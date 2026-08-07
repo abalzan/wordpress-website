@@ -37,7 +37,7 @@ function conexao_theme_setup() {
 	add_theme_support( 'custom-header', array(
 		'default-image' => '', 'width' => 1920, 'height' => 400, 'flex-height' => true, 'flex-width' => true,
 	) );
-	add_theme_support( 'custom-background', array( 'default-color' => 'f5f7f5' ) );
+	add_theme_support( 'custom-background', array( 'default-color' => 'f5f7f8' ) );
 
 	register_nav_menus( array(
 		'primary' => __( 'Menu Principal', 'conexao-br-irlanda' ),
@@ -223,16 +223,18 @@ function conexao_related_posts() {
  * Customizer settings
  */
 function conexao_customize_register( $wp_customize ) {
+	// Colors Section
 	$wp_customize->add_section( 'conexao_colors', array( 'title' => __( 'Cores do Portal', 'conexao-br-irlanda' ), 'priority' => 30 ) );
-	$wp_customize->add_setting( 'conexao_primary_color', array( 'default' => '#1a7a3c', 'sanitize_callback' => 'sanitize_hex_color' ) );
+	$wp_customize->add_setting( 'conexao_primary_color', array( 'default' => '#0E6B3A', 'sanitize_callback' => 'sanitize_hex_color' ) );
 	$wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'conexao_primary_color', array(
 		'label' => __( 'Cor Primária (Verde)', 'conexao-br-irlanda' ), 'section' => 'conexao_colors',
 	) ) );
-	$wp_customize->add_setting( 'conexao_accent_color', array( 'default' => '#f26522', 'sanitize_callback' => 'sanitize_hex_color' ) );
+	$wp_customize->add_setting( 'conexao_accent_color', array( 'default' => '#F68B1F', 'sanitize_callback' => 'sanitize_hex_color' ) );
 	$wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'conexao_accent_color', array(
 		'label' => __( 'Cor de Destaque (Laranja)', 'conexao-br-irlanda' ), 'section' => 'conexao_colors',
 	) ) );
 
+	// Social Section
 	$wp_customize->add_section( 'conexao_social', array( 'title' => __( 'Redes Sociais', 'conexao-br-irlanda' ), 'priority' => 40 ) );
 	$social_fields = array(
 		'conexao_instagram' => array( __( 'Instagram URL', 'conexao-br-irlanda' ), 'https://www.instagram.com/conexaobr.ie/' ),
@@ -244,6 +246,24 @@ function conexao_customize_register( $wp_customize ) {
 		$wp_customize->add_control( $id, array( 'label' => $data[0], 'section' => 'conexao_social', 'type' => 'url' ) );
 	}
 
+	// Hero Section
+	$wp_customize->add_section( 'conexao_hero', array( 'title' => __( 'Hero Section', 'conexao-br-irlanda' ), 'priority' => 35 ) );
+	$wp_customize->add_setting( 'conexao_hero_title', array(
+		'default' => __( 'Tudo que o brasileiro precisa para viver melhor na <span>Irlanda</span>', 'conexao-br-irlanda' ),
+		'sanitize_callback' => 'wp_kses_post',
+	) );
+	$wp_customize->add_control( 'conexao_hero_title', array(
+		'label' => __( 'Título do Hero', 'conexao-br-irlanda' ), 'section' => 'conexao_hero', 'type' => 'textarea',
+	) );
+	$wp_customize->add_setting( 'conexao_hero_subtitle', array(
+		'default' => __( 'Conectando a comunidade brasileira com informações, eventos, guias práticos e muito mais.', 'conexao-br-irlanda' ),
+		'sanitize_callback' => 'sanitize_textarea_field',
+	) );
+	$wp_customize->add_control( 'conexao_hero_subtitle', array(
+		'label' => __( 'Subtítulo do Hero', 'conexao-br-irlanda' ), 'section' => 'conexao_hero', 'type' => 'textarea',
+	) );
+
+	// Footer Section
 	$wp_customize->add_section( 'conexao_footer', array( 'title' => __( 'Rodapé', 'conexao-br-irlanda' ), 'priority' => 50 ) );
 	$wp_customize->add_setting( 'conexao_footer_text', array(
 		'default' => __( '© 2025 Conexão BR Irlanda. Todos os direitos reservados.', 'conexao-br-irlanda' ),
@@ -259,8 +279,8 @@ add_action( 'customize_register', 'conexao_customize_register' );
  * Customizer CSS
  */
 function conexao_customizer_css() {
-	$primary = get_theme_mod( 'conexao_primary_color', '#1a7a3c' );
-	$accent  = get_theme_mod( 'conexao_accent_color', '#f26522' );
+	$primary = get_theme_mod( 'conexao_primary_color', '#0E6B3A' );
+	$accent  = get_theme_mod( 'conexao_accent_color', '#F68B1F' );
 	?>
 	<style type="text/css">
 		:root {

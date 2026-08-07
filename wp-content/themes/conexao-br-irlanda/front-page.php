@@ -1,139 +1,647 @@
-<?php get_header(); ?>
+<?php
+/**
+ * Front Page Template
+ *
+ * @package Conexao_BR_Irlanda
+ */
+
+get_header();
+
+// Get dynamic content or use defaults
+$hero_title    = get_theme_mod( 'conexao_hero_title', __( 'Tudo que o brasileiro precisa para viver melhor na <span>Irlanda</span>', 'conexao-br-irlanda' ) );
+$hero_subtitle = get_theme_mod( 'conexao_hero_subtitle', __( 'Conectando a comunidade brasileira com informações, eventos, guias práticos e muito mais.', 'conexao-br-irlanda' ) );
+?>
 
 <!-- Hero Section -->
 <section class="hero-section">
 	<div class="site-container">
-		<div class="hero-content">
-			<h1 class="hero-title"><?php esc_html_e( 'SUA REVISTA DIGITAL PARA BRASILEIROS NA IRLANDA', 'conexao-br-irlanda' ); ?></h1>
-			<p class="hero-subtitle"><?php esc_html_e( 'Conectando a comunidade brasileira na Irlanda com informações, eventos, cursos e muito mais.', 'conexao-br-irlanda' ); ?></p>
-			<div class="hero-categories">
-				<?php foreach ( array( 'Eventos', 'Empregos', 'Cursos', 'Passeios', 'Família', 'Negócios' ) as $category_name ) {
-					$category = get_category_by_slug( sanitize_title( $category_name ) );
-					if ( $category ) { echo '<a href="' . esc_url( get_category_link( $category->term_id ) ) . '" class="hero-category">' . esc_html( $category_name ) . '</a>'; }
-					else { echo '<span class="hero-category">' . esc_html( $category_name ) . '</span>'; }
-				} ?>
+		<div class="hero-layout">
+			<div class="hero-content">
+				<div class="hero-badge">
+					<span class="hero-badge-dot"></span>
+					<?php esc_html_e( 'Portal da Comunidade Brasileira', 'conexao-br-irlanda' ); ?>
+				</div>
+				<h1 class="hero-title"><?php echo wp_kses_post( $hero_title ); ?></h1>
+				<p class="hero-subtitle"><?php echo esc_html( $hero_subtitle ); ?></p>
+				<div class="hero-ctas">
+					<a href="<?php echo esc_url( home_url( '/guias/' ) ); ?>" class="btn btn-primary">
+						<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+							<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+							<path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+						</svg>
+						<?php esc_html_e( 'Explorar Guias', 'conexao-br-irlanda' ); ?>
+					</a>
+					<a href="<?php echo esc_url( home_url( '/eventos/' ) ); ?>" class="btn btn-outline">
+						<?php esc_html_e( 'Ver Eventos', 'conexao-br-irlanda' ); ?>
+					</a>
+				</div>
 			</div>
-			<div class="hero-ctas">
-				<a href="<?php echo esc_url( home_url( '/eventos/' ) ); ?>" class="btn btn-primary"><?php esc_html_e( 'Eventos da Semana', 'conexao-br-irlanda' ); ?></a>
-				<a href="<?php echo esc_url( home_url( '/contato/' ) ); ?>" class="btn btn-outline"><?php esc_html_e( 'Seja um Apoiador', 'conexao-br-irlanda' ); ?></a>
-				<a href="<?php echo esc_url( home_url( '/blog/' ) ); ?>" class="btn btn-outline"><?php esc_html_e( 'Empregos', 'conexao-br-irlanda' ); ?></a>
+
+			<!-- Events Widget -->
+			<div class="hero-events-widget">
+				<h3 class="hero-events-title">
+					<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+						<rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+						<line x1="16" y1="2" x2="16" y2="6"></line>
+						<line x1="8" y1="2" x2="8" y2="6"></line>
+						<line x1="3" y1="10" x2="21" y2="10"></line>
+					</svg>
+					<?php esc_html_e( 'Próximos Eventos', 'conexao-br-irlanda' ); ?>
+				</h3>
+				<?php
+				$events = new WP_Query( array(
+					'post_type'      => 'event',
+					'posts_per_page' => 3,
+					'meta_key'       => '_event_date',
+					'orderby'        => 'meta_value',
+					'order'          => 'ASC',
+					'no_found_rows'  => true,
+				) );
+				if ( $events->have_posts() ) :
+					while ( $events->have_posts() ) : $events->the_post();
+						$event_date = get_post_meta( get_the_ID(), '_event_date', true );
+						$event_time = get_post_meta( get_the_ID(), '_event_time', true );
+						$event_location = get_post_meta( get_the_ID(), '_event_location', true );
+						$day = $event_date ? date( 'd', strtotime( $event_date ) ) : '--';
+						$month = $event_date ? date( 'M', strtotime( $event_date ) ) : '---';
+						?>
+						<div class="hero-event-card">
+							<div class="hero-event-date">
+								<span class="hero-event-date-day"><?php echo esc_html( $day ); ?></span>
+								<span class="hero-event-date-month"><?php echo esc_html( $month ); ?></span>
+							</div>
+							<div class="hero-event-info">
+								<h4 class="hero-event-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h4>
+								<?php if ( $event_location ) : ?>
+									<span class="hero-event-location">
+										<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2">
+											<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+											<circle cx="12" cy="10" r="3"></circle>
+										</svg>
+										<?php echo esc_html( $event_location ); ?>
+									</span>
+								<?php endif; ?>
+							</div>
+						</div>
+					<?php endwhile; wp_reset_postdata();
+				else : ?>
+					<div class="hero-event-card">
+						<div class="hero-event-info">
+							<h4 class="hero-event-title"><?php esc_html_e( 'Nenhum evento próximo', 'conexao-br-irlanda' ); ?></h4>
+							<span class="hero-event-location"><?php esc_html_e( 'Volte em breve!', 'conexao-br-irlanda' ); ?></span>
+						</div>
+					</div>
+				<?php endif; ?>
+				<a href="<?php echo esc_url( home_url( '/eventos/' ) ); ?>" class="hero-events-cta">
+					<?php esc_html_e( 'Ver todos os eventos →', 'conexao-br-irlanda' ); ?>
+				</a>
 			</div>
 		</div>
 	</div>
 </section>
 
-<!-- Latest Posts -->
+<!-- Quick Access Categories -->
+<section class="quick-access-section">
+	<div class="site-container">
+		<div class="quick-access-grid">
+			<?php
+			$categories = array(
+				array( 'icon' => 'home', 'label' => __( 'Moradia', 'conexao-br-irlanda' ), 'url' => '/moradia/' ),
+				array( 'icon' => 'briefcase', 'label' => __( 'Empregos', 'conexao-br-irlanda' ), 'url' => '/empregos/' ),
+				array( 'icon' => 'heart', 'label' => __( 'Saúde', 'conexao-br-irlanda' ), 'url' => '/saude/' ),
+				array( 'icon' => 'users', 'label' => __( 'Família', 'conexao-br-irlanda' ), 'url' => '/familia/' ),
+				array( 'icon' => 'car', 'label' => __( 'Transporte', 'conexao-br-irlanda' ), 'url' => '/transporte/' ),
+				array( 'icon' => 'dollar', 'label' => __( 'Finanças', 'conexao-br-irlanda' ), 'url' => '/financas/' ),
+				array( 'icon' => 'gift', 'label' => __( 'Benefícios', 'conexao-br-irlanda' ), 'url' => '/beneficios/' ),
+				array( 'icon' => 'utensils', 'label' => __( 'Onde Comer', 'conexao-br-irlanda' ), 'url' => '/onde-comer/' ),
+				array( 'icon' => 'calendar', 'label' => __( 'Eventos', 'conexao-br-irlanda' ), 'url' => '/eventos/' ),
+				array( 'icon' => 'graduation-cap', 'label' => __( 'Educação', 'conexao-br-irlanda' ), 'url' => '/educacao/' ),
+				array( 'icon' => 'file-text', 'label' => __( 'Documentos', 'conexao-br-irlanda' ), 'url' => '/documentos/' ),
+				array( 'icon' => 'map', 'label' => __( 'Ver todas', 'conexao-br-irlanda' ), 'url' => '/categorias/' ),
+			);
+
+			$icon_svgs = array(
+				'home' => '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline>',
+				'briefcase' => '<rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>',
+				'heart' => '<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>',
+				'users' => '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path>',
+				'car' => '<path d="M14 16H9m10 0h3v-3.15a1 1 0 0 0-.84-.99L16 11l-2.7-3.6a1 1 0 0 0-.8-.4H5.24a2 2 0 0 0-1.8 1.1l-.8 1.63A6 6 0 0 0 2 12.42V16h2"></path><circle cx="6.5" cy="16.5" r="2.5"></circle><circle cx="16.5" cy="16.5" r="2.5"></circle>',
+				'dollar' => '<line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>',
+				'gift' => '<polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path>',
+				'utensils' => '<path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line>',
+				'calendar' => '<rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>',
+				'graduation-cap' => '<path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 2.5 3 6 3s3 0 6-3v-5"></path>',
+				'file-text' => '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline>',
+				'map' => '<polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line>',
+			);
+
+			foreach ( $categories as $cat ) :
+				$icon_svg = isset( $icon_svgs[ $cat['icon'] ] ) ? $icon_svgs[ $cat['icon'] ] : '';
+				?>
+				<a href="<?php echo esc_url( home_url( $cat['url'] ) ); ?>" class="quick-access-card">
+					<div class="quick-access-icon">
+						<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<?php echo $icon_svg; /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */ ?>
+						</svg>
+					</div>
+					<span class="quick-access-label"><?php echo esc_html( $cat['label'] ); ?></span>
+				</a>
+			<?php endforeach; ?>
+		</div>
+	</div>
+</section>
+
+<!-- Featured Content -->
 <section class="section">
 	<div class="site-container">
 		<div class="section-header">
-			<h2 class="section-title"><?php esc_html_e( 'Últimas Publicações', 'conexao-br-irlanda' ); ?></h2>
-			<a href="<?php echo esc_url( home_url( '/blog/' ) ); ?>" class="section-link"><?php esc_html_e( 'Ver todos →', 'conexao-br-irlanda' ); ?></a>
+			<div class="section-header-left">
+				<span class="section-eyebrow"><?php esc_html_e( 'Conteúdo em Destaque', 'conexao-br-irlanda' ); ?></span>
+				<h2 class="section-title"><?php esc_html_e( 'Últimas Publicações', 'conexao-br-irlanda' ); ?></h2>
+			</div>
+			<a href="<?php echo esc_url( home_url( '/blog/' ) ); ?>" class="section-link">
+				<?php esc_html_e( 'Ver todas', 'conexao-br-irlanda' ); ?>
+				<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+					<line x1="5" y1="12" x2="19" y2="12"></line>
+					<polyline points="12 5 19 12 12 19"></polyline>
+				</svg>
+			</a>
 		</div>
-		<?php
-		$latest_posts = new WP_Query( array( 'posts_per_page' => 6, 'ignore_sticky_posts' => true, 'no_found_rows' => true ) );
-		if ( $latest_posts->have_posts() ) : $count = 0; ?>
-			<?php while ( $latest_posts->have_posts() ) : $latest_posts->the_post(); ?>
-				<?php if ( 0 === $count ) : ?>
-					<article class="featured-post">
-						<?php if ( has_post_thumbnail() ) : ?>
-							<div class="featured-post-image"><a href="<?php the_permalink(); ?>"><?php the_post_thumbnail( 'conexao-hero', array( 'loading' => 'lazy' ) ); ?></a></div>
+
+		<div class="featured-content-layout">
+			<div class="featured-main">
+				<?php
+				$featured = new WP_Query( array(
+					'posts_per_page'      => 5,
+					'ignore_sticky_posts' => true,
+					'no_found_rows'       => true,
+				) );
+				$count = 0;
+				if ( $featured->have_posts() ) :
+					while ( $featured->have_posts() ) : $featured->the_post();
+						if ( 0 === $count ) : ?>
+							<article class="featured-article">
+								<?php if ( has_post_thumbnail() ) : ?>
+									<div class="featured-article-image">
+										<a href="<?php the_permalink(); ?>"><?php the_post_thumbnail( 'conexao-hero', array( 'loading' => 'lazy' ) ); ?></a>
+									</div>
+								<?php endif; ?>
+								<div class="featured-article-content">
+									<?php
+									$categories = get_the_category();
+									if ( $categories ) : ?>
+										<span class="featured-article-category"><?php echo esc_html( $categories[0]->name ); ?></span>
+									<?php endif; ?>
+									<h3 class="featured-article-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
+									<p class="featured-article-excerpt"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 30, '...' ) ); ?></p>
+									<div class="featured-article-meta">
+										<span>
+											<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+												<circle cx="12" cy="12" r="10"></circle>
+												<polyline points="12 6 12 12 16 14"></polyline>
+											</svg>
+											<?php echo esc_html( get_the_date() ); ?>
+										</span>
+										<span>
+											<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+												<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+												<path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+											</svg>
+											<?php echo esc_html( conexao_reading_time_text() ); ?>
+										</span>
+									</div>
+								</div>
+							</article>
+						<?php else : ?>
+							<?php if ( 1 === $count ) : ?><div class="cards-grid" style="margin-top: 24px;"><?php endif; ?>
+							<article class="post-card">
+								<?php if ( has_post_thumbnail() ) : ?>
+									<div class="post-card-image">
+										<a href="<?php the_permalink(); ?>"><?php the_post_thumbnail( 'conexao-card', array( 'loading' => 'lazy' ) ); ?></a>
+									</div>
+								<?php endif; ?>
+								<?php
+								$cats = get_the_category();
+								if ( $cats ) : ?>
+									<span class="post-card-category"><?php echo esc_html( $cats[0]->name ); ?></span>
+								<?php endif; ?>
+								<div class="post-card-body">
+									<h3 class="post-card-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
+									<p class="post-card-excerpt"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 15, '...' ) ); ?></p>
+									<div class="post-card-meta">
+										<span><?php echo esc_html( get_the_date() ); ?></span>
+										<span><?php echo esc_html( conexao_reading_time_text() ); ?></span>
+									</div>
+								</div>
+							</article>
+							<?php if ( $count === $featured->post_count - 1 ) : ?></div><?php endif; ?>
 						<?php endif; ?>
-						<div class="featured-post-content">
-							<span class="featured-post-tag"><?php esc_html_e( 'Destaque', 'conexao-br-irlanda' ); ?></span>
-							<h3 class="featured-post-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
-							<div class="card-meta"><?php conexao_post_meta(); ?></div>
-							<p class="featured-post-excerpt"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 25, '...' ) ); ?></p>
-							<a href="<?php the_permalink(); ?>" class="btn btn-green"><?php esc_html_e( 'Ler mais', 'conexao-br-irlanda' ); ?></a>
-						</div>
-					</article>
-				<?php else : ?>
-					<?php if ( 1 === $count ) : ?><div class="cards-grid"><?php endif; ?>
-					<article class="post-card">
-						<?php if ( has_post_thumbnail() ) : ?>
-							<div class="post-card-image"><a href="<?php the_permalink(); ?>"><?php the_post_thumbnail( 'conexao-card', array( 'loading' => 'lazy' ) ); ?></a></div>
-						<?php endif; ?>
-						<div class="post-card-body">
-							<h3 class="post-card-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
-							<p class="post-card-excerpt"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 20, '...' ) ); ?></p>
-							<div class="post-card-meta"><?php conexao_post_meta(); ?></div>
-						</div>
-					</article>
-					<?php if ( $count === $latest_posts->post_count - 1 ) : ?></div><?php endif; ?>
+						<?php $count++; ?>
+					<?php endwhile; wp_reset_postdata(); ?>
 				<?php endif; ?>
-				<?php $count++; ?>
-			<?php endwhile; wp_reset_postdata(); ?>
-		<?php endif; ?>
-	</div>
-</section>
+			</div>
 
-<!-- Sponsors -->
-<section class="section sponsors-section">
-	<div class="site-container">
-		<div class="section-header">
-			<h2 class="section-title"><?php esc_html_e( 'Empresas que Apoiam nosso Projeto', 'conexao-br-irlanda' ); ?></h2>
-		</div>
-		<div class="sponsors-grid">
-			<?php
-			$sponsors = new WP_Query( array( 'post_type' => 'sponsor', 'posts_per_page' => 8, 'orderby' => 'menu_order', 'order' => 'ASC', 'no_found_rows' => true ) );
-			if ( $sponsors->have_posts() ) :
-				while ( $sponsors->have_posts() ) : $sponsors->the_post();
-					$sponsor_url = get_post_meta( get_the_ID(), '_conexao_external_url', true ); ?>
-					<a href="<?php echo esc_url( $sponsor_url ? $sponsor_url : '#' ); ?>" class="sponsor-card" target="_blank" rel="noopener noreferrer">
-						<?php if ( has_post_thumbnail() ) : ?><?php the_post_thumbnail( 'medium', array( 'loading' => 'lazy' ) ); ?><?php else : ?><span><?php the_title(); ?></span><?php endif; ?>
-					</a>
-				<?php endwhile; wp_reset_postdata();
-			else : ?>
-				<p><?php esc_html_e( 'Adicione seus patrocinadores em breve.', 'conexao-br-irlanda' ); ?></p>
-			<?php endif; ?>
-		</div>
-	</div>
-</section>
-
-<!-- Directory -->
-<section class="section directory-section">
-	<div class="site-container">
-		<div class="section-header">
-			<h2 class="section-title"><?php esc_html_e( 'Diretório de Negócios', 'conexao-br-irlanda' ); ?></h2>
-			<a href="<?php echo esc_url( home_url( '/blog/' ) ); ?>" class="section-link"><?php esc_html_e( 'Ver todos →', 'conexao-br-irlanda' ); ?></a>
-		</div>
-		<div class="directory-grid">
-			<?php
-			$directory = new WP_Query( array( 'post_type' => 'directory_item', 'posts_per_page' => 6, 'orderby' => 'menu_order', 'order' => 'ASC', 'no_found_rows' => true ) );
-			if ( $directory->have_posts() ) :
-				while ( $directory->have_posts() ) : $directory->the_post();
-					$item_url = get_post_meta( get_the_ID(), '_conexao_external_url', true );
-					$terms    = get_the_terms( get_the_ID(), 'directory_category' ); ?>
-					<a href="<?php echo esc_url( $item_url ? $item_url : '#' ); ?>" class="directory-card" target="_blank" rel="noopener noreferrer">
-						<?php if ( has_post_thumbnail() ) : ?>
-							<div class="directory-card-image"><?php the_post_thumbnail( 'conexao-card', array( 'loading' => 'lazy' ) ); ?></div>
+			<div class="featured-sidebar">
+				<!-- Popular Guides -->
+				<div class="sidebar-widget">
+					<h4 class="sidebar-widget-title">
+						<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+							<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+						</svg>
+						<?php esc_html_e( 'Guias Populares', 'conexao-br-irlanda' ); ?>
+					</h4>
+					<ul class="sidebar-list">
+						<?php
+						$guides = new WP_Query( array(
+							'post_type'      => 'guide',
+							'posts_per_page' => 5,
+							'no_found_rows'  => true,
+						) );
+						$guide_count = 1;
+						if ( $guides->have_posts() ) :
+							while ( $guides->have_posts() ) : $guides->the_post(); ?>
+								<li>
+									<a href="<?php the_permalink(); ?>">
+										<span class="sidebar-list-number"><?php echo esc_html( $guide_count ); ?></span>
+										<?php the_title(); ?>
+									</a>
+								</li>
+							<?php $guide_count++;
+							endwhile; wp_reset_postdata();
+						else : ?>
+							<li><a href="#"><?php esc_html_e( 'Como conseguir um PPS Number', 'conexao-br-irlanda' ); ?></a></li>
+							<li><a href="#"><?php esc_html_e( 'Medical Card Guide', 'conexao-br-irlanda' ); ?></a></li>
+							<li><a href="#"><?php esc_html_e( 'Driving Licence Exchange', 'conexao-br-irlanda' ); ?></a></li>
+							<li><a href="#"><?php esc_html_e( 'Opening a Bank Account', 'conexao-br-irlanda' ); ?></a></li>
+							<li><a href="#"><?php esc_html_e( 'Renting a House', 'conexao-br-irlanda' ); ?></a></li>
 						<?php endif; ?>
-						<div class="directory-card-body">
-							<h3 class="directory-card-title"><?php the_title(); ?></h3>
-							<?php if ( $terms && ! is_wp_error( $terms ) ) : ?><span class="directory-card-category"><?php echo esc_html( $terms[0]->name ); ?></span><?php endif; ?>
+					</ul>
+				</div>
+
+				<!-- Most Read -->
+				<div class="sidebar-widget">
+					<h4 class="sidebar-widget-title">
+						<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+							<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+							<circle cx="12" cy="12" r="3"></circle>
+						</svg>
+						<?php esc_html_e( 'Mais Lidos', 'conexao-br-irlanda' ); ?>
+					</h4>
+					<ul class="sidebar-list">
+						<?php
+						$popular = new WP_Query( array(
+							'posts_per_page'      => 5,
+							'orderby'             => 'comment_count',
+							'order'               => 'DESC',
+							'ignore_sticky_posts' => true,
+							'no_found_rows'       => true,
+						) );
+						$pop_count = 1;
+						if ( $popular->have_posts() ) :
+							while ( $popular->have_posts() ) : $popular->the_post(); ?>
+								<li>
+									<a href="<?php the_permalink(); ?>">
+										<span class="sidebar-list-number"><?php echo esc_html( $pop_count ); ?></span>
+										<?php the_title(); ?>
+									</a>
+								</li>
+							<?php $pop_count++;
+							endwhile; wp_reset_postdata();
+						endif; ?>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- Practical Guides -->
+<section class="section section--gray">
+	<div class="site-container">
+		<div class="section-header">
+			<div class="section-header-left">
+				<span class="section-eyebrow"><?php esc_html_e( 'Guias Práticos', 'conexao-br-irlanda' ); ?></span>
+				<h2 class="section-title"><?php esc_html_e( 'Tudo que você precisa saber', 'conexao-br-irlanda' ); ?></h2>
+				<p class="section-subtitle"><?php esc_html_e( 'Guias completos para ajudar você em cada etapa da sua jornada na Irlanda.', 'conexao-br-irlanda' ); ?></p>
+			</div>
+			<a href="<?php echo esc_url( home_url( '/guias/' ) ); ?>" class="section-link">
+				<?php esc_html_e( 'Ver todos os guias', 'conexao-br-irlanda' ); ?>
+				<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+					<line x1="5" y1="12" x2="19" y2="12"></line>
+					<polyline points="12 5 19 12 12 19"></polyline>
+				</svg>
+			</a>
+		</div>
+
+		<div class="guides-grid">
+			<?php
+			$guide_list = array(
+				array( 'icon' => 'id-card', 'title' => __( 'PPS Number', 'conexao-br-irlanda' ), 'desc' => __( 'Como conseguir seu Personal Public Service Number', 'conexao-br-irlanda' ) ),
+				array( 'icon' => 'heart-pulse', 'title' => __( 'Medical Card', 'conexao-br-irlanda' ), 'desc' => __( 'Guia completo sobre o cartão de saúde irlandês', 'conexao-br-irlanda' ) ),
+				array( 'icon' => 'car', 'title' => __( 'Carteira de Motorista', 'conexao-br-irlanda' ), 'desc' => __( 'Como trocar sua CNH brasileira pela irlandesa', 'conexao-br-irlanda' ) ),
+				array( 'icon' => 'landmark', 'title' => __( 'Conta Bancária', 'conexao-br-irlanda' ), 'desc' => __( 'Passo a passo para abrir sua conta na Irlanda', 'conexao-br-irlanda' ) ),
+				array( 'icon' => 'home', 'title' => __( 'Alugar Casa', 'conexao-br-irlanda' ), 'desc' => __( 'Tudo sobre o mercado imobiliário irlandês', 'conexao-br-irlanda' ) ),
+				array( 'icon' => 'receipt', 'title' => __( 'Impostos', 'conexao-br-irlanda' ), 'desc' => __( 'Entenda o sistema de impostos na Irlanda', 'conexao-br-irlanda' ) ),
+				array( 'icon' => 'stethoscope', 'title' => __( 'GP Registration', 'conexao-br-irlanda' ), 'desc' => __( 'Como se registrar em um médico na Irlanda', 'conexao-br-irlanda' ) ),
+				array( 'icon' => 'flag', 'title' => __( 'Cidadania Irlandesa', 'conexao-br-irlanda' ), 'desc' => __( 'Requisitos e processo para obter a cidadania', 'conexao-br-irlanda' ) ),
+			);
+
+			$guide_icons = array(
+				'id-card' => '<rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line>',
+				'heart-pulse' => '<path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>',
+				'car' => '<path d="M14 16H9m10 0h3v-3.15a1 1 0 0 0-.84-.99L16 11l-2.7-3.6a1 1 0 0 0-.8-.4H5.24a2 2 0 0 0-1.8 1.1l-.8 1.63A6 6 0 0 0 2 12.42V16h2"></path><circle cx="6.5" cy="16.5" r="2.5"></circle><circle cx="16.5" cy="16.5" r="2.5"></circle>',
+				'landmark' => '<line x1="3" y1="22" x2="21" y2="22"></line><line x1="6" y1="18" x2="6" y2="11"></line><line x1="10" y1="18" x2="10" y2="11"></line><line x1="14" y1="18" x2="14" y2="11"></line><line x1="18" y1="18" x2="18" y2="11"></line><polygon points="12 2 20 7 4 7"></polygon>',
+				'home' => '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline>',
+				'receipt' => '<path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1-2-1z"></path><line x1="8" y1="7" x2="16" y2="7"></line><line x1="8" y1="11" x2="16" y2="11"></line><line x1="8" y1="15" x2="12" y2="15"></line>',
+				'stethoscope' => '<path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"></path><path d="M8 15v1a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6v-4"></path><circle cx="20" cy="10" r="2"></circle>',
+				'flag' => '<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line>',
+			);
+
+			foreach ( $guide_list as $guide ) :
+				$icon = isset( $guide_icons[ $guide['icon'] ] ) ? $guide_icons[ $guide['icon'] ] : '';
+				?>
+				<a href="<?php echo esc_url( home_url( '/guias/' ) ); ?>" class="guide-card">
+					<div class="guide-icon">
+						<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<?php echo $icon; /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */ ?>
+						</svg>
+					</div>
+					<h3 class="guide-title"><?php echo esc_html( $guide['title'] ); ?></h3>
+					<p class="guide-description"><?php echo esc_html( $guide['desc'] ); ?></p>
+					<span class="guide-link">
+						<?php esc_html_e( 'Ler mais', 'conexao-br-irlanda' ); ?>
+						<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+							<line x1="5" y1="12" x2="19" y2="12"></line>
+							<polyline points="12 5 19 12 12 19"></polyline>
+						</svg>
+					</span>
+				</a>
+			<?php endforeach; ?>
+		</div>
+	</div>
+</section>
+
+<!-- Upcoming Events -->
+<section class="section">
+	<div class="site-container">
+		<div class="section-header">
+			<div class="section-header-left">
+				<span class="section-eyebrow"><?php esc_html_e( 'Agenda', 'conexao-br-irlanda' ); ?></span>
+				<h2 class="section-title"><?php esc_html_e( 'Próximos Eventos', 'conexao-br-irlanda' ); ?></h2>
+				<p class="section-subtitle"><?php esc_html_e( 'Não perca os eventos da comunidade brasileira na Irlanda.', 'conexao-br-irlanda' ); ?></p>
+			</div>
+			<a href="<?php echo esc_url( home_url( '/eventos/' ) ); ?>" class="section-link">
+				<?php esc_html_e( 'Ver todos', 'conexao-br-irlanda' ); ?>
+				<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+					<line x1="5" y1="12" x2="19" y2="12"></line>
+					<polyline points="12 5 19 12 12 19"></polyline>
+				</svg>
+			</a>
+		</div>
+
+		<div class="events-grid">
+			<?php
+			$events_list = new WP_Query( array(
+				'post_type'      => 'event',
+				'posts_per_page' => 3,
+				'meta_key'       => '_event_date',
+				'orderby'        => 'meta_value',
+				'order'          => 'ASC',
+				'no_found_rows'  => true,
+			) );
+			if ( $events_list->have_posts() ) :
+				while ( $events_list->have_posts() ) : $events_list->the_post();
+					$event_date = get_post_meta( get_the_ID(), '_event_date', true );
+					$event_time = get_post_meta( get_the_ID(), '_event_time', true );
+					$event_location = get_post_meta( get_the_ID(), '_event_location', true );
+					$day = $event_date ? date( 'd', strtotime( $event_date ) ) : '--';
+					$month = $event_date ? date( 'M', strtotime( $event_date ) ) : '---';
+					?>
+					<article class="event-card">
+						<div class="event-card-image">
+							<?php if ( has_post_thumbnail() ) : ?>
+								<?php the_post_thumbnail( 'conexao-card', array( 'loading' => 'lazy' ) ); ?>
+							<?php endif; ?>
+							<div class="event-card-date-badge">
+								<span class="event-card-date-day"><?php echo esc_html( $day ); ?></span>
+								<span class="event-card-date-month"><?php echo esc_html( $month ); ?></span>
+							</div>
 						</div>
-					</a>
+						<div class="event-card-body">
+							<?php
+							$terms = get_the_terms( get_the_ID(), 'event_category' );
+							if ( $terms && ! is_wp_error( $terms ) ) : ?>
+								<span class="event-card-category"><?php echo esc_html( $terms[0]->name ); ?></span>
+							<?php endif; ?>
+							<h3 class="event-card-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
+							<div class="event-card-details">
+								<?php if ( $event_time ) : ?>
+									<span class="event-card-detail">
+										<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+											<circle cx="12" cy="12" r="10"></circle>
+											<polyline points="12 6 12 12 16 14"></polyline>
+										</svg>
+										<?php echo esc_html( $event_time ); ?>
+									</span>
+								<?php endif; ?>
+								<?php if ( $event_location ) : ?>
+									<span class="event-card-detail">
+										<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+											<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+											<circle cx="12" cy="10" r="3"></circle>
+										</svg>
+										<?php echo esc_html( $event_location ); ?>
+									</span>
+								<?php endif; ?>
+							</div>
+							<a href="<?php the_permalink(); ?>" class="event-card-cta">
+								<?php esc_html_e( 'Reservar', 'conexao-br-irlanda' ); ?>
+							</a>
+						</div>
+					</article>
 				<?php endwhile; wp_reset_postdata();
 			else : ?>
-				<p><?php esc_html_e( 'Adicione itens ao diretório em breve.', 'conexao-br-irlanda' ); ?></p>
+				<p><?php esc_html_e( 'Nenhum evento próximo no momento.', 'conexao-br-irlanda' ); ?></p>
 			<?php endif; ?>
 		</div>
 	</div>
 </section>
 
-<!-- CTA -->
-<section class="cta-section">
+<!-- Latest News -->
+<section class="section section--gray">
 	<div class="site-container">
-		<h2><?php esc_html_e( 'Faça parte da nossa comunidade!', 'conexao-br-irlanda' ); ?></h2>
-		<p><?php esc_html_e( 'Siga-nos nas redes sociais e fique por dentro de tudo que acontece na comunidade brasileira na Irlanda.', 'conexao-br-irlanda' ); ?></p>
-		<div class="cta-buttons">
-			<?php $instagram = get_theme_mod( 'conexao_instagram', 'https://www.instagram.com/conexaobr.ie/' ); $whatsapp = get_theme_mod( 'conexao_whatsapp', 'https://wa.me/353899451428' ); ?>
-			<a href="<?php echo esc_url( $instagram ); ?>" class="btn btn-outline" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Seguir no Instagram', 'conexao-br-irlanda' ); ?></a>
-			<a href="<?php echo esc_url( $whatsapp ); ?>" class="btn btn-outline" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Falar no WhatsApp', 'conexao-br-irlanda' ); ?></a>
+		<div class="section-header">
+			<div class="section-header-left">
+				<span class="section-eyebrow"><?php esc_html_e( 'Fique por Dentro', 'conexao-br-irlanda' ); ?></span>
+				<h2 class="section-title"><?php esc_html_e( 'Últimas Notícias', 'conexao-br-irlanda' ); ?></h2>
+			</div>
+			<a href="<?php echo esc_url( home_url( '/noticias/' ) ); ?>" class="section-link">
+				<?php esc_html_e( 'Ver todas', 'conexao-br-irlanda' ); ?>
+				<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+					<line x1="5" y1="12" x2="19" y2="12"></line>
+					<polyline points="12 5 19 12 12 19"></polyline>
+				</svg>
+			</a>
+		</div>
+
+		<div class="news-grid">
+			<?php
+			$news = new WP_Query( array(
+				'posts_per_page'      => 6,
+				'ignore_sticky_posts' => true,
+				'no_found_rows'       => true,
+			) );
+			if ( $news->have_posts() ) :
+				while ( $news->have_posts() ) : $news->the_post(); ?>
+					<article class="news-card">
+						<div class="news-card-image">
+							<?php if ( has_post_thumbnail() ) : ?>
+								<a href="<?php the_permalink(); ?>"><?php the_post_thumbnail( 'conexao-card', array( 'loading' => 'lazy' ) ); ?></a>
+							<?php endif; ?>
+						</div>
+						<div class="news-card-body">
+							<?php
+							$cats = get_the_category();
+							if ( $cats ) : ?>
+								<span class="news-card-category"><?php echo esc_html( $cats[0]->name ); ?></span>
+							<?php endif; ?>
+							<h3 class="news-card-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
+							<p class="news-card-excerpt"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 15, '...' ) ); ?></p>
+							<div class="news-card-meta">
+								<span>
+									<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2">
+										<circle cx="12" cy="12" r="10"></circle>
+										<polyline points="12 6 12 12 16 14"></polyline>
+									</svg>
+									<?php echo esc_html( get_the_date() ); ?>
+								</span>
+								<span>
+									<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2">
+										<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+										<path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+									</svg>
+									<?php echo esc_html( conexao_reading_time_text() ); ?>
+								</span>
+							</div>
+						</div>
+					</article>
+				<?php endwhile; wp_reset_postdata(); ?>
+			<?php endif; ?>
 		</div>
 	</div>
 </section>
 
-<!-- Quote -->
+<!-- Featured Businesses -->
+<section class="section">
+	<div class="site-container">
+		<div class="section-header">
+			<div class="section-header-left">
+				<span class="section-eyebrow"><?php esc_html_e( 'Diretório', 'conexao-br-irlanda' ); ?></span>
+				<h2 class="section-title"><?php esc_html_e( 'Empresas em Destaque', 'conexao-br-irlanda' ); ?></h2>
+				<p class="section-subtitle"><?php esc_html_e( 'Negócios brasileiros que apoiam a comunidade na Irlanda.', 'conexao-br-irlanda' ); ?></p>
+			</div>
+			<a href="<?php echo esc_url( home_url( '/empresas/' ) ); ?>" class="section-link">
+				<?php esc_html_e( 'Ver todas', 'conexao-br-irlanda' ); ?>
+				<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+					<line x1="5" y1="12" x2="19" y2="12"></line>
+					<polyline points="12 5 19 12 12 19"></polyline>
+				</svg>
+			</a>
+		</div>
+
+		<div class="businesses-grid">
+			<?php
+			$businesses = new WP_Query( array(
+				'post_type'      => 'business',
+				'posts_per_page' => 4,
+				'orderby'        => 'menu_order',
+				'order'          => 'ASC',
+				'no_found_rows'  => true,
+			) );
+			if ( $businesses->have_posts() ) :
+				while ( $businesses->have_posts() ) : $businesses->the_post();
+					$biz_phone = get_post_meta( get_the_ID(), '_business_phone', true );
+					$biz_whatsapp = get_post_meta( get_the_ID(), '_business_whatsapp', true );
+					$biz_website = get_post_meta( get_the_ID(), '_business_website', true );
+					$biz_location = get_post_meta( get_the_ID(), '_business_location', true );
+					$terms = get_the_terms( get_the_ID(), 'business_category' );
+					?>
+					<div class="business-card">
+						<div class="business-logo">
+							<?php if ( has_post_thumbnail() ) : ?>
+								<?php the_post_thumbnail( 'thumbnail', array( 'loading' => 'lazy' ) ); ?>
+							<?php else : ?>
+								<svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="#adb5bd" stroke-width="1.5">
+									<rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+									<path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+								</svg>
+							<?php endif; ?>
+						</div>
+						<?php if ( $terms && ! is_wp_error( $terms ) ) : ?>
+							<span class="business-category"><?php echo esc_html( $terms[0]->name ); ?></span>
+						<?php endif; ?>
+						<h3 class="business-name"><?php the_title(); ?></h3>
+						<?php if ( $biz_location ) : ?>
+							<span class="business-location">
+								<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2">
+									<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+									<circle cx="12" cy="10" r="3"></circle>
+								</svg>
+								<?php echo esc_html( $biz_location ); ?>
+							</span>
+						<?php endif; ?>
+						<p class="business-description"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 12, '...' ) ); ?></p>
+						<div class="business-actions">
+							<?php if ( $biz_website ) : ?>
+								<a href="<?php echo esc_url( $biz_website ); ?>" class="business-btn business-btn-primary" target="_blank" rel="noopener noreferrer">
+									<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2">
+										<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+										<polyline points="15 3 21 3 21 9"></polyline>
+										<line x1="10" y1="14" x2="21" y2="3"></line>
+									</svg>
+									Website
+								</a>
+							<?php endif; ?>
+							<?php if ( $biz_whatsapp ) : ?>
+								<a href="<?php echo esc_url( $biz_whatsapp ); ?>" class="business-btn business-btn-whatsapp" target="_blank" rel="noopener noreferrer">
+									<svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
+										<path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+									</svg>
+									WhatsApp
+								</a>
+							<?php endif; ?>
+						</div>
+					</div>
+				<?php endwhile; wp_reset_postdata();
+			else : ?>
+				<p><?php esc_html_e( 'Adicione empresas ao diretório em breve.', 'conexao-br-irlanda' ); ?></p>
+			<?php endif; ?>
+		</div>
+	</div>
+</section>
+
+<!-- Newsletter -->
+<section class="newsletter-section">
+	<div class="site-container">
+		<div class="newsletter-content">
+			<div class="newsletter-text">
+				<h2 class="newsletter-title"><?php esc_html_e( 'Fique por dentro de tudo!', 'conexao-br-irlanda' ); ?></h2>
+				<p class="newsletter-description"><?php esc_html_e( 'Receba as últimas notícias, eventos e guias práticos diretamente no seu email. Sem spam, apenas conteúdo relevante para brasileiros na Irlanda.', 'conexao-br-irlanda' ); ?></p>
+			</div>
+			<div class="newsletter-form">
+				<h3 class="newsletter-form-title"><?php esc_html_e( 'Assine nossa newsletter', 'conexao-br-irlanda' ); ?></h3>
+				<p class="newsletter-form-subtitle"><?php esc_html_e( 'Junte-se a milhares de brasileiros que já recebem nossas atualizações.', 'conexao-br-irlanda' ); ?></p>
+				<form class="newsletter-input-group" action="#" method="post">
+					<input type="email" class="newsletter-input" placeholder="<?php esc_attr_e( 'Seu melhor email', 'conexao-br-irlanda' ); ?>" required>
+					<button type="submit" class="newsletter-btn"><?php esc_html_e( 'Assinar', 'conexao-br-irlanda' ); ?></button>
+				</form>
+				<p class="newsletter-privacy"><?php esc_html_e( 'Ao assinar, você concorda com nossa política de privacidade.', 'conexao-br-irlanda' ); ?></p>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- Quote Section -->
 <section class="quote-section">
 	<div class="site-container">
 		<div class="quote-content">
