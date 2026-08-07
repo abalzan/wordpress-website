@@ -1,0 +1,31 @@
+/* Editor styles for Conexão BR Irlanda */
+body {
+	font-family: 'Inter', sans-serif;
+	color: #1a1a1a;
+}
+h1, h2, h3, h4, h5, h6 {
+	font-family: 'Poppins', sans-serif;
+	font-weight: 700;
+	color: #1a1a1a;
+}
+a {
+	color: #1a7a3c;
+}
+.wp-block { max-width: 800px; }
+.wp-block[data-align="wide"] { max-width: 1200px; }
+.wp-block[data-align="full"] { max-width: none; }
+.wp-block-button__link {
+	background-color: #f26522;
+	color: #ffffff;
+	border-radius: 8px;
+	padding: 12px 24px;
+	font-weight: 600;
+}
+.wp-block-button__link:hover { background-color: #d54e12; }
+.wp-block-quote {
+	border-left: 4px solid #f26522;
+	background: #fff3ec;
+	padding: 15px 20px;
+	font-style: italic;
+}
+.wp-block-image img { border-radius: 8px; }
