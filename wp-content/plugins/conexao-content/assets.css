@@ -1,0 +1,8 @@
+.conexao-card-grid { display:grid; gap:1.25rem; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); margin:1.5rem 0 3rem; }
+.conexao-card { background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 2px 12px rgba(22,52,43,.12); }
+.conexao-card a,.conexao-card>div { color:inherit; display:block; height:100%; text-decoration:none; }
+.conexao-card img { aspect-ratio: 4/3; display:block; height:auto; object-fit:cover; width:100%; }
+.conexao-card h3 { font-size:1rem; margin:0; padding:1rem; }
+.conexao-share { align-items:center; border-top:1px solid #d8e1dc; display:flex; flex-wrap:wrap; gap:.65rem; margin-top:2rem; padding-top:1.25rem; }
+.conexao-share a,.conexao-share button { background:#147a53; border:0; border-radius:999px; color:#fff; cursor:pointer; font:inherit; padding:.4rem .8rem; text-decoration:none; }
+.conexao-reading-time { color:#547067; font-size:.9rem; }

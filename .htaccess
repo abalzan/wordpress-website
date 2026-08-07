@@ -1,0 +1,18 @@
+# Custom redirects for the Wix migration
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteRule ^turismo-e-lazer/?$ /eventos/ [R=301,L]
+RewriteRule ^capacitação/?$ /cursos/ [R=301,L]
+RewriteRule ^fique-por-dentro/?$ /noticias/ [R=301,L]
+RewriteRule ^s-projects-basic/?$ /guias-praticos/ [R=301,L]
+RewriteRule ^post/([^/]+)/?$ /blog/$1/ [R=301,L]
+RewriteRule ^blog/categories/([^/]+)/?$ /category/$1/ [R=301,L]
+
+# BEGIN WordPress
+RewriteBase /
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php [L]
+# END WordPress
+</IfModule>

@@ -1,0 +1,10 @@
+source_path,destination_path,http_status,preserve_query_string,test_status,content_owner,notes
+/,/,301,false,pending,migration-team,Homepage canonical redirect
+/blog,/blog/,301,false,pending,migration-team,Canonical blog archive redirect
+/blog/categories/{cat},/category/{cat}/,301,true,pending,migration-team,Category archive redirect pattern
+/post/{slug},/blog/{slug}/,301,false,pending,migration-team,Legacy Wix blog post redirect pattern
+/turismo-e-lazer,/eventos/,301,false,pending,migration-team,Legacy events path redirect
+/capacitação,/cursos/,301,false,pending,migration-team,Legacy courses path redirect
+/fique-por-dentro,/noticias/,301,false,pending,migration-team,Legacy news path redirect
+/s-projects-basic,/guias-praticos/,301,false,pending,migration-team,Legacy guides path redirect
+/contato,/contato/,301,false,pending,migration-team,Legacy contact path redirect

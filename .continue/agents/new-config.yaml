@@ -1,0 +1,14 @@
+# This is an example configuration file
+# To learn more, see the full config.yaml reference: https://docs.continue.dev/reference
+
+name: Example Config
+version: 1.0.0
+schema: v1
+models:
+  - name: Autodetect
+    provider: ollama
+    model: AUTODETECT
+    apiBase: http://localhost:11434
+    requestOptions:
+      timeout: 9000000
+
