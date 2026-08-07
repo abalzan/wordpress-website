@@ -10,7 +10,10 @@ get_header();
 // Get dynamic content or use defaults
 $hero_title    = get_theme_mod( 'conexao_hero_title', __( 'Tudo que o brasileiro precisa para viver melhor na <span>Irlanda</span>', 'conexao-br-irlanda' ) );
 $hero_subtitle = get_theme_mod( 'conexao_hero_subtitle', __( 'Conectando a comunidade brasileira com informações, eventos, guias práticos e muito mais.', 'conexao-br-irlanda' ) );
+$hero_image    = get_theme_mod( 'conexao_hero_image', '' );
 ?>
+
+<main id="primary" class="site-main">
 
 <!-- Hero Section -->
 <section class="hero-section">
@@ -37,64 +40,27 @@ $hero_subtitle = get_theme_mod( 'conexao_hero_subtitle', __( 'Conectando a comun
 				</div>
 			</div>
 
-			<!-- Events Widget -->
-			<div class="hero-events-widget">
-				<h3 class="hero-events-title">
-					<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-						<rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-						<line x1="16" y1="2" x2="16" y2="6"></line>
-						<line x1="8" y1="2" x2="8" y2="6"></line>
-						<line x1="3" y1="10" x2="21" y2="10"></line>
-					</svg>
-					<?php esc_html_e( 'Próximos Eventos', 'conexao-br-irlanda' ); ?>
-				</h3>
-				<?php
-				$events = new WP_Query( array(
-					'post_type'      => 'event',
-					'posts_per_page' => 3,
-					'meta_key'       => '_event_date',
-					'orderby'        => 'meta_value',
-					'order'          => 'ASC',
-					'no_found_rows'  => true,
-				) );
-				if ( $events->have_posts() ) :
-					while ( $events->have_posts() ) : $events->the_post();
-						$event_date = get_post_meta( get_the_ID(), '_event_date', true );
-						$event_time = get_post_meta( get_the_ID(), '_event_time', true );
-						$event_location = get_post_meta( get_the_ID(), '_event_location', true );
-						$day = $event_date ? date( 'd', strtotime( $event_date ) ) : '--';
-						$month = $event_date ? date( 'M', strtotime( $event_date ) ) : '---';
-						?>
-						<div class="hero-event-card">
-							<div class="hero-event-date">
-								<span class="hero-event-date-day"><?php echo esc_html( $day ); ?></span>
-								<span class="hero-event-date-month"><?php echo esc_html( $month ); ?></span>
-							</div>
-							<div class="hero-event-info">
-								<h4 class="hero-event-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h4>
-								<?php if ( $event_location ) : ?>
-									<span class="hero-event-location">
-										<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2">
-											<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-											<circle cx="12" cy="10" r="3"></circle>
-										</svg>
-										<?php echo esc_html( $event_location ); ?>
-									</span>
-								<?php endif; ?>
-							</div>
-						</div>
-					<?php endwhile; wp_reset_postdata();
-				else : ?>
-					<div class="hero-event-card">
-						<div class="hero-event-info">
-							<h4 class="hero-event-title"><?php esc_html_e( 'Nenhum evento próximo', 'conexao-br-irlanda' ); ?></h4>
-							<span class="hero-event-location"><?php esc_html_e( 'Volte em breve!', 'conexao-br-irlanda' ); ?></span>
-						</div>
+			<!-- Hero Image -->
+			<div class="hero-image">
+				<?php if ( $hero_image ) : ?>
+					<img src="<?php echo esc_url( $hero_image ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>" loading="eager" width="640" height="480" class="hero-image-img">
+				<?php else : ?>
+					<div class="hero-image-placeholder">
+						<svg viewBox="0 0 640 480" width="640" height="480" role="img" aria-label="<?php esc_attr_e( 'Comunidade brasileira na Irlanda', 'conexao-br-irlanda' ); ?>">
+							<defs>
+								<linearGradient id="heroGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+									<stop offset="0%" style="stop-color:#073B2F"/>
+									<stop offset="100%" style="stop-color:#0E6B3A"/>
+								</linearGradient>
+							</defs>
+							<rect width="640" height="480" fill="url(#heroGrad)"/>
+							<circle cx="320" cy="240" r="120" fill="none" stroke="#F68B1F" stroke-width="4" opacity="0.8"/>
+							<circle cx="320" cy="240" r="80" fill="none" stroke="#ffffff" stroke-width="3" opacity="0.6"/>
+							<text x="320" y="255" text-anchor="middle" fill="#fff" font-size="48" font-weight="bold" font-family="Poppins, sans-serif">CB</text>
+							<text x="320" y="420" text-anchor="middle" fill="#fff" font-size="20" font-family="Inter, sans-serif" opacity="0.9">Conexão BR Irlanda</text>
+						</svg>
 					</div>
 				<?php endif; ?>
-				<a href="<?php echo esc_url( home_url( '/eventos/' ) ); ?>" class="hero-events-cta">
-					<?php esc_html_e( 'Ver todos os eventos →', 'conexao-br-irlanda' ); ?>
-				</a>
 			</div>
 		</div>
 	</div>
@@ -106,18 +72,18 @@ $hero_subtitle = get_theme_mod( 'conexao_hero_subtitle', __( 'Conectando a comun
 		<div class="quick-access-grid">
 			<?php
 			$categories = array(
-				array( 'icon' => 'home', 'label' => __( 'Moradia', 'conexao-br-irlanda' ), 'url' => '/moradia/' ),
-				array( 'icon' => 'briefcase', 'label' => __( 'Empregos', 'conexao-br-irlanda' ), 'url' => '/empregos/' ),
-				array( 'icon' => 'heart', 'label' => __( 'Saúde', 'conexao-br-irlanda' ), 'url' => '/saude/' ),
-				array( 'icon' => 'users', 'label' => __( 'Família', 'conexao-br-irlanda' ), 'url' => '/familia/' ),
-				array( 'icon' => 'car', 'label' => __( 'Transporte', 'conexao-br-irlanda' ), 'url' => '/transporte/' ),
-				array( 'icon' => 'dollar', 'label' => __( 'Finanças', 'conexao-br-irlanda' ), 'url' => '/financas/' ),
-				array( 'icon' => 'gift', 'label' => __( 'Benefícios', 'conexao-br-irlanda' ), 'url' => '/beneficios/' ),
-				array( 'icon' => 'utensils', 'label' => __( 'Onde Comer', 'conexao-br-irlanda' ), 'url' => '/onde-comer/' ),
-				array( 'icon' => 'calendar', 'label' => __( 'Eventos', 'conexao-br-irlanda' ), 'url' => '/eventos/' ),
-				array( 'icon' => 'graduation-cap', 'label' => __( 'Educação', 'conexao-br-irlanda' ), 'url' => '/educacao/' ),
-				array( 'icon' => 'file-text', 'label' => __( 'Documentos', 'conexao-br-irlanda' ), 'url' => '/documentos/' ),
-				array( 'icon' => 'map', 'label' => __( 'Ver todas', 'conexao-br-irlanda' ), 'url' => '/categorias/' ),
+				array( 'icon' => 'home', 'label' => __( 'Moradia', 'conexao-br-irlanda' ), 'desc' => __( 'Casas e apartamentos', 'conexao-br-irlanda' ), 'url' => '/moradia/' ),
+				array( 'icon' => 'briefcase', 'label' => __( 'Empregos', 'conexao-br-irlanda' ), 'desc' => __( 'Vagas de trabalho', 'conexao-br-irlanda' ), 'url' => '/empregos/' ),
+				array( 'icon' => 'heart', 'label' => __( 'Saúde', 'conexao-br-irlanda' ), 'desc' => __( 'Acesso à saúde', 'conexao-br-irlanda' ), 'url' => '/saude/' ),
+				array( 'icon' => 'users', 'label' => __( 'Família', 'conexao-br-irlanda' ), 'desc' => __( 'Família e crianças', 'conexao-br-irlanda' ), 'url' => '/familia/' ),
+				array( 'icon' => 'car', 'label' => __( 'Transporte', 'conexao-br-irlanda' ), 'desc' => __( 'Como se locomover', 'conexao-br-irlanda' ), 'url' => '/transporte/' ),
+				array( 'icon' => 'dollar', 'label' => __( 'Finanças', 'conexao-br-irlanda' ), 'desc' => __( 'Bancos e impostos', 'conexao-br-irlanda' ), 'url' => '/financas/' ),
+				array( 'icon' => 'gift', 'label' => __( 'Benefícios', 'conexao-br-irlanda' ), 'desc' => __( 'Auxílios e subsídios', 'conexao-br-irlanda' ), 'url' => '/beneficios/' ),
+				array( 'icon' => 'utensils', 'label' => __( 'Onde Comer', 'conexao-br-irlanda' ), 'desc' => __( 'Restaurantes e mercados', 'conexao-br-irlanda' ), 'url' => '/onde-comer/' ),
+				array( 'icon' => 'calendar', 'label' => __( 'Eventos', 'conexao-br-irlanda' ), 'desc' => __( 'Agenda da comunidade', 'conexao-br-irlanda' ), 'url' => '/eventos/' ),
+				array( 'icon' => 'graduation-cap', 'label' => __( 'Educação', 'conexao-br-irlanda' ), 'desc' => __( 'Cursos e escolas', 'conexao-br-irlanda' ), 'url' => '/educacao/' ),
+				array( 'icon' => 'file-text', 'label' => __( 'Documentos', 'conexao-br-irlanda' ), 'desc' => __( 'Vistos e PPS Number', 'conexao-br-irlanda' ), 'url' => '/documentos/' ),
+				array( 'icon' => 'map', 'label' => __( 'Ver todas', 'conexao-br-irlanda' ), 'desc' => __( 'Todas as categorias', 'conexao-br-irlanda' ), 'url' => '/categorias/' ),
 			);
 
 			$icon_svgs = array(
@@ -145,6 +111,9 @@ $hero_subtitle = get_theme_mod( 'conexao_hero_subtitle', __( 'Conectando a comun
 						</svg>
 					</div>
 					<span class="quick-access-label"><?php echo esc_html( $cat['label'] ); ?></span>
+					<?php if ( ! empty( $cat['desc'] ) ) : ?>
+						<span class="quick-access-desc"><?php echo esc_html( $cat['desc'] ); ?></span>
+					<?php endif; ?>
 				</a>
 			<?php endforeach; ?>
 		</div>
@@ -650,5 +619,7 @@ $hero_subtitle = get_theme_mod( 'conexao_hero_subtitle', __( 'Conectando a comun
 		</div>
 	</div>
 </section>
+
+</main>
 
 <?php get_footer();

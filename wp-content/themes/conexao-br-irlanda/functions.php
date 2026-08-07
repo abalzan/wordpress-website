@@ -79,7 +79,8 @@ add_action( 'widgets_init', 'conexao_widgets_init' );
  * Enqueue scripts and styles
  */
 function conexao_enqueue_scripts() {
-	wp_enqueue_style( 'conexao-main', CONEXAO_THEME_URI . '/assets/css/main.css', array(), CONEXAO_THEME_VERSION );
+	wp_enqueue_style( 'conexao-header-nav', CONEXAO_THEME_URI . '/assets/css/header-nav.css', array(), CONEXAO_THEME_VERSION );
+	wp_enqueue_style( 'conexao-main', CONEXAO_THEME_URI . '/assets/css/main.css', array( 'conexao-header-nav' ), CONEXAO_THEME_VERSION );
 	wp_enqueue_style( 'conexao-fonts', 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap', array(), null );
 	wp_enqueue_script( 'conexao-main', CONEXAO_THEME_URI . '/assets/js/main.js', array(), CONEXAO_THEME_VERSION, true );
 
@@ -262,6 +263,15 @@ function conexao_customize_register( $wp_customize ) {
 	$wp_customize->add_control( 'conexao_hero_subtitle', array(
 		'label' => __( 'Subtítulo do Hero', 'conexao-br-irlanda' ), 'section' => 'conexao_hero', 'type' => 'textarea',
 	) );
+	$wp_customize->add_setting( 'conexao_hero_image', array(
+		'default' => '',
+		'sanitize_callback' => 'esc_url_raw',
+	) );
+	$wp_customize->add_control( new WP_Customize_Image_Control( $wp_customize, 'conexao_hero_image', array(
+		'label' => __( 'Imagem do Hero', 'conexao-br-irlanda' ),
+		'section' => 'conexao_hero',
+		'description' => __( 'Envie uma imagem para o lado direito do hero. Recomendado: 640x480px.', 'conexao-br-irlanda' ),
+	) ) );
 
 	// Footer Section
 	$wp_customize->add_section( 'conexao_footer', array( 'title' => __( 'Rodapé', 'conexao-br-irlanda' ), 'priority' => 50 ) );
