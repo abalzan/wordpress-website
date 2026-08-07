@@ -110,7 +110,7 @@
 
 	// ===== Language Selector =====
 	function initLanguageSelector() {
-		const langButtons = document.querySelectorAll('.language-selector button, .mobile-lang button');
+		const langButtons = document.querySelectorAll('.language-selector button, .mobile-menu-lang button');
 
 		langButtons.forEach(function(button) {
 			button.addEventListener('click', function() {
@@ -142,7 +142,7 @@
 			document.querySelectorAll('[data-lang="' + savedLang + '"]').forEach(function(btn) {
 				btn.classList.add('active');
 			});
-			document.querySelectorAll('.language-selector button:not([data-lang="' + savedLang + '"]), .mobile-lang button:not([data-lang="' + savedLang + '"])').forEach(function(btn) {
+			document.querySelectorAll('.language-selector button:not([data-lang="' + savedLang + '"]), .mobile-menu-lang button:not([data-lang="' + savedLang + '"])').forEach(function(btn) {
 				btn.classList.remove('active');
 			});
 		}

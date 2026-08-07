@@ -82,11 +82,11 @@
 					<div class="footer-column">
 						<h4 class="footer-column-title"><?php esc_html_e( 'Links Úteis', 'conexao-br-irlanda' ); ?></h4>
 						<ul class="footer-links">
-							<li><a href="<?php echo esc_url( home_url( '/sobre/' ) ); ?>"><?php esc_html_e( 'Sobre Nós', 'conexao-br-irlanda' ); ?></a></li>
+							<li><a href="<?php echo esc_url( home_url( '/sobre-nos/' ) ); ?>"><?php esc_html_e( 'Sobre Nós', 'conexao-br-irlanda' ); ?></a></li>
 							<li><a href="<?php echo esc_url( home_url( '/contato/' ) ); ?>"><?php esc_html_e( 'Contato', 'conexao-br-irlanda' ); ?></a></li>
 							<li><a href="<?php echo esc_url( home_url( '/anuncie/' ) ); ?>"><?php esc_html_e( 'Anuncie', 'conexao-br-irlanda' ); ?></a></li>
-							<li><a href="<?php echo esc_url( home_url( '/privacidade/' ) ); ?>"><?php esc_html_e( 'Privacidade', 'conexao-br-irlanda' ); ?></a></li>
-							<li><a href="<?php echo esc_url( home_url( '/termos/' ) ); ?>"><?php esc_html_e( 'Termos de Uso', 'conexao-br-irlanda' ); ?></a></li>
+							<li><a href="<?php echo esc_url( home_url( '/politica-de-privacidade/' ) ); ?>"><?php esc_html_e( 'Privacidade', 'conexao-br-irlanda' ); ?></a></li>
+							<li><a href="<?php echo esc_url( home_url( '/termos-de-uso/' ) ); ?>"><?php esc_html_e( 'Termos de Uso', 'conexao-br-irlanda' ); ?></a></li>
 						</ul>
 					</div>
 				</div>
@@ -102,8 +102,8 @@
 					?>
 				</div>
 				<div class="footer-bottom-links">
-					<a href="<?php echo esc_url( home_url( '/privacidade/' ) ); ?>"><?php esc_html_e( 'Privacidade', 'conexao-br-irlanda' ); ?></a>
-					<a href="<?php echo esc_url( home_url( '/termos/' ) ); ?>"><?php esc_html_e( 'Termos', 'conexao-br-irlanda' ); ?></a>
+					<a href="<?php echo esc_url( home_url( '/politica-de-privacidade/' ) ); ?>"><?php esc_html_e( 'Privacidade', 'conexao-br-irlanda' ); ?></a>
+					<a href="<?php echo esc_url( home_url( '/termos-de-uso/' ) ); ?>"><?php esc_html_e( 'Termos', 'conexao-br-irlanda' ); ?></a>
 					<a href="<?php echo esc_url( home_url( '/cookies/' ) ); ?>"><?php esc_html_e( 'Cookies', 'conexao-br-irlanda' ); ?></a>
 				</div>
 			</div>

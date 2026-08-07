@@ -471,3 +471,16 @@ function conexao_submenu_class( $classes ) {
 	return $classes;
 }
 add_filter( 'nav_menu_submenu_css_class', 'conexao_submenu_class' );
+
+/**
+ * Set menu_class for primary navigation
+ * Only applies when the default class is still set,
+ * so explicit menu_class values (like mobile-menu) are preserved.
+ */
+function conexao_nav_menu_args( $args ) {
+	if ( 'primary' === $args['theme_location'] && 'menu' === $args['menu_class'] ) {
+		$args['menu_class'] = 'primary-menu';
+	}
+	return $args;
+}
+add_filter( 'wp_nav_menu_args', 'conexao_nav_menu_args' );

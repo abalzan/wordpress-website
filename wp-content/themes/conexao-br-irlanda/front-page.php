@@ -128,7 +128,7 @@ $hero_image    = get_theme_mod( 'conexao_hero_image', '' );
 				<span class="section-eyebrow"><?php esc_html_e( 'Conteúdo em Destaque', 'conexao-br-irlanda' ); ?></span>
 				<h2 class="section-title"><?php esc_html_e( 'Últimas Publicações', 'conexao-br-irlanda' ); ?></h2>
 			</div>
-			<a href="<?php echo esc_url( home_url( '/blog/' ) ); ?>" class="section-link">
+			<a href="<?php echo esc_url( home_url( '/noticias/' ) ); ?>" class="section-link">
 				<?php esc_html_e( 'Ver todas', 'conexao-br-irlanda' ); ?>
 				<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
 					<line x1="5" y1="12" x2="19" y2="12"></line>
@@ -305,14 +305,14 @@ $hero_image    = get_theme_mod( 'conexao_hero_image', '' );
 		<div class="guides-grid">
 			<?php
 			$guide_list = array(
-				array( 'icon' => 'id-card', 'title' => __( 'PPS Number', 'conexao-br-irlanda' ), 'desc' => __( 'Como conseguir seu Personal Public Service Number', 'conexao-br-irlanda' ) ),
-				array( 'icon' => 'heart-pulse', 'title' => __( 'Medical Card', 'conexao-br-irlanda' ), 'desc' => __( 'Guia completo sobre o cartão de saúde irlandês', 'conexao-br-irlanda' ) ),
-				array( 'icon' => 'car', 'title' => __( 'Carteira de Motorista', 'conexao-br-irlanda' ), 'desc' => __( 'Como trocar sua CNH brasileira pela irlandesa', 'conexao-br-irlanda' ) ),
-				array( 'icon' => 'landmark', 'title' => __( 'Conta Bancária', 'conexao-br-irlanda' ), 'desc' => __( 'Passo a passo para abrir sua conta na Irlanda', 'conexao-br-irlanda' ) ),
-				array( 'icon' => 'home', 'title' => __( 'Alugar Casa', 'conexao-br-irlanda' ), 'desc' => __( 'Tudo sobre o mercado imobiliário irlandês', 'conexao-br-irlanda' ) ),
-				array( 'icon' => 'receipt', 'title' => __( 'Impostos', 'conexao-br-irlanda' ), 'desc' => __( 'Entenda o sistema de impostos na Irlanda', 'conexao-br-irlanda' ) ),
-				array( 'icon' => 'stethoscope', 'title' => __( 'GP Registration', 'conexao-br-irlanda' ), 'desc' => __( 'Como se registrar em um médico na Irlanda', 'conexao-br-irlanda' ) ),
-				array( 'icon' => 'flag', 'title' => __( 'Cidadania Irlandesa', 'conexao-br-irlanda' ), 'desc' => __( 'Requisitos e processo para obter a cidadania', 'conexao-br-irlanda' ) ),
+				array( 'icon' => 'id-card', 'title' => __( 'PPS Number', 'conexao-br-irlanda' ), 'desc' => __( 'Como conseguir seu Personal Public Service Number', 'conexao-br-irlanda' ), 'url' => '/guias-praticos/pps-number/' ),
+				array( 'icon' => 'heart-pulse', 'title' => __( 'Medical Card', 'conexao-br-irlanda' ), 'desc' => __( 'Guia completo sobre o cartão de saúde irlandês', 'conexao-br-irlanda' ), 'url' => '/guias-praticos/medical-card/' ),
+				array( 'icon' => 'car', 'title' => __( 'Carteira de Motorista', 'conexao-br-irlanda' ), 'desc' => __( 'Como trocar sua CNH brasileira pela irlandesa', 'conexao-br-irlanda' ), 'url' => '/guias-praticos/carteira-de-motorista/' ),
+				array( 'icon' => 'landmark', 'title' => __( 'Conta Bancária', 'conexao-br-irlanda' ), 'desc' => __( 'Passo a passo para abrir sua conta na Irlanda', 'conexao-br-irlanda' ), 'url' => '/guias-praticos/abrir-conta-bancaria/' ),
+				array( 'icon' => 'home', 'title' => __( 'Alugar Casa', 'conexao-br-irlanda' ), 'desc' => __( 'Tudo sobre o mercado imobiliário irlandês', 'conexao-br-irlanda' ), 'url' => '/guias-praticos/alugar-casa/' ),
+				array( 'icon' => 'receipt', 'title' => __( 'Impostos', 'conexao-br-irlanda' ), 'desc' => __( 'Entenda o sistema de impostos na Irlanda', 'conexao-br-irlanda' ), 'url' => '/guias-praticos/impostos/' ),
+				array( 'icon' => 'stethoscope', 'title' => __( 'GP Registration', 'conexao-br-irlanda' ), 'desc' => __( 'Como se registrar em um médico na Irlanda', 'conexao-br-irlanda' ), 'url' => '/guias-praticos/gp-registration/' ),
+				array( 'icon' => 'flag', 'title' => __( 'Cidadania Irlandesa', 'conexao-br-irlanda' ), 'desc' => __( 'Requisitos e processo para obter a cidadania', 'conexao-br-irlanda' ), 'url' => '/guias-praticos/cidadania-irlandesa/' ),
 			);
 
 			$guide_icons = array(
@@ -329,7 +329,7 @@ $hero_image    = get_theme_mod( 'conexao_hero_image', '' );
 			foreach ( $guide_list as $guide ) :
 				$icon = isset( $guide_icons[ $guide['icon'] ] ) ? $guide_icons[ $guide['icon'] ] : '';
 				?>
-				<a href="<?php echo esc_url( home_url( '/guias/' ) ); ?>" class="guide-card">
+				<a href="<?php echo esc_url( home_url( $guide['url'] ) ); ?>" class="guide-card">
 					<div class="guide-icon">
 						<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 							<?php echo $icon; /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */ ?>
