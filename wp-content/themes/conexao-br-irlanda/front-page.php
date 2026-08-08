@@ -60,8 +60,8 @@ $hero_image    = get_theme_mod( 'conexao_hero_image', '' );
 							<text x="320" y="420" text-anchor="middle" fill="#fff" font-size="20" font-family="Inter, sans-serif" opacity="0.9">Conexão BR Irlanda</text>
 						</svg>
 					</div>
-				<?php endif; ?>
-			</div>
+									<?php endif; ?>
+								</div>
 		</div>
 	</div>
 </section>
@@ -130,7 +130,7 @@ $hero_image    = get_theme_mod( 'conexao_hero_image', '' );
 			<div class="featured-main">
 				<?php
 				$featured = new WP_Query( array(
-					'post_type'           => 'news',
+					'post_type'           => array( 'news', 'guide', 'event', 'job', 'business' ),
 					'posts_per_page'      => 5,
 					'ignore_sticky_posts' => true,
 					'no_found_rows'       => true,
@@ -147,8 +147,10 @@ $hero_image    = get_theme_mod( 'conexao_hero_image', '' );
 								<?php endif; ?>
 								<div class="featured-article-content">
 									<?php
-					$categories = get_the_terms( get_the_ID(), 'conexao_category' );
-									if ( $categories ) : ?>
+									$categories = get_the_terms( get_the_ID(), 'conexao_category' );
+									$content_type = get_post_type_object( get_post_type() );
+									if ( $content_type ) : ?><span class="featured-article-category"><?php echo esc_html( $content_type->labels->singular_name ); ?></span><?php endif; ?>
+									<?php if ( $categories && ! is_wp_error( $categories ) ) : ?>
 										<span class="featured-article-category"><?php echo esc_html( $categories[0]->name ); ?></span>
 									<?php endif; ?>
 									<h3 class="featured-article-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
@@ -180,8 +182,10 @@ $hero_image    = get_theme_mod( 'conexao_hero_image', '' );
 									</div>
 								<?php endif; ?>
 								<?php
-								$cats = get_the_category();
-								if ( $cats ) : ?>
+							$cats = get_the_terms( get_the_ID(), 'conexao_category' );
+							$content_type = get_post_type_object( get_post_type() );
+							if ( $content_type ) : ?><span class="post-card-category"><?php echo esc_html( $content_type->labels->singular_name ); ?></span><?php endif; ?>
+							<?php if ( $cats && ! is_wp_error( $cats ) ) : ?>
 									<span class="post-card-category"><?php echo esc_html( $cats[0]->name ); ?></span>
 								<?php endif; ?>
 								<div class="post-card-body">
@@ -197,8 +201,10 @@ $hero_image    = get_theme_mod( 'conexao_hero_image', '' );
 						<?php endif; ?>
 						<?php $count++; ?>
 					<?php endwhile; wp_reset_postdata(); ?>
-				<?php endif; ?>
-			</div>
+				<?php else : ?>
+					<p><?php esc_html_e( 'Novos conteúdos serão publicados em breve.', 'conexao-br-irlanda' ); ?></p>
+									<?php endif; ?>
+								</div>
 
 			<div class="featured-sidebar">
 				<!-- Popular Guides -->
@@ -280,8 +286,8 @@ $hero_image    = get_theme_mod( 'conexao_hero_image', '' );
 		<div class="section-header">
 			<div class="section-header-left">
 				<span class="section-eyebrow"><?php esc_html_e( 'Guias Práticos', 'conexao-br-irlanda' ); ?></span>
-				<h2 class="section-title"><?php esc_html_e( 'Tudo que você precisa saber', 'conexao-br-irlanda' ); ?></h2>
-				<p class="section-subtitle"><?php esc_html_e( 'Guias completos para ajudar você em cada etapa da sua jornada na Irlanda.', 'conexao-br-irlanda' ); ?></p>
+				<h2 class="section-title"><?php esc_html_e( 'Guia em Destaque', 'conexao-br-irlanda' ); ?></h2>
+				<p class="section-subtitle"><?php esc_html_e( 'Um guia completo para ajudar você em sua jornada na Irlanda.', 'conexao-br-irlanda' ); ?></p>
 			</div>
 			<a href="<?php echo esc_url( home_url( '/guides/' ) ); ?>" class="section-link">
 				<?php esc_html_e( 'Ver todos os guias', 'conexao-br-irlanda' ); ?>
@@ -316,7 +322,12 @@ $hero_image    = get_theme_mod( 'conexao_hero_image', '' );
 				'flag' => '<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line>',
 			);
 
-			$guides_query = new WP_Query( array( 'post_type' => 'guide', 'posts_per_page' => 8, 'no_found_rows' => true ) );
+			// Keep the existing card presentation, but populate it exclusively from Guides.
+			$guide_list   = array();
+			$guides_query = new WP_Query( array( 'post_type' => 'guide', 'posts_per_page' => 1, 'meta_key' => '_conexao_featured', 'meta_value' => '1', 'no_found_rows' => true ) );
+			if ( ! $guides_query->have_posts() ) {
+				$guides_query = new WP_Query( array( 'post_type' => 'guide', 'posts_per_page' => 1, 'no_found_rows' => true ) );
+			}
 			if ( $guides_query->have_posts() ) {
 				$guide_list = array();
 				while ( $guides_query->have_posts() ) {
@@ -326,7 +337,9 @@ $hero_image    = get_theme_mod( 'conexao_hero_image', '' );
 				wp_reset_postdata();
 			}
 
-			foreach ( $guide_list as $guide ) :
+			if ( empty( $guide_list ) ) : ?>
+				<p><?php esc_html_e( 'Novos guias serão publicados em breve.', 'conexao-br-irlanda' ); ?></p>
+			<?php endif; foreach ( $guide_list as $guide ) :
 				$icon = isset( $guide_icons[ $guide['icon'] ] ) ? $guide_icons[ $guide['icon'] ] : '';
 				$guide_url = 0 === strpos( $guide['url'], 'http' ) ? $guide['url'] : home_url( $guide['url'] );
 				?>
@@ -339,7 +352,7 @@ $hero_image    = get_theme_mod( 'conexao_hero_image', '' );
 					<h3 class="guide-title"><?php echo esc_html( $guide['title'] ); ?></h3>
 					<p class="guide-description"><?php echo esc_html( $guide['desc'] ); ?></p>
 					<span class="guide-link">
-						<?php esc_html_e( 'Ler mais', 'conexao-br-irlanda' ); ?>
+						<?php esc_html_e( 'Ler guia', 'conexao-br-irlanda' ); ?>
 						<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
 							<line x1="5" y1="12" x2="19" y2="12"></line>
 							<polyline points="12 5 19 12 12 19"></polyline>
@@ -360,7 +373,7 @@ $hero_image    = get_theme_mod( 'conexao_hero_image', '' );
 				<h2 class="section-title"><?php esc_html_e( 'Próximos Eventos', 'conexao-br-irlanda' ); ?></h2>
 				<p class="section-subtitle"><?php esc_html_e( 'Não perca os eventos da comunidade brasileira na Irlanda.', 'conexao-br-irlanda' ); ?></p>
 			</div>
-			<a href="<?php echo esc_url( home_url( '/eventos/' ) ); ?>" class="section-link">
+			<a href="<?php echo esc_url( home_url( '/events/' ) ); ?>" class="section-link">
 				<?php esc_html_e( 'Ver todos', 'conexao-br-irlanda' ); ?>
 				<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
 					<line x1="5" y1="12" x2="19" y2="12"></line>
@@ -375,6 +388,9 @@ $hero_image    = get_theme_mod( 'conexao_hero_image', '' );
 				'post_type'      => 'event',
 				'posts_per_page' => 3,
 				'meta_key'       => '_event_date',
+				'meta_value'     => current_time( 'Y-m-d' ),
+				'meta_compare'   => '>=',
+				'meta_type'      => 'DATE',
 				'orderby'        => 'meta_value',
 				'order'          => 'ASC',
 				'no_found_rows'  => true,
@@ -384,6 +400,7 @@ $hero_image    = get_theme_mod( 'conexao_hero_image', '' );
 					$event_date = get_post_meta( get_the_ID(), '_event_date', true );
 					$event_time = get_post_meta( get_the_ID(), '_event_time', true );
 					$event_location = get_post_meta( get_the_ID(), '_event_location', true );
+					$event_counties = get_the_terms( get_the_ID(), 'conexao_county' );
 					$day = $event_date ? date( 'd', strtotime( $event_date ) ) : '--';
 					$month = $event_date ? date( 'M', strtotime( $event_date ) ) : '---';
 					?>
@@ -414,7 +431,7 @@ $hero_image    = get_theme_mod( 'conexao_hero_image', '' );
 										<?php echo esc_html( $event_time ); ?>
 									</span>
 								<?php endif; ?>
-								<?php if ( $event_location ) : ?>
+							<?php if ( $event_location ) : ?>
 									<span class="event-card-detail">
 										<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
 											<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
@@ -422,6 +439,9 @@ $hero_image    = get_theme_mod( 'conexao_hero_image', '' );
 										</svg>
 										<?php echo esc_html( $event_location ); ?>
 									</span>
+								<?php endif; ?>
+								<?php if ( $event_counties && ! is_wp_error( $event_counties ) ) : ?>
+									<span class="event-card-detail"><?php echo esc_html( $event_counties[0]->name ); ?></span>
 								<?php endif; ?>
 							</div>
 							<a href="<?php the_permalink(); ?>" class="event-card-cta">
@@ -497,6 +517,8 @@ $hero_image    = get_theme_mod( 'conexao_hero_image', '' );
 						</div>
 					</article>
 				<?php endwhile; wp_reset_postdata(); ?>
+			<?php else : ?>
+				<p><?php esc_html_e( 'Novas notícias serão publicadas em breve.', 'conexao-br-irlanda' ); ?></p>
 			<?php endif; ?>
 		</div>
 	</div>
@@ -511,7 +533,7 @@ $hero_image    = get_theme_mod( 'conexao_hero_image', '' );
 				<h2 class="section-title"><?php esc_html_e( 'Empresas em Destaque', 'conexao-br-irlanda' ); ?></h2>
 				<p class="section-subtitle"><?php esc_html_e( 'Negócios brasileiros que apoiam a comunidade na Irlanda.', 'conexao-br-irlanda' ); ?></p>
 			</div>
-			<a href="<?php echo esc_url( home_url( '/empresas/' ) ); ?>" class="section-link">
+			<a href="<?php echo esc_url( home_url( '/businesses/' ) ); ?>" class="section-link">
 				<?php esc_html_e( 'Ver todas', 'conexao-br-irlanda' ); ?>
 				<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
 					<line x1="5" y1="12" x2="19" y2="12"></line>
@@ -525,10 +547,15 @@ $hero_image    = get_theme_mod( 'conexao_hero_image', '' );
 			$businesses = new WP_Query( array(
 				'post_type'      => 'business',
 				'posts_per_page' => 4,
-				'orderby'        => 'menu_order',
-				'order'          => 'ASC',
+				'meta_key'       => '_conexao_featured',
+				'meta_value'     => '1',
+				'orderby'        => 'date',
+				'order'          => 'DESC',
 				'no_found_rows'  => true,
 			) );
+			if ( ! $businesses->have_posts() ) {
+				$businesses = new WP_Query( array( 'post_type' => 'business', 'posts_per_page' => 4, 'no_found_rows' => true ) );
+			}
 			if ( $businesses->have_posts() ) :
 				while ( $businesses->have_posts() ) : $businesses->the_post();
 					$biz_phone = get_post_meta( get_the_ID(), '_business_phone', true );
@@ -536,6 +563,7 @@ $hero_image    = get_theme_mod( 'conexao_hero_image', '' );
 					$biz_website = get_post_meta( get_the_ID(), '_business_website', true );
 					$biz_location = get_post_meta( get_the_ID(), '_business_location', true );
 			$terms = get_the_terms( get_the_ID(), 'conexao_category' );
+					$biz_counties = get_the_terms( get_the_ID(), 'conexao_county' );
 					?>
 					<div class="business-card">
 						<div class="business-logo">
@@ -551,7 +579,8 @@ $hero_image    = get_theme_mod( 'conexao_hero_image', '' );
 						<?php if ( $terms && ! is_wp_error( $terms ) ) : ?>
 							<span class="business-category"><?php echo esc_html( $terms[0]->name ); ?></span>
 						<?php endif; ?>
-						<h3 class="business-name"><?php the_title(); ?></h3>
+						<h3 class="business-name"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
+						<?php if ( $biz_counties && ! is_wp_error( $biz_counties ) ) : ?><span class="business-location"><?php echo esc_html( $biz_counties[0]->name ); ?></span><?php endif; ?>
 						<?php if ( $biz_location ) : ?>
 							<span class="business-location">
 								<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2">
@@ -585,7 +614,7 @@ $hero_image    = get_theme_mod( 'conexao_hero_image', '' );
 					</div>
 				<?php endwhile; wp_reset_postdata();
 			else : ?>
-				<p><?php esc_html_e( 'Adicione empresas ao diretório em breve.', 'conexao-br-irlanda' ); ?></p>
+				<p><?php esc_html_e( 'Empresas e serviços parceiros serão apresentados aqui em breve.', 'conexao-br-irlanda' ); ?></p>
 			<?php endif; ?>
 		</div>
 	</div>
@@ -602,15 +631,18 @@ $hero_image    = get_theme_mod( 'conexao_hero_image', '' );
 			<a href="<?php echo esc_url( home_url( '/jobs/' ) ); ?>" class="section-link"><?php esc_html_e( 'Ver todas', 'conexao-br-irlanda' ); ?></a>
 		</div>
 		<div class="news-grid">
-			<?php $jobs = new WP_Query( array( 'post_type' => 'job', 'posts_per_page' => 3, 'no_found_rows' => true ) ); ?>
+			<?php $jobs = new WP_Query( array( 'post_type' => 'job', 'posts_per_page' => 3, 'meta_key' => '_job_expiration_date', 'meta_value' => current_time( 'Y-m-d' ), 'meta_compare' => '>=', 'meta_type' => 'DATE', 'no_found_rows' => true ) ); ?>
 			<?php if ( $jobs->have_posts() ) : while ( $jobs->have_posts() ) : $jobs->the_post(); $job_categories = get_the_terms( get_the_ID(), 'conexao_category' ); ?>
 				<article class="news-card"><div class="news-card-body">
 					<?php if ( $job_categories && ! is_wp_error( $job_categories ) ) : ?><span class="news-card-category"><?php echo esc_html( $job_categories[0]->name ); ?></span><?php endif; ?>
 					<h3 class="news-card-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
+					<?php $job_details = array_filter( array( get_post_meta( get_the_ID(), '_job_company', true ), get_post_meta( get_the_ID(), '_job_location', true ), get_post_meta( get_the_ID(), '_job_salary', true ), get_post_meta( get_the_ID(), '_job_employment_type', true ) ) ); ?>
+					<?php if ( $job_details ) : ?><p class="news-card-category"><?php echo esc_html( implode( ' · ', $job_details ) ); ?></p><?php endif; ?>
 					<p class="news-card-excerpt"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 18, '...' ) ); ?></p>
+					<a href="<?php the_permalink(); ?>" class="event-card-cta"><?php esc_html_e( 'Ver vaga', 'conexao-br-irlanda' ); ?></a>
 				</div></article>
 			<?php endwhile; wp_reset_postdata(); else : ?>
-				<p><?php esc_html_e( 'Nenhuma vaga publicada no momento.', 'conexao-br-irlanda' ); ?></p>
+				<p><?php esc_html_e( 'Novas oportunidades de emprego serão publicadas em breve.', 'conexao-br-irlanda' ); ?></p>
 			<?php endif; ?>
 		</div>
 	</div>

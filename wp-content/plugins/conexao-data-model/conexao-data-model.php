@@ -60,7 +60,7 @@ final class Conexao_Data_Model {
 					'has_archive'        => $type['slug'],
 					'rewrite'            => array( 'slug' => $type['slug'], 'with_front' => false ),
 					'menu_icon'          => $type['icon'],
-					'supports'           => array( 'title', 'editor', 'excerpt', 'thumbnail', 'author', 'revisions', 'page-attributes' ),
+					'supports'           => array( 'title', 'editor', 'excerpt', 'thumbnail', 'author', 'revisions', 'page-attributes', 'custom-fields' ),
 					'publicly_queryable' => true,
 				)
 			);
