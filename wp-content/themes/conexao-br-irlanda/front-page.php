@@ -43,7 +43,7 @@ $hero_image    = get_theme_mod( 'conexao_hero_image', '' );
 			<!-- Hero Image -->
 			<div class="hero-image">
 				<?php if ( $hero_image ) : ?>
-					<img src="<?php echo esc_url( $hero_image ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>" loading="eager" width="640" height="480" class="hero-image-img">
+					<img src="<?php echo esc_url( $hero_image ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>" loading="eager" fetchpriority="high" width="640" height="480" class="hero-image-img">
 				<?php else : ?>
 					<div class="hero-image-placeholder">
 						<svg viewBox="0 0 640 480" width="640" height="480" role="img" aria-label="<?php esc_attr_e( 'Comunidade brasileira na Irlanda', 'conexao-br-irlanda' ); ?>">
@@ -134,6 +134,8 @@ $hero_image    = get_theme_mod( 'conexao_hero_image', '' );
 					'posts_per_page'      => 5,
 					'ignore_sticky_posts' => true,
 					'no_found_rows'       => true,
+					'update_post_meta_cache' => false,
+					'update_post_term_cache' => false,
 				) );
 				$count = 0;
 				if ( $featured->have_posts() ) :
@@ -221,6 +223,8 @@ $hero_image    = get_theme_mod( 'conexao_hero_image', '' );
 							'post_type'      => 'guide',
 							'posts_per_page' => 5,
 							'no_found_rows'  => true,
+							'update_post_meta_cache' => false,
+							'update_post_term_cache' => false,
 						) );
 						$guide_count = 1;
 						if ( $guides->have_posts() ) :
@@ -260,6 +264,8 @@ $hero_image    = get_theme_mod( 'conexao_hero_image', '' );
 							'order'               => 'DESC',
 							'ignore_sticky_posts' => true,
 							'no_found_rows'       => true,
+							'update_post_meta_cache' => false,
+							'update_post_term_cache' => false,
 						) );
 						$pop_count = 1;
 						if ( $popular->have_posts() ) :
@@ -323,10 +329,25 @@ $hero_image    = get_theme_mod( 'conexao_hero_image', '' );
 			);
 
 			// Keep the existing card presentation, but populate it exclusively from Guides.
+			// Single query with fallback: try featured first, then latest.
 			$guide_list   = array();
-			$guides_query = new WP_Query( array( 'post_type' => 'guide', 'posts_per_page' => 1, 'meta_key' => '_conexao_featured', 'meta_value' => '1', 'no_found_rows' => true ) );
+			$guides_query = new WP_Query( array(
+				'post_type'      => 'guide',
+				'posts_per_page' => 1,
+				'meta_key'       => '_conexao_featured',
+				'meta_value'     => '1',
+				'no_found_rows'  => true,
+				'update_post_meta_cache' => false,
+				'update_post_term_cache' => false,
+			) );
 			if ( ! $guides_query->have_posts() ) {
-				$guides_query = new WP_Query( array( 'post_type' => 'guide', 'posts_per_page' => 1, 'no_found_rows' => true ) );
+				$guides_query = new WP_Query( array(
+					'post_type'      => 'guide',
+					'posts_per_page' => 1,
+					'no_found_rows'  => true,
+					'update_post_meta_cache' => false,
+					'update_post_term_cache' => false,
+				) );
 			}
 			if ( $guides_query->have_posts() ) {
 				$guide_list = array();
@@ -394,6 +415,8 @@ $hero_image    = get_theme_mod( 'conexao_hero_image', '' );
 				'orderby'        => 'meta_value',
 				'order'          => 'ASC',
 				'no_found_rows'  => true,
+				'update_post_meta_cache' => false,
+				'update_post_term_cache' => false,
 			) );
 			if ( $events_list->have_posts() ) :
 				while ( $events_list->have_posts() ) : $events_list->the_post();
@@ -481,6 +504,8 @@ $hero_image    = get_theme_mod( 'conexao_hero_image', '' );
 				'posts_per_page'      => 6,
 				'ignore_sticky_posts' => true,
 				'no_found_rows'       => true,
+				'update_post_meta_cache' => false,
+				'update_post_term_cache' => false,
 			) );
 			if ( $news->have_posts() ) :
 				while ( $news->have_posts() ) : $news->the_post(); ?>
@@ -552,9 +577,17 @@ $hero_image    = get_theme_mod( 'conexao_hero_image', '' );
 				'orderby'        => 'date',
 				'order'          => 'DESC',
 				'no_found_rows'  => true,
+				'update_post_meta_cache' => false,
+				'update_post_term_cache' => false,
 			) );
 			if ( ! $businesses->have_posts() ) {
-				$businesses = new WP_Query( array( 'post_type' => 'business', 'posts_per_page' => 4, 'no_found_rows' => true ) );
+				$businesses = new WP_Query( array(
+					'post_type'      => 'business',
+					'posts_per_page' => 4,
+					'no_found_rows'  => true,
+					'update_post_meta_cache' => false,
+					'update_post_term_cache' => false,
+				) );
 			}
 			if ( $businesses->have_posts() ) :
 				while ( $businesses->have_posts() ) : $businesses->the_post();
@@ -631,7 +664,7 @@ $hero_image    = get_theme_mod( 'conexao_hero_image', '' );
 			<a href="<?php echo esc_url( home_url( '/jobs/' ) ); ?>" class="section-link"><?php esc_html_e( 'Ver todas', 'conexao-br-irlanda' ); ?></a>
 		</div>
 		<div class="news-grid">
-			<?php $jobs = new WP_Query( array( 'post_type' => 'job', 'posts_per_page' => 3, 'meta_key' => '_job_expiration_date', 'meta_value' => current_time( 'Y-m-d' ), 'meta_compare' => '>=', 'meta_type' => 'DATE', 'no_found_rows' => true ) ); ?>
+			<?php $jobs = new WP_Query( array( 'post_type' => 'job', 'posts_per_page' => 3, 'meta_key' => '_job_expiration_date', 'meta_value' => current_time( 'Y-m-d' ), 'meta_compare' => '>=', 'meta_type' => 'DATE', 'no_found_rows' => true, 'update_post_meta_cache' => false, 'update_post_term_cache' => false ) ); ?>
 			<?php if ( $jobs->have_posts() ) : while ( $jobs->have_posts() ) : $jobs->the_post(); $job_categories = get_the_terms( get_the_ID(), 'conexao_category' ); ?>
 				<article class="news-card"><div class="news-card-body">
 					<?php if ( $job_categories && ! is_wp_error( $job_categories ) ) : ?><span class="news-card-category"><?php echo esc_html( $job_categories[0]->name ); ?></span><?php endif; ?>

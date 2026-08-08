@@ -222,8 +222,8 @@ function conexao_seo_og_meta() {
 	} elseif ( is_post_type_archive() ) {
 		$post_type = get_query_var( 'post_type' );
 		$og_url    = get_post_type_archive_link( $post_type );
-		$og_title  = get_the_archive_title();
-		$og_desc   = wp_strip_all_tags( get_the_archive_description() );
+		$og_title  = conexao_archive_title();
+		$og_desc   = conexao_archive_description();
 		$og_image  = $fallback_image;
 	} elseif ( is_tax() || is_category() || is_tag() ) {
 		$og_url   = get_term_link( get_queried_object() );
@@ -544,6 +544,57 @@ function conexao_seo_schema_singular() {
  * ---------------------------------------------------------------------------
  * Returns breadcrumb trail data (name + url) for the current page.
  */
+/**
+ * Get the Portuguese archive title for the current CPT archive.
+ */
+function conexao_archive_title() {
+	if ( is_post_type_archive( 'news' ) ) {
+		return 'Notícias';
+	}
+	if ( is_post_type_archive( 'guide' ) ) {
+		return 'Guias Práticos';
+	}
+	if ( is_post_type_archive( 'event' ) ) {
+		return 'Eventos';
+	}
+	if ( is_post_type_archive( 'job' ) ) {
+		return 'Empregos';
+	}
+	if ( is_post_type_archive( 'business' ) ) {
+		return 'Empresas';
+	}
+	if ( is_tax( 'conexao_category' ) || is_tax( 'conexao_county' ) || is_category() || is_tag() ) {
+		$term = get_queried_object();
+		return $term && isset( $term->name ) ? $term->name : '';
+	}
+
+	return wp_strip_all_tags( get_the_archive_title() );
+}
+
+/**
+ * Get the archive subtitle/description for the current CPT archive.
+ */
+function conexao_archive_description() {
+	if ( is_post_type_archive( 'news' ) ) {
+		return 'Informações e novidades da comunidade brasileira na Irlanda.';
+	}
+	if ( is_post_type_archive( 'guide' ) ) {
+		return 'Guias passo a passo para facilitar sua vida na Irlanda.';
+	}
+	if ( is_post_type_archive( 'event' ) ) {
+		return 'Eventos, encontros e atividades para a comunidade brasileira na Irlanda.';
+	}
+	if ( is_post_type_archive( 'job' ) ) {
+		return 'Oportunidades de emprego para brasileiros na Irlanda.';
+	}
+	if ( is_post_type_archive( 'business' ) ) {
+		return 'Diretório de empresas e serviços para a comunidade brasileira na Irlanda.';
+	}
+
+	$description = get_the_archive_description();
+	return $description ? wp_strip_all_tags( $description ) : '';
+}
+
 function conexao_seo_breadcrumb_data() {
 	$crumbs = array();
 	$home   = array( 'name' => 'Início', 'url' => home_url( '/' ) );
@@ -555,7 +606,7 @@ function conexao_seo_breadcrumb_data() {
 
 		if ( $type_obj && $type_obj->has_archive ) {
 			$crumbs[] = array(
-				'name' => $type_obj->labels->name,
+				'name' => conexao_cpt_label( $post_type ),
 				'url'  => get_post_type_archive_link( $post_type ),
 			);
 		}
@@ -580,7 +631,10 @@ function conexao_seo_breadcrumb_data() {
 
 		$crumbs[] = array( 'name' => get_the_title(), 'url' => get_permalink() );
 	} elseif ( is_post_type_archive() ) {
-		$crumbs[] = array( 'name' => get_the_archive_title(), 'url' => get_post_type_archive_link( get_query_var( 'post_type' ) ) );
+		$crumbs[] = array(
+			'name' => conexao_archive_title(),
+			'url'  => get_post_type_archive_link( get_query_var( 'post_type' ) ),
+		);
 	} elseif ( is_tax() || is_category() || is_tag() ) {
 		$term = get_queried_object();
 		$crumbs[] = array( 'name' => $term->name, 'url' => get_term_link( $term ) );
@@ -596,7 +650,24 @@ function conexao_seo_breadcrumb_data() {
 }
 
 /**
+ * Get the Portuguese label for a CPT.
+ */
+function conexao_cpt_label( $post_type ) {
+	$labels = array(
+		'news'     => 'Notícias',
+		'guide'    => 'Guias Práticos',
+		'event'    => 'Eventos',
+		'job'      => 'Empregos',
+		'business' => 'Empresas',
+		'post'     => 'Blog',
+	);
+	return isset( $labels[ $post_type ] ) ? $labels[ $post_type ] : get_post_type_object( $post_type )->labels->name;
+}
+
+/**
  * Render visible breadcrumbs in templates.
+ *
+ * Uses semantic <nav aria-label="Breadcrumb"> with an ordered list.
  */
 function conexao_seo_breadcrumbs() {
 	if ( is_front_page() ) {
@@ -608,17 +679,21 @@ function conexao_seo_breadcrumbs() {
 		return;
 	}
 
-	echo '<nav class="conexao-breadcrumbs" aria-label="' . esc_attr__( 'Trilha de navegação', 'conexao-br-irlanda' ) . '">';
+	echo '<nav class="conexao-breadcrumbs" aria-label="' . esc_attr__( 'Breadcrumb', 'conexao-br-irlanda' ) . '">';
+	echo '<ol class="conexao-breadcrumb-list">';
 	$count = count( $crumbs );
 	foreach ( $crumbs as $i => $crumb ) {
 		$is_last = ( $i === $count - 1 );
+		echo '<li class="conexao-breadcrumb-item">';
 		if ( $is_last || empty( $crumb['url'] ) ) {
 			echo '<span class="conexao-breadcrumb-current" aria-current="page">' . esc_html( $crumb['name'] ) . '</span>';
 		} else {
 			echo '<a href="' . esc_url( $crumb['url'] ) . '" class="conexao-breadcrumb-link">' . esc_html( $crumb['name'] ) . '</a>';
 			echo '<span class="conexao-breadcrumb-sep" aria-hidden="true">&rsaquo;</span>';
 		}
+		echo '</li>';
 	}
+	echo '</ol>';
 	echo '</nav>';
 }
 
@@ -665,6 +740,8 @@ function conexao_seo_sitemap() {
 		'post_status'    => 'publish',
 		'posts_per_page' => -1,
 		'no_found_rows'  => true,
+		'update_post_meta_cache' => false,
+		'update_post_term_cache' => false,
 	) );
 	foreach ( $pages as $page ) {
 		if ( in_array( $page->post_name, $excluded_pages, true ) ) {
@@ -687,6 +764,8 @@ function conexao_seo_sitemap() {
 			'post_status'    => 'publish',
 			'posts_per_page' => -1,
 			'no_found_rows'  => true,
+			'update_post_meta_cache' => false,
+			'update_post_term_cache' => false,
 		) );
 		foreach ( $items as $item ) {
 			conexao_seo_sitemap_url( get_permalink( $item->ID ), $priority, 'weekly' );
@@ -910,6 +989,8 @@ function conexao_seo_related_guides( $post_id = 0, $limit = 3 ) {
 			),
 		),
 		'no_found_rows'  => true,
+		'update_post_meta_cache' => false,
+		'update_post_term_cache' => false,
 	) );
 
 	$guides = array();
@@ -949,6 +1030,8 @@ function conexao_seo_related_news( $post_id = 0, $limit = 3 ) {
 			),
 		),
 		'no_found_rows'  => true,
+		'update_post_meta_cache' => false,
+		'update_post_term_cache' => false,
 	) );
 
 	$news = array();
@@ -988,6 +1071,8 @@ function conexao_seo_related_events( $post_id = 0, $limit = 3 ) {
 			),
 		),
 		'no_found_rows'  => true,
+		'update_post_meta_cache' => false,
+		'update_post_term_cache' => false,
 	) );
 
 	$events = array();
@@ -1039,6 +1124,8 @@ function conexao_seo_related_businesses( $post_id = 0, $limit = 3 ) {
 		'post__not_in'   => array( $post_id ),
 		'tax_query'      => $tax_query,
 		'no_found_rows'  => true,
+		'update_post_meta_cache' => false,
+		'update_post_term_cache' => false,
 	) );
 
 	$businesses = array();

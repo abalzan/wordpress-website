@@ -56,7 +56,19 @@ final class Conexao_BR_Content {
 	}
 
 	public function enqueue_assets() {
-		wp_enqueue_style( 'conexao-content', plugins_url( 'assets.css', __FILE__ ), array(), '1.0.0' );
+		// Only load plugin CSS where needed:
+		// 1. Singular posts (sharing + reading-time markup is appended).
+		// 2. Pages using the plugin's shortcodes.
+		$should_load = is_singular( 'post' );
+		if ( ! $should_load && is_singular() ) {
+			$post = get_post();
+			if ( $post && ( has_shortcode( $post->post_content, 'conexao_grid' ) || has_shortcode( $post->post_content, 'conexao_blog_categories' ) ) ) {
+				$should_load = true;
+			}
+		}
+		if ( $should_load ) {
+			wp_enqueue_style( 'conexao-content', plugins_url( 'assets.css', __FILE__ ), array(), '1.0.0' );
+		}
 	}
 
 	public function post_permalink( $permalink, $post ) {
@@ -112,7 +124,7 @@ final class Conexao_BR_Content {
 	public function grid_shortcode( $atts ) {
 		$atts = shortcode_atts( array( 'type' => 'sponsor', 'group' => '', 'limit' => -1 ), $atts, 'conexao_grid' );
 		$allowed = array( 'sponsor', 'directory_item', 'curated_link' ); if ( ! in_array( $atts['type'], $allowed, true ) ) return '';
-		$args = array( 'post_type' => $atts['type'], 'posts_per_page' => (int) $atts['limit'], 'meta_key' => self::META_ORDER, 'orderby' => array( 'meta_value_num' => 'ASC', 'title' => 'ASC' ) );
+		$args = array( 'post_type' => $atts['type'], 'posts_per_page' => (int) $atts['limit'], 'meta_key' => self::META_ORDER, 'orderby' => array( 'meta_value_num' => 'ASC', 'title' => 'ASC' ), 'update_post_meta_cache' => false, 'update_post_term_cache' => false );
 		if ( $atts['group'] && in_array( $atts['type'], array( 'directory_item', 'curated_link' ), true ) ) $args['tax_query'] = array( array( 'taxonomy' => 'directory_item' === $atts['type'] ? 'directory_category' : 'curated_group', 'field' => 'slug', 'terms' => sanitize_title( $atts['group'] ) ) );
 		$query = new WP_Query( $args ); if ( ! $query->have_posts() ) return current_user_can( 'edit_posts' ) ? '<p>Adicione itens em <strong>' . esc_html( $atts['type'] ) . '</strong> para exibi-los aqui.</p>' : '';
 		$html = '<div class="conexao-card-grid conexao-card-grid--' . esc_attr( $atts['type'] ) . '">';
@@ -143,7 +155,7 @@ final class Conexao_BR_Content {
 		$links = array( 'Facebook' => 'https://www.facebook.com/sharer/sharer.php?u=' . $url, 'X' => 'https://twitter.com/intent/tweet?url=' . $url . '&text=' . $title, 'LinkedIn' => 'https://www.linkedin.com/sharing/share-offsite/?url=' . $url );
 		$html = '<nav class="conexao-share" aria-label="Compartilhar publicação"><span>Compartilhe:</span>';
 		foreach ( $links as $label => $href ) $html .= '<a href="' . esc_url( $href ) . '" target="_blank" rel="noopener noreferrer">' . esc_html( $label ) . '</a>';
-		$html .= '<button type="button" data-copy-link="' . esc_attr( get_permalink() ) . '">Copiar link</button></nav><script>document.addEventListener("click",e=>{if(e.target.dataset.copyLink){navigator.clipboard.writeText(e.target.dataset.copyLink);e.target.textContent="Link copiado"}})</script>';
+		$html .= '<button type="button" data-copy-link="' . esc_attr( get_permalink() ) . '">Copiar link</button></nav>';
 		return $content . $html;
 	}
 

@@ -2,7 +2,22 @@
 <?php while ( have_posts() ) : the_post(); ?>
 	<header class="single-post-header">
 		<div class="site-container">
-			<?php $categories = get_the_category(); if ( ! empty( $categories ) ) { echo '<div class="post-categories">'; foreach ( $categories as $category ) { echo '<a href="' . esc_url( get_category_link( $category->term_id ) ) . '" class="hero-category">' . esc_html( $category->name ) . '</a>'; } echo '</div>'; } ?>
+			<?php
+			$categories = get_the_category();
+			if ( empty( $categories ) ) {
+				$categories = get_the_terms( get_the_ID(), 'conexao_category' );
+			}
+			if ( ! empty( $categories ) && ! is_wp_error( $categories ) ) {
+				echo '<div class="post-categories">';
+				foreach ( $categories as $category ) {
+					$cat_link = get_term_link( $category );
+					if ( ! is_wp_error( $cat_link ) ) {
+						echo '<a href="' . esc_url( $cat_link ) . '" class="hero-category">' . esc_html( $category->name ) . '</a>';
+					}
+				}
+				echo '</div>';
+			}
+			?>
 			<h1 class="entry-title"><?php the_title(); ?></h1>
 			<div class="entry-meta">
 				<span class="post-author"><?php the_author(); ?></span>

@@ -10,9 +10,7 @@
 		initMobileMenu();
 		initMobileSearch();
 		initLanguageSelector();
-		initSmoothScroll();
 		initCopyButtons();
-		initLazyLoad();
 	});
 
 	// ===== Mobile Menu Toggle (Full-Screen) =====
@@ -184,57 +182,41 @@
 		}
 	}
 
-	// ===== Smooth Scroll for Anchor Links =====
-	function initSmoothScroll() {
-		document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
-			anchor.addEventListener('click', function(e) {
-				const href = this.getAttribute('href');
-
-				// Skip if it's just "#"
-				if (href === '#') return;
-
-				const target = document.querySelector(href);
-
-				if (target) {
-					e.preventDefault();
-
-					const headerHeight = document.querySelector('.site-header')?.offsetHeight || 0;
-					const targetPosition = target.getBoundingClientRect().top + window.pageYOffset - headerHeight - 20;
-
-					window.scrollTo({
-						top: targetPosition,
-						behavior: 'smooth'
-					});
-
-					// Update URL without scrolling
-					history.pushState(null, null, href);
-				}
-			});
-		});
-	}
-
 	// ===== Copy Link Buttons =====
 	function initCopyButtons() {
+		// Theme share buttons (data-copy-url)
 		const copyButtons = document.querySelectorAll('.share-copy');
-
 		copyButtons.forEach(function(button) {
 			button.addEventListener('click', function() {
 				const url = this.getAttribute('data-copy-url');
+				copyToClipboard(url, button);
+			});
+		});
 
-				if (navigator.clipboard && navigator.clipboard.writeText) {
-					navigator.clipboard.writeText(url).then(function() {
-						showCopySuccess(button);
-					}).catch(function() {
-						fallbackCopy(url, button);
-					});
-				} else {
-					fallbackCopy(url, button);
-				}
+		// Plugin share buttons (data-copy-link)
+		const pluginCopyButtons = document.querySelectorAll('[data-copy-link]');
+		pluginCopyButtons.forEach(function(button) {
+			button.addEventListener('click', function() {
+				const url = this.getAttribute('data-copy-link');
+				const originalText = this.textContent;
+				copyToClipboard(url, button, originalText);
 			});
 		});
 	}
 
-	function fallbackCopy(text, button) {
+	function copyToClipboard(url, button, originalText) {
+		if (navigator.clipboard && navigator.clipboard.writeText) {
+			navigator.clipboard.writeText(url).then(function() {
+				showCopySuccess(button, originalText);
+			}).catch(function() {
+				fallbackCopy(url, button, originalText);
+			});
+		} else {
+			fallbackCopy(url, button, originalText);
+		}
+	}
+
+	function fallbackCopy(text, button, originalText) {
 		const textarea = document.createElement('textarea');
 		textarea.value = text;
 		textarea.style.position = 'fixed';
@@ -244,7 +226,7 @@
 
 		try {
 			document.execCommand('copy');
-			showCopySuccess(button);
+			showCopySuccess(button, originalText);
 		} catch (err) {
 			console.error('Copy failed:', err);
 		}
@@ -252,7 +234,16 @@
 		document.body.removeChild(textarea);
 	}
 
-	function showCopySuccess(button) {
+	function showCopySuccess(button, originalText) {
+		// Plugin buttons use text content, theme buttons use innerHTML (SVG icons)
+		if (originalText !== undefined) {
+			button.textContent = 'Link copiado';
+			setTimeout(function() {
+				button.textContent = originalText;
+			}, 2000);
+			return;
+		}
+
 		const originalHTML = button.innerHTML;
 		button.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>';
 		button.style.background = '#0E6B3A';
@@ -261,42 +252,6 @@
 			button.innerHTML = originalHTML;
 			button.style.background = '';
 		}, 2000);
-	}
-
-	// ===== Lazy Load Images =====
-	function initLazyLoad() {
-		if ('IntersectionObserver' in window) {
-			const imageObserver = new IntersectionObserver(function(entries, observer) {
-				entries.forEach(function(entry) {
-					if (entry.isIntersecting) {
-						const img = entry.target;
-
-						// Load the image
-						if (img.dataset.src) {
-							img.src = img.dataset.src;
-						}
-
-						img.classList.add('loaded');
-						observer.unobserve(img);
-					}
-				});
-			}, {
-				rootMargin: '50px 0px',
-				threshold: 0.01
-			});
-
-			document.querySelectorAll('img[loading="lazy"]').forEach(function(img) {
-				imageObserver.observe(img);
-			});
-		} else {
-			// Fallback for browsers that don't support IntersectionObserver
-			document.querySelectorAll('img[loading="lazy"]').forEach(function(img) {
-				if (img.dataset.src) {
-					img.src = img.dataset.src;
-				}
-				img.classList.add('loaded');
-			});
-		}
 	}
 
 	// ===== Expose functions globally if needed =====

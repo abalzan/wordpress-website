@@ -87,6 +87,8 @@ if ( $is_category_page ) {
 						),
 					),
 					'no_found_rows'  => true,
+					'update_post_meta_cache' => false,
+					'update_post_term_cache' => false,
 				) );
 				if ( $guides->have_posts() ) : ?>
 					<section class="landing-section">
@@ -118,6 +120,8 @@ if ( $is_category_page ) {
 						),
 					),
 					'no_found_rows'  => true,
+					'update_post_meta_cache' => false,
+					'update_post_term_cache' => false,
 				) );
 				if ( $news->have_posts() ) : ?>
 					<section class="landing-section">
@@ -149,6 +153,8 @@ if ( $is_category_page ) {
 						),
 					),
 					'no_found_rows'  => true,
+					'update_post_meta_cache' => false,
+					'update_post_term_cache' => false,
 				) );
 				if ( $businesses->have_posts() ) : ?>
 					<section class="landing-section">
@@ -187,6 +193,8 @@ if ( $is_category_page ) {
 						'orderby'        => 'meta_value',
 						'order'          => 'ASC',
 						'no_found_rows'  => true,
+						'update_post_meta_cache' => false,
+						'update_post_term_cache' => false,
 					) );
 					if ( $events->have_posts() ) : ?>
 						<section class="landing-section">

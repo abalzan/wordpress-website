@@ -84,16 +84,198 @@ add_action( 'widgets_init', 'conexao_widgets_init' );
  * Enqueue scripts and styles
  */
 function conexao_enqueue_scripts() {
+	// Only load the font weights actually used in the design.
+	// Inter: 400 (body), 500 (nav), 600 (buttons/headings), 700 (headings).
+	// Poppins: 500 (nav), 600 (subheadings), 700 (headings).
+	wp_enqueue_style( 'conexao-fonts', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap', array(), null );
+
 	wp_enqueue_style( 'conexao-header-nav', CONEXAO_THEME_URI . '/assets/css/header-nav.css', array(), CONEXAO_THEME_VERSION );
 	wp_enqueue_style( 'conexao-main', CONEXAO_THEME_URI . '/assets/css/main.css', array( 'conexao-header-nav' ), CONEXAO_THEME_VERSION );
-	wp_enqueue_style( 'conexao-fonts', 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap', array(), null );
-	wp_enqueue_script( 'conexao-main', CONEXAO_THEME_URI . '/assets/js/main.js', array(), CONEXAO_THEME_VERSION, true );
+
+	// Load main.js with defer to avoid render-blocking.
+	wp_enqueue_script( 'conexao-main', CONEXAO_THEME_URI . '/assets/js/main.js', array(), CONEXAO_THEME_VERSION, array( 'in_footer' => true, 'strategy' => 'defer' ) );
 
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
 	}
 }
 add_action( 'wp_enqueue_scripts', 'conexao_enqueue_scripts' );
+
+/**
+ * Add preconnect hints for Google Fonts in the head.
+ */
+function conexao_fonts_preconnect() {
+	echo '<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>' . "\n";
+	echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
+}
+add_action( 'wp_head', 'conexao_fonts_preconnect', 1 );
+
+/**
+ * ---------------------------------------------------------------------------
+ * PERFORMANCE OPTIMIZATIONS
+ * ---------------------------------------------------------------------------
+ */
+
+/**
+ * Remove emoji scripts/styles (saves ~15KB of JS/CSS on every page).
+ * Emojis are not used in the design and the browser fallback is fine.
+ */
+function conexao_disable_emoji() {
+	remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
+	remove_action( 'wp_print_styles', 'print_emoji_styles' );
+	remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
+	remove_action( 'admin_print_styles', 'print_emoji_styles' );
+	remove_filter( 'the_content_feed', 'wp_staticize_emoji' );
+	remove_filter( 'comment_text_rss', 'wp_staticize_emoji' );
+	remove_filter( 'wp_mail', 'wp_staticize_emoji_for_email' );
+}
+add_action( 'init', 'conexao_disable_emoji' );
+
+/**
+ * Remove the global "wp-embed" script (saves ~2KB on every page).
+ * The site does not use oEmbed embeds in the theme templates.
+ */
+function conexao_disable_embeds() {
+	wp_deregister_script( 'wp-embed' );
+}
+add_action( 'wp_footer', 'conexao_disable_embeds' );
+
+/**
+ * Add fetchpriority="high" to the hero image (LCP element) on the front page.
+ * WordPress 6.3+ supports fetchpriority natively; this is a safe fallback.
+ */
+function conexao_hero_fetchpriority( $html, $post_id ) {
+	if ( is_front_page() && has_post_thumbnail( $post_id ) ) {
+		$html = preg_replace( '/<img /', '<img fetchpriority="high" ', $html, 1 );
+	}
+	return $html;
+}
+add_filter( 'post_thumbnail_html', 'conexao_hero_fetchpriority', 10, 2 );
+
+/**
+ * Add explicit width/height to images that lack them (CLS prevention).
+ * WordPress already adds width/height for registered sizes; this catches
+ * any images output without dimensions.
+ */
+function conexao_add_image_dimensions( $html ) {
+	if ( ! $html || is_admin() ) {
+		return $html;
+	}
+
+	// Only process <img> tags without width/height attributes.
+	if ( preg_match( '/<img(?![^>]*\bwidth=)[^>]*>/i', $html, $matches ) ) {
+		$img = $matches[0];
+		if ( preg_match( '/src="([^"]+)"/', $img, $src_match ) ) {
+			$src = $src_match[1];
+			$size = @getimagesize( $src );
+			if ( $size ) {
+				$html = str_replace( $img, preg_replace( '/\/?>/', ' width="' . $size[0] . '" height="' . $size[1] . '" />', $img, 1 ), $html );
+			}
+		}
+	}
+
+	return $html;
+}
+add_filter( 'the_content', 'conexao_add_image_dimensions', 20 );
+
+/**
+ * Add loading="lazy" to content images that don't have it.
+ * The hero image is handled separately (eager + fetchpriority).
+ */
+function conexao_lazy_content_images( $content ) {
+	if ( is_admin() || is_feed() ) {
+		return $content;
+	}
+
+	// Only add loading="lazy" to images that don't already have it.
+	$content = preg_replace(
+		'/<img(?![^>]*\bloading=)[^>]*>/i',
+		'<img loading="lazy"$0',
+		$content
+	);
+
+	return $content;
+}
+add_filter( 'the_content', 'conexao_lazy_content_images', 20 );
+
+/**
+ * Homepage query cache.
+ *
+ * The homepage runs 8 WP_Query calls. Cache the results in transients for
+ * 5 minutes to avoid re-running expensive meta queries on every page load.
+ * The cache is invalidated whenever any of the relevant CPTs are saved.
+ */
+function conexao_homepage_query( $args, $cache_key, $expiration = 300 ) {
+	$cached = get_transient( $cache_key );
+	if ( false !== $cached ) {
+		return $cached;
+	}
+
+	$query = new WP_Query( $args );
+	$posts = $query->posts;
+
+	// Store minimal post data (ID, title, permalink, date, excerpt, thumbnail).
+	$data = array();
+	foreach ( $posts as $post ) {
+		$data[] = array(
+			'ID'         => $post->ID,
+			'post_title' => $post->post_title,
+			'post_type'  => $post->post_type,
+			'post_date'  => $post->post_date,
+			'post_excerpt' => $post->post_excerpt,
+			'permalink'  => get_permalink( $post->ID ),
+			'thumbnail'  => get_the_post_thumbnail_url( $post->ID, 'conexao-card' ),
+			'thumbnail_hero' => get_the_post_thumbnail_url( $post->ID, 'conexao-hero' ),
+		);
+	}
+
+	set_transient( $cache_key, $data, $expiration );
+	return $data;
+}
+
+/**
+ * Invalidate homepage transients when any CPT is saved.
+ */
+function conexao_homepage_cache_invalidate( $post_id ) {
+	$post_type = get_post_type( $post_id );
+	$cpt_types = array( 'news', 'guide', 'event', 'job', 'business', 'post' );
+	if ( in_array( $post_type, $cpt_types, true ) ) {
+		delete_transient( 'conexao_home_news' );
+		delete_transient( 'conexao_home_guides' );
+		delete_transient( 'conexao_home_events' );
+		delete_transient( 'conexao_home_businesses' );
+		delete_transient( 'conexao_home_jobs' );
+		delete_transient( 'conexao_home_featured' );
+		delete_transient( 'conexao_home_popular' );
+	}
+}
+add_action( 'save_post', 'conexao_homepage_cache_invalidate' );
+add_action( 'delete_post', 'conexao_homepage_cache_invalidate' );
+
+/**
+ * Limit REST API exposure: only expose the endpoints the theme actually uses.
+ * The REST API is still fully functional for admin/editor use.
+ */
+function conexao_rest_api_optimize() {
+	// Remove the global REST API link from the head.
+	remove_action( 'wp_head', 'rest_output_link_wp_head' );
+	remove_action( 'wp_head', 'wp_oembed_add_discovery_links' );
+	remove_action( 'wp_head', 'wp_oembed_add_host_js' );
+}
+add_action( 'init', 'conexao_rest_api_optimize' );
+
+/**
+ * Remove the global "wp-block-library" CSS if not needed.
+ * The theme does not use Gutenberg blocks in templates.
+ */
+function conexao_dequeue_block_library() {
+	if ( ! is_admin() ) {
+		wp_dequeue_style( 'wp-block-library' );
+		wp_dequeue_style( 'wp-block-library-theme' );
+		wp_dequeue_style( 'wc-blocks-style' );
+	}
+}
+add_action( 'wp_enqueue_scripts', 'conexao_dequeue_block_library', 100 );
 
 /**
  * Editor styles
@@ -132,11 +314,20 @@ add_filter( 'body_class', 'conexao_body_classes' );
 
 /**
  * Reading time
+ * Cached per-post to avoid repeated get_post_field() DB calls on card grids.
  */
 function conexao_reading_time() {
-	$content = get_post_field( 'post_content', get_the_ID() );
+	$post_id = get_the_ID();
+	$cached  = wp_cache_get( 'conexao_reading_time_' . $post_id, 'conexao' );
+	if ( false !== $cached ) {
+		return $cached;
+	}
+
+	$content = get_post_field( 'post_content', $post_id );
 	$words   = str_word_count( strip_tags( $content ) );
 	$minutes = max( 1, ceil( $words / 200 ) );
+
+	wp_cache_set( 'conexao_reading_time_' . $post_id, $minutes, 'conexao', 300 );
 	return $minutes;
 }
 
@@ -202,6 +393,8 @@ function conexao_related_posts() {
 		'posts_per_page'      => 3,
 		'ignore_sticky_posts' => true,
 		'no_found_rows'       => true,
+		'update_post_meta_cache' => false,
+		'update_post_term_cache' => false,
 	) );
 
 	if ( $related->have_posts() ) : ?>

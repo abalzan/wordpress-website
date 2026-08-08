@@ -22,15 +22,29 @@
 				<h3><?php esc_html_e( 'Guias Populares', 'conexao-br-irlanda' ); ?></h3>
 				<ul style="list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
 					<?php
-					$popular_guides = new WP_Query( array(
-						'post_type'      => 'guide',
-						'posts_per_page' => 5,
-						'no_found_rows'  => true,
-					) );
-					if ( $popular_guides->have_posts() ) :
-						while ( $popular_guides->have_posts() ) : $popular_guides->the_post(); ?>
-							<li><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></li>
-						<?php endwhile; wp_reset_postdata();
+					// Single query for popular guides, cached in transient (5 min).
+					$popular_guides = get_transient( 'conexao_404_guides' );
+					if ( false === $popular_guides ) {
+						$guide_query = new WP_Query( array(
+							'post_type'      => 'guide',
+							'posts_per_page' => 5,
+							'no_found_rows'  => true,
+							'update_post_meta_cache' => false,
+							'update_post_term_cache' => false,
+						) );
+						$popular_guides = array();
+						if ( $guide_query->have_posts() ) {
+							while ( $guide_query->have_posts() ) : $guide_query->the_post();
+								$popular_guides[] = array( 'title' => get_the_title(), 'url' => get_permalink() );
+							endwhile;
+						}
+						wp_reset_postdata();
+						set_transient( 'conexao_404_guides', $popular_guides, 300 );
+					}
+					if ( ! empty( $popular_guides ) ) :
+						foreach ( $popular_guides as $guide ) : ?>
+							<li><a href="<?php echo esc_url( $guide['url'] ); ?>"><?php echo esc_html( $guide['title'] ); ?></a></li>
+						<?php endforeach;
 					else : ?>
 						<li><a href="<?php echo esc_url( home_url( '/guides/pps-number/' ) ); ?>"><?php esc_html_e( 'PPS Number', 'conexao-br-irlanda' ); ?></a></li>
 						<li><a href="<?php echo esc_url( home_url( '/guides/medical-card/' ) ); ?>"><?php esc_html_e( 'Medical Card', 'conexao-br-irlanda' ); ?></a></li>
@@ -45,15 +59,29 @@
 				<h3><?php esc_html_e( 'Últimas Notícias', 'conexao-br-irlanda' ); ?></h3>
 				<ul style="list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
 					<?php
-					$latest_news = new WP_Query( array(
-						'post_type'      => 'news',
-						'posts_per_page' => 3,
-						'no_found_rows'  => true,
-					) );
-					if ( $latest_news->have_posts() ) :
-						while ( $latest_news->have_posts() ) : $latest_news->the_post(); ?>
-							<li><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></li>
-						<?php endwhile; wp_reset_postdata();
+					// Single query for latest news, cached in transient (5 min).
+					$latest_news = get_transient( 'conexao_404_news' );
+					if ( false === $latest_news ) {
+						$news_query = new WP_Query( array(
+							'post_type'      => 'news',
+							'posts_per_page' => 3,
+							'no_found_rows'  => true,
+							'update_post_meta_cache' => false,
+							'update_post_term_cache' => false,
+						) );
+						$latest_news = array();
+						if ( $news_query->have_posts() ) {
+							while ( $news_query->have_posts() ) : $news_query->the_post();
+								$latest_news[] = array( 'title' => get_the_title(), 'url' => get_permalink() );
+							endwhile;
+						}
+						wp_reset_postdata();
+						set_transient( 'conexao_404_news', $latest_news, 300 );
+					}
+					if ( ! empty( $latest_news ) ) :
+						foreach ( $latest_news as $news_item ) : ?>
+							<li><a href="<?php echo esc_url( $news_item['url'] ); ?>"><?php echo esc_html( $news_item['title'] ); ?></a></li>
+						<?php endforeach;
 					endif; ?>
 				</ul>
 			</div>
@@ -62,21 +90,35 @@
 				<h3><?php esc_html_e( 'Próximos Eventos', 'conexao-br-irlanda' ); ?></h3>
 				<ul style="list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
 					<?php
-					$upcoming_events = new WP_Query( array(
-						'post_type'      => 'event',
-						'posts_per_page' => 3,
-						'meta_key'       => '_event_date',
-						'meta_value'     => current_time( 'Y-m-d' ),
-						'meta_compare'   => '>=',
-						'meta_type'      => 'DATE',
-						'orderby'        => 'meta_value',
-						'order'          => 'ASC',
-						'no_found_rows'  => true,
-					) );
-					if ( $upcoming_events->have_posts() ) :
-						while ( $upcoming_events->have_posts() ) : $upcoming_events->the_post(); ?>
-							<li><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></li>
-						<?php endwhile; wp_reset_postdata();
+					// Single query for upcoming events, cached in transient (5 min).
+					$upcoming_events = get_transient( 'conexao_404_events' );
+					if ( false === $upcoming_events ) {
+						$events_query = new WP_Query( array(
+							'post_type'      => 'event',
+							'posts_per_page' => 3,
+							'meta_key'       => '_event_date',
+							'meta_value'     => current_time( 'Y-m-d' ),
+							'meta_compare'   => '>=',
+							'meta_type'      => 'DATE',
+							'orderby'        => 'meta_value',
+							'order'          => 'ASC',
+							'no_found_rows'  => true,
+							'update_post_meta_cache' => false,
+							'update_post_term_cache' => false,
+						) );
+						$upcoming_events = array();
+						if ( $events_query->have_posts() ) {
+							while ( $events_query->have_posts() ) : $events_query->the_post();
+								$upcoming_events[] = array( 'title' => get_the_title(), 'url' => get_permalink() );
+							endwhile;
+						}
+						wp_reset_postdata();
+						set_transient( 'conexao_404_events', $upcoming_events, 300 );
+					}
+					if ( ! empty( $upcoming_events ) ) :
+						foreach ( $upcoming_events as $event_item ) : ?>
+							<li><a href="<?php echo esc_url( $event_item['url'] ); ?>"><?php echo esc_html( $event_item['title'] ); ?></a></li>
+						<?php endforeach;
 					else : ?>
 						<li><?php esc_html_e( 'Nenhum evento próximo no momento.', 'conexao-br-irlanda' ); ?></li>
 					<?php endif; ?>

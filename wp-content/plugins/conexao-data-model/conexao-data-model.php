@@ -38,11 +38,11 @@ final class Conexao_Data_Model {
 
 	public function register_content_types() {
 		$post_types = array(
-			'news'     => array( 'plural' => 'News', 'singular' => 'News item', 'slug' => 'news', 'icon' => 'dashicons-megaphone' ),
-			'guide'    => array( 'plural' => 'Guides', 'singular' => 'Guide', 'slug' => 'guides', 'icon' => 'dashicons-book-alt' ),
-			'event'    => array( 'plural' => 'Events', 'singular' => 'Event', 'slug' => 'events', 'icon' => 'dashicons-calendar-alt' ),
-			'job'      => array( 'plural' => 'Jobs', 'singular' => 'Job', 'slug' => 'jobs', 'icon' => 'dashicons-portfolio' ),
-			'business' => array( 'plural' => 'Businesses', 'singular' => 'Business', 'slug' => 'businesses', 'icon' => 'dashicons-store' ),
+			'news'     => array( 'plural' => 'Notícias', 'singular' => 'Notícia', 'slug' => 'news', 'icon' => 'dashicons-megaphone' ),
+			'guide'    => array( 'plural' => 'Guias Práticos', 'singular' => 'Guia Prático', 'slug' => 'guides', 'icon' => 'dashicons-book-alt' ),
+			'event'    => array( 'plural' => 'Eventos', 'singular' => 'Evento', 'slug' => 'events', 'icon' => 'dashicons-calendar-alt' ),
+			'job'      => array( 'plural' => 'Empregos', 'singular' => 'Vaga de Emprego', 'slug' => 'jobs', 'icon' => 'dashicons-portfolio' ),
+			'business' => array( 'plural' => 'Empresas', 'singular' => 'Empresa', 'slug' => 'businesses', 'icon' => 'dashicons-store' ),
 		);
 
 		foreach ( $post_types as $post_type => $type ) {
@@ -52,8 +52,15 @@ final class Conexao_Data_Model {
 					'labels' => array(
 						'name'          => $type['plural'],
 						'singular_name' => $type['singular'],
-						'add_new_item'  => 'Add New ' . $type['singular'],
-						'edit_item'     => 'Edit ' . $type['singular'],
+						'add_new_item'  => 'Adicionar ' . $type['singular'],
+						'edit_item'     => 'Editar ' . $type['singular'],
+						'new_item'      => 'Novo ' . $type['singular'],
+						'view_item'     => 'Ver ' . $type['singular'],
+						'search_items'  => 'Buscar ' . $type['plural'],
+						'not_found'     => 'Nenhum ' . $type['singular'] . ' encontrado',
+						'not_found_in_trash' => 'Nenhum ' . $type['singular'] . ' encontrado na lixeira',
+						'all_items'     => 'Todos os ' . $type['plural'],
+						'archives'      => $type['plural'],
 					),
 					'public'             => true,
 					'show_in_rest'       => true,

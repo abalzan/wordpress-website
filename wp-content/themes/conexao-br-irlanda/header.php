@@ -108,7 +108,9 @@
 							<line x1="21" y1="21" x2="16.65" y2="16.65"></line>
 						</svg>
 						<form role="search" method="get" class="search-form" action="<?php echo esc_url( home_url( '/' ) ); ?>">
-							<input type="search" class="search-field" placeholder="<?php esc_attr_e( 'Buscar...', 'conexao-br-irlanda' ); ?>" value="<?php echo get_search_query(); ?>" name="s" />
+							<label class="screen-reader-text" for="header-search-field"><?php esc_html_e( 'Pesquisar', 'conexao-br-irlanda' ); ?></label>
+							<input id="header-search-field" type="search" class="search-field" placeholder="<?php esc_attr_e( 'Buscar...', 'conexao-br-irlanda' ); ?>" value="<?php echo esc_attr( get_search_query() ); ?>" name="s" />
+							<button type="submit" class="screen-reader-text header-search-submit"><?php esc_html_e( 'Buscar', 'conexao-br-irlanda' ); ?></button>
 						</form>
 					</div>
 					<div class="header-social">
