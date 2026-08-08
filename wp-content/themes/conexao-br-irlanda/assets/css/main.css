@@ -3012,6 +3012,134 @@ input[type="button"] {
   }
 }
 
+/* ===== SEO: Breadcrumbs ===== */
+.conexao-breadcrumbs {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 12px 20px 0;
+  font-size: 0.85rem;
+  color: var(--conexao-gray-600);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.conexao-breadcrumb-link {
+  color: var(--conexao-primary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.conexao-breadcrumb-link:hover {
+  color: var(--conexao-accent);
+  text-decoration: underline;
+}
+
+.conexao-breadcrumb-sep {
+  color: var(--conexao-gray-400);
+  font-size: 0.9rem;
+}
+
+.conexao-breadcrumb-current {
+  color: var(--conexao-gray-700);
+  font-weight: 500;
+}
+
+/* ===== SEO: Landing Page Sections ===== */
+.landing-section {
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid var(--conexao-border);
+}
+
+.landing-section-title {
+  font-family: var(--conexao-font-heading);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--conexao-dark);
+  margin-bottom: 20px;
+}
+
+.landing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.landing-card {
+  background: var(--conexao-white);
+  border: 1px solid var(--conexao-border);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.landing-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.landing-card-thumb {
+  display: block;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+}
+
+.landing-card-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.landing-card-title {
+  font-family: var(--conexao-font-heading);
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 12px 14px 4px;
+  margin: 0;
+}
+
+.landing-card-title a {
+  color: var(--conexao-dark);
+  text-decoration: none;
+}
+
+.landing-card-title a:hover {
+  color: var(--conexao-primary);
+}
+
+.landing-card-excerpt {
+  font-size: 0.85rem;
+  color: var(--conexao-gray-600);
+  padding: 0 14px 14px;
+  margin: 0;
+}
+
+.landing-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.landing-tag {
+  display: inline-block;
+  padding: 8px 16px;
+  background: var(--conexao-primary-light);
+  color: var(--conexao-primary);
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.landing-tag:hover {
+  background: var(--conexao-primary);
+  color: var(--conexao-white);
+}
+
 /* ===== Print ===== */
 @media print {
   .site-header,

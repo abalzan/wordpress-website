@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Conexão BR Irlanda</title>
+  <desc id="desc">Portal da comunidade brasileira na Irlanda</desc>
+  <defs>
+    <linearGradient id="background" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#073b2f"/>
+      <stop offset="1" stop-color="#0e6b3a"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#background)"/>
+  <circle cx="600" cy="250" r="128" fill="none" stroke="#f68b1f" stroke-width="7"/>
+  <circle cx="600" cy="250" r="96" fill="none" stroke="#fff" stroke-opacity=".65" stroke-width="4"/>
+  <text x="600" y="278" fill="#fff" font-family="Arial, sans-serif" font-size="90" font-weight="700" text-anchor="middle">CB</text>
+  <text x="600" y="465" fill="#fff" font-family="Arial, sans-serif" font-size="53" font-weight="700" text-anchor="middle">Conexão BR Irlanda</text>
+  <text x="600" y="520" fill="#fff" fill-opacity=".86" font-family="Arial, sans-serif" font-size="27" text-anchor="middle">Portal da comunidade brasileira na Irlanda</text>
+</svg>

@@ -14,6 +14,11 @@ define( 'CONEXAO_THEME_DIR', get_template_directory() );
 define( 'CONEXAO_THEME_URI', get_template_directory_uri() );
 
 /**
+ * Load SEO foundation module.
+ */
+require_once CONEXAO_THEME_DIR . '/inc/seo.php';
+
+/**
  * Theme setup
  */
 function conexao_theme_setup() {
@@ -338,79 +343,6 @@ function conexao_custom_image_sizes( $sizes ) {
 }
 add_filter( 'image_size_names_choose', 'conexao_custom_image_sizes' );
 
-/**
- * Schema markup
- */
-function conexao_schema_markup() {
-	if ( ! is_singular( 'post' ) ) return;
-	?>
-	<script type="application/ld+json">
-	{
-		"@context": "https://schema.org",
-		"@type": "Article",
-		"headline": "<?php echo esc_js( get_the_title() ); ?>",
-		"datePublished": "<?php echo esc_js( get_the_date( 'c' ) ); ?>",
-		"dateModified": "<?php echo esc_js( get_the_modified_date( 'c' ) ); ?>",
-		"author": { "@type": "Person", "name": "<?php echo esc_js( get_the_author() ); ?>" },
-		"publisher": { "@type": "Organization", "name": "<?php echo esc_js( get_bloginfo( 'name' ) ); ?>" }
-		<?php if ( has_post_thumbnail() ) : ?>
-		,"image": "<?php echo esc_js( get_the_post_thumbnail_url( null, 'full' ) ); ?>"
-		<?php endif; ?>
-	}
-	</script>
-	<?php
-}
-add_action( 'wp_head', 'conexao_schema_markup' );
-
-/**
- * Open Graph meta
- */
-function conexao_og_meta() {
-	if ( is_singular() ) {
-		$og_type  = 'article';
-		$og_title = get_the_title();
-		$og_url   = get_permalink();
-		$og_desc  = has_excerpt() ? get_the_excerpt() : wp_trim_words( get_the_content(), 30, '...' );
-		$og_image = has_post_thumbnail() ? get_the_post_thumbnail_url( null, 'large' ) : '';
-	} else {
-		$og_type  = 'website';
-		$og_title = get_bloginfo( 'name' );
-		$og_url   = home_url( '/' );
-		$og_desc  = get_bloginfo( 'description' );
-		$og_image = '';
-	}
-	?>
-	<meta property="og:type" content="<?php echo esc_attr( $og_type ); ?>" />
-	<meta property="og:title" content="<?php echo esc_attr( $og_title ); ?>" />
-	<meta property="og:url" content="<?php echo esc_url( $og_url ); ?>" />
-	<meta property="og:description" content="<?php echo esc_attr( $og_desc ); ?>" />
-	<meta property="og:site_name" content="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>" />
-	<meta property="og:locale" content="pt_BR" />
-	<?php if ( $og_image ) : ?>
-	<meta property="og:image" content="<?php echo esc_url( $og_image ); ?>" />
-	<?php endif; ?>
-	<meta name="twitter:card" content="summary_large_image" />
-	<meta name="twitter:title" content="<?php echo esc_attr( $og_title ); ?>" />
-	<meta name="twitter:description" content="<?php echo esc_attr( $og_desc ); ?>" />
-	<?php if ( $og_image ) : ?>
-	<meta name="twitter:image" content="<?php echo esc_url( $og_image ); ?>" />
-	<?php endif; ?>
-	<?php
-}
-add_action( 'wp_head', 'conexao_og_meta' );
-
-/**
- * Meta description
- */
-function conexao_meta_description() {
-	if ( is_singular() ) {
-		$desc = has_excerpt() ? get_the_excerpt() : wp_trim_words( get_the_content(), 30, '...' );
-		echo '<meta name="description" content="' . esc_attr( $desc ) . '" />' . "\n";
-	} elseif ( is_home() || is_front_page() ) {
-		echo '<meta name="description" content="' . esc_attr( get_bloginfo( 'description' ) ) . '" />' . "\n";
-	}
-}
-add_action( 'wp_head', 'conexao_meta_description' );
 
 /**
  * WhatsApp floating button

@@ -65,12 +65,28 @@ final class Conexao_BR_Content {
 
 	public function redirect_legacy_paths() {
 		$path = wp_parse_url( $_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH );
-		// Legacy Wix redirects. '/contato' is intentionally omitted: the page now
-		// exists as /contato/, and redirecting to it would create a redirect loop.
-		$redirects = array( '/turismo-e-lazer' => '/eventos/', '/capacitação' => '/cursos/', '/fique-por-dentro' => '/noticias/', '/s-projects-basic' => '/guias-praticos/' );
+		// Legacy Wix redirects. All point DIRECTLY to the final destination
+		// (no redirect chains). '/contato' is intentionally omitted: the page
+		// now exists as /contato/, and redirecting to it would create a loop.
+		$redirects = array(
+			'/turismo-e-lazer'   => '/events/',
+			'/capacitação'       => '/cursos/',
+			'/fique-por-dentro'  => '/news/',
+			'/s-projects-basic'  => '/guides/',
+			'/noticias'          => '/news/',
+			'/eventos'           => '/events/',
+			'/empregos'          => '/jobs/',
+			'/empresas'          => '/businesses/',
+			'/privacidade'       => '/politica-de-privacidade/',
+			'/termos'            => '/termos-de-uso/',
+			'/sobre'             => '/sobre-nos/',
+		);
 		$path = untrailingslashit( rawurldecode( $path ) );
 		foreach ( $redirects as $from => $to ) if ( untrailingslashit( $from ) === $path ) { wp_safe_redirect( home_url( $to ), 301 ); exit; }
 		if ( preg_match( '#^/post/([^/]+)$#', $path, $matches ) ) { wp_safe_redirect( home_url( '/blog/' . $matches[1] . '/' ), 301 ); exit; }
+		if ( preg_match( '#^/guias-praticos/([^/]+)$#', $path, $matches ) ) { wp_safe_redirect( home_url( '/guides/' . $matches[1] . '/' ), 301 ); exit; }
+		if ( preg_match( '#^/categories/([^/]+)$#', $path, $matches ) ) { wp_safe_redirect( home_url( '/' . $matches[1] . '/' ), 301 ); exit; }
+		if ( preg_match( '#^/counties/([^/]+)$#', $path, $matches ) ) { wp_safe_redirect( home_url( '/' . $matches[1] . '/' ), 301 ); exit; }
 	}
 
 	public function add_meta_boxes() {

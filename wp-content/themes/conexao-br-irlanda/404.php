@@ -3,8 +3,8 @@
 	<main id="primary" class="content-area">
 		<section class="error-404">
 			<h1 class="error-code">404</h1>
-			<h2><?php esc_html_e( 'Página não encontrada', 'conexao-br-irlanda' ); ?></h2>
-			<p><?php esc_html_e( 'Desculpe, mas a página que você procura não existe. Ela pode ter sido movida ou removida.', 'conexao-br-irlanda' ); ?></p>
+			<h2><?php esc_html_e( 'Ops! Página não encontrada.', 'conexao-br-irlanda' ); ?></h2>
+			<p><?php esc_html_e( 'A página que você procura pode ter sido movida ou removida.', 'conexao-br-irlanda' ); ?></p>
 
 			<div class="error-404-search">
 				<h3><?php esc_html_e( 'Tente buscar pelo que precisa:', 'conexao-br-irlanda' ); ?></h3>
@@ -13,19 +13,73 @@
 
 			<div class="error-404-links" style="margin-top: 30px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
 				<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="btn btn-green"><?php esc_html_e( 'Voltar para o início', 'conexao-br-irlanda' ); ?></a>
-				<a href="<?php echo esc_url( home_url( '/noticias/' ) ); ?>" class="btn btn-primary"><?php esc_html_e( 'Últimas Notícias', 'conexao-br-irlanda' ); ?></a>
-				<a href="<?php echo esc_url( home_url( '/guias/' ) ); ?>" class="btn btn-primary"><?php esc_html_e( 'Guias Práticos', 'conexao-br-irlanda' ); ?></a>
-				<a href="<?php echo esc_url( home_url( '/eventos/' ) ); ?>" class="btn btn-primary"><?php esc_html_e( 'Eventos', 'conexao-br-irlanda' ); ?></a>
+				<a href="<?php echo esc_url( home_url( '/news/' ) ); ?>" class="btn btn-primary"><?php esc_html_e( 'Últimas Notícias', 'conexao-br-irlanda' ); ?></a>
+				<a href="<?php echo esc_url( home_url( '/guides/' ) ); ?>" class="btn btn-primary"><?php esc_html_e( 'Guias Práticos', 'conexao-br-irlanda' ); ?></a>
+				<a href="<?php echo esc_url( home_url( '/events/' ) ); ?>" class="btn btn-primary"><?php esc_html_e( 'Eventos', 'conexao-br-irlanda' ); ?></a>
 			</div>
 
 			<div class="error-404-popular" style="margin-top: 40px;">
 				<h3><?php esc_html_e( 'Guias Populares', 'conexao-br-irlanda' ); ?></h3>
 				<ul style="list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
-					<li><a href="<?php echo esc_url( home_url( '/guias-praticos/pps-number/' ) ); ?>"><?php esc_html_e( 'PPS Number', 'conexao-br-irlanda' ); ?></a></li>
-					<li><a href="<?php echo esc_url( home_url( '/guias-praticos/medical-card/' ) ); ?>"><?php esc_html_e( 'Medical Card', 'conexao-br-irlanda' ); ?></a></li>
-					<li><a href="<?php echo esc_url( home_url( '/guias-praticos/abrir-conta-bancaria/' ) ); ?>"><?php esc_html_e( 'Abrir Conta Bancária', 'conexao-br-irlanda' ); ?></a></li>
-					<li><a href="<?php echo esc_url( home_url( '/guias-praticos/alugar-casa/' ) ); ?>"><?php esc_html_e( 'Alugar Casa', 'conexao-br-irlanda' ); ?></a></li>
-					<li><a href="<?php echo esc_url( home_url( '/guias-praticos/carteira-de-motorista/' ) ); ?>"><?php esc_html_e( 'Carteira de Motorista', 'conexao-br-irlanda' ); ?></a></li>
+					<?php
+					$popular_guides = new WP_Query( array(
+						'post_type'      => 'guide',
+						'posts_per_page' => 5,
+						'no_found_rows'  => true,
+					) );
+					if ( $popular_guides->have_posts() ) :
+						while ( $popular_guides->have_posts() ) : $popular_guides->the_post(); ?>
+							<li><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></li>
+						<?php endwhile; wp_reset_postdata();
+					else : ?>
+						<li><a href="<?php echo esc_url( home_url( '/guides/pps-number/' ) ); ?>"><?php esc_html_e( 'PPS Number', 'conexao-br-irlanda' ); ?></a></li>
+						<li><a href="<?php echo esc_url( home_url( '/guides/medical-card/' ) ); ?>"><?php esc_html_e( 'Medical Card', 'conexao-br-irlanda' ); ?></a></li>
+						<li><a href="<?php echo esc_url( home_url( '/guides/abrir-conta-bancaria/' ) ); ?>"><?php esc_html_e( 'Abrir Conta Bancária', 'conexao-br-irlanda' ); ?></a></li>
+						<li><a href="<?php echo esc_url( home_url( '/guides/alugar-casa/' ) ); ?>"><?php esc_html_e( 'Alugar Casa', 'conexao-br-irlanda' ); ?></a></li>
+						<li><a href="<?php echo esc_url( home_url( '/guides/carteira-de-motorista/' ) ); ?>"><?php esc_html_e( 'Carteira de Motorista', 'conexao-br-irlanda' ); ?></a></li>
+					<?php endif; ?>
+				</ul>
+			</div>
+
+			<div class="error-404-latest" style="margin-top: 40px;">
+				<h3><?php esc_html_e( 'Últimas Notícias', 'conexao-br-irlanda' ); ?></h3>
+				<ul style="list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+					<?php
+					$latest_news = new WP_Query( array(
+						'post_type'      => 'news',
+						'posts_per_page' => 3,
+						'no_found_rows'  => true,
+					) );
+					if ( $latest_news->have_posts() ) :
+						while ( $latest_news->have_posts() ) : $latest_news->the_post(); ?>
+							<li><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></li>
+						<?php endwhile; wp_reset_postdata();
+					endif; ?>
+				</ul>
+			</div>
+
+			<div class="error-404-events" style="margin-top: 40px;">
+				<h3><?php esc_html_e( 'Próximos Eventos', 'conexao-br-irlanda' ); ?></h3>
+				<ul style="list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+					<?php
+					$upcoming_events = new WP_Query( array(
+						'post_type'      => 'event',
+						'posts_per_page' => 3,
+						'meta_key'       => '_event_date',
+						'meta_value'     => current_time( 'Y-m-d' ),
+						'meta_compare'   => '>=',
+						'meta_type'      => 'DATE',
+						'orderby'        => 'meta_value',
+						'order'          => 'ASC',
+						'no_found_rows'  => true,
+					) );
+					if ( $upcoming_events->have_posts() ) :
+						while ( $upcoming_events->have_posts() ) : $upcoming_events->the_post(); ?>
+							<li><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></li>
+						<?php endwhile; wp_reset_postdata();
+					else : ?>
+						<li><?php esc_html_e( 'Nenhum evento próximo no momento.', 'conexao-br-irlanda' ); ?></li>
+					<?php endif; ?>
 				</ul>
 			</div>
 		</section>

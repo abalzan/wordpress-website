@@ -192,3 +192,4 @@
 	</div>
 
 	<div id="content" class="site-content">
+		<?php conexao_seo_breadcrumbs(); ?>

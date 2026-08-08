@@ -1,12 +1,24 @@
 # Custom redirects for the Wix migration
+# All redirects point DIRECTLY to the final destination (no redirect chains).
 <IfModule mod_rewrite.c>
 RewriteEngine On
-RewriteRule ^turismo-e-lazer/?$ /eventos/ [R=301,L]
+RewriteRule ^turismo-e-lazer/?$ /events/ [R=301,L]
 RewriteRule ^capacitação/?$ /cursos/ [R=301,L]
-RewriteRule ^fique-por-dentro/?$ /noticias/ [R=301,L]
-RewriteRule ^s-projects-basic/?$ /guias-praticos/ [R=301,L]
+RewriteRule ^fique-por-dentro/?$ /news/ [R=301,L]
+RewriteRule ^s-projects-basic/?$ /guides/ [R=301,L]
 RewriteRule ^post/([^/]+)/?$ /blog/$1/ [R=301,L]
 RewriteRule ^blog/categories/([^/]+)/?$ /category/$1/ [R=301,L]
+RewriteRule ^guias-praticos/?$ /guides/ [R=301,L]
+RewriteRule ^guias-praticos/([^/]+)/?$ /guides/$1/ [R=301,L]
+RewriteRule ^noticias/?$ /news/ [R=301,L]
+RewriteRule ^eventos/?$ /events/ [R=301,L]
+RewriteRule ^empregos/?$ /jobs/ [R=301,L]
+RewriteRule ^empresas/?$ /businesses/ [R=301,L]
+RewriteRule ^categories/([^/]+)/?$ /$1/ [R=301,L]
+RewriteRule ^counties/([^/]+)/?$ /$1/ [R=301,L]
+RewriteRule ^privacidade/?$ /politica-de-privacidade/ [R=301,L]
+RewriteRule ^termos/?$ /termos-de-uso/ [R=301,L]
+RewriteRule ^sobre/?$ /sobre-nos/ [R=301,L]
 
 # BEGIN WordPress
 RewriteBase /
