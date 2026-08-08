@@ -8,6 +8,7 @@
 	// ===== DOM Ready =====
 	document.addEventListener('DOMContentLoaded', function() {
 		initMobileMenu();
+		initMobileSearch();
 		initLanguageSelector();
 		initSmoothScroll();
 		initCopyButtons();
@@ -44,6 +45,10 @@
 			body.style.overflow = '';
 			menuToggle.focus();
 		}
+
+		menuOverlay.addEventListener('click', function(e) {
+			if (e.target === menuOverlay) closeMenu();
+		});
 
 		// Toggle menu
 		menuToggle.addEventListener('click', function() {
@@ -96,16 +101,47 @@
 			const submenu = dropdown.querySelector('ul, .sub-menu');
 
 			if (link && submenu) {
-				link.addEventListener('click', function(e) {
-					if (window.innerWidth <= 768) {
-						e.preventDefault();
-						submenu.classList.toggle('active');
-						dropdown.classList.toggle('active');
-						link.setAttribute('aria-expanded', submenu.classList.contains('active') ? 'true' : 'false');
-					}
+				const toggle = document.createElement('button');
+				toggle.type = 'button';
+				toggle.className = 'mobile-submenu-toggle';
+				toggle.setAttribute('aria-label', 'Abrir submenu de ' + link.textContent.trim());
+				toggle.setAttribute('aria-expanded', 'false');
+				toggle.addEventListener('click', function() {
+					const expanded = toggle.getAttribute('aria-expanded') === 'true';
+					submenu.classList.toggle('active', !expanded);
+					dropdown.classList.toggle('active', !expanded);
+					toggle.setAttribute('aria-expanded', String(!expanded));
 				});
+				dropdown.insertBefore(toggle, submenu);
 			}
 		});
+	}
+
+	function initMobileSearch() {
+		const toggle = document.querySelector('.mobile-search-toggle');
+		const overlay = document.querySelector('.mobile-search-overlay');
+		const close = document.querySelector('.mobile-search-close');
+		const field = document.querySelector('.mobile-search-field');
+		if (!toggle || !overlay) return;
+
+		function closeSearch() {
+			overlay.classList.remove('active');
+			overlay.setAttribute('aria-hidden', 'true');
+			toggle.setAttribute('aria-expanded', 'false');
+			document.body.style.overflow = '';
+			toggle.focus();
+		}
+
+		toggle.addEventListener('click', function() {
+			overlay.classList.add('active');
+			overlay.setAttribute('aria-hidden', 'false');
+			toggle.setAttribute('aria-expanded', 'true');
+			document.body.style.overflow = 'hidden';
+			setTimeout(function() { if (field) field.focus(); }, 100);
+		});
+		if (close) close.addEventListener('click', closeSearch);
+		overlay.addEventListener('click', function(e) { if (e.target === overlay) closeSearch(); });
+		document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && overlay.classList.contains('active')) closeSearch(); });
 	}
 
 	// ===== Language Selector =====

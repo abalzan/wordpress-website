@@ -99,6 +99,9 @@
 
 				<!-- Header Actions -->
 				<div class="header-actions">
+					<button type="button" class="mobile-search-toggle" aria-label="<?php esc_attr_e( 'Abrir pesquisa', 'conexao-br-irlanda' ); ?>" aria-controls="mobile-search" aria-expanded="false">
+						<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+					</button>
 					<div class="header-search">
 						<svg class="header-search-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
 							<circle cx="11" cy="11" r="8"></circle>
@@ -134,7 +137,7 @@
 	</header>
 
 	<!-- Mobile Menu Overlay -->
-	<div class="mobile-menu-overlay" aria-hidden="true">
+	<div id="mobile-menu" class="mobile-menu-overlay" aria-hidden="true">
 		<div class="mobile-menu-content">
 			<div class="mobile-menu-header">
 				<span class="mobile-menu-title"><?php esc_html_e( 'Menu', 'conexao-br-irlanda' ); ?></span>
@@ -174,6 +177,17 @@
 					<button data-lang="en">EN</button>
 				</div>
 			</div>
+		</div>
+	</div>
+
+	<div id="mobile-search" class="mobile-search-overlay" aria-hidden="true">
+		<div class="mobile-search-overlay-content" role="dialog" aria-modal="true" aria-label="<?php esc_attr_e( 'Pesquisar no site', 'conexao-br-irlanda' ); ?>">
+			<form role="search" method="get" class="mobile-search-form" action="<?php echo esc_url( home_url( '/' ) ); ?>">
+				<label class="screen-reader-text" for="mobile-search-field"><?php esc_html_e( 'Pesquisar', 'conexao-br-irlanda' ); ?></label>
+				<input id="mobile-search-field" type="search" class="mobile-search-field" placeholder="<?php esc_attr_e( 'Pesquisar...', 'conexao-br-irlanda' ); ?>" value="<?php echo esc_attr( get_search_query() ); ?>" name="s" />
+				<button type="submit" class="mobile-search-submit"><?php esc_html_e( 'Buscar', 'conexao-br-irlanda' ); ?></button>
+				<button type="button" class="mobile-search-close" aria-label="<?php esc_attr_e( 'Fechar pesquisa', 'conexao-br-irlanda' ); ?>">&times;</button>
+			</form>
 		</div>
 	</div>
 

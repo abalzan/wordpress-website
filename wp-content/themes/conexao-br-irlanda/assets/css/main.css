@@ -2665,6 +2665,23 @@ input[type="button"] {
     padding: 0 16px;
   }
 
+  .site-container,
+  .section-header-left,
+  .featured-article-content,
+  .post-card-body,
+  .news-card-body,
+  .business-card,
+  .guide-card,
+  .event-card-body {
+    min-width: 0;
+  }
+
+  .site-main,
+  .entry-content,
+  .single-post-content {
+    overflow-wrap: anywhere;
+  }
+
   /* Hide top bar on mobile */
   .top-bar {
     display: none;
@@ -2754,7 +2771,8 @@ input[type="button"] {
   }
 
   .hero-title {
-    font-size: 1.75rem;
+    font-size: clamp(1.75rem, 8vw, 2.25rem);
+    line-height: 1.18;
   }
 
   .hero-subtitle {
@@ -2783,7 +2801,7 @@ input[type="button"] {
 
   .quick-access-card {
     padding: 16px 12px;
-    min-height: 80px;
+    min-height: 132px;
   }
 
   .quick-access-icon {
@@ -2812,6 +2830,49 @@ input[type="button"] {
     align-items: flex-start;
     gap: 12px;
     margin-bottom: 24px;
+  }
+
+  .section-link,
+  .business-btn,
+  .event-card-cta,
+  .newsletter-btn,
+  .read-more {
+    min-height: 48px;
+    align-items: center;
+  }
+
+  .search-form,
+  .search-form input[type="search"] {
+    width: 100%;
+  }
+
+  .search-form {
+    flex-wrap: wrap;
+  }
+
+  .search-form button {
+    min-height: 48px;
+  }
+
+  .single-post-header {
+    padding: 40px 0;
+    margin-bottom: 24px;
+  }
+
+  .single-post-content .entry-content {
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  .single-post-content .entry-content table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  .whatsapp-float {
+    right: 16px;
+    bottom: 16px;
   }
 
   /* Grids mobile - single column */
@@ -2922,6 +2983,7 @@ input[type="button"] {
 
   .quick-access-card {
     padding: 12px 8px;
+    min-height: 124px;
   }
 
   .guides-grid {
