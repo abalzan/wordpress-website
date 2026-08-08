@@ -32,10 +32,6 @@ final class Conexao_BR_Content {
 			'sponsor'        => array( 'name' => 'Apoiadores', 'singular_name' => 'Apoiador', 'has_archive' => false ),
 			'directory_item' => array( 'name' => 'Diretório', 'singular_name' => 'Item do diretório', 'has_archive' => false ),
 			'curated_link'   => array( 'name' => 'Links selecionados', 'singular_name' => 'Link selecionado', 'has_archive' => false ),
-			'guide'          => array( 'name' => 'Guias práticos', 'singular_name' => 'Guia prático', 'has_archive' => 'guias-praticos', 'rewrite' => array( 'slug' => 'guias-praticos' ) ),
-			'event'          => array( 'name' => 'Eventos', 'singular_name' => 'Evento', 'has_archive' => 'eventos', 'rewrite' => array( 'slug' => 'eventos' ), 'menu_icon' => 'dashicons-calendar-alt' ),
-			'business'       => array( 'name' => 'Empresas', 'singular_name' => 'Empresa', 'has_archive' => 'empresas', 'rewrite' => array( 'slug' => 'empresas' ), 'menu_icon' => 'dashicons-store' ),
-			'job'            => array( 'name' => 'Empregos', 'singular_name' => 'Emprego', 'has_archive' => 'empregos', 'rewrite' => array( 'slug' => 'empregos' ), 'menu_icon' => 'dashicons-portfolio' ),
 		);
 		foreach ( $types as $type => $labels ) {
 			register_post_type( $type, array(
@@ -47,9 +43,6 @@ final class Conexao_BR_Content {
 		}
 		register_taxonomy( 'directory_category', 'directory_item', array( 'labels' => array( 'name' => 'Categorias do diretório', 'singular_name' => 'Categoria do diretório' ), 'public' => true, 'show_in_rest' => true ) );
 		register_taxonomy( 'curated_group', 'curated_link', array( 'labels' => array( 'name' => 'Grupos de links', 'singular_name' => 'Grupo de links' ), 'public' => true, 'show_in_rest' => true ) );
-		register_taxonomy( 'event_category', 'event', array( 'labels' => array( 'name' => 'Categorias de Eventos', 'singular_name' => 'Categoria de Evento' ), 'public' => true, 'show_in_rest' => true, 'hierarchical' => true ) );
-		register_taxonomy( 'business_category', 'business', array( 'labels' => array( 'name' => 'Categorias de Empresas', 'singular_name' => 'Categoria de Empresa' ), 'public' => true, 'show_in_rest' => true, 'hierarchical' => true ) );
-		register_taxonomy( 'job_category', 'job', array( 'labels' => array( 'name' => 'Categorias de Empregos', 'singular_name' => 'Categoria de Emprego' ), 'public' => true, 'show_in_rest' => true, 'hierarchical' => true ) );
 	}
 
 	public function register_meta() {

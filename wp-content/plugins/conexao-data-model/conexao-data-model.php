@@ -1,0 +1,129 @@
+<?php
+/**
+ * Plugin Name: Conexão BR Irlanda Data Model
+ * Description: Content types, shared taxonomies, and editorial fields for the Conexão BR Irlanda portal.
+ * Version: 1.0.0
+ * Text Domain: conexao-data-model
+ *
+ * @package Conexao_BR_Irlanda_Data_Model
+ */
+
+defined( 'ABSPATH' ) || exit;
+
+define( 'CONEXAO_DATA_MODEL_FILE', __FILE__ );
+define( 'CONEXAO_DATA_MODEL_DIR', plugin_dir_path( __FILE__ ) );
+
+require_once CONEXAO_DATA_MODEL_DIR . 'includes/class-relationships.php';
+require_once CONEXAO_DATA_MODEL_DIR . 'includes/class-meta.php';
+
+final class Conexao_Data_Model {
+
+	const VERSION = '1.0.0';
+
+	/** @var Conexao_Data_Model|null */
+	private static $instance = null;
+
+	public static function instance() {
+		if ( null === self::$instance ) {
+			self::$instance = new self();
+		}
+
+		return self::$instance;
+	}
+
+	private function __construct() {
+		add_action( 'init', array( $this, 'register_content_types' ), 0 );
+		add_action( 'init', array( $this, 'register_taxonomies' ), 0 );
+	}
+
+	public function register_content_types() {
+		$post_types = array(
+			'news'     => array( 'plural' => 'News', 'singular' => 'News item', 'slug' => 'news', 'icon' => 'dashicons-megaphone' ),
+			'guide'    => array( 'plural' => 'Guides', 'singular' => 'Guide', 'slug' => 'guides', 'icon' => 'dashicons-book-alt' ),
+			'event'    => array( 'plural' => 'Events', 'singular' => 'Event', 'slug' => 'events', 'icon' => 'dashicons-calendar-alt' ),
+			'job'      => array( 'plural' => 'Jobs', 'singular' => 'Job', 'slug' => 'jobs', 'icon' => 'dashicons-portfolio' ),
+			'business' => array( 'plural' => 'Businesses', 'singular' => 'Business', 'slug' => 'businesses', 'icon' => 'dashicons-store' ),
+		);
+
+		foreach ( $post_types as $post_type => $type ) {
+			register_post_type(
+				$post_type,
+				array(
+					'labels' => array(
+						'name'          => $type['plural'],
+						'singular_name' => $type['singular'],
+						'add_new_item'  => 'Add New ' . $type['singular'],
+						'edit_item'     => 'Edit ' . $type['singular'],
+					),
+					'public'             => true,
+					'show_in_rest'       => true,
+					'has_archive'        => $type['slug'],
+					'rewrite'            => array( 'slug' => $type['slug'], 'with_front' => false ),
+					'menu_icon'          => $type['icon'],
+					'supports'           => array( 'title', 'editor', 'excerpt', 'thumbnail', 'author', 'revisions', 'page-attributes' ),
+					'publicly_queryable' => true,
+				)
+			);
+		}
+	}
+
+	public function register_taxonomies() {
+		$content_types = array( 'news', 'guide', 'event', 'job', 'business' );
+
+		register_taxonomy(
+			'conexao_category',
+			$content_types,
+			array(
+				'labels'            => array( 'name' => 'Categories', 'singular_name' => 'Category' ),
+				'public'            => true,
+				'hierarchical'      => true,
+				'show_in_rest'      => true,
+				'show_admin_column' => true,
+				'rewrite'           => array( 'slug' => 'categories', 'with_front' => false ),
+			)
+		);
+
+		register_taxonomy(
+			'conexao_county',
+			$content_types,
+			array(
+				'labels'            => array( 'name' => 'Counties', 'singular_name' => 'County' ),
+				'public'            => true,
+				'hierarchical'      => true,
+				'show_in_rest'      => true,
+				'show_admin_column' => true,
+				'rewrite'           => array( 'slug' => 'counties', 'with_front' => false ),
+			)
+		);
+
+		register_taxonomy(
+			'conexao_tag',
+			array( 'news', 'guide', 'event', 'business' ),
+			array(
+				'labels'            => array( 'name' => 'Tags', 'singular_name' => 'Tag' ),
+				'public'            => true,
+				'hierarchical'      => false,
+				'show_in_rest'      => true,
+				'show_admin_column' => true,
+				'rewrite'           => array( 'slug' => 'tags', 'with_front' => false ),
+			)
+		);
+	}
+
+	public static function activate() {
+		$plugin = self::instance();
+		$plugin->register_content_types();
+		$plugin->register_taxonomies();
+		Conexao_Data_Model_Relationships::seed_terms();
+		flush_rewrite_rules();
+	}
+
+	public static function deactivate() {
+		flush_rewrite_rules();
+	}
+}
+
+Conexao_Data_Model::instance();
+
+register_activation_hook( __FILE__, array( 'Conexao_Data_Model', 'activate' ) );
+register_deactivation_hook( __FILE__, array( 'Conexao_Data_Model', 'deactivate' ) );
