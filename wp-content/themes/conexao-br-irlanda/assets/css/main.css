@@ -1851,34 +1851,140 @@ ul, ol {
   color: var(--conexao-gray-500);
 }
 
-/* ===== Pagination ===== */
-.pagination {
+/* ===== Pagination (reusable component) ===== */
+.conexao-pagination {
   margin-top: 48px;
   display: flex;
   justify-content: center;
-  gap: 8px;
 }
 
-.pagination .page-numbers {
+.conexao-pagination__list {
   display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.conexao-pagination__item {
+  margin: 0;
+  padding: 0;
+}
+
+/* Buttons: page links, prev/next links, current page and ellipsis all carry
+   WordPress's .page-numbers class. Style them consistently inside the scoped
+   component so no global list/link rules leak in. */
+.conexao-pagination .page-numbers {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   min-width: 44px;
   height: 44px;
-  padding: 0 12px;
+  padding: 0 16px;
   border-radius: var(--conexao-radius);
   background: var(--conexao-white);
   border: 1px solid var(--conexao-border);
   color: var(--conexao-dark);
   font-weight: 500;
-  transition: all var(--conexao-transition);
+  font-size: 0.9375rem;
+  line-height: 1;
+  text-decoration: none;
+  transition: background var(--conexao-transition), border-color var(--conexao-transition), color var(--conexao-transition);
 }
 
-.pagination .page-numbers:hover,
-.pagination .page-numbers.current {
+.conexao-pagination .page-numbers:hover {
+  background: var(--conexao-primary-light);
+  border-color: var(--conexao-primary);
+  color: var(--conexao-primary);
+}
+
+.conexao-pagination .page-numbers:focus-visible {
+  outline: 2px solid var(--conexao-primary);
+  outline-offset: 2px;
+}
+
+/* Current page: green fill, white text, not clickable. */
+.conexao-pagination .page-numbers.current,
+.conexao-pagination .page-numbers.current:hover {
   background: var(--conexao-primary);
   border-color: var(--conexao-primary);
   color: var(--conexao-white);
+  cursor: default;
+}
+
+/* Ellipsis: neutral, non-interactive. */
+.conexao-pagination .page-numbers.dots {
+  background: transparent;
+  border-color: transparent;
+  color: var(--conexao-gray-500);
+  cursor: default;
+  min-width: 28px;
+  padding: 0 8px;
+}
+
+/* Widened prev/next controls while keeping the same button language. */
+.conexao-pagination .page-numbers.prev,
+.conexao-pagination .page-numbers.next {
+  padding: 0 20px;
+}
+
+/* Residual default WordPress pagination output (e.g. comment pagination)
+   renders as <nav class="navigation pagination"><div class="nav-links">.
+   Keep it horizontal and consistent with the component without affecting
+   unrelated lists elsewhere on the page. */
+.navigation.pagination {
+  margin-top: 48px;
+  display: flex;
+  justify-content: center;
+}
+
+.navigation.pagination .nav-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+}
+
+.navigation.pagination .nav-links .page-numbers {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  height: 44px;
+  padding: 0 16px;
+  border-radius: var(--conexao-radius);
+  background: var(--conexao-white);
+  border: 1px solid var(--conexao-border);
+  color: var(--conexao-dark);
+  font-weight: 500;
+  font-size: 0.9375rem;
+  line-height: 1;
+  text-decoration: none;
+  transition: background var(--conexao-transition), border-color var(--conexao-transition), color var(--conexao-transition);
+}
+
+.navigation.pagination .nav-links .page-numbers:hover {
+  background: var(--conexao-primary-light);
+  border-color: var(--conexao-primary);
+  color: var(--conexao-primary);
+}
+
+.navigation.pagination .nav-links .page-numbers.current,
+.navigation.pagination .nav-links .page-numbers.current:hover {
+  background: var(--conexao-primary);
+  border-color: var(--conexao-primary);
+  color: var(--conexao-white);
+  cursor: default;
+}
+
+.navigation.pagination .nav-links .page-numbers.prev,
+.navigation.pagination .nav-links .page-numbers.next {
+  padding: 0 20px;
 }
 
 /* ===== Page Header ===== */

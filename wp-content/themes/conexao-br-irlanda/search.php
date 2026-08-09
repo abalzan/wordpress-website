@@ -33,11 +33,7 @@
 				<?php endwhile; ?>
 			</div>
 
-			<?php the_posts_pagination( array(
-				'mid_size'  => 2,
-				'prev_text' => __( '← Anterior', 'conexao-br-irlanda' ),
-				'next_text' => __( 'Próximo →', 'conexao-br-irlanda' ),
-			) ); ?>
+			<?php get_template_part( 'template-parts/pagination' ); ?>
 
 		<?php else : ?>
 			<?php get_template_part( 'template-parts/content', 'none' ); ?>
