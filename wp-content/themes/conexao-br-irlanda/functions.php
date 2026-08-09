@@ -19,6 +19,21 @@ define( 'CONEXAO_THEME_URI', get_template_directory_uri() );
 require_once CONEXAO_THEME_DIR . '/inc/seo.php';
 
 /**
+ * Get the canonical archive URL for the Guides CPT.
+ *
+ * @return string
+ */
+function conexao_get_guides_archive_url() {
+	$archive_link = get_post_type_archive_link( 'guide' );
+
+	if ( $archive_link ) {
+		return $archive_link;
+	}
+
+	return home_url( '/guides/' );
+}
+
+/**
  * Theme setup
  */
 function conexao_theme_setup() {
@@ -785,3 +800,24 @@ function conexao_nav_menu_args( $args ) {
 	return $args;
 }
 add_filter( 'wp_nav_menu_args', 'conexao_nav_menu_args' );
+
+function conexao_override_guides_menu_links( $items, $args ) {
+	if ( 'primary' !== $args->theme_location ) {
+		return $items;
+	}
+
+	$guides_url = conexao_get_guides_archive_url();
+	$legacy_url = untrailingslashit( home_url( '/guias/' ) );
+
+	foreach ( $items as $item ) {
+		$title = strtolower( trim( wp_strip_all_tags( $item->title ) ) );
+		$item_url = untrailingslashit( $item->url );
+
+		if ( 'guias' === $title || 'guias práticos' === $title || $legacy_url === $item_url || false !== strpos( $item_url, '/guias' ) ) {
+			$item->url = $guides_url;
+		}
+	}
+
+	return $items;
+}
+add_filter( 'wp_nav_menu_objects', 'conexao_override_guides_menu_links', 10, 2 );

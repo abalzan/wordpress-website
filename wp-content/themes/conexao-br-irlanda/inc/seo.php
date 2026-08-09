@@ -858,6 +858,7 @@ function conexao_seo_redirects() {
 	// Direct 301 map: old URL -> final URL (no chains).
 	$redirects = array(
 		// Legacy guide paths -> new /guides/ CPT structure.
+		'/guias'                       => '/guides/',
 		'/guias-praticos'              => '/guides/',
 		'/guias-praticos/pps-number'   => '/guides/pps-number/',
 		'/guias-praticos/medical-card' => '/guides/medical-card/',

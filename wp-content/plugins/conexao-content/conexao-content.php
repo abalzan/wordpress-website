@@ -85,6 +85,7 @@ final class Conexao_BR_Content {
 			'/capacitação'       => '/cursos/',
 			'/fique-por-dentro'  => '/news/',
 			'/s-projects-basic'  => '/guides/',
+			'/guias'             => '/guides/',
 			'/noticias'          => '/news/',
 			'/eventos'           => '/events/',
 			'/empregos'          => '/jobs/',

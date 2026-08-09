@@ -545,7 +545,7 @@ if (!$categorias) {
 <li><a href="/servicos/">Serviços</a></li>
 <li><a href="/voluntariado/">Voluntariado</a></li>
 <li><a href="/eventos/">Eventos</a></li>
-<li><a href="/guias/">Guias</a></li>
+<li><a href="/guides/">Guias</a></li>
 </ul><!-- /wp:list -->',
         'post_status'   => 'publish',
         'post_type'     => 'page',

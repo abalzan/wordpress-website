@@ -27,7 +27,7 @@ $hero_image_id = conexao_hero_image_attachment_id();
 				<h1 class="hero-title"><?php echo wp_kses_post( $hero_title ); ?></h1>
 				<p class="hero-subtitle"><?php echo esc_html( $hero_subtitle ); ?></p>
 				<div class="hero-ctas">
-					<a href="<?php echo esc_url( home_url( '/guides/' ) ); ?>" class="btn btn-primary">
+					<a href="<?php echo esc_url( conexao_get_guides_archive_url() ); ?>" class="btn btn-primary">
 						<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
 							<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
 							<path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
@@ -316,7 +316,7 @@ $hero_image_id = conexao_hero_image_attachment_id();
 				<h2 class="section-title"><?php esc_html_e( 'Guia em Destaque', 'conexao-br-irlanda' ); ?></h2>
 				<p class="section-subtitle"><?php esc_html_e( 'Um guia completo para ajudar você em sua jornada na Irlanda.', 'conexao-br-irlanda' ); ?></p>
 			</div>
-			<a href="<?php echo esc_url( home_url( '/guides/' ) ); ?>" class="section-link">
+			<a href="<?php echo esc_url( conexao_get_guides_archive_url() ); ?>" class="section-link">
 				<?php esc_html_e( 'Ver todos os guias', 'conexao-br-irlanda' ); ?>
 				<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
 					<line x1="5" y1="12" x2="19" y2="12"></line>
@@ -328,14 +328,14 @@ $hero_image_id = conexao_hero_image_attachment_id();
 		<div class="guides-grid">
 			<?php
 			$guide_list = array(
-				array( 'icon' => 'id-card', 'title' => __( 'PPS Number', 'conexao-br-irlanda' ), 'desc' => __( 'Como conseguir seu Personal Public Service Number', 'conexao-br-irlanda' ), 'url' => '/guias-praticos/pps-number/' ),
-				array( 'icon' => 'heart-pulse', 'title' => __( 'Medical Card', 'conexao-br-irlanda' ), 'desc' => __( 'Guia completo sobre o cartão de saúde irlandês', 'conexao-br-irlanda' ), 'url' => '/guias-praticos/medical-card/' ),
-				array( 'icon' => 'car', 'title' => __( 'Carteira de Motorista', 'conexao-br-irlanda' ), 'desc' => __( 'Como trocar sua CNH brasileira pela irlandesa', 'conexao-br-irlanda' ), 'url' => '/guias-praticos/carteira-de-motorista/' ),
-				array( 'icon' => 'landmark', 'title' => __( 'Conta Bancária', 'conexao-br-irlanda' ), 'desc' => __( 'Passo a passo para abrir sua conta na Irlanda', 'conexao-br-irlanda' ), 'url' => '/guias-praticos/abrir-conta-bancaria/' ),
-				array( 'icon' => 'home', 'title' => __( 'Alugar Casa', 'conexao-br-irlanda' ), 'desc' => __( 'Tudo sobre o mercado imobiliário irlandês', 'conexao-br-irlanda' ), 'url' => '/guias-praticos/alugar-casa/' ),
-				array( 'icon' => 'receipt', 'title' => __( 'Impostos', 'conexao-br-irlanda' ), 'desc' => __( 'Entenda o sistema de impostos na Irlanda', 'conexao-br-irlanda' ), 'url' => '/guias-praticos/impostos/' ),
-				array( 'icon' => 'stethoscope', 'title' => __( 'GP Registration', 'conexao-br-irlanda' ), 'desc' => __( 'Como se registrar em um médico na Irlanda', 'conexao-br-irlanda' ), 'url' => '/guias-praticos/gp-registration/' ),
-				array( 'icon' => 'flag', 'title' => __( 'Cidadania Irlandesa', 'conexao-br-irlanda' ), 'desc' => __( 'Requisitos e processo para obter a cidadania', 'conexao-br-irlanda' ), 'url' => '/guias-praticos/cidadania-irlandesa/' ),
+				array( 'icon' => 'id-card', 'title' => __( 'PPS Number', 'conexao-br-irlanda' ), 'desc' => __( 'Como conseguir seu Personal Public Service Number', 'conexao-br-irlanda' ), 'url' => '/guides/pps-number/' ),
+				array( 'icon' => 'heart-pulse', 'title' => __( 'Medical Card', 'conexao-br-irlanda' ), 'desc' => __( 'Guia completo sobre o cartão de saúde irlandês', 'conexao-br-irlanda' ), 'url' => '/guides/medical-card/' ),
+				array( 'icon' => 'car', 'title' => __( 'Carteira de Motorista', 'conexao-br-irlanda' ), 'desc' => __( 'Como trocar sua CNH brasileira pela irlandesa', 'conexao-br-irlanda' ), 'url' => '/guides/carteira-de-motorista/' ),
+				array( 'icon' => 'landmark', 'title' => __( 'Conta Bancária', 'conexao-br-irlanda' ), 'desc' => __( 'Passo a passo para abrir sua conta na Irlanda', 'conexao-br-irlanda' ), 'url' => '/guides/abrir-conta-bancaria/' ),
+				array( 'icon' => 'home', 'title' => __( 'Alugar Casa', 'conexao-br-irlanda' ), 'desc' => __( 'Tudo sobre o mercado imobiliário irlandês', 'conexao-br-irlanda' ), 'url' => '/guides/alugar-casa/' ),
+				array( 'icon' => 'receipt', 'title' => __( 'Impostos', 'conexao-br-irlanda' ), 'desc' => __( 'Entenda o sistema de impostos na Irlanda', 'conexao-br-irlanda' ), 'url' => '/guides/impostos/' ),
+				array( 'icon' => 'stethoscope', 'title' => __( 'GP Registration', 'conexao-br-irlanda' ), 'desc' => __( 'Como se registrar em um médico na Irlanda', 'conexao-br-irlanda' ), 'url' => '/guides/gp-registration/' ),
+				array( 'icon' => 'flag', 'title' => __( 'Cidadania Irlandesa', 'conexao-br-irlanda' ), 'desc' => __( 'Requisitos e processo para obter a cidadania', 'conexao-br-irlanda' ), 'url' => '/guides/cidadania-irlandesa/' ),
 			);
 
 			$guide_icons = array(

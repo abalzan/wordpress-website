@@ -58,7 +58,7 @@
 						<ul class="footer-links">
 							<li><a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Home', 'conexao-br-irlanda' ); ?></a></li>
 							<li><a href="<?php echo esc_url( home_url( '/noticias/' ) ); ?>"><?php esc_html_e( 'Notícias', 'conexao-br-irlanda' ); ?></a></li>
-							<li><a href="<?php echo esc_url( home_url( '/guias/' ) ); ?>"><?php esc_html_e( 'Guias', 'conexao-br-irlanda' ); ?></a></li>
+							<li><a href="<?php echo esc_url( conexao_get_guides_archive_url() ); ?>"><?php esc_html_e( 'Guias', 'conexao-br-irlanda' ); ?></a></li>
 							<li><a href="<?php echo esc_url( home_url( '/eventos/' ) ); ?>"><?php esc_html_e( 'Eventos', 'conexao-br-irlanda' ); ?></a></li>
 							<li><a href="<?php echo esc_url( home_url( '/empregos/' ) ); ?>"><?php esc_html_e( 'Empregos', 'conexao-br-irlanda' ); ?></a></li>
 							<li><a href="<?php echo esc_url( home_url( '/empresas/' ) ); ?>"><?php esc_html_e( 'Empresas', 'conexao-br-irlanda' ); ?></a></li>
