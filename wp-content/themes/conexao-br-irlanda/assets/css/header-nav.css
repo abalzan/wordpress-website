@@ -3,12 +3,11 @@
    Horizontal Flexbox Navigation Bar
    ============================================ */
 
-/* ===== Container ===== */
-.container {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 24px;
-}
+/* ===== Container =====
+   The header reuses the site-wide .site-container (max-width 1200px,
+   margin-inline: auto) defined in main.css. No separate header container
+   is used so the header aligns exactly with the hero, sections and footer.
+*/
 
 /* ===== Site Header ===== */
 .site-header {
@@ -92,7 +91,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 24px;
+  gap: 12px;
+  min-width: 0;
 }
 
 /* ===== Logo ===== */
@@ -103,7 +103,7 @@
 .logo a {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   text-decoration: none;
 }
 
@@ -113,10 +113,11 @@
 }
 
 .site-name {
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   font-weight: 700;
   color: #0E6B3A;
   font-family: 'Poppins', sans-serif;
+  white-space: nowrap;
 }
 
 /* ===== Primary Navigation - HORIZONTAL FLEXBOX ===== */
@@ -133,7 +134,7 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 32px;
+  gap: 16px;
   list-style: none;
   margin: 0;
   padding: 0;
@@ -153,10 +154,10 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  padding: 12px 4px;
+  padding: 12px 3px;
   color: #495057;
   font-weight: 500;
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   text-decoration: none;
   transition: color 0.25s ease;
   position: relative;
@@ -277,8 +278,16 @@
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
   flex-shrink: 0;
+  min-width: 0;
+}
+
+/* The main header social icons duplicate the top bar and mobile menu footer.
+   Hiding them on desktop keeps logo + 9-item nav + search + CTA inside the
+   1200px container at 100% zoom without horizontal overflow. */
+.main-header .header-social {
+  display: none;
 }
 
 .header-search {
@@ -304,16 +313,19 @@
   border: 1px solid #e5e7eb;
   border-radius: 9999px;
   font-size: 0.875rem;
-  width: 200px;
+  width: 150px;
   transition: all 0.25s ease;
   background: #f8f9fa;
   font-family: 'Inter', sans-serif;
 }
 
+/*
+ * The search field keeps a fixed width on focus — expanding it inside the
+ * flex row would push the CTA beyond the container edge and cause overflow.
+ */
 .header-search .search-field:focus {
   outline: none;
   border-color: #0E6B3A;
-  width: 240px;
   background: #ffffff;
   box-shadow: 0 0 0 4px rgba(14, 107, 58, 0.1);
 }
@@ -324,7 +336,7 @@
   gap: 8px;
   background: #F68B1F;
   color: #ffffff;
-  padding: 10px 20px;
+  padding: 10px 14px;
   border-radius: 9999px;
   font-weight: 600;
   font-size: 0.875rem;
@@ -782,8 +794,13 @@
   outline-offset: 2px;
 }
 
-/* ===== Responsive: Tablet (768px - 1199px) ===== */
-@media (max-width: 1199px) and (min-width: 769px) {
+/* ===== Responsive: Small desktop (1025px - 1280px) =====
+   The 9-item nav is tight, so reduce spacing and hide the redundant top-bar
+   text labels. The inline search box is replaced by the mobile search toggle
+   (which opens the same overlay) so logo + nav + CTA keep fitting inside the
+   1200px container at 100% zoom, keeping the nav usable and "Anuncie Aqui"
+   visible down to 1024px. */
+@media (max-width: 1280px) and (min-width: 1025px) {
   .top-bar-left span {
     display: none;
   }
@@ -793,20 +810,97 @@
   }
 
   .primary-navigation ul {
-    gap: 20px;
+    gap: 10px;
   }
 
   .primary-navigation ul li a {
-    font-size: 0.875rem;
-    padding: 10px 4px;
+    font-size: 0.8125rem;
+    padding: 10px 2px;
   }
 
-  .header-search .search-field {
-    width: 160px;
+  /* Swap the inline search for the mobile search toggle at this width */
+  .header-search {
+    display: none;
   }
 
-  .header-search .search-field:focus {
-    width: 200px;
+  .mobile-search-toggle {
+    display: flex;
+  }
+}
+
+/* ===== Responsive: Tablet (769px - 1024px) =====
+   The full desktop nav no longer fits alongside the logo/search/CTA at these
+   widths, so we intentionally switch to the side-drawer mobile menu instead of
+   forcing an overflowing single-line nav. */
+@media (max-width: 1024px) and (min-width: 769px) {
+  /* Keep the top bar, but hide the text labels */
+  .top-bar-left span {
+    display: none;
+  }
+
+  .top-bar-left a {
+    padding: 8px;
+  }
+
+  /* Show the mobile menu toggle and search toggle */
+  .mobile-menu-toggle {
+    display: flex;
+    order: 1;
+  }
+
+  .mobile-search-toggle {
+    display: flex;
+  }
+
+  /* Hide the desktop nav, search and CTA on tablet */
+  .primary-navigation {
+    display: none;
+  }
+
+  .header-search {
+    display: none;
+  }
+
+  .header-cta {
+    display: none;
+  }
+
+  /* Main header mobile layout */
+  .main-header {
+    padding: 12px 0;
+  }
+
+  .main-header .site-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  /* Logo left, actions right, toggle left */
+  .logo {
+    order: 2;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+  }
+
+  .header-actions {
+    order: 3;
+    gap: 4px;
+  }
+
+  .site-name {
+    font-size: 1.125rem;
+  }
+
+  .mobile-menu-overlay {
+    background: rgba(7, 59, 47, 0.45);
+  }
+
+  .mobile-menu-content {
+    width: min(88vw, 420px);
+    box-shadow: 12px 0 32px rgba(0, 0, 0, 0.2);
   }
 }
 
