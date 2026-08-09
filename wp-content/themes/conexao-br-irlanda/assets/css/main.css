@@ -221,7 +221,7 @@ ul, ol {
 
 .hero-title {
   font-size: clamp(2rem, 5vw, 3.25rem);
-  font-weight: 800;
+  font-weight: 700;
   color: var(--conexao-white);
   margin-bottom: 20px;
   line-height: 1.15;
@@ -254,9 +254,18 @@ ul, ol {
   box-shadow: var(--conexao-shadow-xl);
 }
 
+/*
+ * The hero img carries explicit width/height attributes from the Media
+ * Library (wp_get_attachment_image). height:auto + those attributes preserve
+ * the image's true aspect ratio and reserve space, preventing CLS. The
+ * aspect-ratio + object-fit here act as a safety net so an extreme-ratio
+ * upload never distorts the design; the approved visual ratio is preserved
+ * at every breakpoint (320–1440px).
+ */
 .hero-image-img {
   width: 100%;
   height: auto;
+  aspect-ratio: 2 / 1;
   object-fit: cover;
   border-radius: var(--conexao-radius-xl);
 }
@@ -1675,7 +1684,7 @@ ul, ol {
 
 .single-post-header .entry-title {
   font-size: clamp(1.75rem, 4vw, 2.75rem);
-  font-weight: 800;
+  font-weight: 700;
   margin-bottom: 16px;
   line-height: 1.2;
 }
@@ -1881,7 +1890,7 @@ ul, ol {
 
 .page-header h1 {
   font-size: clamp(1.75rem, 3vw, 2.25rem);
-  font-weight: 800;
+  font-weight: 700;
   margin-bottom: 12px;
 }
 
@@ -2611,7 +2620,7 @@ input[type="button"] {
 
 .archive-title {
   font-size: clamp(2rem, 4vw, 2.75rem);
-  font-weight: 800;
+  font-weight: 700;
   color: var(--conexao-dark);
   margin-bottom: 12px;
   line-height: 1.15;

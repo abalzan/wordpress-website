@@ -10,7 +10,7 @@ get_header();
 // Get dynamic content or use defaults
 $hero_title    = get_theme_mod( 'conexao_hero_title', __( 'Tudo que o brasileiro precisa para viver melhor na <span>Irlanda</span>', 'conexao-br-irlanda' ) );
 $hero_subtitle = get_theme_mod( 'conexao_hero_subtitle', __( 'Conectando a comunidade brasileira com informações, eventos, guias práticos e muito mais.', 'conexao-br-irlanda' ) );
-$hero_image    = get_theme_mod( 'conexao_hero_image', '' );
+$hero_image_id = conexao_hero_image_attachment_id();
 ?>
 
 <main id="primary" class="site-main">
@@ -42,8 +42,24 @@ $hero_image    = get_theme_mod( 'conexao_hero_image', '' );
 
 			<!-- Hero Image -->
 			<div class="hero-image">
-				<?php if ( $hero_image ) : ?>
-					<img src="<?php echo esc_url( $hero_image ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>" loading="eager" fetchpriority="high" width="640" height="480" class="hero-image-img">
+				<?php if ( $hero_image_id ) : ?>
+					<?php
+					// The hero is the primary LCP element on the front page, so it is
+					// loaded eagerly with high priority and never lazy-loaded. Using
+					// wp_get_attachment_image() generates srcset, sizes, width, height
+					// and a descriptive alt attribute from the Media Library.
+					echo wp_get_attachment_image(
+						$hero_image_id,
+						'conexao-hero',
+						false,
+						array(
+							'class'         => 'hero-image-img',
+							'loading'       => 'eager',
+							'fetchpriority' => 'high',
+							'alt'           => get_bloginfo( 'name' ),
+						)
+					);
+					?>
 				<?php else : ?>
 					<div class="hero-image-placeholder">
 						<svg viewBox="0 0 640 480" width="640" height="480" role="img" aria-label="<?php esc_attr_e( 'Comunidade brasileira na Irlanda', 'conexao-br-irlanda' ); ?>">
@@ -60,8 +76,8 @@ $hero_image    = get_theme_mod( 'conexao_hero_image', '' );
 							<text x="320" y="420" text-anchor="middle" fill="#fff" font-size="20" font-family="Inter, sans-serif" opacity="0.9">Conexão BR Irlanda</text>
 						</svg>
 					</div>
-									<?php endif; ?>
-								</div>
+				<?php endif; ?>
+			</div>
 		</div>
 	</div>
 </section>
@@ -258,18 +274,23 @@ $hero_image    = get_theme_mod( 'conexao_hero_image', '' );
 					</h4>
 					<ul class="sidebar-list">
 						<?php
-						$popular = new WP_Query( array(
-							'posts_per_page'      => 5,
-							'orderby'             => 'comment_count',
-							'order'               => 'DESC',
-							'ignore_sticky_posts' => true,
-							'no_found_rows'       => true,
-							'update_post_meta_cache' => false,
-							'update_post_term_cache' => false,
-						) );
-						$pop_count = 1;
-						if ( $popular->have_posts() ) :
-							while ( $popular->have_posts() ) : $popular->the_post(); ?>
+						// Lightweight "Mais Lidos" list. Uses conexao_popular_posts()
+						// which is view-count-ready (_conexao_view_count meta) and,
+						// until a view-count system exists, falls back to recent
+						// content — avoiding the expensive ORDER BY comment_count.
+						$popular_ids = conexao_popular_posts( 5 );
+						$pop_count   = 1;
+						if ( ! empty( $popular_ids ) ) :
+							$popular_query = new WP_Query( array(
+								'post__in'               => $popular_ids,
+								'orderby'                => 'post__in',
+								'posts_per_page'         => count( $popular_ids ),
+								'ignore_sticky_posts'    => true,
+								'no_found_rows'          => true,
+								'update_post_meta_cache' => false,
+								'update_post_term_cache' => false,
+							) );
+							while ( $popular_query->have_posts() ) : $popular_query->the_post(); ?>
 								<li>
 									<a href="<?php the_permalink(); ?>">
 										<span class="sidebar-list-number"><?php echo esc_html( $pop_count ); ?></span>

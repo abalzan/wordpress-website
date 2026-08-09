@@ -83,17 +83,33 @@ add_action( 'widgets_init', 'conexao_widgets_init' );
 /**
  * Enqueue scripts and styles
  */
+/**
+ * Return a cache-busting version for a theme asset based on its filemtime.
+ *
+ * The .htaccess applies `Cache-Control: public, max-age=31536000, immutable`
+ * to CSS/JS. That is only safe when the asset URL changes whenever the file
+ * changes. Using filemtime() guarantees the browser receives a new URL after
+ * any edit, so the long-lived cache can never serve stale CSS/JS.
+ *
+ * @param string $relative_path Path relative to the theme directory (e.g. "assets/css/main.css").
+ * @return string A version string (unix mtime) safe for the "ver" query arg.
+ */
+function conexao_asset_version( $relative_path ) {
+	$file = CONEXAO_THEME_DIR . '/' . ltrim( $relative_path, '/' );
+	return file_exists( $file ) ? (string) filemtime( $file ) : CONEXAO_THEME_VERSION;
+}
+
 function conexao_enqueue_scripts() {
 	// Only load the font weights actually used in the design.
 	// Inter: 400 (body), 500 (nav), 600 (buttons/headings), 700 (headings).
 	// Poppins: 500 (nav), 600 (subheadings), 700 (headings).
 	wp_enqueue_style( 'conexao-fonts', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap', array(), null );
 
-	wp_enqueue_style( 'conexao-header-nav', CONEXAO_THEME_URI . '/assets/css/header-nav.css', array(), CONEXAO_THEME_VERSION );
-	wp_enqueue_style( 'conexao-main', CONEXAO_THEME_URI . '/assets/css/main.css', array( 'conexao-header-nav' ), CONEXAO_THEME_VERSION );
+	wp_enqueue_style( 'conexao-header-nav', CONEXAO_THEME_URI . '/assets/css/header-nav.css', array(), conexao_asset_version( 'assets/css/header-nav.css' ) );
+	wp_enqueue_style( 'conexao-main', CONEXAO_THEME_URI . '/assets/css/main.css', array( 'conexao-header-nav' ), conexao_asset_version( 'assets/css/main.css' ) );
 
 	// Load main.js with defer to avoid render-blocking.
-	wp_enqueue_script( 'conexao-main', CONEXAO_THEME_URI . '/assets/js/main.js', array(), CONEXAO_THEME_VERSION, array( 'in_footer' => true, 'strategy' => 'defer' ) );
+	wp_enqueue_script( 'conexao-main', CONEXAO_THEME_URI . '/assets/js/main.js', array(), conexao_asset_version( 'assets/js/main.js' ), array( 'in_footer' => true, 'strategy' => 'defer' ) );
 
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
@@ -234,12 +250,24 @@ function conexao_homepage_query( $args, $cache_key, $expiration = 300 ) {
 }
 
 /**
- * Invalidate homepage transients when any CPT is saved.
+ * Invalidate all transient caches that depend on portal content.
+ *
+ * Runs whenever a News, Guide, Event, Job, Business or standard post is
+ * published, updated, or deleted. This keeps:
+ *  - the homepage card/featured/popular transients fresh,
+ *  - the 404 page's guides/news/events transients fresh,
+ *  - the per-post reading-time object-cache entry fresh.
+ *
+ * Transients store only public, non-user-specific data (ID, title, permalink,
+ * date, excerpt, thumbnail URL), so no logged-in/admin data can leak. Keys are
+ * predictable and unique per concern. Expiration is 5 minutes as a safety net
+ * even if a save hook is missed.
  */
 function conexao_homepage_cache_invalidate( $post_id ) {
 	$post_type = get_post_type( $post_id );
 	$cpt_types = array( 'news', 'guide', 'event', 'job', 'business', 'post' );
 	if ( in_array( $post_type, $cpt_types, true ) ) {
+		// Homepage sections.
 		delete_transient( 'conexao_home_news' );
 		delete_transient( 'conexao_home_guides' );
 		delete_transient( 'conexao_home_events' );
@@ -247,10 +275,19 @@ function conexao_homepage_cache_invalidate( $post_id ) {
 		delete_transient( 'conexao_home_jobs' );
 		delete_transient( 'conexao_home_featured' );
 		delete_transient( 'conexao_home_popular' );
+
+		// 404 page sections.
+		delete_transient( 'conexao_404_guides' );
+		delete_transient( 'conexao_404_news' );
+		delete_transient( 'conexao_404_events' );
+
+		// Reading-time object-cache entry for this post.
+		wp_cache_delete( 'conexao_reading_time_' . $post_id, 'conexao' );
 	}
 }
 add_action( 'save_post', 'conexao_homepage_cache_invalidate' );
 add_action( 'delete_post', 'conexao_homepage_cache_invalidate' );
+add_action( 'wp_insert_post', 'conexao_homepage_cache_invalidate' );
 
 /**
  * Limit REST API exposure: only expose the endpoints the theme actually uses.
@@ -265,11 +302,43 @@ function conexao_rest_api_optimize() {
 add_action( 'init', 'conexao_rest_api_optimize' );
 
 /**
- * Remove the global "wp-block-library" CSS if not needed.
- * The theme does not use Gutenberg blocks in templates.
+ * Remove the global "wp-block-library" CSS only when the current page does not
+ * render Gutenberg blocks or the plugin's block-based shortcode pages.
+ *
+ * The theme templates (homepage, CPT archives, CPT singles, search, 404) are
+ * fully custom and do not need block CSS — keeping it dequeued there saves
+ * ~90KB on the most important pages. However, the "conexao-content" plugin
+ * creates static pages (eventos, cursos, noticias, contato, blog) whose body
+ * uses Gutenberg block markup (headings, lists, paragraphs, shortcodes). On
+ * those pages we selectively restore the block-library CSS so the migrated
+ * content keeps its intended styling. We do NOT blanket-restore wc-blocks-style
+ * (WooCommerce is not used).
  */
 function conexao_dequeue_block_library() {
-	if ( ! is_admin() ) {
+	if ( is_admin() ) {
+		return;
+	}
+
+	$needs_blocks = false;
+
+	// A queried post whose content uses Gutenberg blocks.
+	if ( is_singular() ) {
+		$post = get_queried_object();
+		if ( $post && ! empty( $post->post_content ) ) {
+			$needs_blocks = has_blocks( $post->post_content );
+		}
+	}
+
+	// The plugin's shortcodes render block-styled card grids.
+	if ( ! $needs_blocks && is_singular() ) {
+		$post = get_queried_object();
+		if ( $post && ( has_shortcode( $post->post_content, 'conexao_grid' ) || has_shortcode( $post->post_content, 'conexao_blog_categories' ) ) ) {
+			$needs_blocks = true;
+		}
+	}
+
+	// Front page may host block content in the future; keep it lightweight now.
+	if ( ! $needs_blocks ) {
 		wp_dequeue_style( 'wp-block-library' );
 		wp_dequeue_style( 'wp-block-library-theme' );
 		wp_dequeue_style( 'wc-blocks-style' );
@@ -419,6 +488,76 @@ function conexao_related_posts() {
 }
 
 /**
+ * "Mais Lidos" (most read) query.
+ *
+ * The homepage previously ordered by `comment_count`, which requires a full
+ * table scan on wp_posts and becomes expensive as the portal grows. No view-
+ * count system exists yet, so this returns a lightweight, cached list.
+ *
+ * Architecture (future-ready):
+ *   post ID → _conexao_view_count (meta) → ORDER BY meta_value_num
+ *
+ * When post meta `_conexao_view_count` is present on items, they sort first
+ * (meta_value_num DESC). Until a view-count system is introduced, the helper
+ * falls back to "recent content" (date DESC) so the homepage keeps working
+ * without an expensive query. Results are transient-cached for 5 minutes and
+ * invalidated on save/delete (see conexao_homepage_cache_invalidate()).
+ *
+ * @param int $limit Number of items to return (default 5).
+ * @return array List of post IDs, most "popular" first.
+ */
+function conexao_popular_posts( $limit = 5 ) {
+	$limit    = max( 1, absint( $limit ) );
+	$cache_key = 'conexao_home_popular';
+
+	$cached = get_transient( $cache_key );
+	if ( false !== $cached ) {
+		return array_slice( $cached, 0, $limit );
+	}
+
+	// Preferred: order by the cached view-count meta when it exists.
+	// This is intentionally a single indexed meta query, not a JOIN over
+	// comment counts. It returns nothing measurable until the meta is set,
+	// so we fall through to the lightweight recent-content query below.
+	$by_views = new WP_Query( array(
+		'post_type'           => array( 'news', 'guide', 'event', 'job', 'business', 'post' ),
+		'posts_per_page'      => $limit,
+		'meta_key'            => '_conexao_view_count',
+		'orderby'             => 'meta_value_num',
+		'order'               => 'DESC',
+		'ignore_sticky_posts' => true,
+		'no_found_rows'       => true,
+		'update_post_meta_cache' => false,
+		'update_post_term_cache' => false,
+	) );
+
+	$ids = array();
+	if ( $by_views->have_posts() ) {
+		$ids = wp_list_pluck( $by_views->posts, 'ID' );
+	}
+
+	// Fallback: recent content (lightweight, no ORDER BY comment_count).
+	if ( empty( $ids ) ) {
+		$recent = new WP_Query( array(
+			'post_type'           => array( 'news', 'guide', 'event', 'job', 'business', 'post' ),
+			'posts_per_page'      => $limit,
+			'orderby'             => 'date',
+			'order'               => 'DESC',
+			'ignore_sticky_posts' => true,
+			'no_found_rows'       => true,
+			'update_post_meta_cache' => false,
+			'update_post_term_cache' => false,
+		) );
+		if ( $recent->have_posts() ) {
+			$ids = wp_list_pluck( $recent->posts, 'ID' );
+		}
+	}
+
+	set_transient( $cache_key, $ids, 300 );
+	return array_slice( $ids, 0, $limit );
+}
+
+/**
  * Customizer settings
  */
 function conexao_customize_register( $wp_customize ) {
@@ -461,14 +600,19 @@ function conexao_customize_register( $wp_customize ) {
 	$wp_customize->add_control( 'conexao_hero_subtitle', array(
 		'label' => __( 'Subtítulo do Hero', 'conexao-br-irlanda' ), 'section' => 'conexao_hero', 'type' => 'textarea',
 	) );
+	// Store the hero image as a Media Library attachment ID so the theme can
+	// use wp_get_attachment_image() (responsive srcset/sizes/width/height/alt).
+	// Backward compatible: if an old URL value is present, it is converted to
+	// an attachment ID on first read (see conexao_hero_image_attachment_id()).
 	$wp_customize->add_setting( 'conexao_hero_image', array(
-		'default' => '',
-		'sanitize_callback' => 'esc_url_raw',
+		'default'           => '',
+		'sanitize_callback' => 'absint',
 	) );
-	$wp_customize->add_control( new WP_Customize_Image_Control( $wp_customize, 'conexao_hero_image', array(
-		'label' => __( 'Imagem do Hero', 'conexao-br-irlanda' ),
-		'section' => 'conexao_hero',
-		'description' => __( 'Envie uma imagem para o lado direito do hero. Recomendado: 640x480px.', 'conexao-br-irlanda' ),
+	$wp_customize->add_control( new WP_Customize_Media_Control( $wp_customize, 'conexao_hero_image', array(
+		'label'           => __( 'Imagem do Hero', 'conexao-br-irlanda' ),
+		'section'         => 'conexao_hero',
+		'mime_type'       => 'image',
+		'description'     => __( 'Selecione uma imagem da biblioteca para o lado direito do hero. A imagem fica responsiva automaticamente.', 'conexao-br-irlanda' ),
 	) ) );
 
 	// Footer Section
@@ -535,6 +679,38 @@ function conexao_custom_image_sizes( $sizes ) {
 	) );
 }
 add_filter( 'image_size_names_choose', 'conexao_custom_image_sizes' );
+
+/**
+ * Resolve the hero image attachment ID.
+ *
+ * The hero is defined in the Customizer as a Media Library attachment. Older
+ * versions stored a raw URL; this helper converts that legacy value to an
+ * attachment ID on first read so wp_get_attachment_image() can be used to
+ * output a fully responsive image (srcset, sizes, width, height, alt).
+ *
+ * @return int Hero attachment ID, or 0 when none is set.
+ */
+function conexao_hero_image_attachment_id() {
+	$value = get_theme_mod( 'conexao_hero_image', '' );
+
+	if ( empty( $value ) ) {
+		return 0;
+	}
+
+	// Already an attachment ID.
+	if ( is_numeric( $value ) ) {
+		return absint( $value );
+	}
+
+	// Legacy URL value → convert to an attachment ID and persist it.
+	$attachment_id = attachment_url_to_postid( $value );
+	if ( $attachment_id ) {
+		set_theme_mod( 'conexao_hero_image', $attachment_id );
+		return $attachment_id;
+	}
+
+	return 0;
+}
 
 
 /**

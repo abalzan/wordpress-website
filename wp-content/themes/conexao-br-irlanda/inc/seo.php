@@ -750,7 +750,8 @@ function conexao_seo_sitemap() {
 		conexao_seo_sitemap_url( get_permalink( $page->ID ), '0.8', 'monthly' );
 	}
 
-	// CPTs.
+	// CPTs — batched so the sitemap stays lightweight even when a CPT grows
+	// to thousands of posts (no posts_per_page => -1 full-table load).
 	$cpt_priorities = array(
 		'news'     => '0.9',
 		'guide'    => '0.9',
@@ -758,18 +759,25 @@ function conexao_seo_sitemap() {
 		'job'      => '0.7',
 		'business' => '0.7',
 	);
+	$sitemap_batch = 500;
 	foreach ( $cpt_priorities as $cpt => $priority ) {
-		$items = get_posts( array(
-			'post_type'      => $cpt,
-			'post_status'    => 'publish',
-			'posts_per_page' => -1,
-			'no_found_rows'  => true,
-			'update_post_meta_cache' => false,
-			'update_post_term_cache' => false,
-		) );
-		foreach ( $items as $item ) {
-			conexao_seo_sitemap_url( get_permalink( $item->ID ), $priority, 'weekly' );
-		}
+		$page = 1;
+		do {
+			$items = get_posts( array(
+				'post_type'      => $cpt,
+				'post_status'    => 'publish',
+				'posts_per_page' => $sitemap_batch,
+				'paged'          => $page,
+				'fields'         => 'ids',
+				'no_found_rows'  => true,
+				'update_post_meta_cache' => false,
+				'update_post_term_cache' => false,
+			) );
+			foreach ( $items as $item_id ) {
+				conexao_seo_sitemap_url( get_permalink( $item_id ), $priority, 'weekly' );
+			}
+			$page++;
+		} while ( count( $items ) === $sitemap_batch );
 	}
 
 	// Taxonomies (categories + counties, only non-empty).
