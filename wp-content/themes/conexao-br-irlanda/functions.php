@@ -677,6 +677,40 @@ function conexao_darken_color( $hex, $percent ) {
 }
 
 /**
+ * Event archive: only show upcoming events, ordered by event date ascending.
+ */
+function conexao_event_archive_query( $query ) {
+	if ( is_admin() || ! $query->is_main_query() ) {
+		return;
+	}
+
+	if ( is_post_type_archive( 'event' ) ) {
+		$query->set( 'meta_key', '_event_date' );
+		$query->set( 'meta_value', current_time( 'Y-m-d' ) );
+		$query->set( 'meta_compare', '>=' );
+		$query->set( 'meta_type', 'DATE' );
+		$query->set( 'orderby', 'meta_value' );
+		$query->set( 'order', 'ASC' );
+
+		// Town/city filter via ?cidade=slug
+		$town = isset( $_GET['cidade'] ) ? sanitize_title( wp_unslash( $_GET['cidade'] ) ) : '';
+		if ( $town ) {
+			$tax_query = $query->get( 'tax_query' );
+			if ( ! is_array( $tax_query ) ) {
+				$tax_query = array();
+			}
+			$tax_query[] = array(
+				'taxonomy' => 'conexao_town',
+				'field'    => 'slug',
+				'terms'    => $town,
+			);
+			$query->set( 'tax_query', $tax_query );
+		}
+	}
+}
+add_action( 'pre_get_posts', 'conexao_event_archive_query' );
+
+/**
  * Custom image sizes
  */
 function conexao_image_sizes() {

@@ -1,0 +1,609 @@
+<?php
+/**
+ * Event Sources management (admin area + storage).
+ *
+ * @package Conexao_Event_Importer
+ */
+
+defined( 'ABSPATH' ) || exit;
+
+class Conexao_Event_Sources {
+
+	const OPTION_KEY = 'conexao_event_sources';
+
+	/**
+	 * Default sources seeded on activation.
+	 *
+	 * @return array
+	 */
+	public function get_defaults() {
+		return array(
+			'laois_tourism' => array(
+				'id'                 => 'laois_tourism',
+				'name'               => 'Laois Tourism',
+				'url'                => 'https://laoistourism.ie/events/',
+				'type'               => 'website',
+				'status'             => 'active',
+				'last_import'        => '',
+				'last_import_status' => '',
+				'events_imported'    => 0,
+				'last_error'         => '',
+			),
+			'laois_council' => array(
+				'id'                 => 'laois_council',
+				'name'               => 'Laois County Council',
+				'url'                => 'https://laois.ie/libraries/library-events-and-activities/library-events-and-activities',
+				'type'               => 'website',
+				'status'             => 'active',
+				'last_import'        => '',
+				'last_import_status' => '',
+				'events_imported'    => 0,
+				'last_error'         => '',
+			),
+		);
+	}
+
+	/**
+	 * Get all sources.
+	 *
+	 * @return array
+	 */
+	public function get_all() {
+		$sources = get_option( self::OPTION_KEY, array() );
+		if ( ! is_array( $sources ) || empty( $sources ) ) {
+			$sources = $this->get_defaults();
+			update_option( self::OPTION_KEY, $sources, false );
+		}
+		return $sources;
+	}
+
+	/**
+	 * Get active sources.
+	 *
+	 * @return array
+	 */
+	public function get_active() {
+		$active = array();
+		foreach ( $this->get_all() as $source ) {
+			if ( 'active' === $source['status'] ) {
+				$active[ $source['id'] ] = $source;
+			}
+		}
+		return $active;
+	}
+
+	/**
+	 * Get a single source.
+	 *
+	 * @param string $source_id Source slug.
+	 * @return array|null
+	 */
+	public function get( $source_id ) {
+		$sources = $this->get_all();
+		return isset( $sources[ $source_id ] ) ? $sources[ $source_id ] : null;
+	}
+
+	/**
+	 * Save a source.
+	 *
+	 * @param array $source Source data.
+	 * @return bool
+	 */
+	public function save( $source ) {
+		if ( empty( $source['id'] ) ) {
+			return false;
+		}
+
+		$sources = $this->get_all();
+		$sources[ $source['id'] ] = wp_parse_args(
+			$source,
+			array(
+				'name'               => '',
+				'url'                => '',
+				'type'               => 'website',
+				'status'             => 'inactive',
+				'last_import'        => '',
+				'last_import_status' => '',
+				'events_imported'    => 0,
+				'last_error'         => '',
+			)
+		);
+
+		return update_option( self::OPTION_KEY, $sources, false );
+	}
+
+	/**
+	 * Toggle a source's active status.
+	 *
+	 * @param string $source_id Source slug.
+	 * @param string $status    active|inactive.
+	 * @return bool
+	 */
+	public function set_status( $source_id, $status ) {
+		$source = $this->get( $source_id );
+		if ( ! $source ) {
+			return false;
+		}
+		$source['status'] = ( 'active' === $status ) ? 'active' : 'inactive';
+		return $this->save( $source );
+	}
+
+	/**
+	 * Update import stats for a source.
+	 *
+	 * @param string $source_id Source slug.
+	 * @param array  $stats     Stats to update.
+	 * @return bool
+	 */
+	public function update_import_stats( $source_id, $stats ) {
+		$source = $this->get( $source_id );
+		if ( ! $source ) {
+			return false;
+		}
+
+		if ( isset( $stats['last_import'] ) ) {
+			$source['last_import'] = $stats['last_import'];
+		}
+		if ( isset( $stats['last_import_status'] ) ) {
+			$source['last_import_status'] = $stats['last_import_status'];
+		}
+		if ( isset( $stats['events_imported'] ) ) {
+			$source['events_imported'] = (int) $stats['events_imported'];
+		}
+		if ( isset( $stats['last_error'] ) ) {
+			$source['last_error'] = $stats['last_error'];
+		}
+
+		return $this->save( $source );
+	}
+
+	/**
+	 * Seed default sources (used on activation).
+	 */
+	public function seed_defaults() {
+		$existing = get_option( self::OPTION_KEY, array() );
+		if ( ! empty( $existing ) ) {
+			return;
+		}
+		update_option( self::OPTION_KEY, $this->get_defaults(), false );
+	}
+
+	/**
+	 * Register the admin menu.
+	 */
+	public function register_admin_menu() {
+		add_menu_page(
+			__( 'Event Import', 'conexao-event-importer' ),
+			__( 'Event Import', 'conexao-event-importer' ),
+			'manage_options',
+			'conexao-event-import',
+			array( $this, 'render_import_dashboard' ),
+			'dashicons-calendar-alt',
+			26
+		);
+
+		add_submenu_page(
+			'conexao-event-import',
+			__( 'Event Sources', 'conexao-event-importer' ),
+			__( 'Event Sources', 'conexao-event-importer' ),
+			'manage_options',
+			'conexao-event-sources',
+			array( $this, 'render_sources_page' )
+		);
+
+		add_submenu_page(
+			'conexao-event-import',
+			__( 'Import History', 'conexao-event-importer' ),
+			__( 'Import History', 'conexao-event-importer' ),
+			'manage_options',
+			'conexao-import-history',
+			array( $this, 'render_history_page' )
+		);
+	}
+
+	/**
+	 * Render the sources admin page.
+	 */
+	public function render_sources_page() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		// Handle actions: toggle, save, run import.
+		if ( isset( $_POST['conexao_source_action'] ) && check_admin_referer( 'conexao_event_sources', 'conexao_event_sources_nonce' ) ) {
+			$action = sanitize_text_field( wp_unslash( $_POST['conexao_source_action'] ) );
+
+			if ( 'toggle' === $action && isset( $_POST['source_id'] ) ) {
+				$source_id = sanitize_text_field( wp_unslash( $_POST['source_id'] ) );
+				$source    = $this->get( $source_id );
+				if ( $source ) {
+					$new_status = ( 'active' === $source['status'] ) ? 'inactive' : 'active';
+					$this->set_status( $source_id, $new_status );
+					echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Source status updated.', 'conexao-event-importer' ) . '</p></div>';
+				}
+			} elseif ( 'save' === $action && isset( $_POST['source_id'] ) ) {
+				$this->handle_save_source();
+			} elseif ( 'run_import' === $action && isset( $_POST['source_id'] ) ) {
+				$this->handle_run_import();
+			}
+		}
+
+		$sources = $this->get_all();
+		?>
+		<div class="wrap conexao-event-sources">
+			<h1><?php esc_html_e( 'Event Sources', 'conexao-event-importer' ); ?></h1>
+			<p><?php esc_html_e( 'Manage the sources from which events are imported. Only active sources are processed during an import run.', 'conexao-event-importer' ); ?></p>
+			<?php $this->render_sources_table( $sources ); ?>
+			<?php
+			$edit_id = isset( $_GET['edit'] ) ? sanitize_text_field( wp_unslash( $_GET['edit'] ) ) : '';
+			if ( $edit_id ) {
+				$this->render_edit_form( $edit_id );
+			} else {
+				$this->render_add_form();
+			}
+			?>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Handle saving a source from the admin form.
+	 */
+	protected function handle_save_source() {
+		$source_id = sanitize_title( wp_unslash( $_POST['source_id'] ) );
+		$source    = array(
+			'id'     => $source_id,
+			'name'   => isset( $_POST['source_name'] ) ? sanitize_text_field( wp_unslash( $_POST['source_name'] ) ) : '',
+			'url'    => isset( $_POST['source_url'] ) ? esc_url_raw( wp_unslash( $_POST['source_url'] ) ) : '',
+			'type'   => isset( $_POST['source_type'] ) ? sanitize_text_field( wp_unslash( $_POST['source_type'] ) ) : 'website',
+			'status' => isset( $_POST['source_status'] ) ? 'active' : 'inactive',
+		);
+
+		// Preserve existing stats if editing.
+		$existing = $this->get( $source_id );
+		if ( $existing ) {
+			$source['last_import']        = $existing['last_import'];
+			$source['last_import_status'] = $existing['last_import_status'];
+			$source['events_imported']    = $existing['events_imported'];
+			$source['last_error']         = $existing['last_error'];
+		}
+
+		$this->save( $source );
+		echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Source saved.', 'conexao-event-importer' ) . '</p></div>';
+	}
+
+	/**
+	 * Handle running an import from the admin form.
+	 */
+	protected function handle_run_import() {
+		$source_id = sanitize_text_field( wp_unslash( $_POST['source_id'] ) );
+		$result    = apply_filters( 'conexao_event_importer_run_source', $source_id );
+		if ( $result && ! is_wp_error( $result ) ) {
+			echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Import completed.', 'conexao-event-importer' ) . '</p></div>';
+		} else {
+			echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__( 'Import failed.', 'conexao-event-importer' ) . '</p></div>';
+		}
+	}
+
+	/**
+	 * Render the sources table.
+	 *
+	 * @param array $sources Source list.
+	 */
+	protected function render_sources_table( $sources ) {
+		?>
+		<table class="widefat striped">
+			<thead>
+				<tr>
+					<th><?php esc_html_e( 'Name', 'conexao-event-importer' ); ?></th>
+					<th><?php esc_html_e( 'URL', 'conexao-event-importer' ); ?></th>
+					<th><?php esc_html_e( 'Type', 'conexao-event-importer' ); ?></th>
+					<th><?php esc_html_e( 'Status', 'conexao-event-importer' ); ?></th>
+					<th><?php esc_html_e( 'Last Import', 'conexao-event-importer' ); ?></th>
+					<th><?php esc_html_e( 'Events Imported', 'conexao-event-importer' ); ?></th>
+					<th><?php esc_html_e( 'Actions', 'conexao-event-importer' ); ?></th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php foreach ( $sources as $source ) : ?>
+					<tr>
+						<td><strong><?php echo esc_html( $source['name'] ); ?></strong></td>
+						<td><a href="<?php echo esc_url( $source['url'] ); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html( $source['url'] ); ?></a></td>
+						<td><?php echo esc_html( ucfirst( $source['type'] ) ); ?></td>
+						<td>
+							<?php if ( 'active' === $source['status'] ) : ?>
+								<span class="conexao-source-status conexao-source-status--active"><?php esc_html_e( 'Active', 'conexao-event-importer' ); ?></span>
+							<?php else : ?>
+								<span class="conexao-source-status conexao-source-status--inactive"><?php esc_html_e( 'Inactive', 'conexao-event-importer' ); ?></span>
+							<?php endif; ?>
+						</td>
+						<td>
+							<?php if ( ! empty( $source['last_import'] ) ) : ?>
+								<?php echo esc_html( $source['last_import'] ); ?>
+								<?php if ( 'error' === $source['last_import_status'] && ! empty( $source['last_error'] ) ) : ?>
+									<br><span class="conexao-source-error"><?php echo esc_html( $source['last_error'] ); ?></span>
+								<?php endif; ?>
+							<?php else : ?>
+								&mdash;
+							<?php endif; ?>
+						</td>
+						<td><?php echo esc_html( $source['events_imported'] ); ?></td>
+						<td>
+							<form method="post" style="display:inline-block;">
+								<?php wp_nonce_field( 'conexao_event_sources', 'conexao_event_sources_nonce' ); ?>
+								<input type="hidden" name="conexao_source_action" value="run_import">
+								<input type="hidden" name="source_id" value="<?php echo esc_attr( $source['id'] ); ?>">
+								<button type="submit" class="button"><?php esc_html_e( 'Run Import Now', 'conexao-event-importer' ); ?></button>
+							</form>
+							<a class="button" href="<?php echo esc_url( admin_url( 'admin.php?page=conexao-event-sources&edit=' . $source['id'] ) ); ?>"><?php esc_html_e( 'Edit', 'conexao-event-importer' ); ?></a>
+							<form method="post" style="display:inline-block;">
+								<?php wp_nonce_field( 'conexao_event_sources', 'conexao_event_sources_nonce' ); ?>
+								<input type="hidden" name="conexao_source_action" value="toggle">
+								<input type="hidden" name="source_id" value="<?php echo esc_attr( $source['id'] ); ?>">
+								<button type="submit" class="button"><?php echo 'active' === $source['status'] ? esc_html__( 'Disable', 'conexao-event-importer' ) : esc_html__( 'Enable', 'conexao-event-importer' ); ?></button>
+							</form>
+						</td>
+					</tr>
+				<?php endforeach; ?>
+			</tbody>
+		</table>
+		<?php
+	}
+
+	/**
+	 * Render the add-source form.
+	 */
+	protected function render_add_form() {
+		?>
+		<h2><?php esc_html_e( 'Add New Source', 'conexao-event-importer' ); ?></h2>
+		<form method="post" class="conexao-source-form">
+			<?php wp_nonce_field( 'conexao_event_sources', 'conexao_event_sources_nonce' ); ?>
+			<input type="hidden" name="conexao_source_action" value="save">
+			<table class="form-table">
+				<tr>
+					<th><label for="source_id"><?php esc_html_e( 'Source ID', 'conexao-event-importer' ); ?></label></th>
+					<td><input type="text" id="source_id" name="source_id" class="regular-text" required></td>
+				</tr>
+				<tr>
+					<th><label for="source_name"><?php esc_html_e( 'Name', 'conexao-event-importer' ); ?></label></th>
+					<td><input type="text" id="source_name" name="source_name" class="regular-text" required></td>
+				</tr>
+				<tr>
+					<th><label for="source_url"><?php esc_html_e( 'URL', 'conexao-event-importer' ); ?></label></th>
+					<td><input type="url" id="source_url" name="source_url" class="regular-text" required></td>
+				</tr>
+				<tr>
+					<th><label for="source_type"><?php esc_html_e( 'Type', 'conexao-event-importer' ); ?></label></th>
+					<td>
+						<select id="source_type" name="source_type">
+							<option value="website"><?php esc_html_e( 'Website', 'conexao-event-importer' ); ?></option>
+							<option value="facebook"><?php esc_html_e( 'Facebook', 'conexao-event-importer' ); ?></option>
+							<option value="instagram"><?php esc_html_e( 'Instagram', 'conexao-event-importer' ); ?></option>
+							<option value="eventbrite"><?php esc_html_e( 'Eventbrite', 'conexao-event-importer' ); ?></option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th><label for="source_status"><?php esc_html_e( 'Active', 'conexao-event-importer' ); ?></label></th>
+					<td><input type="checkbox" id="source_status" name="source_status" checked></td>
+				</tr>
+			</table>
+			<?php submit_button( __( 'Add Source', 'conexao-event-importer' ) ); ?>
+		</form>
+		<?php
+	}
+
+	/**
+	 * Render the edit-source form.
+	 *
+	 * @param string $source_id Source slug.
+	 */
+	protected function render_edit_form( $source_id ) {
+		$source = $this->get( $source_id );
+		if ( ! $source ) {
+			return;
+		}
+		?>
+		<h2><?php esc_html_e( 'Edit Source', 'conexao-event-importer' ); ?></h2>
+		<form method="post" class="conexao-source-form">
+			<?php wp_nonce_field( 'conexao_event_sources', 'conexao_event_sources_nonce' ); ?>
+			<input type="hidden" name="conexao_source_action" value="save">
+			<input type="hidden" name="source_id" value="<?php echo esc_attr( $source['id'] ); ?>">
+			<table class="form-table">
+				<tr>
+					<th><label><?php esc_html_e( 'Source ID', 'conexao-event-importer' ); ?></label></th>
+					<td><strong><?php echo esc_html( $source['id'] ); ?></strong></td>
+				</tr>
+				<tr>
+					<th><label for="source_name"><?php esc_html_e( 'Name', 'conexao-event-importer' ); ?></label></th>
+					<td><input type="text" id="source_name" name="source_name" class="regular-text" value="<?php echo esc_attr( $source['name'] ); ?>" required></td>
+				</tr>
+				<tr>
+					<th><label for="source_url"><?php esc_html_e( 'URL', 'conexao-event-importer' ); ?></label></th>
+					<td><input type="url" id="source_url" name="source_url" class="regular-text" value="<?php echo esc_attr( $source['url'] ); ?>" required></td>
+				</tr>
+				<tr>
+					<th><label for="source_type"><?php esc_html_e( 'Type', 'conexao-event-importer' ); ?></label></th>
+					<td>
+						<select id="source_type" name="source_type">
+							<option value="website" <?php selected( $source['type'], 'website' ); ?>><?php esc_html_e( 'Website', 'conexao-event-importer' ); ?></option>
+							<option value="facebook" <?php selected( $source['type'], 'facebook' ); ?>><?php esc_html_e( 'Facebook', 'conexao-event-importer' ); ?></option>
+							<option value="instagram" <?php selected( $source['type'], 'instagram' ); ?>><?php esc_html_e( 'Instagram', 'conexao-event-importer' ); ?></option>
+							<option value="eventbrite" <?php selected( $source['type'], 'eventbrite' ); ?>><?php esc_html_e( 'Eventbrite', 'conexao-event-importer' ); ?></option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th><label for="source_status"><?php esc_html_e( 'Active', 'conexao-event-importer' ); ?></label></th>
+					<td><input type="checkbox" id="source_status" name="source_status" <?php checked( 'active', $source['status'] ); ?>></td>
+				</tr>
+			</table>
+			<?php submit_button( __( 'Save Source', 'conexao-event-importer' ) ); ?>
+		</form>
+		<?php
+	}
+
+	/**
+	 * Render the import dashboard page.
+	 */
+	public function render_import_dashboard() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+		$sources = $this->get_all();
+		$next    = wp_next_scheduled( 'conexao_event_import_cron' );
+		?>
+		<div class="wrap conexao-import-dashboard">
+			<h1><?php esc_html_e( 'Event Import', 'conexao-event-importer' ); ?></h1>
+
+			<div class="conexao-import-summary">
+				<div class="conexao-import-stat">
+					<span class="conexao-import-stat-label"><?php esc_html_e( 'Last successful import', 'conexao-event-importer' ); ?></span>
+					<span class="conexao-import-stat-value">
+						<?php
+						$last_success = '';
+						foreach ( $sources as $source ) {
+							if ( ! empty( $source['last_import'] ) && 'error' !== $source['last_import_status'] ) {
+								$last_success = $source['last_import'];
+								break;
+							}
+						}
+						echo $last_success ? esc_html( $last_success ) : '&mdash;';
+						?>
+					</span>
+				</div>
+				<div class="conexao-import-stat">
+					<span class="conexao-import-stat-label"><?php esc_html_e( 'Next scheduled import', 'conexao-event-importer' ); ?></span>
+					<span class="conexao-import-stat-value">
+						<?php
+						if ( $next ) {
+							echo esc_html( gmdate( 'Y-m-d H:i', $next ) );
+						} else {
+							echo esc_html__( 'Monday 03:00', 'conexao-event-importer' );
+						}
+						?>
+					</span>
+				</div>
+			</div>
+
+			<h2><?php esc_html_e( 'Sources', 'conexao-event-importer' ); ?></h2>
+			<ul class="conexao-source-list">
+				<?php foreach ( $sources as $source ) : ?>
+					<li>
+						<span class="conexao-source-indicator <?php echo 'active' === $source['status'] ? 'conexao-source-indicator--active' : 'conexao-source-indicator--inactive'; ?>">
+							<?php echo 'active' === $source['status'] ? '&#10003;' : '&#10007;'; ?>
+						</span>
+						<?php echo esc_html( $source['name'] ); ?>
+						<?php if ( 'error' === $source['last_import_status'] && ! empty( $source['last_error'] ) ) : ?>
+							<span class="conexao-source-error">(<?php echo esc_html( $source['last_error'] ); ?>)</span>
+						<?php endif; ?>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+
+			<h2><?php esc_html_e( 'Run Import', 'conexao-event-importer' ); ?></h2>
+			<form method="post">
+				<?php wp_nonce_field( 'conexao_event_sources', 'conexao_event_sources_nonce' ); ?>
+				<input type="hidden" name="conexao_source_action" value="run_import">
+				<input type="hidden" name="source_id" value="all">
+				<button type="submit" class="button button-primary button-large"><?php esc_html_e( 'Run Import Now', 'conexao-event-importer' ); ?></button>
+			</form>
+
+			<?php $this->render_history_summary(); ?>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Render a compact history summary on the dashboard.
+	 */
+	protected function render_history_summary() {
+		$history = Conexao_Import_History::get_all();
+		if ( empty( $history ) ) {
+			echo '<p>' . esc_html__( 'No imports yet.', 'conexao-event-importer' ) . '</p>';
+			return;
+		}
+		?>
+		<h2><?php esc_html_e( 'Import History', 'conexao-event-importer' ); ?></h2>
+		<table class="widefat striped">
+			<thead>
+				<tr>
+					<th><?php esc_html_e( 'Time', 'conexao-event-importer' ); ?></th>
+					<th><?php esc_html_e( 'Source', 'conexao-event-importer' ); ?></th>
+					<th><?php esc_html_e( 'Found', 'conexao-event-importer' ); ?></th>
+					<th><?php esc_html_e( 'New', 'conexao-event-importer' ); ?></th>
+					<th><?php esc_html_e( 'Updated', 'conexao-event-importer' ); ?></th>
+					<th><?php esc_html_e( 'Duplicates', 'conexao-event-importer' ); ?></th>
+					<th><?php esc_html_e( 'Needs Review', 'conexao-event-importer' ); ?></th>
+					<th><?php esc_html_e( 'Errors', 'conexao-event-importer' ); ?></th>
+					<th><?php esc_html_e( 'Status', 'conexao-event-importer' ); ?></th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php foreach ( array_slice( $history, 0, 10 ) as $entry ) : ?>
+					<tr>
+						<td><?php echo esc_html( $entry['time'] ); ?></td>
+						<td><?php echo esc_html( $entry['source'] ); ?></td>
+						<td><?php echo esc_html( $entry['found'] ); ?></td>
+						<td><?php echo esc_html( $entry['new'] ); ?></td>
+						<td><?php echo esc_html( $entry['updated'] ); ?></td>
+						<td><?php echo esc_html( $entry['duplicates'] ); ?></td>
+						<td><?php echo esc_html( $entry['needs_review'] ); ?></td>
+						<td><?php echo esc_html( $entry['errors'] ); ?></td>
+						<td><?php echo esc_html( $entry['status'] ); ?></td>
+					</tr>
+				<?php endforeach; ?>
+			</tbody>
+		</table>
+		<?php
+	}
+
+	/**
+	 * Render the history page.
+	 */
+	public function render_history_page() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+		$history = Conexao_Import_History::get_all();
+		?>
+		<div class="wrap">
+			<h1><?php esc_html_e( 'Import History', 'conexao-event-importer' ); ?></h1>
+			<?php if ( empty( $history ) ) : ?>
+				<p><?php esc_html_e( 'No imports yet.', 'conexao-event-importer' ); ?></p>
+			<?php else : ?>
+				<table class="widefat striped">
+					<thead>
+						<tr>
+							<th><?php esc_html_e( 'Time', 'conexao-event-importer' ); ?></th>
+							<th><?php esc_html_e( 'Source', 'conexao-event-importer' ); ?></th>
+							<th><?php esc_html_e( 'Found', 'conexao-event-importer' ); ?></th>
+							<th><?php esc_html_e( 'New', 'conexao-event-importer' ); ?></th>
+							<th><?php esc_html_e( 'Updated', 'conexao-event-importer' ); ?></th>
+							<th><?php esc_html_e( 'Duplicates', 'conexao-event-importer' ); ?></th>
+							<th><?php esc_html_e( 'Needs Review', 'conexao-event-importer' ); ?></th>
+							<th><?php esc_html_e( 'Errors', 'conexao-event-importer' ); ?></th>
+							<th><?php esc_html_e( 'Status', 'conexao-event-importer' ); ?></th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php foreach ( $history as $entry ) : ?>
+							<tr>
+								<td><?php echo esc_html( $entry['time'] ); ?></td>
+								<td><?php echo esc_html( $entry['source'] ); ?></td>
+								<td><?php echo esc_html( $entry['found'] ); ?></td>
+								<td><?php echo esc_html( $entry['new'] ); ?></td>
+								<td><?php echo esc_html( $entry['updated'] ); ?></td>
+								<td><?php echo esc_html( $entry['duplicates'] ); ?></td>
+								<td><?php echo esc_html( $entry['needs_review'] ); ?></td>
+								<td><?php echo esc_html( $entry['errors'] ); ?></td>
+								<td><?php echo esc_html( $entry['status'] ); ?></td>
+							</tr>
+						<?php endforeach; ?>
+					</tbody>
+				</table>
+			<?php endif; ?>
+		</div>
+		<?php
+	}
+}

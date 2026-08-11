@@ -77,6 +77,8 @@ $hero_image_id = conexao_hero_image_attachment_id();
 						</svg>
 					</div>
 				<?php endif; ?>
+
+				<?php get_template_part( 'template-parts/hero', 'events' ); ?>
 			</div>
 		</div>
 	</div>
@@ -441,59 +443,8 @@ $hero_image_id = conexao_hero_image_attachment_id();
 			) );
 			if ( $events_list->have_posts() ) :
 				while ( $events_list->have_posts() ) : $events_list->the_post();
-					$event_date = get_post_meta( get_the_ID(), '_event_date', true );
-					$event_time = get_post_meta( get_the_ID(), '_event_time', true );
-					$event_location = get_post_meta( get_the_ID(), '_event_location', true );
-					$event_counties = get_the_terms( get_the_ID(), 'conexao_county' );
-					$day = $event_date ? date( 'd', strtotime( $event_date ) ) : '--';
-					$month = $event_date ? date( 'M', strtotime( $event_date ) ) : '---';
-					?>
-					<article class="event-card">
-						<div class="event-card-image">
-							<?php if ( has_post_thumbnail() ) : ?>
-								<?php the_post_thumbnail( 'conexao-card', array( 'loading' => 'lazy' ) ); ?>
-							<?php endif; ?>
-							<div class="event-card-date-badge">
-								<span class="event-card-date-day"><?php echo esc_html( $day ); ?></span>
-								<span class="event-card-date-month"><?php echo esc_html( $month ); ?></span>
-							</div>
-						</div>
-						<div class="event-card-body">
-							<?php
-			$terms = get_the_terms( get_the_ID(), 'conexao_category' );
-							if ( $terms && ! is_wp_error( $terms ) ) : ?>
-								<span class="event-card-category"><?php echo esc_html( $terms[0]->name ); ?></span>
-							<?php endif; ?>
-							<h3 class="event-card-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
-							<div class="event-card-details">
-								<?php if ( $event_time ) : ?>
-									<span class="event-card-detail">
-										<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
-											<circle cx="12" cy="12" r="10"></circle>
-											<polyline points="12 6 12 12 16 14"></polyline>
-										</svg>
-										<?php echo esc_html( $event_time ); ?>
-									</span>
-								<?php endif; ?>
-							<?php if ( $event_location ) : ?>
-									<span class="event-card-detail">
-										<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
-											<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-											<circle cx="12" cy="10" r="3"></circle>
-										</svg>
-										<?php echo esc_html( $event_location ); ?>
-									</span>
-								<?php endif; ?>
-								<?php if ( $event_counties && ! is_wp_error( $event_counties ) ) : ?>
-									<span class="event-card-detail"><?php echo esc_html( $event_counties[0]->name ); ?></span>
-								<?php endif; ?>
-							</div>
-							<a href="<?php the_permalink(); ?>" class="event-card-cta">
-								<?php esc_html_e( 'Reservar', 'conexao-br-irlanda' ); ?>
-							</a>
-						</div>
-					</article>
-				<?php endwhile; wp_reset_postdata();
+					get_template_part( 'template-parts/event', 'card' );
+				endwhile; wp_reset_postdata();
 			else : ?>
 				<p><?php esc_html_e( 'Nenhum evento próximo no momento.', 'conexao-br-irlanda' ); ?></p>
 			<?php endif; ?>

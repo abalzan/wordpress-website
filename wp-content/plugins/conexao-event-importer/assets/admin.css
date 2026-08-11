@@ -1,0 +1,137 @@
+/* Event Importer Admin Styles */
+.conexao-source-status {
+	display: inline-block;
+	padding: 2px 10px;
+	border-radius: 3px;
+	font-size: 12px;
+	font-weight: 600;
+	text-transform: uppercase;
+}
+
+.conexao-source-status--active {
+	background: #edf7ed;
+	color: #1e7e34;
+	border: 1px solid #b7e1b7;
+}
+
+.conexao-source-status--inactive {
+	background: #fef7e7;
+	color: #9c6b1e;
+	border: 1px solid #f5d9a0;
+}
+
+.conexao-source-error {
+	color: #cc0000;
+	font-size: 12px;
+}
+
+.conexao-import-summary {
+	display: flex;
+	gap: 24px;
+	margin: 20px 0;
+	flex-wrap: wrap;
+}
+
+.conexao-import-stat {
+	background: #fff;
+	border: 1px solid #ccd0d4;
+	border-radius: 4px;
+	padding: 16px 20px;
+	min-width: 220px;
+}
+
+.conexao-import-stat-label {
+	display: block;
+	font-size: 12px;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	color: #646970;
+	margin-bottom: 6px;
+}
+
+.conexao-import-stat-value {
+	display: block;
+	font-size: 18px;
+	font-weight: 600;
+	color: #1d2327;
+}
+
+.conexao-source-list {
+	margin: 10px 0 20px;
+}
+
+.conexao-source-list li {
+	margin-bottom: 6px;
+	font-size: 14px;
+}
+
+.conexao-source-indicator {
+	display: inline-block;
+	width: 20px;
+	text-align: center;
+}
+
+.conexao-source-indicator--active {
+	color: #1e8e3e;
+}
+
+.conexao-source-indicator--inactive {
+	color: #cc0000;
+}
+
+.conexao-source-form {
+	margin-top: 20px;
+	max-width: 700px;
+}
+
+/* Event status badges on the admin list */
+.conexao-status-badge {
+	display: inline-block;
+	padding: 3px 10px;
+	border-radius: 3px;
+	font-size: 11px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.3px;
+}
+
+.conexao-status-badge--published {
+	background: #edf7ed;
+	color: #1e7e34;
+	border: 1px solid #b7e1b7;
+}
+
+.conexao-status-badge--needs_review {
+	background: #fff8e1;
+	color: #8a6d00;
+	border: 1px solid #f0e0a0;
+}
+
+.conexao-status-badge--draft {
+	background: #f1f1f1;
+	color: #50575e;
+	border: 1px solid #d5d5d5;
+}
+
+.conexao-status-badge--source_not_found {
+	background: #fdeaea;
+	color: #b32d2e;
+	border: 1px solid #f0c0c0;
+}
+
+.conexao-status-badge--expired {
+	background: #f1f1f1;
+	color: #646970;
+	border: 1px solid #d5d5d5;
+}
+
+.conexao-status-badge--rejected {
+	background: #fdeaea;
+	color: #b32d2e;
+	border: 1px solid #f0c0c0;
+}
+
+.conexao-source-label {
+	font-size: 12px;
+	color: #50575e;
+}
