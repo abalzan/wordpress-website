@@ -49,9 +49,9 @@ function conexao_seo_title( $title ) {
 		return single_post_title( '', false ) . $location . ' | Empregos | ' . $site_name;
 	}
 
-	if ( is_singular( 'business' ) ) {
+	if ( is_singular( 'sponsor' ) ) {
 		$terms = get_the_terms( get_the_ID(), 'conexao_category' );
-		$cat   = ( $terms && ! is_wp_error( $terms ) ) ? $terms[0]->name : 'Empresas';
+		$cat   = ( $terms && ! is_wp_error( $terms ) ) ? $terms[0]->name : 'Apoiadores';
 		return single_post_title( '', false ) . ' | ' . $cat . ' | ' . $site_name;
 	}
 
@@ -75,8 +75,8 @@ function conexao_seo_title( $title ) {
 		return 'Empregos para Brasileiros na Irlanda | ' . $site_name;
 	}
 
-	if ( is_post_type_archive( 'business' ) ) {
-		return 'Empresas Brasileiras na Irlanda | ' . $site_name;
+	if ( is_post_type_archive( 'sponsor' ) ) {
+		return 'Apoiadores na Irlanda | ' . $site_name;
 	}
 
 	if ( is_tax( 'conexao_category' ) ) {
@@ -131,8 +131,8 @@ function conexao_seo_meta_description() {
 			$description = 'Evento: ' . get_the_title() . '. Participe e fortaleça a comunidade brasileira na Irlanda.';
 		} elseif ( is_singular( 'job' ) ) {
 			$description = 'Vaga de emprego: ' . get_the_title() . '. Oportunidade para brasileiros na Irlanda.';
-		} elseif ( is_singular( 'business' ) ) {
-			$description = 'Empresa: ' . get_the_title() . '. Conheça serviços e negócios para a comunidade brasileira na Irlanda.';
+		} elseif ( is_singular( 'sponsor' ) ) {
+			$description = 'Apoiador: ' . get_the_title() . '. Conheça quem apoia e fortalece a comunidade brasileira na Irlanda.';
 		} elseif ( is_post_type_archive( 'news' ) ) {
 			$description = 'Notícias atualizadas para brasileiros na Irlanda. Imigração, economia, cultura e informações relevantes.';
 		} elseif ( is_post_type_archive( 'guide' ) ) {
@@ -141,12 +141,12 @@ function conexao_seo_meta_description() {
 			$description = 'Eventos, encontros e atividades para a comunidade brasileira na Irlanda. Agenda cultural e networking.';
 		} elseif ( is_post_type_archive( 'job' ) ) {
 			$description = 'Vagas de emprego para brasileiros na Irlanda. Oportunidades em saúde, TI, construção e mais.';
-		} elseif ( is_post_type_archive( 'business' ) ) {
-			$description = 'Diretório de empresas e profissionais brasileiros na Irlanda. Restaurantes, serviços e mais.';
+		} elseif ( is_post_type_archive( 'sponsor' ) ) {
+			$description = 'Conheça as organizações e empresas que apoiam a comunidade brasileira na Irlanda.';
 		} elseif ( is_tax( 'conexao_category' ) ) {
 			$description = 'Conteúdo sobre ' . single_term_title( '', false ) . ' para brasileiros na Irlanda. Guias, notícias e recursos úteis.';
 		} elseif ( is_tax( 'conexao_county' ) ) {
-			$description = 'Guia sobre ' . single_term_title( '', false ) . ' na Irlanda. Eventos, empresas, guias e empregos para brasileiros.';
+			$description = 'Guia sobre ' . single_term_title( '', false ) . ' na Irlanda. Eventos, apoiadores, guias e empregos para brasileiros.';
 		} elseif ( is_404() ) {
 			$description = 'Página não encontrada. Explore guias, notícias e eventos para brasileiros na Irlanda.';
 		}
@@ -501,16 +501,16 @@ function conexao_seo_schema_singular() {
 		echo '<script type="application/ld+json">' . wp_json_encode( $schema ) . '</script>' . "\n";
 	}
 
-	// --- LocalBusiness ---
-	if ( 'business' === $type ) {
-		$biz_phone    = get_post_meta( $post_id, '_business_phone', true );
-		$biz_website  = get_post_meta( $post_id, '_business_website', true );
-		$biz_location = get_post_meta( $post_id, '_business_location', true );
+	// --- Apoiador (Organization / LocalBusiness) ---
+	if ( 'sponsor' === $type ) {
+		$biz_phone    = get_post_meta( $post_id, '_sponsor_phone', true );
+		$biz_website  = get_post_meta( $post_id, '_sponsor_website', true );
+		$biz_location = get_post_meta( $post_id, '_sponsor_location', true );
 		$counties     = get_the_terms( $post_id, 'conexao_county' );
 
 		$schema = array(
 			'@context' => 'https://schema.org',
-			'@type'    => 'LocalBusiness',
+			'@type'    => 'Organization',
 			'name'     => get_the_title(),
 			'url'      => get_permalink(),
 			'image'    => $image,
@@ -560,8 +560,8 @@ function conexao_archive_title() {
 	if ( is_post_type_archive( 'job' ) ) {
 		return 'Empregos';
 	}
-	if ( is_post_type_archive( 'business' ) ) {
-		return 'Empresas';
+	if ( is_post_type_archive( 'sponsor' ) ) {
+		return 'Apoiadores';
 	}
 	if ( is_tax( 'conexao_category' ) || is_tax( 'conexao_county' ) || is_category() || is_tag() ) {
 		$term = get_queried_object();
@@ -587,8 +587,8 @@ function conexao_archive_description() {
 	if ( is_post_type_archive( 'job' ) ) {
 		return 'Oportunidades de emprego para brasileiros na Irlanda.';
 	}
-	if ( is_post_type_archive( 'business' ) ) {
-		return 'Diretório de empresas e serviços para a comunidade brasileira na Irlanda.';
+	if ( is_post_type_archive( 'sponsor' ) ) {
+		return 'Conheça as organizações e empresas que apoiam a comunidade brasileira na Irlanda.';
 	}
 
 	$description = get_the_archive_description();
@@ -620,7 +620,7 @@ function conexao_seo_breadcrumb_data() {
 			);
 		}
 
-		// County crumb for events/businesses.
+		// County crumb for events/apoiadores.
 		$counties = get_the_terms( get_the_ID(), 'conexao_county' );
 		if ( $counties && ! is_wp_error( $counties ) ) {
 			$crumbs[] = array(
@@ -658,7 +658,7 @@ function conexao_cpt_label( $post_type ) {
 		'guide'    => 'Guias Práticos',
 		'event'    => 'Eventos',
 		'job'      => 'Empregos',
-		'business' => 'Empresas',
+		'sponsor'  => 'Apoiadores',
 		'post'     => 'Blog',
 	);
 	return isset( $labels[ $post_type ] ) ? $labels[ $post_type ] : get_post_type_object( $post_type )->labels->name;
@@ -757,7 +757,7 @@ function conexao_seo_sitemap() {
 		'guide'    => '0.9',
 		'event'    => '0.8',
 		'job'      => '0.7',
-		'business' => '0.7',
+		'sponsor'  => '0.7',
 	);
 	$sitemap_batch = 500;
 	foreach ( $cpt_priorities as $cpt => $priority ) {
@@ -887,8 +887,9 @@ function conexao_seo_redirects() {
 		// Legacy jobs paths.
 		'/empregos'                    => '/jobs/',
 
-		// Legacy business paths.
-		'/empresas'                    => '/businesses/',
+		// Legacy business paths -> Apoiadores.
+		'/empresas'                    => '/apoiadores/',
+		'/businesses'                  => '/apoiadores/',
 
 		// Legacy category paths -> static category landing pages.
 		'/categories/moradia'          => '/moradia/',
@@ -1100,9 +1101,9 @@ function conexao_seo_related_events( $post_id = 0, $limit = 3 ) {
 }
 
 /**
- * Get related businesses for a given post (by shared category or county).
+ * Get related apoiaiadores for a given post (by shared category or county).
  */
-function conexao_seo_related_businesses( $post_id = 0, $limit = 3 ) {
+function conexao_seo_related_sponsors( $post_id = 0, $limit = 3 ) {
 	$post_id = $post_id ? $post_id : get_the_ID();
 	$terms   = get_the_terms( $post_id, 'conexao_category' );
 	$counties = get_the_terms( $post_id, 'conexao_county' );
@@ -1128,7 +1129,7 @@ function conexao_seo_related_businesses( $post_id = 0, $limit = 3 ) {
 	}
 
 	$query = new WP_Query( array(
-		'post_type'      => 'business',
+		'post_type'      => 'sponsor',
 		'posts_per_page' => $limit,
 		'post__not_in'   => array( $post_id ),
 		'tax_query'      => $tax_query,
@@ -1137,11 +1138,11 @@ function conexao_seo_related_businesses( $post_id = 0, $limit = 3 ) {
 		'update_post_term_cache' => false,
 	) );
 
-	$businesses = array();
+	$sponsors = array();
 	if ( $query->have_posts() ) {
 		while ( $query->have_posts() ) {
 			$query->the_post();
-			$businesses[] = array(
+			$sponsors[] = array(
 				'title' => get_the_title(),
 				'url'   => get_permalink(),
 			);
@@ -1149,5 +1150,5 @@ function conexao_seo_related_businesses( $post_id = 0, $limit = 3 ) {
 		wp_reset_postdata();
 	}
 
-	return $businesses;
+	return $sponsors;
 }

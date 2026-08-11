@@ -146,6 +146,14 @@ final class Conexao_Admin_Ux_Fields {
 				$html         .= '</div></div>';
 				break;
 
+			case 'checkbox':
+				$checked = ! empty( $value ) ? ' checked="checked"' : '';
+				$html   .= '<label class="conexao-checkbox-label">';
+				$html   .= '<input type="checkbox" class="conexao-field-input" id="' . esc_attr( $id ) . '" name="' . esc_attr( $name ) . '" value="1"' . $checked . ' />';
+				$html   .= ' <span>' . esc_html__( 'Sim', 'conexao-admin-ux' ) . '</span>';
+				$html   .= '</label>';
+				break;
+
 			case 'readonly':
 				$html .= '<div class="conexao-readonly-value">';
 				if ( empty( $value ) ) {
@@ -218,6 +226,9 @@ final class Conexao_Admin_Ux_Fields {
 					break;
 				case 'media':
 					$value = absint( $value ) ? absint( $value ) : esc_url_raw( $value );
+					break;
+				case 'checkbox':
+					$value = ! empty( $value ) ? 1 : 0;
 					break;
 				case 'textarea':
 					$value = sanitize_textarea_field( $value );
@@ -314,7 +325,7 @@ final class Conexao_Admin_Ux_Fields {
 	 * @return bool
 	 */
 	public static function is_virtual( $key ) {
-		$virtual = array( '_event_title', '_event_description', '_news_title', '_news_content', '_guide_title', '_guide_content', '_job_title', '_job_description', '_business_name', '_business_description' );
+		$virtual = array( '_event_title', '_event_description', '_news_title', '_news_content', '_guide_title', '_guide_content', '_job_title', '_job_description', '_sponsor_name', '_sponsor_description' );
 		return in_array( $key, $virtual, true );
 	}
 
@@ -379,13 +390,13 @@ final class Conexao_Admin_Ux_Fields {
 			case '_news_title':
 			case '_guide_title':
 			case '_job_title':
-			case '_business_name':
+			case '_sponsor_name':
 				return $post->post_title;
 			case '_event_description':
 			case '_news_content':
 			case '_guide_content':
 			case '_job_description':
-			case '_business_description':
+			case '_sponsor_description':
 				return $post->post_content;
 		}
 

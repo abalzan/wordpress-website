@@ -75,13 +75,11 @@ $main_pages = [
 <!-- wp:list --><ul><li>Saúde</li><li>Construção Civil</li><li>Tecnologia da Informação</li><li>Limpeza e Serviços Gerais</li><li>Hospitalidade e Turismo</li><li>Varejo</li><li>Administração</li><li>Engenharia</li><li>Educação</li></ul><!-- /wp:list -->',
         'meta_desc' => 'Vagas de emprego para brasileiros na Irlanda. Oportunidades em saúde, TI, construção, hospitalidade e mais.',
     ],
-    'empresas' => [
-        'title' => 'Empresas',
-        'content' => '<!-- wp:heading --><h2>Diretório de empresas brasileiras na Irlanda</h2><!-- /wp:heading -->
-<!-- wp:paragraph --><p>Encontre empresas e profissionais brasileiros na Irlanda. Restaurantes, mercados, advogados, contadores, médicos e muito mais.</p><!-- /wp:paragraph -->
-<!-- wp:heading --><h3>Categorias</h3><!-- /wp:heading -->
-<!-- wp:list --><ul><li>Restaurantes e Alimentação</li><li>Mercados e Supermercados</li><li>Advogados e Imigração</li><li>Contadores e Financeiro</li><li>Médicos e Dentistas</li><li>Auto Escolas</li><li>Limpeza e Serviços</li><li>Construção e Reformas</li><li>Eletricistas e Encanadores</li><li>Beleza e Estética</li><li>Educação e Cursos</li><li>Serviços Financeiros</li><li>Seguros</li><li>Viagens</li><li>Recrutamento</li></ul><!-- /wp:list -->',
-        'meta_desc' => 'Diretório de empresas e profissionais brasileiros na Irlanda. Restaurantes, serviços, saúde e muito mais.',
+    'apoiadores' => [
+        'title' => 'Apoiadores',
+        'content' => '<!-- wp:heading --><h2>Apoiadores da comunidade brasileira na Irlanda</h2><!-- /wp:heading -->
+<!-- wp:paragraph --><p>Conheça as organizações e empresas que apoiam a comunidade brasileira na Irlanda.</p><!-- /wp:paragraph -->',
+        'meta_desc' => 'Conheça as organizações e empresas que apoiam a comunidade brasileira na Irlanda.',
     ],
     'newsletter' => [
         'title' => 'Newsletter',
@@ -603,7 +601,7 @@ $primary_items = [
     ['title' => 'Guias', 'object' => 'page', 'object_id' => $page_ids['guias'] ?? 0],
     ['title' => 'Eventos', 'object' => 'page', 'object_id' => $page_ids['eventos'] ?? 0],
     ['title' => 'Empregos', 'object' => 'page', 'object_id' => $page_ids['empregos'] ?? 0],
-    ['title' => 'Empresas', 'object' => 'page', 'object_id' => $page_ids['empresas'] ?? 0],
+    ['title' => 'Apoiadores', 'object' => 'page', 'object_id' => $page_ids['apoiadores'] ?? 0],
     ['title' => 'Irlanda', 'object' => 'page', 'object_id' => $page_ids['irlanda'] ?? 0],
     ['title' => 'Sobre Nós', 'object' => 'page', 'object_id' => $page_ids['sobre-nos'] ?? 0],
     ['title' => 'Contato', 'object' => 'page', 'object_id' => $page_ids['contato'] ?? 0],

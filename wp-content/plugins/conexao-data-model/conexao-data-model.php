@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Conexão BR Irlanda Data Model
  * Description: Content types, shared taxonomies, and editorial fields for the Conexão BR Irlanda portal.
- * Version: 1.0.0
+ * Version: 1.1.0
  * Text Domain: conexao-data-model
  *
  * @package Conexao_BR_Irlanda_Data_Model
@@ -18,7 +18,7 @@ require_once CONEXAO_DATA_MODEL_DIR . 'includes/class-meta.php';
 
 final class Conexao_Data_Model {
 
-	const VERSION = '1.0.0';
+	const VERSION = '1.1.0';
 
 	/** @var Conexao_Data_Model|null */
 	private static $instance = null;
@@ -38,11 +38,11 @@ final class Conexao_Data_Model {
 
 	public function register_content_types() {
 		$post_types = array(
-			'news'     => array( 'plural' => 'Notícias', 'singular' => 'Notícia', 'slug' => 'news', 'icon' => 'dashicons-megaphone' ),
-			'guide'    => array( 'plural' => 'Guias Práticos', 'singular' => 'Guia Prático', 'slug' => 'guides', 'icon' => 'dashicons-book-alt' ),
-			'event'    => array( 'plural' => 'Eventos', 'singular' => 'Evento', 'slug' => 'events', 'icon' => 'dashicons-calendar-alt' ),
-			'job'      => array( 'plural' => 'Empregos', 'singular' => 'Vaga de Emprego', 'slug' => 'jobs', 'icon' => 'dashicons-portfolio' ),
-			'business' => array( 'plural' => 'Empresas', 'singular' => 'Empresa', 'slug' => 'businesses', 'icon' => 'dashicons-store' ),
+			'news'    => array( 'plural' => 'Notícias', 'singular' => 'Notícia', 'slug' => 'news', 'icon' => 'dashicons-megaphone' ),
+			'guide'   => array( 'plural' => 'Guias Práticos', 'singular' => 'Guia Prático', 'slug' => 'guides', 'icon' => 'dashicons-book-alt' ),
+			'event'   => array( 'plural' => 'Eventos', 'singular' => 'Evento', 'slug' => 'events', 'icon' => 'dashicons-calendar-alt' ),
+			'job'     => array( 'plural' => 'Empregos', 'singular' => 'Vaga de Emprego', 'slug' => 'jobs', 'icon' => 'dashicons-portfolio' ),
+			'sponsor' => array( 'plural' => 'Apoiadores', 'singular' => 'Apoiador', 'slug' => 'apoiadores', 'icon' => 'dashicons-heart' ),
 		);
 
 		foreach ( $post_types as $post_type => $type ) {
@@ -75,7 +75,7 @@ final class Conexao_Data_Model {
 	}
 
 	public function register_taxonomies() {
-		$content_types = array( 'news', 'guide', 'event', 'job', 'business' );
+		$content_types = array( 'news', 'guide', 'event', 'job', 'sponsor' );
 
 		register_taxonomy(
 			'conexao_category',
@@ -105,7 +105,7 @@ final class Conexao_Data_Model {
 
 		register_taxonomy(
 			'conexao_tag',
-			array( 'news', 'guide', 'event', 'business' ),
+			array( 'news', 'guide', 'event', 'sponsor' ),
 			array(
 				'labels'            => array( 'name' => 'Tags', 'singular_name' => 'Tag' ),
 				'public'            => true,

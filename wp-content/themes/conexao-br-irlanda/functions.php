@@ -267,7 +267,7 @@ function conexao_homepage_query( $args, $cache_key, $expiration = 300 ) {
 /**
  * Invalidate all transient caches that depend on portal content.
  *
- * Runs whenever a News, Guide, Event, Job, Business or standard post is
+ * Runs whenever a News, Guide, Event, Job, Apoiador or standard post is
  * published, updated, or deleted. This keeps:
  *  - the homepage card/featured/popular transients fresh,
  *  - the 404 page's guides/news/events transients fresh,
@@ -280,13 +280,13 @@ function conexao_homepage_query( $args, $cache_key, $expiration = 300 ) {
  */
 function conexao_homepage_cache_invalidate( $post_id ) {
 	$post_type = get_post_type( $post_id );
-	$cpt_types = array( 'news', 'guide', 'event', 'job', 'business', 'post' );
+	$cpt_types = array( 'news', 'guide', 'event', 'job', 'sponsor', 'post' );
 	if ( in_array( $post_type, $cpt_types, true ) ) {
 		// Homepage sections.
 		delete_transient( 'conexao_home_news' );
 		delete_transient( 'conexao_home_guides' );
 		delete_transient( 'conexao_home_events' );
-		delete_transient( 'conexao_home_businesses' );
+		delete_transient( 'conexao_home_sponsors' );
 		delete_transient( 'conexao_home_jobs' );
 		delete_transient( 'conexao_home_featured' );
 		delete_transient( 'conexao_home_popular' );
@@ -535,7 +535,7 @@ function conexao_popular_posts( $limit = 5 ) {
 	// comment counts. It returns nothing measurable until the meta is set,
 	// so we fall through to the lightweight recent-content query below.
 	$by_views = new WP_Query( array(
-		'post_type'           => array( 'news', 'guide', 'event', 'job', 'business', 'post' ),
+		'post_type'           => array( 'news', 'guide', 'event', 'job', 'sponsor', 'post' ),
 		'posts_per_page'      => $limit,
 		'meta_key'            => '_conexao_view_count',
 		'orderby'             => 'meta_value_num',
@@ -554,7 +554,7 @@ function conexao_popular_posts( $limit = 5 ) {
 	// Fallback: recent content (lightweight, no ORDER BY comment_count).
 	if ( empty( $ids ) ) {
 		$recent = new WP_Query( array(
-			'post_type'           => array( 'news', 'guide', 'event', 'job', 'business', 'post' ),
+			'post_type'           => array( 'news', 'guide', 'event', 'job', 'sponsor', 'post' ),
 			'posts_per_page'      => $limit,
 			'orderby'             => 'date',
 			'order'               => 'DESC',

@@ -29,7 +29,6 @@ final class Conexao_BR_Content {
 
 	public function register_content() {
 		$types = array(
-			'sponsor'        => array( 'name' => 'Apoiadores', 'singular_name' => 'Apoiador', 'has_archive' => false ),
 			'directory_item' => array( 'name' => 'Diretório', 'singular_name' => 'Item do diretório', 'has_archive' => false ),
 			'curated_link'   => array( 'name' => 'Links selecionados', 'singular_name' => 'Link selecionado', 'has_archive' => false ),
 		);
@@ -89,7 +88,8 @@ final class Conexao_BR_Content {
 			'/noticias'          => '/news/',
 			'/eventos'           => '/events/',
 			'/empregos'          => '/jobs/',
-			'/empresas'          => '/businesses/',
+			'/empresas'          => '/apoiadores/',
+			'/businesses'        => '/apoiadores/',
 			'/privacidade'       => '/politica-de-privacidade/',
 			'/termos'            => '/termos-de-uso/',
 			'/sobre'             => '/sobre-nos/',
@@ -103,7 +103,7 @@ final class Conexao_BR_Content {
 	}
 
 	public function add_meta_boxes() {
-		foreach ( array( 'sponsor', 'directory_item', 'curated_link' ) as $type ) {
+		foreach ( array( 'directory_item', 'curated_link' ) as $type ) {
 			add_meta_box( 'conexao-card-details', 'Detalhes do cartão', array( $this, 'card_fields' ), $type, 'side' );
 		}
 	}

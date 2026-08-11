@@ -29,7 +29,7 @@ final class Conexao_Admin_Ux_Config {
 	 *
 	 * @var string[]
 	 */
-	const SUPPORTED_TYPES = array( 'event', 'news', 'guide', 'job', 'business' );
+	const SUPPORTED_TYPES = array( 'event', 'news', 'guide', 'job', 'sponsor' );
 
 	/**
 	 * Get the full configuration for a post type.
@@ -56,7 +56,7 @@ final class Conexao_Admin_Ux_Config {
 				'news'     => self::news_config(),
 				'guide'    => self::guide_config(),
 				'job'      => self::job_config(),
-				'business' => self::business_config(),
+				'sponsor'  => self::sponsor_config(),
 			);
 		}
 
@@ -163,11 +163,11 @@ final class Conexao_Admin_Ux_Config {
 	}
 
 	/**
-	 * Business categories used by the Empresas directory.
+	 * Categories used by the Apoiadores directory.
 	 *
 	 * @return string[]
 	 */
-	public static function business_categories() {
+	public static function sponsor_categories() {
 		return array(
 			'Serviços Profissionais',
 			'Saúde e Bem-estar',
@@ -175,6 +175,23 @@ final class Conexao_Admin_Ux_Config {
 			'Artes e craft',
 			'Alimentação',
 			'Informações',
+			'Educação',
+			'ONG / Sem fins lucrativos',
+		);
+	}
+
+	/**
+	 * Types of supporters (apoiadores).
+	 *
+	 * @return string[]
+	 */
+	public static function sponsor_types() {
+		return array(
+			'Empresa',
+			'ONG / Associação',
+			'Instituição',
+			'Profissional liberal',
+			'Grupo comunitário',
 		);
 	}
 
@@ -576,61 +593,72 @@ final class Conexao_Admin_Ux_Config {
 
 	/**
 	 * ------------------------------------------------------------------
-	 * EMPRESAS
+	 * APOIADORES
 	 * ------------------------------------------------------------------
 	 */
-	private static function business_config() {
+	private static function sponsor_config() {
 		return array(
-			'post_type'  => 'business',
+			'post_type'  => 'sponsor',
 			'labels'     => array(
-				'singular'        => 'Empresa',
-				'plural'          => 'Empresas',
-				'add_button'      => 'Adicionar Empresa',
-				'add_new_item'    => 'Adicionar Empresa',
-				'edit_item'       => 'Editar Empresa',
-				'empty_title'     => 'Ainda não existem empresas',
-				'empty_message'   => 'Adicione a primeira empresa ao diretório da comunidade.',
-				'success_saved'   => 'Empresa atualizada com sucesso.',
-				'success_created' => 'Empresa criada com sucesso.',
-				'success_published' => 'Empresa publicada com sucesso.',
+				'singular'        => 'Apoiador',
+				'plural'          => 'Apoiadores',
+				'add_button'      => 'Adicionar Apoiador',
+				'add_new_item'    => 'Adicionar Apoiador',
+				'edit_item'       => 'Editar Apoiador',
+				'empty_title'     => 'Ainda não existem apoiadores',
+				'empty_message'   => 'Adicione o primeiro apoiador à comunidade.',
+				'success_saved'   => 'Apoiador atualizado com sucesso.',
+				'success_created' => 'Apoiador criado com sucesso.',
+				'success_published' => 'Apoiador publicado com sucesso.',
 				'success_draft'   => 'Rascunho salvo com sucesso.',
-				'success_duplicated' => 'Empresa duplicada como rascunho.',
-				'success_archived' => 'Empresa arquivada com sucesso.',
-				'success_bulk'    => 'Empresas atualizadas com sucesso.',
+				'success_duplicated' => 'Apoiador duplicado como rascunho.',
+				'success_archived' => 'Apoiador arquivado com sucesso.',
+				'success_bulk'    => 'Apoiadores atualizados com sucesso.',
 			),
-			'date_meta'  => '_business_created_date',
+			'date_meta'  => '_sponsor_created_date',
 			'sections'   => array(
 				'principal' => array(
 					'title'    => 'Informações principais',
-					'icon'     => 'dashicons-store',
+					'icon'     => 'dashicons-heart',
 					'priority' => 10,
 					'fields'   => array(
-						array( 'key' => '_business_name', 'label' => 'Nome da empresa', 'type' => 'text', 'required' => true, 'help' => 'Nome comercial ou razão social.' ),
-						array( 'key' => '_business_logo', 'label' => 'Logo', 'type' => 'media', 'help' => 'Logo da empresa (recomendado: PNG/JPEG transparente).' ),
-						array( 'key' => '_business_category', 'label' => 'Categoria', 'type' => 'select', 'options' => self::business_categories(), 'placeholder' => 'Selecione a categoria' ),
-						array( 'key' => '_business_description', 'label' => 'Descrição', 'type' => 'textarea', 'help' => 'Descreva a empresa e os serviços oferecidos.' ),
+						array( 'key' => '_sponsor_name', 'label' => 'Nome do apoiador', 'type' => 'text', 'required' => true, 'help' => 'Nome da organização, empresa ou entidade.' ),
+						array( 'key' => '_sponsor_logo', 'label' => 'Logo', 'type' => 'media', 'help' => 'Logo do apoiador (recomendado: PNG/JPEG transparente).' ),
+						array( 'key' => '_sponsor_category', 'label' => 'Categoria', 'type' => 'select', 'options' => self::sponsor_categories(), 'placeholder' => 'Selecione a categoria' ),
+						array( 'key' => '_sponsor_type', 'label' => 'Tipo de apoiador', 'type' => 'select', 'options' => self::sponsor_types(), 'placeholder' => 'Selecione o tipo' ),
+						array( 'key' => '_sponsor_description', 'label' => 'Descrição', 'type' => 'textarea', 'help' => 'Descreva o apoiador e como ele apoia a comunidade.' ),
+					),
+				),
+				'links'     => array(
+					'title'    => 'Links',
+					'icon'     => 'dashicons-admin-links',
+					'priority' => 20,
+					'fields'   => array(
+						array( 'key' => '_sponsor_website', 'label' => 'Website', 'type' => 'url' ),
+						array( 'key' => '_sponsor_instagram', 'label' => 'Instagram', 'type' => 'url' ),
+						array( 'key' => '_sponsor_facebook', 'label' => 'Facebook', 'type' => 'url' ),
+						array( 'key' => '_sponsor_linkedin', 'label' => 'LinkedIn', 'type' => 'url' ),
+						array( 'key' => '_sponsor_whatsapp', 'label' => 'WhatsApp', 'type' => 'url', 'help' => 'Link do WhatsApp. Ex.: https://wa.me/353123456789' ),
 					),
 				),
 				'contato'   => array(
-					'title'    => 'Contato e localização',
-					'icon'     => 'dashicons-location-alt',
-					'priority' => 20,
-					'fields'   => array(
-						array( 'key' => '_business_address', 'label' => 'Endereço', 'type' => 'text', 'help' => 'Endereço completo da empresa.' ),
-						array( 'key' => '_business_location', 'label' => 'Localização', 'type' => 'text', 'help' => 'Cidade / county. Ex.: "Portlaoise, Laois".' ),
-						array( 'key' => '_business_phone', 'label' => 'Telefone', 'type' => 'phone' ),
-						array( 'key' => '_business_email', 'label' => 'E-mail', 'type' => 'email' ),
-					),
-				),
-				'online'    => array(
-					'title'    => 'Presença online',
-					'icon'     => 'dashicons-admin-site-alt',
+					'title'    => 'Contato',
+					'icon'     => 'dashicons-email-alt',
 					'priority' => 30,
 					'fields'   => array(
-						array( 'key' => '_business_website', 'label' => 'Website', 'type' => 'url' ),
-						array( 'key' => '_business_whatsapp', 'label' => 'WhatsApp', 'type' => 'url', 'help' => 'Link do WhatsApp. Ex.: https://wa.me/353123456789' ),
-						array( 'key' => '_business_instagram', 'label' => 'Instagram', 'type' => 'url' ),
-						array( 'key' => '_business_facebook', 'label' => 'Facebook', 'type' => 'url' ),
+						array( 'key' => '_sponsor_email', 'label' => 'E-mail', 'type' => 'email' ),
+						array( 'key' => '_sponsor_phone', 'label' => 'Telefone', 'type' => 'phone' ),
+						array( 'key' => '_sponsor_address', 'label' => 'Endereço', 'type' => 'text', 'help' => 'Endereço completo, se aplicável.' ),
+						array( 'key' => '_sponsor_location', 'label' => 'Localização', 'type' => 'text', 'help' => 'Cidade / county. Ex.: "Portlaoise, Laois".' ),
+					),
+				),
+				'exibicao'  => array(
+					'title'    => 'Exibição',
+					'icon'     => 'dashicons-visibility',
+					'priority' => 40,
+					'fields'   => array(
+						array( 'key' => '_sponsor_featured', 'label' => 'Apoiador em destaque', 'type' => 'checkbox', 'help' => 'Exibir na página inicial e/ou no topo da lista.' ),
+						array( 'key' => '_sponsor_display_order', 'label' => 'Ordem de exibição', 'type' => 'number', 'help' => 'Número menor aparece primeiro. Ex.: 1, 2, 3…' ),
 					),
 				),
 			),
@@ -641,13 +669,14 @@ final class Conexao_Admin_Ux_Config {
 					'published' => array( 'label' => 'Publicado', 'badge' => 'published' ),
 					'archived'  => array( 'label' => 'Arquivado', 'badge' => 'archived' ),
 				),
-				'status_meta' => '_business_status',
+				'status_meta' => '_sponsor_status',
 				'default_status' => 'draft',
 			),
 			'columns'    => array(
 				'category' => array( 'label' => 'Categoria', 'render' => 'category' ),
-				'location' => array( 'label' => 'Localização', 'meta' => '_business_location' ),
-				'contact'  => array( 'label' => 'Contato', 'render' => 'business_contact' ),
+				'location' => array( 'label' => 'Localização', 'meta' => '_sponsor_location' ),
+				'contact'  => array( 'label' => 'Contato', 'render' => 'sponsor_contact' ),
+				'featured' => array( 'label' => 'Destaque', 'meta' => '_sponsor_featured', 'format' => 'featured' ),
 				'status'   => array( 'label' => 'Status', 'render' => 'status' ),
 			),
 			'bulk_actions' => array(
@@ -655,10 +684,10 @@ final class Conexao_Admin_Ux_Config {
 				'draft'    => array( 'label' => 'Rascunho', 'type' => 'status', 'value' => 'draft' ),
 				'archive'  => array( 'label' => 'Arquivar', 'type' => 'status', 'value' => 'archived' ),
 				'category' => array( 'label' => 'Atribuir categoria', 'type' => 'taxonomy', 'taxonomy' => 'conexao_category' ),
-				'delete'   => array( 'label' => 'Excluir permanentemente', 'type' => 'delete', 'confirm' => 'Tem certeza que deseja excluir permanentemente as empresas selecionadas? Esta ação não pode ser desfeita.' ),
+				'delete'   => array( 'label' => 'Excluir permanentemente', 'type' => 'delete', 'confirm' => 'Tem certeza que deseja excluir permanentemente os apoiadores selecionados? Esta ação não pode ser desfeita.' ),
 			),
 			'summary'    => array(
-				array( 'key' => 'published', 'label' => 'Publicadas', 'status' => 'published' ),
+				array( 'key' => 'published', 'label' => 'Publicados', 'status' => 'published' ),
 				array( 'key' => 'review', 'label' => 'Revisão', 'status' => 'needs_review' ),
 			),
 		);

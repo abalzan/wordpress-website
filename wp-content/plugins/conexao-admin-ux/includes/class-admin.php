@@ -45,7 +45,7 @@ final class Conexao_Admin_Ux {
 		add_filter( 'post_type_labels_news', array( $this, 'news_labels' ) );
 		add_filter( 'post_type_labels_guide', array( $this, 'guide_labels' ) );
 		add_filter( 'post_type_labels_job', array( $this, 'job_labels' ) );
-		add_filter( 'post_type_labels_business', array( $this, 'business_labels' ) );
+		add_filter( 'post_type_labels_sponsor', array( $this, 'sponsor_labels' ) );
 	}
 
 	/**
@@ -254,21 +254,22 @@ final class Conexao_Admin_Ux {
 	}
 
 	/**
-	 * Improve the Empresas post type labels.
+	 * Improve the Apoiadores post type labels.
 	 *
 	 * @param object $labels Post type labels.
 	 * @return object
 	 */
-	public function business_labels( $labels ) {
-		$labels->all_items        = 'Todas as Empresas';
-		$labels->add_new          = 'Adicionar Empresa';
-		$labels->add_new_item     = 'Adicionar Empresa';
-		$labels->edit_item        = 'Editar Empresa';
-		$labels->new_item         = 'Nova Empresa';
-		$labels->view_item        = 'Ver Empresa';
-		$labels->search_items     = 'Buscar Empresas';
-		$labels->not_found        = 'Nenhuma empresa encontrada';
-		$labels->not_found_in_trash = 'Nenhuma empresa encontrada na lixeira';
+	public function sponsor_labels( $labels ) {
+		$labels->menu_name        = 'Apoiadores';
+		$labels->all_items        = 'Todos os Apoiadores';
+		$labels->add_new          = 'Adicionar Apoiador';
+		$labels->add_new_item     = 'Adicionar Apoiador';
+		$labels->edit_item        = 'Editar Apoiador';
+		$labels->new_item         = 'Novo Apoiador';
+		$labels->view_item        = 'Ver Apoiador';
+		$labels->search_items     = 'Buscar Apoiadores';
+		$labels->not_found        = 'Nenhum apoiador encontrado';
+		$labels->not_found_in_trash = 'Nenhum apoiador encontrado na lixeira';
 		return $labels;
 	}
 

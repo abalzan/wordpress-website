@@ -6,10 +6,10 @@ defined( 'ABSPATH' ) || exit;
 final class Conexao_Data_Model_Meta {
 
 	private static $fields = array(
-		'guide'    => array( '_conexao_featured' => 'checkbox' ),
-		'event'    => array( '_event_date' => 'date', '_event_time' => 'text', '_event_location' => 'text' ),
-		'business' => array( '_conexao_featured' => 'checkbox', '_business_phone' => 'text', '_business_whatsapp' => 'url', '_business_website' => 'url', '_business_location' => 'text' ),
-		'job'      => array( '_job_company' => 'text', '_job_location' => 'text', '_job_salary' => 'text', '_job_employment_type' => 'text', '_job_expiration_date' => 'date' ),
+		'guide'   => array( '_conexao_featured' => 'checkbox' ),
+		'event'   => array( '_event_date' => 'date', '_event_time' => 'text', '_event_location' => 'text' ),
+		'sponsor' => array( '_conexao_featured' => 'checkbox', '_sponsor_phone' => 'text', '_sponsor_whatsapp' => 'url', '_sponsor_website' => 'url', '_sponsor_location' => 'text', '_sponsor_display_order' => 'text' ),
+		'job'     => array( '_job_company' => 'text', '_job_location' => 'text', '_job_salary' => 'text', '_job_employment_type' => 'text', '_job_expiration_date' => 'date' ),
 	);
 
 	public function __construct() {
@@ -36,7 +36,7 @@ final class Conexao_Data_Model_Meta {
 		wp_nonce_field( 'conexao_data_model_meta', 'conexao_data_model_nonce' );
 		foreach ( $box['args'] as $key => $type ) {
 			$id = ltrim( $key, '_' );
-			$label = ucwords( str_replace( array( '_', 'conexao', 'event', 'business', 'job' ), array( ' ', '', '', '', '' ), $id ) );
+			$label = ucwords( str_replace( array( '_', 'conexao', 'sponsor', 'job' ), array( ' ', '', '', '' ), $id ) );
 			if ( 'checkbox' === $type ) {
 				printf( '<p><label><input type="checkbox" name="%1$s" value="1" %2$s> %3$s</label></p>', esc_attr( $id ), checked( (bool) get_post_meta( $post->ID, $key, true ), true, false ), esc_html( $label ) );
 				continue;

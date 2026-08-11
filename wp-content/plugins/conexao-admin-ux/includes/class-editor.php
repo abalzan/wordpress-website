@@ -462,7 +462,7 @@ final class Conexao_Admin_Ux_Editor {
 			'news'     => '_news_title',
 			'guide'    => '_guide_title',
 			'job'      => '_job_title',
-			'business' => '_business_name',
+			'sponsor'  => '_sponsor_name',
 		);
 		return isset( $map[ $this->post_type ] ) ? $map[ $this->post_type ] : '_' . $this->post_type . '_title';
 	}
@@ -478,7 +478,7 @@ final class Conexao_Admin_Ux_Editor {
 			'news'     => '_news_content',
 			'guide'    => '_guide_content',
 			'job'      => '_job_description',
-			'business' => '_business_description',
+			'sponsor'  => '_sponsor_description',
 		);
 		return isset( $map[ $this->post_type ] ) ? $map[ $this->post_type ] : '_' . $this->post_type . '_content';
 	}

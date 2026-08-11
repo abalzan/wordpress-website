@@ -122,10 +122,10 @@ final class Conexao_Admin_Ux_List {
 			return;
 		}
 
-		// Business contact.
-		if ( 'business_contact' === $config['render'] ) {
-			$phone = get_post_meta( $post_id, '_business_phone', true );
-			$email = get_post_meta( $post_id, '_business_email', true );
+		// Sponsor contact.
+		if ( 'sponsor_contact' === $config['render'] ) {
+			$phone = get_post_meta( $post_id, '_sponsor_phone', true );
+			$email = get_post_meta( $post_id, '_sponsor_email', true );
 			if ( $phone ) {
 				echo esc_html( $phone );
 			} elseif ( $email ) {
@@ -145,6 +145,8 @@ final class Conexao_Admin_Ux_List {
 			}
 			if ( 'date' === $config['format'] ) {
 				echo esc_html( date_i18n( 'j M Y', strtotime( $value ) ) );
+			} elseif ( 'featured' === $config['format'] ) {
+				echo ! empty( $value ) ? '<span class="conexao-status-badge conexao-status-badge--published">★ Destaque</span>' : '<span class="conexao-muted">—</span>';
 			} else {
 				echo esc_html( $value );
 			}

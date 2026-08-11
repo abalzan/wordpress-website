@@ -141,9 +141,9 @@ if ( $is_category_page ) {
 				<?php endif; ?>
 
 				<?php
-				// --- Relevant Businesses ---
-				$businesses = new WP_Query( array(
-					'post_type'      => 'business',
+				// --- Relevant Apoiadores ---
+				$sponsors = new WP_Query( array(
+					'post_type'      => 'sponsor',
 					'posts_per_page' => 4,
 					'tax_query'      => array(
 						array(
@@ -156,11 +156,11 @@ if ( $is_category_page ) {
 					'update_post_meta_cache' => false,
 					'update_post_term_cache' => false,
 				) );
-				if ( $businesses->have_posts() ) : ?>
+				if ( $sponsors->have_posts() ) : ?>
 					<section class="landing-section">
-						<h2 class="landing-section-title"><?php esc_html_e( 'Empresas e Serviços', 'conexao-br-irlanda' ); ?></h2>
+						<h2 class="landing-section-title"><?php esc_html_e( 'Apoiadores', 'conexao-br-irlanda' ); ?></h2>
 						<div class="landing-grid">
-							<?php while ( $businesses->have_posts() ) : $businesses->the_post(); ?>
+							<?php while ( $sponsors->have_posts() ) : $sponsors->the_post(); ?>
 								<article class="landing-card">
 									<?php if ( has_post_thumbnail() ) : ?>
 										<a href="<?php the_permalink(); ?>" class="landing-card-thumb"><?php the_post_thumbnail( 'conexao-card', array( 'loading' => 'lazy' ) ); ?></a>
