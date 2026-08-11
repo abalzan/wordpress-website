@@ -62,9 +62,13 @@ final class Conexao_Admin_Ux_List {
 		}
 		$new['title'] = isset( $columns['title'] ) ? $columns['title'] : __( 'Título', 'conexao-admin-ux' );
 
-		if ( ! empty( $this->config['columns'] ) ) {
+		if ( ! empty( $this->config['columns'] ) && is_array( $this->config['columns'] ) ) {
 			foreach ( $this->config['columns'] as $key => $col ) {
-				$new[ 'conexao_' . $key ] = $col['label'];
+				if ( ! is_array( $col ) ) {
+					continue;
+				}
+				$label          = isset( $col['label'] ) && is_string( $col['label'] ) ? $col['label'] : $key;
+				$new[ 'conexao_' . $key ] = $label;
 			}
 		}
 
@@ -89,68 +93,38 @@ final class Conexao_Admin_Ux_List {
 		$key    = substr( $column, strlen( 'conexao_' ) );
 		$config = isset( $this->config['columns'][ $key ] ) ? $this->config['columns'][ $key ] : null;
 
-		if ( ! $config ) {
+		if ( ! $config || ! is_array( $config ) ) {
 			return;
 		}
 
-		// Status badge.
-		if ( 'status' === $config['render'] ) {
-			$this->render_status_badge( $post_id );
-			return;
-		}
+		// Determine the render type safely. Only a non-empty string is valid.
+		$render = isset( $config['render'] ) && is_string( $config['render'] ) ? $config['render'] : '';
 
-		// Source label.
-		if ( 'source' === $config['render'] ) {
-			$this->render_source( $post_id );
-			return;
-		}
-
-		// Event location (venue + town/county).
-		if ( 'event_location' === $config['render'] ) {
-			$this->render_event_location( $post_id );
-			return;
-		}
-
-		// Category.
-		if ( 'category' === $config['render'] ) {
-			$terms = get_the_terms( $post_id, 'conexao_category' );
-			if ( $terms && ! is_wp_error( $terms ) ) {
-				echo esc_html( $terms[0]->name );
-			} else {
-				echo '<span class="conexao-muted">—</span>';
-			}
-			return;
-		}
-
-		// Sponsor contact.
-		if ( 'sponsor_contact' === $config['render'] ) {
-			$phone = get_post_meta( $post_id, '_sponsor_phone', true );
-			$email = get_post_meta( $post_id, '_sponsor_email', true );
-			if ( $phone ) {
-				echo esc_html( $phone );
-			} elseif ( $email ) {
-				echo esc_html( $email );
-			} else {
-				echo '<span class="conexao-muted">—</span>';
-			}
-			return;
-		}
-
-		// Simple meta column.
-		if ( ! empty( $config['meta'] ) ) {
-			$value = get_post_meta( $post_id, $config['meta'], true );
-			if ( empty( $value ) ) {
-				echo '<span class="conexao-muted">—</span>';
+		// Dispatch to the appropriate renderer.
+		switch ( $render ) {
+			case 'status':
+				$this->render_status_badge( $post_id );
 				return;
-			}
-			if ( 'date' === $config['format'] ) {
-				echo esc_html( date_i18n( 'j M Y', strtotime( $value ) ) );
-			} elseif ( 'featured' === $config['format'] ) {
-				echo ! empty( $value ) ? '<span class="conexao-status-badge conexao-status-badge--published">★ Destaque</span>' : '<span class="conexao-muted">—</span>';
-			} else {
-				echo esc_html( $value );
-			}
+
+			case 'source':
+				$this->render_source( $post_id );
+				return;
+
+			case 'event_location':
+				$this->render_event_location( $post_id );
+				return;
+
+			case 'category':
+				$this->render_category( $post_id );
+				return;
+
+			case 'sponsor_contact':
+				$this->render_sponsor_contact( $post_id );
+				return;
 		}
+
+		// No custom render callback — fall back to the default renderer.
+		$this->render_default( $post_id, $config );
 	}
 
 	/**
@@ -160,9 +134,12 @@ final class Conexao_Admin_Ux_List {
 	 */
 	private function render_status_badge( $post_id ) {
 		$status   = Conexao_Admin_Ux_Actions::get_status( $post_id, $this->post_type );
-		$statuses = $this->config['publishing']['statuses'];
-		$label    = isset( $statuses[ $status ]['label'] ) ? $statuses[ $status ]['label'] : $status;
-		$badge    = isset( $statuses[ $status ]['badge'] ) ? $statuses[ $status ]['badge'] : 'draft';
+		$statuses = isset( $this->config['publishing']['statuses'] ) && is_array( $this->config['publishing']['statuses'] )
+			? $this->config['publishing']['statuses']
+			: array();
+
+		$label = isset( $statuses[ $status ]['label'] ) ? $statuses[ $status ]['label'] : $status;
+		$badge = isset( $statuses[ $status ]['badge'] ) ? $statuses[ $status ]['badge'] : 'draft';
 
 		$icon = 'published' === $badge ? '●' : ( 'review' === $badge ? '⚠' : ( 'warning' === $badge ? '⚠' : '●' ) );
 		printf(
@@ -180,13 +157,16 @@ final class Conexao_Admin_Ux_List {
 	 */
 	private function render_source( $post_id ) {
 		$source = get_post_meta( $post_id, '_event_source', true );
-		if ( ! $source ) {
+		if ( ! is_string( $source ) || '' === $source ) {
 			$source = get_post_meta( $post_id, '_' . $this->post_type . '_source', true );
 		}
-		if ( $source ) {
+
+		if ( is_string( $source ) && '' !== $source ) {
 			if ( 'event' === $this->post_type && class_exists( 'Conexao_Event_Sources' ) ) {
 				$sources = ( new Conexao_Event_Sources() )->get_all();
-				$name    = isset( $sources[ $source ]['name'] ) ? $sources[ $source ]['name'] : $source;
+				$name    = isset( $sources[ $source ]['name'] ) && is_string( $sources[ $source ]['name'] )
+					? $sources[ $source ]['name']
+					: $source;
 				echo esc_html( $name );
 			} else {
 				echo esc_html( $source );
@@ -207,23 +187,118 @@ final class Conexao_Admin_Ux_List {
 		$county = wp_get_object_terms( $post_id, 'conexao_county', array( 'fields' => 'names' ) );
 
 		$parts = array();
-		if ( $venue ) {
+		if ( is_string( $venue ) && '' !== $venue ) {
 			$parts[] = $venue;
 		}
-		if ( $town ) {
+		if ( is_string( $town ) && '' !== $town ) {
 			$parts[] = $town;
 		}
-		if ( $county && ! is_wp_error( $county ) && ! empty( $county ) ) {
+		if ( is_array( $county ) && ! empty( $county ) && isset( $county[0] ) && is_string( $county[0] ) ) {
 			$parts[] = $county[0];
 		}
 
 		if ( empty( $parts ) ) {
 			$legacy = get_post_meta( $post_id, '_event_location', true );
-			echo $legacy ? esc_html( $legacy ) : '<span class="conexao-muted">—</span>';
+			if ( is_string( $legacy ) && '' !== $legacy ) {
+				echo esc_html( $legacy );
+			} else {
+				echo '<span class="conexao-muted">—</span>';
+			}
 			return;
 		}
 
 		echo esc_html( implode( ', ', $parts ) );
+	}
+
+	/**
+	 * Render the category column.
+	 *
+	 * @param int $post_id Post ID.
+	 */
+	private function render_category( $post_id ) {
+		$terms = get_the_terms( $post_id, 'conexao_category' );
+		if ( $terms && ! is_wp_error( $terms ) && ! empty( $terms ) && isset( $terms[0]->name ) ) {
+			echo esc_html( $terms[0]->name );
+		} else {
+			echo '<span class="conexao-muted">—</span>';
+		}
+	}
+
+	/**
+	 * Render the sponsor contact column (phone, then email).
+	 *
+	 * @param int $post_id Post ID.
+	 */
+	private function render_sponsor_contact( $post_id ) {
+		$phone = get_post_meta( $post_id, '_sponsor_phone', true );
+		$email = get_post_meta( $post_id, '_sponsor_email', true );
+
+		if ( is_string( $phone ) && '' !== $phone ) {
+			echo esc_html( $phone );
+		} elseif ( is_string( $email ) && '' !== $email ) {
+			echo esc_html( $email );
+		} else {
+			echo '<span class="conexao-muted">—</span>';
+		}
+	}
+
+	/**
+	 * Default renderer for simple meta columns.
+	 *
+	 * Safely handles missing keys, null, empty strings, false, arrays,
+	 * objects, and unexpected data types. Valid values such as 0/'0' are
+	 * preserved when meaningful.
+	 *
+	 * @param int   $post_id Post ID.
+	 * @param array $config  Column config.
+	 */
+	private function render_default( $post_id, $config ) {
+		$meta_key = isset( $config['meta'] ) && is_string( $config['meta'] ) ? $config['meta'] : '';
+		if ( '' === $meta_key ) {
+			echo '<span class="conexao-muted">—</span>';
+			return;
+		}
+
+		$value = get_post_meta( $post_id, $meta_key, true );
+
+		// Handle unexpected data types (arrays, objects, resources).
+		if ( is_array( $value ) || is_object( $value ) || is_resource( $value ) ) {
+			echo '<span class="conexao-muted">—</span>';
+			return;
+		}
+
+		$format = isset( $config['format'] ) && is_string( $config['format'] ) ? $config['format'] : '';
+
+		// Featured format: checkbox value.
+		if ( 'featured' === $format ) {
+			$is_featured = in_array( $value, array( '1', 'on', 'yes', true, 1 ), true );
+			if ( $is_featured ) {
+				echo '<span class="conexao-status-badge conexao-status-badge--published">★ Destaque</span>';
+			} else {
+				echo '<span class="conexao-muted">—</span>';
+			}
+			return;
+		}
+
+		// Missing or empty values (null, '', false). Allow 0 and '0' as meaningful.
+		if ( null === $value || '' === $value || false === $value ) {
+			echo '<span class="conexao-muted">—</span>';
+			return;
+		}
+
+		// Date format.
+		if ( 'date' === $format ) {
+			$timestamp = strtotime( (string) $value );
+			if ( false === $timestamp ) {
+				echo '<span class="conexao-muted">—</span>';
+				return;
+			}
+			echo esc_html( date_i18n( 'j M Y', $timestamp ) );
+			return;
+		}
+
+		// Default: display the value as escaped text.
+		echo esc_html( (string) $value );
 	}
 
 	/**
@@ -243,13 +318,18 @@ final class Conexao_Admin_Ux_List {
 			echo '<option value="">' . esc_html__( 'Todas as fontes', 'conexao-admin-ux' ) . '</option>';
 			if ( class_exists( 'Conexao_Event_Sources' ) ) {
 				$sources = ( new Conexao_Event_Sources() )->get_all();
-				foreach ( $sources as $source ) {
-					printf(
-						'<option value="%1$s" %2$s>%3$s</option>',
-						esc_attr( $source['id'] ),
-						selected( $current, $source['id'], false ),
-						esc_html( $source['name'] )
-					);
+				if ( is_array( $sources ) ) {
+					foreach ( $sources as $source ) {
+						if ( ! is_array( $source ) || ! isset( $source['id'], $source['name'] ) ) {
+							continue;
+						}
+						printf(
+							'<option value="%1$s" %2$s>%3$s</option>',
+							esc_attr( (string) $source['id'] ),
+							selected( $current, (string) $source['id'], false ),
+							esc_html( (string) $source['name'] )
+						);
+					}
 				}
 			}
 			echo '</select>';
@@ -352,8 +432,11 @@ final class Conexao_Admin_Ux_List {
 		unset( $actions['edit'] );
 		unset( $actions['trash'] );
 
-		if ( ! empty( $this->config['bulk_actions'] ) ) {
+		if ( ! empty( $this->config['bulk_actions'] ) && is_array( $this->config['bulk_actions'] ) ) {
 			foreach ( $this->config['bulk_actions'] as $key => $action ) {
+				if ( ! is_array( $action ) || empty( $action['label'] ) || ! is_string( $action['label'] ) ) {
+					continue;
+				}
 				$actions[ 'conexao_' . $key ] = $action['label'];
 			}
 		}
@@ -376,21 +459,25 @@ final class Conexao_Admin_Ux_List {
 
 		$key    = substr( $doaction, strlen( 'conexao_' ) );
 		$action = isset( $this->config['bulk_actions'][ $key ] ) ? $this->config['bulk_actions'][ $key ] : null;
-		if ( ! $action ) {
+		if ( ! $action || ! is_array( $action ) ) {
 			return $redirect;
 		}
 
 		$post_ids = array_map( 'absint', $post_ids );
 		$count    = 0;
+		$type     = isset( $action['type'] ) ? $action['type'] : '';
 
-		switch ( $action['type'] ) {
+		switch ( $type ) {
 			case 'status':
 				$count = Conexao_Admin_Ux_Actions::bulk_status( $post_ids, $this->post_type, $action['value'] );
 				break;
 
 			case 'taxonomy':
 				$term_id = isset( $_POST[ 'conexao_bulk_' . $key ] ) ? absint( $_POST[ 'conexao_bulk_' . $key ] ) : 0;
-				$count   = Conexao_Admin_Ux_Actions::bulk_taxonomy( $post_ids, $action['taxonomy'], $term_id );
+				$taxonomy = isset( $action['taxonomy'] ) ? $action['taxonomy'] : '';
+				if ( $taxonomy ) {
+					$count = Conexao_Admin_Ux_Actions::bulk_taxonomy( $post_ids, $taxonomy, $term_id );
+				}
 				break;
 
 			case 'delete':
@@ -420,7 +507,9 @@ final class Conexao_Admin_Ux_List {
 		$key     = sanitize_key( wp_unslash( $_GET['conexao_bulk_done'] ) );
 		$count   = isset( $_GET['conexao_bulk_count'] ) ? absint( $_GET['conexao_bulk_count'] ) : 0;
 		$actions = isset( $this->config['bulk_actions'][ $key ] ) ? $this->config['bulk_actions'][ $key ] : null;
-		$label   = $actions ? strtolower( $actions['label'] ) : $key;
+		$label   = ( $actions && is_array( $actions ) && isset( $actions['label'] ) && is_string( $actions['label'] ) )
+			? strtolower( $actions['label'] )
+			: $key;
 
 		printf(
 			'<div class="notice notice-success is-dismissible"><p>%s</p></div>',
@@ -497,21 +586,28 @@ final class Conexao_Admin_Ux_List {
 	 */
 	public function render_summary_cards() {
 		$screen = get_current_screen();
-		if ( ! $screen || 'edit-' . $this->post_type !== $screen->id || empty( $this->config['summary'] ) ) {
+		if ( ! $screen || 'edit-' . $this->post_type !== $screen->id || empty( $this->config['summary'] ) || ! is_array( $this->config['summary'] ) ) {
 			return;
 		}
 
 		echo '<div class="conexao-summary-cards">';
 
 		foreach ( $this->config['summary'] as $item ) {
-			$count = $this->summary_count( $item );
-			$url   = $this->summary_url( $item );
+			if ( ! is_array( $item ) ) {
+				continue;
+			}
+
+			$count      = $this->summary_count( $item );
+			$url        = $this->summary_url( $item );
+			$item_key   = isset( $item['key'] ) && is_string( $item['key'] ) ? $item['key'] : 'summary';
+			$item_label = isset( $item['label'] ) && is_string( $item['label'] ) ? $item['label'] : '';
+
 			printf(
 				'<a href="%1$s" class="conexao-summary-card conexao-summary-card--%2$s"><span class="conexao-summary-value">%3$d</span><span class="conexao-summary-label">%4$s</span></a>',
 				esc_url( $url ),
-				esc_attr( $item['key'] ),
+				esc_attr( $item_key ),
 				(int) $count,
-				esc_html( $item['label'] )
+				esc_html( $item_label )
 			);
 		}
 
