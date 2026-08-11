@@ -35,8 +35,9 @@ services:
       - ./wp-content/themes/conexao-br-irlanda:/var/www/html/wp-content/themes/conexao-br-irlanda
       - ./wp-content/plugins/conexao-content:/var/www/html/wp-content/plugins/conexao-content
       - ./wp-content/plugins/conexao-data-model:/var/www/html/wp-content/plugins/conexao-data-model
-      # - ./wp-content/plugins/conexao-test-events:/var/www/html/wp-content/plugins/conexao-test-events
+      - ./wp-content/plugins/conexao-test-events:/var/www/html/wp-content/plugins/conexao-test-events
       - ./wp-content/plugins/conexao-event-importer:/var/www/html/wp-content/plugins/conexao-event-importer
+      - ./wp-content/plugins/conexao-admin-ux:/var/www/html/wp-content/plugins/conexao-admin-ux
       - ./docker/apache-allowoverride.conf:/etc/apache2/conf-enabled/apache-allowoverride.conf:ro
       - ./docker/entrypoint-fix-permissions.sh:/usr/local/bin/entrypoint-fix-permissions.sh:ro
 

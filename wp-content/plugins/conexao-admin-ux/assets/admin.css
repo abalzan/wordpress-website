@@ -1,0 +1,166 @@
+/**
+ * Conexão BR Irlanda — Admin UX
+ * Design system for the custom content management screens.
+ * Follows WordPress admin conventions while adding a clear, professional card-based layout.
+ */
+
+/* Status badges */
+.conexao-status-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	padding: 3px 10px;
+	border-radius: 12px;
+	font-size: 12px;
+	font-weight: 600;
+	line-height: 1.6;
+	white-space: nowrap;
+	border: 1px solid transparent;
+}
+.conexao-status-dot { font-size: 10px; line-height: 1; }
+.conexao-status-badge--published { background: #edfaef; color: #1a7f37; border-color: #acebbe; }
+.conexao-status-badge--draft { background: #f0f0f1; color: #50575e; border-color: #dcdcde; }
+.conexao-status-badge--review { background: #fef8ee; color: #9a6700; border-color: #f5d49a; }
+.conexao-status-badge--warning { background: #fcf0f2; color: #b32d2e; border-color: #f1adad; }
+.conexao-status-badge--expired { background: #f8f8f8; color: #8c8f94; border-color: #dcdcde; }
+.conexao-status-badge--archived { background: #f8f8f8; color: #646970; border-color: #c3c4c7; text-decoration: line-through; }
+.conexao-status-badge--danger { background: #fcf0f2; color: #b32d2e; border-color: #f1adad; }
+
+/* Summary cards */
+.conexao-summary-cards { display: flex; gap: 12px; margin: 12px 0 20px; flex-wrap: wrap; }
+.conexao-summary-card {
+	display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
+	min-width: 140px; padding: 14px 18px; background: #fff;
+	border: 1px solid #dcdcde; border-radius: 8px;
+	box-shadow: 0 1px 2px rgba(0,0,0,0.04); text-decoration: none;
+	transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.conexao-summary-card:hover { border-color: #0E6B3A; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.conexao-summary-value { font-size: 28px; font-weight: 700; line-height: 1.2; color: #1d2327; }
+.conexao-summary-label { font-size: 13px; color: #50575e; }
+.conexao-summary-card--published .conexao-summary-value { color: #1a7f37; }
+.conexao-summary-card--review .conexao-summary-value { color: #9a6700; }
+.conexao-summary-card--week .conexao-summary-value { color: #0E6B3A; }
+
+/* List table */
+.wp-list-table .column-conexao_status { width: 140px; }
+.wp-list-table .column-conexao_date { width: 110px; }
+.wp-list-table .column-conexao_source { width: 160px; }
+.wp-list-table .column-conexao_location { width: 200px; }
+.conexao-muted { color: #8c8f94; }
+.row-actions .conexao-delete-link { color: #b32d2e; }
+
+/* Empty state */
+.conexao-empty-state {
+	background: #fff; border: 1px dashed #c3c4c7; border-radius: 8px;
+	margin: 20px 0; padding: 40px 20px; text-align: center;
+}
+.conexao-empty-state-inner { max-width: 420px; margin: 0 auto; }
+.conexao-empty-icon { font-size: 48px; width: 48px; height: 48px; color: #8c8f94; margin-bottom: 8px; }
+.conexao-empty-state h2 { font-size: 20px; margin: 8px 0; color: #1d2327; }
+.conexao-empty-state p { color: #50575e; margin-bottom: 20px; }
+
+/* Editor sections */
+.conexao-editor-wrapper { max-width: 100%; }
+.conexao-section {
+	background: #fff; border: 1px solid #dcdcde; border-radius: 8px;
+	margin-bottom: 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); overflow: hidden;
+}
+.conexao-section-header {
+	display: flex; align-items: center; gap: 10px;
+	padding: 14px 18px; border-bottom: 1px solid #f0f0f1; background: #f8f9fa;
+}
+.conexao-section-icon { color: #0E6B3A; font-size: 18px; width: 18px; height: 18px; }
+.conexao-section-title { margin: 0; font-size: 14px; font-weight: 600; color: #1d2327; }
+.conexao-section-body { padding: 18px; }
+.conexao-fields-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px 20px; }
+.conexao-field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.conexao-field--editor { grid-column: 1 / -1; }
+.conexao-field-label { font-size: 13px; font-weight: 600; color: #1d2327; }
+.conexao-required { color: #b32d2e; }
+.conexao-field-input { width: 100%; border-radius: 4px; }
+.conexao-field-help { margin: 2px 0 0; font-size: 12px; color: #646970; line-height: 1.5; }
+
+/* Currency */
+.conexao-currency-wrap { display: flex; align-items: center; }
+.conexao-currency-symbol {
+	padding: 4px 10px; background: #f0f0f1; border: 1px solid #8c8f94;
+	border-right: 0; border-radius: 4px 0 0 4px; color: #50575e; font-weight: 600;
+}
+.conexao-currency-wrap .conexao-field-input { border-radius: 0 4px 4px 0; }
+
+/* Media picker */
+.conexao-media-picker { display: flex; flex-direction: column; gap: 8px; }
+.conexao-media-preview {
+	border: 1px dashed #c3c4c7; border-radius: 6px; min-height: 90px;
+	display: flex; align-items: center; justify-content: center; overflow: hidden;
+	background: #f8f9fa; position: relative;
+}
+.conexao-media-preview img { max-width: 100%; max-height: 180px; display: block; }
+.conexao-media-preview.has-image .conexao-media-placeholder { display: none; }
+.conexao-media-placeholder { color: #8c8f94; font-size: 13px; }
+
+/* Town suggestions */
+.conexao-town-suggestions {
+	display: none; position: absolute; z-index: 100; background: #fff;
+	border: 1px solid #dcdcde; border-radius: 4px;
+	box-shadow: 0 4px 12px rgba(0,0,0,0.1); max-height: 200px; overflow-y: auto; width: 100%;
+}
+.conexao-town-suggestions.is-visible { display: block; }
+.conexao-town-suggestion { padding: 8px 12px; cursor: pointer; font-size: 13px; }
+.conexao-town-suggestion:hover, .conexao-town-suggestion.is-highlighted { background: #f0f7f2; }
+
+/* Readonly */
+.conexao-readonly-value {
+	padding: 8px 10px; background: #f8f9fa; border: 1px solid #dcdcde;
+	border-radius: 4px; font-size: 13px; color: #50575e;
+	min-height: 36px; display: flex; align-items: center;
+}
+
+/* Publish box */
+.conexao-publish-box { display: flex; flex-direction: column; gap: 14px; }
+.conexao-current-status { padding-bottom: 10px; border-bottom: 1px solid #f0f0f1; }
+.conexao-where-appears h4 { margin: 0 0 8px; font-size: 13px; }
+.conexao-where-appears p { margin: 4px 0; font-size: 13px; }
+.conexao-status-select label { display: block; margin-bottom: 6px; }
+.conexao-status-select select { width: 100%; }
+.conexao-publish-actions { display: flex; flex-direction: column; gap: 8px; }
+.conexao-publish-actions .button { width: 100%; justify-content: center; text-align: center; }
+.conexao-danger-zone { display: flex; flex-direction: column; gap: 6px; padding-top: 12px; border-top: 1px solid #f0f0f1; }
+.conexao-danger-zone a { font-size: 13px; }
+.conexao-archive-link { color: #646970; }
+.conexao-delete-link { color: #b32d2e !important; }
+.conexao-back-link { margin: 0; font-size: 13px; }
+
+/* Import banner */
+.conexao-import-banner {
+	background: #f8f9fa; border: 1px solid #dcdcde; border-left: 4px solid #0E6B3A;
+	border-radius: 6px; padding: 14px 18px; margin-bottom: 16px;
+}
+.conexao-import-banner--needs_review, .conexao-import-banner--source_not_found {
+	border-left-color: #dba617; background: #fef8ee;
+}
+.conexao-import-banner--expired, .conexao-import-banner--rejected {
+	border-left-color: #b32d2e; background: #fcf0f2;
+}
+.conexao-import-banner-head { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; font-size: 14px; }
+.conexao-import-warning { color: #9a6700; font-size: 16px; }
+.conexao-import-details p { margin: 4px 0; font-size: 13px; }
+.conexao-import-note { color: #9a6700; font-style: italic; }
+
+/* Responsive */
+@media (max-width: 782px) {
+	.conexao-summary-cards { gap: 8px; }
+	.conexao-summary-card { min-width: 108px; padding: 10px 12px; }
+	.conexao-summary-value { font-size: 22px; }
+	.conexao-fields-grid { grid-template-columns: 1fr; }
+	.conexao-section-body { padding: 14px; }
+}
+
+/* Focus states */
+.conexao-field-input:focus, .conexao-section .wp-editor-wrap:focus-within {
+	outline: 2px solid #0E6B3A; outline-offset: 1px; border-radius: 4px;
+}
+.conexao-summary-card:focus-visible, .conexao-delete-link:focus-visible, .conexao-archive-link:focus-visible {
+	outline: 2px solid #0E6B3A; outline-offset: 2px;
+}
