@@ -287,17 +287,58 @@ final class Conexao_Admin_Ux_Fields {
 			),
 		);
 
+		// Virtual fields (title, content) are rendered with name
+		// conexao_fields[key] but map to post_title/post_content columns.
+		// The form also includes hidden post_title/content inputs that
+		// mirror the current post values (empty for new auto-draft posts).
+		// We must check the conexao_fields values first, then fall back
+		// to the hidden post_title/content for cases where the visible
+		// field was not rendered or submitted.
+		$virtual_title_keys = array(
+			'_event_title',
+			'_news_title',
+			'_guide_title',
+			'_job_title',
+			'_sponsor_name',
+		);
+
+		$virtual_content_keys = array(
+			'_event_description',
+			'_news_content',
+			'_guide_content',
+			'_job_description',
+			'_sponsor_description',
+		);
+
 		foreach ( $fields as $field ) {
 			if ( empty( $field['required'] ) ) {
 				continue;
 			}
 
-			$id     = ltrim( $field['key'], '_' );
-			$value  = isset( $meta[ $id ] ) ? trim( (string) $meta[ $id ] ) : '';
+			$key = $field['key'];
+			$id  = ltrim( $key, '_' );
+
+			// For virtual title fields, check conexao_fields first (the visible
+			// input), then fall back to post_title (the hidden mirror field).
+			if ( in_array( $key, $virtual_title_keys, true ) ) {
+				$value = isset( $meta[ $id ] ) ? trim( (string) $meta[ $id ] ) : '';
+				if ( '' === $value && isset( $data['post_title'] ) ) {
+					$value = trim( (string) $data['post_title'] );
+				}
+			} elseif ( in_array( $key, $virtual_content_keys, true ) ) {
+				// For virtual content fields, check conexao_fields first,
+				// then fall back to content.
+				$value = isset( $meta[ $id ] ) ? trim( (string) $meta[ $id ] ) : '';
+				if ( '' === $value && isset( $data['content'] ) ) {
+					$value = trim( (string) $data['content'] );
+				}
+			} else {
+				$value = isset( $meta[ $id ] ) ? trim( (string) $meta[ $id ] ) : '';
+			}
 
 			if ( '' === $value ) {
-				$label = isset( $label_map[ $config['post_type'] ][ $field['key'] ] )
-					? $label_map[ $config['post_type'] ][ $field['key'] ]
+				$label = isset( $label_map[ $config['post_type'] ][ $key ] )
+					? $label_map[ $config['post_type'] ][ $key ]
 					: strtolower( $field['label'] );
 				$errors[] = 'Por favor, informe ' . $label . '.';
 			}
@@ -502,3 +543,4 @@ final class Conexao_Admin_Ux_Fields {
 		}
 	}
 }
+ 
