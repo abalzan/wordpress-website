@@ -439,7 +439,8 @@ final class Conexao_Admin_Ux_Editor {
 		$errors = get_option( 'conexao_admin_ux_errors_' . $post_id, false );
 		if ( $errors ) {
 			$location = add_query_arg( 'conexao_validation', '1', $location );
-			delete_option( 'conexao_admin_ux_errors_' . $post_id );
+			// Keep the errors option so show_save_notice() can render the
+			// specific field messages on the redirected editor screen.
 		}
 
 		$notice = get_option( 'conexao_admin_ux_notice_' . $post_id, false );
@@ -498,7 +499,25 @@ final class Conexao_Admin_Ux_Editor {
 		}
 
 		if ( isset( $_GET['conexao_validation'] ) ) {
-			echo '<div class="notice notice-error is-dismissible"><p><strong>' . esc_html__( 'Não foi possível publicar.', 'conexao-admin-ux' ) . '</strong> ' . esc_html__( 'Preencha os campos obrigatórios antes de publicar.', 'conexao-admin-ux' ) . '</p></div>';
+			$post_id = isset( $_GET['post'] ) ? absint( $_GET['post'] ) : 0;
+			$errors  = $post_id ? get_option( 'conexao_admin_ux_errors_' . $post_id, array() ) : array();
+
+			echo '<div class="notice notice-error is-dismissible">';
+			echo '<p><strong>' . esc_html__( 'Não foi possível publicar.', 'conexao-admin-ux' ) . '</strong></p>';
+			if ( is_array( $errors ) && ! empty( $errors ) ) {
+				echo '<ul class="conexao-validation-list">';
+				foreach ( $errors as $error ) {
+					echo '<li>' . esc_html( $error ) . '</li>';
+				}
+				echo '</ul>';
+			} else {
+				echo '<p>' . esc_html__( 'Preencha os campos obrigatórios antes de publicar.', 'conexao-admin-ux' ) . '</p>';
+			}
+			echo '</div>';
+
+			if ( $post_id ) {
+				delete_option( 'conexao_admin_ux_errors_' . $post_id );
+			}
 		}
 	}
 }

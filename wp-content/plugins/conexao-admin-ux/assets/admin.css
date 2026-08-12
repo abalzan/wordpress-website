@@ -132,6 +132,17 @@
 .conexao-delete-link { color: #b32d2e !important; }
 .conexao-back-link { margin: 0; font-size: 13px; }
 
+/* Validation list */
+.conexao-validation-list {
+	margin: 6px 0 0;
+	padding-left: 20px;
+	list-style: disc;
+}
+.conexao-validation-list li {
+	margin: 2px 0;
+	font-size: 13px;
+}
+
 /* Import banner */
 .conexao-import-banner {
 	background: #f8f9fa; border: 1px solid #dcdcde; border-left: 4px solid #0E6B3A;

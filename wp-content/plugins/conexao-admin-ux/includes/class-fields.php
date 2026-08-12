@@ -35,7 +35,13 @@ final class Conexao_Admin_Ux_Fields {
 		$aria_req = $req ? ' aria-required="true"' : '';
 		$req_html = $req ? ' <span class="conexao-required" aria-hidden="true">*</span>' : '';
 
-		$required_attr = $req ? ' required="required"' : '';
+		// Do NOT render the HTML5 `required` attribute. On a brand-new post
+		// (auto-draft) the virtual title field is empty, so the browser's
+		// native validation would block form submission entirely — making the
+		// Publish button appear "disabled" with no admin UX explanation.
+		// Required-field enforcement is handled server-side in validate(),
+		// which produces a clear, specific error message on the redirect.
+		$required_attr = '';
 
 		$html = '';
 		$html .= '<div class="conexao-field conexao-field--' . esc_attr( $type ) . '" data-field-key="' . esc_attr( $key ) . '">';
@@ -275,6 +281,9 @@ final class Conexao_Admin_Ux_Fields {
 			'event'  => array(
 				'_event_date'  => 'data de início',
 				'_event_title' => 'título',
+			),
+			'sponsor' => array(
+				'_sponsor_name' => 'o nome do apoiador',
 			),
 		);
 
