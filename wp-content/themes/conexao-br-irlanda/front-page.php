@@ -175,6 +175,7 @@ $hero_image_id = conexao_hero_image_attachment_id();
 									<?php endif; ?>
 									<h3 class="featured-article-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
 									<p class="featured-article-excerpt"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 30, '...' ) ); ?></p>
+									<?php if ( 'sponsor' !== get_post_type() ) : ?>
 									<div class="featured-article-meta">
 										<span>
 											<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
@@ -191,6 +192,7 @@ $hero_image_id = conexao_hero_image_attachment_id();
 											<?php echo esc_html( conexao_reading_time_text() ); ?>
 										</span>
 									</div>
+									<?php endif; ?>
 								</div>
 							</article>
 						<?php else : ?>
@@ -211,10 +213,12 @@ $hero_image_id = conexao_hero_image_attachment_id();
 								<div class="post-card-body">
 									<h3 class="post-card-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
 									<p class="post-card-excerpt"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 15, '...' ) ); ?></p>
+									<?php if ( 'sponsor' !== get_post_type() ) : ?>
 									<div class="post-card-meta">
 										<span><?php echo esc_html( get_the_date() ); ?></span>
 										<span><?php echo esc_html( conexao_reading_time_text() ); ?></span>
 									</div>
+									<?php endif; ?>
 								</div>
 							</article>
 							<?php if ( $count === $featured->post_count - 1 ) : ?></div><?php endif; ?>

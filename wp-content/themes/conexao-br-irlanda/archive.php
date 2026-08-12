@@ -51,6 +51,7 @@
 								<?php endif; ?>
 								<h2 class="archive-card-title"><a href="<?php echo esc_url( $card_link ); ?>"<?php echo $card_target . $card_rel; /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */ ?>><?php the_title(); ?></a></h2>
 								<p class="archive-card-excerpt"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 18, '...' ) ); ?></p>
+								<?php if ( ! $is_sponsor ) : ?>
 								<div class="archive-card-meta">
 									<span>
 										<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2">
@@ -67,6 +68,7 @@
 										<?php echo esc_html( conexao_reading_time_text() ); ?>
 									</span>
 								</div>
+								<?php endif; ?>
 							</div>
 						</article>
 					<?php endif; ?>

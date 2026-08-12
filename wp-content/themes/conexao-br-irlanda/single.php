@@ -19,11 +19,13 @@
 			}
 			?>
 			<h1 class="entry-title"><?php the_title(); ?></h1>
+			<?php if ( 'sponsor' !== get_post_type() ) : ?>
 			<div class="entry-meta">
 				<span class="post-author"><?php the_author(); ?></span>
 				<?php conexao_post_meta(); ?>
 				<span class="reading-time"><?php echo esc_html( conexao_reading_time_text() ); ?></span>
 			</div>
+			<?php endif; ?>
 		</div>
 	</header>
 	<div class="site-container">

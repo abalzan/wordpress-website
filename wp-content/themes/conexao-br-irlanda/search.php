@@ -19,6 +19,7 @@
 						<div class="archive-card-body">
 							<h2 class="archive-card-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>
 							<p class="archive-card-excerpt"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 18, '...' ) ); ?></p>
+							<?php if ( 'sponsor' !== get_post_type() ) : ?>
 							<div class="archive-card-meta">
 								<span>
 									<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2">
@@ -28,6 +29,7 @@
 									<?php echo esc_html( get_the_date() ); ?>
 								</span>
 							</div>
+							<?php endif; ?>
 						</div>
 					</article>
 				<?php endwhile; ?>
