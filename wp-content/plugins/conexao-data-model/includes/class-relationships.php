@@ -9,6 +9,7 @@ final class Conexao_Data_Model_Relationships {
 		$categories = array(
 			'Moradia', 'Empregos', 'Saúde', 'Família', 'Transporte', 'Finanças',
 			'Benefícios', 'Onde Comer', 'Educação', 'Documentos', 'Turismo', 'Negócios',
+			'Treinamento',
 		);
 		$counties = array( 'Dublin', 'Laois', 'Cork', 'Galway', 'Limerick', 'Kildare', 'Meath', 'Wicklow', 'Waterford' );
 

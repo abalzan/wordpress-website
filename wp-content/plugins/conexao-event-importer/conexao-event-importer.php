@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Conexão BR Irlanda — Event Importer
- * Description: Automated Events aggregation from external sources (Laois Tourism, Laois County Council, and extensible to more). Imports, normalizes, deduplicates and syncs events into the central WordPress Events database.
- * Version: 1.0.0
+ * Description: Automated Events aggregation from external sources (Laois Tourism, Laois County Council, Local Enterprise Office — Laois, and extensible to more). Imports, normalizes, deduplicates and syncs events into the central WordPress Events database.
+ * Version: 1.1.0
  * Text Domain: conexao-event-importer
  *
  * @package Conexao_Event_Importer
@@ -11,7 +11,7 @@
 defined( 'ABSPATH' ) || exit;
 
 define( 'CONEXAO_EVENT_IMPORTER_FILE', __FILE__ );
-define( 'CONEXAO_EVENT_IMPORTER_VERSION', '1.0.0' );
+define( 'CONEXAO_EVENT_IMPORTER_VERSION', '1.1.0' );
 define( 'CONEXAO_EVENT_IMPORTER_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CONEXAO_EVENT_IMPORTER_URL', plugin_dir_url( __FILE__ ) );
 
@@ -26,6 +26,7 @@ require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/sources/abstract-class-sourc
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/sources/class-icalendar-source.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/sources/class-laois-tourism-source.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/sources/class-laois-council-source.php';
+require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/sources/class-leo-laois-source.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-importer.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-import-scheduler.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-import-dashboard.php';

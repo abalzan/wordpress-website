@@ -692,18 +692,32 @@ function conexao_event_archive_query( $query ) {
 		$query->set( 'orderby', 'meta_value' );
 		$query->set( 'order', 'ASC' );
 
+		$tax_query = $query->get( 'tax_query' );
+		if ( ! is_array( $tax_query ) ) {
+			$tax_query = array();
+		}
+
 		// Town/city filter via ?cidade=slug
 		$town = isset( $_GET['cidade'] ) ? sanitize_title( wp_unslash( $_GET['cidade'] ) ) : '';
 		if ( $town ) {
-			$tax_query = $query->get( 'tax_query' );
-			if ( ! is_array( $tax_query ) ) {
-				$tax_query = array();
-			}
 			$tax_query[] = array(
 				'taxonomy' => 'conexao_town',
 				'field'    => 'slug',
 				'terms'    => $town,
 			);
+		}
+
+		// Category filter via ?categoria=slug (e.g., "treinamento")
+		$category = isset( $_GET['categoria'] ) ? sanitize_title( wp_unslash( $_GET['categoria'] ) ) : '';
+		if ( $category ) {
+			$tax_query[] = array(
+				'taxonomy' => 'conexao_category',
+				'field'    => 'slug',
+				'terms'    => $category,
+			);
+		}
+
+		if ( ! empty( $tax_query ) ) {
 			$query->set( 'tax_query', $tax_query );
 		}
 	}

@@ -171,7 +171,10 @@ class Conexao_Event_Importer_Engine {
 		}
 
 		// Fall back to source ID-based routing for legacy/website sources.
-		switch ( $source['id'] ) {
+		// Normalize the source ID for matching (convert hyphens to underscores).
+		$normalized_id = str_replace( '-', '_', $source['id'] );
+		
+		switch ( $normalized_id ) {
 			case 'laois_tourism':
 				// If Laois Tourism is configured as iCalendar type, use that handler.
 				if ( 'icalendar' === $source_type ) {
@@ -180,6 +183,9 @@ class Conexao_Event_Importer_Engine {
 				return new Conexao_Source_Laois_Tourism( $source );
 			case 'laois_council':
 				return new Conexao_Source_Laois_Council( $source );
+			case 'leo_laois':
+			case 'local_enterprise_office_laois':
+				return new Conexao_Source_LEO_Laois( $source );
 			default:
 				// Allow third-party handlers to be registered.
 				return apply_filters( 'conexao_event_importer_get_handler', null, $source );

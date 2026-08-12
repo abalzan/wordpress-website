@@ -44,6 +44,20 @@ class Conexao_Event_Sources {
 				'import_frequency'   => 'weekly',
 				'last_checked'       => '',
 			),
+			'leo_laois' => array(
+				'id'                 => 'leo_laois',
+				'name'               => 'Local Enterprise Office — Laois',
+				'url'                => 'https://www.localenterprise.ie/laois/training-events/online-bookings/',
+				'type'               => 'leo_training',
+				'status'             => 'active',
+				'last_import'        => '',
+				'last_import_status' => '',
+				'events_imported'    => 0,
+				'last_error'         => '',
+				'import_frequency'   => 'weekly',
+				'last_checked'       => '',
+				'category'           => 'Treinamento',
+			),
 		);
 	}
 
@@ -386,11 +400,12 @@ class Conexao_Event_Sources {
 	 */
 	protected function get_type_label( $type ) {
 		$labels = array(
-			'icalendar'  => __( 'iCalendar / Webcal', 'conexao-event-importer' ),
-			'website'    => __( 'Website', 'conexao-event-importer' ),
-			'facebook'   => __( 'Facebook', 'conexao-event-importer' ),
-			'instagram'  => __( 'Instagram', 'conexao-event-importer' ),
-			'eventbrite' => __( 'Eventbrite', 'conexao-event-importer' ),
+			'icalendar'    => __( 'iCalendar / Webcal', 'conexao-event-importer' ),
+			'website'      => __( 'Website', 'conexao-event-importer' ),
+			'facebook'     => __( 'Facebook', 'conexao-event-importer' ),
+			'instagram'    => __( 'Instagram', 'conexao-event-importer' ),
+			'eventbrite'   => __( 'Eventbrite', 'conexao-event-importer' ),
+			'leo_training' => __( 'Website / Training Events', 'conexao-event-importer' ),
 		);
 		return isset( $labels[ $type ] ) ? $labels[ $type ] : ucfirst( $type );
 	}
