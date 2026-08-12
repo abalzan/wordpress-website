@@ -53,6 +53,19 @@ final class Conexao_Data_Model_Meta {
 		if ( empty( self::$fields[ $post_type ] ) || ! current_user_can( 'edit_post', $post_id ) ) {
 			return;
 		}
+
+		// Skip post types managed by the Conexão Admin UX plugin.
+		// The admin UX plugin has its own save handler that persists all
+		// fields through Conexao_Admin_Ux_Fields::save(). Running this
+		// legacy handler alongside it would be redundant and could cause
+		// conflicts (e.g. overwriting values with empty POST data because
+		// the admin UX form uses different field names).
+		if ( class_exists( 'Conexao_Admin_Ux_Config' ) ) {
+			$managed_types = Conexao_Admin_Ux_Config::SUPPORTED_TYPES;
+			if ( in_array( $post_type, $managed_types, true ) ) {
+				return;
+			}
+		}
 		foreach ( self::$fields[ $post_type ] as $key => $type ) {
 			$id = ltrim( $key, '_' );
 			if ( 'checkbox' === $type ) {

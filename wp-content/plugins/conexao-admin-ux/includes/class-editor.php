@@ -23,6 +23,14 @@ final class Conexao_Admin_Ux_Editor {
 	private $config;
 
 	/**
+	 * Recursion guard: tracks post IDs currently being saved to prevent
+	 * infinite loops when wp_update_post() re-fires save_post_{type}.
+	 *
+	 * @var array<int,bool>
+	 */
+	private static $saving = array();
+
+	/**
 	 * Constructor.
 	 *
 	 * @param string $post_type Post type.
@@ -345,11 +353,20 @@ final class Conexao_Admin_Ux_Editor {
 			return;
 		}
 
+		// Prevent infinite recursion: wp_update_post() re-fires save_post_{type},
+		// which would call this method again before Fields::save() is reached.
+		if ( ! empty( self::$saving[ $post_id ] ) ) {
+			return;
+		}
+		self::$saving[ $post_id ] = true;
+
 		if ( ! isset( $_POST['conexao_admin_ux_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['conexao_admin_ux_nonce'] ) ), 'conexao_admin_ux_save' ) ) {
+			unset( self::$saving[ $post_id ] );
 			return;
 		}
 
 		if ( ! current_user_can( 'edit_post', $post_id ) ) {
+			unset( self::$saving[ $post_id ] );
 			return;
 		}
 
@@ -389,6 +406,13 @@ final class Conexao_Admin_Ux_Editor {
 			'post_content' => $content,
 		);
 
+		// For content types whose "description" is a textarea (not a rich
+		// editor), also populate post_excerpt so public templates that use
+		// get_the_excerpt() display the saved description correctly.
+		if ( 'sponsor' === $this->post_type ) {
+			$post_array['post_excerpt'] = $content;
+		}
+
 		// Set WordPress publish/draft status.
 		if ( 'published' === $status ) {
 			$post_array['post_status'] = 'publish';
@@ -405,8 +429,16 @@ final class Conexao_Admin_Ux_Editor {
 		// (_event_time, _event_location, county/town taxonomies).
 		Conexao_Admin_Ux_Fields::sync_legacy_event_meta( $post_id, $data );
 
+		// Sync the sponsor logo meta to the WordPress featured image so
+		// public templates using has_post_thumbnail() / the_post_thumbnail()
+		// display the logo correctly.
+		$this->sync_media_to_thumbnail( $post_id, $data );
+
 		// Save the custom status.
 		Conexao_Admin_Ux_Actions::set_status( $post_id, $this->post_type, $status );
+
+		// Release the recursion guard.
+		unset( self::$saving[ $post_id ] );
 
 		// Set the notice for the redirect.
 		if ( $errors ) {
@@ -425,6 +457,43 @@ final class Conexao_Admin_Ux_Editor {
 				$message = $this->config['labels']['success_saved'];
 			}
 			update_option( 'conexao_admin_ux_notice_' . $post_id, $message, false );
+		}
+	}
+
+	/**
+	 * Sync a media-type meta field to the WordPress post thumbnail (featured image).
+	 *
+	 * The public theme uses has_post_thumbnail() / the_post_thumbnail() to display
+	 * sponsor logos. This helper ensures the WordPress featured image is set when
+	 * a media field value (attachment ID) is saved.
+	 *
+	 * @param int   $post_id Post ID.
+	 * @param array $data    Unslashed POST data.
+	 */
+	private function sync_media_to_thumbnail( $post_id, $data ) {
+		// Map of post type → meta key (without leading underscore) that holds the attachment ID.
+		$media_fields = array(
+			'sponsor' => 'sponsor_logo',
+			'event'   => 'event_banner',
+			'news'    => 'news_featured_image',
+			'guide'   => 'guide_featured_image',
+		);
+
+		if ( ! isset( $media_fields[ $this->post_type ] ) ) {
+			return;
+		}
+
+		$field_key = $media_fields[ $this->post_type ];
+		$meta_key  = '_' . $field_key;
+		$meta      = isset( $data['conexao_fields'] ) ? $data['conexao_fields'] : array();
+		$value     = isset( $meta[ $field_key ] ) ? $meta[ $field_key ] : '';
+
+		$attachment_id = absint( $value );
+		if ( $attachment_id ) {
+			set_post_thumbnail( $post_id, $attachment_id );
+		} elseif ( '' === $value || '0' === $value ) {
+			// Explicitly cleared — remove the featured image.
+			delete_post_meta( $post_id, '_thumbnail_id' );
 		}
 	}
 

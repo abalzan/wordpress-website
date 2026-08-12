@@ -138,6 +138,10 @@ final class Conexao_Admin_Ux_Fields {
 				$html .= '</div>';
 				break;
 
+			case 'number':
+				$html .= '<input type="number" class="conexao-field-input" id="' . esc_attr( $id ) . '" name="' . esc_attr( $name ) . '" value="' . esc_attr( $value ) . '"' . $required_attr . $aria_req . ' />';
+				break;
+
 			case 'media':
 				$attachment_id = absint( $value );
 				$preview_url   = wp_get_attachment_image_url( $attachment_id, 'medium' );
@@ -232,6 +236,9 @@ final class Conexao_Admin_Ux_Fields {
 					break;
 				case 'media':
 					$value = absint( $value ) ? absint( $value ) : esc_url_raw( $value );
+					break;
+				case 'number':
+					$value = ( '' !== $value && null !== $value ) ? absint( $value ) : '';
 					break;
 				case 'checkbox':
 					$value = ! empty( $value ) ? 1 : 0;
