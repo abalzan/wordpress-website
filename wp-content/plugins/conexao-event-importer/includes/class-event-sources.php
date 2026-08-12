@@ -58,11 +58,31 @@ class Conexao_Event_Sources {
 				'last_checked'       => '',
 				'category'           => 'Treinamento',
 			),
+			'heritage_week' => array(
+				'id'                 => 'heritage_week',
+				'name'               => 'National Heritage Week',
+				'url'                => 'https://www.heritageweek.ie/event-listings?q=&where%5B%5D=laois',
+				'type'               => 'website',
+				'status'             => 'active',
+				'last_import'        => '',
+				'last_import_status' => '',
+				'events_imported'    => 0,
+				'last_error'         => '',
+				'import_frequency'   => 'weekly',
+				'last_checked'       => '',
+				'county'             => 'Laois',
+				'category'           => 'Heritage',
+			),
 		);
 	}
 
 	/**
 	 * Get all sources.
+	 *
+	 * Lazily merges any missing default sources (e.g. heritage_week on older
+	 * installs) and migrates legacy source IDs to their canonical form.
+	 * This keeps the source list complete and idempotent without overwriting
+	 * user changes to existing sources.
 	 *
 	 * @return array
 	 */
@@ -71,7 +91,37 @@ class Conexao_Event_Sources {
 		if ( ! is_array( $sources ) || empty( $sources ) ) {
 			$sources = $this->get_defaults();
 			update_option( self::OPTION_KEY, $sources, false );
+			return $sources;
 		}
+
+		$changed = false;
+
+		// Migrate legacy source IDs to their canonical form.
+		if ( isset( $sources['national-heritage-week'] ) && ! isset( $sources['heritage_week'] ) ) {
+			$sources['heritage_week']             = $sources['national-heritage-week'];
+			$sources['heritage_week']['id']       = 'heritage_week';
+			$sources['heritage_week']['name']     = 'National Heritage Week';
+			$sources['heritage_week']['county']   = 'Laois';
+			$sources['heritage_week']['category'] = 'Heritage';
+			unset( $sources['national-heritage-week'] );
+			$changed = true;
+		}
+
+		// Merge in any default sources that are missing.
+		foreach ( $this->get_defaults() as $default_id => $default_source ) {
+			if ( ! isset( $sources[ $default_id ] ) ) {
+				// Preserve other user-added sources; only add missing defaults.
+				$sources[ $default_id ]            = $default_source;
+				$sources[ $default_id ]['id']      = $default_id;
+				$sources[ $default_id ]['status']  = 'active';
+				$changed = true;
+			}
+		}
+
+		if ( $changed ) {
+			update_option( self::OPTION_KEY, $sources, false );
+		}
+
 		return $sources;
 	}
 
@@ -411,6 +461,19 @@ class Conexao_Event_Sources {
 	}
 
 	/**
+	 * Get the display label for a source, allowing per-source overrides.
+	 *
+	 * @param array $source Source config.
+	 * @return string
+	 */
+	protected function get_source_type_label( $source ) {
+		if ( 'heritage_week' === $source['id'] ) {
+			return __( 'Heritage Week / Website', 'conexao-event-importer' );
+		}
+		return $this->get_type_label( isset( $source['type'] ) ? $source['type'] : 'website' );
+	}
+
+	/**
 	 * Render the sources table.
 	 *
 	 * @param array $sources Source list.
@@ -446,8 +509,11 @@ class Conexao_Event_Sources {
 						</td>
 						<td>
 							<span class="conexao-source-type conexao-source-type--<?php echo esc_attr( $source['type'] ); ?>">
-								<?php echo esc_html( $this->get_type_label( $source['type'] ) ); ?>
+								<?php echo esc_html( $this->get_source_type_label( $source ) ); ?>
 							</span>
+							<?php if ( 'heritage_week' === $source['id'] ) : ?>
+								<br><span class="description"><?php esc_html_e( 'County: Laois · Category: Heritage', 'conexao-event-importer' ); ?></span>
+							<?php endif; ?>
 						</td>
 						<td>
 							<?php if ( 'active' === $source['status'] ) : ?>
@@ -731,6 +797,7 @@ class Conexao_Event_Sources {
 					<th><?php esc_html_e( 'Found', 'conexao-event-importer' ); ?></th>
 					<th><?php esc_html_e( 'New', 'conexao-event-importer' ); ?></th>
 					<th><?php esc_html_e( 'Updated', 'conexao-event-importer' ); ?></th>
+					<th><?php esc_html_e( 'Unchanged', 'conexao-event-importer' ); ?></th>
 					<th><?php esc_html_e( 'Duplicates', 'conexao-event-importer' ); ?></th>
 					<th><?php esc_html_e( 'Needs Review', 'conexao-event-importer' ); ?></th>
 					<th><?php esc_html_e( 'Errors', 'conexao-event-importer' ); ?></th>
@@ -745,6 +812,7 @@ class Conexao_Event_Sources {
 						<td><?php echo esc_html( $entry['found'] ); ?></td>
 						<td><?php echo esc_html( $entry['new'] ); ?></td>
 						<td><?php echo esc_html( $entry['updated'] ); ?></td>
+						<td><?php echo esc_html( isset( $entry['unchanged'] ) ? $entry['unchanged'] : 0 ); ?></td>
 						<td><?php echo esc_html( $entry['duplicates'] ); ?></td>
 						<td><?php echo esc_html( $entry['needs_review'] ); ?></td>
 						<td><?php echo esc_html( $entry['errors'] ); ?></td>
@@ -778,6 +846,7 @@ class Conexao_Event_Sources {
 							<th><?php esc_html_e( 'Found', 'conexao-event-importer' ); ?></th>
 							<th><?php esc_html_e( 'New', 'conexao-event-importer' ); ?></th>
 							<th><?php esc_html_e( 'Updated', 'conexao-event-importer' ); ?></th>
+							<th><?php esc_html_e( 'Unchanged', 'conexao-event-importer' ); ?></th>
 							<th><?php esc_html_e( 'Duplicates', 'conexao-event-importer' ); ?></th>
 							<th><?php esc_html_e( 'Needs Review', 'conexao-event-importer' ); ?></th>
 							<th><?php esc_html_e( 'Errors', 'conexao-event-importer' ); ?></th>
@@ -792,6 +861,7 @@ class Conexao_Event_Sources {
 								<td><?php echo esc_html( $entry['found'] ); ?></td>
 								<td><?php echo esc_html( $entry['new'] ); ?></td>
 								<td><?php echo esc_html( $entry['updated'] ); ?></td>
+								<td><?php echo esc_html( isset( $entry['unchanged'] ) ? $entry['unchanged'] : 0 ); ?></td>
 								<td><?php echo esc_html( $entry['duplicates'] ); ?></td>
 								<td><?php echo esc_html( $entry['needs_review'] ); ?></td>
 								<td><?php echo esc_html( $entry['errors'] ); ?></td>

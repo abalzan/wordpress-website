@@ -21,12 +21,19 @@ $event_url        = get_post_meta( $event_id, '_event_url', true );
 $event_url        = $event_url ? $event_url : get_permalink();
 $event_target     = conexao_event_link_target_attrs( $event_id );
 $event_banner     = get_post_meta( $event_id, '_event_banner', true );
+$banner_attach_id = get_post_meta( $event_id, '_event_banner_attachment_id', true );
 $event_date       = get_post_meta( $event_id, '_event_date', true );
 $event_time       = get_post_meta( $event_id, '_event_time', true );
 $event_location   = get_post_meta( $event_id, '_event_location', true );
 $event_reg        = get_post_meta( $event_id, '_event_registration', true );
 $event_counties   = get_the_terms( $event_id, 'conexao_county' );
 $event_categories = get_the_terms( $event_id, 'conexao_category' );
+
+// Determine the best image source: prefer WordPress attachment, then external URL, then placeholder.
+$has_attachment = $banner_attach_id && wp_attachment_is_image( $banner_attach_id );
+if ( ! $has_attachment ) {
+	$has_attachment = has_post_thumbnail( $event_id );
+}
 
 $day   = $event_date ? date( 'd', strtotime( $event_date ) ) : '--';
 $month = $event_date ? date( 'M', strtotime( $event_date ) ) : '---';
@@ -35,10 +42,27 @@ $month = $event_date ? date( 'M', strtotime( $event_date ) ) : '---';
 <article id="post-<?php the_ID(); ?>" <?php post_class( 'event-card' ); ?>>
 
 	<a class="event-card-banner" href="<?php echo esc_url( $event_url ); ?>" aria-label="<?php echo esc_attr( sprintf( 'Banner para %s', get_the_title() ) ); ?>"<?php echo $event_target; /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */ ?>>
-		<?php if ( $event_banner ) : ?>
+		<?php if ( $has_attachment ) : ?>
+			<?php
+			// Use WordPress image functions for responsive images and proper sizing.
+			// This ensures the image is correctly scaled for the card dimensions.
+			if ( $banner_attach_id && wp_attachment_is_image( $banner_attach_id ) ) {
+				echo wp_get_attachment_image(
+					$banner_attach_id,
+					'conexao-event-banner',
+					false,
+					array(
+						'class'   => 'event-card-banner-img',
+						'loading' => 'lazy',
+						'alt'     => esc_attr( get_the_title() ),
+					)
+				);
+			} else {
+				the_post_thumbnail( 'conexao-event-banner', array( 'class' => 'event-card-banner-img', 'loading' => 'lazy', 'alt' => esc_attr( get_the_title() ) ) );
+			}
+			?>
+		<?php elseif ( $event_banner ) : ?>
 			<img class="event-card-banner-img" src="<?php echo esc_url( $event_banner ); ?>" alt="<?php the_title_attribute(); ?>" loading="lazy">
-		<?php elseif ( has_post_thumbnail() ) : ?>
-			<?php the_post_thumbnail( 'conexao-card', array( 'class' => 'event-card-banner-img', 'loading' => 'lazy' ) ); ?>
 		<?php else : ?>
 			<img class="event-card-banner-img" src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/events/event-placeholder.svg' ); ?>" alt="" loading="lazy">
 		<?php endif; ?>

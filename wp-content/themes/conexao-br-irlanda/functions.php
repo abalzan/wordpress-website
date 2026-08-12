@@ -731,14 +731,16 @@ function conexao_image_sizes() {
 	add_image_size( 'conexao-card', 400, 300, true );
 	add_image_size( 'conexao-hero', 1200, 600, true );
 	add_image_size( 'conexao-thumb', 200, 150, true );
+	add_image_size( 'conexao-event-banner', 640, 360, true );
 }
 add_action( 'after_setup_theme', 'conexao_image_sizes' );
 
 function conexao_custom_image_sizes( $sizes ) {
 	return array_merge( $sizes, array(
-		'conexao-card'  => __( 'Card do Portal', 'conexao-br-irlanda' ),
-		'conexao-hero'  => __( 'Hero do Portal', 'conexao-br-irlanda' ),
-		'conexao-thumb' => __( 'Miniatura do Portal', 'conexao-br-irlanda' ),
+		'conexao-card'         => __( 'Card do Portal', 'conexao-br-irlanda' ),
+		'conexao-hero'         => __( 'Hero do Portal', 'conexao-br-irlanda' ),
+		'conexao-thumb'        => __( 'Miniatura do Portal', 'conexao-br-irlanda' ),
+		'conexao-event-banner' => __( 'Banner de Evento', 'conexao-br-irlanda' ),
 	) );
 }
 add_filter( 'image_size_names_choose', 'conexao_custom_image_sizes' );

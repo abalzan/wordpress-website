@@ -25,8 +25,10 @@ require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-sources.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/sources/abstract-class-source.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/sources/class-icalendar-source.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/sources/class-laois-tourism-source.php';
+require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/sources/class-heritage-week-source.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/sources/class-laois-council-source.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/sources/class-leo-laois-source.php';
+require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-image-handler.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-importer.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-import-scheduler.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-import-dashboard.php';
@@ -132,6 +134,10 @@ final class Conexao_Event_Importer {
 			'_event_review_note',
 		);
 
+		$int_meta = array(
+			'_event_banner_attachment_id',
+		);
+
 		foreach ( $string_meta as $key ) {
 			register_post_meta(
 				'event',
@@ -139,6 +145,18 @@ final class Conexao_Event_Importer {
 				array(
 					'single'       => true,
 					'type'         => 'string',
+					'show_in_rest' => true,
+				)
+			);
+		}
+
+		foreach ( $int_meta as $key ) {
+			register_post_meta(
+				'event',
+				$key,
+				array(
+					'single'       => true,
+					'type'         => 'integer',
 					'show_in_rest' => true,
 				)
 			);

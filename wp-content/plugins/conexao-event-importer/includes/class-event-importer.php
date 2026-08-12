@@ -24,6 +24,9 @@ class Conexao_Event_Importer_Engine {
 	/** @var Conexao_Event_Deduplicator */
 	protected $deduplicator;
 
+	/** @var Conexao_Event_Image_Handler */
+	protected $image_handler;
+
 	/**
 	 * Constructor.
 	 *
@@ -31,10 +34,11 @@ class Conexao_Event_Importer_Engine {
 	 * @param Conexao_Event_Location $location Location normalizer.
 	 */
 	public function __construct( Conexao_Event_Sources $sources, Conexao_Event_Location $location ) {
-		$this->sources     = $sources;
-		$this->location    = $location;
-		$this->normalizer  = new Conexao_Event_Normalizer( $location );
-		$this->deduplicator = new Conexao_Event_Deduplicator();
+		$this->sources        = $sources;
+		$this->location       = $location;
+		$this->normalizer     = new Conexao_Event_Normalizer( $location );
+		$this->deduplicator   = new Conexao_Event_Deduplicator();
+		$this->image_handler  = new Conexao_Event_Image_Handler();
 
 		// Hook the "run source" filter used by the admin UI.
 		add_filter( 'conexao_event_importer_run_source', array( $this, 'run_source' ), 10, 1 );
@@ -50,6 +54,7 @@ class Conexao_Event_Importer_Engine {
 			'found'         => 0,
 			'new'           => 0,
 			'updated'       => 0,
+			'unchanged'     => 0,
 			'duplicates'    => 0,
 			'needs_review'  => 0,
 			'errors'        => 0,
@@ -79,6 +84,7 @@ class Conexao_Event_Importer_Engine {
 			'found'        => 0,
 			'new'          => 0,
 			'updated'      => 0,
+			'unchanged'    => 0,
 			'duplicates'   => 0,
 			'needs_review' => 0,
 			'errors'       => 0,
@@ -135,6 +141,8 @@ class Conexao_Event_Importer_Engine {
 				$stats['new']++;
 			} elseif ( 'updated' === $result['action'] ) {
 				$stats['updated']++;
+			} elseif ( 'unchanged' === $result['action'] ) {
+				$stats['unchanged']++;
 			} elseif ( 'duplicate' === $result['action'] ) {
 				$stats['duplicates']++;
 			}
@@ -186,6 +194,9 @@ class Conexao_Event_Importer_Engine {
 			case 'leo_laois':
 			case 'local_enterprise_office_laois':
 				return new Conexao_Source_LEO_Laois( $source );
+			case 'heritage_week':
+			case 'national_heritage_week':
+				return new Conexao_Source_Heritage_Week( $source );
 			default:
 				// Allow third-party handlers to be registered.
 				return apply_filters( 'conexao_event_importer_get_handler', null, $source );
@@ -205,7 +216,43 @@ class Conexao_Event_Importer_Engine {
 
 		if ( $existing_id ) {
 			$post_id = $existing_id;
-			$action  = 'updated';
+
+			// Check if the event data has actually changed.
+			$existing_title  = get_the_title( $post_id );
+			$existing_date   = get_post_meta( $post_id, '_event_date', true );
+			$existing_time   = get_post_meta( $post_id, '_event_start_time', true );
+			$existing_url    = get_post_meta( $post_id, '_event_url', true );
+			$existing_venue  = get_post_meta( $post_id, '_event_venue', true );
+			$existing_org    = get_post_meta( $post_id, '_event_organizer', true );
+			$existing_banner = get_post_meta( $post_id, '_event_banner', true );
+
+			// Check if the banner attachment exists (may be missing for events
+			// imported before the image download feature was added).
+			$existing_banner_attach = get_post_meta( $post_id, Conexao_Event_Image_Handler::ATTACHMENT_META_KEY, true );
+			$has_attachment = $existing_banner_attach && wp_attachment_is_image( $existing_banner_attach );
+
+			$is_unchanged = (
+				$existing_title === $normalized['title'] &&
+				$existing_date === $normalized['start_date'] &&
+				$existing_time === $normalized['start_time'] &&
+				$existing_url === $normalized['source_url'] &&
+				$existing_venue === $normalized['venue'] &&
+				$existing_org === $normalized['organizer'] &&
+				$existing_banner === $normalized['banner']
+			);
+
+			if ( $is_unchanged ) {
+				// Even if data is unchanged, download the image if we don't have an attachment yet.
+				if ( ! empty( $normalized['banner'] ) && ! $has_attachment ) {
+					$this->handle_event_image( $post_id, $normalized );
+				}
+
+				// Update last checked timestamp only.
+				update_post_meta( $post_id, '_event_last_checked', current_time( 'mysql' ) );
+				return array( 'action' => 'unchanged', 'post_id' => $post_id );
+			}
+
+			$action = 'updated';
 
 			$updated = wp_update_post( array(
 				'ID'           => $post_id,
@@ -239,6 +286,9 @@ class Conexao_Event_Importer_Engine {
 		// Save all event meta.
 		$this->save_event_meta( $post_id, $normalized );
 
+		// Download banner image into WordPress Media Library and set as featured image.
+		$this->handle_event_image( $post_id, $normalized );
+
 		// Save taxonomies (county, town, category).
 		$this->save_event_taxonomies( $post_id, $normalized );
 
@@ -253,6 +303,47 @@ class Conexao_Event_Importer_Engine {
 		}
 
 		return array( 'action' => $action, 'post_id' => $post_id );
+	}
+
+	/**
+	 * Handle event banner image: download into Media Library and set as featured image.
+	 *
+	 * Downloads the external banner URL into the WordPress Media Library using
+	 * media_sideload_image, then sets it as both the _event_banner_attachment_id
+	 * meta and the post thumbnail (featured image).
+	 *
+	 * If the image was already downloaded (same URL), it reuses the existing
+	 * attachment. If the download fails, the event keeps its external URL as
+	 * a fallback in _event_banner.
+	 *
+	 * @param int   $post_id    Post ID.
+	 * @param array $normalized Normalized event data.
+	 */
+	protected function handle_event_image( $post_id, $normalized ) {
+		$banner_url = isset( $normalized['banner'] ) ? $normalized['banner'] : '';
+
+		if ( empty( $banner_url ) ) {
+			return;
+		}
+
+		// Check if we already have an attachment for this event.
+		$existing_attachment = get_post_meta( $post_id, Conexao_Event_Image_Handler::ATTACHMENT_META_KEY, true );
+		if ( $existing_attachment && wp_attachment_is_image( $existing_attachment ) ) {
+			$source_url = get_post_meta( $existing_attachment, '_event_source_url', true );
+			if ( $source_url === $banner_url ) {
+				// Same image already downloaded, nothing to do.
+				return;
+			}
+		}
+
+		// Download the image into the Media Library.
+		$title = isset( $normalized['title'] ) ? $normalized['title'] : '';
+		$attachment_id = $this->image_handler->sideload_image( $banner_url, $post_id, $title );
+
+		if ( $attachment_id ) {
+			// Set as both banner attachment and featured image.
+			$this->image_handler->set_banner_attachment( $post_id, $attachment_id );
+		}
 	}
 
 	/**

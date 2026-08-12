@@ -27,6 +27,7 @@ class Conexao_Import_History {
 			'found'         => isset( $stats['found'] ) ? (int) $stats['found'] : 0,
 			'new'           => isset( $stats['new'] ) ? (int) $stats['new'] : 0,
 			'updated'       => isset( $stats['updated'] ) ? (int) $stats['updated'] : 0,
+			'unchanged'     => isset( $stats['unchanged'] ) ? (int) $stats['unchanged'] : 0,
 			'duplicates'    => isset( $stats['duplicates'] ) ? (int) $stats['duplicates'] : 0,
 			'needs_review'  => isset( $stats['needs_review'] ) ? (int) $stats['needs_review'] : 0,
 			'errors'        => isset( $stats['errors'] ) ? (int) $stats['errors'] : 0,
