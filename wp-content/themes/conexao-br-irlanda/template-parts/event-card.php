@@ -110,6 +110,16 @@ $month = $event_date ? date( 'M', strtotime( $event_date ) ) : '---';
 
 		<p class="event-card-excerpt"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 18, '...' ) ); ?></p>
 
+		<?php if ( $event_price = get_post_meta( $event_id, '_event_price', true ) ) : ?>
+			<p class="event-card-price">
+				<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+					<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+					<circle cx="12" cy="10" r="3"></circle>
+				</svg>
+				<?php echo esc_html( $event_price ); ?>
+			</p>
+		<?php endif; ?>
+
 		<?php if ( $event_reg ) : ?>
 			<p class="event-card-registration"><?php echo esc_html( $event_reg ); ?></p>
 		<?php endif; ?>
