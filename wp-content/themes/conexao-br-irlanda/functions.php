@@ -835,6 +835,45 @@ function conexao_nav_menu_args( $args ) {
 }
 add_filter( 'wp_nav_menu_args', 'conexao_nav_menu_args' );
 
+/**
+ * Determine whether an event's URL points to an external website.
+ *
+ * Compares the stored `_event_url` meta (the original source URL) with the
+ * event's own permalink. When they differ, the link is considered external
+ * and should open in a new browser tab.
+ *
+ * @param int $event_id The event post ID.
+ * @return bool True if the event URL is external, false otherwise.
+ */
+function conexao_is_external_event_url( $event_id ) {
+	$event_url = get_post_meta( $event_id, '_event_url', true );
+
+	if ( empty( $event_url ) ) {
+		return false;
+	}
+
+	$permalink = get_permalink( $event_id );
+
+	// If the stored URL differs from the permalink, it is external.
+	return untrailingslashit( $event_url ) !== untrailingslashit( $permalink );
+}
+
+/**
+ * Return the HTML target and rel attributes for external event links.
+ *
+ * Returns `target="_blank" rel="noopener noreferrer"` when the event URL is
+ * external, or an empty string for internal links.
+ *
+ * @param int $event_id The event post ID.
+ * @return string HTML attributes string (includes leading space when non-empty).
+ */
+function conexao_event_link_target_attrs( $event_id ) {
+	if ( conexao_is_external_event_url( $event_id ) ) {
+		return ' target="_blank" rel="noopener noreferrer"';
+	}
+	return '';
+}
+
 function conexao_override_guides_menu_links( $items, $args ) {
 	if ( 'primary' !== $args->theme_location ) {
 		return $items;

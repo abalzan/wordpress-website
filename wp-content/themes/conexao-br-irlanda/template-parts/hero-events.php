@@ -60,6 +60,7 @@ if ( ! $hero_events->have_posts() ) {
 		$event_id       = get_the_ID();
 		$event_url      = get_post_meta( $event_id, '_event_url', true );
 		$event_url      = $event_url ? $event_url : get_permalink();
+		$event_target   = conexao_event_link_target_attrs( $event_id );
 		$event_banner   = get_post_meta( $event_id, '_event_banner', true );
 		$event_date     = get_post_meta( $event_id, '_event_date', true );
 		$event_time     = get_post_meta( $event_id, '_event_time', true );
@@ -70,7 +71,7 @@ if ( ! $hero_events->have_posts() ) {
 
 		if ( 1 === $hero_event_index ) : ?>
 
-			<a class="hero-event-featured" href="<?php echo esc_url( $event_url ); ?>" aria-label="<?php echo esc_attr( sprintf( 'Ver evento: %s', get_the_title() ) ); ?>">
+			<a class="hero-event-featured" href="<?php echo esc_url( $event_url ); ?>" aria-label="<?php echo esc_attr( sprintf( 'Ver evento: %s', get_the_title() ) ); ?>"<?php echo $event_target; /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */ ?>>
 				<div class="hero-event-featured-banner">
 					<?php if ( $event_banner ) : ?>
 						<img src="<?php echo esc_url( $event_banner ); ?>" alt="<?php the_title_attribute(); ?>" loading="lazy">
@@ -124,7 +125,7 @@ if ( ! $hero_events->have_posts() ) {
 			}
 			?>
 
-			<a class="hero-event-card" href="<?php echo esc_url( $event_url ); ?>" aria-label="<?php echo esc_attr( sprintf( 'Ver evento: %s', get_the_title() ) ); ?>">
+			<a class="hero-event-card" href="<?php echo esc_url( $event_url ); ?>" aria-label="<?php echo esc_attr( sprintf( 'Ver evento: %s', get_the_title() ) ); ?>"<?php echo $event_target; /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */ ?>>
 				<div class="hero-event-thumb">
 					<?php if ( $event_banner ) : ?>
 						<img src="<?php echo esc_url( $event_banner ); ?>" alt="<?php the_title_attribute(); ?>" loading="lazy">

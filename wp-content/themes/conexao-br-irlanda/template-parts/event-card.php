@@ -19,6 +19,7 @@
 $event_id         = get_the_ID();
 $event_url        = get_post_meta( $event_id, '_event_url', true );
 $event_url        = $event_url ? $event_url : get_permalink();
+$event_target     = conexao_event_link_target_attrs( $event_id );
 $event_banner     = get_post_meta( $event_id, '_event_banner', true );
 $event_date       = get_post_meta( $event_id, '_event_date', true );
 $event_time       = get_post_meta( $event_id, '_event_time', true );
@@ -33,7 +34,7 @@ $month = $event_date ? date( 'M', strtotime( $event_date ) ) : '---';
 
 <article id="post-<?php the_ID(); ?>" <?php post_class( 'event-card' ); ?>>
 
-	<a class="event-card-banner" href="<?php echo esc_url( $event_url ); ?>" aria-label="<?php echo esc_attr( sprintf( 'Banner para %s', get_the_title() ) ); ?>">
+	<a class="event-card-banner" href="<?php echo esc_url( $event_url ); ?>" aria-label="<?php echo esc_attr( sprintf( 'Banner para %s', get_the_title() ) ); ?>"<?php echo $event_target; /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */ ?>>
 		<?php if ( $event_banner ) : ?>
 			<img class="event-card-banner-img" src="<?php echo esc_url( $event_banner ); ?>" alt="<?php the_title_attribute(); ?>" loading="lazy">
 		<?php elseif ( has_post_thumbnail() ) : ?>
@@ -59,7 +60,7 @@ $month = $event_date ? date( 'M', strtotime( $event_date ) ) : '---';
 			</span>
 		<?php endif; ?>
 
-		<h3 class="event-card-title"><a href="<?php echo esc_url( $event_url ); ?>"><?php the_title(); ?></a></h3>
+		<h3 class="event-card-title"><a href="<?php echo esc_url( $event_url ); ?>"<?php echo $event_target; /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */ ?>><?php the_title(); ?></a></h3>
 
 		<div class="event-card-details">
 			<?php if ( $event_date ) : ?>
@@ -113,7 +114,7 @@ $month = $event_date ? date( 'M', strtotime( $event_date ) ) : '---';
 			<p class="event-card-registration"><?php echo esc_html( $event_reg ); ?></p>
 		<?php endif; ?>
 
-		<a href="<?php echo esc_url( $event_url ); ?>" class="event-card-cta">
+		<a href="<?php echo esc_url( $event_url ); ?>" class="event-card-cta"<?php echo $event_target; /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */ ?>>
 			<?php echo esc_html( get_post_meta( $event_id, '_event_cta', true ) ? get_post_meta( $event_id, '_event_cta', true ) : __( 'Saiba mais', 'conexao-br-irlanda' ) ); ?>
 			<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 				<line x1="5" y1="12" x2="19" y2="12"></line>
