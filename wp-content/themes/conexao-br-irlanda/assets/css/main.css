@@ -1535,12 +1535,64 @@ ul, ol {
   border: 1px solid var(--conexao-border);
   transition: all var(--conexao-transition);
   text-align: center;
+  position: relative;
 }
 
 .business-card:hover {
   box-shadow: var(--conexao-shadow-md);
   transform: translateY(-4px);
   border-color: var(--conexao-primary);
+}
+
+/* Business card link wrapper - makes entire card clickable */
+.business-card-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  margin: -24px -24px 16px -24px;
+  padding: 24px 24px 16px 24px;
+  border-radius: var(--conexao-radius-lg);
+  transition: all var(--conexao-transition);
+}
+
+.business-card-link:hover {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Clickable business card styles */
+.business-card--clickable {
+  cursor: pointer;
+}
+
+.business-card--clickable:hover {
+  box-shadow: var(--conexao-shadow-lg);
+  transform: translateY(-6px);
+  border-color: var(--conexao-primary);
+}
+
+.business-card--clickable .business-card-link:focus-visible {
+  outline: 2px solid var(--conexao-primary);
+  outline-offset: 2px;
+}
+
+/* External link indicator for clickable business cards */
+.business-card--clickable .business-name::after {
+  content: '';
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-left: 6px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230E6B3A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6'/%3E%3Cpolyline points='15 3 21 3 21 9'/%3E%3Cline x1='10' y1='14' x2='21' y2='3'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  vertical-align: middle;
+  opacity: 0.7;
+  transition: opacity var(--conexao-transition);
+}
+
+.business-card--clickable:hover .business-name::after {
+  opacity: 1;
 }
 
 .business-logo {
@@ -3359,6 +3411,60 @@ input[type="button"] {
   display: flex;
   align-items: center;
   gap: 4px;
+}
+
+/* Clickable archive card styles (for sponsors with external links) */
+.archive-card--clickable {
+  cursor: pointer;
+}
+
+.archive-card--clickable:hover {
+  box-shadow: var(--conexao-shadow-lg);
+  transform: translateY(-6px);
+  border-color: var(--conexao-primary);
+}
+
+.archive-card--clickable .archive-card-image {
+  position: relative;
+}
+
+.archive-card--clickable .archive-card-image::after {
+  content: '';
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 24px;
+  height: 24px;
+  background: var(--conexao-white);
+  border-radius: var(--conexao-radius-sm);
+  box-shadow: var(--conexao-shadow-sm);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230E6B3A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6'/%3E%3Cpolyline points='15 3 21 3 21 9'/%3E%3Cline x1='10' y1='14' x2='21' y2='3'/%3E%3C/svg%3E");
+  background-size: 14px;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.9;
+  transition: opacity var(--conexao-transition);
+}
+
+.archive-card--clickable:hover .archive-card-image::after {
+  opacity: 1;
+}
+
+.archive-card--clickable .archive-card-title a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.archive-card--clickable .archive-card-title a::after {
+  content: '↗';
+  font-size: 0.875rem;
+  opacity: 0.6;
+  transition: opacity var(--conexao-transition);
+}
+
+.archive-card--clickable:hover .archive-card-title a::after {
+  opacity: 1;
 }
 
 /* Tablet archive grid */

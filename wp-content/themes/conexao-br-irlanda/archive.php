@@ -28,9 +28,18 @@
 					<?php if ( $is_event_archive ) : ?>
 						<?php get_template_part( 'template-parts/event', 'card' ); ?>
 					<?php else : ?>
-						<article id="post-<?php the_ID(); ?>" <?php post_class( 'archive-card' ); ?>>
+						<?php
+						// For sponsors, check if there's an external link to make the card clickable.
+						$is_sponsor = 'sponsor' === get_post_type();
+						$sponsor_link = $is_sponsor ? get_post_meta( get_the_ID(), '_sponsor_link', true ) : '';
+						$card_link = $sponsor_link ? esc_url( $sponsor_link ) : get_permalink();
+						$card_target = $sponsor_link ? ' target="_blank"' : '';
+						$card_rel = $sponsor_link ? ' rel="noopener noreferrer"' : '';
+						$card_classes = 'archive-card' . ( $sponsor_link ? ' archive-card--clickable' : '' );
+						?>
+						<article id="post-<?php the_ID(); ?>" <?php post_class( $card_classes ); ?>>
 							<?php if ( has_post_thumbnail() ) : ?>
-								<a href="<?php the_permalink(); ?>" class="archive-card-image" aria-hidden="true" tabindex="-1">
+								<a href="<?php echo esc_url( $card_link ); ?>" class="archive-card-image" aria-hidden="true" tabindex="-1"<?php echo $card_target . $card_rel; /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */ ?>>
 									<?php the_post_thumbnail( 'conexao-card', array( 'loading' => 'lazy' ) ); ?>
 								</a>
 							<?php endif; ?>
@@ -40,7 +49,7 @@
 								if ( $cats && ! is_wp_error( $cats ) ) : ?>
 									<span class="archive-card-category"><?php echo esc_html( $cats[0]->name ); ?></span>
 								<?php endif; ?>
-								<h2 class="archive-card-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>
+								<h2 class="archive-card-title"><a href="<?php echo esc_url( $card_link ); ?>"<?php echo $card_target . $card_rel; /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */ ?>><?php the_title(); ?></a></h2>
 								<p class="archive-card-excerpt"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 18, '...' ) ); ?></p>
 								<div class="archive-card-meta">
 									<span>

@@ -118,9 +118,6 @@ final class Conexao_Admin_Ux_List {
 				$this->render_category( $post_id );
 				return;
 
-			case 'sponsor_contact':
-				$this->render_sponsor_contact( $post_id );
-				return;
 		}
 
 		// No custom render callback — fall back to the default renderer.
@@ -219,24 +216,6 @@ final class Conexao_Admin_Ux_List {
 		$terms = get_the_terms( $post_id, 'conexao_category' );
 		if ( $terms && ! is_wp_error( $terms ) && ! empty( $terms ) && isset( $terms[0]->name ) ) {
 			echo esc_html( $terms[0]->name );
-		} else {
-			echo '<span class="conexao-muted">—</span>';
-		}
-	}
-
-	/**
-	 * Render the sponsor contact column (phone, then email).
-	 *
-	 * @param int $post_id Post ID.
-	 */
-	private function render_sponsor_contact( $post_id ) {
-		$phone = get_post_meta( $post_id, '_sponsor_phone', true );
-		$email = get_post_meta( $post_id, '_sponsor_email', true );
-
-		if ( is_string( $phone ) && '' !== $phone ) {
-			echo esc_html( $phone );
-		} elseif ( is_string( $email ) && '' !== $email ) {
-			echo esc_html( $email );
 		} else {
 			echo '<span class="conexao-muted">—</span>';
 		}

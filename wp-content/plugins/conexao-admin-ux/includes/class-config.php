@@ -629,33 +629,18 @@ final class Conexao_Admin_Ux_Config {
 						array( 'key' => '_sponsor_description', 'label' => 'Descrição', 'type' => 'textarea', 'help' => 'Descreva o apoiador e como ele apoia a comunidade.' ),
 					),
 				),
-				'links'     => array(
-					'title'    => 'Links',
+				'link'      => array(
+					'title'    => 'Link',
 					'icon'     => 'dashicons-admin-links',
 					'priority' => 20,
 					'fields'   => array(
-						array( 'key' => '_sponsor_website', 'label' => 'Website', 'type' => 'url' ),
-						array( 'key' => '_sponsor_instagram', 'label' => 'Instagram', 'type' => 'url' ),
-						array( 'key' => '_sponsor_facebook', 'label' => 'Facebook', 'type' => 'url' ),
-						array( 'key' => '_sponsor_linkedin', 'label' => 'LinkedIn', 'type' => 'url' ),
-						array( 'key' => '_sponsor_whatsapp', 'label' => 'WhatsApp', 'type' => 'url', 'help' => 'Link do WhatsApp. Ex.: https://wa.me/353123456789' ),
-					),
-				),
-				'contato'   => array(
-					'title'    => 'Contato',
-					'icon'     => 'dashicons-email-alt',
-					'priority' => 30,
-					'fields'   => array(
-						array( 'key' => '_sponsor_email', 'label' => 'E-mail', 'type' => 'email' ),
-						array( 'key' => '_sponsor_phone', 'label' => 'Telefone', 'type' => 'phone' ),
-						array( 'key' => '_sponsor_address', 'label' => 'Endereço', 'type' => 'text', 'help' => 'Endereço completo, se aplicável.' ),
-						array( 'key' => '_sponsor_location', 'label' => 'Localização', 'type' => 'text', 'help' => 'Cidade / county. Ex.: "Portlaoise, Laois".' ),
+						array( 'key' => '_sponsor_link', 'label' => 'Link do Apoiador', 'type' => 'url', 'help' => 'Informe o endereço do site ou página do apoiador. Ao clicar no apoiador, o visitante será direcionado para este link.' ),
 					),
 				),
 				'exibicao'  => array(
 					'title'    => 'Exibição',
 					'icon'     => 'dashicons-visibility',
-					'priority' => 40,
+					'priority' => 30,
 					'fields'   => array(
 						array( 'key' => '_sponsor_featured', 'label' => 'Apoiador em destaque', 'type' => 'checkbox', 'help' => 'Exibir na página inicial e/ou no topo da lista.' ),
 						array( 'key' => '_sponsor_display_order', 'label' => 'Ordem de exibição', 'type' => 'number', 'help' => 'Número menor aparece primeiro. Ex.: 1, 2, 3…' ),
@@ -674,8 +659,6 @@ final class Conexao_Admin_Ux_Config {
 			),
 			'columns'    => array(
 				'category' => array( 'label' => 'Categoria', 'render' => 'category' ),
-				'location' => array( 'label' => 'Localização', 'meta' => '_sponsor_location' ),
-				'contact'  => array( 'label' => 'Contato', 'render' => 'sponsor_contact' ),
 				'featured' => array( 'label' => 'Destaque', 'meta' => '_sponsor_featured', 'format' => 'featured' ),
 				'status'   => array( 'label' => 'Status', 'render' => 'status' ),
 			),

@@ -8,7 +8,7 @@ final class Conexao_Data_Model_Meta {
 	private static $fields = array(
 		'guide'   => array( '_conexao_featured' => 'checkbox' ),
 		'event'   => array( '_event_date' => 'date', '_event_time' => 'text', '_event_location' => 'text' ),
-		'sponsor' => array( '_conexao_featured' => 'checkbox', '_sponsor_phone' => 'text', '_sponsor_whatsapp' => 'url', '_sponsor_website' => 'url', '_sponsor_location' => 'text', '_sponsor_display_order' => 'text' ),
+		'sponsor' => array( '_sponsor_link' => 'url', '_sponsor_display_order' => 'text' ),
 		'job'     => array( '_job_company' => 'text', '_job_location' => 'text', '_job_salary' => 'text', '_job_employment_type' => 'text', '_job_expiration_date' => 'date' ),
 	);
 

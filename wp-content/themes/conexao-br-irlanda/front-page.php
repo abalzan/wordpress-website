@@ -562,16 +562,19 @@ $hero_image_id = conexao_hero_image_attachment_id();
 					'update_post_term_cache' => false,
 				) );
 			}
-			if ( $featured_sponsors->have_posts() ) :
-				while ( $featured_sponsors->have_posts() ) : $featured_sponsors->the_post();
-					$sponsor_phone = get_post_meta( get_the_ID(), '_sponsor_phone', true );
-					$sponsor_whatsapp = get_post_meta( get_the_ID(), '_sponsor_whatsapp', true );
-					$sponsor_website = get_post_meta( get_the_ID(), '_sponsor_website', true );
-					$sponsor_location = get_post_meta( get_the_ID(), '_sponsor_location', true );
-					$terms = get_the_terms( get_the_ID(), 'conexao_category' );
-					$sponsor_counties = get_the_terms( get_the_ID(), 'conexao_county' );
-					?>
-					<div class="business-card">
+		if ( $featured_sponsors->have_posts() ) :
+			while ( $featured_sponsors->have_posts() ) : $featured_sponsors->the_post();
+				$sponsor_link = get_post_meta( get_the_ID(), '_sponsor_link', true );
+				$terms = get_the_terms( get_the_ID(), 'conexao_category' );
+				$sponsor_counties = get_the_terms( get_the_ID(), 'conexao_county' );
+				// Determine if the card should be clickable (external link takes priority, then permalink).
+				$card_link = $sponsor_link ? esc_url( $sponsor_link ) : get_permalink();
+				$card_target = $sponsor_link ? ' target="_blank"' : '';
+				$card_rel = $sponsor_link ? ' rel="noopener noreferrer"' : '';
+				$card_classes = 'business-card' . ( $sponsor_link ? ' business-card--clickable' : '' );
+				?>
+				<div class="<?php echo esc_attr( $card_classes ); ?>">
+					<a href="<?php echo esc_url( $card_link ); ?>" class="business-card-link"<?php echo $card_target . $card_rel; /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */ ?>>
 						<div class="business-logo">
 							<?php if ( has_post_thumbnail() ) : ?>
 								<?php the_post_thumbnail( 'thumbnail', array( 'loading' => 'lazy' ) ); ?>
@@ -585,40 +588,12 @@ $hero_image_id = conexao_hero_image_attachment_id();
 						<?php if ( $terms && ! is_wp_error( $terms ) ) : ?>
 							<span class="business-category"><?php echo esc_html( $terms[0]->name ); ?></span>
 						<?php endif; ?>
-						<h3 class="business-name"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
+						<h3 class="business-name"><?php the_title(); ?></h3>
 						<?php if ( $sponsor_counties && ! is_wp_error( $sponsor_counties ) ) : ?><span class="business-location"><?php echo esc_html( $sponsor_counties[0]->name ); ?></span><?php endif; ?>
-						<?php if ( $sponsor_location ) : ?>
-							<span class="business-location">
-								<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2">
-									<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-									<circle cx="12" cy="10" r="3"></circle>
-								</svg>
-								<?php echo esc_html( $sponsor_location ); ?>
-							</span>
-						<?php endif; ?>
 						<p class="business-description"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 12, '...' ) ); ?></p>
-						<div class="business-actions">
-							<?php if ( $sponsor_website ) : ?>
-								<a href="<?php echo esc_url( $sponsor_website ); ?>" class="business-btn business-btn-primary" target="_blank" rel="noopener noreferrer">
-									<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2">
-										<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-										<polyline points="15 3 21 3 21 9"></polyline>
-										<line x1="10" y1="14" x2="21" y2="3"></line>
-									</svg>
-									Website
-								</a>
-							<?php endif; ?>
-							<?php if ( $sponsor_whatsapp ) : ?>
-								<a href="<?php echo esc_url( $sponsor_whatsapp ); ?>" class="business-btn business-btn-whatsapp" target="_blank" rel="noopener noreferrer">
-									<svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor">
-										<path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-									</svg>
-									WhatsApp
-								</a>
-							<?php endif; ?>
-						</div>
-					</div>
-				<?php endwhile; wp_reset_postdata();
+					</a>
+				</div>
+			<?php endwhile; wp_reset_postdata();
 			else : ?>
 				<p><?php esc_html_e( 'Organizações e empresas que apoiam a comunidade serão apresentados aqui em breve.', 'conexao-br-irlanda' ); ?></p>
 			<?php endif; ?>

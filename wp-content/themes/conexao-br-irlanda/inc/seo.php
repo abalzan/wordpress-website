@@ -503,33 +503,26 @@ function conexao_seo_schema_singular() {
 
 	// --- Apoiador (Organization / LocalBusiness) ---
 	if ( 'sponsor' === $type ) {
-		$biz_phone    = get_post_meta( $post_id, '_sponsor_phone', true );
-		$biz_website  = get_post_meta( $post_id, '_sponsor_website', true );
-		$biz_location = get_post_meta( $post_id, '_sponsor_location', true );
+		$sponsor_link = get_post_meta( $post_id, '_sponsor_link', true );
 		$counties     = get_the_terms( $post_id, 'conexao_county' );
 
 		$schema = array(
 			'@context' => 'https://schema.org',
 			'@type'    => 'Organization',
 			'name'     => get_the_title(),
-			'url'      => get_permalink(),
+			'url'      => $sponsor_link ? $sponsor_link : get_permalink(),
 			'image'    => $image,
 			'description' => wp_strip_all_tags( get_the_excerpt() ),
 		);
 
-		if ( $biz_phone ) {
-			$schema['telephone'] = $biz_phone;
+		if ( $sponsor_link ) {
+			$schema['sameAs'] = $sponsor_link;
 		}
 
-		if ( $biz_website ) {
-			$schema['sameAs'] = $biz_website;
-		}
-
-		if ( $biz_location || ( $counties && ! is_wp_error( $counties ) ) ) {
-			$loc = $biz_location ? $biz_location : $counties[0]->name;
+		if ( $counties && ! is_wp_error( $counties ) ) {
 			$schema['address'] = array(
 				'@type'           => 'PostalAddress',
-				'addressLocality' => $loc,
+				'addressLocality' => $counties[0]->name,
 				'addressCountry'  => 'IE',
 			);
 		}
