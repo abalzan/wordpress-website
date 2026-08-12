@@ -162,8 +162,21 @@ class Conexao_Event_Importer_Engine {
 	 * @return Conexao_Source_Base|null
 	 */
 	protected function get_source_handler( $source ) {
+		// Check source type first for type-based routing.
+		$source_type = isset( $source['type'] ) ? $source['type'] : '';
+
+		// iCalendar/Webcal sources use the generic iCalendar handler.
+		if ( 'icalendar' === $source_type ) {
+			return new Conexao_Source_ICalendar( $source );
+		}
+
+		// Fall back to source ID-based routing for legacy/website sources.
 		switch ( $source['id'] ) {
 			case 'laois_tourism':
+				// If Laois Tourism is configured as iCalendar type, use that handler.
+				if ( 'icalendar' === $source_type ) {
+					return new Conexao_Source_ICalendar( $source );
+				}
 				return new Conexao_Source_Laois_Tourism( $source );
 			case 'laois_council':
 				return new Conexao_Source_Laois_Council( $source );

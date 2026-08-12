@@ -23,6 +23,7 @@ require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-normalizer.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-deduplicator.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-sources.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/sources/abstract-class-source.php';
+require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/sources/class-icalendar-source.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/sources/class-laois-tourism-source.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/sources/class-laois-council-source.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-importer.php';
@@ -80,6 +81,25 @@ final class Conexao_Event_Importer {
 
 		// Ensure cron is scheduled.
 		add_action( 'admin_init', array( $this->scheduler, 'maybe_schedule' ) );
+
+		// Allow webcal:// protocol in URLs.
+		add_filter( 'kses_allowed_protocols', array( $this, 'allow_webcal_protocol' ) );
+	}
+
+	/**
+	 * Add webcal to the list of allowed URL protocols.
+	 *
+	 * This allows WordPress to accept webcal:// URLs in forms and content
+	 * without stripping the protocol.
+	 *
+	 * @param array $protocols List of allowed protocols.
+	 * @return array
+	 */
+	public function allow_webcal_protocol( $protocols ) {
+		if ( ! in_array( 'webcal', $protocols, true ) ) {
+			$protocols[] = 'webcal';
+		}
+		return $protocols;
 	}
 
 	/**

@@ -21,13 +21,15 @@ class Conexao_Event_Sources {
 			'laois_tourism' => array(
 				'id'                 => 'laois_tourism',
 				'name'               => 'Laois Tourism',
-				'url'                => 'https://laoistourism.ie/events/',
-				'type'               => 'website',
+				'url'                => 'webcal://laoistourism.ie/?post_type=tribe_events&ical=1&eventDisplay=list',
+				'type'               => 'icalendar',
 				'status'             => 'active',
 				'last_import'        => '',
 				'last_import_status' => '',
 				'events_imported'    => 0,
 				'last_error'         => '',
+				'import_frequency'   => 'weekly',
+				'last_checked'       => '',
 			),
 			'laois_council' => array(
 				'id'                 => 'laois_council',
@@ -39,6 +41,8 @@ class Conexao_Event_Sources {
 				'last_import_status' => '',
 				'events_imported'    => 0,
 				'last_error'         => '',
+				'import_frequency'   => 'weekly',
+				'last_checked'       => '',
 			),
 		);
 	}
@@ -153,6 +157,8 @@ class Conexao_Event_Sources {
 		if ( isset( $stats['last_error'] ) ) {
 			$source['last_error'] = $stats['last_error'];
 		}
+		// Always update last_checked when stats are updated.
+		$source['last_checked'] = current_time( 'mysql' );
 
 		return $this->save( $source );
 	}
@@ -251,11 +257,30 @@ class Conexao_Event_Sources {
 	 */
 	protected function handle_save_source() {
 		$source_id = sanitize_title( wp_unslash( $_POST['source_id'] ) );
+
+		// Get the URL and handle webcal:// protocol specially.
+		$raw_url = isset( $_POST['source_url'] ) ? trim( wp_unslash( $_POST['source_url'] ) ) : '';
+
+		// For webcal:// URLs, we need to handle them specially since esc_url_raw
+		// strips unknown protocols. We'll normalize webcal:// to https:// for storage
+		// but keep the original if the user explicitly wants webcal.
+		$is_webcal = ( 0 === strpos( $raw_url, 'webcal://' ) );
+
+		// For iCalendar sources, accept webcal:// URLs as-is.
+		$source_type = isset( $_POST['source_type'] ) ? sanitize_text_field( wp_unslash( $_POST['source_type'] ) ) : 'website';
+
+		if ( $is_webcal && 'icalendar' === $source_type ) {
+			// Keep webcal:// URL for iCalendar sources.
+			$url = $raw_url;
+		} else {
+			$url = esc_url_raw( $raw_url );
+		}
+
 		$source    = array(
 			'id'     => $source_id,
 			'name'   => isset( $_POST['source_name'] ) ? sanitize_text_field( wp_unslash( $_POST['source_name'] ) ) : '',
-			'url'    => isset( $_POST['source_url'] ) ? esc_url_raw( wp_unslash( $_POST['source_url'] ) ) : '',
-			'type'   => isset( $_POST['source_type'] ) ? sanitize_text_field( wp_unslash( $_POST['source_type'] ) ) : 'website',
+			'url'    => $url,
+			'type'   => $source_type,
 			'status' => isset( $_POST['source_status'] ) ? 'active' : 'inactive',
 		);
 
@@ -266,10 +291,78 @@ class Conexao_Event_Sources {
 			$source['last_import_status'] = $existing['last_import_status'];
 			$source['events_imported']    = $existing['events_imported'];
 			$source['last_error']         = $existing['last_error'];
+			// Preserve existing ICS content if not uploading a new file.
+			if ( ! empty( $existing['ics_content'] ) ) {
+				$source['ics_content'] = $existing['ics_content'];
+			}
+		}
+
+		// Handle ICS file upload for iCalendar sources.
+		if ( 'icalendar' === $source_type && ! empty( $_FILES['ics_file']['tmp_name'] ) ) {
+			$ics_content = $this->handle_ics_upload( $_FILES['ics_file'] );
+			if ( $ics_content ) {
+				$source['ics_content'] = $ics_content;
+			}
 		}
 
 		$this->save( $source );
 		echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Source saved.', 'conexao-event-importer' ) . '</p></div>';
+	}
+
+	/**
+	 * Handle ICS file upload.
+	 *
+	 * @param array $file $_FILES array for the uploaded file.
+	 * @return string|false ICS content or false on failure.
+	 */
+	protected function handle_ics_upload( $file ) {
+		// Check for upload errors.
+		if ( ! isset( $file['error'] ) || UPLOAD_ERR_OK !== $file['error'] ) {
+			$error_msg = $this->get_upload_error_message( $file['error'] ?? UPLOAD_ERR_NO_FILE );
+			echo '<div class="notice notice-error is-dismissible"><p>' . esc_html( sprintf( __( 'ICS file upload failed: %s', 'conexao-event-importer' ), $error_msg ) ) . '</p></div>';
+			return false;
+		}
+
+		// Check file size (max 5MB).
+		$max_size = 5 * 1024 * 1024;
+		if ( $file['size'] > $max_size ) {
+			echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__( 'ICS file is too large. Maximum size is 5MB.', 'conexao-event-importer' ) . '</p></div>';
+			return false;
+		}
+
+		// Read the file content.
+		$content = file_get_contents( $file['tmp_name'] );
+		if ( false === $content ) {
+			echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__( 'Failed to read uploaded ICS file.', 'conexao-event-importer' ) . '</p></div>';
+			return false;
+		}
+
+		// Basic validation: check if it looks like iCalendar data.
+		if ( false === strpos( $content, 'BEGIN:VCALENDAR' ) ) {
+			echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__( 'The uploaded file does not appear to be a valid iCalendar (.ics) file.', 'conexao-event-importer' ) . '</p></div>';
+			return false;
+		}
+
+		return $content;
+	}
+
+	/**
+	 * Get upload error message.
+	 *
+	 * @param int $error Upload error code.
+	 * @return string
+	 */
+	protected function get_upload_error_message( $error ) {
+		$messages = array(
+			UPLOAD_ERR_INI_SIZE   => __( 'The uploaded file exceeds the upload_max_filesize directive in php.ini.', 'conexao-event-importer' ),
+			UPLOAD_ERR_FORM_SIZE  => __( 'The uploaded file exceeds the MAX_FILE_SIZE directive specified in the HTML form.', 'conexao-event-importer' ),
+			UPLOAD_ERR_PARTIAL    => __( 'The uploaded file was only partially uploaded.', 'conexao-event-importer' ),
+			UPLOAD_ERR_NO_FILE    => __( 'No file was uploaded.', 'conexao-event-importer' ),
+			UPLOAD_ERR_NO_TMP_DIR => __( 'Missing a temporary folder.', 'conexao-event-importer' ),
+			UPLOAD_ERR_CANT_WRITE => __( 'Failed to write file to disk.', 'conexao-event-importer' ),
+			UPLOAD_ERR_EXTENSION  => __( 'A PHP extension stopped the file upload.', 'conexao-event-importer' ),
+		);
+		return isset( $messages[ $error ] ) ? $messages[ $error ] : __( 'Unknown upload error.', 'conexao-event-importer' );
 	}
 
 	/**
@@ -286,6 +379,23 @@ class Conexao_Event_Sources {
 	}
 
 	/**
+	 * Get the display label for a source type.
+	 *
+	 * @param string $type Source type.
+	 * @return string
+	 */
+	protected function get_type_label( $type ) {
+		$labels = array(
+			'icalendar'  => __( 'iCalendar / Webcal', 'conexao-event-importer' ),
+			'website'    => __( 'Website', 'conexao-event-importer' ),
+			'facebook'   => __( 'Facebook', 'conexao-event-importer' ),
+			'instagram'  => __( 'Instagram', 'conexao-event-importer' ),
+			'eventbrite' => __( 'Eventbrite', 'conexao-event-importer' ),
+		);
+		return isset( $labels[ $type ] ) ? $labels[ $type ] : ucfirst( $type );
+	}
+
+	/**
 	 * Render the sources table.
 	 *
 	 * @param array $sources Source list.
@@ -296,10 +406,11 @@ class Conexao_Event_Sources {
 			<thead>
 				<tr>
 					<th><?php esc_html_e( 'Name', 'conexao-event-importer' ); ?></th>
-					<th><?php esc_html_e( 'URL', 'conexao-event-importer' ); ?></th>
+					<th><?php esc_html_e( 'Feed URL', 'conexao-event-importer' ); ?></th>
 					<th><?php esc_html_e( 'Type', 'conexao-event-importer' ); ?></th>
 					<th><?php esc_html_e( 'Status', 'conexao-event-importer' ); ?></th>
 					<th><?php esc_html_e( 'Last Import', 'conexao-event-importer' ); ?></th>
+					<th><?php esc_html_e( 'Last Checked', 'conexao-event-importer' ); ?></th>
 					<th><?php esc_html_e( 'Events Imported', 'conexao-event-importer' ); ?></th>
 					<th><?php esc_html_e( 'Actions', 'conexao-event-importer' ); ?></th>
 				</tr>
@@ -307,14 +418,27 @@ class Conexao_Event_Sources {
 			<tbody>
 				<?php foreach ( $sources as $source ) : ?>
 					<tr>
-						<td><strong><?php echo esc_html( $source['name'] ); ?></strong></td>
-						<td><a href="<?php echo esc_url( $source['url'] ); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html( $source['url'] ); ?></a></td>
-						<td><?php echo esc_html( ucfirst( $source['type'] ) ); ?></td>
+						<td>
+							<strong><?php echo esc_html( $source['name'] ); ?></strong>
+							<?php if ( 'icalendar' === $source['type'] ) : ?>
+								<br><span class="description"><?php esc_html_e( 'Calendar feed source', 'conexao-event-importer' ); ?></span>
+							<?php endif; ?>
+						</td>
+						<td>
+							<a href="<?php echo esc_url( $this->normalize_source_url( $source['url'] ) ); ?>" target="_blank" rel="noopener noreferrer">
+								<?php echo esc_html( $this->truncate_url( $source['url'] ) ); ?>
+							</a>
+						</td>
+						<td>
+							<span class="conexao-source-type conexao-source-type--<?php echo esc_attr( $source['type'] ); ?>">
+								<?php echo esc_html( $this->get_type_label( $source['type'] ) ); ?>
+							</span>
+						</td>
 						<td>
 							<?php if ( 'active' === $source['status'] ) : ?>
-								<span class="conexao-source-status conexao-source-status--active"><?php esc_html_e( 'Active', 'conexao-event-importer' ); ?></span>
+								<span class="conexao-source-status conexao-source-status--active">● <?php esc_html_e( 'Active', 'conexao-event-importer' ); ?></span>
 							<?php else : ?>
-								<span class="conexao-source-status conexao-source-status--inactive"><?php esc_html_e( 'Inactive', 'conexao-event-importer' ); ?></span>
+								<span class="conexao-source-status conexao-source-status--inactive">○ <?php esc_html_e( 'Inactive', 'conexao-event-importer' ); ?></span>
 							<?php endif; ?>
 						</td>
 						<td>
@@ -327,13 +451,25 @@ class Conexao_Event_Sources {
 								&mdash;
 							<?php endif; ?>
 						</td>
+						<td>
+							<?php
+							$last_checked = isset( $source['last_checked'] ) ? $source['last_checked'] : '';
+							if ( ! empty( $last_checked ) ) :
+								echo esc_html( $last_checked );
+							elseif ( ! empty( $source['last_import'] ) ) :
+								echo esc_html( $source['last_import'] );
+							else :
+								echo '&mdash;';
+							endif;
+							?>
+						</td>
 						<td><?php echo esc_html( $source['events_imported'] ); ?></td>
 						<td>
 							<form method="post" style="display:inline-block;">
 								<?php wp_nonce_field( 'conexao_event_sources', 'conexao_event_sources_nonce' ); ?>
 								<input type="hidden" name="conexao_source_action" value="run_import">
 								<input type="hidden" name="source_id" value="<?php echo esc_attr( $source['id'] ); ?>">
-								<button type="submit" class="button"><?php esc_html_e( 'Run Import Now', 'conexao-event-importer' ); ?></button>
+								<button type="submit" class="button button-primary"><?php esc_html_e( 'Import Now', 'conexao-event-importer' ); ?></button>
 							</form>
 							<a class="button" href="<?php echo esc_url( admin_url( 'admin.php?page=conexao-event-sources&edit=' . $source['id'] ) ); ?>"><?php esc_html_e( 'Edit', 'conexao-event-importer' ); ?></a>
 							<form method="post" style="display:inline-block;">
@@ -348,6 +484,33 @@ class Conexao_Event_Sources {
 			</tbody>
 		</table>
 		<?php
+	}
+
+	/**
+	 * Normalize a source URL for display (webcal:// -> https://).
+	 *
+	 * @param string $url URL.
+	 * @return string
+	 */
+	protected function normalize_source_url( $url ) {
+		if ( 0 === strpos( $url, 'webcal://' ) ) {
+			return 'https://' . substr( $url, 9 );
+		}
+		return $url;
+	}
+
+	/**
+	 * Truncate a URL for display.
+	 *
+	 * @param string $url URL.
+	 * @param int    $max_length Maximum length.
+	 * @return string
+	 */
+	protected function truncate_url( $url, $max_length = 50 ) {
+		if ( strlen( $url ) <= $max_length ) {
+			return $url;
+		}
+		return substr( $url, 0, $max_length - 3 ) . '...';
 	}
 
 	/**
@@ -370,12 +533,16 @@ class Conexao_Event_Sources {
 				</tr>
 				<tr>
 					<th><label for="source_url"><?php esc_html_e( 'URL', 'conexao-event-importer' ); ?></label></th>
-					<td><input type="url" id="source_url" name="source_url" class="regular-text" required></td>
+					<td>
+						<input type="text" id="source_url" name="source_url" class="regular-text" required placeholder="https://... or webcal://...">
+						<p class="description"><?php esc_html_e( 'For iCalendar sources, use webcal:// or https:// URLs.', 'conexao-event-importer' ); ?></p>
+					</td>
 				</tr>
 				<tr>
 					<th><label for="source_type"><?php esc_html_e( 'Type', 'conexao-event-importer' ); ?></label></th>
 					<td>
 						<select id="source_type" name="source_type">
+							<option value="icalendar"><?php esc_html_e( 'iCalendar / Webcal', 'conexao-event-importer' ); ?></option>
 							<option value="website"><?php esc_html_e( 'Website', 'conexao-event-importer' ); ?></option>
 							<option value="facebook"><?php esc_html_e( 'Facebook', 'conexao-event-importer' ); ?></option>
 							<option value="instagram"><?php esc_html_e( 'Instagram', 'conexao-event-importer' ); ?></option>
@@ -405,7 +572,7 @@ class Conexao_Event_Sources {
 		}
 		?>
 		<h2><?php esc_html_e( 'Edit Source', 'conexao-event-importer' ); ?></h2>
-		<form method="post" class="conexao-source-form">
+		<form method="post" class="conexao-source-form" enctype="multipart/form-data">
 			<?php wp_nonce_field( 'conexao_event_sources', 'conexao_event_sources_nonce' ); ?>
 			<input type="hidden" name="conexao_source_action" value="save">
 			<input type="hidden" name="source_id" value="<?php echo esc_attr( $source['id'] ); ?>">
@@ -420,12 +587,28 @@ class Conexao_Event_Sources {
 				</tr>
 				<tr>
 					<th><label for="source_url"><?php esc_html_e( 'URL', 'conexao-event-importer' ); ?></label></th>
-					<td><input type="url" id="source_url" name="source_url" class="regular-text" value="<?php echo esc_attr( $source['url'] ); ?>" required></td>
+					<td>
+						<input type="text" id="source_url" name="source_url" class="regular-text" value="<?php echo esc_attr( $source['url'] ); ?>" placeholder="https://... or webcal://...">
+						<p class="description"><?php esc_html_e( 'For iCalendar sources, use webcal:// or https:// URLs. Leave empty if uploading an ICS file.', 'conexao-event-importer' ); ?></p>
+					</td>
+				</tr>
+				<tr class="icalendar-upload-row" <?php echo 'icalendar' !== $source['type'] ? 'style="display:none;"' : ''; ?>>
+					<th><label for="ics_file"><?php esc_html_e( 'Upload ICS File', 'conexao-event-importer' ); ?></label></th>
+					<td>
+						<input type="file" id="ics_file" name="ics_file" accept=".ics,.ical,text/calendar">
+						<p class="description">
+							<?php esc_html_e( 'Upload an .ics file to import events from. This overrides the URL above.', 'conexao-event-importer' ); ?>
+							<?php if ( ! empty( $source['ics_content'] ) ) : ?>
+								<br><strong><?php esc_html_e( 'A file is currently loaded.', 'conexao-event-importer' ); ?></strong>
+							<?php endif; ?>
+						</p>
+					</td>
 				</tr>
 				<tr>
 					<th><label for="source_type"><?php esc_html_e( 'Type', 'conexao-event-importer' ); ?></label></th>
 					<td>
 						<select id="source_type" name="source_type">
+							<option value="icalendar" <?php selected( $source['type'], 'icalendar' ); ?>><?php esc_html_e( 'iCalendar / Webcal', 'conexao-event-importer' ); ?></option>
 							<option value="website" <?php selected( $source['type'], 'website' ); ?>><?php esc_html_e( 'Website', 'conexao-event-importer' ); ?></option>
 							<option value="facebook" <?php selected( $source['type'], 'facebook' ); ?>><?php esc_html_e( 'Facebook', 'conexao-event-importer' ); ?></option>
 							<option value="instagram" <?php selected( $source['type'], 'instagram' ); ?>><?php esc_html_e( 'Instagram', 'conexao-event-importer' ); ?></option>
