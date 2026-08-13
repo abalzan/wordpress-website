@@ -176,3 +176,23 @@
 	color: #f05537;
 	border: 1px solid #f5c0a0;
 }
+
+/* Delete button styling - destructive action */
+.button-link-delete {
+	color: #b32d2e !important;
+	border-color: #b32d2e !important;
+	background: #fff !important;
+}
+
+.button-link-delete:hover,
+.button-link-delete:focus {
+	color: #fff !important;
+	background: #b32d2e !important;
+	border-color: #b32d2e !important;
+}
+
+.button-link-delete:active {
+	color: #fff !important;
+	background: #a02728 !important;
+	border-color: #a02728 !important;
+}

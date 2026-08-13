@@ -197,6 +197,29 @@ class Conexao_Event_Sources {
 	}
 
 	/**
+	 * Delete a source.
+	 *
+	 * Removes the source configuration from the sources array.
+	 * Imported events are preserved (not deleted).
+	 *
+	 * @param string $source_id Source slug.
+	 * @return bool True on success, false on failure.
+	 */
+	public function delete( $source_id ) {
+		if ( empty( $source_id ) ) {
+			return false;
+		}
+
+		$sources = $this->get_all();
+		if ( ! isset( $sources[ $source_id ] ) ) {
+			return false;
+		}
+
+		unset( $sources[ $source_id ] );
+		return update_option( self::OPTION_KEY, $sources, false );
+	}
+
+	/**
 	 * Update import stats for a source.
 	 *
 	 * @param string $source_id Source slug.
@@ -279,7 +302,7 @@ class Conexao_Event_Sources {
 			return;
 		}
 
-		// Handle actions: toggle, save, run import.
+		// Handle actions: toggle, save, run import, delete.
 		if ( isset( $_POST['conexao_source_action'] ) && check_admin_referer( 'conexao_event_sources', 'conexao_event_sources_nonce' ) ) {
 			$action = sanitize_text_field( wp_unslash( $_POST['conexao_source_action'] ) );
 
@@ -295,6 +318,8 @@ class Conexao_Event_Sources {
 				$this->handle_save_source();
 			} elseif ( 'run_import' === $action && isset( $_POST['source_id'] ) ) {
 				$this->handle_run_import();
+			} elseif ( 'delete' === $action && isset( $_POST['source_id'] ) ) {
+				$this->handle_delete_source();
 			}
 		}
 
@@ -304,6 +329,26 @@ class Conexao_Event_Sources {
 			<h1><?php esc_html_e( 'Event Sources', 'conexao-event-importer' ); ?></h1>
 			<p><?php esc_html_e( 'Manage the sources from which events are imported. Only active sources are processed during an import run.', 'conexao-event-importer' ); ?></p>
 			<?php $this->render_sources_table( $sources ); ?>
+			<script>
+			(function() {
+				'use strict';
+				// Attach delete confirmation to all delete forms.
+				document.querySelectorAll( '.conexao-source-delete-form' ).forEach( function( form ) {
+					form.addEventListener( 'submit', function( e ) {
+						var button = form.querySelector( '[data-source-name]' );
+						var sourceName = button ? button.getAttribute( 'data-source-name' ) : '';
+						var message = <?php echo wp_json_encode(
+							/* translators: %s: Source name. */
+							sprintf( __( 'Delete Event Source?\n\nAre you sure you want to delete "%s"?\n\nThis will remove the Event Source configuration. Imported events will remain in the database.', 'conexao-event-importer' ), '%s' )
+						); ?>;
+						message = message.replace( '%s', sourceName );
+						if ( ! confirm( message ) ) {
+							e.preventDefault();
+						}
+					} );
+				} );
+			})();
+			</script>
 			<?php
 			$edit_id = isset( $_GET['edit'] ) ? sanitize_text_field( wp_unslash( $_GET['edit'] ) ) : '';
 			if ( $edit_id ) {
@@ -443,6 +488,38 @@ class Conexao_Event_Sources {
 	}
 
 	/**
+	 * Handle deleting a source from the admin form.
+	 *
+	 * Deletes the source configuration while preserving imported events.
+	 * Events remain in the database but are no longer associated with an active source.
+	 */
+	protected function handle_delete_source() {
+		$source_id = sanitize_text_field( wp_unslash( $_POST['source_id'] ) );
+		$source    = $this->get( $source_id );
+
+		if ( ! $source ) {
+			echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__( 'Unable to delete the Event Source. Please try again.', 'conexao-event-importer' ) . '</p></div>';
+			return;
+		}
+
+		$source_name = $source['name'];
+		$deleted     = $this->delete( $source_id );
+
+		if ( $deleted ) {
+			// Log the deletion for debugging purposes.
+			Conexao_Import_Log::add( $source_id, 'info', sprintf( 'Event Source "%s" was deleted by %s.', $source_name, wp_get_current_user()->user_login ) );
+
+			echo '<div class="notice notice-success is-dismissible"><p>' . sprintf(
+				/* translators: %s: Source name. */
+				esc_html__( 'Event Source "%s" was deleted successfully.', 'conexao-event-importer' ),
+				'<strong>' . esc_html( $source_name ) . '</strong>'
+			) . '</p></div>';
+		} else {
+			echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__( 'Unable to delete the Event Source. Please try again.', 'conexao-event-importer' ) . '</p></div>';
+		}
+	}
+
+	/**
 	 * Get the display label for a source type.
 	 *
 	 * @param string $type Source type.
@@ -558,6 +635,12 @@ class Conexao_Event_Sources {
 								<input type="hidden" name="conexao_source_action" value="toggle">
 								<input type="hidden" name="source_id" value="<?php echo esc_attr( $source['id'] ); ?>">
 								<button type="submit" class="button"><?php echo 'active' === $source['status'] ? esc_html__( 'Disable', 'conexao-event-importer' ) : esc_html__( 'Enable', 'conexao-event-importer' ); ?></button>
+							</form>
+							<form method="post" style="display:inline-block;" class="conexao-source-delete-form">
+								<?php wp_nonce_field( 'conexao_event_sources', 'conexao_event_sources_nonce' ); ?>
+								<input type="hidden" name="conexao_source_action" value="delete">
+								<input type="hidden" name="source_id" value="<?php echo esc_attr( $source['id'] ); ?>">
+								<button type="submit" class="button button-link-delete" data-source-name="<?php echo esc_attr( $source['name'] ); ?>"><?php esc_html_e( 'Delete', 'conexao-event-importer' ); ?></button>
 							</form>
 						</td>
 					</tr>
