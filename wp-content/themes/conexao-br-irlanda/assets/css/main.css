@@ -3754,3 +3754,189 @@ input[type="button"] {
     font-size: 0.8125rem;
   }
 }
+
+/* ============================================
+   Course Cards — reuse Event Card visual language
+   ============================================ */
+.course-card {
+  background: var(--conexao-white);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--conexao-shadow-sm);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.course-card:hover {
+  box-shadow: var(--conexao-shadow-lg);
+  transform: translateY(-2px);
+}
+
+.course-card-banner {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  display: block;
+  text-decoration: none;
+}
+
+.course-card-banner-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.course-card:hover .course-card-banner-img {
+  transform: scale(1.05);
+}
+
+.course-card-banner:hover {
+  text-decoration: none;
+}
+
+.course-card-date-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: var(--conexao-white);
+  border-radius: 8px;
+  padding: 6px 10px;
+  text-align: center;
+  box-shadow: var(--conexao-shadow-sm);
+  min-width: 48px;
+}
+
+.course-card-date-day {
+  display: block;
+  font-family: var(--conexao-font-heading);
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--conexao-primary);
+}
+
+.course-card-date-month {
+  display: block;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--conexao-gray-600);
+}
+
+.course-card-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.course-card-category {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--conexao-primary);
+  margin-bottom: 8px;
+}
+
+.course-card-title {
+  font-size: 1.125rem;
+  font-family: var(--conexao-font-heading);
+  font-weight: 600;
+  line-height: 1.3;
+  margin: 0 0 10px;
+}
+
+.course-card-title a {
+  color: var(--conexao-dark);
+  text-decoration: none;
+}
+
+.course-card-title a:hover {
+  color: var(--conexao-primary);
+}
+
+.course-card-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.course-card-detail {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8125rem;
+  color: var(--conexao-gray-600);
+}
+
+.course-card-detail svg {
+  flex-shrink: 0;
+  color: var(--conexao-gray-500);
+}
+
+.course-card-detail--county {
+  color: var(--conexao-gray-500);
+}
+
+.course-card-time-sep {
+  color: var(--conexao-gray-400);
+}
+
+.course-card-time {
+  color: var(--conexao-gray-600);
+}
+
+.course-card-excerpt {
+  font-size: 0.875rem;
+  color: var(--conexao-gray-600);
+  line-height: 1.5;
+  margin: 0 0 12px;
+  flex: 1;
+}
+
+.course-card-price {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--conexao-primary);
+  margin-bottom: 12px;
+}
+
+.course-card-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background: var(--conexao-primary-light);
+  color: var(--conexao-primary);
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: background 0.2s ease, color 0.2s ease;
+  margin-top: auto;
+}
+
+.course-card-cta:hover {
+  background: var(--conexao-primary);
+  color: var(--conexao-white);
+}
+
+/* Courses page uses same wide layout as events */
+.courses-page .course-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}

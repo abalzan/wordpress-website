@@ -724,6 +724,55 @@ function conexao_event_archive_query( $query ) {
 add_action( 'pre_get_posts', 'conexao_event_archive_query' );
 
 /**
+ * Course archive: show all published courses, ordered by course date descending.
+ *
+ * Unlike events, courses don't filter by "upcoming" since courses may be
+ * self-paced or have flexible start dates. We show all published courses
+ * ordered by date (newest first).
+ */
+function conexao_course_archive_query( $query ) {
+	if ( is_admin() || ! $query->is_main_query() ) {
+		return;
+	}
+
+	if ( is_post_type_archive( 'course' ) ) {
+		$query->set( 'meta_key', '_course_date' );
+		$query->set( 'orderby', 'meta_value' );
+		$query->set( 'order', 'DESC' );
+
+		$tax_query = $query->get( 'tax_query' );
+		if ( ! is_array( $tax_query ) ) {
+			$tax_query = array();
+		}
+
+		// Town/city filter via ?cidade=slug
+		$town = isset( $_GET['cidade'] ) ? sanitize_title( wp_unslash( $_GET['cidade'] ) ) : '';
+		if ( $town ) {
+			$tax_query[] = array(
+				'taxonomy' => 'conexao_town',
+				'field'    => 'slug',
+				'terms'    => $town,
+			);
+		}
+
+		// Category filter via ?categoria=slug
+		$category = isset( $_GET['categoria'] ) ? sanitize_title( wp_unslash( $_GET['categoria'] ) ) : '';
+		if ( $category ) {
+			$tax_query[] = array(
+				'taxonomy' => 'conexao_category',
+				'field'    => 'slug',
+				'terms'    => $category,
+			);
+		}
+
+		if ( ! empty( $tax_query ) ) {
+			$query->set( 'tax_query', $tax_query );
+		}
+	}
+}
+add_action( 'pre_get_posts', 'conexao_course_archive_query' );
+
+/**
  * Custom image sizes
  */
 function conexao_image_sizes() {
@@ -884,6 +933,37 @@ function conexao_is_external_event_url( $event_id ) {
  */
 function conexao_event_link_target_attrs( $event_id ) {
 	if ( conexao_is_external_event_url( $event_id ) ) {
+		return ' target="_blank" rel="noopener noreferrer"';
+	}
+	return '';
+}
+
+/**
+ * Determine whether a course's URL points to an external website.
+ *
+ * @param int $course_id The course post ID.
+ * @return bool True if the course URL is external, false otherwise.
+ */
+function conexao_is_external_course_url( $course_id ) {
+	$course_url = get_post_meta( $course_id, '_course_url', true );
+
+	if ( empty( $course_url ) ) {
+		return false;
+	}
+
+	$permalink = get_permalink( $course_id );
+
+	return untrailingslashit( $course_url ) !== untrailingslashit( $permalink );
+}
+
+/**
+ * Return the HTML target and rel attributes for external course links.
+ *
+ * @param int $course_id The course post ID.
+ * @return string HTML attributes string (includes leading space when non-empty).
+ */
+function conexao_course_link_target_attrs( $course_id ) {
+	if ( conexao_is_external_course_url( $course_id ) ) {
 		return ' target="_blank" rel="noopener noreferrer"';
 	}
 	return '';

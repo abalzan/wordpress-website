@@ -40,6 +40,7 @@ final class Conexao_Data_Model {
 		$post_types = array(
 			'guide'   => array( 'plural' => 'Guias Práticos', 'singular' => 'Guia Prático', 'slug' => 'guides', 'icon' => 'dashicons-book-alt' ),
 			'event'   => array( 'plural' => 'Eventos', 'singular' => 'Evento', 'slug' => 'events', 'icon' => 'dashicons-calendar-alt' ),
+			'course'  => array( 'plural' => 'Cursos', 'singular' => 'Curso', 'slug' => 'courses', 'icon' => 'dashicons-welcome-learn-more' ),
 			'job'     => array( 'plural' => 'Empregos', 'singular' => 'Vaga de Emprego', 'slug' => 'jobs', 'icon' => 'dashicons-portfolio' ),
 			'sponsor' => array( 'plural' => 'Apoiadores', 'singular' => 'Apoiador', 'slug' => 'apoiadores', 'icon' => 'dashicons-heart' ),
 		);
@@ -74,7 +75,7 @@ final class Conexao_Data_Model {
 	}
 
 	public function register_taxonomies() {
-		$content_types = array( 'guide', 'event', 'job', 'sponsor' );
+		$content_types = array( 'guide', 'event', 'course', 'job', 'sponsor' );
 
 		register_taxonomy(
 			'conexao_category',
@@ -104,7 +105,7 @@ final class Conexao_Data_Model {
 
 		register_taxonomy(
 			'conexao_tag',
-			array( 'guide', 'event', 'sponsor' ),
+			array( 'guide', 'event', 'course', 'sponsor' ),
 			array(
 				'labels'            => array( 'name' => 'Tags', 'singular_name' => 'Tag' ),
 				'public'            => true,

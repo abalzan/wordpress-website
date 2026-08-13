@@ -1,8 +1,12 @@
 <?php get_header(); ?>
 
-<?php $is_event_archive = is_post_type_archive( 'event' ); ?>
+<?php
+$is_event_archive  = is_post_type_archive( 'event' );
+$is_course_archive = is_post_type_archive( 'course' );
+$is_wide_layout    = $is_event_archive || $is_course_archive;
+?>
 
-<div class="<?php echo $is_event_archive ? 'site-container site-container--wide events-page' : 'site-container'; ?>">
+<div class="<?php echo $is_wide_layout ? 'site-container site-container--wide ' . ( $is_course_archive ? 'courses-page' : 'events-page' ) : 'site-container'; ?>">
 	<main id="primary" class="content-area">
 
 		<?php if ( $is_event_archive ) : ?>
@@ -12,6 +16,13 @@
 				<p class="events-page-description"><?php esc_html_e( 'Encontre eventos, encontros e atividades da comunidade brasileira na Irlanda.', 'conexao-br-irlanda' ); ?></p>
 			</header>
 			<?php get_template_part( 'template-parts/event', 'filters' ); ?>
+		<?php elseif ( $is_course_archive ) : ?>
+			<header class="events-page-header">
+				<span class="section-eyebrow"><?php esc_html_e( 'Aprendizagem e Formação', 'conexao-br-irlanda' ); ?></span>
+				<h1 class="events-page-title"><?php esc_html_e( 'Cursos', 'conexao-br-irlanda' ); ?></h1>
+				<p class="events-page-description"><?php esc_html_e( 'Encontre cursos, formações e oportunidades de aprendizagem na comunidade brasileira na Irlanda.', 'conexao-br-irlanda' ); ?></p>
+			</header>
+			<?php get_template_part( 'template-parts/course', 'filters' ); ?>
 		<?php else : ?>
 			<header class="archive-header">
 				<h1 class="archive-title"><?php echo esc_html( conexao_archive_title() ); ?></h1>
@@ -23,10 +34,12 @@
 		<?php endif; ?>
 
 		<?php if ( have_posts() ) : ?>
-			<div class="<?php echo $is_event_archive ? 'events-grid' : 'archive-grid'; ?>">
+			<div class="<?php echo $is_wide_layout ? 'events-grid' : 'archive-grid'; ?>">
 				<?php while ( have_posts() ) : the_post(); ?>
 					<?php if ( $is_event_archive ) : ?>
 						<?php get_template_part( 'template-parts/event', 'card' ); ?>
+					<?php elseif ( $is_course_archive ) : ?>
+						<?php get_template_part( 'template-parts/course', 'card' ); ?>
 					<?php else : ?>
 						<?php
 						// For sponsors, check if there's an external link to make the card clickable.
