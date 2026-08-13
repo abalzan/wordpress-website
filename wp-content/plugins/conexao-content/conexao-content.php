@@ -177,6 +177,26 @@ final class Conexao_BR_Content {
 
 new Conexao_BR_Content();
 
+/**
+ * Migrate the 'cursos' page slug to 'courses'.
+ * This runs on init to ensure the page slug is updated for existing installations.
+ */
+function conexao_migrate_cursos_slug() {
+	static $done = false;
+	if ( $done ) return;
+	$done = true;
+	
+	$cursos_page = get_page_by_path( 'cursos' );
+	if ( $cursos_page && $cursos_page->post_name !== 'courses' ) {
+		wp_update_post( array(
+			'ID'        => $cursos_page->ID,
+			'post_name' => 'courses',
+		) );
+		flush_rewrite_rules();
+	}
+}
+add_action( 'init', 'conexao_migrate_cursos_slug', 5 );
+
 register_activation_hook( __FILE__, function () {
 	$plugin = new Conexao_BR_Content(); $plugin->register_content(); $plugin->register_routes(); flush_rewrite_rules();
 	$pages = array(
