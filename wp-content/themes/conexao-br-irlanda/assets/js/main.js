@@ -9,7 +9,6 @@
 	document.addEventListener('DOMContentLoaded', function() {
 		initMobileMenu();
 		initMobileSearch();
-		initLanguageSelector();
 		initCopyButtons();
 	});
 
@@ -142,46 +141,6 @@
 		document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && overlay.classList.contains('active')) closeSearch(); });
 	}
 
-	// ===== Language Selector =====
-	function initLanguageSelector() {
-		const langButtons = document.querySelectorAll('.language-selector button, .mobile-menu-lang button');
-
-		langButtons.forEach(function(button) {
-			button.addEventListener('click', function() {
-				const lang = this.getAttribute('data-lang');
-
-				// Update active state for all language buttons
-				langButtons.forEach(function(btn) {
-					btn.classList.remove('active');
-				});
-
-				// Set active for clicked button and its pair
-				document.querySelectorAll('[data-lang="' + lang + '"]').forEach(function(btn) {
-					btn.classList.add('active');
-				});
-
-				// Store language preference
-				localStorage.setItem('conexao_lang', lang);
-
-				// Trigger custom event for other scripts
-				window.dispatchEvent(new CustomEvent('languageChanged', {
-					detail: { lang: lang }
-				}));
-			});
-		});
-
-		// Restore language preference
-		const savedLang = localStorage.getItem('conexao_lang');
-		if (savedLang) {
-			document.querySelectorAll('[data-lang="' + savedLang + '"]').forEach(function(btn) {
-				btn.classList.add('active');
-			});
-			document.querySelectorAll('.language-selector button:not([data-lang="' + savedLang + '"]), .mobile-menu-lang button:not([data-lang="' + savedLang + '"])').forEach(function(btn) {
-				btn.classList.remove('active');
-			});
-		}
-	}
-
 	// ===== Copy Link Buttons =====
 	function initCopyButtons() {
 		// Theme share buttons (data-copy-url)
@@ -256,8 +215,7 @@
 
 	// ===== Expose functions globally if needed =====
 	window.ConexaoPortal = {
-		initMobileMenu: initMobileMenu,
-		initLanguageSelector: initLanguageSelector
+		initMobileMenu: initMobileMenu
 	};
 
 })();

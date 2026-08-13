@@ -1146,6 +1146,15 @@ function conexao_modify_primary_nav_items( $items, $args ) {
 	}
 	$items = array_values( $items );
 
+	// 2. Change the "Home" label to "Início" (Portuguese-first portal).
+	//    The URL is left untouched so the homepage link still works.
+	foreach ( $items as $item ) {
+		$title = strtolower( trim( wp_strip_all_tags( $item->title ) ) );
+		if ( 'home' === $title || 'início' === $title || 'inicio' === $title ) {
+			$item->title = 'Início';
+		}
+	}
+
 	// 2. Reuse the existing /courses/ page so we never create a duplicate route.
 	$cursos_page = get_page_by_path( 'courses' );
 	if ( ! $cursos_page ) {
@@ -1203,3 +1212,200 @@ function conexao_modify_primary_nav_items( $items, $args ) {
 	return $items;
 }
 add_filter( 'wp_nav_menu_objects', 'conexao_modify_primary_nav_items', 20, 2 );
+
+/**
+ * Canonical WordPress object bindings for each primary navigation section.
+ *
+ * Each top-level section maps to the WordPress object that actually backs it
+ * (a Page or a custom post type archive). Binding sections to real objects lets
+ * WordPress' own menu-context logic — the same mechanism the reference "Cursos"
+ * item uses (_wp_menu_item_classes_by_context) — decide when a section is
+ * "current". This makes the active state work reliably for:
+ *   - section landing pages,
+ *   - custom post type archives (Guias, Eventos, Empregos, Apoiadores),
+ *   - individual post detail pages (e.g. /events/event-name/ keeps Eventos active),
+ *   - taxonomy/archive pages where the bound post type is queried,
+ *   - child/descendant pages of a section page.
+ *
+ * @return array
+ */
+function conexao_primary_nav_sections() {
+	$archive_url = function ( $post_type, $fallback_slug ) {
+		$link = get_post_type_archive_link( $post_type );
+		return $link ? $link : home_url( '/' . $fallback_slug . '/' );
+	};
+
+	return array(
+		'início'     => array( 'key' => 'inicio', 'type' => 'custom', 'object' => 'custom', 'url' => home_url( '/' ), 'match' => array() ),
+		'guias'      => array( 'key' => 'guias', 'type' => 'post_type_archive', 'object' => 'guide', 'url' => $archive_url( 'guide', 'guides' ), 'match' => array( 'guides', 'guias' ) ),
+		'eventos'    => array( 'key' => 'eventos', 'type' => 'post_type_archive', 'object' => 'event', 'url' => $archive_url( 'event', 'events' ), 'match' => array( 'eventos', 'events' ) ),
+		'cursos'     => array( 'key' => 'cursos', 'type' => 'page', 'object' => 'page', 'path' => 'courses', 'match' => array( 'cursos', 'courses' ) ),
+		'empregos'   => array( 'key' => 'empregos', 'type' => 'post_type_archive', 'object' => 'job', 'url' => $archive_url( 'job', 'jobs' ), 'match' => array( 'empregos', 'jobs' ) ),
+		'apoiadores' => array( 'key' => 'apoiadores', 'type' => 'post_type_archive', 'object' => 'sponsor', 'url' => $archive_url( 'sponsor', 'apoiadores' ), 'match' => array( 'apoiadores', 'sponsors', 'sponsor' ) ),
+		'irlanda'    => array( 'key' => 'irlanda', 'type' => 'page', 'object' => 'page', 'path' => 'irlanda', 'match' => array( 'irlanda' ) ),
+		'sobre nós'  => array( 'key' => 'sobre-nos', 'type' => 'page', 'object' => 'page', 'path' => 'sobre-nos', 'match' => array( 'sobre-nos', 'sobre', 'sobre nós' ) ),
+		'sobre nos'  => array( 'key' => 'sobre-nos', 'type' => 'page', 'object' => 'page', 'path' => 'sobre-nos', 'match' => array( 'sobre-nos', 'sobre', 'sobre nós' ) ),
+		'contato'    => array( 'key' => 'contato', 'type' => 'page', 'object' => 'page', 'path' => 'contato', 'match' => array( 'contato' ) ),
+	);
+}
+
+/**
+ * Bind a primary navigation item to its canonical WordPress object.
+ *
+ * Updates the item's type/object/object_id/url so WordPress' menu-context
+ * logic can recognise it, and strips stale type/object/current classes so the
+ * re-computed classes stay clean.
+ *
+ * @param stdClass $item    A menu item object (by reference).
+ * @param array    $section A section spec from conexao_primary_nav_sections().
+ */
+function conexao_bind_section_object( $item, $section ) {
+	// Front page link.
+	if ( 'custom' === $section['type'] ) {
+		$item->type      = 'custom';
+		$item->object    = 'custom';
+		$item->object_id = 0;
+		$item->url       = home_url( '/' );
+	}
+
+	// Post type archive sections (Guias, Eventos, Empregos, Apoiadores).
+	if ( 'post_type_archive' === $section['type'] ) {
+		$item->type      = 'post_type_archive';
+		$item->object    = $section['object'];
+		$item->object_id = 0;
+		if ( ! empty( $section['url'] ) ) {
+			$item->url = $section['url'];
+		}
+	}
+
+	// Page sections (Cursos, Irlanda, Sobre Nós, Contato).
+	if ( 'page' === $section['type'] && ! empty( $section['path'] ) ) {
+		$page = get_page_by_path( $section['path'] );
+		if ( $page ) {
+			$item->type        = 'post_type';
+			$item->object      = 'page';
+			$item->object_id   = (int) $page->ID;
+			$item->url         = get_permalink( $page->ID );
+			$item->post_parent = $page->post_parent ? (int) $page->post_parent : 0;
+		}
+	}
+
+	// Refresh the <li> classes so they reflect the canonical binding and drop
+	// any stale type/object/current classes baked into the stored menu item.
+	$clean = array();
+	foreach ( (array) $item->classes as $class ) {
+		if ( 0 === strpos( $class, 'menu-item-type-' ) ) {
+			continue;
+		}
+		if ( 0 === strpos( $class, 'menu-item-object-' ) ) {
+			continue;
+		}
+		if ( 0 === strpos( $class, 'current-menu-' ) || 0 === strpos( $class, 'current_page' ) || 0 === strpos( $class, 'current-post-' ) ) {
+			continue;
+		}
+		$clean[] = $class;
+	}
+	$item->classes = $clean;
+}
+
+/**
+ * Bind every primary section to its canonical object and let WordPress compute
+ * the active/current classes with its own menu-context logic.
+ *
+ * This reuses the exact mechanism the reference "Cursos" item uses
+ * (_wp_menu_item_classes_by_context) and applies it uniformly to every
+ * section, so Início, Guias, Eventos, Cursos, Empregos, Apoiadores, Irlanda,
+ * Sobre Nós and Contato all receive the same reliable active state.
+ *
+ * @param array    $items An array of menu item objects.
+ * @param stdClass $args  An object containing wp_nav_menu() arguments.
+ * @return array
+ */
+function conexao_normalize_primary_nav_sections( $items, $args ) {
+	if ( 'primary' !== $args->theme_location ) {
+		return $items;
+	}
+
+	$sections   = conexao_primary_nav_sections();
+	$has_cursos = false;
+
+	foreach ( $items as $item ) {
+		$title    = strtolower( trim( wp_strip_all_tags( $item->title ) ) );
+		$item_url = untrailingslashit( (string) $item->url );
+
+		$section = isset( $sections[ $title ] ) ? $sections[ $title ] : null;
+
+		// Fall back to URL matching so binding still works if a menu item uses
+		// a non-canonical label.
+		if ( null === $section ) {
+			foreach ( $sections as $section_spec ) {
+				foreach ( $section_spec['match'] as $needle ) {
+					if ( '' !== $needle && false !== strpos( $item_url, '/' . $needle ) ) {
+						$section = $section_spec;
+						break 2;
+					}
+				}
+			}
+		}
+
+		if ( null === $section ) {
+			continue;
+		}
+
+		conexao_bind_section_object( $item, $section );
+
+		if ( 'cursos' === $section['key'] ) {
+			$has_cursos = true;
+		}
+	}
+
+	// Ensure a "Cursos" item bound to the /courses/ page exists (inserted before
+	// "Empregos" if the theme's base filter did not already provide one).
+	if ( ! $has_cursos ) {
+		$cursos_page = get_page_by_path( 'courses' );
+		if ( $cursos_page ) {
+			$page_type   = get_post_type_object( 'page' );
+			$cursos_item = (object) array(
+				'ID'               => 0,
+				'db_id'            => 0,
+				'menu_item_parent' => 0,
+				'object_id'        => $cursos_page->ID,
+				'object'           => 'page',
+				'post_parent'      => $cursos_page->post_parent ? $cursos_page->post_parent : 0,
+				'type'             => 'post_type',
+				'type_label'       => $page_type ? $page_type->labels->singular_name : 'Page',
+				'title'            => 'Cursos',
+				'url'              => get_permalink( $cursos_page->ID ),
+				'classes'          => array( 'menu-item', 'menu-item-type-post_type', 'menu-item-object-page' ),
+				'attr_title'       => '',
+				'target'           => '',
+				'xfn'              => '',
+				'description'      => '',
+				'menu_order'       => 0,
+			);
+
+			$insert_at = null;
+			foreach ( $items as $k => $item ) {
+				if ( 'empregos' === strtolower( trim( wp_strip_all_tags( $item->title ) ) ) ) {
+					$insert_at = $k;
+					break;
+				}
+			}
+
+			if ( null === $insert_at ) {
+				$items[] = $cursos_item;
+			} else {
+				array_splice( $items, $insert_at, 0, array( $cursos_item ) );
+			}
+
+			conexao_bind_section_object( $cursos_item, $sections['cursos'] );
+		}
+	}
+
+	// Let WordPress compute the active/current classes using its own
+	// queried-object/URL logic — applied to the whole primary navigation.
+	_wp_menu_item_classes_by_context( $items );
+
+	return $items;
+}
+add_filter( 'wp_nav_menu_objects', 'conexao_normalize_primary_nav_sections', 25, 2 );

@@ -15,71 +15,25 @@
   position: sticky;
   top: 0;
   z-index: 1000;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  border-bottom: 1px solid #e5e7eb;
 }
 
-/* ===== Top Bar ===== */
-.top-bar {
-  background: #073B2F;
-  color: #ffffff;
-  padding: 10px 0;
-  font-size: 0.875rem;
+/* Keep the sticky header below the WordPress admin bar for logged-in users. */
+body.admin-bar .site-header {
+  top: 32px;
 }
 
-.top-bar .site-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+@media (max-width: 782px) {
+  body.admin-bar .site-header {
+    top: 46px;
+  }
 }
 
-.top-bar-left {
-  display: flex;
-  gap: 20px;
-  align-items: center;
-}
-
-.top-bar-left a {
-  color: #ffffff;
-  opacity: 0.9;
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  transition: opacity 0.2s ease;
-}
-
-.top-bar-left a:hover {
-  opacity: 1;
-}
-
-.top-bar-right {
-  display: flex;
-  align-items: center;
-}
-
-.language-selector {
-  display: flex;
-  gap: 4px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 9999px;
-  padding: 4px;
-}
-
-.language-selector button {
-  background: transparent;
-  border: none;
-  color: #ffffff;
-  padding: 6px 14px;
-  border-radius: 9999px;
-  font-size: 0.8125rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-.language-selector button.active,
-.language-selector button:hover {
-  background: rgba(255, 255, 255, 0.2);
+@media (max-width: 600px) {
+  body.admin-bar .site-header {
+    top: 0;
+  }
 }
 
 /* ===== Main Header ===== */
@@ -180,15 +134,21 @@
 
 .primary-navigation ul li a:hover,
 .primary-navigation ul li.current-menu-item > a,
+.primary-navigation ul li.current-menu-parent > a,
 .primary-navigation ul li.current-menu-ancestor > a,
-.primary-navigation ul li.current_page_item > a {
+.primary-navigation ul li.current_page_item > a,
+.primary-navigation ul li.current_page_parent > a,
+.primary-navigation ul li.current_page_ancestor > a {
   color: #0E6B3A;
 }
 
 .primary-navigation ul li a:hover::after,
 .primary-navigation ul li.current-menu-item > a::after,
+.primary-navigation ul li.current-menu-parent > a::after,
 .primary-navigation ul li.current-menu-ancestor > a::after,
-.primary-navigation ul li.current_page_item > a::after {
+.primary-navigation ul li.current_page_item > a::after,
+.primary-navigation ul li.current_page_parent > a::after,
+.primary-navigation ul li.current_page_ancestor > a::after {
   transform: scaleX(1);
 }
 
@@ -464,6 +424,58 @@
   color: #1a1a2e;
 }
 
+.mobile-menu-search {
+  padding: 16px 24px 4px;
+  flex-shrink: 0;
+}
+
+.mobile-menu-search-form {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.mobile-menu-search-field {
+  flex: 1;
+  min-width: 0;
+  min-height: 48px;
+  padding: 12px 16px 12px 42px;
+  border: 1px solid #e5e7eb;
+  border-radius: 9999px;
+  font-size: 0.9375rem;
+  font-family: 'Inter', sans-serif;
+  background: #f8f9fa url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="%23adb5bd" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>') no-repeat 14px center;
+  color: #495057;
+  transition: all 0.25s ease;
+}
+
+.mobile-menu-search-field:focus {
+  outline: none;
+  border-color: #0E6B3A;
+  background-color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(14, 107, 58, 0.1);
+}
+
+.mobile-menu-search-submit {
+  background: #0E6B3A;
+  color: #ffffff;
+  border: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.25s ease;
+}
+
+.mobile-menu-search-submit:hover {
+  background: #073B2F;
+}
+
 .mobile-menu-nav {
   flex: 1;
   padding: 16px 0;
@@ -532,7 +544,12 @@
 }
 
 .mobile-menu li a:hover,
-.mobile-menu li.current-menu-item a {
+.mobile-menu li.current-menu-item a,
+.mobile-menu li.current-menu-parent a,
+.mobile-menu li.current-menu-ancestor a,
+.mobile-menu li.current_page_item a,
+.mobile-menu li.current_page_parent a,
+.mobile-menu li.current_page_ancestor a {
   color: #0E6B3A;
   background: #f0faf4;
 }
@@ -611,32 +628,6 @@
 .mobile-menu-social a:hover {
   background: #0E6B3A;
   color: #ffffff;
-}
-
-.mobile-menu-lang {
-  display: flex;
-  gap: 8px;
-}
-
-.mobile-menu-lang button {
-  flex: 1;
-  padding: 12px 16px;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  background: #ffffff;
-  color: #495057;
-  font-size: 0.875rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  min-height: 48px;
-}
-
-.mobile-menu-lang button.active,
-.mobile-menu-lang button:hover {
-  background: #0E6B3A;
-  color: #ffffff;
-  border-color: #0E6B3A;
 }
 
 /* ===== Mobile Search Overlay ===== */
@@ -788,27 +779,22 @@
 .header-cta:focus-visible,
 .mobile-menu-toggle:focus-visible,
 .mobile-menu-close:focus-visible,
-.language-selector button:focus-visible,
-.mobile-menu-lang button:focus-visible {
+.mobile-search-toggle:focus-visible,
+.mobile-menu-search-field:focus-visible,
+.mobile-menu-search-submit:focus-visible,
+.mobile-search-field:focus-visible,
+.mobile-search-submit:focus-visible,
+.mobile-search-close:focus-visible {
   outline: 3px solid #F68B1F;
   outline-offset: 2px;
 }
 
 /* ===== Responsive: Small desktop (1025px - 1280px) =====
-   The 9-item nav is tight, so reduce spacing and hide the redundant top-bar
-   text labels. The inline search box is replaced by the mobile search toggle
-   (which opens the same overlay) so logo + nav + CTA keep fitting inside the
-   1200px container at 100% zoom, keeping the nav usable and "Anuncie Aqui"
-   visible down to 1024px. */
+   The 9-item nav is tight, so reduce spacing. The inline search box is
+   replaced by the mobile search toggle (which opens the same overlay) so
+   logo + nav + CTA keep fitting inside the 1200px container at 100% zoom,
+   keeping the nav usable and "Anuncie Aqui" visible down to 1024px. */
 @media (max-width: 1280px) and (min-width: 1025px) {
-  .top-bar-left span {
-    display: none;
-  }
-
-  .top-bar-left a {
-    padding: 8px;
-  }
-
   .primary-navigation ul {
     gap: 10px;
   }
@@ -833,15 +819,6 @@
    widths, so we intentionally switch to the side-drawer mobile menu instead of
    forcing an overflowing single-line nav. */
 @media (max-width: 1024px) and (min-width: 769px) {
-  /* Keep the top bar, but hide the text labels */
-  .top-bar-left span {
-    display: none;
-  }
-
-  .top-bar-left a {
-    padding: 8px;
-  }
-
   /* Show the mobile menu toggle and search toggle */
   .mobile-menu-toggle {
     display: flex;
@@ -906,11 +883,6 @@
 
 /* ===== Responsive: Mobile (below 768px) ===== */
 @media (max-width: 768px) {
-  /* Hide top bar on mobile */
-  .top-bar {
-    display: none;
-  }
-
   /* Main header mobile layout */
   .main-header {
     padding: 12px 0;
