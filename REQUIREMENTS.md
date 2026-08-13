@@ -22,7 +22,7 @@ Before build work begins, the migration team must complete the accompanying cont
 | `/` | Início | `/` | Homepage hub |
 | `/blog` | BLOG | `/blog/` | Blog archive and community content blocks |
 | `/turismo-e-lazer` | EVENTOS | `/eventos/` | Curated external event recommendations |
-| `/capacitação` | CURSOS | `/cursos/` | Training and course advertiser grid |
+| `/capacitação` | CURSOS | `/courses/` | Training and course advertiser grid |
 | `/fique-por-dentro` | NOTÍCIAS | `/noticias/` | News resources and newcomer information |
 | `/s-projects-basic` | GUIAS PRÁTICOS | `/guias-praticos/` | Practical-guide listing |
 | `/contato` | CONTATO | `/contato/` | Contact form and WhatsApp contact |
@@ -105,7 +105,7 @@ Canonical post URLs are `/blog/{slug}/`. Redirect every discovered `/post/{slug}
 | `/blog/categories/{cat}` | `/category/{cat}/` |
 | `/post/{slug}` | `/blog/{slug}/` |
 | `/turismo-e-lazer` | `/eventos/` |
-| `/capacitação` | `/cursos/` |
+| `/capacitação` | `/courses/` |
 | `/fique-por-dentro` | `/noticias/` |
 | `/s-projects-basic` | `/guias-praticos/` |
 | `/contato` | `/contato/` |

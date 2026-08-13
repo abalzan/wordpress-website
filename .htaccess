@@ -3,7 +3,8 @@
 <IfModule mod_rewrite.c>
 RewriteEngine On
 RewriteRule ^turismo-e-lazer/?$ /events/ [R=301,L]
-RewriteRule ^capacitação/?$ /cursos/ [R=301,L]
+RewriteRule ^capacitação/?$ /courses/ [R=301,L]
+RewriteRule ^cursos/?$ /courses/ [R=301,L]
 RewriteRule ^s-projects-basic/?$ /guides/ [R=301,L]
 RewriteRule ^post/([^/]+)/?$ /blog/$1/ [R=301,L]
 RewriteRule ^blog/categories/([^/]+)/?$ /category/$1/ [R=301,L]

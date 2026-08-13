@@ -914,7 +914,7 @@ add_filter( 'wp_nav_menu_objects', 'conexao_override_guides_menu_links', 10, 2 )
  * Modify the primary navigation at render time.
  *
  * Guarantees the "Notícias" item never appears and inserts a "Cursos" item
- * (linked to the existing /cursos/ page) immediately before "Empregos", so
+ * (linked to the existing /courses/ page) immediately before "Empregos", so
  * the final order is:
  *
  *   Home, Guias, Eventos, Cursos, Empregos, Apoiadores, Irlanda, Sobre Nós, Contato
@@ -952,8 +952,8 @@ function conexao_modify_primary_nav_items( $items, $args ) {
 	}
 	$items = array_values( $items );
 
-	// 2. Reuse the existing /cursos/ page so we never create a duplicate route.
-	$cursos_page = get_page_by_path( 'cursos' );
+	// 2. Reuse the existing /courses/ page so we never create a duplicate route.
+	$cursos_page = get_page_by_path( 'courses' );
 	if ( ! $cursos_page ) {
 		return $items;
 	}

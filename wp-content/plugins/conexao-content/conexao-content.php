@@ -81,7 +81,8 @@ final class Conexao_BR_Content {
 		// now exists as /contato/, and redirecting to it would create a loop.
 		$redirects = array(
 			'/turismo-e-lazer'   => '/events/',
-			'/capacitação'       => '/cursos/',
+			'/capacitação'       => '/courses/',
+			'/cursos'            => '/courses/',
 			'/s-projects-basic'  => '/guides/',
 			'/guias'             => '/guides/',
 			'/eventos'           => '/events/',
@@ -181,7 +182,7 @@ register_activation_hook( __FILE__, function () {
 	$pages = array(
 		'blog' => array( 'BLOG', '' ),
 		'eventos' => array( 'EVENTOS', '<!-- wp:heading --><h2>Eventos para a comunidade brasileira na Irlanda</h2><!-- /wp:heading --><!-- wp:paragraph --><p>Recomendações selecionadas de atividades, passeios e bem-estar.</p><!-- /wp:paragraph --><!-- wp:heading {"level":3} --><h3>Família &amp; Crianças</h3><!-- /wp:heading --><!-- wp:shortcode -->[conexao_grid type="curated_link" group="familia-e-criancas"]<!-- /wp:shortcode --><!-- wp:heading {"level":3} --><h3>Lazer &amp; Social</h3><!-- /wp:heading --><!-- wp:shortcode -->[conexao_grid type="curated_link" group="lazer-e-social"]<!-- /wp:shortcode --><!-- wp:heading {"level":3} --><h3>Bem-estar &amp; Natureza</h3><!-- /wp:heading --><!-- wp:shortcode -->[conexao_grid type="curated_link" group="bem-estar-e-natureza"]<!-- /wp:shortcode -->' ),
-		'cursos' => array( 'CURSOS', '<!-- wp:heading --><h2>Capacitação e empreendedorismo</h2><!-- /wp:heading --><!-- wp:paragraph --><p>Encontre cursos e oportunidades para desenvolver a sua carreira e os seus negócios.</p><!-- /wp:paragraph --><!-- wp:shortcode -->[conexao_grid type="curated_link" group="cursos"]<!-- /wp:shortcode -->' ),
+		'courses' => array( 'CURSOS', '<!-- wp:heading --><h2>Capacitação e empreendedorismo</h2><!-- /wp:heading --><!-- wp:paragraph --><p>Encontre cursos e oportunidades para desenvolver a sua carreira e os seus negócios.</p><!-- /wp:paragraph --><!-- wp:shortcode -->[conexao_grid type="curated_link" group="cursos"]<!-- /wp:shortcode -->' ),
 		'contato' => array( 'CONTATO', '<!-- wp:heading --><h2>Tem uma sugestão ou dúvida? Nos mande uma mensagem</h2><!-- /wp:heading --><!-- wp:paragraph --><p>Insira aqui o bloco do formulário escolhido (WPForms ou Contact Form 7). Configure as notificações para o e-mail do proprietário do site e habilite a proteção antispam.</p><!-- /wp:paragraph --><!-- wp:paragraph --><p><a href="https://wa.me/353899451428">Fale conosco pelo WhatsApp</a></p><!-- /wp:paragraph -->' ),
 	);
 	foreach ( $pages as $slug => $page ) if ( ! get_page_by_path( $slug ) ) wp_insert_post( array( 'post_title' => $page[0], 'post_name' => $slug, 'post_content' => $page[1], 'post_status' => 'publish', 'post_type' => 'page' ) );

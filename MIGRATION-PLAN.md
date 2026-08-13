@@ -91,7 +91,7 @@ This plan is tailored to the current repository structure, which already contain
 | /blog/categories/{cat} | /category/{cat}/ | 301 |
 | /post/{slug} | /blog/{slug}/ | 301 |
 | /turismo-e-lazer | /eventos/ | 301 |
-| /capacitação | /cursos/ | 301 |
+| /capacitação | /courses/ | 301 |
 | /fique-por-dentro | /noticias/ | 301 |
 | /s-projects-basic | /guias-praticos/ | 301 |
 | /contato | /contato/ | 301 |
@@ -99,7 +99,7 @@ This plan is tailored to the current repository structure, which already contain
 ### Example Redirection rules
 - Source: `/post/(.+)` -> Target: `/blog/$1/` (regex)
 - Source: `/turismo-e-lazer` -> Target: `/eventos/`
-- Source: `/capacitação` -> Target: `/cursos/`
+- Source: `/capacitação` -> Target: `/courses/`
 - Source: `/fique-por-dentro` -> Target: `/noticias/`
 - Source: `/s-projects-basic` -> Target: `/guias-praticos/`
 - Source: `/contato` -> Target: `/contato/`
