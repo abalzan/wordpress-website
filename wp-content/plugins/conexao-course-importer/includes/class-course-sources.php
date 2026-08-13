@@ -17,19 +17,58 @@ class Conexao_Course_Sources {
 	 * @return array
 	 */
 	public function get_defaults() {
-		return array();
+		return array(
+			'leo_laois' => array(
+				'id'                 => 'leo_laois',
+				'name'               => 'Local Enterprise Office — Laois',
+				'url'                => 'https://www.localenterprise.ie/laois/training-events/online-bookings/',
+				'type'               => 'leo_training',
+				'status'             => 'active',
+				'last_import'        => '',
+				'last_import_status' => '',
+				'courses_imported'   => 0,
+				'last_error'         => '',
+				'county'             => 'Laois',
+				'category'           => 'Treinamento',
+			),
+		);
 	}
 
 	/**
 	 * Get all sources.
 	 *
+	 * Lazily merges any missing default sources into the stored list so
+	 * existing installs automatically pick up new defaults without
+	 * overwriting user changes to existing sources. This keeps the source
+	 * list complete and idempotent.
+	 *
 	 * @return array
 	 */
 	public function get_all() {
 		$sources = get_option( self::OPTION_KEY, array() );
-		if ( ! is_array( $sources ) ) {
-			$sources = array();
+
+		if ( ! is_array( $sources ) || empty( $sources ) ) {
+			$sources = $this->get_defaults();
+			update_option( self::OPTION_KEY, $sources, false );
+			return $sources;
 		}
+
+		$changed = false;
+
+		// Merge in any default sources that are missing.
+		foreach ( $this->get_defaults() as $default_id => $default_source ) {
+			if ( ! isset( $sources[ $default_id ] ) ) {
+				$sources[ $default_id ]            = $default_source;
+				$sources[ $default_id ]['id']      = $default_id;
+				$sources[ $default_id ]['status']  = 'active';
+				$changed = true;
+			}
+		}
+
+		if ( $changed ) {
+			update_option( self::OPTION_KEY, $sources, false );
+		}
+
 		return $sources;
 	}
 
@@ -281,13 +320,21 @@ class Conexao_Course_Sources {
 			'status' => isset( $_POST['source_status'] ) ? 'active' : 'inactive',
 		);
 
-		// Preserve existing stats if editing.
+		// Preserve existing stats + source-level defaults if editing.
 		$existing = $this->get( $source_id );
 		if ( $existing ) {
 			$source['last_import']        = $existing['last_import'];
 			$source['last_import_status'] = $existing['last_import_status'];
 			$source['courses_imported']   = $existing['courses_imported'];
 			$source['last_error']         = $existing['last_error'];
+
+			// Keep location/category defaults (e.g. County Laois) when editing.
+			if ( ! empty( $existing['county'] ) ) {
+				$source['county'] = $existing['county'];
+			}
+			if ( ! empty( $existing['category'] ) ) {
+				$source['category'] = $existing['category'];
+			}
 		}
 
 		$this->save( $source );
@@ -296,29 +343,65 @@ class Conexao_Course_Sources {
 
 	/**
 	 * Handle running an import from the admin form.
+	 *
+	 * Shows detailed per-source diagnostics (source reachable, pages scanned,
+	 * links discovered, parsed, plus new/updated/unchanged/errors) so a failed
+	 * import is understandable instead of just "0 courses imported".
 	 */
 	protected function handle_run_import() {
 		$source_id = sanitize_text_field( wp_unslash( $_POST['source_id'] ) );
-		$result    = apply_filters( 'conexao_course_importer_run_source', $source_id );
-		if ( $result && ! is_wp_error( $result ) ) {
-			$found     = isset( $result['found'] ) ? (int) $result['found'] : 0;
-			$new       = isset( $result['new'] ) ? (int) $result['new'] : 0;
-			$updated   = isset( $result['updated'] ) ? (int) $result['updated'] : 0;
-			$unchanged = isset( $result['unchanged'] ) ? (int) $result['unchanged'] : 0;
-			$errors    = isset( $result['errors'] ) ? (int) $result['errors'] : 0;
 
-			echo '<div class="notice notice-success is-dismissible"><p>';
-			echo esc_html__( 'Course Import completed.', 'conexao-course-importer' );
-			echo '<br>';
-			echo esc_html( sprintf(
-				/* translators: %1$d: found, %2$d: new, %3$d: updated, %4$d: unchanged, %5$d: errors */
-				__( 'Courses discovered: %1$d | New: %2$d | Updated: %3$d | Unchanged: %4$d | Errors: %5$d', 'conexao-course-importer' ),
-				$found, $new, $updated, $unchanged, $errors
-			) );
-			echo '</p></div>';
+		if ( 'all' === $source_id ) {
+			$result = apply_filters( 'conexao_course_importer_run_all', array() );
 		} else {
-			echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__( 'Import failed.', 'conexao-course-importer' ) . '</p></div>';
+			$result = apply_filters( 'conexao_course_importer_run_source', $source_id );
 		}
+
+		if ( ! $result || is_wp_error( $result ) ) {
+			echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__( 'Import failed.', 'conexao-course-importer' ) . '</p></div>';
+			return;
+		}
+
+		$found     = isset( $result['found'] ) ? (int) $result['found'] : 0;
+		$new       = isset( $result['new'] ) ? (int) $result['new'] : 0;
+		$updated   = isset( $result['updated'] ) ? (int) $result['updated'] : 0;
+		$unchanged = isset( $result['unchanged'] ) ? (int) $result['unchanged'] : 0;
+		$errors    = isset( $result['errors'] ) ? (int) $result['errors'] : 0;
+
+		$source_name       = isset( $result['source_name'] ) ? $result['source_name'] : '';
+		$source_reachable  = isset( $result['source_reachable'] ) ? (bool) $result['source_reachable'] : null;
+		$pages_scanned     = isset( $result['pages_scanned'] ) ? (int) $result['pages_scanned'] : 0;
+		$links_discovered  = isset( $result['links_discovered'] ) ? (int) $result['links_discovered'] : $found;
+		$courses_parsed    = isset( $result['courses_parsed'] ) ? (int) $result['courses_parsed'] : $found;
+		$source_error      = isset( $result['source_error'] ) ? (string) $result['source_error'] : '';
+
+		echo '<div class="notice notice-success is-dismissible"><p>';
+		if ( $source_name ) {
+			echo '<strong>' . esc_html( $source_name ) . '</strong><br>';
+		} elseif ( 'all' === $source_id ) {
+			echo '<strong>' . esc_html__( 'All Course Sources', 'conexao-course-importer' ) . '</strong><br>';
+		}
+
+		if ( 'all' !== $source_id && null !== $source_reachable ) {
+			echo esc_html__( 'Source reachable:', 'conexao-course-importer' ) . ' ' . ( $source_reachable ? '✓' : '✗' ) . '<br>';
+		}
+		if ( 'all' !== $source_id ) {
+			echo esc_html__( 'Pages scanned:', 'conexao-course-importer' ) . ' ' . esc_html( $pages_scanned ) . '<br>';
+			echo esc_html__( 'Course links discovered:', 'conexao-course-importer' ) . ' ' . esc_html( $links_discovered ) . '<br>';
+			echo esc_html__( 'Courses parsed:', 'conexao-course-importer' ) . ' ' . esc_html( $courses_parsed ) . '<br>';
+		}
+
+		echo esc_html( sprintf(
+			/* translators: %1$d: new, %2$d: updated, %3$d: unchanged, %4$d: errors */
+			__( 'New: %1$d | Updated: %2$d | Unchanged: %3$d | Errors: %4$d', 'conexao-course-importer' ),
+			$new, $updated, $unchanged, $errors
+		) );
+
+		if ( $source_error ) {
+			echo '<br><span style="color:#b32d2e;">' . esc_html( $source_error ) . '</span>';
+		}
+
+		echo '</p></div>';
 	}
 
 	/**
@@ -354,11 +437,12 @@ class Conexao_Course_Sources {
 	 */
 	protected function get_type_label( $type ) {
 		$labels = array(
-			'website' => __( 'Website', 'conexao-course-importer' ),
-			'api'     => __( 'API', 'conexao-course-importer' ),
-			'rss'     => __( 'RSS/XML', 'conexao-course-importer' ),
-			'icalendar' => __( 'iCalendar', 'conexao-course-importer' ),
-			'custom'  => __( 'Custom', 'conexao-course-importer' ),
+			'website'     => __( 'Website', 'conexao-course-importer' ),
+			'api'         => __( 'API', 'conexao-course-importer' ),
+			'rss'         => __( 'RSS/XML', 'conexao-course-importer' ),
+			'icalendar'   => __( 'iCalendar', 'conexao-course-importer' ),
+			'custom'      => __( 'Custom', 'conexao-course-importer' ),
+			'leo_training' => __( 'Website / Training Courses', 'conexao-course-importer' ),
 		);
 		return isset( $labels[ $type ] ) ? $labels[ $type ] : ucfirst( $type );
 	}
@@ -494,6 +578,7 @@ class Conexao_Course_Sources {
 					<td>
 						<select id="source_type" name="source_type">
 							<option value="website"><?php esc_html_e( 'Website', 'conexao-course-importer' ); ?></option>
+							<option value="leo_training"><?php esc_html_e( 'Website / Training Courses', 'conexao-course-importer' ); ?></option>
 							<option value="api"><?php esc_html_e( 'API', 'conexao-course-importer' ); ?></option>
 							<option value="rss"><?php esc_html_e( 'RSS/XML', 'conexao-course-importer' ); ?></option>
 							<option value="icalendar"><?php esc_html_e( 'iCalendar', 'conexao-course-importer' ); ?></option>
@@ -545,6 +630,7 @@ class Conexao_Course_Sources {
 					<td>
 						<select id="source_type" name="source_type">
 							<option value="website" <?php selected( $source['type'], 'website' ); ?>><?php esc_html_e( 'Website', 'conexao-course-importer' ); ?></option>
+							<option value="leo_training" <?php selected( $source['type'], 'leo_training' ); ?>><?php esc_html_e( 'Website / Training Courses', 'conexao-course-importer' ); ?></option>
 							<option value="api" <?php selected( $source['type'], 'api' ); ?>><?php esc_html_e( 'API', 'conexao-course-importer' ); ?></option>
 							<option value="rss" <?php selected( $source['type'], 'rss' ); ?>><?php esc_html_e( 'RSS/XML', 'conexao-course-importer' ); ?></option>
 							<option value="icalendar" <?php selected( $source['type'], 'icalendar' ); ?>><?php esc_html_e( 'iCalendar', 'conexao-course-importer' ); ?></option>
@@ -605,6 +691,9 @@ class Conexao_Course_Sources {
 								<?php echo 'active' === $source['status'] ? '&#10003;' : '&#10007;'; ?>
 							</span>
 							<?php echo esc_html( $source['name'] ); ?>
+							<?php if ( 'error' === $source['last_import_status'] && ! empty( $source['last_error'] ) ) : ?>
+								<span class="conexao-source-error">(<?php echo esc_html( $source['last_error'] ); ?>)</span>
+							<?php endif; ?>
 						</li>
 					<?php endforeach; ?>
 				</ul>

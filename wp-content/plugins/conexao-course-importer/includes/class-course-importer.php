@@ -42,6 +42,7 @@ class Conexao_Course_Importer_Engine {
 
 		// Hook the "run source" filter used by the admin UI.
 		add_filter( 'conexao_course_importer_run_source', array( $this, 'run_source' ), 10, 1 );
+		add_filter( 'conexao_course_importer_run_all', array( $this, 'run_all' ), 10, 1 );
 	}
 
 	/**
@@ -118,6 +119,25 @@ class Conexao_Course_Importer_Engine {
 
 		$stats['found'] = count( $raw_courses );
 
+		// Capture handler diagnostics for the admin UI.
+		$source_error = '';
+		if ( method_exists( $handler, 'get_diagnostics' ) ) {
+			$diag                        = $handler->get_diagnostics();
+			$stats['source_name']        = isset( $diag['source_name'] ) ? $diag['source_name'] : ( isset( $source['name'] ) ? $source['name'] : $source_id );
+			$stats['source_reachable']   = ! empty( $diag['source_reachable'] );
+			$stats['pages_scanned']      = isset( $diag['pages_scanned'] ) ? (int) $diag['pages_scanned'] : 0;
+			$stats['links_discovered']   = isset( $diag['links_discovered'] ) ? (int) $diag['links_discovered'] : 0;
+			$stats['courses_parsed']     = isset( $diag['courses_parsed'] ) ? (int) $diag['courses_parsed'] : count( $raw_courses );
+			$source_error                = isset( $diag['error'] ) ? (string) $diag['error'] : '';
+		} else {
+			$stats['source_name']      = isset( $source['name'] ) ? $source['name'] : $source_id;
+			$stats['source_reachable'] = true;
+			$stats['pages_scanned']    = 1;
+			$stats['links_discovered'] = count( $raw_courses );
+			$stats['courses_parsed']   = count( $raw_courses );
+		}
+		$stats['source_error'] = $source_error;
+
 		foreach ( $raw_courses as $raw ) {
 			$raw['source'] = $source_id;
 
@@ -148,11 +168,22 @@ class Conexao_Course_Importer_Engine {
 		// Mark courses from this source that disappeared.
 		$this->mark_missing_courses( $source_id, $raw_courses );
 
+		// Reflect source reachability in the recorded status so a failed
+		// connection is visible in the admin instead of a misleading success.
+		$import_status = 'success';
+		$import_error  = '';
+		if ( ! empty( $source_error ) ) {
+			$import_error  = $source_error;
+			if ( empty( $stats['source_reachable'] ) ) {
+				$import_status = 'error';
+			}
+		}
+
 		$this->sources->update_import_stats( $source_id, array(
 			'last_import'        => current_time( 'mysql' ),
-			'last_import_status' => 'success',
+			'last_import_status' => $import_status,
 			'courses_imported'   => $stats['new'],
-			'last_error'         => '',
+			'last_error'         => $import_error,
 		) );
 
 		$this->record_history( $source_id, $stats );
@@ -173,7 +204,17 @@ class Conexao_Course_Importer_Engine {
 			case 'website':
 			case '':
 				return new Conexao_Course_Website_Source( $source );
+			case 'leo_training':
+				return new Conexao_Course_LEO_Laois_Source( $source );
 			default:
+				// Fall back to source ID-based routing for known LEO IDs.
+				$normalized_id = str_replace( '-', '_', isset( $source['id'] ) ? $source['id'] : '' );
+				switch ( $normalized_id ) {
+					case 'leo_laois':
+					case 'local_enterprise_office_laois':
+						return new Conexao_Course_LEO_Laois_Source( $source );
+				}
+
 				// Allow third-party handlers to be registered.
 				return apply_filters( 'conexao_course_importer_get_handler', null, $source );
 		}

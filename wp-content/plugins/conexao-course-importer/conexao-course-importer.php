@@ -23,6 +23,7 @@ require_once CONEXAO_COURSE_IMPORTER_DIR . 'includes/class-course-image-handler.
 require_once CONEXAO_COURSE_IMPORTER_DIR . 'includes/class-course-sources.php';
 require_once CONEXAO_COURSE_IMPORTER_DIR . 'includes/sources/abstract-class-course-source.php';
 require_once CONEXAO_COURSE_IMPORTER_DIR . 'includes/sources/class-course-website-source.php';
+require_once CONEXAO_COURSE_IMPORTER_DIR . 'includes/sources/class-leo-laois-source.php';
 require_once CONEXAO_COURSE_IMPORTER_DIR . 'includes/class-course-importer.php';
 require_once CONEXAO_COURSE_IMPORTER_DIR . 'includes/class-course-import-scheduler.php';
 require_once CONEXAO_COURSE_IMPORTER_DIR . 'includes/class-course-import-dashboard.php';
