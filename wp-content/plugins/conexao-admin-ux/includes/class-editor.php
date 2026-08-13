@@ -409,7 +409,7 @@ final class Conexao_Admin_Ux_Editor {
 		// For content types whose "description" is a textarea (not a rich
 		// editor), also populate post_excerpt so public templates that use
 		// get_the_excerpt() display the saved description correctly.
-		if ( 'sponsor' === $this->post_type ) {
+		if ( 'sponsor' === $this->post_type || 'course_provider' === $this->post_type ) {
 			$post_array['post_excerpt'] = $content;
 		}
 
@@ -473,9 +473,10 @@ final class Conexao_Admin_Ux_Editor {
 	private function sync_media_to_thumbnail( $post_id, $data ) {
 		// Map of post type → meta key (without leading underscore) that holds the attachment ID.
 		$media_fields = array(
-			'sponsor' => 'sponsor_logo',
-			'event'   => 'event_banner',
-			'guide'   => 'guide_featured_image',
+			'sponsor'         => 'sponsor_logo',
+			'event'           => 'event_banner',
+			'guide'           => 'guide_featured_image',
+			'course_provider' => 'provider_logo',
 		);
 
 		if ( ! isset( $media_fields[ $this->post_type ] ) ) {
@@ -527,10 +528,11 @@ final class Conexao_Admin_Ux_Editor {
 	 */
 	private function title_field_key() {
 		$map = array(
-			'event'    => '_event_title',
-			'guide'    => '_guide_title',
-			'job'      => '_job_title',
-			'sponsor'  => '_sponsor_name',
+			'event'           => '_event_title',
+			'guide'           => '_guide_title',
+			'job'             => '_job_title',
+			'sponsor'         => '_sponsor_name',
+			'course_provider' => '_provider_name',
 		);
 		return isset( $map[ $this->post_type ] ) ? $map[ $this->post_type ] : '_' . $this->post_type . '_title';
 	}
@@ -542,10 +544,11 @@ final class Conexao_Admin_Ux_Editor {
 	 */
 	private function content_field_key() {
 		$map = array(
-			'event'    => '_event_description',
-			'guide'    => '_guide_content',
-			'job'      => '_job_description',
-			'sponsor'  => '_sponsor_description',
+			'event'           => '_event_description',
+			'guide'           => '_guide_content',
+			'job'             => '_job_description',
+			'sponsor'         => '_sponsor_description',
+			'course_provider' => '_provider_description',
 		);
 		return isset( $map[ $this->post_type ] ) ? $map[ $this->post_type ] : '_' . $this->post_type . '_content';
 	}

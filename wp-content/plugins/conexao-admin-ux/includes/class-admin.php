@@ -45,6 +45,8 @@ final class Conexao_Admin_Ux {
 		add_filter( 'post_type_labels_guide', array( $this, 'guide_labels' ) );
 		add_filter( 'post_type_labels_job', array( $this, 'job_labels' ) );
 		add_filter( 'post_type_labels_sponsor', array( $this, 'sponsor_labels' ) );
+		add_filter( 'post_type_labels_course', array( $this, 'course_labels' ) );
+		add_filter( 'post_type_labels_course_provider', array( $this, 'course_provider_labels' ) );
 	}
 
 	/**
@@ -250,6 +252,47 @@ final class Conexao_Admin_Ux {
 		$labels->search_items     = 'Buscar Apoiadores';
 		$labels->not_found        = 'Nenhum apoiador encontrado';
 		$labels->not_found_in_trash = 'Nenhum apoiador encontrado na lixeira';
+		return $labels;
+	}
+
+	/**
+	 * Rename the legacy "course" (imported individual courses) post type menu
+	 * so it does not collide with the curated "Cursos" (course providers) menu.
+	 *
+	 * @param object $labels Post type labels.
+	 * @return object
+	 */
+	public function course_labels( $labels ) {
+		$labels->menu_name        = 'Cursos Importados';
+		$labels->all_items        = 'Todas os Cursos Importados';
+		$labels->add_new          = 'Adicionar Curso';
+		$labels->add_new_item     = 'Adicionar Curso';
+		$labels->edit_item        = 'Editar Curso';
+		$labels->new_item         = 'Novo Curso';
+		$labels->view_item        = 'Ver Curso';
+		$labels->search_items     = 'Buscar Cursos';
+		$labels->not_found        = 'Nenhum curso encontrado';
+		$labels->not_found_in_trash = 'Nenhum curso encontrado na lixeira';
+		return $labels;
+	}
+
+	/**
+	 * Improve the Cursos (course providers) post type labels.
+	 *
+	 * @param object $labels Post type labels.
+	 * @return object
+	 */
+	public function course_provider_labels( $labels ) {
+		$labels->menu_name        = 'Cursos';
+		$labels->all_items        = 'Todos os Provedores';
+		$labels->add_new          = 'Adicionar Provedor';
+		$labels->add_new_item     = 'Adicionar Provedor';
+		$labels->edit_item        = 'Editar Provedor';
+		$labels->new_item         = 'Novo Provedor';
+		$labels->view_item        = 'Ver Provedor';
+		$labels->search_items     = 'Buscar Provedores';
+		$labels->not_found        = 'Nenhum provedor encontrado';
+		$labels->not_found_in_trash = 'Nenhum provedor encontrado na lixeira';
 		return $labels;
 	}
 

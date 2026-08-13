@@ -29,7 +29,7 @@ final class Conexao_Admin_Ux_Config {
 	 *
 	 * @var string[]
 	 */
-	const SUPPORTED_TYPES = array( 'event', 'guide', 'job', 'sponsor' );
+	const SUPPORTED_TYPES = array( 'event', 'guide', 'job', 'sponsor', 'course_provider' );
 
 	/**
 	 * Get the full configuration for a post type.
@@ -52,10 +52,11 @@ final class Conexao_Admin_Ux_Config {
 
 		if ( null === $configs ) {
 			$configs = array(
-				'event'    => self::event_config(),
-				'guide'    => self::guide_config(),
-				'job'      => self::job_config(),
-				'sponsor'  => self::sponsor_config(),
+				'event'           => self::event_config(),
+				'guide'           => self::guide_config(),
+				'job'             => self::job_config(),
+				'sponsor'         => self::sponsor_config(),
+				'course_provider' => self::course_provider_config(),
 			);
 		}
 
@@ -191,6 +192,21 @@ final class Conexao_Admin_Ux_Config {
 			'Instituição',
 			'Profissional liberal',
 			'Grupo comunitário',
+		);
+	}
+
+	/**
+	 * Categories used by the Cursos (course provider) directory.
+	 *
+	 * @return string[]
+	 */
+	public static function provider_categories() {
+		return array(
+			'Educação',
+			'Formação Profissional',
+			'Cursos Online',
+			'Negócios',
+			'Diretórios de Cursos',
 		);
 	}
 
@@ -581,6 +597,95 @@ final class Conexao_Admin_Ux_Config {
 				'archive'  => array( 'label' => 'Arquivar', 'type' => 'status', 'value' => 'archived' ),
 				'category' => array( 'label' => 'Atribuir categoria', 'type' => 'taxonomy', 'taxonomy' => 'conexao_category' ),
 				'delete'   => array( 'label' => 'Excluir permanentemente', 'type' => 'delete', 'confirm' => 'Tem certeza que deseja excluir permanentemente os apoiadores selecionados? Esta ação não pode ser desfeita.' ),
+			),
+			'summary'    => array(
+				array( 'key' => 'published', 'label' => 'Publicados', 'status' => 'published' ),
+				array( 'key' => 'review', 'label' => 'Revisão', 'status' => 'needs_review' ),
+			),
+		);
+	}
+
+	/**
+	 * ------------------------------------------------------------------
+	 * CURSOS (Provedores de cursos / institutions)
+	 * ------------------------------------------------------------------
+	 *
+	 * The Cursos section is a curated directory of course providers and
+	 * learning platforms. Each provider is a single record that links directly
+	 * to the provider's own website. We intentionally do NOT import individual
+	 * courses; all course dates, prices, schedules and enrollment live on the
+	 * external provider website.
+	 */
+	private static function course_provider_config() {
+		return array(
+			'post_type'  => 'course_provider',
+			'labels'     => array(
+				'singular'        => 'Provedor de Cursos',
+				'plural'          => 'Provedores de Cursos',
+				'add_button'      => 'Adicionar Provedor',
+				'add_new_item'    => 'Adicionar Provedor',
+				'edit_item'       => 'Editar Provedor',
+				'empty_title'     => 'Ainda não existem provedores de cursos',
+				'empty_message'   => 'Adicione o primeiro provedor de cursos à diretoria da página Cursos.',
+				'success_saved'   => 'Provedor atualizado com sucesso.',
+				'success_created' => 'Provedor criado com sucesso.',
+				'success_published' => 'Provedor publicado com sucesso.',
+				'success_draft'   => 'Rascunho salvo com sucesso.',
+				'success_duplicated' => 'Provedor duplicado como rascunho.',
+				'success_archived' => 'Provedor arquivado com sucesso.',
+				'success_bulk'    => 'Provedores atualizados com sucesso.',
+			),
+			'date_meta'  => '_provider_created_date',
+			'sections'   => array(
+				'principal' => array(
+					'title'    => 'Informações principais',
+					'icon'     => 'dashicons-welcome-learn-more',
+					'priority' => 10,
+					'fields'   => array(
+						array( 'key' => '_provider_name', 'label' => 'Nome', 'type' => 'text', 'required' => true, 'help' => 'Nome do provedor de cursos ou instituição. Ex.: "FETCH Courses".' ),
+						array( 'key' => '_provider_description', 'label' => 'Descrição', 'type' => 'textarea', 'help' => 'Descrição curta em português do que este provedor oferece.' ),
+						array( 'key' => '_provider_logo', 'label' => 'Logo', 'type' => 'media', 'help' => 'Logo oficial do provedor. Recomendado: logo da instituição (PNG/JPEG).' ),
+						array( 'key' => '_provider_category', 'label' => 'Categoria', 'type' => 'select', 'options' => self::provider_categories(), 'placeholder' => 'Selecione a categoria' ),
+						array( 'key' => '_provider_location', 'label' => 'Localização', 'type' => 'text', 'help' => 'Localização (ex.: "Irlanda" ou "Online / Irlanda").' ),
+					),
+				),
+				'link'      => array(
+					'title'    => 'Link do curso / instituição',
+					'icon'     => 'dashicons-external',
+					'priority' => 20,
+					'fields'   => array(
+						array( 'key' => '_provider_url', 'label' => 'Link do Curso / Instituição', 'type' => 'url', 'required' => true, 'help' => 'Endereço do site oficial do provedor. Ao clicar no cartão, o visitante é direcionado para este link em uma nova aba.' ),
+					),
+				),
+				'exibicao'  => array(
+					'title'    => 'Exibição',
+					'icon'     => 'dashicons-visibility',
+					'priority' => 30,
+					'fields'   => array(
+						array( 'key' => '_provider_order', 'label' => 'Ordem de exibição', 'type' => 'number', 'help' => 'Número menor aparece primeiro. Ex.: 1, 2, 3…' ),
+					),
+				),
+			),
+			'publishing' => array(
+				'statuses' => array(
+					'draft'     => array( 'label' => 'Rascunho', 'badge' => 'draft' ),
+					'needs_review' => array( 'label' => 'Revisão', 'badge' => 'review' ),
+					'published' => array( 'label' => 'Publicado', 'badge' => 'published' ),
+					'archived'  => array( 'label' => 'Arquivado', 'badge' => 'archived' ),
+				),
+				'status_meta' => '_provider_status',
+				'default_status' => 'draft',
+			),
+			'columns'    => array(
+				'category' => array( 'label' => 'Categoria', 'meta' => '_provider_category' ),
+				'location' => array( 'label' => 'Localização', 'meta' => '_provider_location' ),
+				'status'   => array( 'label' => 'Status', 'render' => 'status' ),
+			),
+			'bulk_actions' => array(
+				'publish'  => array( 'label' => 'Publicar', 'type' => 'status', 'value' => 'published' ),
+				'draft'    => array( 'label' => 'Rascunho', 'type' => 'status', 'value' => 'draft' ),
+				'archive'  => array( 'label' => 'Arquivar', 'type' => 'status', 'value' => 'archived' ),
+				'delete'   => array( 'label' => 'Excluir permanentemente', 'type' => 'delete', 'confirm' => 'Tem certeza que deseja excluir permanentemente os provedores selecionados? Esta ação não pode ser desfeita.' ),
 			),
 			'summary'    => array(
 				array( 'key' => 'published', 'label' => 'Publicados', 'status' => 'published' ),

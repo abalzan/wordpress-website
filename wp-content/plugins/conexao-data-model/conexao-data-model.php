@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Conexão BR Irlanda Data Model
  * Description: Content types, shared taxonomies, and editorial fields for the Conexão BR Irlanda portal.
- * Version: 1.1.0
+ * Version: 1.2.0
  * Text Domain: conexao-data-model
  *
  * @package Conexao_BR_Irlanda_Data_Model
@@ -18,7 +18,7 @@ require_once CONEXAO_DATA_MODEL_DIR . 'includes/class-meta.php';
 
 final class Conexao_Data_Model {
 
-	const VERSION = '1.1.0';
+	const VERSION = '1.2.0';
 
 	/** @var Conexao_Data_Model|null */
 	private static $instance = null;
@@ -34,18 +34,31 @@ final class Conexao_Data_Model {
 	private function __construct() {
 		add_action( 'init', array( $this, 'register_content_types' ), 0 );
 		add_action( 'init', array( $this, 'register_taxonomies' ), 0 );
+		add_action( 'init', array( $this, 'register_provider_meta' ), 0 );
 	}
 
 	public function register_content_types() {
 		$post_types = array(
-			'guide'   => array( 'plural' => 'Guias Práticos', 'singular' => 'Guia Prático', 'slug' => 'guides', 'icon' => 'dashicons-book-alt' ),
-			'event'   => array( 'plural' => 'Eventos', 'singular' => 'Evento', 'slug' => 'events', 'icon' => 'dashicons-calendar-alt' ),
-			'course'  => array( 'plural' => 'Cursos', 'singular' => 'Curso', 'slug' => 'courses', 'icon' => 'dashicons-welcome-learn-more' ),
-			'job'     => array( 'plural' => 'Empregos', 'singular' => 'Vaga de Emprego', 'slug' => 'jobs', 'icon' => 'dashicons-portfolio' ),
-			'sponsor' => array( 'plural' => 'Apoiadores', 'singular' => 'Apoiador', 'slug' => 'apoiadores', 'icon' => 'dashicons-heart' ),
+			'guide'           => array( 'plural' => 'Guias Práticos', 'singular' => 'Guia Prático', 'slug' => 'guides', 'icon' => 'dashicons-book-alt' ),
+			'event'           => array( 'plural' => 'Eventos', 'singular' => 'Evento', 'slug' => 'events', 'icon' => 'dashicons-calendar-alt' ),
+			'course'          => array( 'plural' => 'Cursos', 'singular' => 'Curso', 'slug' => 'courses', 'icon' => 'dashicons-welcome-learn-more' ),
+			'job'             => array( 'plural' => 'Empregos', 'singular' => 'Vaga de Emprego', 'slug' => 'jobs', 'icon' => 'dashicons-portfolio' ),
+			'sponsor'         => array( 'plural' => 'Apoiadores', 'singular' => 'Apoiador', 'slug' => 'apoiadores', 'icon' => 'dashicons-heart' ),
+			'course_provider' => array( 'plural' => 'Cursos', 'singular' => 'Provedor de Cursos', 'slug' => 'provedores-de-cursos', 'icon' => 'dashicons-welcome-learn-more' ),
 		);
 
 		foreach ( $post_types as $post_type => $type ) {
+			$is_provider = ( 'course_provider' === $post_type );
+
+			// The Cursos page is a WordPress page at /courses/. The legacy
+			// "course" CPT must NOT own an archive at /courses/ or it would
+			// shadow the page. Individual imported courses (if any) remain
+			// reachable via their singular permalinks only.
+			$has_archive = $type['slug'];
+			if ( 'course' === $post_type || $is_provider ) {
+				$has_archive = false;
+			}
+
 			register_post_type(
 				$post_type,
 				array(
@@ -62,13 +75,46 @@ final class Conexao_Data_Model {
 						'all_items'     => 'Todos os ' . $type['plural'],
 						'archives'      => $type['plural'],
 					),
-					'public'             => true,
+					// Providers are curated directory entries that link directly to
+					// an external website. They do not need a public single page, so
+					// the post type is admin-managed only.
+					'public'             => ! $is_provider,
+					'show_ui'            => true,
+					'show_in_menu'       => true,
 					'show_in_rest'       => true,
-					'has_archive'        => $type['slug'],
+					'has_archive'        => $has_archive,
 					'rewrite'            => array( 'slug' => $type['slug'], 'with_front' => false ),
 					'menu_icon'          => $type['icon'],
-					'supports'           => array( 'title', 'editor', 'excerpt', 'thumbnail', 'author', 'revisions', 'page-attributes', 'custom-fields' ),
-					'publicly_queryable' => true,
+					'supports'           => $is_provider
+						? array( 'title', 'editor', 'excerpt', 'thumbnail', 'revisions', 'custom-fields' )
+						: array( 'title', 'editor', 'excerpt', 'thumbnail', 'author', 'revisions', 'page-attributes', 'custom-fields' ),
+					'publicly_queryable' => ! $is_provider,
+				)
+			);
+		}
+	}
+
+	/**
+	 * Register meta fields for the course provider directory entries.
+	 */
+	public function register_provider_meta() {
+		$meta = array(
+			'_provider_logo'     => 'integer', // Media attachment ID.
+			'_provider_category' => 'string',
+			'_provider_location' => 'string',
+			'_provider_url'      => 'string',
+			'_provider_status'   => 'string',
+			'_provider_order'    => 'integer',
+		);
+
+		foreach ( $meta as $key => $type ) {
+			register_post_meta(
+				'course_provider',
+				$key,
+				array(
+					'single'       => true,
+					'type'         => $type,
+					'show_in_rest' => true,
 				)
 			);
 		}
@@ -121,6 +167,7 @@ final class Conexao_Data_Model {
 		$plugin = self::instance();
 		$plugin->register_content_types();
 		$plugin->register_taxonomies();
+		$plugin->register_provider_meta();
 		Conexao_Data_Model_Relationships::seed_terms();
 		flush_rewrite_rules();
 	}

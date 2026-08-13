@@ -346,7 +346,7 @@ function conexao_dequeue_block_library() {
 	// The plugin's shortcodes render block-styled card grids.
 	if ( ! $needs_blocks && is_singular() ) {
 		$post = get_queried_object();
-		if ( $post && ( has_shortcode( $post->post_content, 'conexao_grid' ) || has_shortcode( $post->post_content, 'conexao_blog_categories' ) ) ) {
+		if ( $post && ( has_shortcode( $post->post_content, 'conexao_grid' ) || has_shortcode( $post->post_content, 'conexao_blog_categories' ) || has_shortcode( $post->post_content, 'conexao_course_providers' ) ) ) {
 			$needs_blocks = true;
 		}
 	}
@@ -730,6 +730,118 @@ add_action( 'pre_get_posts', 'conexao_event_archive_query' );
  * self-paced or have flexible start dates. We show all published courses
  * ordered by date (newest first).
  */
+/**
+ * Course Provider shortcode.
+ *
+ * Renders the Cursos directory: a category filter bar plus a grid of
+ * course-provider cards. Each card links to the provider's external website
+ * in a new browser tab. Providers are curated records (course_provider CPT) —
+ * we intentionally do NOT list individual courses here.
+ *
+ * Optional attribute: [conexao_course_providers categories="Educação,Formação"]
+ *
+ * @param array $atts Shortcode attributes.
+ * @return string HTML.
+ */
+function conexao_course_providers_shortcode( $atts ) {
+	$atts = shortcode_atts(
+		array(
+			'categories' => '',
+		),
+		$atts,
+		'conexao_course_providers'
+	);
+
+	// Provider categories. Prefer the Admin UX config when available, otherwise
+	// fall back to this theme-local list so the directory always works.
+	if ( class_exists( 'Conexao_Admin_Ux_Config' ) ) {
+		$categories = Conexao_Admin_Ux_Config::provider_categories();
+	} else {
+		$categories = array(
+			'Educação',
+			'Formação Profissional',
+			'Cursos Online',
+			'Negócios',
+			'Diretórios de Cursos',
+		);
+	}
+	$current    = isset( $_GET['categoria'] ) ? sanitize_text_field( wp_unslash( $_GET['categoria'] ) ) : '';
+
+	$args = array(
+		'post_type'           => 'course_provider',
+		'post_status'         => 'publish',
+		'posts_per_page'      => -1,
+		'no_found_rows'       => true,
+		'update_post_meta_cache' => true,
+		'update_post_term_cache' => false,
+	);
+
+	// Filter by provider status meta (published) to match the admin status model.
+	$args['meta_query'] = array(
+		array(
+			'key'     => '_provider_status',
+			'value'   => 'published',
+			'compare' => '=',
+		),
+	);
+
+	// Category filter via ?categoria=<slug> (slugified category label).
+	if ( $current ) {
+		$args['meta_query'][] = array(
+			'key'   => '_provider_category',
+			'value' => $current,
+		);
+	}
+
+	// Optional comma-separated categories restriction from the shortcode.
+	$allowed = array();
+	if ( ! empty( $atts['categories'] ) ) {
+		$allowed = array_map( 'trim', explode( ',', $atts['categories'] ) );
+	}
+
+	// Order by the display order meta, then title.
+	$args['meta_key'] = '_provider_order';
+	$args['orderby']  = 'meta_value_num title';
+	$args['order']    = 'ASC';
+
+	$query = new WP_Query( $args );
+
+	if ( ! $query->have_posts() ) {
+		return '';
+	}
+
+	// Build the category filter bar (Todos + provider categories).
+	$filter = '<div class="events-filter-bar providers-filter-bar">';
+	$filter .= '<span class="events-filter-label">' . esc_html__( 'Categorias', 'conexao-br-irlanda' ) . '</span>';
+	$filter .= '<a class="events-filter-link' . ( $current ? '' : ' is-active' ) . '" href="' . esc_url( get_permalink() ) . '">' . esc_html__( 'Todos', 'conexao-br-irlanda' ) . '</a>';
+	foreach ( $categories as $category ) {
+		if ( $allowed && ! in_array( $category, $allowed, true ) ) {
+			continue;
+		}
+		$slug = sanitize_title( $category );
+		$url  = add_query_arg( 'categoria', $slug, get_permalink() );
+		$filter .= '<a class="events-filter-link' . ( $current === $slug ? ' is-active' : '' ) . '" href="' . esc_url( $url ) . '">' . esc_html( $category ) . '</a>';
+	}
+	$filter .= '</div>';
+
+	$html  = '<div class="provider-directory">';
+	$html .= $filter;
+	$html .= '<div class="provider-grid">';
+
+	while ( $query->have_posts() ) {
+		$query->the_post();
+		ob_start();
+		get_template_part( 'template-parts/provider', 'card' );
+		$html .= ob_get_clean();
+	}
+
+	wp_reset_postdata();
+
+	$html .= '</div></div>';
+	return $html;
+}
+add_shortcode( 'conexao_course_providers', 'conexao_course_providers_shortcode' );
+
 function conexao_course_archive_query( $query ) {
 	if ( is_admin() || ! $query->is_main_query() ) {
 		return;
@@ -780,6 +892,7 @@ function conexao_image_sizes() {
 	add_image_size( 'conexao-hero', 1200, 600, true );
 	add_image_size( 'conexao-thumb', 200, 150, true );
 	add_image_size( 'conexao-event-banner', 640, 360, true );
+	add_image_size( 'conexao-provider-logo', 320, 180, false );
 }
 add_action( 'after_setup_theme', 'conexao_image_sizes' );
 
@@ -789,6 +902,7 @@ function conexao_custom_image_sizes( $sizes ) {
 		'conexao-hero'         => __( 'Hero do Portal', 'conexao-br-irlanda' ),
 		'conexao-thumb'        => __( 'Miniatura do Portal', 'conexao-br-irlanda' ),
 		'conexao-event-banner' => __( 'Banner de Evento', 'conexao-br-irlanda' ),
+		'conexao-provider-logo' => __( 'Logo de Provedor de Cursos', 'conexao-br-irlanda' ),
 	) );
 }
 add_filter( 'image_size_names_choose', 'conexao_custom_image_sizes' );

@@ -292,6 +292,9 @@ final class Conexao_Admin_Ux_Fields {
 			'sponsor' => array(
 				'_sponsor_name' => 'o nome do apoiador',
 			),
+			'course_provider' => array(
+				'_provider_name' => 'o nome do provedor',
+			),
 		);
 
 		// Virtual fields (title, content) are rendered with name
@@ -307,6 +310,7 @@ final class Conexao_Admin_Ux_Fields {
 			'_guide_title',
 			'_job_title',
 			'_sponsor_name',
+			'_provider_name',
 		);
 
 		$virtual_content_keys = array(
@@ -315,6 +319,7 @@ final class Conexao_Admin_Ux_Fields {
 			'_guide_content',
 			'_job_description',
 			'_sponsor_description',
+			'_provider_description',
 		);
 
 		foreach ( $fields as $field ) {
@@ -382,7 +387,7 @@ final class Conexao_Admin_Ux_Fields {
 	 * @return bool
 	 */
 	public static function is_virtual( $key ) {
-		$virtual = array( '_event_title', '_event_description', '_news_title', '_news_content', '_guide_title', '_guide_content', '_job_title', '_job_description', '_sponsor_name', '_sponsor_description' );
+		$virtual = array( '_event_title', '_event_description', '_news_title', '_news_content', '_guide_title', '_guide_content', '_job_title', '_job_description', '_sponsor_name', '_sponsor_description', '_provider_name', '_provider_description' );
 		return in_array( $key, $virtual, true );
 	}
 
@@ -448,12 +453,14 @@ final class Conexao_Admin_Ux_Fields {
 			case '_guide_title':
 			case '_job_title':
 			case '_sponsor_name':
+			case '_provider_name':
 				return $post->post_title;
 			case '_event_description':
 			case '_news_content':
 			case '_guide_content':
 			case '_job_description':
 			case '_sponsor_description':
+			case '_provider_description':
 				return $post->post_content;
 		}
 
