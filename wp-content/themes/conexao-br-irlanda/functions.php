@@ -970,6 +970,7 @@ function conexao_modify_primary_nav_items( $items, $args ) {
 		'menu_item_parent' => 0,
 		'object_id'        => $cursos_page->ID,
 		'object'           => 'page',
+		'post_parent'      => $cursos_page->post_parent ? $cursos_page->post_parent : 0,
 		'type'             => 'post_type',
 		'type_label'       => $page_type ? $page_type->labels->singular_name : 'Page',
 		'title'            => 'Cursos',
