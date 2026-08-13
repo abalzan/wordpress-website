@@ -42,7 +42,6 @@ final class Conexao_Admin_Ux {
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_list_assets' ) );
 		add_action( 'admin_footer', array( $this, 'render_empty_state' ) );
 		add_filter( 'post_type_labels_event', array( $this, 'event_labels' ) );
-		add_filter( 'post_type_labels_news', array( $this, 'news_labels' ) );
 		add_filter( 'post_type_labels_guide', array( $this, 'guide_labels' ) );
 		add_filter( 'post_type_labels_job', array( $this, 'job_labels' ) );
 		add_filter( 'post_type_labels_sponsor', array( $this, 'sponsor_labels' ) );
@@ -191,25 +190,6 @@ final class Conexao_Admin_Ux {
 		$labels->search_items     = 'Buscar Eventos';
 		$labels->not_found        = 'Nenhum evento encontrado';
 		$labels->not_found_in_trash = 'Nenhum evento encontrado na lixeira';
-		return $labels;
-	}
-
-	/**
-	 * Improve the Notícias post type labels.
-	 *
-	 * @param object $labels Post type labels.
-	 * @return object
-	 */
-	public function news_labels( $labels ) {
-		$labels->all_items        = 'Todas as Notícias';
-		$labels->add_new          = 'Adicionar Notícia';
-		$labels->add_new_item     = 'Adicionar Notícia';
-		$labels->edit_item        = 'Editar Notícia';
-		$labels->new_item         = 'Nova Notícia';
-		$labels->view_item        = 'Ver Notícia';
-		$labels->search_items     = 'Buscar Notícias';
-		$labels->not_found        = 'Nenhuma notícia encontrada';
-		$labels->not_found_in_trash = 'Nenhuma notícia encontrada na lixeira';
 		return $labels;
 	}
 

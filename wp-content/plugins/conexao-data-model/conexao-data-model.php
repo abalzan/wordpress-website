@@ -38,7 +38,6 @@ final class Conexao_Data_Model {
 
 	public function register_content_types() {
 		$post_types = array(
-			'news'    => array( 'plural' => 'Notícias', 'singular' => 'Notícia', 'slug' => 'news', 'icon' => 'dashicons-megaphone' ),
 			'guide'   => array( 'plural' => 'Guias Práticos', 'singular' => 'Guia Prático', 'slug' => 'guides', 'icon' => 'dashicons-book-alt' ),
 			'event'   => array( 'plural' => 'Eventos', 'singular' => 'Evento', 'slug' => 'events', 'icon' => 'dashicons-calendar-alt' ),
 			'job'     => array( 'plural' => 'Empregos', 'singular' => 'Vaga de Emprego', 'slug' => 'jobs', 'icon' => 'dashicons-portfolio' ),
@@ -75,7 +74,7 @@ final class Conexao_Data_Model {
 	}
 
 	public function register_taxonomies() {
-		$content_types = array( 'news', 'guide', 'event', 'job', 'sponsor' );
+		$content_types = array( 'guide', 'event', 'job', 'sponsor' );
 
 		register_taxonomy(
 			'conexao_category',
@@ -105,7 +104,7 @@ final class Conexao_Data_Model {
 
 		register_taxonomy(
 			'conexao_tag',
-			array( 'news', 'guide', 'event', 'sponsor' ),
+			array( 'guide', 'event', 'sponsor' ),
 			array(
 				'labels'            => array( 'name' => 'Tags', 'singular_name' => 'Tag' ),
 				'public'            => true,

@@ -31,10 +31,6 @@ function conexao_seo_title( $title ) {
 		return $site_name . ' | ' . get_bloginfo( 'description' );
 	}
 
-	if ( is_singular( 'news' ) ) {
-		return single_post_title( '', false ) . ' | ' . $site_name;
-	}
-
 	if ( is_singular( 'guide' ) ) {
 		return single_post_title( '', false ) . ' | Guia Prático | ' . $site_name;
 	}
@@ -57,10 +53,6 @@ function conexao_seo_title( $title ) {
 
 	if ( is_singular( 'post' ) ) {
 		return single_post_title( '', false ) . ' | ' . $site_name;
-	}
-
-	if ( is_post_type_archive( 'news' ) ) {
-		return 'Notícias | ' . $site_name;
 	}
 
 	if ( is_post_type_archive( 'guide' ) ) {
@@ -123,8 +115,6 @@ function conexao_seo_meta_description() {
 	if ( ! $description ) {
 		if ( is_front_page() || is_home() ) {
 			$description = get_bloginfo( 'description' );
-		} elseif ( is_singular( 'news' ) ) {
-			$description = 'Notícia: ' . get_the_title() . '. Informações atualizadas para a comunidade brasileira na Irlanda.';
 		} elseif ( is_singular( 'guide' ) ) {
 			$description = 'Guia prático: ' . get_the_title() . '. Passo a passo completo para brasileiros na Irlanda.';
 		} elseif ( is_singular( 'event' ) ) {
@@ -133,8 +123,6 @@ function conexao_seo_meta_description() {
 			$description = 'Vaga de emprego: ' . get_the_title() . '. Oportunidade para brasileiros na Irlanda.';
 		} elseif ( is_singular( 'sponsor' ) ) {
 			$description = 'Apoiador: ' . get_the_title() . '. Conheça quem apoia e fortalece a comunidade brasileira na Irlanda.';
-		} elseif ( is_post_type_archive( 'news' ) ) {
-			$description = 'Notícias atualizadas para brasileiros na Irlanda. Imigração, economia, cultura e informações relevantes.';
 		} elseif ( is_post_type_archive( 'guide' ) ) {
 			$description = 'Guias práticos completos para brasileiros na Irlanda. PPS Number, Medical Card, moradia, emprego e mais.';
 		} elseif ( is_post_type_archive( 'event' ) ) {
@@ -144,11 +132,11 @@ function conexao_seo_meta_description() {
 		} elseif ( is_post_type_archive( 'sponsor' ) ) {
 			$description = 'Conheça as organizações e empresas que apoiam a comunidade brasileira na Irlanda.';
 		} elseif ( is_tax( 'conexao_category' ) ) {
-			$description = 'Conteúdo sobre ' . single_term_title( '', false ) . ' para brasileiros na Irlanda. Guias, notícias e recursos úteis.';
+			$description = 'Conteúdo sobre ' . single_term_title( '', false ) . ' para brasileiros na Irlanda. Guias e recursos úteis.';
 		} elseif ( is_tax( 'conexao_county' ) ) {
 			$description = 'Guia sobre ' . single_term_title( '', false ) . ' na Irlanda. Eventos, apoiadores, guias e empregos para brasileiros.';
 		} elseif ( is_404() ) {
-			$description = 'Página não encontrada. Explore guias, notícias e eventos para brasileiros na Irlanda.';
+			$description = 'Página não encontrada. Explore guias e eventos para brasileiros na Irlanda.';
 		}
 	}
 
@@ -377,11 +365,11 @@ function conexao_seo_schema_singular() {
 
 	$image = has_post_thumbnail() ? get_the_post_thumbnail_url( null, 'full' ) : CONEXAO_THEME_URI . '/assets/images/conexao-social-card.svg';
 
-	// --- News / Article ---
-	if ( in_array( $type, array( 'news', 'post' ), true ) ) {
+	// --- Article (blog posts) ---
+	if ( 'post' === $type ) {
 		$schema = array(
 			'@context'      => 'https://schema.org',
-			'@type'         => 'news' === $type ? 'NewsArticle' : 'Article',
+			'@type'         => 'Article',
 			'headline'      => get_the_title(),
 			'image'         => $image,
 			'datePublished' => get_the_date( 'c' ),
@@ -541,9 +529,6 @@ function conexao_seo_schema_singular() {
  * Get the Portuguese archive title for the current CPT archive.
  */
 function conexao_archive_title() {
-	if ( is_post_type_archive( 'news' ) ) {
-		return 'Notícias';
-	}
 	if ( is_post_type_archive( 'guide' ) ) {
 		return 'Guias Práticos';
 	}
@@ -568,9 +553,6 @@ function conexao_archive_title() {
  * Get the archive subtitle/description for the current CPT archive.
  */
 function conexao_archive_description() {
-	if ( is_post_type_archive( 'news' ) ) {
-		return 'Informações e novidades da comunidade brasileira na Irlanda.';
-	}
 	if ( is_post_type_archive( 'guide' ) ) {
 		return 'Guias passo a passo para facilitar sua vida na Irlanda.';
 	}
@@ -647,7 +629,6 @@ function conexao_seo_breadcrumb_data() {
  */
 function conexao_cpt_label( $post_type ) {
 	$labels = array(
-		'news'     => 'Notícias',
 		'guide'    => 'Guias Práticos',
 		'event'    => 'Eventos',
 		'job'      => 'Empregos',
@@ -746,7 +727,6 @@ function conexao_seo_sitemap() {
 	// CPTs — batched so the sitemap stays lightweight even when a CPT grows
 	// to thousands of posts (no posts_per_page => -1 full-table load).
 	$cpt_priorities = array(
-		'news'     => '0.9',
 		'guide'    => '0.9',
 		'event'    => '0.8',
 		'job'      => '0.7',
@@ -868,10 +848,6 @@ function conexao_seo_redirects() {
 		'/guias-praticos/visto-irlanda' => '/guides/visto-irlanda/',
 		'/guias-praticos/irp-renewal'  => '/guides/irp-renewal/',
 		'/guias-praticos/passaporte-irlandes' => '/guides/passaporte-irlandes/',
-
-		// Legacy news paths.
-		'/noticias'                    => '/news/',
-		'/fique-por-dentro'            => '/news/',
 
 		// Legacy events paths.
 		'/eventos'                     => '/events/',
@@ -1009,47 +985,6 @@ function conexao_seo_related_guides( $post_id = 0, $limit = 3 ) {
 	}
 
 	return $guides;
-}
-
-/**
- * Get related news for a given post (by shared category).
- */
-function conexao_seo_related_news( $post_id = 0, $limit = 3 ) {
-	$post_id = $post_id ? $post_id : get_the_ID();
-	$terms   = get_the_terms( $post_id, 'conexao_category' );
-	if ( empty( $terms ) || is_wp_error( $terms ) ) {
-		return array();
-	}
-
-	$query = new WP_Query( array(
-		'post_type'      => 'news',
-		'posts_per_page' => $limit,
-		'post__not_in'   => array( $post_id ),
-		'tax_query'      => array(
-			array(
-				'taxonomy' => 'conexao_category',
-				'field'    => 'term_id',
-				'terms'    => wp_list_pluck( $terms, 'term_id' ),
-			),
-		),
-		'no_found_rows'  => true,
-		'update_post_meta_cache' => false,
-		'update_post_term_cache' => false,
-	) );
-
-	$news = array();
-	if ( $query->have_posts() ) {
-		while ( $query->have_posts() ) {
-			$query->the_post();
-			$news[] = array(
-				'title' => get_the_title(),
-				'url'   => get_permalink(),
-			);
-		}
-		wp_reset_postdata();
-	}
-
-	return $news;
 }
 
 /**

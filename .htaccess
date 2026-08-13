@@ -4,13 +4,11 @@
 RewriteEngine On
 RewriteRule ^turismo-e-lazer/?$ /events/ [R=301,L]
 RewriteRule ^capacitação/?$ /cursos/ [R=301,L]
-RewriteRule ^fique-por-dentro/?$ /news/ [R=301,L]
 RewriteRule ^s-projects-basic/?$ /guides/ [R=301,L]
 RewriteRule ^post/([^/]+)/?$ /blog/$1/ [R=301,L]
 RewriteRule ^blog/categories/([^/]+)/?$ /category/$1/ [R=301,L]
 RewriteRule ^guias-praticos/?$ /guides/ [R=301,L]
 RewriteRule ^guias-praticos/([^/]+)/?$ /guides/$1/ [R=301,L]
-RewriteRule ^noticias/?$ /news/ [R=301,L]
 RewriteRule ^eventos/?$ /events/ [R=301,L]
 RewriteRule ^empregos/?$ /jobs/ [R=301,L]
 RewriteRule ^empresas/?$ /apoiadores/ [R=301,L]

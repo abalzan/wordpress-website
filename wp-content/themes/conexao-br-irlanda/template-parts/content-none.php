@@ -9,10 +9,7 @@
 			<p><?php esc_html_e( 'Desculpe, mas nada corresponde aos seus termos de busca. Tente novamente com palavras-chave diferentes.', 'conexao-br-irlanda' ); ?></p>
 			<button type="button" class="btn btn-outline-dark conexao-noresult-search-toggle"><?php esc_html_e( 'Nova busca', 'conexao-br-irlanda' ); ?></button>
 		<?php else : ?>
-			<?php if ( is_post_type_archive( 'news' ) ) : ?>
-				<p><?php esc_html_e( 'Nenhuma notícia publicada ainda.', 'conexao-br-irlanda' ); ?></p>
-				<p><?php esc_html_e( 'Novas notícias da comunidade serão publicadas aqui em breve.', 'conexao-br-irlanda' ); ?></p>
-			<?php elseif ( is_post_type_archive( 'guide' ) ) : ?>
+			<?php if ( is_post_type_archive( 'guide' ) ) : ?>
 				<p><?php esc_html_e( 'Nenhum guia publicado ainda.', 'conexao-br-irlanda' ); ?></p>
 				<p><?php esc_html_e( 'Novos guias práticos serão publicados aqui em breve.', 'conexao-br-irlanda' ); ?></p>
 			<?php elseif ( is_post_type_archive( 'event' ) ) : ?>

@@ -475,7 +475,6 @@ final class Conexao_Admin_Ux_Editor {
 		$media_fields = array(
 			'sponsor' => 'sponsor_logo',
 			'event'   => 'event_banner',
-			'news'    => 'news_featured_image',
 			'guide'   => 'guide_featured_image',
 		);
 
@@ -529,7 +528,6 @@ final class Conexao_Admin_Ux_Editor {
 	private function title_field_key() {
 		$map = array(
 			'event'    => '_event_title',
-			'news'     => '_news_title',
 			'guide'    => '_guide_title',
 			'job'      => '_job_title',
 			'sponsor'  => '_sponsor_name',
@@ -545,7 +543,6 @@ final class Conexao_Admin_Ux_Editor {
 	private function content_field_key() {
 		$map = array(
 			'event'    => '_event_description',
-			'news'     => '_news_content',
 			'guide'    => '_guide_content',
 			'job'      => '_job_description',
 			'sponsor'  => '_sponsor_description',

@@ -4,7 +4,7 @@
  *
  * Used for category and county landing pages. Preserves the existing page
  * content (H1, intro) and appends dynamic, relevant content sections:
- * guides, news, businesses, events, and related categories.
+ * guides, businesses, events, and related categories.
  *
  * @package Conexao_BR_Irlanda
  */
@@ -95,39 +95,6 @@ if ( $is_category_page ) {
 						<h2 class="landing-section-title"><?php esc_html_e( 'Guias Práticos', 'conexao-br-irlanda' ); ?></h2>
 						<div class="landing-grid">
 							<?php while ( $guides->have_posts() ) : $guides->the_post(); ?>
-								<article class="landing-card">
-									<?php if ( has_post_thumbnail() ) : ?>
-										<a href="<?php the_permalink(); ?>" class="landing-card-thumb"><?php the_post_thumbnail( 'conexao-card', array( 'loading' => 'lazy' ) ); ?></a>
-									<?php endif; ?>
-									<h3 class="landing-card-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
-									<p class="landing-card-excerpt"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 15, '...' ) ); ?></p>
-								</article>
-							<?php endwhile; wp_reset_postdata(); ?>
-						</div>
-					</section>
-				<?php endif; ?>
-
-				<?php
-				// --- Relevant News ---
-				$news = new WP_Query( array(
-					'post_type'      => 'news',
-					'posts_per_page' => 4,
-					'tax_query'      => array(
-						array(
-							'taxonomy' => $term->taxonomy,
-							'field'    => 'term_id',
-							'terms'    => $term->term_id,
-						),
-					),
-					'no_found_rows'  => true,
-					'update_post_meta_cache' => false,
-					'update_post_term_cache' => false,
-				) );
-				if ( $news->have_posts() ) : ?>
-					<section class="landing-section">
-						<h2 class="landing-section-title"><?php esc_html_e( 'Notícias Relacionadas', 'conexao-br-irlanda' ); ?></h2>
-						<div class="landing-grid">
-							<?php while ( $news->have_posts() ) : $news->the_post(); ?>
 								<article class="landing-card">
 									<?php if ( has_post_thumbnail() ) : ?>
 										<a href="<?php the_permalink(); ?>" class="landing-card-thumb"><?php the_post_thumbnail( 'conexao-card', array( 'loading' => 'lazy' ) ); ?></a>

@@ -48,13 +48,6 @@ $main_pages = [
 <!-- wp:paragraph --><p>Email: contato@conexaobr.ie</p><!-- /wp:paragraph -->',
         'meta_desc' => 'Entre em contato com a equipe do Conexão BR Irlanda. Tire dúvidas, envie sugestões ou saiba como anunciar.',
     ],
-    'noticias' => [
-        'title' => 'Notícias',
-        'content' => '<!-- wp:heading --><h2>Últimas notícias para brasileiros na Irlanda</h2><!-- /wp:heading -->
-<!-- wp:paragraph --><p>Fique por dentro das notícias mais relevantes para a comunidade brasileira na Irlanda. Atualizações sobre imigração, economia, cultura e muito mais.</p><!-- /wp:paragraph -->
-<!-- wp:query --><div class="wp-block-query"><!-- wp:post-template /--></div><!-- /wp:query -->',
-        'meta_desc' => 'Notícias atualizadas para brasileiros na Irlanda. Imigração, economia, cultura e informações relevantes para a comunidade.',
-    ],
     'guias' => [
         'title' => 'Guias Práticos',
         'content' => '<!-- wp:heading --><h2>Guias práticos para brasileiros na Irlanda</h2><!-- /wp:heading -->
@@ -207,8 +200,6 @@ $europe_content = '<!-- wp:heading --><h2>Europa para brasileiros</h2><!-- /wp:h
 
 $county_content_template = '<!-- wp:heading --><h2>%s para brasileiros</h2><!-- /wp:heading -->
 <!-- wp:paragraph --><p>Guia completo sobre o condado de %s na Irlanda. Informações sobre moradia, eventos, negócios, guias, empregos e restaurantes.</p><!-- /wp:paragraph -->
-<!-- wp:heading --><h3>Notícias Locais</h3><!-- /wp:heading -->
-<!-- wp:paragraph --><p>Acompanhe as últimas notícias e atualizações do condado de %s.</p><!-- /wp:paragraph -->
 <!-- wp:heading --><h3>Eventos</h3><!-- /wp:heading -->
 <!-- wp:paragraph --><p>Confira os eventos e atividades acontecendo no condado de %s.</p><!-- /wp:paragraph -->
 <!-- wp:heading --><h3>Negócios e Serviços</h3><!-- /wp:heading -->
@@ -441,7 +432,7 @@ foreach ($main_pages as $slug => $data) {
 echo "\n=== COMMUNITY CATEGORY PAGES ===\n";
 $cat_content = '<!-- wp:heading --><h2>%s</h2><!-- /wp:heading -->
 <!-- wp:paragraph --><p>Ajude a comunidade brasileira na Irlanda com informações sobre %s.</p><!-- /wp:paragraph -->
-<!-- wp:paragraph --><p>Conteúdo para esta seção está sendo preparado. Enquanto isso, explore nossos guias e notícias abaixo.</p><!-- /wp:paragraph -->';
+<!-- wp:paragraph --><p>Conteúdo para esta seção está sendo preparado. Enquanto isso, explore nossos guias abaixo.</p><!-- /wp:paragraph -->';
 
 foreach ($category_pages as $slug => $title) {
     $desc = strtolower($title);
@@ -564,7 +555,7 @@ $page_slugs = array_merge(
     array_keys($category_pages),
     ['irlanda', 'europa'],
     array_keys($counties),
-    ['privacidade', 'termos', 'sobre', 'categorias']
+    ['cursos', 'privacidade', 'termos', 'sobre', 'categorias']
 );
 
 $page_ids = [];
@@ -597,9 +588,9 @@ if (!$primary_menu_id) {
 // Add items to Primary Menu
 $primary_items = [
     ['title' => 'Home', 'url' => home_url('/')],
-    ['title' => 'Notícias', 'object' => 'page', 'object_id' => $page_ids['noticias'] ?? 0],
     ['title' => 'Guias', 'object' => 'page', 'object_id' => $page_ids['guias'] ?? 0],
     ['title' => 'Eventos', 'object' => 'page', 'object_id' => $page_ids['eventos'] ?? 0],
+    ['title' => 'Cursos', 'object' => 'page', 'object_id' => $page_ids['cursos'] ?? 0],
     ['title' => 'Empregos', 'object' => 'page', 'object_id' => $page_ids['empregos'] ?? 0],
     ['title' => 'Apoiadores', 'object' => 'page', 'object_id' => $page_ids['apoiadores'] ?? 0],
     ['title' => 'Irlanda', 'object' => 'page', 'object_id' => $page_ids['irlanda'] ?? 0],

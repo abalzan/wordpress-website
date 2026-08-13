@@ -13,7 +13,6 @@
 
 			<div class="error-404-links" style="margin-top: 30px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
 				<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="btn btn-green"><?php esc_html_e( 'Voltar para o início', 'conexao-br-irlanda' ); ?></a>
-				<a href="<?php echo esc_url( home_url( '/news/' ) ); ?>" class="btn btn-primary"><?php esc_html_e( 'Últimas Notícias', 'conexao-br-irlanda' ); ?></a>
 				<a href="<?php echo esc_url( home_url( '/guides/' ) ); ?>" class="btn btn-primary"><?php esc_html_e( 'Guias Práticos', 'conexao-br-irlanda' ); ?></a>
 				<a href="<?php echo esc_url( home_url( '/events/' ) ); ?>" class="btn btn-primary"><?php esc_html_e( 'Eventos', 'conexao-br-irlanda' ); ?></a>
 			</div>
@@ -52,37 +51,6 @@
 						<li><a href="<?php echo esc_url( home_url( '/guides/alugar-casa/' ) ); ?>"><?php esc_html_e( 'Alugar Casa', 'conexao-br-irlanda' ); ?></a></li>
 						<li><a href="<?php echo esc_url( home_url( '/guides/carteira-de-motorista/' ) ); ?>"><?php esc_html_e( 'Carteira de Motorista', 'conexao-br-irlanda' ); ?></a></li>
 					<?php endif; ?>
-				</ul>
-			</div>
-
-			<div class="error-404-latest" style="margin-top: 40px;">
-				<h3><?php esc_html_e( 'Últimas Notícias', 'conexao-br-irlanda' ); ?></h3>
-				<ul style="list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
-					<?php
-					// Single query for latest news, cached in transient (5 min).
-					$latest_news = get_transient( 'conexao_404_news' );
-					if ( false === $latest_news ) {
-						$news_query = new WP_Query( array(
-							'post_type'      => 'news',
-							'posts_per_page' => 3,
-							'no_found_rows'  => true,
-							'update_post_meta_cache' => false,
-							'update_post_term_cache' => false,
-						) );
-						$latest_news = array();
-						if ( $news_query->have_posts() ) {
-							while ( $news_query->have_posts() ) : $news_query->the_post();
-								$latest_news[] = array( 'title' => get_the_title(), 'url' => get_permalink() );
-							endwhile;
-						}
-						wp_reset_postdata();
-						set_transient( 'conexao_404_news', $latest_news, 300 );
-					}
-					if ( ! empty( $latest_news ) ) :
-						foreach ( $latest_news as $news_item ) : ?>
-							<li><a href="<?php echo esc_url( $news_item['url'] ); ?>"><?php echo esc_html( $news_item['title'] ); ?></a></li>
-						<?php endforeach;
-					endif; ?>
 				</ul>
 			</div>
 

@@ -29,7 +29,7 @@ final class Conexao_Admin_Ux_Config {
 	 *
 	 * @var string[]
 	 */
-	const SUPPORTED_TYPES = array( 'event', 'news', 'guide', 'job', 'sponsor' );
+	const SUPPORTED_TYPES = array( 'event', 'guide', 'job', 'sponsor' );
 
 	/**
 	 * Get the full configuration for a post type.
@@ -53,7 +53,6 @@ final class Conexao_Admin_Ux_Config {
 		if ( null === $configs ) {
 			$configs = array(
 				'event'    => self::event_config(),
-				'news'     => self::news_config(),
 				'guide'    => self::guide_config(),
 				'job'      => self::job_config(),
 				'sponsor'  => self::sponsor_config(),
@@ -325,92 +324,6 @@ final class Conexao_Admin_Ux_Config {
 			),
 			'summary'            => array(
 				array( 'key' => 'published', 'label' => 'Publicados', 'status' => 'published' ),
-				array( 'key' => 'review', 'label' => 'Revisão', 'status' => 'needs_review' ),
-				array( 'key' => 'week', 'label' => 'Esta semana', 'date_range' => 'week' ),
-			),
-		);
-	}
-
-	/**
-	 * ------------------------------------------------------------------
-	 * NOTÍCIAS
-	 * ------------------------------------------------------------------
-	 */
-	private static function news_config() {
-		return array(
-			'post_type'  => 'news',
-			'labels'     => array(
-				'singular'        => 'Notícia',
-				'plural'          => 'Notícias',
-				'add_button'      => 'Adicionar Notícia',
-				'add_new_item'    => 'Adicionar Notícia',
-				'edit_item'       => 'Editar Notícia',
-				'empty_title'     => 'Ainda não existem notícias',
-				'empty_message'   => 'Publique a primeira notícia para manter a comunidade informada.',
-				'success_saved'   => 'Notícia atualizada com sucesso.',
-				'success_created' => 'Notícia criada com sucesso.',
-				'success_published' => 'Notícia publicada com sucesso.',
-				'success_draft'   => 'Rascunho salvo com sucesso.',
-				'success_duplicated' => 'Notícia duplicada como rascunho.',
-				'success_archived' => 'Notícia arquivada com sucesso.',
-				'success_bulk'    => 'Notícias atualizadas com sucesso.',
-			),
-			'date_meta'  => '_news_date',
-			'sections'   => array(
-				'principal' => array(
-					'title'    => 'Informações principais',
-					'icon'     => 'dashicons-megaphone',
-					'priority' => 10,
-					'fields'   => array(
-						array( 'key' => '_news_title', 'label' => 'Título da notícia', 'type' => 'text', 'required' => true, 'help' => 'Use um título claro e informativo.' ),
-						array( 'key' => '_news_content', 'label' => 'Conteúdo', 'type' => 'editor', 'help' => 'Escreva o corpo da notícia.' ),
-						array( 'key' => '_news_featured_image', 'label' => 'Imagem em destaque', 'type' => 'media', 'help' => 'Imagem que ilustra a notícia.' ),
-					),
-				),
-				'publicacao' => array(
-					'title'    => 'Publicação',
-					'icon'     => 'dashicons-calendar',
-					'priority' => 20,
-					'fields'   => array(
-						array( 'key' => '_news_author', 'label' => 'Autor', 'type' => 'text', 'help' => 'Nome do autor da notícia.' ),
-						array( 'key' => '_news_category', 'label' => 'Categoria', 'type' => 'taxonomy', 'taxonomy' => 'conexao_category' ),
-						array( 'key' => '_news_date', 'label' => 'Data de publicação', 'type' => 'date' ),
-					),
-				),
-				'fonte'     => array(
-					'title'    => 'Fonte',
-					'icon'     => 'dashicons-external',
-					'priority' => 30,
-					'fields'   => array(
-						array( 'key' => '_news_source', 'label' => 'Fonte', 'type' => 'text', 'help' => 'O site ou organização de onde esta notícia foi obtida.' ),
-						array( 'key' => '_news_url', 'label' => 'URL original', 'type' => 'url', 'help' => 'Link para a notícia original, quando aplicável.' ),
-					),
-				),
-			),
-			'publishing' => array(
-				'statuses' => array(
-					'draft'     => array( 'label' => 'Rascunho', 'badge' => 'draft' ),
-					'needs_review' => array( 'label' => 'Revisão', 'badge' => 'review' ),
-					'published' => array( 'label' => 'Publicado', 'badge' => 'published' ),
-					'archived'  => array( 'label' => 'Arquivado', 'badge' => 'archived' ),
-				),
-				'status_meta' => '_news_status',
-				'default_status' => 'draft',
-			),
-			'columns'    => array(
-				'date'     => array( 'label' => 'Data', 'meta' => '_news_date', 'format' => 'date' ),
-				'source'   => array( 'label' => 'Fonte', 'render' => 'source' ),
-				'status'   => array( 'label' => 'Status', 'render' => 'status' ),
-			),
-			'bulk_actions' => array(
-				'publish'  => array( 'label' => 'Publicar', 'type' => 'status', 'value' => 'published' ),
-				'draft'    => array( 'label' => 'Rascunho', 'type' => 'status', 'value' => 'draft' ),
-				'archive'  => array( 'label' => 'Arquivar', 'type' => 'status', 'value' => 'archived' ),
-				'category' => array( 'label' => 'Atribuir categoria', 'type' => 'taxonomy', 'taxonomy' => 'conexao_category' ),
-				'delete'   => array( 'label' => 'Excluir permanentemente', 'type' => 'delete', 'confirm' => 'Tem certeza que deseja excluir permanentemente as notícias selecionadas? Esta ação não pode ser desfeita.' ),
-			),
-			'summary'    => array(
-				array( 'key' => 'published', 'label' => 'Publicadas', 'status' => 'published' ),
 				array( 'key' => 'review', 'label' => 'Revisão', 'status' => 'needs_review' ),
 				array( 'key' => 'week', 'label' => 'Esta semana', 'date_range' => 'week' ),
 			),

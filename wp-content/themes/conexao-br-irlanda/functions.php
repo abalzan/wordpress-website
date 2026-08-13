@@ -267,10 +267,10 @@ function conexao_homepage_query( $args, $cache_key, $expiration = 300 ) {
 /**
  * Invalidate all transient caches that depend on portal content.
  *
- * Runs whenever a News, Guide, Event, Job, Apoiador or standard post is
+ * Runs whenever a Guide, Event, Job, Apoiador or standard post is
  * published, updated, or deleted. This keeps:
  *  - the homepage card/featured/popular transients fresh,
- *  - the 404 page's guides/news/events transients fresh,
+ *  - the 404 page's guides/events transients fresh,
  *  - the per-post reading-time object-cache entry fresh.
  *
  * Transients store only public, non-user-specific data (ID, title, permalink,
@@ -280,7 +280,7 @@ function conexao_homepage_query( $args, $cache_key, $expiration = 300 ) {
  */
 function conexao_homepage_cache_invalidate( $post_id ) {
 	$post_type = get_post_type( $post_id );
-	$cpt_types = array( 'news', 'guide', 'event', 'job', 'sponsor', 'post' );
+	$cpt_types = array( 'guide', 'event', 'job', 'sponsor', 'post' );
 	if ( in_array( $post_type, $cpt_types, true ) ) {
 		// Homepage sections.
 		delete_transient( 'conexao_home_news' );
@@ -293,7 +293,6 @@ function conexao_homepage_cache_invalidate( $post_id ) {
 
 		// 404 page sections.
 		delete_transient( 'conexao_404_guides' );
-		delete_transient( 'conexao_404_news' );
 		delete_transient( 'conexao_404_events' );
 
 		// Reading-time object-cache entry for this post.
@@ -323,7 +322,7 @@ add_action( 'init', 'conexao_rest_api_optimize' );
  * The theme templates (homepage, CPT archives, CPT singles, search, 404) are
  * fully custom and do not need block CSS — keeping it dequeued there saves
  * ~90KB on the most important pages. However, the "conexao-content" plugin
- * creates static pages (eventos, cursos, noticias, contato, blog) whose body
+ * creates static pages (eventos, cursos, contato, blog) whose body
  * uses Gutenberg block markup (headings, lists, paragraphs, shortcodes). On
  * those pages we selectively restore the block-library CSS so the migrated
  * content keeps its intended styling. We do NOT blanket-restore wc-blocks-style
@@ -535,7 +534,7 @@ function conexao_popular_posts( $limit = 5 ) {
 	// comment counts. It returns nothing measurable until the meta is set,
 	// so we fall through to the lightweight recent-content query below.
 	$by_views = new WP_Query( array(
-		'post_type'           => array( 'news', 'guide', 'event', 'job', 'sponsor', 'post' ),
+		'post_type'           => array( 'guide', 'event', 'job', 'sponsor', 'post' ),
 		'posts_per_page'      => $limit,
 		'meta_key'            => '_conexao_view_count',
 		'orderby'             => 'meta_value_num',
@@ -554,7 +553,7 @@ function conexao_popular_posts( $limit = 5 ) {
 	// Fallback: recent content (lightweight, no ORDER BY comment_count).
 	if ( empty( $ids ) ) {
 		$recent = new WP_Query( array(
-			'post_type'           => array( 'news', 'guide', 'event', 'job', 'sponsor', 'post' ),
+			'post_type'           => array( 'guide', 'event', 'job', 'sponsor', 'post' ),
 			'posts_per_page'      => $limit,
 			'orderby'             => 'date',
 			'order'               => 'DESC',
@@ -910,3 +909,102 @@ function conexao_override_guides_menu_links( $items, $args ) {
 	return $items;
 }
 add_filter( 'wp_nav_menu_objects', 'conexao_override_guides_menu_links', 10, 2 );
+
+/**
+ * Modify the primary navigation at render time.
+ *
+ * Guarantees the "Notícias" item never appears and inserts a "Cursos" item
+ * (linked to the existing /cursos/ page) immediately before "Empregos", so
+ * the final order is:
+ *
+ *   Home, Guias, Eventos, Cursos, Empregos, Apoiadores, Irlanda, Sobre Nós, Contato
+ *
+ * Both the desktop nav and the mobile/hamburger menu render the 'primary'
+ * theme location, so this single filter applies the change everywhere the
+ * main navigation appears — no CSS hiding is involved.
+ *
+ * Active-state styling is delegated to WordPress' own menu logic
+ * (_wp_menu_item_classes_by_context), so "Cursos" receives the same
+ * current-menu-item/current_page_item underline as the other sections
+ * without hard-coding any state.
+ *
+ * @param array    $items An array of menu item objects.
+ * @param stdClass $args  An object containing wp_nav_menu() arguments.
+ * @return array
+ */
+function conexao_modify_primary_nav_items( $items, $args ) {
+	if ( 'primary' !== $args->theme_location ) {
+		return $items;
+	}
+
+	// 1. Remove the "Notícias" item entirely from the main navigation.
+	foreach ( $items as $key => $item ) {
+		$title    = strtolower( trim( wp_strip_all_tags( $item->title ) ) );
+		$item_url = untrailingslashit( (string) $item->url );
+
+		$is_news = in_array( $title, array( 'notícias', 'noticias' ), true )
+			|| false !== strpos( $item_url, '/noticias' )
+			|| untrailingslashit( home_url( '/news' ) ) === $item_url;
+
+		if ( $is_news ) {
+			unset( $items[ $key ] );
+		}
+	}
+	$items = array_values( $items );
+
+	// 2. Reuse the existing /cursos/ page so we never create a duplicate route.
+	$cursos_page = get_page_by_path( 'cursos' );
+	if ( ! $cursos_page ) {
+		return $items;
+	}
+
+	// 3. Build a "Cursos" menu item pointing at the existing page, mirroring
+	//    the classes WordPress applies to a real "page" menu item.
+	//    Note: the theme's conexao_nav_menu_css_class() filter adds "nav-item"
+	//    for the primary location, so we do not hardcode it here to avoid a
+	//    duplicate class in the rendered markup.
+	$page_type = get_post_type_object( 'page' );
+	$cursos_item = array(
+		'ID'               => 0,
+		'db_id'            => 0,
+		'menu_item_parent' => 0,
+		'object_id'        => $cursos_page->ID,
+		'object'           => 'page',
+		'type'             => 'post_type',
+		'type_label'       => $page_type ? $page_type->labels->singular_name : 'Page',
+		'title'            => 'Cursos',
+		'url'              => get_permalink( $cursos_page->ID ),
+		'classes'          => array( 'menu-item', 'menu-item-type-post_type', 'menu-item-object-page' ),
+		'attr_title'       => '',
+		'target'           => '',
+		'xfn'              => '',
+		'description'      => '',
+		'menu_order'       => 0,
+	);
+
+	// Let WordPress compute the active/current classes using its own
+	// queried-object/URL logic (current-menu-item, current_page_item, etc.).
+	// The helper expects an array of menu items by reference.
+	$cursos_item_obj = (object) $cursos_item;
+	$cursos_items_for_context = array( $cursos_item_obj );
+	_wp_menu_item_classes_by_context( $cursos_items_for_context );
+	$cursos_item_obj = $cursos_items_for_context[0];
+
+	// 4. Insert "Cursos" immediately before "Empregos" (=> after "Eventos").
+	$insert_at = null;
+	foreach ( $items as $k => $item ) {
+		if ( 'empregos' === strtolower( trim( wp_strip_all_tags( $item->title ) ) ) ) {
+			$insert_at = $k;
+			break;
+		}
+	}
+
+	if ( null === $insert_at ) {
+		$items[] = $cursos_item_obj;
+	} else {
+		array_splice( $items, $insert_at, 0, array( $cursos_item_obj ) );
+	}
+
+	return $items;
+}
+add_filter( 'wp_nav_menu_objects', 'conexao_modify_primary_nav_items', 20, 2 );
