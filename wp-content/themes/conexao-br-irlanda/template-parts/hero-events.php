@@ -3,8 +3,9 @@
  * Hero Events Widget Template Part
  *
  * Renders a large "Próximos Eventos" panel that fills the hero area.
- * Uses a featured event with a prominent banner followed by compact
- * upcoming event list items. Each event links to its event page.
+ * Each event uses the same compact card layout: a fixed thumbnail with
+ * an overlaid date badge on the left, and the event information on the
+ * right. Every event links to its event page (or external source URL).
  *
  * Relies on the WordPress loop; expected custom fields:
  *   - _event_date       (Y-m-d)
@@ -12,6 +13,7 @@
  *   - _event_location
  *   - _event_url        (destination URL; defaults to permalink)
  *   - _event_banner     (banner image URL; falls back to featured image)
+ *   - _event_banner_attachment_id (validated WordPress attachment)
  *
  * @package Conexao_BR_Irlanda
  */
@@ -49,90 +51,63 @@ if ( ! $hero_events->have_posts() ) {
 		<span class="hero-events-count"><?php echo esc_html( $hero_events->post_count ); ?> <?php esc_html_e( 'na agenda', 'conexao-br-irlanda' ); ?></span>
 	</header>
 
-	<?php
-	$hero_event_index = 0;
-	$hero_list_open   = false;
+	<div class="hero-events-list">
+		<?php
+		while ( $hero_events->have_posts() ) :
+			$hero_events->the_post();
 
-	while ( $hero_events->have_posts() ) :
-		$hero_events->the_post();
-		$hero_event_index++;
+			$event_id       = get_the_ID();
+			$event_url      = get_post_meta( $event_id, '_event_url', true );
+			$event_url      = $event_url ? $event_url : get_permalink();
+			$event_target   = conexao_event_link_target_attrs( $event_id );
+			$event_banner   = get_post_meta( $event_id, '_event_banner', true );
+			$banner_attach  = get_post_meta( $event_id, '_event_banner_attachment_id', true );
+			$event_date     = get_post_meta( $event_id, '_event_date', true );
+			$event_time     = get_post_meta( $event_id, '_event_time', true );
+			$event_location = get_post_meta( $event_id, '_event_location', true );
 
-		$event_id       = get_the_ID();
-		$event_url      = get_post_meta( $event_id, '_event_url', true );
-		$event_url      = $event_url ? $event_url : get_permalink();
-		$event_target   = conexao_event_link_target_attrs( $event_id );
-		$event_banner   = get_post_meta( $event_id, '_event_banner', true );
-		$event_date     = get_post_meta( $event_id, '_event_date', true );
-		$event_time     = get_post_meta( $event_id, '_event_time', true );
-		$event_location = get_post_meta( $event_id, '_event_location', true );
+			$day   = $event_date ? date( 'd', strtotime( $event_date ) ) : '--';
+			$month = $event_date ? date( 'M', strtotime( $event_date ) ) : '---';
 
-		$day   = $event_date ? date( 'd', strtotime( $event_date ) ) : '--';
-		$month = $event_date ? date( 'M', strtotime( $event_date ) ) : '---';
+			// Resolve the best image source:
+			// 1. Validated WordPress attachment (preferred).
+			// 2. Post thumbnail (featured image).
+			// 3. External banner URL (only if it looks like a valid URL).
+			// 4. Theme placeholder.
+			$has_attachment = $banner_attach && wp_attachment_is_image( $banner_attach );
+			if ( ! $has_attachment ) {
+				$has_attachment = has_post_thumbnail( $event_id );
+			}
 
-		if ( 1 === $hero_event_index ) : ?>
-
-			<a class="hero-event-featured" href="<?php echo esc_url( $event_url ); ?>" aria-label="<?php echo esc_attr( sprintf( 'Ver evento: %s', get_the_title() ) ); ?>"<?php echo $event_target; /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */ ?>>
-				<div class="hero-event-featured-banner">
-					<?php if ( $event_banner ) : ?>
-						<img src="<?php echo esc_url( $event_banner ); ?>" alt="<?php the_title_attribute(); ?>" loading="lazy">
-					<?php elseif ( has_post_thumbnail() ) : ?>
-						<?php the_post_thumbnail( 'conexao-card', array( 'loading' => 'lazy' ) ); ?>
-					<?php else : ?>
-						<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/events/event-placeholder.svg' ); ?>" alt="" loading="lazy">
-					<?php endif; ?>
-
-					<span class="hero-event-date-badge hero-event-date-badge--lg">
-						<span class="hero-event-date-day"><?php echo esc_html( $day ); ?></span>
-						<span class="hero-event-date-month"><?php echo esc_html( $month ); ?></span>
-					</span>
-				</div>
-
-				<div class="hero-event-featured-body">
-					<h4 class="hero-event-featured-title"><?php the_title(); ?></h4>
-
-					<div class="hero-event-meta">
-						<?php if ( $event_time ) : ?>
-							<span class="hero-event-time">
-								<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
-									<circle cx="12" cy="12" r="10"></circle>
-									<polyline points="12 6 12 12 16 14"></polyline>
-								</svg>
-								<?php echo esc_html( $event_time ); ?>
-							</span>
-						<?php endif; ?>
-
-						<?php if ( $event_location ) : ?>
-							<span class="hero-event-location">
-								<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
-									<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-									<circle cx="12" cy="10" r="3"></circle>
-								</svg>
-								<?php echo esc_html( $event_location ); ?>
-							</span>
-						<?php endif; ?>
-					</div>
-
-					<p class="hero-event-featured-excerpt"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 16, '...' ) ); ?></p>
-				</div>
-			</a>
-
-		<?php else : ?>
-
-			<?php
-			if ( ! $hero_list_open ) {
-				echo '<div class="hero-events-list">';
-				$hero_list_open = true;
+			$has_valid_banner = false;
+			if ( ! $has_attachment && $event_banner ) {
+				$has_valid_banner = ( false !== filter_var( $event_banner, FILTER_VALIDATE_URL ) );
 			}
 			?>
 
 			<a class="hero-event-card" href="<?php echo esc_url( $event_url ); ?>" aria-label="<?php echo esc_attr( sprintf( 'Ver evento: %s', get_the_title() ) ); ?>"<?php echo $event_target; /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */ ?>>
 				<div class="hero-event-thumb">
-					<?php if ( $event_banner ) : ?>
-						<img src="<?php echo esc_url( $event_banner ); ?>" alt="<?php the_title_attribute(); ?>" loading="lazy">
-					<?php elseif ( has_post_thumbnail() ) : ?>
-						<?php the_post_thumbnail( 'thumbnail', array( 'loading' => 'lazy' ) ); ?>
+					<?php if ( $has_attachment ) : ?>
+						<?php
+						if ( $banner_attach && wp_attachment_is_image( $banner_attach ) ) {
+							echo wp_get_attachment_image(
+								$banner_attach,
+								'conexao-thumb',
+								false,
+								array(
+									'class'   => 'hero-event-thumb-img',
+									'loading' => 'lazy',
+									'alt'     => '',
+								)
+							);
+						} else {
+							the_post_thumbnail( 'conexao-thumb', array( 'class' => 'hero-event-thumb-img', 'loading' => 'lazy', 'alt' => '' ) );
+						}
+						?>
+					<?php elseif ( $has_valid_banner ) : ?>
+						<img class="hero-event-thumb-img" src="<?php echo esc_url( $event_banner ); ?>" alt="" loading="lazy">
 					<?php else : ?>
-						<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/events/event-placeholder.svg' ); ?>" alt="" loading="lazy">
+						<img class="hero-event-thumb-img" src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/events/event-placeholder.svg' ); ?>" alt="" loading="lazy">
 					<?php endif; ?>
 
 					<span class="hero-event-date-badge">
@@ -147,7 +122,7 @@ if ( ! $hero_events->have_posts() ) {
 					<div class="hero-event-meta">
 						<?php if ( $event_time ) : ?>
 							<span class="hero-event-time">
-								<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2">
+								<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
 									<circle cx="12" cy="12" r="10"></circle>
 									<polyline points="12 6 12 12 16 14"></polyline>
 								</svg>
@@ -157,7 +132,7 @@ if ( ! $hero_events->have_posts() ) {
 
 						<?php if ( $event_location ) : ?>
 							<span class="hero-event-location">
-								<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2">
+								<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
 									<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
 									<circle cx="12" cy="10" r="3"></circle>
 								</svg>
@@ -165,18 +140,15 @@ if ( ! $hero_events->have_posts() ) {
 							</span>
 						<?php endif; ?>
 					</div>
+
+					<?php if ( has_excerpt() ) : ?>
+						<p class="hero-event-excerpt"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 18, '...' ) ); ?></p>
+					<?php endif; ?>
 				</div>
 			</a>
 
-		<?php endif; ?>
-
-	<?php
-	endwhile;
-	if ( $hero_list_open ) {
-		echo '</div>';
-	}
-	wp_reset_postdata();
-	?>
+		<?php endwhile; ?>
+	</div>
 
 	<a href="<?php echo esc_url( home_url( '/events/' ) ); ?>" class="hero-events-cta">
 		<?php esc_html_e( 'Ver todos os eventos', 'conexao-br-irlanda' ); ?>
@@ -186,3 +158,5 @@ if ( ! $hero_events->have_posts() ) {
 		</svg>
 	</a>
 </div>
+<?php
+wp_reset_postdata();
