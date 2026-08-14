@@ -16,6 +16,8 @@ final class Conexao_BR_Content {
 		add_action( 'init', array( $this, 'register_content' ) );
 		add_action( 'init', array( $this, 'register_meta' ) );
 		add_action( 'init', array( $this, 'register_routes' ) );
+		add_filter( 'query_vars', array( $this, 'register_query_vars' ) );
+		add_action( 'pre_get_posts', array( $this, 'blog_archive_query' ) );
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ) );
 		add_action( 'save_post', array( $this, 'save_meta' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_assets' ) );
@@ -23,7 +25,10 @@ final class Conexao_BR_Content {
 		add_filter( 'post_link', array( $this, 'post_permalink' ), 10, 2 );
 		add_shortcode( 'conexao_grid', array( $this, 'grid_shortcode' ) );
 		add_shortcode( 'conexao_blog_categories', array( $this, 'blog_categories_shortcode' ) );
-		add_filter( 'the_content', array( $this, 'append_sharing' ) );
+		// Sharing is rendered by the theme's conexao_share_buttons() in single.php
+		// to avoid a duplicate sharing section on the individual blog article page.
+		// @see single.php line 39, functions.php line 506.
+		// add_filter( 'the_content', array( $this, 'append_sharing' ) );
 		add_filter( 'the_content', array( $this, 'append_reading_time' ), 8 );
 	}
 
@@ -52,10 +57,41 @@ final class Conexao_BR_Content {
 
 	public function register_routes() {
 		// Rewrite /blog/ to the posts archive (paginated).
-		add_rewrite_rule( '^blog/?$', 'index.php?post_type=post', 'top' );
-		add_rewrite_rule( '^blog/page/([0-9]+)/?$', 'index.php?post_type=post&paged=$matches[1]', 'top' );
+		// We use a custom query var (conexao_blog) instead of post_type=post
+		// because with show_on_front=posts, post_type=post is interpreted as
+		// the front page and renders front-page.php instead of home.php.
+		add_rewrite_rule( '^blog/?$', 'index.php?conexao_blog=1', 'top' );
+		add_rewrite_rule( '^blog/page/([0-9]+)/?$', 'index.php?conexao_blog=1&paged=$matches[1]', 'top' );
 		// Individual post URLs: /blog/{post-name}/
 		add_rewrite_rule( '^blog/([^/]+)/?$', 'index.php?name=$matches[1]', 'top' );
+	}
+
+	/**
+	 * Register the custom query var used to identify the /blog/ archive.
+	 */
+	public function register_query_vars( $vars ) {
+		$vars[] = 'conexao_blog';
+		return $vars;
+	}
+
+	/**
+	 * When the conexao_blog query var is present, configure the main query
+	 * to retrieve published posts (the native 'post' post type) ordered by
+	 * date descending, so /blog/ renders the posts archive via home.php.
+	 */
+	public function blog_archive_query( $query ) {
+		if ( is_admin() || ! $query->is_main_query() ) {
+			return;
+		}
+
+		if ( get_query_var( 'conexao_blog' ) ) {
+			$query->set( 'post_type', 'post' );
+			$query->set( 'post_status', 'publish' );
+			$query->set( 'orderby', 'date' );
+			$query->set( 'order', 'DESC' );
+			$query->is_home = true;
+			$query->is_front_page = false;
+		}
 	}
 
 	public function enqueue_assets() {
@@ -204,7 +240,10 @@ add_action( 'init', 'conexao_migrate_cursos_slug', 5 );
 register_activation_hook( __FILE__, function () {
 	$plugin = new Conexao_BR_Content(); $plugin->register_content(); $plugin->register_routes(); flush_rewrite_rules();
 	$pages = array(
-		'blog' => array( 'BLOG', '' ),
+		// NOTE: The "blog" page is intentionally NOT created here. The Blog
+		// section uses the native WordPress posts archive at /blog/ (see
+		// register_routes()). Creating a Page with slug "blog" would shadow
+		// the posts archive and prevent published posts from appearing.
 		'eventos' => array( 'EVENTOS', '<!-- wp:heading --><h2>Eventos para a comunidade brasileira na Irlanda</h2><!-- /wp:heading --><!-- wp:paragraph --><p>Recomendações selecionadas de atividades, passeios e bem-estar.</p><!-- /wp:paragraph --><!-- wp:heading {"level":3} --><h3>Família &amp; Crianças</h3><!-- /wp:heading --><!-- wp:shortcode -->[conexao_grid type="curated_link" group="familia-e-criancas"]<!-- /wp:shortcode --><!-- wp:heading {"level":3} --><h3>Lazer &amp; Social</h3><!-- /wp:heading --><!-- wp:shortcode -->[conexao_grid type="curated_link" group="lazer-e-social"]<!-- /wp:shortcode --><!-- wp:heading {"level":3} --><h3>Bem-estar &amp; Natureza</h3><!-- /wp:heading --><!-- wp:shortcode -->[conexao_grid type="curated_link" group="bem-estar-e-natureza"]<!-- /wp:shortcode -->' ),
 		'courses' => array( 'CURSOS', '<!-- wp:heading --><h2>Encontre cursos, formação e oportunidades de aprendizagem na Irlanda</h2><!-- /wp:heading --><!-- wp:paragraph --><p>Uma diretoria curada de instituições e plataformas de ensino confiáveis na Irlanda. Cada cartão leva você diretamente ao site oficial do provedor.</p><!-- /wp:paragraph --><!-- wp:shortcode -->[conexao_course_providers]<!-- /wp:shortcode -->' ),
 		'contato' => array( 'CONTATO', '<!-- wp:heading --><h2>Tem uma sugestão ou dúvida? Nos mande uma mensagem</h2><!-- /wp:heading --><!-- wp:paragraph --><p>Insira aqui o bloco do formulário escolhido (WPForms ou Contact Form 7). Configure as notificações para o e-mail do proprietário do site e habilite a proteção antispam.</p><!-- /wp:paragraph --><!-- wp:paragraph --><p><a href="https://wa.me/353899451428">Fale conosco pelo WhatsApp</a></p><!-- /wp:paragraph -->' ),

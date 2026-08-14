@@ -89,7 +89,17 @@ get_header();
 			<?php get_template_part( 'template-parts/pagination' ); ?>
 
 		<?php else : ?>
-			<?php get_template_part( 'template-parts/content', 'none' ); ?>
+			<section class="no-results not-found">
+				<header class="page-header">
+					<h1 class="page-title"><?php esc_html_e( 'Nenhum artigo publicado ainda.', 'conexao-br-irlanda' ); ?></h1>
+				</header>
+				<div class="page-content">
+					<p><?php esc_html_e( 'Novos artigos serão publicados aqui em breve.', 'conexao-br-irlanda' ); ?></p>
+					<?php if ( current_user_can( 'publish_posts' ) ) : ?>
+						<p><?php printf( wp_kses( __( 'Pronto para publicar seu primeiro artigo? <a href="%s">Comece aqui</a>.', 'conexao-br-irlanda' ), array( 'a' => array( 'href' => array() ) ) ), esc_url( admin_url( 'post-new.php' ) ) ); ?></p>
+					<?php endif; ?>
+				</div>
+			</section>
 		<?php endif; ?>
 
 	</main>

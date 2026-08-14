@@ -1223,53 +1223,52 @@ function conexao_modify_primary_nav_items( $items, $args ) {
 	}
 
 	// 3. Insert "Blog" immediately after "Início" (=> before "Guias").
-	//    Reuse the existing /blog/ page so we never create a duplicate route.
-	$blog_page = get_page_by_path( 'blog' );
-	if ( $blog_page ) {
-		$page_type = get_post_type_object( 'page' );
-		$blog_item = array(
-			'ID'               => 0,
-			'db_id'            => 0,
-			'menu_item_parent' => 0,
-			'object_id'        => $blog_page->ID,
-			'object'           => 'page',
-			'post_parent'      => $blog_page->post_parent ? $blog_page->post_parent : 0,
-			'type'             => 'post_type',
-			'type_label'       => $page_type ? $page_type->labels->singular_name : 'Page',
-			'title'            => 'Blog',
-			'url'              => get_permalink( $blog_page->ID ),
-			'classes'          => array( 'menu-item', 'menu-item-type-post_type', 'menu-item-object-page' ),
-			'attr_title'       => '',
-			'target'           => '',
-			'xfn'              => '',
-			'description'      => '',
-			'menu_order'       => 0,
-		);
+	//    The Blog section uses the native WordPress posts archive at /blog/.
+	//    We intentionally do NOT look up a Page with slug "blog" — a Page
+	//    with that slug would shadow the posts archive and prevent published
+	//    posts from appearing on /blog/.
+	$blog_item = array(
+		'ID'               => 0,
+		'db_id'            => 0,
+		'menu_item_parent' => 0,
+		'object_id'        => 0,
+		'object'           => 'custom',
+		'post_parent'      => 0,
+		'type'             => 'custom',
+		'type_label'       => 'Custom Link',
+		'title'            => 'Blog',
+		'url'              => home_url( '/blog/' ),
+		'classes'          => array( 'menu-item', 'menu-item-type-custom', 'menu-item-object-custom' ),
+		'attr_title'       => '',
+		'target'           => '',
+		'xfn'              => '',
+		'description'      => '',
+		'menu_order'       => 0,
+	);
 
-		// Let WordPress compute the active/current classes using its own
-		// queried-object/URL logic (current-menu-item, current_page_item, etc.).
-		$blog_item_obj = (object) $blog_item;
-		$blog_items_for_context = array( $blog_item_obj );
-		_wp_menu_item_classes_by_context( $blog_items_for_context );
-		$blog_item_obj = $blog_items_for_context[0];
+	// Let WordPress compute the active/current classes using its own
+	// queried-object/URL logic (current-menu-item, current_page_item, etc.).
+	$blog_item_obj = (object) $blog_item;
+	$blog_items_for_context = array( $blog_item_obj );
+	_wp_menu_item_classes_by_context( $blog_items_for_context );
+	$blog_item_obj = $blog_items_for_context[0];
 
-		// Insert "Blog" immediately before "Guias" (=> after "Início").
-		$insert_blog_at = null;
-		foreach ( $items as $k => $item ) {
-			$item_title = strtolower( trim( wp_strip_all_tags( $item->title ) ) );
-			if ( 'guias' === $item_title || 'guias práticos' === $item_title ) {
-				$insert_blog_at = $k;
-				break;
-			}
+	// Insert "Blog" immediately before "Guias" (=> after "Início").
+	$insert_blog_at = null;
+	foreach ( $items as $k => $item ) {
+		$item_title = strtolower( trim( wp_strip_all_tags( $item->title ) ) );
+		if ( 'guias' === $item_title || 'guias práticos' === $item_title ) {
+			$insert_blog_at = $k;
+			break;
 		}
-
-		if ( null === $insert_blog_at ) {
-			// If "Guias" not found, insert after "Início" (position 1).
-			$insert_blog_at = 1;
-		}
-
-		array_splice( $items, $insert_blog_at, 0, array( $blog_item_obj ) );
 	}
+
+	if ( null === $insert_blog_at ) {
+		// If "Guias" not found, insert after "Início" (position 1).
+		$insert_blog_at = 1;
+	}
+
+	array_splice( $items, $insert_blog_at, 0, array( $blog_item_obj ) );
 
 	// 4. Reuse the existing /courses/ page so we never create a duplicate route.
 	$cursos_page = get_page_by_path( 'courses' );
@@ -1490,47 +1489,46 @@ function conexao_normalize_primary_nav_sections( $items, $args ) {
 		}
 	}
 
-	// Ensure a "Blog" item bound to the /blog/ page exists (inserted before
-	// "Guias" if the theme's base filter did not already provide one).
+	// Ensure a "Blog" item bound to the /blog/ posts archive exists (inserted
+	// before "Guias" if the theme's base filter did not already provide one).
+	// We intentionally do NOT look up a Page with slug "blog" — a Page with
+	// that slug would shadow the posts archive and prevent published posts
+	// from appearing on /blog/.
 	if ( ! $has_blog ) {
-		$blog_page = get_page_by_path( 'blog' );
-		if ( $blog_page ) {
-			$page_type = get_post_type_object( 'page' );
-			$blog_item = (object) array(
-				'ID'               => 0,
-				'db_id'            => 0,
-				'menu_item_parent' => 0,
-				'object_id'        => $blog_page->ID,
-				'object'           => 'page',
-				'post_parent'      => $blog_page->post_parent ? $blog_page->post_parent : 0,
-				'type'             => 'post_type',
-				'type_label'       => $page_type ? $page_type->labels->singular_name : 'Page',
-				'title'            => 'Blog',
-				'url'              => get_permalink( $blog_page->ID ),
-				'classes'          => array( 'menu-item', 'menu-item-type-post_type', 'menu-item-object-page' ),
-				'attr_title'       => '',
-				'target'           => '',
-				'xfn'              => '',
-				'description'      => '',
-				'menu_order'       => 0,
-			);
+		$blog_item = (object) array(
+			'ID'               => 0,
+			'db_id'            => 0,
+			'menu_item_parent' => 0,
+			'object_id'        => 0,
+			'object'           => 'custom',
+			'post_parent'      => 0,
+			'type'             => 'custom',
+			'type_label'       => 'Custom Link',
+			'title'            => 'Blog',
+			'url'              => home_url( '/blog/' ),
+			'classes'          => array( 'menu-item', 'menu-item-type-custom', 'menu-item-object-custom' ),
+			'attr_title'       => '',
+			'target'           => '',
+			'xfn'              => '',
+			'description'      => '',
+			'menu_order'       => 0,
+		);
 
-			$insert_blog_at = null;
-			foreach ( $items as $k => $item ) {
-				$item_title = strtolower( trim( wp_strip_all_tags( $item->title ) ) );
-				if ( 'guias' === $item_title || 'guias práticos' === $item_title ) {
-					$insert_blog_at = $k;
-					break;
-				}
+		$insert_blog_at = null;
+		foreach ( $items as $k => $item ) {
+			$item_title = strtolower( trim( wp_strip_all_tags( $item->title ) ) );
+			if ( 'guias' === $item_title || 'guias práticos' === $item_title ) {
+				$insert_blog_at = $k;
+				break;
 			}
-
-			if ( null === $insert_blog_at ) {
-				$insert_blog_at = 1;
-			}
-
-			array_splice( $items, $insert_blog_at, 0, array( $blog_item ) );
-			conexao_bind_section_object( $items[ $insert_blog_at ], $sections['blog'] );
 		}
+
+		if ( null === $insert_blog_at ) {
+			$insert_blog_at = 1;
+		}
+
+		array_splice( $items, $insert_blog_at, 0, array( $blog_item ) );
+		conexao_bind_section_object( $items[ $insert_blog_at ], $sections['blog'] );
 	}
 
 	// Ensure a "Cursos" item bound to the /courses/ page exists (inserted before
