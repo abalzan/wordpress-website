@@ -51,6 +51,10 @@ final class Conexao_BR_Content {
 	}
 
 	public function register_routes() {
+		// Rewrite /blog/ to the posts archive (paginated).
+		add_rewrite_rule( '^blog/?$', 'index.php?post_type=post', 'top' );
+		add_rewrite_rule( '^blog/page/([0-9]+)/?$', 'index.php?post_type=post&paged=$matches[1]', 'top' );
+		// Individual post URLs: /blog/{post-name}/
 		add_rewrite_rule( '^blog/([^/]+)/?$', 'index.php?name=$matches[1]', 'top' );
 	}
 
@@ -206,7 +210,30 @@ register_activation_hook( __FILE__, function () {
 		'contato' => array( 'CONTATO', '<!-- wp:heading --><h2>Tem uma sugestão ou dúvida? Nos mande uma mensagem</h2><!-- /wp:heading --><!-- wp:paragraph --><p>Insira aqui o bloco do formulário escolhido (WPForms ou Contact Form 7). Configure as notificações para o e-mail do proprietário do site e habilite a proteção antispam.</p><!-- /wp:paragraph --><!-- wp:paragraph --><p><a href="https://wa.me/353899451428">Fale conosco pelo WhatsApp</a></p><!-- /wp:paragraph -->' ),
 	);
 	foreach ( $pages as $slug => $page ) if ( ! get_page_by_path( $slug ) ) wp_insert_post( array( 'post_title' => $page[0], 'post_name' => $slug, 'post_content' => $page[1], 'post_status' => 'publish', 'post_type' => 'page' ) );
-	foreach ( array( 'Saúde e Bem-estar', 'Capacitação', 'Empreendedor', 'Receitas', 'Lazer' ) as $name ) if ( ! term_exists( $name, 'category' ) ) wp_insert_term( $name, 'category' );
+	// Blog categories relevant to the Brazilian community in Ireland.
+	// These categories cover the main content areas for the blog.
+	$blog_categories = array(
+		'Irlanda',
+		'Vida na Irlanda',
+		'Trabalho',
+		'Imigração',
+		'Comunidade',
+		'Educação',
+		'Finanças',
+		'Moradia',
+		'Família',
+		'Notícias',
+		'Saúde e Bem-estar',
+		'Capacitação',
+		'Empreendedor',
+		'Receitas',
+		'Lazer',
+	);
+	foreach ( $blog_categories as $name ) {
+		if ( ! term_exists( $name, 'category' ) ) {
+			wp_insert_term( $name, 'category' );
+		}
+	}
 	foreach ( array( 'Serviços Profissionais', 'Saúde e Bem-estar', 'Marketing e Negócios', 'Artes e craft', 'Alimentação', 'Informações' ) as $name ) if ( ! term_exists( $name, 'directory_category' ) ) wp_insert_term( $name, 'directory_category' );
 	foreach ( array( 'Família e Crianças', 'Lazer e Social', 'Bem-estar e Natureza', 'Cursos', 'Movimento em Laois', 'Mundo Atípico' ) as $name ) if ( ! term_exists( $name, 'curated_group' ) ) wp_insert_term( $name, 'curated_group' );
 	$plugin->ensure_default_guides();

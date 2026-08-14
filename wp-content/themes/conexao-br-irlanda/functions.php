@@ -19,6 +19,61 @@ define( 'CONEXAO_THEME_URI', get_template_directory_uri() );
 require_once CONEXAO_THEME_DIR . '/inc/seo.php';
 
 /**
+ * Relabel "Posts" to "Blog" in the WordPress admin.
+ *
+ * This makes the admin interface clearer for non-technical administrators
+ * by using "Blog" terminology instead of WordPress's native "Posts".
+ * All native WordPress post functionality remains intact.
+ */
+function conexao_relabel_posts_to_blog() {
+	global $wp_post_types;
+	
+	if ( isset( $wp_post_types['post'] ) ) {
+		$wp_post_types['post']->labels = (object) array(
+			'name'                  => 'Blog',
+			'singular_name'         => 'Artigo',
+			'add_new'               => 'Adicionar Novo',
+			'add_new_item'          => 'Adicionar Novo Artigo',
+			'edit_item'             => 'Editar Artigo',
+			'new_item'              => 'Novo Artigo',
+			'view_item'             => 'Ver Artigo',
+			'view_items'            => 'Ver Artigos',
+			'search_items'          => 'Buscar Artigos',
+			'not_found'             => 'Nenhum artigo encontrado',
+			'not_found_in_trash'    => 'Nenhum artigo encontrado na lixeira',
+			'parent_item_colon'     => 'Artigo pai:',
+			'all_items'             => 'Todos os Artigos',
+			'archives'              => 'Arquivos do Blog',
+			'attributes'            => 'Atributos do Artigo',
+			'insert_into_item'      => 'Inserir no artigo',
+			'uploaded_to_this_item' => 'Enviado para este artigo',
+			'featured_image'        => 'Imagem Destacada',
+			'set_featured_image'    => 'Definir imagem destacada',
+			'remove_featured_image' => 'Remover imagem destacada',
+			'use_featured_image'    => 'Usar como imagem destacada',
+			'filter_items_list'     => 'Filtrar lista de artigos',
+			'items_list_navigation' => 'Navegação da lista de artigos',
+			'items_list'            => 'Lista de artigos',
+		);
+	}
+}
+add_action( 'init', 'conexao_relabel_posts_to_blog', 10 );
+
+/**
+ * Change the admin menu label for "Posts" to "Blog".
+ */
+function conexao_change_admin_menu_label() {
+	global $menu;
+	
+	foreach ( $menu as $key => $value ) {
+		if ( isset( $value[0] ) && 'Posts' === $value[0] ) {
+			$menu[ $key ][0] = 'Blog';
+		}
+	}
+}
+add_action( 'admin_menu', 'conexao_change_admin_menu_label', 5 );
+
+/**
  * Get the canonical archive URL for the Guides CPT.
  *
  * @return string
@@ -1108,18 +1163,19 @@ add_filter( 'wp_nav_menu_objects', 'conexao_override_guides_menu_links', 10, 2 )
 /**
  * Modify the primary navigation at render time.
  *
- * Guarantees the "Notícias" item never appears and inserts a "Cursos" item
- * (linked to the existing /courses/ page) immediately before "Empregos", so
- * the final order is:
+ * Guarantees the "Notícias" item never appears, inserts a "Blog" item
+ * (linked to the existing /blog/ page) immediately after "Início", and
+ * inserts a "Cursos" item (linked to the existing /courses/ page)
+ * immediately before "Empregos", so the final order is:
  *
- *   Home, Guias, Eventos, Cursos, Empregos, Apoiadores, Irlanda, Sobre Nós, Contato
+ *   Início, Blog, Guias, Eventos, Cursos, Empregos, Apoiadores, Irlanda, Sobre Nós, Contato
  *
  * Both the desktop nav and the mobile/hamburger menu render the 'primary'
  * theme location, so this single filter applies the change everywhere the
  * main navigation appears — no CSS hiding is involved.
  *
  * Active-state styling is delegated to WordPress' own menu logic
- * (_wp_menu_item_classes_by_context), so "Cursos" receives the same
+ * (_wp_menu_item_classes_by_context), so "Blog" and "Cursos" receive the same
  * current-menu-item/current_page_item underline as the other sections
  * without hard-coding any state.
  *
@@ -1156,7 +1212,56 @@ function conexao_modify_primary_nav_items( $items, $args ) {
 		}
 	}
 
-	// 2. Reuse the existing /courses/ page so we never create a duplicate route.
+	// 3. Insert "Blog" immediately after "Início" (=> before "Guias").
+	//    Reuse the existing /blog/ page so we never create a duplicate route.
+	$blog_page = get_page_by_path( 'blog' );
+	if ( $blog_page ) {
+		$page_type = get_post_type_object( 'page' );
+		$blog_item = array(
+			'ID'               => 0,
+			'db_id'            => 0,
+			'menu_item_parent' => 0,
+			'object_id'        => $blog_page->ID,
+			'object'           => 'page',
+			'post_parent'      => $blog_page->post_parent ? $blog_page->post_parent : 0,
+			'type'             => 'post_type',
+			'type_label'       => $page_type ? $page_type->labels->singular_name : 'Page',
+			'title'            => 'Blog',
+			'url'              => get_permalink( $blog_page->ID ),
+			'classes'          => array( 'menu-item', 'menu-item-type-post_type', 'menu-item-object-page' ),
+			'attr_title'       => '',
+			'target'           => '',
+			'xfn'              => '',
+			'description'      => '',
+			'menu_order'       => 0,
+		);
+
+		// Let WordPress compute the active/current classes using its own
+		// queried-object/URL logic (current-menu-item, current_page_item, etc.).
+		$blog_item_obj = (object) $blog_item;
+		$blog_items_for_context = array( $blog_item_obj );
+		_wp_menu_item_classes_by_context( $blog_items_for_context );
+		$blog_item_obj = $blog_items_for_context[0];
+
+		// Insert "Blog" immediately before "Guias" (=> after "Início").
+		$insert_blog_at = null;
+		foreach ( $items as $k => $item ) {
+			$item_title = strtolower( trim( wp_strip_all_tags( $item->title ) ) );
+			if ( 'guias' === $item_title || 'guias práticos' === $item_title ) {
+				$insert_blog_at = $k;
+				break;
+			}
+		}
+
+		if ( null === $insert_blog_at ) {
+			// If "Guias" not found, insert after "Início" (position 1).
+			$insert_blog_at = 1;
+		}
+
+		array_splice( $items, $insert_blog_at, 0, array( $blog_item_obj ) );
+	}
+
+	// 4. Reuse the existing /courses/ page so we never create a duplicate route.
 	$cursos_page = get_page_by_path( 'courses' );
 	if ( ! $cursos_page ) {
 		return $items;
@@ -1238,6 +1343,8 @@ function conexao_primary_nav_sections() {
 
 	return array(
 		'início'     => array( 'key' => 'inicio', 'type' => 'custom', 'object' => 'custom', 'url' => home_url( '/' ), 'match' => array() ),
+		// Blog uses the native posts archive at /blog/ (not a static page).
+		'blog'       => array( 'key' => 'blog', 'type' => 'posts_archive', 'object' => 'post', 'url' => home_url( '/blog/' ), 'match' => array( 'blog' ) ),
 		'guias'      => array( 'key' => 'guias', 'type' => 'post_type_archive', 'object' => 'guide', 'url' => $archive_url( 'guide', 'guides' ), 'match' => array( 'guides', 'guias' ) ),
 		'eventos'    => array( 'key' => 'eventos', 'type' => 'post_type_archive', 'object' => 'event', 'url' => $archive_url( 'event', 'events' ), 'match' => array( 'eventos', 'events' ) ),
 		'cursos'     => array( 'key' => 'cursos', 'type' => 'page', 'object' => 'page', 'path' => 'courses', 'match' => array( 'cursos', 'courses' ) ),
@@ -1277,6 +1384,14 @@ function conexao_bind_section_object( $item, $section ) {
 		if ( ! empty( $section['url'] ) ) {
 			$item->url = $section['url'];
 		}
+	}
+
+	// Posts archive section (Blog) - uses native WordPress posts.
+	if ( 'posts_archive' === $section['type'] ) {
+		$item->type      = 'custom';
+		$item->object    = 'custom';
+		$item->object_id = 0;
+		$item->url       = ! empty( $section['url'] ) ? $section['url'] : home_url( '/blog/' );
 	}
 
 	// Page sections (Cursos, Irlanda, Sobre Nós, Contato).
@@ -1328,6 +1443,7 @@ function conexao_normalize_primary_nav_sections( $items, $args ) {
 	}
 
 	$sections   = conexao_primary_nav_sections();
+	$has_blog   = false;
 	$has_cursos = false;
 
 	foreach ( $items as $item ) {
@@ -1355,8 +1471,55 @@ function conexao_normalize_primary_nav_sections( $items, $args ) {
 
 		conexao_bind_section_object( $item, $section );
 
+		if ( 'blog' === $section['key'] ) {
+			$has_blog = true;
+		}
+
 		if ( 'cursos' === $section['key'] ) {
 			$has_cursos = true;
+		}
+	}
+
+	// Ensure a "Blog" item bound to the /blog/ page exists (inserted before
+	// "Guias" if the theme's base filter did not already provide one).
+	if ( ! $has_blog ) {
+		$blog_page = get_page_by_path( 'blog' );
+		if ( $blog_page ) {
+			$page_type = get_post_type_object( 'page' );
+			$blog_item = (object) array(
+				'ID'               => 0,
+				'db_id'            => 0,
+				'menu_item_parent' => 0,
+				'object_id'        => $blog_page->ID,
+				'object'           => 'page',
+				'post_parent'      => $blog_page->post_parent ? $blog_page->post_parent : 0,
+				'type'             => 'post_type',
+				'type_label'       => $page_type ? $page_type->labels->singular_name : 'Page',
+				'title'            => 'Blog',
+				'url'              => get_permalink( $blog_page->ID ),
+				'classes'          => array( 'menu-item', 'menu-item-type-post_type', 'menu-item-object-page' ),
+				'attr_title'       => '',
+				'target'           => '',
+				'xfn'              => '',
+				'description'      => '',
+				'menu_order'       => 0,
+			);
+
+			$insert_blog_at = null;
+			foreach ( $items as $k => $item ) {
+				$item_title = strtolower( trim( wp_strip_all_tags( $item->title ) ) );
+				if ( 'guias' === $item_title || 'guias práticos' === $item_title ) {
+					$insert_blog_at = $k;
+					break;
+				}
+			}
+
+			if ( null === $insert_blog_at ) {
+				$insert_blog_at = 1;
+			}
+
+			array_splice( $items, $insert_blog_at, 0, array( $blog_item ) );
+			conexao_bind_section_object( $items[ $insert_blog_at ], $sections['blog'] );
 		}
 	}
 
@@ -1407,6 +1570,198 @@ function conexao_normalize_primary_nav_sections( $items, $args ) {
 	// queried-object/URL logic — applied to the whole primary navigation.
 	_wp_menu_item_classes_by_context( $items );
 
+	// Fix active state conflicts.
+	// WordPress's _wp_menu_item_classes_by_context() can incorrectly set
+	// current-menu-item on multiple items (e.g., both Início and Blog on
+	// the homepage). This filter ensures each section has the correct
+	// active state based on explicit URL/route matching.
+	$items = conexao_fix_nav_active_states( $items );
+
 	return $items;
 }
 add_filter( 'wp_nav_menu_objects', 'conexao_normalize_primary_nav_sections', 25, 2 );
+
+/**
+ * Fix navigation active state conflicts.
+ *
+ * WordPress's _wp_menu_item_classes_by_context() may incorrectly assign
+ * current-menu-item to multiple top-level items (e.g., both "Início" and
+ * "Blog" when on the homepage). This function ensures that:
+ *
+ * 1. The homepage ("Início") is only active when exactly on the homepage.
+ * 2. Each section is only active when on its corresponding page/archive.
+ * 3. No two unrelated top-level items are simultaneously active.
+ *
+ * @param array $items Menu item objects.
+ * @return array Modified menu item objects.
+ */
+function conexao_fix_nav_active_states( $items ) {
+	// Determine the current request path.
+	$current_path = conexao_get_current_path();
+
+	// Define explicit active-state rules for each section.
+	// Each rule maps a section key to a callback that returns true when
+	// the section should be active.
+	$active_rules = array(
+		'inicio'     => function( $path ) {
+			// Homepage: only active when path is empty or '/'.
+			return '' === $path || '/' === $path;
+		},
+		'blog'       => function( $path ) {
+			// Blog: active on /blog/ and /blog/* pages.
+			return preg_match( '#^/blog(/.*)?$#', $path );
+		},
+		'guias'      => function( $path ) {
+			// Guides: active on /guides/ or /guias/ and their subpages.
+			return preg_match( '#^/(guides|guias)(/.*)?$#', $path );
+		},
+		'eventos'    => function( $path ) {
+			// Events: active on /events/ or /eventos/ and their subpages.
+			return preg_match( '#^/(events|eventos)(/.*)?$#', $path );
+		},
+		'cursos'     => function( $path ) {
+			// Courses: active on /courses/ or /cursos/ and their subpages.
+			return preg_match( '#^/(courses|cursos)(/.*)?$#', $path );
+		},
+		'empregos'   => function( $path ) {
+			// Jobs: active on /jobs/ or /empregos/ and their subpages.
+			return preg_match( '#^/(jobs|empregos)(/.*)?$#', $path );
+		},
+		'apoiadores' => function( $path ) {
+			// Sponsors: active on /sponsors/ or /apoiadores/ and their subpages.
+			return preg_match( '#^/(sponsors|apoiadores)(/.*)?$#', $path );
+		},
+		'irlanda'    => function( $path ) {
+			// Ireland: active on /irlanda/ and its subpages.
+			return preg_match( '#^/irlanda(/.*)?$#', $path );
+		},
+		'sobre-nos'  => function( $path ) {
+			// About: active on /sobre-nos/ and its subpages.
+			return preg_match( '#^/sobre-nos(/.*)?$#', $path );
+		},
+		'contato'    => function( $path ) {
+			// Contact: active on /contato/ and its subpages.
+			return preg_match( '#^/contato(/.*)?$#', $path );
+		},
+	);
+
+	// First pass: remove all current-* classes from all items.
+	foreach ( $items as $item ) {
+		$item->classes = array_filter( (array) $item->classes, function( $class ) {
+			return 0 !== strpos( $class, 'current-menu-' )
+				&& 0 !== strpos( $class, 'current_page' )
+				&& 0 !== strpos( $class, 'current-post-' );
+		} );
+		$item->classes = array_values( $item->classes );
+	}
+
+	// Second pass: apply active classes based on explicit rules.
+	foreach ( $items as $item ) {
+		$section_key = conexao_get_item_section_key( $item );
+		if ( null === $section_key || ! isset( $active_rules[ $section_key ] ) ) {
+			continue;
+		}
+
+		$is_active = $active_rules[ $section_key ]( $current_path );
+		if ( $is_active ) {
+			$item->classes[] = 'current-menu-item';
+		}
+	}
+
+	return $items;
+}
+
+/**
+ * Get the current request path, normalized.
+ *
+ * Returns the path portion of the current URL, with trailing slash removed
+ * (except for the homepage which returns '/').
+ *
+ * @return string Normalized current path.
+ */
+function conexao_get_current_path() {
+	$path = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '/';
+
+	// Remove query string.
+	$path = strtok( $path, '?' );
+
+	// Ensure path starts with '/'.
+	if ( empty( $path ) || '/' !== $path[0] ) {
+		$path = '/' . $path;
+	}
+
+	// Normalize: remove trailing slash (except for homepage).
+	if ( '/' !== $path ) {
+		$path = untrailingslashit( $path );
+	}
+
+	return $path;
+}
+
+/**
+ * Determine the section key for a menu item.
+ *
+ * Maps a menu item to its section key based on the item's title, URL,
+ * or bound object.
+ *
+ * @param object $item Menu item object.
+ * @return string|null Section key or null if not matched.
+ */
+function conexao_get_item_section_key( $item ) {
+	$title    = strtolower( trim( wp_strip_all_tags( $item->title ) ) );
+	$item_url = untrailingslashit( (string) $item->url );
+
+	// Map titles to section keys.
+	$title_map = array(
+		'início'          => 'inicio',
+		'inicio'          => 'inicio',
+		'home'            => 'inicio',
+		'blog'            => 'blog',
+		'guias'           => 'guias',
+		'guias práticos'  => 'guias',
+		'eventos'         => 'eventos',
+		'cursos'          => 'cursos',
+		'empregos'        => 'empregos',
+		'apoiadores'      => 'apoiadores',
+		'irlanda'         => 'irlanda',
+		'sobre nós'       => 'sobre-nos',
+		'sobre nos'       => 'sobre-nos',
+		'contato'         => 'contato',
+	);
+
+	if ( isset( $title_map[ $title ] ) ) {
+		return $title_map[ $title ];
+	}
+
+	// Fall back to URL matching.
+	$url_patterns = array(
+		array( 'key' => 'blog',       'pattern' => '/blog' ),
+		array( 'key' => 'guias',      'pattern' => '/guias' ),
+		array( 'key' => 'guias',      'pattern' => '/guides' ),
+		array( 'key' => 'eventos',    'pattern' => '/eventos' ),
+		array( 'key' => 'eventos',    'pattern' => '/events' ),
+		array( 'key' => 'cursos',     'pattern' => '/cursos' ),
+		array( 'key' => 'cursos',     'pattern' => '/courses' ),
+		array( 'key' => 'empregos',   'pattern' => '/empregos' ),
+		array( 'key' => 'empregos',   'pattern' => '/jobs' ),
+		array( 'key' => 'apoiadores', 'pattern' => '/apoiadores' ),
+		array( 'key' => 'apoiadores', 'pattern' => '/sponsors' ),
+		array( 'key' => 'irlanda',    'pattern' => '/irlanda' ),
+		array( 'key' => 'sobre-nos',  'pattern' => '/sobre-nos' ),
+		array( 'key' => 'contato',    'pattern' => '/contato' ),
+	);
+
+	foreach ( $url_patterns as $mapping ) {
+		if ( false !== strpos( $item_url, $mapping['pattern'] ) ) {
+			return $mapping['key'];
+		}
+	}
+
+	// Check if this is the homepage.
+	$home_url = untrailingslashit( home_url( '/' ) );
+	if ( $item_url === $home_url || '' === $item_url || '/' === $item_url ) {
+		return 'inicio';
+	}
+
+	return null;
+}
