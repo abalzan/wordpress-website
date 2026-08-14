@@ -3,10 +3,9 @@
 <?php
 $is_event_archive  = is_post_type_archive( 'event' );
 $is_course_archive = is_post_type_archive( 'course' );
-$is_wide_layout    = $is_event_archive || $is_course_archive;
 ?>
 
-<div class="<?php echo $is_wide_layout ? 'site-container site-container--wide ' . ( $is_course_archive ? 'courses-page' : 'events-page' ) : 'site-container'; ?>">
+<div class="<?php echo $is_event_archive ? 'site-container events-page' : ( $is_course_archive ? 'site-container site-container--wide courses-page' : 'site-container' ); ?>">
 	<main id="primary" class="content-area">
 
 		<?php if ( $is_event_archive ) : ?>
@@ -34,7 +33,7 @@ $is_wide_layout    = $is_event_archive || $is_course_archive;
 		<?php endif; ?>
 
 		<?php if ( have_posts() ) : ?>
-			<div class="<?php echo $is_wide_layout ? 'events-grid' : 'archive-grid'; ?>">
+			<div class="<?php echo ( $is_event_archive || $is_course_archive ) ? 'events-grid' : 'archive-grid'; ?>">
 				<?php while ( have_posts() ) : the_post(); ?>
 					<?php if ( $is_event_archive ) : ?>
 						<?php get_template_part( 'template-parts/event', 'card' ); ?>
