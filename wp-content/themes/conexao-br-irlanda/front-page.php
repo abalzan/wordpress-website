@@ -260,11 +260,7 @@ $hero_image_id = conexao_hero_image_attachment_id();
 							<?php $guide_count++;
 							endwhile; wp_reset_postdata();
 						else : ?>
-							<li><a href="#"><?php esc_html_e( 'Como conseguir um PPS Number', 'conexao-br-irlanda' ); ?></a></li>
-							<li><a href="#"><?php esc_html_e( 'Medical Card Guide', 'conexao-br-irlanda' ); ?></a></li>
-							<li><a href="#"><?php esc_html_e( 'Driving Licence Exchange', 'conexao-br-irlanda' ); ?></a></li>
-							<li><a href="#"><?php esc_html_e( 'Opening a Bank Account', 'conexao-br-irlanda' ); ?></a></li>
-							<li><a href="#"><?php esc_html_e( 'Renting a House', 'conexao-br-irlanda' ); ?></a></li>
+							<li><span class="sidebar-list-empty"><?php esc_html_e( 'Novos guias serão publicados em breve.', 'conexao-br-irlanda' ); ?></span></li>
 						<?php endif; ?>
 					</ul>
 				</div>

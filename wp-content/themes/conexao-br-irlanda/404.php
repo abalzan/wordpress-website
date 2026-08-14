@@ -11,15 +11,15 @@
 				<?php get_search_form(); ?>
 			</div>
 
-			<div class="error-404-links" style="margin-top: 30px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+			<div class="error-404-links">
 				<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="btn btn-green"><?php esc_html_e( 'Voltar para o início', 'conexao-br-irlanda' ); ?></a>
 				<a href="<?php echo esc_url( home_url( '/guides/' ) ); ?>" class="btn btn-primary"><?php esc_html_e( 'Guias Práticos', 'conexao-br-irlanda' ); ?></a>
 				<a href="<?php echo esc_url( home_url( '/events/' ) ); ?>" class="btn btn-primary"><?php esc_html_e( 'Eventos', 'conexao-br-irlanda' ); ?></a>
 			</div>
 
-			<div class="error-404-popular" style="margin-top: 40px;">
+			<div class="error-404-popular">
 				<h3><?php esc_html_e( 'Guias Populares', 'conexao-br-irlanda' ); ?></h3>
-				<ul style="list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+				<ul class="error-404-list">
 					<?php
 					// Single query for popular guides, cached in transient (5 min).
 					$popular_guides = get_transient( 'conexao_404_guides' );
@@ -54,9 +54,9 @@
 				</ul>
 			</div>
 
-			<div class="error-404-events" style="margin-top: 40px;">
+			<div class="error-404-events">
 				<h3><?php esc_html_e( 'Próximos Eventos', 'conexao-br-irlanda' ); ?></h3>
-				<ul style="list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+				<ul class="error-404-list">
 					<?php
 					// Single query for upcoming events, cached in transient (5 min).
 					$upcoming_events = get_transient( 'conexao_404_events' );
