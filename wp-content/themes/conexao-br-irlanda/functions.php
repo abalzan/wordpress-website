@@ -28,33 +28,43 @@ require_once CONEXAO_THEME_DIR . '/inc/seo.php';
 function conexao_relabel_posts_to_blog() {
 	global $wp_post_types;
 	
-	if ( isset( $wp_post_types['post'] ) ) {
-		$wp_post_types['post']->labels = (object) array(
-			'name'                  => 'Blog',
-			'singular_name'         => 'Artigo',
-			'add_new'               => 'Adicionar Novo',
-			'add_new_item'          => 'Adicionar Novo Artigo',
-			'edit_item'             => 'Editar Artigo',
-			'new_item'              => 'Novo Artigo',
-			'view_item'             => 'Ver Artigo',
-			'view_items'            => 'Ver Artigos',
-			'search_items'          => 'Buscar Artigos',
-			'not_found'             => 'Nenhum artigo encontrado',
-			'not_found_in_trash'    => 'Nenhum artigo encontrado na lixeira',
-			'parent_item_colon'     => 'Artigo pai:',
-			'all_items'             => 'Todos os Artigos',
-			'archives'              => 'Arquivos do Blog',
-			'attributes'            => 'Atributos do Artigo',
-			'insert_into_item'      => 'Inserir no artigo',
-			'uploaded_to_this_item' => 'Enviado para este artigo',
-			'featured_image'        => 'Imagem Destacada',
-			'set_featured_image'    => 'Definir imagem destacada',
-			'remove_featured_image' => 'Remover imagem destacada',
-			'use_featured_image'    => 'Usar como imagem destacada',
-			'filter_items_list'     => 'Filtrar lista de artigos',
-			'items_list_navigation' => 'Navegação da lista de artigos',
-			'items_list'            => 'Lista de artigos',
-		);
+	if ( isset( $wp_post_types['post'] ) && isset( $wp_post_types['post']->labels ) ) {
+		// Update the existing labels object in-place rather than replacing it.
+		// WordPress core expects properties such as `menu_name` and
+		// `name_admin_bar` to exist on the labels object; replacing the whole
+		// object with a partial one triggers "Undefined property" warnings in
+		// wp-admin/menu.php and wp-includes/admin-bar.php.
+		$labels = $wp_post_types['post']->labels;
+
+		$labels->name                  = 'Blog';
+		$labels->singular_name         = 'Artigo';
+		$labels->add_new               = 'Adicionar Novo';
+		$labels->add_new_item          = 'Adicionar Novo Artigo';
+		$labels->edit_item             = 'Editar Artigo';
+		$labels->new_item              = 'Novo Artigo';
+		$labels->view_item             = 'Ver Artigo';
+		$labels->view_items            = 'Ver Artigos';
+		$labels->search_items          = 'Buscar Artigos';
+		$labels->not_found             = 'Nenhum artigo encontrado';
+		$labels->not_found_in_trash    = 'Nenhum artigo encontrado na lixeira';
+		$labels->parent_item_colon     = 'Artigo pai:';
+		$labels->all_items             = 'Todos os Artigos';
+		$labels->archives              = 'Arquivos do Blog';
+		$labels->attributes            = 'Atributos do Artigo';
+		$labels->insert_into_item      = 'Inserir no artigo';
+		$labels->uploaded_to_this_item = 'Enviado para este artigo';
+		$labels->featured_image        = 'Imagem Destacada';
+		$labels->set_featured_image    = 'Definir imagem destacada';
+		$labels->remove_featured_image = 'Remover imagem destacada';
+		$labels->use_featured_image    = 'Usar como imagem destacada';
+		$labels->filter_items_list     = 'Filtrar lista de artigos';
+		$labels->items_list_navigation = 'Navegação da lista de artigos';
+		$labels->items_list            = 'Lista de artigos';
+
+		// Explicitly set the menu/admin-bar labels so the Blog terminology is
+		// used consistently in the admin menu and admin bar.
+		$labels->menu_name             = 'Blog';
+		$labels->name_admin_bar        = 'Artigo';
 	}
 }
 add_action( 'init', 'conexao_relabel_posts_to_blog', 10 );
