@@ -73,6 +73,20 @@ class Conexao_Event_Sources {
 				'county'             => 'Laois',
 				'category'           => 'Heritage',
 			),
+			'eventbrite' => array(
+				'id'                 => 'eventbrite',
+				'name'               => 'Eventbrite — Laois',
+				'url'                => 'https://www.eventbrite.ie/d/ireland--laois/all-events/',
+				'type'               => 'eventbrite',
+				'status'             => 'active',
+				'last_import'        => '',
+				'last_import_status' => '',
+				'events_imported'    => 0,
+				'last_error'         => '',
+				'import_frequency'   => 'daily',
+				'last_checked'       => '',
+				'county'             => 'Laois',
+			),
 		);
 	}
 

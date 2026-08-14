@@ -28,6 +28,10 @@ require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/sources/class-laois-tourism-
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/sources/class-heritage-week-source.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/sources/class-laois-council-source.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/sources/class-leo-laois-source.php';
+require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-eventbrite-client.php';
+require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-eventbrite-parser.php';
+require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-eventbrite-normalizer.php';
+require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/sources/class-eventbrite-source.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-image-handler.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-importer.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-import-scheduler.php';

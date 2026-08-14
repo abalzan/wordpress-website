@@ -23,7 +23,7 @@ class Conexao_Import_Scheduler {
 		$this->importer = $importer;
 
 		add_action( self::CRON_HOOK, array( $this, 'run_scheduled_import' ) );
-		add_filter( 'cron_schedules', array( $this, 'add_weekly_recurrence' ) );
+		add_filter( 'cron_schedules', array( $this, 'add_recurrences' ) );
 	}
 
 	/**
@@ -36,15 +36,19 @@ class Conexao_Import_Scheduler {
 	}
 
 	/**
-	 * Register a custom weekly recurrence.
+	 * Register custom recurrences.
 	 *
 	 * @param array $schedules WP cron schedules.
 	 * @return array
 	 */
-	public function add_weekly_recurrence( $schedules ) {
+	public function add_recurrences( $schedules ) {
 		$schedules['conexao_weekly'] = array(
 			'interval' => WEEK_IN_SECONDS,
 			'display'  => __( 'Once Weekly (Mondays 03:00)', 'conexao-event-importer' ),
+		);
+		$schedules['conexao_daily'] = array(
+			'interval' => DAY_IN_SECONDS,
+			'display'  => __( 'Once Daily (03:00)', 'conexao-event-importer' ),
 		);
 		return $schedules;
 	}
@@ -54,8 +58,8 @@ class Conexao_Import_Scheduler {
 	 */
 	public function schedule() {
 		if ( ! wp_next_scheduled( self::CRON_HOOK ) ) {
-			// Add the weekly recurrence filter.
-			add_filter( 'cron_schedules', array( $this, 'add_weekly_recurrence' ) );
+			// Add the recurrence filters.
+			add_filter( 'cron_schedules', array( $this, 'add_recurrences' ) );
 
 			// Compute next Monday 03:00 Europe/Dublin.
 			$timezone = new DateTimeZone( 'Europe/Dublin' );

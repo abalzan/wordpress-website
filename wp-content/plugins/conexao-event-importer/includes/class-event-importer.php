@@ -178,6 +178,11 @@ class Conexao_Event_Importer_Engine {
 			return new Conexao_Source_ICalendar( $source );
 		}
 
+		// Eventbrite sources use the Eventbrite handler.
+		if ( 'eventbrite' === $source_type ) {
+			return new Conexao_Source_Eventbrite( $source );
+		}
+
 		// Fall back to source ID-based routing for legacy/website sources.
 		// Normalize the source ID for matching (convert hyphens to underscores).
 		$normalized_id = str_replace( '-', '_', $source['id'] );
@@ -197,6 +202,8 @@ class Conexao_Event_Importer_Engine {
 			case 'heritage_week':
 			case 'national_heritage_week':
 				return new Conexao_Source_Heritage_Week( $source );
+			case 'eventbrite':
+				return new Conexao_Source_Eventbrite( $source );
 			default:
 				// Allow third-party handlers to be registered.
 				return apply_filters( 'conexao_event_importer_get_handler', null, $source );
