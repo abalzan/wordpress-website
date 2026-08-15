@@ -30,6 +30,49 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 echo "=== Flushing Navigation Rules ===\n\n";
 
+// 0. Ensure the "inicio" and "blog" pages exist (needed for front page and posts page).
+echo "0. Ensuring front page and posts page exist...\n";
+$front_page = get_page_by_path( 'inicio' );
+if ( ! $front_page ) {
+    $front_page_id = wp_insert_post( array(
+        'post_title'   => 'Início',
+        'post_name'    => 'inicio',
+        'post_content' => '<!-- wp:paragraph --><p>Bem-vindo ao Conexão BR Irlanda, o portal da comunidade brasileira na Irlanda.</p><!-- /wp:paragraph -->',
+        'post_status'  => 'publish',
+        'post_type'    => 'page',
+    ) );
+    echo "   Created front page: inicio (ID: {$front_page_id})\n";
+} else {
+    echo "   Front page exists: inicio (ID: {$front_page->ID})\n";
+}
+
+$blog_page = get_page_by_path( 'blog' );
+if ( ! $blog_page ) {
+    $blog_page_id = wp_insert_post( array(
+        'post_title'   => 'Blog',
+        'post_name'    => 'blog',
+        'post_content' => '<!-- wp:paragraph --><p>Artigos e notícias para a comunidade brasileira na Irlanda.</p><!-- /wp:paragraph -->',
+        'post_status'  => 'publish',
+        'post_type'    => 'page',
+    ) );
+    echo "   Created posts page: blog (ID: {$blog_page_id})\n";
+} else {
+    echo "   Posts page exists: blog (ID: {$blog_page->ID})\n";
+}
+
+// Configure front page and posts page settings.
+$front_page = get_page_by_path( 'inicio' );
+$blog_page  = get_page_by_path( 'blog' );
+if ( $front_page ) {
+    update_option( 'show_on_front', 'page' );
+    update_option( 'page_on_front', (int) $front_page->ID );
+    echo "   Front page set to: inicio (ID: {$front_page->ID})\n";
+}
+if ( $blog_page ) {
+    update_option( 'page_for_posts', (int) $blog_page->ID );
+    echo "   Posts page set to: blog (ID: {$blog_page->ID})\n";
+}
+
 // 1. Delete conflicting static pages (only CPT archive slugs that would conflict)
 // NOTE: irlanda, sobre-nos, and contato are real static pages and must NOT be deleted.
 echo "1. Removing conflicting static pages...\n";

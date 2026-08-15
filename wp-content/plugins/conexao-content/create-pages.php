@@ -36,6 +36,16 @@ echo "Starting page creation...\n";
 // Creating static pages with these slugs would conflict with the CPT archives.
 
 $main_pages = [
+    'inicio' => [
+        'title' => 'Início',
+        'content' => '<!-- wp:paragraph --><p>Bem-vindo ao Conexão BR Irlanda, o portal da comunidade brasileira na Irlanda.</p><!-- /wp:paragraph -->',
+        'meta_desc' => 'Conexão BR Irlanda - Portal da comunidade brasileira na Irlanda. Guias, eventos, cursos, empregos e mais.',
+    ],
+    'blog' => [
+        'title' => 'Blog',
+        'content' => '<!-- wp:paragraph --><p>Artigos e notícias para a comunidade brasileira na Irlanda.</p><!-- /wp:paragraph -->',
+        'meta_desc' => 'Blog do Conexão BR Irlanda - Artigos, notícias e informações para brasileiros na Irlanda.',
+    ],
     'sobre-nos' => [
         'title' => 'Sobre Nós',
         'content' => '<!-- wp:heading --><h2>Quem somos</h2><!-- /wp:heading -->
@@ -527,6 +537,30 @@ if (!$categorias) {
 }
 
 // ============================================================
+// CONFIGURE FRONT PAGE AND POSTS PAGE
+// ============================================================
+echo "\n=== FRONT PAGE / POSTS PAGE CONFIGURATION ===\n";
+
+// Set the front page to the "inicio" page.
+$front_page = get_page_by_path( 'inicio' );
+if ( $front_page ) {
+    update_option( 'show_on_front', 'page' );
+    update_option( 'page_on_front', (int) $front_page->ID );
+    echo "  Front page set to: inicio (ID: {$front_page->ID})\n";
+} else {
+    echo "  WARNING: 'inicio' page not found; keeping default front page.\n";
+}
+
+// Set the posts page to the "blog" page so /blog/ serves the posts archive.
+$blog_page = get_page_by_path( 'blog' );
+if ( $blog_page ) {
+    update_option( 'page_for_posts', (int) $blog_page->ID );
+    echo "  Posts page set to: blog (ID: {$blog_page->ID})\n";
+} else {
+    echo "  WARNING: 'blog' page not found; /blog/ will not serve the posts archive.\n";
+}
+
+// ============================================================
 // CREATE NAVIGATION MENUS
 // ============================================================
 echo "\n=== NAVIGATION MENUS ===\n";
@@ -572,6 +606,7 @@ if (!$primary_menu_id) {
 // They use custom URLs pointing to the CPT archive paths
 $primary_items = [
     ['title' => 'Home', 'type' => 'custom', 'url' => home_url('/')],
+    ['title' => 'Blog', 'type' => 'custom', 'url' => home_url('/blog/')],
     ['title' => 'Guias', 'type' => 'custom', 'url' => home_url('/guias/')],
     ['title' => 'Eventos', 'type' => 'custom', 'url' => home_url('/eventos/')],
     ['title' => 'Cursos', 'type' => 'custom', 'url' => home_url('/cursos/')],
