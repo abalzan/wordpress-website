@@ -31,7 +31,19 @@ function conexao_content_enqueue_styles() {
 add_action( 'wp_enqueue_scripts', 'conexao_content_enqueue_styles' );
 
 /**
- * Include page creation logic.
+ * Plugin activation hook.
+ *
+ * When the plugin is activated, create all required pages and navigation menus.
+ * This ensures the site works correctly after a fresh install or rebuild.
+ */
+function conexao_content_activate() {
+    require_once CONEXAO_CONTENT_DIR . 'create-pages.php';
+    flush_rewrite_rules();
+}
+register_activation_hook( __FILE__, 'conexao_content_activate' );
+
+/**
+ * Include page creation logic for WP-CLI.
  *
  * The create-pages.php script is a standalone WP-CLI utility that runs
  * immediately when included. It must NOT run on every page load — it calls
