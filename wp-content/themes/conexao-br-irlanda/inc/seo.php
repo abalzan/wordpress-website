@@ -917,6 +917,11 @@ function conexao_seo_redirects() {
 		'/privacidade'                 => '/politica-de-privacidade/',
 		'/termos'                      => '/termos-de-uso/',
 		'/sobre'                       => '/sobre-nos/',
+
+		// Legacy Wix migration paths (Spanish/legacy) -> Portuguese structure.
+		'/capacitação'                 => '/cursos/',
+		'/capacitacao'                 => '/cursos/',
+		'/s-projects-basic'            => '/guias/',
 	);
 
 	if ( isset( $redirects[ $path ] ) ) {
@@ -969,6 +974,18 @@ function conexao_seo_redirects() {
 	// Pattern: /counties/{slug} -> /{slug}/ (any remaining).
 	if ( preg_match( '#^/counties/([^/]+)$#', $path, $m ) ) {
 		wp_safe_redirect( home_url( '/' . $m[1] . '/' ), 301 );
+		exit;
+	}
+
+	// Pattern: /post/{slug} -> /blog/{slug}/ (legacy Wix blog posts).
+	if ( preg_match( '#^/post/([^/]+)$#', $path, $m ) ) {
+		wp_safe_redirect( home_url( '/blog/' . $m[1] . '/' ), 301 );
+		exit;
+	}
+
+	// Pattern: /blog/categories/{slug} -> /category/{slug}/ (legacy Wix blog categories).
+	if ( preg_match( '#^/blog/categories/([^/]+)$#', $path, $m ) ) {
+		wp_safe_redirect( home_url( '/category/' . $m[1] . '/' ), 301 );
 		exit;
 	}
 }
