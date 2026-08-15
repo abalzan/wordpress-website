@@ -1271,60 +1271,8 @@ function conexao_modify_primary_nav_items( $items, $args ) {
 
 	array_splice( $items, $insert_blog_at, 0, array( $blog_item_obj ) );
 
-	// 4. Reuse the existing /courses/ page so we never create a duplicate route.
-	$cursos_page = get_page_by_path( 'courses' );
-	if ( ! $cursos_page ) {
-		return $items;
-	}
-
-	// 3. Build a "Cursos" menu item pointing at the existing page, mirroring
-	//    the classes WordPress applies to a real "page" menu item.
-	//    Note: the theme's conexao_nav_menu_css_class() filter adds "nav-item"
-	//    for the primary location, so we do not hardcode it here to avoid a
-	//    duplicate class in the rendered markup.
-	$page_type = get_post_type_object( 'page' );
-	$cursos_item = array(
-		'ID'               => 0,
-		'db_id'            => 0,
-		'menu_item_parent' => 0,
-		'object_id'        => $cursos_page->ID,
-		'object'           => 'page',
-		'post_parent'      => $cursos_page->post_parent ? $cursos_page->post_parent : 0,
-		'type'             => 'post_type',
-		'type_label'       => $page_type ? $page_type->labels->singular_name : 'Page',
-		'title'            => 'Cursos',
-		'url'              => get_permalink( $cursos_page->ID ),
-		'classes'          => array( 'menu-item', 'menu-item-type-post_type', 'menu-item-object-page' ),
-		'attr_title'       => '',
-		'target'           => '',
-		'xfn'              => '',
-		'description'      => '',
-		'menu_order'       => 0,
-	);
-
-	// Let WordPress compute the active/current classes using its own
-	// queried-object/URL logic (current-menu-item, current_page_item, etc.).
-	// The helper expects an array of menu items by reference.
-	$cursos_item_obj = (object) $cursos_item;
-	$cursos_items_for_context = array( $cursos_item_obj );
-	_wp_menu_item_classes_by_context( $cursos_items_for_context );
-	$cursos_item_obj = $cursos_items_for_context[0];
-
-	// 4. Insert "Cursos" immediately before "Empregos" (=> after "Eventos").
-	$insert_at = null;
-	foreach ( $items as $k => $item ) {
-		if ( 'empregos' === strtolower( trim( wp_strip_all_tags( $item->title ) ) ) ) {
-			$insert_at = $k;
-			break;
-		}
-	}
-
-	if ( null === $insert_at ) {
-		$items[] = $cursos_item_obj;
-	} else {
-		array_splice( $items, $insert_at, 0, array( $cursos_item_obj ) );
-	}
-
+	// "Cursos" is now handled by conexao_normalize_primary_nav_sections() (priority 25)
+	// to avoid duplicate items in the navigation.
 	return $items;
 }
 add_filter( 'wp_nav_menu_objects', 'conexao_modify_primary_nav_items', 20, 2 );
@@ -1357,7 +1305,7 @@ function conexao_primary_nav_sections() {
 		'blog'       => array( 'key' => 'blog', 'type' => 'posts_archive', 'object' => 'post', 'url' => home_url( '/blog/' ), 'match' => array( 'blog' ) ),
 		'guias'      => array( 'key' => 'guias', 'type' => 'post_type_archive', 'object' => 'guide', 'url' => $archive_url( 'guide', 'guides' ), 'match' => array( 'guides', 'guias' ) ),
 		'eventos'    => array( 'key' => 'eventos', 'type' => 'post_type_archive', 'object' => 'event', 'url' => $archive_url( 'event', 'events' ), 'match' => array( 'eventos', 'events' ) ),
-		'cursos'     => array( 'key' => 'cursos', 'type' => 'page', 'object' => 'page', 'path' => 'courses', 'match' => array( 'cursos', 'courses' ) ),
+		'cursos'     => array( 'key' => 'cursos', 'type' => 'page', 'object' => 'page', 'path' => 'cursos', 'match' => array( 'cursos', 'courses' ) ),
 		'empregos'   => array( 'key' => 'empregos', 'type' => 'post_type_archive', 'object' => 'job', 'url' => $archive_url( 'job', 'jobs' ), 'match' => array( 'empregos', 'jobs' ) ),
 		'apoiadores' => array( 'key' => 'apoiadores', 'type' => 'post_type_archive', 'object' => 'sponsor', 'url' => $archive_url( 'sponsor', 'apoiadores' ), 'match' => array( 'apoiadores', 'sponsors', 'sponsor' ) ),
 		'irlanda'    => array( 'key' => 'irlanda', 'type' => 'page', 'object' => 'page', 'path' => 'irlanda', 'match' => array( 'irlanda' ) ),
@@ -1532,10 +1480,10 @@ function conexao_normalize_primary_nav_sections( $items, $args ) {
 		conexao_bind_section_object( $items[ $insert_blog_at ], $sections['blog'] );
 	}
 
-	// Ensure a "Cursos" item bound to the /courses/ page exists (inserted before
+	// Ensure a "Cursos" item bound to the /cursos/ page exists (inserted before
 	// "Empregos" if the theme's base filter did not already provide one).
 	if ( ! $has_cursos ) {
-		$cursos_page = get_page_by_path( 'courses' );
+		$cursos_page = get_page_by_path( 'cursos' );
 		if ( $cursos_page ) {
 			$page_type   = get_post_type_object( 'page' );
 			$cursos_item = (object) array(

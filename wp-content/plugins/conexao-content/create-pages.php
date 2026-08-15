@@ -60,6 +60,12 @@ $main_pages = [
 <!-- wp:paragraph --><p>Confira a agenda de eventos, encontros, festivais e atividades para brasileiros na Irlanda. Participe e fortaleça nossa comunidade!</p><!-- /wp:paragraph -->',
         'meta_desc' => 'Eventos, encontros e atividades para a comunidade brasileira na Irlanda. Agenda cultural, networking e muito mais.',
     ],
+    'cursos' => [
+        'title' => 'Cursos',
+        'content' => '<!-- wp:heading --><h2>Cursos para brasileiros na Irlanda</h2><!-- /wp:heading -->
+<!-- wp:paragraph --><p>Descubra cursos e oportunidades de aprendizado para brasileiros na Irlanda. Cursos de inglês, profissionalizantes, online e muito mais.</p><!-- /wp:paragraph -->',
+        'meta_desc' => 'Cursos e oportunidades de aprendizado para brasileiros na Irlanda. Cursos de idiomas, profissionalizantes e muito mais.',
+    ],
     'empregos' => [
         'title' => 'Empregos',
         'content' => '<!-- wp:heading --><h2>Vagas de emprego para brasileiros na Irlanda</h2><!-- /wp:heading -->
