@@ -150,7 +150,7 @@ if ( ! $hero_events->have_posts() ) {
 		<?php endwhile; ?>
 	</div>
 
-	<a href="<?php echo esc_url( home_url( '/events/' ) ); ?>" class="hero-events-cta">
+	<a href="<?php echo esc_url( home_url( '/eventos/' ) ); ?>" class="hero-events-cta">
 		<?php esc_html_e( 'Ver todos os eventos', 'conexao-br-irlanda' ); ?>
 		<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
 			<line x1="5" y1="12" x2="19" y2="12"></line>

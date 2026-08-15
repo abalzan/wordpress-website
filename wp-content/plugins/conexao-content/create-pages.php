@@ -27,6 +27,14 @@ echo "Starting page creation...\n";
 // ============================================================
 // 1. MAIN PAGES
 // ============================================================
+// NOTE: The following pages are now handled by CPT archives and should NOT be created as static pages:
+// - guias (guide CPT archive)
+// - eventos (event CPT archive)
+// - cursos (course CPT archive)
+// - empregos (job CPT archive)
+// - apoiadores (sponsor CPT archive)
+// Creating static pages with these slugs would conflict with the CPT archives.
+
 $main_pages = [
     'sobre-nos' => [
         'title' => 'Sobre Nós',
@@ -47,38 +55,6 @@ $main_pages = [
 <!-- wp:paragraph --><p><a href="https://wa.me/353899451428">Fale conosco pelo WhatsApp</a></p><!-- /wp:paragraph -->
 <!-- wp:paragraph --><p>Email: contato@conexaobr.ie</p><!-- /wp:paragraph -->',
         'meta_desc' => 'Entre em contato com a equipe do Conexão BR Irlanda. Tire dúvidas, envie sugestões ou saiba como anunciar.',
-    ],
-    'guias' => [
-        'title' => 'Guias Práticos',
-        'content' => '<!-- wp:heading --><h2>Guias práticos para brasileiros na Irlanda</h2><!-- /wp:heading -->
-<!-- wp:paragraph --><p>Guias completos e atualizados para ajudar você em cada etapa da sua jornada na Irlanda. De documentos a moradia, temos tudo o que você precisa saber.</p><!-- /wp:paragraph -->',
-        'meta_desc' => 'Guias práticos completos para brasileiros na Irlanda. PPS Number, Medical Card, moradia, emprego, documentos e muito mais.',
-    ],
-    'eventos' => [
-        'title' => 'Eventos',
-        'content' => '<!-- wp:heading --><h2>Eventos para a comunidade brasileira na Irlanda</h2><!-- /wp:heading -->
-<!-- wp:paragraph --><p>Confira a agenda de eventos, encontros, festivais e atividades para brasileiros na Irlanda. Participe e fortaleça nossa comunidade!</p><!-- /wp:paragraph -->',
-        'meta_desc' => 'Eventos, encontros e atividades para a comunidade brasileira na Irlanda. Agenda cultural, networking e muito mais.',
-    ],
-    'cursos' => [
-        'title' => 'Cursos',
-        'content' => '<!-- wp:heading --><h2>Cursos para brasileiros na Irlanda</h2><!-- /wp:heading -->
-<!-- wp:paragraph --><p>Descubra cursos e oportunidades de aprendizado para brasileiros na Irlanda. Cursos de inglês, profissionalizantes, online e muito mais.</p><!-- /wp:paragraph -->',
-        'meta_desc' => 'Cursos e oportunidades de aprendizado para brasileiros na Irlanda. Cursos de idiomas, profissionalizantes e muito mais.',
-    ],
-    'empregos' => [
-        'title' => 'Empregos',
-        'content' => '<!-- wp:heading --><h2>Vagas de emprego para brasileiros na Irlanda</h2><!-- /wp:heading -->
-<!-- wp:paragraph --><p>Encontre oportunidades de trabalho em diversos setores. Vagas em saúde, construção, TI, hospitalidade, administração e muito mais.</p><!-- /wp:paragraph -->
-<!-- wp:heading --><h3>Categorias</h3><!-- /wp:heading -->
-<!-- wp:list --><ul><li>Saúde</li><li>Construção Civil</li><li>Tecnologia da Informação</li><li>Limpeza e Serviços Gerais</li><li>Hospitalidade e Turismo</li><li>Varejo</li><li>Administração</li><li>Engenharia</li><li>Educação</li></ul><!-- /wp:list -->',
-        'meta_desc' => 'Vagas de emprego para brasileiros na Irlanda. Oportunidades em saúde, TI, construção, hospitalidade e mais.',
-    ],
-    'apoiadores' => [
-        'title' => 'Apoiadores',
-        'content' => '<!-- wp:heading --><h2>Apoiadores da comunidade brasileira na Irlanda</h2><!-- /wp:heading -->
-<!-- wp:paragraph --><p>Conheça as organizações e empresas que apoiam a comunidade brasileira na Irlanda.</p><!-- /wp:paragraph -->',
-        'meta_desc' => 'Conheça as organizações e empresas que apoiam a comunidade brasileira na Irlanda.',
     ],
     'newsletter' => [
         'title' => 'Newsletter',
@@ -540,7 +516,7 @@ if (!$categorias) {
 <li><a href="/servicos/">Serviços</a></li>
 <li><a href="/voluntariado/">Voluntariado</a></li>
 <li><a href="/eventos/">Eventos</a></li>
-<li><a href="/guides/">Guias</a></li>
+<li><a href="/guias/">Guias</a></li>
 </ul><!-- /wp:list -->',
         'post_status'   => 'publish',
         'post_type'     => 'page',
@@ -561,7 +537,7 @@ $page_slugs = array_merge(
     array_keys($category_pages),
     ['irlanda', 'europa'],
     array_keys($counties),
-    ['cursos', 'privacidade', 'termos', 'sobre', 'categorias']
+    ['privacidade', 'termos', 'sobre', 'categorias']
 );
 
 $page_ids = [];
@@ -592,33 +568,35 @@ if (!$primary_menu_id) {
 }
 
 // Add items to Primary Menu
+// NOTE: Guias, Eventos, Cursos, Empregos, Apoiadores are now CPT archives (not static pages)
+// They use custom URLs pointing to the CPT archive paths
 $primary_items = [
-    ['title' => 'Home', 'url' => home_url('/')],
-    ['title' => 'Guias', 'object' => 'page', 'object_id' => $page_ids['guias'] ?? 0],
-    ['title' => 'Eventos', 'object' => 'page', 'object_id' => $page_ids['eventos'] ?? 0],
-    ['title' => 'Cursos', 'object' => 'page', 'object_id' => $page_ids['cursos'] ?? 0],
-    ['title' => 'Empregos', 'object' => 'page', 'object_id' => $page_ids['empregos'] ?? 0],
-    ['title' => 'Apoiadores', 'object' => 'page', 'object_id' => $page_ids['apoiadores'] ?? 0],
-    ['title' => 'Irlanda', 'object' => 'page', 'object_id' => $page_ids['irlanda'] ?? 0],
-    ['title' => 'Sobre Nós', 'object' => 'page', 'object_id' => $page_ids['sobre-nos'] ?? 0],
-    ['title' => 'Contato', 'object' => 'page', 'object_id' => $page_ids['contato'] ?? 0],
+    ['title' => 'Home', 'type' => 'custom', 'url' => home_url('/')],
+    ['title' => 'Guias', 'type' => 'custom', 'url' => home_url('/guias/')],
+    ['title' => 'Eventos', 'type' => 'custom', 'url' => home_url('/eventos/')],
+    ['title' => 'Cursos', 'type' => 'custom', 'url' => home_url('/cursos/')],
+    ['title' => 'Empregos', 'type' => 'custom', 'url' => home_url('/empregos/')],
+    ['title' => 'Apoiadores', 'type' => 'custom', 'url' => home_url('/apoiadores/')],
+    ['title' => 'Irlanda', 'type' => 'post_type', 'object' => 'page', 'object_id' => $page_ids['irlanda'] ?? 0],
+    ['title' => 'Sobre Nós', 'type' => 'post_type', 'object' => 'page', 'object_id' => $page_ids['sobre-nos'] ?? 0],
+    ['title' => 'Contato', 'type' => 'post_type', 'object' => 'page', 'object_id' => $page_ids['contato'] ?? 0],
 ];
 
 foreach ($primary_items as $item) {
     $menu_item_data = [
-        'menu-item-title' => $item['title'],
-        'menu-item-url' => $item['url'] ?? '',
-        'menu-item-type' => isset($item['object']) ? 'post_type' : 'custom',
-        'menu-item-object' => $item['object'] ?? 'custom',
+        'menu-item-title'     => $item['title'],
+        'menu-item-url'       => $item['url'] ?? '',
+        'menu-item-type'      => $item['type'],
+        'menu-item-object'    => $item['object'] ?? 'custom',
         'menu-item-object-id' => $item['object_id'] ?? 0,
-        'menu-item-status' => 'publish',
+        'menu-item-status'    => 'publish',
     ];
     
     $result = wp_update_nav_menu_item($primary_menu_id, 0, $menu_item_data);
     if (is_wp_error($result)) {
         echo "  ERROR adding item '{$item['title']}': {$result->get_error_message()}\n";
     } else {
-        echo "  Added: {$item['title']}\n";
+        echo "  Added: {$item['title']} (type: {$item['type']})\n";
     }
 }
 

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Conexão BR Irlanda Data Model
  * Description: Content types, shared taxonomies, and editorial fields for the Conexão BR Irlanda portal.
- * Version: 1.2.0
+ * Version: 1.3.0
  * Text Domain: conexao-data-model
  *
  * @package Conexao_BR_Irlanda_Data_Model
@@ -18,7 +18,7 @@ require_once CONEXAO_DATA_MODEL_DIR . 'includes/class-meta.php';
 
 final class Conexao_Data_Model {
 
-	const VERSION = '1.2.0';
+	const VERSION = '1.3.0';
 
 	/** @var Conexao_Data_Model|null */
 	private static $instance = null;
@@ -39,10 +39,12 @@ final class Conexao_Data_Model {
 
 	public function register_content_types() {
 		$post_types = array(
-			'guide'           => array( 'plural' => 'Guias Práticos', 'singular' => 'Guia Prático', 'slug' => 'guides', 'icon' => 'dashicons-book-alt' ),
-			'event'           => array( 'plural' => 'Eventos', 'singular' => 'Evento', 'slug' => 'events', 'icon' => 'dashicons-calendar-alt' ),
-			'course'          => array( 'plural' => 'Cursos', 'singular' => 'Curso', 'slug' => 'courses', 'icon' => 'dashicons-welcome-learn-more' ),
-			'job'             => array( 'plural' => 'Empregos', 'singular' => 'Vaga de Emprego', 'slug' => 'jobs', 'icon' => 'dashicons-portfolio' ),
+			// Portuguese slugs are the canonical URLs for the portal.
+			// English slugs redirect to these for backward compatibility.
+			'guide'           => array( 'plural' => 'Guias Práticos', 'singular' => 'Guia Prático', 'slug' => 'guias', 'icon' => 'dashicons-book-alt' ),
+			'event'           => array( 'plural' => 'Eventos', 'singular' => 'Evento', 'slug' => 'eventos', 'icon' => 'dashicons-calendar-alt' ),
+			'course'          => array( 'plural' => 'Cursos', 'singular' => 'Curso', 'slug' => 'cursos', 'icon' => 'dashicons-welcome-learn-more' ),
+			'job'             => array( 'plural' => 'Empregos', 'singular' => 'Vaga de Emprego', 'slug' => 'empregos', 'icon' => 'dashicons-portfolio' ),
 			'sponsor'         => array( 'plural' => 'Apoiadores', 'singular' => 'Apoiador', 'slug' => 'apoiadores', 'icon' => 'dashicons-heart' ),
 			'course_provider' => array( 'plural' => 'Cursos', 'singular' => 'Provedor de Cursos', 'slug' => 'provedores-de-cursos', 'icon' => 'dashicons-welcome-learn-more' ),
 		);
@@ -50,14 +52,9 @@ final class Conexao_Data_Model {
 		foreach ( $post_types as $post_type => $type ) {
 			$is_provider = ( 'course_provider' === $post_type );
 
-			// The Cursos page is a WordPress page at /courses/. The legacy
-			// "course" CPT must NOT own an archive at /courses/ or it would
-			// shadow the page. Individual imported courses (if any) remain
-			// reachable via their singular permalinks only.
-			$has_archive = $type['slug'];
-			if ( 'course' === $post_type || $is_provider ) {
-				$has_archive = false;
-			}
+			// course_provider is admin-managed only and does not need a public archive.
+			// All other CPTs (guide, event, course, job, sponsor) have public archives.
+			$has_archive = $is_provider ? false : $type['slug'];
 
 			register_post_type(
 				$post_type,

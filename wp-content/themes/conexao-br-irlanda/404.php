@@ -13,8 +13,8 @@
 
 			<div class="error-404-links">
 				<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="btn btn-green"><?php esc_html_e( 'Voltar para o início', 'conexao-br-irlanda' ); ?></a>
-				<a href="<?php echo esc_url( home_url( '/guides/' ) ); ?>" class="btn btn-primary"><?php esc_html_e( 'Guias Práticos', 'conexao-br-irlanda' ); ?></a>
-				<a href="<?php echo esc_url( home_url( '/events/' ) ); ?>" class="btn btn-primary"><?php esc_html_e( 'Eventos', 'conexao-br-irlanda' ); ?></a>
+				<a href="<?php echo esc_url( home_url( '/guias/' ) ); ?>" class="btn btn-primary"><?php esc_html_e( 'Guias Práticos', 'conexao-br-irlanda' ); ?></a>
+				<a href="<?php echo esc_url( home_url( '/eventos/' ) ); ?>" class="btn btn-primary"><?php esc_html_e( 'Eventos', 'conexao-br-irlanda' ); ?></a>
 			</div>
 
 			<div class="error-404-popular">
@@ -45,11 +45,11 @@
 							<li><a href="<?php echo esc_url( $guide['url'] ); ?>"><?php echo esc_html( $guide['title'] ); ?></a></li>
 						<?php endforeach;
 					else : ?>
-						<li><a href="<?php echo esc_url( home_url( '/guides/pps-number/' ) ); ?>"><?php esc_html_e( 'PPS Number', 'conexao-br-irlanda' ); ?></a></li>
-						<li><a href="<?php echo esc_url( home_url( '/guides/medical-card/' ) ); ?>"><?php esc_html_e( 'Medical Card', 'conexao-br-irlanda' ); ?></a></li>
-						<li><a href="<?php echo esc_url( home_url( '/guides/abrir-conta-bancaria/' ) ); ?>"><?php esc_html_e( 'Abrir Conta Bancária', 'conexao-br-irlanda' ); ?></a></li>
-						<li><a href="<?php echo esc_url( home_url( '/guides/alugar-casa/' ) ); ?>"><?php esc_html_e( 'Alugar Casa', 'conexao-br-irlanda' ); ?></a></li>
-						<li><a href="<?php echo esc_url( home_url( '/guides/carteira-de-motorista/' ) ); ?>"><?php esc_html_e( 'Carteira de Motorista', 'conexao-br-irlanda' ); ?></a></li>
+						<li><a href="<?php echo esc_url( home_url( '/guias/pps-number/' ) ); ?>"><?php esc_html_e( 'PPS Number', 'conexao-br-irlanda' ); ?></a></li>
+						<li><a href="<?php echo esc_url( home_url( '/guias/medical-card/' ) ); ?>"><?php esc_html_e( 'Medical Card', 'conexao-br-irlanda' ); ?></a></li>
+						<li><a href="<?php echo esc_url( home_url( '/guias/abrir-conta-bancaria/' ) ); ?>"><?php esc_html_e( 'Abrir Conta Bancária', 'conexao-br-irlanda' ); ?></a></li>
+						<li><a href="<?php echo esc_url( home_url( '/guias/alugar-casa/' ) ); ?>"><?php esc_html_e( 'Alugar Casa', 'conexao-br-irlanda' ); ?></a></li>
+						<li><a href="<?php echo esc_url( home_url( '/guias/carteira-de-motorista/' ) ); ?>"><?php esc_html_e( 'Carteira de Motorista', 'conexao-br-irlanda' ); ?></a></li>
 					<?php endif; ?>
 				</ul>
 			</div>

@@ -829,32 +829,62 @@ function conexao_seo_redirects() {
 	$path = untrailingslashit( rawurldecode( $path ) );
 
 	// Direct 301 map: old URL -> final URL (no chains).
+	// Portuguese URLs are canonical. English URLs redirect to Portuguese.
 	$redirects = array(
-		// Legacy guide paths -> new /guides/ CPT structure.
-		'/guias'                       => '/guides/',
-		'/guias-praticos'              => '/guides/',
-		'/guias-praticos/pps-number'   => '/guides/pps-number/',
-		'/guias-praticos/medical-card' => '/guides/medical-card/',
-		'/guias-praticos/gp-registration' => '/guides/gp-registration/',
-		'/guias-praticos/abrir-conta-bancaria' => '/guides/abrir-conta-bancaria/',
-		'/guias-praticos/alugar-casa'  => '/guides/alugar-casa/',
-		'/guias-praticos/carteira-de-motorista' => '/guides/carteira-de-motorista/',
-		'/guias-praticos/impostos'     => '/guides/impostos/',
-		'/guias-praticos/cidadania-irlandesa' => '/guides/cidadania-irlandesa/',
-		'/guias-praticos/comprar-carro' => '/guides/comprar-carro/',
-		'/guias-praticos/child-benefit' => '/guides/child-benefit/',
-		'/guias-praticos/social-welfare' => '/guides/social-welfare/',
-		'/guias-praticos/abrir-empresa' => '/guides/abrir-empresa/',
-		'/guias-praticos/visto-irlanda' => '/guides/visto-irlanda/',
-		'/guias-praticos/irp-renewal'  => '/guides/irp-renewal/',
-		'/guias-praticos/passaporte-irlandes' => '/guides/passaporte-irlandes/',
+		// English guide paths -> Portuguese /guias/ CPT structure.
+		'/guides'                      => '/guias/',
+		'/guides/pps-number'           => '/guias/pps-number/',
+		'/guides/medical-card'         => '/guias/medical-card/',
+		'/guides/gp-registration'      => '/guias/gp-registration/',
+		'/guides/abrir-conta-bancaria' => '/guias/abrir-conta-bancaria/',
+		'/guides/alugar-casa'          => '/guias/alugar-casa/',
+		'/guides/carteira-de-motorista' => '/guias/carteira-de-motorista/',
+		'/guides/impostos'             => '/guias/impostos/',
+		'/guides/cidadania-irlandesa'  => '/guias/cidadania-irlandesa/',
+		'/guides/comprar-carro'        => '/guias/comprar-carro/',
+		'/guides/child-benefit'        => '/guias/child-benefit/',
+		'/guides/social-welfare'       => '/guias/social-welfare/',
+		'/guides/abrir-empresa'        => '/guias/abrir-empresa/',
+		'/guides/visto-irlanda'        => '/guias/visto-irlanda/',
+		'/guides/irp-renewal'          => '/guias/irp-renewal/',
+		'/guides/passaporte-irlandes'  => '/guias/passaporte-irlandes/',
 
-		// Legacy events paths.
-		'/eventos'                     => '/events/',
-		'/turismo-e-lazer'             => '/events/',
+		// Legacy guide paths -> Portuguese /guias/ CPT structure.
+		'/guias-praticos'              => '/guias/',
+		'/guias-praticos/pps-number'   => '/guias/pps-number/',
+		'/guias-praticos/medical-card' => '/guias/medical-card/',
+		'/guias-praticos/gp-registration' => '/guias/gp-registration/',
+		'/guias-praticos/abrir-conta-bancaria' => '/guias/abrir-conta-bancaria/',
+		'/guias-praticos/alugar-casa'  => '/guias/alugar-casa/',
+		'/guias-praticos/carteira-de-motorista' => '/guias/carteira-de-motorista/',
+		'/guias-praticos/impostos'     => '/guias/impostos/',
+		'/guias-praticos/cidadania-irlandesa' => '/guias/cidadania-irlandesa/',
+		'/guias-praticos/comprar-carro' => '/guias/comprar-carro/',
+		'/guias-praticos/child-benefit' => '/guias/child-benefit/',
+		'/guias-praticos/social-welfare' => '/guias/social-welfare/',
+		'/guias-praticos/abrir-empresa' => '/guias/abrir-empresa/',
+		'/guias-praticos/visto-irlanda' => '/guias/visto-irlanda/',
+		'/guias-praticos/irp-renewal'  => '/guias/irp-renewal/',
+		'/guias-praticos/passaporte-irlandes' => '/guias/passaporte-irlandes/',
 
-		// Legacy jobs paths.
-		'/empregos'                    => '/jobs/',
+		// English events paths -> Portuguese.
+		'/events'                      => '/eventos/',
+		'/turismo-e-lazer'             => '/eventos/',
+
+		// English jobs paths -> Portuguese.
+		'/jobs'                        => '/empregos/',
+
+		// English courses paths -> Portuguese.
+		'/courses'                     => '/cursos/',
+
+		// English sponsors paths -> Portuguese.
+		'/sponsors'                    => '/apoiadores/',
+
+		// English static pages -> Portuguese.
+		'/ireland'                     => '/irlanda/',
+		'/about-us'                    => '/sobre-nos/',
+		'/about'                       => '/sobre-nos/',
+		'/contact'                     => '/contato/',
 
 		// Legacy business paths -> Apoiadores.
 		'/empresas'                    => '/apoiadores/',
@@ -894,9 +924,39 @@ function conexao_seo_redirects() {
 		exit;
 	}
 
-	// Pattern: /guias-praticos/{slug} -> /guides/{slug}/ (any remaining).
+	// Pattern: /guides/{slug} -> /guias/{slug}/ (any remaining).
+	if ( preg_match( '#^/guides/([^/]+)$#', $path, $m ) ) {
+		wp_safe_redirect( home_url( '/guias/' . $m[1] . '/' ), 301 );
+		exit;
+	}
+
+	// Pattern: /guias-praticos/{slug} -> /guias/{slug}/ (any remaining).
 	if ( preg_match( '#^/guias-praticos/([^/]+)$#', $path, $m ) ) {
-		wp_safe_redirect( home_url( '/guides/' . $m[1] . '/' ), 301 );
+		wp_safe_redirect( home_url( '/guias/' . $m[1] . '/' ), 301 );
+		exit;
+	}
+
+	// Pattern: /events/{slug} -> /eventos/{slug}/ (any remaining).
+	if ( preg_match( '#^/events/([^/]+)$#', $path, $m ) ) {
+		wp_safe_redirect( home_url( '/eventos/' . $m[1] . '/' ), 301 );
+		exit;
+	}
+
+	// Pattern: /jobs/{slug} -> /empregos/{slug}/ (any remaining).
+	if ( preg_match( '#^/jobs/([^/]+)$#', $path, $m ) ) {
+		wp_safe_redirect( home_url( '/empregos/' . $m[1] . '/' ), 301 );
+		exit;
+	}
+
+	// Pattern: /courses/{slug} -> /cursos/{slug}/ (any remaining).
+	if ( preg_match( '#^/courses/([^/]+)$#', $path, $m ) ) {
+		wp_safe_redirect( home_url( '/cursos/' . $m[1] . '/' ), 301 );
+		exit;
+	}
+
+	// Pattern: /sponsors/{slug} -> /apoiadores/{slug}/ (any remaining).
+	if ( preg_match( '#^/sponsors/([^/]+)$#', $path, $m ) ) {
+		wp_safe_redirect( home_url( '/apoiadores/' . $m[1] . '/' ), 301 );
 		exit;
 	}
 

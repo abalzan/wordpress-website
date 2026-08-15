@@ -1,17 +1,35 @@
 # Custom redirects for the Wix migration
 # All redirects point DIRECTLY to the final destination (no redirect chains).
+# Portuguese URLs are canonical. English URLs redirect to Portuguese.
 <IfModule mod_rewrite.c>
 RewriteEngine On
-RewriteRule ^turismo-e-lazer/?$ /events/ [R=301,L]
-RewriteRule ^capacitação/?$ /courses/ [R=301,L]
-RewriteRule ^cursos/?$ /courses/ [R=301,L]
-RewriteRule ^s-projects-basic/?$ /guides/ [R=301,L]
+
+# English -> Portuguese CPT archive redirects (backward compatibility)
+RewriteRule ^guides/?$ /guias/ [R=301,L]
+RewriteRule ^guides/([^/]+)/?$ /guias/$1/ [R=301,L]
+RewriteRule ^events/?$ /eventos/ [R=301,L]
+RewriteRule ^events/([^/]+)/?$ /eventos/$1/ [R=301,L]
+RewriteRule ^courses/?$ /cursos/ [R=301,L]
+RewriteRule ^courses/([^/]+)/?$ /cursos/$1/ [R=301,L]
+RewriteRule ^jobs/?$ /empregos/ [R=301,L]
+RewriteRule ^jobs/([^/]+)/?$ /empregos/$1/ [R=301,L]
+RewriteRule ^sponsors/?$ /apoiadores/ [R=301,L]
+RewriteRule ^sponsors/([^/]+)/?$ /apoiadores/$1/ [R=301,L]
+
+# English -> Portuguese static page redirects (backward compatibility)
+RewriteRule ^ireland/?$ /irlanda/ [R=301,L]
+RewriteRule ^about-us/?$ /sobre-nos/ [R=301,L]
+RewriteRule ^about/?$ /sobre-nos/ [R=301,L]
+RewriteRule ^contact/?$ /contato/ [R=301,L]
+
+# Legacy Wix migration redirects
+RewriteRule ^turismo-e-lazer/?$ /eventos/ [R=301,L]
+RewriteRule ^capacitação/?$ /cursos/ [R=301,L]
+RewriteRule ^s-projects-basic/?$ /guias/ [R=301,L]
 RewriteRule ^post/([^/]+)/?$ /blog/$1/ [R=301,L]
 RewriteRule ^blog/categories/([^/]+)/?$ /category/$1/ [R=301,L]
-RewriteRule ^guias-praticos/?$ /guides/ [R=301,L]
-RewriteRule ^guias-praticos/([^/]+)/?$ /guides/$1/ [R=301,L]
-RewriteRule ^eventos/?$ /events/ [R=301,L]
-RewriteRule ^empregos/?$ /jobs/ [R=301,L]
+RewriteRule ^guias-praticos/?$ /guias/ [R=301,L]
+RewriteRule ^guias-praticos/([^/]+)/?$ /guias/$1/ [R=301,L]
 RewriteRule ^empresas/?$ /apoiadores/ [R=301,L]
 RewriteRule ^businesses/?$ /apoiadores/ [R=301,L]
 RewriteRule ^categories/([^/]+)/?$ /$1/ [R=301,L]

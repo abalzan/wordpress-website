@@ -32,6 +32,7 @@ services:
     entrypoint: ["/usr/local/bin/entrypoint-fix-permissions.sh"]
     volumes:
       - wordpress_data:/var/www/html
+      - ./.htaccess:/var/www/html/.htaccess:ro
       - ./wp-content/themes/conexao-br-irlanda:/var/www/html/wp-content/themes/conexao-br-irlanda
       - ./wp-content/plugins/conexao-content:/var/www/html/wp-content/plugins/conexao-content
       - ./wp-content/plugins/conexao-data-model:/var/www/html/wp-content/plugins/conexao-data-model

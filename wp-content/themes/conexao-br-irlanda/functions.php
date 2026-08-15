@@ -95,7 +95,7 @@ function conexao_get_guides_archive_url() {
 		return $archive_link;
 	}
 
-	return home_url( '/guides/' );
+	return home_url( '/guias/' );
 }
 
 /**
@@ -1156,13 +1156,13 @@ function conexao_override_guides_menu_links( $items, $args ) {
 	}
 
 	$guides_url = conexao_get_guides_archive_url();
-	$legacy_url = untrailingslashit( home_url( '/guias/' ) );
+	$legacy_url = untrailingslashit( home_url( '/guides/' ) );
 
 	foreach ( $items as $item ) {
 		$title = strtolower( trim( wp_strip_all_tags( $item->title ) ) );
 		$item_url = untrailingslashit( $item->url );
 
-		if ( 'guias' === $title || 'guias práticos' === $title || $legacy_url === $item_url || false !== strpos( $item_url, '/guias' ) ) {
+		if ( 'guias' === $title || 'guias práticos' === $title || $legacy_url === $item_url || false !== strpos( $item_url, '/guides' ) ) {
 			$item->url = $guides_url;
 		}
 	}
@@ -1303,15 +1303,16 @@ function conexao_primary_nav_sections() {
 		'início'     => array( 'key' => 'inicio', 'type' => 'custom', 'object' => 'custom', 'url' => home_url( '/' ), 'match' => array() ),
 		// Blog uses the native posts archive at /blog/ (not a static page).
 		'blog'       => array( 'key' => 'blog', 'type' => 'posts_archive', 'object' => 'post', 'url' => home_url( '/blog/' ), 'match' => array( 'blog' ) ),
-		'guias'      => array( 'key' => 'guias', 'type' => 'post_type_archive', 'object' => 'guide', 'url' => $archive_url( 'guide', 'guides' ), 'match' => array( 'guides', 'guias' ) ),
-		'eventos'    => array( 'key' => 'eventos', 'type' => 'post_type_archive', 'object' => 'event', 'url' => $archive_url( 'event', 'events' ), 'match' => array( 'eventos', 'events' ) ),
-		'cursos'     => array( 'key' => 'cursos', 'type' => 'page', 'object' => 'page', 'path' => 'cursos', 'match' => array( 'cursos', 'courses' ) ),
-		'empregos'   => array( 'key' => 'empregos', 'type' => 'post_type_archive', 'object' => 'job', 'url' => $archive_url( 'job', 'jobs' ), 'match' => array( 'empregos', 'jobs' ) ),
+		'guias'      => array( 'key' => 'guias', 'type' => 'post_type_archive', 'object' => 'guide', 'url' => $archive_url( 'guide', 'guias' ), 'match' => array( 'guias', 'guides' ) ),
+		'eventos'    => array( 'key' => 'eventos', 'type' => 'post_type_archive', 'object' => 'event', 'url' => $archive_url( 'event', 'eventos' ), 'match' => array( 'eventos', 'events' ) ),
+		// Cursos is now a CPT archive (course CPT), not a static page.
+		'cursos'     => array( 'key' => 'cursos', 'type' => 'post_type_archive', 'object' => 'course', 'url' => $archive_url( 'course', 'cursos' ), 'match' => array( 'cursos', 'courses' ) ),
+		'empregos'   => array( 'key' => 'empregos', 'type' => 'post_type_archive', 'object' => 'job', 'url' => $archive_url( 'job', 'empregos' ), 'match' => array( 'empregos', 'jobs' ) ),
 		'apoiadores' => array( 'key' => 'apoiadores', 'type' => 'post_type_archive', 'object' => 'sponsor', 'url' => $archive_url( 'sponsor', 'apoiadores' ), 'match' => array( 'apoiadores', 'sponsors', 'sponsor' ) ),
-		'irlanda'    => array( 'key' => 'irlanda', 'type' => 'page', 'object' => 'page', 'path' => 'irlanda', 'match' => array( 'irlanda' ) ),
-		'sobre nós'  => array( 'key' => 'sobre-nos', 'type' => 'page', 'object' => 'page', 'path' => 'sobre-nos', 'match' => array( 'sobre-nos', 'sobre', 'sobre nós' ) ),
-		'sobre nos'  => array( 'key' => 'sobre-nos', 'type' => 'page', 'object' => 'page', 'path' => 'sobre-nos', 'match' => array( 'sobre-nos', 'sobre', 'sobre nós' ) ),
-		'contato'    => array( 'key' => 'contato', 'type' => 'page', 'object' => 'page', 'path' => 'contato', 'match' => array( 'contato' ) ),
+		'irlanda'    => array( 'key' => 'irlanda', 'type' => 'page', 'object' => 'page', 'path' => 'irlanda', 'match' => array( 'irlanda', 'ireland' ) ),
+		'sobre nós'  => array( 'key' => 'sobre-nos', 'type' => 'page', 'object' => 'page', 'path' => 'sobre-nos', 'match' => array( 'sobre-nos', 'sobre', 'sobre nós', 'about-us', 'about' ) ),
+		'sobre nos'  => array( 'key' => 'sobre-nos', 'type' => 'page', 'object' => 'page', 'path' => 'sobre-nos', 'match' => array( 'sobre-nos', 'sobre', 'sobre nós', 'about-us', 'about' ) ),
+		'contato'    => array( 'key' => 'contato', 'type' => 'page', 'object' => 'page', 'path' => 'contato', 'match' => array( 'contato', 'contact' ) ),
 	);
 }
 
@@ -1403,6 +1404,10 @@ function conexao_normalize_primary_nav_sections( $items, $args ) {
 	$sections   = conexao_primary_nav_sections();
 	$has_blog   = false;
 	$has_cursos = false;
+	$has_guias  = false;
+	$has_eventos = false;
+	$has_empregos = false;
+	$has_apoiadores = false;
 
 	foreach ( $items as $item ) {
 		$title    = strtolower( trim( wp_strip_all_tags( $item->title ) ) );
@@ -1435,6 +1440,22 @@ function conexao_normalize_primary_nav_sections( $items, $args ) {
 
 		if ( 'cursos' === $section['key'] ) {
 			$has_cursos = true;
+		}
+
+		if ( 'guias' === $section['key'] ) {
+			$has_guias = true;
+		}
+
+		if ( 'eventos' === $section['key'] ) {
+			$has_eventos = true;
+		}
+
+		if ( 'empregos' === $section['key'] ) {
+			$has_empregos = true;
+		}
+
+		if ( 'apoiadores' === $section['key'] ) {
+			$has_apoiadores = true;
 		}
 	}
 
@@ -1480,24 +1501,98 @@ function conexao_normalize_primary_nav_sections( $items, $args ) {
 		conexao_bind_section_object( $items[ $insert_blog_at ], $sections['blog'] );
 	}
 
-	// Ensure a "Cursos" item bound to the /cursos/ page exists (inserted before
+	// Ensure a "Cursos" item bound to the /cursos/ CPT archive exists (inserted before
 	// "Empregos" if the theme's base filter did not already provide one).
 	if ( ! $has_cursos ) {
-		$cursos_page = get_page_by_path( 'cursos' );
-		if ( $cursos_page ) {
-			$page_type   = get_post_type_object( 'page' );
-			$cursos_item = (object) array(
+		$cursos_url = get_post_type_archive_link( 'course' );
+		if ( ! $cursos_url ) {
+			$cursos_url = home_url( '/cursos/' );
+		}
+
+		$cursos_item = (object) array(
+			'ID'               => 0,
+			'db_id'            => 0,
+			'menu_item_parent' => 0,
+			'object_id'        => 0,
+			'object'           => 'course',
+			'post_parent'      => 0,
+			'type'             => 'post_type_archive',
+			'type_label'       => 'Cursos',
+			'title'            => 'Cursos',
+			'url'              => $cursos_url,
+			'classes'          => array( 'menu-item', 'menu-item-type-post_type_archive', 'menu-item-object-course' ),
+			'attr_title'       => '',
+			'target'           => '',
+			'xfn'              => '',
+			'description'      => '',
+			'menu_order'       => 0,
+		);
+
+		$insert_at = null;
+		foreach ( $items as $k => $item ) {
+			if ( 'empregos' === strtolower( trim( wp_strip_all_tags( $item->title ) ) ) ) {
+				$insert_at = $k;
+				break;
+			}
+		}
+
+		if ( null === $insert_at ) {
+			$items[] = $cursos_item;
+		} else {
+			array_splice( $items, $insert_at, 0, array( $cursos_item ) );
+		}
+
+		conexao_bind_section_object( $cursos_item, $sections['cursos'] );
+	}
+
+	// Deduplicate: remove any duplicate items that map to the same section key.
+	// This handles stale menu items that survived deletion (e.g. old Cursos items).
+	$seen_sections = array();
+	foreach ( $items as $k => $item ) {
+		$section_key = conexao_get_item_section_key( $item );
+		if ( null !== $section_key ) {
+			if ( isset( $seen_sections[ $section_key ] ) ) {
+				unset( $items[ $k ] );
+				continue;
+			}
+			$seen_sections[ $section_key ] = true;
+		}
+	}
+	$items = array_values( $items );
+
+	// Ensure all CPT archive sections (Guias, Eventos, Empregos, Apoiadores)
+	// are always present in the navigation, even if the stored menu is missing them.
+	$cpt_sections = array(
+		'guias'      => array( 'post_type' => 'guide',   'title' => 'Guias',      'url' => get_post_type_archive_link( 'guide' ) ? get_post_type_archive_link( 'guide' ) : home_url( '/guias/' ) ),
+		'eventos'    => array( 'post_type' => 'event',   'title' => 'Eventos',    'url' => get_post_type_archive_link( 'event' ) ? get_post_type_archive_link( 'event' ) : home_url( '/eventos/' ) ),
+		'empregos'   => array( 'post_type' => 'job',     'title' => 'Empregos',   'url' => get_post_type_archive_link( 'job' ) ? get_post_type_archive_link( 'job' ) : home_url( '/empregos/' ) ),
+		'apoiadores' => array( 'post_type' => 'sponsor', 'title' => 'Apoiadores', 'url' => get_post_type_archive_link( 'sponsor' ) ? get_post_type_archive_link( 'sponsor' ) : home_url( '/apoiadores/' ) ),
+	);
+
+	foreach ( $cpt_sections as $section_key => $cpt_info ) {
+		$has_section = false;
+		foreach ( $items as $item ) {
+			$item_title = strtolower( trim( wp_strip_all_tags( $item->title ) ) );
+			$item_url   = untrailingslashit( (string) $item->url );
+			if ( $section_key === $item_title || false !== strpos( $item_url, '/' . $section_key ) ) {
+				$has_section = true;
+				break;
+			}
+		}
+
+		if ( ! $has_section ) {
+			$cpt_item = (object) array(
 				'ID'               => 0,
 				'db_id'            => 0,
 				'menu_item_parent' => 0,
-				'object_id'        => $cursos_page->ID,
-				'object'           => 'page',
-				'post_parent'      => $cursos_page->post_parent ? $cursos_page->post_parent : 0,
-				'type'             => 'post_type',
-				'type_label'       => $page_type ? $page_type->labels->singular_name : 'Page',
-				'title'            => 'Cursos',
-				'url'              => get_permalink( $cursos_page->ID ),
-				'classes'          => array( 'menu-item', 'menu-item-type-post_type', 'menu-item-object-page' ),
+				'object_id'        => 0,
+				'object'           => $cpt_info['post_type'],
+				'post_parent'      => 0,
+				'type'             => 'post_type_archive',
+				'type_label'       => $cpt_info['title'],
+				'title'            => $cpt_info['title'],
+				'url'              => $cpt_info['url'],
+				'classes'          => array( 'menu-item', 'menu-item-type-post_type_archive', 'menu-item-object-' . $cpt_info['post_type'] ),
 				'attr_title'       => '',
 				'target'           => '',
 				'xfn'              => '',
@@ -1505,21 +1600,22 @@ function conexao_normalize_primary_nav_sections( $items, $args ) {
 				'menu_order'       => 0,
 			);
 
-			$insert_at = null;
+			// Insert in the correct position based on the canonical order.
+			$order = array( 'inicio', 'blog', 'guias', 'eventos', 'cursos', 'empregos', 'apoiadores', 'irlanda', 'sobre-nos', 'contato' );
+			$target_index = array_search( $section_key, $order, true );
+			$insert_at = count( $items );
+
 			foreach ( $items as $k => $item ) {
-				if ( 'empregos' === strtolower( trim( wp_strip_all_tags( $item->title ) ) ) ) {
+				$item_key = conexao_get_item_section_key( $item );
+				$item_pos = $item_key ? array_search( $item_key, $order, true ) : false;
+				if ( false !== $item_pos && $item_pos > $target_index ) {
 					$insert_at = $k;
 					break;
 				}
 			}
 
-			if ( null === $insert_at ) {
-				$items[] = $cursos_item;
-			} else {
-				array_splice( $items, $insert_at, 0, array( $cursos_item ) );
-			}
-
-			conexao_bind_section_object( $cursos_item, $sections['cursos'] );
+			array_splice( $items, $insert_at, 0, array( $cpt_item ) );
+			conexao_bind_section_object( $cpt_item, $sections[ $section_key ] );
 		}
 	}
 
@@ -1589,16 +1685,16 @@ function conexao_fix_nav_active_states( $items ) {
 			return preg_match( '#^/(sponsors|apoiadores)(/.*)?$#', $path );
 		},
 		'irlanda'    => function( $path ) {
-			// Ireland: active on /irlanda/ and its subpages.
-			return preg_match( '#^/irlanda(/.*)?$#', $path );
+			// Ireland: active on /irlanda/ or /ireland/ and their subpages.
+			return preg_match( '#^/(irlanda|ireland)(/.*)?$#', $path );
 		},
 		'sobre-nos'  => function( $path ) {
-			// About: active on /sobre-nos/ and its subpages.
-			return preg_match( '#^/sobre-nos(/.*)?$#', $path );
+			// About: active on /sobre-nos/ or /about-us/ and their subpages.
+			return preg_match( '#^/(sobre-nos|about-us|about)(/.*)?$#', $path );
 		},
 		'contato'    => function( $path ) {
-			// Contact: active on /contato/ and its subpages.
-			return preg_match( '#^/contato(/.*)?$#', $path );
+			// Contact: active on /contato/ or /contact/ and their subpages.
+			return preg_match( '#^/(contato|contact)(/.*)?$#', $path );
 		},
 	);
 
@@ -1704,8 +1800,12 @@ function conexao_get_item_section_key( $item ) {
 		array( 'key' => 'apoiadores', 'pattern' => '/apoiadores' ),
 		array( 'key' => 'apoiadores', 'pattern' => '/sponsors' ),
 		array( 'key' => 'irlanda',    'pattern' => '/irlanda' ),
+		array( 'key' => 'irlanda',    'pattern' => '/ireland' ),
 		array( 'key' => 'sobre-nos',  'pattern' => '/sobre-nos' ),
+		array( 'key' => 'sobre-nos',  'pattern' => '/about-us' ),
+		array( 'key' => 'sobre-nos',  'pattern' => '/about' ),
 		array( 'key' => 'contato',    'pattern' => '/contato' ),
+		array( 'key' => 'contato',    'pattern' => '/contact' ),
 	);
 
 	foreach ( $url_patterns as $mapping ) {
