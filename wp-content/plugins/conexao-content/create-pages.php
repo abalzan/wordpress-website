@@ -412,6 +412,50 @@ function create_guide_if_not_exists($slug, $title, $content, $meta_desc = '') {
     return $guide_id;
 }
 
+function create_redirect_page_if_missing($slug, $title, $content) {
+    $existing = get_page_by_path($slug);
+    if ($existing) {
+        echo "  EXISTS: {$slug}\n";
+        return $existing->ID;
+    }
+
+    $page_id = wp_insert_post([
+        'post_title'    => $title,
+        'post_name'     => $slug,
+        'post_content'  => $content,
+        'post_status'   => 'publish',
+        'post_type'     => 'page',
+    ]);
+
+    if (is_wp_error($page_id)) {
+        echo "  ERROR: {$slug} - {$page_id->get_error_message()}\n";
+        return false;
+    }
+
+    echo "  CREATED: {$slug} (redirect page)\n";
+    return $page_id;
+}
+
+function add_menu_items($menu_id, $items) {
+    foreach ($items as $item) {
+        $menu_item_data = [
+            'menu-item-title'     => $item['title'],
+            'menu-item-url'       => $item['url'] ?? '',
+            'menu-item-type'      => $item['type'] ?? 'custom',
+            'menu-item-object'    => $item['object'] ?? 'custom',
+            'menu-item-object-id' => $item['object_id'] ?? 0,
+            'menu-item-status'    => 'publish',
+        ];
+
+        $result = wp_update_nav_menu_item($menu_id, 0, $menu_item_data);
+        if (is_wp_error($result)) {
+            echo "  ERROR adding item '{$item['title']}': {$result->get_error_message()}\n";
+        } else {
+            echo "  Added: {$item['title']}" . (isset($item['type']) ? " (type: {$item['type']})" : '') . "\n";
+        }
+    }
+}
+
 // ============================================================
 // EXECUTE PAGE CREATION
 // ============================================================
@@ -455,50 +499,9 @@ foreach ($guide_pages as $slug => $data) {
 // CREATE ADDITIONAL PAGES FOR FOOTER LINKS THAT DON'T MATCH
 // ============================================================
 echo "\n=== FOOTER REDIRECT PAGES ===\n";
-// Create /privacidade/ that redirects to /politica-de-privacidade/
-$privacidade = get_page_by_path('privacidade');
-if (!$privacidade) {
-    wp_insert_post([
-        'post_title'    => 'Privacidade',
-        'post_name'     => 'privacidade',
-        'post_content'  => '<!-- wp:paragraph --><p>Esta página foi movida. <a href="/politica-de-privacidade/">Clique aqui para acessar nossa Política de Privacidade</a>.</p><!-- /wp:paragraph -->',
-        'post_status'   => 'publish',
-        'post_type'     => 'page',
-    ]);
-    echo "  CREATED: privacidade (redirect page)\n";
-} else {
-    echo "  EXISTS: privacidade\n";
-}
-
-// Create /termos/ that redirects to /termos-de-uso/
-$termos = get_page_by_path('termos');
-if (!$termos) {
-    wp_insert_post([
-        'post_title'    => 'Termos',
-        'post_name'     => 'termos',
-        'post_content'  => '<!-- wp:paragraph --><p>Esta página foi movida. <a href="/termos-de-uso/">Clique aqui para acessar nossos Termos de Uso</a>.</p><!-- /wp:paragraph -->',
-        'post_status'   => 'publish',
-        'post_type'     => 'page',
-    ]);
-    echo "  CREATED: termos (redirect page)\n";
-} else {
-    echo "  EXISTS: termos\n";
-}
-
-// Create /sobre/ that redirects to /sobre-nos/
-$sobre = get_page_by_path('sobre');
-if (!$sobre) {
-    wp_insert_post([
-        'post_title'    => 'Sobre',
-        'post_name'     => 'sobre',
-        'post_content'  => '<!-- wp:paragraph --><p>Esta página foi movida. <a href="/sobre-nos/">Clique aqui para acessar Sobre Nós</a>.</p><!-- /wp:paragraph -->',
-        'post_status'   => 'publish',
-        'post_type'     => 'page',
-    ]);
-    echo "  CREATED: sobre (redirect page)\n";
-} else {
-    echo "  EXISTS: sobre\n";
-}
+create_redirect_page_if_missing('privacidade', 'Privacidade', '<!-- wp:paragraph --><p>Esta página foi movida. <a href="/politica-de-privacidade/">Clique aqui para acessar nossa Política de Privacidade</a>.</p><!-- /wp:paragraph -->');
+create_redirect_page_if_missing('termos', 'Termos', '<!-- wp:paragraph --><p>Esta página foi movida. <a href="/termos-de-uso/">Clique aqui para acessar nossos Termos de Uso</a>.</p><!-- /wp:paragraph -->');
+create_redirect_page_if_missing('sobre', 'Sobre', '<!-- wp:paragraph --><p>Esta página foi movida. <a href="/sobre-nos/">Clique aqui para acessar Sobre Nós</a>.</p><!-- /wp:paragraph -->');
 
 // Create /categorias/ page for the "Ver todas" link
 $categorias = get_page_by_path('categorias');
@@ -617,23 +620,7 @@ $primary_items = [
     ['title' => 'Contato', 'type' => 'post_type', 'object' => 'page', 'object_id' => $page_ids['contato'] ?? 0],
 ];
 
-foreach ($primary_items as $item) {
-    $menu_item_data = [
-        'menu-item-title'     => $item['title'],
-        'menu-item-url'       => $item['url'] ?? '',
-        'menu-item-type'      => $item['type'],
-        'menu-item-object'    => $item['object'] ?? 'custom',
-        'menu-item-object-id' => $item['object_id'] ?? 0,
-        'menu-item-status'    => 'publish',
-    ];
-    
-    $result = wp_update_nav_menu_item($primary_menu_id, 0, $menu_item_data);
-    if (is_wp_error($result)) {
-        echo "  ERROR adding item '{$item['title']}': {$result->get_error_message()}\n";
-    } else {
-        echo "  Added: {$item['title']} (type: {$item['type']})\n";
-    }
-}
+add_menu_items($primary_menu_id, $primary_items);
 
 // Assign primary menu to theme location
 $locations = get_theme_mod('nav_menu_locations');
@@ -673,23 +660,12 @@ $footer_items = [
     ['title' => 'Newsletter', 'object' => 'page', 'object_id' => $page_ids['newsletter'] ?? 0],
 ];
 
-foreach ($footer_items as $item) {
-    $menu_item_data = [
-        'menu-item-title' => $item['title'],
-        'menu-item-url' => $item['url'] ?? '',
-        'menu-item-type' => isset($item['object']) ? 'post_type' : 'custom',
-        'menu-item-object' => $item['object'] ?? 'custom',
-        'menu-item-object-id' => $item['object_id'] ?? 0,
-        'menu-item-status' => 'publish',
-    ];
-    
-    $result = wp_update_nav_menu_item($footer_menu_id, 0, $menu_item_data);
-    if (is_wp_error($result)) {
-        echo "  ERROR adding item '{$item['title']}': {$result->get_error_message()}\n";
-    } else {
-        echo "  Added: {$item['title']}\n";
-    }
+foreach ($footer_items as &$item) {
+    $item['type'] = isset($item['object']) ? 'post_type' : 'custom';
 }
+unset($item);
+
+add_menu_items($footer_menu_id, $footer_items);
 
 // Assign footer menu to theme location
 $locations['footer'] = $footer_menu_id;
