@@ -17,7 +17,6 @@ $plugins = array(
 	'conexao-data-model/conexao-data-model.php',
 	'conexao-content/conexao-content.php',
 	'conexao-event-importer/conexao-event-importer.php',
-	'conexao-test-events/conexao-test-events.php',
 	'conexao-admin-ux/conexao-admin-ux.php',
 );
 
