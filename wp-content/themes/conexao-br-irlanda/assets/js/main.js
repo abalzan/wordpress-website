@@ -7,10 +7,40 @@
 
 	// ===== DOM Ready =====
 	document.addEventListener('DOMContentLoaded', function() {
+		initThemeToggle();
 		initMobileMenu();
 		initMobileSearch();
 		initCopyButtons();
 	});
+
+	// ===== Theme Toggle =====
+	function initThemeToggle() {
+		const toggle = document.querySelector('.theme-toggle');
+		if (!toggle) return;
+
+		// Sync the aria-pressed state with the current theme.
+		function syncToggleState() {
+			const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+			toggle.setAttribute('aria-pressed', String(isDark));
+		}
+
+		syncToggleState();
+
+		toggle.addEventListener('click', function() {
+			const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+			const next = current === 'dark' ? 'light' : 'dark';
+
+			document.documentElement.setAttribute('data-theme', next);
+
+			try {
+				localStorage.setItem('conexao-theme', next);
+			} catch (e) {
+				// localStorage unavailable — theme still applies for this session.
+			}
+
+			syncToggleState();
+		});
+	}
 
 	// ===== Mobile Menu Toggle (Full-Screen) =====
 	function initMobileMenu() {

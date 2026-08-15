@@ -188,6 +188,7 @@ function conexao_enqueue_scripts() {
 	wp_enqueue_style( 'conexao-design-system', CONEXAO_THEME_URI . '/assets/css/design-system.css', array(), conexao_asset_version( 'assets/css/design-system.css' ) );
 	wp_enqueue_style( 'conexao-header-nav', CONEXAO_THEME_URI . '/assets/css/header-nav.css', array( 'conexao-design-system' ), conexao_asset_version( 'assets/css/header-nav.css' ) );
 	wp_enqueue_style( 'conexao-main', CONEXAO_THEME_URI . '/assets/css/main.css', array( 'conexao-header-nav' ), conexao_asset_version( 'assets/css/main.css' ) );
+	wp_enqueue_style( 'conexao-dark-mode', CONEXAO_THEME_URI . '/assets/css/dark-mode.css', array( 'conexao-main' ), conexao_asset_version( 'assets/css/dark-mode.css' ) );
 
 	// Load main.js with defer to avoid render-blocking.
 	wp_enqueue_script( 'conexao-main', CONEXAO_THEME_URI . '/assets/js/main.js', array(), conexao_asset_version( 'assets/js/main.js' ), array( 'in_footer' => true, 'strategy' => 'defer' ) );

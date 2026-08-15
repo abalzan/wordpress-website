@@ -10,6 +10,19 @@
 <meta charset="<?php bloginfo( 'charset' ); ?>">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="profile" href="https://gmpg.org/xfn/11">
+<script>
+/* Theme initialization — runs before paint to prevent FOUC. */
+(function() {
+	try {
+		var stored = localStorage.getItem('conexao-theme');
+		var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+		var theme = stored || (prefersDark ? 'dark' : 'light');
+		document.documentElement.setAttribute('data-theme', theme);
+	} catch (e) {
+		document.documentElement.setAttribute('data-theme', 'light');
+	}
+})();
+</script>
 <?php wp_head(); ?>
 </head>
 
@@ -67,6 +80,14 @@
 
 				<!-- Header Actions -->
 				<div class="header-actions">
+					<button type="button" class="theme-toggle" aria-label="<?php esc_attr_e( 'Alternar tema claro/escuro', 'conexao-br-irlanda' ); ?>" aria-pressed="false">
+						<span class="theme-toggle-icon theme-toggle-icon--moon" aria-hidden="true">
+							<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+						</span>
+						<span class="theme-toggle-icon theme-toggle-icon--sun" aria-hidden="true">
+							<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+						</span>
+					</button>
 					<button type="button" class="mobile-search-toggle" aria-label="<?php esc_attr_e( 'Abrir pesquisa', 'conexao-br-irlanda' ); ?>" aria-controls="mobile-search" aria-expanded="false">
 						<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
 					</button>
