@@ -39,6 +39,7 @@ require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-import-dashboard.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-export.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-import.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-transfer-admin.php';
+require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-image-sync-admin.php';
 
 final class Conexao_Event_Importer {
 
@@ -63,6 +64,9 @@ final class Conexao_Event_Importer {
 	/** @var Conexao_Event_Transfer_Admin */
 	public $transfer;
 
+	/** @var Conexao_Event_Image_Sync_Admin */
+	public $image_sync;
+
 	public static function instance() {
 		if ( null === self::$instance ) {
 			self::$instance = new self();
@@ -77,6 +81,7 @@ final class Conexao_Event_Importer {
 		$this->scheduler = new Conexao_Import_Scheduler( $this->importer );
 		$this->dashboard = new Conexao_Import_Dashboard( $this->sources, $this->importer );
 		$this->transfer  = new Conexao_Event_Transfer_Admin();
+		$this->image_sync = new Conexao_Event_Image_Sync_Admin();
 
 		add_action( 'init', array( $this, 'register_meta' ) );
 		add_action( 'init', array( $this, 'register_town_taxonomy' ) );
