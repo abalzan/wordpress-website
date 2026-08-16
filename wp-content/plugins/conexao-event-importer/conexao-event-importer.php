@@ -40,6 +40,8 @@ require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-export.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-import.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-transfer-admin.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-image-sync-admin.php';
+require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-cleanup.php';
+require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-cleanup-admin.php';
 
 final class Conexao_Event_Importer {
 
@@ -67,6 +69,12 @@ final class Conexao_Event_Importer {
 	/** @var Conexao_Event_Image_Sync_Admin */
 	public $image_sync;
 
+	/** @var Conexao_Event_Cleanup */
+	public $cleanup;
+
+	/** @var Conexao_Event_Cleanup_Admin */
+	public $cleanup_admin;
+
 	public static function instance() {
 		if ( null === self::$instance ) {
 			self::$instance = new self();
@@ -82,6 +90,8 @@ final class Conexao_Event_Importer {
 		$this->dashboard = new Conexao_Import_Dashboard( $this->sources, $this->importer );
 		$this->transfer  = new Conexao_Event_Transfer_Admin();
 		$this->image_sync = new Conexao_Event_Image_Sync_Admin();
+		$this->cleanup   = new Conexao_Event_Cleanup();
+		$this->cleanup_admin = new Conexao_Event_Cleanup_Admin( $this->cleanup );
 
 		add_action( 'init', array( $this, 'register_meta' ) );
 		add_action( 'init', array( $this, 'register_town_taxonomy' ) );
@@ -100,6 +110,9 @@ final class Conexao_Event_Importer {
 
 		// Ensure cron is scheduled.
 		add_action( 'admin_init', array( $this->scheduler, 'maybe_schedule' ) );
+
+		// Ensure the cleanup cron is scheduled (idempotent).
+		add_action( 'admin_init', array( $this->cleanup, 'maybe_schedule' ) );
 
 		// Allow webcal:// protocol in URLs.
 		add_filter( 'kses_allowed_protocols', array( $this, 'allow_webcal_protocol' ) );
@@ -249,7 +262,7 @@ final class Conexao_Event_Importer {
 	 */
 	public function admin_assets( $hook ) {
 		$is_event_screen = 'edit.php' === $hook && isset( $_GET['post_type'] ) && 'event' === $_GET['post_type'];
-		if ( false === strpos( $hook, 'conexao-events' ) && false === strpos( $hook, 'conexao-event-import' ) && false === strpos( $hook, 'conexao-event-export' ) && ! $is_event_screen ) {
+		if ( false === strpos( $hook, 'conexao-events' ) && false === strpos( $hook, 'conexao-event-import' ) && false === strpos( $hook, 'conexao-event-export' ) && false === strpos( $hook, 'conexao-event-cleanup' ) && ! $is_event_screen ) {
 			return;
 		}
 		wp_enqueue_style( 'conexao-event-importer-admin', CONEXAO_EVENT_IMPORTER_URL . 'assets/admin.css', array(), CONEXAO_EVENT_IMPORTER_VERSION );
@@ -452,12 +465,21 @@ final class Conexao_Event_Importer {
 		$importer = null;
 		$scheduler = new Conexao_Import_Scheduler( $importer );
 		$scheduler->schedule();
+
+		require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-cleanup.php';
+		$cleanup = new Conexao_Event_Cleanup();
+		$cleanup->schedule();
+
 		flush_rewrite_rules();
 	}
 
 	public static function deactivate() {
 		require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-import-scheduler.php';
 		Conexao_Import_Scheduler::clear_schedule();
+
+		require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-cleanup.php';
+		Conexao_Event_Cleanup::clear_schedule();
+
 		flush_rewrite_rules();
 	}
 }
