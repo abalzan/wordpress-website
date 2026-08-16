@@ -196,3 +196,61 @@
 	background: #a02728 !important;
 	border-color: #a02728 !important;
 }
+
+/* Event Export / Import transfer pages */
+.conexao-event-transfer .conexao-transfer-card {
+	background: #fff;
+	border: 1px solid #ccd0d4;
+	border-radius: 4px;
+	padding: 20px 24px;
+	margin: 20px 0;
+	max-width: 720px;
+}
+
+.conexao-event-transfer .conexao-transfer-card h2 {
+	margin-top: 0;
+	font-size: 16px;
+}
+
+.conexao-event-transfer .conexao-transfer-count {
+	font-size: 15px;
+	margin: 12px 0 16px;
+}
+
+.conexao-event-transfer .conexao-transfer-count strong {
+	font-size: 22px;
+	color: #1d2327;
+}
+
+.conexao-event-transfer .conexao-transfer-list,
+.conexao-event-transfer .conexao-import-stats,
+.conexao-event-transfer .conexao-import-errors {
+	margin: 8px 0 0;
+	padding-left: 20px;
+	list-style: disc;
+}
+
+.conexao-event-transfer .conexao-transfer-list li,
+.conexao-event-transfer .conexao-import-stats li,
+.conexao-event-transfer .conexao-import-errors li {
+	margin-bottom: 4px;
+	font-size: 14px;
+}
+
+.conexao-event-transfer form p {
+	margin: 12px 0;
+}
+
+.conexao-event-transfer form input[type="file"],
+.conexao-event-transfer form select {
+	margin-top: 6px;
+}
+
+.conexao-event-transfer form select {
+	min-width: 260px;
+}
+
+.conexao-event-transfer form .description {
+	display: block;
+	margin-top: 6px;
+}

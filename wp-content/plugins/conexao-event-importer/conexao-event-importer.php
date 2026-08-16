@@ -36,6 +36,9 @@ require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-image-handler.ph
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-importer.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-import-scheduler.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-import-dashboard.php';
+require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-export.php';
+require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-import.php';
+require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-transfer-admin.php';
 
 final class Conexao_Event_Importer {
 
@@ -57,6 +60,9 @@ final class Conexao_Event_Importer {
 	/** @var Conexao_Event_Location */
 	public $location;
 
+	/** @var Conexao_Event_Transfer_Admin */
+	public $transfer;
+
 	public static function instance() {
 		if ( null === self::$instance ) {
 			self::$instance = new self();
@@ -70,6 +76,7 @@ final class Conexao_Event_Importer {
 		$this->importer  = new Conexao_Event_Importer_Engine( $this->sources, $this->location );
 		$this->scheduler = new Conexao_Import_Scheduler( $this->importer );
 		$this->dashboard = new Conexao_Import_Dashboard( $this->sources, $this->importer );
+		$this->transfer  = new Conexao_Event_Transfer_Admin();
 
 		add_action( 'init', array( $this, 'register_meta' ) );
 		add_action( 'init', array( $this, 'register_town_taxonomy' ) );
@@ -237,7 +244,7 @@ final class Conexao_Event_Importer {
 	 */
 	public function admin_assets( $hook ) {
 		$is_event_screen = 'edit.php' === $hook && isset( $_GET['post_type'] ) && 'event' === $_GET['post_type'];
-		if ( false === strpos( $hook, 'conexao-events' ) && false === strpos( $hook, 'conexao-event-import' ) && ! $is_event_screen ) {
+		if ( false === strpos( $hook, 'conexao-events' ) && false === strpos( $hook, 'conexao-event-import' ) && false === strpos( $hook, 'conexao-event-export' ) && ! $is_event_screen ) {
 			return;
 		}
 		wp_enqueue_style( 'conexao-event-importer-admin', CONEXAO_EVENT_IMPORTER_URL . 'assets/admin.css', array(), CONEXAO_EVENT_IMPORTER_VERSION );
