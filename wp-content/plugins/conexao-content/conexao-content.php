@@ -114,8 +114,8 @@ function conexao_grid_shortcode( $atts ) {
             $external_url = get_post_meta( $post_id, '_sponsor_link', true );
         } elseif ( 'job' === $post_type ) {
             $external_url = get_post_meta( $post_id, '_job_url', true );
-        } elseif ( 'course' === $post_type ) {
-            $external_url = get_post_meta( $post_id, '_course_url', true );
+        } elseif ( 'course_provider' === $post_type ) {
+            $external_url = get_post_meta( $post_id, '_provider_url', true );
         }
 
         $link_url  = $external_url ? $external_url : get_permalink();

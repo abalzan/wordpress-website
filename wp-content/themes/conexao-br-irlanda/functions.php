@@ -791,13 +791,6 @@ function conexao_event_archive_query( $query ) {
 add_action( 'pre_get_posts', 'conexao_event_archive_query' );
 
 /**
- * Course archive: show all published courses, ordered by course date descending.
- *
- * Unlike events, courses don't filter by "upcoming" since courses may be
- * self-paced or have flexible start dates. We show all published courses
- * ordered by date (newest first).
- */
-/**
  * Course Provider shortcode.
  *
  * Renders the Cursos directory: a category filter bar plus a grid of
@@ -909,47 +902,6 @@ function conexao_course_providers_shortcode( $atts ) {
 }
 add_shortcode( 'conexao_course_providers', 'conexao_course_providers_shortcode' );
 
-function conexao_course_archive_query( $query ) {
-	if ( is_admin() || ! $query->is_main_query() ) {
-		return;
-	}
-
-	if ( is_post_type_archive( 'course' ) ) {
-		$query->set( 'meta_key', '_course_date' );
-		$query->set( 'orderby', 'meta_value' );
-		$query->set( 'order', 'DESC' );
-
-		$tax_query = $query->get( 'tax_query' );
-		if ( ! is_array( $tax_query ) ) {
-			$tax_query = array();
-		}
-
-		// Town/city filter via ?cidade=slug
-		$town = isset( $_GET['cidade'] ) ? sanitize_title( wp_unslash( $_GET['cidade'] ) ) : '';
-		if ( $town ) {
-			$tax_query[] = array(
-				'taxonomy' => 'conexao_town',
-				'field'    => 'slug',
-				'terms'    => $town,
-			);
-		}
-
-		// Category filter via ?categoria=slug
-		$category = isset( $_GET['categoria'] ) ? sanitize_title( wp_unslash( $_GET['categoria'] ) ) : '';
-		if ( $category ) {
-			$tax_query[] = array(
-				'taxonomy' => 'conexao_category',
-				'field'    => 'slug',
-				'terms'    => $category,
-			);
-		}
-
-		if ( ! empty( $tax_query ) ) {
-			$query->set( 'tax_query', $tax_query );
-		}
-	}
-}
-add_action( 'pre_get_posts', 'conexao_course_archive_query' );
 
 /**
  * Custom image sizes
@@ -1119,37 +1071,6 @@ function conexao_event_link_target_attrs( $event_id ) {
 	return '';
 }
 
-/**
- * Determine whether a course's URL points to an external website.
- *
- * @param int $course_id The course post ID.
- * @return bool True if the course URL is external, false otherwise.
- */
-function conexao_is_external_course_url( $course_id ) {
-	$course_url = get_post_meta( $course_id, '_course_url', true );
-
-	if ( empty( $course_url ) ) {
-		return false;
-	}
-
-	$permalink = get_permalink( $course_id );
-
-	return untrailingslashit( $course_url ) !== untrailingslashit( $permalink );
-}
-
-/**
- * Return the HTML target and rel attributes for external course links.
- *
- * @param int $course_id The course post ID.
- * @return string HTML attributes string (includes leading space when non-empty).
- */
-function conexao_course_link_target_attrs( $course_id ) {
-	if ( conexao_is_external_course_url( $course_id ) ) {
-		return ' target="_blank" rel="noopener noreferrer"';
-	}
-	return '';
-}
-
 function conexao_override_guides_menu_links( $items, $args ) {
 	if ( 'primary' !== $args->theme_location ) {
 		return $items;
@@ -1305,8 +1226,8 @@ function conexao_primary_nav_sections() {
 		'blog'       => array( 'key' => 'blog', 'type' => 'posts_archive', 'object' => 'post', 'url' => home_url( '/blog/' ), 'match' => array( 'blog' ) ),
 		'guias'      => array( 'key' => 'guias', 'type' => 'post_type_archive', 'object' => 'guide', 'url' => $archive_url( 'guide', 'guias' ), 'match' => array( 'guias', 'guides' ) ),
 		'eventos'    => array( 'key' => 'eventos', 'type' => 'post_type_archive', 'object' => 'event', 'url' => $archive_url( 'event', 'eventos' ), 'match' => array( 'eventos', 'events' ) ),
-		// Cursos is now a CPT archive (course CPT), not a static page.
-		'cursos'     => array( 'key' => 'cursos', 'type' => 'post_type_archive', 'object' => 'course', 'url' => $archive_url( 'course', 'cursos' ), 'match' => array( 'cursos', 'courses' ) ),
+		// Cursos is a CPT archive (course_provider CPT), not a static page.
+		'cursos'     => array( 'key' => 'cursos', 'type' => 'post_type_archive', 'object' => 'course_provider', 'url' => $archive_url( 'course_provider', 'cursos' ), 'match' => array( 'cursos', 'courses' ) ),
 		'empregos'   => array( 'key' => 'empregos', 'type' => 'post_type_archive', 'object' => 'job', 'url' => $archive_url( 'job', 'empregos' ), 'match' => array( 'empregos', 'jobs' ) ),
 		'apoiadores' => array( 'key' => 'apoiadores', 'type' => 'post_type_archive', 'object' => 'sponsor', 'url' => $archive_url( 'sponsor', 'apoiadores' ), 'match' => array( 'apoiadores', 'sponsors', 'sponsor' ) ),
 		'irlanda'    => array( 'key' => 'irlanda', 'type' => 'page', 'object' => 'page', 'path' => 'irlanda', 'match' => array( 'irlanda', 'ireland' ) ),
@@ -1504,7 +1425,7 @@ function conexao_normalize_primary_nav_sections( $items, $args ) {
 	// Ensure a "Cursos" item bound to the /cursos/ CPT archive exists (inserted before
 	// "Empregos" if the theme's base filter did not already provide one).
 	if ( ! $has_cursos ) {
-		$cursos_url = get_post_type_archive_link( 'course' );
+		$cursos_url = get_post_type_archive_link( 'course_provider' );
 		if ( ! $cursos_url ) {
 			$cursos_url = home_url( '/cursos/' );
 		}
@@ -1514,13 +1435,13 @@ function conexao_normalize_primary_nav_sections( $items, $args ) {
 			'db_id'            => 0,
 			'menu_item_parent' => 0,
 			'object_id'        => 0,
-			'object'           => 'course',
+			'object'           => 'course_provider',
 			'post_parent'      => 0,
 			'type'             => 'post_type_archive',
 			'type_label'       => 'Cursos',
 			'title'            => 'Cursos',
 			'url'              => $cursos_url,
-			'classes'          => array( 'menu-item', 'menu-item-type-post_type_archive', 'menu-item-object-course' ),
+			'classes'          => array( 'menu-item', 'menu-item-type-post_type_archive', 'menu-item-object-course_provider' ),
 			'attr_title'       => '',
 			'target'           => '',
 			'xfn'              => '',

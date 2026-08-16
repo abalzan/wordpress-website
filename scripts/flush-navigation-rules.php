@@ -163,7 +163,7 @@ echo "\n4. Verifying CPT archive URLs...\n";
 $cpt_checks = array(
     'guide' => 'guias',
     'event' => 'eventos',
-    'course' => 'cursos',
+    'course_provider' => 'cursos',
     'job' => 'empregos',
     'sponsor' => 'apoiadores',
 );

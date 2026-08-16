@@ -2,7 +2,7 @@
 
 <?php
 $is_event_archive  = is_post_type_archive( 'event' );
-$is_course_archive = is_post_type_archive( 'course' );
+$is_course_archive = is_post_type_archive( 'course_provider' );
 ?>
 
 <div class="<?php echo $is_event_archive ? 'site-container events-page' : ( $is_course_archive ? 'site-container site-container--wide courses-page' : 'site-container' ); ?>">
@@ -19,9 +19,9 @@ $is_course_archive = is_post_type_archive( 'course' );
 			<header class="events-page-header">
 				<span class="section-eyebrow"><?php esc_html_e( 'Aprendizagem e Formação', 'conexao-br-irlanda' ); ?></span>
 				<h1 class="events-page-title"><?php esc_html_e( 'Cursos', 'conexao-br-irlanda' ); ?></h1>
-				<p class="events-page-description"><?php esc_html_e( 'Encontre cursos, formações e oportunidades de aprendizagem na comunidade brasileira na Irlanda.', 'conexao-br-irlanda' ); ?></p>
+				<p class="events-page-description"><?php esc_html_e( 'Encontre cursos, formações e oportunidades de aprendizagem na Irlanda.', 'conexao-br-irlanda' ); ?></p>
 			</header>
-			<?php get_template_part( 'template-parts/course', 'filters' ); ?>
+		<?php get_template_part( 'template-parts/event', 'filters' ); ?>
 		<?php else : ?>
 			<header class="archive-header">
 				<h1 class="archive-title"><?php echo esc_html( conexao_archive_title() ); ?></h1>
@@ -37,8 +37,8 @@ $is_course_archive = is_post_type_archive( 'course' );
 				<?php while ( have_posts() ) : the_post(); ?>
 					<?php if ( $is_event_archive ) : ?>
 						<?php get_template_part( 'template-parts/event', 'card' ); ?>
-					<?php elseif ( $is_course_archive ) : ?>
-						<?php get_template_part( 'template-parts/course', 'card' ); ?>
+				<?php elseif ( $is_course_archive ) : ?>
+					<?php get_template_part( 'template-parts/provider', 'card' ); ?>
 					<?php else : ?>
 						<?php
 						// For sponsors, check if there's an external link to make the card clickable.

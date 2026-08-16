@@ -43,18 +43,16 @@ final class Conexao_Data_Model {
 			// English slugs redirect to these for backward compatibility.
 			'guide'           => array( 'plural' => 'Guias Práticos', 'singular' => 'Guia Prático', 'slug' => 'guias', 'icon' => 'dashicons-book-alt' ),
 			'event'           => array( 'plural' => 'Eventos', 'singular' => 'Evento', 'slug' => 'eventos', 'icon' => 'dashicons-calendar-alt' ),
-			'course'          => array( 'plural' => 'Cursos', 'singular' => 'Curso', 'slug' => 'cursos', 'icon' => 'dashicons-welcome-learn-more' ),
 			'job'             => array( 'plural' => 'Empregos', 'singular' => 'Vaga de Emprego', 'slug' => 'empregos', 'icon' => 'dashicons-portfolio' ),
 			'sponsor'         => array( 'plural' => 'Apoiadores', 'singular' => 'Apoiador', 'slug' => 'apoiadores', 'icon' => 'dashicons-heart' ),
-			'course_provider' => array( 'plural' => 'Cursos', 'singular' => 'Provedor de Cursos', 'slug' => 'provedores-de-cursos', 'icon' => 'dashicons-welcome-learn-more' ),
+			'course_provider' => array( 'plural' => 'Cursos', 'singular' => 'Provedor de Cursos', 'slug' => 'cursos', 'icon' => 'dashicons-welcome-learn-more' ),
 		);
 
 		foreach ( $post_types as $post_type => $type ) {
-			$is_provider = ( 'course_provider' === $post_type );
-
-			// course_provider is admin-managed only and does not need a public archive.
-			// All other CPTs (guide, event, course, job, sponsor) have public archives.
-			$has_archive = $is_provider ? false : $type['slug'];
+			// course_provider is a curated directory with a public archive at /cursos/.
+			// Individual course pages are not used; each provider links to an external website.
+			$is_provider      = ( 'course_provider' === $post_type );
+			$has_archive      = $type['slug'];
 
 			register_post_type(
 				$post_type,
@@ -72,10 +70,8 @@ final class Conexao_Data_Model {
 						'all_items'     => 'Todos os ' . $type['plural'],
 						'archives'      => $type['plural'],
 					),
-					// Providers are curated directory entries that link directly to
-					// an external website. They do not need a public single page, so
-					// the post type is admin-managed only.
-					'public'             => ! $is_provider,
+					// All post types are publicly queryable to support their archives.
+					'public'             => true,
 					'show_ui'            => true,
 					'show_in_menu'       => true,
 					'show_in_rest'       => true,
@@ -85,7 +81,7 @@ final class Conexao_Data_Model {
 					'supports'           => $is_provider
 						? array( 'title', 'editor', 'excerpt', 'thumbnail', 'revisions', 'custom-fields' )
 						: array( 'title', 'editor', 'excerpt', 'thumbnail', 'author', 'revisions', 'page-attributes', 'custom-fields' ),
-					'publicly_queryable' => ! $is_provider,
+					'publicly_queryable' => true,
 				)
 			);
 		}
@@ -118,7 +114,7 @@ final class Conexao_Data_Model {
 	}
 
 	public function register_taxonomies() {
-		$content_types = array( 'guide', 'event', 'course', 'job', 'sponsor' );
+		$content_types = array( 'guide', 'event', 'job', 'sponsor', 'course_provider' );
 
 		register_taxonomy(
 			'conexao_category',
@@ -148,7 +144,7 @@ final class Conexao_Data_Model {
 
 		register_taxonomy(
 			'conexao_tag',
-			array( 'guide', 'event', 'course', 'sponsor' ),
+			array( 'guide', 'event', 'job', 'sponsor', 'course_provider' ),
 			array(
 				'labels'            => array( 'name' => 'Tags', 'singular_name' => 'Tag' ),
 				'public'            => true,
