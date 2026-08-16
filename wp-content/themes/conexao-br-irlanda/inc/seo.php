@@ -541,6 +541,9 @@ function conexao_archive_title() {
 	if ( is_post_type_archive( 'sponsor' ) ) {
 		return 'Apoiadores';
 	}
+	if ( is_post_type_archive( 'course_provider' ) ) {
+		return 'Cursos';
+	}
 	if ( is_tax( 'conexao_category' ) || is_tax( 'conexao_county' ) || is_category() || is_tag() ) {
 		$term = get_queried_object();
 		return $term && isset( $term->name ) ? $term->name : '';
