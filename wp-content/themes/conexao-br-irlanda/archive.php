@@ -5,7 +5,7 @@ $is_event_archive  = is_post_type_archive( 'event' );
 $is_course_archive = is_post_type_archive( 'course_provider' );
 ?>
 
-<div class="<?php echo $is_event_archive ? 'site-container events-page' : ( $is_course_archive ? 'site-container site-container--wide courses-page' : 'site-container' ); ?>">
+<div class="<?php echo $is_event_archive ? 'site-container events-page' : ( $is_course_archive ? 'site-container courses-page' : 'site-container' ); ?>">
 	<main id="primary" class="content-area">
 
 		<?php if ( $is_event_archive ) : ?>
