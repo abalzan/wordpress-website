@@ -3,6 +3,7 @@
 <?php
 $is_event_archive  = is_post_type_archive( 'event' );
 $is_course_archive = is_post_type_archive( 'course_provider' );
+$is_guide_archive  = is_post_type_archive( 'guide' );
 ?>
 
 <div class="<?php echo $is_event_archive ? 'site-container events-page' : ( $is_course_archive ? 'site-container courses-page' : 'site-container' ); ?>">
@@ -22,6 +23,15 @@ $is_course_archive = is_post_type_archive( 'course_provider' );
 				<p class="events-page-description"><?php esc_html_e( 'Encontre cursos, formações e oportunidades de aprendizagem na Irlanda.', 'conexao-br-irlanda' ); ?></p>
 			</header>
 		<?php get_template_part( 'template-parts/event', 'filters' ); ?>
+		<?php elseif ( $is_guide_archive ) : ?>
+			<header class="archive-header">
+				<h1 class="archive-title"><?php echo esc_html( conexao_archive_title() ); ?></h1>
+				<?php $archive_desc = conexao_archive_description(); ?>
+				<?php if ( $archive_desc ) : ?>
+					<p class="archive-description"><?php echo esc_html( $archive_desc ); ?></p>
+				<?php endif; ?>
+			</header>
+			<?php get_template_part( 'template-parts/event', 'filters' ); ?>
 		<?php else : ?>
 			<header class="archive-header">
 				<h1 class="archive-title"><?php echo esc_html( conexao_archive_title() ); ?></h1>

@@ -99,6 +99,130 @@ function conexao_get_guides_archive_url() {
 }
 
 /**
+ * Get taxonomy terms that are actually used by a specific post type.
+ *
+ * WordPress' get_terms() counts posts across every post type that shares a
+ * taxonomy. On a site where conexao_category is shared by guides, events,
+ * jobs, sponsors and course providers, that means a category used only by
+ * guides would appear in the events filter bar.
+ *
+ * This helper restricts the result to terms that have at least one published
+ * post of the given post type, so each archive only shows filters that are
+ * relevant to its own content.
+ *
+ * The underlying get_posts() call respects pre_get_posts hooks, so editorial
+ * status filters (e.g. the event-importer's _event_status = published filter)
+ * are applied automatically — terms only appear when they have visible content.
+ *
+ * Results are cached in the object cache for 5 minutes.
+ *
+ * @param string $taxonomy  Taxonomy slug (e.g. conexao_category).
+ * @param string $post_type Post type slug (e.g. event, guide).
+ * @return WP_Term[] Array of term objects, empty when none match.
+ */
+function conexao_get_terms_for_post_type( $taxonomy, $post_type, $extra_args = array() ) {
+	$cache_key = 'conexao_terms_' . $taxonomy . '_' . $post_type;
+	$cache_key .= empty( $extra_args ) ? '' : '_' . md5( wp_json_encode( $extra_args ) );
+	$cached    = wp_cache_get( $cache_key, 'conexao_filters' );
+
+	if ( false !== $cached ) {
+		return $cached;
+	}
+
+	$post_ids = get_posts( array_merge( array(
+		'post_type'              => $post_type,
+		'post_status'            => 'publish',
+		'posts_per_page'         => -1,
+		'fields'                 => 'ids',
+		'no_found_rows'          => true,
+		'update_post_meta_cache' => false,
+		'update_post_term_cache' => false,
+	), $extra_args ) );
+
+	if ( empty( $post_ids ) ) {
+		wp_cache_set( $cache_key, array(), 'conexao_filters', 300 );
+		return array();
+	}
+
+	$terms = wp_get_object_terms( $post_ids, $taxonomy, array(
+		'orderby' => 'name',
+		'order'   => 'ASC',
+	) );
+
+	if ( is_wp_error( $terms ) ) {
+		$terms = array();
+	}
+
+	wp_cache_set( $cache_key, $terms, 'conexao_filters', 300 );
+	return $terms;
+}
+
+/**
+ * Get the distinct provider categories that have at least one published
+ * course provider.
+ *
+ * Course providers categorize via the _provider_category post meta (a string
+ * label such as "Educação"), not via a taxonomy. This helper dynamically
+ * discovers which categories are actually in use so the Cursos filter bar
+ * never shows empty or irrelevant categories.
+ *
+ * Results are cached in the object cache for 5 minutes.
+ *
+ * @return array Array of associative arrays with 'name' and 'slug' keys.
+ */
+function conexao_get_provider_categories() {
+	$cache_key = 'conexao_provider_categories';
+	$cached    = wp_cache_get( $cache_key, 'conexao_filters' );
+
+	if ( false !== $cached ) {
+		return $cached;
+	}
+
+	$providers = get_posts( array(
+		'post_type'              => 'course_provider',
+		'post_status'            => 'publish',
+		'posts_per_page'         => -1,
+		'meta_query'             => array(
+			array(
+				'key'     => '_provider_status',
+				'value'   => 'published',
+				'compare' => '=',
+			),
+		),
+		'no_found_rows'          => true,
+		'update_post_meta_cache' => true,
+		'update_post_term_cache' => false,
+	) );
+
+	if ( empty( $providers ) ) {
+		wp_cache_set( $cache_key, array(), 'conexao_filters', 300 );
+		return array();
+	}
+
+	$seen   = array();
+	$result = array();
+
+	foreach ( $providers as $provider ) {
+		$category = get_post_meta( $provider->ID, '_provider_category', true );
+
+		if ( $category && ! isset( $seen[ $category ] ) ) {
+			$seen[ $category ] = true;
+			$result[] = array(
+				'name' => $category,
+				'slug' => sanitize_title( $category ),
+			);
+		}
+	}
+
+	usort( $result, function( $a, $b ) {
+		return strcasecmp( $a['name'], $b['name'] );
+	} );
+
+	wp_cache_set( $cache_key, $result, 'conexao_filters', 300 );
+	return $result;
+}
+
+/**
  * Theme setup
  */
 function conexao_theme_setup() {
@@ -347,7 +471,7 @@ function conexao_homepage_query( $args, $cache_key, $expiration = 300 ) {
  */
 function conexao_homepage_cache_invalidate( $post_id ) {
 	$post_type = get_post_type( $post_id );
-	$cpt_types = array( 'guide', 'event', 'job', 'sponsor', 'post' );
+	$cpt_types = array( 'guide', 'event', 'job', 'sponsor', 'course_provider', 'post' );
 	if ( in_array( $post_type, $cpt_types, true ) ) {
 		// Homepage sections.
 		delete_transient( 'conexao_home_news' );
@@ -364,6 +488,12 @@ function conexao_homepage_cache_invalidate( $post_id ) {
 
 		// Reading-time object-cache entry for this post.
 		wp_cache_delete( 'conexao_reading_time_' . $post_id, 'conexao' );
+
+		// Filter bar caches (per-content-type term/category lists).
+		wp_cache_delete( 'conexao_terms_conexao_category_event', 'conexao_filters' );
+		wp_cache_delete( 'conexao_terms_conexao_town_event', 'conexao_filters' );
+		wp_cache_delete( 'conexao_terms_conexao_category_guide', 'conexao_filters' );
+		wp_cache_delete( 'conexao_provider_categories', 'conexao_filters' );
 	}
 }
 add_action( 'save_post', 'conexao_homepage_cache_invalidate' );
@@ -743,14 +873,31 @@ function conexao_darken_color( $hex, $percent ) {
 }
 
 /**
- * Event archive: only show upcoming events, ordered by event date ascending.
+ * Content-type archive query filtering.
+ *
+ * Each archive (Eventos, Cursos, Guias) applies its own filtering and ordering
+ * to the main query:
+ *
+ *  - Eventos: only upcoming events (date >= today), ordered by date ascending,
+ *    with optional ?cidade= (town) and ?categoria= (category) taxonomy filters.
+ *  - Cursos: only published providers (_provider_status = published), ordered
+ *    by display order, with optional ?categoria= (provider category meta) filter.
+ *  - Guias: optional ?categoria= (conexao_category taxonomy) filter.
+ *
+ * The ?categoria= parameter is content-type-aware: on /eventos/ it filters by
+ * the conexao_category taxonomy, on /cursos/ by the _provider_category meta,
+ * and on /guias/ by the conexao_category taxonomy again. A filter from one
+ * content type never produces results in another's archive.
  */
-function conexao_event_archive_query( $query ) {
+function conexao_content_archive_query( $query ) {
 	if ( is_admin() || ! $query->is_main_query() ) {
 		return;
 	}
 
-	if ( is_post_type_archive( 'event' ) ) {
+	/*
+	 * Eventos: upcoming events ordered by date, with town/category filters.
+	 */
+	if ( $query->is_post_type_archive( 'event' ) ) {
 		$query->set( 'meta_key', '_event_date' );
 		$query->set( 'meta_value', current_time( 'Y-m-d' ) );
 		$query->set( 'meta_compare', '>=' );
@@ -787,8 +934,89 @@ function conexao_event_archive_query( $query ) {
 			$query->set( 'tax_query', $tax_query );
 		}
 	}
+
+	/*
+	 * Cursos: published providers, ordered by display order, with an
+	 * optional ?categoria= filter that maps to the _provider_category meta.
+	 */
+	if ( $query->is_post_type_archive( 'course_provider' ) ) {
+		$meta_query = $query->get( 'meta_query' );
+		if ( ! is_array( $meta_query ) ) {
+			$meta_query = array();
+		}
+
+		// Only show published providers on the public archive.
+		$meta_query[] = array(
+			'key'     => '_provider_status',
+			'value'   => 'published',
+			'compare' => '=',
+		);
+
+		// Category filter via ?categoria=<slug>.
+		// Provider categories are stored as meta values (human-readable labels),
+		// so the slug is resolved back to the label before querying.
+		$category_slug = isset( $_GET['categoria'] ) ? sanitize_title( wp_unslash( $_GET['categoria'] ) ) : '';
+		if ( $category_slug ) {
+			$provider_categories = conexao_get_provider_categories();
+			$matched_name        = '';
+
+			foreach ( $provider_categories as $cat ) {
+				if ( $cat['slug'] === $category_slug ) {
+					$matched_name = $cat['name'];
+					break;
+				}
+			}
+
+			if ( $matched_name ) {
+				$meta_query[] = array(
+					'key'     => '_provider_category',
+					'value'   => $matched_name,
+					'compare' => '=',
+				);
+			} else {
+				// No matching category — force no results so an irrelevant
+				// filter never produces misleading content.
+				$meta_query[] = array(
+					'key'     => '_provider_category',
+					'value'   => '__conexao_no_such_category__',
+					'compare' => '=',
+				);
+			}
+		}
+
+		$query->set( 'meta_query', $meta_query );
+
+		// Order by display order, then title.
+		$query->set( 'meta_key', '_provider_order' );
+		$query->set( 'orderby', 'meta_value_num title' );
+		$query->set( 'order', 'ASC' );
+	}
+
+	/*
+	 * Guias: optional ?categoria= filter via the conexao_category taxonomy.
+	 */
+	if ( $query->is_post_type_archive( 'guide' ) ) {
+		$tax_query = $query->get( 'tax_query' );
+		if ( ! is_array( $tax_query ) ) {
+			$tax_query = array();
+		}
+
+		// Category filter via ?categoria=slug
+		$category = isset( $_GET['categoria'] ) ? sanitize_title( wp_unslash( $_GET['categoria'] ) ) : '';
+		if ( $category ) {
+			$tax_query[] = array(
+				'taxonomy' => 'conexao_category',
+				'field'    => 'slug',
+				'terms'    => $category,
+			);
+		}
+
+		if ( ! empty( $tax_query ) ) {
+			$query->set( 'tax_query', $tax_query );
+		}
+	}
 }
-add_action( 'pre_get_posts', 'conexao_event_archive_query' );
+add_action( 'pre_get_posts', 'conexao_content_archive_query' );
 
 /**
  * Course Provider shortcode.
