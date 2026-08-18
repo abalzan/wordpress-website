@@ -11,6 +11,14 @@ get_header();
 $hero_title    = get_theme_mod( 'conexao_hero_title', __( 'Tudo que o brasileiro precisa para viver melhor na <span>Irlanda</span>', 'conexao-br-irlanda' ) );
 $hero_subtitle = get_theme_mod( 'conexao_hero_subtitle', __( 'Conectando a comunidade brasileira com informações, eventos, guias práticos e muito mais.', 'conexao-br-irlanda' ) );
 $hero_image_id = conexao_hero_image_attachment_id();
+
+// Prefer the Media Library alternative text when the admin has set one,
+// and fall back to the site name so the hero photo always carries a
+// meaningful, accessible description.
+$hero_image_alt = $hero_image_id ? get_post_meta( $hero_image_id, '_wp_attachment_image_alt', true ) : '';
+if ( '' === $hero_image_alt ) {
+	$hero_image_alt = get_bloginfo( 'name' );
+}
 ?>
 
 <main id="primary" class="site-main">
@@ -56,7 +64,7 @@ $hero_image_id = conexao_hero_image_attachment_id();
 							'class'         => 'hero-image-img',
 							'loading'       => 'eager',
 							'fetchpriority' => 'high',
-							'alt'           => get_bloginfo( 'name' ),
+							'alt'           => $hero_image_alt,
 						)
 					);
 					?>
@@ -78,7 +86,9 @@ $hero_image_id = conexao_hero_image_attachment_id();
 					</div>
 				<?php endif; ?>
 
-				<?php get_template_part( 'template-parts/hero', 'events' ); ?>
+				<?php if ( ! $hero_image_id ) : ?>
+					<?php get_template_part( 'template-parts/hero', 'events' ); ?>
+				<?php endif; ?>
 			</div>
 		</div>
 	</div>

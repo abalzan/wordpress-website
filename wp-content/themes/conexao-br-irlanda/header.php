@@ -51,18 +51,13 @@
 
 				<!-- Logo -->
 				<div class="logo">
-					<?php if ( has_custom_logo() ) : ?>
-						<?php the_custom_logo(); ?>
-					<?php else : ?>
-						<a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home" class="site-logo-link">
-							<svg viewBox="0 0 50 50" width="48" height="48" fill="none" xmlns="http://www.w3.org/2000/svg">
-								<circle cx="25" cy="25" r="24" fill="#0E6B3A"/>
-								<circle cx="25" cy="25" r="20" fill="none" stroke="#F68B1F" stroke-width="2"/>
-								<text x="25" y="32" text-anchor="middle" fill="#fff" font-size="16" font-weight="bold" font-family="Poppins, sans-serif">CB</text>
-							</svg>
-							<span class="site-name"><?php bloginfo( 'name' ); ?></span>
-						</a>
-					<?php endif; ?>
+					<a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home" class="site-logo-link">
+						<img
+							src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/conexao-logo.jpeg' ); ?>"
+							alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>"
+							class="site-logo-img"
+						>
+					</a>
 				</div>
 
 				<!-- Primary Navigation -->
