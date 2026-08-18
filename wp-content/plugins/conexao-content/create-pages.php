@@ -43,7 +43,7 @@ $main_pages = [
     ],
     'blog' => [
         'title' => 'Blog',
-        'content' => '<!-- wp:paragraph --><p>Artigos e notícias para a comunidade brasileira na Irlanda.</p><!-- /wp:paragraph -->',
+        'content' => '',
         'meta_desc' => 'Blog do Conexão BR Irlanda - Artigos, notícias e informações para brasileiros na Irlanda.',
     ],
     'sobre-nos' => [
@@ -250,38 +250,6 @@ function create_page_if_not_exists($slug, $title, $content, $meta_desc = '') {
     return $page_id;
 }
 
-function create_guide_if_not_exists($slug, $title, $content, $meta_desc = '') {
-    $existing = get_page_by_path($slug, OBJECT, 'guide');
-    if ($existing) {
-        echo "  EXISTS: guide/{$slug} (ID: {$existing->ID})\n";
-        return $existing->ID;
-    }
-    
-    // Check if a page with this slug exists
-    $existing_page = get_page_by_path($slug);
-    if ($existing_page) {
-        echo "  EXISTS as page: {$slug} (ID: {$existing_page->ID})\n";
-        return $existing_page->ID;
-    }
-    
-    $guide_id = wp_insert_post([
-        'post_title'    => $title,
-        'post_name'     => $slug,
-        'post_content'  => $content,
-        'post_status'   => 'publish',
-        'post_type'     => 'guide',
-        'meta_input'    => $meta_desc ? ['conexao_meta_description' => $meta_desc] : [],
-    ]);
-    
-    if (is_wp_error($guide_id)) {
-        echo "  ERROR: guide/{$slug} - {$guide_id->get_error_message()}\n";
-        return false;
-    }
-    
-    echo "  CREATED: guide/{$slug} (ID: {$guide_id})\n";
-    return $guide_id;
-}
-
 function create_redirect_page_if_missing($slug, $title, $content) {
     $existing = get_page_by_path($slug);
     if ($existing) {
@@ -358,11 +326,6 @@ foreach ($counties as $slug => $name) {
     $content = sprintf($county_content_template, $name, $name, $name, $name, $name, $name, $name, $name);
     $meta_desc = "Guia completo sobre o condado de {$name} na Irlanda. Eventos, empresas, guias e empregos para brasileiros.";
     create_page_if_not_exists($slug, "Condado de {$name}", $content, $meta_desc);
-}
-
-echo "\n=== GUIDE PLACEHOLDER PAGES (as 'guide' post type) ===\n";
-foreach ($guide_pages as $slug => $data) {
-    create_guide_if_not_exists($slug, $data['title'], $data['content'], $data['meta_desc']);
 }
 
 // ============================================================
