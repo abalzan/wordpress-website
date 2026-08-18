@@ -123,6 +123,34 @@
 	border: 1px solid #f0c0c0;
 }
 
+/* ============================================================
+ * Import Logs screen
+ * ============================================================ */
+.conexao-import-logs .conexao-import-log-actions {
+	margin: 16px 0;
+	display: flex;
+	gap: 8px;
+	align-items: center;
+}
+
+.conexao-import-logs .conexao-log-preview {
+	margin: 12px 0;
+}
+
+.conexao-import-logs .conexao-log-preview pre {
+	background: #f6f7f7;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	padding: 12px 14px;
+	font-size: 12px;
+	line-height: 1.6;
+	white-space: pre-wrap;
+	word-break: break-all;
+	max-height: 480px;
+	overflow-y: auto;
+	color: #1d2327;
+}
+
 .conexao-status-badge--expired {
 	background: #f1f1f1;
 	color: #646970;

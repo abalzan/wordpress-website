@@ -17,8 +17,18 @@ class Conexao_Import_Log {
 
 	const OPTION_KEY = 'conexao_event_import_log';
 
-	/** @var int Maximum number of log entries retained. */
-	const MAX_ENTRIES = 500;
+	/**
+	 * Maximum number of log entries retained.
+	 *
+	 * High enough to hold several full import runs even when each event is
+	 * logged individually (created/updated/skipped/failed), while still
+	 * bounding growth so the option row never becomes unbounded. Older
+	 * entries are dropped automatically once the cap is reached; the most
+	 * recent entries are always kept.
+	 *
+	 * @var int
+	 */
+	const MAX_ENTRIES = 2000;
 
 	/**
 	 * Add a log entry.
@@ -148,6 +158,214 @@ class Conexao_Import_Log {
 	 */
 	public static function clear() {
 		update_option( self::OPTION_KEY, array(), false );
+	}
+
+	/**
+	 * List distinct import run IDs present in the log (newest first).
+	 *
+	 * Used by the admin "Import Logs" screen so an administrator can see and
+	 * download a specific import run rather than only the whole log.
+	 *
+	 * @param int $limit Max number of runs to return.
+	 * @return array Run IDs, newest first.
+	 */
+	public static function get_run_ids( $limit = 50 ) {
+		$run_ids = array();
+		foreach ( self::get_all() as $entry ) {
+			$run_id = isset( $entry['run_id'] ) ? trim( (string) $entry['run_id'] ) : '';
+			if ( '' === $run_id ) {
+				continue;
+			}
+			if ( ! in_array( $run_id, $run_ids, true ) ) {
+				$run_ids[] = $run_id;
+			}
+			if ( count( $run_ids ) >= $limit ) {
+				break;
+			}
+		}
+		return $run_ids;
+	}
+
+	/**
+	 * Obtain an ordered human-readable representation of a log entry.
+	 *
+	 * Single-line, newline-free format so each log entry maps to exactly one
+	 * line in the downloaded .log/.txt file.
+	 *
+	 * Example:
+	 *   2026-08-18 14:32:01 | INFO    | Import started
+	 *   2026-08-18 14:32:03 | CREATED | Event: Example Event | Eventbrite ID: 123456
+	 *
+	 * Level is left-padded to 7 characters for aligned columns. The operation
+	 * column doubles as the outcome for created/updated/skipped/failed entries.
+	 *
+	 * @param array $entry Structured log entry.
+	 * @return string One-line log string.
+	 */
+	public static function format_entry_line( $entry ) {
+		if ( ! is_array( $entry ) ) {
+			return '';
+		}
+
+		$time      = isset( $entry['time'] ) ? (string) $entry['time'] : '';
+		$source    = isset( $entry['source'] ) ? (string) $entry['source'] : '';
+		$level     = strtoupper( self::normalize_level( isset( $entry['level'] ) ? $entry['level'] : 'info' ) );
+		$message   = isset( $entry['message'] ) ? (string) $entry['message'] : '';
+		$event_id  = isset( $entry['event_id'] ) ? (string) $entry['event_id'] : '';
+		$event_ttl = isset( $entry['event_title'] ) ? (string) $entry['event_title'] : '';
+		$http      = isset( $entry['http_status'] ) ? (int) $entry['http_status'] : 0;
+
+		// Strip newlines/tabs so a single entry stays on one line.
+		$strip = function ( $value ) {
+			return str_replace( array( "\r", "\n", "\t" ), ' ', (string) $value );
+		};
+
+		$level_padded = str_pad( $level, 7 );
+
+		// Start with timestamp + level (align with the example format).
+		$line = $time . ' | ' . $level_padded . ' | ';
+
+		// Include source when present (not strictly one of the example columns,
+		// but essential to know which feed/API produced the line).
+		if ( '' !== $source && 'image_handler' !== $source ) {
+			$line .= 'Source: ' . $strip( $source ) . ' | ';
+		}
+
+		// Event title + Eventbrite (source) ID.
+		if ( '' !== $event_ttl ) {
+			$line .= 'Event: ' . $strip( $event_ttl );
+			if ( '' !== $event_id ) {
+				$line .= ' | Eventbrite ID: ' . $strip( $event_id );
+			}
+		} elseif ( '' !== $event_id ) {
+			$line .= 'Eventbrite ID: ' . $strip( $event_id );
+		}
+
+		if ( '' !== $event_ttl || '' !== $event_id ) {
+			$line .= ' | ';
+		}
+
+		$line .= $strip( $message );
+
+		// Append HTTP status where available.
+		if ( $http > 0 ) {
+			$line .= ' | HTTP ' . (int) $http;
+		}
+
+		// Append a small amount of safe context (URL, attempt, post_id).
+		$context = isset( $entry['context'] ) && is_array( $entry['context'] ) ? $entry['context'] : array();
+		$context_labels = array(
+			'url'        => 'URL',
+			'attempt'    => 'Attempt',
+			'post_id'    => 'Post ID',
+			'source_url' => 'Source URL',
+		);
+		foreach ( $context_labels as $ctx_key => $ctx_label ) {
+			if ( isset( $context[ $ctx_key ] ) && '' !== (string) $context[ $ctx_key ] ) {
+				$line .= ' | ' . $ctx_label . ': ' . $strip( $context[ $ctx_key ] );
+			}
+		}
+
+		return $line;
+	}
+
+	/**
+	 * Format a collection of log entries as a plain-text block.
+	 *
+	 * Newest first -> oldest last, matching the on-screen ordering.
+	 *
+	 * @param array $entries Log entries.
+	 * @return string Plain-text log content.
+	 */
+	public static function format_entries( $entries ) {
+		if ( ! is_array( $entries ) || empty( $entries ) ) {
+			return '';
+		}
+
+		$lines = array();
+		foreach ( $entries as $entry ) {
+			$line = self::format_entry_line( $entry );
+			if ( '' !== $line ) {
+				$lines[] = $line;
+			}
+		}
+
+		return implode( "\n", $lines ) . "\n";
+	}
+
+	/**
+	 * Build a plain-text .log document for the whole log.
+	 *
+	 * @return string
+	 */
+	public static function export_all() {
+		$lines   = array();
+		$lines[] = '# Event Importer Log';
+		$lines[] = '# Generated: ' . current_time( 'mysql' );
+		$lines[] = '';
+		$entries = self::get_all();
+		if ( empty( $entries ) ) {
+			$lines[] = '(No log entries yet.)';
+			return implode( "\n", $lines ) . "\n";
+		}
+		$lines[] = self::format_entries( $entries );
+		return implode( "\n", $lines );
+	}
+
+	/**
+	 * Build a plain-text .log document for a single import run.
+	 *
+	 * @param string $run_id Import run ID.
+	 * @return string
+	 */
+	public static function export_run( $run_id ) {
+		$run_id  = sanitize_key( (string) $run_id );
+		$entries = self::get_for_run( $run_id, 1000 );
+
+		$lines   = array();
+		$lines[] = '# Event Importer Log — Import run ' . $run_id;
+		$lines[] = '# Generated: ' . current_time( 'mysql' );
+		$lines[] = '';
+
+		if ( empty( $entries ) ) {
+			$lines[] = '(No log entries for this run.)';
+			return implode( "\n", $lines ) . "\n";
+		}
+
+		$lines[] = self::format_entries( $entries );
+		return implode( "\n", $lines );
+	}
+
+	/**
+	 * Purge log entries older than a given age limit, regardless of cap.
+	 *
+	 * Retention is a defence-in-depth complement to MAX_ENTRIES: keep a rolling
+	 * window of recent activity while guaranteeing old history does not grow
+	 * forever. The maximum age of 90 days keeps enough history to diagnose an
+	 * import that failed weeks earlier without unbounded growth.
+	 *
+	 * @return int Number of entries removed.
+	 */
+	public static function prune_older_than_90_days() {
+		$log      = self::get_all();
+		$cutoff   = time() - 90 * DAY_IN_SECONDS;
+		$filtered = array();
+		$removed  = 0;
+
+		foreach ( $log as $entry ) {
+			$time = isset( $entry['time'] ) ? strtotime( (string) $entry['time'] ) : 0;
+			if ( $time > 0 && $time < $cutoff ) {
+				$removed++;
+				continue;
+			}
+			$filtered[] = $entry;
+		}
+
+		if ( $removed > 0 ) {
+			update_option( self::OPTION_KEY, $filtered, false );
+		}
+
+		return $removed;
 	}
 
 	/**

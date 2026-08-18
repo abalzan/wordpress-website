@@ -232,6 +232,18 @@ class Conexao_Event_Importer_Engine {
 
 		$result = new Conexao_Import_Result( $source_id, $source['name'] );
 
+		// Log the start of the run for lifecycle tracking.
+		Conexao_Import_Log::add(
+			$source_id,
+			'info',
+			sprintf(
+				/* translators: %s: source name */
+				__( 'Import started for %s.', 'conexao-event-importer' ),
+				$source['name']
+			),
+			array( 'run_id' => $this->current_run_id )
+		);
+
 		$handler = $this->get_source_handler( $source );
 		if ( ! $handler ) {
 			$message = __( 'No import handler is registered for this event source.', 'conexao-event-importer' );
@@ -358,9 +370,39 @@ class Conexao_Event_Importer_Engine {
 				switch ( $upsert['action'] ) {
 					case 'created':
 						$result->add_created( $normalized['title'], $upsert['post_id'] );
+						Conexao_Import_Log::add(
+							$source_id,
+							'info',
+							sprintf(
+								/* translators: %s: event title */
+								__( 'Event created: %s', 'conexao-event-importer' ),
+								$normalized['title']
+							),
+							array(
+								'run_id'      => $this->current_run_id,
+								'event_id'    => $event_id,
+								'event_title' => $normalized['title'],
+								'post_id'     => isset( $upsert['post_id'] ) ? (int) $upsert['post_id'] : 0,
+							)
+						);
 						break;
 					case 'updated':
 						$result->add_updated( $normalized['title'], $upsert['post_id'] );
+						Conexao_Import_Log::add(
+							$source_id,
+							'info',
+							sprintf(
+								/* translators: %s: event title */
+								__( 'Event updated: %s', 'conexao-event-importer' ),
+								$normalized['title']
+							),
+							array(
+								'run_id'      => $this->current_run_id,
+								'event_id'    => $event_id,
+								'event_title' => $normalized['title'],
+								'post_id'     => isset( $upsert['post_id'] ) ? (int) $upsert['post_id'] : 0,
+							)
+						);
 						break;
 					case 'unchanged':
 						$result->add_unchanged( $normalized['title'], $upsert['post_id'] );
@@ -370,6 +412,21 @@ class Conexao_Event_Importer_Engine {
 						break;
 					case 'skipped':
 						$result->add_skipped( $normalized['title'], isset( $upsert['reason'] ) ? $upsert['reason'] : '' );
+						Conexao_Import_Log::add(
+							$source_id,
+							'warning',
+							sprintf(
+								/* translators: 1: event title, 2: skip reason */
+								__( 'Event skipped: %1$s. %2$s', 'conexao-event-importer' ),
+								$normalized['title'],
+								isset( $upsert['reason'] ) ? $upsert['reason'] : ''
+							),
+							array(
+								'run_id'      => $this->current_run_id,
+								'event_id'    => $event_id,
+								'event_title' => $normalized['title'],
+							)
+						);
 						break;
 					case 'error':
 					default:

@@ -17,6 +17,7 @@ define( 'CONEXAO_EVENT_IMPORTER_URL', plugin_dir_url( __FILE__ ) );
 
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-status.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-import-log.php';
+require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-import-log-admin.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-import-history.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-import-result.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-location.php';
@@ -76,6 +77,9 @@ final class Conexao_Event_Importer {
 	/** @var Conexao_Event_Cleanup_Admin */
 	public $cleanup_admin;
 
+	/** @var Conexao_Import_Log_Admin */
+	public $log_admin;
+
 	public static function instance() {
 		if ( null === self::$instance ) {
 			self::$instance = new self();
@@ -93,6 +97,9 @@ final class Conexao_Event_Importer {
 		$this->image_sync = new Conexao_Event_Image_Sync_Admin();
 		$this->cleanup   = new Conexao_Event_Cleanup();
 		$this->cleanup_admin = new Conexao_Event_Cleanup_Admin( $this->cleanup );
+
+		// Import Logs admin screen + secure download / clear actions.
+		$this->log_admin = new Conexao_Import_Log_Admin();
 
 		add_action( 'init', array( $this, 'register_meta' ) );
 		add_action( 'init', array( $this, 'register_town_taxonomy' ) );
@@ -263,7 +270,7 @@ final class Conexao_Event_Importer {
 	 */
 	public function admin_assets( $hook ) {
 		$is_event_screen = 'edit.php' === $hook && isset( $_GET['post_type'] ) && 'event' === $_GET['post_type'];
-		$is_import_screen = false !== strpos( $hook, 'conexao-events' ) || false !== strpos( $hook, 'conexao-event-import' ) || false !== strpos( $hook, 'conexao-event-export' ) || false !== strpos( $hook, 'conexao-event-cleanup' );
+		$is_import_screen = false !== strpos( $hook, 'conexao-events' ) || false !== strpos( $hook, 'conexao-event-import' ) || false !== strpos( $hook, 'conexao-event-export' ) || false !== strpos( $hook, 'conexao-event-cleanup' ) || false !== strpos( $hook, 'conexao-import-log' );
 		if ( ! $is_import_screen && ! $is_event_screen ) {
 			return;
 		}

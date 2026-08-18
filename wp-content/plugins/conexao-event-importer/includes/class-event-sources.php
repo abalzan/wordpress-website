@@ -653,6 +653,12 @@ class Conexao_Event_Sources {
 					<?php esc_html_e( 'The remaining events continued importing normally.', 'conexao-event-importer' ); ?>
 				</p>
 			<?php endif; ?>
+
+			<p style="margin-top:10px;">
+				<a class="button button-secondary" href="<?php echo esc_url( admin_url( 'admin.php?page=conexao-import-log' ) ); ?>">
+					<?php esc_html_e( 'View / Download Import Logs', 'conexao-event-importer' ); ?>
+				</a>
+			</p>
 		</div>
 		<?php
 	}
@@ -1100,6 +1106,19 @@ class Conexao_Event_Sources {
 		?>
 		<div class="wrap">
 			<h1><?php esc_html_e( 'Import History', 'conexao-event-importer' ); ?></h1>
+			<p class="description">
+				<?php
+				$logs_url = admin_url( 'admin.php?page=conexao-import-log' );
+				printf(
+					/* translators: %s: URL to the Import Logs page */
+					wp_kses(
+						__( 'For detailed import logs (including failures and API errors), see the <a href="%s">Import Logs</a> page.', 'conexao-event-importer' ),
+						array( 'a' => array( 'href' => array() ) )
+					),
+					esc_url( $logs_url )
+				);
+				?>
+			</p>
 			<?php if ( empty( $history ) ) : ?>
 				<p><?php esc_html_e( 'No imports yet.', 'conexao-event-importer' ); ?></p>
 			<?php else : ?>
