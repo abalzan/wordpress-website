@@ -99,6 +99,90 @@ function conexao_get_guides_archive_url() {
 }
 
 /**
+ * Resolve the canonical Guide category URL for a Quick Access card.
+ *
+ * The homepage Quick Access cards should funnel straight into the existing
+ * /guias/ archive filter (the same tax_query used by the filter bar), rather
+ * than linking to static placeholder pages. The ?categoria= parameter must use
+ * the real conexao_category term slug — which is NOT always the same as the
+ * visible card label (e.g. card "Moradia" -> term name "Moradia e Aluguel"
+ * with slug "moradia"; card "Finanças" -> term name "Consumidor e Finanças"
+ * with slug "financas").
+ *
+ * Resolution order (first match wins):
+ *  1. If $identifier is an existing conexao_category term slug, use it as-is.
+ *  2. If $identifier matches an existing term by name (case-insensitive),
+ *     use that term's slug.
+ *  3. Fall back to a manual label -> slug mapping ($fallback_slug) so the
+ *     card still works even before terms are seeded. The manual slug is only
+ *     used when the term is not resolvable via taxonomy, and is itself
+ *     validated: if it doesn't exist we fall through to the plain archive.
+ *
+ * @param string $identifier   Card identifier (label or slug).
+ * @param string $fallback_slug Optional known term slug to try when the term
+ *                              cannot be resolved from taxonomy data.
+ * @return string Fully-qualified URL, or the plain /guias/ archive when no
+ *                matching category exists.
+ */
+function conexao_get_guide_category_url( $identifier, $fallback_slug = '' ) {
+	$archive_url = conexao_get_guides_archive_url();
+	$identifier  = trim( (string) $identifier );
+
+	if ( '' === $identifier || '/' === $identifier ) {
+		return $archive_url;
+	}
+
+	$candidates = array();
+
+	// 1. The identifier is itself a term slug.
+	$candidates[] = sanitize_title( $identifier );
+
+	// 2. A manual fallback slug, if provided.
+	if ( '' !== $fallback_slug ) {
+		$candidates[] = sanitize_title( $fallback_slug );
+	}
+
+	$term = null;
+
+	foreach ( $candidates as $candidate_slug ) {
+		if ( '' === $candidate_slug ) {
+			continue;
+		}
+
+		$found = get_term_by( 'slug', $candidate_slug, 'conexao_category' );
+		if ( $found && ! is_wp_error( $found ) ) {
+			$term = $found;
+			break;
+		}
+	}
+
+	// 3. Match by term name (case-insensitive) — covers labels like
+	//    "Moradia e Aluguel" being passed directly, or accented labels.
+	if ( ! $term ) {
+		$terms = get_terms( array(
+			'taxonomy'   => 'conexao_category',
+			'hide_empty' => false,
+		) );
+
+		if ( ! is_wp_error( $terms ) ) {
+			$needle = mb_strtolower( $identifier );
+			foreach ( $terms as $candidate_term ) {
+				if ( mb_strtolower( $candidate_term->name ) === $needle ) {
+					$term = $candidate_term;
+					break;
+				}
+			}
+		}
+	}
+
+	if ( $term ) {
+		return add_query_arg( 'categoria', $term->slug, $archive_url );
+	}
+
+	return $archive_url;
+}
+
+/**
  * Get taxonomy terms that are actually used by a specific post type.
  *
  * WordPress' get_terms() counts posts across every post type that shares a
