@@ -78,8 +78,17 @@ class Conexao_Eventbrite_Client {
 				Conexao_Import_Log::add(
 					'eventbrite',
 					'error',
-					'Eventbrite fetch failed: ' . $response->get_error_message(),
-					array( 'url' => $page_url, 'attempt' => $attempt )
+					sprintf(
+						/* translators: %s: error message */
+						__( 'Eventbrite request failed: %s', 'conexao-event-importer' ),
+						$response->get_error_message()
+					),
+					array(
+						'url'          => $page_url,
+						'attempt'      => $attempt,
+						'http_status'  => 0,
+						'run_id'       => apply_filters( 'conexao_event_importer_current_run_id', '' ),
+					)
 				);
 				$this->backoff( $attempt );
 				continue;
@@ -96,8 +105,12 @@ class Conexao_Eventbrite_Client {
 					Conexao_Import_Log::add(
 						'eventbrite',
 						'error',
-						'Eventbrite returned 401 Unauthorized. The discovery page may require authentication.',
-						array( 'url' => $page_url )
+						__( 'Eventbrite returned 401 Unauthorized. The discovery page may require authentication.', 'conexao-event-importer' ),
+						array(
+							'url'         => $page_url,
+							'http_status' => 401,
+							'run_id'      => apply_filters( 'conexao_event_importer_current_run_id', '' ),
+						)
 					);
 					return '';
 
@@ -105,8 +118,16 @@ class Conexao_Eventbrite_Client {
 					Conexao_Import_Log::add(
 						'eventbrite',
 						'error',
-						'Eventbrite returned 404 Not Found.',
-						array( 'url' => $page_url )
+						sprintf(
+							/* translators: %s: URL */
+							__( 'Eventbrite returned 404 Not Found for %s. The discovery URL may have changed.', 'conexao-event-importer' ),
+							$page_url
+						),
+						array(
+							'url'         => $page_url,
+							'http_status' => 404,
+							'run_id'      => apply_filters( 'conexao_event_importer_current_run_id', '' ),
+						)
 					);
 					return '';
 
@@ -116,8 +137,17 @@ class Conexao_Eventbrite_Client {
 					Conexao_Import_Log::add(
 						'eventbrite',
 						'warning',
-						'Eventbrite returned HTTP ' . $code . '. Retrying with backoff.',
-						array( 'url' => $page_url, 'attempt' => $attempt )
+						sprintf(
+							/* translators: %d: HTTP status code */
+							__( 'Eventbrite returned HTTP %d. Retrying with a short delay.', 'conexao-event-importer' ),
+							$code
+						),
+						array(
+							'url'         => $page_url,
+							'attempt'     => $attempt,
+							'http_status' => $code,
+							'run_id'      => apply_filters( 'conexao_event_importer_current_run_id', '' ),
+						)
 					);
 					$this->backoff( $attempt );
 					break;
@@ -126,8 +156,16 @@ class Conexao_Eventbrite_Client {
 					Conexao_Import_Log::add(
 						'eventbrite',
 						'error',
-						'Eventbrite returned unexpected HTTP ' . $code . '.',
-						array( 'url' => $page_url )
+						sprintf(
+							/* translators: %d: HTTP status code */
+							__( 'Eventbrite returned an unexpected HTTP %d response.', 'conexao-event-importer' ),
+							$code
+						),
+						array(
+							'url'         => $page_url,
+							'http_status' => $code,
+							'run_id'      => apply_filters( 'conexao_event_importer_current_run_id', '' ),
+						)
 					);
 					return '';
 			}
@@ -136,8 +174,15 @@ class Conexao_Eventbrite_Client {
 		Conexao_Import_Log::add(
 			'eventbrite',
 			'error',
-			'Eventbrite fetch failed after ' . self::MAX_RETRIES . ' attempts.',
-			array( 'url' => $page_url )
+			sprintf(
+				/* translators: %d: number of retries */
+				__( 'Eventbrite could not be reached after %d attempts. The discovery page may be temporarily unavailable, or Eventbrite may be rate-limiting this site.', 'conexao-event-importer' ),
+				self::MAX_RETRIES
+			),
+			array(
+				'url'    => $page_url,
+				'run_id' => apply_filters( 'conexao_event_importer_current_run_id', '' ),
+			)
 		);
 
 		return '';

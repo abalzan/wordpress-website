@@ -1,0 +1,245 @@
+<?php
+/**
+ * Eventbrite Laois event source handler.
+ *
+ * Fetches Eventbrite's public Laois discovery page, parses
+ * `window.__SERVER_DATA__`, follows pagination, validates Laois region,
+ * and returns raw events for the central importer.
+ *
+ * Discovery mechanism: Eventbrite public discovery page / server-rendered HTML.
+ * This is NOT an official Eventbrite API integration.
+ *
+ * @package Conexao_Event_Importer
+ */
+
+defined( 'ABSPATH' ) || exit;
+
+class Conexao_Source_Eventbrite extends Conexao_Source_Base {
+
+	/**
+	 * Maximum number of pages to fetch (safety limit).
+	 *
+	 * @var int
+	 */
+	const MAX_PAGES = 50;
+
+	/**
+	 * Get the source slug.
+	 *
+	 * @return string
+	 */
+	public function get_id() {
+		return 'eventbrite';
+	}
+
+	/**
+	 * Fetch raw event listings from Eventbrite Laois discovery.
+	 *
+	 * @return array[]
+	 * @throws Exception When the Eventbrite source is unreachable or returns invalid data.
+	 */
+	public function fetch_events() {
+		$base_url = isset( $this->config['url'] ) && $this->config['url'] ? $this->config['url'] : Conexao_Eventbrite_Client::DEFAULT_DISCOVERY_URL;
+
+		$client   = new Conexao_Eventbrite_Client();
+		$parser   = new Conexao_Eventbrite_Parser();
+		$normalizer = new Conexao_Eventbrite_Normalizer();
+
+		// Capture the run_id from the current context (set via filter).
+		$run_id = apply_filters( 'conexao_event_importer_current_run_id', '' );
+
+		// Fetch page 1 first to get pagination info.
+		$html = $client->fetch_page( $base_url, 1 );
+		if ( empty( $html ) ) {
+			throw new Exception( __( 'Eventbrite returned no data for the discovery page.', 'conexao-event-importer' ) );
+		}
+
+		try {
+			$page1 = $parser->parse( $html );
+		} catch ( Exception $e ) {
+			Conexao_Import_Log::add(
+				$this->get_id(),
+				'error',
+				sprintf(
+					/* translators: %s: error message */
+					__( 'Eventbrite response could not be parsed: %s', 'conexao-event-importer' ),
+					$e->getMessage()
+				),
+				array(
+					'run_id' => $run_id,
+					'url'    => $base_url,
+				)
+			);
+			throw new Exception( __( 'Eventbrite returned an unexpected response. The page structure may have changed.', 'conexao-event-importer' ) );
+		}
+
+		$pagination = $page1['pagination'];
+		$page_count = isset( $pagination['page_count'] ) ? (int) $pagination['page_count'] : 1;
+		$page_count = max( 1, min( $page_count, self::MAX_PAGES ) );
+
+		Conexao_Import_Log::add(
+			$this->get_id(),
+			'info',
+			sprintf( 'Eventbrite import started. Page 1/%d fetched, %d events.', $page_count, count( $page1['events'] ) ),
+			array( 'run_id' => $run_id )
+		);
+
+		$all_events = $page1['events'];
+
+		// Fetch remaining pages.
+		for ( $page = 2; $page <= $page_count; $page++ ) {
+			$client->delay();
+
+			$html = $client->fetch_page( $base_url, $page );
+			if ( empty( $html ) ) {
+				Conexao_Import_Log::add(
+					$this->get_id(),
+					'warning',
+					sprintf( 'Eventbrite page %d/%d could not be fetched. Continuing with the events already found.', $page, $page_count ),
+					array( 'run_id' => $run_id )
+				);
+				continue;
+			}
+
+			try {
+				$page_data = $parser->parse( $html );
+			} catch ( Exception $e ) {
+				Conexao_Import_Log::add(
+					$this->get_id(),
+					'warning',
+					sprintf(
+						/* translators: 1: page number, 2: total pages */
+						__( 'Eventbrite page %1$d/%2$d could not be parsed. Continuing with the events already found.', 'conexao-event-importer' ),
+						$page,
+						$page_count
+					),
+					array( 'run_id' => $run_id )
+				);
+				continue;
+			}
+
+			Conexao_Import_Log::add(
+				$this->get_id(),
+				'info',
+				sprintf( 'Fetched page %d/%d, %d events.', $page, $page_count, count( $page_data['events'] ) ),
+				array( 'run_id' => $run_id )
+			);
+
+			$all_events = array_merge( $all_events, $page_data['events'] );
+		}
+
+		// Deduplicate by event ID.
+		$seen_ids = array();
+		$unique_events = array();
+		$duplicates = 0;
+
+		foreach ( $all_events as $event ) {
+			$id = isset( $event['id'] ) ? (string) $event['id'] : '';
+			if ( empty( $id ) ) {
+				continue;
+			}
+			if ( isset( $seen_ids[ $id ] ) ) {
+				$duplicates++;
+				continue;
+			}
+			$seen_ids[ $id ] = true;
+			$unique_events[] = $event;
+		}
+
+		Conexao_Import_Log::add(
+			$this->get_id(),
+			'info',
+			sprintf( 'Eventbrite: %d total fetched, %d duplicates removed, %d unique.', count( $all_events ), $duplicates, count( $unique_events ) ),
+			array( 'run_id' => $run_id )
+		);
+
+		// Filter for Laois region and normalize.
+		$raw_events = array();
+		$skipped = 0;
+
+		foreach ( $unique_events as $event ) {
+			$event_title = isset( $event['name'] ) ? trim( (string) $event['name'] ) : '';
+			$event_id    = isset( $event['id'] ) ? (string) $event['id'] : '';
+
+			// Validate Laois region.
+			if ( ! $this->is_laois_event( $event ) ) {
+				$skipped++;
+				Conexao_Import_Log::add(
+					$this->get_id(),
+					'debug',
+					sprintf(
+						/* translators: 1: event title, 2: event ID */
+						__( 'Skipped non-Laois event "%1$s" (ID %2$s).', 'conexao-event-importer' ),
+						$event_title,
+						$event_id
+					),
+					array(
+						'run_id'      => $run_id,
+						'event_id'    => $event_id,
+						'event_title' => $event_title,
+					)
+				);
+				continue;
+			}
+
+			// Skip online events (this is a physical Laois events calendar).
+			if ( ! empty( $event['is_online_event'] ) ) {
+				$skipped++;
+				Conexao_Import_Log::add(
+					$this->get_id(),
+					'info',
+					sprintf(
+						/* translators: 1: event title */
+						__( 'Skipped online-only event "%1$s".', 'conexao-event-importer' ),
+						$event_title
+					),
+					array(
+						'run_id'      => $run_id,
+						'event_id'    => $event_id,
+						'event_title' => $event_title,
+					)
+				);
+				continue;
+			}
+
+			$raw_events[] = $normalizer->normalize( $event );
+		}
+
+		Conexao_Import_Log::add(
+			$this->get_id(),
+			'info',
+			sprintf( 'Eventbrite: %d Laois events after filtering, %d skipped (non-Laois or online).', count( $raw_events ), $skipped ),
+			array( 'run_id' => $run_id )
+		);
+
+		return $raw_events;
+	}
+
+	/**
+	 * Check if an Eventbrite event is in Laois.
+	 *
+	 * Validates that the locations array contains a region entry with
+	 * name "Laois". Does NOT search title or description.
+	 *
+	 * @param array $event Raw Eventbrite event.
+	 * @return bool
+	 */
+	protected function is_laois_event( $event ) {
+		if ( empty( $event['locations'] ) || ! is_array( $event['locations'] ) ) {
+			return false;
+		}
+
+		foreach ( $event['locations'] as $location ) {
+			if ( ! is_array( $location ) ) {
+				continue;
+			}
+			if ( isset( $location['type'] ) && 'region' === $location['type'] ) {
+				if ( isset( $location['name'] ) && 'Laois' === $location['name'] ) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+}

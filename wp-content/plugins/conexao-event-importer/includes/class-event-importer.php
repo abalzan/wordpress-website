@@ -5,6 +5,12 @@
  * Orchestrates fetching, normalizing, deduplicating, and storing events
  * from configured sources into the central WordPress event database.
  *
+ * Error handling: each event is processed inside its own try/catch so a
+ * single failing event never aborts the remaining events in the source.
+ * Global failures (API unreachable, malformed source data, etc.) are
+ * reported as fatal errors while per-event failures are reported with
+ * the event title and a human-readable reason.
+ *
  * @package Conexao_Event_Importer
  */
 
@@ -27,6 +33,9 @@ class Conexao_Event_Importer_Engine {
 	/** @var Conexao_Event_Image_Handler */
 	protected $image_handler;
 
+	/** @var string Current import run ID (set per run_source call). */
+	protected $current_run_id = '';
+
 	/**
 	 * Constructor.
 	 *
@@ -42,125 +51,537 @@ class Conexao_Event_Importer_Engine {
 
 		// Hook the "run source" filter used by the admin UI.
 		add_filter( 'conexao_event_importer_run_source', array( $this, 'run_source' ), 10, 1 );
+
+		// Hook the "run all" filter used by the admin dashboard.
+		add_filter( 'conexao_event_importer_run_all', array( $this, 'run_all' ), 10, 1 );
+
+		// Expose the current import run ID for structured log correlation.
+		add_filter( 'conexao_event_importer_current_run_id', array( $this, 'get_current_run_id' ) );
+	}
+
+	/**
+	 * Get the current import run ID.
+	 *
+	 * @return string
+	 */
+	public function get_current_run_id() {
+		return $this->current_run_id;
 	}
 
 	/**
 	 * Run a full import across all active sources.
 	 *
-	 * @return array Aggregate stats.
+	 * Returns a combined result array with per-source stats, event outcomes,
+	 * and any fatal errors. Individual source failures do not stop other sources.
+	 *
+	 * @return array Combined result array.
 	 */
 	public function run_all() {
-		$stats = array(
+		// Start a fresh run ID for the combined run.
+		$this->current_run_id = 'all-' . (string) microtime( true );
+
+		$combined = array(
 			'found'         => 0,
-			'new'           => 0,
+			'created'       => 0,
 			'updated'       => 0,
 			'unchanged'     => 0,
 			'duplicates'    => 0,
+			'skipped'       => 0,
 			'needs_review'  => 0,
+			'failed'        => 0,
 			'errors'        => 0,
+			'new'           => 0,
+			'fatal_errors'  => array(),
+			'event_results' => array(),
+			'status'        => 'success',
+			'sources'       => array(),
 		);
 
-		foreach ( $this->sources->get_active() as $source ) {
+		$active_sources = $this->sources->get_active();
+
+		// Guard against no active sources.
+		if ( empty( $active_sources ) ) {
+			$combined['status'] = 'warning';
+			$combined['fatal_errors'][] = array(
+				'message'   => __( 'No active event sources are configured. Enable at least one source to import events.', 'conexao-event-importer' ),
+				'technical' => '',
+			);
+			return $combined;
+		}
+
+		foreach ( $active_sources as $source ) {
 			$result = $this->run_source( $source['id'] );
-			foreach ( $stats as $key => $value ) {
-				$stats[ $key ] += isset( $result[ $key ] ) ? $result[ $key ] : 0;
+
+			// Aggregate counters.
+			$combined['found']        += isset( $result['found'] ) ? (int) $result['found'] : 0;
+			$combined['created']      += isset( $result['created'] ) ? (int) $result['created'] : 0;
+			$combined['new']          += isset( $result['new'] ) ? (int) $result['new'] : 0;
+			$combined['updated']      += isset( $result['updated'] ) ? (int) $result['updated'] : 0;
+			$combined['unchanged']    += isset( $result['unchanged'] ) ? (int) $result['unchanged'] : 0;
+			$combined['duplicates']   += isset( $result['duplicates'] ) ? (int) $result['duplicates'] : 0;
+			$combined['skipped']      += isset( $result['skipped'] ) ? (int) $result['skipped'] : 0;
+			$combined['needs_review'] += isset( $result['needs_review'] ) ? (int) $result['needs_review'] : 0;
+			$combined['failed']       += isset( $result['failed'] ) ? (int) $result['failed'] : 0;
+			$combined['errors']       += isset( $result['errors'] ) ? (int) $result['errors'] : 0;
+
+			// Merge fatal errors.
+			if ( ! empty( $result['fatal_errors'] ) && is_array( $result['fatal_errors'] ) ) {
+				$combined['fatal_errors'] = array_merge( $combined['fatal_errors'], $result['fatal_errors'] );
+			}
+
+			// Merge event results.
+			if ( ! empty( $result['event_results'] ) && is_array( $result['event_results'] ) ) {
+				$combined['event_results'] = array_merge( $combined['event_results'], $result['event_results'] );
+			}
+
+			// Merge per-source stats.
+			$combined['sources'][ $source['id'] ] = $result;
+
+			// Derive combined status.
+			if ( 'failed' === $result['status'] ) {
+				if ( 'failed' !== $combined['status'] ) {
+					$combined['status'] = 'failed';
+				}
+			} elseif ( 'partial' === $result['status'] ) {
+				if ( 'success' === $combined['status'] ) {
+					$combined['status'] = 'partial';
+				}
+			} elseif ( 'warning' === $result['status'] ) {
+				if ( 'success' === $combined['status'] ) {
+					$combined['status'] = 'warning';
+				}
 			}
 		}
 
 		// Mark past events as expired.
 		Conexao_Event_Status::mark_expired_events();
 
-		return $stats;
+		// Record a combined history entry when more than one source ran.
+		if ( count( $combined['sources'] ) > 1 ) {
+			Conexao_Import_History::record(
+				'all',
+				$combined,
+				$combined['status'],
+				'',
+				array(
+					'run_id'        => $this->current_run_id,
+					'fatal_errors'  => $combined['fatal_errors'],
+					'failed_events' => self::extract_failed_events( $combined['event_results'] ),
+				)
+			);
+		}
+
+		return $combined;
 	}
 
 	/**
 	 * Run an import for a single source.
 	 *
+	 * Returns a stats array that includes both the legacy keys
+	 * (found, new, updated, unchanged, duplicates, needs_review, errors)
+	 * and the new keys (created, skipped, failed, status, fatal_errors,
+	 * event_results).
+	 *
+	 * Per-event failures are isolated: one event failing does not stop the
+	 * remaining events. Global failures (unreachable API, invalid source data)
+	 * stop the source and report a fatal error.
+	 *
 	 * @param string $source_id Source slug.
 	 * @return array Stats for this source.
 	 */
 	public function run_source( $source_id ) {
-		$stats = array(
-			'found'        => 0,
-			'new'          => 0,
-			'updated'      => 0,
-			'unchanged'    => 0,
-			'duplicates'   => 0,
-			'needs_review' => 0,
-			'errors'       => 0,
-		);
+		// Start a fresh run ID for log correlation.
+		$this->current_run_id = (string) microtime( true );
 
 		$source = $this->sources->get( $source_id );
-		if ( ! $source || 'active' !== $source['status'] ) {
-			return $stats;
+		if ( ! $source ) {
+			return array(
+				'found'         => 0,
+				'new'           => 0,
+				'created'       => 0,
+				'updated'       => 0,
+				'unchanged'     => 0,
+				'duplicates'    => 0,
+				'skipped'       => 0,
+				'needs_review'  => 0,
+				'errors'        => 0,
+				'failed'        => 0,
+				'status'        => 'failed',
+				'fatal_errors'  => array( array( 'message' => __( 'Event source not found.', 'conexao-event-importer' ), 'technical' => '' ) ),
+				'event_results' => array(),
+			);
 		}
+
+		if ( 'active' !== $source['status'] ) {
+			return array(
+				'found'         => 0,
+				'new'           => 0,
+				'created'       => 0,
+				'updated'       => 0,
+				'unchanged'     => 0,
+				'duplicates'    => 0,
+				'skipped'       => 0,
+				'needs_review'  => 0,
+				'errors'        => 0,
+				'failed'        => 0,
+				'status'        => 'warning',
+				'fatal_errors'  => array(),
+				'event_results' => array(),
+			);
+		}
+
+		$result = new Conexao_Import_Result( $source_id, $source['name'] );
 
 		$handler = $this->get_source_handler( $source );
 		if ( ! $handler ) {
-			Conexao_Import_Log::add( $source_id, 'error', 'Nenhum handler registrado para esta fonte.' );
-			$this->sources->update_import_stats( $source_id, array(
-				'last_import'        => current_time( 'mysql' ),
-				'last_import_status' => 'error',
-				'last_error'         => 'Nenhum handler registrado.',
+			$message = __( 'No import handler is registered for this event source.', 'conexao-event-importer' );
+			Conexao_Import_Log::add( $source_id, 'error', $message, array( 'run_id' => $this->current_run_id ) );
+			$result->add_fatal_error( $message );
+			$this->update_source_stats_after_run( $source_id, $result );
+			Conexao_Import_History::record( $source_id, $result->get_stats(), $result->get_status(), $message, array(
+				'run_id'        => $this->current_run_id,
+				'fatal_errors'  => $result->get_fatal_errors(),
+				'failed_events' => $result->get_failed_events(),
 			) );
-			return $stats;
+			return $result->get_stats();
 		}
+
+		// Capture the current log length so we can detect errors logged during fetch.
+		$log_before_fetch = Conexao_Import_Log::get_all();
 
 		try {
 			$raw_events = $handler->fetch_events();
 		} catch ( Exception $e ) {
-			Conexao_Import_Log::add( $source_id, 'error', 'Erro ao buscar eventos: ' . $e->getMessage() );
-			$this->sources->update_import_stats( $source_id, array(
-				'last_import'        => current_time( 'mysql' ),
-				'last_import_status' => 'error',
-				'last_error'         => $e->getMessage(),
+			$message = sprintf(
+				/* translators: %s: source name */
+				__( 'Failed to fetch events from %s. The source may be temporarily unavailable.', 'conexao-event-importer' ),
+				$source['name']
+			);
+			Conexao_Import_Log::add( $source_id, 'error', $message, array(
+				'run_id' => $this->current_run_id,
 			) );
-			return $stats;
+			$result->add_fatal_error( $message, $e->getMessage() );
+			$this->update_source_stats_after_run( $source_id, $result );
+			Conexao_Import_History::record( $source_id, $result->get_stats(), $result->get_status(), $message, array(
+				'run_id'        => $this->current_run_id,
+				'fatal_errors'  => $result->get_fatal_errors(),
+				'failed_events' => $result->get_failed_events(),
+			) );
+			return $result->get_stats();
 		}
 
-		$stats['found'] = count( $raw_events );
+		if ( ! is_array( $raw_events ) ) {
+			$message = sprintf(
+				/* translators: %s: source name */
+				__( 'The %s source returned an invalid response. No events were imported.', 'conexao-event-importer' ),
+				$source['name']
+			);
+			Conexao_Import_Log::add( $source_id, 'error', $message, array( 'run_id' => $this->current_run_id ) );
+			$result->add_fatal_error( $message );
+			$this->update_source_stats_after_run( $source_id, $result );
+			Conexao_Import_History::record( $source_id, $result->get_stats(), $result->get_status(), $message, array(
+				'run_id'        => $this->current_run_id,
+				'fatal_errors'  => $result->get_fatal_errors(),
+				'failed_events' => $result->get_failed_events(),
+			) );
+			return $result->get_stats();
+		}
+
+		// If the source returned zero events, check whether new errors were logged
+		// during the fetch. If so, it's a fatal problem, not a genuine "no events".
+		if ( empty( $raw_events ) ) {
+			$error_logged = false;
+			foreach ( Conexao_Import_Log::get_all() as $entry ) {
+				if ( 'error' === $entry['level'] && isset( $entry['source'] ) && $entry['source'] === $source_id ) {
+					$is_new = true;
+					foreach ( $log_before_fetch as $before ) {
+						if ( $before === $entry ) {
+							$is_new = false;
+							break;
+						}
+					}
+					if ( $is_new ) {
+						$error_logged = true;
+						break;
+					}
+				}
+			}
+
+			if ( $error_logged ) {
+				$message = sprintf(
+					/* translators: %s: source name */
+					__( 'The %s source could not be fetched. See the import log for details.', 'conexao-event-importer' ),
+					$source['name']
+				);
+				$result->add_fatal_error( $message );
+				$this->update_source_stats_after_run( $source_id, $result );
+				Conexao_Import_History::record( $source_id, $result->get_stats(), $result->get_status(), $message, array(
+					'run_id'        => $this->current_run_id,
+					'fatal_errors'  => $result->get_fatal_errors(),
+					'failed_events' => $result->get_failed_events(),
+				) );
+				return $result->get_stats();
+			}
+		}
+
+		$result->set_found( count( $raw_events ) );
 
 		foreach ( $raw_events as $raw ) {
 			$raw['source'] = $source_id;
 
-			$normalized = $this->normalizer->normalize( $raw );
+			$event_title = isset( $raw['title'] ) ? trim( (string) $raw['title'] ) : '';
+			$event_id    = isset( $raw['source_id'] ) ? trim( (string) $raw['source_id'] ) : '';
 
-			// Always check for an existing event first, even for needs-review
-			// events, to avoid creating duplicates on repeated imports.
-			$existing_id = $this->deduplicator->find( $normalized );
+			// Per-event error isolation: one failing event must not abort the rest.
+			try {
+				$normalized = $this->normalizer->normalize( $raw );
 
-			if ( $normalized['needs_review'] ) {
-				$stats['needs_review']++;
-				$this->upsert_event( $normalized, true, $existing_id );
-				continue;
-			}
+				// Always check for an existing event first, even for needs-review
+				// events, to avoid creating duplicates on repeated imports.
+				$existing_id = $this->deduplicator->find( $normalized );
 
-			$result = $this->upsert_event( $normalized, false, $existing_id );
+				if ( $normalized['needs_review'] ) {
+					$result->add_needs_review( $normalized['title'], $normalized['review_notes'], $existing_id );
+					$upsert = $this->upsert_event( $normalized, true, $existing_id );
+					if ( 'error' === $upsert['action'] ) {
+						$result->add_failed(
+							$normalized['title'],
+							__( 'The event could not be saved to WordPress.', 'conexao-event-importer' ),
+							isset( $upsert['error'] ) ? $upsert['error'] : ''
+						);
+					}
+					continue;
+				}
 
-			if ( 'created' === $result['action'] ) {
-				$stats['new']++;
-			} elseif ( 'updated' === $result['action'] ) {
-				$stats['updated']++;
-			} elseif ( 'unchanged' === $result['action'] ) {
-				$stats['unchanged']++;
-			} elseif ( 'duplicate' === $result['action'] ) {
-				$stats['duplicates']++;
+				$upsert = $this->upsert_event( $normalized, false, $existing_id );
+
+				switch ( $upsert['action'] ) {
+					case 'created':
+						$result->add_created( $normalized['title'], $upsert['post_id'] );
+						break;
+					case 'updated':
+						$result->add_updated( $normalized['title'], $upsert['post_id'] );
+						break;
+					case 'unchanged':
+						$result->add_unchanged( $normalized['title'], $upsert['post_id'] );
+						break;
+					case 'duplicate':
+						$result->add_duplicate( $normalized['title'], $upsert['post_id'] );
+						break;
+					case 'skipped':
+						$result->add_skipped( $normalized['title'], isset( $upsert['reason'] ) ? $upsert['reason'] : '' );
+						break;
+					case 'error':
+					default:
+						$reason = isset( $upsert['error'] ) ? $upsert['error'] : __( 'The event could not be saved to WordPress.', 'conexao-event-importer' );
+						$result->add_failed( $normalized['title'], $reason );
+						Conexao_Import_Log::add(
+							$source_id,
+							'error',
+							sprintf(
+								/* translators: 1: event title, 2: error message */
+								__( 'Failed to import event: %1$s. %2$s', 'conexao-event-importer' ),
+								$normalized['title'],
+								$reason
+							),
+							array(
+								'run_id'       => $this->current_run_id,
+								'event_id'     => $event_id,
+								'event_title'  => $normalized['title'],
+							)
+						);
+						break;
+				}
+			} catch ( Exception $e ) {
+				// Unexpected per-event failure. Log it, count it, continue.
+				$title = $event_title ? $event_title : __( '(unknown event)', 'conexao-event-importer' );
+				$result->add_failed(
+					$title,
+					__( 'An unexpected error interrupted this event.', 'conexao-event-importer' ),
+					$e->getMessage()
+				);
+				Conexao_Import_Log::add(
+					$source_id,
+					'error',
+					sprintf(
+						/* translators: 1: event title, 2: error message */
+						__( 'Unexpected error importing "%1$s": %2$s', 'conexao-event-importer' ),
+						$title,
+						$e->getMessage()
+					),
+					array(
+						'run_id'      => $this->current_run_id,
+						'event_id'    => $event_id,
+						'event_title' => $title,
+					)
+				);
 			}
 		}
 
 		// Mark events from this source that disappeared as "Source Not Found".
 		$this->mark_missing_events( $source_id, $raw_events );
 
-		$this->sources->update_import_stats( $source_id, array(
-			'last_import'        => current_time( 'mysql' ),
-			'last_import_status' => 'success',
-			'events_imported'    => $stats['new'],
-			'last_error'         => '',
+		// Update the source's last-import metadata.
+		$this->update_source_stats_after_run( $source_id, $result );
+
+		// Build a human-readable summary message.
+		$message = $this->build_summary_message( $result );
+
+		// Record the history entry with failure details.
+		Conexao_Import_History::record( $source_id, $result->get_stats(), $result->get_status(), $message, array(
+			'run_id'        => $this->current_run_id,
+			'fatal_errors'  => $result->get_fatal_errors(),
+			'failed_events' => $result->get_failed_events(),
 		) );
 
-		Conexao_Import_History::record( $source_id, $stats, 'success' );
+		// Log the run summary (info level, one line, not huge).
+		Conexao_Import_Log::add(
+			$source_id,
+			'info',
+			sprintf(
+				/* translators: 1: source name, 2: created count, 3: updated count, 4: skipped count, 5: failed count */
+				__( 'Import of %1$s completed: %2$d created, %3$d updated, %4$d skipped, %5$d failed.', 'conexao-event-importer' ),
+				$source['name'],
+				$result->get_counts()['created'],
+				$result->get_counts()['updated'],
+				$result->get_counts()['skipped'],
+				$result->get_counts()['failed']
+			),
+			array( 'run_id' => $this->current_run_id )
+		);
 
-		return $stats;
+		return $result->get_stats();
+	}
+
+	/**
+	 * Update the source's last-import metadata after a run.
+	 *
+	 * @param string                $source_id Source slug.
+	 * @param Conexao_Import_Result $result    Import result.
+	 */
+	protected function update_source_stats_after_run( $source_id, Conexao_Import_Result $result ) {
+		$status = $result->get_status();
+
+		// Map the new statuses to the legacy two-state (success|error) used in
+		// the sources option, while keeping the richer status in the history.
+		$legacy_status = ( 'failed' === $status ) ? 'error' : 'success';
+
+		$stats = array(
+			'last_import'        => current_time( 'mysql' ),
+			'last_import_status' => $legacy_status,
+			'events_imported'    => $result->get_counts()['created'],
+			'last_error'         => '',
+		);
+
+		// Set the last_error message on failures.
+		if ( 'failed' === $status ) {
+			$fatal = $result->get_fatal_errors();
+			if ( ! empty( $fatal ) ) {
+				$stats['last_error'] = $fatal[0]['message'];
+			} elseif ( $result->get_counts()['failed'] > 0 ) {
+				$stats['last_error'] = sprintf(
+					/* translators: %d: number of failed events */
+					__( '%d event(s) failed to import.', 'conexao-event-importer' ),
+					$result->get_counts()['failed']
+				);
+			}
+		} elseif ( 'partial' === $status ) {
+			$stats['last_import_status'] = 'success'; // Partial is still a completed run.
+			$stats['last_error'] = sprintf(
+				/* translators: %d: number of failed events */
+				__( '%d event(s) failed but the rest were imported.', 'conexao-event-importer' ),
+				$result->get_counts()['failed']
+			);
+		} elseif ( 'warning' === $status ) {
+			$stats['last_import_status'] = 'success';
+		}
+
+		$this->sources->update_import_stats( $source_id, $stats );
+	}
+
+	/**
+	 * Build a human-readable summary message for an import result.
+	 *
+	 * @param Conexao_Import_Result $result Import result.
+	 * @return string
+	 */
+	protected function build_summary_message( Conexao_Import_Result $result ) {
+		$counts = $result->get_counts();
+
+		if ( 'failed' === $result->get_status() ) {
+			$fatal = $result->get_fatal_errors();
+			if ( ! empty( $fatal ) ) {
+				return $fatal[0]['message'];
+			}
+			return __( 'Import failed. See details below.', 'conexao-event-importer' );
+		}
+
+		$parts   = array();
+		$parts[] = sprintf(
+			/* translators: %d: number of events found */
+			__( '%d events found', 'conexao-event-importer' ),
+			$counts['found']
+		);
+		if ( $counts['created'] > 0 ) {
+			$parts[] = sprintf(
+				/* translators: %d: number of events created */
+				__( '%d created', 'conexao-event-importer' ),
+				$counts['created']
+			);
+		}
+		if ( $counts['updated'] > 0 ) {
+			$parts[] = sprintf(
+				/* translators: %d: number of events updated */
+				__( '%d updated', 'conexao-event-importer' ),
+				$counts['updated']
+			);
+		}
+		if ( $counts['unchanged'] > 0 ) {
+			$parts[] = sprintf(
+				/* translators: %d: number of unchanged events */
+				__( '%d unchanged', 'conexao-event-importer' ),
+				$counts['unchanged']
+			);
+		}
+		if ( $counts['skipped'] > 0 ) {
+			$parts[] = sprintf(
+				/* translators: %d: number of skipped events */
+				__( '%d skipped', 'conexao-event-importer' ),
+				$counts['skipped']
+			);
+		}
+		if ( $counts['needs_review'] > 0 ) {
+			$parts[] = sprintf(
+				/* translators: %d: number of events needing review */
+				__( '%d need review', 'conexao-event-importer' ),
+				$counts['needs_review']
+			);
+		}
+		if ( $counts['failed'] > 0 ) {
+			$parts[] = sprintf(
+				/* translators: %d: number of failed events */
+				__( '%d failed', 'conexao-event-importer' ),
+				$counts['failed']
+			);
+		}
+
+		return implode( ', ', $parts );
+	}
+
+	/**
+	 * Extract failed events from a list of event results.
+	 *
+	 * @param array $event_results Event result list.
+	 * @return array
+	 */
+	protected static function extract_failed_events( $event_results ) {
+		$failed = array();
+		foreach ( $event_results as $event ) {
+			if ( isset( $event['outcome'] ) && 'failed' === $event['outcome'] ) {
+				$failed[] = $event;
+			}
+		}
+		return array_slice( $failed, 0, 100 );
 	}
 
 	/**
@@ -186,7 +607,7 @@ class Conexao_Event_Importer_Engine {
 		// Fall back to source ID-based routing for legacy/website sources.
 		// Normalize the source ID for matching (convert hyphens to underscores).
 		$normalized_id = str_replace( '-', '_', $source['id'] );
-		
+
 		switch ( $normalized_id ) {
 			case 'laois_tourism':
 				// If Laois Tourism is configured as iCalendar type, use that handler.
@@ -216,7 +637,7 @@ class Conexao_Event_Importer_Engine {
 	 * @param array $normalized   Normalized event data.
 	 * @param bool  $needs_review Whether this event needs human review.
 	 * @param int   $existing_id  Existing post ID (0 for new).
-	 * @return array{action:string, post_id:int}
+	 * @return array{action:string, post_id:int, error?:string, reason?:string}
 	 */
 	protected function upsert_event( $normalized, $needs_review = false, $existing_id = 0 ) {
 		$now = current_time( 'mysql' );
@@ -270,8 +691,8 @@ class Conexao_Event_Importer_Engine {
 			) );
 
 			if ( is_wp_error( $updated ) ) {
-				Conexao_Import_Log::add( $normalized['source'], 'error', 'Falha ao atualizar evento: ' . $updated->get_error_message(), array( 'title' => $normalized['title'] ) );
-				return array( 'action' => 'error', 'post_id' => 0 );
+				Conexao_Import_Log::add( $normalized['source'], 'error', 'Falha ao atualizar evento: ' . $updated->get_error_message(), array( 'title' => $normalized['title'], 'run_id' => $this->current_run_id ) );
+				return array( 'action' => 'error', 'post_id' => 0, 'error' => $updated->get_error_message() );
 			}
 		} else {
 			$post_id = wp_insert_post( array(
@@ -283,8 +704,8 @@ class Conexao_Event_Importer_Engine {
 			) );
 
 			if ( is_wp_error( $post_id ) ) {
-				Conexao_Import_Log::add( $normalized['source'], 'error', 'Falha ao criar evento: ' . $post_id->get_error_message(), array( 'title' => $normalized['title'] ) );
-				return array( 'action' => 'error', 'post_id' => 0 );
+				Conexao_Import_Log::add( $normalized['source'], 'error', 'Falha ao criar evento: ' . $post_id->get_error_message(), array( 'title' => $normalized['title'], 'run_id' => $this->current_run_id ) );
+				return array( 'action' => 'error', 'post_id' => 0, 'error' => $post_id->get_error_message() );
 			}
 
 			$action = 'created';
@@ -294,10 +715,28 @@ class Conexao_Event_Importer_Engine {
 		$this->save_event_meta( $post_id, $normalized );
 
 		// Download banner image into WordPress Media Library and set as featured image.
+		// Failures here do NOT fail the event import — the external URL is kept as a fallback.
 		$this->handle_event_image( $post_id, $normalized );
 
-		// Save taxonomies (county, town, category).
-		$this->save_event_taxonomies( $post_id, $normalized );
+		// Save taxonomies (county, town, category). Failures should not fail the event.
+		try {
+			$this->save_event_taxonomies( $post_id, $normalized );
+		} catch ( Exception $e ) {
+			Conexao_Import_Log::add(
+				$normalized['source'],
+				'warning',
+				sprintf(
+					/* translators: 1: event title, 2: error message */
+					__( 'The event "%1$s" was imported but taxonomy assignment failed: %2$s', 'conexao-event-importer' ),
+					$normalized['title'],
+					$e->getMessage()
+				),
+				array(
+					'run_id'      => $this->current_run_id,
+					'event_title' => $normalized['title'],
+				)
+			);
+		}
 
 		// Set status.
 		$status = $needs_review ? Conexao_Event_Status::NEEDS_REVIEW : Conexao_Event_Status::PUBLISHED;
@@ -350,6 +789,22 @@ class Conexao_Event_Importer_Engine {
 		if ( $attachment_id ) {
 			// Set as both banner attachment and featured image.
 			$this->image_handler->set_banner_attachment( $post_id, $attachment_id );
+		} else {
+			// Download failed; the external URL remains in _event_banner as fallback.
+			Conexao_Import_Log::add(
+				$normalized['source'],
+				'warning',
+				sprintf(
+					/* translators: 1: event title */
+					__( 'The image for "%1$s" could not be downloaded. The external Eventbrite image URL will be used instead.', 'conexao-event-importer' ),
+					$normalized['title']
+				),
+				array(
+					'run_id'      => $this->current_run_id,
+					'event_title' => $normalized['title'],
+					'url'         => $banner_url,
+				)
+			);
 		}
 	}
 

@@ -18,6 +18,7 @@ define( 'CONEXAO_EVENT_IMPORTER_URL', plugin_dir_url( __FILE__ ) );
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-status.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-import-log.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-import-history.php';
+require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-import-result.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-location.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-normalizer.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-deduplicator.php';
@@ -262,10 +263,24 @@ final class Conexao_Event_Importer {
 	 */
 	public function admin_assets( $hook ) {
 		$is_event_screen = 'edit.php' === $hook && isset( $_GET['post_type'] ) && 'event' === $_GET['post_type'];
-		if ( false === strpos( $hook, 'conexao-events' ) && false === strpos( $hook, 'conexao-event-import' ) && false === strpos( $hook, 'conexao-event-export' ) && false === strpos( $hook, 'conexao-event-cleanup' ) && ! $is_event_screen ) {
+		$is_import_screen = false !== strpos( $hook, 'conexao-events' ) || false !== strpos( $hook, 'conexao-event-import' ) || false !== strpos( $hook, 'conexao-event-export' ) || false !== strpos( $hook, 'conexao-event-cleanup' );
+		if ( ! $is_import_screen && ! $is_event_screen ) {
 			return;
 		}
 		wp_enqueue_style( 'conexao-event-importer-admin', CONEXAO_EVENT_IMPORTER_URL . 'assets/admin.css', array(), CONEXAO_EVENT_IMPORTER_VERSION );
+
+		if ( $is_import_screen ) {
+			wp_enqueue_script( 'conexao-event-importer-admin', CONEXAO_EVENT_IMPORTER_URL . 'assets/admin.js', array(), CONEXAO_EVENT_IMPORTER_VERSION, true );
+			wp_localize_script(
+				'conexao-event-importer-admin',
+				'conexaoEventImporter',
+				array(
+					'i18n' => array(
+						'importing' => __( 'Importing… please wait. Do not close this page.', 'conexao-event-importer' ),
+					),
+				)
+			);
+		}
 	}
 
 	/**

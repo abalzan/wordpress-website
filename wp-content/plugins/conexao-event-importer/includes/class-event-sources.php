@@ -490,15 +490,171 @@ class Conexao_Event_Sources {
 
 	/**
 	 * Handle running an import from the admin form.
+	 *
+	 * Supports both single-source imports (source_id = slug) and full imports
+	 * (source_id = "all" or empty).
 	 */
 	protected function handle_run_import() {
-		$source_id = sanitize_text_field( wp_unslash( $_POST['source_id'] ) );
-		$result    = apply_filters( 'conexao_event_importer_run_source', $source_id );
-		if ( $result && ! is_wp_error( $result ) ) {
-			echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Import completed.', 'conexao-event-importer' ) . '</p></div>';
+		$source_id = isset( $_POST['source_id'] ) ? sanitize_text_field( wp_unslash( $_POST['source_id'] ) ) : '';
+
+		if ( '' === $source_id || 'all' === $source_id ) {
+			// Full import across all active sources.
+			$result = apply_filters( 'conexao_event_importer_run_all', array() );
 		} else {
-			echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__( 'Import failed.', 'conexao-event-importer' ) . '</p></div>';
+			// Single-source import.
+			$result = apply_filters( 'conexao_event_importer_run_source', $source_id );
 		}
+
+		$this->render_import_result_notice( $result, $source_id );
+	}
+
+	/**
+	 * Render a detailed admin notice after an import run.
+	 *
+	 * Shows created/updated/skipped/failed counts and a collapsible "View details"
+	 * section listing the events that failed and why.
+	 *
+	 * @param array  $result    Import result array.
+	 * @param string $source_id Source slug or 'all'.
+	 */
+	protected function render_import_result_notice( $result, $source_id ) {
+		if ( ! is_array( $result ) || empty( $result ) ) {
+			echo '<div class="notice notice-error is-dismissible"><p>' . esc_html__( 'The import could not be completed. No result was returned.', 'conexao-event-importer' ) . '</p></div>';
+			return;
+		}
+
+		$status  = isset( $result['status'] ) ? $result['status'] : 'success';
+		$created = isset( $result['created'] ) ? (int) $result['created'] : ( isset( $result['new'] ) ? (int) $result['new'] : 0 );
+		$updated = isset( $result['updated'] ) ? (int) $result['updated'] : 0;
+		$unchanged = isset( $result['unchanged'] ) ? (int) $result['unchanged'] : 0;
+		$duplicates = isset( $result['duplicates'] ) ? (int) $result['duplicates'] : 0;
+		$skipped = isset( $result['skipped'] ) ? (int) $result['skipped'] : 0;
+		$needs_review = isset( $result['needs_review'] ) ? (int) $result['needs_review'] : 0;
+		$failed  = isset( $result['failed'] ) ? (int) $result['failed'] : ( isset( $result['errors'] ) ? (int) $result['errors'] : 0 );
+
+		// Determine notice type.
+		$notice_type = 'success';
+		$title       = __( 'Import completed', 'conexao-event-importer' );
+		if ( 'failed' === $status ) {
+			$notice_type = 'error';
+			$title       = __( 'Import could not be completed', 'conexao-event-importer' );
+		} elseif ( 'partial' === $status ) {
+			$notice_type = 'warning';
+			$title       = __( 'Import completed with errors', 'conexao-event-importer' );
+		} elseif ( 'warning' === $status ) {
+			$notice_type = 'warning';
+			$title       = __( 'Import completed with warnings', 'conexao-event-importer' );
+		}
+
+		$source_label = __( 'All sources', 'conexao-event-importer' );
+		if ( $source_id && 'all' !== $source_id ) {
+			$source = $this->get( $source_id );
+			if ( $source ) {
+				$source_label = $source['name'];
+			}
+		}
+
+		// Build the summary line.
+		$summary_parts = array();
+		if ( $created > 0 ) {
+			$summary_parts[] = sprintf( /* translators: %d: count */ __( '%d created', 'conexao-event-importer' ), $created );
+		}
+		if ( $updated > 0 ) {
+			$summary_parts[] = sprintf( /* translators: %d: count */ __( '%d updated', 'conexao-event-importer' ), $updated );
+		}
+		if ( $unchanged > 0 ) {
+			$summary_parts[] = sprintf( /* translators: %d: count */ __( '%d unchanged', 'conexao-event-importer' ), $unchanged );
+		}
+		if ( $duplicates > 0 ) {
+			$summary_parts[] = sprintf( /* translators: %d: count */ __( '%d duplicates', 'conexao-event-importer' ), $duplicates );
+		}
+		if ( $skipped > 0 ) {
+			$summary_parts[] = sprintf( /* translators: %d: count */ __( '%d skipped', 'conexao-event-importer' ), $skipped );
+		}
+		if ( $needs_review > 0 ) {
+			$summary_parts[] = sprintf( /* translators: %d: count */ __( '%d need review', 'conexao-event-importer' ), $needs_review );
+		}
+		if ( $failed > 0 ) {
+			$summary_parts[] = sprintf( /* translators: %d: count */ __( '%d failed', 'conexao-event-importer' ), $failed );
+		}
+		if ( empty( $summary_parts ) ) {
+			$summary_parts[] = __( 'No events found', 'conexao-event-importer' );
+		}
+
+		// Collect failed events / fatal errors for the details section.
+		$fatal_errors   = isset( $result['fatal_errors'] ) && is_array( $result['fatal_errors'] ) ? $result['fatal_errors'] : array();
+		$failed_events  = array();
+		if ( isset( $result['event_results'] ) && is_array( $result['event_results'] ) ) {
+			foreach ( $result['event_results'] as $evt ) {
+				if ( isset( $evt['outcome'] ) && 'failed' === $evt['outcome'] ) {
+					$failed_events[] = $evt;
+				}
+			}
+		}
+
+		$has_details = ( ! empty( $fatal_errors ) || ! empty( $failed_events ) );
+
+		?>
+		<div class="notice notice-<?php echo esc_attr( $notice_type ); ?> is-dismissible conexao-import-notice">
+			<p>
+				<strong><?php echo esc_html( $title ); ?></strong> — <?php echo esc_html( $source_label ); ?>
+			</p>
+			<p><?php echo esc_html( implode( ', ', $summary_parts ) ); ?></p>
+
+			<?php if ( 'failed' === $status && ! empty( $fatal_errors ) ) : ?>
+				<p>
+					<?php foreach ( $fatal_errors as $fe ) : ?>
+						<strong><?php echo esc_html( $fe['message'] ); ?></strong>
+						<?php if ( ! empty( $fe['technical'] ) ) : ?>
+							<details class="conexao-error-details">
+								<summary><?php esc_html_e( 'Technical details', 'conexao-event-importer' ); ?></summary>
+								<code><?php echo esc_html( $fe['technical'] ); ?></code>
+							</details>
+						<?php endif; ?>
+					<?php endforeach; ?>
+				</p>
+			<?php endif; ?>
+
+			<?php if ( ! empty( $failed_events ) ) : ?>
+				<details class="conexao-error-details">
+					<summary>
+						<?php
+						echo esc_html(
+							sprintf(
+								/* translators: %d: number of failed events */
+								__( 'View %d failed event(s)', 'conexao-event-importer' ),
+								count( $failed_events )
+							)
+						);
+						?>
+					</summary>
+					<ul class="conexao-failed-events-list">
+						<?php foreach ( array_slice( $failed_events, 0, 50 ) as $failed_event ) : ?>
+							<li>
+								<strong><?php echo esc_html( $failed_event['title'] ); ?></strong>
+								— <?php echo esc_html( $failed_event['message'] ); ?>
+								<?php if ( ! empty( $failed_event['technical'] ) ) : ?>
+									<details>
+										<summary><?php esc_html_e( 'Technical detail', 'conexao-event-importer' ); ?></summary>
+										<code><?php echo esc_html( $failed_event['technical'] ); ?></code>
+									</details>
+								<?php endif; ?>
+							</li>
+						<?php endforeach; ?>
+						<?php if ( count( $failed_events ) > 50 ) : ?>
+							<li><em><?php esc_html_e( 'Additional failures are available in the import history.', 'conexao-event-importer' ); ?></em></li>
+						<?php endif; ?>
+					</ul>
+				</details>
+			<?php endif; ?>
+
+			<?php if ( $has_details ) : ?>
+				<p class="description">
+					<?php esc_html_e( 'The remaining events continued importing normally.', 'conexao-event-importer' ); ?>
+				</p>
+			<?php endif; ?>
+		</div>
+		<?php
 	}
 
 	/**
@@ -637,7 +793,7 @@ class Conexao_Event_Sources {
 						</td>
 						<td><?php echo esc_html( $source['events_imported'] ); ?></td>
 						<td>
-							<form method="post" style="display:inline-block;">
+							<form method="post" style="display:inline-block;" data-conexao-import-form>
 								<?php wp_nonce_field( 'conexao_event_sources', 'conexao_event_sources_nonce' ); ?>
 								<input type="hidden" name="conexao_source_action" value="run_import">
 								<input type="hidden" name="source_id" value="<?php echo esc_attr( $source['id'] ); ?>">
@@ -811,6 +967,12 @@ class Conexao_Event_Sources {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return;
 		}
+
+		// Handle "Run Import Now" submitted from this page.
+		if ( isset( $_POST['conexao_source_action'] ) && 'run_import' === sanitize_text_field( wp_unslash( $_POST['conexao_source_action'] ) ) && check_admin_referer( 'conexao_event_sources', 'conexao_event_sources_nonce' ) ) {
+			$this->handle_run_import();
+		}
+
 		$sources = $this->get_all();
 		$next    = wp_next_scheduled( 'conexao_event_import_cron' );
 		?>
@@ -863,7 +1025,7 @@ class Conexao_Event_Sources {
 			</ul>
 
 			<h2><?php esc_html_e( 'Run Import', 'conexao-event-importer' ); ?></h2>
-			<form method="post">
+			<form method="post" data-conexao-import-form>
 				<?php wp_nonce_field( 'conexao_event_sources', 'conexao_event_sources_nonce' ); ?>
 				<input type="hidden" name="conexao_source_action" value="run_import">
 				<input type="hidden" name="source_id" value="all">
@@ -896,6 +1058,7 @@ class Conexao_Event_Sources {
 					<th><?php esc_html_e( 'Updated', 'conexao-event-importer' ); ?></th>
 					<th><?php esc_html_e( 'Unchanged', 'conexao-event-importer' ); ?></th>
 					<th><?php esc_html_e( 'Duplicates', 'conexao-event-importer' ); ?></th>
+					<th><?php esc_html_e( 'Skipped', 'conexao-event-importer' ); ?></th>
 					<th><?php esc_html_e( 'Needs Review', 'conexao-event-importer' ); ?></th>
 					<th><?php esc_html_e( 'Errors', 'conexao-event-importer' ); ?></th>
 					<th><?php esc_html_e( 'Status', 'conexao-event-importer' ); ?></th>
@@ -911,9 +1074,14 @@ class Conexao_Event_Sources {
 						<td><?php echo esc_html( $entry['updated'] ); ?></td>
 						<td><?php echo esc_html( isset( $entry['unchanged'] ) ? $entry['unchanged'] : 0 ); ?></td>
 						<td><?php echo esc_html( $entry['duplicates'] ); ?></td>
+						<td><?php echo esc_html( isset( $entry['skipped'] ) ? $entry['skipped'] : 0 ); ?></td>
 						<td><?php echo esc_html( $entry['needs_review'] ); ?></td>
 						<td><?php echo esc_html( $entry['errors'] ); ?></td>
-						<td><?php echo esc_html( $entry['status'] ); ?></td>
+						<td>
+							<span class="conexao-status-badge conexao-status-badge--<?php echo esc_attr( $entry['status'] ); ?>">
+								<?php echo esc_html( $entry['status'] ); ?>
+							</span>
+						</td>
 					</tr>
 				<?php endforeach; ?>
 			</tbody>
@@ -945,6 +1113,7 @@ class Conexao_Event_Sources {
 							<th><?php esc_html_e( 'Updated', 'conexao-event-importer' ); ?></th>
 							<th><?php esc_html_e( 'Unchanged', 'conexao-event-importer' ); ?></th>
 							<th><?php esc_html_e( 'Duplicates', 'conexao-event-importer' ); ?></th>
+							<th><?php esc_html_e( 'Skipped', 'conexao-event-importer' ); ?></th>
 							<th><?php esc_html_e( 'Needs Review', 'conexao-event-importer' ); ?></th>
 							<th><?php esc_html_e( 'Errors', 'conexao-event-importer' ); ?></th>
 							<th><?php esc_html_e( 'Status', 'conexao-event-importer' ); ?></th>
@@ -960,9 +1129,14 @@ class Conexao_Event_Sources {
 								<td><?php echo esc_html( $entry['updated'] ); ?></td>
 								<td><?php echo esc_html( isset( $entry['unchanged'] ) ? $entry['unchanged'] : 0 ); ?></td>
 								<td><?php echo esc_html( $entry['duplicates'] ); ?></td>
+								<td><?php echo esc_html( isset( $entry['skipped'] ) ? $entry['skipped'] : 0 ); ?></td>
 								<td><?php echo esc_html( $entry['needs_review'] ); ?></td>
 								<td><?php echo esc_html( $entry['errors'] ); ?></td>
-								<td><?php echo esc_html( $entry['status'] ); ?></td>
+								<td>
+									<span class="conexao-status-badge conexao-status-badge--<?php echo esc_attr( $entry['status'] ); ?>">
+										<?php echo esc_html( $entry['status'] ); ?>
+									</span>
+								</td>
 							</tr>
 						<?php endforeach; ?>
 					</tbody>
