@@ -2942,6 +2942,11 @@ input[type="button"] {
     max-width: 100%;
   }
 
+  /* Hide the placeholder SVG on mobile only, keep container */
+  .hero-image-placeholder svg {
+    display: none;
+  }
+
   .hero-content {
     order: 2;
   }
