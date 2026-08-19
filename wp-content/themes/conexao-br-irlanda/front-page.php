@@ -138,7 +138,7 @@ if ( '' === $hero_image_alt ) {
 </section>
 
 <!-- Featured Content -->
-<section class="section">
+<section class="section section--featured">
 	<div class="site-container">
 		<div class="section-header">
 			<div class="section-header-left">
@@ -320,7 +320,7 @@ if ( '' === $hero_image_alt ) {
 </section>
 
 <!-- Practical Guides -->
-<section class="section section--gray">
+<section class="section section--gray section--guides">
 	<div class="site-container">
 		<div class="section-header">
 			<div class="section-header-left">
@@ -419,7 +419,7 @@ if ( '' === $hero_image_alt ) {
 </section>
 
 <!-- Upcoming Events -->
-<section class="section">
+<section class="section section--events">
 	<div class="site-container">
 		<div class="section-header">
 			<div class="section-header-left">
@@ -463,7 +463,7 @@ if ( '' === $hero_image_alt ) {
 </section>
 
 <!-- Apoiadores -->
-<section class="section">
+<section class="section section--apoiadores">
 	<div class="site-container">
 		<div class="section-header">
 			<div class="section-header-left">
@@ -543,7 +543,7 @@ if ( '' === $hero_image_alt ) {
 </section>
 
 <!-- Latest Jobs -->
-<section class="section section--gray">
+<section class="section section--gray section--jobs">
 	<div class="site-container">
 		<div class="section-header">
 			<div class="section-header-left">

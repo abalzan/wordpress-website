@@ -4079,3 +4079,70 @@ input[type="button"] {
 .provider-card:hover .provider-card-cta svg {
   transform: translateX(3px);
 }
+
+/* ============================================================
+   Homepage Mobile Hierarchy
+   -------------------------
+   DOM order of the front page:
+     Hero → Quick Access → Featured → Guides → Events → Apoiadores → Jobs
+   On desktop this reads naturally and is preserved.
+
+   On mobile we reorder so the visitor is first told WHO we are, then WHAT we
+   offer, then WHERE to go — before any event feed:
+     Hero → Quick Access → Events → Featured → Guides → Apoiadores → Jobs
+
+   Pure presentation/mobile reflow via flex `order`; no content is duplicated
+   or removed. Sections are direct children of `main.site-main`.
+============================================================ */
+@media (max-width: 768px) {
+  .home .site-main,
+  .front-page .site-main {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .home .site-main .hero-section,
+  .front-page .site-main .hero-section {
+    order: 1;
+  }
+
+  .home .site-main .quick-access-section,
+  .front-page .site-main .quick-access-section {
+    order: 2;
+  }
+
+  .home .site-main .section--events,
+  .front-page .site-main .section--events {
+    order: 3;
+  }
+
+  .home .site-main .section--featured,
+  .front-page .site-main .section--featured {
+    order: 4;
+  }
+
+  .home .site-main .section--guides,
+  .front-page .site-main .section--guides {
+    order: 5;
+  }
+
+  .home .site-main .section--apoiadores,
+  .front-page .site-main .section--apoiadores {
+    order: 6;
+  }
+
+  .home .site-main .section--jobs,
+  .front-page .site-main .section--jobs {
+    order: 7;
+  }
+
+  .home .site-main .newsletter-section,
+  .front-page .site-main .newsletter-section {
+    order: 8;
+  }
+
+  .home .site-main .quote-section,
+  .front-page .site-main .quote-section {
+    order: 9;
+  }
+}
