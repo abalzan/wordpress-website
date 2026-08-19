@@ -26,6 +26,11 @@
 						<p class="footer-about">
 							<?php esc_html_e( 'Conectando a comunidade brasileira na Irlanda com informações, eventos, cursos e muito mais. Sua revista digital para brasileiros na Irlanda.', 'conexao-br-irlanda' ); ?>
 						</p>
+					</div>
+
+					<!-- Social Column -->
+					<div class="footer-column">
+						<h4 class="footer-column-title"><?php esc_html_e( 'Redes Sociais', 'conexao-br-irlanda' ); ?></h4>
 						<div class="footer-social">
 							<?php
 							$instagram = get_theme_mod( 'conexao_instagram', 'https://www.instagram.com/conexaobr.ie/' );
@@ -48,43 +53,6 @@
 								</a>
 							<?php endif; ?>
 						</div>
-					</div>
-
-					<!-- Navigation Column -->
-					<div class="footer-column">
-						<h4 class="footer-column-title"><?php esc_html_e( 'Navegação', 'conexao-br-irlanda' ); ?></h4>
-						<ul class="footer-links">
-							<li><a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php esc_html_e( 'Home', 'conexao-br-irlanda' ); ?></a></li>
-							<li><a href="<?php echo esc_url( conexao_get_guides_archive_url() ); ?>"><?php esc_html_e( 'Guias', 'conexao-br-irlanda' ); ?></a></li>
-							<li><a href="<?php echo esc_url( home_url( '/eventos/' ) ); ?>"><?php esc_html_e( 'Eventos', 'conexao-br-irlanda' ); ?></a></li>
-							<li><a href="<?php echo esc_url( home_url( '/empregos/' ) ); ?>"><?php esc_html_e( 'Empregos', 'conexao-br-irlanda' ); ?></a></li>
-							<li><a href="<?php echo esc_url( home_url( '/apoiadores/' ) ); ?>"><?php esc_html_e( 'Apoiadores', 'conexao-br-irlanda' ); ?></a></li>
-						</ul>
-					</div>
-
-					<!-- Categories Column -->
-					<div class="footer-column">
-						<h4 class="footer-column-title"><?php esc_html_e( 'Categorias', 'conexao-br-irlanda' ); ?></h4>
-						<ul class="footer-links">
-							<li><a href="<?php echo esc_url( home_url( '/moradia/' ) ); ?>"><?php esc_html_e( 'Moradia', 'conexao-br-irlanda' ); ?></a></li>
-							<li><a href="<?php echo esc_url( home_url( '/saude/' ) ); ?>"><?php esc_html_e( 'Saúde', 'conexao-br-irlanda' ); ?></a></li>
-							<li><a href="<?php echo esc_url( home_url( '/familia/' ) ); ?>"><?php esc_html_e( 'Família', 'conexao-br-irlanda' ); ?></a></li>
-							<li><a href="<?php echo esc_url( home_url( '/transporte/' ) ); ?>"><?php esc_html_e( 'Transporte', 'conexao-br-irlanda' ); ?></a></li>
-							<li><a href="<?php echo esc_url( home_url( '/financas/' ) ); ?>"><?php esc_html_e( 'Finanças', 'conexao-br-irlanda' ); ?></a></li>
-							<li><a href="<?php echo esc_url( home_url( '/educacao/' ) ); ?>"><?php esc_html_e( 'Educação', 'conexao-br-irlanda' ); ?></a></li>
-						</ul>
-					</div>
-
-					<!-- Useful Links Column -->
-					<div class="footer-column">
-						<h4 class="footer-column-title"><?php esc_html_e( 'Links Úteis', 'conexao-br-irlanda' ); ?></h4>
-						<ul class="footer-links">
-							<li><a href="<?php echo esc_url( home_url( '/sobre-nos/' ) ); ?>"><?php esc_html_e( 'Sobre Nós', 'conexao-br-irlanda' ); ?></a></li>
-							<li><a href="<?php echo esc_url( home_url( '/contato/' ) ); ?>"><?php esc_html_e( 'Contato', 'conexao-br-irlanda' ); ?></a></li>
-							<li><a href="<?php echo esc_url( home_url( '/anuncie/' ) ); ?>"><?php esc_html_e( 'Anuncie', 'conexao-br-irlanda' ); ?></a></li>
-							<li><a href="<?php echo esc_url( home_url( '/politica-de-privacidade/' ) ); ?>"><?php esc_html_e( 'Privacidade', 'conexao-br-irlanda' ); ?></a></li>
-							<li><a href="<?php echo esc_url( home_url( '/termos-de-uso/' ) ); ?>"><?php esc_html_e( 'Termos de Uso', 'conexao-br-irlanda' ); ?></a></li>
-						</ul>
 					</div>
 				</div>
 			</div>
