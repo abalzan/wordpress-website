@@ -3076,7 +3076,7 @@ input[type="button"] {
     overflow-wrap: anywhere;
   }
 
-  /* Hero section mobile - image first, headline underneath */
+  /* Hero section mobile - headline first, image underneath */
   .hero-section {
     min-height: auto;
   }
@@ -3087,18 +3087,18 @@ input[type="button"] {
     gap: 24px;
   }
 
-  .hero-image {
+  .hero-content {
     order: 1;
+  }
+
+  .hero-image {
+    order: 2;
     max-width: 100%;
   }
 
   /* Hide the placeholder SVG on mobile only, keep container */
   .hero-image-placeholder svg {
     display: none;
-  }
-
-  .hero-content {
-    order: 2;
   }
 
   .hero-events-widget {
@@ -4314,5 +4314,161 @@ input[type="button"] {
   .home .site-main .quote-section,
   .front-page .site-main .quote-section {
     order: 9;
+  }
+}
+
+/* ===== Mobile Search Overlay ===== */
+.mobile-search-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: var(--space-2);
+  width: 48px;
+  height: 48px;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+
+.mobile-search-toggle:hover {
+  background: var(--color-surface-muted);
+  color: var(--color-primary);
+}
+
+.mobile-search-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(7, 59, 47, 0.45);
+  z-index: 9999;
+  opacity: 0;
+  visibility: hidden;
+  overflow-x: hidden;
+  transition: opacity var(--transition), visibility var(--transition);
+}
+
+.mobile-search-overlay.active {
+  display: block;
+  opacity: 1;
+  visibility: visible;
+}
+
+.mobile-search-overlay-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  background: var(--color-surface);
+  padding: var(--space-5) var(--space-5);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-100%);
+  transition: transform var(--transition-slow);
+}
+
+.mobile-search-overlay.active .mobile-search-overlay-content {
+  transform: translateY(0);
+}
+
+.mobile-search-form {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  max-width: 600px;
+  min-width: 0;
+  margin: 0 auto;
+}
+
+.mobile-search-field {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: auto;
+  min-height: 48px;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+  font-family: var(--font-body);
+}
+
+.mobile-search-field:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px rgba(14, 107, 58, 0.1);
+}
+
+.mobile-search-submit {
+  flex-shrink: 0;
+  background: var(--color-primary);
+  color: var(--conexao-white);
+  border: none;
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: var(--text-sm);
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+
+.mobile-search-submit:hover {
+  background: var(--color-primary-dark);
+}
+
+.mobile-search-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-2xl);
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
+.mobile-search-close:hover {
+  background: var(--color-surface-muted);
+  color: var(--color-text);
+}
+
+/* Show mobile search toggle at tablet and below */
+@media (max-width: 1280px) {
+  .mobile-search-toggle {
+    display: flex;
+  }
+
+  .header-search {
+    display: none;
+  }
+}
+
+/* Narrow viewport adjustments for mobile search overlay */
+@media (max-width: 480px) {
+  .mobile-search-overlay-content {
+    padding: var(--space-4) var(--space-3);
+  }
+
+  .mobile-search-form {
+    gap: 6px;
+  }
+
+  .mobile-search-submit {
+    padding: var(--space-3) var(--space-4);
+    font-size: var(--text-xs);
   }
 }
