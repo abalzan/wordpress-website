@@ -1036,15 +1036,7 @@
 }
 
 [data-theme="dark"] .footer-about {
-  color: rgba(255, 255, 255, 0.7);
-}
-
-[data-theme="dark"] .footer-links a {
-  color: rgba(255, 255, 255, 0.7);
-}
-
-[data-theme="dark"] .footer-links a:hover {
-  color: var(--conexao-accent);
+  color: rgba(255, 255, 255, 0.72);
 }
 
 [data-theme="dark"] .footer-bottom {

@@ -2613,13 +2613,13 @@ ul, ol {
 }
 
 .footer-main {
-  padding: 60px 0 40px;
+  padding: 56px 0 40px;
 }
 
 .footer-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr;
-  gap: 40px;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: clamp(32px, 6vw, 72px);
   align-items: start;
 }
 
@@ -2628,74 +2628,82 @@ ul, ol {
 }
 
 .footer-logo {
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
 .footer-logo img {
-  max-height: 48px;
+  max-height: 56px;
   width: auto;
 }
 
 .footer-about {
   font-size: 0.9375rem;
-  color: rgba(255, 255, 255, 0.7);
-  line-height: 1.6;
-  margin-bottom: 20px;
+  color: rgba(255, 255, 255, 0.72);
+  line-height: 1.65;
+  max-width: 440px;
+  margin: 0;
+}
+
+.footer-column {
+  min-width: 0;
+  padding-top: 6px;
+}
+
+.footer-column-title {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 16px;
 }
 
 .footer-social {
   display: flex;
-  gap: 10px;
+  align-items: center;
+  gap: 12px;
 }
 
 .footer-social a {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 40px;
   height: 40px;
   border-radius: var(--conexao-radius-full);
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
   color: var(--conexao-white);
-  transition: all var(--conexao-transition);
+  transition: background var(--conexao-transition), color var(--conexao-transition), transform var(--conexao-transition), box-shadow var(--conexao-transition);
+}
+
+.footer-social a svg {
+  width: 18px;
+  height: 18px;
 }
 
 .footer-social a:hover {
   background: var(--conexao-accent);
   color: var(--conexao-white);
   transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
-.footer-column-title {
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--conexao-white);
-  margin-bottom: 20px;
+.footer-social a.footer-social-link--whatsapp:hover {
+  background: var(--color-whatsapp);
 }
 
-.footer-links {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+.footer-social a.footer-social-link--facebook:hover {
+  background: #1877f2;
 }
 
-.footer-links li {
-  margin-bottom: 10px;
-}
-
-.footer-links a {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.9375rem;
-  transition: all var(--conexao-transition);
-}
-
-.footer-links a:hover {
-  color: var(--conexao-accent);
-  padding-left: 4px;
+.footer-social a:focus-visible {
+  outline: 3px solid var(--conexao-accent);
+  outline-offset: 2px;
 }
 
 .footer-bottom {
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.18);
   padding: 20px 0;
 }
 
@@ -2704,7 +2712,7 @@ ul, ol {
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 16px;
+  gap: 12px 24px;
 }
 
 .footer-copyright {
@@ -2714,16 +2722,29 @@ ul, ol {
 
 .footer-bottom-links {
   display: flex;
-  gap: 24px;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.footer-bottom-sep {
+  color: rgba(255, 255, 255, 0.35);
 }
 
 .footer-bottom-links a {
   font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.65);
+  transition: color var(--conexao-transition);
 }
 
 .footer-bottom-links a:hover {
   color: var(--conexao-accent);
+}
+
+.footer-bottom-links a:focus-visible {
+  outline: 3px solid var(--conexao-accent);
+  outline-offset: 2px;
+  border-radius: 2px;
 }
 
 /* ===== WhatsApp Float ===== */
@@ -3034,13 +3055,8 @@ input[type="button"] {
   }
 
   .footer-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 32px;
-  }
-
-  .footer-brand {
-    grid-column: 1 / -1;
-    max-width: 460px;
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+    gap: 40px;
   }
 }
 
@@ -3306,9 +3322,13 @@ input[type="button"] {
   }
 
   /* Footer mobile */
+  .footer-main {
+    padding: 48px 0 32px;
+  }
+
   .footer-grid {
     grid-template-columns: 1fr;
-    gap: 28px;
+    gap: 32px;
   }
 
   .footer-brand {
@@ -3316,14 +3336,32 @@ input[type="button"] {
     max-width: 100%;
   }
 
+  .footer-logo {
+    margin-bottom: 16px;
+  }
+
+  .footer-about {
+    max-width: 100%;
+  }
+
+  .footer-column {
+    padding-top: 0;
+  }
+
+  .footer-bottom {
+    padding: 16px 0;
+  }
+
   .footer-bottom .site-container {
     flex-direction: column;
     text-align: center;
+    gap: 10px;
   }
 
   .footer-bottom-links {
     justify-content: center;
     flex-wrap: wrap;
+    gap: 8px;
   }
 
   /* Blog layout mobile */
