@@ -101,17 +101,22 @@ if ( '' === $hero_image_alt ) {
 			<?php
 			$quick_access_cards = array(
 				array( 'icon' => 'home', 'title' => __( 'Moradia', 'conexao-br-irlanda' ), 'description' => __( 'Casas e apartamentos', 'conexao-br-irlanda' ), 'term' => 'moradia' ),
-				array( 'icon' => 'briefcase', 'title' => __( 'Empregos', 'conexao-br-irlanda' ), 'description' => __( 'Vagas de trabalho', 'conexao-br-irlanda' ), 'url' => '/empregos/' ),
+				array( 'icon' => 'briefcase', 'title' => __( 'Empregos', 'conexao-br-irlanda' ), 'description' => __( 'Vagas de trabalho', 'conexao-br-irlanda' ), 'url' => '/empregos/', 'mobile_priority' => 'empregos' ),
 				array( 'icon' => 'heart', 'title' => __( 'Saúde', 'conexao-br-irlanda' ), 'description' => __( 'Acesso à saúde', 'conexao-br-irlanda' ), 'term' => 'saude' ),
-				array( 'icon' => 'users', 'title' => __( 'Família', 'conexao-br-irlanda' ), 'description' => __( 'Família e crianças', 'conexao-br-irlanda' ), 'url' => '/familia/' ),
+				array( 'icon' => 'compass', 'title' => __( 'Lazer', 'conexao-br-irlanda' ), 'description' => __( 'Lazer e turismo', 'conexao-br-irlanda' ), 'url' => '/lazer/', 'mobile_priority' => 'lazer' ),
 				array( 'icon' => 'car', 'title' => __( 'Transporte', 'conexao-br-irlanda' ), 'description' => __( 'Como se locomover', 'conexao-br-irlanda' ), 'term' => 'transporte' ),
 				array( 'icon' => 'dollar', 'title' => __( 'Finanças', 'conexao-br-irlanda' ), 'description' => __( 'Bancos e impostos', 'conexao-br-irlanda' ), 'term' => 'financas' ),
 				array( 'icon' => 'gift', 'title' => __( 'Benefícios', 'conexao-br-irlanda' ), 'description' => __( 'Auxílios e subsídios', 'conexao-br-irlanda' ), 'term' => 'beneficios' ),
 				array( 'icon' => 'utensils', 'title' => __( 'Onde Comer', 'conexao-br-irlanda' ), 'description' => __( 'Restaurantes e mercados', 'conexao-br-irlanda' ), 'url' => '/onde-comer/' ),
-				array( 'icon' => 'calendar', 'title' => __( 'Eventos', 'conexao-br-irlanda' ), 'description' => __( 'Agenda da comunidade', 'conexao-br-irlanda' ), 'url' => '/eventos/' ),
+				array( 'icon' => 'calendar', 'title' => __( 'Eventos', 'conexao-br-irlanda' ), 'description' => __( 'Agenda da comunidade', 'conexao-br-irlanda' ), 'url' => '/eventos/', 'mobile_priority' => 'eventos' ),
 				array( 'icon' => 'graduation-cap', 'title' => __( 'Educação', 'conexao-br-irlanda' ), 'description' => __( 'Cursos e escolas', 'conexao-br-irlanda' ), 'url' => '/cursos/' ),
 				array( 'icon' => 'file-text', 'title' => __( 'Documentos', 'conexao-br-irlanda' ), 'description' => __( 'Vistos e PPS Number', 'conexao-br-irlanda' ), 'term' => 'documentos' ),
 				array( 'icon' => 'map', 'title' => __( 'Ver todas', 'conexao-br-irlanda' ), 'description' => __( 'Todas as categorias', 'conexao-br-irlanda' ), 'url' => '/categorias/' ),
+				// Mobile-only priority cards. These stay out of the desktop grid
+				// (mobile_only) and are promoted into the compact mobile 2x2
+				// navigation via the mobile_priority flag, together with the
+				// Empregos, Eventos and Lazer cards above.
+				array( 'icon' => 'book', 'title' => __( 'Guias', 'conexao-br-irlanda' ), 'description' => __( 'Guias práticos', 'conexao-br-irlanda' ), 'guides' => true, 'mobile_priority' => 'guias', 'mobile_only' => true ),
 			);
 
 			$icon_svgs = array(
@@ -127,6 +132,8 @@ if ( '' === $hero_image_alt ) {
 				'graduation-cap' => '<path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 2.5 3 6 3s3 0 6-3v-5"></path>',
 				'file-text' => '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline>',
 				'map' => '<polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line>',
+				'book' => '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>',
+				'compass' => '<circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>',
 			);
 
 			foreach ( $quick_access_cards as $card ) :
@@ -436,28 +443,43 @@ if ( '' === $hero_image_alt ) {
 			</a>
 		</div>
 
-		<div class="events-grid">
+		<div class="events-grid events-grid--preview">
 			<?php
+			// Homepage compact preview: only upcoming, published events ordered
+			// chronologically, limited to 2. This uses the SAME underlying event
+			// data as the /eventos/ archive — it never creates or duplicates
+			// records and it does not modify event metadata.
 			$events_list = new WP_Query( array(
-				'post_type'      => 'event',
-				'posts_per_page' => 3,
-				'meta_key'       => '_event_date',
-				'meta_value'     => current_time( 'Y-m-d' ),
-				'meta_compare'   => '>=',
-				'meta_type'      => 'DATE',
-				'orderby'        => 'meta_value',
-				'order'          => 'ASC',
-				'no_found_rows'  => true,
+				'post_type'           => 'event',
+				'post_status'         => 'publish',
+				'posts_per_page'      => 2,
+				'meta_key'            => '_event_date',
+				'meta_value'          => current_time( 'Y-m-d' ),
+				'meta_compare'        => '>=',
+				'meta_type'           => 'DATE',
+				'orderby'             => 'meta_value',
+				'order'               => 'ASC',
+				'no_found_rows'       => true,
 				'update_post_meta_cache' => false,
 				'update_post_term_cache' => false,
 			) );
 			if ( $events_list->have_posts() ) :
 				while ( $events_list->have_posts() ) : $events_list->the_post();
-					get_template_part( 'template-parts/event', 'card' );
+					get_template_part( 'template-parts/event', 'preview' );
 				endwhile; wp_reset_postdata();
 			else : ?>
 				<p><?php esc_html_e( 'Nenhum evento próximo no momento.', 'conexao-br-irlanda' ); ?></p>
 			<?php endif; ?>
+		</div>
+
+		<div class="events-section-footer">
+			<a href="<?php echo esc_url( home_url( '/eventos/' ) ); ?>" class="events-section-link">
+				<?php esc_html_e( 'Ver agenda completa', 'conexao-br-irlanda' ); ?>
+				<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+					<line x1="5" y1="12" x2="19" y2="12"></line>
+					<polyline points="12 5 19 12 12 19"></polyline>
+				</svg>
+			</a>
 		</div>
 	</div>
 </section>

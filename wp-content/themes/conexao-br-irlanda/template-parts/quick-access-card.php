@@ -16,8 +16,11 @@ if ( empty( $card['title'] ) ) {
 // Resolve the destination URL. Cards that carry a 'term' key resolve to the
 // existing /guias/ archive filter (the same tax_query used by the filter bar),
 // using the real conexao_category term slug. Cards with an explicit 'url' keep
-// their existing destination (e.g. /eventos/, /categorias/).
-if ( ! empty( $card['term'] ) ) {
+// their existing destination (e.g. /eventos/, /categorias/). Cards flagged with
+// 'guides' point to the canonical Guides archive.
+if ( ! empty( $card['guides'] ) ) {
+	$card_url = conexao_get_guides_archive_url();
+} elseif ( ! empty( $card['term'] ) ) {
 	$card_url = conexao_get_guide_category_url( $card['term'], $card['term'] );
 } elseif ( ! empty( $card['url'] ) ) {
 	$card_url = home_url( $card['url'] );
@@ -28,8 +31,22 @@ if ( ! empty( $card['term'] ) ) {
 if ( '' === $card_url ) {
 	return;
 }
+
+// Compose the card classes. Cards tagged with a mobile_priority slug are the
+// ones promoted into the compact mobile 2x2 navigation; cards flagged
+// mobile_only are kept out of the desktop grid and shown on mobile only.
+// A priority-specific class (e.g. --priority-empregos) is also added so the
+// mobile-only CSS can control the 2x2 ordering of the priority cards.
+$card_classes = array( 'quick-access-card' );
+if ( ! empty( $card['mobile_priority'] ) ) {
+	$card_classes[] = 'quick-access-card--mobile-priority';
+	$card_classes[] = 'quick-access-card--priority-' . sanitize_html_class( $card['mobile_priority'] );
+}
+if ( ! empty( $card['mobile_only'] ) ) {
+	$card_classes[] = 'quick-access-card--mobile-only';
+}
 ?>
-<a href="<?php echo esc_url( $card_url ); ?>" class="quick-access-card">
+<a href="<?php echo esc_url( $card_url ); ?>" class="<?php echo esc_attr( implode( ' ', $card_classes ) ); ?>">
 	<div class="quick-access-icon">
 		<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
 			<?php echo $icon; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>

@@ -639,6 +639,12 @@ ul, ol {
   display: block;
 }
 
+/* Mobile-only Quick Access cards (e.g. Guias) are kept out of the desktop and
+   tablet grids, and only appear in the compact mobile 2x2 nav. */
+.quick-access-card--mobile-only {
+  display: none;
+}
+
 /* ===== Section Styles ===== */
 .section {
   padding: 80px 0;
@@ -1371,6 +1377,150 @@ ul, ol {
 .events-page .event-card-cta:hover {
   background: var(--conexao-primary);
   color: var(--conexao-white);
+}
+
+/* ===== Homepage Compact Event Preview ===== */
+/* The homepage "Próximos Eventos" section uses a lighter, scannable card
+   (template-parts/event-preview.php) than the full /eventos/ archive card.
+   These styles are scoped under .events-grid--preview so the archive layout
+   in archive.php remains completely untouched. */
+.events-grid--preview {
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.event-preview {
+  background: var(--conexao-white);
+  border-radius: var(--conexao-radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--conexao-border);
+  transition: all var(--conexao-transition);
+  height: 100%;
+}
+
+.event-preview:hover {
+  box-shadow: var(--conexao-shadow-lg);
+  transform: translateY(-4px);
+}
+
+.event-preview-link {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  text-decoration: none;
+  color: inherit;
+}
+
+.event-preview-media {
+  position: relative;
+  aspect-ratio: 16/9;
+  overflow: hidden;
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.event-preview-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform var(--conexao-transition-slow);
+}
+
+.event-preview:hover .event-preview-img {
+  transform: scale(1.05);
+}
+
+.event-preview-body {
+  padding: 18px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.event-preview-title {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--conexao-dark);
+  margin: 0;
+}
+
+.event-preview-meta,
+.event-preview-location {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8125rem;
+  color: var(--conexao-gray-600);
+  margin: 0;
+}
+
+.event-preview-meta svg,
+.event-preview-location svg {
+  flex-shrink: 0;
+  color: var(--conexao-primary);
+}
+
+.event-preview-meta-sep {
+  color: var(--conexao-gray-400);
+  margin: 0 2px;
+}
+
+.event-preview-time {
+  color: var(--conexao-gray-600);
+}
+
+/* Section footer "Ver agenda completa →" */
+.events-section-footer {
+  margin-top: 24px;
+  text-align: center;
+}
+
+.events-section-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  color: var(--conexao-primary);
+  text-decoration: none;
+  transition: color var(--conexao-transition);
+  padding: 10px 18px;
+  border: 1px solid var(--conexao-primary);
+  border-radius: var(--conexao-radius-full);
+}
+
+.events-section-link:hover {
+  background: var(--conexao-primary);
+  color: var(--conexao-white);
+}
+
+.events-section-link svg {
+  flex-shrink: 0;
+}
+
+/* Mobile: single column compact previews */
+@media (max-width: 768px) {
+  .events-grid--preview {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .event-preview-body {
+    padding: 14px 16px 16px;
+    gap: 8px;
+  }
+
+  .event-preview-title {
+    font-size: 1rem;
+  }
+
+  .events-section-footer {
+    margin-top: 20px;
+  }
 }
 
 /* ===== News Grid ===== */
@@ -3015,6 +3165,24 @@ input[type="button"] {
     margin-top: 2px;
   }
 
+  /* Compact 2x2 mobile portal navigation: show only the four priority cards
+     (Empregos, Eventos, Guias, Lazer) while hiding the remaining desktop-only
+     cards, and bring the mobile-only priority cards back in. */
+  .quick-access-card--mobile-only {
+    display: flex;
+  }
+
+  .quick-access-card:not(.quick-access-card--mobile-priority) {
+    display: none;
+  }
+
+  /* Force the 2x2 priority grid into the fixed order
+     (Empregos, Eventos, Guias, Lazer) regardless of DOM position. */
+  .quick-access-card--priority-empregos { order: 1; }
+  .quick-access-card--priority-eventos  { order: 2; }
+  .quick-access-card--priority-guias    { order: 3; }
+  .quick-access-card--priority-lazer    { order: 4; }
+
   /* Sections mobile */
   .section {
     padding: 40px 0;
@@ -3649,6 +3817,7 @@ input[type="button"] {
   .hero-badge-dot,
   .featured-article-image img,
   .event-card-banner-img,
+  .event-preview-img,
   .news-card-image img,
   .post-card-image img,
   .directory-card-image img,
@@ -3660,6 +3829,7 @@ input[type="button"] {
   .quick-access-card:hover,
   .guide-card:hover,
   .event-card:hover,
+  .event-preview:hover,
   .news-card:hover,
   .business-card:hover,
   .post-card:hover,
