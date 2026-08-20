@@ -129,7 +129,6 @@ foreach ( $query->posts as $post_id ) {
 
 	$current_status = get_post_meta( $post_id, '_leisure_image_status', true );
 	$has_local      = (bool) get_post_meta( $post_id, '_leisure_image_attachment_id', true );
-	$has_external   = (bool) get_post_meta( $post_id, '_leisure_image_external_url', true );
 
 	if ( $di_url ) {
 		update_post_meta( $post_id, '_leisure_image_source_url', $di_url );
@@ -138,7 +137,7 @@ foreach ( $query->posts as $post_id ) {
 		}
 	}
 
-	if ( ! $has_local && ! $has_external ) {
+	if ( ! $has_local ) {
 		if ( 'pending' !== $current_status ) {
 			update_post_meta( $post_id, '_leisure_image_status', 'pending' );
 			$updated++;
@@ -146,9 +145,6 @@ foreach ( $query->posts as $post_id ) {
 		}
 	} elseif ( $has_local && 'local' !== $current_status ) {
 		update_post_meta( $post_id, '_leisure_image_status', 'local' );
-		$updated++;
-	} elseif ( $has_external && 'external' !== $current_status ) {
-		update_post_meta( $post_id, '_leisure_image_status', 'external' );
 		$updated++;
 	}
 }

@@ -5,17 +5,17 @@
  * Requires the Conexão Lazer Migration plugin (conexao-leisure-migration).
  *
  * Usage:
- *   # Export all leisure items to a JSON file.
- *   wp eval-file scripts/run-leisure-migration.php --allow-root -- export /path/out.json
+ *   # Export all leisure items to a ZIP package.
+ *   wp eval-file scripts/run-leisure-migration.php --allow-root -- export /path/out.zip
  *
  *   # Preview (dry run) an import — no data is written.
- *   wp eval-file scripts/run-leisure-migration.php --allow-root -- preview /path/in.json
+ *   wp eval-file scripts/run-leisure-migration.php --allow-root -- preview /path/in.zip
  *
  *   # Import (after reviewing the preview).
- *   wp eval-file scripts/run-leisure-migration.php --allow-root -- import /path/in.json
+ *   wp eval-file scripts/run-leisure-migration.php --allow-root -- import /path/in.zip
  *
  *   # Import, skipping items that already exist.
- *   wp eval-file scripts/run-leisure-migration.php --allow-root -- import-skip /path/in.json
+ *   wp eval-file scripts/run-leisure-migration.php --allow-root -- import-skip /path/in.zip
  *
  *   # Verify current leisure state (counts, taxonomies, featured images).
  *   wp eval-file scripts/run-leisure-migration.php --allow-root -- verify
@@ -69,23 +69,22 @@ function conexao_lazer_cli_line( $label, $value ) {
 switch ( $command ) {
 	case 'export':
 		if ( ! $path ) {
-			$path = 'conexao-lazer-export-' . gmdate( 'Y-m-d-His' ) . '.json';
+			$path = 'lazer-export-' . gmdate( 'Y-m-d' ) . '.zip';
 		}
-		$payload = $exporter->build_export();
-		$json    = wp_json_encode( $payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
-		if ( false === file_put_contents( $path, $json ) ) {
-			fwrite( STDERR, "ERROR: Could not write export file: $path\n" );
+		$package = $exporter->build_package( $path );
+		if ( is_wp_error( $package ) ) {
+			fwrite( STDERR, "ERROR: " . $package->get_error_message() . "\n" );
 			exit( 1 );
 		}
-		fwrite( STDOUT, "Exported " . count( $payload['items'] ) . " leisure location(s) to:\n  $path\n" );
-		fwrite( STDOUT, '  Format: ' . $payload['manifest']['format'] . ' v' . $payload['manifest']['version'] . "\n" );
-		fwrite( STDOUT, '  Source: ' . $payload['manifest']['source_url'] . "\n" );
+		fwrite( STDOUT, "Exported Lazer package to:\n  $path\n" );
+		fwrite( STDOUT, '  Format: ' . Conexao_Lazer_Exporter::FORMAT . ' v' . Conexao_Lazer_Exporter::FORMAT_VERSION . "\n" );
+		fwrite( STDOUT, '  Source: ' . home_url() . "\n" );
 		break;
 
 	case 'preview':
 	case 'dry-run':
 		if ( ! $path ) {
-			fwrite( STDERR, "ERROR: preview requires a JSON file path.\n" );
+			fwrite( STDERR, "ERROR: preview requires a ZIP file path.\n" );
 			exit( 1 );
 		}
 		$stats = $importer->import_file( $path, array( 'dry_run' => true ) );
@@ -103,6 +102,8 @@ switch ( $command ) {
 		conexao_lazer_cli_line( 'To skip', $stats['skipped'] );
 		conexao_lazer_cli_line( 'Failed', $stats['failed'] );
 		conexao_lazer_cli_line( 'Images to import', $stats['images_imported'] );
+		conexao_lazer_cli_line( 'Images to reuse', $stats['images_reused'] );
+		conexao_lazer_cli_line( 'Images missing', $stats['images_missing'] );
 		conexao_lazer_cli_line( 'Tax terms to create', $stats['taxonomies_created'] );
 		conexao_lazer_cli_line( 'Tax terms matched', $stats['taxonomies_matched'] );
 		break;
@@ -110,7 +111,7 @@ switch ( $command ) {
 	case 'import':
 	case 'import-update':
 		if ( ! $path ) {
-			fwrite( STDERR, "ERROR: import requires a JSON file path.\n" );
+			fwrite( STDERR, "ERROR: import requires a ZIP file path.\n" );
 			exit( 1 );
 		}
 		conexao_lazer_cli_import( $importer, $path, true );
@@ -118,7 +119,7 @@ switch ( $command ) {
 
 	case 'import-skip':
 		if ( ! $path ) {
-			fwrite( STDERR, "ERROR: import-skip requires a JSON file path.\n" );
+			fwrite( STDERR, "ERROR: import-skip requires a ZIP file path.\n" );
 			exit( 1 );
 		}
 		conexao_lazer_cli_import( $importer, $path, false );
@@ -145,7 +146,7 @@ switch ( $command ) {
 	default:
 		fwrite( STDOUT, "Conexão Lazer Migration CLI\n" );
 		fwrite( STDOUT, "Usage: wp eval-file scripts/run-leisure-migration.php --allow-root -- <command> [path]\n" );
-		fwrite( STDOUT, "  export [path]        Export all leisure items to a JSON file.\n" );
+		fwrite( STDOUT, "  export [path]        Export all leisure items to a ZIP package.\n" );
 		fwrite( STDOUT, "  preview [path]       Dry-run import preview (writes nothing).\n" );
 		fwrite( STDOUT, "  import [path]        Import, updating existing items.\n" );
 		fwrite( STDOUT, "  import-skip [path]   Import, skipping existing items.\n" );
@@ -157,7 +158,7 @@ switch ( $command ) {
  * Run an import from the CLI and print a human-readable report.
  *
  * @param Conexao_Lazer_Importer $importer Importer instance.
- * @param string                 $path     JSON file path.
+ * @param string                 $path     ZIP file path.
  * @param bool                   $update   Whether to update existing items.
  */
 function conexao_lazer_cli_import( $importer, $path, $update ) {
@@ -170,6 +171,8 @@ function conexao_lazer_cli_import( $importer, $path, $update ) {
 	conexao_lazer_cli_line( 'Skipped', $stats['skipped'] );
 	conexao_lazer_cli_line( 'Failed', $stats['failed'] );
 	conexao_lazer_cli_line( 'Images imported', $stats['images_imported'] );
+	conexao_lazer_cli_line( 'Images reused', $stats['images_reused'] );
+	conexao_lazer_cli_line( 'Images missing', $stats['images_missing'] );
 	conexao_lazer_cli_line( 'Tax terms created', $stats['taxonomies_created'] );
 	conexao_lazer_cli_line( 'Tax terms matched', $stats['taxonomies_matched'] );
 

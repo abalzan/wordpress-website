@@ -29,12 +29,10 @@ $leisure_link_url      = $leisure_external ? $leisure_external : $leisure_permal
 $leisure_is_external   = (bool) $leisure_external;
 $leisure_has_official  = (bool) get_post_meta( $leisure_id, '_leisure_official_website', true );
 
-// Image handling: prefer a properly-licensed local Media Library image
-// (featured thumbnail). Falls back to an explicitly-licensed external URL.
-// When neither exists, the card renders a neutral "Image pending" state.
-// Alt text is fetched from the dedicated meta field, falling back to the
-// location title for accessibility.
-$leisure_image_status = get_post_meta( $leisure_id, '_leisure_image_status', true );
+// Image handling: the image is always a local WordPress Media Library
+// attachment (featured thumbnail). When no image is available, the card
+// renders a neutral "Image pending" state. Alt text is fetched from the
+// dedicated meta field, falling back to the location title for accessibility.
 $leisure_alt_text     = get_post_meta( $leisure_id, '_leisure_image_alt_text', true );
 $leisure_alt          = $leisure_alt_text ? $leisure_alt_text : get_the_title();
 $leisure_src_url      = get_post_meta( $leisure_id, '_leisure_image_source_url', true );
@@ -55,16 +53,6 @@ array(
 'alt'     => esc_attr( $leisure_alt ),
 )
 );
-} elseif ( 'external' === $leisure_image_status ) {
-$external_img = get_post_meta( $leisure_id, '_leisure_image_external_url', true );
-if ( $external_img ) {
-$leisure_has_image = true;
-$leisure_img_html  = sprintf(
-'<img src="%s" alt="%s" loading="lazy" width="400" height="300">',
-esc_url( $external_img ),
-esc_attr( $leisure_alt )
-);
-}
 }
 
 // Determine if attribution should be shown.

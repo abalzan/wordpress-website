@@ -2,14 +2,18 @@
 /**
  * Lazer (leisure) importer.
  *
- * Imports a portable JSON export file (produced by Conexao_Lazer_Exporter)
- * into the current WordPress installation, recreating leisure posts, metadata,
- * taxonomies and featured images.
+ * Imports a portable ZIP package (produced by Conexao_Lazer_Exporter) into
+ * the current WordPress installation, recreating leisure posts, metadata,
+ * taxonomies and Media Library attachments from the actual image files
+ * contained in the package.
  *
- * The importer is safe to run repeatedly: records are matched by their stable
- * export UUID, then by slug, then by title, so re-importing never creates
- * duplicates. It only ever affects the `leisure` post type, its taxonomies
- * and the Media Library attachments created for leisure images.
+ * The importer is idempotent: records are matched by their stable export UUID,
+ * then by slug, then by title, so re-importing never creates duplicates.
+ * Images are matched by their stable image ID and content hash, so existing
+ * attachments are reused rather than duplicated.
+ *
+ * The importer only ever affects the `leisure` post type, its taxonomies and
+ * the Media Library attachments it creates for leisure images.
  *
  * @package Conexao_Lazer_Migration
  */
@@ -18,11 +22,6 @@ defined( 'ABSPATH' ) || exit;
 
 class Conexao_Lazer_Importer {
 
-	/**
-	 * Allowed meta keys (mirrors the exporter list).
-	 *
-	 * @var array
-	 */
 	protected $allowed_meta_keys = array(
 		'_leisure_county',
 		'_leisure_town',
@@ -43,26 +42,22 @@ class Conexao_Lazer_Importer {
 		'_leisure_duration',
 		'_leisure_best_time',
 		'_leisure_image_attachment_id',
-		'_leisure_image_external_url',
 		'_leisure_image_source',
 		'_leisure_image_source_url',
 		'_leisure_image_author',
 		'_leisure_image_license',
 		'_leisure_image_attribution',
 		'_leisure_image_alt_text',
-		'_leisure_image_status',
 	);
 
-	/**
-	 * Taxonomies that are imported for each leisure item.
-	 *
-	 * @var array
-	 */
 	protected $supported_taxonomies = array(
 		'conexao_category',
 		'conexao_county',
 		'conexao_tag',
 	);
+
+	const MAX_PACKAGE_SIZE = 100 * MB_IN_BYTES;
+	const MAX_IMAGE_SIZE   = 25 * MB_IN_BYTES;
 
 	/**
 	 * Validate an uploaded/prepared import file.
@@ -71,7 +66,7 @@ class Conexao_Lazer_Importer {
 	 * or a WP_Error describing the problem. No data is written during
 	 * validation.
 	 *
-	 * @param array|string $file $_FILES entry or absolute path to a JSON file.
+	 * @param array|string $file $_FILES entry or absolute path to a ZIP file.
 	 * @return true|WP_Error
 	 */
 	public function validate_upload( $file ) {
@@ -101,37 +96,80 @@ class Conexao_Lazer_Importer {
 			return new WP_Error( 'invalid_upload', __( 'The uploaded file could not be read.', 'conexao-leisure-migration' ) );
 		}
 
-		// Check file size (limit to 25 MB).
-		if ( filesize( $file['tmp_name'] ) > 25 * MB_IN_BYTES ) {
-			return new WP_Error( 'file_too_large', __( 'The uploaded file is too large. Maximum size is 25 MB.', 'conexao-leisure-migration' ) );
+		if ( filesize( $file['tmp_name'] ) > self::MAX_PACKAGE_SIZE ) {
+			return new WP_Error( 'file_too_large', __( 'The uploaded file is too large. Maximum size is 100 MB.', 'conexao-leisure-migration' ) );
 		}
 
-		// Check the file extension.
 		$ext = strtolower( pathinfo( $file['name'], PATHINFO_EXTENSION ) );
-		if ( 'json' !== $ext ) {
-			return new WP_Error( 'invalid_type', __( 'Only .json export files are supported.', 'conexao-leisure-migration' ) );
+		if ( 'zip' !== $ext ) {
+			return new WP_Error( 'invalid_type', __( 'Only .zip export packages are supported.', 'conexao-leisure-migration' ) );
 		}
 
-		return $this->validate_json_contents( file_get_contents( $file['tmp_name'] ) );
+		return $this->validate_zip( $file['tmp_name'] );
 	}
 
-	/**
-	 * Validate a JSON file given its path (used by the CLI script).
-	 *
-	 * @param string $path Absolute path to a JSON file.
-	 * @return true|WP_Error
-	 */
 	protected function validate_file_path( $path ) {
 		if ( ! is_file( $path ) || ! is_readable( $path ) ) {
 			return new WP_Error( 'file_not_found', __( 'The export file could not be found or read.', 'conexao-leisure-migration' ) );
 		}
 
 		$ext = strtolower( pathinfo( $path, PATHINFO_EXTENSION ) );
-		if ( 'json' !== $ext ) {
-			return new WP_Error( 'invalid_type', __( 'Only .json export files are supported.', 'conexao-leisure-migration' ) );
+		if ( 'zip' !== $ext ) {
+			return new WP_Error( 'invalid_type', __( 'Only .zip export packages are supported.', 'conexao-leisure-migration' ) );
 		}
 
-		return $this->validate_json_contents( file_get_contents( $path ) );
+		return $this->validate_zip( $path );
+	}
+
+	/**
+	 * Validate a ZIP package: structure, data.json, and image files.
+	 *
+	 * @param string $zip_path Absolute path to the ZIP.
+	 * @return true|WP_Error
+	 */
+	protected function validate_zip( $zip_path ) {
+		if ( ! class_exists( 'ZipArchive' ) ) {
+			return new WP_Error( 'zip_missing', __( 'The ZipArchive PHP extension is required to import the export package.', 'conexao-leisure-migration' ) );
+		}
+
+		$zip = new ZipArchive();
+		$res = $zip->open( $zip_path );
+		if ( true !== $res ) {
+			return new WP_Error( 'zip_open_failed', __( 'The uploaded file is not a valid ZIP archive.', 'conexao-leisure-migration' ) );
+		}
+
+		// Locate data.json (either at root or inside lazer-export/).
+		$data_index = $this->find_zip_entry( $zip, 'data.json' );
+		if ( false === $data_index ) {
+			$zip->close();
+			return new WP_Error( 'invalid_format', __( 'The ZIP package does not contain a data.json file.', 'conexao-leisure-migration' ) );
+		}
+
+		$contents = $zip->getFromIndex( $data_index );
+		$zip->close();
+
+		if ( false === $contents ) {
+			return new WP_Error( 'read_error', __( 'Could not read data.json from the ZIP package.', 'conexao-leisure-migration' ) );
+		}
+
+		return $this->validate_json_contents( $contents );
+	}
+
+	/**
+	 * Find a file entry in a ZIP by basename.
+	 *
+	 * @param ZipArchive $zip      Open ZIP archive.
+	 * @param string     $basename File basename to find.
+	 * @return int|false Index of the entry, or false.
+	 */
+	protected function find_zip_entry( $zip, $basename ) {
+		for ( $i = 0; $i < $zip->numFiles; $i++ ) {
+			$name = $zip->getNameIndex( $i );
+			if ( basename( $name ) === $basename ) {
+				return $i;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -162,36 +200,122 @@ class Conexao_Lazer_Importer {
 	}
 
 	/**
+	 * Extract a ZIP package to a temp directory and return the data payload.
+	 *
+	 * @param string $zip_path Absolute path to the ZIP.
+	 * @return array{data:array, images_dir:string, tmp_dir:string}|WP_Error
+	 */
+	protected function extract_package( $zip_path ) {
+		if ( ! class_exists( 'ZipArchive' ) ) {
+			return new WP_Error( 'zip_missing', __( 'The ZipArchive PHP extension is required to import the export package.', 'conexao-leisure-migration' ) );
+		}
+
+		$zip = new ZipArchive();
+		$res = $zip->open( $zip_path );
+		if ( true !== $res ) {
+			return new WP_Error( 'zip_open_failed', __( 'The uploaded file is not a valid ZIP archive.', 'conexao-leisure-migration' ) );
+		}
+
+		$tmp_dir = wp_tempnam( 'conexao-lazer-import' );
+		if ( file_exists( $tmp_dir ) ) {
+			@unlink( $tmp_dir );
+		}
+		if ( ! wp_mkdir_p( $tmp_dir ) ) {
+			$zip->close();
+			return new WP_Error( 'tmp_mkdir_failed', __( 'Could not create the import temp directory.', 'conexao-leisure-migration' ) );
+		}
+
+		$zip->extractTo( $tmp_dir );
+		$zip->close();
+
+		// Locate data.json.
+		$data_path = $this->find_file_recursive( $tmp_dir, 'data.json' );
+		if ( ! $data_path ) {
+			$this->remove_directory( $tmp_dir );
+			return new WP_Error( 'invalid_format', __( 'The ZIP package does not contain a data.json file.', 'conexao-leisure-migration' ) );
+		}
+
+		$contents = file_get_contents( $data_path );
+		$data     = json_decode( $contents, true );
+		if ( ! is_array( $data ) ) {
+			$this->remove_directory( $tmp_dir );
+			return new WP_Error( 'invalid_json', __( 'data.json is not valid JSON.', 'conexao-leisure-migration' ) );
+		}
+
+		// Locate the images directory.
+		$images_dir = $this->find_dir_recursive( $tmp_dir, 'images' );
+		if ( ! $images_dir ) {
+			$images_dir = trailingslashit( $tmp_dir );
+		}
+
+		return array(
+			'data'       => $data,
+			'images_dir' => $images_dir,
+			'tmp_dir'    => $tmp_dir,
+		);
+	}
+
+	/**
+	 * Recursively find a file by basename.
+	 *
+	 * @param string $dir      Directory to search.
+	 * @param string $basename Basename to find.
+	 * @return string|false Absolute path, or false.
+	 */
+	protected function find_file_recursive( $dir, $basename ) {
+		$iterator = new RecursiveIteratorIterator(
+			new RecursiveDirectoryIterator( $dir ),
+			RecursiveIteratorIterator::LEAVES_ONLY
+		);
+		foreach ( $iterator as $file ) {
+			if ( $file->isFile() && $file->getBasename() === $basename ) {
+				return $file->getPathname();
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Recursively find a directory by basename.
+	 *
+	 * @param string $dir      Directory to search.
+	 * @param string $basename Basename to find.
+	 * @return string|false Absolute path, or false.
+	 */
+	protected function find_dir_recursive( $dir, $basename ) {
+		$iterator = new RecursiveIteratorIterator(
+			new RecursiveDirectoryIterator( $dir ),
+			RecursiveIteratorIterator::SELF_FIRST
+		);
+		foreach ( $iterator as $item ) {
+			if ( $item->isDir() && $item->getBasename() === $basename ) {
+				return $item->getPathname();
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Read an export payload from a $_FILES entry or a file path.
 	 *
 	 * @param array|string $file $_FILES entry or absolute path.
 	 * @return array Export data array.
 	 */
 	public function read_data( $file ) {
-		$contents = is_string( $file ) ? file_get_contents( $file ) : file_get_contents( $file['tmp_name'] );
-		$data     = json_decode( $contents, true );
-
-		return is_array( $data ) ? $data : array();
+		$path = is_string( $file ) ? $file : $file['tmp_name'];
+		$extracted = $this->extract_package( $path );
+		if ( is_wp_error( $extracted ) ) {
+			return array();
+		}
+		return $extracted['data'];
 	}
 
 	/**
-	 * Import leisure items from an uploaded file or path.
+	 * Import leisure items from an uploaded ZIP or path.
 	 *
 	 * @param array|string $file     $_FILES entry or absolute path.
 	 * @param array        $options  Import options: dry_run (bool), update (bool).
-	 * @return array{
-	 *   dry_run: bool,
-	 *   found: int,
-	 *   created: int,
-	 *   updated: int,
-	 *   skipped: int,
-	 *   failed: int,
-	 *   images_imported: int,
-	 *   taxonomies_created: int,
-	 *   taxonomies_matched: int,
-	 *   items: array,
-	 *   errors: array
-	 * }
+	 * @return array
 	 */
 	public function import_file( $file, $options = array() ) {
 		$validated = $this->validate_upload( $file );
@@ -199,7 +323,16 @@ class Conexao_Lazer_Importer {
 			return $this->empty_stats( array( $validated->get_error_message() ) );
 		}
 
-		$data    = $this->read_data( $file );
+		$path = is_string( $file ) ? $file : $file['tmp_name'];
+		$extracted = $this->extract_package( $path );
+		if ( is_wp_error( $extracted ) ) {
+			return $this->empty_stats( array( $extracted->get_error_message() ) );
+		}
+
+		$data       = $extracted['data'];
+		$images_dir = $extracted['images_dir'];
+		$tmp_dir    = $extracted['tmp_dir'];
+
 		$dry_run = ! empty( $options['dry_run'] );
 		$update  = ! isset( $options['update'] ) || ! empty( $options['update'] );
 
@@ -208,7 +341,7 @@ class Conexao_Lazer_Importer {
 		$stats['found']   = count( $data['items'] );
 
 		foreach ( $data['items'] as $item ) {
-			$result = $this->import_item( $item, $dry_run, $update, $stats );
+			$result = $this->import_item( $item, $images_dir, $dry_run, $update, $stats );
 
 			if ( 'created' === $result['action'] ) {
 				$stats['created']++;
@@ -223,8 +356,9 @@ class Conexao_Lazer_Importer {
 				}
 			}
 
-			// Aggregate image / taxonomy preview counts (dry-run) or actuals.
 			$stats['images_imported']    += ! empty( $result['images'] ) ? (int) $result['images'] : 0;
+			$stats['images_reused']      += ! empty( $result['images_reused'] ) ? (int) $result['images_reused'] : 0;
+			$stats['images_missing']     += ! empty( $result['images_missing'] ) ? (int) $result['images_missing'] : 0;
 			$stats['taxonomies_created'] += ! empty( $result['tax_created'] ) ? (int) $result['tax_created'] : 0;
 			$stats['taxonomies_matched'] += ! empty( $result['tax_matched'] ) ? (int) $result['tax_matched'] : 0;
 
@@ -235,58 +369,47 @@ class Conexao_Lazer_Importer {
 			$stats['verification'] = $this->verify_import( count( $data['items'] ) );
 		}
 
+		// Clean up the temp directory.
+		$this->remove_directory( $tmp_dir );
+
 		return $stats;
 	}
 
-	/**
-	 * Build an initial empty stats array.
-	 *
-	 * @param array $errors Initial errors.
-	 * @return array
-	 */
 	protected function empty_stats( $errors ) {
 		return array(
-			'dry_run'             => false,
-			'found'               => 0,
-			'created'             => 0,
-			'updated'             => 0,
-			'skipped'             => 0,
-			'failed'              => 0,
-			'images_imported'     => 0,
-			'taxonomies_created'  => 0,
-			'taxonomies_matched'  => 0,
-			'items'               => array(),
-			'errors'              => $errors,
-			'verification'        => null,
+			'dry_run'            => false,
+			'found'              => 0,
+			'created'            => 0,
+			'updated'            => 0,
+			'skipped'            => 0,
+			'failed'             => 0,
+			'images_imported'    => 0,
+			'images_reused'      => 0,
+			'images_missing'     => 0,
+			'taxonomies_created' => 0,
+			'taxonomies_matched' => 0,
+			'items'              => array(),
+			'errors'             => $errors,
+			'verification'       => null,
 		);
 	}
 
-	/**
-	 * Import a single leisure item from the export payload.
-	 *
-	 * @param array $item    Item data from the export file.
-	 * @param bool  $dry_run Whether to only preview without writing.
-	 * @param bool  $update  Whether to update existing records.
-	 * @param array $stats   Running stats (mutable, for image/taxonomy counters).
-	 * @return array{action:string, post_id:int, error?:string, title?:string, images?:int, tax_created?:int, tax_matched?:int}
-	 */
-	protected function import_item( $item, $dry_run, $update, &$stats ) {
-		$post = isset( $item['post'] ) ? $item['post'] : array();
+	protected function import_item( $item, $images_dir, $dry_run, $update, &$stats ) {
+		$post  = isset( $item['post'] ) ? $item['post'] : array();
 		$title = isset( $post['title'] ) ? trim( (string) $post['title'] ) : '';
 		$slug  = isset( $post['slug'] ) ? sanitize_title( $post['slug'] ) : '';
 
 		if ( empty( $title ) && empty( $slug ) ) {
 			return array(
-				'action' => 'failed',
+				'action'  => 'failed',
 				'post_id' => 0,
-				'error'  => __( 'Item is missing both a title and a slug.', 'conexao-leisure-migration' ),
-				'title'  => $title,
+				'error'   => __( 'Item is missing both a title and a slug.', 'conexao-leisure-migration' ),
+				'title'   => $title,
 			);
 		}
 
 		$uuid = isset( $item['uuid'] ) ? sanitize_text_field( $item['uuid'] ) : '';
 
-		// Find an existing leisure post.
 		$existing_id = $this->find_existing_item( $item, $uuid, $slug, $title );
 
 		if ( $existing_id ) {
@@ -299,18 +422,17 @@ class Conexao_Lazer_Importer {
 			}
 
 			if ( $dry_run ) {
-				// Preview the update.
-				$run = $this->simulate_update( $existing_id, $item, $title );
+				$run = $this->simulate_update( $existing_id, $item, $images_dir, $title );
 			} else {
-				$run = $this->update_item( $existing_id, $item, $title, $stats );
+				$run = $this->update_item( $existing_id, $item, $images_dir, $title, $stats );
 			}
 
 			if ( is_wp_error( $run ) ) {
 				return array(
-					'action' => 'failed',
+					'action'  => 'failed',
 					'post_id' => $existing_id,
-					'error'  => $run->get_error_message(),
-					'title'  => $title,
+					'error'   => $run->get_error_message(),
+					'title'   => $title,
 				);
 			}
 
@@ -319,23 +441,25 @@ class Conexao_Lazer_Importer {
 				'post_id'        => $existing_id,
 				'title'          => $title,
 				'images'         => $run['images'],
+				'images_reused'  => $run['images_reused'],
+				'images_missing' => $run['images_missing'],
 				'tax_created'    => $run['tax_created'],
 				'tax_matched'    => $run['tax_matched'],
 			);
 		}
 
 		if ( $dry_run ) {
-			$run = $this->simulate_create( $item, $title );
+			$run = $this->simulate_create( $item, $images_dir, $title );
 		} else {
-			$run = $this->create_item( $item, $title, $stats );
+			$run = $this->create_item( $item, $images_dir, $title, $stats );
 		}
 
 		if ( is_wp_error( $run ) ) {
 			return array(
-				'action' => 'failed',
+				'action'  => 'failed',
 				'post_id' => 0,
-				'error'  => $run->get_error_message(),
-				'title'  => $title,
+				'error'   => $run->get_error_message(),
+				'title'   => $title,
 			);
 		}
 
@@ -344,79 +468,74 @@ class Conexao_Lazer_Importer {
 			'post_id'        => $run['post_id'],
 			'title'          => $title,
 			'images'         => $run['images'],
+			'images_reused'  => $run['images_reused'],
+			'images_missing' => $run['images_missing'],
 			'tax_created'    => $run['tax_created'],
 			'tax_matched'    => $run['tax_matched'],
 		);
 	}
 
-	/**
-	 * Simulate creating an item (dry-run) without writing anything.
-	 *
-	 * @param array  $item  Item data.
-	 * @param string $title Item title.
-	 * @return array
-	 */
-	protected function simulate_create( $item, $title ) {
+	protected function simulate_create( $item, $images_dir, $title ) {
 		$tax = $this->preview_taxonomies( $item );
+		$img = $this->preview_image( $item, $images_dir );
 
 		return array(
-			'post_id'     => 0,
-			'images'      => $this->preview_image( $item ),
-			'tax_created' => $tax['created'],
-			'tax_matched' => $tax['matched'],
-			'is_preview'  => true,
-			'title'       => $title,
+			'post_id'        => 0,
+			'images'         => $img['import'],
+			'images_reused'  => $img['reuse'],
+			'images_missing' => $img['missing'],
+			'tax_created'    => $tax['created'],
+			'tax_matched'    => $tax['matched'],
+			'is_preview'     => true,
+			'title'          => $title,
+		);
+	}
+
+	protected function simulate_update( $existing_id, $item, $images_dir, $title ) {
+		$tax = $this->preview_taxonomies( $item );
+		$img = $this->preview_image( $item, $images_dir );
+
+		return array(
+			'post_id'        => $existing_id,
+			'images'         => $img['import'],
+			'images_reused'  => $img['reuse'],
+			'images_missing' => $img['missing'],
+			'tax_created'    => $tax['created'],
+			'tax_matched'    => $tax['matched'],
+			'is_preview'     => true,
+			'title'          => $title,
 		);
 	}
 
 	/**
-	 * Simulate updating an item (dry-run) without writing anything.
+	 * Preview: determine whether an image would be imported, reused, or missing.
 	 *
-	 * @param int    $existing_id Existing post ID.
-	 * @param array  $item        Item data.
-	 * @param string $title       Item title.
-	 * @return array
+	 * @param array  $item       Item data.
+	 * @param string $images_dir Extracted images directory.
+	 * @return array{import:int, reuse:int, missing:int}
 	 */
-	protected function simulate_update( $existing_id, $item, $title ) {
-		$tax = $this->preview_taxonomies( $item );
+	protected function preview_image( $item, $images_dir ) {
+		$image_data = isset( $item['image_data'] ) ? $item['image_data'] : array();
+		$filename   = isset( $image_data['filename'] ) ? $image_data['filename'] : '';
 
-		return array(
-			'post_id'     => $existing_id,
-			'images'      => $this->preview_image( $item ),
-			'tax_created' => $tax['created'],
-			'tax_matched' => $tax['matched'],
-			'is_preview'  => true,
-			'title'       => $title,
-		);
-	}
-
-	/**
-	 * Preview: estimate whether an image would be imported and attachments.
-	 *
-	 * @param array $item Item data.
-	 * @return int 1 if images would be imported, else 0.
-	 */
-	protected function preview_image( $item ) {
-		$meta          = isset( $item['meta'] ) ? $item['meta'] : array();
-		$featured      = isset( $item['featured_image'] ) ? $item['featured_image'] : array();
-
-		// Only items that actually have a local Media Library attachment can
-		// have their image imported. The _leisure_image_status label is not
-		// authoritative — a 'pending' item may still carry a real thumbnail.
-		if ( empty( $featured['local_attachment_id'] ) && empty( $featured['local_url'] ) ) {
-			return 0;
+		if ( empty( $filename ) ) {
+			return array( 'import' => 0, 'reuse' => 0, 'missing' => 0 );
 		}
 
-		$url = $this->best_download_url( $featured, $meta );
-		return $url ? 1 : 0;
+		$file_path = $this->resolve_image_path( $images_dir, $filename );
+		if ( ! $file_path || ! file_exists( $file_path ) ) {
+			return array( 'import' => 0, 'reuse' => 0, 'missing' => 1 );
+		}
+
+		// If the image ID already exists on an attachment, it will be reused.
+		$image_id = isset( $image_data['id'] ) ? $image_data['id'] : '';
+		if ( $image_id && $this->find_attachment_by_image_id( $image_id ) ) {
+			return array( 'import' => 0, 'reuse' => 1, 'missing' => 0 );
+		}
+
+		return array( 'import' => 1, 'reuse' => 0, 'missing' => 0 );
 	}
 
-	/**
-	 * Preview: count how many taxonomy terms would be created.
-	 *
-	 * @param array $item Item data.
-	 * @return array{created:int, matched:int}
-	 */
 	protected function preview_taxonomies( $item ) {
 		$taxonomies = isset( $item['taxonomies'] ) ? $item['taxonomies'] : array();
 		$created = 0;
@@ -429,7 +548,6 @@ class Conexao_Lazer_Importer {
 			}
 
 			if ( ! taxonomy_exists( $taxonomy ) ) {
-				// Taxonomy missing on destination — count names as would-be created.
 				$created += count( array_filter( array_map( 'trim', $names ) ) );
 				continue;
 			}
@@ -449,22 +567,7 @@ class Conexao_Lazer_Importer {
 		return array( 'created' => $created, 'matched' => $matched );
 	}
 
-	/**
-	 * Find an existing leisure post that matches the imported item.
-	 *
-	 * Matching priority:
-	 *  1. Export UUID meta (_leisure_export_uuid)
-	 *  2. Slug (post_name) — leisure slugs are stable and unique
-	 *  3. Title (exact)
-	 *
-	 * @param array  $item  Item data.
-	 * @param string $uuid  Export UUID.
-	 * @param string $slug  Legible slug.
-	 * @param string $title Title.
-	 * @return int Post ID or 0.
-	 */
 	protected function find_existing_item( $item, $uuid, $slug, $title ) {
-		// 1. UUID match.
 		if ( $uuid ) {
 			$by_uuid = $this->find_by_uuid( $uuid );
 			if ( $by_uuid ) {
@@ -472,7 +575,6 @@ class Conexao_Lazer_Importer {
 			}
 		}
 
-		// 2. Slug match.
 		if ( $slug ) {
 			$by_slug = $this->find_by_slug( $slug );
 			if ( $by_slug ) {
@@ -480,7 +582,6 @@ class Conexao_Lazer_Importer {
 			}
 		}
 
-		// 3. Title match.
 		if ( $title ) {
 			return $this->find_by_title( $title );
 		}
@@ -488,70 +589,43 @@ class Conexao_Lazer_Importer {
 		return 0;
 	}
 
-	/**
-	 * Find a leisure post by its export UUID.
-	 *
-	 * @param string $uuid Export UUID.
-	 * @return int Post ID or 0.
-	 */
 	protected function find_by_uuid( $uuid ) {
-		$query = new WP_Query(
-			array(
-				'post_type'      => 'leisure',
-				'post_status'    => 'any',
-				'posts_per_page' => 1,
-				'fields'         => 'ids',
-				'no_found_rows'  => true,
-				'update_post_meta_cache' => false,
-				'update_post_term_cache' => false,
-				'meta_query'     => array(
-					array(
-						'key'   => Conexao_Lazer_Exporter::UUID_META_KEY,
-						'value' => $uuid,
-					),
+		$query = new WP_Query( array(
+			'post_type'      => 'leisure',
+			'post_status'    => 'any',
+			'posts_per_page' => 1,
+			'fields'         => 'ids',
+			'no_found_rows'  => true,
+			'update_post_meta_cache' => false,
+			'update_post_term_cache' => false,
+			'meta_query'     => array(
+				array(
+					'key'   => Conexao_Lazer_Exporter::UUID_META_KEY,
+					'value' => $uuid,
 				),
-			)
-		);
+			),
+		) );
 
 		return $query->have_posts() ? (int) $query->posts[0] : 0;
 	}
 
-	/**
-	 * Find a leisure post by its slug.
-	 *
-	 * @param string $slug Post slug.
-	 * @return int Post ID or 0.
-	 */
 	protected function find_by_slug( $slug ) {
 		$post = get_page_by_path( $slug, OBJECT, 'leisure' );
 		return $post ? (int) $post->ID : 0;
 	}
 
-	/**
-	 * Find a leisure post by its exact title.
-	 *
-	 * @param string $title Title.
-	 * @return int Post ID or 0.
-	 */
 	protected function find_by_title( $title ) {
-		$query = new WP_Query(
-			array(
-				'post_type'      => 'leisure',
-				'post_status'    => 'any',
-				'posts_per_page' => 1,
-				'fields'         => 'ids',
-				'no_found_rows'  => true,
-				'update_post_meta_cache' => false,
-				'update_post_term_cache' => false,
-				's'              => $title,
-				'meta_query'     => array(
-					'relation' => 'OR',
-					array( 'key' => 'title_match', 'compare' => 'NOT EXISTS' ), // placeholder to allow later filtering.
-				),
-			)
-		);
+		$query = new WP_Query( array(
+			'post_type'      => 'leisure',
+			'post_status'    => 'any',
+			'posts_per_page' => -1,
+			'fields'         => 'ids',
+			'no_found_rows'  => true,
+			'update_post_meta_cache' => false,
+			'update_post_term_cache' => false,
+			's'              => $title,
+		) );
 
-		// Narrow by exact title match.
 		foreach ( $query->posts as $post_id ) {
 			if ( get_the_title( $post_id ) === $title ) {
 				return (int) $post_id;
@@ -561,111 +635,74 @@ class Conexao_Lazer_Importer {
 		return 0;
 	}
 
-	/**
-	 * Create a new leisure post from the export payload.
-	 *
-	 * @param array  $item  Item data.
-	 * @param string $title Item title.
-	 * @param array  $stats Running stats.
-	 * @return array|WP_Error {post_id, images, tax_created, tax_matched} or WP_Error.
-	 */
-	protected function create_item( $item, $title, &$stats ) {
+	protected function create_item( $item, $images_dir, $title, &$stats ) {
 		$post_data = $this->sanitize_post_data( $item );
 
-		$post_id = wp_insert_post(
-			array(
-				'post_type'    => 'leisure',
-				'post_title'   => $post_data['title'],
-				'post_content' => $post_data['content'],
-				'post_excerpt' => $post_data['excerpt'],
-				'post_status'  => $post_data['status'],
-				'post_name'    => $post_data['slug'],
-				'post_date'    => $post_data['date'],
-			),
-			true
-		);
+		$post_id = wp_insert_post( array(
+			'post_type'    => 'leisure',
+			'post_title'   => $post_data['title'],
+			'post_content' => $post_data['content'],
+			'post_excerpt' => $post_data['excerpt'],
+			'post_status'  => $post_data['status'],
+			'post_name'    => $post_data['slug'],
+			'post_date'    => $post_data['date'],
+		), true );
 
 		if ( is_wp_error( $post_id ) ) {
 			return $post_id;
 		}
 
-		$result = $this->populate_item( $post_id, $item, $stats );
+		$result = $this->populate_item( $post_id, $item, $images_dir, $stats );
 
 		return array_merge( array( 'post_id' => (int) $post_id ), $result );
 	}
 
-	/**
-	 * Update an existing leisure post from the export payload.
-	 *
-	 * @param int    $post_id Existing leisure post ID.
-	 * @param array  $item    Item data.
-	 * @param string $title   Item title.
-	 * @param array  $stats   Running stats.
-	 * @return array|WP_Error {post_id, images, tax_created, tax_matched} or WP_Error.
-	 */
-	protected function update_item( $post_id, $item, $title, &$stats ) {
+	protected function update_item( $post_id, $item, $images_dir, $title, &$stats ) {
 		$post_data = $this->sanitize_post_data( $item );
 
-		$updated = wp_update_post(
-			array(
-				'ID'           => $post_id,
-				'post_title'   => $post_data['title'],
-				'post_content' => $post_data['content'],
-				'post_excerpt' => $post_data['excerpt'],
-				'post_status'  => $post_data['status'],
-				'post_name'    => $post_data['slug'],
-			),
-			true
-		);
+		$updated = wp_update_post( array(
+			'ID'           => $post_id,
+			'post_title'   => $post_data['title'],
+			'post_content' => $post_data['content'],
+			'post_excerpt' => $post_data['excerpt'],
+			'post_status'  => $post_data['status'],
+			'post_name'    => $post_data['slug'],
+		), true );
 
 		if ( is_wp_error( $updated ) ) {
 			return $updated;
 		}
 
-		$result = $this->populate_item( $post_id, $item, $stats );
+		$result = $this->populate_item( $post_id, $item, $images_dir, $stats );
 
 		return array_merge( array( 'post_id' => (int) $post_id ), $result );
 	}
 
-	/**
-	 * Populate meta, taxonomies, and featured image for a leisure post.
-	 *
-	 * @param int   $post_id Leisure post ID.
-	 * @param array $item    Item data.
-	 * @param array $stats   Running stats.
-	 * @return array{images:int, tax_created:int, tax_matched:int}
-	 */
-	protected function populate_item( $post_id, $item, &$stats ) {
-		// Save the export UUID so re-imports can be matched.
+	protected function populate_item( $post_id, $item, $images_dir, &$stats ) {
 		if ( ! empty( $item['uuid'] ) ) {
 			update_post_meta( $post_id, Conexao_Lazer_Exporter::UUID_META_KEY, sanitize_text_field( $item['uuid'] ) );
 		}
 
-		// Save item meta.
 		$this->save_item_meta( $post_id, $item );
 
-		// Save taxonomies.
 		$tax = $this->save_item_taxonomies( $post_id, $item );
 		$stats['taxonomies_created'] += $tax['created'];
 		$stats['taxonomies_matched'] += $tax['matched'];
 
-		// Handle the featured image.
-		$images = $this->handle_item_image( $post_id, $item );
-		$stats['images_imported'] += $images;
+		$img = $this->handle_item_image( $post_id, $item, $images_dir );
+		$stats['images_imported'] += $img['import'];
+		$stats['images_reused']   += $img['reuse'];
+		$stats['images_missing']  += $img['missing'];
 
 		return array(
-			'images'      => $images,
-			'tax_created' => $tax['created'],
-			'tax_matched' => $tax['matched'],
+			'images'         => $img['import'],
+			'images_reused'  => $img['reuse'],
+			'images_missing' => $img['missing'],
+			'tax_created'    => $tax['created'],
+			'tax_matched'    => $tax['matched'],
 		);
 	}
 
-	/**
-	 * Save all leisure meta fields from the export payload.
-	 *
-	 * @param int   $post_id Leisure post ID.
-	 * @param array $item    Item data.
-	 */
 	protected function save_item_meta( $post_id, $item ) {
 		$meta = isset( $item['meta'] ) ? $item['meta'] : array();
 
@@ -677,13 +714,6 @@ class Conexao_Lazer_Importer {
 		}
 	}
 
-	/**
-	 * Sanitize a meta value by key type and save it.
-	 *
-	 * @param int    $post_id Post ID.
-	 * @param string $key     Meta key.
-	 * @param mixed  $value   Raw value.
-	 */
 	protected function sanitize_and_save_meta( $post_id, $key, $value ) {
 		switch ( $key ) {
 			case '_leisure_image_attachment_id':
@@ -709,12 +739,6 @@ class Conexao_Lazer_Importer {
 		update_post_meta( $post_id, $key, $value );
 	}
 
-	/**
-	 * Normalize a boolean-ish meta value to '1' or ''.
-	 *
-	 * @param mixed $value Raw value.
-	 * @return string
-	 */
 	protected function normalize_boolean_meta( $value ) {
 		if ( is_bool( $value ) ) {
 			return $value ? '1' : '';
@@ -726,19 +750,8 @@ class Conexao_Lazer_Importer {
 		return in_array( $value, array( '1', 'true', 'yes', 'on' ), true ) ? '1' : '';
 	}
 
-	/**
-	 * Save taxonomies for a leisure post from the export payload.
-	 *
-	 * Terms are matched by name (not ID) so they map correctly across
-	 * installations. Missing terms are created automatically.
-	 *
-	 * @param int   $post_id Leisure post ID.
-	 * @param array $item    Item data.
-	 * @return array{created:int, matched:int}
-	 */
 	protected function save_item_taxonomies( $post_id, $item ) {
 		$taxonomies = isset( $item['taxonomies'] ) ? $item['taxonomies'] : array();
-
 		$created = 0;
 		$matched = 0;
 
@@ -758,7 +771,6 @@ class Conexao_Lazer_Importer {
 				continue;
 			}
 
-			// Ensure each term exists (by name) and collect term IDs.
 			$term_ids = array();
 			foreach ( $names as $name ) {
 				$term = term_exists( $name, $taxonomy );
@@ -786,288 +798,260 @@ class Conexao_Lazer_Importer {
 	/**
 	 * Handle the featured image for an imported leisure post.
 	 *
-	 * Only local-images (status 'local') are downloaded into the Media Library.
-	 * External licensed images (Wikimedia Commons etc.) are preserved as meta
-	 * but never re-downloaded, so the licensing/source model is kept intact.
+	 * The image file is read from the extracted package and imported into the
+	 * WordPress Media Library. If the same image ID already exists on an
+	 * attachment, that attachment is reused (idempotent).
 	 *
-	 * Localhost URLs cannot be reached from the destination site and are never
-	 * used; the item keeps its 'pending' image status when no reachable local
-	 * URL is available.
-	 *
-	 * @param int   $post_id Leisure post ID.
-	 * @param array $item    Item data.
-	 * @return int 1 if an image was imported, else 0.
+	 * @param int    $post_id    Leisure post ID.
+	 * @param array  $item       Item data.
+	 * @param string $images_dir Extracted images directory.
+	 * @return array{import:int, reuse:int, missing:int}
 	 */
-	protected function handle_item_image( $post_id, $item ) {
-		$meta     = isset( $item['meta'] ) ? $item['meta'] : array();
-		$featured = isset( $item['featured_image'] ) ? $item['featured_image'] : array();
+	protected function handle_item_image( $post_id, $item, $images_dir ) {
+		$image_data = isset( $item['image_data'] ) ? $item['image_data'] : array();
+		$filename   = isset( $image_data['filename'] ) ? $image_data['filename'] : '';
 
-		// Only items that actually have a local Media Library attachment can
-		// have their image imported. A 'pending' item may still carry a real
-		// featured image, so we check for the attachment, not the status label.
-		if ( empty( $featured['local_attachment_id'] ) && empty( $featured['local_url'] ) ) {
-			return 0;
+		if ( empty( $filename ) ) {
+			return array( 'import' => 0, 'reuse' => 0, 'missing' => 0 );
 		}
 
-		$url = $this->best_download_url( $featured, $meta );
-		if ( empty( $url ) ) {
-			// No reachable local image — keep 'pending' so the editor can fix it.
-			$this->set_image_status( $post_id, 'pending' );
-			return 0;
+		$file_path = $this->resolve_image_path( $images_dir, $filename );
+		if ( ! $file_path || ! file_exists( $file_path ) ) {
+			return array( 'import' => 0, 'reuse' => 0, 'missing' => 1 );
 		}
 
-		$title        = isset( $item['post']['title'] ) ? $item['post']['title'] : 'Lazer image';
-		$attachment_id = $this->sideload_image( $url, $post_id, $title );
+		// Validate the image file.
+		$validated = $this->validate_image_file( $file_path );
+		if ( is_wp_error( $validated ) ) {
+			return array( 'import' => 0, 'reuse' => 0, 'missing' => 1 );
+		}
 
+		$image_id = isset( $image_data['id'] ) ? $image_data['id'] : '';
+
+		// Reuse an existing attachment with the same stable image ID.
+		if ( $image_id ) {
+			$existing = $this->find_attachment_by_image_id( $image_id );
+			if ( $existing ) {
+				$this->assign_attachment( $post_id, $existing, $item, $image_data );
+				return array( 'import' => 0, 'reuse' => 1, 'missing' => 0 );
+			}
+		}
+
+		// Import the file into the Media Library.
+		$attachment_id = $this->import_image_file( $file_path, $post_id, $item, $image_data );
 		if ( ! $attachment_id ) {
-			$this->set_image_status( $post_id, 'pending' );
-			return 0;
+			return array( 'import' => 0, 'reuse' => 0, 'missing' => 1 );
 		}
 
-		// Restore alt text if provided.
-		$alt = isset( $featured['alt'] ) ? $featured['alt'] : '';
-		if ( empty( $alt ) && ! empty( $meta['_leisure_image_alt_text'] ) ) {
-			$alt = $meta['_leisure_image_alt_text'];
-		}
-		if ( $alt ) {
-			update_post_meta( $attachment_id, '_wp_attachment_image_alt', sanitize_text_field( (string) $alt ) );
-		}
+		$this->assign_attachment( $post_id, $attachment_id, $item, $image_data );
 
-		// Associate the attachment: featured image + leisure image meta.
-		set_post_thumbnail( $post_id, $attachment_id );
-		update_post_meta( $post_id, '_leisure_image_attachment_id', $attachment_id );
-		$this->set_image_status( $post_id, 'local' );
-
-		return 1;
+		return array( 'import' => 1, 'reuse' => 0, 'missing' => 0 );
 	}
 
 	/**
-	 * Choose the best reachable URL to download for a local image.
+	 * Resolve a package-relative image path to an absolute path.
 	 *
-	 * Preferred order:
-	 *  1. Non-localhost attachment local_url.
-	 *  2. Non-localhost thumbnail_url.
-	 *  3. Anything else that is a valid, non-localhost http(s) URL.
-	 *
-	 * Localhost / Docker URLs are never returned (the destination cannot reach them).
-	 *
-	 * @param array $featured Featured image export data.
-	 * @param array $meta     Item meta.
-	 * @return string Best URL, or ''.
+	 * @param string $images_dir Extracted images directory.
+	 * @param string $filename   Package-relative filename (e.g. "images/001-x.jpg").
+	 * @return string|false Absolute path, or false.
 	 */
-	protected function best_download_url( $featured, $meta ) {
-		$candidates = array();
+	protected function resolve_image_path( $images_dir, $filename ) {
+		$filename = ltrim( $filename, '/' );
+		$basename = basename( $filename );
 
-		if ( ! empty( $featured['local_url'] ) ) {
-			$candidates[] = $featured['local_url'];
-		}
-		if ( ! empty( $featured['thumbnail_url'] ) ) {
-			$candidates[] = $featured['thumbnail_url'];
-		}
-		if ( ! empty( $featured['localhost_hint'] ) ) {
-			$candidates[] = $featured['localhost_hint'];
-		}
-
-		// Also consider the external licensed image URL if a local image is set
-		// on this item (safety net, e.g. when localhost can't be reached).
-		if ( ! empty( $meta['_leisure_image_external_url'] ) ) {
-			$candidates[] = $meta['_leisure_image_external_url'];
-		}
-
-		foreach ( $candidates as $candidate ) {
-			if ( empty( $candidate ) || ! filter_var( $candidate, FILTER_VALIDATE_URL ) ) {
-				continue;
-			}
-			$scheme = strtolower( (string) wp_parse_url( $candidate, PHP_URL_SCHEME ) );
-			if ( ! in_array( $scheme, array( 'http', 'https' ), true ) ) {
-				continue;
-			}
-			if ( $this->is_localhost_url( $candidate ) ) {
-				continue;
-			}
-
+		// If the filename already points into the images dir, use it directly.
+		$candidate = trailingslashit( $images_dir ) . $basename;
+		if ( file_exists( $candidate ) ) {
 			return $candidate;
 		}
 
-		return '';
+		// Otherwise search recursively.
+		$found = $this->find_file_recursive( $images_dir, $basename );
+		return $found ? $found : false;
 	}
 
 	/**
-	 * Set the image status meta for a leisure post.
+	 * Validate an image file before importing.
 	 *
-	 * @param int    $post_id Post ID.
-	 * @param string $status  Status key.
+	 * @param string $file_path Absolute path.
+	 * @return true|WP_Error
 	 */
-	protected function set_image_status( $post_id, $status ) {
-		$valid = array( 'none', 'pending', 'local', 'external' );
-		if ( ! in_array( $status, $valid, true ) ) {
-			return;
-		}
-		update_post_meta( $post_id, '_leisure_image_status', $status );
-	}
-
-	/**
-	 * Check whether a URL points to a localhost / local Docker environment.
-	 *
-	 * @param string $url URL to check.
-	 * @return bool
-	 */
-	public function is_localhost_url( $url ) {
-		$host = wp_parse_url( $url, PHP_URL_HOST );
-		if ( ! $host ) {
-			return false;
+	protected function validate_image_file( $file_path ) {
+		if ( ! file_exists( $file_path ) || ! is_readable( $file_path ) ) {
+			return new WP_Error( 'image_unreadable', __( 'Image file could not be read.', 'conexao-leisure-migration' ) );
 		}
 
-		$host = strtolower( $host );
+		if ( filesize( $file_path ) > self::MAX_IMAGE_SIZE ) {
+			return new WP_Error( 'image_too_large', __( 'Image file exceeds the maximum size.', 'conexao-leisure-migration' ) );
+		}
 
-		return in_array( $host, array( 'localhost', '127.0.0.1', '::1' ), true )
-			|| 0 === strpos( $host, '192.168.' )
-			|| 0 === strpos( $host, '10.' )
-			|| 0 === strpos( $host, '172.' );
+		$ext = strtolower( pathinfo( $file_path, PATHINFO_EXTENSION ) );
+		$allowed = array( 'jpg', 'jpeg', 'png', 'gif', 'webp', 'jfif' );
+		if ( ! in_array( $ext, $allowed, true ) ) {
+			return new WP_Error( 'image_bad_ext', __( 'Image file has an unsupported extension.', 'conexao-leisure-migration' ) );
+		}
+
+		// Verify magic bytes.
+		$handle = fopen( $file_path, 'rb' );
+		if ( ! $handle ) {
+			return new WP_Error( 'image_read_failed', __( 'Could not open image file.', 'conexao-leisure-migration' ) );
+		}
+		$head = fread( $handle, 16 );
+		fclose( $handle );
+
+		$valid = false;
+		if ( 0 === strpos( $head, "\xFF\xD8\xFF" ) ) {
+			$valid = true;
+		} elseif ( 0 === strpos( $head, "\x89PNG\r\n\x1a\n" ) ) {
+			$valid = true;
+		} elseif ( 0 === strpos( $head, 'GIF87a' ) || 0 === strpos( $head, 'GIF89a' ) ) {
+			$valid = true;
+		} elseif ( 0 === strpos( $head, 'RIFF' ) && strlen( $head ) >= 12 && 'WEBP' === substr( $head, 8, 4 ) ) {
+			$valid = true;
+		}
+
+		if ( ! $valid ) {
+			return new WP_Error( 'image_invalid', __( 'Image file contents are not a valid image.', 'conexao-leisure-migration' ) );
+		}
+
+		return true;
 	}
 
 	/**
-	 * Sideload an image URL into the WordPress Media Library.
+	 * Find an existing attachment by its stable image ID.
 	 *
-	 * Adapted from the event image handler so the migration plugin is
-	 * self-contained and does not create a dependency on the event plugin.
-	 *
-	 * @param string $url     Image URL.
-	 * @param int    $post_id Leisure post ID.
-	 * @param string $title   Attachment title.
+	 * @param string $image_id Stable image identifier.
 	 * @return int Attachment ID or 0.
 	 */
-	protected function sideload_image( $url, $post_id, $title = '' ) {
-		if ( empty( $url ) ) {
-			return 0;
-		}
+	protected function find_attachment_by_image_id( $image_id ) {
+		$query = new WP_Query( array(
+			'post_type'      => 'attachment',
+			'post_status'    => 'inherit',
+			'posts_per_page' => 1,
+			'fields'         => 'ids',
+			'no_found_rows'  => true,
+			'update_post_meta_cache' => false,
+			'update_post_term_cache' => false,
+			'meta_query'     => array(
+				array(
+					'key'   => Conexao_Lazer_Exporter::IMAGE_UUID_META_KEY,
+					'value' => $image_id,
+				),
+			),
+		) );
 
+		return $query->have_posts() ? (int) $query->posts[0] : 0;
+	}
+
+	/**
+	 * Import an image file from the package into the Media Library.
+	 *
+	 * @param string $file_path  Absolute path to the image file.
+	 * @param int    $post_id    Leisure post ID.
+	 * @param array  $item       Item data.
+	 * @param array  $image_data Image metadata.
+	 * @return int Attachment ID or 0.
+	 */
+	protected function import_image_file( $file_path, $post_id, $item, $image_data ) {
 		require_once ABSPATH . 'wp-admin/includes/file.php';
 		require_once ABSPATH . 'wp-admin/includes/image.php';
+		require_once ABSPATH . 'wp-admin/includes/media.php';
 
-		$response = wp_remote_get(
-			$url,
-			array(
-				'timeout'     => 30,
-				'redirection' => 5,
-				'user-agent'  => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-			)
-		);
+		$ext = strtolower( pathinfo( $file_path, PATHINFO_EXTENSION ) );
+		$ext = $ext ? $ext : 'jpg';
 
-		if ( is_wp_error( $response ) ) {
-			return 0;
-		}
+		$title = isset( $image_data['title'] ) && $image_data['title']
+			? $image_data['title']
+			: ( isset( $item['post']['title'] ) ? $item['post']['title'] : 'Lazer image' );
 
-		$code = (int) wp_remote_retrieve_response_code( $response );
-		if ( $code < 200 || $code >= 300 ) {
-			return 0;
-		}
+		$filename = sanitize_file_name( $title . '.' . $ext );
+		$filename = wp_unique_filename( wp_upload_dir()['path'], $filename );
 
-		$body = wp_remote_retrieve_body( $response );
-		if ( ! is_string( $body ) || '' === $body ) {
-			return 0;
-		}
-
-		if ( strlen( $body ) > 25 * MB_IN_BYTES ) {
-			return 0;
-		}
-
-		$detected = $this->detect_image_type( $body );
-		if ( ! $detected ) {
-			return 0;
-		}
-
-		$filename = $this->build_filename( $title, $detected['ext'], $url );
-
-		$upload = wp_upload_bits( $filename, null, $body );
+		$upload = wp_upload_bits( $filename, null, file_get_contents( $file_path ) );
 		if ( ! empty( $upload['error'] ) || empty( $upload['file'] ) ) {
 			return 0;
 		}
 
-		$file_path = $upload['file'];
-		$wp_type   = wp_check_filetype_and_ext( $file_path, $filename );
+		$file_path_uploaded = $upload['file'];
+		$wp_type = wp_check_filetype_and_ext( $file_path_uploaded, $filename );
 		if ( empty( $wp_type['ext'] ) || empty( $wp_type['type'] ) ) {
-			@unlink( $file_path ); // phpcs:ignore WordPress.PHP.NoDiscouragedPHPFunctions
+			@unlink( $file_path_uploaded );
 			return 0;
 		}
 
-		$attachment_title = $title ? trim( (string) $title ) : __( 'Lazer image', 'conexao-leisure-migration' );
-
-		$attachment_id = wp_insert_attachment(
-			array(
-				'post_mime_type' => $wp_type['type'],
-				'post_title'     => sanitize_text_field( $attachment_title ),
-				'post_content'   => '',
-				'post_status'    => 'inherit',
-			),
-			$file_path,
-			absint( $post_id )
-		);
+		$attachment_id = wp_insert_attachment( array(
+			'post_mime_type' => $wp_type['type'],
+			'post_title'     => sanitize_text_field( $title ),
+			'post_content'   => '',
+			'post_status'    => 'inherit',
+		), $file_path_uploaded, absint( $post_id ) );
 
 		if ( ! $attachment_id || is_wp_error( $attachment_id ) ) {
-			@unlink( $file_path ); // phpcs:ignore WordPress.PHP.NoDiscouragedPHPFunctions
+			@unlink( $file_path_uploaded );
 			return 0;
 		}
 
 		$attachment_id = (int) $attachment_id;
 
-		$metadata = wp_generate_attachment_metadata( $attachment_id, $file_path );
+		$metadata = wp_generate_attachment_metadata( $attachment_id, $file_path_uploaded );
 		if ( ! empty( $metadata ) && ! is_wp_error( $metadata ) ) {
 			wp_update_attachment_metadata( $attachment_id, $metadata );
+		}
+
+		// Store stable image identifiers.
+		if ( ! empty( $image_data['id'] ) ) {
+			update_post_meta( $attachment_id, Conexao_Lazer_Exporter::IMAGE_UUID_META_KEY, sanitize_text_field( $image_data['id'] ) );
+		}
+		if ( ! empty( $image_data['md5'] ) ) {
+			update_post_meta( $attachment_id, Conexao_Lazer_Exporter::IMAGE_HASH_META_KEY, sanitize_text_field( $image_data['md5'] ) );
 		}
 
 		return $attachment_id;
 	}
 
 	/**
-	 * Detect the image type from binary content (magic bytes).
+	 * Assign an attachment to a leisure post and restore image metadata.
 	 *
-	 * @param string $body Downloaded content.
-	 * @return array|null Array with 'ext' and 'mime', or null.
+	 * @param int    $post_id    Leisure post ID.
+	 * @param int    $attachment_id Attachment ID.
+	 * @param array  $item       Item data.
+	 * @param array  $image_data Image metadata.
 	 */
-	protected function detect_image_type( $body ) {
-		if ( ! is_string( $body ) || '' === $body ) {
-			return null;
+	protected function assign_attachment( $post_id, $attachment_id, $item, $image_data ) {
+		set_post_thumbnail( $post_id, $attachment_id );
+		update_post_meta( $post_id, '_leisure_image_attachment_id', $attachment_id );
+
+		// Restore alt text.
+		$alt = isset( $image_data['alt'] ) ? $image_data['alt'] : '';
+		if ( empty( $alt ) && ! empty( $item['meta']['_leisure_image_alt_text'] ) ) {
+			$alt = $item['meta']['_leisure_image_alt_text'];
+		}
+		if ( $alt ) {
+			update_post_meta( $attachment_id, '_wp_attachment_image_alt', sanitize_text_field( (string) $alt ) );
 		}
 
-		if ( 0 === strpos( $body, "\xFF\xD8\xFF" ) ) {
-			return array( 'ext' => 'jpg', 'mime' => 'image/jpeg' );
+		// Restore source/licensing metadata on the attachment.
+		if ( ! empty( $image_data['source'] ) ) {
+			update_post_meta( $attachment_id, '_leisure_image_source', sanitize_text_field( $image_data['source'] ) );
 		}
-		if ( 0 === strpos( $body, "\x89PNG\r\n\x1a\n" ) ) {
-			return array( 'ext' => 'png', 'mime' => 'image/png' );
+		if ( ! empty( $image_data['source_url'] ) ) {
+			update_post_meta( $attachment_id, '_leisure_image_source_url', esc_url_raw( $image_data['source_url'] ) );
 		}
-		if ( 0 === strpos( $body, 'GIF87a' ) || 0 === strpos( $body, 'GIF89a' ) ) {
-			return array( 'ext' => 'gif', 'mime' => 'image/gif' );
+		if ( ! empty( $image_data['author'] ) ) {
+			update_post_meta( $attachment_id, '_leisure_image_author', sanitize_text_field( $image_data['author'] ) );
 		}
-		if ( 0 === strpos( $body, 'RIFF' ) && strlen( $body ) >= 12 && 'WEBP' === substr( $body, 8, 4 ) ) {
-			return array( 'ext' => 'webp', 'mime' => 'image/webp' );
+		if ( ! empty( $image_data['license'] ) ) {
+			update_post_meta( $attachment_id, '_leisure_image_license', sanitize_text_field( $image_data['license'] ) );
+		}
+		if ( ! empty( $image_data['attribution'] ) ) {
+			update_post_meta( $attachment_id, '_leisure_image_attribution', sanitize_textarea_field( $image_data['attribution'] ) );
 		}
 
-		return null;
+		// Set the image status to 'local' — the image is now a local Media
+		// Library attachment.
+		update_post_meta( $post_id, '_leisure_image_status', 'local' );
 	}
 
-	/**
-	 * Build a safe, unique filename for the imported image.
-	 *
-	 * @param string $title     Attachment title.
-	 * @param string $extension File extension.
-	 * @param string $url       Source URL.
-	 * @return string
-	 */
-	protected function build_filename( $title, $extension, $url ) {
-		$name = sanitize_title( $title );
-		$base = $name ? $name : 'conexao-lazer-image';
-		$hash = substr( md5( $url ), 0, 10 );
-
-		return sanitize_file_name( $base . '-' . $hash . '.' . $extension );
-	}
-
-	/**
-	 * Sanitize the post data from an export payload.
-	 *
-	 * @param array $item Item data.
-	 * @return array{title:string, content:string, excerpt:string, status:string, slug:string, date:string}
-	 */
 	protected function sanitize_post_data( $item ) {
 		$post = isset( $item['post'] ) ? $item['post'] : array();
 
@@ -1094,15 +1078,6 @@ class Conexao_Lazer_Importer {
 		);
 	}
 
-	/**
-	 * Post-import verification.
-	 *
-	 * Counts leisure posts, taxonomies, featured images and reports meta /
-	 * status / slug figures so the user can confirm the migration succeeded.
-	 *
-	 * @param int $expected Expected item count (from manifest).
-	 * @return array
-	 */
 	public function verify_import( $expected = 0 ) {
 		$counts = array(
 			'leisure_total'     => 0,
@@ -1118,14 +1093,12 @@ class Conexao_Lazer_Importer {
 			'expected'          => (int) $expected,
 		);
 
-		$query = new WP_Query(
-			array(
-				'post_type'      => 'leisure',
-				'post_status'    => 'any',
-				'posts_per_page' => -1,
-				'fields'         => 'ids',
-			)
-		);
+		$query = new WP_Query( array(
+			'post_type'      => 'leisure',
+			'post_status'    => 'any',
+			'posts_per_page' => -1,
+			'fields'         => 'ids',
+		) );
 
 		$counts['leisure_total'] = count( $query->posts );
 
@@ -1162,5 +1135,24 @@ class Conexao_Lazer_Importer {
 		}
 
 		return $counts;
+	}
+
+	protected function remove_directory( $dir ) {
+		if ( ! is_dir( $dir ) ) {
+			return;
+		}
+		$items = scandir( $dir );
+		foreach ( $items as $item ) {
+			if ( '.' === $item || '..' === $item ) {
+				continue;
+			}
+			$path = $dir . '/' . $item;
+			if ( is_dir( $path ) ) {
+				$this->remove_directory( $path );
+			} else {
+				@unlink( $path );
+			}
+		}
+		@rmdir( $dir );
 	}
 }

@@ -303,14 +303,13 @@ final class Conexao_Admin_Ux_Config {
 					'priority' => 25,
 					'fields'   => array(
 						array( 'key' => '_leisure_image_attachment_id', 'label' => 'Imagem em destaque', 'type' => 'media', 'help' => 'Imagem principal do local com direitos adequados (armazenada na biblioteca de mídia). Também disponível na secção "Imagem e fonte".' ),
-						array( 'key' => '_leisure_image_external_url', 'label' => 'URL de imagem externa (licenciada)', 'type' => 'url', 'help' => 'Somente preencha se tiver confirmação de que a exibição remota é permitida (ex.: site oficial do local que autoriza o uso). Não use hotlinking sem permissão.' ),
 						array( 'key' => '_leisure_image_source', 'label' => 'Fonte da imagem', 'type' => 'text', 'help' => 'Ex.: "Biblioteca de mídia", "Site oficial", "Wikimedia Commons", "Enviada".' ),
 						array( 'key' => '_leisure_image_source_url', 'label' => 'URL da página de origem', 'type' => 'url', 'help' => 'Página onde a imagem/mais informações estão (ex.: página do arquivo no Wikimedia Commons). Serve como referência e atribuição.' ),
 						array( 'key' => '_leisure_image_author', 'label' => 'Fotógrafo / autor', 'type' => 'text', 'help' => 'Nome do autor da imagem, conforme indicado na página do Wikimedia Commons. Usado para atribuição.' ),
 						array( 'key' => '_leisure_image_license', 'label' => 'Licença', 'type' => 'text', 'help' => 'Licença da imagem (ex.: "CC BY-SA 4.0", "Public Domain", "CC0").' ),
 						array( 'key' => '_leisure_image_attribution', 'label' => 'Atribuição / crédito', 'type' => 'textarea', 'help' => 'Texto de atribuição completo (fotógrafo + licença + fonte). Ex.: "Foto: John Smith, CC BY-SA 4.0, Wikimedia Commons".' ),
 						array( 'key' => '_leisure_image_alt_text', 'label' => 'Texto alternativo (alt)', 'type' => 'text', 'help' => 'Texto descritivo para acessibilidade (ex.: "Cliffs of Moher, County Clare"). Se vazio, usa o nome do local.' ),
-						array( 'key' => '_leisure_image_status', 'label' => 'Status da imagem', 'type' => 'select', 'options' => array( 'none' => 'Nenhuma', 'pending' => 'Imagem pendente', 'local' => 'Local (mídia)', 'external' => 'Externa (licenciada)' ), 'help' => 'Estado atual da imagem. Use "Imagem pendente" quando ainda não houver uma imagem com direitos adequados.' ),
+						array( 'key' => '_leisure_image_status', 'label' => 'Status da imagem', 'type' => 'select', 'options' => array( 'none' => 'Nenhuma', 'pending' => 'Imagem pendente', 'local' => 'Local (mídia)' ), 'help' => 'Estado atual da imagem. Use "Imagem pendente" quando ainda não houver uma imagem com direitos adequados.' ),
 					),
 				),
 				'atributos' => array(

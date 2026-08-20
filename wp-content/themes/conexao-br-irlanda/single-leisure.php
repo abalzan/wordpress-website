@@ -35,7 +35,6 @@ get_header();
 	$leisure_best_time     = get_post_meta( $leisure_id, '_leisure_best_time', true );
 
 	// Image metadata for hero + attribution.
-	$leisure_image_status = get_post_meta( $leisure_id, '_leisure_image_status', true );
 	$leisure_alt_text     = get_post_meta( $leisure_id, '_leisure_image_alt_text', true );
 	$leisure_alt          = $leisure_alt_text ? $leisure_alt_text : get_the_title();
 	$leisure_src_url      = get_post_meta( $leisure_id, '_leisure_image_source_url', true );
@@ -88,21 +87,12 @@ get_header();
 				</header>
 
 				<?php
-				// Hero image: prefer a properly-licensed local Media Library
-				// image (featured thumbnail). Falls back to an explicitly-
-				// licensed external URL. When neither exists, no hero is shown.
+				// Hero image: always a local WordPress Media Library attachment
+				// (featured thumbnail). When no image is available, no hero is
+				// shown.
 				$leisure_hero_html = '';
 				if ( has_post_thumbnail() ) {
 					$leisure_hero_html = get_the_post_thumbnail( $leisure_id, 'conexao-hero', array( 'loading' => 'eager', 'alt' => esc_attr( $leisure_alt ) ) );
-				} elseif ( 'external' === $leisure_image_status ) {
-					$external_img = get_post_meta( $leisure_id, '_leisure_image_external_url', true );
-					if ( $external_img ) {
-						$leisure_hero_html = sprintf(
-							'<img src="%s" alt="%s" loading="eager" width="1200" height="600">',
-							esc_url( $external_img ),
-							esc_attr( $leisure_alt )
-						);
-					}
 				}
 
 				if ( $leisure_hero_html ) : ?>

@@ -7,14 +7,13 @@
  * the appropriate image/source with each location — or mark it as
  * "Image pending" when no properly licensed image is available yet.
  *
- * The image itself is always stored in a license-safe way:
- *   - A local WordPress Media Library image (`_leisure_image_attachment_id`),
- *     which is set as the post thumbnail automatically by the editor.
- *   - An external, explicitly-licensed URL (`_leisure_image_external_url`),
- *     only used when permission to display it remotely has been confirmed.
+ * The image is always stored as a local WordPress Media Library attachment
+ * (`_leisure_image_attachment_id`), which is set as the post thumbnail
+ * automatically by the editor.
  *
  * This page also supports searching Wikimedia Commons for free-licensed images
  * and importing them directly into the Media Library with full attribution.
+ * Wikimedia data is stored as source/licensing metadata only.
  *
  * @package Conexao_Admin_Ux
  */
@@ -94,8 +93,7 @@ class Conexao_Leisure_Image_Admin {
 		}
 
 		// Save fields.
-		$attachment  = isset( $_POST['leisure_image_attachment_id'] ) ? absabsint( $_POST['leisure_image_attachment_id'] ) : 0;
-		$external    = isset( $_POST['leisure_image_external_url'] ) ? esc_url_raw( wp_unslash( $_POST['leisure_image_external_url'] ) ) : '';
+		$attachment  = isset( $_POST['leisure_image_attachment_id'] ) ? absint( $_POST['leisure_image_attachment_id'] ) : 0;
 		$source      = isset( $_POST['leisure_image_source'] ) ? sanitize_text_field( wp_unslash( $_POST['leisure_image_source'] ) ) : '';
 		$source_url  = isset( $_POST['leisure_image_source_url'] ) ? esc_url_raw( wp_unslash( $_POST['leisure_image_source_url'] ) ) : '';
 		$attribution = isset( $_POST['leisure_image_attribution'] ) ? sanitize_textarea_field( wp_unslash( $_POST['leisure_image_attribution'] ) ) : '';
@@ -105,19 +103,16 @@ class Conexao_Leisure_Image_Admin {
 		$status      = isset( $_POST['leisure_image_status'] ) ? sanitize_key( wp_unslash( $_POST['leisure_image_status'] ) ) : '';
 
 		// Derive status from provided values when not set to a valid value.
-		$valid_statuses = array( 'none', 'pending', 'local', 'external' );
+		$valid_statuses = array( 'none', 'pending', 'local' );
 		if ( ! in_array( $status, $valid_statuses, true ) ) {
 			if ( $attachment && wp_attachment_is_image( $attachment ) ) {
 				$status = 'local';
-			} elseif ( $external ) {
-				$status = 'external';
 			} else {
 				$status = 'pending';
 			}
 		}
 
 		update_post_meta( $post_id, '_leisure_image_attachment_id', $attachment ? $attachment : '' );
-		update_post_meta( $post_id, '_leisure_image_external_url', $external );
 		update_post_meta( $post_id, '_leisure_image_source', $source );
 		update_post_meta( $post_id, '_leisure_image_source_url', $source_url );
 		update_post_meta( $post_id, '_leisure_image_author', $author );
@@ -256,7 +251,6 @@ class Conexao_Leisure_Image_Admin {
 		}
 
 		update_post_meta( $post_id, '_leisure_image_attachment_id', (int) $att_id );
-		update_post_meta( $post_id, '_leisure_image_external_url', '' );
 		update_post_meta( $post_id, '_leisure_image_source', 'Wikimedia Commons' );
 		update_post_meta( $post_id, '_leisure_image_source_url', $info['page_url'] );
 		update_post_meta( $post_id, '_leisure_image_author', $info['author'] );
@@ -313,7 +307,7 @@ class Conexao_Leisure_Image_Admin {
 			if ( $query->have_posts() ) {
 				foreach ( $query->posts as $id ) {
 					// Only touch locations lacking a local image.
-					if ( ! get_post_thumbnail_id( $id ) && ! get_post_meta( $id, '_leisure_image_external_url', true ) ) {
+					if ( ! get_post_thumbnail_id( $id ) ) {
 						update_post_meta( $id, '_leisure_image_status', 'pending' );
 						$count++;
 					}
@@ -328,7 +322,6 @@ class Conexao_Leisure_Image_Admin {
 		if ( $post_id && 'leisure' === get_post_type( $post_id ) ) {
 			update_post_meta( $post_id, '_leisure_image_status', 'pending' );
 			delete_post_meta( $post_id, '_leisure_image_attachment_id' );
-			delete_post_meta( $post_id, '_leisure_image_external_url' );
 			delete_post_meta( $post_id, '_thumbnail_id' );
 			wp_safe_redirect( add_query_arg( 'conexao_leisure_img_notice', 'saved', $redirect ) );
 			exit;
@@ -389,16 +382,6 @@ class Conexao_Leisure_Image_Admin {
 				'fields'  => 'ids',
 				'no_found_rows' => true,
 			) ),
-			'external' => (int) get_posts( array(
-				'post_type'      => 'leisure',
-				'post_status'    => 'publish',
-				'posts_per_page' => -1,
-				'meta_query'     => array(
-					array( 'key' => '_leisure_image_status', 'value' => 'external' ),
-				),
-				'fields'  => 'ids',
-				'no_found_rows' => true,
-			) ),
 		);
 
 		// List all leisure locations for the table.
@@ -434,8 +417,6 @@ class Conexao_Leisure_Image_Admin {
 					<?php esc_html_e( ' locais com imagem importada da biblioteca de mídia', 'conexao-admin-ux' ); ?>
 					| <strong><?php echo esc_html( number_format_i18n( $stats['pending'] ) ); ?></strong>
 					<?php esc_html_e( ' com imagem pendente', 'conexao-admin-ux' ); ?>
-					| <strong><?php echo esc_html( number_format_i18n( $stats['external'] ) ); ?></strong>
-					<?php esc_html_e( ' com imagem externa licenciada', 'conexao-admin-ux' ); ?>
 				</p>
 
 				<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin-top: 8px;">
@@ -478,7 +459,6 @@ class Conexao_Leisure_Image_Admin {
 						$title       = get_the_title();
 						$edit_link   = get_edit_post_link( $id );
 						$att_id      = get_post_meta( $id, '_leisure_image_attachment_id', true );
-						$external    = get_post_meta( $id, '_leisure_image_external_url', true );
 						$source      = get_post_meta( $id, '_leisure_image_source', true );
 						$source_url  = get_post_meta( $id, '_leisure_image_source_url', true );
 						$author      = get_post_meta( $id, '_leisure_image_author', true );
@@ -486,10 +466,10 @@ class Conexao_Leisure_Image_Admin {
 						$alt_text    = get_post_meta( $id, '_leisure_image_alt_text', true );
 						$attribution = get_post_meta( $id, '_leisure_image_attribution', true );
 						$status      = get_post_meta( $id, '_leisure_image_status', true );
-						if ( ! in_array( $status, array( 'none', 'pending', 'local', 'external' ), true ) ) {
+						if ( ! in_array( $status, array( 'none', 'pending', 'local' ), true ) ) {
 							$status = 'none';
 						}
-						$thumb = $att_id ? wp_get_attachment_image_url( $att_id, 'medium' ) : ( $external ? esc_url( $external ) : '' );
+						$thumb = $att_id ? wp_get_attachment_image_url( $att_id, 'medium' ) : '';
 						$wiki_query = $title;
 						?>
 						<tr class="conexao-leisure-row" data-post-id="<?php echo esc_attr( (string) $id ); ?>" data-wiki-query="<?php echo esc_attr( $wiki_query ); ?>">
@@ -527,9 +507,8 @@ class Conexao_Leisure_Image_Admin {
 									'none'     => __( 'Nenhuma', 'conexao-admin-ux' ),
 									'pending'  => __( 'Imagem pendente', 'conexao-admin-ux' ),
 									'local'    => __( 'Local (mídia)', 'conexao-admin-ux' ),
-									'external' => __( 'Externa (licenciada)', 'conexao-admin-ux' ),
 								);
-								echo '<span class="dashicons dashicons-marker ' . ( 'local' === $status ? 'status-published' : ( 'pending' === $status ? 'status-review' : ( 'external' === $status ? 'status-draft' : '' ) ) ) . '"></span> ';
+								echo '<span class="dashicons dashicons-marker ' . ( 'local' === $status ? 'status-published' : ( 'pending' === $status ? 'status-review' : '' ) ) . '"></span> ';
 								echo esc_html( isset( $status_labels[ $status ] ) ? $status_labels[ $status ] : $status );
 								?>
 							</td>

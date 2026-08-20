@@ -143,15 +143,11 @@ final class Conexao_Data_Model {
 			'_leisure_best_time'     => 'string', // Melhor época para visitar.
 
 			// --- Leisure image / source fields ---
-			// The location's main image. Prefer a WordPress Media Library
+			// The location's main image. Always a WordPress Media Library
 			// attachment ID (`_leisure_image_attachment_id`), which yields a
 			// responsive local image (srcset/width/height) and is set as the
 			// post thumbnail by the Admin UX editor.
 			'_leisure_image_attachment_id' => 'integer', // Local Media Library attachment ID.
-			// Optional external, properly-licensed image URL (only used when
-			// explicit permission to display it remotely has been confirmed —
-			// e.g. the location's own official site that permits reuse).
-			'_leisure_image_external_url'  => 'string', // External licensed image URL.
 			// Image source label (e.g. "Discover Ireland", "Site oficial",
 			// "Biblioteca de mídia", "Wikimedia Commons", "Enviada").
 			'_leisure_image_source'        => 'string',
@@ -167,8 +163,7 @@ final class Conexao_Data_Model {
 			// Accessibility alt text for the image (e.g. "Cliffs of Moher, County Clare").
 			'_leisure_image_alt_text'      => 'string',
 			// Image state: 'none' (no image), 'pending' (awaiting a properly
-			// licensed image), 'local' (WordPress Media Library), 'external'
-			// (licensed external URL). Defaults to 'none'.
+			// licensed image), 'local' (WordPress Media Library). Defaults to 'none'.
 			'_leisure_image_status'        => 'string',
 		);
 
