@@ -1525,6 +1525,7 @@ ul, ol {
 
   .event-preview {
     border-radius: var(--conexao-radius);
+    min-width: 0;
   }
 
   .event-preview:hover {
@@ -1559,16 +1560,21 @@ ul, ol {
   .event-preview-title {
     font-size: 0.9375rem;
     line-height: 1.3;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: break-word;
+    word-break: break-word;
   }
 
   .event-preview-meta,
   .event-preview-location {
     font-size: 0.75rem;
     gap: 6px;
+    flex-wrap: wrap;
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: break-word;
+    word-break: break-word;
   }
 
   .event-preview-meta svg,
@@ -4784,6 +4790,8 @@ input[type="button"] {
   .event-preview-media {
     width: 76px;
     min-width: 76px;
+    max-width: 76px;
+    flex: 0 0 76px;
   }
 
   .event-preview-body {
@@ -4793,11 +4801,20 @@ input[type="button"] {
 
   .event-preview-title {
     font-size: 0.875rem;
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: break-word;
+    word-break: break-word;
   }
 
   .event-preview-meta,
   .event-preview-location {
     font-size: 0.6875rem;
+    flex-wrap: wrap;
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: break-word;
+    word-break: break-word;
   }
 
   .events-section-footer {
