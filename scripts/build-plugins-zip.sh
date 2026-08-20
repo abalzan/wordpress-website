@@ -21,6 +21,7 @@ PLUGIN_SLUGS=(
     "conexao-content"
     "conexao-admin-ux"
     "conexao-event-importer"
+    "conexao-leisure-migration"
 )
 
 # Output destination (override with BUILD_OUTPUT_DIR env var if needed)
@@ -103,3 +104,4 @@ echo "     - conexao-data-model"
 echo "     - conexao-content"
 echo "     - conexao-admin-ux"
 echo "     - conexao-event-importer"
+echo "     - conexao-leisure-migration"

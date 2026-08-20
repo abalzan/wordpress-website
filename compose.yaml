@@ -38,6 +38,7 @@ services:
       - ./wp-content/plugins/conexao-data-model:/var/www/html/wp-content/plugins/conexao-data-model
       - ./wp-content/plugins/conexao-event-importer:/var/www/html/wp-content/plugins/conexao-event-importer
       - ./wp-content/plugins/conexao-admin-ux:/var/www/html/wp-content/plugins/conexao-admin-ux
+      - ./wp-content/plugins/conexao-leisure-migration:/var/www/html/wp-content/plugins/conexao-leisure-migration
       - ./docker/apache-allowoverride.conf:/etc/apache2/conf-enabled/apache-allowoverride.conf:ro
       - ./docker/entrypoint-fix-permissions.sh:/usr/local/bin/entrypoint-fix-permissions.sh:ro
 
