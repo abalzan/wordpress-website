@@ -223,7 +223,7 @@ final class Conexao_Admin_Ux_Fields {
 					$value = self::sanitize_time( $value );
 					break;
 				case 'url':
-					$value = esc_url_raw( $value );
+					$value = self::sanitize_url( $value );
 					break;
 				case 'email':
 					$value = sanitize_email( $value );
@@ -271,6 +271,24 @@ final class Conexao_Admin_Ux_Fields {
 				}
 			}
 		}
+
+		// Keep the county taxonomy in sync for leisure posts so the public
+		// /lazer/ ?county= filter works. The county is stored as a select meta
+		// (_leisure_county) in the editor, but the public filter queries the
+		// shared conexao_county taxonomy.
+		if ( 'leisure' === get_post_type( $post_id ) && ! empty( $meta['leisure_county'] ) ) {
+			$county = sanitize_text_field( $meta['leisure_county'] );
+			if ( taxonomy_exists( 'conexao_county' ) ) {
+				$term = term_exists( $county, 'conexao_county' );
+				if ( ! $term ) {
+					$term = wp_insert_term( $county, 'conexao_county' );
+				}
+				if ( $term && ! is_wp_error( $term ) ) {
+					$term_id = is_array( $term ) ? $term['term_id'] : $term;
+					wp_set_object_terms( $post_id, array( (int) $term_id ), 'conexao_county' );
+				}
+			}
+		}
 	}
 
 	/**
@@ -311,6 +329,7 @@ final class Conexao_Admin_Ux_Fields {
 			'_job_title',
 			'_sponsor_name',
 			'_provider_name',
+			'_leisure_name',
 		);
 
 		$virtual_content_keys = array(
@@ -320,6 +339,7 @@ final class Conexao_Admin_Ux_Fields {
 			'_job_description',
 			'_sponsor_description',
 			'_provider_description',
+			'_leisure_description',
 		);
 
 		foreach ( $fields as $field ) {
@@ -387,7 +407,7 @@ final class Conexao_Admin_Ux_Fields {
 	 * @return bool
 	 */
 	public static function is_virtual( $key ) {
-		$virtual = array( '_event_title', '_event_description', '_news_title', '_news_content', '_guide_title', '_guide_content', '_job_title', '_job_description', '_sponsor_name', '_sponsor_description', '_provider_name', '_provider_description' );
+		$virtual = array( '_event_title', '_event_description', '_news_title', '_news_content', '_guide_title', '_guide_content', '_job_title', '_job_description', '_sponsor_name', '_sponsor_description', '_provider_name', '_provider_description', '_leisure_name', '_leisure_description' );
 		return in_array( $key, $virtual, true );
 	}
 
@@ -437,6 +457,39 @@ final class Conexao_Admin_Ux_Fields {
 	}
 
 	/**
+	 * Sanitize an absolute http/https URL.
+	 *
+	 * Ensures only well-formed, absolute http(s) URLs are allowed. Malformed
+	 * URLs, dangerously-protocoled URLs (e.g. javascript:, data:, file:) and
+	 * empty values result in an empty string. This is used for all `url`
+	 * field types so that stored values remain safe when output later.
+	 *
+	 * @param string $value Raw URL value.
+	 * @return string Sanitized URL, or '' when invalid.
+	 */
+	public static function sanitize_url( $value ) {
+		$value = trim( (string) $value );
+		if ( '' === $value ) {
+			return '';
+		}
+
+		// Reject any non-http(s) scheme outright (javascript:, data:, file:, etc.).
+		if ( ! preg_match( '#^https?://#i', $value ) ) {
+			return '';
+		}
+
+		// Use WordPress's standard URL sanitization as the final gatekeeper.
+		$clean = esc_url_raw( $value );
+		if ( ! $clean || $clean !== esc_url_raw( $clean ) ) {
+			// esc_url strips dangerous protocols; if the result lost its
+			// scheme or differs, treat as invalid.
+			return '';
+		}
+
+		return $clean;
+	}
+
+	/**
 	 * Get the saved value for a field config from a post.
 	 *
 	 * @param WP_Post $post  Post object.
@@ -454,6 +507,7 @@ final class Conexao_Admin_Ux_Fields {
 			case '_job_title':
 			case '_sponsor_name':
 			case '_provider_name':
+			case '_leisure_name':
 				return $post->post_title;
 			case '_event_description':
 			case '_news_content':
@@ -461,19 +515,20 @@ final class Conexao_Admin_Ux_Fields {
 			case '_job_description':
 			case '_sponsor_description':
 			case '_provider_description':
+			case '_leisure_description':
 				return $post->post_content;
 		}
 
 		// County and Town: prefer taxonomy (public site uses taxonomies for
 		// filtering), fall back to stored meta.
-		if ( '_event_county' === $key || '_guide_county' === $key ) {
+		if ( '_event_county' === $key || '_guide_county' === $key || '_leisure_county' === $key ) {
 			$terms = wp_get_object_terms( $post->ID, 'conexao_county', array( 'fields' => 'names' ) );
 			if ( ! is_wp_error( $terms ) && ! empty( $terms ) ) {
 				return $terms[0];
 			}
 		}
 
-		if ( '_event_town' === $key || '_guide_town' === $key ) {
+		if ( '_event_town' === $key || '_guide_town' === $key || '_leisure_town' === $key ) {
 			$terms = wp_get_object_terms( $post->ID, 'conexao_town', array( 'fields' => 'names' ) );
 			if ( ! is_wp_error( $terms ) && ! empty( $terms ) ) {
 				return $terms[0];

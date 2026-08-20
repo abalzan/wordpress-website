@@ -396,6 +396,7 @@ function conexao_enqueue_scripts() {
 	wp_enqueue_style( 'conexao-design-system', CONEXAO_THEME_URI . '/assets/css/design-system.css', array(), conexao_asset_version( 'assets/css/design-system.css' ) );
 	wp_enqueue_style( 'conexao-header-nav', CONEXAO_THEME_URI . '/assets/css/header-nav.css', array( 'conexao-design-system' ), conexao_asset_version( 'assets/css/header-nav.css' ) );
 	wp_enqueue_style( 'conexao-main', CONEXAO_THEME_URI . '/assets/css/main.css', array( 'conexao-header-nav' ), conexao_asset_version( 'assets/css/main.css' ) );
+	wp_enqueue_style( 'conexao-leisure', CONEXAO_THEME_URI . '/assets/css/leisure.css', array( 'conexao-main' ), conexao_asset_version( 'assets/css/leisure.css' ) );
 	wp_enqueue_style( 'conexao-dark-mode', CONEXAO_THEME_URI . '/assets/css/dark-mode.css', array( 'conexao-main' ), conexao_asset_version( 'assets/css/dark-mode.css' ) );
 
 	// Load main.js with defer to avoid render-blocking.
@@ -555,7 +556,7 @@ function conexao_homepage_query( $args, $cache_key, $expiration = 300 ) {
  */
 function conexao_homepage_cache_invalidate( $post_id ) {
 	$post_type = get_post_type( $post_id );
-	$cpt_types = array( 'guide', 'event', 'job', 'sponsor', 'course_provider', 'post' );
+	$cpt_types = array( 'guide', 'event', 'job', 'sponsor', 'course_provider', 'leisure', 'post' );
 	if ( in_array( $post_type, $cpt_types, true ) ) {
 		// Homepage sections.
 		delete_transient( 'conexao_home_news' );
@@ -1077,6 +1078,44 @@ function conexao_content_archive_query( $query ) {
 	}
 
 	/*
+	 * Lazer: optional ?county= (conexao_county) and ?categoria=
+	 * (conexao_category taxonomy) filters, combinable.
+	 */
+	if ( $query->is_post_type_archive( 'leisure' ) ) {
+		$tax_query = $query->get( 'tax_query' );
+		if ( ! is_array( $tax_query ) ) {
+			$tax_query = array();
+		}
+
+		// Combine filters in a single nested relation so county + category work together.
+		$county   = isset( $_GET['county'] ) ? sanitize_title( wp_unslash( $_GET['county'] ) ) : '';
+		$category = isset( $_GET['categoria'] ) ? sanitize_title( wp_unslash( $_GET['categoria'] ) ) : '';
+
+		if ( $county ) {
+			$tax_query[] = array(
+				'taxonomy' => 'conexao_county',
+				'field'    => 'slug',
+				'terms'    => $county,
+			);
+		}
+
+		if ( $category ) {
+			$tax_query[] = array(
+				'taxonomy' => 'conexao_category',
+				'field'    => 'slug',
+				'terms'    => $category,
+			);
+		}
+
+		if ( ! empty( $tax_query ) ) {
+			if ( count( $tax_query ) > 1 ) {
+				$tax_query['relation'] = 'AND';
+			}
+			$query->set( 'tax_query', $tax_query );
+		}
+	}
+
+	/*
 	 * Guias: optional ?categoria= filter via the conexao_category taxonomy.
 	 */
 	if ( $query->is_post_type_archive( 'guide' ) ) {
@@ -1540,6 +1579,8 @@ function conexao_primary_nav_sections() {
 		'eventos'    => array( 'key' => 'eventos', 'type' => 'post_type_archive', 'object' => 'event', 'url' => $archive_url( 'event', 'eventos' ), 'match' => array( 'eventos', 'events' ) ),
 		// Cursos is a CPT archive (course_provider CPT), not a static page.
 		'cursos'     => array( 'key' => 'cursos', 'type' => 'post_type_archive', 'object' => 'course_provider', 'url' => $archive_url( 'course_provider', 'cursos' ), 'match' => array( 'cursos', 'courses' ) ),
+		// Lazer is a CPT archive (leisure CPT) at /lazer/.
+		'lazer'      => array( 'key' => 'lazer', 'type' => 'post_type_archive', 'object' => 'leisure', 'url' => $archive_url( 'leisure', 'lazer' ), 'match' => array( 'lazer', 'leisure' ) ),
 		'empregos'   => array( 'key' => 'empregos', 'type' => 'post_type_archive', 'object' => 'job', 'url' => $archive_url( 'job', 'empregos' ), 'match' => array( 'empregos', 'jobs' ) ),
 		'apoiadores' => array( 'key' => 'apoiadores', 'type' => 'post_type_archive', 'object' => 'sponsor', 'url' => $archive_url( 'sponsor', 'apoiadores' ), 'match' => array( 'apoiadores', 'sponsors', 'sponsor' ) ),
 		'irlanda'    => array( 'key' => 'irlanda', 'type' => 'page', 'object' => 'page', 'path' => 'irlanda', 'match' => array( 'irlanda', 'ireland' ) ),
@@ -1798,6 +1839,7 @@ function conexao_normalize_primary_nav_sections( $items, $args ) {
 	$cpt_sections = array(
 		'guias'      => array( 'post_type' => 'guide',   'title' => 'Guias',      'url' => get_post_type_archive_link( 'guide' ) ? get_post_type_archive_link( 'guide' ) : home_url( '/guias/' ) ),
 		'eventos'    => array( 'post_type' => 'event',   'title' => 'Eventos',    'url' => get_post_type_archive_link( 'event' ) ? get_post_type_archive_link( 'event' ) : home_url( '/eventos/' ) ),
+		'lazer'      => array( 'post_type' => 'leisure', 'title' => 'Lazer',      'url' => get_post_type_archive_link( 'leisure' ) ? get_post_type_archive_link( 'leisure' ) : home_url( '/lazer/' ) ),
 		'empregos'   => array( 'post_type' => 'job',     'title' => 'Empregos',   'url' => get_post_type_archive_link( 'job' ) ? get_post_type_archive_link( 'job' ) : home_url( '/empregos/' ) ),
 		'apoiadores' => array( 'post_type' => 'sponsor', 'title' => 'Apoiadores', 'url' => get_post_type_archive_link( 'sponsor' ) ? get_post_type_archive_link( 'sponsor' ) : home_url( '/apoiadores/' ) ),
 	);
@@ -1834,7 +1876,7 @@ function conexao_normalize_primary_nav_sections( $items, $args ) {
 			);
 
 			// Insert in the correct position based on the canonical order.
-			$order = array( 'inicio', 'blog', 'guias', 'eventos', 'cursos', 'empregos', 'apoiadores', 'irlanda', 'sobre-nos', 'contato' );
+			$order = array( 'inicio', 'blog', 'guias', 'eventos', 'cursos', 'lazer', 'empregos', 'apoiadores', 'irlanda', 'sobre-nos', 'contato' );
 			$target_index = array_search( $section_key, $order, true );
 			$insert_at = count( $items );
 
@@ -1908,6 +1950,10 @@ function conexao_fix_nav_active_states( $items ) {
 		'cursos'     => function( $path ) {
 			// Courses: active on /courses/ or /cursos/ and their subpages.
 			return preg_match( '#^/(courses|cursos)(/.*)?$#', $path );
+		},
+		'lazer'      => function( $path ) {
+			// Lazer: active on /lazer/ or /leisure/ and their subpages.
+			return preg_match( '#^/(lazer|leisure)(/.*)?$#', $path );
 		},
 		'empregos'   => function( $path ) {
 			// Jobs: active on /jobs/ or /empregos/ and their subpages.
@@ -2007,6 +2053,7 @@ function conexao_get_item_section_key( $item ) {
 		'guias práticos'  => 'guias',
 		'eventos'         => 'eventos',
 		'cursos'          => 'cursos',
+		'lazer'           => 'lazer',
 		'empregos'        => 'empregos',
 		'apoiadores'      => 'apoiadores',
 		'irlanda'         => 'irlanda',
@@ -2028,6 +2075,8 @@ function conexao_get_item_section_key( $item ) {
 		array( 'key' => 'eventos',    'pattern' => '/events' ),
 		array( 'key' => 'cursos',     'pattern' => '/cursos' ),
 		array( 'key' => 'cursos',     'pattern' => '/courses' ),
+		array( 'key' => 'lazer',      'pattern' => '/lazer' ),
+		array( 'key' => 'lazer',      'pattern' => '/leisure' ),
 		array( 'key' => 'empregos',   'pattern' => '/empregos' ),
 		array( 'key' => 'empregos',   'pattern' => '/jobs' ),
 		array( 'key' => 'apoiadores', 'pattern' => '/apoiadores' ),

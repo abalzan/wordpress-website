@@ -477,6 +477,7 @@ final class Conexao_Admin_Ux_Editor {
 			'event'           => 'event_banner',
 			'guide'           => 'guide_featured_image',
 			'course_provider' => 'provider_logo',
+			'leisure'         => 'leisure_image_attachment_id',
 		);
 
 		if ( ! isset( $media_fields[ $this->post_type ] ) ) {

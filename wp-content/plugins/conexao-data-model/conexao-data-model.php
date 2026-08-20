@@ -35,6 +35,7 @@ final class Conexao_Data_Model {
 		add_action( 'init', array( $this, 'register_content_types' ), 0 );
 		add_action( 'init', array( $this, 'register_taxonomies' ), 0 );
 		add_action( 'init', array( $this, 'register_provider_meta' ), 0 );
+		add_action( 'init', array( $this, 'register_leisure_meta' ), 0 );
 	}
 
 	public function register_content_types() {
@@ -46,6 +47,7 @@ final class Conexao_Data_Model {
 			'job'             => array( 'plural' => 'Empregos', 'singular' => 'Vaga de Emprego', 'slug' => 'empregos', 'icon' => 'dashicons-portfolio' ),
 			'sponsor'         => array( 'plural' => 'Apoiadores', 'singular' => 'Apoiador', 'slug' => 'apoiadores', 'icon' => 'dashicons-heart' ),
 			'course_provider' => array( 'plural' => 'Cursos', 'singular' => 'Provedor de Cursos', 'slug' => 'cursos', 'icon' => 'dashicons-welcome-learn-more' ),
+			'leisure'         => array( 'plural' => 'Lazer e Turismo', 'singular' => 'Local de Lazer', 'slug' => 'lazer', 'icon' => 'dashicons-palmtree' ),
 		);
 
 		foreach ( $post_types as $post_type => $type ) {
@@ -113,8 +115,78 @@ final class Conexao_Data_Model {
 		}
 	}
 
+	/**
+	 * Register meta fields for leisure / tourism directory entries.
+	 *
+	 * Each field is optional; empty values are simply not rendered. Fields map
+	 * to the Data Fields spec for the /lazer/ directory.
+	 */
+	public function register_leisure_meta() {
+		$meta = array(
+			'_leisure_county'        => 'string', // County (also stored as conexao_county term).
+			'_leisure_town'          => 'string', // Town / city.
+			'_leisure_address'       => 'string', // Street address.
+			'_leisure_website'       => 'string', // Legacy official website URL field.
+			'_leisure_official_website' => 'string', // Official website URL (primary external destination).
+			'_leisure_discover_ireland' => 'string', // Discover Ireland reference URL (fallback external destination).
+			'_leisure_map_url'       => 'string', // Google Maps / location URL.
+			'_leisure_feature'       => 'boolean', // Featured destination.
+			'_leisure_free'          => 'string', // Gratuito / Pago.
+			'_leisure_family'        => 'boolean', // Adequado para famílias.
+			'_leisure_accessibility' => 'boolean', // Acessibilidade.
+			'_leisure_pet_friendly'  => 'boolean', // Pet friendly.
+			'_leisure_indoor'        => 'boolean', // Interior.
+			'_leisure_outdoor'       => 'boolean', // Exterior.
+			'_leisure_parking'       => 'boolean', // Estacionamento.
+			'_leisure_booking'       => 'boolean', // Necessita reserva.
+			'_leisure_duration'      => 'string', // Duração recomendada.
+			'_leisure_best_time'     => 'string', // Melhor época para visitar.
+
+			// --- Leisure image / source fields ---
+			// The location's main image. Prefer a WordPress Media Library
+			// attachment ID (`_leisure_image_attachment_id`), which yields a
+			// responsive local image (srcset/width/height) and is set as the
+			// post thumbnail by the Admin UX editor.
+			'_leisure_image_attachment_id' => 'integer', // Local Media Library attachment ID.
+			// Optional external, properly-licensed image URL (only used when
+			// explicit permission to display it remotely has been confirmed —
+			// e.g. the location's own official site that permits reuse).
+			'_leisure_image_external_url'  => 'string', // External licensed image URL.
+			// Image source label (e.g. "Discover Ireland", "Site oficial",
+			// "Biblioteca de mídia", "Wikimedia Commons", "Enviada").
+			'_leisure_image_source'        => 'string',
+			// The source page URL where the image / more info can be found
+			// (e.g. the Wikimedia Commons file page). Used for attribution.
+			'_leisure_image_source_url'    => 'string',
+			// Photographer / author of the image (from Commons extmetadata).
+			'_leisure_image_author'        => 'string',
+			// License short name (e.g. "CC BY-SA 4.0", "Public Domain").
+			'_leisure_image_license'       => 'string',
+			// Optional attribution text (photographer / licence) when required.
+			'_leisure_image_attribution'   => 'string',
+			// Accessibility alt text for the image (e.g. "Cliffs of Moher, County Clare").
+			'_leisure_image_alt_text'      => 'string',
+			// Image state: 'none' (no image), 'pending' (awaiting a properly
+			// licensed image), 'local' (WordPress Media Library), 'external'
+			// (licensed external URL). Defaults to 'none'.
+			'_leisure_image_status'        => 'string',
+		);
+
+		foreach ( $meta as $key => $type ) {
+			register_post_meta(
+				'leisure',
+				$key,
+				array(
+					'single'       => true,
+					'type'         => $type,
+					'show_in_rest' => true,
+				)
+			);
+		}
+	}
+
 	public function register_taxonomies() {
-		$content_types = array( 'guide', 'event', 'job', 'sponsor', 'course_provider' );
+		$content_types = array( 'guide', 'event', 'job', 'sponsor', 'course_provider', 'leisure' );
 
 		register_taxonomy(
 			'conexao_category',
@@ -144,7 +216,7 @@ final class Conexao_Data_Model {
 
 		register_taxonomy(
 			'conexao_tag',
-			array( 'guide', 'event', 'job', 'sponsor', 'course_provider' ),
+			array( 'guide', 'event', 'job', 'sponsor', 'course_provider', 'leisure' ),
 			array(
 				'labels'            => array( 'name' => 'Tags', 'singular_name' => 'Tag' ),
 				'public'            => true,

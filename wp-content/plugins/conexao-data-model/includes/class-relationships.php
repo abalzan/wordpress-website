@@ -11,9 +11,27 @@ final class Conexao_Data_Model_Relationships {
 			'Benefícios', 'Onde Comer', 'Educação', 'Documentos', 'Turismo', 'Negócios',
 			'Treinamento',
 		);
-		$counties = array( 'Dublin', 'Laois', 'Cork', 'Galway', 'Limerick', 'Kildare', 'Meath', 'Wicklow', 'Waterford' );
+		// All 26 Republic of Ireland counties for the /lazer/ directory.
+		$counties = array(
+			'Dublin', 'Wicklow', 'Meath', 'Kildare', 'Louth', 'Cavan', 'Monaghan',
+			'Donegal', 'Sligo', 'Leitrim', 'Roscommon', 'Mayo', 'Westmeath', 'Longford',
+			'Laois', 'Offaly', 'Galway', 'Clare', 'Limerick', 'Tipperary', 'Kilkenny',
+			'Carlow', 'Wexford', 'Waterford', 'Cork', 'Kerry',
+		);
+		// Leisure/tourism categories for the /lazer/ directory.
+		$leisure_categories = array(
+			'Natureza', 'História', 'Cultura', 'Família', 'Praias', 'Caminhadas',
+			'Aventura', 'Jardins', 'Museus', 'Castelos', 'Vida Selvagem', 'Patrimônio',
+			'Cidades', 'Ilhas', 'Greenways', 'Outros',
+		);
 
 		foreach ( $categories as $term ) {
+			if ( ! term_exists( $term, 'conexao_category' ) ) {
+				wp_insert_term( $term, 'conexao_category' );
+			}
+		}
+
+		foreach ( $leisure_categories as $term ) {
 			if ( ! term_exists( $term, 'conexao_category' ) ) {
 				wp_insert_term( $term, 'conexao_category' );
 			}

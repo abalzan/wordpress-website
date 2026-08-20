@@ -29,7 +29,7 @@ final class Conexao_Admin_Ux_Config {
 	 *
 	 * @var string[]
 	 */
-	const SUPPORTED_TYPES = array( 'event', 'guide', 'job', 'sponsor', 'course_provider' );
+	const SUPPORTED_TYPES = array( 'event', 'guide', 'job', 'sponsor', 'course_provider', 'leisure' );
 
 	/**
 	 * Get the full configuration for a post type.
@@ -57,6 +57,7 @@ final class Conexao_Admin_Ux_Config {
 				'job'             => self::job_config(),
 				'sponsor'         => self::sponsor_config(),
 				'course_provider' => self::course_provider_config(),
+				'leisure'         => self::leisure_config(),
 			);
 		}
 
@@ -207,6 +208,165 @@ final class Conexao_Admin_Ux_Config {
 			'Cursos Online',
 			'Negócios',
 			'Diretórios de Cursos',
+		);
+	}
+
+	/**
+	 * Leisure / tourism categories for the /lazer/ directory.
+	 * Matches the seeded `conexao_category` terms.
+	 *
+	 * @return string[]
+	 */
+	public static function leisure_categories() {
+		return array(
+			'Natureza',
+			'História',
+			'Cultura',
+			'Família',
+			'Praias',
+			'Caminhadas',
+			'Aventura',
+			'Jardins',
+			'Museus',
+			'Castelos',
+			'Vida Selvagem',
+			'Patrimônio',
+			'Cidades',
+			'Ilhas',
+			'Greenways',
+			'Outros',
+		);
+	}
+
+	/**
+	 * ------------------------------------------------------------------
+	 * LAZER & TURISMO
+	 * ------------------------------------------------------------------
+	 */
+	private static function leisure_config() {
+		return array(
+			'post_type'  => 'leisure',
+			'labels'     => array(
+				'singular'        => 'Local de Lazer',
+				'plural'          => 'Lazer e Turismo',
+				'add_button'      => 'Adicionar Local',
+				'add_new_item'    => 'Adicionar Local',
+				'edit_item'       => 'Editar Local',
+				'empty_title'     => 'Ainda não existem locais',
+				'empty_message'   => 'Adicione o primeiro lugar ou atividade turística à diretoria de Lazer.',
+				'success_saved'   => 'Local atualizado com sucesso.',
+				'success_created' => 'Local criado com sucesso.',
+				'success_published' => 'Local publicado com sucesso.',
+				'success_draft'   => 'Rascunho salvo com sucesso.',
+				'success_duplicated' => 'Local duplicado como rascunho.',
+				'success_archived' => 'Local arquivado com sucesso.',
+				'success_bulk'    => 'Locais atualizados com sucesso.',
+			),
+			'date_meta'  => '_leisure_created_date',
+			'sections'   => array(
+				'principal' => array(
+					'title'    => 'Informações principais',
+					'icon'     => 'dashicons-palmtree',
+					'priority' => 10,
+					'fields'   => array(
+						array( 'key' => '_leisure_name', 'label' => 'Nome do local', 'type' => 'text', 'required' => true, 'help' => 'Ex.: "Cliffs of Moher", "Glendalough".' ),
+						array( 'key' => '_leisure_short_description', 'label' => 'Descrição curta', 'type' => 'text', 'help' => 'Resumo exibido nos cartões da página /lazer/.' ),
+						array( 'key' => '_leisure_description', 'label' => 'Descrição completa', 'type' => 'editor', 'help' => 'Descreva o local, o que ver/fazer e por que vale a pena visitar.' ),
+						array( 'key' => '_leisure_image_attachment_id', 'label' => 'Imagem em destaque', 'type' => 'media', 'help' => 'Imagem principal do local com direitos adequados (armazenada na biblioteca de mídia). Também disponível na secção "Imagem e fonte".' ),
+					),
+				),
+				'classificacao' => array(
+					'title'    => 'Classificação',
+					'icon'     => 'dashicons-category',
+					'priority' => 20,
+					'fields'   => array(
+						array( 'key' => '_leisure_category', 'label' => 'Categoria', 'type' => 'taxonomy', 'taxonomy' => 'conexao_category', 'help' => 'Tipo de atração: Natureza, História, Praias, Castelos, etc.' ),
+						array( 'key' => '_leisure_county', 'label' => 'County', 'type' => 'select', 'options' => self::counties(), 'placeholder' => 'Selecione o county', 'help' => 'Condado onde o local está situado.' ),
+						array( 'key' => '_leisure_town', 'label' => 'Cidade / Vila', 'type' => 'town', 'help' => 'Cidade ou vila mais próxima.' ),
+					),
+				),
+				'localizacao' => array(
+					'title'    => 'Localização e contato',
+					'icon'     => 'dashicons-location-alt',
+					'priority' => 30,
+					'fields'   => array(
+						array( 'key' => '_leisure_address', 'label' => 'Endereço', 'type' => 'text', 'help' => 'Rua, número e código postal, se disponível.' ),
+						array( 'key' => '_leisure_official_website', 'label' => 'Official Website URL', 'type' => 'url', 'help' => 'Endereço do site oficial do local (ex.: https://www.example.com/). Ao clicar no local, o visitante será direcionado diretamente para este link.' ),
+						array( 'key' => '_leisure_discover_ireland', 'label' => 'Discover Ireland URL', 'type' => 'url', 'help' => 'Página deste local no Discover Ireland (ex.: https://www.discoverireland.ie/...). Usado apenas como referência quando não houver site oficial.' ),
+						array( 'key' => '_leisure_website', 'label' => 'Site oficial (legado)', 'type' => 'url', 'advanced' => true, 'help' => 'Campo antigo usado anteriormente. Prefira preencher "Official Website URL" acima.' ),
+						array( 'key' => '_leisure_map_url', 'label' => 'Link do mapa', 'type' => 'url', 'help' => 'Link do Google Maps / localização.' ),
+					),
+				),
+				'imagem'  => array(
+					'title'    => 'Imagem e fonte',
+					'icon'     => 'dashicons-format-image',
+					'priority' => 25,
+					'fields'   => array(
+						array( 'key' => '_leisure_image_attachment_id', 'label' => 'Imagem em destaque', 'type' => 'media', 'help' => 'Imagem principal do local com direitos adequados (armazenada na biblioteca de mídia). Também disponível na secção "Imagem e fonte".' ),
+						array( 'key' => '_leisure_image_external_url', 'label' => 'URL de imagem externa (licenciada)', 'type' => 'url', 'help' => 'Somente preencha se tiver confirmação de que a exibição remota é permitida (ex.: site oficial do local que autoriza o uso). Não use hotlinking sem permissão.' ),
+						array( 'key' => '_leisure_image_source', 'label' => 'Fonte da imagem', 'type' => 'text', 'help' => 'Ex.: "Biblioteca de mídia", "Site oficial", "Wikimedia Commons", "Enviada".' ),
+						array( 'key' => '_leisure_image_source_url', 'label' => 'URL da página de origem', 'type' => 'url', 'help' => 'Página onde a imagem/mais informações estão (ex.: página do arquivo no Wikimedia Commons). Serve como referência e atribuição.' ),
+						array( 'key' => '_leisure_image_author', 'label' => 'Fotógrafo / autor', 'type' => 'text', 'help' => 'Nome do autor da imagem, conforme indicado na página do Wikimedia Commons. Usado para atribuição.' ),
+						array( 'key' => '_leisure_image_license', 'label' => 'Licença', 'type' => 'text', 'help' => 'Licença da imagem (ex.: "CC BY-SA 4.0", "Public Domain", "CC0").' ),
+						array( 'key' => '_leisure_image_attribution', 'label' => 'Atribuição / crédito', 'type' => 'textarea', 'help' => 'Texto de atribuição completo (fotógrafo + licença + fonte). Ex.: "Foto: John Smith, CC BY-SA 4.0, Wikimedia Commons".' ),
+						array( 'key' => '_leisure_image_alt_text', 'label' => 'Texto alternativo (alt)', 'type' => 'text', 'help' => 'Texto descritivo para acessibilidade (ex.: "Cliffs of Moher, County Clare"). Se vazio, usa o nome do local.' ),
+						array( 'key' => '_leisure_image_status', 'label' => 'Status da imagem', 'type' => 'select', 'options' => array( 'none' => 'Nenhuma', 'pending' => 'Imagem pendente', 'local' => 'Local (mídia)', 'external' => 'Externa (licenciada)' ), 'help' => 'Estado atual da imagem. Use "Imagem pendente" quando ainda não houver uma imagem com direitos adequados.' ),
+					),
+				),
+				'atributos' => array(
+					'title'    => 'Atributos úteis',
+					'icon'     => 'dashicons-info-outline',
+					'priority' => 40,
+					'fields'   => array(
+						array( 'key' => '_leisure_free', 'label' => 'Custo', 'type' => 'text', 'help' => 'Ex.: "Grátis", "Pago", "€8 por adulto". Deixe em branco se não tiver certeza.' ),
+						array( 'key' => '_leisure_family', 'label' => 'Adequado para famílias', 'type' => 'checkbox' ),
+						array( 'key' => '_leisure_accessibility', 'label' => 'Acessível', 'type' => 'checkbox', 'help' => 'Acessibilidade para pessoas com mobilidade reduzida.' ),
+						array( 'key' => '_leisure_pet_friendly', 'label' => 'Pet friendly', 'type' => 'checkbox' ),
+						array( 'key' => '_leisure_indoor', 'label' => 'Interior', 'type' => 'checkbox' ),
+						array( 'key' => '_leisure_outdoor', 'label' => 'Exterior', 'type' => 'checkbox' ),
+						array( 'key' => '_leisure_parking', 'label' => 'Estacionamento', 'type' => 'checkbox' ),
+						array( 'key' => '_leisure_booking', 'label' => 'Necessita reserva', 'type' => 'checkbox' ),
+						array( 'key' => '_leisure_duration', 'label' => 'Duração recomendada', 'type' => 'text', 'help' => 'Ex.: "2-3 horas", "meio dia".' ),
+						array( 'key' => '_leisure_best_time', 'label' => 'Melhor época para visitar', 'type' => 'text', 'help' => 'Ex.: "Primavera", "todo o ano".' ),
+					),
+				),
+				'destaque' => array(
+					'title'    => 'Destaque',
+					'icon'     => 'dashicons-star-filled',
+					'priority' => 50,
+					'fields'   => array(
+						array( 'key' => '_leisure_feature', 'label' => 'Local em destaque', 'type' => 'checkbox', 'help' => 'Exibir na seção "Destinos em destaque" da /lazer/.' ),
+					),
+				),
+			),
+			'publishing' => array(
+				'statuses' => array(
+					'draft'     => array( 'label' => 'Rascunho', 'badge' => 'draft' ),
+					'needs_review' => array( 'label' => 'Revisão', 'badge' => 'review' ),
+					'published' => array( 'label' => 'Publicado', 'badge' => 'published' ),
+					'archived'  => array( 'label' => 'Arquivado', 'badge' => 'archived' ),
+				),
+				'status_meta' => '_leisure_status',
+				'default_status' => 'draft',
+			),
+			'columns'    => array(
+				'category' => array( 'label' => 'Categoria', 'render' => 'category' ),
+				'county'   => array( 'label' => 'County', 'render' => 'county' ),
+				'featured' => array( 'label' => 'Destaque', 'meta' => '_leisure_feature', 'format' => 'featured' ),
+				'status'   => array( 'label' => 'Status', 'render' => 'status' ),
+			),
+			'bulk_actions' => array(
+				'publish'  => array( 'label' => 'Publicar', 'type' => 'status', 'value' => 'published' ),
+				'draft'    => array( 'label' => 'Rascunho', 'type' => 'status', 'value' => 'draft' ),
+				'archive'  => array( 'label' => 'Arquivar', 'type' => 'status', 'value' => 'archived' ),
+				'category' => array( 'label' => 'Atribuir categoria', 'type' => 'taxonomy', 'taxonomy' => 'conexao_category' ),
+				'county'   => array( 'label' => 'Atribuir localização (County)', 'type' => 'taxonomy', 'taxonomy' => 'conexao_county' ),
+				'delete'   => array( 'label' => 'Excluir permanentemente', 'type' => 'delete', 'confirm' => 'Tem certeza que deseja excluir permanentemente os locais selecionados? Esta ação não pode ser desfeita.' ),
+			),
+			'summary'    => array(
+				array( 'key' => 'published', 'label' => 'Publicados', 'status' => 'published' ),
+				array( 'key' => 'review', 'label' => 'Revisão', 'status' => 'needs_review' ),
+			),
 		);
 	}
 

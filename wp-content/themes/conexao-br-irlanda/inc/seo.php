@@ -51,6 +51,12 @@ function conexao_seo_title( $title ) {
 		return single_post_title( '', false ) . ' | ' . $cat . ' | ' . $site_name;
 	}
 
+	if ( is_singular( 'leisure' ) ) {
+		$terms = get_the_terms( get_the_ID(), 'conexao_category' );
+		$cat   = ( $terms && ! is_wp_error( $terms ) ) ? $terms[0]->name : 'Lazer';
+		return single_post_title( '', false ) . ' | ' . $cat . ' | ' . $site_name;
+	}
+
 	if ( is_singular( 'post' ) ) {
 		return single_post_title( '', false ) . ' | ' . $site_name;
 	}
@@ -69,6 +75,10 @@ function conexao_seo_title( $title ) {
 
 	if ( is_post_type_archive( 'sponsor' ) ) {
 		return 'Apoiadores na Irlanda | ' . $site_name;
+	}
+
+	if ( is_post_type_archive( 'leisure' ) ) {
+		return 'Lazer & Turismo na Irlanda | ' . $site_name;
 	}
 
 	if ( is_tax( 'conexao_category' ) ) {
@@ -123,6 +133,8 @@ function conexao_seo_meta_description() {
 			$description = 'Vaga de emprego: ' . get_the_title() . '. Oportunidade para brasileiros na Irlanda.';
 		} elseif ( is_singular( 'sponsor' ) ) {
 			$description = 'Apoiador: ' . get_the_title() . '. Conheça quem apoia e fortalece a comunidade brasileira na Irlanda.';
+		} elseif ( is_singular( 'leisure' ) ) {
+			$description = 'Lazer e turismo: ' . get_the_title() . '. Descubra este local incrível para visitar na Irlanda.';
 		} elseif ( is_post_type_archive( 'guide' ) ) {
 			$description = 'Guias práticos completos para brasileiros na Irlanda. PPS Number, Medical Card, moradia, emprego e mais.';
 		} elseif ( is_post_type_archive( 'event' ) ) {
@@ -131,6 +143,8 @@ function conexao_seo_meta_description() {
 			$description = 'Vagas de emprego para brasileiros na Irlanda. Oportunidades em saúde, TI, construção e mais.';
 		} elseif ( is_post_type_archive( 'sponsor' ) ) {
 			$description = 'Conheça as organizações e empresas que apoiam a comunidade brasileira na Irlanda.';
+		} elseif ( is_post_type_archive( 'leisure' ) ) {
+			$description = 'Descubra lugares para visitar, natureza, cultura, turismo e coisas para fazer na Irlanda. Guia de lazer por condado.';
 		} elseif ( is_tax( 'conexao_category' ) ) {
 			$description = 'Conteúdo sobre ' . single_term_title( '', false ) . ' para brasileiros na Irlanda. Guias e recursos úteis.';
 		} elseif ( is_tax( 'conexao_county' ) ) {
@@ -541,6 +555,9 @@ function conexao_archive_title() {
 	if ( is_post_type_archive( 'sponsor' ) ) {
 		return 'Apoiadores';
 	}
+	if ( is_post_type_archive( 'leisure' ) ) {
+		return 'Lazer';
+	}
 	if ( is_post_type_archive( 'course_provider' ) ) {
 		return 'Cursos';
 	}
@@ -567,6 +584,9 @@ function conexao_archive_description() {
 	}
 	if ( is_post_type_archive( 'sponsor' ) ) {
 		return 'Conheça as organizações e empresas que apoiam a comunidade brasileira na Irlanda.';
+	}
+	if ( is_post_type_archive( 'leisure' ) ) {
+		return 'Descubra lugares para visitar, natureza, cultura, turismo e coisas para fazer na Irlanda.';
 	}
 
 	$description = get_the_archive_description();
@@ -636,6 +656,7 @@ function conexao_cpt_label( $post_type ) {
 		'event'    => 'Eventos',
 		'job'      => 'Empregos',
 		'sponsor'  => 'Apoiadores',
+		'leisure'  => 'Lazer e Turismo',
 		'post'     => 'Blog',
 	);
 	return isset( $labels[ $post_type ] ) ? $labels[ $post_type ] : get_post_type_object( $post_type )->labels->name;
@@ -734,6 +755,7 @@ function conexao_seo_sitemap() {
 		'event'    => '0.8',
 		'job'      => '0.7',
 		'sponsor'  => '0.7',
+		'leisure'  => '0.7',
 	);
 	$sitemap_batch = 500;
 	foreach ( $cpt_priorities as $cpt => $priority ) {
@@ -750,6 +772,9 @@ function conexao_seo_sitemap() {
 				'update_post_term_cache' => false,
 			) );
 			foreach ( $items as $item_id ) {
+				if ( 'leisure' === $cpt && conexao_leisure_external_url( $item_id ) ) {
+					continue;
+				}
 				conexao_seo_sitemap_url( get_permalink( $item_id ), $priority, 'weekly' );
 			}
 			$page++;
@@ -1023,6 +1048,60 @@ function conexao_seo_redirects() {
 	}
 }
 add_action( 'template_redirect', 'conexao_seo_redirects', 5 );
+
+/**
+ * Resolve the external destination URL for a leisure location, if any.
+ *
+ * Priority: Offical Website URL, then Discover Ireland URL. Returns '' when
+ * the location should use its internal /lazer/{slug}/ page.
+ *
+ * @param int $post_id Leisure post ID.
+ * @return string External URL, or '' when none configured.
+ */
+function conexao_leisure_external_url( $post_id = 0 ) {
+	$post_id = $post_id ? (int) $post_id : get_the_ID();
+
+	if ( ! $post_id || 'leisure' !== get_post_type( $post_id ) ) {
+		return '';
+	}
+
+	$official  = get_post_meta( $post_id, '_leisure_official_website', true );
+	$discover  = get_post_meta( $post_id, '_leisure_discover_ireland', true );
+
+	// Pick the first valid (non-empty) external destination by priority.
+	$candidates = array_filter( array( $official, $discover ) );
+	foreach ( $candidates as $candidate ) {
+		$candidate = trim( (string) $candidate );
+		// Defence in depth: only ever redirect to an absolute http(s) URL.
+		if ( $candidate && preg_match( '#^https?://#i', $candidate ) && esc_url_raw( $candidate ) === $candidate ) {
+			return $candidate;
+		}
+	}
+
+	return '';
+}
+
+/**
+ * Redirect a single leisure post to its configured external destination.
+ *
+ * Hooked on template_redirect at priority 6 (after the migration-safe 301
+ * redirects at priority 5, before normal template rendering). Only applies to
+ * singular leisure queries; uses a 302 so the destination can be changed later.
+ */
+function conexao_leisure_redirect() {
+	if ( is_admin() || ! is_singular( 'leisure' ) ) {
+		return;
+	}
+
+	$external = conexao_leisure_external_url( get_the_ID() );
+	if ( ! $external ) {
+		return; // No external destination -> render the normal internal page.
+	}
+
+	wp_redirect( $external, 302 );
+	exit;
+}
+add_action( 'template_redirect', 'conexao_leisure_redirect', 6 );
 
 /**
  * ---------------------------------------------------------------------------

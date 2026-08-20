@@ -23,6 +23,8 @@ require_once CONEXAO_ADMIN_UX_DIR . 'includes/class-actions.php';
 require_once CONEXAO_ADMIN_UX_DIR . 'includes/class-list.php';
 require_once CONEXAO_ADMIN_UX_DIR . 'includes/class-editor.php';
 require_once CONEXAO_ADMIN_UX_DIR . 'includes/class-admin.php';
+require_once CONEXAO_ADMIN_UX_DIR . 'includes/class-leisure-image-admin.php';
+require_once CONEXAO_ADMIN_UX_DIR . 'includes/class-wikimedia-client.php';
 
 Conexao_Admin_Ux::instance();
 

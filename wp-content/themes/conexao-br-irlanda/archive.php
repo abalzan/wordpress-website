@@ -1,12 +1,13 @@
 <?php get_header(); ?>
 
 <?php
-$is_event_archive  = is_post_type_archive( 'event' );
-$is_course_archive = is_post_type_archive( 'course_provider' );
-$is_guide_archive  = is_post_type_archive( 'guide' );
+$is_event_archive   = is_post_type_archive( 'event' );
+$is_course_archive  = is_post_type_archive( 'course_provider' );
+$is_guide_archive   = is_post_type_archive( 'guide' );
+$is_leisure_archive = is_post_type_archive( 'leisure' );
 ?>
 
-<div class="<?php echo $is_event_archive ? 'site-container events-page' : ( $is_course_archive ? 'site-container courses-page' : 'site-container' ); ?>">
+<div class="<?php echo $is_event_archive ? 'site-container events-page' : ( $is_course_archive ? 'site-container courses-page' : ( $is_leisure_archive ? 'site-container leisure-page' : 'site-container' ) ); ?>">
 	<main id="primary" class="content-area">
 
 		<?php if ( $is_event_archive ) : ?>
@@ -22,7 +23,14 @@ $is_guide_archive  = is_post_type_archive( 'guide' );
 				<h1 class="events-page-title"><?php esc_html_e( 'Cursos', 'conexao-br-irlanda' ); ?></h1>
 				<p class="events-page-description"><?php esc_html_e( 'Encontre cursos, formações e oportunidades de aprendizagem na Irlanda.', 'conexao-br-irlanda' ); ?></p>
 			</header>
-		<?php get_template_part( 'template-parts/event', 'filters' ); ?>
+			<?php get_template_part( 'template-parts/event', 'filters' ); ?>
+		<?php elseif ( $is_leisure_archive ) : ?>
+			<header class="events-page-header">
+				<span class="section-eyebrow"><?php esc_html_e( 'Lazer & Turismo', 'conexao-br-irlanda' ); ?></span>
+				<h1 class="events-page-title"><?php esc_html_e( 'Lazer', 'conexao-br-irlanda' ); ?></h1>
+				<p class="events-page-description"><?php esc_html_e( 'Descubra lugares para visitar, natureza, cultura, turismo e coisas para fazer na Irlanda.', 'conexao-br-irlanda' ); ?></p>
+			</header>
+			<?php get_template_part( 'template-parts/leisure', 'filters' ); ?>
 		<?php elseif ( $is_guide_archive ) : ?>
 			<header class="archive-header">
 				<h1 class="archive-title"><?php echo esc_html( conexao_archive_title() ); ?></h1>
@@ -43,12 +51,14 @@ $is_guide_archive  = is_post_type_archive( 'guide' );
 		<?php endif; ?>
 
 		<?php if ( have_posts() ) : ?>
-			<div class="<?php echo ( $is_event_archive || $is_course_archive ) ? 'events-grid' : 'archive-grid'; ?>">
+			<div class="<?php echo ( $is_event_archive || $is_course_archive || $is_leisure_archive ) ? 'events-grid' : 'archive-grid'; ?>">
 				<?php while ( have_posts() ) : the_post(); ?>
 					<?php if ( $is_event_archive ) : ?>
 						<?php get_template_part( 'template-parts/event', 'card' ); ?>
-				<?php elseif ( $is_course_archive ) : ?>
-					<?php get_template_part( 'template-parts/provider', 'card' ); ?>
+					<?php elseif ( $is_course_archive ) : ?>
+						<?php get_template_part( 'template-parts/provider', 'card' ); ?>
+					<?php elseif ( $is_leisure_archive ) : ?>
+						<?php get_template_part( 'template-parts/leisure', 'card' ); ?>
 					<?php else : ?>
 						<?php
 						// For sponsors, check if there's an external link to make the card clickable.

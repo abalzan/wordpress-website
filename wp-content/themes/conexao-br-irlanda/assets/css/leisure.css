@@ -1,0 +1,362 @@
+/* ============================================================
+   Lazer & Turismo (/lazer/) directory styles
+   Follows the existing event-card / provider-card visual language.
+   ============================================================ */
+
+/* --- Archive page --- */
+.leisure-page .events-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+	gap: 28px;
+}
+
+/* --- Filter bars --- */
+.leisure-filter-bar {
+	margin-bottom: 8px;
+}
+
+.leisure-filter-bar--category {
+	margin-top: 8px;
+	margin-bottom: 24px;
+}
+
+/* --- Card --- */
+.leisure-card {
+	background: var(--conexao-white);
+	border-radius: var(--conexao-radius-lg);
+	overflow: hidden;
+	border: 1px solid var(--conexao-border);
+	transition: all var(--conexao-transition);
+	display: flex;
+	flex-direction: column;
+}
+
+.leisure-card:hover {
+	box-shadow: var(--conexao-shadow-lg);
+	transform: translateY(-4px);
+}
+
+.leisure-card-image {
+	display: block;
+	aspect-ratio: 16 / 10;
+	overflow: hidden;
+	background: var(--conexao-surface-muted, #eef1f4);
+}
+
+.leisure-card-image img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+
+/* --- Image pending state (no properly licensed image yet) --- */
+.leisure-card-image-pending {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+	width: 100%;
+	height: 100%;
+	color: var(--conexao-text-muted, #6b7280);
+	background: var(--conexao-surface-muted, #eef1f4);
+}
+
+.leisure-card-image-pending svg {
+	opacity: 0.55;
+}
+
+.leisure-card-image-pending-text {
+	font-size: 0.8rem;
+	font-weight: 600;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+}
+
+.leisure-card-body {
+	padding: 20px;
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	gap: 8px;
+}
+
+.leisure-card-category {
+	display: inline-block;
+	align-self: flex-start;
+	font-size: 0.72rem;
+	font-weight: 700;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: var(--conexao-primary, #0E6B3A);
+	background: rgba(14, 107, 58, 0.08);
+	border-radius: var(--conexao-radius-sm, 6px);
+	padding: 4px 10px;
+}
+
+.leisure-card-title {
+	font-family: var(--conexao-font-heading, Poppins, sans-serif);
+	font-size: 1.15rem;
+	font-weight: 700;
+	line-height: 1.3;
+	margin: 0;
+}
+
+.leisure-card-title a {
+	color: var(--conexao-text, #1a1a1a);
+	text-decoration: none;
+}
+
+.leisure-card-title a:hover {
+	color: var(--conexao-primary, #0E6B3A);
+}
+
+.leisure-card-details {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	align-items: center;
+}
+
+.leisure-card-detail {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 0.82rem;
+	color: var(--conexao-text-muted, #6b7280);
+}
+
+.leisure-card-time-sep {
+	margin: 0 2px;
+	color: var(--conexao-text-muted, #6b7280);
+}
+
+.leisure-card-excerpt {
+	font-size: 0.9rem;
+	line-height: 1.55;
+	color: var(--conexao-text-muted, #4b5563);
+	margin: 4px 0 8px;
+	flex: 1;
+}
+
+.leisure-card-attrs {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px 14px;
+	list-style: none;
+	margin: 0 0 12px;
+	padding: 0;
+}
+
+.leisure-card-attr {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 0.78rem;
+	color: var(--conexao-text-muted, #4b5563);
+}
+
+.leisure-attr-dot {
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background: var(--conexao-accent, #F68B1F);
+	flex-shrink: 0;
+}
+
+.leisure-card-cta {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	font-weight: 600;
+	font-size: 0.9rem;
+	color: var(--conexao-primary, #0E6B3A);
+	text-decoration: none;
+	margin-top: auto;
+}
+
+.leisure-card-cta:hover {
+	text-decoration: underline;
+}
+
+/* --- Single location page --- */
+.leisure-single-header {
+	margin-bottom: 8px;
+}
+
+.leisure-single-location {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	margin-top: 4px;
+	font-size: 0.9rem;
+	color: var(--conexao-text-muted, #4b5563);
+}
+
+.leisure-single-location-sep {
+	margin: 0 2px;
+}
+
+.leisure-single-hero {
+	margin: 24px 0;
+	border-radius: var(--conexao-radius-lg);
+	overflow: hidden;
+}
+
+.leisure-single-hero img {
+	width: 100%;
+	height: auto;
+	display: block;
+}
+
+.leisure-single-content {
+	font-size: 1rem;
+	line-height: 1.7;
+}
+
+.leisure-single-info {
+	display: grid;
+	gap: 24px;
+	margin: 28px 0;
+}
+
+@media (min-width: 768px) {
+	.leisure-single-info {
+		grid-template-columns: 1fr 1fr;
+	}
+}
+
+.leisure-single-block {
+	background: var(--conexao-surface-muted, #f5f7f8);
+	border: 1px solid var(--conexao-border);
+	border-radius: var(--conexao-radius-lg);
+	padding: 22px;
+}
+
+.leisure-single-block-title {
+	font-family: var(--conexao-font-heading, Poppins, sans-serif);
+	font-size: 1.05rem;
+	font-weight: 700;
+	margin: 0 0 14px;
+}
+
+.leisure-single-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: grid;
+	gap: 12px;
+}
+
+.leisure-single-item {
+	display: flex;
+	align-items: flex-start;
+	gap: 10px;
+	font-size: 0.92rem;
+	color: var(--conexao-text, #1a1a1a);
+}
+
+.leisure-single-item svg {
+	flex-shrink: 0;
+	color: var(--conexao-primary, #0E6B3A);
+	margin-top: 2px;
+}
+
+.leisure-single-item a {
+	color: var(--conexao-primary, #0E6B3A);
+	font-weight: 600;
+	text-decoration: none;
+}
+
+.leisure-single-item a:hover {
+	text-decoration: underline;
+}
+
+.leisure-attr-grid {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+}
+
+.leisure-attr-item {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 0.86rem;
+	background: var(--conexao-white);
+	border: 1px solid var(--conexao-border);
+	border-radius: var(--conexao-radius-sm, 6px);
+	padding: 6px 12px;
+}
+
+.leisure-attr-yes {
+	font-weight: 600;
+	color: var(--conexao-primary, #0E6B3A);
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+	.leisure-page .events-grid {
+		grid-template-columns: 1fr;
+		gap: 20px;
+	}
+}
+/* --- Attribution overlay on card image --- */
+.leisure-card-image-wrapper {
+	position: relative;
+}
+
+.leisure-card-attribution {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background: rgba(0, 0, 0, 0.62);
+	color: #fff;
+	font-size: 0.7rem;
+	line-height: 1.3;
+	padding: 4px 8px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	backdrop-filter: blur(1px);
+}
+
+.leisure-card-attribution-link {
+	color: #fff;
+	text-decoration: none;
+	font-size: 0.75rem;
+	line-height: 1;
+}
+
+.leisure-card-attribution-link:hover {
+	text-decoration: underline;
+}
+
+/* --- Single page hero caption --- */
+.leisure-single-hero {
+	position: relative;
+}
+
+.leisure-single-hero-caption {
+	font-size: 0.8rem;
+	color: var(--conexao-text-muted, #6b7280);
+	padding: 8px 0 0;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.leisure-single-hero-caption a {
+	color: var(--conexao-primary, #0E6B3A);
+	text-decoration: none;
+	font-weight: 600;
+}
+
+.leisure-single-hero-caption a:hover {
+	text-decoration: underline;
+}
