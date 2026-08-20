@@ -95,15 +95,16 @@ if ( '' === $hero_image_alt ) {
 </section>
 
 <!-- Quick Access Categories -->
-<section class="quick-access-section">
+<section class="quick-access-section" aria-labelledby="quick-access-heading">
 	<div class="site-container">
+		<h2 id="quick-access-heading" class="quick-access-heading"><?php esc_html_e( 'Acesso Rápido', 'conexao-br-irlanda' ); ?></h2>
 		<div class="quick-access-grid">
 			<?php
 			$quick_access_cards = array(
 				array( 'icon' => 'home', 'title' => __( 'Moradia', 'conexao-br-irlanda' ), 'description' => __( 'Casas e apartamentos', 'conexao-br-irlanda' ), 'term' => 'moradia' ),
 				array( 'icon' => 'briefcase', 'title' => __( 'Empregos', 'conexao-br-irlanda' ), 'description' => __( 'Vagas de trabalho', 'conexao-br-irlanda' ), 'url' => '/empregos/', 'mobile_priority' => 'empregos' ),
 				array( 'icon' => 'heart', 'title' => __( 'Saúde', 'conexao-br-irlanda' ), 'description' => __( 'Acesso à saúde', 'conexao-br-irlanda' ), 'term' => 'saude' ),
-				array( 'icon' => 'compass', 'title' => __( 'Lazer', 'conexao-br-irlanda' ), 'description' => __( 'Lazer e turismo', 'conexao-br-irlanda' ), 'url' => '/lazer/', 'mobile_priority' => 'lazer' ),
+				array( 'icon' => 'compass', 'title' => __( 'Lazer', 'conexao-br-irlanda' ), 'description' => __( 'Lazer e turismo', 'conexao-br-irlanda' ), 'url' => '/lazer/', 'mobile_priority' => 'lazer', 'mobile_label' => __( 'O que fazer', 'conexao-br-irlanda' ) ),
 				array( 'icon' => 'car', 'title' => __( 'Transporte', 'conexao-br-irlanda' ), 'description' => __( 'Como se locomover', 'conexao-br-irlanda' ), 'term' => 'transporte' ),
 				array( 'icon' => 'dollar', 'title' => __( 'Finanças', 'conexao-br-irlanda' ), 'description' => __( 'Bancos e impostos', 'conexao-br-irlanda' ), 'term' => 'financas' ),
 				array( 'icon' => 'gift', 'title' => __( 'Benefícios', 'conexao-br-irlanda' ), 'description' => __( 'Auxílios e subsídios', 'conexao-br-irlanda' ), 'term' => 'beneficios' ),
@@ -474,7 +475,7 @@ if ( '' === $hero_image_alt ) {
 
 		<div class="events-section-footer">
 			<a href="<?php echo esc_url( home_url( '/eventos/' ) ); ?>" class="events-section-link">
-				<?php esc_html_e( 'Ver agenda completa', 'conexao-br-irlanda' ); ?>
+				<?php esc_html_e( 'Ver todos os eventos', 'conexao-br-irlanda' ); ?>
 				<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
 					<line x1="5" y1="12" x2="19" y2="12"></line>
 					<polyline points="12 5 19 12 12 19"></polyline>

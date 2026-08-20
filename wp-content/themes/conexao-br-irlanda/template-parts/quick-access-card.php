@@ -53,6 +53,9 @@ if ( ! empty( $card['mobile_only'] ) ) {
 		</svg>
 	</div>
 	<span class="quick-access-label"><?php echo esc_html( $card['title'] ); ?></span>
+	<?php if ( ! empty( $card['mobile_label'] ) ) : ?>
+		<span class="quick-access-label quick-access-label--mobile"><?php echo esc_html( $card['mobile_label'] ); ?></span>
+	<?php endif; ?>
 	<?php if ( ! empty( $card['description'] ) ) : ?>
 		<span class="quick-access-desc"><?php echo esc_html( $card['description'] ); ?></span>
 	<?php endif; ?>
