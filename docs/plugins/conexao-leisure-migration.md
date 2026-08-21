@@ -1,0 +1,86 @@
+# Conexão Leisure Migration
+
+- **Path**: `wp-content/plugins/conexao-leisure-migration/`
+- **Version**: 2.0.0
+- **Purpose**: Export and import the /lazer/ (leisure) dataset as a self-contained ZIP package containing data.json and actual image files from the Media Library. Production images are always local — no dependency on Wikimedia Commons for delivery.
+
+## Responsibilities
+
+- Export all leisure CPT posts + taxonomies + images into a portable ZIP
+- Import ZIP into another WordPress installation (with dry-run preview)
+- Deduplicate by stable UUID, then slug, then title
+- Import image files as local Media Library attachments
+- Preserve Wikimedia attribution/license metadata as reference
+- Clean up legacy external-image data from the old architecture
+- Self-register the leisure CPT + taxonomies when conexao-data-model is absent (fallback)
+
+## Key Components
+
+| File | Class | Purpose |
+|------|-------|---------|
+| `conexao-leisure-migration.php` | `Conexao_Lazer_Migration` | Main plugin, self-registration fallback |
+| `includes/class-leisure-exporter.php` | `Conexao_Lazer_Exporter` | Build ZIP with data.json + image files |
+| `includes/class-leisure-importer.php` | `Conexao_Lazer_Importer` | Import ZIP with dry-run, dedupe, media handling |
+| `includes/class-leisure-maintenance.php` | `Conexao_Lazer_Maintenance` | Legacy external-image data cleanup |
+| `includes/class-leisure-transfer-admin.php` | `Conexao_Lazer_Transfer_Admin` | Admin pages: Export, Import, Manutenção |
+
+## Hooks
+
+### Actions
+- `init` at priority 20 — self-register leisure CPT/taxonomies if missing
+- `plugins_loaded` — boot admin UI
+- `admin_menu` — register submenu pages
+
+### Admin Pages
+
+Under Lazer menu:
+- **Exportar Lazer** — download ZIP with all leisure data + images
+- **Importar Lazer** — upload ZIP with dry-run preview + confirm
+- **Manutenção** — cleanup legacy external-image data
+
+## Data Flow
+
+### Export
+1. Query all leisure posts
+2. Collect all taxonomy terms
+3. Collect image files from Media Library (by `_leisure_image_attachment_id`)
+4. Generate stable UUID per item/image
+5. Package into ZIP: `data.json` + `images/` directory
+
+### Import
+1. Validate ZIP structure
+2. Dry run: count found/created/updated/skipped/failed
+3. Real import: create/update posts, import images, assign taxonomies
+4. Matching order: UUID → slug → title
+5. Images matched by stable image ID → reused (no duplicates)
+
+## Data
+
+The importer only touches:
+- Leisure CPT posts
+- Leisure taxonomies (conexao_category, conexao_county, conexao_tag — matched by name)
+- Media Library attachments created for leisure images
+
+It never touches: events, guides, jobs, courses, blog posts, pages, supporters, or unrelated media.
+
+## Self-Registration Fallback
+
+When `conexao-data-model` is not active, this plugin registers the `leisure` CPT and the shared taxonomies on `init` (priority 20) so the importer can write into a consistent schema. When data-model is present, this fallback is skipped.
+
+## Dependencies
+
+- `conexao-data-model` (recommended, but optional — fallback self-registers the types)
+
+## Important Rules
+
+- Uses stable UUIDs for deduplication — never WordPress post IDs.
+- Images are always imported as local Media Library attachments.
+- Wikimedia Commons metadata is preserved as reference only, never hotlinked.
+- Legacy external-image data can be cleaned up via the Manutenção page.
+
+## Files to Inspect First
+
+- `conexao-leisure-migration.php` — main plugin, fallback registration
+- `includes/class-leisure-exporter.php` — export logic
+- `includes/class-leisure-importer.php` — import logic with dedupe + media
+- `includes/class-leisure-transfer-admin.php` — admin UI
