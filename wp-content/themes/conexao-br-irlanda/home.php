@@ -14,11 +14,12 @@ get_header();
 <div class="site-container blog-page">
 	<main id="primary" class="content-area">
 
-		<header class="events-page-header">
-			<span class="section-eyebrow"><?php esc_html_e( 'Artigos e Notícias', 'conexao-br-irlanda' ); ?></span>
-			<h1 class="events-page-title"><?php esc_html_e( 'Blog', 'conexao-br-irlanda' ); ?></h1>
-			<p class="events-page-description"><?php esc_html_e( 'Informações, dicas e notícias para a comunidade brasileira na Irlanda.', 'conexao-br-irlanda' ); ?></p>
-		</header>
+		<?php get_template_part( 'template-parts/archive', 'header', array(
+			'eyebrow'     => __( 'Artigos e Notícias', 'conexao-br-irlanda' ),
+			'title'       => __( 'Blog', 'conexao-br-irlanda' ),
+			'description' => __( 'Informações, dicas e notícias para a comunidade brasileira na Irlanda.', 'conexao-br-irlanda' ),
+			'filters'     => '',
+		) ); ?>
 
 		<?php
 		// Display blog categories filter.

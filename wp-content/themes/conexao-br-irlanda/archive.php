@@ -5,50 +5,89 @@ $is_event_archive   = is_post_type_archive( 'event' );
 $is_course_archive  = is_post_type_archive( 'course_provider' );
 $is_guide_archive   = is_post_type_archive( 'guide' );
 $is_leisure_archive = is_post_type_archive( 'leisure' );
+$is_job_archive     = is_post_type_archive( 'job' );
+$is_sponsor_archive = is_post_type_archive( 'sponsor' );
+
+/*
+ * Determine the site-container class (controls grid/card layout CSS).
+ */
+$container_class = 'site-container';
+if ( $is_event_archive ) {
+	$container_class .= ' events-page';
+} elseif ( $is_course_archive ) {
+	$container_class .= ' courses-page';
+} elseif ( $is_leisure_archive ) {
+	$container_class .= ' leisure-page';
+}
+
+/*
+ * Standardised archive header configuration.
+ *
+ * Each archive passes its own eyebrow, title, description, and optional
+ * filter template to the shared template-parts/archive-header.php component.
+ * This ensures all archive pages render the same .page-header structure
+ * while preserving the existing eyebrow text, titles, descriptions, and
+ * page-specific filter bars.
+ */
+$archive_header = array();
+
+if ( $is_event_archive ) {
+	$archive_header = array(
+		'eyebrow'     => _x( 'Agenda da Comunidade', 'archive eyebrow', 'conexao-br-irlanda' ),
+		'title'       => _x( 'Eventos', 'archive page title', 'conexao-br-irlanda' ),
+		'description' => _x( 'Encontre eventos, encontros e atividades da comunidade brasileira na Irlanda.', 'archive description', 'conexao-br-irlanda' ),
+		'filters'     => 'event',
+	);
+} elseif ( $is_course_archive ) {
+	$archive_header = array(
+		'eyebrow'     => _x( 'Aprendizagem e Formação', 'archive eyebrow', 'conexao-br-irlanda' ),
+		'title'       => _x( 'Cursos', 'archive page title', 'conexao-br-irlanda' ),
+		'description' => _x( 'Encontre cursos, formações e oportunidades de aprendizagem na Irlanda.', 'archive description', 'conexao-br-irlanda' ),
+		'filters'     => 'event',
+	);
+} elseif ( $is_guide_archive ) {
+	$archive_header = array(
+		'eyebrow'     => _x( 'Informação e Guias', 'archive eyebrow', 'conexao-br-irlanda' ),
+		'title'       => conexao_archive_title(),
+		'description' => conexao_archive_description(),
+		'filters'     => 'event',
+	);
+} elseif ( $is_leisure_archive ) {
+	$archive_header = array(
+		'eyebrow'     => _x( 'Lazer & Turismo', 'archive eyebrow', 'conexao-br-irlanda' ),
+		'title'       => _x( 'Lazer', 'archive page title', 'conexao-br-irlanda' ),
+		'description' => _x( 'Descubra lugares para visitar, natureza, cultura, turismo e coisas para fazer na Irlanda.', 'archive description', 'conexao-br-irlanda' ),
+		'filters'     => 'leisure',
+	);
+} elseif ( $is_job_archive ) {
+	$archive_header = array(
+		'eyebrow'     => _x( 'Oportunidades', 'archive eyebrow', 'conexao-br-irlanda' ),
+		'title'       => conexao_archive_title(),
+		'description' => conexao_archive_description(),
+		'filters'     => '',
+	);
+} elseif ( $is_sponsor_archive ) {
+	$archive_header = array(
+		'eyebrow'     => _x( 'Apoiadores', 'archive eyebrow', 'conexao-br-irlanda' ),
+		'title'       => conexao_archive_title(),
+		'description' => conexao_archive_description(),
+		'filters'     => '',
+	);
+} else {
+	/* Generic fallback for any other CPT archive. */
+	$archive_header = array(
+		'eyebrow'     => '',
+		'title'       => conexao_archive_title(),
+		'description' => conexao_archive_description(),
+		'filters'     => '',
+	);
+}
 ?>
 
-<div class="<?php echo $is_event_archive ? 'site-container events-page' : ( $is_course_archive ? 'site-container courses-page' : ( $is_leisure_archive ? 'site-container leisure-page' : 'site-container' ) ); ?>">
+<div class="<?php echo esc_attr( $container_class ); ?>">
 	<main id="primary" class="content-area">
 
-		<?php if ( $is_event_archive ) : ?>
-			<header class="events-page-header">
-				<span class="section-eyebrow"><?php esc_html_e( 'Agenda da Comunidade', 'conexao-br-irlanda' ); ?></span>
-				<h1 class="events-page-title"><?php esc_html_e( 'Eventos', 'conexao-br-irlanda' ); ?></h1>
-				<p class="events-page-description"><?php esc_html_e( 'Encontre eventos, encontros e atividades da comunidade brasileira na Irlanda.', 'conexao-br-irlanda' ); ?></p>
-			</header>
-			<?php get_template_part( 'template-parts/event', 'filters' ); ?>
-		<?php elseif ( $is_course_archive ) : ?>
-			<header class="events-page-header">
-				<span class="section-eyebrow"><?php esc_html_e( 'Aprendizagem e Formação', 'conexao-br-irlanda' ); ?></span>
-				<h1 class="events-page-title"><?php esc_html_e( 'Cursos', 'conexao-br-irlanda' ); ?></h1>
-				<p class="events-page-description"><?php esc_html_e( 'Encontre cursos, formações e oportunidades de aprendizagem na Irlanda.', 'conexao-br-irlanda' ); ?></p>
-			</header>
-			<?php get_template_part( 'template-parts/event', 'filters' ); ?>
-		<?php elseif ( $is_leisure_archive ) : ?>
-			<header class="events-page-header">
-				<span class="section-eyebrow"><?php esc_html_e( 'Lazer & Turismo', 'conexao-br-irlanda' ); ?></span>
-				<h1 class="events-page-title"><?php esc_html_e( 'Lazer', 'conexao-br-irlanda' ); ?></h1>
-				<p class="events-page-description"><?php esc_html_e( 'Descubra lugares para visitar, natureza, cultura, turismo e coisas para fazer na Irlanda.', 'conexao-br-irlanda' ); ?></p>
-			</header>
-			<?php get_template_part( 'template-parts/leisure', 'filters' ); ?>
-		<?php elseif ( $is_guide_archive ) : ?>
-			<header class="archive-header">
-				<h1 class="archive-title"><?php echo esc_html( conexao_archive_title() ); ?></h1>
-				<?php $archive_desc = conexao_archive_description(); ?>
-				<?php if ( $archive_desc ) : ?>
-					<p class="archive-description"><?php echo esc_html( $archive_desc ); ?></p>
-				<?php endif; ?>
-			</header>
-			<?php get_template_part( 'template-parts/event', 'filters' ); ?>
-		<?php else : ?>
-			<header class="archive-header">
-				<h1 class="archive-title"><?php echo esc_html( conexao_archive_title() ); ?></h1>
-				<?php $archive_desc = conexao_archive_description(); ?>
-				<?php if ( $archive_desc ) : ?>
-					<p class="archive-description"><?php echo esc_html( $archive_desc ); ?></p>
-				<?php endif; ?>
-			</header>
-		<?php endif; ?>
+		<?php get_template_part( 'template-parts/archive', 'header', $archive_header ); ?>
 
 		<?php if ( have_posts() ) : ?>
 			<div class="<?php echo ( $is_event_archive || $is_course_archive || $is_leisure_archive ) ? 'events-grid' : 'archive-grid'; ?>">

@@ -3060,6 +3060,11 @@ input[type="button"] {
     margin-bottom: 32px;
   }
 
+  .page-header {
+    padding: 40px 0 24px;
+    margin-bottom: 32px;
+  }
+
   .events-page .events-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 24px;
@@ -3138,6 +3143,15 @@ input[type="button"] {
   }
 
   .events-page-title {
+    font-size: clamp(1.75rem, 7vw, 2.25rem);
+  }
+
+  .page-header {
+    padding: 32px 0 20px;
+    margin-bottom: 24px;
+  }
+
+  .page-header .page-title {
     font-size: clamp(1.75rem, 7vw, 2.25rem);
   }
 

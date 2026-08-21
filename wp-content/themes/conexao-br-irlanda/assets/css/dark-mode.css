@@ -863,6 +863,7 @@
 /* ===== 19. PAGE HEADER / ARCHIVE ===== */
 [data-theme="dark"] .page-header {
   background: var(--color-surface-muted);
+  border-bottom-color: var(--color-border);
 }
 
 [data-theme="dark"] .page-header h1,
