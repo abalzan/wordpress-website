@@ -451,7 +451,8 @@
 [data-theme="dark"] .widget,
 [data-theme="dark"] .landing-card,
 [data-theme="dark"] .course-card,
-[data-theme="dark"] .provider-card {
+[data-theme="dark"] .provider-card,
+[data-theme="dark"] .leisure-card {
   background: var(--color-surface);
   border-color: var(--color-border);
 }
@@ -469,7 +470,8 @@
 [data-theme="dark"] .related-post-card:hover,
 [data-theme="dark"] .landing-card:hover,
 [data-theme="dark"] .course-card:hover,
-[data-theme="dark"] .provider-card:hover {
+[data-theme="dark"] .provider-card:hover,
+[data-theme="dark"] .leisure-card:hover {
   border-color: var(--color-primary);
 }
 
@@ -479,6 +481,8 @@
 [data-theme="dark"] .event-card-title a,
 [data-theme="dark"] .course-card-title a,
 [data-theme="dark"] .provider-card-title,
+[data-theme="dark"] .leisure-card-title,
+[data-theme="dark"] .leisure-card-title a,
 [data-theme="dark"] .archive-card-title a,
 [data-theme="dark"] .post-card-title a,
 [data-theme="dark"] .news-card-title a,
@@ -493,6 +497,7 @@
 [data-theme="dark"] .card-title a:hover,
 [data-theme="dark"] .event-card-title a:hover,
 [data-theme="dark"] .course-card-title a:hover,
+[data-theme="dark"] .leisure-card-title a:hover,
 [data-theme="dark"] .archive-card-title a:hover,
 [data-theme="dark"] .post-card-title a:hover,
 [data-theme="dark"] .news-card-title a:hover,
@@ -509,6 +514,7 @@
 [data-theme="dark"] .event-card-excerpt,
 [data-theme="dark"] .course-card-excerpt,
 [data-theme="dark"] .provider-card-excerpt,
+[data-theme="dark"] .leisure-card-excerpt,
 [data-theme="dark"] .archive-card-excerpt,
 [data-theme="dark"] .post-card-excerpt,
 [data-theme="dark"] .news-card-excerpt,
@@ -524,6 +530,7 @@
 [data-theme="dark"] .event-card-detail,
 [data-theme="dark"] .course-card-detail,
 [data-theme="dark"] .provider-card-detail,
+[data-theme="dark"] .leisure-card-detail,
 [data-theme="dark"] .archive-card-meta,
 [data-theme="dark"] .post-card-meta,
 [data-theme="dark"] .news-card-meta,
@@ -553,7 +560,8 @@
 [data-theme="dark"] .news-card-category,
 [data-theme="dark"] .business-category,
 [data-theme="dark"] .featured-article-category,
-[data-theme="dark"] .provider-card-category {
+[data-theme="dark"] .provider-card-category,
+[data-theme="dark"] .leisure-card-category {
   background: var(--color-primary-50);
   color: var(--color-primary);
 }
@@ -568,7 +576,8 @@
 [data-theme="dark"] .card-cta,
 [data-theme="dark"] .event-card-cta,
 [data-theme="dark"] .course-card-cta,
-[data-theme="dark"] .provider-card-cta {
+[data-theme="dark"] .provider-card-cta,
+[data-theme="dark"] .leisure-card-cta {
   background: var(--color-primary-50);
   color: var(--color-primary);
 }
@@ -576,7 +585,8 @@
 [data-theme="dark"] .card-cta:hover,
 [data-theme="dark"] .event-card-cta:hover,
 [data-theme="dark"] .course-card-cta:hover,
-[data-theme="dark"] .provider-card-cta:hover {
+[data-theme="dark"] .provider-card-cta:hover,
+[data-theme="dark"] .leisure-card-cta:hover {
   background: var(--color-primary);
   color: var(--conexao-white);
 }
@@ -1338,6 +1348,7 @@
 [data-theme="dark"] .blog-post-item,
 [data-theme="dark"] .directory-card,
 [data-theme="dark"] .sponsor-card,
+[data-theme="dark"] .leisure-card,
 [data-theme="dark"] .filter-link,
 [data-theme="dark"] .events-filter-link,
 [data-theme="dark"] .btn,
@@ -1359,7 +1370,202 @@
   transition: background-color var(--transition), color var(--transition), border-color var(--transition);
 }
 
-/* ===== 37. REDUCED MOTION ===== */
+/* ===== 37. LEISURE FILTERS =====
+   Comprehensive dark-mode overrides for the /lazer/ filter widget:
+   desktop dropdowns, active-filter indicators, and mobile bottom-sheet. */
+
+/* Filter group label */
+[data-theme="dark"] .leisure-filter-group-label {
+  color: var(--color-text-muted);
+}
+
+/* Dropdown trigger — default state */
+[data-theme="dark"] .leisure-dropdown-trigger {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .leisure-dropdown-trigger:hover,
+[data-theme="dark"] .leisure-dropdown-trigger[aria-expanded="true"] {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-primary-50);
+}
+
+[data-theme="dark"] .leisure-dropdown-trigger.is-selected {
+  color: var(--color-text);
+  border-color: var(--color-border);
+  background: var(--color-surface);
+}
+
+[data-theme="dark"] .leisure-dropdown-trigger.is-selected:hover,
+[data-theme="dark"] .leisure-dropdown-trigger.is-selected[aria-expanded="true"] {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-primary-50);
+}
+
+/* Active dot indicator */
+[data-theme="dark"] .leisure-dot {
+  background: var(--color-primary);
+}
+
+/* Dropdown panel */
+[data-theme="dark"] .leisure-dropdown-panel {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+/* Dropdown links */
+[data-theme="dark"] .leisure-dropdown-link {
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .leisure-dropdown-link:hover {
+  background: var(--color-primary-50);
+  color: var(--color-primary);
+}
+
+[data-theme="dark"] .leisure-dropdown-link.is-active {
+  background: var(--color-primary-50);
+  color: var(--color-primary);
+}
+
+/* Checkmark */
+[data-theme="dark"] .leisure-checkmark {
+  color: var(--color-primary);
+}
+
+/* Toolbar clear link */
+[data-theme="dark"] .leisure-toolbar-clear {
+  color: var(--color-text-muted);
+}
+
+[data-theme="dark"] .leisure-toolbar-clear:hover {
+  color: var(--color-accent);
+  background: var(--color-surface-muted);
+}
+
+/* Mobile filter trigger */
+[data-theme="dark"] .leisure-mobile-filter-trigger {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .leisure-mobile-filter-trigger:hover,
+[data-theme="dark"] .leisure-mobile-filter-trigger[aria-expanded="true"] {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-primary-50);
+}
+
+/* Mobile filter icon */
+[data-theme="dark"] .leisure-mobile-filter-icon {
+  color: var(--color-primary);
+}
+
+/* Mobile filter count badge */
+[data-theme="dark"] .leisure-mobile-filter-count {
+  background: var(--color-primary);
+  color: var(--conexao-white);
+}
+
+/* Mobile sheet overlay */
+[data-theme="dark"] .leisure-mobile-sheet {
+  background: rgba(0, 0, 0, 0.65);
+}
+
+/* Mobile sheet panel */
+[data-theme="dark"] .leisure-mobile-sheet-panel {
+  background: var(--color-surface);
+}
+
+[data-theme="dark"] .leisure-mobile-sheet-header {
+  border-bottom-color: var(--color-border);
+}
+
+[data-theme="dark"] .leisure-mobile-sheet-handle {
+  background: var(--color-border);
+}
+
+[data-theme="dark"] .leisure-mobile-sheet-title {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .leisure-mobile-sheet-close {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .leisure-mobile-sheet-close:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-primary-50);
+}
+
+/* Mobile sheet body */
+[data-theme="dark"] .leisure-mobile-sheet-body {
+  color: var(--color-text-secondary);
+}
+
+/* Accordion summary */
+[data-theme="dark"] .leisure-filter-accordion-summary {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .leisure-filter-accordion-summary:hover {
+  color: var(--color-primary);
+}
+
+/* Filter option labels */
+[data-theme="dark"] .leisure-filter-option {
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .leisure-filter-option:hover {
+  background: var(--color-primary-50);
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .leisure-filter-option:has(.leisure-filter-radio:checked) {
+  background: var(--color-primary-50);
+  color: var(--color-primary);
+}
+
+/* Mobile sheet footer */
+[data-theme="dark"] .leisure-mobile-sheet-footer {
+  border-top-color: var(--color-border);
+  background: var(--color-surface);
+}
+
+/* Apply button */
+[data-theme="dark"] .leisure-apply-button {
+  background: var(--color-primary);
+  color: var(--conexao-white);
+}
+
+[data-theme="dark"] .leisure-apply-button:hover {
+  background: var(--color-primary-dark);
+}
+
+/* Mobile clear button */
+[data-theme="dark"] .leisure-mobile-clear {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .leisure-mobile-clear:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-primary-50);
+}
+
+/* ===== 38. REDUCED MOTION ===== */
 @media (prefers-reduced-motion: reduce) {
   [data-theme="dark"] body,
   [data-theme="dark"] .site-header,

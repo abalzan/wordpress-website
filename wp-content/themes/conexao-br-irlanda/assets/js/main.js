@@ -11,6 +11,7 @@
 		initMobileMenu();
 		initMobileSearch();
 		initCopyButtons();
+		initLeisureFilters();
 	});
 
 	// ===== Theme Toggle =====
@@ -241,6 +242,136 @@
 			button.innerHTML = originalHTML;
 			button.style.background = '';
 		}, 2000);
+	}
+
+	// ===== Leisure Filters (desktop dropdowns + mobile bottom sheet) =====
+	// The filtering stays server-side and URL driven: desktop options are real
+	// hyperlinks and the mobile options are a native GET form that posts the
+	// selected county/category back to /lazer/. This enhancement wires up the
+	// interaction layer:
+	//   - only one desktop dropdown is open at a time,
+	//   - clicking the trigger toggles its own menu,
+	//   - clicking outside or pressing Escape closes open menus / the sheet,
+	//   - the mobile sheet is a fixed overlay with a focusable close control,
+	//   - empty "Todos" radio values are stripped so URLs stay clean (e.g.
+	//     /lazer/?categoria=castelos instead of /lazer/?county=&categoria=castelos).
+	function initLeisureFilters() {
+		const root = document.querySelector('[data-leisure-filters]');
+		if (!root) return;
+
+		const dropdowns = Array.prototype.slice.call(root.querySelectorAll('[data-dropdown]'));
+
+		function setDropdown(dropdown, open) {
+			const trigger = dropdown.querySelector('[data-dropdown-trigger]');
+			if (trigger) {
+				trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+			}
+		}
+
+		function closeAllDropdowns(except) {
+			dropdowns.forEach(function(dd) {
+				if (dd === except) return;
+				setDropdown(dd, false);
+			});
+		}
+
+		dropdowns.forEach(function(dropdown) {
+			const trigger = dropdown.querySelector('[data-dropdown-trigger]');
+			if (!trigger) return;
+
+			trigger.addEventListener('click', function(e) {
+				e.stopPropagation();
+				const wasOpen = trigger.getAttribute('aria-expanded') === 'true';
+				closeAllDropdowns(dropdown);
+				setDropdown(dropdown, !wasOpen);
+			});
+		});
+
+		// Click outside any dropdown closes every open menu.
+		document.addEventListener('click', function(e) {
+			if (!e.target.closest('[data-dropdown]')) {
+				closeAllDropdowns();
+			}
+		});
+
+		// Mobile bottom sheet.
+		const sheetTrigger = root.querySelector('[data-mobile-trigger]');
+		const sheetOverlay = root.querySelector('[data-mobile-sheet]');
+		const sheetClose = root.querySelector('[data-mobile-close]');
+		const sheetPanel = sheetOverlay ? sheetOverlay.querySelector('.leisure-mobile-sheet-panel') : null;
+
+		function openMobileSheet() {
+			if (!sheetOverlay) return;
+			sheetOverlay.classList.add('is-open');
+			sheetOverlay.setAttribute('aria-hidden', 'false');
+			if (sheetTrigger) sheetTrigger.setAttribute('aria-expanded', 'true');
+			document.body.style.overflow = 'hidden';
+			if (sheetClose) {
+				setTimeout(function() { sheetClose.focus(); }, 50);
+			}
+		}
+
+		function closeMobileSheet(restoreFocus) {
+			if (!sheetOverlay) return;
+			sheetOverlay.classList.remove('is-open');
+			sheetOverlay.setAttribute('aria-hidden', 'true');
+			if (sheetTrigger) sheetTrigger.setAttribute('aria-expanded', 'false');
+			document.body.style.overflow = '';
+			if (restoreFocus && sheetTrigger) {
+				sheetTrigger.focus();
+			}
+		}
+
+		if (sheetTrigger && sheetOverlay) {
+			sheetTrigger.addEventListener('click', function() {
+				const isOpen = sheetOverlay.classList.contains('is-open');
+				if (isOpen) {
+					closeMobileSheet();
+				} else {
+					openMobileSheet();
+				}
+			});
+
+			if (sheetClose) {
+				sheetClose.addEventListener('click', function() {
+					closeMobileSheet(true);
+				});
+			}
+
+			// Clicking the dark backdrop (outside the sheet panel) closes it.
+			sheetOverlay.addEventListener('click', function(e) {
+				if (e.target === sheetOverlay || (sheetPanel && !sheetPanel.contains(e.target))) {
+					closeMobileSheet(true);
+				}
+			});
+		}
+
+		// Escape closes any open dropdown and the mobile sheet.
+		document.addEventListener('keydown', function(e) {
+			if (e.key !== 'Escape') return;
+			closeAllDropdowns();
+			closeMobileSheet(true);
+		});
+
+		// Mobile form: strip empty params and navigate to a clean URL.
+		const form = root.querySelector('[data-mobile-form]');
+		if (form) {
+			form.addEventListener('submit', function(e) {
+				e.preventDefault();
+
+				var url = new URL(form.getAttribute('action'), window.location.origin);
+				var params = new URLSearchParams(new FormData(form));
+
+				params.forEach(function(value, key) {
+					if (value === '' || value === null) {
+						params.delete(key);
+					}
+				});
+
+				var qs = params.toString();
+				window.location.href = url.pathname + (qs ? '?' + qs : '');
+			});
+		}
 	}
 
 	// ===== Expose functions globally if needed =====

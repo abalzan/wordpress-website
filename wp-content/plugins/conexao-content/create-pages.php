@@ -63,7 +63,7 @@ $main_pages = [
         'content' => '<!-- wp:heading --><h2>Entre em contato conosco</h2><!-- /wp:heading -->
 <!-- wp:paragraph --><p>Tem uma sugestão, dúvida ou quer anunciar conosco? Mande uma mensagem!</p><!-- /wp:paragraph -->
 <!-- wp:paragraph --><p><a href="https://wa.me/353899451428">Fale conosco pelo WhatsApp</a></p><!-- /wp:paragraph -->
-<!-- wp:paragraph --><p>Email: contato@conexaobr.ie</p><!-- /wp:paragraph -->',
+<!-- wp:paragraph --><p>Email: tdcriativo@gmail.com</p><!-- /wp:paragraph -->',
         'meta_desc' => 'Entre em contato com a equipe do Conexão BR Irlanda. Tire dúvidas, envie sugestões ou saiba como anunciar.',
     ],
     'newsletter' => [
