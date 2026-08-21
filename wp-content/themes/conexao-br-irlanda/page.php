@@ -14,4 +14,8 @@
 		<?php endwhile; ?>
 	</main>
 </div>
+
+<?php get_template_part( 'template-parts/newsletter-section' ); ?>
+<?php get_template_part( 'template-parts/quote-section' ); ?>
+
 <?php get_footer();
