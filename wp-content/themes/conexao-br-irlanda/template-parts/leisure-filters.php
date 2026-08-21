@@ -223,9 +223,12 @@ $active_filter_count = ( $current_county ? 1 : 0 ) + ( $current_category ? 1 : 0
 					<form method="get" action="<?php echo esc_url( $archive_url ); ?>" class="leisure-mobile-form" data-mobile-form>
 						<div class="leisure-mobile-sheet-body">
 							<?php if ( $has_county ) : ?>
-								<details class="leisure-filter-accordion" open>
-									<summary class="leisure-filter-accordion-summary">
-										<span><?php esc_html_e( 'Condado', 'conexao-br-irlanda' ); ?></span>
+								<details class="leisure-filter-accordion" data-filter-accordion>
+									<summary class="leisure-filter-accordion-summary" aria-expanded="false">
+										<span class="leisure-accordion-label">
+											<span class="leisure-accordion-title"><?php esc_html_e( 'Condado', 'conexao-br-irlanda' ); ?></span>
+											<span class="leisure-accordion-value<?php echo $active_county_name ? ' is-visible' : ''; ?>" aria-live="polite"><?php echo $active_county_name ? ' · ' . esc_html( $active_county_name ) : ''; ?></span>
+										</span>
 										<span class="leisure-accordion-caret" aria-hidden="true">▾</span>
 									</summary>
 									<fieldset class="leisure-filter-fieldset">
@@ -245,9 +248,12 @@ $active_filter_count = ( $current_county ? 1 : 0 ) + ( $current_category ? 1 : 0
 							<?php endif; ?>
 
 							<?php if ( $has_category ) : ?>
-								<details class="leisure-filter-accordion">
-									<summary class="leisure-filter-accordion-summary">
-										<span><?php esc_html_e( 'Tipo', 'conexao-br-irlanda' ); ?></span>
+								<details class="leisure-filter-accordion" data-filter-accordion>
+									<summary class="leisure-filter-accordion-summary" aria-expanded="false">
+										<span class="leisure-accordion-label">
+											<span class="leisure-accordion-title"><?php esc_html_e( 'Tipo', 'conexao-br-irlanda' ); ?></span>
+											<span class="leisure-accordion-value<?php echo $active_category_name ? ' is-visible' : ''; ?>" aria-live="polite"><?php echo $active_category_name ? ' · ' . esc_html( $active_category_name ) : ''; ?></span>
+										</span>
 										<span class="leisure-accordion-caret" aria-hidden="true">▾</span>
 									</summary>
 									<fieldset class="leisure-filter-fieldset">

@@ -306,6 +306,8 @@
 			sheetOverlay.setAttribute('aria-hidden', 'false');
 			if (sheetTrigger) sheetTrigger.setAttribute('aria-expanded', 'true');
 			document.body.style.overflow = 'hidden';
+			// Each visit starts with the filter accordions collapsed.
+			closeAllAccordions();
 			if (sheetClose) {
 				setTimeout(function() { sheetClose.focus(); }, 50);
 			}
@@ -346,10 +348,108 @@
 			});
 		}
 
-		// Escape closes any open dropdown and the mobile sheet.
+		// Mobile filter accordions: only one open at a time. Selecting an
+		// option closes the accordion, previews the chosen value in the
+		// collapsed header (or clears it for "Todos"), and moves focus to the
+		// next accordion summary (or the apply button) so keyboard users can
+		// continue refining. Actual server-side filtering still happens on
+		// form submit — the URL-driven architecture is unchanged.
+		const accordions = Array.prototype.slice.call(root.querySelectorAll('[data-filter-accordion]'));
+
+		function syncAccordionCaret(accordion) {
+			const summary = accordion.querySelector('.leisure-filter-accordion-summary');
+			if (summary) {
+				summary.setAttribute('aria-expanded', accordion.open ? 'true' : 'false');
+			}
+		}
+
+		function closeAllAccordions() {
+			accordions.forEach(function(acc) {
+				if (acc.open) {
+					acc.open = false;
+				}
+			});
+		}
+
+		function closeOtherAccordions(except) {
+			accordions.forEach(function(acc) {
+				if (acc !== except && acc.open) {
+					acc.open = false;
+				}
+			});
+		}
+
+		function updateAccordionValue(accordion, radio) {
+			const valueEl = accordion.querySelector('.leisure-accordion-value');
+			if (!valueEl) return;
+			const label = radio.closest('.leisure-filter-option');
+			const text = label ? label.querySelector('span').textContent.trim() : '';
+			if (!radio.value) {
+				// "Todos" selected — return the header to its neutral state.
+				valueEl.textContent = '';
+				valueEl.classList.remove('is-visible');
+			} else {
+				valueEl.textContent = ' · ' + text;
+				valueEl.classList.add('is-visible');
+			}
+		}
+
+		function focusAfterSelection(accordion) {
+			const index = accordions.indexOf(accordion);
+			if (index === -1) return;
+			const next = accordions[index + 1];
+			if (next) {
+				const nextSummary = next.querySelector('.leisure-filter-accordion-summary');
+				if (nextSummary) nextSummary.focus();
+				return;
+			}
+			const apply = root.querySelector('.leisure-apply-button');
+			if (apply) apply.focus();
+		}
+
+		accordions.forEach(function(accordion) {
+			// Keep the summary aria-expanded in sync with the details state.
+			syncAccordionCaret(accordion);
+
+			accordion.addEventListener('toggle', function() {
+				syncAccordionCaret(accordion);
+				if (accordion.open) {
+					closeOtherAccordions(accordion);
+				}
+			});
+
+			// Selecting an option closes the accordion immediately and shows
+			// the chosen value in the collapsed header.
+			const radios = accordion.querySelectorAll('.leisure-filter-radio');
+			radios.forEach(function(radio) {
+				radio.addEventListener('change', function() {
+					updateAccordionValue(accordion, radio);
+					accordion.open = false;
+					syncAccordionCaret(accordion);
+					focusAfterSelection(accordion);
+				});
+			});
+		});
+
+		// The mobile "Limpar" link navigates to the unfiltered archive; also
+		// collapse any open accordion so the sheet closes cleanly before the
+		// server-rendered state takes over.
+		const mobileClear = root.querySelector('.leisure-mobile-clear');
+		if (mobileClear) {
+			mobileClear.addEventListener('click', function() {
+				closeAllAccordions();
+			});
+		}
+
+		// Escape closes an open accordion first; otherwise it closes the sheet.
 		document.addEventListener('keydown', function(e) {
 			if (e.key !== 'Escape') return;
 			closeAllDropdowns();
+			const anyOpen = accordions.some(function(acc) { return acc.open; });
+			if (anyOpen) {
+				closeAllAccordions();
+				return;
+			}
 			closeMobileSheet(true);
 		});
 

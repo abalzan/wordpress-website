@@ -419,11 +419,42 @@
 	color: var(--color-primary);
 }
 
+.leisure-filter-accordion-summary:focus-visible {
+	outline: var(--focus-ring);
+	outline-offset: var(--focus-offset);
+}
+
 .leisure-accordion-caret {
 	font-size: 0.6rem;
 	line-height: 1;
 	transition: transform var(--transition-fast);
 	color: inherit;
+}
+
+/* Accordion label — title + optional selected value */
+.leisure-accordion-label {
+	display: inline-flex;
+	align-items: baseline;
+	gap: 4px;
+	min-width: 0;
+	overflow: hidden;
+}
+
+.leisure-accordion-title {
+	flex-shrink: 0;
+}
+
+.leisure-accordion-value {
+	display: none;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	font-weight: 600;
+	color: var(--color-primary);
+}
+
+.leisure-accordion-value.is-visible {
+	display: inline;
 }
 
 .leisure-filter-accordion[open] .leisure-accordion-caret {
