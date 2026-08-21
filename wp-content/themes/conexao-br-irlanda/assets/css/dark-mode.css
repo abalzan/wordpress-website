@@ -1211,6 +1211,12 @@
 }
 
 /* ===== 33. BUTTONS ===== */
+/* Hero buttons — always white text on dark green gradient */
+[data-theme="dark"] .hero-ctas .btn-primary,
+[data-theme="dark"] .hero-ctas .btn-outline {
+  color: var(--conexao-white);
+}
+
 [data-theme="dark"] .btn-outline-dark {
   border-color: var(--color-border);
   color: var(--color-text);
