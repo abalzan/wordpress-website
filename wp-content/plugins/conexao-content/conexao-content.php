@@ -42,17 +42,14 @@ function conexao_content_activate() {
 }
 register_activation_hook( __FILE__, 'conexao_content_activate' );
 
-/**
- * Include page creation logic for WP-CLI.
- *
- * The create-pages.php script is a standalone WP-CLI utility that runs
- * immediately when included. It must NOT run on every page load — it calls
- * wp_get_nav_menu_items() which requires fully initialized rewrite rules.
- * Only include it when explicitly invoked via WP-CLI (wp eval-file).
- */
-if ( defined( 'WP_CLI' ) && WP_CLI ) {
-    require_once CONEXAO_CONTENT_DIR . 'create-pages.php';
-}
+// NOTE: create-pages.php is a standalone WP-CLI utility that runs immediately
+// when included. It must NOT be auto-included on every WP-CLI command or page
+// load — it executes at plugin-include time (before pluggable.php is loaded),
+// which fatals under `wp eval`/`wp post list`, and it calls
+// wp_get_nav_menu_items() which requires fully initialized rewrite rules.
+// Run it explicitly when needed:
+//   wp eval-file wp-content/plugins/conexao-content/create-pages.php --allow-root
+// It also runs automatically via the activation hook above on fresh installs.
 
 /**
  * The shortcode [conexao_grid] renders an SEO-friendly grid of links

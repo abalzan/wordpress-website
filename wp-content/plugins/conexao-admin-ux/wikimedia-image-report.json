@@ -1,13 +1,329 @@
 [
     {
-        "slug": "charles-fort",
-        "title": "Charles Fort",
+        "slug": "dun-laoghaire-east-pier",
+        "title": "Dún Laoghaire East Pier",
         "status": "imported",
-        "attachment_id": 499,
-        "image_url": "https://upload.wikimedia.org/wikipedia/commons/6/68/Charles_Fort%2C_Kinsale%2C_Co._Cork.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
-        "author": "The Speckled Bird",
+        "attachment_id": 919,
+        "author": "Ridiculopathy",
+        "license": "CC0",
+        "source_url": "https://commons.wikimedia.org/w/api.php/File:George%27s_Street%2C_D%C3%BAn_Laoghaire%2C_Dublin%2C_Ireland_01.jpg"
+    },
+    {
+        "slug": "portmarnock-beach",
+        "title": "Portmarnock Beach (Velvet Strand)",
+        "status": "imported",
+        "attachment_id": 920,
+        "author": "Unknown authorUnknown author",
+        "license": "Public domain",
+        "source_url": "https://commons.wikimedia.org/w/api.php/File:Portmarnock_1933_slnsw.jpg"
+    },
+    {
+        "slug": "brigits-garden",
+        "title": "Brigit's Garden",
+        "status": "imported",
+        "attachment_id": 921,
+        "author": "Sheila Russell",
+        "license": "CC BY-SA 2.0",
+        "source_url": "https://commons.wikimedia.org/w/api.php/File:Brigit%27s_Garden_-_geograph.org.uk_-_140802.jpg"
+    },
+    {
+        "slug": "spike-island-cork",
+        "title": "Spike Island",
+        "status": "imported",
+        "attachment_id": 922,
+        "author": "Szzuk",
+        "license": "CC0",
+        "source_url": "https://commons.wikimedia.org/w/api.php/File:Spike_Island_1875.jpg"
+    },
+    {
+        "slug": "heywood-gardens",
+        "title": "Heywood Gardens",
+        "status": "imported",
+        "attachment_id": 923,
+        "author": "Liam Hughes from Milwaukee, WI, USA",
+        "license": "CC BY 2.0",
+        "source_url": "https://commons.wikimedia.org/w/api.php/File:Ballinakill_%281696493589%29.jpg"
+    },
+    {
+        "slug": "timahoe-round-tower",
+        "title": "Timahoe Round Tower",
+        "status": "imported",
+        "attachment_id": 924,
+        "author": "Sarah777",
+        "license": "Public domain",
+        "source_url": "https://commons.wikimedia.org/w/api.php/File:TimahoeRoundTower2.JPG"
+    },
+    {
+        "slug": "clonmacnoise",
+        "title": "Clonmacnoise",
+        "status": "imported",
+        "attachment_id": 925,
+        "author": "Berthold Werner",
         "license": "CC BY-SA 4.0",
-        "source_url": "https://commons.wikimedia.org/w/api.php/File:Charles_Fort%2C_Kinsale%2C_Co._Cork.JPG",
-        "alt_text": "Charles Fort, Cork, Irlanda"
+        "source_url": "https://commons.wikimedia.org/w/api.php/File:Ireland_Clonmacnoise_BW_2025-09-09_15-51-47.jpg"
+    },
+    {
+        "slug": "belvedere-house-gardens",
+        "title": "Belvedere House Gardens & Park",
+        "status": "imported",
+        "attachment_id": 926,
+        "author": "Olliebailie",
+        "license": "CC BY-SA 4.0",
+        "source_url": "https://commons.wikimedia.org/w/api.php/File:Mullingar_-_Belvedere_House_and_Gardens_-_20211014140015.jpg"
+    },
+    {
+        "slug": "glendeer-pet-farm",
+        "title": "Glendeer Pet Farm",
+        "status": "image_not_found",
+        "search": "Glendeer"
+    },
+    {
+        "slug": "ardagh-heritage-village",
+        "title": "Ardagh Heritage Village",
+        "status": "imported",
+        "attachment_id": 927,
+        "author": "Government House, Department of the Prime Minister and Cabinet",
+        "license": "CC0",
+        "source_url": "https://commons.wikimedia.org/w/api.php/File:Mike_Ardagh_ONZM_investiture.jpg"
+    },
+    {
+        "slug": "arigna-mining-experience",
+        "title": "Arigna Mining Experience",
+        "status": "imported",
+        "attachment_id": 928,
+        "author": "A.-K. D.",
+        "license": "CC0",
+        "source_url": "https://commons.wikimedia.org/w/api.php/File:Arigna_Bridge_Moat.png"
+    },
+    {
+        "slug": "parkes-castle",
+        "title": "Parke's Castle",
+        "status": "imported",
+        "attachment_id": 929,
+        "author": "Jellyfish2023",
+        "license": "CC0",
+        "source_url": "https://commons.wikimedia.org/w/api.php/File:Parke%27s_Castle_Sweathouse.jpg"
+    },
+    {
+        "slug": "sean-mac-diarmada-cottage",
+        "title": "Seán Mac Diarmada Cottage",
+        "status": "imported",
+        "attachment_id": 930,
+        "author": "Kenneth Allen",
+        "license": "CC BY-SA 2.0",
+        "source_url": "https://commons.wikimedia.org/w/api.php/File:Kiltyclogher%2C_County_Leitrim_-_geograph.org.uk_-_1119088.jpg"
+    },
+    {
+        "slug": "shannon-pot",
+        "title": "Shannon Pot",
+        "status": "imported",
+        "attachment_id": 931,
+        "author": "W. S.",
+        "license": "Public domain",
+        "source_url": "https://commons.wikimedia.org/w/api.php/File:Source_of_the_Shannon%2C_map_1836_%28IA_jstor-30003450%29_%28cropped%29.jpg"
+    },
+    {
+        "slug": "cavan-county-museum",
+        "title": "Cavan County Museum",
+        "status": "imported",
+        "attachment_id": 932,
+        "author": "A.-K. D.",
+        "license": "CC BY-SA 4.0",
+        "source_url": "https://commons.wikimedia.org/w/api.php/File:County_Cavan_-_Ballyjamesduff_Courthouse_-_20220926092005.png"
+    },
+    {
+        "slug": "castle-leslie-estate",
+        "title": "Castle Leslie Estate",
+        "status": "imported",
+        "attachment_id": 933,
+        "author": "C Michael Hogan ",
+        "license": "CC BY-SA 2.0",
+        "source_url": "https://commons.wikimedia.org/w/api.php/File:Formal_rear_garden_of_Leslie_Castle_-_geograph.org.uk_-_2514761.jpg"
+    },
+    {
+        "slug": "monaghan-county-museum",
+        "title": "Monaghan County Museum",
+        "status": "imported",
+        "attachment_id": 934,
+        "author": "Kenneth Allen ",
+        "license": "CC BY-SA 2.0",
+        "source_url": "https://commons.wikimedia.org/w/api.php/File:Tidy_Towns_wood_sculpture%2C_Monaghan_-_geograph.org.uk_-_3934463.jpg"
+    },
+    {
+        "slug": "drumcliffe",
+        "title": "Drumcliffe",
+        "status": "imported",
+        "attachment_id": 935,
+        "author": "Item is held by John Oxley Library, State Library of Queensland.",
+        "license": "Public domain",
+        "source_url": "https://commons.wikimedia.org/w/api.php/File:StateLibQld_1_144023_Omega_%28ship%29.jpg"
+    },
+    {
+        "slug": "croagh-patrick",
+        "title": "Croagh Patrick",
+        "status": "imported",
+        "attachment_id": 936,
+        "author": "EamonnPKeane at English Wikipedia",
+        "license": "Public domain",
+        "source_url": "https://commons.wikimedia.org/w/api.php/File:Wall_under_Croagh_Patrick.JPG"
+    },
+    {
+        "slug": "downpatrick-head",
+        "title": "Downpatrick Head",
+        "status": "imported",
+        "attachment_id": 937,
+        "author": "Barry",
+        "license": "CC BY 2.0",
+        "source_url": "https://commons.wikimedia.org/w/api.php/File:D%C3%BAn_Briste_sea_stack%2C_May_2021.jpg"
+    },
+    {
+        "slug": "wild-nephin-ballycroy-national-park",
+        "title": "Wild Nephin Ballycroy National Park",
+        "status": "imported",
+        "attachment_id": 938,
+        "author": "Jacobfrid",
+        "license": "CC BY-SA 4.0",
+        "source_url": "https://commons.wikimedia.org/w/api.php/File:Ballycroy-NP-Map.png"
+    },
+    {
+        "slug": "medieval-mile-museum",
+        "title": "Medieval Mile Museum",
+        "status": "imported",
+        "attachment_id": 939,
+        "author": "Zairon",
+        "license": "CC BY 4.0",
+        "source_url": "https://commons.wikimedia.org/w/api.php/File:Kilkenny_Cathedral_St._Mary_Exterior_Facade_1.jpg"
+    },
+    {
+        "slug": "rothe-house-garden",
+        "title": "Rothe House & Garden",
+        "status": "imported",
+        "attachment_id": 940,
+        "author": "Anne-K. Distel",
+        "license": "CC0",
+        "source_url": "https://commons.wikimedia.org/w/api.php/File:Rothe_House_Wappen_Rothe.png"
+    },
+    {
+        "slug": "dunmore-cave",
+        "title": "Dunmore Cave",
+        "status": "imported",
+        "attachment_id": 941,
+        "author": "P.",
+        "license": "Public domain",
+        "source_url": "https://commons.wikimedia.org/w/api.php/File:The_Cave_of_Dunmore%2C_1832_%28IA_jstor-30003087%29_%28page_1_crop%29.jpg"
+    },
+    {
+        "slug": "castlecomer-discovery-park",
+        "title": "Castlecomer Discovery Park",
+        "status": "import_error",
+        "error": "A valid URL was not provided."
+    },
+    {
+        "slug": "lismore-castle-gardens",
+        "title": "Lismore Castle Gardens",
+        "status": "imported",
+        "attachment_id": 942,
+        "author": "Alphonse Dousseau",
+        "license": "CC0",
+        "source_url": "https://commons.wikimedia.org/w/api.php/File:DV405_no.279_Lismore_castle.png"
+    },
+    {
+        "slug": "dunbrody-famine-ship",
+        "title": "Dunbrody Famine Ship",
+        "status": "imported",
+        "attachment_id": 943,
+        "author": "Gfox228",
+        "license": "CC BY 3.0",
+        "source_url": "https://commons.wikimedia.org/w/api.php/File:Dunbrody%2C_New_Ross%2C_Ireland_-_panoramio.jpg"
+    },
+    {
+        "slug": "saltee-islands",
+        "title": "Saltee Islands",
+        "status": "imported",
+        "attachment_id": 944,
+        "author": "KenSwe72",
+        "license": "CC0",
+        "source_url": "https://commons.wikimedia.org/w/api.php/File:Saltees_Islands.jpg"
+    },
+    {
+        "slug": "mitchelstown-cave",
+        "title": "Mitchelstown Cave",
+        "status": "imported",
+        "attachment_id": 945,
+        "author": "https://archive.org/download/jstor-30004498/30004498.pdf IA contributor: JSTOR",
+        "license": "Public domain",
+        "source_url": "https://commons.wikimedia.org/w/api.php/File:The_Four_Courts_%28IA_jstor-30004498%29_%28page_1_crop%29.jpg"
+    },
+    {
+        "slug": "holy-cross-abbey",
+        "title": "Holy Cross Abbey",
+        "status": "imported",
+        "attachment_id": 946,
+        "author": "ERoss99",
+        "license": "CC BY-SA 3.0",
+        "source_url": "https://commons.wikimedia.org/w/api.php/File:Holy_Cross_Abbey_01.JPG"
+    },
+    {
+        "slug": "adare-village",
+        "title": "Adare",
+        "status": "imported",
+        "attachment_id": 947,
+        "author": "Rossographer ",
+        "license": "CC BY-SA 2.0",
+        "source_url": "https://commons.wikimedia.org/w/api.php/File:The_N21_approaching_Adare_-_geograph.org.uk_-_5043395.jpg"
+    },
+    {
+        "slug": "bog-of-allen-nature-centre",
+        "title": "Bog of Allen Nature Centre",
+        "status": "imported",
+        "attachment_id": 948,
+        "author": "",
+        "license": "Public domain",
+        "source_url": "https://commons.wikimedia.org/w/api.php/File:The_Turf_Cutters_of_the_Bog_of_Allen%2C_1835_%28IA_jstor-30004047%29_%28page_1_crop%29.jpg"
+    },
+    {
+        "slug": "donadea-forest-park",
+        "title": "Donadea Forest Park",
+        "status": "imported",
+        "attachment_id": 949,
+        "author": "buzzard525",
+        "license": "CC BY 3.0",
+        "source_url": "https://commons.wikimedia.org/w/api.php/File:St._Peters_Anglican_Church%2C_Donadea_-_panoramio.jpg"
+    },
+    {
+        "slug": "mondello-park",
+        "title": "Mondello Park",
+        "status": "imported",
+        "attachment_id": 950,
+        "author": "Joefromthebay",
+        "license": "CC0",
+        "source_url": "https://commons.wikimedia.org/w/api.php/File:Incendio_a_Capo_Gallo%2C_versante_Mondello_-_25_luglio_2011.jpg"
+    },
+    {
+        "slug": "carlingford",
+        "title": "Carlingford",
+        "status": "imported",
+        "attachment_id": 951,
+        "author": "Cargoking",
+        "license": "CC BY 3.0",
+        "source_url": "https://commons.wikimedia.org/w/api.php/File:Carlingford_Town.JPG"
+    },
+    {
+        "slug": "borris-house",
+        "title": "Borris House",
+        "status": "imported",
+        "attachment_id": 952,
+        "author": "David Bergin",
+        "license": "CC BY 2.0",
+        "source_url": "https://commons.wikimedia.org/w/api.php/File:Borris_Viaduct%2C_Borris%2C_County_Carlow.jpg"
+    },
+    {
+        "slug": "oak-park-forest-park",
+        "title": "Oak Park Forest Park",
+        "status": "imported",
+        "attachment_id": 953,
+        "author": "Unknown authorUnknown author",
+        "license": "Public domain",
+        "source_url": "https://commons.wikimedia.org/w/api.php/File:Oak_park_party.png"
     }
 ]

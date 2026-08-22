@@ -1,0 +1,2958 @@
+{
+    "checked_at": "2026-08-21T21:35:05+00:00",
+    "total": 178,
+    "official_ok": 76,
+    "official_review": 6,
+    "official_fail": 24,
+    "discover_ok": 30,
+    "discover_suggested": 49,
+    "discover_fail": 42,
+    "items": [
+        {
+            "slug": "national-museum-archaeology",
+            "title": "National Museum of Ireland – Archaeology",
+            "county": "Dublin",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.museum.ie/en-IE/Museums/Archaeology"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "epic-irish-emigration-museum",
+            "title": "EPIC The Irish Emigration Museum",
+            "county": "Dublin",
+            "official": {
+                "status": "ok",
+                "http": 202,
+                "url": "https://epicchq.com/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "national-botanic-gardens-dublin",
+            "title": "National Botanic Gardens",
+            "county": "Dublin",
+            "official": {
+                "status": "manual_review",
+                "http": 403,
+                "url": "https://botanicgardens.ie/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "glasnevin-cemetery-museum",
+            "title": "Glasnevin Cemetery Museum",
+            "county": "Dublin",
+            "official": {
+                "status": "fail",
+                "http": 0,
+                "url": "https://www.glasnevinmuseum.ie/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "dun-laoghaire-east-pier",
+            "title": "Dún Laoghaire East Pier",
+            "county": "Dublin",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://www.discoverireland.ie/dublin/dun-laoghaire-east-pier",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "portmarnock-beach",
+            "title": "Portmarnock Beach (Velvet Strand)",
+            "county": "Dublin",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://www.discoverireland.ie/dublin/portmarnock-beach",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "russborough-house",
+            "title": "Russborough House",
+            "county": "Wicklow",
+            "official": {
+                "status": "fail",
+                "http": 0,
+                "url": "https://www.russboroughhouse.ie/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "wicklow-historic-gaol",
+            "title": "Wicklow's Historic Gaol",
+            "county": "Wicklow",
+            "official": {
+                "status": "ok",
+                "http": 202,
+                "url": "https://www.wicklowshistoricgaol.com/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "brittas-bay-beach",
+            "title": "Brittas Bay Beach",
+            "county": "Wicklow",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://www.discoverireland.ie/wicklow/brittas-bay",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "killruddery-house-gardens",
+            "title": "Killruddery House & Gardens",
+            "county": "Wicklow",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://killruddery.com/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/wicklow/killruddery-house-gardens",
+                "suggestions": [
+                    "https://www.discoverireland.ie/wicklow/killruddery-house-gardens"
+                ]
+            }
+        },
+        {
+            "slug": "mount-usher-gardens",
+            "title": "Mount Usher Gardens",
+            "county": "Wicklow",
+            "official": {
+                "status": "fail",
+                "http": 0,
+                "url": "https://www.mountushergardens.ie/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/wicklow/mount-usher-gardens",
+                "suggestions": [
+                    "https://www.discoverireland.ie/wicklow/mount-usher-gardens"
+                ]
+            }
+        },
+        {
+            "slug": "wicklow-way",
+            "title": "The Wicklow Way",
+            "county": "Wicklow",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://www.discoverireland.ie/wicklow/the-wicklow-way",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "emerald-park",
+            "title": "Emerald Park",
+            "county": "Meath",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.emeraldpark.ie/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/meath/emerald-park",
+                "suggestions": [
+                    "https://www.discoverireland.ie/meath/emerald-park"
+                ]
+            }
+        },
+        {
+            "slug": "bective-abbey",
+            "title": "Bective Abbey",
+            "county": "Meath",
+            "official": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://heritageireland.ie/places-to-visit/bective-abbey/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/meath/bective-abbey",
+                "suggestions": [
+                    "https://www.discoverireland.ie/meath/bective-abbey"
+                ]
+            }
+        },
+        {
+            "slug": "kells-historic-town",
+            "title": "Kells Historic Town",
+            "county": "Meath",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://www.discoverireland.ie/meath/kells",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "sonairte-ecology-centre",
+            "title": "Sonairte Ecology Centre",
+            "county": "Meath",
+            "official": {
+                "status": "fail",
+                "http": 0,
+                "url": "https://sonairte.ie/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "dowth",
+            "title": "Dowth Passage Tomb",
+            "county": "Meath",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://heritageireland.ie/places-to-visit/bru-na-boinne-visitor-centre-newgrange-and-knowth/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "spanish-arch-long-walk",
+            "title": "Spanish Arch & Long Walk",
+            "county": "Galway",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://www.discoverireland.ie/galway/spanish-arch",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "galway-city-museum",
+            "title": "Galway City Museum",
+            "county": "Galway",
+            "official": {
+                "status": "ok",
+                "http": 202,
+                "url": "https://www.galwaycitymuseum.ie/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/galway/galway-city-museum",
+                "suggestions": [
+                    "https://www.discoverireland.ie/galway/galway-city-museum"
+                ]
+            }
+        },
+        {
+            "slug": "brigits-garden",
+            "title": "Brigit's Garden",
+            "county": "Galway",
+            "official": {
+                "status": "ok",
+                "http": 202,
+                "url": "https://brigitsgarden.ie/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "coole-park",
+            "title": "Coole Park",
+            "county": "Galway",
+            "official": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://heritageireland.ie/places-to-visit/coole-park/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "portumna-castle-gardens",
+            "title": "Portumna Castle & Gardens",
+            "county": "Galway",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://heritageireland.ie/places-to-visit/portumna-castle-and-gardens/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "thoor-ballylee",
+            "title": "Thoor Ballylee",
+            "county": "Galway",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/galway/thoor-ballylee",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "ennis-friary",
+            "title": "Ennis Friary",
+            "county": "Clare",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://heritageireland.ie/places-to-visit/ennis-friary/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/clare/ennis-friary",
+                "suggestions": [
+                    "https://www.discoverireland.ie/clare/ennis-friary"
+                ]
+            }
+        },
+        {
+            "slug": "scattery-island",
+            "title": "Scattery Island",
+            "county": "Clare",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/clare/scattery-island",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "holy-island-inis-cealtra",
+            "title": "Holy Island (Inis Cealtra)",
+            "county": "Clare",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://www.discoverireland.ie/clare/holy-island-inis-cealtra",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "spanish-point-beach",
+            "title": "Spanish Point Beach",
+            "county": "Clare",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/clare/spanish-point",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "craggaunowen",
+            "title": "Craggaunowen",
+            "county": "Clare",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://www.discoverireland.ie/clare/craggaunowen-the-living-past",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "vandeleur-walled-garden",
+            "title": "Vandeleur Walled Garden",
+            "county": "Clare",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://www.discoverireland.ie/clare/vandeleur-walled-garden",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "english-market-cork",
+            "title": "English Market",
+            "county": "Cork",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/cork/english-market",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "cork-city-gaol",
+            "title": "Cork City Gaol",
+            "county": "Cork",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://corkcitygaol.com/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "blackrock-castle-observatory",
+            "title": "Blackrock Castle Observatory",
+            "county": "Cork",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.bco.ie/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "garnish-island",
+            "title": "Garnish Island",
+            "county": "Cork",
+            "official": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://heritageireland.ie/places-to-visit/garnish-island/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "spike-island-cork",
+            "title": "Spike Island",
+            "county": "Cork",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.spikeislandcork.ie/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "doneraile-park",
+            "title": "Doneraile Park",
+            "county": "Cork",
+            "official": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://heritageireland.ie/places-to-visit/doneraile-park/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "skellig-michael",
+            "title": "Skellig Michael",
+            "county": "Kerry",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://heritageireland.ie/places-to-visit/skellig-michael/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "valentia-island",
+            "title": "Valentia Island",
+            "county": "Kerry",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://valentiaisland.ie/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/valentia-island",
+                "suggestions": [
+                    "https://www.discoverireland.ie/valentia-island"
+                ]
+            }
+        },
+        {
+            "slug": "kerry-cliffs",
+            "title": "Kerry Cliffs",
+            "county": "Kerry",
+            "official": {
+                "status": "fail",
+                "http": 0,
+                "url": "https://www.kerrycliffs.com/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/kerry/kerry-cliffs",
+                "suggestions": [
+                    "https://www.discoverireland.ie/kerry/kerry-cliffs"
+                ]
+            }
+        },
+        {
+            "slug": "derrynane-house",
+            "title": "Derrynane House & National Historic Park",
+            "county": "Kerry",
+            "official": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://heritageireland.ie/places-to-visit/derrynane-national-historic-park/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/kerry/derrynane-house",
+                "suggestions": [
+                    "https://www.discoverireland.ie/kerry/derrynane-house"
+                ]
+            }
+        },
+        {
+            "slug": "gallarus-oratory",
+            "title": "Gallarus Oratory",
+            "county": "Kerry",
+            "official": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://heritageireland.ie/places-to-visit/gallarus-oratory/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "muckross-abbey",
+            "title": "Muckross Abbey",
+            "county": "Kerry",
+            "official": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://heritageireland.ie/places-to-visit/muckross-abbey/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "banna-strand",
+            "title": "Banna Strand",
+            "county": "Kerry",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/kerry/banna-strand",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "rock-of-dunamase",
+            "title": "Rock of Dunamase",
+            "county": "Laois",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/laois/rock-of-dunamase",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "emo-court",
+            "title": "Emo Court",
+            "county": "Laois",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://heritageireland.ie/places-to-visit/emo-court/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/laois/emo-court",
+                "suggestions": [
+                    "https://www.discoverireland.ie/laois/emo-court"
+                ]
+            }
+        },
+        {
+            "slug": "heywood-gardens",
+            "title": "Heywood Gardens",
+            "county": "Laois",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://heritageireland.ie/places-to-visit/heywood-gardens/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/laois/heywood-gardens",
+                "suggestions": [
+                    "https://www.discoverireland.ie/laois/heywood-gardens"
+                ]
+            }
+        },
+        {
+            "slug": "timahoe-round-tower",
+            "title": "Timahoe Round Tower",
+            "county": "Laois",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/laois/timahoe-round-tower",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "abbeyleix-heritage-house",
+            "title": "Abbeyleix Heritage House",
+            "county": "Laois",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://abbeyleixheritage.com/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/laois/abbeyleix-heritage-house",
+                "suggestions": [
+                    "https://www.discoverireland.ie/laois/abbeyleix-heritage-house"
+                ]
+            }
+        },
+        {
+            "slug": "slieve-bloom-mountains",
+            "title": "Slieve Bloom Mountains",
+            "county": "Laois",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://slievebloom.ie/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "clonmacnoise",
+            "title": "Clonmacnoise",
+            "county": "Offaly",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://heritageireland.ie/places-to-visit/clonmacnoise/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/offaly/clonmacnoise",
+                "suggestions": [
+                    "https://www.discoverireland.ie/offaly/clonmacnoise"
+                ]
+            }
+        },
+        {
+            "slug": "birr-castle-demesne",
+            "title": "Birr Castle Demesne",
+            "county": "Offaly",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://birrcastle.com/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "lough-boora-discovery-park",
+            "title": "Lough Boora Discovery Park",
+            "county": "Offaly",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://loughboora.com/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/offaly/lough-boora-discovery-park",
+                "suggestions": [
+                    "https://www.discoverireland.ie/offaly/lough-boora-discovery-park"
+                ]
+            }
+        },
+        {
+            "slug": "charleville-forest-castle",
+            "title": "Charleville Forest Castle",
+            "county": "Offaly",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://www.discoverireland.ie/offaly/charleville-forest-castle",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "tullamore-dew-experience",
+            "title": "Tullamore D.E.W. Experience",
+            "county": "Offaly",
+            "official": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://www.tullamoredew.com/en-ie/visit-us/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "belvedere-house-gardens",
+            "title": "Belvedere House Gardens & Park",
+            "county": "Westmeath",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://belvedere-house.ie/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "athlone-castle",
+            "title": "Athlone Castle Visitor Centre",
+            "county": "Westmeath",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.athlonecastle.ie/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/westmeath/athlone-castle",
+                "suggestions": [
+                    "https://www.discoverireland.ie/westmeath/athlone-castle"
+                ]
+            }
+        },
+        {
+            "slug": "kilbeggan-distillery",
+            "title": "Kilbeggan Distillery Experience",
+            "county": "Westmeath",
+            "official": {
+                "status": "fail",
+                "http": 0,
+                "url": "https://www.kilbeggandistillery.com/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "mullaghmeen-forest",
+            "title": "Mullaghmeen Forest",
+            "county": "Westmeath",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://www.discoverireland.ie/westmeath/mullaghmeen-forest",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "glendeer-pet-farm",
+            "title": "Glendeer Pet Farm",
+            "county": "Westmeath",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://glendeerpetfarm.ie/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "corlea-trackway",
+            "title": "Corlea Trackway Visitor Centre",
+            "county": "Longford",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://heritageireland.ie/places-to-visit/corlea-trackway-visitor-centre/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "ardagh-heritage-village",
+            "title": "Ardagh Heritage Village",
+            "county": "Longford",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://www.discoverireland.ie/longford/ardagh-heritage-village",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "granard-motte-bailey",
+            "title": "Granard Motte & Bailey",
+            "county": "Longford",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://www.discoverireland.ie/longford/granard-motte-and-bailey",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "royal-canal-greenway",
+            "title": "Royal Canal Greenway",
+            "county": "Longford",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://www.discoverireland.ie/longford/royal-canal-greenway",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "newcastle-wood",
+            "title": "Newcastle Wood",
+            "county": "Longford",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://www.discoverireland.ie/longford/newcastle-wood",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "lough-ree",
+            "title": "Lough Ree",
+            "county": "Longford",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://www.discoverireland.ie/longford/lough-ree",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "rathcroghan",
+            "title": "Rathcroghan",
+            "county": "Roscommon",
+            "official": {
+                "status": "manual_review",
+                "http": 403,
+                "url": "https://rathcroghan.ie/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "boyle-abbey",
+            "title": "Boyle Abbey",
+            "county": "Roscommon",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://heritageireland.ie/places-to-visit/boyle-abbey/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/roscommon/boyle-abbey",
+                "suggestions": [
+                    "https://www.discoverireland.ie/roscommon/boyle-abbey"
+                ]
+            }
+        },
+        {
+            "slug": "strokestown-park-famine-museum",
+            "title": "Strokestown Park & National Famine Museum",
+            "county": "Roscommon",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://strokestownpark.ie/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "arigna-mining-experience",
+            "title": "Arigna Mining Experience",
+            "county": "Roscommon",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.arignaminingexperience.ie/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/roscommon/arigna-mining-experience",
+                "suggestions": [
+                    "https://www.discoverireland.ie/roscommon/arigna-mining-experience"
+                ]
+            }
+        },
+        {
+            "slug": "lough-key-forest-park",
+            "title": "Lough Key Forest & Activity Park",
+            "county": "Roscommon",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://loughkey.ie/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "roscommon-castle",
+            "title": "Roscommon Castle",
+            "county": "Roscommon",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/roscommon/roscommon-castle",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "glencar-waterfall",
+            "title": "Glencar Waterfall",
+            "county": "Leitrim",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/leitrim/glencar-waterfall",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "parkes-castle",
+            "title": "Parke's Castle",
+            "county": "Leitrim",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://heritageireland.ie/places-to-visit/parkes-castle/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "acres-lake-floating-boardwalk",
+            "title": "Acres Lake Floating Boardwalk",
+            "county": "Leitrim",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://www.discoverireland.ie/leitrim/acres-lake-floating-boardwalk",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "lough-allen",
+            "title": "Lough Allen",
+            "county": "Leitrim",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://www.discoverireland.ie/leitrim/lough-allen",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "lough-rynn-castle-gardens",
+            "title": "Lough Rynn Castle Gardens",
+            "county": "Leitrim",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://www.discoverireland.ie/leitrim/lough-rynn-castle-estate-and-gardens",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "sean-mac-diarmada-cottage",
+            "title": "Seán Mac Diarmada Cottage",
+            "county": "Leitrim",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://www.discoverireland.ie/leitrim/sean-macdiarmada-cottage",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "cavan-burren-park",
+            "title": "Cavan Burren Park",
+            "county": "Cavan",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/cavan/cavan-burren-park",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "killykeen-forest-park",
+            "title": "Killykeen Forest Park",
+            "county": "Cavan",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://www.discoverireland.ie/cavan/killykeen-forest-park",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "dun-a-ri-forest-park",
+            "title": "Dún a Rí Forest Park",
+            "county": "Cavan",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://www.discoverireland.ie/cavan/dun-na-ri-forest-park",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "shannon-pot",
+            "title": "Shannon Pot",
+            "county": "Cavan",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://www.discoverireland.ie/cavan/shannon-pot",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "cavan-county-museum",
+            "title": "Cavan County Museum",
+            "county": "Cavan",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/cavan/cavan-county-museum",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "belturbet-railway-station",
+            "title": "Belturbet Railway Station",
+            "county": "Cavan",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://www.discoverireland.ie/cavan/belturbet-heritage-town",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "castle-leslie-estate",
+            "title": "Castle Leslie Estate",
+            "county": "Monaghan",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.castleleslie.com/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/monaghan/castle-leslie-estate",
+                "suggestions": [
+                    "https://www.discoverireland.ie/monaghan/castle-leslie-estate"
+                ]
+            }
+        },
+        {
+            "slug": "rossmore-forest-park",
+            "title": "Rossmore Forest Park",
+            "county": "Monaghan",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/monaghan/rossmore-forest-park",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "monaghan-county-museum",
+            "title": "Monaghan County Museum",
+            "county": "Monaghan",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://monaghan.ie/museum/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/monaghan/monaghan-county-museum",
+                "suggestions": [
+                    "https://www.discoverireland.ie/monaghan/monaghan-county-museum"
+                ]
+            }
+        },
+        {
+            "slug": "carrickmacross-lace-gallery",
+            "title": "Carrickmacross Lace Gallery",
+            "county": "Monaghan",
+            "official": {
+                "status": "ok",
+                "http": 202,
+                "url": "https://www.carrickmacrosslace.ie/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/monaghan/carrickmacross-lace-gallery",
+                "suggestions": [
+                    "https://www.discoverireland.ie/monaghan/carrickmacross-lace-gallery"
+                ]
+            }
+        },
+        {
+            "slug": "patrick-kavanagh-centre",
+            "title": "Patrick Kavanagh Centre",
+            "county": "Monaghan",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/monaghan/patrick-kavanagh-centre",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "sliabh-beagh",
+            "title": "Sliabh Beagh",
+            "county": "Monaghan",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://www.discoverireland.ie/monaghan/sliabh-beagh",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "glenveagh-national-park",
+            "title": "Glenveagh National Park",
+            "county": "Donegal",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.glenveaghnationalpark.ie/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "sliabh-liag",
+            "title": "Sliabh Liag (Slieve League)",
+            "county": "Donegal",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://www.discoverireland.ie/donegal/slieve-league-cliffs",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "donegal-castle",
+            "title": "Donegal Castle",
+            "county": "Donegal",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://heritageireland.ie/places-to-visit/donegal-castle/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/donegal/donegal-castle",
+                "suggestions": [
+                    "https://www.discoverireland.ie/donegal/donegal-castle"
+                ]
+            }
+        },
+        {
+            "slug": "malin-head",
+            "title": "Malin Head",
+            "county": "Donegal",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/donegal/malin-head",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "fanad-head-lighthouse",
+            "title": "Fanad Head Lighthouse",
+            "county": "Donegal",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://fanadlighthouse.com/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "grianan-of-aileach",
+            "title": "Grianán of Aileach",
+            "county": "Donegal",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/donegal/grianan-of-aileach",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "errigal",
+            "title": "Errigal",
+            "county": "Donegal",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://www.discoverireland.ie/donegal/errigal",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "ards-forest-park",
+            "title": "Ards Forest Park",
+            "county": "Donegal",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/donegal/ards-forest-park",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "benbulben",
+            "title": "Benbulben",
+            "county": "Sligo",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/sligo/benbulben",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "strandhill-beach",
+            "title": "Strandhill Beach",
+            "county": "Sligo",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/sligo/strandhill-beach",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "carrowmore-megalithic-cemetery",
+            "title": "Carrowmore Megalithic Cemetery",
+            "county": "Sligo",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://heritageireland.ie/places-to-visit/carrowmore-megalithic-cemetery/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/sligo/carrowmore-megalithic-cemetery",
+                "suggestions": [
+                    "https://www.discoverireland.ie/sligo/carrowmore-megalithic-cemetery"
+                ]
+            }
+        },
+        {
+            "slug": "queen-maeves-trail-knocknarea",
+            "title": "Queen Maeve's Trail (Knocknarea)",
+            "county": "Sligo",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://www.discoverireland.ie/sligo/queen-maeves-trail",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "sligo-abbey",
+            "title": "Sligo Abbey",
+            "county": "Sligo",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://heritageireland.ie/places-to-visit/sligo-abbey/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/sligo/sligo-abbey",
+                "suggestions": [
+                    "https://www.discoverireland.ie/sligo/sligo-abbey"
+                ]
+            }
+        },
+        {
+            "slug": "lissadell-house",
+            "title": "Lissadell House",
+            "county": "Sligo",
+            "official": {
+                "status": "fail",
+                "http": 0,
+                "url": "https://lissadellhouse.com/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "drumcliffe",
+            "title": "Drumcliffe",
+            "county": "Sligo",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://www.discoverireland.ie/sligo/drumcliffe",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "eagles-flying",
+            "title": "Eagles Flying",
+            "county": "Sligo",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.eaglesflying.com/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "croagh-patrick",
+            "title": "Croagh Patrick",
+            "county": "Mayo",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/mayo/croagh-patrick",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "achill-island",
+            "title": "Achill Island",
+            "county": "Mayo",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://www.discoverireland.ie/mayo/achill-island",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "keem-bay",
+            "title": "Keem Bay",
+            "county": "Mayo",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/mayo/keem-bay",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "westport-house",
+            "title": "Westport House & Adventure Park",
+            "county": "Mayo",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://westporthouse.ie/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/mayo/westport-house",
+                "suggestions": [
+                    "https://www.discoverireland.ie/mayo/westport-house"
+                ]
+            }
+        },
+        {
+            "slug": "national-museum-country-life",
+            "title": "National Museum of Ireland – Country Life",
+            "county": "Mayo",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.museum.ie/en-IE/Museums/Country-Life"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "downpatrick-head",
+            "title": "Downpatrick Head",
+            "county": "Mayo",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/mayo/downpatrick-head",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "ceide-fields",
+            "title": "Céide Fields",
+            "county": "Mayo",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://ceidefields.com/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/mayo/ceide-fields",
+                "suggestions": [
+                    "https://www.discoverireland.ie/mayo/ceide-fields"
+                ]
+            }
+        },
+        {
+            "slug": "great-western-greenway",
+            "title": "Great Western Greenway",
+            "county": "Mayo",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/mayo/great-western-greenway",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "wild-nephin-ballycroy-national-park",
+            "title": "Wild Nephin Ballycroy National Park",
+            "county": "Mayo",
+            "official": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://www.nationalparks.ie/ballycroy/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/mayo/wild-nephin-ballycroy-national-park",
+                "suggestions": [
+                    "https://www.discoverireland.ie/mayo/wild-nephin-ballycroy-national-park"
+                ]
+            }
+        },
+        {
+            "slug": "clare-island",
+            "title": "Clare Island",
+            "county": "Mayo",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://clareisland.ie/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/mayo/clare-island",
+                "suggestions": [
+                    "https://www.discoverireland.ie/mayo/clare-island"
+                ]
+            }
+        },
+        {
+            "slug": "kilkenny-castle",
+            "title": "Kilkenny Castle",
+            "county": "Kilkenny",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.kilkennycastle.ie/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/kilkenny/kilkenny-castle",
+                "suggestions": [
+                    "https://www.discoverireland.ie/kilkenny/kilkenny-castle"
+                ]
+            }
+        },
+        {
+            "slug": "medieval-mile-museum",
+            "title": "Medieval Mile Museum",
+            "county": "Kilkenny",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.medievalmilemuseum.ie/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/kilkenny/medieval-mile-museum",
+                "suggestions": [
+                    "https://www.discoverireland.ie/kilkenny/medieval-mile-museum"
+                ]
+            }
+        },
+        {
+            "slug": "jerpoint-abbey",
+            "title": "Jerpoint Abbey",
+            "county": "Kilkenny",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://heritageireland.ie/places-to-visit/jerpoint-abbey/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/kilkenny/jerpoint-abbey",
+                "suggestions": [
+                    "https://www.discoverireland.ie/kilkenny/jerpoint-abbey"
+                ]
+            }
+        },
+        {
+            "slug": "rothe-house-garden",
+            "title": "Rothe House & Garden",
+            "county": "Kilkenny",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://rothehouse.com/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/kilkenny/rothe-house-garden",
+                "suggestions": [
+                    "https://www.discoverireland.ie/kilkenny/rothe-house-garden"
+                ]
+            }
+        },
+        {
+            "slug": "smithwicks-experience",
+            "title": "Smithwick's Experience",
+            "county": "Kilkenny",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.smithwicksexperience.com/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "dunmore-cave",
+            "title": "Dunmore Cave",
+            "county": "Kilkenny",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://heritageireland.ie/places-to-visit/dunmore-cave/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/kilkenny/dunmore-cave",
+                "suggestions": [
+                    "https://www.discoverireland.ie/kilkenny/dunmore-cave"
+                ]
+            }
+        },
+        {
+            "slug": "castlecomer-discovery-park",
+            "title": "Castlecomer Discovery Park",
+            "county": "Kilkenny",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://discoverypark.ie/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "jerpoint-park",
+            "title": "Jerpoint Park (Newtown Jerpoint)",
+            "county": "Kilkenny",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://jerpointpark.com/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "woodstock-gardens",
+            "title": "Woodstock Gardens",
+            "county": "Kilkenny",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://www.discoverireland.ie/kilkenny/woodstock-gardens",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "house-of-waterford-crystal",
+            "title": "House of Waterford Crystal",
+            "county": "Waterford",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.waterfordvisitorcentre.com/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "waterford-treasures",
+            "title": "Waterford Treasures Museums",
+            "county": "Waterford",
+            "official": {
+                "status": "manual_review",
+                "http": 403,
+                "url": "https://www.waterfordtreasures.com/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "reginals-tower",
+            "title": "Reginald's Tower",
+            "county": "Waterford",
+            "official": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://heritageireland.ie/places-to-visit/reginals-tower/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "waterford-greenway",
+            "title": "Waterford Greenway",
+            "county": "Waterford",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://deisegreenway.com/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/waterford/waterford-greenway",
+                "suggestions": [
+                    "https://www.discoverireland.ie/waterford/waterford-greenway"
+                ]
+            }
+        },
+        {
+            "slug": "copper-coast-geopark",
+            "title": "Copper Coast Geopark",
+            "county": "Waterford",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://coppercoastgeopark.com/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "mount-congreve-gardens",
+            "title": "Mount Congreve Gardens",
+            "county": "Waterford",
+            "official": {
+                "status": "manual_review",
+                "http": 403,
+                "url": "https://mountcongreve.com/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/waterford/mount-congreve-gardens",
+                "suggestions": [
+                    "https://www.discoverireland.ie/waterford/mount-congreve-gardens"
+                ]
+            }
+        },
+        {
+            "slug": "lismore-castle-gardens",
+            "title": "Lismore Castle Gardens",
+            "county": "Waterford",
+            "official": {
+                "status": "fail",
+                "http": 0,
+                "url": "https://lismorecastle.com/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/waterford/lismore-castle-gardens",
+                "suggestions": [
+                    "https://www.discoverireland.ie/waterford/lismore-castle-gardens"
+                ]
+            }
+        },
+        {
+            "slug": "ardmore-round-tower",
+            "title": "Ardmore Round Tower & Cathedral",
+            "county": "Waterford",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/waterford/ardmore-round-tower-and-cathedral",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "coumshingaun-loop",
+            "title": "Coumshingaun Loop (Comeragh Mountains)",
+            "county": "Waterford",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://www.discoverireland.ie/waterford/coumshingaun-loop-walk",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "irish-national-heritage-park",
+            "title": "Irish National Heritage Park",
+            "county": "Wexford",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://irishheritage.ie/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/wexford/irish-national-heritage-park",
+                "suggestions": [
+                    "https://www.discoverireland.ie/wexford/irish-national-heritage-park"
+                ]
+            }
+        },
+        {
+            "slug": "johnstown-castle",
+            "title": "Johnstown Castle",
+            "county": "Wexford",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://johnstowncastle.ie/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "hook-lighthouse",
+            "title": "Hook Lighthouse",
+            "county": "Wexford",
+            "official": {
+                "status": "fail",
+                "http": 0,
+                "url": "https://hookheritage.ie/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "dunbrody-famine-ship",
+            "title": "Dunbrody Famine Ship",
+            "county": "Wexford",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.dunbrody.com/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "saltee-islands",
+            "title": "Saltee Islands",
+            "county": "Wexford",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/wexford/saltee-islands",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "curracloe-beach",
+            "title": "Curracloe Beach",
+            "county": "Wexford",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/wexford/curracloe-beach",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "wexford-wildfowl-reserve",
+            "title": "Wexford Wildfowl Reserve",
+            "county": "Wexford",
+            "official": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://www.npws.ie/protected-sites/nature-reserves/wexford-wildfowl-reserve"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "ferns-castle",
+            "title": "Ferns Castle",
+            "county": "Wexford",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://heritageireland.ie/places-to-visit/ferns-castle/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/wexford/ferns-castle",
+                "suggestions": [
+                    "https://www.discoverireland.ie/wexford/ferns-castle"
+                ]
+            }
+        },
+        {
+            "slug": "tintern-abbey-wexford",
+            "title": "Tintern Abbey",
+            "county": "Wexford",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://heritageireland.ie/places-to-visit/tintern-abbey/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "rock-of-cashel",
+            "title": "Rock of Cashel",
+            "county": "Tipperary",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://heritageireland.ie/places-to-visit/rock-of-cashel/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/tipperary/rock-of-cashel",
+                "suggestions": [
+                    "https://www.discoverireland.ie/tipperary/rock-of-cashel"
+                ]
+            }
+        },
+        {
+            "slug": "cahir-castle",
+            "title": "Cahir Castle",
+            "county": "Tipperary",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://heritageireland.ie/places-to-visit/cahir-castle/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/tipperary/cahir-castle",
+                "suggestions": [
+                    "https://www.discoverireland.ie/tipperary/cahir-castle"
+                ]
+            }
+        },
+        {
+            "slug": "swiss-cottage",
+            "title": "Swiss Cottage",
+            "county": "Tipperary",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://heritageireland.ie/places-to-visit/swiss-cottage/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/tipperary/swiss-cottage",
+                "suggestions": [
+                    "https://www.discoverireland.ie/tipperary/swiss-cottage"
+                ]
+            }
+        },
+        {
+            "slug": "glen-of-aherlow",
+            "title": "Glen of Aherlow",
+            "county": "Tipperary",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://aherlow.com/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/glen-of-aherlow",
+                "suggestions": [
+                    "https://www.discoverireland.ie/glen-of-aherlow"
+                ]
+            }
+        },
+        {
+            "slug": "the-vee-bay-lough",
+            "title": "The Vee & Bay Lough",
+            "county": "Tipperary",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://www.discoverireland.ie/tipperary/the-vee",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "ormond-castle",
+            "title": "Ormond Castle",
+            "county": "Tipperary",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://heritageireland.ie/places-to-visit/ormond-castle/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/tipperary/ormond-castle",
+                "suggestions": [
+                    "https://www.discoverireland.ie/tipperary/ormond-castle"
+                ]
+            }
+        },
+        {
+            "slug": "mitchelstown-cave",
+            "title": "Mitchelstown Cave",
+            "county": "Tipperary",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.mitchelstowncave.com/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/tipperary/mitchelstown-cave",
+                "suggestions": [
+                    "https://www.discoverireland.ie/tipperary/mitchelstown-cave"
+                ]
+            }
+        },
+        {
+            "slug": "holy-cross-abbey",
+            "title": "Holy Cross Abbey",
+            "county": "Tipperary",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://www.discoverireland.ie/tipperary/holy-cross-abbey",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "king-johns-castle-limerick",
+            "title": "King John's Castle",
+            "county": "Limerick",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://kingjohnscastle.com/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "hunt-museum",
+            "title": "Hunt Museum",
+            "county": "Limerick",
+            "official": {
+                "status": "manual_review",
+                "http": 403,
+                "url": "https://www.huntmuseum.com/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "st-marys-cathedral-limerick",
+            "title": "St Mary's Cathedral",
+            "county": "Limerick",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://saintmaryscathedral.ie/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "adare-village",
+            "title": "Adare",
+            "county": "Limerick",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://www.discoverireland.ie/limerick/adare",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "foynes-flying-boat-museum",
+            "title": "Foynes Flying Boat & Maritime Museum",
+            "county": "Limerick",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.flyingboatmuseum.com/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "lough-gur",
+            "title": "Lough Gur",
+            "county": "Limerick",
+            "official": {
+                "status": "manual_review",
+                "http": 403,
+                "url": "https://loughgur.com/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/limerick/lough-gur",
+                "suggestions": [
+                    "https://www.discoverireland.ie/limerick/lough-gur"
+                ]
+            }
+        },
+        {
+            "slug": "curraghchase-forest-park",
+            "title": "Curraghchase Forest Park",
+            "county": "Limerick",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://www.discoverireland.ie/limerick/curraghchase-forest-park",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "irish-national-stud-japanese-gardens",
+            "title": "Irish National Stud & Japanese Gardens",
+            "county": "Kildare",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://irishnationalstud.ie/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "castletown-house",
+            "title": "Castletown House",
+            "county": "Kildare",
+            "official": {
+                "status": "fail",
+                "http": 0,
+                "url": "https://castletownhouse.ie/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/kildare/castletown-house",
+                "suggestions": [
+                    "https://www.discoverireland.ie/kildare/castletown-house"
+                ]
+            }
+        },
+        {
+            "slug": "bog-of-allen-nature-centre",
+            "title": "Bog of Allen Nature Centre",
+            "county": "Kildare",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.ipcc.ie/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/kildare/bog-of-allen-nature-centre",
+                "suggestions": [
+                    "https://www.discoverireland.ie/kildare/bog-of-allen-nature-centre"
+                ]
+            }
+        },
+        {
+            "slug": "pollardstown-fen",
+            "title": "Pollardstown Fen",
+            "county": "Kildare",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/kildare/pollardstown-fen",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "maynooth-castle",
+            "title": "Maynooth Castle",
+            "county": "Kildare",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://heritageireland.ie/places-to-visit/maynooth-castle/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/kildare/maynooth-castle",
+                "suggestions": [
+                    "https://www.discoverireland.ie/kildare/maynooth-castle"
+                ]
+            }
+        },
+        {
+            "slug": "donadea-forest-park",
+            "title": "Donadea Forest Park",
+            "county": "Kildare",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/kildare/donadea-forest-park",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "lullymore-heritage-park",
+            "title": "Lullymore Heritage & Discovery Park",
+            "county": "Kildare",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://lullymoreheritagepark.com/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "mondello-park",
+            "title": "Mondello Park",
+            "county": "Kildare",
+            "official": {
+                "status": "fail",
+                "http": 0,
+                "url": "https://www.mondellopark.com/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "carlingford",
+            "title": "Carlingford",
+            "county": "Louth",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://www.discoverireland.ie/louth/carlingford",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "king-johns-castle-carlingford",
+            "title": "King John's Castle (Carlingford)",
+            "county": "Louth",
+            "official": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://heritageireland.ie/places-to-visit/king-johns-castle-carlingford/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "proleek-dolmen",
+            "title": "Proleek Dolmen",
+            "county": "Louth",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/louth/proleek-dolmen",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "monasterboice",
+            "title": "Monasterboice",
+            "county": "Louth",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://www.discoverireland.ie/louth/monasterboice",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "mellifont-abbey",
+            "title": "Mellifont Abbey",
+            "county": "Louth",
+            "official": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://heritageireland.ie/places-to-visit/mellifont-abbey/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "carlingford-lough-greenway",
+            "title": "Carlingford Lough Greenway",
+            "county": "Louth",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://www.discoverireland.ie/louth/carlingford-lough-greenway",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "millmount-fort-museum",
+            "title": "Millmount Fort & Museum",
+            "county": "Louth",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://www.discoverireland.ie/louth/millmount-fort-and-museum",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "brownshill-dolmen",
+            "title": "Brownshill Dolmen",
+            "county": "Carlow",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/carlow/brownshill-dolmen",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "altamont-gardens",
+            "title": "Altamont Gardens",
+            "county": "Carlow",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://heritageireland.ie/places-to-visit/altamont-gardens/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/carlow/altamont-gardens",
+                "suggestions": [
+                    "https://www.discoverireland.ie/carlow/altamont-gardens"
+                ]
+            }
+        },
+        {
+            "slug": "ducketts-grove",
+            "title": "Duckett's Grove",
+            "county": "Carlow",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://www.discoverireland.ie/carlow/ducketts-grove",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "huntington-castle-gardens",
+            "title": "Huntington Castle & Gardens",
+            "county": "Carlow",
+            "official": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://huntingtoncastle.com/"
+            },
+            "discover": {
+                "status": "none",
+                "http": 0,
+                "url": "",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "borris-house",
+            "title": "Borris House",
+            "county": "Carlow",
+            "official": {
+                "status": "ok",
+                "http": 202,
+                "url": "https://borrishouse.com/"
+            },
+            "discover": {
+                "status": "suggested",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/carlow/borris-house",
+                "suggestions": [
+                    "https://www.discoverireland.ie/carlow/borris-house"
+                ]
+            }
+        },
+        {
+            "slug": "oak-park-forest-park",
+            "title": "Oak Park Forest Park",
+            "county": "Carlow",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "ok",
+                "http": 200,
+                "url": "https://www.discoverireland.ie/carlow/oak-park-forest-park",
+                "suggestions": []
+            }
+        },
+        {
+            "slug": "mount-leinster-nine-stones",
+            "title": "Mount Leinster & Nine Stones",
+            "county": "Carlow",
+            "official": {
+                "status": "none",
+                "http": 0,
+                "url": ""
+            },
+            "discover": {
+                "status": "fail",
+                "http": 404,
+                "url": "https://www.discoverireland.ie/carlow/mount-leinster",
+                "suggestions": []
+            }
+        }
+    ]
+}

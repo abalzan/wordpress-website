@@ -17,7 +17,7 @@
 | File | Purpose |
 |------|---------|
 | `conexao-content.php` | Main plugin file, shortcodes, activation hook |
-| `create-pages.php` | Page/menu creation script (runs on activation + WP-CLI) |
+| `create-pages.php` | Page/menu creation script (runs on activation, or manually via `wp eval-file wp-content/plugins/conexao-content/create-pages.php --allow-root`) |
 | `assets.css` | Styles for shortcode grids |
 
 ## Shortcodes
