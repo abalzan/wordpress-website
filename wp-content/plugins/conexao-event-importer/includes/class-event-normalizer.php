@@ -43,6 +43,13 @@ class Conexao_Event_Normalizer {
 
 		$location = $this->location->normalize( isset( $raw['location'] ) ? $raw['location'] : '' );
 
+		// Per-source county hint: sources scoped to a single county (e.g.
+		// 'county' => 'Laois' in the source config) can guarantee the county
+		// even when the raw location string omits it or is empty entirely.
+		if ( empty( $location['county'] ) && ! empty( $raw['county'] ) ) {
+			$location['county'] = trim( (string) $raw['county'] );
+		}
+
 		$category = isset( $raw['category'] ) ? trim( (string) $raw['category'] ) : '';
 		$organizer = isset( $raw['organizer'] ) ? trim( (string) $raw['organizer'] ) : '';
 		$price     = isset( $raw['price'] ) ? trim( (string) $raw['price'] ) : '';
@@ -65,7 +72,10 @@ class Conexao_Event_Normalizer {
 			$review_notes[] = __( 'URL de origem ausente', 'conexao-event-importer' );
 		}
 
-		if ( empty( $location['town'] ) && empty( $location['venue'] ) ) {
+		// County-level identification is sufficient for auto-publishing:
+		// feeds scoped to one county (Laois Tourism, Heritage Week) often
+		// omit precise venues, and the county tag keeps them filterable.
+		if ( empty( $location['town'] ) && empty( $location['venue'] ) && empty( $location['county'] ) ) {
 			$needs_review   = true;
 			$review_notes[] = __( 'Localização não identificada', 'conexao-event-importer' );
 		}
@@ -88,8 +98,9 @@ class Conexao_Event_Normalizer {
 			'town'         => $location['town'],
 			'venue'        => $location['venue'],
 			'address'      => $location['address'],
-			// The theme's _event_location meta shows in cards; use the venue.
-			'event_location' => $location['venue'] ? $location['venue'] : $location['town'],
+			// The theme's _event_location meta shows in cards; prefer venue,
+			// then town, then county so county-scoped events still show a label.
+			'event_location' => $location['venue'] ? $location['venue'] : ( $location['town'] ? $location['town'] : $location['county'] ),
 			'banner'       => $banner,
 			'category'     => $category,
 			'organizer'    => $organizer,

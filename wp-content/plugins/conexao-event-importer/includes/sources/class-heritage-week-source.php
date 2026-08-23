@@ -95,7 +95,9 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 
 			$page++;
 			$page_url = $next;
-			$html     = $this->fetch_html( $page_url );
+			// Pagination pages are optional: a failed page ends the walk but
+			// keeps the events already parsed from earlier pages.
+			$html     = $this->fetch_html_or_empty( $page_url );
 		}
 
 		return $events;
@@ -451,7 +453,7 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 			$url,
 			array(
 				'timeout'    => 20,
-				'user-agent' => 'Mozilla/5.0 (compatible; ConexaoEventImporter/1.0; +https://conexaobrirlanda.ie)',
+				'user-agent' => $this->get_http_user_agent(),
 			)
 		);
 

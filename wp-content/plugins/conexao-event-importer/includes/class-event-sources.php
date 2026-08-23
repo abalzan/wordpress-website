@@ -21,7 +21,9 @@ class Conexao_Event_Sources {
 			'laois_tourism' => array(
 				'id'                 => 'laois_tourism',
 				'name'               => 'Laois Tourism',
-				'url'                => 'webcal://laoistourism.ie/?post_type=tribe_events&ical=1&eventDisplay=list',
+				// Photo-view ICS export with recurrences hidden. Requires a
+				// browser-like User-Agent (Cloudflare blocks generic bots).
+				'url'                => 'https://laoistourism.ie/events/photo/?hide_subsequent_recurrences=1&ical=1',
 				'type'               => 'icalendar',
 				'status'             => 'active',
 				'last_import'        => '',
@@ -30,6 +32,7 @@ class Conexao_Event_Sources {
 				'last_error'         => '',
 				'import_frequency'   => 'weekly',
 				'last_checked'       => '',
+				'county'             => 'Laois',
 			),
 			'laois_council' => array(
 				'id'                 => 'laois_council',
@@ -405,6 +408,11 @@ class Conexao_Event_Sources {
 			'url'    => $url,
 			'type'   => $source_type,
 			'status' => isset( $_POST['source_status'] ) ? 'active' : 'inactive',
+			// Automation settings: how often this source should be imported
+			// (respected by the daily scheduler) plus optional taxonomy hints.
+			'import_frequency' => isset( $_POST['source_frequency'] ) && 'daily' === sanitize_key( wp_unslash( $_POST['source_frequency'] ) ) ? 'daily' : 'weekly',
+			'county'           => isset( $_POST['source_county'] ) ? sanitize_text_field( wp_unslash( $_POST['source_county'] ) ) : '',
+			'category'         => isset( $_POST['source_category'] ) ? sanitize_text_field( wp_unslash( $_POST['source_category'] ) ) : '',
 		);
 
 		// Preserve existing stats if editing.
@@ -891,6 +899,24 @@ class Conexao_Event_Sources {
 					</td>
 				</tr>
 				<tr>
+					<th><label for="source_frequency"><?php esc_html_e( 'Import Frequency', 'conexao-event-importer' ); ?></label></th>
+					<td>
+						<select id="source_frequency" name="source_frequency">
+							<option value="weekly" selected><?php esc_html_e( 'Weekly', 'conexao-event-importer' ); ?></option>
+							<option value="daily"><?php esc_html_e( 'Daily', 'conexao-event-importer' ); ?></option>
+						</select>
+						<p class="description"><?php esc_html_e( 'How often the automated scheduler imports this source. Daily sources are checked every night; weekly sources roughly once per week.', 'conexao-event-importer' ); ?></p>
+					</td>
+				</tr>
+				<tr>
+					<th><label for="source_county"><?php esc_html_e( 'County (optional)', 'conexao-event-importer' ); ?></label></th>
+					<td><input type="text" id="source_county" name="source_county" class="regular-text" placeholder="Laois"></td>
+				</tr>
+				<tr>
+					<th><label for="source_category"><?php esc_html_e( 'Category (optional)', 'conexao-event-importer' ); ?></label></th>
+					<td><input type="text" id="source_category" name="source_category" class="regular-text" placeholder="Heritage"></td>
+				</tr>
+				<tr>
 					<th><label for="source_status"><?php esc_html_e( 'Active', 'conexao-event-importer' ); ?></label></th>
 					<td><input type="checkbox" id="source_status" name="source_status" checked></td>
 				</tr>
@@ -955,6 +981,24 @@ class Conexao_Event_Sources {
 							<option value="eventbrite" <?php selected( $source['type'], 'eventbrite' ); ?>><?php esc_html_e( 'Eventbrite', 'conexao-event-importer' ); ?></option>
 						</select>
 					</td>
+				</tr>
+				<tr>
+					<th><label for="source_frequency"><?php esc_html_e( 'Import Frequency', 'conexao-event-importer' ); ?></label></th>
+					<td>
+						<select id="source_frequency" name="source_frequency">
+							<option value="weekly" <?php selected( isset( $source['import_frequency'] ) ? $source['import_frequency'] : 'weekly', 'weekly' ); ?>><?php esc_html_e( 'Weekly', 'conexao-event-importer' ); ?></option>
+							<option value="daily" <?php selected( isset( $source['import_frequency'] ) ? $source['import_frequency'] : '', 'daily' ); ?>><?php esc_html_e( 'Daily', 'conexao-event-importer' ); ?></option>
+						</select>
+						<p class="description"><?php esc_html_e( 'How often the automated scheduler imports this source. Daily sources are checked every night; weekly sources roughly once per week.', 'conexao-event-importer' ); ?></p>
+					</td>
+				</tr>
+				<tr>
+					<th><label for="source_county"><?php esc_html_e( 'County (optional)', 'conexao-event-importer' ); ?></label></th>
+					<td><input type="text" id="source_county" name="source_county" class="regular-text" value="<?php echo esc_attr( isset( $source['county'] ) ? $source['county'] : '' ); ?>" placeholder="Laois"></td>
+				</tr>
+				<tr>
+					<th><label for="source_category"><?php esc_html_e( 'Category (optional)', 'conexao-event-importer' ); ?></label></th>
+					<td><input type="text" id="source_category" name="source_category" class="regular-text" value="<?php echo esc_attr( isset( $source['category'] ) ? $source['category'] : '' ); ?>" placeholder="Heritage"></td>
 				</tr>
 				<tr>
 					<th><label for="source_status"><?php esc_html_e( 'Active', 'conexao-event-importer' ); ?></label></th>

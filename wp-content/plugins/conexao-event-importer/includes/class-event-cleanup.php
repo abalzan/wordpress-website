@@ -198,13 +198,37 @@ class Conexao_Event_Cleanup {
 	/**
 	 * Find all events whose end date/time has already passed.
 	 *
-	 * Uses the event's actual end date/time when available. Falls back to the
-	 * event date when no end date is set. Comparison uses the site timezone.
+	 * Uses the shared end-timestamp helper from Conexao_Event_Status so the
+	 * expiry check and the cleanup always agree on "has this event ended?".
+	 *
+	 * When the cleanup_scope setting is 'imported_only', manually created
+	 * events (no _event_imported meta) are protected from deletion.
 	 *
 	 * @return int[] Event post IDs.
 	 */
 	protected function find_past_events() {
 		$now = current_datetime();
+
+		$meta_query = array(
+			'relation' => 'AND',
+			array(
+				'key'     => '_event_date',
+				'compare' => 'EXISTS',
+			),
+			array(
+				'key'     => '_event_date',
+				'value'   => '',
+				'compare' => '!=',
+			),
+		);
+
+		// Optional scope restriction: only delete importer-created events.
+		if ( class_exists( 'Conexao_Import_Settings' ) && 'imported_only' === Conexao_Import_Settings::get( 'cleanup_scope', 'all' ) ) {
+			$meta_query[] = array(
+				'key'   => '_event_imported',
+				'value' => '1',
+			);
+		}
 
 		$query = new WP_Query(
 			array(
@@ -215,25 +239,14 @@ class Conexao_Event_Cleanup {
 				'no_found_rows'          => true,
 				'update_post_meta_cache' => false,
 				'update_post_term_cache' => false,
-				'meta_query'             => array(
-					'relation' => 'AND',
-					array(
-						'key'     => '_event_date',
-						'compare' => 'EXISTS',
-					),
-					array(
-						'key'     => '_event_date',
-						'value'   => '',
-						'compare' => '!=',
-					),
-				),
+				'meta_query'             => $meta_query,
 			)
 		);
 
 		$past_ids = array();
 
 		foreach ( $query->posts as $post_id ) {
-			$end_timestamp = $this->get_event_end_timestamp( $post_id );
+			$end_timestamp = Conexao_Event_Status::get_event_end_timestamp( $post_id );
 
 			if ( $end_timestamp && $end_timestamp < $now->getTimestamp() ) {
 				$past_ids[] = (int) $post_id;
@@ -241,62 +254,6 @@ class Conexao_Event_Cleanup {
 		}
 
 		return $past_ids;
-	}
-
-	/**
-	 * Get the end timestamp for an event in the site timezone.
-	 *
-	 * Uses _event_end_date + _event_end_time when available. Falls back to
-	 * _event_date + _event_start_time (or _event_time) when no end date exists.
-	 *
-	 * @param int $post_id Event post ID.
-	 * @return int|null Unix timestamp or null when the date is invalid.
-	 */
-	protected function get_event_end_timestamp( $post_id ) {
-		$end_date = get_post_meta( $post_id, '_event_end_date', true );
-		$end_time = get_post_meta( $post_id, '_event_end_time', true );
-
-		// Fall back to the event date when no end date is set.
-		if ( empty( $end_date ) ) {
-			$end_date = get_post_meta( $post_id, '_event_date', true );
-			$end_time = get_post_meta( $post_id, '_event_start_time', true );
-
-			// Fall back to the combined _event_time field if start time is empty.
-			if ( empty( $end_time ) ) {
-				$event_time = get_post_meta( $post_id, '_event_time', true );
-				if ( $event_time ) {
-					// _event_time may be "10:00 — 12:00"; use the first part.
-					$parts = explode( '—', $event_time );
-					$end_time = trim( $parts[0] );
-				}
-			}
-		}
-
-		if ( empty( $end_date ) ) {
-			return null;
-		}
-
-		// Validate the date format (Y-m-d).
-		if ( ! preg_match( '/^\d{4}-\d{2}-\d{2}$/', $end_date ) ) {
-			return null;
-		}
-
-		$timezone = wp_timezone();
-
-		try {
-			$date = new DateTime( $end_date, $timezone );
-
-			if ( ! empty( $end_time ) && preg_match( '/^(\d{1,2}):(\d{2})$/', $end_time, $m ) ) {
-				$date->setTime( (int) $m[1], (int) $m[2] );
-			} else {
-				// No time: treat the event as ending at the end of the day.
-				$date->setTime( 23, 59, 59 );
-			}
-
-			return $date->getTimestamp();
-		} catch ( Exception $e ) {
-			return null;
-		}
 	}
 
 	/**

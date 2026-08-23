@@ -5,6 +5,12 @@
  * Defines the contract every source must implement so new sources can be
  * added later without rebuilding the system.
  *
+ * HTTP fetching is structured: fetch_html() throws a
+ * Conexao_Source_Fetch_Exception on network errors or non-200 responses so
+ * the import engine can report a clean fatal error instead of guessing from
+ * log entries. Sources that must tolerate individual page failures (e.g.
+ * pagination) can use fetch_html_or_empty().
+ *
  * @package Conexao_Event_Importer
  */
 
@@ -49,32 +55,93 @@ abstract class Conexao_Source_Base {
 	abstract public function fetch_events();
 
 	/**
-	 * Fetch the HTML of a URL.
+	 * Get the HTTP User-Agent used for source requests.
 	 *
-	 * @param string $url URL to fetch.
-	 * @return string HTML body or empty string on failure.
+	 * Several sources (e.g. laoistourism.ie behind Cloudflare) reject
+	 * generic/bot-like user agents with 403, so the default mimics a real
+	 * browser. Override via the 'conexao_event_importer_http_user_agent'
+	 * filter when a source needs something specific.
+	 *
+	 * @return string
 	 */
-	protected function fetch_html( $url ) {
-		$response = wp_remote_get(
-			$url,
-			array(
-				'timeout'    => 30,
-				'user-agent' => 'Mozilla/5.0 (compatible; ConexaoEventImporter/1.0; +https://conexaobrirlanda.ie)',
-			)
+	protected function get_http_user_agent() {
+		return apply_filters(
+			'conexao_event_importer_http_user_agent',
+			'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36'
+		);
+	}
+
+	/**
+	 * Fetch the HTML of a URL, throwing on transport/HTTP failure.
+	 *
+	 * Network errors and non-200 status codes raise a
+	 * Conexao_Source_Fetch_Exception (after logging) so callers can
+	 * distinguish "source down" from "no events found".
+	 *
+	 * @param string $url  URL to fetch.
+	 * @param array  $args Optional extra wp_remote_get args (headers etc).
+	 * @return string HTML body.
+	 * @throws Conexao_Source_Fetch_Exception On any transport or HTTP failure.
+	 */
+	protected function fetch_html( $url, $args = array() ) {
+		$default_args = array(
+			'timeout'    => 30,
+			'user-agent' => $this->get_http_user_agent(),
 		);
 
+		$response = wp_remote_get( $url, array_merge( $default_args, $args ) );
+
 		if ( is_wp_error( $response ) ) {
-			Conexao_Import_Log::add( $this->get_id(), 'error', 'Falha ao buscar URL: ' . $response->get_error_message(), array( 'url' => $url ) );
-			return '';
+			$message = 'Falha ao buscar URL: ' . $response->get_error_message();
+			Conexao_Import_Log::add(
+				$this->get_id(),
+				'error',
+				$message,
+				array(
+					'url'         => $url,
+					'http_status' => 0,
+					'run_id'      => apply_filters( 'conexao_event_importer_current_run_id', '' ),
+				)
+			);
+			throw new Conexao_Source_Fetch_Exception( $message, 0 );
 		}
 
 		$code = wp_remote_retrieve_response_code( $response );
-		if ( 200 !== $code ) {
-			Conexao_Import_Log::add( $this->get_id(), 'error', 'Resposta HTTP ' . $code . ' ao buscar URL.', array( 'url' => $url ) );
-			return '';
+
+		if ( 200 !== (int) $code ) {
+			$message = 'Resposta HTTP ' . $code . ' ao buscar URL.';
+			Conexao_Import_Log::add(
+				$this->get_id(),
+				'error',
+				$message,
+				array(
+					'url'         => $url,
+					'http_status' => (int) $code,
+					'run_id'      => apply_filters( 'conexao_event_importer_current_run_id', '' ),
+				)
+			);
+			throw new Conexao_Source_Fetch_Exception( $message, (int) $code );
 		}
 
 		return wp_remote_retrieve_body( $response );
+	}
+
+	/**
+	 * Tolerant fetch: returns an empty string instead of throwing.
+	 *
+	 * Use for optional pages (pagination continuation, detail enrichment)
+	 * where a single failed request should not abort the whole source run.
+	 *
+	 * @param string $url  URL to fetch.
+	 * @param array  $args Optional extra wp_remote_get args.
+	 * @return string HTML body or empty string on failure.
+	 */
+	protected function fetch_html_or_empty( $url, $args = array() ) {
+		try {
+			return $this->fetch_html( $url, $args );
+		} catch ( Conexao_Source_Fetch_Exception $e ) {
+			return '';
+		}
 	}
 
 	/**
@@ -99,7 +166,7 @@ abstract class Conexao_Source_Base {
 	/**
 	 * Extract text from a DOMElement.
 	 *
-	 * @param DOMElement $node  Node to extract from.
+	 * @param DOMElement $node     Node to extract from.
 	 * @param string     $selector CSS selector (basic).
 	 * @return string
 	 */

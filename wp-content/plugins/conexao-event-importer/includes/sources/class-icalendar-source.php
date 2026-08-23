@@ -91,33 +91,24 @@ class Conexao_Source_ICalendar extends Conexao_Source_Base {
 	/**
 	 * Fetch the iCalendar feed data.
 	 *
+	 * Delegates to the structured base fetcher, which throws a
+	 * Conexao_Source_Fetch_Exception on transport/HTTP failures so the
+	 * import engine reports a clean fatal error instead of an ambiguous
+	 * "no events" result.
+	 *
 	 * @param string $url Feed URL.
-	 * @return string iCalendar data or empty string on failure.
+	 * @return string iCalendar data.
+	 * @throws Conexao_Source_Fetch_Exception On any transport or HTTP failure.
 	 */
 	protected function fetch_ical( $url ) {
-		$response = wp_remote_get(
+		return $this->fetch_html(
 			$url,
 			array(
-				'timeout'    => 30,
-				'user-agent' => 'Mozilla/5.0 (compatible; ConexaoEventImporter/1.0; +https://conexaobrirlanda.ie)',
-				'headers'    => array(
+				'headers' => array(
 					'Accept' => 'text/calendar, application/calendar+json, */*',
 				),
 			)
 		);
-
-		if ( is_wp_error( $response ) ) {
-			Conexao_Import_Log::add( $this->get_id(), 'error', 'Failed to fetch iCal feed: ' . $response->get_error_message(), array( 'url' => $url ) );
-			return '';
-		}
-
-		$code = wp_remote_retrieve_response_code( $response );
-		if ( 200 !== $code ) {
-			Conexao_Import_Log::add( $this->get_id(), 'error', 'HTTP ' . $code . ' response when fetching iCal feed.', array( 'url' => $url ) );
-			return '';
-		}
-
-		return wp_remote_retrieve_body( $response );
 	}
 
 	/**
@@ -338,6 +329,24 @@ class Conexao_Source_ICalendar extends Conexao_Source_Base {
 		$image_url = $this->get_property_value( $vevent, 'X-IMAGE' );
 		if ( empty( $event['image'] ) && ! empty( $image_url ) && preg_match( '/^https?:\/\//i', $image_url ) ) {
 			$event['image'] = $image_url;
+		}
+
+		// Categories: CATEGORIES is a comma-separated list; the first entry
+		// becomes the primary event category (e.g. "Heritage Week,Member").
+		$categories = $this->get_property_value( $vevent, 'CATEGORIES' );
+		if ( ! empty( $categories ) ) {
+			$parts              = explode( ',', $categories );
+			$event['category']  = trim( $parts[0] );
+		}
+
+		// Per-source taxonomy hints configured on the source (county/category
+		// fields). County-scoped feeds often omit LOCATION entirely; the hint
+		// lets the normalizer tag the county and auto-publish.
+		if ( empty( $event['category'] ) && ! empty( $this->config['category'] ) ) {
+			$event['category'] = $this->config['category'];
+		}
+		if ( ! empty( $this->config['county'] ) ) {
+			$event['county'] = $this->config['county'];
 		}
 
 		return $event;

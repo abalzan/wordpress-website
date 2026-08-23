@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Conexão BR Irlanda — Event Importer
  * Description: Automated Events aggregation from external sources (Laois Tourism, Laois County Council, Local Enterprise Office — Laois, and extensible to more). Imports, normalizes, deduplicates and syncs events into the central WordPress Events database.
- * Version: 1.1.0
+ * Version: 1.2.0
  * Text Domain: conexao-event-importer
  *
  * @package Conexao_Event_Importer
@@ -11,11 +11,15 @@
 defined( 'ABSPATH' ) || exit;
 
 define( 'CONEXAO_EVENT_IMPORTER_FILE', __FILE__ );
-define( 'CONEXAO_EVENT_IMPORTER_VERSION', '1.1.0' );
+define( 'CONEXAO_EVENT_IMPORTER_VERSION', '1.2.0' );
 define( 'CONEXAO_EVENT_IMPORTER_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CONEXAO_EVENT_IMPORTER_URL', plugin_dir_url( __FILE__ ) );
 
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-status.php';
+require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-source-fetch-exception.php';
+require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-import-settings.php';
+require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-source-health.php';
+require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-import-notifier.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-import-log.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-import-log-admin.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-import-history.php';
@@ -44,6 +48,11 @@ require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-transfer-admin.p
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-image-sync-admin.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-cleanup.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-cleanup-admin.php';
+require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-image-sync-scheduler.php';
+require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-import-rest.php';
+
+// WP-CLI commands (self-guarding: only registers when WP_CLI is defined).
+require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-import-cli.php';
 
 final class Conexao_Event_Importer {
 
@@ -80,6 +89,12 @@ final class Conexao_Event_Importer {
 	/** @var Conexao_Import_Log_Admin */
 	public $log_admin;
 
+	/** @var Conexao_Event_Image_Sync_Scheduler */
+	public $image_sync_scheduler;
+
+	/** @var Conexao_Import_Rest */
+	public $rest;
+
 	public static function instance() {
 		if ( null === self::$instance ) {
 			self::$instance = new self();
@@ -101,10 +116,21 @@ final class Conexao_Event_Importer {
 		// Import Logs admin screen + secure download / clear actions.
 		$this->log_admin = new Conexao_Import_Log_Admin();
 
+		// Nightly external-image sweeper (automation).
+		$this->image_sync_scheduler = new Conexao_Event_Image_Sync_Scheduler();
+
+		// Token-protected REST endpoints: /conexao-events/v1/run and /status.
+		$this->rest = new Conexao_Import_Rest( $this->scheduler );
+
 		add_action( 'init', array( $this, 'register_meta' ) );
 		add_action( 'init', array( $this, 'register_town_taxonomy' ) );
 		add_action( 'pre_get_posts', array( $this, 'filter_public_event_queries' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_assets' ) );
+
+		// Settings page under the Event Import menu (late priority so the
+		// parent menu from Conexao_Event_Sources exists first).
+		$settings = new Conexao_Import_Settings();
+		add_action( 'admin_menu', array( $settings, 'register_admin_menu' ), 20 );
 
 		// Admin list columns + status filter for the event post type.
 		add_filter( 'manage_event_posts_columns', array( $this, 'event_admin_columns' ) );
@@ -122,8 +148,98 @@ final class Conexao_Event_Importer {
 		// Ensure the cleanup cron is scheduled (idempotent).
 		add_action( 'admin_init', array( $this->cleanup, 'maybe_schedule' ) );
 
+		// Ensure the nightly image-sync sweeper cron is scheduled (idempotent).
+		add_action( 'admin_init', array( $this->image_sync_scheduler, 'maybe_schedule' ) );
+
+		// Health banner: surface importer problems to admins without digging
+		// through logs (failing/stale sources, stuck runs).
+		add_action( 'admin_notices', array( $this, 'render_health_banner' ) );
+
 		// Allow webcal:// protocol in URLs.
 		add_filter( 'kses_allowed_protocols', array( $this, 'allow_webcal_protocol' ) );
+	}
+
+	/**
+	 * Render a persistent health banner on Event Import screens when problems
+	 * are detected: failing or stale sources, or a run that appears stuck.
+	 *
+	 * Only shown to users who can manage options, only on importer screens,
+	 * so it never nags the rest of wp-admin.
+	 */
+	public function render_health_banner() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+		$hook   = $screen ? (string) $screen->id : '';
+
+		$is_relevant = false !== strpos( $hook, 'conexao-event' )
+			|| false !== strpos( $hook, 'conexao-import' )
+			|| 'edit-event' === $hook;
+
+		if ( ! $is_relevant ) {
+			return;
+		}
+
+		$problems = array();
+
+		// Stuck run detection.
+		if ( $this->scheduler->is_locked() && ! $this->scheduler->is_running() ) {
+			$problems[] = __( 'An import lock is held but no run is active — it may be stuck. Use "wp conexao-events unlock" or Event Import → Settings to recover.', 'conexao-event-importer' );
+		}
+
+		// Failing / stale sources.
+		foreach ( $this->sources->get_all() as $source ) {
+			$health = Conexao_Source_Health::get( $source['id'] );
+			$name   = isset( $source['name'] ) ? $source['name'] : $source['id'];
+
+			if ( ! empty( $health['disabled_at'] ) && 'inactive' === ( isset( $source['status'] ) ? $source['status'] : '' ) ) {
+				$problems[] = sprintf(
+					/* translators: 1: source name, 2: reason */
+					__( '"%1$s" was auto-disabled: %2$s', 'conexao-event-importer' ),
+					$name,
+					$health['disable_reason']
+				);
+			} elseif ( (int) $health['consecutive_failures'] > 0 && 'active' === ( isset( $source['status'] ) ? $source['status'] : '' ) ) {
+				$problems[] = sprintf(
+					/* translators: 1: source name, 2: failure count */
+					__( '"%1$s" has %2$d consecutive failed import(s).', 'conexao-event-importer' ),
+					$name,
+					(int) $health['consecutive_failures']
+				);
+			} elseif ( Conexao_Source_Health::is_stale( $source ) ) {
+				$problems[] = sprintf(
+					/* translators: %s: source name */
+					__( '"%s" has not had a successful import within its expected frequency window.', 'conexao-event-importer' ),
+					$name
+				);
+			}
+		}
+
+		if ( empty( $problems ) ) {
+			return;
+		}
+
+		?>
+		<div class="notice notice-warning">
+			<p><strong><?php esc_html_e( 'Event Importer health:', 'conexao-event-importer' ); ?></strong></p>
+			<ul style="margin-left:18px; list-style:disc;">
+				<?php foreach ( array_slice( $problems, 0, 8 ) as $problem ) : ?>
+					<li><?php echo esc_html( $problem ); ?></li>
+				<?php endforeach; ?>
+			</ul>
+			<p>
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=conexao-import-settings' ) ); ?>">
+					<?php esc_html_e( 'Open Import Settings', 'conexao-event-importer' ); ?>
+				</a>
+				&nbsp;·&nbsp;
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=conexao-import-log' ) ); ?>">
+					<?php esc_html_e( 'View Import Logs', 'conexao-event-importer' ); ?>
+				</a>
+			</p>
+		</div>
+		<?php
 	}
 
 	/**
@@ -244,12 +360,7 @@ final class Conexao_Event_Importer {
 			return;
 		}
 
-		$existing = $query->get( 'meta_query' );
-		if ( ! is_array( $existing ) ) {
-			$existing = array();
-		}
-
-		$existing[] = array(
+		$status_clause = array(
 			'relation' => 'OR',
 			array(
 				'key'     => '_event_status',
@@ -262,7 +373,34 @@ final class Conexao_Event_Importer {
 			),
 		);
 
-		$query->set( 'meta_query', $existing );
+		$existing = $query->get( 'meta_query' );
+		if ( ! is_array( $existing ) || empty( $existing ) ) {
+			$query->set( 'meta_query', array( $status_clause ) );
+			return;
+		}
+
+		// CRITICAL: the query may already carry its own meta_query with a
+		// top-level relation (e.g. the deduplicator's OR clauses). Appending
+		// the status constraint flat would inherit that relation and turn
+		// "(url match) OR (published)" — matching every published event.
+		// Nesting the original clauses as a group guarantees the status
+		// constraint is ANDed with them.
+		$inner          = $existing;
+		$inner_relation = 'AND';
+		if ( isset( $inner['relation'] ) ) {
+			$inner_relation = strtoupper( (string) $inner['relation'] );
+			unset( $inner['relation'] );
+		}
+		$inner = array_values( $inner );
+
+		$query->set(
+			'meta_query',
+			array(
+				'relation' => 'AND',
+				array_merge( array( 'relation' => $inner_relation ), $inner ),
+				$status_clause,
+			)
+		);
 	}
 
 	/**
@@ -492,6 +630,10 @@ final class Conexao_Event_Importer {
 		$cleanup = new Conexao_Event_Cleanup();
 		$cleanup->schedule();
 
+		require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-image-sync-scheduler.php';
+		$image_sync_scheduler = new Conexao_Event_Image_Sync_Scheduler();
+		$image_sync_scheduler->maybe_schedule();
+
 		flush_rewrite_rules();
 	}
 
@@ -501,6 +643,9 @@ final class Conexao_Event_Importer {
 
 		require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-cleanup.php';
 		Conexao_Event_Cleanup::clear_schedule();
+
+		require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-image-sync-scheduler.php';
+		Conexao_Event_Image_Sync_Scheduler::clear_schedule();
 
 		flush_rewrite_rules();
 	}

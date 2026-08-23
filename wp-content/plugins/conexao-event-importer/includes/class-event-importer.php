@@ -74,9 +74,15 @@ class Conexao_Event_Importer_Engine {
 	 * Returns a combined result array with per-source stats, event outcomes,
 	 * and any fatal errors. Individual source failures do not stop other sources.
 	 *
+	 * @param array $args Optional arguments:
+	 *   - dry_run   (bool)  Fetch/normalize/classify without writing anything.
+	 *   - source_ids (array) Restrict the run to these source slugs.
 	 * @return array Combined result array.
 	 */
-	public function run_all() {
+	public function run_all( $args = array() ) {
+		$args    = wp_parse_args( is_array( $args ) ? $args : array(), array( 'dry_run' => false, 'source_ids' => array() ) );
+		$dry_run = ! empty( $args['dry_run'] );
+
 		// Start a fresh run ID for the combined run.
 		$this->current_run_id = 'all-' . (string) microtime( true );
 
@@ -95,9 +101,21 @@ class Conexao_Event_Importer_Engine {
 			'event_results' => array(),
 			'status'        => 'success',
 			'sources'       => array(),
+			'dry_run'       => $dry_run,
 		);
 
 		$active_sources = $this->sources->get_active();
+
+		// Optionally restrict to a subset of sources.
+		if ( ! empty( $args['source_ids'] ) && is_array( $args['source_ids'] ) ) {
+			$allowed        = array_map( 'strval', $args['source_ids'] );
+			$active_sources = array_filter(
+				$active_sources,
+				function ( $source ) use ( $allowed ) {
+					return isset( $source['id'] ) && in_array( $source['id'], $allowed, true );
+				}
+			);
+		}
 
 		// Guard against no active sources.
 		if ( empty( $active_sources ) ) {
@@ -110,7 +128,7 @@ class Conexao_Event_Importer_Engine {
 		}
 
 		foreach ( $active_sources as $source ) {
-			$result = $this->run_source( $source['id'] );
+			$result = $this->run_source( $source['id'], $dry_run );
 
 			// Aggregate counters.
 			$combined['found']        += isset( $result['found'] ) ? (int) $result['found'] : 0;
@@ -187,9 +205,11 @@ class Conexao_Event_Importer_Engine {
 	 * stop the source and report a fatal error.
 	 *
 	 * @param string $source_id Source slug.
+	 * @param bool   $dry_run   When true, fetch/normalize/classify without
+	 *                          writing anything to the database.
 	 * @return array Stats for this source.
 	 */
-	public function run_source( $source_id ) {
+	public function run_source( $source_id, $dry_run = false ) {
 		// Start a fresh run ID for log correlation.
 		$this->current_run_id = (string) microtime( true );
 
@@ -258,11 +278,29 @@ class Conexao_Event_Importer_Engine {
 			return $result->get_stats();
 		}
 
-		// Capture the current log length so we can detect errors logged during fetch.
-		$log_before_fetch = Conexao_Import_Log::get_all();
-
 		try {
 			$raw_events = $handler->fetch_events();
+		} catch ( Conexao_Source_Fetch_Exception $e ) {
+			// Structured transport/HTTP failure — a clean fatal error, not an
+			// ambiguous "no events" result.
+			$message = sprintf(
+				/* translators: %s: source name */
+				__( 'Failed to fetch events from %1$s. HTTP status: %2$d.', 'conexao-event-importer' ),
+				$source['name'],
+				$e->get_http_status()
+			);
+			Conexao_Import_Log::add( $source_id, 'error', $message, array(
+				'run_id'      => $this->current_run_id,
+				'http_status' => $e->get_http_status(),
+			) );
+			$result->add_fatal_error( $message, $e->getMessage() );
+			$this->update_source_stats_after_run( $source_id, $result );
+			Conexao_Import_History::record( $source_id, $result->get_stats(), $result->get_status(), $message, array(
+				'run_id'        => $this->current_run_id,
+				'fatal_errors'  => $result->get_fatal_errors(),
+				'failed_events' => $result->get_failed_events(),
+			) );
+			return $result->get_stats();
 		} catch ( Exception $e ) {
 			$message = sprintf(
 				/* translators: %s: source name */
@@ -299,44 +337,11 @@ class Conexao_Event_Importer_Engine {
 			return $result->get_stats();
 		}
 
-		// If the source returned zero events, check whether new errors were logged
-		// during the fetch. If so, it's a fatal problem, not a genuine "no events".
-		if ( empty( $raw_events ) ) {
-			$error_logged = false;
-			foreach ( Conexao_Import_Log::get_all() as $entry ) {
-				if ( 'error' === $entry['level'] && isset( $entry['source'] ) && $entry['source'] === $source_id ) {
-					$is_new = true;
-					foreach ( $log_before_fetch as $before ) {
-						if ( $before === $entry ) {
-							$is_new = false;
-							break;
-						}
-					}
-					if ( $is_new ) {
-						$error_logged = true;
-						break;
-					}
-				}
-			}
-
-			if ( $error_logged ) {
-				$message = sprintf(
-					/* translators: %s: source name */
-					__( 'The %s source could not be fetched. See the import log for details.', 'conexao-event-importer' ),
-					$source['name']
-				);
-				$result->add_fatal_error( $message );
-				$this->update_source_stats_after_run( $source_id, $result );
-				Conexao_Import_History::record( $source_id, $result->get_stats(), $result->get_status(), $message, array(
-					'run_id'        => $this->current_run_id,
-					'fatal_errors'  => $result->get_fatal_errors(),
-					'failed_events' => $result->get_failed_events(),
-				) );
-				return $result->get_stats();
-			}
-		}
-
 		$result->set_found( count( $raw_events ) );
+
+		if ( $dry_run ) {
+			return $this->dry_run_source( $source_id, $source, $raw_events );
+		}
 
 		foreach ( $raw_events as $raw ) {
 			$raw['source'] = $source_id;
@@ -511,7 +516,77 @@ class Conexao_Event_Importer_Engine {
 	}
 
 	/**
+	 * Classify a fetched batch of raw events without writing anything.
+	 *
+	 * Used by --dry-run: fetches and normalizes exactly like a real run,
+	 * then reports what WOULD happen (create / update / needs review) based
+	 * on the deduplicator — no posts, meta or images are touched.
+	 *
+	 * @param string $source_id  Source slug.
+	 * @param array  $source     Source config.
+	 * @param array  $raw_events Raw events from the handler.
+	 * @return array Stats for this source.
+	 */
+	protected function dry_run_source( $source_id, $source, $raw_events ) {
+		$result = new Conexao_Import_Result( $source_id, $source['name'] );
+		$result->set_found( count( $raw_events ) );
+
+		foreach ( $raw_events as $raw ) {
+			$raw['source'] = $source_id;
+
+			try {
+				$normalized = $this->normalizer->normalize( $raw );
+
+				if ( $normalized['needs_review'] ) {
+					$result->add_needs_review( $normalized['title'], $normalized['review_notes'], 0 );
+					continue;
+				}
+
+				$existing_id = $this->deduplicator->find( $normalized );
+
+				if ( $existing_id ) {
+					// Cannot know "unchanged" without reading all stored fields;
+					// report as would-update for transparency.
+					$result->add_updated( $normalized['title'] . ' (would update)', $existing_id );
+				} else {
+					$result->add_created( $normalized['title'] . ' (would create)', 0 );
+				}
+			} catch ( Exception $e ) {
+				$result->add_failed(
+					isset( $raw['title'] ) ? (string) $raw['title'] : '',
+					__( 'An unexpected error interrupted this event.', 'conexao-event-importer' ),
+					$e->getMessage()
+				);
+			}
+		}
+
+		$stats                 = $result->get_stats();
+		$stats['dry_run']      = true;
+		$stats['source_name']  = isset( $source['name'] ) ? $source['name'] : $source_id;
+
+		Conexao_Import_Log::add(
+			$source_id,
+			'info',
+			sprintf(
+				/* translators: 1: source name, 2: found count, 3: would-create count, 4: would-update count, 5: review count */
+				__( 'Dry-run of %1$s completed: %2$d found, %3$d would be created, %4$d would be updated, %5$d need review. Nothing was written.', 'conexao-event-importer' ),
+				isset( $source['name'] ) ? $source['name'] : $source_id,
+				count( $raw_events ),
+				(int) $stats['created'],
+				(int) $stats['updated'],
+				(int) $stats['needs_review']
+			),
+			array( 'run_id' => $this->current_run_id )
+		);
+
+		return $stats;
+	}
+
+	/**
 	 * Update the source's last-import metadata after a run.
+	 *
+	 * Also feeds the per-source health tracker (consecutive failures,
+	 * auto-disable) used by the automation layer.
 	 *
 	 * @param string                $source_id Source slug.
 	 * @param Conexao_Import_Result $result    Import result.
@@ -554,6 +629,30 @@ class Conexao_Event_Importer_Engine {
 		}
 
 		$this->sources->update_import_stats( $source_id, $stats );
+
+		// Feed the health tracker: partial/warning runs still count as
+		// successes for consecutive-failure purposes (the source is reachable).
+		if ( class_exists( 'Conexao_Source_Health' ) ) {
+			if ( 'failed' === $status ) {
+				$reason = ! empty( $stats['last_error'] ) ? $stats['last_error'] : __( 'Unknown import failure.', 'conexao-event-importer' );
+				$disabled = Conexao_Source_Health::record_failure( $source_id, $reason );
+
+				if ( $disabled && class_exists( 'Conexao_Import_Notifier' ) ) {
+					$sources_manager = new Conexao_Event_Sources();
+					$source          = $sources_manager->get( $source_id );
+					$notifier        = new Conexao_Import_Notifier();
+					$health          = Conexao_Source_Health::get( $source_id );
+					$notifier->notify_auto_disabled(
+						$source_id,
+						isset( $source['name'] ) ? $source['name'] : $source_id,
+						(int) $health['consecutive_failures'],
+						$reason
+					);
+				}
+			} else {
+				Conexao_Source_Health::record_success( $source_id );
+			}
+		}
 	}
 
 	/**
@@ -623,6 +722,17 @@ class Conexao_Event_Importer_Engine {
 		}
 
 		return implode( ', ', $parts );
+	}
+
+	/**
+	 * Public wrapper around extract_failed_events() for other components
+	 * (scheduler finalize, CLI) that need the same bounded extraction.
+	 *
+	 * @param array $event_results Event result list.
+	 * @return array
+	 */
+	public static function extract_failed_events_public( $event_results ) {
+		return self::extract_failed_events( $event_results );
 	}
 
 	/**
