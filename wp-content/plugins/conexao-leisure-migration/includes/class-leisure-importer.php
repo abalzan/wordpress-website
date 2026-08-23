@@ -56,7 +56,7 @@ class Conexao_Lazer_Importer {
 		'conexao_tag',
 	);
 
-	const MAX_PACKAGE_SIZE = 100 * MB_IN_BYTES;
+	const MAX_PACKAGE_SIZE = 300 * MB_IN_BYTES;
 	const MAX_IMAGE_SIZE   = 25 * MB_IN_BYTES;
 
 	/**

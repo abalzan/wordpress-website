@@ -13,7 +13,7 @@ Modern community portal theme for Conexão BR Irlanda. Features a green/orange p
 
 | File | Route | Description |
 |------|-------|-------------|
-| `front-page.php` | `/` | Homepage with hero, quick access cards, sections |
+| `front-page.php` | `/` | Homepage with full-bleed hero image, quick access cards, sections |
 | `archive.php` | CPT archives | Shared archive for all 6 CPTs |
 | `single-leisure.php` | `/lazer/{slug}/` | Dedicated leisure/tourism detail template |
 | `single.php` | `/{cpt}/{slug}/` | Single post for all other CPTs |
@@ -36,7 +36,7 @@ Modern community portal theme for Conexão BR Irlanda. Features a green/orange p
 | `event-card.php` | Events archive grid |
 | `event-filters.php` | Events archive filter bar |
 | `event-preview.php` | Homepage events section |
-| `hero-events.php` | Homepage hero (fallback events) |
+| `hero-events.php` | Retained; no longer rendered (hero uses committed full-bleed asset) |
 | `leisure-card.php` | Lazer archive grid |
 | `leisure-filters.php` | Lazer archive filter bar (desktop + mobile) |
 | `provider-card.php` | Course providers archive/grid |
@@ -45,6 +45,18 @@ Modern community portal theme for Conexão BR Irlanda. Features a green/orange p
 | `quote-section.php` | Quote/testimonial section |
 | `pagination.php` | Archive pagination |
 | `content-none.php` | Empty state / no results |
+
+## Homepage Hero
+
+The front-page hero is a single full-bleed cinematic image with overlaid text (the old green panel + separate right-hand image card / `.hero-layout` grid has been removed):
+
+- **Asset**: `assets/images/conexaobr_Hero_image.png` (2057×764), output in `front-page.php` via `get_template_directory_uri()` as `<img class="hero-background-img">` inside `.hero-background`. Resolves identically in local and production (no Media Library / localhost URL).
+- **Styles** (`main.css`): `.hero-section` uses `aspect-ratio: 2057 / 764` on desktop (full composition uncropped) with a green gradient fallback; `.hero-background-img` uses `object-fit: cover` / `object-position: center`. The hero content presentation mirrors the previous layout: `min-height: 500px`, the copy is vertically centered via a flex `.site-container` (`align-items: center`), `max-width: 640px` and `padding: 60px 0`. A subtle soft green gradient (`.hero-content::before`) tints only the left text-safe zone for legibility without obscuring the castle/family/flags.
+- **Responsive**: mobile overrides `aspect-ratio: auto; min-height: 250px` and neutralizes the desktop vertical centering so the compact hero drives its own height; compact mobile typography is retained.
+- **Accessibility**: the `<img>` is decorative (`alt=""`, `aria-hidden`); the `<section>` has an `aria-label`.
+- **Performance**: `loading="eager"` + `fetchpriority="high"` (LCP).
+
+The hero background is **not** a Customizer setting — the `conexao_hero_image` Media control was removed (the green text-safe zone and castle/family/flags are part of the fixed asset). Only `conexao_hero_title` / `conexao_hero_subtitle` remain customisable.
 
 ## CSS Architecture
 
@@ -91,7 +103,7 @@ Key functionality includes:
 | `conexao_normalize_primary_nav_sections()` | Nav binding + active state (priority 25) |
 | `conexao_fix_nav_active_states()` | Active state conflict resolution |
 | `conexao_popular_posts()` | "Mais Lidos" query (view-count ready) |
-| `conexao_customize_register()` | Customizer sections (colors, social, hero, footer) |
+| `conexao_customize_register()` | Customizer sections (colors, social, hero [title/subtitle only], footer) |
 
 ### Image Sizes
 

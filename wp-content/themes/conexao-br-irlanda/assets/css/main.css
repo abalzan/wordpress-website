@@ -156,39 +156,78 @@ ul, ol {
 /* ===== Header ===== */
 /* Header, navigation, mobile menu, and search styling are in header-nav.css */
 
-/* ===== Hero Section ===== */
+/* ===== Hero Section =====
+   The hero background is the committed project asset
+   (assets/images/conexaobr_Hero_image.png for desktop, with the dedicated
+   mobile composition conexaobr_Hero_image_mobile.png), rendered as a
+   full-bleed <picture> (see front-page.php). On desktop the section's
+   aspect-ratio is the standard 3.71:1 cinematic crop: the green text-safe
+   zone on the left stays strong (the desktop asset already carries it), with
+   the castle, family and flags visible on the right. The gradient below is
+   only a loading/failure fallback. */
 .hero-section {
-  background: linear-gradient(135deg, var(--conexao-primary-dark) 0%, var(--conexao-primary) 100%);
   color: var(--conexao-white);
   padding: 0;
   position: relative;
   overflow: hidden;
-  min-height: 500px;
+  background: linear-gradient(135deg, var(--conexao-primary-dark) 0%, var(--conexao-primary) 100%);
+  aspect-ratio: 3.71 / 1;
 }
 
-.hero-section::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  right: -20%;
-  width: 600px;
-  height: 600px;
-  background: radial-gradient(circle, rgba(246, 139, 31, 0.15) 0%, transparent 70%);
-  border-radius: 50%;
-}
-
-.hero-layout {
-  display: grid;
-  grid-template-columns: 1fr 600px;
-  gap: 32px;
+/* Vertically center the hero copy within the 3.71:1 desktop hero. The image
+   fills the whole section via object-fit:cover, so the hero reads as one
+   cinematic banner with the text over the image's green text-safe zone. */
+.hero-section .site-container {
+  display: flex;
   align-items: center;
-  padding: 60px 0;
-  position: relative;
-  z-index: 1;
+  height: 100%;
+}
+
+/* Full-bleed hero background. Absolutely positioned so it fills the section;
+   the <picture> wrapper is made block + full-size so the img inside can
+   resolve its percentage height, and object-fit:cover + the matching
+   order-ratio keep the image from distorting. */
+.hero-background {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.hero-background picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-background-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
 }
 
 .hero-content {
+  position: relative;
+  z-index: 1;
   max-width: 640px;
+  padding: 60px 0;
+}
+
+/* Subtle soft gradient on the left text-safe zone only, so white copy stays
+   legible over the image on every breakpoint without hiding the green or
+   obscuring the castle/family/flags. Stops transparent by ~60% so the right
+   side of the image is left untouched. */
+.hero-content::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, rgba(7, 59, 47, 0.15) 0%, rgba(7, 59, 47, 0.05) 45%, transparent 60%);
+  pointer-events: none;
+  z-index: -1;
 }
 
 .hero-badge {
@@ -246,41 +285,10 @@ ul, ol {
   gap: 12px;
 }
 
-/* Hero Image */
-.hero-image {
-  position: relative;
-  border-radius: var(--conexao-radius-xl);
-  overflow: hidden;
-  box-shadow: var(--conexao-shadow-xl);
-}
-
-/*
- * The hero img carries explicit width/height attributes from the Media
- * Library (wp_get_attachment_image). height:auto + those attributes preserve
- * the image's true aspect ratio and reserve space, preventing CLS. The
- * aspect-ratio + object-fit here act as a safety net so an extreme-ratio
- * upload never distorts the design; the approved visual ratio is preserved
- * at every breakpoint (320–1440px).
- */
-.hero-image-img {
-  width: 100%;
-  height: auto;
-  aspect-ratio: 2 / 1;
-  object-fit: cover;
-  border-radius: var(--conexao-radius-xl);
-}
-
-.hero-image-placeholder {
-  border-radius: var(--conexao-radius-xl);
-  overflow: hidden;
-  line-height: 0;
-}
-
-.hero-image-placeholder svg {
-  width: 100%;
-  height: auto;
-  display: block;
-}
+/* The hero is now a full-bleed background (.hero-background-img) rather than a
+   separate image card. The old .hero-image / .hero-image-img /
+   .hero-image-placeholder rules are intentionally removed with the markup
+   they targeted, so the hero reads as one cohesive cinematic image. */
 
 /* Hero Events Widget - large panel filling the hero area */
 .hero-events-widget {
@@ -3110,14 +3118,9 @@ input[type="button"] {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .hero-layout {
-    grid-template-columns: 1fr;
-    gap: 32px;
-  }
-
-  .hero-image {
+  .hero-content {
     max-width: 560px;
-    margin: 0 auto;
+    padding: 44px 0;
   }
 
   .hero-events-widget {
@@ -3183,19 +3186,33 @@ input[type="button"] {
     overflow-wrap: anywhere;
   }
 
-  /* Hero section mobile - headline first, image underneath */
+  /* Hero section mobile - uses the dedicated 2.69:1 mobile composition
+     (conexaobr_Hero_image_mobile.png) via the <picture> element. The
+     aspect-ratio keeps the section height proportional to the viewport width
+     on every screen; object-fit:cover on .hero-background-img fills the
+     container without distortion. The green text-safe zone, family, castle
+     and flags remain visible in the mobile crop. */
   .hero-section {
-    min-height: auto;
+    aspect-ratio: 2.69 / 1;
   }
 
-  .hero-layout {
-    grid-template-columns: 1fr;
-    padding: 24px 0 16px;
-    gap: 16px;
+  /* Mobile: neutralize the desktop vertical centering so the compact hero
+     drives its own height (image-first, no full 500px column). */
+  .hero-section .site-container {
+    min-height: auto;
+    height: 100%;
   }
 
   .hero-content {
     order: 1;
+    max-width: 100%;
+    padding: 32px 0 20px;
+  }
+
+  /* Slightly stronger left gradient on mobile so white copy stays legible
+     over the cropped (possibly photo) area, without hiding the image. */
+  .hero-content::before {
+    background: linear-gradient(to right, rgba(7, 59, 47, 0.4) 0%, rgba(7, 59, 47, 0.18) 35%, transparent 70%);
   }
 
   .hero-badge {
@@ -3208,15 +3225,6 @@ input[type="button"] {
 
   .hero-subtitle {
     margin-bottom: 20px;
-  }
-
-  /* On mobile the hero is content-focused: the large decorative hero photo /
-     placeholder is hidden so it does not push the useful Quick Access and
-     events content below the fold. The dedicated "Próximos Eventos" section
-     below already surfaces upcoming events, so the fallback hero-events
-     widget is also removed on small screens. */
-  .hero-image {
-    display: none;
   }
 
   .hero-events-widget {
@@ -4673,9 +4681,10 @@ input[type="button"] {
 
   /* --- Compact Hero ---
      Prioritises Badge → Heading → Description → CTA with minimal gaps.
-     The decorative image is already hidden on mobile. */
-  .hero-layout {
-    padding: 8px 0 4px;
+     The cinematic image stays visible on mobile (cropped); white copy is
+     kept legible via the .hero-content::before gradient. */
+  .hero-content {
+    padding: 24px 0 12px;
     gap: 8px;
   }
 

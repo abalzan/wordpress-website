@@ -84,3 +84,14 @@ All in `template-parts/`:
 - Inline `<script>` in `<head>` prevents FOUC by reading localStorage before paint
 - All CSS variables get dark overrides in `dark-mode.css`
 - The `main.js` syncs `aria-pressed` on the toggle button
+
+## Homepage Hero
+
+The front-page hero is a full‑bleed cinematic image with overlaid text (the old green panel + separate right‑hand image card / `.hero-layout` grid has been removed):
+
+- **Asset**: `assets/images/conexaobr_Hero_image.png` (2057×764), output in `front-page.php` via `get_template_directory_uri()` as `<img class="hero-background-img">` inside `.hero-background`. Resolves identically in local and production.
+- **Image behavior**: `aspect-ratio: 2057 / 764` on desktop (uncropped); `.hero-background-img` uses `object-fit: cover` / `object-position: center`. Hero content keeps the previous presentation: `min-height: 500px`, vertically centered via a flex `.site-container`, `max-width: 640px`. Mobile: `aspect-ratio: auto; min-height: 250px` with the vertical centering neutralized.
+- **Text safety**: a subtle left‑side green gradient (`.hero-content::before`, transparent after ~60–70%) darkens only the text‑safe zone; the castle/family/flags on the right stay unobscured.
+- **Accessibility**: decorative `<img>` (`alt=""`, `aria-hidden`); `<section aria-label>`.
+- **Performance**: `loading="eager"` + `fetchpriority="high"` (LCP).
+- **Not in Customizer**: the `conexao_hero_image` Media control was removed; only `conexao_hero_title`/`conexao_hero_subtitle` are customisable.

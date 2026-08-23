@@ -10,85 +10,64 @@ get_header();
 // Get dynamic content or use defaults
 $hero_title    = get_theme_mod( 'conexao_hero_title', __( 'Tudo que o brasileiro precisa para viver melhor na <span>Irlanda</span>', 'conexao-br-irlanda' ) );
 $hero_subtitle = get_theme_mod( 'conexao_hero_subtitle', __( 'Conectando a comunidade brasileira com informações, eventos, guias práticos e muito mais.', 'conexao-br-irlanda' ) );
-$hero_image_id = conexao_hero_image_attachment_id();
-
-// Prefer the Media Library alternative text when the admin has set one,
-// and fall back to the site name so the hero photo always carries a
-// meaningful, accessible description.
-$hero_image_alt = $hero_image_id ? get_post_meta( $hero_image_id, '_wp_attachment_image_alt', true ) : '';
-if ( '' === $hero_image_alt ) {
-	$hero_image_alt = get_bloginfo( 'name' );
-}
+// The hero background is a responsive <picture> element (see below) that
+// selects the correct asset based on viewport:
+//   Desktop (≥769px): conexaobr_Hero_image.png  (3.71:1 composition)
+//   Mobile (≤768px):  conexaobr_Hero_image_mobile.png  (2.69:1 composition)
+// Both assets are committed project files loaded via
+// get_template_directory_uri() so they resolve identically in local and
+// production (no Media Library / localhost URL). The image itself carries
+// the green text-safe zone on the left, so no extra solid overlay panel
+// is added. See the <picture> inside the hero below.
 ?>
 
 <main id="primary" class="site-main">
 
 <!-- Hero Section -->
-<section class="hero-section">
+<section class="hero-section" aria-label="<?php esc_attr_e( 'Destaque da Comunidade', 'conexao-br-irlanda' ); ?>">
+
+	<!-- Full-bleed cinematic hero image (project asset). The img is decorative:
+	     the overlaid copy carries the page message, so alt="" + aria-hidden. -->
+	<div class="hero-background" aria-hidden="true">
+		<picture>
+			<!-- Mobile: responsive 2.69:1 composition. The browser selects the
+			     matching asset automatically -- no JavaScript involved. -->
+			<source
+				media="(max-width: 768px)"
+				srcset="<?php echo esc_url( get_template_directory_uri() . '/assets/images/conexaobr_Hero_image_mobile.png' ); ?>">
+			<!-- Desktop: 3.71:1 composition (conexaobr_Hero_image.png). The
+			     width/height attributes reserve the 3.71:1 slot before load to
+			     prevent layout shift; object-fit:cover handles the crop. -->
+			<img class="hero-background-img"
+				src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/conexaobr_Hero_image.png' ); ?>"
+				width="3710"
+				height="1000"
+				alt=""
+				loading="eager"
+				fetchpriority="high"
+				aria-hidden="true">
+		</picture>
+	</div>
+
 	<div class="site-container">
-		<div class="hero-layout">
-			<div class="hero-content">
-				<div class="hero-badge">
-					<span class="hero-badge-dot"></span>
-					<?php esc_html_e( 'Portal da Comunidade Brasileira', 'conexao-br-irlanda' ); ?>
-				</div>
-				<h1 class="hero-title"><?php echo wp_kses_post( $hero_title ); ?></h1>
-				<p class="hero-subtitle"><?php echo esc_html( $hero_subtitle ); ?></p>
-				<div class="hero-ctas">
-					<a href="<?php echo esc_url( conexao_get_guides_archive_url() ); ?>" class="btn btn-primary">
-						<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
-							<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
-							<path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
-						</svg>
-						<?php esc_html_e( 'Explorar Guias', 'conexao-br-irlanda' ); ?>
-					</a>
-					<a href="<?php echo esc_url( home_url( '/eventos/' ) ); ?>" class="btn btn-outline">
-						<?php esc_html_e( 'Ver Eventos', 'conexao-br-irlanda' ); ?>
-					</a>
-				</div>
+		<div class="hero-content">
+			<div class="hero-badge">
+				<span class="hero-badge-dot"></span>
+				<?php esc_html_e( 'Portal da Comunidade Brasileira', 'conexao-br-irlanda' ); ?>
 			</div>
-
-			<!-- Hero Image -->
-			<div class="hero-image">
-				<?php if ( $hero_image_id ) : ?>
-					<?php
-					// The hero is the primary LCP element on the front page, so it is
-					// loaded eagerly with high priority and never lazy-loaded. Using
-					// wp_get_attachment_image() generates srcset, sizes, width, height
-					// and a descriptive alt attribute from the Media Library.
-					echo wp_get_attachment_image(
-						$hero_image_id,
-						'conexao-hero',
-						false,
-						array(
-							'class'         => 'hero-image-img',
-							'loading'       => 'eager',
-							'fetchpriority' => 'high',
-							'alt'           => $hero_image_alt,
-						)
-					);
-					?>
-				<?php else : ?>
-					<div class="hero-image-placeholder">
-						<svg viewBox="0 0 640 480" width="640" height="480" role="img" aria-label="<?php esc_attr_e( 'Comunidade brasileira na Irlanda', 'conexao-br-irlanda' ); ?>">
-							<defs>
-								<linearGradient id="heroGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-									<stop offset="0%" style="stop-color:#073B2F"/>
-									<stop offset="100%" style="stop-color:#0E6B3A"/>
-								</linearGradient>
-							</defs>
-							<rect width="640" height="480" fill="url(#heroGrad)"/>
-							<circle cx="320" cy="240" r="120" fill="none" stroke="#F68B1F" stroke-width="4" opacity="0.8"/>
-							<circle cx="320" cy="240" r="80" fill="none" stroke="#ffffff" stroke-width="3" opacity="0.6"/>
-							<text x="320" y="255" text-anchor="middle" fill="#fff" font-size="48" font-weight="bold" font-family="Poppins, sans-serif">CB</text>
-							<text x="320" y="420" text-anchor="middle" fill="#fff" font-size="20" font-family="Inter, sans-serif" opacity="0.9">Conexão BR Irlanda</text>
-						</svg>
-					</div>
-				<?php endif; ?>
-
-				<?php if ( ! $hero_image_id ) : ?>
-					<?php get_template_part( 'template-parts/hero', 'events' ); ?>
-				<?php endif; ?>
+			<h1 class="hero-title"><?php echo wp_kses_post( $hero_title ); ?></h1>
+			<p class="hero-subtitle"><?php echo esc_html( $hero_subtitle ); ?></p>
+			<div class="hero-ctas">
+				<a href="<?php echo esc_url( conexao_get_guides_archive_url() ); ?>" class="btn btn-primary">
+					<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+						<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+						<path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+					</svg>
+					<?php esc_html_e( 'Explorar Guias', 'conexao-br-irlanda' ); ?>
+				</a>
+				<a href="<?php echo esc_url( home_url( '/eventos/' ) ); ?>" class="btn btn-outline">
+					<?php esc_html_e( 'Ver Eventos', 'conexao-br-irlanda' ); ?>
+				</a>
 			</div>
 		</div>
 	</div>

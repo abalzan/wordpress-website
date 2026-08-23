@@ -896,20 +896,11 @@ function conexao_customize_register( $wp_customize ) {
 	$wp_customize->add_control( 'conexao_hero_subtitle', array(
 		'label' => __( 'Subtítulo do Hero', 'conexao-br-irlanda' ), 'section' => 'conexao_hero', 'type' => 'textarea',
 	) );
-	// Store the hero image as a Media Library attachment ID so the theme can
-	// use wp_get_attachment_image() (responsive srcset/sizes/width/height/alt).
-	// Backward compatible: if an old URL value is present, it is converted to
-	// an attachment ID on first read (see conexao_hero_image_attachment_id()).
-	$wp_customize->add_setting( 'conexao_hero_image', array(
-		'default'           => '',
-		'sanitize_callback' => 'absint',
-	) );
-	$wp_customize->add_control( new WP_Customize_Media_Control( $wp_customize, 'conexao_hero_image', array(
-		'label'           => __( 'Imagem do Hero', 'conexao-br-irlanda' ),
-		'section'         => 'conexao_hero',
-		'mime_type'       => 'image',
-		'description'     => __( 'Selecione uma imagem da biblioteca para o lado direito do hero. A imagem fica responsiva automaticamente.', 'conexao-br-irlanda' ),
-	) ) );
+	// The front-page hero background is the committed theme asset
+	// assets/images/conexaobr_Hero_image.png (loaded via
+	// get_template_directory_uri() in front-page.php), so there is no
+	// Customizer hero-image setting. The green text-safe zone and the
+	// castle/family/flags composition are part of that fixed asset.
 
 	// Footer Section
 	$wp_customize->add_section( 'conexao_footer', array( 'title' => __( 'Rodapé', 'conexao-br-irlanda' ), 'priority' => 50 ) );
@@ -1276,38 +1267,6 @@ function conexao_custom_image_sizes( $sizes ) {
 	) );
 }
 add_filter( 'image_size_names_choose', 'conexao_custom_image_sizes' );
-
-/**
- * Resolve the hero image attachment ID.
- *
- * The hero is defined in the Customizer as a Media Library attachment. Older
- * versions stored a raw URL; this helper converts that legacy value to an
- * attachment ID on first read so wp_get_attachment_image() can be used to
- * output a fully responsive image (srcset, sizes, width, height, alt).
- *
- * @return int Hero attachment ID, or 0 when none is set.
- */
-function conexao_hero_image_attachment_id() {
-	$value = get_theme_mod( 'conexao_hero_image', '' );
-
-	if ( empty( $value ) ) {
-		return 0;
-	}
-
-	// Already an attachment ID.
-	if ( is_numeric( $value ) ) {
-		return absint( $value );
-	}
-
-	// Legacy URL value → convert to an attachment ID and persist it.
-	$attachment_id = attachment_url_to_postid( $value );
-	if ( $attachment_id ) {
-		set_theme_mod( 'conexao_hero_image', $attachment_id );
-		return $attachment_id;
-	}
-
-	return 0;
-}
 
 
 /**
