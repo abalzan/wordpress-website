@@ -479,21 +479,33 @@
 	// Lightweight, dependency-free enhancement over a native scroll-snap
 	// track. Which supporters appear — and in what order — is decided entirely
 	// in PHP from the existing sponsor fields ("Apoiador em destaque" and
-	// "Ordem de exibição"); this script only adds navigation:
+	// "Ordem de exibição"); this script only adds navigation and autoplay:
 	//   - prev/next buttons that step one card at a time,
+	//   - pagination dots (Hero variant) that jump straight to a slide,
 	//   - keyboard support on the scrollable track (arrows, Home, End),
 	//   - wrap-around at both ends so controls never dead-end,
-	//   - a polite live region announcing the current position.
-	// No autoplay: navigation is always user-controlled. When every card fits
-	// the viewport (few supporters or wide screens) the carousel adds
-	// .is-static, hides its arrows and centers the row instead — a simple
-	// responsive layout rather than a pointless carousel. Mobile relies on
-	// natural touch swipe; arrows are hidden there by CSS.
+	//   - a polite live region announcing the current position,
+	//   - 10-second autoplay on the Hero variant ONLY: a single setTimeout
+	//     chain per carousel (never setInterval), paused while the user
+	//     hovers/focuses/presses the component or the tab is hidden,
+	//     restarted with a full fresh interval after any manual navigation
+	//     or swipe, and disabled entirely under prefers-reduced-motion.
+	// When every card fits the viewport (few supporters or wide screens) the
+	// carousel adds .is-static, hides its arrows and centers the row instead —
+	// a simple responsive layout rather than a pointless carousel. Mobile
+	// relies on natural touch swipe plus the labelled arrow row kept by the
+	// hero variant.
+	var SPONSORS_AUTOPLAY_INTERVAL = 10000;
+
+	// Checked live (not cached once at load) so changing the OS setting
+	// mid-session is respected at the next scheduling decision.
+	function prefersReducedMotion() {
+		return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+	}
+
 	function initSponsorsCarousel() {
 		var carousels = document.querySelectorAll('[data-sponsors-carousel]');
 		if (!carousels.length) return;
-
-		var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 		Array.prototype.forEach.call(carousels, function(carousel) {
 			var viewport = carousel.querySelector('.sponsors-carousel-viewport');
@@ -501,8 +513,23 @@
 			var nextBtn  = carousel.querySelector('[data-sponsors-next]');
 			var status   = carousel.querySelector('[data-sponsors-status]');
 			var slides   = viewport ? Array.prototype.slice.call(viewport.querySelectorAll('.sponsors-slide')) : [];
+			var dots     = Array.prototype.slice.call(carousel.querySelectorAll('[data-sponsors-dot]'));
 
 			if (!viewport || slides.length === 0) return;
+
+			// --- Autoplay state ---------------------------------------------
+			// Exactly ONE pending timeout per carousel: the timer id doubles
+			// as the "armed" flag (null = stopped), and every re-arm clears
+			// the previous timer first, so duplicate timers are impossible.
+			var autoplayTimer = null;
+			// Independent pause reasons — the cycle stays off while ANY is set.
+			var hoverPaused = false; // pointer rests over the component
+			var focusPaused = false; // any descendant owns focus
+			var pressPaused = false; // pointer/touch pressed on the component
+			// True while a programmatic scrollTo animates, so the scroll
+			// listener can tell autoplay movement apart from user swipes.
+			var autoScrolling = false;
+			var autoScrollResetTimer = null;
 
 			// Distance between consecutive slide starts (card width + gap).
 			// Falls back to the first card's width for single-card tracks.
@@ -524,7 +551,25 @@
 				return Math.min(slides.length - 1, Math.max(0, Math.round(viewport.scrollLeft / step)));
 			}
 
+			// Keep the pagination dots in sync with the visible slide: the
+			// active dot gets .is-active + aria-current, the rest reset.
+			// Runs wherever the position is re-evaluated (scroll, sync).
+			function updateDots() {
+				if (!dots.length) return;
+				var active = currentIndex();
+				Array.prototype.forEach.call(dots, function(dot, dotIndex) {
+					var isActive = dotIndex === active;
+					dot.classList.toggle('is-active', isActive);
+					if (isActive) {
+						dot.setAttribute('aria-current', 'true');
+					} else {
+						dot.removeAttribute('aria-current');
+					}
+				});
+			}
+
 			function announce() {
+				updateDots();
 				if (!status) return;
 				if (maxScroll() <= 2) {
 					status.textContent = '';
@@ -534,9 +579,17 @@
 			}
 
 			function scrollToIndex(index) {
+				// Flag programmatic movement so the scroll listener below does
+				// not mistake this animation for a user swipe; the flag clears
+				// once the smooth scroll has had time to settle.
+				autoScrolling = true;
+				clearTimeout(autoScrollResetTimer);
+				autoScrollResetTimer = setTimeout(function() {
+					autoScrolling = false;
+				}, prefersReducedMotion() ? 80 : 700);
 				viewport.scrollTo({
 					left: index * stepSize(),
-					behavior: reduceMotion ? 'auto' : 'smooth'
+					behavior: prefersReducedMotion() ? 'auto' : 'smooth'
 				});
 			}
 
@@ -552,26 +605,85 @@
 				scrollToIndex(index <= 0 ? slides.length - 1 : index - 1);
 			}
 
+			// --- Autoplay control --------------------------------------------
+			// The cycle applies to the Hero variant only, needs at least two
+			// slides plus actual overflow, and never runs for users who asked
+			// for reduced motion (manual navigation keeps working there).
+			function autoplayEligible() {
+				return carousel.classList.contains('sponsors-carousel--hero') &&
+					slides.length > 1 &&
+					maxScroll() > 2 &&
+					!prefersReducedMotion();
+			}
+
+			// Single entry point for arming / re-arming / pausing the cycle:
+			// it always clears any pending timer before deciding, so repeated
+			// calls can never stack timers or speed the carousel up.
+			function scheduleAutoplay() {
+				if (autoplayTimer !== null) {
+					clearTimeout(autoplayTimer);
+					autoplayTimer = null;
+				}
+				if (!autoplayEligible() || hoverPaused || focusPaused || pressPaused || document.hidden) {
+					return;
+				}
+				autoplayTimer = setTimeout(function() {
+					autoplayTimer = null;
+					// If the component left the DOM meanwhile, stop cycling.
+					if (!carousel.isConnected) return;
+					goNext();
+					scheduleAutoplay();
+				}, SPONSORS_AUTOPLAY_INTERVAL);
+			}
+
+			// Manual navigation moves first, THEN restarts the full 10-second
+			// countdown — an arrow click never causes an immediate follow-up
+			// advance; the next automatic step comes a full interval later.
+			function goNextManual() {
+				goNext();
+				scheduleAutoplay();
+			}
+
+			function goPrevManual() {
+				goPrev();
+				scheduleAutoplay();
+			}
+
 			// Adaptive layout: when everything fits without scrolling, mark
 			// the carousel static (CSS hides the arrows and centers the row).
 			function sync() {
 				carousel.classList.toggle('is-static', maxScroll() <= 2);
 				announce();
+				// Geometry changed — re-decide whether a cycle should run.
+				scheduleAutoplay();
 			}
 
-			if (prevBtn) prevBtn.addEventListener('click', goPrev);
-			if (nextBtn) nextBtn.addEventListener('click', goNext);
+			if (prevBtn) prevBtn.addEventListener('click', goPrevManual);
+			if (nextBtn) nextBtn.addEventListener('click', goNextManual);
+
+			// Pagination dots (Hero variant): jump straight to the matching
+			// slide, then restart the full 10-second countdown - the same
+			// manual-navigation contract as the arrow buttons (no immediate
+			// follow-up advance).
+			Array.prototype.forEach.call(dots, function(dot, dotIndex) {
+				dot.addEventListener('click', function() {
+					scrollToIndex(dotIndex);
+					scheduleAutoplay();
+				});
+			});
 
 			// Keyboard support on the scrollable track itself.
 			viewport.addEventListener('keydown', function(e) {
-				if (e.key === 'ArrowRight') { e.preventDefault(); goNext(); }
-				else if (e.key === 'ArrowLeft') { e.preventDefault(); goPrev(); }
-				else if (e.key === 'Home') { e.preventDefault(); scrollToIndex(0); }
-				else if (e.key === 'End') { e.preventDefault(); scrollToIndex(slides.length - 1); }
+				if (e.key === 'ArrowRight') { e.preventDefault(); goNextManual(); }
+				else if (e.key === 'ArrowLeft') { e.preventDefault(); goPrevManual(); }
+				else if (e.key === 'Home') { e.preventDefault(); scrollToIndex(0); scheduleAutoplay(); }
+				else if (e.key === 'End') { e.preventDefault(); scrollToIndex(slides.length - 1); scheduleAutoplay(); }
 			});
 
 			// rAF-throttled scroll updates keep the live region in sync with
-			// swipes and drags without flooding assistive tech.
+			// swipes and drags without flooding assistive tech. User-driven
+			// scrolling also restarts the 10-second countdown; autoplay's own
+			// animated scrolls are excluded via the autoScrolling flag.
 			var ticking = false;
 			viewport.addEventListener('scroll', function() {
 				if (ticking) return;
@@ -579,8 +691,66 @@
 				window.requestAnimationFrame(function() {
 					ticking = false;
 					announce();
+					if (!autoScrolling) scheduleAutoplay();
 				});
 			});
+
+			// Pause the cycle whenever the user engages with the component —
+			// hovering it, focusing anything inside it, or pressing/touching
+			// it — and resume from a fresh full interval once engagement ends.
+			// Hover pause is attached only where real hover exists: on pure
+			// touch devices mouseenter fires on tap but mouseleave may never
+			// fire afterwards, which would pause autoplay forever.
+			var canHover = window.matchMedia && window.matchMedia('(hover: hover)').matches;
+			if (canHover) {
+				carousel.addEventListener('mouseenter', function() {
+					hoverPaused = true;
+					scheduleAutoplay();
+				});
+				carousel.addEventListener('mouseleave', function() {
+					hoverPaused = false;
+					scheduleAutoplay();
+				});
+			}
+			carousel.addEventListener('focusin', function() {
+				focusPaused = true;
+				scheduleAutoplay();
+			});
+			carousel.addEventListener('focusout', function() {
+				// Wait a tick so the next focus target is known before
+				// deciding whether focus truly left the component.
+				window.setTimeout(function() {
+					focusPaused = carousel.contains(document.activeElement);
+					scheduleAutoplay();
+				}, 0);
+			});
+			carousel.addEventListener('pointerdown', function() {
+				pressPaused = true;
+				scheduleAutoplay();
+			});
+			carousel.addEventListener('pointerup', function() {
+				pressPaused = false;
+				scheduleAutoplay();
+			});
+			carousel.addEventListener('pointercancel', function() {
+				pressPaused = false;
+				scheduleAutoplay();
+			});
+
+			// Background tabs must not burn through the cycle unobserved;
+			// returning to the tab resumes from a fresh full interval.
+			document.addEventListener('visibilitychange', scheduleAutoplay);
+
+			// Respect live changes of the OS reduced-motion preference.
+			if (window.matchMedia) {
+				var motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+				var onMotionPreferenceChange = function() { scheduleAutoplay(); };
+				if (motionQuery.addEventListener) {
+					motionQuery.addEventListener('change', onMotionPreferenceChange);
+				} else if (motionQuery.addListener) {
+					motionQuery.addListener(onMotionPreferenceChange); // Safari < 14
+				}
+			}
 
 			// Breakpoint changes alter how many cards fit — re-evaluate.
 			var resizeTimer = null;
@@ -589,6 +759,8 @@
 				resizeTimer = setTimeout(sync, 150);
 			});
 
+			// Initial layout pass also arms the first interval — the first
+			// sponsor stays visible for the full 10 seconds before advancing.
 			sync();
 		});
 	}

@@ -928,7 +928,14 @@ function conexao_get_featured_sponsors() {
 				'category'      => $category,
 				'county'        => $county,
 				'description'   => wp_trim_words( $excerpt, 12, '...' ),
-				'thumbnail'     => get_the_post_thumbnail( $sponsor_id, 'thumbnail', array( 'loading' => 'lazy' ) ),
+				// Presentation-only choice: the Hero carousel displays each
+				// sponsor logo at up to ~260px, so request the "large"
+				// registered size (falls back to the original file when
+				// smaller) instead of the 150×150 "thumbnail" — same
+				// attachment, no data change, just a crisp source. CSS
+				// object-fit:contain still preserves every logo's natural
+				// proportions inside its fluid logo area.
+				'thumbnail'     => get_the_post_thumbnail( $sponsor_id, 'large', array( 'loading' => 'lazy' ) ),
 				'display_order' => get_post_meta( $sponsor_id, '_sponsor_display_order', true ),
 			);
 		}

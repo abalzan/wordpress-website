@@ -166,13 +166,20 @@ ul, ol {
        1080×600 (1.8:1) full-bleed composition; the image covers the whole
        section and the copy sits on top (see the mobile media queries below).
    The gradient below is only a loading/failure fallback. */
+/* The 3.71:1 cinematic proportion is kept as a MINIMUM via min-height rather
+   than a fixed aspect-ratio box: identical rendering whenever the copy fits,
+   but the section can grow when the Featured Apoiadores carousel renders
+   inside .hero-content instead of clipping it (overflow:hidden). The image
+   still fills the section via object-fit:cover from the rules below — same
+   content-driven model the mobile hero already uses. */
 .hero-section {
   color: var(--conexao-white);
   padding: 0;
   position: relative;
   overflow: hidden;
   background: linear-gradient(135deg, var(--conexao-primary-dark) 0%, var(--conexao-primary) 100%);
-  aspect-ratio: 3.71 / 1;
+  aspect-ratio: auto;
+  min-height: calc(100vw / 3.71);
 }
 
 /* Vertically center the hero copy within the 3.71:1 desktop hero. The image
@@ -284,6 +291,422 @@ ul, ol {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
+}
+
+/* ===== Featured Apoiadores carousel — Hero variant =====
+   Featured single-sponsor showcase rendered by template-parts/
+   featured-sponsors.php into the RIGHT column of a two-column Hero
+   composition (.hero-copy beside .hero-sponsors) on desktop/tablet, stacked
+   beneath the copy on mobile. Reuses the shared .sponsors-carousel
+   scroll-snap engine; this variant restyles it for the hero context:
+   EXACTLY ONE supporter visible at a time as a single large featured IMAGE
+   card — the artwork fills the whole tile, the name is overlaid at the top
+   over a soft scrim, small translucent prev/next arrows sit vertically
+   centered INSIDE the image, and pagination dots sit at the tile's bottom
+   center. Which supporters appear and their order remain decided solely by
+   the existing sponsor fields ("Apoiador em destaque" / "Ordem de
+   exibição"). */
+
+/* Left column: hero copy. min-width:0 lets long words wrap inside the grid
+   column instead of forcing it wider, so heading and carousel never collide. */
+.hero-copy {
+  min-width: 0;
+}
+
+/* When the carousel is present, tighten the hero copy's internal gaps so the
+   two-column composition fits within the existing hero height. */
+.hero-content--with-sponsors .hero-badge {
+  margin-bottom: 16px;
+}
+
+.hero-content--with-sponsors .hero-title {
+  margin-bottom: 12px;
+}
+
+.hero-content--with-sponsors .hero-subtitle {
+  margin-bottom: 20px;
+}
+
+/* The CTAs end the left column — no bottom margin needed beside the
+   carousel. Mobile re-adds separation via its own .hero-ctas rule below. */
+.hero-content--with-sponsors .hero-ctas {
+  margin-bottom: 0;
+}
+
+/* Right column: Featured Apoiadores showcase. A subtle translucent green
+   glass surface groups label + carousel and keeps them legible over the
+   photographic right side of the hero (castle/family/flags) without hiding
+   the image — a light touch, not an opaque block. */
+.hero-sponsors {
+  min-width: 0;
+  background: linear-gradient(165deg, rgba(6, 44, 35, 0.52) 0%, rgba(6, 44, 35, 0.34) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: var(--conexao-radius);
+  box-shadow: var(--conexao-shadow-md);
+  padding: 14px 18px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Desktop/tablet (≥769px): balanced two-column composition — hero copy left
+   (~55–60%), Featured Apoiadores right (~40–45%). The double-class selector
+   outranks the single-class .hero-content width/padding rules in the
+   responsive blocks further down, so ONLY the with-sponsors variant goes
+   full-width two-column; without sponsors the hero keeps its original
+   single-column layout untouched. */
+@media (min-width: 769px) {
+  .hero-content.hero-content--with-sponsors {
+    max-width: none;
+    width: 100%;
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(28px, 4vw, 64px);
+    padding: 44px 0 36px;
+  }
+
+  /* Slightly reduced desktop type scale for the narrower left column: strong
+     hierarchy (Badge → Heading → Description → CTAs), but the heading wraps
+     naturally inside the column instead of spanning the whole hero. */
+  .hero-content--with-sponsors .hero-title {
+    font-size: clamp(1.875rem, 3.4vw, 2.75rem);
+  }
+
+  .hero-content--with-sponsors .hero-subtitle {
+    font-size: clamp(1rem, 1.3vw, 1.125rem);
+    max-width: 46ch;
+  }
+}
+
+.sponsors-hero-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 12px;
+}
+
+/* Small gap between slides (the shared list defaults to 20px) — it only
+   spaces neighbours during the slide transition. */
+.sponsors-carousel--hero .sponsors-carousel-list {
+  gap: 12px;
+}
+
+/* EXACTLY ONE sponsor per view: each slide fills the viewport edge-to-edge,
+   so no neighbouring tile is ever partially visible and every snap position
+   shows a single complete sponsor. */
+.sponsors-carousel--hero .sponsors-slide {
+  flex: 0 0 100%;
+  width: 100%;
+}
+
+/* Semantic surface + control tokens for the featured sponsor card. Declared
+   once on the component root and consumed by every card/control rule below,
+   so no color literal is repeated per rule; dark-mode.css redefines ONLY
+   these tokens under [data-theme="dark"] (deep translucent surface, deeper
+   control glass). The sponsor artwork itself is never recolored or cropped —
+   the surface only backs it. */
+.sponsors-carousel--hero {
+  /* Very light warm neutral — backs the artwork (letterbox bands for
+     non-16:9 assets, no-image fallback) like a designed mat/frame. */
+  --sponsor-surface: #fcfbf7;
+  /* Subtle translucent green-gray edge instead of a hard gray border. */
+  --sponsor-border: rgba(14, 107, 58, 0.16);
+  --sponsor-border-hover: rgba(14, 107, 58, 0.34);
+  /* Existing Conexão green as the small accent, never the background. */
+  --sponsor-accent: var(--conexao-primary);
+  /* Soft, restrained shadow tinted with the hero's deep green. */
+  --sponsor-shadow: 0 10px 28px rgba(6, 44, 35, 0.16), 0 2px 6px rgba(6, 44, 35, 0.08);
+  --sponsor-shadow-hover: 0 16px 36px rgba(6, 44, 35, 0.2), 0 4px 10px rgba(6, 44, 35, 0.1);
+  /* Integrated controls: translucent deep-green glass with white icons —
+     legible over ANY artwork in BOTH themes without hiding the image. */
+  --sponsor-control-bg: rgba(6, 44, 35, 0.44);
+  --sponsor-control-bg-hover: rgba(6, 44, 35, 0.66);
+  --sponsor-control-border: rgba(255, 255, 255, 0.28);
+  --sponsor-control-border-hover: rgba(255, 255, 255, 0.55);
+  --sponsor-control-icon: #ffffff;
+  /* Name scrim: soft dark-green gradient fading downward so the overlaid
+     name stays readable over light or dark artwork alike. */
+  --sponsor-name-scrim: linear-gradient(180deg, rgba(6, 44, 35, 0.78) 0%, rgba(6, 44, 35, 0.4) 58%, rgba(6, 44, 35, 0) 100%);
+}
+
+/* Stage: positioning context that lets the arrows and dots float OVER the
+   visible tile (the viewport it wraps is exactly the tile's size plus a
+   slim breathing gap). */
+.sponsors-carousel-stage {
+  position: relative;
+}
+
+/* Slim viewport padding: just enough room for the hover lift and the focus
+   ring — the tile itself is now the whole visual surface. */
+.sponsors-carousel--hero .sponsors-carousel-viewport {
+  padding: 6px 4px;
+}
+
+/* Featured tile: ONE large visual surface per view. The artwork fills the
+   entire card (no separate content area beneath); the card height derives
+   from the column width via a fixed 16:9 ratio — matching the dominant
+   banner assets — so switching sponsors never changes the hero or
+   right-column height, and every image ratio fits inside the same stable
+   frame. */
+.sponsor-tile {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  padding: 0;
+  background: var(--sponsor-surface);
+  border: 1px solid var(--sponsor-border);
+  border-radius: var(--conexao-radius-lg);
+  box-shadow: var(--sponsor-shadow);
+  overflow: hidden;
+  transition: transform var(--conexao-transition), box-shadow var(--conexao-transition), border-color var(--conexao-transition);
+}
+
+.sponsor-tile:hover {
+  transform: translateY(-3px);
+  border-color: var(--sponsor-border-hover);
+  box-shadow: var(--sponsor-shadow-hover);
+}
+
+.sponsor-tile:focus-visible {
+  outline: 2px solid var(--sponsor-accent);
+  outline-offset: 2px;
+}
+
+/* The logo area IS the tile: absolutely stretched over the full card
+   surface. object-fit: contain (not cover) — the current sponsor banners
+   carry text and decoration right up to their edges, and cover would crop
+   meaningful artwork; contain shows every asset whole, with the warm
+   surface reading as slim letterbox bands for non-16:9 ratios. */
+.sponsor-tile-logo {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.sponsor-tile-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* No-thumbnail fallback icon scales with the larger tile. */
+.sponsor-tile-logo svg {
+  width: clamp(56px, 6vw, 84px);
+  height: auto;
+}
+
+/* Sponsor name: overlaid at the TOP of the image over a soft scrim — it no
+   longer occupies its own block below the artwork. Compact, bold, white
+   with a faint text-shadow for extra edge contrast; the image stays the
+   dominant element. */
+.sponsor-tile-name {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  max-width: 100%;
+  padding: clamp(10px, 1.4vw, 14px) clamp(14px, 1.8vw, 18px) clamp(22px, 3vw, 32px);
+  font-family: var(--conexao-font-heading);
+  font-size: clamp(0.875rem, 1.05vw, 1.0625rem);
+  font-weight: 600;
+  line-height: 1.3;
+  color: #ffffff;
+  text-align: left;
+  text-shadow: 0 1px 2px rgba(6, 44, 35, 0.45);
+  background: var(--sponsor-name-scrim);
+  overflow-wrap: break-word;
+  /* Long names wrap to at most two tidy lines instead of ellipsis truncation. */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Integrated navigation: small translucent circular arrows vertically
+   centered INSIDE the image (replacing the old external control row), plus
+   pagination dots at the tile's bottom center. Both reuse the semantic
+   control tokens so they stay legible over any artwork in both themes
+   while keeping the sponsor image dominant. */
+.sponsors-carousel--hero .sponsors-carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  width: clamp(34px, 3.4vw, 40px);
+  height: clamp(34px, 3.4vw, 40px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--conexao-radius-full);
+  background: var(--sponsor-control-bg);
+  border: 1px solid var(--sponsor-control-border);
+  color: var(--sponsor-control-icon);
+  box-shadow: 0 2px 10px rgba(6, 44, 35, 0.28);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  cursor: pointer;
+  transition: background var(--conexao-transition), border-color var(--conexao-transition), box-shadow var(--conexao-transition);
+}
+
+.sponsors-carousel--hero .sponsors-carousel-arrow--prev {
+  left: clamp(10px, 1.4vw, 16px);
+}
+
+.sponsors-carousel--hero .sponsors-carousel-arrow--next {
+  right: clamp(10px, 1.4vw, 16px);
+}
+
+.sponsors-carousel--hero .sponsors-carousel-arrow:hover {
+  background: var(--sponsor-control-bg-hover);
+  border-color: var(--sponsor-control-border-hover);
+  color: var(--sponsor-control-icon);
+  box-shadow: 0 4px 14px rgba(6, 44, 35, 0.36);
+}
+
+.sponsors-carousel--hero .sponsors-carousel-arrow:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+/* Pagination dots: slim frosted pill at the bottom center so the dots stay
+   readable over bright artwork AND over the light letterbox surface. One
+   dot per slide (rendered in PHP); the carousel JS wires clicks and keeps
+   the active state in sync. */
+.sponsors-carousel-dots {
+  position: absolute;
+  bottom: clamp(12px, 1.8vw, 16px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 10px;
+  border-radius: var(--conexao-radius-full);
+  background: rgba(6, 44, 35, 0.38);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.sponsors-carousel-dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: none;
+  border-radius: var(--conexao-radius-full);
+  background: rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+  transition: background var(--conexao-transition), width var(--conexao-transition);
+}
+
+.sponsors-carousel-dot:hover {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+/* Active dot: filled and elongated into a small pill — clearly visible
+   without competing with the artwork. */
+.sponsors-carousel-dot.is-active {
+  width: 20px;
+  background: #ffffff;
+}
+
+.sponsors-carousel-dot:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+/* Adaptive static mode (single sponsor / everything fits): the shared
+   engine hides the arrows; the dots hide with them — one dot is not
+   navigation. */
+.sponsors-carousel.is-static .sponsors-carousel-dots {
+  display: none;
+}
+
+/* Mobile keeps the same one-sponsor-per-view behaviour; unlike the shared
+   carousel (arrows hidden ≤768px, swipe only), the hero variant keeps its
+   integrated overlay arrows visible as explicit touch-friendly controls
+   alongside native swipe. Higher specificity than the shared hide rule
+   wins regardless of source order. */
+@media (max-width: 768px) {
+  .sponsors-carousel--hero .sponsors-carousel-arrow {
+    display: inline-flex;
+  }
+}
+
+/* Tablet: still exactly one sponsor per view; only the column ratio/gap
+   tighten so heading and carousel never collide at intermediate widths
+   (~769–1199px). */
+@media (max-width: 1199px) and (min-width: 769px) {
+  .hero-content.hero-content--with-sponsors {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    gap: clamp(24px, 3.5vw, 44px);
+  }
+}
+
+/* Mobile: stack the columns — hero copy first, Featured Apoiadores beneath
+   it (DOM order already matches; the two-column grid above never applies
+   ≤768px). Still EXACTLY ONE sponsor per view: the same integrated image
+   card (overlay name, inner arrows, bottom dots) proportionally scaled so
+   the Hero stays compact, with the overlay arrows remaining available
+   alongside native swipe. */
+@media (max-width: 768px) {
+  .hero-content--with-sponsors {
+    padding: 56px 0 20px;
+  }
+
+  .hero-content--with-sponsors .hero-ctas {
+    margin-bottom: 16px;
+  }
+
+  /* Compact glass surface under the stacked carousel. */
+  .hero-sponsors {
+    padding: 12px 14px;
+  }
+
+  .sponsors-hero-label {
+    font-size: 0.6875rem;
+    margin-bottom: 8px;
+  }
+
+  /* Same integrated card, proportionally scaled: the 16:9 tile shrinks
+     with the column so the Hero stays compact; overlays tighten with it. */
+  .sponsors-carousel--hero .sponsors-carousel-viewport {
+    padding: 5px 3px;
+  }
+
+  .sponsor-tile-name {
+    font-size: 0.8125rem;
+    padding: 10px 12px 20px;
+  }
+
+  .sponsors-carousel--hero .sponsors-carousel-arrow {
+    width: 34px;
+    height: 34px;
+  }
+
+  .sponsors-carousel-dots {
+    bottom: 10px;
+    gap: 6px;
+    padding: 5px 9px;
+  }
+
+  .sponsors-carousel-dot {
+    width: 7px;
+    height: 7px;
+  }
+
+  .sponsors-carousel-dot.is-active {
+    width: 18px;
+  }
 }
 
 /* The hero is now a full-bleed background (.hero-background-img) rather than a
@@ -4185,6 +4608,7 @@ input[type="button"] {
   .event-preview:hover,
   .news-card:hover,
   .business-card:hover,
+  .sponsor-tile:hover,
   .post-card:hover,
   .btn-primary:hover,
   .btn-outline:hover,
@@ -4607,16 +5031,19 @@ input[type="button"] {
    Homepage Mobile Hierarchy
    -------------------------
    DOM order of the front page:
-     Hero → Quick Access → Featured → Guides → Events → Apoiadores → Jobs
+     Hero (incl. Featured Apoiadores carousel) → Quick Access → Featured →
+     Guides → Events → Jobs
    On desktop this reads naturally and is preserved.
 
    On mobile we reorder so the visitor is first told WHO we are, then WHAT we
    offer, then WHERE to go — before any event feed:
-     Hero → Quick Access → Events → Featured → Guides → Apoiadores → Jobs
+     Hero → Quick Access → Events → Featured → Guides → Jobs
 
    Pure presentation/mobile reflow via flex `order`; no content is duplicated
-   or removed. Sections are direct children of `main.site-main`.
-============================================================ */
+   or removed. Sections are direct children of `main.site-main`. Featured
+   Apoiadores live INSIDE the hero (template part), not as a standalone
+   section, so no order slot exists for them here.
+   ============================================================ */
 @media (max-width: 768px) {
   .home .site-main,
   .front-page .site-main {
@@ -4649,14 +5076,9 @@ input[type="button"] {
     order: 5;
   }
 
-  .home .site-main .section--apoiadores,
-  .front-page .site-main .section--apoiadores {
-    order: 6;
-  }
-
   .home .site-main .section--jobs,
   .front-page .site-main .section--jobs {
-    order: 7;
+    order: 6;
   }
 
   .home .site-main .newsletter-section,

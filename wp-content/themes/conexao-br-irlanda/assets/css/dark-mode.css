@@ -823,6 +823,62 @@
   outline-color: var(--conexao-accent);
 }
 
+/* Hero Apoiadores carousel (template-parts/featured-sponsors.php) gets a
+   DEDICATED dark treatment rather than an inversion of the light card:
+   a deep, slightly translucent neutral-green surface backs the artwork
+   (letterbox bands / no-image fallback) and keeps the card clearly distinct
+   from the hero photograph, and the shadow gains a faint green glow. The
+   sponsor artwork itself is untouched — never recolored, cropped or
+   darkened; only the integrated controls adjust.
+
+   Only the semantic tokens declared in main.css (.sponsors-carousel--hero)
+   are redefined here; every tile/arrow/dot rule there picks them up
+   automatically. */
+[data-theme="dark"] .sponsors-carousel--hero {
+  /* Deep translucent dark surface over the photo (not pure black). */
+  --sponsor-surface: rgba(13, 24, 19, 0.92);
+  /* Subtle light neutral edge for separation without harshness. */
+  --sponsor-border: rgba(255, 255, 255, 0.14);
+  --sponsor-border-hover: rgba(58, 184, 117, 0.5);
+  /* Dark-adjusted brand green (#3ab875) as the small accent. */
+  --sponsor-accent: var(--conexao-primary);
+  /* Soft dark shadow with a very subtle green glow. */
+  --sponsor-shadow: 0 12px 32px rgba(0, 0, 0, 0.45), 0 0 24px rgba(58, 184, 117, 0.08);
+  --sponsor-shadow-hover: 0 18px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(58, 184, 117, 0.12);
+  /* Integrated controls: slightly deeper glass so the white icons/dots keep
+     contrast over bright artwork without darkening the image itself. */
+  --sponsor-control-bg: rgba(6, 44, 35, 0.55);
+  --sponsor-control-bg-hover: rgba(6, 44, 35, 0.75);
+  --sponsor-control-border: rgba(255, 255, 255, 0.3);
+  --sponsor-control-border-hover: rgba(255, 255, 255, 0.55);
+  --sponsor-control-icon: #ffffff;
+  /* Slightly stronger name scrim so the overlaid name stays readable over
+     bright artwork. */
+  --sponsor-name-scrim: linear-gradient(180deg, rgba(6, 44, 35, 0.82) 0%, rgba(6, 44, 35, 0.44) 58%, rgba(6, 44, 35, 0) 100%);
+}
+
+/* The hero's integrated arrows sit OVER the artwork, not on a card surface,
+   so they keep their translucent on-image style in dark mode. These
+   higher-specificity rules stop the generic dark arrow treatment for the
+   homepage Apoiadores carousel above from leaking into the hero overlay. */
+[data-theme="dark"] .sponsors-carousel--hero .sponsors-carousel-arrow {
+  background: var(--sponsor-control-bg);
+  border-color: var(--sponsor-control-border);
+  color: var(--sponsor-control-icon);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .sponsors-carousel--hero .sponsors-carousel-arrow:hover {
+  background: var(--sponsor-control-bg-hover);
+  border-color: var(--sponsor-control-border-hover);
+  color: var(--sponsor-control-icon);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="dark"] .sponsors-carousel--hero .sponsors-carousel-arrow:focus-visible {
+  outline-color: #ffffff;
+}
+
 /* ===== 15. BLOG / SINGLE POST ===== */
 [data-theme="dark"] .single-post-header {
   background: var(--color-surface-muted);

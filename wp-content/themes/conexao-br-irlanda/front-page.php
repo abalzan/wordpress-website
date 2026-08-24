@@ -25,6 +25,13 @@ $hero_subtitle = get_theme_mod( 'conexao_hero_subtitle', __( 'Conectando a comun
 // get_template_directory_uri() so they resolve identically in local and
 // production (no Media Library / localhost URL). See the <picture> inside
 // the hero below and the mobile hero rules in assets/css/main.css.
+
+// Featured Apoiadores for the Hero carousel. Data-driven from the EXISTING
+// sponsor fields ("Apoiador em destaque" / "Ordem de exibição") via
+// conexao_get_featured_sponsors() — see template-parts/featured-sponsors.php.
+// Checked here so .hero-content can tighten its spacing only when the
+// carousel will actually render (the transient-cached query makes this cheap).
+$hero_has_sponsors = ! empty( conexao_get_featured_sponsors() );
 ?>
 
 <main id="primary" class="site-main">
@@ -71,25 +78,43 @@ $hero_subtitle = get_theme_mod( 'conexao_hero_subtitle', __( 'Conectando a comun
 	</div>
 
 	<div class="site-container">
-		<div class="hero-content">
-			<div class="hero-badge">
-				<span class="hero-badge-dot"></span>
-				<?php esc_html_e( 'Portal da Comunidade Brasileira', 'conexao-br-irlanda' ); ?>
+		<!-- Two-column Hero composition (CSS in assets/css/main.css): hero copy
+		     left, Featured Apoiadores right on desktop/tablet (≥769px);
+		     stacked copy-first on mobile (≤768px). Without featured sponsors
+		     the modifier class is omitted and the hero stays single-column. -->
+		<div class="hero-content<?php echo $hero_has_sponsors ? ' hero-content--with-sponsors' : ''; ?>">
+			<!-- Left column: Badge → Heading → Description → CTAs. Content and
+			     links unchanged; only wrapped for the two-column layout. -->
+			<div class="hero-copy">
+				<div class="hero-badge">
+					<span class="hero-badge-dot"></span>
+					<?php esc_html_e( 'Portal da Comunidade Brasileira', 'conexao-br-irlanda' ); ?>
+				</div>
+				<h1 class="hero-title"><?php echo wp_kses_post( $hero_title ); ?></h1>
+				<p class="hero-subtitle"><?php echo esc_html( $hero_subtitle ); ?></p>
+				<div class="hero-ctas">
+					<a href="<?php echo esc_url( conexao_get_guides_archive_url() ); ?>" class="btn btn-primary">
+						<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+							<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+							<path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+						</svg>
+						<?php esc_html_e( 'Explorar Guias', 'conexao-br-irlanda' ); ?>
+					</a>
+					<a href="<?php echo esc_url( home_url( '/eventos/' ) ); ?>" class="btn btn-outline">
+						<?php esc_html_e( 'Ver Eventos', 'conexao-br-irlanda' ); ?>
+					</a>
+				</div>
 			</div>
-			<h1 class="hero-title"><?php echo wp_kses_post( $hero_title ); ?></h1>
-			<p class="hero-subtitle"><?php echo esc_html( $hero_subtitle ); ?></p>
-			<div class="hero-ctas">
-				<a href="<?php echo esc_url( conexao_get_guides_archive_url() ); ?>" class="btn btn-primary">
-					<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
-						<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
-						<path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
-					</svg>
-					<?php esc_html_e( 'Explorar Guias', 'conexao-br-irlanda' ); ?>
-				</a>
-				<a href="<?php echo esc_url( home_url( '/eventos/' ) ); ?>" class="btn btn-outline">
-					<?php esc_html_e( 'Ver Eventos', 'conexao-br-irlanda' ); ?>
-				</a>
+			<?php if ( $hero_has_sponsors ) : ?>
+			<!-- Right column: Featured Apoiadores carousel — the SAME working
+			     component moved into its own layout wrapper (query, ordering,
+			     links, JS and accessibility untouched). Rendered only when a
+			     supporter is marked "Apoiador em destaque", so no empty column
+			     is reserved otherwise. See template-parts/featured-sponsors.php. -->
+			<div class="hero-sponsors">
+				<?php get_template_part( 'template-parts/featured-sponsors' ); ?>
 			</div>
+			<?php endif; ?>
 		</div>
 	</div>
 </section>
@@ -165,8 +190,12 @@ $hero_subtitle = get_theme_mod( 'conexao_hero_subtitle', __( 'Conectando a comun
 		<div class="featured-content-layout">
 			<div class="featured-main">
 				<?php
+				// Editorial featured content only. Sponsors are intentionally NOT
+				// part of this generic query: featured supporters have their own
+				// dedicated carousel inside the Hero (template-parts/
+				// featured-sponsors.php) and must not be duplicated here.
 				$featured = new WP_Query( array(
-					'post_type'           => array( 'guide', 'event', 'job', 'sponsor' ),
+					'post_type'           => array( 'guide', 'event', 'job' ),
 					'posts_per_page'      => 5,
 					'ignore_sticky_posts' => true,
 					'no_found_rows'       => true,
@@ -193,7 +222,6 @@ $hero_subtitle = get_theme_mod( 'conexao_hero_subtitle', __( 'Conectando a comun
 									<?php endif; ?>
 									<h3 class="featured-article-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
 									<p class="featured-article-excerpt"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 30, '...' ) ); ?></p>
-									<?php if ( 'sponsor' !== get_post_type() ) : ?>
 									<div class="featured-article-meta">
 										<span>
 											<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
@@ -210,7 +238,6 @@ $hero_subtitle = get_theme_mod( 'conexao_hero_subtitle', __( 'Conectando a comun
 											<?php echo esc_html( conexao_reading_time_text() ); ?>
 										</span>
 									</div>
-									<?php endif; ?>
 								</div>
 							</article>
 						<?php else : ?>
@@ -231,12 +258,10 @@ $hero_subtitle = get_theme_mod( 'conexao_hero_subtitle', __( 'Conectando a comun
 								<div class="post-card-body">
 									<h3 class="post-card-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
 									<p class="post-card-excerpt"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 15, '...' ) ); ?></p>
-									<?php if ( 'sponsor' !== get_post_type() ) : ?>
 									<div class="post-card-meta">
 										<span><?php echo esc_html( get_the_date() ); ?></span>
 										<span><?php echo esc_html( conexao_reading_time_text() ); ?></span>
 									</div>
-									<?php endif; ?>
 								</div>
 							</article>
 							<?php if ( $count === $featured->post_count - 1 ) : ?></div><?php endif; ?>
@@ -482,104 +507,6 @@ $hero_subtitle = get_theme_mod( 'conexao_hero_subtitle', __( 'Conectando a comun
 				</svg>
 			</a>
 		</div>
-	</div>
-</section>
-
-<!-- Apoiadores -->
-<section class="section section--apoiadores">
-	<div class="site-container">
-		<div class="section-header">
-			<div class="section-header-left">
-				<span class="section-eyebrow"><?php esc_html_e( 'Apoiadores', 'conexao-br-irlanda' ); ?></span>
-				<h2 class="section-title"><?php esc_html_e( 'Apoiadores', 'conexao-br-irlanda' ); ?></h2>
-				<p class="section-subtitle"><?php esc_html_e( 'Conheça quem apoia e fortalece a nossa comunidade.', 'conexao-br-irlanda' ); ?></p>
-			</div>
-			<a href="<?php echo esc_url( home_url( '/apoiadores/' ) ); ?>" class="section-link">
-				<?php esc_html_e( 'Ver todos', 'conexao-br-irlanda' ); ?>
-				<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
-					<line x1="5" y1="12" x2="19" y2="12"></line>
-					<polyline points="12 5 19 12 12 19"></polyline>
-				</svg>
-			</a>
-		</div>
-
-		<?php
-		// Homepage Apoiadores carousel — a presentation layer over the EXISTING
-		// sponsor data model. Which supporters appear is decided solely by the
-		// "Apoiador em destaque" field (_sponsor_featured = 1) and where they
-		// appear by "Ordem de exibição" (_sponsor_display_order ascending,
-		// ties broken by title). Editing a supporter in wp-admin updates this
-		// section automatically — no code change required.
-		// See conexao_get_featured_sponsors() in functions.php.
-		$featured_sponsors = conexao_get_featured_sponsors();
-		$sponsor_total     = count( $featured_sponsors );
-		?>
-		<?php if ( $sponsor_total > 0 ) : ?>
-		<div class="sponsors-carousel" data-sponsors-carousel>
-			<!-- Polite live region announcing the current position while scrolling. -->
-			<p class="screen-reader-text" data-sponsors-status aria-live="polite"></p>
-
-			<div class="sponsors-carousel-viewport"
-				tabindex="0"
-				role="group"
-				aria-roledescription="carousel"
-				aria-label="<?php esc_attr_e( 'Apoiadores em destaque', 'conexao-br-irlanda' ); ?>">
-				<ul class="sponsors-carousel-list">
-					<?php foreach ( $featured_sponsors as $sponsor_index => $featured_sponsor ) :
-						$sponsor_title   = $featured_sponsor['title'];
-						$sponsor_url     = $featured_sponsor['url'];
-						// External link takes priority, then the sponsor permalink —
-						// same behavior as before, including target/rel attributes.
-						$sponsor_href    = $sponsor_url ? $sponsor_url : $featured_sponsor['permalink'];
-						$sponsor_target  = $sponsor_url ? ' target="_blank"' : '';
-						$sponsor_rel     = $sponsor_url ? ' rel="noopener noreferrer"' : '';
-						$sponsor_classes = 'business-card' . ( $sponsor_url ? ' business-card--clickable' : '' );
-						?>
-						<li class="sponsors-slide"
-							role="group"
-							aria-roledescription="slide"
-							aria-label="<?php echo esc_attr( sprintf( __( 'Apoiador %1$d de %2$d', 'conexao-br-irlanda' ), $sponsor_index + 1, $sponsor_total ) ); ?>">
-							<div class="<?php echo esc_attr( $sponsor_classes ); ?>">
-								<a href="<?php echo esc_url( $sponsor_href ); ?>" class="business-card-link"<?php echo $sponsor_target . $sponsor_rel; /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */ ?>>
-									<div class="business-logo">
-										<?php if ( ! empty( $featured_sponsor['thumbnail'] ) ) : ?>
-											<?php echo $featured_sponsor['thumbnail']; /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */ ?>
-										<?php else : ?>
-											<svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="#adb5bd" stroke-width="1.5" aria-hidden="true">
-												<rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
-												<path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
-											</svg>
-										<?php endif; ?>
-									</div>
-									<?php if ( $featured_sponsor['category'] ) : ?>
-										<span class="business-category"><?php echo esc_html( $featured_sponsor['category'] ); ?></span>
-									<?php endif; ?>
-									<h3 class="business-name"><?php echo esc_html( $sponsor_title ); ?></h3>
-									<?php if ( $featured_sponsor['county'] ) : ?><span class="business-location"><?php echo esc_html( $featured_sponsor['county'] ); ?></span><?php endif; ?>
-									<p class="business-description"><?php echo esc_html( $featured_sponsor['description'] ); ?></p>
-								</a>
-							</div>
-						</li>
-					<?php endforeach; ?>
-				</ul>
-			</div>
-
-			<div class="sponsors-carousel-controls">
-				<button type="button" class="sponsors-carousel-arrow sponsors-carousel-arrow--prev" data-sponsors-prev aria-label="<?php esc_attr_e( 'Apoiador anterior', 'conexao-br-irlanda' ); ?>">
-					<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-						<polyline points="15 18 9 12 15 6"></polyline>
-					</svg>
-				</button>
-				<button type="button" class="sponsors-carousel-arrow sponsors-carousel-arrow--next" data-sponsors-next aria-label="<?php esc_attr_e( 'Próximo apoiador', 'conexao-br-irlanda' ); ?>">
-					<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-						<polyline points="9 18 15 12 9 6"></polyline>
-					</svg>
-				</button>
-			</div>
-		</div>
-		<?php else : ?>
-			<p><?php esc_html_e( 'Organizações e empresas que apoiam a comunidade serão apresentados aqui em breve.', 'conexao-br-irlanda' ); ?></p>
-		<?php endif; ?>
 	</div>
 </section>
 
