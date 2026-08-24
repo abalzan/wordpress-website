@@ -157,14 +157,15 @@ ul, ol {
 /* Header, navigation, mobile menu, and search styling are in header-nav.css */
 
 /* ===== Hero Section =====
-   The hero background is the committed project asset
-   (assets/images/conexaobr_Hero_image.png for desktop, with the dedicated
-   mobile composition conexaobr_Hero_image_mobile.png), rendered as a
-   full-bleed <picture> (see front-page.php). On desktop the section's
-   aspect-ratio is the standard 3.71:1 cinematic crop: the green text-safe
-   zone on the left stays strong (the desktop asset already carries it), with
-   the castle, family and flags visible on the right. The gradient below is
-   only a loading/failure fallback. */
+   The hero background is the committed project asset, rendered as a
+   full-bleed <picture> (see front-page.php):
+     Desktop (≥769px): conexaobr_Hero_image.png — 3.71:1 cinematic crop that
+       carries the green text-safe zone on the left, with the castle, family
+       and flags on the right. UNCHANGED by the mobile redesign.
+     Mobile (≤768px): conexaobr_Hero_image_mobile (.webp/.png) — dedicated
+       1080×600 (1.8:1) full-bleed composition; the image covers the whole
+       section and the copy sits on top (see the mobile media queries below).
+   The gradient below is only a loading/failure fallback. */
 .hero-section {
   color: var(--conexao-white);
   padding: 0;
@@ -3186,33 +3187,67 @@ input[type="button"] {
     overflow-wrap: anywhere;
   }
 
-  /* Hero section mobile - uses the dedicated 2.69:1 mobile composition
-     (conexaobr_Hero_image_mobile.png) via the <picture> element. The
-     aspect-ratio keeps the section height proportional to the viewport width
-     on every screen; object-fit:cover on .hero-background-img fills the
-     container without distortion. The green text-safe zone, family, castle
-     and flags remain visible in the mobile crop. */
+  /* Hero section mobile — full-bleed image composition.
+     The dedicated 1.8:1 mobile asset (conexaobr_Hero_image_mobile — WebP
+     1080×600, PNG fallback 1683×935, served via the <picture> element)
+     covers the ENTIRE .hero-section; the copy sits on top of it, anchored
+     bottom-left over the quiet lake area of the photograph.
+
+     Sizing model (single source of truth): the SECTION controls the hero's
+     dimensions. Its height is never shorter than the mobile image's own
+     1.8:1 proportion — expressed as min-height: calc(100vw / 1.8), valid
+     because at full bleed the section width equals the viewport width —
+     and it grows naturally with its content whenever the overlaid copy
+     needs more room. This replaces the previous arbitrary
+     clamp(430px, 120vw, 600px) floor, which forced a square/portrait hero
+     box unrelated to the image ratio (e.g. 375×450) and cover-cropped the
+     1.8:1 photo into it. An aspect-ratio box alone would not work here:
+     its ratio-derived height ignores content, so taller copy would be
+     clipped by the section's overflow:hidden. With this model the image
+     always fills the section via object-fit:cover from the base rules,
+     renders at its intended proportion wherever the viewport allows, and
+     no fixed pixel heights exist anywhere in the chain. The green panel is
+     gone: the photo is the background. */
   .hero-section {
-    aspect-ratio: 2.69 / 1;
+    aspect-ratio: auto;
+    min-height: calc(100vw / 1.8);
+    display: flex;
   }
 
-  /* Mobile: neutralize the desktop vertical centering so the compact hero
-     drives its own height (image-first, no full 500px column). */
+  /* The image always fills the section (object-fit: cover from the base
+     rules). object-position biases the visible crop toward the castle and
+     the family so neither ends up hidden behind the copy on any width. */
+  .hero-background-img {
+    object-position: 38% center;
+  }
+
+  /* Stretch the container to the full hero height and anchor the copy to the
+     bottom-left — the area with the best readability over the photo. */
   .hero-section .site-container {
-    min-height: auto;
-    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    height: auto;
+    min-height: inherit;
   }
 
   .hero-content {
     order: 1;
     max-width: 100%;
-    padding: 32px 0 20px;
+    /* Top padding is only the minimum gap between the sticky header and
+       the badge on widths where the copy defines the hero height; kept
+       compact so it cannot inflate the hero with empty space above the
+       bottom-anchored copy. */
+    padding: 64px 0 30px;
   }
 
-  /* Slightly stronger left gradient on mobile so white copy stays legible
-     over the cropped (possibly photo) area, without hiding the image. */
+  /* Subtle readability overlay: a bottom-up green gradient (plus a slight
+     left bias) fades out by ~85% of the content height, so the top of the
+     photograph stays completely untouched and the image remains clearly
+     visible while the white copy keeps strong contrast. */
   .hero-content::before {
-    background: linear-gradient(to right, rgba(7, 59, 47, 0.4) 0%, rgba(7, 59, 47, 0.18) 35%, transparent 70%);
+    background:
+      linear-gradient(to right, rgba(6, 44, 35, 0.35) 0%, rgba(6, 44, 35, 0) 62%),
+      linear-gradient(to top, rgba(6, 44, 35, 0.82) 0%, rgba(6, 44, 35, 0.5) 42%, rgba(6, 44, 35, 0.12) 72%, rgba(6, 44, 35, 0) 88%);
   }
 
   .hero-badge {
@@ -3250,14 +3285,8 @@ input[type="button"] {
     font-size: 1rem;
   }
 
-  .hero-ctas {
-    flex-direction: column;
-  }
-
-  .hero-ctas .btn {
-    width: 100%;
-    justify-content: center;
-  }
+  /* CTA layout on mobile is defined once in the "Homepage Mobile UX Polish"
+     block below (side-by-side compact buttons that wrap on narrow screens). */
 
   /* Quick access mobile - single 4x1 row */
   .quick-access-section {
@@ -4680,14 +4709,11 @@ input[type="button"] {
   }
 
   /* --- Compact Hero ---
-     Prioritises Badge → Heading → Description → CTA with minimal gaps.
-     The cinematic image stays visible on mobile (cropped); white copy is
-     kept legible via the .hero-content::before gradient. */
-  .hero-content {
-    padding: 24px 0 12px;
-    gap: 8px;
-  }
-
+     Full-bleed image composition: the photo is the section background and
+     the copy is anchored bottom-left over it (layout defined in the first
+     mobile block above). This block only compacts the type scale and
+     spacing: Badge → Heading → Description → CTA with minimal gaps, kept
+     legible over the photo via the .hero-content::before gradient. */
   .hero-badge {
     margin-bottom: 10px;
     padding: 5px 12px;

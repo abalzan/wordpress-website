@@ -12,13 +12,19 @@ $hero_title    = get_theme_mod( 'conexao_hero_title', __( 'Tudo que o brasileiro
 $hero_subtitle = get_theme_mod( 'conexao_hero_subtitle', __( 'Conectando a comunidade brasileira com informações, eventos, guias práticos e muito mais.', 'conexao-br-irlanda' ) );
 // The hero background is a responsive <picture> element (see below) that
 // selects the correct asset based on viewport:
-//   Desktop (≥769px): conexaobr_Hero_image.png  (3.71:1 composition)
-//   Mobile (≤768px):  conexaobr_Hero_image_mobile.png  (2.69:1 composition)
-// Both assets are committed project files loaded via
+//   Desktop (≥769px): conexaobr_Hero_image.png  (3.71:1 composition with the
+//                     green text-safe zone on the left — unchanged)
+//   Mobile (≤768px):  conexaobr_Hero_image_mobile.webp/.png — dedicated
+//                     1.8:1 full-bleed compositions (WebP 1080×600, PNG
+//                     fallback 1683×935). On mobile the
+//                     image covers the entire .hero-section and the copy sits
+//                     on top of it, anchored bottom-left over the quiet lake
+//                     area; a subtle green gradient (CSS only) keeps the text
+//                     readable. WebP is served first, PNG is the fallback.
+// All assets are committed project files loaded via
 // get_template_directory_uri() so they resolve identically in local and
-// production (no Media Library / localhost URL). The image itself carries
-// the green text-safe zone on the left, so no extra solid overlay panel
-// is added. See the <picture> inside the hero below.
+// production (no Media Library / localhost URL). See the <picture> inside
+// the hero below and the mobile hero rules in assets/css/main.css.
 ?>
 
 <main id="primary" class="site-main">
@@ -30,18 +36,33 @@ $hero_subtitle = get_theme_mod( 'conexao_hero_subtitle', __( 'Conectando a comun
 	     the overlaid copy carries the page message, so alt="" + aria-hidden. -->
 	<div class="hero-background" aria-hidden="true">
 		<picture>
-			<!-- Mobile: responsive 2.69:1 composition. The browser selects the
-			     matching asset automatically -- no JavaScript involved. -->
+			<!-- Mobile (≤768px): dedicated 1.8:1 full-bleed compositions.
+			     WebP first (1080×600, ≈128 KB), PNG fallback (1683×935 —
+			     same 1.8:1 framing at higher resolution). The browser selects
+			     the matching asset automatically — no JavaScript. The
+			     width/height attributes give each source a truthful
+			     pre-load intrinsic-ratio hint (1.8:1); they never stretch the
+			     image because CSS fully determines the rendered box. -->
 			<source
 				media="(max-width: 768px)"
+				type="image/webp"
+				width="1080"
+				height="600"
+				srcset="<?php echo esc_url( get_template_directory_uri() . '/assets/images/conexaobr_Hero_image_mobile.webp' ); ?>">
+			<source
+				media="(max-width: 768px)"
+				width="1683"
+				height="935"
 				srcset="<?php echo esc_url( get_template_directory_uri() . '/assets/images/conexaobr_Hero_image_mobile.png' ); ?>">
-			<!-- Desktop: 3.71:1 composition (conexaobr_Hero_image.png). The
-			     width/height attributes reserve the 3.71:1 slot before load to
-			     prevent layout shift; object-fit:cover handles the crop. -->
+			<!-- Desktop: cinematic composition (conexaobr_Hero_image.png,
+			     2057×764 intrinsic). The 3.71:1 hero slot is reserved by the
+			     .hero-section aspect-ratio rule in CSS — not by these
+			     attributes — so width/height only carry honest pre-load
+			     intrinsic metadata; object-fit:cover handles the crop. -->
 			<img class="hero-background-img"
 				src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/conexaobr_Hero_image.png' ); ?>"
-				width="3710"
-				height="1000"
+				width="2057"
+				height="764"
 				alt=""
 				loading="eager"
 				fetchpriority="high"

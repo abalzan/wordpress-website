@@ -89,8 +89,11 @@ All in `template-parts/`:
 
 The front-page hero is a full‑bleed cinematic image with overlaid text (the old green panel + separate right‑hand image card / `.hero-layout` grid has been removed):
 
-- **Asset**: `assets/images/conexaobr_Hero_image.png` (2057×764), output in `front-page.php` via `get_template_directory_uri()` as `<img class="hero-background-img">` inside `.hero-background`. Resolves identically in local and production.
-- **Image behavior**: `aspect-ratio: 2057 / 764` on desktop (uncropped); `.hero-background-img` uses `object-fit: cover` / `object-position: center`. Hero content keeps the previous presentation: `min-height: 500px`, vertically centered via a flex `.site-container`, `max-width: 640px`. Mobile: `aspect-ratio: auto; min-height: 250px` with the vertical centering neutralized.
+- **Assets**: committed project files output in `front-page.php` via `get_template_directory_uri()` inside a responsive `<picture>` in `.hero-background`. Desktop fallback `<img>`: `conexaobr_Hero_image.png` (2057×764). Mobile sources (≤768px): `conexaobr_Hero_image_mobile.webp` (1080×600) with PNG fallback (1683×935) — both 1.8:1. Resolves identically in local and production.
+- **Sizing model** (one source of truth — the section controls dimensions):
+  - Desktop (≥769px): `.hero-section { aspect-ratio: 3.71 / 1 }`; the image fills it via `object-fit: cover` / `object-position: center`; copy vertically centered by a flex `.site-container`, `max-width: 640px`.
+  - Mobile (≤768px): `aspect-ratio: auto; min-height: calc(100vw / 1.8)` — the hero is never shorter than the mobile image's own 1.8:1 proportion and grows naturally with its content (no fixed pixel heights, nothing clipped). Copy is bottom-anchored over the photo (`align-items: flex-end`), image crop biased via `object-position: 38% center`.
+  - The `width`/`height` attributes on each `<source>`/`<img>` carry truthful intrinsic metadata only; CSS fully determines the rendered box, so they never stretch or size the image.
 - **Text safety**: a subtle left‑side green gradient (`.hero-content::before`, transparent after ~60–70%) darkens only the text‑safe zone; the castle/family/flags on the right stay unobscured.
 - **Accessibility**: decorative `<img>` (`alt=""`, `aria-hidden`); `<section aria-label>`.
 - **Performance**: `loading="eager"` + `fetchpriority="high"` (LCP).
