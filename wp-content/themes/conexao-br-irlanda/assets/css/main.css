@@ -3228,6 +3228,16 @@ input[type="button"] {
     align-items: flex-end;
     height: auto;
     min-height: inherit;
+    /* Tighter, viewport-proportional horizontal gutter than the global
+       mobile container gutter (16px/side). Over the full-bleed photo the
+       standard gutter reads as too inset, so the hero copy (badge first)
+       sits visibly closer to the image's left edge while keeping an
+       intentional breathing margin at every width (≈6.4px @320px → 9.6px
+       @480px). Scoped to .hero-section only: every other section keeps
+       the standard .site-container gutters, and desktop (>768px) is
+       untouched. The background image is absolutely positioned and does
+       not participate in this sizing. */
+    width: min(100%, calc(100% - 2 * clamp(6px, 2vw, 10px)));
   }
 
   .hero-content {
