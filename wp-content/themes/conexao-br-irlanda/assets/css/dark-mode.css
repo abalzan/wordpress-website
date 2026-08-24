@@ -802,6 +802,27 @@
   background: var(--conexao-white);
 }
 
+/* Homepage Apoiadores carousel — navigation arrows. Dark surfaces keep the
+   buttons readable over cards; brand green only on hover/focus, matching
+   the light theme's secondary visual weight. */
+[data-theme="dark"] .sponsors-carousel-arrow {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text-secondary);
+  box-shadow: var(--conexao-shadow-sm);
+}
+
+[data-theme="dark"] .sponsors-carousel-arrow:hover {
+  background: var(--color-primary-50);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  box-shadow: var(--conexao-shadow-md);
+}
+
+[data-theme="dark"] .sponsors-carousel-arrow:focus-visible {
+  outline-color: var(--conexao-accent);
+}
+
 /* ===== 15. BLOG / SINGLE POST ===== */
 [data-theme="dark"] .single-post-header {
   background: var(--color-surface-muted);

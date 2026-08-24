@@ -44,6 +44,27 @@ Each content type defines its own statuses in the config. Common statuses:
 
 Event-specific: `source_not_found`, `expired`, `rejected`.
 
+## Media Fields & Featured Image Sync
+
+`media`-type fields (e.g. the Apoiador `_sponsor_logo`) store a **Media Library
+attachment ID** — never a URL, and never local-only IDs as portable identifiers.
+The relationship is: post → attachment ID → WordPress featured image.
+
+- The editor's save handler (`Conexao_Admin_Ux_Editor::save()`) syncs each
+  type's media field to the core featured image via `set_post_thumbnail()` /
+  `delete_post_thumbnail()` so public templates using
+  `has_post_thumbnail()` / `the_post_thumbnail()` display it.
+- Sync only runs when the editor form submitted the field; autosaves,
+  Quick Edit, bulk actions and importers never touch thumbnails through it.
+- `Conexao_Admin_Ux_Fields::normalize_media_value()` keeps values as numeric
+  attachment IDs and resolves legacy URL values back to their attachment via
+  `attachment_url_to_postid()`.
+- The rendered hidden input always carries the stored value verbatim; preview
+  resolution failures must never empty it (that previously caused saves to
+  wipe the saved image).
+- Removing an image clears the relationship only — the Media Library
+  attachment itself is never deleted.
+
 ## Admin Pages
 
 - **Leisure images**: Tools → Gerenciador de Imagens (Lazer) — Wikimedia search and import

@@ -485,17 +485,28 @@ final class Conexao_Admin_Ux_Editor {
 		}
 
 		$field_key = $media_fields[ $this->post_type ];
-		$meta_key  = '_' . $field_key;
 		$meta      = isset( $data['conexao_fields'] ) ? $data['conexao_fields'] : array();
-		$value     = isset( $meta[ $field_key ] ) ? $meta[ $field_key ] : '';
 
-		$attachment_id = absint( $value );
-		if ( $attachment_id ) {
-			set_post_thumbnail( $post_id, $attachment_id );
-		} elseif ( '' === $value || '0' === $value ) {
-			// Explicitly cleared — remove the featured image.
-			delete_post_meta( $post_id, '_thumbnail_id' );
+		// Only act when the editor form actually submitted this field. Other
+		// write paths (Quick Edit, bulk actions, importers, autosaves) never
+		// include it and must not have their thumbnails touched here.
+		if ( ! isset( $meta[ $field_key ] ) ) {
+			return;
 		}
+
+		// Normalize to an attachment ID (also resolves legacy URL values back
+		// to their Media Library attachment when possible).
+		$value         = Conexao_Admin_Ux_Fields::normalize_media_value( $meta[ $field_key ] );
+		$attachment_id = is_int( $value ) ? $value : 0;
+
+		if ( $attachment_id && 'attachment' === get_post_type( $attachment_id ) ) {
+			set_post_thumbnail( $post_id, $attachment_id );
+		} elseif ( '' === $value ) {
+			// Explicitly cleared — remove the featured image via the core
+			// API. The Media Library attachment itself is never deleted.
+			delete_post_thumbnail( $post_id );
+		}
+		// Legacy unresolvable URL values leave any existing thumbnail untouched.
 	}
 
 	/**

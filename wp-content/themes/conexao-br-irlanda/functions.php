@@ -854,6 +854,106 @@ function conexao_popular_posts( $limit = 5 ) {
 }
 
 /**
+ * Featured Apoiadores for the homepage carousel.
+ *
+ * Fully data-driven from the EXISTING sponsor post type and its editorial
+ * fields — no new content model and no duplicated supporter data:
+ *
+ *   - "Apoiador em destaque" (_sponsor_featured = 1) decides WHAT appears.
+ *   - "Ordem de exibição"   (_sponsor_display_order) decides WHERE it appears.
+ *
+ * Editing a supporter in wp-admin therefore updates the homepage carousel
+ * automatically; no code change is ever required.
+ *
+ * Ordering is deterministic so the carousel never shuffles between loads:
+ *   1. _sponsor_display_order ascending (numeric; supporters without a
+ *      value sort last so they are never hidden just because the field
+ *      was left blank),
+ *   2. title ascending as tiebreaker for equal order values.
+ *
+ * Results are transient-cached under "conexao_home_sponsors" — the exact
+ * key conexao_homepage_cache_invalidate() already deletes whenever any
+ * sponsor is saved, updated or deleted — so admin edits appear on the
+ * homepage immediately (with a 5-minute safety-net expiration).
+ *
+ * @return array[] List of normalized sponsor card data arrays.
+ */
+function conexao_get_featured_sponsors() {
+	$cache_key = 'conexao_home_sponsors';
+	$cached    = get_transient( $cache_key );
+
+	if ( false !== $cached && is_array( $cached ) ) {
+		return $cached;
+	}
+
+	$query = new WP_Query( array(
+		'post_type'      => 'sponsor',
+		'post_status'    => 'publish',
+		'posts_per_page' => -1,
+		'no_found_rows'  => true,
+		'meta_query'     => array(
+			array(
+				'key'     => '_sponsor_featured',
+				'value'   => '1',
+				'compare' => '=',
+			),
+		),
+	) );
+
+	$sponsors = array();
+
+	if ( $query->have_posts() ) {
+		foreach ( $query->posts as $sponsor_post ) {
+			$sponsor_id = $sponsor_post->ID;
+			$link       = get_post_meta( $sponsor_id, '_sponsor_link', true );
+
+			$terms    = get_the_terms( $sponsor_id, 'conexao_category' );
+			$category = ( $terms && ! is_wp_error( $terms ) ) ? $terms[0]->name : '';
+
+			$counties = get_the_terms( $sponsor_id, 'conexao_county' );
+			$county   = ( $counties && ! is_wp_error( $counties ) ) ? $counties[0]->name : '';
+
+			// Mirror get_the_excerpt(): manual excerpt wins, otherwise derive
+			// one from the content. Trimmed to the same 12 words the homepage
+			// card has always displayed.
+			$excerpt = trim( (string) $sponsor_post->post_excerpt );
+			if ( '' === $excerpt ) {
+				$excerpt = wp_strip_all_tags( $sponsor_post->post_content );
+			}
+
+			$sponsors[] = array(
+				'title'         => $sponsor_post->post_title,
+				'permalink'     => get_permalink( $sponsor_id ),
+				'url'           => $link,
+				'category'      => $category,
+				'county'        => $county,
+				'description'   => wp_trim_words( $excerpt, 12, '...' ),
+				'thumbnail'     => get_the_post_thumbnail( $sponsor_id, 'thumbnail', array( 'loading' => 'lazy' ) ),
+				'display_order' => get_post_meta( $sponsor_id, '_sponsor_display_order', true ),
+			);
+		}
+		wp_reset_postdata();
+	}
+
+	// Deterministic ordering: Ordem de exibição ascending (numeric), ties
+	// broken by title ascending.
+	usort( $sponsors, function( $a, $b ) {
+		$order_a = ( '' !== (string) $a['display_order'] ) ? (int) $a['display_order'] : PHP_INT_MAX;
+		$order_b = ( '' !== (string) $b['display_order'] ) ? (int) $b['display_order'] : PHP_INT_MAX;
+
+		if ( $order_a === $order_b ) {
+			return strcasecmp( $a['title'], $b['title'] );
+		}
+
+		return ( $order_a < $order_b ) ? -1 : 1;
+	} );
+
+	set_transient( $cache_key, $sponsors, 300 );
+
+	return $sponsors;
+}
+
+/**
  * Customizer settings
  */
 function conexao_customize_register( $wp_customize ) {

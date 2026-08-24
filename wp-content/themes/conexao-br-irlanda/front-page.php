@@ -503,65 +503,83 @@ $hero_subtitle = get_theme_mod( 'conexao_hero_subtitle', __( 'Conectando a comun
 			</a>
 		</div>
 
-		<div class="businesses-grid">
-			<?php
-			$featured_sponsors = new WP_Query( array(
-				'post_type'      => 'sponsor',
-				'posts_per_page' => 4,
-				'meta_key'       => '_sponsor_featured',
-				'meta_value'     => '1',
-				'orderby'        => 'meta_value_num',
-				'meta_key'       => '_sponsor_display_order',
-				'order'          => 'ASC',
-				'no_found_rows'  => true,
-				'update_post_meta_cache' => false,
-				'update_post_term_cache' => false,
-			) );
-			if ( ! $featured_sponsors->have_posts() ) {
-				$featured_sponsors = new WP_Query( array(
-					'post_type'      => 'sponsor',
-					'posts_per_page' => 4,
-					'no_found_rows'  => true,
-					'update_post_meta_cache' => false,
-					'update_post_term_cache' => false,
-				) );
-			}
-		if ( $featured_sponsors->have_posts() ) :
-			while ( $featured_sponsors->have_posts() ) : $featured_sponsors->the_post();
-				$sponsor_link = get_post_meta( get_the_ID(), '_sponsor_link', true );
-				$terms = get_the_terms( get_the_ID(), 'conexao_category' );
-				$sponsor_counties = get_the_terms( get_the_ID(), 'conexao_county' );
-				// Determine if the card should be clickable (external link takes priority, then permalink).
-				$card_link = $sponsor_link ? esc_url( $sponsor_link ) : get_permalink();
-				$card_target = $sponsor_link ? ' target="_blank"' : '';
-				$card_rel = $sponsor_link ? ' rel="noopener noreferrer"' : '';
-				$card_classes = 'business-card' . ( $sponsor_link ? ' business-card--clickable' : '' );
-				?>
-				<div class="<?php echo esc_attr( $card_classes ); ?>">
-					<a href="<?php echo esc_url( $card_link ); ?>" class="business-card-link"<?php echo $card_target . $card_rel; /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */ ?>>
-						<div class="business-logo">
-							<?php if ( has_post_thumbnail() ) : ?>
-								<?php the_post_thumbnail( 'thumbnail', array( 'loading' => 'lazy' ) ); ?>
-							<?php else : ?>
-								<svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="#adb5bd" stroke-width="1.5">
-									<rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
-									<path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
-								</svg>
-							<?php endif; ?>
-						</div>
-						<?php if ( $terms && ! is_wp_error( $terms ) ) : ?>
-							<span class="business-category"><?php echo esc_html( $terms[0]->name ); ?></span>
-						<?php endif; ?>
-						<h3 class="business-name"><?php the_title(); ?></h3>
-						<?php if ( $sponsor_counties && ! is_wp_error( $sponsor_counties ) ) : ?><span class="business-location"><?php echo esc_html( $sponsor_counties[0]->name ); ?></span><?php endif; ?>
-						<p class="business-description"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 12, '...' ) ); ?></p>
-					</a>
-				</div>
-			<?php endwhile; wp_reset_postdata();
-			else : ?>
-				<p><?php esc_html_e( 'Organizações e empresas que apoiam a comunidade serão apresentados aqui em breve.', 'conexao-br-irlanda' ); ?></p>
-			<?php endif; ?>
+		<?php
+		// Homepage Apoiadores carousel — a presentation layer over the EXISTING
+		// sponsor data model. Which supporters appear is decided solely by the
+		// "Apoiador em destaque" field (_sponsor_featured = 1) and where they
+		// appear by "Ordem de exibição" (_sponsor_display_order ascending,
+		// ties broken by title). Editing a supporter in wp-admin updates this
+		// section automatically — no code change required.
+		// See conexao_get_featured_sponsors() in functions.php.
+		$featured_sponsors = conexao_get_featured_sponsors();
+		$sponsor_total     = count( $featured_sponsors );
+		?>
+		<?php if ( $sponsor_total > 0 ) : ?>
+		<div class="sponsors-carousel" data-sponsors-carousel>
+			<!-- Polite live region announcing the current position while scrolling. -->
+			<p class="screen-reader-text" data-sponsors-status aria-live="polite"></p>
+
+			<div class="sponsors-carousel-viewport"
+				tabindex="0"
+				role="group"
+				aria-roledescription="carousel"
+				aria-label="<?php esc_attr_e( 'Apoiadores em destaque', 'conexao-br-irlanda' ); ?>">
+				<ul class="sponsors-carousel-list">
+					<?php foreach ( $featured_sponsors as $sponsor_index => $featured_sponsor ) :
+						$sponsor_title   = $featured_sponsor['title'];
+						$sponsor_url     = $featured_sponsor['url'];
+						// External link takes priority, then the sponsor permalink —
+						// same behavior as before, including target/rel attributes.
+						$sponsor_href    = $sponsor_url ? $sponsor_url : $featured_sponsor['permalink'];
+						$sponsor_target  = $sponsor_url ? ' target="_blank"' : '';
+						$sponsor_rel     = $sponsor_url ? ' rel="noopener noreferrer"' : '';
+						$sponsor_classes = 'business-card' . ( $sponsor_url ? ' business-card--clickable' : '' );
+						?>
+						<li class="sponsors-slide"
+							role="group"
+							aria-roledescription="slide"
+							aria-label="<?php echo esc_attr( sprintf( __( 'Apoiador %1$d de %2$d', 'conexao-br-irlanda' ), $sponsor_index + 1, $sponsor_total ) ); ?>">
+							<div class="<?php echo esc_attr( $sponsor_classes ); ?>">
+								<a href="<?php echo esc_url( $sponsor_href ); ?>" class="business-card-link"<?php echo $sponsor_target . $sponsor_rel; /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */ ?>>
+									<div class="business-logo">
+										<?php if ( ! empty( $featured_sponsor['thumbnail'] ) ) : ?>
+											<?php echo $featured_sponsor['thumbnail']; /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */ ?>
+										<?php else : ?>
+											<svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="#adb5bd" stroke-width="1.5" aria-hidden="true">
+												<rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+												<path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+											</svg>
+										<?php endif; ?>
+									</div>
+									<?php if ( $featured_sponsor['category'] ) : ?>
+										<span class="business-category"><?php echo esc_html( $featured_sponsor['category'] ); ?></span>
+									<?php endif; ?>
+									<h3 class="business-name"><?php echo esc_html( $sponsor_title ); ?></h3>
+									<?php if ( $featured_sponsor['county'] ) : ?><span class="business-location"><?php echo esc_html( $featured_sponsor['county'] ); ?></span><?php endif; ?>
+									<p class="business-description"><?php echo esc_html( $featured_sponsor['description'] ); ?></p>
+								</a>
+							</div>
+						</li>
+					<?php endforeach; ?>
+				</ul>
+			</div>
+
+			<div class="sponsors-carousel-controls">
+				<button type="button" class="sponsors-carousel-arrow sponsors-carousel-arrow--prev" data-sponsors-prev aria-label="<?php esc_attr_e( 'Apoiador anterior', 'conexao-br-irlanda' ); ?>">
+					<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+						<polyline points="15 18 9 12 15 6"></polyline>
+					</svg>
+				</button>
+				<button type="button" class="sponsors-carousel-arrow sponsors-carousel-arrow--next" data-sponsors-next aria-label="<?php esc_attr_e( 'Próximo apoiador', 'conexao-br-irlanda' ); ?>">
+					<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+						<polyline points="9 18 15 12 9 6"></polyline>
+					</svg>
+				</button>
+			</div>
 		</div>
+		<?php else : ?>
+			<p><?php esc_html_e( 'Organizações e empresas que apoiam a comunidade serão apresentados aqui em breve.', 'conexao-br-irlanda' ); ?></p>
+		<?php endif; ?>
 	</div>
 </section>
 

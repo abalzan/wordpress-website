@@ -58,6 +58,17 @@ The front-page hero is a single full-bleed cinematic image with overlaid text (t
 
 The hero background is **not** a Customizer setting — the `conexao_hero_image` Media control was removed (the green text-safe zone and castle/family/flags are part of the fixed asset). Only `conexao_hero_title` / `conexao_hero_subtitle` remain customisable.
 
+## Homepage Apoiadores Carousel
+
+The homepage "Apoiadores" section is a responsive, dependency-free carousel over the **existing sponsor data model** — no new content type, no duplicated supporter data:
+
+- **Data source**: `conexao_get_featured_sponsors()` (functions.php). Only sponsors with **Apoiador em destaque** (`_sponsor_featured = 1`) appear; ordering uses **Ordem de exibição** (`_sponsor_display_order`) ascending with a title tiebreaker so equal values never shuffle between loads. Sponsors without an order value sort last. Editing a supporter in wp-admin updates the section automatically (transient-cached under `conexao_home_sponsors`, invalidated on save).
+- **Markup** (`front-page.php`): scroll-snap track (`.sponsors-carousel-viewport` > `.sponsors-carousel-list` > `.sponsors-slide`) reusing the existing `.business-card` visual identity, link behavior (`target="_blank" rel="noopener noreferrer"` for external links) and dark-mode logo treatment.
+- **Responsive**: 4 cards per view desktop, 2 tablet, 1 full card + next-card peek mobile (native swipe; arrows hidden ≤768px).
+- **Adaptive**: when every card fits without scrolling, JS adds `.is-static` — arrows hide and the row centers (simple layout instead of a pointless carousel). No autoplay; wrap-around prev/next only when scrollable.
+- **Accessibility**: `aria-roledescription="carousel"`/`"slide"`, per-slide "Apoiador X de Y" labels, keyboard support on the track (arrows/Home/End), 44px labelled buttons, visible focus states, polite live region announcing position, reduced-motion aware.
+- **Styles**: `main.css` ("Sponsors Carousel" block) + `dark-mode.css` arrow overrides.
+
 ## CSS Architecture
 
 6 files, loaded in order via `functions.php`:
@@ -81,6 +92,7 @@ Features:
 - Mobile search overlay
 - Copy-to-clipboard buttons
 - Leisure filters (desktop dropdowns + mobile bottom sheet)
+- Sponsors carousel (homepage Apoiadores: scroll-snap track, arrows, keyboard nav, adaptive static mode)
 
 ## Custom WordPress Integration
 
@@ -103,6 +115,7 @@ Key functionality includes:
 | `conexao_normalize_primary_nav_sections()` | Nav binding + active state (priority 25) |
 | `conexao_fix_nav_active_states()` | Active state conflict resolution |
 | `conexao_popular_posts()` | "Mais Lidos" query (view-count ready) |
+| `conexao_get_featured_sponsors()` | Featured Apoiadores for the homepage carousel (transient-cached) |
 | `conexao_customize_register()` | Customizer sections (colors, social, hero [title/subtitle only], footer) |
 
 ### Image Sizes

@@ -1861,6 +1861,138 @@ ul, ol {
   background: #1da851;
 }
 
+/* ===== Sponsors Carousel (homepage Apoiadores) =====
+   Responsive, dependency-free carousel built on native scroll-snap.
+   Presentation layer only — which supporters appear and in what order is
+   decided entirely by the existing sponsor fields ("Apoiador em destaque"
+   and "Ordem de exibição"). Desktop shows 4 cards per view, tablet 2, and
+   mobile one full card plus a peek of the next so horizontal scrolling is
+   obvious. When every card fits the viewport the JS adds .is-static and
+   the section degrades to a simple centered row with no controls. */
+.sponsors-carousel {
+  position: relative;
+}
+
+.sponsors-carousel-viewport {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 4px;
+  /* Vertical padding gives the card hover lift / focus ring room instead
+     of clipping it; inline padding protects the outermost focus rings. */
+  padding: 10px 4px 14px;
+  /* Extend 4px past the container edges so cards stay flush with the
+     section grid while the inner padding still applies. The site
+     container's own padding absorbs the extension — no page overflow. */
+  margin-inline: -4px;
+  -webkit-overflow-scrolling: touch;
+  /* Hidden scrollbar on purpose: the partial next-card peek plus the
+     arrows communicate scrollability. Keyboard/touch scrolling unaffected. */
+  scrollbar-width: none;
+}
+
+.sponsors-carousel-viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.sponsors-carousel-viewport:focus-visible {
+  outline: 2px solid var(--conexao-primary);
+  outline-offset: 2px;
+}
+
+.sponsors-carousel-list {
+  display: flex;
+  align-items: stretch;
+  gap: 20px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.sponsors-slide {
+  flex: 0 0 calc((100% - 60px) / 4); /* 4-up desktop */
+  min-width: 0;
+  scroll-snap-align: start;
+  display: flex;
+}
+
+.sponsors-slide .business-card {
+  width: 100%;
+}
+
+/* Tablet: 2 cards per view */
+@media (max-width: 1199px) and (min-width: 769px) {
+  .sponsors-slide {
+    flex-basis: calc((100% - 20px) / 2);
+  }
+}
+
+/* Mobile: one full card plus a peek of the next */
+@media (max-width: 768px) {
+  .sponsors-slide {
+    flex-basis: min(78%, 320px);
+  }
+}
+
+/* Navigation arrows — desktop/tablet only. Mobile relies on natural
+   touch swipe (no tiny tap targets). Visually secondary: neutral surface,
+   quiet border, brand color only on hover/focus. */
+.sponsors-carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--conexao-radius-full);
+  background: var(--conexao-white);
+  border: 1px solid var(--conexao-border);
+  color: var(--conexao-gray-600);
+  box-shadow: var(--conexao-shadow-sm);
+  cursor: pointer;
+  transition: all var(--conexao-transition);
+}
+
+.sponsors-carousel-arrow--prev {
+  left: -14px;
+}
+
+.sponsors-carousel-arrow--next {
+  right: -14px;
+}
+
+.sponsors-carousel-arrow:hover {
+  color: var(--conexao-primary);
+  border-color: var(--conexao-primary);
+  background: var(--conexao-primary-50);
+  box-shadow: var(--conexao-shadow-md);
+}
+
+.sponsors-carousel-arrow:focus-visible {
+  outline: 2px solid var(--conexao-primary);
+  outline-offset: 2px;
+}
+
+@media (max-width: 768px) {
+  .sponsors-carousel-arrow {
+    display: none;
+  }
+}
+
+/* Adaptive static mode: when all featured supporters fit without
+   scrolling (few supporters or wide screens), hide the arrows and center
+   the row — a simple responsive layout instead of a pointless carousel. */
+.sponsors-carousel.is-static .sponsors-carousel-arrow {
+  display: none;
+}
+
+.sponsors-carousel.is-static .sponsors-carousel-list {
+  justify-content: center;
+}
+
 /* ===== Newsletter ===== */
 .newsletter-section {
   background: linear-gradient(135deg, var(--conexao-primary-dark) 0%, var(--conexao-primary) 100%);

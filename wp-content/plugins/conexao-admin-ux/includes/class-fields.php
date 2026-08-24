@@ -143,12 +143,30 @@ final class Conexao_Admin_Ux_Fields {
 				break;
 
 			case 'media':
+				// The hidden input MUST always carry the stored value verbatim
+				// (attachment ID, or a legacy URL). It must never be derived
+				// from whether a preview could be resolved: when no preview
+				// size exists the old logic rendered an empty field, and the
+				// next save silently wiped the saved image relationship.
+				$value         = (string) $value;
 				$attachment_id = absint( $value );
-				$preview_url   = wp_get_attachment_image_url( $attachment_id, 'medium' );
-				$display_value = $preview_url ? $attachment_id : esc_url( $value );
-				$preview       = $preview_url ? '<img src="' . esc_url( $preview_url ) . '" alt="" />' : ( $value ? '<img src="' . esc_url( $value ) . '" alt="" />' : '' );
+				$preview       = '';
+				if ( $attachment_id ) {
+					$preview_src = wp_get_attachment_image_url( $attachment_id, 'medium' );
+					if ( ! $preview_src ) {
+						// Fall back to the original file (e.g. logos smaller
+						// than the "medium" size, or missing size metadata).
+						$preview_src = wp_get_attachment_url( $attachment_id );
+					}
+					if ( $preview_src ) {
+						$preview = '<img src="' . esc_url( $preview_src ) . '" alt="" />';
+					}
+				} elseif ( '' !== $value ) {
+					// Legacy URL-only value: display it and keep it intact.
+					$preview = '<img src="' . esc_url( $value ) . '" alt="" />';
+				}
 				$html         .= '<div class="conexao-media-picker" data-field-id="' . esc_attr( $id ) . '">';
-				$html         .= '<input type="hidden" class="conexao-media-value" id="' . esc_attr( $id ) . '" name="' . esc_attr( $name ) . '" value="' . esc_attr( $display_value ) . '" />';
+				$html         .= '<input type="hidden" class="conexao-media-value" id="' . esc_attr( $id ) . '" name="' . esc_attr( $name ) . '" value="' . esc_attr( $value ) . '" />';
 				$html         .= '<div class="conexao-media-preview' . ( $preview ? ' has-image' : '' ) . '">' . $preview . '<span class="conexao-media-placeholder">' . esc_html__( 'Nenhuma imagem selecionada', 'conexao-admin-ux' ) . '</span></div>';
 				$html         .= '<div class="conexao-media-actions">';
 				$html         .= '<button type="button" class="button conexao-media-choose">' . esc_html__( 'Selecionar imagem', 'conexao-admin-ux' ) . '</button>';
@@ -235,7 +253,7 @@ final class Conexao_Admin_Ux_Fields {
 					$value = sanitize_text_field( $value );
 					break;
 				case 'media':
-					$value = absint( $value ) ? absint( $value ) : esc_url_raw( $value );
+					$value = self::normalize_media_value( $value );
 					break;
 				case 'number':
 					$value = ( '' !== $value && null !== $value ) ? absint( $value ) : '';
@@ -453,6 +471,39 @@ final class Conexao_Admin_Ux_Fields {
 			}
 			return sprintf( '%02d:%02d', $hour, $min );
 		}
+		return '';
+	}
+
+	/**
+	 * Normalize a media field value into a Media Library attachment ID.
+	 *
+	 * Numeric values are kept as attachment IDs — the single source of truth
+	 * for the Apoiador → attachment relationship. Legacy URL values (stored
+	 * before the editor standardized on IDs) are resolved back to an existing
+	 * Media Library attachment via attachment_url_to_postid(); unresolvable
+	 * legacy URLs are preserved as-is instead of being destroyed.
+	 *
+	 * @param mixed $value Raw submitted value.
+	 * @return int|string Attachment ID (int), legacy URL (string), or ''.
+	 */
+	public static function normalize_media_value( $value ) {
+		$value = trim( (string) $value );
+		if ( '' === $value || '0' === $value ) {
+			return '';
+		}
+
+		if ( ctype_digit( $value ) ) {
+			return (int) $value;
+		}
+
+		if ( preg_match( '#^https?://#i', $value ) ) {
+			$id = attachment_url_to_postid( $value );
+			if ( $id ) {
+				return (int) $id;
+			}
+			return esc_url_raw( $value );
+		}
+
 		return '';
 	}
 

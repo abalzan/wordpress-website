@@ -12,6 +12,7 @@
 		initMobileSearch();
 		initCopyButtons();
 		initLeisureFilters();
+		initSponsorsCarousel();
 	});
 
 	// ===== Theme Toggle =====
@@ -472,6 +473,124 @@
 				window.location.href = url.pathname + (qs ? '?' + qs : '');
 			});
 		}
+	}
+
+	// ===== Sponsors Carousel (homepage Apoiadores) =====
+	// Lightweight, dependency-free enhancement over a native scroll-snap
+	// track. Which supporters appear — and in what order — is decided entirely
+	// in PHP from the existing sponsor fields ("Apoiador em destaque" and
+	// "Ordem de exibição"); this script only adds navigation:
+	//   - prev/next buttons that step one card at a time,
+	//   - keyboard support on the scrollable track (arrows, Home, End),
+	//   - wrap-around at both ends so controls never dead-end,
+	//   - a polite live region announcing the current position.
+	// No autoplay: navigation is always user-controlled. When every card fits
+	// the viewport (few supporters or wide screens) the carousel adds
+	// .is-static, hides its arrows and centers the row instead — a simple
+	// responsive layout rather than a pointless carousel. Mobile relies on
+	// natural touch swipe; arrows are hidden there by CSS.
+	function initSponsorsCarousel() {
+		var carousels = document.querySelectorAll('[data-sponsors-carousel]');
+		if (!carousels.length) return;
+
+		var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+		Array.prototype.forEach.call(carousels, function(carousel) {
+			var viewport = carousel.querySelector('.sponsors-carousel-viewport');
+			var prevBtn  = carousel.querySelector('[data-sponsors-prev]');
+			var nextBtn  = carousel.querySelector('[data-sponsors-next]');
+			var status   = carousel.querySelector('[data-sponsors-status]');
+			var slides   = viewport ? Array.prototype.slice.call(viewport.querySelectorAll('.sponsors-slide')) : [];
+
+			if (!viewport || slides.length === 0) return;
+
+			// Distance between consecutive slide starts (card width + gap).
+			// Falls back to the first card's width for single-card tracks.
+			function stepSize() {
+				if (slides.length > 1) {
+					var delta = slides[1].offsetLeft - slides[0].offsetLeft;
+					if (delta > 0) return delta;
+				}
+				return slides[0].offsetWidth;
+			}
+
+			function maxScroll() {
+				return viewport.scrollWidth - viewport.clientWidth;
+			}
+
+			function currentIndex() {
+				var step = stepSize();
+				if (step <= 0) return 0;
+				return Math.min(slides.length - 1, Math.max(0, Math.round(viewport.scrollLeft / step)));
+			}
+
+			function announce() {
+				if (!status) return;
+				if (maxScroll() <= 2) {
+					status.textContent = '';
+					return;
+				}
+				status.textContent = 'Apoiador ' + (currentIndex() + 1) + ' de ' + slides.length;
+			}
+
+			function scrollToIndex(index) {
+				viewport.scrollTo({
+					left: index * stepSize(),
+					behavior: reduceMotion ? 'auto' : 'smooth'
+				});
+			}
+
+			function goNext() {
+				if (maxScroll() <= 2) return;
+				var index = currentIndex();
+				scrollToIndex(index >= slides.length - 1 ? 0 : index + 1);
+			}
+
+			function goPrev() {
+				if (maxScroll() <= 2) return;
+				var index = currentIndex();
+				scrollToIndex(index <= 0 ? slides.length - 1 : index - 1);
+			}
+
+			// Adaptive layout: when everything fits without scrolling, mark
+			// the carousel static (CSS hides the arrows and centers the row).
+			function sync() {
+				carousel.classList.toggle('is-static', maxScroll() <= 2);
+				announce();
+			}
+
+			if (prevBtn) prevBtn.addEventListener('click', goPrev);
+			if (nextBtn) nextBtn.addEventListener('click', goNext);
+
+			// Keyboard support on the scrollable track itself.
+			viewport.addEventListener('keydown', function(e) {
+				if (e.key === 'ArrowRight') { e.preventDefault(); goNext(); }
+				else if (e.key === 'ArrowLeft') { e.preventDefault(); goPrev(); }
+				else if (e.key === 'Home') { e.preventDefault(); scrollToIndex(0); }
+				else if (e.key === 'End') { e.preventDefault(); scrollToIndex(slides.length - 1); }
+			});
+
+			// rAF-throttled scroll updates keep the live region in sync with
+			// swipes and drags without flooding assistive tech.
+			var ticking = false;
+			viewport.addEventListener('scroll', function() {
+				if (ticking) return;
+				ticking = true;
+				window.requestAnimationFrame(function() {
+					ticking = false;
+					announce();
+				});
+			});
+
+			// Breakpoint changes alter how many cards fit — re-evaluate.
+			var resizeTimer = null;
+			window.addEventListener('resize', function() {
+				clearTimeout(resizeTimer);
+				resizeTimer = setTimeout(sync, 150);
+			});
+
+			sync();
+		});
 	}
 
 	// ===== Expose functions globally if needed =====

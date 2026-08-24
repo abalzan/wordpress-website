@@ -37,9 +37,15 @@
 		});
 
 		frame.on('select', function () {
-			var attachment = frame.state().get('selection').first().toJSON();
+			var selected = frame.state().get('selection').first();
+			if (!selected) return;
+			var attachment = selected.toJSON();
+			// The attachment ID is the value persisted with the post; without
+			// it there is nothing to save, so leave the field untouched.
+			if (!attachment || !attachment.id) return;
 			input.val(attachment.id);
-			var img = (attachment.sizes && attachment.sizes.medium) ? attachment.sizes.medium.url : attachment.url;
+			var sizes = attachment.sizes || {};
+			var img = (sizes.medium && sizes.medium.url) || (sizes.full && sizes.full.url) || attachment.url;
 			preview.html('<img src="' + img + '" alt="" />').addClass('has-image');
 			removeBtn.show();
 		});
