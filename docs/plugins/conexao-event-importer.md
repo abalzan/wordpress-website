@@ -1,7 +1,7 @@
 # Conexão Event Importer
 
 - **Path**: `wp-content/plugins/conexao-event-importer/`
-- **Version**: 1.3.0
+- **Version**: 1.4.0
 - **Purpose**: Local-only event aggregation. Fetches events from external sources (Laois Tourism, National Heritage Week, Eventbrite Laois) into the **local** WordPress installation, downloads all images into the local Media Library, then exports the complete event data as JSON for import into the production WordPress.com site.
 
 ## Architecture: Local is the importer, production is only the destination
@@ -26,6 +26,7 @@ production-side fetching. Everything is manual/on-demand.
 - Manage event source configurations (add, edit, toggle, delete)
 - Fetch events from external sources (iCalendar, HTML scraping, Eventbrite discovery/API) — **local only**
 - Normalize raw event data into structured WP post data
+- Filter out events whose date/time has already passed — past events are never created or updated by an import run
 - Deduplicate events by source + source_id (primary), URL, or content match — re-running never creates duplicates
 - Create/update event posts with full meta, taxonomies, and featured images
 - Download external event images into the local Media Library during import
@@ -42,6 +43,7 @@ production-side fetching. Everything is manual/on-demand.
 | `includes/class-event-sources.php` | `Conexao_Event_Sources` | Source CRUD, admin pages, manual import trigger |
 | `includes/class-event-status.php` | `Conexao_Event_Status` | Status constants, get/set/mark-expired, shared end-timestamp helper |
 | `includes/class-event-normalizer.php` | `Conexao_Event_Normalizer` | Normalize raw event data |
+| `includes/class-event-date-filter.php` | `Conexao_Event_Date_Filter` | Past-event filter: compare normalized dates against site-timezone now |
 | `includes/class-event-location.php` | `Conexao_Event_Location` | Location normalization (county, town, venue) |
 | `includes/class-event-deduplicator.php` | `Conexao_Event_Deduplicator` | Find existing events by source_id, URL, or content |
 | `includes/class-event-importer.php` | `Conexao_Event_Importer_Engine` | Main import engine, upsert logic, dry-run support |
@@ -103,7 +105,7 @@ Create a free token at [developers.eventbrite.com](https://www.eventbrite.com/de
 ## Workflow (manual, on-demand)
 
 1. On the **local** Docker WordPress, open **Event Import → Dashboard** and click **Import Events Now** (or run `wp conexao-events import`). Each source can also be imported individually from Event Sources.
-2. The importer fetches each active source, normalizes events, deduplicates against existing posts, and upserts. Images are downloaded into the local Media Library during import (`_event_banner_attachment_id` + post thumbnail).
+2. The importer fetches each active source, normalizes events, filters out past/invalid-date events (see [Past-event filtering](#past-event-filtering-v14)), deduplicates against existing posts, and upserts. Images are downloaded into the local Media Library during import (`_event_banner_attachment_id` + post thumbnail).
 3. Review needs-review events in the Events list if desired.
 4. Open **Event Import → Export Events** and download the JSON file. The export embeds each event's featured image as base64 data (up to 5 MB per image).
 5. On **production**, open **Event Import → Import Events** and upload the JSON. Attachments are recreated from the embedded bytes — no external requests are made.
@@ -123,6 +125,47 @@ Locally, `docker/php/uploads.ini` raises both limits to 64M (see
 `docs/development.md`). On production (WordPress.com) the limits are
 platform-managed; if an export is too large, run **Cleanup** locally first or
 split the export.
+
+### Past-event filtering (v1.4)
+
+Every import run evaluates each fetched event's scheduling fields
+(`start_date`, `start_time`, `end_date`, `end_time` — stored as `_event_date`,
+`_event_start_time`, `_event_end_date`, `_event_end_time`) against the current
+site date/time (`current_datetime()` / `wp_timezone()` — never string compares,
+never a hardcoded UTC assumption). The filter runs after normalization and
+**before** deduplication/upsert, so expired source events never create or
+update posts:
+
+```
+Fetch source → Parse → Normalize date/time → Compare with now
+    → future/current → import (dedupe → upsert as before)
+    → already ended  → skip ("Skipped (past)")
+    → missing/invalid/unparseable date → skip ("Skipped (invalid date)")
+```
+
+Rules:
+
+- **Multi-day events** use the end date/time as the cutoff when available —
+  an event running 20–27 Aug still imports on 25 Aug.
+- **Start-only events** import while their start moment is current or future,
+  and are skipped once it has passed. With no time given, the event counts as
+  running all day (end-of-day cutoff), matching `Conexao_Event_Status`
+  expiry semantics.
+- **Invalid dates** (missing required date, malformed format, impossible
+  calendar dates like Feb 30) are safely skipped with reason
+  "the event date could not be evaluated" — they are never treated as future.
+  Note this changes pre-1.4 behavior, where date-less events were imported as
+  needs-review; they are now skipped outright.
+- **Existing posts are never deleted or expired by this filter.** Previously
+  imported events stay untouched; the separate Cleanup process and the
+  auto-expire pass remain responsible for removing/hiding past events.
+- Skipped events still count as "present" URLs for `mark_missing_events()`,
+  so skipping cannot flip live events to Source Not Found.
+
+Statistics are reported everywhere results are shown:
+`skipped=N (past=X, invalid_date=Y)` appears in the run summary log line, the
+WP-CLI report (`wp conexao-events import`), the admin result notice, and the
+history entry; per-event skip reasons appear in Import Logs.
 
 ### Duplicate handling
 

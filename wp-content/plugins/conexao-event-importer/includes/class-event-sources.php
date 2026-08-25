@@ -548,7 +548,20 @@ class Conexao_Event_Sources {
 			$summary_parts[] = sprintf( /* translators: %d: count */ __( '%d duplicates', 'conexao-event-importer' ), $duplicates );
 		}
 		if ( $skipped > 0 ) {
-			$summary_parts[] = sprintf( /* translators: %d: count */ __( '%d skipped', 'conexao-event-importer' ), $skipped );
+			$skipped_past    = isset( $result['skipped_past'] ) ? (int) $result['skipped_past'] : 0;
+			$skipped_invalid = isset( $result['skipped_invalid_date'] ) ? (int) $result['skipped_invalid_date'] : 0;
+
+			if ( $skipped_past > 0 || $skipped_invalid > 0 ) {
+				$summary_parts[] = sprintf(
+					/* translators: 1: total skipped, 2: skipped because already ended, 3: skipped with invalid dates */
+					__( '%1$d skipped (%2$d past, %3$d invalid date)', 'conexao-event-importer' ),
+					$skipped,
+					$skipped_past,
+					$skipped_invalid
+				);
+			} else {
+				$summary_parts[] = sprintf( /* translators: %d: count */ __( '%d skipped', 'conexao-event-importer' ), $skipped );
+			}
 		}
 		if ( $needs_review > 0 ) {
 			$summary_parts[] = sprintf( /* translators: %d: count */ __( '%d need review', 'conexao-event-importer' ), $needs_review );

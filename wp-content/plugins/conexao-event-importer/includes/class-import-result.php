@@ -24,14 +24,16 @@ class Conexao_Import_Result {
 
 	/** @var array Aggregate counters. */
 	protected $counts = array(
-		'found'         => 0,
-		'created'       => 0,
-		'updated'       => 0,
-		'unchanged'     => 0,
-		'duplicates'    => 0,
-		'skipped'       => 0,
-		'needs_review'  => 0,
-		'failed'        => 0,
+		'found'                => 0,
+		'created'              => 0,
+		'updated'              => 0,
+		'unchanged'            => 0,
+		'duplicates'           => 0,
+		'skipped'              => 0,
+		'skipped_past'         => 0,
+		'skipped_invalid_date' => 0,
+		'needs_review'         => 0,
+		'failed'               => 0,
 	);
 
 	/** @var array Global/fatal error messages that stopped the source import. */
@@ -176,6 +178,36 @@ class Conexao_Import_Result {
 			'severity' => 'warning',
 		);
 		$this->maybe_warn();
+	}
+
+	/**
+	 * Record an event skipped because its relevant date/time has already
+	 * passed — the event has ended, so it is never created or updated.
+	 *
+	 * Also increments the generic skipped counter so legacy consumers keep
+	 * seeing consistent totals.
+	 *
+	 * @param string $event_title Event title.
+	 * @param string $reason      Human-readable skip reason.
+	 */
+	public function add_skipped_past( $event_title, $reason = '' ) {
+		$this->counts['skipped_past']++;
+		$this->add_skipped( $event_title, $reason );
+	}
+
+	/**
+	 * Record an event skipped because its date could not be evaluated
+	 * (missing required date, invalid format, or unparseable value).
+	 *
+	 * Also increments the generic skipped counter so legacy consumers keep
+	 * seeing consistent totals.
+	 *
+	 * @param string $event_title Event title.
+	 * @param string $reason      Human-readable skip reason.
+	 */
+	public function add_skipped_invalid_date( $event_title, $reason = '' ) {
+		$this->counts['skipped_invalid_date']++;
+		$this->add_skipped( $event_title, $reason );
 	}
 
 	/**
