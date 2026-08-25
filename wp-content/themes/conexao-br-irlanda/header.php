@@ -53,9 +53,14 @@
 				<div class="logo">
 					<a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home" class="site-logo-link">
 						<img
-							src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/conexao-logo.jpeg' ); ?>"
+							src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo_conexao_br_irlanda.jpeg' ); ?>"
 							alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>"
-							class="site-logo-img"
+							class="site-logo-img site-logo-img--light"
+						>
+						<img
+							src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo_dark_mode.png' ); ?>"
+							alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>"
+							class="site-logo-img site-logo-img--dark"
 						>
 					</a>
 				</div>

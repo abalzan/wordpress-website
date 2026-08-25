@@ -66,6 +66,26 @@ body.admin-bar .site-header {
   width: auto;
 }
 
+/* ===== Theme-aware header logo =====
+   Both variants stay in the DOM and share one rendered box, so toggling
+   themes never changes the header height or shifts the layout:
+   - aspect-ratio matches the wider dark asset (3:2); object-fit: contain
+     letterboxes the square light asset inside that same box.
+   - The existing .logo img max-height caps (48px desktop / 40px / 36px
+     mobile) keep governing the size at every breakpoint.
+   Visibility is controlled purely by the data-theme attribute on <html>
+   (single source of truth — no JS): light/default shows --light here,
+   dark-mode.css shows --dark. Scoped to .site-header so the footer
+   logo is unaffected. */
+.site-header .site-logo-img {
+  aspect-ratio: 3 / 2;
+  object-fit: contain;
+}
+
+.site-header .site-logo-img--dark {
+  display: none;
+}
+
 .site-name {
   font-size: var(--text-lg);
   font-weight: 700;

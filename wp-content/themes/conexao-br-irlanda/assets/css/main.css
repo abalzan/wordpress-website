@@ -1303,7 +1303,7 @@ ul, ol {
   display: none;
 }
 
-/* Mobile-specific card label (e.g. "O que fazer" instead of "Lazer") stays
+/* Mobile-specific card label (e.g. "Lazer e turismo" instead of "Lazer") stays
    hidden on desktop/tablet so only the default label is shown there. It is
    swapped in (and the default hidden) inside the mobile media query below. */
 .quick-access-label--mobile {
@@ -4110,10 +4110,10 @@ input[type="button"] {
     font-size: 0.75rem;
   }
 
-  /* Mobile-specific card label (e.g. "O que fazer" instead of "Lazer") is
+  /* Mobile-specific card label (e.g. "Lazer e turismo" instead of "Lazer") is
      shown only on small screens. Every shortcut keeps its default label,
-     except cards that carry a dedicated mobile variant (only the "O que
-     fazer" card), where the default label is swapped out so the two never
+     except cards that carry a dedicated mobile variant (only the "Lazer e
+     turismo" card), where the default label is swapped out so the two never
      stack. */
   .quick-access-label--mobile {
     display: block;
@@ -4133,9 +4133,9 @@ input[type="button"] {
   }
 
   /* Compact single-row mobile portal navigation: show only the four priority
-     cards (Empregos, Eventos, Guias, O que fazer) in one 4x1 row while hiding
-     the remaining desktop-only cards, and bring the mobile-only priority
-     cards back in. */
+     cards (Apoiadores, Empregos, Blog, Lazer e turismo) in one 4x1 row while
+     hiding the remaining desktop-only cards, and bring the mobile-only
+     priority cards back in. */
   .quick-access-card--mobile-only {
     display: flex;
   }
@@ -4145,11 +4145,11 @@ input[type="button"] {
   }
 
   /* Force the single-row priority grid into the fixed order
-     (Empregos, Eventos, Guias, O que fazer) regardless of DOM position. */
-  .quick-access-card--priority-empregos { order: 1; }
-  .quick-access-card--priority-eventos  { order: 2; }
-  .quick-access-card--priority-guias    { order: 3; }
-  .quick-access-card--priority-lazer    { order: 4; }
+     (Apoiadores, Empregos, Blog, Lazer e turismo) regardless of DOM position. */
+  .quick-access-card--priority-apoiadores { order: 1; }
+  .quick-access-card--priority-empregos   { order: 2; }
+  .quick-access-card--priority-blog       { order: 3; }
+  .quick-access-card--priority-lazer      { order: 4; }
 
   /* Sections mobile */
   .section {
@@ -5585,9 +5585,13 @@ input[type="button"] {
 
   .quick-access-label--mobile,
   .quick-access-label {
-    font-size: 0.75rem;
+    /* Slightly smaller type and tighter tracking so the longer "Lazer e
+       turismo" label shares the 4x1 shortcut row without forcing horizontal
+       overflow; it wraps naturally only when a tile is too narrow. */
+    font-size: 0.6875rem;
     font-weight: 600;
-    line-height: 1.2;
+    letter-spacing: -0.01em;
+    line-height: 1.25;
     word-break: break-word;
     max-width: 100%;
   }
