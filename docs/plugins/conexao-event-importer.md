@@ -113,6 +113,21 @@ Create a free token at [developers.eventbrite.com](https://www.eventbrite.com/de
 5. On **production**, open **Event Import → Import Events** and upload the JSON. Attachments are recreated from the embedded bytes — no external requests are made.
 6. Optionally run **Cleanup** locally before exporting to remove past events.
 
+### Upload size limits
+
+Because featured images are embedded as base64, export JSON files are often
+10–20 MB. The **Import Events** screen therefore:
+
+- displays the effective maximum upload size (`min(upload_max_filesize, post_max_size)`),
+- validates the selected file client-side before submitting,
+- redirects back with a clear error notice when PHP rejects an oversized POST
+  (`post_max_size`) or the file exceeds `upload_max_filesize`.
+
+Locally, `docker/php/uploads.ini` raises both limits to 64M (see
+`docs/development.md`). On production (WordPress.com) the limits are
+platform-managed; if an export is too large, run **Cleanup** locally first or
+split the export.
+
 ### Duplicate handling
 
 Re-running the importer updates existing events instead of creating duplicates. Matching priority:

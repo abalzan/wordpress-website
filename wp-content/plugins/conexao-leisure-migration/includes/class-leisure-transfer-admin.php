@@ -28,6 +28,7 @@ class Conexao_Lazer_Transfer_Admin {
 		$this->maintenance = new Conexao_Lazer_Maintenance();
 
 		add_action( 'admin_menu', array( $this, 'register_admin_menu' ) );
+		add_action( 'admin_init', array( $this, 'intercept_oversized_post' ) );
 		add_action( 'admin_post_conexao_export_lazer', array( $this, 'handle_export' ) );
 		add_action( 'admin_post_conexao_import_lazer', array( $this, 'handle_import' ) );
 		add_action( 'admin_post_conexao_import_lazer_preview', array( $this, 'handle_import_preview' ) );
@@ -75,6 +76,60 @@ class Conexao_Lazer_Transfer_Admin {
 		$this->exporter->download();
 	}
 
+	/**
+	 * Effective maximum upload size: the lower of upload_max_filesize and
+	 * post_max_size, in bytes.
+	 *
+	 * @return int
+	 */
+	protected function get_max_upload_bytes() {
+		return min(
+			wp_convert_hr_to_bytes( (string) ini_get( 'upload_max_filesize' ) ),
+			wp_convert_hr_to_bytes( (string) ini_get( 'post_max_size' ) )
+		);
+	}
+
+	/**
+	 * Detect POST requests that PHP rejected because the body exceeded
+	 * post_max_size. In that scenario PHP empties $_POST and $_FILES, so the
+	 * nonce check and the regular handlers never run and the user would be
+	 * silently bounced away with no feedback. Only requests originating from
+	 * the Lazer import screen are intercepted.
+	 */
+	public function intercept_oversized_post() {
+		if ( ! isset( $_SERVER['REQUEST_METHOD'] ) || 'POST' !== $_SERVER['REQUEST_METHOD'] ) {
+			return;
+		}
+
+		if ( ! empty( $_POST ) || ! empty( $_FILES ) ) {
+			return;
+		}
+
+		$content_length = isset( $_SERVER['CONTENT_LENGTH'] ) ? (int) $_SERVER['CONTENT_LENGTH'] : 0;
+		if ( $content_length <= 0 ) {
+			return;
+		}
+
+		$post_max = wp_convert_hr_to_bytes( (string) ini_get( 'post_max_size' ) );
+		if ( $post_max <= 0 || $content_length <= $post_max ) {
+			return;
+		}
+
+		$referer = isset( $_SERVER['HTTP_REFERER'] ) ? esc_url_raw( wp_unslash( $_SERVER['HTTP_REFERER'] ) ) : '';
+		if ( '' === $referer || false === strpos( $referer, 'page=conexao-lazer-import' ) ) {
+			return;
+		}
+
+		wp_safe_redirect(
+			add_query_arg(
+				'conexao_lazer_import_error',
+				'post_max_size',
+				admin_url( 'admin.php?page=conexao-lazer-import' )
+			)
+		);
+		exit;
+	}
+
 	public function handle_import_preview() {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_die( esc_html__( 'You do not have permission to import Lazer data.', 'conexao-leisure-migration' ) );
@@ -90,6 +145,12 @@ class Conexao_Lazer_Transfer_Admin {
 		}
 
 		$file = $_FILES['conexao_lazer_import_file']; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+
+		$upload_error = isset( $file['error'] ) ? (int) $file['error'] : UPLOAD_ERR_OK;
+		if ( UPLOAD_ERR_INI_SIZE === $upload_error || UPLOAD_ERR_FORM_SIZE === $upload_error ) {
+			wp_safe_redirect( add_query_arg( 'conexao_lazer_import_error', 'too_large', $redirect ) );
+			exit;
+		}
 
 		$preview = $this->importer->import_file( $file, array( 'dry_run' => true ) );
 
@@ -131,6 +192,13 @@ class Conexao_Lazer_Transfer_Admin {
 		}
 
 		$file     = $_FILES['conexao_lazer_import_file']; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+
+		$upload_error = isset( $file['error'] ) ? (int) $file['error'] : UPLOAD_ERR_OK;
+		if ( UPLOAD_ERR_INI_SIZE === $upload_error || UPLOAD_ERR_FORM_SIZE === $upload_error ) {
+			wp_safe_redirect( add_query_arg( 'conexao_lazer_import_error', 'too_large', $redirect ) );
+			exit;
+		}
+
 		$strategy = isset( $_POST['conexao_lazer_duplicate_strategy'] ) ? sanitize_key( wp_unslash( $_POST['conexao_lazer_duplicate_strategy'] ) ) : 'update';
 		if ( ! in_array( $strategy, array( 'update', 'skip' ), true ) ) {
 			$strategy = 'update';
@@ -253,6 +321,8 @@ class Conexao_Lazer_Transfer_Admin {
 
 		$error = isset( $_GET['conexao_lazer_import_error'] ) ? sanitize_key( wp_unslash( $_GET['conexao_lazer_import_error'] ) ) : '';
 
+		$max_upload_bytes = $this->get_max_upload_bytes();
+
 		$is_preview = isset( $_GET['conexao_lazer_preview'] );
 		$is_result  = isset( $_GET['conexao_lazer_result'] );
 
@@ -287,13 +357,25 @@ class Conexao_Lazer_Transfer_Admin {
 				<div class="notice notice-error is-dismissible">
 					<p><strong><?php esc_html_e( 'Import error', 'conexao-leisure-migration' ); ?></strong></p>
 					<p>
-						<?php
-						if ( 'no_file' === $error ) {
-							esc_html_e( 'Please choose a ZIP export package to upload.', 'conexao-leisure-migration' );
-						} else {
-							esc_html_e( 'The file could not be imported.', 'conexao-leisure-migration' );
-						}
-						?>
+					<?php
+					if ( 'no_file' === $error ) {
+						esc_html_e( 'Please choose a ZIP export package to upload.', 'conexao-leisure-migration' );
+					} elseif ( 'too_large' === $error ) {
+						echo esc_html( sprintf(
+							/* translators: %s: maximum upload size, e.g. "64 MB" */
+							__( 'The selected file exceeds the maximum upload size (%s). Increase the PHP upload_max_filesize / post_max_size limits, or split the export package.', 'conexao-leisure-migration' ),
+							size_format( $max_upload_bytes )
+						) );
+					} elseif ( 'post_max_size' === $error ) {
+						echo esc_html( sprintf(
+							/* translators: %s: maximum POST body size, e.g. "64 MB" */
+							__( 'The upload was rejected by the server because it exceeded the POST size limit (%s). Increase the PHP post_max_size limit, or split the export package.', 'conexao-leisure-migration' ),
+							size_format( $max_upload_bytes )
+						) );
+					} else {
+						esc_html_e( 'The file could not be imported.', 'conexao-leisure-migration' );
+					}
+					?>
 					</p>
 				</div>
 			<?php endif; ?>
@@ -361,6 +443,7 @@ class Conexao_Lazer_Transfer_Admin {
 					<p>
 						<label for="conexao_lazer_import_file"><strong><?php esc_html_e( 'Export package (.zip)', 'conexao-leisure-migration' ); ?></strong></label><br>
 						<input type="file" name="conexao_lazer_import_file" id="conexao_lazer_import_file" accept=".zip,application/zip" required>
+						<span class="description"><?php echo esc_html( sprintf( __( 'Maximum upload size: %s.', 'conexao-leisure-migration' ), size_format( $max_upload_bytes ) ) ); ?></span>
 					</p>
 
 					<p>
@@ -381,6 +464,20 @@ class Conexao_Lazer_Transfer_Admin {
 						<?php submit_button( __( 'Preview Import (Dry Run)', 'conexao-leisure-migration' ), 'primary', 'submit', false ); ?>
 					<?php endif; ?>
 				</form>
+				<script>
+				(function () {
+					var input = document.getElementById('conexao_lazer_import_file');
+					var form = input ? input.closest('form') : null;
+					if (!input || !form) { return; }
+					form.addEventListener('submit', function (event) {
+						var maxBytes = <?php echo (int) $max_upload_bytes; ?>;
+						if (input.files && input.files.length && input.files[0].size > maxBytes) {
+							event.preventDefault();
+							window.alert(<?php echo wp_json_encode( sprintf( __( 'The selected file is larger than the maximum upload size (%s). Choose a smaller export package or increase the PHP upload limits.', 'conexao-leisure-migration' ), size_format( $max_upload_bytes ) ) ); ?>);
+						}
+					});
+				})();
+				</script>
 			</div>
 
 			<div class="conexao-lazer-card" style="background:#fff;padding:20px;border:1px solid #ccd0d4;margin-top:12px;max-width:720px;">
