@@ -129,20 +129,27 @@ $hero_has_sponsors = ! empty( conexao_get_featured_sponsors() );
 				array( 'icon' => 'home', 'title' => __( 'Moradia', 'conexao-br-irlanda' ), 'description' => __( 'Casas e apartamentos', 'conexao-br-irlanda' ), 'term' => 'moradia' ),
 				array( 'icon' => 'briefcase', 'title' => __( 'Empregos', 'conexao-br-irlanda' ), 'description' => __( 'Vagas de trabalho', 'conexao-br-irlanda' ), 'url' => '/empregos/', 'mobile_priority' => 'empregos' ),
 				array( 'icon' => 'heart', 'title' => __( 'Saúde', 'conexao-br-irlanda' ), 'description' => __( 'Acesso à saúde', 'conexao-br-irlanda' ), 'term' => 'saude' ),
-				array( 'icon' => 'compass', 'title' => __( 'Lazer', 'conexao-br-irlanda' ), 'description' => __( 'Lazer e turismo', 'conexao-br-irlanda' ), 'url' => '/lazer/', 'mobile_priority' => 'lazer', 'mobile_label' => __( 'O que fazer', 'conexao-br-irlanda' ) ),
+				array( 'icon' => 'compass', 'title' => __( 'Lazer', 'conexao-br-irlanda' ), 'description' => __( 'Lazer e turismo', 'conexao-br-irlanda' ), 'url' => '/lazer/', 'mobile_priority' => 'lazer', 'mobile_label' => __( 'Lazer e turismo', 'conexao-br-irlanda' ) ),
 				array( 'icon' => 'car', 'title' => __( 'Transporte', 'conexao-br-irlanda' ), 'description' => __( 'Como se locomover', 'conexao-br-irlanda' ), 'term' => 'transporte' ),
 				array( 'icon' => 'dollar', 'title' => __( 'Finanças', 'conexao-br-irlanda' ), 'description' => __( 'Bancos e impostos', 'conexao-br-irlanda' ), 'term' => 'financas' ),
 				array( 'icon' => 'gift', 'title' => __( 'Benefícios', 'conexao-br-irlanda' ), 'description' => __( 'Auxílios e subsídios', 'conexao-br-irlanda' ), 'term' => 'beneficios' ),
 				array( 'icon' => 'utensils', 'title' => __( 'Onde Comer', 'conexao-br-irlanda' ), 'description' => __( 'Restaurantes e mercados', 'conexao-br-irlanda' ), 'url' => '/onde-comer/' ),
-				array( 'icon' => 'calendar', 'title' => __( 'Eventos', 'conexao-br-irlanda' ), 'description' => __( 'Agenda da comunidade', 'conexao-br-irlanda' ), 'url' => '/eventos/', 'mobile_priority' => 'eventos' ),
+				array( 'icon' => 'calendar', 'title' => __( 'Eventos', 'conexao-br-irlanda' ), 'description' => __( 'Agenda da comunidade', 'conexao-br-irlanda' ), 'url' => '/eventos/' ),
 				array( 'icon' => 'graduation-cap', 'title' => __( 'Educação', 'conexao-br-irlanda' ), 'description' => __( 'Cursos e escolas', 'conexao-br-irlanda' ), 'url' => '/cursos/' ),
 				array( 'icon' => 'file-text', 'title' => __( 'Documentos', 'conexao-br-irlanda' ), 'description' => __( 'Vistos e PPS Number', 'conexao-br-irlanda' ), 'term' => 'documentos' ),
 				array( 'icon' => 'map', 'title' => __( 'Ver todas', 'conexao-br-irlanda' ), 'description' => __( 'Todas as categorias', 'conexao-br-irlanda' ), 'url' => '/categorias/' ),
 				// Mobile-only priority cards. These stay out of the desktop grid
-				// (mobile_only) and are promoted into the compact mobile 2x2
+				// (mobile_only) and are promoted into the compact mobile 4x1
 				// navigation via the mobile_priority flag, together with the
-				// Empregos, Eventos and Lazer cards above.
-				array( 'icon' => 'book', 'title' => __( 'Guias', 'conexao-br-irlanda' ), 'description' => __( 'Guias práticos', 'conexao-br-irlanda' ), 'guides' => true, 'mobile_priority' => 'guias', 'mobile_only' => true ),
+				// Empregos and Lazer cards above. The mobile priority set is
+				// exactly: Apoiadores | Empregos | Blog | Lazer e turismo.
+				array( 'icon' => 'users', 'title' => __( 'Apoiadores', 'conexao-br-irlanda' ), 'description' => __( 'Negócios parceiros', 'conexao-br-irlanda' ), 'url' => '/apoiadores/', 'mobile_priority' => 'apoiadores', 'mobile_only' => true ),
+				array( 'icon' => 'pen', 'title' => __( 'Blog', 'conexao-br-irlanda' ), 'description' => __( 'Novidades e artigos', 'conexao-br-irlanda' ), 'url' => '/blog/', 'mobile_priority' => 'blog', 'mobile_only' => true ),
+				// Guias remains defined as a mobile-only card but is no longer part
+				// of the four-slot mobile priority row. With mobile_only set and no
+				// mobile_priority it stays hidden on every breakpoint until it is
+				// re-promoted (the desktop grid must remain unchanged).
+				array( 'icon' => 'book', 'title' => __( 'Guias', 'conexao-br-irlanda' ), 'description' => __( 'Guias práticos', 'conexao-br-irlanda' ), 'guides' => true, 'mobile_only' => true ),
 			);
 
 			$icon_svgs = array(
@@ -159,6 +166,7 @@ $hero_has_sponsors = ! empty( conexao_get_featured_sponsors() );
 				'file-text' => '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline>',
 				'map' => '<polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon><line x1="8" y1="2" x2="8" y2="18"></line><line x1="16" y1="6" x2="16" y2="22"></line>',
 				'book' => '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>',
+				'pen' => '<path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>',
 				'compass' => '<circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>',
 			);
 

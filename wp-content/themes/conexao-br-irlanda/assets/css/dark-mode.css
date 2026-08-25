@@ -80,6 +80,17 @@
   border-bottom-color: var(--color-border);
 }
 
+/* Theme-aware header logo: swap assets via the data-theme attribute.
+   Specificity (0,3,0) outranks the base hide rule in header-nav.css
+   regardless of stylesheet order. */
+[data-theme="dark"] .site-header .site-logo-img--light {
+  display: none;
+}
+
+[data-theme="dark"] .site-header .site-logo-img--dark {
+  display: block;
+}
+
 [data-theme="dark"] .header-search .search-field {
   background: var(--color-surface-muted);
   border-color: var(--color-border);
