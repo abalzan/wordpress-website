@@ -70,9 +70,13 @@ body.admin-bar .site-header {
    Both variants stay in the DOM and share one rendered box, so toggling
    themes never changes the header height or shifts the layout:
    - aspect-ratio matches the wider dark asset (3:2); object-fit: contain
-     letterboxes the square light asset inside that same box.
-   - The existing .logo img max-height caps (48px desktop / 40px / 36px
-     mobile) keep governing the size at every breakpoint.
+     letterboxes the wider light asset inside that same box.
+   - Desktop/tablet keep the .logo img max-height caps (48px desktop /
+     40px tablet). Mobile (≤768px) uses the same natural capping approach
+     (40px, matched to the 48px header controls); there the shared box is
+     re-proportioned to the real dark-asset ratio (8/3) so the artwork —
+     not empty letterbox space — defines the visible height. See the
+     mobile block below.
    Visibility is controlled purely by the data-theme attribute on <html>
    (single source of truth — no JS): light/default shows --light here,
    dark-mode.css shows --dark. Scoped to .site-header so the footer
@@ -927,16 +931,48 @@ body.admin-bar .site-header {
     gap: 8px;
   }
 
-  /* Logo center */
+  /* Logo center — a flex child of the header row, not a box-filling layer.
+     The row height is established by the 48px touch targets
+     (.mobile-menu-toggle / .mobile-search-toggle); .logo simply joins that
+     row and is vertically centered by the container's align-items: center.
+     No stretch, no percentage fill: the image keeps its natural size,
+     capped by max-height to sit slightly below the control height so it
+     never touches the top/bottom of the header. object-fit: contain from
+     the shared-box rule above keeps the artwork proportional and centered.
+     Light/dark switching stays shift-free: both variants still share ONE
+     rendered box. On mobile that shared box is re-proportioned to the real
+     dark-asset ratio (1600×600 = 8/3) instead of the desktop 3/2
+     letterbox — at this small scale a 3/2 box would render the wide logo
+     artworks at barely half the capped height ("floating small" again).
+     With 8/3 both variants render at the full capped height (the slightly
+     less-wide light asset just letterboxes a little horizontally, still
+     centered). Scoped to .site-header so the footer logo is unaffected. */
   .logo {
     order: 2;
     flex: 1;
+    min-width: 0;
     justify-content: center;
     display: flex;
   }
 
+  .logo .site-logo-link {
+    justify-content: center;
+  }
+
   .logo img {
+    display: block;
+    width: auto;
+    height: auto;
     max-height: 40px;
+    max-width: 100%;
+  }
+
+  /* Mobile-only shared-box proportions for the header logos (see above).
+     40px tall × 8/3 ≈ 107px wide — comfortably inside the ~128px of row
+     space the logo gets on a 320px screen; max-width: 100% degrades the
+     box gracefully (ratio preserved) on narrower viewports. */
+  .site-header .site-logo-img {
+    aspect-ratio: 8 / 3;
   }
 
   .site-name {

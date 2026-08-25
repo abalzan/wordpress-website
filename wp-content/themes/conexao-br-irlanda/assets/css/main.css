@@ -5481,14 +5481,12 @@ input[type="button"] {
    ============================================ */
 @media (max-width: 768px) {
   /* --- Compact header bar ---
-     Tight padding + slightly smaller logo, while keeping the touch targets
-     (44px+ buttons) intact. */
+     Tight padding while keeping the touch targets (44px+ buttons) intact.
+     The logo image is intentionally NOT capped here: header-nav.css owns
+     mobile logo sizing (a 40px max-height matched to the 48px header
+     controls, sized as a natural flex child of the header row). */
   .main-header {
     padding: 6px 0;
-  }
-
-  .logo img {
-    max-height: 36px;
   }
 
   /* --- Compact Hero ---
