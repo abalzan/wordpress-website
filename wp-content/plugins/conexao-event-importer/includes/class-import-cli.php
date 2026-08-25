@@ -4,14 +4,12 @@
  *
  * Commands (namespace: conexao-events):
  *
- *   wp conexao-events import [--source=<id>] [--all] [--dry-run]
+ *   wp conexao-events import [--source=<id>] [--dry-run]
  *   wp conexao-events cleanup [--dry-run]
  *   wp conexao-events status
- *   wp conexao-events unlock
  *
- * These commands make the importer fully operable from a system cron
- * (recommended for production: `wp conexao-events import --due-only` or the
- * REST trigger), independent of wp-admin traffic.
+ * Import execution is local-only and on-demand. There is no cron scheduling,
+ * no REST trigger, and no auto-disable of sources.
  *
  * @package Conexao_Event_Importer
  */
@@ -29,7 +27,7 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	class Conexao_Import_CLI {
 
 		/**
-		 * Run event imports.
+		 * Run event imports (manual / local-only).
 		 *
 		 * ## OPTIONS
 		 *
@@ -37,10 +35,7 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 		 * : Import only this source slug.
 		 *
 		 * [--all]
-		 * : Import every active source regardless of its frequency.
-		 *
-		 * [--due-only]
-		 * : Only import sources that are due according to their frequency (default).
+		 * : Import every active source (default).
 		 *
 		 * [--dry-run]
 		 * : Fetch and classify events without writing anything.
@@ -49,7 +44,7 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 		 *
 		 *     wp conexao-events import
 		 *     wp conexao-events import --source=eventbrite
-		 *     wp conexao-events import --all --dry-run
+		 *     wp conexao-events import --dry-run
 		 *
 		 * @subcommand import
 		 *
@@ -77,29 +72,13 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 				return;
 			}
 
-			// Build the source list.
+			// All active sources.
 			$sources_manager = new Conexao_Event_Sources();
 			$active          = $sources_manager->get_active();
 
 			if ( empty( $active ) ) {
 				WP_CLI::warning( 'No active event sources configured.' );
 				return;
-			}
-
-			if ( empty( $assoc_args['all'] ) ) {
-				// Default: only sources that are due.
-				$scheduler = $plugin->scheduler;
-				$active    = array_filter(
-					$active,
-					function ( $source ) use ( $scheduler ) {
-						return $scheduler->is_source_due( $source );
-					}
-				);
-
-				if ( empty( $active ) ) {
-					WP_CLI::success( 'No sources are due for import.' );
-					return;
-				}
 			}
 
 			WP_CLI::log( sprintf( 'Importing %d source(s)%s…', count( $active ), $dry_run ? ' (dry-run)' : '' ) );
@@ -157,7 +136,7 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 				return;
 			}
 
-			$result = $cleanup->run_cleanup( 'cli' );
+			$result = $cleanup->run_cleanup();
 
 			WP_CLI::log( sprintf(
 				'Cleanup: %d found, %d deleted, %d images deleted, %d preserved, %d errors.',
@@ -178,7 +157,7 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 		}
 
 		/**
-		 * Show importer status: sources, health, schedules.
+		 * Show importer status: sources, health, and last import times.
 		 *
 		 * ## EXAMPLES
 		 *
@@ -190,17 +169,7 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 		 * @param array $assoc_args Associative args.
 		 */
 		public function status( $args, $assoc_args ) {
-			$plugin    = Conexao_Event_Importer::instance();
-			$scheduler = $plugin->scheduler;
-
-			$next_import  = $scheduler->get_next_scheduled();
-			$next_cleanup = wp_next_scheduled( 'conexao_event_cleanup_cron' );
-
-			WP_CLI::log( 'Schedules:' );
-			WP_CLI::log( '  Next import kickoff : ' . ( $next_import ? gmdate( 'Y-m-d H:i:s', $next_import ) . ' UTC' : 'not scheduled' ) );
-			WP_CLI::log( '  Next cleanup        : ' . ( $next_cleanup ? gmdate( 'Y-m-d H:i:s', $next_cleanup ) . ' UTC' : 'not scheduled' ) );
-			WP_CLI::log( '  Run in progress     : ' . ( $scheduler->is_running() ? 'yes' : 'no' ) );
-			WP_CLI::log( '' );
+			WP_CLI::log( 'Event Importer Status (manual, local-only):' );
 
 			$rows = array();
 			foreach ( ( new Conexao_Event_Sources() )->get_all() as $source ) {
@@ -210,32 +179,12 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 					'id'          => $source['id'],
 					'name'        => isset( $source['name'] ) ? $source['name'] : $source['id'],
 					'status'      => isset( $source['status'] ) ? $source['status'] : '',
-					'frequency'   => isset( $source['import_frequency'] ) ? $source['import_frequency'] : 'weekly',
-					'last_import' => isset( $source['last_import'] ) ? $source['last_import'] : '—',
+					'last_import' => isset( $source['last_import'] ) && $source['last_import'] ? $source['last_import'] : '—',
 					'fails'       => (string) $health['consecutive_failures'],
-					'stale'       => Conexao_Source_Health::is_stale( $source ) ? 'yes' : 'no',
 				);
 			}
 
-			WP_CLI\Utils\format_items( 'table', $rows, array( 'id', 'name', 'status', 'frequency', 'last_import', 'fails', 'stale' ) );
-		}
-
-		/**
-		 * Force-release a stuck import run lock.
-		 *
-		 * ## EXAMPLES
-		 *
-		 *     wp conexao-events unlock
-		 *
-		 * @subcommand unlock
-		 *
-		 * @param array $args       Positional args.
-		 * @param array $assoc_args Associative args.
-		 */
-		public function unlock( $args, $assoc_args ) {
-			$plugin = Conexao_Event_Importer::instance();
-			$plugin->scheduler->force_unlock();
-			WP_CLI::success( 'Import lock released and run state cleared.' );
+			WP_CLI\Utils\format_items( 'table', $rows, array( 'id', 'name', 'status', 'last_import', 'fails' ) );
 		}
 
 		/**

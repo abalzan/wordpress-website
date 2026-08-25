@@ -56,9 +56,10 @@ class Conexao_Event_Import {
 			return new WP_Error( 'invalid_upload', __( 'The uploaded file could not be read.', 'conexao-event-importer' ) );
 		}
 
-		// Check file size (limit to 10 MB).
-		if ( filesize( $file['tmp_name'] ) > 10 * MB_IN_BYTES ) {
-			return new WP_Error( 'file_too_large', __( 'The uploaded file is too large. Maximum size is 10 MB.', 'conexao-event-importer' ) );
+		// Check file size (limit to 64 MB — export v1.1 embeds base64 images,
+		// which roughly triples the JSON size compared to URL-only exports).
+		if ( filesize( $file['tmp_name'] ) > 64 * MB_IN_BYTES ) {
+			return new WP_Error( 'file_too_large', __( 'The uploaded file is too large. Maximum size is 64 MB.', 'conexao-event-importer' ) );
 		}
 
 		// Check the file extension.
@@ -598,10 +599,14 @@ class Conexao_Event_Import {
 	/**
 	 * Handle the featured image for an imported event.
 	 *
-	 * Attempts to download the image from the external source URL into the
-	 * WordPress Media Library and set it as the featured image. Falls back to
-	 * the banner URL if no source URL is available. Fails gracefully if the
-	 * image cannot be downloaded.
+	 * Preferred path: create the Media Library attachment from the base64
+	 * image data embedded in the export file — no external HTTP requests are
+	 * made. This is what makes production imports work even though the
+	 * production server cannot reach the original event sources.
+	 *
+	 * Fallback path (legacy 1.0 exports without embedded data): sideload the
+	 * image from its external source URL. This only works when the current
+	 * server can reach that URL; failures here do not fail the event import.
 	 *
 	 * @param int   $post_id Event post ID.
 	 * @param array $event   Event data from the export file.
@@ -610,13 +615,41 @@ class Conexao_Event_Import {
 		$featured = isset( $event['featured_image'] ) ? $event['featured_image'] : array();
 		$meta     = isset( $event['meta'] ) ? $event['meta'] : array();
 
-		// Determine the best URL to download.
+		// Determine the original external source URL (recorded as attachment meta).
 		$source_url = isset( $featured['source_url'] ) ? $featured['source_url'] : '';
-		$banner_url = isset( $featured['banner_url'] ) ? $featured['banner_url'] : '';
-
-		if ( empty( $source_url ) && ! empty( $meta['_event_banner'] ) ) {
+		if ( empty( $source_url ) && ! empty( $meta['_event_banner'] ) && ! $this->is_localhost_url( $meta['_event_banner'] ) ) {
 			$source_url = $meta['_event_banner'];
 		}
+
+		$title = isset( $event['post']['title'] ) ? $event['post']['title'] : '';
+
+		// 1. Preferred: embedded base64 image data (export format >= 1.1.0).
+		$data_base64 = isset( $featured['data_base64'] ) ? $featured['data_base64'] : '';
+		if ( ! empty( $data_base64 ) ) {
+			$filename    = isset( $featured['filename'] ) ? $featured['filename'] : '';
+			$attachment_id = $this->image_handler->create_attachment_from_base64(
+				$data_base64,
+				$post_id,
+				$title,
+				$filename,
+				$source_url
+			);
+
+			if ( $attachment_id ) {
+				$this->image_handler->set_banner_attachment( $post_id, $attachment_id );
+
+				// Restore the alt text if provided.
+				if ( ! empty( $featured['alt'] ) ) {
+					update_post_meta( $attachment_id, '_wp_attachment_image_alt', sanitize_text_field( $featured['alt'] ) );
+				}
+				return;
+			}
+
+			// Embedded data failed validation — fall through to the URL path.
+		}
+
+		// 2. Fallback: sideload from the external source URL (legacy exports).
+		$banner_url = isset( $featured['banner_url'] ) ? $featured['banner_url'] : '';
 		if ( empty( $source_url ) && $banner_url ) {
 			$source_url = $banner_url;
 		}
@@ -629,8 +662,6 @@ class Conexao_Event_Import {
 		if ( $this->is_localhost_url( $source_url ) ) {
 			return;
 		}
-
-		$title = isset( $event['post']['title'] ) ? $event['post']['title'] : '';
 
 		$attachment_id = $this->image_handler->sideload_image( $source_url, $post_id, $title );
 

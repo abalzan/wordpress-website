@@ -225,6 +225,123 @@ class Conexao_Event_Image_Handler {
 	}
 
 	/**
+	 * Create a Media Library attachment from base64-encoded image data.
+	 *
+	 * Used by the event import to recreate attachments from the embedded
+	 * image bytes in an export file — no external HTTP requests required.
+	 * The content is validated via magic bytes before being written, and
+	 * WordPress core re-validates the file type after writing.
+	 *
+	 * @param string $data_base64 Base64-encoded image bytes.
+	 * @param int    $post_id     Post ID to associate the attachment with.
+	 * @param string $title       Optional title for the attachment.
+	 * @param string $filename    Optional original filename (extension is used).
+	 * @param string $source_url  Optional original external source URL (recorded as meta).
+	 * @return int Attachment ID or 0 on failure.
+	 */
+	public function create_attachment_from_base64( $data_base64, $post_id, $title = '', $filename = '', $source_url = '' ) {
+		if ( empty( $data_base64 ) || ! is_string( $data_base64 ) ) {
+			return 0;
+		}
+
+		$bytes = base64_decode( $data_base64, true ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode -- Portable binary transport in JSON.
+
+		if ( false === $bytes || '' === $bytes ) {
+			$this->log( 'error', 'Embedded image data could not be decoded.', '', $post_id );
+			return 0;
+		}
+
+		if ( strlen( $bytes ) > self::MAX_IMAGE_SIZE ) {
+			$this->log( 'warning', 'Embedded image exceeds the maximum size limit.', '', $post_id );
+			return 0;
+		}
+
+		// Verify the actual file content via magic bytes (the definitive check).
+		$detected = $this->detect_image_type( $bytes );
+		if ( ! $detected ) {
+			$this->log( 'error', 'Embedded image data is not a supported image (JPEG, PNG, WebP, or GIF).', '', $post_id );
+			return 0;
+		}
+
+		// Ensure the WordPress media helper files are available.
+		require_once ABSPATH . 'wp-admin/includes/file.php';  // wp_upload_bits, wp_check_filetype_and_ext.
+		require_once ABSPATH . 'wp-admin/includes/image.php'; // wp_generate_attachment_metadata.
+
+		// Build a safe filename. Prefer the exported filename's extension;
+		// fall back to the extension detected from the magic bytes.
+		$base_name = $filename ? sanitize_file_name( pathinfo( $filename, PATHINFO_FILENAME ) ) : '';
+		if ( empty( $base_name ) ) {
+			$base_name = sanitize_title( $title );
+		}
+		if ( empty( $base_name ) ) {
+			$base_name = 'conexao-event-image';
+		}
+		if ( $source_url ) {
+			$base_name .= '-' . substr( md5( $source_url ), 0, 10 );
+		}
+
+		$up_dir = wp_upload_dir();
+		if ( $up_dir['error'] ) {
+			$this->log( 'error', 'Uploads directory error: ' . $up_dir['error'], '', $post_id );
+			return 0;
+		}
+
+		$safe_filename = wp_unique_filename( $up_dir['path'], $base_name . '.' . $detected['ext'] );
+
+		// Write the file to the Media Library using the core upload API.
+		$upload = wp_upload_bits( $safe_filename, null, $bytes );
+		if ( ! empty( $upload['error'] ) || empty( $upload['file'] ) ) {
+			$message = ! empty( $upload['error'] ) ? $upload['error'] : __( 'Unknown upload error.', 'conexao-event-importer' );
+			$this->log( 'error', 'Failed to write embedded image file: ' . $message, '', $post_id );
+			return 0;
+		}
+
+		$file_path = $upload['file'];
+
+		// Final security gate: let WordPress core validate extension + MIME.
+		$wp_type = wp_check_filetype_and_ext( $file_path, $safe_filename );
+		if ( empty( $wp_type['ext'] ) || empty( $wp_type['type'] ) ) {
+			wp_delete_file( $file_path );
+			$this->log( 'error', 'WordPress core rejected the embedded image file type.', '', $post_id );
+			return 0;
+		}
+
+		$attachment_title = $title ? trim( (string) $title ) : __( 'Event Image', 'conexao-event-importer' );
+
+		// Create the attachment record in the Media Library.
+		$attachment_id = wp_insert_attachment(
+			array(
+				'post_mime_type' => $wp_type['type'],
+				'post_title'     => sanitize_text_field( $attachment_title ),
+				'post_content'   => '',
+				'post_status'    => 'inherit',
+			),
+			$file_path,
+			absint( $post_id )
+		);
+
+		if ( ! $attachment_id || is_wp_error( $attachment_id ) ) {
+			wp_delete_file( $file_path );
+			$message = is_wp_error( $attachment_id ) ? $attachment_id->get_error_message() : __( 'Unknown error.', 'conexao-event-importer' );
+			$this->log( 'error', 'Failed to create attachment from embedded image: ' . $message, '', $post_id );
+			return 0;
+		}
+
+		// Generate standard WordPress image sizes + thumbnails.
+		$metadata = wp_generate_attachment_metadata( $attachment_id, $file_path );
+		if ( ! empty( $metadata ) && ! is_wp_error( $metadata ) ) {
+			wp_update_attachment_metadata( $attachment_id, $metadata );
+		}
+
+		// Record the original source URL so future imports can match/dedupe.
+		if ( $source_url && filter_var( $source_url, FILTER_VALIDATE_URL ) ) {
+			update_post_meta( $attachment_id, self::SOURCE_URL_META_KEY, esc_url_raw( $source_url ) );
+		}
+
+		return (int) $attachment_id;
+	}
+
+	/**
 	 * Get the existing attachment ID for a source URL.
 	 *
 	 * Checks whether this event already has a banner attachment for this URL,

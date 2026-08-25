@@ -630,25 +630,12 @@ class Conexao_Event_Importer_Engine {
 
 		$this->sources->update_import_stats( $source_id, $stats );
 
-		// Feed the health tracker: partial/warning runs still count as
-		// successes for consecutive-failure purposes (the source is reachable).
+		// Feed the health tracker: record the outcome for admin visibility.
+		// Sources are never auto-disabled — an administrator decides.
 		if ( class_exists( 'Conexao_Source_Health' ) ) {
 			if ( 'failed' === $status ) {
 				$reason = ! empty( $stats['last_error'] ) ? $stats['last_error'] : __( 'Unknown import failure.', 'conexao-event-importer' );
-				$disabled = Conexao_Source_Health::record_failure( $source_id, $reason );
-
-				if ( $disabled && class_exists( 'Conexao_Import_Notifier' ) ) {
-					$sources_manager = new Conexao_Event_Sources();
-					$source          = $sources_manager->get( $source_id );
-					$notifier        = new Conexao_Import_Notifier();
-					$health          = Conexao_Source_Health::get( $source_id );
-					$notifier->notify_auto_disabled(
-						$source_id,
-						isset( $source['name'] ) ? $source['name'] : $source_id,
-						(int) $health['consecutive_failures'],
-						$reason
-					);
-				}
+				Conexao_Source_Health::record_failure( $source_id, $reason );
 			} else {
 				Conexao_Source_Health::record_success( $source_id );
 			}

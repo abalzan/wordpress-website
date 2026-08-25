@@ -30,8 +30,6 @@ class Conexao_Event_Sources {
 				'last_import_status' => '',
 				'events_imported'    => 0,
 				'last_error'         => '',
-				'import_frequency'   => 'weekly',
-				'last_checked'       => '',
 				'county'             => 'Laois',
 			),
 			'laois_council' => array(
@@ -44,8 +42,6 @@ class Conexao_Event_Sources {
 				'last_import_status' => '',
 				'events_imported'    => 0,
 				'last_error'         => '',
-				'import_frequency'   => 'weekly',
-				'last_checked'       => '',
 			),
 			'leo_laois' => array(
 				'id'                 => 'leo_laois',
@@ -57,8 +53,6 @@ class Conexao_Event_Sources {
 				'last_import_status' => '',
 				'events_imported'    => 0,
 				'last_error'         => '',
-				'import_frequency'   => 'weekly',
-				'last_checked'       => '',
 				'category'           => 'Treinamento',
 			),
 			'heritage_week' => array(
@@ -71,8 +65,6 @@ class Conexao_Event_Sources {
 				'last_import_status' => '',
 				'events_imported'    => 0,
 				'last_error'         => '',
-				'import_frequency'   => 'weekly',
-				'last_checked'       => '',
 				'county'             => 'Laois',
 				'category'           => 'Heritage',
 			),
@@ -86,8 +78,6 @@ class Conexao_Event_Sources {
 				'last_import_status' => '',
 				'events_imported'    => 0,
 				'last_error'         => '',
-				'import_frequency'   => 'daily',
-				'last_checked'       => '',
 				'county'             => 'Laois',
 			),
 		);
@@ -261,9 +251,6 @@ class Conexao_Event_Sources {
 		if ( isset( $stats['last_error'] ) ) {
 			$source['last_error'] = $stats['last_error'];
 		}
-		// Always update last_checked when stats are updated.
-		$source['last_checked'] = current_time( 'mysql' );
-
 		return $this->save( $source );
 	}
 
@@ -408,9 +395,7 @@ class Conexao_Event_Sources {
 			'url'    => $url,
 			'type'   => $source_type,
 			'status' => isset( $_POST['source_status'] ) ? 'active' : 'inactive',
-			// Automation settings: how often this source should be imported
-			// (respected by the daily scheduler) plus optional taxonomy hints.
-			'import_frequency' => isset( $_POST['source_frequency'] ) && 'daily' === sanitize_key( wp_unslash( $_POST['source_frequency'] ) ) ? 'daily' : 'weekly',
+			// Taxonomy hints.
 			'county'           => isset( $_POST['source_county'] ) ? sanitize_text_field( wp_unslash( $_POST['source_county'] ) ) : '',
 			'category'         => isset( $_POST['source_category'] ) ? sanitize_text_field( wp_unslash( $_POST['source_category'] ) ) : '',
 		);
@@ -749,7 +734,6 @@ class Conexao_Event_Sources {
 					<th><?php esc_html_e( 'Type', 'conexao-event-importer' ); ?></th>
 					<th><?php esc_html_e( 'Status', 'conexao-event-importer' ); ?></th>
 					<th><?php esc_html_e( 'Last Import', 'conexao-event-importer' ); ?></th>
-					<th><?php esc_html_e( 'Last Checked', 'conexao-event-importer' ); ?></th>
 					<th><?php esc_html_e( 'Events Imported', 'conexao-event-importer' ); ?></th>
 					<th><?php esc_html_e( 'Actions', 'conexao-event-importer' ); ?></th>
 				</tr>
@@ -792,18 +776,6 @@ class Conexao_Event_Sources {
 							<?php else : ?>
 								&mdash;
 							<?php endif; ?>
-						</td>
-						<td>
-							<?php
-							$last_checked = isset( $source['last_checked'] ) ? $source['last_checked'] : '';
-							if ( ! empty( $last_checked ) ) :
-								echo esc_html( $last_checked );
-							elseif ( ! empty( $source['last_import'] ) ) :
-								echo esc_html( $source['last_import'] );
-							else :
-								echo '&mdash;';
-							endif;
-							?>
 						</td>
 						<td><?php echo esc_html( $source['events_imported'] ); ?></td>
 						<td>
@@ -899,16 +871,6 @@ class Conexao_Event_Sources {
 					</td>
 				</tr>
 				<tr>
-					<th><label for="source_frequency"><?php esc_html_e( 'Import Frequency', 'conexao-event-importer' ); ?></label></th>
-					<td>
-						<select id="source_frequency" name="source_frequency">
-							<option value="weekly" selected><?php esc_html_e( 'Weekly', 'conexao-event-importer' ); ?></option>
-							<option value="daily"><?php esc_html_e( 'Daily', 'conexao-event-importer' ); ?></option>
-						</select>
-						<p class="description"><?php esc_html_e( 'How often the automated scheduler imports this source. Daily sources are checked every night; weekly sources roughly once per week.', 'conexao-event-importer' ); ?></p>
-					</td>
-				</tr>
-				<tr>
 					<th><label for="source_county"><?php esc_html_e( 'County (optional)', 'conexao-event-importer' ); ?></label></th>
 					<td><input type="text" id="source_county" name="source_county" class="regular-text" placeholder="Laois"></td>
 				</tr>
@@ -983,16 +945,6 @@ class Conexao_Event_Sources {
 					</td>
 				</tr>
 				<tr>
-					<th><label for="source_frequency"><?php esc_html_e( 'Import Frequency', 'conexao-event-importer' ); ?></label></th>
-					<td>
-						<select id="source_frequency" name="source_frequency">
-							<option value="weekly" <?php selected( isset( $source['import_frequency'] ) ? $source['import_frequency'] : 'weekly', 'weekly' ); ?>><?php esc_html_e( 'Weekly', 'conexao-event-importer' ); ?></option>
-							<option value="daily" <?php selected( isset( $source['import_frequency'] ) ? $source['import_frequency'] : '', 'daily' ); ?>><?php esc_html_e( 'Daily', 'conexao-event-importer' ); ?></option>
-						</select>
-						<p class="description"><?php esc_html_e( 'How often the automated scheduler imports this source. Daily sources are checked every night; weekly sources roughly once per week.', 'conexao-event-importer' ); ?></p>
-					</td>
-				</tr>
-				<tr>
 					<th><label for="source_county"><?php esc_html_e( 'County (optional)', 'conexao-event-importer' ); ?></label></th>
 					<td><input type="text" id="source_county" name="source_county" class="regular-text" value="<?php echo esc_attr( isset( $source['county'] ) ? $source['county'] : '' ); ?>" placeholder="Laois"></td>
 				</tr>
@@ -1024,7 +976,6 @@ class Conexao_Event_Sources {
 		}
 
 		$sources = $this->get_all();
-		$next    = wp_next_scheduled( 'conexao_event_import_cron' );
 		?>
 		<div class="wrap conexao-import-dashboard">
 			<h1><?php esc_html_e( 'Event Import', 'conexao-event-importer' ); ?></h1>
@@ -1042,18 +993,6 @@ class Conexao_Event_Sources {
 							}
 						}
 						echo $last_success ? esc_html( $last_success ) : '&mdash;';
-						?>
-					</span>
-				</div>
-				<div class="conexao-import-stat">
-					<span class="conexao-import-stat-label"><?php esc_html_e( 'Next scheduled import', 'conexao-event-importer' ); ?></span>
-					<span class="conexao-import-stat-value">
-						<?php
-						if ( $next ) {
-							echo esc_html( gmdate( 'Y-m-d H:i', $next ) );
-						} else {
-							echo esc_html__( 'Monday 03:00', 'conexao-event-importer' );
-						}
 						?>
 					</span>
 				</div>
@@ -1079,8 +1018,14 @@ class Conexao_Event_Sources {
 				<?php wp_nonce_field( 'conexao_event_sources', 'conexao_event_sources_nonce' ); ?>
 				<input type="hidden" name="conexao_source_action" value="run_import">
 				<input type="hidden" name="source_id" value="all">
-				<button type="submit" class="button button-primary button-large"><?php esc_html_e( 'Run Import Now', 'conexao-event-importer' ); ?></button>
+				<button type="submit" class="button button-primary button-large"><?php esc_html_e( 'Import Events Now', 'conexao-event-importer' ); ?></button>
 			</form>
+
+			<p style="margin-top: 10px;">
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=conexao-event-export' ) ); ?>" class="button button-secondary">
+					<?php esc_html_e( 'Export Events', 'conexao-event-importer' ); ?>
+				</a>
+			</p>
 
 			<?php $this->render_history_summary(); ?>
 		</div>
