@@ -356,10 +356,9 @@ ul, ol {
 }
 
 /* Desktop/tablet (≥769px): two-column composition — hero copy left, Featured
-   Apoiadores right as a PORTRAIT feature panel. The sponsor track is a
-   responsive capped width (not a bare fr share) so the panel stays narrow
-   enough that its height clearly exceeds its width at every desktop/tablet
-   viewport. The double-class selector
+   Apoiadores right as a WIDE LANDSCAPE feature card. The sponsor column takes
+   a generous fr share (~45% of the row) so the 16:9 tile renders clearly
+   wider than tall at every desktop/tablet viewport. The double-class selector
    outranks the single-class .hero-content width/padding rules in the
    responsive blocks further down, so ONLY the with-sponsors variant goes
    full-width two-column; without sponsors the hero keeps its original
@@ -379,7 +378,7 @@ ul, ol {
     max-width: none;
     width: 100%;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) clamp(260px, 25vw, 330px);
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
     align-items: stretch;
     gap: clamp(28px, 4vw, 64px);
     padding: 44px 0 36px;
@@ -406,43 +405,25 @@ ul, ol {
   }
 
   /* Right column as a flex stack spanning the same row height: the label
-     sits on the TOP line and the carousel fills everything below it, so
-     the tile expands naturally between label and controls instead of
-     floating vertically centered inside the column. */
+     sits on the TOP line and the landscape carousel is pinned to the
+     BOTTOM line via margin-top:auto (below), so the glass surface spans
+     the full shared row while the tile keeps its width-derived 16:9
+     height instead of stretching to the column height. */
   .hero-content--with-sponsors .hero-sponsors {
     display: flex;
     flex-direction: column;
   }
 
-  /* Stretch chain: carousel root → stage → viewport → list. Each level
-     fills the remaining height (min-height:0 lets it grow AND shrink
-     freely); the slides are already display:flex with align-items:stretch,
-     so the height reaches .sponsor-tile, whose aspect-ratio yields to the
-     stretched height while object-fit:contain keeps every artwork whole. */
+  /* Landscape tile: the carousel keeps its NATURAL height — the tile derives
+     its height from the column width via the 16:9 ratio on .sponsor-tile
+     below instead of stretching to the row height — and margin-top:auto
+     pins the whole block (tile + integrated controls) to the BOTTOM line,
+     so its lower edge stays visually aligned with the CTA row (.btn-outline)
+     however much taller the copy column is. No fixed pixel offsets: the
+     relationship emerges from the shared-grid stretch plus this auto margin,
+     so it holds at every desktop/tablet width (1024/1280/1440/1600+). */
   .hero-content--with-sponsors .sponsors-carousel {
-    flex: 1;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .hero-content--with-sponsors .sponsors-carousel-stage {
-    flex: 1;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .hero-content--with-sponsors .sponsors-carousel-viewport {
-    flex: 1;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .hero-content--with-sponsors .sponsors-carousel-list {
-    flex: 1;
-    min-height: 0;
+    margin-top: auto;
   }
 
   /* Slightly reduced desktop type scale for the narrower left column: strong
@@ -524,18 +505,20 @@ ul, ol {
   padding: 6px 4px;
 }
 
-/* Featured tile: ONE large visual surface per view — a PORTRAIT feature
-   panel (3:4), not a square or landscape card. The artwork fills the whole
-   surface and object-fit:contain letterboxes every source ratio onto the
-   warm mat without cropping. In the two-column Hero the shared-grid
-   stretch chain may extend the panel beyond 3:4 (never below it), so the
-   presentation is always clearly taller than wide while switching
-   sponsors keeps one stable frame. */
+/* Featured tile: ONE large visual surface per view. The artwork fills the
+   entire card (no separate content area beneath); on desktop/tablet the
+   card height derives from the column width via a fixed 16:9 LANDSCAPE
+   ratio — matching the dominant banner assets — so switching sponsors
+   never changes the right-column height, and every image ratio fits inside
+   the same stable frame. Mobile (≤768px) re-specifies the frame as
+   PORTRAIT 3:4 in its own block below, keeping the phone presentation
+   clearly taller than wide. object-fit:contain letterboxes every source
+   ratio onto the warm mat without cropping or distortion. */
 .sponsor-tile {
   position: relative;
   display: block;
   width: 100%;
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 16 / 9;
   padding: 0;
   background: var(--sponsor-surface);
   border: 1px solid var(--sponsor-border);
@@ -723,12 +706,12 @@ ul, ol {
   }
 }
 
-/* Tablet: still exactly one sponsor per view; the portrait sponsor track
-   narrows and the gap tightens so heading and panel never collide at
-   intermediate widths (~769–1199px). */
+/* Tablet: still exactly one sponsor per view; only the column ratio/gap
+   tighten so heading and carousel never collide at intermediate widths
+   (~769–1199px). The sponsor column keeps its landscape 16:9 frame. */
 @media (max-width: 1199px) and (min-width: 769px) {
   .hero-content.hero-content--with-sponsors {
-    grid-template-columns: minmax(0, 1fr) clamp(240px, 24vw, 310px);
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
     gap: clamp(24px, 3.5vw, 44px);
   }
 }
@@ -741,7 +724,8 @@ ul, ol {
    type scale, CTAs wrapping naturally (stacked when narrow, side-by-side
    once both fit). The carousel keeps EXACTLY ONE sponsor per view — the
    same integrated image card (overlay name, inner arrows, bottom dots) in
-   the same PORTRAIT 3:4 frame as desktop; object-fit:contain keeps the
+    its own PORTRAIT 3:4 frame (desktop/tablet use a landscape 16:9 frame
+    instead); object-fit:contain keeps the
    artwork's rendered size stable (extra frame height reads as mat, not
    smaller art), controls shrink toward their touch minimums, and the
    overlay arrows remain available alongside native swipe. */
@@ -782,8 +766,9 @@ ul, ol {
     flex-direction: column;
   }
 
-  /* Stretch chain: carousel root → stage → viewport → list (same pattern
-     as ≥769px). The slides are display:flex with align-items:stretch, so
+  /* Stretch chain: carousel root → stage → viewport → list (mobile-only —
+     the ≥769px composition pins the landscape tile to the CTA baseline
+     instead). The slides are display:flex with align-items:stretch, so
      the height reaches .sponsor-tile; its 3:4 ratio only sets the natural
      floor — the stretched copy-column height usually extends it further,
      keeping the panel clearly taller than wide on phones too. */
@@ -858,8 +843,8 @@ ul, ol {
     margin-bottom: 6px;
   }
 
-  /* Integrated card, retuned for the narrow column: the SAME PORTRAIT 3:4
-     frame as desktop (usually stretched taller by the shared-grid chain),
+  /* Integrated card, retuned for the narrow column: the mobile-only
+     PORTRAIT 3:4 frame (usually stretched taller by the shared-grid chain),
      keeping the presentation clearly taller than wide at phone widths;
      overlays and controls tighten with it. Scoped to the hero's right
      column so no other carousel is affected. */
