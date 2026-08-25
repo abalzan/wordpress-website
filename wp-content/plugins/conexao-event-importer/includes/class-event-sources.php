@@ -32,29 +32,6 @@ class Conexao_Event_Sources {
 				'last_error'         => '',
 				'county'             => 'Laois',
 			),
-			'laois_council' => array(
-				'id'                 => 'laois_council',
-				'name'               => 'Laois County Council',
-				'url'                => 'https://laois.ie/libraries/library-events-and-activities/library-events-and-activities',
-				'type'               => 'website',
-				'status'             => 'active',
-				'last_import'        => '',
-				'last_import_status' => '',
-				'events_imported'    => 0,
-				'last_error'         => '',
-			),
-			'leo_laois' => array(
-				'id'                 => 'leo_laois',
-				'name'               => 'Local Enterprise Office — Laois',
-				'url'                => 'https://www.localenterprise.ie/laois/training-events/online-bookings/',
-				'type'               => 'leo_training',
-				'status'             => 'active',
-				'last_import'        => '',
-				'last_import_status' => '',
-				'events_imported'    => 0,
-				'last_error'         => '',
-				'category'           => 'Treinamento',
-			),
 			'heritage_week' => array(
 				'id'                 => 'heritage_week',
 				'name'               => 'National Heritage Week',
@@ -102,6 +79,15 @@ class Conexao_Event_Sources {
 		}
 
 		$changed = false;
+
+		// Remove retired sources (Laois County Council, LEO Laois). They are
+		// no longer import sources; previously imported events are preserved.
+		foreach ( array( 'laois_council', 'leo_laois', 'local_enterprise_office_laois' ) as $retired_id ) {
+			if ( isset( $sources[ $retired_id ] ) ) {
+				unset( $sources[ $retired_id ] );
+				$changed = true;
+			}
+		}
 
 		// Migrate legacy source IDs to their canonical form.
 		if ( isset( $sources['national-heritage-week'] ) && ! isset( $sources['heritage_week'] ) ) {
@@ -701,7 +687,6 @@ class Conexao_Event_Sources {
 			'facebook'     => __( 'Facebook', 'conexao-event-importer' ),
 			'instagram'    => __( 'Instagram', 'conexao-event-importer' ),
 			'eventbrite'   => __( 'Eventbrite', 'conexao-event-importer' ),
-			'leo_training' => __( 'Website / Training Events', 'conexao-event-importer' ),
 		);
 		return isset( $labels[ $type ] ) ? $labels[ $type ] : ucfirst( $type );
 	}

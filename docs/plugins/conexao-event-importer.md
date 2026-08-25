@@ -2,7 +2,7 @@
 
 - **Path**: `wp-content/plugins/conexao-event-importer/`
 - **Version**: 1.3.0
-- **Purpose**: Local-only event aggregation. Fetches events from external sources (Laois Tourism, Laois County Council, Local Enterprise Office Laois, National Heritage Week, Eventbrite Laois) into the **local** WordPress installation, downloads all images into the local Media Library, then exports the complete event data as JSON for import into the production WordPress.com site.
+- **Purpose**: Local-only event aggregation. Fetches events from external sources (Laois Tourism, National Heritage Week, Eventbrite Laois) into the **local** WordPress installation, downloads all images into the local Media Library, then exports the complete event data as JSON for import into the production WordPress.com site.
 
 ## Architecture: Local is the importer, production is only the destination
 
@@ -71,8 +71,6 @@ production-side fetching. Everything is manual/on-demand.
 | `class-icalendar-source.php` | `Conexao_Source_ICalendar` | iCalendar/Webcal feeds |
 | `class-laois-tourism-source.php` | `Conexao_Source_Laois_Tourism` | HTML scraping |
 | `class-heritage-week-source.php` | `Conexao_Source_Heritage_Week` | HTML scraping (paginated + detail enrichment) |
-| `class-laois-council-source.php` | `Conexao_Source_Laois_Council` | HTML scraping |
-| `class-leo-laois-source.php` | `Conexao_Source_LEO_Laois` | ASP.NET JSON/HTML API |
 | `class-eventbrite-source.php` | `Conexao_Source_Eventbrite` | Eventbrite: official v3 API (when token set) or discovery-page scraping |
 
 ## Default Sources (seeded on activation)
@@ -80,8 +78,6 @@ production-side fetching. Everything is manual/on-demand.
 | ID | Name | Type |
 |----|------|------|
 | `laois_tourism` | Laois Tourism | iCalendar (webcal) |
-| `laois_council` | Laois County Council | Website |
-| `leo_laois` | Local Enterprise Office — Laois | Website/API |
 | `heritage_week` | National Heritage Week | Website |
 | `eventbrite` | Eventbrite — Laois | Eventbrite |
 

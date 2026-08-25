@@ -769,11 +769,6 @@ class Conexao_Event_Importer_Engine {
 					return new Conexao_Source_ICalendar( $source );
 				}
 				return new Conexao_Source_Laois_Tourism( $source );
-			case 'laois_council':
-				return new Conexao_Source_Laois_Council( $source );
-			case 'leo_laois':
-			case 'local_enterprise_office_laois':
-				return new Conexao_Source_LEO_Laois( $source );
 			case 'heritage_week':
 			case 'national_heritage_week':
 				return new Conexao_Source_Heritage_Week( $source );
