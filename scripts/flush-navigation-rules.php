@@ -129,7 +129,9 @@ $menu_items_config = array(
     array( 'title' => 'Cursos', 'url' => home_url( '/cursos/' ) ),
     array( 'title' => 'Empregos', 'url' => home_url( '/empregos/' ) ),
     array( 'title' => 'Apoiadores', 'url' => home_url( '/apoiadores/' ) ),
-    array( 'title' => 'Irlanda', 'url' => home_url( '/irlanda/' ) ),
+    // NOTE: "Irlanda" is intentionally NOT a primary-nav item. The /irlanda/
+    // page remains published and directly accessible; it is just not linked
+    // from the main navigation (desktop and mobile share this same menu).
     array( 'title' => 'Sobre Nós', 'url' => home_url( '/sobre-nos/' ) ),
     array( 'title' => 'Contato', 'url' => home_url( '/contato/' ) ),
 );
@@ -204,6 +206,5 @@ echo "  - Eventos:    /eventos/\n";
 echo "  - Cursos:     /cursos/\n";
 echo "  - Empregos:   /empregos/\n";
 echo "  - Apoiadores: /apoiadores/\n";
-echo "  - Irlanda:    /irlanda/\n";
 echo "  - Sobre Nós:  /sobre-nos/\n";
 echo "  - Contato:    /contato/\n";

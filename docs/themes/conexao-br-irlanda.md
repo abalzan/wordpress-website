@@ -149,7 +149,9 @@ The primary navigation is dynamically modified at render time:
 6. Bind each item to its canonical WordPress object
 7. Fix active-state conflicts via URL pattern matching
 
-Canonical order: Início, Blog, Guias, Eventos, Cursos, Lazer, Empregos, Apoiadores, Irlanda, Sobre Nós, Contato.
+Canonical order: Início, Blog, Guias, Eventos, Cursos, Lazer, Empregos, Apoiadores, Sobre Nós, Contato.
+
+Note: "Irlanda" is intentionally NOT a navigation item. The /irlanda/ page remains published and directly accessible; it is simply not linked from the main navigation (desktop and mobile share the same `primary` menu). See `scripts/remove-irlanda-menu-item.php` for removing any legacy "Irlanda" item from an existing menu.
 
 ## Performance Optimizations
 

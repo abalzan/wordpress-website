@@ -448,7 +448,9 @@ $primary_items = [
     ['title' => 'Cursos', 'type' => 'custom', 'url' => home_url('/cursos/')],
     ['title' => 'Empregos', 'type' => 'custom', 'url' => home_url('/empregos/')],
     ['title' => 'Apoiadores', 'type' => 'custom', 'url' => home_url('/apoiadores/')],
-    ['title' => 'Irlanda', 'type' => 'post_type', 'object' => 'page', 'object_id' => $page_ids['irlanda'] ?? 0],
+    // NOTE: "Irlanda" is intentionally NOT a primary-nav item. The /irlanda/
+    // page remains published and directly accessible; it is just not linked
+    // from the main navigation (desktop or mobile share this same menu).
     ['title' => 'Sobre Nós', 'type' => 'post_type', 'object' => 'page', 'object_id' => $page_ids['sobre-nos'] ?? 0],
     ['title' => 'Contato', 'type' => 'post_type', 'object' => 'page', 'object_id' => $page_ids['contato'] ?? 0],
 ];
