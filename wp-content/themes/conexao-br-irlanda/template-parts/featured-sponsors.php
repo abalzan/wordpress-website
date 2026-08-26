@@ -73,11 +73,13 @@ $sponsor_total = count( $featured_sponsors );
 			<ul class="sponsors-carousel-list">
 				<?php foreach ( $featured_sponsors as $sponsor_index => $featured_sponsor ) :
 					$sponsor_title = $featured_sponsor['title'];
-					// External link takes priority, then the sponsor permalink —
-					// preserving the established target/rel behavior.
-					$sponsor_href  = $featured_sponsor['url'] ? $featured_sponsor['url'] : $featured_sponsor['permalink'];
-					$sponsor_target = $featured_sponsor['url'] ? ' target="_blank"' : '';
-					$sponsor_rel    = $featured_sponsor['url'] ? ' rel="noopener noreferrer"' : '';
+					// INTERNAL navigation: the tile opens the Apoiador detail page,
+					// where the full description and every configured contact
+					// channel live (the carousel itself stays visually clean — no
+					// social icons over the Hero image). The official website and
+					// all other channels remain available as contact buttons on
+					// that detail page.
+					$sponsor_href  = $featured_sponsor['permalink'];
 					?>
 					<li class="sponsors-slide"
 						role="group"
@@ -85,7 +87,7 @@ $sponsor_total = count( $featured_sponsors );
 						aria-label="<?php echo esc_attr( sprintf( __( 'Apoiador %1$d de %2$d', 'conexao-br-irlanda' ), $sponsor_index + 1, $sponsor_total ) ); ?>">
 						<a href="<?php echo esc_url( $sponsor_href ); ?>"
 							class="sponsor-tile"
-							aria-label="<?php echo esc_attr( $sponsor_title ); ?>"<?php echo $sponsor_target . $sponsor_rel; /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */ ?>>
+							aria-label="<?php echo esc_attr( $sponsor_title ); ?>">
 						<!-- The logo area IS the tile: CSS stretches it over the
 						     full card surface (object-fit: contain keeps every
 						     asset's natural proportions — sponsor artwork is

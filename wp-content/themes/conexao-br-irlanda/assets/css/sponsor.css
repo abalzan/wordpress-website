@@ -1,0 +1,312 @@
+/* ============================================
+   Conexão BR Irlanda — Apoiador (Sponsor) Single
+   Detail page: identity, description, contacts
+   ============================================
+
+   Presentation layer for single-sponsor.php. Built exclusively on the
+   shared design-system tokens (--color-*, --radius-*, --shadow-*,
+   --space-*) so dark mode inherits automatically via the aliases that
+   dark-mode.css redefines; the few theme-specific tweaks live in
+   dark-mode.css ("Apoiador single" section). No page-specific color
+   literals outside the per-platform brand icon accents below.
+
+   Layout model:
+     .sponsor-single-header   back link + category chips + name + county
+     .sponsor-single-hero     main image on a soft mat (never cropped)
+     .sponsor-single-body     two columns ≥901px: description | contacts;
+                              stacked into one column below that.
+*/
+
+/* ===== Header ===== */
+
+.sponsor-single-header {
+  margin-bottom: var(--space-5);
+}
+
+.sponsor-single-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: var(--space-4);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.sponsor-single-back svg {
+  flex: none;
+  transition: transform var(--transition-fast);
+}
+
+.sponsor-single-back:hover {
+  color: var(--color-primary);
+}
+
+.sponsor-single-back:hover svg {
+  transform: translateX(-3px);
+}
+
+.sponsor-single-back:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+  border-radius: var(--radius-sm);
+}
+
+.sponsor-single-header .entry-title {
+  margin: var(--space-2) 0 var(--space-3);
+}
+
+.sponsor-single-location {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+}
+
+.sponsor-single-location svg {
+  flex: none;
+  color: var(--color-primary);
+}
+
+/* ===== Main image ===== */
+/* The artwork sits on a soft mat and is NEVER cropped or recolored —
+   object-fit: contain letterboxes every source ratio, same contract as
+   the homepage carousel tiles. */
+
+.sponsor-single-hero {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 0 var(--space-6);
+  padding: clamp(16px, 3vw, 32px);
+  background: var(--color-surface-muted);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.sponsor-single-picture {
+  display: flex;
+  justify-content: center;
+  max-width: 100%;
+}
+
+.sponsor-single-picture img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: clamp(220px, 38vw, 440px);
+  object-fit: contain;
+  border-radius: var(--radius);
+}
+
+@media (max-width: 768px) {
+  .sponsor-single-picture img {
+    max-height: 300px;
+  }
+}
+
+/* ===== Body: description + contacts ===== */
+
+.sponsor-single-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: var(--space-6);
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .sponsor-single-body {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-5);
+  }
+}
+
+/* Description — the existing WordPress content, rendered prominently.
+   :empty hides the wrapper entirely when an Apoiador has no content,
+   letting the contact card take the full row width. */
+
+.sponsor-single-content:empty {
+  display: none;
+}
+
+.sponsor-single-content {
+  font-size: var(--text-base);
+  line-height: 1.7;
+  color: var(--color-text-secondary);
+}
+
+.sponsor-single-content > h2,
+.sponsor-single-content > h3,
+.sponsor-single-content > h4 {
+  margin: var(--space-6) 0 var(--space-3);
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--color-text);
+}
+
+.sponsor-single-content > h2:first-child,
+.sponsor-single-content > h3:first-child,
+.sponsor-single-content > p:first-child {
+  margin-top: 0;
+}
+
+.sponsor-single-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius);
+}
+
+.sponsor-single-content a {
+  color: var(--color-primary);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+.sponsor-single-content a:hover {
+  color: var(--color-accent-dark);
+}
+
+/* ===== "Entre em contato" card ===== */
+
+.sponsor-single-contact {
+  position: sticky;
+  top: 96px; /* clears the fixed site header on desktop */
+  padding: var(--space-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+@media (max-width: 900px) {
+  .sponsor-single-contact {
+    position: static;
+  }
+}
+
+.sponsor-single-contact-title {
+  margin: 0 0 var(--space-1);
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--color-text);
+}
+
+.sponsor-single-contact-intro {
+  margin: 0 0 var(--space-4);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  color: var(--color-text-muted);
+}
+
+.sponsor-contact-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+/* One tappable button per EXISTING channel only — no placeholders.
+   48px minimum height keeps every target comfortably above the 44px
+   touch guideline at 320–414px widths. */
+
+.sponsor-contact-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  padding: 10px 14px;
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--color-text);
+  text-decoration: none;
+  transition:
+    transform var(--transition-fast),
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    background-color var(--transition-fast);
+}
+
+.sponsor-contact-btn:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-primary);
+  background: var(--color-primary-50);
+  box-shadow: var(--shadow-sm);
+  color: var(--color-text);
+}
+
+.sponsor-contact-btn:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.sponsor-contact-icon {
+  flex: none;
+  display: inline-flex;
+  width: 22px;
+  height: 22px;
+}
+
+.sponsor-contact-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.sponsor-contact-label {
+  overflow-wrap: anywhere;
+}
+
+/* Familiar per-platform brand accents on the ICONS only — surfaces stay
+   neutral so the card reads as one coherent component in both themes. */
+
+.sponsor-contact-btn--instagram .sponsor-contact-icon { color: #e1306c; }
+.sponsor-contact-btn--facebook  .sponsor-contact-icon { color: #1877f2; }
+.sponsor-contact-btn--whatsapp  .sponsor-contact-icon { color: var(--color-whatsapp); }
+.sponsor-contact-btn--linkedin  .sponsor-contact-icon { color: #0a66c2; }
+.sponsor-contact-btn--tiktok    .sponsor-contact-icon { color: var(--color-text); }
+.sponsor-contact-btn--email     .sponsor-contact-icon { color: var(--color-accent-dark); }
+.sponsor-contact-btn--website   .sponsor-contact-icon { color: var(--color-primary); }
+.sponsor-contact-btn--outro     .sponsor-contact-icon { color: var(--color-text-muted); }
+
+/* ===== Small screens (320–414px) ===== */
+
+@media (max-width: 480px) {
+  .sponsor-single-contact {
+    padding: var(--space-4);
+  }
+
+  .sponsor-contact-list {
+    gap: 8px;
+  }
+
+  .sponsor-contact-btn {
+    /* Full-width rows with comfortable tap targets on narrow phones. */
+    width: 100%;
+    padding: 12px 14px;
+  }
+}
+
+/* ===== Reduced motion ===== */
+
+@media (prefers-reduced-motion: reduce) {
+  .sponsor-single-back,
+  .sponsor-single-back svg,
+  .sponsor-contact-btn {
+    transition: none !important;
+  }
+
+  .sponsor-contact-btn:hover {
+    transform: none;
+  }
+}

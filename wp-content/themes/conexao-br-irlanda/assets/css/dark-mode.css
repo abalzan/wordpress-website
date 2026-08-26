@@ -1712,7 +1712,48 @@
   background: var(--color-primary-50);
 }
 
-/* ===== 38. REDUCED MOTION ===== */
+/* ===== 38. APOIADOR SINGLE (single-sponsor.php) =====
+   The detail page is built on semantic tokens, so most of it adapts via
+   the aliases above. These rules tune the two surfaces and brighten the
+   two darkest brand accents so every contact icon keeps comfortable
+   contrast on dark backgrounds. */
+
+[data-theme="dark"] .sponsor-single-back:hover {
+  color: var(--conexao-primary);
+}
+
+[data-theme="dark"] .sponsor-single-hero {
+  background: var(--color-surface-muted);
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .sponsor-single-contact {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  box-shadow: var(--shadow-sm);
+}
+
+[data-theme="dark"] .sponsor-contact-btn {
+  background: var(--color-surface-muted);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .sponsor-contact-btn:hover {
+  background: var(--color-primary-50);
+  border-color: var(--color-primary);
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .sponsor-contact-btn:focus-visible {
+  outline-color: var(--conexao-accent);
+}
+
+/* Brightened brand accents for contrast on dark surfaces. */
+[data-theme="dark"] .sponsor-contact-btn--facebook .sponsor-contact-icon { color: #5aa7ff; }
+[data-theme="dark"] .sponsor-contact-btn--linkedin .sponsor-contact-icon { color: #58a6dd; }
+
+/* ===== 39. REDUCED MOTION ===== */
 @media (prefers-reduced-motion: reduce) {
   [data-theme="dark"] body,
   [data-theme="dark"] .site-header,

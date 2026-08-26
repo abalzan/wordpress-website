@@ -16,6 +16,7 @@ Modern community portal theme for Conexão BR Irlanda. Features a green/orange p
 | `front-page.php` | `/` | Homepage with full-bleed hero image, quick access cards, sections |
 | `archive.php` | CPT archives | Shared archive for all 6 CPTs |
 | `single-leisure.php` | `/lazer/{slug}/` | Dedicated leisure/tourism detail template |
+| `single-sponsor.php` | `/apoiadores/{slug}/` | Dedicated Apoiador detail template: name, main image, description, "Entre em contato" buttons (only configured channels) |
 | `single.php` | `/{cpt}/{slug}/` | Single post for all other CPTs |
 | `page.php` | `/{slug}/` | Static pages |
 | `page-landing.php` | specific pages | Landing page template |
@@ -65,8 +66,9 @@ The hero background is **not** a Customizer setting — the `conexao_hero_image`
 The Featured Apoiadores carousel is a compact supporting showcase **inside the homepage Hero** (right-hand column beside the copy at every breakpoint, including mobile), rendered by the reusable template part `template-parts/featured-sponsors.php`. It is a responsive, dependency-free carousel over the **existing sponsor data model** — no new content type, no duplicated supporter data:
 
 - **Data source**: `conexao_get_featured_sponsors()` (functions.php). Only sponsors with **Apoiador em destaque** (`_sponsor_featured = 1`) appear; ordering uses **Ordem de exibição** (`_sponsor_display_order`) ascending with a title tiebreaker so equal values never shuffle between loads. Sponsors without an order value sort last. Editing a supporter in wp-admin updates the section automatically (transient-cached under `conexao_home_sponsors`, invalidated on save).
+- **Link behavior**: every tile navigates INTERNALLY to the Apoiador detail page (`/apoiadores/{slug}/`, rendered by `single-sponsor.php`) — the carousel stays visually clean with no social icons over the Hero image. The official website and all other channels are offered as contact buttons on the detail page instead.
 - **Placement**: called from `front-page.php` inside `.hero-content`, wrapped in its own `.hero-sponsors` layout column beside `.hero-copy` (the copy column holds badge → heading → description → CTAs). The template part renders nothing when no supporter is featured, and the wrapper is skipped entirely so no empty column is reserved; when it does render, `.hero-content` gets a `--with-sponsors` modifier that enables the two-column grid (all breakpoints; mobile-tuned proportions ≤768px), tightens the hero copy spacing, and keeps the min-height sizing model (3.71:1 kept as a minimum) so the section can grow instead of clipping.
-- **Markup** (`template-parts/featured-sponsors.php`): scroll-snap track (`.sponsors-carousel-viewport` > `.sponsors-carousel-list` > `.sponsors-slide`) with one large sponsor card (`.sponsor-tile`) visible at a time, framed over the hero photo in both themes; link behavior preserved (`target="_blank" rel="noopener noreferrer"` for external links). Each slide's visual is a responsive `<picture>` built by `conexao_sponsor_carousel_image()`: the portrait **Imagem Mobile** (`_sponsor_mobile_image`) is served at ≤768px via `<source media="(max-width: 768px)">` and the landscape **Imagem Desktop** (`_sponsor_desktop_image`) via the `<img>` — the browser picks the correct asset naturally, with no JavaScript source swapping. Sources request the `large` size plus srcset candidates so artwork stays crisp at the enlarged display scale, carry truthful intrinsic width/height metadata, and share one `<img>` alt (attachment alt → sponsor name fallback), so screen readers announce the supporter exactly once. When both roles resolve to the same attachment only the `<img>` is emitted (single download); missing images fall back gracefully (mobile → desktop → legacy `_sponsor_logo` → featured image) and a record with no usable image renders the SVG placeholder instead of a broken image.
+- **Markup** (`template-parts/featured-sponsors.php`): scroll-snap track (`.sponsors-carousel-viewport` > `.sponsors-carousel-list` > `.sponsors-slide`) with one large sponsor card (`.sponsor-tile`) visible at a time, framed over the hero photo in both themes; each tile is an internal link to the Apoiador detail page (no external jump, no icons over the Hero image). Each slide's visual is a responsive `<picture>` built by `conexao_sponsor_carousel_image()`: the portrait **Imagem Mobile** (`_sponsor_mobile_image`) is served at ≤768px via `<source media="(max-width: 768px)">` and the landscape **Imagem Desktop** (`_sponsor_desktop_image`) via the `<img>` — the browser picks the correct asset naturally, with no JavaScript source swapping. Sources request the `large` size plus srcset candidates so artwork stays crisp at the enlarged display scale, carry truthful intrinsic width/height metadata, and share one `<img>` alt (attachment alt → sponsor name fallback), so screen readers announce the supporter exactly once. When both roles resolve to the same attachment only the `<img>` is emitted (single download); missing images fall back gracefully (mobile → desktop → legacy `_sponsor_logo` → featured image) and a record with no usable image renders the SVG placeholder instead of a broken image.
 - **Responsive**: EXACTLY ONE sponsor per view on every breakpoint — each slide fills the viewport edge-to-edge so no neighbour is ever partially visible. The tile frame is breakpoint-specific: **landscape 16:9** on desktop/tablet (height derived from the column width, pinned to the CTA baseline) and **portrait 3:4** on mobile ≤768px (the shared-grid stretch chain may extend it taller, never wider or squarer; `object-fit: contain` letterboxes every source ratio onto the mat without cropping or distortion), with small translucent prev/next arrows vertically centered INSIDE the image and pagination dots at its bottom center (the hero variant keeps its arrows visible ≤768px alongside native swipe; they slim to 28px at ≤374px). With a single featured supporter the adaptive static mode hides the controls.
 - **Card treatment**: semantic tokens declared once on the component root (`.sponsors-carousel--hero`: `--sponsor-surface`, `--sponsor-border`, `--sponsor-border-hover`, `--sponsor-accent`, `--sponsor-text`, `--sponsor-shadow`, `--sponsor-shadow-hover`) drive every card/arrow rule — no color literals repeated per rule. Light mode: very light warm neutral surface (`#fcfbf7`), subtle translucent green border, soft deep-green shadow, dark neutral caption text, and a slim inset Conexão-green accent line along the top edge (`.sponsor-tile::before`) as the only brand accent. Dark mode: `dark-mode.css` redefines ONLY these tokens — deep translucent dark-green surface, subtle light border, high-contrast light text, soft shadow with a faint green glow. Sponsor artwork is never recolored; the card frames it.
 - **Autoplay**: Hero variant only, 10-second interval implemented in `main.js` as a single `setTimeout` chain per carousel (never `setInterval`; timer id doubles as the armed flag). The first sponsor stays visible a full 10 seconds after load; each automatic advance re-arms the next full interval. Autoplay pauses while the user hovers (only where `(hover: hover)` matches), focuses anything inside, presses/touches the component, or the tab is hidden, and resumes from a fresh full interval when engagement ends. Manual navigation (buttons, arrow keys, Home/End) and user swipes/drags restart the countdown instead of triggering an immediate follow-up advance (programmatic autoplay scrolls are excluded via an `autoScrolling` flag). `prefers-reduced-motion: reduce` disables autoplay entirely (checked live, manual navigation still works); static mode (everything fits) never autoplays.
@@ -76,14 +78,15 @@ The Featured Apoiadores carousel is a compact supporting showcase **inside the h
 
 ## CSS Architecture
 
-6 files, loaded in order via `functions.php`:
+7 files, loaded in order via `functions.php`:
 
 1. **Google Fonts** — Inter + Poppins (external)
 2. **design-system.css** — Design tokens, typography, buttons, cards, filters, page headers, empty states, focus, responsive, reduced motion
 3. **header-nav.css** — Header layout, primary nav, mobile menu, search
 4. **main.css** — Hero, sections, grids, cards, footer, responsive breakpoints
 5. **leisure.css** — Leisure archive + single layout
-6. **dark-mode.css** — `[data-theme="dark"]` overrides
+6. **sponsor.css** — Apoiador single layout + contact buttons (per-platform icon accents)
+7. **dark-mode.css** — `[data-theme="dark"]` overrides
 
 Versioning: `filemtime()` for cache busting (see `conexao_asset_version()` in functions.php).
 
@@ -123,6 +126,8 @@ Key functionality includes:
 | `conexao_sponsor_image_ids()` | Resolves an Apoiador's Imagem Desktop/Mobile attachment IDs with legacy fallbacks |
 | `conexao_sponsor_carousel_image()` | Builds the carousel slide's responsive `<picture>` (mobile source ≤768px, desktop img above) |
 | `conexao_get_featured_sponsors()` | Featured Apoiadores for the homepage carousel (transient-cached) |
+| `conexao_sponsor_contact_rows()` | Merges `_sponsor_link` + `_sponsor_contacts` into ordered, deduplicated display rows for the detail page |
+| `conexao_contact_label()` / `conexao_contact_icon()` | Frontend label + inline-SVG icon per contact type (reuses existing brand paths) |
 | `conexao_customize_register()` | Customizer sections (colors, social, hero [title/subtitle only], footer) |
 
 ### Image Sizes
@@ -180,4 +185,5 @@ Note: "Irlanda" is intentionally NOT a navigation item. The /irlanda/ page remai
 - `front-page.php` — homepage template
 - `archive.php` — shared archive template
 - `single-leisure.php` — leisure detail template
+- `single-sponsor.php` — Apoiador detail template (description + contacts)
 - `assets/js/main.js` — frontend JavaScript
