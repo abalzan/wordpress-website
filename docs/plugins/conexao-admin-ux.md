@@ -1,7 +1,7 @@
 # Conexão Admin UX
 
 - **Path**: `wp-content/plugins/conexao-admin-ux/`
-- **Version**: 1.0.0
+- **Version**: 1.0.1
 - **Purpose**: Professional, reusable CMS admin experience for all custom content types. Replaces generic meta boxes with structured sections, clear statuses, bulk actions, duplicate/archive workflows, dashboard summaries, and leisure image management.
 
 ## Responsibilities
@@ -44,6 +44,26 @@ Each content type defines its own statuses in the config. Common statuses:
 
 Event-specific: `source_not_found`, `expired`, `rejected`. Events have no
 review state — imported events are published immediately.
+
+## First-Save Behavior (empty-content guard bypass)
+
+The sectioned editor stores the real title/description in `conexao_fields[...]`
+and renders hidden mirror inputs (`post_title`, `content`) that carry the
+post's current values. On a brand-new post (auto-draft) those mirrors are empty,
+so a first submission used to hit core's `wp_insert_post()` "empty content"
+guard (all managed types support title + editor + excerpt). Core aborted the
+update before any hook fired, so `save_post_{type}` never ran and every field
+except `_edit_last` was silently lost while the UI reported success — the
+"first save loses everything, second save works" bug.
+
+`Conexao_Admin_Ux::bypass_empty_content_guard_for_editor()` (filter
+`wp_insert_post_empty_content`) returns `false` only when an editor form is
+being submitted: valid `conexao_admin_ux_nonce`, `action=editpost`, managed
+post type, existing post ID, and never during autosaves. This makes the first
+save behave exactly like an update — one request persists title, content,
+excerpt, all meta, taxonomies and the featured-image sync. All other write
+paths (autosave, Quick Edit, bulk edit, REST, importers) keep core's default
+guard behavior.
 
 ## Media Fields & Featured Image Sync
 

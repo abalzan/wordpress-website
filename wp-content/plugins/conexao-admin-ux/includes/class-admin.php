@@ -41,11 +41,78 @@ final class Conexao_Admin_Ux {
 		add_action( 'admin_init', array( $this, 'handle_row_actions' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_list_assets' ) );
 		add_action( 'admin_footer', array( $this, 'render_empty_state' ) );
+		add_filter( 'wp_insert_post_empty_content', array( $this, 'bypass_empty_content_guard_for_editor' ), 10, 2 );
 		add_filter( 'post_type_labels_event', array( $this, 'event_labels' ) );
 		add_filter( 'post_type_labels_guide', array( $this, 'guide_labels' ) );
 		add_filter( 'post_type_labels_job', array( $this, 'job_labels' ) );
 		add_filter( 'post_type_labels_sponsor', array( $this, 'sponsor_labels' ) );
 		add_filter( 'post_type_labels_course_provider', array( $this, 'course_provider_labels' ) );
+	}
+
+	/**
+	 * Bypass core's "empty content" guard for Admin UX editor submissions.
+	 *
+	 * Root cause of the first-save data loss on brand-new records:
+	 *
+	 * The sectioned editor stores the real title/description in
+	 * `conexao_fields[...]` and renders hidden mirror inputs (`post_title`,
+	 * `content`) that carry the CURRENT post values. On a brand-new post
+	 * (auto-draft) those mirrors are empty and no excerpt input exists, so a
+	 * first submission reaches `edit_post()` → `wp_update_post()` with empty
+	 * title + content + excerpt. Because every managed post type supports
+	 * title, editor AND excerpt, `wp_insert_post()` treats the update as
+	 * "empty" and aborts BEFORE firing any hook — `save_post_{type}` never
+	 * runs, so `Conexao_Admin_Ux_Editor::save()` never persists the
+	 * conexao_fields data. The user sees a success redirect while only
+	 * `_edit_last` was written. On the second save the mirror carries the
+	 * existing title, the guard passes, and everything saves — which is why
+	 * updating worked while creating did not.
+	 *
+	 * When one of our editor forms is being submitted (valid nonce), return
+	 * false so the normal insert/update proceeds and the standard
+	 * `save_post_{type}` hooks fire with the full $_POST payload. This makes
+	 * the very first save behave exactly like an update: one request, all
+	 * fields persisted.
+	 *
+	 * Everything else (autosaves, Quick Edit, bulk edit, REST, importers,
+	 * front-end) keeps core's default behavior.
+	 *
+	 * @param bool  $maybe_empty Whether the post is considered "empty".
+	 * @param array $postarr     Post data being inserted/updated.
+	 * @return bool
+	 */
+	public function bypass_empty_content_guard_for_editor( $maybe_empty, $postarr ) {
+		if ( ! $maybe_empty ) {
+			return $maybe_empty;
+		}
+
+		// Never interfere with autosaves; they must keep core semantics.
+		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+			return $maybe_empty;
+		}
+
+		// Only relevant to wp-admin form submissions.
+		if ( ! is_admin() || empty( $_POST['action'] ) || 'editpost' !== sanitize_key( wp_unslash( $_POST['action'] ) ) ) {
+			return $maybe_empty;
+		}
+
+		// Must be one of the post types this plugin manages.
+		$post_type = isset( $postarr['post_type'] ) ? sanitize_key( $postarr['post_type'] ) : '';
+		if ( '' === $post_type || ! in_array( $post_type, Conexao_Admin_Ux_Config::SUPPORTED_TYPES, true ) ) {
+			return $maybe_empty;
+		}
+
+		// Must be an existing post (auto-draft) reached from our editor form,
+		// authenticated with the editor nonce. Without the nonce we keep the
+		// default guard so unauthenticated/foreign requests are unaffected.
+		if ( empty( $postarr['ID'] ) || ! isset( $_POST['conexao_admin_ux_nonce'] ) ) {
+			return $maybe_empty;
+		}
+		if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['conexao_admin_ux_nonce'] ) ), 'conexao_admin_ux_save' ) ) {
+			return $maybe_empty;
+		}
+
+		return false;
 	}
 
 	/**
