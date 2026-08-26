@@ -135,11 +135,9 @@ $hero_has_sponsors = ! empty( conexao_get_featured_sponsors() );
 				array( 'icon' => 'car', 'title' => __( 'Transporte', 'conexao-br-irlanda' ), 'description' => __( 'Como se locomover', 'conexao-br-irlanda' ), 'term' => 'transporte' ),
 				array( 'icon' => 'dollar', 'title' => __( 'Finanças', 'conexao-br-irlanda' ), 'description' => __( 'Bancos e impostos', 'conexao-br-irlanda' ), 'term' => 'financas' ),
 				array( 'icon' => 'gift', 'title' => __( 'Benefícios', 'conexao-br-irlanda' ), 'description' => __( 'Auxílios e subsídios', 'conexao-br-irlanda' ), 'term' => 'beneficios' ),
-				array( 'icon' => 'utensils', 'title' => __( 'Onde Comer', 'conexao-br-irlanda' ), 'description' => __( 'Restaurantes e mercados', 'conexao-br-irlanda' ), 'url' => '/onde-comer/' ),
 				array( 'icon' => 'calendar', 'title' => __( 'Eventos', 'conexao-br-irlanda' ), 'description' => __( 'Agenda da comunidade', 'conexao-br-irlanda' ), 'url' => '/eventos/' ),
 				array( 'icon' => 'graduation-cap', 'title' => __( 'Educação', 'conexao-br-irlanda' ), 'description' => __( 'Cursos e escolas', 'conexao-br-irlanda' ), 'url' => '/cursos/' ),
 				array( 'icon' => 'file-text', 'title' => __( 'Documentos', 'conexao-br-irlanda' ), 'description' => __( 'Vistos e PPS Number', 'conexao-br-irlanda' ), 'term' => 'documentos' ),
-				array( 'icon' => 'map', 'title' => __( 'Ver todas', 'conexao-br-irlanda' ), 'description' => __( 'Todas as categorias', 'conexao-br-irlanda' ), 'url' => '/categorias/' ),
 				// Mobile-only priority cards. These stay out of the desktop grid
 				// (mobile_only) and are promoted into the compact mobile 4x1
 				// navigation via the mobile_priority flag, together with the
