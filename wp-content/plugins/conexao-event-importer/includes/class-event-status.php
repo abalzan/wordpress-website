@@ -10,7 +10,6 @@ defined( 'ABSPATH' ) || exit;
 class Conexao_Event_Status {
 
 	const DRAFT            = 'draft';
-	const NEEDS_REVIEW     = 'needs_review';
 	const PUBLISHED        = 'published';
 	const SOURCE_NOT_FOUND = 'source_not_found';
 	const EXPIRED          = 'expired';
@@ -24,7 +23,6 @@ class Conexao_Event_Status {
 	public static function get_statuses() {
 		return array(
 			self::DRAFT            => __( 'Draft', 'conexao-event-importer' ),
-			self::NEEDS_REVIEW     => __( 'Needs Review', 'conexao-event-importer' ),
 			self::PUBLISHED        => __( 'Published', 'conexao-event-importer' ),
 			self::SOURCE_NOT_FOUND => __( 'Source Not Found', 'conexao-event-importer' ),
 			self::EXPIRED          => __( 'Expired', 'conexao-event-importer' ),

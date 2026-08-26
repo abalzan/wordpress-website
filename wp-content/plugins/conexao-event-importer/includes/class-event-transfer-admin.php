@@ -205,7 +205,7 @@ class Conexao_Event_Transfer_Admin {
 					<li><?php esc_html_e( 'Categories, counties, tags, and towns', 'conexao-event-importer' ); ?></li>
 					<li><?php esc_html_e( 'External URLs, organizer, price, and registration info', 'conexao-event-importer' ); ?></li>
 					<li><?php esc_html_e( 'Featured image references (downloaded on import)', 'conexao-event-importer' ); ?></li>
-					<li><?php esc_html_e( 'Event status (published, draft, needs review, etc.)', 'conexao-event-importer' ); ?></li>
+					<li><?php esc_html_e( 'Event status (published, draft, expired, etc.)', 'conexao-event-importer' ); ?></li>
 				</ul>
 			</div>
 		</div>

@@ -4,7 +4,7 @@
  *
  * Centralizes per-event outcome tracking so the admin can see exactly what
  * happened during an import run: created, updated, unchanged, skipped,
- * needs_review, and failed events with human-readable reasons.
+ * and failed events with human-readable reasons.
  *
  * @package Conexao_Event_Importer
  */
@@ -32,7 +32,6 @@ class Conexao_Import_Result {
 		'skipped'              => 0,
 		'skipped_past'         => 0,
 		'skipped_invalid_date' => 0,
-		'needs_review'         => 0,
 		'failed'               => 0,
 	);
 
@@ -208,29 +207,6 @@ class Conexao_Import_Result {
 	public function add_skipped_invalid_date( $event_title, $reason = '' ) {
 		$this->counts['skipped_invalid_date']++;
 		$this->add_skipped( $event_title, $reason );
-	}
-
-	/**
-	 * Record an event flagged for human review (incomplete data).
-	 *
-	 * @param string $event_title   Event title.
-	 * @param array  $review_notes  Notes explaining why review is needed.
-	 * @param int    $post_id       WordPress post ID.
-	 */
-	public function add_needs_review( $event_title, $review_notes = array(), $post_id = 0 ) {
-		$this->counts['needs_review']++;
-		$message = __( 'Event imported for review — missing required data.', 'conexao-event-importer' );
-		if ( ! empty( $review_notes ) ) {
-			$message .= ' ' . implode( ' ', array_map( 'strval', $review_notes ) );
-		}
-		$this->events[] = array(
-			'title'    => $event_title,
-			'post_id'  => (int) $post_id,
-			'outcome'  => 'needs_review',
-			'message'  => $message,
-			'severity' => 'warning',
-		);
-		$this->maybe_warn();
 	}
 
 	/**

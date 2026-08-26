@@ -297,7 +297,6 @@ final class Conexao_Admin_Ux_Editor {
 		$imported   = get_post_meta( $post->ID, '_event_imported', true );
 		$import_date = get_post_meta( $post->ID, '_event_import_date', true );
 		$last_check = get_post_meta( $post->ID, '_event_last_checked', true );
-		$review_note = get_post_meta( $post->ID, '_event_review_note', true );
 		$status      = Conexao_Admin_Ux_Actions::get_status( $post->ID, 'event' );
 
 		if ( ! $source && ! $imported ) {
@@ -314,12 +313,7 @@ final class Conexao_Admin_Ux_Editor {
 
 		echo '<div class="conexao-import-banner conexao-import-banner--' . esc_attr( $status ) . '">';
 		echo '<div class="conexao-import-banner-head">';
-		if ( 'needs_review' === $status ) {
-			echo '<span class="conexao-import-warning" role="img" aria-label="Atenção">⚠</span> ';
-			echo '<strong>' . esc_html__( 'Needs Review', 'conexao-admin-ux' ) . '</strong>';
-		} else {
-			echo '<strong>' . esc_html__( 'Importado automaticamente', 'conexao-admin-ux' ) . '</strong>';
-		}
+		echo '<strong>' . esc_html__( 'Importado automaticamente', 'conexao-admin-ux' ) . '</strong>';
 		echo '</div>';
 
 		echo '<div class="conexao-import-details">';
@@ -331,9 +325,6 @@ final class Conexao_Admin_Ux_Editor {
 		}
 		if ( $last_check ) {
 			echo '<p><strong>' . esc_html__( 'Última verificação', 'conexao-admin-ux' ) . ':</strong> ' . esc_html( date_i18n( 'j M Y', strtotime( $last_check ) ) ) . '</p>';
-		}
-		if ( $review_note ) {
-			echo '<p class="conexao-import-note">⚠ ' . esc_html( $review_note ) . '</p>';
 		}
 		if ( $source_url ) {
 			echo '<p><a href="' . esc_url( $source_url ) . '" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Abrir evento original ↗', 'conexao-admin-ux' ) . '</a></p>';

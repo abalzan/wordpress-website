@@ -73,7 +73,6 @@ class Conexao_Event_Export {
 		'_event_last_checked',
 		'_event_status',
 		'_event_imported',
-		'_event_review_note',
 	);
 
 	/**

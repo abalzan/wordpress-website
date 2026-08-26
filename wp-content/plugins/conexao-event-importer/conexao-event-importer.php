@@ -117,7 +117,7 @@ final class Conexao_Event_Importer {
 		add_action( 'restrict_manage_posts', array( $this, 'event_status_filter_dropdown' ) );
 		add_filter( 'parse_query', array( $this, 'event_status_filter_query' ) );
 
-		// Event status meta box on the event editor, so admins can publish/review events.
+		// Event status meta box on the event editor, so admins can manage the status.
 		add_action( 'add_meta_boxes', array( $this, 'add_event_status_meta_box' ) );
 		add_action( 'save_post_event', array( $this, 'save_event_status_meta_box' ) );
 
@@ -167,7 +167,6 @@ final class Conexao_Event_Importer {
 			'_event_last_checked',
 			'_event_status',
 			'_event_imported',
-			'_event_review_note',
 		);
 
 		$int_meta = array(
@@ -226,7 +225,7 @@ final class Conexao_Event_Importer {
 	 *
 	 * Applies to ALL event queries on the frontend (main archive query AND the
 	 * secondary WP_Query calls used by the homepage hero widget and the
-	 * "Próximos Eventos" section). This keeps draft / needs-review / expired /
+	 * "Próximos Eventos" section). This keeps draft / expired /
 	 * source-not-found / rejected imported events out of public pages.
 	 */
 	public function filter_public_event_queries( $query ) {
@@ -436,7 +435,6 @@ final class Conexao_Event_Importer {
 		$current = Conexao_Event_Status::get_status( $post->ID );
 		$labels  = Conexao_Event_Status::get_statuses();
 		$source  = get_post_meta( $post->ID, '_event_source', true );
-		$note    = get_post_meta( $post->ID, '_event_review_note', true );
 
 		?>
 		<p>
@@ -454,13 +452,6 @@ final class Conexao_Event_Importer {
 			<p style="margin-top:10px;">
 				<strong><?php esc_html_e( 'Source', 'conexao-event-importer' ); ?>:</strong>
 				<?php echo esc_html( $source ); ?>
-			</p>
-		<?php endif; ?>
-
-		<?php if ( $note ) : ?>
-			<p style="margin-top:10px;">
-				<strong><?php esc_html_e( 'Review note', 'conexao-event-importer' ); ?>:</strong><br>
-				<em><?php echo esc_html( $note ); ?></em>
 			</p>
 		<?php endif; ?>
 
@@ -491,11 +482,6 @@ final class Conexao_Event_Importer {
 		if ( isset( $_POST['conexao_event_status'] ) ) {
 			$status = sanitize_text_field( wp_unslash( $_POST['conexao_event_status'] ) );
 			Conexao_Event_Status::set_status( $post_id, $status );
-
-			// If set to published, clear the review note.
-			if ( Conexao_Event_Status::PUBLISHED === $status ) {
-				delete_post_meta( $post_id, '_event_review_note' );
-			}
 		}
 	}
 

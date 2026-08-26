@@ -24,8 +24,8 @@ class Conexao_Event_Normalizer {
 	 *   title:string, description:string, start_date:string, start_time:string,
 	 *   end_date:string, end_time:string, county:string, town:string, venue:string,
 	 *   address:string, banner:string, category:string, organizer:string, price:string,
-	 *   source:string, source_id:string, source_url:string, needs_review:bool,
-	 *   review_notes:array
+	 *   source:string, source_id:string, source_url:string,
+	 *   validation_errors:array
 	 * }
 	 */
 	public function normalize( $raw ) {
@@ -54,30 +54,27 @@ class Conexao_Event_Normalizer {
 		$organizer = isset( $raw['organizer'] ) ? trim( (string) $raw['organizer'] ) : '';
 		$price     = isset( $raw['price'] ) ? trim( (string) $raw['price'] ) : '';
 
-		$needs_review   = false;
-		$review_notes   = array();
+		// Required-field validation. Events failing these checks are skipped
+		// by the importer — they are never created as posts.
+		$validation_errors = array();
 
 		if ( empty( $title ) ) {
-			$needs_review   = true;
-			$review_notes[] = __( 'Título ausente', 'conexao-event-importer' );
+			$validation_errors[] = __( 'Título ausente', 'conexao-event-importer' );
 		}
 
 		if ( empty( $start_date ) ) {
-			$needs_review   = true;
-			$review_notes[] = __( 'Data de início ausente', 'conexao-event-importer' );
+			$validation_errors[] = __( 'Data de início ausente', 'conexao-event-importer' );
 		}
 
 		if ( empty( $source_url ) ) {
-			$needs_review   = true;
-			$review_notes[] = __( 'URL de origem ausente', 'conexao-event-importer' );
+			$validation_errors[] = __( 'URL de origem ausente', 'conexao-event-importer' );
 		}
 
-		// County-level identification is sufficient for auto-publishing:
+		// County-level identification is sufficient:
 		// feeds scoped to one county (Laois Tourism, Heritage Week) often
 		// omit precise venues, and the county tag keeps them filterable.
 		if ( empty( $location['town'] ) && empty( $location['venue'] ) && empty( $location['county'] ) ) {
-			$needs_review   = true;
-			$review_notes[] = __( 'Localização não identificada', 'conexao-event-importer' );
+			$validation_errors[] = __( 'Localização não identificada', 'conexao-event-importer' );
 		}
 
 		$start_time_combo = $start_time;
@@ -105,11 +102,10 @@ class Conexao_Event_Normalizer {
 			'category'     => $category,
 			'organizer'    => $organizer,
 			'price'        => $price,
-			'source'       => $source,
-			'source_id'    => $source_id,
-			'source_url'   => $source_url,
-			'needs_review' => $needs_review,
-			'review_notes' => $review_notes,
+			'source'            => $source,
+			'source_id'         => $source_id,
+			'source_url'        => $source_url,
+			'validation_errors' => $validation_errors,
 		);
 	}
 

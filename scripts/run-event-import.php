@@ -19,7 +19,6 @@ echo "Found:         {$stats['found']}\n";
 echo "New:           {$stats['new']}\n";
 echo "Updated:       {$stats['updated']}\n";
 echo "Duplicates:    {$stats['duplicates']}\n";
-echo "Needs Review:  {$stats['needs_review']}\n";
 echo "Errors:        {$stats['errors']}\n";
 
 echo "\n=== Sources ===\n";
@@ -39,7 +38,7 @@ foreach ( array_slice( $log, 0, 10 ) as $entry ) {
 echo "\n=== Import History (last 5) ===\n";
 $history = Conexao_Import_History::get_all();
 foreach ( array_slice( $history, 0, 5 ) as $entry ) {
-	echo "[{$entry['time']}] [{$entry['source']}] found={$entry['found']} new={$entry['new']} updated={$entry['updated']} dups={$entry['duplicates']} review={$entry['needs_review']} errors={$entry['errors']} status={$entry['status']}\n";
+	echo "[{$entry['time']}] [{$entry['source']}] found={$entry['found']} new={$entry['new']} updated={$entry['updated']} dups={$entry['duplicates']} skipped={$entry['skipped']} errors={$entry['errors']} status={$entry['status']}\n";
 }
 
 echo "\n=== Events in DB ===\n";

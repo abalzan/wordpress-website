@@ -508,7 +508,6 @@ class Conexao_Event_Sources {
 		$unchanged = isset( $result['unchanged'] ) ? (int) $result['unchanged'] : 0;
 		$duplicates = isset( $result['duplicates'] ) ? (int) $result['duplicates'] : 0;
 		$skipped = isset( $result['skipped'] ) ? (int) $result['skipped'] : 0;
-		$needs_review = isset( $result['needs_review'] ) ? (int) $result['needs_review'] : 0;
 		$failed  = isset( $result['failed'] ) ? (int) $result['failed'] : ( isset( $result['errors'] ) ? (int) $result['errors'] : 0 );
 
 		// Determine notice type.
@@ -562,9 +561,6 @@ class Conexao_Event_Sources {
 			} else {
 				$summary_parts[] = sprintf( /* translators: %d: count */ __( '%d skipped', 'conexao-event-importer' ), $skipped );
 			}
-		}
-		if ( $needs_review > 0 ) {
-			$summary_parts[] = sprintf( /* translators: %d: count */ __( '%d need review', 'conexao-event-importer' ), $needs_review );
 		}
 		if ( $failed > 0 ) {
 			$summary_parts[] = sprintf( /* translators: %d: count */ __( '%d failed', 'conexao-event-importer' ), $failed );
@@ -1052,7 +1048,6 @@ class Conexao_Event_Sources {
 					<th><?php esc_html_e( 'Unchanged', 'conexao-event-importer' ); ?></th>
 					<th><?php esc_html_e( 'Duplicates', 'conexao-event-importer' ); ?></th>
 					<th><?php esc_html_e( 'Skipped', 'conexao-event-importer' ); ?></th>
-					<th><?php esc_html_e( 'Needs Review', 'conexao-event-importer' ); ?></th>
 					<th><?php esc_html_e( 'Errors', 'conexao-event-importer' ); ?></th>
 					<th><?php esc_html_e( 'Status', 'conexao-event-importer' ); ?></th>
 				</tr>
@@ -1068,7 +1063,6 @@ class Conexao_Event_Sources {
 						<td><?php echo esc_html( isset( $entry['unchanged'] ) ? $entry['unchanged'] : 0 ); ?></td>
 						<td><?php echo esc_html( $entry['duplicates'] ); ?></td>
 						<td><?php echo esc_html( isset( $entry['skipped'] ) ? $entry['skipped'] : 0 ); ?></td>
-						<td><?php echo esc_html( $entry['needs_review'] ); ?></td>
 						<td><?php echo esc_html( $entry['errors'] ); ?></td>
 						<td>
 							<span class="conexao-status-badge conexao-status-badge--<?php echo esc_attr( $entry['status'] ); ?>">
@@ -1120,7 +1114,6 @@ class Conexao_Event_Sources {
 							<th><?php esc_html_e( 'Unchanged', 'conexao-event-importer' ); ?></th>
 							<th><?php esc_html_e( 'Duplicates', 'conexao-event-importer' ); ?></th>
 							<th><?php esc_html_e( 'Skipped', 'conexao-event-importer' ); ?></th>
-							<th><?php esc_html_e( 'Needs Review', 'conexao-event-importer' ); ?></th>
 							<th><?php esc_html_e( 'Errors', 'conexao-event-importer' ); ?></th>
 							<th><?php esc_html_e( 'Status', 'conexao-event-importer' ); ?></th>
 						</tr>
@@ -1136,7 +1129,6 @@ class Conexao_Event_Sources {
 								<td><?php echo esc_html( isset( $entry['unchanged'] ) ? $entry['unchanged'] : 0 ); ?></td>
 								<td><?php echo esc_html( $entry['duplicates'] ); ?></td>
 								<td><?php echo esc_html( isset( $entry['skipped'] ) ? $entry['skipped'] : 0 ); ?></td>
-								<td><?php echo esc_html( $entry['needs_review'] ); ?></td>
 								<td><?php echo esc_html( $entry['errors'] ); ?></td>
 								<td>
 									<span class="conexao-status-badge conexao-status-badge--<?php echo esc_attr( $entry['status'] ); ?>">

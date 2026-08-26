@@ -21,7 +21,7 @@ class Conexao_Import_History {
 	 * Record a completed import run.
 	 *
 	 * @param string $source_id  Source slug.
-	 * @param array  $stats      Stats: found, new, updated, unchanged, duplicates, skipped, skipped_past, skipped_invalid_date, needs_review, errors (failed).
+	 * @param array  $stats      Stats: found, new, updated, unchanged, duplicates, skipped, skipped_past, skipped_invalid_date, errors (failed).
 	 * @param string $status     success|warning|partial|error|failed.
 	 * @param string $message    Optional summary message.
 	 * @param array  $extra      Optional extra data: failed_events, fatal_errors, run_id, event_results.
@@ -41,7 +41,6 @@ class Conexao_Import_History {
 			'skipped'              => isset( $stats['skipped'] ) ? (int) $stats['skipped'] : 0,
 			'skipped_past'         => isset( $stats['skipped_past'] ) ? (int) $stats['skipped_past'] : 0,
 			'skipped_invalid_date' => isset( $stats['skipped_invalid_date'] ) ? (int) $stats['skipped_invalid_date'] : 0,
-			'needs_review'         => isset( $stats['needs_review'] ) ? (int) $stats['needs_review'] : 0,
 			'errors'        => isset( $stats['errors'] ) ? (int) $stats['errors'] : 0,
 			'status'        => self::normalize_status( $status ),
 			'message'       => sanitize_text_field( (string) $message ),

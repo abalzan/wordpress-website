@@ -531,7 +531,6 @@ class Conexao_Event_Import {
 			'_event_last_checked',
 			'_event_status',
 			'_event_imported',
-			'_event_review_note',
 		);
 
 		foreach ( $allowed as $key ) {

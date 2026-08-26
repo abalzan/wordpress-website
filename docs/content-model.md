@@ -48,7 +48,7 @@ Registered by `conexao-data-model` (method `register_taxonomies()`).
 - `_event_registration`, `_event_cta`
 - `_event_source`, `_event_source_id`, `_event_organizer`, `_event_price`
 - `_event_import_date`, `_event_last_checked`
-- `_event_status`, `_event_imported`, `_event_review_note`
+- `_event_status`, `_event_imported`
 
 ### Sponsor
 

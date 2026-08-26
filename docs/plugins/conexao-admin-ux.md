@@ -42,7 +42,8 @@ Each content type defines its own statuses in the config. Common statuses:
 | `published` | published | Publicado |
 | `archived` | archived | Arquivado |
 
-Event-specific: `source_not_found`, `expired`, `rejected`.
+Event-specific: `source_not_found`, `expired`, `rejected`. Events have no
+review state — imported events are published immediately.
 
 ## Media Fields & Featured Image Sync
 

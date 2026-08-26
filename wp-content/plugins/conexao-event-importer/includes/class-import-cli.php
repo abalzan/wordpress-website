@@ -203,7 +203,7 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			$prefix = $dry_run ? '[dry-run] ' : '';
 
 			WP_CLI::log( sprintf(
-				'  %s%s: found=%d created=%d updated=%d unchanged=%d duplicates=%d skipped=%d (past=%d, invalid_date=%d) review=%d failed=%d status=%s',
+				'  %s%s: found=%d created=%d updated=%d unchanged=%d duplicates=%d skipped=%d (past=%d, invalid_date=%d) failed=%d status=%s',
 				$prefix,
 				$source_id,
 				(int) ( isset( $result['found'] ) ? $result['found'] : 0 ),
@@ -214,7 +214,6 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 				(int) ( isset( $result['skipped'] ) ? $result['skipped'] : 0 ),
 				(int) ( isset( $result['skipped_past'] ) ? $result['skipped_past'] : 0 ),
 				(int) ( isset( $result['skipped_invalid_date'] ) ? $result['skipped_invalid_date'] : 0 ),
-				(int) ( isset( $result['needs_review'] ) ? $result['needs_review'] : 0 ),
 				(int) ( isset( $result['failed'] ) ? $result['failed'] : 0 ),
 				isset( $result['status'] ) ? $result['status'] : 'unknown'
 			) );
