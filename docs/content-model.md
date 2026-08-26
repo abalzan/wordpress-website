@@ -52,7 +52,13 @@ Registered by `conexao-data-model` (method `register_taxonomies()`).
 
 ### Sponsor
 
-- `_sponsor_link` (url), `_sponsor_display_order` (text)
+- `_sponsor_link` (url), `_sponsor_display_order` (text) — `_sponsor_link` is the
+  canonical/official website: archive cards, homepage carousel and SEO schema
+  click through to it
+- `_sponsor_contacts` (array) — ordered contact/social links repeater, one
+  meta holding `[ { type, url }, … ]` rows; types: website, instagram,
+  facebook, whatsapp, linkedin, tiktok, email (stored as `mailto:`), outro.
+  Managed by `Conexao_Data_Model_Contacts`; row order is meaningful
 - `_sponsor_featured` (checkbox)
 - `_sponsor_status`, `_sponsor_category`, `_sponsor_type`, `_sponsor_description`
 - Responsive carousel images (Media Library attachment IDs):

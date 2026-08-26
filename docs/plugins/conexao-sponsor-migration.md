@@ -6,7 +6,7 @@ bytes** — the destination site recreates every Media Library attachment
 locally, with no external requests and no localhost URLs in production data.
 
 - Path: `wp-content/plugins/conexao-sponsor-migration/`
-- Version: 1.0.0
+- Version: 1.1.0 (export file format 1.1.0 — adds the per-sponsor `contacts` collection; 1.0.0 files remain importable)
 - Text domain: `conexao-sponsor-migration`
 - Admin: top-level menu **Apoiadores Migration** → *Exportar Apoiadores* /
   *Importar Apoiadores* (`manage_options`)
@@ -19,6 +19,10 @@ Per sponsor:
 - `_sponsor_category`, `_sponsor_type`, `_sponsor_link`, `_sponsor_featured`,
   `_sponsor_display_order`, `_sponsor_status`, `_sponsor_created_date`
 - Taxonomies by term name: `conexao_category`, `conexao_county`
+- **Contacts** ("Contatos" repeater): the ordered list of `{type, url}` rows
+  from `_sponsor_contacts`, carried as a top-level `contacts` array per sponsor.
+  Types: website, instagram, facebook, whatsapp, linkedin, tiktok, email, outro.
+  The canonical `_sponsor_link` stays a regular meta key (see below).
 - **Both responsive carousel images plus the legacy logo**, with bytes embedded:
 
 | Role | Meta key | Meaning |
@@ -54,6 +58,11 @@ documented "existing Apoiador image → Imagem Desktop" migration).
 - Localhost / own-host URLs are never fetched.
 - Featured image follows the public fallback chain:
   desktop → mobile → legacy logo.
+- Contacts: rows are sanitized through `Conexao_Data_Model_Contacts` (the same
+  rules as the admin editor) before storage. A payload **with** the `contacts`
+  key replaces existing rows (an empty list clears them); a legacy 1.0.0
+  payload **without** the key leaves existing contacts untouched, so old files
+  never destroy newer data.
 - Additive only: touches sponsor posts, the two shared taxonomies (matched by
   name), and attachments it creates. Never events/guides/jobs/courses/leisure
   or unrelated media.
@@ -65,13 +74,17 @@ documented "existing Apoiador image → Imagem Desktop" migration).
 
 ```json
 {
-  "manifest": { "format": "conexao-sponsor-export", "version": "1.0.0", "...": "..." },
+  "manifest": { "format": "conexao-sponsor-export", "version": "1.1.0", "...": "..." },
   "sponsors": [
     {
       "uuid": "…",
       "post": { "title": "…", "content": "…", "excerpt": "…", "status": "publish", "slug": "…" },
       "meta": { "_sponsor_link": "…", "_sponsor_desktop_image": "12", "...": "…" },
       "taxonomies": { "conexao_category": ["Serviços Profissionais"] },
+      "contacts": [
+        { "type": "instagram", "url": "https://instagram.com/…" },
+        { "type": "whatsapp",  "url": "https://wa.me/353…" }
+      ],
       "images": {
         "desktop":     { "id": "<md5>", "filename": "…", "mime_type": "image/png", "data_base64": "…", "alt": "…" },
         "mobile":      { "id": "<md5>", "filename": "…", "mime_type": "image/png", "data_base64": "…", "alt": "…" },

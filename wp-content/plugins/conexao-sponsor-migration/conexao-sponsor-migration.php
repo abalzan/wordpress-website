@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Conexão BR Irlanda — Apoiadores Migration
  * Description: Export and import the Apoiadores (sponsors) dataset as a portable JSON file with embedded image bytes. Carries both responsive carousel images per supporter (Imagem Desktop and Imagem Mobile) plus the legacy logo, so production imports recreate every Media Library attachment locally and assign it to the correct Apoiador. Dedupe by stable UUID + image content hash; dry-run preview; no external requests required.
- * Version: 1.0.0
+ * Version: 1.1.0
  * Text Domain: conexao-sponsor-migration
  *
  * @package Conexao_Sponsor_Migration
@@ -19,7 +19,7 @@ require_once CONEXAO_SPONSOR_MIGRATION_DIR . 'includes/class-sponsor-transfer-ad
 
 final class Conexao_Sponsor_Migration {
 
-	const VERSION = '1.0.0';
+	const VERSION = '1.1.0';
 
 	/** @var Conexao_Sponsor_Migration|null */
 	private static $instance = null;
@@ -63,6 +63,16 @@ final class Conexao_Sponsor_Migration {
 	 * not yet have the Conexão data model active.
 	 */
 	public function maybe_register_helpers() {
+		// The Apoiador contacts model normally ships with conexao-data-model;
+		// requiring it directly keeps the structured contact/social links
+		// ("Contatos" repeater) exporting and importing correctly even on
+		// installs where the data-model plugin is not active. The file only
+		// defines a class (no side effects), so this is safe to repeat.
+		if ( ! class_exists( 'Conexao_Data_Model_Contacts' )
+			&& file_exists( WP_PLUGIN_DIR . '/conexao-data-model/includes/class-contacts.php' ) ) {
+			require_once WP_PLUGIN_DIR . '/conexao-data-model/includes/class-contacts.php';
+		}
+
 		if ( ! post_type_exists( 'sponsor' ) ) {
 			register_post_type(
 				'sponsor',

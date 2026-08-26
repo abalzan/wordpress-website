@@ -7,7 +7,9 @@
  * UUID, then slug, then title — never by local database IDs. Both responsive
  * carousel image relationships (Imagem Desktop / Imagem Mobile) and the
  * legacy logo are recreated as local Media Library attachments and assigned
- * to the correct Apoiador.
+ * to the correct Apoiador. The structured contact/social links ("Contatos"
+ * repeater, export format 1.1.0+) are restored per sponsor; legacy 1.0.0
+ * exports without contacts leave any existing contacts untouched.
  *
  * @package Conexao_Sponsor_Migration
  */
@@ -186,8 +188,38 @@ class Conexao_Sponsor_Importer {
 		$this->save_meta( $post_id, $sponsor );
 		$this->save_taxonomies( $post_id, $sponsor );
 		$this->handle_images( $post_id, $sponsor, $stats );
+		$this->save_contacts( $post_id, $sponsor );
 
 		return $existing ? 'updated' : 'created';
+	}
+
+	/**
+	 * Save the exported contact/social links onto the imported sponsor.
+	 *
+	 * The "contacts" key carries an ordered list of {type, url} rows and is
+	 * sanitized through Conexao_Data_Model_Contacts before storage — the same
+	 * rules the admin editor applies. Semantics:
+	 *
+	 * - Key present (any 1.1.0+ export): rows replace the existing contacts,
+	 *   including an empty list (an explicit "no contacts" on the source).
+	 * - Key absent (legacy 1.0.0 export): existing contacts are left
+	 *   untouched so re-importing old files never destroys newer data.
+	 *
+	 * @param int   $post_id Sponsor post ID.
+	 * @param array $sponsor Exported sponsor payload.
+	 */
+	protected function save_contacts( $post_id, $sponsor ) {
+		if ( ! array_key_exists( 'contacts', $sponsor ) ) {
+			return;
+		}
+
+		if ( ! class_exists( 'Conexao_Data_Model_Contacts' ) ) {
+			return;
+		}
+
+		$rows = is_array( $sponsor['contacts'] ) ? $sponsor['contacts'] : array();
+
+		Conexao_Data_Model_Contacts::update( $post_id, $rows );
 	}
 
 	/**

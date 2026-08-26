@@ -116,6 +116,35 @@ migration step:
 - Removing an image clears the relationship only — the Media Library
   attachment itself is never deleted.
 
+## Sponsor Contacts Repeater ("Contatos")
+
+The Apoiador editor's **Contatos** section holds:
+
+1. **Site oficial (link principal)** — the canonical `_sponsor_link` meta,
+   unchanged in behavior: archive cards, the homepage carousel and the SEO
+   schema click through to it.
+2. **Outros contatos** — a structured repeater (`contacts` field type) for
+   any number of additional contact/social links.
+
+Repeater behavior:
+
+- Each row is `[ Tipo ▼ ] [ URL ] [ ↑ ↓ Remover ]`; `+ Adicionar contato`
+  clones an inline `<script type="text/html">` template via admin.js.
+- Rows are rendered server-side from stored meta; JS only adds/removes/
+  reorders, so the first save of a brand-new Apoiador persists every row
+  added before submission (no client-side hydration involved).
+- The save handler iterates rows in submission order and never trusts row
+  indexes, so removing/reordering rows needs no renumbering.
+- Types: Website, Instagram, Facebook, WhatsApp, LinkedIn, TikTok, E-mail,
+  Outro (`Conexao_Data_Model_Contacts::types()`).
+- Inputs are plain text (no native `type=url`/`email` constraint validation)
+  so mid-edit drafts never get blocked by browser popups; per-type rules are
+  enforced server-side with specific pt-BR error messages surfaced through
+  the standard validation notice.
+- Storage is a single array meta `_sponsor_contacts` owned by
+  `Conexao_Data_Model_Contacts` (see the data-model plugin docs). Empty
+  repeaters delete the meta entirely.
+
 ## Admin Pages
 
 - **Leisure images**: Tools → Gerenciador de Imagens (Lazer) — Wikimedia search and import

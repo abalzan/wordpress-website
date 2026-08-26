@@ -738,12 +738,18 @@ final class Conexao_Admin_Ux_Config {
 						),
 					),
 				),
-				'link'      => array(
-					'title'    => 'Link',
-					'icon'     => 'dashicons-admin-links',
+				// Contatos: the canonical/official website stays the dedicated
+				// "_sponsor_link" meta (archive cards, homepage carousel and
+				// SEO schema click through to it). Additional channels live in
+				// the structured "_sponsor_contacts" repeater below — see
+				// Conexao_Data_Model_Contacts for the storage model.
+				'contatos'  => array(
+					'title'    => 'Contatos',
+					'icon'     => 'dashicons-share-alt2',
 					'priority' => 20,
 					'fields'   => array(
-						array( 'key' => '_sponsor_link', 'label' => 'Link do Apoiador', 'type' => 'url', 'help' => 'Informe o endereço do site ou página do apoiador. Ao clicar no apoiador, o visitante será direcionado para este link.' ),
+						array( 'key' => '_sponsor_link', 'label' => 'Site oficial (link principal)', 'type' => 'url', 'help' => 'Endereço usado em todo o site: os cartões de Apoiadores e o carousel da página inicial abrem este link quando o visitante clica.' ),
+						array( 'key' => '_sponsor_contacts', 'label' => 'Outros contatos', 'type' => 'contacts', 'help' => 'Adicione quantos contatos quiser (Instagram, Facebook, WhatsApp, LinkedIn, TikTok, e-mail…). Use as setas para reordenar — a ordem definida aqui é a ordem exibida no site.' ),
 					),
 				),
 				'exibicao'  => array(

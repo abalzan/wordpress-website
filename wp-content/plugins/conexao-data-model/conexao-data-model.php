@@ -15,6 +15,7 @@ define( 'CONEXAO_DATA_MODEL_DIR', plugin_dir_path( __FILE__ ) );
 
 require_once CONEXAO_DATA_MODEL_DIR . 'includes/class-relationships.php';
 require_once CONEXAO_DATA_MODEL_DIR . 'includes/class-meta.php';
+require_once CONEXAO_DATA_MODEL_DIR . 'includes/class-contacts.php';
 
 final class Conexao_Data_Model {
 
@@ -36,6 +37,7 @@ final class Conexao_Data_Model {
 		add_action( 'init', array( $this, 'register_taxonomies' ), 0 );
 		add_action( 'init', array( $this, 'register_provider_meta' ), 0 );
 		add_action( 'init', array( $this, 'register_leisure_meta' ), 0 );
+		add_action( 'init', array( $this, 'register_sponsor_contacts_meta' ), 0 );
 	}
 
 	public function register_content_types() {
@@ -178,6 +180,35 @@ final class Conexao_Data_Model {
 				)
 			);
 		}
+	}
+
+	/**
+	 * Register the structured Apoiador contacts meta (`_sponsor_contacts`).
+	 *
+	 * A single array meta holding the ordered contact rows managed by the
+	 * admin editor's repeater (see Conexao_Data_Model_Contacts). The
+	 * sanitize callback is defense-in-depth for REST/meta API writes — the
+	 * admin editor and importer already sanitize explicitly through
+	 * Conexao_Data_Model_Contacts::sanitize_rows() before saving.
+	 *
+	 * show_in_rest is disabled: array meta without a REST schema cannot be
+	 * represented in the REST response, and no consumer reads this field
+	 * through the REST API.
+	 */
+	public function register_sponsor_contacts_meta() {
+		register_post_meta(
+			'sponsor',
+			Conexao_Data_Model_Contacts::META_KEY,
+			array(
+				'single'            => true,
+				'type'              => 'array',
+				'show_in_rest'      => false,
+				'sanitize_callback' => array( 'Conexao_Data_Model_Contacts', 'sanitize_rows' ),
+				'auth_callback'     => function ( $allowed, $meta_key, $object_id ) {
+					return current_user_can( 'edit_post', $object_id );
+				},
+			)
+		);
 	}
 
 	public function register_taxonomies() {

@@ -163,8 +163,85 @@
 		});
 	}
 
+	// ------------------------------------------------------------------
+	// Apoiador contacts repeater (Contatos).
+	// Rows are rendered server-side; JS only adds (from the inline
+	// template), removes and reorders them. The save handler iterates
+	// rows in submission order, so indexes never need renumbering.
+	// ------------------------------------------------------------------
+
+	function updateContactsEmptyState(wrap) {
+		wrap.find('.conexao-contacts-empty').prop('hidden', wrap.find('.conexao-contact-row').length > 0);
+	}
+
+	function applyContactTypeHints(row) {
+		var type = row.find('.conexao-contact-type').val();
+		var input = row.find('.conexao-contact-url');
+		if ('email' === type) {
+			input.attr({ placeholder: 'nome@exemplo.com', inputmode: 'email' });
+		} else if ('whatsapp' === type) {
+			input.attr({ placeholder: 'https://wa.me/353… ou número com DDI', inputmode: 'url' });
+		} else {
+			input.attr({ placeholder: 'https://', inputmode: 'url' });
+		}
+	}
+
+	$(document).on('click', '.conexao-contacts-add', function (e) {
+		e.preventDefault();
+		var wrap = $(this).closest('.conexao-contacts');
+		// .text() is the documented way to read <script> contents; .html()
+		// can behave inconsistently across jQuery versions for script nodes.
+		var template = $.trim(wrap.find('.conexao-contacts-template').text() || '');
+		if (!template) {
+			return;
+		}
+		var next = parseInt(wrap.data('next-index'), 10);
+		if (isNaN(next)) {
+			next = wrap.find('.conexao-contact-row').length;
+		}
+		wrap.find('.conexao-contacts-rows').append(template.replace(/__INDEX__/g, next));
+		wrap.data('next-index', next + 1);
+		updateContactsEmptyState(wrap);
+		wrap.find('.conexao-contact-row').last().find('.conexao-contact-type').trigger('focus');
+	});
+
+	$(document).on('click', '.conexao-contact-remove', function (e) {
+		e.preventDefault();
+		var wrap = $(this).closest('.conexao-contacts');
+		$(this).closest('.conexao-contact-row').remove();
+		updateContactsEmptyState(wrap);
+	});
+
+	$(document).on('click', '.conexao-contact-up', function (e) {
+		e.preventDefault();
+		var row = $(this).closest('.conexao-contact-row');
+		var prev = row.prev('.conexao-contact-row');
+		if (prev.length) {
+			row.insertBefore(prev);
+		}
+	});
+
+	$(document).on('click', '.conexao-contact-down', function (e) {
+		e.preventDefault();
+		var row = $(this).closest('.conexao-contact-row');
+		var nextRow = row.next('.conexao-contact-row');
+		if (nextRow.length) {
+			row.insertAfter(nextRow);
+		}
+	});
+
+	// Type-dependent hints: placeholder + mobile keyboard per contact type.
+	$(document).on('change', '.conexao-contact-type', function () {
+		applyContactTypeHints($(this).closest('.conexao-contact-row'));
+	});
+
 	$(document).ready(function () {
 		attachCountyDependency();
 		attachTownAutocomplete();
+
+		// Apply correct hints to pre-filled rows on load.
+		$('.conexao-contact-row').each(function () {
+			applyContactTypeHints($(this));
+		});
 	});
 })(jQuery);

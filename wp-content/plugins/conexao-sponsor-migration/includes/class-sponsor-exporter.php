@@ -12,6 +12,9 @@
  *   _sponsor_mobile_image  → Imagem Mobile  (portrait carousel artwork)
  *   _sponsor_logo          → legacy single-image field (pre-two-field model)
  *
+ * The multiple contact/social links ("Contatos" repeater) are carried as a
+ * structured per-sponsor "contacts" list of {type, url} rows in stored order.
+ *
  * Because the destination site cannot reliably fetch images from the source
  * (and localhost URLs must never leak into production data), the actual image
  * bytes are embedded in the export (base64-encoded). The import side creates
@@ -33,8 +36,12 @@ class Conexao_Sponsor_Exporter {
 
 	/**
 	 * Export file format version.
+	 *
+	 * 1.1.0 adds the structured "contacts" collection per sponsor
+	 * (multiple contact/social links, see Conexao_Data_Model_Contacts).
+	 * Importers remain compatible with 1.0.0 files that lack it.
 	 */
-	const FORMAT_VERSION = '1.0.0';
+	const FORMAT_VERSION = '1.1.0';
 
 	/**
 	 * Meta key used to store a stable unique identifier for each sponsor.
@@ -200,6 +207,13 @@ class Conexao_Sponsor_Exporter {
 			}
 		}
 
+		// Structured contact/social links (repeater). Sponsors saved before
+		// this feature simply export an empty list — never a missing key —
+		// so a re-import reproduces "no contacts" exactly.
+		$contacts = class_exists( 'Conexao_Data_Model_Contacts' )
+			? Conexao_Data_Model_Contacts::get( $post->ID )
+			: array();
+
 		return array(
 			'uuid'     => $uuid,
 			'post'     => array(
@@ -213,6 +227,7 @@ class Conexao_Sponsor_Exporter {
 			),
 			'meta'     => $meta,
 			'taxonomies' => $taxonomies,
+			'contacts' => $contacts,
 			'images'   => array(
 				'desktop'     => $this->export_image( $desktop_value ),
 				'mobile'      => $this->export_image( $mobile_value ),

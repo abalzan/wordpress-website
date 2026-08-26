@@ -18,6 +18,7 @@
 | `conexao-data-model.php` | Main plugin file, class `Conexao_Data_Model` |
 | `includes/class-meta.php` | Editorial meta boxes (legacy, replaced by admin-ux for supported types) |
 | `includes/class-relationships.php` | Taxonomies and default term seeding |
+| `includes/class-contacts.php` | Apoiador contacts model (`_sponsor_contacts` repeater: types, sanitization, storage) |
 
 ## Data Model
 
@@ -46,6 +47,35 @@ See `docs/content-model.md` for complete details.
 
 Leisure meta (`_leisure_*`) and course provider meta (`_provider_*`) are registered in this plugin's `register_leisure_meta()` and `register_provider_meta()` methods.
 
+### Sponsor Contacts (`_sponsor_contacts`)
+
+`Conexao_Data_Model_Contacts` owns the structured multi-contact storage for
+Apoiadores — a single array meta holding an ordered list of rows:
+
+```
+[ ['type' => 'instagram', 'url' => 'https://instagram.com/…'],
+  ['type' => 'whatsapp',  'url' => 'https://wa.me/353…'] ]
+```
+
+- **Types**: `website`, `instagram`, `facebook`, `whatsapp`, `linkedin`,
+  `tiktok`, `email`, `outro`.
+- **Canonical website stays separate**: `_sponsor_link` remains the official
+  link used by archive cards, the homepage carousel and SEO schema. A
+  Website-type row here is an additional link, never a replacement.
+- **Sanitization** (`sanitize_rows()`, shared by the admin editor save path
+  and the sponsor importer): http(s)-only URLs; scheme-less domains get a
+  `https://` prefix; unsafe protocols rejected; WhatsApp accepts bare numbers
+  (normalized to `wa.me`) plus any full wa.me/api.whatsapp.com/
+  chat.whatsapp.com link; e-mails validated via `sanitize_email()` and stored
+  as `mailto:` links.
+- **Validation** (`validate_submission()`) returns per-row pt-BR error
+  messages for invalid input instead of silently dropping it.
+- **API**: `get($post_id)` / `update($post_id, $rows)` / `types()` /
+  `display_value($type, $url)` for front-end or tooling consumers.
+- Meta is registered in `register_sponsor_contacts_meta()` (array type,
+  REST exposure off, sanitize callback as defense-in-depth).
+- Row order is meaningful: preserve insertion order when rendering.
+
 ## Admin UI
 
 Legacy meta boxes (Class `Conexao_Data_Model_Meta`). For event/guide/job/sponsor/course_provider/leisure, the admin-ux plugin replaces these with its own editor. The legacy handler skips types managed by admin-ux.
@@ -65,3 +95,4 @@ Legacy meta boxes (Class `Conexao_Data_Model_Meta`). For event/guide/job/sponsor
 - `conexao-data-model.php` — main plugin file, CPT/taxonomy registration
 - `includes/class-relationships.php` — taxonomy seeds
 - `includes/class-meta.php` — meta registration and editorial boxes
+- `includes/class-contacts.php` — Apoiador contacts model

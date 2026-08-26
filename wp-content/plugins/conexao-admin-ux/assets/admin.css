@@ -110,6 +110,31 @@
 .conexao-town-suggestion { padding: 8px 12px; cursor: pointer; font-size: 13px; }
 .conexao-town-suggestion:hover, .conexao-town-suggestion.is-highlighted { background: #f0f7f2; }
 
+/* Contacts repeater (Apoiadores — Contatos) */
+.conexao-field--contacts { grid-column: 1 / -1; }
+.conexao-contacts { display: flex; flex-direction: column; gap: 10px; }
+.conexao-contacts-rows { display: flex; flex-direction: column; gap: 8px; }
+.conexao-contact-row {
+	display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+	padding: 6px 8px; background: #f8f9fa;
+	border: 1px solid #e2e4e7; border-radius: 6px;
+}
+.conexao-contact-type { flex: 0 0 170px; min-width: 130px; }
+.conexao-contact-url { flex: 1 1 240px; min-width: 200px; }
+.conexao-contact-actions { display: inline-flex; gap: 4px; flex: 0 0 auto; margin-left: auto; }
+.conexao-contact-action {
+	display: inline-flex; align-items: center; justify-content: center;
+	width: 30px; height: 30px; padding: 0;
+	border: 1px solid #dcdcde; border-radius: 4px; background: #fff;
+	color: #50575e; cursor: pointer; line-height: 1;
+}
+.conexao-contact-action:hover { border-color: #0E6B3A; color: #0E6B3A; }
+.conexao-contact-remove:hover { border-color: #b32d2e; color: #b32d2e; }
+.conexao-contact-action:focus-visible { outline: 2px solid #0E6B3A; outline-offset: 2px; }
+.conexao-contact-action .dashicons { font-size: 16px; width: 16px; height: 16px; }
+.conexao-contacts-empty { margin: 0; color: #8c8f94; font-size: 13px; }
+.conexao-contacts-add { align-self: flex-start; }
+
 /* Readonly */
 .conexao-readonly-value {
 	padding: 8px 10px; background: #f8f9fa; border: 1px solid #dcdcde;
@@ -166,6 +191,8 @@
 	.conexao-summary-value { font-size: 22px; }
 	.conexao-fields-grid { grid-template-columns: 1fr; }
 	.conexao-section-body { padding: 14px; }
+	.conexao-contact-type { flex-basis: calc(50% - 4px); }
+	.conexao-contact-url { order: 3; flex-basis: 100%; }
 }
 
 /* Focus states */

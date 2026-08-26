@@ -174,6 +174,38 @@ final class Conexao_Admin_Ux_Fields {
 				$html         .= '</div></div>';
 				break;
 
+			case 'contacts':
+				// Structured repeater (Apoiadores): ordered rows of
+				// [type, url] stored as a single array meta. Rows are
+				// rendered server-side from the stored value so a first
+				// save of a brand-new post works without any client-side
+				// hydration; JS only adds/removes/reorders rows.
+				$rows  = is_array( $value ) ? array_values( $value ) : array();
+				$types = class_exists( 'Conexao_Data_Model_Contacts' )
+					? Conexao_Data_Model_Contacts::types()
+					: array();
+
+				$html .= '<div class="conexao-contacts" data-next-index="' . esc_attr( count( $rows ) ) . '">';
+				$html .= '<div class="conexao-contacts-rows">';
+				foreach ( $rows as $row_index => $row ) {
+					$row_type = isset( $row['type'] ) ? $row['type'] : 'outro';
+					$row_url  = isset( $row['url'] ) ? $row['url'] : '';
+					if ( class_exists( 'Conexao_Data_Model_Contacts' ) ) {
+						$row_url = Conexao_Data_Model_Contacts::display_value( $row_type, $row_url );
+					}
+					$html .= self::contact_row( $row_index, $row_type, $row_url, $types );
+				}
+				$html .= '</div>';
+				$html .= '<p class="conexao-contacts-empty"' . ( $rows ? ' hidden' : '' ) . '>' . esc_html__( 'Nenhum contato adicional.', 'conexao-admin-ux' ) . '</p>';
+				$html .= '<button type="button" class="button conexao-contacts-add">+ ' . esc_html__( 'Adicionar contato', 'conexao-admin-ux' ) . '</button>';
+				// Row template cloned by admin.js when adding a contact.
+				// __INDEX__ is replaced with an unused row index; the save
+				// handler iterates rows in submission order and never trusts
+				// the indexes themselves.
+				$html .= '<script type="text/html" class="conexao-contacts-template">' . self::contact_row( '__INDEX__', '', '', $types ) . '</script>';
+				$html .= '</div>';
+				break;
+
 			case 'checkbox':
 				$checked = ! empty( $value ) ? ' checked="checked"' : '';
 				$html   .= '<label class="conexao-checkbox-label">';
@@ -234,6 +266,20 @@ final class Conexao_Admin_Ux_Fields {
 			$value = isset( $meta[ $id ] ) ? $meta[ $id ] : '';
 
 			switch ( $field['type'] ) {
+				case 'contacts':
+					// Structured repeater: sanitize every row through the
+					// shared model so unsafe protocols never reach storage.
+					// An empty result deletes the meta entirely.
+					$rows = ( isset( $meta[ $id ] ) && is_array( $meta[ $id ] ) ) ? $meta[ $id ] : array();
+					if ( class_exists( 'Conexao_Data_Model_Contacts' ) ) {
+						$value = Conexao_Data_Model_Contacts::sanitize_rows( $rows );
+					} else {
+						$value = array();
+					}
+					if ( empty( $value ) ) {
+						$value = ''; // Triggers delete_post_meta below.
+					}
+					break;
 				case 'date':
 					$value = self::sanitize_date( $value );
 					break;
@@ -376,12 +422,21 @@ final class Conexao_Admin_Ux_Fields {
 		);
 
 		foreach ( $fields as $field ) {
-			if ( empty( $field['required'] ) ) {
+			$key = $field['key'];
+			$id  = ltrim( $key, '_' );
+
+			// Structured contact repeater: validate each submitted row
+			// against its selected type. Invalid rows produce specific,
+			// human-readable errors instead of being silently dropped.
+			if ( 'contacts' === $field['type'] && class_exists( 'Conexao_Data_Model_Contacts' ) ) {
+				$rows    = ( isset( $meta[ $id ] ) && is_array( $meta[ $id ] ) ) ? $meta[ $id ] : array();
+				$errors  = array_merge( $errors, Conexao_Data_Model_Contacts::validate_submission( $rows ) );
 				continue;
 			}
 
-			$key = $field['key'];
-			$id  = ltrim( $key, '_' );
+			if ( empty( $field['required'] ) ) {
+				continue;
+			}
 
 			// For virtual title fields, check conexao_fields first (the visible
 			// input), then fall back to post_title (the hidden mirror field).
@@ -442,6 +497,55 @@ final class Conexao_Admin_Ux_Fields {
 	public static function is_virtual( $key ) {
 		$virtual = array( '_event_title', '_event_description', '_news_title', '_news_content', '_guide_title', '_guide_content', '_job_title', '_job_description', '_sponsor_name', '_sponsor_description', '_provider_name', '_provider_description', '_leisure_name', '_leisure_description' );
 		return in_array( $key, $virtual, true );
+	}
+
+	/**
+	 * Render one contact repeater row.
+	 *
+	 * Used both for stored rows and for the JS template (with the literal
+	 * "__INDEX__" placeholder). Inputs deliberately avoid id attributes so
+	 * template clones can never collide with existing rows.
+	 *
+	 * @param int|string $index Row index (or "__INDEX__" placeholder).
+	 * @param string     $type  Selected contact type.
+	 * @param string     $url   Contact URL / e-mail display value.
+	 * @param array      $types Available types (value => label).
+	 * @return string HTML.
+	 */
+	private static function contact_row( $index, $type, $url, $types ) {
+		$name_base = 'conexao_fields[sponsor_contacts][' . $index . ']';
+
+		$row  = '<div class="conexao-contact-row">';
+		$row .= '<select class="conexao-contact-type" name="' . esc_attr( $name_base . '[type]' ) . '" aria-label="' . esc_attr__( 'Tipo de contato', 'conexao-admin-ux' ) . '">';
+		$row .= '<option value="">' . esc_html__( 'Tipo…', 'conexao-admin-ux' ) . '</option>';
+		foreach ( $types as $type_value => $type_label ) {
+			$row .= '<option value="' . esc_attr( $type_value ) . '" ' . selected( $type, $type_value, false ) . '>' . esc_html( $type_label ) . '</option>';
+		}
+		$row .= '</select>';
+
+		// Text inputs (not type=url/email) on purpose: native constraint
+		// validation would block saving drafts mid-edit with browser popups
+		// that cannot explain our per-type rules. Server-side validation in
+		// Conexao_Data_Model_Contacts produces clear pt-BR messages instead.
+		$input_type  = 'text';
+		$input_mode  = 'email' === $type ? 'email' : 'url';
+		$placeholder  = 'email' === $type
+			? __( 'nome@exemplo.com', 'conexao-admin-ux' )
+			: ( 'whatsapp' === $type
+				? __( 'https://wa.me/353… ou número com DDI', 'conexao-admin-ux' )
+				: __( 'https://', 'conexao-admin-ux' ) );
+
+		$row .= '<input type="' . esc_attr( $input_type ) . '" inputmode="' . esc_attr( $input_mode ) . '" class="conexao-contact-url" name="' . esc_attr( $name_base . '[url]' ) . '" value="' . esc_attr( $url ) . '" placeholder="' . esc_attr( $placeholder ) . '" aria-label="' . esc_attr__( 'Link do contato', 'conexao-admin-ux' ) . '" autocomplete="off" />';
+
+		$row .= '<span class="conexao-contact-actions">';
+		$row .= '<button type="button" class="conexao-contact-action conexao-contact-up" aria-label="' . esc_attr__( 'Mover para cima', 'conexao-admin-ux' ) . '"><span class="dashicons dashicons-arrow-up-alt2" aria-hidden="true"></span></button>';
+		$row .= '<button type="button" class="conexao-contact-action conexao-contact-down" aria-label="' . esc_attr__( 'Mover para baixo', 'conexao-admin-ux' ) . '"><span class="dashicons dashicons-arrow-down-alt2" aria-hidden="true"></span></button>';
+		$row .= '<button type="button" class="conexao-contact-action conexao-contact-remove" aria-label="' . esc_attr__( 'Remover contato', 'conexao-admin-ux' ) . '"><span class="dashicons dashicons-trash" aria-hidden="true"></span></button>';
+		$row .= '</span>';
+
+		$row .= '</div>';
+
+		return $row;
 	}
 
 	/**
