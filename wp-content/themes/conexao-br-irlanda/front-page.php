@@ -198,12 +198,21 @@ $hero_has_sponsors = ! empty( conexao_get_featured_sponsors() );
 		<div class="featured-content-layout">
 			<div class="featured-main">
 				<?php
-				// Editorial featured content only. Sponsors are intentionally NOT
-				// part of this generic query: featured supporters have their own
-				// dedicated carousel inside the Hero (template-parts/
-				// featured-sponsors.php) and must not be duplicated here.
+				// Editorial featured content only. The "Conteudo em Destaque" /
+				// "Ultimas Publicacoes" section is restricted to genuinely
+				// editorial and informational content types only:
+				// Guias, Cursos (course_provider) and Blog (post).
+				//
+				// Eventos (event), Lazer (leisure), Apoiadores (sponsor) and
+				// Empregos (job) are intentionally excluded here so they never
+				// appear in this section. Each has its own dedicated homepage
+				// section or archive (see "Proximos Eventos" and "Latest Jobs"
+				// below, plus the Hero carousel for featured Apoiadores).
+				// Featured supporters have their own carousel inside the Hero
+				// (template-parts/featured-sponsors.php) and must not be
+				// duplicated here.
 				$featured = new WP_Query( array(
-					'post_type'           => array( 'guide', 'event', 'job' ),
+					'post_type'           => array( 'guide', 'post' ),
 					'posts_per_page'      => 5,
 					'ignore_sticky_posts' => true,
 					'no_found_rows'       => true,
