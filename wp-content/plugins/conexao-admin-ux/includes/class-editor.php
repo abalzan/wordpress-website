@@ -182,6 +182,14 @@ final class Conexao_Admin_Ux_Editor {
 				echo Conexao_Admin_Ux_Fields::render( $field, $value, $post->ID ); // phpcs:ignore WordPress.Security.EscapeOutput -- field renderer escapes its output.
 			}
 			echo '</div>';
+
+			// Apoiadores: flag a record that has an Imagem Mobile but no
+			// Imagem Desktop so the administrator can complete the artwork
+			// (the front end falls back to the mobile image on desktop).
+			if ( 'sponsor' === $this->post_type && 'imagens' === $key ) {
+				echo $this->sponsor_missing_desktop_notice( $post ); // phpcs:ignore WordPress.Security.EscapeOutput -- built from escaped parts below.
+			}
+
 			echo '</div></div>';
 		}
 
@@ -413,6 +421,19 @@ final class Conexao_Admin_Ux_Editor {
 
 		wp_update_post( $post_array );
 
+		// Capture the PRE-save state of the sponsor image relationships so the
+		// thumbnail sync below can tell "administrator cleared the images"
+		// apart from "record never had admin-managed images" — a sponsor whose
+		// artwork lived solely in the WordPress featured image must keep it.
+		$sponsor_image_state = null;
+		if ( 'sponsor' === $this->post_type ) {
+			$sponsor_image_state = array(
+				'desktop' => get_post_meta( $post_id, '_sponsor_desktop_image', true ),
+				'mobile'  => get_post_meta( $post_id, '_sponsor_mobile_image', true ),
+				'legacy'  => get_post_meta( $post_id, '_sponsor_logo', true ),
+			);
+		}
+
 		// Save all custom fields + taxonomies.
 		Conexao_Admin_Ux_Fields::save( $post_id, $this->config, $data );
 
@@ -420,10 +441,10 @@ final class Conexao_Admin_Ux_Editor {
 		// (_event_time, _event_location, county/town taxonomies).
 		Conexao_Admin_Ux_Fields::sync_legacy_event_meta( $post_id, $data );
 
-		// Sync the sponsor logo meta to the WordPress featured image so
+		// Sync the sponsor carousel images to the WordPress featured image so
 		// public templates using has_post_thumbnail() / the_post_thumbnail()
-		// display the logo correctly.
-		$this->sync_media_to_thumbnail( $post_id, $data );
+		// display the correct artwork.
+		$this->sync_media_to_thumbnail( $post_id, $data, $sponsor_image_state );
 
 		// Save the custom status.
 		Conexao_Admin_Ux_Actions::set_status( $post_id, $this->post_type, $status );
@@ -455,16 +476,25 @@ final class Conexao_Admin_Ux_Editor {
 	 * Sync a media-type meta field to the WordPress post thumbnail (featured image).
 	 *
 	 * The public theme uses has_post_thumbnail() / the_post_thumbnail() to display
-	 * sponsor logos. This helper ensures the WordPress featured image is set when
-	 * a media field value (attachment ID) is saved.
+	 * sponsor logos and other artwork. This helper ensures the WordPress featured
+	 * image is set when a media field value (attachment ID) is saved.
 	 *
-	 * @param int   $post_id Post ID.
-	 * @param array $data    Unslashed POST data.
+	 * @param int        $post_id       Post ID.
+	 * @param array      $data          Unslashed POST data.
+	 * @param array|null $sponsor_state Pre-save snapshot of the sponsor image
+	 *                                    metas (desktop/mobile/legacy), or null
+	 *                                    for non-sponsor types.
 	 */
-	private function sync_media_to_thumbnail( $post_id, $data ) {
+	private function sync_media_to_thumbnail( $post_id, $data, $sponsor_state = null ) {
+		// Sponsors use the responsive two-image model (Imagem Desktop /
+		// Imagem Mobile) with its own resolution + safety rules.
+		if ( 'sponsor' === $this->post_type ) {
+			$this->sync_sponsor_thumbnail( $post_id, $data, is_array( $sponsor_state ) ? $sponsor_state : array() );
+			return;
+		}
+
 		// Map of post type → meta key (without leading underscore) that holds the attachment ID.
 		$media_fields = array(
-			'sponsor'         => 'sponsor_logo',
 			'event'           => 'event_banner',
 			'guide'           => 'guide_featured_image',
 			'course_provider' => 'provider_logo',
@@ -498,6 +528,129 @@ final class Conexao_Admin_Ux_Editor {
 			delete_post_thumbnail( $post_id );
 		}
 		// Legacy unresolvable URL values leave any existing thumbnail untouched.
+	}
+
+	/**
+	 * Sync the Apoiador carousel images to the WordPress featured image.
+	 *
+	 * Resolution order for the featured image (mirrors the front-end fallback
+	 * chain in the theme's conexao_sponsor_image_ids()):
+	 *
+	 *   1. Imagem Desktop (submitted value)
+	 *   2. Imagem Mobile  (submitted value — a record with only a mobile
+	 *      image still needs a featured image)
+	 *   3. Legacy _sponsor_logo relationship still present after save
+	 *
+	 * The featured image is only CLEARED when the record previously had an
+	 * admin-managed image relationship and everything now resolves empty —
+	 * sponsors whose artwork lived solely in the WordPress featured image are
+	 * left untouched.
+	 *
+	 * @param int   $post_id Post ID.
+	 * @param array $data    Unslashed POST data.
+	 * @param array $state   Pre-save snapshot: desktop/mobile/legacy values.
+	 */
+	private function sync_sponsor_thumbnail( $post_id, $data, $state ) {
+		$meta = isset( $data['conexao_fields'] ) ? $data['conexao_fields'] : array();
+
+		// Only act when the redesigned editor actually submitted one of the
+		// image fields. Other write paths (Quick Edit, bulk actions,
+		// importers, autosaves) must not have their thumbnails touched here.
+		if ( ! isset( $meta['sponsor_desktop_image'] ) && ! isset( $meta['sponsor_mobile_image'] ) ) {
+			return;
+		}
+
+		/**
+		 * Resolve a submitted media value into a real attachment ID.
+		 *
+		 * Empty submissions resolve to 0 (explicit clearing). Non-empty
+		 * unresolvable legacy URL strings keep the previously stored
+		 * relationship when it points at a real attachment.
+		 *
+		 * @param string $submitted Raw submitted value.
+		 * @param mixed  $stored    Pre-save stored value.
+		 * @return int Attachment ID or 0.
+		 */
+		$resolve = function ( $submitted, $stored ) {
+			$value = Conexao_Admin_Ux_Fields::normalize_media_value( $submitted );
+
+			if ( is_int( $value ) && $value && 'attachment' === get_post_type( $value ) ) {
+				return (int) $value;
+			}
+
+			if ( is_string( $value ) && '' !== $value ) {
+				$stored_id = absint( $stored );
+				if ( $stored_id && 'attachment' === get_post_type( $stored_id ) ) {
+					return $stored_id;
+				}
+			}
+
+			return 0;
+		};
+
+		$desktop = $resolve(
+			isset( $meta['sponsor_desktop_image'] ) ? $meta['sponsor_desktop_image'] : '',
+			isset( $state['desktop'] ) ? $state['desktop'] : ''
+		);
+		$mobile = $resolve(
+			isset( $meta['sponsor_mobile_image'] ) ? $meta['sponsor_mobile_image'] : '',
+			isset( $state['mobile'] ) ? $state['mobile'] : ''
+		);
+
+		$effective = $desktop ? $desktop : $mobile;
+
+		if ( ! $effective ) {
+			// Fields::save() has already deleted the legacy _sponsor_logo meta
+			// when the Desktop field was explicitly emptied, so read whatever
+			// remains (numeric legacy IDs only — URL strings cannot identify
+			// an attachment reliably).
+			$legacy = get_post_meta( $post_id, '_sponsor_logo', true );
+			$legacy_id = ( is_numeric( $legacy ) && (int) $legacy > 0 ) ? absint( $legacy ) : 0;
+			if ( $legacy_id && 'attachment' === get_post_type( $legacy_id ) ) {
+				$effective = $legacy_id;
+			}
+		}
+
+		if ( $effective ) {
+			set_post_thumbnail( $post_id, $effective );
+			return;
+		}
+
+		// Everything resolved empty. Clear the featured image only when the
+		// record previously had an admin-managed image relationship.
+		$had_managed = ! empty( $state['desktop'] ) || ! empty( $state['mobile'] ) || ! empty( $state['legacy'] );
+		if ( $had_managed ) {
+			delete_post_thumbnail( $post_id );
+		}
+	}
+
+	/**
+	 * Warning shown inside the "Imagens do carousel" section when an
+	 * Apoiador has an Imagem Mobile but no Imagem Desktop.
+	 *
+	 * The front end falls back to the mobile image on desktop viewports, but
+	 * the administrator should complete the landscape artwork.
+	 *
+	 * @param WP_Post $post Post object.
+	 * @return string HTML ('' when nothing to warn about).
+	 */
+	private function sponsor_missing_desktop_notice( $post ) {
+		$desktop = get_post_meta( $post->ID, '_sponsor_desktop_image', true );
+		if ( empty( $desktop ) ) {
+			// Same legacy fallback the form itself uses for the Desktop field.
+			$desktop = get_post_meta( $post->ID, '_sponsor_logo', true );
+		}
+
+		$mobile = get_post_meta( $post->ID, '_sponsor_mobile_image', true );
+
+		if ( ! empty( $desktop ) || empty( $mobile ) ) {
+			return '';
+		}
+
+		return '<div class="notice notice-warning inline conexao-inline-warning">'
+			. '<p><strong>' . esc_html__( 'Imagem Desktop ausente.', 'conexao-admin-ux' ) . '</strong> '
+			. esc_html__( 'Este apoiador tem Imagem Mobile, mas nenhuma Imagem Desktop. Em telas maiores o carousel usará a própria imagem mobile como alternativa — selecione uma composição horizontal/landscape para completar o cadastro.', 'conexao-admin-ux' )
+			. '</p></div>';
 	}
 
 	/**

@@ -709,10 +709,33 @@ final class Conexao_Admin_Ux_Config {
 					'priority' => 10,
 					'fields'   => array(
 						array( 'key' => '_sponsor_name', 'label' => 'Nome do apoiador', 'type' => 'text', 'required' => true, 'help' => 'Nome da organização, empresa ou entidade.' ),
-						array( 'key' => '_sponsor_logo', 'label' => 'Logo', 'type' => 'media', 'help' => 'Logo do apoiador (recomendado: PNG/JPEG transparente).' ),
 						array( 'key' => '_sponsor_category', 'label' => 'Categoria', 'type' => 'select', 'options' => self::sponsor_categories(), 'placeholder' => 'Selecione a categoria' ),
 						array( 'key' => '_sponsor_type', 'label' => 'Tipo de apoiador', 'type' => 'select', 'options' => self::sponsor_types(), 'placeholder' => 'Selecione o tipo' ),
 						array( 'key' => '_sponsor_description', 'label' => 'Descrição', 'type' => 'textarea', 'help' => 'Descreva o apoiador e como ele apoia a comunidade.' ),
+					),
+				),
+				// Responsive carousel artwork: two independent Media Library
+				// relationships per Apoiador. The legacy "_sponsor_logo" meta
+				// is NOT rendered here — it became the Imagem Desktop fallback
+				// for records created before the two-field model (see
+				// Conexao_Admin_Ux_Fields::get_value()).
+				'imagens'   => array(
+					'title'    => 'Imagens do carousel',
+					'icon'     => 'dashicons-format-image',
+					'priority' => 15,
+					'fields'   => array(
+						array(
+							'key'   => '_sponsor_desktop_image',
+							'label' => 'Imagem Desktop',
+							'type'  => 'media',
+							'help'  => 'Usada no carousel em telas maiores (tablets e desktops). Prefira uma composição horizontal/landscape — aproximadamente 16:9 (ex.: 1280×720 ou 1600×900).',
+						),
+						array(
+							'key'   => '_sponsor_mobile_image',
+							'label' => 'Imagem Mobile',
+							'type'  => 'media',
+							'help'  => 'Usada no carousel em telas pequenas (celulares). Prefira uma composição vertical/portrait — aproximadamente 3:4 ou 4:5 (ex.: 800×1000 ou 900×1200). Se vazia, a Imagem Desktop é usada como alternativa.',
+						),
 					),
 				),
 				'link'      => array(

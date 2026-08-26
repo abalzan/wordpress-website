@@ -67,14 +67,44 @@ guard behavior.
 
 ## Media Fields & Featured Image Sync
 
-`media`-type fields (e.g. the Apoiador `_sponsor_logo`) store a **Media Library
-attachment ID** — never a URL, and never local-only IDs as portable identifiers.
+`media`-type fields (e.g. the Apoiador `_sponsor_desktop_image` /
+`_sponsor_mobile_image`) store a **Media Library attachment ID** — never a
+URL as the source of truth, and never local-only IDs as portable identifiers.
 The relationship is: post → attachment ID → WordPress featured image.
+
+### Apoiador responsive images (Imagem Desktop / Imagem Mobile)
+
+Each Apoiador carries two independent Media Library relationships for the
+homepage carousel:
+
+- **Imagem Desktop** (`_sponsor_desktop_image`) — landscape artwork used at
+  viewports ≥769px. Recommended ~16:9 (e.g. 1280×720 / 1600×900).
+- **Imagem Mobile** (`_sponsor_mobile_image`) — portrait artwork used at
+  ≤768px. Recommended ~3:4 or 4:5 (e.g. 800×1000 / 900×1200). Falls back to
+  the desktop image when empty.
+
+Legacy records created before the two-field model keep working without any
+migration step:
+
+- The editor's Imagem Desktop field falls back to the old `_sponsor_logo`
+  value when the new key is empty (`Conexao_Admin_Ux_Fields::get_value()`),
+  so editing an existing Apoiador shows its current artwork pre-filled; the
+  first save persists it into `_sponsor_desktop_image`.
+- Explicitly clearing the Desktop field also clears the legacy
+  `_sponsor_logo` relationship so removed artwork cannot resurrect through
+  the front-end fallback chain.
+- A warning notice appears in the "Imagens do carousel" section when an
+  Apoiador has an Imagem Mobile but no Imagem Desktop.
 
 - The editor's save handler (`Conexao_Admin_Ux_Editor::save()`) syncs each
   type's media field to the core featured image via `set_post_thumbnail()` /
   `delete_post_thumbnail()` so public templates using
   `has_post_thumbnail()` / `the_post_thumbnail()` display it.
+- For sponsors, the sync resolves the effective artwork with the same chain
+  the front end uses (Desktop → Mobile → remaining legacy logo) and only
+  clears the featured image when the record previously had an admin-managed
+  image relationship — sponsors whose artwork lived solely in the featured
+  image are left untouched.
 - Sync only runs when the editor form submitted the field; autosaves,
   Quick Edit, bulk actions and importers never touch thumbnails through it.
 - `Conexao_Admin_Ux_Fields::normalize_media_value()` keeps values as numeric

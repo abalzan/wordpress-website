@@ -554,6 +554,19 @@ ul, ol {
   height: 100%;
 }
 
+/* Responsive <picture> wrapper (Imagem Desktop / Imagem Mobile): the
+   picture element must behave exactly like the previous bare img flex
+   item — stretched over the whole tile — so switching between the
+   landscape and portrait sources never shifts the carousel layout,
+   tile frame, or controls at any breakpoint. */
+.sponsor-tile-logo picture {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
 .sponsor-tile-logo img {
   width: 100%;
   height: 100%;

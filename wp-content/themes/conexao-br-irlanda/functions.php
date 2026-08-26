@@ -854,6 +854,154 @@ function conexao_popular_posts( $limit = 5 ) {
 }
 
 /**
+ * Resolve the Imagem Desktop / Imagem Mobile attachment IDs for an Apoiador.
+ *
+ * Data model (see docs/content-model.md):
+ *
+ *   _sponsor_desktop_image → landscape artwork (desktop/tablet carousel)
+ *   _sponsor_mobile_image  → portrait artwork  (mobile carousel)
+ *
+ * Backward compatibility with records created before the two-field model —
+ * no administrator action is ever required for existing Apoiadores to keep
+ * working:
+ *
+ *   Desktop → _sponsor_desktop_image → legacy _sponsor_logo → featured image
+ *   Mobile  → _sponsor_mobile_image  → Desktop resolution
+ *
+ * Legacy values are Media Library attachment IDs. URL-only legacy values
+ * cannot identify an attachment reliably and are ignored here; the admin
+ * editor migrates them into attachment IDs on the next save.
+ *
+ * @param int $sponsor_id Sponsor post ID.
+ * @return int[] { desktop_attachment_id, mobile_attachment_id } (0 = none).
+ */
+function conexao_sponsor_image_ids( $sponsor_id ) {
+	$desktop_id = absint( get_post_meta( $sponsor_id, '_sponsor_desktop_image', true ) );
+
+	if ( ! $desktop_id ) {
+		$legacy = get_post_meta( $sponsor_id, '_sponsor_logo', true );
+		if ( $legacy && ctype_digit( (string) $legacy ) ) {
+			$desktop_id = absint( $legacy );
+		}
+	}
+
+	if ( ! $desktop_id ) {
+		$desktop_id = absint( get_post_thumbnail_id( $sponsor_id ) );
+	}
+
+	$mobile_id = absint( get_post_meta( $sponsor_id, '_sponsor_mobile_image', true ) );
+
+	// Only real image attachments qualify; anything else resolves to "none"
+	// so a deleted attachment can never render as a broken image.
+	if ( $desktop_id && ! wp_attachment_is_image( $desktop_id ) ) {
+		$desktop_id = 0;
+	}
+	if ( $mobile_id && ! wp_attachment_is_image( $mobile_id ) ) {
+		$mobile_id = 0;
+	}
+
+	// Graceful fallbacks: missing mobile → desktop; missing desktop → mobile.
+	if ( ! $mobile_id ) {
+		$mobile_id = $desktop_id;
+	}
+	if ( ! $desktop_id ) {
+		$desktop_id = $mobile_id;
+	}
+
+	return array( $desktop_id, $mobile_id );
+}
+
+/**
+ * Build the responsive <picture> markup for an Apoiador carousel slide.
+ *
+ * The browser picks the correct asset naturally — no JavaScript source
+ * swapping anywhere in the carousel:
+ *
+ *   - Viewports ≤768px receive the portrait Imagem Mobile via
+ *     <source media="(max-width: 768px)"> (the same breakpoint the carousel
+ *     CSS uses to switch the tile frame from landscape 16:9 to portrait 3:4).
+ *   - Larger viewports receive the landscape Imagem Desktop via the <img>.
+ *   - When both roles resolve to the SAME attachment (missing mobile image,
+ *     legacy records) only the <img> is emitted so the browser downloads a
+ *     single asset and neither viewport loads an unnecessary duplicate.
+ *
+ * Alt text comes from the desktop attachment's alt field and falls back to
+ * the sponsor name, so screen readers always announce the supporter exactly
+ * once (the <source> elements carry no alternative text of their own).
+ *
+ * width/height attributes carry truthful intrinsic metadata of the served
+ * size only; CSS fully determines the rendered box, so they never stretch or
+ * resize anything (same model as the hero background picture).
+ *
+ * @param int    $sponsor_id    Sponsor post ID.
+ * @param string $sponsor_title Sponsor name (alt-text fallback).
+ * @return string Picture HTML, or '' when the sponsor has no usable image.
+ */
+function conexao_sponsor_carousel_image( $sponsor_id, $sponsor_title = '' ) {
+	list( $desktop_id, $mobile_id ) = conexao_sponsor_image_ids( $sponsor_id );
+
+	if ( ! $desktop_id ) {
+		return '';
+	}
+
+	$size        = 'large';
+	$desktop_src = wp_get_attachment_image_url( $desktop_id, $size );
+	if ( ! $desktop_src ) {
+		return '';
+	}
+
+	// A separate mobile <source> is only worth emitting when it points at a
+	// genuinely different asset than the desktop fallback.
+	$distinct_mobile = ( $mobile_id && $mobile_id !== $desktop_id );
+	if ( $distinct_mobile ) {
+		$mobile_src = wp_get_attachment_image_url( $mobile_id, $size );
+		$distinct_mobile = ( $mobile_src && $mobile_src !== $desktop_src );
+	}
+
+	// Meaningful alt text with a sponsor-name fallback.
+	$alt = trim( (string) get_post_meta( $desktop_id, '_wp_attachment_image_alt', true ) );
+	if ( '' === $alt ) {
+		$alt = $sponsor_title;
+	}
+
+	$html = '<picture class="sponsor-tile-picture">';
+
+	if ( $distinct_mobile ) {
+		$mobile_dimensions = wp_get_attachment_image_src( $mobile_id, $size );
+		$mobile_srcset     = wp_get_attachment_image_srcset( $mobile_id, $size );
+
+		$html .= '<source media="(max-width: 768px)"'
+			. ' srcset="' . esc_attr( $mobile_srcset ? $mobile_srcset : $mobile_src ) . '"'
+			. ' sizes="(max-width: 768px) 50vw"';
+		if ( $mobile_dimensions ) {
+			$html .= ' width="' . esc_attr( (int) $mobile_dimensions[1] ) . '"'
+				. ' height="' . esc_attr( (int) $mobile_dimensions[2] ) . '"';
+		}
+		$html .= ' />';
+	}
+
+	$desktop_dimensions = wp_get_attachment_image_src( $desktop_id, $size );
+	$desktop_srcset     = wp_get_attachment_image_srcset( $desktop_id, $size );
+
+	$html .= '<img src="' . esc_url( $desktop_src ) . '"';
+	if ( $desktop_srcset ) {
+		$html .= ' srcset="' . esc_attr( $desktop_srcset ) . '"';
+	}
+	// Rough column hint so the browser can pick a sensibly sized candidate;
+	// object-fit: contain makes exactness irrelevant to the layout.
+	$html .= ' sizes="(min-width: 769px) 42vw, 50vw"';
+	if ( $desktop_dimensions ) {
+		$html .= ' width="' . esc_attr( (int) $desktop_dimensions[1] ) . '"'
+			. ' height="' . esc_attr( (int) $desktop_dimensions[2] ) . '"';
+	}
+	$html .= ' alt="' . esc_attr( $alt ) . '" loading="lazy" decoding="async" />';
+
+	$html .= '</picture>';
+
+	return $html;
+}
+
+/**
  * Featured Apoiadores for the homepage carousel.
  *
  * Fully data-driven from the EXISTING sponsor post type and its editorial
@@ -928,14 +1076,15 @@ function conexao_get_featured_sponsors() {
 				'category'      => $category,
 				'county'        => $county,
 				'description'   => wp_trim_words( $excerpt, 12, '...' ),
-				// Presentation-only choice: the Hero carousel displays each
-				// sponsor logo at up to ~260px, so request the "large"
-				// registered size (falls back to the original file when
-				// smaller) instead of the 150×150 "thumbnail" — same
-				// attachment, no data change, just a crisp source. CSS
-				// object-fit:contain still preserves every logo's natural
-				// proportions inside its fluid logo area.
-				'thumbnail'     => get_the_post_thumbnail( $sponsor_id, 'large', array( 'loading' => 'lazy' ) ),
+				// Responsive artwork: a <picture> that serves the portrait
+				// Imagem Mobile at ≤768px and the landscape Imagem Desktop
+				// above it (see conexao_sponsor_carousel_image()). Requested
+				// at the "large" registered size (falls back to the original
+				// file when smaller) with srcset candidates so logos stay
+				// crisp at the enlarged display scale. CSS object-fit:contain
+				// still preserves every asset's natural proportions inside
+				// its breakpoint-specific tile frame.
+				'image'         => conexao_sponsor_carousel_image( $sponsor_id, $sponsor_post->post_title ),
 				'display_order' => get_post_meta( $sponsor_id, '_sponsor_display_order', true ),
 			);
 		}

@@ -17,6 +17,14 @@
  * Renders NOTHING when no supporter is marked as featured, so callers can
  * include it unconditionally (e.g. inside the homepage Hero).
  *
+ * Each slide's artwork is a responsive <picture> built in
+ * conexao_sponsor_carousel_image() (functions.php) from the Apoiador's two
+ * independent image relationships: the portrait "Imagem Mobile" is served at
+ * ≤768px via <source media>, the landscape "Imagem Desktop" via the <img>.
+ * The browser selects the correct asset naturally — no JavaScript source
+ * swapping — and missing images fall back gracefully (mobile → desktop →
+ * legacy logo → featured image), never rendering a broken image.
+ *
  * Markup reuses the shared .sponsors-carousel scroll-snap engine (CSS in
  * assets/css/main.css, behavior in assets/js/main.js — prev/next buttons,
  * pagination dots, keyboard support, swipe, polite live region, adaptive
@@ -81,11 +89,14 @@ $sponsor_total = count( $featured_sponsors );
 						<!-- The logo area IS the tile: CSS stretches it over the
 						     full card surface (object-fit: contain keeps every
 						     asset's natural proportions — sponsor artwork is
-						     never cropped or recolored). The fallback icon
-						     scales with the tile via CSS. -->
+						     never cropped or recolored). The <picture> serves
+						     the portrait Imagem Mobile at ≤768px and the
+						     landscape Imagem Desktop above; with no usable
+						     image at all the fallback icon scales with the
+						     tile via CSS. -->
 						<span class="sponsor-tile-logo">
-							<?php if ( ! empty( $featured_sponsor['thumbnail'] ) ) : ?>
-								<?php echo $featured_sponsor['thumbnail']; /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */ ?>
+							<?php if ( ! empty( $featured_sponsor['image'] ) ) : ?>
+								<?php echo $featured_sponsor['image']; /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built by conexao_sponsor_carousel_image(), which escapes its own output. */ ?>
 							<?php else : ?>
 								<svg viewBox="0 0 24 24" fill="none" stroke="#adb5bd" stroke-width="1.5" aria-hidden="true">
 									<rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>

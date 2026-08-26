@@ -18,7 +18,7 @@ compose.yaml                      # Local Docker (WordPress + MySQL)
 docker/                           # Apache AllowOverride + permission entrypoint
 scripts/                          # WP-CLI/build/seed/migration scripts (PHP + bash)
 content-inventory/                # Wix migration inventory CSVs
-wp-content/plugins/               # 5 custom plugins (see below)
+wp-content/plugins/               # 6 custom plugins (see below)
 wp-content/themes/conexao-br-irlanda/  # Active theme (only theme)
 ```
 
@@ -33,6 +33,7 @@ All under `wp-content/plugins/`. Load order matters:
 | `conexao-admin-ux` | Custom wp-admin UI + statuses | docs/plugins/conexao-admin-ux.md |
 | `conexao-event-importer` | Event aggregation pipeline | docs/plugins/conexao-event-importer.md |
 | `conexao-leisure-migration` | Lazer export/import (ZIP) | docs/plugins/conexao-leisure-migration.md |
+| `conexao-sponsor-migration` | Apoiadores export/import (JSON + embedded images) | docs/plugins/conexao-sponsor-migration.md |
 
 ## Theme
 
@@ -85,6 +86,7 @@ See docs/routing.md.
 | Register/change content types | plugins/conexao-data-model |
 | Event import pipeline | docs/plugins/conexao-event-importer.md |
 | Lazer data/migration | docs/plugins/conexao-leisure-migration.md |
+| Apoiador data/migration | docs/plugins/conexao-sponsor-migration.md |
 | Admin UI/statuses | plugins/conexao-admin-ux |
 | Templates/components | docs/themes/conexao-br-irlanda.md |
 | CSS/design | docs/frontend.md, theme assets/css/ |

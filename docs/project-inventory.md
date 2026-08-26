@@ -9,6 +9,7 @@
 | conexao-admin-ux | 1.0.0 | `wp-content/plugins/conexao-admin-ux/` |
 | conexao-event-importer | 1.3.0 | `wp-content/plugins/conexao-event-importer/` |
 | conexao-leisure-migration | 2.0.0 | `wp-content/plugins/conexao-leisure-migration/` |
+| conexao-sponsor-migration | 1.0.0 | `wp-content/plugins/conexao-sponsor-migration/` |
 
 ## Themes
 
@@ -92,5 +93,6 @@ None. Event importing and cleanup are manual, local-only operations (see docs/pl
 | Admin UX plugin | `docs/plugins/conexao-admin-ux.md` |
 | Event Importer plugin | `docs/plugins/conexao-event-importer.md` |
 | Leisure Migration plugin | `docs/plugins/conexao-leisure-migration.md` |
+| Sponsor Migration plugin | `docs/plugins/conexao-sponsor-migration.md` |
 | Theme inventory | `docs/themes/README.md` |
 | Conexão BR Irlanda theme | `docs/themes/conexao-br-irlanda.md` |

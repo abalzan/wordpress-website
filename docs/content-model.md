@@ -54,7 +54,12 @@ Registered by `conexao-data-model` (method `register_taxonomies()`).
 
 - `_sponsor_link` (url), `_sponsor_display_order` (text)
 - `_sponsor_featured` (checkbox)
-- `_sponsor_status`, `_sponsor_category`, `_sponsor_type`, `_sponsor_logo`, `_sponsor_description`
+- `_sponsor_status`, `_sponsor_category`, `_sponsor_type`, `_sponsor_description`
+- Responsive carousel images (Media Library attachment IDs):
+  - `_sponsor_desktop_image` — landscape artwork for the homepage carousel at ≥769px (~16:9 recommended)
+  - `_sponsor_mobile_image` — portrait artwork at ≤768px (~3:4/4:5 recommended); falls back to the desktop image
+- Legacy: `_sponsor_logo` (pre-two-field single image; kept as a fallback —
+  the admin editor migrates it into `_sponsor_desktop_image` on first save)
 
 ### Job
 
