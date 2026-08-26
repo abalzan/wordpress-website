@@ -1675,6 +1675,14 @@ function conexao_image_sizes() {
 	add_image_size( 'conexao-thumb', 200, 150, true );
 	add_image_size( 'conexao-event-banner', 640, 360, true );
 	add_image_size( 'conexao-provider-logo', 320, 180, false );
+
+	// Empregos (Jobs) featured image — Instagram Story-style portrait.
+	// Soft crop (fit within the box): portrait artwork keeps its full
+	// composition (9:16 sources become 1080×1920, 2:3 become 1080×1620),
+	// and legacy landscape images are constrained proportionally instead
+	// of being cropped. Sources already smaller than the box fall back to
+	// the original file, so existing Jobs need no regeneration.
+	add_image_size( 'conexao-job-portrait', 1080, 1920, false );
 }
 add_action( 'after_setup_theme', 'conexao_image_sizes' );
 
@@ -1685,9 +1693,29 @@ function conexao_custom_image_sizes( $sizes ) {
 		'conexao-thumb'        => __( 'Miniatura do Portal', 'conexao-br-irlanda' ),
 		'conexao-event-banner' => __( 'Banner de Evento', 'conexao-br-irlanda' ),
 		'conexao-provider-logo' => __( 'Logo de Provedor de Cursos', 'conexao-br-irlanda' ),
+		'conexao-job-portrait' => __( 'Vaga Vertical (Instagram)', 'conexao-br-irlanda' ),
 	) );
 }
 add_filter( 'image_size_names_choose', 'conexao_custom_image_sizes' );
+
+/**
+ * Explain the expected featured-image format when editing a Job.
+ *
+ * Job artwork is authored vertically for Instagram Stories. This hint sets
+ * expectations in the admin without blocking uploads of other dimensions.
+ */
+function conexao_job_featured_image_hint( $content, $post_id ) {
+	if ( ! $post_id || 'job' !== get_post_type( $post_id ) ) {
+		return $content;
+	}
+
+	$hint = '<p class="description">'
+		. __( 'Imagem da vaga: use uma imagem vertical, preferencialmente 1080 × 1920 px (formato Instagram Stories).', 'conexao-br-irlanda' )
+		. '</p>';
+
+	return $hint . $content;
+}
+add_filter( 'admin_post_thumbnail_html', 'conexao_job_featured_image_hint', 10, 2 );
 
 
 /**

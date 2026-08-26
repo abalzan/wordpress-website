@@ -3166,6 +3166,18 @@ ul, ol {
   overflow: hidden;
 }
 
+/* ===== Empregos (Jobs) featured image — Instagram-style portrait =====
+   Job artwork is authored vertically for Instagram Stories (9:16, or 2:3).
+   Render it at its natural aspect ratio: no cropping, no stretching.
+   The soft-crop conexao-job-portrait size keeps the full composition and
+   legacy landscape images degrade gracefully to their own ratio. */
+.single-post-content .post-thumbnail-job img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain; /* safety net: never crop if a container ever constrains height */
+}
+
 .single-post-content .entry-content {
   font-size: 1.0625rem;
   line-height: 1.8;

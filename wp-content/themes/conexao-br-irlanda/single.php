@@ -32,7 +32,19 @@
 		<div class="single-post-content">
 			<main id="primary" class="content-area">
 				<article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
-					<?php if ( has_post_thumbnail() ) : ?><div class="post-thumbnail"><?php the_post_thumbnail( 'conexao-hero' ); ?></div><?php endif; ?>
+					<?php if ( has_post_thumbnail() ) : ?>
+					<?php if ( 'job' === get_post_type() ) : ?>
+						<?php
+						// Empregos: Instagram Story-style portrait artwork.
+						// Uses the soft-crop conexao-job-portrait size so vertical
+						// compositions are never cropped into a landscape hero;
+						// legacy landscape images still render at their own ratio.
+						?>
+						<div class="post-thumbnail post-thumbnail-job"><?php the_post_thumbnail( 'conexao-job-portrait' ); ?></div>
+					<?php else : ?>
+						<div class="post-thumbnail"><?php the_post_thumbnail( 'conexao-hero' ); ?></div>
+					<?php endif; ?>
+				<?php endif; ?>
 					<div class="entry-content">
 						<?php the_content(); wp_link_pages( array( 'before' => '<div class="page-links">' . esc_html__( 'Páginas:', 'conexao-br-irlanda' ), 'after' => '</div>' ) ); ?>
 					</div>

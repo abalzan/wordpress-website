@@ -139,6 +139,17 @@ Key functionality includes:
 | `conexao-thumb` | 200 × 150 | Hard |
 | `conexao-event-banner` | 640 × 360 | Hard |
 | `conexao-provider-logo` | 320 × 180 | Soft |
+| `conexao-job-portrait` | 1080 × 1920 | Soft |
+
+The `conexao-job-portrait` size is used only by the Empregos (Jobs) single
+template (`single.php`, job branch). Job artwork is authored vertically for
+Instagram Stories (9:16 preferred, 2:3 acceptable); the soft crop fits the
+image inside the box without cropping, so portrait compositions are preserved
+in full and legacy landscape images render at their own natural ratio (never
+distorted). Sources already smaller than the box fall back to the original
+file, so existing Jobs need no thumbnail regeneration. The Job editor shows a
+format hint under the Featured Image box via the
+`admin_post_thumbnail_html` filter (`conexao_job_featured_image_hint()`).
 
 ### SEO (`inc/seo.php`)
 
