@@ -1512,9 +1512,10 @@ add_filter( 'wp_nav_menu_objects', 'conexao_override_guides_menu_links', 10, 2 )
 /**
  * Modify the primary navigation at render time.
  *
- * Guarantees the "Notícias" item never appears, inserts a "Blog" item
- * (linked to the existing /blog/ page) immediately after "Início", and
- * inserts a "Cursos" item (linked to the existing /courses/ page)
+ * Guarantees the "Notícias" item never appears, renames "Home" to "Início",
+ * renames the "Lazer" label to "Lazer e turismo" (URL unchanged), inserts a
+ * "Blog" item (linked to the existing /blog/ page) immediately after "Início",
+ * and inserts a "Cursos" item (linked to the existing /courses/ page)
  * immediately before "Empregos", so the final order is:
  *
  *   Início, Blog, Guias, Eventos, Cursos, Empregos, Apoiadores, Irlanda, Sobre Nós, Contato
@@ -1561,7 +1562,18 @@ function conexao_modify_primary_nav_items( $items, $args ) {
 		}
 	}
 
-	// 3. Insert "Blog" immediately after "Início" (=> before "Guias").
+	// 3. Rename the "Lazer" navigation label to "Lazer e turismo".
+	//    Label-only change: the /lazer/ URL, the leisure post type and every
+	//    other attribute stay untouched, so object binding, deduplication and
+	//    active-state logic keep resolving this item to the "lazer" section.
+	foreach ( $items as $item ) {
+		$title = strtolower( trim( wp_strip_all_tags( $item->title ) ) );
+		if ( 'lazer' === $title || 'leisure' === $title ) {
+			$item->title = 'Lazer e turismo';
+		}
+	}
+
+	// 4. Insert "Blog" immediately after "Início" (=> before "Guias").
 	//    The Blog section uses the native WordPress posts archive at /blog/.
 	//    We intentionally do NOT look up a Page with slug "blog" — a Page
 	//    with that slug would shadow the posts archive and prevent published
@@ -1645,8 +1657,10 @@ function conexao_primary_nav_sections() {
 		'eventos'    => array( 'key' => 'eventos', 'type' => 'post_type_archive', 'object' => 'event', 'url' => $archive_url( 'event', 'eventos' ), 'match' => array( 'eventos', 'events' ) ),
 		// Cursos is a CPT archive (course_provider CPT), not a static page.
 		'cursos'     => array( 'key' => 'cursos', 'type' => 'post_type_archive', 'object' => 'course_provider', 'url' => $archive_url( 'course_provider', 'cursos' ), 'match' => array( 'cursos', 'courses' ) ),
-		// Lazer is a CPT archive (leisure CPT) at /lazer/.
-		'lazer'      => array( 'key' => 'lazer', 'type' => 'post_type_archive', 'object' => 'leisure', 'url' => $archive_url( 'leisure', 'lazer' ), 'match' => array( 'lazer', 'leisure' ) ),
+		// Lazer is a CPT archive (leisure CPT) at /lazer/. Its navigation label
+		// is "Lazer e turismo"; both labels resolve to the same section spec.
+		'lazer'           => array( 'key' => 'lazer', 'type' => 'post_type_archive', 'object' => 'leisure', 'url' => $archive_url( 'leisure', 'lazer' ), 'match' => array( 'lazer', 'leisure' ) ),
+		'lazer e turismo' => array( 'key' => 'lazer', 'type' => 'post_type_archive', 'object' => 'leisure', 'url' => $archive_url( 'leisure', 'lazer' ), 'match' => array( 'lazer', 'leisure' ) ),
 		'empregos'   => array( 'key' => 'empregos', 'type' => 'post_type_archive', 'object' => 'job', 'url' => $archive_url( 'job', 'empregos' ), 'match' => array( 'empregos', 'jobs' ) ),
 		'apoiadores' => array( 'key' => 'apoiadores', 'type' => 'post_type_archive', 'object' => 'sponsor', 'url' => $archive_url( 'sponsor', 'apoiadores' ), 'match' => array( 'apoiadores', 'sponsors', 'sponsor' ) ),
 		'irlanda'    => array( 'key' => 'irlanda', 'type' => 'page', 'object' => 'page', 'path' => 'irlanda', 'match' => array( 'irlanda', 'ireland' ) ),
@@ -1905,7 +1919,7 @@ function conexao_normalize_primary_nav_sections( $items, $args ) {
 	$cpt_sections = array(
 		'guias'      => array( 'post_type' => 'guide',   'title' => 'Guias',      'url' => get_post_type_archive_link( 'guide' ) ? get_post_type_archive_link( 'guide' ) : home_url( '/guias/' ) ),
 		'eventos'    => array( 'post_type' => 'event',   'title' => 'Eventos',    'url' => get_post_type_archive_link( 'event' ) ? get_post_type_archive_link( 'event' ) : home_url( '/eventos/' ) ),
-		'lazer'      => array( 'post_type' => 'leisure', 'title' => 'Lazer',      'url' => get_post_type_archive_link( 'leisure' ) ? get_post_type_archive_link( 'leisure' ) : home_url( '/lazer/' ) ),
+		'lazer'      => array( 'post_type' => 'leisure', 'title' => 'Lazer e turismo', 'url' => get_post_type_archive_link( 'leisure' ) ? get_post_type_archive_link( 'leisure' ) : home_url( '/lazer/' ) ),
 		'empregos'   => array( 'post_type' => 'job',     'title' => 'Empregos',   'url' => get_post_type_archive_link( 'job' ) ? get_post_type_archive_link( 'job' ) : home_url( '/empregos/' ) ),
 		'apoiadores' => array( 'post_type' => 'sponsor', 'title' => 'Apoiadores', 'url' => get_post_type_archive_link( 'sponsor' ) ? get_post_type_archive_link( 'sponsor' ) : home_url( '/apoiadores/' ) ),
 	);
@@ -2120,6 +2134,7 @@ function conexao_get_item_section_key( $item ) {
 		'eventos'         => 'eventos',
 		'cursos'          => 'cursos',
 		'lazer'           => 'lazer',
+		'lazer e turismo' => 'lazer',
 		'empregos'        => 'empregos',
 		'apoiadores'      => 'apoiadores',
 		'irlanda'         => 'irlanda',
