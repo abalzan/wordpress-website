@@ -602,10 +602,21 @@ function conexao_seo_breadcrumb_data() {
 		$post_type = get_post_type();
 		$type_obj  = get_post_type_object( $post_type );
 
+		// The archive crumb. Unless the CPT archive is disabled (the `job`
+		// archive was replaced by the /empregos/ landing page), in which case
+		// we still point to the Empregos page so job singles keep their
+		// breadcrumb trail.
+		$archive_url = '';
 		if ( $type_obj && $type_obj->has_archive ) {
+			$archive_url = get_post_type_archive_link( $post_type );
+		} elseif ( 'job' === $post_type ) {
+			$archive_url = function_exists( 'conexao_empregos_page_url' ) ? conexao_empregos_page_url() : '';
+		}
+
+		if ( $archive_url ) {
 			$crumbs[] = array(
 				'name' => conexao_cpt_label( $post_type ),
-				'url'  => get_post_type_archive_link( $post_type ),
+				'url'  => $archive_url,
 			);
 		}
 

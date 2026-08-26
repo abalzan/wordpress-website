@@ -55,8 +55,12 @@ final class Conexao_Data_Model {
 		foreach ( $post_types as $post_type => $type ) {
 			// course_provider is a curated directory with a public archive at /cursos/.
 			// Individual course pages are not used; each provider links to an external website.
-			$is_provider      = ( 'course_provider' === $post_type );
-			$has_archive      = $type['slug'];
+			$is_provider = ( 'course_provider' === $post_type );
+			// /empregos/ is the Jobs landing page (page-empregos.php). Disable the job
+			// CPT *archive* so that URL belongs to the static page, while the CPT's
+			// `rewrite` slug stays `empregos` so individual job posts (e.g.
+			// /empregos/oportunidades/) keep their existing permalinks untouched.
+			$has_archive = ( 'job' === $post_type ) ? false : $type['slug'];
 
 			register_post_type(
 				$post_type,

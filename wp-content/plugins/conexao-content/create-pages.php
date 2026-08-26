@@ -27,13 +27,19 @@ echo "Starting page creation...\n";
 // ============================================================
 // 1. MAIN PAGES
 // ============================================================
-// NOTE: The following pages are now handled by CPT archives and should NOT be created as static pages:
+// NOTE: The following pages are handled by CPT archives and should NOT be
+// created as static pages:
 // - guias (guide CPT archive)
 // - eventos (event CPT archive)
 // - cursos (course CPT archive)
-// - empregos (job CPT archive)
 // - apoiadores (sponsor CPT archive)
 // Creating static pages with these slugs would conflict with the CPT archives.
+//
+// Empregos is the EXCEPTION: its CPT archive is disabled (see
+// conexao-data-model), and /empregos/ is instead a normal WordPress page —
+// the "Jobs Landing" hub — created below in section "EMPREGOS LANDING PAGE"
+// and rendered by the theme's page-empregos.php template. Individual job posts
+// (e.g. /empregos/oportunidades/) keep their /empregos/{slug}/ URLs.
 
 $main_pages = [
     'inicio' => [
@@ -301,6 +307,38 @@ function add_menu_items($menu_id, $items) {
 echo "\n=== MAIN PAGES ===\n";
 foreach ($main_pages as $slug => $data) {
     create_page_if_not_exists($slug, $data['title'], $data['content'], $data['meta_desc']);
+}
+
+echo "\n=== EMPREGOS LANDING PAGE ===\n";
+// /empregos/ is now a normal WordPress page (the "Jobs Landing" hub) rendered
+// by the theme's page-empregos.php template. It carries the editable title,
+// portrait featured image, body content and the optional "Mais informações"
+// link — all manageable from wp-admin. Content is intentionally left minimal
+// so the owner can populate it through the editor.
+$empregos_page = get_page_by_path('empregos');
+if (!$empregos_page) {
+    $empregos_page_id = wp_insert_post([
+        'post_title'    => 'Empregos',
+        'post_name'     => 'empregos',
+        'post_content'  => '<!-- wp:paragraph --><p>Informações sobre oportunidades de emprego para a comunidade brasileira na Irlanda. Este conteúdo é editável — substitua-o pelos detalhes sobre como as oportunidades são partilhadas, orientações de Instagram e dicas por condado.</p><!-- /wp:paragraph -->',
+        'post_status'   => 'publish',
+        'post_type'     => 'page',
+    ]);
+
+    if (is_wp_error($empregos_page_id)) {
+        echo "  ERROR: empregos - {$empregos_page_id->get_error_message()}\n";
+    } else {
+        echo "  CREATED: empregos (ID: {$empregos_page_id})\n";
+        $empregos_page = get_post($empregos_page_id);
+    }
+} else {
+    echo "  EXISTS: empregos (ID: {$empregos_page->ID})\n";
+}
+
+if ($empregos_page) {
+    // Assign the dedicated Jobs landing template so the layout takes effect.
+    update_post_meta($empregos_page->ID, '_wp_page_template', 'page-empregos.php');
+    echo "  Template: page-empregos.php\n";
 }
 
 echo "\n=== COMMUNITY CATEGORY PAGES ===\n";

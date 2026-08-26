@@ -19,6 +19,14 @@ define( 'CONEXAO_THEME_URI', get_template_directory_uri() );
 require_once CONEXAO_THEME_DIR . '/inc/seo.php';
 
 /**
+ * Load the Empregos landing page support (optional "Mais informações" link
+ * field + helpers). It adds a single meta field on top of the standard
+ * WordPress page fields used by page-empregos.php (title, featured image,
+ * body content).
+ */
+require_once CONEXAO_THEME_DIR . '/inc/empregos-landing.php';
+
+/**
  * Relabel "Posts" to "Blog" in the WordPress admin.
  *
  * This makes the admin interface clearer for non-technical administrators

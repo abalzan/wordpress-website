@@ -5712,3 +5712,101 @@ input[type="button"] {
     gap: 5px;
   }
 }
+
+/* =============================================================
+   Empregos — Jobs Landing Page (page-empregos.php)
+   =============================================================
+   A clean information hub rendered as a normal WP page:
+     Empregos
+       ↳ Portrait image   (featured image, Instagram-style 9:16)
+       ↳ Jobs information (editable page body)
+       ↳ Instagram / county guidance
+       ↳ [ Mais informações ] (optional CTA; hidden when no link)
+
+   Desktop uses a two-column layout (portrait beside the text); mobile stacks
+   into a single natural column. All colours rely on the design-system tokens
+   (--color-*, --space-*, --radius-*, --shadow-*) so light and dark mode are
+   handled automatically by the existing system. */
+
+/* Two-column desktop layout. */
+.empregos-landing {
+  display: grid;
+  grid-template-columns: minmax(220px, 340px) minmax(0, 1fr);
+  gap: var(--space-6) var(--space-7);
+  align-items: start;
+  padding: var(--space-6) 0 var(--space-8);
+}
+
+.empregos-landing-media {
+  min-width: 0;
+}
+
+/* Portrait artwork: soft-crop `conexao-job-portrait` keeps the full vertical
+   composition. object-fit: contain is a safety net so the image is never
+   cropped or distorted even if a container ever constrains its height. */
+.empregos-portrait {
+  position: sticky;
+  top: var(--space-6);
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-muted);
+  box-shadow: var(--shadow-md);
+}
+
+.empregos-portrait img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.empregos-landing-body {
+  min-width: 0;
+}
+
+.empregos-landing-body .entry-content {
+  font-size: 1.0625rem;
+  line-height: 1.8;
+  color: var(--color-text-secondary);
+  max-width: 68ch;
+}
+
+.empregos-landing-body .entry-content h2 {
+  margin-top: var(--space-6);
+}
+
+.empregos-landing-body .entry-content h3 {
+  margin-top: var(--space-5);
+}
+
+.empregos-landing-body .entry-content ul,
+.empregos-landing-body .entry-content ol {
+  padding-left: var(--space-5);
+}
+
+.empregos-landing-cta {
+  margin-top: var(--space-7);
+}
+
+/* Mobile: single natural column — title, portrait, info, CTA. */
+@media (max-width: 768px) {
+  .empregos-landing {
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+    padding: var(--space-5) 0 var(--space-7);
+  }
+
+  /* Portrait keeps Instagram-style proportions; cap so it stays prominent
+     but never dwarfs the reading column on narrow screens. */
+  .empregos-portrait {
+    position: static;
+    max-width: 420px;
+    margin-inline: auto;
+  }
+
+  .empregos-landing-cta {
+    margin-top: var(--space-5);
+    text-align: center;
+  }
+}

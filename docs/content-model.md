@@ -8,12 +8,17 @@ Registered by `conexao-data-model` plugin (class `Conexao_Data_Model`, method `r
 |-----------|-------|--------------|----------|-------|
 | `guide` | Guias Práticos | `guias` | title, editor, excerpt, thumbnail, author, revisions, page-attributes, custom-fields | Practical guides |
 | `event` | Eventos | `eventos` | Same as above | Imported + manual; visibility gated by `_event_status` |
-| `job` | Empregos | `empregos` | Same as above | Job listings |
+| `job` | Empregos | *disabled* | Same as above | Job listings; **archive disabled** — `/empregos/` is a static page (Jobs Landing), singles stay at `/empregos/{slug}/` |
 | `sponsor` | Apoiadores | `apoiadores` | Same as above | Business directory |
 | `course_provider` | Cursos | `cursos` | title, editor, excerpt, thumbnail, revisions, custom-fields | Directory; links externally; no single-post pages |
 | `leisure` | Lazer e Turismo | `lazer` | Same as guide (incl. author, page-attributes) | Tourism directory; local Media Library images |
 
-All CPTs are: `public`, `show_in_rest` (Gutenberg), `has_archive`, rewrite with Portuguese slug, `with_front => false`.
+All CPTs are: `public`, `show_in_rest` (Gutenberg), rewrite with a Portuguese
+slug, `with_front => false`, and `has_archive` — **except `job`**, whose archive
+is disabled so that `/empregos/` can be a normal WordPress page (the "Jobs
+Landing" hub, rendered by the theme's `page-empregos.php`). Individual job
+posts keep their `/empregos/{slug}/` permalinks (the CPT `rewrite` slug stays
+`empregos`).
 
 ## Taxonomies
 
@@ -72,6 +77,15 @@ Registered by `conexao-data-model` (method `register_taxonomies()`).
 - `_job_company` (text), `_job_location`, `_job_salary`, `_job_employment_type`, `_job_expiration_date` (date)
 - `_job_status`, `_job_application_url`, `_job_source`
 - `_job_requirements`, `_job_description`
+
+### Empresas Landing page (page post type)
+
+The `/empregos/` landing page uses the standard Page fields (title, featured
+image, body) plus one minimal field:
+
+- `_empregos_link` (url, page) — optional destination of the "Mais informações"
+  CTA. When empty, the CTA is not rendered. Managed in the "Jobs — Link"
+  metabox on the Page editor.
 
 ### Course Provider
 

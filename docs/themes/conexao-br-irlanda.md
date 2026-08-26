@@ -19,6 +19,7 @@ Modern community portal theme for Conexão BR Irlanda. Features a green/orange p
 | `single-sponsor.php` | `/apoiadores/{slug}/` | Dedicated Apoiador detail template: name, main image, description, "Entre em contato" buttons (only configured channels) |
 | `single.php` | `/{cpt}/{slug}/` | Single post for all other CPTs |
 | `page.php` | `/{slug}/` | Static pages |
+| `page-empregos.php` | `/empregos/` | Jobs Landing page — portrait image + editable body + optional "Mais informações" CTA |
 | `page-landing.php` | specific pages | Landing page template |
 | `home.php` | `/blog/` | Blog archive |
 | `search.php` | `/search/` | Search results |
@@ -141,15 +142,41 @@ Key functionality includes:
 | `conexao-provider-logo` | 320 × 180 | Soft |
 | `conexao-job-portrait` | 1080 × 1920 | Soft |
 
-The `conexao-job-portrait` size is used only by the Empregos (Jobs) single
-template (`single.php`, job branch). Job artwork is authored vertically for
+The `conexao-job-portrait` size is used by the Empregos (Jobs) artwork: the job
+single template (`single.php`, job branch) and the `/empregos/` Jobs Landing
+page (`page-empregos.php`). Job/landing artwork is authored vertically for
 Instagram Stories (9:16 preferred, 2:3 acceptable); the soft crop fits the
 image inside the box without cropping, so portrait compositions are preserved
 in full and legacy landscape images render at their own natural ratio (never
 distorted). Sources already smaller than the box fall back to the original
-file, so existing Jobs need no thumbnail regeneration. The Job editor shows a
-format hint under the Featured Image box via the
-`admin_post_thumbnail_html` filter (`conexao_job_featured_image_hint()`).
+file, so existing Jobs need no thumbnail regeneration. Editors see a format
+hint under the Featured Image box via the `admin_post_thumbnail_html` filter:
+`conexao_job_featured_image_hint()` (jobs) and
+`conexao_empregos_featured_image_hint()` (landing page).
+
+### Empregos Landing page (`page-empregos.php` + `inc/empregos-landing.php`)
+
+The `/empregos/` URL is a normal WordPress page (the `job` CPT archive is
+disabled; single job posts keep their `/empregos/{slug}/` URLs). The page is
+rendered by `page-empregos.php` as a clean information hub:
+
+```
+Empregos
+  ↳ Portrait image   (featured image — conexao-job-portrait, Instagram-style)
+  ↳ Jobs information (editable page body)
+  ↳ Instagram / county guidance
+  ↳ [ Mais informações ]  (optional; hidden when no link is set)
+```
+
+- **Editing**: everything is managed from wp-admin (Páginas → Empregos): title,
+  portrait featured image, body content, plus the optional CTA link.
+- **CTA link**: `inc/empregos-landing.php` registers the `_empregos_link` page
+  meta and renders a minimal "Jobs — Link 'Mais informações'" metabox. When the
+  URL is empty the button is not output at all; when external it opens in a new
+  tab.
+- **Layout/CSS**: `main.css` — desktop uses a two-column portrait+text grid;
+  mobile (≤768px) stacks into a single natural column. Colours come entirely
+  from the design-system tokens, so light and dark mode are automatic.
 
 ### SEO (`inc/seo.php`)
 

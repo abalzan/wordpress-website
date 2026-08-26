@@ -162,11 +162,13 @@ echo "\n   Assigned menu to primary location.\n";
 
 // 4. Verify CPT archive URLs
 echo "\n4. Verifying CPT archive URLs...\n";
+// `job` is NOT an archive anymore: its archive was disabled so /empregos/
+// could become the Jobs Landing page (see conexao-data-model). It is verified
+// as a static page by page-empregos.php.
 $cpt_checks = array(
     'guide' => 'guias',
     'event' => 'eventos',
     'course_provider' => 'cursos',
-    'job' => 'empregos',
     'sponsor' => 'apoiadores',
 );
 
@@ -185,6 +187,7 @@ foreach ( $cpt_checks as $cpt => $expected_slug ) {
 // 5. Verify static page URLs
 echo "\n5. Verifying static page URLs...\n";
 $page_checks = array(
+    'empregos' => 'Empregos',
     'irlanda' => 'Irlanda',
     'sobre-nos' => 'Sobre Nós',
     'contato' => 'Contato',

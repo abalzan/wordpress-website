@@ -11,9 +11,15 @@ Portuguese slugs are canonical. English URLs redirect to Portuguese equivalents 
 | Guides | `/guias/` | `/guides/` |
 | Events | `/eventos/` | `/events/` |
 | Courses | `/cursos/` | `/courses/` |
-| Jobs | `/empregos/` | `/jobs/` |
+| Jobs | `/empregos/` — **landing page** (job archive disabled) | `/jobs/` |
 | Sponsors | `/apoiadores/` | `/sponsors/` |
 | Lazer | `/lazer/` | `/leisure/` |
+
+> **Note (Empregos):** the `job` CPT archive is disabled (see
+> [`plugins/conexao-data-model`](plugins/README.md)). `/empregos/` is now a
+> normal WordPress page — the "Jobs Landing" hub — rendered by the theme's
+> `page-empregos.php` template. Individual job posts keep their
+> `/empregos/{slug}/` URLs (e.g. `/empregos/oportunidades/`).
 | Blog | `/blog/` | n/a |
 
 ### Single Items
@@ -94,7 +100,8 @@ Runs at `template_redirect` priority 6. Redirects individual leisure posts to th
 
 ```
 front-page.php          → /
-archive.php             → /guias/, /eventos/, /cursos/, /empregos/, /apoiadores/, /lazer/
+archive.php             → /guias/, /eventos/, /cursos/, /apoiadores/, /lazer/
+page-empregos.php       → /empregos/ (Jobs Landing page; job archive disabled)
 single-leisure.php      → /lazer/{slug}/
 single.php              → /{cpt}/{slug}/ (all other CPTs)
 page.php                → /{slug}/ (static pages)
