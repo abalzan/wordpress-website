@@ -471,7 +471,6 @@ final class Conexao_Admin_Ux_Config {
 			'publishing'         => array(
 				'statuses' => array(
 					'draft'            => array( 'label' => 'Rascunho', 'badge' => 'draft' ),
-					'needs_review'     => array( 'label' => 'Revisão', 'badge' => 'review' ),
 					'published'        => array( 'label' => 'Publicado', 'badge' => 'published' ),
 					'source_not_found' => array( 'label' => 'Indisponível na fonte', 'badge' => 'warning' ),
 					'expired'          => array( 'label' => 'Expirado', 'badge' => 'expired' ),
@@ -499,7 +498,6 @@ final class Conexao_Admin_Ux_Config {
 			),
 			'summary'            => array(
 				array( 'key' => 'published', 'label' => 'Publicados', 'status' => 'published' ),
-				array( 'key' => 'review', 'label' => 'Revisão', 'status' => 'needs_review' ),
 				array( 'key' => 'week', 'label' => 'Esta semana', 'date_range' => 'week' ),
 			),
 		);

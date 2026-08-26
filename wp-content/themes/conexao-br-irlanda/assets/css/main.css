@@ -296,8 +296,9 @@ ul, ol {
 /* ===== Featured Apoiadores carousel — Hero variant =====
    Featured single-sponsor showcase rendered by template-parts/
    featured-sponsors.php into the RIGHT column of a two-column Hero
-   composition (.hero-copy beside .hero-sponsors) on desktop/tablet, stacked
-   beneath the copy on mobile. Reuses the shared .sponsors-carousel
+   composition (.hero-copy beside .hero-sponsors) at every breakpoint —
+   side-by-side on mobile too, with mobile-tuned proportions. Reuses the
+   shared .sponsors-carousel
    scroll-snap engine; this variant restyles it for the hero context:
    EXACTLY ONE supporter visible at a time as a single large featured IMAGE
    card — the artwork fills the whole tile, the name is overlaid at the top
@@ -336,33 +337,93 @@ ul, ol {
 /* Right column: Featured Apoiadores showcase. A subtle translucent green
    glass surface groups label + carousel and keeps them legible over the
    photographic right side of the hero (castle/family/flags) without hiding
-   the image — a light touch, not an opaque block. */
+   the image — a light touch, not an opaque block. Zero top padding: the
+   "Apoiadores em destaque" label is this column's first child, so with no
+   top inset its box starts exactly on the same grid top line as the
+   .hero-badge in the left column (see the ≥769px stretch rules below) —
+   both columns' first elements share one horizontal line. Inline/bottom
+   padding still frames the glass surface; the ≤768px block re-specifies
+   its own compact padding. */
 .hero-sponsors {
   min-width: 0;
   background: linear-gradient(165deg, rgba(6, 44, 35, 0.52) 0%, rgba(6, 44, 35, 0.34) 100%);
   border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: var(--conexao-radius);
   box-shadow: var(--conexao-shadow-md);
-  padding: 14px 18px;
+  padding: 0 18px 14px;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 }
 
-/* Desktop/tablet (≥769px): balanced two-column composition — hero copy left
-   (~55–60%), Featured Apoiadores right (~40–45%). The double-class selector
+/* Desktop/tablet (≥769px): two-column composition — hero copy left, Featured
+   Apoiadores right as a WIDE LANDSCAPE feature card. The sponsor column takes
+   a generous fr share (~45% of the row) so the 16:9 tile renders clearly
+   wider than tall at every desktop/tablet viewport. The double-class selector
    outranks the single-class .hero-content width/padding rules in the
    responsive blocks further down, so ONLY the with-sponsors variant goes
    full-width two-column; without sponsors the hero keeps its original
-   single-column layout untouched. */
+   single-column layout untouched.
+
+   Shared vertical rhythm: the columns behave as ONE two-column layout on a
+   single invisible grid instead of two independently positioned blocks.
+   align-items:stretch gives both columns the same height, and each column
+   is a flex stack anchored to the same two horizontal lines — the top of
+   .hero-badge ↔ the top of the sponsor panel/label ("Apoiadores em
+   destaque"), and the bottom of the CTA row (.btn-outline) ↔ the bottom of
+   the sponsor panel and its integrated controls. No fixed pixel offsets:
+   the relationship emerges from stretch + the flex chains below, so it
+   holds at every desktop/tablet width (1024/1280/1440/1600+). */
 @media (min-width: 769px) {
   .hero-content.hero-content--with-sponsors {
     max-width: none;
     width: 100%;
     display: grid;
     grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-    align-items: center;
+    align-items: stretch;
     gap: clamp(28px, 4vw, 64px);
     padding: 44px 0 36px;
+  }
+
+  /* Left column as a flex stack spanning the shared row height: badge,
+     heading and description keep their natural flow from the TOP line,
+     while margin-top:auto pins the CTA row to the BOTTOM line — absorbing
+     whatever slack the stretched column leaves between subtitle and CTAs.
+     Both columns therefore start and finish together. */
+  .hero-content--with-sponsors .hero-copy {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Inside the flex column the inline-flex badge would otherwise be
+     stretched to the full column width; keep its intrinsic pill width. */
+  .hero-content--with-sponsors .hero-badge {
+    align-self: flex-start;
+  }
+
+  .hero-content--with-sponsors .hero-ctas {
+    margin-top: auto;
+  }
+
+  /* Right column as a flex stack spanning the same row height: the label
+     sits on the TOP line and the landscape carousel is pinned to the
+     BOTTOM line via margin-top:auto (below), so the glass surface spans
+     the full shared row while the tile keeps its width-derived 16:9
+     height instead of stretching to the column height. */
+  .hero-content--with-sponsors .hero-sponsors {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Landscape tile: the carousel keeps its NATURAL height — the tile derives
+     its height from the column width via the 16:9 ratio on .sponsor-tile
+     below instead of stretching to the row height — and margin-top:auto
+     pins the whole block (tile + integrated controls) to the BOTTOM line,
+     so its lower edge stays visually aligned with the CTA row (.btn-outline)
+     however much taller the copy column is. No fixed pixel offsets: the
+     relationship emerges from the shared-grid stretch plus this auto margin,
+     so it holds at every desktop/tablet width (1024/1280/1440/1600+). */
+  .hero-content--with-sponsors .sponsors-carousel {
+    margin-top: auto;
   }
 
   /* Slightly reduced desktop type scale for the narrower left column: strong
@@ -445,11 +506,14 @@ ul, ol {
 }
 
 /* Featured tile: ONE large visual surface per view. The artwork fills the
-   entire card (no separate content area beneath); the card height derives
-   from the column width via a fixed 16:9 ratio — matching the dominant
-   banner assets — so switching sponsors never changes the hero or
-   right-column height, and every image ratio fits inside the same stable
-   frame. */
+   entire card (no separate content area beneath); on desktop/tablet the
+   card height derives from the column width via a fixed 16:9 LANDSCAPE
+   ratio — matching the dominant banner assets — so switching sponsors
+   never changes the right-column height, and every image ratio fits inside
+   the same stable frame. Mobile (≤768px) re-specifies the frame as
+   PORTRAIT 3:4 in its own block below, keeping the phone presentation
+   clearly taller than wide. object-fit:contain letterboxes every source
+   ratio onto the warm mat without cropping or distortion. */
 .sponsor-tile {
   position: relative;
   display: block;
@@ -644,7 +708,7 @@ ul, ol {
 
 /* Tablet: still exactly one sponsor per view; only the column ratio/gap
    tighten so heading and carousel never collide at intermediate widths
-   (~769–1199px). */
+   (~769–1199px). The sponsor column keeps its landscape 16:9 frame. */
 @media (max-width: 1199px) and (min-width: 769px) {
   .hero-content.hero-content--with-sponsors {
     grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
@@ -652,60 +716,200 @@ ul, ol {
   }
 }
 
-/* Mobile: stack the columns — hero copy first, Featured Apoiadores beneath
-   it (DOM order already matches; the two-column grid above never applies
-   ≤768px). Still EXACTLY ONE sponsor per view: the same integrated image
-   card (overlay name, inner arrows, bottom dots) proportionally scaled so
-   the Hero stays compact, with the overlay arrows remaining available
-   alongside native swipe. */
+/* Mobile (≤768px): the two columns STAY SIDE-BY-SIDE — one cohesive Hero
+   composition over the shared full-bleed photograph, sharing the SAME
+   invisible grid as desktop (stretch-aligned tops and bottoms). Hero copy
+   remains the primary element: wider column (~55/45, rebalancing toward
+   the panel at ≤374px where absolute width is scarcest), scoped compact
+   type scale, CTAs wrapping naturally (stacked when narrow, side-by-side
+   once both fit). The carousel keeps EXACTLY ONE sponsor per view — the
+   same integrated image card (overlay name, inner arrows, bottom dots) in
+    its own PORTRAIT 3:4 frame (desktop/tablet use a landscape 16:9 frame
+    instead); object-fit:contain keeps the
+   artwork's rendered size stable (extra frame height reads as mat, not
+   smaller art), controls shrink toward their touch minimums, and the
+   overlay arrows remain available alongside native swipe. */
 @media (max-width: 768px) {
-  .hero-content--with-sponsors {
-    padding: 56px 0 20px;
+  /* Double-class selector outranks the single-class .hero-content
+     padding/max-width rules in the mobile blocks further down (same
+     pattern as the ≥769px composition above). Same shared-grid treatment
+     as desktop: align-items:stretch gives both columns one height, so the
+     "Apoiadores em destaque" label starts on the .hero-badge top line and
+     the portrait panel runs down to the CTA bottom line. */
+  .hero-content.hero-content--with-sponsors {
+    display: grid;
+    grid-template-columns: minmax(0, 1.22fr) minmax(0, 1fr);
+    align-items: stretch;
+    gap: clamp(10px, 2.5vw, 16px);
+    padding: 56px 0 24px;
+  }
+
+  /* Mobile mirror of the ≥769px flex stacks: the copy column anchors the
+     badge to the TOP line and pins the CTAs to the BOTTOM line; the
+     sponsor column anchors the label to the top and lets the carousel
+     fill everything below it. */
+  .hero-content--with-sponsors .hero-copy {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .hero-content--with-sponsors .hero-badge {
+    align-self: flex-start;
   }
 
   .hero-content--with-sponsors .hero-ctas {
-    margin-bottom: 16px;
+    margin-top: auto;
   }
 
-  /* Compact glass surface under the stacked carousel. */
-  .hero-sponsors {
-    padding: 12px 14px;
+  .hero-content--with-sponsors .hero-sponsors {
+    display: flex;
+    flex-direction: column;
   }
 
-  .sponsors-hero-label {
-    font-size: 0.6875rem;
+  /* Stretch chain: carousel root → stage → viewport → list (mobile-only —
+     the ≥769px composition pins the landscape tile to the CTA baseline
+     instead). The slides are display:flex with align-items:stretch, so
+     the height reaches .sponsor-tile; its 3:4 ratio only sets the natural
+     floor — the stretched copy-column height usually extends it further,
+     keeping the panel clearly taller than wide on phones too. */
+  .hero-content--with-sponsors .sponsors-carousel,
+  .hero-content--with-sponsors .sponsors-carousel-stage,
+  .hero-content--with-sponsors .sponsors-carousel-viewport {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .hero-content--with-sponsors .sponsors-carousel-list {
+    flex: 1;
+    min-height: 0;
+  }
+
+  /* Scoped compact type scale — applied ONLY when the carousel renders,
+     so the no-sponsor single-column hero keeps its original sizes. */
+  .hero-content--with-sponsors .hero-badge {
+    margin-bottom: 10px;
+    padding: 5px 10px;
+    font-size: 0.625rem;
+    line-height: 1.35;
+  }
+
+  .hero-content--with-sponsors .hero-badge-dot {
+    width: 6px;
+    height: 6px;
+    flex-shrink: 0;
+  }
+
+  .hero-content--with-sponsors .hero-title {
+    font-size: clamp(1.0625rem, 4.6vw, 1.5rem);
+    line-height: 1.22;
+    letter-spacing: -0.01em;
     margin-bottom: 8px;
   }
 
-  /* Same integrated card, proportionally scaled: the 16:9 tile shrinks
-     with the column so the Hero stays compact; overlays tighten with it. */
-  .sponsors-carousel--hero .sponsors-carousel-viewport {
-    padding: 5px 3px;
+  .hero-content--with-sponsors .hero-subtitle {
+    font-size: clamp(0.8125rem, 2.6vw, 1rem);
+    line-height: 1.5;
+    margin-bottom: 12px;
   }
 
-  .sponsor-tile-name {
-    font-size: 0.8125rem;
-    padding: 10px 12px 20px;
+  /* CTAs end the left column; the container's bottom padding provides the
+     closing space (the old stacked-layout margin is gone). Buttons keep
+     the shared compact sizing and wrap as whole units (white-space:nowrap)
+     — stacked on narrow phones, side-by-side once both fit. */
+  .hero-content--with-sponsors .hero-ctas {
+    margin-bottom: 0;
+    gap: 8px;
   }
 
-  .sponsors-carousel--hero .sponsors-carousel-arrow {
-    width: 34px;
-    height: 34px;
+  .hero-content--with-sponsors .hero-ctas .btn {
+    padding: 9px 12px;
+    font-size: 0.75rem;
+    min-height: 42px;
   }
 
-  .sponsors-carousel-dots {
-    bottom: 10px;
-    gap: 6px;
-    padding: 5px 9px;
+  /* Right column: compact glass surface — the subtle separation between
+     the two zones over the shared photo (no hard divider, no opaque
+     block). Zero top padding puts the "Apoiadores em destaque" label on
+     the same top line as .hero-badge. */
+  .hero-sponsors {
+    padding: 0 11px 10px;
   }
 
-  .sponsors-carousel-dot {
-    width: 7px;
-    height: 7px;
+  .sponsors-hero-label {
+    font-size: 0.625rem;
+    letter-spacing: 0.07em;
+    margin-bottom: 6px;
   }
 
-  .sponsors-carousel-dot.is-active {
-    width: 18px;
+  /* Integrated card, retuned for the narrow column: the mobile-only
+     PORTRAIT 3:4 frame (usually stretched taller by the shared-grid chain),
+     keeping the presentation clearly taller than wide at phone widths;
+     overlays and controls tighten with it. Scoped to the hero's right
+     column so no other carousel is affected. */
+  .hero-sponsors .sponsors-carousel-viewport {
+    padding: 4px 2px;
+  }
+
+  .hero-sponsors .sponsor-tile {
+    aspect-ratio: 3 / 4;
+  }
+
+  .hero-sponsors .sponsor-tile-name {
+    font-size: 0.75rem;
+    padding: 8px 10px 18px;
+  }
+
+  .hero-sponsors .sponsors-carousel-arrow {
+    width: 32px;
+    height: 32px;
+  }
+
+  .hero-sponsors .sponsors-carousel-arrow--prev {
+    left: 6px;
+  }
+
+  .hero-sponsors .sponsors-carousel-arrow--next {
+    right: 6px;
+  }
+
+  .hero-sponsors .sponsors-carousel-dots {
+    bottom: 8px;
+    gap: 5px;
+    padding: 4px 8px;
+  }
+
+  .hero-sponsors .sponsors-carousel-dot {
+    width: 6px;
+    height: 6px;
+  }
+
+  .hero-sponsors .sponsors-carousel-dot.is-active {
+    width: 16px;
+  }
+}
+
+/* Small phones (≤374px): rebalance the split (~53/47) and slim the overlay
+   arrows so the portrait panel keeps usable artwork width and comfortably
+   tappable controls where absolute space is scarcest. */
+@media (max-width: 374px) {
+  .hero-content.hero-content--with-sponsors {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .hero-sponsors .sponsors-carousel-arrow {
+    width: 28px;
+    height: 28px;
+  }
+
+  .hero-sponsors .sponsors-carousel-arrow--prev {
+    left: 4px;
+  }
+
+  .hero-sponsors .sponsors-carousel-arrow--next {
+    right: 4px;
   }
 }
 
@@ -5262,14 +5466,12 @@ input[type="button"] {
    ============================================ */
 @media (max-width: 768px) {
   /* --- Compact header bar ---
-     Tight padding + slightly smaller logo, while keeping the touch targets
-     (44px+ buttons) intact. */
+     Tight padding while keeping the touch targets (44px+ buttons) intact.
+     The logo image is intentionally NOT capped here: header-nav.css owns
+     mobile logo sizing (a 40px max-height matched to the 48px header
+     controls, sized as a natural flex child of the header row). */
   .main-header {
     padding: 6px 0;
-  }
-
-  .logo img {
-    max-height: 36px;
   }
 
   /* --- Compact Hero ---

@@ -2,7 +2,10 @@
 /**
  * Test the imported Event workflow with the Admin UX.
  *
- * Verifies: Import → Review → Edit → Publish → Update → Archive
+ * Verifies: Import → Ready → Edit → Publish → Update → Archive
+ *
+ * Imported events are ready to use immediately: there is no intermediate
+ * "Needs Review" state and no review-note metadata.
  *
  * Usage: docker compose exec wordpress php /var/www/html/scripts/test-event-imported-workflow.php
  */
@@ -44,7 +47,7 @@ function check( $label, $condition ) {
 }
 
 // 1. SIMULATE IMPORT: create an event as the importer would
-// (with source, source_id, imported flag, needs_review)
+// (with source, source_id, imported flag)
 $post_id = wp_insert_post(
 	array(
 		'post_type'    => 'event',
@@ -73,16 +76,15 @@ update_post_meta( $post_id, '_event_import_date', current_time( 'mysql' ) );
 update_post_meta( $post_id, '_event_last_checked', current_time( 'mysql' ) );
 echo "\n";
 
-// 2. IMPORTED → NEEDS REVIEW
-// Importer checks normalizer: if location couldn't be determined → needs_review
-Conexao_Event_Status::set_status( $post_id, Conexao_Event_Status::NEEDS_REVIEW );
-update_post_meta( $post_id, '_event_review_note', 'Localização não identificada' );
+// 2. IMPORTED EVENTS ARE READY IMMEDIATELY
+// The importer publishes valid events straight away — there is no
+// intermediate "Needs Review" state or review-note metadata.
+Conexao_Event_Status::set_status( $post_id, Conexao_Event_Status::PUBLISHED );
 $status = Conexao_Admin_Ux_Actions::get_status( $post_id, 'event' );
-check( 'Imported event is needs_review', Conexao_Event_Status::NEEDS_REVIEW === $status );
+check( 'Imported event is published immediately', Conexao_Event_Status::PUBLISHED === $status );
 
-// 3. Review note visible
-$note = get_post_meta( $post_id, '_event_review_note', true );
-check( 'Review note saved', 'Localização não identificada' === $note );
+// 3. No review metadata exists anymore
+check( 'No review note meta is written', '' === get_post_meta( $post_id, '_event_review_note', true ) );
 
 // 4. Source data preserved
 $source = get_post_meta( $post_id, '_event_source', true );
@@ -92,16 +94,14 @@ check( 'Source preserved', 'laois_tourism' === $source );
 $import_date = get_post_meta( $post_id, '_event_import_date', true );
 check( 'Import date preserved', ! empty( $import_date ) );
 
-// 6. EDIT (admin fixes location)
+// 6. EDIT (admin tweaks content)
 update_post_meta( $post_id, '_event_venue', 'Portlaoise Town Square (Corrigido)' );
-delete_post_meta( $post_id, '_event_review_note' );
 
-// 7. PUBLISH (admin reviews and approves)
+// 7. PUBLISH (status management still works normally)
 Conexao_Admin_Ux_Actions::set_status( $post_id, 'event', 'published' );
 $status = Conexao_Admin_Ux_Actions::get_status( $post_id, 'event' );
 $post   = get_post( $post_id );
 check( 'Publish imported event', 'published' === $status && 'publish' === $post->post_status );
-check( 'Review note cleared on publish', '' === get_post_meta( $post_id, '_event_review_note', true ) );
 
 // 8. Check importer status reader is consistent
 $importer_status = Conexao_Event_Status::get_status( $post_id );
@@ -131,7 +131,6 @@ if ( is_numeric( $dup_id ) ) {
 
 // 11. SOURCE NOT FOUND (event disappears from source)
 Conexao_Event_Status::set_status( $post_id, Conexao_Event_Status::SOURCE_NOT_FOUND );
-update_post_meta( $post_id, '_event_review_note', 'Evento não encontrado na fonte na última importação.' );
 $status = Conexao_Admin_Ux_Actions::get_status( $post_id, 'event' );
 check( 'Source not found status', 'source_not_found' === $status );
 

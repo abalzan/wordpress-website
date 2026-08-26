@@ -9,7 +9,7 @@ This project contains 5 custom WordPress plugins. All are in `wp-content/plugins
 | conexao-data-model | `wp-content/plugins/conexao-data-model/` | 1.3.0 | CPTs, taxonomies, editorial meta | conexao-data-model.md |
 | conexao-content | `wp-content/plugins/conexao-content/` | 1.0.0 | Static pages, shortcodes | conexao-content.md |
 | conexao-admin-ux | `wp-content/plugins/conexao-admin-ux/` | 1.0.0 | Custom admin UI, statuses, bulk actions | conexao-admin-ux.md |
-| conexao-event-importer | `wp-content/plugins/conexao-event-importer/` | 1.1.0 | Event aggregation from external sources | conexao-event-importer.md |
+| conexao-event-importer | `wp-content/plugins/conexao-event-importer/` | 1.3.0 | Local-only event import + export to production (manual, no cron) | conexao-event-importer.md |
 | conexao-leisure-migration | `wp-content/plugins/conexao-leisure-migration/` | 2.0.0 | Lazer ZIP export/import with images | conexao-leisure-migration.md |
 
 ## Load Order

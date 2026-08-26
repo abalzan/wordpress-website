@@ -7,7 +7,7 @@
 | conexao-data-model | 1.3.0 | `wp-content/plugins/conexao-data-model/` |
 | conexao-content | 1.0.0 | `wp-content/plugins/conexao-content/` |
 | conexao-admin-ux | 1.0.0 | `wp-content/plugins/conexao-admin-ux/` |
-| conexao-event-importer | 1.1.0 | `wp-content/plugins/conexao-event-importer/` |
+| conexao-event-importer | 1.3.0 | `wp-content/plugins/conexao-event-importer/` |
 | conexao-leisure-migration | 2.0.0 | `wp-content/plugins/conexao-leisure-migration/` |
 
 ## Themes
@@ -54,10 +54,7 @@
 
 ## Cron Jobs
 
-| Hook | Schedule | Plugin |
-|------|----------|--------|
-| `conexao_event_import_cron` | Weekly (Sunday 02:00) | event-importer |
-| `conexao_event_cleanup_cron` | Weekly (Sunday 03:00) | event-importer |
+None. Event importing and cleanup are manual, local-only operations (see docs/plugins/conexao-event-importer.md). The production site never fetches from external event sources.
 
 ## Shortcodes
 

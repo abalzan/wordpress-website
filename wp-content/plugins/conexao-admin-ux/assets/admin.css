@@ -148,7 +148,7 @@
 	background: #f8f9fa; border: 1px solid #dcdcde; border-left: 4px solid #0E6B3A;
 	border-radius: 6px; padding: 14px 18px; margin-bottom: 16px;
 }
-.conexao-import-banner--needs_review, .conexao-import-banner--source_not_found {
+.conexao-import-banner--source_not_found {
 	border-left-color: #dba617; background: #fef8ee;
 }
 .conexao-import-banner--expired, .conexao-import-banner--rejected {

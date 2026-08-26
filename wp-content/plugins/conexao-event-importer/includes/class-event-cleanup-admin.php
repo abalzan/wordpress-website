@@ -3,8 +3,10 @@
  * Event cleanup admin interface.
  *
  * Adds a "Cleanup" page under the Event Importer menu. The page shows the
- * cleanup status (last run, next scheduled run, counts) and provides a
- * "Run Cleanup Now" button for manual execution.
+ * cleanup status (last run, counts) and provides a "Run Cleanup Now" button
+ * for manual execution.
+ *
+ * Cleanup is manual-only — there is no scheduled/cron-based cleanup.
  *
  * @package Conexao_Event_Importer
  */
@@ -54,16 +56,16 @@ class Conexao_Event_Cleanup_Admin {
 
 		check_admin_referer( 'conexao_run_cleanup', 'conexao_cleanup_nonce' );
 
-		$result = $this->cleanup->run_cleanup( 'manual' );
+		$result = $this->cleanup->run_cleanup();
 
 		$redirect = admin_url( 'admin.php?page=conexao-event-cleanup' );
 
 		$args = array(
-			'conexao_cleanup_events_found'   => $result['events_found'],
-			'conexao_cleanup_events_deleted' => $result['events_deleted'],
-			'conexao_cleanup_images_deleted' => $result['images_deleted'],
+			'conexao_cleanup_events_found'     => $result['events_found'],
+			'conexao_cleanup_events_deleted'   => $result['events_deleted'],
+			'conexao_cleanup_images_deleted'   => $result['images_deleted'],
 			'conexao_cleanup_images_preserved' => $result['images_preserved'],
-			'conexao_cleanup_errors'         => count( $result['errors'] ),
+			'conexao_cleanup_errors'           => count( $result['errors'] ),
 		);
 
 		wp_safe_redirect( add_query_arg( $args, $redirect ) );
@@ -78,8 +80,7 @@ class Conexao_Event_Cleanup_Admin {
 			return;
 		}
 
-		$status = $this->cleanup->get_status();
-		$next   = $this->cleanup->get_next_scheduled();
+		$status  = $this->cleanup->get_status();
 		$history = $this->cleanup->get_history();
 
 		// Read the result of a manual run from the query args.
@@ -95,11 +96,10 @@ class Conexao_Event_Cleanup_Admin {
 		}
 
 		$last_time = ! empty( $status['time'] ) ? $status['time'] : '';
-		$last_trigger = ! empty( $status['trigger'] ) ? $status['trigger'] : '';
 		?>
 		<div class="wrap conexao-event-cleanup">
 			<h1><?php esc_html_e( 'Event Cleanup', 'conexao-event-importer' ); ?></h1>
-			<p><?php esc_html_e( 'Automatically deletes past events and their exclusively-owned images. The cleanup runs once per week and is conservative — it only deletes media that was imported by the event importer and is no longer used anywhere else.', 'conexao-event-importer' ); ?></p>
+			<p><?php esc_html_e( 'Manually deletes past events and their exclusively-owned images. Only media that was imported by the event importer and is no longer used by any other event, page, post, or content is removed — when in doubt, images are kept.', 'conexao-event-importer' ); ?></p>
 
 			<?php if ( $run_result ) : ?>
 				<div class="notice <?php echo $run_result['errors'] > 0 ? 'notice-warning' : 'notice-success'; ?> is-dismissible">
@@ -123,26 +123,6 @@ class Conexao_Event_Cleanup_Admin {
 					<span class="conexao-import-stat-label"><?php esc_html_e( 'Last cleanup', 'conexao-event-importer' ); ?></span>
 					<span class="conexao-import-stat-value">
 						<?php echo $last_time ? esc_html( $last_time ) : '&mdash;'; ?>
-						<?php if ( $last_trigger ) : ?>
-							<small style="display:block; font-size:12px; color:#646970; font-weight:400;">
-								<?php echo 'scheduled' === $last_trigger ? esc_html__( 'Scheduled run', 'conexao-event-importer' ) : esc_html__( 'Manual run', 'conexao-event-importer' ); ?>
-							</small>
-						<?php endif; ?>
-					</span>
-				</div>
-
-				<div class="conexao-import-stat">
-					<span class="conexao-import-stat-label"><?php esc_html_e( 'Next scheduled cleanup', 'conexao-event-importer' ); ?></span>
-					<span class="conexao-import-stat-value">
-						<?php
-						if ( $next ) {
-							$next_dt = new DateTime( '@' . $next );
-							$next_dt->setTimezone( wp_timezone() );
-							echo esc_html( $next_dt->format( 'Y-m-d H:i' ) );
-						} else {
-							echo esc_html__( 'Not scheduled', 'conexao-event-importer' );
-						}
-						?>
 					</span>
 				</div>
 
@@ -189,7 +169,7 @@ class Conexao_Event_Cleanup_Admin {
 			<div class="conexao-event-transfer">
 				<div class="conexao-transfer-card">
 					<h2><?php esc_html_e( 'Run Cleanup Now', 'conexao-event-importer' ); ?></h2>
-					<p><?php esc_html_e( 'Runs the same safe cleanup logic as the scheduled weekly job. Past events are deleted, and their importer-created images are removed only when they are no longer used anywhere else.', 'conexao-event-importer' ); ?></p>
+					<p><?php esc_html_e( 'Deletes past events and their exclusively-owned images. Events whose end date/time has passed are removed; images imported by the event importer are deleted only when they are no longer used by any other content.', 'conexao-event-importer' ); ?></p>
 
 					<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 						<input type="hidden" name="action" value="conexao_run_cleanup">
@@ -202,7 +182,7 @@ class Conexao_Event_Cleanup_Admin {
 					<h2><?php esc_html_e( 'What happens', 'conexao-event-importer' ); ?></h2>
 					<ul class="conexao-transfer-list">
 						<li><?php esc_html_e( 'Events whose end date/time has passed are deleted.', 'conexao-event-importer' ); ?></li>
-						<li><?php esc_html_e( 'Events without an end date use their event date as the fallback.', 'conexao-event-importer' ); ?></li>
+						<li><?php esc_html_e( 'Events without an end date are skipped (manual review territory).', 'conexao-event-importer' ); ?></li>
 						<li><?php esc_html_e( 'Only images imported by the event importer are considered for deletion.', 'conexao-event-importer' ); ?></li>
 						<li><?php esc_html_e( 'Images still used by another event, page, post, or content are preserved.', 'conexao-event-importer' ); ?></li>
 						<li><?php esc_html_e( 'Manually uploaded media unrelated to the event is never deleted.', 'conexao-event-importer' ); ?></li>
@@ -217,7 +197,6 @@ class Conexao_Event_Cleanup_Admin {
 					<thead>
 						<tr>
 							<th><?php esc_html_e( 'Time', 'conexao-event-importer' ); ?></th>
-							<th><?php esc_html_e( 'Trigger', 'conexao-event-importer' ); ?></th>
 							<th><?php esc_html_e( 'Events Found', 'conexao-event-importer' ); ?></th>
 							<th><?php esc_html_e( 'Events Deleted', 'conexao-event-importer' ); ?></th>
 							<th><?php esc_html_e( 'Images Evaluated', 'conexao-event-importer' ); ?></th>
@@ -230,9 +209,6 @@ class Conexao_Event_Cleanup_Admin {
 						<?php foreach ( array_slice( $history, 0, 20 ) as $entry ) : ?>
 							<tr>
 								<td><?php echo esc_html( $entry['time'] ); ?></td>
-								<td>
-									<?php echo 'scheduled' === $entry['trigger'] ? esc_html__( 'Scheduled', 'conexao-event-importer' ) : esc_html__( 'Manual', 'conexao-event-importer' ); ?>
-								</td>
 								<td><?php echo esc_html( (int) $entry['events_found'] ); ?></td>
 								<td><?php echo esc_html( (int) $entry['events_deleted'] ); ?></td>
 								<td><?php echo esc_html( (int) $entry['images_evaluated'] ); ?></td>

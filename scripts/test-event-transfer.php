@@ -86,7 +86,6 @@ $sample_event = array(
 		'_event_last_checked' => '2026-08-15 10:00:00',
 		'_event_status'      => 'published',
 		'_event_imported'    => '1',
-		'_event_review_note' => '',
 	),
 	'taxonomies' => array(
 		'conexao_category' => array( 'Heritage' ),

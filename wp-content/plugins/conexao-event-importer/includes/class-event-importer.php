@@ -87,21 +87,22 @@ class Conexao_Event_Importer_Engine {
 		$this->current_run_id = 'all-' . (string) microtime( true );
 
 		$combined = array(
-			'found'         => 0,
-			'created'       => 0,
-			'updated'       => 0,
-			'unchanged'     => 0,
-			'duplicates'    => 0,
-			'skipped'       => 0,
-			'needs_review'  => 0,
-			'failed'        => 0,
-			'errors'        => 0,
-			'new'           => 0,
-			'fatal_errors'  => array(),
-			'event_results' => array(),
-			'status'        => 'success',
-			'sources'       => array(),
-			'dry_run'       => $dry_run,
+			'found'                => 0,
+			'created'              => 0,
+			'updated'              => 0,
+			'unchanged'            => 0,
+			'duplicates'           => 0,
+			'skipped'              => 0,
+			'skipped_past'         => 0,
+			'skipped_invalid_date' => 0,
+			'failed'               => 0,
+			'errors'               => 0,
+			'new'                  => 0,
+			'fatal_errors'         => array(),
+			'event_results'        => array(),
+			'status'               => 'success',
+			'sources'              => array(),
+			'dry_run'              => $dry_run,
 		);
 
 		$active_sources = $this->sources->get_active();
@@ -136,9 +137,10 @@ class Conexao_Event_Importer_Engine {
 			$combined['new']          += isset( $result['new'] ) ? (int) $result['new'] : 0;
 			$combined['updated']      += isset( $result['updated'] ) ? (int) $result['updated'] : 0;
 			$combined['unchanged']    += isset( $result['unchanged'] ) ? (int) $result['unchanged'] : 0;
-			$combined['duplicates']   += isset( $result['duplicates'] ) ? (int) $result['duplicates'] : 0;
-			$combined['skipped']      += isset( $result['skipped'] ) ? (int) $result['skipped'] : 0;
-			$combined['needs_review'] += isset( $result['needs_review'] ) ? (int) $result['needs_review'] : 0;
+			$combined['duplicates']           += isset( $result['duplicates'] ) ? (int) $result['duplicates'] : 0;
+			$combined['skipped']              += isset( $result['skipped'] ) ? (int) $result['skipped'] : 0;
+			$combined['skipped_past']         += isset( $result['skipped_past'] ) ? (int) $result['skipped_past'] : 0;
+			$combined['skipped_invalid_date'] += isset( $result['skipped_invalid_date'] ) ? (int) $result['skipped_invalid_date'] : 0;
 			$combined['failed']       += isset( $result['failed'] ) ? (int) $result['failed'] : 0;
 			$combined['errors']       += isset( $result['errors'] ) ? (int) $result['errors'] : 0;
 
@@ -196,7 +198,7 @@ class Conexao_Event_Importer_Engine {
 	 * Run an import for a single source.
 	 *
 	 * Returns a stats array that includes both the legacy keys
-	 * (found, new, updated, unchanged, duplicates, needs_review, errors)
+	 * (found, new, updated, unchanged, duplicates, errors)
 	 * and the new keys (created, skipped, failed, status, fatal_errors,
 	 * event_results).
 	 *
@@ -223,7 +225,6 @@ class Conexao_Event_Importer_Engine {
 				'unchanged'     => 0,
 				'duplicates'    => 0,
 				'skipped'       => 0,
-				'needs_review'  => 0,
 				'errors'        => 0,
 				'failed'        => 0,
 				'status'        => 'failed',
@@ -241,7 +242,6 @@ class Conexao_Event_Importer_Engine {
 				'unchanged'     => 0,
 				'duplicates'    => 0,
 				'skipped'       => 0,
-				'needs_review'  => 0,
 				'errors'        => 0,
 				'failed'        => 0,
 				'status'        => 'warning',
@@ -353,24 +353,92 @@ class Conexao_Event_Importer_Engine {
 			try {
 				$normalized = $this->normalizer->normalize( $raw );
 
-				// Always check for an existing event first, even for needs-review
-				// events, to avoid creating duplicates on repeated imports.
-				$existing_id = $this->deduplicator->find( $normalized );
+				// Past-event filter: never create or update events whose
+				// relevant date/time has already passed. Runs before
+				// deduplication/upsert so expired source events never touch
+				// WordPress. Previously imported posts are left untouched —
+				// the separate cleanup process remains responsible for them.
+				$date_check = Conexao_Event_Date_Filter::evaluate( $normalized );
 
-				if ( $normalized['needs_review'] ) {
-					$result->add_needs_review( $normalized['title'], $normalized['review_notes'], $existing_id );
-					$upsert = $this->upsert_event( $normalized, true, $existing_id );
-					if ( 'error' === $upsert['action'] ) {
-						$result->add_failed(
-							$normalized['title'],
-							__( 'The event could not be saved to WordPress.', 'conexao-event-importer' ),
-							isset( $upsert['error'] ) ? $upsert['error'] : ''
-						);
-					}
+				if ( Conexao_Event_Date_Filter::INVALID === $date_check['status'] ) {
+					$reason = __( 'Skipped: the event date could not be evaluated (missing, malformed, or unparseable date).', 'conexao-event-importer' );
+					$result->add_skipped_invalid_date( $normalized['title'], $reason );
+					Conexao_Import_Log::add(
+						$source_id,
+						'warning',
+						sprintf(
+							/* translators: %s: event title */
+							__( 'Event skipped (invalid date): %s', 'conexao-event-importer' ),
+							$normalized['title']
+						),
+						array(
+							'run_id'      => $this->current_run_id,
+							'event_id'    => $event_id,
+							'event_title' => $normalized['title'],
+						)
+					);
 					continue;
 				}
 
-				$upsert = $this->upsert_event( $normalized, false, $existing_id );
+				if ( Conexao_Event_Date_Filter::PAST === $date_check['status'] ) {
+					$reason = sprintf(
+						/* translators: %s: event end date/time */
+						__( 'Skipped: the event has already ended (%s).', 'conexao-event-importer' ),
+						$date_check['cutoff_label']
+					);
+					$result->add_skipped_past( $normalized['title'], $reason );
+					Conexao_Import_Log::add(
+						$source_id,
+						'info',
+						sprintf(
+							/* translators: 1: event title, 2: event end date/time */
+							__( 'Event skipped (past): %1$s — ended %2$s.', 'conexao-event-importer' ),
+							$normalized['title'],
+							$date_check['cutoff_label']
+						),
+						array(
+							'run_id'      => $this->current_run_id,
+							'event_id'    => $event_id,
+							'event_title' => $normalized['title'],
+						)
+					);
+					continue;
+				}
+
+				// Validation gate: events missing required data are safely
+				// skipped — they are never created as posts and existing
+				// posts are left untouched.
+				if ( ! empty( $normalized['validation_errors'] ) ) {
+					$title = $normalized['title'] ? $normalized['title'] : __( '(untitled event)', 'conexao-event-importer' );
+					$reason = sprintf(
+						/* translators: %s: list of missing/invalid required fields */
+						__( 'Skipped: missing required data (%s).', 'conexao-event-importer' ),
+						implode( '; ', $normalized['validation_errors'] )
+					);
+					$result->add_skipped( $title, $reason );
+					Conexao_Import_Log::add(
+						$source_id,
+						'warning',
+						sprintf(
+							/* translators: 1: event title, 2: validation problems */
+							__( 'Event skipped (incomplete): %1$s — %2$s.', 'conexao-event-importer' ),
+							$title,
+							implode( '; ', $normalized['validation_errors'] )
+						),
+						array(
+							'run_id'      => $this->current_run_id,
+							'event_id'    => $event_id,
+							'event_title' => $title,
+						)
+					);
+					continue;
+				}
+
+				// Check for an existing event first to avoid creating
+				// duplicates on repeated imports.
+				$existing_id = $this->deduplicator->find( $normalized );
+
+				$upsert = $this->upsert_event( $normalized, $existing_id );
 
 				switch ( $upsert['action'] ) {
 					case 'created':
@@ -497,17 +565,20 @@ class Conexao_Event_Importer_Engine {
 		) );
 
 		// Log the run summary (info level, one line, not huge).
+		$counts = $result->get_counts();
 		Conexao_Import_Log::add(
 			$source_id,
 			'info',
 			sprintf(
-				/* translators: 1: source name, 2: created count, 3: updated count, 4: skipped count, 5: failed count */
-				__( 'Import of %1$s completed: %2$d created, %3$d updated, %4$d skipped, %5$d failed.', 'conexao-event-importer' ),
+				/* translators: 1: source name, 2: created count, 3: updated count, 4: total skipped, 5: skipped as past, 6: skipped with invalid date, 7: failed count */
+				__( 'Import of %1$s completed: %2$d created, %3$d updated, %4$d skipped (%5$d past, %6$d invalid date), %7$d failed.', 'conexao-event-importer' ),
 				$source['name'],
-				$result->get_counts()['created'],
-				$result->get_counts()['updated'],
-				$result->get_counts()['skipped'],
-				$result->get_counts()['failed']
+				(int) $counts['created'],
+				(int) $counts['updated'],
+				(int) $counts['skipped'],
+				(int) $counts['skipped_past'],
+				(int) $counts['skipped_invalid_date'],
+				(int) $counts['failed']
 			),
 			array( 'run_id' => $this->current_run_id )
 		);
@@ -519,8 +590,9 @@ class Conexao_Event_Importer_Engine {
 	 * Classify a fetched batch of raw events without writing anything.
 	 *
 	 * Used by --dry-run: fetches and normalizes exactly like a real run,
-	 * then reports what WOULD happen (create / update / needs review) based
-	 * on the deduplicator — no posts, meta or images are touched.
+	 * then reports what WOULD happen (create / update / skip) based on the
+	 * validation rules and the deduplicator — no posts, meta or images are
+	 * touched.
 	 *
 	 * @param string $source_id  Source slug.
 	 * @param array  $source     Source config.
@@ -537,8 +609,40 @@ class Conexao_Event_Importer_Engine {
 			try {
 				$normalized = $this->normalizer->normalize( $raw );
 
-				if ( $normalized['needs_review'] ) {
-					$result->add_needs_review( $normalized['title'], $normalized['review_notes'], 0 );
+				// Past-event filter (dry-run): report past/invalid-date events
+				// as skipped without touching anything.
+				$date_check = Conexao_Event_Date_Filter::evaluate( $normalized );
+
+				if ( Conexao_Event_Date_Filter::INVALID === $date_check['status'] ) {
+					$result->add_skipped_invalid_date(
+						$normalized['title'],
+						__( 'Would skip: the event date could not be evaluated (missing, malformed, or unparseable date).', 'conexao-event-importer' )
+					);
+					continue;
+				}
+
+				if ( Conexao_Event_Date_Filter::PAST === $date_check['status'] ) {
+					$result->add_skipped_past(
+						$normalized['title'],
+						sprintf(
+							/* translators: %s: event end date/time */
+							__( 'Would skip: the event has already ended (%s).', 'conexao-event-importer' ),
+							$date_check['cutoff_label']
+						)
+					);
+					continue;
+				}
+
+				if ( ! empty( $normalized['validation_errors'] ) ) {
+					$title = $normalized['title'] ? $normalized['title'] : __( '(untitled event)', 'conexao-event-importer' );
+					$result->add_skipped(
+						$title,
+						sprintf(
+							/* translators: %s: list of missing/invalid required fields */
+							__( 'Would skip: missing required data (%s).', 'conexao-event-importer' ),
+							implode( '; ', $normalized['validation_errors'] )
+						)
+					);
 					continue;
 				}
 
@@ -568,13 +672,13 @@ class Conexao_Event_Importer_Engine {
 			$source_id,
 			'info',
 			sprintf(
-				/* translators: 1: source name, 2: found count, 3: would-create count, 4: would-update count, 5: review count */
-				__( 'Dry-run of %1$s completed: %2$d found, %3$d would be created, %4$d would be updated, %5$d need review. Nothing was written.', 'conexao-event-importer' ),
+				/* translators: 1: source name, 2: found count, 3: would-create count, 4: would-update count, 5: would-skip count */
+				__( 'Dry-run of %1$s completed: %2$d found, %3$d would be created, %4$d would be updated, %5$d would be skipped (past, invalid date, or incomplete data). Nothing was written.', 'conexao-event-importer' ),
 				isset( $source['name'] ) ? $source['name'] : $source_id,
 				count( $raw_events ),
 				(int) $stats['created'],
 				(int) $stats['updated'],
-				(int) $stats['needs_review']
+				(int) $stats['skipped']
 			),
 			array( 'run_id' => $this->current_run_id )
 		);
@@ -630,25 +734,12 @@ class Conexao_Event_Importer_Engine {
 
 		$this->sources->update_import_stats( $source_id, $stats );
 
-		// Feed the health tracker: partial/warning runs still count as
-		// successes for consecutive-failure purposes (the source is reachable).
+		// Feed the health tracker: record the outcome for admin visibility.
+		// Sources are never auto-disabled — an administrator decides.
 		if ( class_exists( 'Conexao_Source_Health' ) ) {
 			if ( 'failed' === $status ) {
 				$reason = ! empty( $stats['last_error'] ) ? $stats['last_error'] : __( 'Unknown import failure.', 'conexao-event-importer' );
-				$disabled = Conexao_Source_Health::record_failure( $source_id, $reason );
-
-				if ( $disabled && class_exists( 'Conexao_Import_Notifier' ) ) {
-					$sources_manager = new Conexao_Event_Sources();
-					$source          = $sources_manager->get( $source_id );
-					$notifier        = new Conexao_Import_Notifier();
-					$health          = Conexao_Source_Health::get( $source_id );
-					$notifier->notify_auto_disabled(
-						$source_id,
-						isset( $source['name'] ) ? $source['name'] : $source_id,
-						(int) $health['consecutive_failures'],
-						$reason
-					);
-				}
+				Conexao_Source_Health::record_failure( $source_id, $reason );
 			} else {
 				Conexao_Source_Health::record_success( $source_id );
 			}
@@ -700,18 +791,24 @@ class Conexao_Event_Importer_Engine {
 			);
 		}
 		if ( $counts['skipped'] > 0 ) {
-			$parts[] = sprintf(
-				/* translators: %d: number of skipped events */
-				__( '%d skipped', 'conexao-event-importer' ),
-				$counts['skipped']
-			);
-		}
-		if ( $counts['needs_review'] > 0 ) {
-			$parts[] = sprintf(
-				/* translators: %d: number of events needing review */
-				__( '%d need review', 'conexao-event-importer' ),
-				$counts['needs_review']
-			);
+			$skipped_past    = isset( $counts['skipped_past'] ) ? (int) $counts['skipped_past'] : 0;
+			$skipped_invalid = isset( $counts['skipped_invalid_date'] ) ? (int) $counts['skipped_invalid_date'] : 0;
+
+			if ( $skipped_past > 0 || $skipped_invalid > 0 ) {
+				$parts[] = sprintf(
+					/* translators: 1: total skipped, 2: skipped because already ended, 3: skipped with invalid dates */
+					__( '%1$d skipped (%2$d past, %3$d invalid date)', 'conexao-event-importer' ),
+					$counts['skipped'],
+					$skipped_past,
+					$skipped_invalid
+				);
+			} else {
+				$parts[] = sprintf(
+					/* translators: %d: number of skipped events */
+					__( '%d skipped', 'conexao-event-importer' ),
+					$counts['skipped']
+				);
+			}
 		}
 		if ( $counts['failed'] > 0 ) {
 			$parts[] = sprintf(
@@ -782,11 +879,6 @@ class Conexao_Event_Importer_Engine {
 					return new Conexao_Source_ICalendar( $source );
 				}
 				return new Conexao_Source_Laois_Tourism( $source );
-			case 'laois_council':
-				return new Conexao_Source_Laois_Council( $source );
-			case 'leo_laois':
-			case 'local_enterprise_office_laois':
-				return new Conexao_Source_LEO_Laois( $source );
 			case 'heritage_week':
 			case 'national_heritage_week':
 				return new Conexao_Source_Heritage_Week( $source );
@@ -802,11 +894,10 @@ class Conexao_Event_Importer_Engine {
 	 * Create or update an event in the database.
 	 *
 	 * @param array $normalized   Normalized event data.
-	 * @param bool  $needs_review Whether this event needs human review.
 	 * @param int   $existing_id  Existing post ID (0 for new).
 	 * @return array{action:string, post_id:int, error?:string, reason?:string}
 	 */
-	protected function upsert_event( $normalized, $needs_review = false, $existing_id = 0 ) {
+	protected function upsert_event( $normalized, $existing_id = 0 ) {
 		$now = current_time( 'mysql' );
 
 		if ( $existing_id ) {
@@ -905,15 +996,10 @@ class Conexao_Event_Importer_Engine {
 			);
 		}
 
-		// Set status.
-		$status = $needs_review ? Conexao_Event_Status::NEEDS_REVIEW : Conexao_Event_Status::PUBLISHED;
-		Conexao_Event_Status::set_status( $post_id, $status );
-
-		// If it was previously "Source Not Found" and reappeared, mark it published.
-		$prev_status = get_post_meta( $post_id, '_event_status', true );
-		if ( Conexao_Event_Status::SOURCE_NOT_FOUND === $prev_status && ! $needs_review ) {
-			Conexao_Event_Status::set_status( $post_id, Conexao_Event_Status::PUBLISHED );
-		}
+		// Imported events are ready to use immediately — there is no review
+		// step. This also returns previously "Source Not Found" events to
+		// published when they reappear in the source feed.
+		Conexao_Event_Status::set_status( $post_id, Conexao_Event_Status::PUBLISHED );
 
 		return array( 'action' => $action, 'post_id' => $post_id );
 	}
@@ -1006,10 +1092,6 @@ class Conexao_Event_Importer_Engine {
 		foreach ( $meta as $key => $value ) {
 			update_post_meta( $post_id, $key, $value );
 		}
-
-		if ( $normalized['needs_review'] && ! empty( $normalized['review_notes'] ) ) {
-			update_post_meta( $post_id, '_event_review_note', implode( '; ', $normalized['review_notes'] ) );
-		}
 	}
 
 	/**
@@ -1098,9 +1180,8 @@ class Conexao_Event_Importer_Engine {
 		foreach ( $query->posts as $post_id ) {
 			$stored_url = get_post_meta( $post_id, '_event_url', true );
 			if ( $stored_url && ! in_array( $stored_url, $current_urls, true ) ) {
-				// Event disappeared from the source. Mark for review, don't delete.
+				// Event disappeared from the source. Hide it, don't delete.
 				Conexao_Event_Status::set_status( $post_id, Conexao_Event_Status::SOURCE_NOT_FOUND );
-				update_post_meta( $post_id, '_event_review_note', __( 'Evento não encontrado na fonte na última importação.', 'conexao-event-importer' ) );
 			}
 		}
 	}

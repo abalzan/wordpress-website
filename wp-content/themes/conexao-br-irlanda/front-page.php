@@ -79,9 +79,11 @@ $hero_has_sponsors = ! empty( conexao_get_featured_sponsors() );
 
 	<div class="site-container">
 		<!-- Two-column Hero composition (CSS in assets/css/main.css): hero copy
-		     left, Featured Apoiadores right on desktop/tablet (≥769px);
-		     stacked copy-first on mobile (≤768px). Without featured sponsors
-		     the modifier class is omitted and the hero stays single-column. -->
+		     left, Featured Apoiadores right at every breakpoint — including
+		     mobile (≤768px), where both zones share the full-bleed photo with
+		     mobile-tuned proportions (~55/45, ~58/42 on small phones). Without
+		     featured sponsors the modifier class is omitted and the hero stays
+		     single-column. -->
 		<div class="hero-content<?php echo $hero_has_sponsors ? ' hero-content--with-sponsors' : ''; ?>">
 			<!-- Left column: Badge → Heading → Description → CTAs. Content and
 			     links unchanged; only wrapped for the two-column layout. -->

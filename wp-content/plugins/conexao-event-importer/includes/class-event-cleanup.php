@@ -2,11 +2,13 @@
 /**
  * Event cleanup engine.
  *
- * Automatically identifies and deletes past events once per week, including
- * the images/media that belong exclusively to those events. The cleanup is
- * conservative: it only deletes media that was imported by the event importer
- * (identified by the _event_source_url attachment meta) and that is no longer
- * used by any other event, page, post, or WordPress content.
+ * Manually deletes past events and their exclusively-owned images. The cleanup
+ * is conservative: it only deletes media that was imported by the event
+ * importer (identified by the _event_source_url attachment meta) and that is
+ * no longer used by any other event, page, post, or WordPress content.
+ *
+ * Cleanup is triggered manually from the admin "Run Cleanup Now" button or
+ * from WP-CLI. There is no scheduled/cron-based cleanup.
  *
  * @package Conexao_Event_Importer
  */
@@ -14,13 +16,6 @@
 defined( 'ABSPATH' ) || exit;
 
 class Conexao_Event_Cleanup {
-
-	/**
-	 * Cron hook for the weekly cleanup.
-	 *
-	 * @var string
-	 */
-	const CRON_HOOK = 'conexao_event_cleanup_cron';
 
 	/**
 	 * Option key storing the last cleanup run summary.
@@ -61,86 +56,15 @@ class Conexao_Event_Cleanup {
 	const MAX_EVENTS_PER_RUN = 200;
 
 	/**
-	 * Constructor.
-	 */
-	public function __construct() {
-		add_action( self::CRON_HOOK, array( $this, 'run_scheduled_cleanup' ) );
-		add_filter( 'cron_schedules', array( $this, 'add_recurrences' ) );
-	}
-
-	/**
-	 * Register the weekly recurrence schedule.
+	 * Run the cleanup now (manual trigger only).
 	 *
-	 * @param array $schedules WP cron schedules.
-	 * @return array
-	 */
-	public function add_recurrences( $schedules ) {
-		$schedules['conexao_cleanup_weekly'] = array(
-			'interval' => WEEK_IN_SECONDS,
-			'display'  => __( 'Once Weekly (Cleanup)', 'conexao-event-importer' ),
-		);
-		return $schedules;
-	}
-
-	/**
-	 * Ensure the cleanup cron is scheduled (idempotent).
-	 */
-	public function maybe_schedule() {
-		if ( ! wp_next_scheduled( self::CRON_HOOK ) ) {
-			$this->schedule();
-		}
-	}
-
-	/**
-	 * Schedule the weekly cleanup for next Monday at 03:30 Europe/Dublin.
+	 * Finds all past events (end date/time already passed), deletes them,
+	 * and removes their exclusively-owned images.
 	 *
-	 * Uses a different time than the import (03:00) so the two jobs do not
-	 * collide. The schedule is idempotent — it never registers twice.
-	 */
-	public function schedule() {
-		if ( wp_next_scheduled( self::CRON_HOOK ) ) {
-			return;
-		}
-
-		add_filter( 'cron_schedules', array( $this, 'add_recurrences' ) );
-
-		$timezone = new DateTimeZone( 'Europe/Dublin' );
-		$now      = new DateTime( 'now', $timezone );
-		$target   = clone $now;
-		$target->modify( 'next monday 03:30' );
-
-		wp_schedule_event( $target->getTimestamp(), 'conexao_cleanup_weekly', self::CRON_HOOK );
-	}
-
-	/**
-	 * Clear the scheduled cleanup.
-	 */
-	public static function clear_schedule() {
-		$timestamp = wp_next_scheduled( self::CRON_HOOK );
-		if ( $timestamp ) {
-			wp_unschedule_event( $timestamp, self::CRON_HOOK );
-		}
-	}
-
-	/**
-	 * Run the scheduled cleanup.
-	 */
-	public function run_scheduled_cleanup() {
-		$this->run_cleanup( 'scheduled' );
-	}
-
-	/**
-	 * Run the cleanup now (manual or scheduled).
-	 *
-	 * This is the single entry point used by both the scheduled cron and the
-	 * admin "Run Cleanup Now" button, so the logic is always identical.
-	 *
-	 * @param string $trigger 'scheduled' or 'manual'.
 	 * @return array Cleanup result summary.
 	 */
-	public function run_cleanup( $trigger = 'manual' ) {
+	public function run_cleanup() {
 		$result = array(
-			'trigger'          => $trigger,
 			'time'             => current_time( 'mysql' ),
 			'events_found'     => 0,
 			'events_deleted'   => 0,
@@ -184,10 +108,6 @@ class Conexao_Event_Cleanup {
 					$result['events_deleted'],
 					$result['images_deleted'],
 					$result['images_preserved']
-				),
-				array(
-					'trigger' => $trigger,
-					'errors'  => count( $result['errors'] ),
 				)
 			);
 		}
@@ -248,7 +168,14 @@ class Conexao_Event_Cleanup {
 		foreach ( $query->posts as $post_id ) {
 			$end_timestamp = Conexao_Event_Status::get_event_end_timestamp( $post_id );
 
-			if ( $end_timestamp && $end_timestamp < $now->getTimestamp() ) {
+			// Events with no end date are not cleaned up by the time-based
+			// rule.  They may still be cleaned up if an explicit end date
+			// exists; otherwise, skip (manual review territory).
+			if ( ! $end_timestamp ) {
+				continue;
+			}
+
+			if ( $end_timestamp < $now->getTimestamp() ) {
 				$past_ids[] = (int) $post_id;
 			}
 		}
@@ -257,48 +184,40 @@ class Conexao_Event_Cleanup {
 	}
 
 	/**
-	 * Delete a past event and its exclusively-owned media.
-	 *
-	 * Collects the attachment IDs associated with the event, deletes the event
-	 * post, then evaluates each attachment for safe deletion.
+	 * Delete a single event and its exclusively-owned images.
 	 *
 	 * @param int   $event_id Event post ID.
-	 * @param array $result   Result array (modified by reference).
+	 * @param array $result   Result array (passed by reference for counters).
 	 */
 	protected function delete_event_with_media( $event_id, &$result ) {
-		// Collect attachment IDs associated with this event.
-		$attachment_ids = $this->get_event_attachment_ids( $event_id );
+		// Collect the attachment IDs referenced by this event before deletion.
+		$attachment_ids = array();
 
-		// Delete the event post (this also removes its featured image reference).
-		$deleted = wp_delete_post( $event_id, true );
+		$banner_attach = get_post_meta( $event_id, self::EVENT_BANNER_META, true );
+		if ( $banner_attach && wp_attachment_is_image( $banner_attach ) ) {
+			$attachment_ids[] = (int) $banner_attach;
+		}
+
+		$thumb_id = get_post_thumbnail_id( $event_id );
+		if ( $thumb_id && wp_attachment_is_image( $thumb_id ) && ! in_array( $thumb_id, $attachment_ids, true ) ) {
+			$attachment_ids[] = (int) $thumb_id;
+		}
+
+		// Delete the event post.
+		$deleted = wp_delete_post( $event_id, false );
 
 		if ( ! $deleted ) {
-			$result['errors'][] = sprintf(
-				/* translators: %d: Event ID. */
-				__( 'Failed to delete event #%d.', 'conexao-event-importer' ),
-				$event_id
-			);
-			return;
+			throw new Exception( __( 'Could not delete the event post.', 'conexao-event-importer' ) );
 		}
 
 		$result['events_deleted']++;
 
-		// Evaluate each attachment for safe deletion.
+		// Clean up exclusively-owned images.
 		foreach ( $attachment_ids as $attachment_id ) {
 			$result['images_evaluated']++;
-
-			if ( $this->is_attachment_safe_to_delete( $attachment_id ) ) {
-				$deleted_attachment = wp_delete_attachment( $attachment_id, true );
-				if ( $deleted_attachment ) {
-					$result['images_deleted']++;
-				} else {
-					$result['images_preserved']++;
-					$result['errors'][] = sprintf(
-						/* translators: %d: Attachment ID. */
-						__( 'Failed to delete attachment #%d.', 'conexao-event-importer' ),
-						$attachment_id
-					);
-				}
+			if ( $this->is_exclusively_owned( $attachment_id ) ) {
+				wp_delete_attachment( $attachment_id, true );
+				$result['images_deleted']++;
 			} else {
 				$result['images_preserved']++;
 			}
@@ -306,52 +225,20 @@ class Conexao_Event_Cleanup {
 	}
 
 	/**
-	 * Get all attachment IDs associated with an event.
-	 *
-	 * Checks the _event_banner_attachment_id meta and the post thumbnail.
-	 * Deduplicates the result.
-	 *
-	 * @param int $event_id Event post ID.
-	 * @return int[] Attachment IDs.
-	 */
-	protected function get_event_attachment_ids( $event_id ) {
-		$ids = array();
-
-		$banner_id = get_post_meta( $event_id, self::EVENT_BANNER_META, true );
-		if ( $banner_id && wp_attachment_is_image( $banner_id ) ) {
-			$ids[] = (int) $banner_id;
-		}
-
-		$thumbnail_id = get_post_thumbnail_id( $event_id );
-		if ( $thumbnail_id && wp_attachment_is_image( $thumbnail_id ) ) {
-			$ids[] = (int) $thumbnail_id;
-		}
-
-		return array_values( array_unique( array_filter( $ids ) ) );
-	}
-
-	/**
 	 * Determine whether an attachment is safe to delete.
 	 *
-	 * An attachment is safe to delete ONLY when ALL of the following are true:
-	 *  1. It was created by the event importer (has _event_source_url meta).
-	 *  2. It is not the featured image of any other post.
-	 *  3. It is not referenced by any other event's _event_banner_attachment_id.
-	 *  4. It is not referenced in any post/page content.
-	 *  5. It is not referenced by any other post meta across the site.
-	 *
-	 * If there is any uncertainty, the attachment is preserved.
+	 * An attachment is exclusively owned when ALL of the following are true:
+	 * 1. It was imported by the event importer (_event_source_url meta exists).
+	 * 2. It is not the featured image of any other post.
+	 * 3. It is not referenced by any other event's banner meta.
+	 * 4. It is not referenced in any post/page content.
+	 * 5. It is not referenced by any other post meta.
 	 *
 	 * @param int $attachment_id Attachment ID.
-	 * @return bool True when safe to delete.
+	 * @return bool
 	 */
-	protected function is_attachment_safe_to_delete( $attachment_id ) {
-		$attachment_id = absint( $attachment_id );
-		if ( ! $attachment_id ) {
-			return false;
-		}
-
-		// 1. Must be importer-created (has the source URL meta).
+	protected function is_exclusively_owned( $attachment_id ) {
+		// 1. Must have been created by the event importer.
 		$source_url = get_post_meta( $attachment_id, self::ATTACHMENT_SOURCE_META, true );
 		if ( empty( $source_url ) ) {
 			return false;
@@ -571,7 +458,6 @@ class Conexao_Event_Cleanup {
 		// Store only non-sensitive summary data.
 		$entry = array(
 			'time'             => $result['time'],
-			'trigger'          => $result['trigger'],
 			'events_found'     => $result['events_found'],
 			'events_deleted'   => $result['events_deleted'],
 			'images_evaluated' => $result['images_evaluated'],
@@ -595,14 +481,5 @@ class Conexao_Event_Cleanup {
 	public function get_history() {
 		$history = get_option( self::HISTORY_OPTION, array() );
 		return is_array( $history ) ? $history : array();
-	}
-
-	/**
-	 * Get the next scheduled cleanup timestamp.
-	 *
-	 * @return int|false Unix timestamp or false when not scheduled.
-	 */
-	public function get_next_scheduled() {
-		return wp_next_scheduled( self::CRON_HOOK );
 	}
 }

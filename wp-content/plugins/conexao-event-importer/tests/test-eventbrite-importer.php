@@ -753,7 +753,7 @@ $test_raw = array(
 $normalized = $normalizer_engine->normalize( $test_raw );
 
 // Force create by passing existing_id = 0 (bypass deduplicator).
-$result1 = $upsert_method->invoke( $plugin->importer, $normalized, false, 0 );
+$result1 = $upsert_method->invoke( $plugin->importer, $normalized, 0 );
 test_assert( 'created' === $result1['action'], 'Upsert test: first run creates event' );
 $post_id = $result1['post_id'];
 test_assert( $post_id > 0, 'Upsert test: post ID is valid' );
@@ -762,7 +762,7 @@ test_assert( $post_id > 0, 'Upsert test: post ID is valid' );
 $existing_id2 = $deduplicator->find( $normalized );
 test_assert( $existing_id2 === $post_id, 'Upsert test: deduplicator finds existing event' );
 
-$result2 = $upsert_method->invoke( $plugin->importer, $normalized, false, $existing_id2 );
+$result2 = $upsert_method->invoke( $plugin->importer, $normalized, $existing_id2 );
 test_assert( 'unchanged' === $result2['action'], 'Upsert test: second run is unchanged' );
 
 // Verify only one record exists.
@@ -798,7 +798,7 @@ $normalized_updated = $normalizer_engine->normalize( $test_raw );
 $existing_id3 = $deduplicator->find( $normalized_updated );
 test_assert( $existing_id3 === $post_id, 'Update test: deduplicator still finds same event' );
 
-$result3 = $upsert_method->invoke( $plugin->importer, $normalized_updated, false, $existing_id3 );
+$result3 = $upsert_method->invoke( $plugin->importer, $normalized_updated, $existing_id3 );
 test_assert( 'updated' === $result3['action'], 'Update test: event is updated' );
 
 $updated_title = get_the_title( $post_id );
@@ -867,7 +867,7 @@ $test_raw2 = array(
 
 $normalized2 = $normalizer_engine->normalize( $test_raw2 );
 $existing_id4 = $deduplicator->find( $normalized2 );
-$result4 = $upsert_method->invoke( $plugin->importer, $normalized2, false, $existing_id4 );
+$result4 = $upsert_method->invoke( $plugin->importer, $normalized2, $existing_id4 );
 $post_id2 = $result4['post_id'];
 
 // Call mark_missing_events with zero events - should NOT delete and should NOT

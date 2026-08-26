@@ -20,8 +20,12 @@ class Conexao_Event_Export {
 
 	/**
 	 * Export file format version.
+	 *
+	 * 1.1.0 adds embedded base64 image data (data_base64, filename,
+	 * mime_type) so the destination site can create Media Library
+	 * attachments without fetching anything from external sources.
 	 */
-	const FORMAT_VERSION = '1.0.0';
+	const FORMAT_VERSION = '1.1.0';
 
 	/**
 	 * Meta key used to store a stable unique identifier for each event.
@@ -30,6 +34,14 @@ class Conexao_Event_Export {
 	 * matched between installations without relying on database IDs.
 	 */
 	const UUID_META_KEY = '_event_export_uuid';
+
+	/**
+	 * Maximum size of an embedded (base64) image in bytes.
+	 *
+	 * Images larger than this are exported with their URLs only; the import
+	 * side falls back to sideloading from the source URL when possible.
+	 */
+	const MAX_EMBEDDED_IMAGE_BYTES = 5242880; // 5 MB raw (~6.7 MB base64).
 
 	/**
 	 * Meta keys that are exported/imported for each event.
@@ -61,7 +73,6 @@ class Conexao_Event_Export {
 		'_event_last_checked',
 		'_event_status',
 		'_event_imported',
-		'_event_review_note',
 	);
 
 	/**
@@ -189,18 +200,22 @@ class Conexao_Event_Export {
 	/**
 	 * Export the featured image / banner references for an event.
 	 *
-	 * The external source URL (if known) is the most portable reference because
-	 * it can be re-downloaded on the destination site. The local attachment URL
-	 * is included as a fallback but is not relied upon.
+	 * Because the production site cannot reliably fetch images from the
+	 * original external sources, the image bytes are embedded in the export
+	 * (base64-encoded) alongside the metadata. The import side creates a real
+	 * Media Library attachment from this data — no external requests needed.
 	 *
 	 * @param WP_Post $post Event post object.
 	 * @return array
 	 */
 	protected function export_featured_image( $post ) {
 		$result = array(
-			'source_url' => '',
-			'banner_url' => '',
-			'alt'        => '',
+			'source_url'   => '',
+			'banner_url'   => '',
+			'alt'          => '',
+			'filename'     => '',
+			'mime_type'    => '',
+			'data_base64'  => '',
 		);
 
 		$banner_url = get_post_meta( $post->ID, '_event_banner', true );
@@ -222,6 +237,23 @@ class Conexao_Event_Export {
 			$alt = get_post_meta( $attachment_id, '_wp_attachment_image_alt', true );
 			if ( $alt ) {
 				$result['alt'] = $alt;
+			}
+
+			// Embed the actual image bytes so the destination site can create
+			// the attachment locally without contacting any external source.
+			$file = get_attached_file( $attachment_id );
+			if ( $file && file_exists( $file ) && is_readable( $file ) ) {
+				$bytes = file_get_contents( $file ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Local file read.
+				if ( false !== $bytes && strlen( $bytes ) <= self::MAX_EMBEDDED_IMAGE_BYTES ) {
+					$result['data_base64'] = base64_encode( $bytes ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode -- Portable binary transport in JSON.
+					$result['mime_type']   = get_post_mime_type( $attachment_id );
+
+					// Preserve the original filename when available.
+					$filename = basename( $file );
+					if ( $filename ) {
+						$result['filename'] = $filename;
+					}
+				}
 			}
 		}
 

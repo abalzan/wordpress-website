@@ -58,7 +58,7 @@
 							class="site-logo-img site-logo-img--light"
 						>
 						<img
-							src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo_dark_mode.png' ); ?>"
+							src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo_dark_mode.jpeg' ); ?>"
 							alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>"
 							class="site-logo-img site-logo-img--dark"
 						>

@@ -190,7 +190,7 @@ $page_id = wp_insert_post(
 echo "Setup complete. Running cleanup...\n\n";
 
 // Run the cleanup.
-$result = $cleanup->run_cleanup( 'manual' );
+$result = $cleanup->run_cleanup();
 
 echo "Cleanup result:\n";
 echo "  Events found: {$result['events_found']}\n";
@@ -217,7 +217,7 @@ check( 'Manual image preserved (not importer-created)', null !== get_post( $manu
 check( 'Content-referenced image preserved', null !== get_post( $content_attachment_id ) );
 
 // Run cleanup again to verify idempotency.
-$result2 = $cleanup->run_cleanup( 'manual' );
+$result2 = $cleanup->run_cleanup();
 check( 'Second run finds no events', 0 === $result2['events_found'] );
 check( 'Second run deletes no events', 0 === $result2['events_deleted'] );
 check( 'Second run has no errors', 0 === count( $result2['errors'] ) );

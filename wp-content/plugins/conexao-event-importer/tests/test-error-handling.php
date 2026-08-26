@@ -54,15 +54,14 @@ $result->add_created( 'Event A', 100 );
 $result->add_updated( 'Event B', 101 );
 $result->add_unchanged( 'Event C', 102 );
 $result->add_skipped( 'Event D', 'Online only event.' );
-$result->add_needs_review( 'Event E', array( 'Missing title' ) );
 
 test_assert( 1 === $result->get_counts()['created'], 'Created count increments' );
 test_assert( 1 === $result->get_counts()['updated'], 'Updated count increments' );
 test_assert( 1 === $result->get_counts()['unchanged'], 'Unchanged count increments' );
 test_assert( 1 === $result->get_counts()['skipped'], 'Skipped count increments' );
-test_assert( 1 === $result->get_counts()['needs_review'], 'Needs review count increments' );
+test_assert( ! method_exists( $result, 'add_needs_review' ), 'No needs-review outcome exists anymore' );
 test_assert( 'warning' === $result->get_status(), 'Warnings upgrade status to warning' );
-test_assert( 5 === count( $result->get_events() ), 'Events list has 5 entries' );
+test_assert( 4 === count( $result->get_events() ), 'Events list has 4 entries' );
 
 // ---------------------------------------------------------------------------
 // Test 2: Per-event failure does not stop the import
@@ -160,7 +159,6 @@ $stats = array(
 	'unchanged'    => 3,
 	'duplicates'   => 1,
 	'skipped'      => 1,
-	'needs_review' => 0,
 	'errors'       => 0,
 	'failed'       => 0,
 );
@@ -233,7 +231,6 @@ try {
 		'unchanged'     => 5,
 		'duplicates'    => 0,
 		'skipped'       => 1,
-		'needs_review'  => 0,
 		'failed'        => 1,
 		'errors'        => 1,
 		'fatal_errors'  => array(),

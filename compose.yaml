@@ -41,6 +41,7 @@ services:
       - ./wp-content/plugins/conexao-leisure-migration:/var/www/html/wp-content/plugins/conexao-leisure-migration
       - ./docker/apache-allowoverride.conf:/etc/apache2/conf-enabled/apache-allowoverride.conf:ro
       - ./docker/entrypoint-fix-permissions.sh:/usr/local/bin/entrypoint-fix-permissions.sh:ro
+      - ./docker/php/uploads.ini:/usr/local/etc/php/conf.d/zz-conexao-uploads.ini:ro
 
 volumes:
   db_data:

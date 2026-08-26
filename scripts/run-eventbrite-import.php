@@ -22,7 +22,6 @@ echo "New:           {$stats['new']}\n";
 echo "Updated:       {$stats['updated']}\n";
 echo "Unchanged:     {$stats['unchanged']}\n";
 echo "Duplicates:    {$stats['duplicates']}\n";
-echo "Needs Review:  {$stats['needs_review']}\n";
 echo "Errors:        {$stats['errors']}\n";
 
 echo "\n=== Eventbrite Source ===\n";
@@ -46,5 +45,5 @@ foreach ( $log as $entry ) {
 echo "\n=== Eventbrite Import History (last 5) ===\n";
 $history = Conexao_Import_History::get_for_source( 'eventbrite', 5 );
 foreach ( $history as $entry ) {
-	echo "[{$entry['time']}] found={$entry['found']} new={$entry['new']} updated={$entry['updated']} dups={$entry['duplicates']} review={$entry['needs_review']} errors={$entry['errors']} status={$entry['status']}\n";
+	echo "[{$entry['time']}] found={$entry['found']} new={$entry['new']} updated={$entry['updated']} dups={$entry['duplicates']} skipped={$entry['skipped']} errors={$entry['errors']} status={$entry['status']}\n";
 }
