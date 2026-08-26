@@ -20,7 +20,7 @@
  * Markup reuses the shared .sponsors-carousel scroll-snap engine (CSS in
  * assets/css/main.css, behavior in assets/js/main.js — prev/next buttons,
  * pagination dots, keyboard support, swipe, polite live region, adaptive
- * static mode, plus a gentle 10-second autoplay unique to this Hero variant:
+ * static mode, plus a 2-second autoplay unique to this Hero variant:
  * one setTimeout chain per carousel, paused on hover/focus/touch/hidden tab,
  * restarted with a full fresh interval after manual navigation or swipe, and
  * disabled entirely under prefers-reduced-motion).

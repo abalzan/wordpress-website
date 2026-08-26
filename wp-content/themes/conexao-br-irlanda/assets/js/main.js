@@ -485,7 +485,7 @@
 	//   - keyboard support on the scrollable track (arrows, Home, End),
 	//   - wrap-around at both ends so controls never dead-end,
 	//   - a polite live region announcing the current position,
-	//   - 10-second autoplay on the Hero variant ONLY: a single setTimeout
+	//   - 2-second autoplay on the Hero variant ONLY: a single setTimeout
 	//     chain per carousel (never setInterval), paused while the user
 	//     hovers/focuses/presses the component or the tab is hidden,
 	//     restarted with a full fresh interval after any manual navigation
@@ -495,7 +495,7 @@
 	// a simple responsive layout rather than a pointless carousel. Mobile
 	// relies on natural touch swipe plus the labelled arrow row kept by the
 	// hero variant.
-	var SPONSORS_AUTOPLAY_INTERVAL = 10000;
+	var SPONSORS_AUTOPLAY_INTERVAL = 2000;
 
 	// Checked live (not cached once at load) so changing the OS setting
 	// mid-session is respected at the next scheduling decision.
@@ -636,7 +636,7 @@
 				}, SPONSORS_AUTOPLAY_INTERVAL);
 			}
 
-			// Manual navigation moves first, THEN restarts the full 10-second
+			// Manual navigation moves first, THEN restarts the full 2-second
 			// countdown — an arrow click never causes an immediate follow-up
 			// advance; the next automatic step comes a full interval later.
 			function goNextManual() {
@@ -662,7 +662,7 @@
 			if (nextBtn) nextBtn.addEventListener('click', goNextManual);
 
 			// Pagination dots (Hero variant): jump straight to the matching
-			// slide, then restart the full 10-second countdown - the same
+			// slide, then restart the full 2-second countdown - the same
 			// manual-navigation contract as the arrow buttons (no immediate
 			// follow-up advance).
 			Array.prototype.forEach.call(dots, function(dot, dotIndex) {
@@ -682,7 +682,7 @@
 
 			// rAF-throttled scroll updates keep the live region in sync with
 			// swipes and drags without flooding assistive tech. User-driven
-			// scrolling also restarts the 10-second countdown; autoplay's own
+			// scrolling also restarts the 2-second countdown; autoplay's own
 			// animated scrolls are excluded via the autoScrolling flag.
 			var ticking = false;
 			viewport.addEventListener('scroll', function() {
@@ -760,7 +760,7 @@
 			});
 
 			// Initial layout pass also arms the first interval — the first
-			// sponsor stays visible for the full 10 seconds before advancing.
+			// sponsor stays visible for the full 2 seconds before advancing.
 			sync();
 		});
 	}
