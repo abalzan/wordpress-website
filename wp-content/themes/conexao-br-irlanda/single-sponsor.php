@@ -60,32 +60,12 @@ get_header();
 
 			<article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
 
-				<header class="sponsor-single-header">
-					<a href="<?php echo esc_url( $sponsor_archive_url ); ?>" class="sponsor-single-back">
-						<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg>
-						<span><?php esc_html_e( 'Todos os apoiadores', 'conexao-br-irlanda' ); ?></span>
-					</a>
+				<a href="<?php echo esc_url( $sponsor_archive_url ); ?>" class="sponsor-single-back">
+					<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"></polyline></svg>
+					<span><?php esc_html_e( 'Todos os apoiadores', 'conexao-br-irlanda' ); ?></span>
+				</a>
 
-					<?php if ( $sponsor_categories && ! is_wp_error( $sponsor_categories ) ) : ?>
-						<div class="post-categories">
-							<?php foreach ( $sponsor_categories as $category ) : ?>
-								<span class="hero-category"><?php echo esc_html( $category->name ); ?></span>
-							<?php endforeach; ?>
-						</div>
-					<?php endif; ?>
-
-					<h1 class="entry-title"><?php the_title(); ?></h1>
-
-					<?php if ( $sponsor_counties && ! is_wp_error( $sponsor_counties ) ) : ?>
-						<div class="sponsor-single-location">
-							<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-								<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"></path>
-								<circle cx="12" cy="10" r="3"></circle>
-							</svg>
-							<span><?php echo esc_html( wp_list_pluck( $sponsor_counties, 'name' )[0] ); ?></span>
-						</div>
-					<?php endif; ?>
-				</header>
+				<div class="sponsor-single-layout">
 
 				<?php
 				// Main image: ONE canonical Apoiador asset ("Imagem do
@@ -109,7 +89,7 @@ get_header();
 						if ( $sponsor_srcset ) {
 							$sponsor_hero_html .= ' srcset="' . esc_attr( $sponsor_srcset ) . '"';
 						}
-						$sponsor_hero_html .= ' sizes="(min-width: 769px) 720px, 92vw"';
+						$sponsor_hero_html .= ' sizes="(min-width: 769px) 360px, 92vw"';
 						if ( $sponsor_dimensions ) {
 							$sponsor_hero_html .= ' width="' . esc_attr( (int) $sponsor_dimensions[1] ) . '"'
 								. ' height="' . esc_attr( (int) $sponsor_dimensions[2] ) . '"';
@@ -124,7 +104,31 @@ get_header();
 					</figure>
 				<?php endif; ?>
 
-				<div class="sponsor-single-body">
+				<div class="sponsor-single-info">
+
+					<header class="sponsor-single-header">
+						<?php if ( $sponsor_categories && ! is_wp_error( $sponsor_categories ) ) : ?>
+							<div class="post-categories">
+								<?php foreach ( $sponsor_categories as $category ) : ?>
+									<span class="hero-category"><?php echo esc_html( $category->name ); ?></span>
+								<?php endforeach; ?>
+							</div>
+						<?php endif; ?>
+
+						<h1 class="entry-title"><?php the_title(); ?></h1>
+
+						<?php if ( $sponsor_counties && ! is_wp_error( $sponsor_counties ) ) : ?>
+							<div class="sponsor-single-location">
+								<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+									<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"></path>
+									<circle cx="12" cy="10" r="3"></circle>
+								</svg>
+								<span><?php echo esc_html( wp_list_pluck( $sponsor_counties, 'name' )[0] ); ?></span>
+							</div>
+						<?php endif; ?>
+					</header>
+
+					<div class="sponsor-single-body">
 
 					<?php if ( trim( get_the_content() ) ) : ?>
 						<div class="sponsor-single-content entry-content">
@@ -157,7 +161,11 @@ get_header();
 						</aside>
 					<?php endif; ?>
 
-				</div>
+					</div><!-- /.sponsor-single-body -->
+
+				</div><!-- /.sponsor-single-info -->
+
+				</div><!-- /.sponsor-single-layout -->
 
 			</article>
 

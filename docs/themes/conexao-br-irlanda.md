@@ -16,7 +16,7 @@ Modern community portal theme for Conexão BR Irlanda. Features a green/orange p
 | `front-page.php` | `/` | Homepage with full-bleed hero image, quick access cards, sections |
 | `archive.php` | CPT archives | Shared archive for all 6 CPTs |
 | `single-leisure.php` | `/lazer/{slug}/` | Dedicated leisure/tourism detail template |
-| `single-sponsor.php` | `/apoiadores/{slug}/` | Dedicated Apoiador detail template: name, main image, description, "Entre em contato" buttons (only configured channels) |
+| `single-sponsor.php` | `/apoiadores/{slug}/` | Dedicated Apoiador detail template: back link, portrait image (left column) beside name/description/“Entre em contato” buttons (right column) on desktop; single-column stack below 769px |
 | `single.php` | `/{cpt}/{slug}/` | Single post for all other CPTs |
 | `page.php` | `/{slug}/` | Static pages |
 | `page-empregos.php` | `/empregos/` | Jobs Landing page — portrait image + editable body + optional "Mais informações" CTA |

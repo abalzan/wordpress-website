@@ -11,10 +11,15 @@
    literals outside the per-platform brand icon accents below.
 
    Layout model:
-     .sponsor-single-header   back link + category chips + name + county
-     .sponsor-single-hero     main image on a soft mat (never cropped)
-     .sponsor-single-body     two columns ≥901px: description | contacts;
-                              stacked into one column below that.
+     .sponsor-single-back     back link at the very top of the page
+     .sponsor-single-layout   detail composition:
+       .sponsor-single-hero   left column ≥769px — main image in the shared
+                              3:4 PORTRAIT frame on a soft mat (never cropped)
+       .sponsor-single-info   right column ≥769px —
+         .sponsor-single-header  category chips + name + county
+         .sponsor-single-body    description, then "Entre em contato"
+     Below 769px everything stacks in one column: back → image → title →
+     description → contacts.
 */
 
 /* ===== Header ===== */
@@ -72,54 +77,78 @@
 }
 
 /* ===== Main image ===== */
-/* The artwork sits on a soft mat and is NEVER cropped or recolored —
-   object-fit: contain letterboxes every source ratio, same contract as
-   the homepage carousel tiles. */
+/* PORTRAIT standard — same contract as the homepage Hero carousel and the
+   /apoiadores/ archive: one canonical "Imagem do Apoiador" artwork framed in
+   a predictable 3:4 portrait box. object-fit: contain letterboxes every
+   source ratio onto a soft mat without cropping or distorting the artwork.
+   The frame itself owns the dimensions (aspect-ratio), so the rendered shape
+   never depends on the source image's own ratio. */
 
 .sponsor-single-hero {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin: 0 0 var(--space-6);
+  /* The portrait frame owns the shape — same 3:4 ratio as the archive cards
+     and Hero tiles, independent of each artwork's intrinsic dimensions. */
+  aspect-ratio: 3 / 4;
+  width: min(100%, 360px);
+  margin: 0 auto var(--space-6);
   padding: clamp(16px, 3vw, 32px);
   background: var(--color-surface-muted);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
 }
 
-/* The detail page now renders a single responsive <img> (canonical
-   "Imagem do Apoiador" — same asset as the homepage carousel). */
+/* ===== Desktop detail composition (≥769px only) =====
+   Two columns: constrained portrait image on the left (~35–40% of the
+   content width), information on the right. Grid-based — no positioning
+   hacks — and aligned to the top so the title starts level with the
+   image. Below 769px this stays a plain block stack. */
+
+@media (min-width: 769px) {
+  .sponsor-single-layout {
+    display: grid;
+    grid-template-columns: minmax(240px, 360px) minmax(0, 1fr);
+    gap: var(--space-7); /* 48px */
+    align-items: start;
+  }
+
+  .sponsor-single-hero {
+    margin: 0; /* fills its own grid column; no extra bottom gap */
+  }
+}
+
+/* The detail page renders a single responsive <img> (canonical
+   "Imagem do Apoiador" — same asset as the homepage carousel). It fills the
+   portrait frame while contain-fit letterboxing any source ratio, so the
+   artwork is never stretched, cropped, or recolored. */
 
 .sponsor-single-hero img {
   display: block;
-  width: auto;
-  max-width: 100%;
-  height: auto;
-  max-height: clamp(220px, 38vw, 440px);
+  width: 100%;
+  height: 100%;
   object-fit: contain;
   border-radius: var(--radius);
 }
 
 @media (max-width: 768px) {
-  .sponsor-single-hero img {
-    max-height: 300px;
+  .sponsor-single-hero {
+    /* Prominent on mobile without becoming excessively tall: the intrinsic
+       3:4 frame plus this cap keeps every phone width overflow-free. */
+    max-width: min(100%, 300px);
   }
 }
 
-/* ===== Body: description + contacts ===== */
+/* ===== Body: description + contacts =====
+   The information column stacks vertically (title → description →
+   "Entre em contato") so both short and long descriptions grow the
+   page naturally without breaking the composition. */
 
 .sponsor-single-body {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 320px;
-  gap: var(--space-6);
+  gap: var(--space-5);
   align-items: start;
-}
-
-@media (max-width: 900px) {
-  .sponsor-single-body {
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--space-5);
-  }
 }
 
 /* Description — the existing WordPress content, rendered prominently.
@@ -172,19 +201,11 @@
 /* ===== "Entre em contato" card ===== */
 
 .sponsor-single-contact {
-  position: sticky;
-  top: 96px; /* clears the fixed site header on desktop */
   padding: var(--space-5);
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
-}
-
-@media (max-width: 900px) {
-  .sponsor-single-contact {
-    position: static;
-  }
 }
 
 .sponsor-single-contact-title {
