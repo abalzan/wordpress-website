@@ -142,7 +142,29 @@ Key functionality includes:
 | `conexao-provider-logo` | 320 × 180 | Soft |
 | `conexao-job-portrait` | 1080 × 1920 | Soft |
 
+**Responsive `sizes` hints (below-the-fold cards).** Templates that render
+card thumbnails pass an explicit `sizes` attribute matched to the actual
+rendered card width, instead of relying on WordPress's default
+`(max-width: Wpx) 100vw, Wpx` hint. The default hint makes DPR-2 browsers
+compute a needed width larger than the hard-cropped derivative, causing the
+browser to download the uncropped full-size original (for event images this
+was a multi-hundred-KiB portrait source displayed inside a 16:9 card).
+Current hints:
+
+- `event-preview-img` (homepage "Próximos Eventos"):
+  `(max-width: 480px) 76px, (max-width: 768px) 92px, 320px` — capped at 320px
+  so the DPR-2 need stays ≤640 device px and the browser always picks the
+  640×360 `conexao-event-banner` crop.
+- `event-card-banner-img` (`event-card.php`):
+  `(max-width: 768px) 85vw, 320px` — same 640px-ceiling rationale.
+- Featured article (`front-page.php`): `(max-width: 1024px) 92vw, 66vw`.
+- Featured sidebar cards (`front-page.php`): `(max-width: 768px) 92vw, 380px`.
+
+All below-the-fold card images keep `loading="lazy"`; the Hero `<picture>`
+stays eager with `fetchpriority="high"`.
+
 The `conexao-job-portrait` size is used by the Empregos (Jobs) artwork: the job
+
 single template (`single.php`, job branch) and the `/empregos/` Jobs Landing
 page (`page-empregos.php`). Job/landing artwork is authored vertically for
 Instagram Stories (9:16 preferred, 2:3 acceptable); the soft crop fits the

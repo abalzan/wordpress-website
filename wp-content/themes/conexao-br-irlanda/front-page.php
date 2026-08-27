@@ -240,7 +240,7 @@ $hero_has_sponsors = ! empty( conexao_get_featured_sponsors() );
 							<article class="featured-article">
 								<?php if ( has_post_thumbnail() ) : ?>
 									<div class="featured-article-image">
-										<a href="<?php the_permalink(); ?>"><?php the_post_thumbnail( 'conexao-hero', array( 'loading' => 'lazy' ) ); ?></a>
+										<a href="<?php the_permalink(); ?>"><?php the_post_thumbnail( 'conexao-hero', array( 'loading' => 'lazy', 'sizes' => '(max-width: 1024px) 92vw, 66vw' ) ); ?></a>
 									</div>
 								<?php endif; ?>
 								<div class="featured-article-content">
@@ -276,7 +276,7 @@ $hero_has_sponsors = ! empty( conexao_get_featured_sponsors() );
 							<article class="post-card">
 								<?php if ( has_post_thumbnail() ) : ?>
 									<div class="post-card-image">
-										<a href="<?php the_permalink(); ?>"><?php the_post_thumbnail( 'conexao-card', array( 'loading' => 'lazy' ) ); ?></a>
+										<a href="<?php the_permalink(); ?>"><?php the_post_thumbnail( 'conexao-card', array( 'loading' => 'lazy', 'sizes' => '(max-width: 768px) 92vw, 380px' ) ); ?></a>
 									</div>
 								<?php endif; ?>
 								<?php

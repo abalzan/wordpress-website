@@ -55,10 +55,22 @@ $month = $event_date ? date( 'M', strtotime( $event_date ) ) : '---';
 						'class'   => 'event-card-banner-img',
 						'loading' => 'lazy',
 						'alt'     => esc_attr( get_the_title() ),
+						// Real rendered banner widths (main.css): 1-column mobile
+						// (~85vw) and a 3-column desktop grid cell (~320px inside
+						// the site container). Capped at 320px so the DPR-2 need
+						// stays ≤640 device px and the browser always picks the
+						// 640×360 cropped conexao-event-banner derivative instead
+						// of the uncropped (often portrait) original.
+						'sizes'   => '(max-width: 768px) 85vw, 320px',
 					)
 				);
 			} else {
-				the_post_thumbnail( 'conexao-event-banner', array( 'class' => 'event-card-banner-img', 'loading' => 'lazy', 'alt' => esc_attr( get_the_title() ) ) );
+				the_post_thumbnail( 'conexao-event-banner', array(
+					'class'   => 'event-card-banner-img',
+					'loading' => 'lazy',
+					'alt'     => esc_attr( get_the_title() ),
+					'sizes'   => '(max-width: 768px) 85vw, 320px',
+				) );
 			}
 			?>
 		<?php elseif ( $event_banner ) : ?>

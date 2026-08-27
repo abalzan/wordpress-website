@@ -69,10 +69,24 @@ if ( $event_towns && ! is_wp_error( $event_towns ) && ! empty( $event_towns ) ) 
 							'class'   => 'event-preview-img',
 							'loading' => 'lazy',
 							'alt'     => esc_attr( get_the_title() ),
+							// Real rendered thumbnail widths (see main.css): 76px on
+							// small phones, 92px up to 768px, and a half-width card
+							// (~320px) on desktop. The 320px ceiling keeps the
+							// DPR-2 target at ≤640 device px so the browser selects
+							// the 640×360 hard-cropped conexao-event-banner
+							// derivative instead of the much larger uncropped
+							// original (which for portrait sources is the wrong
+							// aspect ratio AND a heavy download).
+							'sizes'   => '(max-width: 480px) 76px, (max-width: 768px) 92px, 320px',
 						)
 					);
 				} else {
-					the_post_thumbnail( 'conexao-event-banner', array( 'class' => 'event-preview-img', 'loading' => 'lazy', 'alt' => esc_attr( get_the_title() ) ) );
+					the_post_thumbnail( 'conexao-event-banner', array(
+						'class'   => 'event-preview-img',
+						'loading' => 'lazy',
+						'alt'     => esc_attr( get_the_title() ),
+						'sizes'   => '(max-width: 480px) 76px, (max-width: 768px) 92px, 320px',
+					) );
 				}
 				?>
 			<?php elseif ( $event_banner ) : ?>
