@@ -61,6 +61,17 @@ $hero_has_sponsors = ! empty( conexao_get_featured_sponsors() );
 				width="1683"
 				height="935"
 				srcset="<?php echo esc_url( get_template_directory_uri() . '/assets/images/conexaobr_Hero_image_mobile.png' ); ?>">
+			<!-- Desktop (≥769px): WebP first (2057×764, ≈225 KB — converted
+			     from the 2.1 MB PNG at q88, visually lossless), PNG fallback
+			     for browsers without WebP support. Placed AFTER the mobile
+			     sources so mobile WebP-capable browsers keep matching the
+			     dedicated mobile asset first. -->
+			<source
+				media="(min-width: 769px)"
+				type="image/webp"
+				width="2057"
+				height="764"
+				srcset="<?php echo esc_url( get_template_directory_uri() . '/assets/images/conexaobr_Hero_image.webp' ); ?>">
 			<!-- Desktop: cinematic composition (conexaobr_Hero_image.png,
 			     2057×764 intrinsic). The 3.71:1 hero slot is reserved by the
 			     .hero-section aspect-ratio rule in CSS — not by these

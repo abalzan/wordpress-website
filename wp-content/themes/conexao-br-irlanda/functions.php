@@ -427,6 +427,25 @@ function conexao_fonts_preconnect() {
 add_action( 'wp_head', 'conexao_fonts_preconnect', 1 );
 
 /**
+ * Preload the homepage Hero background (the LCP element) so the browser
+ * starts fetching it in parallel with the render-blocking CSS instead of
+ * only discovering it after the CSS finishes. Matches the <picture>
+ * sources in front-page.php exactly: mobile WebP ≤768px, desktop WebP
+ * ≥769px. No-op on every other page.
+ */
+function conexao_hero_preload() {
+	if ( ! is_front_page() ) {
+		return;
+	}
+
+	$base = get_template_directory_uri() . '/assets/images/';
+
+	echo '<link rel="preload" as="image" fetchpriority="high" media="(max-width: 768px)" href="' . esc_url( $base . 'conexaobr_Hero_image_mobile.webp' ) . '">' . "\n";
+	echo '<link rel="preload" as="image" fetchpriority="high" media="(min-width: 769px)" href="' . esc_url( $base . 'conexaobr_Hero_image.webp' ) . '">' . "\n";
+}
+add_action( 'wp_head', 'conexao_hero_preload', 2 );
+
+/**
  * ---------------------------------------------------------------------------
  * PERFORMANCE OPTIMIZATIONS
  * ---------------------------------------------------------------------------
