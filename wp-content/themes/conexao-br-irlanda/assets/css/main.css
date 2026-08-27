@@ -335,30 +335,34 @@ ul, ol {
 }
 
 /* Right column: Featured Apoiadores showcase. A subtle translucent green
-   glass surface groups label + carousel and keeps them legible over the
+   glass surface groups the carousel and keeps it legible over the
    photographic right side of the hero (castle/family/flags) without hiding
-   the image — a light touch, not an opaque block. Zero top padding: the
-   "Apoiadores em destaque" label is this column's first child, so with no
-   top inset its box starts exactly on the same grid top line as the
-   .hero-badge in the left column (see the ≥769px stretch rules below) —
-   both columns' first elements share one horizontal line. Inline/bottom
-   padding still frames the glass surface; the ≤768px block re-specifies
-   its own compact padding. */
+   the image — a light touch, not an opaque block. Modest, evenly distributed
+   padding frames the glass surface; the carousel starts a comfortable inset
+   below the shared-grid top line instead of stacking against the border,
+   while its bottom edge stays pinned to the CTA baseline (see the ≥769px
+   stretch rules below). */
 .hero-sponsors {
   min-width: 0;
   background: linear-gradient(165deg, rgba(6, 44, 35, 0.52) 0%, rgba(6, 44, 35, 0.34) 100%);
   border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: var(--conexao-radius);
   box-shadow: var(--conexao-shadow-md);
-  padding: 0 18px 14px;
+  /* Desktop: modestly trimmed framing so the whole surface reads as a
+     supporting element beside the copy rather than a second feature panel
+     (the mobile block below re-declares its own compact padding, so this
+     never touches phones). */
+  padding: 10px 15px var(--hero-panel-inset, 14px);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 }
 
 /* Desktop/tablet (≥769px): two-column composition — hero copy left, Featured
-   Apoiadores right as a WIDE LANDSCAPE feature card. The sponsor column takes
-   a generous fr share (~45% of the row) so the 16:9 tile renders clearly
-   wider than tall at every desktop/tablet viewport. The double-class selector
+   Apoiadores right as a PORTRAIT feature card — the SAME portrait presentation
+   used on mobile, only scaled up. The sponsor column keeps a moderate fr
+   share (~35% of the row) so the 3:4 tile sits as a supporting feature of
+   the composition rather than a second Hero — slightly smaller and better
+   balanced with the copy column. The double-class selector
    outranks the single-class .hero-content width/padding rules in the
    responsive blocks further down, so ONLY the with-sponsors variant goes
    full-width two-column; without sponsors the hero keeps its original
@@ -368,8 +372,9 @@ ul, ol {
    single invisible grid instead of two independently positioned blocks.
    align-items:stretch gives both columns the same height, and each column
    is a flex stack anchored to the same two horizontal lines — the top of
-   .hero-badge ↔ the top of the sponsor panel/label ("Apoiadores em
-   destaque"), and the bottom of the CTA row (.btn-outline) ↔ the bottom of
+   .hero-badge ↔ the top of the sponsor panel ("Apoiadores em destaque"
+   via the viewport's aria-label; visually inset by the panel padding), and
+   the bottom of the CTA row (.btn-outline) ↔ the bottom of
    the sponsor panel and its integrated controls. No fixed pixel offsets:
    the relationship emerges from stretch + the flex chains below, so it
    holds at every desktop/tablet width (1024/1280/1440/1600+). */
@@ -378,10 +383,16 @@ ul, ol {
     max-width: none;
     width: 100%;
     display: grid;
-    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 0.75fr);
     align-items: stretch;
     gap: clamp(28px, 4vw, 64px);
     padding: 44px 0 36px;
+    /* Shared token for the sponsor panel's bottom framing inset. The right
+       column's glass surface reserves this much space below the carousel
+       viewport; the left column consumes the SAME token (see the .hero-copy
+       rule below) so the CTA box ends exactly where the viewport box does —
+       one source of truth, no pixel drift between the two columns. */
+    --hero-panel-inset: 14px;
   }
 
   /* Left column as a flex stack spanning the shared row height: badge,
@@ -392,6 +403,14 @@ ul, ol {
   .hero-content--with-sponsors .hero-copy {
     display: flex;
     flex-direction: column;
+    /* Mirror the sponsor panel's bottom framing inset onto the left column:
+       with the grid stretching both columns to one shared row height, this
+       padding lifts .hero-ctas (pinned here by margin-top: auto) so its
+       bottom edge lands exactly on the bottom edge of
+       .sponsors-carousel-viewport — which sits var(--hero-panel-inset) above
+       the row line inside .hero-sponsors. Keeps aligning when the heading
+       wraps, the sponsor image changes, or fonts render differently. */
+    padding-bottom: var(--hero-panel-inset);
   }
 
   /* Inside the flex column the inline-flex badge would otherwise be
@@ -404,18 +423,17 @@ ul, ol {
     margin-top: auto;
   }
 
-  /* Right column as a flex stack spanning the same row height: the label
-     sits on the TOP line and the landscape carousel is pinned to the
-     BOTTOM line via margin-top:auto (below), so the glass surface spans
-     the full shared row while the tile keeps its width-derived 16:9
-     height instead of stretching to the column height. */
+  /* Right column as a flex stack spanning the same row height: the glass
+     surface spans the full shared row while the portrait carousel is pinned
+     to the BOTTOM line via margin-top:auto (below), so the tile keeps its
+     width-derived 3:4 height instead of stretching to the column height. */
   .hero-content--with-sponsors .hero-sponsors {
     display: flex;
     flex-direction: column;
   }
 
-  /* Landscape tile: the carousel keeps its NATURAL height — the tile derives
-     its height from the column width via the 16:9 ratio on .sponsor-tile
+  /* Portrait tile: the carousel keeps its NATURAL height — the tile derives
+     its height from the column width via the 3:4 ratio on .sponsor-tile
      below instead of stretching to the row height — and margin-top:auto
      pins the whole block (tile + integrated controls) to the BOTTOM line,
      so its lower edge stays visually aligned with the CTA row (.btn-outline)
@@ -439,17 +457,6 @@ ul, ol {
   }
 }
 
-.sponsors-hero-label {
-  font-size: 0.8125rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.85);
-  margin-bottom: 12px;
-}
-
-/* Small gap between slides (the shared list defaults to 20px) — it only
-   spaces neighbours during the slide transition. */
 .sponsors-carousel--hero .sponsors-carousel-list {
   gap: 12px;
 }
@@ -470,7 +477,7 @@ ul, ol {
    the surface only backs it. */
 .sponsors-carousel--hero {
   /* Very light warm neutral — backs the artwork (letterbox bands for
-     non-16:9 assets, no-image fallback) like a designed mat/frame. */
+     non-3:4 assets, no-image fallback) like a designed mat/frame. */
   --sponsor-surface: #fcfbf7;
   /* Subtle translucent green-gray edge instead of a hard gray border. */
   --sponsor-border: rgba(14, 107, 58, 0.16);
@@ -506,19 +513,17 @@ ul, ol {
 }
 
 /* Featured tile: ONE large visual surface per view. The artwork fills the
-   entire card (no separate content area beneath); on desktop/tablet the
-   card height derives from the column width via a fixed 16:9 LANDSCAPE
-   ratio — matching the dominant banner assets — so switching sponsors
-   never changes the right-column height, and every image ratio fits inside
-   the same stable frame. Mobile (≤768px) re-specifies the frame as
-   PORTRAIT 3:4 in its own block below, keeping the phone presentation
-   clearly taller than wide. object-fit:contain letterboxes every source
-   ratio onto the warm mat without cropping or distortion. */
+   entire card (no separate content area beneath); the card frame is PORTRAIT
+   3:4 at EVERY breakpoint — desktop and mobile share the same orientation and
+   visual treatment, only scaled responsively (the shared-grid stretch chain
+   may extend the tile taller on phones, never wider or squarer).
+   object-fit:contain letterboxes every source ratio onto the warm mat
+   without cropping or distortion. */
 .sponsor-tile {
   position: relative;
   display: block;
   width: 100%;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 3 / 4;
   padding: 0;
   background: var(--sponsor-surface);
   border: 1px solid var(--sponsor-border);
@@ -543,7 +548,7 @@ ul, ol {
    surface. object-fit: contain (not cover) — the current sponsor banners
    carry text and decoration right up to their edges, and cover would crop
    meaningful artwork; contain shows every asset whole, with the warm
-   surface reading as slim letterbox bands for non-16:9 ratios. */
+   surface reading as slim letterbox bands for non-3:4 ratios. */
 .sponsor-tile-logo {
   position: absolute;
   inset: 0;
@@ -554,19 +559,10 @@ ul, ol {
   height: 100%;
 }
 
-/* Responsive <picture> wrapper (Imagem Desktop / Imagem Mobile): the
-   picture element must behave exactly like the previous bare img flex
-   item — stretched over the whole tile — so switching between the
-   landscape and portrait sources never shifts the carousel layout,
-   tile frame, or controls at any breakpoint. */
-.sponsor-tile-logo picture {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-}
-
+/* Responsive <img> (single canonical "Imagem do Apoiador"): stretched over
+   the whole tile so the responsive srcset candidates can swap without ever
+   shifting the carousel layout, tile frame, or controls at any breakpoint.
+   The same asset serves desktop and mobile — no source switching. */
 .sponsor-tile-logo img {
   width: 100%;
   height: 100%;
@@ -721,10 +717,10 @@ ul, ol {
 
 /* Tablet: still exactly one sponsor per view; only the column ratio/gap
    tighten so heading and carousel never collide at intermediate widths
-   (~769–1199px). The sponsor column keeps its landscape 16:9 frame. */
+   (~769–1199px). The sponsor column keeps its portrait 3:4 frame. */
 @media (max-width: 1199px) and (min-width: 769px) {
   .hero-content.hero-content--with-sponsors {
-    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.88fr);
     gap: clamp(24px, 3.5vw, 44px);
   }
 }
@@ -737,8 +733,7 @@ ul, ol {
    type scale, CTAs wrapping naturally (stacked when narrow, side-by-side
    once both fit). The carousel keeps EXACTLY ONE sponsor per view — the
    same integrated image card (overlay name, inner arrows, bottom dots) in
-    its own PORTRAIT 3:4 frame (desktop/tablet use a landscape 16:9 frame
-    instead); object-fit:contain keeps the
+    its own PORTRAIT 3:4 frame; object-fit:contain keeps the
    artwork's rendered size stable (extra frame height reads as mat, not
    smaller art), controls shrink toward their touch minimums, and the
    overlay arrows remain available alongside native swipe. */
@@ -747,8 +742,8 @@ ul, ol {
      padding/max-width rules in the mobile blocks further down (same
      pattern as the ≥769px composition above). Same shared-grid treatment
      as desktop: align-items:stretch gives both columns one height, so the
-     "Apoiadores em destaque" label starts on the .hero-badge top line and
-     the portrait panel runs down to the CTA bottom line. */
+     portrait panel runs from the badge top line down to the CTA bottom
+     line. */
   .hero-content.hero-content--with-sponsors {
     display: grid;
     grid-template-columns: minmax(0, 1.22fr) minmax(0, 1fr);
@@ -780,7 +775,7 @@ ul, ol {
   }
 
   /* Stretch chain: carousel root → stage → viewport → list (mobile-only —
-     the ≥769px composition pins the landscape tile to the CTA baseline
+     the ≥769px composition pins the portrait tile to the CTA baseline
      instead). The slides are display:flex with align-items:stretch, so
      the height reaches .sponsor-tile; its 3:4 ratio only sets the natural
      floor — the stretched copy-column height usually extends it further,
@@ -844,16 +839,10 @@ ul, ol {
 
   /* Right column: compact glass surface — the subtle separation between
      the two zones over the shared photo (no hard divider, no opaque
-     block). Zero top padding puts the "Apoiadores em destaque" label on
-     the same top line as .hero-badge. */
+     block). A small even top inset keeps the portrait image comfortably
+     framed inside the surface without pushing it below the badge line. */
   .hero-sponsors {
-    padding: 0 11px 10px;
-  }
-
-  .sponsors-hero-label {
-    font-size: 0.625rem;
-    letter-spacing: 0.07em;
-    margin-bottom: 6px;
+    padding: 6px 11px 10px;
   }
 
   /* Integrated card, retuned for the narrow column: the mobile-only

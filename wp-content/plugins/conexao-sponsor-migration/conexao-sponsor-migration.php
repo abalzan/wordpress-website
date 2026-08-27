@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Conexão BR Irlanda — Apoiadores Migration
- * Description: Export and import the Apoiadores (sponsors) dataset as a portable JSON file with embedded image bytes. Carries both responsive carousel images per supporter (Imagem Desktop and Imagem Mobile) plus the legacy logo, so production imports recreate every Media Library attachment locally and assign it to the correct Apoiador. Dedupe by stable UUID + image content hash; dry-run preview; no external requests required.
+ * Description: Export and import the Apoiadores (sponsors) dataset as a portable JSON file with the canonical Apoiador image embedded as bytes, so production imports recreate the Media Library attachment locally and assign it to the correct Apoiador. Legacy Desktop/Mobile exports are resolved into the single canonical image. Dedupe by stable UUID + image content hash; dry-run preview; no external requests required.
  * Version: 1.1.0
  * Text Domain: conexao-sponsor-migration
  *

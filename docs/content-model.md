@@ -66,11 +66,16 @@ Registered by `conexao-data-model` (method `register_taxonomies()`).
   Managed by `Conexao_Data_Model_Contacts`; row order is meaningful
 - `_sponsor_featured` (checkbox)
 - `_sponsor_status`, `_sponsor_category`, `_sponsor_type`, `_sponsor_description`
-- Responsive carousel images (Media Library attachment IDs):
-  - `_sponsor_desktop_image` — landscape artwork for the homepage carousel at ≥769px (~16:9 recommended)
-  - `_sponsor_mobile_image` — portrait artwork at ≤768px (~3:4/4:5 recommended); falls back to the desktop image
-- Legacy: `_sponsor_logo` (pre-two-field single image; kept as a fallback —
-  the admin editor migrates it into `_sponsor_desktop_image` on first save)
+- Canonical carousel/detail image (Media Library attachment ID):
+  - `_sponsor_image` — single portrait "Imagem do Apoiador" used at every
+    breakpoint (desktop Hero carousel, mobile Hero carousel, detail page).
+    Recommended ~3:4 or 4:5 (e.g. 800×1000 / 900×1200).
+- Legacy (kept as read-only fallbacks — never rendered in the editor):
+  `_sponsor_mobile_image` → `_sponsor_desktop_image` → `_sponsor_logo` are
+  consulted in that order when `_sponsor_image` is empty, so pre-consolidation
+  records keep their artwork; the next admin save persists the resolved value
+  into `_sponsor_image`. Attachments referenced by the legacy keys are never
+  deleted.
 
 ### Job
 

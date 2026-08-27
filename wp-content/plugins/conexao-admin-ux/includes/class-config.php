@@ -714,27 +714,24 @@ final class Conexao_Admin_Ux_Config {
 						array( 'key' => '_sponsor_description', 'label' => 'Descrição', 'type' => 'textarea', 'help' => 'Descreva o apoiador e como ele apoia a comunidade.' ),
 					),
 				),
-				// Responsive carousel artwork: two independent Media Library
-				// relationships per Apoiador. The legacy "_sponsor_logo" meta
-				// is NOT rendered here — it became the Imagem Desktop fallback
-				// for records created before the two-field model (see
-				// Conexao_Admin_Ux_Fields::get_value()).
+				// Canonical Apoiador artwork: ONE portrait image used by the
+				// homepage carousel and detail page at every breakpoint. The
+				// legacy "_sponsor_desktop_image" / "_sponsor_mobile_image" /
+				// "_sponsor_logo" metas are NOT rendered here — existing
+				// records resolve their canonical image from them (mobile →
+				// desktop → legacy logo) via
+				// Conexao_Admin_Ux_Fields::get_value() and migrate into
+				// "_sponsor_image" on the next save.
 				'imagens'   => array(
-					'title'    => 'Imagens do carousel',
+					'title'    => 'Imagem do Apoiador',
 					'icon'     => 'dashicons-format-image',
 					'priority' => 15,
 					'fields'   => array(
 						array(
-							'key'   => '_sponsor_desktop_image',
-							'label' => 'Imagem Desktop',
+							'key'   => '_sponsor_image',
+							'label' => 'Imagem do Apoiador',
 							'type'  => 'media',
-							'help'  => 'Usada no carousel em telas maiores (tablets e desktops). Prefira uma composição horizontal/landscape — aproximadamente 16:9 (ex.: 1280×720 ou 1600×900).',
-						),
-						array(
-							'key'   => '_sponsor_mobile_image',
-							'label' => 'Imagem Mobile',
-							'type'  => 'media',
-							'help'  => 'Usada no carousel em telas pequenas (celulares). Prefira uma composição vertical/portrait — aproximadamente 3:4 ou 4:5 (ex.: 800×1000 ou 900×1200). Se vazia, a Imagem Desktop é usada como alternativa.',
+							'help'  => 'Use uma imagem vertical/portrait (aproximadamente 3:4 ou 4:5 — ex.: 800×1000 ou 900×1200). Essa imagem será usada no destaque do Apoiador em desktop e mobile.',
 						),
 					),
 				),

@@ -67,34 +67,32 @@ guard behavior.
 
 ## Media Fields & Featured Image Sync
 
-`media`-type fields (e.g. the Apoiador `_sponsor_desktop_image` /
-`_sponsor_mobile_image`) store a **Media Library attachment ID** — never a
-URL as the source of truth, and never local-only IDs as portable identifiers.
-The relationship is: post → attachment ID → WordPress featured image.
+`media`-type fields (e.g. the Apoiador `_sponsor_image`) store a **Media
+Library attachment ID** — never a URL as the source of truth, and never
+local-only IDs as portable identifiers. The relationship is:
+post → attachment ID → WordPress featured image.
 
-### Apoiador responsive images (Imagem Desktop / Imagem Mobile)
+### Apoiador canonical image (Imagem do Apoiador)
 
-Each Apoiador carries two independent Media Library relationships for the
-homepage carousel:
+Each Apoiador carries ONE Media Library relationship for the homepage carousel
+and detail page — a single portrait artwork used identically on desktop and
+mobile:
 
-- **Imagem Desktop** (`_sponsor_desktop_image`) — landscape artwork used at
-  viewports ≥769px. Recommended ~16:9 (e.g. 1280×720 / 1600×900).
-- **Imagem Mobile** (`_sponsor_mobile_image`) — portrait artwork used at
-  ≤768px. Recommended ~3:4 or 4:5 (e.g. 800×1000 / 900×1200). Falls back to
-  the desktop image when empty.
+- **Imagem do Apoiador** (`_sponsor_image`) — portrait artwork. Recommended
+  ~3:4 or 4:5 (e.g. 800×1000 / 900×1200). No separate desktop/mobile fields;
+  there is no responsive source switching between different sponsor assets.
 
-Legacy records created before the two-field model keep working without any
-migration step:
+Legacy records created before the single-image consolidation keep working
+without any migration step:
 
-- The editor's Imagem Desktop field falls back to the old `_sponsor_logo`
-  value when the new key is empty (`Conexao_Admin_Ux_Fields::get_value()`),
-  so editing an existing Apoiador shows its current artwork pre-filled; the
-  first save persists it into `_sponsor_desktop_image`.
-- Explicitly clearing the Desktop field also clears the legacy
-  `_sponsor_logo` relationship so removed artwork cannot resurrect through
-  the front-end fallback chain.
-- A warning notice appears in the "Imagens do carousel" section when an
-  Apoiador has an Imagem Mobile but no Imagem Desktop.
+- The editor's Imagem do Apoiador field falls back to the pre-consolidation
+  metas when `_sponsor_image` is empty (`Conexao_Admin_Ux_Fields::get_value()`):
+  `_sponsor_mobile_image` → `_sponsor_desktop_image` → `_sponsor_logo`, so
+  editing an existing Apoiador shows its current artwork pre-filled; the first
+  save persists the resolved value into `_sponsor_image`.
+- Explicitly clearing the image field also clears all three legacy image
+  relationships so removed artwork cannot resurrect through the front-end
+  fallback chain. Attachments themselves are never deleted.
 
 - The editor's save handler (`Conexao_Admin_Ux_Editor::save()`) syncs each
   type's media field to the core featured image via `set_post_thumbnail()` /

@@ -863,80 +863,66 @@ function conexao_popular_posts( $limit = 5 ) {
 }
 
 /**
- * Resolve the Imagem Desktop / Imagem Mobile attachment IDs for an Apoiador.
+ * Resolve an Apoiador's canonical image attachment ID.
  *
  * Data model (see docs/content-model.md):
  *
- *   _sponsor_desktop_image → landscape artwork (desktop/tablet carousel)
- *   _sponsor_mobile_image  → portrait artwork  (mobile carousel)
+ *   _sponsor_image → single portrait "Imagem do Apoiador" used at every
+ *                    breakpoint (desktop carousel, mobile carousel, detail
+ *                    page).
  *
- * Backward compatibility with records created before the two-field model —
- * no administrator action is ever required for existing Apoiadores to keep
+ * Backward compatibility with records created before the consolidation — no
+ * administrator action is ever required for existing Apoiadores to keep
  * working:
  *
- *   Desktop → _sponsor_desktop_image → legacy _sponsor_logo → featured image
- *   Mobile  → _sponsor_mobile_image  → Desktop resolution
+ *   _sponsor_image → _sponsor_mobile_image → _sponsor_desktop_image →
+ *   legacy _sponsor_logo → featured image
  *
- * Legacy values are Media Library attachment IDs. URL-only legacy values
- * cannot identify an attachment reliably and are ignored here; the admin
- * editor migrates them into attachment IDs on the next save.
+ * All values are Media Library attachment IDs. URL-only legacy values cannot
+ * identify an attachment reliably and are ignored here; the admin editor
+ * migrates them into attachment IDs on the next save.
+ *
+ * Only real image attachments qualify; anything else resolves to the next
+ * candidate so a deleted attachment can never render as a broken image.
  *
  * @param int $sponsor_id Sponsor post ID.
- * @return int[] { desktop_attachment_id, mobile_attachment_id } (0 = none).
+ * @return int Attachment ID (0 = none).
  */
-function conexao_sponsor_image_ids( $sponsor_id ) {
-	$desktop_id = absint( get_post_meta( $sponsor_id, '_sponsor_desktop_image', true ) );
+function conexao_sponsor_image_id( $sponsor_id ) {
+	$candidates = array(
+		absint( get_post_meta( $sponsor_id, '_sponsor_image', true ) ),
+		absint( get_post_meta( $sponsor_id, '_sponsor_mobile_image', true ) ),
+		absint( get_post_meta( $sponsor_id, '_sponsor_desktop_image', true ) ),
+	);
 
-	if ( ! $desktop_id ) {
-		$legacy = get_post_meta( $sponsor_id, '_sponsor_logo', true );
-		if ( $legacy && ctype_digit( (string) $legacy ) ) {
-			$desktop_id = absint( $legacy );
+	$legacy = get_post_meta( $sponsor_id, '_sponsor_logo', true );
+	if ( $legacy && ctype_digit( (string) $legacy ) ) {
+		$candidates[] = absint( $legacy );
+	}
+
+	$candidates[] = absint( get_post_thumbnail_id( $sponsor_id ) );
+
+	foreach ( $candidates as $candidate_id ) {
+		if ( $candidate_id && wp_attachment_is_image( $candidate_id ) ) {
+			return $candidate_id;
 		}
 	}
 
-	if ( ! $desktop_id ) {
-		$desktop_id = absint( get_post_thumbnail_id( $sponsor_id ) );
-	}
-
-	$mobile_id = absint( get_post_meta( $sponsor_id, '_sponsor_mobile_image', true ) );
-
-	// Only real image attachments qualify; anything else resolves to "none"
-	// so a deleted attachment can never render as a broken image.
-	if ( $desktop_id && ! wp_attachment_is_image( $desktop_id ) ) {
-		$desktop_id = 0;
-	}
-	if ( $mobile_id && ! wp_attachment_is_image( $mobile_id ) ) {
-		$mobile_id = 0;
-	}
-
-	// Graceful fallbacks: missing mobile → desktop; missing desktop → mobile.
-	if ( ! $mobile_id ) {
-		$mobile_id = $desktop_id;
-	}
-	if ( ! $desktop_id ) {
-		$desktop_id = $mobile_id;
-	}
-
-	return array( $desktop_id, $mobile_id );
+	return 0;
 }
 
 /**
- * Build the responsive <picture> markup for an Apoiador carousel slide.
+ * Build the responsive image markup for an Apoiador carousel slide.
  *
- * The browser picks the correct asset naturally — no JavaScript source
- * swapping anywhere in the carousel:
+ * ONE canonical portrait asset ("Imagem do Apoiador") serves every
+ * breakpoint — desktop and mobile share the same artwork and the same visual
+ * portrait treatment; there is no responsive source switching between
+ * different Apoiador images. WordPress still serves appropriately sized
+ * derivatives via srcset/sizes so artwork stays crisp at the enlarged display
+ * scale without downloading oversized files.
  *
- *   - Viewports ≤768px receive the portrait Imagem Mobile via
- *     <source media="(max-width: 768px)"> (the same breakpoint the carousel
- *     CSS uses to switch the tile frame from landscape 16:9 to portrait 3:4).
- *   - Larger viewports receive the landscape Imagem Desktop via the <img>.
- *   - When both roles resolve to the SAME attachment (missing mobile image,
- *     legacy records) only the <img> is emitted so the browser downloads a
- *     single asset and neither viewport loads an unnecessary duplicate.
- *
- * Alt text comes from the desktop attachment's alt field and falls back to
- * the sponsor name, so screen readers always announce the supporter exactly
- * once (the <source> elements carry no alternative text of their own).
+ * Alt text comes from the attachment's alt field and falls back to the
+ * sponsor name, so screen readers always announce the supporter exactly once.
  *
  * width/height attributes carry truthful intrinsic metadata of the served
  * size only; CSS fully determines the rendered box, so they never stretch or
@@ -944,68 +930,42 @@ function conexao_sponsor_image_ids( $sponsor_id ) {
  *
  * @param int    $sponsor_id    Sponsor post ID.
  * @param string $sponsor_title Sponsor name (alt-text fallback).
- * @return string Picture HTML, or '' when the sponsor has no usable image.
+ * @return string Image HTML, or '' when the sponsor has no usable image.
  */
 function conexao_sponsor_carousel_image( $sponsor_id, $sponsor_title = '' ) {
-	list( $desktop_id, $mobile_id ) = conexao_sponsor_image_ids( $sponsor_id );
+	$attachment_id = conexao_sponsor_image_id( $sponsor_id );
 
-	if ( ! $desktop_id ) {
+	if ( ! $attachment_id ) {
 		return '';
 	}
 
-	$size        = 'large';
-	$desktop_src = wp_get_attachment_image_url( $desktop_id, $size );
-	if ( ! $desktop_src ) {
+	$size = 'large';
+	$src  = wp_get_attachment_image_url( $attachment_id, $size );
+	if ( ! $src ) {
 		return '';
-	}
-
-	// A separate mobile <source> is only worth emitting when it points at a
-	// genuinely different asset than the desktop fallback.
-	$distinct_mobile = ( $mobile_id && $mobile_id !== $desktop_id );
-	if ( $distinct_mobile ) {
-		$mobile_src = wp_get_attachment_image_url( $mobile_id, $size );
-		$distinct_mobile = ( $mobile_src && $mobile_src !== $desktop_src );
 	}
 
 	// Meaningful alt text with a sponsor-name fallback.
-	$alt = trim( (string) get_post_meta( $desktop_id, '_wp_attachment_image_alt', true ) );
+	$alt = trim( (string) get_post_meta( $attachment_id, '_wp_attachment_image_alt', true ) );
 	if ( '' === $alt ) {
 		$alt = $sponsor_title;
 	}
 
-	$html = '<picture class="sponsor-tile-picture">';
+	$dimensions = wp_get_attachment_image_src( $attachment_id, $size );
+	$srcset     = wp_get_attachment_image_srcset( $attachment_id, $size );
 
-	if ( $distinct_mobile ) {
-		$mobile_dimensions = wp_get_attachment_image_src( $mobile_id, $size );
-		$mobile_srcset     = wp_get_attachment_image_srcset( $mobile_id, $size );
-
-		$html .= '<source media="(max-width: 768px)"'
-			. ' srcset="' . esc_attr( $mobile_srcset ? $mobile_srcset : $mobile_src ) . '"'
-			. ' sizes="(max-width: 768px) 50vw"';
-		if ( $mobile_dimensions ) {
-			$html .= ' width="' . esc_attr( (int) $mobile_dimensions[1] ) . '"'
-				. ' height="' . esc_attr( (int) $mobile_dimensions[2] ) . '"';
-		}
-		$html .= ' />';
-	}
-
-	$desktop_dimensions = wp_get_attachment_image_src( $desktop_id, $size );
-	$desktop_srcset     = wp_get_attachment_image_srcset( $desktop_id, $size );
-
-	$html .= '<img src="' . esc_url( $desktop_src ) . '"';
-	if ( $desktop_srcset ) {
-		$html .= ' srcset="' . esc_attr( $desktop_srcset ) . '"';
+	$html = '<img src="' . esc_url( $src ) . '"';
+	if ( $srcset ) {
+		$html .= ' srcset="' . esc_attr( $srcset ) . '"';
 	}
 	// Rough column hint so the browser can pick a sensibly sized candidate;
 	// object-fit: contain makes exactness irrelevant to the layout.
-	$html .= ' sizes="(min-width: 769px) 42vw, 50vw"';
-	if ( $desktop_dimensions ) {
-		$html .= ' width="' . esc_attr( (int) $desktop_dimensions[1] ) . '"'
-			. ' height="' . esc_attr( (int) $desktop_dimensions[2] ) . '"';
+	$html .= ' sizes="(min-width: 769px) 30vw, 50vw"';
+	if ( $dimensions ) {
+		$html .= ' width="' . esc_attr( (int) $dimensions[1] ) . '"'
+			. ' height="' . esc_attr( (int) $dimensions[2] ) . '"';
 	}
 	$html .= ' alt="' . esc_attr( $alt ) . '" loading="lazy" decoding="async" />';
-
-	$html .= '</picture>';
 
 	return $html;
 }

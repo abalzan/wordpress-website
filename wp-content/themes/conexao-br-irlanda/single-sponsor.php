@@ -19,8 +19,9 @@
  *     read through conexao_sponsor_contact_rows() which ALSO folds in the
  *     legacy `_sponsor_link` official website first, so records that only
  *     have that single field keep producing a complete detail page.
- *   - The main image reuses conexao_sponsor_image_ids() (Imagem Desktop →
- *     legacy _sponsor_logo → featured image; Imagem Mobile fallbacks).
+ *   - The main image reuses conexao_sponsor_image_id() (canonical
+ *     "Imagem do Apoiador" → legacy mobile/desktop/logo metas → featured
+ *     image fallback chain).
  *
  * The homepage Hero carousel stays visually clean: it links here instead of
  * carrying contact icons. External links open safely in a new tab
@@ -45,8 +46,8 @@ get_header();
 	$sponsor_categories = get_the_terms( $sponsor_id, 'conexao_category' );
 	$sponsor_counties   = get_the_terms( $sponsor_id, 'conexao_county' );
 
-	// Main image attachment IDs with legacy fallbacks (0 = none at all).
-	list( $sponsor_desktop_id, $sponsor_mobile_id ) = conexao_sponsor_image_ids( $sponsor_id );
+	// Canonical main image attachment ID with legacy fallbacks (0 = none).
+	$sponsor_image_id = conexao_sponsor_image_id( $sponsor_id );
 
 	$sponsor_archive_url = get_post_type_archive_link( 'sponsor' );
 	if ( ! $sponsor_archive_url ) {
@@ -87,53 +88,33 @@ get_header();
 				</header>
 
 				<?php
-				// Main image: responsive <picture> over the SAME two-image model
-				// as the homepage carousel — portrait Imagem Mobile at ≤768px via
-				// <source media>, landscape Imagem Desktop via the <img>. When both
-				// roles resolve to the same asset only the <img> is emitted. This
-				// image is the page's LCP element: eager + fetchpriority high.
+				// Main image: ONE canonical Apoiador asset ("Imagem do
+				// Apoiador") — responsive WordPress image with srcset/sizes,
+				// used identically on desktop and mobile. This image is the
+				// page's LCP element: eager + fetchpriority high.
 				$sponsor_hero_html = '';
-				if ( $sponsor_desktop_id ) {
-					$sponsor_desktop_src = wp_get_attachment_image_url( $sponsor_desktop_id, 'large' );
+				if ( $sponsor_image_id ) {
+					$sponsor_src = wp_get_attachment_image_url( $sponsor_image_id, 'large' );
 
-					if ( $sponsor_desktop_src ) {
-						$sponsor_alt = trim( (string) get_post_meta( $sponsor_desktop_id, '_wp_attachment_image_alt', true ) );
+					if ( $sponsor_src ) {
+						$sponsor_alt = trim( (string) get_post_meta( $sponsor_image_id, '_wp_attachment_image_alt', true ) );
 						if ( '' === $sponsor_alt ) {
 							$sponsor_alt = get_the_title();
 						}
 
-						$sponsor_hero_html = '<picture class="sponsor-single-picture">';
+						$sponsor_dimensions = wp_get_attachment_image_src( $sponsor_image_id, 'large' );
+						$sponsor_srcset     = wp_get_attachment_image_srcset( $sponsor_image_id, 'large' );
 
-						if ( $sponsor_mobile_id && $sponsor_mobile_id !== $sponsor_desktop_id ) {
-							$sponsor_mobile_src = wp_get_attachment_image_url( $sponsor_mobile_id, 'large' );
-
-							if ( $sponsor_mobile_src && $sponsor_mobile_src !== $sponsor_desktop_src ) {
-								$sponsor_mobile_dimensions = wp_get_attachment_image_src( $sponsor_mobile_id, 'large' );
-
-								$sponsor_hero_html .= '<source media="(max-width: 768px)" srcset="' . esc_attr( $sponsor_mobile_src ) . '"';
-								if ( $sponsor_mobile_dimensions ) {
-									$sponsor_hero_html .= ' width="' . esc_attr( (int) $sponsor_mobile_dimensions[1] ) . '"'
-										. ' height="' . esc_attr( (int) $sponsor_mobile_dimensions[2] ) . '"';
-								}
-								$sponsor_hero_html .= ' />';
-							}
-						}
-
-						$sponsor_desktop_dimensions = wp_get_attachment_image_src( $sponsor_desktop_id, 'large' );
-						$sponsor_desktop_srcset     = wp_get_attachment_image_srcset( $sponsor_desktop_id, 'large' );
-
-						$sponsor_hero_html .= '<img src="' . esc_url( $sponsor_desktop_src ) . '"';
-						if ( $sponsor_desktop_srcset ) {
-							$sponsor_hero_html .= ' srcset="' . esc_attr( $sponsor_desktop_srcset ) . '"';
+						$sponsor_hero_html = '<img src="' . esc_url( $sponsor_src ) . '"';
+						if ( $sponsor_srcset ) {
+							$sponsor_hero_html .= ' srcset="' . esc_attr( $sponsor_srcset ) . '"';
 						}
 						$sponsor_hero_html .= ' sizes="(min-width: 769px) 720px, 92vw"';
-						if ( $sponsor_desktop_dimensions ) {
-							$sponsor_hero_html .= ' width="' . esc_attr( (int) $sponsor_desktop_dimensions[1] ) . '"'
-								. ' height="' . esc_attr( (int) $sponsor_desktop_dimensions[2] ) . '"';
+						if ( $sponsor_dimensions ) {
+							$sponsor_hero_html .= ' width="' . esc_attr( (int) $sponsor_dimensions[1] ) . '"'
+								. ' height="' . esc_attr( (int) $sponsor_dimensions[2] ) . '"';
 						}
 						$sponsor_hero_html .= ' alt="' . esc_attr( $sponsor_alt ) . '" loading="eager" fetchpriority="high" decoding="async" />';
-
-						$sponsor_hero_html .= '</picture>';
 					}
 				}
 

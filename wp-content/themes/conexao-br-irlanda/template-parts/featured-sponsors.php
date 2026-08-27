@@ -17,13 +17,12 @@
  * Renders NOTHING when no supporter is marked as featured, so callers can
  * include it unconditionally (e.g. inside the homepage Hero).
  *
- * Each slide's artwork is a responsive <picture> built in
- * conexao_sponsor_carousel_image() (functions.php) from the Apoiador's two
- * independent image relationships: the portrait "Imagem Mobile" is served at
- * ≤768px via <source media>, the landscape "Imagem Desktop" via the <img>.
- * The browser selects the correct asset naturally — no JavaScript source
- * swapping — and missing images fall back gracefully (mobile → desktop →
- * legacy logo → featured image), never rendering a broken image.
+ * Each slide's artwork is a responsive <img> built in
+ * conexao_sponsor_carousel_image() (functions.php) from the Apoiador's single
+ * canonical image relationship ("Imagem do Apoiador"): the SAME portrait asset
+ * serves desktop and mobile — no responsive source switching between different
+ * images. Missing artwork falls back gracefully (canonical → legacy
+ * mobile/desktop/logo metas → featured image), never rendering a broken image.
  *
  * Markup reuses the shared .sponsors-carousel scroll-snap engine (CSS in
  * assets/css/main.css, behavior in assets/js/main.js — prev/next buttons,
@@ -57,7 +56,6 @@ $sponsor_total = count( $featured_sponsors );
 ?>
 
 <div class="sponsors-carousel sponsors-carousel--hero" data-sponsors-carousel>
-	<p class="sponsors-hero-label"><?php esc_html_e( 'Apoiadores em destaque', 'conexao-br-irlanda' ); ?></p>
 
 	<!-- Polite live region announcing the current position while scrolling. -->
 	<p class="screen-reader-text" data-sponsors-status aria-live="polite"></p>
@@ -91,11 +89,11 @@ $sponsor_total = count( $featured_sponsors );
 						<!-- The logo area IS the tile: CSS stretches it over the
 						     full card surface (object-fit: contain keeps every
 						     asset's natural proportions — sponsor artwork is
-						     never cropped or recolored). The <picture> serves
-						     the portrait Imagem Mobile at ≤768px and the
-						     landscape Imagem Desktop above; with no usable
-						     image at all the fallback icon scales with the
-						     tile via CSS. -->
+						     never cropped or recolored). The responsive <img>
+						     serves the single canonical "Imagem do Apoiador"
+						     on desktop AND mobile; with no usable image at
+						     all the fallback icon scales with the tile via
+						     CSS. -->
 						<span class="sponsor-tile-logo">
 							<?php if ( ! empty( $featured_sponsor['image'] ) ) : ?>
 								<?php echo $featured_sponsor['image']; /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built by conexao_sponsor_carousel_image(), which escapes its own output. */ ?>

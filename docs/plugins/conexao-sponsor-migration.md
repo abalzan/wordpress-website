@@ -23,21 +23,24 @@ Per sponsor:
   from `_sponsor_contacts`, carried as a top-level `contacts` array per sponsor.
   Types: website, instagram, facebook, whatsapp, linkedin, tiktok, email, outro.
   The canonical `_sponsor_link` stays a regular meta key (see below).
-- **Both responsive carousel images plus the legacy logo**, with bytes embedded:
+- **The canonical Apoiador image**, with bytes embedded:
 
 | Role | Meta key | Meaning |
 |---|---|---|
-| `desktop` | `_sponsor_desktop_image` | Imagem Desktop (landscape carousel artwork) |
-| `mobile` | `_sponsor_mobile_image` | Imagem Mobile (portrait carousel artwork) |
-| `legacy_logo` | `_sponsor_logo` | Pre-two-field single image |
+| `image` | `_sponsor_image` | Imagem do Apoiador (single portrait artwork, desktop + mobile) |
 
 Each image entry carries a stable content hash (`id`), filename, MIME type,
 alt text, source URL fallback, and base64 `data_base64` (≤ 5 MB; larger images
 fall back to URL sideloading on import).
 
-Backward compatibility: a record whose artwork lives solely in the WordPress
-featured image exports that attachment **as** the Imagem Desktop (the
-documented "existing Apoiador image → Imagem Desktop" migration).
+Backward compatibility: pre-consolidation records whose artwork lives only in
+the old `_sponsor_mobile_image` / `_sponsor_desktop_image` / `_sponsor_logo`
+metas resolve them into the canonical image at export time (mobile → desktop →
+legacy logo); a record whose artwork lives solely in the WordPress featured
+image exports that attachment **as** the Imagem do Apoiador. Importing a
+legacy two-image export file also works — the importer resolves
+`images.desktop` / `images.mobile` / `images.legacy_logo` into one canonical
+`_sponsor_image` (mobile → desktop → legacy logo).
 
 ## Identifiers (portability rules)
 
@@ -79,7 +82,7 @@ documented "existing Apoiador image → Imagem Desktop" migration).
     {
       "uuid": "…",
       "post": { "title": "…", "content": "…", "excerpt": "…", "status": "publish", "slug": "…" },
-      "meta": { "_sponsor_link": "…", "_sponsor_desktop_image": "12", "...": "…" },
+      "meta": { "_sponsor_link": "…", "_sponsor_image": "12", "...": "…" },
       "taxonomies": { "conexao_category": ["Serviços Profissionais"] },
       "contacts": [
         { "type": "instagram", "url": "https://instagram.com/…" },

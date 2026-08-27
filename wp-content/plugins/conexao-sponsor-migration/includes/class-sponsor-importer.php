@@ -4,12 +4,14 @@
  *
  * Imports a sponsor export file (JSON with embedded base64 image bytes) into
  * this installation. Existing sponsors are matched by their stable export
- * UUID, then slug, then title — never by local database IDs. Both responsive
- * carousel image relationships (Imagem Desktop / Imagem Mobile) and the
- * legacy logo are recreated as local Media Library attachments and assigned
- * to the correct Apoiador. The structured contact/social links ("Contatos"
- * repeater, export format 1.1.0+) are restored per sponsor; legacy 1.0.0
- * exports without contacts leave any existing contacts untouched.
+ * UUID, then slug, then title — never by local database IDs. The canonical
+ * Apoiador image ("Imagem do Apoiador", "_sponsor_image") is recreated as a
+ * local Media Library attachment and assigned to the correct Apoiador; legacy
+ * exports carrying the old Desktop/Mobile/logo image roles are resolved into
+ * the single canonical image (mobile → desktop → legacy logo). The structured
+ * contact/social links ("Contatos" repeater, export format 1.1.0+) are
+ * restored per sponsor; legacy 1.0.0 exports without contacts leave any
+ * existing contacts untouched.
  *
  * @package Conexao_Sponsor_Migration
  */
@@ -286,13 +288,20 @@ class Conexao_Sponsor_Importer {
 	 * Save the exported meta onto the imported sponsor post.
 	 *
 	 * Image meta keys are handled separately by handle_images() (they must
-	 * point at LOCAL attachment IDs), so they are skipped here.
+	 * point at LOCAL attachment IDs), so they are skipped here — including
+	 * the pre-consolidation keys, which are folded into the canonical
+	 * "_sponsor_image" instead.
 	 *
 	 * @param int   $post_id Sponsor post ID.
 	 * @param array $sponsor Exported sponsor payload.
 	 */
 	protected function save_meta( $post_id, $sponsor ) {
-		$image_keys = array( '_sponsor_logo', '_sponsor_desktop_image', '_sponsor_mobile_image' );
+		$image_keys = array(
+			'_sponsor_image',
+			'_sponsor_logo',
+			'_sponsor_desktop_image',
+			'_sponsor_mobile_image',
+		);
 		$meta       = isset( $sponsor['meta'] ) && is_array( $sponsor['meta'] ) ? $sponsor['meta'] : array();
 
 		foreach ( $meta as $key => $value ) {
@@ -338,36 +347,43 @@ class Conexao_Sponsor_Importer {
 	}
 
 	/**
-	 * Recreate both responsive carousel images + the legacy logo as local
-	 * Media Library attachments and assign them to the sponsor.
+	 * Recreate the canonical Apoiador image as a local Media Library
+	 * attachment and assign it to the sponsor.
+	 *
+	 * Accepts BOTH export generations:
+	 *
+	 *   - Current single-image structure: images.image (Imagem do Apoiador).
+	 *   - Legacy two-image exports: images.desktop / images.mobile /
+	 *     images.legacy_logo — resolved with the documented migration
+	 *     priority (mobile → desktop → legacy logo) so old ZIPs still
+	 *     produce one canonical image on import.
 	 *
 	 * Embedded bytes are the primary source; when absent, a reachable URL is
 	 * sideloaded. Localhost URLs are never fetched (project rule: no localhost
-	 * URLs in production data). The featured image is set to the effective
-	 * desktop artwork (desktop → mobile → legacy logo), mirroring the admin
-	 * editor's sync behavior.
+	 * URLs in production data). The featured image mirrors the same fallback
+	 * chain, mirroring the admin editor's sync behavior. Obsolete image meta
+	 * keys from legacy payloads are cleaned up; attachments are never deleted.
 	 *
 	 * @param int   $post_id Sponsor post ID.
 	 * @param array $sponsor Exported sponsor payload.
 	 * @param array $stats   Running stats (counters updated by ref).
 	 */
 	protected function handle_images( $post_id, $sponsor, &$stats ) {
-		$roles = array( 'desktop', 'mobile', 'legacy_logo' );
-		$keys  = array(
-			'desktop'     => '_sponsor_desktop_image',
-			'mobile'      => '_sponsor_mobile_image',
-			'legacy_logo' => '_sponsor_logo',
-		);
+		$images = isset( $sponsor['images'] ) && is_array( $sponsor['images'] ) ? $sponsor['images'] : array();
 
-		$resolved = array();
+		// Candidate image payloads in resolution order: canonical first,
+		// then the legacy roles (mobile wins over desktop per the migration
+		// strategy, then the pre-two-field logo).
+		$candidates = array();
+		foreach ( array( 'image', 'mobile', 'desktop', 'legacy_logo' ) as $role ) {
+			if ( ! empty( $images[ $role ] ) && is_array( $images[ $role ] ) && ( ! empty( $images[ $role ]['id'] ) || ! empty( $images[ $role ]['url'] ) ) ) {
+				$candidates[] = $images[ $role ];
+			}
+		}
 
-		foreach ( $roles as $role ) {
-			$image = isset( $sponsor['images'][ $role ] ) && is_array( $sponsor['images'][ $role ] )
-				? $sponsor['images'][ $role ]
-				: array();
+		$attachment_id = 0;
 
-			$attachment_id = 0;
-
+		foreach ( $candidates as $image ) {
 			if ( ! empty( $image['id'] ) ) {
 				$attachment_id = $this->ensure_attachment( $image, $post_id, $stats );
 			} elseif ( ! empty( $image['url'] ) ) {
@@ -380,25 +396,29 @@ class Conexao_Sponsor_Importer {
 				}
 			}
 
-			$resolved[ $role ] = $attachment_id;
-
 			if ( $attachment_id ) {
-				update_post_meta( $post_id, $keys[ $role ], $attachment_id );
+				update_post_meta( $post_id, '_sponsor_image', $attachment_id );
 				if ( ! empty( $image['alt'] ) ) {
 					update_post_meta( $attachment_id, '_wp_attachment_image_alt', sanitize_text_field( $image['alt'] ) );
 				}
-			} else {
-				delete_post_meta( $post_id, $keys[ $role ] );
+				break;
 			}
 		}
 
-		// Featured image mirrors the front-end fallback chain:
-		// desktop → mobile → legacy logo.
-		$effective = $resolved['desktop'] ? $resolved['desktop']
-			: ( $resolved['mobile'] ? $resolved['mobile'] : $resolved['legacy_logo'] );
+		// Remove obsolete image references so imports always end up with the
+		// single canonical key. Attachments themselves stay untouched.
+		delete_post_meta( $post_id, '_sponsor_desktop_image' );
+		delete_post_meta( $post_id, '_sponsor_mobile_image' );
+		delete_post_meta( $post_id, '_sponsor_logo' );
 
-		if ( $effective ) {
-			set_post_thumbnail( $post_id, $effective );
+		if ( ! $attachment_id ) {
+			delete_post_meta( $post_id, '_sponsor_image' );
+		}
+
+		// Featured image mirrors the front-end fallback chain (the canonical
+		// image, or none at all when no usable image was carried).
+		if ( $attachment_id && wp_attachment_is_image( $attachment_id ) ) {
+			set_post_thumbnail( $post_id, $attachment_id );
 		} else {
 			delete_post_thumbnail( $post_id );
 		}

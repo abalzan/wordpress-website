@@ -191,10 +191,8 @@ class Conexao_Sponsor_Transfer_Admin {
 				<ul style="list-style:disc;padding-left:20px;line-height:1.7;">
 					<li><?php esc_html_e( 'Nome, descrição, status e slug de cada apoiador', 'conexao-sponsor-migration' ); ?></li>
 					<li><?php esc_html_e( 'Categoria, tipo, link, destaque e ordem de exibição', 'conexao-sponsor-migration' ); ?></li>
-					<li><strong><?php esc_html_e( 'Imagem Desktop (composição horizontal do carousel) — bytes da imagem embutidos no arquivo', 'conexao-sponsor-migration' ); ?></strong></li>
-					<li><strong><?php esc_html_e( 'Imagem Mobile (composição vertical do carousel) — bytes da imagem embutidos no arquivo', 'conexao-sponsor-migration' ); ?></strong></li>
-					<li><?php esc_html_e( 'Logo antigo (campo legado), quando existir', 'conexao-sponsor-migration' ); ?></li>
-					<li><?php esc_html_e( 'Texto alternativo (alt) de cada imagem', 'conexao-sponsor-migration' ); ?></li>
+					<li><strong><?php esc_html_e( 'Imagem do Apoiador (imagem vertical/portrait usada em desktop e mobile) — bytes da imagem embutidos no arquivo', 'conexao-sponsor-migration' ); ?></strong></li>
+					<li><?php esc_html_e('Texto alternativo (alt) da imagem', 'conexao-sponsor-migration' ); ?></li>
 					<li><?php esc_html_e( 'Um ID estável por apoiador e um hash estável por imagem (reimportações nunca duplicam)', 'conexao-sponsor-migration' ); ?></li>
 				</ul>
 			</div>

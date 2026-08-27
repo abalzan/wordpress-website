@@ -2,15 +2,18 @@
 /**
  * Apoiadores export.
  *
- * Exports all sponsor posts (and their metadata, taxonomies, and BOTH
- * responsive carousel images) into a portable JSON file that can be imported
- * into another WordPress installation running the same sponsor structure.
+ * Exports all sponsor posts (and their metadata, taxonomies, and the canonical
+ * Apoiador image) into a portable JSON file that can be imported into another
+ * WordPress installation running the same sponsor structure.
  *
- * Image relationships carried per supporter:
+ * Image relationship carried per supporter:
  *
- *   _sponsor_desktop_image → Imagem Desktop (landscape carousel artwork)
- *   _sponsor_mobile_image  → Imagem Mobile  (portrait carousel artwork)
- *   _sponsor_logo          → legacy single-image field (pre-two-field model)
+ *   _sponsor_image → Imagem do Apoiador (single portrait artwork used on
+ *                    desktop and mobile). Pre-consolidation records still
+ *                    holding the old _sponsor_desktop_image /
+ *                    _sponsor_mobile_image / _sponsor_logo metas resolve them
+ *                    into the canonical image at export time (mobile →
+ *                    desktop → legacy logo), so no image is ever lost.
  *
  * The multiple contact/social links ("Contatos" repeater) are carried as a
  * structured per-sponsor "contacts" list of {type, url} rows in stored order.
@@ -70,9 +73,11 @@ class Conexao_Sponsor_Exporter {
 	/**
 	 * Meta keys that are exported/imported for each sponsor.
 	 *
-	 * System/WordPress meta is intentionally excluded. The two responsive
-	 * carousel image keys plus the legacy logo key are included so both image
-	 * relationships survive the migration.
+	 * System/WordPress meta is intentionally excluded. The canonical image
+	 * key ("_sponsor_image") is included so the single-image relationship
+	 * survives the migration. The pre-consolidation keys
+	 * (_sponsor_desktop_image / _sponsor_mobile_image / _sponsor_logo) are
+	 * exported through the structured "images" payload instead.
 	 *
 	 * @var array
 	 */
@@ -84,9 +89,7 @@ class Conexao_Sponsor_Exporter {
 		'_sponsor_display_order',
 		'_sponsor_status',
 		'_sponsor_created_date',
-		'_sponsor_logo',
-		'_sponsor_desktop_image',
-		'_sponsor_mobile_image',
+		'_sponsor_image',
 	);
 
 	/**
@@ -189,21 +192,30 @@ class Conexao_Sponsor_Exporter {
 			}
 		}
 
-		// Both responsive carousel images + the legacy logo, with the actual
-		// bytes embedded so the destination site can create the Media Library
-		// attachments locally.
-		$desktop_value = get_post_meta( $post->ID, '_sponsor_desktop_image', true );
-		$mobile_value  = get_post_meta( $post->ID, '_sponsor_mobile_image', true );
-		$legacy_value  = get_post_meta( $post->ID, '_sponsor_logo', true );
+		// The canonical Apoiador image, with the actual bytes embedded so the
+		// destination site can create the Media Library attachment locally.
+		//
+		// Resolution mirrors the front-end/admin fallback chain:
+		//   _sponsor_image → _sponsor_mobile_image → _sponsor_desktop_image →
+		//   legacy _sponsor_logo
+		$canonical_value = get_post_meta( $post->ID, '_sponsor_image', true );
+		if ( empty( $canonical_value ) ) {
+			$canonical_value = get_post_meta( $post->ID, '_sponsor_mobile_image', true );
+		}
+		if ( empty( $canonical_value ) ) {
+			$canonical_value = get_post_meta( $post->ID, '_sponsor_desktop_image', true );
+		}
+		if ( empty( $canonical_value ) ) {
+			$canonical_value = get_post_meta( $post->ID, '_sponsor_logo', true );
+		}
 
 		// Backward compatibility: a record whose artwork lives solely in the
 		// WordPress featured image (never managed through the image fields)
-		// exports that attachment AS the Imagem Desktop — mirroring the
-		// documented migration "existing Apoiador image → Imagem Desktop".
-		if ( empty( $desktop_value ) && empty( $mobile_value ) && empty( $legacy_value ) ) {
+		// exports that attachment AS the Imagem do Apoiador.
+		if ( empty( $canonical_value ) ) {
 			$thumbnail_id = get_post_thumbnail_id( $post->ID );
 			if ( $thumbnail_id && wp_attachment_is_image( $thumbnail_id ) ) {
-				$desktop_value = (int) $thumbnail_id;
+				$canonical_value = (int) $thumbnail_id;
 			}
 		}
 
@@ -229,9 +241,7 @@ class Conexao_Sponsor_Exporter {
 			'taxonomies' => $taxonomies,
 			'contacts' => $contacts,
 			'images'   => array(
-				'desktop'     => $this->export_image( $desktop_value ),
-				'mobile'      => $this->export_image( $mobile_value ),
-				'legacy_logo' => $this->export_image( $legacy_value ),
+				'image' => $this->export_image( $canonical_value ),
 			),
 		);
 	}

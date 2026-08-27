@@ -87,13 +87,10 @@
   border-radius: var(--radius-lg);
 }
 
-.sponsor-single-picture {
-  display: flex;
-  justify-content: center;
-  max-width: 100%;
-}
+/* The detail page now renders a single responsive <img> (canonical
+   "Imagem do Apoiador" — same asset as the homepage carousel). */
 
-.sponsor-single-picture img {
+.sponsor-single-hero img {
   display: block;
   width: auto;
   max-width: 100%;
@@ -104,7 +101,7 @@
 }
 
 @media (max-width: 768px) {
-  .sponsor-single-picture img {
+  .sponsor-single-hero img {
     max-height: 300px;
   }
 }

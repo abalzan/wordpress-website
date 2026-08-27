@@ -326,17 +326,18 @@ final class Conexao_Admin_Ux_Fields {
 		}
 
 		// Sponsor image migration semantics: once the redesigned editor
-		// submits the Imagem Desktop/Imagem Mobile fields, an explicitly
-		// emptied Desktop field must also clear the legacy _sponsor_logo
-		// relationship. Without this, the legacy value would keep resurrecting
-		// the removed artwork through the front-end fallback chain even after
-		// the administrator removed it. Records whose legacy logo was migrated
-		// into _sponsor_desktop_image by a previous save are unaffected (the
-		// submitted value then carries the same attachment ID).
-		if ( 'sponsor' === get_post_type( $post_id ) && array_key_exists( 'sponsor_desktop_image', $meta ) ) {
-			$submitted_desktop = isset( $meta['sponsor_desktop_image'] ) ? self::normalize_media_value( $meta['sponsor_desktop_image'] ) : '';
-			if ( '' === $submitted_desktop ) {
+		// submits the "Imagem do Apoiador" field, an explicitly emptied
+		// field must also clear the LEGACY image relationships
+		// (_sponsor_desktop_image / _sponsor_mobile_image / _sponsor_logo).
+		// Without this, a removed attachment would keep resurrecting through
+		// the front-end fallback chain even after the administrator removed
+		// it. Attachments themselves are never deleted.
+		if ( 'sponsor' === get_post_type( $post_id ) && array_key_exists( 'sponsor_image', $meta ) ) {
+			$submitted_image = isset( $meta['sponsor_image'] ) ? self::normalize_media_value( $meta['sponsor_image'] ) : '';
+			if ( '' === $submitted_image ) {
 				delete_post_meta( $post_id, '_sponsor_logo' );
+				delete_post_meta( $post_id, '_sponsor_desktop_image' );
+				delete_post_meta( $post_id, '_sponsor_mobile_image' );
 			}
 		}
 
@@ -714,15 +715,25 @@ final class Conexao_Admin_Ux_Fields {
 			return get_post_meta( $post->ID, '_event_location', true );
 		}
 
-		// Sponsor Imagem Desktop: fall back to the legacy _sponsor_logo value
-		// so Apoiadores created before the two-field model keep showing their
-		// current artwork as the Desktop image. The first save through this
-		// editor persists that resolved value into _sponsor_desktop_image,
-		// after which the new field is authoritative on its own.
-		if ( '_sponsor_desktop_image' === $key ) {
+		// Sponsor canonical image ("Imagem do Apoiador"): fall back to the
+		// pre-consolidation image metas so existing Apoiadores keep showing
+		// their current artwork prefilled in the editor — resolution order
+		// mirrors the front-end fallback chain:
+		//
+		//   _sponsor_image → _sponsor_mobile_image (portrait) →
+		//   _sponsor_desktop_image → legacy _sponsor_logo
+		//
+		// The first save through this editor persists the resolved value into
+		// _sponsor_image, after which the new field is authoritative on its own.
+		if ( '_sponsor_image' === $key ) {
 			$value = get_post_meta( $post->ID, $key, true );
 			if ( empty( $value ) ) {
-				$value = get_post_meta( $post->ID, '_sponsor_logo', true );
+				foreach ( array( '_sponsor_mobile_image', '_sponsor_desktop_image', '_sponsor_logo' ) as $legacy_key ) {
+					$legacy_value = get_post_meta( $post->ID, $legacy_key, true );
+					if ( ! empty( $legacy_value ) ) {
+						return $legacy_value;
+					}
+				}
 			}
 			return $value;
 		}
