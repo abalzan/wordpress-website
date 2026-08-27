@@ -112,7 +112,15 @@ if ( $is_event_archive ) {
 						$card_classes = 'archive-card' . ( $is_sponsor ? ' archive-card--clickable' : '' );
 						?>
 						<article id="post-<?php the_ID(); ?>" <?php post_class( $card_classes ); ?>>
-							<?php if ( has_post_thumbnail() ) : ?>
+							<?php if ( $is_sponsor && conexao_sponsor_carousel_image( get_the_ID() ) ) :
+								// Canonical "Imagem do Apoiador" (single portrait asset,
+								// same as the Hero carousel) rendered uncropped and responsive;
+								// falls back to the featured thumbnail below when absent.
+								?>
+								<a href="<?php echo esc_url( $card_link ); ?>" class="archive-card-image" aria-hidden="true" tabindex="-1">
+									<?php echo conexao_sponsor_carousel_image( get_the_ID() ); // phpcs:ignore WordPress.Security.EscapeOutput -- safe HTML built in functions.php. ?>
+								</a>
+							<?php elseif ( has_post_thumbnail() ) : ?>
 								<a href="<?php echo esc_url( $card_link ); ?>" class="archive-card-image" aria-hidden="true" tabindex="-1">
 									<?php the_post_thumbnail( 'conexao-card', array( 'loading' => 'lazy' ) ); ?>
 								</a>

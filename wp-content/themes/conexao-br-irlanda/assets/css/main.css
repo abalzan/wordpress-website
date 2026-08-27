@@ -4478,6 +4478,29 @@ input[type="button"] {
   transform: scale(1.05);
 }
 
+/* ===== Sponsor archive (/apoiadores/) portrait images =====
+   The Apoiadores directory follows the SAME portrait standard as the Hero
+   carousel: one canonical image ("Imagem do Apoiador") in a 3:4 portrait
+   frame. object-fit: contain letterboxes every source ratio onto a muted
+   surface without cropping or distorting artwork — the same model the hero
+   .sponsor-tile uses. Scoped to the sponsor post-type archive only, so
+   every other archive card keeps its 16/10 cover treatment. The muted
+   surface var adapts to dark mode through the existing theme tokens. */
+.post-type-archive-sponsor .archive-card-image {
+  aspect-ratio: 3 / 4;
+  background: var(--color-surface-muted);
+}
+
+.post-type-archive-sponsor .archive-card-image img {
+  object-fit: contain;
+}
+
+/* Contained artwork must not be zoom-cropped on hover; keep the card-level
+   lift instead (translateY on the card itself still applies). */
+.post-type-archive-sponsor .archive-card:hover .archive-card-image img {
+  transform: none;
+}
+
 .archive-card-body {
   padding: 20px;
   flex: 1;
