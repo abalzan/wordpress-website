@@ -404,9 +404,33 @@ function conexao_enqueue_scripts() {
 	wp_enqueue_style( 'conexao-design-system', CONEXAO_THEME_URI . '/assets/css/design-system.css', array(), conexao_asset_version( 'assets/css/design-system.css' ) );
 	wp_enqueue_style( 'conexao-header-nav', CONEXAO_THEME_URI . '/assets/css/header-nav.css', array( 'conexao-design-system' ), conexao_asset_version( 'assets/css/header-nav.css' ) );
 	wp_enqueue_style( 'conexao-main', CONEXAO_THEME_URI . '/assets/css/main.css', array( 'conexao-header-nav' ), conexao_asset_version( 'assets/css/main.css' ) );
-	wp_enqueue_style( 'conexao-leisure', CONEXAO_THEME_URI . '/assets/css/leisure.css', array( 'conexao-main' ), conexao_asset_version( 'assets/css/leisure.css' ) );
-	wp_enqueue_style( 'conexao-sponsor', CONEXAO_THEME_URI . '/assets/css/sponsor.css', array( 'conexao-leisure' ), conexao_asset_version( 'assets/css/sponsor.css' ) );
-	wp_enqueue_style( 'conexao-dark-mode', CONEXAO_THEME_URI . '/assets/css/dark-mode.css', array( 'conexao-sponsor' ), conexao_asset_version( 'assets/css/dark-mode.css' ) );
+	// Conditional component stylesheets. Evidence from the audit: the
+	// leisure-* classes are only rendered by the Lazer archive/single
+	// templates (and taxonomy term archives, which can list leisure posts
+	// via archive.php), and the sponsor-single-*/sponsor-contact-* classes
+	// in sponsor.css are only rendered by single-sponsor.php. The homepage
+	// hero carousel styles (.sponsor-tile etc.) live in main.css, so the
+	// carousel is unaffected. Skipping these files saves ~29 KB of CSS
+	// (before compression) on every other page type.
+	$needs_leisure_css = is_post_type_archive( 'leisure' ) || is_singular( 'leisure' ) || is_tax();
+	$needs_sponsor_css = is_singular( 'sponsor' );
+
+	// Keep the cascade order identical to the previous site-wide chain
+	// (main → leisure → sponsor → dark-mode) by chaining dependencies
+	// dynamically; dark-mode.css must always come last so its overrides win.
+	$dark_mode_dep = 'conexao-main';
+
+	if ( $needs_leisure_css ) {
+		wp_enqueue_style( 'conexao-leisure', CONEXAO_THEME_URI . '/assets/css/leisure.css', array( 'conexao-main' ), conexao_asset_version( 'assets/css/leisure.css' ) );
+		$dark_mode_dep = 'conexao-leisure';
+	}
+
+	if ( $needs_sponsor_css ) {
+		wp_enqueue_style( 'conexao-sponsor', CONEXAO_THEME_URI . '/assets/css/sponsor.css', array( $dark_mode_dep ), conexao_asset_version( 'assets/css/sponsor.css' ) );
+		$dark_mode_dep = 'conexao-sponsor';
+	}
+
+	wp_enqueue_style( 'conexao-dark-mode', CONEXAO_THEME_URI . '/assets/css/dark-mode.css', array( $dark_mode_dep ), conexao_asset_version( 'assets/css/dark-mode.css' ) );
 
 	// Load main.js with defer to avoid render-blocking.
 	wp_enqueue_script( 'conexao-main', CONEXAO_THEME_URI . '/assets/js/main.js', array(), conexao_asset_version( 'assets/js/main.js' ), array( 'in_footer' => true, 'strategy' => 'defer' ) );
@@ -951,7 +975,7 @@ function conexao_sponsor_image_id( $sponsor_id ) {
  * @param string $sponsor_title Sponsor name (alt-text fallback).
  * @return string Image HTML, or '' when the sponsor has no usable image.
  */
-function conexao_sponsor_carousel_image( $sponsor_id, $sponsor_title = '' ) {
+function conexao_sponsor_carousel_image( $sponsor_id, $sponsor_title = '', $eager = false ) {
 	$attachment_id = conexao_sponsor_image_id( $sponsor_id );
 
 	if ( ! $attachment_id ) {
@@ -984,7 +1008,13 @@ function conexao_sponsor_carousel_image( $sponsor_id, $sponsor_title = '' ) {
 		$html .= ' width="' . esc_attr( (int) $dimensions[1] ) . '"'
 			. ' height="' . esc_attr( (int) $dimensions[2] ) . '"';
 	}
-	$html .= ' alt="' . esc_attr( $alt ) . '" loading="lazy" decoding="async" />';
+	// Above-the-fold usage (homepage Hero carousel, first slide) loads
+	// eagerly; every other usage stays lazy. The Hero renders its first
+	// slide immediately on page load, so lazy-loading it only delays
+	// paint of visible content — no bandwidth is ever saved.
+	$loading_attr = $eager ? 'loading="eager" decoding="async"' : 'loading="lazy" decoding="async"';
+
+	$html .= ' alt="' . esc_attr( $alt ) . '" ' . $loading_attr . ' />';
 
 	return $html;
 }
@@ -1039,7 +1069,7 @@ function conexao_get_featured_sponsors() {
 	$sponsors = array();
 
 	if ( $query->have_posts() ) {
-		foreach ( $query->posts as $sponsor_post ) {
+		foreach ( $query->posts as $sponsor_index => $sponsor_post ) {
 			$sponsor_id = $sponsor_post->ID;
 			$link       = get_post_meta( $sponsor_id, '_sponsor_link', true );
 
@@ -1072,7 +1102,9 @@ function conexao_get_featured_sponsors() {
 				// crisp at the enlarged display scale. CSS object-fit:contain
 				// still preserves every asset's natural proportions inside
 				// its breakpoint-specific tile frame.
-				'image'         => conexao_sponsor_carousel_image( $sponsor_id, $sponsor_post->post_title ),
+				// The Hero renders slide 0 as soon as the page paints, so
+				// the first image loads eagerly; the rest stay lazy.
+				'image'         => conexao_sponsor_carousel_image( $sponsor_id, $sponsor_post->post_title, 0 === $sponsor_index ),
 				'display_order' => get_post_meta( $sponsor_id, '_sponsor_display_order', true ),
 			);
 		}
