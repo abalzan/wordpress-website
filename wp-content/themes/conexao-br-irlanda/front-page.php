@@ -15,7 +15,7 @@ $hero_subtitle = get_theme_mod( 'conexao_hero_subtitle', __( 'Conectando a comun
 //   Desktop (≥769px): conexaobr_Hero_image.png  (3.71:1 composition with the
 //                     green text-safe zone on the left — unchanged)
 //   Mobile (≤768px):  conexaobr_Hero_image_mobile.webp/.png — dedicated
-//                     1.8:1 full-bleed compositions (WebP 1080×600, PNG
+//                     1.8:1 full-bleed compositions (WebP 900×500, PNG
 //                     fallback 1683×935). On mobile the
 //                     image covers the entire .hero-section and the copy sits
 //                     on top of it, anchored bottom-left over the quiet lake
@@ -44,17 +44,20 @@ $hero_has_sponsors = ! empty( conexao_get_featured_sponsors() );
 	<div class="hero-background" aria-hidden="true">
 		<picture>
 			<!-- Mobile (≤768px): dedicated 1.8:1 full-bleed compositions.
-			     WebP first (1080×600, ≈128 KB), PNG fallback (1683×935 —
-			     same 1.8:1 framing at higher resolution). The browser selects
-			     the matching asset automatically — no JavaScript. The
-			     width/height attributes give each source a truthful
-			     pre-load intrinsic-ratio hint (1.8:1); they never stretch the
-			     image because CSS fully determines the rendered box. -->
+			     WebP first (900×500, ≈100 KB — re-encoded from the PNG master
+			     at q85; 900 device px covers the mobile hero at DPR 2 up to
+			     450 CSS px, which spans every phone width this layout ships),
+			     PNG fallback (1683×935 — same 1.8:1 framing at higher
+			     resolution). The browser selects the matching asset
+			     automatically — no JavaScript. The width/height attributes
+			     give each source a truthful pre-load intrinsic-ratio hint
+			     (1.8:1); they never stretch the image because CSS fully
+			     determines the rendered box. -->
 			<source
 				media="(max-width: 768px)"
 				type="image/webp"
-				width="1080"
-				height="600"
+				width="900"
+				height="500"
 				srcset="<?php echo esc_url( get_template_directory_uri() . '/assets/images/conexaobr_Hero_image_mobile.webp' ); ?>">
 			<source
 				media="(max-width: 768px)"

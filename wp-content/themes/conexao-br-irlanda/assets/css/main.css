@@ -163,7 +163,7 @@ ul, ol {
        carries the green text-safe zone on the left, with the castle, family
        and flags on the right. UNCHANGED by the mobile redesign.
      Mobile (≤768px): conexaobr_Hero_image_mobile (.webp/.png) — dedicated
-       1080×600 (1.8:1) full-bleed composition; the image covers the whole
+       900×500 (1.8:1) full-bleed composition; the image covers the whole
        section and the copy sits on top (see the mobile media queries below).
    The gradient below is only a loading/failure fallback. */
 /* The 3.71:1 cinematic proportion is kept as a MINIMUM via min-height rather
@@ -3962,7 +3962,7 @@ input[type="button"] {
 
   /* Hero section mobile — full-bleed image composition.
      The dedicated 1.8:1 mobile asset (conexaobr_Hero_image_mobile — WebP
-     1080×600, PNG fallback 1683×935, served via the <picture> element)
+     900×500, PNG fallback 1683×935, served via the <picture> element)
      covers the ENTIRE .hero-section; the copy sits on top of it, anchored
      bottom-left over the quiet lake area of the photograph.
 
