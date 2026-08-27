@@ -115,11 +115,13 @@ page-landing.php        → landing page template (specific pages)
 
 The theme dynamically modifies the primary navigation at render time via `wp_nav_menu_objects` filters:
 
-1. **Priority 20** (`conexao_modify_primary_nav_items`): Removes "Notícias" items, changes "Home" to "Início", inserts "Blog" and "Cursos" items.
+1. **Priority 20** (`conexao_modify_primary_nav_items`): Removes "Notícias" and "Sobre Nós" items, changes "Home" to "Início", inserts "Blog" and "Cursos" items.
 2. **Priority 25** (`conexao_normalize_primary_nav_sections`): Binds each nav item to its canonical WordPress object for reliable active-state detection.
 
-Canonical nav order: Início, Blog, Guias, Eventos, Cursos, Lazer, Empregos, Apoiadores, Sobre Nós, Contato.
+Canonical nav order: Início, Blog, Guias, Eventos, Cursos, Lazer, Empregos, Apoiadores, Contato.
 
 Note: "Irlanda" is intentionally NOT a navigation item. The /irlanda/ page remains published and directly accessible; it is simply not linked from the main navigation (desktop and mobile share the same `primary` menu). See `scripts/remove-irlanda-menu-item.php` for removing any legacy "Irlanda" item from an existing menu.
+
+Note: "Sobre Nós" is intentionally NOT a navigation item either. The /sobre-nos/ page remains published and directly accessible at /sobre-nos/; it is simply not linked from the main navigation (desktop and mobile share the same `primary` menu). See `scripts/remove-sobre-nos-menu-item.php` for removing any legacy "Sobre Nós" item from an existing menu.
 
 Active-state resolution uses URL pattern matching in `conexao_fix_nav_active_states()`.

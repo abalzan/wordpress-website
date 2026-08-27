@@ -1828,7 +1828,7 @@ add_filter( 'wp_nav_menu_objects', 'conexao_override_guides_menu_links', 10, 2 )
  * and inserts a "Cursos" item (linked to the existing /courses/ page)
  * immediately before "Empregos", so the final order is:
  *
- *   Início, Blog, Guias, Eventos, Cursos, Empregos, Apoiadores, Irlanda, Sobre Nós, Contato
+ *   Início, Blog, Guias, Eventos, Cursos, Empregos, Apoiadores, Contato
  *
  * Both the desktop nav and the mobile/hamburger menu render the 'primary'
  * theme location, so this single filter applies the change everywhere the
@@ -1858,6 +1858,26 @@ function conexao_modify_primary_nav_items( $items, $args ) {
 			|| untrailingslashit( home_url( '/news' ) ) === $item_url;
 
 		if ( $is_news ) {
+			unset( $items[ $key ] );
+		}
+	}
+	$items = array_values( $items );
+
+	// 1b. Remove the "Sobre Nós" item entirely from the main navigation.
+	//     The /sobre-nos/ page itself stays published and directly accessible;
+	//     only its navigation entry is removed (desktop + mobile share this
+	//     same 'primary' menu location).
+	foreach ( $items as $key => $item ) {
+		$title    = strtolower( trim( wp_strip_all_tags( $item->title ) ) );
+		$item_url = untrailingslashit( (string) $item->url );
+
+		$is_about = 'sobre nós' === $title
+			|| 'sobre nos' === $title
+			|| 'about us' === $title
+			|| false !== strpos( $item_url, '/sobre-nos' )
+			|| untrailingslashit( home_url( '/about-us' ) ) === $item_url;
+
+		if ( $is_about ) {
 			unset( $items[ $key ] );
 		}
 	}
