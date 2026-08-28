@@ -28,6 +28,32 @@
 ## Build Process
 
 ### Plugins
+## Environment Differences
+
+- **Local**: Full admin access, WP_DEBUG enabled, `WORDPRESS_DEBUG=1`
+- **Production**: WordPress.com managed, WP_DEBUG disabled, caching enabled
+- **Domain-specific configuration**: None required — all paths are relative
+
+## Media thumbnails for new image sizes
+
+The theme registers two additive sizes used by the homepage responsive
+images: `conexao-sponsor-tile` (512px, Hero Apoiador carousel) and
+`conexao-event-preview` (240×135 crop, homepage event previews). Attachments
+uploaded *before* these sizes existed must be regenerated once on production
+so the srcset ladders include the small derivatives:
+
+```bash
+# Local (Docker): regenerate the sponsor + event banner attachments
+docker compose exec wordpress php wp-cli.phar media regenerate <IDs...> --skip-delete --yes --allow-root
+```
+
+On WordPress.com production, regenerate thumbnails for the same attachments
+via WP-CLI (`wp media regenerate`) or a plugin equivalent after deploying the
+theme update. The `scripts/generate-logo-derivatives.php` script creates the
+240px header-logo derivatives from the theme assets (already committed; run
+it only if the logo masters are ever replaced).
+
+## Deployment Checklist
 
 ```bash
 ./scripts/build-plugins-zip.sh

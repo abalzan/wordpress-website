@@ -53,9 +53,13 @@
 				<div class="logo">
 					<a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home" class="site-logo-link">
 						<picture>
-							<source type="image/webp" srcset="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo_conexao_br_irlanda.webp' ); ?>">
+							<source type="image/webp"
+								srcset="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo_conexao_br_irlanda-240.webp' ); ?> 240w, <?php echo esc_url( get_template_directory_uri() . '/assets/images/logo_conexao_br_irlanda.webp' ); ?> 480w"
+								sizes="(max-width: 768px) 96px, 72px">
 							<img
 								src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo_conexao_br_irlanda.jpeg' ); ?>"
+								srcset="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo_conexao_br_irlanda-240.jpeg' ); ?> 240w, <?php echo esc_url( get_template_directory_uri() . '/assets/images/logo_conexao_br_irlanda.jpeg' ); ?> 1600w"
+								sizes="(max-width: 768px) 96px, 72px"
 								width="480"
 								height="200"
 								alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>"
@@ -64,9 +68,13 @@
 							>
 						</picture>
 						<picture>
-							<source type="image/webp" srcset="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo_dark_mode.webp' ); ?>">
+							<source type="image/webp"
+								srcset="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo_dark_mode-240.webp' ); ?> 240w, <?php echo esc_url( get_template_directory_uri() . '/assets/images/logo_dark_mode.webp' ); ?> 480w"
+								sizes="(max-width: 768px) 96px, 72px">
 							<img
 								src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo_dark_mode.jpeg' ); ?>"
+								srcset="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo_dark_mode-240.jpeg' ); ?> 240w, <?php echo esc_url( get_template_directory_uri() . '/assets/images/logo_dark_mode.jpeg' ); ?> 1600w"
+								sizes="(max-width: 768px) 96px, 72px"
 								width="480"
 								height="180"
 								alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>"

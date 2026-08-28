@@ -1027,7 +1027,13 @@ function conexao_sponsor_carousel_image( $sponsor_id, $sponsor_title = '', $eage
 		return '';
 	}
 
-	$size = 'large';
+	// Request the proportional 'medium' (300px) derivative as the src so the
+	// srcset ladder keeps EVERY candidate ≥300px — including the dedicated
+	// 512px 'conexao-sponsor-tile' derivative — and lets `sizes` below pick
+	// the right one per viewport. (wp_get_attachment_image_srcset() excludes
+	// candidates smaller than the requested size, so requesting the 512px
+	// tile directly would drop the 300px rung.)
+	$size = 'medium';
 	$src  = wp_get_attachment_image_url( $attachment_id, $size );
 	if ( ! $src ) {
 		return '';
@@ -1046,9 +1052,13 @@ function conexao_sponsor_carousel_image( $sponsor_id, $sponsor_title = '', $eage
 	if ( $srcset ) {
 		$html .= ' srcset="' . esc_attr( $srcset ) . '"';
 	}
-	// Rough column hint so the browser can pick a sensibly sized candidate;
-	// object-fit: contain makes exactness irrelevant to the layout.
-	$html .= ' sizes="(min-width: 769px) 30vw, 50vw"';
+	// Actual tile width hint: on desktop the Hero's right column is ~30vw;
+	// on mobile the portrait tile is roughly 46% of the content width. With
+	// the 512px 'conexao-sponsor-tile' derivative registered, this keeps the
+	// browser on the small candidate instead of the 768/960px originals —
+	// the tile never renders wider than ~350 CSS px, so DPR-2 needs at most
+	// ~700 device px and 512 is the closest adequate candidate.
+	$html .= ' sizes="(min-width: 769px) 30vw, 46vw"';
 	if ( $dimensions ) {
 		$html .= ' width="' . esc_attr( (int) $dimensions[1] ) . '"'
 			. ' height="' . esc_attr( (int) $dimensions[2] ) . '"';
@@ -1738,6 +1748,18 @@ function conexao_image_sizes() {
 	add_image_size( 'conexao-hero', 1200, 600, true );
 	add_image_size( 'conexao-thumb', 200, 150, true );
 	add_image_size( 'conexao-event-banner', 640, 360, true );
+	// Homepage "Próximos Eventos" preview thumb (see template-parts/
+	// event-preview.php). The preview renders at 76–92 CSS px on phones, so
+	// the browser only needs a ~160–320 device-px 16:9 candidate; the 640×360
+	// banner above is kept as the desktop candidate via srcset.
+	add_image_size( 'conexao-event-preview', 240, 135, true );
+	// Homepage Hero Apoiador carousel tile (see
+	// conexao_sponsor_carousel_image()). The tile renders ~170 CSS px wide on
+	// phones and ~30vw on desktop; a 512px-wide proportional derivative
+	// covers both without shipping the 768/960+ originals. Uncropped so the
+	// canonical artwork keeps its natural ratio (CSS letterboxes via
+	// object-fit: contain).
+	add_image_size( 'conexao-sponsor-tile', 512 );
 	add_image_size( 'conexao-provider-logo', 320, 180, false );
 
 	// Empregos (Jobs) featured image — Instagram Story-style portrait.
@@ -1755,6 +1777,8 @@ function conexao_custom_image_sizes( $sizes ) {
 		'conexao-card'         => __( 'Card do Portal', 'conexao-br-irlanda' ),
 		'conexao-hero'         => __( 'Hero do Portal', 'conexao-br-irlanda' ),
 		'conexao-thumb'        => __( 'Miniatura do Portal', 'conexao-br-irlanda' ),
+		'conexao-event-preview' => __( 'Prévia de Evento (16:9)', 'conexao-br-irlanda' ),
+		'conexao-sponsor-tile'  => __( 'Tile do Apoiador (512px)', 'conexao-br-irlanda' ),
 		'conexao-event-banner' => __( 'Banner de Evento', 'conexao-br-irlanda' ),
 		'conexao-provider-logo' => __( 'Logo de Provedor de Cursos', 'conexao-br-irlanda' ),
 		'conexao-job-portrait' => __( 'Vaga Vertical (Instagram)', 'conexao-br-irlanda' ),

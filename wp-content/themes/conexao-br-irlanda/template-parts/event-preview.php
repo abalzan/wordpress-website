@@ -63,7 +63,7 @@ if ( $event_towns && ! is_wp_error( $event_towns ) && ! empty( $event_towns ) ) 
 				if ( $banner_attach_id && wp_attachment_is_image( $banner_attach_id ) ) {
 					echo wp_get_attachment_image(
 						$banner_attach_id,
-						'conexao-event-banner',
+						'conexao-event-preview',
 						false,
 						array(
 							'class'   => 'event-preview-img',
@@ -71,17 +71,16 @@ if ( $event_towns && ! is_wp_error( $event_towns ) && ! empty( $event_towns ) ) 
 							'alt'     => esc_attr( get_the_title() ),
 							// Real rendered thumbnail widths (see main.css): 76px on
 							// small phones, 92px up to 768px, and a half-width card
-							// (~320px) on desktop. The 320px ceiling keeps the
-							// DPR-2 target at ≤640 device px so the browser selects
-							// the 640×360 hard-cropped conexao-event-banner
-							// derivative instead of the much larger uncropped
-							// original (which for portrait sources is the wrong
-							// aspect ratio AND a heavy download).
+							// (~320px) on desktop. Requested size is the 240×135
+							// 16:9 'conexao-event-preview' derivative so phones
+							// (76–92 CSS px ⇒ ≤~320 device px) never download the
+							// 640×360 banner or the original; the srcset ladder
+							// still offers 640×360 for the desktop card.
 							'sizes'   => '(max-width: 480px) 76px, (max-width: 768px) 92px, 320px',
 						)
 					);
 				} else {
-					the_post_thumbnail( 'conexao-event-banner', array(
+					the_post_thumbnail( 'conexao-event-preview', array(
 						'class'   => 'event-preview-img',
 						'loading' => 'lazy',
 						'alt'     => esc_attr( get_the_title() ),
