@@ -450,19 +450,23 @@ add_action( 'wp_enqueue_scripts', 'conexao_enqueue_scripts' );
 
 /**
  * Add preconnect hints for Google Fonts in the head.
+ *
+ * We deliberately do NOT emit a `rel="preload" as="style"` hint for the
+ * fonts here. The Google Fonts stylesheet is already loaded NON render-
+ * blocking via `conexao_fonts_non_blocking` (`media="print"` + `onload`,
+ * with `font-display:swap` in its URL), so the browser downloads it on its
+ * own in the background — a redundant cross-origin `preload as="style"`
+ * would only add a high-priority, third-party request (own DNS+TLS) to the
+ * top of the <head> that competes with the LCP hero image preload for the
+ * first network slot. Removing it lets the browser start the Hero fetch
+ * with nothing in front of it. The two preconnects below still warm the
+ * DNS/TLS path so the font swap happens quickly.
  */
 function conexao_fonts_preconnect() {
 	echo '<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>' . "\n";
 	echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
-
-	// The Google Fonts stylesheet is loaded NON-render-blocking (see
-	// conexao_fonts_non_blocking below), so give the preload scanner an
-	// early, high-priority fetch hint. Same URL as the conexao-fonts
-	// handle, so the browser dedupes the request.
-	$fonts_url = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap';
-	echo '<link rel="preload" as="style" href="' . esc_url( $fonts_url ) . '">' . "\n";
 }
-add_action( 'wp_head', 'conexao_fonts_preconnect', 1 );
+add_action( 'wp_head', 'conexao_fonts_preconnect', 2 );
 
 /**
  * Load the Google Fonts stylesheet WITHOUT blocking first render.
@@ -508,6 +512,18 @@ add_filter( 'style_loader_tag', 'conexao_fonts_non_blocking', 10, 2 );
  * only discovering it after the CSS finishes. Matches the <picture>
  * sources in front-page.php exactly: mobile WebP ≤768px, desktop WebP
  * ≥769px. No-op on every other page.
+ *
+ * IMPORTANT: This function is kept for reference but is no longer hooked
+ * to wp_head. The preload links are now emitted directly in header.php,
+ * BEFORE the inline theme-detection <script>, so the browser's preload
+ * scanner can discover the LCP fetch before the script blocks HTML
+ * parsing. Previously, the preload was emitted at wp_head priority 1
+ * — the first wp_head hook — but wp_head() itself runs AFTER the inline
+ * <script> in header.php. On some mobile browsers, window.matchMedia()
+ * in that script can take several hundred of milliseconds to query the
+ * OS theme, blocking the main parser from reaching the preload links and
+ * causing a ~610 ms resource-load delay on the LCP image. Moving the
+ * preload to the very first position in <head> eliminates that delay.
  */
 function conexao_hero_preload() {
 	if ( ! is_front_page() ) {
@@ -519,7 +535,7 @@ function conexao_hero_preload() {
 	echo '<link rel="preload" as="image" fetchpriority="high" media="(max-width: 768px)" href="' . esc_url( $base . 'conexaobr_Hero_image_mobile.webp' ) . '">' . "\n";
 	echo '<link rel="preload" as="image" fetchpriority="high" media="(min-width: 769px)" href="' . esc_url( $base . 'conexaobr_Hero_image.webp' ) . '">' . "\n";
 }
-add_action( 'wp_head', 'conexao_hero_preload', 2 );
+// Preload now emitted in header.php before the theme init script — see above.
 
 /**
  * ---------------------------------------------------------------------------

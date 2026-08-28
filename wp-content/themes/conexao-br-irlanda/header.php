@@ -9,6 +9,14 @@
 <head>
 <meta charset="<?php bloginfo( 'charset' ); ?>">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<?php if ( is_front_page() ) : ?>
+<!-- Hero LCP preload — emitted in <head> BEFORE the theme init script so the
+     browser's preload scanner discovers the fetch while parsing is unblocked.
+     Media conditions and URLs exactly match the <picture> sources in
+     front-page.php: mobile WebP ≤768px, desktop WebP ≥769px. -->
+<link rel="preload" as="image" type="image/webp" fetchpriority="high" media="(max-width: 768px)" href="<?php echo esc_url( get_template_directory_uri() . '/assets/images/conexaobr_Hero_image_mobile.webp' ); ?>">
+<link rel="preload" as="image" type="image/webp" fetchpriority="high" media="(min-width: 769px)" href="<?php echo esc_url( get_template_directory_uri() . '/assets/images/conexaobr_Hero_image.webp' ); ?>">
+<?php endif; ?>
 <link rel="profile" href="https://gmpg.org/xfn/11">
 <script>
 /* Theme initialization — runs before paint to prevent FOUC. */

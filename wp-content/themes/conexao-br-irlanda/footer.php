@@ -17,9 +17,14 @@
 						<div class="footer-logo">
 							<a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home" class="site-logo-link">
 								<img
-									src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/conexao-logo.jpeg' ); ?>"
+									src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo_dark_mode-240.webp' ); ?>"
+									srcset="<?php echo esc_url( get_template_directory_uri() . '/assets/images/logo_dark_mode-240.webp' ); ?> 240w, <?php echo esc_url( get_template_directory_uri() . '/assets/images/logo_dark_mode.webp' ); ?> 480w"
+									sizes="(max-width: 768px) 240px, 480px"
+									width="480"
+									height="180"
 									alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>"
 									class="site-logo-img"
+									loading="lazy"
 								>
 							</a>
 						</div>
