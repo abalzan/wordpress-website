@@ -127,7 +127,7 @@ Because featured images are embedded as base64, export JSON files are often
 - redirects back with a clear error notice when PHP rejects an oversized POST
   (`post_max_size`) or the file exceeds `upload_max_filesize`.
 
-Locally, `docker/php/uploads.ini` raises both limits to 64M (see
+Locally, `docker/php/uploads.ini` raises both limits to 300M (see
 `docs/development.md`). On production (WordPress.com) the limits are
 platform-managed; if an export is too large, run **Cleanup** locally first or
 split the export.

@@ -11,7 +11,7 @@
 ## PHP Upload Limits (Local)
 
 - The official `wordpress` image defaults to `upload_max_filesize = 2M` and `post_max_size = 8M`, which is too small for large event/Lazer export files.
-- `docker/php/uploads.ini` is mounted into the container at `/usr/local/etc/php/conf.d/zz-conexao-uploads.ini` and raises the limits to 64M (plus memory/time limits for long imports).
+- `docker/php/uploads.ini` is mounted into the container at `/usr/local/etc/php/conf.d/zz-conexao-uploads.ini` and raises the limits to 300M (plus memory/time limits for long imports).
 - Changes to that file require a container restart: `docker compose restart wordpress`.
 - Production equivalents are managed by the hosting platform (WordPress.com) and cannot be changed from this repo.
 - Both import screens (Events → Import Events, Lazer → Importar Lazer) display the effective maximum upload size, validate file size client-side before submitting, and show a clear error notice if a POST is rejected by `post_max_size`.

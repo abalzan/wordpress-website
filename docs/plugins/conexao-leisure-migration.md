@@ -61,7 +61,7 @@ The **Importar Lazer** screen displays the effective maximum upload size
 client-side before submitting, and redirects back with a clear error notice
 when PHP rejects an oversized POST (`post_max_size`) or the file exceeds
 `upload_max_filesize`. Locally, `docker/php/uploads.ini` raises both limits to
-64M (see `docs/development.md`).
+300M (see `docs/development.md`).
 
 ## Data
 
