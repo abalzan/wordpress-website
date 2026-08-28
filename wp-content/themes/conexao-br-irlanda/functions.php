@@ -737,6 +737,42 @@ function conexao_dequeue_block_library() {
 		wp_dequeue_style( 'wc-blocks-style' );
 	}
 }
+/**
+ * Dequeue the "Gravatar Enhanced" pattern stylesheets on the frontend.
+ *
+ * PageSpeed audit evidence: gravatar-enhanced-patterns-shared,
+ * -edit and -view load as render-blocking CSS on every public page,
+ * including the homepage — yet the theme and all custom templates
+ * contain no Gravatar pattern blocks (comments use core get_avatar(),
+ * which needs no stylesheet). The "-edit" sheet is editor-only markup
+ * leaking into the public head.
+ *
+ * They are only kept when the queried singular content actually embeds
+ * a Gravatar block, so a future block-based page keeps working.
+ */
+function conexao_dequeue_gravatar_patterns() {
+	if ( is_admin() ) {
+		return;
+	}
+
+	$content = '';
+	if ( is_singular() ) {
+		$post = get_queried_object();
+		if ( $post && ! empty( $post->post_content ) ) {
+			$content = $post->post_content;
+		}
+	}
+
+	if ( false === strpos( $content, 'gravatar' ) ) {
+		wp_dequeue_style( 'gravatar-enhanced-patterns-shared' );
+		wp_dequeue_style( 'gravatar-enhanced-patterns-edit' );
+		wp_dequeue_style( 'gravatar-enhanced-patterns-view' );
+	}
+}
+add_action( 'wp_enqueue_scripts', 'conexao_dequeue_gravatar_patterns', 100 );
+
+/**
+ * Remove emoji scripts/styles (saves ~15KB of JS/CSS on every page).
 add_action( 'wp_enqueue_scripts', 'conexao_dequeue_block_library', 100 );
 
 /**

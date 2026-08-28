@@ -19,14 +19,36 @@ define( 'CONEXAO_CONTENT_URI', plugin_dir_url( __FILE__ ) );
 
 /**
  * Enqueue styles for plugin shortcodes and widgets
+ *
+ * The stylesheet is tiny (~0.9 KB) but it was previously a separate
+ * render-blocking <link> on EVERY page, including the homepage, where
+ * its classes are mostly unused. PageSpeed flags every blocking request,
+ * and each one costs a full HTTP round-trip before first paint. It is
+ * now inlined (well under the "very small critical CSS" threshold), which:
+ *   - removes one render-blocking request from every page;
+ *   - removes the stale-cache risk of versioning by a constant instead
+ *     of filemtime (WordPress.com edge could serve the old file forever);
+ *   - keeps assets/css as the single source of truth (read at runtime,
+ *     never duplicated in PHP).
+ * Cascade position is unchanged: the inline block prints exactly where
+ * the <link> used to print, before the theme's dark-mode overrides.
  */
 function conexao_content_enqueue_styles() {
-    wp_enqueue_style(
-        'conexao-content',
-        CONEXAO_CONTENT_URI . 'assets.css',
-        array(),
-        CONEXAO_CONTENT_VERSION
-    );
+	$css_file = CONEXAO_CONTENT_DIR . 'assets.css';
+
+	if ( ! file_exists( $css_file ) ) {
+		return;
+	}
+
+	$css = file_get_contents( $css_file );
+
+	if ( false === $css || '' === trim( $css ) ) {
+		return;
+	}
+
+	wp_register_style( 'conexao-content', false, array(), CONEXAO_CONTENT_VERSION );
+	wp_enqueue_style( 'conexao-content' );
+	wp_add_inline_style( 'conexao-content', $css );
 }
 add_action( 'wp_enqueue_scripts', 'conexao_content_enqueue_styles' );
 
