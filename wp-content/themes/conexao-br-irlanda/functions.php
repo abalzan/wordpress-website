@@ -447,8 +447,53 @@ add_action( 'wp_enqueue_scripts', 'conexao_enqueue_scripts' );
 function conexao_fonts_preconnect() {
 	echo '<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>' . "\n";
 	echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
+
+	// The Google Fonts stylesheet is loaded NON-render-blocking (see
+	// conexao_fonts_non_blocking below), so give the preload scanner an
+	// early, high-priority fetch hint. Same URL as the conexao-fonts
+	// handle, so the browser dedupes the request.
+	$fonts_url = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap';
+	echo '<link rel="preload" as="style" href="' . esc_url( $fonts_url ) . '">' . "\n";
 }
 add_action( 'wp_head', 'conexao_fonts_preconnect', 1 );
+
+/**
+ * Load the Google Fonts stylesheet WITHOUT blocking first render.
+ *
+ * The external fonts CSS used to be a render-blocking stylesheet on a
+ * third-party origin: the browser had to complete DNS + TLS + request to
+ * fonts.googleapis.com BEFORE painting anything, which delayed FCP and —
+ * most visibly on mobile — pushed the hero image's first paint out by
+ * ~1 s (the PageSpeed "element render delay" on the LCP hero image).
+ *
+ * The standard async-CSS pattern fixes this without changing the visual
+ * result: the link is printed with media="print" (non-render-blocking,
+ * still downloaded), promoted to media="all" by onload, and a <noscript>
+ * fallback keeps the fonts working without JavaScript. font-display:swap
+ * (already in the URL) means text paints with the fallback face and
+ * upgrades when the real fonts arrive — identical behavior to before on
+ * slow connections, but first paint no longer waits for the third-party
+ * round-trip.
+ */
+function conexao_fonts_non_blocking( $tag, $handle ) {
+	if ( 'conexao-fonts' !== $handle ) {
+		return $tag;
+	}
+
+	// Non-blocking: print media never blocks rendering; onload promotes it.
+	$async_tag = str_replace(
+		"media='all'",
+		"media='print' onload=\"this.media='all'\"",
+		$tag
+	);
+
+	// Progressive enhancement fallback: keep the blocking stylesheet when
+	// JavaScript is unavailable (or the onload handler never runs).
+	$noscript = '<noscript>' . trim( $tag ) . '</noscript>' . "\n";
+
+	return $async_tag . $noscript;
+}
+add_filter( 'style_loader_tag', 'conexao_fonts_non_blocking', 10, 2 );
 
 /**
  * Preload the homepage Hero background (the LCP element) so the browser
