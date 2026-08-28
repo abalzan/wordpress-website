@@ -407,11 +407,17 @@
 }
 
 [data-theme="dark"] .section-eyebrow {
-  color: var(--color-primary);
+  /* Use the intended dark-mode brand green (#3ab875) — not --color-primary,
+     which stays at the light value when page-optimize concatenates a later
+     `:root` after this file, killing the token override and dropping these
+     accents to #0e6b3a (contrast ~2.7:1 on dark surfaces). #3ab875 gives
+     5.9–7.1:1. Keep the global token untouched to avoid regressing
+     white-on-green buttons elsewhere. */
+  color: #3ab875;
 }
 
 [data-theme="dark"] .section-link {
-  color: var(--color-primary);
+  color: #3ab875;
 }
 
 [data-theme="dark"] .section-link:hover {
@@ -574,7 +580,9 @@
 [data-theme="dark"] .provider-card-category,
 [data-theme="dark"] .leisure-card-category {
   background: var(--color-primary-50);
-  color: var(--color-primary);
+  /* Dark-mode brand green for the accent text on the dark primary-50 tint
+     (see .section-eyebrow notes; #0e6b3a → 2.27:1, #3ab875 → 5.94:1). */
+  color: #3ab875;
 }
 
 [data-theme="dark"] .card-category--accent,
@@ -687,7 +695,7 @@
 }
 
 [data-theme="dark"] .guide-link {
-  color: var(--color-primary);
+  color: #3ab875;
 }
 
 /* ===== 11. EVENTS ===== */
@@ -745,7 +753,7 @@
 }
 
 [data-theme="dark"] .events-section-link {
-  color: var(--color-primary);
+  color: #3ab875;
 }
 
 [data-theme="dark"] .events-section-link:hover {
@@ -1112,7 +1120,7 @@
 }
 
 [data-theme="dark"] .quote-author {
-  color: var(--color-primary);
+  color: #3ab875;
 }
 
 /* ===== 23. COMMENTS ===== */

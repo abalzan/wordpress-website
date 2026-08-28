@@ -84,6 +84,22 @@ All in `template-parts/`:
 - Inline `<script>` in `<head>` prevents FOUC by reading localStorage before paint
 - All CSS variables get dark overrides in `dark-mode.css`
 - The `main.js` syncs `aria-pressed` on the toggle button
+- **Homepage accent text** (`.section-eyebrow`, `.section-link`,
+  `.featured-article-category`, `.guide-link`, `.events-section-link`,
+  `.quote-author`): the dark-mode color is deliberately hard-coded to the
+  intended dark brand green `#3ab875` rather than `var(--color-primary)`.
+  When page-optimize concatenates CSS, a later `:root` in `main.css` wins the
+  cascade over the `[data-theme="dark"]` token block (equal specificity), so
+  `--color-primary` stays at the light value `#0e6b3a` (contrast ~2.7:1 on
+  dark). Keep these overrides; don't revert them to `var(--color-primary)`.
+
+## Accessibility details
+
+- **Carousel pagination dots** (`.sponsors-carousel-dot`): each button is a
+  24×24px hit target (WCAG 2.5.8) with the small visible dot drawn via
+  `::before`; buttons sit 24px apart (`gap: 0`) so no target is obscured.
+- **WhatsApp float**: wrapped in an `<aside>` (complementary landmark) in
+  `conexao_whatsapp_button()` so it is contained by a landmark (axe `region`).
 
 ## Homepage Hero
 

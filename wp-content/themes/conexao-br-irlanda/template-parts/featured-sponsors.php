@@ -80,7 +80,6 @@ $sponsor_total = count( $featured_sponsors );
 					$sponsor_href  = $featured_sponsor['permalink'];
 					?>
 					<li class="sponsors-slide"
-						role="group"
 						aria-roledescription="slide"
 						aria-label="<?php echo esc_attr( sprintf( __( 'Apoiador %1$d de %2$d', 'conexao-br-irlanda' ), $sponsor_index + 1, $sponsor_total ) ); ?>">
 						<a href="<?php echo esc_url( $sponsor_href ); ?>"

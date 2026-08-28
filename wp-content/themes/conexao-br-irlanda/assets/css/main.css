@@ -652,7 +652,9 @@ ul, ol {
 /* Pagination dots: slim frosted pill at the bottom center so the dots stay
    readable over bright artwork AND over the light letterbox surface. One
    dot per slide (rendered in PHP); the carousel JS wires clicks and keeps
-   the active state in sync. */
+   the active state in sync. Each dot is a 24×24px hit target (WCAG 2.5.8);
+   the visible dot stays small via ::before and the buttons sit 24px apart
+   (gap: 0) so the targets are never partially obscured. */
 .sponsors-carousel-dots {
   position: absolute;
   bottom: clamp(12px, 1.8vw, 16px);
@@ -661,7 +663,7 @@ ul, ol {
   z-index: 3;
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 0;
   padding: 6px 10px;
   border-radius: var(--conexao-radius-full);
   background: rgba(6, 44, 35, 0.38);
@@ -671,23 +673,39 @@ ul, ol {
 }
 
 .sponsors-carousel-dot {
-  width: 8px;
-  height: 8px;
+  position: relative;
+  width: 24px;
+  height: 24px;
+  /* 24px hit targets (WCAG 2.5.8) must not overlap, or they count as
+     partially obscured; centers sit 24px apart (gap: 0 on the container).
+     The visible dot stays small via ::before. */
+  margin: 0;
   padding: 0;
   border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.sponsors-carousel-dot::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
   border-radius: var(--conexao-radius-full);
   background: rgba(255, 255, 255, 0.55);
-  cursor: pointer;
   transition: background var(--conexao-transition), width var(--conexao-transition);
 }
 
-.sponsors-carousel-dot:hover {
+.sponsors-carousel-dot:hover::before {
   background: rgba(255, 255, 255, 0.8);
 }
 
 /* Active dot: filled and elongated into a small pill — clearly visible
    without competing with the artwork. */
-.sponsors-carousel-dot.is-active {
+.sponsors-carousel-dot.is-active::before {
   width: 20px;
   background: #ffffff;
 }
@@ -878,16 +896,23 @@ ul, ol {
 
   .hero-sponsors .sponsors-carousel-dots {
     bottom: 8px;
-    gap: 5px;
+    gap: 0;
     padding: 4px 8px;
   }
 
+  /* Small 24px hit targets, no overlap → dot centers 24px apart. */
   .hero-sponsors .sponsors-carousel-dot {
+    width: 24px;
+    height: 24px;
+    margin: 0;
+  }
+
+  .hero-sponsors .sponsors-carousel-dot::before {
     width: 6px;
     height: 6px;
   }
 
-  .hero-sponsors .sponsors-carousel-dot.is-active {
+  .hero-sponsors .sponsors-carousel-dot.is-active::before {
     width: 16px;
   }
 }
@@ -1353,7 +1378,10 @@ ul, ol {
 
 .section-subtitle {
   font-size: 1rem;
-  color: var(--conexao-gray-600);
+  /* gray-700 (not gray-600): on the muted section background (#f5f7f8)
+     gray-600 (#6c757d) is only ~4.36:1; gray-700 (#495057) clears 4.5:1.
+     Dark mode is overridden separately in dark-mode.css. */
+  color: var(--conexao-gray-700);
   margin-top: 8px;
 }
 
@@ -1464,7 +1492,9 @@ ul, ol {
   align-items: center;
   gap: 16px;
   font-size: 0.8125rem;
-  color: var(--conexao-gray-500);
+  /* gray-600 (not gray-500): gray-500 (#adb5bd) is only 2.07:1 on white;
+     gray-600 (#6c757d) is 4.83:1 (AA). Dark mode is overridden separately. */
+  color: var(--conexao-gray-600);
 }
 
 .featured-article-meta span {
@@ -2815,7 +2845,9 @@ ul, ol {
   align-items: center;
   gap: 12px;
   font-size: 0.75rem;
-  color: var(--conexao-gray-500);
+  /* gray-600 (not gray-500): gray-500 (#adb5bd) is only 2.07:1 on white;
+     gray-600 (#6c757d) is 4.83:1 (AA). Dark mode is overridden separately. */
+  color: var(--conexao-gray-600);
   padding-top: 16px;
   border-top: 1px solid var(--conexao-border);
 }
