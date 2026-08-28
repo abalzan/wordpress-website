@@ -27,6 +27,13 @@ require_once CONEXAO_THEME_DIR . '/inc/seo.php';
 require_once CONEXAO_THEME_DIR . '/inc/empregos-landing.php';
 
 /**
+ * Load the Empregos "Onde procurar emprego" job-search resources (filterable
+ * data source for the external job-site cards rendered below the landing
+ * content by page-empregos.php).
+ */
+require_once CONEXAO_THEME_DIR . '/inc/job-resources.php';
+
+/**
  * Relabel "Posts" to "Blog" in the WordPress admin.
  *
  * This makes the admin interface clearer for non-technical administrators

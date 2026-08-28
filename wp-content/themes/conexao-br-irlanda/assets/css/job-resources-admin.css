@@ -1,0 +1,40 @@
+.wp-admin .conexao-job-resources-admin .conexao-job-resource-row {
+	max-width: 980px;
+}
+
+.wp-admin .conexao-job-resources-admin .conexao-job-resource-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 4px 16px;
+	padding: 8px 12px 12px;
+}
+
+.wp-admin .conexao-job-resources-admin .conexao-job-resource-field--full,
+.wp-admin .conexao-job-resources-admin .conexao-job-resource-image {
+	grid-column: 1 / -1;
+}
+
+.wp-admin .conexao-job-resources-admin .conexao-job-resource-field label {
+	display: block;
+	font-weight: 600;
+	margin-bottom: 4px;
+}
+
+.wp-admin .conexao-job-resources-admin .conexao-job-resource-thumb {
+	max-width: 96px;
+	height: auto;
+	display: block;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	background: #fff;
+}
+
+.wp-admin .conexao-job-resources-admin .conexao-job-resource-image-preview:empty {
+	display: none;
+}
+
+@media (max-width: 782px) {
+	.wp-admin .conexao-job-resources-admin .conexao-job-resource-grid {
+		grid-template-columns: 1fr;
+	}
+}

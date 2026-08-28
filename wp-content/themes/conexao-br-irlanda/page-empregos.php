@@ -100,6 +100,13 @@ get_header();
 
 		<?php endwhile; ?>
 
+		<?php
+		// "Onde procurar emprego" — external job-search sites, rendered below
+		// the existing Instagram banner / guidance content (content above is
+		// untouched; the data lives in inc/job-resources.php).
+		get_template_part( 'template-parts/job-resources' );
+		?>
+
 	</main>
 </div>
 

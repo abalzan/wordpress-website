@@ -5822,3 +5822,59 @@ input[type="button"] {
     text-align: center;
   }
 }
+
+/* =============================================================
+   Empregos — "Onde procurar emprego" (job resources section)
+   =============================================================
+   External job-search sites rendered below the landing content.
+   The cards intentionally reuse the Event card classes
+   (.event-card*) so they inherit the existing card design and
+   dark-mode treatment; only the section heading, grid spacing and
+   the image fallback banner are new. */
+
+.empregos-job-resources {
+  margin-top: var(--space-7);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--color-border);
+}
+
+.empregos-job-resources-title {
+  font-size: clamp(1.375rem, 3vw, 1.75rem);
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: var(--space-5);
+  line-height: 1.2;
+}
+
+/* Cards stretch to equal height so the CTA rows align across the row. */
+.empregos-job-resources .event-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.empregos-job-resources .event-card-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.empregos-job-resources .event-card-cta {
+  margin-top: auto;
+}
+
+/* Image fallback: a branded gradient banner with the site initial, used
+   when a resource has no image yet (never a broken image). */
+.job-resource-banner-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--conexao-primary), var(--conexao-accent));
+}
+
+.job-resource-banner-letter {
+  font-size: clamp(2.5rem, 6vw, 3.5rem);
+  font-weight: 700;
+  color: var(--conexao-white);
+  line-height: 1;
+  text-transform: uppercase;
+}

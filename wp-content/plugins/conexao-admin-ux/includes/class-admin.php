@@ -42,9 +42,12 @@ final class Conexao_Admin_Ux {
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_list_assets' ) );
 		add_action( 'admin_footer', array( $this, 'render_empty_state' ) );
 		add_filter( 'wp_insert_post_empty_content', array( $this, 'bypass_empty_content_guard_for_editor' ), 10, 2 );
+		add_filter( 'use_block_editor_for_post_type', array( $this, 'force_classic_editor_for_post_type' ), 100, 2 );
+		add_filter( 'use_block_editor_for_post', array( $this, 'force_classic_editor_for_post' ), 100, 2 );
 		add_filter( 'post_type_labels_event', array( $this, 'event_labels' ) );
 		add_filter( 'post_type_labels_guide', array( $this, 'guide_labels' ) );
 		add_filter( 'post_type_labels_job', array( $this, 'job_labels' ) );
+		add_action( 'wp_untrash_post_status', array( $this, 'restore_original_status_on_untrash' ), 10, 3 );
 		add_filter( 'post_type_labels_sponsor', array( $this, 'sponsor_labels' ) );
 		add_filter( 'post_type_labels_course_provider', array( $this, 'course_provider_labels' ) );
 	}
@@ -113,6 +116,85 @@ final class Conexao_Admin_Ux {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Boot the reusable list + editor for each supported content type.
+	/**
+	 * Force the classic editor for the content types managed by Admin UX.
+	 *
+	 * Root cause of the broken Empregos (and Eventos/Guias/Apoiadores) CRUD:
+	 *
+	 * The Admin UX editor is a classic meta-box implementation. It renders
+	 * its own sectioned form fields and a custom publish box, and persists
+	 * everything through the classic wp-admin flow: the edit form POSTs to
+	 * post.php, the $_POST payload is read inside `save_post_{type}`, and
+	 * virtual title/description fields are mapped onto post_title/content.
+	 *
+	 * When the block editor is active instead, edit-form-advanced.php's main
+	 * `<form name="post">` is never rendered (meta boxes are printed inside
+	 * non-submitting `metabox-location-*` wrapper forms and saving happens
+	 * through the REST API). Consequences on those screens:
+	 *   - The custom "Publicar"/"Atualizar" buttons submit nothing.
+	 *   - `$_POST['conexao_fields']` never exists during the REST save, so
+	 *     `Conexao_Admin_Ux_Editor::save()` persists no custom fields and
+	 *     the virtual title/description are never written.
+	 *   - Core title/content edits bypass the structured editor entirely.
+	 * Net effect: creating or editing a record "succeeds" while losing all
+	 * admin-UX-managed data — the Empregos admin appeared non-functional.
+	 *
+	 * This filter restores the classic editor (and thus the working classic
+	 * save flow) for the supported content types only. Posts, pages and any
+	 * unmanaged post types keep the block editor untouched.
+	 *
+	 * @param bool   $use_block_editor Whether the post type uses the block editor.
+	 * @param string $post_type        Post type name.
+	 * @return bool
+	 */
+	public function force_classic_editor_for_post_type( $use_block_editor, $post_type ) {
+		if ( in_array( $post_type, Conexao_Admin_Ux_Config::SUPPORTED_TYPES, true ) ) {
+			return false;
+		}
+
+		return $use_block_editor;
+	}
+
+	/**
+	 * Same as force_classic_editor_for_post_type() but for a specific post
+	 * being loaded (e.g. edit.php/post.php on an existing Emprego record).
+	 *
+	 * @param bool    $use_block_editor Whether the post uses the block editor.
+	 * @param WP_Post $post             Post object.
+	 * @return bool
+	 */
+	public function force_classic_editor_for_post( $use_block_editor, $post ) {
+		if ( $post instanceof WP_Post
+			&& in_array( $post->post_type, Conexao_Admin_Ux_Config::SUPPORTED_TYPES, true ) ) {
+			return false;
+		}
+
+		return $use_block_editor;
+	}
+
+	/**
+	 * Restore the original status when a managed post is taken out of the
+	 * Trash. WordPress defaults to "draft" on restore; for the Admin UX
+	 * content types the archive/publish status is part of the record, so
+	 * restoring a previously published Emprego should put it back to
+	 * publish (mirrors the pre-trash state, including the custom status).
+	 *
+	 * @param string $new_status      Status to apply after untrash.
+	 * @param int    $post_id         ID of the post being restored.
+	 * @param string $previous_status Status before the post was trashed.
+	 * @return string
+	 */
+	public function restore_original_status_on_untrash( $new_status, $post_id, $previous_status ) {
+		if ( in_array( get_post_type( $post_id ), Conexao_Admin_Ux_Config::SUPPORTED_TYPES, true )
+			&& in_array( $previous_status, array( 'publish', 'future', 'private' ), true ) ) {
+			return $previous_status;
+		}
+
+		return $new_status;
 	}
 
 	/**

@@ -1,12 +1,14 @@
 # Conexão Admin UX
 
 - **Path**: `wp-content/plugins/conexao-admin-ux/`
-- **Version**: 1.0.1
+- **Version**: 1.0.3
 - **Purpose**: Professional, reusable CMS admin experience for all custom content types. Replaces generic meta boxes with structured sections, clear statuses, bulk actions, duplicate/archive workflows, dashboard summaries, and leisure image management.
 
 ## Responsibilities
 
 - Provide structured editor UI (sections, fields) for event/guide/job/sponsor/course_provider/leisure
+- Force the **classic editor** for these content types (`use_block_editor_for_post_type` filter). The sectioned editor is a classic meta-box implementation that persists through the `post.php` form POST and `save_post_{type}` hook; under the block editor its publish buttons and `$_POST` fields are unreachable and all structured data would be silently lost. Posts, pages, and unmanaged types keep the block editor.
+- Restore the pre-trash status on "Restore" for managed types (core defaults untrash to `draft`).
 - Manage custom publishing statuses per content type (draft, needs_review, published, archived, etc.)
 - Provide custom admin list columns, filters, bulk actions, and row actions
 - Render dashboard summary cards

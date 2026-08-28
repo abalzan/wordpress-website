@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Conexão BR Irlanda — Admin UX
  * Description: Reusable, professional CMS admin experience for Eventos, Notícias, Guias, Empregos and Apoiadores. Replaces generic meta boxes with structured sections, clear statuses, bulk actions, duplicate/archive workflows and dashboard summaries.
- * Version: 1.0.2
+ * Version: 1.0.3
  * Text Domain: conexao-admin-ux
  * Requires at least: 6.4
  * Requires PHP: 8.0
