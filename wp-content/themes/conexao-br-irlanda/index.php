@@ -18,7 +18,7 @@
 									<div class="entry-meta">
 										<?php conexao_post_meta(); ?>
 										<span class="post-author"><?php the_author(); ?></span>
-										<?php $categories = get_the_category(); if ( ! empty( $categories ) ) { echo '<span class="post-categories">'; foreach ( $categories as $category ) { echo '<a href="' . esc_url( get_category_link( $category->term_id ) ) . '">' . esc_html( $category->name ) . '</a>'; } echo '</span>'; } ?>
+										<?php $categories = get_the_category(); if ( ! empty( $categories ) ) { echo '<span class="post-categories">'; foreach ( $categories as $category ) { echo '<a href="' . esc_url( conexao_blog_category_filter_url( $category->slug ) ) . '">' . esc_html( $category->name ) . '</a>'; } echo '</span>'; } ?>
 									</div>
 								</header>
 								<div class="entry-summary"><?php the_excerpt(); ?></div>

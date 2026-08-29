@@ -1507,9 +1507,36 @@ function conexao_darken_color( $hex, $percent ) {
 }
 
 /**
+ * Build the Blog category filter URL.
+ *
+ * Blog categories are filtered on the Blog archive itself via the
+ * ?categoria= query parameter (/blog/?categoria=slug) — the same pattern
+ * as Guias — instead of navigating to the native WordPress
+ * /category/{slug}/ archive. The archive base URL is resolved from the
+ * configured posts page (page_for_posts) so it follows the permalink
+ * rather than being hard-coded.
+ *
+ * @param string $category_slug Category slug. Empty returns the base archive URL.
+ * @return string Absolute URL to the (optionally filtered) Blog archive.
+ */
+function conexao_blog_category_filter_url( $category_slug ) {
+	$blog_url = get_permalink( (int) get_option( 'page_for_posts' ) );
+	if ( ! is_string( $blog_url ) || '' === $blog_url ) {
+		$blog_url = home_url( '/blog/' );
+	}
+
+	$category_slug = sanitize_title( $category_slug );
+	if ( '' === $category_slug ) {
+		return $blog_url;
+	}
+
+	return add_query_arg( 'categoria', $category_slug, $blog_url );
+}
+
+/**
  * Content-type archive query filtering.
  *
- * Each archive (Eventos, Cursos, Guias) applies its own filtering and ordering
+ * Each archive (Eventos, Cursos, Guias, Blog) applies its own filtering and ordering
  * to the main query:
  *
  *  - Eventos: only upcoming events (date >= today), ordered by date ascending,
@@ -1517,6 +1544,7 @@ function conexao_darken_color( $hex, $percent ) {
  *  - Cursos: only published providers (_provider_status = published), ordered
  *    by display order, with optional ?categoria= (provider category meta) filter.
  *  - Guias: optional ?categoria= (conexao_category taxonomy) filter.
+ *  - Blog (/blog/): optional ?categoria= (native `category` taxonomy) filter.
  *
  * The ?categoria= parameter is content-type-aware: on /eventos/ it filters by
  * the conexao_category taxonomy, on /cursos/ by the _provider_category meta,
@@ -1685,6 +1713,32 @@ function conexao_content_archive_query( $query ) {
 
 		if ( ! empty( $tax_query ) ) {
 			$query->set( 'tax_query', $tax_query );
+		}
+	}
+
+	/*
+	 * Blog (/blog/): optional ?categoria= filter via the native `category`
+	 * taxonomy. Blog category links point at the Blog archive itself
+	 * (/blog/?categoria=slug — see conexao_blog_category_filter_url())
+	 * instead of the default /category/{slug}/ archive, so the same
+	 * main-query filtering pattern used by Guias above applies here. The
+	 * native category taxonomy and its archives remain fully intact for
+	 * the rest of WordPress (wp-admin, feeds, direct /category/ URLs).
+	 *
+	 * The current Blog query is reused as-is (no extra query); pagination
+	 * links carry the query string, so the filter is preserved on every
+	 * page — including the infinite-scroll enhancement, which fetches the
+	 * real /page/N/ URLs rendered by the pagination component.
+	 */
+	if ( $query->is_home() ) {
+		$category = isset( $_GET['categoria'] ) ? sanitize_title( wp_unslash( $_GET['categoria'] ) ) : '';
+		if ( $category ) {
+			$query->set( 'category_name', $category );
+
+			// WordPress prepends sticky posts on the posts page even when
+			// they do not match the category filter — a filtered view must
+			// never leak off-category sticky posts to the top.
+			$query->set( 'ignore_sticky_posts', true );
 		}
 	}
 }

@@ -23,16 +23,23 @@ get_header();
 
 		<?php
 		// Display blog categories filter.
-		$categories = get_categories( array( 'hide_empty' => true, 'orderby' => 'name' ) );
+		//
+		// Category links filter the Blog archive itself (/blog/?categoria=slug
+		// — same pattern as Guias) instead of navigating to the native
+		// WordPress /category/{slug}/ archive. The active state follows the
+		// ?categoria= parameter, since is_category() is never true on the
+		// Blog posts page.
+		$categories            = get_categories( array( 'hide_empty' => true, 'orderby' => 'name' ) );
+		$current_blog_category = isset( $_GET['categoria'] ) ? sanitize_title( wp_unslash( $_GET['categoria'] ) ) : '';
 		if ( ! empty( $categories ) ) :
 		?>
 		<nav class="events-filter-bar" aria-label="<?php esc_attr_e( 'Categorias do blog', 'conexao-br-irlanda' ); ?>">
 			<span class="events-filter-label"><?php esc_html_e( 'Categorias', 'conexao-br-irlanda' ); ?></span>
-			<a class="events-filter-link<?php echo ! is_category() ? ' is-active' : ''; ?>" href="<?php echo esc_url( home_url( '/blog/' ) ); ?>">
+			<a class="events-filter-link<?php echo '' === $current_blog_category ? ' is-active' : ''; ?>" href="<?php echo esc_url( conexao_blog_category_filter_url( '' ) ); ?>">
 				<?php esc_html_e( 'Todos', 'conexao-br-irlanda' ); ?>
 			</a>
 			<?php foreach ( $categories as $category ) : ?>
-				<a class="events-filter-link<?php echo is_category( $category->slug ) ? ' is-active' : ''; ?>" href="<?php echo esc_url( get_category_link( $category->term_id ) ); ?>">
+				<a class="events-filter-link<?php echo $current_blog_category === $category->slug ? ' is-active' : ''; ?>" href="<?php echo esc_url( conexao_blog_category_filter_url( $category->slug ) ); ?>">
 					<?php echo esc_html( $category->name ); ?>
 				</a>
 			<?php endforeach; ?>

@@ -10,8 +10,15 @@
 			if ( ! empty( $categories ) && ! is_wp_error( $categories ) ) {
 				echo '<div class="post-categories">';
 				foreach ( $categories as $category ) {
-					$cat_link = get_term_link( $category );
-					if ( ! is_wp_error( $cat_link ) ) {
+					if ( 'category' === $category->taxonomy ) {
+						// Native blog categories filter the Blog archive
+						// (/blog/?categoria=slug) instead of the default
+						// /category/{slug}/ archive.
+						$cat_link = conexao_blog_category_filter_url( $category->slug );
+					} else {
+						$cat_link = get_term_link( $category );
+					}
+					if ( ! is_wp_error( $cat_link ) && $cat_link ) {
 						echo '<a href="' . esc_url( $cat_link ) . '" class="hero-category">' . esc_html( $category->name ) . '</a>';
 					}
 				}

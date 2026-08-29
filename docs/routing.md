@@ -47,8 +47,9 @@ Created by `conexao-content` plugin:
 | `/lazer/` | `?categoria=slug` | `conexao_category` |
 | `/cursos/` | `?categoria=slug` | `_provider_category` (meta) |
 | `/guias/` | `?categoria=slug` | `conexao_category` |
+| `/blog/` | `?categoria=slug` | `category` (native) |
 
-Filters are content-type-aware: the same `?categoria=` parameter resolves to different taxonomies/meta on different archives.
+Filters are content-type-aware: the same `?categoria=` parameter resolves to different taxonomies/meta on different archives. Blog category links point at `/blog/?categoria=slug` (the Blog archive itself), not at the native `/category/{slug}/` archive — which remains intact for direct access, feeds and wp-admin.
 
 ## Redirect Architecture
 
