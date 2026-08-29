@@ -3416,6 +3416,92 @@ ul, ol {
   padding: 0 20px;
 }
 
+/* ===== Infinite scroll (progressive enhancement on Blog/Guias/Lazer) =====
+   The numeric pagination is hidden by JS only (class below) so no-JS
+   visitors keep the fully functional pagination component. The status
+   region reserves a small constant height to avoid layout jumps, and all
+   colors use design tokens so light/dark mode both work unchanged. */
+.conexao-pagination--infinite-hidden {
+  display: none !important;
+}
+
+.infinite-scroll {
+  margin-top: 24px;
+  text-align: center;
+}
+
+.infinite-scroll__status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 24px; /* constant reserve — no layout jump while loading */
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+/* Tiny sentinel watched by IntersectionObserver — never visible. */
+.infinite-scroll__sentinel {
+  height: 1px;
+  width: 100%;
+}
+
+.infinite-scroll__spinner {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  border: 2px solid var(--color-border);
+  border-top-color: var(--color-primary);
+  animation: conexao-infinite-spin 0.8s linear infinite;
+}
+
+@keyframes conexao-infinite-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .infinite-scroll__spinner {
+    animation: none; /* static ring; the "Carregando..." text conveys state */
+  }
+}
+
+.infinite-scroll__error {
+  color: var(--color-text-secondary);
+}
+
+.infinite-scroll__retry {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 0 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-primary);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background var(--transition), border-color var(--transition), color var(--transition);
+}
+
+.infinite-scroll__retry:hover {
+  background: var(--color-primary-50);
+  border-color: var(--color-primary);
+}
+
+.infinite-scroll__retry:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.infinite-scroll__end {
+  color: var(--color-text-muted);
+}
+
 /* Residual default WordPress pagination output (e.g. comment pagination)
    renders as <nav class="navigation pagination"><div class="nav-links">.
    Keep it horizontal and consistent with the component without affecting

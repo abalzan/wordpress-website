@@ -90,7 +90,18 @@ if ( $is_event_archive ) {
 		<?php get_template_part( 'template-parts/archive', 'header', $archive_header ); ?>
 
 		<?php if ( have_posts() ) : ?>
-			<div class="<?php echo ( $is_event_archive || $is_course_archive || $is_leisure_archive ) ? 'events-grid' : 'archive-grid'; ?>">
+			<?php
+			/*
+			 * Infinite scroll (progressive enhancement) applies to the Guias
+			 * and Lazer archives and to Blog category archives. The JS reads
+			 * the next-page URL from the shared pagination component below,
+			 * so filters (?categoria=, ?county=) and ordering are preserved
+			 * by the existing main-query logic. Without JS, normal
+			 * pagination still renders and works.
+			 */
+			$infinite_scroll = $is_guide_archive || $is_leisure_archive || is_category();
+			?>
+			<div class="<?php echo ( $is_event_archive || $is_course_archive || $is_leisure_archive ) ? 'events-grid' : 'archive-grid'; ?>"<?php echo $infinite_scroll ? ' data-infinite-scroll' : ''; ?>>
 				<?php while ( have_posts() ) : the_post(); ?>
 					<?php if ( $is_event_archive ) : ?>
 						<?php get_template_part( 'template-parts/event', 'card' ); ?>

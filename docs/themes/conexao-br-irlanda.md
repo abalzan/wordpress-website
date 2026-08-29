@@ -103,6 +103,7 @@ Features:
 - Copy-to-clipboard buttons
 - Leisure filters (desktop dropdowns + mobile bottom sheet)
 - Sponsors carousel (homepage Apoiadores: scroll-snap track, arrows, keyboard nav, adaptive static mode, 10-second autoplay on the Hero variant with pause-on-interaction and reduced-motion support)
+- Infinite scroll (`initInfiniteScroll`) — progressive enhancement on the Blog (`/blog/`), Guias (`/guias/`) and Lazer (`/lazer/`) archives, plus Blog category archives. Grids are tagged `data-infinite-scroll` in `home.php`/`archive.php`; the JS reads the next-page URL from the server-rendered `.conexao-pagination` component, fetches the real `/page/N/` URL (so `?categoria=`/`?county=` filters and main-query ordering are preserved by construction), parses the document, dedupes by `id="post-{ID}"`, and appends the cards via an IntersectionObserver sentinel (no scroll listeners). One request at a time; `history.pushState` per loaded page; `aria-live="polite"` loading state; manual "Tentar novamente" retry on error; observer disconnects at the end of pagination. Without JavaScript the numeric pagination keeps rendering and working — it is only hidden via the `.conexao-pagination--infinite-hidden` class when the enhancement initializes.
 
 ## Custom WordPress Integration
 

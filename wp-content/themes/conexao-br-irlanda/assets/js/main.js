@@ -13,6 +13,7 @@
 		initCopyButtons();
 		initLeisureFilters();
 		initSponsorsCarousel();
+		initInfiniteScroll();
 	});
 
 	// ===== Theme Toggle =====
@@ -792,6 +793,178 @@
 			// sponsor stays visible for the full 2 seconds before advancing.
 			sync();
 		});
+	}
+
+	// ===== Infinite Scroll (progressive enhancement) =====
+	// Applies to the Blog (/blog/), Guias (/guias/) and Lazer (/lazer/)
+	// archives. It rides entirely on top of the existing WordPress
+	// pagination: the "next page" URL is read from the server-rendered
+	// pagination component and the real page-2/page-3 URLs are fetched,
+	// so every query var (?categoria=, ?county=, category archives, ...)
+	// and the main-query ordering are preserved by construction — no
+	// custom endpoint and no duplicate query. Without JavaScript the
+	// normal pagination links keep working untouched (the pagination
+	// markup is only hidden, never removed, when this enhancement runs).
+	function initInfiniteScroll() {
+		var grid = document.querySelector('[data-infinite-scroll]');
+		if (!grid || grid.dataset.infiniteBound) return;
+		// No IntersectionObserver (very old browsers): keep normal pagination.
+		if (!('IntersectionObserver' in window) || !window.DOMParser) return;
+		grid.dataset.infiniteBound = 'true'; // guard against double init
+
+		var pagination = grid.parentElement && grid.parentElement.querySelector('.conexao-pagination');
+		if (!pagination) return;
+
+		var nextLink = pagination.querySelector('a.page-numbers.next');
+		if (!nextLink) return; // single page — nothing to enhance
+
+		var nextUrl = nextLink.getAttribute('href');
+		var busy = false;     // only one request at a time
+		var errored = false;  // errors wait for an explicit retry
+		var finished = false;
+
+		// Hide the numeric pagination visually while keeping it in the
+		// markup for no-JS visitors, crawlers and keyboard fallbacks.
+		pagination.classList.add('conexao-pagination--infinite-hidden');
+
+		// Status region: announced to screen readers via aria-live="polite".
+		var footer = document.createElement('div');
+		footer.className = 'infinite-scroll';
+		var status = document.createElement('p');
+		status.className = 'infinite-scroll__status';
+		status.setAttribute('role', 'status');
+		status.setAttribute('aria-live', 'polite');
+		footer.appendChild(status);
+
+		// Sentinel: observed instead of any continuous scroll listener.
+		var sentinel = document.createElement('div');
+		sentinel.className = 'infinite-scroll__sentinel';
+		sentinel.setAttribute('aria-hidden', 'true');
+		footer.appendChild(sentinel);
+		pagination.insertAdjacentElement('afterend', footer);
+
+		var observer = new IntersectionObserver(onIntersect, { rootMargin: '480px 0px' });
+		observer.observe(sentinel);
+
+		function onIntersect(entries) {
+			for (var i = 0; i < entries.length; i++) {
+				if (!entries[i].isIntersecting) continue;
+				if (busy || errored || finished) return;
+				loadNext();
+				return;
+			}
+		}
+
+		function setStatusLoading() {
+			clearStatus();
+			var spinner = document.createElement('span');
+			spinner.className = 'infinite-scroll__spinner';
+			spinner.setAttribute('aria-hidden', 'true');
+			status.appendChild(spinner);
+			status.appendChild(document.createTextNode('Carregando...'));
+		}
+
+		function setStatusError() {
+			clearStatus();
+			var text = document.createElement('span');
+			text.className = 'infinite-scroll__error';
+			text.textContent = 'Não foi possível carregar mais conteúdo.';
+			var retry = document.createElement('button');
+			retry.type = 'button';
+			retry.className = 'infinite-scroll__retry';
+			retry.textContent = 'Tentar novamente';
+			retry.addEventListener('click', function() {
+				if (busy) return;
+				errored = false;
+				loadNext();
+			});
+			status.appendChild(text);
+			status.appendChild(retry);
+		}
+
+		function clearStatus() {
+			while (status.firstChild) status.removeChild(status.firstChild);
+		}
+
+		function loadNext() {
+			if (busy || finished || errored || !nextUrl) return;
+
+			busy = true;
+			setStatusLoading();
+
+			fetch(nextUrl, {
+				credentials: 'same-origin',
+				headers: { 'X-Requested-With': 'conexao-infinite-scroll' }
+			}).then(function(response) {
+				if (!response.ok) throw new Error('HTTP ' + response.status);
+				return response.text();
+			}).then(function(html) {
+				var doc = new DOMParser().parseFromString(html, 'text/html');
+				var remoteGrid = doc.querySelector('[data-infinite-scroll]');
+				if (!remoteGrid) throw new Error('Unexpected archive markup');
+
+				appendBatch(remoteGrid);
+
+				// Resolve the following page from the fetched document's own
+				// pagination — exactly the links WordPress rendered.
+				var remoteNext = doc.querySelector('.conexao-pagination a.page-numbers.next');
+				var following = remoteNext ? remoteNext.getAttribute('href') : null;
+
+				// One history entry per loaded page: /blog/ → /blog/page/2/ →
+				// /blog/page/3/. The Back button then restores the previous
+				// page URL naturally (the browser restores the scroll
+				// position; the already-appended content stays in place).
+				if (following && history.pushState) {
+					try {
+						history.pushState({ conexaoInfiniteScroll: true }, '', nextUrl);
+					} catch (e) {
+						// Same-origin violation or quota — history is optional.
+					}
+				}
+
+				busy = false;
+				clearStatus();
+
+				if (!following) {
+					finish();
+					return;
+				}
+				nextUrl = following;
+
+				// Re-arm the observer: if the sentinel is still inside the
+				// (enlarged) rootMargin, observing again fires a fresh
+				// callback and the next batch loads immediately.
+				observer.unobserve(sentinel);
+				observer.observe(sentinel);
+			}).catch(function() {
+				// Network/server/parse failure: show a recoverable error
+				// state. No automatic retries — the user decides.
+				busy = false;
+				errored = true;
+				setStatusError();
+			});
+		}
+
+		function appendBatch(remoteGrid) {
+			var fragment = document.createDocumentFragment();
+			Array.prototype.forEach.call(remoteGrid.children, function(node) {
+				if (node.nodeType !== 1) return;
+				// Duplicate guard: every archive card carries id="post-{ID}".
+				if (node.id && document.getElementById(node.id)) return;
+				fragment.appendChild(document.importNode(node, true));
+			});
+			grid.appendChild(fragment);
+		}
+
+		function finish() {
+			finished = true;
+			observer.disconnect(); // stop requesting nonexistent pages
+			clearStatus();
+			var end = document.createElement('span');
+			end.className = 'infinite-scroll__end';
+			end.textContent = 'Você chegou ao fim.';
+			status.appendChild(end);
+		}
 	}
 
 	// ===== Expose functions globally if needed =====

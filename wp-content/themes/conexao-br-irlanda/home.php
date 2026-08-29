@@ -40,7 +40,7 @@ get_header();
 		<?php endif; ?>
 
 		<?php if ( have_posts() ) : ?>
-			<div class="archive-grid">
+			<div class="archive-grid" data-infinite-scroll>
 				<?php while ( have_posts() ) : the_post(); ?>
 					<article id="post-<?php the_ID(); ?>" <?php post_class( 'archive-card' ); ?>>
 						<?php if ( has_post_thumbnail() ) : ?>
