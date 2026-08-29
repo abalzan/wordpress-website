@@ -13,9 +13,14 @@
 <!-- Hero LCP preload — emitted in <head> BEFORE the theme init script so the
      browser's preload scanner discovers the fetch while parsing is unblocked.
      Media conditions and URLs exactly match the <picture> sources in
-     front-page.php: mobile WebP ≤768px, desktop WebP ≥769px. -->
+     front-page.php: mobile WebP ≤768px; desktop WebP ≥769px as a two-candidate
+     imagesrcset ladder (1600w + 2057w) with imagesizes="100vw", so the preload
+     resolves to the SAME candidate the <picture> srcset picks per device —
+     DPR-1 desktops fetch the 1600w derivative, DPR-2/wide screens the 2057w
+     master. The plain href fallback (the 2057w master) keeps legacy browsers
+     that predate imagesrcset behaving exactly as before. -->
 <link rel="preload" as="image" type="image/webp" fetchpriority="high" media="(max-width: 768px)" href="<?php echo esc_url( get_template_directory_uri() . '/assets/images/conexaobr_Hero_image_mobile.webp' ); ?>">
-<link rel="preload" as="image" type="image/webp" fetchpriority="high" media="(min-width: 769px)" href="<?php echo esc_url( get_template_directory_uri() . '/assets/images/conexaobr_Hero_image.webp' ); ?>">
+<link rel="preload" as="image" type="image/webp" fetchpriority="high" media="(min-width: 769px)" imagesrcset="<?php echo esc_attr( get_template_directory_uri() . '/assets/images/conexaobr_Hero_image-1600.webp' ); ?> 1600w, <?php echo esc_attr( get_template_directory_uri() . '/assets/images/conexaobr_Hero_image.webp' ); ?> 2057w" imagesizes="100vw" href="<?php echo esc_url( get_template_directory_uri() . '/assets/images/conexaobr_Hero_image.webp' ); ?>">
 <?php endif; ?>
 <link rel="profile" href="https://gmpg.org/xfn/11">
 <script>

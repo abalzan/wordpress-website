@@ -64,17 +64,25 @@ $hero_has_sponsors = ! empty( conexao_get_featured_sponsors() );
 				width="1683"
 				height="935"
 				srcset="<?php echo esc_url( get_template_directory_uri() . '/assets/images/conexaobr_Hero_image_mobile.png' ); ?>">
-			<!-- Desktop (≥769px): WebP first (2057×764, ≈225 KB — converted
-			     from the 2.1 MB PNG at q88, visually lossless), PNG fallback
-			     for browsers without WebP support. Placed AFTER the mobile
-			     sources so mobile WebP-capable browsers keep matching the
-			     dedicated mobile asset first. -->
+			<!-- Desktop (≥769px): WebP first with a two-candidate responsive
+			     ladder (q88, visually lossless, same encoding as the master):
+			       - conexaobr_Hero_image-1600.webp (1600×594, ≈140 KB) — covers
+			         DPR-1 desktops rendering the hero at ≤1600 CSS px (the
+			         hero is full-bleed, so sizes="100vw" is exact). PageSpeed
+			         measured the hero rendering at ~1516×563 while the
+			         2057px master was being downloaded (~84.5 KiB waste).
+			       - conexaobr_Hero_image.webp (2057×764, ≈225 KB) — kept for
+			         DPR-2 / very wide screens where it is genuinely needed.
+			     PNG fallback for browsers without WebP support. Placed AFTER
+			     the mobile sources so mobile WebP-capable browsers keep
+			     matching the dedicated mobile asset first. -->
 			<source
 				media="(min-width: 769px)"
 				type="image/webp"
 				width="2057"
 				height="764"
-				srcset="<?php echo esc_url( get_template_directory_uri() . '/assets/images/conexaobr_Hero_image.webp' ); ?>">
+				sizes="100vw"
+				srcset="<?php echo esc_url( get_template_directory_uri() . '/assets/images/conexaobr_Hero_image-1600.webp' ); ?> 1600w, <?php echo esc_url( get_template_directory_uri() . '/assets/images/conexaobr_Hero_image.webp' ); ?> 2057w">
 			<!-- Desktop: cinematic composition (conexaobr_Hero_image.png,
 			     2057×764 intrinsic). The 3.71:1 hero slot is reserved by the
 			     .hero-section aspect-ratio rule in CSS — not by these

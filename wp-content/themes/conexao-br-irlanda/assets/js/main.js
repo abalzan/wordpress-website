@@ -553,10 +553,10 @@
 
 			// Keep the pagination dots in sync with the visible slide: the
 			// active dot gets .is-active + aria-current, the rest reset.
-			// Runs wherever the position is re-evaluated (scroll, sync).
-			function updateDots() {
+			// Takes the already-measured current index so the caller can
+			// complete its layout reads BEFORE any DOM write happens here.
+			function updateDots(active) {
 				if (!dots.length) return;
-				var active = currentIndex();
 				Array.prototype.forEach.call(dots, function(dot, dotIndex) {
 					var isActive = dotIndex === active;
 					dot.classList.toggle('is-active', isActive);
@@ -568,14 +568,25 @@
 				});
 			}
 
-			function announce() {
-				updateDots();
+			// Sync the dots + live region with the visible slide. `max` may
+			// carry a maxScroll() value the caller measured BEFORE any DOM
+			// write, so one read pass can feed several writers. Ordering
+			// matters: every layout read (maxScroll, stepSize's offsetLeft,
+			// scrollLeft) happens BEFORE the first write (dot classes, status
+			// text). Writing first and measuring afterwards is exactly the
+			// read → write → read pattern browsers surface as "forced
+			// reflow" (Lighthouse diagnostic) — this ordering is purely a
+			// measurement reorder and does not change any behavior.
+			function announce(max) {
+				var m = (max === undefined) ? maxScroll() : max;
+				var active = currentIndex();
+				updateDots(active);
 				if (!status) return;
-				if (maxScroll() <= 2) {
+				if (m <= 2) {
 					status.textContent = '';
 					return;
 				}
-				status.textContent = 'Apoiador ' + (currentIndex() + 1) + ' de ' + slides.length;
+				status.textContent = 'Apoiador ' + (active + 1) + ' de ' + slides.length;
 			}
 
 			function scrollToIndex(index) {
@@ -594,45 +605,55 @@
 			}
 
 			function goNext() {
-				if (maxScroll() <= 2) return;
+				var max = maxScroll();
+				if (max <= 2) return;
 				var index = currentIndex();
 				scrollToIndex(index >= slides.length - 1 ? 0 : index + 1);
+				// Hand the already-measured maxScroll() to the caller so a
+				// following scheduleAutoplay() needs no fresh layout read
+				// (scrollWidth is scroll-position independent, so the value
+				// is identical to a post-scroll measurement).
+				return max;
 			}
 
 			function goPrev() {
-				if (maxScroll() <= 2) return;
+				var max = maxScroll();
+				if (max <= 2) return;
 				var index = currentIndex();
 				scrollToIndex(index <= 0 ? slides.length - 1 : index - 1);
+				return max;
 			}
 
 			// --- Autoplay control --------------------------------------------
 			// The cycle applies to the Hero variant only, needs at least two
 			// slides plus actual overflow, and never runs for users who asked
 			// for reduced motion (manual navigation keeps working there).
-			function autoplayEligible() {
+			// `max` may carry a maxScroll() value measured by the caller
+			// before any DOM write, keeping eligibility a read-free decision.
+			function autoplayEligible(max) {
+				var m = (max === undefined) ? maxScroll() : max;
 				return carousel.classList.contains('sponsors-carousel--hero') &&
 					slides.length > 1 &&
-					maxScroll() > 2 &&
+					m > 2 &&
 					!prefersReducedMotion();
 			}
 
 			// Single entry point for arming / re-arming / pausing the cycle:
 			// it always clears any pending timer before deciding, so repeated
 			// calls can never stack timers or speed the carousel up.
-			function scheduleAutoplay() {
+			function scheduleAutoplay(max) {
 				if (autoplayTimer !== null) {
 					clearTimeout(autoplayTimer);
 					autoplayTimer = null;
 				}
-				if (!autoplayEligible() || hoverPaused || focusPaused || pressPaused || document.hidden) {
+				if (!autoplayEligible(max) || hoverPaused || focusPaused || pressPaused || document.hidden) {
 					return;
 				}
 				autoplayTimer = setTimeout(function() {
 					autoplayTimer = null;
 					// If the component left the DOM meanwhile, stop cycling.
 					if (!carousel.isConnected) return;
-					goNext();
-					scheduleAutoplay();
+					scheduleAutoplay(goNext());
 				}, SPONSORS_AUTOPLAY_INTERVAL);
 			}
 
@@ -640,22 +661,25 @@
 			// countdown — an arrow click never causes an immediate follow-up
 			// advance; the next automatic step comes a full interval later.
 			function goNextManual() {
-				goNext();
-				scheduleAutoplay();
+				scheduleAutoplay(goNext());
 			}
 
 			function goPrevManual() {
-				goPrev();
-				scheduleAutoplay();
+				scheduleAutoplay(goPrev());
 			}
 
 			// Adaptive layout: when everything fits without scrolling, mark
 			// the carousel static (CSS hides the arrows and centers the row).
 			function sync() {
-				carousel.classList.toggle('is-static', maxScroll() <= 2);
-				announce();
-				// Geometry changed — re-decide whether a cycle should run.
-				scheduleAutoplay();
+				// Read phase: take every layout measurement BEFORE the first
+				// DOM write, so nothing here can force a synchronous reflow.
+				var max = maxScroll();
+				announce(max);
+				// Write phase: only now mutate the DOM.
+				carousel.classList.toggle('is-static', max <= 2);
+				// Geometry changed — re-decide whether a cycle should run
+				// (reads the pre-measured max; no further layout access).
+				scheduleAutoplay(max);
 			}
 
 			if (prevBtn) prevBtn.addEventListener('click', goPrevManual);
@@ -690,8 +714,13 @@
 				ticking = true;
 				window.requestAnimationFrame(function() {
 					ticking = false;
-					announce();
-					if (!autoScrolling) scheduleAutoplay();
+					// One read pass feeds both writers: maxScroll() is taken
+					// before announce()'s dot-class writes, and the autoplay
+					// re-arm consumes the same measurement — so no layout
+					// read ever follows a DOM write in this callback.
+					var max = maxScroll();
+					announce(max);
+					if (!autoScrolling) scheduleAutoplay(max);
 				});
 			});
 

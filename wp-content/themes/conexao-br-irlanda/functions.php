@@ -533,7 +533,11 @@ function conexao_hero_preload() {
 	$base = get_template_directory_uri() . '/assets/images/';
 
 	echo '<link rel="preload" as="image" fetchpriority="high" media="(max-width: 768px)" href="' . esc_url( $base . 'conexaobr_Hero_image_mobile.webp' ) . '">' . "\n";
-	echo '<link rel="preload" as="image" fetchpriority="high" media="(min-width: 769px)" href="' . esc_url( $base . 'conexaobr_Hero_image.webp' ) . '">' . "\n";
+	// Desktop: mirror the <picture> srcset ladder (1600w + 2057w,
+	// sizes="100vw") so the preload resolves to the same candidate the
+	// browser would select from the markup — DPR-1 desktops get the 1600w
+	// derivative instead of always fetching the 2057w master.
+	echo '<link rel="preload" as="image" fetchpriority="high" media="(min-width: 769px)" imagesrcset="' . esc_attr( $base . 'conexaobr_Hero_image-1600.webp 1600w, ' . $base . 'conexaobr_Hero_image.webp 2057w' ) . '" imagesizes="100vw" href="' . esc_url( $base . 'conexaobr_Hero_image.webp' ) . '">' . "\n";
 }
 // Preload now emitted in header.php before the theme init script — see above.
 
