@@ -41,7 +41,7 @@ Defined in `assets/css/design-system.css`. Uses CSS custom properties mapped fro
 2. **design-system.css** — Design tokens, typography, buttons, cards, filters, page headers, empty states
 3. **header-nav.css** — Header layout, navigation, mobile menu, search
 4. **main.css** — Hero, sections, archive grids, cards, footer, responsive
-5. **leisure.css** — Leisure archive filters (dropdowns, mobile sheet), single leisure layout
+5. **leisure.css** — Leisure archive filters (discovery heading, dropdowns, active-filter chips, result count, mobile sheet), single leisure layout
 6. **dark-mode.css** — `[data-theme="dark"]` overrides for all components
 
 Asset versioning uses `filemtime()` for cache busting. `.htaccess` sets `Cache-Control: public, max-age=31536000, immutable` on CSS/JS.
@@ -55,7 +55,7 @@ Features:
 - **Mobile menu** — full-screen overlay, focus trap, submenu toggles, Escape to close
 - **Mobile search** — full-screen overlay, auto-focus on open
 - **Copy buttons** — share link copy to clipboard with visual feedback
-- **Leisure filters** — desktop dropdowns (one open at a time), mobile bottom sheet with accordions
+- **Leisure filters** — desktop dropdowns (one open at a time); mobile: prominent full-width "Filtrar" button (active-count badge) opening a modal bottom sheet with always-visible radio sections, staged "Mostrar resultados" apply, focus trap, Escape/backdrop close and focus return
 - **Infinite scroll** — automatic on Blog/Guias/Lazer + category archives (IntersectionObserver sentinel, 480px rootMargin, one page at a time; bfcache `pageshow` guard so back/forward navigation never leaves a stuck request)
 - **Load More** — manual "Carregar mais" button on `/eventos/` and `/cursos/` only (no auto-loading): fetches the real next `/page/N/` URL on click, appends cards with dedupe, polite live-region announcements, disabled while loading, removed at end of results, re-enabled after back/forward cache restore
 
@@ -70,7 +70,7 @@ All in `template-parts/`:
 | `event-filters.php` | Events archive filter bar |
 | `event-preview.php` | Homepage events section |
 | `leisure-card.php` | Lazer archive grid |
-| `leisure-filters.php` | Lazer archive filter bar (desktop + mobile) |
+| `leisure-filters.php` | Lazer archive filter bar (desktop: discovery heading + dropdowns + chips + count; mobile: bottom sheet) |
 | `provider-card.php` | Course providers archive/grid |
 | `quick-access-card.php` | Homepage quick access grid |
 | `newsletter-section.php` | Newsletter CTA section (homepage + archives) |

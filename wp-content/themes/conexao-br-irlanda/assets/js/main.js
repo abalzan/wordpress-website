@@ -309,15 +309,16 @@
 			sheetOverlay.setAttribute('aria-hidden', 'false');
 			if (sheetTrigger) sheetTrigger.setAttribute('aria-expanded', 'true');
 			document.body.style.overflow = 'hidden';
-			// Each visit starts with the filter accordions collapsed.
-			closeAllAccordions();
+			// NOTE: the radio state is server-rendered from the URL and is
+			// deliberately never reset here — reopening the sheet must show
+			// the current selections.
 			if (sheetClose) {
 				setTimeout(function() { sheetClose.focus(); }, 50);
 			}
 		}
 
 		function closeMobileSheet(restoreFocus) {
-			if (!sheetOverlay) return;
+			if (!sheetOverlay || !sheetOverlay.classList.contains('is-open')) return;
 			sheetOverlay.classList.remove('is-open');
 			sheetOverlay.setAttribute('aria-hidden', 'true');
 			if (sheetTrigger) sheetTrigger.setAttribute('aria-expanded', 'false');
@@ -349,114 +350,42 @@
 					closeMobileSheet(true);
 				}
 			});
-		}
 
-		// Mobile filter accordions: only one open at a time. Selecting an
-		// option closes the accordion, previews the chosen value in the
-		// collapsed header (or clears it for "Todos"), and moves focus to the
-		// next accordion summary (or the apply button) so keyboard users can
-		// continue refining. Actual server-side filtering still happens on
-		// form submit — the URL-driven architecture is unchanged.
-		const accordions = Array.prototype.slice.call(root.querySelectorAll('[data-filter-accordion]'));
-
-		function syncAccordionCaret(accordion) {
-			const summary = accordion.querySelector('.leisure-filter-accordion-summary');
-			if (summary) {
-				summary.setAttribute('aria-expanded', accordion.open ? 'true' : 'false');
-			}
-		}
-
-		function closeAllAccordions() {
-			accordions.forEach(function(acc) {
-				if (acc.open) {
-					acc.open = false;
+			// Modal focus trap: while the sheet is open, Tab cycles inside the
+			// panel so keyboard focus never escapes to the page behind it.
+			sheetOverlay.addEventListener('keydown', function(e) {
+				if (e.key !== 'Tab' || !sheetPanel) return;
+				const focusables = Array.prototype.filter.call(
+					sheetPanel.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'),
+					function(el) {
+						return !el.disabled && el.offsetParent !== null;
+					}
+				);
+				if (!focusables.length) return;
+				const first = focusables[0];
+				const last = focusables[focusables.length - 1];
+				if (e.shiftKey && document.activeElement === first) {
+					e.preventDefault();
+					last.focus();
+				} else if (!e.shiftKey && document.activeElement === last) {
+					e.preventDefault();
+					first.focus();
 				}
 			});
 		}
 
-		function closeOtherAccordions(except) {
-			accordions.forEach(function(acc) {
-				if (acc !== except && acc.open) {
-					acc.open = false;
-				}
-			});
-		}
-
-		function updateAccordionValue(accordion, radio) {
-			const valueEl = accordion.querySelector('.leisure-accordion-value');
-			if (!valueEl) return;
-			const label = radio.closest('.leisure-filter-option');
-			const text = label ? label.querySelector('span').textContent.trim() : '';
-			if (!radio.value) {
-				// "Todos" selected — return the header to its neutral state.
-				valueEl.textContent = '';
-				valueEl.classList.remove('is-visible');
-			} else {
-				valueEl.textContent = ' · ' + text;
-				valueEl.classList.add('is-visible');
-			}
-		}
-
-		function focusAfterSelection(accordion) {
-			const index = accordions.indexOf(accordion);
-			if (index === -1) return;
-			const next = accordions[index + 1];
-			if (next) {
-				const nextSummary = next.querySelector('.leisure-filter-accordion-summary');
-				if (nextSummary) nextSummary.focus();
-				return;
-			}
-			const apply = root.querySelector('.leisure-apply-button');
-			if (apply) apply.focus();
-		}
-
-		accordions.forEach(function(accordion) {
-			// Keep the summary aria-expanded in sync with the details state.
-			syncAccordionCaret(accordion);
-
-			accordion.addEventListener('toggle', function() {
-				syncAccordionCaret(accordion);
-				if (accordion.open) {
-					closeOtherAccordions(accordion);
-				}
-			});
-
-			// Selecting an option closes the accordion immediately and shows
-			// the chosen value in the collapsed header.
-			const radios = accordion.querySelectorAll('.leisure-filter-radio');
-			radios.forEach(function(radio) {
-				radio.addEventListener('change', function() {
-					updateAccordionValue(accordion, radio);
-					accordion.open = false;
-					syncAccordionCaret(accordion);
-					focusAfterSelection(accordion);
-				});
-			});
-		});
-
-		// The mobile "Limpar" link navigates to the unfiltered archive; also
-		// collapse any open accordion so the sheet closes cleanly before the
-		// server-rendered state takes over.
-		const mobileClear = root.querySelector('.leisure-mobile-clear');
-		if (mobileClear) {
-			mobileClear.addEventListener('click', function() {
-				closeAllAccordions();
-			});
-		}
-
-		// Escape closes an open accordion first; otherwise it closes the sheet.
+		// Escape closes the sheet (and any desktop dropdown); focus returns
+		// to the "Filtrar" trigger.
 		document.addEventListener('keydown', function(e) {
 			if (e.key !== 'Escape') return;
 			closeAllDropdowns();
-			const anyOpen = accordions.some(function(acc) { return acc.open; });
-			if (anyOpen) {
-				closeAllAccordions();
-				return;
-			}
 			closeMobileSheet(true);
 		});
 
-		// Mobile form: strip empty params and navigate to a clean URL.
+		// Mobile form: staged selection — the radios only take effect when
+		// the user presses "Mostrar resultados". Empty params are stripped
+		// so URLs stay clean (e.g. /lazer/?categoria=castelos instead of
+		// /lazer/?county=&categoria=castelos).
 		const form = root.querySelector('[data-mobile-form]');
 		if (form) {
 			form.addEventListener('submit', function(e) {

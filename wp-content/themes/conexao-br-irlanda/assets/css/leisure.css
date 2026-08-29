@@ -24,13 +24,22 @@
 	z-index: 20;
 }
 
+/* --- Discovery heading (desktop) --- */
+.leisure-filters-title {
+	font-family: var(--font-display);
+	font-size: var(--text-lg);
+	font-weight: 700;
+	color: var(--color-text);
+	margin: 0 0 var(--space-3);
+}
+
 /* --- Toolbar row (desktop) --- */
 .leisure-filter-toolbar {
 	display: flex;
 	flex-wrap: wrap;
-	align-items: flex-end;
-	gap: var(--space-3) var(--space-4);
-	margin: 0 0 var(--space-4);
+	align-items: center;
+	gap: var(--space-2) var(--space-3);
+	margin: 0 0 var(--space-3);
 }
 
 /* --- Filter group (label + dropdown) --- */
@@ -40,12 +49,74 @@
 	gap: 3px;
 }
 
-.leisure-filter-group-label {
+/* --- Active filter chips (desktop) --- */
+.leisure-active-filters {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--space-2) var(--space-3);
+	margin: 0 0 var(--space-3);
+}
+
+.leisure-active-filters-label {
 	font-size: var(--text-xs);
 	font-weight: 600;
 	color: var(--color-text-muted);
 	letter-spacing: 0.02em;
-	padding-left: 2px;
+}
+
+.leisure-active-filters-chips {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--space-2);
+}
+
+.leisure-filter-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	min-height: 30px;
+	padding: 5px 11px;
+	border-radius: var(--radius-full);
+	border: 1px solid var(--color-primary);
+	background: var(--color-primary-50);
+	color: var(--color-primary);
+	font-size: var(--text-sm);
+	font-weight: 600;
+	line-height: 1;
+	text-decoration: none;
+	white-space: nowrap;
+	transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.leisure-filter-chip:hover {
+	border-color: var(--color-accent);
+	color: var(--color-accent);
+}
+
+.leisure-filter-chip:focus-visible {
+	outline: var(--focus-ring);
+	outline-offset: var(--focus-offset);
+}
+
+.leisure-filter-chip-name {
+	max-width: 160px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.leisure-filter-chip-remove {
+	font-size: 0.9rem;
+	line-height: 1;
+	flex-shrink: 0;
+}
+
+/* --- Lightweight result count --- */
+.leisure-results-count {
+	margin: 0 0 var(--space-4);
+	font-size: var(--text-sm);
+	color: var(--color-text-muted);
 }
 
 /* --- Dropdown (button + panel) --- */
@@ -111,7 +182,7 @@
 .leisure-dropdown-label {
 	overflow: hidden;
 	text-overflow: ellipsis;
-	max-width: 120px;
+	max-width: 160px;
 }
 
 .leisure-dropdown-caret {
@@ -385,87 +456,35 @@
 	padding: var(--space-2) var(--space-5) var(--space-4);
 }
 
-/* Accordion sections inside the sheet */
-.leisure-filter-accordion {
+/* Filter sections inside the sheet — always visible, no accordions.
+   One fieldset per group with a legend heading: the full option set is
+   exposed at once, radio state is server-rendered from the URL and never
+   reset when the sheet reopens, and selection stays staged until
+   "Mostrar resultados" applies it. */
+.leisure-mobile-section {
 	border: 0;
-	margin: 0;
+	margin: 0 0 var(--space-4);
 	padding: 0;
+	min-width: 0;
 }
 
-.leisure-filter-accordion + .leisure-filter-accordion {
-	margin-top: var(--space-1);
+.leisure-mobile-section:last-child {
+	margin-bottom: 0;
 }
 
-.leisure-filter-accordion-summary {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: var(--space-2);
-	padding: var(--space-3) 0;
+.leisure-mobile-section-legend {
+	padding: 0;
+	margin: 0 0 var(--space-1);
 	font-family: var(--font-display);
 	font-size: var(--text-sm);
 	font-weight: 700;
 	color: var(--color-text);
-	cursor: pointer;
-	list-style: none;
-	user-select: none;
 }
 
-.leisure-filter-accordion-summary::-webkit-details-marker {
-	display: none;
-}
-
-.leisure-filter-accordion-summary:hover {
-	color: var(--color-primary);
-}
-
-.leisure-filter-accordion-summary:focus-visible {
-	outline: var(--focus-ring);
-	outline-offset: var(--focus-offset);
-}
-
-.leisure-accordion-caret {
-	font-size: 0.6rem;
-	line-height: 1;
-	transition: transform var(--transition-fast);
-	color: inherit;
-}
-
-/* Accordion label — title + optional selected value */
-.leisure-accordion-label {
-	display: inline-flex;
-	align-items: baseline;
-	gap: 4px;
-	min-width: 0;
-	overflow: hidden;
-}
-
-.leisure-accordion-title {
-	flex-shrink: 0;
-}
-
-.leisure-accordion-value {
-	display: none;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-	font-weight: 600;
-	color: var(--color-primary);
-}
-
-.leisure-accordion-value.is-visible {
-	display: inline;
-}
-
-.leisure-filter-accordion[open] .leisure-accordion-caret {
-	transform: rotate(180deg);
-}
-
-.leisure-filter-fieldset {
-	border: 0;
-	margin: 0;
-	padding: 0 0 var(--space-2);
-	min-width: 0;
+.leisure-filter-options {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
 }
 
 .leisure-filter-option {
@@ -473,7 +492,7 @@
 	display: flex;
 	align-items: center;
 	gap: var(--space-3);
-	min-height: 44px;
+	min-height: 48px;
 	padding: var(--space-2) var(--space-3);
 	border-radius: var(--radius);
 	cursor: pointer;
@@ -580,12 +599,27 @@
 }
 
 @media (max-width: 768px) {
+	/* Only the desktop dropdown toolbar is replaced by the mobile
+	   "Filtrar" sheet — the heading, active-filter chips, "Limpar
+	   filtros" and result count stay visible above the results. */
 	.leisure-filter-toolbar {
 		display: none;
 	}
 
 	.leisure-mobile-filter {
 		display: block;
+	}
+
+	/* Touch-friendly chips: bigger tap targets than the desktop row. */
+	.leisure-filter-chip {
+		min-height: 40px;
+		padding: 8px 14px;
+		font-size: var(--text-base);
+	}
+
+	.leisure-toolbar-clear {
+		min-height: 40px;
+		padding: 8px 12px;
 	}
 }
 

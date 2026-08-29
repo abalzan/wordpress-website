@@ -1603,6 +1603,37 @@
   background: var(--color-surface-muted);
 }
 
+/* Discovery heading */
+[data-theme="dark"] .leisure-filters-title {
+  color: var(--color-text);
+}
+
+/* Lightweight result count */
+[data-theme="dark"] .leisure-results-count {
+  color: var(--color-text-muted);
+}
+
+/* Active filter chips */
+[data-theme="dark"] .leisure-active-filters-label {
+  color: var(--color-text-muted);
+}
+
+[data-theme="dark"] .leisure-filter-chip {
+  background: var(--color-primary-50);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+[data-theme="dark"] .leisure-filter-chip:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+[data-theme="dark"] .leisure-filter-chip:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
 /* Mobile filter trigger */
 [data-theme="dark"] .leisure-mobile-filter-trigger {
   background: var(--color-surface);
@@ -1667,13 +1698,9 @@
   color: var(--color-text-secondary);
 }
 
-/* Accordion summary */
-[data-theme="dark"] .leisure-filter-accordion-summary {
+/* Section legends (mobile sheet) */
+[data-theme="dark"] .leisure-mobile-section-legend {
   color: var(--color-text);
-}
-
-[data-theme="dark"] .leisure-filter-accordion-summary:hover {
-  color: var(--color-primary);
 }
 
 /* Filter option labels */

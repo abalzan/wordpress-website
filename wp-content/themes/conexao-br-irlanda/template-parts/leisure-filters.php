@@ -4,17 +4,26 @@
  *
  * Renders the /lazer/ filtering UI as a single, lightweight component.
  *
- * Desktop: a compact toolbar with two grouped dropdown triggers ("Condado"
- * and "Tipo") and a "Limpar filtros" action that only appears while a filter
- * is active. Each dropdown is a real hyperlink menu anchored directly below
- * its trigger button, so the URL is always shareable and refresh/back-forward
- * safe. Active filters are indicated by a dot indicator on the trigger rather
- * than a separate chip bar.
+ * Desktop: a content-discovery toolbar under the "Encontre o que fazer"
+ * heading — compact dropdown triggers ("Localização" and "Tipo") that show
+ * the selected value while a filter is active, an active-filter chip row
+ * where each chip is a real hyperlink that removes that single filter, a
+ * "Limpar filtros" action that only appears while a filter is active, and a
+ * lightweight result-count line. Each dropdown is a real hyperlink menu
+ * anchored directly below its trigger button, so the URL is always shareable
+ * and refresh/back-forward safe.
  *
- * Mobile: a "Filtros" button that opens a fixed-position bottom-sheet panel
- * containing the same filters as native radio groups, with sticky
- * [Limpar] / [Aplicar filtros] actions. Because the sheet is an overlay it
- * never pushes the attraction grid around.
+ * Mobile: a prominent full-width "Filtrar" button (with an active-filter
+ * count badge when filters are applied) that opens a fixed-position
+ * bottom-sheet panel. Inside the sheet every filter group is a plain
+ * always-visible radio fieldset — no accordions — so the full option set is
+ * exposed at once, the current state is never reset when the sheet reopens,
+ * and selection is staged until "Mostrar resultados" applies it once. The
+ * sheet is a modal dialog: focus is trapped while open and returned to the
+ * "Filtrar" button on close. Because the sheet is an overlay it never pushes
+ * the attraction grid around. Above the results, mobile also shows the same
+ * active-filter chip row (each chip a real hyperlink that removes that single
+ * filter) and "Limpar filtros" as the desktop toolbar.
  *
  * Filtering remains fully server-side and URL driven (unchanged):
  *   - County filters use the `conexao_county` taxonomy via `?county=`.
@@ -81,20 +90,46 @@ if ( $current_county ) {
 $active_county_name   = isset( $county_by_slug[ $current_county ] ) ? $county_by_slug[ $current_county ] : $current_county;
 $active_category_name = isset( $category_by_slug[ $current_category ] ) ? $category_by_slug[ $current_category ] : $current_category;
 
-// Labels shown on the desktop dropdown triggers. When a filter is active the
-// trigger shows the selected value so the current state is immediately visible.
-$county_label   = $active_county_name ? $active_county_name : __( 'Todos', 'conexao-br-irlanda' );
-$category_label = $active_category_name ? $active_category_name : __( 'Todos', 'conexao-br-irlanda' );
+// Labels shown on the desktop dropdown triggers. When no filter is active the
+// trigger shows the group name ("Localização", "Tipo"); when a filter is
+// selected the trigger shows the chosen value (plus the dot indicator) so the
+// current state is visible without opening the menu.
+$county_trigger_label   = $current_county ? $active_county_name : __( 'Localização', 'conexao-br-irlanda' );
+$category_trigger_label = $current_category ? $active_category_name : __( 'Tipo', 'conexao-br-irlanda' );
+
+// Screen-reader labels for the triggers — the dot indicator is decorative, so
+// the active state is also announced as text.
+$county_trigger_aria = $current_county
+	? sprintf(
+		/* translators: %s: selected county name. */
+		__( 'Filtrar por Localização. Filtro ativo: %s', 'conexao-br-irlanda' ),
+		$active_county_name
+	)
+	: __( 'Filtrar por Localização', 'conexao-br-irlanda' );
+
+$category_trigger_aria = $current_category
+	? sprintf(
+		/* translators: %s: selected category name. */
+		__( 'Filtrar por Tipo. Filtro ativo: %s', 'conexao-br-irlanda' ),
+		$active_category_name
+	)
+	: __( 'Filtrar por Tipo', 'conexao-br-irlanda' );
 
 // Number of active filters, shown as a small badge on the mobile trigger.
 $active_filter_count = ( $current_county ? 1 : 0 ) + ( $current_category ? 1 : 0 );
+
+// Lightweight result summary. The main archive query already computes
+// found_posts for pagination, so reading it here costs no extra query.
+global $wp_query;
+$leisure_total = ( isset( $wp_query ) && $wp_query instanceof WP_Query ) ? (int) $wp_query->found_posts : 0;
 ?>
 <div class="leisure-filters" data-leisure-filters>
+
+	<h2 class="leisure-filters-title"><?php esc_html_e( 'Encontre o que fazer', 'conexao-br-irlanda' ); ?></h2>
 
 	<div class="leisure-filter-toolbar">
 		<?php if ( $has_county ) : ?>
 			<div class="leisure-filter-group">
-				<span class="leisure-filter-group-label"><?php esc_html_e( 'Condado', 'conexao-br-irlanda' ); ?></span>
 				<div class="leisure-dropdown" data-dropdown>
 					<button
 						type="button"
@@ -102,11 +137,12 @@ $active_filter_count = ( $current_county ? 1 : 0 ) + ( $current_category ? 1 : 0
 						aria-haspopup="listbox"
 						aria-expanded="false"
 						aria-controls="leisure-county-panel"
+						aria-label="<?php echo esc_attr( $county_trigger_aria ); ?>"
 						data-dropdown-trigger>
 						<?php if ( $current_county ) : ?>
 							<span class="leisure-dot" aria-hidden="true"></span>
 						<?php endif; ?>
-						<span class="leisure-dropdown-label"><?php echo esc_html( $county_label ); ?></span>
+						<span class="leisure-dropdown-label"><?php echo esc_html( $county_trigger_label ); ?></span>
 						<span class="leisure-dropdown-caret" aria-hidden="true">▾</span>
 					</button>
 
@@ -137,7 +173,6 @@ $active_filter_count = ( $current_county ? 1 : 0 ) + ( $current_category ? 1 : 0
 
 		<?php if ( $has_category ) : ?>
 			<div class="leisure-filter-group">
-				<span class="leisure-filter-group-label"><?php esc_html_e( 'Tipo', 'conexao-br-irlanda' ); ?></span>
 				<div class="leisure-dropdown" data-dropdown>
 					<button
 						type="button"
@@ -145,11 +180,12 @@ $active_filter_count = ( $current_county ? 1 : 0 ) + ( $current_category ? 1 : 0
 						aria-haspopup="listbox"
 						aria-expanded="false"
 						aria-controls="leisure-category-panel"
+						aria-label="<?php echo esc_attr( $category_trigger_aria ); ?>"
 						data-dropdown-trigger>
 						<?php if ( $current_category ) : ?>
 							<span class="leisure-dot" aria-hidden="true"></span>
 						<?php endif; ?>
-						<span class="leisure-dropdown-label"><?php echo esc_html( $category_label ); ?></span>
+						<span class="leisure-dropdown-label"><?php echo esc_html( $category_trigger_label ); ?></span>
 						<span class="leisure-dropdown-caret" aria-hidden="true">▾</span>
 					</button>
 
@@ -178,12 +214,53 @@ $active_filter_count = ( $current_county ? 1 : 0 ) + ( $current_category ? 1 : 0
 			</div>
 		<?php endif; ?>
 
-		<?php if ( $has_active_filters ) : ?>
+	</div>
+
+	<?php if ( $has_active_filters ) : ?>
+		<div class="leisure-active-filters" data-leisure-active-filters>
+			<span class="leisure-active-filters-label"><?php esc_html_e( 'Filtros ativos:', 'conexao-br-irlanda' ); ?></span>
+
+			<div class="leisure-active-filters-chips">
+				<?php if ( $current_county ) : ?>
+					<a
+						class="leisure-filter-chip"
+						href="<?php echo esc_url( $remove_county_url ); ?>"
+						aria-label="<?php echo esc_attr( sprintf( /* translators: %s: county name. */ __( 'Remover filtro: %s', 'conexao-br-irlanda' ), $active_county_name ) ); ?>"
+					>
+						<span class="leisure-filter-chip-name"><?php echo esc_html( $active_county_name ); ?></span>
+						<span class="leisure-filter-chip-remove" aria-hidden="true">×</span>
+					</a>
+				<?php endif; ?>
+
+				<?php if ( $current_category ) : ?>
+					<a
+						class="leisure-filter-chip"
+						href="<?php echo esc_url( $remove_category_url ); ?>"
+						aria-label="<?php echo esc_attr( sprintf( /* translators: %s: category name. */ __( 'Remover filtro: %s', 'conexao-br-irlanda' ), $active_category_name ) ); ?>"
+					>
+						<span class="leisure-filter-chip-name"><?php echo esc_html( $active_category_name ); ?></span>
+						<span class="leisure-filter-chip-remove" aria-hidden="true">×</span>
+					</a>
+				<?php endif; ?>
+			</div>
+
 			<a class="leisure-toolbar-clear" href="<?php echo esc_url( $clear_url ); ?>">
 				<?php esc_html_e( 'Limpar filtros', 'conexao-br-irlanda' ); ?>
 			</a>
-		<?php endif; ?>
-	</div>
+		</div>
+	<?php endif; ?>
+
+	<?php if ( $leisure_total > 0 ) : ?>
+		<p class="leisure-results-count" role="status">
+			<?php
+			printf(
+				/* translators: %s: number of results. */
+				_n( '%s opção encontrada', '%s opções encontradas', $leisure_total, 'conexao-br-irlanda' ),
+				number_format_i18n( $leisure_total )
+			);
+			?>
+		</p>
+	<?php endif; ?>
 
 	<?php if ( $has_county || $has_category ) : ?>
 		<div class="leisure-mobile-filter" data-mobile-filter>
@@ -193,6 +270,7 @@ $active_filter_count = ( $current_county ? 1 : 0 ) + ( $current_category ? 1 : 0
 				aria-haspopup="dialog"
 				aria-expanded="false"
 				aria-controls="leisure-mobile-sheet"
+				<?php echo $active_filter_count > 0 ? 'aria-label="' . esc_attr( sprintf( /* translators: %s: number of active filters. */ __( 'Filtrar (%s filtros ativos)', 'conexao-br-irlanda' ), number_format_i18n( $active_filter_count ) ) ) . '"' : ''; ?>
 				data-mobile-trigger>
 				<span class="leisure-mobile-filter-icon" aria-hidden="true">
 					<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -201,9 +279,9 @@ $active_filter_count = ( $current_county ? 1 : 0 ) + ( $current_category ? 1 : 0
 						<line x1="10" y1="18" x2="14" y2="18"></line>
 					</svg>
 				</span>
-				<?php esc_html_e( 'Filtros', 'conexao-br-irlanda' ); ?>
+				<span class="leisure-mobile-filter-label"><?php esc_html_e( 'Filtrar', 'conexao-br-irlanda' ); ?></span>
 				<?php if ( $active_filter_count > 0 ) : ?>
-					<span class="leisure-mobile-filter-count" aria-hidden="true"><?php echo esc_html( $active_filter_count ); ?></span>
+					<span class="leisure-mobile-filter-count" aria-hidden="true"><?php echo esc_html( number_format_i18n( $active_filter_count ) ); ?></span>
 				<?php endif; ?>
 			</button>
 
@@ -222,60 +300,48 @@ $active_filter_count = ( $current_county ? 1 : 0 ) + ( $current_category ? 1 : 0
 
 					<form method="get" action="<?php echo esc_url( $archive_url ); ?>" class="leisure-mobile-form" data-mobile-form>
 						<div class="leisure-mobile-sheet-body">
-							<?php if ( $has_county ) : ?>
-								<details class="leisure-filter-accordion" data-filter-accordion>
-									<summary class="leisure-filter-accordion-summary" aria-expanded="false">
-										<span class="leisure-accordion-label">
-											<span class="leisure-accordion-title"><?php esc_html_e( 'Condado', 'conexao-br-irlanda' ); ?></span>
-											<span class="leisure-accordion-value<?php echo $active_county_name ? ' is-visible' : ''; ?>" aria-live="polite"><?php echo $active_county_name ? ' · ' . esc_html( $active_county_name ) : ''; ?></span>
-										</span>
-										<span class="leisure-accordion-caret" aria-hidden="true">▾</span>
-									</summary>
-									<fieldset class="leisure-filter-fieldset">
+						<?php if ( $has_county ) : ?>
+							<fieldset class="leisure-mobile-section">
+								<legend class="leisure-mobile-section-legend"><?php esc_html_e( 'Localização', 'conexao-br-irlanda' ); ?></legend>
+								<div class="leisure-filter-options">
+									<label class="leisure-filter-option">
+										<input class="leisure-filter-radio" type="radio" name="county" value="" <?php checked( '' === $current_county ); ?>>
+										<span><?php esc_html_e( 'Todos', 'conexao-br-irlanda' ); ?></span>
+									</label>
+
+									<?php foreach ( $county_terms as $term ) : ?>
 										<label class="leisure-filter-option">
-											<input class="leisure-filter-radio" type="radio" name="county" value="" <?php checked( '' === $current_county ); ?>>
-											<span><?php esc_html_e( 'Todos', 'conexao-br-irlanda' ); ?></span>
+											<input class="leisure-filter-radio" type="radio" name="county" value="<?php echo esc_attr( $term->slug ); ?>" <?php checked( $current_county === $term->slug ); ?>>
+											<span><?php echo esc_html( $term->name ); ?></span>
 										</label>
+									<?php endforeach; ?>
+								</div>
+							</fieldset>
+						<?php endif; ?>
 
-										<?php foreach ( $county_terms as $term ) : ?>
-											<label class="leisure-filter-option">
-												<input class="leisure-filter-radio" type="radio" name="county" value="<?php echo esc_attr( $term->slug ); ?>" <?php checked( $current_county === $term->slug ); ?>>
-												<span><?php echo esc_html( $term->name ); ?></span>
-											</label>
-										<?php endforeach; ?>
-									</fieldset>
-								</details>
-							<?php endif; ?>
+						<?php if ( $has_category ) : ?>
+							<fieldset class="leisure-mobile-section">
+								<legend class="leisure-mobile-section-legend"><?php esc_html_e( 'Tipo', 'conexao-br-irlanda' ); ?></legend>
+								<div class="leisure-filter-options">
+									<label class="leisure-filter-option">
+										<input class="leisure-filter-radio" type="radio" name="categoria" value="" <?php checked( '' === $current_category ); ?>>
+										<span><?php esc_html_e( 'Todos', 'conexao-br-irlanda' ); ?></span>
+									</label>
 
-							<?php if ( $has_category ) : ?>
-								<details class="leisure-filter-accordion" data-filter-accordion>
-									<summary class="leisure-filter-accordion-summary" aria-expanded="false">
-										<span class="leisure-accordion-label">
-											<span class="leisure-accordion-title"><?php esc_html_e( 'Tipo', 'conexao-br-irlanda' ); ?></span>
-											<span class="leisure-accordion-value<?php echo $active_category_name ? ' is-visible' : ''; ?>" aria-live="polite"><?php echo $active_category_name ? ' · ' . esc_html( $active_category_name ) : ''; ?></span>
-										</span>
-										<span class="leisure-accordion-caret" aria-hidden="true">▾</span>
-									</summary>
-									<fieldset class="leisure-filter-fieldset">
+									<?php foreach ( $category_terms as $term ) : ?>
 										<label class="leisure-filter-option">
-											<input class="leisure-filter-radio" type="radio" name="categoria" value="" <?php checked( '' === $current_category ); ?>>
-											<span><?php esc_html_e( 'Todos', 'conexao-br-irlanda' ); ?></span>
+											<input class="leisure-filter-radio" type="radio" name="categoria" value="<?php echo esc_attr( $term->slug ); ?>" <?php checked( $current_category === $term->slug ); ?>>
+											<span><?php echo esc_html( $term->name ); ?></span>
 										</label>
+									<?php endforeach; ?>
+								</div>
+							</fieldset>
+						<?php endif; ?>
+					</div>
 
-										<?php foreach ( $category_terms as $term ) : ?>
-											<label class="leisure-filter-option">
-												<input class="leisure-filter-radio" type="radio" name="categoria" value="<?php echo esc_attr( $term->slug ); ?>" <?php checked( $current_category === $term->slug ); ?>>
-												<span><?php echo esc_html( $term->name ); ?></span>
-											</label>
-										<?php endforeach; ?>
-									</fieldset>
-								</details>
-							<?php endif; ?>
-						</div>
-
-						<div class="leisure-mobile-sheet-footer">
+					<div class="leisure-mobile-sheet-footer">
 							<a class="leisure-mobile-clear" href="<?php echo esc_url( $clear_url ); ?>"><?php esc_html_e( 'Limpar', 'conexao-br-irlanda' ); ?></a>
-							<button type="submit" class="leisure-apply-button"><?php esc_html_e( 'Aplicar filtros', 'conexao-br-irlanda' ); ?></button>
+							<button type="submit" class="leisure-apply-button"><?php esc_html_e( 'Mostrar resultados', 'conexao-br-irlanda' ); ?></button>
 						</div>
 					</form>
 				</div>
