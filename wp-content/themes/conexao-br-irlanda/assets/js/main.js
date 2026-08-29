@@ -14,6 +14,7 @@
 		initLeisureFilters();
 		initSponsorsCarousel();
 		initInfiniteScroll();
+		initLoadMore();
 	});
 
 	// ===== Theme Toggle =====
@@ -959,6 +960,152 @@
 		function finish() {
 			finished = true;
 			observer.disconnect(); // stop requesting nonexistent pages
+			clearStatus();
+			var end = document.createElement('span');
+			end.className = 'infinite-scroll__end';
+			end.textContent = 'Você chegou ao fim.';
+			status.appendChild(end);
+		}
+	}
+
+	// ===== Manual Load More (progressive enhancement) =====
+	// Applies to the Eventos (/eventos/) and Cursos (/cursos/) archives.
+	// Unlike the automatic infinite scroll above, these archives NEVER
+	// fetch a batch on their own: the next page loads only after an
+	// explicit "Carregar mais" click. Everything else works exactly like
+	// the infinite scroll — the next-page URL is read from the
+	// server-rendered pagination component and the real /page/N/ URL is
+	// fetched, so every query var (?cidade=, ?categoria=) and the
+	// main-query ordering (including the chronological event order) are
+	// preserved by construction. Without JavaScript the numeric
+	// pagination keeps working untouched (it is only hidden, never
+	// removed, when this enhancement runs).
+	function initLoadMore() {
+		var grid = document.querySelector('[data-load-more]');
+		if (!grid || grid.dataset.loadMoreBound) return;
+		// No DOMParser (very old browsers): keep normal pagination.
+		if (!window.DOMParser) return;
+		grid.dataset.loadMoreBound = 'true'; // guard against double init
+
+		var pagination = grid.parentElement && grid.parentElement.querySelector('.conexao-pagination');
+		if (!pagination) return;
+
+		var nextLink = pagination.querySelector('a.page-numbers.next');
+		if (!nextLink) return; // single page — no button, nothing to enhance
+
+		var nextUrl = nextLink.getAttribute('href');
+		var busy = false;     // only one request at a time
+		var finished = false;
+		var noun = grid.closest('.events-page') ? 'eventos' : 'cursos';
+
+		// Hide the numeric pagination visually while keeping it in the
+		// markup for no-JS visitors, crawlers and keyboard fallbacks.
+		pagination.classList.add('conexao-pagination--infinite-hidden');
+
+		// Footer: the manual button + a polite status region. The status
+		// reuses the infinite-scroll status/end classes so styling (and
+		// dark mode, via the shared design tokens) stays identical.
+		var footer = document.createElement('div');
+		footer.className = 'load-more';
+
+		var button = document.createElement('button');
+		button.type = 'button';
+		button.className = 'load-more__button';
+		button.textContent = 'Carregar mais';
+		button.addEventListener('click', loadNext); // single handler, never re-bound
+
+		var status = document.createElement('p');
+		status.className = 'infinite-scroll__status';
+		status.setAttribute('role', 'status');
+		status.setAttribute('aria-live', 'polite');
+
+		footer.appendChild(button);
+		footer.appendChild(status);
+		pagination.insertAdjacentElement('afterend', footer);
+
+		function setLoading(loading) {
+			// Disabled while a request is active: duplicate clicks can
+			// never start a second request (loadNext also re-checks `busy`).
+			button.disabled = loading;
+			button.textContent = loading ? 'Carregando...' : 'Carregar mais';
+		}
+
+		function clearStatus() {
+			while (status.firstChild) status.removeChild(status.firstChild);
+		}
+
+		function loadNext() {
+			if (busy || finished || !nextUrl) return;
+
+			busy = true;
+			setLoading(true);
+			clearStatus();
+
+			fetch(nextUrl, {
+				credentials: 'same-origin',
+				headers: { 'X-Requested-With': 'conexao-load-more' }
+			}).then(function(response) {
+				if (!response.ok) throw new Error('HTTP ' + response.status);
+				return response.text();
+			}).then(function(html) {
+				var doc = new DOMParser().parseFromString(html, 'text/html');
+				var remoteGrid = doc.querySelector('[data-load-more]');
+				if (!remoteGrid) throw new Error('Unexpected archive markup');
+
+				var added = appendBatch(remoteGrid);
+
+				// Resolve the following page from the fetched document's
+				// own pagination — exactly the links WordPress rendered.
+				var remoteNext = doc.querySelector('.conexao-pagination a.page-numbers.next');
+				var following = remoteNext ? remoteNext.getAttribute('href') : null;
+
+				busy = false;
+
+				if (!following) {
+					finish();
+					return;
+				}
+
+				nextUrl = following;
+				setLoading(false);
+
+				// Polite announcement — focus stays where the user left it.
+				if (added > 0) {
+					clearStatus();
+					status.appendChild(document.createTextNode('Mais ' + added + ' ' + noun + ' carregados.'));
+				}
+			}).catch(function() {
+				// Network/server/parse failure: recoverable. Re-enable the
+				// button so the user can retry with a fresh click — no
+				// automatic retries, no second concurrent request.
+				busy = false;
+				setLoading(false);
+				clearStatus();
+				status.appendChild(document.createTextNode('Não foi possível carregar mais conteúdo. Tente novamente.'));
+			});
+		}
+
+		function appendBatch(remoteGrid) {
+			var fragment = document.createDocumentFragment();
+			var added = 0;
+			Array.prototype.forEach.call(remoteGrid.children, function(node) {
+				if (node.nodeType !== 1) return;
+				// Duplicate guard: every archive card carries id="post-{ID}".
+				if (node.id && document.getElementById(node.id)) return;
+				fragment.appendChild(document.importNode(node, true));
+				added++;
+			});
+			grid.appendChild(fragment);
+			return added;
+		}
+
+		function finish() {
+			finished = true;
+			// No further pages: remove the button (nothing left to request)
+			// and show a muted end-of-results note in its place.
+			if (button.parentNode) {
+				footer.removeChild(button);
+			}
 			clearStatus();
 			var end = document.createElement('span');
 			end.className = 'infinite-scroll__end';

@@ -3502,6 +3502,53 @@ ul, ol {
   color: var(--color-text-muted);
 }
 
+/* ===== Manual Load More (progressive enhancement on Eventos/Cursos) =====
+   Explicit "Carregar mais" button — the next archive page is fetched only
+   on click, never automatically. Shares the infinite-scroll status/end
+   styles above (same design tokens, so dark mode works unchanged); the
+   button mirrors the pagination button language. */
+.load-more {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+}
+
+.load-more__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px; /* comfortable touch target on mobile */
+  padding: 0 24px;
+  border: 1px solid var(--color-primary);
+  border-radius: var(--radius);
+  background: var(--color-primary);
+  color: var(--conexao-white);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition), border-color var(--transition), opacity var(--transition);
+}
+
+.load-more__button:hover:not([disabled]) {
+  background: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+}
+
+.load-more__button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Disabled/loading state: request in flight — no further clicks accepted. */
+.load-more__button[disabled] {
+  opacity: 0.7;
+  cursor: progress;
+}
+
 /* Residual default WordPress pagination output (e.g. comment pagination)
    renders as <nav class="navigation pagination"><div class="nav-links">.
    Keep it horizontal and consistent with the component without affecting
