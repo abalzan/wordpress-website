@@ -86,14 +86,22 @@ All in `template-parts/`:
 - Inline `<script>` in `<head>` prevents FOUC by reading localStorage before paint
 - All CSS variables get dark overrides in `dark-mode.css`
 - The `main.js` syncs `aria-pressed` on the toggle button
-- **Homepage accent text** (`.section-eyebrow`, `.section-link`,
+- **Green text/icons on dark surfaces** (`.section-eyebrow`, `.section-link`,
   `.featured-article-category`, `.guide-link`, `.events-section-link`,
-  `.quote-author`): the dark-mode color is deliberately hard-coded to the
-  intended dark brand green `#3ab875` rather than `var(--color-primary)`.
-  When page-optimize concatenates CSS, a later `:root` in `main.css` wins the
-  cascade over the `[data-theme="dark"]` token block (equal specificity), so
-  `--color-primary` stays at the light value `#0e6b3a` (contrast ~2.7:1 on
-  dark). Keep these overrides; don't revert them to `var(--color-primary)`.
+  `.quote-author`, `.leisure-card-cta`, `.leisure-card-attr`,
+  `.leisure-card-category`, `.conexao-breadcrumb-link`, and the active/hover
+  states of the `/lazer/` filter UI — chips, dropdowns, checked radios): the
+  dark-mode color is deliberately the dark brand green `#3ab875`
+  (`--conexao-primary-text`, defined in the `dark-mode.css` token block)
+  rather than `var(--color-primary)`. When page-optimize concatenates CSS, a
+  later `:root` — `main.css`'s palette AND the `conexao_customizer_css()`
+  inline block in `functions.php` — wins the cascade over the
+  `[data-theme="dark"]` token block (equal specificity), so
+  `--color-primary` stays at the light value `#0e6b3a` (contrast ~2.3:1 on
+  dark tints, ~2.7:1 on the dark background). Green **backgrounds** keep
+  `var(--color-primary)`: white text on `#0e6b3a` is 6.5:1 (on `#3ab875` it
+  would fail at 2.5:1). Keep this split; don't revert text colors to
+  `var(--color-primary)`.
 
 ## Accessibility details
 

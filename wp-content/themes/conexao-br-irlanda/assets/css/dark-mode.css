@@ -14,6 +14,14 @@
   --conexao-primary-dark: #28a060;
   --conexao-primary-light: #1a3a2a;
   --conexao-primary-50: #142b20;
+  /* Brand green for TEXT/ICONS on dark surfaces. --conexao-primary keeps the
+     light value #0E6B3A in practice: conexao_customizer_css() re-declares it
+     on :root AFTER this stylesheet, so it wins the cascade — which is what
+     white-on-green buttons need (white on #0E6B3A = 6.5:1; on #3ab875 = 2.5:1,
+     a failure). Green TEXT on dark surfaces needs the opposite: #0e6b3a on
+     primary-50 #142b20 = 2.27:1 (fail), #3ab875 = 5.94:1 (pass). Same pattern
+     as the .leisure-card-category pill note below. */
+  --conexao-primary-text: #3ab875;
   --conexao-accent: #f59e42;
   --conexao-accent-dark: #d97a1a;
   --conexao-accent-light: #3a2a1a;
@@ -548,6 +556,7 @@
 [data-theme="dark"] .course-card-detail,
 [data-theme="dark"] .provider-card-detail,
 [data-theme="dark"] .leisure-card-detail,
+[data-theme="dark"] .leisure-card-attr,
 [data-theme="dark"] .archive-card-meta,
 [data-theme="dark"] .post-card-meta,
 [data-theme="dark"] .news-card-meta,
@@ -598,7 +607,9 @@
 [data-theme="dark"] .provider-card-cta,
 [data-theme="dark"] .leisure-card-cta {
   background: var(--color-primary-50);
-  color: var(--color-primary);
+  /* Green text on the dark primary-50 tint: var(--color-primary) resolves to
+     #0e6b3a here (2.27:1 — fail); use the dark-adjusted text green instead. */
+  color: var(--conexao-primary-text);
 }
 
 [data-theme="dark"] .card-cta:hover,
@@ -1174,7 +1185,7 @@
 }
 
 [data-theme="dark"] .conexao-breadcrumb-link {
-  color: var(--color-primary);
+  color: var(--conexao-primary-text);
 }
 
 [data-theme="dark"] .conexao-breadcrumb-link:hover {
@@ -1543,8 +1554,8 @@
 
 [data-theme="dark"] .leisure-dropdown-trigger:hover,
 [data-theme="dark"] .leisure-dropdown-trigger[aria-expanded="true"] {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
+  border-color: var(--conexao-primary-text);
+  color: var(--conexao-primary-text);
   background: var(--color-primary-50);
 }
 
@@ -1556,14 +1567,14 @@
 
 [data-theme="dark"] .leisure-dropdown-trigger.is-selected:hover,
 [data-theme="dark"] .leisure-dropdown-trigger.is-selected[aria-expanded="true"] {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
+  border-color: var(--conexao-primary-text);
+  color: var(--conexao-primary-text);
   background: var(--color-primary-50);
 }
 
 /* Active dot indicator */
 [data-theme="dark"] .leisure-dot {
-  background: var(--color-primary);
+  background: var(--conexao-primary-text);
 }
 
 /* Dropdown panel */
@@ -1580,17 +1591,17 @@
 
 [data-theme="dark"] .leisure-dropdown-link:hover {
   background: var(--color-primary-50);
-  color: var(--color-primary);
+  color: var(--conexao-primary-text);
 }
 
 [data-theme="dark"] .leisure-dropdown-link.is-active {
   background: var(--color-primary-50);
-  color: var(--color-primary);
+  color: var(--conexao-primary-text);
 }
 
 /* Checkmark */
 [data-theme="dark"] .leisure-checkmark {
-  color: var(--color-primary);
+  color: var(--conexao-primary-text);
 }
 
 /* Toolbar clear link */
@@ -1620,8 +1631,8 @@
 
 [data-theme="dark"] .leisure-filter-chip {
   background: var(--color-primary-50);
-  border-color: var(--color-primary);
-  color: var(--color-primary);
+  border-color: var(--conexao-primary-text);
+  color: var(--conexao-primary-text);
 }
 
 [data-theme="dark"] .leisure-filter-chip:hover {
@@ -1643,14 +1654,14 @@
 
 [data-theme="dark"] .leisure-mobile-filter-trigger:hover,
 [data-theme="dark"] .leisure-mobile-filter-trigger[aria-expanded="true"] {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
+  border-color: var(--conexao-primary-text);
+  color: var(--conexao-primary-text);
   background: var(--color-primary-50);
 }
 
 /* Mobile filter icon */
 [data-theme="dark"] .leisure-mobile-filter-icon {
-  color: var(--color-primary);
+  color: var(--conexao-primary-text);
 }
 
 /* Mobile filter count badge */
@@ -1688,8 +1699,8 @@
 }
 
 [data-theme="dark"] .leisure-mobile-sheet-close:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
+  border-color: var(--conexao-primary-text);
+  color: var(--conexao-primary-text);
   background: var(--color-primary-50);
 }
 
@@ -1715,7 +1726,7 @@
 
 [data-theme="dark"] .leisure-filter-option:has(.leisure-filter-radio:checked) {
   background: var(--color-primary-50);
-  color: var(--color-primary);
+  color: var(--conexao-primary-text);
 }
 
 /* Mobile sheet footer */
@@ -1742,8 +1753,8 @@
 }
 
 [data-theme="dark"] .leisure-mobile-clear:hover {
-  border-color: var(--color-primary);
-  color: var(--color-primary);
+  border-color: var(--conexao-primary-text);
+  color: var(--conexao-primary-text);
   background: var(--color-primary-50);
 }
 
