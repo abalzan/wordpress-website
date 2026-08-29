@@ -56,8 +56,8 @@ Features:
 - **Mobile search** — full-screen overlay, auto-focus on open
 - **Copy buttons** — share link copy to clipboard with visual feedback
 - **Leisure filters** — desktop dropdowns (one open at a time), mobile bottom sheet with accordions
-- **Infinite scroll** — automatic on Blog/Guias/Lazer + category archives (IntersectionObserver sentinel)
-- **Load More** — manual "Carregar mais" button on `/eventos/` and `/cursos/` only (no auto-loading): fetches the real next `/page/N/` URL on click, appends cards with dedupe, polite live-region announcements, disabled while loading, removed at end of results
+- **Infinite scroll** — automatic on Blog/Guias/Lazer + category archives (IntersectionObserver sentinel, 480px rootMargin, one page at a time; bfcache `pageshow` guard so back/forward navigation never leaves a stuck request)
+- **Load More** — manual "Carregar mais" button on `/eventos/` and `/cursos/` only (no auto-loading): fetches the real next `/page/N/` URL on click, appends cards with dedupe, polite live-region announcements, disabled while loading, removed at end of results, re-enabled after back/forward cache restore
 
 ## Shared Template Parts
 

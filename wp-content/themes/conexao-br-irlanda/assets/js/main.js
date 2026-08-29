@@ -946,6 +946,21 @@
 			});
 		}
 
+		// Back/forward navigation (bfcache): a fetch that was in flight
+		// when the user left the page never resolves after restore, which
+		// would leave `busy` stuck and silently kill the enhancement.
+		// Reset the in-flight state so scrolling simply continues where it
+		// stopped (same bfcache guard used by the event-importer admin JS).
+		window.addEventListener('pageshow', function(event) {
+			if (!event.persisted) return;
+			busy = false;
+			// Keep a rendered error/retry state; only clear a stale
+			// "Carregando..." spinner left over from the abandoned fetch.
+			if (!errored && !finished) clearStatus();
+			observer.unobserve(sentinel);
+			observer.observe(sentinel);
+		});
+
 		function appendBatch(remoteGrid) {
 			var fragment = document.createDocumentFragment();
 			Array.prototype.forEach.call(remoteGrid.children, function(node) {
@@ -1084,6 +1099,17 @@
 				status.appendChild(document.createTextNode('Não foi possível carregar mais conteúdo. Tente novamente.'));
 			});
 		}
+
+		// Back/forward navigation (bfcache): a fetch that was in flight
+		// when the user left the page never resolves after restore, which
+		// would leave the button stuck on "Carregando..." forever. Re-enable
+		// it so the next click just works (same bfcache guard used by the
+		// event-importer admin JS).
+		window.addEventListener('pageshow', function(event) {
+			if (!event.persisted) return;
+			busy = false;
+			if (!finished) setLoading(false);
+		});
 
 		function appendBatch(remoteGrid) {
 			var fragment = document.createDocumentFragment();
