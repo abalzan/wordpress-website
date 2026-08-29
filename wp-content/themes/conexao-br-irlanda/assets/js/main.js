@@ -254,7 +254,12 @@
 	// interaction layer:
 	//   - only one desktop dropdown is open at a time,
 	//   - clicking the trigger toggles its own menu,
-	//   - clicking outside or pressing Escape closes open menus / the sheet,
+	//   - clicking outside or pressing Escape closes open menus / the sheet
+	//     (Escape returns focus to the trigger of the dropdown it closed),
+	//   - the Localização popover has a client-side search field that filters
+	//     the already server-rendered options (no extra request, no change to
+	//     the filter values) — Escape inside it first clears the query, then
+	//     a second Escape closes the menu,
 	//   - the mobile sheet is a fixed overlay with a focusable close control,
 	//   - empty "Todos" radio values are stripped so URLs stay clean (e.g.
 	//     /lazer/?categoria=castelos instead of /lazer/?county=&categoria=castelos).
@@ -264,10 +269,27 @@
 
 		const dropdowns = Array.prototype.slice.call(root.querySelectorAll('[data-dropdown]'));
 
+		function getTrigger(dropdown) {
+			return dropdown.querySelector('[data-dropdown-trigger]');
+		}
+
+		function isOpen(dropdown) {
+			const trigger = getTrigger(dropdown);
+			return !!trigger && trigger.getAttribute('aria-expanded') === 'true';
+		}
+
 		function setDropdown(dropdown, open) {
-			const trigger = dropdown.querySelector('[data-dropdown-trigger]');
+			const trigger = getTrigger(dropdown);
 			if (trigger) {
 				trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+			}
+			// Focus the search field when a searchable menu opens so the user
+			// can type immediately; the query is kept (not reset) so reopening
+			// preserves the filtering in progress.
+			const search = dropdown.querySelector('[data-dropdown-search]');
+			if (open && search) {
+				search.focus();
+				search.select();
 			}
 		}
 
@@ -279,14 +301,17 @@
 		}
 
 		dropdowns.forEach(function(dropdown) {
-			const trigger = dropdown.querySelector('[data-dropdown-trigger]');
+			const trigger = getTrigger(dropdown);
 			if (!trigger) return;
 
 			trigger.addEventListener('click', function(e) {
 				e.stopPropagation();
-				const wasOpen = trigger.getAttribute('aria-expanded') === 'true';
+				const wasOpen = isOpen(dropdown);
 				closeAllDropdowns(dropdown);
 				setDropdown(dropdown, !wasOpen);
+				// Return focus to the trigger when a menu closes via toggle so
+				// keyboard users never lose their place.
+				if (wasOpen) trigger.focus();
 			});
 		});
 
@@ -295,6 +320,91 @@
 			if (!e.target.closest('[data-dropdown]')) {
 				closeAllDropdowns();
 			}
+		});
+
+		// Client-side search inside a dropdown panel: filters the options that
+		// were already rendered by PHP (accent/case-insensitive match on the
+		// visible label). Purely cosmetic filtering — the underlying links and
+		// their URLs are untouched, so with JS disabled every option remains
+		// a working hyperlink.
+		function normalize(text) {
+			return (text || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+		}
+
+		dropdowns.forEach(function(dropdown) {
+			const search = dropdown.querySelector('[data-dropdown-search]');
+			if (!search) return;
+
+			const options = Array.prototype.slice.call(dropdown.querySelectorAll('.leisure-dropdown-link'));
+			const empty = dropdown.querySelector('[data-dropdown-empty]');
+			const list = dropdown.querySelector('.leisure-dropdown-list');
+
+			function applyFilter() {
+				const query = normalize(search.value.trim());
+				let visible = 0;
+				options.forEach(function(option) {
+					const match = !query || normalize(option.textContent).indexOf(query) !== -1;
+					option.hidden = !match;
+					if (match) visible++;
+				});
+				if (empty) {
+					empty.hidden = visible > 0;
+				}
+				if (list) {
+					list.hidden = visible === 0;
+				}
+			}
+
+			search.addEventListener('input', applyFilter);
+
+			// Escape inside the search first clears the query (restoring every
+			// option), and only closes the menu on a second press.
+			search.addEventListener('keydown', function(e) {
+				if (e.key !== 'Escape') return;
+				if (search.value !== '') {
+					e.stopPropagation();
+					search.value = '';
+					applyFilter();
+				}
+			});
+		});
+
+		// Mobile sheet option search (Localização): the same client-side,
+		// accent/case-insensitive filtering as the desktop popover, applied to
+		// the radio labels. The field is only rendered for long lists (decided
+		// in PHP), so a short county list stays free of unnecessary search UI.
+		// Escape first clears the query; a second press falls through to the
+		// sheet's own Escape handling and closes it.
+		Array.prototype.forEach.call(root.querySelectorAll('[data-option-search]'), function(search) {
+			const section = search.closest('.leisure-mobile-section');
+			if (!section) return;
+
+			const options = Array.prototype.slice.call(section.querySelectorAll('.leisure-filter-option'));
+			const empty = section.querySelector('[data-option-empty]');
+			const list = section.querySelector('[data-option-list]');
+
+			function applySearch() {
+				const query = normalize(search.value.trim());
+				let visible = 0;
+				options.forEach(function(option) {
+					const match = !query || normalize(option.textContent).indexOf(query) !== -1;
+					option.hidden = !match;
+					if (match) visible++;
+				});
+				if (empty) empty.hidden = visible > 0;
+				if (list) list.hidden = visible === 0;
+			}
+
+			search.addEventListener('input', applySearch);
+
+			search.addEventListener('keydown', function(e) {
+				if (e.key !== 'Escape') return;
+				if (search.value !== '') {
+					e.stopPropagation();
+					search.value = '';
+					applySearch();
+				}
+			});
 		});
 
 		// Mobile bottom sheet.
@@ -374,11 +484,17 @@
 			});
 		}
 
-		// Escape closes the sheet (and any desktop dropdown); focus returns
-		// to the "Filtrar" trigger.
+		// Escape closes the sheet (and any desktop dropdown, returning focus
+		// to its trigger); focus returns to the "Filtrar" trigger for the sheet.
 		document.addEventListener('keydown', function(e) {
 			if (e.key !== 'Escape') return;
-			closeAllDropdowns();
+			dropdowns.forEach(function(dd) {
+				if (isOpen(dd)) {
+					setDropdown(dd, false);
+					const trigger = getTrigger(dd);
+					if (trigger) trigger.focus();
+				}
+			});
 			closeMobileSheet(true);
 		});
 

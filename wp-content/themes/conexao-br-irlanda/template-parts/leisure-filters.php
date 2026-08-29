@@ -5,13 +5,17 @@
  * Renders the /lazer/ filtering UI as a single, lightweight component.
  *
  * Desktop: a content-discovery toolbar under the "Encontre o que fazer"
- * heading — compact dropdown triggers ("Localização" and "Tipo") that show
+ * heading — substantial dropdown triggers ("Localização" and "Tipo", roughly
+ * 220–280px wide so they align with the attraction grid below) that show
  * the selected value while a filter is active, an active-filter chip row
  * where each chip is a real hyperlink that removes that single filter, a
  * "Limpar filtros" action that only appears while a filter is active, and a
  * lightweight result-count line. Each dropdown is a real hyperlink menu
  * anchored directly below its trigger button, so the URL is always shareable
- * and refresh/back-forward safe.
+ * and refresh/back-forward safe. The Localização popover additionally has a
+ * client-side search field over its server-rendered options (about 26
+ * counties) — cosmetic filtering only, no extra request and no change to
+ * the underlying links.
  *
  * Mobile: a prominent full-width "Filtrar" button (with an active-filter
  * count badge when filters are applied) that opens a fixed-position
@@ -146,26 +150,38 @@ $leisure_total = ( isset( $wp_query ) && $wp_query instanceof WP_Query ) ? (int)
 						<span class="leisure-dropdown-caret" aria-hidden="true">▾</span>
 					</button>
 
-					<div class="leisure-dropdown-panel" id="leisure-county-panel" role="listbox" aria-label="<?php esc_attr_e( 'Condado', 'conexao-br-irlanda' ); ?>" data-dropdown-panel>
-						<a class="leisure-dropdown-link <?php echo empty( $current_county ) ? 'is-active' : ''; ?>" role="option" aria-selected="<?php echo empty( $current_county ) ? 'true' : 'false'; ?>" href="<?php echo esc_url( $current_category ? add_query_arg( 'categoria', $current_category, $archive_url ) : $archive_url ); ?>">
-							<span class="leisure-checkmark" aria-hidden="true"><?php echo empty( $current_county ) ? '✓' : ''; ?></span>
-							<span><?php esc_html_e( 'Todos', 'conexao-br-irlanda' ); ?></span>
-						</a>
-
-						<?php foreach ( $county_terms as $term ) : ?>
-							<?php
-							$url = add_query_arg( 'county', $term->slug, $archive_url );
-							// Preserve the category filter when switching counties.
-							if ( $current_category ) {
-								$url = add_query_arg( 'categoria', $current_category, $url );
-							}
-							$is_active = ( $current_county === $term->slug );
-							?>
-							<a class="leisure-dropdown-link <?php echo $is_active ? 'is-active' : ''; ?>" role="option" aria-selected="<?php echo $is_active ? 'true' : 'false'; ?>" href="<?php echo esc_url( $url ); ?>">
-								<span class="leisure-checkmark" aria-hidden="true"><?php echo $is_active ? '✓' : ''; ?></span>
-								<span><?php echo esc_html( $term->name ); ?></span>
+					<div class="leisure-dropdown-panel" id="leisure-county-panel" data-dropdown-panel>
+						<?php // Client-side search over the server-rendered options —
+						      // no extra request, no change to the filter values. ?>
+						<input
+							type="search"
+							class="leisure-dropdown-search"
+							data-dropdown-search
+							placeholder="<?php esc_attr_e( 'Procurar localização', 'conexao-br-irlanda' ); ?>"
+							aria-label="<?php esc_attr_e( 'Procurar localização', 'conexao-br-irlanda' ); ?>"
+							autocomplete="off">
+						<div class="leisure-dropdown-list" role="listbox" aria-label="<?php esc_attr_e( 'Condado', 'conexao-br-irlanda' ); ?>">
+							<a class="leisure-dropdown-link <?php echo empty( $current_county ) ? 'is-active' : ''; ?>" role="option" aria-selected="<?php echo empty( $current_county ) ? 'true' : 'false'; ?>" href="<?php echo esc_url( $current_category ? add_query_arg( 'categoria', $current_category, $archive_url ) : $archive_url ); ?>">
+								<span class="leisure-checkmark" aria-hidden="true"><?php echo empty( $current_county ) ? '✓' : ''; ?></span>
+								<span><?php esc_html_e( 'Todos', 'conexao-br-irlanda' ); ?></span>
 							</a>
-						<?php endforeach; ?>
+
+							<?php foreach ( $county_terms as $term ) : ?>
+								<?php
+								$url = add_query_arg( 'county', $term->slug, $archive_url );
+								// Preserve the category filter when switching counties.
+								if ( $current_category ) {
+									$url = add_query_arg( 'categoria', $current_category, $url );
+								}
+								$is_active = ( $current_county === $term->slug );
+								?>
+								<a class="leisure-dropdown-link <?php echo $is_active ? 'is-active' : ''; ?>" role="option" aria-selected="<?php echo $is_active ? 'true' : 'false'; ?>" href="<?php echo esc_url( $url ); ?>">
+									<span class="leisure-checkmark" aria-hidden="true"><?php echo $is_active ? '✓' : ''; ?></span>
+									<span><?php echo esc_html( $term->name ); ?></span>
+								</a>
+							<?php endforeach; ?>
+						</div>
+						<p class="leisure-dropdown-empty" data-dropdown-empty hidden><?php esc_html_e( 'Nenhuma localização encontrada.', 'conexao-br-irlanda' ); ?></p>
 					</div>
 				</div>
 			</div>
@@ -189,26 +205,28 @@ $leisure_total = ( isset( $wp_query ) && $wp_query instanceof WP_Query ) ? (int)
 						<span class="leisure-dropdown-caret" aria-hidden="true">▾</span>
 					</button>
 
-					<div class="leisure-dropdown-panel" id="leisure-category-panel" role="listbox" aria-label="<?php esc_attr_e( 'Tipo', 'conexao-br-irlanda' ); ?>" data-dropdown-panel>
-						<a class="leisure-dropdown-link <?php echo empty( $current_category ) ? 'is-active' : ''; ?>" role="option" aria-selected="<?php echo empty( $current_category ) ? 'true' : 'false'; ?>" href="<?php echo esc_url( $current_county ? add_query_arg( 'county', $current_county, $archive_url ) : $archive_url ); ?>">
-							<span class="leisure-checkmark" aria-hidden="true"><?php echo empty( $current_category ) ? '✓' : ''; ?></span>
-							<span><?php esc_html_e( 'Todos', 'conexao-br-irlanda' ); ?></span>
-						</a>
-
-						<?php foreach ( $category_terms as $term ) : ?>
-							<?php
-							$url = add_query_arg( 'categoria', $term->slug, $archive_url );
-							// Preserve the county filter when switching categories.
-							if ( $current_county ) {
-								$url = add_query_arg( 'county', $current_county, $url );
-							}
-							$is_active = ( $current_category === $term->slug );
-							?>
-							<a class="leisure-dropdown-link <?php echo $is_active ? 'is-active' : ''; ?>" role="option" aria-selected="<?php echo $is_active ? 'true' : 'false'; ?>" href="<?php echo esc_url( $url ); ?>">
-								<span class="leisure-checkmark" aria-hidden="true"><?php echo $is_active ? '✓' : ''; ?></span>
-								<span><?php echo esc_html( $term->name ); ?></span>
+					<div class="leisure-dropdown-panel" id="leisure-category-panel" data-dropdown-panel>
+						<div class="leisure-dropdown-list" role="listbox" aria-label="<?php esc_attr_e( 'Tipo', 'conexao-br-irlanda' ); ?>">
+							<a class="leisure-dropdown-link <?php echo empty( $current_category ) ? 'is-active' : ''; ?>" role="option" aria-selected="<?php echo empty( $current_category ) ? 'true' : 'false'; ?>" href="<?php echo esc_url( $current_county ? add_query_arg( 'county', $current_county, $archive_url ) : $archive_url ); ?>">
+								<span class="leisure-checkmark" aria-hidden="true"><?php echo empty( $current_category ) ? '✓' : ''; ?></span>
+								<span><?php esc_html_e( 'Todos', 'conexao-br-irlanda' ); ?></span>
 							</a>
-						<?php endforeach; ?>
+
+							<?php foreach ( $category_terms as $term ) : ?>
+								<?php
+								$url = add_query_arg( 'categoria', $term->slug, $archive_url );
+								// Preserve the county filter when switching categories.
+								if ( $current_county ) {
+									$url = add_query_arg( 'county', $current_county, $url );
+								}
+								$is_active = ( $current_category === $term->slug );
+								?>
+								<a class="leisure-dropdown-link <?php echo $is_active ? 'is-active' : ''; ?>" role="option" aria-selected="<?php echo $is_active ? 'true' : 'false'; ?>" href="<?php echo esc_url( $url ); ?>">
+									<span class="leisure-checkmark" aria-hidden="true"><?php echo $is_active ? '✓' : ''; ?></span>
+									<span><?php echo esc_html( $term->name ); ?></span>
+								</a>
+							<?php endforeach; ?>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -300,10 +318,24 @@ $leisure_total = ( isset( $wp_query ) && $wp_query instanceof WP_Query ) ? (int)
 
 					<form method="get" action="<?php echo esc_url( $archive_url ); ?>" class="leisure-mobile-form" data-mobile-form>
 						<div class="leisure-mobile-sheet-body">
-						<?php if ( $has_county ) : ?>
+						<?php if ( $has_county ) :
+							// A search field only makes sense for a long list — with a
+							// handful of counties it would be unnecessary UI. This mirrors
+							// the desktop popover, which always shows search over the same
+							// (currently ~26-county) list.
+							$show_county_search = count( $county_terms ) > 8;
+							?>
 							<fieldset class="leisure-mobile-section">
 								<legend class="leisure-mobile-section-legend"><?php esc_html_e( 'Localização', 'conexao-br-irlanda' ); ?></legend>
-								<div class="leisure-filter-options">
+								<?php if ( $show_county_search ) : ?>
+									<input
+										type="search"
+										class="leisure-mobile-search"
+										data-option-search
+										placeholder="<?php esc_attr_e( 'Procurar localização', 'conexao-br-irlanda' ); ?>"
+										aria-label="<?php esc_attr_e( 'Procurar localização', 'conexao-br-irlanda' ); ?>">
+								<?php endif; ?>
+								<div class="leisure-filter-options" data-option-list>
 									<label class="leisure-filter-option">
 										<input class="leisure-filter-radio" type="radio" name="county" value="" <?php checked( '' === $current_county ); ?>>
 										<span><?php esc_html_e( 'Todos', 'conexao-br-irlanda' ); ?></span>
@@ -316,6 +348,9 @@ $leisure_total = ( isset( $wp_query ) && $wp_query instanceof WP_Query ) ? (int)
 										</label>
 									<?php endforeach; ?>
 								</div>
+								<?php if ( $show_county_search ) : ?>
+									<p class="leisure-filter-options-empty" data-option-empty hidden><?php esc_html_e( 'Nenhuma localização encontrada', 'conexao-br-irlanda' ); ?></p>
+								<?php endif; ?>
 							</fieldset>
 						<?php endif; ?>
 

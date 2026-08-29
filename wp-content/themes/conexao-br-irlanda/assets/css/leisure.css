@@ -33,12 +33,14 @@
 	margin: 0 0 var(--space-3);
 }
 
-/* --- Toolbar row (desktop) --- */
+/* --- Toolbar row (desktop) ---
+   Column gap of 16px keeps the two discovery controls sharing the same
+   horizontal rhythm as the attraction grid below (same container edges). */
 .leisure-filter-toolbar {
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
-	gap: var(--space-2) var(--space-3);
+	gap: var(--space-2) var(--space-4);
 	margin: 0 0 var(--space-3);
 }
 
@@ -127,9 +129,15 @@
 .leisure-dropdown-trigger {
 	display: inline-flex;
 	align-items: center;
-	gap: 5px;
-	min-height: 34px;
-	padding: 5px 12px;
+	gap: var(--space-2);
+	/* Substantial discovery controls: wide enough to read as primary
+	   actions (220–280px depending on the viewport), never wider than
+	   their container. */
+	width: clamp(220px, 24vw, 280px);
+	max-width: 100%;
+	min-height: 44px;
+	padding: 10px 14px;
+	box-sizing: border-box;
 	border-radius: var(--radius);
 	border: 1px solid var(--color-border);
 	background: var(--color-surface);
@@ -180,14 +188,15 @@
 }
 
 .leisure-dropdown-label {
+	min-width: 0;
 	overflow: hidden;
 	text-overflow: ellipsis;
-	max-width: 160px;
 }
 
 .leisure-dropdown-caret {
 	font-size: 0.6rem;
 	line-height: 1;
+	margin-left: auto;
 	transition: transform var(--transition-fast);
 	flex-shrink: 0;
 	color: inherit;
@@ -207,7 +216,8 @@
 }
 
 /* --- Dropdown panel ---
-   Compact, anchored directly below its trigger. */
+   Anchored directly below its trigger and matching its width (min-width
+   100% of the trigger) so the popover reads as an extension of the control. */
 .leisure-dropdown-panel {
 	position: absolute;
 	top: calc(100% + 4px);
@@ -215,18 +225,73 @@
 	z-index: 25;
 	width: max-content;
 	min-width: 100%;
-	max-width: min(200px, calc(100vw - 32px));
-	max-height: 240px;
+	max-width: min(280px, calc(100vw - 32px));
+	max-height: 320px;
 	overflow-y: auto;
 	overscroll-behavior: contain;
 	display: none;
 	flex-direction: column;
-	gap: 1px;
-	padding: 4px;
+	gap: 4px;
+	padding: 6px;
 	background: var(--color-surface);
 	border: 1px solid var(--color-border);
 	border-radius: var(--radius);
 	box-shadow: var(--shadow-md);
+}
+
+/* --- Location search (Localização popover) ---
+   Client-side filter over the server-rendered options; visually a divider
+   row pinned to the top of the panel. */
+.leisure-dropdown-search {
+	width: 100%;
+	box-sizing: border-box;
+	min-height: 34px;
+	padding: 6px 10px;
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius-sm);
+	background: var(--color-surface-muted);
+	color: var(--color-text);
+	font: inherit;
+	font-size: var(--text-sm);
+	appearance: none;
+	-webkit-appearance: none;
+	/* Stay pinned to the top while the county list scrolls beneath it. */
+	position: sticky;
+	top: 0;
+	z-index: 1;
+}
+
+.leisure-dropdown-search::placeholder {
+	color: var(--color-text-muted);
+}
+
+.leisure-dropdown-search:focus-visible {
+	outline: var(--focus-ring);
+	outline-offset: var(--focus-offset);
+	border-color: var(--color-primary);
+}
+
+.leisure-dropdown-search::-webkit-search-cancel-button {
+	-webkit-appearance: none;
+}
+
+/* Options wrapper — keeps the compact single-column rhythm inside the panel. */
+.leisure-dropdown-list {
+	display: flex;
+	flex-direction: column;
+	gap: 1px;
+}
+
+.leisure-dropdown-link[hidden],
+.leisure-dropdown-list[hidden] {
+	display: none;
+}
+
+.leisure-dropdown-empty {
+	margin: 0;
+	padding: 8px 10px;
+	font-size: var(--text-sm);
+	color: var(--color-text-muted);
 }
 
 .leisure-dropdown-link {
@@ -524,6 +589,49 @@
 .leisure-filter-radio:focus-visible {
 	outline: var(--focus-ring);
 	outline-offset: var(--focus-offset);
+}
+
+/* Location search inside the mobile sheet — only rendered for long lists.
+   Comfortable 44px touch target, matching the other sheet controls. */
+.leisure-mobile-search {
+	width: 100%;
+	min-height: 44px;
+	padding: var(--space-2) var(--space-3);
+	margin: 0 0 var(--space-2);
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius);
+	background: var(--color-surface-muted);
+	color: var(--color-text);
+	font: inherit;
+	font-size: var(--text-base);
+	-webkit-appearance: none;
+	appearance: none;
+}
+
+.leisure-mobile-search::placeholder {
+	color: var(--color-text-muted);
+}
+
+.leisure-mobile-search:focus-visible {
+	outline: var(--focus-ring);
+	outline-offset: var(--focus-offset);
+	border-color: var(--color-primary);
+}
+
+/* Hidden-attribute guards: the option labels and the option list are flex
+   containers, so the UA display:none for [hidden] would otherwise lose to
+   their display:flex rules and searched-out options would stay visible. */
+.leisure-filter-option[hidden],
+.leisure-filter-options[hidden] {
+	display: none;
+}
+
+/* "No results" message under a fully searched-out option list */
+.leisure-filter-options-empty {
+	margin: 0;
+	padding: var(--space-2) var(--space-3);
+	font-size: var(--text-sm);
+	color: var(--color-text-muted);
 }
 
 /* Sheet footer: sticky action buttons */

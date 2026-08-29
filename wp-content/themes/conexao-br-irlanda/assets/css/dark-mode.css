@@ -1584,6 +1584,26 @@
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
 }
 
+/* Location search (Localização popover) */
+[data-theme="dark"] .leisure-dropdown-search {
+  background: var(--color-surface-muted);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .leisure-dropdown-search::placeholder {
+  color: var(--color-text-muted);
+}
+
+[data-theme="dark"] .leisure-dropdown-search:focus-visible {
+  border-color: var(--conexao-primary-text);
+}
+
+/* "No results" message inside the search panel */
+[data-theme="dark"] .leisure-dropdown-empty {
+  color: var(--color-text-muted);
+}
+
 /* Dropdown links */
 [data-theme="dark"] .leisure-dropdown-link {
   color: var(--color-text-secondary);
@@ -1712,6 +1732,26 @@
 /* Section legends (mobile sheet) */
 [data-theme="dark"] .leisure-mobile-section-legend {
   color: var(--color-text);
+}
+
+/* Location search inside the mobile sheet */
+[data-theme="dark"] .leisure-mobile-search {
+  background: var(--color-surface-muted);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .leisure-mobile-search::placeholder {
+  color: var(--color-text-muted);
+}
+
+[data-theme="dark"] .leisure-mobile-search:focus-visible {
+  border-color: var(--conexao-primary-text);
+}
+
+/* "No results" message under the searched option list */
+[data-theme="dark"] .leisure-filter-options-empty {
+  color: var(--color-text-muted);
 }
 
 /* Filter option labels */

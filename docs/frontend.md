@@ -70,7 +70,7 @@ All in `template-parts/`:
 | `event-filters.php` | Events archive filter bar |
 | `event-preview.php` | Homepage events section |
 | `leisure-card.php` | Lazer archive grid |
-| `leisure-filters.php` | Lazer archive filter bar (desktop: discovery heading + dropdowns + chips + count; mobile: bottom sheet) |
+| `leisure-filters.php` | Lazer archive filter bar (desktop: discovery heading + wide dropdowns with location search + chips + count; mobile: bottom sheet with location search for long lists) |
 | `provider-card.php` | Course providers archive/grid |
 | `quick-access-card.php` | Homepage quick access grid |
 | `newsletter-section.php` | Newsletter CTA section (homepage + archives) |
