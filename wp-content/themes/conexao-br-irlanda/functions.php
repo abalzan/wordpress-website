@@ -30,8 +30,14 @@ require_once CONEXAO_THEME_DIR . '/inc/empregos-landing.php';
  * Load the Empregos "Onde procurar emprego" job-search resources (filterable
  * data source for the external job-site cards rendered below the landing
  * content by page-empregos.php).
- */
+  */
 require_once CONEXAO_THEME_DIR . '/inc/job-resources.php';
+
+/**
+ * Load the search module: accent-insensitive search matching over the native
+ * post_title / post_excerpt / post_content search columns. See inc/search.php.
+ */
+require_once CONEXAO_THEME_DIR . '/inc/search.php';
 
 /**
  * Relabel "Posts" to "Blog" in the WordPress admin.

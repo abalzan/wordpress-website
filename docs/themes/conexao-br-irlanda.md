@@ -133,6 +133,7 @@ Key functionality includes:
 | `conexao_sponsor_contact_rows()` | Merges `_sponsor_link` + `_sponsor_contacts` into ordered, deduplicated display rows for the detail page |
 | `conexao_contact_label()` / `conexao_contact_icon()` | Frontend label + inline-SVG icon per contact type (reuses existing brand paths) |
 | `conexao_customize_register()` | Customizer sections (colors, social, hero [title/subtitle only], footer) |
+| `conexao_accent_insensitive_posts_search()` / `conexao_accent_insensitive_posts_orderby()` | `posts_search` / `posts_search_orderby` filters — makes the main public search accent-insensitive over post_title, post_excerpt and post_content via an explicit `COLLATE utf8mb4_unicode_ci` on each LIKE comparison (see `inc/search.php`) |
 
 ### Image Sizes
 
@@ -202,6 +203,38 @@ Empregos
 - **Layout/CSS**: `main.css` — desktop uses a two-column portrait+text grid;
   mobile (≤768px) stacks into a single natural column. Colours come entirely
   from the design-system tokens, so light and dark mode are automatic.
+
+### Search (`inc/search.php`)
+
+Makes the main public search accent-insensitive while preserving WordPress's
+native search behavior (same WHERE clause over `post_title`, `post_excerpt`
+and `post_content`, same relevance ordering). Stored content is never modified —
+e.g. a page titled "Benefícios" stays "Benefícios"; it is the comparison
+collation that changes.
+
+The `posts_search` (WHERE) and `posts_search_orderby` (relevance ranking)
+filters append an explicit `utf8mb4_unicode_ci` collation to each search `LIKE`
+comparison at query time:
+
+```sql
+wp_posts.post_title COLLATE utf8mb4_unicode_ci LIKE '%beneficios%'
+```
+
+`utf8mb4_unicode_ci` is the project's configured collation (see `compose.yaml`
+`WORDPRESS_DB_COLLATION`) and is accent-insensitive for all Portuguese
+characters (á, à, â, ã, ä, é, ê, í, ó, ô, õ, ö, ú, ü, ç and uppercase). It is
+universally available (MySQL 5.6+/8.x, MariaDB), so this works identically on
+the local Docker stack and on the WordPress.com production host. When a
+column is already accent-insensitive (the local stack) the COLLATE is a
+harmless no-op; when it is accent-sensitive it forces a correct match.
+
+- Scope: main public search only (`is_search` + `is_main_query`, not in
+  `is_admin()`). Archive filters, the event importer's `_event_status` gating,
+  admin searches and secondary `WP_Query` searches are untouched.
+- The `?s=` search URL is preserved.
+- Performance: a single `preg_replace` on a short SQL fragment per search
+  request — no extra DB queries and no PHP loop over posts.
+- The collation is overridable via the `conexao_search_collation` filter.
 
 ### SEO (`inc/seo.php`)
 
