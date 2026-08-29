@@ -89,6 +89,15 @@ if ( $is_event_archive ) {
 
 		<?php get_template_part( 'template-parts/archive', 'header', $archive_header ); ?>
 
+		<?php // Leisure only: stable wrapper the instant mobile filtering
+		      // swaps in place (grid + pagination / empty state). It wraps
+		      // BOTH the posts grid and the no-results empty state below, so
+		      // every server render of /lazer/ exposes a stable
+		      // [data-leisure-results] node for the fetch+swap pipeline. ?>
+		<?php if ( $is_leisure_archive ) : ?>
+		<div class="leisure-results" data-leisure-results>
+		<?php endif; ?>
+
 		<?php if ( have_posts() ) : ?>
 			<?php
 			/*
@@ -180,6 +189,9 @@ if ( $is_event_archive ) {
 
 		<?php else : ?>
 			<?php get_template_part( 'template-parts/content', 'none' ); ?>
+		<?php endif; ?>
+		<?php if ( $is_leisure_archive ) : ?>
+		</div>
 		<?php endif; ?>
 
 	</main>

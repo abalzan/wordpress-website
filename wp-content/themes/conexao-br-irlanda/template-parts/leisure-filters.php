@@ -22,19 +22,28 @@
  * bottom-sheet panel. Inside the sheet every filter group is a plain
  * always-visible radio fieldset — no accordions — so the full option set is
  * exposed at once, the current state is never reset when the sheet reopens,
- * and selection is staged until "Mostrar resultados" applies it once. The
- * sheet is a modal dialog: focus is trapped while open and returned to the
- * "Filtrar" button on close. Because the sheet is an overlay it never pushes
- * the attraction grid around. Above the results, mobile also shows the same
+ * and selecting a radio applies the filter immediately. Selecting ANY
+ * filter ALSO closes the sheet in the same gesture — focus returns
+ * to the "Filtrar" button and the user lands directly on the filtered
+ * results; the sheet can be reopened to stack another filter (selections
+ * are preserved). "Mostrar resultados" remains
+ * only as a no-JS / fallback action). The sheet is a modal dialog: focus is
+ * trapped while open and returned to the "Filtrar" button on close. Because
+ * the sheet is an overlay it never pushes the attraction grid around. Above
+ * the results, mobile also shows the same
  * active-filter chip row (each chip a real hyperlink that removes that single
- * filter) and "Limpar filtros" as the desktop toolbar.
+ * filter) and "Limpar filtros" as the desktop toolbar; on mobile those taps
+ * run through the same instant apply pipeline (in-place swap, focus moves to
+ * the next chip / back to the trigger when the tapped control is removed).
  *
  * Filtering remains fully server-side and URL driven (unchanged):
  *   - County filters use the `conexao_county` taxonomy via `?county=`.
  *   - Category filters use the `conexao_category` taxonomy via `?categoria=`.
- * Both are combinable and every desktop option is a real hyperlink; the mobile
- * options are form controls. Browser refresh, back/forward, sharing and direct
- * access to filtered URLs keep working exactly as before.
+ * Both are combinable and every desktop option is a real hyperlink (desktop
+ * chips/"Limpar filtros" keep their native navigation — only the mobile
+ * interactions apply in place); the mobile options are form controls.
+ * Browser refresh, back/forward, sharing and direct access to filtered URLs
+ * keep working exactly as before.
  *
  * @package Conexao_BR_Irlanda
  */

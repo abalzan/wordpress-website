@@ -12,6 +12,7 @@
 		initMobileSearch();
 		initCopyButtons();
 		initLeisureFilters();
+		initLeisureInstantFilters();
 		initSponsorsCarousel();
 		initInfiniteScroll();
 		initLoadMore();
@@ -249,8 +250,8 @@
 
 	// ===== Leisure Filters (desktop dropdowns + mobile bottom sheet) =====
 	// The filtering stays server-side and URL driven: desktop options are real
-	// hyperlinks and the mobile options are a native GET form that posts the
-	// selected county/category back to /lazer/. This enhancement wires up the
+	// hyperlinks and the mobile options are radio inputs bound to the same
+	// ?county=/?categoria= parameters. This enhancement wires up the
 	// interaction layer:
 	//   - only one desktop dropdown is open at a time,
 	//   - clicking the trigger toggles its own menu,
@@ -261,46 +262,59 @@
 	//     the filter values) — Escape inside it first clears the query, then
 	//     a second Escape closes the menu,
 	//   - the mobile sheet is a fixed overlay with a focusable close control,
+	//   - on mobile, changing a radio applies the filter immediately
+	//     (initLeisureInstantFilters below) — the sheet auto-closes so the
+	//     user lands on the results; it can be reopened to stack another
+	//     filter (selections are preserved), and "Mostrar resultados"
+	//     remains only as a fallback for browsers without the instant
+	//     enhancement,
 	//   - empty "Todos" radio values are stripped so URLs stay clean (e.g.
 	//     /lazer/?categoria=castelos instead of /lazer/?county=&categoria=castelos).
-	function initLeisureFilters() {
-		const root = document.querySelector('[data-leisure-filters]');
-		if (!root) return;
 
-		const dropdowns = Array.prototype.slice.call(root.querySelectorAll('[data-dropdown]'));
+	// Desktop dropdown state and helpers live at module scope (not inside
+	// initLeisureFilters) so the instant-filter module can rebuild the
+	// dropdown bindings after swapping the toolbar markup in place.
+	var leisureDropdowns = [];
 
-		function getTrigger(dropdown) {
-			return dropdown.querySelector('[data-dropdown-trigger]');
+	function normalize(text) {
+		return (text || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+	}
+
+	function getTrigger(dropdown) {
+		return dropdown.querySelector('[data-dropdown-trigger]');
+	}
+
+	function isOpen(dropdown) {
+		const trigger = getTrigger(dropdown);
+		return !!trigger && trigger.getAttribute('aria-expanded') === 'true';
+	}
+
+	function setDropdown(dropdown, open) {
+		const trigger = getTrigger(dropdown);
+		if (trigger) {
+			trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
 		}
-
-		function isOpen(dropdown) {
-			const trigger = getTrigger(dropdown);
-			return !!trigger && trigger.getAttribute('aria-expanded') === 'true';
+		// Focus the search field when a searchable menu opens so the user
+		// can type immediately; the query is kept (not reset) so reopening
+		// preserves the filtering in progress.
+		const search = dropdown.querySelector('[data-dropdown-search]');
+		if (open && search) {
+			search.focus();
+			search.select();
 		}
+	}
 
-		function setDropdown(dropdown, open) {
-			const trigger = getTrigger(dropdown);
-			if (trigger) {
-				trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
-			}
-			// Focus the search field when a searchable menu opens so the user
-			// can type immediately; the query is kept (not reset) so reopening
-			// preserves the filtering in progress.
-			const search = dropdown.querySelector('[data-dropdown-search]');
-			if (open && search) {
-				search.focus();
-				search.select();
-			}
-		}
+	function closeAllDropdowns(except) {
+		leisureDropdowns.forEach(function(dd) {
+			if (dd === except) return;
+			setDropdown(dd, false);
+		});
+	}
 
-		function closeAllDropdowns(except) {
-			dropdowns.forEach(function(dd) {
-				if (dd === except) return;
-				setDropdown(dd, false);
-			});
-		}
+	function bindLeisureDropdowns(root) {
+		leisureDropdowns = Array.prototype.slice.call(root.querySelectorAll('[data-dropdown]'));
 
-		dropdowns.forEach(function(dropdown) {
+		leisureDropdowns.forEach(function(dropdown) {
 			const trigger = getTrigger(dropdown);
 			if (!trigger) return;
 
@@ -315,23 +329,12 @@
 			});
 		});
 
-		// Click outside any dropdown closes every open menu.
-		document.addEventListener('click', function(e) {
-			if (!e.target.closest('[data-dropdown]')) {
-				closeAllDropdowns();
-			}
-		});
-
 		// Client-side search inside a dropdown panel: filters the options that
 		// were already rendered by PHP (accent/case-insensitive match on the
 		// visible label). Purely cosmetic filtering — the underlying links and
 		// their URLs are untouched, so with JS disabled every option remains
 		// a working hyperlink.
-		function normalize(text) {
-			return (text || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-		}
-
-		dropdowns.forEach(function(dropdown) {
+		leisureDropdowns.forEach(function(dropdown) {
 			const search = dropdown.querySelector('[data-dropdown-search]');
 			if (!search) return;
 
@@ -367,6 +370,77 @@
 					applyFilter();
 				}
 			});
+		});
+	}
+
+	// ===== Mobile filter bottom sheet helpers (shared) =====
+	// Single open/close path for the sheet, shared by the sheet bindings in
+	// initLeisureFilters() and the instant-filter pipeline in
+	// initLeisureInstantFilters() — the latter dismisses the panel when any
+	// filter is chosen, and must use exactly the same close steps (class,
+	// aria state, body scroll, focus return) as the explicit close paths so
+	// the two behaviors never drift apart. The nodes are looked up at call
+	// time because the instant pipeline swaps the results markup around the
+	// sheet (the sheet itself is never part of the swap), so these helpers
+	// are safe to call from either module. closeMobileSheet(true) restores
+	// focus to the mobile "Filtrar" trigger, so a keyboard user is never
+	// left inside the now-hidden panel.
+	function leisureSheetNodes() {
+		const root = document.querySelector('[data-leisure-filters]');
+		if (!root) return null;
+		return {
+			trigger: root.querySelector('[data-mobile-trigger]'),
+			overlay: root.querySelector('[data-mobile-sheet]'),
+			close: root.querySelector('[data-mobile-close]')
+		};
+	}
+
+	function openMobileSheet() {
+		const sheet = leisureSheetNodes();
+		if (!sheet || !sheet.overlay) return;
+		sheet.overlay.classList.add('is-open');
+		sheet.overlay.setAttribute('aria-hidden', 'false');
+		if (sheet.trigger) sheet.trigger.setAttribute('aria-expanded', 'true');
+		document.body.style.overflow = 'hidden';
+		// NOTE: the radio state is server-rendered from the URL and is
+		// deliberately never reset here — reopening the sheet must show
+		// the current selections.
+		if (sheet.close) {
+			setTimeout(function() {
+				// The sheet may already be closed before this fires (the
+				// instant filter pipeline closes it on any selection;
+				// the user may also tap Fechar/the backdrop). Never move
+				// focus into a hidden element.
+				if (sheet.overlay.classList.contains('is-open')) {
+					sheet.close.focus();
+				}
+			}, 50);
+		}
+	}
+
+	function closeMobileSheet(restoreFocus) {
+		const sheet = leisureSheetNodes();
+		if (!sheet || !sheet.overlay || !sheet.overlay.classList.contains('is-open')) return;
+		sheet.overlay.classList.remove('is-open');
+		sheet.overlay.setAttribute('aria-hidden', 'true');
+		if (sheet.trigger) sheet.trigger.setAttribute('aria-expanded', 'false');
+		document.body.style.overflow = '';
+		if (restoreFocus && sheet.trigger) {
+			sheet.trigger.focus();
+		}
+	}
+
+	function initLeisureFilters() {
+		const root = document.querySelector('[data-leisure-filters]');
+		if (!root) return;
+
+		bindLeisureDropdowns(root);
+
+		// Click outside any dropdown closes every open menu.
+		document.addEventListener('click', function(e) {
+			if (!e.target.closest('[data-dropdown]')) {
+				closeAllDropdowns();
+			}
 		});
 
 		// Mobile sheet option search (Localização): the same client-side,
@@ -413,30 +487,9 @@
 		const sheetClose = root.querySelector('[data-mobile-close]');
 		const sheetPanel = sheetOverlay ? sheetOverlay.querySelector('.leisure-mobile-sheet-panel') : null;
 
-		function openMobileSheet() {
-			if (!sheetOverlay) return;
-			sheetOverlay.classList.add('is-open');
-			sheetOverlay.setAttribute('aria-hidden', 'false');
-			if (sheetTrigger) sheetTrigger.setAttribute('aria-expanded', 'true');
-			document.body.style.overflow = 'hidden';
-			// NOTE: the radio state is server-rendered from the URL and is
-			// deliberately never reset here — reopening the sheet must show
-			// the current selections.
-			if (sheetClose) {
-				setTimeout(function() { sheetClose.focus(); }, 50);
-			}
-		}
-
-		function closeMobileSheet(restoreFocus) {
-			if (!sheetOverlay || !sheetOverlay.classList.contains('is-open')) return;
-			sheetOverlay.classList.remove('is-open');
-			sheetOverlay.setAttribute('aria-hidden', 'true');
-			if (sheetTrigger) sheetTrigger.setAttribute('aria-expanded', 'false');
-			document.body.style.overflow = '';
-			if (restoreFocus && sheetTrigger) {
-				sheetTrigger.focus();
-			}
-		}
+		// openMobileSheet() and closeMobileSheet() are the shared module
+		// helpers above — the sheet nodes are re-looked-up at call time, so
+		// this closure keeps only the consts the event bindings below need.
 
 		if (sheetTrigger && sheetOverlay) {
 			sheetTrigger.addEventListener('click', function() {
@@ -488,7 +541,7 @@
 		// to its trigger); focus returns to the "Filtrar" trigger for the sheet.
 		document.addEventListener('keydown', function(e) {
 			if (e.key !== 'Escape') return;
-			dropdowns.forEach(function(dd) {
+			leisureDropdowns.forEach(function(dd) {
 				if (isOpen(dd)) {
 					setDropdown(dd, false);
 					const trigger = getTrigger(dd);
@@ -498,28 +551,388 @@
 			closeMobileSheet(true);
 		});
 
-		// Mobile form: staged selection — the radios only take effect when
-		// the user presses "Mostrar resultados". Empty params are stripped
-		// so URLs stay clean (e.g. /lazer/?categoria=castelos instead of
-		// /lazer/?county=&categoria=castelos).
+		// Mobile form (staged fallback): with the instant enhancement active
+		// (initLeisureInstantFilters below) this submit is owned by that
+		// module, so only the reset of the default action happens here. In
+		// browsers without the instant enhancement the old staged behaviour
+		// still applies. Empty params are stripped so URLs stay clean (e.g.
+		// /lazer/?categoria=castelos instead of /lazer/?county=&categoria=castelos).
 		const form = root.querySelector('[data-mobile-form]');
 		if (form) {
 			form.addEventListener('submit', function(e) {
 				e.preventDefault();
 
-				var url = new URL(form.getAttribute('action'), window.location.origin);
-				var params = new URLSearchParams(new FormData(form));
+				// The instant module binds its own submit handler and applies
+				// the selection in place — skip the full page navigation.
+				if (root.dataset.instantBound === 'true') return;
 
-				params.forEach(function(value, key) {
-					if (value === '' || value === null) {
-						params.delete(key);
-					}
+				var url = new URL(form.getAttribute('action'), window.location.origin);
+
+				// Build the query string from only the non-empty radios. The
+				// point is to strip the "Todos" (value="") options. (This must
+				// not mutate the params collection while iterating it — the
+				// empty "Todos" value of every group would otherwise be
+				// skipped and leak into the URL as an empty parameter.)
+				var params = new URLSearchParams();
+				new FormData(form).forEach(function(value, key) {
+					if (value !== '' && value !== null) params.append(key, value);
 				});
 
 				var qs = params.toString();
 				window.location.href = url.pathname + (qs ? '?' + qs : '');
 			});
 		}
+	}
+
+	// ===== Leisure Instant Mobile Filtering =====
+	// On mobile the filter sheet no longer waits for "Mostrar resultados":
+	// every radio change (and every chip / "Limpar" tap) applies the filter
+	// immediately by fetching the filtered archive URL and swapping the
+	// results in place. Everything else about the filtering is untouched —
+	// the URLs, the server-side query, the pagination and the infinite
+	// scroll behave exactly like a normal page load, because the swapped
+	// markup IS a normal server render of the target URL.
+	//   - Any selection applies AND dismisses the panel in the same
+	//     gesture (focus returns to the "Filtrar" trigger) so the user
+	//     lands directly on the filtered results; the panel can be
+	//     reopened to stack another filter (selections are preserved
+	//     across reopen because openMobileSheet() never resets radios),
+	//   - the URL is kept in sync via history.pushState (refresh, share,
+	//     back/forward all keep working; back/forward restores the matching
+	//     filter state),
+	//   - one request per selection: starting a new apply aborts the previous
+	//     one and stale responses are discarded, so an older result can never
+	//     overwrite a newer selection,
+	//   - a subtle updating state (dimmed grid + "Atualizando..." in the
+	//     result-count line) — the old results stay visible until the new
+	//     markup has arrived, so there is no flashing,
+	//   - focus returns to the "Filtrar" trigger after every selection
+	//     (the sheet and its radios live outside the swapped markup, so
+	//     reopening the panel shows the current selections without
+	//     losing state),
+	//   - the result-count line (role="status") announces the new count,
+	//   - desktop is untouched: the mobile form only exists inside the sheet,
+	//     and the swapped desktop toolbar keeps its behaviour through
+	//     bindLeisureDropdowns().
+	// Browsers without fetch/DOMParser/AbortController keep the previous
+	// staged behaviour (the "Mostrar resultados" submit handler still runs).
+	function initLeisureInstantFilters() {
+		var root = document.querySelector('[data-leisure-filters]');
+		var results = document.querySelector('[data-leisure-results]');
+		var form = root ? root.querySelector('[data-mobile-form]') : null;
+		var trigger = root ? root.querySelector('[data-mobile-trigger]') : null;
+		if (!root || !results || !form) return;
+		if (!window.fetch || !window.DOMParser || !window.AbortController || !window.history || !window.URLSearchParams || !window.FormData) return;
+		if (root.dataset.instantBound) return;
+		root.dataset.instantBound = 'true';
+
+		var controller = null;
+		var requestId = 0;
+		// The control that started an in-place apply (a chip or "Limpar
+		// filtros", both outside the sheet). Recorded so the swap can return
+		// focus to its successor when the original node is removed by the
+		// update — radios and the sheet controls are never swapped, so their
+		// focus is left untouched.
+		var lastFocused = null;
+
+		function isMobileViewport() {
+			return !!(window.matchMedia && window.matchMedia('(max-width: 768px)').matches);
+		}
+
+		// Current value of a filter group, read from the live radio state.
+		function selectedValue(name) {
+			var checked = form.querySelector('input[type="radio"][name="' + name + '"]:checked');
+			return checked ? checked.value : '';
+		}
+
+		function activeFilterCount() {
+			return (selectedValue('county') ? 1 : 0) + (selectedValue('categoria') ? 1 : 0);
+		}
+
+		// The clean URL for the current radio state — the exact same
+		// construction the staged submit used: form action + non-empty
+		// params only (e.g. /lazer/?county=dublin&categoria=natureza).
+		function urlFromForm() {
+			var url = new URL(form.getAttribute('action'), window.location.origin);
+
+			// Append only the non-empty radios ("Todos" = value=""). Do NOT
+			// collect all params and delete while iterating: deleting the
+			// first emptied entry shifts the iteration index and lets later
+			// empty values leak back into the URL (e.g. "?categoria=").
+			var params = new URLSearchParams();
+			new FormData(form).forEach(function(value, key) {
+				if (value !== '' && value !== null) params.append(key, value);
+			});
+			var qs = params.toString();
+			return url.pathname + (qs ? '?' + qs : '');
+		}
+
+		// Keep the live radios in sync with an applied URL — used after chip
+		// removals and "Limpar", which arrive as hyperlink navigations rather
+		// than radio changes. Missing params re-select the "Todos" option.
+		function syncFormFromUrl(targetUrl) {
+			var query = targetUrl.indexOf('?') !== -1 ? targetUrl.slice(targetUrl.indexOf('?') + 1) : '';
+			var params = new URLSearchParams(query);
+			['county', 'categoria'].forEach(function(name) {
+				var value = params.get(name) || '';
+				var input = form.querySelector('input[type="radio"][name="' + name + '"][value="' + value + '"]');
+				if (input) input.checked = true;
+			});
+		}
+
+		// Keep the "Filtrar" trigger (count badge + accessible name) in sync
+		// with the number of active filters, exactly like the server render.
+		function updateTriggerState() {
+			if (!trigger) return;
+			var count = activeFilterCount();
+			var badge = trigger.querySelector('.leisure-mobile-filter-count');
+			if (count > 0) {
+				if (badge) {
+					badge.textContent = String(count);
+				} else {
+					badge = document.createElement('span');
+					badge.className = 'leisure-mobile-filter-count';
+					badge.setAttribute('aria-hidden', 'true');
+					badge.textContent = String(count);
+					trigger.appendChild(badge);
+				}
+				trigger.setAttribute('aria-label', 'Filtrar (' + count + ' filtros ativos)');
+			} else {
+				if (badge) badge.remove();
+				trigger.removeAttribute('aria-label');
+			}
+		}
+
+		// The result-count line doubles as the status region: it is kept in
+		// the DOM (stable role="status" region) and only its text changes, so
+		// screen readers announce loading and the new count reliably.
+		function countLine() {
+			var line = root.querySelector('.leisure-results-count');
+			if (line) return line;
+			line = document.createElement('p');
+			line.className = 'leisure-results-count';
+			line.setAttribute('role', 'status');
+			var active = root.querySelector('[data-leisure-active-filters]');
+			if (active) {
+				active.insertAdjacentElement('afterend', line);
+			} else {
+				root.appendChild(line);
+			}
+			return line;
+		}
+
+		function setUpdating(updating) {
+			results.classList.toggle('is-updating', updating);
+			if (updating) {
+				results.setAttribute('aria-busy', 'true');
+				var line = countLine();
+				while (line.firstChild) line.removeChild(line.firstChild);
+				var spinner = document.createElement('span');
+				spinner.className = 'infinite-scroll__spinner';
+				spinner.setAttribute('aria-hidden', 'true');
+				line.appendChild(spinner);
+				line.appendChild(document.createTextNode('Atualizando...'));
+			} else {
+				results.removeAttribute('aria-busy');
+			}
+		}
+
+		// Replace the contents of a live element with the parsed equivalent.
+		function importChildren(fromEl, toEl) {
+			while (toEl.firstChild) toEl.removeChild(toEl.firstChild);
+			Array.prototype.forEach.call(fromEl.children, function(child) {
+				toEl.appendChild(document.importNode(child, true));
+			});
+		}
+
+		// Swap the results area (grid + pagination / empty state) and the
+		// filter bar state (desktop toolbar, chips, result count) with the
+		// freshly fetched markup. The mobile sheet and its form are NOT part
+		// of the swap, so the open panel and radio focus survive untouched.
+		function swapMarkup(doc) {
+			var newResults = doc.querySelector('[data-leisure-results]');
+			if (newResults) {
+				importChildren(newResults, results);
+			}
+
+			var newRoot = doc.querySelector('[data-leisure-filters]');
+			if (newRoot) {
+				// Desktop toolbar — hidden on mobile, kept in sync so rotating
+				// the device never shows stale dropdown state. Its bindings are
+				// rebuilt because the nodes are new.
+				var newToolbar = newRoot.querySelector('.leisure-filter-toolbar');
+				var liveToolbar = root.querySelector('.leisure-filter-toolbar');
+				if (newToolbar && liveToolbar) {
+					liveToolbar.replaceWith(document.importNode(newToolbar, true));
+					bindLeisureDropdowns(root);
+				}
+
+				// Active-filter chips + "Limpar filtros" (rendered only while a
+				// filter is active).
+				var newActive = newRoot.querySelector('[data-leisure-active-filters]');
+				var liveActive = root.querySelector('[data-leisure-active-filters]');
+				if (newActive && liveActive) {
+					liveActive.replaceWith(document.importNode(newActive, true));
+				} else if (newActive && !liveActive) {
+					var toolbar = root.querySelector('.leisure-filter-toolbar');
+					if (toolbar) {
+						toolbar.insertAdjacentElement('afterend', document.importNode(newActive, true));
+					} else {
+						root.appendChild(document.importNode(newActive, true));
+					}
+				} else if (!newActive && liveActive) {
+					liveActive.remove();
+				}
+
+				// Result count: text-only update on the stable live node.
+				var newCount = newRoot.querySelector('.leisure-results-count');
+				var liveCount = countLine();
+				if (newCount) {
+					liveCount.hidden = false;
+					liveCount.textContent = newCount.textContent;
+				} else {
+					liveCount.hidden = true;
+					liveCount.textContent = '';
+				}
+			}
+
+			// NOTE: updateTriggerState() deliberately runs AFTER the pipeline
+			// re-syncs the radios (syncFormFromUrl, in the apply callback),
+			// so the "Filtrar" badge/aria-label always reflect the new state
+			// — chip removals and "Limpar" arrive as URL navigations, and at
+			// swap time the form still holds the OLD checked radios.
+
+			// The grid node is new: re-run the infinite scroll enhancement so
+			// it binds to the fresh markup and keeps loading the FILTERED
+			// pages — its next-page URLs come from the swapped pagination,
+			// which was rendered from the filtered query.
+			initInfiniteScroll();
+
+			restoreFocusAfterSwap();
+		}
+
+		// If the control that triggered the update was removed by the swap
+		// (a chip or "Limpar filtros" outside the sheet), keep keyboard
+		// focus flowing to its successor instead of dropping to <body>.
+		// Anything still in the document (radios, the sheet's own "Limpar",
+		// the "Mostrar resultados" button) keeps focus exactly where it was.
+		function restoreFocusAfterSwap() {
+			if (!lastFocused || lastFocused.isConnected) return;
+			if (!isMobileViewport()) return;
+			var chips = root.querySelectorAll('.leisure-filter-chip');
+			if (chips.length) {
+				chips[0].focus();
+				return;
+			}
+			// Every filter was cleared and the chip row is gone: move focus
+			// to the primary filtering control rather than leaving it on
+			// <body>.
+			if (trigger) {
+				trigger.focus();
+				return;
+			}
+			results.tabIndex = -1;
+			results.focus();
+		}
+
+		function applyFilterUrl(targetUrl, opts) {
+			opts = opts || {};
+			var absolute = new URL(targetUrl, window.location.href).href;
+			var id = ++requestId;
+
+			// Exactly one request per selection: a new selection aborts the
+			// previous in-flight request, and the id guard discards any
+			// response that still sneaks through.
+			if (controller) controller.abort();
+			controller = new AbortController();
+
+			setUpdating(true);
+
+			fetch(absolute, { credentials: 'same-origin', signal: controller.signal }).then(function(response) {
+				if (!response.ok) throw new Error('HTTP ' + response.status);
+				return response.text();
+			}).then(function(html) {
+				if (id !== requestId) return; // a newer selection superseded this one
+				var doc = new DOMParser().parseFromString(html, 'text/html');
+				if (!doc.querySelector('[data-leisure-results]')) {
+					throw new Error('Unexpected response markup');
+				}
+				setUpdating(false);
+				swapMarkup(doc);
+				syncFormFromUrl(absolute);
+				// Badge and accessible name are computed from the LIVE radio
+				// state, which syncFormFromUrl has just reconciled with the
+				// applied URL — so chip removals and "Limpar" can never show
+				// a stale count.
+				updateTriggerState();
+				var title = doc.querySelector('title');
+				if (title) document.title = title.textContent;
+				// Push a normal entry for user selections (radio, chip,
+				// "Limpar"), so Back walks through each applied state. A
+				// back/forward RESTORE replaces the entry it stands on —
+				// otherwise re-pushing would stack a duplicate entry and the
+				// subsequent Forward stop would go nowhere.
+				if (opts.replace) {
+					history.replaceState({}, '', urlFromForm());
+				} else {
+					history.pushState({}, '', urlFromForm());
+				}
+			}).catch(function(err) {
+				if (err && err.name === 'AbortError') return; // superseded request
+				// Anything unexpected (offline, 500, ...): fall back to a
+				// normal navigation — filtering itself keeps working.
+				window.location.href = targetUrl;
+			});
+		}
+
+		// Radio change = apply immediately. Tapping the already-active
+		// option fires no change event, so no redundant request is
+		// possible. On mobile, ANY selection applies the filter AND
+		// dismisses the panel in the same gesture — the user is returned
+		// straight to the filtered results. closeMobileSheet(true) uses the
+		// shared close path and restores focus to the "Filtrar" trigger, so
+		// keyboard focus never ends up inside the now-hidden panel and no
+		// extra request is made (closing only toggles classes/aria/scroll,
+		// never fetch). The sheet can be reopened to stack another filter;
+		// selections are preserved across reopen because openMobileSheet()
+		// never resets radios.
+		form.addEventListener('change', function(e) {
+			if (!e.target || e.target.type !== 'radio') return;
+			applyFilterUrl(urlFromForm());
+			if (isMobileViewport()) closeMobileSheet(true);
+		});
+
+		// "Mostrar resultados" (kept as an explicit fallback) re-routes
+		// through the same instant pipeline instead of a full page load.
+		form.addEventListener('submit', function(e) {
+			e.preventDefault();
+			applyFilterUrl(urlFromForm());
+		});
+
+		// Chips ([Dublin ×]), "Limpar filtros" and the sheet's "Limpar" are
+		// real hyperlinks; on mobile they run through the same instant
+		// pipeline (delegation on the root survives every markup swap above).
+		// On desktop they keep their native hyperlink navigation exactly as
+		// before — desktop behaviour is untouched by this enhancement.
+		root.addEventListener('click', function(e) {
+			var link = e.target.closest('.leisure-filter-chip, .leisure-toolbar-clear, .leisure-mobile-clear');
+			if (!link || !root.contains(link)) return;
+			if (!isMobileViewport()) return;
+			e.preventDefault();
+			lastFocused = document.activeElement;
+			applyFilterUrl(link.getAttribute('href'));
+		});
+
+		// Back/forward restores the matching filter state. Popstates fired by
+		// the infinite scroll's own page pushes (same filter params) are
+		// ignored, matching the existing no-restore behaviour.
+		window.addEventListener('popstate', function() {
+			var params = new URLSearchParams(window.location.search);
+			var county = params.get('county') || '';
+			var category = params.get('categoria') || '';
+			if (county === selectedValue('county') && category === selectedValue('categoria')) return;
+			applyFilterUrl(window.location.href, { replace: true });
+		});
 	}
 
 	// ===== Sponsors Carousel (homepage Apoiadores) =====
@@ -945,6 +1358,15 @@
 				if (!response.ok) throw new Error('HTTP ' + response.status);
 				return response.text();
 			}).then(function(html) {
+				// The grid may have been swapped in place by the mobile
+				// leisure instant filter while this request was in flight.
+				// If so, discard the stale batch — it must never reach the
+				// DOM, update the URL via pushState or re-arm the observer
+				// on the old, detached markup.
+				if (!grid.isConnected) {
+					busy = false;
+					return;
+				}
 				var doc = new DOMParser().parseFromString(html, 'text/html');
 				var remoteGrid = doc.querySelector('[data-infinite-scroll]');
 				if (!remoteGrid) throw new Error('Unexpected archive markup');
@@ -998,6 +1420,9 @@
 		// stopped (same bfcache guard used by the event-importer admin JS).
 		window.addEventListener('pageshow', function(event) {
 			if (!event.persisted) return;
+			// The grid was replaced by an in-place filter swap — nothing to
+			// resume on the old markup.
+			if (!grid.isConnected) return;
 			busy = false;
 			// Keep a rendered error/retry state; only clear a stale
 			// "Carregando..." spinner left over from the abandoned fetch.

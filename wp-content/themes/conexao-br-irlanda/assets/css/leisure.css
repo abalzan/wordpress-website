@@ -523,9 +523,10 @@
 
 /* Filter sections inside the sheet — always visible, no accordions.
    One fieldset per group with a legend heading: the full option set is
-   exposed at once, radio state is server-rendered from the URL and never
-   reset when the sheet reopens, and selection stays staged until
-   "Mostrar resultados" applies it. */
+   exposed at once and radio state is server-rendered from the URL and
+   never reset when the sheet reopens. Selecting a radio applies the
+   filter immediately (main.js initLeisureInstantFilters); "Mostrar
+   resultados" remains only as a no-JS / fallback action. */
 .leisure-mobile-section {
 	border: 0;
 	margin: 0 0 var(--space-4);
@@ -729,6 +730,21 @@
 		min-height: 40px;
 		padding: 8px 12px;
 	}
+}
+
+/* --- Instant mobile filtering: subtle updating state --- */
+/* While a filter request is in flight the existing grid dims slightly and
+   stops taking pointer input; the new markup replaces it in a single pass
+   once it has arrived, so there is no empty-state flash between selections.
+   The mobile sheet itself is never dimmed — the user keeps interacting with
+   it while the results behind it update. */
+.leisure-results .events-grid {
+	transition: opacity var(--transition-fast);
+}
+
+.leisure-results.is-updating .events-grid {
+	opacity: 0.55;
+	pointer-events: none;
 }
 
 /* --- Card --- */
