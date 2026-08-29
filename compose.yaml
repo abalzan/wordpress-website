@@ -29,6 +29,10 @@ services:
       WORDPRESS_DB_USER: ${WORDPRESS_DB_USER:-wordpress}
       WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD:-wordpress}
       WORDPRESS_DEBUG: ${WORDPRESS_DEBUG:-1}
+      # Local DB must match the utf8mb4 charset/collation used by the restore
+      # script (scripts/restore-updraft-db.sh). Never set these to latin1.
+      WORDPRESS_DB_CHARSET: utf8mb4
+      WORDPRESS_DB_COLLATION: utf8mb4_unicode_ci
     entrypoint: ["/usr/local/bin/entrypoint-fix-permissions.sh"]
     volumes:
       - wordpress_data:/var/www/html

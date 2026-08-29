@@ -8,6 +8,50 @@
 4. Access WordPress at http://localhost:8080.
 5. Complete the WordPress installation wizard (if first run).
 
+## Restoring a Production UpdraftPlus Backup (Local Only)
+
+Production UpdraftPlus database dumps declare `SET NAMES latin1` and
+`DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci`, but the text payload inside
+them is valid UTF-8 (e.g. "Capacitação" as raw UTF-8 bytes). Importing such a
+dump as-is produces mojibake ("CapacitaÃ§Ã£o") because MySQL misinterprets the
+UTF-8 bytes as latin1.
+
+`scripts/restore-updraft-db.sh` handles this safely:
+
+```bash
+# Fresh restore into a recreated local database (drops existing local data!)
+./scripts/restore-updraft-db.sh /path/to/backup_YYYY-MM-DD-...-db_
+
+# Same, but keep the production siteurl/home instead of http://localhost:8080
+./scripts/restore-updraft-db.sh /path/to/backup_...-db_ --keep-urls
+```
+
+What it does (never modifies the original backup, local database only):
+
+1. Verifies the dump payload is valid UTF-8 before touching anything.
+2. Verifies every `latin1` occurrence is structural (SET NAMES / table DDL) and
+   that none sits inside an `INSERT INTO` data row; aborts otherwise.
+3. On a temp copy only, rewrites `SET NAMES latin1` → `SET NAMES utf8mb4` and
+   the table `DEFAULT CHARSET`/`COLLATE` to `utf8mb4`/`utf8mb4_unicode_ci`.
+4. Drops and recreates the local database (`utf8mb4_unicode_ci`) and imports
+   with `mysql --default-character-set=utf8mb4`, so UTF-8 payload bytes are
+   stored unchanged.
+5. Points `siteurl`/`home` at `http://localhost:8080` (unless `--keep-urls`).
+6. Runs raw-byte verification (HEX checks + binary-safe mojibake scan) against
+   posts, terms, termmeta, postmeta, options and usermeta.
+
+`compose.yaml` pins `WORDPRESS_DB_CHARSET=utf8mb4` and
+`WORDPRESS_DB_COLLATION=utf8mb4_unicode_ci` so the generated `wp-config.php`
+matches the restored database. Do not change these to `latin1`.
+
+Notes:
+
+- This is a DB-only restore: uploads/images referenced from production URLs are
+  not included (import the UpdraftPlus uploads archive separately if needed).
+- The dump contains production URLs in post content; only `siteurl`/`home` are
+  rewritten. Run a WP-CLI search-replace locally if you need the rest rewritten.
+- Never run this script against production.
+
 ## PHP Upload Limits (Local)
 
 - The official `wordpress` image defaults to `upload_max_filesize = 2M` and `post_max_size = 8M`, which is too small for large event/Lazer export files.
