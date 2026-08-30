@@ -586,31 +586,17 @@ if ( ! empty( $latest_news_ids ) ) :
 	</div>
 </section>
 
-<!-- Latest Jobs -->
-<section class="section section--gray section--jobs">
+<!-- Job Search Resources (single source of truth: conexao_job_resources(), same data as /empregos/) -->
+<section class="section section--gray section--jobs" aria-labelledby="jobs-home-title">
 	<div class="site-container">
 		<div class="section-header">
 			<div class="section-header-left">
 				<span class="section-eyebrow"><?php esc_html_e( 'Oportunidades', 'conexao-br-irlanda' ); ?></span>
-				<h2 class="section-title"><?php esc_html_e( 'Últimas Vagas', 'conexao-br-irlanda' ); ?></h2>
+				<h2 class="section-title" id="jobs-home-title"><?php esc_html_e( 'Onde procurar emprego', 'conexao-br-irlanda' ); ?></h2>
 			</div>
-			<a href="<?php echo esc_url( home_url( '/empregos/' ) ); ?>" class="section-link"><?php esc_html_e( 'Ver todas', 'conexao-br-irlanda' ); ?></a>
+			<a href="<?php echo esc_url( home_url( '/empregos/' ) ); ?>" class="section-link"><?php esc_html_e( 'Ver mais', 'conexao-br-irlanda' ); ?></a>
 		</div>
-		<div class="news-grid">
-			<?php $jobs = new WP_Query( array( 'post_type' => 'job', 'posts_per_page' => 3, 'meta_key' => '_job_expiration_date', 'meta_value' => current_time( 'Y-m-d' ), 'meta_compare' => '>=', 'meta_type' => 'DATE', 'no_found_rows' => true, 'update_post_meta_cache' => false, 'update_post_term_cache' => false ) ); ?>
-			<?php if ( $jobs->have_posts() ) : while ( $jobs->have_posts() ) : $jobs->the_post(); $job_categories = get_the_terms( get_the_ID(), 'conexao_category' ); ?>
-				<article class="news-card"><div class="news-card-body">
-					<?php if ( $job_categories && ! is_wp_error( $job_categories ) ) : ?><span class="news-card-category"><?php echo esc_html( $job_categories[0]->name ); ?></span><?php endif; ?>
-					<h3 class="news-card-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
-					<?php $job_details = array_filter( array( get_post_meta( get_the_ID(), '_job_company', true ), get_post_meta( get_the_ID(), '_job_location', true ), get_post_meta( get_the_ID(), '_job_salary', true ), get_post_meta( get_the_ID(), '_job_employment_type', true ) ) ); ?>
-					<?php if ( $job_details ) : ?><p class="news-card-category"><?php echo esc_html( implode( ' · ', $job_details ) ); ?></p><?php endif; ?>
-					<p class="news-card-excerpt"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 18, '...' ) ); ?></p>
-					<a href="<?php the_permalink(); ?>" class="event-card-cta"><?php esc_html_e( 'Ver vaga', 'conexao-br-irlanda' ); ?></a>
-				</div></article>
-			<?php endwhile; wp_reset_postdata(); else : ?>
-				<p><?php esc_html_e( 'Novas oportunidades de emprego serão publicadas em breve.', 'conexao-br-irlanda' ); ?></p>
-			<?php endif; ?>
-		</div>
+		<?php get_template_part( 'template-parts/job-resources', 'preview' ); ?>
 	</div>
 </section>
 

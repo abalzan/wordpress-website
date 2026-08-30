@@ -6101,3 +6101,32 @@ input[type="button"] {
   line-height: 1;
   text-transform: uppercase;
 }
+
+/* =============================================================
+   Homepage — "Onde procurar emprego" (compact job resources)
+   =============================================================
+   The homepage .section--jobs slot renders a compact subset of the
+   SAME job-resource data as the Empregos landing section above
+   (conexao_job_resources() — see template-parts/job-resources-preview.php).
+   Text-only cards reusing the Event card classes; only the equal-height
+   / CTA alignment tweaks are new (same approach as the Empregos
+   section). No images, no JS. */
+
+.jobs-home-grid .event-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.jobs-home-grid .event-card-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.jobs-home-grid .event-card-title {
+  margin-bottom: 8px;
+}
+
+.jobs-home-grid .event-card-cta {
+  margin-top: auto;
+}
