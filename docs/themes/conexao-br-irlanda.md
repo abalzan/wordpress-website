@@ -47,6 +47,7 @@ Modern community portal theme for Conexão BR Irlanda. Features a green/orange p
 | `quick-access-card.php` | Homepage quick access grid |
 | `newsletter-section.php` | Newsletter CTA (homepage + archives) |
 | `quote-section.php` | Quote/testimonial section |
+| `share-buttons.php` | Blog posts + Guias singles — canonical "Compartilhar" component (`.share-buttons`: Facebook, X, LinkedIn, Copiar link), rendered after the article content via `conexao_share_buttons()` (supports `post` and `guide`). Jetpack/WordPress.com's duplicate sharing output (`sharing_display` on `the_content`/`the_excerpt`) is removed in `functions.php` (`conexao_disable_jetpack_sharing()`), so this is the only share UI on articles. Copy-link behavior lives in `assets/js/main.js` (`.share-copy` + `data-copy-url`), styling in `main.css`/`dark-mode.css` |
 | `pagination.php` | Archive pagination |
 | `content-none.php` | Empty state / no results |
 
