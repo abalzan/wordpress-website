@@ -704,6 +704,7 @@ function conexao_homepage_cache_invalidate( $post_id ) {
 		delete_transient( 'conexao_home_jobs' );
 		delete_transient( 'conexao_home_featured' );
 		delete_transient( 'conexao_home_popular' );
+		delete_transient( 'conexao_home_latest' );
 
 		// 404 page sections.
 		delete_transient( 'conexao_404_guides' );
@@ -1035,6 +1036,55 @@ function conexao_popular_posts( $limit = 5 ) {
 		if ( $recent->have_posts() ) {
 			$ids = wp_list_pluck( $recent->posts, 'ID' );
 		}
+	}
+
+	set_transient( $cache_key, $ids, 300 );
+	return array_slice( $ids, 0, $limit );
+}
+
+/**
+ * Latest Blog posts for the homepage "Ultimas Novidades" section.
+ *
+ * Answers "what's new?" and is intentionally distinct from
+ * conexao_popular_posts() ("Mais Lidos" = what's popular): this
+ * ranks strictly by publication date, newest first, and sources
+ * Blog posts (post) ONLY — no Guias, Eventos, Cursos, Lazer,
+ * Empregos or Apoiadores.
+ *
+ * Architecture mirrors conexao_popular_posts(): a single bounded
+ * query stores only the post IDs in a transient (5 minutes,
+ * invalidated on save/delete via conexao_homepage_cache_invalidate()),
+ * so publishing a new post makes it appear without a manual cache
+ * purge. The rendering query in front-page.php re-fetches by ID
+ * (post__in) so cards keep the full responsive-image treatment.
+ *
+ * @param int $limit Number of posts to return (default 3).
+ * @return array List of post IDs, newest first.
+ */
+function conexao_latest_blog_posts( $limit = 3 ) {
+	$limit     = max( 1, absint( $limit ) );
+	$cache_key = 'conexao_home_latest';
+
+	$cached = get_transient( $cache_key );
+	if ( false !== $cached ) {
+		return array_slice( $cached, 0, $limit );
+	}
+
+	$query = new WP_Query( array(
+		'post_type'              => 'post',
+		'post_status'            => 'publish',
+		'posts_per_page'         => $limit,
+		'orderby'                => 'date',
+		'order'                  => 'DESC',
+		'ignore_sticky_posts'    => true,
+		'no_found_rows'          => true,
+		'update_post_meta_cache' => false,
+		'update_post_term_cache' => false,
+	) );
+
+	$ids = array();
+	if ( $query->have_posts() ) {
+		$ids = wp_list_pluck( $query->posts, 'ID' );
 	}
 
 	set_transient( $cache_key, $ids, 300 );

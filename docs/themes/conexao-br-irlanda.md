@@ -79,6 +79,15 @@ The Featured Apoiadores carousel is a compact supporting showcase **inside the h
 - **Accessibility**: `aria-roledescription="carousel"`/`"slide"`, per-slide "Apoiador X de Y" labels, keyboard support on the track (arrows/Home/End), labelled buttons, visible focus states, polite live region announcing position (also updated by autoplay advances), reduced-motion aware autoplay.
 - **Styles**: `main.css` ("Sponsors Carousel" base + "Featured Apoiadores carousel — Hero variant" blocks) + `dark-mode.css` hero token overrides.
 
+## Homepage Últimas Novidades Section
+
+The "Últimas novidades" section (`front-page.php`, between Featured Content and Próximos Eventos — where the removed "Guia em Destaque" section used to sit) surfaces the 3 newest **Blog posts only**, answering "what's new?" (distinct from "Mais Lidos", which answers "what's popular?" — the two must not be merged):
+
+- **Data source**: `conexao_latest_blog_posts( 3 )` (functions.php) — a single bounded `WP_Query` over `post` (Blog) only, `orderby date DESC`, `ignore_sticky_posts`, `no_found_rows`. Guias, Eventos, Cursos, Lazer, Empregos and Apoiadores are intentionally excluded. Post IDs are transient-cached under `conexao_home_latest` for 5 minutes and invalidated on save/delete (`conexao_homepage_cache_invalidate()`), so publishing a new post makes it appear without a manual purge.
+- **Rendering**: the cached ID list is re-fetched with `post__in` + `orderby post__in` (preserves newest-first order) and rendered with the existing `.post-card` component inside the existing `.cards-grid` (auto-fill `minmax(300px, 1fr)` → 3 columns on desktop, 1 per row on mobile) — same image treatment (`conexao-card` size, `loading="lazy"`, `sizes="(max-width: 768px) 92vw, 380px"`), `.post-card-categories` wrapper, 15-word excerpt and date/reading-time meta as the Featured Content sidebar cards. The header reuses the standard `.section-header` pattern with a "Ver todos" `.section-link` to `/blog/`. The section renders nothing while there are no posts.
+- **Mobile ordering**: `.section--latest-news` is slotted after `.section--featured` (order 5) in the "Homepage Mobile Hierarchy" block in `main.css`; Jobs/Newsletter/Quote renumber to 6/7/8.
+- **Dark mode / accessibility**: no new CSS surfaces — `.section--gray` and `.post-card` are already themed in `dark-mode.css`; the section uses `<section aria-labelledby>` + `<h2>` and the cards' existing link/focus patterns.
+
 ## CSS Architecture
 
 7 files, loaded in order via `functions.php`:
@@ -128,6 +137,7 @@ Key functionality includes:
 | `conexao_normalize_primary_nav_sections()` | Nav binding + active state (priority 25) |
 | `conexao_fix_nav_active_states()` | Active state conflict resolution |
 | `conexao_popular_posts()` | "Mais Lidos" query (ranks by `_conexao_view_count` recorded in `inc/post-views.php`) |
+| `conexao_latest_blog_posts()` | "Últimas novidades" homepage query — 3 newest Blog posts by publication date (transient-cached under `conexao_home_latest`) |
 | `conexao_maybe_count_view()` / `conexao_record_view()` | Server-side view counting for "Mais Lidos" (see `inc/post-views.php`) |
 | `conexao_sponsor_image_id()` | Resolves an Apoiador's canonical Imagem do Apoiador attachment ID with legacy fallbacks (mobile → desktop → logo → featured) |
 | `conexao_sponsor_carousel_image()` | Builds the carousel slide's responsive `<img>` from the single canonical Apoiador image (same asset desktop + mobile) |
@@ -306,7 +316,7 @@ Note: "Sobre Nós" is intentionally NOT a navigation item either. The /sobre-nos
 - wp-embed script deregistration
 - Block library CSS selectively dequeued (only loaded on pages using blocks or shortcodes)
 - REST API link removal from `<head>`
-- Homepage queries cached as transients (5 min, invalidated on save)
+- Homepage queries cached as transients (5 min, invalidated on save) — including the "Últimas novidades" Blog query (`conexao_home_latest`)
 - CSS asset versioning via `filemtime()`
 - Lazy loading on content images
 - Fetchpriority="high" on hero image (LCP)

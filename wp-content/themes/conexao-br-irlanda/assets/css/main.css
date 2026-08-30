@@ -5399,19 +5399,24 @@ input[type="button"] {
     order: 4;
   }
 
+  .home .site-main .section--latest-news,
+  .front-page .site-main .section--latest-news {
+    order: 5;
+  }
+
   .home .site-main .section--jobs,
   .front-page .site-main .section--jobs {
-    order: 5;
+    order: 6;
   }
 
   .home .site-main .newsletter-section,
   .front-page .site-main .newsletter-section {
-    order: 6;
+    order: 7;
   }
 
   .home .site-main .quote-section,
   .front-page .site-main .quote-section {
-    order: 7;
+    order: 8;
   }
 }
 

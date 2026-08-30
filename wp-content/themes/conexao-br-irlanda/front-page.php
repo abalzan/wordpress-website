@@ -405,6 +405,80 @@ $hero_has_sponsors = ! empty( conexao_get_featured_sponsors() );
 	</div>
 </section>
 
+<!-- Latest News (Blog) -->
+<?php
+// "Ultimas Novidades" — the newest Blog posts, answering "what's new?"
+// (Mais Lidos answers "what's popular?"). Blog posts (post) ONLY: Guias,
+// Eventos, Cursos, Lazer, Empregos and Apoiadores are intentionally
+// excluded. One bounded query, ID list transient-cached under
+// conexao_home_latest and invalidated on save/delete (functions.php),
+// then re-fetched by post__in so the cards reuse the existing post-card
+// component and its responsive-image treatment unchanged. The section
+// renders nothing while there are no posts to show.
+$latest_news_ids = conexao_latest_blog_posts( 3 );
+if ( ! empty( $latest_news_ids ) ) :
+	?>
+<section class="section section--gray section--latest-news" aria-labelledby="latest-news-heading">
+	<div class="site-container">
+		<div class="section-header">
+			<div class="section-header-left">
+				<span class="section-eyebrow"><?php esc_html_e( 'Blog', 'conexao-br-irlanda' ); ?></span>
+				<h2 class="section-title" id="latest-news-heading"><?php esc_html_e( 'Últimas novidades', 'conexao-br-irlanda' ); ?></h2>
+			</div>
+			<a href="<?php echo esc_url( home_url( '/blog/' ) ); ?>" class="section-link">
+				<?php esc_html_e( 'Ver todos', 'conexao-br-irlanda' ); ?>
+				<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+					<line x1="5" y1="12" x2="19" y2="12"></line>
+					<polyline points="12 5 19 12 12 19"></polyline>
+				</svg>
+			</a>
+		</div>
+
+		<div class="cards-grid">
+			<?php
+			$latest_news_query = new WP_Query( array(
+				'post__in'               => $latest_news_ids,
+				'post_type'              => 'post',
+				// Must match conexao_latest_blog_posts(): publication date,
+				// newest first (post__in preserves the cached ID order).
+				'orderby'                => 'post__in',
+				'posts_per_page'         => count( $latest_news_ids ),
+				'ignore_sticky_posts'    => true,
+				'no_found_rows'          => true,
+				'update_post_meta_cache' => false,
+				'update_post_term_cache' => false,
+			) );
+			if ( $latest_news_query->have_posts() ) :
+				while ( $latest_news_query->have_posts() ) : $latest_news_query->the_post();
+					$latest_news_cats = get_the_terms( get_the_ID(), 'conexao_category' );
+					?>
+					<article class="post-card">
+						<?php if ( has_post_thumbnail() ) : ?>
+							<div class="post-card-image">
+								<a href="<?php the_permalink(); ?>"><?php the_post_thumbnail( 'conexao-card', array( 'loading' => 'lazy', 'sizes' => '(max-width: 768px) 92vw, 380px' ) ); ?></a>
+							</div>
+						<?php endif; ?>
+						<div class="post-card-body">
+							<?php if ( $latest_news_cats && ! is_wp_error( $latest_news_cats ) ) : ?>
+								<div class="post-card-categories">
+									<span class="post-card-category"><?php echo esc_html( $latest_news_cats[0]->name ); ?></span>
+								</div>
+							<?php endif; ?>
+							<h3 class="post-card-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
+							<p class="post-card-excerpt"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 15, '...' ) ); ?></p>
+							<div class="post-card-meta">
+								<span><?php echo esc_html( get_the_date() ); ?></span>
+								<span><?php echo esc_html( conexao_reading_time_text() ); ?></span>
+							</div>
+						</div>
+					</article>
+				<?php endwhile; wp_reset_postdata();
+			endif; ?>
+		</div>
+	</div>
+</section>
+<?php endif; ?>
+
 <!-- Upcoming Events -->
 <section class="section section--events">
 	<div class="site-container">
