@@ -607,7 +607,18 @@ function conexao_seo_breadcrumb_data() {
 		// we still point to the Empregos page so job singles keep their
 		// breadcrumb trail.
 		$archive_url = '';
-		if ( $type_obj && $type_obj->has_archive ) {
+		if ( 'post' === $post_type ) {
+			// Blog posts live under the /blog/ posts page (see
+			// conexao-content's create-pages.php, which sets `page_for_posts`).
+			// Link the crumb to that page instead of
+			// get_post_type_archive_link( 'post' ), which falls back to the
+			// front page when no posts page is set and would duplicate the
+			// Início crumb.
+			$blog_page_id = ( 'page' === get_option( 'show_on_front' ) ) ? (int) get_option( 'page_for_posts' ) : 0;
+			if ( $blog_page_id ) {
+				$archive_url = get_permalink( $blog_page_id );
+			}
+		} elseif ( $type_obj && $type_obj->has_archive ) {
 			$archive_url = get_post_type_archive_link( $post_type );
 		} elseif ( 'job' === $post_type ) {
 			$archive_url = function_exists( 'conexao_empregos_page_url' ) ? conexao_empregos_page_url() : '';
@@ -620,13 +631,23 @@ function conexao_seo_breadcrumb_data() {
 			);
 		}
 
-		// Category crumb.
-		$terms = get_the_terms( get_the_ID(), 'conexao_category' );
+		// Category crumb. Blog posts use the native `category` taxonomy —
+		// its /category/{slug}/ archives remain intact for direct access,
+		// while the Blog archive itself filters via /blog/?categoria=slug.
+		// All other CPTs use the shared `conexao_category` taxonomy.
+		// When a post has multiple terms, get_the_terms() returns them
+		// ordered by name, so $terms[0] is the deterministic primary term
+		// (same selection rule used by the other CPTs below).
+		$category_taxonomy = ( 'post' === $post_type ) ? 'category' : 'conexao_category';
+		$terms = get_the_terms( get_the_ID(), $category_taxonomy );
 		if ( $terms && ! is_wp_error( $terms ) ) {
-			$crumbs[] = array(
-				'name' => $terms[0]->name,
-				'url'  => get_term_link( $terms[0] ),
-			);
+			$term_link = get_term_link( $terms[0] );
+			if ( ! is_wp_error( $term_link ) ) {
+				$crumbs[] = array(
+					'name' => $terms[0]->name,
+					'url'  => $term_link,
+				);
+			}
 		}
 
 		// County crumb for events/apoiadores.
@@ -639,6 +660,16 @@ function conexao_seo_breadcrumb_data() {
 		}
 
 		$crumbs[] = array( 'name' => get_the_title(), 'url' => get_permalink() );
+	} elseif ( is_home() ) {
+		// Blog archive (/blog/, including its ?categoria= filtered views):
+		// Início → Blog. No category or post crumb — filtered archive views
+		// must not look like individual post breadcrumbs.
+		$blog_url = '';
+		$blog_page_id = (int) get_option( 'page_for_posts' );
+		if ( $blog_page_id ) {
+			$blog_url = get_permalink( $blog_page_id );
+		}
+		$crumbs[] = array( 'name' => 'Blog', 'url' => $blog_url );
 	} elseif ( is_post_type_archive() ) {
 		$crumbs[] = array(
 			'name' => conexao_archive_title(),

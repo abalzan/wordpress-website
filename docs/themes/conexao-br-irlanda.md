@@ -275,6 +275,12 @@ the section always renders even before view data accumulates.
 
 Handles titles, meta descriptions, canonical URLs, Open Graph, Twitter Cards, schema.org (WebSite, Organization, Article, Event, JobPosting, sponsor), breadcrumbs, XML sitemap (`/sitemap.xml`), robots.txt, and legacy/English-to-Portuguese 301 redirects.
 
+Breadcrumb hierarchy (`conexao_seo_breadcrumb_data()`), rendered by `header.php` via the shared `conexao-breadcrumbs` component and reused for the `BreadcrumbList` schema (single source, no duplicate markup):
+
+- Blog archive `/blog/` (incl. `?categoria=` filtered views): Início → Blog (current page).
+- Blog single: Início → Blog (`/blog/` posts page) → Category (native `category` taxonomy, i.e. `/category/{slug}/` — the `?categoria=` filter is only used by the archive UI) → Post title. With multiple categories, the first term returned by `get_the_terms()` (ordered by name) is used.
+- Other CPT singles: Início → CPT archive → `conexao_category` term (when present) → `conexao_county` term for events/apoiadores → title.
+
 ### Navigation Logic
 
 The primary navigation is dynamically modified at render time:
