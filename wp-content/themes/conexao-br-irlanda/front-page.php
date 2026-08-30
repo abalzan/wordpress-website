@@ -160,13 +160,16 @@ $hero_has_sponsors = ! empty( conexao_get_featured_sponsors() );
 				array( 'icon' => 'calendar', 'title' => __( 'Eventos', 'conexao-br-irlanda' ), 'description' => __( 'Agenda da comunidade', 'conexao-br-irlanda' ), 'url' => '/eventos/' ),
 				array( 'icon' => 'graduation-cap', 'title' => __( 'Educação', 'conexao-br-irlanda' ), 'description' => __( 'Cursos e escolas', 'conexao-br-irlanda' ), 'url' => '/cursos/' ),
 				array( 'icon' => 'file-text', 'title' => __( 'Documentos', 'conexao-br-irlanda' ), 'description' => __( 'Vistos e PPS Number', 'conexao-br-irlanda' ), 'term' => 'documentos' ),
-				// Mobile-only priority cards. These stay out of the desktop grid
-				// (mobile_only) and are promoted into the compact mobile 4x1
-				// navigation via the mobile_priority flag, together with the
-				// Empregos and Lazer cards above. The mobile priority set is
-				// exactly: Apoiadores | Empregos | Blog | Lazer e turismo.
+				// Apoiadores stays a mobile-only priority card: it is kept out of the
+				// desktop grid (mobile_only) and promoted into the compact mobile 4x1
+				// navigation via the mobile_priority flag, together with the Empregos
+				// and Lazer cards above. The mobile priority set is exactly:
+				// Apoiadores | Empregos | Blog | Lazer e turismo.
 				array( 'icon' => 'users', 'title' => __( 'Apoiadores', 'conexao-br-irlanda' ), 'description' => __( 'Negócios parceiros', 'conexao-br-irlanda' ), 'url' => '/apoiadores/', 'mobile_priority' => 'apoiadores', 'mobile_only' => true ),
-				array( 'icon' => 'pen', 'title' => __( 'Blog', 'conexao-br-irlanda' ), 'description' => __( 'Novidades e artigos', 'conexao-br-irlanda' ), 'url' => '/blog/', 'mobile_priority' => 'blog', 'mobile_only' => true ),
+				// Blog carries a mobile_priority flag (it sits third in the compact
+				// mobile 4x1 row) but no mobile_only flag, so the same single card
+				// renders in both the desktop grid and the mobile priority row.
+				array( 'icon' => 'pen', 'title' => __( 'Blog', 'conexao-br-irlanda' ), 'description' => __( 'Novidades e artigos', 'conexao-br-irlanda' ), 'url' => '/blog/', 'mobile_priority' => 'blog' ),
 				// Guias remains defined as a mobile-only card but is no longer part
 				// of the four-slot mobile priority row. With mobile_only set and no
 				// mobile_priority it stays hidden on every breakpoint until it is
