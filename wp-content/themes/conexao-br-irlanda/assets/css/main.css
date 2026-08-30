@@ -1578,74 +1578,6 @@ ul, ol {
   padding: var(--space-2) 0;
 }
 
-/* ===== Practical Guides ===== */
-.guides-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-}
-
-.guide-card {
-  display: flex;
-  flex-direction: column;
-  padding: 24px;
-  background: var(--conexao-white);
-  border: 1px solid var(--conexao-border);
-  border-radius: var(--conexao-radius-lg);
-  transition: all var(--conexao-transition);
-  text-decoration: none;
-  color: inherit;
-}
-
-.guide-card:hover {
-  border-color: var(--conexao-primary);
-  box-shadow: var(--conexao-shadow-md);
-  transform: translateY(-4px);
-}
-
-.guide-icon {
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--conexao-primary-50);
-  border-radius: var(--conexao-radius);
-  margin-bottom: 16px;
-  color: var(--conexao-primary);
-  transition: all var(--conexao-transition);
-}
-
-.guide-card:hover .guide-icon {
-  background: var(--conexao-primary);
-  color: var(--conexao-white);
-}
-
-.guide-title {
-  font-size: 1rem;
-  font-weight: 600;
-  margin-bottom: 8px;
-  color: var(--conexao-dark);
-  line-height: 1.3;
-}
-
-.guide-description {
-  font-size: 0.875rem;
-  color: var(--conexao-gray-600);
-  line-height: 1.5;
-  margin-bottom: 12px;
-  flex: 1;
-}
-
-.guide-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--conexao-primary);
-}
-
 /* ===== Events Section ===== */
 .events-grid {
   display: grid;
@@ -4032,10 +3964,6 @@ input[type="button"] {
     grid-template-columns: repeat(3, 1fr);
   }
 
-  .guides-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
   .events-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -4118,7 +4046,6 @@ input[type="button"] {
   .post-card-body,
   .news-card-body,
   .business-card,
-  .guide-card,
   .event-card-body {
     min-width: 0;
   }
@@ -4375,10 +4302,6 @@ input[type="button"] {
   }
 
   /* Grids mobile - single column */
-  .guides-grid {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
 
   .events-grid {
     grid-template-columns: 1fr;
@@ -4510,10 +4433,6 @@ input[type="button"] {
   .quick-access-card {
     padding: 10px 4px;
     min-height: 88px;
-  }
-
-  .guides-grid {
-    grid-template-columns: 1fr;
   }
 
   .sponsors-grid {
@@ -5013,7 +4932,6 @@ input[type="button"] {
   }
 
   .quick-access-card:hover,
-  .guide-card:hover,
   .event-card:hover,
   .event-preview:hover,
   .news-card:hover,
@@ -5442,12 +5360,12 @@ input[type="button"] {
    -------------------------
    DOM order of the front page:
      Hero (incl. Featured Apoiadores carousel) → Quick Access → Featured →
-     Guides → Events → Jobs
+     Events → Jobs
    On desktop this reads naturally and is preserved.
 
    On mobile we reorder so the visitor is first told WHO we are, then WHAT we
    offer, then WHERE to go — before any event feed:
-     Hero → Quick Access → Events → Featured → Guides → Jobs
+     Hero → Quick Access → Events → Featured → Jobs
 
    Pure presentation/mobile reflow via flex `order`; no content is duplicated
    or removed. Sections are direct children of `main.site-main`. Featured
@@ -5481,24 +5399,19 @@ input[type="button"] {
     order: 4;
   }
 
-  .home .site-main .section--guides,
-  .front-page .site-main .section--guides {
-    order: 5;
-  }
-
   .home .site-main .section--jobs,
   .front-page .site-main .section--jobs {
-    order: 6;
+    order: 5;
   }
 
   .home .site-main .newsletter-section,
   .front-page .site-main .newsletter-section {
-    order: 8;
+    order: 6;
   }
 
   .home .site-main .quote-section,
   .front-page .site-main .quote-section {
-    order: 9;
+    order: 7;
   }
 }
 

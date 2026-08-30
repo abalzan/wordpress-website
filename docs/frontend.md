@@ -87,7 +87,7 @@ All in `template-parts/`:
 - All CSS variables get dark overrides in `dark-mode.css`
 - The `main.js` syncs `aria-pressed` on the toggle button
 - **Green text/icons on dark surfaces** (`.section-eyebrow`, `.section-link`,
-  `.featured-article-category`, `.guide-link`, `.events-section-link`,
+  `.featured-article-category`, `.events-section-link`,
   `.quote-author`, `.leisure-card-cta`, `.leisure-card-attr`,
   `.leisure-card-category`, `.conexao-breadcrumb-link`, and the active/hover
   states of the `/lazer/` filter UI — chips, dropdowns, checked radios): the

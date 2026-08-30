@@ -464,7 +464,6 @@
 [data-theme="dark"] .card,
 [data-theme="dark"] .featured-article,
 [data-theme="dark"] .sidebar-widget,
-[data-theme="dark"] .guide-card,
 [data-theme="dark"] .event-card,
 [data-theme="dark"] .news-card,
 [data-theme="dark"] .business-card,
@@ -484,7 +483,6 @@
 
 [data-theme="dark"] .card:hover,
 [data-theme="dark"] .featured-article:hover,
-[data-theme="dark"] .guide-card:hover,
 [data-theme="dark"] .event-card:hover,
 [data-theme="dark"] .news-card:hover,
 [data-theme="dark"] .business-card:hover,
@@ -502,7 +500,6 @@
 
 /* Card titles */
 [data-theme="dark"] .card-title a,
-[data-theme="dark"] .guide-title,
 [data-theme="dark"] .event-card-title a,
 [data-theme="dark"] .course-card-title a,
 [data-theme="dark"] .provider-card-title,
@@ -535,7 +532,6 @@
 
 /* Card excerpts & descriptions */
 [data-theme="dark"] .card-excerpt,
-[data-theme="dark"] .guide-description,
 [data-theme="dark"] .event-card-excerpt,
 [data-theme="dark"] .course-card-excerpt,
 [data-theme="dark"] .provider-card-excerpt,
@@ -692,21 +688,6 @@
 
 [data-theme="dark"] .sidebar-list-empty {
   color: var(--color-text-secondary);
-}
-
-/* ===== 10. GUIDES ===== */
-[data-theme="dark"] .guide-icon {
-  background: var(--color-primary-50);
-  color: var(--color-primary);
-}
-
-[data-theme="dark"] .guide-card:hover .guide-icon {
-  background: var(--color-primary);
-  color: var(--conexao-white);
-}
-
-[data-theme="dark"] .guide-link {
-  color: #3ab875;
 }
 
 /* ===== 11. EVENTS ===== */
@@ -1500,7 +1481,6 @@
 [data-theme="dark"] .event-card,
 [data-theme="dark"] .course-card,
 [data-theme="dark"] .provider-card,
-[data-theme="dark"] .guide-card,
 [data-theme="dark"] .news-card,
 [data-theme="dark"] .post-card,
 [data-theme="dark"] .archive-card,
@@ -1847,7 +1827,6 @@
   [data-theme="dark"] .event-card,
   [data-theme="dark"] .course-card,
   [data-theme="dark"] .provider-card,
-  [data-theme="dark"] .guide-card,
   [data-theme="dark"] .news-card,
   [data-theme="dark"] .post-card,
   [data-theme="dark"] .archive-card,

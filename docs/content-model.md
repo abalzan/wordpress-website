@@ -42,7 +42,10 @@ Registered by `conexao-data-model` (method `register_taxonomies()`).
 ### Guide (`_conexao_featured`)
 
 - Type: `boolean` (checkbox)
-- Purpose: Mark as featured on homepage
+- Purpose: Mark a guide as featured. **Not currently consumed** — the homepage
+  "Guia em Destaque" section was removed (guides are surfaced via Quick Access,
+  the main navigation and "Mais Lidos"); the meta is kept for future
+  featured-guide features.
 
 ### Event (registered by event-importer)
 
