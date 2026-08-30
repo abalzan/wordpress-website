@@ -460,6 +460,46 @@
   color: var(--color-text-secondary);
 }
 
+/* ===== 7b. "PRECISA DE AJUDA?" UTILITY SHORTCUTS =====
+   Compact homepage utility section (front-page.php). Mirrors the Quick Access
+   dark treatment: page background section, surface panel, muted chips and the
+   dark-adjusted brand green for icon glyphs (see the --conexao-primary-text
+   note in the tokens block — green TEXT/icons on dark surfaces need #3ab875,
+   not the customizer-re-declared light #0E6B3A). */
+[data-theme="dark"] .help-section {
+  background: var(--color-background);
+}
+
+[data-theme="dark"] .help-section-panel {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .help-shortcut {
+  background: var(--color-surface-muted);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .help-shortcut:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+[data-theme="dark"] .help-shortcut-icon {
+  background: var(--color-primary-50);
+  color: var(--conexao-primary-text);
+}
+
+[data-theme="dark"] .help-shortcut:hover .help-shortcut-icon {
+  background: var(--color-primary);
+  color: var(--conexao-white);
+}
+
+[data-theme="dark"] .help-shortcut:focus-visible {
+  outline-color: var(--conexao-accent);
+}
+
 /* ===== 8. CARDS ===== */
 [data-theme="dark"] .card,
 [data-theme="dark"] .featured-article,

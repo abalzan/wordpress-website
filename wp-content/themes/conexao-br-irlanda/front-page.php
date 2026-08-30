@@ -149,32 +149,38 @@ $hero_has_sponsors = ! empty( conexao_get_featured_sponsors() );
 		<h2 id="quick-access-heading" class="quick-access-heading"><?php esc_html_e( 'Acesso Rápido', 'conexao-br-irlanda' ); ?></h2>
 		<div class="quick-access-grid">
 			<?php
+			// Each card carries an inert 'key' slug: it is not used by the
+			// Quick Access rendering at all — it exists so the homepage
+			// "Precisa de ajuda?" utility section (further down) can select a
+			// small, explicit subset of these SAME definitions as its single
+			// source of truth for label / icon / destination, instead of
+			// hard-coding a second, drift-prone copy.
 			$quick_access_cards = array(
-				array( 'icon' => 'home', 'title' => __( 'Moradia', 'conexao-br-irlanda' ), 'description' => __( 'Casas e apartamentos', 'conexao-br-irlanda' ), 'term' => 'moradia' ),
-				array( 'icon' => 'briefcase', 'title' => __( 'Empregos', 'conexao-br-irlanda' ), 'description' => __( 'Vagas de trabalho', 'conexao-br-irlanda' ), 'url' => '/empregos/', 'mobile_priority' => 'empregos' ),
-				array( 'icon' => 'heart', 'title' => __( 'Saúde', 'conexao-br-irlanda' ), 'description' => __( 'Acesso à saúde', 'conexao-br-irlanda' ), 'term' => 'saude' ),
-				array( 'icon' => 'compass', 'title' => __( 'Lazer', 'conexao-br-irlanda' ), 'description' => __( 'Lazer e turismo', 'conexao-br-irlanda' ), 'url' => '/lazer/', 'mobile_priority' => 'lazer', 'mobile_label' => __( 'Lazer e turismo', 'conexao-br-irlanda' ) ),
-				array( 'icon' => 'car', 'title' => __( 'Transporte', 'conexao-br-irlanda' ), 'description' => __( 'Como se locomover', 'conexao-br-irlanda' ), 'term' => 'transporte' ),
-				array( 'icon' => 'dollar', 'title' => __( 'Finanças', 'conexao-br-irlanda' ), 'description' => __( 'Bancos e impostos', 'conexao-br-irlanda' ), 'term' => 'financas' ),
-				array( 'icon' => 'gift', 'title' => __( 'Benefícios', 'conexao-br-irlanda' ), 'description' => __( 'Auxílios e subsídios', 'conexao-br-irlanda' ), 'term' => 'beneficios' ),
-				array( 'icon' => 'calendar', 'title' => __( 'Eventos', 'conexao-br-irlanda' ), 'description' => __( 'Agenda da comunidade', 'conexao-br-irlanda' ), 'url' => '/eventos/' ),
-				array( 'icon' => 'graduation-cap', 'title' => __( 'Educação', 'conexao-br-irlanda' ), 'description' => __( 'Cursos e escolas', 'conexao-br-irlanda' ), 'url' => '/cursos/' ),
-				array( 'icon' => 'file-text', 'title' => __( 'Documentos', 'conexao-br-irlanda' ), 'description' => __( 'Vistos e PPS Number', 'conexao-br-irlanda' ), 'term' => 'documentos' ),
+				array( 'key' => 'moradia', 'icon' => 'home', 'title' => __( 'Moradia', 'conexao-br-irlanda' ), 'description' => __( 'Casas e apartamentos', 'conexao-br-irlanda' ), 'term' => 'moradia' ),
+				array( 'key' => 'empregos', 'icon' => 'briefcase', 'title' => __( 'Empregos', 'conexao-br-irlanda' ), 'description' => __( 'Vagas de trabalho', 'conexao-br-irlanda' ), 'url' => '/empregos/', 'mobile_priority' => 'empregos' ),
+				array( 'key' => 'saude', 'icon' => 'heart', 'title' => __( 'Saúde', 'conexao-br-irlanda' ), 'description' => __( 'Acesso à saúde', 'conexao-br-irlanda' ), 'term' => 'saude' ),
+				array( 'key' => 'lazer', 'icon' => 'compass', 'title' => __( 'Lazer', 'conexao-br-irlanda' ), 'description' => __( 'Lazer e turismo', 'conexao-br-irlanda' ), 'url' => '/lazer/', 'mobile_priority' => 'lazer', 'mobile_label' => __( 'Lazer e turismo', 'conexao-br-irlanda' ) ),
+				array( 'key' => 'transporte', 'icon' => 'car', 'title' => __( 'Transporte', 'conexao-br-irlanda' ), 'description' => __( 'Como se locomover', 'conexao-br-irlanda' ), 'term' => 'transporte' ),
+				array( 'key' => 'financas', 'icon' => 'dollar', 'title' => __( 'Finanças', 'conexao-br-irlanda' ), 'description' => __( 'Bancos e impostos', 'conexao-br-irlanda' ), 'term' => 'financas' ),
+				array( 'key' => 'beneficios', 'icon' => 'gift', 'title' => __( 'Benefícios', 'conexao-br-irlanda' ), 'description' => __( 'Auxílios e subsídios', 'conexao-br-irlanda' ), 'term' => 'beneficios' ),
+				array( 'key' => 'eventos', 'icon' => 'calendar', 'title' => __( 'Eventos', 'conexao-br-irlanda' ), 'description' => __( 'Agenda da comunidade', 'conexao-br-irlanda' ), 'url' => '/eventos/' ),
+				array( 'key' => 'educacao', 'icon' => 'graduation-cap', 'title' => __( 'Educação', 'conexao-br-irlanda' ), 'description' => __( 'Cursos e escolas', 'conexao-br-irlanda' ), 'url' => '/cursos/' ),
+				array( 'key' => 'documentos', 'icon' => 'file-text', 'title' => __( 'Documentos', 'conexao-br-irlanda' ), 'description' => __( 'Vistos e PPS Number', 'conexao-br-irlanda' ), 'term' => 'documentos' ),
 				// Apoiadores stays a mobile-only priority card: it is kept out of the
 				// desktop grid (mobile_only) and promoted into the compact mobile 4x1
 				// navigation via the mobile_priority flag, together with the Empregos
 				// and Lazer cards above. The mobile priority set is exactly:
 				// Apoiadores | Empregos | Blog | Lazer e turismo.
-				array( 'icon' => 'users', 'title' => __( 'Apoiadores', 'conexao-br-irlanda' ), 'description' => __( 'Negócios parceiros', 'conexao-br-irlanda' ), 'url' => '/apoiadores/', 'mobile_priority' => 'apoiadores', 'mobile_only' => true ),
+				array( 'key' => 'apoiadores', 'icon' => 'users', 'title' => __( 'Apoiadores', 'conexao-br-irlanda' ), 'description' => __( 'Negócios parceiros', 'conexao-br-irlanda' ), 'url' => '/apoiadores/', 'mobile_priority' => 'apoiadores', 'mobile_only' => true ),
 				// Blog carries a mobile_priority flag (it sits third in the compact
 				// mobile 4x1 row) but no mobile_only flag, so the same single card
 				// renders in both the desktop grid and the mobile priority row.
-				array( 'icon' => 'pen', 'title' => __( 'Blog', 'conexao-br-irlanda' ), 'description' => __( 'Novidades e artigos', 'conexao-br-irlanda' ), 'url' => '/blog/', 'mobile_priority' => 'blog' ),
+				array( 'key' => 'blog', 'icon' => 'pen', 'title' => __( 'Blog', 'conexao-br-irlanda' ), 'description' => __( 'Novidades e artigos', 'conexao-br-irlanda' ), 'url' => '/blog/', 'mobile_priority' => 'blog' ),
 				// Guias remains defined as a mobile-only card but is no longer part
 				// of the four-slot mobile priority row. With mobile_only set and no
 				// mobile_priority it stays hidden on every breakpoint until it is
 				// re-promoted (the desktop grid must remain unchanged).
-				array( 'icon' => 'book', 'title' => __( 'Guias', 'conexao-br-irlanda' ), 'description' => __( 'Guias práticos', 'conexao-br-irlanda' ), 'guides' => true, 'mobile_only' => true ),
+				array( 'key' => 'guias', 'icon' => 'book', 'title' => __( 'Guias', 'conexao-br-irlanda' ), 'description' => __( 'Guias práticos', 'conexao-br-irlanda' ), 'guides' => true, 'mobile_only' => true ),
 			);
 
 			$icon_svgs = array(
@@ -404,6 +410,48 @@ $hero_has_sponsors = ! empty( conexao_get_featured_sponsors() );
 		</div>
 	</div>
 </section>
+
+<!-- Precisa de ajuda? (compact utility shortcuts) -->
+<?php
+// "Precisa de ajuda?" — a compact, action-oriented utility section answering
+// "what do I need right now?". It is intentionally NOT a second Quick Access
+// grid: the Quick Access section stays the broad navigation; this one shows a
+// small, fixed set of problem-solving destinations as shortcut chips.
+//
+// Single source of truth: the cards below are the SAME definitions the Quick
+// Access grid above renders (matched by the inert 'key' annotation), so the
+// label / icon / destination of each shortcut can never drift from Acesso
+// Rápido. Only the SELECTION here is explicit — and deliberately kept small.
+// Rendering goes through template-parts/help-shortcut-card.php, which resolves
+// destinations with the same helpers the Quick Access cards use
+// (conexao_get_guides_archive_url(), conexao_get_guide_category_url(),
+// home_url()).
+$help_shortcut_keys = array( 'moradia', 'empregos', 'documentos', 'saude', 'beneficios', 'financas' );
+$help_shortcuts     = array();
+foreach ( $quick_access_cards as $qa_card ) {
+	if ( ! empty( $qa_card['key'] ) && in_array( $qa_card['key'], $help_shortcut_keys, true ) ) {
+		$help_shortcuts[ $qa_card['key'] ] = $qa_card;
+	}
+}
+if ( ! empty( $help_shortcuts ) ) : ?>
+<section class="help-section" aria-labelledby="help-section-heading">
+	<div class="site-container">
+		<div class="help-section-panel">
+			<h2 id="help-section-heading" class="help-section-heading"><?php esc_html_e( 'Precisa de ajuda?', 'conexao-br-irlanda' ); ?></h2>
+			<nav class="help-shortcuts" aria-label="<?php esc_attr_e( 'Atalhos para as principais áreas do site', 'conexao-br-irlanda' ); ?>">
+				<ul class="help-shortcuts-grid">
+					<?php foreach ( $help_shortcut_keys as $help_key ) :
+						if ( empty( $help_shortcuts[ $help_key ] ) ) {
+							continue;
+						}
+						get_template_part( 'template-parts/help-shortcut-card', null, array( 'card' => $help_shortcuts[ $help_key ], 'icons' => $icon_svgs ) );
+					endforeach; ?>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</section>
+<?php endif; ?>
 
 <!-- Latest News (Blog) -->
 <?php

@@ -1322,6 +1322,136 @@ ul, ol {
   display: none;
 }
 
+/* ===== "Precisa de ajuda?" utility shortcuts =====
+   Compact, action-oriented homepage section answering "what do I need right
+   now?". Deliberately NOT a second Quick Access grid: Acesso Rápido stays the
+   broad navigation; this section shows a small, fixed set of problem-solving
+   destinations as bordered chips inside a single panel.
+
+   It reuses the Quick Access VISUAL language (design tokens, icon treatment,
+   radius, borders, typography) but with its own .help-* class names so none
+   of the Quick Access behavioural CSS (mobile priority ordering, horizontal
+   shortcut scroll, mobile-only cards) can leak in. The label / icon / URL
+   data is shared with the Quick Access cards in front-page.php — there is no
+   second definition of it. */
+.help-section {
+  padding: 56px 0;
+  background: var(--conexao-light-gray);
+}
+
+.help-section-panel {
+  background: var(--conexao-white);
+  border: 1px solid var(--conexao-border);
+  border-radius: var(--conexao-radius-lg);
+  padding: 28px 24px 24px;
+}
+
+.help-section-heading {
+  font-family: var(--conexao-font-heading);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--conexao-dark);
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.help-shortcuts-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.help-shortcut {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  background: var(--conexao-white);
+  border: 1px solid var(--conexao-border);
+  border-radius: var(--conexao-radius);
+  text-decoration: none;
+  color: var(--conexao-dark);
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all var(--conexao-transition);
+}
+
+.help-shortcut:hover {
+  border-color: var(--conexao-primary);
+  color: var(--conexao-primary);
+  box-shadow: var(--conexao-shadow-sm);
+  transform: translateY(-2px);
+}
+
+/* Visible keyboard focus. The icon is decorative (aria-hidden); the visible
+   label provides the accessible name of the link. */
+.help-shortcut:focus-visible {
+  outline: 2px solid var(--conexao-primary);
+  outline-offset: 2px;
+}
+
+.help-shortcut-icon {
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--conexao-primary-50);
+  border-radius: var(--conexao-radius-sm);
+  color: var(--conexao-primary);
+  transition: all var(--conexao-transition);
+}
+
+.help-shortcut:hover .help-shortcut-icon {
+  background: var(--conexao-primary);
+  color: var(--conexao-white);
+}
+
+.help-shortcut-label {
+  line-height: 1.3;
+}
+
+/* Mobile: the six shortcuts settle into a compact two-column arrangement —
+   never a forced single horizontal row. */
+@media (max-width: 768px) {
+  .help-section {
+    padding: 40px 0;
+  }
+
+  .help-section-panel {
+    padding: 20px 14px 14px;
+  }
+
+  .help-section-heading {
+    font-size: 1.125rem;
+    margin-bottom: 14px;
+  }
+
+  .help-shortcuts-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .help-shortcut {
+    padding: 10px 12px;
+    font-size: 0.85rem;
+  }
+
+  .help-shortcut-icon {
+    width: 30px;
+    height: 30px;
+  }
+
+  .help-shortcut-icon svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
 /* ===== Section Styles ===== */
 .section {
   padding: 80px 0;
@@ -5360,12 +5490,13 @@ input[type="button"] {
    -------------------------
    DOM order of the front page:
      Hero (incl. Featured Apoiadores carousel) → Quick Access → Featured →
-     Events → Jobs
+     "Precisa de ajuda?" → Latest News → Events → Jobs
    On desktop this reads naturally and is preserved.
 
    On mobile we reorder so the visitor is first told WHO we are, then WHAT we
    offer, then WHERE to go — before any event feed:
-     Hero → Quick Access → Events → Featured → Jobs
+     Hero → Quick Access → Events → Featured → "Precisa de ajuda?" →
+     Latest News → Jobs
 
    Pure presentation/mobile reflow via flex `order`; no content is duplicated
    or removed. Sections are direct children of `main.site-main`. Featured
@@ -5399,24 +5530,29 @@ input[type="button"] {
     order: 4;
   }
 
+  .home .site-main .help-section,
+  .front-page .site-main .help-section {
+    order: 5;
+  }
+
   .home .site-main .section--latest-news,
   .front-page .site-main .section--latest-news {
-    order: 5;
+    order: 6;
   }
 
   .home .site-main .section--jobs,
   .front-page .site-main .section--jobs {
-    order: 6;
+    order: 7;
   }
 
   .home .site-main .newsletter-section,
   .front-page .site-main .newsletter-section {
-    order: 7;
+    order: 8;
   }
 
   .home .site-main .quote-section,
   .front-page .site-main .quote-section {
-    order: 8;
+    order: 9;
   }
 }
 

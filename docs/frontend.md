@@ -73,6 +73,7 @@ All in `template-parts/`:
 | `leisure-filters.php` | Lazer archive filter bar (desktop: discovery heading + wide dropdowns with location search + chips + count; mobile: bottom sheet with location search for long lists) |
 | `provider-card.php` | Course providers archive/grid |
 | `quick-access-card.php` | Homepage quick access grid |
+| `help-shortcut-card.php` | Homepage "Precisa de ajuda?" compact utility shortcut chip (reuses Quick Access card data) |
 | `newsletter-section.php` | Newsletter CTA section (homepage + archives) |
 | `quote-section.php` | Testimonial/quote section (homepage + archives) |
 | `pagination.php` | Archive pagination |
