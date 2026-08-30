@@ -264,9 +264,13 @@ $hero_has_sponsors = ! empty( conexao_get_featured_sponsors() );
 									<?php
 									$categories = get_the_terms( get_the_ID(), 'conexao_category' );
 									$content_type = get_post_type_object( get_post_type() );
-									if ( $content_type ) : ?><span class="featured-article-category"><?php echo esc_html( $content_type->labels->singular_name ); ?></span><?php endif; ?>
-									<?php if ( $categories && ! is_wp_error( $categories ) ) : ?>
-										<span class="featured-article-category"><?php echo esc_html( $categories[0]->name ); ?></span>
+									if ( $content_type || ( $categories && ! is_wp_error( $categories ) ) ) : ?>
+										<div class="featured-article-categories">
+											<?php if ( $content_type ) : ?><span class="featured-article-category"><?php echo esc_html( $content_type->labels->singular_name ); ?></span><?php endif; ?>
+											<?php if ( $categories && ! is_wp_error( $categories ) ) : ?>
+												<span class="featured-article-category"><?php echo esc_html( $categories[0]->name ); ?></span>
+											<?php endif; ?>
+										</div>
 									<?php endif; ?>
 									<h3 class="featured-article-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
 									<p class="featured-article-excerpt"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 30, '...' ) ); ?></p>

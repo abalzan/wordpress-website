@@ -1582,18 +1582,16 @@ ul, ol {
   justify-content: center;
 }
 
-.featured-article-category {
-  display: inline-block;
-  background: var(--conexao-primary-50);
-  color: var(--conexao-primary);
-  padding: 6px 12px;
-  border-radius: var(--conexao-radius-full);
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
+/* Featured article categories: same wrapper pattern as .post-card-categories.
+   Normal flow block (no absolute positioning) so badges occupy their own
+   space above the title and wrap naturally; skipped in markup when there
+   are no categories, so no blank space is reserved. */
+.featured-article-categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
   margin-bottom: 16px;
-  align-self: flex-start;
+  min-width: 0;
 }
 
 .featured-article-title {
@@ -2865,7 +2863,13 @@ ul, ol {
   margin-bottom: 12px;
 }
 
-.post-card-category {
+/* Shared category badge styling: the homepage featured article
+   (.featured-article-category) uses exactly the same badge design as the
+   post cards; only each component's *-categories wrapper handles its own
+   layout/spacing. Dark mode groups both classes in dark-mode.css and the
+   label typography is shared in design-system.css. */
+.post-card-category,
+.featured-article-category {
   background: var(--conexao-accent);
   color: var(--conexao-white);
   padding: 6px 12px;
