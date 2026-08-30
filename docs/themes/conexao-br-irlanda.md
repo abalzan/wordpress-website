@@ -126,7 +126,8 @@ Key functionality includes:
 | `conexao_modify_primary_nav_items()` | Nav item insertion/removal (priority 20) |
 | `conexao_normalize_primary_nav_sections()` | Nav binding + active state (priority 25) |
 | `conexao_fix_nav_active_states()` | Active state conflict resolution |
-| `conexao_popular_posts()` | "Mais Lidos" query (view-count ready) |
+| `conexao_popular_posts()` | "Mais Lidos" query (ranks by `_conexao_view_count` recorded in `inc/post-views.php`) |
+| `conexao_maybe_count_view()` / `conexao_record_view()` | Server-side view counting for "Mais Lidos" (see `inc/post-views.php`) |
 | `conexao_sponsor_image_id()` | Resolves an Apoiador's canonical Imagem do Apoiador attachment ID with legacy fallbacks (mobile → desktop → logo → featured) |
 | `conexao_sponsor_carousel_image()` | Builds the carousel slide's responsive `<img>` from the single canonical Apoiador image (same asset desktop + mobile) |
 | `conexao_get_featured_sponsors()` | Featured Apoiadores for the homepage carousel (transient-cached) |
@@ -235,6 +236,40 @@ harmless no-op; when it is accent-sensitive it forces a correct match.
 - Performance: a single `preg_replace` on a short SQL fragment per search
   request — no extra DB queries and no PHP loop over posts.
 - The collation is overridable via the `conexao_search_collation` filter.
+
+### Post views / "Mais Lidos" (`inc/post-views.php`)
+
+Records one view per front-end content page load into the `_conexao_view_count`
+post meta. The homepage "Mais Lidos" sidebar (`front-page.php`) ranks content
+by that meta via `conexao_popular_posts()` (`ORDER BY meta_value_num DESC`,
+single indexed meta query, `no_found_rows`, transient-cached under
+`conexao_home_popular` for 5 minutes and invalidated on save/delete).
+
+Design constraints:
+
+- **Server-side only** — no AJAX beacon, no third-party script, no extra
+  homepage query. The sole cost is one indexed postmeta `UPDATE` per content
+  page view, performed atomically (`meta_value = meta_value + 1`) so
+  concurrent requests never lose an increment; the meta row is inserted only
+  on the first view (`add_post_meta` with unique key).
+- **One increment per request** — `is_main_query()` plus a per-request static
+  flag guarantee secondary `WP_Query` calls and repeated hooks never
+  double-count.
+- **Scope** — "Mais Lidos" is an informational-content ranking: **Blog
+  (`post`) + Guias (`guide`) only**. Events, jobs, apoiadores, cursos and
+  lazer are never counted or ranked, even when they have higher view counts.
+  The scope lives in `conexao_view_count_post_types()` and is shared by both
+  the counting gate and `conexao_popular_posts()`.
+- **Inflation guards** — admin/AJAX/cron/REST requests, previews, feeds,
+  embeds, logged-in users and common bots/crawlers (user-agent hint list) are
+  not counted. Re-fetching a page counts as a genuine view (standard
+  server-side behavior) — no aggressive bot infrastructure.
+- **Freshness** — the ranking refreshes at most 5 minutes after new views
+  (transient TTL); no per-view invalidation, so the homepage keeps hitting
+  the cache between refreshes.
+
+Content without any views yet falls back to "recent content" (date DESC), so
+the section always renders even before view data accumulates.
 
 ### SEO (`inc/seo.php`)
 

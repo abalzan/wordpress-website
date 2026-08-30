@@ -34,6 +34,14 @@ require_once CONEXAO_THEME_DIR . '/inc/empregos-landing.php';
 require_once CONEXAO_THEME_DIR . '/inc/job-resources.php';
 
 /**
+ * Load the view-counting module: records a single view per front-end content
+ * page load into the `_conexao_view_count` post meta, which powers the
+ * homepage "Mais Lidos" section (see conexao_popular_posts()). See
+ * inc/post-views.php.
+ */
+require_once CONEXAO_THEME_DIR . '/inc/post-views.php';
+
+/**
  * Load the search module: accent-insensitive search matching over the native
  * post_title / post_excerpt / post_content search columns. See inc/search.php.
  */
@@ -953,24 +961,32 @@ function conexao_related_posts() {
  * "Mais Lidos" (most read) query.
  *
  * The homepage previously ordered by `comment_count`, which requires a full
- * table scan on wp_posts and becomes expensive as the portal grows. No view-
- * count system exists yet, so this returns a lightweight, cached list.
+ * table scan on wp_posts and becomes expensive as the portal grows. Views are
+ * recorded server-side by inc/post-views.php into the `_conexao_view_count`
+ * post meta (one increment per front-end content page view).
  *
- * Architecture (future-ready):
- *   post ID → _conexao_view_count (meta) → ORDER BY meta_value_num
+ * Content scope: ONLY Blog (`post`) and Guias (`guide`). This is an
+ * informational-content ranking — events, jobs, apoiadores, cursos and lazer
+ * are never included, even when they have higher view counts. The scope is
+ * read from conexao_view_count_post_types() (inc/post-views.php) so the
+ * counting gate and this ranking can never drift apart.
  *
- * When post meta `_conexao_view_count` is present on items, they sort first
- * (meta_value_num DESC). Until a view-count system is introduced, the helper
- * falls back to "recent content" (date DESC) so the homepage keeps working
- * without an expensive query. Results are transient-cached for 5 minutes and
- * invalidated on save/delete (see conexao_homepage_cache_invalidate()).
+ * Architecture:
+ *   post ID → _conexao_view_count (meta, written by inc/post-views.php)
+ *   → ORDER BY meta_value_num DESC
+ *
+ * Posts with view counts sort first (meta_value_num DESC); content never
+ * visited yet falls back to "recent content" (date DESC) so the homepage
+ * keeps working without an expensive query. Results are transient-cached for
+ * 5 minutes and invalidated on save/delete (see conexao_homepage_cache_invalidate()).
  *
  * @param int $limit Number of items to return (default 5).
- * @return array List of post IDs, most "popular" first.
+ * @return array List of post IDs, most read first.
  */
 function conexao_popular_posts( $limit = 5 ) {
-	$limit    = max( 1, absint( $limit ) );
+	$limit     = max( 1, absint( $limit ) );
 	$cache_key = 'conexao_home_popular';
+	$scopes    = conexao_view_count_post_types();
 
 	$cached = get_transient( $cache_key );
 	if ( false !== $cached ) {
@@ -982,13 +998,13 @@ function conexao_popular_posts( $limit = 5 ) {
 	// comment counts. It returns nothing measurable until the meta is set,
 	// so we fall through to the lightweight recent-content query below.
 	$by_views = new WP_Query( array(
-		'post_type'           => array( 'guide', 'event', 'job', 'sponsor', 'post' ),
-		'posts_per_page'      => $limit,
-		'meta_key'            => '_conexao_view_count',
-		'orderby'             => 'meta_value_num',
-		'order'               => 'DESC',
-		'ignore_sticky_posts' => true,
-		'no_found_rows'       => true,
+		'post_type'              => $scopes,
+		'posts_per_page'         => $limit,
+		'meta_key'               => '_conexao_view_count',
+		'orderby'                => 'meta_value_num',
+		'order'                  => 'DESC',
+		'ignore_sticky_posts'    => true,
+		'no_found_rows'          => true,
 		'update_post_meta_cache' => false,
 		'update_post_term_cache' => false,
 	) );
@@ -1001,12 +1017,12 @@ function conexao_popular_posts( $limit = 5 ) {
 	// Fallback: recent content (lightweight, no ORDER BY comment_count).
 	if ( empty( $ids ) ) {
 		$recent = new WP_Query( array(
-			'post_type'           => array( 'guide', 'event', 'job', 'sponsor', 'post' ),
-			'posts_per_page'      => $limit,
-			'orderby'             => 'date',
-			'order'               => 'DESC',
-			'ignore_sticky_posts' => true,
-			'no_found_rows'       => true,
+			'post_type'              => $scopes,
+			'posts_per_page'         => $limit,
+			'orderby'                => 'date',
+			'order'                  => 'DESC',
+			'ignore_sticky_posts'    => true,
+			'no_found_rows'          => true,
 			'update_post_meta_cache' => false,
 			'update_post_term_cache' => false,
 		) );

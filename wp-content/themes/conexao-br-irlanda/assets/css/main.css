@@ -2796,10 +2796,14 @@ ul, ol {
   transform: scale(1.05);
 }
 
+.post-card-categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
 .post-card-category {
-  position: absolute;
-  top: 16px;
-  left: 16px;
   background: var(--conexao-accent);
   color: var(--conexao-white);
   padding: 6px 12px;

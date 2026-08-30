@@ -287,14 +287,18 @@ $hero_has_sponsors = ! empty( conexao_get_featured_sponsors() );
 										<a href="<?php the_permalink(); ?>"><?php the_post_thumbnail( 'conexao-card', array( 'loading' => 'lazy', 'sizes' => '(max-width: 768px) 92vw, 380px' ) ); ?></a>
 									</div>
 								<?php endif; ?>
-								<?php
-							$cats = get_the_terms( get_the_ID(), 'conexao_category' );
-							$content_type = get_post_type_object( get_post_type() );
-							if ( $content_type ) : ?><span class="post-card-category"><?php echo esc_html( $content_type->labels->singular_name ); ?></span><?php endif; ?>
-							<?php if ( $cats && ! is_wp_error( $cats ) ) : ?>
-									<span class="post-card-category"><?php echo esc_html( $cats[0]->name ); ?></span>
-								<?php endif; ?>
 								<div class="post-card-body">
+								<?php
+								$cats = get_the_terms( get_the_ID(), 'conexao_category' );
+								$content_type = get_post_type_object( get_post_type() );
+								if ( $content_type || ( $cats && ! is_wp_error( $cats ) ) ) : ?>
+									<div class="post-card-categories">
+										<?php if ( $content_type ) : ?><span class="post-card-category"><?php echo esc_html( $content_type->labels->singular_name ); ?></span><?php endif; ?>
+										<?php if ( $cats && ! is_wp_error( $cats ) ) : ?>
+											<span class="post-card-category"><?php echo esc_html( $cats[0]->name ); ?></span>
+										<?php endif; ?>
+									</div>
+								<?php endif; ?>
 									<h3 class="post-card-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
 									<p class="post-card-excerpt"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 15, '...' ) ); ?></p>
 									<div class="post-card-meta">
@@ -359,14 +363,21 @@ $hero_has_sponsors = ! empty( conexao_get_featured_sponsors() );
 					<ul class="sidebar-list">
 						<?php
 						// Lightweight "Mais Lidos" list. Uses conexao_popular_posts()
-						// which is view-count-ready (_conexao_view_count meta) and,
-						// until a view-count system exists, falls back to recent
-						// content — avoiding the expensive ORDER BY comment_count.
+						// which ranks by the _conexao_view_count meta recorded
+						// server-side (inc/post-views.php); content without
+						// views yet falls back to recent content — avoiding
+						// the expensive ORDER BY comment_count.
+						// Scope is Blog (post) + Guias (guide) only.
 						$popular_ids = conexao_popular_posts( 5 );
 						$pop_count   = 1;
 						if ( ! empty( $popular_ids ) ) :
 							$popular_query = new WP_Query( array(
 								'post__in'               => $popular_ids,
+								// Must match the scope of conexao_popular_posts():
+								// Blog (post) + Guias (guide) only. Without it
+								// WP_Query defaults to 'post' only and silently
+								// drops guides.
+								'post_type'              => conexao_view_count_post_types(),
 								'orderby'                => 'post__in',
 								'posts_per_page'         => count( $popular_ids ),
 								'ignore_sticky_posts'    => true,
