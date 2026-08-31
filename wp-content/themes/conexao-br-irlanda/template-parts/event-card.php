@@ -35,8 +35,84 @@ if ( ! $has_attachment ) {
 	$has_attachment = has_post_thumbnail( $event_id );
 }
 
-$day   = $event_date ? date( 'd', strtotime( $event_date ) ) : '--';
-$month = $event_date ? date( 'M', strtotime( $event_date ) ) : '---';
+$event_end_date = get_post_meta( $event_id, '_event_end_date', true );
+
+/*
+ * Localized date presentation for the Event archive.
+ *
+ * Site content and imported events are Portuguese, but the WP install itself
+ * runs in English — so date_i18n( 'M' ) would print English month names. These
+ * maps derive a consistent Portuguese abbreviation set from the REAL stored
+ * dates (never hard-coded, never a replacement for the data), matching the
+ * surrounding UI: JAN–DEZ and DOM–SÁB.
+ */
+$month_short_pt = array(
+	1 => 'JAN', 2 => 'FEV', 3 => 'MAR', 4 => 'ABR', 5 => 'MAI', 6 => 'JUN',
+	7 => 'JUL', 8 => 'AGO', 9 => 'SET', 10 => 'OUT', 11 => 'NOV', 12 => 'DEZ',
+);
+$month_full_pt = array(
+	1 => 'janeiro', 2 => 'fevereiro', 3 => 'março', 4 => 'abril', 5 => 'maio', 6 => 'junho',
+	7 => 'julho', 8 => 'agosto', 9 => 'setembro', 10 => 'outubro', 11 => 'novembro', 12 => 'dezembro',
+);
+$weekday_short_pt = array(
+	0 => 'DOM', 1 => 'SEG', 2 => 'TER', 3 => 'QUA', 4 => 'QUI', 5 => 'SEX', 6 => 'SÁB',
+);
+$weekday_full_pt = array(
+	0 => 'domingo', 1 => 'segunda-feira', 2 => 'terça-feira', 3 => 'quarta-feira',
+	4 => 'quinta-feira', 5 => 'sexta-feira', 6 => 'sábado',
+);
+
+$date_ts    = $event_date ? strtotime( $event_date ) : 0;
+$end_ts     = $event_end_date ? strtotime( $event_end_date ) : 0;
+$month_num  = $event_date ? (int) date( 'n', $date_ts ) : 0;
+
+$day     = $month = $weekday = '--';
+$date_iso = '';
+$sr_label = '';
+if ( $event_date ) {
+	$start_day = (string) date( 'j', $date_ts );
+	$day       = $start_day;
+	$month     = isset( $month_short_pt[ $month_num ] ) ? $month_short_pt[ $month_num ] : '---';
+	$weekday   = isset( $weekday_short_pt[ (int) date( 'w', $date_ts ) ] ) ? $weekday_short_pt[ (int) date( 'w', $date_ts ) ] : '---';
+	$date_iso  = $event_date;
+
+	// Full readable date sentence for assistive tech (the visual badge above
+	// keeps the compact "12 SET SÁB" form; this <time> carries the rest).
+	$month_full = isset( $month_full_pt[ $month_num ] ) ? $month_full_pt[ $month_num ] : '';
+	$year_num   = date( 'Y', $date_ts );
+	if ( $event_end_date && $end_ts > $date_ts ) {
+		// Multi-day event: surface the stored _event_end_date as a range.
+		if ( date( 'Y-m', $end_ts ) === date( 'Y-m', $date_ts ) ) {
+			$day      = $start_day . '-' . date( 'j', $end_ts ); // "12-15" on the same line.
+			$sr_label = sprintf( '%s a %s de %s de %s', $start_day, date( 'j', $end_ts ), $month_full, $year_num );
+		} else {
+			$end_month = isset( $month_full_pt[ (int) date( 'n', $end_ts ) ] ) ? $month_full_pt[ (int) date( 'n', $end_ts ) ] : '';
+			$sr_label  = sprintf( 'de %s de %s a %s de %s de %s', $start_day, $month_full, date( 'j', $end_ts ), $end_month, date( 'Y', $end_ts ) );
+		}
+		$date_iso .= '/' . $event_end_date; // ISO 8601 range, machine-readable.
+	} else {
+		$sr_label = sprintf( '%s de %s de %s', $start_day, $month_full, $year_num );
+	}
+	$sr_label .= ', ' . $weekday_full_pt[ (int) date( 'w', $date_ts ) ];
+	if ( $event_time ) {
+		$sr_label .= ', às ' . $event_time;
+	}
+}
+
+// "Hoje"/"Amanhã" — only when the event genuinely falls today/tomorrow
+// (site-local date). Always a subtle chip alongside the real date, never a
+// replacement for it.
+$is_today = false;
+$hint     = '';
+if ( $event_date ) {
+	$today = current_time( 'Y-m-d' );
+	if ( $event_date === $today ) {
+		$is_today = true;
+		$hint     = __( 'Hoje', 'conexao-br-irlanda' );
+	} elseif ( $event_date === date( 'Y-m-d', strtotime( $today . ' +1 day' ) ) ) {
+		$hint = __( 'Amanhã', 'conexao-br-irlanda' );
+	}
+}
 ?>
 
 <article id="post-<?php the_ID(); ?>" <?php post_class( 'event-card' ); ?>>
@@ -79,13 +155,24 @@ $month = $event_date ? date( 'M', strtotime( $event_date ) ) : '---';
 			<img class="event-card-banner-img" src="<?php echo esc_url( get_template_directory_uri() . '/assets/images/events/event-placeholder.svg' ); ?>" alt="" loading="lazy">
 		<?php endif; ?>
 
-		<div class="event-card-date-badge">
+		<div class="event-card-date-badge<?php echo $is_today ? ' is-today' : ''; ?>" aria-hidden="true">
 			<span class="event-card-date-day"><?php echo esc_html( $day ); ?></span>
 			<span class="event-card-date-month"><?php echo esc_html( $month ); ?></span>
+			<span class="event-card-date-weekday"><?php echo esc_html( $weekday ); ?></span>
+			<?php if ( $event_end_date && $end_ts > $date_ts && date( 'Y-m', $end_ts ) !== date( 'Y-m', $date_ts ) ) : ?>
+				<span class="event-card-date-range"><?php echo esc_html( 'até ' . date( 'j', $end_ts ) . ' ' . ( isset( $month_short_pt[ (int) date( 'n', $end_ts ) ] ) ? $month_short_pt[ (int) date( 'n', $end_ts ) ] : '' ) ); ?></span>
+			<?php endif; ?>
+			<?php if ( $hint ) : ?>
+				<span class="event-card-date-hint"><?php echo esc_html( $hint ); ?></span>
+			<?php endif; ?>
 		</div>
 	</a>
 
 	<div class="event-card-body">
+		<?php if ( $event_date && $sr_label ) : ?>
+			<time class="event-card-date-iso screen-reader-text" datetime="<?php echo esc_attr( $date_iso ); ?>"><?php echo esc_html( $sr_label ); ?></time>
+		<?php endif; ?>
+
 		<?php if ( $event_categories && ! is_wp_error( $event_categories ) ) : ?>
 			<span class="event-card-category">
 				<svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -99,27 +186,13 @@ $month = $event_date ? date( 'M', strtotime( $event_date ) ) : '---';
 		<h3 class="event-card-title"><a href="<?php echo esc_url( $event_url ); ?>"<?php echo $event_target; /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */ ?>><?php the_title(); ?></a></h3>
 
 		<div class="event-card-details">
-			<?php if ( $event_date ) : ?>
+			<?php if ( $event_time ) : ?>
 				<span class="event-card-detail">
-					<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-						<rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-						<line x1="16" y1="2" x2="16" y2="6"></line>
-						<line x1="8" y1="2" x2="8" y2="6"></line>
-						<line x1="3" y1="10" x2="21" y2="10"></line>
-					</svg>
-					<?php echo esc_html( date_i18n( get_option( 'date_format' ), strtotime( $event_date ) ) ); ?>
-					<?php if ( $event_time ) : ?>
-						<span class="event-card-time-sep">&middot;</span>
-						<span class="event-card-time"><?php echo esc_html( $event_time ); ?></span>
-					<?php endif; ?>
-				</span>
-			<?php elseif ( $event_time ) : ?>
-				<span class="event-card-detail">
-					<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+					<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
 						<circle cx="12" cy="12" r="10"></circle>
 						<polyline points="12 6 12 12 16 14"></polyline>
 					</svg>
-					<?php echo esc_html( $event_time ); ?>
+					<span class="event-card-time"><?php echo esc_html( $event_time ); ?></span>
 				</span>
 			<?php endif; ?>
 

@@ -1961,27 +1961,78 @@ ul, ol {
   top: 16px;
   left: 16px;
   background: var(--conexao-white);
+  border: 1px solid var(--conexao-border);
   border-radius: var(--conexao-radius-sm);
-  padding: 8px 12px;
+  padding: 8px 10px 7px;
   text-align: center;
-  box-shadow: var(--conexao-shadow-sm);
-  min-width: 52px;
+  box-shadow: var(--conexao-shadow-md);
+  min-width: 58px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.events-page .event-card-date-badge.is-today {
+  border-color: var(--conexao-accent);
 }
 
 .events-page .event-card-date-day {
   display: block;
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: 1.75rem;
+  font-weight: 800;
   color: var(--conexao-primary);
-  line-height: 1;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.events-page .event-card-date-badge.is-today .event-card-date-day {
+  color: var(--conexao-accent);
 }
 
 .events-page .event-card-date-month {
   display: block;
   font-size: 0.6875rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--conexao-gray-600);
   text-transform: uppercase;
+  letter-spacing: 0.08em;
+  line-height: 1.3;
+}
+
+.events-page .event-card-date-weekday {
+  display: block;
+  font-size: 0.625rem;
+  font-weight: 600;
+  color: var(--conexao-gray-500);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  line-height: 1.3;
+}
+
+.events-page .event-card-date-range {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.5625rem;
+  font-weight: 700;
+  color: var(--conexao-gray-600);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1.3;
+}
+
+.events-page .event-card-date-hint {
+  display: block;
+  margin-top: 4px;
+  padding: 2px 7px;
+  background: var(--conexao-accent-light);
+  color: var(--conexao-accent);
+  border-radius: var(--conexao-radius-full);
+  font-size: 0.5625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  line-height: 1.3;
 }
 
 .events-page .event-card-body {

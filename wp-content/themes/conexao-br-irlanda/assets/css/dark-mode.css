@@ -676,6 +676,28 @@
   color: var(--color-text-secondary);
 }
 
+[data-theme="dark"] .event-card-date-badge {
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .event-card-date-weekday,
+[data-theme="dark"] .event-card-date-range {
+  color: var(--color-text-muted);
+}
+
+[data-theme="dark"] .event-card-date-badge.is-today {
+  border-color: var(--color-accent);
+}
+
+[data-theme="dark"] .event-card-date-badge.is-today .event-card-date-day {
+  color: var(--color-accent);
+}
+
+[data-theme="dark"] .event-card-date-hint {
+  background: var(--color-accent-light);
+  color: var(--color-accent);
+}
+
 /* Card registration */
 [data-theme="dark"] .event-card-registration {
   background: var(--color-primary-50);

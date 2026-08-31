@@ -35,7 +35,7 @@ Modern community portal theme for Conexão BR Irlanda. Features a green/orange p
 | File | Used On |
 |------|---------|
 | `archive-header.php` | All CPT archives |
-| `event-card.php` | Events archive grid |
+| `event-card.php` | Events archive grid — card banner carries the date badge (`12 / SET / SÁB`, Portuguese JAN–DEZ weekdays; multi-day via `_event_end_date` as `12-15` or `até 4 OUT`; subtle `Hoje`/`Amanhã` chip only for same/next-day events). The visual badge is `aria-hidden`; the card body holds a sr-only `<time>` with the full date sentence. Time (unchanged `_event_time`) is the first detail row; no duplicated inline date |
 | `event-filters.php` | Events archive filter bar (event-only: `?cidade=` towns + `?categoria=` categories used by published events) |
 | `course-filters.php` | Cursos archive filter bar (course-only: `?categoria=` provider categories from `_provider_category` meta; renders nothing when no categories exist) |
 | `guide-filters.php` | Guias archive filter bar (`?categoria=` conexao_category terms used by published guides) |
