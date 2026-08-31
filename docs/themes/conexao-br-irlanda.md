@@ -234,30 +234,51 @@ Makes the main public search accent-insensitive while preserving WordPress's
 native search behavior (same WHERE clause over `post_title`, `post_excerpt`
 and `post_content`, same relevance ordering). Stored content is never modified —
 e.g. a page titled "Benefícios" stays "Benefícios"; it is the comparison
-collation that changes.
+expression that changes.
 
 The `posts_search` (WHERE) and `posts_search_orderby` (relevance ranking)
-filters append an explicit `utf8mb4_unicode_ci` collation to each search `LIKE`
-comparison at query time:
+filters rewrite each search `LIKE` comparison so the column is first
+normalized to utf8mb4 and then compared under an explicit accent-insensitive
+collation at query time:
 
 ```sql
-wp_posts.post_title COLLATE utf8mb4_unicode_ci LIKE '%beneficios%'
+CONVERT(wp_posts.post_title USING utf8mb4) COLLATE utf8mb4_unicode_ci LIKE '%beneficios%'
 ```
 
 `utf8mb4_unicode_ci` is the project's configured collation (see `compose.yaml`
 `WORDPRESS_DB_COLLATION`) and is accent-insensitive for all Portuguese
 characters (á, à, â, ã, ä, é, ê, í, ó, ô, õ, ö, ú, ü, ç and uppercase). It is
-universally available (MySQL 5.6+/8.x, MariaDB), so this works identically on
-the local Docker stack and on the WordPress.com production host. When a
-column is already accent-insensitive (the local stack) the COLLATE is a
-harmless no-op; when it is accent-sensitive it forces a correct match.
+universally available (MySQL 5.6+/8.x, MariaDB).
+
+**Why `CONVERT(... USING utf8mb4)` — production root cause.** A first
+implementation used a bare `wp_posts.post_title COLLATE utf8mb4_unicode_ci`.
+That is only valid when the column's character set is already utf8mb4. The
+production WordPress.com host stores this site's `wp_posts` columns in a
+non-utf8mb4 character set (UpdraftPlus database dumps declare
+`DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci`; see
+`scripts/restore-updraft-db.sh` for the encoding history), so MySQL rejected
+the whole query with `ERROR 1253 (42000): COLLATION 'utf8mb4_unicode_ci' is not
+valid for CHARACTER SET 'latin1'`. WordPress silently swallowed the error and
+every `?s=` search returned an empty result set in production (even plain
+ASCII terms such as `dublin`). Wrapping the column in `CONVERT(... USING
+utf8mb4)` makes the COLLATE valid on every server and the comparison always
+accent-insensitive, regardless of whether the column is stored as latin1,
+utf8mb3 or utf8mb4 (verified against simulated latin1 and utf8mb4 tables).
 
 - Scope: main public search only (`is_search` + `is_main_query`, not in
   `is_admin()`). Archive filters, the event importer's `_event_status` gating,
   admin searches and secondary `WP_Query` searches are untouched.
-- The `?s=` search URL is preserved.
+- The `?s=` search URL is preserved — no custom endpoint, no JS filtering, no
+  external search service.
+- The transformation is idempotent (safe against re-entry) and only touches
+  `wp_posts.{post_title|post_excerpt|post_content}` immediately before a
+  `(NOT )?LIKE`, so single terms, multiple terms, quoted phrases, exclusion
+  terms and the native relevance ordering all behave exactly like WordPress
+  native search, just accent-insensitive.
 - Performance: a single `preg_replace` on a short SQL fragment per search
-  request — no extra DB queries and no PHP loop over posts.
+  request — no extra DB queries and no PHP loop over posts. Native search uses
+  a leading-wildcard `LIKE` (no index possible), so the `CONVERT` wrapper adds
+  no meaningful overhead.
 - The collation is overridable via the `conexao_search_collation` filter.
 
 ### Post views / "Mais Lidos" (`inc/post-views.php`)
