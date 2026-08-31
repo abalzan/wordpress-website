@@ -646,6 +646,19 @@
 	flex-shrink: 0;
 }
 
+/* With the instant-filter enhancement active (main.js), every selection
+   applies immediately and closes the sheet — a visible "Mostrar
+   resultados" button would be a second, redundant primary action, so it
+   is hidden and "Limpar" takes the full footer width. Without JS the
+   button remains as the explicit apply fallback. */
+.leisure-mobile-form--instant .leisure-apply-button {
+	display: none;
+}
+
+.leisure-mobile-form--instant .leisure-mobile-clear {
+	flex: 1;
+}
+
 .leisure-apply-button {
 	display: inline-flex;
 	align-items: center;
@@ -709,14 +722,38 @@
 
 @media (max-width: 768px) {
 	/* Only the desktop dropdown toolbar is replaced by the mobile
-	   "Filtrar" sheet — the heading, active-filter chips, "Limpar
-	   filtros" and result count stay visible above the results. */
+	   "Filtrar" sheet — the active-filter chips, "Limpar filtros"
+	   and result count stay visible above the results. */
 	.leisure-filter-toolbar {
 		display: none;
 	}
 
+	/* Mobile hierarchy: "Encontre o que fazer" → "Filtrar" trigger →
+	   active-filter chips → result count. The DOM order is shared with
+	   desktop (where the dropdown toolbar sits between the title and the
+	   chips instead), so flex ordering keeps both layouts correct without
+	   duplicating markup. */
+	.leisure-filters {
+		display: flex;
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.leisure-filters-title {
+		order: 0;
+	}
+
 	.leisure-mobile-filter {
 		display: block;
+		order: 1;
+	}
+
+	.leisure-active-filters {
+		order: 2;
+	}
+
+	.leisure-results-count {
+		order: 3;
 	}
 
 	/* Touch-friendly chips: bigger tap targets than the desktop row. */
@@ -926,6 +963,7 @@
 }
 
 .leisure-single-hero {
+	position: relative;
 	margin: 24px 0;
 	border-radius: var(--conexao-radius-lg);
 	overflow: hidden;
@@ -1065,10 +1103,6 @@
 }
 
 /* --- Single page hero caption --- */
-.leisure-single-hero {
-	position: relative;
-}
-
 .leisure-single-hero-caption {
 	font-size: 0.8rem;
 	color: var(--conexao-text-muted, #6b7280);

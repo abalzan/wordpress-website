@@ -384,9 +384,9 @@ $leisure_total = ( isset( $wp_query ) && $wp_query instanceof WP_Query ) ? (int)
 					</div>
 
 					<div class="leisure-mobile-sheet-footer">
-							<a class="leisure-mobile-clear" href="<?php echo esc_url( $clear_url ); ?>"><?php esc_html_e( 'Limpar', 'conexao-br-irlanda' ); ?></a>
-							<button type="submit" class="leisure-apply-button"><?php esc_html_e( 'Mostrar resultados', 'conexao-br-irlanda' ); ?></button>
-						</div>
+						<a class="leisure-mobile-clear" href="<?php echo esc_url( $clear_url ); ?>"><?php esc_html_e( 'Limpar', 'conexao-br-irlanda' ); ?></a>
+						<button type="submit" class="leisure-apply-button"><?php esc_html_e( 'Mostrar resultados', 'conexao-br-irlanda' ); ?></button>
+					</div>
 					</form>
 				</div>
 			</div>

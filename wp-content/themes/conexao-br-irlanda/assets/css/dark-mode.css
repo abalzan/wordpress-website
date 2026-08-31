@@ -1556,11 +1556,6 @@
    Comprehensive dark-mode overrides for the /lazer/ filter widget:
    desktop dropdowns, active-filter indicators, and mobile bottom-sheet. */
 
-/* Filter group label */
-[data-theme="dark"] .leisure-filter-group-label {
-  color: var(--color-text-muted);
-}
-
 /* Dropdown trigger — default state */
 [data-theme="dark"] .leisure-dropdown-trigger {
   background: var(--color-surface);
@@ -1773,6 +1768,13 @@
 /* Filter option labels */
 [data-theme="dark"] .leisure-filter-option {
   color: var(--color-text-secondary);
+}
+
+/* Native radios: the checked fill uses the brighter dark-mode primary so
+   the selected option reads clearly on dark surfaces (same tone as the
+   active-dot and trigger states above). */
+[data-theme="dark"] .leisure-filter-radio {
+  accent-color: var(--conexao-primary-text);
 }
 
 [data-theme="dark"] .leisure-filter-option:hover {

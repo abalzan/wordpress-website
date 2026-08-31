@@ -626,6 +626,12 @@
 		if (root.dataset.instantBound) return;
 		root.dataset.instantBound = 'true';
 
+		// Mark the form so the no-JS "Mostrar resultados" fallback button
+		// is hidden (CSS): with the instant pipeline bound, every selection
+		// applies and closes the sheet in the same gesture, so the button
+		// would be a redundant second primary action.
+		form.classList.add('leisure-mobile-form--instant');
+
 		var controller = null;
 		var requestId = 0;
 		// The control that started an in-place apply (a chip or "Limpar
