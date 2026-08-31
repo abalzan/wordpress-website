@@ -237,12 +237,14 @@ e.g. a page titled "Benefícios" stays "Benefícios"; it is the comparison
 expression that changes.
 
 The `posts_search` (WHERE) and `posts_search_orderby` (relevance ranking)
-filters rewrite each search `LIKE` comparison so the column is first
-normalized to utf8mb4 and then compared under an explicit accent-insensitive
-collation at query time:
+filters rewrite each search `LIKE` comparison so **both sides** are first
+re-interpreted as raw bytes (`USING binary`) and then as utf8mb4, compared
+under an explicit accent-insensitive collation at query time:
 
 ```sql
-CONVERT(wp_posts.post_title USING utf8mb4) COLLATE utf8mb4_unicode_ci LIKE '%beneficios%'
+CONVERT(CONVERT(wp_posts.post_title USING binary) USING utf8mb4)
+  COLLATE utf8mb4_unicode_ci
+  LIKE CONVERT(CONVERT('%beneficios%' USING binary) USING utf8mb4)
 ```
 
 `utf8mb4_unicode_ci` is the project's configured collation (see `compose.yaml`
@@ -250,20 +252,33 @@ CONVERT(wp_posts.post_title USING utf8mb4) COLLATE utf8mb4_unicode_ci LIKE '%ben
 characters (á, à, â, ã, ä, é, ê, í, ó, ô, õ, ö, ú, ü, ç and uppercase). It is
 universally available (MySQL 5.6+/8.x, MariaDB).
 
-**Why `CONVERT(... USING utf8mb4)` — production root cause.** A first
-implementation used a bare `wp_posts.post_title COLLATE utf8mb4_unicode_ci`.
-That is only valid when the column's character set is already utf8mb4. The
-production WordPress.com host stores this site's `wp_posts` columns in a
-non-utf8mb4 character set (UpdraftPlus database dumps declare
-`DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci`; see
-`scripts/restore-updraft-db.sh` for the encoding history), so MySQL rejected
-the whole query with `ERROR 1253 (42000): COLLATION 'utf8mb4_unicode_ci' is not
-valid for CHARACTER SET 'latin1'`. WordPress silently swallowed the error and
-every `?s=` search returned an empty result set in production (even plain
-ASCII terms such as `dublin`). Wrapping the column in `CONVERT(... USING
-utf8mb4)` makes the COLLATE valid on every server and the comparison always
-accent-insensitive, regardless of whether the column is stored as latin1,
-utf8mb3 or utf8mb4 (verified against simulated latin1 and utf8mb4 tables).
+**Why both sides go through `USING binary` — production root cause.** The
+production WordPress.com host declares the `wp_posts` columns as latin1
+(UpdraftPlus dumps: `DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci`; see
+`scripts/restore-updraft-db.sh`) while the stored bytes are genuine UTF-8
+("Saúde" = `5361C3BA6465`), and the WordPress connection itself uses latin1.
+
+History of the three implementations:
+
+1. Bare `wp_posts.post_title COLLATE utf8mb4_unicode_ci` → MySQL rejected the
+   whole query (`ERROR 1253: COLLATION 'utf8mb4_unicode_ci' is not valid for
+   CHARACTER SET 'latin1'`), WordPress swallowed the error, and every `?s=`
+   search returned an empty result set — even ASCII terms such as `dublin`.
+2. Single-sided `CONVERT(wp_posts.post_title USING utf8mb4)` → the COLLATE
+   became valid, but `CONVERT` converts **from the declared charset
+   (latin1)**, re-encoding the already-UTF-8 bytes into mojibake
+   ("SaÃºde"), so unaccented patterns *still* never matched. Production kept
+   returning results only for ASCII-only text.
+3. Current two-sided byte re-interpretation (above): `USING binary` is
+   byte-transparent, so the second `CONVERT` re-interprets the *stored/sent*
+   bytes as utf8mb4 — the exact text — on both the column and the pattern
+   literal (which is also sent as UTF-8 bytes over the latin1 connection).
+   Verified against a byte-faithful production copy with a latin1 session:
+   `saude` → 27 SQL matches (plain `LIKE`: 1), accented `saúde` → 5, and full
+   front-end search works (`scripts/charset-migration/artifacts/
+   search-fix-*`). The expression is also a no-op wrapper on utf8mb4 columns
+   + utf8mb4 connections, so it behaves identically before and after any
+   future storage migration.
 
 - Scope: main public search only (`is_search` + `is_main_query`, not in
   `is_admin()`). Archive filters, the event importer's `_event_status` gating,

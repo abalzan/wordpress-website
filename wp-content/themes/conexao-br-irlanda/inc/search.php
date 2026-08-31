@@ -26,30 +26,43 @@
  * WordPress's native search is preserved exactly:
  *   - Same WHERE clause over post_title, post_excerpt and post_content.
  *   - Same relevance ordering (title > excerpt > content matches rank first).
- * No stored content is modified and no PHP-side loop rewrites strings. We
- * force each search LIKE comparison to run under an explicit
- * accent-insensitive utf8mb4 collation by wrapping the column in a CONVERT
- * that first normalises it to utf8mb4:
+ * No stored content is modified and no PHP-side loop rewrites strings. Each
+ * search LIKE comparison is rewritten so BOTH sides are normalised to a
+ * byte-correct utf8mb4 expression under an explicit accent-insensitive
+ * collation:
  *
- *   CONVERT(wp_posts.post_title USING utf8mb4) COLLATE utf8mb4_unicode_ci LIKE '%beneficios%'
+ *   CONVERT(CONVERT(wp_posts.post_title USING binary) USING utf8mb4)
+ *     COLLATE utf8mb4_unicode_ci
+ *     LIKE CONVERT(CONVERT('%beneficios%' USING binary) USING utf8mb4)
  *
- * Why the previous bare `COLLATE` attempt broke production
- * --------------------------------------------------------
- * A bare `wp_posts.post_title COLLATE utf8mb4_unicode_ci LIKE ...` is only
- * valid when the column's character set is already utf8mb4. On a latin1
- * column, MySQL/MariaDB rejects it with:
+ * Why both sides are re-interpreted through BINARY
+ * ------------------------------------------------
+ * On the production host the wp_posts columns are declared latin1 but contain
+ * GENUINE UTF-8 BYTES (UTF-8 written over a latin1 connection), e.g. "Saúde"
+ * is stored as the bytes 5361C3BA6465. The previous single-sided rewrite,
  *
- *   ERROR 1253 (42000): COLLATION 'utf8mb4_unicode_ci' is not valid for
- *   CHARACTER SET 'latin1'
+ *   CONVERT(wp_posts.post_title USING utf8mb4) COLLATE utf8mb4_unicode_ci LIKE '%beneficios%',
  *
- * WordPress swallows that error and returns an empty result set, so EVERY
- * search (?s=...) on the production host silently returned "Nada encontrado"
- * — including plain ASCII terms such as "dublin". Wrapping the column in
- * `CONVERT(... USING utf8mb4)` makes the expression utf8mb4 on every server,
- * so the COLLATE is always accepted and the comparison is always performed
- * accent-insensitively by MySQL, regardless of whether the column is stored
- * as latin1, utf8mb3 or utf8mb4. Verified against simulated latin1 and
- * utf8mb4 tables (see docs/themes/conexao-br-irlanda.md).
+ * asks MySQL to convert the column FROM ITS DECLARED CHARSET (latin1) to
+ * utf8mb4 — which re-encodes the already-UTF-8 bytes into mojibake
+ * ("CapacitaÃ§Ã£o"), so unaccented patterns still never match. The production
+ * symptom therefore persisted: only plain-ASCII searches found rows.
+ *
+ * The fixed expression converts the column to BINARY first (byte-transparent:
+ * the raw stored bytes, no charset re-encoding) and THEN re-interprets those
+ * bytes as utf8mb4 — the exact text that was stored. The pattern literal
+ * receives the same treatment: WordPress sends it as UTF-8 bytes over a
+ * latin1 connection, so CONVERT(... USING binary) recovers the raw bytes and
+ * the second CONVERT re-interprets them as utf8mb4. The comparison is thus
+ * byte-correct and accent-insensitive in EVERY environment:
+ *   - latin1 columns + latin1 connection (production today),
+ *   - utf8mb4 columns + utf8mb4 connection (local Docker, or after a storage
+ *     migration — the two-step CONVERT is then a no-op wrapper),
+ * and both operands are always utf8mb4 expressions, so ERROR 1253
+ * ("COLLATION 'utf8mb4_unicode_ci' is not valid for CHARACTER SET 'latin1'")
+ * can never occur. Verified against a byte-faithful production copy
+ * (latin1 columns, latin1 session): "saude" → 27 matches (plain LIKE: 1),
+ * accented "saúde" → 5; evidence in scripts/charset-migration/artifacts/.
  *
  * utf8mb4_unicode_ci is the project's configured collation (see
  * compose.yaml WORDPRESS_DB_COLLATION) and exists on every MySQL 5.6+/8.x
@@ -118,21 +131,21 @@ function conexao_is_main_search( $query ) {
  *   wp_posts.post_title LIKE '%term%' DESC       posts_search_orderby (relevance)
  *   WHEN wp_posts.post_title LIKE '%term%' THEN  posts_search_orderby (CASE, multi-term)
  *
- * Each column reference immediately before a (NOT) LIKE operator is rewritten
- * to:
+ * Each `column (NOT) LIKE '<pattern>'` pair is rewritten to:
  *
- *   CONVERT(wp_posts.post_title USING utf8mb4) COLLATE utf8mb4_unicode_ci LIKE '%term%'
+ *   CONVERT(CONVERT(column USING binary) USING utf8mb4)
+ *     COLLATE utf8mb4_unicode_ci (NOT) LIKE
+ *   CONVERT(CONVERT('%pattern%' USING binary) USING utf8mb4)
  *
- * The CONVERT(... USING utf8mb4) wrapper is essential: it turns the column
- * into a utf8mb4 expression no matter how the column is actually stored
- * (latin1 on the WordPress.com production host, utf8mb4 locally, etc.), so
- * the explicit COLLATE is always accepted by MySQL and the comparison is
- * always accent-insensitive. A bare `wp_posts.post_title COLLATE
- * utf8mb4_unicode_ci` is invalid on a latin1 column (ERROR 1253) and made the
- * entire production search return an empty result set. Idempotent: after the
- * transformation the column is followed by " USING" rather than whitespace +
- * LIKE, so re-running is a no-op (no risk of double CONVERT/COLLATE if
- * another hook re-enters the fragment).
+ * Both sides go through BINARY first: BINARY is byte-transparent, so the
+ * second CONVERT re-interprets the *stored / sent* bytes as utf8mb4 instead
+ * of re-encoding them from the declared charset (latin1 on the WordPress.com
+ * production host, utf8mb4 locally). The explicit COLLATE is always accepted
+ * because both operands are utf8mb4 expressions, and the comparison is always
+ * accent-insensitive. Idempotent: after the transformation the column is
+ * followed by " USING binary" rather than whitespace + LIKE, so re-running is
+ * a no-op (no risk of double CONVERT/COLLATE if another hook re-enters the
+ * fragment).
  *
  * @param string $sql The search fragment (WHERE or ORDER BY relevance SQL).
  * @return string The fragment with accent-insensitive collations applied.
@@ -147,22 +160,26 @@ function conexao_apply_accent_insensitive_search_collation( $sql ) {
 	$collation = conexao_search_collation();
 
 	/*
-	 * Match a table-qualified searchable column ($wpdb->posts.post_title etc.)
-	 * followed by whitespace and a LIKE / NOT LIKE operator. Group 1 captures
-	 * the "table.column" reference (NOT the trailing whitespace); group 2
-	 * captures the operator. The whole column reference is wrapped in
-	 * CONVERT(... USING utf8mb4) and the COLLATE is inserted just before the
-	 * operator, so the comparison is forced to the accent-insensitive
-	 * collation regardless of the column's own charset/collation. The column
-	 * set is exactly the native WordPress search columns.
+	 * Match `column (NOT) LIKE '<pattern>'`: group 1 is the table-qualified
+	 * searchable column ($wpdb->posts.post_title etc.), group 2 the (NOT) LIKE
+	 * operator, group 3 the inside of the quoted pattern literal (escaped
+	 * characters such as \' or \% are captured verbatim). Both sides are
+	 * rebuilt through CONVERT(CONVERT(... USING binary) USING utf8mb4) so the
+	 * comparison is byte-correct and accent-insensitive regardless of the
+	 * column charset or the connection charset (see the file docblock). The
+	 * column set is exactly the native WordPress search columns.
 	 */
 	$pattern = '/(' . preg_quote( (string) $wpdb->posts, '/' )
 		. '\.(?:post_title|post_excerpt|post_content))\s+'
-		. '((?:NOT\s+)?LIKE)/i';
+		. '((?:NOT\s+)?LIKE)\s+\'((?:[^\'\\\\]|\\\\.)*)\'/i';
 
-	return preg_replace(
+	return preg_replace_callback(
 		$pattern,
-		'CONVERT(${1} USING utf8mb4) COLLATE ' . $collation . ' ${2}',
+		function ( $m ) use ( $collation ) {
+			return 'CONVERT(CONVERT(' . $m[1] . ' USING binary) USING utf8mb4)'
+				. ' COLLATE ' . $collation . ' ' . $m[2]
+				. ' CONVERT(CONVERT(\'' . $m[3] . '\' USING binary) USING utf8mb4)';
+		},
 		$sql
 	);
 }
