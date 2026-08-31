@@ -43,14 +43,14 @@ if ( $is_event_archive ) {
 		'eyebrow'     => _x( 'Aprendizagem e Formação', 'archive eyebrow', 'conexao-br-irlanda' ),
 		'title'       => _x( 'Cursos', 'archive page title', 'conexao-br-irlanda' ),
 		'description' => _x( 'Encontre cursos, formações e oportunidades de aprendizagem na Irlanda.', 'archive description', 'conexao-br-irlanda' ),
-		'filters'     => 'event',
+		'filters'     => 'course',
 	);
 } elseif ( $is_guide_archive ) {
 	$archive_header = array(
 		'eyebrow'     => _x( 'Informação e Guias', 'archive eyebrow', 'conexao-br-irlanda' ),
 		'title'       => conexao_archive_title(),
 		'description' => conexao_archive_description(),
-		'filters'     => 'event',
+		'filters'     => 'guide',
 	);
 } elseif ( $is_leisure_archive ) {
 	$archive_header = array(

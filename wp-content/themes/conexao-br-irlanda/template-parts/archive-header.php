@@ -15,8 +15,11 @@
  * @var string $args['eyebrow']     Section eyebrow text (rendered uppercase by CSS).
  * @var string $args['title']       Page title (h1).
  * @var string $args['description'] Optional description paragraph.
- * @var string $args['filters']     Optional filter template slug ('event', 'leisure')
- *                                  or empty string for no filters.
+ * @var string $args['filters']     Optional filter template slug ('event',
+ *                                  'course', 'guide', 'leisure') or empty
+ *                                  string for no filters. Each archive has
+ *                                  its own filter template — the slug maps
+ *                                  to template-parts/{slug}-filters.php.
  */
 
 $eyebrow     = $args['eyebrow']     ?? '';

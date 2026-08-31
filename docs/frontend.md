@@ -67,7 +67,9 @@ All in `template-parts/`:
 |------|---------|
 | `archive-header.php` | All CPT archives (title, eyebrow, description, filters) |
 | `event-card.php` | Events archive grid |
-| `event-filters.php` | Events archive filter bar |
+| `event-filters.php` | Events archive filter bar (event-only: `?cidade=` towns + `?categoria=` categories used by published events) |
+| `course-filters.php` | Cursos archive filter bar (course-only: `?categoria=` provider categories from `_provider_category` meta; renders nothing when no categories exist) |
+| `guide-filters.php` | Guias archive filter bar (`?categoria=` conexao_category terms used by published guides) |
 | `event-preview.php` | Homepage events section |
 | `leisure-card.php` | Lazer archive grid |
 | `leisure-filters.php` | Lazer archive filter bar (desktop: discovery heading + wide dropdowns with location search + chips + count; mobile: bottom sheet with location search for long lists) |
