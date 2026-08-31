@@ -48,8 +48,10 @@ Created by `conexao-content` plugin:
 | `/cursos/` | `?categoria=slug` | `_provider_category` (meta) |
 | `/guias/` | `?categoria=slug` | `conexao_category` |
 | `/blog/` | `?categoria=slug` | `category` (native) |
+| `/blog/` | `?s=term` | Blog-scoped native search (acts on `post` only; same accent-insensitive pipeline as sitewide `/?s=`, scoped by `pre_get_posts`) |
+| `/blog/` | `?categoria=slug&s=term` | Combined category + search (both applied to the same main query, neither state lost) |
 
-Filters are content-type-aware: the same `?categoria=` parameter resolves to different taxonomies/meta on different archives. Blog category links point at `/blog/?categoria=slug` (the Blog archive itself), not at the native `/category/{slug}/` archive — which remains intact for direct access, feeds and wp-admin.
+Filters are content-type-aware: the same `?categoria=` parameter resolves to different taxonomies/meta on different archives. Blog category links point at `/blog/?categoria=slug` (the Blog archive itself), not at the native `/category/{slug}/` archive — which remains intact for direct access, feeds and wp-admin. A Blog-scoped native search is available via `/blog/?s=term` (the same accent-insensitive search pipeline, gated to `post` only); the `s` and `categoria` parameters can be combined in a single query, with neither state silently lost.
 
 ## Redirect Architecture
 

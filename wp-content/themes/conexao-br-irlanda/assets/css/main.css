@@ -5193,6 +5193,159 @@ input[type="button"] {
 }
 
 /* ============================================
+   Blog Discovery Toolbar (home.php — editorial library)
+   ============================================
+   Cohesive search + category area on the Blog archive. Search is a
+   prominent native WordPress search form (?s=), categories reuse the
+   established .events-filter-link pill language, and the active-filter
+   chip + "Limpar filtros" + result count form one accessible row.
+   All tokens are design-system aliases, so light + dark mode and the
+   mobile responsive breakpoints are automatic. */
+.blog-discovery {
+  margin-bottom: var(--space-6);
+  padding: var(--space-5) var(--space-6);
+  background: var(--color-surface-muted);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.blog-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* Prominent library search — one form, native `s` query. */
+.blog-search-form .conexao-search-wrap {
+  position: relative;
+}
+
+.blog-search-form .conexao-search-icon {
+  display: block;
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-text-muted);
+  pointer-events: none;
+}
+
+.blog-search-form .search-field {
+  min-height: 52px;
+  padding: 12px 16px 12px 46px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  font-size: var(--text-base);
+}
+
+.blog-search-form .search-field:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px rgba(14, 107, 58, 0.12);
+}
+
+.blog-search-form .search-submit {
+  border-radius: var(--radius-full);
+  padding: 12px 28px;
+}
+
+/* Category bar inside the toolbar keeps the shared pill controls. */
+.blog-category-bar {
+  margin: 0;
+  padding: 0;
+  flex-wrap: wrap;
+}
+
+/* Active-filter row: chip + clear + free result count. */
+.blog-active-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  min-height: 40px;
+  margin-top: var(--space-2);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+}
+
+.blog-active-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
+  color: var(--conexao-white);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.blog-active-chip-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.28);
+  color: var(--conexao-white);
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: none;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.blog-active-chip-remove:hover {
+  background: rgba(255, 255, 255, 0.45);
+  color: var(--conexao-white);
+}
+
+.blog-active-chip-remove:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 1px;
+}
+
+.blog-clear-filters {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.blog-clear-filters:hover {
+  color: var(--color-primary);
+}
+
+.blog-results-count {
+  margin-left: auto;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+@media (max-width: 768px) {
+  .blog-discovery {
+    padding: var(--space-4);
+    margin-bottom: var(--space-5);
+  }
+
+  .blog-toolbar {
+    gap: var(--space-3);
+  }
+
+  .blog-active-row {
+    padding-top: var(--space-3);
+  }
+
+  .blog-results-count {
+    margin-left: 0;
+  }
+}
+
+/* ============================================
    Course Cards — reuse Event Card visual language
    ============================================ */
 .course-card {

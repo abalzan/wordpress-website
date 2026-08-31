@@ -1218,6 +1218,28 @@
   box-shadow: 0 0 0 4px rgba(46, 158, 99, 0.15);
 }
 
+/* ===== 24a. BLOG DISCOVERY TOOLBAR (dark overrides) =====
+   The blog discovery toolbar uses design-token aliases, so most
+   surfaces, text, and borders auto-adapt. The focus shadow and the
+   active-chip background need explicit dark overrides because they
+   use hardcoded light-mode colors in main.css. */
+[data-theme="dark"] .blog-search-form .search-field:focus {
+  border-color: var(--conexao-primary);
+  box-shadow: 0 0 0 4px rgba(58, 184, 117, 0.18);
+}
+
+[data-theme="dark"] .blog-active-chip {
+  background: var(--conexao-primary);
+}
+
+[data-theme="dark"] .blog-active-chip-remove {
+  background: rgba(0, 0, 0, 0.25);
+}
+
+[data-theme="dark"] .blog-active-chip-remove:hover {
+  background: rgba(0, 0, 0, 0.4);
+}
+
 /* ===== 25. BREADCRUMBS ===== */
 [data-theme="dark"] .conexao-breadcrumbs {
   color: var(--color-text-secondary);

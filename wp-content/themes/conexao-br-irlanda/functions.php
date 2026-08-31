@@ -1809,17 +1809,74 @@ function conexao_content_archive_query( $query ) {
 	 */
 	if ( $query->is_home() ) {
 		$category = isset( $_GET['categoria'] ) ? sanitize_title( wp_unslash( $_GET['categoria'] ) ) : '';
+		$search   = isset( $_GET['s'] ) ? trim( wp_unslash( $_GET['s'] ) ) : '';
+
+		/*
+		 * Blog-scoped native search (/blog/?s=…). The posts page always
+		 * resolves with is_home()=true and is_search()=false — parse_query()
+		 * matches `pagename` first (which skips the search flag) and only then
+		 * corrects the request to the posts page — so WordPress would
+		 * otherwise silently ignore the `s` parameter. Re-activating the
+		 * is_search() flag on this main query runs the SAME native search
+		 * pipeline used by the sitewide /?s=… search:
+		 *
+		 *   - the `s` query var + WP_Query::parse_search() WHERE clause,
+		 *   - the relevance ORDER BY (parse_search_order()),
+		 *   - the accent-insensitive collation in inc/search.php, which is
+		 *     gated on is_search() via conexao_is_main_search().
+		 *
+		 * The search is scoped to `post` (the Blog), never 'any', so a Blog
+		 * search cannot return Events, Guias, Apoiadores, etc. The request
+		 * stays on /blog/ and keeps rendering the Blog archive template via
+		 * conexao_blog_search_template() (template-loader would otherwise
+		 * prefer the generic search.php first).
+		 */
+		if ( '' !== $search ) {
+			$query->set( 's', $search );
+			$query->set( 'post_type', 'post' );
+			$query->is_search = true;
+		}
+
 		if ( $category ) {
 			$query->set( 'category_name', $category );
+		}
 
-			// WordPress prepends sticky posts on the posts page even when
-			// they do not match the category filter — a filtered view must
-			// never leak off-category sticky posts to the top.
+		// WordPress prepends sticky posts on the posts page even when they do
+		// not match the active category or search filters — a filtered view
+		// must never leak off-filter sticky posts to the top.
+		if ( '' !== $search || '' !== $category ) {
 			$query->set( 'ignore_sticky_posts', true );
 		}
 	}
 }
 add_action( 'pre_get_posts', 'conexao_content_archive_query' );
+
+/**
+ * Keep Blog searches on the Blog archive template.
+ *
+ * /blog/?s=… runs the native search pipeline (see the Blog block in
+ * conexao_content_archive_query()) but stays within the posts-page query
+ * hierarchy: is_home() remains true and pre_get_posts flips is_search()
+ * on, so BOTH flags are true. The template loader checks is_search() before
+ * is_home() and would normally pick the generic whole-site search.php —
+ * swap it back to the Blog archive template (home.php) so the editorial
+ * library toolbar (search field, category chips, active filter + count)
+ * keeps rendering and the infinite-scroll enhancement keeps its grid.
+ *
+ * @param string $template The template path selected by the template loader.
+ * @return string
+ */
+function conexao_blog_search_template( $template ) {
+	if ( is_search() && is_home() ) {
+		$home = get_home_template();
+		if ( $home ) {
+			return $home;
+		}
+	}
+
+	return $template;
+}
+add_filter( 'template_include', 'conexao_blog_search_template', 20 );
 
 /**
  * Course Provider shortcode.
