@@ -698,7 +698,6 @@ function conexao_homepage_cache_invalidate( $post_id ) {
 	if ( in_array( $post_type, $cpt_types, true ) ) {
 		// Homepage sections.
 		delete_transient( 'conexao_home_news' );
-		delete_transient( 'conexao_home_guides' );
 		delete_transient( 'conexao_home_events' );
 		delete_transient( 'conexao_home_sponsors' );
 		delete_transient( 'conexao_home_jobs' );

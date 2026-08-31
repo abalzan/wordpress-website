@@ -726,10 +726,6 @@
   color: var(--color-primary);
 }
 
-[data-theme="dark"] .sidebar-list-empty {
-  color: var(--color-text-secondary);
-}
-
 /* ===== 11. EVENTS ===== */
 [data-theme="dark"] .events-page-header {
   border-bottom-color: var(--color-border);

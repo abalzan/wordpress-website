@@ -330,40 +330,6 @@ $hero_has_sponsors = ! empty( conexao_get_featured_sponsors() );
 								</div>
 
 			<div class="featured-sidebar">
-				<!-- Popular Guides -->
-				<div class="sidebar-widget">
-					<h4 class="sidebar-widget-title">
-						<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
-							<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-						</svg>
-						<?php esc_html_e( 'Guias Populares', 'conexao-br-irlanda' ); ?>
-					</h4>
-					<ul class="sidebar-list">
-						<?php
-						$guides = new WP_Query( array(
-							'post_type'      => 'guide',
-							'posts_per_page' => 5,
-							'no_found_rows'  => true,
-							'update_post_meta_cache' => false,
-							'update_post_term_cache' => false,
-						) );
-						$guide_count = 1;
-						if ( $guides->have_posts() ) :
-							while ( $guides->have_posts() ) : $guides->the_post(); ?>
-								<li>
-									<a href="<?php the_permalink(); ?>">
-										<span class="sidebar-list-number"><?php echo esc_html( $guide_count ); ?></span>
-										<?php the_title(); ?>
-									</a>
-								</li>
-							<?php $guide_count++;
-							endwhile; wp_reset_postdata();
-						else : ?>
-							<li><span class="sidebar-list-empty"><?php esc_html_e( 'Novos guias serão publicados em breve.', 'conexao-br-irlanda' ); ?></span></li>
-						<?php endif; ?>
-					</ul>
-				</div>
-
 				<!-- Most Read -->
 				<div class="sidebar-widget">
 					<h4 class="sidebar-widget-title">

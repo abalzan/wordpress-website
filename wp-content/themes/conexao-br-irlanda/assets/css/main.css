@@ -1699,13 +1699,6 @@ ul, ol {
   font-weight: 700;
 }
 
-.sidebar-list-empty {
-  display: block;
-  font-size: var(--text-sm);
-  color: var(--color-text-secondary);
-  padding: var(--space-2) 0;
-}
-
 /* ===== Events Section ===== */
 .events-grid {
   display: grid;
@@ -4120,7 +4113,10 @@ input[type="button"] {
 
   .featured-sidebar {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    /* Single column: the featured sidebar now holds only the "Mais Lidos"
+       widget (the "Guias Populares" widget was removed from the homepage),
+       so a two-column grid would leave an empty half-column. */
+    grid-template-columns: 1fr;
   }
 
   .hero-content {
