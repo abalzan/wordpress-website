@@ -333,6 +333,23 @@ The Blog archive at `/blog/` is rendered as a searchable editorial library rathe
 
 **Testing:** Verified live for all states: no filter, category only, search only (accent-insensitive: `saude` → matches "Saúde"), combined search+category, empty search, empty category, pagination (with and without JS), and the sitewide `/?s=` search unchanged.
 
+### Apoiadores Directory (`/apoiadores/` in `archive.php` + `single-sponsor.php`)
+
+Intentionally simple partner showcase — no search, no category filters, no sorting (the partner count is small; browsing cards IS the experience).
+
+**Archive (`archive.php`, sponsor branch):**
+- Header: shared `archive-header.php` with eyebrow "Parceiros da Comunidade" (complements the h1 "Apoiadores" instead of repeating it), title, and description "Conheça os negócios que apoiam a comunidade brasileira na Irlanda." (from `conexao_archive_description()` in `inc/seo.php`).
+- Cards reuse the shared `archive-card` in `archive-grid` (3 columns desktop → 1 mobile), plus:
+  - Portrait image: `conexao_sponsor_carousel_image()` (canonical "Imagem do Apoiador", sponsor title as alt fallback) in the same 3:4 `object-fit: contain` frame as the Hero carousel (`.post-type-archive-sponsor` rules in `main.css`) — lazy-loaded, srcset/sizes/width/height, never cropped or stretched.
+  - Lightweight body: optional category pill, business name (the title link carries the accessible name), trimmed excerpt (omitted when empty), and a decorative `archive-card-cta` hint ("Conhecer o Apoiador", `aria-hidden` — pinned to the card bottom via `margin-top: auto`).
+  - Internal navigation only: `.archive-card--clickable` affordances are a right-arrow image chip and title arrow (`→`) — NOT an external-link icon — because the card opens the Apoiador detail page where description and every configured contact channel live. No contact buttons on the card.
+- Empty state (`content-none.php` sponsor branch): "Nenhum apoiador cadastrado ainda." / "Em breve, novos negócios estarão apoiando nossa comunidade."
+
+**Detail page (`single-sponsor.php`):** unchanged structure — portrait image (LCP, eager) → name → category/county → description → "Entre em contato" buttons rendered ONLY for configured channels (via `conexao_sponsor_contact_rows()`, which folds in the legacy `_sponsor_link` website first). Dark mode and mobile behavior are token-driven (see `assets/css/sponsor.css` and the "Apoiador single" section of `dark-mode.css`).
+
+**Deliberately out of scope:** search, filters, sorting, contact buttons on cards, and any directory navigation — do not add them while the partner count is small.
+
+
 ### Post views / "Mais Lidos" (`inc/post-views.php`)
 
 Records one view per front-end content page load into the `_conexao_view_count`

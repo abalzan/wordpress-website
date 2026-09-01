@@ -20,7 +20,7 @@
 				<p><?php esc_html_e( 'Novas oportunidades serão publicadas aqui em breve.', 'conexao-br-irlanda' ); ?></p>
 			<?php elseif ( is_post_type_archive( 'sponsor' ) ) : ?>
 				<p><?php esc_html_e( 'Nenhum apoiador cadastrado ainda.', 'conexao-br-irlanda' ); ?></p>
-				<p><?php esc_html_e( 'Organizações e empresas que apoiam a comunidade serão apresentadas aqui em breve.', 'conexao-br-irlanda' ); ?></p>
+				<p><?php esc_html_e( 'Em breve, novos negócios estarão apoiando nossa comunidade.', 'conexao-br-irlanda' ); ?></p>
 			<?php else : ?>
 				<p><?php esc_html_e( 'Parece que não conseguimos encontrar o que você procura. Talvez a busca possa ajudar.', 'conexao-br-irlanda' ); ?></p>
 			<?php endif; ?>

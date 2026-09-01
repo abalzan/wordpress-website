@@ -68,7 +68,10 @@ if ( $is_event_archive ) {
 	);
 } elseif ( $is_sponsor_archive ) {
 	$archive_header = array(
-		'eyebrow'     => _x( 'Apoiadores', 'archive eyebrow', 'conexao-br-irlanda' ),
+		// The eyebrow complements the h1 ("Apoiadores") instead of
+		// repeating it — it frames the page as a partner showcase and
+		// carries the "why they matter" message above the cards.
+		'eyebrow'     => _x( 'Parceiros da Comunidade', 'archive eyebrow', 'conexao-br-irlanda' ),
 		'title'       => conexao_archive_title(),
 		'description' => conexao_archive_description(),
 		'filters'     => '',
@@ -140,13 +143,13 @@ if ( $is_event_archive ) {
 						$card_classes = 'archive-card' . ( $is_sponsor ? ' archive-card--clickable' : '' );
 						?>
 						<article id="post-<?php the_ID(); ?>" <?php post_class( $card_classes ); ?>>
-							<?php if ( $is_sponsor && conexao_sponsor_carousel_image( get_the_ID() ) ) :
+							<?php if ( $is_sponsor && conexao_sponsor_carousel_image( get_the_ID(), get_the_title() ) ) :
 								// Canonical "Imagem do Apoiador" (single portrait asset,
 								// same as the Hero carousel) rendered uncropped and responsive;
 								// falls back to the featured thumbnail below when absent.
 								?>
 								<a href="<?php echo esc_url( $card_link ); ?>" class="archive-card-image" aria-hidden="true" tabindex="-1">
-									<?php echo conexao_sponsor_carousel_image( get_the_ID() ); // phpcs:ignore WordPress.Security.EscapeOutput -- safe HTML built in functions.php. ?>
+									<?php echo conexao_sponsor_carousel_image( get_the_ID(), get_the_title() ); // phpcs:ignore WordPress.Security.EscapeOutput -- safe HTML built in functions.php. ?>
 								</a>
 							<?php elseif ( has_post_thumbnail() ) : ?>
 								<a href="<?php echo esc_url( $card_link ); ?>" class="archive-card-image" aria-hidden="true" tabindex="-1">
@@ -160,7 +163,10 @@ if ( $is_event_archive ) {
 									<span class="archive-card-category"><?php echo esc_html( $cats[0]->name ); ?></span>
 								<?php endif; ?>
 								<h2 class="archive-card-title"><a href="<?php echo esc_url( $card_link ); ?>"><?php the_title(); ?></a></h2>
-								<p class="archive-card-excerpt"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 18, '...' ) ); ?></p>
+								<?php $card_excerpt = trim( wp_trim_words( get_the_excerpt(), 18, '...' ) ); ?>
+								<?php if ( '' !== $card_excerpt ) : ?>
+									<p class="archive-card-excerpt"><?php echo esc_html( $card_excerpt ); ?></p>
+								<?php endif; ?>
 								<?php if ( ! $is_sponsor ) : ?>
 								<div class="archive-card-meta">
 									<span>
@@ -178,6 +184,13 @@ if ( $is_event_archive ) {
 										<?php echo esc_html( conexao_reading_time_text() ); ?>
 									</span>
 								</div>
+								<?php endif; ?>
+								<?php if ( $is_sponsor ) : ?>
+									<?php // Decorative affordance: the whole card (and the title link)
+									// navigates to the Apoiador detail page; the title link
+									// already carries the accessible name, so this hint is
+									// intentionally aria-hidden (not meaningful content). ?>
+									<span class="archive-card-cta" aria-hidden="true"><?php esc_html_e( 'Conhecer o Apoiador', 'conexao-br-irlanda' ); ?></span>
 								<?php endif; ?>
 							</div>
 						</article>

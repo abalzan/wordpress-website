@@ -602,7 +602,7 @@ function conexao_archive_description() {
 		return 'Oportunidades de emprego para brasileiros na Irlanda.';
 	}
 	if ( is_post_type_archive( 'sponsor' ) ) {
-		return 'Conheça as organizações e empresas que apoiam a comunidade brasileira na Irlanda.';
+		return 'Conheça os negócios que apoiam a comunidade brasileira na Irlanda.';
 	}
 	if ( is_post_type_archive( 'leisure' ) ) {
 		return 'Descubra lugares para visitar, natureza, cultura, turismo e coisas para fazer na Irlanda.';
