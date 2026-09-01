@@ -27,12 +27,6 @@ function conexao_seo_title( $title ) {
 
 	$site_name = get_bloginfo( 'name' );
 
-	// Blog-scoped search (/blog/?s=…): both is_search() and is_home() are true,
-	// so this must be checked before the generic is_home() branch.
-	if ( is_search() && is_home() ) {
-		return 'Busca: ' . get_search_query() . ' | Blog | ' . $site_name;
-	}
-
 	if ( is_front_page() || is_home() ) {
 		return $site_name . ' | ' . get_bloginfo( 'description' );
 	}
@@ -129,9 +123,7 @@ function conexao_seo_meta_description() {
 
 	// Dynamic templates per content type.
 	if ( ! $description ) {
-		if ( is_search() && is_home() ) {
-			$description = 'Busca no Blog: ' . get_search_query() . '. Informações, histórias e experiências para brasileiros na Irlanda.';
-		} elseif ( is_front_page() || is_home() ) {
+		if ( is_front_page() || is_home() ) {
 			$description = get_bloginfo( 'description' );
 		} elseif ( is_singular( 'guide' ) ) {
 			$description = 'Guia prático: ' . get_the_title() . '. Passo a passo completo para brasileiros na Irlanda.';
@@ -186,17 +178,6 @@ function conexao_seo_canonical() {
 
 	if ( is_singular() ) {
 		$canonical = get_permalink();
-	} elseif ( is_search() && is_home() ) {
-		// Blog-scoped search (/blog/?s=…): both is_search() and is_home() are
-		// true, so this must be checked before the generic is_home() branch.
-		// Keep the search (and any active category) on the Blog archive URL so
-		// the crawlable state is not collapsed into the sitewide search or the
-		// plain Blog archive.
-		$canonical = home_url( '/blog/?s=' . rawurlencode( get_search_query() ) );
-		$category  = get_query_var( 'category_name' );
-		if ( $category ) {
-			$canonical = add_query_arg( 'categoria', $category, $canonical );
-		}
 	} elseif ( is_front_page() || is_home() ) {
 		$canonical = home_url( '/' );
 	} elseif ( is_post_type_archive() ) {

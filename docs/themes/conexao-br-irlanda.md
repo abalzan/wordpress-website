@@ -297,41 +297,6 @@ History of the three implementations:
   a leading-wildcard `LIKE` (no index possible), so the `CONVERT` wrapper adds
   no meaningful overhead.
 - The collation is overridable via the `conexao_search_collation` filter.
-### Blog Editorial Library (`home.php`)
-
-The Blog archive at `/blog/` is rendered as a searchable editorial library rather than a simple chronological list. The `/blog/` URL and `home.php` template remain unchanged; the improvements are additive:
-
-**Architecture:**
-- A Blog-scoped native search is activated when `?s=` is present on `/blog/` (`conexao_content_archive_query()` in `functions.php` flips `is_search=true` + scopes to `post`). This reuses the exact same `posts_search` / `posts_search_orderby` accent-insensitive pipeline (`inc/search.php`) — no new search engine, plugin, or JS filter.
-- The `?categoria=slug` native category filter works as before. Both `s` and `categoria` are applied to the same main `WP_Query`, so combined search+category returns the correct intersection with no extra query.
-- The template-loader normally prefers `search.php` over `home.php` when `is_search()` is true; `conexao_blog_search_template()` (`template_include` filter) swaps back to `home.php` when both `is_search()` and `is_home()` are true.
-
-**Template (`home.php`) structure:**
-
-1. **Archive header** — shared `template-parts/archive-header.php` with eyebrow, title, and description ("Informações, histórias e experiências para brasileiros na Irlanda.").
-2. **Blog discovery** (`.blog-discovery`) — a cohesive `<section>` containing:
-   - **Search form** — a semantic `<form role="search" method="get">` with a proper `<label>` (not just placeholder), a visible focus ring, keyboard submission, placeholder "Buscar no Blog...", and a hidden `categoria` input when a category is active so the form preserves both states on submit.
-   - **Category bar** (`.events-filter-bar`, `.blog-category-bar`) — reuse the existing pill controls (`events-filter-link`), with `[ Todos ]` link and `aria-current` on the active category.
-3. **Active-filter row** (`.blog-active-row`) — shows the `[ Categoria × ]` chip when a category is selected, a "Limpar filtros" link (clears all filters, including search, by navigating to the plain `/blog/` URL), and the article count read from `$wp_query->found_posts` (free, native — no extra `COUNT(*)` query). The chip's × link preserves the current search term when removing only the category.
-4. **Article cards** — existing `archive-card` components inside an `archive-grid` with `data-infinite-scroll` for the JS enhancement.
-5. **Pagination** — `template-parts/pagination.php` renders the crawlable numeric pagination (hidden by JS when infinite scroll initializes).
-6. **Empty states** — differentiated: "Nenhum artigo encontrado. Tente usar outras palavras ou remover o filtro." (search), "Nenhum artigo nesta categoria." (category), "Nenhum artigo publicado ainda." (no posts).
-
-**CSS (`main.css`):**
-- `.blog-discovery` — muted surface, border, rounded container.
-- `.blog-search-form` — prominent full-width search with inset icon, `border-radius: 9999px` input, pill submit button.
-- `.blog-active-chip` — green pill with ×-remove button, contextual dark-mode adjustments (`dark-mode.css`).
-- All tokens are design-system aliases (`.color-surface`, `--color-text-secondary`, `--color-border`, etc.), so dark mode and the mobile breakpoint are automatic. Explicit dark overrides only for the search field focus shadow and the chip's internal × button background.
-
-**SEO (`inc/seo.php`):**
-- Title: "Busca: {term} | Blog | {site name}" (checked before the generic `is_home()` branch).
-- Canonical: `/blog/?s={term}` (and optionally `&categoria={slug}`), so each search state has its own canonical on the Blog archive.
-- Noindex: inherited from `is_search()`.
-- Breadcrumb: `Início → Blog` (same `is_home()` branch; the Blog archive label is preserved even when searching).
-
-**Performance:** The search uses the same native `LIKE` (leading wildcard, no index) as any WordPress search. `found_posts` is already populated by the main query — no extra count query. The toolbar adds negligible DOM weight and no JS.
-
-**Testing:** Verified live for all states: no filter, category only, search only (accent-insensitive: `saude` → matches "Saúde"), combined search+category, empty search, empty category, pagination (with and without JS), and the sitewide `/?s=` search unchanged.
 
 ### Apoiadores Directory (`/apoiadores/` in `archive.php` + `single-sponsor.php`)
 
