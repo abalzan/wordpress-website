@@ -49,14 +49,13 @@ review state — imported events are published immediately.
 
 ## First-Save Behavior (empty-content guard bypass)
 
-The sectioned editor stores the real title/description in `conexao_fields[...]`
-and renders hidden mirror inputs (`post_title`, `content`) that carry the
-post's current values. On a brand-new post (auto-draft) those mirrors are empty,
-so a first submission used to hit core's `wp_insert_post()` "empty content"
-guard (all managed types support title + editor + excerpt). Core aborted the
-update before any hook fired, so `save_post_{type}` never ran and every field
-except `_edit_last` was silently lost while the UI reported success — the
-"first save loses everything, second save works" bug.
+The sectioned editor stores the real title/description in `conexao_fields[...]`.
+On a brand-new post (auto-draft) the core title input is empty and no content
+input exists, so a first submission used to hit core's `wp_insert_post()`
+"empty content" guard (all managed types support title + editor + excerpt).
+Core aborted the update before any hook fired, so `save_post_{type}` never ran
+and every field except `_edit_last` was silently lost while the UI reported
+success — the "first save loses everything, second save works" bug.
 
 `Conexao_Admin_Ux::bypass_empty_content_guard_for_editor()` (filter
 `wp_insert_post_empty_content`) returns `false` only when an editor form is
@@ -66,6 +65,55 @@ save behave exactly like an update — one request persists title, content,
 excerpt, all meta, taxonomies and the featured-image sync. All other write
 paths (autosave, Quick Edit, bulk edit, REST, importers) keep core's default
 guard behavior.
+
+## Title/Content Save Flow (no mirror inputs)
+
+The editor form deliberately contains **no hidden mirror `post_title` /
+`content` inputs**. An earlier implementation rendered them alongside the core
+`#title` input; because PHP keeps the *last* duplicate `post_title` value, the
+stale mirror silently discarded edits typed into the core title box (the UI
+still reported success), and the stale mirror content was written by core's
+`edit_post()` before the plugin's own handler re-wrote the correct values —
+producing bogus revisions.
+
+Core's `edit_post()` only maps `content`/`excerpt` when those keys are present
+and leaves absent keys untouched (`wp_update_post()` merges against the stored
+post), so omitting the mirrors is safe.
+
+Title resolution in `Conexao_Admin_Ux_Editor::save()`:
+
+1. `pre_post_update` snapshots the pre-save title/content (first capture wins;
+   core's own `wp_update_post()` runs *before* `save_post` fires).
+2. If the sectioned editor's virtual title field differs from the pre-save
+   title, it is canonical and wins.
+3. Otherwise the value core already saved stands (an edited core `#title`
+   input, or the unchanged title).
+
+Content resolution follows the same policy:
+
+1. If the sectioned editor's virtual content field differs from the pre-save
+   content snapshot, it is canonical and wins (sanitized with `wp_kses_post`).
+2. Otherwise the value core already saved stands — either the user's edit in
+   the core rich editor, or unchanged content.
+
+The snapshot comparison is what fixes the "Atualizar reverte o conteúdo" bug:
+`remove_meta_box('postdivrich', …)` cannot actually remove the core rich
+editor because `#postdivrich` is hardcoded in `edit-form-advanced.php`, so the
+form always submits BOTH the core `content` field (page-load value) and the
+sectioned editor's `conexao_fields[...]` description. Without the snapshot
+check, an edit typed into the core editor was written by core's `edit_post()`
+and then overwritten by the virtual field's stale page-load value, while
+Preview (which renders form/autosave state, not the saved post) still showed
+the edit — the exact "preview works, update reverts" symptom.
+
+The core title input is hidden via `assets/admin.css` (`#titlewrap`) and the
+core rich editor likewise (`#postdivrich`) — the stylesheet is only enqueued
+on this plugin's editor screens — so each managed type has a single visible
+title/content surface: its sectioned editor fields (`_guide_title`,
+`_guide_content`, `_leisure_name`, …). The permalink row inside `#titlediv`
+stays visible. `title_field_key()` / `content_field_key()` map every managed
+type — including leisure (`_leisure_name` / `_leisure_description`) — so the
+sectioned fields are authoritative.
 
 ## Media Fields & Featured Image Sync
 

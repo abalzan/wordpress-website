@@ -202,3 +202,26 @@
 .conexao-summary-card:focus-visible, .conexao-delete-link:focus-visible, .conexao-archive-link:focus-visible {
 	outline: 2px solid #0E6B3A; outline-offset: 2px;
 }
+/* ---------------------------------------------------------------------
+ * Core title input.
+ * The sectioned editor provides its own "Título" field and persists it
+ * through save_post_{type}. Hiding the core title input avoids two
+ * competing title surfaces on the same screen (the stylesheet is only
+ * enqueued on this plugin's editor screens). The permalink row inside
+ * #titlediv stays visible.
+ * --------------------------------------------------------------------- */
+#titlewrap { display: none; }
+
+/* ---------------------------------------------------------------------
+ * Core content editor.
+ * The sectioned editor provides its own "Conteúdo" rich-text field and
+ * persists it through save_post_{type}. The core #postdivrich editor is
+ * hardcoded in edit-form-advanced.php, so remove_meta_box() cannot
+ * remove it — hiding it here avoids two competing content surfaces on
+ * the same screen (the stylesheet is only enqueued on this plugin's
+ * editor screens). Its textarea still submits with the page-load value,
+ * but the save handler detects the unchanged value through the pre-save
+ * snapshot and keeps the sectioned editor's content (see
+ * Conexao_Admin_Ux_Editor::save()).
+ * --------------------------------------------------------------------- */
+#postdivrich { display: none; }

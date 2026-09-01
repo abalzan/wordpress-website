@@ -439,8 +439,9 @@ final class Conexao_Admin_Ux_Fields {
 				continue;
 			}
 
-			// For virtual title fields, check conexao_fields first (the visible
-			// input), then fall back to post_title (the hidden mirror field).
+			// For virtual title fields, check conexao_fields first (the
+			// sectioned editor input), then fall back to post_title (the
+			// core title input).
 			if ( in_array( $key, $virtual_title_keys, true ) ) {
 				$value = isset( $meta[ $id ] ) ? trim( (string) $meta[ $id ] ) : '';
 				if ( '' === $value && isset( $data['post_title'] ) ) {

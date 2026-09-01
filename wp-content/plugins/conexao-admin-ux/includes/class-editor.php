@@ -31,6 +31,17 @@ final class Conexao_Admin_Ux_Editor {
 	private static $saving = array();
 
 	/**
+	 * Pre-update snapshot of title/content, captured on the FIRST
+	 * pre_post_update of the request (i.e. before core's edit_post()
+	 * writes the form's core fields). Used to tell "the user edited the
+	 * sectioned editor's virtual title field" apart from "the user edited
+	 * the core #title input".
+	 *
+	 * @var array<int,array{title:string,content:string}>
+	 */
+	private static $pre_update = array();
+
+	/**
 	 * Constructor.
 	 *
 	 * @param string $post_type Post type.
@@ -48,9 +59,33 @@ final class Conexao_Admin_Ux_Editor {
 		add_action( 'add_meta_boxes', array( $this, 'add_editor_meta_box' ), 30 );
 		add_action( 'add_meta_boxes', array( $this, 'add_publish_meta_box' ), 30 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
+		add_action( 'pre_post_update', array( $this, 'capture_pre_update_state' ), 10, 2 );
 		add_action( 'save_post_' . $this->post_type, array( $this, 'save' ), 10, 2 );
 		add_filter( 'redirect_post_location', array( $this, 'redirect_with_notice' ), 10, 2 );
 		add_action( 'admin_notices', array( $this, 'show_save_notice' ) );
+	}
+
+	/**
+	 * Snapshot the pre-save title/content on the first pre_post_update of
+	 * the request for this post type. Core's edit_post() runs its own
+	 * wp_update_post() (from the form's core fields) BEFORE save_post fires,
+	 * so inside save_post the passed $post already reflects core's write —
+	 * not the state the user started from.
+	 *
+	 * @param int   $post_id Post ID.
+	 * @param array $data    Post data about to be written.
+	 */
+	public function capture_pre_update_state( $post_id, $data ) {
+		if ( isset( self::$pre_update[ $post_id ] ) ) {
+			return; // First capture (pre-core-write) wins.
+		}
+		if ( $this->post_type !== get_post_type( $post_id ) || wp_is_post_revision( $post_id ) ) {
+			return;
+		}
+		self::$pre_update[ $post_id ] = array(
+			'title'   => (string) get_post_field( 'post_title', $post_id ),
+			'content' => (string) get_post_field( 'post_content', $post_id ),
+		);
 	}
 
 	/**
@@ -148,12 +183,15 @@ final class Conexao_Admin_Ux_Editor {
 	public function render_editor( $post ) {
 		wp_nonce_field( 'conexao_admin_ux_save', 'conexao_admin_ux_nonce' );
 
-		// Keep the core WordPress title/content fields in the form so the
-		// standard save flow also picks them up (redundant safety).
-		echo '<div style="display:none;">';
-		echo '<input type="text" name="post_title" id="conexao_post_title_hidden" value="' . esc_attr( $post->post_title ) . '" />';
-		echo '<textarea name="content" id="conexao_post_content_hidden" rows="10">' . esc_textarea( $post->post_content ) . '</textarea>';
-		echo '</div>';
+		// NOTE: no hidden mirror post_title/content inputs here. Duplicate
+		// name="post_title" inputs (this mirror + the core #title input)
+		// made PHP's $_POST keep the LAST value — the stale mirror — so any
+		// edit typed into the core title box was silently discarded, and the
+		// stale mirror content fed corrupted data into core's save (creating
+		// bogus revisions) before Conexao_Admin_Ux_Editor::save() re-wrote
+		// the correct values. Core's edit_post() keeps the existing
+		// title/content when the keys are absent, and the sectioned editor
+		// fields below are the canonical editing surface.
 
 		echo '<div class="conexao-editor-wrapper">';
 
@@ -368,8 +406,50 @@ final class Conexao_Admin_Ux_Editor {
 		$field_key  = ltrim( $this->title_field_key(), '_' );
 		$content_key = ltrim( $this->content_field_key(), '_' );
 
-		$title = isset( $data['conexao_fields'][ $field_key ] ) ? sanitize_text_field( $data['conexao_fields'][ $field_key ] ) : ( isset( $data['post_title'] ) ? sanitize_text_field( $data['post_title'] ) : $post->post_title );
-		$content = isset( $data['conexao_fields'][ $content_key ] ) ? wp_kses_post( $data['conexao_fields'][ $content_key ] ) : ( isset( $data['content'] ) ? wp_kses_post( $data['content'] ) : $post->post_content );
+		// Title resolution. The sectioned editor's virtual field is the
+		// canonical title surface, but the core #title input may also carry
+		// an edit. By the time save_post fires, core's edit_post() has
+		// ALREADY written the core field, so $post holds that result. Using
+		// the pre-save snapshot we can tell the two surfaces apart:
+		//   1. virtual field changed vs pre-save state  -> use it (canonical);
+		//   2. virtual field unchanged -> keep what core just saved (which is
+		//      either the user's core #title edit or the unchanged title).
+		$pre_update   = isset( self::$pre_update[ $post_id ] ) ? self::$pre_update[ $post_id ] : array(
+			'title'   => $post->post_title,
+			'content' => $post->post_content,
+		);
+		$custom_title = isset( $data['conexao_fields'][ $field_key ] ) ? sanitize_text_field( $data['conexao_fields'][ $field_key ] ) : null;
+
+		if ( null !== $custom_title && $custom_title !== $pre_update['title'] ) {
+			$title = $custom_title;
+		} else {
+			// Virtual field untouched: keep the value core saved (an edited
+			// core #title input, or the unchanged title).
+			$title = $post->post_title;
+		}
+
+		// Content resolution. The sectioned editor's virtual field is the
+		// canonical content surface, BUT the core rich editor (#postdivrich)
+		// is still rendered and submitted by the post.php form — hiding it
+		// via CSS does not remove its `content` POST field. core's
+		// edit_post() writes that field BEFORE save_post fires, so $post
+		// already reflects it. Using the pre-save snapshot we can tell the
+		// two surfaces apart (same policy as the title resolution above):
+		//   1. virtual field changed vs pre-save state  -> use it (canonical);
+		//   2. virtual field unchanged -> keep what core just saved (either
+		//      the user's edit in the core editor, or the unchanged content).
+		// Without this, an edit made in the core editor was overwritten by
+		// the virtual field's stale value on every save — the "Atualizar
+		// reverte o conteúdo" bug.
+		$raw_custom_content = isset( $data['conexao_fields'][ $content_key ] ) ? (string) $data['conexao_fields'][ $content_key ] : null;
+
+		if ( null !== $raw_custom_content && $raw_custom_content !== $pre_update['content'] ) {
+			// The virtual field was actually edited in this request.
+			$content = wp_kses_post( $raw_custom_content );
+		} else {
+			// Virtual field untouched: keep the value core saved.
+			$content = $post->post_content;
+		}
 
 		// Validate required fields.
 		$errors = Conexao_Admin_Ux_Fields::validate( $this->config, $data );
@@ -661,6 +741,7 @@ final class Conexao_Admin_Ux_Editor {
 			'job'             => '_job_title',
 			'sponsor'         => '_sponsor_name',
 			'course_provider' => '_provider_name',
+			'leisure'         => '_leisure_name',
 		);
 		return isset( $map[ $this->post_type ] ) ? $map[ $this->post_type ] : '_' . $this->post_type . '_title';
 	}
@@ -677,6 +758,7 @@ final class Conexao_Admin_Ux_Editor {
 			'job'             => '_job_description',
 			'sponsor'         => '_sponsor_description',
 			'course_provider' => '_provider_description',
+			'leisure'         => '_leisure_description',
 		);
 		return isset( $map[ $this->post_type ] ) ? $map[ $this->post_type ] : '_' . $this->post_type . '_content';
 	}

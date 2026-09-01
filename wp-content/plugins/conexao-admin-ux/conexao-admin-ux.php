@@ -16,7 +16,7 @@ define( 'CONEXAO_ADMIN_UX_FILE', __FILE__ );
 // Asset cache-busting version: MUST be bumped whenever any file under
 // assets/ changes, otherwise browsers keep serving the stale cached
 // admin.js/admin.css and new UI behaviors silently stop working.
-define( 'CONEXAO_ADMIN_UX_VERSION', '1.0.2' );
+define( 'CONEXAO_ADMIN_UX_VERSION', '1.0.3' );
 define( 'CONEXAO_ADMIN_UX_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CONEXAO_ADMIN_UX_URL', plugin_dir_url( __FILE__ ) );
 
