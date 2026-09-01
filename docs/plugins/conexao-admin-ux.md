@@ -217,6 +217,12 @@ Repeater behavior:
 
 - `conexao-data-model` (depends on its CPTs existing)
 
+## Wikimedia attribution source URLs
+
+Wikimedia Commons file page URLs are built by `Conexao_Wikimedia_Client::file_page_url()` and stored in `_leisure_image_source_url` (on the leisure post and its imported attachment). The correct format is `https://commons.wikimedia.org/wiki/File:<filename>` — never the API endpoint (`/w/api.php/File:...`).
+
+An earlier version of the client built file page URLs from the API endpoint base. Historical note: `scripts/fix-wikimedia-source-urls.php` is a one-time, idempotent migration that rewrites the broken prefix to `/wiki/File:` on any record that still carries it (run with `--dry-run` to preview). It only touches `_leisure_image_source_url` values matching the exact broken prefix; license/author/attribution metadata is never modified.
+
 ## Files to Inspect First
 
 - `conexao-admin-ux.php` — main plugin, component boot

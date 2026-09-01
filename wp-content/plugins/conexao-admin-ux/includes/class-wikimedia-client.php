@@ -33,6 +33,9 @@ final class Conexao_Wikimedia_Client {
 	/** API endpoint. */
 	const API_URL = 'https://commons.wikimedia.org/w/api.php';
 
+	/** Public wiki (file page) base URL. */
+	const WIKI_URL = 'https://commons.wikimedia.org/wiki';
+
 	/**
 	 * License priority mapping.
 	 *
@@ -431,12 +434,16 @@ final class Conexao_Wikimedia_Client {
 	/**
 	 * Build the Wikimedia Commons file page URL.
 	 *
+	 * Uses the public wiki base (https://commons.wikimedia.org/wiki/File:...),
+	 * NOT the API endpoint (https://commons.wikimedia.org/w/api.php), so the
+	 * stored attribution/source URL resolves to the human-readable file page.
+	 *
 	 * @param string $filename The filename (without "File:" prefix).
 	 * @return string Absolute Commons file page URL.
 	 */
 	public function file_page_url( $filename ) {
 		$encoded = str_replace( ' ', '_', $filename );
-		return self::API_URL . '/File:' . rawurlencode( $encoded );
+		return self::WIKI_URL . '/File:' . rawurlencode( $encoded );
 	}
 
 	/**
