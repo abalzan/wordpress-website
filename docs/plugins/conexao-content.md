@@ -37,6 +37,8 @@ Parameters:
 
 Links resolve to external URLs when the post has one (events → `_event_url`, sponsors → `_sponsor_link`, jobs → `_job_url`, course_providers → `_provider_url`).
 
+Event visibility is enforced by the shortcode itself: because it queries with `post_type=any`, it mirrors the Event Runtime's public rule (`_event_status = published` OR no status for legacy events). Hidden events — `draft`, `expired`, `source_not_found`, `rejected` — never appear in the grid, with or without the `categories` filter. Non-event posts are unaffected (they never carry `_event_status`).
+
 ### `[conexao_blog_categories]`
 
 Renders category pills linking to `/blog/` filtered by native WordPress category.

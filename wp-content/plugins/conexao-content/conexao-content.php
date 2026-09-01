@@ -96,6 +96,27 @@ function conexao_grid_shortcode( $atts ) {
         'update_post_term_cache' => false,
     );
 
+    // Event visibility guard: post_type=any can match the `event` type, but the
+    // Event Runtime's pre_get_posts gate only constrains dedicated event queries
+    // (event archives/tax archives) — not this generic grid query. Mirror the
+    // runtime rule inline (status `published` OR no status = legacy manual
+    // events) so hidden events (`draft`, `expired`, `source_not_found`,
+    // `rejected`) never appear in the grid. Non-event posts never carry
+    // `_event_status`, so they pass the NOT EXISTS branch and are unaffected.
+    if ( post_type_exists( 'event' ) ) {
+        $args['meta_query'] = array(
+            'relation' => 'OR',
+            array(
+                'key'   => '_event_status',
+                'value' => 'published',
+            ),
+            array(
+                'key'     => '_event_status',
+                'compare' => 'NOT EXISTS',
+            ),
+        );
+    }
+
     if ( ! empty( $category_slugs ) ) {
         $args['tax_query'] = array(
             array(
