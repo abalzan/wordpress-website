@@ -4,7 +4,14 @@
  *
  * Captures structured log entries with event context for diagnosing real
  * production problems. Logs are stored in a single WordPress option and
- * capped at 500 entries to avoid unbounded growth.
+ * capped at 2000 entries to avoid unbounded growth; entries older than
+ * 90 days are pruned (see prune_older_than_90_days()).
+ *
+ * Write amplification: during a managed import run (begin_run() … end_run(),
+ * used by the importer engine), entries are buffered in memory and persisted
+ * with a small number of bounded read-merge writes instead of rewriting the
+ * whole option for every entry. Calls made outside a managed run persist
+ * immediately, exactly as before, so no entry is ever silently lost.
  *
  * Sensitive data (API keys, tokens, passwords) is never logged.
  *
@@ -29,6 +36,38 @@ class Conexao_Import_Log {
 	 * @var int
 	 */
 	const MAX_ENTRIES = 2000;
+
+	/**
+	 * Number of buffered entries that trigger an intermediate flush.
+	 *
+	 * Bounds memory usage for very large runs while keeping the number of
+	 * option writes per run tiny (a full run typically writes once).
+	 *
+	 * @var int
+	 */
+	const BUFFER_FLUSH_AT = 250;
+
+	/**
+	 * Buffered entries awaiting persistence (oldest first).
+	 *
+	 * @var array[]
+	 */
+	protected static $buffer = array();
+
+	/**
+	 * Nesting depth of managed runs. Only the outermost end_run() flushes,
+	 * so run_all() wrapping run_source() yields a single bounded write.
+	 *
+	 * @var int
+	 */
+	protected static $run_depth = 0;
+
+	/**
+	 * Whether the shutdown safety-net hook has been registered.
+	 *
+	 * @var bool
+	 */
+	protected static $shutdown_registered = false;
 
 	/**
 	 * Add a log entry.
@@ -81,8 +120,87 @@ class Conexao_Import_Log {
 		}
 		$entry['context'] = $safe_context;
 
+		// Managed run active: buffer the entry and persist it on flush.
+		if ( self::$run_depth > 0 ) {
+			self::$buffer[] = $entry;
+
+			// Bound memory for very large runs; entries stay ordered because
+			// each flush prepends a newer batch in front of the previous one.
+			if ( count( self::$buffer ) >= self::BUFFER_FLUSH_AT ) {
+				self::flush();
+			}
+			return;
+		}
+
+		// No managed run active: persist immediately (legacy behavior), so
+		// ad-hoc callers are never silently lost.
+		self::persist_entries( array( $entry ) );
+	}
+
+	/**
+	 * Start buffering log entries for a managed import run.
+	 *
+	 * Calls may nest (run_all() wraps run_source()): only the outermost
+	 * end_run() persists. A shutdown hook acts as a safety net so buffered
+	 * entries survive an abnormal request termination.
+	 */
+	public static function begin_run() {
+		self::$run_depth++;
+
+		if ( 1 === self::$run_depth && ! self::$shutdown_registered ) {
+			self::$shutdown_registered = true;
+			add_action( 'shutdown', array( __CLASS__, 'flush' ), 5 );
+		}
+	}
+
+	/**
+	 * Finish a managed import run and persist buffered entries.
+	 *
+	 * Safe to call more than once (extra calls are no-ops).
+	 */
+	public static function end_run() {
+		if ( self::$run_depth > 0 ) {
+			self::$run_depth--;
+		}
+
+		if ( 0 === self::$run_depth ) {
+			self::flush();
+		}
+	}
+
+	/**
+	 * Persist any buffered entries now (bounded read-merge-write).
+	 *
+	 * Concurrency: the stored log is re-read immediately before writing so a
+	 * flush only prepends this run's entries to the freshest persisted state —
+	 * it never overwrites entries persisted by a concurrent run. A single
+	 * flush per run (instead of one write per entry) also shrinks the race
+	 * window dramatically for this local, manually-triggered tool.
+	 */
+	public static function flush() {
+		if ( empty( self::$buffer ) ) {
+			return;
+		}
+
+		// Buffer is oldest-first; storage is newest-first.
+		$entries = array_reverse( self::$buffer );
+		self::$buffer = array();
+
+		self::persist_entries( $entries );
+	}
+
+	/**
+	 * Prepend entries (newest first) to the stored log, respecting the cap.
+	 *
+	 * @param array[] $entries Structured entries, newest first.
+	 */
+	protected static function persist_entries( $entries ) {
+		if ( empty( $entries ) ) {
+			return;
+		}
+
 		$log = self::get_all();
-		array_unshift( $log, $entry );
+		$log = array_merge( $entries, $log );
 		$log = array_slice( $log, 0, self::MAX_ENTRIES );
 
 		update_option( self::OPTION_KEY, $log, false );
@@ -157,6 +275,8 @@ class Conexao_Import_Log {
 	 * Clear the log.
 	 */
 	public static function clear() {
+		// Drop any buffered entries too: the caller asked for a clean slate.
+		self::$buffer = array();
 		update_option( self::OPTION_KEY, array(), false );
 	}
 
@@ -347,6 +467,9 @@ class Conexao_Import_Log {
 	 * @return int Number of entries removed.
 	 */
 	public static function prune_older_than_90_days() {
+		// Flush buffered entries first so retention also applies to them.
+		self::flush();
+
 		$log      = self::get_all();
 		$cutoff   = time() - 90 * DAY_IN_SECONDS;
 		$filtered = array();

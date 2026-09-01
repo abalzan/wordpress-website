@@ -25,6 +25,17 @@ cleanup end-timestamps) — the dependency direction is strictly
 **Importer Tools → Runtime**, enforced by the `Requires Plugins` header and a
 boot guard that refuses to load tooling without the runtime.
 
+### Expiry execution path (no cron)
+
+`Conexao_Event_Status::mark_expired_events()` is **not** scheduled. There is no
+cron event, no daily/weekly WP-Cron schedule, and no REST trigger. It runs
+synchronously at the end of every import run
+(`Conexao_Event_Importer_Engine::run_all()` calls it after all sources have
+been processed). Practical consequence: events whose end date/time has passed
+stop appearing on public pages the next time an import is run — not on a
+timer. If no import is ever run, published events stay visible until the
+manual Cleanup removes them.
+
 ## Architecture: Local is the importer, production is only the destination
 
 External event sources block requests coming from the production WordPress.com
@@ -52,9 +63,34 @@ production-side fetching. Everything is manual/on-demand.
 - Create/update event posts with full meta, taxonomies, and featured images
 - Download external event images into the local Media Library during import
 - Export/import events as portable JSON with stable UUIDs and **embedded base64 image data**
-- Log all import activity with download/clear capabilities
+- Log all import activity with download/clear capabilities (2,000-entry cap,
+  90-day retention — see [Import logging](#import-logging))
 - Manual cleanup of expired events and their exclusively-owned images
-- Auto-expire published events once their end date/time passes
+- Auto-expire published events once their end date/time passes — expiry
+  marking runs at the end of each import run (no cron; see
+  [Expiry execution path](#expiry-execution-path-no-cron) above)
+
+## Import logging
+
+`Conexao_Import_Log` stores structured entries in the
+`conexao_event_import_log` option (autoload off):
+
+- **Cap**: 2,000 entries (newest first); older entries are dropped
+  automatically once the cap is reached.
+- **Retention**: entries older than 90 days are pruned opportunistically when
+  the Import Logs admin screen is opened.
+- **Write behavior**: during an import run the engine wraps the run in
+  `Conexao_Import_Log::begin_run()` / `end_run()`. Entries are buffered in
+  memory and persisted with a small number of bounded read-merge writes
+  (one write per ~250 buffered entries, plus one final flush) instead of
+  rewriting the whole option for every log line. Calls made outside a managed
+  run (e.g. the Cleanup tool) persist immediately as before.
+- **Concurrency**: each flush re-reads the stored log before writing and only
+  prepends its own entries, so a concurrent manual run's persisted entries are
+  not overwritten.
+- **Sensitive data**: keys matching token/password/api_key/authorization (and
+  similar configured keys) are stripped from context before anything is
+  persisted.
 
 ## Key Components
 
@@ -73,7 +109,7 @@ production-side fetching. Everything is manual/on-demand.
 | `includes/class-source-fetch-exception.php` | `Conexao_Source_Fetch_Exception` | Structured transport/HTTP fetch failure |
 | `includes/class-import-cli.php` | `Conexao_Import_CLI` | WP-CLI commands (`wp conexao-events …`) |
 | `includes/class-import-result.php` | `Conexao_Import_Result` | Structured import result tracking |
-| `includes/class-import-log.php` | `Conexao_Import_Log` | Persistent log storage |
+| `includes/class-import-log.php` | `Conexao_Import_Log` | Persistent log storage (run-buffered writes, 2,000-entry cap, 90-day retention) |
 | `includes/class-import-log-admin.php` | `Conexao_Import_Log_Admin` | Log admin UI, download, clear |
 | `includes/class-import-history.php` | `Conexao_Import_History` | Import run history tracking |
 | `includes/class-event-export.php` | `Conexao_Event_Export` | JSON export with UUIDs + embedded base64 images |

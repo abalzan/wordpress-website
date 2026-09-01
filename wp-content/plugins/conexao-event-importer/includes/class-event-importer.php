@@ -71,6 +71,11 @@ class Conexao_Event_Importer_Engine {
 	/**
 	 * Run a full import across all active sources.
 	 *
+	 * Log entries generated during the run are buffered and persisted with a
+	 * single bounded write when the run finishes (write-amplification fix).
+	 * The finally block guarantees buffered entries survive early returns
+	 * and unexpected exceptions.
+	 *
 	 * Returns a combined result array with per-source stats, event outcomes,
 	 * and any fatal errors. Individual source failures do not stop other sources.
 	 *
@@ -80,6 +85,21 @@ class Conexao_Event_Importer_Engine {
 	 * @return array Combined result array.
 	 */
 	public function run_all( $args = array() ) {
+		Conexao_Import_Log::begin_run();
+		try {
+			return $this->run_all_unbuffered( $args );
+		} finally {
+			Conexao_Import_Log::end_run();
+		}
+	}
+
+	/**
+	 * Run a full import across all active sources (logging already scoped).
+	 *
+	 * @param array $args Optional arguments (see run_all()).
+	 * @return array Combined result array.
+	 */
+	protected function run_all_unbuffered( $args = array() ) {
 		$args    = wp_parse_args( is_array( $args ) ? $args : array(), array( 'dry_run' => false, 'source_ids' => array() ) );
 		$dry_run = ! empty( $args['dry_run'] );
 
@@ -206,12 +226,32 @@ class Conexao_Event_Importer_Engine {
 	 * remaining events. Global failures (unreachable API, invalid source data)
 	 * stop the source and report a fatal error.
 	 *
+	 * Log entries are buffered for the duration of the run and persisted once
+	 * when it finishes. When invoked from run_all() the calls nest and only
+	 * the outermost scope persists.
+	 *
 	 * @param string $source_id Source slug.
 	 * @param bool   $dry_run   When true, fetch/normalize/classify without
 	 *                          writing anything to the database.
 	 * @return array Stats for this source.
 	 */
 	public function run_source( $source_id, $dry_run = false ) {
+		Conexao_Import_Log::begin_run();
+		try {
+			return $this->run_source_unbuffered( $source_id, $dry_run );
+		} finally {
+			Conexao_Import_Log::end_run();
+		}
+	}
+
+	/**
+	 * Run an import for a single source (logging already scoped).
+	 *
+	 * @param string $source_id Source slug.
+	 * @param bool   $dry_run   When true, fetch/normalize/classify without writing.
+	 * @return array Stats for this source.
+	 */
+	protected function run_source_unbuffered( $source_id, $dry_run = false ) {
 		// Start a fresh run ID for log correlation.
 		$this->current_run_id = (string) microtime( true );
 
