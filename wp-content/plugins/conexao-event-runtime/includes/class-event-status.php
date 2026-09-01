@@ -1,8 +1,12 @@
 <?php
 /**
- * Event status management.
+ * Event status management (production runtime).
  *
- * @package Conexao_Event_Importer
+ * Owns the `_event_status` semantics shared by the public visibility gate,
+ * the admin status UI (Conexão Admin UX consumes this class via
+ * class_exists()) and the local import tooling (expiry marking, cleanup).
+ *
+ * @package Conexao_Event_Runtime
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -22,11 +26,11 @@ class Conexao_Event_Status {
 	 */
 	public static function get_statuses() {
 		return array(
-			self::DRAFT            => __( 'Draft', 'conexao-event-importer' ),
-			self::PUBLISHED        => __( 'Published', 'conexao-event-importer' ),
-			self::SOURCE_NOT_FOUND => __( 'Source Not Found', 'conexao-event-importer' ),
-			self::EXPIRED          => __( 'Expired', 'conexao-event-importer' ),
-			self::REJECTED         => __( 'Rejected', 'conexao-event-importer' ),
+			self::DRAFT            => __( 'Draft', 'conexao-event-runtime' ),
+			self::PUBLISHED        => __( 'Published', 'conexao-event-runtime' ),
+			self::SOURCE_NOT_FOUND => __( 'Source Not Found', 'conexao-event-runtime' ),
+			self::EXPIRED          => __( 'Expired', 'conexao-event-runtime' ),
+			self::REJECTED         => __( 'Rejected', 'conexao-event-runtime' ),
 		);
 	}
 
@@ -66,9 +70,10 @@ class Conexao_Event_Status {
 	 *  2. PUBLISHED events whose end date/time has passed — these previously
 	 *     stayed publicly visible until the weekly cleanup deleted them.
 	 *
-	 * Runs on a schedule (daily kickoff) and whenever an import finishes, so
-	 * historical data is preserved but expired events stop appearing on
-	 * public pages immediately after they end.
+	 * Triggered by the local import tooling after each import run (no cron —
+	 * importing and cleanup are manual, local-only operations), so historical
+	 * data is preserved but expired events stop appearing on public pages
+	 * immediately after they end.
 	 */
 	public static function mark_expired_events() {
 		$expired = 0;

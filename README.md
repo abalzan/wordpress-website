@@ -55,7 +55,8 @@ Copy `.env.example` to `.env` only when overriding defaults. All defaults work o
     │   ├── conexao-data-model      # CPTs, taxonomies, meta
     │   ├── conexao-content         # Pages, shortcodes
     │   ├── conexao-admin-ux        # Custom admin UI
-    │   ├── conexao-event-importer  # Event aggregation
+    │   ├── conexao-event-runtime   # Event runtime (production dependency)
+    │   ├── conexao-event-importer  # Event import/export tooling (local-only)
     │   └── conexao-leisure-migration # Lazer export/import
     └── themes/
         └── conexao-br-irlanda      # Active theme

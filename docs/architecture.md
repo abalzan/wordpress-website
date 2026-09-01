@@ -37,8 +37,9 @@ Plugins must load in this dependency order:
 1. **conexao-data-model** — Registers CPTs, taxonomies, meta fields. Other plugins depend on these types existing.
 2. **conexao-content** — Creates static pages and shortcodes. Depends on data-model types for grid shortcodes.
 3. **conexao-admin-ux** — Enhances admin UI for all supported types. Depends on data-model types.
-4. **conexao-event-importer** — Event aggregation pipeline. Depends on event CPT from data-model.
-5. **conexao-leisure-migration** — Leisure export/import. Can self-register leisure CPT if data-model is absent (fallback).
+4. **conexao-event-runtime** — Production event runtime: event meta registration, the `conexao_town` taxonomy, the `_event_status` gate on public event queries, and the event status admin UI. Depends on the event CPT from data-model. **Required on production.**
+5. **conexao-event-importer** — Local-only event aggregation/import/export tooling. Depends on data-model and the event runtime (`Requires Plugins` header). **Never required on production.**
+6. **conexao-leisure-migration** — Leisure export/import. Can self-register leisure CPT if data-model is absent (fallback).
 
 ## Theme Architecture
 

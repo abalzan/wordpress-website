@@ -59,9 +59,14 @@ it only if the logo masters are ever replaced).
 ./scripts/build-plugins-zip.sh
 ```
 
-Output: `dist/conexao-data-model.zip`, `dist/conexao-content.zip`, `dist/conexao-admin-ux.zip`, `dist/conexao-event-importer.zip`, `dist/conexao-leisure-migration.zip`
+Output: `dist/conexao-data-model.zip`, `dist/conexao-content.zip`, `dist/conexao-admin-ux.zip`, `dist/conexao-event-runtime.zip`, `dist/conexao-event-importer.zip`, `dist/conexao-leisure-migration.zip`
 
 Import via WordPress Admin → Plugins → Add New → Upload Plugin. Activate in load order.
+
+**Production** needs: data-model, content, admin-ux, **event-runtime**. The
+event importer (local tooling) should **not** be installed or active on
+production — see docs/plugins/conexao-event-runtime.md for the activation and
+migration plan.
 
 ### Theme
 

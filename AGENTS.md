@@ -31,7 +31,8 @@ All under `wp-content/plugins/`. Load order matters:
 | `conexao-data-model` | CPTs, taxonomies, meta | docs/plugins/conexao-data-model.md |
 | `conexao-content` | Static pages + shortcodes | docs/plugins/conexao-content.md |
 | `conexao-admin-ux` | Custom wp-admin UI + statuses | docs/plugins/conexao-admin-ux.md |
-| `conexao-event-importer` | Event aggregation pipeline | docs/plugins/conexao-event-importer.md |
+| `conexao-event-runtime` | Production event runtime (event meta, `conexao_town`, `_event_status` gate, status admin UI) | docs/plugins/conexao-event-runtime.md |
+| `conexao-event-importer` | Local-only event import/export tooling (manual, no cron) | docs/plugins/conexao-event-importer.md |
 | `conexao-leisure-migration` | Lazer export/import (ZIP) | docs/plugins/conexao-leisure-migration.md |
 | `conexao-sponsor-migration` | Apoiadores export/import (JSON + embedded images) | docs/plugins/conexao-sponsor-migration.md |
 
@@ -75,7 +76,7 @@ See docs/routing.md.
 6. **Reuse shared template parts** (`template-parts/`) and the design-system CSS variables. No page-specific CSS hacks.
 7. **Dark mode:** reuse existing variables in `assets/css/dark-mode.css`.
 8. **Preserve image attribution/license metadata** (`_leisure_image_author`, `_license`, `_attribution`, etc.).
-9. **Public event queries must respect `_event_status`** (published or no status). The event-importer enforces this via `pre_get_posts`.
+9. **Public event queries must respect `_event_status`** (published or no status). The event-runtime plugin enforces this via `pre_get_posts`.
 10. **Front page caching:** transients (`conexao_home_*`, `conexao_404_*`) are invalidated on save. Keep new homepage queries cached.
 
 ## Common tasks — where to look
@@ -84,7 +85,8 @@ See docs/routing.md.
 |---|---|
 | Change CPT/archive/URL | docs/routing.md, docs/content-model.md |
 | Register/change content types | plugins/conexao-data-model |
-| Event import pipeline | docs/plugins/conexao-event-importer.md |
+| Event import pipeline (local) | docs/plugins/conexao-event-importer.md |
+| Event runtime / `_event_status` gate | docs/plugins/conexao-event-runtime.md |
 | Lazer data/migration | docs/plugins/conexao-leisure-migration.md |
 | Apoiador data/migration | docs/plugins/conexao-sponsor-migration.md |
 | Admin UI/statuses | plugins/conexao-admin-ux |

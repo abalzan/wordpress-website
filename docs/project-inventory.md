@@ -7,7 +7,8 @@
 | conexao-data-model | 1.3.0 | `wp-content/plugins/conexao-data-model/` |
 | conexao-content | 1.0.0 | `wp-content/plugins/conexao-content/` |
 | conexao-admin-ux | 1.0.0 | `wp-content/plugins/conexao-admin-ux/` |
-| conexao-event-importer | 1.3.0 | `wp-content/plugins/conexao-event-importer/` |
+| conexao-event-runtime | 1.0.0 | `wp-content/plugins/conexao-event-runtime/` |
+| conexao-event-importer | 1.5.0 | `wp-content/plugins/conexao-event-importer/` |
 | conexao-leisure-migration | 2.0.0 | `wp-content/plugins/conexao-leisure-migration/` |
 | conexao-sponsor-migration | 1.0.0 | `wp-content/plugins/conexao-sponsor-migration/` |
 
@@ -91,6 +92,7 @@ None. Event importing and cleanup are manual, local-only operations (see docs/pl
 | Data Model plugin | `docs/plugins/conexao-data-model.md` |
 | Content plugin | `docs/plugins/conexao-content.md` |
 | Admin UX plugin | `docs/plugins/conexao-admin-ux.md` |
+| Event Runtime plugin | `docs/plugins/conexao-event-runtime.md` |
 | Event Importer plugin | `docs/plugins/conexao-event-importer.md` |
 | Leisure Migration plugin | `docs/plugins/conexao-leisure-migration.md` |
 | Sponsor Migration plugin | `docs/plugins/conexao-sponsor-migration.md` |

@@ -393,7 +393,7 @@ Note: "Sobre Nós" is intentionally NOT a navigation item either. The /sobre-nos
 - `conexao-data-model` (CPTs and taxonomies)
 - `conexao-content` (shortcodes used in page content)
 - `conexao-admin-ux` (status meta, editor enhancements)
-- `conexao-event-importer` (event status filtering via `pre_get_posts`)
+- `conexao-event-runtime` (event meta, `conexao_town`, `_event_status` filtering via `pre_get_posts`)
 
 ## Files to Inspect First
 

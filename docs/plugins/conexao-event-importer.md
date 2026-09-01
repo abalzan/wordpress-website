@@ -1,8 +1,29 @@
-# Conexão Event Importer
+# Conexão BR Irlanda — Event Importer (Local Tools)
 
 - **Path**: `wp-content/plugins/conexao-event-importer/`
-- **Version**: 1.4.0
-- **Purpose**: Local-only event aggregation. Fetches events from external sources (Laois Tourism, National Heritage Week, Eventbrite Laois) into the **local** WordPress installation, downloads all images into the local Media Library, then exports the complete event data as JSON for import into the production WordPress.com site.
+- **Version**: 1.5.0
+- **Requires Plugins**: `conexao-data-model`, `conexao-event-runtime`
+- **Purpose**: Local-only event import/export tooling. Fetches events from external sources (Laois Tourism, National Heritage Week, Eventbrite Laois) into the **local** WordPress installation, downloads all images into the local Media Library, then exports the complete event data as JSON for import into the production WordPress.com site.
+- **Not needed on production.** All production-critical event behavior (meta/taxonomy registration, `_event_status` public query gate, status admin UI) lives in the separate [Event Runtime](conexao-event-runtime.md) plugin. It is safe to deactivate this plugin on production.
+
+## Runtime / tooling split (v1.5.0)
+
+As of v1.5.0 this plugin contains **only local tooling**. The following moved
+to the Event Runtime plugin:
+
+| Moved item | Where it lives now |
+|---|---|
+| Event meta registration (`_event_*`, incl. `_event_status`) | `Conexao_Event_Runtime::register_meta()` |
+| `conexao_town` taxonomy registration | `Conexao_Event_Runtime::register_town_taxonomy()` |
+| `_event_status` public query gate (`pre_get_posts`) | `Conexao_Event_Runtime::filter_public_event_queries()` |
+| Event status/source admin columns + `?event_status=` list filter | `Conexao_Event_Runtime` |
+| `conexao_event_status_box` meta box + save handler | `Conexao_Event_Runtime` |
+| `Conexao_Event_Status` class (statuses, get/set, expiry, end-timestamp helper) | `conexao-event-runtime/includes/class-event-status.php` |
+
+The tooling still *uses* `Conexao_Event_Status` (post-import expiry marking,
+cleanup end-timestamps) — the dependency direction is strictly
+**Importer Tools → Runtime**, enforced by the `Requires Plugins` header and a
+boot guard that refuses to load tooling without the runtime.
 
 ## Architecture: Local is the importer, production is only the destination
 
@@ -39,9 +60,8 @@ production-side fetching. Everything is manual/on-demand.
 
 | File | Class | Purpose |
 |------|-------|---------|
-| `conexao-event-importer.php` | `Conexao_Event_Importer` | Main plugin, boot all components |
+| `conexao-event-importer.php` | `Conexao_Event_Importer` | Main plugin, boot all components (local tooling only) |
 | `includes/class-event-sources.php` | `Conexao_Event_Sources` | Source CRUD, admin pages, manual import trigger |
-| `includes/class-event-status.php` | `Conexao_Event_Status` | Status constants, get/set/mark-expired, shared end-timestamp helper |
 | `includes/class-event-normalizer.php` | `Conexao_Event_Normalizer` | Normalize raw event data |
 | `includes/class-event-date-filter.php` | `Conexao_Event_Date_Filter` | Past-event filter: compare normalized dates against site-timezone now |
 | `includes/class-event-location.php` | `Conexao_Event_Location` | Location normalization (county, town, venue) |
@@ -107,7 +127,7 @@ Create a free token at [developers.eventbrite.com](https://www.eventbrite.com/de
 1. On the **local** Docker WordPress, open **Event Import → Dashboard** and click **Import Events Now** (or run `wp conexao-events import`). Each source can also be imported individually from Event Sources.
 2. The importer fetches each active source, normalizes events, filters out past/invalid-date events (see [Past-event filtering](#past-event-filtering-v14)), validates required fields, deduplicates against existing posts, and upserts. Valid events are published immediately — there is no review/approval step. Images are downloaded into the local Media Library during import (`_event_banner_attachment_id` + post thumbnail).
 3. Open **Event Import → Export Events** and download the JSON file. The export embeds each event's featured image as base64 data (up to 5 MB per image).
-4. On **production**, open **Event Import → Import Events** and upload the JSON. Attachments are recreated from the embedded bytes — no external requests are made.
+4. On **production**, upload the JSON. Attachments are recreated from the embedded bytes — no external requests are made. Since v1.5.0 the transfer/import screens are local tooling, so this step requires the Event Importer plugin to be **temporarily active on production** (Event Runtime must be active too — WordPress enforces this via `Requires Plugins`). Deactivate the importer again afterwards; this is safe and does not affect public event behavior. The package format is unchanged.
 5. Optionally run **Cleanup** locally before exporting to remove past events.
 
 ### Required-field validation
@@ -190,7 +210,8 @@ The export/import path additionally matches on the stable export UUID (`_event_e
 
 ## Event Meta (registered)
 
-See `docs/content-model.md` for full meta field list. Key fields:
+Event meta registration is owned by the [Event Runtime](conexao-event-runtime.md)
+plugin since v1.5.0. See `docs/content-model.md` for the full meta field list. Key fields:
 
 - `_event_source` / `_event_source_id` — deduplication key
 - `_event_status` — visibility gate (published / draft / expired / etc.)
@@ -200,7 +221,7 @@ See `docs/content-model.md` for full meta field list. Key fields:
 
 ## Taxonomy
 
-- `conexao_town` — registered by this plugin, applied to events only
+- `conexao_town` — registered by the [Event Runtime](conexao-event-runtime.md) plugin, applied to events only
 
 ## Export format (v1.1)
 
@@ -247,7 +268,9 @@ wp conexao-events status                                # per-source health tabl
 - `conexao_event_image_download_args` — customize image download HTTP args
 
 ### Actions
-- `pre_get_posts` — filter public event queries (`_event_status = published`)
+
+The public `_event_status` query gate is **not** registered here anymore —
+it moved to the Event Runtime plugin (see the split section above).
 
 ## Admin UI
 

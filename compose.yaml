@@ -41,6 +41,7 @@ services:
       - ./wp-content/plugins/conexao-content:/var/www/html/wp-content/plugins/conexao-content
       - ./wp-content/plugins/conexao-data-model:/var/www/html/wp-content/plugins/conexao-data-model
       - ./wp-content/plugins/conexao-event-importer:/var/www/html/wp-content/plugins/conexao-event-importer
+      - ./wp-content/plugins/conexao-event-runtime:/var/www/html/wp-content/plugins/conexao-event-runtime
       - ./wp-content/plugins/conexao-admin-ux:/var/www/html/wp-content/plugins/conexao-admin-ux
       - ./wp-content/plugins/conexao-leisure-migration:/var/www/html/wp-content/plugins/conexao-leisure-migration
       - ./wp-content/plugins/conexao-sponsor-migration:/var/www/html/wp-content/plugins/conexao-sponsor-migration
