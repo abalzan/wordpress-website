@@ -29,7 +29,7 @@ final class Conexao_Admin_Ux_Config {
 	 *
 	 * @var string[]
 	 */
-	const SUPPORTED_TYPES = array( 'event', 'guide', 'job', 'sponsor', 'course_provider', 'leisure' );
+	const SUPPORTED_TYPES = array( 'event', 'guide', 'job', 'sponsor', 'course_provider', 'leisure', 'recruitment_agency' );
 
 	/**
 	 * Get the full configuration for a post type.
@@ -52,12 +52,13 @@ final class Conexao_Admin_Ux_Config {
 
 		if ( null === $configs ) {
 			$configs = array(
-				'event'           => self::event_config(),
-				'guide'           => self::guide_config(),
-				'job'             => self::job_config(),
-				'sponsor'         => self::sponsor_config(),
-				'course_provider' => self::course_provider_config(),
-				'leisure'         => self::leisure_config(),
+				'event'               => self::event_config(),
+				'guide'               => self::guide_config(),
+				'job'                 => self::job_config(),
+				'sponsor'             => self::sponsor_config(),
+				'course_provider'     => self::course_provider_config(),
+				'leisure'             => self::leisure_config(),
+				'recruitment_agency'  => self::recruitment_agency_config(),
 			);
 		}
 
@@ -873,6 +874,99 @@ final class Conexao_Admin_Ux_Config {
 			'summary'    => array(
 				array( 'key' => 'published', 'label' => 'Publicados', 'status' => 'published' ),
 				array( 'key' => 'review', 'label' => 'Revisão', 'status' => 'needs_review' ),
+			),
+		);
+	}
+
+	/**
+	 * ------------------------------------------------------------------
+	 * AGÊNCIAS DE RECRUTAMENTO (recruitment agencies directory)
+	 * ------------------------------------------------------------------
+	 *
+	 * Curated directory of recruitment agencies relevant to general /
+	 * entry-level employment, rendered as a section on the /empregos/
+	 * landing page. Records are wp-admin-only (no public single/archive);
+	 * each one is a compact card linking out to the agency's own site.
+	 * Discoverability is the "Ordem de exibição" field — lower numbers
+	 * first, so the agencies most relevant to the audience come first.
+	 */
+	private static function recruitment_agency_config() {
+		return array(
+			'post_type'  => 'recruitment_agency',
+			'labels'     => array(
+				'singular'        => 'Agência',
+				'plural'          => 'Agências de Recrutamento',
+				'add_button'      => 'Adicionar Agência',
+				'add_new_item'    => 'Adicionar Agência',
+				'edit_item'       => 'Editar Agência',
+				'empty_title'     => 'Ainda não há agências cadastradas',
+				'empty_message'   => 'Adicione a primeira agência de recrutamento para exibi-la na seção "Agências de recrutamento" da página /empregos/.',
+				'success_saved'   => 'Agência atualizada com sucesso.',
+				'success_created' => 'Agência criada com sucesso.',
+				'success_published' => 'Agência publicada com sucesso.',
+				'success_draft'   => 'Rascunho salvo com sucesso.',
+				'success_duplicated' => 'Agência duplicada como rascunho.',
+				'success_archived' => 'Agência arquivada com sucesso.',
+				'success_bulk'    => 'Agências atualizadas com sucesso.',
+			),
+			'date_meta'  => '_agency_last_checked',
+			'sections'   => array(
+				'dados'     => array(
+					'title'    => 'Informações da agência',
+					'icon'     => 'dashicons-networking',
+					'priority' => 10,
+					'fields'   => array(
+						array( 'key' => '_agency_name', 'label' => 'Nome da agência', 'type' => 'text', 'required' => true, 'help' => 'Nome oficial da agência de recrutamento. Ex.: "InSource Recruitment".' ),
+						array( 'key' => '_agency_job_types', 'label' => 'Principais tipos de trabalho', 'type' => 'textarea', 'help' => 'Áreas relevantes para quem procura a primeira vaga ou mudou de carreira. Ex.: "Armazém, logística, produção, hotelaria, limpeza, varejo, construção civil, operacional".' ),
+						array( 'key' => '_agency_location', 'label' => 'Localização / cobertura', 'type' => 'text', 'help' => 'Cidade(s) ou região(ões) atendidas. Ex.: "Dublin" ou "Nacional — Dublin, Cork, Galway".' ),
+					),
+				),
+				'contato'   => array(
+					'title'    => 'Site e telefone',
+					'icon'     => 'dashicons-phone',
+					'priority' => 20,
+					'fields'   => array(
+						array( 'key' => '_agency_website', 'label' => 'Site oficial', 'type' => 'url', 'required' => true, 'help' => 'Link para o site da agência. O botão do cartão abre este link em uma nova aba.' ),
+						array( 'key' => '_agency_phone', 'label' => 'Telefone', 'type' => 'phone', 'help' => 'Telefone principal para candidatos. Ex.: "+353 1 234 5678". Usado como link de discagem (tel:).' ),
+					),
+				),
+				'exibicao'  => array(
+					'title'    => 'Exibição e verificação',
+					'icon'     => 'dashicons-visibility',
+					'priority' => 30,
+					'fields'   => array(
+						array( 'key' => '_agency_temporary', 'label' => 'Vagas temporárias', 'type' => 'checkbox', 'help' => 'A agência trabalha com vagas temporárias.' ),
+						array( 'key' => '_agency_permanent', 'label' => 'Vagas permanentes', 'type' => 'checkbox', 'help' => 'A agência trabalha com vagas permanentes.' ),
+						array( 'key' => '_agency_order', 'label' => 'Ordem de exibição', 'type' => 'number', 'help' => 'Número menor aparece primeiro. As agências mais relevantes para este público devem vir antes.' ),
+						array( 'key' => '_agency_last_checked', 'label' => 'Última verificação', 'type' => 'date', 'help' => 'Data em que o site e os contatos da agência foram verificados pela última vez.' ),
+						array( 'key' => '_agency_wrc_licence', 'label' => 'Licença WRC', 'type' => 'text', 'help' => 'Número da licença da Workplace Relations Commission, se confirmada (ex.: "EA 3972"). Deixe em branco se não verificado.' ),
+					),
+				),
+			),
+			'publishing' => array(
+				'statuses' => array(
+					'draft'     => array( 'label' => 'Rascunho', 'badge' => 'draft' ),
+					'needs_review' => array( 'label' => 'Revisão', 'badge' => 'review' ),
+					'published' => array( 'label' => 'Publicado', 'badge' => 'published' ),
+					'archived'  => array( 'label' => 'Arquivado', 'badge' => 'archived' ),
+				),
+				'status_meta' => '_agency_status',
+				'default_status' => 'draft',
+			),
+			'columns'    => array(
+				'location'  => array( 'label' => 'Localização', 'meta' => '_agency_location' ),
+				'job_types' => array( 'label' => 'Tipos de trabalho', 'meta' => '_agency_job_types' ),
+				'status'    => array( 'label' => 'Status', 'render' => 'status' ),
+			),
+			'bulk_actions' => array(
+				'publish' => array( 'label' => 'Publicar', 'type' => 'status', 'value' => 'published' ),
+				'draft'   => array( 'label' => 'Rascunho', 'type' => 'status', 'value' => 'draft' ),
+				'archive' => array( 'label' => 'Arquivar', 'type' => 'status', 'value' => 'archived' ),
+				'delete'  => array( 'label' => 'Excluir permanentemente', 'type' => 'delete', 'confirm' => 'Tem certeza que deseja excluir permanentemente as agências selecionadas? Esta ação não pode ser desfeita.' ),
+			),
+			'summary'    => array(
+				array( 'key' => 'published', 'label' => 'Publicadas', 'status' => 'published' ),
+				array( 'key' => 'review', 'label' => 'Em revisão', 'status' => 'needs_review' ),
 			),
 		);
 	}

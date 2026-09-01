@@ -242,7 +242,10 @@ final class Conexao_Admin_Ux_Editor {
 		$is_published = 'published' === $status;
 
 		// Where this appears.
-		$public_url = ( 'publish' === $post->post_status ) ? get_permalink( $post->ID ) : '';
+		// Non-public content types (e.g. the recruitment-agency directory) have
+		// no front-end URL; skip the "Ver no site"/"Visualizar rascunho" links.
+		$is_viewable = is_post_type_viewable( $this->post_type );
+		$public_url = $is_viewable && 'publish' === $post->post_status ? get_permalink( $post->ID ) : '';
 		$archive_url = get_post_type_archive_link( $this->post_type );
 
 		echo '<div class="conexao-publish-box">';
@@ -261,7 +264,7 @@ final class Conexao_Admin_Ux_Editor {
 		echo '<h4>' . esc_html__( 'Onde este conteúdo aparece', 'conexao-admin-ux' ) . '</h4>';
 		if ( $public_url ) {
 			echo '<p><a href="' . esc_url( $public_url ) . '" target="_blank" rel="noopener">' . esc_html__( 'Ver no site ↗', 'conexao-admin-ux' ) . '</a></p>';
-		} else {
+		} elseif ( $is_viewable ) {
 			$preview = get_preview_post_link( $post );
 			if ( $preview ) {
 				echo '<p><a href="' . esc_url( $preview ) . '" target="_blank" rel="noopener">' . esc_html__( 'Visualizar rascunho ↗', 'conexao-admin-ux' ) . '</a></p>';
@@ -736,12 +739,13 @@ final class Conexao_Admin_Ux_Editor {
 	 */
 	private function title_field_key() {
 		$map = array(
-			'event'           => '_event_title',
-			'guide'           => '_guide_title',
-			'job'             => '_job_title',
-			'sponsor'         => '_sponsor_name',
-			'course_provider' => '_provider_name',
-			'leisure'         => '_leisure_name',
+			'event'               => '_event_title',
+			'guide'               => '_guide_title',
+			'job'                 => '_job_title',
+			'sponsor'             => '_sponsor_name',
+			'course_provider'     => '_provider_name',
+			'leisure'             => '_leisure_name',
+			'recruitment_agency'  => '_agency_name',
 		);
 		return isset( $map[ $this->post_type ] ) ? $map[ $this->post_type ] : '_' . $this->post_type . '_title';
 	}

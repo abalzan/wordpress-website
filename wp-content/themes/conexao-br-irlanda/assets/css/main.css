@@ -6212,3 +6212,112 @@ input[type="button"] {
 .jobs-home-grid .event-card-cta {
   margin-top: auto;
 }
+/* =============================================================
+   Empregos — "Agências de recrutamento" (recruitment agencies)
+   =============================================================
+   Curated recruitment agency directory rendered below the job
+   resources on /empregos/. Cards reuse the Event card classes
+   (.event-card*) so they inherit the existing card design and
+   dark-mode treatment; only the section spacing, the intro text,
+   the temp/permanent flags, detail rows and the warning box are
+   new. */
+
+.empregos-recruitment-agencies {
+  margin-top: var(--space-7);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--color-border);
+}
+
+.empregos-recruitment-agencies-title {
+  font-size: clamp(1.375rem, 3vw, 1.75rem);
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: var(--space-2);
+  line-height: 1.2;
+}
+
+.empregos-recruitment-agencies-intro {
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary, #555);
+  margin-bottom: var(--space-5);
+  line-height: 1.5;
+  max-width: 720px;
+}
+
+/* Cards stretch to equal height so CTAs align across the row. */
+.empregos-recruitment-agencies .event-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.empregos-recruitment-agencies .event-card-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+/* Temp / permanent flag pills */
+.agency-card-flags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.agency-card-flag {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: var(--conexao-radius-full, 999px);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+}
+
+.agency-card-flag--temp {
+  background: var(--conexao-gray-200, #e5e7eb);
+  color: var(--conexao-gray-700, #374151);
+}
+
+.agency-card-flag--perm {
+  background: var(--conexao-primary-50, #e8f5e9);
+  color: var(--conexao-primary, #2e7d32);
+}
+
+/* Detail rows reuse .event-card-detail for consistency. */
+.agency-card-details {
+  margin-bottom: 14px;
+}
+
+.agency-card-phone a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.agency-card-phone a:hover {
+  text-decoration: underline;
+}
+
+/* Warning / safety box */
+.empregos-recruitment-agencies-warning {
+  margin-top: var(--space-6);
+  padding: var(--space-4) var(--space-5);
+  background: var(--conexao-warning-bg, #fff8e1);
+  border: 1px solid var(--conexao-warning-border, #ffe082);
+  border-radius: var(--conexao-radius-sm, 8px);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.empregos-recruitment-agencies-warning p {
+  margin: 0;
+}
+
+.empregos-recruitment-agencies-warning p + p {
+  margin-top: var(--space-2);
+}
+
+.empregos-recruitment-agencies-warning strong {
+  color: var(--conexao-warning-text, #e65100);
+}

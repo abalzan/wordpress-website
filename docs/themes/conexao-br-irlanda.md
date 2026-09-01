@@ -42,6 +42,7 @@ Modern community portal theme for Conexão BR Irlanda. Features a green/orange p
 | `event-preview.php` | Homepage events section |
 | `featured-sponsors.php` | Homepage Hero (Featured Apoiadores carousel; renders nothing when no supporter is featured) |
 | `job-resources.php` | Empregos landing ("Onde procurar emprego" — external job-site cards reusing the Event card classes; data from `conexao_job_resources()` in `inc/job-resources.php`, filterable via `conexao_job_resources`). The cards are managed in wp-admin under **Empregos → Onde procurar emprego** (`conexao-job-resources` submenu, stored in the `conexao_job_resources` option; the built-in Jobs.ie / Indeed / IrishJobs defaults apply until first save) |
+| `recruitment-agencies.php` | Empregos landing ("Agências de recrutamento" — curated directory of recruitment agencies relevant to general/entry-level employment, reusing the Event card classes; data from the `recruitment_agency` CPT managed in wp-admin under **Empregos → Agências de Recrutamento** via the Admin UX editor. Includes a safety warning about legitimate agencies) |
 | `job-resources-preview.php` | Homepage `.section--jobs` slot ("Onde procurar emprego" — compact, text-only subset of the SAME `conexao_job_resources()` data used by the Empregos landing; first 3 resources only, no images/JS, cards reuse the Event card classes with `.jobs-home-grid` alignment tweaks in `main.css`) |
 | `hero-events.php` | Retained; no longer rendered (hero uses committed full-bleed asset) |
 | `leisure-card.php` | Lazer archive grid |

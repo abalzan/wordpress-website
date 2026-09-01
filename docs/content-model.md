@@ -12,6 +12,7 @@ Registered by `conexao-data-model` plugin (class `Conexao_Data_Model`, method `r
 | `sponsor` | Apoiadores | `apoiadores` | Same as above | Business directory |
 | `course_provider` | Cursos | `cursos` | title, editor, excerpt, thumbnail, revisions, custom-fields | Directory; links externally; no single-post pages |
 | `leisure` | Lazer e Turismo | `lazer` | Same as guide (incl. author, page-attributes) | Tourism directory; local Media Library images |
+| `recruitment_agency` | Agências de Recrutamento | *none* | title, editor, excerpt, revisions, custom-fields | Admin-only directory; no archive, no single URL (rendered inside /empregos/ landing via template-part). Managed under Empregos menu. |
 
 All CPTs are: `public`, `show_in_rest` (Gutenberg), rewrite with a Portuguese
 slug, `with_front => false`, and `has_archive` — **except `job`**, whose archive
@@ -19,6 +20,13 @@ is disabled so that `/empregos/` can be a normal WordPress page (the "Jobs
 Landing" hub, rendered by the theme's `page-empregos.php`). Individual job
 posts keep their `/empregos/{slug}/` permalinks (the CPT `rewrite` slug stays
 `empregos`).
+
+**`recruitment_agency`** is another exception: it is not public (`public` and
+`publicly_queryable` are false), has no rewrite, no archive, and no single
+post URL. The CPT exists purely as a wp-admin data container for the curated
+"Agências de recrutamento" directory rendered inside the /empregos/ landing
+page. In wp-admin it appears as a submenu item under the existing Empregos
+menu.
 
 ## Taxonomies
 
@@ -99,6 +107,15 @@ image, body) plus one minimal field:
 
 - `_provider_logo` (integer — attachment ID)
 - `_provider_category` (string), `_provider_location`, `_provider_url`, `_provider_status`, `_provider_order` (integer)
+
+### Recruitment Agency
+
+- `_agency_website` (string), `_agency_phone` (string), `_agency_location` (string)
+- `_agency_job_types` (string)
+- `_agency_temporary` (boolean), `_agency_permanent` (boolean)
+- `_agency_order` (integer), `_agency_last_checked` (string — date)
+- `_agency_wrc_licence` (string)
+- `_agency_status` (string)
 
 ### Leisure (comprehensive image metadata)
 

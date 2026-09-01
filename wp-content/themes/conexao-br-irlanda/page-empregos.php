@@ -107,6 +107,14 @@ get_header();
 		get_template_part( 'template-parts/job-resources' );
 		?>
 
+		<?php
+		// "Agências de recrutamento" — curated recruitment-agency directory
+		// rendered as compact cards below the job resources. The section is a
+		// second useful pathway (Instagram remains the primary current-vacancy
+		// CTA). Data lives in inc/recruitment-agencies.php.
+		get_template_part( 'template-parts/recruitment-agencies' );
+		?>
+
 	</main>
 </div>
 

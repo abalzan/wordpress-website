@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Conexão BR Irlanda Data Model
  * Description: Content types, shared taxonomies, and editorial fields for the Conexão BR Irlanda portal.
- * Version: 1.3.0
+ * Version: 1.4.0
  * Text Domain: conexao-data-model
  *
  * @package Conexao_BR_Irlanda_Data_Model
@@ -19,7 +19,7 @@ require_once CONEXAO_DATA_MODEL_DIR . 'includes/class-contacts.php';
 
 final class Conexao_Data_Model {
 
-	const VERSION = '1.3.0';
+	const VERSION = '1.4.0';
 
 	/** @var Conexao_Data_Model|null */
 	private static $instance = null;
@@ -38,6 +38,7 @@ final class Conexao_Data_Model {
 		add_action( 'init', array( $this, 'register_provider_meta' ), 0 );
 		add_action( 'init', array( $this, 'register_leisure_meta' ), 0 );
 		add_action( 'init', array( $this, 'register_sponsor_contacts_meta' ), 0 );
+		add_action( 'init', array( $this, 'register_agency_meta' ), 0 );
 	}
 
 	public function register_content_types() {
@@ -50,6 +51,9 @@ final class Conexao_Data_Model {
 			'sponsor'         => array( 'plural' => 'Apoiadores', 'singular' => 'Apoiador', 'slug' => 'apoiadores', 'icon' => 'dashicons-heart' ),
 			'course_provider' => array( 'plural' => 'Cursos', 'singular' => 'Provedor de Cursos', 'slug' => 'cursos', 'icon' => 'dashicons-welcome-learn-more' ),
 			'leisure'         => array( 'plural' => 'Lazer e Turismo', 'singular' => 'Local de Lazer', 'slug' => 'lazer', 'icon' => 'dashicons-palmtree' ),
+			// Recruitment agencies directory — wp-admin only (see the loop below).
+			// Records render exclusively inside the /empregos/ landing section.
+			'recruitment_agency' => array( 'plural' => 'Agências de Recrutamento', 'singular' => 'Agência de Recrutamento', 'slug' => 'agencias-de-recrutamento', 'icon' => 'dashicons-networking' ),
 		);
 
 		foreach ( $post_types as $post_type => $type ) {
@@ -61,6 +65,17 @@ final class Conexao_Data_Model {
 			// `rewrite` slug stays `empregos` so individual job posts (e.g.
 			// /empregos/oportunidades/) keep their existing permalinks untouched.
 			$has_archive = ( 'job' === $post_type ) ? false : $type['slug'];
+
+			// Recruitment agencies is a wp-admin-only directory: records render
+			// exclusively inside the /empregos/ landing section (theme module
+			// inc/recruitment-agencies.php + template-parts/recruitment-agencies.php).
+			// The CPT has no public archive, no single URL, no rewrite rule and no
+			// search presence — it exists to store the curated directory data in a
+			// reusable, admin-editable structure. In wp-admin it appears as a
+			// submenu of the existing Empregos menu.
+			$is_agency    = ( 'recruitment_agency' === $post_type );
+			$is_public    = ! $is_agency;
+			$show_in_menu = $is_agency ? 'edit.php?post_type=job' : true;
 
 			register_post_type(
 				$post_type,
@@ -75,21 +90,24 @@ final class Conexao_Data_Model {
 						'search_items'  => 'Buscar ' . $type['plural'],
 						'not_found'     => 'Nenhum ' . $type['singular'] . ' encontrado',
 						'not_found_in_trash' => 'Nenhum ' . $type['singular'] . ' encontrado na lixeira',
-						'all_items'     => 'Todos os ' . $type['plural'],
+						'all_items'     => 'Todas as ' . $type['plural'],
 						'archives'      => $type['plural'],
 					),
-					// All post types are publicly queryable to support their archives.
-					'public'             => true,
+					// All post types are publicly queryable to support their archives
+					// — except recruitment_agency (see below), which is admin-only.
+					'public'             => $is_public,
 					'show_ui'            => true,
-					'show_in_menu'       => true,
+					'show_in_menu'       => $show_in_menu,
 					'show_in_rest'       => true,
+					'publicly_queryable' => $is_public,
 					'has_archive'        => $has_archive,
-					'rewrite'            => array( 'slug' => $type['slug'], 'with_front' => false ),
+					'rewrite'            => $is_agency ? false : array( 'slug' => $type['slug'], 'with_front' => false ),
 					'menu_icon'          => $type['icon'],
 					'supports'           => $is_provider
 						? array( 'title', 'editor', 'excerpt', 'thumbnail', 'revisions', 'custom-fields' )
-						: array( 'title', 'editor', 'excerpt', 'thumbnail', 'author', 'revisions', 'page-attributes', 'custom-fields' ),
-					'publicly_queryable' => true,
+						: ( $is_agency
+							? array( 'title', 'editor', 'excerpt', 'revisions', 'custom-fields' )
+							: array( 'title', 'editor', 'excerpt', 'thumbnail', 'author', 'revisions', 'page-attributes', 'custom-fields' ) ),
 				)
 			);
 		}
@@ -111,6 +129,41 @@ final class Conexao_Data_Model {
 		foreach ( $meta as $key => $type ) {
 			register_post_meta(
 				'course_provider',
+				$key,
+				array(
+					'single'       => true,
+					'type'         => $type,
+					'show_in_rest' => true,
+				)
+			);
+		}
+	}
+
+	/**
+	 * Register meta fields for the recruitment-agency directory entries.
+	 *
+	 * These back the "Agências de recrutamento" section on /empregos/ and are
+	 * edited through the Conexão Admin UX (Empregos → Agências de Recrutamento).
+	 * Every field is optional except the agency name/website, which the admin-ux
+	 * config marks as required.
+	 */
+	public function register_agency_meta() {
+		$meta = array(
+			'_agency_website'      => 'string',  // Official website URL (external destination).
+			'_agency_phone'        => 'string',  // Main phone number for candidates.
+			'_agency_location'     => 'string',  // Main location / coverage.
+			'_agency_job_types'    => 'string',  // Main types of work relevant to the audience.
+			'_agency_temporary'    => 'boolean', // Offers temporary work.
+			'_agency_permanent'    => 'boolean', // Offers permanent work.
+			'_agency_order'        => 'integer', // Display priority (lower first).
+			'_agency_last_checked' => 'string',  // Date the agency information was last verified.
+			'_agency_wrc_licence'  => 'string',  // Workplace Relations Commission licence reference.
+			'_agency_status'       => 'string',  // Custom publishing status (draft/needs_review/published/archived).
+		);
+
+		foreach ( $meta as $key => $type ) {
+			register_post_meta(
+				'recruitment_agency',
 				$key,
 				array(
 					'single'       => true,
@@ -263,6 +316,7 @@ final class Conexao_Data_Model {
 		$plugin->register_content_types();
 		$plugin->register_taxonomies();
 		$plugin->register_provider_meta();
+		$plugin->register_agency_meta();
 		Conexao_Data_Model_Relationships::seed_terms();
 		flush_rewrite_rules();
 	}

@@ -34,6 +34,12 @@ require_once CONEXAO_THEME_DIR . '/inc/empregos-landing.php';
 require_once CONEXAO_THEME_DIR . '/inc/job-resources.php';
 
 /**
+ * Load the Empregos "Agências de recrutamento" recruitment-agencies module
+ * (data source for the agency cards rendered below the job resources).
+ */
+require_once CONEXAO_THEME_DIR . '/inc/recruitment-agencies.php';
+
+/**
  * Load the view-counting module: records a single view per front-end content
  * page load into the `_conexao_view_count` post meta, which powers the
  * homepage "Mais Lidos" section (see conexao_popular_posts()). See

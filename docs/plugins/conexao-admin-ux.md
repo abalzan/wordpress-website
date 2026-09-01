@@ -6,7 +6,7 @@
 
 ## Responsibilities
 
-- Provide structured editor UI (sections, fields) for event/guide/job/sponsor/course_provider/leisure
+- Provide structured editor UI (sections, fields) for event/guide/job/sponsor/course_provider/leisure/recruitment_agency
 - Force the **classic editor** for these content types (`use_block_editor_for_post_type` filter). The sectioned editor is a classic meta-box implementation that persists through the `post.php` form POST and `save_post_{type}` hook; under the block editor its publish buttons and `$_POST` fields are unreachable and all structured data would be silently lost. Posts, pages, and unmanaged types keep the block editor.
 - Restore the pre-trash status on "Restore" for managed types (core defaults untrash to `draft`).
 - Manage custom publishing statuses per content type (draft, needs_review, published, archived, etc.)
@@ -18,7 +18,7 @@
 
 ## Supported Content Types
 
-`Conexao_Admin_Ux_Config::SUPPORTED_TYPES`: `event`, `guide`, `job`, `sponsor`, `course_provider`, `leisure`
+`Conexao_Admin_Ux_Config::SUPPORTED_TYPES`: `event`, `guide`, `job`, `sponsor`, `course_provider`, `leisure`, `recruitment_agency`
 
 ## Key Components
 

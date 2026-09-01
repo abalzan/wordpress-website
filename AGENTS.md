@@ -90,6 +90,7 @@ See docs/routing.md.
 | Lazer data/migration | docs/plugins/conexao-leisure-migration.md |
 | Apoiador data/migration | docs/plugins/conexao-sponsor-migration.md |
 | Admin UI/statuses | plugins/conexao-admin-ux |
+| Recruitment agencies / Empregos agency directory | docs/plugins/conexao-data-model.md, theme inc/recruitment-agencies.php |
 | Templates/components | docs/themes/conexao-br-irlanda.md |
 | CSS/design | docs/frontend.md, theme assets/css/ |
 | SEO/redirects/sitemap | theme inc/seo.php |

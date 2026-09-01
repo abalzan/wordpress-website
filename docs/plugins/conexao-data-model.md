@@ -1,14 +1,14 @@
 # Conexão Data Model
 
 - **Path**: `wp-content/plugins/conexao-data-model/`
-- **Version**: 1.3.0
+- **Version**: 1.4.0
 - **Purpose**: Registers custom post types, shared taxonomies, and editorial meta fields.
 
 ## Responsibilities
 
-- Register 6 CPTs: `guide`, `event`, `job`, `sponsor`, `course_provider`, `leisure`
+- Register 7 CPTs: `guide`, `event`, `job`, `sponsor`, `course_provider`, `leisure`, `recruitment_agency`
 - Register 3 shared taxonomies: `conexao_category`, `conexao_county`, `conexao_tag`
-- Register editorial meta fields for guides, events, sponsors, jobs
+- Register editorial meta fields for guides, events, sponsors, jobs, recruitment agencies
 - Seed default category/county taxonomy terms on activation
 
 ## Key Components
