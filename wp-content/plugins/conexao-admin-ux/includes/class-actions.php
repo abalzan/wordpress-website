@@ -93,7 +93,8 @@ final class Conexao_Admin_Ux_Actions {
 			return new WP_Error( 'invalid_post', __( 'Conteúdo inválido para duplicação.', 'conexao-admin-ux' ) );
 		}
 
-		if ( ! current_user_can( 'edit_posts' ) ) {
+		// The user must be able to edit the specific post being duplicated.
+		if ( ! current_user_can( 'edit_post', $post_id ) ) {
 			return new WP_Error( 'forbidden', __( 'Você não tem permissão para duplicar conteúdo.', 'conexao-admin-ux' ) );
 		}
 

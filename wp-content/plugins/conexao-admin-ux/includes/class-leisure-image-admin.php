@@ -80,14 +80,17 @@ class Conexao_Leisure_Image_Admin {
 	 * Handle saving an image/source association for a single location.
 	 */
 	public function handle_save() {
-		if ( ! current_user_can( 'edit_posts' ) ) {
+		$post_id = isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : 0;
+
+		// Object-level authorization: the user must be able to edit this
+		// specific leisure location, not just any post.
+		if ( ! $post_id || ! current_user_can( 'edit_post', $post_id ) ) {
 			wp_die( esc_html__( 'Você não tem permissão para editar locais.', 'conexao-admin-ux' ) );
 		}
 
 		check_admin_referer( 'conexao_leisure_image_save', 'conexao_leisure_image_nonce' );
 
-		$post_id = isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : 0;
-		if ( ! $post_id || 'leisure' !== get_post_type( $post_id ) ) {
+		if ( 'leisure' !== get_post_type( $post_id ) ) {
 			wp_safe_redirect( add_query_arg( 'conexao_leisure_img_notice', 'invalid', admin_url( 'admin.php?page=conexao-leisure-images' ) ) );
 			exit;
 		}
@@ -211,14 +214,16 @@ class Conexao_Leisure_Image_Admin {
 	public function handle_wiki_import() {
 		check_ajax_referer( 'conexao_wikimedia_search', 'nonce' );
 
-		if ( ! current_user_can( 'edit_posts' ) ) {
-			wp_send_json_error( array( 'message' => 'unauthorized' ), 403 );
-		}
-
 		$post_id    = isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : 0;
 		$file_title = isset( $_POST['file_title'] ) ? sanitize_text_field( wp_unslash( $_POST['file_title'] ) ) : '';
 
-		if ( ! $post_id || 'leisure' !== get_post_type( $post_id ) || empty( $file_title ) ) {
+		// Creating a Media Library attachment requires the upload capability,
+		// and the target leisure post must be editable by this user.
+		if ( ! current_user_can( 'upload_files' ) || ! $post_id || ! current_user_can( 'edit_post', $post_id ) ) {
+			wp_send_json_error( array( 'message' => 'unauthorized' ), 403 );
+		}
+
+		if ( 'leisure' !== get_post_type( $post_id ) || empty( $file_title ) ) {
 			wp_send_json_error( array( 'message' => 'invalid parameters' ), 400 );
 		}
 
@@ -277,7 +282,17 @@ class Conexao_Leisure_Image_Admin {
 	 * Handle marking one or more locations as "Image pending" (no licensed image yet).
 	 */
 	public function handle_mark_pending() {
-		if ( ! current_user_can( 'edit_posts' ) ) {
+		$is_bulk = isset( $_POST['bulk_pending'] );
+		$post_id = isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : 0;
+
+		// Bulk pending touches every published leisure post, so the broad
+		// edit_posts capability applies there. The single-post path is
+		// authorized at the object level instead.
+		if ( $is_bulk ) {
+			if ( ! current_user_can( 'edit_posts' ) ) {
+				wp_die( esc_html__( 'Você não tem permissão para editar locais.', 'conexao-admin-ux' ) );
+			}
+		} elseif ( ! $post_id || ! current_user_can( 'edit_post', $post_id ) ) {
 			wp_die( esc_html__( 'Você não tem permissão para editar locais.', 'conexao-admin-ux' ) );
 		}
 
@@ -305,7 +320,13 @@ class Conexao_Leisure_Image_Admin {
 
 			$count = 0;
 			if ( $query->have_posts() ) {
+				// Prime the post cache once so the per-post capability checks
+				// below do not trigger a database query per post.
+				_prime_post_caches( $query->posts, false, false );
 				foreach ( $query->posts as $id ) {
+					if ( ! current_user_can( 'edit_post', $id ) ) {
+						continue;
+					}
 					// Only touch locations lacking a local image.
 					if ( ! get_post_thumbnail_id( $id ) ) {
 						update_post_meta( $id, '_leisure_image_status', 'pending' );
