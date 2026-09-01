@@ -229,3 +229,22 @@ An earlier version of the client built file page URLs from the API endpoint base
 - `includes/class-config.php` — per-type configuration (the best overview of what each type does)
 - `includes/class-editor.php` — editor UI save logic
 - `includes/class-wikimedia-client.php` — Wikimedia API client
+
+## Regression Tests
+
+Save-flow regression suites live in the repo's `scripts/` directory:
+
+- `scripts/test-admin-ux-save-regression.php` — CLI suite (58 checks) simulating the classic
+  `post.php` save flow for Guia first save/update, Apoiador first save/update (contacts +
+  image + featured-image sync), the `self::$saving` recursion guard, nonce/capability gates,
+  validation feedback, meta fields for all managed types, and autosave isolation. Run inside
+  the container: `php /tmp/test-admin-ux-save-regression.php` (docker cp the file in first;
+  it defines `WP_ADMIN` itself and mirrors core's auto-draft creation).
+- `scripts/test-admin-ux-e2e-http.sh` — end-to-end HTTP suite against a running local
+  environment: logs into wp-admin (handles the Jetpack math CAPTCHA if present), loads all
+  list tables/editor screens/leisure images page, performs a real Guia Update via
+  `post.php`, reloads and verifies persistence, and exercises the Duplicate/Archive row
+  actions. Creates and deletes its own temp admin user.
+
+Both suites are destructive-safe: they create disposable records and delete them on exit.
+Never run them against production.
