@@ -24,29 +24,47 @@ if ( ! post_type_exists( 'recruitment_agency' ) ) {
 /**
  * Agency definitions (Top 15).
  *
+ * Data source: the agency research document supplied with the directory task.
+ * Only values present in that research are stored here.
+ *
+ * 'job_types' holds comma-separated CANONICAL keys from
+ * Conexao_Data_Model_Agency::job_types(). Research terms without a canonical
+ * equivalent (e.g. "engenharia", "TI", "farmacêutico") are deliberately NOT
+ * stored — the card only shows the site's standardized labels.
+ *
+ * 'location': nationwide agencies are stored as "Nacional"; multi-location
+ * agencies use a concise comma-separated list.
+ *
+ * 'wrc': only populated where the research explicitly provides the licence
+ * number; left empty otherwise (never guessed).
+ *
  * @return array[]
  */
 function conexao_seed_agencies() {
 	return array(
-		array( 'name' => 'InSource Recruitment', 'slug' => 'insource-recruitment', 'job_types' => 'Logística, crossdock, armazém, operacional, limpeza, reciclagem, saúde, hospitalidade e eventos', 'location' => 'Dublin 2 (nacional)', 'website' => 'https://www.insource.ie/', 'phone' => '+353 86 028 6985', 'temporary' => true, 'permanent' => true, 'order' => 1, 'wrc' => 'EA 3972' ),
-		array( 'name' => 'Flexsource', 'slug' => 'flexsource', 'job_types' => 'Armazém e distribuição, produção industrial, transportes e logística, hotelaria, construção civil, varejo, farmacêutico', 'location' => 'Swords,Blanchardstown,Naas,Cork — nacional', 'website' => 'https://www.flexsource.ie/', 'phone' => '+353 1 895 5700', 'temporary' => true, 'permanent' => true, 'order' => 2 ),
-		array( 'name' => 'Team Obair', 'slug' => 'team-obair', 'job_types' => 'Armazém, logística, produção, distribuição, operacional', 'location' => 'Dublin 8', 'website' => 'https://teamobair.com/', 'phone' => '+353 1 453 6722', 'temporary' => true, 'permanent' => true, 'order' => 3 ),
-		array( 'name' => 'Noel Group', 'slug' => 'noel-group', 'job_types' => 'Operacional, produção, logística, armazém, construção civil, hotelaria', 'location' => 'Dublin,Limerick,Cork,Waterford,Galway,Naas', 'website' => 'https://noelgroup.ie/', 'phone' => '+353 1 677 9332', 'temporary' => true, 'permanent' => true, 'order' => 4 ),
-		array( 'name' => 'Total Solutions', 'slug' => 'total-solutions', 'job_types' => 'Construção civil, armazém, hotelaria, produção industrial, logística, escritório, vendas', 'location' => 'Lucan, Co.Dublin — nacional', 'website' => 'https://totalsolutions.ie/', 'phone' => '+353 1 628 3610', 'temporary' => true, 'permanent' => true, 'order' => 5 ),
-		array( 'name' => 'Staffline Recruitment', 'slug' => 'staffline-recruitment', 'job_types' => 'Produção industrial, logística, armazém, hotelaria, construção civil, varejo, administrativo', 'location' => 'Swords, Co.Dublin — nacional', 'website' => 'https://www.staffline.ie/', 'phone' => '+353 1 890 0190', 'temporary' => true, 'permanent' => true, 'order' => 6 ),
-		array( 'name' => 'Excel Recruitment', 'slug' => 'excel-recruitment', 'job_types' => 'Hotelaria, armazém, varejo, logística, construção civil, produção', 'location' => 'Dublin 7, Cork, Naas, Galway, Belfast', 'website' => 'https://www.excelrecruitment.com/', 'phone' => '+353 1 871 7676', 'temporary' => true, 'permanent' => true, 'order' => 7 ),
-		array( 'name' => 'CREGG', 'slug' => 'cregg', 'job_types' => 'Dispositivos médicos, produção farmacêutica, manufatura, engenharia, TI', 'location' => 'Shannon,Galway,Limerick,Cork,Dublin,Kilkenny,Roscommon', 'website' => 'https://www.cregg.ie/', 'phone' => '+353 61 363 318', 'temporary' => true, 'permanent' => true, 'order' => 8 ),
-		array( 'name' => 'FRS Recruitment', 'slug' => 'frs-recruitment', 'job_types' => 'Produção industrial, engenharia, farmacêutico, construção civil, saúde, agronegócio', 'location' => 'Dublin,Cork,Galway,Limerick,Kilkenny,Cavan,Kerry,Portlaoise', 'website' => 'https://www.frsrecruitment.com/', 'phone' => '0818 890 890', 'temporary' => true, 'permanent' => true, 'order' => 9 ),
-		array( 'name' => 'PE Global', 'slug' => 'pe-global', 'job_types' => 'Produção industrial, dispositivos médicos, farmacêutico, alimentos, construção civil, engenharia', 'location' => 'Cork — nacional', 'website' => 'https://www.peglobal.net/', 'phone' => '+353 21 429 7900', 'temporary' => true, 'permanent' => true, 'order' => 10 ),
-		array( 'name' => 'Matrix Recruitment', 'slug' => 'matrix-recruitment', 'job_types' => 'Engenharia, manufatura, ciências da vida, finanças, RH, escritório, supply chain', 'location' => 'Waterford,Carlow,Athlone,Dublin', 'website' => 'https://matrixrecruitment.ie/', 'phone' => '+353 51 353 825', 'temporary' => true, 'permanent' => true, 'order' => 11 ),
-		array( 'name' => 'FlexiStaff', 'slug' => 'flexistaff', 'job_types' => 'Transporte e logística, armazém, produção industrial, construção civil, varejo, alimentos', 'location' => 'Dublin — nacional', 'website' => 'https://flexistaff.ie/', 'phone' => '+353 1 687 6461', 'temporary' => true, 'permanent' => true, 'order' => 12 ),
-		array( 'name' => 'RecruitmentPlus', 'slug' => 'recruitmentplus', 'job_types' => 'Escritório, administrativo, hotelaria, logística, operacional', 'location' => 'Deansgrange, Co.Dublin; Dundalk, Co.Louth', 'website' => 'https://www.recruitmentplus.ie/', 'phone' => '+353 1 278 8610', 'temporary' => true, 'permanent' => true, 'order' => 13 ),
-		array( 'name' => 'Gi Group Ireland', 'slug' => 'gi-group-ireland', 'job_types' => 'Engenharia, energias renováveis, ciências da vida, construção civil, suporte empresarial', 'location' => 'Cork, Galway', 'website' => 'https://ie.gigroup.com/', 'phone' => '+353 21 427 4700', 'temporary' => true, 'permanent' => true, 'order' => 14 ),
-		array( 'name' => 'MCR Personnel', 'slug' => 'mcr-personnel', 'job_types' => 'Construção civil, operacional geral, industrial, armazém, facilities, limpeza', 'location' => 'Dublin 7 — nacional', 'website' => 'https://mcrgroup.ie/personnel/', 'phone' => '+353 1 889 9100', 'temporary' => true, 'permanent' => true, 'order' => 15 ),
+		array( 'name' => 'InSource Recruitment', 'slug' => 'insource-recruitment', 'job_types' => 'logistics,warehouse,general_operative,cleaning,hospitality', 'location' => 'Nacional', 'website' => 'https://www.insource.ie/', 'phone' => '+353 86 028 6985', 'temporary' => true, 'permanent' => true, 'order' => 1, 'wrc' => 'EA 3972' ),
+		array( 'name' => 'Flexsource', 'slug' => 'flexsource', 'job_types' => 'warehouse,factory_production,logistics,hospitality,construction_labour,retail', 'location' => 'Nacional', 'website' => 'https://www.flexsource.ie/', 'phone' => '+353 1 895 5700', 'temporary' => true, 'permanent' => true, 'order' => 2 ),
+		array( 'name' => 'Team Obair', 'slug' => 'team-obair', 'job_types' => 'warehouse,logistics,factory_production,general_operative', 'location' => 'Dublin', 'website' => 'https://teamobair.com/', 'phone' => '+353 1 453 6722', 'temporary' => true, 'permanent' => true, 'order' => 3 ),
+		array( 'name' => 'Noel Group', 'slug' => 'noel-group', 'job_types' => 'general_operative,factory_production,logistics,warehouse,construction_labour,hospitality', 'location' => 'Dublin, Limerick, Cork, Waterford, Galway, Naas', 'website' => 'https://noelgroup.ie/', 'phone' => '+353 1 677 9332', 'temporary' => true, 'permanent' => true, 'order' => 4 ),
+		array( 'name' => 'Total Solutions', 'slug' => 'total-solutions', 'job_types' => 'construction_labour,warehouse,hospitality,factory_production,logistics,office_admin', 'location' => 'Nacional', 'website' => 'https://totalsolutions.ie/', 'phone' => '+353 1 628 3610', 'temporary' => true, 'permanent' => true, 'order' => 5 ),
+		array( 'name' => 'Staffline Recruitment', 'slug' => 'staffline-recruitment', 'job_types' => 'factory_production,logistics,warehouse,hospitality,construction_labour,retail,office_admin', 'location' => 'Nacional', 'website' => 'https://www.staffline.ie/', 'phone' => '+353 1 890 0190', 'temporary' => true, 'permanent' => true, 'order' => 6 ),
+		array( 'name' => 'Excel Recruitment', 'slug' => 'excel-recruitment', 'job_types' => 'hospitality,warehouse,retail,logistics,construction_labour,factory_production', 'location' => 'Dublin, Cork, Naas, Galway, Belfast', 'website' => 'https://www.excelrecruitment.com/', 'phone' => '+353 1 871 7676', 'temporary' => true, 'permanent' => true, 'order' => 7 ),
+		array( 'name' => 'CREGG', 'slug' => 'cregg', 'job_types' => 'factory_production', 'location' => 'Shannon, Galway, Limerick, Cork, Dublin, Kilkenny, Roscommon', 'website' => 'https://www.cregg.ie/', 'phone' => '+353 61 363 318', 'temporary' => true, 'permanent' => true, 'order' => 8 ),
+		array( 'name' => 'FRS Recruitment', 'slug' => 'frs-recruitment', 'job_types' => 'factory_production,construction_labour,agriculture_seasonal', 'location' => 'Dublin, Cork, Galway, Limerick, Kilkenny, Cavan, Kerry, Portlaoise', 'website' => 'https://www.frsrecruitment.com/', 'phone' => '0818 890 890', 'temporary' => true, 'permanent' => true, 'order' => 9 ),
+		array( 'name' => 'PE Global', 'slug' => 'pe-global', 'job_types' => 'factory_production,construction_labour', 'location' => 'Nacional', 'website' => 'https://www.peglobal.net/', 'phone' => '+353 21 429 7900', 'temporary' => true, 'permanent' => true, 'order' => 10 ),
+		array( 'name' => 'Matrix Recruitment', 'slug' => 'matrix-recruitment', 'job_types' => 'factory_production,office_admin,logistics', 'location' => 'Waterford, Carlow, Athlone, Dublin', 'website' => 'https://matrixrecruitment.ie/', 'phone' => '+353 51 353 825', 'temporary' => true, 'permanent' => true, 'order' => 11 ),
+		array( 'name' => 'FlexiStaff', 'slug' => 'flexistaff', 'job_types' => 'logistics,warehouse,factory_production,construction_labour,retail', 'location' => 'Nacional', 'website' => 'https://flexistaff.ie/', 'phone' => '+353 1 687 6461', 'temporary' => true, 'permanent' => true, 'order' => 12 ),
+		array( 'name' => 'RecruitmentPlus', 'slug' => 'recruitmentplus', 'job_types' => 'office_admin,hospitality,logistics,general_operative', 'location' => 'Deansgrange, Co. Dublin; Dundalk, Co. Louth', 'website' => 'https://www.recruitmentplus.ie/', 'phone' => '+353 1 278 8610', 'temporary' => true, 'permanent' => true, 'order' => 13 ),
+		array( 'name' => 'Gi Group Ireland', 'slug' => 'gi-group-ireland', 'job_types' => 'construction_labour,office_admin', 'location' => 'Cork, Galway', 'website' => 'https://ie.gigroup.com/', 'phone' => '+353 21 427 4700', 'temporary' => true, 'permanent' => true, 'order' => 14 ),
+		array( 'name' => 'MCR Personnel', 'slug' => 'mcr-personnel', 'job_types' => 'construction_labour,general_operative,factory_production,warehouse,cleaning', 'location' => 'Nacional', 'website' => 'https://mcrgroup.ie/personnel/', 'phone' => '+353 1 889 9100', 'temporary' => true, 'permanent' => true, 'order' => 15 ),
 	);
 }
 // ─────────────── Runner ───────────────
 echo "=== Seed Recruitment Agencies ===\n";
+
+// Initial "Last checked" date — when the agency data was verified against
+// the research document (not a guarantee of current vacancies).
+$last_checked = '2026-09-02';
 
 $agencies = conexao_seed_agencies();
 $created  = 0;
@@ -59,7 +77,9 @@ foreach ( $agencies as $agency ) {
 		'post_status'  => 'publish',
 		'post_title'   => $agency['name'],
 		'post_name'    => $agency['slug'],
-		'post_content' => $agency['job_types'],
+		// The directory card renders ONLY the structured meta below; the
+		// post body stays empty so free-text data never diverges from it.
+		'post_content' => '',
 	);
 	if ( $existing ) {
 		$args['ID'] = $existing->ID;
@@ -81,8 +101,14 @@ foreach ( $agencies as $agency ) {
 	update_post_meta( $post_id, '_agency_permanent', $agency['permanent'] ? '1' : '0' );
 	update_post_meta( $post_id, '_agency_order',     $agency['order'] );
 	update_post_meta( $post_id, '_agency_status',    'published' );
+	// Initial import date — records when the agency data was last verified
+	// against the research document (not a guarantee of current vacancies).
+	update_post_meta( $post_id, '_agency_last_checked', $last_checked );
 	if ( ! empty( $agency['wrc'] ) ) {
 		update_post_meta( $post_id, '_agency_wrc_licence', $agency['wrc'] );
+	} else {
+		// No licence in the research: never carry over a stale value.
+		delete_post_meta( $post_id, '_agency_wrc_licence' );
 	}
 	$wrc_label = ! empty( $agency['wrc'] ) ? "WRC: {$agency['wrc']}" : 'sem WRC';
 	echo "  - {$agency['name']} [{$agency['location']}] {$wrc_label}\n";
