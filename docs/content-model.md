@@ -99,9 +99,9 @@ Registered by `conexao-data-model` (method `register_taxonomies()`).
 The `/empregos/` landing page uses the standard Page fields (title, featured
 image, body) plus one minimal field:
 
-- `_empregos_link` (url, page) — optional destination of the "Mais informações"
-  CTA. When empty, the CTA is not rendered. Managed in the "Jobs — Link"
-  metabox on the Page editor.
+- `_empregos_link` (url, page) — optional destination of the
+  "Ver vagas no Instagram" CTA. When empty, the CTA is not rendered. Managed in
+  the "Jobs — Link" metabox on the Page editor.
 
 ### Course Provider
 

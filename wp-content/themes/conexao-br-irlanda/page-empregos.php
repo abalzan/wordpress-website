@@ -10,8 +10,8 @@
  *     ↳ Portrait image         (featured image, Instagram-style 9:16)
  *     ↳ Jobs information       (editable page body via wp-admin)
  *     ↳ Instagram / county guidance
- *     ↳ [ Mais informações ]   (optional CTA linked to the _empregos_link field;
- *                               hidden entirely when no link is configured)
+ *     ↳ [ Ver vagas no Instagram ] (optional CTA linked to the _empregos_link
+ *                               field; hidden entirely when no link is configured)
  *
  * Everything here is driven by the standard WordPress page fields (title,
  * featured image, body content) plus one minimal CTA-link field. On desktop the
@@ -82,7 +82,7 @@ get_header();
 										target="_blank" rel="noopener noreferrer"
 									<?php endif; ?>
 								>
-									<?php esc_html_e( 'Mais informações', 'conexao-br-irlanda' ); ?>
+									<?php esc_html_e( 'Ver vagas no Instagram', 'conexao-br-irlanda' ); ?>
 									<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
 										<line x1="5" y1="12" x2="19" y2="12"></line>
 										<polyline points="12 5 19 12 12 19"></polyline>

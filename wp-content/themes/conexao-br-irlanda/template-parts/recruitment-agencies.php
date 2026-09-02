@@ -90,9 +90,11 @@ if ( empty( $agencies ) ) {
 					<?php endif; ?>
 
 					<?php if ( $wrc ) : ?>
+						<?php /* Licence numbers stay in the admin data only; visitors
+						       see a simple verified-licence indicator instead. */ ?>
 						<div class="event-card-detail agency-card-wrc">
 							<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-							<?php echo esc_html( $wrc ); ?>
+							<?php esc_html_e( 'Licenciada', 'conexao-br-irlanda' ); ?>
 						</div>
 					<?php endif; ?>
 				</div>

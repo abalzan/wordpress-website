@@ -42,7 +42,7 @@ Modern community portal theme for Conexão BR Irlanda. Features a green/orange p
 | `event-preview.php` | Homepage events section |
 | `featured-sponsors.php` | Homepage Hero (Featured Apoiadores carousel; renders nothing when no supporter is featured) |
 | `job-resources.php` | "Onde procurar emprego" — reusable external job-site cards reusing the Event card classes; data from `conexao_job_resources()` in `inc/job-resources.php`, filterable via `conexao_job_resources`. The cards are managed in wp-admin under **Empregos → Onde procurar emprego** (`conexao-job-resources` submenu, stored in the `conexao_job_resources` option; the built-in Jobs.ie / Indeed / IrishJobs defaults apply until first save). **Currently not rendered anywhere** — the Empregos landing intentionally stopped calling this template part (see the comment in `page-empregos.php`); the component, its data and its CSS are retained for future reuse. (The homepage uses the separate compact preview below.) |
-| `recruitment-agencies.php` | Empregos landing ("Agências de recrutamento" — curated directory of recruitment agencies relevant to general/entry-level employment, reusing the Event card classes; data from the `recruitment_agency` CPT managed in wp-admin under **Empregos → Agências de Recrutamento** via the Admin UX editor. Includes a safety warning about legitimate agencies) |
+| `recruitment-agencies.php` | Empregos landing ("Agências de recrutamento" — curated directory of recruitment agencies relevant to general/entry-level employment, reusing the Event card classes; data from the `recruitment_agency` CPT managed in wp-admin under **Empregos → Agências de Recrutamento** via the Admin UX editor. Includes a safety warning about legitimate agencies. A WRC licence number stored in `_agency_wrc_licence` stays in the admin data; the card shows a simple "Licenciada" indicator only when a licence is actually present) |
 | `job-resources-preview.php` | Homepage `.section--jobs` slot ("Onde procurar emprego" — compact, text-only subset of the SAME `conexao_job_resources()` data used by the Empregos landing; first 3 resources only, no images/JS, cards reuse the Event card classes with `.jobs-home-grid` alignment tweaks in `main.css`) |
 | `hero-events.php` | Retained; no longer rendered (hero uses committed full-bleed asset) |
 | `leisure-card.php` | Lazer archive grid |
@@ -218,15 +218,15 @@ Empregos
   ↳ Portrait image   (featured image — conexao-job-portrait, Instagram-style)
   ↳ Jobs information (editable page body)
   ↳ Instagram / county guidance
-  ↳ [ Mais informações ]  (optional; hidden when no link is set)
+  ↳ [ Ver vagas no Instagram ]  (optional; hidden when no link is set)
 ```
 
 - **Editing**: everything is managed from wp-admin (Páginas → Empregos): title,
   portrait featured image, body content, plus the optional CTA link.
 - **CTA link**: `inc/empregos-landing.php` registers the `_empregos_link` page
-  meta and renders a minimal "Jobs — Link 'Mais informações'" metabox. When the
-  URL is empty the button is not output at all; when external it opens in a new
-  tab.
+  meta and renders a minimal "Jobs — Link" metabox. The button label is
+  "Ver vagas no Instagram". When the URL is empty the button is not output at
+  all; when external it opens in a new tab.
 - **Layout/CSS**: `main.css` — desktop uses a two-column portrait+text grid;
   mobile (≤768px) stacks into a single natural column. Colours come entirely
   from the design-system tokens, so light and dark mode are automatic.
