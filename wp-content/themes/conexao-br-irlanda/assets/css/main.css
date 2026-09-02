@@ -6325,6 +6325,59 @@ input[type="button"] {
 }
 
 /* =============================================================
+   Empregos — Public-Sector Recruitment (page-empregos.php)
+   =============================================================
+   Small static section "Trabalhe no setor público" between the
+   recruitment agencies and the Employment Permit employers:
+   three official public-sector recruitment portals (Publicjobs.ie,
+   HSE Jobs, Local Government Jobs). Same event-card visual
+   language as the other Empregos sections — no new card component,
+   no images, no JS. Cards reuse the shared tokens, so dark mode is
+   handled automatically by the existing system. */
+
+.empregos-public-sector {
+  margin-top: var(--space-6);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--color-border);
+}
+
+.empregos-public-sector-title {
+  font-size: clamp(1.25rem, 2.6vw, 1.5rem);
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: var(--space-2);
+  line-height: 1.2;
+}
+
+.empregos-public-sector-intro {
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary, #555);
+  margin-bottom: var(--space-5);
+  line-height: 1.5;
+  max-width: 720px;
+}
+
+/* Cards stretch to equal height so CTAs align across the row. */
+.empregos-public-sector .event-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.empregos-public-sector .event-card-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.empregos-public-sector .public-sector-card-description {
+  margin-bottom: 14px;
+}
+
+.empregos-public-sector .public-sector-card-cta {
+  margin-top: auto;
+}
+
+/* =============================================================
    Empregos — Employment Permit Employers (page-empregos.php)
    =============================================================
    Separate "Empresas com histórico de Employment Permits" section

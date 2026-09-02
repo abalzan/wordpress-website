@@ -122,6 +122,16 @@ get_header();
 		?>
 
 		<?php
+		// "Trabalhe no setor público" — a small, static list of official
+		// public-sector recruitment portals (Publicjobs.ie, HSE Jobs, Local
+		// Government Jobs), between the agencies and the Employment Permit
+		// employers. These are official portals — NOT recruitment agencies.
+		// Instagram remains the primary current-vacancy CTA above. Data lives
+		// directly in template-parts/public-sector-jobs.php.
+		get_template_part( 'template-parts/public-sector-jobs' );
+		?>
+
+		<?php
 		// "Empresas com histórico de Employment Permits" — separate section
 		// BELOW the recruitment agencies: verified historical permit
 		// evidence from the official DETE statistics, never presented as
