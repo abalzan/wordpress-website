@@ -113,31 +113,16 @@ get_header();
 		?>
 
 		<?php
-		// "Agências de recrutamento" — curated recruitment-agency directory
-		// rendered as compact cards directly below the Instagram banner /
-		// guidance content (the "Onde procurar emprego" section is currently
-		// disabled — see the comment above). Instagram remains the primary
-		// current-vacancy CTA. Data lives in inc/recruitment-agencies.php.
-		get_template_part( 'template-parts/recruitment-agencies' );
-		?>
-
-		<?php
-		// "Trabalhe no setor público" — a small, static list of official
-		// public-sector recruitment portals (Publicjobs.ie, HSE Jobs, Local
-		// Government Jobs), between the agencies and the Employment Permit
-		// employers. These are official portals — NOT recruitment agencies.
-		// Instagram remains the primary current-vacancy CTA above. Data lives
-		// directly in template-parts/public-sector-jobs.php.
-		get_template_part( 'template-parts/public-sector-jobs' );
-		?>
-
-		<?php
-		// "Empresas com histórico de Employment Permits" — separate section
-		// BELOW the recruitment agencies: verified historical permit
-		// evidence from the official DETE statistics, never presented as
-		// current sponsorship. Visually quieter than the agencies section
-		// on purpose. Data lives in inc/permit-employers.php.
-		get_template_part( 'template-parts/permit-employers' );
+		// "Oportunidades de emprego" — the UNIFIED employment opportunities
+		// directory: recruitment agencies, official public-sector recruitment
+		// portals and Employment Permit-history employers in ONE shared,
+		// filterable grid (Tipo de oportunidade / Área / Localização /
+		// Tipo de contrato, server-side via ?tipo=/?area=/?localizacao=/
+		// ?contrato=). Replaces the three former separate sections.
+		// Instagram remains the primary current-vacancy CTA above. Data and
+		// filter logic live in inc/employment-opportunities.php +
+		// inc/recruitment-agencies.php + inc/permit-employers.php.
+		get_template_part( 'template-parts/employment-opportunities' );
 		?>
 
 	</main>

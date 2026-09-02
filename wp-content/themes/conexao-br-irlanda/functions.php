@@ -47,6 +47,16 @@ require_once CONEXAO_THEME_DIR . '/inc/recruitment-agencies.php';
 require_once CONEXAO_THEME_DIR . '/inc/permit-employers.php';
 
 /**
+ * Load the shared Empregos "Employment Opportunities" data/model layer: one
+ * structured representation (canonical resource_type: agency / public_sector
+ * / permit_history) over the three existing employment data sources, ready
+ * for a future unified directory. Data only — renders no UI. Reuses the
+ * agency/permit-employer helpers above instead of duplicating them.
+ */
+require_once CONEXAO_THEME_DIR . '/inc/employment-opportunities.php';
+
+
+/**
  * Load the view-counting module: records a single view per front-end content
  * page load into the `_conexao_view_count` post meta, which powers the
  * homepage "Mais Lidos" section (see conexao_popular_posts()). See

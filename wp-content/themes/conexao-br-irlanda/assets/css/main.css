@@ -6213,22 +6213,25 @@ input[type="button"] {
   margin-top: auto;
 }
 /* =============================================================
-   Empregos — "Agências de recrutamento" (recruitment agencies)
+   Empregos — unified "Oportunidades de emprego" directory
    =============================================================
-   Curated recruitment agency directory rendered below the job
-   resources on /empregos/. Cards reuse the Event card classes
-   (.event-card*) so they inherit the existing card design and
-   dark-mode treatment; only the section spacing, the intro text,
-   the temp/permanent flags, detail rows and the warning box are
-   new. */
+   ONE directory (template-parts/employment-opportunities.php)
+   for recruitment agencies, official public-sector recruitment
+   portals and Employment Permit-history employers. Cards reuse
+   the Event card classes (.event-card*) so they inherit the
+   existing card design and dark-mode treatment, with narrow type
+   modifiers (.agency-card / .public-sector-card /
+   .permit-employer-card) and a small non-color type label
+   (.opportunity-card-type). The temp/permanent flags, detail
+   rows and the warning boxes keep their established styles. */
 
-.empregos-recruitment-agencies {
+.empregos-opportunities {
   margin-top: var(--space-7);
   padding-top: var(--space-6);
   border-top: 1px solid var(--color-border);
 }
 
-.empregos-recruitment-agencies-title {
+.empregos-opportunities-title {
   font-size: clamp(1.375rem, 3vw, 1.75rem);
   font-weight: 700;
   color: var(--color-text);
@@ -6236,7 +6239,7 @@ input[type="button"] {
   line-height: 1.2;
 }
 
-.empregos-recruitment-agencies-intro {
+.empregos-opportunities-intro {
   font-size: 0.9375rem;
   color: var(--color-text-secondary, #555);
   margin-bottom: var(--space-5);
@@ -6244,42 +6247,79 @@ input[type="button"] {
   max-width: 720px;
 }
 
+/* Context block: agency-specific context + the recruitment-agency
+   and Employment Permit warnings, between the intro and the unified
+   filters — never buried, never rewritten into sponsorship claims. */
+.empregos-opportunities-context {
+  margin-bottom: var(--space-5);
+}
+
+.empregos-opportunities-context-agencies {
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary, #555);
+  line-height: 1.5;
+  margin: 0 0 var(--space-3);
+  max-width: 720px;
+}
+
+/* Small non-color type label on every card. Follows the neutral
+   flag-pill pattern (.agency-card-flag--temp) so light/dark mode
+   follow the same token overrides. */
+.opportunity-card-type {
+  display: inline-block;
+  align-self: flex-start;
+  margin: 0 0 8px;
+  padding: 2px 10px;
+  border-radius: var(--conexao-radius-full, 999px);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+  background: var(--conexao-gray-200, #e5e7eb);
+  color: var(--conexao-gray-700, #374151);
+}
+
 /* Equal-height cards with bottom-anchored CTAs. The grid container owns
    row equalisation (align-items: stretch is the grid default; stated
    explicitly so no inherited rule can opt items out), each card is a flex
    column that stretches to the row height, the body fills the card and
    the CTA anchors to the bottom with margin-top:auto — the same pattern
-   used by the Empregos job-resources section above. Content lengths
-   (names, job types, locations, missing licensing rows) are absorbed by
-   the flexible space between the details and the CTA — no reserved or
-   fixed block heights. */
-.empregos-recruitment-agencies-grid {
+   used across the site. Content lengths (names, job types, locations,
+   descriptions, missing rows) are absorbed by the flexible space between
+   the details and the CTA — no reserved or fixed block heights, no
+   JavaScript height calculations. */
+.empregos-opportunities-grid {
   align-items: stretch;
 }
 
-.empregos-recruitment-agencies .event-card {
+.empregos-opportunities .event-card {
   display: flex;
   flex-direction: column;
 }
 
-.empregos-recruitment-agencies .event-card-body {
+.empregos-opportunities .event-card-body {
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
   min-width: 0;
 }
 
-.empregos-recruitment-agencies .event-card-cta {
+.empregos-opportunities .event-card-cta {
   margin-top: auto;
 }
 
-.empregos-recruitment-agencies-grid .agency-card-job-types {
+.empregos-opportunities-grid .agency-card-job-types {
   /* Job-type lists must never be truncated by the shared
      .event-card-excerpt line clamp — let them wrap fully. */
   display: block;
   overflow: visible;
   -webkit-line-clamp: unset;
   -webkit-box-orient: unset;
+}
+
+.empregos-opportunities .public-sector-card-description {
+  margin-bottom: 14px;
 }
 
 /* Temp / permanent flag pills */
@@ -7080,90 +7120,18 @@ input[type="button"] {
 
 
 /* =============================================================
-   Empregos — Public-Sector Recruitment (page-empregos.php)
+   Empregos — Permit-history employers: indicator, warning boxes
+   and the "Importante" exception block (page-empregos.php)
    =============================================================
-   Small static section "Trabalhe no setor público" between the
-   recruitment agencies and the Employment Permit employers:
-   three official public-sector recruitment portals (Publicjobs.ie,
-   HSE Jobs, Local Government Jobs). Same event-card visual
-   language as the other Empregos sections — no new card component,
-   no images, no JS. Cards reuse the shared tokens, so dark mode is
-   handled automatically by the existing system. */
-
-.empregos-public-sector {
-  margin-top: var(--space-6);
-  padding-top: var(--space-6);
-  border-top: 1px solid var(--color-border);
-}
-
-.empregos-public-sector-title {
-  font-size: clamp(1.25rem, 2.6vw, 1.5rem);
-  font-weight: 700;
-  color: var(--color-text);
-  margin-bottom: var(--space-2);
-  line-height: 1.2;
-}
-
-.empregos-public-sector-intro {
-  font-size: 0.9375rem;
-  color: var(--color-text-secondary, #555);
-  margin-bottom: var(--space-5);
-  line-height: 1.5;
-  max-width: 720px;
-}
-
-/* Cards stretch to equal height so CTAs align across the row. */
-.empregos-public-sector .event-card {
-  display: flex;
-  flex-direction: column;
-}
-
-.empregos-public-sector .event-card-body {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
-
-.empregos-public-sector .public-sector-card-description {
-  margin-bottom: 14px;
-}
-
-.empregos-public-sector .public-sector-card-cta {
-  margin-top: auto;
-}
-
-/* =============================================================
-   Empregos — Employment Permit Employers (page-empregos.php)
-   =============================================================
-   Separate "Empresas com histórico de Employment Permits" section
-   BELOW the recruitment agencies. Deliberately quieter than the
-   agencies section: same event-card visual language (no new card
-   component), a compact ✓ indicator pill instead of flag rows, and
-   one shared explanation note instead of per-card disclaimers.
+   The former standalone "Empresas com histórico de Employment
+   Permits" section is now part of the unified opportunities
+   directory; its card/section rules moved to the unified block
+   above. What remains here is the shared evidence/warning UI:
+   the amber warning boxes, the ✓ explanation note, the compact
+   ✓ indicator pill and the "Importante" exception block.
    The ✓ means verified HISTORICAL permit evidence only — the copy
-   in template-parts/permit-employers.php enforces the wording. */
-
-.empregos-permit-employers {
-  margin-top: var(--space-6);
-  padding-top: var(--space-6);
-  border-top: 1px solid var(--color-border);
-}
-
-.empregos-permit-employers-title {
-  font-size: clamp(1.25rem, 2.6vw, 1.5rem);
-  font-weight: 700;
-  color: var(--color-text);
-  margin-bottom: var(--space-2);
-  line-height: 1.2;
-}
-
-.empregos-permit-employers-intro {
-  font-size: 0.9375rem;
-  color: var(--color-text-secondary, #555);
-  margin-bottom: var(--space-4);
-  line-height: 1.5;
-  max-width: 720px;
-}
+   in template-parts/employment-opportunities.php enforces the
+   wording. */
 
 /* Warning boxes reuse the amber token system of the agencies warning
    (same fallbacks, same dark-mode overrides in dark-mode.css). */
@@ -7227,17 +7195,8 @@ input[type="button"] {
   color: var(--conexao-primary, #2e7d32);
 }
 
-/* Cards: same equal-height flex pattern as the agency cards. */
-.empregos-permit-employers .event-card {
-  display: flex;
-  flex-direction: column;
-}
-
-.empregos-permit-employers .event-card-body {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
+/* Cards: the equal-height flex pattern now lives in the unified
+   directory rules (.empregos-opportunities). */
 
 .employer-card-permit {
   display: flex;

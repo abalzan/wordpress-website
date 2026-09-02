@@ -117,10 +117,12 @@ upsert-by-slug, same data as `scripts/seed-recruitment-agencies.php`).
 
 ## Employment-Permit Employers Meta (`register_permit_employer_meta()`)
 
-Backs the "Empresas com histórico de Employment Permits" section on
-/empregos/ (theme module `inc/permit-employers.php` + template part
-`template-parts/permit-employers.php`), edited in wp-admin under
-**Empregos → Empregadores — Employment Permits** via the Admin UX.
+Backs the Employment Permit-history employers in the unified
+"Oportunidades de emprego" directory on /empregos/ (theme modules
+`inc/permit-employers.php` + `inc/employment-opportunities.php` +
+template part `template-parts/employment-opportunities.php`), edited in
+wp-admin under **Empregos → Empregadores — Employment Permits** via the
+Admin UX.
 Same protected-meta/`auth_callback` REST pattern as the agency meta;
 `_employer_notes` is REST-hidden.
 

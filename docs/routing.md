@@ -48,9 +48,9 @@ Created by `conexao-content` plugin:
 | `/cursos/` | `?categoria=slug` | `_provider_category` (meta) |
 | `/guias/` | `?categoria=slug` | `conexao_category` |
 | `/blog/` | `?categoria=slug` | `category` (native) |
-| `/empregos/` | `?area=`, `?localizacao=`, `?contrato=` | `_agency_job_types` / normalized `_agency_location` / `_agency_temporary`+`_agency_permanent` (meta) — agency directory only |
+| `/empregos/` | `?tipo=` (`agency`/`public_sector`/`permit_history`), `?area=`, `?localizacao=`, `?contrato=` | canonical `resource_type` / `_agency_job_types` / normalized `_agency_location` / `_agency_temporary`+`_agency_permanent` (meta) — unified opportunities directory; `?permit_history` requires the structured `has_permit_history` flag |
 
-Filters are content-type-aware: the same `?categoria=` parameter resolves to different taxonomies/meta on different archives. Blog category links point at `/blog/?categoria=slug` (the Blog archive itself), not at the native `/category/{slug}/` archive — which remains intact for direct access, feeds and wp-admin. The `/empregos/` parameters are page-level (static landing template) and affect ONLY the "Agências de recrutamento" directory rendered by `template-parts/recruitment-agencies.php` — never the public-sector or Employment Permit sections.
+Filters are content-type-aware: the same `?categoria=` parameter resolves to different taxonomies/meta on different archives. Blog category links point at `/blog/?categoria=slug` (the Blog archive itself), not at the native `/category/{slug}/` archive — which remains intact for direct access, feeds and wp-admin. The `/empregos/` parameters are page-level (static landing template) and filter the unified "Oportunidades de emprego" directory rendered by `template-parts/employment-opportunities.php`: `?tipo=` selects the resource type (agencies / public-sector portals / permit-history employers, the latter via the structured `has_permit_history` flag) while `?area=`/`?localizacao=`/`?contrato=` keep their exact pre-existing agency-directory semantics (AND logic, backward-compatible URLs).
 
 ## Redirect Architecture
 

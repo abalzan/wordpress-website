@@ -126,10 +126,14 @@ image, body) plus one minimal field:
 - `_agency_status` (string — custom publishing status; only `published` renders on /empregos/)
 - `_agency_notes` (string — internal maintenance notes; REST-hidden, never rendered on the site)
 
-**Directory filters (/empregos/).** The recruitment-agency directory rendered by
-`template-parts/recruitment-agencies.php` is filterable via `?area=` / `?localizacao=` /
-`?contrato=` (theme: `inc/recruitment-agencies.php`, `conexao_recruitment_agency_filter_state()`):
+**Directory filters (/empregos/).** The unified opportunities directory rendered by
+`template-parts/employment-opportunities.php` is filterable via `?tipo=` / `?area=` /
+`?localizacao=` / `?contrato=` (theme: `inc/employment-opportunities.php`,
+`conexao_employment_opportunities_filter_state()`):
 
+- `tipo` selects the resource type: `agency`, `public_sector` or `permit_history`.
+  `permit_history` matches only records with the structured `has_permit_history` flag
+  (from `_employer_permit_status`) — historical evidence only, never a sponsorship claim.
 - `area` reuses the canonical `_agency_job_types` keys as filter slugs — no duplicate registry.
 - `contrato` maps to the `_agency_temporary` / `_agency_permanent` flags (an agency flagged
   for both matches either value).
@@ -140,6 +144,8 @@ image, body) plus one minimal field:
   truth — when adding an agency with a new location, add the location (slug, label, name
   aliases) to that registry so it becomes filterable; unknown segments are ignored and never
   guessed. "Nacional" coverage matches every specific location filter.
+- Area/localização/contrato apply only where structured data exists (the agencies);
+  non-agency resources never match those dimensions and none of their attributes are invented.
 
 ### Leisure (comprehensive image metadata)
 
