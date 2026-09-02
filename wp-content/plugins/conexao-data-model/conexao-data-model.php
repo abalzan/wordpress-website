@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Conexão BR Irlanda Data Model
  * Description: Content types, shared taxonomies, and editorial fields for the Conexão BR Irlanda portal.
- * Version: 1.4.1
+ * Version: 1.4.2
  * Text Domain: conexao-data-model
  *
  * @package Conexao_BR_Irlanda_Data_Model
@@ -20,7 +20,7 @@ require_once CONEXAO_DATA_MODEL_DIR . 'includes/class-agency.php';
 
 final class Conexao_Data_Model {
 
-	const VERSION = '1.4.1';
+	const VERSION = '1.4.2';
 
 	/** @var Conexao_Data_Model|null */
 	private static $instance = null;
@@ -170,6 +170,15 @@ final class Conexao_Data_Model {
 					'single'       => true,
 					'type'         => $type,
 					'show_in_rest' => true,
+					// All keys are protected (underscore-prefixed). Without an
+					// explicit auth_callback, register_meta() defaults to
+					// __return_false for protected keys, which makes every
+					// REST write fail with 403 rest_cannot_update — even for
+					// administrators. Allow exactly what the wp-admin editor
+					// allows: users who can edit the agency record.
+					'auth_callback' => function ( $allowed, $meta_key, $object_id ) {
+						return current_user_can( 'edit_post', $object_id );
+					},
 				)
 			);
 		}

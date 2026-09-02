@@ -97,6 +97,22 @@ labels — the same pattern as the Apoiador contact types).
 - Agencies are never auto-tagged — only values confirmed by the supplied
   research may be assigned, and only through the editor.
 
+## Agency Meta & REST (`register_agency_meta()`)
+
+All `_agency_*` meta keys are protected (underscore-prefixed) and registered
+with `show_in_rest => true` plus an explicit `auth_callback`
+(`current_user_can('edit_post', $object_id)`). The auth callback is required:
+WordPress core defaults protected-meta REST writes to `__return_false`, which
+would make every REST create/update of an agency fail with
+`403 rest_cannot_update` — even for administrators. With the callback, the
+directory can be seeded/edited through the REST API exactly as broadly as the
+wp-admin editor allows (the same convention as the `_empregos_link` page meta).
+`_agency_notes` stays REST-hidden (`show_in_rest => false`).
+
+The WordPress.com-compatible seeding path is
+`scripts/seed-recruitment-agencies-rest.py` (Application Password auth,
+upsert-by-slug, same data as `scripts/seed-recruitment-agencies.php`).
+
 ## Admin UI
 
 Legacy meta boxes (Class `Conexao_Data_Model_Meta`). For event/guide/job/sponsor/course_provider/leisure, the admin-ux plugin replaces these with its own editor. The legacy handler skips types managed by admin-ux.
