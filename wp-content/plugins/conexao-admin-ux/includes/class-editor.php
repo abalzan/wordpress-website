@@ -746,6 +746,7 @@ final class Conexao_Admin_Ux_Editor {
 			'course_provider'     => '_provider_name',
 			'leisure'             => '_leisure_name',
 			'recruitment_agency'  => '_agency_name',
+			'permit_employer'     => '_employer_name',
 		);
 		return isset( $map[ $this->post_type ] ) ? $map[ $this->post_type ] : '_' . $this->post_type . '_title';
 	}

@@ -29,7 +29,7 @@ final class Conexao_Admin_Ux_Config {
 	 *
 	 * @var string[]
 	 */
-	const SUPPORTED_TYPES = array( 'event', 'guide', 'job', 'sponsor', 'course_provider', 'leisure', 'recruitment_agency' );
+	const SUPPORTED_TYPES = array( 'event', 'guide', 'job', 'sponsor', 'course_provider', 'leisure', 'recruitment_agency', 'permit_employer' );
 
 	/**
 	 * Get the full configuration for a post type.
@@ -59,6 +59,7 @@ final class Conexao_Admin_Ux_Config {
 				'course_provider'     => self::course_provider_config(),
 				'leisure'             => self::leisure_config(),
 				'recruitment_agency'  => self::recruitment_agency_config(),
+				'permit_employer'     => self::permit_employer_config(),
 			);
 		}
 
@@ -976,6 +977,117 @@ final class Conexao_Admin_Ux_Config {
 			),
 			'summary'    => array(
 				array( 'key' => 'published', 'label' => 'Publicadas', 'status' => 'published' ),
+				array( 'key' => 'review', 'label' => 'Em revisão', 'status' => 'needs_review' ),
+			),
+		);
+	}
+
+	/**
+	 * ------------------------------------------------------------------
+	 * EMPREGADORES — EMPLOYMENT PERMITS (permit-history employers)
+	 * ------------------------------------------------------------------
+	 *
+	 * Curated directory of EMPLOYERS (never recruitment agencies) with
+	 * verified historical Employment Permit evidence in the official DETE
+	 * "Permits issued to companies" statistics, rendered as a separate
+	 * section on the /empregos/ landing page below the agencies.
+	 *
+	 * Editorial rules baked into this config:
+	 * - 'verified' permit status = verified HISTORICAL permit evidence,
+	 *   never "currently sponsoring" — the frontend copy enforces this.
+	 * - 'unverified' = normal employer entry with NO permit indicator
+	 *   (used for Kepak until its exact DETE legal entity is validated).
+	 * - 'exception' = rendered in the "Importante" block with the
+	 *   employer's current-position statement (Nua Healthcare).
+	 * - No WRC/DETE reference numbers are ever shown on the frontend;
+	 *   keep them in the internal notes field only.
+	 * - No salary thresholds, quotas, ratings or sponsorship wording.
+	 */
+	private static function permit_employer_config() {
+		return array(
+			'post_type'  => 'permit_employer',
+			'labels'     => array(
+				'singular'        => 'Empregador',
+				'plural'          => 'Empregadores — Employment Permits',
+				'add_button'      => 'Adicionar Empregador',
+				'add_new_item'    => 'Adicionar Empregador',
+				'edit_item'       => 'Editar Empregador',
+				'empty_title'     => 'Ainda não há empregadores cadastrados',
+				'empty_message'   => 'Adicione o primeiro empregador para exibi-lo na seção "Empresas com histórico de Employment Permits" da página /empregos/.',
+				'success_saved'   => 'Empregador atualizado com sucesso.',
+				'success_created' => 'Empregador criado com sucesso.',
+				'success_published' => 'Empregador publicado com sucesso.',
+				'success_draft'   => 'Rascunho salvo com sucesso.',
+				'success_duplicated' => 'Empregador duplicado como rascunho.',
+				'success_archived' => 'Empregador arquivado com sucesso.',
+				'success_bulk'    => 'Empregadores atualizados com sucesso.',
+			),
+			'date_meta'  => '_employer_last_checked',
+			'sections'   => array(
+				'dados'     => array(
+					'title'    => 'Informações do empregador',
+					'icon'     => 'dashicons-building',
+					'priority' => 10,
+					'fields'   => array(
+						array( 'key' => '_employer_name', 'label' => 'Nome do empregador', 'type' => 'text', 'required' => true, 'help' => 'Nome PÚBLICO atual da empresa (não o nome da entidade legal nos dados oficiais, se for diferente). Ex.: "Mowlam Healthcare".' ),
+						array( 'key' => '_employer_sector', 'label' => 'Setor', 'type' => 'text', 'help' => 'Setor de atuação. Ex.: "Saúde e Cuidados" ou "Alimentos — Processamento de Carne".' ),
+						array( 'key' => '_employer_roles', 'label' => 'Tipos de funções relevantes', 'type' => 'text', 'help' => 'Funções típicas, separadas por vírgula. Ex.: "Enfermeiros, Healthcare Assistants". Nunca prometa vaga ou elegibilidade.' ),
+						array( 'key' => '_employer_location', 'label' => 'Localização / cobertura', 'type' => 'text', 'help' => 'Cidade(s)/região(ões). Ex.: "Nacional (Irlanda)" ou "Cork".' ),
+					),
+				),
+				'links'     => array(
+					'title'    => 'Links oficiais',
+					'icon'     => 'dashicons-admin-links',
+					'priority' => 20,
+					'fields'   => array(
+						array( 'key' => '_employer_official_website', 'label' => 'Site oficial', 'type' => 'url', 'required' => true, 'help' => 'Site oficial público da empresa. O botão do cartão abre este link em uma nova aba.' ),
+						array( 'key' => '_employer_careers_url', 'label' => 'Página de carreiras/vagas', 'type' => 'url', 'help' => 'Link direto para a página de carreiras/vagas, se existir. Deixe em branco se não houver página oficial confirmada.' ),
+					),
+				),
+				'permits'   => array(
+					'title'    => 'Histórico de Employment Permits',
+					'icon'     => 'dashicons-visibility',
+					'priority' => 30,
+					'fields'   => array(
+						array( 'key' => '_employer_permit_status', 'label' => 'Situação do histórico', 'type' => 'select', 'options' => array( 'verified' => 'Histórico verificado (dados oficiais)', 'unverified' => 'Sem histórico verificado (entrada simples, sem selo)', 'exception' => 'Exceção (não patrocina atualmente — bloco Importante)' ), 'help' => '"Histórico verificado" = evidência HISTÓRICA nos dados oficiais do Department of Enterprise. NUNCA significa que a empresa patrocina hoje.' ),
+						array( 'key' => '_employer_evidence_years', 'label' => 'Anos com evidência', 'type' => 'text', 'help' => 'Anos em que a empresa aparece nos dados oficiais. Ex.: "2023–2025". Deixe em branco se não verificado.' ),
+						array( 'key' => '_employer_evidence_source', 'label' => 'Fonte da evidência (interna)', 'type' => 'text', 'help' => 'Fonte exata, apenas nos dados administrativos. Ex.: "DETE Permits issued to companies 2023–2025". Esta fonte NUNCA aparece no site público — a seção mostra uma única nota de fonte compartilhada.' ),
+						array( 'key' => '_employer_last_checked', 'label' => 'Última verificação', 'type' => 'date', 'help' => 'Data em que os dados do empregador foram verificados pela última vez.' ),
+					),
+				),
+				'interno'   => array(
+					'title'    => 'Notas internas',
+					'icon'     => 'dashicons-lock',
+					'priority' => 40,
+					'fields'   => array(
+						array( 'key' => '_employer_notes', 'label' => 'Notas internas', 'type' => 'textarea', 'help' => 'Anotações de manutenção (ex.: entidade legal DETE pendente de validação, números de referência oficiais). Estas notas NUNCA aparecem no site público.' ),
+					),
+				),
+			),
+			'publishing' => array(
+				'statuses' => array(
+					'draft'     => array( 'label' => 'Rascunho', 'badge' => 'draft' ),
+					'needs_review' => array( 'label' => 'Revisão', 'badge' => 'review' ),
+					'published' => array( 'label' => 'Publicado', 'badge' => 'published' ),
+					'archived'  => array( 'label' => 'Arquivado', 'badge' => 'archived' ),
+				),
+				'status_meta' => '_employer_status',
+				'default_status' => 'draft',
+			),
+			'columns'    => array(
+				'sector'       => array( 'label' => 'Setor', 'meta' => '_employer_sector' ),
+				'location'     => array( 'label' => 'Localização', 'meta' => '_employer_location' ),
+				'permit'       => array( 'label' => 'Histórico', 'meta' => '_employer_permit_status' ),
+				'last_checked' => array( 'label' => 'Última verificação', 'meta' => '_employer_last_checked', 'format' => 'date' ),
+			),
+			'bulk_actions' => array(
+				'publish' => array( 'label' => 'Publicar', 'type' => 'status', 'value' => 'published' ),
+				'draft'   => array( 'label' => 'Rascunho', 'type' => 'status', 'value' => 'draft' ),
+				'archive' => array( 'label' => 'Arquivar', 'type' => 'status', 'value' => 'archived' ),
+				'delete'  => array( 'label' => 'Excluir permanentemente', 'type' => 'delete', 'confirm' => 'Tem certeza que deseja excluir permanentemente os empregadores selecionados? Esta ação não pode ser desfeita.' ),
+			),
+			'summary'    => array(
+				array( 'key' => 'published', 'label' => 'Publicados', 'status' => 'published' ),
 				array( 'key' => 'review', 'label' => 'Em revisão', 'status' => 'needs_review' ),
 			),
 		);

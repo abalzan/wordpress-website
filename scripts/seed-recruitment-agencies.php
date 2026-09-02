@@ -22,21 +22,32 @@ if ( ! post_type_exists( 'recruitment_agency' ) ) {
 }
 
 /**
- * Agency definitions (Top 15).
+ * Agency definitions (27 agencies: original Top 15 + 12 validated in the
+ * 2026-09 Employment page expansion — see
+ * docs/research/2026-09-empregos-agencies-and-employment-permits.md).
  *
- * Data source: the agency research document supplied with the directory task.
- * Only values present in that research are stored here.
+ * Data source: the agency research document supplied with the directory task,
+ * re-verified against each agency's own official website (2026-09-02): title,
+ * contact page and phone/location where published. Only values present in
+ * that verification are stored here.
  *
  * 'job_types' holds comma-separated CANONICAL keys from
  * Conexao_Data_Model_Agency::job_types(). Research terms without a canonical
- * equivalent (e.g. "engenharia", "TI", "farmacêutico") are deliberately NOT
- * stored — the card only shows the site's standardized labels.
+ * equivalent (e.g. "engenharia", "TI") are deliberately NOT stored — the card
+ * only shows the site's standardized labels. The 'healthcare' key was added
+ * to the registry for this expansion (TTM, Servisource, Cpl, Access
+ * Healthcare, Hollilander all recruit healthcare professionals).
  *
  * 'location': nationwide agencies are stored as "Nacional"; multi-location
- * agencies use a concise comma-separated list.
+ * agencies use a concise comma-separated list of locations confirmed on the
+ * agency's own site.
  *
  * 'wrc': only populated where the research explicitly provides the licence
- * number; left empty otherwise (never guessed).
+ * number; left empty otherwise (never guessed). NONE of the 12 agencies
+ * added in the 2026-09 expansion have verified WRC numbers, so none show
+ * the "Licenciada" badge until one is confirmed.
+ *
+ * 'order': 16–27 continue after the original Top 15.
  *
  * @return array[]
  */
@@ -57,6 +68,19 @@ function conexao_seed_agencies() {
 		array( 'name' => 'RecruitmentPlus', 'slug' => 'recruitmentplus', 'job_types' => 'office_admin,hospitality,logistics,general_operative', 'location' => 'Deansgrange, Co. Dublin; Dundalk, Co. Louth', 'website' => 'https://www.recruitmentplus.ie/', 'phone' => '+353 1 278 8610', 'temporary' => true, 'permanent' => true, 'order' => 13 ),
 		array( 'name' => 'Gi Group Ireland', 'slug' => 'gi-group-ireland', 'job_types' => 'construction_labour,office_admin', 'location' => 'Cork, Galway', 'website' => 'https://ie.gigroup.com/', 'phone' => '+353 21 427 4700', 'temporary' => true, 'permanent' => true, 'order' => 14 ),
 		array( 'name' => 'MCR Personnel', 'slug' => 'mcr-personnel', 'job_types' => 'construction_labour,general_operative,factory_production,warehouse,cleaning', 'location' => 'Nacional', 'website' => 'https://mcrgroup.ie/personnel/', 'phone' => '+353 1 889 9100', 'temporary' => true, 'permanent' => true, 'order' => 15 ),
+		// --- 2026-09 validated expansion (orders 16-27) ---
+		array( 'name' => 'TTM Healthcare Solutions', 'slug' => 'ttm-healthcare-solutions', 'job_types' => 'healthcare', 'location' => 'Nacional (Ennis, Co. Clare; Galway)', 'website' => 'https://www.ttmhealthcare.com/', 'phone' => '+353 65 686 9300', 'temporary' => true, 'permanent' => true, 'order' => 16 ),
+		array( 'name' => 'Servisource', 'slug' => 'servisource', 'job_types' => 'healthcare', 'location' => 'Nacional', 'website' => 'https://www.servisource.ie/', 'phone' => '', 'temporary' => true, 'permanent' => true, 'order' => 17 ),
+		array( 'name' => 'Cpl', 'slug' => 'cpl', 'job_types' => 'healthcare,office_admin,warehouse,logistics,factory_production', 'location' => 'Nacional (Dublin)', 'website' => 'https://www.cpl.com/', 'phone' => '+353 1 614 6000', 'temporary' => true, 'permanent' => true, 'order' => 18 ),
+		array( 'name' => 'Access Healthcare', 'slug' => 'access-healthcare', 'job_types' => 'healthcare', 'location' => 'Nacional (Dublin)', 'website' => 'https://www.accesshealthcare.ie/', 'phone' => '+353 1 649 8500', 'temporary' => true, 'permanent' => true, 'order' => 19 ),
+		array( 'name' => 'Gibbons Recruitment', 'slug' => 'gibbons-recruitment', 'job_types' => 'construction_labour,factory_production,warehouse,agriculture_seasonal', 'location' => 'Dublin', 'website' => 'https://gibbonsrecruitment.ie/', 'phone' => '', 'temporary' => true, 'permanent' => true, 'order' => 20 ),
+		array( 'name' => 'Ward Personnel', 'slug' => 'ward-personnel', 'job_types' => 'construction_labour,general_operative', 'location' => 'Dublin, Cork, Athlone', 'website' => 'https://www.wardpersonnel.com/', 'phone' => '+353 1 539 0600', 'temporary' => true, 'permanent' => true, 'order' => 21 ),
+		array( 'name' => 'OSS Recruitment', 'slug' => 'oss-recruitment', 'job_types' => 'construction_labour,factory_production,general_operative', 'location' => 'Dublin', 'website' => 'https://www.ossrecruitment.ie/', 'phone' => '+353 1 460 5517', 'temporary' => true, 'permanent' => true, 'order' => 22 ),
+		array( 'name' => 'Hollilander', 'slug' => 'hollilander', 'job_types' => 'healthcare', 'location' => 'Dublin', 'website' => 'https://www.hollilander.ie/', 'phone' => '+353 1 204 0921', 'temporary' => true, 'permanent' => true, 'order' => 23 ),
+		array( 'name' => 'Adecco Ireland', 'slug' => 'adecco-ireland', 'job_types' => 'warehouse,logistics,office_admin,factory_production,hospitality', 'location' => 'Nacional', 'website' => 'https://www.adecco.ie/', 'phone' => '', 'temporary' => true, 'permanent' => true, 'order' => 24 ),
+		array( 'name' => '3D Personnel', 'slug' => '3d-personnel', 'job_types' => 'construction_labour', 'location' => 'Dublin, Cork, Galway', 'website' => 'https://www.3dpersonnel.com/', 'phone' => '+353 1 513 3101', 'temporary' => true, 'permanent' => true, 'order' => 25 ),
+		array( 'name' => 'Collins McNicholas', 'slug' => 'collins-mcnicholas', 'job_types' => 'factory_production,office_admin,logistics', 'location' => 'Galway, Cork, Sligo, Athlone', 'website' => 'https://www.collinsmcnicholas.ie/', 'phone' => '', 'temporary' => true, 'permanent' => true, 'order' => 26 ),
+		array( 'name' => 'Sigmar Recruitment', 'slug' => 'sigmar-recruitment', 'job_types' => 'office_admin,warehouse,logistics,factory_production', 'location' => 'Galway, Dublin, Cork, Athlone', 'website' => 'https://www.sigmarrecruitment.com/', 'phone' => '+353 1 474 4600', 'temporary' => true, 'permanent' => true, 'order' => 27 ),
 	);
 }
 // ─────────────── Runner ───────────────

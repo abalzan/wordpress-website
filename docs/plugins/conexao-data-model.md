@@ -1,12 +1,12 @@
 # Conexão Data Model
 
 - **Path**: `wp-content/plugins/conexao-data-model/`
-- **Version**: 1.4.1
+- **Version**: 1.5.0
 - **Purpose**: Registers custom post types, shared taxonomies, and editorial meta fields.
 
 ## Responsibilities
 
-- Register 7 CPTs: `guide`, `event`, `job`, `sponsor`, `course_provider`, `leisure`, `recruitment_agency`
+- Register 8 CPTs: `guide`, `event`, `job`, `sponsor`, `course_provider`, `leisure`, `recruitment_agency`, `permit_employer`
 - Register 3 shared taxonomies: `conexao_category`, `conexao_county`, `conexao_tag`
 - Register editorial meta fields for guides, events, sponsors, jobs, recruitment agencies
 - Seed default category/county taxonomy terms on activation
@@ -20,6 +20,7 @@
 | `includes/class-relationships.php` | Taxonomies and default term seeding |
 | `includes/class-contacts.php` | Apoiador contacts model (`_sponsor_contacts` repeater: types, sanitization, storage) |
 | `includes/class-agency.php` | Recruitment-agency job-type registry (`Conexao_Data_Model_Agency`: canonical keys, pt-BR labels, legacy passthrough) |
+| `register_permit_employer_meta()` (main file) | `_employer_*` meta for the employment-permit employers directory (same protected-meta/REST auth pattern as the agency meta) |
 
 ## Data Model
 
@@ -84,10 +85,11 @@ Agências de Recrutamento directory, shared by the Admin UX editor
 (`multiselect` options) and the frontend card rendering (consistent
 labels — the same pattern as the Apoiador contact types).
 
-- `job_types()`: canonical key => pt-BR label (11 values: warehouse,
+- `job_types()`: canonical key => pt-BR label (12 values: warehouse,
   general_operative, factory_production, logistics, hospitality, cleaning,
   retail, construction_labour, driving_delivery, office_admin,
-  agriculture_seasonal).
+  agriculture_seasonal, healthcare — `healthcare` was added in 1.5.0 for
+  the validated healthcare-recruitment agencies).
 - Storage: `_agency_job_types` holds a comma-separated list of canonical
   keys (e.g. `warehouse,logistics`). The Admin UX save path whitelists every
   submitted value against `job_types()`; unknown values are dropped.
@@ -112,6 +114,32 @@ wp-admin editor allows (the same convention as the `_empregos_link` page meta).
 The WordPress.com-compatible seeding path is
 `scripts/seed-recruitment-agencies-rest.py` (Application Password auth,
 upsert-by-slug, same data as `scripts/seed-recruitment-agencies.php`).
+
+## Employment-Permit Employers Meta (`register_permit_employer_meta()`)
+
+Backs the "Empresas com histórico de Employment Permits" section on
+/empregos/ (theme module `inc/permit-employers.php` + template part
+`template-parts/permit-employers.php`), edited in wp-admin under
+**Empregos → Empregadores — Employment Permits** via the Admin UX.
+Same protected-meta/`auth_callback` REST pattern as the agency meta;
+`_employer_notes` is REST-hidden.
+
+| Meta key | Meaning |
+|----------|---------|
+| `_employer_official_website` | Official public-facing website (required) |
+| `_employer_careers_url` | Careers/jobs page, only when confirmed |
+| `_employer_sector` / `_employer_roles` / `_employer_location` | Card content (roles: free text, employer-specific) |
+| `_employer_permit_status` | `verified` (verified HISTORICAL permit evidence — never "currently sponsoring"), `unverified` (plain entry, no indicator), `exception` ("Importante" block) |
+| `_employer_evidence_years` | Years with official records, e.g. "2023–2025" |
+| `_employer_evidence_source` | Exact source — admin data only, never rendered |
+| `_employer_last_checked` | Verification date |
+| `_employer_status` | Custom publishing status |
+
+Editorial rules live in
+`docs/research/2026-09-empregos-agencies-and-employment-permits.md`.
+Seeding: `scripts/seed-permit-employers.php` (WP-CLI/local) and
+`scripts/seed-permit-employers-rest.py` (WordPress.com, Application
+Password auth, upsert-by-slug — keep the two in sync).
 
 ## Admin UI
 

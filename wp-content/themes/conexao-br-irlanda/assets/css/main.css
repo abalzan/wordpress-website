@@ -6323,3 +6323,183 @@ input[type="button"] {
 .empregos-recruitment-agencies-warning strong {
   color: var(--conexao-warning-text, #e65100);
 }
+
+/* =============================================================
+   Empregos — Employment Permit Employers (page-empregos.php)
+   =============================================================
+   Separate "Empresas com histórico de Employment Permits" section
+   BELOW the recruitment agencies. Deliberately quieter than the
+   agencies section: same event-card visual language (no new card
+   component), a compact ✓ indicator pill instead of flag rows, and
+   one shared explanation note instead of per-card disclaimers.
+   The ✓ means verified HISTORICAL permit evidence only — the copy
+   in template-parts/permit-employers.php enforces the wording. */
+
+.empregos-permit-employers {
+  margin-top: var(--space-6);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--color-border);
+}
+
+.empregos-permit-employers-title {
+  font-size: clamp(1.25rem, 2.6vw, 1.5rem);
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: var(--space-2);
+  line-height: 1.2;
+}
+
+.empregos-permit-employers-intro {
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary, #555);
+  margin-bottom: var(--space-4);
+  line-height: 1.5;
+  max-width: 720px;
+}
+
+/* Warning boxes reuse the amber token system of the agencies warning
+   (same fallbacks, same dark-mode overrides in dark-mode.css). */
+.empregos-permit-employers-warning {
+  margin-bottom: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--conexao-warning-bg, #fff8e1);
+  border: 1px solid var(--conexao-warning-border, #ffe082);
+  border-radius: var(--conexao-radius-sm, 8px);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.empregos-permit-employers-warning p {
+  margin: 0;
+}
+
+/* Shared explanation note: the ✓ indicator legend + permit wording. */
+.empregos-permit-employers-note {
+  margin-top: var(--space-4);
+  margin-bottom: var(--space-5);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface-muted, #f6f8f7);
+  border: 1px solid var(--color-border);
+  border-radius: var(--conexao-radius-sm, 8px);
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.empregos-permit-employers-note p {
+  margin: 0;
+  color: var(--color-text-secondary, #555);
+}
+
+.empregos-permit-employers-note a {
+  color: var(--color-text);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.empregos-permit-employers-note .empregos-permit-indicator {
+  margin-right: var(--space-2);
+}
+
+/* Compact permit indicator pill (✓ Histórico de Employment Permits). */
+.empregos-permit-indicator {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: var(--conexao-radius-full, 999px);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.empregos-permit-indicator--verified {
+  background: var(--conexao-primary-50, #e8f5e9);
+  color: var(--conexao-primary, #2e7d32);
+}
+
+/* Cards: same equal-height flex pattern as the agency cards. */
+.empregos-permit-employers .event-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.empregos-permit-employers .event-card-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.employer-card-permit {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.employer-card-permit-years {
+  font-size: 0.75rem;
+  color: var(--color-text-muted, #6b7280);
+}
+
+.employer-card-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: auto;
+  padding-top: 4px;
+}
+
+.employer-card-links .employer-card-cta {
+  margin-top: 0;
+}
+
+/* "Importante" exceptions block (e.g. Nua Healthcare): small, text-only,
+   amber-accented so the exception is immediately visible without a
+   misleading permit badge. */
+.empregos-permit-exceptions {
+  margin-top: var(--space-5);
+  padding: var(--space-4) var(--space-5);
+  background: var(--conexao-warning-bg, #fff8e1);
+  border: 1px solid var(--conexao-warning-border, #ffe082);
+  border-left-width: 4px;
+  border-radius: var(--conexao-radius-sm, 8px);
+}
+
+.empregos-permit-exceptions-title {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  margin: 0 0 var(--space-2);
+  color: var(--conexao-warning-text, #e65100);
+}
+
+.empregos-permit-exceptions-item + .empregos-permit-exceptions-item {
+  margin-top: var(--space-3);
+}
+
+.empregos-permit-exceptions-employer {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.empregos-permit-exceptions-employer a {
+  color: var(--color-text);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.empregos-permit-exceptions-meta {
+  font-weight: 400;
+  color: var(--color-text-secondary, #555);
+}
+
+.empregos-permit-exceptions-note {
+  margin: var(--space-1) 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: var(--color-text-secondary, #555);
+}

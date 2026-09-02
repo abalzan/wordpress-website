@@ -13,6 +13,7 @@ Registered by `conexao-data-model` plugin (class `Conexao_Data_Model`, method `r
 | `course_provider` | Cursos | `cursos` | title, editor, excerpt, thumbnail, revisions, custom-fields | Directory; links externally; no single-post pages |
 | `leisure` | Lazer e Turismo | `lazer` | Same as guide (incl. author, page-attributes) | Tourism directory; local Media Library images |
 | `recruitment_agency` | Agências de Recrutamento | *none* | title, editor, excerpt, revisions, custom-fields | Admin-only directory; no archive, no single URL (rendered inside /empregos/ landing via template-part). Managed under Empregos menu. |
+| `permit_employer` | Empregadores — Employment Permits | *none* | Same as recruitment_agency | Admin-only directory of employers with verified historical Employment Permit evidence (official DETE statistics); rendered inside the /empregos/ landing, below the agencies. Employers are NOT recruitment agencies. Managed under Empregos menu. |
 
 All CPTs are: `public`, `show_in_rest` (Gutenberg), rewrite with a Portuguese
 slug, `with_front => false`, and `has_archive` — **except `job`**, whose archive
@@ -21,12 +22,19 @@ Landing" hub, rendered by the theme's `page-empregos.php`). Individual job
 posts keep their `/empregos/{slug}/` permalinks (the CPT `rewrite` slug stays
 `empregos`).
 
-**`recruitment_agency`** is another exception: it is not public (`public` and
-`publicly_queryable` are false), has no rewrite, no archive, and no single
-post URL. The CPT exists purely as a wp-admin data container for the curated
-"Agências de recrutamento" directory rendered inside the /empregos/ landing
-page. In wp-admin it appears as a submenu item under the existing Empregos
-menu.
+**`recruitment_agency`** and **`permit_employer`** are further exceptions: they
+are not public (`public` and `publicly_queryable` are false), have no rewrite,
+no archive, and no single post URL. The CPTs exist purely as wp-admin data
+containers for the curated directories rendered inside the /empregos/ landing
+page ("Agências de recrutamento" and "Empresas com histórico de Employment
+Permits"). In wp-admin both appear as a submenu item under the existing
+Empregos menu. `permit_employer` records carry a `_employer_permit_status`
+of `verified` (verified HISTORICAL permit evidence — never "currently
+sponsoring"), `unverified` (plain entry, no indicator), or `exception`
+(rendered in the "Importante" block with the employer's current-position
+statement). See
+`docs/research/2026-09-empregos-agencies-and-employment-permits.md` for the
+validated data and editorial rules.
 
 ## Taxonomies
 

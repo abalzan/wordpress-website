@@ -40,6 +40,13 @@ require_once CONEXAO_THEME_DIR . '/inc/job-resources.php';
 require_once CONEXAO_THEME_DIR . '/inc/recruitment-agencies.php';
 
 /**
+ * Load the Empregos "Empresas com histórico de Employment Permits"
+ * employment-permit employers module (data source for the employer cards
+ * rendered below the recruitment agencies by page-empregos.php).
+ */
+require_once CONEXAO_THEME_DIR . '/inc/permit-employers.php';
+
+/**
  * Load the view-counting module: records a single view per front-end content
  * page load into the `_conexao_view_count` post meta, which powers the
  * homepage "Mais Lidos" section (see conexao_popular_posts()). See

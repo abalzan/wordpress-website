@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Conexão BR Irlanda Data Model
  * Description: Content types, shared taxonomies, and editorial fields for the Conexão BR Irlanda portal.
- * Version: 1.4.2
+ * Version: 1.5.0
  * Text Domain: conexao-data-model
  *
  * @package Conexao_BR_Irlanda_Data_Model
@@ -20,7 +20,7 @@ require_once CONEXAO_DATA_MODEL_DIR . 'includes/class-agency.php';
 
 final class Conexao_Data_Model {
 
-	const VERSION = '1.4.2';
+	const VERSION = '1.5.0';
 
 	/** @var Conexao_Data_Model|null */
 	private static $instance = null;
@@ -40,6 +40,7 @@ final class Conexao_Data_Model {
 		add_action( 'init', array( $this, 'register_leisure_meta' ), 0 );
 		add_action( 'init', array( $this, 'register_sponsor_contacts_meta' ), 0 );
 		add_action( 'init', array( $this, 'register_agency_meta' ), 0 );
+		add_action( 'init', array( $this, 'register_permit_employer_meta' ), 0 );
 	}
 
 	public function register_content_types() {
@@ -55,6 +56,12 @@ final class Conexao_Data_Model {
 			// Recruitment agencies directory — wp-admin only (see the loop below).
 			// Records render exclusively inside the /empregos/ landing section.
 			'recruitment_agency' => array( 'plural' => 'Agências de Recrutamento', 'singular' => 'Agência de Recrutamento', 'slug' => 'agencias-de-recrutamento', 'icon' => 'dashicons-networking' ),
+			// Employment-permit employers directory — wp-admin only, same
+			// container pattern as recruitment_agency. Employers are a
+			// DIFFERENT entity from recruitment agencies and are never
+			// modelled as one; they render in the "Empresas com histórico de
+			// Employment Permits" section of /empregos/.
+			'permit_employer' => array( 'plural' => 'Empregadores — Employment Permits', 'singular' => 'Empregador (Employment Permits)', 'slug' => 'empregadores-employment-permits', 'icon' => 'dashicons-building' ),
 		);
 
 		foreach ( $post_types as $post_type => $type ) {
@@ -67,16 +74,22 @@ final class Conexao_Data_Model {
 			// /empregos/oportunidades/) keep their existing permalinks untouched.
 			$has_archive = ( 'job' === $post_type ) ? false : $type['slug'];
 
-			// Recruitment agencies is a wp-admin-only directory: records render
-			// exclusively inside the /empregos/ landing section (theme module
-			// inc/recruitment-agencies.php + template-parts/recruitment-agencies.php).
-			// The CPT has no public archive, no single URL, no rewrite rule and no
-			// search presence — it exists to store the curated directory data in a
-			// reusable, admin-editable structure. In wp-admin it appears as a
-			// submenu of the existing Empregos menu.
-			$is_agency    = ( 'recruitment_agency' === $post_type );
-			$is_public    = ! $is_agency;
-			$show_in_menu = $is_agency ? 'edit.php?post_type=job' : true;
+			// recruitment_agency and permit_employer are wp-admin-only
+			// directories: records render exclusively inside the /empregos/
+			// landing section (theme modules inc/recruitment-agencies.php +
+			// inc/permit-employers.php and their template parts). They have
+			// no public archive, no single URL, no rewrite rule and no
+			// search presence — they exist to store the curated directory
+			// data in a reusable, admin-editable structure. In wp-admin both
+			// appear as a submenu of the existing Empregos menu.
+			//
+			// permit_employer is NOT an agency record: employment-permit
+			// employers are separate entities (companies/organisations with
+			// verified historical permit evidence in the official DETE
+			// statistics), never recruitment agencies.
+			$is_admin_only = in_array( $post_type, array( 'recruitment_agency', 'permit_employer' ), true );
+			$is_public     = ! $is_admin_only;
+			$show_in_menu  = $is_admin_only ? 'edit.php?post_type=job' : true;
 
 			register_post_type(
 				$post_type,
@@ -95,18 +108,19 @@ final class Conexao_Data_Model {
 						'archives'      => $type['plural'],
 					),
 					// All post types are publicly queryable to support their archives
-					// — except recruitment_agency (see below), which is admin-only.
+					// — except recruitment_agency/permit_employer (see above),
+					// which are admin-only.
 					'public'             => $is_public,
 					'show_ui'            => true,
 					'show_in_menu'       => $show_in_menu,
 					'show_in_rest'       => true,
 					'publicly_queryable' => $is_public,
 					'has_archive'        => $has_archive,
-					'rewrite'            => $is_agency ? false : array( 'slug' => $type['slug'], 'with_front' => false ),
+					'rewrite'            => $is_admin_only ? false : array( 'slug' => $type['slug'], 'with_front' => false ),
 					'menu_icon'          => $type['icon'],
 					'supports'           => $is_provider
 						? array( 'title', 'editor', 'excerpt', 'thumbnail', 'revisions', 'custom-fields' )
-						: ( $is_agency
+						: ( $is_admin_only
 							? array( 'title', 'editor', 'excerpt', 'revisions', 'custom-fields' )
 							: array( 'title', 'editor', 'excerpt', 'thumbnail', 'author', 'revisions', 'page-attributes', 'custom-fields' ) ),
 				)
@@ -194,6 +208,75 @@ final class Conexao_Data_Model {
 				'type'              => 'string',
 				'show_in_rest'      => false,
 				'auth_callback'     => function ( $allowed, $meta_key, $object_id ) {
+					return current_user_can( 'edit_post', $object_id );
+				},
+			)
+		);
+	}
+
+	/**
+	 * Register meta fields for the employment-permit employers directory.
+	 *
+	 * These back the "Empresas com histórico de Employment Permits" section
+	 * on /empregos/ and are edited through the Conexão Admin UX (Empregos →
+	 * Empregadores — Employment Permits). Every field is optional except
+	 * the employer name/website, which the admin-ux config marks required.
+	 *
+	 * Semantics (do not weaken):
+	 * - `_employer_permit_status = 'verified'` means VERIFIED HISTORICAL
+	 *   permit evidence in the official DETE "Permits issued to companies"
+	 *   statistics — never "currently sponsoring".
+	 * - 'unverified' renders as a normal employer entry with NO permit
+	 *   indicator (e.g. Kepak while its DETE legal entity is being matched).
+	 * - 'exception' renders in the "Importante" block with the employer's
+	 *   own current-position statement (e.g. Nua Healthcare: not currently
+	 *   recruiting internationally / not sponsoring GEPs).
+	 * - `_employer_evidence_source` and `_employer_evidence_years` stay in
+	 *   the admin data; the frontend shows a single shared source note.
+	 */
+	public function register_permit_employer_meta() {
+		$meta = array(
+			'_employer_official_website'  => 'string', // Official public-facing website URL.
+			'_employer_careers_url'       => 'string', // Careers/jobs page URL (when one exists).
+			'_employer_sector'            => 'string', // Sector label shown on the card.
+			'_employer_roles'             => 'string', // Relevant role types (comma-separated free text).
+			'_employer_location'          => 'string', // Location / coverage.
+			'_employer_permit_status'     => 'string', // verified | unverified | exception.
+			'_employer_evidence_source'   => 'string', // Where the permit evidence comes from (admin data).
+			'_employer_evidence_years'    => 'string', // Evidence years, e.g. "2023–2025" (shown on the card).
+			'_employer_last_checked'      => 'string', // Date the record was last verified.
+			'_employer_status'            => 'string', // Custom publishing status (draft/needs_review/published/archived).
+		);
+
+		foreach ( $meta as $key => $type ) {
+			register_post_meta(
+				'permit_employer',
+				$key,
+				array(
+					'single'        => true,
+					'type'          => $type,
+					'show_in_rest'  => true,
+					// Same auth pattern as the agency meta: protected keys
+					// default to __return_false in REST without an explicit
+					// auth_callback, breaking REST seeding (see
+					// register_agency_meta() for the full explanation).
+					'auth_callback' => function ( $allowed, $meta_key, $object_id ) {
+						return current_user_can( 'edit_post', $object_id );
+					},
+				)
+			);
+		}
+
+		// Internal maintenance notes — editorial-only, never rendered on the
+		// public site (e.g. pending DETE legal-entity matching for Kepak).
+		register_post_meta(
+			'permit_employer',
+			'_employer_notes',
+			array(
+				'single'        => true,
+				'type'          => 'string',
+				'show_in_rest'  => false,
+				'auth_callback' => function ( $allowed, $meta_key, $object_id ) {
 					return current_user_can( 'edit_post', $object_id );
 				},
 			)

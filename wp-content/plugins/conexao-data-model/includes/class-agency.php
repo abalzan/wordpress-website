@@ -43,6 +43,12 @@ final class Conexao_Data_Model_Agency {
 			'driving_delivery'     => 'Condução / Entregas',
 			'office_admin'         => 'Escritório / Administrativo',
 			'agriculture_seasonal' => 'Agricultura / Sazonal',
+			// Added for the 2026-09 Empregos expansion: several validated
+			// agencies (TTM, Servisource, Access Healthcare, Hollilander,
+			// Cpl) recruit healthcare professionals — a sector the original
+			// registry did not cover. Confirmed against each agency's own
+			// site before adding (agencies are never auto-tagged).
+			'healthcare'           => 'Saúde / Cuidados',
 		);
 	}
 

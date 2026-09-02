@@ -1894,8 +1894,13 @@
    Literal #f59e42 (not var(--conexao-accent)) because
    conexao_customizer_css() re-declares --conexao-accent on :root AFTER
    this stylesheet — same reason as .section-eyebrow above. Light mode
-   is untouched: these overrides only apply under [data-theme="dark"]. */
-[data-theme="dark"] .empregos-recruitment-agencies-warning {
+   is untouched: these overrides only apply under [data-theme="dark"].
+   2026-09: the selector now also covers the Employment Permit employers
+   section (.empregos-permit-employers-warning, .empregos-permit-exceptions),
+   which reuses the same amber token fallbacks. */
+[data-theme="dark"] .empregos-recruitment-agencies-warning,
+[data-theme="dark"] .empregos-permit-employers-warning,
+[data-theme="dark"] .empregos-permit-exceptions {
   --conexao-warning-bg: #2e2314;
   --conexao-warning-border: #f59e42;
   --conexao-warning-text: #f59e42;

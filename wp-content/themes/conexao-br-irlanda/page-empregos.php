@@ -121,6 +121,15 @@ get_header();
 		get_template_part( 'template-parts/recruitment-agencies' );
 		?>
 
+		<?php
+		// "Empresas com histórico de Employment Permits" — separate section
+		// BELOW the recruitment agencies: verified historical permit
+		// evidence from the official DETE statistics, never presented as
+		// current sponsorship. Visually quieter than the agencies section
+		// on purpose. Data lives in inc/permit-employers.php.
+		get_template_part( 'template-parts/permit-employers' );
+		?>
+
 	</main>
 </div>
 
