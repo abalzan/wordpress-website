@@ -61,7 +61,7 @@ See docs/content-model.md for full details.
 - CPT archives: `/guias/`, `/eventos/`, `/cursos/`, `/empregos/`, `/apoiadores/`, `/lazer/`
 - Blog: `/blog/`
 - Singles: `/{cpt}/{slug}/`, leisure uses `single-leisure.php`
-- Filters: `/eventos/?cidade=slug&categoria=slug`, `/lazer/?county=slug&categoria=slug`, `/cursos/?categoria=slug`, `/guias/?categoria=slug`, `/blog/?categoria=slug`
+- Filters: `/eventos/?cidade=slug&categoria=slug`, `/lazer/?county=slug&categoria=slug`, `/cursos/?categoria=slug`, `/guias/?categoria=slug`, `/blog/?categoria=slug`, `/empregos/?area=&localizacao=&contrato=` (agency directory only)
 - Static pages: `/irlanda/`, `/sobre-nos/`, `/contato/`, `/moradia/`, `/saude/`, county pages, etc.
 
 See docs/routing.md.

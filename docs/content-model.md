@@ -126,6 +126,21 @@ image, body) plus one minimal field:
 - `_agency_status` (string — custom publishing status; only `published` renders on /empregos/)
 - `_agency_notes` (string — internal maintenance notes; REST-hidden, never rendered on the site)
 
+**Directory filters (/empregos/).** The recruitment-agency directory rendered by
+`template-parts/recruitment-agencies.php` is filterable via `?area=` / `?localizacao=` /
+`?contrato=` (theme: `inc/recruitment-agencies.php`, `conexao_recruitment_agency_filter_state()`):
+
+- `area` reuses the canonical `_agency_job_types` keys as filter slugs — no duplicate registry.
+- `contrato` maps to the `_agency_temporary` / `_agency_permanent` flags (an agency flagged
+  for both matches either value).
+- `localizacao` normalizes the human-readable `_agency_location` string ("Nacional",
+  "Dublin, Limerick", "Nacional (Dublin)", "Deansgrange, Co. Dublin; Dundalk, Co. Louth")
+  into canonical location slugs via the registry in
+  `conexao_recruitment_agency_locations()`. `_agency_location` remains the single source of
+  truth — when adding an agency with a new location, add the location (slug, label, name
+  aliases) to that registry so it becomes filterable; unknown segments are ignored and never
+  guessed. "Nacional" coverage matches every specific location filter.
+
 ### Leisure (comprehensive image metadata)
 
 Location fields:

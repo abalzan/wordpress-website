@@ -1907,6 +1907,261 @@
   color: var(--color-text-secondary);
 }
 
+/* ===== 39b. EMPREGOS — AGENCY DIRECTORY FILTERS =====
+   Dark-mode overrides for the /empregos/ recruitment-agency filter
+   widget (desktop dropdowns, active-filter chips, mobile bottom-sheet).
+   Mirrors section 37 (Leisure filters) so both filter widgets share the
+   same dark-mode treatment, including the brightened --conexao-primary-text
+   accent for selected/hover states. */
+
+/* Dropdown trigger — default state */
+[data-theme="dark"] .agency-filters-dropdown-trigger {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .agency-filters-dropdown-trigger:hover,
+[data-theme="dark"] .agency-filters-dropdown-trigger[aria-expanded="true"] {
+  border-color: var(--conexao-primary-text);
+  color: var(--conexao-primary-text);
+  background: var(--color-primary-50);
+}
+
+[data-theme="dark"] .agency-filters-dropdown-trigger.is-selected {
+  color: var(--color-text);
+  border-color: var(--color-border);
+  background: var(--color-surface);
+}
+
+[data-theme="dark"] .agency-filters-dropdown-trigger.is-selected:hover,
+[data-theme="dark"] .agency-filters-dropdown-trigger.is-selected[aria-expanded="true"] {
+  border-color: var(--conexao-primary-text);
+  color: var(--conexao-primary-text);
+  background: var(--color-primary-50);
+}
+
+/* Active dot indicator */
+[data-theme="dark"] .agency-filters-dot {
+  background: var(--conexao-primary-text);
+}
+
+/* Dropdown panel */
+[data-theme="dark"] .agency-filters-dropdown-panel {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+/* Location search (Localização popover) */
+[data-theme="dark"] .agency-filters-dropdown-search {
+  background: var(--color-surface-muted);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .agency-filters-dropdown-search::placeholder {
+  color: var(--color-text-muted);
+}
+
+[data-theme="dark"] .agency-filters-dropdown-search:focus-visible {
+  border-color: var(--conexao-primary-text);
+}
+
+/* "No results" message inside the search panel */
+[data-theme="dark"] .agency-filters-options-empty {
+  color: var(--color-text-muted);
+}
+
+/* Dropdown links */
+[data-theme="dark"] .agency-filters-dropdown-link {
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .agency-filters-dropdown-link:hover {
+  background: var(--color-primary-50);
+  color: var(--conexao-primary-text);
+}
+
+[data-theme="dark"] .agency-filters-dropdown-link.is-active {
+  background: var(--color-primary-50);
+  color: var(--conexao-primary-text);
+}
+
+/* Checkmark */
+[data-theme="dark"] .agency-filters-checkmark {
+  color: var(--conexao-primary-text);
+}
+
+/* Toolbar clear link */
+[data-theme="dark"] .agency-filters-clear {
+  color: var(--color-text-muted);
+}
+
+[data-theme="dark"] .agency-filters-clear:hover {
+  color: var(--color-accent);
+  background: var(--color-surface-muted);
+}
+
+/* Lightweight result count */
+[data-theme="dark"] .agency-filters-count {
+  color: var(--color-text-muted);
+}
+
+/* Active filter chips */
+[data-theme="dark"] .agency-filters-active-label {
+  color: var(--color-text-muted);
+}
+
+[data-theme="dark"] .agency-filters-chip {
+  background: var(--color-primary-50);
+  border-color: var(--conexao-primary-text);
+  color: var(--conexao-primary-text);
+}
+
+[data-theme="dark"] .agency-filters-chip:hover {
+  border-color: var(--conexao-accent);
+  color: var(--conexao-accent);
+}
+
+/* Zero-results state */
+[data-theme="dark"] .agency-filters-empty {
+  background: var(--color-surface-muted);
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .agency-filters-empty-text {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .agency-filters-empty-clear {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .agency-filters-empty-clear:hover {
+  border-color: var(--conexao-primary-text);
+  color: var(--conexao-primary-text);
+  background: var(--color-primary-50);
+}
+
+/* Mobile "Filtrar" trigger */
+[data-theme="dark"] .agency-filters-mobile-trigger {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .agency-filters-mobile-trigger:hover,
+[data-theme="dark"] .agency-filters-mobile-trigger[aria-expanded="true"] {
+  border-color: var(--conexao-primary-text);
+  color: var(--conexao-primary-text);
+  background: var(--color-primary-50);
+}
+
+[data-theme="dark"] .agency-filters-mobile-icon {
+  color: var(--conexao-primary-text);
+}
+
+[data-theme="dark"] .agency-filters-mobile-count {
+  background: var(--conexao-primary-text);
+  color: #05240f;
+}
+
+/* Mobile sheet */
+[data-theme="dark"] .agency-filters-sheet-panel {
+  background: var(--color-surface);
+}
+
+[data-theme="dark"] .agency-filters-sheet-header {
+  border-bottom-color: var(--color-border);
+}
+
+[data-theme="dark"] .agency-filters-sheet-handle {
+  background: var(--color-border);
+}
+
+[data-theme="dark"] .agency-filters-sheet-title {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .agency-filters-sheet-close {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .agency-filters-sheet-close:hover {
+  border-color: var(--conexao-primary-text);
+  color: var(--conexao-primary-text);
+  background: var(--color-primary-50);
+}
+
+[data-theme="dark"] .agency-filters-sheet-footer {
+  border-top-color: var(--color-border);
+  background: var(--color-surface);
+}
+
+/* Filter option labels */
+[data-theme="dark"] .agency-filters-option {
+  color: var(--color-text-secondary);
+}
+
+/* Native radios: the checked fill uses the brighter dark-mode primary so
+   the selected option reads clearly on dark surfaces. */
+[data-theme="dark"] .agency-filters-radio {
+  accent-color: var(--conexao-primary-text);
+}
+
+[data-theme="dark"] .agency-filters-option:hover {
+  background: var(--color-primary-50);
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .agency-filters-option:has(.agency-filters-radio:checked) {
+  background: var(--color-primary-50);
+  color: var(--conexao-primary-text);
+}
+
+/* Location search inside the mobile sheet */
+[data-theme="dark"] .agency-filters-mobile-search {
+  background: var(--color-surface-muted);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .agency-filters-mobile-search::placeholder {
+  color: var(--color-text-muted);
+}
+
+[data-theme="dark"] .agency-filters-mobile-search:focus-visible {
+  border-color: var(--conexao-primary-text);
+}
+
+/* Apply button */
+[data-theme="dark"] .agency-filters-apply-button {
+  background: var(--color-primary);
+  color: var(--conexao-white);
+}
+
+[data-theme="dark"] .agency-filters-apply-button:hover {
+  background: var(--color-primary-dark);
+}
+
+/* Mobile clear button */
+[data-theme="dark"] .agency-filters-mobile-clear {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .agency-filters-mobile-clear:hover {
+  border-color: var(--conexao-primary-text);
+  color: var(--conexao-primary-text);
+  background: var(--color-primary-50);
+}
+
 /* ===== 40. REDUCED MOTION ===== */
 @media (prefers-reduced-motion: reduce) {
   [data-theme="dark"] body,

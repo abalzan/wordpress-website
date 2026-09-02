@@ -6244,7 +6244,19 @@ input[type="button"] {
   max-width: 720px;
 }
 
-/* Cards stretch to equal height so CTAs align across the row. */
+/* Equal-height cards with bottom-anchored CTAs. The grid container owns
+   row equalisation (align-items: stretch is the grid default; stated
+   explicitly so no inherited rule can opt items out), each card is a flex
+   column that stretches to the row height, the body fills the card and
+   the CTA anchors to the bottom with margin-top:auto — the same pattern
+   used by the Empregos job-resources section above. Content lengths
+   (names, job types, locations, missing licensing rows) are absorbed by
+   the flexible space between the details and the CTA — no reserved or
+   fixed block heights. */
+.empregos-recruitment-agencies-grid {
+  align-items: stretch;
+}
+
 .empregos-recruitment-agencies .event-card {
   display: flex;
   flex-direction: column;
@@ -6253,7 +6265,21 @@ input[type="button"] {
 .empregos-recruitment-agencies .event-card-body {
   display: flex;
   flex-direction: column;
-  flex: 1;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.empregos-recruitment-agencies .event-card-cta {
+  margin-top: auto;
+}
+
+.empregos-recruitment-agencies-grid .agency-card-job-types {
+  /* Job-type lists must never be truncated by the shared
+     .event-card-excerpt line clamp — let them wrap fully. */
+  display: block;
+  overflow: visible;
+  -webkit-line-clamp: unset;
+  -webkit-box-orient: unset;
 }
 
 /* Temp / permanent flag pills */
@@ -6323,6 +6349,735 @@ input[type="button"] {
 .empregos-recruitment-agencies-warning strong {
   color: var(--conexao-warning-text, #e65100);
 }
+
+/* =============================================================
+   Empregos — Agency directory filters (Área / Localização / Contrato)
+   =============================================================
+   Mirrors the /lazer/ filter widget (leisure.css) so the interaction
+   and visual language match: desktop hyperlink dropdowns, active-filter
+   chips, a result-count status line and a mobile bottom sheet. Leisure
+   CSS is not loaded on /empregos/, so these are empregos-scoped rules
+   built from the same design-system tokens. Server-side filtering —
+   no card-hiding JavaScript. */
+
+.agency-filters {
+  position: relative;
+  z-index: 20;
+  margin-bottom: var(--space-5);
+}
+
+/* --- Toolbar row (desktop) --- */
+.agency-filters-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-4);
+}
+
+/* --- Filter group --- */
+.agency-filters-group {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+/* --- Dropdown (button + panel) --- */
+.agency-filters-dropdown {
+  position: relative;
+}
+
+.agency-filters-dropdown-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  /* Substantial discovery controls, matching the Lazer dropdowns. */
+  width: clamp(220px, 24vw, 280px);
+  max-width: 100%;
+  min-height: 44px;
+  padding: 10px 14px;
+  box-sizing: border-box;
+  border-radius: var(--radius);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.agency-filters-dropdown-trigger:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-primary-50);
+}
+
+.agency-filters-dropdown-trigger[aria-expanded="true"] {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-primary-50);
+}
+
+.agency-filters-dropdown-trigger.is-selected {
+  font-weight: 600;
+  color: var(--color-text);
+  border-color: var(--color-border);
+  background: var(--color-surface);
+}
+
+.agency-filters-dropdown-trigger.is-selected:hover,
+.agency-filters-dropdown-trigger.is-selected[aria-expanded="true"] {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-primary-50);
+}
+
+.agency-filters-dropdown-trigger[aria-expanded="true"] ~ .agency-filters-dropdown-panel {
+  display: flex;
+}
+
+.agency-filters-dropdown-trigger:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.agency-filters-dropdown-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.agency-filters-dropdown-caret {
+  font-size: 0.6rem;
+  line-height: 1;
+  margin-left: auto;
+  transition: transform var(--transition-fast);
+  flex-shrink: 0;
+  color: inherit;
+}
+
+.agency-filters-dropdown-trigger[aria-expanded="true"] .agency-filters-dropdown-caret {
+  transform: rotate(180deg);
+}
+
+/* --- Active dot indicator --- */
+.agency-filters-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  flex-shrink: 0;
+}
+
+/* --- Dropdown panel (anchored below its trigger) --- */
+.agency-filters-dropdown-panel {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 25;
+  width: max-content;
+  min-width: 100%;
+  max-width: min(280px, calc(100vw - 32px));
+  max-height: 320px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  padding: 6px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+}
+
+.agency-filters-dropdown-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.agency-filters-dropdown-link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 40px;
+  padding: 8px 10px;
+  border-radius: var(--radius);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.agency-filters-dropdown-link:hover {
+  background: var(--color-primary-50);
+  color: var(--color-primary);
+}
+
+.agency-filters-dropdown-link:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.agency-filters-dropdown-link.is-active {
+  background: var(--color-primary-50);
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.agency-filters-checkmark {
+  width: 14px;
+  flex-shrink: 0;
+  color: var(--color-primary);
+  font-size: 0.85rem;
+  line-height: 1;
+}
+
+/* Hidden-attribute guards: these are flex containers, so the UA
+   display:none for [hidden] would otherwise lose to their display rules. */
+.agency-filters-dropdown-link[hidden],
+.agency-filters-dropdown-list[hidden],
+.agency-filters-option[hidden],
+.agency-filters-options[hidden] {
+  display: none;
+}
+
+/* --- Location search inside the Localização popover --- */
+.agency-filters-dropdown-search {
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 34px;
+  padding: 6px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface-muted);
+  color: var(--color-text);
+  font: inherit;
+  font-size: var(--text-sm);
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.agency-filters-dropdown-search::placeholder {
+  color: var(--color-text-muted);
+}
+
+.agency-filters-dropdown-search:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+  border-color: var(--color-primary);
+}
+
+.agency-filters-options-empty {
+  margin: 0;
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+/* --- Active filter chips (shared desktop + mobile) --- */
+.agency-filters-active {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-3);
+  margin-top: var(--space-3);
+}
+
+.agency-filters-active-label {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--color-text-muted);
+  letter-spacing: 0.02em;
+}
+
+.agency-filters-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.agency-filters-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 30px;
+  padding: 5px 11px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-primary);
+  background: var(--color-primary-50);
+  color: var(--color-primary);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.agency-filters-chip:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.agency-filters-chip:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.agency-filters-chip-name {
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.agency-filters-chip-remove {
+  font-size: 0.9rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.agency-filters-clear {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 4px 10px;
+  border-radius: var(--radius);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color var(--transition-fast), background var(--transition-fast);
+}
+
+.agency-filters-clear:hover {
+  color: var(--color-primary);
+  background: var(--color-primary-50);
+}
+
+.agency-filters-clear:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+/* --- Lightweight result count (doubles as the aria-live status line) --- */
+.agency-filters-count {
+  margin: var(--space-3) 0 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+/* --- Zero-results state --- */
+.agency-filters-empty {
+  padding: var(--space-6) var(--space-5);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface-muted);
+  text-align: center;
+}
+
+.agency-filters-empty-text {
+  margin: 0 0 var(--space-4);
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.agency-filters-empty-clear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: var(--space-2) var(--space-5);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  text-decoration: none;
+  transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.agency-filters-empty-clear:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-primary-50);
+}
+
+.agency-filters-empty-clear:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+/* --- Mobile "Filtrar" trigger (bottom sheet opener) --- */
+.agency-filters-mobile-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
+  min-height: 48px;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  font-size: var(--text-base);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+}
+
+.agency-filters-mobile-trigger:hover,
+.agency-filters-mobile-trigger[aria-expanded="true"] {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-primary-50);
+}
+
+.agency-filters-mobile-trigger:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.agency-filters-mobile-icon {
+  display: inline-flex;
+  color: var(--color-primary);
+}
+
+.agency-filters-mobile-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 var(--space-1);
+  border-radius: var(--radius-full);
+  background: var(--color-primary);
+  color: var(--conexao-white);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* --- Bottom sheet overlay --- */
+.agency-filters-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.agency-filters-sheet.is-open {
+  display: flex;
+}
+
+.agency-filters-sheet-panel {
+  width: 100%;
+  max-width: 640px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface);
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.agency-filters-sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-5) var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+  position: relative;
+}
+
+.agency-filters-sheet-handle {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 36px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--color-border);
+}
+
+.agency-filters-sheet-title {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0;
+  padding-top: var(--space-2);
+}
+
+.agency-filters-sheet-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.agency-filters-sheet-close:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-primary-50);
+}
+
+.agency-filters-sheet-close:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+/* --- Sheet form: scrollable body + sticky actions --- */
+.agency-filters-mobile-form {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1;
+}
+
+.agency-filters-sheet-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--space-2) var(--space-5) var(--space-4);
+}
+
+/* Filter sections inside the sheet — always visible, no accordions.
+   Radio state is server-rendered from the URL and never reset when the
+   sheet reopens; selecting a radio applies the filter immediately. */
+.agency-filters-mobile-section {
+  border: 0;
+  padding: 0;
+  margin: 0 0 var(--space-4);
+  min-width: 0;
+}
+
+.agency-filters-mobile-section:last-child {
+  margin-bottom: 0;
+}
+
+.agency-filters-mobile-legend {
+  padding: 0;
+  margin: 0 0 var(--space-1);
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.agency-filters-options {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.agency-filters-option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 48px;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: var(--text-base);
+  color: var(--color-text-secondary);
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.agency-filters-option:hover {
+  background: var(--color-primary-50);
+  color: var(--color-text);
+}
+
+.agency-filters-option:has(.agency-filters-radio:checked) {
+  background: var(--color-primary-50);
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.agency-filters-radio {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  accent-color: var(--color-primary);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.agency-filters-radio:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+/* Location search inside the mobile sheet — comfortable 44px touch target. */
+.agency-filters-mobile-search {
+  width: 100%;
+  min-height: 44px;
+  padding: var(--space-2) var(--space-3);
+  margin: 0 0 var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface-muted);
+  color: var(--color-text);
+  font: inherit;
+  font-size: var(--text-base);
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.agency-filters-mobile-search::placeholder {
+  color: var(--color-text-muted);
+}
+
+.agency-filters-mobile-search:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+  border-color: var(--color-primary);
+}
+
+/* --- Sheet footer: sticky action buttons --- */
+.agency-filters-sheet-footer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border-top: 1px solid var(--color-border);
+  background: var(--color-surface);
+  flex-shrink: 0;
+}
+
+.agency-filters-apply-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-height: 48px;
+  padding: var(--space-3) var(--space-5);
+  border: 0;
+  border-radius: var(--radius);
+  background: var(--color-primary);
+  color: var(--conexao-white);
+  font-size: var(--text-base);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+}
+
+.agency-filters-apply-button:hover {
+  background: var(--color-primary-dark);
+}
+
+.agency-filters-apply-button:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.agency-filters-mobile-clear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.agency-filters-mobile-clear:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-primary-50);
+}
+
+.agency-filters-mobile-clear:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+/* --- Responsive: swap between desktop toolbar and mobile sheet --- */
+@media (min-width: 769px) {
+  .agency-filters-mobile {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Only the desktop dropdown toolbar is replaced by the mobile
+     "Filtrar" sheet — the active-filter chips, "Limpar filtros"
+     and result count stay visible above the results. */
+  .agency-filters-toolbar {
+    display: none;
+  }
+
+  /* Mobile hierarchy: "Filtrar" trigger → active-filter chips →
+     result count. The DOM order is shared with desktop (where the
+     dropdown toolbar sits first), so flex ordering keeps both layouts
+     correct without duplicating markup. */
+  .agency-filters {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .agency-filters-mobile {
+    display: block;
+    order: 1;
+  }
+
+  .agency-filters-active {
+    order: 2;
+  }
+
+  .agency-filters-count {
+    order: 3;
+  }
+
+  /* Touch-friendly chips: bigger tap targets than the desktop row. */
+  .agency-filters-chip {
+    min-height: 40px;
+    padding: 8px 14px;
+  }
+
+  .agency-filters-clear {
+    min-height: 40px;
+  }
+}
+
+
 
 /* =============================================================
    Empregos — Public-Sector Recruitment (page-empregos.php)

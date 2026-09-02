@@ -13,6 +13,7 @@
 		initCopyButtons();
 		initLeisureFilters();
 		initLeisureInstantFilters();
+		initAgencyFilters();
 		initSponsorsCarousel();
 		initInfiniteScroll();
 		initLoadMore();
@@ -939,6 +940,257 @@
 			if (county === selectedValue('county') && category === selectedValue('categoria')) return;
 			applyFilterUrl(window.location.href, { replace: true });
 		});
+	}
+
+	// ===== Empregos — Recruitment Agency Filters =====
+	// Mirrors the Lazer filter interaction (initLeisureFilters) for the
+	// /empregos/ agency directory:
+	//   - desktop hyperlink dropdowns: one open at a time, toggle re-focuses
+	//     the trigger, outside click / Escape close with focus return,
+	//   - a client-side search inside the Localização popover (and the mobile
+	//     sheet section) that filters the already server-rendered options,
+	//   - a modal mobile bottom sheet with always-visible radio fieldsets:
+	//     focus trap, Escape/backdrop close, focus return to the trigger,
+	//   - selecting a radio applies the filter immediately (the form is
+	//     submitted, navigating to the server-rendered filtered URL — the
+	//     sheet auto-dismisses because the page navigates, exactly like the
+	//     Lazer apply-and-close gesture),
+	//   - the submit pipeline strips the empty "Todas"/"Todos" values so URLs
+	//     stay clean (/empregos/?area=warehouse, never /empregos/?area=&...).
+	// Filtering itself is server-side and URL driven (?area=/?localizacao=/
+	// ?contrato=); refresh, back/forward and shared URLs all work natively.
+	function initAgencyFilters() {
+		var root = document.querySelector('[data-agency-filters]');
+		if (!root) return;
+
+		var dropdowns = Array.prototype.slice.call(root.querySelectorAll('[data-dropdown]'));
+
+		function getTrigger(dropdown) {
+			return dropdown.querySelector('[data-dropdown-trigger]');
+		}
+
+		function isOpen(dropdown) {
+			var trigger = getTrigger(dropdown);
+			return !!trigger && trigger.getAttribute('aria-expanded') === 'true';
+		}
+
+		function setDropdown(dropdown, open) {
+			var trigger = getTrigger(dropdown);
+			if (trigger) {
+				trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+			}
+			var search = dropdown.querySelector('[data-option-search]');
+			if (open && search) {
+				search.focus();
+				search.select();
+			}
+		}
+
+		function closeAllDropdowns(except) {
+			dropdowns.forEach(function(dd) {
+				if (dd === except) return;
+				setDropdown(dd, false);
+			});
+		}
+
+		dropdowns.forEach(function(dropdown) {
+			var trigger = getTrigger(dropdown);
+			if (!trigger) return;
+
+			trigger.addEventListener('click', function(e) {
+				e.stopPropagation();
+				var wasOpen = isOpen(dropdown);
+				closeAllDropdowns(dropdown);
+				setDropdown(dropdown, !wasOpen);
+				if (wasOpen) trigger.focus();
+			});
+		});
+
+		// Click outside any dropdown closes every open menu.
+		document.addEventListener('click', function(e) {
+			if (!e.target.closest('[data-dropdown]')) {
+				closeAllDropdowns();
+			}
+		});
+
+		// Escape closes open dropdowns (focus back to the trigger) and the
+		// mobile sheet (focus back to the "Filtrar" trigger).
+		document.addEventListener('keydown', function(e) {
+			if (e.key !== 'Escape') return;
+			dropdowns.forEach(function(dd) {
+				if (isOpen(dd)) {
+					setDropdown(dd, false);
+					var trigger = getTrigger(dd);
+					if (trigger) trigger.focus();
+				}
+			});
+			if (sheetOverlay && sheetOverlay.classList.contains('is-open')) {
+				closeSheet(true);
+			}
+		});
+
+		// Client-side option search (accent/case-insensitive match on the
+		// visible label) — purely cosmetic: the underlying links and radio
+		// values are untouched, so with JS disabled every option remains
+		// usable. Works for both the desktop popover and the mobile section.
+		function normalizeText(text) {
+			return (text || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+		}
+
+		Array.prototype.forEach.call(root.querySelectorAll('[data-option-search]'), function(search) {
+			var scope = search.closest('[data-option-scope]');
+			if (!scope) return;
+
+			var options = Array.prototype.slice.call(scope.querySelectorAll('[data-option-item]'));
+			var container = search.closest('.agency-filters-dropdown-panel') || search.closest('.agency-filters-mobile-section') || root;
+			var empty = container.querySelector('[data-option-empty]');
+			var list = scope.querySelector('[data-option-list]');
+
+			function applySearch() {
+				var query = normalizeText(search.value.trim());
+				var visible = 0;
+				options.forEach(function(option) {
+					var match = !query || normalizeText(option.textContent).indexOf(query) !== -1;
+					option.hidden = !match;
+					if (match) visible++;
+				});
+				if (empty) {
+					empty.hidden = visible > 0;
+				}
+				if (list) {
+					list.hidden = visible === 0;
+				}
+			}
+
+			search.addEventListener('input', applySearch);
+
+			// Escape inside the search first clears the query (restoring every
+			// option); a second press falls through and closes the panel/sheet.
+			search.addEventListener('keydown', function(e) {
+				if (e.key !== 'Escape') return;
+				if (search.value !== '') {
+					e.stopPropagation();
+					search.value = '';
+					applySearch();
+				}
+			});
+		});
+
+		// Mobile bottom sheet (modal dialog, same UX as the Lazer sheet).
+		var sheetTrigger = root.querySelector('[data-mobile-trigger]');
+		var sheetOverlay = root.querySelector('[data-mobile-sheet]');
+		var sheetClose = root.querySelector('[data-mobile-close]');
+		var sheetPanel = sheetOverlay ? sheetOverlay.querySelector('.agency-filters-sheet-panel') : null;
+
+		function openSheet() {
+			if (!sheetOverlay) return;
+			sheetOverlay.classList.add('is-open');
+			sheetOverlay.setAttribute('aria-hidden', 'false');
+			if (sheetTrigger) sheetTrigger.setAttribute('aria-expanded', 'true');
+			document.body.style.overflow = 'hidden';
+			// NOTE: the radio state is server-rendered from the URL and is
+			// deliberately never reset here — reopening the sheet must show
+			// the current selections.
+			if (sheetClose) {
+				setTimeout(function() {
+					// The sheet may already be closed before this fires. Never
+					// move focus into a hidden element.
+					if (sheetOverlay.classList.contains('is-open')) {
+						sheetClose.focus();
+					}
+				}, 50);
+			}
+		}
+
+		function closeSheet(restoreFocus) {
+			if (!sheetOverlay || !sheetOverlay.classList.contains('is-open')) return;
+			sheetOverlay.classList.remove('is-open');
+			sheetOverlay.setAttribute('aria-hidden', 'true');
+			if (sheetTrigger) sheetTrigger.setAttribute('aria-expanded', 'false');
+			document.body.style.overflow = '';
+			if (restoreFocus && sheetTrigger) {
+				sheetTrigger.focus();
+			}
+		}
+
+		if (sheetTrigger && sheetOverlay) {
+			sheetTrigger.addEventListener('click', function() {
+				if (sheetOverlay.classList.contains('is-open')) {
+					closeSheet();
+				} else {
+					openSheet();
+				}
+			});
+
+			if (sheetClose) {
+				sheetClose.addEventListener('click', function() {
+					closeSheet(true);
+				});
+			}
+
+			// Clicking the dark backdrop (outside the sheet panel) closes it.
+			sheetOverlay.addEventListener('click', function(e) {
+				if (e.target === sheetOverlay || (sheetPanel && !sheetPanel.contains(e.target))) {
+					closeSheet(true);
+				}
+			});
+
+			// Modal focus trap: while the sheet is open, Tab cycles inside the
+			// panel so keyboard focus never escapes to the page behind it.
+			sheetOverlay.addEventListener('keydown', function(e) {
+				if (e.key !== 'Tab' || !sheetPanel) return;
+				var focusables = Array.prototype.filter.call(
+					sheetPanel.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'),
+					function(el) {
+						return !el.disabled && el.offsetParent !== null;
+					}
+				);
+				if (!focusables.length) return;
+				var first = focusables[0];
+				var last = focusables[focusables.length - 1];
+				if (e.shiftKey && document.activeElement === first) {
+					e.preventDefault();
+					last.focus();
+				} else if (!e.shiftKey && document.activeElement === last) {
+					e.preventDefault();
+					first.focus();
+				}
+			});
+		}
+
+		// Mobile form: every radio change applies the filter immediately by
+		// navigating to the server-rendered URL (the "Mostrar resultados"
+		// button remains as the no-JS fallback submit). Empty "Todas"/"Todos"
+		// values are stripped so URLs stay clean, and the section anchor is
+		// preserved so the user lands back on the directory.
+		var form = root.querySelector('[data-mobile-form]');
+		if (form) {
+			form.addEventListener('submit', function(e) {
+				e.preventDefault();
+
+				var url = new URL(form.getAttribute('action'), window.location.origin);
+
+				var params = new URLSearchParams();
+				new FormData(form).forEach(function(value, key) {
+					if (value !== '' && value !== null) params.append(key, value);
+				});
+
+				var qs = params.toString();
+				window.location.href = url.pathname + (qs ? '?' + qs : '') + (url.hash || '');
+			});
+
+			Array.prototype.forEach.call(form.querySelectorAll('input[type="radio"]'), function(radio) {
+				radio.addEventListener('change', function() {
+					// requestSubmit() runs the submit pipeline above (clean URL,
+					// anchor preserved); the raw submit() is the legacy fallback.
+					if (typeof form.requestSubmit === 'function') {
+						form.requestSubmit();
+					} else {
+						form.submit();
+					}
+				});
+			});
+		}
 	}
 
 	// ===== Sponsors Carousel (homepage Apoiadores) =====

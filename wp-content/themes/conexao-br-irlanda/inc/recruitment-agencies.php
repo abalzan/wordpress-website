@@ -128,3 +128,366 @@ function conexao_recruitment_agency_meta( $agency, $key ) {
 
 	return (string) $value;
 }
+
+// ============================================================================
+// Directory filters (Área de trabalho / Localização / Tipo de contrato)
+//
+// Server-side, URL-driven filtering for the recruitment-agency directory
+// rendered by template-parts/recruitment-agencies.php — the same architecture
+// as the /lazer/ filters (?county=/?categoria=): filter state lives in clean
+// query parameters (?area=/?localizacao=/?contrato=), the options are derived
+// from the actual directory data, and matching never depends on how a value
+// happens to be formatted for display.
+//
+// Data sources per dimension:
+//   - Área: `_agency_job_types` already stores canonical keys from
+//     Conexao_Data_Model_Agency::job_types() — reused as the filter slugs.
+//   - Contrato: `_agency_temporary` / `_agency_permanent` booleans.
+//   - Localização: `_agency_location` is a human-readable coverage string
+//     ("Dublin, Limerick", "Nacional", "Nacional (Dublin)"). It stays the
+//     single source of truth for display AND filtering; the registry below
+//     normalizes it into canonical location slugs. Only known locations are
+//     matched — unknown segments fail safely (the agency simply never matches
+//     a location filter and never appears as a filter option).
+// ============================================================================
+
+/**
+ * Canonical filterable areas: storage key => Portuguese display label.
+ *
+ * Delegates to the data-model plugin registry (the single source of truth
+ * shared with the Admin UX editor). Legacy free-text segments are never
+ * filterable — only canonical keys count.
+ *
+ * @return array<string,string>
+ */
+function conexao_recruitment_agency_areas() {
+	if ( class_exists( 'Conexao_Data_Model_Agency' ) ) {
+		return Conexao_Data_Model_Agency::job_types();
+	}
+
+	return array();
+}
+
+/**
+ * Canonical filterable locations: slug => label + normalized name aliases.
+ *
+ * The registry covers the locations present in the current agency dataset
+ * (see scripts/seed-recruitment-agencies.php). Add a location here before
+ * tagging an agency with it — agencies are never matched on unknown values.
+ *
+ * @return array<string,array{label:string,aliases:string[]}>
+ */
+function conexao_recruitment_agency_locations() {
+	return array(
+		'nacional'   => array(
+			'label'   => 'Nacional',
+			// Nationwide coverage; matches every specific location filter.
+			'aliases' => array( 'nacional', 'national', 'nationwide' ),
+		),
+		'dublin'     => array(
+			'label'   => 'Dublin',
+			'aliases' => array( 'dublin', 'co dublin', 'county dublin', 'deansgrange' ),
+		),
+		'cork'       => array(
+			'label'   => 'Cork',
+			'aliases' => array( 'cork', 'co cork', 'county cork' ),
+		),
+		'galway'     => array(
+			'label'   => 'Galway',
+			'aliases' => array( 'galway', 'co galway', 'county galway' ),
+		),
+		'limerick'   => array(
+			'label'   => 'Limerick',
+			'aliases' => array( 'limerick', 'co limerick', 'county limerick' ),
+		),
+		'waterford'  => array(
+			'label'   => 'Waterford',
+			'aliases' => array( 'waterford' ),
+		),
+		'naas'       => array(
+			'label'   => 'Naas',
+			'aliases' => array( 'naas' ),
+		),
+		'athlone'    => array(
+			'label'   => 'Athlone',
+			'aliases' => array( 'athlone' ),
+		),
+		'sligo'      => array(
+			'label'   => 'Sligo',
+			'aliases' => array( 'sligo' ),
+		),
+		'carlow'     => array(
+			'label'   => 'Carlow',
+			'aliases' => array( 'carlow' ),
+		),
+		'kilkenny'   => array(
+			'label'   => 'Kilkenny',
+			'aliases' => array( 'kilkenny' ),
+		),
+		'portlaoise' => array(
+			'label'   => 'Portlaoise',
+			'aliases' => array( 'portlaoise' ),
+		),
+		'shannon'    => array(
+			'label'   => 'Shannon',
+			'aliases' => array( 'shannon' ),
+		),
+		'cavan'      => array(
+			'label'   => 'Cavan',
+			'aliases' => array( 'cavan', 'co cavan' ),
+		),
+		'kerry'      => array(
+			'label'   => 'Kerry',
+			'aliases' => array( 'kerry', 'co kerry', 'county kerry' ),
+		),
+		'roscommon'  => array(
+			'label'   => 'Roscommon',
+			'aliases' => array( 'roscommon' ),
+		),
+		'dundalk'    => array(
+			'label'   => 'Dundalk',
+			'aliases' => array( 'dundalk', 'louth', 'co louth', 'county louth' ),
+		),
+	);
+}
+
+/**
+ * Normalize one location fragment for registry lookup.
+ *
+ * Accent-, case- and punctuation-insensitive ("Co. Dublin" and "co dublin"
+ * both resolve to the Dublin alias), so filter matching never depends on
+ * how the coverage string was written.
+ *
+ * @param string $segment Raw fragment from `_agency_location`.
+ * @return string Normalized alias, or '' when nothing remains.
+ */
+function conexao_recruitment_agency_normalize_location( $segment ) {
+	$segment = (string) $segment;
+
+	if ( function_exists( 'remove_accents' ) ) {
+		$segment = remove_accents( $segment );
+	}
+
+	$segment = strtolower( $segment );
+	$segment = str_replace( '.', '', $segment );
+	$segment = preg_replace( '/[^a-z0-9]+/', ' ', $segment );
+
+	return trim( (string) preg_replace( '/\s+/', ' ', $segment ) );
+}
+
+/**
+ * The canonical location slugs an agency covers, from `_agency_location`.
+ *
+ * Splits the display string on commas/semicolons (parenthetical details such
+ * as "Nacional (Ennis, Co. Clare; Galway)" are unwrapped into the list) and
+ * matches each fragment against the canonical registry. Unknown fragments
+ * are ignored rather than guessed.
+ *
+ * @param string $raw Stored `_agency_location` value.
+ * @return string[] Canonical location slugs (may be empty).
+ */
+function conexao_recruitment_agency_location_slugs( $raw ) {
+	$raw = is_string( $raw ) ? trim( $raw ) : '';
+	if ( '' === $raw ) {
+		return array();
+	}
+
+	$lookup = array();
+	foreach ( conexao_recruitment_agency_locations() as $slug => $location ) {
+		foreach ( $location['aliases'] as $alias ) {
+			$lookup[ $alias ] = $slug;
+		}
+	}
+
+	// Parentheses stay part of the coverage list, not part of one name.
+	$raw   = str_replace( array( '(', ')', '[', ']' ), ',', $raw );
+	$slugs = array();
+
+	foreach ( preg_split( '/[,;]+/', $raw ) as $segment ) {
+		$normalized = conexao_recruitment_agency_normalize_location( $segment );
+		if ( '' === $normalized || ! isset( $lookup[ $normalized ] ) ) {
+			continue;
+		}
+		$slugs[ $lookup[ $normalized ] ] = true;
+	}
+
+	return array_keys( $slugs );
+}
+
+/**
+ * The canonical area keys an agency recruits for.
+ *
+ * @param WP_Post $agency Agency post.
+ * @return string[] Canonical keys from `_agency_job_types` (may be empty).
+ */
+function conexao_recruitment_agency_area_keys( $agency ) {
+	$raw = conexao_recruitment_agency_meta( $agency, '_agency_job_types' );
+	if ( '' === $raw ) {
+		return array();
+	}
+
+	$canonical = conexao_recruitment_agency_areas();
+	$keys      = array();
+
+	foreach ( explode( ',', $raw ) as $segment ) {
+		$segment = trim( $segment );
+		if ( '' !== $segment && isset( $canonical[ $segment ] ) ) {
+			$keys[ $segment ] = true;
+		}
+	}
+
+	return array_keys( $keys );
+}
+
+/**
+ * Whether one agency satisfies all three filter dimensions (AND logic).
+ *
+ * Within a dimension the selection is single-valued. Nationwide agencies
+ * match every specific location; an agency flagged for both contract types
+ * matches either contract filter.
+ *
+ * @param WP_Post $agency   Agency post.
+ * @param string  $area     Canonical area key or ''.
+ * @param string  $location Canonical location slug or ''.
+ * @param string  $contrato 'temporario', 'permanente' or ''.
+ * @return bool
+ */
+function conexao_recruitment_agency_matches_filters( $agency, $area, $location, $contrato ) {
+	if ( '' !== $area && ! in_array( $area, conexao_recruitment_agency_area_keys( $agency ), true ) ) {
+		return false;
+	}
+
+	if ( '' !== $location ) {
+		$slugs = conexao_recruitment_agency_location_slugs( conexao_recruitment_agency_meta( $agency, '_agency_location' ) );
+		if ( ! in_array( 'nacional', $slugs, true ) && ! in_array( $location, $slugs, true ) ) {
+			return false;
+		}
+	}
+
+	if ( '' !== $contrato ) {
+		if ( 'temporario' === $contrato && ! (bool) get_post_meta( $agency->ID, '_agency_temporary', true ) ) {
+			return false;
+		}
+		if ( 'permanente' === $contrato && ! (bool) get_post_meta( $agency->ID, '_agency_permanent', true ) ) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+/**
+ * Current filter state + available options for the agency directory.
+ *
+ * Options are derived from the agencies actually on display, so a dimension
+ * value is only offered while at least one agency supports it. Invalid or
+ * unsupported URL values fail safely and behave as "no filter".
+ *
+ * @param WP_Post[] $agencies Displayable agency posts (full directory).
+ * @return array{
+ *   area:string, location:string, contrato:string,
+ *   area_options:array<string,string>, location_options:array<string,string>,
+ *   contrato_options:array<string,string>, agencies:WP_Post[]
+ * }
+ */
+function conexao_recruitment_agency_filter_state( $agencies ) {
+	$registry = conexao_recruitment_agency_locations();
+
+	$area_options     = array();
+	$location_options = array();
+	$contrato_options = array();
+
+	foreach ( $agencies as $agency ) {
+		foreach ( conexao_recruitment_agency_area_keys( $agency ) as $key ) {
+			$area_options[ $key ] = true;
+		}
+		foreach ( conexao_recruitment_agency_location_slugs( conexao_recruitment_agency_meta( $agency, '_agency_location' ) ) as $slug ) {
+			$location_options[ $slug ] = true;
+		}
+		if ( (bool) get_post_meta( $agency->ID, '_agency_temporary', true ) ) {
+			$contrato_options['temporario'] = true;
+		}
+		if ( (bool) get_post_meta( $agency->ID, '_agency_permanent', true ) ) {
+			$contrato_options['permanente'] = true;
+		}
+	}
+
+	// Keep the canonical registry order for areas (it matches the Admin UX
+	// editor); locations read best with "Nacional" first, then alphabetical.
+	$area_list = array();
+	foreach ( conexao_recruitment_agency_areas() as $key => $label ) {
+		if ( isset( $area_options[ $key ] ) ) {
+			$area_list[ $key ] = $label;
+		}
+	}
+
+	$location_list = array();
+	if ( isset( $location_options['nacional'] ) ) {
+		$location_list['nacional'] = $registry['nacional']['label'];
+	}
+	$specific = array_diff_key( $location_options, $location_list );
+	foreach ( array_keys( $specific ) as $slug ) {
+		$location_list[ $slug ] = isset( $registry[ $slug ] ) ? $registry[ $slug ]['label'] : $slug;
+	}
+	uasort(
+		$location_list,
+		static function ( $a, $b ) {
+			return strcmp( $a, $b );
+		}
+	);
+	if ( isset( $location_list['nacional'] ) ) {
+		// Re-pin "Nacional" at the top after the alphabetical sort.
+		$nacional = array( 'nacional' => $registry['nacional']['label'] );
+		$location_list = $nacional + array_diff_key( $location_list, $nacional );
+	}
+
+	$contrato_labels = array(
+		'temporario' => __( 'Temporário', 'conexao-br-irlanda' ),
+		'permanente' => __( 'Permanente', 'conexao-br-irlanda' ),
+	);
+	$contrato_list   = array();
+	foreach ( $contrato_labels as $slug => $label ) {
+		if ( isset( $contrato_options[ $slug ] ) ) {
+			$contrato_list[ $slug ] = $label;
+		}
+	}
+
+	// Selected values (invalid/unsupported values degrade to no filter).
+	// phpcs:disable WordPress.Security.NonceVerification.Recommended -- public read-only filter state, like ?categoria= on the archives.
+	$area = isset( $_GET['area'] ) ? sanitize_title( wp_unslash( $_GET['area'] ) ) : '';
+	if ( ! isset( $area_list[ $area ] ) ) {
+		$area = '';
+	}
+
+	$location = isset( $_GET['localizacao'] ) ? sanitize_title( wp_unslash( $_GET['localizacao'] ) ) : '';
+	if ( ! isset( $location_list[ $location ] ) ) {
+		$location = '';
+	}
+
+	$contrato = isset( $_GET['contrato'] ) ? sanitize_title( wp_unslash( $_GET['contrato'] ) ) : '';
+	if ( ! isset( $contrato_list[ $contrato ] ) ) {
+		$contrato = '';
+	}
+	// phpcs:enable WordPress.Security.NonceVerification.Recommended
+
+	$filtered = array();
+	if ( '' === $area && '' === $location && '' === $contrato ) {
+		$filtered = $agencies;
+	} else {
+		foreach ( $agencies as $agency ) {
+			if ( conexao_recruitment_agency_matches_filters( $agency, $area, $location, $contrato ) ) {
+				$filtered[] = $agency;
+			}
+		}
+	}
+
+	return array(
+		'area'             => $area,
+		'location'         => $location,
+		'contrato'         => $contrato,
+		'area_options'     => $area_list,
+		'location_options' => $location_list,
+		'contrato_options' => $contrato_list,
+		'agencies'         => $filtered,
+	);
+}
