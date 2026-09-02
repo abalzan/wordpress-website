@@ -101,17 +101,23 @@ get_header();
 		<?php endwhile; ?>
 
 		<?php
-		// "Onde procurar emprego" — external job-search sites, rendered below
-		// the existing Instagram banner / guidance content (content above is
-		// untouched; the data lives in inc/job-resources.php).
-		get_template_part( 'template-parts/job-resources' );
+		// "Onde procurar emprego" (external job-search sites) is INTENTIONALLY
+		// not rendered on /empregos/ for now — the page goes straight from the
+		// Instagram/vacancies landing content to the recruitment agencies.
+		// Nothing was deleted: the reusable component lives at
+		// template-parts/job-resources.php, the data in inc/job-resources.php
+		// (conexao_job_resources option, editable under Empregos →
+		// "Onde procurar emprego" in wp-admin) and the styles in main.css.
+		// To bring the section back, restore:
+		//   get_template_part( 'template-parts/job-resources' );
 		?>
 
 		<?php
 		// "Agências de recrutamento" — curated recruitment-agency directory
-		// rendered as compact cards below the job resources. The section is a
-		// second useful pathway (Instagram remains the primary current-vacancy
-		// CTA). Data lives in inc/recruitment-agencies.php.
+		// rendered as compact cards directly below the Instagram banner /
+		// guidance content (the "Onde procurar emprego" section is currently
+		// disabled — see the comment above). Instagram remains the primary
+		// current-vacancy CTA. Data lives in inc/recruitment-agencies.php.
 		get_template_part( 'template-parts/recruitment-agencies' );
 		?>
 

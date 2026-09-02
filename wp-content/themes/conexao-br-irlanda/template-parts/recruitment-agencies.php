@@ -26,6 +26,15 @@ if ( empty( $agencies ) ) {
 	<p class="empregos-recruitment-agencies-intro">
 		<?php esc_html_e( 'Algumas agências de recrutamento trabalham com vagas temporárias e permanentes em áreas como armazém, produção, logística, hotelaria, limpeza, varejo e funções operacionais.', 'conexao-br-irlanda' ); ?>
 	</p>
+	<div class="empregos-recruitment-agencies-warning">
+		<p>
+			<strong><?php esc_html_e( 'Atenção:', 'conexao-br-irlanda' ); ?></strong>
+			<?php esc_html_e( 'uma agência de recrutamento legítima não deve cobrar de você para encontrar emprego. Desconfie de pedidos de pagamento, dados bancários, criptomoedas, cartões-presente ou promessas de emprego garantido.', 'conexao-br-irlanda' ); ?>
+		</p>
+		<p>
+			<?php esc_html_e( 'Certifique-se também de que tem o direito legal de trabalhar na Irlanda (visto de trabalho, Stamp 1/1G/4, ou cidadania irlandesa/UE).', 'conexao-br-irlanda' ); ?>
+		</p>
+	</div>
 	<div class="events-grid empregos-recruitment-agencies-grid">
 		<?php foreach ( $agencies as $agency ) :
 			$agency_name     = esc_html( $agency->post_title );
@@ -99,15 +108,5 @@ if ( empty( $agencies ) ) {
 			</div>
 		</article>
 		<?php endforeach; ?>
-	</div>
-
-	<div class="empregos-recruitment-agencies-warning">
-		<p>
-			<strong><?php esc_html_e( 'Atenção:', 'conexao-br-irlanda' ); ?></strong>
-			<?php esc_html_e( 'uma agência de recrutamento legítima não deve cobrar de você para encontrar emprego. Desconfie de pedidos de pagamento, dados bancários, criptomoedas, cartões-presente ou promessas de emprego garantido.', 'conexao-br-irlanda' ); ?>
-		</p>
-		<p>
-			<?php esc_html_e( 'Certifique-se também de que tem o direito legal de trabalhar na Irlanda (visto de trabalho, Stamp 1/1G/4, ou cidadania irlandesa/UE).', 'conexao-br-irlanda' ); ?>
-		</p>
 	</div>
 </section>

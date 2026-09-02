@@ -6302,6 +6302,8 @@ input[type="button"] {
 /* Warning / safety box */
 .empregos-recruitment-agencies-warning {
   margin-top: var(--space-6);
+  /* Bottom spacing mirrors the intro's gap above the agency grid. */
+  margin-bottom: var(--space-5);
   padding: var(--space-4) var(--space-5);
   background: var(--conexao-warning-bg, #fff8e1);
   border: 1px solid var(--conexao-warning-border, #ffe082);
