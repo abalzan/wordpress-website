@@ -1879,7 +1879,30 @@
 [data-theme="dark"] .sponsor-contact-btn--facebook .sponsor-contact-icon { color: #5aa7ff; }
 [data-theme="dark"] .sponsor-contact-btn--linkedin .sponsor-contact-icon { color: #58a6dd; }
 
-/* ===== 39. REDUCED MOTION ===== */
+/* ===== 39. EMPREGOS — RECRUITMENT AGENCIES WARNING =====
+   main.css paints the warning with the light-mode amber tokens
+   (--conexao-warning-bg/border/text fall back to #fff8e1/#ffe082/#e65100
+   and had no dark overrides), so in dark mode the bright cream surface
+   survived while the text inherited the dark-theme gray — ~1.5:1
+   contrast (WCAG fail); the orange "Atenção:" was ~3.6:1. Swap in a
+   dark amber-tinted surface with the dark-mode accent for the border
+   and the "Atenção:" label, and pin the body text to the dark
+   secondary text color. All pairings clear WCAG AA: #c0ccd8 on
+   #2e2314 ≈ 9.4:1 and #f59e42 on #2e2314 ≈ 7.2:1; the #f59e42 border
+   also passes non-text contrast (≈ 7.2:1) and, with the tinted box
+   shape, keeps the warning distinguishable without relying on color.
+   Literal #f59e42 (not var(--conexao-accent)) because
+   conexao_customizer_css() re-declares --conexao-accent on :root AFTER
+   this stylesheet — same reason as .section-eyebrow above. Light mode
+   is untouched: these overrides only apply under [data-theme="dark"]. */
+[data-theme="dark"] .empregos-recruitment-agencies-warning {
+  --conexao-warning-bg: #2e2314;
+  --conexao-warning-border: #f59e42;
+  --conexao-warning-text: #f59e42;
+  color: var(--color-text-secondary);
+}
+
+/* ===== 40. REDUCED MOTION ===== */
 @media (prefers-reduced-motion: reduce) {
   [data-theme="dark"] body,
   [data-theme="dark"] .site-header,
