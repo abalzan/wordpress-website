@@ -4,7 +4,7 @@ REST seeder for the curated recruitment-agency directory (Empregos).
 
 WordPress.com-compatible replacement for scripts/seed-recruitment-agencies.php,
 which requires wp-load.php / WP-CLI (not available on WordPress.com — no SSH,
-no SFTP, no CLI). This script seeds the SAME 15 agencies (identical data,
+no SFTP, no CLI). This script seeds the SAME 27 agencies (identical data,
 copied from seed-recruitment-agencies.php — keep the two in sync) through the
 WordPress REST API using an Application Password.
 
@@ -12,6 +12,15 @@ The `recruitment_agency` CPT and every `_agency_*` meta except `_agency_notes`
 are registered with `show_in_rest => true` (conexao-data-model), so the full
 directory can be created/updated remotely. `_agency_notes` is REST-hidden by
 design (admin-only maintenance surface) and is not seeded here.
+
+Identity rules (per the 2026-09 production migration audit):
+- Records are matched by post SLUG (never by local WordPress post IDs —
+  IDs are not portable between installs).
+- Secondary duplicate protection: if the slug does not exist but
+  `_agency_website` already does, the record is SKIPPED (never duplicated).
+- Matched records whose stored data is identical to the dataset are left
+  UNTOUCHED (reported as "unchanged"); only real field diffs trigger an
+  update. The script NEVER deletes anything.
 
 Usage:
     export WP_USERNAME='your-wpcom-username'
@@ -28,8 +37,8 @@ Options:
     --page-id ID     Empregos page ID for --update-page (default: 11086)
     --dry-run        List what would be created/updated without writing.
 
-The seeder is idempotent: existing agencies are matched by slug and updated,
-missing ones are created — the same behaviour as the PHP seeder.
+The seeder is idempotent: existing agencies are matched by slug and updated
+ONLY when a field actually differs, missing ones are created — never deleted.
 
 Requires Python 3.8+ (standard library only).
 """
@@ -42,7 +51,6 @@ import sys
 import time
 import urllib.error
 import urllib.request
-from datetime import date
 
 # ---------------------------------------------------------------------------
 # Agency data — MUST stay identical to conexao_seed_agencies() in
@@ -93,6 +101,12 @@ EMPREGOS_CONTENT = (
 )
 
 
+# Fixed verification date from the approved dataset (2026-09-02 audit) —
+# do NOT use date.today(): re-running the seeder must not rewrite existing
+# records' verification date.
+LAST_CHECKED = "2026-09-02"
+
+
 def build_meta(agency):
     """REST meta payload — mirrors update_post_meta() calls in the PHP seeder."""
     meta = {
@@ -104,7 +118,7 @@ def build_meta(agency):
         "_agency_permanent": bool(agency["permanent"]),
         "_agency_order": int(agency["order"]),
         "_agency_status": "published",
-        "_agency_last_checked": date.today().strftime("%Y-%m-%d"),
+        "_agency_last_checked": LAST_CHECKED,
     }
     if agency.get("wrc"):
         meta["_agency_wrc_licence"] = agency["wrc"]
@@ -147,22 +161,72 @@ class WpRest:
         raise last_error
 
     def list_agencies(self):
-        """All existing agency posts (id + slug), paged."""
+        """All existing agency posts with the fields needed for matching and
+        diffing (id + slug + status + title + content + meta), paged."""
         existing = {}
         page = 1
         while True:
             batch = self.request(
                 "GET",
-                f"recruitment_agency?per_page=100&page={page}&context=edit&_fields=id,slug",
+                "recruitment_agency?per_page=100&page={}&context=edit"
+                "&_fields=id,slug,status,title,content,meta".format(page),
             )
             if not batch:
                 break
             for post in batch:
-                existing[post.get("slug", "")] = post["id"]
+                existing[post.get("slug", "")] = post
             if len(batch) < 100:
                 break
             page += 1
         return existing
+
+
+def normalize_meta(raw_meta):
+    """Only the keys this seeder owns, with absent values normalized so the
+    diff against build_meta() is meaningful. Platform-owned keys (Jetpack,
+    footnotes, ...) are ignored."""
+    meta = raw_meta or {}
+    normalized = {}
+    for key in ("_agency_job_types", "_agency_location", "_agency_website",
+                "_agency_phone", "_agency_order", "_agency_status",
+                "_agency_last_checked", "_agency_wrc_licence"):
+        value = meta.get(key, "")
+        if value is None:
+            value = ""
+        normalized[key] = value
+    for key in ("_agency_temporary", "_agency_permanent"):
+        normalized[key] = bool(meta.get(key, False))
+    return normalized
+
+
+def diff_fields(agency, post):
+    """Field-level diff between the dataset and an existing production post.
+    Returns a list of human-readable differences (empty = unchanged)."""
+    diffs = []
+    payload = {
+        "title": agency["name"],
+        "slug": agency["slug"],
+        "status": "publish",
+        "content": "",
+        "meta": build_meta(agency),
+    }
+    stored_title = (post.get("title") or {}).get("raw", "")
+    stored_content = (post.get("content") or {}).get("raw", "")
+    stored = {
+        "title": stored_title,
+        "slug": post.get("slug", ""),
+        "status": post.get("status", ""),
+        "content": stored_content,
+        "meta": normalize_meta(post.get("meta")),
+    }
+    for field in ("title", "slug", "status", "content"):
+        if payload[field] != stored[field]:
+            diffs.append(f"{field}: {stored[field]!r} -> {payload[field]!r}")
+    for key, expected in payload["meta"].items():
+        actual = stored["meta"].get(key)
+        if actual != expected:
+            diffs.append(f"{key}: {actual!r} -> {expected!r}")
+    return diffs
 
 
 def main():
@@ -200,9 +264,15 @@ def main():
                  "(O CPT é registrado pelo plugin conexao-data-model — confirme que está ativo.)")
     print(f"Agências existentes: {len(existing)}")
 
-    # --- Upsert (same semantics as the PHP seeder) ---------------------------
-    created = updated = 0
+    # --- Upsert (match by slug; website as secondary duplicate protection) ---
+    created = updated = unchanged = skipped = 0
     action = "SERIA " if args.dry_run else ""
+    # Secondary duplicate index: _agency_website -> production post.
+    by_website = {}
+    for post in existing.values():
+        site = normalize_meta(post.get("meta")).get("_agency_website", "")
+        if site:
+            by_website[site] = post
     for agency in AGENCIES:
         payload = {
             "title": agency["name"],
@@ -211,23 +281,43 @@ def main():
             "content": "",  # Card renders only the structured meta (see PHP seeder).
             "meta": build_meta(agency),
         }
-        post_id = existing.get(agency["slug"])
         wrc_label = f"WRC: {agency['wrc']}" if agency.get("wrc") else "sem WRC"
+        post = existing.get(agency["slug"])
         try:
-            if post_id:
-                print(f"  {action}ATUALIZAR #{post_id} {agency['name']} [{agency['location']}] {wrc_label}")
+            if post:
+                diffs = diff_fields(agency, post)
+                if not diffs:
+                    print(f"  {action}INALTERADA  #{post['id']} {agency['name']} "
+                          f"[{agency['location']}] {wrc_label}")
+                    unchanged += 1
+                    continue
+                print(f"  {action}ATUALIZAR   #{post['id']} {agency['name']} "
+                      f"[{agency['location']}] {wrc_label}")
+                for d in diffs:
+                    print(f"               - {d}")
                 if not args.dry_run:
-                    rest.request("POST", f"recruitment_agency/{post_id}", payload)
+                    rest.request("POST", f"recruitment_agency/{post['id']}", payload)
                 updated += 1
+            elif agency["website"] in by_website:
+                # Slug missing but the website already exists: refuse to
+                # create a duplicate (secondary duplicate protection).
+                other = by_website[agency["website"]]
+                print(f"  {action}PULAR       {agency['name']} — website "
+                      f"{agency['website']} já existe em "
+                      f"#{other['id']} {other.get('slug', '?')}")
+                skipped += 1
             else:
-                print(f"  {action}CRIAR        {agency['name']} [{agency['location']}] {wrc_label}")
+                print(f"  {action}CRIAR       {agency['name']} "
+                      f"[{agency['location']}] {wrc_label}")
                 if not args.dry_run:
                     rest.request("POST", "recruitment_agency", payload)
                 created += 1
         except RuntimeError as e:
             sys.exit(f"Erro ao salvar {agency['name']}: {e}")
 
-    print(f"\n=== Resumo ===\nTotal:       {len(AGENCIES)}\nCriadas:     {created}\nAtualizadas: {updated}")
+    print(f"\n=== Resumo ===\nTotal:       {len(AGENCIES)}\n"
+          f"Criadas:     {created}\nAtualizadas: {updated}\n"
+          f"Inalteradas: {unchanged}\nPuladas:     {skipped}\nExcluídas:   0")
 
     # --- Optional: sync the /empregos/ page body -----------------------------
     if args.update_page:

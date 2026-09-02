@@ -38,45 +38,55 @@ import sys
 import time
 import urllib.error
 import urllib.request
-from datetime import date
 
 # ---------------------------------------------------------------------------
-# Employer data — MUST stay identical to conexao_seed_permit_employers() in
-# scripts/seed-permit-employers.php (single source of truth lives there).
+# Employer data — matches the APPROVED local dataset (local Docker DB, dumped
+# and verified in docs/research/2026-09-empregos-production-migration-audit.md
+# §4). This is the migration source of truth — NOT the older research-doc
+# dataset: no `_employer_sector`, no `_employer_evidence_years` (the local DB
+# carries none), `_employer_roles` only where the local record has one.
 #
 # 'permit': verified = verified HISTORICAL permit evidence (never "currently
 # sponsoring"); unverified = plain entry with NO indicator (Kepak); exception
-# = "Importante" block (Nua Healthcare). Farm Solutions is deliberately
-# absent (on HOLD until its WRC/licensing status is manually resolved).
+# = renders as a normal permit-history card (Nua Healthcare — no special
+# warning). Farm Solutions is deliberately absent (on HOLD until its
+# WRC/licensing status is manually resolved).
+#
+# NOTE: scripts/seed-permit-employers.php still carries the older research-doc
+# dataset (sector/years/roles) and is intentionally left untouched by this
+# migration — the approved local DB supersedes it here.
 # ---------------------------------------------------------------------------
 EMPLOYERS = [
-    {"name": "Mowlam Healthcare", "slug": "mowlam-healthcare", "sector": "Saúde e Cuidados", "roles": "Enfermeiros, Healthcare Assistants", "location": "Nacional (Irlanda)", "website": "https://mowlamhealthcare.com/", "careers": "https://mowlamhealthcare.com/careers/", "permit": "verified", "years": "2023–2025"},
-    {"name": "Resilience Healthcare", "slug": "resilience-healthcare", "sector": "Saúde e Cuidados", "roles": "Healthcare Assistants, Enfermeiros, Equipe de apoio", "location": "Nacional (Irlanda)", "website": "https://resiliencecare.ie/", "careers": "", "permit": "verified", "years": "2023–2025"},
-    {"name": "InisCare", "slug": "iniscare", "sector": "Cuidados Domiciliários", "roles": "Cuidadores domiciliários (Home Carers)", "location": "Nacional (Irlanda)", "website": "https://www.iniscare.ie/", "careers": "https://iniscare.ie/new-job/", "permit": "verified", "years": "2023–2025"},
-    {"name": "UL Hospitals Group (HSE Mid West)", "slug": "ul-hospitals-group", "sector": "Saúde pública (HSE)", "roles": "Enfermeiros, Profissionais de saúde", "location": "Limerick", "website": "https://www.hse.ie/eng/region/midwest/", "careers": "", "permit": "verified", "years": "2023–2025"},
-    {"name": "Cork University Hospital", "slug": "cork-university-hospital", "sector": "Saúde pública (HSE)", "roles": "Enfermeiros, Profissionais de saúde", "location": "Cork", "website": "https://cuh.hse.ie/", "careers": "", "permit": "verified", "years": "2023–2025"},
-    {"name": "University Hospital Galway", "slug": "university-hospital-galway", "sector": "Saúde pública (HSE)", "roles": "Enfermeiros, Profissionais de saúde", "location": "Galway", "website": "https://www.saolta.ie/", "careers": "", "permit": "verified", "years": "2023–2025"},
-    {"name": "Rosderra Irish Meats", "slug": "rosderra-irish-meats", "sector": "Alimentos — Processamento de Carne", "roles": "Operadores de produção, Processamento de alimentos", "location": "Nacional (Irlanda)", "website": "https://www.rosderra.ie/", "careers": "https://www.rosderra.ie/careers/", "permit": "verified", "years": "2023–2025"},
-    {"name": "Dawn Meats", "slug": "dawn-meats", "sector": "Alimentos — Processamento de Carne", "roles": "Operadores de produção, Processamento de alimentos", "location": "Nacional (Irlanda)", "website": "https://www.dawnmeats.com/", "careers": "https://www.dawnmeats.com/careers", "permit": "verified", "years": "2023–2025"},
-    {"name": "ABP Food Group", "slug": "abp-food-group", "sector": "Alimentos — Processamento de Carne", "roles": "Operadores de produção, Processamento de alimentos", "location": "Nacional (Irlanda)", "website": "https://abpfoodgroup.com/", "careers": "https://abpfoodgroup.com/careers/", "permit": "verified", "years": "2023–2025"},
-    {"name": "Monaghan Mushrooms", "slug": "monaghan-mushrooms", "sector": "Agroalimentar — Cogumelos", "roles": "Operadores de produção, Colheita e processamento", "location": "Monaghan; Nacional (Irlanda)", "website": "https://www.monaghan.eu/", "careers": "https://www.monaghan.eu/careers/", "permit": "verified", "years": "2023–2025"},
-    {"name": "Liffey Meats", "slug": "liffey-meats", "sector": "Alimentos — Processamento de Carne", "roles": "Operadores de produção, Processamento de alimentos", "location": "Nacional (Irlanda)", "website": "https://liffeymeats.ie/", "careers": "", "permit": "verified", "years": "2023–2025"},
-    {"name": "Kepak", "slug": "kepak", "sector": "Alimentos — Processamento de Carne", "roles": "Operadores de produção, Processamento de alimentos", "location": "Nacional (Irlanda)", "website": "https://www.kepak.com/", "careers": "https://www.kepak.com/careers/", "permit": "unverified", "years": ""},
-    {"name": "Nua Healthcare", "slug": "nua-healthcare", "sector": "Saúde e Cuidados", "roles": "", "location": "Nacional (Irlanda)", "website": "https://www.nuahealthcare.ie/", "careers": "https://www.nuahealthcare.ie/careers/", "permit": "exception", "years": "2023–2025"},
+    {"name": "Mowlam Healthcare", "slug": "mowlam-healthcare", "roles": "Enfermeiros, Healthcare Assistants", "location": "Nacional (Irlanda)", "website": "https://mowlamhealthcare.com/", "careers": "https://mowlamhealthcare.com/careers/", "permit": "verified"},
+    {"name": "Resilience Healthcare", "slug": "resilience-healthcare", "roles": "Healthcare Assistants, Enfermeiros, Equipe de apoio", "location": "Nacional (Irlanda)", "website": "https://resiliencecare.ie/", "careers": "", "permit": "verified"},
+    {"name": "InisCare", "slug": "iniscare", "roles": "", "location": "Nacional (Irlanda)", "website": "https://www.iniscare.ie/", "careers": "https://iniscare.ie/new-job/", "permit": "verified"},
+    {"name": "UL Hospitals Group", "slug": "ul-hospitals-group", "roles": "", "location": "Limerick", "website": "https://www.hse.ie/eng/region/midwest/", "careers": "", "permit": "verified"},
+    {"name": "Cork University Hospital", "slug": "cork-university-hospital", "roles": "", "location": "Cork", "website": "https://cuh.hse.ie/", "careers": "", "permit": "verified"},
+    {"name": "University Hospital Galway", "slug": "university-hospital-galway", "roles": "", "location": "Galway", "website": "https://www.saolta.ie/", "careers": "", "permit": "verified"},
+    {"name": "Rosderra Irish Meats", "slug": "rosderra-irish-meats", "roles": "", "location": "Nacional (Irlanda)", "website": "https://www.rosderra.ie/", "careers": "https://www.rosderra.ie/careers/", "permit": "verified"},
+    {"name": "Dawn Meats", "slug": "dawn-meats", "roles": "", "location": "Nacional (Irlanda)", "website": "https://www.dawnmeats.com/", "careers": "https://www.dawnmeats.com/careers", "permit": "verified"},
+    {"name": "ABP Food Group", "slug": "abp-food-group", "roles": "", "location": "Nacional (Irlanda)", "website": "https://abpfoodgroup.com/", "careers": "https://abpfoodgroup.com/careers/", "permit": "verified"},
+    {"name": "Monaghan Mushrooms", "slug": "monaghan-mushrooms", "roles": "", "location": "Monaghan; Nacional (Irlanda)", "website": "https://www.monaghan.eu/", "careers": "https://www.monaghan.eu/careers/", "permit": "verified"},
+    {"name": "Liffey Meats", "slug": "liffey-meats", "roles": "", "location": "Nacional (Irlanda)", "website": "https://liffeymeats.ie/", "careers": "", "permit": "verified"},
+    {"name": "Kepak", "slug": "kepak", "roles": "", "location": "Nacional (Irlanda)", "website": "https://www.kepak.com/", "careers": "https://www.kepak.com/careers/", "permit": "unverified"},
+    {"name": "Nua Healthcare", "slug": "nua-healthcare", "roles": "", "location": "Nacional (Irlanda)", "website": "https://www.nuahealthcare.ie/", "careers": "https://www.nuahealthcare.ie/careers/", "permit": "exception"},
 ]
 
 
 def build_meta(employer):
-    """REST meta payload — mirrors update_post_meta() calls in the PHP seeder."""
+    """REST meta payload — mirrors the approved local DB field-by-field.
+
+    Deliberately NOT set (absent from the approved local dataset):
+    `_employer_sector`, `_employer_evidence_years`, `_employer_notes`
+    (REST-hidden by design), `_employer_evidence_source`.
+    """
     return {
-        "_employer_sector": employer["sector"],
         "_employer_roles": employer["roles"],
         "_employer_location": employer["location"],
         "_employer_official_website": employer["website"],
         "_employer_careers_url": employer["careers"],
         "_employer_permit_status": employer["permit"],
-        "_employer_evidence_years": employer["years"],
-        "_employer_last_checked": date.today().strftime("%Y-%m-%d"),
+        "_employer_last_checked": "2026-09-02",
         "_employer_status": "published",
     }
 
