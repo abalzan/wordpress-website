@@ -106,6 +106,10 @@ final class Conexao_Admin_Ux_List {
 				$this->render_status_badge( $post_id );
 				return;
 
+			case 'agency_active':
+				$this->render_agency_active( $post_id );
+				return;
+
 			case 'source':
 				$this->render_source( $post_id );
 				return;
@@ -145,6 +149,30 @@ final class Conexao_Admin_Ux_List {
 			esc_html( $label ),
 			esc_html( $icon )
 		);
+	}
+
+	/**
+	 * Render the "Ativa" column: an agency is active when its publishing
+	 * status is `published` (the same status that gates /empregos/ display).
+	 * Every other status (draft, needs_review, archived) renders as Inativa —
+	 * there is no separate active flag to keep out of sync.
+	 *
+	 * @param int $post_id Post ID.
+	 */
+	private function render_agency_active( $post_id ) {
+		$status = Conexao_Admin_Ux_Actions::get_status( $post_id, $this->post_type );
+
+		if ( 'published' === $status ) {
+			printf(
+				'<span class="conexao-status-badge conexao-status-badge--published"><span class="conexao-status-dot" aria-hidden="true">●</span> %s</span>',
+				esc_html__( 'Ativa', 'conexao-admin-ux' )
+			);
+		} else {
+			printf(
+				'<span class="conexao-status-badge conexao-status-badge--draft"><span class="conexao-status-dot" aria-hidden="true">●</span> %s</span>',
+				esc_html__( 'Inativa', 'conexao-admin-ux' )
+			);
+		}
 	}
 
 	/**
@@ -253,6 +281,16 @@ final class Conexao_Admin_Ux_List {
 			$is_featured = in_array( $value, array( '1', 'on', 'yes', true, 1 ), true );
 			if ( $is_featured ) {
 				echo '<span class="conexao-status-badge conexao-status-badge--published">★ Destaque</span>';
+			} else {
+				echo '<span class="conexao-muted">—</span>';
+			}
+			return;
+		}
+
+		// Boolean format: yes/no checkbox value rendered as a "Sim" badge.
+		if ( 'boolean' === $format ) {
+			if ( in_array( $value, array( '1', 'on', 'yes', true, 1 ), true ) ) {
+				echo '<span class="conexao-status-badge conexao-status-badge--published">' . esc_html__( 'Sim', 'conexao-admin-ux' ) . '</span>';
 			} else {
 				echo '<span class="conexao-muted">—</span>';
 			}

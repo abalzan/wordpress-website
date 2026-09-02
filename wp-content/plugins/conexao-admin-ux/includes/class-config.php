@@ -917,7 +917,7 @@ final class Conexao_Admin_Ux_Config {
 					'priority' => 10,
 					'fields'   => array(
 						array( 'key' => '_agency_name', 'label' => 'Nome da agência', 'type' => 'text', 'required' => true, 'help' => 'Nome oficial da agência de recrutamento. Ex.: "InSource Recruitment".' ),
-						array( 'key' => '_agency_job_types', 'label' => 'Principais tipos de trabalho', 'type' => 'textarea', 'help' => 'Áreas relevantes para quem procura a primeira vaga ou mudou de carreira. Ex.: "Armazém, logística, produção, hotelaria, limpeza, varejo, construção civil, operacional".' ),
+						array( 'key' => '_agency_job_types', 'label' => 'Principais tipos de trabalho', 'type' => 'multiselect', 'options' => class_exists( 'Conexao_Data_Model_Agency' ) ? Conexao_Data_Model_Agency::job_types() : array(), 'help' => 'Marque apenas as áreas confirmadas para esta agência — o site exibe sempre estes rótulos padronizados.' ),
 						array( 'key' => '_agency_location', 'label' => 'Localização / cobertura', 'type' => 'text', 'help' => 'Cidade(s) ou região(ões) atendidas. Ex.: "Dublin" ou "Nacional — Dublin, Cork, Galway".' ),
 					),
 				),
@@ -942,6 +942,14 @@ final class Conexao_Admin_Ux_Config {
 						array( 'key' => '_agency_wrc_licence', 'label' => 'Licença WRC', 'type' => 'text', 'help' => 'Número da licença da Workplace Relations Commission, se confirmada (ex.: "EA 3972"). Deixe em branco se não verificado.' ),
 					),
 				),
+				'interno'   => array(
+					'title'    => 'Notas internas',
+					'icon'     => 'dashicons-lock',
+					'priority' => 40,
+					'fields'   => array(
+						array( 'key' => '_agency_notes', 'label' => 'Notas internas', 'type' => 'textarea', 'help' => 'Anotações de manutenção para a equipe editorial (ex.: "site fora do ar em 03/2025 — aguardar resposta"). Estas notas NUNCA aparecem no site público.' ),
+					),
+				),
 			),
 			'publishing' => array(
 				'statuses' => array(
@@ -954,9 +962,11 @@ final class Conexao_Admin_Ux_Config {
 				'default_status' => 'draft',
 			),
 			'columns'    => array(
-				'location'  => array( 'label' => 'Localização', 'meta' => '_agency_location' ),
-				'job_types' => array( 'label' => 'Tipos de trabalho', 'meta' => '_agency_job_types' ),
-				'status'    => array( 'label' => 'Status', 'render' => 'status' ),
+				'location'     => array( 'label' => 'Localização / cobertura', 'meta' => '_agency_location' ),
+				'temporary'    => array( 'label' => 'Temporárias', 'meta' => '_agency_temporary', 'format' => 'boolean' ),
+				'permanent'    => array( 'label' => 'Permanentes', 'meta' => '_agency_permanent', 'format' => 'boolean' ),
+				'active'       => array( 'label' => 'Ativa', 'render' => 'agency_active' ),
+				'last_checked' => array( 'label' => 'Última verificação', 'meta' => '_agency_last_checked', 'format' => 'date' ),
 			),
 			'bulk_actions' => array(
 				'publish' => array( 'label' => 'Publicar', 'type' => 'status', 'value' => 'published' ),

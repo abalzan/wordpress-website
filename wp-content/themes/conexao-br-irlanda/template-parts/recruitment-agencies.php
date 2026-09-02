@@ -29,7 +29,8 @@ if ( empty( $agencies ) ) {
 	<div class="events-grid empregos-recruitment-agencies-grid">
 		<?php foreach ( $agencies as $agency ) :
 			$agency_name     = esc_html( $agency->post_title );
-			$job_types       = conexao_recruitment_agency_meta( $agency, '_agency_job_types' );
+			$job_type_labels = conexao_recruitment_agency_job_type_labels( conexao_recruitment_agency_meta( $agency, '_agency_job_types' ) );
+			$job_types       = $job_type_labels ? implode( ', ', $job_type_labels ) : '';
 			$location        = conexao_recruitment_agency_meta( $agency, '_agency_location' );
 			$phone           = conexao_recruitment_agency_meta( $agency, '_agency_phone' );
 			$website         = esc_url( conexao_recruitment_agency_meta( $agency, '_agency_website' ) );

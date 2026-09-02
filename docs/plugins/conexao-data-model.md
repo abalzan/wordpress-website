@@ -1,7 +1,7 @@
 # Conexão Data Model
 
 - **Path**: `wp-content/plugins/conexao-data-model/`
-- **Version**: 1.4.0
+- **Version**: 1.4.1
 - **Purpose**: Registers custom post types, shared taxonomies, and editorial meta fields.
 
 ## Responsibilities
@@ -19,6 +19,7 @@
 | `includes/class-meta.php` | Editorial meta boxes (legacy, replaced by admin-ux for supported types) |
 | `includes/class-relationships.php` | Taxonomies and default term seeding |
 | `includes/class-contacts.php` | Apoiador contacts model (`_sponsor_contacts` repeater: types, sanitization, storage) |
+| `includes/class-agency.php` | Recruitment-agency job-type registry (`Conexao_Data_Model_Agency`: canonical keys, pt-BR labels, legacy passthrough) |
 
 ## Data Model
 
@@ -75,6 +76,26 @@ Apoiadores — a single array meta holding an ordered list of rows:
 - Meta is registered in `register_sponsor_contacts_meta()` (array type,
   REST exposure off, sanitize callback as defense-in-depth).
 - Row order is meaningful: preserve insertion order when rendering.
+
+## Recruitment Agency Job Types (`Conexao_Data_Model_Agency`)
+
+Single source of truth for the "Principais tipos de trabalho" of the
+Agências de Recrutamento directory, shared by the Admin UX editor
+(`multiselect` options) and the frontend card rendering (consistent
+labels — the same pattern as the Apoiador contact types).
+
+- `job_types()`: canonical key => pt-BR label (11 values: warehouse,
+  general_operative, factory_production, logistics, hospitality, cleaning,
+  retail, construction_labour, driving_delivery, office_admin,
+  agriculture_seasonal).
+- Storage: `_agency_job_types` holds a comma-separated list of canonical
+  keys (e.g. `warehouse,logistics`). The Admin UX save path whitelists every
+  submitted value against `job_types()`; unknown values are dropped.
+- `job_type_labels($raw)`: maps stored keys to labels; segments that are not
+  canonical keys (legacy free text from records created before the
+  structured editor) pass through unchanged so old data keeps rendering.
+- Agencies are never auto-tagged — only values confirmed by the supplied
+  research may be assigned, and only through the editor.
 
 ## Admin UI
 

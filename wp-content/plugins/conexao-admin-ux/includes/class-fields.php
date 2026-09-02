@@ -93,6 +93,29 @@ final class Conexao_Admin_Ux_Fields {
 				$html .= '</select>';
 				break;
 
+			case 'multiselect':
+				// Checkbox group: options is a value => label map. The value
+				// is stored as a comma-separated list of canonical keys, so
+				// the submitted array is normalized on save (never trust the
+				// raw values) and the frontend renders consistent labels.
+				$options  = isset( $field['options'] ) && is_array( $field['options'] ) ? $field['options'] : array();
+				$selected = is_array( $value )
+					? $value
+					: array_filter( array_map( 'trim', explode( ',', (string) $value ) ), 'strlen' );
+				$selected = array_map( 'strval', (array) $selected );
+
+				$html .= '<div class="conexao-multiselect">';
+				foreach ( $options as $option_value => $option_label ) {
+					$opt_id  = $id . '-' . sanitize_html_class( $option_value );
+					$checked = in_array( (string) $option_value, $selected, true ) ? ' checked="checked"' : '';
+					$html   .= '<label class="conexao-multiselect-option" for="' . esc_attr( $opt_id ) . '">';
+					$html   .= '<input type="checkbox" id="' . esc_attr( $opt_id ) . '" name="' . esc_attr( $name ) . '[]" value="' . esc_attr( $option_value ) . '"' . $checked . ' />';
+					$html   .= ' <span>' . esc_html( $option_label ) . '</span>';
+					$html   .= '</label>';
+				}
+				$html .= '</div>';
+				break;
+
 			case 'taxonomy':
 				$taxonomy = isset( $field['taxonomy'] ) ? $field['taxonomy'] : 'conexao_category';
 				$terms    = get_terms( array( 'taxonomy' => $taxonomy, 'hide_empty' => false, 'orderby' => 'name' ) );
@@ -306,6 +329,28 @@ final class Conexao_Admin_Ux_Fields {
 					break;
 				case 'checkbox':
 					$value = ! empty( $value ) ? 1 : 0;
+					break;
+				case 'multiselect':
+					// Checkbox group: whitelist every submitted value against
+					// the configured options and store a comma-separated list
+					// of canonical keys. Accepts either the editor's array
+					// submission or a comma-separated string; anything unknown
+					// is dropped. An empty selection deletes the meta entirely.
+					if ( is_array( $value ) ) {
+						$values = $value;
+					} else {
+						$values = array_filter( array_map( 'trim', explode( ',', (string) $value ) ), 'strlen' );
+					}
+					$options = isset( $field['options'] ) && is_array( $field['options'] ) ? $field['options'] : array();
+					$allowed = array_map( 'strval', array_keys( $options ) );
+					$clean   = array();
+					foreach ( $values as $single ) {
+						$single = trim( (string) $single );
+						if ( '' !== $single && in_array( $single, $allowed, true ) ) {
+							$clean[] = $single;
+						}
+					}
+					$value = implode( ',', array_unique( $clean ) );
 					break;
 				case 'textarea':
 					$value = sanitize_textarea_field( $value );

@@ -225,3 +225,26 @@
  * Conexao_Admin_Ux_Editor::save()).
  * --------------------------------------------------------------------- */
 #postdivrich { display: none; }
+
+/* ------------------------------------------------------------------
+   Multiselect (checkbox group) field — e.g. agency job types.
+   Wraps options as inline pill-style checkboxes; no JS required.
+   ------------------------------------------------------------------ */
+.conexao-multiselect {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+}
+
+.conexao-multiselect-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.conexao-multiselect-option input[type="checkbox"] {
+  margin: 0;
+  vertical-align: middle;
+}

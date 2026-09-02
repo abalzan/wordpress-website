@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Conexão BR Irlanda Data Model
  * Description: Content types, shared taxonomies, and editorial fields for the Conexão BR Irlanda portal.
- * Version: 1.4.0
+ * Version: 1.4.1
  * Text Domain: conexao-data-model
  *
  * @package Conexao_BR_Irlanda_Data_Model
@@ -16,10 +16,11 @@ define( 'CONEXAO_DATA_MODEL_DIR', plugin_dir_path( __FILE__ ) );
 require_once CONEXAO_DATA_MODEL_DIR . 'includes/class-relationships.php';
 require_once CONEXAO_DATA_MODEL_DIR . 'includes/class-meta.php';
 require_once CONEXAO_DATA_MODEL_DIR . 'includes/class-contacts.php';
+require_once CONEXAO_DATA_MODEL_DIR . 'includes/class-agency.php';
 
 final class Conexao_Data_Model {
 
-	const VERSION = '1.4.0';
+	const VERSION = '1.4.1';
 
 	/** @var Conexao_Data_Model|null */
 	private static $instance = null;
@@ -172,6 +173,22 @@ final class Conexao_Data_Model {
 				)
 			);
 		}
+
+		// Internal maintenance notes — editorial-only, never rendered on the
+		// public site. Kept out of the REST API and gated behind edit_post so
+		// the notes stay an admin-only maintenance surface.
+		register_post_meta(
+			'recruitment_agency',
+			'_agency_notes',
+			array(
+				'single'            => true,
+				'type'              => 'string',
+				'show_in_rest'      => false,
+				'auth_callback'     => function ( $allowed, $meta_key, $object_id ) {
+					return current_user_can( 'edit_post', $object_id );
+				},
+			)
+		);
 	}
 
 	/**

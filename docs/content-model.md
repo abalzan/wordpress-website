@@ -110,12 +110,13 @@ image, body) plus one minimal field:
 
 ### Recruitment Agency
 
-- `_agency_website` (string), `_agency_phone` (string), `_agency_location` (string)
-- `_agency_job_types` (string)
+- `_agency_website` (string — http(s) URL), `_agency_phone` (string), `_agency_location` (string)
+- `_agency_job_types` (string — comma-separated canonical keys from `Conexao_Data_Model_Agency::job_types()`: warehouse, general_operative, factory_production, logistics, hospitality, cleaning, retail, construction_labour, driving_delivery, office_admin, agriculture_seasonal; legacy free-text values are passed through as-is by `job_type_labels()`)
 - `_agency_temporary` (boolean), `_agency_permanent` (boolean)
-- `_agency_order` (integer), `_agency_last_checked` (string — date)
+- `_agency_order` (integer — missing values still render, sorted last), `_agency_last_checked` (string — date, Y-m-d)
 - `_agency_wrc_licence` (string)
-- `_agency_status` (string)
+- `_agency_status` (string — custom publishing status; only `published` renders on /empregos/)
+- `_agency_notes` (string — internal maintenance notes; REST-hidden, never rendered on the site)
 
 ### Leisure (comprehensive image metadata)
 

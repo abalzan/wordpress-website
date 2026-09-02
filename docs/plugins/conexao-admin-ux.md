@@ -1,7 +1,7 @@
 # Conexão Admin UX
 
 - **Path**: `wp-content/plugins/conexao-admin-ux/`
-- **Version**: 1.0.3
+- **Version**: 1.0.4
 - **Purpose**: Professional, reusable CMS admin experience for all custom content types. Replaces generic meta boxes with structured sections, clear statuses, bulk actions, duplicate/archive workflows, dashboard summaries, and leisure image management.
 
 ## Responsibilities
@@ -19,6 +19,31 @@
 ## Supported Content Types
 
 `Conexao_Admin_Ux_Config::SUPPORTED_TYPES`: `event`, `guide`, `job`, `sponsor`, `course_provider`, `leisure`, `recruitment_agency`
+
+### Field types & column renderers
+
+Field controls (config `type`): `text`, `textarea`, `editor`, `date`, `time`,
+`select`, `multiselect` (checkbox group; options are a value => label map,
+stored as a comma-separated list of whitelisted keys — used by the agency
+job types), `taxonomy`, `town`, `url`, `email`, `phone`, `currency`,
+`number`, `media`, `contacts`, `checkbox`, `readonly`.
+
+List column renderers (config `columns`): `render => status` | `source` |
+`event_location` | `category` | `agency_active` (Ativa/Inativa badge derived
+from the publishing status — no separate active flag), or a default meta
+renderer with `format => featured` | `boolean` ("Sim" badge) | `date`.
+
+### Recruitment agencies (Empregos)
+
+Sections: agency info (name, structured job types, location/coverage), site &
+phone, display & verification (temporary/permanent checkboxes, display order,
+last-checked date, WRC licence), and **Notas internas** (`_agency_notes` —
+maintenance-only textarea that is never rendered on the public site and is
+hidden from the REST API). The list shows
+Agency | Localização / cobertura | Temporárias | Permanentes | Ativa | Última
+verificação. An agency is "Ativa" when its status is `published`; that same
+status gates /empregos/ display.
+
 
 ## Key Components
 
