@@ -131,7 +131,7 @@ Same protected-meta/`auth_callback` REST pattern as the agency meta;
 | `_employer_official_website` | Official public-facing website (required) |
 | `_employer_careers_url` | Careers/jobs page, only when confirmed |
 | `_employer_sector` / `_employer_roles` / `_employer_location` | Card content (roles: free text, employer-specific) |
-| `_employer_permit_status` | `verified` (verified HISTORICAL permit evidence — never "currently sponsoring"), `unverified` (plain entry, no indicator), `exception` ("Importante" block) |
+| `_employer_permit_status` | `verified` (verified HISTORICAL permit evidence — never "currently sponsoring"), `unverified` (plain entry, no indicator), `exception` (same historical evidence + company-stated current-position caveat in admin data; renders as a normal permit-history card) |
 | `_employer_evidence_years` | Years with official records, e.g. "2023–2025" |
 | `_employer_evidence_source` | Exact source — admin data only, never rendered |
 | `_employer_last_checked` | Verification date |

@@ -30,12 +30,18 @@
  *     (active values still show as removable chips).
  *
  * Wording rules (do not weaken):
- * - The recruitment-agency warning stays associated with agency resources.
+ * - ONE compact safety/permit notice (.empregos-opportunities-notice)
+ *   sits between the intro and the filters: scam/payment warning, agency
+ *   fee warning, the historical-only Employment Permit caveat and the
+ *   official rules link. It is never rewritten into sponsorship claims.
  * - "Histórico de Employment Permits" means historical DETE evidence only;
  *   it never implies current sponsorship. No "sponsor/sponsorship"
- *   terminology is introduced anywhere.
- * - Exception employers (e.g. a current-position statement) render ONLY in
- *   the "Importante" block below the grid, never as directory cards.
+ *   terminology is introduced anywhere (except "sponsorship atual"
+ *   explicitly qualified as NOT guaranteed).
+ * - Exception permit employers (e.g. a company-stated current-position
+ *   caveat) render as normal permit-history cards with the shared
+ *   indicator; the compact safety/permit notice above the filters is the
+ *   single explanation of the historical-only permit data.
  *
  * Cards reuse the Event card visual language (.event-card*) with narrow
  * type modifiers (.agency-card / .public-sector-card /
@@ -47,17 +53,13 @@
 
 $state = conexao_employment_opportunities_filter_state();
 
-// Cards actually rendered. Render rules carried over from the previous
-// sections: a resource without an external URL has no usable card, and
-// 'exception' permit employers are presented only in the "Importante"
-// block below the grid (their current-position statement must stay
-// prominent, and they are NOT presented as directory entries).
+// Cards actually rendered. A resource without an external URL has no
+// usable card. 'exception' permit employers render as normal
+// permit-history cards — their structured data is unchanged and the
+// compact notice above the filters carries the permit explanation.
 $opportunities = array();
 foreach ( $state['opportunities'] as $item ) {
 	if ( '' === trim( (string) $item['url'] ) ) {
-		continue;
-	}
-	if ( 'permit_history' === $item['resource_type'] && 'exception' === ( $item['meta']['permit_status'] ?? '' ) ) {
 		continue;
 	}
 	$opportunities[] = $item;
@@ -151,18 +153,6 @@ $card_type_labels = array(
 );
 
 $new_tab_hint = esc_attr__( '(abre em nova aba)', 'conexao-br-irlanda' );
-
-// "Importante" block (exception employers): context, not filtered results —
-// derived from the full collection and shown whenever the permit-history
-// type is not filtered out by ?tipo=.
-$exception_employers = array();
-if ( '' === $state['tipo'] || 'permit_history' === $state['tipo'] ) {
-	foreach ( conexao_employment_opportunities( array( 'permit_history' ) ) as $item ) {
-		if ( 'exception' === ( $item['meta']['permit_status'] ?? '' ) ) {
-			$exception_employers[] = $item;
-		}
-	}
-}
 ?>
 <section class="empregos-opportunities" aria-labelledby="empregos-opportunities-title">
 	<span id="empregos-agencies-title"></span>
@@ -170,43 +160,20 @@ if ( '' === $state['tipo'] || 'permit_history' === $state['tipo'] ) {
 	<span id="empregos-permit-employers-title"></span>
 	<h2 id="empregos-opportunities-title" class="empregos-opportunities-title">
 		<?php esc_html_e( 'Oportunidades de emprego', 'conexao-br-irlanda' ); ?>
-
-	<div class="empregos-opportunities-context">
-		<p class="empregos-opportunities-context-agencies">
-			<?php esc_html_e( 'Nas agências de recrutamento: algumas trabalham com vagas temporárias e permanentes em áreas como armazém, produção, logística, hotelaria, limpeza, varejo e funções operacionais.', 'conexao-br-irlanda' ); ?>
-		</p>
-		<div class="empregos-recruitment-agencies-warning">
-			<p>
-				<strong><?php esc_html_e( 'Atenção:', 'conexao-br-irlanda' ); ?></strong>
-				<?php esc_html_e( 'uma agência de recrutamento legítima não deve cobrar de você para encontrar emprego. Desconfie de pedidos de pagamento, dados bancários, criptomoedas, cartões-presente ou promessas de emprego garantido.', 'conexao-br-irlanda' ); ?>
-			</p>
-			<p>
-				<?php esc_html_e( 'Certifique-se também de que tem o direito legal de trabalhar na Irlanda (visto de trabalho, Stamp 1/1G/4, ou cidadania irlandesa/UE).', 'conexao-br-irlanda' ); ?>
-			</p>
-		</div>
-		<div class="empregos-permit-employers-warning">
-			<p>
-				<?php esc_html_e( '⚠️ Nenhuma empresa ou agência pode garantir a aprovação de um Employment Permit. A elegibilidade depende da vaga, do empregador, da remuneração, das qualificações e das regras vigentes na Irlanda.', 'conexao-br-irlanda' ); ?>
-			</p>
-		</div>
-		<div class="empregos-permit-employers-warning">
-			<p>
-				<?php esc_html_e( '⚠️ Nunca pague a intermediários por uma promessa de emprego, visto ou Employment Permit. Desconfie de ofertas que garantam "visto fácil" ou aprovação garantida.', 'conexao-br-irlanda' ); ?>
-			</p>
-		</div>
-		<div class="empregos-permit-employers-note">
-			<p>
-				<span class="empregos-permit-indicator empregos-permit-indicator--verified" aria-hidden="true">✓ <?php esc_html_e( 'Histórico de Employment Permits', 'conexao-br-irlanda' ); ?></span>
-				<?php esc_html_e( 'Há histórico oficial de Employment Permits para este empregador nos dados oficiais do Department of Enterprise — um registro do passado, não uma promessa de sponsorship atual. Algumas funções podem ser elegíveis para Employment Permit, dependendo dos requisitos da vaga e das regras vigentes.', 'conexao-br-irlanda' ); ?>
-				<a href="https://enterprise.gov.ie/en/what-we-do/workplace-and-skills/employment-permits/" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Consultar as regras oficiais vigentes', 'conexao-br-irlanda' ); ?><span class="screen-reader-text"> <?php echo esc_html( $new_tab_hint ); ?></span></a>
-			</p>
-		</div>
-	</div>
-
 	</h2>
-	<p class="empregos-opportunities-intro">
-		<?php esc_html_e( 'Um diretório único com três caminhos diferentes: agências de recrutamento, portais oficiais do setor público e empresas com histórico de Employment Permits. Use os filtros para encontrar o que faz sentido para o seu perfil.', 'conexao-br-irlanda' ); ?>
-	</p>
+
+	<aside class="empregos-opportunities-notice" role="note" aria-label="<?php esc_attr_e( 'Avisos importantes sobre emprego e Employment Permits', 'conexao-br-irlanda' ); ?>">
+		<p>
+			<strong><?php esc_html_e( 'Atenção:', 'conexao-br-irlanda' ); ?></strong>
+			<?php esc_html_e( 'nunca pague por uma promessa de emprego, visto ou Employment Permit. Uma agência de recrutamento legítima não deve cobrar para encontrar emprego.', 'conexao-br-irlanda' ); ?>
+			<span class="empregos-permit-indicator empregos-permit-indicator--verified">✓ <?php esc_html_e( 'Histórico de Employment Permits', 'conexao-br-irlanda' ); ?></span>
+			<?php esc_html_e( 'indica uso anterior nos dados oficiais do Department of Enterprise e não garante sponsorship atual — a elegibilidade depende da vaga, do empregador e das regras vigentes na Irlanda.', 'conexao-br-irlanda' ); ?>
+			<a href="https://enterprise.gov.ie/en/what-we-do/workplace-and-skills/employment-permits/" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Consultar as regras oficiais', 'conexao-br-irlanda' ); ?><span class="screen-reader-text"> <?php echo esc_html( $new_tab_hint ); ?></span></a>
+		</p>
+		<p class="empregos-opportunities-notice-secondary">
+			<?php esc_html_e( 'Certifique-se de que tem direito legal a trabalhar na Irlanda.', 'conexao-br-irlanda' ); ?>
+		</p>
+	</aside>
 
 	<div class="agency-filters" data-agency-filters>
 		<div class="agency-filters-toolbar">
@@ -465,6 +432,28 @@ if ( '' === $state['tipo'] || 'permit_history' === $state['tipo'] ) {
 							</fieldset>
 
 
+						<?php if ( ! $show_dimension_filters ) : ?>
+							<?php
+							// The area/localização/contrato fieldsets are hidden while a
+							// single non-agency type is selected, but active values must
+							// survive a mobile tipo change exactly like the desktop
+							// dropdown links do (they stay visible as removable chips on
+							// both). Mirror them as hidden inputs so the form submit
+							// never silently resets the other dimensions.
+							$hidden_dimensions = array(
+								'area'        => $state['area'],
+								'localizacao' => $state['location'],
+								'contrato'    => $state['contrato'],
+							);
+							foreach ( $hidden_dimensions as $hidden_name => $hidden_value ) :
+								if ( '' === $hidden_value ) {
+									continue;
+								}
+								?>
+								<input type="hidden" name="<?php echo esc_attr( $hidden_name ); ?>" value="<?php echo esc_attr( $hidden_value ); ?>">
+							<?php endforeach; ?>
+						<?php endif; ?>
+
 							<?php if ( $show_dimension_filters && ! empty( $state['area_options'] ) ) : ?>
 								<fieldset class="agency-filters-mobile-section">
 									<legend class="agency-filters-mobile-legend"><?php esc_html_e( 'Área de trabalho', 'conexao-br-irlanda' ); ?></legend>
@@ -664,7 +653,7 @@ if ( '' === $state['tipo'] || 'permit_history' === $state['tipo'] ) {
 				$location      = (string) ( $item['meta']['location_display'] ?? '' );
 				$website       = esc_url( $item['url'] );
 				$careers       = esc_url( (string) ( $item['meta']['careers_url'] ?? '' ) );
-				$is_verified   = ! empty( $item['meta']['is_verified'] );
+				$has_permit_history = ! empty( $item['has_permit_history'] );
 				$years         = (string) ( $item['meta']['evidence_years'] ?? '' );
 				?>
 				<article class="event-card permit-employer-card employer-card">
@@ -674,7 +663,7 @@ if ( '' === $state['tipo'] || 'permit_history' === $state['tipo'] ) {
 							<a href="<?php echo esc_url( $website ); ?>" title="<?php echo esc_attr( $new_tab_hint ); ?>" target="_blank" rel="noopener noreferrer"><?php echo $employer_name; ?></a>
 						</h3>
 
-						<?php if ( $is_verified ) : ?>
+						<?php if ( $has_permit_history ) : ?>
 							<div class="employer-card-permit">
 								<span class="empregos-permit-indicator empregos-permit-indicator--verified">✓ <?php esc_html_e( 'Histórico de Employment Permits', 'conexao-br-irlanda' ); ?></span>
 								<?php if ( $years ) : ?>
@@ -729,42 +718,6 @@ if ( '' === $state['tipo'] || 'permit_history' === $state['tipo'] ) {
 			<?php endif; ?>
 		<?php endforeach; ?>
 	</div>
-	<?php endif; ?>
-
-	<?php if ( ! empty( $exception_employers ) ) : ?>
-		<div class="empregos-permit-exceptions">
-			<h3 class="empregos-permit-exceptions-title"><?php esc_html_e( 'Importante', 'conexao-br-irlanda' ); ?></h3>
-			<?php foreach ( $exception_employers as $item ) : ?>
-				<?php
-				$employer_name = esc_html( $item['title'] );
-				$sector        = (string) ( $item['meta']['sector'] ?? '' );
-				$location      = (string) ( $item['meta']['location_display'] ?? '' );
-				$website       = esc_url( (string) $item['url'] );
-				$years         = (string) ( $item['meta']['evidence_years'] ?? '' );
-				?>
-				<div class="empregos-permit-exceptions-item">
-					<p class="empregos-permit-exceptions-employer">
-						<?php if ( $website ) : ?>
-							<a href="<?php echo esc_url( $website ); ?>" target="_blank" rel="noopener noreferrer"><?php echo $employer_name; ?></a><span class="screen-reader-text"> <?php echo esc_html( $new_tab_hint ); ?></span>
-						<?php else : ?>
-							<?php echo $employer_name; ?>
-						<?php endif; ?>
-						<?php if ( $sector ) : ?>
-							<span class="empregos-permit-exceptions-meta"> — <?php echo esc_html( $sector ); ?><?php echo $location ? ', ' . esc_html( $location ) : ''; ?></span>
-						<?php endif; ?>
-					</p>
-					<p class="empregos-permit-exceptions-note">
-						<?php
-						echo esc_html( sprintf(
-							/* translators: %s: years with official records, e.g. "2023–2025". */
-							__( 'Aparece nos dados oficiais de Employment Permits (%s), mas, segundo informação oficial da empresa, NÃO está atualmente patrocinando Employment Permits para recrutamento internacional.', 'conexao-br-irlanda' ),
-							$years ? $years : __( 'anos anteriores', 'conexao-br-irlanda' )
-						) );
-						?>
-					</p>
-				</div>
-			<?php endforeach; ?>
-		</div>
 	<?php endif; ?>
 </section>
 

@@ -31,8 +31,10 @@ Permits"). In wp-admin both appear as a submenu item under the existing
 Empregos menu. `permit_employer` records carry a `_employer_permit_status`
 of `verified` (verified HISTORICAL permit evidence — never "currently
 sponsoring"), `unverified` (plain entry, no indicator), or `exception`
-(rendered in the "Importante" block with the employer's current-position
-statement). See
+(has the same historical evidence plus a company-stated current-position
+caveat kept in the admin data; it renders as a normal permit-history
+card — the unified directory's compact notice is the single Employment
+Permit explanation). See
 `docs/research/2026-09-empregos-agencies-and-employment-permits.md` for the
 validated data and editorial rules.
 

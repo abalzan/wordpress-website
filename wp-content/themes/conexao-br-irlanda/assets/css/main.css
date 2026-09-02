@@ -6222,8 +6222,9 @@ input[type="button"] {
    existing card design and dark-mode treatment, with narrow type
    modifiers (.agency-card / .public-sector-card /
    .permit-employer-card) and a small non-color type label
-   (.opportunity-card-type). The temp/permanent flags, detail
-   rows and the warning boxes keep their established styles. */
+   (.opportunity-card-type). The temp/permanent flags and detail
+   rows keep their established styles; the safety/permit copy is
+   ONE compact notice (.empregos-opportunities-notice). */
 
 .empregos-opportunities {
   margin-top: var(--space-7);
@@ -6235,31 +6236,9 @@ input[type="button"] {
   font-size: clamp(1.375rem, 3vw, 1.75rem);
   font-weight: 700;
   color: var(--color-text);
-  margin-bottom: var(--space-2);
+  /* Direct flow into the compact safety/permit notice below. */
+  margin-bottom: var(--space-4);
   line-height: 1.2;
-}
-
-.empregos-opportunities-intro {
-  font-size: 0.9375rem;
-  color: var(--color-text-secondary, #555);
-  margin-bottom: var(--space-5);
-  line-height: 1.5;
-  max-width: 720px;
-}
-
-/* Context block: agency-specific context + the recruitment-agency
-   and Employment Permit warnings, between the intro and the unified
-   filters — never buried, never rewritten into sponsorship claims. */
-.empregos-opportunities-context {
-  margin-bottom: var(--space-5);
-}
-
-.empregos-opportunities-context-agencies {
-  font-size: 0.9375rem;
-  color: var(--color-text-secondary, #555);
-  line-height: 1.5;
-  margin: 0 0 var(--space-3);
-  max-width: 720px;
 }
 
 /* Small non-color type label on every card. Follows the neutral
@@ -6365,29 +6344,50 @@ input[type="button"] {
   text-decoration: underline;
 }
 
-/* Warning / safety box */
-.empregos-recruitment-agencies-warning {
-  margin-top: var(--space-6);
-  /* Bottom spacing mirrors the intro's gap above the agency grid. */
+/* ONE compact safety/permit notice between the intro and the filters
+   (consolidates the former three warning boxes): scam/payment warning,
+   agency fee warning, historical-only Employment Permit caveat and the
+   official rules link. Reuses the amber token system (same fallbacks,
+   same dark-mode overrides in dark-mode.css) and keeps the copy short
+   so the directory still reads as a directory first. */
+.empregos-opportunities-notice {
   margin-bottom: var(--space-5);
-  padding: var(--space-4) var(--space-5);
+  padding: var(--space-3) var(--space-4);
   background: var(--conexao-warning-bg, #fff8e1);
   border: 1px solid var(--conexao-warning-border, #ffe082);
   border-radius: var(--conexao-radius-sm, 8px);
   font-size: 0.875rem;
-  line-height: 1.5;
+  line-height: 1.55;
 }
 
-.empregos-recruitment-agencies-warning p {
+.empregos-opportunities-notice p {
   margin: 0;
 }
 
-.empregos-recruitment-agencies-warning p + p {
+.empregos-opportunities-notice p + p {
   margin-top: var(--space-2);
 }
 
-.empregos-recruitment-agencies-warning strong {
+.empregos-opportunities-notice strong {
   color: var(--conexao-warning-text, #e65100);
+}
+
+.empregos-opportunities-notice a {
+  color: var(--color-text);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.empregos-opportunities-notice .empregos-permit-indicator {
+  margin-right: var(--space-2);
+}
+
+/* Secondary work-right reminder: visually subordinate to the main
+   warning sentence, still readable (secondary text token, light + dark). */
+.empregos-opportunities-notice-secondary {
+  font-size: 0.8125rem;
+  color: var(--color-text-secondary, #555);
 }
 
 /* =============================================================
@@ -7120,62 +7120,18 @@ input[type="button"] {
 
 
 /* =============================================================
-   Empregos — Permit-history employers: indicator, warning boxes
-   and the "Importante" exception block (page-empregos.php)
+   Empregos — Permit-history employers: indicator pill
    =============================================================
    The former standalone "Empresas com histórico de Employment
    Permits" section is now part of the unified opportunities
    directory; its card/section rules moved to the unified block
-   above. What remains here is the shared evidence/warning UI:
-   the amber warning boxes, the ✓ explanation note, the compact
-   ✓ indicator pill and the "Importante" exception block.
+   above. What remains here is the shared evidence UI: the compact
+   ✓ indicator pill (also used in the unified directory's compact
+   safety/permit notice).
    The ✓ means verified HISTORICAL permit evidence only — the copy
    in template-parts/employment-opportunities.php enforces the
-   wording. */
-
-/* Warning boxes reuse the amber token system of the agencies warning
-   (same fallbacks, same dark-mode overrides in dark-mode.css). */
-.empregos-permit-employers-warning {
-  margin-bottom: var(--space-3);
-  padding: var(--space-3) var(--space-4);
-  background: var(--conexao-warning-bg, #fff8e1);
-  border: 1px solid var(--conexao-warning-border, #ffe082);
-  border-radius: var(--conexao-radius-sm, 8px);
-  font-size: 0.875rem;
-  line-height: 1.5;
-}
-
-.empregos-permit-employers-warning p {
-  margin: 0;
-}
-
-/* Shared explanation note: the ✓ indicator legend + permit wording. */
-.empregos-permit-employers-note {
-  margin-top: var(--space-4);
-  margin-bottom: var(--space-5);
-  padding: var(--space-3) var(--space-4);
-  background: var(--color-surface-muted, #f6f8f7);
-  border: 1px solid var(--color-border);
-  border-radius: var(--conexao-radius-sm, 8px);
-  font-size: 0.875rem;
-  line-height: 1.6;
-}
-
-.empregos-permit-employers-note p {
-  margin: 0;
-  color: var(--color-text-secondary, #555);
-}
-
-.empregos-permit-employers-note a {
-  color: var(--color-text);
-  font-weight: 600;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-
-.empregos-permit-employers-note .empregos-permit-indicator {
-  margin-right: var(--space-2);
-}
+   wording. The former amber warning boxes were consolidated into
+   .empregos-opportunities-notice (see the unified directory block). */
 
 /* Compact permit indicator pill (✓ Histórico de Employment Permits). */
 .empregos-permit-indicator {
@@ -7221,52 +7177,4 @@ input[type="button"] {
 
 .employer-card-links .employer-card-cta {
   margin-top: 0;
-}
-
-/* "Importante" exceptions block (e.g. Nua Healthcare): small, text-only,
-   amber-accented so the exception is immediately visible without a
-   misleading permit badge. */
-.empregos-permit-exceptions {
-  margin-top: var(--space-5);
-  padding: var(--space-4) var(--space-5);
-  background: var(--conexao-warning-bg, #fff8e1);
-  border: 1px solid var(--conexao-warning-border, #ffe082);
-  border-left-width: 4px;
-  border-radius: var(--conexao-radius-sm, 8px);
-}
-
-.empregos-permit-exceptions-title {
-  font-size: 0.9375rem;
-  font-weight: 700;
-  margin: 0 0 var(--space-2);
-  color: var(--conexao-warning-text, #e65100);
-}
-
-.empregos-permit-exceptions-item + .empregos-permit-exceptions-item {
-  margin-top: var(--space-3);
-}
-
-.empregos-permit-exceptions-employer {
-  margin: 0;
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--color-text);
-}
-
-.empregos-permit-exceptions-employer a {
-  color: var(--color-text);
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-
-.empregos-permit-exceptions-meta {
-  font-weight: 400;
-  color: var(--color-text-secondary, #555);
-}
-
-.empregos-permit-exceptions-note {
-  margin: var(--space-1) 0 0;
-  font-size: 0.8125rem;
-  line-height: 1.55;
-  color: var(--color-text-secondary, #555);
 }

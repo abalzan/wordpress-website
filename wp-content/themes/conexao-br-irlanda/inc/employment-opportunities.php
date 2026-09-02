@@ -290,35 +290,43 @@ function conexao_employment_opportunity_from_permit_employer( $employer ) {
  * @return array[] List of opportunity items (see the normalizer header).
  */
 function conexao_employment_opportunities( $resource_types = array() ) {
-	$items = array();
-
-	// Agencies (directory order), via the existing query helper.
-	foreach ( conexao_recruitment_agencies() as $agency ) {
-		if ( '' === conexao_recruitment_agency_meta( $agency, '_agency_website' ) ) {
-			continue;
-		}
-		$items[] = conexao_employment_opportunity_from_agency( $agency );
-	}
-
-	// Public-sector portals (entries without a name or URL are skipped —
-	// they can never render a usable card).
-	foreach ( conexao_public_sector_jobs() as $job ) {
-		if ( '' === trim( (string) ( $job['name'] ?? '' ) ) || '' === trim( (string) ( $job['url'] ?? '' ) ) ) {
-			continue;
-		}
-		$items[] = conexao_employment_opportunity_from_public_sector_job( $job );
-	}
-
-	// Permit employers (name order), via the existing query helper.
-	foreach ( conexao_permit_employers() as $employer ) {
-		$items[] = conexao_employment_opportunity_from_permit_employer( $employer );
-	}
-
-	// Optional resource-type whitelist.
+	// Resolve the whitelist FIRST so sources that cannot contribute are
+	// never queried/normalized (e.g. a caller asking only for permit
+	// employers must not re-run the agencies query).
 	$wanted = array();
 	foreach ( (array) $resource_types as $type ) {
 		if ( is_string( $type ) && '' !== $type ) {
 			$wanted[ $type ] = true;
+		}
+	}
+
+	$items = array();
+
+	// Agencies (directory order), via the existing query helper.
+	if ( ! $wanted || isset( $wanted['agency'] ) ) {
+		foreach ( conexao_recruitment_agencies() as $agency ) {
+			if ( '' === conexao_recruitment_agency_meta( $agency, '_agency_website' ) ) {
+				continue;
+			}
+			$items[] = conexao_employment_opportunity_from_agency( $agency );
+		}
+	}
+
+	// Public-sector portals (entries without a name or URL are skipped —
+	// they can never render a usable card).
+	if ( ! $wanted || isset( $wanted['public_sector'] ) ) {
+		foreach ( conexao_public_sector_jobs() as $job ) {
+			if ( '' === trim( (string) ( $job['name'] ?? '' ) ) || '' === trim( (string) ( $job['url'] ?? '' ) ) ) {
+				continue;
+			}
+			$items[] = conexao_employment_opportunity_from_public_sector_job( $job );
+		}
+	}
+
+	// Permit employers (name order), via the existing query helper.
+	if ( ! $wanted || isset( $wanted['permit_history'] ) ) {
+		foreach ( conexao_permit_employers() as $employer ) {
+			$items[] = conexao_employment_opportunity_from_permit_employer( $employer );
 		}
 	}
 

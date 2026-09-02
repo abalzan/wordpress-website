@@ -228,9 +228,11 @@ final class Conexao_Data_Model {
 	 *   statistics — never "currently sponsoring".
 	 * - 'unverified' renders as a normal employer entry with NO permit
 	 *   indicator (e.g. Kepak while its DETE legal entity is being matched).
-	 * - 'exception' renders in the "Importante" block with the employer's
+	 * - 'exception' carries the same historical evidence plus the employer's
 	 *   own current-position statement (e.g. Nua Healthcare: not currently
-	 *   recruiting internationally / not sponsoring GEPs).
+	 *   recruiting internationally / not sponsoring GEPs) and renders as a
+	 *   normal permit-history card in the unified directory; the compact
+	 *   safety/permit notice is the single frontend explanation.
 	 * - `_employer_evidence_source` and `_employer_evidence_years` stay in
 	 *   the admin data; the frontend shows a single shared source note.
 	 */

@@ -19,8 +19,9 @@
  *   it does.
  * - `unverified` renders as a normal employer entry with NO permit
  *   indicator (e.g. Kepak until its exact DETE legal entity is matched).
- * - `exception` renders in the "Importante" block below the cards with
- *   the employer's current-position statement (e.g. Nua Healthcare).
+ * - `exception` carries the same historical evidence plus the employer's
+ *   current-position statement (e.g. Nua Healthcare) and renders as a
+ *   normal permit-history card in the unified directory.
  * - WRC/DETE reference numbers stay in the admin data only. Evidence
  *   sources stay in the admin data only — the section shows ONE shared
  *   source note plus a single link to the official guidance.

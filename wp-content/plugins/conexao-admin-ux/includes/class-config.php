@@ -997,8 +997,10 @@ final class Conexao_Admin_Ux_Config {
 	 *   never "currently sponsoring" — the frontend copy enforces this.
 	 * - 'unverified' = normal employer entry with NO permit indicator
 	 *   (used for Kepak until its exact DETE legal entity is validated).
-	 * - 'exception' = rendered in the "Importante" block with the
-	 *   employer's current-position statement (Nua Healthcare).
+	 * - 'exception' = same historical evidence plus the employer's
+	 *   current-position statement (Nua Healthcare); renders as a normal
+	 *   permit-history card, with the frontend compact notice as the
+	 *   single Employment Permit explanation.
 	 * - No WRC/DETE reference numbers are ever shown on the frontend;
 	 *   keep them in the internal notes field only.
 	 * - No salary thresholds, quotas, ratings or sponsorship wording.
@@ -1049,7 +1051,7 @@ final class Conexao_Admin_Ux_Config {
 					'icon'     => 'dashicons-visibility',
 					'priority' => 30,
 					'fields'   => array(
-						array( 'key' => '_employer_permit_status', 'label' => 'Situação do histórico', 'type' => 'select', 'options' => array( 'verified' => 'Histórico verificado (dados oficiais)', 'unverified' => 'Sem histórico verificado (entrada simples, sem selo)', 'exception' => 'Exceção (não patrocina atualmente — bloco Importante)' ), 'help' => '"Histórico verificado" = evidência HISTÓRICA nos dados oficiais do Department of Enterprise. NUNCA significa que a empresa patrocina hoje.' ),
+						array( 'key' => '_employer_permit_status', 'label' => 'Situação do histórico', 'type' => 'select', 'options' => array( 'verified' => 'Histórico verificado (dados oficiais)', 'unverified' => 'Sem histórico verificado (entrada simples, sem selo)', 'exception' => 'Exceção (histórico oficial, mas a empresa informa que não patrocina atualmente)' ), 'help' => '"Histórico verificado" = evidência HISTÓRICA nos dados oficiais do Department of Enterprise. NUNCA significa que a empresa patrocina hoje.' ),
 						array( 'key' => '_employer_evidence_years', 'label' => 'Anos com evidência', 'type' => 'text', 'help' => 'Anos em que a empresa aparece nos dados oficiais. Ex.: "2023–2025". Deixe em branco se não verificado.' ),
 						array( 'key' => '_employer_evidence_source', 'label' => 'Fonte da evidência (interna)', 'type' => 'text', 'help' => 'Fonte exata, apenas nos dados administrativos. Ex.: "DETE Permits issued to companies 2023–2025". Esta fonte NUNCA aparece no site público — a seção mostra uma única nota de fonte compartilhada.' ),
 						array( 'key' => '_employer_last_checked', 'label' => 'Última verificação', 'type' => 'date', 'help' => 'Data em que os dados do empregador foram verificados pela última vez.' ),
