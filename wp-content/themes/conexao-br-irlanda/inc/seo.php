@@ -198,6 +198,14 @@ function conexao_seo_canonical() {
 }
 add_action( 'wp_head', 'conexao_seo_canonical', 5 );
 
+// This theme renders its own canonical for every indexable context above
+// (singular, archives, terms, search — normalized for pagination and query
+// parameters). WordPress core's rel_canonical() would emit a SECOND,
+// unnormalized canonical tag on singular pages (e.g. /empregos/?pagina=2
+// rendered two identical <link rel="canonical"> tags), so remove it.
+remove_action( 'wp_head', 'rel_canonical' );
+
+
 /**
  * ---------------------------------------------------------------------------
  * 4. OPEN GRAPH + TWITTER CARDS
@@ -278,6 +286,12 @@ function conexao_seo_noindex() {
 		$noindex = true;
 	} elseif ( is_paged() ) {
 		// Paginated archives canonicalize to base; noindex to avoid dupes.
+		$noindex = true;
+	} elseif ( is_singular() && isset( $_GET['pagina'] ) && (int) $_GET['pagina'] > 1 ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- public read-only pagination state.
+		// Query-string pagination on static pages (e.g. /empregos/?pagina=N on
+		// the unified Empregos directory) is invisible to is_paged(). Treat it
+		// exactly like /page/N/: the canonical above already points to the
+		// base page, so paginated states are noindexed to avoid dupes.
 		$noindex = true;
 	} elseif ( is_tax( 'conexao_tag' ) ) {
 		// Tag archives are thin/duplicative; noindex.

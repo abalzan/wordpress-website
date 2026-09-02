@@ -100,6 +100,52 @@ $remove_area_url     = $opportunity_filter_url( $state['tipo'], '', $state['loca
 $remove_location_url = $opportunity_filter_url( $state['tipo'], $state['area'], '', $state['contrato'] );
 $remove_contrato_url = $opportunity_filter_url( $state['tipo'], $state['area'], $state['location'], '' );
 
+// --- Server-side pagination of the FINAL filtered collection ---------------
+// Pipeline: merge → filter (above) → count → paginate → render. The unified
+// directory is a static page, not a main-query archive, so pagination uses
+// the ?pagina=N query var instead of /page/N/ — the same slice-by-page
+// contract the archives get from the WordPress query. initInfiniteScroll()
+// (assets/js/main.js) then enhances it exactly like Blog/Guias/Lazer.
+$per_page    = 24;
+$total_items = count( $opportunities );
+$total_pages = (int) ceil( $total_items / $per_page );
+
+// phpcs:disable WordPress.Security.NonceVerification.Recommended -- public read-only pagination state, like the filters above.
+$pagina = isset( $_GET['pagina'] ) ? absint( wp_unslash( $_GET['pagina'] ) ) : 1;
+// phpcs:enable WordPress.Security.NonceVerification.Recommended
+$pagina = max( 1, $pagina );
+if ( $total_pages > 0 ) {
+	// Out-of-range requests (stale/shared links) clamp to the last real page.
+	$pagina = min( $pagina, $total_pages );
+}
+
+$offset                = ( $pagina - 1 ) * $per_page;
+$current_opportunities = array_slice( $opportunities, $offset, $per_page );
+
+// Page URLs keep every active filter (?tipo=/?area=/?localizacao=/?contrato=)
+// and always carry ?pagina=N. Filter links/chips/the mobile form are built
+// from the filter state only and never include pagina, so changing any
+// filter always lands on page 1 (no stale pagina survives a filter change).
+$opportunity_paginated_url = static function ( $page_number ) use ( $page_url, $section_anchor, $state ) {
+	$args = array();
+	if ( '' !== $state['tipo'] ) {
+		$args['tipo'] = $state['tipo'];
+	}
+	if ( '' !== $state['area'] ) {
+		$args['area'] = $state['area'];
+	}
+	if ( '' !== $state['location'] ) {
+		$args['localizacao'] = $state['location'];
+	}
+	if ( '' !== $state['contrato'] ) {
+		$args['contrato'] = $state['contrato'];
+	}
+	$args['pagina'] = $page_number;
+
+	return add_query_arg( $args, $page_url ) . $section_anchor;
+};
+
+
 // Resolved display names for the active chips / triggers.
 $active_tipo_name     = $state['tipo'] ? $state['tipo_options'][ $state['tipo'] ] : '';
 $active_area_name     = $state['area'] ? $state['area_options'][ $state['area'] ] : '';
@@ -538,8 +584,16 @@ $new_tab_hint = esc_attr__( '(abre em nova aba)', 'conexao-br-irlanda' );
 			</a>
 		</div>
 	<?php else : ?>
-	<div class="events-grid empregos-opportunities-grid">
-		<?php foreach ( $opportunities as $item ) : ?>
+	<div class="events-grid empregos-opportunities-grid" data-infinite-scroll>
+		<?php foreach ( $current_opportunities as $item ) : ?>
+			<?php
+			// Stable, deterministic DOM id — never a bare WordPress post ID,
+			// because public-sector resources have no post. Built from the
+			// item's unique key (agency:{ID} / public_sector:{slug} /
+			// permit_employer:{ID}) so the shared infinite-scroll duplicate
+			// guard (document.getElementById) works across every resource type.
+			$opp_dom_id = 'opp-' . sanitize_title( str_replace( array( ':', '/' ), '-', (string) $item['key'] ) );
+			?>
 			<?php if ( 'agency' === $item['resource_type'] ) : ?>
 				<?php
 				$agency          = $item['_source'];
@@ -555,7 +609,7 @@ $new_tab_hint = esc_attr__( '(abre em nova aba)', 'conexao-br-irlanda' );
 				$tel_uri         = conexao_recruitment_agency_tel_uri( $phone );
 				$external_attrs  = ' target="_blank" rel="noopener noreferrer"';
 				?>
-				<article class="event-card agency-card">
+				<article id="<?php echo esc_attr( $opp_dom_id ); ?>" class="event-card agency-card">
 					<div class="event-card-body agency-card-body">
 						<p class="opportunity-card-type"><?php echo esc_html( $card_type_labels['agency'] ); ?></p>
 						<h3 class="event-card-title agency-card-title">
@@ -614,7 +668,7 @@ $new_tab_hint = esc_attr__( '(abre em nova aba)', 'conexao-br-irlanda' );
 				</article>
 			<?php elseif ( 'public_sector' === $item['resource_type'] ) : ?>
 
-				<article class="event-card public-sector-card">
+				<article id="<?php echo esc_attr( $opp_dom_id ); ?>" class="event-card public-sector-card">
 					<div class="event-card-body public-sector-card-body">
 						<p class="opportunity-card-type"><?php echo esc_html( $card_type_labels['public_sector'] ); ?></p>
 						<h3 class="event-card-title public-sector-card-title">
@@ -656,7 +710,7 @@ $new_tab_hint = esc_attr__( '(abre em nova aba)', 'conexao-br-irlanda' );
 				$has_permit_history = ! empty( $item['has_permit_history'] );
 				$years         = (string) ( $item['meta']['evidence_years'] ?? '' );
 				?>
-				<article class="event-card permit-employer-card employer-card">
+				<article id="<?php echo esc_attr( $opp_dom_id ); ?>" class="event-card permit-employer-card employer-card">
 					<div class="event-card-body employer-card-body">
 						<p class="opportunity-card-type"><?php echo esc_html( $card_type_labels['permit_history'] ); ?></p>
 						<h3 class="event-card-title employer-card-title">
@@ -718,6 +772,60 @@ $new_tab_hint = esc_attr__( '(abre em nova aba)', 'conexao-br-irlanda' );
 			<?php endif; ?>
 		<?php endforeach; ?>
 	</div>
+
+		<?php if ( $total_pages > 1 ) : ?>
+			<?php
+			// Server-rendered pagination for the unified directory. This is a
+			// static page (?pagina=N), so paginate_links() on the main query
+			// is unusable — the links are built by hand, but the markup
+			// contract is exactly the same as template-parts/pagination.php:
+			// .conexao-pagination + a.page-numbers(.prev/.next) +
+			// .page-numbers.current/.dots. initInfiniteScroll() depends on
+			// a.page-numbers.next and on the pagination being a sibling of
+			// the grid; without JavaScript the numeric links keep working
+			// untouched (the enhancement only hides them, never removes
+			// them). The final page renders no next link, which is how the
+			// shared enhancement knows to stop.
+			$pagination_end_size = 1;
+			$pagination_mid_size = 2;
+			$pagination_items    = array();
+			$pagination_dots     = false;
+			for ( $n = 1; $n <= $total_pages; $n++ ) {
+				$in_ends = $n <= $pagination_end_size || $n > $total_pages - $pagination_end_size;
+				$in_mid  = abs( $n - $pagina ) <= $pagination_mid_size;
+				if ( $in_ends || $in_mid ) {
+					$pagination_items[] = array( 'page' => $n );
+					$pagination_dots    = false;
+				} elseif ( ! $pagination_dots ) {
+					$pagination_items[] = array( 'dots' => true );
+					$pagination_dots    = true;
+				}
+			}
+			?>
+			<nav class="conexao-pagination" aria-label="<?php esc_attr_e( 'Paginação', 'conexao-br-irlanda' ); ?>">
+				<ul class="conexao-pagination__list">
+					<?php if ( $pagina > 1 ) : ?>
+						<li class="conexao-pagination__item">
+							<a class="prev page-numbers" href="<?php echo esc_url( $opportunity_paginated_url( $pagina - 1 ) ); ?>"><?php esc_html_e( '← Anterior', 'conexao-br-irlanda' ); ?></a>
+						</li>
+					<?php endif; ?>
+					<?php foreach ( $pagination_items as $pagination_item ) : ?>
+						<?php if ( ! empty( $pagination_item['dots'] ) ) : ?>
+							<li class="conexao-pagination__item"><span class="page-numbers dots">…</span></li>
+						<?php elseif ( $pagination_item['page'] === $pagina ) : ?>
+							<li class="conexao-pagination__item"><span aria-current="page" class="page-numbers current"><?php echo esc_html( number_format_i18n( $pagination_item['page'] ) ); ?></span></li>
+						<?php else : ?>
+							<li class="conexao-pagination__item"><a class="page-numbers" href="<?php echo esc_url( $opportunity_paginated_url( $pagination_item['page'] ) ); ?>"><?php echo esc_html( number_format_i18n( $pagination_item['page'] ) ); ?></a></li>
+						<?php endif; ?>
+					<?php endforeach; ?>
+					<?php if ( $pagina < $total_pages ) : ?>
+						<li class="conexao-pagination__item">
+							<a class="next page-numbers" href="<?php echo esc_url( $opportunity_paginated_url( $pagina + 1 ) ); ?>"><?php esc_html_e( 'Próximo →', 'conexao-br-irlanda' ); ?></a>
+						</li>
+					<?php endif; ?>
+				</ul>
+			</nav>
+		<?php endif; ?>
 	<?php endif; ?>
 </section>
 
