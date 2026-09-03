@@ -574,7 +574,8 @@ $new_tab_hint = esc_attr__( '(abre em nova aba)', 'conexao-br-irlanda' );
 					</form>
 				</div>
 			</div>
-		</div>
+		</div><!-- .agency-filters-mobile -->
+	</div><!-- .agency-filters -->
 
 	<?php if ( empty( $opportunities ) ) : ?>
 		<div class="agency-filters-empty">
