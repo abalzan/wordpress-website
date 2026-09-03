@@ -521,20 +521,35 @@ if ( ! empty( $latest_news_ids ) ) :
 			// chronologically, limited to 2. This uses the SAME underlying event
 			// data as the /eventos/ archive — it never creates or duplicates
 			// records and it does not modify event metadata.
-			$events_list = new WP_Query( array(
-				'post_type'           => 'event',
-				'post_status'         => 'publish',
-				'posts_per_page'      => 2,
-				'meta_key'            => '_event_date',
-				'meta_value'          => current_time( 'Y-m-d' ),
-				'meta_compare'        => '>=',
-				'meta_type'           => 'DATE',
-				'orderby'             => 'meta_value',
-				'order'               => 'ASC',
-				'no_found_rows'       => true,
+			//
+			// Recurrence: consumes the shared ordered upcoming-event ID list
+			// (Conexao_Event_Query via conexao_event_upcoming_ids()) when the
+			// event runtime is active; legacy date-meta query otherwise.
+			$front_upcoming_ids = conexao_event_upcoming_ids();
+
+			$front_events_args = array(
+				'post_type'              => 'event',
+				'post_status'            => 'publish',
+				'posts_per_page'         => 2,
+				'no_found_rows'          => true,
 				'update_post_meta_cache' => false,
 				'update_post_term_cache' => false,
-			) );
+			);
+
+			if ( is_array( $front_upcoming_ids ) ) {
+				$front_events_args['post__in'] = empty( $front_upcoming_ids ) ? array( 0 ) : $front_upcoming_ids;
+				$front_events_args['orderby']  = 'post__in';
+				$front_events_args['order']    = 'ASC';
+			} else {
+				$front_events_args['meta_key']     = '_event_date';
+				$front_events_args['meta_value']   = current_time( 'Y-m-d' );
+				$front_events_args['meta_compare'] = '>=';
+				$front_events_args['meta_type']    = 'DATE';
+				$front_events_args['orderby']      = 'meta_value';
+				$front_events_args['order']        = 'ASC';
+			}
+
+			$events_list = new WP_Query( $front_events_args );
 			if ( $events_list->have_posts() ) :
 				while ( $events_list->have_posts() ) : $events_list->the_post();
 					get_template_part( 'template-parts/event', 'preview' );

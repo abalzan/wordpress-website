@@ -30,7 +30,8 @@ $event_url        = $event_url ? $event_url : get_permalink();
 $event_target     = conexao_event_link_target_attrs( $event_id );
 $event_banner     = get_post_meta( $event_id, '_event_banner', true );
 $banner_attach_id = get_post_meta( $event_id, '_event_banner_attachment_id', true );
-$event_date       = get_post_meta( $event_id, '_event_date', true );
+// Recurring events show their NEXT occurrence, not the series start date.
+$event_date       = conexao_event_display_date( $event_id );
 $event_time       = get_post_meta( $event_id, '_event_time', true );
 
 // Determine the best image source: prefer WordPress attachment, then the

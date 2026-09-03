@@ -142,7 +142,9 @@ Key functionality includes:
 |----------|---------|
 | `conexao_theme_setup()` | Theme supports, nav menus, content width |
 | `conexao_enqueue_scripts()` | CSS/JS asset loading |
-| `conexao_content_archive_query()` | `pre_get_posts` — archive ordering and filtering |
+| `conexao_content_archive_query()` | `pre_get_posts` — archive ordering and filtering; on `/eventos/` feeds the recurrence-aware ordered ID list from the event runtime (`Conexao_Event_Query` via `conexao_event_upcoming_ids()`) with `post__in` + `orderby post__in`, keeping pagination/load-more and the `?cidade=`/`?categoria=` filters intact; legacy date-meta path when the runtime is inactive |
+| `conexao_event_upcoming_ids()` | Shared ordered upcoming/recurring event ID list (thin wrapper over the event runtime's `Conexao_Event_Query`; used by the archive, hero widget, homepage events section, 404 and landing pages) |
+| `conexao_event_display_date()` | Card display date: next occurrence for recurring events, stored `_event_date` otherwise |
 | `conexao_course_providers_shortcode()` | `[conexao_course_providers]` shortcode |
 | `conexao_get_terms_for_post_type()` | Filter-context term resolution |
 | `conexao_get_provider_categories()` | Dynamic provider category discovery |

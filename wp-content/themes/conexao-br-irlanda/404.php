@@ -61,19 +61,34 @@
 					// Single query for upcoming events, cached in transient (5 min).
 					$upcoming_events = get_transient( 'conexao_404_events' );
 					if ( false === $upcoming_events ) {
-						$events_query = new WP_Query( array(
-							'post_type'      => 'event',
-							'posts_per_page' => 3,
-							'meta_key'       => '_event_date',
-							'meta_value'     => current_time( 'Y-m-d' ),
-							'meta_compare'   => '>=',
-							'meta_type'      => 'DATE',
-							'orderby'        => 'meta_value',
-							'order'          => 'ASC',
-							'no_found_rows'  => true,
+						// Recurrence: consume the shared ordered upcoming-event ID
+						// list (Conexao_Event_Query) when the event runtime is
+						// active; legacy date-meta query otherwise.
+						$upcoming_ids = conexao_event_upcoming_ids();
+
+						$events_args = array(
+							'post_type'              => 'event',
+							'post_status'            => 'publish',
+							'posts_per_page'         => 3,
+							'no_found_rows'          => true,
 							'update_post_meta_cache' => false,
 							'update_post_term_cache' => false,
-						) );
+						);
+
+						if ( is_array( $upcoming_ids ) ) {
+							$events_args['post__in'] = empty( $upcoming_ids ) ? array( 0 ) : $upcoming_ids;
+							$events_args['orderby']  = 'post__in';
+							$events_args['order']    = 'ASC';
+						} else {
+							$events_args['meta_key']     = '_event_date';
+							$events_args['meta_value']   = current_time( 'Y-m-d' );
+							$events_args['meta_compare'] = '>=';
+							$events_args['meta_type']    = 'DATE';
+							$events_args['orderby']      = 'meta_value';
+							$events_args['order']        = 'ASC';
+						}
+
+						$events_query = new WP_Query( $events_args );
 						$upcoming_events = array();
 						if ( $events_query->have_posts() ) {
 							while ( $events_query->have_posts() ) : $events_query->the_post();

@@ -18,6 +18,7 @@ define( 'CONEXAO_EVENT_RUNTIME_URL', plugin_dir_url( __FILE__ ) );
 
 require_once CONEXAO_EVENT_RUNTIME_DIR . 'includes/class-event-status.php';
 require_once CONEXAO_EVENT_RUNTIME_DIR . 'includes/class-event-recurrence.php';
+require_once CONEXAO_EVENT_RUNTIME_DIR . 'includes/class-event-query.php';
 
 final class Conexao_Event_Runtime {
 

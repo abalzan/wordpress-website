@@ -39,7 +39,8 @@ conexao-event-runtime`, and it refuses to boot if the runtime's
 | Public gate | `pre_get_posts`: all frontend event queries (main archive + secondary `WP_Query` calls) are constrained to `_event_status = published` OR no status (legacy events). Published upcoming → visible; expired / source_not_found / rejected / draft → hidden. Behavior is byte-for-byte identical to the old importer implementation |
 | Status admin UI | Status/Source columns + `?event_status=` filter dropdown on the events list (Admin UX summary cards link to these URLs), and the `conexao_event_status_box` meta box that Admin UX removes in favor of its own sectioned editor |
 | `Conexao_Event_Status` | Status constants, get/set, legacy-default-to-published semantics, expiry marking, shared end-timestamp helper |
-| `Conexao_Event_Recurrence` | Internal recurrence model + evaluator (`_event_recurrence*` meta, `occurs_on_date()`, `next_occurrence()`). Data model + evaluator only — not visible to editors and not consumed by queries/templates yet |
+| `Conexao_Event_Recurrence` | Internal recurrence model + evaluator (`_event_recurrence*` meta, `occurs_on_date()`, `next_occurrence()`). Consumed by the public query helper below since Step 3 |
+| `Conexao_Event_Query` | Public query/candidate helper for recurring events: SQL candidate widening → batch meta load → exact PHP evaluation via the evaluator → ordered ID list (`upcoming_event_ids()`), date-keyed transient cache. Consumed by the theme's event archive + secondary event surfaces (Step 3) |
 
 The Admin UX plugin consumes the runtime via `class_exists('Conexao_Event_Status')`
 for event status get/set — that relationship is preserved.
@@ -102,8 +103,48 @@ Evaluator: `Conexao_Event_Recurrence` (`includes/class-event-recurrence.php`)
 All arithmetic is calendar-day based in the WordPress timezone
 (`wp_timezone()` + `DateTimeImmutable`, aligned with `current_datetime()`):
 no UTC timestamps and no `strtotime()`/`date()`+`time()` in the recurrence
-path. The evaluator is intentionally invisible to editors and to public
-queries.
+path. The evaluator is intentionally invisible to editors; since Step 3 it
+is consumed by the public query helper below.
+
+## Public query integration (Step 3)
+
+`Conexao_Event_Query` (`includes/class-event-query.php`) makes recurring
+events participate in the existing event surfaces without occurrence posts:
+
+1. **SQL candidate widening** — one lightweight `wpdb` query over-selects:
+   every one-time event with `_event_date >= today` (the legacy archive
+   restriction, untouched) plus every weekly series that can occur in the
+   local `[today, today+7]` window (not ended before today; started no later
+   than the window end). The public `_event_status` gate (published OR
+   legacy no-status) is replicated in SQL. No `FIND_IN_SET()`, no
+   `WP_Date_Query` weekday logic, no new tables.
+2. **Batch meta load** — `update_meta_cache()` loads all postmeta for the
+   candidates in a single query; the evaluator then runs from cache.
+3. **Exact PHP evaluation** — `next_occurrence()` decides per candidate.
+4. **Ordered ID list** — sorted by next occurrence ascending (ties by post
+   ID); returned by `upcoming_event_ids()` / `upcoming_events()` (ID ⇒
+   next occurrence date).
+
+Semantics: weekly events enter the result set when they have an occurrence
+on/after the current local date within the 7-day window (an active weekly
+series always repeats within 7 days, so nothing active is missed). One-time
+events keep their existing "today or later" behavior — strictly additive.
+
+Consumers: the theme calls `conexao_event_upcoming_ids()` (null when the
+plugin is inactive → legacy query path preserved) in
+`conexao_content_archive_query()` (main `/eventos/` query, fed via
+`post__in` + `orderby => post__in` so pagination, load-more, the
+`?cidade=`/`?categoria=` tax filters and the status gate all keep operating
+on real event posts) and in `template-parts/hero-events.php`,
+`front-page.php`, `404.php` and `page-landing.php`. Event cards show the
+next occurrence via `conexao_event_display_date()`.
+
+**Cache**: a single transient keyed by the site-local calendar date
+(`conexao_event_upcoming_YYYYMMDD`), expiring at the next local midnight —
+results are stable all day and the day rollover naturally rebuilds the set.
+`Conexao_Event_Query::flush_cache()` is called by the theme's
+`conexao_homepage_cache_invalidate()` whenever an event is saved/deleted.
+No cron, no persistent scheduler.
 
 ## Tests
 
@@ -139,6 +180,24 @@ selection, inclusive start/end boundaries, open-ended and invalid-date
 defensive handling, malformed weekday CSV, leap years, DST transitions,
 timezone-sensitive calendar dates, and `next_occurrence()` for one-time /
 weekly / ended-series events. Public behavior is untouched.
+
+`tests/test-event-query.php` — public query/candidate helper tests
+(`Conexao_Event_Query`, Step 3):
+
+```bash
+docker compose exec wordpress php /var/www/html/wp-content/plugins/conexao-event-runtime/tests/test-event-query.php
+```
+
+Covers: one-time events in/out of the list, weekly active / not-started /
+ended / twice-weekly / open-ended / weekday-mismatch series, the status
+gate, single-appearance of each event, next-occurrence sorting, the
+`post__in` + `orderby => post__in` pattern (including `tax_query`
+narrowing and the empty-list `array( 0 )` case), and the date-keyed
+transient cache + flush.
+
+Local test data: `scripts/seed-recurrence-test-events.php` seeds the
+9-event Step 3 test matrix (prefixed `[REC-TEST]`, weekdays relative to
+the current local day); run it with the `cleanup` argument to remove.
 
 If WP-CLI is not available in the container, plugin activation can be toggled
 directly through the `active_plugins` option, e.g.:

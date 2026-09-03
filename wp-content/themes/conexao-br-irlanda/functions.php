@@ -732,6 +732,13 @@ function conexao_homepage_cache_invalidate( $post_id ) {
 		delete_transient( 'conexao_404_guides' );
 		delete_transient( 'conexao_404_events' );
 
+		// Recurring-events ordered ID list (date-keyed transient owned by
+		// the event runtime's Conexao_Event_Query helper; only events can
+		// change the set).
+		if ( 'event' === $post_type && class_exists( 'Conexao_Event_Query' ) ) {
+			Conexao_Event_Query::flush_cache();
+		}
+
 		// Reading-time object-cache entry for this post.
 		wp_cache_delete( 'conexao_reading_time_' . $post_id, 'conexao' );
 
@@ -1634,6 +1641,54 @@ function conexao_blog_category_filter_url( $category_slug ) {
 }
 
 /**
+ * Ordered ID list of currently active/upcoming public events.
+ *
+ * Thin theme-side wrapper over Conexao_Event_Query (conexao-event-runtime
+ * plugin): one SQL candidate query, one batch meta load, exact PHP recurrence
+ * evaluation, sorted by next occurrence, date-keyed transient cache. Shared
+ * by the /eventos/ archive, the hero widget, the homepage events section,
+ * the 404 page and the landing-page events section.
+ *
+ * Returns null when the event runtime plugin (and therefore the recurrence
+ * query helper) is not available, so every caller can fall back to the
+ * legacy date-meta query path unchanged.
+ *
+ * @return int[]|null Ordered event post IDs, or null when unavailable.
+ */
+function conexao_event_upcoming_ids() {
+	if ( ! class_exists( 'Conexao_Event_Query' ) ) {
+		return null;
+	}
+
+	$ids = Conexao_Event_Query::upcoming_event_ids();
+	return is_array( $ids ) ? $ids : null;
+}
+
+/**
+ * The date an event card should display.
+ *
+ * Recurring events show their NEXT occurrence (from the shared, cached
+ * upcoming-events map) instead of their stored `_event_date`, which is only
+ * the series start. One-time events (and any event not in the current
+ * window) keep the stored `_event_date` — existing behavior is untouched.
+ *
+ * @param int $event_id Event post ID.
+ * @return string Y-m-d date string (may be empty when the event has none).
+ */
+function conexao_event_display_date( $event_id ) {
+	$date = get_post_meta( (int) $event_id, '_event_date', true );
+
+	if ( class_exists( 'Conexao_Event_Query' ) ) {
+		$next = Conexao_Event_Query::next_occurrence_date( (int) $event_id );
+		if ( $next ) {
+			$date = $next;
+		}
+	}
+
+	return $date;
+}
+
+/**
  * Content-type archive query filtering.
  *
  * Each archive (Eventos, Cursos, Guias, Blog) applies its own filtering and ordering
@@ -1658,14 +1713,40 @@ function conexao_content_archive_query( $query ) {
 
 	/*
 	 * Eventos: upcoming events ordered by date, with town/category filters.
+	 *
+	 * Recurrence-aware path: when the event runtime's Conexao_Event_Query
+	 * helper is available, the main query is fed the pre-computed ordered ID
+	 * list (one-time events dated today or later + weekly series with an
+	 * occurrence in the current local 7-day window, sorted by next
+	 * occurrence) via post__in + orderby => post__in. The query remains a
+	 * single main WP_Query over real event posts, so pagination
+	 * (/eventos/page/N/ + load-more), the _event_status gate and the
+	 * taxonomy filters below keep working unchanged, and a recurring event
+	 * appears exactly once (it is ONE post — no occurrence posts exist).
+	 * When the helper is unavailable (runtime plugin inactive), the legacy
+	 * date-meta query below runs byte-for-byte as before.
 	 */
 	if ( $query->is_post_type_archive( 'event' ) ) {
-		$query->set( 'meta_key', '_event_date' );
-		$query->set( 'meta_value', current_time( 'Y-m-d' ) );
-		$query->set( 'meta_compare', '>=' );
-		$query->set( 'meta_type', 'DATE' );
-		$query->set( 'orderby', 'meta_value' );
-		$query->set( 'order', 'ASC' );
+		$upcoming_ids = conexao_event_upcoming_ids();
+
+		if ( is_array( $upcoming_ids ) ) {
+			// post__in => array() is ambiguous in WP_Query; array( 0 )
+			// deterministically yields "no upcoming events".
+			if ( empty( $upcoming_ids ) ) {
+				$upcoming_ids = array( 0 );
+			}
+			$query->set( 'post__in', $upcoming_ids );
+			$query->set( 'orderby', 'post__in' );
+			$query->set( 'order', 'ASC' );
+		} else {
+			// Legacy path (event runtime inactive): date-meta ordering only.
+			$query->set( 'meta_key', '_event_date' );
+			$query->set( 'meta_value', current_time( 'Y-m-d' ) );
+			$query->set( 'meta_compare', '>=' );
+			$query->set( 'meta_type', 'DATE' );
+			$query->set( 'orderby', 'meta_value' );
+			$query->set( 'order', 'ASC' );
+		}
 
 		$tax_query = $query->get( 'tax_query' );
 		if ( ! is_array( $tax_query ) ) {

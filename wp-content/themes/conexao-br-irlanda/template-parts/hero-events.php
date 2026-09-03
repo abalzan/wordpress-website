@@ -15,22 +15,47 @@
  *   - _event_banner     (banner image URL; falls back to featured image)
  *   - _event_banner_attachment_id (validated WordPress attachment)
  *
+ * Recurrence: when the event runtime's Conexao_Event_Query helper is active,
+ * the widget consumes the shared ordered upcoming-event ID list (one-time
+ * events + weekly series, sorted by next occurrence, date-keyed transient
+ * cache) via post__in + orderby => post__in. Without the helper the legacy
+ * date-meta query below runs unchanged.
+ *
  * @package Conexao_BR_Irlanda
  */
 
-$hero_events = new WP_Query( array(
-	'post_type'              => 'event',
-	'posts_per_page'         => 4,
-	'meta_key'               => '_event_date',
-	'meta_value'             => current_time( 'Y-m-d' ),
-	'meta_compare'           => '>=',
-	'meta_type'              => 'DATE',
-	'orderby'                => 'meta_value',
-	'order'                  => 'ASC',
-	'no_found_rows'          => true,
-	'update_post_meta_cache' => false,
-	'update_post_term_cache' => false,
-) );
+$hero_upcoming_ids = conexao_event_upcoming_ids();
+
+if ( is_array( $hero_upcoming_ids ) ) {
+	if ( empty( $hero_upcoming_ids ) ) {
+		$hero_upcoming_ids = array( 0 ); // Deterministic "no upcoming events".
+	}
+	$hero_events = new WP_Query( array(
+		'post_type'              => 'event',
+		'post_status'            => 'publish',
+		'posts_per_page'         => 4,
+		'post__in'               => $hero_upcoming_ids,
+		'orderby'                => 'post__in',
+		'order'                  => 'ASC',
+		'no_found_rows'          => true,
+		'update_post_meta_cache' => false,
+		'update_post_term_cache' => false,
+	) );
+} else {
+	$hero_events = new WP_Query( array(
+		'post_type'              => 'event',
+		'posts_per_page'         => 4,
+		'meta_key'               => '_event_date',
+		'meta_value'             => current_time( 'Y-m-d' ),
+		'meta_compare'           => '>=',
+		'meta_type'              => 'DATE',
+		'orderby'                => 'meta_value',
+		'order'                  => 'ASC',
+		'no_found_rows'          => true,
+		'update_post_meta_cache' => false,
+		'update_post_term_cache' => false,
+	) );
+}
 
 if ( ! $hero_events->have_posts() ) {
 	return;
@@ -62,7 +87,8 @@ if ( ! $hero_events->have_posts() ) {
 			$event_target   = conexao_event_link_target_attrs( $event_id );
 			$event_banner   = get_post_meta( $event_id, '_event_banner', true );
 			$banner_attach  = get_post_meta( $event_id, '_event_banner_attachment_id', true );
-			$event_date     = get_post_meta( $event_id, '_event_date', true );
+			// Recurring events show their NEXT occurrence, not the series start.
+			$event_date     = conexao_event_display_date( $event_id );
 			$event_time     = get_post_meta( $event_id, '_event_time', true );
 			$event_location = get_post_meta( $event_id, '_event_location', true );
 

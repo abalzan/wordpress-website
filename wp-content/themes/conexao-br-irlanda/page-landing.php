@@ -143,26 +143,42 @@ if ( $is_category_page ) {
 				<?php
 				// --- Relevant Events (county pages only) ---
 				if ( $is_county_page ) :
-					$events = new WP_Query( array(
-						'post_type'      => 'event',
-						'posts_per_page' => 3,
-						'tax_query'      => array(
+					// Recurrence: consume the shared ordered upcoming-event ID
+					// list (Conexao_Event_Query) when the event runtime is
+					// active; legacy date-meta query otherwise. The county
+					// taxonomy filter keeps narrowing the same ID list.
+					$landing_upcoming_ids = conexao_event_upcoming_ids();
+
+					$landing_events_args = array(
+						'post_type'              => 'event',
+						'post_status'            => 'publish',
+						'posts_per_page'         => 3,
+						'tax_query'              => array(
 							array(
 								'taxonomy' => 'conexao_county',
 								'field'    => 'term_id',
 								'terms'    => $term->term_id,
 							),
 						),
-						'meta_key'       => '_event_date',
-						'meta_value'     => current_time( 'Y-m-d' ),
-						'meta_compare'   => '>=',
-						'meta_type'      => 'DATE',
-						'orderby'        => 'meta_value',
-						'order'          => 'ASC',
-						'no_found_rows'  => true,
+						'no_found_rows'          => true,
 						'update_post_meta_cache' => false,
 						'update_post_term_cache' => false,
-					) );
+					);
+
+					if ( is_array( $landing_upcoming_ids ) ) {
+						$landing_events_args['post__in'] = empty( $landing_upcoming_ids ) ? array( 0 ) : $landing_upcoming_ids;
+						$landing_events_args['orderby']  = 'post__in';
+						$landing_events_args['order']    = 'ASC';
+					} else {
+						$landing_events_args['meta_key']     = '_event_date';
+						$landing_events_args['meta_value']   = current_time( 'Y-m-d' );
+						$landing_events_args['meta_compare'] = '>=';
+						$landing_events_args['meta_type']    = 'DATE';
+						$landing_events_args['orderby']      = 'meta_value';
+						$landing_events_args['order']        = 'ASC';
+					}
+
+					$events = new WP_Query( $landing_events_args );
 					if ( $events->have_posts() ) : ?>
 						<section class="landing-section">
 							<h2 class="landing-section-title"><?php esc_html_e( 'Próximos Eventos', 'conexao-br-irlanda' ); ?></h2>
