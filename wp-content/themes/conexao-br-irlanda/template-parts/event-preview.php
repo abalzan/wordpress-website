@@ -112,6 +112,11 @@ if ( $event_towns && ! is_wp_error( $event_towns ) && ! empty( $event_towns ) ) 
 						<span class="event-preview-meta-sep">&middot;</span>
 						<span class="event-preview-time"><?php echo esc_html( $event_time ); ?></span>
 					<?php endif; ?>
+					<?php $preview_recurrence = conexao_event_recurrence_label( $event_id ); ?>
+					<?php if ( $preview_recurrence ) : ?>
+						<span class="event-preview-meta-sep">&middot;</span>
+						<span class="event-preview-recurrence"><?php echo esc_html( $preview_recurrence ); ?></span>
+					<?php endif; ?>
 				</p>
 			<?php elseif ( $event_time ) : ?>
 				<p class="event-preview-meta">

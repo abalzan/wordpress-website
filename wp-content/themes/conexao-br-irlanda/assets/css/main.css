@@ -1967,6 +1967,9 @@ ul, ol {
   text-align: center;
   box-shadow: var(--conexao-shadow-md);
   min-width: 58px;
+  /* Cap the badge inside the banner: long recurrence labels
+     ("Toda segunda, quarta e sexta") wrap instead of overflowing. */
+  max-width: calc(100% - 32px);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -2032,6 +2035,32 @@ ul, ol {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
+  line-height: 1.3;
+}
+
+/* Recurrence label — concise Portuguese text inside the date badge
+   (e.g. "Toda quarta-feira", "Toda segunda e quarta"). Normal case,
+   muted color, fits in the existing badge without extra line height. */
+.events-page .event-card-recurrence {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.625rem;
+  font-weight: 600;
+  color: var(--conexao-gray-600);
+  line-height: 1.3;
+  letter-spacing: 0.02em;
+}
+
+/* Recurrence end-date — small uppercase "até 15 OUT" line, matching
+   the existing date-range typography so it never makes the card taller. */
+.events-page .event-card-recurrence-end {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.5625rem;
+  font-weight: 700;
+  color: var(--conexao-gray-600);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
   line-height: 1.3;
 }
 
@@ -2257,6 +2286,15 @@ ul, ol {
 
 .event-preview-time {
   color: var(--conexao-gray-600);
+}
+
+/* Recurrence label in the compact homepage preview — subtle, same color
+   family as the time text so it reads as supporting metadata. */
+.event-preview-recurrence {
+  color: var(--conexao-gray-600);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  font-style: italic;
 }
 
 /* Section footer "Ver agenda completa →" */

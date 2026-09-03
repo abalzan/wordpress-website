@@ -39,7 +39,7 @@ conexao-event-runtime`, and it refuses to boot if the runtime's
 | Public gate | `pre_get_posts`: all frontend event queries (main archive + secondary `WP_Query` calls) are constrained to `_event_status = published` OR no status (legacy events). Published upcoming → visible; expired / source_not_found / rejected / draft → hidden. Behavior is byte-for-byte identical to the old importer implementation |
 | Status admin UI | Status/Source columns + `?event_status=` filter dropdown on the events list (Admin UX summary cards link to these URLs), and the `conexao_event_status_box` meta box that Admin UX removes in favor of its own sectioned editor |
 | `Conexao_Event_Status` | Status constants, get/set, legacy-default-to-published semantics, expiry marking, shared end-timestamp helper |
-| `Conexao_Event_Recurrence` | Internal recurrence model + evaluator (`_event_recurrence*` meta, `occurs_on_date()`, `next_occurrence()`). Consumed by the public query helper below since Step 3 |
+| `Conexao_Event_Recurrence` | Internal recurrence model + evaluator (`_event_recurrence*` meta, `occurs_on_date()`, `next_occurrence()`). Consumed by the public query helper below since Step 3; since Step 4 `recurrence_type()`, `recurrence_days()` and `recurrence_end()` are also **public** so the theme's presentation helpers (`conexao_event_is_recurring()`, `conexao_event_recurrence_label()`, `conexao_event_recurrence_end()`) can build card labels without duplicating meta reads or evaluation logic |
 | `Conexao_Event_Query` | Public query/candidate helper for recurring events: SQL candidate widening → batch meta load → exact PHP evaluation via the evaluator → ordered ID list (`upcoming_event_ids()`), date-keyed transient cache. Consumed by the theme's event archive + secondary event surfaces (Step 3) |
 
 The Admin UX plugin consumes the runtime via `class_exists('Conexao_Event_Status')`
@@ -198,6 +198,18 @@ transient cache + flush.
 Local test data: `scripts/seed-recurrence-test-events.php` seeds the
 9-event Step 3 test matrix (prefixed `[REC-TEST]`, weekdays relative to
 the current local day); run it with the `cleanup` argument to remove.
+
+Step 4 (presentation) is verified by `scripts/verify-recurrence-presentation.php`
+(project root; pipe it into the container — `scripts/` is a named volume, e.g.
+`cat scripts/verify-recurrence-presentation.php | docker compose exec -T wordpress php`).
+It creates its own `[P4-TEST]` events, renders the real
+`template-parts/event-card.php` for the 8 approved scenarios (weekly
+Wednesday; Monday+Wednesday; recurring today/tomorrow; inactive series;
+one-time; open-ended; end-dated), asserts the label text, `Hoje`/`Amanhã`
+chips, end-date range, sr-only sentence, `aria-hidden` badge, and the
+absence of raw meta keys / CSV tokens, then cleans up after itself. Run the
+seed script first — it fails fast with instructions if the `[REC-TEST]`
+matrix is missing.
 
 If WP-CLI is not available in the container, plugin activation can be toggled
 directly through the `active_plugins` option, e.g.:

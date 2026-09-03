@@ -70,6 +70,28 @@ $month_num  = $event_date ? (int) date( 'n', $date_ts ) : 0;
 $day     = $month = $weekday = '--';
 $date_iso = '';
 $sr_label = '';
+
+/*
+ * Recurrence presentation (Step 4): a concise label such as
+ * "Toda quarta-feira" and an optional end-date range ("até 15 SET").
+ * Computed here — before the date block — so the values enrich both the
+ * screen-reader <time> sentence and the visual badge. All recurrence
+ * logic lives in the runtime class; this is presentation only and never
+ * surfaces raw weekday CSV, ISO numbers or internal meta keys.
+ */
+$recurrence_label    = conexao_event_recurrence_label( $event_id );
+$recurrence_end_html = '';
+if ( conexao_event_is_recurring( $event_id ) ) {
+	$r_end = Conexao_Event_Recurrence::recurrence_end( (int) $event_id );
+	if ( $r_end ) {
+		$r_end_ts  = strtotime( $r_end );
+		$r_end_day = (int) date( 'j', $r_end_ts );
+		$r_end_mon = isset( $month_short_pt[ (int) date( 'n', $r_end_ts ) ] )
+			? $month_short_pt[ (int) date( 'n', $r_end_ts ) ] : '';
+		$recurrence_end_html = sprintf( 'até %d %s', $r_end_day, $r_end_mon );
+	}
+}
+
 if ( $event_date ) {
 	$start_day = (string) date( 'j', $date_ts );
 	$day       = $start_day;
@@ -98,20 +120,44 @@ if ( $event_date ) {
 	if ( $event_time ) {
 		$sr_label .= ', às ' . $event_time;
 	}
+	if ( $recurrence_label ) {
+		$sr_label .= ' — ' . $recurrence_label;
+	}
 }
 
 // "Hoje"/"Amanhã" — only when the event genuinely falls today/tomorrow
 // (site-local date). Always a subtle chip alongside the real date, never a
 // replacement for it.
+//
+// For recurring events the shared recurrence evaluator decides whether the
+// event occurs on the current local date — more robust than a raw string
+// comparison against the cached "next occurrence" date, and keeps all
+// recurrence logic in the runtime class (no logic duplicated in template).
+// One-time events keep the existing exact date comparison so their output
+// is byte-for-byte identical to production.
 $is_today = false;
 $hint     = '';
 if ( $event_date ) {
-	$today = current_time( 'Y-m-d' );
-	if ( $event_date === $today ) {
-		$is_today = true;
-		$hint     = __( 'Hoje', 'conexao-br-irlanda' );
-	} elseif ( $event_date === date( 'Y-m-d', strtotime( $today . ' +1 day' ) ) ) {
-		$hint = __( 'Amanhã', 'conexao-br-irlanda' );
+	if ( conexao_event_is_recurring( $event_id ) ) {
+		$now = current_datetime();
+		if ( Conexao_Event_Recurrence::occurs_on_date( (int) $event_id, $now ) ) {
+			$is_today = true;
+			$hint     = __( 'Hoje', 'conexao-br-irlanda' );
+		} else {
+			$tomorrow = $now->modify( '+1 day' );
+			if ( Conexao_Event_Recurrence::occurs_on_date( (int) $event_id, $tomorrow ) ) {
+				$hint = __( 'Amanhã', 'conexao-br-irlanda' );
+			}
+		}
+	} else {
+		// One-time events: preserve existing raw date comparison.
+		$today = current_time( 'Y-m-d' );
+		if ( $event_date === $today ) {
+			$is_today = true;
+			$hint     = __( 'Hoje', 'conexao-br-irlanda' );
+		} elseif ( $event_date === date( 'Y-m-d', strtotime( $today . ' +1 day' ) ) ) {
+			$hint = __( 'Amanhã', 'conexao-br-irlanda' );
+		}
 	}
 }
 ?>
@@ -160,8 +206,14 @@ if ( $event_date ) {
 			<span class="event-card-date-day"><?php echo esc_html( $day ); ?></span>
 			<span class="event-card-date-month"><?php echo esc_html( $month ); ?></span>
 			<span class="event-card-date-weekday"><?php echo esc_html( $weekday ); ?></span>
+			<?php if ( $recurrence_label ) : ?>
+				<span class="event-card-recurrence"><?php echo esc_html( $recurrence_label ); ?></span>
+			<?php endif; ?>
 			<?php if ( $event_end_date && $end_ts > $date_ts && date( 'Y-m', $end_ts ) !== date( 'Y-m', $date_ts ) ) : ?>
 				<span class="event-card-date-range"><?php echo esc_html( 'até ' . date( 'j', $end_ts ) . ' ' . ( isset( $month_short_pt[ (int) date( 'n', $end_ts ) ] ) ? $month_short_pt[ (int) date( 'n', $end_ts ) ] : '' ) ); ?></span>
+			<?php endif; ?>
+			<?php if ( $recurrence_end_html ) : ?>
+				<span class="event-card-recurrence-end"><?php echo esc_html( $recurrence_end_html ); ?></span>
 			<?php endif; ?>
 			<?php if ( $hint ) : ?>
 				<span class="event-card-date-hint"><?php echo esc_html( $hint ); ?></span>

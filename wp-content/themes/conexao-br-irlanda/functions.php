@@ -1682,10 +1682,114 @@ function conexao_event_display_date( $event_id ) {
 		$next = Conexao_Event_Query::next_occurrence_date( (int) $event_id );
 		if ( $next ) {
 			$date = $next;
-		}
+			}
 	}
 
 	return $date;
+}
+
+/**
+ * Whether an event is a weekly recurring event.
+ *
+ * Wraps the runtime class so the template never reads recurrence meta or
+ * duplicate any evaluator logic. Returns false when the event runtime
+ * plugin is inactive (graceful degradation to one-time behavior).
+ *
+ * @param int $event_id Event post ID.
+ * @return bool
+ */
+function conexao_event_is_recurring( $event_id ): bool {
+	if ( ! class_exists( 'Conexao_Event_Recurrence' ) ) {
+		return false;
+	}
+	return Conexao_Event_Recurrence::TYPE_WEEKLY ===
+		Conexao_Event_Recurrence::recurrence_type( (int) $event_id );
+}
+
+/**
+ * Concise Portuguese recurrence label for a recurring event.
+ *
+ * Returns e.g. "Toda quarta-feira" (single day) or "Toda segunda e quarta"
+ * (multiple days), or an empty string for one-time / non-weekly / invalid
+ * events. ISO weekday numbers (1 = Monday … 7 = Sunday) are mapped to full
+ * Portuguese weekday names; raw numbers and CSV storage are never surfaced.
+ *
+ * @param int $event_id Event post ID.
+ * @return string Empty when the event is not recurring.
+ */
+function conexao_event_recurrence_label( $event_id ): string {
+	if ( ! conexao_event_is_recurring( $event_id ) ) {
+		return '';
+	}
+
+	$days = Conexao_Event_Recurrence::recurrence_days( (int) $event_id );
+	if ( empty( $days ) ) {
+		return '';
+	}
+
+	/*
+	 * ISO weekday numbers (1 = Monday through 7 = Sunday) map to Portuguese
+	 * full weekday names. This is presentation only — the mapping from the
+	 * recurrence model's day codes never leaks to the markup.
+	 */
+	$weekday_names = array(
+		1 => 'segunda-feira',
+		2 => 'terça-feira',
+		3 => 'quarta-feira',
+		4 => 'quinta-feira',
+		5 => 'sexta-feira',
+		6 => 'sábado',
+		7 => 'domingo',
+	);
+
+	$names = array();
+	foreach ( $days as $iso_day ) {
+		if ( isset( $weekday_names[ $iso_day ] ) ) {
+			$names[] = $weekday_names[ $iso_day ];
+		}
+	}
+
+	if ( empty( $names ) ) {
+		return '';
+	}
+
+	if ( count( $names ) === 1 ) {
+		/* translators: %s is a Portuguese weekday name, e.g. "quarta-feira". */
+		return sprintf( 'Toda %s', $names[0] );
+	}
+
+	/*
+	 * Multiple days: Portuguese drops the "-feira" suffix when listing
+	 * ("Toda segunda e quarta", "Toda segunda, quarta e sexta"). "sábado"
+	 * and "domingo" have no suffix and pass through unchanged.
+	 */
+	$short = array_map(
+		static function ( $name ) {
+			return preg_replace( '/-feira$/u', '', $name );
+		},
+		$names
+	);
+
+	$last   = array_pop( $short );
+	$joined = implode( ', ', $short ) . ' e ' . $last;
+
+	return sprintf( 'Toda %s', $joined );
+}
+
+/**
+ * The recurrence end date (Y-m-d) for a recurring event.
+ *
+ * Returns null for one-time events, non-weekly recurrence, open-ended
+ * series, or invalid dates. The runtime class performs the validation.
+ *
+ * @param int $event_id Event post ID.
+ * @return string|null Validated Y-m-d string, or null when open-ended.
+ */
+function conexao_event_recurrence_end( $event_id ): ?string {
+	if ( ! conexao_event_is_recurring( $event_id ) ) {
+		return null;
+	}
+	return Conexao_Event_Recurrence::recurrence_end( (int) $event_id );
 }
 
 /**

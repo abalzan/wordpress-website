@@ -131,13 +131,16 @@ class Conexao_Event_Recurrence {
 
 		return null;
 	}
-/**
+	/**
 	 * Normalized recurrence type for an event (trimmed string).
+	 *
+	 * Public so theme/template code can check recurrence state without
+	 * duplicating the read logic. Returns '' for one-time or unknown types.
 	 *
 	 * @param int $post_id Event post ID.
 	 * @return string
 	 */
-	private static function recurrence_type( $post_id ) {
+	public static function recurrence_type( $post_id ) {
 		$value = get_post_meta( $post_id, '_event_recurrence', true );
 		if ( ! is_string( $value ) ) {
 			return '';
@@ -149,10 +152,13 @@ class Conexao_Event_Recurrence {
 	 * Parse the recurrence weekdays into a list of ISO weekday numbers
 	 * (1 = Monday ... 7 = Sunday). Invalid/empty CSV entries are discarded.
 	 *
+	 * Public so theme/template code can build presentation labels without
+	 * re-implementing the CSV parsing.
+	 *
 	 * @param int $post_id Event post ID.
 	 * @return int[]
 	 */
-	private static function recurrence_days( $post_id ) {
+	public static function recurrence_days( $post_id ) {
 		$value = get_post_meta( $post_id, '_event_recurrence_days', true );
 		if ( ! is_string( $value ) || '' === trim( $value ) ) {
 			return array();
@@ -197,10 +203,13 @@ class Conexao_Event_Recurrence {
 	 * Recurrence end as a validated Y-m-d string, or null when blank/invalid
 	 * (blank = open-ended; invalid is defensively treated as open-ended).
 	 *
+	 * Public so theme/template code can display the series end date without
+	 * re-implementing the validation.
+	 *
 	 * @param int $post_id Event post ID.
 	 * @return string|null
 	 */
-	private static function recurrence_end( $post_id ) {
+	public static function recurrence_end( $post_id ) {
 		$value = get_post_meta( $post_id, '_event_recurrence_end', true );
 		if ( ! is_string( $value ) || '' === trim( $value ) ) {
 			return null;

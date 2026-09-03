@@ -681,7 +681,9 @@
 }
 
 [data-theme="dark"] .event-card-date-weekday,
-[data-theme="dark"] .event-card-date-range {
+[data-theme="dark"] .event-card-date-range,
+[data-theme="dark"] .event-card-recurrence,
+[data-theme="dark"] .event-card-recurrence-end {
   color: var(--color-text-muted);
 }
 
@@ -799,6 +801,10 @@
 }
 
 [data-theme="dark"] .event-preview-time {
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .event-preview-recurrence {
   color: var(--color-text-secondary);
 }
 
