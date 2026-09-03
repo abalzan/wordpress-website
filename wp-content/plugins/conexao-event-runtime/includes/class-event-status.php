@@ -75,6 +75,7 @@ class Conexao_Event_Status {
 	 * data is preserved but expired events stop appearing on public pages
 	 * immediately after they end.
 	 */
+
 	public static function mark_expired_events() {
 		$expired = 0;
 
@@ -89,7 +90,7 @@ class Conexao_Event_Status {
 					array(
 						'key'     => '_event_date',
 						'value'   => current_time( 'Y-m-d' ),
-						'compare' => '<',
+						'compare' => '<=',
 						'type'    => 'DATE',
 					),
 					array(
@@ -103,9 +104,17 @@ class Conexao_Event_Status {
 			)
 		);
 
+		$now_ts = time();
+
 		foreach ( $legacy_query->posts as $post_id ) {
-			update_post_meta( $post_id, '_event_status', self::EXPIRED );
-			$expired++;
+			// A multi-day event stays live until its actual end date/time has
+			// passed — reuse the shared end-timestamp helper so the legacy path
+			// honors `_event_end_date` the same way the published path does.
+			$end_timestamp = self::get_event_end_timestamp( $post_id );
+			if ( $end_timestamp && $end_timestamp < $now_ts ) {
+				update_post_meta( $post_id, '_event_status', self::EXPIRED );
+				$expired++;
+			}
 		}
 
 		// 2. Published events whose end date/time has passed.

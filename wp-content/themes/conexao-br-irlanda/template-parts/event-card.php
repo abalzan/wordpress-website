@@ -129,35 +129,33 @@ if ( $event_date ) {
 // (site-local date). Always a subtle chip alongside the real date, never a
 // replacement for it.
 //
-// For recurring events the shared recurrence evaluator decides whether the
-// event occurs on the current local date — more robust than a raw string
-// comparison against the cached "next occurrence" date, and keeps all
-// recurrence logic in the runtime class (no logic duplicated in template).
-// One-time events keep the existing exact date comparison so their output
-// is byte-for-byte identical to production.
+// The shared recurrence evaluator decides whether the event occurs on the
+// current local date — more robust than a raw string comparison against the
+// cached "next occurrence" date, and keeps all recurrence logic in the
+// runtime class (no logic duplicated in template). Routing one-time events
+// through the same evaluator also means a multi-day event shows "Hoje" on
+// every day it is running, not only on day 1.
 $is_today = false;
 $hint     = '';
-if ( $event_date ) {
-	if ( conexao_event_is_recurring( $event_id ) ) {
-		$now = current_datetime();
-		if ( Conexao_Event_Recurrence::occurs_on_date( (int) $event_id, $now ) ) {
-			$is_today = true;
-			$hint     = __( 'Hoje', 'conexao-br-irlanda' );
-		} else {
-			$tomorrow = $now->modify( '+1 day' );
-			if ( Conexao_Event_Recurrence::occurs_on_date( (int) $event_id, $tomorrow ) ) {
-				$hint = __( 'Amanhã', 'conexao-br-irlanda' );
-			}
-		}
+if ( $event_date && class_exists( 'Conexao_Event_Recurrence' ) ) {
+	$now = current_datetime();
+	if ( Conexao_Event_Recurrence::occurs_on_date( (int) $event_id, $now ) ) {
+		$is_today = true;
+		$hint     = __( 'Hoje', 'conexao-br-irlanda' );
 	} else {
-		// One-time events: preserve existing raw date comparison.
-		$today = current_time( 'Y-m-d' );
-		if ( $event_date === $today ) {
-			$is_today = true;
-			$hint     = __( 'Hoje', 'conexao-br-irlanda' );
-		} elseif ( $event_date === date( 'Y-m-d', strtotime( $today . ' +1 day' ) ) ) {
+		$tomorrow = $now->modify( '+1 day' );
+		if ( Conexao_Event_Recurrence::occurs_on_date( (int) $event_id, $tomorrow ) ) {
 			$hint = __( 'Amanhã', 'conexao-br-irlanda' );
 		}
+	}
+} elseif ( $event_date ) {
+	// Runtime inactive: preserve the legacy raw date comparison.
+	$today = current_time( 'Y-m-d' );
+	if ( $event_date === $today ) {
+		$is_today = true;
+		$hint     = __( 'Hoje', 'conexao-br-irlanda' );
+	} elseif ( $event_date === date( 'Y-m-d', strtotime( $today . ' +1 day' ) ) ) {
+		$hint = __( 'Amanhã', 'conexao-br-irlanda' );
 	}
 }
 ?>

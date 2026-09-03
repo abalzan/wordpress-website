@@ -256,6 +256,34 @@ test_assert(
 );
 
 // ---------------------------------------------------------------------------
+// 6. Legacy expiry for multi-day events
+// ---------------------------------------------------------------------------
+test_section( 'Multi-Day Legacy Expiry' );
+
+// Multi-day event (no status) that started in the past but ends in the
+// future must NOT be expired by the legacy path.
+$md_legacy = create_test_event( 'MD legacy active', array(
+	'_event_date'      => gmdate( 'Y-m-d', strtotime( '-2 days' ) ),
+	'_event_end_date'  => gmdate( 'Y-m-d', strtotime( '+2 days' ) ),
+) );
+
+// One-day legacy event in the past SHOULD be expired.
+$md_legacy_past = create_test_event( 'MD legacy past', array(
+	'_event_date' => gmdate( 'Y-m-d', strtotime( '-3 days' ) ),
+) );
+
+Conexao_Event_Status::mark_expired_events();
+
+test_assert(
+	'expired' !== Conexao_Event_Status::get_status( $md_legacy ),
+	'L: multi-day legacy event is NOT expired while end date is still future'
+);
+test_assert(
+	'expired' === Conexao_Event_Status::get_status( $md_legacy_past ),
+	'L: one-day legacy event in the past IS still expired'
+);
+
+// ---------------------------------------------------------------------------
 // Cleanup
 // ---------------------------------------------------------------------------
 test_section( 'Cleanup' );

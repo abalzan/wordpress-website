@@ -361,6 +361,87 @@ $nt_now = Conexao_Event_Recurrence::next_occurrence( $nt_today, $now_dt );
 test_assert( $nt_now && $today === recurrence_ymd( $nt_now ), 'current_datetime(): next occurrence is today' );
 
 // ---------------------------------------------------------------------------
+// 9. Multi-day one-time events (inclusive [start, end] range)
+// ---------------------------------------------------------------------------
+test_section( 'Multi-Day One-Time Events' );
+
+// A. One-day event: start = end = today -> active today.
+$md_one_day = create_test_event( 'Multi-day one-day', array(
+	'_event_date'      => '2026-09-03',
+	'_event_end_date'  => '2026-09-03',
+) );
+test_assert( Conexao_Event_Recurrence::occurs_on_date( $md_one_day, recurrence_date( '2026-09-03' ) ), 'A: one-day event active on its date' );
+test_assert( ! Conexao_Event_Recurrence::occurs_on_date( $md_one_day, recurrence_date( '2026-09-02' ) ), 'A: one-day event inactive the day before' );
+test_assert( ! Conexao_Event_Recurrence::occurs_on_date( $md_one_day, recurrence_date( '2026-09-04' ) ), 'A: one-day event inactive the day after' );
+
+// B. 2-day event: start = today, end = tomorrow -> active both days.
+$md_two_day = create_test_event( 'Multi-day two-day', array(
+	'_event_date'      => '2026-09-03',
+	'_event_end_date'  => '2026-09-04',
+) );
+test_assert( Conexao_Event_Recurrence::occurs_on_date( $md_two_day, recurrence_date( '2026-09-03' ) ), 'B: 2-day event active on day 1' );
+test_assert( Conexao_Event_Recurrence::occurs_on_date( $md_two_day, recurrence_date( '2026-09-04' ) ), 'B: 2-day event active on day 2' );
+test_assert( ! Conexao_Event_Recurrence::occurs_on_date( $md_two_day, recurrence_date( '2026-09-02' ) ), 'B: 2-day event inactive before start' );
+test_assert( ! Conexao_Event_Recurrence::occurs_on_date( $md_two_day, recurrence_date( '2026-09-05' ) ), 'B: 2-day event inactive after end' );
+
+// C. 3-day festival on day 2: start = yesterday, end = tomorrow -> active today.
+$md_festival = create_test_event( 'Multi-day festival', array(
+	'_event_date'      => '2026-09-02',
+	'_event_end_date'  => '2026-09-04',
+) );
+test_assert( Conexao_Event_Recurrence::occurs_on_date( $md_festival, recurrence_date( '2026-09-02' ) ), 'C: festival active on day 1' );
+test_assert( Conexao_Event_Recurrence::occurs_on_date( $md_festival, recurrence_date( '2026-09-03' ) ), 'C: festival active on day 2 (today)' );
+test_assert( Conexao_Event_Recurrence::occurs_on_date( $md_festival, recurrence_date( '2026-09-04' ) ), 'C: festival active on day 3' );
+test_assert( ! Conexao_Event_Recurrence::occurs_on_date( $md_festival, recurrence_date( '2026-09-01' ) ), 'C: festival inactive before start' );
+test_assert( ! Conexao_Event_Recurrence::occurs_on_date( $md_festival, recurrence_date( '2026-09-05' ) ), 'C: festival inactive after end' );
+
+// D. Multi-day started two days ago, ending tomorrow -> active today.
+$md_started_early = create_test_event( 'Multi-day started early', array(
+	'_event_date'      => '2026-09-01',
+	'_event_end_date'  => '2026-09-04',
+) );
+test_assert( Conexao_Event_Recurrence::occurs_on_date( $md_started_early, recurrence_date( '2026-09-03' ) ), 'D: in-progress multi-day event active today' );
+
+// E. Event ended yesterday -> inactive today.
+$md_ended_yesterday = create_test_event( 'Multi-day ended yesterday', array(
+	'_event_date'      => '2026-08-30',
+	'_event_end_date'  => '2026-09-02',
+) );
+test_assert( ! Conexao_Event_Recurrence::occurs_on_date( $md_ended_yesterday, recurrence_date( '2026-09-03' ) ), 'E: event ended yesterday is inactive today' );
+
+// F. Event ending today -> active today.
+$md_ends_today = create_test_event( 'Multi-day ends today', array(
+	'_event_date'      => '2026-09-01',
+	'_event_end_date'  => '2026-09-03',
+) );
+test_assert( Conexao_Event_Recurrence::occurs_on_date( $md_ends_today, recurrence_date( '2026-09-03' ) ), 'F: event ending today is active today' );
+
+// G. Event starting tomorrow -> inactive today.
+$md_starts_tomorrow = create_test_event( 'Multi-day starts tomorrow', array(
+	'_event_date'      => '2026-09-04',
+	'_event_end_date'  => '2026-09-06',
+) );
+test_assert( ! Conexao_Event_Recurrence::occurs_on_date( $md_starts_tomorrow, recurrence_date( '2026-09-03' ) ), 'G: event starting tomorrow is inactive today' );
+
+// H. No _event_end_date -> preserve one-time exact-match behavior.
+$md_no_end = create_test_event( 'Multi-day no end date', array(
+	'_event_date' => '2026-09-03',
+) );
+test_assert( Conexao_Event_Recurrence::occurs_on_date( $md_no_end, recurrence_date( '2026-09-03' ) ), 'H: no end date -> active only on start date' );
+test_assert( ! Conexao_Event_Recurrence::occurs_on_date( $md_no_end, recurrence_date( '2026-09-04' ) ), 'H: no end date -> inactive the day after' );
+
+// I. Multi-day next occurrence while active -> returns today's local date.
+$md_next_active = Conexao_Event_Recurrence::next_occurrence( $md_festival, recurrence_date( '2026-09-03' ) );
+test_assert( $md_next_active && '2026-09-03' === recurrence_ymd( $md_next_active ), 'I: multi-day next occurrence while active returns today' );
+
+// J. Multi-day future event -> returns its start date.
+$md_next_future = Conexao_Event_Recurrence::next_occurrence( $md_starts_tomorrow, recurrence_date( '2026-09-03' ) );
+test_assert( $md_next_future && '2026-09-04' === recurrence_ymd( $md_next_future ), 'J: multi-day future event returns start date' );
+
+// K. Multi-day event already ended -> returns null.
+test_assert( null === Conexao_Event_Recurrence::next_occurrence( $md_ended_yesterday, recurrence_date( '2026-09-03' ) ), 'K: multi-day event already ended returns null' );
+
+// ---------------------------------------------------------------------------
 // Cleanup
 // ---------------------------------------------------------------------------
 test_section( 'Cleanup' );

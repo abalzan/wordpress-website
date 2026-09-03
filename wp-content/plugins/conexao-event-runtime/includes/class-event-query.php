@@ -179,8 +179,10 @@ final class Conexao_Event_Query {
 	 *
 	 * Over-selects in one lightweight query (no per-event recurrence work):
 	 *
-	 *  - One-time events: `_event_date` on/after the current local date
-	 *    (exactly the legacy archive restriction — strictly additive).
+	 *  - One-time events: `_event_date` on/after the current local date, OR
+	 *    `_event_end_date` on/after the current local date (catches multi-day
+	 *    events already in progress — started before today but not yet ended).
+	 *    Events whose end date is already before today stay excluded.
 	 *  - Weekly events: `_event_recurrence = 'weekly'` where the series can
 	 *    still occur in the local [today, today+7] window — i.e. not ended
 	 *    before today (blank/missing end = open-ended) and started no later
@@ -206,6 +208,7 @@ final class Conexao_Event_Query {
 			SELECT DISTINCT p.ID
 			FROM {$wpdb->posts} p
 			LEFT JOIN {$wpdb->postmeta} ed ON ( p.ID = ed.post_id AND ed.meta_key = '_event_date' )
+			LEFT JOIN {$wpdb->postmeta} ee ON ( p.ID = ee.post_id AND ee.meta_key = '_event_end_date' )
 			LEFT JOIN {$wpdb->postmeta} st ON ( p.ID = st.post_id AND st.meta_key = '_event_status' )
 			LEFT JOIN {$wpdb->postmeta} rc ON ( p.ID = rc.post_id AND rc.meta_key = '_event_recurrence' )
 			LEFT JOIN {$wpdb->postmeta} rs ON ( p.ID = rs.post_id AND rs.meta_key = '_event_recurrence_start' )
@@ -222,12 +225,15 @@ final class Conexao_Event_Query {
 			      OR
 			      (
 			          ( rc.meta_value IS NULL OR rc.meta_value <> 'weekly' )
-			          AND ed.meta_value >= %s
+			          AND (
+			              ed.meta_value >= %s
+			              OR ee.meta_value >= %s
+			          )
 			      )
 			  )
 		";
 
-		$rows = $wpdb->get_col( $wpdb->prepare( $sql, $window_end, $window_end, $today_str ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		$rows = $wpdb->get_col( $wpdb->prepare( $sql, $window_end, $window_end, $today_str, $today_str ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 
 		return array_map( 'intval', (array) $rows );
 	}

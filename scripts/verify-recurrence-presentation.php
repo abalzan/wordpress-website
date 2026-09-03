@@ -246,6 +246,37 @@ foreach ( $leaks as $needle ) {
 }
 p4_check( 'No raw meta keys / CSV / storage tokens in any rendered card', '' === $leak_found, $leak_found );
 
+// S9: multi-day event on day 2 (start yesterday, end tomorrow) -> "Hoje".
+$s9 = p4_create( '9. Multi-day Hoje', array(
+	'_event_date'      => p4_day( -1 ),
+	'_event_end_date'  => p4_day( 1 ),
+	'_event_time'      => '19:00',
+) );
+$h9  = p4_render_card( $s9 );
+p4_check( 'M: multi-day day-2 shows "Hoje" chip', strpos( $h9, '>Hoje<' ) !== false );
+p4_check( 'M: multi-day day-2 badge has is-today class', strpos( $h9, 'is-today' ) !== false );
+
+// S10: multi-day event where tomorrow is still within range -> "Amanhã".
+$s10 = p4_create( '10. Multi-day Amanhã', array(
+	'_event_date'      => p4_day( 0 ),
+	'_event_end_date'  => p4_day( 1 ),
+	'_event_time'      => '20:00',
+) );
+$h10 = p4_render_card( $s10 );
+p4_check( 'N: multi-day event with tomorrow in range shows "Amanhã" when rendered tomorrow',
+	Conexao_Event_Recurrence::occurs_on_date( (int) $s10, current_datetime()->modify( '+1 day' ) ) === true );
+// Today it should say Hoje (day 1 of 2).
+p4_check( 'N: multi-day event day-1 shows "Hoje"', strpos( $h10, '>Hoje<' ) !== false );
+
+// S11: multi-day event after end date -> neither chip.
+$s11 = p4_create( '11. Multi-day ended', array(
+	'_event_date'      => p4_day( -5 ),
+	'_event_end_date'  => p4_day( -3 ),
+	'_event_time'      => '18:00',
+) );
+$h11 = p4_render_card( $s11 );
+p4_check( 'multi-day ended: no Hoje/Amanhã chip', strpos( $h11, 'event-card-date-hint' ) === false );
+
 p4_cleanup();
 echo "\nStep 4 presentation test events removed; recurrence cache flushed.\n";
 

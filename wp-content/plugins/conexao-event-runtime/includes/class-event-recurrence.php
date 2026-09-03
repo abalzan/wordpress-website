@@ -223,8 +223,13 @@ class Conexao_Event_Recurrence {
 	}
 
 	/**
-	 * Legacy one-time date comparison: exact stored-date match on the local
-	 * calendar date.
+	 * One-time date comparison on the local calendar date.
+	 *
+	 * When `_event_end_date` is absent or invalid, this keeps the legacy
+	 * exact-match behavior (active only on `_event_date`). When a valid end
+	 * date is present, the event is active for every calendar day in the
+	 * inclusive [start, end] range — so a multi-day event stays visible on
+	 * each day it is running, not only on day 1.
 	 *
 	 * @param int    $post_id    Event post ID.
 	 * @param string $local_date Local date in Y-m-d format.
@@ -232,11 +237,23 @@ class Conexao_Event_Recurrence {
 	 */
 	private static function one_time_occurs_on_date( $post_id, $local_date ) {
 		$event_date = (string) get_post_meta( $post_id, '_event_date', true );
-		return $event_date === $local_date;
+		$end_date   = get_post_meta( $post_id, '_event_end_date', true );
+		if ( ! is_string( $end_date ) || ! self::is_valid_date( $end_date ) ) {
+			return $event_date === $local_date;
+		}
+		return $event_date <= $local_date && $local_date <= $end_date;
 	}
 
 	/**
-	 * Legacy one-time next-occurrence logic.
+	 * One-time next-occurrence logic.
+	 *
+	 * No end date (legacy one-day): returns `_event_date` when it is on/after
+	 * `$from_date`, otherwise null.
+	 *
+	 * With a valid end date (multi-day): returns null only when the event has
+	 * already ended before `$from_date`; returns `$from_date` itself when the
+	 * event is currently active (so it sorts among today's events); returns
+	 * `_event_date` when the event has not started yet.
 	 *
 	 * @param int    $post_id   Event post ID.
 	 * @param string $from_date Local start date in Y-m-d format.
@@ -246,6 +263,16 @@ class Conexao_Event_Recurrence {
 		$event_date = (string) get_post_meta( $post_id, '_event_date', true );
 		if ( ! self::is_valid_date( $event_date ) ) {
 			return null;
+		}
+		$end_date = get_post_meta( $post_id, '_event_end_date', true );
+		if ( is_string( $end_date ) && self::is_valid_date( $end_date ) ) {
+			if ( $end_date < $from_date ) {
+				return null;
+			}
+			if ( $event_date > $from_date ) {
+				return new DateTimeImmutable( $event_date, wp_timezone() );
+			}
+			return new DateTimeImmutable( $from_date, wp_timezone() );
 		}
 		if ( $event_date < $from_date ) {
 			return null;

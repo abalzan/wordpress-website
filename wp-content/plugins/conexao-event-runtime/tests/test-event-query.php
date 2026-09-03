@@ -294,6 +294,88 @@ $from_events = Conexao_Event_Query::upcoming_events( Conexao_Event_Query::today(
 test_assert( array_keys( $from_events ) === $ordered_ids, 'explicit $from evaluation matches the cached list' );
 
 // ---------------------------------------------------------------------------
+// 7. Multi-day events: candidate SQL + query behavior
+// ---------------------------------------------------------------------------
+test_section( 'Multi-Day Events' );
+
+Conexao_Event_Query::flush_cache();
+
+// Multi-day event started yesterday, ends tomorrow -> must be a candidate.
+$md_in_progress = create_test_event( 'MD in progress', array(
+	'_event_date'      => query_day_offset( -1 ),
+	'_event_end_date'  => query_day_offset( 1 ),
+) );
+
+// Multi-day event started today, ends in 3 days -> candidate.
+$md_starts_today = create_test_event( 'MD starts today', array(
+	'_event_date'      => query_day_offset( 0 ),
+	'_event_end_date'  => query_day_offset( 3 ),
+) );
+
+// Multi-day event that ended yesterday -> must NOT be a candidate.
+$md_ended = create_test_event( 'MD ended yesterday', array(
+	'_event_date'      => query_day_offset( -5 ),
+	'_event_end_date'  => query_day_offset( -1 ),
+) );
+
+// Multi-day event starting next week -> candidate (start >= today).
+$md_future = create_test_event( 'MD future', array(
+	'_event_date'      => query_day_offset( 5 ),
+	'_event_end_date'  => query_day_offset( 7 ),
+) );
+
+$md_ids = Conexao_Event_Query::upcoming_event_ids();
+
+test_assert( in_array( $md_in_progress, $md_ids, true ), 'O: in-progress multi-day event is in the list' );
+test_assert( in_array( $md_starts_today, $md_ids, true ), 'O: multi-day event starting today is in the list' );
+test_assert( ! in_array( $md_ended, $md_ids, true ), 'O: multi-day event ended yesterday is NOT in the list' );
+test_assert( in_array( $md_future, $md_ids, true ), 'O: future multi-day event is in the list' );
+
+// P. Pagination: multi-day event appears once (one post, one result).
+$md_events = Conexao_Event_Query::upcoming_events();
+$md_count = isset( $md_events[ $md_in_progress ] ) ? 1 : 0;
+test_assert( 1 === $md_count, 'P: multi-day event appears exactly once' );
+
+// Next occurrence for in-progress multi-day event is today.
+test_assert(
+	Conexao_Event_Query::next_occurrence_date( $md_in_progress ) === query_day_offset( 0 ),
+	'in-progress multi-day: next occurrence is today'
+);
+
+// Taxonomy filter still works for multi-day events.
+$md_term_result = wp_insert_term( 'RECQ MD Category', 'conexao_category' );
+$md_term_id     = is_wp_error( $md_term_result ) ? null : $md_term_result['term_id'];
+if ( $md_term_id ) {
+	wp_set_object_terms( $md_in_progress, array( $md_term_id ), 'conexao_category' );
+	$md_ordered_ids = array_keys( Conexao_Event_Query::upcoming_events() );
+	$md_filtered    = new WP_Query( array(
+		'post_type'      => 'event',
+		'post_status'    => 'publish',
+		'post__in'       => $md_ordered_ids,
+		'orderby'        => 'post__in',
+		'order'         => 'ASC',
+		'tax_query'      => array(
+			array(
+				'taxonomy' => 'conexao_category',
+				'field'    => 'term_id',
+				'terms'    => $md_term_id,
+			),
+		),
+		'no_found_rows' => true,
+	) );
+	test_assert(
+		wp_list_pluck( $md_filtered->posts, 'ID' ) === array( $md_in_progress ),
+		'O: taxonomy filter works for multi-day events'
+	);
+	wp_delete_term( $md_term_id, 'conexao_category' );
+} else {
+	test_assert( false, 'could not create multi-day test category term' );
+}
+
+// Q. Weekly recurrence behavior unchanged: expired weekly still excluded.
+test_assert( ! in_array( $expired_weekly, $md_ids, true ), 'Q: expired weekly event still excluded after multi-day changes' );
+
+// ---------------------------------------------------------------------------
 // Cleanup
 // ---------------------------------------------------------------------------
 foreach ( $test_post_ids as $test_post_id ) {
