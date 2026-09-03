@@ -2165,12 +2165,11 @@ add_filter( 'wp_nav_menu_objects', 'conexao_override_guides_menu_links', 10, 2 )
  * Modify the primary navigation at render time.
  *
  * Guarantees the "Notícias" item never appears, renames "Home" to "Início",
- * renames the "Lazer" label to "Lazer e turismo" (URL unchanged), inserts a
- * "Blog" item (linked to the existing /blog/ page) immediately after "Início",
- * and inserts a "Cursos" item (linked to the existing /courses/ page)
- * immediately before "Empregos", so the final order is:
+ * renames the "Lazer" label to "Lazer e turismo" (URL unchanged) and inserts a
+ * fallback "Blog" item (linked to the existing /blog/ page) immediately before
+ * "Contato", so the final order matches the canonical sequence:
  *
- *   Início, Blog, Guias, Eventos, Cursos, Empregos, Apoiadores, Contato
+ *   Início, Apoiadores, Guias, Eventos, Cursos, Lazer e turismo, Empregos, Blog, Contato
  *
  * Both the desktop nav and the mobile/hamburger menu render the 'primary'
  * theme location, so this single filter applies the change everywhere the
@@ -2245,7 +2244,7 @@ function conexao_modify_primary_nav_items( $items, $args ) {
 		}
 	}
 
-	// 4. Insert "Blog" immediately after "Início" (=> before "Guias").
+	// 4. Ensure a "Blog" item exists even if the stored menu lacks one.
 	//    The Blog section uses the native WordPress posts archive at /blog/.
 	//    We intentionally do NOT look up a Page with slug "blog" — a Page
 	//    with that slug would shadow the posts archive and prevent published
@@ -2276,19 +2275,20 @@ function conexao_modify_primary_nav_items( $items, $args ) {
 	_wp_menu_item_classes_by_context( $blog_items_for_context );
 	$blog_item_obj = $blog_items_for_context[0];
 
-	// Insert "Blog" immediately before "Guias" (=> after "Início").
+	// Insert "Blog" immediately before "Contato" (canonical position: after
+	// "Empregos", near the end of the navigation).
 	$insert_blog_at = null;
 	foreach ( $items as $k => $item ) {
 		$item_title = strtolower( trim( wp_strip_all_tags( $item->title ) ) );
-		if ( 'guias' === $item_title || 'guias práticos' === $item_title ) {
+		if ( 'contato' === $item_title ) {
 			$insert_blog_at = $k;
 			break;
 		}
 	}
 
 	if ( null === $insert_blog_at ) {
-		// If "Guias" not found, insert after "Início" (position 1).
-		$insert_blog_at = 1;
+		// If "Contato" not found, append at the end of the navigation.
+		$insert_blog_at = count( $items );
 	}
 
 	array_splice( $items, $insert_blog_at, 0, array( $blog_item_obj ) );
@@ -2486,7 +2486,8 @@ function conexao_normalize_primary_nav_sections( $items, $args ) {
 	}
 
 	// Ensure a "Blog" item bound to the /blog/ posts archive exists (inserted
-	// before "Guias" if the theme's base filter did not already provide one).
+	// immediately before "Contato" if the theme's base filter did not already
+	// provide one).
 	// We intentionally do NOT look up a Page with slug "blog" — a Page with
 	// that slug would shadow the posts archive and prevent published posts
 	// from appearing on /blog/.
@@ -2513,14 +2514,15 @@ function conexao_normalize_primary_nav_sections( $items, $args ) {
 		$insert_blog_at = null;
 		foreach ( $items as $k => $item ) {
 			$item_title = strtolower( trim( wp_strip_all_tags( $item->title ) ) );
-			if ( 'guias' === $item_title || 'guias práticos' === $item_title ) {
+			if ( 'contato' === $item_title ) {
 				$insert_blog_at = $k;
 				break;
 			}
 		}
 
 		if ( null === $insert_blog_at ) {
-			$insert_blog_at = 1;
+			// If "Contato" not found, append at the end of the navigation.
+			$insert_blog_at = count( $items );
 		}
 
 		array_splice( $items, $insert_blog_at, 0, array( $blog_item ) );
@@ -2628,7 +2630,7 @@ function conexao_normalize_primary_nav_sections( $items, $args ) {
 			);
 
 			// Insert in the correct position based on the canonical order.
-			$order = array( 'inicio', 'blog', 'guias', 'eventos', 'cursos', 'lazer', 'empregos', 'apoiadores', 'irlanda', 'sobre-nos', 'contato' );
+			$order = array( 'inicio', 'apoiadores', 'guias', 'eventos', 'cursos', 'lazer', 'empregos', 'blog', 'irlanda', 'sobre-nos', 'contato' );
 			$target_index = array_search( $section_key, $order, true );
 			$insert_at = count( $items );
 

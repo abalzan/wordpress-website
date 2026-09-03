@@ -414,13 +414,15 @@ The primary navigation is dynamically modified at render time:
 
 1. Remove "Notícias" items
 2. Change "Home" label to "Início"
-3. Insert "Blog" before "Guias"
+3. Insert fallback "Blog" item immediately before "Contato"
 4. Insert "Cursos" before "Empregos"
 5. Ensure Lazer section exists
 6. Bind each item to its canonical WordPress object
 7. Fix active-state conflicts via URL pattern matching
 
-Canonical order: Início, Blog, Guias, Eventos, Cursos, Lazer, Empregos, Apoiadores, Contato.
+Canonical order: Início, Apoiadores, Guias, Eventos, Cursos, Lazer e turismo, Empregos, Blog, Contato.
+
+The stored menu order is the WordPress-native `nav_menu_item` `menu_order` (desktop and mobile share the same `primary` menu, so one order covers both); see `scripts/reorder-primary-menu-blog-apoiadores.php`.
 
 Note: "Irlanda" is intentionally NOT a navigation item. The /irlanda/ page remains published and directly accessible; it is simply not linked from the main navigation (desktop and mobile share the same `primary` menu). See `scripts/remove-irlanda-menu-item.php` for removing any legacy "Irlanda" item from an existing menu.
 
