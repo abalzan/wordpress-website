@@ -26,7 +26,13 @@ Field controls (config `type`): `text`, `textarea`, `editor`, `date`, `time`,
 `select`, `multiselect` (checkbox group; options are a value => label map,
 stored as a comma-separated list of whitelisted keys — used by the agency
 job types), `taxonomy`, `town`, `url`, `email`, `phone`, `currency`,
-`number`, `media`, `contacts`, `checkbox`, `readonly`.
+`number`, `media`, `contacts`, `checkbox`, `readonly`, `radio` (inline
+radio group; options are a value => label map, stored as a single whitelisted
+value — used by the event recurrence toggle), `weekdays` (ISO weekday
+multi-checkbox group; options are ISO day numbers 1-7 mapped to short pt-BR
+labels, stored as a comma-separated ascending list — used by the event
+recurrence weekday selector), `static` (display-only text with a label,
+never saved — used for "Repetição: Semanal").
 
 List column renderers (config `columns`): `render => status` | `source` |
 `event_location` | `category` | `agency_active` (Ativa/Inativa badge derived

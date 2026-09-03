@@ -149,6 +149,27 @@ final class Conexao_Admin_Ux_Config {
 	}
 
 	/**
+	 * Recurrence weekday options (ISO weekday numbers in display order).
+	 *
+	 * Keys are the ISO weekday numbers stored in `_event_recurrence_days`
+	 * (1 = Monday … 7 = Sunday); labels are the short pt-BR names shown in
+	 * the editor's weekday checkbox group.
+	 *
+	 * @return array<int,string>
+	 */
+	public static function weekdays() {
+		return array(
+			1 => 'Seg',
+			2 => 'Ter',
+			3 => 'Qua',
+			4 => 'Qui',
+			5 => 'Sex',
+			6 => 'Sáb',
+			7 => 'Dom',
+		);
+	}
+
+	/**
 	 * Employment types for Jobs.
 	 *
 	 * @return string[]
@@ -434,6 +455,42 @@ final class Conexao_Admin_Ux_Config {
 						array( 'key' => '_event_start_time', 'label' => 'Hora de início', 'type' => 'time' ),
 						array( 'key' => '_event_end_date', 'label' => 'Data de término', 'type' => 'date', 'help' => 'Deixe em branco para eventos de um dia.' ),
 						array( 'key' => '_event_end_time', 'label' => 'Hora de término', 'type' => 'time' ),
+						array(
+							'key'     => '_event_recurrence',
+							'label'   => 'Repetição',
+							'type'    => 'radio',
+							'options' => array( '' => 'Evento único', 'weekly' => 'Recorrente' ),
+							'help'    => 'Eventos recorrentes se repetem semanalmente nos dias selecionados abaixo.',
+						),
+						array(
+							'key'            => '_event_recurrence_frequency',
+							'label'          => 'Repetição',
+							'type'           => 'static',
+							'static_text'    => 'Semanal',
+							'conditional_on' => array( 'field' => '_event_recurrence', 'value' => 'weekly' ),
+						),
+						array(
+							'key'            => '_event_recurrence_days',
+							'label'          => 'Dias',
+							'type'           => 'weekdays',
+							'options'        => self::weekdays(),
+							'conditional_on' => array( 'field' => '_event_recurrence', 'value' => 'weekly' ),
+							'help'           => 'Selecione pelo menos um dia da semana em que o evento se repete.',
+						),
+						array(
+							'key'            => '_event_recurrence_start',
+							'label'          => 'Data inicial',
+							'type'           => 'date',
+							'conditional_on' => array( 'field' => '_event_recurrence', 'value' => 'weekly' ),
+							'help'           => 'Padrão: a Data de início.',
+						),
+						array(
+							'key'            => '_event_recurrence_end',
+							'label'          => 'Data final',
+							'type'           => 'date',
+							'conditional_on' => array( 'field' => '_event_recurrence', 'value' => 'weekly' ),
+							'help'           => 'Vazio = repete até pausar.',
+						),
 					),
 				),
 				'location'  => array(

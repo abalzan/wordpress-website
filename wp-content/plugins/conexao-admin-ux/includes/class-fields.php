@@ -44,7 +44,22 @@ final class Conexao_Admin_Ux_Fields {
 		$required_attr = '';
 
 		$html = '';
-		$html .= '<div class="conexao-field conexao-field--' . esc_attr( $type ) . '" data-field-key="' . esc_attr( $key ) . '">';
+
+		// Conditional visibility (config `conditional_on`): rendered fields
+		// carry a `conexao-conditional` class plus data attributes describing
+		// the controlling field + value; admin.js shows/hides them generically.
+		$class_extra = '';
+		$data_cond   = '';
+		if ( ! empty( $field['conditional_on'] ) && is_array( $field['conditional_on'] ) ) {
+			$cond_field = isset( $field['conditional_on']['field'] ) ? $field['conditional_on']['field'] : '';
+			$cond_value = isset( $field['conditional_on']['value'] ) ? $field['conditional_on']['value'] : '';
+			if ( '' !== $cond_field ) {
+				$class_extra = ' conexao-conditional';
+				$data_cond   = ' data-conditional-field="' . esc_attr( $cond_field ) . '" data-conditional-value="' . esc_attr( (string) $cond_value ) . '"';
+			}
+		}
+
+		$html .= '<div class="conexao-field conexao-field--' . esc_attr( $type ) . $class_extra . '" data-field-key="' . esc_attr( $key ) . '"' . $data_cond . '>';
 		$html .= '<label class="conexao-field-label" for="' . esc_attr( $id ) . '">' . esc_html( $label ) . $req_html . '</label>';
 
 		switch ( $type ) {
@@ -116,6 +131,53 @@ final class Conexao_Admin_Ux_Fields {
 				$html .= '</div>';
 				break;
 
+case 'radio':
+				// Radio button group: options is a value => label map.
+				// The stored value is one of the option keys (or '' when
+				// a blank option exists, e.g. "Evento único"). Whitelisted
+				// on save.
+				$options  = isset( $field['options'] ) && is_array( $field['options'] ) ? $field['options'] : array();
+				$html    .= '<div class="conexao-radio-options">';
+				foreach ( $options as $option_value => $option_label ) {
+					$opt_id  = $id . '-' . sanitize_html_class( '' === (string) $option_value ? 'none' : $option_value );
+					$checked = ( (string) $value === (string) $option_value ) ? ' checked="checked"' : '';
+					$html    .= '<label class="conexao-radio-option" for="' . esc_attr( $opt_id ) . '">';
+					$html    .= '<input type="radio" id="' . esc_attr( $opt_id ) . '" name="' . esc_attr( $name ) . '" value="' . esc_attr( $option_value ) . '"' . $checked . ' />';
+					$html    .= ' <span>' . esc_html( $option_label ) . '</span>';
+					$html    .= '</label>';
+				}
+				$html .= '</div>';
+				break;
+
+			case 'weekdays':
+				// Weekday multi-checkbox group: options is an ISO weekday
+				// number (1=Mon … 7=Sun) => label map. The stored value is
+				// a CSV of ascending ISO weekday numbers (e.g. "1,3");
+				// sanitize_weekdays() rejects non-numeric values, values
+				// outside 1–7, and duplicates, normalizing to ascending
+				// order deterministically.
+				$options  = isset( $field['options'] ) && is_array( $field['options'] ) ? $field['options'] : array();
+				$selected = array_map( 'strval', self::sanitize_weekdays( $value ) );
+
+				$html .= '<div class="conexao-weekdays">';
+				foreach ( $options as $option_value => $option_label ) {
+					$opt_id  = $id . '-' . sanitize_html_class( $option_value );
+					$checked = in_array( (string) $option_value, $selected, true ) ? ' checked="checked"' : '';
+					$html    .= '<label class="conexao-weekday-option" for="' . esc_attr( $opt_id ) . '">';
+					$html    .= '<input type="checkbox" id="' . esc_attr( $opt_id ) . '" name="' . esc_attr( $name ) . '[]" value="' . esc_attr( $option_value ) . '"' . $checked . ' />';
+					$html    .= ' <span>' . esc_html( $option_label ) . '</span>';
+					$html    .= '</label>';
+				}
+				$html .= '</div>';
+				break;
+
+			case 'static':
+				// Display-only row (e.g. "Repetição: Semanal"): no input,
+				// never saved. The label renders above via the generic
+				// label markup.
+				$static_text = isset( $field['static_text'] ) ? $field['static_text'] : '';
+				$html       .= '<div class="conexao-static-value">' . esc_html( $static_text ) . '</div>';
+				break;
 			case 'taxonomy':
 				$taxonomy = isset( $field['taxonomy'] ) ? $field['taxonomy'] : 'conexao_category';
 				$terms    = get_terms( array( 'taxonomy' => $taxonomy, 'hide_empty' => false, 'orderby' => 'name' ) );
@@ -286,6 +348,24 @@ final class Conexao_Admin_Ux_Fields {
 				continue;
 			}
 
+			// Display-only fields (e.g. "Repetição: Semanal") have no input
+			// and no meta key to persist.
+			if ( 'static' === $field['type'] ) {
+				continue;
+			}
+
+			// Event recurrence metadata is persisted atomically by
+			// save_event_recurrence() below so that invalid rules are never
+			// stored and switching back to "Evento único" clears the entire
+			// group.
+			if ( 'event' === get_post_type( $post_id ) && in_array(
+				$key,
+				array( '_event_recurrence', '_event_recurrence_days', '_event_recurrence_start', '_event_recurrence_end' ),
+				true
+			) ) {
+				continue;
+			}
+
 			$value = isset( $meta[ $id ] ) ? $meta[ $id ] : '';
 
 			switch ( $field['type'] ) {
@@ -353,6 +433,21 @@ final class Conexao_Admin_Ux_Fields {
 					$value = implode( ',', array_unique( $clean ) );
 					break;
 				case 'textarea':
+case 'radio':
+					// Radio group: whitelist the submitted value against the
+					// configured option keys ('' is a valid key, representing
+					// "Evento único"). Any unrecognised value is dropped.
+					$options = isset( $field['options'] ) && is_array( $field['options'] ) ? $field['options'] : array();
+					$allowed = array_map( 'strval', array_keys( $options ) );
+					$value   = in_array( (string) $value, $allowed, true ) ? (string) $value : '';
+					break;
+				case 'weekdays':
+					// Weekday multi-checkbox: normalizes to a CSV of ascending
+					// ISO weekday numbers (1=Mon … 7=Sun), rejecting
+					// non-numeric, out-of-range, or duplicate values.
+					// An empty selection deletes the meta entirely.
+					$value = implode( ',', self::sanitize_weekdays( $value ) );
+					break;
 					$value = sanitize_textarea_field( $value );
 					break;
 				case 'editor':
@@ -386,6 +481,15 @@ final class Conexao_Admin_Ux_Fields {
 			}
 		}
 
+// Event recurrence: persists the weekly rule atomically (all four
+		// meta keys together, validate-then-write), clears the whole group
+		// when the event is one-time, and never writes invalid rules —
+		// mirroring the validation messages shown by the editor.
+		if ( 'event' === get_post_type( $post_id ) ) {
+			self::save_event_recurrence( $post_id, $meta );
+		}
+
+		// Save taxonomies.
 		// Save taxonomies.
 		if ( isset( $data['conexao_taxonomies'] ) && is_array( $data['conexao_taxonomies'] ) ) {
 			foreach ( $data['conexao_taxonomies'] as $taxonomy => $term_id ) {
@@ -852,6 +956,206 @@ final class Conexao_Admin_Ux_Fields {
 		} elseif ( '' === $town_meta && isset( $fields['event_town'] ) ) {
 			wp_set_object_terms( $post_id, array(), 'conexao_town' );
 		}
+	}
+/**
+	 * Whether the key is part of the event recurrence meta group.
+	 *
+	 * The group is persisted atomically by save_event_recurrence() — never
+	 * through the generic per-field loop — so a partially-edited recurring
+	 * event can never persist an inconsistent rule.
+	 *
+	 * @param string $key Meta key.
+	 * @return bool
+	 */
+	private static function is_event_recurrence_key( $key ) {
+		return in_array(
+			$key,
+			array(
+				'_event_recurrence',
+				'_event_recurrence_days',
+				'_event_recurrence_start',
+				'_event_recurrence_end',
+			),
+			true
+		);
+	}
+
+	/**
+	 * Normalize a weekday multi-checkbox submission into a deterministic
+	 * ascending list of ISO weekday numbers (1 = Monday … 7 = Sunday).
+	 *
+	 * Rejects non-numeric tokens, values outside 1–7, and duplicate
+	 * weekdays. Accepts the editor's array submission or a pre-parsed
+	 * comma-separated string (e.g. from get_post_meta()).
+	 *
+	 * @param mixed $value Submitted value (array or CSV string).
+	 * @return int[] Sorted, deduplicated weekday numbers.
+	 */
+	public static function sanitize_weekdays( $value ) {
+		if ( is_array( $value ) ) {
+			$tokens = $value;
+		} else {
+			$tokens = array_filter( array_map( 'trim', explode( ',', (string) $value ) ), 'strlen' );
+		}
+
+		$days = array();
+		foreach ( $tokens as $token ) {
+			$token = trim( (string) $token );
+			if ( ! preg_match( '/^([1-7])$/', $token, $m ) ) {
+				continue;
+			}
+			$days[ (int) $m[1] ] = true;
+		}
+
+		$days = array_keys( $days );
+		sort( $days, SORT_NUMERIC );
+		return $days;
+	}
+/**
+	 * Validate the submitted event recurrence fields.
+	 *
+	 * Returns both blocking errors (rendered in the "Não foi possível
+	 * publicar." notice and forced to draft on a publish attempt) and
+	 * non-blocking warnings (rendered as an amber notice after save).
+	 *
+	 * One-time events have nothing to validate. Weekly events require at
+	 * least one selected weekday and a recurrence end that is not before
+	 * the recurrence start. When an explicit recurrence start falls on a
+	 * non-selected weekday the save is still allowed, but a warning is
+	 * raised so the editor can double-check the intent.
+	 *
+	 * @param array $data Unslashed POST data (typically $_POST).
+	 * @return array{errors:string[],warnings:string[]}
+	 */
+	public static function validate_recurrence( $data ) {
+		$errors   = array();
+		$warnings = array();
+
+		$meta = isset( $data['conexao_fields'] ) && is_array( $data['conexao_fields'] )
+			? $data['conexao_fields']
+			: array();
+
+		if ( ! isset( $meta['event_recurrence'] ) ) {
+			return array( 'errors' => $errors, 'warnings' => $warnings );
+		}
+
+		// Evento único: nothing to validate; the save handler clears any
+		// previously stored recurrence metadata.
+		if ( 'weekly' !== trim( (string) $meta['event_recurrence'] ) ) {
+			return array( 'errors' => $errors, 'warnings' => $warnings );
+		}
+
+		$days  = self::sanitize_weekdays(
+			isset( $meta['event_recurrence_days'] ) ? $meta['event_recurrence_days'] : array()
+		);
+
+		if ( empty( $days ) ) {
+			$errors[] = 'Para eventos recorrentes, selecione pelo menos um dia da semana.';
+		}
+
+		$start = self::sanitize_date(
+			isset( $meta['event_recurrence_start'] ) ? $meta['event_recurrence_start'] : ''
+		);
+		$end   = self::sanitize_date(
+			isset( $meta['event_recurrence_end'] ) ? $meta['event_recurrence_end'] : ''
+		);
+
+		// Y-m-d strings compare chronologically; blank values are allowed.
+		if ( '' !== $start && '' !== $end && $end < $start ) {
+			$errors[] = 'A data final da repetição deve ser igual ou posterior à data inicial.';
+		}
+
+		// Non-blocking warning: a start date that does not fall on a
+		// selected weekday.
+		if ( '' !== $start && ! empty( $days ) ) {
+			$start_weekday = self::date_weekday_iso( $start );
+			if ( null !== $start_weekday && ! in_array( $start_weekday, $days, true ) ) {
+				$warnings[] = 'A data inicial da repetição não cai em um dos dias da semana selecionados. A primeira ocorrência começa no próximo dia selecionado após essa data.';
+			}
+		}
+
+		return array( 'errors' => $errors, 'warnings' => $warnings );
+	}
+/**
+	 * Persist the event recurrence group atomically.
+	 *
+	 * Weekly rules are written only when they are valid (≥ 1 weekday and a
+	 * valid start/end window); invalid submissions are refused entirely so
+	 * the previously stored rule survives an unsuccessful edit and a
+	 * brand-new event never gains broken recurrence metadata. Selecting
+	 * "Evento único" (or an unknown recurrence value) deletes the whole
+	 * group, preventing stale rules from surviving a switch.
+
+	 * @param int   $post_id Event post ID.
+	 * @param array $meta    Unslashed conexao_fields POST data.
+	 */
+	public static function save_event_recurrence( $post_id, array $meta ) {
+		$raw_type = isset( $meta['event_recurrence'] ) ? trim( (string) $meta['event_recurrence'] ) : '';
+		$type     = ( 'weekly' === $raw_type ) ? 'weekly' : '';
+
+		if ( 'weekly' !== $type ) {
+			foreach ( array(
+				'_event_recurrence',
+				'_event_recurrence_days',
+				'_event_recurrence_start',
+				'_event_recurrence_end',
+			) as $key ) {
+				delete_post_meta( $post_id, $key );
+			}
+			return;
+		}
+
+		$days = self::sanitize_weekdays(
+			isset( $meta['event_recurrence_days'] ) ? $meta['event_recurrence_days'] : array()
+		);
+
+		if ( empty( $days ) ) {
+			return;
+		}
+
+		$start = self::sanitize_date(
+			isset( $meta['event_recurrence_start'] ) ? $meta['event_recurrence_start'] : ''
+		);
+		$end   = self::sanitize_date(
+			isset( $meta['event_recurrence_end'] ) ? $meta['event_recurrence_end'] : ''
+		);
+
+		if ( '' !== $start && '' !== $end && $end < $start ) {
+			return;
+		}
+
+		update_post_meta( $post_id, '_event_recurrence', 'weekly' );
+		update_post_meta( $post_id, '_event_recurrence_days', implode( ',', $days ) );
+
+		if ( '' === $start ) {
+			delete_post_meta( $post_id, '_event_recurrence_start' );
+		} else {
+			update_post_meta( $post_id, '_event_recurrence_start', $start );
+		}
+		if ( '' === $end ) {
+			delete_post_meta( $post_id, '_event_recurrence_end' );
+		} else {
+			update_post_meta( $post_id, '_event_recurrence_end', $end );
+		}
+	}
+
+	/**
+	 * ISO weekday number (1 = Monday … 7 = Sunday) for a validated Y-m-d
+	 * date, or null when the value is not a real calendar date.
+	 *
+	 * Uses DateTimeImmutable + the site timezone (matching the event runtime
+	 * recurrence evaluator conventions) — no strtotime()/date() in the
+	 * recurrence validation path.
+	 *
+	 * @param string $date Validated Y-m-d date string.
+	 * @return int|null
+	 */
+	private static function date_weekday_iso( $date ) {
+		$datetime = DateTimeImmutable::createFromFormat( '!Y-m-d', $date, wp_timezone() );
+		if ( false === $datetime ) {
+			return null;
+		}
+		return (int) $datetime->format( 'N' );
 	}
 }
  

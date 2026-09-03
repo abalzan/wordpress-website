@@ -75,12 +75,12 @@ Registered by `conexao-data-model` (method `register_taxonomies()`).
 - `_event_source`, `_event_source_id`, `_event_organizer`, `_event_price`
 - `_event_import_date`, `_event_last_checked`
 - `_event_status`, `_event_imported`
-- `_event_recurrence` (`''` one-time | `weekly`) — internal recurrence model;
+- `_event_recurrence` (`''` one-time | `weekly`) — recurrence model;
   with `_event_recurrence_days` (CSV of ISO weekdays `1`–`7`),
   `_event_recurrence_start` (`Y-m-d`, optional, falls back to `_event_date`)
   and `_event_recurrence_end` (`Y-m-d`, optional, blank = open-ended).
-  Evaluated by `Conexao_Event_Recurrence` (event runtime plugin). Not yet
-  exposed in the admin UI or consumed by public queries.
+  Visible in the admin editor. Evaluated by `Conexao_Event_Recurrence`
+  (event runtime plugin).
 
 ### Sponsor
 

@@ -248,3 +248,66 @@
   margin: 0;
   vertical-align: middle;
 }
+/* ------------------------------------------------------------------
+   Radio button group — e.g. "Repetição: Evento único / Recorrente".
+   ------------------------------------------------------------------ */
+.conexao-radio-options {
+  display: flex;
+  gap: 14px;
+  padding: 4px 0;
+}
+.conexao-radio-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin: 0;
+  line-height: 1.4;
+}
+.conexao-radio-option input[type="radio"] {
+  margin: 0;
+}
+
+/* ------------------------------------------------------------------
+   Weekday checkbox group — ISO weekday numbers (Seg … Dom).
+   ------------------------------------------------------------------ */
+.conexao-weekdays {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+}
+.conexao-weekday-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin: 0;
+  line-height: 1.4;
+}
+.conexao-weekday-option input[type="checkbox"] {
+  margin: 0;
+}
+
+/* ------------------------------------------------------------------
+   Static (display-only) value — e.g. "Repetição: Semanal".
+   ------------------------------------------------------------------ */
+.conexao-static-value {
+  padding: 8px 10px;
+  background: #f0f0f1;
+  border: 1px solid #dcdcde;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #50575e;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+}
+
+/* ------------------------------------------------------------------
+   Conditional field visibility: hidden by default; shown via JS when
+   the controlling input matches the required value.
+   ------------------------------------------------------------------ */
+.conexao-conditional {
+  display: none !important;
+}
+.conexao-conditional.conexao-conditional--visible {
+  display: flex !important;
+}

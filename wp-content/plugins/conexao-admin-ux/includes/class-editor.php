@@ -457,6 +457,14 @@ final class Conexao_Admin_Ux_Editor {
 		// Validate required fields.
 		$errors = Conexao_Admin_Ux_Fields::validate( $this->config, $data );
 
+		// Validate event recurrence rules (if applicable).
+		$recurrence_warnings = array();
+		if ( 'event' === $this->post_type ) {
+			$recurrence_result   = Conexao_Admin_Ux_Fields::validate_recurrence( $data );
+			$recurrence_warnings = $recurrence_result['warnings'];
+			$errors              = array_merge( $errors, $recurrence_result['errors'] );
+		}
+
 		// Determine the desired status before saving.
 		$publish_action = isset( $data['conexao_publish_action'] ) ? sanitize_key( $data['conexao_publish_action'] ) : '';
 		$status         = isset( $data['conexao_editor_status'] ) ? sanitize_key( $data['conexao_editor_status'] ) : '';
@@ -525,6 +533,11 @@ final class Conexao_Admin_Ux_Editor {
 
 		// Save the custom status.
 		Conexao_Admin_Ux_Actions::set_status( $post_id, $this->post_type, $status );
+if ( ! empty( $recurrence_warnings ) ) {
+			update_option( 'conexao_admin_ux_warnings_' . $post_id, $recurrence_warnings, false );
+		}
+
+		// Save success message.
 
 		// Release the recursion guard.
 		unset( self::$saving[ $post_id ] );
@@ -769,6 +782,23 @@ final class Conexao_Admin_Ux_Editor {
 	}
 
 	/**
+// Non-blocking recurrence warnings (e.g. start date not on a selected
+		// weekday). Stored by the save handler; shown on the very next page
+		// load after save regardless of query args.
+		$post_id      = isset( $_GET['post'] ) ? absint( $_GET['post'] ) : 0;
+		$warnings_key = 'conexao_admin_ux_warnings_' . $post_id;
+		$warnings     = $post_id ? get_option( $warnings_key, array() ) : array();
+		if ( is_array( $warnings ) && ! empty( $warnings ) ) {
+			echo '<div class="notice notice-warning is-dismissible">';
+			echo '<p><strong>' . esc_html__( 'Aviso', 'conexao-admin-ux' ) . '</strong></p>';
+			echo '<ul class="conexao-validation-list">';
+			foreach ( $warnings as $warning ) {
+				echo '<li>' . esc_html( $warning ) . '</li>';
+			}
+			echo '</ul>';
+			echo '</div>';
+			delete_option( $warnings_key );
+		}
 	 * Display the save/validation notice.
 	 */
 	public function show_save_notice() {

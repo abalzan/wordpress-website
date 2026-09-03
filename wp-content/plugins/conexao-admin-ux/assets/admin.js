@@ -244,4 +244,61 @@
 			applyContactTypeHints($(this));
 		});
 	});
+// ------------------------------------------------------------------
+	// Conditional field visibility (e.g. recurrence fields shown only
+	// when "Recorrente" is selected).
+	// Controlled via data-conditional-field + data-conditional-value
+	// attributes rendered by the field renderer. No widget-specific
+	// JS is needed; the generic handler below listens on all radio/
+	// select/checkbox inputs with a matching field-key and toggles the
+	// conditional fields.
+	// ------------------------------------------------------------------
+
+	function updateConditionalFields(container) {
+		if (!container) container = document;
+		$(container).find('.conexao-conditional').each(function() {
+			var el = $(this);
+			var fieldKey = el.data('conditional-field');
+			var requiredValue = el.data('conditional-value');
+			if (!fieldKey) return;
+
+			var metaKey = fieldKey.replace(/^_/, '');
+
+			// Find the controlling input(s) in the same section.
+			// Radio/checkbox groups share a name attribute.
+			var name = 'conexao_fields[' + metaKey + ']';
+			var section = el.closest('.conexao-section');
+			var inputs = section.length
+				? section.find('[name="' + name + '"]')
+				: $('[name="' + name + '"]');
+
+			if (!inputs.length) {
+				el.removeClass('conexao-conditional--visible');
+				return;
+			}
+
+			var show = false;
+			var firstInput = inputs.get(0);
+			if (firstInput.type === 'radio' || firstInput.type === 'checkbox') {
+				inputs.each(function() {
+					if ($(this).prop('checked') && String($(this).val()) === String(requiredValue)) {
+						show = true;
+					}
+				});
+			} else {
+				show = String(firstInput.value) === String(requiredValue);
+			}
+
+			el.toggleClass('conexao-conditional--visible', show);
+		});
+	}
+
+	$(document).on('change', '.conexao-field-input', function() {
+		var section = $(this).closest('.conexao-section');
+		updateConditionalFields(section.length ? section.get(0) : document);
+	});
+
+	$(document).ready(function() {
+		updateConditionalFields(document);
+	});
 })(jQuery);
