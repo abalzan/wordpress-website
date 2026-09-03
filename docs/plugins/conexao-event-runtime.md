@@ -45,6 +45,68 @@ conexao-event-runtime`, and it refuses to boot if the runtime's
 The Admin UX plugin consumes the runtime via `class_exists('Conexao_Event_Status')`
 for event status get/set — that relationship is preserved.
 
+## Recurrence
+
+Events are either **one-time** (the legacy default) or **weekly recurring**. The
+model lives entirely in post meta — no occurrence posts are created and no cron
+is introduced.
+
+Meta keys (all registered on the `event` post type, REST-visible):
+
+| Key | Format | Notes |
+|---|---|---|
+| `_event_recurrence` | `''` (one-time) or `weekly` | Empty/unsupported value = legacy one-time behavior |
+| `_event_recurrence_days` | CSV of ISO weekdays `1` (Mon) … `7` (Sun) | Invalid/empty tokens discarded |
+| `_event_recurrence_start` | `Y-m-d` | Optional; falls back to `_event_date` when blank. Invalid = series undefined |
+| `_event_recurrence_end` | `Y-m-d` | Optional; blank or invalid = open-ended |
+
+**Evaluator** — `Conexao_Event_Recurrence` (`includes/class-event-recurrence.php`):
+
+- `occurs_on_date( $post_id, DateTimeImmutable $date )` — whether the event occurs
+  on the given local calendar date. One-time events keep the exact `_event_date`
+  comparison; weekly events check the weekday against the inclusive start/end
+  window.
+- `next_occurrence( $post_id, DateTimeImmutable $from )` — the next occurrence
+  on/after `from` (scans the next 7 days), or `null` when the series has ended.
+- `recurrence_type()`, `recurrence_days()`, `recurrence_end()` — public accessors
+  consumed by the theme's presentation helpers.
+
+All evaluation runs on local calendar dates in `wp_timezone()` via
+`DateTimeImmutable` (no UTC timestamps, no bare `strptime()`). This makes weekday
+calculations correct across DST transitions.
+
+**Query strategy** — `Conexao_Event_Query` (`includes/class-event-query.php`):
+
+1. SQL candidate widening — one lightweight query over-selects: one-time events
+   dated today or later, plus every weekly series that could occur in the
+   upcoming 7-day window. Y-m-d strings compare correctly as plain strings, so no
+   MySQL date functions are needed.
+2. Batch meta load — `update_meta_cache()` loads all postmeta for the candidates
+   in one query; the evaluator then runs entirely from the cache (no per-event
+   queries).
+3. PHP exact evaluation — `next_occurrence()` decides, per candidate, whether a
+   real occurrence exists and when.
+4. Ordered ID list — sorted by next occurrence (ascending, ties by post ID).
+   Surfaces consume it via `post__in` + `orderby => post__in`, so pagination,
+   taxonomy filters and the `_event_status` gate keep operating on real posts.
+
+**Cache** — the ordered list is stored in a transient keyed by the site-local
+calendar date (`conexao_event_upcoming_YYYYMMDD`), expiring at the next local
+midnight. Results are stable all day; the day rollover naturally rebuilds the set.
+`Conexao_Event_Query::flush_cache()` is called by the theme's
+`conexao_homepage_cache_invalidate()` whenever an event is saved/deleted. No cron.
+
+**Admin behavior** (Admin UX plugin, `class-fields.php`):
+
+- Recurrence toggle (`''` / `weekly` radio), weekday multi-checkbox, start/end
+  date fields — all conditional on "Recorrente" being selected.
+- Validation: weekly events require ≥ 1 weekday; end date must be ≥ start date;
+  a start date on a non-selected weekday raises a non-blocking warning.
+- Atomic persistence: the four recurrence keys are written together by
+  `save_event_recurrence()` — invalid submissions are refused (the previously
+  stored rule survives), and switching back to "Evento único" deletes the whole
+  group so no stale rule survives.
+
 ## Non-goals
 
 - No source fetching, HTTP clients, scrapers, or normalizers
@@ -52,6 +114,7 @@ for event status get/set — that relationship is preserved.
 - No CLI, no import logs, no source health, no Eventbrite configuration
 - No cron (importing and cleanup remain manual and local-only)
 - No data migration, no content changes on activation
+- No occurrence posts, no new REST endpoints, no custom AJAX
 
 ## Activation / Deactivation
 

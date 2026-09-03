@@ -148,7 +148,17 @@ Key functionality includes:
 | `conexao_event_is_recurring()` | Whether an event is a weekly recurring series (thin wrapper over `Conexao_Event_Recurrence::recurrence_type()`; false when the runtime is inactive) |
 | `conexao_event_recurrence_label()` | Concise Portuguese recurrence label: `Toda quarta-feira` (single day, full `-feira` form) / `Toda segunda e quarta`, `Toda segunda, quarta e sexta` (multi-day drops `-feira`); empty string for one-time events. ISO weekday numbers → names mapping only; never exposes CSV or meta keys |
 | `conexao_event_recurrence_end()` | Validated series end date (Y-m-d) or null when open-ended (thin wrapper over `Conexao_Event_Recurrence::recurrence_end()`) |
-| `conexao_course_providers_shortcode()` | `[conexao_course_providers]` shortcode |
+
+**Recurrence presentation** (Step 4): event cards (`template-parts/event-card.php`)
+show a concise label (`Toda quarta-feira`, or the suffix-less multi-day form
+`Toda segunda e quarta`) and, when the series has an end date, a small uppercase
+`até D MMM` range line. The `Hoje`/`Amanhã` chip for recurring events is decided
+by `Conexao_Event_Recurrence::occurs_on_date()` (one-time events keep the raw
+date comparison, so their output is unchanged). The compact homepage preview
+(`template-parts/event-preview.php`) appends the same recurrence label to the
+date/time meta line. All recurrence logic lives in the runtime class; templates
+only map ISO weekday numbers to Portuguese names — raw CSV and meta keys never
+reach the markup.
 | `conexao_get_terms_for_post_type()` | Filter-context term resolution |
 | `conexao_get_provider_categories()` | Dynamic provider category discovery |
 | `conexao_homepage_query()` | Transient-cached homepage queries |

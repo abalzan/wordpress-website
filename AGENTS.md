@@ -31,7 +31,7 @@ All under `wp-content/plugins/`. Load order matters:
 | `conexao-data-model` | CPTs, taxonomies, meta | docs/plugins/conexao-data-model.md |
 | `conexao-content` | Static pages + shortcodes | docs/plugins/conexao-content.md |
 | `conexao-admin-ux` | Custom wp-admin UI + statuses | docs/plugins/conexao-admin-ux.md |
-| `conexao-event-runtime` | Production event runtime (event meta, `conexao_town`, `_event_status` gate, status admin UI) | docs/plugins/conexao-event-runtime.md |
+| `conexao-event-runtime` | Production event runtime (event meta, `conexao_town`, `_event_status` gate, status admin UI, recurring-event model + evaluator + query helper) | docs/plugins/conexao-event-runtime.md |
 | `conexao-event-importer` | Local-only event import/export tooling (manual, no cron) | docs/plugins/conexao-event-importer.md |
 | `conexao-leisure-migration` | Lazer export/import (ZIP) | docs/plugins/conexao-leisure-migration.md |
 | `conexao-sponsor-migration` | Apoiadores export/import (JSON + embedded images) | docs/plugins/conexao-sponsor-migration.md |
