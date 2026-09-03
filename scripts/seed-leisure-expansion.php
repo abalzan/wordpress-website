@@ -198,10 +198,64 @@ foreach ( $candidates as $data ) {
 
 	// --- Taxonomies ---
 	if ( $category_term ) {
-		wp_set_object_terms( $post_id, array( $category_term ), 'conexao_category' );
+		wp_set_object_terms( $post_id, array( (int) $category_term ), 'conexao_category' );
 	}
 	if ( $county_term ) {
-		wp_set_object_terms( $post_id, array( $county_term ), 'conexao_county' );
+		wp_set_object_terms( $post_id, array( (int) $county_term ), 'conexao_county' );
+	}
+
+	// --- Structured characteristics (conexao_leisure_attribute taxonomy) ---
+	// Canonical representation for the practical attributes. Legacy meta is
+	// also written below for transition compatibility.
+	$attr_term_ids = array();
+	$attr_map = array(
+		'family'    => 'Famílias',
+		'outdoor'   => 'Exterior',
+		'indoor'    => 'Interior',
+		'booking'   => 'Necessita reserva',
+		'pet'       => 'Pet friendly',
+		'parking'   => 'Estacionamento',
+	);
+	foreach ( $attr_map as $data_key => $term_name ) {
+		if ( ! empty( $data[ $data_key ] ) ) {
+			$term = term_exists( $term_name, 'conexao_leisure_attribute' );
+			if ( $term && ! is_wp_error( $term ) ) {
+				$attr_term_ids[] = (int) $term['term_id'];
+			}
+		}
+	}
+	// Indoor + outdoor collapse into the combined term.
+	if ( ! empty( $data['indoor'] ) && ! empty( $data['outdoor'] ) ) {
+		$attr_term_ids = array_diff( $attr_term_ids, array_map( 'intval', array() ) );
+		// Remove the separate interior/exterior entries.
+		$int_term = term_exists( 'Interior', 'conexao_leisure_attribute' );
+		$ext_term = term_exists( 'Exterior', 'conexao_leisure_attribute' );
+		$combo    = term_exists( 'Interior + exterior', 'conexao_leisure_attribute' );
+		$filtered = array();
+		foreach ( $attr_term_ids as $tid ) {
+			if ( $int_term && ! is_wp_error( $int_term ) && (int) $int_term['term_id'] === $tid ) {
+				continue;
+			}
+			if ( $ext_term && ! is_wp_error( $ext_term ) && (int) $ext_term['term_id'] === $tid ) {
+				continue;
+			}
+			$filtered[] = $tid;
+		}
+		$attr_term_ids = $filtered;
+		if ( $combo && ! is_wp_error( $combo ) ) {
+			$attr_term_ids[] = (int) $combo['term_id'];
+		}
+	}
+	// Gratuito from the free flag.
+	if ( ! empty( $data['free'] ) ) {
+		$free_term = term_exists( 'Gratuito', 'conexao_leisure_attribute' );
+		if ( $free_term && ! is_wp_error( $free_term ) ) {
+			$attr_term_ids[] = (int) $free_term['term_id'];
+		}
+	}
+	if ( ! empty( $attr_term_ids ) ) {
+		$attr_term_ids = array_values( array_unique( array_map( 'intval', $attr_term_ids ) ) );
+		wp_set_object_terms( $post_id, $attr_term_ids, 'conexao_leisure_attribute' );
 	}
 
 	// --- Meta (same keys as seed-leisure-locations.php) ---
@@ -213,7 +267,9 @@ foreach ( $candidates as $data ) {
 	update_post_meta( $post_id, '_leisure_discover_ireland', isset( $data['discover_ireland'] ) ? $data['discover_ireland'] : '' );
 	update_post_meta( $post_id, '_leisure_map_url', '' );
 	update_post_meta( $post_id, '_leisure_feature', '' );
-	update_post_meta( $post_id, '_leisure_free', ! empty( $data['free'] ) ? '1' : '' );
+	// _leisure_free: store the canonical Portuguese label instead of a bare '1'
+	// so the value is meaningful if ever displayed directly.
+	update_post_meta( $post_id, '_leisure_free', ! empty( $data['free'] ) ? 'Gratuito' : '' );
 	update_post_meta( $post_id, '_leisure_family', ! empty( $data['family'] ) ? '1' : '' );
 	update_post_meta( $post_id, '_leisure_accessibility', '' );
 	update_post_meta( $post_id, '_leisure_pet_friendly', '' );

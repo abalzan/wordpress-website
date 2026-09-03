@@ -23,16 +23,48 @@ get_header();
 	$leisure_website       = $leisure_official ? $leisure_official : get_post_meta( $leisure_id, '_leisure_website', true );
 	$leisure_discover      = get_post_meta( $leisure_id, '_leisure_discover_ireland', true );
 	$leisure_map_url       = get_post_meta( $leisure_id, '_leisure_map_url', true );
-	$leisure_free          = get_post_meta( $leisure_id, '_leisure_free', true );
-	$leisure_family        = get_post_meta( $leisure_id, '_leisure_family', true );
-	$leisure_accessibility = get_post_meta( $leisure_id, '_leisure_accessibility', true );
-	$leisure_pet_friendly  = get_post_meta( $leisure_id, '_leisure_pet_friendly', true );
-	$leisure_indoor        = get_post_meta( $leisure_id, '_leisure_indoor', true );
-	$leisure_outdoor       = get_post_meta( $leisure_id, '_leisure_outdoor', true );
-	$leisure_parking       = get_post_meta( $leisure_id, '_leisure_parking', true );
-	$leisure_booking       = get_post_meta( $leisure_id, '_leisure_booking', true );
 	$leisure_duration      = get_post_meta( $leisure_id, '_leisure_duration', true );
 	$leisure_best_time     = get_post_meta( $leisure_id, '_leisure_best_time', true );
+
+	// Resolve the display set for the practical attributes of this destination.
+	// Primary source: the structured conexao_leisure_attribute taxonomy.
+	// Fallback: legacy checkbox meta during the transition. Never render the
+	// same attribute twice when both sources are present.
+	$leisure_attr_names = array();
+
+	$attr_terms = get_the_terms( $leisure_id, 'conexao_leisure_attribute' );
+	if ( $attr_terms && ! is_wp_error( $attr_terms ) ) {
+		foreach ( $attr_terms as $term ) {
+			$leisure_attr_names[ sanitize_title( $term->name ) ] = $term->name;
+		}
+	}
+
+	// Legacy fallback — only add names not already present from the taxonomy.
+	$legacy_attr_map = array(
+		'_leisure_family'        => array( 'familias', 'Famílias' ),
+		'_leisure_outdoor'       => array( 'exterior', 'Exterior' ),
+		'_leisure_indoor'        => array( 'interior', 'Interior' ),
+		'_leisure_booking'       => array( 'necessita-reserva', 'Necessita reserva' ),
+		'_leisure_accessibility' => array( 'acessivel', 'Acessível' ),
+		'_leisure_pet_friendly'  => array( 'pet-friendly', 'Pet friendly' ),
+		'_leisure_parking'       => array( 'estacionamento', 'Estacionamento' ),
+	);
+	foreach ( $legacy_attr_map as $meta_key => $mapping ) {
+		if ( '1' === (string) get_post_meta( $leisure_id, $meta_key, true ) && ! isset( $leisure_attr_names[ $mapping[0] ] ) ) {
+			$leisure_attr_names[ $mapping[0] ] = $mapping[1];
+		}
+	}
+	$legacy_free = get_post_meta( $leisure_id, '_leisure_free', true );
+	if ( '' !== (string) $legacy_free ) {
+		$free_lower = mb_strtolower( (string) $legacy_free, 'UTF-8' );
+		$is_free    = ( '1' === (string) $legacy_free )
+			|| false !== strpos( $free_lower, 'gratuit' )
+			|| false !== strpos( $free_lower, 'free' )
+			|| false !== strpos( $free_lower, 'grátis' );
+		if ( $is_free && ! isset( $leisure_attr_names['gratuito'] ) ) {
+			$leisure_attr_names['gratuito'] = 'Gratuito';
+		}
+	}
 
 	// Image metadata for hero + attribution.
 	$leisure_alt_text     = get_post_meta( $leisure_id, '_leisure_image_alt_text', true );
@@ -121,7 +153,7 @@ get_header();
 					<?php the_content(); ?>
 				</div>
 
-				<?php if ( $leisure_address || $leisure_website || $leisure_map_url || $leisure_free || $leisure_duration || $leisure_best_time || $leisure_family || $leisure_accessibility || $leisure_pet_friendly || $leisure_indoor || $leisure_outdoor || $leisure_parking || $leisure_booking ) : ?>
+				<?php if ( $leisure_address || $leisure_website || $leisure_map_url || ! empty( $leisure_attr_names ) || $leisure_duration || $leisure_best_time ) : ?>
 					<div class="leisure-single-info">
 
 						<?php if ( $leisure_address || $leisure_website || $leisure_map_url ) : ?>
@@ -161,39 +193,18 @@ get_header();
 							</div>
 						<?php endif; ?>
 
-						<?php if ( $leisure_free || $leisure_duration || $leisure_best_time || $leisure_family || $leisure_accessibility || $leisure_pet_friendly || $leisure_indoor || $leisure_outdoor || $leisure_parking || $leisure_booking ) : ?>
+						<?php if ( ! empty( $leisure_attr_names ) || $leisure_duration || $leisure_best_time ) : ?>
 							<div class="leisure-single-block leisure-single--attrs">
 								<h2 class="leisure-single-block-title"><?php esc_html_e( 'Informações úteis', 'conexao-br-irlanda' ); ?></h2>
 								<ul class="leisure-attr-grid">
-									<?php if ( $leisure_free ) : ?>
-										<li class="leisure-attr-item"><strong><?php esc_html_e( 'Custo', 'conexao-br-irlanda' ); ?>:</strong> <?php echo esc_html( $leisure_free ); ?></li>
-									<?php endif; ?>
+									<?php foreach ( $leisure_attr_names as $attr_name ) : ?>
+										<li class="leisure-attr-item leisure-attr-yes"><?php echo esc_html( $attr_name ); ?></li>
+									<?php endforeach; ?>
 									<?php if ( $leisure_duration ) : ?>
 										<li class="leisure-attr-item"><strong><?php esc_html_e( 'Duração', 'conexao-br-irlanda' ); ?>:</strong> <?php echo esc_html( $leisure_duration ); ?></li>
 									<?php endif; ?>
 									<?php if ( $leisure_best_time ) : ?>
 										<li class="leisure-attr-item"><strong><?php esc_html_e( 'Melhor época', 'conexao-br-irlanda' ); ?>:</strong> <?php echo esc_html( $leisure_best_time ); ?></li>
-									<?php endif; ?>
-									<?php if ( $leisure_family ) : ?>
-										<li class="leisure-attr-item leisure-attr-yes"><?php esc_html_e( 'Adequado para famílias', 'conexao-br-irlanda' ); ?></li>
-									<?php endif; ?>
-									<?php if ( $leisure_accessibility ) : ?>
-										<li class="leisure-attr-item leisure-attr-yes"><?php esc_html_e( 'Acessível', 'conexao-br-irlanda' ); ?></li>
-									<?php endif; ?>
-									<?php if ( $leisure_pet_friendly ) : ?>
-										<li class="leisure-attr-item leisure-attr-yes"><?php esc_html_e( 'Pet friendly', 'conexao-br-irlanda' ); ?></li>
-									<?php endif; ?>
-									<?php if ( $leisure_indoor ) : ?>
-										<li class="leisure-attr-item leisure-attr-yes"><?php esc_html_e( 'Interior', 'conexao-br-irlanda' ); ?></li>
-									<?php endif; ?>
-									<?php if ( $leisure_outdoor ) : ?>
-										<li class="leisure-attr-item leisure-attr-yes"><?php esc_html_e( 'Exterior', 'conexao-br-irlanda' ); ?></li>
-									<?php endif; ?>
-									<?php if ( $leisure_parking ) : ?>
-										<li class="leisure-attr-item leisure-attr-yes"><?php esc_html_e( 'Estacionamento', 'conexao-br-irlanda' ); ?></li>
-									<?php endif; ?>
-									<?php if ( $leisure_booking ) : ?>
-										<li class="leisure-attr-item leisure-attr-yes"><?php esc_html_e( 'Necessita reserva', 'conexao-br-irlanda' ); ?></li>
 									<?php endif; ?>
 								</ul>
 							</div>

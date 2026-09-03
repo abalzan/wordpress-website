@@ -56,15 +56,26 @@ if ( ! $archive_url ) {
 // Current filter state from the URL.
 $current_county   = isset( $_GET['county'] ) ? sanitize_title( wp_unslash( $_GET['county'] ) ) : '';
 $current_category = isset( $_GET['categoria'] ) ? sanitize_title( wp_unslash( $_GET['categoria'] ) ) : '';
+	$current_atributo = '';
+if ( isset( $_GET['atributo'] ) ) {
+	$atributo_raw = wp_unslash( $_GET['atributo'] );
+	if ( is_array( $atributo_raw ) ) {
+		$current_atributo = implode( ',', array_map( 'sanitize_title', $atributo_raw ) );
+	} else {
+		$current_atributo = sanitize_text_field( $atributo_raw );
+	}
+}
 
 // Collect counties and categories actually used by leisure locations.
 $county_terms   = conexao_get_terms_for_post_type( 'conexao_county', 'leisure' );
-$category_terms = conexao_get_terms_for_post_type( 'conexao_category', 'leisure' );
+$category_terms   = conexao_get_terms_for_post_type( 'conexao_category', 'leisure' );
+	$attribute_terms  = conexao_get_terms_for_post_type( 'conexao_leisure_attribute', 'leisure' );
 
 $has_county   = ( ! is_wp_error( $county_terms ) && ! empty( $county_terms ) );
-$has_category = ( ! is_wp_error( $category_terms ) && ! empty( $category_terms ) );
+$has_category   = ( ! is_wp_error( $category_terms ) && ! empty( $category_terms ) );
+	$has_attribute = ( ! is_wp_error( $attribute_terms ) && ! empty( $attribute_terms ) );
 
-if ( ! $has_county && ! $has_category ) {
+if ( ! $has_county && ! $has_category && ! $has_attribute ) {
 	return;
 }
 
@@ -83,7 +94,7 @@ if ( $has_category ) {
 	}
 }
 
-$has_active_filters = ( '' !== $current_county || '' !== $current_category );
+$has_active_filters = ( '' !== $current_county || '' !== $current_category || '' !== $current_atributo );
 
 // URL that clears every filter (the plain archive).
 $clear_url = $archive_url;
@@ -130,6 +141,9 @@ $category_trigger_aria = $current_category
 
 // Number of active filters, shown as a small badge on the mobile trigger.
 $active_filter_count = ( $current_county ? 1 : 0 ) + ( $current_category ? 1 : 0 );
+	if ( $current_atributo ) {
+		$active_filter_count += count( array_filter( array_map( 'trim', explode( ',', $current_atributo ) ) ) );
+	}
 
 // Lightweight result summary. The main archive query already computes
 // found_posts for pagination, so reading it here costs no extra query.
@@ -229,6 +243,74 @@ $leisure_total = ( isset( $wp_query ) && $wp_query instanceof WP_Query ) ? (int)
 									$url = add_query_arg( 'county', $current_county, $url );
 								}
 								$is_active = ( $current_category === $term->slug );
+								?>
+								<a class="leisure-dropdown-link <?php echo $is_active ? 'is-active' : ''; ?>" role="option" aria-selected="<?php echo $is_active ? 'true' : 'false'; ?>" href="<?php echo esc_url( $url ); ?>">
+									<span class="leisure-checkmark" aria-hidden="true"><?php echo $is_active ? '✓' : ''; ?></span>
+									<span><?php echo esc_html( $term->name ); ?></span>
+								</a>
+							<?php endforeach; ?>
+						</div>
+					</div>
+				</div>
+			</div>
+		<?php endif; ?>
+
+		<?php if ( $has_attribute ) : ?>
+			<div class="leisure-filter-group">
+				<div class="leisure-dropdown" data-dropdown>
+					<button
+						type="button"
+						class="leisure-dropdown-trigger<?php echo $current_atributo ? ' is-selected' : ''; ?>"
+						aria-haspopup="listbox"
+						aria-expanded="false"
+						aria-controls="leisure-attribute-panel"
+						aria-label="<?php esc_attr_e( 'Filtrar por Características', 'conexao-br-irlanda' ); ?>"
+						data-dropdown-trigger>
+						<?php if ( $current_atributo ) : ?>
+							<span class="leisure-dot" aria-hidden="true"></span>
+						<?php endif; ?>
+						<span class="leisure-dropdown-label"><?php esc_html_e( 'Características', 'conexao-br-irlanda' ); ?></span>
+						<span class="leisure-dropdown-caret" aria-hidden="true">▾</span>
+					</button>
+
+					<div class="leisure-dropdown-panel" id="leisure-attribute-panel" data-dropdown-panel>
+						<div class="leisure-dropdown-list" role="listbox" aria-label="<?php esc_attr_e( 'Características', 'conexao-br-irlanda' ); ?>">
+							<a class="leisure-dropdown-link <?php echo empty( $current_atributo ) ? 'is-active' : ''; ?>" role="option" aria-selected="<?php echo empty( $current_atributo ) ? 'true' : 'false'; ?>" href="<?php
+								// Remove only the attribute filter, preserve county + category.
+								$base = $archive_url;
+								if ( $current_county ) {
+									$base = add_query_arg( 'county', $current_county, $base );
+								}
+								if ( $current_category ) {
+									$base = add_query_arg( 'categoria', $current_category, $base );
+								}
+								echo esc_url( $base );
+							?>">
+								<span class="leisure-checkmark" aria-hidden="true"><?php echo empty( $current_atributo ) ? '✓' : ''; ?></span>
+								<span><?php esc_html_e( 'Todas', 'conexao-br-irlanda' ); ?></span>
+							</a>
+
+							<?php foreach ( $attribute_terms as $term ) : ?>
+								<?php
+								// Toggle this attribute in the comma-separated list.
+								$selected_attrs = $current_atributo ? array_filter( array_map( 'trim', explode( ',', $current_atributo ) ) ) : array();
+								if ( in_array( $term->slug, $selected_attrs, true ) ) {
+									$selected_attrs = array_diff( $selected_attrs, array( $term->slug ) );
+								} else {
+									$selected_attrs[] = $term->slug;
+								}
+								$new_atributo = implode( ',', $selected_attrs );
+								$url = $archive_url;
+								if ( $current_county ) {
+									$url = add_query_arg( 'county', $current_county, $url );
+								}
+								if ( $current_category ) {
+									$url = add_query_arg( 'categoria', $current_category, $url );
+								}
+								if ( '' !== $new_atributo ) {
+									$url = add_query_arg( 'atributo', $new_atributo, $url );
+								}
+								$is_active = in_array( $term->slug, $selected_attrs, true );
 								?>
 								<a class="leisure-dropdown-link <?php echo $is_active ? 'is-active' : ''; ?>" role="option" aria-selected="<?php echo $is_active ? 'true' : 'false'; ?>" href="<?php echo esc_url( $url ); ?>">
 									<span class="leisure-checkmark" aria-hidden="true"><?php echo $is_active ? '✓' : ''; ?></span>
@@ -382,6 +464,24 @@ $leisure_total = ( isset( $wp_query ) && $wp_query instanceof WP_Query ) ? (int)
 							</fieldset>
 						<?php endif; ?>
 					</div>
+				<?php if ( $has_attribute ) : ?>
+					<fieldset class="leisure-mobile-section">
+						<legend class="leisure-mobile-section-legend"><?php esc_html_e( 'Características', 'conexao-br-irlanda' ); ?></legend>
+						<div class="leisure-filter-options">
+							<?php
+							$selected_attrs = $current_atributo ? array_filter( array_map( 'trim', explode( ',', $current_atributo ) ) ) : array();
+							foreach ( $attribute_terms as $term ) :
+								$opt_id = 'attr-' . sanitize_html_class( $term->slug );
+								$checked = in_array( $term->slug, $selected_attrs, true ) ? ' checked="checked"' : '';
+							?>
+								<label class="leisure-filter-option">
+									<input class="leisure-filter-checkbox" type="checkbox" name="atributo[]" value="<?php echo esc_attr( $term->slug ); ?>"<?php echo $checked; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+									<span><?php echo esc_html( $term->name ); ?></span>
+								</label>
+							<?php endforeach; ?>
+						</div>
+					</fieldset>
+				<?php endif; ?>
 
 					<div class="leisure-mobile-sheet-footer">
 						<a class="leisure-mobile-clear" href="<?php echo esc_url( $clear_url ); ?>"><?php esc_html_e( 'Limpar', 'conexao-br-irlanda' ); ?></a>

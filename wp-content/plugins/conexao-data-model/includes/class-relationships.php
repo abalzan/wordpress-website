@@ -42,5 +42,26 @@ final class Conexao_Data_Model_Relationships {
 				wp_insert_term( $term, 'conexao_county' );
 			}
 		}
+
+		// Structured practical/profile characteristics for leisure destinations.
+		// These live in a dedicated non-hierarchical taxonomy so they stay
+		// distinct from the experience/category concepts in conexao_category.
+		$leisure_attributes = array(
+			'Famílias',
+			'Exterior',
+			'Interior',
+			'Interior + exterior',
+			'Gratuito',
+			'Pet friendly',
+			'Acessível',
+			'Estacionamento',
+			'Necessita reserva',
+		);
+
+		foreach ( $leisure_attributes as $term ) {
+			if ( ! term_exists( $term, 'conexao_leisure_attribute' ) ) {
+				wp_insert_term( $term, 'conexao_leisure_attribute' );
+			}
+		}
 	}
 }

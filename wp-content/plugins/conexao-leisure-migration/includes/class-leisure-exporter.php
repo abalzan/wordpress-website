@@ -62,10 +62,11 @@ class Conexao_Lazer_Exporter {
 		'_leisure_image_alt_text',
 	);
 
-	protected $export_taxonomies = array(
+protected $export_taxonomies = array(
 		'conexao_category',
 		'conexao_county',
 		'conexao_tag',
+		'conexao_leisure_attribute',
 	);
 
 	public function count_items() {

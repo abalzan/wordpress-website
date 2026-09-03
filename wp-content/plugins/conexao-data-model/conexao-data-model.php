@@ -420,6 +420,23 @@ final class Conexao_Data_Model {
 				'rewrite'           => array( 'slug' => 'tags', 'with_front' => false ),
 			)
 		);
+
+		// Structured practical/profile characteristics for leisure destinations
+		// only. Non-hierarchical so it behaves like a controlled tag list. Distinct
+		// from conexao_category (which holds experience/category concepts) and from
+		// conexao_county (location).
+		register_taxonomy(
+			'conexao_leisure_attribute',
+			array( 'leisure' ),
+			array(
+				'labels'            => array( 'name' => 'Características', 'singular_name' => 'Característica' ),
+				'public'            => false,
+				'hierarchical'      => false,
+				'show_in_rest'      => true,
+				'show_admin_column' => true,
+				'rewrite'           => false,
+			)
+		);
 	}
 
 	public static function activate() {

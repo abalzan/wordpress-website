@@ -1950,8 +1950,19 @@ function conexao_content_archive_query( $query ) {
 		}
 
 		// Combine filters in a single nested relation so county + category work together.
-		$county   = isset( $_GET['county'] ) ? sanitize_title( wp_unslash( $_GET['county'] ) ) : '';
-		$category = isset( $_GET['categoria'] ) ? sanitize_title( wp_unslash( $_GET['categoria'] ) ) : '';
+		$county    = isset( $_GET['county'] ) ? sanitize_title( wp_unslash( $_GET['county'] ) ) : '';
+		$category  = isset( $_GET['categoria'] ) ? sanitize_title( wp_unslash( $_GET['categoria'] ) ) : '';
+		// Características may arrive as a comma-separated string (desktop links)
+		// or as an array of slugs (mobile checkbox form submits atributo[]).
+		$atributo = '';
+		if ( isset( $_GET['atributo'] ) ) {
+			$atributo_raw = wp_unslash( $_GET['atributo'] );
+			if ( is_array( $atributo_raw ) ) {
+				$atributo = array_map( 'sanitize_title', $atributo_raw );
+			} else {
+				$atributo = sanitize_text_field( $atributo_raw );
+			}
+		}
 
 		if ( $county ) {
 			$tax_query[] = array(
@@ -1967,6 +1978,28 @@ function conexao_content_archive_query( $query ) {
 				'field'    => 'slug',
 				'terms'    => $category,
 			);
+		}
+
+		// Características: comma-separated slugs (desktop links) or an array
+		// of slugs (mobile checkboxes submit atributo[]). OR logic within this
+		// dimension. County and category remain AND with this group.
+		if ( taxonomy_exists( 'conexao_leisure_attribute' ) ) {
+			$atributo_raw = $atributo;
+			if ( is_array( $atributo_raw ) ) {
+				$atributo_slugs = array_map( 'sanitize_title', $atributo_raw );
+			} else {
+				$atributo_slugs = array_filter( array_map( 'trim', explode( ',', (string) $atributo_raw ) ) );
+				$atributo_slugs = array_map( 'sanitize_title', $atributo_slugs );
+			}
+			$atributo_slugs = array_filter( $atributo_slugs );
+			if ( ! empty( $atributo_slugs ) ) {
+				$tax_query[] = array(
+					'taxonomy' => 'conexao_leisure_attribute',
+					'field'    => 'slug',
+					'terms'    => array_values( $atributo_slugs ),
+					'operator' => 'IN',
+				);
+			}
 		}
 
 		if ( ! empty( $tax_query ) ) {

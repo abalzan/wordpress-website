@@ -54,6 +54,7 @@ class Conexao_Lazer_Importer {
 		'conexao_category',
 		'conexao_county',
 		'conexao_tag',
+		'conexao_leisure_attribute',
 	);
 
 	const MAX_PACKAGE_SIZE = 300 * MB_IN_BYTES;

@@ -197,6 +197,29 @@ case 'radio':
 				}
 				break;
 
+			case 'taxonomy_multi':
+				// Multi-select taxonomy as a checkbox list. Submits as
+				// conexao_taxonomies[taxonomy][] = term_id.
+				$taxonomy = isset( $field['taxonomy'] ) ? $field['taxonomy'] : 'conexao_category';
+				$terms    = get_terms( array( 'taxonomy' => $taxonomy, 'hide_empty' => false, 'orderby' => 'name' ) );
+				$current  = wp_get_object_terms( $post_id, $taxonomy, array( 'fields' => 'ids' ) );
+				$current  = is_wp_error( $current ) ? array() : array_map( 'intval', $current );
+				$html    .= '<div class="conexao-taxonomy-multi" id="' . esc_attr( $id ) . '">';
+				if ( ! is_wp_error( $terms ) && ! empty( $terms ) ) {
+					foreach ( $terms as $term ) {
+						$opt_id  = $id . '-' . sanitize_html_class( $term->slug );
+						$checked = in_array( (int) $term->term_id, $current, true ) ? ' checked="checked"' : '';
+						$html   .= '<label class="conexao-taxonomy-multi-option" for="' . esc_attr( $opt_id ) . '">';
+						$html   .= '<input type="checkbox" id="' . esc_attr( $opt_id ) . '" name="conexao_taxonomies[' . esc_attr( $taxonomy ) . '][]" value="' . esc_attr( $term->term_id ) . '"' . $checked . ' />';
+						$html   .= ' <span>' . esc_html( $term->name ) . '</span>';
+						$html   .= '</label>';
+					}
+				} else {
+					$html .= '<span class="conexao-taxonomy-multi-empty">' . esc_html__( 'Nenhuma opção disponível.', 'conexao-admin-ux' ) . '</span>';
+				}
+				$html .= '</div>';
+				break;
+
 			case 'town':
 				$html .= '<input type="text" class="conexao-field-input conexao-town-input" id="' . esc_attr( $id ) . '" name="' . esc_attr( $name ) . '" value="' . esc_attr( $value ) . '" autocomplete="off" />';
 				$html .= '<div class="conexao-town-suggestions" id="' . esc_attr( $id ) . '-suggestions" role="listbox" aria-label="Sugestões de cidades"></div>';
@@ -492,10 +515,17 @@ case 'radio':
 		// Save taxonomies.
 		// Save taxonomies.
 		if ( isset( $data['conexao_taxonomies'] ) && is_array( $data['conexao_taxonomies'] ) ) {
-			foreach ( $data['conexao_taxonomies'] as $taxonomy => $term_id ) {
+			foreach ( $data["conexao_taxonomies"] as $taxonomy => $term_value ) {
 				$taxonomy = sanitize_key( $taxonomy );
-				$term_id  = absint( $term_id );
-				if ( taxonomy_exists( $taxonomy ) ) {
+				if ( ! taxonomy_exists( $taxonomy ) ) {
+					continue;
+				}
+				if ( is_array( $term_value ) ) {
+					$term_ids = array_map( "absint", $term_value );
+					$term_ids = array_filter( $term_ids );
+					wp_set_object_terms( $post_id, array_values( $term_ids ), $taxonomy );
+				} else {
+					$term_id = absint( $term_value );
 					wp_set_object_terms( $post_id, $term_id ? array( $term_id ) : array(), $taxonomy );
 				}
 			}
