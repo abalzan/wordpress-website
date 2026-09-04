@@ -57,6 +57,9 @@ class Conexao_Lazer_Exporter {
 		'_leisure_practical_notes',
 		'_leisure_practical_source_url',
 		'_leisure_practical_last_checked',
+		// Phase 3B — internal-page classification flag. Boolean: exported as
+		// '1' when set; empty/false values are omitted (see export_item()).
+		'_leisure_internal_page',
 		'_leisure_image_attachment_id',
 		'_leisure_image_source',
 		'_leisure_image_source_url',

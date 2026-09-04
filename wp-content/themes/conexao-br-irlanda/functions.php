@@ -1688,6 +1688,33 @@ function conexao_leisure_county_filter_url( $county_slug ) {
 	return add_query_arg( 'county', $county_slug, $leisure_url );
 }
 /**
+ * Normalize the mutually exclusive environment attributes (Ambiente).
+ *
+ * `Interior + exterior` (slug `interior-exterior`) is a combined/derived
+ * state: when it applies, the individual `Interior` and `Exterior`
+ * attributes are redundant for frontend presentation and must never render
+ * alongside it. This is the single canonical resolution rule — every
+ * surface (archive card, single page, future cards) renders whatever this
+ * returns, so the card and the page can never disagree.
+ *
+ * The input may mix structured taxonomy names and legacy-checkbox fallback
+ * names; normalization runs AFTER both sources are merged, so redundant
+ * environment signals are removed regardless of where they came from. The
+ * underlying taxonomy assignments are never modified — this is display
+ * normalization only. Taxonomy filtering semantics are unchanged.
+ *
+ * @param array<string,string> $attr_names Map of attribute slug => display name.
+ * @return array<string,string> Normalized map of attribute slug => display name.
+ */
+function conexao_leisure_normalize_environment_attributes( $attr_names ) {
+	if ( isset( $attr_names['interior-exterior'] ) ) {
+		unset( $attr_names['interior'], $attr_names['exterior'] );
+	}
+
+	return $attr_names;
+}
+
+/**
  * Resolve the display set of practical characteristics for a leisure record.
  *
  * Phase 3C — a single shared source for the practical-attribute resolution
@@ -1696,6 +1723,11 @@ function conexao_leisure_county_filter_url( $county_slug ) {
  * `conexao_leisure_attribute` taxonomy; legacy checkbox meta is the fallback
  * during the transition. Both are merged without ever rendering the same
  * attribute twice. Never renders empty labels — only what is actually stored.
+ *
+ * The merged set is passed through
+ * conexao_leisure_normalize_environment_attributes() so mutually exclusive
+ * environment attributes (Interior / Exterior / Interior + exterior) are
+ * canonical before any rendering.
  *
  * @param int $post_id Leisure post ID.
  * @return array<string,string> Map of attribute slug => display name.
@@ -1740,7 +1772,9 @@ function conexao_leisure_attributes( $post_id = 0 ) {
 		}
 	}
 
-	return $attr_names;
+	// Canonical environment normalization: when `Interior + exterior`
+	// applies, the individual Interior/Exterior attributes never render.
+	return conexao_leisure_normalize_environment_attributes( $attr_names );
 }
 
 /**

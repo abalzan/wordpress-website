@@ -52,6 +52,18 @@ Exported/imported meta includes the Phase 2 practical-information keys
 `_leisure_practical_last_checked`). The importer sanitizes them explicitly:
 `sanitize_textarea_field` for the notes, `esc_url_raw` for the source URL.
 
+The Phase 3B `_leisure_internal_page` flag (keep the internal `/lazer/` page
+even when an Official Website / Discover Ireland URL is set) is also part of
+the supported meta: the exporter emits `'1'` when the flag is set (empty or
+absent values are simply not exported), and the importer normalizes any
+truthy representation (`1`, `true`, `yes`, `on`, non-zero number) to `'1'`
+via the same `normalize_boolean_meta()` used for the other leisure checkbox
+fields — arbitrary values are never stored, and `0`/false values normalize
+to "no flag". Absent/false therefore round-trips as "no flag", which
+preserves the external-URL 302 redirect classification exactly as before
+(see `conexao_leisure_external_url()` in `inc/seo.php` — unchanged by this
+plugin).
+
 ### Import
 1. Validate ZIP structure
 2. Dry run: count found/created/updated/skipped/failed
