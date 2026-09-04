@@ -198,11 +198,42 @@ echo esc_html( $display_attr );
 <p class="leisure-card-excerpt"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 18, '...' ) ); ?></p>
 
 <?php if ( ! empty( $leisure_attr_names ) ) : ?>
+<?php
+// Cards stay concise: show a capped, prioritized set of high-value
+// practical attributes only (Phase 2 audit). Priority: Entrada
+// (Gratuito/Pago/condicional), Ambiente (Interior/Exterior),
+// Acessibilidade, Estacionamento; then the remaining profile
+// attributes. Transport/bicycle details live on the individual page.
+$leisure_card_attr_priority = array(
+	'gratuito',
+	'pago',
+	'gratuito-em-determinadas-condicoes',
+	'interior-exterior',
+	'exterior',
+	'interior',
+	'acessivel',
+	'estacionamento',
+	'familias',
+	'necessita-reserva',
+	'pet-friendly',
+);
+$leisure_card_attrs = array();
+foreach ( $leisure_card_attr_priority as $priority_slug ) {
+	if ( isset( $leisure_attr_names[ $priority_slug ] ) ) {
+		$leisure_card_attrs[ $priority_slug ] = $leisure_attr_names[ $priority_slug ];
+	}
+	if ( count( $leisure_card_attrs ) >= 4 ) {
+		break;
+	}
+}
+?>
+<?php if ( ! empty( $leisure_card_attrs ) ) : ?>
 <ul class="leisure-card-attrs">
-<?php foreach ( $leisure_attr_names as $attr_name ) : ?>
+<?php foreach ( $leisure_card_attrs as $attr_name ) : ?>
 <li class="leisure-card-attr"><span class="leisure-attr-dot"></span><?php echo esc_html( $attr_name ); ?></li>
 <?php endforeach; ?>
 </ul>
+<?php endif; ?>
 <?php endif; ?>
 
 <a href="<?php echo esc_url( $leisure_link_url ); ?>" class="leisure-card-cta"<?php echo $leisure_is_external ? ' rel="noopener"' : ''; ?>>

@@ -351,6 +351,31 @@ final class Conexao_Admin_Ux_Config {
 						array( 'key' => '_leisure_best_time', 'label' => 'Melhor época para visitar', 'type' => 'text', 'help' => 'Ex.: "Primavera", "todo o ano".' ),
 					),
 				),
+				'pratico' => array(
+					'title'    => 'Informações úteis',
+					'icon'     => 'dashicons-clipboard',
+					'priority' => 45,
+					'fields'   => array(
+						array(
+							'key'   => '_leisure_practical_notes',
+							'label' => 'Observações práticas',
+							'type'  => 'textarea',
+							'help'  => 'Dicas úteis para visitantes (ex.: "Leve agasalho", "Fecha no inverno").',
+						),
+						array(
+							'key'   => '_leisure_practical_source_url',
+							'label' => 'Fonte da verificação',
+							'type'  => 'url',
+							'help'  => 'Site usado para verificar as informações práticas (ex.: site oficial, Discover Ireland).',
+						),
+						array(
+							'key'   => '_leisure_practical_last_checked',
+							'label' => 'Última verificação',
+							'type'  => 'date',
+							'help'  => 'Data em que as informações práticas foram verificadas pela última vez.',
+						),
+					),
+				),
 				'destaque' => array(
 					'title'    => 'Destaque',
 					'icon'     => 'dashicons-star-filled',

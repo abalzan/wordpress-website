@@ -456,7 +456,9 @@ case 'radio':
 					$value = implode( ',', array_unique( $clean ) );
 					break;
 				case 'textarea':
-case 'radio':
+					$value = sanitize_textarea_field( $value );
+					break;
+				case 'radio':
 					// Radio group: whitelist the submitted value against the
 					// configured option keys ('' is a valid key, representing
 					// "Evento único"). Any unrecognised value is dropped.
@@ -470,8 +472,6 @@ case 'radio':
 					// non-numeric, out-of-range, or duplicate values.
 					// An empty selection deletes the meta entirely.
 					$value = implode( ',', self::sanitize_weekdays( $value ) );
-					break;
-					$value = sanitize_textarea_field( $value );
 					break;
 				case 'editor':
 					$value = wp_kses_post( $value );

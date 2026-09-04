@@ -26,6 +26,14 @@ get_header();
 	$leisure_duration      = get_post_meta( $leisure_id, '_leisure_duration', true );
 	$leisure_best_time     = get_post_meta( $leisure_id, '_leisure_best_time', true );
 
+	// Phase 2 — practical-information fields. The source URL is deliberately
+	// loaded but never rendered publicly: verification display uses only the
+	// last-checked date (the official website CTA stays the authoritative
+	// source), and raw source URLs/field names must not leak onto the page.
+	$leisure_practical_notes       = get_post_meta( $leisure_id, '_leisure_practical_notes', true );
+	$leisure_practical_source_url  = get_post_meta( $leisure_id, '_leisure_practical_source_url', true ); // No direct output.
+	$leisure_practical_last_checked = get_post_meta( $leisure_id, '_leisure_practical_last_checked', true );
+
 	// Resolve the display set for the practical attributes of this destination.
 	// Primary source: the structured conexao_leisure_attribute taxonomy.
 	// Fallback: legacy checkbox meta during the transition. Never render the
@@ -214,7 +222,42 @@ get_header();
 				<?php endif; ?>
 
 				<?php
-				// Related leisure locations in the same county / category.
+				// Phase 2 — practical notes + verification (individual page only).
+			if ( $leisure_practical_notes ) :
+			?>
+				<div class="leisure-single-block leisure-single--practical">
+					<h2 class="leisure-single-block-title"><?php esc_html_e( 'Observações práticas', 'conexao-br-irlanda' ); ?></h2>
+					<div class="leisure-practical-notes">
+						<?php echo wp_kses_post( wpautop( $leisure_practical_notes ) ); ?>
+					</div>
+					<?php if ( $leisure_practical_last_checked ) : ?>
+						<?php
+						$checked_timestamp = strtotime( $leisure_practical_last_checked );
+						$six_months_ago    = strtotime( '-6 months' );
+						if ( $checked_timestamp && $checked_timestamp >= $six_months_ago ) :
+							?>
+							<p class="leisure-practical-verified">
+								<?php
+								echo esc_html(
+									sprintf(
+										/* translators: %s: formatted date */
+										__( 'Informação verificada em %s', 'conexao-br-irlanda' ),
+										date_i18n( get_option( 'date_format' ), $checked_timestamp )
+									)
+								);
+								?>
+							</p>
+						<?php else : ?>
+							<p class="leisure-practical-stale">
+								<?php esc_html_e( 'Verifique as informações no site oficial.', 'conexao-br-irlanda' ); ?>
+							</p>
+						<?php endif; ?>
+					<?php endif; ?>
+				</div>
+			<?php
+			endif;
+
+			// Related leisure locations in the same county / category.
 				$related_tax = array();
 				if ( $leisure_counties && ! is_wp_error( $leisure_counties ) ) {
 					$related_tax[] = array(

@@ -41,7 +41,7 @@ Defined in `assets/css/design-system.css`. Uses CSS custom properties mapped fro
 2. **design-system.css** — Design tokens, typography, buttons, cards, filters, page headers, empty states
 3. **header-nav.css** — Header layout, navigation, mobile menu, search
 4. **main.css** — Hero, sections, archive grids, cards, footer, responsive
-5. **leisure.css** — Leisure archive filters (discovery heading, dropdowns, active-filter chips, result count, mobile sheet), single leisure layout
+5. **leisure.css** — Leisure archive filters (discovery heading, dropdowns, active-filter chips, result count, mobile sheet), single leisure layout, practical-notes block (`.leisure-practical-notes`, `.leisure-practical-verified`, `.leisure-practical-stale`)
 6. **dark-mode.css** — `[data-theme="dark"]` overrides for all components
 
 Asset versioning uses `filemtime()` for cache busting. `.htaccess` sets `Cache-Control: public, max-age=31536000, immutable` on CSS/JS.
@@ -72,8 +72,8 @@ All in `template-parts/`:
 | `course-filters.php` | Cursos archive filter bar (course-only: `?categoria=` provider categories from `_provider_category` meta; renders nothing when no categories exist) |
 | `guide-filters.php` | Guias archive filter bar (`?categoria=` conexao_category terms used by published guides) |
 | `event-preview.php` | Homepage events section |
-| `leisure-card.php` | Lazer archive grid |
-| `leisure-filters.php` | Lazer archive filter bar (desktop: discovery heading + wide dropdowns with location search + chips + count; mobile: bottom sheet with location search for long lists) |
+| `leisure-card.php` | Lazer archive grid — cards show a capped, prioritized set of Características attributes (max 4): Entrada (Gratuito / Pago / Gratuito em determinadas condições) → Ambiente (Interior + exterior / Exterior / Interior) → Acessibilidade → Estacionamento, then Famílias / Necessita reserva / Pet friendly. Transporte público and Bicicleta are deliberately card-excluded (individual page only). Practical notes, verification dates and source URLs never appear on cards |
+| `leisure-filters.php` | Lazer archive filter bar (desktop: discovery heading + wide dropdowns with location search + chips + count; mobile: bottom sheet with location search for long lists). The Características dropdown reads `conexao_leisure_attribute` dynamically, so newly seeded attribute terms (e.g. Pago, Bicicleta) become filterable automatically via `?atributo=` (multi-select OR preserved) |
 | `provider-card.php` | Course providers archive/grid |
 | `quick-access-card.php` | Homepage quick access grid |
 | `help-shortcut-card.php` | Homepage "Precisa de ajuda?" compact utility shortcut chip (reuses Quick Access card data) |

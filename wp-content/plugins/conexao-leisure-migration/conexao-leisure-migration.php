@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Conexão BR Irlanda — Lazer Migration
  * Description: Export and import the /lazer/ (leisure) dataset as a self-contained ZIP package containing data.json and the actual image files from the Media Library. Imports into another installation with dry-run preview, dedupe by stable UUID + image ID, Media Library attachment creation, legacy-data cleanup, and post-import verification. Production images are always local — no dependency on Wikimedia Commons for delivery.
- * Version: 2.0.0
+ * Version: 2.1.0
  * Text Domain: conexao-leisure-migration
  *
  * @package Conexao_Lazer_Migration
@@ -20,7 +20,7 @@ require_once CONEXAO_LAZER_MIGRATION_DIR . 'includes/class-leisure-transfer-admi
 
 final class Conexao_Lazer_Migration {
 
-	const VERSION = '2.0.0';
+	const VERSION = '2.1.0';
 
 	/** @var Conexao_Lazer_Migration|null */
 	private static $instance = null;

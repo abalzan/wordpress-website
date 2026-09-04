@@ -1,7 +1,7 @@
 # Conexão Data Model
 
 - **Path**: `wp-content/plugins/conexao-data-model/`
-- **Version**: 1.5.0
+- **Version**: 1.6.0
 - **Purpose**: Registers custom post types, shared taxonomies, and editorial meta fields.
 
 ## Responsibilities
@@ -48,6 +48,20 @@ See `docs/content-model.md` for complete details.
 | `job` | `_job_company`, `_job_location`, `_job_salary`, `_job_employment_type`, `_job_expiration_date` |
 
 Leisure meta (`_leisure_*`) and course provider meta (`_provider_*`) are registered in this plugin's `register_leisure_meta()` and `register_provider_meta()` methods.
+
+#### Leisure practical-information meta (Phase 2)
+
+Registered by `register_leisure_meta()` (protected, `show_in_rest => true`,
+optional — empty values never affect existing records):
+
+| Meta key | Meaning |
+|----------|---------|
+| `_leisure_practical_notes` | "Observações práticas" — concise visitor tips for the individual leisure page |
+| `_leisure_practical_source_url` | Source URL used to verify the practical notes (admin/verification only, never rendered publicly) |
+| `_leisure_practical_last_checked` | Date the practical information was last verified |
+
+Verification metadata applies to the practical notes only — never to stable
+taxonomy attributes. Opening hours are deliberately not modelled.
 
 ### Sponsor Contacts (`_sponsor_contacts`)
 

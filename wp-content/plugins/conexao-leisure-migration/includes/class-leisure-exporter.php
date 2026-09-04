@@ -53,6 +53,10 @@ class Conexao_Lazer_Exporter {
 		'_leisure_booking',
 		'_leisure_duration',
 		'_leisure_best_time',
+		// Phase 2 — practical-information fields.
+		'_leisure_practical_notes',
+		'_leisure_practical_source_url',
+		'_leisure_practical_last_checked',
 		'_leisure_image_attachment_id',
 		'_leisure_image_source',
 		'_leisure_image_source_url',

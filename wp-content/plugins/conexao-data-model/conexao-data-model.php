@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Conexão BR Irlanda Data Model
  * Description: Content types, shared taxonomies, and editorial fields for the Conexão BR Irlanda portal.
- * Version: 1.5.0
+ * Version: 1.6.0
  * Text Domain: conexao-data-model
  *
  * @package Conexao_BR_Irlanda_Data_Model
@@ -20,7 +20,7 @@ require_once CONEXAO_DATA_MODEL_DIR . 'includes/class-agency.php';
 
 final class Conexao_Data_Model {
 
-	const VERSION = '1.5.0';
+	const VERSION = '1.6.0';
 
 	/** @var Conexao_Data_Model|null */
 	private static $instance = null;
@@ -335,6 +335,11 @@ final class Conexao_Data_Model {
 			// Image state: 'none' (no image), 'pending' (awaiting a properly
 			// licensed image), 'local' (WordPress Media Library). Defaults to 'none'.
 			'_leisure_image_status'        => 'string',
+
+			// Phase 2 — practical-information fields (optional, free-text).
+			'_leisure_practical_notes'       => 'string', // Observações práticas for visitors.
+			'_leisure_practical_source_url'  => 'string', // Source used to verify the practical notes.
+			'_leisure_practical_last_checked' => 'string', // Date the practical info was last verified.
 		);
 
 		foreach ( $meta as $key => $type ) {

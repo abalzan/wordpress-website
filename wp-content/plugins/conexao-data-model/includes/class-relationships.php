@@ -56,6 +56,11 @@ final class Conexao_Data_Model_Relationships {
 			'Acessível',
 			'Estacionamento',
 			'Necessita reserva',
+			// Phase 2 — practical-information extensions.
+			'Pago',
+			'Gratuito em determinadas condições',
+			'Acesso de transporte público',
+			'Bicicleta',
 		);
 
 		foreach ( $leisure_attributes as $term ) {

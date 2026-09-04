@@ -1,7 +1,7 @@
 # Conexão Admin UX
 
 - **Path**: `wp-content/plugins/conexao-admin-ux/`
-- **Version**: 1.0.4
+- **Version**: 1.0.6
 - **Purpose**: Professional, reusable CMS admin experience for all custom content types. Replaces generic meta boxes with structured sections, clear statuses, bulk actions, duplicate/archive workflows, dashboard summaries, and leisure image management.
 
 ## Responsibilities
@@ -228,6 +228,26 @@ Repeater behavior:
 
 - **Leisure images**: Tools → Gerenciador de Imagens (Lazer) — Wikimedia search and import
 - Leisure image management is also accessible via AJAX: `conexao_leisure_wiki_search`, `conexao_leisure_wiki_import`
+
+### Leisure editor — practical information (Phase 2)
+
+The leisure editor's **Atributos úteis** section keeps the structured
+Características taxonomy field (`conexao_leisure_attribute`), duration and
+best-time. A separate **Informações úteis** section (priority 45) holds the
+optional practical-information fields:
+
+| Field | Type | Meta key |
+|-------|------|----------|
+| Observações práticas | textarea | `_leisure_practical_notes` |
+| Fonte da verificação | url | `_leisure_practical_source_url` |
+| Última verificação | date | `_leisure_practical_last_checked` |
+
+All three are optional; an empty save deletes the meta (no empty sections on
+the site). The source URL and checked date back the single-page verification
+message — they are never rendered publicly as raw text/field names. The
+`Gratuito em determinadas condições`, `Pago`, `Acesso de transporte público`
+and `Bicicleta` terms become available in the Características field
+automatically via the seeded taxonomy.
 
 ## Hooks
 

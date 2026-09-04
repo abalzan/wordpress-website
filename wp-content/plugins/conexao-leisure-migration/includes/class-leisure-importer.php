@@ -41,6 +41,10 @@ class Conexao_Lazer_Importer {
 		'_leisure_booking',
 		'_leisure_duration',
 		'_leisure_best_time',
+		// Phase 2 — practical-information fields.
+		'_leisure_practical_notes',
+		'_leisure_practical_source_url',
+		'_leisure_practical_last_checked',
 		'_leisure_image_attachment_id',
 		'_leisure_image_source',
 		'_leisure_image_source_url',
@@ -727,6 +731,12 @@ class Conexao_Lazer_Importer {
 			case '_leisure_parking':
 			case '_leisure_booking':
 				$value = $this->normalize_boolean_meta( $value );
+				break;
+			case '_leisure_practical_notes':
+				$value = is_scalar( $value ) ? sanitize_textarea_field( (string) $value ) : '';
+				break;
+			case '_leisure_practical_source_url':
+				$value = is_scalar( $value ) ? esc_url_raw( (string) $value ) : '';
 				break;
 			default:
 				$value = is_scalar( $value ) ? sanitize_text_field( (string) $value ) : '';

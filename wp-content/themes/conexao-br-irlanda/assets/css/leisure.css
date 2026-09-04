@@ -1063,6 +1063,44 @@
 	color: var(--conexao-primary, #0E6B3A);
 }
 
+/* --- Phase 2: practical notes + verification (single page only) --- */
+.leisure-practical-notes {
+	font-size: 0.92rem;
+	color: var(--conexao-text, #1a1a1a);
+}
+
+.leisure-practical-notes p {
+	margin: 0 0 8px;
+}
+
+.leisure-practical-notes p:last-child {
+	margin-bottom: 0;
+}
+
+.leisure-practical-verified,
+.leisure-practical-stale {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	margin: 12px 0 0;
+	padding: 4px 10px;
+	border-radius: var(--conexao-radius-sm, 6px);
+	font-size: 0.8rem;
+	font-weight: 600;
+	background: var(--conexao-white, #ffffff);
+	border: 1px solid var(--conexao-border);
+}
+
+.leisure-practical-verified {
+	color: var(--conexao-primary, #0E6B3A);
+}
+
+.leisure-practical-stale {
+	color: var(--conexao-text-secondary, #5f6b76);
+	font-weight: 500;
+	font-style: italic;
+}
+
 /* --- Responsive --- */
 @media (max-width: 768px) {
 	.leisure-page .events-grid {

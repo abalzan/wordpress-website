@@ -55,6 +55,18 @@ Registered by `conexao-data-model` (method `register_taxonomies()`).
 
 **Counties**: All 26 Republic of Ireland counties.
 
+**Leisure attributes** (`conexao_leisure_attribute`, leisure only — Phase 2
+vocabulary): Famílias, Exterior, Interior, Interior + exterior, Gratuito,
+Pet friendly, Acessível, Estacionamento, Necessita reserva, **Pago**,
+**Gratuito em determinadas condições**, **Acesso de transporte público**,
+**Bicicleta**. These are the canonical practical-characteristics concepts for
+the /lazer/ directory — never create duplicate synonyms (Grátis, Free,
+Transporte, etc.). Admission terms (Gratuito / Pago / Gratuito em
+determinadas condições) are mutually exclusive and assigned only when the
+existing data supports them; unknown admission information stays unassigned.
+The Características filter reads this taxonomy dynamically, so new terms are
+automatically filterable via `?atributo=`.
+
 ## Meta Fields
 
 ### Guide (`_conexao_featured`)
@@ -171,6 +183,24 @@ Location fields:
 - `_leisure_free`, `_leisure_duration`, `_leisure_best_time`
 - `_leisure_family`, `_leisure_accessibility`, `_leisure_pet_friendly`, `_leisure_indoor`, `_leisure_outdoor`, `_leisure_parking`, `_leisure_booking`
 - `_leisure_feature` (boolean — featured destination)
+
+Practical-information fields (Phase 2 — all optional, free-text):
+- `_leisure_practical_notes` — "Observações práticas": concise visitor tips
+  (e.g. "Leve agasalho", "Fecha no inverno"). Never bulk-generated; left
+  empty when no reliable practical information exists. Rendered only on the
+  individual leisure page, never on archive cards.
+- `_leisure_practical_source_url` — source used to verify the practical
+  notes (official site / Discover Ireland page). Admin + export/import only —
+  never rendered on the public site as raw text.
+- `_leisure_practical_last_checked` — date the practical information was
+  last verified (site date format). If the notes are older than 6 months,
+  the single page shows "Verifique as informações no site oficial." instead
+  of "Informação verificada em [date]". Verification metadata applies to the
+  free-text practical notes only, never to stable taxonomy attributes.
+
+Opening hours are intentionally NOT modelled (high-maintenance without a
+verification workflow; the official website CTA remains the authoritative
+source for current hours).
 
 Image fields:
 - `_leisure_image_attachment_id` (integer — local Media Library)

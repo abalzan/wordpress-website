@@ -1,7 +1,7 @@
 # Conexão Leisure Migration
 
 - **Path**: `wp-content/plugins/conexao-leisure-migration/`
-- **Version**: 2.0.0
+- **Version**: 2.1.0
 - **Purpose**: Export and import the /lazer/ (leisure) dataset as a self-contained ZIP package containing data.json and actual image files from the Media Library. Production images are always local — no dependency on Wikimedia Commons for delivery.
 
 ## Responsibilities
@@ -42,10 +42,15 @@ Under Lazer menu:
 
 ### Export
 1. Query all leisure posts
-2. Collect all taxonomy terms
+2. Collect all taxonomy terms (incl. `conexao_leisure_attribute` — Características)
 3. Collect image files from Media Library (by `_leisure_image_attachment_id`)
 4. Generate stable UUID per item/image
 5. Package into ZIP: `data.json` + `images/` directory
+
+Exported/imported meta includes the Phase 2 practical-information keys
+(`_leisure_practical_notes`, `_leisure_practical_source_url`,
+`_leisure_practical_last_checked`). The importer sanitizes them explicitly:
+`sanitize_textarea_field` for the notes, `esc_url_raw` for the source URL.
 
 ### Import
 1. Validate ZIP structure
@@ -86,6 +91,25 @@ When `conexao-data-model` is not active, this plugin registers the `leisure` CPT
 - Images are always imported as local Media Library attachments.
 - Wikimedia Commons metadata is preserved as reference only, never hotlinked.
 - Legacy external-image data can be cleaned up via the Manutenção page.
+
+### Legacy attribute backfill (`scripts/backfill-leisure-attributes.php`)
+
+Companion WP-CLI script that maps legacy `_leisure_*` checkbox meta onto the
+`conexao_leisure_attribute` taxonomy. Idempotent, safe to rerun, and **never
+deletes legacy meta** (transition-safe fallback). Run:
+
+```
+wp eval-file scripts/backfill-leisure-attributes.php --allow-root          # apply
+wp eval-file scripts/backfill-leisure-attributes.php dry-run --allow-root  # report only
+```
+
+The `_leisure_free` meta is classified into a five-way report — Claramente
+Gratuito / Claramente Pago / Claramente condicional / Ambíguo (manual
+review) / Vazio-desconhecido. Only unambiguous values migrate automatically
+('1', "Gratuito", "Free" → Gratuito; "Pago"/"Paid" → Pago; explicit
+conditional free-period text → Gratuito em determinadas condições).
+Ambiguous text is listed for manual review and never converted; admission
+terms are mutually exclusive per record.
 
 ## Files to Inspect First
 
