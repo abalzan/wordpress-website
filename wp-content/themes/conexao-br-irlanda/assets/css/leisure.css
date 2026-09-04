@@ -572,19 +572,26 @@
 	color: var(--color-text);
 }
 
-.leisure-filter-option:has(.leisure-filter-radio:checked) {
+.leisure-filter-option:has(.leisure-filter-radio:checked),
+.leisure-filter-option:has(.leisure-filter-checkbox:checked) {
 	background: var(--color-primary-50);
 	color: var(--color-primary);
 	font-weight: 600;
 }
 
-.leisure-filter-radio {
+.leisure-filter-radio,
+.leisure-filter-checkbox {
 	width: 20px;
 	height: 20px;
 	margin: 0;
 	accent-color: var(--color-primary);
 	cursor: pointer;
 	flex-shrink: 0;
+}
+
+.leisure-filter-checkbox:focus-visible {
+	outline: var(--focus-ring);
+	outline-offset: var(--focus-offset);
 }
 
 .leisure-filter-radio:focus-visible {
@@ -646,15 +653,13 @@
 	flex-shrink: 0;
 }
 
-/* With the instant-filter enhancement active (main.js), every selection
-   applies immediately and closes the sheet — a visible "Mostrar
-   resultados" button would be a second, redundant primary action, so it
-   is hidden and "Limpar" takes the full footer width. Without JS the
-   button remains as the explicit apply fallback. */
-.leisure-mobile-form--instant .leisure-apply-button {
-	display: none;
-}
-
+/* With the instant-filter enhancement active (main.js), the single-select
+   Localização radio still applies and closes the sheet in the same gesture,
+   but the multi-select Tipo/Características checkbox groups accumulate
+   their selections while the sheet stays open — "Mostrar resultados" is
+   the explicit apply action for those groups and therefore stays visible.
+   "Limpar" shares the footer width with it. Without JS the form submits
+   the same way. */
 .leisure-mobile-form--instant .leisure-mobile-clear {
 	flex: 1;
 }

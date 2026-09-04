@@ -263,12 +263,13 @@
 	//     the filter values) — Escape inside it first clears the query, then
 	//     a second Escape closes the menu,
 	//   - the mobile sheet is a fixed overlay with a focusable close control,
-	//   - on mobile, changing a radio applies the filter immediately
-	//     (initLeisureInstantFilters below) — the sheet auto-closes so the
-	//     user lands on the results; it can be reopened to stack another
-	//     filter (selections are preserved), and "Mostrar resultados"
-	//     remains only as a fallback for browsers without the instant
-	//     enhancement,
+	//   - on mobile, changing the single-select Localização radio applies the
+	//     filter immediately (initLeisureInstantFilters below) — the sheet
+	//     auto-closes so the user lands on the results; the multi-select
+	//     Tipo/Características checkbox groups accumulate selections while
+	//     the sheet stays open and are submitted together by "Mostrar
+	//     resultados" (each section's "Todos"/"Todas" checkbox is a reset
+	//     action that clears only its own section),
 	//   - empty "Todos" radio values are stripped so URLs stay clean (e.g.
 	//     /lazer/?categoria=castelos instead of /lazer/?county=&categoria=castelos).
 
@@ -586,10 +587,14 @@
 	}
 
 	// ===== Leisure Instant Mobile Filtering =====
-	// On mobile the filter sheet no longer waits for "Mostrar resultados":
-	// every radio change (and every chip / "Limpar" tap) applies the filter
-	// immediately by fetching the filtered archive URL and swapping the
-	// results in place. Everything else about the filtering is untouched —
+	// On mobile the filter sheet applies single-select changes instantly:
+	// every Localização radio change (and every chip / "Limpar" tap) applies
+	// the filter by fetching the filtered archive URL and swapping the
+	// results in place. The multi-select Tipo/Características checkbox
+	// groups accumulate their selections while the sheet stays open and are
+	// submitted together by "Mostrar resultados" (or by the next Localização
+	// radio change, since the URL is always built from the whole form
+	// state). Everything else about the filtering is untouched —
 	// the URLs, the server-side query, the pagination and the infinite
 	// scroll behave exactly like a normal page load, because the swapped
 	// markup IS a normal server render of the target URL.
@@ -627,10 +632,11 @@
 		if (root.dataset.instantBound) return;
 		root.dataset.instantBound = 'true';
 
-		// Mark the form so the no-JS "Mostrar resultados" fallback button
-		// is hidden (CSS): with the instant pipeline bound, every selection
-		// applies and closes the sheet in the same gesture, so the button
-		// would be a redundant second primary action.
+		// Mark the form so the CSS can align the footer buttons: with
+		// multi-select Tipo/Características sections, "Mostrar resultados"
+		// is the primary apply action for those groups (individual checkbox
+		// selections never navigate), while Localização radios still apply
+		// instantly. The button therefore stays visible.
 		form.classList.add('leisure-mobile-form--instant');
 
 		var controller = null;
@@ -646,14 +652,36 @@
 			return !!(window.matchMedia && window.matchMedia('(max-width: 768px)').matches);
 		}
 
-		// Current value of a filter group, read from the live radio state.
+		// Current value of the single-select Localização group, read from the
+		// live radio state.
 		function selectedValue(name) {
 			var checked = form.querySelector('input[type="radio"][name="' + name + '"]:checked');
 			return checked ? checked.value : '';
 		}
 
+		// Selected slugs of a multi-select checkbox group (Tipo /
+		// Características), in DOM order — the same order the server renders
+		// the terms in, so the built URL is deterministic.
+		function checkedValues(name) {
+			return Array.prototype.map.call(
+				form.querySelectorAll('input[type="checkbox"][name="' + name + '"]:checked'),
+				function(input) { return input.value; }
+			);
+		}
+
+		// The nameless "Todos"/"Todas" checkbox of a multi-select section is
+		// the section reset: it is checked exactly when no individual option
+		// of that section is checked.
+		function syncClearCheckboxes() {
+			Array.prototype.forEach.call(form.querySelectorAll('input[type="checkbox"][data-filter-clear]'), function(clearInput) {
+				var section = clearInput.closest('.leisure-mobile-section');
+				var any = section ? section.querySelectorAll('input[type="checkbox"][name]:checked').length : 0;
+				clearInput.checked = !any;
+			});
+		}
+
 		function activeFilterCount() {
-			return (selectedValue('county') ? 1 : 0) + (selectedValue('categoria') ? 1 : 0);
+			return (selectedValue('county') ? 1 : 0) + checkedValues('categoria[]').length + checkedValues('atributo[]').length;
 		}
 
 		// The clean URL for the current radio state — the exact same
@@ -662,10 +690,12 @@
 		function urlFromForm() {
 			var url = new URL(form.getAttribute('action'), window.location.origin);
 
-			// Append only the non-empty radios ("Todos" = value=""). Do NOT
-			// collect all params and delete while iterating: deleting the
-			// first emptied entry shifts the iteration index and lets later
-			// empty values leak back into the URL (e.g. "?categoria=").
+			// Append only the non-empty values: the Localização radios submit a
+			// "Todos" empty value (stripped below), while the multi-select
+			// checkbox groups submit their checked slugs as categoria[] /
+			// atributo[]. (Do NOT collect all params and delete while iterating:
+			// deleting the first emptied entry shifts the iteration index and
+			// lets later empty values leak back into the URL, e.g. "?categoria=".)
 			var params = new URLSearchParams();
 			new FormData(form).forEach(function(value, key) {
 				if (value !== '' && value !== null) params.append(key, value);
@@ -674,17 +704,30 @@
 			return url.pathname + (qs ? '?' + qs : '');
 		}
 
-		// Keep the live radios in sync with an applied URL — used after chip
-		// removals and "Limpar", which arrive as hyperlink navigations rather
-		// than radio changes. Missing params re-select the "Todos" option.
+		// Keep the live form state in sync with an applied URL — used after
+		// chip removals and "Limpar", which arrive as hyperlink navigations
+		// rather than control changes. A missing county param re-selects the
+		// "Todos" radio; missing multi-select params clear every checkbox of
+		// that group (and re-activate its section reset).
 		function syncFormFromUrl(targetUrl) {
 			var query = targetUrl.indexOf('?') !== -1 ? targetUrl.slice(targetUrl.indexOf('?') + 1) : '';
 			var params = new URLSearchParams(query);
-			['county', 'categoria'].forEach(function(name) {
-				var value = params.get(name) || '';
-				var input = form.querySelector('input[type="radio"][name="' + name + '"][value="' + value + '"]');
-				if (input) input.checked = true;
+
+			// Localização stays single-select.
+			var county = params.get('county') || '';
+			var countyInput = form.querySelector('input[type="radio"][name="county"][value="' + county + '"]');
+			if (countyInput) countyInput.checked = true;
+
+			// Tipo / Características are multi-select checkbox groups driven
+			// by comma-separated URL params.
+			[['categoria[]', 'categoria'], ['atributo[]', 'atributo']].forEach(function(pair) {
+				var values = (params.get(pair[1]) || '').split(',').filter(Boolean);
+				Array.prototype.forEach.call(form.querySelectorAll('input[type="checkbox"][name="' + pair[0] + '"]'), function(input) {
+					input.checked = values.indexOf(input.value) !== -1;
+				});
 			});
+
+			syncClearCheckboxes();
 		}
 
 		// Keep the "Filtrar" trigger (count badge + accessible name) in sync
@@ -892,21 +935,52 @@
 			});
 		}
 
-		// Radio change = apply immediately. Tapping the already-active
-		// option fires no change event, so no redundant request is
-		// possible. On mobile, ANY selection applies the filter AND
-		// dismisses the panel in the same gesture — the user is returned
-		// straight to the filtered results. closeMobileSheet(true) uses the
-		// shared close path and restores focus to the "Filtrar" trigger, so
-		// keyboard focus never ends up inside the now-hidden panel and no
-		// extra request is made (closing only toggles classes/aria/scroll,
-		// never fetch). The sheet can be reopened to stack another filter;
-		// selections are preserved across reopen because openMobileSheet()
-		// never resets radios.
+		// Localização (single-select radio) still applies immediately AND
+		// dismisses the panel in the same gesture — the URL is built from the
+		// WHOLE form state, so any Tipo/Características checkboxes already
+		// ticked are submitted together with it. Tapping the already-active
+		// radio fires no change event, so no redundant request is possible.
+		// closeMobileSheet(true) uses the shared close path and restores focus
+		// to the "Filtrar" trigger; the sheet can be reopened to stack more
+		// selections (checkbox state is preserved because openMobileSheet()
+		// never resets the form).
+		//
+		// The multi-select checkbox groups NEVER navigate on an individual
+		// selection — checked options accumulate while the sheet stays open
+		// and only "Mostrar resultados" (or a Localização radio) applies them.
+		// A change only re-syncs that section's reset checkbox and the
+		// trigger badge. Checking "Todos"/"Todas" (data-filter-clear) is the
+		// section reset: it clears every named checkbox of its section and
+		// stays checked; unchecking it with nothing else selected re-activates
+		// it, since "nothing selected" IS the reset state.
 		form.addEventListener('change', function(e) {
-			if (!e.target || e.target.type !== 'radio') return;
-			applyFilterUrl(urlFromForm());
-			if (isMobileViewport()) closeMobileSheet(true);
+			var input = e.target;
+			if (!input) return;
+
+			if (input.type === 'radio') {
+				applyFilterUrl(urlFromForm());
+				if (isMobileViewport()) closeMobileSheet(true);
+				return;
+			}
+
+			if (input.type !== 'checkbox') return;
+
+			if (input.hasAttribute('data-filter-clear')) {
+				var section = input.closest('.leisure-mobile-section');
+				if (input.checked && section) {
+					Array.prototype.forEach.call(section.querySelectorAll('input[type="checkbox"][name]'), function(option) {
+						option.checked = false;
+					});
+					input.checked = true;
+				} else if (section && !section.querySelectorAll('input[type="checkbox"][name]:checked').length) {
+					input.checked = true;
+				}
+				updateTriggerState();
+				return;
+			}
+
+			syncClearCheckboxes();
+			updateTriggerState();
 		});
 
 		// "Mostrar resultados" (kept as an explicit fallback) re-routes
@@ -935,9 +1009,9 @@
 		// ignored, matching the existing no-restore behaviour.
 		window.addEventListener('popstate', function() {
 			var params = new URLSearchParams(window.location.search);
-			var county = params.get('county') || '';
-			var category = params.get('categoria') || '';
-			if (county === selectedValue('county') && category === selectedValue('categoria')) return;
+			if ((params.get('county') || '') === selectedValue('county')
+				&& (params.get('categoria') || '') === checkedValues('categoria[]').join(',')
+				&& (params.get('atributo') || '') === checkedValues('atributo[]').join(',')) return;
 			applyFilterUrl(window.location.href, { replace: true });
 		});
 	}

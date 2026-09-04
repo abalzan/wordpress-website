@@ -2302,6 +2302,89 @@ function conexao_event_recurrence_end( $event_id ): ?string {
 }
 
 /**
+ * Normalize a Lazer multi-select filter parameter into a clean slug list.
+ *
+ * Accepts either a comma-separated string (desktop hyperlink dropdowns:
+ * ?atributo=exterior,familias / ?categoria=natureza,cultura) or an array of
+ * slugs (the mobile sheet's checkbox groups submit atributo[] / categoria[]).
+ * Every value is sanitized with sanitize_title (lowercase, canonical slug
+ * form), empty values are dropped and duplicates are removed while keeping
+ * the user's selection order, so URL generation is deterministic:
+ * "exterior,familias,exterior" → array( 'exterior', 'familias' ).
+ *
+ * @param string|array $raw Raw parameter value (already unslashed or plain).
+ * @return string[] List of unique, sanitized slugs in selection order.
+ */
+function conexao_leisure_multi_slugs( $raw ) {
+	$parts = is_array( $raw ) ? $raw : explode( ',', (string) $raw );
+
+	$slugs = array();
+	foreach ( $parts as $part ) {
+		$slug = sanitize_title( trim( (string) $part ) );
+		if ( '' !== $slug ) {
+			$slugs[] = $slug;
+		}
+	}
+
+	return array_values( array_unique( $slugs ) );
+}
+
+/**
+ * Read a Lazer multi-select filter parameter from the current request.
+ *
+ * @param string $param Query parameter name ('categoria', 'atributo').
+ * @return string[] Unique sanitized slugs, empty array when absent.
+ */
+function conexao_leisure_query_slugs( $param ) {
+	if ( ! isset( $_GET[ $param ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- public archive filter.
+		return array();
+	}
+
+	return conexao_leisure_multi_slugs( wp_unslash( $_GET[ $param ] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+}
+
+/**
+ * Build a Lazer archive filter URL from a complete filter state.
+ *
+ * The single shared URL builder for every filter surface (desktop dropdown
+ * options, active-filter chips, mobile fallback form action): the caller
+ * passes the FULL state (county slug or '', plus slug arrays for the
+ * multi-select dimensions) and empty dimensions are simply omitted from the
+ * URL. Because callers always pass the complete state, changing one filter
+ * can never drop the others, and the URL never carries stale pagination
+ * (it is built from the clean archive link, so any filter change resets
+ * to page 1).
+ *
+ * @param array  $filters Filter state: 'county' (string), 'categoria' (string[]), 'atributo' (string[]).
+ * @param string $base    Optional archive base URL; defaults to the leisure archive link.
+ * @return string Filtered archive URL.
+ */
+function conexao_leisure_filter_url( array $filters, $base = '' ) {
+	if ( ! $base ) {
+		$base = get_post_type_archive_link( 'leisure' );
+		if ( ! $base ) {
+			$base = home_url( '/lazer/' );
+		}
+	}
+
+	$url = $base;
+
+	if ( ! empty( $filters['county'] ) ) {
+		$url = add_query_arg( 'county', $filters['county'], $url );
+	}
+	if ( ! empty( $filters['categoria'] ) ) {
+		$url = add_query_arg( 'categoria', implode( ',', $filters['categoria'] ), $url );
+	}
+	if ( ! empty( $filters['atributo'] ) ) {
+		$url = add_query_arg( 'atributo', implode( ',', $filters['atributo'] ), $url );
+	}
+
+	return $url;
+}
+
+/**
+ * Content-type archive query filtering.
+/**
  * Content-type archive query filtering.
  *
  * Each archive (Eventos, Cursos, Guias, Blog) applies its own filtering and ordering
@@ -2458,20 +2541,14 @@ function conexao_content_archive_query( $query ) {
 			$tax_query = array();
 		}
 
-		// Combine filters in a single nested relation so county + category work together.
-		$county    = isset( $_GET['county'] ) ? sanitize_title( wp_unslash( $_GET['county'] ) ) : '';
-		$category  = isset( $_GET['categoria'] ) ? sanitize_title( wp_unslash( $_GET['categoria'] ) ) : '';
-		// Características may arrive as a comma-separated string (desktop links)
-		// or as an array of slugs (mobile checkbox form submits atributo[]).
-		$atributo = '';
-		if ( isset( $_GET['atributo'] ) ) {
-			$atributo_raw = wp_unslash( $_GET['atributo'] );
-			if ( is_array( $atributo_raw ) ) {
-				$atributo = array_map( 'sanitize_title', $atributo_raw );
-			} else {
-				$atributo = sanitize_text_field( $atributo_raw );
-			}
-		}
+		$county = isset( $_GET['county'] ) ? sanitize_title( wp_unslash( $_GET['county'] ) ) : '';
+		// Tipo and Características are multi-select dimensions: each may
+		// arrive as a comma-separated string (desktop hyperlink dropdowns)
+		// or as an array of slugs (mobile checkbox groups submit categoria[]
+		// / atributo[]). Both shapes are normalized by the shared helper —
+		// sanitized, de-duplicated, selection order preserved.
+		$category_slugs  = conexao_leisure_query_slugs( 'categoria' );
+		$attribute_slugs = conexao_leisure_query_slugs( 'atributo' );
 
 		if ( $county ) {
 			$tax_query[] = array(
@@ -2481,34 +2558,29 @@ function conexao_content_archive_query( $query ) {
 			);
 		}
 
-		if ( $category ) {
+		// Tipo: OR within the dimension (Natureza OR Cultura), AND with every
+		// other dimension. A single-slug URL (?categoria=natureza) produces
+		// exactly the same query as before — IN with one term is identical
+		// to the previous single-term match. Unknown slugs simply never
+		// match, so they are ignored safely without raw SQL.
+		if ( ! empty( $category_slugs ) ) {
 			$tax_query[] = array(
 				'taxonomy' => 'conexao_category',
 				'field'    => 'slug',
-				'terms'    => $category,
+				'terms'    => $category_slugs,
+				'operator' => 'IN',
 			);
 		}
 
-		// Características: comma-separated slugs (desktop links) or an array
-		// of slugs (mobile checkboxes submit atributo[]). OR logic within this
-		// dimension. County and category remain AND with this group.
-		if ( taxonomy_exists( 'conexao_leisure_attribute' ) ) {
-			$atributo_raw = $atributo;
-			if ( is_array( $atributo_raw ) ) {
-				$atributo_slugs = array_map( 'sanitize_title', $atributo_raw );
-			} else {
-				$atributo_slugs = array_filter( array_map( 'trim', explode( ',', (string) $atributo_raw ) ) );
-				$atributo_slugs = array_map( 'sanitize_title', $atributo_slugs );
-			}
-			$atributo_slugs = array_filter( $atributo_slugs );
-			if ( ! empty( $atributo_slugs ) ) {
-				$tax_query[] = array(
-					'taxonomy' => 'conexao_leisure_attribute',
-					'field'    => 'slug',
-					'terms'    => array_values( $atributo_slugs ),
-					'operator' => 'IN',
-				);
-			}
+		// Características: OR within the dimension, AND with county/category
+		// groups.
+		if ( taxonomy_exists( 'conexao_leisure_attribute' ) && ! empty( $attribute_slugs ) ) {
+			$tax_query[] = array(
+				'taxonomy' => 'conexao_leisure_attribute',
+				'field'    => 'slug',
+				'terms'    => $attribute_slugs,
+				'operator' => 'IN',
+			);
 		}
 
 		if ( ! empty( $tax_query ) ) {
