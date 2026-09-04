@@ -545,6 +545,60 @@ function conexao_seo_schema_singular() {
 
 		echo '<script type="application/ld+json">' . wp_json_encode( $schema ) . '</script>' . "\n";
 	}
+
+	// --- Lazer (TouristAttraction) — INTERNAL pages only ---
+	// Records with an external destination redirect via conexao_leisure_redirect()
+	// BEFORE this header renders; the guard below keeps that claim explicit and
+	// truthful. Only properties actually stored/verified are emitted (name,
+	// description, image, place/address) — never opening hours, price,
+	// aggregate rating, reviews, accessibility or geo coordinates, which are
+	// not stored for this content. WebSite / Organization / BreadcrumbList and
+	// canonical/sitemap behaviour are untouched (emitted separately, site-wide).
+	if ( 'leisure' === $type && ( ! function_exists( 'conexao_leisure_external_url' ) || ! conexao_leisure_external_url( $post_id ) ) ) {
+		$schema = array(
+			'@context'         => 'https://schema.org',
+			'@type'            => 'TouristAttraction',
+			'name'             => get_the_title(),
+			'url'              => get_permalink(),
+			'image'            => $image,
+			'mainEntityOfPage' => get_permalink(),
+		);
+
+		$description = trim( wp_strip_all_tags( get_the_excerpt() ) );
+		if ( '' === $description ) {
+			$description = trim( wp_strip_all_tags( get_the_content() ) );
+			if ( '' === $description ) {
+				$description = get_the_title();
+			} else {
+				// Keep long free-text content brief for structured data.
+				$description = mb_substr( $description, 0, 300 );
+			}
+		}
+		$schema['description'] = $description;
+
+		// Place/address — only claim what is actually stored.
+		$leisure_town     = trim( (string) get_post_meta( $post_id, '_leisure_town', true ) );
+		$leisure_address  = trim( (string) get_post_meta( $post_id, '_leisure_address', true ) );
+		$leisure_counties = get_the_terms( $post_id, 'conexao_county' );
+		$county_name      = ( $leisure_counties && ! is_wp_error( $leisure_counties ) && ! empty( $leisure_counties ) ) ? $leisure_counties[0]->name : '';
+		$locality         = implode( ', ', array_filter( array( $leisure_town, $county_name ) ) );
+
+		if ( $leisure_address || $locality ) {
+			$address = array(
+				'@type'          => 'PostalAddress',
+				'addressCountry' => 'IE',
+			);
+			if ( $leisure_address ) {
+				$address['streetAddress'] = $leisure_address;
+			}
+			if ( $locality ) {
+				$address['addressLocality'] = $locality;
+			}
+			$schema['address'] = $address;
+		}
+
+		echo '<script type="application/ld+json">' . wp_json_encode( $schema ) . '</script>' . "\n";
+	}
 }
 
 /**

@@ -985,7 +985,13 @@
 
 .leisure-single-hero img {
 	width: 100%;
-	height: auto;
+	/* Phase 3C — the hero is served as a proportional srcset (768/1024/1536/2048
+	   from the WordPress responsive-image infrastructure), so it keeps a
+	   constant 2:1 visual box and center-crops whichever candidate the browser
+	   picks. This preserves the previous 2:1 hero framing while letting mobile
+	   download a much smaller file than the old fixed 1200px image. */
+	aspect-ratio: 2 / 1;
+	object-fit: cover;
 	display: block;
 }
 
@@ -1113,6 +1119,38 @@
 	color: var(--conexao-text-secondary, #5f6b76);
 	font-weight: 500;
 	font-style: italic;
+}
+
+/* --- Phase 3C: related upcoming events (single page only) ---
+   Visually consistent with the "Outros lugares relacionados" section: a
+   bordered top divider and matching spacing, so related events never
+   overpower the destination itself. The cards are the existing event-card
+   component (no second design). */
+.leisure-single-events {
+	margin-top: 48px;
+	padding-top: 32px;
+	border-top: 1px solid var(--conexao-border);
+}
+
+.leisure-single-events-title {
+	font-size: 1.5rem;
+	font-weight: 700;
+	color: var(--conexao-dark);
+	margin: 0 0 24px;
+}
+
+/* Fit 2–3 event cards to the single-page content column responsively. */
+.leisure-single-events .events-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+	gap: 24px;
+}
+
+@media (max-width: 768px) {
+	.leisure-single-events .events-grid {
+		grid-template-columns: 1fr;
+		gap: 20px;
+	}
 }
 
 /* --- Responsive --- */

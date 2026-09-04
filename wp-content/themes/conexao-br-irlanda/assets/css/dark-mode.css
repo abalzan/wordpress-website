@@ -1065,6 +1065,17 @@
   color: var(--color-text);
 }
 
+/* Phase 3C — related events section on the leisure single page (same divider
+   + heading treatment as related posts above; the event cards themselves are
+   already fully themed for dark mode). */
+[data-theme="dark"] .leisure-single-events {
+  border-top-color: var(--color-border);
+}
+
+[data-theme="dark"] .leisure-single-events-title {
+  color: var(--color-text);
+}
+
 /* ===== 18. PAGINATION ===== */
 [data-theme="dark"] .conexao-pagination .page-numbers,
 [data-theme="dark"] .navigation.pagination .nav-links .page-numbers {

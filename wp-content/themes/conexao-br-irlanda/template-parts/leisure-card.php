@@ -17,76 +17,9 @@ $leisure_counties    = get_the_terms( $leisure_id, 'conexao_county' );
 $leisure_town        = get_post_meta( $leisure_id, '_leisure_town', true );
 $leisure_permalink   = get_permalink();
 
-// Resolve the display set for the practical attributes of this destination.
-// Primary source: the structured conexao_leisure_attribute taxonomy.
-// Fallback: legacy checkbox meta during the transition. Never render the
-// same attribute twice when both sources are present.
-$leisure_attr_names = array();
-
-$attr_terms = get_the_terms( $leisure_id, 'conexao_leisure_attribute' );
-if ( $attr_terms && ! is_wp_error( $attr_terms ) ) {
-	foreach ( $attr_terms as $term ) {
-		$leisure_attr_names[ sanitize_title( $term->name ) ] = $term->name;
-	}
-}
-
-// Legacy fallback — only add names not already present from the taxonomy.
-if ( '1' === (string) get_post_meta( $leisure_id, '_leisure_family', true ) ) {
-	$key = 'familias';
-	if ( ! isset( $leisure_attr_names[ $key ] ) ) {
-		$leisure_attr_names[ $key ] = 'Famílias';
-	}
-}
-if ( '1' === (string) get_post_meta( $leisure_id, '_leisure_outdoor', true ) ) {
-	$key = 'exterior';
-	if ( ! isset( $leisure_attr_names[ $key ] ) ) {
-		$leisure_attr_names[ $key ] = 'Exterior';
-	}
-}
-if ( '1' === (string) get_post_meta( $leisure_id, '_leisure_indoor', true ) ) {
-	$key = 'interior';
-	if ( ! isset( $leisure_attr_names[ $key ] ) ) {
-		$leisure_attr_names[ $key ] = 'Interior';
-	}
-}
-if ( '1' === (string) get_post_meta( $leisure_id, '_leisure_booking', true ) ) {
-	$key = 'necessita-reserva';
-	if ( ! isset( $leisure_attr_names[ $key ] ) ) {
-		$leisure_attr_names[ $key ] = 'Necessita reserva';
-	}
-}
-if ( '1' === (string) get_post_meta( $leisure_id, '_leisure_accessibility', true ) ) {
-	$key = 'acessivel';
-	if ( ! isset( $leisure_attr_names[ $key ] ) ) {
-		$leisure_attr_names[ $key ] = 'Acessível';
-	}
-}
-if ( '1' === (string) get_post_meta( $leisure_id, '_leisure_pet_friendly', true ) ) {
-	$key = 'pet-friendly';
-	if ( ! isset( $leisure_attr_names[ $key ] ) ) {
-		$leisure_attr_names[ $key ] = 'Pet friendly';
-	}
-}
-if ( '1' === (string) get_post_meta( $leisure_id, '_leisure_parking', true ) ) {
-	$key = 'estacionamento';
-	if ( ! isset( $leisure_attr_names[ $key ] ) ) {
-		$leisure_attr_names[ $key ] = 'Estacionamento';
-	}
-}
-$legacy_free = get_post_meta( $leisure_id, '_leisure_free', true );
-if ( '' !== (string) $legacy_free ) {
-	$free_lower = mb_strtolower( (string) $legacy_free, 'UTF-8' );
-	$is_free    = ( '1' === (string) $legacy_free )
-		|| false !== strpos( $free_lower, 'gratuit' )
-		|| false !== strpos( $free_lower, 'free' )
-		|| false !== strpos( $free_lower, 'grátis' );
-	if ( $is_free ) {
-		$key = 'gratuito';
-		if ( ! isset( $leisure_attr_names[ $key ] ) ) {
-			$leisure_attr_names[ $key ] = 'Gratuito';
-		}
-	}
-}
+// Phase 3C — shared attribute-resolution helper (same as the single page).
+// Returns only actual display names, never empty labels.
+$leisure_attr_names = conexao_leisure_attributes( $leisure_id );
 
 // Destination: when an external official website (or Discover Ireland page)
 // is configured, the card links directly there. Otherwise it uses the normal

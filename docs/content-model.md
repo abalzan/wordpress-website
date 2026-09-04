@@ -229,6 +229,18 @@ Opening hours are intentionally NOT modelled (high-maintenance without a
 verification workflow; the official website CTA remains the authoritative
 source for current hours).
 
+Related events + SEO (Phase 3C): on INTERNAL single pages only, county is the
+single reliable relationship used to surface a \"Próximos eventos\" section —
+the destination's `conexao_county` term intersects the SHARED cached
+upcoming-event list (`Conexao_Event_Query::upcoming_events()` via
+`conexao_leisure_related_events()`, theme functions.php). Never category /
+keywords / title similarity / free text / geographic distance; no second event
+query system; no per-page transient. Internal singles also emit
+`TouristAttraction` JSON-LD (inc/seo.php) with only actually-stored
+name/description/image/place. `_leisure_duration` and `_leisure_best_time`
+remain editorial fields: they render on the single page ONLY when actual data
+exists (never empty labels).
+
 Image fields:
 - `_leisure_image_attachment_id` (integer — local Media Library)
 - `_leisure_image_source`, `_leisure_image_source_url`, `_leisure_image_author`, `_leisure_image_license`, `_leisure_image_attribution`, `_leisure_image_alt_text`

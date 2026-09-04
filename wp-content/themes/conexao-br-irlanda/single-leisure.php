@@ -42,45 +42,10 @@ get_header();
 	$leisure_practical_source_url  = get_post_meta( $leisure_id, '_leisure_practical_source_url', true ); // Labelled output only, via conexao_leisure_authoritative_links().
 	$leisure_practical_last_checked = get_post_meta( $leisure_id, '_leisure_practical_last_checked', true );
 
-	// Resolve the display set for the practical attributes of this destination.
-	// Primary source: the structured conexao_leisure_attribute taxonomy.
-	// Fallback: legacy checkbox meta during the transition. Never render the
-	// same attribute twice when both sources are present.
-	$leisure_attr_names = array();
-
-	$attr_terms = get_the_terms( $leisure_id, 'conexao_leisure_attribute' );
-	if ( $attr_terms && ! is_wp_error( $attr_terms ) ) {
-		foreach ( $attr_terms as $term ) {
-			$leisure_attr_names[ sanitize_title( $term->name ) ] = $term->name;
-		}
-	}
-
-	// Legacy fallback — only add names not already present from the taxonomy.
-	$legacy_attr_map = array(
-		'_leisure_family'        => array( 'familias', 'Famílias' ),
-		'_leisure_outdoor'       => array( 'exterior', 'Exterior' ),
-		'_leisure_indoor'        => array( 'interior', 'Interior' ),
-		'_leisure_booking'       => array( 'necessita-reserva', 'Necessita reserva' ),
-		'_leisure_accessibility' => array( 'acessivel', 'Acessível' ),
-		'_leisure_pet_friendly'  => array( 'pet-friendly', 'Pet friendly' ),
-		'_leisure_parking'       => array( 'estacionamento', 'Estacionamento' ),
-	);
-	foreach ( $legacy_attr_map as $meta_key => $mapping ) {
-		if ( '1' === (string) get_post_meta( $leisure_id, $meta_key, true ) && ! isset( $leisure_attr_names[ $mapping[0] ] ) ) {
-			$leisure_attr_names[ $mapping[0] ] = $mapping[1];
-		}
-	}
-	$legacy_free = get_post_meta( $leisure_id, '_leisure_free', true );
-	if ( '' !== (string) $legacy_free ) {
-		$free_lower = mb_strtolower( (string) $legacy_free, 'UTF-8' );
-		$is_free    = ( '1' === (string) $legacy_free )
-			|| false !== strpos( $free_lower, 'gratuit' )
-			|| false !== strpos( $free_lower, 'free' )
-			|| false !== strpos( $free_lower, 'grátis' );
-		if ( $is_free && ! isset( $leisure_attr_names['gratuito'] ) ) {
-			$leisure_attr_names['gratuito'] = 'Gratuito';
-		}
-	}
+	// Phase 3C — shared attribute-resolution helper, also used by the archive
+	// card (and any future surface) so the single page and card never diverge.
+	// Returns only actual display names — never empty labels.
+	$leisure_attr_names = conexao_leisure_attributes( $leisure_id );
 
 	// Image metadata for hero + attribution.
 	$leisure_alt_text     = get_post_meta( $leisure_id, '_leisure_image_alt_text', true );
@@ -93,6 +58,21 @@ get_header();
 
 	$leisure_categories = get_the_terms( $leisure_id, 'conexao_category' );
 	$leisure_counties   = get_the_terms( $leisure_id, 'conexao_county' );
+
+	// Defensive internal-only guard. Records with an external destination
+	// redirect via conexao_leisure_redirect() BEFORE this template renders, so
+	// the internal-only sections below (related events) are never reached on a
+	// redirecting page; this keeps the guard explicit and truthful.
+	$leisure_is_internal = ( ! function_exists( 'conexao_leisure_external_url' ) || ! conexao_leisure_external_url( $leisure_id ) );
+
+	// Phase 3C — related upcoming events for THIS destination's county, from the
+	// existing cached upcoming-event list (no second event-query system, no
+	// per-page transient). Empty array when the county has no upcoming events,
+	// so the section is not rendered at all.
+	$leisure_events = array();
+	if ( $leisure_is_internal ) {
+		$leisure_events = conexao_leisure_related_events( $leisure_id );
+	}
 	?>
 
 	<div class="site-container leisure-single">
@@ -137,13 +117,13 @@ get_header();
 				</header>
 
 				<?php
-				// Hero image: always a local WordPress Media Library attachment
-				// (featured thumbnail). When no image is available, no hero is
-				// shown.
-				$leisure_hero_html = '';
-				if ( has_post_thumbnail() ) {
-					$leisure_hero_html = get_the_post_thumbnail( $leisure_id, 'conexao-hero', array( 'loading' => 'eager', 'alt' => esc_attr( $leisure_alt ) ) );
-				}
+				// Phase 3C — responsive hero via the shared helper
+				// (wp_get_attachment_image + WordPress srcset + appropriate sizes;
+				// the hero is still the LCP image, so it stays eager with
+				// fetchpriority="high"). Always a local WordPress Media Library
+				// attachment (featured thumbnail); when no image is available, no
+				// hero is shown.
+				$leisure_hero_html = conexao_leisure_hero_image( $leisure_id, $leisure_alt );
 
 				if ( $leisure_hero_html ) : ?>
 					<figure class="leisure-single-hero">
@@ -377,6 +357,32 @@ get_header();
 										</p>
 									</div>
 								</article>
+							<?php endforeach; ?>
+							<?php wp_reset_postdata(); ?>
+						</div>
+					</section>
+				<?php endif;
+				?>
+
+				<?php // Phase 3C — related upcoming events for this county.
+				// Renders nothing when the county has no upcoming events (never an
+				// empty section / no "Nenhum evento encontrado"). Reuses the EXISTING
+				// event card component — no second card design, same date / Hoje /
+				// Amanhã / recurrence labels and existing accessibility.
+				if ( ! empty( $leisure_events ) ) : ?>
+					<section class="leisure-single-events">
+						<h2 class="leisure-single-events-title"><?php esc_html_e( 'Próximos eventos', 'conexao-br-irlanda' ); ?></h2>
+						<div class="leisure-single-events-grid events-grid">
+							<?php foreach ( $leisure_events as $leisure_event ) : ?>
+								<?php
+								// setup_postdata() does not assign the global $post
+								// itself — do it explicitly so the event-card part's
+								// the_title()/get_permalink()/the_excerpt() resolve
+								// against this event.
+								$GLOBALS['post'] = $leisure_event; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+								setup_postdata( $leisure_event );
+								?>
+								<?php get_template_part( 'template-parts/event', 'card' ); ?>
 							<?php endforeach; ?>
 							<?php wp_reset_postdata(); ?>
 						</div>

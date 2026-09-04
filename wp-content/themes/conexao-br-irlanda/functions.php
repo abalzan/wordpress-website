@@ -1688,6 +1688,62 @@ function conexao_leisure_county_filter_url( $county_slug ) {
 	return add_query_arg( 'county', $county_slug, $leisure_url );
 }
 /**
+ * Resolve the display set of practical characteristics for a leisure record.
+ *
+ * Phase 3C — a single shared source for the practical-attribute resolution
+ * that used to be duplicated between the single page and the archive card
+ * (and any future surface). Primary source is the structured
+ * `conexao_leisure_attribute` taxonomy; legacy checkbox meta is the fallback
+ * during the transition. Both are merged without ever rendering the same
+ * attribute twice. Never renders empty labels — only what is actually stored.
+ *
+ * @param int $post_id Leisure post ID.
+ * @return array<string,string> Map of attribute slug => display name.
+ */
+function conexao_leisure_attributes( $post_id = 0 ) {
+	$post_id = $post_id ? (int) $post_id : get_the_ID();
+
+	$attr_names = array();
+
+	$attr_terms = get_the_terms( $post_id, 'conexao_leisure_attribute' );
+	if ( $attr_terms && ! is_wp_error( $attr_terms ) ) {
+		foreach ( $attr_terms as $term ) {
+			$attr_names[ sanitize_title( $term->name ) ] = $term->name;
+		}
+	}
+
+	// Legacy fallback — only add names not already present from the taxonomy.
+	$legacy_attr_map = array(
+		'_leisure_family'        => array( 'familias', 'Famílias' ),
+		'_leisure_outdoor'       => array( 'exterior', 'Exterior' ),
+		'_leisure_indoor'        => array( 'interior', 'Interior' ),
+		'_leisure_booking'       => array( 'necessita-reserva', 'Necessita reserva' ),
+		'_leisure_accessibility' => array( 'acessivel', 'Acessível' ),
+		'_leisure_pet_friendly'  => array( 'pet-friendly', 'Pet friendly' ),
+		'_leisure_parking'       => array( 'estacionamento', 'Estacionamento' ),
+	);
+	foreach ( $legacy_attr_map as $meta_key => $mapping ) {
+		if ( '1' === (string) get_post_meta( $post_id, $meta_key, true ) && ! isset( $attr_names[ $mapping[0] ] ) ) {
+			$attr_names[ $mapping[0] ] = $mapping[1];
+		}
+	}
+
+	$legacy_free = get_post_meta( $post_id, '_leisure_free', true );
+	if ( '' !== (string) $legacy_free ) {
+		$free_lower = mb_strtolower( (string) $legacy_free, 'UTF-8' );
+		$is_free    = ( '1' === (string) $legacy_free )
+			|| false !== strpos( $free_lower, 'gratuit' )
+			|| false !== strpos( $free_lower, 'free' )
+			|| false !== strpos( $free_lower, 'grátis' );
+		if ( $is_free && ! isset( $attr_names['gratuito'] ) ) {
+			$attr_names['gratuito'] = 'Gratuito';
+		}
+	}
+
+	return $attr_names;
+}
+
+/**
  * Resolve the best available map URL for a leisure location.
  *
  * Phase 3B — powers the "Ver localização no mapa" link on the individual
@@ -1915,6 +1971,145 @@ function conexao_leisure_related_internal_destinations( $leisure_id ) {
 	}
 
 	return array_map( 'get_post', $found );
+}
+
+/**
+ * Related upcoming events for a leisure destination (Phase 3C).
+ *
+ * The county (`conexao_county`) is the ONLY reliable relationship between a
+ * leisure destination and an event in this context — we must never match on
+ * category, keywords, title similarity, free text or geographic distance.
+ *
+ * This intersects the SHARED, cached upcoming-event list from the existing
+ * event runtime (`Conexao_Event_Query::upcoming_events()` via
+ * `conexao_event_upcoming_ids()`) with the destination's county term. It does
+ * NOT run a second event-query system and does NOT create a per-page
+ * transient: the event runtime's date-keyed cache is the single source, and
+ * this narrows it with one `post__in` + `tax_query` query. `orderby =>
+ * post__in` preserves the runtime's existing occurrence ordering (next
+ * occurrence ascending, recurring events using their own next-occurrence
+ * logic, multi-day events using their active-date logic), and each event
+ * appears exactly once.
+ *
+ * Only genuinely internal destinations can reach the single page (external
+ * records redirect before template rendering). This helper still guards on
+ * the canonical `conexao_leisure_external_url()` classification so a
+ * defensive call can never surface events for a record that redirects away.
+ *
+ * @param int $leisure_id Leisure post ID.
+ * @return WP_Post[] Up to 3 same-county upcoming events (runtime order), or
+ *                   an empty array when none qualify.
+ */
+function conexao_leisure_related_events( $leisure_id ) {
+	$leisure_id = absint( $leisure_id );
+	if ( ! $leisure_id || 'leisure' !== get_post_type( $leisure_id ) ) {
+		return array();
+	}
+
+	// Only internal pages get the section (defensive; see docs above).
+	if ( function_exists( 'conexao_leisure_external_url' ) && conexao_leisure_external_url( $leisure_id ) ) {
+		return array();
+	}
+
+	// County is the only reliable relationship.
+	$counties = get_the_terms( $leisure_id, 'conexao_county' );
+	if ( ! $counties || is_wp_error( $counties ) || empty( $counties ) ) {
+		return array();
+	}
+
+	// Consume the existing cached upcoming-event list (runtime ordered).
+	$upcoming_ids = conexao_event_upcoming_ids();
+	if ( ! is_array( $upcoming_ids ) || empty( $upcoming_ids ) ) {
+		return array();
+	}
+
+	// One filtered subset query over the SAME cached IDs: no full re-query of
+	// every event, no second occurrence evaluation, no per-county transient.
+	$query = new WP_Query(
+		array(
+			'post_type'              => 'event',
+			'post_status'            => 'publish',
+			'post__in'               => $upcoming_ids, // Already _event_status gated + occurrence ordered by the runtime.
+			'orderby'                => 'post__in',
+			'order'                  => 'ASC',
+			'posts_per_page'         => 3,
+			'tax_query'              => array(
+				array(
+					'taxonomy' => 'conexao_county',
+					'field'    => 'term_id',
+					'terms'    => wp_list_pluck( $counties, 'term_id' ),
+				),
+			),
+			'no_found_rows'          => true,
+			'ignore_sticky_posts'    => true,
+			'update_post_meta_cache' => false,
+			'update_post_term_cache' => false,
+		)
+	);
+
+	return $query->posts; // post__in order preserves the runtime ordering.
+}
+
+/**
+ * Build the responsive hero image for the internal leisure single page.
+ *
+ * Phase 3C — performance: the previous hero used the 1200&times;600 hard crop
+ * directly with eager loading and NO srcset, so every viewport downloaded the
+ * full 1200px image. A hard-cropped size produces no proportional rungs, so
+ * WordPress emits no srcset for it (this is why the old
+ * `get_the_post_thumbnail( ..., 'conexao-hero', ... )` had none).
+ *
+ * Fix (same pattern as `conexao_sponsor_carousel_image()`): request a smaller
+ * PROPORTIONAL size as the `src` so the WordPress-generated `srcset` keeps the
+ * low rungs (768/1024/1536/2048), then let the `sizes` attribute pick the
+ * right candidate per viewport — mobile downloads ~768–1024px instead of
+ * 1200px. The hero keeps a constant 2:1 visual box via `object-fit: cover`,
+ * so any served candidate fills the same frame (see leisure.css). This stays
+ * LCP: the hero is the real above-the-fold image, so it keeps `loading="eager"`
+ * with `fetchpriority="high"` and `decoding="async"`. No JS image library.
+ *
+ * Attribution/alt behaviour is untouched: alt comes from `$alt` exactly as the
+ * single page resolved it before.
+ *
+ * @param int    $leisure_id Leisure post ID.
+ * @param string $alt        Alt text (already resolved with title fallback).
+ * @return string Responsive <img> HTML, or '' when the post has no image.
+ */
+function conexao_leisure_hero_image( $leisure_id, $alt = '' ) {
+	$attachment_id = get_post_thumbnail_id( $leisure_id );
+	if ( ! $attachment_id || ! wp_attachment_is_image( $attachment_id ) ) {
+		return '';
+	}
+
+	// Base the ladder on a proportional size so the srcset includes the small
+	// rungs; `sizes` below picks per viewport. (medium_large = 768px.)
+	$size = 'medium_large';
+	$src  = wp_get_attachment_image_url( $attachment_id, $size );
+	if ( ! $src ) {
+		// No proportional derivative (unlikely for imported/uploaded images);
+		// fall back to the canonical hero size as before.
+		$size = 'conexao-hero';
+		$src  = wp_get_attachment_image_url( $attachment_id, $size );
+		if ( ! $src ) {
+			return '';
+		}
+	}
+
+	return wp_get_attachment_image(
+		$attachment_id,
+		$size,
+		false,
+		array(
+			'class'         => 'leisure-single-hero-img',
+			'loading'       => 'eager',
+			'decoding'      => 'async',
+			'fetchpriority' => 'high',
+			'alt'           => $alt,
+			// The hero spans the content column (site container is 1200px).
+			// Desktop needs ~1200 CSS px (more at high DPR), mobile ~92vw.
+			'sizes'         => '(min-width: 1200px) 1200px, (min-width: 769px) 96vw, 92vw',
+		)
+	);
 }
 
 /**
