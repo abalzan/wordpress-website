@@ -1639,6 +1639,286 @@ function conexao_blog_category_filter_url( $category_slug ) {
 
 	return add_query_arg( 'categoria', $category_slug, $blog_url );
 }
+/**
+ * Build the Lazer category filter URL.
+ *
+ * Lazer categories are filtered on the Lazer archive itself via the
+ * ?categoria= query parameter (/lazer/?categoria=slug) — the same URL
+ * contract the archive's own filter bar uses (see conexao_content_archive_query()).
+ * The archive base URL is resolved from the CPT archive link so it follows
+ * the permalink rather than being hard-coded.
+ *
+ * @param string $category_slug Category slug. Empty returns the base archive URL.
+ * @return string Absolute URL to the (optionally filtered) Lazer archive.
+ */
+function conexao_leisure_category_filter_url( $category_slug ) {
+	$leisure_url = get_post_type_archive_link( 'leisure' );
+	if ( ! is_string( $leisure_url ) || '' === $leisure_url ) {
+		$leisure_url = home_url( '/lazer/' );
+	}
+
+	$category_slug = sanitize_title( $category_slug );
+	if ( '' === $category_slug ) {
+		return $leisure_url;
+	}
+
+	return add_query_arg( 'categoria', $category_slug, $leisure_url );
+}
+
+/**
+ * Build the Lazer county (location) filter URL.
+ *
+ * Same contract as above for the ?county= parameter (/lazer/?county=slug).
+ * Town-level filtering does not exist — towns are display text only.
+ *
+ * @param string $county_slug County slug. Empty returns the base archive URL.
+ * @return string Absolute URL to the (optionally filtered) Lazer archive.
+ */
+function conexao_leisure_county_filter_url( $county_slug ) {
+	$leisure_url = get_post_type_archive_link( 'leisure' );
+	if ( ! is_string( $leisure_url ) || '' === $leisure_url ) {
+		$leisure_url = home_url( '/lazer/' );
+	}
+
+	$county_slug = sanitize_title( $county_slug );
+	if ( '' === $county_slug ) {
+		return $leisure_url;
+	}
+
+	return add_query_arg( 'county', $county_slug, $leisure_url );
+}
+/**
+ * Resolve the best available map URL for a leisure location.
+ *
+ * Phase 3B — powers the "Ver localização no mapa" link on the individual
+ * Lazer page so an internal record can always answer "Onde fica?".
+ *
+ * Priority:
+ * 1. `_leisure_map_url` — existing canonical map link. Existing data is never
+ *    replaced by a generated URL.
+ * 2. A deterministic Google Maps search URL derived at render time from the
+ *    verified address (`_leisure_address`, plus town/county when available).
+ * 3. Fallback: a deterministic Google Maps search URL derived from
+ *    title + town + county. Only generated when at least one location signal
+ *    exists beyond the title — a bare title is never enough.
+ *
+ * The derived URL uses the official Google Maps URL scheme
+ * (https://www.google.com/maps/search/?api=1&query=...): no API key, no
+ * geocoding, no remote requests, no map embed — identical data always
+ * produces the identical URL, and it is generated at render time.
+ *
+ * @param int $post_id Leisure post ID.
+ * @return string Map URL, or '' when no sufficient location data exists.
+ */
+function conexao_leisure_map_url( $post_id = 0 ) {
+	$post_id = $post_id ? (int) $post_id : get_the_ID();
+
+	if ( ! $post_id || 'leisure' !== get_post_type( $post_id ) ) {
+		return '';
+	}
+
+	// 1. Existing canonical map data always wins.
+	$stored = trim( (string) get_post_meta( $post_id, '_leisure_map_url', true ) );
+	if ( $stored && preg_match( '#^https?://#i', $stored ) && esc_url_raw( $stored ) === $stored ) {
+		return $stored;
+	}
+
+	$address = trim( (string) get_post_meta( $post_id, '_leisure_address', true ) );
+	$town    = trim( (string) get_post_meta( $post_id, '_leisure_town', true ) );
+
+	$county_name = '';
+	$counties    = get_the_terms( $post_id, 'conexao_county' );
+	if ( $counties && ! is_wp_error( $counties ) ) {
+		$county_name = trim( $counties[0]->name );
+	}
+
+	// 2. Verified address present — search on the address (plus town/county).
+	if ( '' !== $address ) {
+		$query_parts = array_values( array_filter( array( $address, $town, $county_name ) ) );
+	} else {
+		// 3. Fallback: title + town + county. Requires at least one location
+		// signal beyond the title; otherwise no map link is generated.
+		if ( '' === $town && '' === $county_name ) {
+			return '';
+		}
+		$query_parts = array_values( array_filter( array( get_the_title( $post_id ), $town, $county_name ) ) );
+	}
+
+	if ( empty( $query_parts ) ) {
+		return '';
+	}
+
+	$query_parts[] = 'Ireland';
+
+	return 'https://www.google.com/maps/search/?api=1&query=' . rawurlencode( implode( ', ', $query_parts ) );
+}
+
+/**
+ * Display-only authoritative information links for an internal leisure page.
+ *
+ * Phase 3B — separates "which authoritative links should be displayed?"
+ * (this function) from "should the page redirect externally?"
+ * (conexao_leisure_external_url(), inc/seo.php). An internal record may
+ * surface an Official Website / Discover Ireland reference (or the Phase 2
+ * practical-verification source) without the page itself becoming an
+ * external redirect. Records classified for the external redirect never
+ * render a page at all and never yield display links here, so the presence
+ * of a display link can never influence the redirect classification.
+ *
+ * Priority: Official Website ('Site oficial'), Discover Ireland
+ * ('Ver no Discover Ireland'), then the practical-verification source URL
+ * ('Mais informações') when it is not already listed. URLs are validated the
+ * same way as redirect candidates (absolute http(s) only) and deduplicated.
+ *
+ * @param int $post_id Leisure post ID.
+ * @return array[] List of array( 'url' => string, 'label' => string ).
+ */
+function conexao_leisure_authoritative_links( $post_id = 0 ) {
+	$post_id = $post_id ? (int) $post_id : get_the_ID();
+
+	if ( ! $post_id || 'leisure' !== get_post_type( $post_id ) ) {
+		return array();
+	}
+
+	// Only internal pages display authoritative links. The canonical external
+	// classification always wins: if the record redirects, nothing is shown.
+	if ( function_exists( 'conexao_leisure_external_url' ) && conexao_leisure_external_url( $post_id ) ) {
+		return array();
+	}
+
+	$links     = array();
+	$seen_urls = array();
+
+	$candidates = array(
+		array( (string) get_post_meta( $post_id, '_leisure_official_website', true ), __( 'Site oficial', 'conexao-br-irlanda' ) ),
+		array( (string) get_post_meta( $post_id, '_leisure_discover_ireland', true ), __( 'Ver no Discover Ireland', 'conexao-br-irlanda' ) ),
+		array( (string) get_post_meta( $post_id, '_leisure_practical_source_url', true ), __( 'Mais informações', 'conexao-br-irlanda' ) ),
+	);
+
+	foreach ( $candidates as $candidate ) {
+		$url   = trim( $candidate[0] );
+		$label = $candidate[1];
+
+		if ( '' === $url || isset( $seen_urls[ $url ] ) ) {
+			continue;
+		}
+
+		// Defence in depth: only ever link to an absolute http(s) URL.
+		if ( ! preg_match( '#^https?://#i', $url ) || esc_url_raw( $url ) !== $url ) {
+			continue;
+		}
+
+		$seen_urls[ $url ] = true;
+		$links[]           = array(
+			'url'   => $url,
+			'label' => $label,
+		);
+	}
+
+	return $links;
+}
+
+/**
+ * Select related internal leisure destinations for a single Lazer page.
+
+/**
+ * Select related internal leisure destinations for a single Lazer page.
+ *
+ * Phase 3A — the related section is an internal navigation hub: a related
+ * destination is eligible only when it does NOT qualify for the existing
+ * external redirect, i.e. conexao_leisure_external_url() (inc/seo.php, the
+ * canonical classification also used by the template_redirect hook and the
+ * archive cards) returns '' for it. Records with an Official Website or
+ * Discover Ireland URL are therefore never recommended here.
+ *
+ * Matching strategy (reliable signals confirmed by the Phase 3 audit):
+ * 1. Up to 3 eligible internal destinations in the same county.
+ * 2. If fewer than 3 exist, supplement with same-category eligible
+ *    internal destinations. Duplicates are avoided and the current post is
+ *    always excluded. No keyword matching, no geographical proximity, no
+ *    manual relationships.
+ *
+ * Efficiency: at most two lightweight WP_Query calls (the category query
+ * only runs when the county query left the set short), both with
+ * no_found_rows and default post-meta caching so the external-URL check
+ * reads from the meta cache instead of issuing extra queries.
+ *
+ * @param int $leisure_id Current leisure post ID.
+ * @return WP_Post[] Up to 3 related internal destination posts (may be empty).
+ */
+function conexao_leisure_related_internal_destinations( $leisure_id ) {
+	$leisure_id = absint( $leisure_id );
+	if ( ! $leisure_id || 'leisure' !== get_post_type( $leisure_id ) ) {
+		return array();
+	}
+
+	$limit = 3;
+	$found = array();
+
+	// Match batches, most specific signal first: same county, then same category.
+	$batches = array();
+	$counties = get_the_terms( $leisure_id, 'conexao_county' );
+	if ( $counties && ! is_wp_error( $counties ) ) {
+		$batches[] = array(
+			'taxonomy' => 'conexao_county',
+			'field'    => 'term_id',
+			'terms'    => wp_list_pluck( $counties, 'term_id' ),
+		);
+	}
+	$categories = get_the_terms( $leisure_id, 'conexao_category' );
+	if ( $categories && ! is_wp_error( $categories ) ) {
+		$batches[] = array(
+			'taxonomy' => 'conexao_category',
+			'field'    => 'term_id',
+			'terms'    => wp_list_pluck( $categories, 'term_id' ),
+		);
+	}
+
+	// Enough candidates to survive batches where many records are externally
+	// redirected; the eligibility check itself is cache-only (no extra SQL).
+	$candidates_per_batch = 20;
+
+	foreach ( $batches as $batch ) {
+		if ( count( $found ) >= $limit ) {
+			break;
+		}
+
+		$query = new WP_Query(
+			array(
+				'post_type'           => 'leisure',
+				'post_status'         => 'publish',
+				'post__not_in'        => array_merge( array( $leisure_id ), $found ),
+				'posts_per_page'      => $candidates_per_batch,
+				'no_found_rows'       => true,
+				'ignore_sticky_posts' => true,
+				'tax_query'           => array( $batch ),
+			)
+		);
+
+		foreach ( $query->posts as $candidate ) {
+			if ( count( $found ) >= $limit ) {
+				break;
+			}
+
+			// Genuinely internal only: skip records with an external
+			// destination (they redirect off-site). Canonical classification.
+			if ( function_exists( 'conexao_leisure_external_url' ) && conexao_leisure_external_url( $candidate->ID ) ) {
+				continue;
+			}
+
+			$found[] = $candidate->ID;
+		}
+	}
+
+	if ( empty( $found ) ) {
+		return array();
+	}
+
+	return array_map( 'get_post', $found );
+}
+
+/**
+ * Ordered ID list of currently active/upcoming public events.
 
 /**
  * Ordered ID list of currently active/upcoming public events.

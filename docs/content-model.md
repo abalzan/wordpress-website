@@ -180,9 +180,28 @@ Location fields:
 - `_leisure_county`, `_leisure_town`, `_leisure_address`
 - `_leisure_official_website`, `_leisure_discover_ireland`, `_leisure_website` (legacy)
 - `_leisure_map_url`
+- `_leisure_internal_page` (boolean, Phase 3B) — explicit "keep internal page"
+  classification. When set, the record stays on its internal
+  `/lazer/{slug}/` page even with an Official Website or Discover Ireland URL
+  configured; those URLs are then displayed as labelled reference links
+  ("Site oficial" / "Ver no Discover Ireland") instead of triggering the
+  external 302 redirect. The flag is the only redirect/display decoupling
+  signal — the mere presence of a display link never redirects, and every
+  record without the flag classifies exactly as before.
 - `_leisure_free`, `_leisure_duration`, `_leisure_best_time`
 - `_leisure_family`, `_leisure_accessibility`, `_leisure_pet_friendly`, `_leisure_indoor`, `_leisure_outdoor`, `_leisure_parking`, `_leisure_booking`
 - `_leisure_feature` (boolean — featured destination)
+
+Map URLs (Phase 3B): the single page's "Ver localização no mapa" link is
+resolved at render time by `conexao_leisure_map_url()` (theme functions.php):
+1. `_leisure_map_url` when set (existing canonical data is never replaced);
+2. otherwise a deterministic Google Maps search URL derived from the verified
+   address (+ town/county) when `_leisure_address` exists;
+3. otherwise a deterministic Google Maps search URL derived from
+   title + town + county — only when at least one location signal exists
+   beyond the title. Uses the official `?api=1&query=` URL scheme: no API
+   key, no geocoding, no remote requests, no embed; identical data always
+   yields the identical URL.
 
 Practical-information fields (Phase 2 — all optional, free-text):
 - `_leisure_practical_notes` — "Observações práticas": concise visitor tips
@@ -190,12 +209,20 @@ Practical-information fields (Phase 2 — all optional, free-text):
   empty when no reliable practical information exists. Rendered only on the
   individual leisure page, never on archive cards.
 - `_leisure_practical_source_url` — source used to verify the practical
-  notes (official site / Discover Ireland page). Admin + export/import only —
-  never rendered on the public site as raw text.
+  notes (official site / Discover Ireland page). Admin + export/import field.
+  Phase 3B: on internal pages it is additionally surfaced as a labelled
+  display-only authoritative link ("Mais informações") via
+  `conexao_leisure_authoritative_links()` (theme functions.php) so the
+  stale-verification message stays truthful — it is never printed as raw
+  text and never influences the external-redirect classification.
 - `_leisure_practical_last_checked` — date the practical information was
   last verified (site date format). If the notes are older than 6 months,
-  the single page shows "Verifique as informações no site oficial." instead
-  of "Informação verificada em [date]". Verification metadata applies to the
+  the single page shows a verify note instead of "Informação verificada em
+  [date]". Phase 3B — the note is truthful: it links to the site oficial /
+  Discover Ireland / source only when a real, displayable authoritative link
+  exists (`conexao_leisure_authoritative_links()`); with no link available it
+  shows a neutral "Informações podem estar desatualizadas..." note instead of
+  implying an unavailable link. Verification metadata applies to the
   free-text practical notes only, never to stable taxonomy attributes.
 
 Opening hours are intentionally NOT modelled (high-maintenance without a

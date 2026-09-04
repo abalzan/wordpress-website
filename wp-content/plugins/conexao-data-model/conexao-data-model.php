@@ -300,6 +300,7 @@ final class Conexao_Data_Model {
 			'_leisure_official_website' => 'string', // Official website URL (primary external destination).
 			'_leisure_discover_ireland' => 'string', // Discover Ireland reference URL (fallback external destination).
 			'_leisure_map_url'       => 'string', // Google Maps / location URL.
+			'_leisure_internal_page' => 'boolean', // Phase 3B — keep the internal page; official/discover URLs become display-only links.
 			'_leisure_feature'       => 'boolean', // Featured destination.
 			'_leisure_free'          => 'string', // Gratuito / Pago.
 			'_leisure_family'        => 'boolean', // Adequado para famílias.

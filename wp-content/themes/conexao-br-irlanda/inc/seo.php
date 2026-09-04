@@ -1111,6 +1111,18 @@ add_action( 'template_redirect', 'conexao_seo_redirects', 5 );
  * Priority: Offical Website URL, then Discover Ireland URL. Returns '' when
  * the location should use its internal /lazer/{slug}/ page.
  *
+ * Phase 3B — redirect/display separation. This function remains the single
+ * canonical classification for the external redirect (template_redirect hook,
+ * sitemap, archive cards and the related-destinations selector all read it).
+ * A record with the `_leisure_internal_page` flag set keeps its internal page
+ * even when an Official Website or Discover Ireland URL exists: those URLs
+ * then become display-only authoritative links (see
+ * conexao_leisure_authoritative_links() in functions.php) and are never used
+ * as a redirect destination. The mere presence of a display link must never
+ * trigger the redirect — only the absence of the flag preserves the legacy
+ * external classification, so all existing externally classified records
+ * keep redirecting exactly as before.
+ *
  * @param int $post_id Leisure post ID.
  * @return string External URL, or '' when none configured.
  */
@@ -1118,6 +1130,13 @@ function conexao_leisure_external_url( $post_id = 0 ) {
 	$post_id = $post_id ? (int) $post_id : get_the_ID();
 
 	if ( ! $post_id || 'leisure' !== get_post_type( $post_id ) ) {
+		return '';
+	}
+
+	// Phase 3B — explicit "keep internal page" classification. When set, the
+	// Official Website / Discover Ireland URLs are display-only references and
+	// the record is internal for every consumer of this function.
+	if ( get_post_meta( $post_id, '_leisure_internal_page', true ) ) {
 		return '';
 	}
 

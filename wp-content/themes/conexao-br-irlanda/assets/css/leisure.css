@@ -962,6 +962,20 @@
 	margin: 0 2px;
 }
 
+/* Phase 3A — the county line links to the Lazer location filter
+   (/lazer/?county=slug). Keeps the muted inline look, with a subtle
+   affordance so it reads as clickable without redesigning the header. */
+.leisure-single-location-link {
+	color: inherit;
+	text-decoration: underline;
+	text-underline-offset: 2px;
+	transition: color var(--conexao-transition);
+}
+
+.leisure-single-location-link:hover {
+	color: var(--conexao-primary);
+}
+
 .leisure-single-hero {
 	position: relative;
 	margin: 24px 0;

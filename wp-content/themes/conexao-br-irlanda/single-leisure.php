@@ -26,12 +26,20 @@ get_header();
 	$leisure_duration      = get_post_meta( $leisure_id, '_leisure_duration', true );
 	$leisure_best_time     = get_post_meta( $leisure_id, '_leisure_best_time', true );
 
-	// Phase 2 — practical-information fields. The source URL is deliberately
-	// loaded but never rendered publicly: verification display uses only the
-	// last-checked date (the official website CTA stays the authoritative
-	// source), and raw source URLs/field names must not leak onto the page.
+	// Phase 3B — resolved map URL (existing canonical map link first, then a
+	// deterministic Google Maps search URL derived at render time from
+	// title/town/county) and display-only authoritative links for internal
+	// records. Generated on the fly: no API, no geocoding, no remote requests.
+	$leisure_map_resolved = conexao_leisure_map_url( $leisure_id );
+	$leisure_info_links   = conexao_leisure_authoritative_links( $leisure_id );
+
+	// Phase 2 — practical-information fields. The source URL is only ever
+	// rendered as a labelled display-only authoritative link via
+	// conexao_leisure_authoritative_links() ("Mais informações") so the
+	// verification message stays truthful — raw source URLs/field names must
+	// not leak onto the page.
 	$leisure_practical_notes       = get_post_meta( $leisure_id, '_leisure_practical_notes', true );
-	$leisure_practical_source_url  = get_post_meta( $leisure_id, '_leisure_practical_source_url', true ); // No direct output.
+	$leisure_practical_source_url  = get_post_meta( $leisure_id, '_leisure_practical_source_url', true ); // Labelled output only, via conexao_leisure_authoritative_links().
 	$leisure_practical_last_checked = get_post_meta( $leisure_id, '_leisure_practical_last_checked', true );
 
 	// Resolve the display set for the practical attributes of this destination.
@@ -96,7 +104,8 @@ get_header();
 					<?php if ( $leisure_categories && ! is_wp_error( $leisure_categories ) ) : ?>
 						<div class="post-categories">
 							<?php foreach ( $leisure_categories as $category ) : ?>
-								<span class="hero-category"><?php echo esc_html( $category->name ); ?></span>
+								<?php // Phase 3A — real internal links to the existing Lazer category filter (/lazer/?categoria=slug). ?>
+								<a class="hero-category" href="<?php echo esc_url( conexao_leisure_category_filter_url( $category->slug ) ); ?>" aria-label="<?php echo esc_attr( sprintf( __( 'Ver lugares de lazer na categoria %s', 'conexao-br-irlanda' ), $category->name ) ); ?>"><?php echo esc_html( $category->name ); ?></a>
 							<?php endforeach; ?>
 						</div>
 					<?php endif; ?>
@@ -109,7 +118,8 @@ get_header();
 								<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"></path>
 								<circle cx="12" cy="10" r="3"></circle>
 							</svg>
-							<span><?php echo esc_html( $leisure_counties[0]->name ); ?></span>
+							<?php // Phase 3A — the county links to the existing Lazer location filter (/lazer/?county=slug). Towns have no filter and stay as display text. ?>
+							<a class="leisure-single-location-link" href="<?php echo esc_url( conexao_leisure_county_filter_url( $leisure_counties[0]->slug ) ); ?>" aria-label="<?php echo esc_attr( sprintf( __( 'Ver lugares de lazer em %s', 'conexao-br-irlanda' ), $leisure_counties[0]->name ) ); ?>"><?php echo esc_html( $leisure_counties[0]->name ); ?></a>
 							<?php if ( $leisure_town ) : ?>
 								<span class="leisure-single-location-sep">&middot;</span>
 								<span><?php echo esc_html( $leisure_town ); ?></span>
@@ -161,40 +171,75 @@ get_header();
 					<?php the_content(); ?>
 				</div>
 
-				<?php if ( $leisure_address || $leisure_website || $leisure_map_url || ! empty( $leisure_attr_names ) || $leisure_duration || $leisure_best_time ) : ?>
+				<?php
+				// Phase 3B — the location block is fully conditional: it only
+				// renders when it has something meaningful to show (never an
+				// empty "Localização e Contato" section). The map link prefers
+				// existing canonical data (_leisure_map_url / verified
+				// address) and falls back to a deterministic Google Maps
+				// search URL derived from title + town + county at render
+				// time (conexao_leisure_map_url(), functions.php).
+				$leisure_block_county = ( $leisure_counties && ! is_wp_error( $leisure_counties ) ) ? $leisure_counties[0]->name : '';
+				$leisure_block_title  = ( $leisure_address || $leisure_website )
+					? __( 'Localização e Contato', 'conexao-br-irlanda' )
+					: __( 'Localização', 'conexao-br-irlanda' );
+				// The legacy website row is skipped when the same URL is
+				// already displayed as an authoritative link.
+				$leisure_show_website = $leisure_website && ! in_array( $leisure_website, wp_list_pluck( $leisure_info_links, 'url' ), true );
+				?>
+				<?php if ( $leisure_address || $leisure_town || $leisure_block_county || $leisure_show_website || $leisure_map_resolved || ! empty( $leisure_attr_names ) || $leisure_duration || $leisure_best_time ) : ?>
 					<div class="leisure-single-info">
 
-						<?php if ( $leisure_address || $leisure_website || $leisure_map_url ) : ?>
+						<?php if ( $leisure_address || $leisure_town || $leisure_block_county || $leisure_show_website || $leisure_map_resolved ) : ?>
 							<div class="leisure-single-block leisure-single--details">
-								<h2 class="leisure-single-block-title"><?php esc_html_e( 'Localização e Contato', 'conexao-br-irlanda' ); ?></h2>
+								<h2 class="leisure-single-block-title"><?php echo esc_html( $leisure_block_title ); ?></h2>
 								<ul class="leisure-single-list">
+									<?php if ( $leisure_town || $leisure_block_county ) : ?>
+										<li class="leisure-single-item">
+											<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false">
+												<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"></path>
+												<circle cx="12" cy="10" r="3"></circle>
+											</svg>
+											<span><?php echo esc_html( implode( ', ', array_filter( array( $leisure_town, $leisure_block_county ) ) ) ); ?></span>
+										</li>
+									<?php endif; ?>
 									<?php if ( $leisure_address ) : ?>
 										<li class="leisure-single-item">
-											<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+											<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false">
 												<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
 												<circle cx="12" cy="10" r="3"></circle>
 											</svg>
 											<span><?php echo esc_html( $leisure_address ); ?></span>
 										</li>
 									<?php endif; ?>
-									<?php if ( $leisure_website ) : ?>
+									<?php if ( $leisure_show_website ) : ?>
 										<li class="leisure-single-item">
-											<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+											<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false">
 												<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
 												<polyline points="15 3 21 3 21 9"></polyline>
 												<line x1="10" y1="14" x2="21" y2="3"></line>
 											</svg>
-											<a href="<?php echo esc_url( $leisure_website ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Site oficial', 'conexao-br-irlanda' ); ?></a>
+											<a href="<?php echo esc_url( $leisure_website ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Site oficial', 'conexao-br-irlanda' ); ?><span class="screen-reader-text"><?php esc_html_e( ' (abre em nova aba)', 'conexao-br-irlanda' ); ?></span></a>
 										</li>
 									<?php endif; ?>
-									<?php if ( $leisure_map_url ) : ?>
+									<?php foreach ( $leisure_info_links as $leisure_info_link ) : ?>
 										<li class="leisure-single-item">
-											<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+											<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false">
+												<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+												<polyline points="15 3 21 3 21 9"></polyline>
+												<line x1="10" y1="14" x2="21" y2="3"></line>
+											</svg>
+											<a href="<?php echo esc_url( $leisure_info_link['url'] ); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html( $leisure_info_link['label'] ); ?><span class="screen-reader-text"><?php esc_html_e( ' (abre em nova aba)', 'conexao-br-irlanda' ); ?></span></a>
+										</li>
+									<?php endforeach; ?>
+									<?php if ( $leisure_map_resolved ) : ?>
+										<li class="leisure-single-item">
+											<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false">
 												<polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"></polygon>
 												<line x1="8" y1="2" x2="8" y2="18"></line>
 												<line x1="16" y1="6" x2="16" y2="22"></line>
 											</svg>
-											<a href="<?php echo esc_url( $leisure_map_url ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Ver no mapa', 'conexao-br-irlanda' ); ?></a>
+											<a href="<?php echo esc_url( $leisure_map_resolved ); ?>" target="_blank" rel="noopener noreferrer" aria-label="<?php echo esc_attr( sprintf( __( 'Ver localização de %s no mapa (abre em nova aba)', 'conexao-br-irlanda' ), get_the_title() ) ); ?>"><?php esc_html_e( 'Ver localização no mapa', 'conexao-br-irlanda' ); ?></a>
 										</li>
 									<?php endif; ?>
 								</ul>
@@ -249,7 +294,26 @@ get_header();
 							</p>
 						<?php else : ?>
 							<p class="leisure-practical-stale">
-								<?php esc_html_e( 'Verifique as informações no site oficial.', 'conexao-br-irlanda' ); ?>
+								<?php
+								// Phase 3B — the verification message must be
+								// truthful: it only points to an external source
+								// when a real, displayable authoritative link
+								// exists (the page stays internal). Never imply a
+								// link that is not available.
+								$leisure_stale_link = ! empty( $leisure_info_links ) ? $leisure_info_links[0] : array();
+								if ( ! empty( $leisure_stale_link ) ) :
+									if ( 'Site oficial' === $leisure_stale_link['label'] ) :
+										?>
+										<a href="<?php echo esc_url( $leisure_stale_link['url'] ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Verifique as informações no site oficial', 'conexao-br-irlanda' ); ?><span class="screen-reader-text"><?php esc_html_e( ' (abre em nova aba)', 'conexao-br-irlanda' ); ?></span></a>.
+									<?php elseif ( 'Ver no Discover Ireland' === $leisure_stale_link['label'] ) : ?>
+										<a href="<?php echo esc_url( $leisure_stale_link['url'] ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Verifique as informações no Discover Ireland', 'conexao-br-irlanda' ); ?><span class="screen-reader-text"><?php esc_html_e( ' (abre em nova aba)', 'conexao-br-irlanda' ); ?></span></a>.
+									<?php else : ?>
+										<?php esc_html_e( 'Verifique as informações na fonte:', 'conexao-br-irlanda' ); ?>
+										<a href="<?php echo esc_url( $leisure_stale_link['url'] ); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Mais informações', 'conexao-br-irlanda' ); ?><span class="screen-reader-text"><?php esc_html_e( ' (abre em nova aba)', 'conexao-br-irlanda' ); ?></span></a>.
+									<?php endif; ?>
+								<?php else : ?>
+									<?php esc_html_e( 'Informações podem estar desatualizadas. Confirme os detalhes diretamente com a atração antes da sua visita.', 'conexao-br-irlanda' ); ?>
+								<?php endif; ?>
 							</p>
 						<?php endif; ?>
 					<?php endif; ?>
@@ -258,39 +322,38 @@ get_header();
 			endif;
 
 			// Related leisure locations in the same county / category.
-				$related_tax = array();
-				if ( $leisure_counties && ! is_wp_error( $leisure_counties ) ) {
-					$related_tax[] = array(
-						'taxonomy' => 'conexao_county',
-						'field'    => 'term_id',
-						'terms'    => wp_list_pluck( $leisure_counties, 'term_id' ),
-					);
-				}
-				if ( $leisure_categories && ! is_wp_error( $leisure_categories ) ) {
-					$related_tax[] = array(
-						'taxonomy' => 'conexao_category',
-						'field'    => 'term_id',
-						'terms'    => wp_list_pluck( $leisure_categories, 'term_id' ),
-					);
-				}
+			// Phase 3A — a genuine internal navigation hub: selection runs
+			// through conexao_leisure_related_internal_destinations()
+			// (functions.php), which only returns records that do NOT
+			// qualify for the external redirect (classified via the
+			// canonical conexao_leisure_external_url() in inc/seo.php).
+			// Same county first, same-category supplement, up to 3 results;
+			// when none are eligible the whole section stays hidden.
+				$related_posts = conexao_leisure_related_internal_destinations( $leisure_id );
 
-				$related = new WP_Query( array(
-					'post_type'      => 'leisure',
-					'post__not_in'   => array( $leisure_id ),
-					'posts_per_page' => 3,
-					'no_found_rows'  => true,
-					'tax_query'      => array_merge( array( 'relation' => 'OR' ), $related_tax ),
-				) );
-
-				if ( $related->have_posts() ) : ?>
+				if ( ! empty( $related_posts ) ) : ?>
 					<section class="related-posts">
 						<h3 class="related-posts-title"><?php esc_html_e( 'Outros lugares relacionados', 'conexao-br-irlanda' ); ?></h3>
 						<div class="related-posts-grid">
-							<?php while ( $related->have_posts() ) : $related->the_post(); ?>
+							<?php foreach ( $related_posts as $related_post ) : ?>
+								<?php
+								// setup_postdata() does not assign the global $post
+								// itself — do it explicitly so the_title()/the_permalink()
+								// resolve against this related destination.
+								$GLOBALS['post'] = $related_post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+								setup_postdata( $related_post );
+								?>
+								<?php
+								$related_id       = get_the_ID();
+								$related_cats     = get_the_terms( $related_id, 'conexao_category' );
+								$related_counties = get_the_terms( $related_id, 'conexao_county' );
+								$related_cat      = ( $related_cats && ! is_wp_error( $related_cats ) ) ? $related_cats[0] : null;
+								$related_county   = ( $related_counties && ! is_wp_error( $related_counties ) ) ? $related_counties[0] : null;
+								?>
 								<article class="related-post-card">
 									<?php if ( has_post_thumbnail() ) : ?>
 										<?php
-										$r_alt = get_post_meta( get_the_ID(), '_leisure_image_alt_text', true );
+										$r_alt = get_post_meta( $related_id, '_leisure_image_alt_text', true );
 										if ( ! $r_alt ) {
 											$r_alt = get_the_title();
 										}
@@ -301,19 +364,24 @@ get_header();
 									<?php endif; ?>
 									<div class="related-post-content">
 										<h4 class="related-post-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h4>
-										<span class="related-post-date">
-											<?php
-											$r_counties = get_the_terms( get_the_ID(), 'conexao_county' );
-											echo $r_counties && ! is_wp_error( $r_counties ) ? esc_html( $r_counties[0]->name ) : '';
-											?>
-										</span>
+										<p class="related-post-meta">
+											<?php if ( $related_cat ) : ?>
+												<a class="related-post-meta-link" href="<?php echo esc_url( conexao_leisure_category_filter_url( $related_cat->slug ) ); ?>" aria-label="<?php echo esc_attr( sprintf( __( 'Ver mais lugares na categoria %s', 'conexao-br-irlanda' ), $related_cat->name ) ); ?>"><?php echo esc_html( $related_cat->name ); ?></a>
+											<?php endif; ?>
+											<?php if ( $related_cat && $related_county ) : ?>
+												<span class="related-post-meta-sep" aria-hidden="true">&middot;</span>
+											<?php endif; ?>
+											<?php if ( $related_county ) : ?>
+												<a class="related-post-meta-link" href="<?php echo esc_url( conexao_leisure_county_filter_url( $related_county->slug ) ); ?>" aria-label="<?php echo esc_attr( sprintf( __( 'Ver lugares de lazer em %s', 'conexao-br-irlanda' ), $related_county->name ) ); ?>"><?php echo esc_html( $related_county->name ); ?></a>
+											<?php endif; ?>
+										</p>
 									</div>
 								</article>
-							<?php endwhile; ?>
+							<?php endforeach; ?>
+							<?php wp_reset_postdata(); ?>
 						</div>
 					</section>
 				<?php endif;
-				wp_reset_postdata();
 				?>
 
 			</article>

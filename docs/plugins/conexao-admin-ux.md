@@ -244,10 +244,25 @@ optional practical-information fields:
 
 All three are optional; an empty save deletes the meta (no empty sections on
 the site). The source URL and checked date back the single-page verification
-message — they are never rendered publicly as raw text/field names. The
+message — Phase 3B: on internal pages the source URL is additionally shown as
+a labelled "Mais informações" link so the verification message stays truthful;
+it is still never rendered as raw text/field names. The
 `Gratuito em determinadas condições`, `Pago`, `Acesso de transporte público`
 and `Bicicleta` terms become available in the Características field
 automatically via the seeded taxonomy.
+
+### Leisure editor — Localização e contato (Phase 3B)
+
+The **Localização e contato** section holds the address, the authoritative
+URLs (`_leisure_official_website`, `_leisure_discover_ireland`, legacy
+`_leisure_website`), the map link and the `_leisure_internal_page` checkbox
+("Manter página interna"). Without the flag, an official/Discover Ireland URL
+classifies the record as external (card links out, single request 302-redirects)
+— unchanged legacy behavior. With the flag, the record keeps its internal page
+and those URLs are displayed as labelled reference links; the flag is the only
+redirect/display decoupling signal. When the map link is empty, the internal
+page generates a deterministic "Ver localização no mapa" Google Maps search
+URL from title/town/county at render time (no API, no geocoding).
 
 ## Hooks
 

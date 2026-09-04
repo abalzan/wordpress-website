@@ -597,9 +597,29 @@
 [data-theme="dark"] .post-card-meta,
 [data-theme="dark"] .news-card-meta,
 [data-theme="dark"] .related-post-date,
+[data-theme="dark"] .related-post-meta,
+[data-theme="dark"] .related-post-meta-sep,
+[data-theme="dark"] .related-post-meta-link,
 [data-theme="dark"] .featured-article-meta,
 [data-theme="dark"] .blog-post-item .entry-meta {
   color: var(--color-text-secondary);
+}
+
+/* Phase 3A — related-card meta links + county link hover states. */
+[data-theme="dark"] .related-post-meta-link:hover {
+  color: var(--conexao-accent);
+}
+
+[data-theme="dark"] .leisure-single-location-link:hover {
+  color: var(--conexao-accent);
+}
+
+[data-theme="dark"] .related-post-meta-link:focus-visible,
+[data-theme="dark"] .leisure-single-location-link:focus-visible,
+[data-theme="dark"] .leisure-single-header .post-categories a:focus-visible {
+  outline: 2px solid var(--conexao-accent);
+  outline-offset: 2px;
+  border-radius: 2px;
 }
 
 [data-theme="dark"] .event-card-detail--county,

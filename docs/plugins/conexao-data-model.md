@@ -57,8 +57,9 @@ optional — empty values never affect existing records):
 | Meta key | Meaning |
 |----------|---------|
 | `_leisure_practical_notes` | "Observações práticas" — concise visitor tips for the individual leisure page |
-| `_leisure_practical_source_url` | Source URL used to verify the practical notes (admin/verification only, never rendered publicly) |
+| `_leisure_practical_source_url` | Source URL used to verify the practical notes (admin/verification field; since Phase 3B also surfaced as a labelled display-only "Mais informações" link on internal pages, never as raw text) |
 | `_leisure_practical_last_checked` | Date the practical information was last verified |
+| `_leisure_internal_page` | Phase 3B — boolean flag: keep the internal `/lazer/{slug}/` page even when `_leisure_official_website`/`_leisure_discover_ireland` are set; those URLs become display-only reference links instead of triggering the external redirect. Records without the flag classify exactly as before |
 
 Verification metadata applies to the practical notes only — never to stable
 taxonomy attributes. Opening hours are deliberately not modelled.

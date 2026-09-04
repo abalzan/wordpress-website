@@ -317,7 +317,8 @@ final class Conexao_Admin_Ux_Config {
 						array( 'key' => '_leisure_official_website', 'label' => 'Official Website URL', 'type' => 'url', 'help' => 'Endereço do site oficial do local (ex.: https://www.example.com/). Ao clicar no local, o visitante será direcionado diretamente para este link.' ),
 						array( 'key' => '_leisure_discover_ireland', 'label' => 'Discover Ireland URL', 'type' => 'url', 'help' => 'Página deste local no Discover Ireland (ex.: https://www.discoverireland.ie/...). Usado apenas como referência quando não houver site oficial.' ),
 						array( 'key' => '_leisure_website', 'label' => 'Site oficial (legado)', 'type' => 'url', 'advanced' => true, 'help' => 'Campo antigo usado anteriormente. Prefira preencher "Official Website URL" acima.' ),
-						array( 'key' => '_leisure_map_url', 'label' => 'Link do mapa', 'type' => 'url', 'help' => 'Link do Google Maps / localização.' ),
+						array( 'key' => '_leisure_map_url', 'label' => 'Link do mapa', 'type' => 'url', 'help' => 'Link do Google Maps / localização. Se vazio, a página interna gera automaticamente um link "Ver localização no mapa" a partir do nome, cidade e county.' ),
+						array( 'key' => '_leisure_internal_page', 'label' => 'Manter página interna', 'type' => 'checkbox', 'help' => 'Se marcado, o local mantém a página interna em /lazer/ mesmo com "Official Website URL" ou "Discover Ireland URL" preenchidos — esses links passam a ser exibidos na página como referência ("Site oficial" / "Ver no Discover Ireland") em vez de redirecionar o visitante.' ),
 					),
 				),
 				'imagem'  => array(
