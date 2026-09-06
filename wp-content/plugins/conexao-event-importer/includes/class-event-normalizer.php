@@ -43,11 +43,72 @@ class Conexao_Event_Normalizer {
 
 		$location = $this->location->normalize( isset( $raw['location'] ) ? $raw['location'] : '' );
 
+		// Structured location hints from the source (e.g. Eventbrite
+		// venue.address fields, Heritage Week JSON-LD Event.location) are
+		// explicit data and take precedence over string-derived values.
+		if ( ! empty( $raw['venue'] ) ) {
+			$location['venue'] = trim( (string) $raw['venue'] );
+		}
+		if ( empty( $location['town'] ) && ! empty( $raw['town'] ) ) {
+			$location['town'] = trim( (string) $raw['town'] );
+		}
+
+		// Address resolution + audit status ('found' | 'rejected' | 'missing').
+		$address_status = 'missing';
+		if ( isset( $raw['address'] ) && '' !== trim( (string) $raw['address'] ) ) {
+			$address = Conexao_Event_Address::normalize( $raw['address'] );
+			if ( '' !== $address ) {
+				$location['address'] = $address;
+				$address_status      = 'found';
+			} else {
+				// The source supplied something, but it normalized away to
+				// nothing usable — report as rejected/ambiguous.
+				$address_status = 'rejected';
+			}
+		} elseif ( ! empty( $location['address'] ) ) {
+			$address_status = 'found';
+		}
+
 		// Per-source county hint: sources scoped to a single county (e.g.
 		// 'county' => 'Laois' in the source config) can guarantee the county
 		// even when the raw location string omits it or is empty entirely.
 		if ( empty( $location['county'] ) && ! empty( $raw['county'] ) ) {
 			$location['county'] = trim( (string) $raw['county'] );
+		}
+
+		// Structured source hints (e.g. Eventbrite venue.address, Heritage
+		// Week JSON-LD) take precedence over the string-derived values
+		// because the source provides them as explicit structured fields.
+		if ( ! empty( $raw['venue'] ) ) {
+			$location['venue'] = trim( (string) $raw['venue'] );
+		}
+		if ( empty( $location['town'] ) && ! empty( $raw['town'] ) ) {
+			$location['town'] = trim( (string) $raw['town'] );
+		}
+
+		// Address resolution — never guessed. Priority:
+		//   1. structured source address (raw['address']),
+		//   2. address detected inside the location string (street number
+		//      or Eircode pattern) by Conexao_Event_Location,
+		//   3. empty (venue-only / town-only events keep the address empty).
+		$address        = '';
+		$address_status = 'missing';
+
+		if ( isset( $raw['address'] ) && '' !== trim( (string) $raw['address'] ) ) {
+			$normalized_address = Conexao_Event_Address::normalize( $raw['address'] );
+			if ( '' !== $normalized_address && Conexao_Event_Address::is_plausible( $normalized_address ) ) {
+				$address        = $normalized_address;
+				$address_status = 'found';
+			} else {
+				// The source supplied something, but it did not validate as
+				// an address (malformed/non-address value) — reject it.
+				$address_status = 'rejected';
+			}
+		}
+
+		if ( '' === $address && ! empty( $location['address'] ) ) {
+			$address        = $location['address'];
+			$address_status = 'found';
 		}
 
 		$category = isset( $raw['category'] ) ? trim( (string) $raw['category'] ) : '';
@@ -94,7 +155,9 @@ class Conexao_Event_Normalizer {
 			'county'       => $location['county'],
 			'town'         => $location['town'],
 			'venue'        => $location['venue'],
-			'address'      => $location['address'],
+			'address'      => $address,
+			// Address audit status: found | rejected | missing.
+			'address_status' => $address_status,
 			// The theme's _event_location meta shows in cards; prefer venue,
 			// then town, then county so county-scoped events still show a label.
 			'event_location' => $location['venue'] ? $location['venue'] : ( $location['town'] ? $location['town'] : $location['county'] ),

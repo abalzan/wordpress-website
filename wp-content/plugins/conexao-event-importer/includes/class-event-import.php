@@ -518,6 +518,7 @@ class Conexao_Event_Import {
 			'_event_location',
 			'_event_venue',
 			'_event_address',
+			'_event_map_url',
 			'_event_url',
 			'_event_source_url',
 			'_event_banner',

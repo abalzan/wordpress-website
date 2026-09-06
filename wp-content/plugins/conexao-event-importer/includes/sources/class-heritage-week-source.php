@@ -353,6 +353,18 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 
 		$xpath = new DOMXPath( $dom );
 
+		// JSON-LD structured data: schema.org/Event.location is the strongest
+		// location representation on the detail page. Only Event.location is
+		// read, so organizer/contact addresses on the page are never used.
+		// Values found here take precedence over the labelled details list.
+		$jsonld_location = ( new Conexao_Event_Jsonld_Location() )->extract( $html );
+		if ( ! empty( $jsonld_location['venue'] ) ) {
+			$event['venue'] = $jsonld_location['venue'];
+		}
+		if ( ! empty( $jsonld_location['address'] ) ) {
+			$event['address'] = $jsonld_location['address'];
+		}
+
 		// Description.
 		$desc = $xpath->query( '//div[contains(concat(" ", normalize-space(@class), " "), " text-block ")]' );
 		if ( $desc && $desc->length > 0 ) {

@@ -177,6 +177,16 @@ class Conexao_Event_Importer_Engine {
 			// Merge per-source stats.
 			$combined['sources'][ $source['id'] ] = $result;
 
+			// Aggregate the dry-run address audit counters.
+			if ( ! empty( $result['address_audit'] ) && is_array( $result['address_audit'] ) ) {
+				if ( empty( $combined['address_audit'] ) ) {
+					$combined['address_audit'] = array_fill_keys( array_keys( $result['address_audit'] ), 0 );
+				}
+				foreach ( $result['address_audit'] as $audit_key => $audit_count ) {
+					$combined['address_audit'][ $audit_key ] = ( isset( $combined['address_audit'][ $audit_key ] ) ? $combined['address_audit'][ $audit_key ] : 0 ) + (int) $audit_count;
+				}
+			}
+
 			// Derive combined status.
 			if ( 'failed' === $result['status'] ) {
 				if ( 'failed' !== $combined['status'] ) {
@@ -643,6 +653,17 @@ class Conexao_Event_Importer_Engine {
 		$result = new Conexao_Import_Result( $source_id, $source['name'] );
 		$result->set_found( count( $raw_events ) );
 
+		// Address audit counters (dry-run only, nothing is written).
+		$address_audit = array(
+			'found'             => 0,
+			'unchanged'         => 0,
+			'changed'           => 0,
+			'no_source_address' => 0,
+			'no_address'        => 0,
+			'ambiguous'         => 0,
+			'skipped'           => 0,
+		);
+
 		foreach ( $raw_events as $raw ) {
 			$raw['source'] = $source_id;
 
@@ -654,6 +675,7 @@ class Conexao_Event_Importer_Engine {
 				$date_check = Conexao_Event_Date_Filter::evaluate( $normalized );
 
 				if ( Conexao_Event_Date_Filter::INVALID === $date_check['status'] ) {
+					$address_audit['skipped']++;
 					$result->add_skipped_invalid_date(
 						$normalized['title'],
 						__( 'Would skip: the event date could not be evaluated (missing, malformed, or unparseable date).', 'conexao-event-importer' )
@@ -662,6 +684,7 @@ class Conexao_Event_Importer_Engine {
 				}
 
 				if ( Conexao_Event_Date_Filter::PAST === $date_check['status'] ) {
+					$address_audit['skipped']++;
 					$result->add_skipped_past(
 						$normalized['title'],
 						sprintf(
@@ -674,6 +697,7 @@ class Conexao_Event_Importer_Engine {
 				}
 
 				if ( ! empty( $normalized['validation_errors'] ) ) {
+					$address_audit['skipped']++;
 					$title = $normalized['title'] ? $normalized['title'] : __( '(untitled event)', 'conexao-event-importer' );
 					$result->add_skipped(
 						$title,
@@ -687,6 +711,10 @@ class Conexao_Event_Importer_Engine {
 				}
 
 				$existing_id = $this->deduplicator->find( $normalized );
+
+				// Address audit: classify the address outcome for this event
+				// against the stored value. Read-only — no meta is touched.
+				$this->audit_address( $address_audit, $normalized, $existing_id );
 
 				if ( $existing_id ) {
 					// Cannot know "unchanged" without reading all stored fields;
@@ -707,6 +735,7 @@ class Conexao_Event_Importer_Engine {
 		$stats                 = $result->get_stats();
 		$stats['dry_run']      = true;
 		$stats['source_name']  = isset( $source['name'] ) ? $source['name'] : $source_id;
+		$stats['address_audit'] = $address_audit;
 
 		Conexao_Import_Log::add(
 			$source_id,
@@ -724,6 +753,58 @@ class Conexao_Event_Importer_Engine {
 		);
 
 		return $stats;
+	}
+
+	/**
+	 * Classify the address outcome of one dry-run event into the audit
+	 * counters. Read-only: existing post meta is compared, never modified.
+	 *
+	 * Categories:
+	 *  - found:             source supplies a usable address (new or updated).
+	 *  - unchanged:         source address matches the stored address.
+	 *  - changed:           source address differs from the stored address.
+	 *  - no_source_address: source supplies none; a stored address would be
+	 *                       preserved (e.g. a manually corrected address).
+	 *  - no_address:        neither the source nor the stored event has one.
+	 *  - ambiguous:         the source supplied a value that failed
+	 *                       validation (malformed/non-address) — rejected.
+	 *  - skipped:           event skipped (past, invalid date, incomplete).
+	 *
+	 * @param array $address_audit Audit counters (by reference).
+	 * @param array $normalized    Normalized event data.
+	 * @param int   $existing_id   Existing post ID (0 when it would be created).
+	 */
+	protected function audit_address( &$address_audit, $normalized, $existing_id ) {
+		$status = isset( $normalized['address_status'] ) ? $normalized['address_status'] : 'missing';
+		$stored = $existing_id ? (string) get_post_meta( $existing_id, '_event_address', true ) : '';
+		$incoming = isset( $normalized['address'] ) ? (string) $normalized['address'] : '';
+
+		if ( 'rejected' === $status ) {
+			$address_audit['ambiguous']++;
+			return;
+		}
+
+		if ( 'missing' === $status || '' === $incoming ) {
+			if ( '' !== $stored ) {
+				$address_audit['no_source_address']++;
+			} else {
+				$address_audit['no_address']++;
+			}
+			return;
+		}
+
+		// 'found' status with a usable incoming address.
+		if ( $existing_id ) {
+			if ( '' === $stored ) {
+				$address_audit['found']++;
+			} elseif ( $stored === $incoming ) {
+				$address_audit['unchanged']++;
+			} else {
+				$address_audit['changed']++;
+			}
+		} else {
+			$address_audit['found']++;
+		}
 	}
 
 	/**
@@ -952,6 +1033,13 @@ class Conexao_Event_Importer_Engine {
 			$existing_org    = get_post_meta( $post_id, '_event_organizer', true );
 			$existing_banner = get_post_meta( $post_id, '_event_banner', true );
 
+			// Address change detection with preservation: compare the stored
+			// address against the value that would be stored (incoming
+			// source address, or the existing address when the source
+			// supplies none). See Conexao_Event_Address::resolve_stored().
+			$existing_address = (string) get_post_meta( $post_id, '_event_address', true );
+			$resolved_address = Conexao_Event_Address::resolve_stored( $normalized['address'], $existing_address );
+
 			// Check if the banner attachment exists (may be missing for events
 			// imported before the image download feature was added).
 			$existing_banner_attach = get_post_meta( $post_id, Conexao_Event_Image_Handler::ATTACHMENT_META_KEY, true );
@@ -964,7 +1052,8 @@ class Conexao_Event_Importer_Engine {
 				$existing_url === $normalized['source_url'] &&
 				$existing_venue === $normalized['venue'] &&
 				$existing_org === $normalized['organizer'] &&
-				$existing_banner === $normalized['banner']
+				$existing_banner === $normalized['banner'] &&
+				$existing_address === $resolved_address
 			);
 
 			if ( $is_unchanged ) {
@@ -972,6 +1061,12 @@ class Conexao_Event_Importer_Engine {
 				if ( ! empty( $normalized['banner'] ) && ! $has_attachment ) {
 					$this->handle_event_image( $post_id, $normalized );
 				}
+
+				// Backfill the deterministic map URL for events imported
+				// before address support existed. Never overwrites an
+				// existing non-empty value, so this write happens at most
+				// once per event (idempotent re-imports write nothing).
+				$this->maybe_backfill_map_url( $post_id, $normalized );
 
 				// Update last checked timestamp only.
 				update_post_meta( $post_id, '_event_last_checked', current_time( 'mysql' ) );
@@ -1108,6 +1203,45 @@ class Conexao_Event_Importer_Engine {
 	 * @param array $normalized Normalized event data.
 	 */
 	protected function save_event_meta( $post_id, $normalized ) {
+		// Address preservation (see Conexao_Event_Address::resolve_stored()):
+		// when the source supplies an address it wins; when it supplies none,
+		// an existing stored address (manually corrected or previously
+		// imported) is preserved instead of being wiped.
+		$existing_address = (string) get_post_meta( $post_id, '_event_address', true );
+		$stored_address   = Conexao_Event_Address::resolve_stored( $normalized['address'], $existing_address );
+
+		// Map URL: a value the importer did not derive itself (e.g. set
+		// manually) is always preserved. When the stored map URL is empty, a
+		// deterministic one is derived from the strongest available location
+		// data (address → venue + location → location). When the stored map
+		// URL is exactly the one previously derived from the previous stored
+		// address/location, it is refreshed so an address change never leaves
+		// a stale map link behind.
+		$existing_map_url = (string) get_post_meta( $post_id, '_event_map_url', true );
+		$map_url          = $existing_map_url;
+
+		if ( '' === $map_url ) {
+			$map_url = Conexao_Event_Address::map_url(
+				Conexao_Event_Address::map_query( $stored_address, $normalized['venue'], $normalized['event_location'] )
+			);
+		} elseif ( '' !== $existing_address ) {
+			$previous_derived = Conexao_Event_Address::map_url(
+				Conexao_Event_Address::map_query(
+					$existing_address,
+					(string) get_post_meta( $post_id, '_event_venue', true ),
+					(string) get_post_meta( $post_id, '_event_location', true )
+				)
+			);
+			if ( '' !== $previous_derived && $existing_map_url === $previous_derived ) {
+				$refreshed = Conexao_Event_Address::map_url(
+					Conexao_Event_Address::map_query( $stored_address, $normalized['venue'], $normalized['event_location'] )
+				);
+				if ( '' !== $refreshed ) {
+					$map_url = $refreshed;
+				}
+			}
+		}
+
 		$meta = array(
 			'_event_date'        => $normalized['start_date'],
 			'_event_time'        => $normalized['event_time'],
@@ -1116,7 +1250,8 @@ class Conexao_Event_Importer_Engine {
 			'_event_end_time'    => $normalized['end_time'],
 			'_event_location'    => $normalized['event_location'],
 			'_event_venue'       => $normalized['venue'],
-			'_event_address'     => $normalized['address'],
+			'_event_address'     => $stored_address,
+			'_event_map_url'     => $map_url,
 			'_event_url'         => $normalized['source_url'],
 			'_event_source_url'  => $normalized['source_url'],
 			'_event_banner'      => $normalized['banner'],
@@ -1131,6 +1266,33 @@ class Conexao_Event_Importer_Engine {
 
 		foreach ( $meta as $key => $value ) {
 			update_post_meta( $post_id, $key, $value );
+		}
+	}
+
+	/**
+	 * Backfill the deterministic map URL for an event that does not have one.
+	 *
+	 * Used in the "unchanged" fast path so events imported before address
+	 * support get a map URL on the next import run. Never overwrites an
+	 * existing non-empty value; writes nothing when the value already exists
+	 * or no location data is available.
+	 *
+	 * @param int   $post_id    Post ID.
+	 * @param array $normalized Normalized event data.
+	 */
+	protected function maybe_backfill_map_url( $post_id, $normalized ) {
+		$existing = (string) get_post_meta( $post_id, '_event_map_url', true );
+
+		if ( '' !== $existing ) {
+			return;
+		}
+
+		$map_url = Conexao_Event_Address::map_url(
+			Conexao_Event_Address::map_query( (string) get_post_meta( $post_id, '_event_address', true ), $normalized['venue'], $normalized['event_location'] )
+		);
+
+		if ( '' !== $map_url ) {
+			update_post_meta( $post_id, '_event_map_url', $map_url );
 		}
 	}
 

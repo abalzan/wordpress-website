@@ -81,6 +81,7 @@ automatically filterable via `?atributo=`.
 
 - `_event_date` (date), `_event_time` (text), `_event_start_time`, `_event_end_date`, `_event_end_time`
 - `_event_location`, `_event_venue`, `_event_address`
+- `_event_map_url` (text, v1.1.0) — deterministic Google Maps search URL derived by the importer from the strongest available location data (address → venue + location → location). Never overwritten when non-empty; REST-visible for the mobile app
 - `_event_url`, `_event_source_url`
 - `_event_banner`, `_event_banner_attachment_id`
 - `_event_registration`, `_event_cta`

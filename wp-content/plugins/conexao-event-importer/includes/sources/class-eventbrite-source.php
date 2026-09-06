@@ -218,16 +218,40 @@ class Conexao_Source_Eventbrite extends Conexao_Source_Base {
 		}
 
 		// Location: venue name + display address when expanded.
-		$location = '';
+		$location   = '';
+		$venue_name = '';
+		$town       = '';
+		$address    = '';
+
 		if ( ! empty( $event['venue'] ) && is_array( $event['venue'] ) ) {
 			$venue_parts = array();
 			if ( ! empty( $event['venue']['name'] ) ) {
-				$venue_parts[] = $event['venue']['name'];
+				$venue_name  = trim( (string) $event['venue']['name'] );
+				$venue_parts[] = $venue_name;
 			}
 			if ( ! empty( $event['venue']['address']['localized_address_display'] ) ) {
 				$venue_parts[] = $event['venue']['address']['localized_address_display'];
 			}
 			$location = implode( ', ', $venue_parts );
+
+			// Structured address parts supplied by the API (expand=venue).
+			// Composed from supplied fields only — never guessed.
+			$address_fields = isset( $event['venue']['address'] ) && is_array( $event['venue']['address'] ) ? $event['venue']['address'] : array();
+			if ( ! empty( $address_fields ) ) {
+				$address = Conexao_Event_Address::compose(
+					array(
+						isset( $address_fields['address_1'] ) ? $address_fields['address_1'] : '',
+						isset( $address_fields['address_2'] ) ? $address_fields['address_2'] : '',
+						isset( $address_fields['city'] ) ? $address_fields['city'] : '',
+						isset( $address_fields['region'] ) ? $address_fields['region'] : '',
+						isset( $address_fields['postal_code'] ) ? $address_fields['postal_code'] : '',
+					)
+				);
+			}
+
+			if ( empty( $town ) && ! empty( $address_fields['city'] ) ) {
+				$town = trim( (string) $address_fields['city'] );
+			}
 		}
 
 		return array(
@@ -239,6 +263,9 @@ class Conexao_Source_Eventbrite extends Conexao_Source_Base {
 			'end_date'    => $end_date,
 			'end_time'    => $end_time,
 			'location'    => $location,
+			'venue'       => $venue_name,
+			'town'        => $town,
+			'address'     => $address,
 			'description' => isset( $event['description']['text'] ) ? trim( (string) $event['description']['text'] ) : '',
 			'image'       => isset( $event['logo']['url'] ) ? (string) $event['logo']['url'] : '',
 			'source_id'   => (string) $event['id'],

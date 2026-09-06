@@ -100,9 +100,14 @@ class Conexao_Event_Location {
 			$result['venue'] = $venue;
 		}
 
-		// Address: if the raw string contains a street-like pattern, keep it.
-		if ( preg_match( '/\b\d{1,4}\s+[A-Za-z]/', $raw ) && empty( $result['address'] ) ) {
-			$result['address'] = $raw;
+		// Address: keep the raw string when it looks like a real address.
+		// Deterministic signals only (never guessed): a street-like pattern
+		// (number + word) or an Irish Eircode. Bare venue/town names are
+		// left in the venue field with the address left empty.
+		if ( empty( $result['address'] )
+			&& ( preg_match( '/\b\d{1,4}\s+[A-Za-z]/', $raw ) || preg_match( Conexao_Event_Address::EIRCODE_REGEX, $raw ) )
+		) {
+			$result['address'] = Conexao_Event_Address::normalize( $raw );
 		}
 
 		return $result;

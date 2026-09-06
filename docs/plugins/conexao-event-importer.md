@@ -1,7 +1,7 @@
 # Conexão BR Irlanda — Event Importer (Local Tools)
 
 - **Path**: `wp-content/plugins/conexao-event-importer/`
-- **Version**: 1.5.0
+- **Version**: 1.6.0
 - **Requires Plugins**: `conexao-data-model`, `conexao-event-runtime`
 - **Purpose**: Local-only event import/export tooling. Fetches events from external sources (Laois Tourism, National Heritage Week, Eventbrite Laois) into the **local** WordPress installation, downloads all images into the local Media Library, then exports the complete event data as JSON for import into the production WordPress.com site.
 - **Not needed on production.** All production-critical event behavior (meta/taxonomy registration, `_event_status` public query gate, status admin UI) lives in the separate [Event Runtime](conexao-event-runtime.md) plugin. It is safe to deactivate this plugin on production.
@@ -254,6 +254,102 @@ plugin since v1.5.0. See `docs/content-model.md` for the full meta field list. K
 - `_event_date` / `_event_time` / `_event_end_date` / `_event_end_time` — scheduling
 - `_event_banner` / `_event_banner_attachment_id` — images
 - `_event_url` — external ticket/info URL
+
+## Address support (v1.6.0)
+
+Imported events carry a reliable physical address whenever the source provides
+one. The primary consumer is the mobile app, which reads the address through
+the existing REST meta.
+
+### Fields
+
+| Field | Meaning |
+|---|---|
+| `_event_venue` | Venue/place name only (e.g. `Electric Picnic`) |
+| `_event_address` | Street-level address as supplied by the source (e.g. `Stradbally Hall, Stradbally, Co. Laois`) |
+| `_event_location` | Short card label (unchanged behavior: venue → town → county) |
+| `_event_map_url` | Deterministic Google Maps **search** URL derived at import time (see below) |
+
+`_event_address` already existed and is **reused** — no duplicate field was
+introduced. `_event_map_url` is the one new field (registered by Event
+Runtime ≥ 1.1.0, REST-visible like the other `_event_*` meta).
+
+### Extraction priority (per event)
+
+1. **Structured location/address data from the source** — Eventbrite
+   `venue.address` fields (API `expand=venue` and the discovery-page
+   `window.__SERVER_DATA__`), composed from the supplied
+   `address_1/address_2/city/region/postal_code` parts.
+2. **JSON-LD structured data** (Heritage Week detail pages) — only
+   `schema.org/Event.location` is read (`Place.name` → venue; `Place.address`
+   as text or `PostalAddress` → address, composed from the supplied
+   `streetAddress/addressLocality/addressRegion/postalCode/addressCountry`
+   parts). Organizer/contact/ticket-office addresses elsewhere on the page
+   are structurally rejected.
+3. **Location-string heuristics** (iCalendar `LOCATION`, Heritage Week
+   labelled details list, Laois Tourism) — the full supplied string is kept
+   as the address only when it contains a deterministic address signal
+   (street-number pattern or an Irish Eircode).
+
+### No-guess rule
+
+The importer never invents address content. `Dublin` stays a venue/town label
+with an empty address (nothing is appended, not even "Ireland");
+`Croke Park` never gets a street address; `Jones Road, Dublin 3, D03 P0K7` is
+stored exactly as supplied (normalized only). A source value that fails
+validation (malformed, markup, URLs, no address signal) is rejected and the
+address stays empty.
+
+### Normalization (`Conexao_Event_Address`)
+
+HTML entities decoded, `<br>`/block-tag boundaries converted to `, `,
+markup stripped, whitespace collapsed, duplicate separators collapsed,
+leading/trailing separators trimmed. Content is otherwise preserved: no
+translation, no removal of apartment/unit information, no alteration of
+postal codes. Values are sanitized as plain text for storage.
+
+### Map URL
+
+`_event_map_url` is a plain `https://www.google.com/maps/search/?api=1&query=…`
+link (same scheme as the theme's leisure map helper) — no Maps API, no
+geocoding, no API key, no remote requests. Query priority: full address →
+venue + location label → location label. An existing non-empty
+`_event_map_url` is **never overwritten** (no ownership metadata exists, so
+manual values cannot be distinguished from importer-derived ones — preserve
+is always safe); events imported before this feature are backfilled on their
+next import.
+
+### Update / preservation behavior
+
+No ownership metadata exists for event fields; the importer's existing
+strategy is preserved and extended deterministically:
+
+- The source address wins on re-import (importer-owned field on update).
+- When the source supplies **no** address, an existing stored address
+  (e.g. manually corrected in wp-admin) is **preserved**, not wiped.
+- An unchanged address resolves to the identical value, so idempotent
+  re-imports do not rewrite the meta (the unchanged fast-path is not
+  triggered by it).
+- `_event_map_url` is only written when currently empty (never overwritten).
+
+### Dry-run address audit
+
+`wp conexao-events import --dry-run` (or the equivalent engine call) reports
+per-source address audit counters without writing anything:
+
+```
+address-audit: found=N unchanged=N changed=N no_source_address=N no_address=N ambiguous=N skipped=N
+```
+
+- `found` — source supplies a usable address (new or added to an event that had none)
+- `unchanged` — source address matches the stored address
+- `changed` — source address differs from the stored address
+- `no_source_address` — source supplies none; the stored address would be preserved
+- `no_address` — neither source nor stored event has one
+- `ambiguous` — source supplied a value that failed validation (rejected)
+- `skipped` — event skipped (past, invalid date, incomplete data)
+
+Run this **before** any production migration; the dry run modifies nothing.
 
 ## Taxonomy
 

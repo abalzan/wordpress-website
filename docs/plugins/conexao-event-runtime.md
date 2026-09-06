@@ -1,7 +1,7 @@
 # Conexão BR Irlanda — Event Runtime
 
 - **Path**: `wp-content/plugins/conexao-event-runtime/`
-- **Version**: 1.0.0
+- **Version**: 1.1.0
 - **Requires Plugins**: `conexao-data-model`
 - **Purpose**: **Production dependency.** Owns all event runtime behavior the live site needs: event meta registration, the `conexao_town` taxonomy, the `_event_status` visibility gate on public event queries, and the event status admin UI. Contains **no** import/export tooling.
 

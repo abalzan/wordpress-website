@@ -1,3 +1,4 @@
 .env
 dist/
 scripts/__pycache__/
+.agents/skills/

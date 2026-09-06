@@ -223,6 +223,21 @@ if ( defined( 'WP_CLI' ) && WP_CLI ) {
 					WP_CLI::warning( '    ' . ( isset( $error['message'] ) ? $error['message'] : '' ) );
 				}
 			}
+
+			// Address audit (dry-run only): address outcome classification.
+			if ( ! empty( $result['address_audit'] ) && is_array( $result['address_audit'] ) ) {
+				$audit = $result['address_audit'];
+				WP_CLI::log( sprintf(
+					'    address-audit: found=%d unchanged=%d changed=%d no_source_address=%d no_address=%d ambiguous=%d skipped=%d',
+					(int) ( isset( $audit['found'] ) ? $audit['found'] : 0 ),
+					(int) ( isset( $audit['unchanged'] ) ? $audit['unchanged'] : 0 ),
+					(int) ( isset( $audit['changed'] ) ? $audit['changed'] : 0 ),
+					(int) ( isset( $audit['no_source_address'] ) ? $audit['no_source_address'] : 0 ),
+					(int) ( isset( $audit['no_address'] ) ? $audit['no_address'] : 0 ),
+					(int) ( isset( $audit['ambiguous'] ) ? $audit['ambiguous'] : 0 ),
+					(int) ( isset( $audit['skipped'] ) ? $audit['skipped'] : 0 )
+				) );
+			}
 		}
 	}
 
