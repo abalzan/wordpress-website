@@ -106,7 +106,11 @@ the WordPress timezone (`wp_timezone()`). No occurrence posts, no cron.
 
 - `_sponsor_link` (url), `_sponsor_display_order` (text) — `_sponsor_link` is the
   canonical/official website: archive cards, homepage carousel and SEO schema
-  click through to it
+  click through to it. `_sponsor_display_order` ("Ordem de exibição") is the
+  editor-curated order used by the homepage Hero carousel AND the `/apoiadores/`
+  archive: ascending first, then supporters without an order value newest
+  published first (see `conexao_sponsor_archive_ordered_ids()` in the theme).
+  Numeric `0` is a valid order value, never treated as empty.
 - `_sponsor_contacts` (array) — ordered contact/social links repeater, one
   meta holding `[ { type, url }, … ]` rows; types: website, instagram,
   facebook, whatsapp, linkedin, tiktok, email (stored as `mailto:`), outro.

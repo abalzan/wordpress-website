@@ -173,6 +173,7 @@ reach the markup.
 | `conexao_sponsor_image_id()` | Resolves an Apoiador's canonical Imagem do Apoiador attachment ID with legacy fallbacks (mobile → desktop → logo → featured) |
 | `conexao_sponsor_carousel_image()` | Builds the carousel slide's responsive `<img>` from the single canonical Apoiador image (same asset desktop + mobile) |
 | `conexao_get_featured_sponsors()` | Featured Apoiadores for the homepage carousel (transient-cached) |
+| `conexao_sponsor_archive_ordered_ids()` | Ordered Apoiador post IDs for `/apoiadores/` (same `_sponsor_display_order` field as the hero; no-order supporters newest first; applied via `post__in` before pagination) |
 | `conexao_sponsor_contact_rows()` | Merges `_sponsor_link` + `_sponsor_contacts` into ordered, deduplicated display rows for the detail page |
 | `conexao_contact_label()` / `conexao_contact_icon()` | Frontend label + inline-SVG icon per contact type (reuses existing brand paths) |
 | `conexao_customize_register()` | Customizer sections (colors, social, hero [title/subtitle only], footer) |
@@ -364,10 +365,11 @@ History of the three implementations:
 
 ### Apoiadores Directory (`/apoiadores/` in `archive.php` + `single-sponsor.php`)
 
-Intentionally simple partner showcase — no search, no category filters, no sorting (the partner count is small; browsing cards IS the experience).
+Intentionally simple partner showcase — no search, no category filters, no user-facing sort controls (the partner count is small; browsing cards IS the experience). The card order is NOT publication date: **`/apoiadores/` follows the same editor-curated ordering as the homepage Hero carousel** — "Ordem de exibição" (`_sponsor_display_order`) ascending first, then supporters without an order value newest published first. Editing the field in wp-admin moves a supporter immediately; no code change is required for new supporters (they land in the second group at the right position automatically).
 
 **Archive (`archive.php`, sponsor branch):**
 - Header: shared `archive-header.php` with eyebrow "Parceiros da Comunidade" (complements the h1 "Apoiadores" instead of repeating it), title, and description "Conheça os negócios que apoiam a comunidade brasileira na Irlanda." (from `conexao_archive_description()` in `inc/seo.php`).
+- Ordering: `conexao_sponsor_archive_ordered_ids()` (functions.php) computes the full ordered post-ID list — supporters with `_sponsor_display_order` first (ascending; ties by title ascending, then post ID — same tiebreaker the homepage carousel uses), then supporters without a value by `post_date` DESC (newest first, post ID DESC tiebreak). The main query is fed this list via `post__in` + `orderby => post__in` (the same mechanism the events archive uses), so ordering happens BEFORE pagination and every `/apoiadores` page keeps the fixed global order. Numeric `0` is a valid order value, never treated as empty.
 - Cards reuse the shared `archive-card` in `archive-grid` (3 columns desktop → 1 mobile), plus:
   - Portrait image: `conexao_sponsor_carousel_image()` (canonical "Imagem do Apoiador", sponsor title as alt fallback) in the same 3:4 `object-fit: contain` frame as the Hero carousel (`.post-type-archive-sponsor` rules in `main.css`) — lazy-loaded, srcset/sizes/width/height, never cropped or stretched.
   - Lightweight body: optional category pill, business name (the title link carries the accessible name), trimmed excerpt (omitted when empty), and an `archive-card-cta` link ("Conhecer o Apoiador") — a real link to the Apoiador detail page, independently clickable and keyboard/touch accessible without JavaScript, pinned to the card bottom via `margin-top: auto`).
@@ -376,7 +378,7 @@ Intentionally simple partner showcase — no search, no category filters, no sor
 
 **Detail page (`single-sponsor.php`):** unchanged structure — portrait image (LCP, eager) → name → category/county → description → "Entre em contato" buttons rendered ONLY for configured channels (via `conexao_sponsor_contact_rows()`, which folds in the legacy `_sponsor_link` website first). Dark mode and mobile behavior are token-driven (see `assets/css/sponsor.css` and the "Apoiador single" section of `dark-mode.css`).
 
-**Deliberately out of scope:** search, filters, sorting, contact buttons on cards, and any directory navigation — do not add them while the partner count is small.
+**Deliberately out of scope:** search, user-facing filters/sort controls, contact buttons on cards, and any directory navigation — do not add them while the partner count is small. (The card ORDER is editor-controlled via "Ordem de exibição", as documented above; "sorting" here means visitor-facing sort widgets.)
 
 
 ### Post views / "Mais Lidos" (`inc/post-views.php`)

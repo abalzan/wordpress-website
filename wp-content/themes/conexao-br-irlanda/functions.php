@@ -1355,6 +1355,109 @@ function conexao_get_featured_sponsors() {
 }
 
 /**
+ * Ordered list of published Apoiador post IDs for the /apoiadores/ archive.
+ *
+ * Follows the SAME editor-curated ordering source as the homepage carousel —
+ * the existing "Ordem de exibição" field (`_sponsor_display_order`) — so the
+ * archive and the homepage can never disagree about the position of an
+ * explicitly ordered supporter:
+ *
+ *   1. Apoiadores WITH a custom order come first, sorted by that order
+ *      ascending (1 → 2 → 3 → …). The value is cast to an integer exactly
+ *      like the homepage carousel (`conexao_get_featured_sponsors()`), so
+ *      numeric 0 is a VALID order — never treated as "no order" — and a
+ *      non-numeric edit degrades to 0 the same way. Duplicate order values
+ *      never discard a supporter: ties are broken by title ascending — the
+ *      same deterministic secondary sort the homepage carousel already uses
+ *      for equal order values — then by post ID ascending for full
+ *      determinism (identical titles).
+ *   2. Apoiadores WITHOUT a custom order (missing, empty, null) sort after
+ *      every ordered supporter, newest published first (post_date DESC), with
+ *      post ID DESC as the final stable tiebreak for equal publication dates.
+ *
+ * "Has a custom order" is decided by the exact same emptiness check the
+ * homepage carousel performs (`'' !== (string) $order`), so both surfaces
+ * always agree on whether a supporter belongs to the ordered group.
+ *
+ * No caching: the supporter count is small and a per-request read makes a
+ * freshly saved "Ordem de exibição" visible on the very next archive load.
+ *
+ * The main query consumes this list via post__in + orderby => post__in (the
+ * same mechanism the events archive uses), so ordering happens BEFORE
+ * pagination slices the set — every /apoiadores page keeps this global order.
+ *
+ * @return int[] Ordered published sponsor post IDs.
+ */
+function conexao_sponsor_archive_ordered_ids() {
+	$sponsors = get_posts( array(
+		'post_type'              => 'sponsor',
+		'post_status'            => 'publish',
+		'posts_per_page'         => -1,
+		'no_found_rows'          => true,
+		'orderby'                => 'ID',
+		'order'                  => 'ASC',
+		'update_post_meta_cache' => true,
+		'update_post_term_cache' => false,
+	) );
+
+	if ( empty( $sponsors ) ) {
+		return array();
+	}
+
+	$ordered   = array();
+	$unordered = array();
+
+	foreach ( $sponsors as $sponsor ) {
+		$item = array(
+			'ID'        => (int) $sponsor->ID,
+			'title'     => $sponsor->post_title,
+			'order'     => get_post_meta( $sponsor->ID, '_sponsor_display_order', true ),
+			'post_date' => $sponsor->post_date,
+		);
+
+		// Same emptiness check as the homepage carousel: only an empty /
+		// missing value means "no custom order". Numeric 0 stays valid.
+		if ( '' !== (string) $item['order'] ) {
+			$ordered[] = $item;
+		} else {
+			$unordered[] = $item;
+		}
+	}
+
+	// Group 1 — custom order ascending; ties by title ascending (the same
+	// deterministic secondary sort the homepage carousel uses), then by post
+	// ID ascending so duplicate order values can never hide a supporter.
+	usort( $ordered, function( $a, $b ) {
+		$order_a = (int) $a['order'];
+		$order_b = (int) $b['order'];
+
+		if ( $order_a === $order_b ) {
+			$title_cmp = strcasecmp( $a['title'], $b['title'] );
+			if ( 0 !== $title_cmp ) {
+				return $title_cmp;
+			}
+			return $a['ID'] <=> $b['ID'];
+		}
+
+		return ( $order_a < $order_b ) ? -1 : 1;
+	} );
+
+	// Group 2 — no custom order: newest published first, post ID DESC as the
+	// final stable tiebreak for identical publication dates.
+	usort( $unordered, function( $a, $b ) {
+		if ( $a['post_date'] !== $b['post_date'] ) {
+			return strcmp( $b['post_date'], $a['post_date'] );
+		}
+		return $b['ID'] <=> $a['ID'];
+	} );
+
+	return array_merge(
+		wp_list_pluck( $ordered, 'ID' ),
+		wp_list_pluck( $unordered, 'ID' )
+	);
+}
+
+/**
  * Normalize the contact rows displayed on an Apoiador detail page.
  *
  * Merges the TWO existing contact sources into one ordered display list
@@ -2384,10 +2487,8 @@ function conexao_leisure_filter_url( array $filters, $base = '' ) {
 
 /**
  * Content-type archive query filtering.
-/**
- * Content-type archive query filtering.
  *
- * Each archive (Eventos, Cursos, Guias, Blog) applies its own filtering and ordering
+ * Each archive (Eventos, Cursos, Guias, Blog, Apoiadores) applies its own filtering and ordering
  * to the main query:
  *
  *  - Eventos: only upcoming events (date >= today), ordered by date ascending,
@@ -2396,6 +2497,10 @@ function conexao_leisure_filter_url( array $filters, $base = '' ) {
  *    by display order, with optional ?categoria= (provider category meta) filter.
  *  - Guias: optional ?categoria= (conexao_category taxonomy) filter.
  *  - Blog (/blog/): optional ?categoria= (native `category` taxonomy) filter.
+ *  - Apoiadores (/apoiadores/): same editor-curated ordering as the homepage
+ *    carousel — "Ordem de exibição" (_sponsor_display_order) ascending first,
+ *    then supporters without an order value newest published first (see
+ *    conexao_sponsor_archive_ordered_ids()).
  *
  * The ?categoria= parameter is content-type-aware: on /eventos/ it filters by
  * the conexao_category taxonomy, on /cursos/ by the _provider_category meta,
@@ -2639,6 +2744,31 @@ function conexao_content_archive_query( $query ) {
 			// never leak off-category sticky posts to the top.
 			$query->set( 'ignore_sticky_posts', true );
 		}
+	}
+
+	/*
+	 * Apoiadores: /apoiadores/ follows the SAME editor-curated ordering as
+	 * the homepage carousel — "Ordem de exibição" (_sponsor_display_order)
+	 * ascending for supporters with a value, then supporters without a value
+	 * newest published first (see conexao_sponsor_archive_ordered_ids()).
+	 *
+	 * A pre-computed ordered post-ID list is applied via post__in +
+	 * orderby => post__in — the same mechanism the events archive uses — so
+	 * ordering happens BEFORE pagination slices the set. Every /apoiadores
+	 * page (and the load-more/pagination links) keeps this fixed global order.
+	 */
+	if ( $query->is_post_type_archive( 'sponsor' ) ) {
+		$sponsor_ids = conexao_sponsor_archive_ordered_ids();
+
+		// post__in => array() is ambiguous in WP_Query; array( 0 )
+		// deterministically yields "no supporters".
+		if ( empty( $sponsor_ids ) ) {
+			$sponsor_ids = array( 0 );
+		}
+
+		$query->set( 'post__in', $sponsor_ids );
+		$query->set( 'orderby', 'post__in' );
+		$query->set( 'order', 'ASC' );
 	}
 }
 add_action( 'pre_get_posts', 'conexao_content_archive_query' );
