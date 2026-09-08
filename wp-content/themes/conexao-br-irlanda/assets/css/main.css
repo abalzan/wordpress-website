@@ -4980,6 +4980,7 @@ input[type="button"] {
   font-size: 0.8125rem;
   font-weight: 600;
   color: var(--conexao-primary-text, var(--color-primary));
+  text-decoration: none;
 }
 
 .post-type-archive-sponsor .archive-card-cta::after {

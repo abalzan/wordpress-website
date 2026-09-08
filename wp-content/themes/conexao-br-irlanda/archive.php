@@ -190,7 +190,7 @@ if ( $is_event_archive ) {
 									// navigates to the Apoiador detail page; the title link
 									// already carries the accessible name, so this hint is
 									// intentionally aria-hidden (not meaningful content). ?>
-									<span class="archive-card-cta" aria-hidden="true"><?php esc_html_e( 'Conhecer o Apoiador', 'conexao-br-irlanda' ); ?></span>
+									<a href="<?php echo esc_url( $card_link ); ?>" class="archive-card-cta"><?php esc_html_e( 'Conhecer o Apoiador', 'conexao-br-irlanda' ); ?></a>
 								<?php endif; ?>
 							</div>
 						</article>
