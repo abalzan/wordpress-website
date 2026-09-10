@@ -130,6 +130,7 @@ production-side fetching. Everything is manual/on-demand.
 | `class-laois-tourism-source.php` | `Conexao_Source_Laois_Tourism` | HTML scraping |
 | `class-heritage-week-source.php` | `Conexao_Source_Heritage_Week` | HTML scraping (paginated + detail enrichment) |
 | `class-ivvcc-source.php` | `Conexao_Source_Ivvcc` | IVVCC EventON calendar scraping + detail enrichment (ships inactive; see [importers/ivvcc-importer.md](../importers/ivvcc-importer.md)) |
+| `class-motorsport-ireland-source.php` | `Conexao_Source_Motorsport_Ireland` | Motorsport Ireland Squarespace master-calendar scraping + JSON-LD date enrichment (ships inactive; see [importers/motorsport-ireland.md](../importers/motorsport-ireland.md)) |
 | `class-eventbrite-source.php` | `Conexao_Source_Eventbrite` | Eventbrite: official v3 API (when token set) or discovery-page scraping |
 
 ## Default Sources (seeded on activation)
@@ -139,6 +140,8 @@ production-side fetching. Everything is manual/on-demand.
 | `laois_tourism` | Laois Tourism | iCalendar (webcal) |
 | `heritage_week` | National Heritage Week | Website |
 | `eventbrite` | Eventbrite — Laois | Eventbrite |
+| `ivvcc` | IVVCC — Irish Veteran & Vintage Car Club | Website (inactive) |
+| `motorsport_ireland` | Motorsport Ireland | Website (inactive) |
 
 ### Cloudflare / bot protection
 

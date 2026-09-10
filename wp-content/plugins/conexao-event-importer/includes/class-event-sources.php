@@ -69,6 +69,18 @@ class Conexao_Event_Sources {
 				'last_error'         => '',
 				'county'             => '',
 			),
+			'motorsport_ireland' => array(
+				'id'                 => 'motorsport_ireland',
+				'name'               => 'Motorsport Ireland',
+				'url'                => 'https://www.motorsportireland.com/events',
+				'type'               => 'website',
+				'status'             => 'inactive',
+				'last_import'        => '',
+				'last_import_status' => '',
+				'events_imported'    => 0,
+				'last_error'         => '',
+				'county'             => '',
+			),
 		);
 	}
 

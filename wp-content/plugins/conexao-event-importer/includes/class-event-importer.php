@@ -1005,6 +1005,8 @@ class Conexao_Event_Importer_Engine {
 				return new Conexao_Source_Heritage_Week( $source );
 			case 'ivvcc':
 				return new Conexao_Source_Ivvcc( $source );
+			case 'motorsport_ireland':
+				return new Conexao_Source_Motorsport_Ireland( $source );
 			case 'eventbrite':
 				return new Conexao_Source_Eventbrite( $source );
 			default:

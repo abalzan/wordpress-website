@@ -134,7 +134,15 @@ class Conexao_Event_Normalizer {
 		// County-level identification is sufficient:
 		// feeds scoped to one county (Laois Tourism, Heritage Week) often
 		// omit precise venues, and the county tag keeps them filterable.
-		if ( empty( $location['town'] ) && empty( $location['venue'] ) && empty( $location['county'] ) ) {
+		//
+		// Opt-in exception: nationwide sources that genuinely publish NO
+		// location data (e.g. Motorsport Ireland federation calendar — the
+		// unknown state is preserved rather than invented) may declare
+		// 'location_optional' on the raw event. Events then import without
+		// county/town/venue instead of being skipped. Sources that do not
+		// set the flag keep the exact previous behavior.
+		$location_optional = ! empty( $raw['location_optional'] );
+		if ( empty( $location['town'] ) && empty( $location['venue'] ) && empty( $location['county'] ) && ! $location_optional ) {
 			$validation_errors[] = __( 'Localização não identificada', 'conexao-event-importer' );
 		}
 
