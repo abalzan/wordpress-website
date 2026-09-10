@@ -155,10 +155,6 @@ changes, no options beyond the temp status flip.
 1. The source ships **inactive** (`status => 'inactive'`) and is never run
    automatically (no cron, no REST/AJAX trigger — the importer is
    local-only tooling).
-2. Stage C production import requires an explicit production-import
-   authorization. Until then the importer stays inactive and no production
-   event is created/updated.
+2. Stage C production import requires explicit operator confirmation before production writes. This is an internal deployment safety gate and is not a representation that Motorsport Ireland requires permission to reference or link to its public event pages. No Motorsport Ireland website requirement for operator authorization before this internal production import was identified during the project audit. This Stage C confirmation is an internal production-safety control, not a claim that Motorsport Ireland granted or requires permission.
 3. Note: motorsport events carry no county/town, so they will not appear in
-   county-filtered archive views; cards still show title, date, club and a
-   link to the source event page.
-
+   county-filtered archive views; cards still show title, date, club and a link to the source event page.

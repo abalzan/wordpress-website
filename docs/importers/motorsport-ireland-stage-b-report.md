@@ -210,12 +210,9 @@ focused DB tests).
    all and 3 carry a discipline only.
 
 ## Stage C handoff
+Stage C requires explicit operator confirmation because it performs production data writes. The confirmation is an internal deployment control, not a source-permission requirement.
 
-Before any production import (explicit production-import authorization
-required — Stage C gate):
-
-1. Obtain production-import authorization (owner decision; this report does
-   not grant it).
+1. Confirm operator approval to proceed with the Motorsport Ireland production import (this report and the Stage B dry run do not constitute the confirmation).
 2. Decide the editorial position on location-less events (they cannot be
    county-filtered; consider a default presentation note for the
    Brazilian-community audience).
@@ -232,4 +229,3 @@ required — Stage C gate):
 ---
 
 **MOTORSPORT IRELAND STAGE B PASSED**
-
