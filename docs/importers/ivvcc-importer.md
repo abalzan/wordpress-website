@@ -3,20 +3,18 @@
 > **Source:** `https://www.ivvcc.ie/` — Irish Veteran & Vintage Car Club.
 > **Stage B implementation** of [ivvcc-audit.md](ivvcc-audit.md).
 > **Status:** implemented + dry-run/live-parse validated. The source ships
-> **inactive** — activate it in *Event Import → Event Sources* only after
-> IVVCC permission is obtained (audit §14: copyright requires permission).
+> **inactive** — activate it in *Event Import → Event Sources* for local
+> import/transfer only after operator confirmation as an internal deployment
+> control. This is separate from any source-owner permission requirement.
 >
-> **Stage C status (2026-09-10):** `PRODUCTION IMPORT BLOCKED — IVVCC
-> PERMISSION NOT CONFIRMED`. No posts created/updated, no images imported,
-> source left **inactive**. Read-only verification completed: 90 published
-> events, 0 IVVCC events at baseline; dry-run (live) = 11 found / 7 CREATE /
-> 4 SKIP (3 past, 1 missing location) / 0 UPDATE / 0 errors; live parse =
-> 20 cards → 12 unique EventON IDs → 11 parsed + 1 TBA skip (Cobh still
-> unresolved); EventON `data-cal_ver` still `2.6.16` (no source change);
-> 46 IVVCC parser/location/dedup tests + past-filter (29) + address (76) +
-> error-handling (55) + import-log (53) + eventbrite (68) suites all PASS;
-> `php -l` clean. Production import counts and post-import audits (§21–§39)
-> remain pending until permission is confirmed.
+> **Stage C source-use determination (2026-09-10):** `IVVCC STAGE C
+> SOURCE-USE PASSED` for the intended A + limited B use case (link to public
+> IVVCC event pages + display of factual event metadata with source
+> attribution). See [ivvcc-stage-c-source-use-report.md](ivvcc-stage-c-source-use-report.md).
+>
+> **Stage D production import:** Requires explicit operator confirmation before
+> any production write. Production activation is an internal deployment control
+> only. See [ivvcc-stage-d-report.md](ivvcc-stage-d-report.md) when available.
 
 ## Source
 
@@ -137,11 +135,57 @@ an image, FIVA/logo/header/footer chrome is rejected
 (`.jpg/.png/.gif/.webp`, non-chrome, non-page-URL) found inside an event card
 would flow through the existing `Conexao_Event_Image_Handler`.
 
-## Description
+## Content model — approved production boundary
 
-Subtitle is the only meaningful body text; detail-page subtitle is merged
-when it adds content. Site chrome (nav, FIVA blocks, cookie UI, EventON
-controls, email-protection markup) is never imported.
+The Stage C source-use report approved the **A + limited B** model:
+
+- **A (LINK/REFERENCE):** Canonical IVVCC event URL stored as `_event_url`/
+  `_event_source_url`; displayed as "Ver evento no IVVCC" link.
+- **Limited B (FACTUAL METADATA AGGREGATION):** Title, start date, start time,
+  end date, end time, published location, published organizer, and explicitly
+  published price when represented by the existing importer.
+
+### Explicitly excluded (per IVVCC privacy policy)
+
+The IVVCC privacy policy states:
+
+> "All content on the ivvcc.ie website, unless otherwise stated is owned by
+> the IVVCC and may not be reproduced without permission."
+
+The importer respects this by excluding:
+
+- event photographs;
+- logos (FIVA, header, footer chrome rejected by `is_chrome_image()`);
+- PDFs;
+- registration forms (no registration URL field exists; registration text
+  preserved as factual note only when explicitly present);
+- full descriptions (none exist in source — only subtitles present);
+- other page content (nav, footer, cookie UI, EventON controls, email-
+  protection markup all stripped).
+
+### Subtitle/description — conservative production configuration
+
+**Status: OMITTED under conservative mode.**
+
+The Stage C source-use report identified the subtitle as a gray area. The
+subtitle is the event's own short descriptive text from EventON (typically a
+phrase like "Cars up to 1919" or "Brass Brigade Run - cars up to 1919"),
+not a full article. Under the conservative production configuration, the
+subtitle is **not stored** as the event description. Production events will
+have:
+
+- title;
+- date/time;
+- location;
+- organizer;
+- price when explicitly available;
+- source link;
+- source attribution.
+
+To include the subtitle, the operator must explicitly accept the documented
+ Stage C interpretation that a short factual subtitle displayed as a label
+is acceptable. This decision must be recorded in the Stage D report. Do not
+silently include the subtitle.
 
 ## Update / missing / expiry
 
@@ -180,8 +224,12 @@ production data are touched.
 
 ## Known limitations
 
-1. **Copyright:** ivvcc.ie content requires IVVCC permission before
-   production import (audit §14). The source ships inactive for this reason.
+1. **Operator confirmation required:** Production activation requires operator
+   confirmation as an internal deployment control. This is separate from any
+   source-owner permission requirement. The Stage C source-use report
+   concluded that the intended A + limited B use case (linking + factual
+   metadata) is supported by available evidence, but the organization must
+   make its own decision to proceed.
 2. Month-grid AJAX navigation is not followed — only the inline upcoming
    cards on the calendar page (matches "upcoming only" scope).
 3. Organizer contact details are partially Cloudflare-email-obfuscated;
