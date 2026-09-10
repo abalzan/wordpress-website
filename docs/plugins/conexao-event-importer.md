@@ -129,6 +129,7 @@ production-side fetching. Everything is manual/on-demand.
 | `class-icalendar-source.php` | `Conexao_Source_ICalendar` | iCalendar/Webcal feeds |
 | `class-laois-tourism-source.php` | `Conexao_Source_Laois_Tourism` | HTML scraping |
 | `class-heritage-week-source.php` | `Conexao_Source_Heritage_Week` | HTML scraping (paginated + detail enrichment) |
+| `class-ivvcc-source.php` | `Conexao_Source_Ivvcc` | IVVCC EventON calendar scraping + detail enrichment (ships inactive; see [importers/ivvcc-importer.md](../importers/ivvcc-importer.md)) |
 | `class-eventbrite-source.php` | `Conexao_Source_Eventbrite` | Eventbrite: official v3 API (when token set) or discovery-page scraping |
 
 ## Default Sources (seeded on activation)

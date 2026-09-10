@@ -56,6 +56,76 @@ class Conexao_Event_Location {
 	);
 
 	/**
+	 * Known Irish counties for nationwide location derivation.
+	 *
+	 * Generalized from the original Laois-only behavior so nationwide
+	 * sources (e.g. IVVCC) resolve county terms without a second engine.
+	 *
+	 * @var array Map of lowercase county key => canonical county name.
+	 */
+	protected $known_counties = array(
+		'antrim'     => 'Antrim',
+		'armagh'     => 'Armagh',
+		'carlow'     => 'Carlow',
+		'cavan'      => 'Cavan',
+		'clare'      => 'Clare',
+		'cork'       => 'Cork',
+		'derry'      => 'Derry',
+		'donegal'    => 'Donegal',
+		'down'       => 'Down',
+		'dublin'     => 'Dublin',
+		'fermanagh'  => 'Fermanagh',
+		'galway'     => 'Galway',
+		'kerry'      => 'Kerry',
+		'kildare'    => 'Kildare',
+		'kilkenny'   => 'Kilkenny',
+		'laois'      => 'Laois',
+		'leitrim'    => 'Leitrim',
+		'limerick'   => 'Limerick',
+		'longford'   => 'Longford',
+		'louth'      => 'Louth',
+		'mayo'       => 'Mayo',
+		'meath'      => 'Meath',
+		'monaghan'   => 'Monaghan',
+		'offaly'     => 'Offaly',
+		'roscommon'  => 'Roscommon',
+		'sligo'      => 'Sligo',
+		'tipperary'  => 'Tipperary',
+		'tyrone'     => 'Tyrone',
+		'waterford'  => 'Waterford',
+		'westmeath'  => 'Westmeath',
+		'wexford'    => 'Wexford',
+		'wicklow'    => 'Wicklow',
+	);
+
+	/**
+	 * Nationwide town index (lowercase key => array( display, county )).
+	 *
+	 * Covers IVVCC-relevant towns plus county towns so venue strings like
+	 * "Park Hotel, Dungarvan, Co Waterford" resolve without guessing.
+	 *
+	 * @var array
+	 */
+	protected $national_towns = array(
+		'abbeyleix'    => array( 'Abbeyleix', 'Laois' ),
+		'ballyvourney' => array( 'Ballyvourney', 'Cork' ),
+		'blessington'  => array( 'Blessington', 'Wicklow' ),
+		'carlow'       => array( 'Carlow', 'Carlow' ),
+		'clonskeagh'   => array( 'Clonskeagh', 'Dublin' ),
+		'cobh'         => array( 'Cobh', 'Cork' ),
+		'cork'         => array( 'Cork', 'Cork' ),
+		'dublin'       => array( 'Dublin', 'Dublin' ),
+		'dungarvan'    => array( 'Dungarvan', 'Waterford' ),
+		'kenmare'      => array( 'Kenmare', 'Kerry' ),
+		'kilkenny'     => array( 'Kilkenny', 'Kilkenny' ),
+		'portlaoise'   => array( 'Portlaoise', 'Laois' ),
+		'russborough'  => array( 'Blessington', 'Wicklow' ),
+		'sligo'        => array( 'Sligo', 'Sligo' ),
+		'waterford'    => array( 'Waterford', 'Waterford' ),
+		'wexford'      => array( 'Wexford', 'Wexford' ),
+	);
+
+	/**
 	 * Normalize a raw location string into structured parts.
 	 *
 	 * @param string $raw_location Raw location string from the source.
@@ -75,26 +145,66 @@ class Conexao_Event_Location {
 
 		$raw = trim( preg_replace( '/\s+/', ' ', (string) $raw_location ) );
 
-		// County detection.
-		if ( preg_match( '/\bco\.?\s*laois\b/i', $raw ) || preg_match( '/\blaois\b/i', $raw ) ) {
-			$result['county'] = 'Laois';
+		// County detection: nationwide ("Co X" or bare county name).
+		foreach ( $this->known_counties as $key => $name ) {
+			if ( preg_match( '/\bco\.?\s*' . preg_quote( $key, '/' ) . '\b/i', $raw ) || preg_match( '/\b' . preg_quote( $key, '/' ) . '\b/i', $raw ) ) {
+				$result['county'] = $name;
+				break;
+			}
 		}
 
-		// Town extraction.
+		// Town extraction: Laois list first (legacy behavior preserved),
+		// then the nationwide index (implies its county when county is empty).
 		foreach ( $this->known_towns as $town ) {
 			if ( preg_match( '/\b' . preg_quote( $town, '/' ) . '\b/i', $raw ) ) {
 				$result['town'] = $this->proper_case( $town );
 				break;
 			}
 		}
+		if ( '' === $result['town'] ) {
+			foreach ( $this->national_towns as $key => $pair ) {
+				if ( preg_match( '/\b' . preg_quote( $key, '/' ) . '\b/i', $raw ) ) {
+					$result['town'] = $pair[0];
+					if ( '' === $result['county'] ) {
+						$result['county'] = $pair[1];
+					}
+					break;
+				}
+			}
+		}
 
 		// Venue: strip county/town markers to isolate the venue name.
+		// A "Co X" marker is always removed. A bare county name is removed
+		// only as a trailing comma-separated component ("Dungarvan,
+		// Waterford" -> "Dungarvan") — a standalone county/town string
+		// ("Dublin", "Sligo Town") stays a venue label, matching the
+		// no-guess venue behavior of the original Laois-only logic.
 		$venue = $raw;
-		$venue = preg_replace( '/\bco\.?\s*laois\b/i', '', $venue );
-		$venue = preg_replace( '/\blaois\b/i', '', $venue );
+		foreach ( $this->known_counties as $key => $name ) {
+			$venue = preg_replace( '/\bco\.?\s*' . preg_quote( $key, '/' ) . '\b/i', '', $venue );
+		}
+		if ( '' !== $result['county'] ) {
+			$county_key = array_search( $result['county'], $this->known_counties, true );
+			$venue      = preg_replace( '/,\s*' . preg_quote( (string) $county_key, '/' ) . '\s*$/i', '', $venue );
+		}
 		$venue = preg_replace( '/\b' . preg_quote( ( $result['town'] ? strtolower( $result['town'] ) : '' ), '/' ) . '\b/i', '', $venue );
 		$venue = trim( preg_replace( '/\s*,\s*|\s+/', ' ', $venue ) );
 		$venue = trim( $venue, ' ,-' );
+
+		// Guard for standalone place names ("Dublin", "Kenmare"): when the
+		// town/county stripping consumed the whole string, keep the raw
+		// value (minus any "Co X" marker) as the venue label instead of
+		// storing an empty venue. Bare county-marker strings ("Co Laois")
+		// still yield no venue, matching legacy behavior.
+		if ( '' === $venue ) {
+			$fallback = $raw;
+			foreach ( $this->known_counties as $key => $name ) {
+				$fallback = preg_replace( '/\bco\.?\s*' . preg_quote( $key, '/' ) . '\b/i', '', $fallback );
+			}
+			$fallback = trim( preg_replace( '/\s*,\s*|\s+/', ' ', $fallback ) );
+			$fallback = trim( $fallback, ' ,-' );
+			$venue    = $fallback;
+		}
 
 		if ( $venue ) {
 			$result['venue'] = $venue;

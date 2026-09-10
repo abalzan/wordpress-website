@@ -1003,6 +1003,8 @@ class Conexao_Event_Importer_Engine {
 			case 'heritage_week':
 			case 'national_heritage_week':
 				return new Conexao_Source_Heritage_Week( $source );
+			case 'ivvcc':
+				return new Conexao_Source_Ivvcc( $source );
 			case 'eventbrite':
 				return new Conexao_Source_Eventbrite( $source );
 			default:

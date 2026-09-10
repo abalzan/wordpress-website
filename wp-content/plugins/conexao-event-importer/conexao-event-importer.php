@@ -36,6 +36,7 @@ require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/sources/abstract-class-sourc
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/sources/class-icalendar-source.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/sources/class-laois-tourism-source.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/sources/class-heritage-week-source.php';
+require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/sources/class-ivvcc-source.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-eventbrite-client.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-eventbrite-parser.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-eventbrite-normalizer.php';

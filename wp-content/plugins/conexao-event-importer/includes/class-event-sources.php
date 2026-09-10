@@ -57,6 +57,18 @@ class Conexao_Event_Sources {
 				'last_error'         => '',
 				'county'             => 'Laois',
 			),
+			'ivvcc' => array(
+				'id'                 => 'ivvcc',
+				'name'               => 'IVVCC — Irish Veteran & Vintage Car Club',
+				'url'                => 'https://www.ivvcc.ie/upcoming-events-calendar/',
+				'type'               => 'website',
+				'status'             => 'inactive',
+				'last_import'        => '',
+				'last_import_status' => '',
+				'events_imported'    => 0,
+				'last_error'         => '',
+				'county'             => '',
+			),
 		);
 	}
 
@@ -104,9 +116,13 @@ class Conexao_Event_Sources {
 		foreach ( $this->get_defaults() as $default_id => $default_source ) {
 			if ( ! isset( $sources[ $default_id ] ) ) {
 				// Preserve other user-added sources; only add missing defaults.
+				// IVVCC ships inactive: nationwide vintage-car source that
+				// requires permission + dry-run validation before activation.
 				$sources[ $default_id ]            = $default_source;
 				$sources[ $default_id ]['id']      = $default_id;
-				$sources[ $default_id ]['status']  = 'active';
+				if ( 'ivvcc' !== $default_id ) {
+					$sources[ $default_id ]['status'] = 'active';
+				}
 				$changed = true;
 			}
 		}
