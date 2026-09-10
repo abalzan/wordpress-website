@@ -5,6 +5,18 @@
 > **Status:** implemented + dry-run/live-parse validated. The source ships
 > **inactive** — activate it in *Event Import → Event Sources* only after
 > IVVCC permission is obtained (audit §14: copyright requires permission).
+>
+> **Stage C status (2026-09-10):** `PRODUCTION IMPORT BLOCKED — IVVCC
+> PERMISSION NOT CONFIRMED`. No posts created/updated, no images imported,
+> source left **inactive**. Read-only verification completed: 90 published
+> events, 0 IVVCC events at baseline; dry-run (live) = 11 found / 7 CREATE /
+> 4 SKIP (3 past, 1 missing location) / 0 UPDATE / 0 errors; live parse =
+> 20 cards → 12 unique EventON IDs → 11 parsed + 1 TBA skip (Cobh still
+> unresolved); EventON `data-cal_ver` still `2.6.16` (no source change);
+> 46 IVVCC parser/location/dedup tests + past-filter (29) + address (76) +
+> error-handling (55) + import-log (53) + eventbrite (68) suites all PASS;
+> `php -l` clean. Production import counts and post-import audits (§21–§39)
+> remain pending until permission is confirmed.
 
 ## Source
 
