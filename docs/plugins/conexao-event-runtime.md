@@ -1,7 +1,7 @@
 # Conexão BR Irlanda — Event Runtime
 
 - **Path**: `wp-content/plugins/conexao-event-runtime/`
-- **Version**: 1.1.0
+- **Version**: 1.2.0
 - **Requires Plugins**: `conexao-data-model`
 - **Purpose**: **Production dependency.** Owns all event runtime behavior the live site needs: event meta registration, the `conexao_town` taxonomy, the `_event_status` visibility gate on public event queries, and the event status admin UI. Contains **no** import/export tooling.
 
@@ -34,7 +34,7 @@ conexao-event-runtime`, and it refuses to boot if the runtime's
 
 | Area | Detail |
 |---|---|
-| Event meta | Registers all `_event_*` meta (including `_event_status` and the internal `_event_recurrence*` group) on the `event` post type, REST-visible |
+| Event meta | Registers all `_event_*` meta (including `_event_status`, the internal `_event_recurrence*` group, and the export identity `_event_export_uuid`) on the `event` post type, REST-visible |
 | Taxonomy | Registers `conexao_town` (Cidades) for events, rewrite slug `towns` |
 | Public gate | `pre_get_posts`: all frontend event queries (main archive + secondary `WP_Query` calls) are constrained to `_event_status = published` OR no status (legacy events). Published upcoming → visible; expired / source_not_found / rejected / draft → hidden. Behavior is byte-for-byte identical to the old importer implementation |
 | Status admin UI | Status/Source columns + `?event_status=` filter dropdown on the events list (Admin UX summary cards link to these URLs), and the `conexao_event_status_box` meta box that Admin UX removes in favor of its own sectioned editor |
@@ -44,6 +44,23 @@ conexao-event-runtime`, and it refuses to boot if the runtime's
 
 The Admin UX plugin consumes the runtime via `class_exists('Conexao_Event_Status')`
 for event status get/set — that relationship is preserved.
+
+## REST writes (v1.2.0)
+
+All `_event_*` keys are protected (underscore-prefixed) and registered with
+`show_in_rest => true` plus an explicit `auth_callback`
+(`current_user_can('edit_post', $object_id)`). The auth callback is required:
+WordPress core defaults protected-meta REST writes to `__return_false`, which
+makes every REST create/update of an event fail with `403 rest_cannot_update`
+— even for administrators. Without it, import/transfer tooling can read event
+meta through the REST API but can never persist it, so cross-instance identity
+(`_event_export_uuid`), dates, status and source fields stay permanently empty
+and every import run looks like a fresh creation (duplicates). This is the
+same convention as the `_agency_*`/`_employer_*` meta in the data-model plugin.
+
+`_event_export_uuid` joined the registered key set in v1.2.0 so the export
+format's stable identity key (written by `conexao-event-importer` exports and
+matched first on import) is REST-writable on production.
 
 ## Recurrence
 

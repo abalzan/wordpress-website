@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Conexão BR Irlanda — Event Runtime
  * Description: Production event runtime. Registers event metadata and the Town/City taxonomy, owns the _event_status visibility gate for public event queries, and provides the event status admin UI. Contains no import/export tooling — see Conexão BR Irlanda Event Importer (local-only).
- * Version: 1.1.0
+ * Version: 1.2.0
  * Requires Plugins: conexao-data-model
  * Text Domain: conexao-event-runtime
  *
@@ -12,7 +12,7 @@
 defined( 'ABSPATH' ) || exit;
 
 define( 'CONEXAO_EVENT_RUNTIME_FILE', __FILE__ );
-define( 'CONEXAO_EVENT_RUNTIME_VERSION', '1.1.0' );
+define( 'CONEXAO_EVENT_RUNTIME_VERSION', '1.2.0' );
 define( 'CONEXAO_EVENT_RUNTIME_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CONEXAO_EVENT_RUNTIME_URL', plugin_dir_url( __FILE__ ) );
 
@@ -83,6 +83,7 @@ final class Conexao_Event_Runtime {
 			'_event_recurrence_start',
 			'_event_recurrence_end',
 			'_event_imported',
+			'_event_export_uuid',
 		);
 
 		$int_meta = array(
@@ -97,6 +98,16 @@ final class Conexao_Event_Runtime {
 					'single'       => true,
 					'type'         => 'string',
 					'show_in_rest' => true,
+					// All keys are protected (underscore-prefixed). Without an
+					// explicit auth_callback, register_meta() defaults to
+					// __return_false for protected keys, so every REST write
+					// fails with 403 rest_cannot_update — even for
+					// administrators (same convention as the recruitment-agency
+					// meta in the data-model plugin). Allow exactly what the
+					// wp-admin editor allows: users who can edit the event.
+					'auth_callback' => function ( $allowed, $meta_key, $object_id ) {
+						return current_user_can( 'edit_post', $object_id );
+					},
 				)
 			);
 		}
@@ -109,6 +120,11 @@ final class Conexao_Event_Runtime {
 					'single'       => true,
 					'type'         => 'integer',
 					'show_in_rest' => true,
+					// See the string-meta loop above for why the auth_callback
+					// is required on protected meta.
+					'auth_callback' => function ( $allowed, $meta_key, $object_id ) {
+						return current_user_can( 'edit_post', $object_id );
+					},
 				)
 			);
 		}
