@@ -70,10 +70,18 @@ function conexao_expand_jaccard( $a, $b ) {
 
 // ------------------------------------------------------------------
 // Load candidate dataset.
+// Parts 1/2: earlier expansion batches. Part 3: Stage C (Lazer
+// expansion — 12 approved NEW records; see
+// docs/importers/lazer-expansion-stage-c-report.md).
 // ------------------------------------------------------------------
 $part1 = require dirname( __FILE__ ) . '/data/leisure-expansion-data-1.php';
 $part2 = require dirname( __FILE__ ) . '/data/leisure-expansion-data-2.php';
 $candidates = array_merge( $part1, $part2 );
+$part3_file = dirname( __FILE__ ) . '/data/leisure-expansion-data-3.php';
+if ( file_exists( $part3_file ) ) {
+	$candidates = array_merge( $candidates, require $part3_file );
+}
+
 
 echo 'Loaded ' . count( $candidates ) . " candidate locations.\n";
 
@@ -98,7 +106,7 @@ foreach ( $existing as $post ) {
 	if ( '' !== $norm ) {
 		$index_titles[ $norm ] = $post->post_title;
 	}
-	foreach ( array( '_leisure_official_website', '_leisure_website' ) as $key ) {
+	foreach ( array( '_leisure_official_website', '_leisure_website', '_leisure_discover_ireland' ) as $key ) {
 		$url = get_post_meta( $post->ID, $key, true );
 		if ( $url ) {
 			$index_urls[ untrailingslashit( strtolower( trim( $url ) ) ) ] = true;
@@ -135,9 +143,11 @@ foreach ( $candidates as $data ) {
 	$title = $data['title'];
 	$slug  = sanitize_title( $data['slug'] );
 	$norm  = conexao_expand_normalize_title( $title );
-	$url   = untrailingslashit( strtolower( trim( isset( $data['official_website'] ) ? $data['official_website'] : '' ) ) );
+	$url = untrailingslashit( strtolower( trim( isset( $data['official_website'] ) ? $data['official_website'] : '' ) ) );
+	$di_url = untrailingslashit( strtolower( trim( isset( $data['discover_ireland'] ) ? $data['discover_ireland'] : '' ) ) );
 
-	// --- Duplicate checks ---
+	// --- Duplicate checks (slug, normalized title, official URL,
+	// Discover Ireland URL, token overlap) ---
 	$dup_reason = '';
 
 	if ( isset( $index_slugs[ $slug ] ) ) {
@@ -146,6 +156,8 @@ foreach ( $candidates as $data ) {
 		$dup_reason = "normalized title matches existing '{$index_titles[$norm]}'";
 	} elseif ( $url && isset( $index_urls[ $url ] ) ) {
 		$dup_reason = "official website {$url} already used";
+	} elseif ( $di_url && isset( $index_urls[ $di_url ] ) ) {
+		$dup_reason = "Discover Ireland URL {$di_url} already used";
 	} else {
 		// Token overlap against existing titles.
 		foreach ( $index_titles as $existing_norm => $existing_orig ) {
@@ -209,12 +221,15 @@ foreach ( $candidates as $data ) {
 	// also written below for transition compatibility.
 	$attr_term_ids = array();
 	$attr_map = array(
-		'family'    => 'Famílias',
-		'outdoor'   => 'Exterior',
-		'indoor'    => 'Interior',
-		'booking'   => 'Necessita reserva',
-		'pet'       => 'Pet friendly',
-		'parking'   => 'Estacionamento',
+		'family'        => 'Famílias',
+		'outdoor'       => 'Exterior',
+		'indoor'        => 'Interior',
+		'booking'       => 'Necessita reserva',
+		'pet'           => 'Pet friendly',
+		'parking'       => 'Estacionamento',
+		'accessibility' => 'Acessível',
+		'transport'     => 'Acesso de transporte público',
+		'bicycle'       => 'Bicicleta',
 	);
 	foreach ( $attr_map as $data_key => $term_name ) {
 		if ( ! empty( $data[ $data_key ] ) ) {
@@ -246,11 +261,20 @@ foreach ( $candidates as $data ) {
 			$attr_term_ids[] = (int) $combo['term_id'];
 		}
 	}
-	// Gratuito from the free flag.
-	if ( ! empty( $data['free'] ) ) {
-		$free_term = term_exists( 'Gratuito', 'conexao_leisure_attribute' );
-		if ( $free_term && ! is_wp_error( $free_term ) ) {
-			$attr_term_ids[] = (int) $free_term['term_id'];
+	// Free/paid classification. Part 3 (Stage C) records carry an explicit
+	// `free_status` label ('Gratuito', 'Pago', 'Gratuito em determinadas
+	// condições'); legacy parts keep the bare free flag ('Gratuito').
+	$free_label = '';
+	if ( isset( $data['free_status'] ) && '' !== trim( (string) $data['free_status'] ) ) {
+		$free_label = trim( (string) $data['free_status'] );
+	} elseif ( ! empty( $data['free'] ) ) {
+		$free_label = 'Gratuito';
+	}
+	$free_term_names = array( 'Gratuito', 'Pago', 'Gratuito em determinadas condições' );
+	if ( in_array( $free_label, $free_term_names, true ) ) {
+		$free_attr_term = term_exists( $free_label, 'conexao_leisure_attribute' );
+		if ( $free_attr_term && ! is_wp_error( $free_attr_term ) ) {
+			$attr_term_ids[] = (int) $free_attr_term['term_id'];
 		}
 	}
 	if ( ! empty( $attr_term_ids ) ) {
@@ -261,7 +285,7 @@ foreach ( $candidates as $data ) {
 	// --- Meta (same keys as seed-leisure-locations.php) ---
 	update_post_meta( $post_id, '_leisure_county', $data['county'] );
 	update_post_meta( $post_id, '_leisure_town', isset( $data['town'] ) ? $data['town'] : '' );
-	update_post_meta( $post_id, '_leisure_address', '' );
+	update_post_meta( $post_id, '_leisure_address', isset( $data['address'] ) ? $data['address'] : '' );
 	update_post_meta( $post_id, '_leisure_website', '' );
 	update_post_meta( $post_id, '_leisure_official_website', isset( $data['official_website'] ) ? $data['official_website'] : '' );
 	update_post_meta( $post_id, '_leisure_discover_ireland', isset( $data['discover_ireland'] ) ? $data['discover_ireland'] : '' );
@@ -269,22 +293,29 @@ foreach ( $candidates as $data ) {
 	update_post_meta( $post_id, '_leisure_feature', '' );
 	// _leisure_free: store the canonical Portuguese label instead of a bare '1'
 	// so the value is meaningful if ever displayed directly.
-	update_post_meta( $post_id, '_leisure_free', ! empty( $data['free'] ) ? 'Gratuito' : '' );
+	update_post_meta( $post_id, '_leisure_free', $free_label );
 	update_post_meta( $post_id, '_leisure_family', ! empty( $data['family'] ) ? '1' : '' );
-	update_post_meta( $post_id, '_leisure_accessibility', '' );
-	update_post_meta( $post_id, '_leisure_pet_friendly', '' );
+	update_post_meta( $post_id, '_leisure_accessibility', ! empty( $data['accessibility'] ) ? '1' : '' );
+	update_post_meta( $post_id, '_leisure_pet_friendly', ! empty( $data['pet'] ) ? '1' : '' );
 	update_post_meta( $post_id, '_leisure_indoor', ! empty( $data['indoor'] ) ? '1' : '' );
 	update_post_meta( $post_id, '_leisure_outdoor', ! empty( $data['outdoor'] ) ? '1' : '' );
-	update_post_meta( $post_id, '_leisure_parking', '' );
+	update_post_meta( $post_id, '_leisure_parking', ! empty( $data['parking'] ) ? '1' : '' );
 	update_post_meta( $post_id, '_leisure_booking', ! empty( $data['booking'] ) ? '1' : '' );
 	update_post_meta( $post_id, '_leisure_duration', '' );
 	update_post_meta( $post_id, '_leisure_best_time', '' );
+	// Phase 2 practical-verification metadata (Stage C).
+	update_post_meta( $post_id, '_leisure_practical_notes', isset( $data['practical_notes'] ) ? $data['practical_notes'] : '' );
+	update_post_meta( $post_id, '_leisure_practical_source_url', isset( $data['practical_source_url'] ) ? $data['practical_source_url'] : '' );
+	update_post_meta( $post_id, '_leisure_practical_last_checked', isset( $data['practical_last_checked'] ) ? $data['practical_last_checked'] : '' );
 
 	// --- Update indexes so later candidates see this record ---
 	$index_slugs[ $slug ] = true;
 	$index_titles[ $norm ] = $title;
 	if ( $url ) {
 		$index_urls[ $url ] = true;
+	}
+	if ( $di_url ) {
+		$index_urls[ $di_url ] = true;
 	}
 	$seen_in_dataset[ $slug ] = true;
 	$seen_in_dataset[ 't:' . $norm ] = true;

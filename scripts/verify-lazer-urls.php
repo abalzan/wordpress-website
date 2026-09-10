@@ -39,6 +39,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 $part1 = require dirname( __FILE__ ) . '/data/leisure-expansion-data-1.php';
 $part2 = require dirname( __FILE__ ) . '/data/leisure-expansion-data-2.php';
 $locations = array_merge( $part1, $part2 );
+$part3_file = dirname( __FILE__ ) . '/data/leisure-expansion-data-3.php';
+if ( file_exists( $part3_file ) ) {
+	$locations = array_merge( $locations, require $part3_file );
+}
 
 echo 'Verifying URLs for ' . count( $locations ) . " locations...\n";
 
