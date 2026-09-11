@@ -294,6 +294,111 @@ function conexao_get_terms_for_post_type( $taxonomy, $post_type, $extra_args = a
 }
 
 /**
+ * Get town/city terms for the Events archive, optionally scoped to a county.
+ *
+ * County → Town scoping: when a county slug is provided, only towns attached
+ * to at least one published event in that county are returned (via a single
+ * get_posts ID query + wp_get_object_terms, same cost model as
+ * conexao_get_terms_for_post_type()). Without a county, all towns used by
+ * published events are returned. Empty counties/towns never appear.
+ *
+ * Results are cached in the object cache for 5 minutes.
+ *
+ * @param string $county_slug Optional county slug to scope towns to.
+ * @return WP_Term[] Town terms ordered by name ASC.
+ */
+function conexao_get_event_towns( $county_slug = '' ) {
+	$county_slug = sanitize_title( $county_slug );
+	$cache_key   = 'conexao_event_towns' . ( '' !== $county_slug ? '_' . $county_slug : '' );
+	$cached      = wp_cache_get( $cache_key, 'conexao_filters' );
+
+	if ( false !== $cached ) {
+		return $cached;
+	}
+
+	$args = array(
+		'post_type'              => 'event',
+		'post_status'            => 'publish',
+		'posts_per_page'         => -1,
+		'fields'                 => 'ids',
+		'no_found_rows'          => true,
+		'update_post_meta_cache' => false,
+		'update_post_term_cache' => false,
+	);
+
+	if ( '' !== $county_slug ) {
+		$county_term = get_term_by( 'slug', $county_slug, 'conexao_county' );
+		if ( ! $county_term || is_wp_error( $county_term ) ) {
+			wp_cache_set( $cache_key, array(), 'conexao_filters', 300 );
+			return array();
+		}
+		$args['tax_query'] = array(
+			array(
+				'taxonomy' => 'conexao_county',
+				'field'    => 'slug',
+				'terms'    => $county_slug,
+			),
+		);
+	}
+
+	$post_ids = get_posts( $args );
+
+	if ( empty( $post_ids ) ) {
+		wp_cache_set( $cache_key, array(), 'conexao_filters', 300 );
+		return array();
+	}
+
+	$terms = wp_get_object_terms(
+		$post_ids,
+		'conexao_town',
+		array(
+			'orderby' => 'name',
+			'order'   => 'ASC',
+		)
+	);
+
+	if ( is_wp_error( $terms ) ) {
+		$terms = array();
+	}
+
+	wp_cache_set( $cache_key, $terms, 'conexao_filters', 300 );
+	return $terms;
+}
+
+/**
+ * Build an Events archive filter URL preserving the full filter state.
+ *
+ * Single source of truth for /eventos/ filter links (Localização county,
+ * Cidade town, Categoria category). Empty dimensions are omitted, the page
+ * cursor is always reset, and every combination stays shareable/refresh-safe.
+ * Invalid slugs pass through untouched — the query layer ignores unknown
+ * slugs gracefully (zero results rather than an error).
+ *
+ * @param array  $filters Filter state: 'county', 'cidade', 'categoria' slugs.
+ * @param string $base    Optional base URL (defaults to the event archive).
+ * @return string Filter URL.
+ */
+function conexao_event_filter_url( array $filters, $base = '' ) {
+	if ( '' === $base ) {
+		$base = get_post_type_archive_link( 'event' );
+	}
+
+	$url = remove_query_arg( array( 'county', 'cidade', 'categoria', 'paged', 'pagina' ), $base );
+
+	if ( ! empty( $filters['county'] ) ) {
+		$url = add_query_arg( 'county', sanitize_title( $filters['county'] ), $url );
+	}
+	if ( ! empty( $filters['cidade'] ) ) {
+		$url = add_query_arg( 'cidade', sanitize_title( $filters['cidade'] ), $url );
+	}
+	if ( ! empty( $filters['categoria'] ) ) {
+		$url = add_query_arg( 'categoria', sanitize_title( $filters['categoria'] ), $url );
+	}
+
+	return $url;
+}
+
+/**
  * Get the distinct provider categories that have at least one published
  * course provider.
  *
@@ -2492,7 +2597,8 @@ function conexao_leisure_filter_url( array $filters, $base = '' ) {
  * to the main query:
  *
  *  - Eventos: only upcoming events (date >= today), ordered by date ascending,
- *    with optional ?cidade= (town) and ?categoria= (category) taxonomy filters.
+ *    with optional ?county= (county), ?cidade= (town) and ?categoria=
+ *    (category) taxonomy filters (AND-combined).
  *  - Cursos: only published providers (_provider_status = published), ordered
  *    by display order, with optional ?categoria= (provider category meta) filter.
  *  - Guias: optional ?categoria= (conexao_category taxonomy) filter.
@@ -2554,24 +2660,65 @@ function conexao_content_archive_query( $query ) {
 			$tax_query = array();
 		}
 
+		// County filter via ?county=slug (e.g., "laois") — same ?county= convention as /lazer/.
+		$county = isset( $_GET['county'] ) ? sanitize_title( wp_unslash( $_GET['county'] ) ) : '';
+		if ( $county ) {
+			$county_term = get_term_by( 'slug', $county, 'conexao_county' );
+			if ( $county_term && ! is_wp_error( $county_term ) ) {
+				$tax_query[] = array(
+					'taxonomy' => 'conexao_county',
+					'field'    => 'slug',
+					'terms'    => $county,
+				);
+			} else {
+				// Unknown county slug — force no results so an invalid filter
+				// never produces misleading content.
+				$tax_query[] = array(
+					'taxonomy' => 'conexao_county',
+					'field'    => 'slug',
+					'terms'    => '__conexao_no_such_county__',
+				);
+			}
+		}
+
 		// Town/city filter via ?cidade=slug
 		$town = isset( $_GET['cidade'] ) ? sanitize_title( wp_unslash( $_GET['cidade'] ) ) : '';
 		if ( $town ) {
-			$tax_query[] = array(
-				'taxonomy' => 'conexao_town',
-				'field'    => 'slug',
-				'terms'    => $town,
-			);
+			$town_term = get_term_by( 'slug', $town, 'conexao_town' );
+			if ( $town_term && ! is_wp_error( $town_term ) ) {
+				$tax_query[] = array(
+					'taxonomy' => 'conexao_town',
+					'field'    => 'slug',
+					'terms'    => $town,
+				);
+			} else {
+				// Unknown town slug — force no results gracefully.
+				$tax_query[] = array(
+					'taxonomy' => 'conexao_town',
+					'field'    => 'slug',
+					'terms'    => '__conexao_no_such_town__',
+				);
+			}
 		}
 
 		// Category filter via ?categoria=slug (e.g., "treinamento")
 		$category = isset( $_GET['categoria'] ) ? sanitize_title( wp_unslash( $_GET['categoria'] ) ) : '';
 		if ( $category ) {
-			$tax_query[] = array(
-				'taxonomy' => 'conexao_category',
-				'field'    => 'slug',
-				'terms'    => $category,
-			);
+			$category_term = get_term_by( 'slug', $category, 'conexao_category' );
+			if ( $category_term && ! is_wp_error( $category_term ) ) {
+				$tax_query[] = array(
+					'taxonomy' => 'conexao_category',
+					'field'    => 'slug',
+					'terms'    => $category,
+				);
+			} else {
+				// Unknown category slug — force no results gracefully.
+				$tax_query[] = array(
+					'taxonomy' => 'conexao_category',
+					'field'    => 'slug',
+					'terms'    => '__conexao_no_such_category__',
+				);
+			}
 		}
 
 		if ( ! empty( $tax_query ) ) {

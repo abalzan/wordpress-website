@@ -41,16 +41,18 @@ Created by `conexao-content` plugin:
 
 | Archive | Parameters | Taxonomy/Meta |
 |---------|-----------|---------------|
+| `/eventos/` | `?county=slug` | `conexao_county` |
 | `/eventos/` | `?cidade=slug` | `conexao_town` |
 | `/eventos/` | `?categoria=slug` | `conexao_category` |
 | `/lazer/` | `?county=slug` | `conexao_county` |
 | `/lazer/` | `?categoria=slug` | `conexao_category` |
+| `/lazer/` | `?atributo=slug[,slug]` | `conexao_leisure_attribute` (multi-select OR) |
 | `/cursos/` | `?categoria=slug` | `_provider_category` (meta) |
 | `/guias/` | `?categoria=slug` | `conexao_category` |
 | `/blog/` | `?categoria=slug` | `category` (native) |
 | `/empregos/` | `?tipo=` (`agency`/`public_sector`/`permit_history`), `?area=`, `?localizacao=`, `?contrato=` | canonical `resource_type` / `_agency_job_types` / normalized `_agency_location` / `_agency_temporary`+`_agency_permanent` (meta) — unified opportunities directory; `?permit_history` requires the structured `has_permit_history` flag |
 
-Filters are content-type-aware: the same `?categoria=` parameter resolves to different taxonomies/meta on different archives. Blog category links point at `/blog/?categoria=slug` (the Blog archive itself), not at the native `/category/{slug}/` archive — which remains intact for direct access, feeds and wp-admin. The `/empregos/` parameters are page-level (static landing template) and filter the unified "Oportunidades de emprego" directory rendered by `template-parts/employment-opportunities.php`: `?tipo=` selects the resource type (agencies / public-sector portals / permit-history employers, the latter via the structured `has_permit_history` flag) while `?area=`/`?localizacao=`/`?contrato=` keep their exact pre-existing agency-directory semantics (AND logic, backward-compatible URLs).
+Filters are content-type-aware: the same `?categoria=` parameter resolves to different taxonomies/meta on different archives. On `/eventos/` the three location/category dimensions (`?county=`/`?cidade=`/`?categoria=`) are AND-combined — a town from another county can never override the county selection, invalid slugs yield zero results gracefully, and option lists derive from counties/towns actually used by published events (county → city scoping via `conexao_get_event_towns()`; all option URLs are built through the shared `conexao_event_filter_url()` helper so filter changes never drop other dimensions and always reset to page 1). The same `?county=` convention is shared with `/lazer/`. Blog category links point at `/blog/?categoria=slug` (the Blog archive itself), not at the native `/category/{slug}/` archive — which remains intact for direct access, feeds and wp-admin. The `/empregos/` parameters are page-level (static landing template) and filter the unified "Oportunidades de emprego" directory rendered by `template-parts/employment-opportunities.php`: `?tipo=` selects the resource type (agencies / public-sector portals / permit-history employers, the latter via the structured `has_permit_history` flag) while `?area=`/`?localizacao=`/`?contrato=` keep their exact pre-existing agency-directory semantics (AND logic, backward-compatible URLs).
 
 ## Redirect Architecture
 

@@ -68,7 +68,7 @@ All in `template-parts/`:
 |------|---------|
 | `archive-header.php` | All CPT archives (title, eyebrow, description, filters) |
 | `event-card.php` | Events archive grid |
-| `event-filters.php` | Events archive filter bar (event-only: `?cidade=` towns + `?categoria=` categories used by published events) |
+| `event-filters.php` | Events archive filter widget (event-only, Lazer/Empregos widget standard: `?county=` counties + `?cidade=` towns + `?categoria=` categories used by published events; desktop dropdowns with listbox options + search for long lists, active-filter chips, result count, mobile "Filtrar" bottom sheet with radios + instant apply; AND-combined, County → City cascade server-side via `conexao_get_event_towns()`, URLs through `conexao_event_filter_url()`) |
 | `course-filters.php` | Cursos archive filter bar (course-only: `?categoria=` provider categories from `_provider_category` meta; renders nothing when no categories exist) |
 | `guide-filters.php` | Guias archive filter bar (`?categoria=` conexao_category terms used by published guides) |
 | `event-preview.php` | Homepage events section |

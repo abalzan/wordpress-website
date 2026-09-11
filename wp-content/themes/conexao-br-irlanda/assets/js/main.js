@@ -14,6 +14,7 @@
 		initLeisureFilters();
 		initLeisureInstantFilters();
 		initAgencyFilters();
+		initEventFilters();
 		initSponsorsCarousel();
 		initInfiniteScroll();
 		initLoadMore();
@@ -1016,13 +1017,16 @@
 		});
 	}
 
-	// ===== Empregos — Recruitment Agency Filters =====
-	// Mirrors the Lazer filter interaction (initLeisureFilters) for the
-	// /empregos/ agency directory:
+	// ===== Directory filter interaction (shared: Empregos + Eventos) =====
+	// One implementation of the Lazer filter interaction (initLeisureFilters),
+	// reused by every directory filter widget built on the data-dropdown /
+	// data-mobile-* contract:
+	//   /empregos/ agency directory → [data-agency-filters] (initAgencyFilters)
+	//   /eventos/ events archive    → [data-event-filters] (initEventFilters)
 	//   - desktop hyperlink dropdowns: one open at a time, toggle re-focuses
 	//     the trigger, outside click / Escape close with focus return,
-	//   - a client-side search inside the Localização popover (and the mobile
-	//     sheet section) that filters the already server-rendered options,
+	//   - a client-side search inside long popovers (and the mobile sheet
+	//     sections) that filters the already server-rendered options,
 	//   - a modal mobile bottom sheet with always-visible radio fieldsets:
 	//     focus trap, Escape/backdrop close, focus return to the trigger,
 	//   - selecting a radio applies the filter immediately (the form is
@@ -1030,11 +1034,15 @@
 	//     sheet auto-dismisses because the page navigates, exactly like the
 	//     Lazer apply-and-close gesture),
 	//   - the submit pipeline strips the empty "Todas"/"Todos" values so URLs
-	//     stay clean (/empregos/?area=warehouse, never /empregos/?area=&...).
-	// Filtering itself is server-side and URL driven (?area=/?localizacao=/
-	// ?contrato=); refresh, back/forward and shared URLs all work natively.
-	function initAgencyFilters() {
-		var root = document.querySelector('[data-agency-filters]');
+	//     stay clean (/empregos/?area=warehouse, /eventos/?county=laois —
+	//     never /.../?area=&...).
+	// `ns` carries the widget's CSS class prefix ('agency-filters' /
+	// 'event-filters') for the few class-name lookups below; everything else
+	// is driven by the shared data-* contract. Filtering itself is
+	// server-side and URL driven (?area=/?localizacao=/?contrato= and
+	// ?county=/?cidade=/?categoria=); refresh, back/forward and shared URLs
+	// all work natively.
+	function initDirectoryFilters(root, ns) {
 		if (!root) return;
 
 		var dropdowns = Array.prototype.slice.call(root.querySelectorAll('[data-dropdown]'));
@@ -1116,7 +1124,7 @@
 			if (!scope) return;
 
 			var options = Array.prototype.slice.call(scope.querySelectorAll('[data-option-item]'));
-			var container = search.closest('.agency-filters-dropdown-panel') || search.closest('.agency-filters-mobile-section') || root;
+			var container = search.closest('.' + ns + '-dropdown-panel') || search.closest('.' + ns + '-mobile-section') || root;
 			var empty = container.querySelector('[data-option-empty]');
 			var list = scope.querySelector('[data-option-list]');
 
@@ -1154,7 +1162,7 @@
 		var sheetTrigger = root.querySelector('[data-mobile-trigger]');
 		var sheetOverlay = root.querySelector('[data-mobile-sheet]');
 		var sheetClose = root.querySelector('[data-mobile-close]');
-		var sheetPanel = sheetOverlay ? sheetOverlay.querySelector('.agency-filters-sheet-panel') : null;
+		var sheetPanel = sheetOverlay ? sheetOverlay.querySelector('.' + ns + '-sheet-panel') : null;
 
 		function openSheet() {
 			if (!sheetOverlay) return;
@@ -1265,6 +1273,18 @@
 				});
 			});
 		}
+	}
+
+	// /empregos/ agency directory (Área / Localização / Contrato).
+	function initAgencyFilters() {
+		initDirectoryFilters(document.querySelector('[data-agency-filters]'), 'agency-filters');
+	}
+
+	// /eventos/ events archive (Localização / Cidade / Categoria) — the same
+	// interaction contract as the agency directory, over the event URL
+	// dimensions (?county= / ?cidade= / ?categoria=).
+	function initEventFilters() {
+		initDirectoryFilters(document.querySelector('[data-event-filters]'), 'event-filters');
 	}
 
 	// ===== Sponsors Carousel (homepage Apoiadores) =====
