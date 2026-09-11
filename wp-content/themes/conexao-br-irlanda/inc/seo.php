@@ -709,7 +709,20 @@ function conexao_seo_breadcrumb_data() {
 		$category_taxonomy = ( 'post' === $post_type ) ? 'category' : 'conexao_category';
 		$terms = get_the_terms( get_the_ID(), $category_taxonomy );
 		if ( $terms && ! is_wp_error( $terms ) ) {
-			$term_link = get_term_link( $terms[0] );
+			// Guides: the category crumb must link to the EXISTING filtered
+			// Guias archive (/guias/?categoria=<slug> — the same tax_query the
+			// archive filter bar applies) instead of the taxonomy term archive.
+			// get_term_link() would produce /categories/{slug}/, which this
+			// site's .htaccess 301-redirects to the standalone /{slug}/ static
+			// page (e.g. /moradia/) — not the filtered Guias archive. The URL
+			// is built through the shared conexao_get_guide_category_url()
+			// helper (add_query_arg + canonical term slug) so the breadcrumb
+			// and the archive filter bar can never drift apart.
+			if ( 'guide' === $post_type && function_exists( 'conexao_get_guide_category_url' ) ) {
+				$term_link = conexao_get_guide_category_url( $terms[0]->slug, $terms[0]->slug );
+			} else {
+				$term_link = get_term_link( $terms[0] );
+			}
 			if ( ! is_wp_error( $term_link ) ) {
 				$crumbs[] = array(
 					'name' => $terms[0]->name,

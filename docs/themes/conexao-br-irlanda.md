@@ -425,6 +425,7 @@ Breadcrumb hierarchy (`conexao_seo_breadcrumb_data()`), rendered by `header.php`
 - Blog archive `/blog/` (incl. `?categoria=` filtered views): Início → Blog (current page).
 - Blog single: Início → Blog (`/blog/` posts page) → Category (native `category` taxonomy, i.e. `/category/{slug}/` — the `?categoria=` filter is only used by the archive UI) → Post title. With multiple categories, the first term returned by `get_the_terms()` (ordered by name) is used.
 - Other CPT singles: Início → CPT archive → `conexao_category` term (when present) → `conexao_county` term for events/apoiadores → title.
+- **Guides (`guide`)**: the `conexao_category` crumb links to the EXISTING filtered Guias archive (`/guias/?categoria=<slug>` — the same tax_query the archive filter bar applies), built through the shared `conexao_get_guide_category_url()` helper. It never links to the taxonomy term archive (`/categories/<slug>/` would 301 to the standalone `/<slug>/` static page, e.g. `/moradia/`). Multiple categories: first term returned by `get_the_terms()` (ordered by name) is used, the same deterministic rule applied before. See `docs/guias-breadcrumb-filter-report.md`.
 
 ### Navigation Logic
 
