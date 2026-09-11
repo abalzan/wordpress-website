@@ -1418,6 +1418,15 @@
   color: var(--conexao-white);
 }
 
+/* Hero secondary CTA hover — the rule above pins white text on the hero's
+   dark green gradient, but its specificity (0,3,0) also beats the global
+   .btn-outline:hover (0,2,0), so on hover the text stays white over the
+   white hover background → unreadable. Restore the shared outline idiom
+   (green text on the white hover fill) for .hero-ctas only. */
+[data-theme="dark"] .hero-ctas .btn-outline:hover {
+  color: var(--color-primary);
+}
+
 [data-theme="dark"] .btn-outline-dark {
   border-color: var(--color-border);
   color: var(--color-text);
