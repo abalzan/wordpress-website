@@ -1,0 +1,89 @@
+{
+  "stage": "B-setup",
+  "implementation_status": "NOT_STARTED",
+  "source": "mondellopark",
+  "display_name": "Mondello Park",
+  "description": "Mondello Park motorsport events - Ireland's National Motorsports Campus",
+  "base_url": "https://mondellopark.ie",
+  "detail_url_pattern": "https://mondellopark.ie/events/{slug}/",
+  "discovery_url": "https://mondellopark.ie/wp-json/wp/v2/events?per_page=100",
+  "sitemap_url": "https://mondellopark.ie/events-sitemap.xml",
+  "identity": {
+    "strategy": "source+source_id",
+    "source_field": "_event_source",
+    "source_id_field": "_event_source_id",
+    "source_value": "mondellopark",
+    "source_id_value": "{slug}"
+  },
+  "date_source": {
+    "type": "visible_html_text",
+    "format": "Month DD, YYYY",
+    "parser_required": true,
+    "notes": "Event dates exist only as visible HTML text on detail pages. No machine-readable date format available. Range format: 'Month DD, YYYY - Month DD, YYYY'. Same-day ranges collapse to one day."
+  },
+  "time_source": {
+    "type": "none",
+    "notes": "No event start/end times are machine-readable anywhere in the source. Time fields left empty."
+  },
+  "status_source": {
+    "type": "external",
+    "notes": "Reuse Conexão Event Status; do not invent statuses. Status gate via _event_status field in Event Runtime."
+  },
+  "ticket_url_source": {
+    "primary": "ticketsolve",
+    "pattern": "https://mondellopark.ticketsolve.com/ticketbooth/shows/{showId}",
+    "notes": "Capture primary 'Book Now' Ticketsolve URL (strip ?utm_source=… params) as ticket CTA. Store secondary IDs/external links in custom meta, not URL fields."
+  },
+  "category_mapping": {
+    "car-racing": "Car Racing",
+    "drifting": "Drifting",
+    "ids": "IDS",
+    "jdm": "JDM",
+    "motorbike-racing": "Motorbike Racing",
+    "rally": "Rally",
+    "retro-historic": "Retro/Historic",
+    "shows": "Shows"
+  },
+  "notes": {
+    "platform": "WordPress (self-hosted, SiteGround edge). Theme mondello-theme. Yoast SEO 28.3.",
+    "rest_api": "Yes - X-WP-Total: 29; ?per_page=100 returns all 29 events in one JSON request.",
+    "public_api_for_event_data": "None. /wp-json/wp/v2/events exposes id/slug/title/link/date/modified/event_category-IDs/featured_media/yoast_head but no event date/time/venue/price/ticket.",
+    "ticketing_platform": "Ticketsolve (JS SPA behind Queue-it + Safetynet). tickets.mondellopark.ie is legacy dead Checkfront subdomain (Cloudflare 403).",
+    "structured_data": "No schema.org/Event anywhere. Yoast JSON-LD = WebPage/BreadcrumbList/WebSite/Organization/ImageObject only (publish timestamps, not event dates).",
+    "events_discovered": "29 published (sitemap ∩ REST). 6 upcoming (Sep 12 → Nov 29 2026); 23 past/archived still published.",
+    "sample_tested": "17 detail pages parsed end-to-end + listing + REST + Ticketsolve shell.",
+    "location_default": "Mondello Park, Donore, Naas, Co. Kildare, Eircode: W91 T957; phone +353 (0)45 860200. County=Kildare, town=Naas.",
+    "audit_today_reference": "Fri, 11 Sep 2026 (from server Date response header)",
+    "implementation_approach": "JSON-backed importer handler - the Stage B implementation will use a JSON-backed importer handler pattern consistent with existing Conexão importer pipeline. This JSON setup file documents the source configuration; actual implementation must follow from this setup, not precede it."
+  },
+  "existing_event_sources": [
+    {
+      "source": "ivvcc",
+      "type": "existing"
+    },
+    {
+      "source": "motorsport-ireland",
+      "type": "existing"
+    },
+    {
+      "source": "eventbrite",
+      "type": "existing"
+    }
+  ],
+  "review_notes": {
+    "fia-euro-rx": "detail URL redirects externally (301 to https://erxmondellopark.com/index.html); Stage B must determine whether canonical event identity can still be established safely.",
+    "james-deane-130-showdown": "ticket destination is external (130showdown.com); do not skip solely because ticketing is external if the Mondello Park event page itself is a valid event source. Import canonical+dates as a free event at admin discretion."
+  },
+  "skip_rules": {
+    "past-dated_events": "skip - importer already enforces 'never creates past events'; mandatory because source publishes past events",
+    "notes": "Keep only genuinely deterministic skip rules. Do not skip events solely because ticketing is external - that decision belongs in Stage B implementation based on actual source evidence."
+  },
+  "todo": [
+    "Implement custom date parser for English-month-name format (Month DD, YYYY and Month DD, YYYY - Month DD, YYYY)",
+    "Determine fia-euro-rx handling strategy based on actual source evidence (301 redirect to external)",
+    "Determine james-deane-130-showdown handling strategy (external tickets only) at admin discretion",
+    "Validate that Mondello Park event pages themselves remain valid event sources despite external ticketing",
+    "Verify all 29 events for date filtering requirements",
+    "Document Stage B implementation decisions and any deviations from this setup JSON"
+  ]
+}

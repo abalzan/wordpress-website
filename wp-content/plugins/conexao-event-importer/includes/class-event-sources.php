@@ -81,6 +81,18 @@ class Conexao_Event_Sources {
 				'last_error'         => '',
 				'county'             => '',
 			),
+			'mondello_park' => array(
+				'id'                 => 'mondello_park',
+				'name'               => 'Mondello Park — Ireland\'s National Motorsports Campus',
+				'url'                => 'https://mondellopark.ie/wp-json/wp/v2/events?per_page=100',
+				'type'               => 'website',
+				'status'             => 'inactive',
+				'last_import'        => '',
+				'last_import_status' => '',
+				'events_imported'    => 0,
+				'last_error'         => '',
+				'county'             => 'Kildare',
+			),
 		);
 	}
 
@@ -128,13 +140,11 @@ class Conexao_Event_Sources {
 		foreach ( $this->get_defaults() as $default_id => $default_source ) {
 			if ( ! isset( $sources[ $default_id ] ) ) {
 				// Preserve other user-added sources; only add missing defaults.
-				// IVVCC ships inactive: nationwide vintage-car source that
-				// requires permission + dry-run validation before activation.
-				$sources[ $default_id ]            = $default_source;
-				$sources[ $default_id ]['id']      = $default_id;
-				if ( 'ivvcc' !== $default_id ) {
-					$sources[ $default_id ]['status'] = 'active';
-				}
+				// New sources keep their declared default status (e.g. ivvcc,
+				// motorsport_ireland and mondello_park ship inactive and must
+				// stay inactive until explicitly activated in wp-admin).
+				$sources[ $default_id ]       = $default_source;
+				$sources[ $default_id ]['id'] = $default_id;
 				$changed = true;
 			}
 		}

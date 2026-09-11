@@ -1007,6 +1007,8 @@ class Conexao_Event_Importer_Engine {
 				return new Conexao_Source_Ivvcc( $source );
 			case 'motorsport_ireland':
 				return new Conexao_Source_Motorsport_Ireland( $source );
+			case 'mondello_park':
+				return new Conexao_Source_Mondello_Park( $source );
 			case 'eventbrite':
 				return new Conexao_Source_Eventbrite( $source );
 			default:
