@@ -828,6 +828,7 @@
 	gap: 10px;
 	width: 100%;
 	height: 100%;
+	aspect-ratio: 16 / 10;
 	color: var(--conexao-text-muted, #6b7280);
 	background: var(--conexao-surface-muted, #eef1f4);
 }
@@ -934,19 +935,52 @@
 	flex-shrink: 0;
 }
 
-.leisure-card-cta {
-	display: inline-flex;
+.leisure-card-actions {
+	display: flex;
+	flex-wrap: wrap;
 	align-items: center;
-	gap: 8px;
-	font-weight: 600;
-	font-size: 0.9rem;
-	color: var(--conexao-primary, #0E6B3A);
-	text-decoration: none;
+	gap: 10px;
 	margin-top: auto;
 }
 
+.leisure-card-cta {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	font-weight: 600;
+	font-size: 0.9rem;
+	line-height: 1.2;
+	color: var(--conexao-primary, #0E6B3A);
+	background: var(--color-primary-50, #f0faf4);
+	border-radius: var(--conexao-radius-sm, 8px);
+	padding: 6px 12px;
+	text-decoration: none;
+	transition: background var(--conexao-transition, 250ms ease),
+		    color var(--conexao-transition, 250ms ease),
+		    border-color var(--conexao-transition, 250ms ease);
+}
+
 .leisure-card-cta:hover {
-	text-decoration: underline;
+	background: var(--conexao-primary, #0E6B3A);
+	color: var(--conexao-white, #ffffff);
+	text-decoration: none;
+}
+
+/* Secondary "Ver no mapa" action: bordered pill to sit beside the primary
+   filled CTA without competing as a co-primary. Shares the base
+   .leisure-card-cta component (height, radius, typography, padding,
+   transition); only overrides the visual secondary variant. */
+.leisure-card-cta--map {
+	border: 1px solid var(--conexao-border);
+	background: transparent;
+}
+
+.leisure-card-cta--map:hover {
+	border-color: var(--conexao-primary, #0E6B3A);
+	background: transparent;
+	color: var(--conexao-primary, #0E6B3A);
+	text-decoration: none;
 }
 
 /* --- Single location page --- */

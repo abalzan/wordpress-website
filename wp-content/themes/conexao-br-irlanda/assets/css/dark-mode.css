@@ -677,6 +677,24 @@
   color: var(--conexao-white);
 }
 
+/* Secondary "Ver no mapa" action (dark mode): bordered pill that reads as
+   the secondary variant beside the filled primary CTA. The primary dark-mode
+   rule sets a filled --color-primary-50 background on .leisure-card-cta
+   (which this element also carries), so we explicitly reset the background to
+   transparent here. Border uses the dark-adjusted green for contrast. */
+[data-theme="dark"] .leisure-card-cta--map {
+  border-color: var(--color-border);
+  color: var(--conexao-primary-text);
+  background: transparent;
+}
+
+[data-theme="dark"] .leisure-card-cta--map:hover {
+  border-color: var(--conexao-primary-text);
+  color: var(--conexao-white);
+  background: transparent;
+  text-decoration: none;
+}
+
 /* Card date badges */
 [data-theme="dark"] .card-date-badge,
 [data-theme="dark"] .event-card-date-badge,

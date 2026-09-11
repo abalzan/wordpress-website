@@ -6,7 +6,7 @@
  * site's existing directory cards (event-card / provider-card). Each card
  * shows the location image (or an "Image pending" state when no properly
  * licensed image is available), category, place name, short description,
- * county, optional useful attributes and a "Ver local" CTA.
+ * county, optional useful attributes and a primary CTA.
  *
  * @package Conexao_BR_Irlanda
  */
@@ -21,13 +21,32 @@ $leisure_permalink   = get_permalink();
 // Returns only actual display names, never empty labels.
 $leisure_attr_names = conexao_leisure_attributes( $leisure_id );
 
-// Destination: when an external official website (or Discover Ireland page)
-// is configured, the card links directly there. Otherwise it uses the normal
-// internal /lazer/{slug}/ page.
+// Destination classification:
+// 1. External record (official/Discover Ireland URL, no _leisure_internal_page
+//    flag) → link directly to the external destination.
+// 2. Internal record WITH the _leisure_internal_page flag (Phase 3B — explicitly
+//    preserved useful internal page) → link to the internal /lazer/{slug}/ page.
+// 3. Internal record WITHOUT the flag → no primary destination. The card shows
+//    no primary CTA and the image/title are not linked, avoiding navigation to
+//    a low-value intermediate page.
 $leisure_external      = function_exists( 'conexao_leisure_external_url' ) ? conexao_leisure_external_url( $leisure_id ) : '';
-$leisure_link_url      = $leisure_external ? $leisure_external : $leisure_permalink;
 $leisure_is_external   = (bool) $leisure_external;
 $leisure_has_official  = (bool) get_post_meta( $leisure_id, '_leisure_official_website', true );
+$leisure_internal_page = (bool) get_post_meta( $leisure_id, '_leisure_internal_page', true );
+
+if ( $leisure_is_external ) {
+	$leisure_link_url = $leisure_external;
+} elseif ( $leisure_internal_page ) {
+	$leisure_link_url = $leisure_permalink;
+} else {
+	$leisure_link_url = '';
+}
+
+// Phase 3D — resolved map URL for the secondary "Ver no mapa" action.
+// Uses the existing canonical helper (functions.php): a stored _leisure_map_url
+// wins, otherwise a deterministic Google Maps search URL is derived at render
+// time from title/town/county. Empty when no sufficient location data exists.
+$leisure_map_url = function_exists( 'conexao_leisure_map_url' ) ? conexao_leisure_map_url( $leisure_id ) : '';
 
 // Image handling: the image is always a local WordPress Media Library
 // attachment (featured thumbnail). When no image is available, the card
@@ -62,7 +81,9 @@ $leisure_show_attribution = $leisure_has_image && ( $leisure_attribution || $lei
 <article id="post-<?php the_ID(); ?>" <?php post_class( 'leisure-card' . ( $leisure_is_external ? ' leisure-card--external' : '' ) ); ?>>
 
 <div class="leisure-card-image-wrapper">
+<?php if ( $leisure_link_url ) : ?>
 <a class="leisure-card-image" href="<?php echo esc_url( $leisure_link_url ); ?>"<?php echo $leisure_is_external ? ' rel="noopener"' : ''; ?> tabindex="-1" aria-hidden="true">
+<?php endif; ?>
 <?php if ( $leisure_has_image ) : ?>
 <?php echo $leisure_img_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 <?php else : ?>
@@ -75,7 +96,9 @@ $leisure_show_attribution = $leisure_has_image && ( $leisure_attribution || $lei
 <span class="leisure-card-image-pending-text"><?php esc_html_e( 'Imagem pendente', 'conexao-br-irlanda' ); ?></span>
 </span>
 <?php endif; ?>
+<?php if ( $leisure_link_url ) : ?>
 </a>
+<?php endif; ?>
 
 <?php if ( $leisure_show_attribution ) : ?>
 <div class="leisure-card-attribution">
@@ -102,7 +125,7 @@ echo esc_html( $display_attr );
 <span class="leisure-card-category"><?php echo esc_html( $leisure_categories[0]->name ); ?></span>
 <?php endif; ?>
 
-<h3 class="leisure-card-title"><a href="<?php echo esc_url( $leisure_link_url ); ?>"<?php echo $leisure_is_external ? ' rel="noopener"' : ''; ?>><?php the_title(); ?></a></h3>
+<h3 class="leisure-card-title"><?php if ( $leisure_link_url ) : ?><a href="<?php echo esc_url( $leisure_link_url ); ?>"<?php echo $leisure_is_external ? ' rel="noopener"' : ''; ?>><?php the_title(); ?></a><?php else : ?><?php the_title(); ?><?php endif; ?></h3>
 
 <div class="leisure-card-details">
 <?php if ( $leisure_counties && ! is_wp_error( $leisure_counties ) ) : ?>
@@ -169,28 +192,41 @@ foreach ( $leisure_card_attr_priority as $priority_slug ) {
 <?php endif; ?>
 <?php endif; ?>
 
+<div class="leisure-card-actions">
+<?php
+// Primary CTA — rendered only when a primary destination exists:
+// 1. External + official website → "Ver site oficial" (external-link icon)
+// 2. External without official (Discover Ireland only) → "Ver mais" (arrow icon)
+// 3. Internal with _leisure_internal_page flag → "Ver mais" (arrow icon)
+// 4. Internal without the flag → no primary CTA (low-value page, no navigation)
+?>
+<?php if ( $leisure_link_url ) : ?>
 <a href="<?php echo esc_url( $leisure_link_url ); ?>" class="leisure-card-cta"<?php echo $leisure_is_external ? ' rel="noopener"' : ''; ?>>
-<?php if ( $leisure_is_external ) : ?>
-<?php esc_html_e( $leisure_has_official ? 'Ver site oficial' : 'Ver mais', 'conexao-br-irlanda' ); ?>
-<?php if ( $leisure_has_official ) : ?>
+<?php if ( $leisure_is_external && $leisure_has_official ) : ?>
+<?php esc_html_e( 'Ver site oficial', 'conexao-br-irlanda' ); ?>
 <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
 <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
 <polyline points="15 3 21 3 21 9"></polyline>
 <line x1="10" y1="14" x2="21" y2="3"></line>
 </svg>
 <?php else : ?>
-<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-<line x1="5" y1="12" x2="19" y2="12"></line>
-<polyline points="12 5 19 12 12 19"></polyline>
-</svg>
-<?php endif; ?>
-<?php else : ?>
-<?php esc_html_e( 'Ver local', 'conexao-br-irlanda' ); ?>
+<?php esc_html_e( 'Ver mais', 'conexao-br-irlanda' ); ?>
 <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
 <line x1="5" y1="12" x2="19" y2="12"></line>
 <polyline points="12 5 19 12 12 19"></polyline>
 </svg>
 <?php endif; ?>
 </a>
+<?php endif; ?>
+<?php if ( $leisure_map_url ) : ?>
+<a href="<?php echo esc_url( $leisure_map_url ); ?>" class="leisure-card-cta leisure-card-cta--map" target="_blank" rel="noopener noreferrer" aria-label="<?php echo esc_attr( sprintf( __( 'Ver localização de %s no mapa (abre em nova aba)', 'conexao-br-irlanda' ), get_the_title() ) ); ?>">
+<?php esc_html_e( 'Ver no mapa', 'conexao-br-irlanda' ); ?>
+<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"></path>
+<circle cx="12" cy="10" r="3"></circle>
+</svg>
+</a>
+<?php endif; ?>
+</div>
 </div>
 </article>
