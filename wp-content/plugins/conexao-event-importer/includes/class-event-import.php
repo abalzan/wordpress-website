@@ -56,9 +56,9 @@ class Conexao_Event_Import {
 			return new WP_Error( 'invalid_upload', __( 'The uploaded file could not be read.', 'conexao-event-importer' ) );
 		}
 
-		// Check file size (limit to 64 MB — export v1.1 embeds base64 images,
+		// Check file size (limit to 500 MB — export v1.1 embeds base64 images,
 		// which roughly triples the JSON size compared to URL-only exports).
-		if ( filesize( $file['tmp_name'] ) > 64 * MB_IN_BYTES ) {
+		if ( filesize( $file['tmp_name'] ) > 500 * MB_IN_BYTES ) {
 			return new WP_Error( 'file_too_large', __( 'The uploaded file is too large. Maximum size is 64 MB.', 'conexao-event-importer' ) );
 		}
 
