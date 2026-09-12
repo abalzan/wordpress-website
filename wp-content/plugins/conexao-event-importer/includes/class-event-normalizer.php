@@ -115,6 +115,16 @@ class Conexao_Event_Normalizer {
 		$organizer = isset( $raw['organizer'] ) ? trim( (string) $raw['organizer'] ) : '';
 		$price     = isset( $raw['price'] ) ? trim( (string) $raw['price'] ) : '';
 
+		// Optional source-scoped reference list (e.g. Mondello Park
+		// raw['_ticket_show_ids'] — secondary Ticketsolve show IDs).
+		// Forwarded verbatim as a string array when the source supplies it;
+		// sources that do not set the key get no key in the normalized
+		// payload and no post meta is written.
+		$ticket_show_ids = null;
+		if ( isset( $raw['_ticket_show_ids'] ) && is_array( $raw['_ticket_show_ids'] ) ) {
+			$ticket_show_ids = array_values( array_map( 'strval', $raw['_ticket_show_ids'] ) );
+		}
+
 		// Required-field validation. Events failing these checks are skipped
 		// by the importer — they are never created as posts.
 		$validation_errors = array();
@@ -151,7 +161,7 @@ class Conexao_Event_Normalizer {
 			$start_time_combo = $start_time ? $start_time . ' — ' . $end_time : $end_time;
 		}
 
-		return array(
+		$result = array(
 			'title'        => $title,
 			'description'  => $description,
 			'start_date'   => $start_date,
@@ -178,6 +188,12 @@ class Conexao_Event_Normalizer {
 			'source_url'        => $source_url,
 			'validation_errors' => $validation_errors,
 		);
+
+		if ( null !== $ticket_show_ids ) {
+			$result['_ticket_show_ids'] = $ticket_show_ids;
+		}
+
+		return $result;
 	}
 
 	/**

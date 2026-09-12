@@ -1284,6 +1284,18 @@ class Conexao_Event_Importer_Engine {
 		foreach ( $meta as $key => $value ) {
 			update_post_meta( $post_id, $key, $value );
 		}
+
+		// Optional source-scoped reference list (e.g. Mondello Park
+		// secondary Ticketsolve show IDs). Written only when the source
+		// forwarded the key; never written for other sources. Reference
+		// metadata only — never a URL field.
+		if ( ! empty( $normalized['_ticket_show_ids'] ) && is_array( $normalized['_ticket_show_ids'] ) ) {
+			update_post_meta(
+				$post_id,
+				'_ticket_show_ids',
+				array_values( array_map( 'strval', $normalized['_ticket_show_ids'] ) )
+			);
+		}
 	}
 
 	/**

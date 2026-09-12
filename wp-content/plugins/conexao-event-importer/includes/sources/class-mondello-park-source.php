@@ -221,13 +221,27 @@ class Conexao_Source_Mondello_Park extends Conexao_Source_Base {
 				'county'                => isset( $this->config['county'] ) ? trim( (string) $this->config['county'] ) : '',
 				'description'           => '',
 				'image'                 => '',
-				'_source_categories'    => $categories,
+				// Documented category mapping (§Category mapping): REST
+				// `event_category` term IDs → Conexão category names via
+				// map_categories(). The primary mapped name is forwarded
+				// as raw['category'] so the normalizer + engine
+				// term-assignment path applies it. Unknown IDs are logged
+				// and skipped by the mapping (never guessed); a
+				// category-less event forwards an empty string and the
+				// term path stays a no-op. The full mapped list is
+				// preserved in raw['_source_categories'].
+				'category'              => '',
+				'_source_categories'    => array(),
 				'_ticket_show_ids'      => array(),
 				'_detail_engaged'       => false,
 				'_no_detail'            => false,
 				'_redirect'             => '',
 				'_parse_warnings'       => array(),
 			);
+
+			$mapped_categories = self::map_categories( $categories );
+			$raw['category']           = isset( $mapped_categories[0] ) ? (string) $mapped_categories[0] : '';
+			$raw['_source_categories'] = $mapped_categories;
 
 			$events[] = $raw;
 		}

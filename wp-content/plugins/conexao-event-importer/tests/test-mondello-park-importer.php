@@ -628,6 +628,14 @@ try {
 			'mocked event identity unchanged (slug primary)'
 		);
 		mp_test_assert(
+			isset( $wired_events[0]['category'] ) && 'Car Racing' === $wired_events[0]['category'],
+			'raw[\'category\'] = Car Racing forwarded via documented map_categories (wiring gap fixed)'
+		);
+		mp_test_assert(
+			isset( $wired_events[0]['_source_categories'] ) && array( 'Car Racing' ) === $wired_events[0]['_source_categories'],
+			'raw[\'_source_categories\'] preserves the full mapped list'
+		);
+		mp_test_assert(
 			! isset( $wired_events[0]['address'] ) || '' === trim( (string) $wired_events[0]['address'] ),
 			'no address is invented at the source level'
 		);
