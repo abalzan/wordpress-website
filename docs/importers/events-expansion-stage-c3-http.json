@@ -1,0 +1,241 @@
+{
+  "generated_at": "2026-09-12T21:26:03+0100",
+  "archive": [
+    {
+      "name": "archive_unfiltered",
+      "path": "/eventos/",
+      "http": 200,
+      "seconds": 0.135,
+      "cards_page1": 10,
+      "max_page": 82,
+      "empty_state": false,
+      "has_filters": true
+    },
+    {
+      "name": "county_laois",
+      "path": "/eventos/?county=laois",
+      "http": 200,
+      "seconds": 0.116,
+      "cards_page1": 10,
+      "max_page": 4,
+      "empty_state": false,
+      "has_filters": true
+    },
+    {
+      "name": "county_cork",
+      "path": "/eventos/?county=cork",
+      "http": 200,
+      "seconds": 0.11,
+      "cards_page1": 10,
+      "max_page": 38,
+      "empty_state": false,
+      "has_filters": true
+    },
+    {
+      "name": "county_dublin",
+      "path": "/eventos/?county=dublin",
+      "http": 200,
+      "seconds": 0.113,
+      "cards_page1": 10,
+      "max_page": 34,
+      "empty_state": false,
+      "has_filters": true
+    },
+    {
+      "name": "city_portlaoise",
+      "path": "/eventos/?cidade=portlaoise",
+      "http": 200,
+      "seconds": 0.108,
+      "cards_page1": 10,
+      "max_page": 2,
+      "empty_state": false,
+      "has_filters": true
+    },
+    {
+      "name": "city_cork",
+      "path": "/eventos/?cidade=cork",
+      "http": 200,
+      "seconds": 0.106,
+      "cards_page1": 10,
+      "max_page": 38,
+      "empty_state": false,
+      "has_filters": true
+    },
+    {
+      "name": "city_dublin",
+      "path": "/eventos/?cidade=dublin",
+      "http": 200,
+      "seconds": 0.121,
+      "cards_page1": 10,
+      "max_page": 33,
+      "empty_state": false,
+      "has_filters": true
+    },
+    {
+      "name": "county_laois_city_portlaoise",
+      "path": "/eventos/?county=laois&cidade=portlaoise",
+      "http": 200,
+      "seconds": 0.105,
+      "cards_page1": 10,
+      "max_page": 2,
+      "empty_state": false,
+      "has_filters": true
+    },
+    {
+      "name": "county_kildare_city_maynooth",
+      "path": "/eventos/?county=kildare&cidade=maynooth",
+      "http": 200,
+      "seconds": 0.094,
+      "cards_page1": 0,
+      "max_page": 1,
+      "empty_state": true,
+      "has_filters": true
+    },
+    {
+      "name": "category_rally",
+      "path": "/eventos/?categoria=rally",
+      "http": 200,
+      "seconds": 0.109,
+      "cards_page1": 10,
+      "max_page": 2,
+      "empty_state": false,
+      "has_filters": true
+    },
+    {
+      "name": "county_kildare_category_rally",
+      "path": "/eventos/?county=kildare&categoria=rally",
+      "http": 200,
+      "seconds": 0.105,
+      "cards_page1": 2,
+      "max_page": 1,
+      "empty_state": false,
+      "has_filters": true
+    },
+    {
+      "name": "and_proof_cork_county_laois_city",
+      "path": "/eventos/?county=cork&cidade=portlaoise",
+      "http": 200,
+      "seconds": 0.09,
+      "cards_page1": 0,
+      "max_page": 1,
+      "empty_state": true,
+      "has_filters": true
+    },
+    {
+      "name": "and_proof_laois_county_cork_city",
+      "path": "/eventos/?county=laois&cidade=cork",
+      "http": 200,
+      "seconds": 0.101,
+      "cards_page1": 0,
+      "max_page": 1,
+      "empty_state": true,
+      "has_filters": true
+    },
+    {
+      "name": "unknown_county",
+      "path": "/eventos/?county=atlantis",
+      "http": 200,
+      "seconds": 0.085,
+      "cards_page1": 0,
+      "max_page": 1,
+      "empty_state": true,
+      "has_filters": true
+    }
+  ],
+  "detail": [
+    {
+      "id": 12042,
+      "slug": "iplan-expert-advanced-workshop-portlaoise",
+      "source": "eventbrite_laois",
+      "url": "https://conexaobr.ie/eventos/iplan-expert-advanced-workshop-portlaoise/",
+      "http": 200,
+      "seconds": 0.085,
+      "title_tag": "iPLAN Expert/Advanced Workshop &#8211; Portlaoise | Eventos na Irlanda | Conexão BR",
+      "has_event_jsonld": true,
+      "has_venue_text": true,
+      "external_source_links": [],
+      "has_og_image": true,
+      "label": "eventbrite_laois",
+      "found": true
+    },
+    {
+      "id": 13511,
+      "slug": "homecoming",
+      "source": "eventbrite_cork",
+      "url": "https://conexaobr.ie/eventos/homecoming/",
+      "http": 200,
+      "seconds": 0.08,
+      "title_tag": "Homecoming | Eventos na Irlanda | Conexão BR",
+      "has_event_jsonld": true,
+      "has_venue_text": true,
+      "external_source_links": [],
+      "has_og_image": true,
+      "label": "eventbrite_cork",
+      "found": true
+    },
+    {
+      "id": 13515,
+      "slug": "dance-before-dark-at-house",
+      "source": "eventbrite_dublin",
+      "url": "https://conexaobr.ie/eventos/dance-before-dark-at-house/",
+      "http": 200,
+      "seconds": 0.089,
+      "title_tag": "Dance Before Dark at HOUSE | Eventos na Irlanda | Conexão BR",
+      "has_event_jsonld": true,
+      "has_venue_text": true,
+      "external_source_links": [],
+      "has_og_image": true,
+      "label": "eventbrite_dublin",
+      "found": true
+    },
+    {
+      "id": 12027,
+      "slug": "birr-district-mc-turkey-chaser-autotest",
+      "source": "motorsport_ireland",
+      "url": "https://conexaobr.ie/eventos/birr-district-mc-turkey-chaser-autotest/",
+      "http": 200,
+      "seconds": 0.089,
+      "title_tag": "Birr &#038; District MC Turkey Chaser Autotest | Eventos na Irlanda | Conexão BR",
+      "has_event_jsonld": true,
+      "has_venue_text": false,
+      "external_source_links": [],
+      "has_og_image": true,
+      "label": "non_pilot_motorsport_ireland",
+      "found": true
+    },
+    {
+      "id": 11551,
+      "slug": "wildlife-photography-experience",
+      "source": "eventbrite",
+      "url": "https://conexaobr.ie/eventos/wildlife-photography-experience/",
+      "http": 200,
+      "seconds": 0.086,
+      "title_tag": "Wildlife Photography Experience | Eventos na Irlanda | Conexão BR",
+      "has_event_jsonld": true,
+      "has_venue_text": false,
+      "external_source_links": [],
+      "has_og_image": true,
+      "label": "non_pilot_legacy_eventbrite",
+      "found": true
+    }
+  ],
+  "sitemap": {
+    "url": "https://conexaobr.ie/sitemap_index.xml",
+    "index_http": 200,
+    "index_seconds": 0.612,
+    "event_url_count": 828,
+    "sample_event_indexable": true
+  },
+  "external_links": {
+    "archive_cta_total": 10,
+    "archive_cta_external_eventbrite": 10,
+    "sample": [
+      "https://www.eventbrite.ie/e/the-path-of-love-befriending-ourselves-and-others-tickets-1985103556174",
+      "https://www.eventbrite.ie/e/laois-pride-after-party-2026-tickets-1996816288271",
+      "https://www.eventbrite.ie/e/wildlife-photography-experience-tickets-1998361982484",
+      "https://www.eventbrite.ie/e/womans-circle-tickets-1980801875732",
+      "https://www.eventbrite.com/e/big-vegan-hike-picnic-glenbarrow-eco-walk-co-laois-tickets-1999282710406"
+    ],
+    "all_target_blank_noopener": true
+  }
+}
