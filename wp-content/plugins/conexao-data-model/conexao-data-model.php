@@ -351,6 +351,19 @@ final class Conexao_Data_Model {
 					'single'       => true,
 					'type'         => $type,
 					'show_in_rest' => true,
+					// All keys are protected (underscore-prefixed). Without an
+					// explicit auth_callback, register_meta() defaults to
+					// __return_false for protected keys, which makes every
+					// REST write fail with 403 rest_cannot_update — even for
+					// administrators. Allow exactly what the wp-admin editor
+					// allows: users who can edit the leisure record.
+					// Same pattern as register_agency_meta() /
+					// register_permit_employer_meta(); required so the
+					// production image + attribution refresh can run through
+					// the REST API (scripts/update-lazer-images-rest.py).
+					'auth_callback' => function ( $allowed, $meta_key, $object_id ) {
+						return current_user_can( 'edit_post', $object_id );
+					},
 				)
 			);
 		}

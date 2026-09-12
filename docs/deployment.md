@@ -94,6 +94,29 @@ Import via WordPress Admin → Appearance → Themes → Add New → Upload Them
 3. ZIP contains: `data.json` + actual image files from Media Library
 4. Matching: stable UUID → slug → title (never WordPress post IDs)
 
+### Lazer image refresh (REST, no PHP/CLI)
+
+Production is WordPress.com (no SSH/SFTP/CLI), so image corrections cannot be
+run from a PHP script. Use the standard-library REST script instead — it
+uploads the replacement image to the Media Library, sets the featured image
+(the theme's hero/card image) and rewrites the `_leisure_image_*` attribution
+meta using the exact same format as the PHP importer:
+
+```bash
+export WP_USERNAME='…'
+export WP_APPLICATION_PASSWORD='…'   # wp-admin → Perfil → Senhas de aplicativo
+python3 scripts/update-lazer-images-rest.py --dry-run   # preview
+python3 scripts/update-lazer-images-rest.py             # apply
+```
+
+Notes:
+- Matches listings by **slug**; idempotent (skips when `_leisure_image_source_url`
+  already matches); never deletes the old attachment unless `--delete-old`.
+- Requires the `conexao-data-model` update that adds an `auth_callback` to
+  `register_leisure_meta()` — without it the attribution meta is read-only over
+  REST (`403 rest_cannot_update`). Deploy that plugin update first.
+
+
 ### Events
 
 1. Export: WordPress Admin → Event Import → Export Events → JSON download
