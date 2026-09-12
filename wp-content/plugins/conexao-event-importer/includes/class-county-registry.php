@@ -72,7 +72,7 @@ class Conexao_County_Registry {
 			'slug'             => 'dublin',
 			'jurisdiction'     => 'ROI',
 			'eb_slug'          => 'ireland--dublin',
-			'eb_region_labels' => array( 'Dublin' ),
+			'eb_region_labels' => array( 'Dublin City', 'Dunlaoghaire-Rathdown', 'Fingal' ),
 			'hw_where'         => array( 'dublin-city', 'dublin-dunlaoghaire-rathdown', 'dublin-fingal', 'dublin-south' ),
 		),
 		'galway'     => array(

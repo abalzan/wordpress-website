@@ -95,6 +95,7 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 
 		$all_events = array();
 		$seen_ids   = array();
+		$events     = array();
 		$started_at = microtime( true );
 
 		foreach ( $hw_where as $where ) {
