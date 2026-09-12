@@ -364,9 +364,14 @@ class Conexao_Source_Motorsport_Ireland extends Conexao_Source_Base {
 		}
 
 		// eventlist-description sometimes holds rescheduling notes.
+		// IMPORTANT: the Squarespace description container nests inline
+		// `<style id="container-styles">` blocks (page-builder CSS) beside
+		// the actual text block, and DOMNode::textContent would include
+		// that CSS verbatim (regression: "#block-… { --stroke-style: … }"
+		// imported as event content). Extract visible text only.
 		$desc_nodes = $xpath->query( './/*[contains(concat(" ", normalize-space(@class), " "), " eventlist-description ")]', $card );
 		if ( $desc_nodes && $desc_nodes->length > 0 ) {
-			$desc_text = self::clean_text( $desc_nodes->item( 0 )->textContent );
+			$desc_text = self::extract_visible_text( $desc_nodes->item( 0 ) );
 			if ( '' !== $desc_text ) {
 				$event['description'] = $desc_text;
 			}
@@ -611,7 +616,10 @@ class Conexao_Source_Motorsport_Ireland extends Conexao_Source_Base {
 		$content = $xpath->query( '//*[contains(concat(" ", normalize-space(@class), " "), " eventitem-column-content ")]' );
 
 		if ( $content && $content->length > 0 ) {
-			$text = self::clean_text( $content->item( 0 )->textContent );
+			// Same leak guard as the listing card: the detail column can
+			// nest Squarespace page-builder `<style>`/`<script>` blocks
+			// beside the event text — never import them as body text.
+			$text = self::extract_visible_text( $content->item( 0 ) );
 			// The detail content column often contains only the category
 			// meta line ("Posted In: Club, Type") — that is taxonomy data,
 			// not a description (already captured from the card). Never
@@ -641,6 +649,124 @@ class Conexao_Source_Motorsport_Ireland extends Conexao_Source_Base {
 		$dom->loadHTML( '<?xml encoding="UTF-8">' . $html );
 		libxml_clear_errors();
 		return $dom;
+	}
+
+	/**
+	 * Extract visible text from a Squarespace content container.
+	 *
+	 * Motorsport Ireland (Squarespace 6) nests page-builder markup inside
+	 * its content containers:
+	 *
+	 *   - inline `<style id="container-styles">` /
+	 *     `<style id="override-container-styles">` blocks carrying the
+	 *     block's design CSS (`#block-{hex} { --stroke-style: … }`, `@media`,
+	 *     `mix-blend-mode`, …),
+	 *   - occasional `<script>` blocks (data-block-scripts payloads).
+	 *
+	 * `DOMNode::textContent` would include all of that verbatim, which
+	 * imported raw CSS as event content (2026-09 leak). This helper:
+	 *
+	 *  1. removes `<style>`/`<script>` descendants from a detached clone,
+	 *  2. prefers the narrowest visible-text container
+	 *     (`.sqs-html-content` — Squarespace's actual text block) when
+	 *     present, so structured layout wrappers never enter the text,
+	 *  3. runs the text-level CSS safety net (strip_css_leak) over the
+	 *     result.
+	 *
+	 * Legitimate plain text (event names, venue/club names, cancellation
+	 * and reschedule notices, ticket/organizer instructions) is preserved.
+	 *
+	 * @param DOMNode|null $container Content container node.
+	 * @return string Cleaned visible text ('' when nothing visible).
+	 */
+	public static function extract_visible_text( $container ) {
+		if ( ! $container instanceof DOMNode ) {
+			return '';
+		}
+
+		$clone = $container->cloneNode( true );
+
+		foreach ( array( 'style', 'script' ) as $tag ) {
+			$list = $clone->getElementsByTagName( $tag );
+			while ( $list->length > 0 ) {
+				$node = $list->item( 0 );
+				if ( $node->parentNode ) {
+					$node->parentNode->removeChild( $node );
+				}
+			}
+		}
+
+		// Narrowest boundary: every Squarespace text block (in document
+		// order) holds exactly the visible event text — including
+		// rescheduling notices ("Rescheduled from … to …"). Structured
+		// layout wrappers and design blocks never enter the text.
+		$texts    = array();
+		$all      = $clone->getElementsByTagName( '*' );
+		$contents = array();
+		foreach ( $all as $el ) {
+			$class = (string) $el->getAttribute( 'class' );
+			if ( preg_match( '/(^|\s)sqs-html-content(\s|$)/', $class ) ) {
+				$contents[] = $el;
+			}
+		}
+		foreach ( $contents as $el ) {
+			$t = self::clean_text( self::strip_css_leak( $el->textContent ) );
+			if ( '' !== $t ) {
+				$texts[] = $t;
+			}
+		}
+		if ( $texts ) {
+			return self::clean_text( implode( ' ', $texts ) );
+		}
+
+		// Fallback: whatever visible text remains (no text block present),
+		// with design markup stripped.
+		return self::clean_text( self::strip_css_leak( $clone->textContent ) );
+	}
+
+	/**
+	 * Text-level CSS/page-builder leak safety net.
+	 *
+	 * Applied only to Motorsport Ireland extracted description text (never
+	 * to other sources). DOM-level `<style>`/`<script>` removal is the
+	 * primary defense; this net removes residual CSS fragments that can
+	 * survive text-only capture (e.g. unparseable/CDATA edge cases):
+	 *
+	 *  - `#block-{hex} … { … }` Squarespace block-selector rules
+	 *    (applied repeatedly, because nested blocks close in stages),
+	 *  - `@media … { … }` wrappers,
+	 *  - CSS custom-property declarations (`--tweak-text-block-*: …;`),
+	 *  - stray rule braces.
+	 *
+	 * @param string $text Raw extracted text.
+	 * @return string Text without CSS/page-builder fragments.
+	 */
+	public static function strip_css_leak( $text ) {
+		$text = (string) $text;
+		if ( '' === $text ) {
+			return '';
+		}
+
+		// Residual style/script elements (string-level belt-and-braces).
+		$text = preg_replace( '#<(style|script)\b[^>]*>.*?</\1>#is', ' ', $text );
+		$text = preg_replace( '#</?(style|script)\b[^>]*>#i', ' ', $text );
+
+		// Squarespace block-selector rules, repeated to unwind nesting.
+		do {
+			$before = $text;
+			$text   = preg_replace( '/#block-[0-9a-zA-Z_]+\s*[^{}]*\{[^{}]*\}/', ' ', $text );
+		} while ( null !== $text && $text !== $before );
+
+		// Media-query wrappers left over around removed rules.
+		$text = preg_replace( '/@media[^{}]*\{[^{}]*\}/', ' ', $text );
+
+		// CSS custom-property declarations.
+		$text = preg_replace( '/--[a-zA-Z][a-zA-Z0-9-]*\s*:\s*[^;{}]*;?/', ' ', $text );
+
+		// Orphan rule braces from partially removed blocks.
+		$text = str_replace( array( '{', '}' ), ' ', $text );
+
+		return (string) $text;
 	}
 
 	/**

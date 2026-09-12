@@ -383,6 +383,120 @@ $e = mi_parse_one( $single );
 test_assert( '' === $e['organizer'], 'single link: organizer stays empty (no mis-attribution)' );
 test_assert( 'Rally' === $e['category'], 'single link: discipline stored as category' );
 
+
+// 31. CSS/page-builder leak regression (2026-09 incident).
+//
+// Root cause: Squarespace nests inline `<style id="container-styles">` /
+// `<style id="override-container-styles">` blocks and page-builder script
+// data inside the eventlist-description container; DOMNode::textContent
+// included that CSS verbatim and it was imported as event content
+// ("#block-… { --stroke-style: none;--stroke-thickness: 6px; }" rendered
+// on the public events page).
+//
+// This fixture reproduces the REAL markup pattern from the live source
+// (see tests/fixtures/mi-listing.html) with legitimate event content.
+test_section( '31: CSS/page-builder leak regression (real Squarespace markup)' );
+
+$leak_description_html =
+	  '<div class="sqs-layout sqs-grid-12 columns-12" data-layout-label="Post Body" data-type="item" id="item-849555a57974f020f868">'
+	. '<div class="row sqs-row"><div class="col sqs-col-12 span-12">'
+	. '<div class="sqs-block html-block" data-block-type="1337" id="block-849555a57974f020f868">'
+	. '<div class="sqs-block-content"><div class="sqs-text-block-container">'
+	. '<div class="sqs-html-content" data-sqsp-text-block-content><p style="white-space:pre-wrap;">National Championship</p></div>'
+	. '<style id="container-styles">#block-849555a57974f020f868 {'
+	. ' --stroke-style: none;--stroke-thickness: 6px;'
+	. ' } #block-849555a57974f020f868 .sqs-html-content { --tweak-text-block-padding: 6% 6% 6% 6%; }'
+	. ' #block-849555a57974f020f868 { mix-blend-mode: var(--tweak-text-block-blend); }</style>'
+	. '<style id="override-container-styles">@media screen and (max-width: 767px) { #block-849555a57974f020f868 .sqs-html-content { } }</style>'
+	. '<script data-block-scripts="payload">window.__sqsBlockConfig = { "id": "block-849555a57974f020f868" };</script>'
+	. '</div></div></div>'
+	. '<div class="sqs-block-content"><div class="sqs-html-content" data-sqsp-text-block-content><p style="white-space:pre-wrap;">Rescheduled from June 28th 2026 to August 30th 2026</p></div></div>'
+	. '</div></div></div>';
+
+$leaky = mi_card_fixture( array(
+	'id'          => '849555a57974f020f868',
+	'description' => $leak_description_html,
+) );
+$e = mi_parse_one( $leaky );
+$desc = isset( $e['description'] ) ? $e['description'] : '';
+test_assert( false !== strpos( $desc, 'National Championship' ), 'leak: legitimate event text preserved' );
+test_assert( false !== strpos( $desc, 'Rescheduled from June 28th 2026 to August 30th 2026' ), 'leak: rescheduling notice preserved' );
+foreach ( array(
+	'--stroke-style',
+	'--stroke-thickness',
+	'#block-',
+	'@media',
+	'mix-blend-mode',
+	'--tweak-text-block-',
+	'window.__sqsBlockConfig',
+	'<style',
+	'<script',
+) as $forbidden ) {
+	test_assert( false === strpos( $desc, $forbidden ), "leak: output does not contain {$forbidden}" );
+}
+
+// The full saved live listing snapshot must parse with zero CSS leakage.
+test_section( '31b: full live fixture sweep — no CSS in any normalized card' );
+$fixture_html  = file_get_contents( __DIR__ . '/fixtures/mi-listing.html' );
+$fixture_cards = Conexao_Source_Motorsport_Ireland::parse_listing_cards( $fixture_html, 'https://www.motorsportireland.com/events' );
+test_assert( count( $fixture_cards ) > 0, 'fixture sweep: cards parsed from saved live snapshot' );
+$leaked_cards = 0;
+foreach ( $fixture_cards as $fc ) {
+	$fd = isset( $fc['description'] ) ? $fc['description'] : '';
+	foreach ( array( '--stroke-style', '--stroke-thickness', '#block-' ) as $frag ) {
+		if ( false !== strpos( $fd, $frag ) ) {
+			$leaked_cards++;
+		}
+	}
+}
+test_assert( 0 === $leaked_cards, 'fixture sweep: 0 cards contain CSS/page-builder fragments' );
+$almc = null;
+foreach ( $fixture_cards as $fc ) {
+	if ( '6989d37d36d357787c3539f4' === $fc['source_id'] ) {
+		$almc = $fc;
+		break;
+	}
+}
+test_assert( null !== $almc && 'National Championship' === $almc['description'], 'fixture sweep: ALMC card description is exactly the clean visible text' );
+
+// Detail-page description: same guard applies to eventitem-column-content.
+test_section( '31c: detail-page description leak guard' );
+$leaky_detail = mi_detail_fixture( array(
+	'desc' => '<div class="sqs-html-content"><p>Annual grass surface autocross event organised by ALMC.</p></div>'
+		. '<style>#block-abc123 { --stroke-style: none;--stroke-thickness: 6px; }</style>'
+		. '<script>window.__x = 1;</script>',
+) );
+$detail_desc = Conexao_Source_Motorsport_Ireland::parse_detail_description( $leaky_detail );
+test_assert( 'Annual grass surface autocross event organised by ALMC.' === $detail_desc, 'detail: legitimate description preserved' );
+foreach ( array( '--stroke-style', '--stroke-thickness', '#block-', '<style', '<script', 'window.__x' ) as $forbidden ) {
+	test_assert( false === strpos( $detail_desc, $forbidden ), "detail: output does not contain {$forbidden}" );
+}
+
+// Text-level safety net: strips CSS fragments, preserves legit plain text.
+test_section( '31d: strip_css_leak safety net' );
+$raw    = 'National Championship #block-849555a57974f020f868 { --stroke-style: none;--stroke-thickness: 6px; } '
+	. '@media screen and (max-width: 767px) { #block-849555a57974f020f868 { } } '
+	. '--tweak-text-block-padding: 6% 6% 6% 6%; Signal postponed - check official site';
+$netted = Conexao_Source_Motorsport_Ireland::strip_css_leak( $raw );
+foreach ( array( '--stroke-style', '--stroke-thickness', '#block-', '@media', '--tweak-text-block-padding' ) as $forbidden ) {
+	test_assert( false === strpos( $netted, $forbidden ), "safety net: strips {$forbidden}" );
+}
+test_assert( false !== strpos( $netted, 'National Championship' ), 'safety net: keeps event text' );
+test_assert( false !== strpos( $netted, 'Signal postponed - check official site' ), 'safety net: keeps cancellation/notice text' );
+test_assert( '' === Conexao_Source_Motorsport_Ireland::strip_css_leak( '' ), 'safety net: empty in, empty out' );
+
+// Hidden page-builder metadata with NO visible text must yield empty.
+test_section( '31e: design-markup-only description yields empty text' );
+$design_only = mi_card_fixture( array(
+	'id'          => 'cafe0000000000000000001',
+	'description' => '<div class="sqs-layout sqs-grid-12 columns-12" data-type="item" id="item-cafe0000000000000000001">'
+		. '<style id="container-styles">#block-cafe1 { --stroke-style: none;--stroke-thickness: 6px; }</style>'
+		. '<script>window.__sqsBlockConfig = 1;</script>'
+		. '</div>',
+) );
+$e = mi_parse_one( $design_only );
+test_assert( '' === $e['description'], 'design-only markup yields empty description (never CSS)' );
+
 echo "\n========================================\n";
 echo "Motorsport Ireland Test Results: {$passed} passed, {$failed} failed\n";
 echo "========================================\n";
