@@ -5,6 +5,13 @@
  * Converts raw Eventbrite event data (from `search_data.events.results`)
  * into the application's raw event format expected by the main normalizer.
  *
+ * The raw event is expected to carry `county` and `source` keys injected by
+ * the source handler (Stage B: configuration-driven county identity).
+ * Falls back to 'eventbrite' for source when not provided (legacy compat).
+ *
+ * Venue data is read from `primary_venue` (current Eventbrite payload shape)
+ * with a fallback to the legacy `venue` key for backward compatibility.
+ *
  * @package Conexao_Event_Importer
  */
 
@@ -20,7 +27,7 @@ class Conexao_Eventbrite_Normalizer {
 	 */
 	public function normalize( $raw ) {
 		$event = array(
-			'source'      => 'eventbrite',
+			'source'      => $this->get( $raw, 'source' ) ? $this->get( $raw, 'source' ) : 'eventbrite',
 			'title'       => $this->get( $raw, 'name' ),
 			'url'         => $this->get( $raw, 'url' ),
 			'start_date'  => '',
@@ -34,8 +41,8 @@ class Conexao_Eventbrite_Normalizer {
 			'organizer'   => $this->get_organizer_name( $raw ),
 			'price'       => $this->get_price( $raw ),
 			'category'    => $this->get_category( $raw ),
-			'county'      => 'Laois',
-			'town'        => $this->get_location_part( $raw, 'locality' ),
+			'county'      => $this->get( $raw, 'county' ),
+			'town'        => $this->get_town( $raw ),
 			'venue'       => $this->get_venue_name( $raw ),
 			'address'     => $this->get_address( $raw ),
 			'is_online'   => ! empty( $raw['is_online_event'] ),
@@ -68,17 +75,66 @@ class Conexao_Eventbrite_Normalizer {
 	}
 
 	/**
-	 * Get the event description, preferring full_description.
+	 * Get the event description, preferring the short summary.
+	 *
+	 * Stage A recommendation: prefer `summary` over `full_description`
+	 * to keep content boundaries tight (no large editorial copy).
 	 *
 	 * @param array $raw Raw Eventbrite event.
 	 * @return string
 	 */
 	protected function get_description( $raw ) {
-		$desc = $this->get( $raw, 'full_description' );
+		$desc = $this->get( $raw, 'summary' );
 		if ( empty( $desc ) ) {
-			$desc = $this->get( $raw, 'summary' );
+			$desc = $this->get( $raw, 'full_description' );
 		}
 		return $desc;
+	}
+
+	/**
+	 * Get the town/city from the raw event.
+	 *
+	 * Tries locations[].locality first, then primary_venue address city,
+	 * then legacy venue address city. Never guesses.
+	 *
+	 * @param array $raw Raw Eventbrite event.
+	 * @return string
+	 */
+	protected function get_town( $raw ) {
+		$town = $this->get_location_part( $raw, 'locality' );
+		if ( empty( $town ) ) {
+			$town = $this->get_venue_address_part( $raw, 'city' );
+		}
+		return $town;
+	}
+
+	/**
+	 * Get a venue address part from primary_venue (with venue fallback).
+	 *
+	 * @param array  $raw  Raw Eventbrite event.
+	 * @param string $part Address part key (e.g. 'city', 'region', 'postal_code').
+	 * @return string
+	 */
+	protected function get_venue_address_part( $raw, $part ) {
+		// Prefer primary_venue (current payload shape).
+		if ( ! empty( $raw['primary_venue'] ) && is_array( $raw['primary_venue'] ) ) {
+			$address = isset( $raw['primary_venue']['address'] ) ? $raw['primary_venue']['address'] : array();
+			if ( is_array( $address ) && ! empty( $address[ $part ] ) ) {
+				return trim( (string) $address[ $part ] );
+			}
+			// Some payloads expose address parts directly on primary_venue.
+			if ( ! empty( $raw['primary_venue'][ $part ] ) ) {
+				return trim( (string) $raw['primary_venue'][ $part ] );
+			}
+		}
+		// Legacy fallback: venue key.
+		if ( ! empty( $raw['venue'] ) && is_array( $raw['venue'] ) ) {
+			$address = isset( $raw['venue']['address'] ) ? $raw['venue']['address'] : array();
+			if ( is_array( $address ) && ! empty( $address[ $part ] ) ) {
+				return trim( (string) $address[ $part ] );
+			}
+		}
+		return '';
 	}
 
 	/**
@@ -228,10 +284,21 @@ class Conexao_Eventbrite_Normalizer {
 	/**
 	 * Get the venue name from the raw event.
 	 *
+	 * Reads `primary_venue` (current Eventbrite payload shape) first,
+	 * falls back to legacy `venue` key for backward compatibility.
+	 *
 	 * @param array $raw Raw Eventbrite event.
 	 * @return string
 	 */
 	protected function get_venue_name( $raw ) {
+		// Prefer primary_venue (current payload shape).
+		if ( ! empty( $raw['primary_venue'] ) && is_array( $raw['primary_venue'] ) ) {
+			$name = $this->get( $raw['primary_venue'], 'name' );
+			if ( ! empty( $name ) ) {
+				return $name;
+			}
+		}
+		// Legacy fallback: venue key.
 		if ( ! empty( $raw['venue'] ) && is_array( $raw['venue'] ) ) {
 			return $this->get( $raw['venue'], 'name' );
 		}
@@ -241,23 +308,46 @@ class Conexao_Eventbrite_Normalizer {
 	/**
 	 * Get the venue address from the raw event.
 	 *
+	 * Reads `primary_venue` (current Eventbrite payload shape) first,
+	 * falls back to legacy `venue` key for backward compatibility.
+	 *
+	 * Address parts: address_1, address_2, city, region, postal_code.
+	 * Eircode (postal_code) is preserved when supplied.
+	 * No fabricated address: only emits parts that are actually present.
+	 *
 	 * @param array $raw Raw Eventbrite event.
 	 * @return string
 	 */
 	protected function get_address( $raw ) {
-		if ( ! empty( $raw['venue'] ) && is_array( $raw['venue'] ) ) {
-			$address = isset( $raw['venue']['address'] ) ? $raw['venue']['address'] : array();
-			if ( is_array( $address ) ) {
-				$parts = array();
-				foreach ( array( 'address_1', 'address_2', 'city', 'region', 'postal_code' ) as $field ) {
-					if ( ! empty( $address[ $field ] ) ) {
-						$parts[] = $address[ $field ];
-					}
-				}
-				return implode( ', ', $parts );
+		$address = null;
+
+		// Prefer primary_venue (current payload shape).
+		if ( ! empty( $raw['primary_venue'] ) && is_array( $raw['primary_venue'] ) ) {
+			$address = isset( $raw['primary_venue']['address'] ) ? $raw['primary_venue']['address'] : array();
+			if ( ! is_array( $address ) || empty( $address ) ) {
+				$address = null;
 			}
 		}
-		return '';
+
+		// Legacy fallback: venue key.
+		if ( null === $address && ! empty( $raw['venue'] ) && is_array( $raw['venue'] ) ) {
+			$address = isset( $raw['venue']['address'] ) ? $raw['venue']['address'] : array();
+			if ( ! is_array( $address ) ) {
+				$address = null;
+			}
+		}
+
+		if ( null === $address ) {
+			return '';
+		}
+
+		$parts = array();
+		foreach ( array( 'address_1', 'address_2', 'city', 'region', 'postal_code' ) as $field ) {
+			if ( ! empty( $address[ $field ] ) ) {
+				$parts[] = $address[ $field ];
+			}
+		}
+		return implode( ', ', $parts );
 	}
 
 	/**

@@ -290,6 +290,71 @@ class Conexao_Event_Sources {
 	}
 
 	/**
+	 * Seed the county source registrations from the authoritative county registry.
+	 *
+	 * Generates 26 Eventbrite + 26 Heritage Week source configs (52 total).
+	 * ALL sources start as `inactive`. Idempotent: running twice does not
+	 * create duplicates or overwrite unrelated source configuration.
+	 *
+	 * Only inserts sources whose IDs do not already exist in the option,
+	 * so previously activated/edited sources are never reset.
+	 *
+	 * @return array{inserted:int, skipped:int, ids:array} Summary of the seeding run.
+	 */
+	public function seed_county_sources() {
+		$existing = get_option( self::OPTION_KEY, array() );
+		if ( ! is_array( $existing ) ) {
+			$existing = array();
+		}
+
+		$county_sources = Conexao_County_Registry::get_all_county_sources();
+
+		$inserted = 0;
+		$skipped  = 0;
+		$new_ids  = array();
+
+		foreach ( $county_sources as $id => $source ) {
+			if ( isset( $existing[ $id ] ) ) {
+				$skipped++;
+				continue;
+			}
+			$existing[ $id ] = $source;
+			$new_ids[] = $id;
+			$inserted++;
+		}
+
+		if ( $inserted > 0 ) {
+			update_option( self::OPTION_KEY, $existing, false );
+		}
+
+		return array(
+			'inserted' => $inserted,
+			'skipped'  => $skipped,
+			'ids'      => $new_ids,
+		);
+	}
+
+	/**
+	 * Get all county source IDs currently registered.
+	 *
+	 * @return array List of county source IDs.
+	 */
+	public function get_county_source_ids() {
+		$sources = get_option( self::OPTION_KEY, array() );
+		if ( ! is_array( $sources ) ) {
+			return array();
+		}
+
+		$county_ids = array();
+		foreach ( Conexao_County_Registry::get_all_county_sources() as $id => $source ) {
+			if ( isset( $sources[ $id ] ) ) {
+				$county_ids[] = $id;
+			}
+		}
+		return $county_ids;
+	}
+
+	/**
 	 * Register the admin menu.
 	 */
 	public function register_admin_menu() {
@@ -734,6 +799,7 @@ class Conexao_Event_Sources {
 			'facebook'     => __( 'Facebook', 'conexao-event-importer' ),
 			'instagram'    => __( 'Instagram', 'conexao-event-importer' ),
 			'eventbrite'   => __( 'Eventbrite', 'conexao-event-importer' ),
+			'heritage_week' => __( 'National Heritage Week', 'conexao-event-importer' ),
 		);
 		return isset( $labels[ $type ] ) ? $labels[ $type ] : ucfirst( $type );
 	}
@@ -899,6 +965,7 @@ class Conexao_Event_Sources {
 							<option value="facebook"><?php esc_html_e( 'Facebook', 'conexao-event-importer' ); ?></option>
 							<option value="instagram"><?php esc_html_e( 'Instagram', 'conexao-event-importer' ); ?></option>
 							<option value="eventbrite"><?php esc_html_e( 'Eventbrite', 'conexao-event-importer' ); ?></option>
+							<option value="heritage_week"><?php esc_html_e( 'National Heritage Week', 'conexao-event-importer' ); ?></option>
 						</select>
 					</td>
 				</tr>
@@ -973,6 +1040,7 @@ class Conexao_Event_Sources {
 							<option value="facebook" <?php selected( $source['type'], 'facebook' ); ?>><?php esc_html_e( 'Facebook', 'conexao-event-importer' ); ?></option>
 							<option value="instagram" <?php selected( $source['type'], 'instagram' ); ?>><?php esc_html_e( 'Instagram', 'conexao-event-importer' ); ?></option>
 							<option value="eventbrite" <?php selected( $source['type'], 'eventbrite' ); ?>><?php esc_html_e( 'Eventbrite', 'conexao-event-importer' ); ?></option>
+							<option value="heritage_week" <?php selected( $source['type'], 'heritage_week' ); ?>><?php esc_html_e( 'National Heritage Week', 'conexao-event-importer' ); ?></option>
 						</select>
 					</td>
 				</tr>

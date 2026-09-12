@@ -1,25 +1,17 @@
 <?php
 /**
- * National Heritage Week source handler.
+ * National Heritage Week county source handler.
  *
- * Fetches and parses events from:
- * https://www.heritageweek.ie/event-listings?q=&where[]=laois
+ * Fetches and parses events from the Heritage Week website for a configured
+ * county. The handler is configuration-driven: county and `where[]` filter
+ * values are read from the source config.
  *
- * The Heritage Week website does not expose a public API, RSS/XML feed,
- * JSON endpoint or JSON-LD structured data (verified during investigation).
- * This adapter therefore implements a robust server-side HTML scraper that:
+ * One implementation backs many county sources (e.g. heritage_week_laois,
+ * heritage_week_cork, heritage_week_dublin). Multiple `where[]` values are
+ * walked within a single source registration (relevant for Galway, Dublin).
  *
- *  1. Walks every pagination page (not just the first).
- *  2. Extracts event cards (article.item-summary) including the native
- *     data-id, title, original event URL, image, location, dates/times and
- *     organiser.
- *  3. Visits each individual event detail page to enrich the record with
- *     the full description, complete location, event type and organiser
- *     contact details.
- *  4. Normalizes everything into the shared raw event array consumed by the
- *     central importer (deduplication, update, category assignment).
- *
- * A failure on one event never stops the rest of the import.
+ * Legacy fallback: when config['id'] is missing, returns 'heritage_week' for
+ * backward compatibility with the existing Laois source record.
  *
  * @package Conexao_Event_Importer
  */
@@ -32,75 +24,174 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 	const MAX_PAGES   = 50;
 
 	/**
-	 * Get the source slug.
+	 * Soft time budget (seconds) for the whole source walk.
+	 *
+	 * Recommended by Stage A audit (§13.6) to prevent unbounded detail-page
+	 * enrichment from stalling large-county imports.
+	 *
+	 * @var int
+	 */
+	const TIME_BUDGET_SECONDS = 120;
+
+	/**
+	 * Get the source ID.
+	 *
+	 * Returns the configured source ID so each county source has an independent
+	 * identity (dedup/log/health). Falls back to 'heritage_week' only when the
+	 * config ID is missing (legacy compatibility).
 	 *
 	 * @return string
 	 */
 	public function get_id() {
+		if ( ! empty( $this->config['id'] ) ) {
+			return $this->config['id'];
+		}
 		return 'heritage_week';
 	}
 
 	/**
-	 * Fetch raw event listings from the Heritage Week Laois listing.
+	 * Get the configured county name.
 	 *
-	 * Walks all pagination pages and enriches each event from its detail
-	 * page. A failure on one event never stops the rest of the import.
+	 * @return string
+	 */
+	protected function get_county() {
+		return isset( $this->config['county'] ) ? $this->config['county'] : '';
+	}
+
+	/**
+	 * Get the configured Heritage Week where[] filter values.
+	 *
+	 * @return array
+	 */
+	protected function get_hw_where() {
+		if ( ! empty( $this->config['hw_where'] ) && is_array( $this->config['hw_where'] ) ) {
+			return $this->config['hw_where'];
+		}
+		// Fallback: single where[] from the URL.
+		return array( 'laois' );
+	}
+
+	/**
+	 * Build a Heritage Week listing URL for a given where[] value.
+	 *
+	 * @param string $where The where[] filter value.
+	 * @return string
+	 */
+	protected function build_hw_url( $where ) {
+		return 'https://www.heritageweek.ie/event-listings?q=&where%5B%5D=' . urlencode( $where );
+	}
+
+	/**
+	 * Fetch raw event listings from the Heritage Week county listing.
+	 *
+	 * Walks all configured where[] filter values and all pagination pages,
+	 * and enriches each event from its detail page. A failure on one event
+	 * never stops the rest of the import.
 	 *
 	 * @return array[]
 	 */
 	public function fetch_events() {
-		$base_url = isset( $this->config['url'] ) && $this->config['url'] ? $this->config['url'] : self::DEFAULT_URL;
+		$hw_where = $this->get_hw_where();
 
-		// Fetch the first page first so we can detect the event year.
-		$first_html = $this->fetch_html( $base_url );
-		if ( empty( $first_html ) ) {
-			return array();
-		}
-		$year = $this->detect_year( $first_html );
+		$all_events = array();
+		$seen_ids   = array();
+		$started_at = microtime( true );
 
-		$events   = array();
-		$page_url = $base_url;
-		$page     = 1;
-		$html     = $first_html;
+		foreach ( $hw_where as $where ) {
+			$base_url = $this->build_hw_url( $where );
 
-		while ( $html && $page <= self::MAX_PAGES ) {
-			$dom = $this->parse_html( $html );
-			if ( ! $dom ) {
-				Conexao_Import_Log::add( $this->get_id(), 'error', 'Não foi possível analisar o HTML da página de eventos do Heritage Week.', array( 'url' => $page_url ) );
-				break;
+			// Fetch the first page first so we can detect the event year.
+			$first_html = $this->fetch_html_or_empty( $base_url );
+			if ( empty( $first_html ) ) {
+				Conexao_Import_Log::add(
+					$this->get_id(),
+					'error',
+					sprintf( 'Failed to fetch Heritage Week listing for where[]=%s: %s', $where, $base_url )
+				);
+				continue;
 			}
+			$year = $this->detect_year( $first_html );
 
-			$xpath = new DOMXPath( $dom );
-			$cards = $xpath->query( '//article[contains(concat(" ", normalize-space(@class), " "), " item-summary ")]' );
+			$page_url = $base_url;
+			$page     = 1;
+			$html     = $first_html;
 
-			if ( $cards && $cards->length > 0 ) {
-				foreach ( $cards as $card ) {
-					try {
-						$event = $this->extract_listing_event( $card, $xpath, $page_url, $year );
-						if ( empty( $event['title'] ) || empty( $event['url'] ) ) {
-							continue;
+			while ( $html && $page <= self::MAX_PAGES ) {
+				// Time budget check.
+				if ( ( microtime( true ) - $started_at ) > self::TIME_BUDGET_SECONDS ) {
+					Conexao_Import_Log::add(
+						$this->get_id(),
+						'warning',
+						sprintf(
+							/* translators: 1: where[] value, 2: last completed page */
+							__( 'Heritage Week import reached its time budget after where[]=%1$s page %2$d — remaining will be picked up by the next run.', 'conexao-event-importer' ),
+							$where,
+							$page - 1
+						)
+					);
+					break 2; // Exit both the while and foreach loops.
+				}
+
+				$dom = $this->parse_html( $html );
+				if ( ! $dom ) {
+					Conexao_Import_Log::add(
+						$this->get_id(),
+						'error',
+						sprintf( 'Não foi possível analisar o HTML da página de eventos do Heritage Week (where[]=%s, page %d).', $where, $page ),
+						array( 'url' => $page_url )
+					);
+					break;
+				}
+
+				$xpath = new DOMXPath( $dom );
+				$cards = $xpath->query( '//article[contains(concat(" ", normalize-space(@class), " "), " item-summary ")]' );
+
+				if ( $cards && $cards->length > 0 ) {
+					foreach ( $cards as $card ) {
+						// Time budget check (per event for detail enrichment).
+						if ( ( microtime( true ) - $started_at ) > self::TIME_BUDGET_SECONDS ) {
+							break 3; // Exit all loops.
 						}
-						$event    = $this->enrich_event( $event );
-						$events[] = $event;
-					} catch ( Exception $e ) {
-						Conexao_Import_Log::add( $this->get_id(), 'error', 'Erro ao processar evento do Heritage Week: ' . $e->getMessage() );
+
+						try {
+							$event = $this->extract_listing_event( $card, $xpath, $page_url, $year );
+							if ( empty( $event['title'] ) || empty( $event['url'] ) ) {
+								continue;
+							}
+							$event    = $this->enrich_event( $event );
+							$events[] = $event;
+						} catch ( Exception $e ) {
+							Conexao_Import_Log::add( $this->get_id(), 'error', 'Erro ao processar evento do Heritage Week: ' . $e->getMessage() );
+						}
 					}
 				}
-			}
 
-			$next = $this->get_next_page_url( $xpath, $page_url );
-			if ( ! $next ) {
-				break;
-			}
+				$next = $this->get_next_page_url( $xpath, $page_url );
+				if ( ! $next ) {
+					break;
+				}
 
-			$page++;
-			$page_url = $next;
-			// Pagination pages are optional: a failed page ends the walk but
-			// keeps the events already parsed from earlier pages.
-			$html     = $this->fetch_html_or_empty( $page_url );
+				$page++;
+				$page_url = $next;
+				$html     = $this->fetch_html_or_empty( $page_url );
+			}
 		}
 
-		return $events;
+		// Deduplicate across where[] values by source_id.
+		foreach ( $events as $event ) {
+			$id = isset( $event['source_id'] ) ? (string) $event['source_id'] : '';
+			if ( empty( $id ) ) {
+				$all_events[] = $event;
+				continue;
+			}
+			if ( isset( $seen_ids[ $id ] ) ) {
+				continue;
+			}
+			$seen_ids[ $id ] = true;
+			$all_events[] = $event;
+		}
+
+		return $all_events;
 	}
 
 	/**
@@ -145,8 +236,8 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 			'image'       => '',
 			'source_id'   => '',
 			'organizer'   => '',
-			'category'    => 'Heritage',
-			'county'      => 'Laois',
+			'category'    => ! empty( $this->config['category'] ) ? $this->config['category'] : 'Heritage',
+			'county'      => $this->get_county(),
 		);
 
 		// Native Heritage Week event ID (strong dedup identifier).

@@ -2,12 +2,15 @@
 /**
  * Eventbrite discovery client.
  *
- * Fetches Eventbrite's public Laois discovery pages and returns the raw HTML.
+ * Fetches Eventbrite's public county discovery pages and returns the raw HTML.
  * Implements conservative request handling with retry/backoff for transient
  * failures (429, 500, 503).
  *
  * This client ONLY performs server-side GET requests to the public discovery
  * page. It does NOT use Eventbrite's undocumented internal search API.
+ *
+ * Each client instance is bound to a source ID so log entries are attributed
+ * to the correct county source (independent log streams per source).
  *
  * @package Conexao_Event_Importer
  */
@@ -17,7 +20,7 @@ defined( 'ABSPATH' ) || exit;
 class Conexao_Eventbrite_Client {
 
 	/**
-	 * Default discovery URL for Laois events.
+	 * Default discovery URL for Laois events (legacy fallback).
 	 *
 	 * @var string
 	 */
@@ -52,6 +55,22 @@ class Conexao_Eventbrite_Client {
 	const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
 
 	/**
+	 * Source ID for log attribution.
+	 *
+	 * @var string
+	 */
+	protected $source_id;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param string $source_id Source ID for log attribution (e.g. 'eventbrite_laois').
+	 */
+	public function __construct( $source_id = 'eventbrite' ) {
+		$this->source_id = $source_id;
+	}
+
+	/**
 	 * Fetch a discovery page.
 	 *
 	 * @param string $url  Page URL.
@@ -76,7 +95,7 @@ class Conexao_Eventbrite_Client {
 
 			if ( is_wp_error( $response ) ) {
 				Conexao_Import_Log::add(
-					'eventbrite',
+					$this->source_id,
 					'error',
 					sprintf(
 						/* translators: %s: error message */
@@ -103,7 +122,7 @@ class Conexao_Eventbrite_Client {
 				case 401:
 					// Authentication required — do not retry, do not attempt internal API.
 					Conexao_Import_Log::add(
-						'eventbrite',
+						$this->source_id,
 						'error',
 						__( 'Eventbrite returned 401 Unauthorized. The discovery page may require authentication.', 'conexao-event-importer' ),
 						array(
@@ -116,7 +135,7 @@ class Conexao_Eventbrite_Client {
 
 				case 404:
 					Conexao_Import_Log::add(
-						'eventbrite',
+						$this->source_id,
 						'error',
 						sprintf(
 							/* translators: %s: URL */
@@ -135,7 +154,7 @@ class Conexao_Eventbrite_Client {
 				case 500:
 				case 503:
 					Conexao_Import_Log::add(
-						'eventbrite',
+						$this->source_id,
 						'warning',
 						sprintf(
 							/* translators: %d: HTTP status code */
@@ -154,7 +173,7 @@ class Conexao_Eventbrite_Client {
 
 				default:
 					Conexao_Import_Log::add(
-						'eventbrite',
+						$this->source_id,
 						'error',
 						sprintf(
 							/* translators: %d: HTTP status code */
@@ -172,7 +191,7 @@ class Conexao_Eventbrite_Client {
 		}
 
 		Conexao_Import_Log::add(
-			'eventbrite',
+			$this->source_id,
 			'error',
 			sprintf(
 				/* translators: %d: number of retries */

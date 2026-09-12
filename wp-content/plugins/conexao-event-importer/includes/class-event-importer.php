@@ -1000,6 +1000,11 @@ class Conexao_Event_Importer_Engine {
 			return new Conexao_Source_Eventbrite( $source );
 		}
 
+		// Heritage Week county sources use the Heritage Week handler.
+		if ( 'heritage_week' === $source_type ) {
+			return new Conexao_Source_Heritage_Week( $source );
+		}
+
 		// Fall back to source ID-based routing for legacy/website sources.
 		// Normalize the source ID for matching (convert hyphens to underscores).
 		$normalized_id = str_replace( '-', '_', $source['id'] );

@@ -1,9 +1,9 @@
 # Conexão BR Irlanda — Event Importer (Local Tools)
 
 - **Path**: `wp-content/plugins/conexao-event-importer/`
-- **Version**: 1.6.0
+- **Version**: 1.7.0
 - **Requires Plugins**: `conexao-data-model`, `conexao-event-runtime`
-- **Purpose**: Local-only event import/export tooling. Fetches events from external sources (Laois Tourism, National Heritage Week, Eventbrite Laois) into the **local** WordPress installation, downloads all images into the local Media Library, then exports the complete event data as JSON for import into the production WordPress.com site.
+- **Purpose**: Local-only event import/export tooling. Fetches events from external sources (Laois Tourism, National Heritage Week, Eventbrite multi-county) into the **local** WordPress installation, downloads all images into the local Media Library, then exports the complete event data as JSON for import into the production WordPress.com site.
 - **Not needed on production.** All production-critical event behavior (meta/taxonomy registration, `_event_status` public query gate, status admin UI) lives in the separate [Event Runtime](conexao-event-runtime.md) plugin. It is safe to deactivate this plugin on production.
 
 ## Runtime / tooling split (v1.5.0)
@@ -129,10 +129,82 @@ production-side fetching. Everything is manual/on-demand.
 | `class-icalendar-source.php` | `Conexao_Source_ICalendar` | iCalendar/Webcal feeds |
 | `class-laois-tourism-source.php` | `Conexao_Source_Laois_Tourism` | HTML scraping |
 | `class-heritage-week-source.php` | `Conexao_Source_Heritage_Week` | HTML scraping (paginated + detail enrichment) |
+| `class-county-registry.php` | `Conexao_County_Registry` | Authoritative 26-county registry (EB slugs, region labels, HW `where[]`) |
 | `class-ivvcc-source.php` | `Conexao_Source_Ivvcc` | IVVCC EventON calendar scraping + detail enrichment (ships inactive; see [importers/ivvcc-importer.md](../importers/ivvcc-importer.md)) |
 | `class-motorsport-ireland-source.php` | `Conexao_Source_Motorsport_Ireland` | Motorsport Ireland Squarespace master-calendar scraping + JSON-LD date enrichment (ships inactive; see [importers/motorsport-ireland.md](../importers/motorsport-ireland.md)) |
 | `class-eventbrite-source.php` | `Conexao_Source_Eventbrite` | Eventbrite: official v3 API (when token set) or discovery-page scraping |
 
+## Default Sources (seeded on activation)
+
+On activation, the plugin seeds these default sources:
+
+| Source ID | Name | Type | Status |
+|---|---|---|---|
+| `laois_tourism` | Laois Tourism | `icalendar` | active |
+| `heritage_week` | National Heritage Week (Laois) | `website` | active |
+| `eventbrite` | Eventbrite — Laois | `eventbrite` | active |
+| `ivvcc` | IVVCC | `website` | inactive |
+| `motorsport_ireland` | Motorsport Ireland | `website` | inactive |
+| `mondello_park` | Mondello Park | `website` | inactive |
+
+### County Source Registry (v1.7.0)
+
+The multi-county expansion introduces 52 additional source registrations
+(26 Eventbrite + 26 Heritage Week) for the 26 Republic of Ireland counties.
+These are seeded via `Conexao_Event_Sources::seed_county_sources()` and are
+**all inactive by default**.
+
+**Source key scheme:**
+- Eventbrite: `eventbrite_<county-slug>` (e.g. `eventbrite_cork`)
+- Heritage Week: `heritage_week_<county-slug>` (e.g. `heritage_week_dublin`)
+
+**Authoritative registry:** `Conexao_County_Registry` (`includes/class-county-registry.php`)
+is the single source of truth. It defines, per county: display name, slug,
+jurisdiction, Eventbrite URL slug, Eventbrite accepted region labels, and
+Heritage Week `where[]` filter values.
+
+**Region-label policy:** An Eventbrite event is accepted only when its region
+matches one of the configured `region_labels`. Unknown regions are REJECTED +
+LOGGED (never silently accepted).
+
+**Heritage Week `where[]` policy:** Multiple `where[]` values are walked within
+a single source registration (relevant for Galway, Dublin). The 2026 form values
+are audited in `docs/importers/events-expansion-stage-a-audit.md`.
+
+**Seeding:** `seed_county_sources()` is idempotent — running it twice does not
+create duplicates. It only inserts sources whose IDs do not already exist.
+
+**Eventbrite pagination cap:** `page_count` is capped at 49 (~980 events).
+Large counties (Dublin, Cork) may report much higher `object_count` values.
+The deep tail is unreachable via the public page. This is a documented
+provider limitation, not a bug.
+
+**Eventbrite API removal:** The v3 Events Search API path (`/v3/events/search/`)
+was removed in Stage B (verified 404). The HTML discovery path is the only
+supported mechanism.
+
+**Venue normalization fix:** The normalizer reads `primary_venue` (current
+payload shape) with `venue` as a legacy fallback. This fixes the Stage A
+regression where venue name/address were silently empty.
+
+**Dry-run workflow:**
+```bash
+# Seed county sources (idempotent)
+wp eval 'require "wp-content/plugins/conexao-event-importer/includes/class-event-sources.php"; (new Conexao_Event_Sources())->seed_county_sources();'
+
+# Dry-run a single county source
+wp conexao-events import --source=eventbrite_cork --dry-run
+wp conexao-events import --source=heritage_week_dublin --dry-run
+
+# Live probe (read-only verification)
+php wp-content/plugins/conexao-event-importer/tests/probe-county-sources.php
+
+# Full dry-run (all 52 sources)
+php wp-content/plugins/conexao-event-importer/tests/dry-run-county-sources.php
+```
+
+**Local-only restriction:** All county sources must remain local-only.
+Eventbrite discovery blocks datacenter IPs (405). No production-side fetching.
 ## Default Sources (seeded on activation)
 
 | ID | Name | Type |
