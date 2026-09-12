@@ -181,7 +181,7 @@ $mock_client = new class() extends Conexao_Eventbrite_Client {
 };
 
 // Test the source with mock client.
-$source = new class( array( 'url' => 'https://www.eventbrite.ie/d/ireland--laois/all-events/' ) ) extends Conexao_Source_Eventbrite {
+$source = new class( array( 'id' => 'eventbrite', 'county' => 'Laois', 'region_labels' => array( 'Laois' ), 'url' => 'https://www.eventbrite.ie/d/ireland--laois/all-events/' ) ) extends Conexao_Source_Eventbrite {
 	public $client;
 
 	public function fetch_events() {
@@ -233,15 +233,18 @@ $source = new class( array( 'url' => 'https://www.eventbrite.ie/d/ireland--laois
 			$unique_events[] = $event;
 		}
 
-		// Filter for Laois and normalize.
+		// Filter for the configured county and normalize.
 		$raw_events = array();
 		foreach ( $unique_events as $event ) {
-			if ( ! $this->is_laois_event( $event ) ) {
+			$region_check = $this->is_county_event( $event );
+			if ( ! $region_check['accepted'] ) {
 				continue;
 			}
 			if ( ! empty( $event['is_online_event'] ) ) {
 				continue;
 			}
+			$event['county'] = $this->get_county();
+			$event['source'] = $this->get_id();
 			$raw_events[] = $normalizer->normalize( $event );
 		}
 
@@ -339,9 +342,9 @@ test_assert( count( $unique ) === 1, 'Dedup test: only 1 unique event after dedu
 test_section( 'Location Test' );
 
 $source_ref = new ReflectionClass( 'Conexao_Source_Eventbrite' );
-$method = $source_ref->getMethod( 'is_laois_event' );
+$method = $source_ref->getMethod( 'is_county_event' );
 $method->setAccessible( true );
-$source_instance = new Conexao_Source_Eventbrite( array() );
+$source_instance = new Conexao_Source_Eventbrite( array( 'county' => 'Laois', 'region_labels' => array( 'Laois' ) ) );
 
 // Laois event.
 $laois_event = array(
@@ -352,7 +355,7 @@ $laois_event = array(
 		array( 'type' => 'locality', 'name' => 'Portlaoise' ),
 	),
 );
-test_assert( $method->invoke( $source_instance, $laois_event ) === true, 'Location test: region=Laois is accepted' );
+test_assert( $method->invoke( $source_instance, $laois_event )['accepted'] === true, 'Location test: region=Laois is accepted' );
 
 // Dublin event.
 $dublin_event = array(
@@ -363,7 +366,7 @@ $dublin_event = array(
 		array( 'type' => 'locality', 'name' => 'Dublin' ),
 	),
 );
-test_assert( $method->invoke( $source_instance, $dublin_event ) === false, 'Location test: region=Dublin is rejected' );
+test_assert( $method->invoke( $source_instance, $dublin_event )['accepted'] === false, 'Location test: region=Dublin is rejected' );
 
 // Missing region.
 $missing_region = array(
@@ -372,10 +375,10 @@ $missing_region = array(
 		array( 'type' => 'country', 'name' => 'Ireland' ),
 	),
 );
-test_assert( $method->invoke( $source_instance, $missing_region ) === false, 'Location test: missing region is rejected' );
+test_assert( $method->invoke( $source_instance, $missing_region )['accepted'] === false, 'Location test: missing region is rejected' );
 
 // No locations at all.
-test_assert( $method->invoke( $source_instance, array() ) === false, 'Location test: no locations is rejected' );
+test_assert( $method->invoke( $source_instance, array() )['accepted'] === false, 'Location test: no locations is rejected' );
 
 // ---------------------------------------------------------------------------
 // Test 5: Online event test
@@ -408,9 +411,9 @@ test_assert( $normalized_online['is_online'] === true, 'Online event test: is_on
 
 // The source should skip online events.
 $source_ref2 = new ReflectionClass( 'Conexao_Source_Eventbrite' );
-$method2 = $source_ref2->getMethod( 'is_laois_event' );
+$method2 = $source_ref2->getMethod( 'is_county_event' );
 $method2->setAccessible( true );
-test_assert( $method2->invoke( $source_instance, $online_event ) === true, 'Online event test: still Laois region' );
+test_assert( $method2->invoke( $source_instance, $online_event )['accepted'] === true, 'Online event test: still Laois region' );
 
 // ---------------------------------------------------------------------------
 // Test 6: Missing fields test
@@ -624,6 +627,9 @@ test_section( 'Normalizer Test' );
 $full_event = array(
 	'id' => '3333333333',
 	'name' => 'Full Event',
+	// Injected by the source handler (Stage B) before normalization.
+	'source' => 'eventbrite',
+	'county' => 'Laois',
 	'full_description' => 'Full description here.',
 	'summary' => 'Summary here.',
 	'url' => 'https://www.eventbrite.ie/e/full-event-tickets-3333333333',
@@ -672,7 +678,8 @@ $normalized_full = $normalizer->normalize( $full_event );
 test_assert( $normalized_full['source'] === 'eventbrite', 'Normalizer test: source is eventbrite' );
 test_assert( $normalized_full['source_id'] === '3333333333', 'Normalizer test: source_id is correct' );
 test_assert( $normalized_full['title'] === 'Full Event', 'Normalizer test: title is correct' );
-test_assert( $normalized_full['description'] === 'Full description here.', 'Normalizer test: description uses full_description' );
+// Stage A/B: the normalizer prefers the short `summary` over `full_description`.
+test_assert( $normalized_full['description'] === 'Summary here.', 'Normalizer test: description prefers summary' );
 test_assert( $normalized_full['start_date'] === '2026-12-20', 'Normalizer test: start_date is correct' );
 test_assert( $normalized_full['start_time'] === '10:00', 'Normalizer test: start_time is correct' );
 test_assert( $normalized_full['end_date'] === '2026-12-20', 'Normalizer test: end_date is correct' );

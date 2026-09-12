@@ -1,7 +1,7 @@
 # Conexão BR Irlanda — Event Runtime
 
 - **Path**: `wp-content/plugins/conexao-event-runtime/`
-- **Version**: 1.2.0
+- **Version**: 1.2.1
 - **Requires Plugins**: `conexao-data-model`
 - **Purpose**: **Production dependency.** Owns all event runtime behavior the live site needs: event meta registration, the `conexao_town` taxonomy, the `_event_status` visibility gate on public event queries, and the event status admin UI. Contains **no** import/export tooling.
 
@@ -36,7 +36,7 @@ conexao-event-runtime`, and it refuses to boot if the runtime's
 |---|---|
 | Event meta | Registers all `_event_*` meta (including `_event_status`, the internal `_event_recurrence*` group, and the export identity `_event_export_uuid`) on the `event` post type, REST-visible |
 | Taxonomy | Registers `conexao_town` (Cidades) for events, rewrite slug `towns` |
-| Public gate | `pre_get_posts`: all frontend event queries (main archive + secondary `WP_Query` calls) are constrained to `_event_status = published` OR no status (legacy events). Published upcoming → visible; expired / source_not_found / rejected / draft → hidden. Behavior is byte-for-byte identical to the old importer implementation |
+| Public gate | `pre_get_posts`: all frontend event queries (main archive + secondary `WP_Query` calls) are constrained to `_event_status = published` OR no status (legacy events). Published upcoming → visible; expired / source_not_found / rejected / draft → hidden. Behavior is byte-for-byte identical to the old importer implementation. Returns early in two non-public contexts: `wp-admin` (admin lists/editor) and WP-CLI (`defined('WP_CLI') && WP_CLI`) — the latter lets the local importer's CLI queries see hidden `source_not_found` events for deduplication/restoration (v1.2.1) |
 | Status admin UI | Status/Source columns + `?event_status=` filter dropdown on the events list (Admin UX summary cards link to these URLs), and the `conexao_event_status_box` meta box that Admin UX removes in favor of its own sectioned editor |
 | `Conexao_Event_Status` | Status constants, get/set, legacy-default-to-published semantics, expiry marking, shared end-timestamp helper |
 | `Conexao_Event_Recurrence` | Internal recurrence model + evaluator (`_event_recurrence*` meta, `occurs_on_date()`, `next_occurrence()`). Consumed by the public query helper below since Step 3; since Step 4 `recurrence_type()`, `recurrence_days()` and `recurrence_end()` are also **public** so the theme's presentation helpers (`conexao_event_is_recurring()`, `conexao_event_recurrence_label()`, `conexao_event_recurrence_end()`) can build card labels without duplicating meta reads or evaluation logic |

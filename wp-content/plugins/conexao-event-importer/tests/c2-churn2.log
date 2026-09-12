@@ -1,0 +1,7 @@
+fetch1=1 fetch2=1
+
+Warning: Undefined array key "banner" in /var/www/html/wp-content/plugins/conexao-event-importer/tests/c2-fetch-churn.php on line 41
+
+Warning: Undefined array key "source_url" in /var/www/html/wp-content/plugins/conexao-event-importer/tests/c2-fetch-churn.php on line 41
+churned_events=0
+importer/tests/c2-fetch-churn.php on line 41

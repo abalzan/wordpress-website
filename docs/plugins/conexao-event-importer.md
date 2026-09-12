@@ -1,7 +1,7 @@
 # Conexão BR Irlanda — Event Importer (Local Tools)
 
 - **Path**: `wp-content/plugins/conexao-event-importer/`
-- **Version**: 1.7.0
+- **Version**: 1.7.1
 - **Requires Plugins**: `conexao-data-model`, `conexao-event-runtime`
 - **Purpose**: Local-only event import/export tooling. Fetches events from external sources (Laois Tourism, National Heritage Week, Eventbrite multi-county) into the **local** WordPress installation, downloads all images into the local Media Library, then exports the complete event data as JSON for import into the production WordPress.com site.
 - **Not needed on production.** All production-critical event behavior (meta/taxonomy registration, `_event_status` public query gate, status admin UI) lives in the separate [Event Runtime](conexao-event-runtime.md) plugin. It is safe to deactivate this plugin on production.

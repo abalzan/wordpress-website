@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Conexão BR Irlanda — Event Runtime
  * Description: Production event runtime. Registers event metadata and the Town/City taxonomy, owns the _event_status visibility gate for public event queries, and provides the event status admin UI. Contains no import/export tooling — see Conexão BR Irlanda Event Importer (local-only).
- * Version: 1.2.0
+ * Version: 1.2.1
  * Requires Plugins: conexao-data-model
  * Text Domain: conexao-event-runtime
  *
@@ -12,7 +12,7 @@
 defined( 'ABSPATH' ) || exit;
 
 define( 'CONEXAO_EVENT_RUNTIME_FILE', __FILE__ );
-define( 'CONEXAO_EVENT_RUNTIME_VERSION', '1.2.0' );
+define( 'CONEXAO_EVENT_RUNTIME_VERSION', '1.2.1' );
 define( 'CONEXAO_EVENT_RUNTIME_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CONEXAO_EVENT_RUNTIME_URL', plugin_dir_url( __FILE__ ) );
 
@@ -159,9 +159,28 @@ final class Conexao_Event_Runtime {
 	 * secondary WP_Query calls used by the homepage hero widget and the
 	 * "Próximos Eventos" section). This keeps draft / expired /
 	 * source-not-found / rejected imported events out of public pages.
+	 *
+	 * The gate is a *frontend* gate only. Two non-public contexts return
+	 * immediately without constraining the query:
+	 *
+	 *   1. `wp-admin` — admin lists / the editor must show every status.
+	 *   2. WP-CLI (`defined('WP_CLI') && WP_CLI`) — the local importer and its
+	 *      tooling run from the command line (e.g. `wp conexao-events import`).
+	 *      Those internal queries MUST be able to see `source_not_found`
+	 *      events so deduplication can match a reappearing event and restore
+	 *      it instead of re-creating a duplicate. WP-CLI is the smallest safe
+	 *      boundary: real public web requests never run under WP-CLI.
+	 *      See docs/importers/events-expansion-stage-c2-report.md §5.
 	 */
 	public function filter_public_event_queries( $query ) {
 		if ( is_admin() ) {
+			return;
+		}
+
+		// Internal importer/tooling (WP-CLI) must query hidden statuses
+		// (e.g. source_not_found) for deduplication and reappearing-event
+		// restoration. This does NOT affect public frontend requests.
+		if ( defined( 'WP_CLI' ) && WP_CLI ) {
 			return;
 		}
 

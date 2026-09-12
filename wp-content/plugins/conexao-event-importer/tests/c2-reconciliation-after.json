@@ -1,0 +1,1208 @@
+{
+    "captured_at": "2026-09-12T17:52:47+01:00",
+    "before": {
+        "total_events_all_sources": 1019,
+        "cork_county_events": 504,
+        "eventbrite_cork_events": 503,
+        "total": 887,
+        "published": 685,
+        "source_not_found": 200,
+        "expired": 2,
+        "duplicate_identities": 117,
+        "distinct_source_identity": 770,
+        "by_source": {
+            "eventbrite_laois": 34,
+            "eventbrite_cork": 503,
+            "eventbrite_dublin": 350
+        }
+    },
+    "after": {
+        "total_events_all_sources": 902,
+        "cork_county_events": 387,
+        "eventbrite_cork_events": 386,
+        "total": 770,
+        "published": 685,
+        "source_not_found": 83,
+        "expired": 2,
+        "duplicate_identities": 0,
+        "distinct_source_identity": 770,
+        "by_source": {
+            "eventbrite_laois": 34,
+            "eventbrite_cork": 386,
+            "eventbrite_dublin": 350
+        }
+    },
+    "removed": 117,
+    "audit": [
+        {
+            "keep": 16771,
+            "remove": 18088,
+            "source": "eventbrite_cork",
+            "source_id": "1993436308661",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16773,
+            "remove": 18089,
+            "source": "eventbrite_cork",
+            "source_id": "1993030447720",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16775,
+            "remove": 18090,
+            "source": "eventbrite_cork",
+            "source_id": "1998965519680",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16777,
+            "remove": 18091,
+            "source": "eventbrite_cork",
+            "source_id": "1998481006488",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16779,
+            "remove": 18092,
+            "source": "eventbrite_cork",
+            "source_id": "1998964470542",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16781,
+            "remove": 18093,
+            "source": "eventbrite_cork",
+            "source_id": "1997831535904",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16783,
+            "remove": 18094,
+            "source": "eventbrite_cork",
+            "source_id": "1990091990716",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16785,
+            "remove": 18095,
+            "source": "eventbrite_cork",
+            "source_id": "2000152820930",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16787,
+            "remove": 18096,
+            "source": "eventbrite_cork",
+            "source_id": "1998489373514",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16789,
+            "remove": 18097,
+            "source": "eventbrite_cork",
+            "source_id": "1998964281978",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16791,
+            "remove": 18098,
+            "source": "eventbrite_cork",
+            "source_id": "1994124360643",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16793,
+            "remove": 18099,
+            "source": "eventbrite_cork",
+            "source_id": "1996060867788",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16795,
+            "remove": 18100,
+            "source": "eventbrite_cork",
+            "source_id": "1998417159520",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16797,
+            "remove": 18101,
+            "source": "eventbrite_cork",
+            "source_id": "1999022249360",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16799,
+            "remove": 18102,
+            "source": "eventbrite_cork",
+            "source_id": "1999527082329",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16801,
+            "remove": 18103,
+            "source": "eventbrite_cork",
+            "source_id": "1992088829314",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16803,
+            "remove": 18104,
+            "source": "eventbrite_cork",
+            "source_id": "1999536972912",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16805,
+            "remove": 18105,
+            "source": "eventbrite_cork",
+            "source_id": "1995324319753",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16809,
+            "remove": 18106,
+            "source": "eventbrite_cork",
+            "source_id": "1999036256255",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16813,
+            "remove": 18107,
+            "source": "eventbrite_cork",
+            "source_id": "1999165873945",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16817,
+            "remove": 18108,
+            "source": "eventbrite_cork",
+            "source_id": "2000044503951",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16822,
+            "remove": 18109,
+            "source": "eventbrite_cork",
+            "source_id": "1997691835055",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16826,
+            "remove": 18110,
+            "source": "eventbrite_cork",
+            "source_id": "1993518900696",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16830,
+            "remove": 18111,
+            "source": "eventbrite_cork",
+            "source_id": "1995463530135",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16834,
+            "remove": 18112,
+            "source": "eventbrite_cork",
+            "source_id": "2000263447818",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16841,
+            "remove": 18113,
+            "source": "eventbrite_cork",
+            "source_id": "1999572495160",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16846,
+            "remove": 18114,
+            "source": "eventbrite_cork",
+            "source_id": "1988064598732",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16850,
+            "remove": 18115,
+            "source": "eventbrite_cork",
+            "source_id": "2000200110374",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16853,
+            "remove": 18116,
+            "source": "eventbrite_cork",
+            "source_id": "1999050880998",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16860,
+            "remove": 18117,
+            "source": "eventbrite_cork",
+            "source_id": "1998884164344",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16864,
+            "remove": 18118,
+            "source": "eventbrite_cork",
+            "source_id": "2000150873104",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16868,
+            "remove": 18119,
+            "source": "eventbrite_cork",
+            "source_id": "1999536118356",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16875,
+            "remove": 18120,
+            "source": "eventbrite_cork",
+            "source_id": "1999799301544",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16881,
+            "remove": 18121,
+            "source": "eventbrite_cork",
+            "source_id": "1999577872243",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16883,
+            "remove": 18122,
+            "source": "eventbrite_cork",
+            "source_id": "1993284578833",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16888,
+            "remove": 18123,
+            "source": "eventbrite_cork",
+            "source_id": "1999420271856",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16893,
+            "remove": 18124,
+            "source": "eventbrite_cork",
+            "source_id": "1999215109209",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16898,
+            "remove": 18125,
+            "source": "eventbrite_cork",
+            "source_id": "1999580379743",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16902,
+            "remove": 18126,
+            "source": "eventbrite_cork",
+            "source_id": "1998869390154",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16907,
+            "remove": 18127,
+            "source": "eventbrite_cork",
+            "source_id": "2000265209086",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16912,
+            "remove": 18128,
+            "source": "eventbrite_cork",
+            "source_id": "1993462279340",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16916,
+            "remove": 18129,
+            "source": "eventbrite_cork",
+            "source_id": "1991565500022",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16919,
+            "remove": 18130,
+            "source": "eventbrite_cork",
+            "source_id": "1999668974733",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16923,
+            "remove": 18131,
+            "source": "eventbrite_cork",
+            "source_id": "1985054407168",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16925,
+            "remove": 18132,
+            "source": "eventbrite_cork",
+            "source_id": "2000215547547",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16930,
+            "remove": 18133,
+            "source": "eventbrite_cork",
+            "source_id": "1997441321763",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16934,
+            "remove": 18134,
+            "source": "eventbrite_cork",
+            "source_id": "1998376493888",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16938,
+            "remove": 18135,
+            "source": "eventbrite_cork",
+            "source_id": "1993329628578",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16944,
+            "remove": 18136,
+            "source": "eventbrite_cork",
+            "source_id": "1998481187028",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16949,
+            "remove": 18137,
+            "source": "eventbrite_cork",
+            "source_id": "1999270104702",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16955,
+            "remove": 18138,
+            "source": "eventbrite_cork",
+            "source_id": "1995445169217",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16958,
+            "remove": 18139,
+            "source": "eventbrite_cork",
+            "source_id": "1999486923212",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16962,
+            "remove": 18140,
+            "source": "eventbrite_cork",
+            "source_id": "1999606994348",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16967,
+            "remove": 18141,
+            "source": "eventbrite_cork",
+            "source_id": "1992552699763",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16972,
+            "remove": 18142,
+            "source": "eventbrite_cork",
+            "source_id": "1997186475511",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16976,
+            "remove": 18143,
+            "source": "eventbrite_cork",
+            "source_id": "1987942050186",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16982,
+            "remove": 18144,
+            "source": "eventbrite_cork",
+            "source_id": "1998376490879",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16985,
+            "remove": 18145,
+            "source": "eventbrite_cork",
+            "source_id": "1992690188997",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16988,
+            "remove": 18146,
+            "source": "eventbrite_cork",
+            "source_id": "1976267308720",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16993,
+            "remove": 18147,
+            "source": "eventbrite_cork",
+            "source_id": "1992592655271",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 16997,
+            "remove": 18148,
+            "source": "eventbrite_cork",
+            "source_id": "1993961836529",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17001,
+            "remove": 18149,
+            "source": "eventbrite_cork",
+            "source_id": "2000260892174",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17004,
+            "remove": 18150,
+            "source": "eventbrite_cork",
+            "source_id": "2000020147099",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17010,
+            "remove": 18151,
+            "source": "eventbrite_cork",
+            "source_id": "1999486446787",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17012,
+            "remove": 18152,
+            "source": "eventbrite_cork",
+            "source_id": "1990345582215",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17016,
+            "remove": 18153,
+            "source": "eventbrite_cork",
+            "source_id": "1999785835266",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17022,
+            "remove": 18154,
+            "source": "eventbrite_cork",
+            "source_id": "1997858520616",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17026,
+            "remove": 18155,
+            "source": "eventbrite_cork",
+            "source_id": "1990161055290",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17031,
+            "remove": 18156,
+            "source": "eventbrite_cork",
+            "source_id": "1990557946402",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17035,
+            "remove": 18157,
+            "source": "eventbrite_cork",
+            "source_id": "1997148959299",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17039,
+            "remove": 18158,
+            "source": "eventbrite_cork",
+            "source_id": "1998884855411",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17047,
+            "remove": 18159,
+            "source": "eventbrite_cork",
+            "source_id": "1996354670560",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17052,
+            "remove": 18160,
+            "source": "eventbrite_cork",
+            "source_id": "1994658289639",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17057,
+            "remove": 18161,
+            "source": "eventbrite_cork",
+            "source_id": "1985809960047",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17060,
+            "remove": 18162,
+            "source": "eventbrite_cork",
+            "source_id": "1999083272883",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17065,
+            "remove": 18163,
+            "source": "eventbrite_cork",
+            "source_id": "1986094473033",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17068,
+            "remove": 18164,
+            "source": "eventbrite_cork",
+            "source_id": "1999251676583",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17073,
+            "remove": 18165,
+            "source": "eventbrite_cork",
+            "source_id": "1998827762645",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17079,
+            "remove": 18166,
+            "source": "eventbrite_cork",
+            "source_id": "1997957726343",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17084,
+            "remove": 18167,
+            "source": "eventbrite_cork",
+            "source_id": "1986153045224",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17087,
+            "remove": 18168,
+            "source": "eventbrite_cork",
+            "source_id": "2000155426724",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17090,
+            "remove": 18170,
+            "source": "eventbrite_cork",
+            "source_id": "1998749724230",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17094,
+            "remove": 18171,
+            "source": "eventbrite_cork",
+            "source_id": "1994498274028",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17099,
+            "remove": 18172,
+            "source": "eventbrite_cork",
+            "source_id": "1998252796907",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17105,
+            "remove": 18173,
+            "source": "eventbrite_cork",
+            "source_id": "1998479335490",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17109,
+            "remove": 18174,
+            "source": "eventbrite_cork",
+            "source_id": "1978884316260",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17111,
+            "remove": 18175,
+            "source": "eventbrite_cork",
+            "source_id": "1997478468871",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17115,
+            "remove": 18176,
+            "source": "eventbrite_cork",
+            "source_id": "1986068712984",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17119,
+            "remove": 18177,
+            "source": "eventbrite_cork",
+            "source_id": "1991761269574",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17123,
+            "remove": 18178,
+            "source": "eventbrite_cork",
+            "source_id": "1983389069097",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17127,
+            "remove": 18179,
+            "source": "eventbrite_cork",
+            "source_id": "1989793792798",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17132,
+            "remove": 18180,
+            "source": "eventbrite_cork",
+            "source_id": "1994292974973",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17135,
+            "remove": 18181,
+            "source": "eventbrite_cork",
+            "source_id": "2000258674541",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17139,
+            "remove": 18182,
+            "source": "eventbrite_cork",
+            "source_id": "1999707634365",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17149,
+            "remove": 18184,
+            "source": "eventbrite_cork",
+            "source_id": "1997718425588",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17153,
+            "remove": 18185,
+            "source": "eventbrite_cork",
+            "source_id": "1998534198587",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17158,
+            "remove": 18186,
+            "source": "eventbrite_cork",
+            "source_id": "1990996644560",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17161,
+            "remove": 18187,
+            "source": "eventbrite_cork",
+            "source_id": "1999261178002",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17167,
+            "remove": 18188,
+            "source": "eventbrite_cork",
+            "source_id": "1998439731032",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17170,
+            "remove": 18189,
+            "source": "eventbrite_cork",
+            "source_id": "2000255385704",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17174,
+            "remove": 18190,
+            "source": "eventbrite_cork",
+            "source_id": "1999758158484",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17179,
+            "remove": 18191,
+            "source": "eventbrite_cork",
+            "source_id": "1996780980665",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17184,
+            "remove": 18192,
+            "source": "eventbrite_cork",
+            "source_id": "1998376363498",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17188,
+            "remove": 18193,
+            "source": "eventbrite_cork",
+            "source_id": "2000207588742",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17192,
+            "remove": 18194,
+            "source": "eventbrite_cork",
+            "source_id": "1998533985951",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17198,
+            "remove": 18195,
+            "source": "eventbrite_cork",
+            "source_id": "1999927641412",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17202,
+            "remove": 18196,
+            "source": "eventbrite_cork",
+            "source_id": "1999087456396",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17205,
+            "remove": 18197,
+            "source": "eventbrite_cork",
+            "source_id": "1998963367242",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17209,
+            "remove": 18198,
+            "source": "eventbrite_cork",
+            "source_id": "1998895467151",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17213,
+            "remove": 18199,
+            "source": "eventbrite_cork",
+            "source_id": "1998748514612",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17217,
+            "remove": 18200,
+            "source": "eventbrite_cork",
+            "source_id": "1998958166687",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17223,
+            "remove": 18201,
+            "source": "eventbrite_cork",
+            "source_id": "1999760196580",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17227,
+            "remove": 18202,
+            "source": "eventbrite_cork",
+            "source_id": "1999697824022",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17231,
+            "remove": 18203,
+            "source": "eventbrite_cork",
+            "source_id": "1998747834578",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17233,
+            "remove": 18204,
+            "source": "eventbrite_cork",
+            "source_id": "1997495530904",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17236,
+            "remove": 18205,
+            "source": "eventbrite_cork",
+            "source_id": "1996575308494",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        },
+        {
+            "keep": 17750,
+            "remove": 18206,
+            "source": "eventbrite_cork",
+            "source_id": "1998114353820",
+            "keep_status": "published",
+            "keep_status_after": "published",
+            "already_applied": true,
+            "delete_succeeded": true
+        }
+    ]
+}

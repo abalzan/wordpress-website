@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Conexão BR Irlanda — Event Importer (Local Tools)
  * Description: Local-only event import/export tooling. Fetches, normalizes, deduplicates, and imports events from configured external sources into the local WordPress database. Event images are downloaded into the Media Library locally, then the complete event data (with embedded images) is exported to JSON for import into the production WordPress.com site. Production-critical event runtime behavior (meta/taxonomy registration, _event_status, public query filtering, status admin UI) lives in the separate "Conexão BR Irlanda — Event Runtime" plugin.
- * Version: 1.7.0
+ * Version: 1.7.1
  * Requires Plugins: conexao-data-model, conexao-event-runtime
  * Text Domain: conexao-event-importer
  *
@@ -12,7 +12,7 @@
 defined( 'ABSPATH' ) || exit;
 
 define( 'CONEXAO_EVENT_IMPORTER_FILE', __FILE__ );
-define( 'CONEXAO_EVENT_IMPORTER_VERSION', '1.7.0' );
+define( 'CONEXAO_EVENT_IMPORTER_VERSION', '1.7.1' );
 define( 'CONEXAO_EVENT_IMPORTER_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CONEXAO_EVENT_IMPORTER_URL', plugin_dir_url( __FILE__ ) );
 

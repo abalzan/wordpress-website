@@ -110,37 +110,91 @@ class Conexao_Event_Export {
 	/**
 	 * Build the full export payload for all events.
 	 *
+	 * Optional scoping (backward compatible — with no args the behavior is
+	 * identical to previous versions and the JSON format is unchanged):
+	 *
+	 *   - `sources` (string[]): restrict the export to events whose
+	 *     `_event_source` meta is one of these source slugs.
+	 *   - `after`   (string): Y-m-d cutoff — only events whose `_event_date`
+	 *     is on or after this date are included.
+	 *
+	 * Applied filters are recorded in the manifest under `filters` so the
+	 * receiving side can see the scope of the package.
+	 *
+	 * @param array $args Optional scope arguments (see above).
 	 * @return array{
 	 *   manifest: array,
 	 *   events: array
 	 * }
 	 */
-	public function build_export() {
-		$events = array();
-
-		$query = new WP_Query(
+	public function build_export( $args = array() ) {
+		$args = wp_parse_args(
+			is_array( $args ) ? $args : array(),
 			array(
-				'post_type'      => 'event',
-				'post_status'    => 'any',
-				'posts_per_page' => -1,
-				'orderby'        => 'ID',
-				'order'          => 'ASC',
-				'no_found_rows'  => true,
+				'sources' => array(),
+				'after'   => '',
 			)
 		);
+
+		$query_args = array(
+			'post_type'      => 'event',
+			'post_status'    => 'any',
+			'posts_per_page' => -1,
+			'orderby'        => 'ID',
+			'order'          => 'ASC',
+			'no_found_rows'  => true,
+		);
+
+		$meta_query = array( 'relation' => 'AND' );
+		$filters    = array();
+
+		if ( ! empty( $args['sources'] ) && is_array( $args['sources'] ) ) {
+			$sources     = array_values( array_map( 'sanitize_key', $args['sources'] ) );
+			$meta_query[] = array(
+				'key'     => '_event_source',
+				'value'   => $sources,
+				'compare' => 'IN',
+			);
+			$filters['sources'] = $sources;
+		}
+
+		$after = trim( (string) $args['after'] );
+		if ( '' !== $after && preg_match( '/^\d{4}-\d{2}-\d{2}$/', $after ) ) {
+			$meta_query[]   = array(
+				'key'     => '_event_date',
+				'value'   => $after,
+				'compare' => '>=',
+				'type'    => 'DATE',
+			);
+			$filters['after'] = $after;
+		}
+
+		if ( count( $meta_query ) > 1 ) {
+			$query_args['meta_query'] = $meta_query;
+		}
+
+		$query = new WP_Query( $query_args );
+
+		$events = array();
 
 		foreach ( $query->posts as $post ) {
 			$events[] = $this->export_event( $post );
 		}
 
+		$manifest = array(
+			'format'       => self::FORMAT,
+			'version'      => self::FORMAT_VERSION,
+			'exported_at'  => current_time( 'c' ),
+			'source_url'   => home_url(),
+			'event_count'  => count( $events ),
+		);
+
+		if ( ! empty( $filters ) ) {
+			$manifest['filters'] = $filters;
+		}
+
 		return array(
-			'manifest' => array(
-				'format'       => self::FORMAT,
-				'version'      => self::FORMAT_VERSION,
-				'exported_at'  => current_time( 'c' ),
-				'source_url'   => home_url(),
-				'event_count'  => count( $events ),
-			),
+			'manifest' => $manifest,
 			'events'   => $events,
 		);
 	}

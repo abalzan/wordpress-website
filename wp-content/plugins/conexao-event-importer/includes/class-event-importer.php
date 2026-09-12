@@ -1047,7 +1047,15 @@ class Conexao_Event_Importer_Engine {
 			$post_id = $existing_id;
 
 			// Check if the event data has actually changed.
-			$existing_title  = get_the_title( $post_id );
+			// IMPORTANT: read the raw stored post_title (get_post_field)
+			// instead of get_the_title(), which applies the the_title
+			// filter chain (wptexturize converts " - " to the en-dash
+			// entity and convert_chars encodes "&"). Comparing the
+			// texturized form against the raw source title made every
+			// event whose title contains " - " or "&" classify as
+			// "updated" on every import run (perpetual update churn),
+			// found during the Stage C2 idempotency re-run.
+			$existing_title  = (string) get_post_field( 'post_title', $post_id );
 			$existing_date   = get_post_meta( $post_id, '_event_date', true );
 			$existing_time   = get_post_meta( $post_id, '_event_start_time', true );
 			$existing_url    = get_post_meta( $post_id, '_event_url', true );
@@ -1067,8 +1075,15 @@ class Conexao_Event_Importer_Engine {
 			$existing_banner_attach = get_post_meta( $post_id, Conexao_Event_Image_Handler::ATTACHMENT_META_KEY, true );
 			$has_attachment = $existing_banner_attach && wp_attachment_is_image( $existing_banner_attach );
 
+			// Title comparison normalizes HTML entities on both sides:
+			// Eventbrite's discovery payload alternates between serving
+			// entity-encoded ("&amp;", "&#8211;") and plain ("&", "–")
+			// title variants between fetches for the same event. Without
+			// normalization each variant flip legitimately re-updated
+			// the event on every run. Both variants render identically,
+			// so they are the same value for change detection.
 			$is_unchanged = (
-				$existing_title === $normalized['title'] &&
+				html_entity_decode( $existing_title, ENT_QUOTES | ENT_HTML5 ) === html_entity_decode( $normalized['title'], ENT_QUOTES | ENT_HTML5 ) &&
 				$existing_date === $normalized['start_date'] &&
 				$existing_time === $normalized['start_time'] &&
 				$existing_url === $normalized['source_url'] &&
@@ -1092,6 +1107,19 @@ class Conexao_Event_Importer_Engine {
 
 				// Update last checked timestamp only.
 				update_post_meta( $post_id, '_event_last_checked', current_time( 'mysql' ) );
+
+				// Reappearing-event lifecycle: a source_not_found event that
+				// reappears in the source feed with unchanged data must still
+				// be restored to published. The create/update path below
+				// restores every upserted event (Conexao_Event_Status::PUBLISHED
+				// after save_event_meta); the "unchanged" fast path returns
+				// before that line, so it must restore the status itself.
+				// Scoped to source_not_found only — draft / rejected / expired
+				// editorial/expiry states are never auto-restored here.
+				if ( Conexao_Event_Status::SOURCE_NOT_FOUND === Conexao_Event_Status::get_status( $post_id ) ) {
+					Conexao_Event_Status::set_status( $post_id, Conexao_Event_Status::PUBLISHED );
+				}
+
 				return array( 'action' => 'unchanged', 'post_id' => $post_id );
 			}
 
