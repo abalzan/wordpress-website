@@ -329,6 +329,123 @@ mp_test_assert(
 );
 
 // =========================================================================
+// Primary ticket link extraction (Book Now preference)
+//
+// Live-source regression (verified 2026-09-12 against
+// https://mondellopark.ie/events/drift-games-winter-bash/):
+//   <a class="btn"  href="…/shows/1173670623">DRIFT BASH TICKETS</a>  (first in DOM)
+//   <a class="btn " href="…/shows/1173670621">Book Now</a>            (primary CTA)
+// The old "first Ticketsolve link encountered" fallback selected the
+// secondary DRIFT BASH TICKETS show ID (1173670623) as the primary ticket
+// URL. The extractor must prefer an anchor labelled "Book Now".
+// =========================================================================
+
+mp_test_section( 'Primary ticket URL extraction (Book Now preference)' );
+
+// Expose the protected extractor through a minimal test subclass.
+if ( ! class_exists( 'Mp_Test_Ticket_Source' ) ) {
+	class Mp_Test_Ticket_Source extends Conexao_Source_Mondello_Park {
+		public function ticket_url( DOMXPath $xpath ) {
+			return $this->extract_ticket_url( $xpath );
+		}
+		public function ticket_show_ids( DOMXPath $xpath, $primary_url ) {
+			return $this->extract_ticket_show_ids( $xpath, $primary_url );
+		}
+	}
+}
+
+$mp_ticket_source = new Mp_Test_Ticket_Source( array( 'id' => 'mondellopark' ) );
+
+$mp_winter_bash_html = <<<'MPHTML'
+<html><body>
+<div class="event-actions">
+	<a class="btn" href="https://mondellopark.ticketsolve.com/ticketbooth/shows/1173670623">DRIFT BASH TICKETS</a>
+	<a class="btn " href="https://mondellopark.ticketsolve.com/ticketbooth/shows/1173670621" target="">Book Now</a>
+</div>
+</body></html>
+MPHTML;
+
+$mp_winter_bash_doc = new DOMDocument();
+$mp_winter_bash_doc->loadHTML( $mp_winter_bash_html );
+$mp_winter_bash_xpath = new DOMXPath( $mp_winter_bash_doc );
+
+$mp_winter_bash_ticket = $mp_ticket_source->ticket_url( $mp_winter_bash_xpath );
+mp_test_assert(
+	$mp_winter_bash_ticket === 'https://mondellopark.ticketsolve.com/ticketbooth/shows/1173670621' ,
+	'Winter Bash live structure: primary ticket URL = …/shows/1173670621 (Book Now), not the first-in-DOM DRIFT BASH TICKETS link'
+);
+
+$mp_winter_bash_ids = $mp_ticket_source->ticket_show_ids( $mp_winter_bash_xpath, $mp_winter_bash_ticket );
+mp_test_assert(
+	$mp_winter_bash_ids === array( '1173670621', '1173670623' ) ,
+	'Winter Bash _ticket_show_ids = [1173670621 (primary), 1173670623 (secondary)]'
+);
+
+// Single Ticketsolve link: selected directly.
+$mp_single_html = '<html><body><a class="btn" href="https://mondellopark.ticketsolve.com/ticketbooth/shows/1173669529">Book Now</a></body></html>';
+$mp_single_doc = new DOMDocument();
+$mp_single_doc->loadHTML( $mp_single_html );
+$mp_single_xpath = new DOMXPath( $mp_single_doc );
+mp_test_assert(
+	$mp_ticket_source->ticket_url( $mp_single_xpath ) === 'https://mondellopark.ticketsolve.com/ticketbooth/shows/1173669529' ,
+	'single Ticketsolve "Book Now" link selected'
+);
+
+// Explicit book-now class hook wins even when not labelled "Book Now".
+$mp_class_html = '<html><body>'
+	. '<a class="btn book-now" href="https://mondellopark.ticketsolve.com/ticketbooth/shows/999">Get tickets</a>'
+	. '<a class="btn" href="https://mondellopark.ticketsolve.com/ticketbooth/shows/888">Book Now</a>'
+	. '</body></html>';
+$mp_class_doc = new DOMDocument();
+$mp_class_doc->loadHTML( $mp_class_html );
+$mp_class_xpath = new DOMXPath( $mp_class_doc );
+mp_test_assert(
+	$mp_ticket_source->ticket_url( $mp_class_xpath ) === 'https://mondellopark.ticketsolve.com/ticketbooth/shows/999' ,
+	'book-now class hook takes precedence over label/DOM-order preference'
+);
+
+// No labelled Book Now anchor → falls back to first in DOM order.
+$mp_fallback_html = '<html><body>'
+	. '<a class="btn" href="https://mondellopark.ticketsolve.com/ticketbooth/shows/777">DRIFT BASH TICKETS</a>'
+	. '<a class="btn" href="https://mondellopark.ticketsolve.com/ticketbooth/shows/555">Weekend tickets</a>'
+	. '</body></html>';
+$mp_fallback_doc = new DOMDocument();
+$mp_fallback_doc->loadHTML( $mp_fallback_html );
+$mp_fallback_xpath = new DOMXPath( $mp_fallback_doc );
+mp_test_assert(
+	$mp_ticket_source->ticket_url( $mp_fallback_xpath ) === 'https://mondellopark.ticketsolve.com/ticketbooth/shows/777' ,
+	'no Book Now label → first Ticketsolve link in DOM order (unchanged fallback)'
+);
+
+// UTM parameters stripped on the selected Book Now link.
+$mp_utm_html = '<html><body><a class="btn" href="https://mondellopark.ticketsolve.com/ticketbooth/shows/1173669529?utm_source=mondello-event-page&utm_medium=referral">Book Now</a></body></html>';
+$mp_utm_doc = new DOMDocument();
+$mp_utm_doc->loadHTML( $mp_utm_html );
+$mp_utm_xpath = new DOMXPath( $mp_utm_doc );
+mp_test_assert(
+	$mp_ticket_source->ticket_url( $mp_utm_xpath ) === 'https://mondellopark.ticketsolve.com/ticketbooth/shows/1173669529' ,
+	'Book Now selection + utm stripped'
+);
+
+// show_id_from_url helper (path-based IDs).
+mp_test_assert(
+	'Conexao_Source_Mondello_Park::show_id_from_url'('https://mondellopark.ticketsolve.com/ticketbooth/shows/1173670621') === '1173670621' ,
+	'show_id_from_url: path-based ID extracted'
+);
+mp_test_assert(
+	'Conexao_Source_Mondello_Park::show_id_from_url'('https://mondellopark.ticketsolve.com/ticketbooth/shows/1173669529?utm_source=x') === '1173669529' ,
+	'show_id_from_url: ID extracted with query string present'
+);
+mp_test_assert(
+	'Conexao_Source_Mondello_Park::show_id_from_url'('https://mondellopark.ie/events/drift-games-winter-bash/') === '' ,
+	'show_id_from_url: non-Ticketsolve URL → empty'
+);
+mp_test_assert(
+	'Conexao_Source_Mondello_Park::show_id_from_url'('') === '' ,
+	'show_id_from_url: empty URL → empty'
+);
+
+// =========================================================================
 // Identity / source metadata
 // =========================================================================
 
@@ -445,6 +562,230 @@ mp_test_assert(
 mp_test_assert(
 	$no_detail_event['_no_detail'] === true ,
 	'no-detail event flagged'
+);
+
+// =========================================================================
+// County hint wiring (Stage C preparation): the audited source config
+// declares county => 'Kildare' and the handler must forward it into
+// raw['county'] so the normalizer's existing source-scoped hint applies
+// when the location string yields no county. Verified at two levels:
+//   1. fetch_events() wiring — mocked HTTP (no network, no writes);
+//   2. normalizer behavior — precedence + no-guess address rules.
+// =========================================================================
+
+mp_test_section( 'County hint wiring: fetch_events forwards config county' );
+
+// Mock all HTTP for the source: the REST discovery URL returns a small
+// deterministic JSON listing; any other mondellopark.ie URL (detail pages)
+// returns 500 so the bounded detail walk takes its non-network exception
+// path. No real network calls occur in this section.
+$mp_http_mock = function ( $pre, $args, $url ) {
+	$url = (string) $url;
+	if ( false !== strpos( $url, 'mondellopark.ie/wp-json/wp/v2/events' ) ) {
+		return array(
+			'response' => array( 'code' => 200, 'message' => 'OK' ),
+			'body'     => wp_json_encode( array(
+				array(
+					'id'             => 101,
+					'slug'           => 'county-wiring-test',
+					'title'          => array( 'rendered' => 'County Wiring Test Event' ),
+					'link'           => 'https://mondellopark.ie/events/county-wiring-test/',
+					'event_category' => array( 23 ),
+				),
+			) ),
+		);
+	}
+	if ( false !== strpos( $url, 'mondellopark.ie' ) ) {
+		return array(
+			'response' => array( 'code' => 500, 'message' => 'Internal Server Error' ),
+			'body'     => '',
+		);
+	}
+	return $pre;
+};
+add_filter( 'pre_http_request', $mp_http_mock, 10, 3 );
+
+try {
+	$mp_wired = new Conexao_Source_Mondello_Park( array(
+		'id'          => 'mondello_park',
+		'type'        => 'website',
+		'county'      => 'Kildare',
+		'crawl_delay' => 0,
+	) );
+	$wired_events = $mp_wired->fetch_events();
+
+	mp_test_assert(
+		is_array( $wired_events ) && 1 === count( $wired_events ),
+		'mocked fetch_events returns the single REST event'
+	);
+	if ( ! empty( $wired_events[0] ) ) {
+		mp_test_assert(
+			isset( $wired_events[0]['county'] ) && 'Kildare' === $wired_events[0]['county'],
+			'raw[\'county\'] = Kildare forwarded from the source config (wiring gap fixed)'
+		);
+		mp_test_assert(
+			isset( $wired_events[0]['source_id'] ) && 'county-wiring-test' === $wired_events[0]['source_id'],
+			'mocked event identity unchanged (slug primary)'
+		);
+		mp_test_assert(
+			! isset( $wired_events[0]['address'] ) || '' === trim( (string) $wired_events[0]['address'] ),
+			'no address is invented at the source level'
+		);
+		mp_test_assert(
+			! isset( $wired_events[0]['start_time'] ) || '' === (string) $wired_events[0]['start_time'],
+			'no event time is invented at the source level'
+		);
+	}
+} catch ( Exception $e ) {
+	mp_test_assert( false, 'county wiring fetch_events ran without exception: ' . $e->getMessage() );
+}
+
+// Behavior C: a source config WITHOUT a county forwards an empty hint and
+// the raw event stays county-less (unchanged behavior).
+try {
+	$mp_wired_none = new Conexao_Source_Mondello_Park( array(
+		'id'          => 'mondello_park',
+		'type'        => 'website',
+		'crawl_delay' => 0,
+	) );
+	$mp_none_events = $mp_wired_none->fetch_events();
+	mp_test_assert(
+		! empty( $mp_none_events[0] ) && ( ! isset( $mp_none_events[0]['county'] ) || '' === trim( (string) $mp_none_events[0]['county'] ) ),
+		'config without county → raw county stays empty (behavior C)'
+	);
+} catch ( Exception $e ) {
+	mp_test_assert( false, 'county-less config fetch_events ran without exception: ' . $e->getMessage() );
+}
+
+remove_filter( 'pre_http_request', $mp_http_mock, 10 );
+
+mp_test_section( 'County hint wiring: normalizer precedence + no-guess rules' );
+
+$mp_normalizer = new Conexao_Event_Normalizer( new Conexao_Event_Location() );
+
+function mp_county_raw( $overrides = array() ) {
+	return array_merge( array(
+		'source'      => 'mondellopark',
+		'source_id'   => 'county-wiring-test',
+		'title'       => 'County Wiring Test Event',
+		'url'         => 'https://mondellopark.ie/events/county-wiring-test/',
+		'start_date'  => '2026-10-03',
+		'start_time'  => '',
+		'end_date'    => '',
+		'end_time'    => '',
+		'location'    => '',
+		'county'      => 'Kildare',
+		'description' => '',
+		'image'       => '',
+	), $overrides );
+}
+
+// Behavior B: missing county (venue-only location) receives the hint.
+$norm_b = $mp_normalizer->normalize( mp_county_raw( array( 'location' => 'Mondello Park' ) ) );
+mp_test_assert(
+	isset( $norm_b['county'] ) && 'Kildare' === $norm_b['county'],
+	'behavior B: venue-only location receives the configured Kildare hint'
+);
+mp_test_assert(
+	isset( $norm_b['venue'] ) && 'Mondello Park' === $norm_b['venue'],
+	'behavior B: source-supplied venue preserved'
+);
+mp_test_assert(
+	isset( $norm_b['address'] ) && '' === $norm_b['address'],
+	'venue-only Mondello Park does NOT become a fabricated street address'
+);
+mp_test_assert(
+	isset( $norm_b['town'] ) && '' === $norm_b['town'],
+	'behavior B: no town invented'
+);
+mp_test_assert(
+	empty( $norm_b['validation_errors'] ),
+	'behavior B: event passes location validation via the county tag'
+);
+mp_test_assert(
+	isset( $norm_b['event_location'] ) && 'Mondello Park' === $norm_b['event_location'],
+	'behavior B: location label prefers the source venue'
+);
+
+// County-only events (no venue/town) keep a county label and validate.
+$norm_county_only = $mp_normalizer->normalize( mp_county_raw() );
+mp_test_assert(
+	isset( $norm_county_only['county'] ) && 'Kildare' === $norm_county_only['county']
+		&& isset( $norm_county_only['event_location'] ) && 'Kildare' === $norm_county_only['event_location'],
+	'county-only events keep the county as the location label'
+);
+mp_test_assert(
+	empty( $norm_county_only['validation_errors'] ),
+	'county-only events pass location validation'
+);
+mp_test_assert(
+	isset( $norm_county_only['address'] ) && '' === $norm_county_only['address'],
+	'county-only events never gain an invented address'
+);
+
+// Behavior A: source-supplied county is preserved (hint never overrides).
+$norm_a = $mp_normalizer->normalize( mp_county_raw( array( 'location' => 'Mondello Park, Co Wicklow' ) ) );
+mp_test_assert(
+	isset( $norm_a['county'] ) && 'Wicklow' === $norm_a['county'],
+	'behavior A: source-supplied county (Co Wicklow) preserved over the Kildare hint'
+);
+
+// Behavior C: no hint and no location → unchanged (still skipped).
+$norm_c = $mp_normalizer->normalize( mp_county_raw( array( 'location' => '', 'county' => '' ) ) );
+mp_test_assert(
+	isset( $norm_c['county'] ) && '' === $norm_c['county'],
+	'behavior C: no hint, no location → county stays empty'
+);
+mp_test_assert(
+	in_array( 'Localização não identificada', $norm_c['validation_errors'], true ),
+	'behavior C: missing location is still skipped (unchanged)'
+);
+
+// Unrelated sources are not affected by the Mondello wiring change.
+$norm_mi = $mp_normalizer->normalize( array(
+	'source'     => 'motorsportireland',
+	'title'      => 'MI Event',
+	'url'        => 'https://www.motorsportireland.com/events/x',
+	'start_date' => '2026-10-03',
+	'location'   => '',
+) );
+mp_test_assert(
+	isset( $norm_mi['county'] ) && '' === $norm_mi['county']
+		&& in_array( 'Localização não identificada', $norm_mi['validation_errors'], true ),
+	'unrelated sources: Motorsport Ireland-style raw unchanged (no county invented)'
+);
+
+$norm_laois = $mp_normalizer->normalize( array(
+	'source'     => 'eventbrite',
+	'title'      => 'Laois Event',
+	'url'        => 'https://www.eventbrite.ie/e/x',
+	'start_date' => '2026-10-03',
+	'location'   => '',
+	'county'     => 'Laois',
+) );
+mp_test_assert(
+	isset( $norm_laois['county'] ) && 'Laois' === $norm_laois['county'],
+	'unrelated sources: Eventbrite-style county hint still applies'
+);
+
+// Address plausibility rules remain unchanged (shared class untouched).
+mp_test_assert(
+	false === Conexao_Event_Address::is_plausible( 'Mondello Park' ),
+	'plausibility: bare venue name Mondello Park is NOT an address'
+);
+mp_test_assert(
+	false === Conexao_Event_Address::is_plausible( 'Kildare' ),
+	'plausibility: bare county name is NOT an address'
+);
+mp_test_assert(
+	true === Conexao_Event_Address::is_plausible( 'Unit 4, Mondello Park, Naas, W91 XW63' ),
+	'plausibility: real street/Eircode address still accepted'
+);
+
+// No event times invented by the county hint.
+mp_test_assert(
+	'' === $norm_b['start_time'] && '' === $norm_b['end_time'],
+	'no event times invented by the county hint'
 );
 
 // =========================================================================

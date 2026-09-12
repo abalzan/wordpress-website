@@ -394,7 +394,14 @@ class Conexao_Event_Importer_Engine {
 		}
 
 		foreach ( $raw_events as $raw ) {
-			$raw['source'] = $source_id;
+			// Canonical source identity: the handler's declared source key
+			// wins when present (e.g. Mondello Park documents
+			// `_event_source = mondellopark` while its source config ID is
+			// mondello_park). Every other handler declares a value identical
+			// to its config ID, so behavior is unchanged for them.
+			$raw['source'] = isset( $raw['source'] ) && '' !== trim( (string) $raw['source'] )
+				? trim( (string) $raw['source'] )
+				: $source_id;
 
 			$event_title = isset( $raw['title'] ) ? trim( (string) $raw['title'] ) : '';
 			$event_id    = isset( $raw['source_id'] ) ? trim( (string) $raw['source_id'] ) : '';
@@ -665,7 +672,11 @@ class Conexao_Event_Importer_Engine {
 		);
 
 		foreach ( $raw_events as $raw ) {
-			$raw['source'] = $source_id;
+			// Canonical source identity — same rule as the real import path
+			// (handler-declared key wins; config ID as fallback).
+			$raw['source'] = isset( $raw['source'] ) && '' !== trim( (string) $raw['source'] )
+				? trim( (string) $raw['source'] )
+				: $source_id;
 
 			try {
 				$normalized = $this->normalizer->normalize( $raw );
@@ -1351,6 +1362,19 @@ class Conexao_Event_Importer_Engine {
 	 * @param array  $raw_events  Raw events fetched this run.
 	 */
 	protected function mark_missing_events( $source_id, $raw_events ) {
+		// Canonical source identity — the raw events carry the handler's
+		// declared source key (see run_source); fall back to the config ID.
+		$canonical_source = '';
+		foreach ( $raw_events as $raw ) {
+			if ( isset( $raw['source'] ) && '' !== trim( (string) $raw['source'] ) ) {
+				$canonical_source = trim( (string) $raw['source'] );
+				break;
+			}
+		}
+		if ( '' === $canonical_source ) {
+			$canonical_source = $source_id;
+		}
+
 		$current_urls = array();
 		foreach ( $raw_events as $raw ) {
 			if ( ! empty( $raw['url'] ) ) {
@@ -1374,7 +1398,7 @@ class Conexao_Event_Importer_Engine {
 					'relation' => 'AND',
 					array(
 						'key'   => '_event_source',
-						'value' => $source_id,
+						'value' => $canonical_source,
 					),
 					array(
 						'key'     => '_event_status',

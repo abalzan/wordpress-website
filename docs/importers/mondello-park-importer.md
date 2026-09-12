@@ -93,9 +93,21 @@ racing, JDM, retro/historic, shows, IDS).
   W91 T957) is NOT hard-coded into every event.
 - Where the detail page omits address/town/county/Eircode, those fields are
   left empty rather than invented.
-- The source config carries `county => 'Kildare'` as a source-scoped hint so
-  that events whose detail page only surfaces the venue name ("Mondello Park")
-  still receive a valid county term without inventing an address.
+- **Source-scoped county hint (wired in Stage C preparation, 2026-09-12):**
+  the source config carries `county => 'Kildare'` and `fetch_events()` now
+  forwards that value into `raw['county']` for every Mondello Park event.
+  The normalizer (`Conexao_Event_Normalizer`) applies this hint ONLY when the
+  location string does not already yield a county, so:
+  - **A. source supplies a county** (e.g. `Mondello Park, Co Wicklow`) → the
+    source-supplied county is preserved (`Wicklow` wins over the hint).
+  - **B. source omits the county** and the config declares `Kildare` →
+    `Kildare` is applied as the source-scoped fallback county.
+  - **C. config has no county** → an empty hint is forwarded and behavior is
+    unchanged (event without location is still skipped).
+  This is a county taxonomy tag only: no street address, town or Eircode is
+  ever derived from it. Previously the declared hint was not forwarded, so
+  valid future events reached location validation without county information
+  and the dry-run reported `0 would-create / 0 would-update`.
 - "Mondello Park" alone is a venue label, not an address — the existing
   `Conexao_Event_Address::is_plausible()` no-guess rule correctly rejects it as
   an address candidate, so no special source flag is required.
@@ -129,15 +141,26 @@ guessed).
 - **UTM stripping:** `utm_source`, `utm_medium`, `utm_campaign` and similar
   query parameters are stripped. `showId` is preserved.
 - **Secondary show IDs:** if the detail page contains multiple Ticketsolve
-  links, the first encountered is used as the primary; secondary show IDs are
-  recorded in `raw['_ticket_show_ids']` custom meta only — never in a URL
-  field.
+  links, the "Book Now"-labelled link (see below) is used as the primary;
+  secondary show IDs are recorded in `raw['_ticket_show_ids']` custom meta
+  only — never in a URL field.
 - **External ticket providers:** if an external (non-Ticketsolve) ticket link
   is explicitly present, it is captured as the ticket URL.
-- **Winter Bash:** Stage A identified two Ticketsolve show IDs. The primary
-  "Book Now" link encountered in the detail page is used. Both IDs are logged
-  for reference. The canonical Mondello Park event page remains the event
+- **Winter Bash:** the detail page contains TWO Ticketsolve show IDs. The
+  primary "Book Now" link encountered in the detail page is used. Both IDs are
+  logged for reference. The canonical Mondello Park event page remains the event
   identity; the ticket URL is not identity.
+- **Winter Bash resolution (verified against the live page, 2026-09-12):**
+  the live detail page renders the secondary `DRIFT BASH TICKETS` button
+  (`…/shows/1173670623`) **before** the primary `Book Now` button
+  (`…/shows/1173670621`). The earlier "first Ticketsolve link encountered"
+  heuristic therefore selected the wrong (secondary) show ID — the Stage C
+  dry-run had recorded `1173670623` as primary. `extract_ticket_url()` now
+  prefers: (1) a `book-now` class hook, (2) a Ticketsolve anchor labelled
+  "Book Now", (3) first Ticketsolve link in DOM order. **Primary Book Now
+  show ID = `1173670621`** (the Stage B value was correct); `1173670623` is
+  the secondary "DRIFT BASH TICKETS" body link, recorded only in
+  `raw['_ticket_show_ids']`.
 - **James Deane 130 Showdown:** ticketing destination is external
   (130showdown.com). The Mondello Park event page itself is a valid event
   source; the event is imported with canonical + dates as a free event at
@@ -249,3 +272,168 @@ external.
 
 **Do not activate the source in production or create production events without
 explicit Stage C authorization.**
+
+---
+
+## Stage C pre-production preparation (2026-09-12)
+
+Read-only verification pass after wiring the source-scoped Kildare county hint
+into `raw['county']`. No production writes, no production activation.
+
+### Verification results
+
+| Check | Result |
+|---|---|
+| County wiring fix (config hint → `raw['county']`) | PASS (behaviors A/B/C tested) |
+| Focused Mondello suite | 130/130 PASS (was 106; +24 county-wiring assertions) |
+| Full regression — Eventbrite | PASS 68/68 |
+| Full regression — IVVCC | 45/46 — 1 PRE-EXISTING failure (`different ID+URL does not collapse`, unchanged from Stage B) |
+| Full regression — Motorsport Ireland | PASS 60/60 |
+| Full regression — shared address/normalizer | PASS 76/76 |
+| Full regression — past-event filter / log / errors / image-sync | PASS 29/0, 53/0, 55/0, 30/0 |
+| Full regression — Event Runtime (query/recurrence) | PASS (query suite is flaky only when suites run concurrently — ENVIRONMENTAL; 3/3 clean runs after the fix) |
+| Live read-only dry-run | PASS (below) |
+| Source key | `mondellopark` |
+| Inactive by default | PASS (`get_defaults()` seeds `status = inactive`; `get_all()` merge preserves declared inactive status for missing defaults) |
+| Production endpoints / credentials / TicketSolve API / production writes | NONE / NONE / NONE / 0 |
+
+### Live dry-run after the fix (2026-09-12, UTC)
+
+found=29, unique=29, parsed=27 (detail pages engaged; 1 detail fetch failure,
+1 undated prose-only page), would-create=6, would-update=0, would-skip=23
+(past=21, invalid_date=2), skipped=23, ambiguous=0, failed=0.
+
+| slug | title | date | county | category | ticket URL | result |
+|---|---|---|---|---|---|---|
+| james-deane-130-showdown | James Deane – 130 Showdown | 2026-09-19 → 2026-09-20 | Kildare | Drifting | canonical detail URL (external ticketing) | would-create |
+| drift-games-winter-bash | Drift Games Winter Bash | 2026-11-14 → 2026-11-15 | Kildare | Drifting | ticketsolve …/shows/1173670621 (primary) | would-create |
+| iccr-september-2026 | ICCR September 2026 | 2026-09-12 → 2026-09-13 | Kildare | Car Racing | ticketsolve …/shows/1173669529 | would-create |
+| irx-october-2026 | IRX October 2026 | 2026-10-03 → 2026-10-04 | Kildare | Rally | ticketsolve …/shows/1173669538 | would-create |
+| iccr-october-2026 | ICCR October 2026 | 2026-10-18 | Kildare | Car Racing | ticketsolve …/shows/1173669532 | would-create |
+| irx-november-2026 | IRX November 2026 | 2026-11-28 → 2026-11-29 | Kildare | Rally | ticketsolve …/shows/1173669539 | would-create |
+| fia-euro-rx | FIA Euro RX | (none) | Kildare | Rally | canonical detail URL | would-skip (invalid date — audited external redirect; page date exists only as prose, never guessed) |
+| masters-superbike-may-2026 | Masters Superbike | (none) | Kildare | Motorbike Racing | canonical detail URL | would-skip (invalid date — detail fetch failed, no invention) |
+| (21 further events) | — | past | — | — | — | would-skip (past) |
+
+Legitimate skips are expected and correct: the goal was that valid future
+events are no longer discarded because the documented Kildare hint was not
+forwarded — achieved.
+
+### Winter Bash ticket-ID discrepancy — resolved (Stage C pre-write check, 2026-09-12)
+
+Stage B evidence recorded the Winter Bash primary "Book Now" Ticketsolve show
+ID as `1173670621`; the Stage C readiness dry-run recorded `1173670623`. Both
+values were re-verified against the **current live source**
+(`https://mondellopark.ie/events/drift-games-winter-bash/`):
+
+| Live anchor (in DOM order) | href show ID | Role |
+|---|---|---|
+| `<a class="btn" …>DRIFT BASH TICKETS</a>` | `1173670623` | Secondary body link |
+| `<a class="btn " …>Book Now</a>` | `1173670621` | **Primary "Book Now" destination** |
+
+**Decision:** the live source proves the Stage C dry-run value (`1173670623`
+as primary) was wrong — the extractor's "first Ticketsolve link encountered"
+fallback picked the secondary button that precedes the Book Now button in the
+DOM. The Stage B value (`1173670621`) is correct. The extractor was fixed
+(prefer `book-now` class → "Book Now" label → DOM order), tests extended
+(130 → 140 assertions, all PASS), and the documentation corrected. No
+production writes occurred before this resolution.
+
+### Stage C production import attempt — BLOCKED (2026-09-12, UTC)
+
+The pre-write discrepancy (Winter Bash ticket ID) was resolved first (see
+above). The production attempt then proceeded through a controlled REST
+pipeline (`scripts/mondello-production-import.py`, modeled on the IVVCC
+production scripts: `.env` application-password auth, six-identity allowlist,
+hard gates on pre-existing Mondello identities/slug clashes, dry-run default,
+before/after verification reads):
+
+- Pre-flight: production baseline **43 published events**, **0** Mondello
+  identities, **0** slug clashes; runtime meta registration visible (31 keys);
+  export validated (6 allowlisted events).
+- Dry-run mutation set: **6 would-create / 0 would-update / 0 failures** —
+  exactly the approved scope.
+- Apply: the FIRST create (`james-deane-130-showdown`) was created and
+  published (post **11705**, author 283039558) but **every `_event_*` meta key
+  was refused** — `403 rest_cannot_update` on `_event_date` (and all other
+  `_event_*` keys). A follow-up diagnostic meta PATCH on 11705 (the IVVCC
+  Phase C mechanism) also failed: `401 rest_cannot_edit`, and
+  `/users/me` returns `401 rest_not_logged_in` with the same credentials that
+  previously performed IVVCC Phase C meta writes (documented PASS).
+
+**Result: Stage C = BLOCKED.** The remaining five events were NOT created
+(the pipeline aborts on first failure). Production state after the attempt:
+
+- 44 published events (43 baseline + 1 partial post 11705).
+- Post 11705 = `james-deane-130-showdown`, publish, **no meta, no terms** —
+  an incomplete artifact. Its detail URL resolves publicly (HTTP 200) but it
+  carries no date/ticket data and does not appear in the `/eventos/` archive
+  (the upcoming-events query requires `_event_date`).
+- No non-Mondello event was modified (newest non-11705 `modified` timestamp
+  is pre-attempt, 2026-09-10).
+- Per the Stage C safety rules nothing was deleted and no manual edits were
+  attempted beyond the single diagnostic PATCH probe (which was refused).
+
+**Remediation requires an operator decision** (follow-up authorization):
+
+1. Delete the partial post 11705, then re-run the import once the production
+   auth/runtime environment is restored to the IVVCC Phase C state (runtime
+   ≥ 1.2.0 with functional meta auth_callback); or
+2. Keep 11705 and complete it (single meta PATCH + county) under the same
+   restored environment, then create the remaining five via
+   create-with-meta (or create + meta PATCH).
+
+The export artifact `dist/mondello-only-export.json` remains valid and
+verified (Winter Bash ticket URL `…/shows/1173670621` confirmed against the
+live source).
+
+### Phase 1/2 re-diagnostics — runtime gate FAIL (2026-09-12, UTC, after the BLOCKED attempt)
+
+Re-run of production diagnostics (`scripts/mp-phase1-diagnostics.py`, read-only,
+no writes) to establish the recovery path:
+
+- **Authentication RESTORED since the blocked attempt.** `GET /users/me?context=edit`
+  now returns **200** (`id=283039558`, `conexaobradmin`, administrator,
+  `edit_posts`/`manage_options` true) and plain authenticated reads of 11705
+  succeed. The `401 rest_not_logged_in` / `401 rest_cannot_edit` recorded above
+  no longer reproduces — the credential was refreshed/re-authenticated between
+  sessions. No write test has been performed (see gate below).
+- **Post 11705 unchanged:** publish, correct title/slug, public URL HTTP 200,
+  all `_event_*` meta empty (`_event_source=''`, `_event_date=''`).
+- **Production census:** 44 published events (43 baseline + partial 11705);
+  0 events carry a `_event_source` value (11705's is empty).
+- **Phase 2 runtime gate: FAIL.** The edit-context meta schema on 11705 lists
+  31 keys — all 26 pre-1.2.0 `_event_*` keys **but not `_event_export_uuid`**
+  (registered only in runtime 1.2.0). Production is therefore running a
+  **pre-1.2.0 conexao-event-runtime**. This also explains the original
+  create-time `403 rest_cannot_update` on every `_event_*` key: the deployed
+  registration lacks the v1.2.0 `auth_callback`, so protected-meta writes are
+  refused even for an authenticated administrator.
+
+**Result: PHASE 2 GATE = STOP.** Required operator action before any repair
+or import:
+
+1. Deploy the validated **`dist/conexao-event-runtime.zip` (v1.2.0,
+   14.4 KB, built 2026-09-10)** to production (WordPress.com plugin upload /
+   update). No other deployment is authorized.
+2. Then re-run `python3 scripts/mp-phase1-diagnostics.py --probe` — the
+   single authorized write — to confirm the auth_callback works
+   (`PATCH 11705 meta._event_export_uuid`, value from the validated export).
+
+No meta write, no repair, no remaining-event import has been attempted.
+Post 11705 remains untouched.
+
+### Edge cases reconfirmed
+
+- FIA Euro RX: detail page unusable (external redirect / prose-only date);
+  skipped, no date invented.
+- Masters Superbike: past instances skipped as past; the undated instance is
+  skipped as invalid date (detail fetch failure).
+- James Deane 130 Showdown: importable with external ticketing (canonical URL
+  kept when no explicit ticket link exists on the page).
+- Winter Bash: primary Ticketsolve Book Now link used.
+- No event times are invented (`time_source = none`).
+- No address is invented ("Mondello Park" remains a venue label;
+  `is_plausible()` rules unchanged).
+- Past events remain filtered.
+- Unknown categories are logged and never guessed.

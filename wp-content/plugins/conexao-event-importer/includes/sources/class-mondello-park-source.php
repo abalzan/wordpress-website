@@ -64,8 +64,17 @@
  * Ticket URL: primary "Book Now" Ticketsolve URL (utm params stripped) stored
  *   in the event URL field. Secondary show IDs stored in raw['_ticket_show_ids']
  *   custom meta only — never in a URL field. For Winter Bash two Ticketsolve
- *   show IDs exist (Stage A): the primary Book Now link encountered in the
- *   detail page is used; both IDs are logged for reference.
+ *   show IDs exist; both IDs are logged for reference.
+ *
+ *   VERIFIED AGAINST LIVE SOURCE (2026-09-12, Stage C pre-write check):
+ *   https://mondellopark.ie/events/drift-games-winter-bash/ renders
+ *     <a class="btn"   href="…/shows/1173670623">DRIFT BASH TICKETS</a>   (first in DOM)
+ *     <a class="btn "  href="…/shows/1173670621">Book Now</a>             (primary CTA)
+ *   The earlier "first Ticketsolve link encountered" heuristic therefore
+ *   selected the secondary "DRIFT BASH TICKETS" body link (1173670623) as the
+ *   primary. The extractor now prefers, in order: (1) an explicit
+ *   `book-now` class hook, (2) a Ticketsolve anchor labelled "Book Now",
+ *   (3) first Ticketsolve link in DOM order. Winter Bash primary = 1173670621.
  *
  * Content boundary: factual fields only (title, factual dates, venue when
  *   supplied, organizer when supplied, category, ticket URL, canonical Mondello
@@ -200,6 +209,16 @@ class Conexao_Source_Mondello_Park extends Conexao_Source_Base {
 				'end_date'              => '',
 				'end_time'              => '',
 				'location'              => '',
+				// Source-scoped county hint (audited source config: county
+				// => 'Kildare'). Forwarded so events whose detail page only
+				// surfaces the venue name ("Mondello Park") still receive a
+				// valid county term. The normalizer applies this hint ONLY
+				// when the location string does not already yield a county,
+				// so any source-supplied county is preserved; an empty
+				// config value forwards an empty hint and changes nothing.
+				// County tag only — no address, town or venue is ever
+				// invented from it.
+				'county'                => isset( $this->config['county'] ) ? trim( (string) $this->config['county'] ) : '',
 				'description'           => '',
 				'image'                 => '',
 				'_source_categories'    => $categories,
@@ -357,17 +376,8 @@ class Conexao_Source_Mondello_Park extends Conexao_Source_Base {
 		// --- Book Now / ticket link ---
 		$ticket_link = $this->extract_ticket_url( $xpath );
 		if ( '' !== $ticket_link ) {
-			$event['url'] = $ticket_link;
-			$parsed_ts    = parse_url( $ticket_link, PHP_URL_QUERY );
-			if ( $parsed_ts ) {
-				parse_str( $parsed_ts, $ts_params );
-				if ( isset( $ts_params['showId'] ) ) {
-					$show_id = $ts_params['showId'];
-					if ( ! in_array( $show_id, $event['_ticket_show_ids'], true ) ) {
-						$event['_ticket_show_ids'][] = $show_id;
-					}
-				}
-			}
+			$event['url']              = $ticket_link;
+			$event['_ticket_show_ids'] = $this->extract_ticket_show_ids( $xpath, $ticket_link );
 		}
 
 		if ( ! empty( $event['_parse_warnings'] ) ) {
@@ -434,6 +444,9 @@ class Conexao_Source_Mondello_Park extends Conexao_Source_Base {
 	/**
 	 * Extract primary ticket URL from detail page.
 	 *
+	 * Preference order: (1) `book-now` class hook; (2) Ticketsolve anchor
+	 * labelled "Book Now"; (3) first Ticketsolve link in DOM order.
+	 *
 	 * @param DOMXPath $xpath
 	 * @return string
 	 */
@@ -452,12 +465,77 @@ class Conexao_Source_Mondello_Park extends Conexao_Source_Base {
 			'//a[contains(@href, "ticketsolve.com/ticketbooth/shows/")]'
 		);
 		if ( $ts_links && $ts_links->length > 0 ) {
+			// Prefer an explicitly labelled "Book Now" anchor: the live
+			// Winter Bash page renders the secondary "DRIFT BASH TICKETS"
+			// button before the primary "Book Now" button, so DOM order
+			// alone selects the wrong show ID (verified 2026-09-12).
+			for ( $i = 0; $i < $ts_links->length; $i++ ) {
+				$node  = $ts_links->item( $i );
+				$label = strtolower( trim( $this->extract_text( $node ) ) );
+				if ( '' !== $label && false !== strpos( $label, 'book now' ) ) {
+					$href = $node->getAttribute( 'href' );
+					if ( '' !== $href ) {
+						return self::strip_utm( $href );
+					}
+				}
+			}
+
+			// Fallback: first Ticketsolve link in DOM order.
 			$href = $ts_links->item( 0 )->getAttribute( 'href' );
 			if ( '' !== $href ) {
 				return self::strip_utm( $href );
 			}
 		}
 
+		return '';
+	}
+
+	/**
+	 * Collect all Ticketsolve show IDs referenced by the detail page, primary
+	 * first. Show IDs live in the URL path (/ticketbooth/shows/{id}), not in a
+	 * showId= query param. Stored in raw['_ticket_show_ids'] for reference
+	 * only — never in a URL field.
+	 *
+	 * @param DOMXPath $xpath
+	 * @param string   $primary_url Already-selected primary ticket URL.
+	 * @return string[]
+	 */
+	protected function extract_ticket_show_ids( DOMXPath $xpath, $primary_url ) {
+		$ids = array();
+
+		$primary_id = self::show_id_from_url( $primary_url );
+		if ( '' !== $primary_id ) {
+			$ids[] = $primary_id;
+		}
+
+		$ts_links = $xpath->query(
+			'//a[contains(@href, "ticketsolve.com/ticketbooth/shows/")]'
+		);
+		if ( $ts_links ) {
+			for ( $i = 0; $i < $ts_links->length; $i++ ) {
+				$show_id = self::show_id_from_url( $ts_links->item( $i )->getAttribute( 'href' ) );
+				if ( '' !== $show_id && ! in_array( $show_id, $ids, true ) ) {
+					$ids[] = $show_id;
+				}
+			}
+		}
+
+		return $ids;
+	}
+
+	/**
+	 * Extract the Ticketsolve show ID from a ticketbooth URL (path-based).
+	 *
+	 * @param string $url
+	 * @return string Show ID, or '' when not a Ticketsolve show URL.
+	 */
+	public static function show_id_from_url( $url ) {
+		if ( ! is_string( $url ) || '' === $url ) {
+			return '';
+		}
+		if ( preg_match( '#/ticketbooth/shows/(\d+)#', $url, $m ) ) {
+			return $m[1];
+		}
 		return '';
 	}
 
