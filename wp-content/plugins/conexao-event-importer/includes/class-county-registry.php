@@ -200,7 +200,10 @@ class Conexao_County_Registry {
 			'slug'             => 'tipperary',
 			'jurisdiction'     => 'ROI',
 			'eb_slug'          => 'ireland--tipperary',
-			'eb_region_labels' => array( 'Tipperary' ),
+			// Eventbrite labels County Tipperary events under the historical
+			// ridings ("South Tipperary" / "North Tipperary"); the bare
+			// "Tipperary" label is kept for forward compatibility.
+			'eb_region_labels' => array( 'Tipperary', 'South Tipperary', 'North Tipperary' ),
 			'hw_where'         => array( 'tipperary' ),
 		),
 		'waterford'  => array(

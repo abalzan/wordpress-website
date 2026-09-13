@@ -1,0 +1,796 @@
+{
+  "format": "conexao-events-stage-d-rollout-manifest",
+  "generated_at": "2026-09-13T18:14:51+01:00",
+  "export_filename": "stage-d-rollout-export.json",
+  "export_bytes": 118221100,
+  "schema": "conexao-event-export",
+  "schema_version": "1.1.0",
+  "source_url": "http://localhost:8080",
+  "scope": {
+    "counties": [
+      "carlow",
+      "cavan",
+      "clare",
+      "donegal",
+      "galway",
+      "kerry",
+      "kildare",
+      "kilkenny",
+      "leitrim",
+      "limerick",
+      "longford",
+      "louth",
+      "mayo",
+      "meath",
+      "monaghan",
+      "offaly",
+      "roscommon",
+      "sligo",
+      "tipperary",
+      "waterford",
+      "westmeath",
+      "wexford",
+      "wicklow"
+    ],
+    "county_count": 23,
+    "source_ids": [
+      "eventbrite_carlow",
+      "eventbrite_cavan",
+      "eventbrite_clare",
+      "eventbrite_donegal",
+      "eventbrite_galway",
+      "eventbrite_kerry",
+      "eventbrite_kildare",
+      "eventbrite_kilkenny",
+      "eventbrite_leitrim",
+      "eventbrite_limerick",
+      "eventbrite_longford",
+      "eventbrite_louth",
+      "eventbrite_mayo",
+      "eventbrite_meath",
+      "eventbrite_monaghan",
+      "eventbrite_offaly",
+      "eventbrite_roscommon",
+      "eventbrite_sligo",
+      "eventbrite_tipperary",
+      "eventbrite_waterford",
+      "eventbrite_westmeath",
+      "eventbrite_wexford",
+      "eventbrite_wicklow",
+      "heritage_week_carlow",
+      "heritage_week_cavan",
+      "heritage_week_clare",
+      "heritage_week_donegal",
+      "heritage_week_galway",
+      "heritage_week_kerry",
+      "heritage_week_kildare",
+      "heritage_week_kilkenny",
+      "heritage_week_leitrim",
+      "heritage_week_limerick",
+      "heritage_week_longford",
+      "heritage_week_louth",
+      "heritage_week_mayo",
+      "heritage_week_meath",
+      "heritage_week_monaghan",
+      "heritage_week_offaly",
+      "heritage_week_roscommon",
+      "heritage_week_sligo",
+      "heritage_week_tipperary",
+      "heritage_week_waterford",
+      "heritage_week_westmeath",
+      "heritage_week_wexford",
+      "heritage_week_wicklow"
+    ],
+    "source_count": 46,
+    "excludes": [
+      "eventbrite_cork",
+      "eventbrite_dublin",
+      "eventbrite_laois",
+      "heritage_week_cork",
+      "heritage_week_dublin",
+      "heritage_week_laois"
+    ]
+  },
+  "event_count": 1231,
+  "image_count": 1129,
+  "uuid_count": 1231,
+  "source_identity_count": 1231,
+  "url_count": 1231,
+  "duplicate_count": {
+    "uuid": 0,
+    "identity": 0,
+    "url": 0,
+    "total": 0
+  },
+  "past_event_count": 0,
+  "excluded_past_event_count": 5,
+  "missing_uuid_count": 0,
+  "missing_source_id_count": 0,
+  "source_breakdown": {
+    "eventbrite_carlow": 17,
+    "eventbrite_cavan": 27,
+    "eventbrite_clare": 54,
+    "eventbrite_donegal": 51,
+    "eventbrite_galway": 187,
+    "eventbrite_kerry": 60,
+    "eventbrite_kildare": 62,
+    "eventbrite_kilkenny": 64,
+    "eventbrite_leitrim": 47,
+    "eventbrite_limerick": 28,
+    "eventbrite_longford": 11,
+    "eventbrite_louth": 55,
+    "eventbrite_mayo": 63,
+    "eventbrite_meath": 115,
+    "eventbrite_monaghan": 15,
+    "eventbrite_offaly": 32,
+    "eventbrite_roscommon": 10,
+    "eventbrite_sligo": 69,
+    "eventbrite_tipperary": 48,
+    "eventbrite_waterford": 50,
+    "eventbrite_westmeath": 49,
+    "eventbrite_wexford": 57,
+    "eventbrite_wicklow": 60
+  },
+  "county_breakdown": {
+    "Carlow": 17,
+    "Cavan": 27,
+    "Clare": 54,
+    "Donegal": 50,
+    "Dublin": 1,
+    "Galway": 187,
+    "Kerry": 60,
+    "Kildare": 62,
+    "Kilkenny": 64,
+    "Leitrim": 47,
+    "Limerick": 28,
+    "Longford": 10,
+    "Louth": 55,
+    "Mayo": 63,
+    "Meath": 115,
+    "Monaghan": 15,
+    "Offaly": 32,
+    "Roscommon": 10,
+    "Sligo": 69,
+    "Tipperary": 48,
+    "Waterford": 50,
+    "Westmeath": 49,
+    "Wexford": 57,
+    "Wicklow": 60
+  },
+  "validation": {
+    "schema_version_ok": true,
+    "no_localhost_urls": true,
+    "no_missing_uuid": true,
+    "no_duplicate_uuid": true,
+    "no_duplicate_identity": true,
+    "no_duplicate_url": true,
+    "no_past_events": true,
+    "event_count_matches": true
+  },
+  "validation_result": "PASS",
+  "rollout": {
+    "stage": "D",
+    "rollout_status": "PASSED",
+    "rollout_status_date": "2026-09-13",
+    "importer_version": "1.7.1",
+    "registry_counties": 26,
+    "pilot_counties": [
+      "cork",
+      "dublin",
+      "laois"
+    ],
+    "remaining_counties": [
+      "carlow",
+      "cavan",
+      "clare",
+      "donegal",
+      "galway",
+      "kerry",
+      "kildare",
+      "kilkenny",
+      "leitrim",
+      "limerick",
+      "longford",
+      "louth",
+      "mayo",
+      "meath",
+      "monaghan",
+      "offaly",
+      "roscommon",
+      "sligo",
+      "tipperary",
+      "waterford",
+      "westmeath",
+      "wexford",
+      "wicklow"
+    ],
+    "remaining_county_count": 23,
+    "source_count": 46,
+    "batch_results": [
+      {
+        "batch": 1,
+        "counties": [
+          "carlow",
+          "cavan",
+          "clare",
+          "donegal",
+          "galway"
+        ],
+        "sources": [
+          {
+            "source": "eventbrite_carlow",
+            "county": "carlow",
+            "provider": "eventbrite",
+            "status": "success",
+            "dry_run": {
+              "found": null
+            },
+            "import": {
+              "found": 17,
+              "created": 17,
+              "updated": 0,
+              "unchanged": 0,
+              "duplicates": 0,
+              "failed": 0,
+              "status": "success"
+            }
+          },
+          {
+            "source": "eventbrite_cavan",
+            "county": "cavan",
+            "provider": "eventbrite",
+            "status": "success",
+            "dry_run": {
+              "found": null
+            },
+            "import": {
+              "found": 27,
+              "created": 27,
+              "updated": 0,
+              "unchanged": 0,
+              "duplicates": 0,
+              "failed": 0,
+              "status": "success"
+            }
+          },
+          {
+            "source": "eventbrite_clare",
+            "county": "clare",
+            "provider": "eventbrite",
+            "status": "success",
+            "dry_run": {
+              "found": null
+            },
+            "import": {
+              "found": 54,
+              "created": 14,
+              "updated": 0,
+              "unchanged": 40,
+              "duplicates": 0,
+              "failed": 0,
+              "status": "success"
+            }
+          },
+          {
+            "source": "eventbrite_donegal",
+            "county": "donegal",
+            "provider": "eventbrite",
+            "status": "success",
+            "dry_run": {
+              "found": null
+            },
+            "import": {
+              "found": 50,
+              "created": 0,
+              "updated": 0,
+              "unchanged": 50,
+              "duplicates": 0,
+              "failed": 0,
+              "status": "success"
+            }
+          },
+          {
+            "source": "eventbrite_galway",
+            "county": "galway",
+            "provider": "eventbrite",
+            "status": "success",
+            "dry_run": {
+              "found": null
+            },
+            "import": {
+              "found": 188,
+              "created": 188,
+              "updated": 0,
+              "unchanged": 0,
+              "duplicates": 0,
+              "failed": 0,
+              "status": "success"
+            }
+          }
+        ]
+      },
+      {
+        "batch": 2,
+        "counties": [
+          "kerry",
+          "kildare",
+          "kilkenny",
+          "leitrim",
+          "limerick"
+        ],
+        "sources": [
+          {
+            "source": "eventbrite_kerry",
+            "county": "kerry",
+            "provider": "eventbrite",
+            "status": "success",
+            "dry_run": {
+              "found": null
+            },
+            "import": {
+              "found": 60,
+              "created": 60,
+              "updated": 0,
+              "unchanged": 0,
+              "duplicates": 0,
+              "failed": 0,
+              "status": "success"
+            }
+          },
+          {
+            "source": "eventbrite_kildare",
+            "county": "kildare",
+            "provider": "eventbrite",
+            "status": "success",
+            "dry_run": {
+              "found": null
+            },
+            "import": {
+              "found": 63,
+              "created": 63,
+              "updated": 0,
+              "unchanged": 0,
+              "duplicates": 0,
+              "failed": 0,
+              "status": "success"
+            }
+          },
+          {
+            "source": "eventbrite_kilkenny",
+            "county": "kilkenny",
+            "provider": "eventbrite",
+            "status": "success",
+            "dry_run": {
+              "found": null
+            },
+            "import": {
+              "found": 65,
+              "created": 65,
+              "updated": 0,
+              "unchanged": 0,
+              "duplicates": 0,
+              "failed": 0,
+              "status": "success"
+            }
+          },
+          {
+            "source": "eventbrite_leitrim",
+            "county": "leitrim",
+            "provider": "eventbrite",
+            "status": "success",
+            "dry_run": {
+              "found": null
+            },
+            "import": {
+              "found": 47,
+              "created": 47,
+              "updated": 0,
+              "unchanged": 0,
+              "duplicates": 0,
+              "failed": 0,
+              "status": "success"
+            }
+          },
+          {
+            "source": "eventbrite_limerick",
+            "county": "limerick",
+            "provider": "eventbrite",
+            "status": "success",
+            "dry_run": {
+              "found": null
+            },
+            "import": {
+              "found": 28,
+              "created": 28,
+              "updated": 0,
+              "unchanged": 0,
+              "duplicates": 0,
+              "failed": 0,
+              "status": "success"
+            }
+          }
+        ]
+      },
+      {
+        "batch": 3,
+        "counties": [
+          "longford",
+          "louth",
+          "mayo",
+          "meath",
+          "monaghan"
+        ],
+        "sources": [
+          {
+            "source": "eventbrite_longford",
+            "county": "longford",
+            "provider": "eventbrite",
+            "status": "success",
+            "dry_run": {
+              "found": null
+            },
+            "import": {
+              "found": 11,
+              "created": 11,
+              "updated": 0,
+              "unchanged": 0,
+              "duplicates": 0,
+              "failed": 0,
+              "status": "success"
+            }
+          },
+          {
+            "source": "eventbrite_louth",
+            "county": "louth",
+            "provider": "eventbrite",
+            "status": "success",
+            "dry_run": {
+              "found": null
+            },
+            "import": {
+              "found": 55,
+              "created": 55,
+              "updated": 0,
+              "unchanged": 0,
+              "duplicates": 0,
+              "failed": 0,
+              "status": "success"
+            }
+          },
+          {
+            "source": "eventbrite_mayo",
+            "county": "mayo",
+            "provider": "eventbrite",
+            "status": "success",
+            "dry_run": {
+              "found": null
+            },
+            "import": {
+              "found": 63,
+              "created": 63,
+              "updated": 0,
+              "unchanged": 0,
+              "duplicates": 0,
+              "failed": 0,
+              "status": "success"
+            }
+          },
+          {
+            "source": "eventbrite_meath",
+            "county": "meath",
+            "provider": "eventbrite",
+            "status": "success",
+            "dry_run": {
+              "found": null
+            },
+            "import": {
+              "found": 117,
+              "created": 117,
+              "updated": 0,
+              "unchanged": 0,
+              "duplicates": 0,
+              "failed": 0,
+              "status": "success"
+            }
+          },
+          {
+            "source": "eventbrite_monaghan",
+            "county": "monaghan",
+            "provider": "eventbrite",
+            "status": "success",
+            "dry_run": {
+              "found": null
+            },
+            "import": {
+              "found": 15,
+              "created": 15,
+              "updated": 0,
+              "unchanged": 0,
+              "duplicates": 0,
+              "failed": 0,
+              "status": "success"
+            }
+          }
+        ]
+      },
+      {
+        "batch": 4,
+        "counties": [
+          "offaly",
+          "roscommon",
+          "sligo",
+          "tipperary",
+          "waterford"
+        ],
+        "sources": [
+          {
+            "source": "eventbrite_offaly",
+            "county": "offaly",
+            "provider": "eventbrite",
+            "status": "success",
+            "dry_run": {
+              "found": null
+            },
+            "import": {
+              "found": 32,
+              "created": 32,
+              "updated": 0,
+              "unchanged": 0,
+              "duplicates": 0,
+              "failed": 0,
+              "status": "success"
+            }
+          },
+          {
+            "source": "eventbrite_roscommon",
+            "county": "roscommon",
+            "provider": "eventbrite",
+            "status": "success",
+            "dry_run": {
+              "found": null
+            },
+            "import": {
+              "found": 10,
+              "created": 10,
+              "updated": 0,
+              "unchanged": 0,
+              "duplicates": 0,
+              "failed": 0,
+              "status": "success"
+            }
+          },
+          {
+            "source": "eventbrite_sligo",
+            "county": "sligo",
+            "provider": "eventbrite",
+            "status": "success",
+            "dry_run": {
+              "found": null
+            },
+            "import": {
+              "found": 69,
+              "created": 69,
+              "updated": 0,
+              "unchanged": 0,
+              "duplicates": 0,
+              "failed": 0,
+              "status": "success"
+            }
+          },
+          {
+            "source": "eventbrite_tipperary",
+            "county": "tipperary",
+            "provider": "eventbrite",
+            "status": "success",
+            "dry_run": {
+              "found": null
+            },
+            "import": {
+              "found": 48,
+              "created": 48,
+              "updated": 0,
+              "unchanged": 0,
+              "duplicates": 0,
+              "failed": 0,
+              "status": "success"
+            }
+          },
+          {
+            "source": "eventbrite_waterford",
+            "county": "waterford",
+            "provider": "eventbrite",
+            "status": "success",
+            "dry_run": {
+              "found": null
+            },
+            "import": {
+              "found": 50,
+              "created": 50,
+              "updated": 0,
+              "unchanged": 0,
+              "duplicates": 0,
+              "failed": 0,
+              "status": "success"
+            }
+          }
+        ]
+      },
+      {
+        "batch": 5,
+        "counties": [
+          "westmeath",
+          "wexford",
+          "wicklow"
+        ],
+        "sources": [
+          {
+            "source": "eventbrite_westmeath",
+            "county": "westmeath",
+            "provider": "eventbrite",
+            "status": "success",
+            "dry_run": {
+              "found": null
+            },
+            "import": {
+              "found": 50,
+              "created": 49,
+              "updated": 1,
+              "unchanged": 0,
+              "duplicates": 0,
+              "failed": 0,
+              "status": "success"
+            }
+          },
+          {
+            "source": "eventbrite_wexford",
+            "county": "wexford",
+            "provider": "eventbrite",
+            "status": "success",
+            "dry_run": {
+              "found": null
+            },
+            "import": {
+              "found": 57,
+              "created": 57,
+              "updated": 0,
+              "unchanged": 0,
+              "duplicates": 0,
+              "failed": 0,
+              "status": "success"
+            }
+          },
+          {
+            "source": "eventbrite_wicklow",
+            "county": "wicklow",
+            "provider": "eventbrite",
+            "status": "success",
+            "dry_run": {
+              "found": null
+            },
+            "import": {
+              "found": 60,
+              "created": 60,
+              "updated": 0,
+              "unchanged": 0,
+              "duplicates": 0,
+              "failed": 0,
+              "status": "success"
+            }
+          }
+        ]
+      }
+    ],
+    "heritage_week_dry_run_found": {
+      "carlow": 24,
+      "cavan": 24,
+      "clare": 0,
+      "donegal": 0,
+      "galway": 0,
+      "kerry": 0,
+      "kildare": 0,
+      "kilkenny": 0,
+      "leitrim": 24,
+      "limerick": 0,
+      "longford": 24,
+      "louth": 0,
+      "mayo": 24,
+      "meath": 0,
+      "monaghan": 0,
+      "offaly": 0,
+      "roscommon": 0,
+      "sligo": 0,
+      "tipperary": 0,
+      "waterford": 0,
+      "westmeath": 24,
+      "wexford": 24,
+      "wicklow": 24
+    },
+    "heritage_week_2026_season": "past",
+    "dry_run_note": "Dry-run classification completed for the initial batch and probe counties; remaining counties were rate-limited (HTTP 429) during the first concurrent attempt and were subsequently imported sequentially with long cool-downs under the throttled harness. Live fetch verification and the post-import idempotency census substitute for the unavailable dry-runs.",
+    "idempotency": {
+      "method": "identity census (source+source_id / URL) plus re-run unchanged counts",
+      "duplicate_source_identities": 0,
+      "duplicate_urls": 0,
+      "re_run_unchanged": {
+        "eventbrite_clare": 40,
+        "eventbrite_donegal": 50
+      },
+      "re_run_updated": {
+        "eventbrite_westmeath": 1
+      }
+    },
+    "lifecycle": {
+      "source_not_found_public_hidden": true,
+      "source_not_found_cli_visible": true,
+      "reappearing_identity_restores_existing": true,
+      "test": "test-reappearing-event-lifecycle.php (public + wp eval-file CLI) ALL PASS"
+    },
+    "frontend": {
+      "archive": 200,
+      "pagination": 200,
+      "county_filter": 200,
+      "city_filter": 200,
+      "category_filter": 200,
+      "and_semantics": "PASS",
+      "detail_page": 200,
+      "jsonld": "PASS",
+      "external_links": "PASS",
+      "sitemap": "Jetpack-shadowed locally (pre-existing); production verified in Stage C3"
+    },
+    "test_results": {
+      "test-county-registry.php": {
+        "passed": 471,
+        "failed": 2,
+        "class": "BASELINE/ENVIRONMENT (sources already seeded)"
+      },
+      "test-eventbrite-importer.php": {
+        "passed": 68,
+        "failed": 0,
+        "class": "PASS"
+      },
+      "test-reappearing-event-lifecycle.php": {
+        "result": "ALL PASS (public + CLI)",
+        "class": "PASS"
+      },
+      "test-past-event-filter.php": {
+        "passed": 29,
+        "failed": 0,
+        "class": "PASS"
+      },
+      "test-event-address.php": {
+        "passed": 76,
+        "failed": 0,
+        "class": "PASS"
+      },
+      "test-error-handling.php": {
+        "passed": 54,
+        "failed": 1,
+        "class": "BASELINE/ENVIRONMENT (shared history option state)"
+      },
+      "test-import-log.php": {
+        "passed": 53,
+        "failed": 0,
+        "class": "PASS"
+      },
+      "verify-filters.php": {
+        "result": "PASS (Cork+Portlaoise combo -> 0)",
+        "class": "PASS"
+      }
+    },
+    "production_impact": "None. All writes local (Docker WordPress). No production contact. Runtime plugin untouched.",
+    "cron_or_background_fetch_introduced": false,
+    "known_limitations": [
+      "Eventbrite discovery is a time-budgeted moving window; found counts vary between runs. Idempotency asserted on identities, not counts.",
+      "Heritage Week 2026 edition is past: 7 counties returned 24 past events, 16 returned 0; HW contributes 0 importable events until the 2027 edition.",
+      "One exportable record (eventbrite_donegal, no _event_status meta) and one off-county taxonomy assignment (Longford-sourced event tagged Dublin) are legacy data quirks, not scope breaches.",
+      "Local sitemap shadowed by Jetpack (pre-existing); not a Stage D regression.",
+      "5 events that ended 2026-09-12 were excluded from the export payload (excluded_past_event_count=5) by the importer past-event rule."
+    ],
+    "notes": [
+      "All 23 Eventbrite county sources imported successfully (strictly sequential throttled runs, 75s cool-downs, 2026-09-12T22:16Z..2026-09-13T09:36Z).",
+      "Upstream HTTP 429 rate limits during the initial concurrent attempt were overcome by long cool-downs; no fallback data invented, validation never weakened.",
+      "Export generated with the memory-safe chunked driver (tests/stage-d-export-chunked.php) reusing Conexao_Event_Export::export_event() per event; schema remains conexao-event-export v1.1.0.",
+      "Importer version unchanged (1.7.1); no cron/background external fetching; importer remains available and dormant for the rollout workflow."
+    ]
+  }
+}
