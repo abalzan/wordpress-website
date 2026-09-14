@@ -128,7 +128,7 @@ function conexao_seo_meta_description() {
 		} elseif ( is_singular( 'guide' ) ) {
 			$description = 'Guia prático: ' . get_the_title() . '. Passo a passo completo para brasileiros na Irlanda.';
 		} elseif ( is_singular( 'event' ) ) {
-			$description = 'Evento: ' . get_the_title() . '. Participe e fortaleça a comunidade brasileira na Irlanda.';
+			$description = 'Evento: ' . get_the_title() . '. Participe de eventos e atividades na Irlanda.';
 		} elseif ( is_singular( 'job' ) ) {
 			$description = 'Vaga de emprego: ' . get_the_title() . '. Oportunidade para brasileiros na Irlanda.';
 		} elseif ( is_singular( 'sponsor' ) ) {
@@ -138,7 +138,7 @@ function conexao_seo_meta_description() {
 		} elseif ( is_post_type_archive( 'guide' ) ) {
 			$description = 'Guias práticos completos para brasileiros na Irlanda. PPS Number, Medical Card, moradia, emprego e mais.';
 		} elseif ( is_post_type_archive( 'event' ) ) {
-			$description = 'Eventos, encontros e atividades para a comunidade brasileira na Irlanda. Agenda cultural e networking.';
+			$description = 'Eventos, encontros e atividades na Irlanda. Agenda cultural e networking.';
 		} elseif ( is_post_type_archive( 'job' ) ) {
 			$description = 'Vagas de emprego para brasileiros na Irlanda. Oportunidades em saúde, TI, construção e mais.';
 		} elseif ( is_post_type_archive( 'sponsor' ) ) {
@@ -645,7 +645,7 @@ function conexao_archive_description() {
 		return 'Guias passo a passo para facilitar sua vida na Irlanda.';
 	}
 	if ( is_post_type_archive( 'event' ) ) {
-		return 'Eventos, encontros e atividades para a comunidade brasileira na Irlanda.';
+		return 'Encontre eventos, encontros e atividades na Irlanda.';
 	}
 	if ( is_post_type_archive( 'job' ) ) {
 		return 'Oportunidades de emprego para brasileiros na Irlanda.';

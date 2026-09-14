@@ -33,9 +33,9 @@ $archive_header = array();
 
 if ( $is_event_archive ) {
 	$archive_header = array(
-		'eyebrow'     => _x( 'Agenda da Comunidade', 'archive eyebrow', 'conexao-br-irlanda' ),
+		'eyebrow'     => _x( 'Agenda Irlandesa', 'archive eyebrow', 'conexao-br-irlanda' ),
 		'title'       => _x( 'Eventos', 'archive page title', 'conexao-br-irlanda' ),
-		'description' => _x( 'Encontre eventos, encontros e atividades da comunidade brasileira na Irlanda.', 'archive description', 'conexao-br-irlanda' ),
+		'description' => _x( 'Encontre eventos, encontros e atividades na Irlanda.', 'archive description', 'conexao-br-irlanda' ),
 		'filters'     => 'event',
 	);
 } elseif ( $is_course_archive ) {
