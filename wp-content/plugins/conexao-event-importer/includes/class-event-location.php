@@ -268,22 +268,72 @@ class Conexao_Event_Location {
 	}
 
 	/**
+	 * Sanitize a town value by stripping Eircode fragments.
+	 *
+	 * Eventbrite and other sources may supply a locality that concatenates
+	 * the town name with an Irish Eircode (e.g. "Ballinamore N41 E8H0",
+	 * "Oranmore H91 72H3"). The city/town filter must represent a locality
+	 * only, never a postal code. This method:
+	 *   - removes any Irish Eircode (routing key + unique id)
+	 *   - collapses leftover whitespace/separators
+	 *   - returns '' when the value was a standalone Eircode
+	 *
+	 * Values are otherwise preserved as-is: no fuzzy matching, no
+	 * geographic inference. A value consisting only of an Eircode yields
+	 * '' so the caller can leave the town classification empty rather
+	 * than fabricating a locality.
+	 *
+	 * @param string $town Raw town value.
+	 * @return string Cleaned town name, or '' when no valid locality remains.
+	 */
+	public function sanitize_town( $town ) {
+		$town = trim( (string) $town );
+		if ( '' === $town ) {
+			return '';
+		}
+
+		// Strip Irish Eircode patterns (e.g. "N41 E8H0", "N41E8H0",
+		// "H91 72H3"). Case-insensitive; the Eircode regex is defined in
+		// Conexao_Event_Address and matches routing key + unique id.
+		$cleaned = preg_replace( Conexao_Event_Address::EIRCODE_REGEX, '', $town );
+
+		// Collapse whitespace and separators left after Eircode removal.
+		$cleaned = preg_replace( '/\s*,\s*|\s+/', ' ', $cleaned );
+		$cleaned = trim( $cleaned, ' ,-.' );
+
+		// A valid town name must contain at least one letter. A value
+		// that was a standalone Eircode (e.g. "A92 DF7X." → ".") or
+		// that collapses to punctuation/separators only is not a
+		// locality. Do not fabricate a town.
+		if ( '' === $cleaned || ! preg_match( '/[A-Za-z]/', $cleaned ) ) {
+			return '';
+		}
+
+		return $cleaned;
+	}
+
+	/**
 	 * Ensure a town term exists in the conexao_town taxonomy.
+	 *
+	 * The supplied town name is sanitized first so Eircode fragments are
+	 * never stored as town terms. A standalone Eircode (which sanitizes
+	 * to '') is rejected and returns 0.
 	 *
 	 * @param string $town_name Town name.
 	 * @return int Term ID (0 on failure).
 	 */
 	public function ensure_town( $town_name ) {
-		if ( empty( $town_name ) ) {
+		$sanitized = $this->sanitize_town( $town_name );
+		if ( '' === $sanitized ) {
 			return 0;
 		}
 
-		$term = term_exists( $town_name, 'conexao_town' );
+		$term = term_exists( $sanitized, 'conexao_town' );
 		if ( $term ) {
 			return (int) $term['term_id'];
 		}
 
-		$new = wp_insert_term( $town_name, 'conexao_town' );
+		$new = wp_insert_term( $sanitized, 'conexao_town' );
 		if ( is_wp_error( $new ) ) {
 			return 0;
 		}

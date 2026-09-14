@@ -86,6 +86,17 @@ class Conexao_Event_Normalizer {
 			$location['town'] = trim( (string) $raw['town'] );
 		}
 
+		// Sanitize the finalized town value: strip any Eircode fragments so
+		// the cidade filter never shows postal codes as localities. A
+		// standalone Eircode sanitizes to '' and the town is left empty
+		// (the event stays discoverable by county). Must run AFTER all
+		// town assignment blocks above, since a sanitized-empty town
+		// would be re-populated by the assignment block here.
+		// See Conexao_Event_Location::sanitize_town().
+		if ( ! empty( $location['town'] ) ) {
+			$location['town'] = $this->location->sanitize_town( $location['town'] );
+		}
+
 		// Address resolution — never guessed. Priority:
 		//   1. structured source address (raw['address']),
 		//   2. address detected inside the location string (street number
