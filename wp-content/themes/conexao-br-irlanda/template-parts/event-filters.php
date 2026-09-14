@@ -174,12 +174,12 @@ $event_total = ( isset( $wp_query ) && $wp_query instanceof WP_Query ) ? (int) $
 						aria-haspopup="listbox"
 						aria-expanded="false"
 						aria-controls="event-filters-county-panel"
-						aria-label="<?php echo esc_attr( $event_trigger_aria( __( 'Localização', 'conexao-br-irlanda' ), $active_county_name ) ); ?>"
+						aria-label="<?php echo esc_attr( $event_trigger_aria( __( 'County', 'conexao-br-irlanda' ), $active_county_name ) ); ?>"
 						data-dropdown-trigger>
 						<?php if ( $current_county ) : ?>
 							<span class="event-filters-dot" aria-hidden="true"></span>
 						<?php endif; ?>
-						<span class="event-filters-dropdown-label"><?php echo esc_html( $current_county ? $active_county_name : __( 'Localização', 'conexao-br-irlanda' ) ); ?></span>
+						<span class="event-filters-dropdown-label"><?php echo esc_html( $current_county ? $active_county_name : __( 'County', 'conexao-br-irlanda' ) ); ?></span>
 						<span class="event-filters-dropdown-caret" aria-hidden="true">▾</span>
 					</button>
 
@@ -191,11 +191,11 @@ $event_total = ( isset( $wp_query ) && $wp_query instanceof WP_Query ) ? (int) $
 								type="search"
 								class="event-filters-dropdown-search"
 								data-option-search
-								placeholder="<?php esc_attr_e( 'Procurar localização', 'conexao-br-irlanda' ); ?>"
-								aria-label="<?php esc_attr_e( 'Procurar localização', 'conexao-br-irlanda' ); ?>"
+								placeholder="<?php esc_attr_e( 'Procurar county', 'conexao-br-irlanda' ); ?>"
+								aria-label="<?php esc_attr_e( 'Procurar county', 'conexao-br-irlanda' ); ?>"
 								autocomplete="off">
 						<?php endif; ?>
-						<div class="event-filters-dropdown-list" role="listbox" aria-label="<?php esc_attr_e( 'Localização', 'conexao-br-irlanda' ); ?>" data-option-list>
+						<div class="event-filters-dropdown-list" role="listbox" aria-label="<?php esc_attr_e( 'County', 'conexao-br-irlanda' ); ?>" data-option-list>
 							<?php // "Todas" is the reset action for THIS dimension only:
 							      // it clears ?county= and preserves cidade + categoria
 							      // (a town filter stays valid without a county). ?>
@@ -221,7 +221,7 @@ $event_total = ( isset( $wp_query ) && $wp_query instanceof WP_Query ) ? (int) $
 							<?php endforeach; ?>
 						</div>
 						<?php if ( $show_county_search ) : ?>
-							<p class="event-filters-options-empty" data-option-empty hidden><?php esc_html_e( 'Nenhuma localização encontrada.', 'conexao-br-irlanda' ); ?></p>
+							<p class="event-filters-options-empty" data-option-empty hidden><?php esc_html_e( 'Nenhum county encontrado.', 'conexao-br-irlanda' ); ?></p>
 						<?php endif; ?>
 					</div>
 				</div>
@@ -405,14 +405,14 @@ $event_total = ( isset( $wp_query ) && $wp_query instanceof WP_Query ) ? (int) $
 						      // County -> City cascade is preserved on mobile. ?>
 						<?php if ( $has_county ) : ?>
 							<fieldset class="event-filters-mobile-section" data-option-scope>
-								<legend class="event-filters-mobile-legend"><?php esc_html_e( 'Localização', 'conexao-br-irlanda' ); ?></legend>
+								<legend class="event-filters-mobile-legend"><?php esc_html_e( 'County', 'conexao-br-irlanda' ); ?></legend>
 								<?php if ( $show_county_search ) : ?>
 									<input
 										type="search"
 										class="event-filters-mobile-search"
 										data-option-search
-										placeholder="<?php esc_attr_e( 'Procurar localização', 'conexao-br-irlanda' ); ?>"
-										aria-label="<?php esc_attr_e( 'Procurar localização', 'conexao-br-irlanda' ); ?>">
+										placeholder="<?php esc_attr_e( 'Procurar county', 'conexao-br-irlanda' ); ?>"
+										aria-label="<?php esc_attr_e( 'Procurar county', 'conexao-br-irlanda' ); ?>">
 								<?php endif; ?>
 								<div class="event-filters-options" data-option-list>
 									<label class="event-filters-option">
@@ -427,7 +427,7 @@ $event_total = ( isset( $wp_query ) && $wp_query instanceof WP_Query ) ? (int) $
 									<?php endforeach; ?>
 								</div>
 								<?php if ( $show_county_search ) : ?>
-									<p class="event-filters-options-empty" data-option-empty hidden><?php esc_html_e( 'Nenhuma localização encontrada', 'conexao-br-irlanda' ); ?></p>
+									<p class="event-filters-options-empty" data-option-empty hidden><?php esc_html_e( 'Nenhum county encontrado', 'conexao-br-irlanda' ); ?></p>
 								<?php endif; ?>
 							</fieldset>
 						<?php endif; ?>

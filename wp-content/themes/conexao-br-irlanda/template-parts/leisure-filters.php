@@ -161,7 +161,7 @@ $leisure_slug_name = function( $slug, array $by_slug ) {
 // The multi-select dimensions show a single selection's label where practical
 // and a concise count for several selections ("3 selecionados") — the full
 // selection is always announced by the trigger's aria-label below.
-$county_trigger_label = $current_county ? $leisure_slug_name( $current_county, $county_by_slug ) : __( 'Localização', 'conexao-br-irlanda' );
+$county_trigger_label = $current_county ? $leisure_slug_name( $current_county, $county_by_slug ) : __( 'County', 'conexao-br-irlanda' );
 
 /**
  * Local helper: the closed-dropdown trigger label for a multi-select
@@ -197,10 +197,10 @@ $attribute_trigger_label = $leisure_multi_trigger_label( $current_attributes, $a
 $county_trigger_aria = $current_county
 	? sprintf(
 		/* translators: %s: selected county name. */
-		__( 'Filtrar por Localização. Filtro ativo: %s', 'conexao-br-irlanda' ),
+		__( 'Filtrar por County. Filtro ativo: %s', 'conexao-br-irlanda' ),
 		$leisure_slug_name( $current_county, $county_by_slug )
 	)
-	: __( 'Filtrar por Localização', 'conexao-br-irlanda' );
+	: __( 'Filtrar por County', 'conexao-br-irlanda' );
 
 /**
  * Local helper: the screen-reader trigger label for a multi-select dimension.
@@ -274,8 +274,8 @@ $leisure_total = ( isset( $wp_query ) && $wp_query instanceof WP_Query ) ? (int)
 							type="search"
 							class="leisure-dropdown-search"
 							data-dropdown-search
-							placeholder="<?php esc_attr_e( 'Procurar localização', 'conexao-br-irlanda' ); ?>"
-							aria-label="<?php esc_attr_e( 'Procurar localização', 'conexao-br-irlanda' ); ?>"
+							placeholder="<?php esc_attr_e( 'Procurar county', 'conexao-br-irlanda' ); ?>"
+							aria-label="<?php esc_attr_e( 'Procurar county', 'conexao-br-irlanda' ); ?>"
 							autocomplete="off">
 						<div class="leisure-dropdown-list" role="listbox" aria-label="<?php esc_attr_e( 'Condado', 'conexao-br-irlanda' ); ?>">
 							<?php // Localização stays single-select; its option URLs are built from the shared
@@ -293,7 +293,7 @@ $leisure_total = ( isset( $wp_query ) && $wp_query instanceof WP_Query ) ? (int)
 								</a>
 							<?php endforeach; ?>
 						</div>
-						<p class="leisure-dropdown-empty" data-dropdown-empty hidden><?php esc_html_e( 'Nenhuma localização encontrada.', 'conexao-br-irlanda' ); ?></p>
+						<p class="leisure-dropdown-empty" data-dropdown-empty hidden><?php esc_html_e( 'Nenhum county encontrado.', 'conexao-br-irlanda' ); ?></p>
 					</div>
 				</div>
 			</div>
@@ -501,14 +501,14 @@ $leisure_total = ( isset( $wp_query ) && $wp_query instanceof WP_Query ) ? (int)
 							$show_county_search = count( $county_terms ) > 8;
 							?>
 							<fieldset class="leisure-mobile-section">
-								<legend class="leisure-mobile-section-legend"><?php esc_html_e( 'Localização', 'conexao-br-irlanda' ); ?></legend>
+								<legend class="leisure-mobile-section-legend"><?php esc_html_e( 'County', 'conexao-br-irlanda' ); ?></legend>
 								<?php if ( $show_county_search ) : ?>
 									<input
 										type="search"
 										class="leisure-mobile-search"
 										data-option-search
-										placeholder="<?php esc_attr_e( 'Procurar localização', 'conexao-br-irlanda' ); ?>"
-										aria-label="<?php esc_attr_e( 'Procurar localização', 'conexao-br-irlanda' ); ?>">
+										placeholder="<?php esc_attr_e( 'Procurar county', 'conexao-br-irlanda' ); ?>"
+										aria-label="<?php esc_attr_e( 'Procurar county', 'conexao-br-irlanda' ); ?>">
 								<?php endif; ?>
 								<div class="leisure-filter-options" data-option-list>
 									<label class="leisure-filter-option">
@@ -524,7 +524,7 @@ $leisure_total = ( isset( $wp_query ) && $wp_query instanceof WP_Query ) ? (int)
 									<?php endforeach; ?>
 								</div>
 								<?php if ( $show_county_search ) : ?>
-									<p class="leisure-filter-options-empty" data-option-empty hidden><?php esc_html_e( 'Nenhuma localização encontrada', 'conexao-br-irlanda' ); ?></p>
+									<p class="leisure-filter-options-empty" data-option-empty hidden><?php esc_html_e( 'Nenhum county encontrado', 'conexao-br-irlanda' ); ?></p>
 								<?php endif; ?>
 							</fieldset>
 						<?php endif; ?>
