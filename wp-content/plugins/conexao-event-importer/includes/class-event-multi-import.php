@@ -8,10 +8,10 @@
  * within the PHP memory limit. The existing single-file importer remains
  * the source of truth for Event identity, deduplication, and lifecycle.
  *
- * No cron, no background processing, no external fetching. The batch runs
- * synchronously inside the administrator's explicit POST request and
- * stops on the first failed file, marking subsequent files as
- * not-processed.
+ * No cron, no background processing, no external fetching. Each file is
+ * imported in its own HTTP request, orchestrated by the browser. The
+ * server stages uploaded files in a temporary directory and processes
+ * them one at a time on demand.
  *
  * @package Conexao_Event_Importer
  */
@@ -29,6 +29,275 @@ class Conexao_Event_Multi_Import {
 
 	public function __construct() {
 		$this->importer = new Conexao_Event_Import();
+	}
+
+	/**
+	 * Get the root directory for staged multi-import batches.
+	 *
+	 * @return string
+	 */
+	public function get_staging_root() {
+		$uploads = wp_upload_dir();
+		return trailingslashit( $uploads['basedir'] ) . 'conexao-multi-import';
+	}
+
+	/**
+	 * Stage uploaded files for per-file processing.
+	 *
+	 * @param array $raw_files The $_FILES['conexao_import_files'] array.
+	 * @return array|WP_Error Staging result with batch_token, files, manifest.
+	 */
+	public function stage_uploads( $raw_files ) {
+		$files = $this->normalize_uploaded_files( $raw_files );
+		if ( empty( $files ) ) {
+			return new WP_Error( 'no_files', __( 'No files were uploaded.', 'conexao-event-importer' ) );
+		}
+
+		$manifest_raw = $this->extract_manifest( $files );
+
+		$manifest = null;
+		if ( is_array( $manifest_raw ) ) {
+			$manifest = $this->parse_and_validate_manifest( $manifest_raw );
+			if ( is_wp_error( $manifest ) ) {
+				return $manifest;
+			}
+		}
+
+		$files = $this->order_files( $files, $manifest );
+
+		$staging_root = $this->get_staging_root();
+		if ( ! wp_mkdir_p( $staging_root ) ) {
+			return new WP_Error( 'stage_failed', __( 'Could not create the staging directory.', 'conexao-event-importer' ) );
+		}
+
+		$batch_token = wp_hash( uniqid( 'multi_import_', true ) . wp_rand(), 'auth' );
+		$batch_dir   = $staging_root . '/' . $batch_token;
+
+		if ( ! wp_mkdir_p( $batch_dir ) ) {
+			return new WP_Error( 'stage_failed', __( 'Could not create the batch directory.', 'conexao-event-importer' ) );
+		}
+
+		$htaccess = $batch_dir . '/.htaccess';
+		if ( ! file_exists( $htaccess ) ) {
+			file_put_contents( $htaccess, "Deny from all\n" ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
+		}
+
+		$staged_files = array();
+		foreach ( $files as $index => $file ) {
+			$original_name = isset( $file['name'] ) ? $file['name'] : 'part-' . $index . '.json';
+			$safe_name     = sanitize_file_name( $original_name );
+			$dest_path     = $batch_dir . '/' . $index . '_' . $safe_name;
+
+			if ( ! copy( $file['tmp_name'], $dest_path ) ) {
+				return new WP_Error(
+					'stage_failed',
+					sprintf(
+						/* translators: %s: file name */
+						__( 'Could not stage file: %s', 'conexao-event-importer' ),
+						$original_name
+					)
+				);
+			}
+
+			$staged_files[] = array(
+				'index'    => $index,
+				'filename' => $original_name,
+				'sha256'   => isset( $file['sha256'] ) ? $file['sha256'] : '',
+				'size'     => isset( $file['size'] ) ? $file['size'] : filesize( $dest_path ),
+			);
+
+			@unlink( $file['tmp_name'] ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discourenced
+		}
+
+		$meta = array(
+			'created'   => time(),
+			'files'     => $staged_files,
+			'manifest'  => $manifest,
+			'batch_dir' => $batch_dir,
+		);
+		file_put_contents( $batch_dir . '/batch.json', wp_json_encode( $meta ) ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
+
+		return array(
+			'batch_token' => $batch_token,
+			'file_count'  => count( $staged_files ),
+			'files'       => $staged_files,
+			'manifest'    => $manifest,
+		);
+	}
+
+	/**
+	 * Import a single staged file by index.
+	 *
+	 * Processes exactly ONE file from a previously staged batch.
+	 *
+	 * @param string $batch_token The batch token returned by stage_uploads().
+	 * @param int    $file_index  The zero-based index of the file to import.
+	 * @param array  $options     Import options (duplicate_strategy).
+	 * @return array Per-file result.
+	 */
+	public function import_staged_file( $batch_token, $file_index, $options = array() ) {
+		$start    = microtime( true );
+		$peak_mem = memory_get_peak_usage( true );
+
+		$result = array(
+			'success'     => false,
+			'filename'    => '',
+			'part_number' => absint( $file_index ) + 1,
+			'event_count' => 0,
+			'media_count' => 0,
+			'created'     => 0,
+			'updated'     => 0,
+			'skipped'     => 0,
+			'errors'      => array(),
+			'peak_memory' => 0,
+			'duration'    => 0.0,
+			'status'      => 'failed',
+		);
+
+		if ( ! is_string( $batch_token ) || empty( $batch_token ) || ! preg_match( '/^[a-f0-9]{64}$/', $batch_token ) ) {
+			$result['errors'][] = __( 'Invalid batch token.', 'conexao-event-importer' );
+			return $result;
+		}
+
+		$file_index = absint( $file_index );
+		if ( $file_index < 0 ) {
+			$result['errors'][] = __( 'Invalid file index.', 'conexao-event-importer' );
+			return $result;
+		}
+
+		$batch_dir = $this->get_staging_root() . '/' . $batch_token;
+		$meta_path = $batch_dir . '/batch.json';
+
+		if ( ! file_exists( $meta_path ) ) {
+			$result['errors'][] = __( 'Batch not found or expired.', 'conexao-event-importer' );
+			return $result;
+		}
+
+		$meta_raw = file_get_contents( $meta_path ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+		$meta     = json_decode( $meta_raw, true );
+
+		if ( ! is_array( $meta ) || ! isset( $meta['files'] ) || ! is_array( $meta['files'] ) ) {
+			$result['errors'][] = __( 'Batch metadata is corrupted.', 'conexao-event-importer' );
+			return $result;
+		}
+
+		$target_file = null;
+		foreach ( $meta['files'] as $f ) {
+			if ( isset( $f['index'] ) && (int) $f['index'] === $file_index ) {
+				$target_file = $f;
+				break;
+			}
+		}
+
+		if ( null === $target_file ) {
+			$result['errors'][] = __( 'File not found in batch.', 'conexao-event-importer' );
+			return $result;
+		}
+
+		$staged_path = $batch_dir . '/' . $file_index . '_' . sanitize_file_name( $target_file['filename'] );
+		if ( ! file_exists( $staged_path ) ) {
+			$result['errors'][] = __( 'Staged file is missing from disk.', 'conexao-event-importer' );
+			return $result;
+		}
+
+		if ( ! empty( $target_file['sha256'] ) ) {
+			$actual_hash = hash_file( 'sha256', $staged_path );
+			if ( $actual_hash !== $target_file['sha256'] ) {
+				$result['errors'][] = __( 'SHA-256 hash mismatch. The file may have been corrupted.', 'conexao-event-importer' );
+				return $result;
+			}
+		}
+
+		$result['filename'] = $target_file['filename'];
+
+		$file = array(
+			'name'     => $target_file['filename'],
+			'tmp_name' => $staged_path,
+			'error'    => UPLOAD_ERR_OK,
+		);
+
+		$strategy = isset( $options['duplicate_strategy'] ) ? $options['duplicate_strategy'] : 'update';
+		if ( ! in_array( $strategy, array( 'update', 'skip' ), true ) ) {
+			$strategy = 'update';
+		}
+
+		try {
+			$import_result = $this->importer->import_file( $file, array( 'duplicate_strategy' => $strategy ) );
+
+			$result['created']     = isset( $import_result['imported'] ) ? (int) $import_result['imported'] : 0;
+			$result['updated']     = isset( $import_result['updated'] ) ? (int) $import_result['updated'] : 0;
+			$result['skipped']     = isset( $import_result['skipped'] ) ? (int) $import_result['skipped'] : 0;
+			$result['errors']      = isset( $import_result['errors'] ) ? $import_result['errors'] : array();
+			$result['event_count'] = $result['created'] + $result['updated'] + $result['skipped'];
+			$result['success']     = true;
+			$result['status']      = 'success';
+
+			if ( isset( $import_result['media_discovered'] ) ) {
+				$result['media_count'] = (int) $import_result['media_discovered'];
+			}
+		} catch ( \Exception $e ) {
+			$result['errors'][] = $e->getMessage();
+			$result['status']   = 'failed';
+		}
+
+		$result['duration']    = round( microtime( true ) - $start, 3 );
+		$result['peak_memory'] = memory_get_peak_usage( true ) > $peak_mem ? memory_get_peak_usage( true ) : $peak_mem;
+
+		unset( $file, $import_result );
+		if ( function_exists( 'gc_collect_cycles' ) ) {
+			gc_collect_cycles();
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Clean up a staged batch directory.
+	 *
+	 * @param string $batch_token The batch token.
+	 * @return bool True if cleaned up or already absent.
+	 */
+	public function cleanup_batch( $batch_token ) {
+		if ( ! is_string( $batch_token ) || empty( $batch_token ) || ! preg_match( '/^[a-f0-9]{64}$/', $batch_token ) ) {
+			return false;
+		}
+
+		$batch_dir = $this->get_staging_root() . '/' . $batch_token;
+		if ( ! is_dir( $batch_dir ) ) {
+			return true;
+		}
+
+		$this->delete_directory( $batch_dir );
+		return true;
+	}
+
+	/**
+	 * Recursively delete a directory.
+	 *
+	 * @param string $dir Directory path.
+	 */
+	protected function delete_directory( $dir ) {
+		if ( ! is_dir( $dir ) ) {
+			return;
+		}
+
+		$items = scandir( $dir );
+		if ( false === $items ) {
+			return;
+		}
+
+		foreach ( $items as $item ) {
+			if ( '.' === $item || '..' === $item ) {
+				continue;
+			}
+			$path = $dir . '/' . $item;
+			if ( is_dir( $path ) ) {
+				$this->delete_directory( $path );
+			} else {
+				@unlink( $path ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discourenced
+			}
+		}
+		@rmdir( $dir ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discourenced
 	}
 
 	/**

@@ -191,8 +191,23 @@ final class Conexao_Event_Importer {
 			'conexao-event-importer-admin',
 			'conexaoEventImporter',
 			array(
-				'i18n' => array(
-					'importing' => __( 'Importing… please wait. Do not close this page.', 'conexao-event-importer' ),
+				'ajaxUrl'   => admin_url( 'admin-post.php' ),
+				'i18n'      => array(
+					'importing'          => __( 'Importing… please wait. Do not close this page.', 'conexao-event-importer' ),
+					'importingFile'      => __( 'Importing file %1$d of %2$d…', 'conexao-event-importer' ),
+					'fileSuccess'        => __( 'File %d: completed successfully.', 'conexao-event-importer' ),
+					'fileFailed'         => __( 'File %d: failed.', 'conexao-event-importer' ),
+					'importComplete'     => __( 'Import completed successfully.', 'conexao-event-importer' ),
+					'importStopped'      => __( 'Import stopped after a failure.', 'conexao-event-importer' ),
+					'allFilesProcessed'  => __( 'All files processed.', 'conexao-event-importer' ),
+					'retrying'           => __( 'Retrying file %d…', 'conexao-event-importer' ),
+					'cleanupError'       => __( 'Could not clean up temporary files.', 'conexao-event-importer' ),
+					'networkError'       => __( 'Network error. Please check your connection and retry.', 'conexao-event-importer' ),
+					'serverError'        => __( 'Server error. Please check the logs.', 'conexao-event-importer' ),
+				),
+				'nonces'    => array(
+					'importFile' => wp_create_nonce( 'conexao_import_events_multi_file' ),
+					'cleanup'    => wp_create_nonce( 'conexao_import_events_multi_cleanup' ),
 				),
 			)
 		);

@@ -36,6 +36,8 @@ class Conexao_Event_Transfer_Admin {
 		add_action( 'admin_post_conexao_download_export_part', array( $this, 'handle_download_part' ) );
 		$this->multi_import = new Conexao_Event_Multi_Import();
 		add_action( 'admin_post_conexao_import_events_multi', array( $this, 'handle_import_multi' ) );
+		add_action( 'admin_post_conexao_import_events_multi_file', array( $this, 'handle_import_multi_file' ) );
+		add_action( 'admin_post_conexao_import_events_multi_cleanup', array( $this, 'handle_import_multi_cleanup' ) );
 	}
 
 	/**
@@ -121,11 +123,11 @@ class Conexao_Event_Transfer_Admin {
 		exit;
 	}
 	/**
-	 * Handle the multi-file import request.
+	 * Handle the multi-file import upload request.
 	 *
-	 * Validates the upload, runs the multi-file orchestrator, and redirects
-	 * back to the import page with a serialized batch report in the query
-	 * string so the results can be displayed.
+	 * Stages the uploaded files and redirects back to the import page with
+	 * a batch token. The browser then orchestrates per-file imports through
+	 * the `handle_import_multi_file` handler.
 	 */
 	public function handle_import_multi() {
 		if ( ! current_user_can( 'manage_options' ) ) {
@@ -148,39 +150,87 @@ class Conexao_Event_Transfer_Admin {
 			$strategy = 'update';
 		}
 
-		set_time_limit( 0 );
+		$staged = $this->multi_import->stage_uploads( $_FILES['conexao_import_files'] ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
 
-		$report = $this->multi_import->run_batch( $_FILES['conexao_import_files'], array( 'duplicate_strategy' => $strategy ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
-
-		$summary = array(
-			'status'    => $report['status'],
-			'files'     => isset( $report['totals']['files'] ) ? (int) $report['totals']['files'] : 0,
-			'ok'        => isset( $report['totals']['files_success'] ) ? (int) $report['totals']['files_success'] : 0,
-			'failed'    => isset( $report['totals']['files_failed'] ) ? (int) $report['totals']['files_failed'] : 0,
-			'skipped'   => isset( $report['totals']['files_not_processed'] ) ? (int) $report['totals']['files_not_processed'] : 0,
-			'imported'  => isset( $report['totals']['imported'] ) ? (int) $report['totals']['imported'] : 0,
-			'updated'   => isset( $report['totals']['updated'] ) ? (int) $report['totals']['updated'] : 0,
-			'events'    => isset( $report['totals']['discovered'] ) ? (int) $report['totals']['discovered'] : 0,
-			'media'     => isset( $report['totals']['media_discovered'] ) ? (int) $report['totals']['media_discovered'] : 0,
-			'duration'  => isset( $report['duration'] ) ? $report['duration'] : 0,
-			'peak_mem'  => isset( $report['peak_memory_bytes'] ) ? (int) $report['peak_memory_bytes'] : 0,
-		);
-
-		$args = array(
-			'conexao_multi_result' => rawurlencode( wp_json_encode( $summary ) ),
-		);
-
-		if ( ! empty( $report['totals']['errors'] ) ) {
-			$args['conexao_multi_errors'] = rawurlencode( wp_json_encode( array_slice( $report['totals']['errors'], 0, 25 ) ) );
+		if ( is_wp_error( $staged ) ) {
+			$error_code = $staged->get_error_code();
+			$error_map  = array(
+				'no_files'       => 'no_files',
+				'manifest_error' => 'manifest',
+				'stage_failed'   => 'stage_failed',
+			);
+			$query_arg   = isset( $error_map[ $error_code ] ) ? $error_map[ $error_code ] : 'stage_failed';
+			wp_safe_redirect( add_query_arg( 'conexao_multi_error', $query_arg, $redirect ) );
+			exit;
 		}
 
-		if ( ! empty( $report['manifest_error'] ) ) {
-			$args['conexao_multi_error'] = 'manifest';
-		} elseif ( 'no_files' === $report['status'] ) {
-			$args['conexao_multi_error'] = 'no_files';
+		$args = array(
+			'conexao_multi_batch'     => rawurlencode( $staged['batch_token'] ),
+			'conexao_multi_file_count' => (int) $staged['file_count'],
+			'conexao_multi_strategy'  => $strategy,
+		);
+
+		if ( ! empty( $staged['manifest'] ) && is_array( $staged['manifest'] ) ) {
+			$args['conexao_multi_manifest'] = '1';
 		}
 
 		wp_safe_redirect( add_query_arg( $args, $redirect ) );
+		exit;
+	}
+
+	/**
+	 * Handle a single-file import request within a multi-file batch.
+	 *
+	 * Processes exactly ONE file identified by batch token and file index.
+	 * Returns a compact JSON response. This is the core of the
+	 * request-per-file architecture.
+	 */
+	public function handle_import_multi_file() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'You do not have permission to import events.', 'conexao-event-importer' ) );
+		}
+
+		check_admin_referer( 'conexao_import_events_multi_file', 'conexao_import_multi_file_nonce' );
+
+		$batch_token = isset( $_POST['batch_token'] ) ? sanitize_text_field( wp_unslash( $_POST['batch_token'] ) ) : '';
+		$file_index  = isset( $_POST['file_index'] ) ? absint( wp_unslash( $_POST['file_index'] ) ) : 0;
+
+		$strategy = isset( $_POST['conexao_multi_duplicate_strategy'] )
+			? sanitize_key( wp_unslash( $_POST['conexao_multi_duplicate_strategy'] ) )
+			: 'update';
+		if ( ! in_array( $strategy, array( 'update', 'skip' ), true ) ) {
+			$strategy = 'update';
+		}
+
+		$result = $this->multi_import->import_staged_file( $batch_token, $file_index, array( 'duplicate_strategy' => $strategy ) );
+
+		nocache_headers();
+		header( 'Content-Type: application/json; charset=utf-8' );
+		header( 'X-Content-Type-Options: nosniff' );
+
+		echo wp_json_encode( $result );
+		exit;
+	}
+
+	/**
+	 * Clean up a staged batch directory.
+	 */
+	public function handle_import_multi_cleanup() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'You do not have permission to import events.', 'conexao-event-importer' ) );
+		}
+
+		check_admin_referer( 'conexao_import_events_multi_cleanup', 'conexao_import_multi_cleanup_nonce' );
+
+		$batch_token = isset( $_POST['batch_token'] ) ? sanitize_text_field( wp_unslash( $_POST['batch_token'] ) ) : '';
+
+		$cleaned = $this->multi_import->cleanup_batch( $batch_token );
+
+		nocache_headers();
+		header( 'Content-Type: application/json; charset=utf-8' );
+		header( 'X-Content-Type-Options: nosniff' );
+
+		echo wp_json_encode( array( 'cleaned' => $cleaned ) );
 		exit;
 	}
 	/**

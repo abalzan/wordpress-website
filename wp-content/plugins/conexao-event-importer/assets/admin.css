@@ -449,3 +449,112 @@
 	color: #b32d2e;
 	border: 1px solid #f0c0c0;
 }
+
+/* ============================================================
+ * Multi-file import progress UI
+ * ============================================================ */
+.conexao-multi-import-progress {
+	background: #fff;
+	border: 1px solid #ccd0d4;
+	border-radius: 4px;
+	padding: 20px 24px;
+	margin: 16px 0;
+}
+
+.conexao-multi-import-progress h3 {
+	margin-top: 0;
+	margin-bottom: 12px;
+	font-size: 16px;
+}
+
+.conexao-multi-status {
+	font-size: 14px;
+	font-weight: 600;
+	color: #2271b1;
+	margin: 8px 0;
+	display: flex;
+	align-items: center;
+}
+
+.conexao-multi-part-info {
+	font-size: 13px;
+	color: #646970;
+	margin: 4px 0 12px;
+}
+
+.conexao-multi-import-complete .conexao-multi-status {
+	color: #1e7e34;
+}
+
+.conexao-multi-import-stopped .conexao-multi-status {
+	color: #b32d2e;
+}
+
+.conexao-multi-file-list {
+	margin: 12px 0;
+	padding: 0;
+	list-style: none;
+}
+
+.conexao-multi-file-list li {
+	padding: 6px 8px;
+	margin: 2px 0;
+	border-radius: 3px;
+	font-size: 13px;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.conexao-multi-file-pending {
+	background: #f6f7f7;
+	color: #646970;
+}
+
+.conexao-multi-file-processing {
+	background: #f0f6fc;
+	color: #2271b1;
+}
+
+.conexao-multi-file-success {
+	background: #edf7ed;
+	color: #1e7e34;
+}
+
+.conexao-multi-file-failed {
+	background: #fdeaea;
+	color: #b32d2e;
+}
+
+.conexao-multi-file-status {
+	font-weight: 700;
+	min-width: 16px;
+	text-align: center;
+	display: inline-block;
+}
+
+.conexao-multi-file-label {
+	font-weight: 600;
+}
+
+.conexao-multi-file-detail {
+	color: inherit;
+	opacity: 0.8;
+	font-size: 12px;
+}
+
+.conexao-multi-aggregate {
+	margin-top: 16px;
+	padding-top: 12px;
+	border-top: 1px solid #dcdcde;
+}
+
+.conexao-multi-aggregate h4 {
+	margin: 0 0 8px;
+	font-size: 13px;
+	color: #1d2327;
+}
+
+.conexao-multi-retry-btn {
+	margin-top: 12px !important;
+}
