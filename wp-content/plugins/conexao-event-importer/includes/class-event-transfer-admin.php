@@ -18,6 +18,9 @@ class Conexao_Event_Transfer_Admin {
 	/** @var Conexao_Event_Import */
 	protected $importer;
 
+	/** @var Conexao_Event_Multi_Import */
+	protected $multi_import;
+
 	/**
 	 * Constructor.
 	 */
@@ -31,6 +34,8 @@ class Conexao_Event_Transfer_Admin {
 		add_action( 'admin_post_conexao_import_events', array( $this, 'handle_import' ) );
 		add_action( 'admin_post_conexao_export_events_multipart', array( $this, 'handle_export_multipart' ) );
 		add_action( 'admin_post_conexao_download_export_part', array( $this, 'handle_download_part' ) );
+		$this->multi_import = new Conexao_Event_Multi_Import();
+		add_action( 'admin_post_conexao_import_events_multi', array( $this, 'handle_import_multi' ) );
 	}
 
 	/**
@@ -115,7 +120,69 @@ class Conexao_Event_Transfer_Admin {
 		wp_safe_redirect( add_query_arg( $args, $redirect ) );
 		exit;
 	}
+	/**
+	 * Handle the multi-file import request.
+	 *
+	 * Validates the upload, runs the multi-file orchestrator, and redirects
+	 * back to the import page with a serialized batch report in the query
+	 * string so the results can be displayed.
+	 */
+	public function handle_import_multi() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'You do not have permission to import events.', 'conexao-event-importer' ) );
+		}
 
+		check_admin_referer( 'conexao_import_events_multi', 'conexao_import_multi_nonce' );
+
+		$redirect = admin_url( 'admin.php?page=conexao-event-import-file' );
+
+		if ( empty( $_FILES['conexao_import_files'] ) ) {
+			wp_safe_redirect( add_query_arg( 'conexao_multi_error', 'no_files', $redirect ) );
+			exit;
+		}
+
+		$strategy = isset( $_POST['conexao_multi_duplicate_strategy'] )
+			? sanitize_key( wp_unslash( $_POST['conexao_multi_duplicate_strategy'] ) )
+			: 'update';
+		if ( ! in_array( $strategy, array( 'update', 'skip' ), true ) ) {
+			$strategy = 'update';
+		}
+
+		set_time_limit( 0 );
+
+		$report = $this->multi_import->run_batch( $_FILES['conexao_import_files'], array( 'duplicate_strategy' => $strategy ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+
+		$summary = array(
+			'status'    => $report['status'],
+			'files'     => isset( $report['totals']['files'] ) ? (int) $report['totals']['files'] : 0,
+			'ok'        => isset( $report['totals']['files_success'] ) ? (int) $report['totals']['files_success'] : 0,
+			'failed'    => isset( $report['totals']['files_failed'] ) ? (int) $report['totals']['files_failed'] : 0,
+			'skipped'   => isset( $report['totals']['files_not_processed'] ) ? (int) $report['totals']['files_not_processed'] : 0,
+			'imported'  => isset( $report['totals']['imported'] ) ? (int) $report['totals']['imported'] : 0,
+			'updated'   => isset( $report['totals']['updated'] ) ? (int) $report['totals']['updated'] : 0,
+			'events'    => isset( $report['totals']['discovered'] ) ? (int) $report['totals']['discovered'] : 0,
+			'media'     => isset( $report['totals']['media_discovered'] ) ? (int) $report['totals']['media_discovered'] : 0,
+			'duration'  => isset( $report['duration'] ) ? $report['duration'] : 0,
+			'peak_mem'  => isset( $report['peak_memory_bytes'] ) ? (int) $report['peak_memory_bytes'] : 0,
+		);
+
+		$args = array(
+			'conexao_multi_result' => rawurlencode( wp_json_encode( $summary ) ),
+		);
+
+		if ( ! empty( $report['totals']['errors'] ) ) {
+			$args['conexao_multi_errors'] = rawurlencode( wp_json_encode( array_slice( $report['totals']['errors'], 0, 25 ) ) );
+		}
+
+		if ( ! empty( $report['manifest_error'] ) ) {
+			$args['conexao_multi_error'] = 'manifest';
+		} elseif ( 'no_files' === $report['status'] ) {
+			$args['conexao_multi_error'] = 'no_files';
+		}
+
+		wp_safe_redirect( add_query_arg( $args, $redirect ) );
+		exit;
+	}
 	/**
 	 * Handle the multipart export request.
 	 *
@@ -566,7 +633,7 @@ class Conexao_Event_Transfer_Admin {
 
 			<div class="conexao-transfer-card">
 				<h2><?php esc_html_e( 'Upload Export File', 'conexao-event-importer' ); ?></h2>
-				<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" enctype="multipart/form-data">
+				<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" enctype="multipart/form-data" data-conexao-import-form>
 					<input type="hidden" name="action" value="conexao_import_events">
 					<?php wp_nonce_field( 'conexao_import_events', 'conexao_import_nonce' ); ?>
 
@@ -612,8 +679,109 @@ class Conexao_Event_Transfer_Admin {
 					<li><?php esc_html_e( 'Existing events are updated or skipped based on your selection.', 'conexao-event-importer' ); ?></li>
 					<li><?php esc_html_e( 'Importing the same file twice will not create duplicates.', 'conexao-event-importer' ); ?></li>
 				</ul>
-			</div>
+
+		<?php $this->render_multi_import_result(); ?>
+
+		<div class="conexao-transfer-card">
+			<h2><?php esc_html_e( 'Import Multiple Export Files', 'conexao-event-importer' ); ?></h2>
+			<p class="description">
+				<?php esc_html_e( 'Import several export files sequentially (for example, a multipart export). Each file is processed independently, one at a time, so large imports stay within the PHP memory limit.', 'conexao-event-importer' ); ?>
+			</p>
+			<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" enctype="multipart/form-data" data-conexao-import-form>
+				<input type="hidden" name="action" value="conexao_import_events_multi">
+				<input type="hidden" name="MAX_FILE_SIZE" value="<?php echo (int) $max_upload_bytes; ?>">
+				<?php wp_nonce_field( 'conexao_import_events_multi', 'conexao_import_multi_nonce' ); ?>
+
+				<p>
+					<label for="conexao_import_files"><strong><?php esc_html_e( 'Export files (.json)', 'conexao-event-importer' ); ?></strong></label><br>
+					<input type="file" name="conexao_import_files[]" id="conexao_import_files" accept=".json,application/json" multiple required>
+					<span class="description"><?php esc_html_e( 'Select one or more export files. If you have a multipart manifest, include it and the files will be imported in the correct order.', 'conexao-event-importer' ); ?></span>
+				</p>
+
+				<p>
+					<label for="conexao_multi_duplicate_strategy"><strong><?php esc_html_e( 'If an event already exists', 'conexao-event-importer' ); ?></strong></label><br>
+					<select name="conexao_multi_duplicate_strategy" id="conexao_multi_duplicate_strategy">
+						<option value="update"><?php esc_html_e( 'Update the existing event', 'conexao-event-importer' ); ?></option>
+						<option value="skip"><?php esc_html_e( 'Skip the existing event', 'conexao-event-importer' ); ?></option>
+					</select>
+				</p>
+
+				<?php submit_button( __( 'Import Multiple Files', 'conexao-event-importer' ), 'primary', 'submit', false ); ?>
+			</form>
+		</div>
 		</div>
 		<?php
+	}
+
+	/**
+	 * Render the multi-file import result card, if a batch was just run.
+	 */
+	protected function render_multi_import_result() {
+		if ( ! isset( $_GET['conexao_multi_result'] ) ) {
+			return;
+		}
+
+		$raw   = wp_unslash( $_GET['conexao_multi_result'] );
+		$json  = rawurldecode( $raw );
+		$summary = json_decode( $json, true );
+
+		if ( ! is_array( $summary ) ) {
+			return;
+		}
+
+		$errors = array();
+		if ( isset( $_GET['conexao_multi_errors'] ) ) {
+			$err_raw  = wp_unslash( $_GET['conexao_multi_errors'] );
+			$err_json = rawurldecode( $err_raw );
+			$errors   = json_decode( $err_json, true );
+			if ( ! is_array( $errors ) ) {
+				$errors = array();
+			}
+		}
+
+		$status  = isset( $summary['status'] ) ? $summary['status'] : 'unknown';
+		$is_ok   = in_array( $status, array( 'complete' ), true );
+		$is_stop = ( 'stopped' === $status );
+
+		$notice_class = $is_ok ? 'notice-success' : ( $is_stop ? 'notice-warning' : 'notice-error' );
+		?>
+		<div class="notice <?php echo esc_attr( $notice_class ); ?> is-dismissible">
+			<p><strong><?php esc_html_e( 'Multi-file import', 'conexao-event-importer' ); ?></strong>
+			<?php
+			if ( $is_stop ) {
+				esc_html_e( ' — stopped after a failure. Earlier parts remain imported.', 'conexao-event-importer' );
+			} elseif ( 'manifest_error' === $status ) {
+				esc_html_e( ' — manifest validation failed.', 'conexao-event-importer' );
+			} elseif ( 'no_files' === $status ) {
+				esc_html_e( ' — no files uploaded.', 'conexao-event-importer' );
+			}
+			?>
+			</p>
+			<ul class="conexao-import-stats">
+				<li><?php echo esc_html( sprintf( __( 'Files processed: %d', 'conexao-event-importer' ), isset( $summary['files'] ) ? (int) $summary['files'] : 0 ) ); ?></li>
+				<li><?php echo esc_html( sprintf( __( 'Successful: %d', 'conexao-event-importer' ), isset( $summary['ok'] ) ? (int) $summary['ok'] : 0 ) ); ?></li>
+				<li><?php echo esc_html( sprintf( __( 'Failed: %d', 'conexao-event-importer' ), isset( $summary['failed'] ) ? (int) $summary['failed'] : 0 ) ); ?></li>
+				<li><?php echo esc_html( sprintf( __( 'Not processed: %d', 'conexao-event-importer' ), isset( $summary['skipped'] ) ? (int) $summary['skipped'] : 0 ) ); ?></li>
+				<li><?php echo esc_html( sprintf( __( 'Events discovered: %d', 'conexao-event-importer' ), isset( $summary['events'] ) ? (int) $summary['events'] : 0 ) ); ?></li>
+				<li><?php echo esc_html( sprintf( __( 'Events created: %d', 'conexao-event-importer' ), isset( $summary['imported'] ) ? (int) $summary['imported'] : 0 ) ); ?></li>
+				<li><?php echo esc_html( sprintf( __( 'Events updated: %d', 'conexao-event-importer' ), isset( $summary['updated'] ) ? (int) $summary['updated'] : 0 ) ); ?></li>
+				<li><?php echo esc_html( sprintf( __( 'Images: %d', 'conexao-event-importer' ), isset( $summary['media'] ) ? (int) $summary['media'] : 0 ) ); ?></li>
+				<li><?php echo esc_html( sprintf( __( 'Total duration: %ss', 'conexao-event-importer' ), isset( $summary['duration'] ) ? $summary['duration'] : 0 ) ); ?></li>
+				<li><?php echo esc_html( sprintf( __( 'Peak memory: %s', 'conexao-event-importer' ), size_format( isset( $summary['peak_mem'] ) ? (int) $summary['peak_mem'] : 0 ) ) ); ?></li>
+			</ul>
+		</div>
+		<?php
+		if ( ! empty( $errors ) ) :
+		?>
+		<div class="notice notice-error is-dismissible">
+			<p><strong><?php esc_html_e( 'Errors', 'conexao-event-importer' ); ?></strong></p>
+			<ul class="conexao-import-errors">
+				<?php foreach ( $errors as $error_message ) : ?>
+					<li><?php echo esc_html( $error_message ); ?></li>
+				<?php endforeach; ?>
+			</ul>
+		</div>
+		<?php
+		endif;
 	}
 }

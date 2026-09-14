@@ -50,6 +50,7 @@ require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-import-dashboard.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-export.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-import.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-transfer-admin.php';
+require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-multi-import.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-image-sync-admin.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-cleanup.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-cleanup-admin.php';
