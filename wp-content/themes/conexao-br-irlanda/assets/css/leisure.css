@@ -523,10 +523,8 @@
 
 /* Filter sections inside the sheet — always visible, no accordions.
    One fieldset per group with a legend heading: the full option set is
-   exposed at once and radio state is server-rendered from the URL and
-   never reset when the sheet reopens. Selecting a radio applies the
-   filter immediately (main.js initLeisureInstantFilters); "Mostrar
-   resultados" remains only as a no-JS / fallback action. */
+   exposed at once. Selections are staged and applied only by "Mostrar
+   resultados". */
 .leisure-mobile-section {
 	border: 0;
 	margin: 0 0 var(--space-4);
@@ -651,17 +649,6 @@
 	border-top: 1px solid var(--color-border);
 	background: var(--color-surface);
 	flex-shrink: 0;
-}
-
-/* With the instant-filter enhancement active (main.js), the single-select
-   Localização radio still applies and closes the sheet in the same gesture,
-   but the multi-select Tipo/Características checkbox groups accumulate
-   their selections while the sheet stays open — "Mostrar resultados" is
-   the explicit apply action for those groups and therefore stays visible.
-   "Limpar" shares the footer width with it. Without JS the form submits
-   the same way. */
-.leisure-mobile-form--instant .leisure-mobile-clear {
-	flex: 1;
 }
 
 .leisure-apply-button {

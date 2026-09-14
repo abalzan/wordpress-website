@@ -12,7 +12,6 @@
 		initMobileSearch();
 		initCopyButtons();
 		initLeisureFilters();
-		initLeisureInstantFilters();
 		initAgencyFilters();
 		initEventFilters();
 		initSponsorsCarousel();
@@ -264,19 +263,14 @@
 	//     the filter values) — Escape inside it first clears the query, then
 	//     a second Escape closes the menu,
 	//   - the mobile sheet is a fixed overlay with a focusable close control,
-	//   - on mobile, changing the single-select Localização radio applies the
-	//     filter immediately (initLeisureInstantFilters below) — the sheet
-	//     auto-closes so the user lands on the results; the multi-select
-	//     Tipo/Características checkbox groups accumulate selections while
-	//     the sheet stays open and are submitted together by "Mostrar
-	//     resultados" (each section's "Todos"/"Todas" checkbox is a reset
-	//     action that clears only its own section),
+	//   - on mobile, all selections remain staged in the sheet until "Mostrar
+	//     resultados" submits the form (each section's "Todos"/"Todas"
+	//     checkbox is a local reset action that clears only its own section),
 	//   - empty "Todos" radio values are stripped so URLs stay clean (e.g.
 	//     /lazer/?categoria=castelos instead of /lazer/?county=&categoria=castelos).
 
 	// Desktop dropdown state and helpers live at module scope (not inside
-	// initLeisureFilters) so the instant-filter module can rebuild the
-	// dropdown bindings after swapping the toolbar markup in place.
+	// initLeisureFilters).
 	var leisureDropdowns = [];
 
 	function normalize(text) {
@@ -377,17 +371,10 @@
 	}
 
 	// ===== Mobile filter bottom sheet helpers (shared) =====
-	// Single open/close path for the sheet, shared by the sheet bindings in
-	// initLeisureFilters() and the instant-filter pipeline in
-	// initLeisureInstantFilters() — the latter dismisses the panel when any
-	// filter is chosen, and must use exactly the same close steps (class,
-	// aria state, body scroll, focus return) as the explicit close paths so
-	// the two behaviors never drift apart. The nodes are looked up at call
-	// time because the instant pipeline swaps the results markup around the
-	// sheet (the sheet itself is never part of the swap), so these helpers
-	// are safe to call from either module. closeMobileSheet(true) restores
-	// focus to the mobile "Filtrar" trigger, so a keyboard user is never
-	// left inside the now-hidden panel.
+	// One open/close path keeps the sheet's class, aria state, body scroll and
+	// focus restoration consistent. closeMobileSheet(true) restores focus to
+	// the mobile "Filtrar" trigger, so a keyboard user is never left inside
+	// the now-hidden panel.
 	function leisureSheetNodes() {
 		const root = document.querySelector('[data-leisure-filters]');
 		if (!root) return null;
@@ -398,22 +385,48 @@
 		};
 	}
 
+	// The mobile form is deliberately a staged editor. Its server-rendered
+	// controls describe the last URL that was actually applied; opening the
+	// sheet restores that state and discards any edits abandoned by closing it.
+	function syncLeisureMobileFormToAppliedUrl() {
+		const root = document.querySelector('[data-leisure-filters]');
+		const form = root ? root.querySelector('[data-mobile-form]') : null;
+		if (!form) return;
+
+		const params = new URLSearchParams(window.location.search);
+		const county = params.get('county') || '';
+		const countyInput = form.querySelector('input[type="radio"][name="county"][value="' + county + '"]');
+		if (countyInput) countyInput.checked = true;
+
+		[['categoria[]', 'categoria'], ['atributo[]', 'atributo']].forEach(function(pair) {
+			// The ordinary GET form produces repeated categoria[]/atributo[]
+			// values; shared desktop URLs use one comma-separated value. Accept
+			// both shapes when restoring the last applied state.
+			const values = params.getAll(pair[0]).concat((params.get(pair[1]) || '').split(',')).filter(Boolean);
+			Array.prototype.forEach.call(form.querySelectorAll('input[type="checkbox"][name="' + pair[0] + '"]'), function(input) {
+				input.checked = values.indexOf(input.value) !== -1;
+			});
+		});
+
+		Array.prototype.forEach.call(form.querySelectorAll('input[type="checkbox"][data-filter-clear]'), function(clearInput) {
+			const section = clearInput.closest('.leisure-mobile-section');
+			clearInput.checked = !section || !section.querySelectorAll('input[type="checkbox"][name]:checked').length;
+		});
+	}
+
 	function openMobileSheet() {
 		const sheet = leisureSheetNodes();
 		if (!sheet || !sheet.overlay) return;
+		syncLeisureMobileFormToAppliedUrl();
 		sheet.overlay.classList.add('is-open');
 		sheet.overlay.setAttribute('aria-hidden', 'false');
 		if (sheet.trigger) sheet.trigger.setAttribute('aria-expanded', 'true');
 		document.body.style.overflow = 'hidden';
-		// NOTE: the radio state is server-rendered from the URL and is
-		// deliberately never reset here — reopening the sheet must show
-		// the current selections.
+		// The form was reset to the URL's applied state immediately before open.
 		if (sheet.close) {
 			setTimeout(function() {
-				// The sheet may already be closed before this fires (the
-				// instant filter pipeline closes it on any selection;
-				// the user may also tap Fechar/the backdrop). Never move
-				// focus into a hidden element.
+				// The sheet may already be closed before this fires if the user
+				// taps Fechar/the backdrop. Never move focus into a hidden element.
 				if (sheet.overlay.classList.contains('is-open')) {
 					sheet.close.focus();
 				}
@@ -554,20 +567,38 @@
 			closeMobileSheet(true);
 		});
 
-		// Mobile form (staged fallback): with the instant enhancement active
-		// (initLeisureInstantFilters below) this submit is owned by that
-		// module, so only the reset of the default action happens here. In
-		// browsers without the instant enhancement the old staged behaviour
-		// still applies. Empty params are stripped so URLs stay clean (e.g.
+		// Mobile form: the only application path is the explicit submit from
+		// "Mostrar resultados". Empty params are stripped so URLs stay clean (e.g.
 		// /lazer/?categoria=castelos instead of /lazer/?county=&categoria=castelos).
 		const form = root.querySelector('[data-mobile-form]');
 		if (form) {
+			// Tipo and Características remain staged multi-select controls. Their
+			// nameless Todos/Todas controls reset only their own section; neither
+			// path submits or changes the URL.
+			form.addEventListener('change', function(e) {
+				const input = e.target;
+				if (!input || input.type !== 'checkbox') return;
+
+				const section = input.closest('.leisure-mobile-section');
+				if (!section) return;
+
+				if (input.hasAttribute('data-filter-clear')) {
+					if (input.checked) {
+						Array.prototype.forEach.call(section.querySelectorAll('input[type="checkbox"][name]'), function(option) {
+							option.checked = false;
+						});
+					} else if (!section.querySelectorAll('input[type="checkbox"][name]:checked').length) {
+						input.checked = true;
+					}
+					return;
+				}
+
+				const clearInput = section.querySelector('input[type="checkbox"][data-filter-clear]');
+				if (clearInput) clearInput.checked = !section.querySelectorAll('input[type="checkbox"][name]:checked').length;
+			});
+
 			form.addEventListener('submit', function(e) {
 				e.preventDefault();
-
-				// The instant module binds its own submit handler and applies
-				// the selection in place — skip the full page navigation.
-				if (root.dataset.instantBound === 'true') return;
 
 				var url = new URL(form.getAttribute('action'), window.location.origin);
 

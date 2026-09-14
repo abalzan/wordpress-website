@@ -551,27 +551,27 @@ $leisure_total = ( isset( $wp_query ) && $wp_query instanceof WP_Query ) ? (int)
 								</div>
 							</fieldset>
 						<?php endif; ?>
-					</div>
-				<?php if ( $has_attribute ) : ?>
-					<fieldset class="leisure-mobile-section">
-						<legend class="leisure-mobile-section-legend"><?php esc_html_e( 'Características', 'conexao-br-irlanda' ); ?></legend>
-							<?php // Same multi-select model as the Tipo section: checkbox group
-							      // (name="atributo[]") plus the nameless "Todas" section reset. ?>
-						<div class="leisure-filter-options">
-							<label class="leisure-filter-option">
-								<input class="leisure-filter-checkbox" type="checkbox" data-filter-clear <?php checked( empty( $current_attributes ) ); ?>>
-								<span><?php esc_html_e( 'Todas', 'conexao-br-irlanda' ); ?></span>
-							</label>
+							<?php if ( $has_attribute ) : ?>
+								<fieldset class="leisure-mobile-section">
+									<legend class="leisure-mobile-section-legend"><?php esc_html_e( 'Características', 'conexao-br-irlanda' ); ?></legend>
+									<?php // Same multi-select model as the Tipo section: checkbox group
+									      // (name="atributo[]") plus the nameless "Todas" section reset. ?>
+									<div class="leisure-filter-options">
+										<label class="leisure-filter-option">
+											<input class="leisure-filter-checkbox" type="checkbox" data-filter-clear <?php checked( empty( $current_attributes ) ); ?>>
+											<span><?php esc_html_e( 'Todas', 'conexao-br-irlanda' ); ?></span>
+										</label>
 
-							<?php foreach ( $attribute_terms as $term ) : ?>
-								<label class="leisure-filter-option">
-									<input class="leisure-filter-checkbox" type="checkbox" name="atributo[]" value="<?php echo esc_attr( $term->slug ); ?>" <?php checked( in_array( $term->slug, $current_attributes, true ) ); ?>>
-									<span><?php echo esc_html( $term->name ); ?></span>
-								</label>
-							<?php endforeach; ?>
+										<?php foreach ( $attribute_terms as $term ) : ?>
+											<label class="leisure-filter-option">
+												<input class="leisure-filter-checkbox" type="checkbox" name="atributo[]" value="<?php echo esc_attr( $term->slug ); ?>" <?php checked( in_array( $term->slug, $current_attributes, true ) ); ?>>
+												<span><?php echo esc_html( $term->name ); ?></span>
+											</label>
+										<?php endforeach; ?>
+									</div>
+								</fieldset>
+							<?php endif; ?>
 						</div>
-					</fieldset>
-				<?php endif; ?>
 
 					<div class="leisure-mobile-sheet-footer">
 						<a class="leisure-mobile-clear" href="<?php echo esc_url( $clear_url ); ?>"><?php esc_html_e( 'Limpar', 'conexao-br-irlanda' ); ?></a>
