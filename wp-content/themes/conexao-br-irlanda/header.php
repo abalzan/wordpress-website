@@ -179,6 +179,29 @@
 				) );
 				?>
 			</nav>
+
+			<!--
+				Primary conversion action (Anuncie Aqui) for the mobile drawer.
+
+				The desktop .header-cta is hidden at <=1024px to keep the compact
+				mobile header uncluttered, so the same action is surfaced here
+				instead: after the navigation list and before the social footer,
+				outside the scrollable .mobile-menu-nav (it is a persistent
+				non-shrinking sibling), so it can never be scrolled out of reach.
+				Same destination (/anuncie/), same design language and same upload
+				icon as the desktop CTA — see .mobile-menu-cta in header-nav.css.
+			-->
+			<div class="mobile-menu-cta-wrap">
+				<a href="<?php echo esc_url( home_url( '/anuncie/' ) ); ?>" class="mobile-menu-cta">
+					<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+						<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+						<polyline points="17 8 12 3 7 8"></polyline>
+						<line x1="12" y1="3" x2="12" y2="15"></line>
+					</svg>
+					<?php esc_html_e( 'Anuncie Aqui', 'conexao-br-irlanda' ); ?>
+				</a>
+			</div>
+
 			<div class="mobile-menu-footer">
 				<div class="mobile-menu-social">
 					<?php if ( $instagram ) : ?>

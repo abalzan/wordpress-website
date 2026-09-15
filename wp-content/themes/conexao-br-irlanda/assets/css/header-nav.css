@@ -314,7 +314,13 @@ body.admin-bar .site-header {
   box-shadow: 0 0 0 4px rgba(14, 107, 58, 0.1);
 }
 
-.header-cta {
+/* Second selector: the mobile-drawer instance of the same action. It shares
+   the entire desktop CTA rule (accent fill, white text, pill radius, 44px+
+   target, nowrap) and only re-proportions itself for the drawer below —
+   see ".mobile-menu-cta" in the Mobile Menu section. Extending this shared
+   rule keeps one CTA definition instead of a duplicated component. */
+.header-cta,
+.mobile-menu-cta {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
@@ -624,6 +630,51 @@ body.admin-bar .site-header {
   min-height: 48px;
 }
 
+/* ===== Mobile Menu: Anuncie Aqui CTA =====
+   Drawer instance of the desktop .header-cta (shared rule above): same accent
+   fill, white text, pill radius and upload icon, re-proportioned for the
+   drawer instead of copied at desktop dimensions.
+
+   Placement: a non-shrinking sibling AFTER the scrollable .mobile-menu-nav and
+   BEFORE .mobile-menu-footer, so the action is always visible and reachable
+   (never scrolled out of the menu) without being fixed/floating. The top
+   border separates it from ordinary navigation links; the footer's own
+   border-top separates it from the social links.
+
+   Sizing: full drawer content width, centred, 52px min-height — a comfortable
+   touch target that reads as a primary action (bigger than the 48px nav rows)
+   without overwhelming the list. Only design-system tokens are used, so light
+   and dark mode both come from the theme token layer (dark-mode.css remaps
+   --conexao-accent / --color-surface / --color-border at [data-theme="dark"]).
+
+   States: hover/active keep the desktop idiom (deeper accent fill + white
+   text) but drop the desktop's -2px lift and shadow. On a full-width drawer
+   button the lift reads as jitter, and a hover-applied translate can stick
+   after a tap on touch devices. :focus-visible comes from the shared focus
+   list below. */
+.mobile-menu-cta-wrap {
+  flex-shrink: 0;
+  padding: var(--space-5);
+  border-top: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+.mobile-menu-cta {
+  width: 100%;
+  justify-content: center;
+  padding: var(--space-3) var(--space-5);
+  font-size: var(--text-base);
+  min-height: 52px;
+}
+
+.mobile-menu-cta:hover,
+.mobile-menu-cta:active {
+  background: var(--color-accent-dark);
+  color: var(--conexao-white);
+  transform: none;
+  box-shadow: none;
+}
+
 .mobile-menu-footer {
   padding: var(--space-5) var(--space-5);
   border-top: 1px solid var(--color-border);
@@ -809,6 +860,7 @@ body.admin-bar .site-header {
 .primary-navigation ul li a:focus-visible,
 .mobile-menu li a:focus-visible,
 .header-cta:focus-visible,
+.mobile-menu-cta:focus-visible,
 .mobile-menu-toggle:focus-visible,
 .mobile-menu-close:focus-visible,
 .mobile-search-toggle:focus-visible,
@@ -1056,6 +1108,7 @@ body.admin-bar .site-header {
   .primary-navigation ul li.menu-item-has-children > a::before,
   .mobile-menu-toggle .hamburger-line,
   .mobile-submenu-toggle::before,
+  .mobile-menu-cta,
   .mobile-menu-content,
   .mobile-menu-overlay,
   .site-header {

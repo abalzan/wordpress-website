@@ -24,7 +24,7 @@ Modern community portal theme for Conexão BR Irlanda. Features a green/orange p
 | `home.php` | `/blog/` | Blog archive |
 | `search.php` | `/search/` | Search results |
 | `404.php` | 404 | 404 page |
-| `header.php` | All | Site header, nav, mobile menu |
+| `header.php` | All | Site header, nav, mobile menu. The drawer hosts the primary conversion action ("Anuncie Aqui" → `/anuncie/`) between the nav list and the social footer — see `docs/ui/mobile-anuncie-aqui-cta-report.md` |
 | `footer.php` | All | Site footer |
 | `sidebar.php` | All | Sidebar widget area |
 | `comments.php` | Posts | Comments template |
