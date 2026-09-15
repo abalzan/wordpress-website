@@ -154,19 +154,24 @@
   background: var(--color-surface);
 }
 
-/* Mobile drawer "Anuncie Aqui" CTA — keep the accent fill's label white.
+/* Accent-filled "Anuncie Aqui" CTAs — keep the label white in dark mode.
    The generic dark anchor rules ([data-theme="dark"] a / a:hover, 0,1,1 and
-   0,2,1) outrank header-nav.css's (0,1,0) CTA rules, which repainted this
-   accent-filled action green-on-orange (2.7:1) and, on hover/active,
+   0,2,1) outrank header-nav.css's (0,1,0) CTA rules, which repainted these
+   accent-filled actions green-on-orange (2.7:1) and, on hover/active,
    orange-on-orange (~1.5:1 — the label effectively disappears). Same
    specificity trap as the hero CTAs above, fixed the same way: pin the
-   intended white label with a dark-scoped selector that outranks the generic
-   anchor rules. Scoped to the drawer CTA only — the desktop .header-cta is
-   intentionally left untouched by this change. */
+   intended white label with dark-scoped selectors that outrank the generic
+   anchor rules. Applies to the mobile drawer CTA and the compact mobile
+   top-bar CTA — the full-text desktop .header-cta is intentionally left
+   untouched by this change. */
 [data-theme="dark"] .mobile-menu-cta,
 [data-theme="dark"] .mobile-menu-cta:hover,
 [data-theme="dark"] .mobile-menu-cta:active,
-[data-theme="dark"] .mobile-menu-cta:focus-visible {
+[data-theme="dark"] .mobile-menu-cta:focus-visible,
+[data-theme="dark"] .header-cta-compact,
+[data-theme="dark"] .header-cta-compact:hover,
+[data-theme="dark"] .header-cta-compact:active,
+[data-theme="dark"] .header-cta-compact:focus-visible {
   color: var(--conexao-white);
 }
 

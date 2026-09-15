@@ -314,13 +314,15 @@ body.admin-bar .site-header {
   box-shadow: 0 0 0 4px rgba(14, 107, 58, 0.1);
 }
 
-/* Second selector: the mobile-drawer instance of the same action. It shares
-   the entire desktop CTA rule (accent fill, white text, pill radius, 44px+
-   target, nowrap) and only re-proportions itself for the drawer below —
-   see ".mobile-menu-cta" in the Mobile Menu section. Extending this shared
-   rule keeps one CTA definition instead of a duplicated component. */
+/* Second/third selectors: the drawer instance and the compact mobile top-bar
+   instance of the same action. They share this entire desktop CTA rule (accent
+   fill, white text, pill radius, 44px+ target, nowrap) and only re-proportion
+   themselves for their context — see ".mobile-menu-cta" and
+   ".header-cta-compact" below. Extending this shared rule keeps one CTA
+   definition instead of duplicated components. */
 .header-cta,
-.mobile-menu-cta {
+.mobile-menu-cta,
+.header-cta-compact {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
@@ -341,6 +343,66 @@ body.admin-bar .site-header {
   color: var(--conexao-white);
   transform: translateY(-2px);
   box-shadow: var(--shadow-sm);
+}
+
+/* ===== Compact header CTA (mobile/tablet top bar) =====
+   Second entry point to /anuncie/ for <=1024px, where the full-text
+   .header-cta above is hidden.
+
+   Space-tested against the real header row: a full-text pill measures ~141px,
+   which cannot coexist with hamburger + logo + theme toggle + search at phone
+   widths — the logo is the flexible child (flex: 1 1 0%), so inserting the
+   text pill would collapse it to a sliver (≈0px at 320px, ≈19px at 360px). The
+   label is therefore rendered only where it genuinely fits (>=480px, where the
+   logo still measures its natural 107×40) and the control is a 48px icon pill
+   below that, which keeps the logo at full size down to ~355px.
+
+   The accessible name is ALWAYS "Anuncie Aqui" (aria-label), independent of
+   width, so hiding the visual label never affects assistive tech; the visible
+   span is aria-hidden="true" to avoid a duplicate name. The drawer CTA
+   (.mobile-menu-cta) carries the full visible label at every width. */
+.header-cta-compact {
+  display: none;
+}
+
+@media (max-width: 1024px) {
+  .header-cta-compact {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    min-height: 48px;
+    padding: 0;
+    flex-shrink: 0;
+  }
+
+  .header-cta-compact .header-cta-compact-label {
+    display: none;
+  }
+}
+
+/* Label variant — only where the row has room for it. */
+@media (min-width: 480px) and (max-width: 1024px) {
+  .header-cta-compact {
+    width: auto;
+    gap: var(--space-1);
+    padding: var(--space-2) var(--space-3);
+  }
+
+  .header-cta-compact .header-cta-compact-label {
+    display: inline;
+  }
+}
+
+/* Keep the desktop idiom (deeper accent, white label) without the -2px lift,
+   which reads as jitter on a small in-bar control and can stick after a tap. */
+.header-cta-compact:hover,
+.header-cta-compact:active {
+  background: var(--color-accent-dark);
+  color: var(--conexao-white);
+  transform: none;
+  box-shadow: none;
 }
 
 /* ===== Mobile Menu Toggle ===== */
@@ -861,6 +923,7 @@ body.admin-bar .site-header {
 .mobile-menu li a:focus-visible,
 .header-cta:focus-visible,
 .mobile-menu-cta:focus-visible,
+.header-cta-compact:focus-visible,
 .mobile-menu-toggle:focus-visible,
 .mobile-menu-close:focus-visible,
 .mobile-search-toggle:focus-visible,
@@ -1085,6 +1148,23 @@ body.admin-bar .site-header {
   }
 }
 
+/* ===== Ultra-narrow phones (<=359px) =====
+   At 320px the row is hamburger + logo + theme + search + the compact top-bar
+   CTA, and the logo is the flexible child, so it absorbs the new control
+   (measured: 96x36 -> 66x25 with the default 8px/4px gaps). Tightening only the
+   gaps on these very small screens buys back 12px for the logo (measured:
+   78x29, i.e. +18%) with no container overflow, no horizontal scrolling and the
+   48x48 target untouched. Scoped to <=359px so every wider layout is unaffected. */
+@media (max-width: 359px) {
+  .main-header .site-container {
+    gap: 4px;
+  }
+
+  .header-actions {
+    gap: 2px;
+  }
+}
+
 /* ===== Print ===== */
 @media print {
   .site-header,
@@ -1109,6 +1189,7 @@ body.admin-bar .site-header {
   .mobile-menu-toggle .hamburger-line,
   .mobile-submenu-toggle::before,
   .mobile-menu-cta,
+  .header-cta-compact,
   .mobile-menu-content,
   .mobile-menu-overlay,
   .site-header {

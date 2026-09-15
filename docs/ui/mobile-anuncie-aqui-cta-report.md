@@ -22,9 +22,9 @@ computed styles, real interactions.
 
 | File | Change |
 |---|---|
-| `wp-content/themes/conexao-br-irlanda/header.php` | New `.mobile-menu-cta-wrap` block rendered between `</nav>` (`.mobile-menu-nav`) and `.mobile-menu-footer`. Link `href` built with `home_url( '/anuncie/' )`, label via `esc_html_e( 'Anuncie Aqui', … )`, SVG icon `aria-hidden="true"`. |
-| `wp-content/themes/conexao-br-irlanda/assets/css/header-nav.css` | (a) `.mobile-menu-cta` added to the **existing** `.header-cta` base rule (selector list only — no declaration changed); (b) new *"Mobile Menu: Anuncie Aqui CTA"* block (`.mobile-menu-cta-wrap`, `.mobile-menu-cta`, `:hover`/`:active`); (c) `.mobile-menu-cta:focus-visible` added to the existing focus-visible list; (d) `.mobile-menu-cta` added to the reduced-motion transition-suppression list. |
-| `wp-content/themes/conexao-br-irlanda/assets/css/dark-mode.css` | One dark-scoped rule pinning the drawer CTA label to `var(--conexao-white)` (see *Dark-mode fix*). |
+| `wp-content/themes/conexao-br-irlanda/header.php` | New `.mobile-menu-cta-wrap` block rendered between `</nav>` (`.mobile-menu-nav`) and `.mobile-menu-footer`. Link `href` built with `home_url( '/anuncie/' )`, label via `esc_html_e( 'Anuncie Aqui', … )`, SVG icon `aria-hidden="true"`. **Follow-up:** a compact `.header-cta-compact` link in `.header-actions` for the mobile/tablet top bar — see *Follow-up Change* below. |
+| `wp-content/themes/conexao-br-irlanda/assets/css/header-nav.css` | (a) `.mobile-menu-cta` added to the **existing** `.header-cta` base rule (selector list only — no declaration changed); (b) new *"Mobile Menu: Anuncie Aqui CTA"* block (`.mobile-menu-cta-wrap`, `.mobile-menu-cta`, `:hover`/`:active`); (c) `.mobile-menu-cta:focus-visible` added to the existing focus-visible list; (d) `.mobile-menu-cta` added to the reduced-motion transition-suppression list. **Follow-up:** the *"Compact header CTA"* block (`.header-cta-compact` + responsive label rule) and the same list additions for it. |
+| `wp-content/themes/conexao-br-irlanda/assets/css/dark-mode.css` | One dark-scoped rule pinning the accent CTAs' label to `var(--conexao-white)` (drawer + compact top-bar instance; see *Dark-mode fix*). |
 | `wp-content/themes/conexao-br-irlanda/assets/css/design-system.css` | `.mobile-menu-cta` added to the **existing** shared button-typography group (`.btn, .header-cta, …`). |
 | `docs/ui/mobile-anuncie-aqui-cta-report.md` | This report. |
 
@@ -239,15 +239,176 @@ Note: the theme's CSS is concatenated/minified by Jetpack into a single
 `_static/` stylesheet, so the checks were run against the served CSS (verified
 to contain the new rules) rather than the source files alone.
 
+## Follow-up Change: Compact Top-Bar CTA (requested after review)
+
+After review the request changed: the action should be **visible in the mobile
+top bar without opening the menu**. That contradicts the original brief
+("Do NOT place the full-text CTA permanently in the mobile top bar"), so it was
+implemented the measured, lowest-risk way rather than by dropping the desktop
+pill into the row.
+
+### Space measurement that drove the design
+
+Measured on the live header (`header .site-container` is `100% - 32px` at ≤768px;
+the row is `hamburger + logo + .header-actions`, `gap: 8px`, `.header-actions`
+`gap: 4px`):
+
+| Viewport | Container | Row before | Full-text pill needs | Result |
+|---|---|---|---|---|
+| 320 | 288px | 272px used, 16px slack | ~141px | **does not fit** — logo is the flexible child, so it would collapse to ≈0px |
+| 360 | 328px | 312px used | ~141px | does not fit — logo would collapse (168px box → ≈19px) |
+| 430 | 398px | 382px used | ~141px | does not fit — logo would drop to ≈89px (83%) |
+| 480 | 448px | 432px used | ~141px | **fits** — logo keeps its natural 107×40 |
+| 768 / 1024 | 736 / 976px | — | ~141px | fits comfortably |
+
+So a text pill can only exist from ~450px up; on phones something must give.
+
+### Implemented behaviour
+
+`.header-cta-compact` inside `.header-actions` (right-most, mirroring the desktop
+pill's position):
+
+| Width | Rendering |
+|---|---|
+| ≥1025px | `display: none` — the desktop `.header-cta` is the only CTA |
+| 480–1024px | accent pill, 141×48, icon + visible label "Anuncie Aqui" |
+| ≤479px | 48×48 accent icon pill (upload icon, same icon as the desktop CTA), label visually hidden |
+
+- The **drawer CTA keeps the full visible label at every width**, so the action
+  is never represented by an icon alone in the interface.
+- Accessible name is **always "Anuncie Aqui"** via `aria-label`, independent of
+  whether the visual label is rendered (`role=link, name="Anuncie Aqui"` lookup
+  returns exactly 1 match at 360px). The visible span is `aria-hidden="true"` so
+  the name is never duplicated.
+- 48×48 target, `border-radius: var(--radius-full)`, accent fill, white label —
+  all shared tokens, no new colour system (the compact variant is added to the
+  same `.header-cta` / `.mobile-menu-cta` base rule and the design-system
+  typography group).
+- Hover/active: deeper accent + white label, no `-2px` lift.
+- Dark mode: white label pinned (same rule as the drawer CTA) so it never
+  becomes green-on-orange.
+- No overlap: while the drawer is open the overlay (z-index 9999) covers the
+  top-bar CTA, so tapping there closes the drawer instead of navigating
+  (verified: `elementFromPoint` at the CTA position returns the overlay).
+
+### Cost of the change (measured)
+
+| Width | Logo image before | Logo image after | Notes |
+|---|---|---|---|
+| 320 | 96×36 | 78×29 (81%) | after the ≤359px refinement below — before it was 66×25 (69%) |
+| 340–479 | 96×36 | 96×36 (100%) | no impact |
+| 480+ | — | unchanged | label variant |
+
+#### Ultra-narrow refinement (≤359px)
+
+The logo is the flexible child of the header row, so at 320px it absorbs the new
+control. A ≤359px-only gap refinement (`header-nav.css`, *"Ultra-narrow phones"*)
+buys back 12px by tightening the row rhythm from `8px/4px` to `4px/2px`:
+
+| 320px measurement | Before refinement | After refinement |
+|---|---|---|
+| Logo image | 66×25 | **78×29** (+18%) |
+| Compact CTA | 48×48 | 48×48 (unchanged) |
+| Container overflow | none | none |
+| Horizontal scroll | none | none |
+
+Scoped to ≤359px, so every wider layout (360px+) keeps the original spacing.
+Verified: 340/359px now render the logo at its full 96×36.
+
+### Ultra-narrow / spacing verification
+
+| Width | Logo | Top-bar CTA | Container gap | Actions gap | Overflow | H-scroll |
+|---|---|---|---|---|---|---|
+| 320 | 78×29 | 48×48 | 4px | 2px | none | none |
+| 340 | 96×36 | 48×48 | 4px | 2px | none | none |
+| 359 | 96×36 | 48×48 | 4px | 2px | none | none |
+| 360–479 | 96×36 | 48×48 | 8px | 4px | none | none |
+| 480–1024 | 96×36 | 141×48 (label) | 8px | 4px | none | none |
+| 1025+ | 72×48 | hidden | 12px | 12px | none | none |
+
+No container overflow and no horizontal scrolling at any width; header height
+stayed 60px (mobile) / 64px (tablet) / 80px (desktop).
+
+### Follow-up verification
+
+| Check | Result |
+|---|---|
+| Visible without opening the menu (≤1024px) | PASS — icon pill (320–479), labelled pill (480–1024) |
+| Hidden on desktop | PASS — `display:none`, box width 0 at 1025/1440 |
+| Exactly one visible CTA per breakpoint | PASS — 1440: 1 (`header-cta`); 768: 1 (`header-cta-compact`); drawer CTA width 0 while closed |
+| Links to `/anuncie/` | PASS — click from the 390px top bar lands on `/anuncie/` |
+| Accessible name | PASS — "Anuncie Aqui" at icon-only width (aria-label) |
+| Focus | PASS — Tab order `hamburger → logo → theme → search → CTA`; `:focus-visible` = 3px accent ring, offset 2px |
+| Touch target | PASS — 48×48 |
+| Light/dark readability | PASS — white on `#F68B1F` in both themes (2.43:1, same as the desktop CTA) |
+| Reduced motion | PASS — `transition-duration: 0s` (added to the suppression list) |
+| Desktop regression | PASS — full CTA unchanged (`display:flex`, `#F68B1F`, `#ffffff`, `8px 12px`, 14px, 44px min-height, pill radius) |
+| Drawer CTA | PASS — unchanged and still the labelled instance |
+| Logo/header integrity | PASS — no overflow, header height unchanged, logo full size from 355px up |
+
+### Trade-off note
+
+This addition deliberately relaxes the brief's "no permanent top-bar CTA" rule at
+the user's request. The cost is a smaller logo at 320–350px and one more control
+in the mobile bar; the benefit is that the conversion action is discoverable
+without opening the menu, on top of the labelled drawer instance. If the logo
+size at 320px is not acceptable, the alternatives are: hide the compact CTA below
+360px (drawer-only on those devices), or accept the icon-only variant as the
+single mobile affordance.
+
+## Deployment (production is WordPress.com — no SSH/SFTP/CLI)
+
+Verified against the actual WordPress core code in the local container
+(`wp-admin/update.php`, `wp-admin/includes/class-theme-upgrader.php`,
+`class-wp-upgrader.php`, `class-theme-installer-skin.php`):
+
+```bash
+./scripts/build-theme-zip.sh      # → dist/conexao-br-irlanda.zip (91 files)
+```
+
+1. WP Admin → **Appearance → Themes → Add New → Upload Theme** → choose
+   `dist/conexao-br-irlanda.zip` → Install Now.
+2. Because the theme folder already exists, WP reports
+   **"Destination folder already exists"** / *"This theme is already installed."*
+   (`folder_exists`, `abort_if_destination_exists` defaults to true for uploads —
+   `update.php` only passes `overwrite_package` when `?overwrite=update-theme`
+   is present).
+3. The same screen shows a comparison table (Installed vs Uploaded) and the
+   **"Replace current with uploaded"** button. Click it — it re-runs with
+   `overwrite=update-theme` → `clear_destination` → the theme folder is replaced.
+   A version bump is **not** required for this path (the repo has kept
+   `Version: 1.0.0` since the initial commit, so the comparison table will show
+   1.0.0 vs 1.0.0).
+4. WordPress.com caching: purge/flush the site cache (and any page cache) after
+   the theme is replaced, then hard-refresh on the phone. Theme CSS/JS are
+   versioned with `filemtime()`, so the asset URLs change automatically when the
+   files change.
+
+Verified before/after state:
+
+| Environment | `mobile-menu-cta` (drawer) | `header-cta-compact` (top bar) |
+|---|---|---|
+| Local `http://localhost:8080` | present | present |
+| Production `https://conexaobr.ie` | **absent** | **absent** — only the desktop `header-cta` |
+
+So the mobile CTA cannot be seen on production until the ZIP above is uploaded
+and activated.
+
 ## Status
 
-**PASSED** — "Anuncie Aqui" is discoverable and tappable in the mobile menu,
-links to `/anuncie/`, is visually prominent yet consistent with the design
-system and `.header-cta`, works in light and dark mode, is keyboard/screen-reader
-accessible with a visible focus state, and no unrelated functionality regressed.
+**PASSED** — "Anuncie Aqui" is now reachable in the mobile interface **without
+opening the menu** (compact top-bar CTA: labelled ≥480px, 48×48 icon pill below)
+**and** inside the mobile menu as a full-text primary action. Both instances link
+to `/anuncie/`, are visually prominent yet consistent with the design system and
+`.header-cta`, work in light and dark mode, are keyboard/screen-reader accessible
+with visible focus and ≥44px targets, and no unrelated functionality regressed.
+The desktop header keeps its unchanged full-text CTA only.
 
 Known limitations (pre-existing, documented above, not introduced here): the
 accent-fill label contrast is 2.43:1 because it inherits the brand's
 white-on-orange CTA pairing, and the desktop `.header-cta` keeps its own
 pre-existing dark-mode colour bug (out of scope by instruction).
+
+Trade-off introduced by the follow-up (documented above): the 320–350px logo is
+smaller than before to make room for the top-bar CTA.
 

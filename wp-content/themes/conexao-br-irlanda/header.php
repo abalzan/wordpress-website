@@ -142,6 +142,26 @@
 						</svg>
 						<?php esc_html_e( 'Anuncie Aqui', 'conexao-br-irlanda' ); ?>
 					</a>
+
+					<!--
+						Compact top-bar "Anuncie Aqui" for mobile/tablet (<=1024px), where
+						the full-text .header-cta above is hidden. Measured space: a
+						full-text pill needs ~141px, which does not exist next to the
+						hamburger + logo + theme toggle + search at phone widths, so the
+						label only renders where it fits (>=480px) and the control stays a
+						48px icon pill below that — the drawer keeps the full-text label in
+						both cases (.mobile-menu-cta). Name is always "Anuncie Aqui"
+						(aria-label); the visible span is decorative with aria-hidden so the
+						name never depends on the icon or on the label being visible.
+					-->
+					<a href="<?php echo esc_url( home_url( '/anuncie/' ) ); ?>" class="header-cta-compact" aria-label="<?php esc_attr_e( 'Anuncie Aqui', 'conexao-br-irlanda' ); ?>">
+						<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+							<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+							<polyline points="17 8 12 3 7 8"></polyline>
+							<line x1="12" y1="3" x2="12" y2="15"></line>
+						</svg>
+						<span class="header-cta-compact-label" aria-hidden="true"><?php esc_html_e( 'Anuncie Aqui', 'conexao-br-irlanda' ); ?></span>
+					</a>
 				</div>
 			</div>
 		</div>
