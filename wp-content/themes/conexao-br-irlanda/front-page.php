@@ -124,7 +124,7 @@ $hero_has_sponsors = ! empty( conexao_get_featured_sponsors() );
 						</svg>
 						<?php esc_html_e( 'Explorar Guias', 'conexao-br-irlanda' ); ?>
 					</a>
-					<a href="<?php echo esc_url( home_url( '/eventos/' ) ); ?>" class="btn btn-outline">
+					<a href="<?php echo esc_url( conexao_lang_url( '/eventos/' ) ); ?>" class="btn btn-outline">
 						<?php esc_html_e( 'Ver Eventos', 'conexao-br-irlanda' ); ?>
 					</a>
 				</div>
@@ -217,7 +217,7 @@ $hero_has_sponsors = ! empty( conexao_get_featured_sponsors() );
 				<span class="section-eyebrow"><?php esc_html_e( 'Conteúdo em Destaque', 'conexao-br-irlanda' ); ?></span>
 				<h2 class="section-title"><?php esc_html_e( 'Últimas Publicações', 'conexao-br-irlanda' ); ?></h2>
 			</div>
-			<a href="<?php echo esc_url( home_url( '/blog/' ) ); ?>" class="section-link">
+			<a href="<?php echo esc_url( conexao_lang_url( '/blog/' ) ); ?>" class="section-link">
 				<?php esc_html_e( 'Ver todas', 'conexao-br-irlanda' ); ?>
 				<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
 					<line x1="5" y1="12" x2="19" y2="12"></line>
@@ -443,7 +443,7 @@ if ( ! empty( $latest_news_ids ) ) :
 				<span class="section-eyebrow"><?php esc_html_e( 'Blog', 'conexao-br-irlanda' ); ?></span>
 				<h2 class="section-title" id="latest-news-heading"><?php esc_html_e( 'Últimas novidades', 'conexao-br-irlanda' ); ?></h2>
 			</div>
-			<a href="<?php echo esc_url( home_url( '/blog/' ) ); ?>" class="section-link">
+			<a href="<?php echo esc_url( conexao_lang_url( '/blog/' ) ); ?>" class="section-link">
 				<?php esc_html_e( 'Ver todos', 'conexao-br-irlanda' ); ?>
 				<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
 					<line x1="5" y1="12" x2="19" y2="12"></line>
@@ -506,7 +506,7 @@ if ( ! empty( $latest_news_ids ) ) :
 				<h2 class="section-title"><?php esc_html_e( 'Próximos Eventos', 'conexao-br-irlanda' ); ?></h2>
 				<p class="section-subtitle"><?php esc_html_e( 'Não perca os eventos da comunidade brasileira na Irlanda.', 'conexao-br-irlanda' ); ?></p>
 			</div>
-			<a href="<?php echo esc_url( home_url( '/eventos/' ) ); ?>" class="section-link">
+			<a href="<?php echo esc_url( conexao_lang_url( '/eventos/' ) ); ?>" class="section-link">
 				<?php esc_html_e( 'Ver todos', 'conexao-br-irlanda' ); ?>
 				<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
 					<line x1="5" y1="12" x2="19" y2="12"></line>
@@ -560,7 +560,7 @@ if ( ! empty( $latest_news_ids ) ) :
 		</div>
 
 		<div class="events-section-footer">
-			<a href="<?php echo esc_url( home_url( '/eventos/' ) ); ?>" class="events-section-link">
+			<a href="<?php echo esc_url( conexao_lang_url( '/eventos/' ) ); ?>" class="events-section-link">
 				<?php esc_html_e( 'Ver todos os eventos', 'conexao-br-irlanda' ); ?>
 				<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
 					<line x1="5" y1="12" x2="19" y2="12"></line>
@@ -579,7 +579,7 @@ if ( ! empty( $latest_news_ids ) ) :
 				<span class="section-eyebrow"><?php esc_html_e( 'Oportunidades', 'conexao-br-irlanda' ); ?></span>
 				<h2 class="section-title" id="jobs-home-title"><?php esc_html_e( 'Onde procurar emprego', 'conexao-br-irlanda' ); ?></h2>
 			</div>
-			<a href="<?php echo esc_url( home_url( '/empregos/' ) ); ?>" class="section-link"><?php esc_html_e( 'Ver mais', 'conexao-br-irlanda' ); ?></a>
+			<a href="<?php echo esc_url( conexao_lang_url( '/empregos/' ) ); ?>" class="section-link"><?php esc_html_e( 'Ver mais', 'conexao-br-irlanda' ); ?></a>
 		</div>
 		<?php get_template_part( 'template-parts/job-resources', 'preview' ); ?>
 	</div>

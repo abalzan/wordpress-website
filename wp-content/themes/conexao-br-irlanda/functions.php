@@ -185,6 +185,19 @@ function conexao_get_guides_archive_url() {
  *     used when the term is not resolvable via taxonomy, and is itself
  *     validated: if it doesn't exist we fall through to the plain archive.
  *
+ * STAGE 3.3 — language behaviour. The identifiers are canonical Portuguese
+ * slugs, but Polylang filters term lookups by language, so the lookup is
+ * widened (`conexao_find_term_across_languages()`) and the term is then
+ * resolved to the current language (`conexao_lang_term()`):
+ *
+ *  - Portuguese request → the term is returned unchanged: the URL is
+ *    byte-identical to the pre-Stage-3.3 output.
+ *  - English request with a LINKED English term that actually carries
+ *    published English guides → the English slug on the English archive
+ *    (`/en/guias/?categoria=documents`) — a real English destination.
+ *  - English request without one → the plain English archive (never a
+ *    Portuguese slug under `/en/`, never an invented term URL).
+ *
  * @param string $identifier   Card identifier (label or slug).
  * @param string $fallback_slug Optional known term slug to try when the term
  *                              cannot be resolved from taxonomy data.
@@ -217,6 +230,12 @@ function conexao_get_guide_category_url( $identifier, $fallback_slug = '' ) {
 		}
 
 		$found = get_term_by( 'slug', $candidate_slug, 'conexao_category' );
+		if ( ! $found || is_wp_error( $found ) ) {
+			// Stage 3.3: the slug may belong to ANOTHER language (the card
+			// definitions keep canonical Portuguese slugs).
+			$found = conexao_find_term_across_languages( $candidate_slug, 'conexao_category' );
+		}
+
 		if ( $found && ! is_wp_error( $found ) ) {
 			$term = $found;
 			break;
@@ -243,7 +262,15 @@ function conexao_get_guide_category_url( $identifier, $fallback_slug = '' ) {
 	}
 
 	if ( $term ) {
-		return add_query_arg( 'categoria', $term->slug, $archive_url );
+		// Stage 3.3: resolve to the current language. Portuguese requests get
+		// the term back unchanged; English requests get the linked English
+		// term only when it carries published English guides, otherwise null
+		// (the plain language archive below).
+		$language_term = conexao_lang_term( $term, 'guide' );
+
+		if ( $language_term instanceof WP_Term ) {
+			return add_query_arg( 'categoria', $language_term->slug, $archive_url );
+		}
 	}
 
 	return $archive_url;

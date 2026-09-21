@@ -26,7 +26,9 @@ if ( ! empty( $card['guides'] ) ) {
 } elseif ( ! empty( $card['term'] ) ) {
 	$card_url = conexao_get_guide_category_url( $card['term'], $card['term'] );
 } elseif ( ! empty( $card['url'] ) ) {
-	$card_url = home_url( $card['url'] );
+	// Canonical Portuguese path → the current language's real destination
+	// (Stage 3.3, same helper as the Quick Access grid).
+	$card_url = conexao_lang_url( $card['url'] );
 } else {
 	return;
 }

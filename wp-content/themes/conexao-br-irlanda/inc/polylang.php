@@ -580,6 +580,291 @@ function conexao_language_archive_url( string $post_type, string $target_slug ):
 }
 
 /**
+ * STAGE 3.3 — language-aware destination for a canonical Portuguese path.
+ *
+ * Theme chrome has always built absolute internal links with
+ * `home_url( '/eventos/' )`-style calls. Polylang rewrites `home_url()` only
+ * for the BARE home URL (`PLL_Frontend_Filters_Links::home_url()` returns the
+ * URL untouched as soon as `$path` is not empty — see its
+ * `rtrim( $url, '/' ) != $this->links_model->home` guard), so every
+ * path-bearing `home_url()` call keeps pointing at the Portuguese URL inside
+ * an English request. That is the remaining leakage Stage 3.2 §26 recorded.
+ *
+ * This helper resolves such a path to the destination an English visitor must
+ * reach, using the smallest existing APIs — no link rewriter, no HTML
+ * post-processing, no hard-coded /en/ URLs:
+ *
+ *  1. Polylang inactive, unknown/empty current language, or current language
+ *     is the default language → `home_url( $path )` byte-identical to the
+ *     pre-Polylang behaviour. Portuguese output cannot change.
+ *  2. The path addresses an existing object (page, or any post reachable at
+ *     that path) that HAS a published translation in the current language →
+ *     that translation's permalink (real EN translation: `/empregos/` →
+ *     `/en/jobs/`).
+ *  3. The path addresses a post type archive → the current language's archive
+ *     URL (`conexao_language_archive_url()`): `/eventos/` → `/en/eventos/`.
+ *     The Blog (`post`) archive is excluded: there is no per-language Blog
+ *     archive, so Blog keeps its approved B1 Portuguese destination.
+ *  4. Everything else — a B1 page with no translation, a utility page, a path
+ *     that does not resolve — returns `home_url( $path )`: the approved B1
+ *     behaviour. No EN detail URL is ever invented for untranslated content,
+ *     and B2 pages are NOT auto-promoted here (linking straight to the
+ *     Portuguese B2 URL is the approved B1-style destination; see Stage 3.2
+ *     §5 for the B2 allowlist contract).
+ *
+ * @param string $path Path relative to the site home, e.g. "/eventos/".
+ * @return string Absolute URL.
+ */
+function conexao_lang_url( string $path ): string {
+	$path = '/' . ltrim( $path, '/' );
+
+	if ( ! conexao_polylang_active() ) {
+		return home_url( $path );
+	}
+
+	$current = conexao_current_language_slug();
+	$default = conexao_default_language_slug();
+
+	if ( '' === $current || $current === $default ) {
+		return home_url( $path );
+	}
+
+	// (2) Post type archive path. Checked before the page lookup because
+	// WordPress serves the archive for a path that collides with a page slug
+	// (e.g. `/lazer/` is the leisure archive even though a canonical `lazer`
+	// page also exists in the catalogue).
+	$post_type = conexao_lang_url_archive_post_type( $path );
+
+	if ( '' !== $post_type && 'post' !== $post_type ) {
+		$archive = conexao_language_archive_url( $post_type, $current );
+
+		if ( '' !== $archive ) {
+			return $archive;
+		}
+	}
+
+	// (3) Real translation of a real object addressed by this exact path.
+	$object = conexao_lang_url_object( $path );
+
+	if ( $object instanceof WP_Post ) {
+		$translation = pll_get_post( (int) $object->ID, $current );
+
+		if ( $translation && (int) $translation !== (int) $object->ID && 'publish' === get_post_status( $translation ) ) {
+			$permalink = get_permalink( (int) $translation );
+
+			if ( $permalink ) {
+				return $permalink;
+			}
+		}
+
+		// No translation: approved B1 behaviour — the Portuguese URL.
+		return home_url( $path );
+	}
+
+	// (4) B1 / utility / unresolved: unchanged Portuguese URL.
+	return home_url( $path );
+}
+
+/**
+ * The object addressed by a canonical path, when there is one.
+ *
+ * Only single-segment-rooted permalinks are considered (pages, and the
+ * hierarchical structures `get_page_by_path()` understands). Archive paths
+ * are handled by conexao_lang_url_archive_post_type().
+ *
+ * @param string $path Path relative to the site home.
+ * @return WP_Post|null
+ */
+function conexao_lang_url_object( string $path ) {
+	$trimmed = trim( $path, '/' );
+
+	if ( '' === $trimmed ) {
+		return null;
+	}
+
+	$object = get_page_by_path( $trimmed, OBJECT, 'page' );
+
+	return $object instanceof WP_Post ? $object : null;
+}
+
+/**
+ * The post type served by an archive path ("eventos" → "event").
+ *
+ * @param string $path Path relative to the site home.
+ * @return string Post type name, or '' when the path is not an archive root.
+ */
+function conexao_lang_url_archive_post_type( string $path ): string {
+	$trimmed = trim( $path, '/' );
+
+	// Archives are single-segment roots (/eventos/, /lazer/, …).
+	if ( '' === $trimmed || false !== strpos( $trimmed, '/' ) ) {
+		return '';
+	}
+
+	foreach ( get_post_types( array( 'public' => true ), 'objects' ) as $post_type => $object ) {
+		if ( empty( $object->has_archive ) ) {
+			continue;
+		}
+
+		$slug = is_string( $object->has_archive ) ? $object->has_archive : '';
+
+		if ( '' === $slug ) {
+			$slug = ( is_array( $object->rewrite ) && ! empty( $object->rewrite['slug'] ) ) ? $object->rewrite['slug'] : $post_type;
+		}
+
+		if ( $slug === $trimmed ) {
+			return (string) $post_type;
+		}
+	}
+
+	return '';
+}
+
+/**
+ * STAGE 3.3 — the current language's counterpart of a taxonomy term.
+ *
+ * Used by language-aware taxonomy links (the Guides category cards). Returns:
+ *
+ *  - the term itself when Polylang is inactive or no language context exists
+ *    (exact pre-Polylang behaviour),
+ *  - the LINKED term of the current language when one exists (and, when a
+ *    post type is given, when that term is actually used by published content
+ *    of that type in this language — a filter link must never lead to an empty
+ *    English archive),
+ *  - null when there is no usable counterpart, so the caller can fall back to
+ *    the plain language archive URL instead of inventing a term URL.
+ *
+ * Shared proper-noun taxonomies (county/town) are deliberately not
+ * Polylang-translated; `pll_get_term()` simply returns the same term for them,
+ * so they keep resolving to themselves in both languages.
+ *
+ * @param mixed  $term      Candidate term (WP_Term expected).
+ * @param string $post_type Optional post type the term must have content for.
+ * @return WP_Term|null
+ */
+function conexao_lang_term( $term, string $post_type = '' ) {
+	if ( ! $term instanceof WP_Term ) {
+		return null;
+	}
+
+	if ( ! conexao_polylang_active() || ! function_exists( 'pll_get_term' ) ) {
+		return $term;
+	}
+
+	$current = conexao_current_language_slug();
+
+	if ( '' === $current ) {
+		return $term;
+	}
+
+	$translation_id = pll_get_term( (int) $term->term_id, $current );
+
+	if ( ! $translation_id ) {
+		return null;
+	}
+
+	$translated = get_term( (int) $translation_id, $term->taxonomy );
+
+	if ( ! $translated || is_wp_error( $translated ) ) {
+		return null;
+	}
+
+	if ( '' !== $post_type && ! conexao_term_has_language_content( (int) $translated->term_id, $translated->taxonomy, $post_type, $current ) ) {
+		return null;
+	}
+
+	return $translated;
+}
+
+/**
+ * Does a term carry published content of a post type in a language?
+ *
+ * One cheap query (no_found_rows, ids only), memoised per request.
+ *
+ * @param int    $term_id    Term id.
+ * @param string $taxonomy   Taxonomy name.
+ * @param string $post_type  Post type name.
+ * @param string $language   Language slug.
+ * @return bool
+ */
+function conexao_term_has_language_content( int $term_id, string $taxonomy, string $post_type, string $language ): bool {
+	static $cache = array();
+
+	$key = $term_id . '|' . $taxonomy . '|' . $post_type . '|' . $language;
+
+	if ( isset( $cache[ $key ] ) ) {
+		return $cache[ $key ];
+	}
+
+	$args = array(
+		'post_type'              => $post_type,
+		'post_status'            => 'publish',
+		'posts_per_page'         => 1,
+		'fields'                 => 'ids',
+		'no_found_rows'          => true,
+		'update_post_meta_cache' => false,
+		'update_post_term_cache' => false,
+		'tax_query'              => array(
+			array(
+				'taxonomy' => $taxonomy,
+				'field'    => 'term_id',
+				'terms'    => $term_id,
+			),
+		),
+	);
+
+	if ( '' !== $language && conexao_polylang_active() ) {
+		$args['lang'] = $language;
+	}
+
+	$query = new WP_Query( $args );
+
+	$cache[ $key ] = ! empty( $query->posts );
+
+	return $cache[ $key ];
+}
+
+/**
+ * STAGE 3.3 — look a term up by slug across every language.
+ *
+ * `get_term_by()` is language-filtered by Polylang, so a canonical Portuguese
+ * slug cannot be found while an English request is being rendered. Card
+ * definitions and other canonical configuration keep Portuguese slugs, so the
+ * lookup is widened here (Polylang's documented `lang => ''` query argument)
+ * and the caller then resolves the current language's counterpart with
+ * `conexao_lang_term()`.
+ *
+ * @param string $slug     Term slug.
+ * @param string $taxonomy Taxonomy name.
+ * @return WP_Term|null
+ */
+function conexao_find_term_across_languages( string $slug, string $taxonomy ) {
+	$slug = sanitize_title( $slug );
+
+	if ( '' === $slug ) {
+		return null;
+	}
+
+	$args = array(
+		'taxonomy'   => $taxonomy,
+		'slug'       => $slug,
+		'hide_empty' => false,
+	);
+
+	if ( conexao_polylang_active() ) {
+		$args['lang'] = '';
+	}
+
+	$terms = get_terms( $args );
+
+	if ( is_wp_error( $terms ) || empty( $terms ) ) {
+		return null;
+	}
+
+	return $terms[0] instanceof WP_Term ? $terms[0] : null;
+}
+
+/**
  * Translation-aware URL of a language for the object/context being viewed.
  *
  * Policy (approved B5 model, Stage 2 scope):
