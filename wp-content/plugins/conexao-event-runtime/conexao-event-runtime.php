@@ -465,3 +465,19 @@ Conexao_Event_Runtime::instance();
 
 register_activation_hook( __FILE__, array( 'Conexao_Event_Runtime', 'activate' ) );
 register_deactivation_hook( __FILE__, array( 'Conexao_Event_Runtime', 'deactivate' ) );
+
+/**
+ * Load the plugin textdomain (Stage 1 i18n foundation).
+ *
+ * Translation files live in this plugin's languages/ directory. This does
+ * not touch the event status gate, the recurrence evaluator or any event
+ * identity logic — gettext wrapping only, no behavior change.
+ */
+function conexao_event_runtime_load_textdomain() {
+	load_plugin_textdomain(
+		'conexao-event-runtime',
+		false,
+		dirname( plugin_basename( __FILE__ ) ) . '/languages'
+	);
+}
+add_action( 'init', 'conexao_event_runtime_load_textdomain' );

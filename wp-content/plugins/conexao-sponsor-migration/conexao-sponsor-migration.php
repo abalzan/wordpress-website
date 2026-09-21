@@ -136,3 +136,18 @@ final class Conexao_Sponsor_Migration {
 }
 
 Conexao_Sponsor_Migration::instance();
+/**
+ * Load the plugin textdomain (Stage 1 i18n foundation).
+ *
+ * Translation files live in this plugin's languages/ directory. This does
+ * not touch sponsor identity/matching — gettext wrapping only, no behavior
+ * change.
+ */
+function conexao_sponsor_migration_load_textdomain() {
+	load_plugin_textdomain(
+		'conexao-sponsor-migration',
+		false,
+		dirname( plugin_basename( __FILE__ ) ) . '/languages'
+	);
+}
+add_action( 'init', 'conexao_sponsor_migration_load_textdomain' );

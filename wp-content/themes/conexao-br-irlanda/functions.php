@@ -14,6 +14,12 @@ define( 'CONEXAO_THEME_DIR', get_template_directory() );
 define( 'CONEXAO_THEME_URI', get_template_directory_uri() );
 
 /**
+ * Load the i18n foundation module FIRST so the Stage 1 locale correction
+ * (en_US → pt_BR) applies to everything loaded after it, including SEO.
+ */
+require_once CONEXAO_THEME_DIR . '/inc/i18n.php';
+
+/**
  * Load SEO foundation module.
  */
 require_once CONEXAO_THEME_DIR . '/inc/seo.php';
@@ -583,6 +589,18 @@ function conexao_enqueue_scripts() {
 
 	// Load main.js with defer to avoid render-blocking.
 	wp_enqueue_script( 'conexao-main', CONEXAO_THEME_URI . '/assets/js/main.js', array(), conexao_asset_version( 'assets/js/main.js' ), array( 'in_footer' => true, 'strategy' => 'defer' ) );
+
+	/*
+	 * Inject the localized UI strings for main.js (Stage 1 i18n foundation).
+	 * main.js reads `window.ConexaoI18n` and falls back to the Portuguese
+	 * literals only when this payload is absent. The strings' single gettext
+	 * source is conexao_js_i18n_strings() in inc/i18n.php.
+	 */
+	wp_add_inline_script(
+		'conexao-main',
+		'window.ConexaoI18n = ' . wp_json_encode( conexao_js_i18n_strings() ) . ';',
+		'before'
+	);
 
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
@@ -2424,12 +2442,20 @@ function conexao_event_is_recurring( $event_id ): bool {
 }
 
 /**
- * Concise Portuguese recurrence label for a recurring event.
+ * Concise recurrence label for a recurring event, in the active UI language.
  *
- * Returns e.g. "Toda quarta-feira" (single day) or "Toda segunda e quarta"
- * (multiple days), or an empty string for one-time / non-weekly / invalid
- * events. ISO weekday numbers (1 = Monday … 7 = Sunday) are mapped to full
- * Portuguese weekday names; raw numbers and CSV storage are never surfaced.
+ * Portuguese (the site's source language) renders exactly as before:
+ * "Toda quarta-feira" (single day) or "Toda segunda e quarta" (multiple
+ * days). Non-PT locales (Stage 2's en_US catalog) get their own natural
+ * wording, e.g. "Every Wednesday" / "Every Monday and Wednesday", via the
+ * theme's translation catalogs. Returns an empty string for one-time /
+ * non-weekly / invalid events.
+ *
+ * ISO weekday numbers (1 = Monday … 7 = Sunday) are mapped to localized
+ * full weekday names; raw numbers and CSV storage are never surfaced. The
+ * underlying recurrence model is untouched — ISO day codes, recurrence meta
+ * and storage are presentation-agnostic; only presentation is
+ * language-aware here.
  *
  * @param int $event_id Event post ID.
  * @return string Empty when the event is not recurring.
@@ -2444,25 +2470,83 @@ function conexao_event_recurrence_label( $event_id ): string {
 		return '';
 	}
 
-	/*
-	 * ISO weekday numbers (1 = Monday through 7 = Sunday) map to Portuguese
-	 * full weekday names. This is presentation only — the mapping from the
-	 * recurrence model's day codes never leaks to the markup.
-	 */
-	$weekday_names = array(
-		1 => 'segunda-feira',
-		2 => 'terça-feira',
-		3 => 'quarta-feira',
-		4 => 'quinta-feira',
-		5 => 'sexta-feira',
-		6 => 'sábado',
-		7 => 'domingo',
+	return conexao_recurrence_present_days( $days );
+}
+
+/**
+ * Localized full weekday name for an ISO weekday code (1 = Monday … 7 = Sunday).
+ *
+ * Presentation only. The source strings are the Portuguese full names (the
+ * site's source language); translation catalogs map them per locale.
+ *
+ * @param int $iso_day ISO weekday code.
+ * @return string Weekday name, or '' for an invalid code.
+ */
+function conexao_recurrence_weekday_name( $iso_day ): string {
+	$names = array(
+		1 => __( 'segunda-feira', 'conexao-br-irlanda' ),
+		2 => __( 'terça-feira', 'conexao-br-irlanda' ),
+		3 => __( 'quarta-feira', 'conexao-br-irlanda' ),
+		4 => __( 'quinta-feira', 'conexao-br-irlanda' ),
+		5 => __( 'sexta-feira', 'conexao-br-irlanda' ),
+		6 => __( 'sábado', 'conexao-br-irlanda' ),
+		7 => __( 'domingo', 'conexao-br-irlanda' ),
 	);
 
+	return isset( $names[ $iso_day ] ) ? $names[ $iso_day ] : '';
+}
+
+/**
+ * Join two or more localized list items with the active language's glue.
+ *
+ * Portuguese: "segunda e quarta" / "segunda, quarta e sexta".
+ * English (via catalog): "Monday and Wednesday" / "Monday, Wednesday and Friday"
+ * — the same two patterns translate naturally because the last item is
+ * always passed separately.
+ *
+ * @param array $items Non-empty list of localized names (at least 1).
+ * @return string The joined list.
+ */
+function conexao_recurrence_list_join( array $items ): string {
+	if ( 1 === count( $items ) ) {
+		return $items[0];
+	}
+
+	if ( 2 === count( $items ) ) {
+		/* translators: %1$s and %2$s are weekday names, e.g. "segunda" and "quarta". */
+		return sprintf( __( '%1$s e %2$s', 'conexao-br-irlanda' ), $items[0], $items[1] );
+	}
+
+	$last = array_pop( $items );
+	/* translators: %1$s is a comma-separated list of weekday names; %2$s is the final weekday name. */
+	return sprintf( __( '%1$s e %2$s', 'conexao-br-irlanda' ), implode( ', ', $items ), $last );
+}
+
+/**
+ * Present recurrence ISO weekday codes as a localized label.
+ *
+ * Language-aware presentation mechanism (Stage 1 i18n foundation):
+ *
+ *  - PT locales keep the site's exact current grammar: single day
+ *    "Toda quarta-feira"; multiple days drop the "-feira" suffix
+ *    ("Toda segunda e quarta", "Toda segunda, quarta e sexta") — a
+ *    Portuguese-specific rule, so it only runs on the PT path.
+ *  - Any other locale uses its translated weekday names and list glue with
+ *    no "-feira" handling (a no-op for English "Monday" anyway, but the
+ *    language-specific rule is deliberately kept out of the generic path).
+ *
+ * The recurrence model (ISO codes 1–7, meta keys, CSV storage) is never
+ * touched and never leaks into the output.
+ *
+ * @param array $iso_days Non-empty list of ISO weekday codes (1–7).
+ * @return string The recurrence label, or '' when no valid day is given.
+ */
+function conexao_recurrence_present_days( array $iso_days ): string {
 	$names = array();
-	foreach ( $days as $iso_day ) {
-		if ( isset( $weekday_names[ $iso_day ] ) ) {
-			$names[] = $weekday_names[ $iso_day ];
+	foreach ( $iso_days as $iso_day ) {
+		$name = conexao_recurrence_weekday_name( $iso_day );
+		if ( '' !== $name ) {
+			$names[] = $name;
 		}
 	}
 
@@ -2470,27 +2554,24 @@ function conexao_event_recurrence_label( $event_id ): string {
 		return '';
 	}
 
-	if ( count( $names ) === 1 ) {
-		/* translators: %s is a Portuguese weekday name, e.g. "quarta-feira". */
-		return sprintf( 'Toda %s', $names[0] );
+	if ( 0 === strpos( conexao_current_locale(), 'pt' ) && count( $names ) > 1 ) {
+		/*
+		 * Portuguese grammar: when listing multiple days the "-feira"
+		 * suffix is dropped ("segunda", not "segunda-feira"). "sábado" and
+		 * "domingo" have no suffix and pass through unchanged. This
+		 * language-specific rule only runs on the PT path; non-PT locales
+		 * join their translated names directly with no suffix handling.
+		 */
+		$names = array_map(
+			static function ( $name ) {
+				return preg_replace( '/-feira$/u', '', $name );
+			},
+			$names
+		);
 	}
 
-	/*
-	 * Multiple days: Portuguese drops the "-feira" suffix when listing
-	 * ("Toda segunda e quarta", "Toda segunda, quarta e sexta"). "sábado"
-	 * and "domingo" have no suffix and pass through unchanged.
-	 */
-	$short = array_map(
-		static function ( $name ) {
-			return preg_replace( '/-feira$/u', '', $name );
-		},
-		$names
-	);
-
-	$last   = array_pop( $short );
-	$joined = implode( ', ', $short ) . ' e ' . $last;
-
-	return sprintf( 'Toda %s', $joined );
+	/* translators: %s is a weekday name or a list of weekday names, e.g. "quarta-feira" or "segunda, quarta e sexta". */
+	return sprintf( __( 'Toda %s', 'conexao-br-irlanda' ), conexao_recurrence_list_join( $names ) );
 }
 
 /**
@@ -3305,7 +3386,7 @@ function conexao_modify_primary_nav_items( $items, $args ) {
 	foreach ( $items as $item ) {
 		$title = strtolower( trim( wp_strip_all_tags( $item->title ) ) );
 		if ( 'home' === $title || 'início' === $title || 'inicio' === $title ) {
-			$item->title = 'Início';
+			$item->title = __( 'Início', 'conexao-br-irlanda' );
 		}
 	}
 
@@ -3316,7 +3397,7 @@ function conexao_modify_primary_nav_items( $items, $args ) {
 	foreach ( $items as $item ) {
 		$title = strtolower( trim( wp_strip_all_tags( $item->title ) ) );
 		if ( 'lazer' === $title || 'leisure' === $title ) {
-			$item->title = 'Lazer e turismo';
+			$item->title = __( 'Lazer e turismo', 'conexao-br-irlanda' );
 		}
 	}
 
@@ -3667,11 +3748,11 @@ function conexao_normalize_primary_nav_sections( $items, $args ) {
 	// Ensure all CPT archive sections (Guias, Eventos, Empregos, Apoiadores)
 	// are always present in the navigation, even if the stored menu is missing them.
 	$cpt_sections = array(
-		'guias'      => array( 'post_type' => 'guide',   'title' => 'Guias',      'url' => get_post_type_archive_link( 'guide' ) ? get_post_type_archive_link( 'guide' ) : home_url( '/guias/' ) ),
-		'eventos'    => array( 'post_type' => 'event',   'title' => 'Eventos',    'url' => get_post_type_archive_link( 'event' ) ? get_post_type_archive_link( 'event' ) : home_url( '/eventos/' ) ),
-		'lazer'      => array( 'post_type' => 'leisure', 'title' => 'Lazer e turismo', 'url' => get_post_type_archive_link( 'leisure' ) ? get_post_type_archive_link( 'leisure' ) : home_url( '/lazer/' ) ),
-		'empregos'   => array( 'post_type' => 'job',     'title' => 'Empregos',   'url' => get_post_type_archive_link( 'job' ) ? get_post_type_archive_link( 'job' ) : home_url( '/empregos/' ) ),
-		'apoiadores' => array( 'post_type' => 'sponsor', 'title' => 'Apoiadores', 'url' => get_post_type_archive_link( 'sponsor' ) ? get_post_type_archive_link( 'sponsor' ) : home_url( '/apoiadores/' ) ),
+		'guias'      => array( 'post_type' => 'guide',   'title' => __( 'Guias', 'conexao-br-irlanda' ),      'url' => get_post_type_archive_link( 'guide' ) ? get_post_type_archive_link( 'guide' ) : home_url( '/guias/' ) ),
+		'eventos'    => array( 'post_type' => 'event',   'title' => __( 'Eventos', 'conexao-br-irlanda' ),    'url' => get_post_type_archive_link( 'event' ) ? get_post_type_archive_link( 'event' ) : home_url( '/eventos/' ) ),
+		'lazer'      => array( 'post_type' => 'leisure', 'title' => __( 'Lazer e turismo', 'conexao-br-irlanda' ), 'url' => get_post_type_archive_link( 'leisure' ) ? get_post_type_archive_link( 'leisure' ) : home_url( '/lazer/' ) ),
+		'empregos'   => array( 'post_type' => 'job',     'title' => __( 'Empregos', 'conexao-br-irlanda' ),   'url' => get_post_type_archive_link( 'job' ) ? get_post_type_archive_link( 'job' ) : home_url( '/empregos/' ) ),
+		'apoiadores' => array( 'post_type' => 'sponsor', 'title' => __( 'Apoiadores', 'conexao-br-irlanda' ), 'url' => get_post_type_archive_link( 'sponsor' ) ? get_post_type_archive_link( 'sponsor' ) : home_url( '/apoiadores/' ) ),
 	);
 
 	foreach ( $cpt_sections as $section_key => $cpt_info ) {

@@ -32,28 +32,30 @@ function conexao_seo_title( $title ) {
 	}
 
 	if ( is_singular( 'guide' ) ) {
-		return single_post_title( '', false ) . ' | Guia Prático | ' . $site_name;
+		/* translators: %s is the guide title. */
+		return single_post_title( '', false ) . ' | ' . __( 'Guia Prático', 'conexao-br-irlanda' ) . ' | ' . $site_name;
 	}
 
 	if ( is_singular( 'event' ) ) {
-		return single_post_title( '', false ) . ' | Eventos na Irlanda | ' . $site_name;
+		return single_post_title( '', false ) . ' | ' . __( 'Eventos na Irlanda', 'conexao-br-irlanda' ) . ' | ' . $site_name;
 	}
 
 	if ( is_singular( 'job' ) ) {
 		$job_location = get_post_meta( get_the_ID(), '_job_location', true );
-		$location     = $job_location ? ' em ' . $job_location : '';
-		return single_post_title( '', false ) . $location . ' | Empregos | ' . $site_name;
+		/* translators: %s is the job location, e.g. " em Dublin". */
+		$location     = $job_location ? sprintf( __( ' em %s', 'conexao-br-irlanda' ), $job_location ) : '';
+		return single_post_title( '', false ) . $location . ' | ' . __( 'Empregos', 'conexao-br-irlanda' ) . ' | ' . $site_name;
 	}
 
 	if ( is_singular( 'sponsor' ) ) {
 		$terms = get_the_terms( get_the_ID(), 'conexao_category' );
-		$cat   = ( $terms && ! is_wp_error( $terms ) ) ? $terms[0]->name : 'Apoiadores';
+		$cat   = ( $terms && ! is_wp_error( $terms ) ) ? $terms[0]->name : __( 'Apoiadores', 'conexao-br-irlanda' );
 		return single_post_title( '', false ) . ' | ' . $cat . ' | ' . $site_name;
 	}
 
 	if ( is_singular( 'leisure' ) ) {
 		$terms = get_the_terms( get_the_ID(), 'conexao_category' );
-		$cat   = ( $terms && ! is_wp_error( $terms ) ) ? $terms[0]->name : 'Lazer';
+		$cat   = ( $terms && ! is_wp_error( $terms ) ) ? $terms[0]->name : __( 'Lazer', 'conexao-br-irlanda' );
 		return single_post_title( '', false ) . ' | ' . $cat . ' | ' . $site_name;
 	}
 
@@ -62,23 +64,23 @@ function conexao_seo_title( $title ) {
 	}
 
 	if ( is_post_type_archive( 'guide' ) ) {
-		return 'Guias Práticos | ' . $site_name;
+		return __( 'Guias Práticos', 'conexao-br-irlanda' ) . ' | ' . $site_name;
 	}
 
 	if ( is_post_type_archive( 'event' ) ) {
-		return 'Eventos na Irlanda | ' . $site_name;
+		return __( 'Eventos na Irlanda', 'conexao-br-irlanda' ) . ' | ' . $site_name;
 	}
 
 	if ( is_post_type_archive( 'job' ) ) {
-		return 'Empregos para Brasileiros na Irlanda | ' . $site_name;
+		return __( 'Empregos para Brasileiros na Irlanda', 'conexao-br-irlanda' ) . ' | ' . $site_name;
 	}
 
 	if ( is_post_type_archive( 'sponsor' ) ) {
-		return 'Apoiadores na Irlanda | ' . $site_name;
+		return __( 'Apoiadores na Irlanda', 'conexao-br-irlanda' ) . ' | ' . $site_name;
 	}
 
 	if ( is_post_type_archive( 'leisure' ) ) {
-		return 'Lazer & Turismo na Irlanda | ' . $site_name;
+		return __( 'Lazer & Turismo na Irlanda', 'conexao-br-irlanda' ) . ' | ' . $site_name;
 	}
 
 	if ( is_tax( 'conexao_category' ) ) {
@@ -90,11 +92,12 @@ function conexao_seo_title( $title ) {
 	}
 
 	if ( is_search() ) {
-		return 'Busca: ' . get_search_query() . ' | ' . $site_name;
+		/* translators: %s is the search query. */
+		return sprintf( __( 'Busca: %s', 'conexao-br-irlanda' ), get_search_query() ) . ' | ' . $site_name;
 	}
 
 	if ( is_404() ) {
-		return 'Página não encontrada | ' . $site_name;
+		return __( 'Página não encontrada', 'conexao-br-irlanda' ) . ' | ' . $site_name;
 	}
 
 	return $title;
@@ -126,31 +129,38 @@ function conexao_seo_meta_description() {
 		if ( is_front_page() || is_home() ) {
 			$description = get_bloginfo( 'description' );
 		} elseif ( is_singular( 'guide' ) ) {
-			$description = 'Guia prático: ' . get_the_title() . '. Passo a passo completo para brasileiros na Irlanda.';
+			/* translators: %s is the guide title. */
+			$description = sprintf( __( 'Guia prático: %s. Passo a passo completo para brasileiros na Irlanda.', 'conexao-br-irlanda' ), get_the_title() );
 		} elseif ( is_singular( 'event' ) ) {
-			$description = 'Evento: ' . get_the_title() . '. Participe de eventos e atividades na Irlanda.';
+			/* translators: %s is the event title. */
+			$description = sprintf( __( 'Evento: %s. Participe de eventos e atividades na Irlanda.', 'conexao-br-irlanda' ), get_the_title() );
 		} elseif ( is_singular( 'job' ) ) {
-			$description = 'Vaga de emprego: ' . get_the_title() . '. Oportunidade para brasileiros na Irlanda.';
+			/* translators: %s is the job title. */
+			$description = sprintf( __( 'Vaga de emprego: %s. Oportunidade para brasileiros na Irlanda.', 'conexao-br-irlanda' ), get_the_title() );
 		} elseif ( is_singular( 'sponsor' ) ) {
-			$description = 'Apoiador: ' . get_the_title() . '. Conheça quem apoia e fortalece a comunidade brasileira na Irlanda.';
+			/* translators: %s is the sponsor name. */
+			$description = sprintf( __( 'Apoiador: %s. Conheça quem apoia e fortalece a comunidade brasileira na Irlanda.', 'conexao-br-irlanda' ), get_the_title() );
 		} elseif ( is_singular( 'leisure' ) ) {
-			$description = 'Lazer e turismo: ' . get_the_title() . '. Descubra este local incrível para visitar na Irlanda.';
+			/* translators: %s is the destination name. */
+			$description = sprintf( __( 'Lazer e turismo: %s. Descubra este local incrível para visitar na Irlanda.', 'conexao-br-irlanda' ), get_the_title() );
 		} elseif ( is_post_type_archive( 'guide' ) ) {
-			$description = 'Guias práticos completos para brasileiros na Irlanda. PPS Number, Medical Card, moradia, emprego e mais.';
+			$description = __( 'Guias práticos completos para brasileiros na Irlanda. PPS Number, Medical Card, moradia, emprego e mais.', 'conexao-br-irlanda' );
 		} elseif ( is_post_type_archive( 'event' ) ) {
-			$description = 'Eventos, encontros e atividades na Irlanda. Agenda cultural e networking.';
+			$description = __( 'Eventos, encontros e atividades na Irlanda. Agenda cultural e networking.', 'conexao-br-irlanda' );
 		} elseif ( is_post_type_archive( 'job' ) ) {
-			$description = 'Vagas de emprego para brasileiros na Irlanda. Oportunidades em saúde, TI, construção e mais.';
+			$description = __( 'Vagas de emprego para brasileiros na Irlanda. Oportunidades em saúde, TI, construção e mais.', 'conexao-br-irlanda' );
 		} elseif ( is_post_type_archive( 'sponsor' ) ) {
-			$description = 'Conheça as organizações e empresas que apoiam a comunidade brasileira na Irlanda.';
+			$description = __( 'Conheça as organizações e empresas que apoiam a comunidade brasileira na Irlanda.', 'conexao-br-irlanda' );
 		} elseif ( is_post_type_archive( 'leisure' ) ) {
-			$description = 'Descubra lugares para visitar, natureza, cultura, turismo e coisas para fazer na Irlanda. Guia de lazer por condado.';
+			$description = __( 'Descubra lugares para visitar, natureza, cultura, turismo e coisas para fazer na Irlanda. Guia de lazer por condado.', 'conexao-br-irlanda' );
 		} elseif ( is_tax( 'conexao_category' ) ) {
-			$description = 'Conteúdo sobre ' . single_term_title( '', false ) . ' para brasileiros na Irlanda. Guias e recursos úteis.';
+			/* translators: %s is the category name. */
+			$description = sprintf( __( 'Conteúdo sobre %s para brasileiros na Irlanda. Guias e recursos úteis.', 'conexao-br-irlanda' ), single_term_title( '', false ) );
 		} elseif ( is_tax( 'conexao_county' ) ) {
-			$description = 'Guia sobre ' . single_term_title( '', false ) . ' na Irlanda. Eventos, apoiadores, guias e empregos para brasileiros.';
+			/* translators: %s is the county name (a proper noun — never translated). */
+			$description = sprintf( __( 'Guia sobre %s na Irlanda. Eventos, apoiadores, guias e empregos para brasileiros.', 'conexao-br-irlanda' ), single_term_title( '', false ) );
 		} elseif ( is_404() ) {
-			$description = 'Página não encontrada. Explore guias e eventos para brasileiros na Irlanda.';
+			$description = __( 'Página não encontrada. Explore guias e eventos para brasileiros na Irlanda.', 'conexao-br-irlanda' );
 		}
 	}
 
@@ -258,7 +268,7 @@ function conexao_seo_og_meta() {
 	<meta property="og:url" content="<?php echo esc_url( $og_url ); ?>" />
 	<meta property="og:description" content="<?php echo esc_attr( $og_desc ); ?>" />
 	<meta property="og:site_name" content="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>" />
-	<meta property="og:locale" content="pt_BR" />
+	<meta property="og:locale" content="<?php echo esc_attr( conexao_og_locale() ); ?>" />
 	<meta property="og:image" content="<?php echo esc_url( $og_image ); ?>" />
 	<meta property="og:image:alt" content="<?php echo esc_attr( $og_title ); ?>" />
 	<meta name="twitter:card" content="summary_large_image" />
@@ -612,22 +622,22 @@ function conexao_seo_schema_singular() {
  */
 function conexao_archive_title() {
 	if ( is_post_type_archive( 'guide' ) ) {
-		return 'Guias Práticos';
+		return __( 'Guias Práticos', 'conexao-br-irlanda' );
 	}
 	if ( is_post_type_archive( 'event' ) ) {
-		return 'Eventos';
+		return __( 'Eventos', 'conexao-br-irlanda' );
 	}
 	if ( is_post_type_archive( 'job' ) ) {
-		return 'Empregos';
+		return __( 'Empregos', 'conexao-br-irlanda' );
 	}
 	if ( is_post_type_archive( 'sponsor' ) ) {
-		return 'Apoiadores';
+		return __( 'Apoiadores', 'conexao-br-irlanda' );
 	}
 	if ( is_post_type_archive( 'leisure' ) ) {
-		return 'Lazer';
+		return __( 'Lazer', 'conexao-br-irlanda' );
 	}
 	if ( is_post_type_archive( 'course_provider' ) ) {
-		return 'Cursos';
+		return __( 'Cursos', 'conexao-br-irlanda' );
 	}
 	if ( is_tax( 'conexao_category' ) || is_tax( 'conexao_county' ) || is_category() || is_tag() ) {
 		$term = get_queried_object();
@@ -642,19 +652,19 @@ function conexao_archive_title() {
  */
 function conexao_archive_description() {
 	if ( is_post_type_archive( 'guide' ) ) {
-		return 'Guias passo a passo para facilitar sua vida na Irlanda.';
+		return __( 'Guias passo a passo para facilitar sua vida na Irlanda.', 'conexao-br-irlanda' );
 	}
 	if ( is_post_type_archive( 'event' ) ) {
-		return 'Encontre eventos, encontros e atividades na Irlanda.';
+		return __( 'Encontre eventos, encontros e atividades na Irlanda.', 'conexao-br-irlanda' );
 	}
 	if ( is_post_type_archive( 'job' ) ) {
-		return 'Oportunidades de emprego para brasileiros na Irlanda.';
+		return __( 'Oportunidades de emprego para brasileiros na Irlanda.', 'conexao-br-irlanda' );
 	}
 	if ( is_post_type_archive( 'sponsor' ) ) {
-		return 'Conheça os negócios que apoiam a comunidade brasileira na Irlanda.';
+		return __( 'Conheça os negócios que apoiam a comunidade brasileira na Irlanda.', 'conexao-br-irlanda' );
 	}
 	if ( is_post_type_archive( 'leisure' ) ) {
-		return 'Descubra lugares para visitar, natureza, cultura, turismo e coisas para fazer na Irlanda.';
+		return __( 'Descubra lugares para visitar, natureza, cultura, turismo e coisas para fazer na Irlanda.', 'conexao-br-irlanda' );
 	}
 
 	$description = get_the_archive_description();
@@ -663,7 +673,7 @@ function conexao_archive_description() {
 
 function conexao_seo_breadcrumb_data() {
 	$crumbs = array();
-	$home   = array( 'name' => 'Início', 'url' => home_url( '/' ) );
+	$home   = array( 'name' => __( 'Início', 'conexao-br-irlanda' ), 'url' => home_url( '/' ) );
 	$crumbs[] = $home;
 
 	if ( is_singular() ) {
@@ -762,7 +772,7 @@ function conexao_seo_breadcrumb_data() {
 	} elseif ( is_page() ) {
 		$crumbs[] = array( 'name' => get_the_title(), 'url' => get_permalink() );
 	} elseif ( is_search() ) {
-		$crumbs[] = array( 'name' => 'Busca', 'url' => '' );
+		$crumbs[] = array( 'name' => __( 'Busca', 'conexao-br-irlanda' ), 'url' => '' );
 	} elseif ( is_404() ) {
 		$crumbs[] = array( 'name' => 'Página não encontrada', 'url' => '' );
 	}
@@ -775,12 +785,12 @@ function conexao_seo_breadcrumb_data() {
  */
 function conexao_cpt_label( $post_type ) {
 	$labels = array(
-		'guide'    => 'Guias Práticos',
-		'event'    => 'Eventos',
-		'job'      => 'Empregos',
-		'sponsor'  => 'Apoiadores',
-		'leisure'  => 'Lazer e Turismo',
-		'post'     => 'Blog',
+		'guide'    => __( 'Guias Práticos', 'conexao-br-irlanda' ),
+		'event'    => __( 'Eventos', 'conexao-br-irlanda' ),
+		'job'      => __( 'Empregos', 'conexao-br-irlanda' ),
+		'sponsor'  => __( 'Apoiadores', 'conexao-br-irlanda' ),
+		'leisure'  => __( 'Lazer e Turismo', 'conexao-br-irlanda' ),
+		'post'     => __( 'Blog', 'conexao-br-irlanda' ),
 	);
 	return isset( $labels[ $post_type ] ) ? $labels[ $post_type ] : get_post_type_object( $post_type )->labels->name;
 }

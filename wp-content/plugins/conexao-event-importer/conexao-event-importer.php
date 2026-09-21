@@ -238,3 +238,18 @@ Conexao_Event_Importer::instance();
 
 register_activation_hook( __FILE__, array( 'Conexao_Event_Importer', 'activate' ) );
 register_deactivation_hook( __FILE__, array( 'Conexao_Event_Importer', 'deactivate' ) );
+/**
+ * Load the plugin textdomain (Stage 1 i18n foundation).
+ *
+ * Translation files live in this plugin's languages/ directory. This does
+ * not touch importer matching, export JSON or identity fields — gettext
+ * wrapping only, no behavior change.
+ */
+function conexao_event_importer_load_textdomain() {
+	load_plugin_textdomain(
+		'conexao-event-importer',
+		false,
+		dirname( plugin_basename( __FILE__ ) ) . '/languages'
+	);
+}
+add_action( 'init', 'conexao_event_importer_load_textdomain' );

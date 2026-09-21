@@ -130,3 +130,18 @@ final class Conexao_Lazer_Migration {
 }
 
 Conexao_Lazer_Migration::instance();
+/**
+ * Load the plugin textdomain (Stage 1 i18n foundation).
+ *
+ * Translation files live in this plugin's languages/ directory. This does
+ * not touch Lazer UUID logic or migration matching — gettext wrapping only,
+ * no behavior change.
+ */
+function conexao_leisure_migration_load_textdomain() {
+	load_plugin_textdomain(
+		'conexao-leisure-migration',
+		false,
+		dirname( plugin_basename( __FILE__ ) ) . '/languages'
+	);
+}
+add_action( 'init', 'conexao_leisure_migration_load_textdomain' );

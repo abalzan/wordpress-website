@@ -1,0 +1,224 @@
+# English (US) translations for the Conexão BR Irlanda theme.
+# The theme's source language is pt_BR; this catalog translates its static
+# UI strings into natural English. STAGE 1 SCOPE: a curated subset covering
+# the i18n-foundation surfaces (recurrence labels, navigation overrides, SEO
+# title/description patterns, breadcrumb root, JavaScript UI strings).
+# Untranslated entries deliberately fall back to the Portuguese source so
+# nothing half-translated is ever emitted. These translations are NOT active
+# on the public site in Stage 1 (pt_BR is the only public language; no /en/
+# routing exists yet — see CONEXAO_BR_ENGLISH_STAGE_1_REPORT.md).
+msgid ""
+msgstr ""
+"Project-Id-Version: Conexão BR Irlanda 1.0.0\n"
+"Report-Msgid-Bugs-To: https://github.com/abalzan/wordpress-website\n"
+"POT-Creation-Date: 2026-09-21 00:00+0000\n"
+"PO-Revision-Date: 2026-09-21 00:00+0000\n"
+"Last-Translator: Conexão BR Irlanda maintainers\n"
+"Language-Team: English (US)\n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: human-authored curated catalog\n"
+
+# Recurrence presentation (language-aware formatter in functions.php).
+msgid "Toda %s"
+msgstr "Every %s"
+
+msgid "segunda-feira"
+msgstr "Monday"
+
+msgid "terça-feira"
+msgstr "Tuesday"
+
+msgid "quarta-feira"
+msgstr "Wednesday"
+
+msgid "quinta-feira"
+msgstr "Thursday"
+
+msgid "sexta-feira"
+msgstr "Friday"
+
+msgid "sábado"
+msgstr "Saturday"
+
+msgid "domingo"
+msgstr "Sunday"
+
+msgid "%1$s e %2$s"
+msgstr "%1$s and %2$s"
+
+# Navigation runtime overrides (functions.php).
+msgid "Início"
+msgstr "Home"
+
+msgid "Lazer e turismo"
+msgstr "Leisure & tourism"
+
+msgid "Guias"
+msgstr "Guides"
+
+msgid "Eventos"
+msgstr "Events"
+
+msgid "Empregos"
+msgstr "Jobs"
+
+msgid "Apoiadores"
+msgstr "Supporters"
+
+msgid "Lazer"
+msgstr "Leisure"
+
+msgid "Cursos"
+msgstr "Courses"
+
+msgid "Blog"
+msgstr "Blog"
+
+# SEO titles (inc/seo.php).
+msgid "Guia Prático"
+msgstr "Practical Guide"
+
+msgid "Eventos na Irlanda"
+msgstr "Events in Ireland"
+
+msgid "Empregos para Brasileiros na Irlanda"
+msgstr "Jobs for Brazilians in Ireland"
+
+msgid "Apoiadores na Irlanda"
+msgstr "Supporters in Ireland"
+
+msgid "Lazer & Turismo na Irlanda"
+msgstr "Leisure & Tourism in Ireland"
+
+msgid "Guias Práticos"
+msgstr "Practical Guides"
+
+msgid "Página não encontrada"
+msgstr "Page not found"
+
+msgid "Busca: %s"
+msgstr "Search: %s"
+
+msgid " em %s"
+msgstr " in %s"
+
+msgid "Lazer e Turismo"
+msgstr "Leisure & Tourism"
+
+msgid "Busca"
+msgstr "Search"
+
+# SEO meta descriptions (inc/seo.php).
+msgid "Guia prático: %s. Passo a passo completo para brasileiros na Irlanda."
+msgstr "Practical guide: %s. Complete step-by-step for Brazilians in Ireland."
+
+msgid "Evento: %s. Participe de eventos e atividades na Irlanda."
+msgstr "Event: %s. Take part in events and activities in Ireland."
+
+msgid "Vaga de emprego: %s. Oportunidade para brasileiros na Irlanda."
+msgstr "Job opening: %s. Opportunity for Brazilians in Ireland."
+
+msgid "Apoiador: %s. Conheça quem apoia e fortalece a comunidade brasileira na Irlanda."
+msgstr "Supporter: %s. Meet those who support and strengthen the Brazilian community in Ireland."
+
+msgid "Lazer e turismo: %s. Descubra este local incrível para visitar na Irlanda."
+msgstr "Leisure & tourism: %s. Discover this incredible place to visit in Ireland."
+
+msgid "Guias práticos completos para brasileiros na Irlanda. PPS Number, Medical Card, moradia, emprego e mais."
+msgstr "Complete practical guides for Brazilians in Ireland. PPS Number, Medical Card, housing, jobs and more."
+
+msgid "Eventos, encontros e atividades na Irlanda. Agenda cultural e networking."
+msgstr "Events, meetups and activities in Ireland. Cultural agenda and networking."
+
+msgid "Vagas de emprego para brasileiros na Irlanda. Oportunidades em saúde, TI, construção e mais."
+msgstr "Job openings for Brazilians in Ireland. Opportunities in healthcare, IT, construction and more."
+
+msgid "Conheça as organizações e empresas que apoiam a comunidade brasileira na Irlanda."
+msgstr "Meet the organizations and businesses that support the Brazilian community in Ireland."
+
+msgid "Descubra lugares para visitar, natureza, cultura, turismo e coisas para fazer na Irlanda. Guia de lazer por condado."
+msgstr "Discover places to visit, nature, culture, tourism and things to do in Ireland. County-by-county leisure guide."
+
+msgid "Conteúdo sobre %s para brasileiros na Irlanda. Guias e recursos úteis."
+msgstr "Content about %s for Brazilians in Ireland. Useful guides and resources."
+
+msgid "Guia sobre %s na Irlanda. Eventos, apoiadores, guias e empregos para brasileiros."
+msgstr "Guide to %s in Ireland. Events, supporters, guides and jobs for Brazilians."
+
+msgid "Página não encontrada. Explore guias e eventos para brasileiros na Irlanda."
+msgstr "Page not found. Explore guides and events for Brazilians in Ireland."
+
+# SEO archive descriptions (inc/seo.php).
+msgid "Guias passo a passo para facilitar sua vida na Irlanda."
+msgstr "Step-by-step guides to make your life in Ireland easier."
+
+msgid "Encontre eventos, encontros e atividades na Irlanda."
+msgstr "Find events, meetups and activities in Ireland."
+
+msgid "Oportunidades de emprego para brasileiros na Irlanda."
+msgstr "Job opportunities for Brazilians in Ireland."
+
+msgid "Conheça os negócios que apoiam a comunidade brasileira na Irlanda."
+msgstr "Meet the businesses that support the Brazilian community in Ireland."
+
+msgid "Descubra lugares para visitar, natureza, cultura, turismo e coisas para fazer na Irlanda."
+msgstr "Discover places to visit, nature, culture, tourism and things to do in Ireland."
+
+# JavaScript UI strings (inc/i18n.php → wp_add_inline_script → main.js).
+msgid "Abrir submenu de %s"
+msgstr "Open submenu for %s"
+
+msgid "Link copiado"
+msgstr "Link copied"
+
+msgid "Filtrar"
+msgstr "Filter"
+
+msgid "%d filtro ativo"
+msgstr "%d active filter"
+
+msgid "%d filtros ativos"
+msgstr "%d active filters"
+
+msgid "Apoiador %1$d de %2$d"
+msgstr "Sponsor %1$d of %2$d"
+
+msgid "Carregando..."
+msgstr "Loading..."
+
+msgid "Carregar mais"
+msgstr "Load more"
+
+msgid "Não foi possível carregar mais conteúdo."
+msgstr "Could not load more content."
+
+msgid "Não foi possível carregar mais conteúdo. Tente novamente."
+msgstr "Could not load more content. Please try again."
+
+msgid "Tentar novamente"
+msgstr "Try again"
+
+msgid "Você chegou ao fim."
+msgstr "You have reached the end."
+
+msgid "Mais %1$d %2$s carregado."
+msgstr "%1$d more %2$s loaded."
+
+msgid "Mais %1$d %2$s carregados."
+msgstr "%1$d more %2$s loaded."
+
+msgid "evento"
+msgstr "event"
+
+msgid "eventos"
+msgstr "events"
+
+msgid "curso"
+msgstr "course"
+
+msgid "cursos"
+msgstr "courses"

@@ -214,3 +214,18 @@ function conexao_blog_categories_shortcode() {
     return $html;
 }
 add_shortcode( 'conexao_blog_categories', 'conexao_blog_categories_shortcode' );
+/**
+ * Load the plugin textdomain (Stage 1 i18n foundation).
+ *
+ * Translation files live in this plugin's languages/ directory. Admin-only
+ * strings may be catalogued here even though English admin support is
+ * deferred to a later stage. No functionality changes.
+ */
+function conexao_content_load_textdomain() {
+	load_plugin_textdomain(
+		'conexao-content',
+		false,
+		dirname( plugin_basename( __FILE__ ) ) . '/languages'
+	);
+}
+add_action( 'init', 'conexao_content_load_textdomain' );

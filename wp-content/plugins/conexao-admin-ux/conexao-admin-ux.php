@@ -33,3 +33,19 @@ Conexao_Admin_Ux::instance();
 
 register_activation_hook( __FILE__, array( 'Conexao_Admin_Ux', 'activate' ) );
 register_deactivation_hook( __FILE__, array( 'Conexao_Admin_Ux', 'deactivate' ) );
+/**
+ * Load the plugin textdomain (Stage 1 i18n foundation).
+ *
+ * Translation files live in this plugin's languages/ directory. Admin-only
+ * strings may be catalogued here even though English admin support is
+ * deferred to a later stage. No functionality changes and no rewrite of the
+ * admin UX.
+ */
+function conexao_admin_ux_load_textdomain() {
+	load_plugin_textdomain(
+		'conexao-admin-ux',
+		false,
+		dirname( plugin_basename( __FILE__ ) ) . '/languages'
+	);
+}
+add_action( 'init', 'conexao_admin_ux_load_textdomain' );
