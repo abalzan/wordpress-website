@@ -1,4 +1,11 @@
 <?php get_header(); ?>
+<?php
+// STAGE 3.1 — B2 fallback notice: EN chrome + "displayed in Portuguese"
+// banner above the preserved PT body. Emits nothing on PT requests.
+if ( function_exists( 'conexao_b2_fallback_notice' ) ) {
+	conexao_b2_fallback_notice();
+}
+?>
 <?php while ( have_posts() ) : the_post(); ?>
 	<header class="single-post-header">
 		<div class="site-container">

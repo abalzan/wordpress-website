@@ -55,6 +55,27 @@ function conexao_polylang_active(): bool {
 }
 
 /**
+ * STAGE 3.1 — B2 fallback notice.
+ *
+ * Renders the approved English notice on B2 fallback pages ("Portuguese
+ * content under an EN URL"). The Portuguese body is preserved exactly; the
+ * notice is chrome only. Safe to call on any request: emits nothing unless
+ * conexao_is_language_fallback() is true.
+ *
+ * @return void
+ */
+function conexao_b2_fallback_notice(): void {
+	if ( ! conexao_is_language_fallback() ) {
+		return;
+	}
+	?>
+	<div class="language-fallback-notice" role="note" aria-live="polite" lang="en">
+		<p><?php esc_html_e( 'This content is displayed in Portuguese.', 'conexao-br-irlanda' ); ?></p>
+	</div>
+	<?php
+}
+
+/**
  * Slug of the language serving the current request ('pt', 'en', …).
  *
  * @return string Empty string when Polylang is inactive.
@@ -179,11 +200,46 @@ add_filter( 'pll_get_taxonomies', 'conexao_polylang_translated_taxonomies', 10, 
  * @return string Locale of the active Polylang language, or $locale untouched.
  */
 function conexao_polylang_current_locale( $locale ) {
+	// STAGE 3.1 — B2 fallback: the shell locale follows the REQUESTED language,
+	// not the resolved record's language, so the chrome stays English while the
+	// Portuguese body is rendered unchanged beneath the fallback notice.
+	if ( function_exists( 'conexao_is_language_fallback' ) && conexao_is_language_fallback() ) {
+		$shell = conexao_language_locale( conexao_requested_language_slug() );
+
+		if ( '' !== $shell ) {
+			return $shell;
+		}
+	}
+
 	$active = conexao_language_locale();
 
 	return '' !== $active ? $active : $locale;
 }
 add_filter( 'conexao_current_locale', 'conexao_polylang_current_locale', 10 );
+
+/**
+ * STAGE 3.1 — B2 shell locale for `get_locale()`.
+ *
+ * `language_attributes()` (and any core consumer of `get_locale()`) reads the
+ * locale directly, so the B2 shell must be applied there too — otherwise the
+ * English shell would render `<html lang="pt-BR">` while the translated chrome
+ * and the fallback notice are English. Scope is strictly the B2 fallback state
+ * (see conexao_is_language_fallback()); every other request keeps Polylang's
+ * own locale resolution untouched.
+ *
+ * @param string $locale Locale resolved so far.
+ * @return string
+ */
+function conexao_polylang_b2_shell_locale( $locale ) {
+	if ( ! function_exists( 'conexao_is_language_fallback' ) || ! conexao_is_language_fallback() ) {
+		return $locale;
+	}
+
+	$shell = conexao_language_locale( conexao_requested_language_slug() );
+
+	return '' !== $shell ? $shell : $locale;
+}
+add_filter( 'locale', 'conexao_polylang_b2_shell_locale', 99 );
 
 /**
  * Slug of the language the REQUESTED URL asks for.
@@ -409,8 +465,28 @@ function conexao_language_switch_url( string $target_slug ): string {
 		return '';
 	}
 
-	if ( $target_slug === conexao_current_language_slug() ) {
+	// STAGE 3.1 — B2 fallback: the request language is the shell language even
+	// though the resolved record belongs to another language. The shell
+	// language's row must self-link (its URL is the one being viewed).
+	$requested = conexao_requested_language_slug();
+	if ( '' === $requested ) {
+		$requested = conexao_current_language_slug();
+	}
+
+	if ( $target_slug === $requested ) {
 		return conexao_current_request_url();
+	}
+
+	// STAGE 3.1 — B2 fallback: the record's own language links to the record's
+	// real (canonical) permalink, never to another fake shell URL.
+	if ( conexao_is_language_fallback() && is_singular() ) {
+		$object_language = function_exists( 'pll_get_post_language' ) ? pll_get_post_language( get_queried_object_id(), 'slug' ) : '';
+		if ( $target_slug === $object_language ) {
+			$permalink = get_permalink( get_queried_object_id() );
+			if ( $permalink ) {
+				return $permalink;
+			}
+		}
 	}
 
 	if ( is_singular() && function_exists( 'pll_get_post' ) ) {
@@ -432,11 +508,75 @@ function conexao_language_switch_url( string $target_slug ): string {
 }
 
 /**
+ * STAGE 3.1 — Serve the translated front page AT the language home.
+ *
+ * With a static front page, WordPress 301-redirects the URL that does not
+ * match the front page's permalink. For the default language that is correct
+ * (`/inicio/` → `/`), and Polylang mirrors it for `/en/` — but in the EN
+ * language the translated front page is a real page record with its own slug,
+ * so `/en/` was 301-redirected to `/en/home/`. Stage 3.1 requires `/en/` to
+ * render the English homepage itself (and PT `/` to stay untouched).
+ *
+ * Scope is narrow: the redirect is suppressed only when the requested URL is
+ * EXACTLY a language home (already slash-terminated `pll_home_url()` for the
+ * requested language). Every other canonical redirect — trailing-slash
+ * correction, pagination, feeds, `/en/home/`-style page URLs — is untouched.
+ *
+ * @param string|false $redirect_url  Canonical redirect computed by core.
+ * @param string       $requested_url Requested URL.
+ * @return string|false
+ */
+function conexao_polylang_language_home_serves_front_page( $redirect_url, $requested_url ) {
+	if ( is_admin() || is_feed() || is_robots() || is_preview() || is_trackback() ) {
+		return $redirect_url;
+	}
+
+	if ( ! function_exists( 'pll_home_url' ) || ! function_exists( 'conexao_requested_language_slug' ) ) {
+		return $redirect_url;
+	}
+
+	$requested = conexao_requested_language_slug();
+	if ( '' === $requested ) {
+		return $redirect_url;
+	}
+
+	$requested_path = (string) wp_parse_url( (string) $requested_url, PHP_URL_PATH );
+
+	// Only slash-terminated URLs (i.e. real home requests, not `/en`).
+	if ( '' === $requested_path || '/' !== substr( $requested_path, -1 ) ) {
+		return $redirect_url;
+	}
+
+	// The front page of the requested language is what must be served here.
+	if ( ! is_front_page() && ! ( is_home() && ! is_paged() ) ) {
+		return $redirect_url;
+	}
+
+	// Compare PATHS only: the redirect core computes here is the same home
+	// under a different host/scheme representation, and hosts must never
+	// influence the decision.
+	$home_path = (string) wp_parse_url( pll_home_url( $requested ), PHP_URL_PATH );
+
+	if ( trailingslashit( $requested_path ) !== trailingslashit( $home_path ) ) {
+		return $redirect_url;
+	}
+
+	// The requested URL is the language home itself: serve the translated
+	// front page here instead of redirecting to its slugged permalink.
+	return false;
+}
+add_filter( 'redirect_canonical', 'conexao_polylang_language_home_serves_front_page', 20, 2 );
+
+/**
  * True when the current request renders a record of another language.
  *
  * This is the approved B2 state ("Portuguese content under an EN URL"): the
  * requested language has no translation of the resolved object. Canonical
  * must then point at the record's own language URL (see inc/seo.php).
+ *
+ * STAGE 3.1: returns true only for B2-eligible post types (see
+ * conexao_should_render_b2_fallback()). B1 types never report fallback —
+ * they keep the 302 policy until a real translation exists.
  *
  * @return bool
  */
@@ -445,7 +585,16 @@ function conexao_is_language_fallback(): bool {
 		return false;
 	}
 
-	$object_language = pll_get_post_language( get_queried_object_id(), 'slug' );
+	$object_id = get_queried_object_id();
+	if ( $object_id <= 0 ) {
+		return false;
+	}
+
+	if ( function_exists( 'conexao_should_render_b2_fallback' ) && ! conexao_should_render_b2_fallback( (int) $object_id ) ) {
+		return false;
+	}
+
+	$object_language = pll_get_post_language( $object_id, 'slug' );
 	$current         = conexao_requested_language_slug();
 
 	return is_string( $object_language ) && '' !== $object_language && '' !== $current && $object_language !== $current;
@@ -584,6 +733,139 @@ function conexao_requested_object_language() {
 }
 
 /**
+ * STAGE 3.1 — B2 fallback content types.
+ *
+ * B2 = "Portuguese content under an English URL": an EN request with no EN
+ * translation renders the existing PT record with EN chrome + notice.
+ *
+ * B1 = Guides, Blog posts, key narrative static pages: keep the approved 302
+ * policy until a real translation exists (never render fallback).
+ *
+ * @return string[]
+ */
+function conexao_b2_post_types(): array {
+	return array( 'event', 'leisure', 'sponsor', 'course_provider', 'job' );
+}
+
+/**
+ * Is a post type eligible for B2 fallback rendering?
+ *
+ * @param string $post_type Post type name.
+ * @return bool
+ */
+function conexao_is_b2_post_type( $post_type ): bool {
+	return in_array( (string) $post_type, conexao_b2_post_types(), true );
+}
+
+/**
+ * STAGE 3.1 — B2-eligible static pages (pilot allowlist).
+ *
+ * Directory/county pages approved for B2 are allowlisted by slug. Every
+ * other page (narrative content: sobre-nos, contato, irlanda, legal pages,
+ * homepage) stays B1 (302 until a real EN translation exists).
+ *
+ * Empty in the pilot: no page allowlist entries are approved yet, so ALL
+ * pages keep the B1 302 in this stage. Slugs added here must be existing
+ * Portuguese page slugs (never new URLs).
+ *
+ * @return string[]
+ */
+function conexao_b2_page_allowlist(): array {
+	return array();
+}
+
+/**
+ * Is a static page eligible for B2 fallback rendering?
+ *
+ * @param int $post_id Page ID.
+ * @return bool
+ */
+function conexao_is_b2_page( $post_id ): bool {
+	$post = get_post( (int) $post_id );
+	if ( ! $post instanceof WP_Post || 'page' !== $post->post_type ) {
+		return false;
+	}
+
+	return in_array( $post->post_name, conexao_b2_page_allowlist(), true );
+}
+
+/**
+ * Should a singular request be answered with B2 fallback instead of a 302?
+ *
+ * True only when ALL hold:
+ *  - Polylang is active,
+ *  - the requested language is English,
+ *  - the resolved post is a B2 post type in another language,
+ *  - no real translation exists in the requested language,
+ *  - for events: the record passes the public _event_status gate
+ *    (expired/rejected/source_not_found never render in EN).
+ *
+ * @param int|null $post_id Post ID (defaults to the queried object).
+ * @return bool
+ */
+function conexao_should_render_b2_fallback( $post_id = null ): bool {
+	if ( ! conexao_polylang_active() || ! function_exists( 'pll_get_post' ) ) {
+		return false;
+	}
+
+	if ( 'en' !== conexao_requested_language_slug() ) {
+		return false;
+	}
+
+	$post_id = $post_id ? (int) $post_id : get_queried_object_id();
+	if ( $post_id <= 0 ) {
+		return false;
+	}
+
+	$post = get_post( $post_id );
+	if ( ! $post instanceof WP_Post ) {
+		return false;
+	}
+
+	// Static pages: only explicitly allowlisted directory/county pages are
+	// B2; every other page is B1 (302 until translated).
+	if ( 'page' === $post->post_type ) {
+		if ( ! function_exists( 'conexao_is_b2_page' ) || ! conexao_is_b2_page( $post_id ) ) {
+			return false;
+		}
+	} elseif ( ! conexao_is_b2_post_type( $post->post_type ) ) {
+		return false;
+	}
+
+	if ( 'publish' !== $post->post_status ) {
+		return false;
+	}
+
+	// A real EN translation wins: render it (no fallback state).
+	$translated_id = (int) pll_get_post( $post_id, 'en' );
+	if ( $translated_id > 0 && $translated_id !== $post_id ) {
+		return false;
+	}
+
+	// The resolved record must itself be Portuguese (or language-less legacy);
+	// an EN record never "falls back" to itself.
+	if ( function_exists( 'pll_get_post_language' ) ) {
+		$object_lang = pll_get_post_language( $post_id, 'slug' );
+		if ( 'en' === $object_lang ) {
+			return false;
+		}
+	}
+
+	// Event status gate keeps precedence over language fallback: hidden
+	// events never render under /en/ (they keep the B1 302 → PT → 404 path).
+	// Mirrors the runtime's public gate: published OR legacy no-status rows
+	// are visible; every other _event_status hides the record.
+	if ( 'event' === $post->post_type ) {
+		$event_status = get_post_meta( $post_id, '_event_status', true );
+		if ( '' !== $event_status && 'published' !== $event_status ) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+/**
  * Take ownership of Polylang's language-mismatch redirect status.
  *
  * Polylang's frontend canonical sends a **301** when a URL is requested under
@@ -622,6 +904,31 @@ function conexao_polylang_language_redirect_is_temporary( $redirect_url, $langua
 
 	if ( '' === $detected || '' === $requested || $detected === $requested ) {
 		return $redirect_url;
+	}
+
+	// STAGE 3.1 — B2 fallback: an EN request for a B2 record with no EN
+	// translation renders the PT record under the EN URL (200, no redirect).
+	// Returning false tells Polylang "no canonical redirect" so the request
+	// reaches template_redirect, where the B2 renderer owns the response.
+	if ( 'en' === $requested ) {
+		// 1. B2 single records (events, Lazer, sponsors, courses, jobs).
+		if ( is_singular() && ! is_tax() && ! is_category() && ! is_tag() ) {
+			$candidate = get_queried_object_id();
+			if ( $candidate > 0 && conexao_should_render_b2_fallback( (int) $candidate ) ) {
+				return false;
+			}
+		}
+
+		// 2. B2 post-type archives under EN, including their taxonomy filters
+		// (`?county=`, `?cidade=`, `?categoria=`). Counties/towns are SHARED
+		// geographic identity and never duplicated (architecture §6), so a
+		// shared PT term must not bounce the EN archive back to PT — the
+		// archive itself is already the B2 set and the term is the same
+		// identity in both languages. This is what lets
+		// `/en/lazer/?county=dublin` and `/en/eventos/?cidade=dublin` render.
+		if ( is_post_type_archive() && conexao_is_b2_post_type( (string) get_query_var( 'post_type' ) ) ) {
+			return false;
+		}
 	}
 
 	// Language mismatch: the approved B1/B2 Stage 2 behaviour is a temporary
@@ -830,7 +1137,13 @@ function conexao_language_switcher_data(): array {
 		return array();
 	}
 
-	$current = conexao_current_language_slug();
+	// STAGE 3.1 — B2 fallback: the shell language is the language the URL asks
+	// for, so the switcher marks IT as current (the resolved record's own
+	// language gets the canonical permalink via conexao_language_switch_url()).
+	$current = conexao_requested_language_slug();
+	if ( '' === $current ) {
+		$current = conexao_current_language_slug();
+	}
 	$rows    = array();
 
 	foreach ( $languages as $language ) {

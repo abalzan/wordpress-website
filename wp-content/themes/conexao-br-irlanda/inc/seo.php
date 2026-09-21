@@ -957,7 +957,33 @@ function conexao_seo_sitemap() {
 		if ( in_array( $page->post_name, $excluded_pages, true ) ) {
 			continue;
 		}
+		// STAGE 3.1: conexao_object_translation_links() only returns REAL
+		// translation pairs, so untranslated pages emit no EN alternate. B2
+		// fallback URLs (no EN record) are never listed as indexable EN
+		// <url> entries; B1 redirect-only URLs are excluded (no alternate).
 		conexao_seo_sitemap_url( get_permalink( $page->ID ), '0.8', 'monthly', conexao_object_translation_links( (int) $page->ID ) );
+	}
+
+	// STAGE 3.1 — EN pass: real EN translations get their own indexable EN
+	// <url> entry (self-canonical EN). B2 fallbacks and B1 redirect-only URLs
+	// are never emitted as EN entries.
+	if ( conexao_polylang_active() ) {
+		$en_page_args = array(
+			'post_type'      => 'page',
+			'post_status'    => 'publish',
+			'posts_per_page' => -1,
+			'no_found_rows'  => true,
+			'update_post_meta_cache' => false,
+			'update_post_term_cache' => false,
+			'lang'           => 'en',
+		);
+		$en_pages = get_posts( $en_page_args );
+		foreach ( $en_pages as $en_page ) {
+			if ( in_array( $en_page->post_name, $excluded_pages, true ) ) {
+				continue;
+			}
+			conexao_seo_sitemap_url( get_permalink( $en_page->ID ), '0.8', 'monthly', conexao_object_translation_links( (int) $en_page->ID ) );
+		}
 	}
 
 	// CPTs — batched so the sitemap stays lightweight even when a CPT grows
@@ -991,10 +1017,40 @@ function conexao_seo_sitemap() {
 				if ( 'leisure' === $cpt && conexao_leisure_external_url( $item_id ) ) {
 					continue;
 				}
+				// STAGE 3.1: PT <url> entries carry alternates for REAL
+				// translations only (B2 fallbacks / B1 redirect-only URLs emit
+				// no EN alternate and no EN <url> entry).
 				conexao_seo_sitemap_url( get_permalink( $item_id ), $priority, 'weekly', conexao_object_translation_links( (int) $item_id ) );
 			}
 			$page++;
 		} while ( count( $items ) === $sitemap_batch );
+
+		// STAGE 3.1 — EN pass: real EN records get their own indexable EN
+		// <url> entry. Only emitted where an EN post actually exists (B2
+		// fallbacks have no EN record, so they never appear here).
+		if ( conexao_polylang_active() ) {
+			$en_page = 1;
+			do {
+				$en_items = get_posts( array(
+					'post_type'      => $cpt,
+					'post_status'    => 'publish',
+					'posts_per_page' => $sitemap_batch,
+					'paged'          => $en_page,
+					'fields'         => 'ids',
+					'no_found_rows'  => true,
+					'update_post_meta_cache' => false,
+					'update_post_term_cache' => false,
+					'lang'           => 'en',
+				) );
+				foreach ( $en_items as $en_item_id ) {
+					if ( 'leisure' === $cpt && conexao_leisure_external_url( $en_item_id ) ) {
+						continue;
+					}
+					conexao_seo_sitemap_url( get_permalink( $en_item_id ), $priority, 'weekly', conexao_object_translation_links( (int) $en_item_id ) );
+				}
+				$en_page++;
+			} while ( count( $en_items ) === $sitemap_batch );
+		}
 	}
 
 	// Taxonomies (categories + counties, only non-empty).
@@ -1015,6 +1071,33 @@ function conexao_seo_sitemap() {
 	exit;
 }
 add_action( 'template_redirect', 'conexao_seo_sitemap', 0 );
+
+/**
+ * ---------------------------------------------------------------------------
+ * STAGE 3.1 — B2 FALLBACK: SINGLE SEO PRODUCER
+ * ---------------------------------------------------------------------------
+ * On a B2 fallback page the resolved record belongs to another language, so
+ * Jetpack's Open Graph module (which resolves the locale from the detected
+ * record language) emits `og:locale=pt_BR` while the theme's own SEO layer —
+ * the site's single SEO owner — correctly emits the shell locale `en_US`.
+ * Two producers must never emit conflicting SEO tags, so Jetpack's Open Graph
+ * output is disabled on exactly those pages; the theme's complete OG/Twitter
+ * set (see conexao_seo_og_meta()) keeps rendering.
+ *
+ * Scope is deliberately narrow: every non-B2 request keeps Jetpack's default
+ * behavior, so nothing else on the site changes.
+ *
+ * @param bool $enabled Whether Jetpack should emit Open Graph tags.
+ * @return bool
+ */
+function conexao_seo_disable_jetpack_og_on_b2( $enabled ) {
+	if ( function_exists( 'conexao_is_language_fallback' ) && conexao_is_language_fallback() ) {
+		return false;
+	}
+
+	return $enabled;
+}
+add_filter( 'jetpack_enable_open_graph', 'conexao_seo_disable_jetpack_og_on_b2', 10, 1 );
 
 /**
  * Helper: output a single sitemap <url> entry.
@@ -1315,6 +1398,16 @@ add_action( 'template_redirect', 'conexao_seo_redirects', 5 );
 function conexao_seo_missing_translation_redirect() {
 	if ( ! conexao_polylang_active() || is_admin() || is_feed() || is_robots() || is_preview() || is_trackback() ) {
 		return;
+	}
+
+	// STAGE 3.1 — B2 fallback owns its response: an EN request for a B2
+	// record with no EN translation renders the PT record under the EN URL
+	// (200 + notice + PT canonical) instead of the B1 302.
+	if ( is_singular() && function_exists( 'conexao_should_render_b2_fallback' ) ) {
+		$candidate = get_queried_object_id();
+		if ( $candidate > 0 && conexao_should_render_b2_fallback( (int) $candidate ) ) {
+			return;
+		}
 	}
 
 	$requested = conexao_requested_object_language();

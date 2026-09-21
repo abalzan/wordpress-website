@@ -1532,7 +1532,7 @@ function conexao_get_featured_sponsors() {
  * @return int[] Ordered published sponsor post IDs.
  */
 function conexao_sponsor_archive_ordered_ids() {
-	$sponsors = get_posts( array(
+	$sponsor_query_args = array(
 		'post_type'              => 'sponsor',
 		'post_status'            => 'publish',
 		'posts_per_page'         => -1,
@@ -1541,7 +1541,15 @@ function conexao_sponsor_archive_ordered_ids() {
 		'order'                  => 'ASC',
 		'update_post_meta_cache' => true,
 		'update_post_term_cache' => false,
-	) );
+	);
+	// STAGE 3.1 — B2 fallback: secondary queries do not inherit the
+	// front-end language context, so on EN requests include both languages.
+	// The archive main query then intersects this ordered list with the
+	// language-curated set (EN records + B2 PT records).
+	if ( function_exists( 'conexao_polylang_active' ) && conexao_polylang_active() && function_exists( 'conexao_requested_language_slug' ) && 'en' === conexao_requested_language_slug() ) {
+		$sponsor_query_args['lang'] = 'en,pt';
+	}
+	$sponsors = get_posts( $sponsor_query_args );
 
 	if ( empty( $sponsors ) ) {
 		return array();
@@ -2738,6 +2746,14 @@ function conexao_content_archive_query( $query ) {
 		$upcoming_ids = conexao_event_upcoming_ids();
 
 		if ( is_array( $upcoming_ids ) ) {
+			// STAGE 3.1 — B2 fallback: widen the language scope to EN+PT so
+			// Polylang's is_already_filtered() skips its own narrowing. The
+			// ID list itself is already language-curated (EN records + B2 PT
+			// records with no EN translation, never hidden statuses).
+			if ( function_exists( 'conexao_polylang_active' ) && conexao_polylang_active() && 'en' === conexao_requested_language_slug() ) {
+				$query->set( 'lang', 'en,pt' );
+			}
+
 			// post__in => array() is ambiguous in WP_Query; array( 0 )
 			// deterministically yields "no upcoming events".
 			if ( empty( $upcoming_ids ) ) {
@@ -3019,7 +3035,228 @@ function conexao_content_archive_query( $query ) {
 		$query->set( 'order', 'ASC' );
 	}
 }
-add_action( 'pre_get_posts', 'conexao_content_archive_query' );
+add_action( 'pre_get_posts', 'conexao_content_archive_query', 20 );
+
+/**
+ * STAGE 3.1 — B2 archive widening (generic post types).
+ *
+ * Polylang filters front-end queries by language. For B2 archives under /en/
+ * (leisure, sponsor, course_provider, job) the PT records with no EN
+ * translation must remain visible. The robust mechanism: set the query's
+ * `lang` var to BOTH languages. Polylang's is_already_filtered() then sees
+ * an explicit language scope and skips its own narrowing, while the query
+ * layer resolves `lang=en,pt` to a tax_query matching either language.
+ *
+ * Events are handled inside conexao_content_archive_query() itself (their
+ * post__in ID list is already language-curated); this hook covers the
+ * remaining B2 types on any archive/search context. Guides/blog/pages keep
+ * the B1 302 policy (never widened).
+ *
+ * @param WP_Query $query Query object.
+ * @return void
+ */
+function conexao_b2_archive_widen_query( $query ) {
+	if ( is_admin() || ! $query->is_main_query() ) {
+		return;
+	}
+
+	if ( ! function_exists( 'conexao_polylang_active' ) || ! conexao_polylang_active() ) {
+		return;
+	}
+
+	if ( 'en' !== conexao_requested_language_slug() ) {
+		return;
+	}
+
+	// Resolve the effective post type(s): bare archives expose the type via
+	// the query string (query['post_type']) rather than the query var.
+	$types = array();
+	$var   = $query->get( 'post_type' );
+	if ( is_array( $var ) ) {
+		$types = $var;
+	} elseif ( is_string( $var ) && '' !== $var ) {
+		$types = array( $var );
+	} elseif ( isset( $query->query['post_type'] ) ) {
+		$types = is_array( $query->query['post_type'] ) ? $query->query['post_type'] : array( $query->query['post_type'] );
+	}
+
+	// Bare post-type archives carry no post_type var at all (e.g. /en/lazer/
+	// resolves to post_type=leisure only via the rewrite rule): fall back to
+	// the queried object.
+	if ( empty( $types ) && $query->is_post_type_archive() ) {
+		$archive_types = $query->get( 'post_type' );
+		if ( is_string( $archive_types ) && '' !== $archive_types ) {
+			$types = array( $archive_types );
+		} else {
+			$queried = get_queried_object();
+			if ( $queried instanceof WP_Post_Type && ! empty( $queried->name ) ) {
+				$types = array( $queried->name );
+			}
+		}
+	}
+
+	// post_type=any / empty search queries are out of scope (handled by the
+	// search-widening rule, not the archive rule).
+	$widen = false;
+	foreach ( $types as $type ) {
+		if ( function_exists( 'conexao_is_b2_post_type' ) && conexao_is_b2_post_type( (string) $type ) ) {
+			$widen = true;
+			break;
+		}
+	}
+
+	if ( ! $widen ) {
+		return;
+	}
+
+	$query->set( 'lang', 'en,pt' );
+}
+add_action( 'pre_get_posts', 'conexao_b2_archive_widen_query', 30 );
+
+/**
+ * STAGE 3.1 — B2 search widen + tax_query modification.
+ *
+ * For EN search: replace Polylang's single-language tax_query (language='en'
+ * only) with a B2-aware query that allows EN posts of any type + B2-type PT
+ * posts. The lang var stays 'en' (Polylang's parse_query set it), so
+ * is_already_filtered() returns TRUE and filter_query does NOT re-add the
+ * language tax_query when we modify it here.
+ *
+ * @param WP_Query $query Query object.
+ * @return void
+ */
+function conexao_b2_search_widen_query( $query ) {
+	if ( is_admin() || ! $query->is_main_query() || ! $query->is_search() ) {
+		return;
+	}
+
+	if ( ! function_exists( 'conexao_polylang_active' ) || ! conexao_polylang_active() ) {
+		return;
+	}
+
+	if ( 'en' !== conexao_requested_language_slug() ) {
+		return;
+	}
+
+	// Mark for posts_clauses filter.
+	$query->set( 'conexao_b2_search_enabled', true );
+
+	// Replace Polylang's single-language tax_query (language='en') with a
+	// B2-aware clause that allows EN posts + B2-type PT posts.
+	$tax_query = $query->get( 'tax_query' );
+	if ( ! is_array( $tax_query ) ) {
+		$tax_query = array();
+	}
+
+	$b2_types = function_exists( 'conexao_b2_post_types' ) ? conexao_b2_post_types() : array();
+	if ( empty( $b2_types ) ) {
+		return;
+	}
+
+	// Remove Polylang's language='en' clause.
+	$new_tax_query = array();
+	foreach ( $tax_query as $clause ) {
+		if ( is_array( $clause ) && isset( $clause['taxonomy'] ) && 'language' === $clause['taxonomy'] ) {
+			continue; // Skip Polylang's language clause
+		}
+		$new_tax_query[] = $clause;
+	}
+
+	// Add B2-aware language clause: allow EN OR (PT AND B2 post types).
+	// Use OR relation at top level so the two language branches are ORed.
+	$new_tax_query = array(
+		'relation' => 'OR',
+		array(
+			'taxonomy' => 'language',
+			'field'    => 'slug',
+			'terms'    => 'en',
+			'operator' => 'IN',
+		),
+		array(
+			'taxonomy' => 'language',
+			'field'    => 'slug',
+			'terms'    => 'pt',
+			'operator' => 'IN',
+		),
+	);
+
+	$query->set( 'tax_query', $new_tax_query );
+	$query->set( 'post_type', 'any' ); // Ensure post_type stays 'any' for search.
+}
+add_action( 'pre_get_posts', 'conexao_b2_search_widen_query', 31 );
+
+/**
+ * STAGE 3.1 — B2 search language/post-type intersection filter.
+ *
+ * Wideens the language scope (lang=en,pt) THEN narrows the actual result set
+ * in SQL so EN search returns:
+ *   - EN posts of any type, plus
+ *   - PT posts ONLY in B2 post types (event/leisure/sponsor/course_provider/job)
+ *   - never PT guides, PT blog posts, PT pages (B1), never hidden-status events.
+ *
+ * The lang scope alone is not enough (it admits every PT publishable post).
+ * This runs after the taxonomy query is built, so it keeps Polylang's behavior
+ * intact for everything except the title/content/excerpt search columns.
+ *
+ * @param array    $clauses  The posts_clauses array (WHERE + JOIN fragments).
+ * @param WP_Query $query    The query object.
+ * @return array
+ */
+function conexao_b2_search_query_clauses( $clauses, $query ) {
+	if ( is_admin() || ! $query->is_main_query() || ! $query->is_search() ) {
+		return $clauses;
+	}
+
+	if ( ! function_exists( 'conexao_polylang_active' ) || ! conexao_polylang_active() ) {
+		return $clauses;
+	}
+
+	if ( 'en' !== conexao_requested_language_slug() ) {
+		return $clauses;
+	}
+
+	// Only apply when the search widen hook has flagged this query.
+	$b2_enabled = $query->get( 'conexao_b2_search_enabled' );
+	if ( ! $b2_enabled ) {
+		return $clauses;
+	}
+
+	global $wpdb;
+
+	// Build the B2 WHERE condition: a post is EN-visible in search when:
+	//   (language = 'en')  <- real EN content, any type
+	// OR
+	//   (language = 'pt' AND post_type IN (B2 types))  <- PT fallback only for B2 types
+	$b2_types = function_exists( 'conexao_b2_post_types' ) ? conexao_b2_post_types() : array();
+	$b2_types_literal = empty( $b2_types ) ? '' : "'" . implode( "','", array_map( 'esc_sql', $b2_types ) ) . "'";
+
+	// LEFT JOIN the language taxonomy to check each post's language.
+	$clauses['join'] .= " LEFT JOIN {$wpdb->term_relationships} tr_lang ON ( tr_lang.object_id = {$wpdb->posts}.ID ) ";
+	$clauses['join'] .= " LEFT JOIN {$wpdb->term_taxonomy} tt_lang ON ( tt_lang.term_taxonomy_id = tr_lang.term_taxonomy_id AND tt_lang.taxonomy = 'language' ) ";
+	$clauses['join'] .= " LEFT JOIN {$wpdb->terms} t_lang ON ( t_lang.term_id = tt_lang.term_id ) ";
+
+	$en_visible_sql = "( t_lang.slug = 'en' )";
+	if ( ! empty( $b2_types_literal ) ) {
+		$en_visible_sql = "( t_lang.slug = 'en' OR ( t_lang.slug = 'pt' AND {$wpdb->posts}.post_type IN ( {$b2_types_literal} ) ) )";
+	}
+
+	// Event status gate: a PT event is only EN-visible if published or no status.
+	// The runtime's public gate keeps precedence, and search goes through
+	// WP_Query directly (post_type=any is outside the runtime's gate), so the
+	// same rule is re-applied here for the PT event branch only.
+	if ( in_array( 'event', $b2_types, true ) ) {
+		$en_visible_sql .= ' AND NOT ( t_lang.slug = \'pt\' AND ' . $wpdb->posts . '.post_type = \'event\' )';
+		$en_visible_sql .= ' OR ( ' . $wpdb->posts . '.post_type = \'event\' AND (';
+		$en_visible_sql .= ' ( SELECT meta_value FROM ' . $wpdb->postmeta . ' WHERE meta_key = \'_event_status\' AND post_id = ' . $wpdb->posts . '.ID LIMIT 1 ) IS NULL';
+		$en_visible_sql .= ' OR ( SELECT meta_value FROM ' . $wpdb->postmeta . ' WHERE meta_key = \'_event_status\' AND post_id = ' . $wpdb->posts . '.ID LIMIT 1 ) = \'published\'';
+		$en_visible_sql .= ' ) )';
+	}
+
+	$clauses['where'] .= ' AND ( ' . $en_visible_sql . ' )';
+
+	return $clauses;
+}
+add_filter( 'posts_clauses', 'conexao_b2_search_query_clauses', 35, 2 );
 
 /**
  * Course Provider shortcode.

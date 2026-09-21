@@ -207,6 +207,12 @@ final class Conexao_Event_Query {
 	/**
 	 * Is this event record part of the current language context?
 	 *
+	 * STAGE 3.1 — B2 fallback: on EN requests, Portuguese event records with
+	 * no EN translation are part of the EN archive (rendered with EN chrome
+	 * + notice). Records that DO have an EN translation stay out of the PT
+	 * archive's way: only the record matching the current language is kept,
+	 * so no event ever appears twice.
+	 *
 	 * @param int $post_id Event post ID.
 	 * @return bool
 	 */
@@ -219,7 +225,28 @@ final class Conexao_Event_Query {
 
 		$language = pll_get_post_language( $post_id, 'slug' );
 
-		return ! is_string( $language ) || '' === $language || $language === $current;
+		if ( ! is_string( $language ) || '' === $language ) {
+			return true;
+		}
+
+		if ( $language === $current ) {
+			return true;
+		}
+
+		// B2 fallback: a PT record with no EN translation belongs to the EN
+		// archive. Hidden statuses never surface (the status gate already
+		// filtered them from the candidate set, but re-check defensively).
+		if ( 'en' === $current && 'pt' === $language && function_exists( 'pll_get_post' ) ) {
+			$translated = (int) pll_get_post( $post_id, 'en' );
+			if ( 0 === $translated || $translated === $post_id ) {
+				$status = get_post_meta( $post_id, '_event_status', true );
+				if ( '' === $status || 'published' === $status ) {
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 
 	/**
