@@ -274,11 +274,32 @@ $q = ms_test_query( array( 'atributo' => 'MS-Exterior,ms-familias,ms-exterior' )
 t_assert( array( $post_a, $post_b ) === wp_list_pluck( $q->posts, 'ID' ), 'query params are canonicalized (case + duplicates) before querying' );
 
 // tax_query structure: AND relation, IN operator per multi-select dimension.
+// Stage 2: Polylang adds its own `language` group to every front-end query, so
+// the filter dimensions are asserted separately from the language group.
 $q = ms_test_query( array( 'county' => 'ms-cavan', 'categoria' => 'ms-natureza,ms-cultura', 'atributo' => 'ms-exterior,ms-familias' ) );
 $tax_query = $q->get( 'tax_query' );
 t_assert( is_array( $tax_query ) && 'AND' === ( $tax_query['relation'] ?? '' ), 'tax_query uses relation AND between dimensions' );
 $groups = array_values( array_filter( $tax_query, 'is_array' ) );
+$language_groups = array_values(
+	array_filter(
+		$groups,
+		static function ( $group ) {
+			return 'language' === ( $group['taxonomy'] ?? '' );
+		}
+	)
+);
+$groups = array_values(
+	array_filter(
+		$groups,
+		static function ( $group ) {
+			return 'language' !== ( $group['taxonomy'] ?? '' );
+		}
+	)
+);
 t_assert( 3 === count( $groups ), 'tax_query contains one group per active dimension' );
+if ( function_exists( 'pll_current_language' ) ) {
+	t_assert( 1 === count( $language_groups ), 'the language layer adds exactly one language group to filtered leisure queries' );
+}
 
 $cat_group = null;
 foreach ( $groups as $group ) {

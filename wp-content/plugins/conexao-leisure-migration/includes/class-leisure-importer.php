@@ -600,7 +600,7 @@ class Conexao_Lazer_Importer {
 		$query = new WP_Query( array(
 			'post_type'      => 'leisure',
 			'post_status'    => 'any',
-			'posts_per_page' => 1,
+			'posts_per_page' => 10,
 			'fields'         => 'ids',
 			'no_found_rows'  => true,
 			'update_post_meta_cache' => false,
@@ -613,7 +613,66 @@ class Conexao_Lazer_Importer {
 			),
 		) );
 
-		return $query->have_posts() ? (int) $query->posts[0] : 0;
+		return $this->pick_import_language( $query->posts );
+	}
+
+	/**
+	 * Pick the record that belongs to the importer's language (Stage 2).
+	 *
+	 * A Polylang translation carries the same `_leisure_export_uuid` as its
+	 * Portuguese master, so UUID matching alone can return two records. The
+	 * import target is the record in the import language (or an unassigned
+	 * legacy record); a record in another language is returned only as a last
+	 * resort so the caller can detect the conflict instead of duplicating the
+	 * UUID or overwriting a translation.
+	 *
+	 * @param int[] $ids Candidate post IDs (query order).
+	 * @return int Post ID or 0.
+	 */
+	protected function pick_import_language( array $ids ) {
+		$ids = array_map( 'intval', $ids );
+
+		if ( empty( $ids ) ) {
+			return 0;
+		}
+
+		$foreign = 0;
+
+		foreach ( $ids as $id ) {
+			if ( $this->is_import_target( $id ) ) {
+				return $id;
+			}
+
+			if ( ! $foreign ) {
+				$foreign = $id;
+			}
+		}
+
+		return $foreign;
+	}
+
+	/**
+	 * May the importer write to this Lazer record? (Stage 2 language guard)
+	 *
+	 * True for the import language and for unassigned (legacy) records; false
+	 * for a record in another language, which is a translation, never the
+	 * import target. Never touches `_leisure_export_uuid`.
+	 *
+	 * @param int $post_id Lazer post ID.
+	 * @return bool
+	 */
+	protected function is_import_target( $post_id ) {
+		$language = class_exists( 'Conexao_Leisure_Migration_Language_Guard' )
+			? Conexao_Leisure_Migration_Language_Guard::import_language()
+			: '';
+
+		if ( '' === $language || ! function_exists( 'pll_get_post_language' ) ) {
+			return true;
+		}
+
+		$post_language = pll_get_post_language( (int) $post_id, 'slug' );
+
+		return ! is_string( $post_language ) || '' === $post_language || $post_language === $language;
 	}
 
 	protected function find_by_slug( $slug ) {
@@ -665,6 +724,17 @@ class Conexao_Lazer_Importer {
 	}
 
 	protected function update_item( $post_id, $item, $images_dir, $title, &$stats ) {
+		// Stage 2 language guard: a record in another language is a linked
+		// translation, not the import target. Writing would overwrite the
+		// translated content with Portuguese source content and would make
+		// that record a competing UUID target for the same Lazer identity.
+		if ( ! $this->is_import_target( $post_id ) ) {
+			return new WP_Error(
+				'conexao_leisure_language_conflict',
+				__( 'Registro em outro idioma: o importador não grava em traduções.', 'conexao-leisure-migration' )
+			);
+		}
+
 		$post_data = $this->sanitize_post_data( $item );
 
 		$updated = wp_update_post( array(

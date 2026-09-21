@@ -7,6 +7,7 @@ Conexão BR Irlanda: a WordPress community portal for Brazilians in Ireland. Con
 ## Stack
 
 - WordPress 7.0.2 (PHP 8.5, Apache), MySQL (Docker), vanilla JS/CSS.
+- Polylang 3.8.9 (Free) for English (`/en/`) — see CONEXAO_BR_ENGLISH_STAGE_2_REPORT.md.
 - Production: WordPress.com, domain https://conexaobr.ie.
 - No build tooling for JS/CSS. Assets are plain files.
 
@@ -78,6 +79,7 @@ See docs/routing.md.
 8. **Preserve image attribution/license metadata** (`_leisure_image_author`, `_license`, `_attribution`, etc.).
 9. **Public event queries must respect `_event_status`** (published or no status). The event-runtime plugin enforces this via `pre_get_posts`.
 10. **Front page caching:** transients (`conexao_home_*`, `conexao_404_*`) are invalidated on save. Keep new homepage queries cached.
+11. **English is an additional language layer, never a fork.** Polylang adds `/en/`; Portuguese URLs/slugs/identity stay canonical. An English record is a *linked translation* of the same Event/Lazer identity — never a second identity record. Theme language logic lives only in `inc/polylang.php` + `inc/seo.php`; theme/plugin code reads locale through `conexao_current_locale()`. Transient/object caches must be language-scoped. See docs/routing.md §English and CONEXAO_BR_ENGLISH_STAGE_2_REPORT.md.
 
 ## Common tasks — where to look
 

@@ -81,6 +81,16 @@ function conexao_current_locale(): string {
  * @return string Corrected locale.
  */
 function conexao_correct_default_locale( $locale ) {
+	/*
+	 * Stage 2: once Polylang is active, `locale` is a per-request, per-language
+	 * value — `en_US` on an /en/ request is legitimate and must be preserved.
+	 * The correction below only applies to the single-language state it was
+	 * written for (an unconfigured install whose content is Portuguese).
+	 */
+	if ( function_exists( 'conexao_polylang_active' ) && conexao_polylang_active() ) {
+		return $locale;
+	}
+
 	if ( ! $locale || 'en_US' === $locale ) {
 		return 'pt_BR';
 	}

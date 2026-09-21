@@ -20,6 +20,15 @@ define( 'CONEXAO_THEME_URI', get_template_directory_uri() );
 require_once CONEXAO_THEME_DIR . '/inc/i18n.php';
 
 /**
+ * Load the Polylang integration (Stage 2) immediately after the i18n
+ * foundation: it wires `conexao_current_locale` to the active language,
+ * declares the translated post types/taxonomies and neutralizes the Stage 1
+ * locale correction while a multilingual context exists. It must be loaded
+ * before `after_setup_theme` so Polylang caches the translated-type policy.
+ */
+require_once CONEXAO_THEME_DIR . '/inc/polylang.php';
+
+/**
  * Load SEO foundation module.
  */
 require_once CONEXAO_THEME_DIR . '/inc/seo.php';
@@ -263,7 +272,7 @@ function conexao_get_guide_category_url( $identifier, $fallback_slug = '' ) {
  * @return WP_Term[] Array of term objects, empty when none match.
  */
 function conexao_get_terms_for_post_type( $taxonomy, $post_type, $extra_args = array() ) {
-	$cache_key = 'conexao_terms_' . $taxonomy . '_' . $post_type;
+	$cache_key = conexao_lang_cache_key( 'conexao_terms_' . $taxonomy . '_' . $post_type );
 	$cache_key .= empty( $extra_args ) ? '' : '_' . md5( wp_json_encode( $extra_args ) );
 	$cached    = wp_cache_get( $cache_key, 'conexao_filters' );
 
@@ -315,7 +324,7 @@ function conexao_get_terms_for_post_type( $taxonomy, $post_type, $extra_args = a
  */
 function conexao_get_event_towns( $county_slug = '' ) {
 	$county_slug = sanitize_title( $county_slug );
-	$cache_key   = 'conexao_event_towns' . ( '' !== $county_slug ? '_' . $county_slug : '' );
+	$cache_key   = conexao_lang_cache_key( 'conexao_event_towns' . ( '' !== $county_slug ? '_' . $county_slug : '' ) );
 	$cached      = wp_cache_get( $cache_key, 'conexao_filters' );
 
 	if ( false !== $cached ) {
@@ -418,7 +427,7 @@ function conexao_event_filter_url( array $filters, $base = '' ) {
  * @return array Array of associative arrays with 'name' and 'slug' keys.
  */
 function conexao_get_provider_categories() {
-	$cache_key = 'conexao_provider_categories';
+	$cache_key = conexao_lang_cache_key( 'conexao_provider_categories' );
 	$cached    = wp_cache_get( $cache_key, 'conexao_filters' );
 
 	if ( false !== $cached ) {
@@ -797,7 +806,9 @@ add_filter( 'the_content', 'conexao_lazy_content_images', 20 );
  * The cache is invalidated whenever any of the relevant CPTs are saved.
  */
 function conexao_homepage_query( $args, $cache_key, $expiration = 300 ) {
-	$cached = get_transient( $cache_key );
+	// Stage 2: homepage section caches are per-language (PT cache ≠ EN cache).
+	$cache_key = conexao_lang_cache_key( $cache_key );
+	$cached    = get_transient( $cache_key );
 	if ( false !== $cached ) {
 		return $cached;
 	}
@@ -842,34 +853,43 @@ function conexao_homepage_cache_invalidate( $post_id ) {
 	$post_type = get_post_type( $post_id );
 	$cpt_types = array( 'guide', 'event', 'job', 'sponsor', 'course_provider', 'leisure', 'post' );
 	if ( in_array( $post_type, $cpt_types, true ) ) {
+		/*
+		 * Stage 2: every language variant is flushed. Saving a PT record must
+		 * also invalidate the EN caches (and vice versa) — see
+		 * conexao_flush_language_cache() in inc/polylang.php.
+		 */
+
 		// Homepage sections.
-		delete_transient( 'conexao_home_news' );
-		delete_transient( 'conexao_home_events' );
-		delete_transient( 'conexao_home_sponsors' );
-		delete_transient( 'conexao_home_jobs' );
-		delete_transient( 'conexao_home_featured' );
-		delete_transient( 'conexao_home_popular' );
-		delete_transient( 'conexao_home_latest' );
+		conexao_flush_language_cache( 'conexao_home_news' );
+		conexao_flush_language_cache( 'conexao_home_events' );
+		conexao_flush_language_cache( 'conexao_home_sponsors' );
+		conexao_flush_language_cache( 'conexao_home_jobs' );
+		conexao_flush_language_cache( 'conexao_home_featured' );
+		conexao_flush_language_cache( 'conexao_home_popular' );
+		conexao_flush_language_cache( 'conexao_home_latest' );
 
 		// 404 page sections.
-		delete_transient( 'conexao_404_guides' );
-		delete_transient( 'conexao_404_events' );
+		conexao_flush_language_cache( 'conexao_404_guides' );
+		conexao_flush_language_cache( 'conexao_404_events' );
 
-		// Recurring-events ordered ID list (date-keyed transient owned by
-		// the event runtime's Conexao_Event_Query helper; only events can
-		// change the set).
+		// Recurring-events ordered ID list (date- and language-keyed
+		// transient owned by the event runtime's Conexao_Event_Query
+		// helper; only events can change the set). The helper flushes
+		// every language variant.
 		if ( 'event' === $post_type && class_exists( 'Conexao_Event_Query' ) ) {
 			Conexao_Event_Query::flush_cache();
 		}
 
-		// Reading-time object-cache entry for this post.
+		// Reading-time object-cache entry for this post (keyed by post ID:
+		// a translation is its own record, so it can never collide).
 		wp_cache_delete( 'conexao_reading_time_' . $post_id, 'conexao' );
 
-		// Filter bar caches (per-content-type term/category lists).
-		wp_cache_delete( 'conexao_terms_conexao_category_event', 'conexao_filters' );
-		wp_cache_delete( 'conexao_terms_conexao_town_event', 'conexao_filters' );
-		wp_cache_delete( 'conexao_terms_conexao_category_guide', 'conexao_filters' );
-		wp_cache_delete( 'conexao_provider_categories', 'conexao_filters' );
+		// Filter bar caches (per-content-type term/category lists) — per
+		// language, because they carry term names and language-scoped posts.
+		conexao_flush_language_object_cache( 'conexao_terms_conexao_category_event', 'conexao_filters' );
+		conexao_flush_language_object_cache( 'conexao_terms_conexao_town_event', 'conexao_filters' );
+		conexao_flush_language_object_cache( 'conexao_terms_conexao_category_guide', 'conexao_filters' );
+		conexao_flush_language_object_cache( 'conexao_provider_categories', 'conexao_filters' );
 	}
 }
 add_action( 'save_post', 'conexao_homepage_cache_invalidate' );
@@ -1144,7 +1164,7 @@ function conexao_related_posts() {
  */
 function conexao_popular_posts( $limit = 5 ) {
 	$limit     = max( 1, absint( $limit ) );
-	$cache_key = 'conexao_home_popular';
+	$cache_key = conexao_lang_cache_key( 'conexao_home_popular' );
 	$scopes    = conexao_view_count_post_types();
 
 	$cached = get_transient( $cache_key );
@@ -1215,7 +1235,7 @@ function conexao_popular_posts( $limit = 5 ) {
  */
 function conexao_latest_blog_posts( $limit = 3 ) {
 	$limit     = max( 1, absint( $limit ) );
-	$cache_key = 'conexao_home_latest';
+	$cache_key = conexao_lang_cache_key( 'conexao_home_latest' );
 
 	$cached = get_transient( $cache_key );
 	if ( false !== $cached ) {
@@ -1393,7 +1413,7 @@ function conexao_sponsor_carousel_image( $sponsor_id, $sponsor_title = '', $eage
  * @return array[] List of normalized sponsor card data arrays.
  */
 function conexao_get_featured_sponsors() {
-	$cache_key = 'conexao_home_sponsors';
+	$cache_key = conexao_lang_cache_key( 'conexao_home_sponsors' );
 	$cached    = get_transient( $cache_key );
 
 	if ( false !== $cached && is_array( $cached ) ) {

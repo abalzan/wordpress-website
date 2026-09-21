@@ -103,6 +103,14 @@ When `conexao-data-model` is not active, this plugin registers the `leisure` CPT
 - Images are always imported as local Media Library attachments.
 - Wikimedia Commons metadata is preserved as reference only, never hotlinked.
 - Legacy external-image data can be cleaned up via the Manutenção page.
+- **Multilingual (Stage 2):** `_leisure_export_uuid` is language-neutral. A linked
+  English translation shares the UUID verbatim; `find_by_uuid()` prefers the
+  record in the import language and `update_item()` refuses to write to a
+  translation (`WP_Error`), so an EN variant can never become a competing UUID
+  target or duplicate the identity. `includes/class-language-guard.php` assigns
+  the default language (`pt_BR`) to imported Lazer records without ever
+  reassigning an existing language. Gate coverage:
+  `tests/test-language-uuid.php`.
 
 ### Legacy attribute backfill (`scripts/backfill-leisure-attributes.php`)
 

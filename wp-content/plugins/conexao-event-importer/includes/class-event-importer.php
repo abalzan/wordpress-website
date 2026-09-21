@@ -1043,6 +1043,42 @@ class Conexao_Event_Importer_Engine {
 	protected function upsert_event( $normalized, $existing_id = 0 ) {
 		$now = current_time( 'mysql' );
 
+		/*
+		 * Stage 2 language guard.
+		 *
+		 * Deduplication is identity-based (source + source_id → URL →
+		 * content), and a Polylang translation carries the same identity meta.
+		 * If the matched record belongs to another language it is a
+		 * translation, not the import target: writing here would overwrite
+		 * translated content with source-language content and would turn that
+		 * record into a competing import target for the same production
+		 * identity. Skip instead — the translation and the Portuguese master
+		 * both stay untouched, and the run reports why.
+		 */
+		if ( $existing_id && class_exists( 'Conexao_Event_Importer_Language_Guard' )
+			&& ! Conexao_Event_Importer_Language_Guard::is_import_target( (int) $existing_id ) ) {
+			Conexao_Import_Log::add(
+				$normalized['source'],
+				'warning',
+				sprintf(
+					/* translators: %s: event title */
+					__( 'Event skipped (language conflict): %s was matched to a translated record. The importer only writes to records in the import language.', 'conexao-event-importer' ),
+					$normalized['title']
+				),
+				array(
+					'run_id'      => $this->current_run_id,
+					'event_title' => $normalized['title'],
+					'post_id'     => (int) $existing_id,
+				)
+			);
+
+			return array(
+				'action'  => 'skipped',
+				'post_id' => (int) $existing_id,
+				'reason'  => __( 'Matched a translated record: the importer never writes to another language.', 'conexao-event-importer' ),
+			);
+		}
+
 		if ( $existing_id ) {
 			$post_id = $existing_id;
 

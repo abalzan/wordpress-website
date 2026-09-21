@@ -226,6 +226,26 @@ results are stable all day and the day rollover naturally rebuilds the set.
 `conexao_homepage_cache_invalidate()` whenever an event is saved/deleted.
 No cron, no persistent scheduler.
 
+## Multilingual (Stage 2)
+
+`Conexao_Event_Query` is language-aware:
+
+- `cache_key()` appends the active language slug
+  (`conexao_event_upcoming_YYYYMMDD_pt` / `_en`), so PT and EN public event
+  lists can never share a cache entry; `flush_cache()` clears every language
+  variant (previous day, today, next day).
+- `upcoming_events()` skips candidate records whose Polylang language is not the
+  current one, because a linked translation is a separate post carrying a copy of
+  the identity/scheduling meta. Records without a language (Polylang inactive,
+  legacy rows) stay visible.
+- Both behaviours are no-ops when Polylang is inactive — the plugin keeps its
+  single-language behaviour.
+
+The `_event_status` gate keeps priority over the language filter: both compose
+via SQL AND, so an expired/rejected event stays hidden in every language.
+Gate coverage: `tests/test-event-language-gate.php` (plain PHP, so the real
+`pre_get_posts` gate applies).
+
 ## Tests
 
 `tests/test-plugin-separation.php` — run in both configurations from the

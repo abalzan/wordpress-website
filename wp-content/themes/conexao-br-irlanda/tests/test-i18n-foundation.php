@@ -120,10 +120,14 @@ t_assert(
 	'dates render Portuguese month names ("setembro")'
 );
 
-// --- Stage 1 must NOT add multilingual SEO behavior (Phase 12). ---
-t_assert( ! has_filter( 'wp_head', 'conexao_seo_hreflang' ), 'no hreflang emitter registered on wp_head' );
-t_assert( ! function_exists( 'conexao_language_switcher' ), 'no language switcher helper exists' );
-t_assert( false === strpos( conexao_og_locale(), 'en' ), 'og:locale is not English under the Stage 1 public context' );
+// --- Stage 2 supersedes the Stage 1 "no multilingual output" scope -------
+// Stage 1 deliberately shipped without an hreflang emitter or a language
+// switcher; Stage 2 adds both (inc/polylang.php). These checks now assert the
+// invariants the Stage 1 foundation still guarantees in the PT context.
+t_assert( function_exists( 'conexao_seo_hreflang' ), 'hreflang emitter registered (Stage 2)' );
+t_assert( function_exists( 'conexao_language_switcher' ), 'language switcher helper exists (Stage 2)' );
+t_strict( 'pt_BR', conexao_og_locale(), 'og:locale is pt_BR in the Portuguese context' );
+t_assert( is_array( conexao_hreflang_links() ), 'hreflang link resolver returns an array' );
 
 echo "\ni18n foundation: {$passed} passed, {$failed} failed\n";
 exit( $failed > 0 ? 1 : 0 );

@@ -17,6 +17,11 @@ require_once CONEXAO_SPONSOR_MIGRATION_DIR . 'includes/class-sponsor-exporter.ph
 require_once CONEXAO_SPONSOR_MIGRATION_DIR . 'includes/class-sponsor-importer.php';
 require_once CONEXAO_SPONSOR_MIGRATION_DIR . 'includes/class-sponsor-transfer-admin.php';
 
+// Stage 2: language guard (Polylang-aware; no-op without Polylang). Keeps
+// imported sponsors in the default language without touching identity meta.
+require_once CONEXAO_SPONSOR_MIGRATION_DIR . 'includes/class-language-guard.php';
+Conexao_Sponsor_Migration_Language_Guard::init();
+
 final class Conexao_Sponsor_Migration {
 
 	const VERSION = '1.1.0';

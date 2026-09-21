@@ -122,6 +122,42 @@ docker compose exec wordpress wp user list
 - Use browser DevTools device emulation.
 - Test dark mode toggle in both themes.
 
+## Multilingual (EN) development — Stage 2
+
+English support (`/en/`) is provided by **Polylang 3.8.9 (Free)** and the theme's
+single integration layer `wp-content/themes/conexao-br-irlanda/inc/polylang.php`.
+See `CONEXAO_BR_ENGLISH_STAGE_2_REPORT.md` for the full gate results.
+
+```bash
+# 1. Install + activate Polylang (local only, never production)
+docker compose exec -T wordpress wp plugin install polylang --version=3.8.9 --allow-root
+docker compose exec -T wordpress wp plugin activate polylang --allow-root
+
+# 2. Configure languages + assign existing content to pt_BR (idempotent)
+docker compose exec -T wordpress wp eval-file - --allow-root < scripts/stage2-polylang-setup.php
+#    dry run:  ... < scripts/stage2-polylang-setup.php dry-run
+
+# 3. Verify the URL/SEO/cache/REST matrix (HTTP level)
+./scripts/stage2-http-verify.sh http://localhost:8080
+
+# 4. Stage 2 gates (language, identity, status, UUID, taxonomy)
+docker compose exec wordpress php /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-polylang-foundation.php
+docker compose exec wordpress php /var/www/html/wp-content/plugins/conexao-event-runtime/tests/test-event-language-gate.php
+docker compose exec wordpress php /var/www/html/wp-content/plugins/conexao-event-importer/tests/test-language-identity.php
+docker compose exec wordpress php /var/www/html/wp-content/plugins/conexao-leisure-migration/tests/test-language-uuid.php
+```
+
+Notes:
+
+- Polylang is installed in the container volume (`/var/www/html/wp-content/plugins/polylang`),
+  **not** committed to this repository. Deactivating it restores single-language
+  behaviour (every integration helper is capability-guarded).
+- Translated post types/taxonomies are declared in code (`pll_get_post_types` /
+  `pll_get_taxonomies` in `inc/polylang.php`), so local/staging/production cannot drift.
+- Local PHP uses opcache with `validate_timestamps=On` and
+  `revalidate_freq=2`; when editing theme PHP during a request-heavy loop, allow
+  ~2 s or the previous bytecode may still be served.
+
 ## Running Scripts
 
 Utility scripts are in `scripts/`. Most are WP-CLI eval files:

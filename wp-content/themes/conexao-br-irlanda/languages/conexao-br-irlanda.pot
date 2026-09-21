@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-21T09:47:10+00:00\n"
+"POT-Creation-Date: 2026-09-21T11:00:22+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: conexao-br-irlanda\n"
@@ -53,17 +53,17 @@ msgstr ""
 
 #: 404.php:16
 #: inc/seo.php:67
-#: inc/seo.php:625
-#: inc/seo.php:788
+#: inc/seo.php:677
+#: inc/seo.php:840
 #: page-landing.php:95
 msgid "Guias Práticos"
 msgstr ""
 
 #: 404.php:17
 #: front-page.php:166
-#: functions.php:3752
-#: inc/seo.php:628
-#: inc/seo.php:789
+#: functions.php:3772
+#: inc/seo.php:680
+#: inc/seo.php:841
 msgid "Eventos"
 msgstr ""
 
@@ -71,34 +71,34 @@ msgstr ""
 msgid "Guias Populares"
 msgstr ""
 
-#: 404.php:48
+#: 404.php:50
 msgid "PPS Number"
 msgstr ""
 
-#: 404.php:49
+#: 404.php:51
 msgid "Medical Card"
 msgstr ""
 
-#: 404.php:50
+#: 404.php:52
 msgid "Abrir Conta Bancária"
 msgstr ""
 
-#: 404.php:51
+#: 404.php:53
 msgid "Alugar Casa"
 msgstr ""
 
-#: 404.php:52
+#: 404.php:54
 msgid "Carteira de Motorista"
 msgstr ""
 
-#: 404.php:58
+#: 404.php:60
 #: front-page.php:506
 #: page-landing.php:184
 #: template-parts/hero-events.php:74
 msgid "Próximos Eventos"
 msgstr ""
 
-#: 404.php:106
+#: 404.php:108
 #: front-page.php:558
 msgid "Nenhum evento próximo no momento."
 msgstr ""
@@ -196,12 +196,12 @@ msgid "Conectando a comunidade brasileira na Irlanda com informações, eventos,
 msgstr ""
 
 #: footer.php:38
-#: functions.php:1763
+#: functions.php:1783
 msgid "Redes Sociais"
 msgstr ""
 
 #: footer.php:70
-#: functions.php:1799
+#: functions.php:1819
 msgid "© 2025 Conexão BR Irlanda. Todos os direitos reservados."
 msgstr ""
 
@@ -218,12 +218,12 @@ msgid "Cookies"
 msgstr ""
 
 #: front-page.php:11
-#: functions.php:1777
+#: functions.php:1797
 msgid "Tudo que o brasileiro precisa para viver melhor na <span>Irlanda</span>"
 msgstr ""
 
 #: front-page.php:12
-#: functions.php:1784
+#: functions.php:1804
 msgid "Conectando a comunidade brasileira com informações, eventos, guias práticos e muito mais."
 msgstr ""
 
@@ -256,10 +256,10 @@ msgid "Casas e apartamentos"
 msgstr ""
 
 #: front-page.php:160
-#: functions.php:3754
+#: functions.php:3774
 #: inc/seo.php:47
-#: inc/seo.php:631
-#: inc/seo.php:790
+#: inc/seo.php:683
+#: inc/seo.php:842
 msgid "Empregos"
 msgstr ""
 
@@ -277,13 +277,13 @@ msgstr ""
 
 #: front-page.php:162
 #: inc/seo.php:58
-#: inc/seo.php:637
+#: inc/seo.php:689
 msgid "Lazer"
 msgstr ""
 
 #: front-page.php:162
-#: functions.php:3400
-#: functions.php:3753
+#: functions.php:3420
+#: functions.php:3773
 msgid "Lazer e turismo"
 msgstr ""
 
@@ -332,10 +332,10 @@ msgid "Vistos e PPS Number"
 msgstr ""
 
 #: front-page.php:174
-#: functions.php:3755
+#: functions.php:3775
 #: inc/seo.php:52
-#: inc/seo.php:634
-#: inc/seo.php:791
+#: inc/seo.php:686
+#: inc/seo.php:843
 #: page-landing.php:128
 msgid "Apoiadores"
 msgstr ""
@@ -347,7 +347,7 @@ msgstr ""
 #: front-page.php:178
 #: front-page.php:443
 #: home.php:19
-#: inc/seo.php:793
+#: inc/seo.php:845
 #: index.php:7
 msgid "Blog"
 msgstr ""
@@ -357,7 +357,7 @@ msgid "Novidades e artigos"
 msgstr ""
 
 #: front-page.php:183
-#: functions.php:3751
+#: functions.php:3771
 #: template-parts/guide-filters.php:36
 msgid "Guias"
 msgstr ""
@@ -434,156 +434,156 @@ msgstr ""
 msgid "Ver mais"
 msgstr ""
 
-#: functions.php:499
+#: functions.php:508
 #: header.php:101
 msgid "Menu Principal"
 msgstr ""
 
-#: functions.php:500
+#: functions.php:509
 msgid "Menu Rodapé"
 msgstr ""
 
-#: functions.php:501
+#: functions.php:510
 msgid "Menu Social"
 msgstr ""
 
-#: functions.php:514
+#: functions.php:523
 msgid "Sidebar Principal"
 msgstr ""
 
-#: functions.php:515
+#: functions.php:524
 msgid "Rodapé - Coluna 1"
 msgstr ""
 
-#: functions.php:516
+#: functions.php:525
 msgid "Rodapé - Coluna 2"
 msgstr ""
 
-#: functions.php:517
+#: functions.php:526
 msgid "Rodapé - Coluna 3"
 msgstr ""
 
-#: functions.php:1028
+#: functions.php:1048
 #, php-format
 msgid "%d min de leitura"
 msgid_plural "%d min de leitura"
 msgstr[0] ""
 msgstr[1] ""
 
-#: functions.php:1100
+#: functions.php:1120
 msgid "Posts Relacionados"
 msgstr ""
 
-#: functions.php:1626
+#: functions.php:1646
 msgid "Website"
 msgstr ""
 
-#: functions.php:1752
+#: functions.php:1772
 msgid "Cores do Portal"
 msgstr ""
 
-#: functions.php:1755
+#: functions.php:1775
 msgid "Cor Primária (Verde)"
 msgstr ""
 
-#: functions.php:1759
+#: functions.php:1779
 msgid "Cor de Destaque (Laranja)"
 msgstr ""
 
-#: functions.php:1765
+#: functions.php:1785
 msgid "Instagram URL"
 msgstr ""
 
-#: functions.php:1766
+#: functions.php:1786
 msgid "WhatsApp URL"
 msgstr ""
 
-#: functions.php:1767
+#: functions.php:1787
 msgid "Facebook URL"
 msgstr ""
 
-#: functions.php:1775
+#: functions.php:1795
 msgid "Hero Section"
 msgstr ""
 
-#: functions.php:1781
+#: functions.php:1801
 msgid "Título do Hero"
 msgstr ""
 
-#: functions.php:1788
+#: functions.php:1808
 msgid "Subtítulo do Hero"
 msgstr ""
 
-#: functions.php:1797
+#: functions.php:1817
 msgid "Rodapé"
 msgstr ""
 
-#: functions.php:1803
+#: functions.php:1823
 msgid "Texto do Rodapé"
 msgstr ""
 
-#: functions.php:2109
+#: functions.php:2129
 #: single-leisure.php:202
 msgid "Site oficial"
 msgstr ""
 
-#: functions.php:2110
+#: functions.php:2130
 msgid "Ver no Discover Ireland"
 msgstr ""
 
-#: functions.php:2111
+#: functions.php:2131
 #: single-leisure.php:292
 msgid "Mais informações"
 msgstr ""
 
-#: functions.php:2487
+#: functions.php:2507
 msgid "segunda-feira"
 msgstr ""
 
-#: functions.php:2488
+#: functions.php:2508
 msgid "terça-feira"
 msgstr ""
 
-#: functions.php:2489
+#: functions.php:2509
 msgid "quarta-feira"
 msgstr ""
 
-#: functions.php:2490
+#: functions.php:2510
 msgid "quinta-feira"
 msgstr ""
 
-#: functions.php:2491
+#: functions.php:2511
 msgid "sexta-feira"
 msgstr ""
 
-#: functions.php:2492
+#: functions.php:2512
 msgid "sábado"
 msgstr ""
 
-#: functions.php:2493
+#: functions.php:2513
 msgid "domingo"
 msgstr ""
 
 #. translators: %1$s and %2$s are weekday names, e.g. "segunda" and "quarta".
 #. translators: %1$s is a comma-separated list of weekday names; %2$s is the final weekday name.
-#: functions.php:2517
-#: functions.php:2522
+#: functions.php:2537
+#: functions.php:2542
 #, php-format
 msgid "%1$s e %2$s"
 msgstr ""
 
 #. translators: %s is a weekday name or a list of weekday names, e.g. "quarta-feira" or "segunda, quarta e sexta".
-#: functions.php:2574
+#: functions.php:2594
 #, php-format
 msgid "Toda %s"
 msgstr ""
 
-#: functions.php:3086
+#: functions.php:3106
 #: home.php:37
 msgid "Categorias"
 msgstr ""
 
-#: functions.php:3087
+#: functions.php:3107
 #: home.php:39
 #: template-parts/course-filters.php:53
 #: template-parts/employment-opportunities.php:370
@@ -598,57 +598,57 @@ msgstr ""
 msgid "Todos"
 msgstr ""
 
-#: functions.php:3151
+#: functions.php:3171
 msgid "Card do Portal"
 msgstr ""
 
-#: functions.php:3152
+#: functions.php:3172
 msgid "Hero do Portal"
 msgstr ""
 
-#: functions.php:3153
+#: functions.php:3173
 msgid "Miniatura do Portal"
 msgstr ""
 
-#: functions.php:3154
+#: functions.php:3174
 msgid "Prévia de Evento (16:9)"
 msgstr ""
 
-#: functions.php:3155
+#: functions.php:3175
 msgid "Tile do Apoiador (512px)"
 msgstr ""
 
-#: functions.php:3156
+#: functions.php:3176
 msgid "Banner de Evento"
 msgstr ""
 
-#: functions.php:3157
+#: functions.php:3177
 msgid "Logo de Provedor de Cursos"
 msgstr ""
 
-#: functions.php:3158
+#: functions.php:3178
 msgid "Vaga Vertical (Instagram)"
 msgstr ""
 
-#: functions.php:3175
+#: functions.php:3195
 msgid "Imagem da vaga: use uma imagem vertical, preferencialmente 1080 × 1920 px (formato Instagram Stories)."
 msgstr ""
 
-#: functions.php:3193
+#: functions.php:3213
 msgid "Fale com a Conexão BR"
 msgstr ""
 
-#: functions.php:3194
+#: functions.php:3214
 msgid "Fale conosco no WhatsApp"
 msgstr ""
 
-#: functions.php:3206
+#: functions.php:3226
 #: header.php:46
 msgid "Pular para o conteúdo"
 msgstr ""
 
-#: functions.php:3389
-#: inc/seo.php:676
+#: functions.php:3409
+#: inc/seo.php:728
 msgid "Início"
 msgstr ""
 
@@ -656,58 +656,58 @@ msgstr ""
 msgid "Abrir menu"
 msgstr ""
 
-#: header.php:115
+#: header.php:124
 msgid "Alternar tema claro/escuro"
 msgstr ""
 
-#: header.php:123
+#: header.php:132
 msgid "Abrir pesquisa"
 msgstr ""
 
-#: header.php:132
-#: header.php:184
-#: header.php:245
+#: header.php:141
+#: header.php:204
+#: header.php:265
 #: searchform.php:18
 msgid "Pesquisar"
 msgstr ""
 
-#: header.php:133
-#: header.php:185
-#: header.php:246
+#: header.php:142
+#: header.php:205
+#: header.php:266
 msgid "Buscar no portal..."
 msgstr ""
 
-#: header.php:134
-#: header.php:186
-#: header.php:247
+#: header.php:143
+#: header.php:206
+#: header.php:267
 #: searchform.php:25
 msgid "Buscar"
 msgstr ""
 
-#: header.php:143
-#: header.php:157
-#: header.php:163
-#: header.php:221
+#: header.php:152
+#: header.php:166
+#: header.php:172
+#: header.php:241
 msgid "Anuncie Aqui"
 msgstr ""
 
-#: header.php:174
+#: header.php:183
 msgid "Menu"
 msgstr ""
 
-#: header.php:175
+#: header.php:184
 msgid "Fechar menu"
 msgstr ""
 
-#: header.php:191
+#: header.php:211
 msgid "Menu Mobile"
 msgstr ""
 
-#: header.php:243
+#: header.php:263
 msgid "Pesquisar no site"
 msgstr ""
 
-#: header.php:248
+#: header.php:268
 msgid "Fechar pesquisa"
 msgstr ""
 
@@ -810,16 +810,16 @@ msgid "Imagem da página de Empregos: use uma imagem vertical, preferencialmente
 msgstr ""
 
 #. translators: %s is the parent menu item title.
-#: inc/i18n.php:130
+#: inc/i18n.php:140
 #, php-format
 msgid "Abrir submenu de %s"
 msgstr ""
 
-#: inc/i18n.php:132
+#: inc/i18n.php:142
 msgid "Link copiado"
 msgstr ""
 
-#: inc/i18n.php:134
+#: inc/i18n.php:144
 #: template-parts/employment-opportunities.php:447
 #: template-parts/event-filters.php:379
 #: template-parts/leisure-filters.php:475
@@ -827,73 +827,73 @@ msgid "Filtrar"
 msgstr ""
 
 #. translators: %d is the number of active filters (exactly one).
-#: inc/i18n.php:136
+#: inc/i18n.php:146
 #, php-format
 msgid "%d filtro ativo"
 msgstr ""
 
 #. translators: %d is the number of active filters (two or more).
-#: inc/i18n.php:138
+#: inc/i18n.php:148
 #, php-format
 msgid "%d filtros ativos"
 msgstr ""
 
 #. translators: 1: current sponsor position, 2: total sponsors.
-#: inc/i18n.php:140
+#: inc/i18n.php:150
 #: template-parts/featured-sponsors.php:84
 #, php-format
 msgid "Apoiador %1$d de %2$d"
 msgstr ""
 
-#: inc/i18n.php:142
+#: inc/i18n.php:152
 msgid "Carregando..."
 msgstr ""
 
-#: inc/i18n.php:143
+#: inc/i18n.php:153
 msgid "Carregar mais"
 msgstr ""
 
-#: inc/i18n.php:144
+#: inc/i18n.php:154
 msgid "Não foi possível carregar mais conteúdo."
 msgstr ""
 
-#: inc/i18n.php:145
+#: inc/i18n.php:155
 msgid "Não foi possível carregar mais conteúdo. Tente novamente."
 msgstr ""
 
-#: inc/i18n.php:146
+#: inc/i18n.php:156
 msgid "Tentar novamente"
 msgstr ""
 
-#: inc/i18n.php:147
+#: inc/i18n.php:157
 msgid "Você chegou ao fim."
 msgstr ""
 
 #. translators: 1: number of newly loaded cards, 2: singular noun ("evento"/"curso").
-#: inc/i18n.php:149
+#: inc/i18n.php:159
 #, php-format
 msgid "Mais %1$d %2$s carregado."
 msgstr ""
 
 #. translators: 1: number of newly loaded cards, 2: plural noun ("eventos"/"cursos").
-#: inc/i18n.php:151
+#: inc/i18n.php:161
 #, php-format
 msgid "Mais %1$d %2$s carregados."
 msgstr ""
 
-#: inc/i18n.php:152
+#: inc/i18n.php:162
 msgid "evento"
 msgstr ""
 
-#: inc/i18n.php:153
+#: inc/i18n.php:163
 msgid "eventos"
 msgstr ""
 
-#: inc/i18n.php:154
+#: inc/i18n.php:164
 msgid "curso"
 msgstr ""
 
-#: inc/i18n.php:155
+#: inc/i18n.php:165
 msgid "cursos"
 msgstr ""
 
@@ -1086,40 +1086,40 @@ msgstr ""
 msgid "Página não encontrada. Explore guias e eventos para brasileiros na Irlanda."
 msgstr ""
 
-#: inc/seo.php:640
+#: inc/seo.php:692
 #: template-parts/course-filters.php:50
 msgid "Cursos"
 msgstr ""
 
-#: inc/seo.php:655
+#: inc/seo.php:707
 msgid "Guias passo a passo para facilitar sua vida na Irlanda."
 msgstr ""
 
-#: inc/seo.php:658
+#: inc/seo.php:710
 msgid "Encontre eventos, encontros e atividades na Irlanda."
 msgstr ""
 
-#: inc/seo.php:661
+#: inc/seo.php:713
 msgid "Oportunidades de emprego para brasileiros na Irlanda."
 msgstr ""
 
-#: inc/seo.php:664
+#: inc/seo.php:716
 msgid "Conheça os negócios que apoiam a comunidade brasileira na Irlanda."
 msgstr ""
 
-#: inc/seo.php:667
+#: inc/seo.php:719
 msgid "Descubra lugares para visitar, natureza, cultura, turismo e coisas para fazer na Irlanda."
 msgstr ""
 
-#: inc/seo.php:775
+#: inc/seo.php:827
 msgid "Busca"
 msgstr ""
 
-#: inc/seo.php:792
+#: inc/seo.php:844
 msgid "Lazer e Turismo"
 msgstr ""
 
-#: inc/seo.php:813
+#: inc/seo.php:865
 msgid "Breadcrumb"
 msgstr ""
 
@@ -1713,6 +1713,16 @@ msgstr ""
 #: template-parts/job-resources.php:62
 #, php-format
 msgid "Acessar %s"
+msgstr ""
+
+#: template-parts/language-switcher.php:31
+msgid "Idioma do site"
+msgstr ""
+
+#. translators: %s: language name, e.g. "English".
+#: template-parts/language-switcher.php:42
+#, php-format
+msgid "Ver em %s"
 msgstr ""
 
 #: template-parts/leisure-card.php:96

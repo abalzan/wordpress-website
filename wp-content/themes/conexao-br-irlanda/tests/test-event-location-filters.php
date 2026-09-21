@@ -267,11 +267,32 @@ $q = ev_test_query( array( 'categoria' => 'ev-beta' ) );
 t_assert( in_array( $post_d, wp_list_pluck( $q->posts, 'ID' ), true ) && in_array( $post_b, wp_list_pluck( $q->posts, 'ID' ), true ), 'events without county/town stay discoverable via other filters (J)' );
 
 // tax_query structure: AND relation, one group per active dimension.
+// Stage 2: Polylang adds its own `language` group to front-end queries, so the
+// filter dimensions are counted separately from the language group.
 $q = ev_test_query( array( 'county' => 'ev-cavan', 'cidade' => 'ev-cavan-town', 'categoria' => 'ev-alpha' ) );
 $tax_query = $q->get( 'tax_query' );
 $tq = is_array( $tax_query ) ? ( isset( $tax_query['queries'] ) ? $tax_query['queries'] : $tax_query ) : array();
 $groups = array_values( array_filter( is_array( $tq ) ? $tq : array(), 'is_array' ) );
+$language_groups = array_values(
+	array_filter(
+		$groups,
+		static function ( $group ) {
+			return 'language' === ( $group['taxonomy'] ?? '' );
+		}
+	)
+);
+$groups = array_values(
+	array_filter(
+		$groups,
+		static function ( $group ) {
+			return 'language' !== ( $group['taxonomy'] ?? '' );
+		}
+	)
+);
 t_assert( 3 === count( $groups ), 'tax_query contains one group per active dimension' );
+if ( function_exists( 'pll_current_language' ) ) {
+	t_assert( 1 === count( $language_groups ), 'the language layer adds exactly one language group to filtered event queries' );
+}
 
 // The recurrence-aware post__in path is active and our future-dated events are in it.
 $upcoming = conexao_event_upcoming_ids();

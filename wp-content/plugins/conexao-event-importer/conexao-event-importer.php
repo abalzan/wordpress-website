@@ -55,6 +55,11 @@ require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-image-sync-admin
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-cleanup.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-cleanup-admin.php';
 
+// Stage 2: language guard for imported events (Polylang-aware, no-op without
+// Polylang). Must load before the importers run.
+require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-language-guard.php';
+Conexao_Event_Importer_Language_Guard::init();
+
 // WP-CLI commands (self-guarding: only registers when WP_CLI is defined).
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-import-cli.php';
 

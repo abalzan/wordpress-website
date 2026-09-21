@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-21T09:19:28+00:00\n"
+"POT-Creation-Date: 2026-09-21T11:00:46+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: conexao-event-importer\n"
@@ -24,55 +24,55 @@ msgstr ""
 msgid "Local-only event import/export tooling. Fetches, normalizes, deduplicates, and imports events from configured external sources into the local WordPress database. Event images are downloaded into the Media Library locally, then the complete event data (with embedded images) is exported to JSON for import into the production WordPress.com site. Production-critical event runtime behavior (meta/taxonomy registration, _event_status, public query filtering, status admin UI) lives in the separate \"Conexão BR Irlanda — Event Runtime\" plugin."
 msgstr ""
 
-#: conexao-event-importer.php:88
+#: conexao-event-importer.php:93
 msgid "Conexão BR Irlanda — Event Importer (Local Tools) requires the \"Conexão BR Irlanda — Event Runtime\" plugin to be installed and active."
 msgstr ""
 
-#: conexao-event-importer.php:196
+#: conexao-event-importer.php:201
 msgid "Importing… please wait. Do not close this page."
 msgstr ""
 
-#: conexao-event-importer.php:197
+#: conexao-event-importer.php:202
 #, php-format
 msgid "Importing file %1$d of %2$d…"
 msgstr ""
 
-#: conexao-event-importer.php:198
+#: conexao-event-importer.php:203
 #, php-format
 msgid "File %d: completed successfully."
 msgstr ""
 
-#: conexao-event-importer.php:199
+#: conexao-event-importer.php:204
 #, php-format
 msgid "File %d: failed."
 msgstr ""
 
-#: conexao-event-importer.php:200
+#: conexao-event-importer.php:205
 msgid "Import completed successfully."
 msgstr ""
 
-#: conexao-event-importer.php:201
+#: conexao-event-importer.php:206
 msgid "Import stopped after a failure."
 msgstr ""
 
-#: conexao-event-importer.php:202
+#: conexao-event-importer.php:207
 msgid "All files processed."
 msgstr ""
 
-#: conexao-event-importer.php:203
+#: conexao-event-importer.php:208
 #, php-format
 msgid "Retrying file %d…"
 msgstr ""
 
-#: conexao-event-importer.php:204
+#: conexao-event-importer.php:209
 msgid "Could not clean up temporary files."
 msgstr ""
 
-#: conexao-event-importer.php:205
+#: conexao-event-importer.php:210
 msgid "Network error. Please check your connection and retry."
 msgstr ""
 
-#: conexao-event-importer.php:206
+#: conexao-event-importer.php:211
 msgid "Server error. Please check the logs."
 msgstr ""
 
@@ -729,14 +729,24 @@ msgstr ""
 msgid "%d failed"
 msgstr ""
 
+#. translators: %s: event title
+#: includes/class-event-importer.php:1065
+#, php-format
+msgid "Event skipped (language conflict): %s was matched to a translated record. The importer only writes to records in the import language."
+msgstr ""
+
+#: includes/class-event-importer.php:1078
+msgid "Matched a translated record: the importer never writes to another language."
+msgstr ""
+
 #. translators: 1: event title, 2: error message
-#: includes/class-event-importer.php:1173
+#: includes/class-event-importer.php:1209
 #, php-format
 msgid "The event \"%1$s\" was imported but taxonomy assignment failed: %2$s"
 msgstr ""
 
 #. translators: 1: event title
-#: includes/class-event-importer.php:1237
+#: includes/class-event-importer.php:1273
 #, php-format
 msgid "The image for \"%1$s\" could not be downloaded. The external Eventbrite image URL will be used instead."
 msgstr ""

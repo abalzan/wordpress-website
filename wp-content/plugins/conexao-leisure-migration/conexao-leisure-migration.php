@@ -18,6 +18,11 @@ require_once CONEXAO_LAZER_MIGRATION_DIR . 'includes/class-leisure-importer.php'
 require_once CONEXAO_LAZER_MIGRATION_DIR . 'includes/class-leisure-maintenance.php';
 require_once CONEXAO_LAZER_MIGRATION_DIR . 'includes/class-leisure-transfer-admin.php';
 
+// Stage 2: language guard (Polylang-aware; no-op without Polylang). Keeps
+// imported Lazer records in the default language without touching UUIDs.
+require_once CONEXAO_LAZER_MIGRATION_DIR . 'includes/class-language-guard.php';
+Conexao_Leisure_Migration_Language_Guard::init();
+
 final class Conexao_Lazer_Migration {
 
 	const VERSION = '2.1.0';

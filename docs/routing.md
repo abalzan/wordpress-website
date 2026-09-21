@@ -37,6 +37,45 @@ Created by `conexao-content` plugin:
 - `/irlanda/`, `/europa/`, county pages (e.g., `/laois/`, `/dublin/`)
 - Category landing pages: `/moradia/`, `/saude/`, `/familia/`, etc.
 
+## English (`/en/`) — Stage 2
+
+English is an **additional language layer** delivered by Polylang (Stage 2 of
+`CONEXAO_BR_ENGLISH_ARCHITECTURE_DECISION.md`). Portuguese URLs are unchanged;
+English URLs wrap the same paths in `/en/`:
+
+| Context | Portuguese | English |
+|---|---|---|
+| Home | `/` | `/en/` |
+| Guides | `/guias/` | `/en/guias/` |
+| Events | `/eventos/` | `/en/eventos/` |
+| Lazer | `/lazer/` | `/en/lazer/` |
+| Courses | `/cursos/` | `/en/cursos/` |
+| Sponsors | `/apoiadores/` | `/en/apoiadores/` |
+| Empregos landing | `/empregos/` | `/en/empregos/` (302 → PT until translated) |
+| Blog | `/blog/` | `/en/blog/` (302 → PT until translated) |
+| Filters | `/eventos/?cidade=dublin` | `/en/eventos/?cidade=dublin` |
+
+Rules:
+
+- **CPT rewrite slugs are never renamed.** The Portuguese slug (`guias`,
+  `eventos`, `lazer`, `blog`, `empregos`, `cursos`, `apoiadores`) is canonical
+  in both languages; English only adds the `/en/` prefix.
+- **Existing EN→PT 301 redirects are untouched** (`/guides/` → `/guias/`, …).
+  `/en/…` paths can never match them (all rules are anchored to the root path).
+- **Untranslated content is answered with a 302 to the Portuguese URL** while no
+  English version exists — never a 301, never a fake English detail page.
+  `conexao_seo_missing_translation_redirect()` (theme `inc/seo.php`) issues the
+  302 and `conexao_polylang_language_redirect_is_temporary()` intercepts
+  Polylang's own 301 for exactly these requests.
+- **Canonical + hreflang are owned by `inc/seo.php`**: self-canonical PT/EN
+  URLs, `hreflang="pt-BR"`, `hreflang="en"`, `hreflang="x-default"` — only where
+  a real translation relationship or a content-backed language archive exists.
+- **Caches are per language** (`conexao_*_pt` / `conexao_*_en`).
+
+Language assignment, URL mode and the translated post types/taxonomies are
+configured by `scripts/stage2-polylang-setup.php` + `inc/polylang.php` (see
+`docs/development.md` § Multilingual (EN) development).
+
 ### Filters (Query Parameters)
 
 | Archive | Parameters | Taxonomy/Meta |

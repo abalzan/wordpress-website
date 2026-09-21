@@ -40,7 +40,7 @@ class Conexao_Event_Deduplicator {
 	}
 
 	/**
-	 * Find an event by its source ID.
+	 * Find an existing event by its source ID.
 	 *
 	 * @param string $source    Source slug.
 	 * @param string $source_id Source event ID.
@@ -50,7 +50,7 @@ class Conexao_Event_Deduplicator {
 		$query = new WP_Query(
 			array(
 				'post_type'      => 'event',
-				'posts_per_page' => 1,
+				'posts_per_page' => 10,
 				'fields'         => 'ids',
 				'no_found_rows'  => true,
 				'update_post_meta_cache' => false,
@@ -69,7 +69,7 @@ class Conexao_Event_Deduplicator {
 			)
 		);
 
-		return $query->have_posts() ? (int) $query->posts[0] : 0;
+		return $this->pick_import_language( $query->posts );
 	}
 
 	/**
@@ -82,7 +82,7 @@ class Conexao_Event_Deduplicator {
 		$query = new WP_Query(
 			array(
 				'post_type'      => 'event',
-				'posts_per_page' => 1,
+				'posts_per_page' => 10,
 				'fields'         => 'ids',
 				'no_found_rows'  => true,
 				'update_post_meta_cache' => false,
@@ -101,7 +101,70 @@ class Conexao_Event_Deduplicator {
 			)
 		);
 
-		return $query->have_posts() ? (int) $query->posts[0] : 0;
+		return $this->pick_import_language( $query->posts );
+	}
+
+	/**
+	 * Pick the record that belongs to the importer's language.
+	 *
+	 * A Polylang translation carries the same identity meta as its Portuguese
+	 * master, so identity matching alone can return two records. The import
+	 * target is always the record in the import language (or a record without
+	 * a language, e.g. a legacy row). A record in another language is only
+	 * used as a last resort, so the caller can detect and report the conflict
+	 * instead of silently creating a duplicate identity.
+	 *
+	 * @param int[] $ids Candidate post IDs (query order).
+	 * @return int Post ID or 0.
+	 */
+	protected function pick_import_language( array $ids ) {
+		$ids = array_map( 'intval', $ids );
+
+		if ( empty( $ids ) ) {
+			return 0;
+		}
+
+		$language = class_exists( 'Conexao_Event_Importer_Language_Guard' )
+			? Conexao_Event_Importer_Language_Guard::import_language()
+			: '';
+
+		if ( '' === $language || ! function_exists( 'pll_get_post_language' ) ) {
+			return (int) reset( $ids );
+		}
+
+		$foreign = 0;
+
+		foreach ( $ids as $id ) {
+			if ( $this->is_import_language( $id ) ) {
+				return $id;
+			}
+
+			if ( ! $foreign ) {
+				$foreign = $id;
+			}
+		}
+
+		return $foreign;
+	}
+
+	/**
+	 * Is this candidate a valid import target language-wise?
+	 *
+	 * @param int $post_id Candidate post ID.
+	 * @return bool True for the importer's language and for unassigned rows.
+	 */
+	protected function is_import_language( $post_id ) {
+		$language = class_exists( 'Conexao_Event_Importer_Language_Guard' )
+			? Conexao_Event_Importer_Language_Guard::import_language()
+			: '';
+
+		if ( '' === $language || ! function_exists( 'pll_get_post_language' ) ) {
+			return true;
+		}
+
+		$post_language = pll_get_post_language( (int) $post_id, 'slug' );
+
+		return ! is_string( $post_language ) || '' === $post_language || $post_language === $language;
 	}
 
 	/**
@@ -128,6 +191,8 @@ class Conexao_Event_Deduplicator {
 				's'              => $normalized['title'],
 			)
 		);
+
+		$fallback = 0;
 
 		foreach ( $query->posts as $post_id ) {
 			$existing_title = sanitize_title( get_the_title( $post_id ) );
@@ -163,9 +228,17 @@ class Conexao_Event_Deduplicator {
 				continue;
 			}
 
-			return (int) $post_id;
+			// Language preference: a translation of the same source content is
+			// not the import target — remember it only as a last resort.
+			if ( $this->is_import_language( (int) $post_id ) ) {
+				return (int) $post_id;
+			}
+
+			if ( ! $fallback ) {
+				$fallback = (int) $post_id;
+			}
 		}
 
-		return 0;
+		return $fallback;
 	}
 }

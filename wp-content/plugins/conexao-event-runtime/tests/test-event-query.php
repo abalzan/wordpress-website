@@ -281,9 +281,23 @@ test_assert( 0 === $empty_q->post_count, 'empty ID list yields zero results (no 
 // ---------------------------------------------------------------------------
 test_section( 'Cache' );
 
-$today_key = 'conexao_event_upcoming_' . Conexao_Event_Query::today()->format( 'Ymd' );
+// Stage 2: the event transient key carries the language dimension
+// (`conexao_event_upcoming_YYYYMMDD_pt`) whenever Polylang is active, so PT and
+// EN lists can never share a cache entry. Without Polylang the legacy
+// date-only key is used.
+$today_suffix = '';
+if ( function_exists( 'pll_current_language' ) && function_exists( 'pll_default_language' ) ) {
+	$today_suffix = '_' . (string) pll_current_language( 'slug' );
+}
+$today_key = 'conexao_event_upcoming_' . Conexao_Event_Query::today()->format( 'Ymd' ) . $today_suffix;
 $cached    = get_transient( $today_key );
 test_assert( is_array( $cached ) && array_keys( $cached ) === $ordered_ids, 'date-keyed transient stores the ordered ID map' );
+
+if ( function_exists( 'pll_current_language' ) ) {
+	test_section( 'Language-scoped cache' );
+	$other_key = 'conexao_event_upcoming_' . Conexao_Event_Query::today()->format( 'Ymd' ) . '_en';
+	test_assert( $other_key !== $today_key, 'PT and EN event transients use different keys (no cross-language hits)' );
+}
 test_assert( Conexao_Event_Query::upcoming_event_ids() === array_map( 'intval', $ordered_ids ), 'cached read matches fresh evaluation' );
 
 Conexao_Event_Query::flush_cache();

@@ -480,6 +480,30 @@ wp conexao-events status                                # per-source health tabl
 The public `_event_status` query gate is **not** registered here anymore —
 it moved to the Event Runtime plugin (see the split section above).
 
+## Multilingual (Stage 2) — language guard
+
+`includes/class-language-guard.php` (`Conexao_Event_Importer_Language_Guard`)
+protects event identity when Polylang is active:
+
+- **Import language**: imported events are assigned the site's default language
+  (`pt_BR`) on `save_post_event`, whichever path created them (single import,
+  multi-import, JSON/ZIP transfer). An existing language is never reassigned, so
+  a hand-made English translation keeps `en`. Source-language detection for
+  English-native sources is Stage 3 work and deliberately not implemented.
+- **Import target**: `upsert_event()` refuses to write to a record in another
+  language — a translation is not the import target. The run reports a skip
+  (`language conflict`) instead of overwriting translated content or creating a
+  second record for the same source identity.
+- **Deduplication**: `Conexao_Event_Deduplicator::find()` prefers the record in
+  the import language (identity meta is shared verbatim with the translation, so
+  a naive newest-first lookup could otherwise return the translation).
+- Identity meta (`_event_source`, `_event_source_id`, `_event_export_uuid`,
+  `_event_url`, scheduling/status fields) stays language-neutral — Polylang only
+  adds the language relationship.
+
+Gate coverage: `tests/test-language-identity.php`.
+All helpers are no-ops when Polylang is inactive.
+
 ## Admin UI
 
 Menu: Event Import (top-level menu, icon dashicons-calendar-alt)

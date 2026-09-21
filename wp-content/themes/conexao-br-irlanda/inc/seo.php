@@ -203,6 +203,20 @@ function conexao_seo_canonical() {
 	if ( $canonical ) {
 		// Strip pagination from canonical (page/2/ etc. canonicalizes to base).
 		$canonical = preg_replace( '#/page/\d+/?#', '/', $canonical );
+
+		/**
+		 * Filters the canonical URL before it is printed.
+		 *
+		 * Stage 2: the Polylang integration (inc/polylang.php) uses this to
+		 * point a fallback rendering (a Portuguese record served under an EN
+		 * URL) at the record's own language URL, so Portuguese stays the
+		 * canonical of untranslated content. The theme stays the single owner
+		 * of canonical output — the filter only adjusts the value.
+		 *
+		 * @param string $canonical Canonical URL.
+		 */
+		$canonical = (string) apply_filters( 'conexao_seo_canonical_url', $canonical );
+
 		echo '<link rel="canonical" href="' . esc_url( $canonical ) . '" />' . "\n";
 	}
 }
@@ -214,6 +228,27 @@ add_action( 'wp_head', 'conexao_seo_canonical', 5 );
 // unnormalized canonical tag on singular pages (e.g. /empregos/?pagina=2
 // rendered two identical <link rel="canonical"> tags), so remove it.
 remove_action( 'wp_head', 'rel_canonical' );
+
+/**
+ * Translation-aware hreflang alternates (Stage 2).
+ *
+ * The theme is the single owner of hreflang output (architecture §14). Links
+ * come from `conexao_hreflang_links()` (inc/polylang.php), which only ever
+ * returns alternates for REAL translation relationships or content-backed
+ * language archives — never for a missing translation, a redirect-only URL or
+ * an empty archive. With Polylang inactive the list is empty, so
+ * single-language installs emit nothing.
+ */
+function conexao_seo_hreflang() {
+	foreach ( conexao_hreflang_links() as $link ) {
+		if ( empty( $link['hreflang'] ) || empty( $link['url'] ) ) {
+			continue;
+		}
+
+		echo '<link rel="alternate" hreflang="' . esc_attr( $link['hreflang'] ) . '" href="' . esc_url( $link['url'] ) . '" />' . "\n";
+	}
+}
+add_action( 'wp_head', 'conexao_seo_hreflang', 5 );
 
 
 /**
@@ -317,6 +352,19 @@ function conexao_seo_noindex() {
 add_action( 'wp_head', 'conexao_seo_noindex', 3 );
 
 /**
+ * BCP-47 language tag for the current request (schema.org `inLanguage`).
+ *
+ * Reads the Stage 1 locale abstraction, so it follows the active Polylang
+ * language automatically ("pt-BR" on Portuguese requests, "en-US" on
+ * English ones) with no extra language logic in the SEO layer.
+ *
+ * @return string
+ */
+function conexao_seo_in_language(): string {
+	return str_replace( '_', '-', conexao_current_locale() );
+}
+
+/**
  * ---------------------------------------------------------------------------
  * 6. STRUCTURED DATA / SCHEMA.ORG
  * ---------------------------------------------------------------------------
@@ -333,6 +381,7 @@ function conexao_seo_schema() {
 		'name'        => $site_name,
 		'url'         => $home_url,
 		'description' => get_bloginfo( 'description' ),
+		'inLanguage'  => conexao_seo_in_language(),
 		'potentialAction' => array(
 			'@type'       => 'SearchAction',
 			'target'      => $home_url . '?s={search_term_string}',
@@ -415,6 +464,7 @@ function conexao_seo_schema_singular() {
 			'author'        => array( '@type' => 'Person', 'name' => get_the_author() ),
 			'publisher'     => $publisher,
 			'mainEntityOfPage' => get_permalink(),
+			'inLanguage'    => conexao_seo_in_language(),
 		);
 		echo '<script type="application/ld+json">' . wp_json_encode( $schema ) . '</script>' . "\n";
 	}
@@ -431,6 +481,7 @@ function conexao_seo_schema_singular() {
 			'author'        => array( '@type' => 'Person', 'name' => get_the_author() ),
 			'publisher'     => $publisher,
 			'mainEntityOfPage' => get_permalink(),
+			'inLanguage'    => conexao_seo_in_language(),
 		);
 		echo '<script type="application/ld+json">' . wp_json_encode( $schema ) . '</script>' . "\n";
 	}
@@ -449,6 +500,7 @@ function conexao_seo_schema_singular() {
 			'url'       => get_permalink(),
 			'image'     => $image,
 			'eventStatus' => 'https://schema.org/EventScheduled',
+			'inLanguage'  => conexao_seo_in_language(),
 		);
 
 		if ( $event_date ) {
@@ -855,30 +907,57 @@ function conexao_seo_sitemap() {
 		return;
 	}
 
+	/*
+	 * Stage 2 language scoping.
+	 *
+	 * The theme sitemap is the canonical producer (architecture §15) and lists
+	 * the Portuguese URL set: every Portuguese URL is unchanged and no
+	 * redirect-only / fallback / empty-archive URL is ever listed. Queries are
+	 * pinned to the default language explicitly so the output cannot depend on
+	 * which language context happens to serve the request; translations are
+	 * exposed through `<xhtml:link rel="alternate">` entries only where a real
+	 * translation pair exists.
+	 */
+	$sitemap_lang = conexao_default_language_slug();
+
 	// Prevent WordPress from processing this as a normal request.
 	status_header( 200 );
 	header( 'Content-Type: application/xml; charset=UTF-8' );
 	echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
-	echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
+	echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">' . "\n";
 
-	// Homepage.
-	conexao_seo_sitemap_url( home_url( '/' ), '1.0', 'daily' );
+	// Homepage — `/` and `/en/` are both real pages, so the pair is declared.
+	$home_alternates = array();
+	if ( conexao_polylang_active() ) {
+		$home_alternates = conexao_hreflang_with_default(
+			array(
+				'pt' => array( 'hreflang' => conexao_hreflang_code( 'pt' ), 'url' => trailingslashit( pll_home_url( 'pt' ) ) ),
+				'en' => array( 'hreflang' => conexao_hreflang_code( 'en' ), 'url' => trailingslashit( pll_home_url( 'en' ) ) ),
+			),
+			'pt'
+		);
+	}
+	conexao_seo_sitemap_url( home_url( '/' ), '1.0', 'daily', $home_alternates );
 
 	// Static pages (exclude utility/redirect pages).
 	$excluded_pages = array( 'privacidade', 'termos', 'sobre', 'search', 'cookies' );
-	$pages = get_posts( array(
+	$page_query_args = array(
 		'post_type'      => 'page',
 		'post_status'    => 'publish',
 		'posts_per_page' => -1,
 		'no_found_rows'  => true,
 		'update_post_meta_cache' => false,
 		'update_post_term_cache' => false,
-	) );
+	);
+	if ( '' !== $sitemap_lang ) {
+		$page_query_args['lang'] = $sitemap_lang;
+	}
+	$pages = get_posts( $page_query_args );
 	foreach ( $pages as $page ) {
 		if ( in_array( $page->post_name, $excluded_pages, true ) ) {
 			continue;
 		}
-		conexao_seo_sitemap_url( get_permalink( $page->ID ), '0.8', 'monthly' );
+		conexao_seo_sitemap_url( get_permalink( $page->ID ), '0.8', 'monthly', conexao_object_translation_links( (int) $page->ID ) );
 	}
 
 	// CPTs — batched so the sitemap stays lightweight even when a CPT grows
@@ -894,7 +973,7 @@ function conexao_seo_sitemap() {
 	foreach ( $cpt_priorities as $cpt => $priority ) {
 		$page = 1;
 		do {
-			$items = get_posts( array(
+			$cpt_query_args = array(
 				'post_type'      => $cpt,
 				'post_status'    => 'publish',
 				'posts_per_page' => $sitemap_batch,
@@ -903,12 +982,16 @@ function conexao_seo_sitemap() {
 				'no_found_rows'  => true,
 				'update_post_meta_cache' => false,
 				'update_post_term_cache' => false,
-			) );
+			);
+			if ( '' !== $sitemap_lang ) {
+				$cpt_query_args['lang'] = $sitemap_lang;
+			}
+			$items = get_posts( $cpt_query_args );
 			foreach ( $items as $item_id ) {
 				if ( 'leisure' === $cpt && conexao_leisure_external_url( $item_id ) ) {
 					continue;
 				}
-				conexao_seo_sitemap_url( get_permalink( $item_id ), $priority, 'weekly' );
+				conexao_seo_sitemap_url( get_permalink( $item_id ), $priority, 'weekly', conexao_object_translation_links( (int) $item_id ) );
 			}
 			$page++;
 		} while ( count( $items ) === $sitemap_batch );
@@ -924,7 +1007,7 @@ function conexao_seo_sitemap() {
 			continue;
 		}
 		foreach ( $terms as $term ) {
-			conexao_seo_sitemap_url( get_term_link( $term ), '0.6', 'monthly' );
+			conexao_seo_sitemap_url( get_term_link( $term ), '0.6', 'monthly', conexao_object_translation_links( (int) $term->term_id, 'term' ) );
 		}
 	}
 
@@ -935,10 +1018,23 @@ add_action( 'template_redirect', 'conexao_seo_sitemap', 0 );
 
 /**
  * Helper: output a single sitemap <url> entry.
+ *
+ * @param string  $url        Canonical URL of the entry (default language).
+ * @param string  $priority   sitemap priority.
+ * @param string  $freq       sitemap changefreq.
+ * @param array[] $alternates Translation alternates (hreflang => array(…)).
+ *                            Only real translation sets are passed in, so an
+ *                            untranslated URL emits no alternate at all.
  */
-function conexao_seo_sitemap_url( $url, $priority, $freq ) {
+function conexao_seo_sitemap_url( $url, $priority, $freq, array $alternates = array() ) {
 	echo "\t<url>\n";
 	echo "\t\t<loc>" . esc_url( $url ) . "</loc>\n";
+	foreach ( $alternates as $alternate ) {
+		if ( empty( $alternate['hreflang'] ) || empty( $alternate['url'] ) ) {
+			continue;
+		}
+		echo "\t\t<xhtml:link rel=\"alternate\" hreflang=\"" . esc_attr( $alternate['hreflang'] ) . '" href="' . esc_url( $alternate['url'] ) . "\" />\n";
+	}
 	echo "\t\t<changefreq>" . esc_html( $freq ) . "</changefreq>\n";
 	echo "\t\t<priority>" . esc_html( $priority ) . "</priority>\n";
 	echo "\t</url>\n";
@@ -962,6 +1058,10 @@ function conexao_seo_robots_txt( $output, $public ) {
 	$custom .= "Disallow: /wp-includes/\n";
 	$custom .= "Disallow: /?s=\n";
 	$custom .= "Disallow: /search/\n";
+	// Stage 2: mirror the search rules for the English namespace (architecture
+	// §17) so /en/ search results are never indexed.
+	$custom .= "Disallow: /en/?s=\n";
+	$custom .= "Disallow: /en/search/\n";
 	$custom .= "Disallow: /page/\n";
 	$custom .= "Disallow: /feed/\n";
 	$custom .= "Disallow: /trackback/\n";
@@ -1181,6 +1281,64 @@ function conexao_seo_redirects() {
 	}
 }
 add_action( 'template_redirect', 'conexao_seo_redirects', 5 );
+
+/**
+ * ---------------------------------------------------------------------------
+ * 10b. MISSING-TRANSLATION REDIRECT (Stage 2 — approved B5 model)
+ * ---------------------------------------------------------------------------
+ *
+ * When an `/en/` URL resolves to a record that has no English translation,
+ * Polylang's frontend canonical would send a **301** to the Portuguese URL.
+ * A permanent redirect is wrong for a URL that is scheduled to become a real
+ * English page, so Stage 2 takes ownership of the status code:
+ *
+ *   - `inc/polylang.php` suppresses Polylang's own 301 for exactly these
+ *     requests (`pll_check_canonical_url` filter);
+ *   - this rule issues the approved **302** to the record's own URL instead.
+ *
+ * Approved policy mapping (architecture §12):
+ *   - B1 (Guides, Blog, key static pages): EN URL 302 → PT page.
+ *   - B2 (Events, Lazer, Sponsors, Courses, Employment, county pages): the
+ *     approved end state renders PT content under an EN shell; that rendering
+ *     (plus its EN archive inclusion and hreflang pair) is Stage 3 work, so
+ *     Stage 2 falls back to the same temporary 302 — never a 301, never a
+ *     fake EN detail page. Recorded in the Stage 2 report as a known
+ *     limitation and Stage 3 prerequisite.
+ *
+ * Guarantees:
+ *   - Never fires on a Portuguese request (all Portuguese content is `pt`).
+ *   - Never fires on a real translation (record language === request language).
+ *   - Never fires on the front page (`/en/` is a real, routable home).
+ *   - Never fires on archives, search, 404 or feeds.
+ *   - Targets Portuguese URLs only, so `/en/x → /x` can never loop back.
+ */
+function conexao_seo_missing_translation_redirect() {
+	if ( ! conexao_polylang_active() || is_admin() || is_feed() || is_robots() || is_preview() || is_trackback() ) {
+		return;
+	}
+
+	$requested = conexao_requested_object_language();
+
+	if ( ! $requested || $requested['language'] === conexao_requested_language_slug() ) {
+		return;
+	}
+
+	if ( 'term' === $requested['type'] ) {
+		$target = get_term_link( $requested['id'] );
+		$target = is_wp_error( $target ) ? '' : $target;
+	} else {
+		$target = (string) get_permalink( $requested['id'] );
+	}
+
+	if ( ! $target ) {
+		return;
+	}
+
+	// 302 (temporary): the English page may be created at this URL later.
+	wp_safe_redirect( $target, 302 );
+	exit;
+}
+add_action( 'template_redirect', 'conexao_seo_missing_translation_redirect', 6 );
 
 /**
  * Resolve the external destination URL for a leisure location, if any.

@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-21T09:19:29+00:00\n"
+"POT-Creation-Date: 2026-09-21T11:00:46+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: conexao-sponsor-migration\n"
@@ -54,7 +54,7 @@ msgstr ""
 msgid "Registro sem título."
 msgstr ""
 
-#: includes/class-sponsor-importer.php:174
+#: includes/class-sponsor-importer.php:180
 msgid "Não foi possível criar o post do apoiador."
 msgstr ""
 

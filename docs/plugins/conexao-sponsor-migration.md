@@ -51,6 +51,16 @@ legacy two-image export file also works — the importer resolves
   (`_conexao_import_hash`). Re-imports reuse existing attachments instead of
   creating duplicates.
 
+## Multilingual (Stage 2)
+
+`includes/class-language-guard.php` assigns the site's default language (`pt_BR`)
+to imported sponsor records and never reassigns an existing language.
+`find_existing_sponsor()` prefers the record in the import language and
+`import_sponsor()` skips a record that belongs to another language, so a linked
+English translation can never be overwritten by a Portuguese-source import or
+become a competing identity target for the same export UUID. All helpers are
+no-ops when Polylang is inactive.
+
 ## Import behavior
 
 - File validated before anything is written (format manifest + sponsor list).

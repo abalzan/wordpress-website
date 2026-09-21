@@ -140,6 +140,12 @@ class Conexao_Sponsor_Importer {
 			return 'skipped';
 		}
 
+		// Stage 2 language guard: never overwrite a linked translation with
+		// source-language content (the translation is not the import target).
+		if ( $existing && ! $this->is_import_target( $existing->ID ) ) {
+			return 'skipped';
+		}
+
 		if ( $dry_run ) {
 			// Count the images the real run would create/reuse so the preview
 			// numbers match the confirmed run.
@@ -239,15 +245,16 @@ class Conexao_Sponsor_Importer {
 			$found = get_posts( array(
 				'post_type'              => 'sponsor',
 				'post_status'            => 'any',
-				'posts_per_page'         => 1,
+				'posts_per_page'         => 10,
 				'fields'                 => 'all',
 				'no_found_rows'          => true,
 				'update_post_term_cache' => false,
 				'meta_key'               => Conexao_Sponsor_Exporter::UUID_META_KEY,
 				'meta_value'             => $uuid,
 			) );
-			if ( ! empty( $found ) ) {
-				return $found[0];
+			$match = $this->pick_import_language( $found );
+			if ( $match ) {
+				return $match;
 			}
 		}
 
@@ -256,13 +263,14 @@ class Conexao_Sponsor_Importer {
 				'post_type'              => 'sponsor',
 				'post_status'            => 'any',
 				'name'                   => sanitize_title( $sponsor['post']['slug'] ),
-				'posts_per_page'         => 1,
+				'posts_per_page'         => 10,
 				'fields'                 => 'all',
 				'no_found_rows'          => true,
 				'update_post_term_cache' => false,
 			) );
-			if ( ! empty( $found ) ) {
-				return $found[0];
+			$match = $this->pick_import_language( $found );
+			if ( $match ) {
+				return $match;
 			}
 		}
 
@@ -271,17 +279,73 @@ class Conexao_Sponsor_Importer {
 				'post_type'              => 'sponsor',
 				'post_status'            => 'any',
 				'title'                  => $sponsor['post']['title'],
-				'posts_per_page'         => 1,
+				'posts_per_page'         => 10,
 				'fields'                 => 'all',
 				'no_found_rows'          => true,
 				'update_post_term_cache' => false,
 			) );
-			if ( ! empty( $found ) ) {
-				return $found[0];
+			$match = $this->pick_import_language( $found );
+			if ( $match ) {
+				return $match;
 			}
 		}
 
 		return null;
+	}
+
+	/**
+	 * Pick the record that belongs to the importer's language (Stage 2).
+	 *
+	 * A Polylang translation carries the same `_sponsor_export_uuid` as its
+	 * Portuguese master, so UUID/slug/title matching alone can return two
+	 * records. The import target is the record in the import language (or an
+	 * unassigned legacy record).
+	 *
+	 * @param WP_Post[] $posts Candidate posts (query order).
+	 * @return WP_Post|null
+	 */
+	protected function pick_import_language( array $posts ) {
+		if ( empty( $posts ) ) {
+			return null;
+		}
+
+		$foreign = null;
+
+		foreach ( $posts as $post ) {
+			if ( ! $post instanceof WP_Post ) {
+				continue;
+			}
+
+			if ( $this->is_import_target( $post->ID ) ) {
+				return $post;
+			}
+
+			if ( ! $foreign ) {
+				$foreign = $post;
+			}
+		}
+
+		return $foreign;
+	}
+
+	/**
+	 * May the importer write to this sponsor record? (Stage 2 language guard)
+	 *
+	 * @param int $post_id Sponsor post ID.
+	 * @return bool
+	 */
+	protected function is_import_target( $post_id ) {
+		$language = class_exists( 'Conexao_Sponsor_Migration_Language_Guard' )
+			? Conexao_Sponsor_Migration_Language_Guard::import_language()
+			: '';
+
+		if ( '' === $language || ! function_exists( 'pll_get_post_language' ) ) {
+			return true;
+		}
+
+		$post_language = pll_get_post_language( (int) $post_id, 'slug' );
+
+		return ! is_string( $post_language ) || '' === $post_language || $post_language === $language;
 	}
 
 	/**
