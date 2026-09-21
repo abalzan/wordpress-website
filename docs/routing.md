@@ -51,8 +51,9 @@ English URLs wrap the same paths in `/en/`:
 | Lazer | `/lazer/` | `/en/lazer/` |
 | Courses | `/cursos/` | `/en/cursos/` |
 | Sponsors | `/apoiadores/` | `/en/apoiadores/` |
-| Empregos landing | `/empregos/` | `/en/empregos/` (302 → PT until translated) |
-| Blog | `/blog/` | `/en/blog/` (302 → PT until translated) |
+| Empregos landing | `/empregos/` | `/en/jobs/` (real translation since Stage 3.2; `/en/empregos/` 302 → PT) |
+| Blog | `/blog/` | `/en/blog/` (302 → PT until translated; EN posts live at `/en/{post-slug}/`) |
+| County pages + `/irlanda/` | `/dublin/`, `/irlanda/`, … | `/en/dublin/`, `/en/irlanda/` (B2: PT body under EN shell + notice) |
 | Filters | `/eventos/?cidade=dublin` | `/en/eventos/?cidade=dublin` |
 
 Rules:
@@ -75,6 +76,41 @@ Rules:
 Language assignment, URL mode and the translated post types/taxonomies are
 configured by `scripts/stage2-polylang-setup.php` + `inc/polylang.php` (see
 `docs/development.md` § Multilingual (EN) development).
+
+### English rollout state (Stage 3.2)
+
+- **`/en/` serves the English homepage directly** (the linked translation of
+  the PT front page). `pll_home_url('en')` = `/en/`; `/en/home/` 301 → `/en/`
+  (mirroring `/inicio/` 301 → `/`). Declared through Polylang's
+  `pll_additional_language_data` / `pll_language_home_url` filters plus a
+  self-heal guard in `inc/polylang.php` (Polylang builds its language list
+  before the theme loads).
+- **B2 fallback** (PT record under EN shell + notice, canonical → PT, not in
+  the sitemap): events, lazer, sponsors, courses, jobs, plus the explicit
+  **page allowlist** `conexao_b2_page_allowlist()` — `/irlanda/` + the county
+  pages (dublin, cork, galway, limerick, kildare, meath, wicklow, waterford,
+  laois). Everything else stays B1 (302 → PT) or serves a real translation.
+- **Taxonomy policy (Stage 3.2 correction)**: `conexao_category` and
+  `conexao_tag` are Polylang-translated (shared concept identity via linked
+  EN terms, e.g. `natureza` ↔ `nature`). **`conexao_county` and
+  `conexao_town` are NOT translated** — one shared term per county/town, the
+  same term on PT and EN records, so `?county=` / `?cidade=` filters match
+  both languages' records identically. (Polylang Free ≥ 3.5 auto-creates
+  suffixed term copies when a term is assigned across languages; keeping
+  proper-noun taxonomies out of Polylang avoids that entirely — decision §1:
+  "Counties/towns are shared — no per-language duplicate terms".)
+- **Category filter slugs are language-specific by design**: a PT slug
+  (`?categoria=festivais`) matches PT records (including B2 fallback records
+  in EN context); an EN slug (`?categoria=festivals`) matches EN records.
+  County/town filters use the one shared slug in both languages.
+- **A record never appears twice**: once a published EN translation exists,
+  the EN translation replaces its PT master in EN archives/search
+  (`conexao_b2_translation_replaced_pt_ids()`), and untranslated PT records
+  keep rendering as B2 fallbacks.
+- **Legacy redirect precedence**: `conexao_seo_redirects()` runs at
+  `template_redirect` priority 2 (before Polylang's canonical at 4) so the
+  production EN→PT 301s keep winning even where an EN page now exists with
+  the same slug as a legacy source path (`/jobs/`, `/about-us/`, `/contact/`).
 
 ### Filters (Query Parameters)
 
@@ -126,7 +162,7 @@ Legacy Wix redirects:
 
 ### 2. PHP (inc/seo.php — `conexao_seo_redirects()`)
 
-Runs at `template_redirect` priority 5. Handles:
+Runs at `template_redirect` priority 2 (Stage 3.2: before Polylang's language canonical at priority 4, so legacy 301s keep precedence over slug collisions with EN pages). Handles:
 
 - English guide paths: `/guides/{slug}` → `/guias/{slug}/`
 - Legacy guide paths: `/guias-praticos/{slug}` → `/guias/{slug}/`

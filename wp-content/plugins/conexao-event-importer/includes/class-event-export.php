@@ -89,6 +89,10 @@ class Conexao_Event_Export {
 		'_event_last_checked',
 		'_event_status',
 		'_event_imported',
+		// Stage 3.2 — source-language classification, when classified.
+		// Additive: absent on legacy records, exported as meta AND surfaced
+		// as the top-level "lang" field (see export_event()).
+		'_event_source_language',
 	);
 
 	/**
@@ -149,6 +153,19 @@ class Conexao_Event_Export {
 			'order'          => 'ASC',
 			'no_found_rows'  => true,
 		);
+
+		// Stage 3.2 — the export set is exactly the importer-owned records.
+		// English translations are linked editorial records that SHARE the
+		// identity meta; exporting them would duplicate the identity in the
+		// package. Constrain to the import language deterministically (the
+		// ambient admin/CLI language can vary). No-op when Polylang is
+		// inactive (single-language export, same as before).
+		if ( class_exists( 'Conexao_Event_Importer_Language_Guard' ) ) {
+			$import_language = Conexao_Event_Importer_Language_Guard::import_language();
+			if ( '' !== $import_language ) {
+				$query_args['lang'] = $import_language;
+			}
+		}
 
 		$meta_query = array( 'relation' => 'AND' );
 		$filters    = array();
@@ -833,8 +850,19 @@ class Conexao_Event_Export {
 		// Featured image / banner info.
 		$featured_image = $this->export_featured_image( $post );
 
+		// Stage 3.2 — additive source-language field. One of
+		// pt|en|other|unknown (Conexao_Event_Source_Language). 'unknown'
+		// covers every record with no explicit classification (legacy
+		// imports, manual events, sources without a language signal).
+		// Read-only: the export never mutates event content or meta beyond
+		// the pre-existing UUID provisioning above.
+		$lang = class_exists( 'Conexao_Event_Source_Language' )
+			? Conexao_Event_Source_Language::export_value( get_post_meta( $post->ID, Conexao_Event_Source_Language::META_KEY, true ) )
+			: 'unknown';
+
 		return array(
 			'uuid'          => $uuid,
+			'lang'          => $lang,
 			'post'          => array(
 				'title'    => $post->post_title,
 				'content'  => $post->post_content,

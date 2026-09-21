@@ -532,6 +532,10 @@ class Conexao_Event_Import {
 			'_event_last_checked',
 			'_event_status',
 			'_event_imported',
+			// Stage 3.2 — source-language classification round-trips with
+			// the rest of the pipeline meta (additive; absent on legacy
+			// packages).
+			'_event_source_language',
 		);
 
 		foreach ( $allowed as $key ) {

@@ -19,6 +19,7 @@ define( 'CONEXAO_EVENT_RUNTIME_URL', plugin_dir_url( __FILE__ ) );
 require_once CONEXAO_EVENT_RUNTIME_DIR . 'includes/class-event-status.php';
 require_once CONEXAO_EVENT_RUNTIME_DIR . 'includes/class-event-recurrence.php';
 require_once CONEXAO_EVENT_RUNTIME_DIR . 'includes/class-event-query.php';
+require_once CONEXAO_EVENT_RUNTIME_DIR . 'includes/class-source-language.php';
 
 final class Conexao_Event_Runtime {
 
@@ -84,6 +85,10 @@ final class Conexao_Event_Runtime {
 			'_event_recurrence_end',
 			'_event_imported',
 			'_event_export_uuid',
+			// Stage 3.2 — source-language classification (see
+			// Conexao_Event_Source_Language): explicit source signal only,
+			// never inferred from content text. Allowed: pt|en|other.
+			'_event_source_language',
 		);
 
 		$int_meta = array(

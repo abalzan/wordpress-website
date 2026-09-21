@@ -21,6 +21,14 @@ $page_eyebrow = isset( $eyebrows[ $page_slug ] ) ? $eyebrows[ $page_slug ] : '';
 
 <div class="site-container">
 	<main id="primary" class="content-area">
+		<?php
+		// STAGE 3.1/3.2 — B2 fallback notice: an allowlisted page rendered
+		// under /en/ shows the approved English notice above the PT body.
+		// Emits nothing on normal PT/EN pages (see inc/polylang.php).
+		if ( function_exists( 'conexao_b2_fallback_notice' ) ) {
+			conexao_b2_fallback_notice();
+		}
+		?>
 		<?php while ( have_posts() ) : the_post(); ?>
 			<article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
 				<?php

@@ -890,6 +890,17 @@ function conexao_homepage_cache_invalidate( $post_id ) {
 		conexao_flush_language_object_cache( 'conexao_terms_conexao_town_event', 'conexao_filters' );
 		conexao_flush_language_object_cache( 'conexao_terms_conexao_category_guide', 'conexao_filters' );
 		conexao_flush_language_object_cache( 'conexao_provider_categories', 'conexao_filters' );
+
+		// Stage 3.2 — B2 replacement sets (PT masters hidden behind their EN
+		// translation). Language-independent data, one key per B2 type subset;
+		// the archive hook uses the queried type, search uses the full B2 set.
+		$b2_sets = array( conexao_b2_post_types() );
+		foreach ( conexao_b2_post_types() as $b2_single ) {
+			$b2_sets[] = array( $b2_single );
+		}
+		foreach ( $b2_sets as $b2_set ) {
+			wp_cache_delete( 'conexao_b2_replaced_' . md5( implode( ',', $b2_set ) ), 'conexao_filters' );
+		}
 	}
 }
 add_action( 'save_post', 'conexao_homepage_cache_invalidate' );
@@ -2821,7 +2832,27 @@ function conexao_content_archive_query( $query ) {
 		// Category filter via ?categoria=slug (e.g., "treinamento")
 		$category = isset( $_GET['categoria'] ) ? sanitize_title( wp_unslash( $_GET['categoria'] ) ) : '';
 		if ( $category ) {
-			$category_term = get_term_by( 'slug', $category, 'conexao_category' );
+			/*
+			 * STAGE 3.2 — resolve the slug language-neutrally. Polylang
+			 * language-scopes plain get_term_by() to the current language, so a
+			 * PT-slug filter on the EN (B2) archive would resolve as "unknown
+			 * slug" and silently return zero records. The /lazer/ handler
+			 * already resolves slugs neutrally (its tax query matches either
+			 * language's term); align the events archive so PT-slug filters
+			 * keep matching the PT fallback records in the EN context exactly
+			 * as they do in Portuguese. EN-slug filters keep matching the EN
+			 * records — the two slug families stay distinct by design.
+			 */
+			$category_term = get_terms(
+				array(
+					'taxonomy'   => 'conexao_category',
+					'slug'       => $category,
+					'lang'       => '',
+					'hide_empty' => false,
+					'number'     => 1,
+				)
+			);
+			$category_term = ( ! is_wp_error( $category_term ) && ! empty( $category_term ) ) ? $category_term[0] : false;
 			if ( $category_term && ! is_wp_error( $category_term ) ) {
 				$tax_query[] = array(
 					'taxonomy' => 'conexao_category',
@@ -3110,6 +3141,25 @@ function conexao_b2_archive_widen_query( $query ) {
 	}
 
 	$query->set( 'lang', 'en,pt' );
+
+	// STAGE 3.2 — never show a PT record next to its own EN translation:
+	// a PT master with a published EN translation is replaced by it (the
+	// events archive curates the same rule inside Conexao_Event_Query).
+	if ( function_exists( 'conexao_b2_translation_replaced_pt_ids' ) ) {
+		$replaced = conexao_b2_translation_replaced_pt_ids( $types );
+		if ( ! empty( $replaced ) ) {
+			// WP_Query ignores post__not_in whenever post__in is set (the two
+			// clauses are mutually exclusive in core), so curated ID lists (the
+			// sponsor archive's post__in) are filtered directly instead.
+			$existing_in = $query->get( 'post__in' );
+			if ( is_array( $existing_in ) && ! empty( $existing_in ) ) {
+				$query->set( 'post__in', array_values( array_diff( array_map( 'intval', $existing_in ), $replaced ) ) );
+			}
+			$existing_not_in = $query->get( 'post__not_in' );
+			$existing_not_in = is_array( $existing_not_in ) ? $existing_not_in : array();
+			$query->set( 'post__not_in', array_map( 'intval', array_merge( $existing_not_in, $replaced ) ) );
+		}
+	}
 }
 add_action( 'pre_get_posts', 'conexao_b2_archive_widen_query', 30 );
 
@@ -3182,6 +3232,17 @@ function conexao_b2_search_widen_query( $query ) {
 
 	$query->set( 'tax_query', $new_tax_query );
 	$query->set( 'post_type', 'any' ); // Ensure post_type stays 'any' for search.
+
+	// STAGE 3.2 — the PT fallback branch must not surface a PT record whose
+	// own EN translation is already in the result set (no duplicate identity).
+	if ( function_exists( 'conexao_b2_translation_replaced_pt_ids' ) ) {
+		$replaced = conexao_b2_translation_replaced_pt_ids( $b2_types );
+		if ( ! empty( $replaced ) ) {
+			$existing_not_in = $query->get( 'post__not_in' );
+			$existing_not_in = is_array( $existing_not_in ) ? $existing_not_in : array();
+			$query->set( 'post__not_in', array_map( 'intval', array_merge( $existing_not_in, $replaced ) ) );
+		}
+	}
 }
 add_action( 'pre_get_posts', 'conexao_b2_search_widen_query', 31 );
 

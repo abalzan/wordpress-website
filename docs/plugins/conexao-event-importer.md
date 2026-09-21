@@ -504,6 +504,29 @@ protects event identity when Polylang is active:
 Gate coverage: `tests/test-language-identity.php`.
 All helpers are no-ops when Polylang is inactive.
 
+## Export language field (Stage 3.2)
+
+The local export JSON gained ONE additive per-event field, `"lang"`:
+
+- Values: `pt` | `en` | `other` | `unknown`. Source of truth: the event's
+  `_event_source_language` meta (see the runtime plugin's
+  `Conexao_Event_Source_Language`). `unknown` covers every record with no
+  explicit classification (legacy imports, manual events, sources without a
+  language signal) — the value is never guessed from content text.
+- The field is ADDITIVE: every existing field (uuid, post, meta, taxonomies,
+  featured_image) is unchanged, so existing consumers ignore it safely.
+  `_event_source_language` also round-trips inside the `meta` bag (added to the
+  transfer importer's allowlist), so production records receive the
+  classification on import.
+- The export set is constrained to the IMPORT language when Polylang is
+  active: English translations are linked editorial records that share the
+  identity meta, and exporting them would duplicate the identity in the
+  package — the export contains exactly one row per production identity.
+- Importer-side: `source_language` is honored from the normalized payload only
+  when it is a valid explicit classification; the Eventbrite normalizer maps
+  the event's declared `locale`; absent/invalid values store nothing.
+- Flutter does NOT depend on this field in Stage 3.2.
+
 ## Admin UI
 
 Menu: Event Import (top-level menu, icon dashicons-calendar-alt)

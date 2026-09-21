@@ -28,8 +28,14 @@ require_once CONEXAO_ADMIN_UX_DIR . 'includes/class-editor.php';
 require_once CONEXAO_ADMIN_UX_DIR . 'includes/class-admin.php';
 require_once CONEXAO_ADMIN_UX_DIR . 'includes/class-leisure-image-admin.php';
 require_once CONEXAO_ADMIN_UX_DIR . 'includes/class-wikimedia-client.php';
+require_once CONEXAO_ADMIN_UX_DIR . 'includes/class-translation-state.php';
 
 Conexao_Admin_Ux::instance();
+
+// Stage 3.2 — editorial translation-state indicator (admin-only; full no-op
+// when Polylang is inactive). Loaded for every request so the save_post sync
+// also covers CLI/importer/REST writes, which are editing events too.
+add_action( 'plugins_loaded', array( 'Conexao_Admin_Ux_Translation_State', 'init' ), 20 );
 
 register_activation_hook( __FILE__, array( 'Conexao_Admin_Ux', 'activate' ) );
 register_deactivation_hook( __FILE__, array( 'Conexao_Admin_Ux', 'deactivate' ) );

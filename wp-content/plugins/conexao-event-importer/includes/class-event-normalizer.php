@@ -197,6 +197,13 @@ class Conexao_Event_Normalizer {
 			'source'            => $source,
 			'source_id'         => $source_id,
 			'source_url'        => $source_url,
+			// Stage 3.2 — source-language classification. Consumes ONLY an
+			// explicit source signal ($raw['source_language'], e.g. a locale
+			// mapped by the source normalizer); never title/body inference.
+			// '' = unclassified (the export reports "unknown").
+			'source_language'   => class_exists( 'Conexao_Event_Source_Language' )
+				? Conexao_Event_Source_Language::sanitize( isset( $raw['source_language'] ) ? $raw['source_language'] : '' )
+				: '',
 			'validation_errors' => $validation_errors,
 		);
 

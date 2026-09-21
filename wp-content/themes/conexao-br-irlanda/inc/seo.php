@@ -953,8 +953,15 @@ function conexao_seo_sitemap() {
 		$page_query_args['lang'] = $sitemap_lang;
 	}
 	$pages = get_posts( $page_query_args );
+	$front_page_id = (int) get_option( 'page_on_front' );
 	foreach ( $pages as $page ) {
 		if ( in_array( $page->post_name, $excluded_pages, true ) ) {
+			continue;
+		}
+		// STAGE 3.2 — the static front page's own permalink IS the homepage
+		// URL (get_page_link() maps page_on_front to home_url('/')), so
+		// emitting it here would duplicate the homepage entry above.
+		if ( $front_page_id > 0 && (int) $page->ID === $front_page_id ) {
 			continue;
 		}
 		// STAGE 3.1: conexao_object_translation_links() only returns REAL
@@ -1363,7 +1370,17 @@ function conexao_seo_redirects() {
 		exit;
 	}
 }
-add_action( 'template_redirect', 'conexao_seo_redirects', 5 );
+/*
+ * STAGE 3.2 — priority 2 (was 5): the legacy redirect table must keep
+ * precedence over Polylang's language canonical (template_redirect priority
+ * 4). English pages now exist whose slugs collide with legacy English source
+ * paths (e.g. /jobs/, /about-us/, /contact/ resolve the EN page by slug), and
+ * Polylang would bounce them to /en/... before this table could apply the
+ * production 301. Root-anchored legacy paths keep their exact redirect
+ * contract; every other request is unaffected (the table only matches exact
+ * legacy paths).
+ */
+add_action( 'template_redirect', 'conexao_seo_redirects', 2 );
 
 /**
  * ---------------------------------------------------------------------------

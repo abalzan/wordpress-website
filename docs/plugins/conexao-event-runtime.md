@@ -246,6 +246,25 @@ via SQL AND, so an expired/rejected event stays hidden in every language.
 Gate coverage: `tests/test-event-language-gate.php` (plain PHP, so the real
 `pre_get_posts` gate applies).
 
+## Source-language metadata (Stage 3.2)
+
+`includes/class-source-language.php` (`Conexao_Event_Source_Language`) owns the
+`_event_source_language` meta contract: the language the SOURCE CONTENT is
+written in — an explicit signal (a source-declared locale such as Eventbrite
+`locale`, or an editor classification), never inferred from title/body text.
+
+- Stored values: exactly `pt`, `en`, `other`. Absent meta = unclassified.
+- `from_locale()` maps explicit source locale tags (`pt_BR` → pt, `en_IE` → en,
+  anything else → other, empty → unclassified) — the only automated path.
+- `export_value()` maps the stored value to the export JSON `lang` field,
+  normalizing absence to `unknown` (never stored as a meta value).
+- The meta is registered like every other `_event_*` field (REST-visible,
+  auth-gated) and is **editorial pipeline data, never identity**: dedup
+  matching, UUIDs, scheduling and the `_event_status` gate do not read it.
+- A Portuguese-source event stays a Portuguese record; an English-source
+  event IS the English record (source-inherited, architecture §8) — the meta
+  exists so the pipeline can tell them apart before any editorial decision.
+
 ## Tests
 
 `tests/test-plugin-separation.php` — run in both configurations from the

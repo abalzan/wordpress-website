@@ -90,8 +90,16 @@ foreach ( array( 'recruitment_agency', 'permit_employer' ) as $type ) {
 	t2_assert( ! in_array( $type, $post_types, true ), "admin-only post type excluded: {$type}" );
 }
 $taxonomies = PLL()->model->get_translated_taxonomies();
-foreach ( array( 'conexao_category', 'conexao_county', 'conexao_town', 'conexao_tag', 'category', 'post_tag' ) as $tax ) {
+foreach ( array( 'conexao_category', 'conexao_tag', 'category', 'post_tag' ) as $tax ) {
 	t2_assert( in_array( $tax, $taxonomies, true ), "translated taxonomy registered: {$tax}" );
+}
+// STAGE 3.2 policy correction — proper-noun location taxonomies are
+// deliberately NOT translated: one shared term per county/town, no
+// per-language duplicates, identical filter behaviour in both languages
+// (decision §1: "Counties/towns are shared — no per-language duplicate
+// terms"; see inc/polylang.php conexao_polylang_translated_taxonomies()).
+foreach ( array( 'conexao_county', 'conexao_town' ) as $tax ) {
+	t2_assert( ! in_array( $tax, $taxonomies, true ), "location taxonomy deliberately SHARED (not translated): {$tax}" );
 }
 
 echo "\n-- Language-scoped caches --\n";
@@ -143,19 +151,38 @@ foreach ( array( 'conexao_county', 'conexao_town', 'conexao_category' ) as $tax 
 	t2_strict( array(), $suffixed, "{$tax} has no per-language suffixed terms" );
 }
 
-$unassigned_terms = 0;
-$shared_terms     = get_terms(
+// STAGE 3.2 — translated taxonomies carry exactly one language per term;
+// SHARED location taxonomies carry none (a language on a shared term would
+// mean Polylang still owns it).
+$unassigned_translated = 0;
+$translated_terms      = get_terms(
 	array(
-		'taxonomy'   => array( 'conexao_county', 'conexao_town', 'conexao_category' ),
+		'taxonomy'   => array( 'conexao_category', 'category' ),
 		'hide_empty' => false,
+		'lang'       => '',
 	)
 );
-foreach ( $shared_terms as $term ) {
+foreach ( $translated_terms as $term ) {
 	if ( '' === (string) pll_get_term_language( $term->term_id, 'slug' ) ) {
-		$unassigned_terms++;
+		$unassigned_translated++;
 	}
 }
-t2_strict( 0, $unassigned_terms, 'every shared term has exactly one language assignment' );
+t2_strict( 0, $unassigned_translated, 'every translated-taxonomy term has exactly one language assignment' );
+
+$assigned_shared = 0;
+$location_terms  = get_terms(
+	array(
+		'taxonomy'   => array( 'conexao_county', 'conexao_town' ),
+		'hide_empty' => false,
+		'lang'       => '',
+	)
+);
+foreach ( $location_terms as $term ) {
+	if ( '' !== (string) pll_get_term_language( $term->term_id, 'slug' ) ) {
+		$assigned_shared++;
+	}
+}
+t2_strict( 0, $assigned_shared, 'no shared county/town term carries a language assignment' );
 
 echo "\n-- Event / Lazer identity meta is language-neutral --\n";
 $event = get_posts( array( 'post_type' => 'event', 'posts_per_page' => 1, 'post_status' => 'any', 'fields' => 'ids' ) );
@@ -163,7 +190,23 @@ if ( $event ) {
 	$event_id = (int) $event[0];
 	$lang     = pll_get_post_language( $event_id, 'slug' );
 	t2_assert( in_array( $lang, array( 'pt', 'en' ), true ), 'event has exactly one language assignment' );
-	t2_strict( 1, count( pll_get_post_translations( $event_id ) ), 'untouched event has no invented translations' );
+	// STAGE 3.2 — translations may legitimately exist now. The invariant is
+	// that a translation group only ever contains true identity siblings
+	// (same _event_source + _event_source_id), in distinct languages — never
+	// an invented second identity.
+	$translations = pll_get_post_translations( $event_id );
+	t2_assert( count( $translations ) >= 1, 'event is part of a translation group' );
+	t2_assert( count( $translations ) === count( array_unique( $translations ) ), 'no duplicated record in the translation group' );
+	$group_langs = array_keys( $translations );
+	sort( $group_langs );
+	t2_assert( $group_langs === array_values( array_unique( $group_langs ) ), 'each translation sits in its own language' );
+	foreach ( $translations as $tr_id ) {
+		t2_assert(
+			get_post_meta( $tr_id, '_event_source', true ) === get_post_meta( $event_id, '_event_source', true )
+			&& get_post_meta( $tr_id, '_event_source_id', true ) === get_post_meta( $event_id, '_event_source_id', true ),
+			'translation #' . $tr_id . ' shares the identity meta of its source (never a second identity)'
+		);
+	}
 
 	$identity_before = array(
 		'_event_source'      => get_post_meta( $event_id, '_event_source', true ),

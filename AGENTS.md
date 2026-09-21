@@ -55,6 +55,8 @@ Active theme: `conexao-br-irlanda` (wp-content/themes/). Docs: docs/themes/conex
 
 Taxonomies: `conexao_category` (shared), `conexao_county` (shared), `conexao_tag` (shared), `conexao_town` (events only).
 
+Language policy (Stage 3.2): `conexao_category` / `conexao_tag` are Polylang-translated (linked EN terms); `conexao_county` / `conexao_town` are NOT — one shared proper-noun term per county/town, identical filters in both languages. See docs/routing.md §English rollout state.
+
 See docs/content-model.md for full details.
 
 ## Key routes

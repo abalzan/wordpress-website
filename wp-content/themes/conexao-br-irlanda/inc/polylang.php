@@ -168,10 +168,29 @@ add_filter( 'pll_get_post_types', 'conexao_polylang_translated_post_types', 10, 
 /**
  * Taxonomies Polylang translates.
  *
- * `conexao_county` / `conexao_town` hold proper nouns and `conexao_category`
- * / `conexao_tag` are shared filters — in all four cases ONE term identity is
- * shared across languages (per-language names only). Slugs stay Portuguese
- * and are never fragmented into per-language duplicates.
+ * `conexao_category` / `conexao_tag` carry real vocabulary (Natureza →
+ * Nature), so they are Polylang-translated: ONE shared concept identity per
+ * term-translation pair, Portuguese slugs never touched, English terms get
+ * genuine English names/slugs (Stage 3.2 pilot: scripts/stage32-translate-terms.php).
+ *
+ * STAGE 3.2 POLICY CORRECTION — `conexao_county` and `conexao_town` are
+ * proper nouns and are deliberately NOT Polylang-translated anymore:
+ *
+ *  - The architecture decision §1 invariant says "Counties/towns are shared —
+ *    no per-language duplicate terms". One physical term per county/town is
+ *    the truest form of that invariant: every record of either language
+ *    carries the SAME term, so `?county=dublin` / `?cidade=dublin` match PT
+ *    fallback records and EN records identically in both language contexts.
+ *  - Polylang Free ≥ 3.5 auto-creates a term translation (slug-suffixed, e.g.
+ *    `dublin-en`, name copied verbatim) whenever a term of another language
+ *    is assigned to a post (PLL_Crud_Posts::set_object_terms). For proper
+ *    nouns that produces a junk duplicate that splits the filter slugs; for
+ *    categories it is the intended mechanism (EN names are authored first,
+ *    see the term-translation script, so the auto-create path never triggers).
+ *
+ * Consequence: county/town terms have no language and no translations.
+ * Their filter URLs (`?county=`, `?cidade=`) are language-neutral and keep
+ * their exact pre-Polylang behaviour.
  *
  * @param string[] $taxonomies  Current list (keys = values).
  * @param bool     $is_settings True when Polylang renders its settings screen.
@@ -182,13 +201,129 @@ function conexao_polylang_translated_taxonomies( $taxonomies, $is_settings = fal
 		return $taxonomies;
 	}
 
-	foreach ( array( 'conexao_category', 'conexao_county', 'conexao_town', 'conexao_tag' ) as $taxonomy ) {
+	foreach ( array( 'conexao_category', 'conexao_tag' ) as $taxonomy ) {
 		$taxonomies[ $taxonomy ] = $taxonomy;
 	}
 
 	return $taxonomies;
 }
 add_filter( 'pll_get_taxonomies', 'conexao_polylang_translated_taxonomies', 10, 2 );
+
+/**
+ * STAGE 3.2 — serve the translated static front page at the language home URL.
+ *
+ * Polylang's per-language static-front-page model derives each language's
+ * `page_on_front` from the translation set of the site's `page_on_front`
+ * option (PLL_Static_Pages): the English record 126 ("home") is the English
+ * front page *because* it is the linked translation of the Portuguese front
+ * page 4 ("inicio"). That part of the flow is untouched here.
+ *
+ * What changes is the URL Polylang publishes as the language home. Out of the
+ * box, Polylang Free's links layer (PLL_Links_Model::set_language_home_url)
+ * reports the language home as the translated page's slugged URL
+ * (/en/home/) and its own canonical redirect then 301s /en/ → /en/home/.
+ * The approved architecture requires the English homepage at the bare /en/
+ * URL — the exact mirror of Portuguese, whose front page lives at / while
+ * /inicio/ consolidates onto it.
+ *
+ * The supported declaration point for that is Polylang's language-construction
+ * pipeline: the `pll_additional_language_data` filter (whose allowlist exists
+ * precisely for `home_url`/`search_url`/`page_on_front`/`page_for_posts`, and
+ * on which Polylang registers its own `set_language_home_urls`). Declaring the
+ * directory home there makes every consumer agree on one canonical home URL:
+ * pll_home_url(), the language switcher, hreflang, the nav "Home" link and
+ * Polylang's OWN canonical redirect, which then consolidates
+ * /en/home/ → /en/ instead of the reverse.
+ *
+ * The read-time `pll_language_home_url` filter is additionally wired so the
+ * declaration also holds when a site defines PLL_CACHE_HOME_URL=false (it is
+ * guarded by that constant and is otherwise a no-op).
+ *
+ * This is configuration through Polylang's API, not a redirect or rewrite:
+ * no template_redirect special case is added, no URL is hidden, and the
+ * page_on_front resolution (which record serves /en/) is unchanged.
+ *
+ * @param array $additional_data Additional language data being built.
+ * @param array $language        Language data (db shape).
+ * @return array
+ */
+function conexao_polylang_language_home_data( $additional_data, $language ) {
+	if ( ! conexao_polylang_active() ) {
+		return $additional_data;
+	}
+
+	$slug = is_array( $language ) && ! empty( $language['slug'] ) ? (string) $language['slug'] : '';
+	if ( '' !== $slug ) {
+		$additional_data['home_url'] = trailingslashit( PLL()->links_model->home_url( $slug ) );
+	}
+
+	return $additional_data;
+}
+add_filter( 'pll_additional_language_data', 'conexao_polylang_language_home_data', 20, 2 );
+
+/**
+ * Read-time companion of conexao_polylang_language_home_data() — see the
+ * rationale there. Only consulted when PLL_CACHE_LANGUAGES/PLL_CACHE_HOME_URL
+ * are disabled; returns the same directory home so behaviour is constant.
+ *
+ * @param string $url      Language home URL computed so far.
+ * @param array  $language PLL_Language::to_array( 'db' ) shape.
+ * @return string
+ */
+function conexao_polylang_language_home_url( $url, $language ) {
+	if ( ! conexao_polylang_active() ) {
+		return $url;
+	}
+
+	$slug = is_array( $language ) && ! empty( $language['slug'] ) ? (string) $language['slug'] : '';
+	if ( '' === $slug ) {
+		return $url;
+	}
+
+	return trailingslashit( PLL()->links_model->home_url( $slug ) );
+}
+add_filter( 'pll_language_home_url', 'conexao_polylang_language_home_url', 20, 2 );
+
+/**
+ * STAGE 3.2 — keep the declared language home URLs authoritative.
+ *
+ * Polylang builds its language list at plugins_loaded priority 1 — BEFORE the
+ * theme (and therefore the declaration above) is loaded. Whenever the
+ * persistent language cache (the pll_languages_list transient) is rebuilt in
+ * that window — a language was edited, the permalink structure changed, or a
+ * cache clean ran — the stored home_url reverts to Polylang's default
+ * (/en/home/). This guard detects that state at theme load and rebuilds the
+ * list once, now that the declaration is registered, so the corrected list
+ * is persisted again for every later request. One comparison in the steady
+ * state; no writes.
+ *
+ * @return void
+ */
+function conexao_polylang_language_home_ensure(): void {
+	if ( ! conexao_polylang_active() || ! function_exists( 'PLL' ) || ! PLL() ) {
+		return;
+	}
+
+	$en = PLL()->model->get_language( 'en' );
+	if ( ! $en ) {
+		return;
+	}
+
+	$declared = trailingslashit( PLL()->links_model->home_url( 'en' ) );
+
+	if ( (string) $en->get_home_url() === $declared ) {
+		return;
+	}
+
+	// Stale list (built before this theme file loaded). Rebuild it now, with
+	// the pll_additional_language_data declaration in place.
+	PLL()->model->clean_languages_cache();
+	PLL()->model->get_languages_list();
+}
+
+// Runs at theme load: after Polylang's bootstrap (PLL() exists) and after the
+// declaration filters above are registered.
+conexao_polylang_language_home_ensure();
 
 /**
  * Point the Stage 1 locale extension point at Polylang's active language.
@@ -758,20 +893,44 @@ function conexao_is_b2_post_type( $post_type ): bool {
 }
 
 /**
- * STAGE 3.1 — B2-eligible static pages (pilot allowlist).
+ * STAGE 3.1/3.2 — B2-eligible static pages (explicit allowlist).
  *
- * Directory/county pages approved for B2 are allowlisted by slug. Every
- * other page (narrative content: sobre-nos, contato, irlanda, legal pages,
- * homepage) stays B1 (302 until a real EN translation exists).
+ * Directory/county pages approved for B2 are allowlisted by their Portuguese
+ * slug. The allowlist is the approved architecture decision
+ * (CONEXAO_BR_ENGLISH_ARCHITECTURE_DECISION.md §8): county pages and /irlanda/
+ * are directory/information pages → B2 (PT content under EN shell + notice).
  *
- * Empty in the pilot: no page allowlist entries are approved yet, so ALL
- * pages keep the B1 302 in this stage. Slugs added here must be existing
+ * Everything else stays out on purpose:
+ *  - key narrative/legal pages (inicio, sobre-nos, contato, empregos,
+ *    politica-de-privacidade, termos-de-uso, cookies) are REAL TRANSLATIONS
+ *    (B1 until translated, then the translation serves — never B2);
+ *  - the remaining narrative/utility pages (category hubs, newsletter,
+ *    revista, anuncie, search, …) keep B1;
+ *  - B2 is never a catch-all and never a substitute for editorial translation.
+ *
+ * The list is static and code-reviewed; the filter exists only so tests can
+ * exercise the boundary without editing the theme. Entries must be existing
  * Portuguese page slugs (never new URLs).
  *
- * @return string[]
+ * @return string[] Portuguese page slugs eligible for B2 fallback rendering.
  */
 function conexao_b2_page_allowlist(): array {
-	return array();
+	$allowlist = array(
+		// County landing pages (directory/information hubs — decision §8).
+		'dublin',
+		'cork',
+		'galway',
+		'limerick',
+		'kildare',
+		'meath',
+		'wicklow',
+		'waterford',
+		'laois',
+		// Ireland country guide hub (directory/information — decision §8).
+		'irlanda',
+	);
+
+	return (array) apply_filters( 'conexao_b2_page_allowlist', $allowlist );
 }
 
 /**
@@ -863,6 +1022,75 @@ function conexao_should_render_b2_fallback( $post_id = null ): bool {
 	}
 
 	return true;
+}
+
+/**
+ * STAGE 3.2 — default-language masters replaced by a linked EN translation.
+ *
+ * The B2 contract shows a Portuguese record in the English space ONLY as a
+ * fallback while no real English record exists. Once a published, linked EN
+ * translation exists, the EN record appears INSTEAD of the PT sibling —
+ * never both (a record must never appear twice in EN archives or search).
+ *
+ * The events archive already curates this inside Conexao_Event_Query (the
+ * language-scoped ID list carries the EN translation in place of the PT
+ * master). This helper covers the generic B2 archives (leisure, sponsor,
+ * course_provider, job) and EN search.
+ *
+ * Result set: published records in a non-default language that have a
+ * default-language sibling. Cached briefly in the shared `conexao_filters`
+ * object-cache group and flushed from the save/delete/insert hub
+ * (conexao_homepage_cache_invalidate), so a new translation takes effect
+ * immediately and PT/EN caches never cross.
+ *
+ * @param string[] $post_types Post types to consider (B2 types / 'any' search set).
+ * @return int[] Default-language post IDs replaced by an EN translation.
+ */
+function conexao_b2_translation_replaced_pt_ids( array $post_types ): array {
+	if ( ! conexao_polylang_active() || ! function_exists( 'pll_get_post' ) ) {
+		return array();
+	}
+
+	$post_types = array_values( array_filter( array_map( 'strval', $post_types ) ) );
+	if ( empty( $post_types ) ) {
+		return array();
+	}
+
+	$default = pll_default_language( 'slug' );
+	$others  = array_diff( (array) pll_languages_list( array( 'fields' => 'slug' ) ), array( $default ) );
+	if ( '' === $default || empty( $others ) ) {
+		return array();
+	}
+
+	$cache_key = 'conexao_b2_replaced_' . md5( implode( ',', $post_types ) );
+	$cached    = wp_cache_get( $cache_key, 'conexao_filters' );
+	if ( false !== $cached && is_array( $cached ) ) {
+		return array_map( 'intval', $cached );
+	}
+
+	$translations = get_posts(
+		array(
+			'post_type'      => $post_types,
+			'post_status'    => 'publish',
+			'posts_per_page' => -1,
+			'fields'         => 'ids',
+			'no_found_rows'  => true,
+			'lang'           => implode( ',', array_values( $others ) ),
+		)
+	);
+
+	$ids = array();
+	foreach ( $translations as $translation_id ) {
+		$pt_id = (int) pll_get_post( (int) $translation_id, $default );
+		if ( $pt_id > 0 && $pt_id !== (int) $translation_id ) {
+			$ids[] = $pt_id;
+		}
+	}
+
+	$ids = array_values( array_unique( array_map( 'intval', $ids ) ) );
+	wp_cache_set( $cache_key, $ids, 'conexao_filters', 300 );
+
+	return $ids;
 }
 
 /**

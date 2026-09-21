@@ -1354,6 +1354,18 @@ class Conexao_Event_Importer_Engine {
 			update_post_meta( $post_id, $key, $value );
 		}
 
+		// Stage 3.2 — source-language metadata. Written only when the source
+		// supplied a valid explicit classification (pt|en|other); an absent or
+		// invalid value leaves the meta unset, which the export reports as
+		// "unknown". Identity semantics are unchanged: this meta is editorial
+		// pipeline data, never part of dedup matching.
+		if ( class_exists( 'Conexao_Event_Source_Language' ) && ! empty( $normalized['source_language'] ) ) {
+			$source_language = Conexao_Event_Source_Language::sanitize( $normalized['source_language'] );
+			if ( '' !== $source_language ) {
+				update_post_meta( $post_id, Conexao_Event_Source_Language::META_KEY, $source_language );
+			}
+		}
+
 		// Optional source-scoped reference list (e.g. Mondello Park
 		// secondary Ticketsolve show IDs). Written only when the source
 		// forwarded the key; never written for other sources. Reference
