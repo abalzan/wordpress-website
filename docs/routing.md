@@ -112,6 +112,45 @@ configured by `scripts/stage2-polylang-setup.php` + `inc/polylang.php` (see
   production EN→PT 301s keep winning even where an EN page now exists with
   the same slug as a legacy source path (`/jobs/`, `/about-us/`, `/contact/`).
 
+### English rollout state (Stage 3.3)
+
+Stage 3.2 left one visible UX gap: theme chrome built internal links with
+`home_url( '/eventos/' )`-style calls, and Polylang only rewrites the **bare**
+home URL (`PLL_Frontend_Filters_Links::home_url()` returns the URL untouched as
+soon as `$path` is non-empty), so the English homepage still linked to
+Portuguese destinations. Stage 3.3 closes that:
+
+- **`conexao_lang_url( $path )`** (`inc/polylang.php`) resolves a canonical
+  Portuguese path to the destination the current language must reach:
+  1. Polylang inactive / default language / empty language → `home_url( $path )`
+     **byte-identical to the pre-Polylang output** (Portuguese cannot change);
+  2. the path addresses a post type archive → `conexao_language_archive_url()`
+     (`/eventos/` → `/en/eventos/`); the Blog (`post`) archive is excluded, so
+     Blog keeps its approved B1 Portuguese destination;
+  3. the path addresses a page/object with a published translation → that
+     translation's permalink (`/empregos/` → `/en/jobs/`,
+     `/politica-de-privacidade/` → `/en/privacy-policy/`);
+  4. otherwise → `home_url( $path )`: B1 (untranslated) and B2 pages are never
+     auto-promoted to an invented EN URL.
+- Used by the homepage quick-access cards, the "Precisa de ajuda?" shortcuts,
+  the hero/section links and the footer legal links.
+- **Guides category cards** resolve the *linked English term* when it exists and
+  actually carries published English guides (`conexao_lang_term()` +
+  `conexao_find_term_across_languages()`), e.g. `/en/guias/?categoria=documents`;
+  otherwise they fall back to the plain English archive. A Portuguese term slug
+  is never emitted under `/en/`.
+- **EN primary navigation**: no English menu is assigned to the `primary`
+  location in the local dataset, so the header falls back to WordPress'
+  page-list menu, which Polylang filters to the seven English pages
+  (language-consistent, but it does not expose the directory archives). In
+  production a per-language menu must be assigned — see the Stage 3.3 report
+  §19/§24.
+- **hreflang output** is emitted by the theme (`inc/seo.php`,
+  `conexao_hreflang_links()`), which is the single SEO owner; Polylang's own
+  `wp_head` rel-alternate set is additionally present in the local environment
+  (pre-existing since Stage 2, to be consolidated in Stage 4 — see the Stage 3.3
+  report §14/§23).
+
 ### Filters (Query Parameters)
 
 | Archive | Parameters | Taxonomy/Meta |
