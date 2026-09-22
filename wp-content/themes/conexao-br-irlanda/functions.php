@@ -29,6 +29,16 @@ require_once CONEXAO_THEME_DIR . '/inc/i18n.php';
 require_once CONEXAO_THEME_DIR . '/inc/polylang.php';
 
 /**
+ * Load the bilingual REST contract (Stage 4.1) immediately after the Polylang
+ * integration it builds on: language-aware `?lang=` collection filtering, the
+ * `conexao_language` record metadata (lang / is_fallback / translations), the
+ * detail-endpoint language rules and the REST event-status gate. All hooks are
+ * guarded by conexao_polylang_active(), so a single-language site behaves
+ * exactly as before.
+ */
+require_once CONEXAO_THEME_DIR . '/inc/rest-language.php';
+
+/**
  * Load SEO foundation module.
  */
 require_once CONEXAO_THEME_DIR . '/inc/seo.php';
