@@ -157,6 +157,55 @@ Portuguese destinations. Stage 3.3 closes that:
   (pre-existing since Stage 2, to be consolidated in Stage 4 — see the Stage 3.3
   report §14/§23).
 
+### English rollout state (Stage 4.1 — bilingual REST contract)
+
+Polylang Free sets the REST *language context* from a `lang` parameter but
+does **not** filter post collections by language and exposes no translation
+relationships (confirmed in the Stage 3.3 report §26). Stage 4.1 closes that
+gap inside the existing REST API — no new endpoints, no second routing
+system. Owner: **`inc/rest-language.php`** (theme, loaded from
+`functions.php` after `inc/polylang.php`; every hook guarded by
+`conexao_polylang_active()`, so a single-language site is unaffected).
+
+- **Request model** on the existing endpoints: `?lang=pt`, `?lang=en`, or no
+  `lang` at all. Omitting `lang` preserves the exact pre-Stage-4.1 behaviour
+  (unfiltered collections, any-language detail) — no existing consumer has to
+  add `lang=pt`.
+- **Invalid `lang`** → HTTP 400 `conexao_rest_invalid_lang` (accepted values
+  discovered from Polylang, currently `pt`, `en`); never Polylang's silent
+  fall-back to the default language.
+- **Collection membership** mirrors the front-end policy: `lang=pt` →
+  Portuguese records; `lang=en` → real EN records + B2-eligible PT fallbacks
+  (event, leisure, sponsor, course_provider, job) with translated PT masters
+  *replaced* (never duplicated); B1 types (guide, post) get real EN records
+  only; hidden events never appear.
+- **`conexao_language` field** on every record of the seven content types,
+  the six contract taxonomies and `/wp/v2/search` results:
+  `{ lang, is_fallback, translations: { <lang>: { id, url } } }` — enough for
+  a client to distinguish real PT / real EN / B2 fallback / source-inherited
+  EN without scraping HTML. The existing `link` field already carries the
+  language-correct canonical (EN self / PT for B2).
+- **Detail rules**: matching language → 200; PT B2 record without an EN
+  translation under `lang=en` → 200 with `is_fallback=true`; any other
+  language mismatch → 404 `conexao_rest_language_unavailable` with the linked
+  translation ids in `data.translations`.
+- **Event hard gate on details**: expired/rejected/source_not_found events
+  answer the same 404 (`rest_post_invalid_id`) the front-end singles produce,
+  for public (unauthenticated) requests — the collection gate already did
+  this via `pre_get_posts`; REST details were the only leak.
+- **Taxonomies**: translated taxonomies (`conexao_category`, `conexao_tag`,
+  `category`, `post_tag`) filter to the requested language (Polylang's own
+  REST term filtering); shared `conexao_county`/`conexao_town` return the
+  same shared terms for every language (`lang: null` in the field).
+- **No new cache**: the only reused cache is the language-independent
+  `conexao_b2_translation_replaced_pt_ids()` set, invalidated on save/delete
+  by the theme's existing hooks — PT and EN responses can never share a cache
+  key.
+- Verification: `wp-content/themes/conexao-br-irlanda/tests/test-stage41-rest-language.php`
+  (in-process REST dispatch, 212 assertions) and
+  `scripts/stage41-rest-verify.py` (wire-level matrix, writes
+  `stage41-rest-matrix.json`). Local/staging only — nothing deployed.
+
 ### Filters (Query Parameters)
 
 | Archive | Parameters | Taxonomy/Meta |

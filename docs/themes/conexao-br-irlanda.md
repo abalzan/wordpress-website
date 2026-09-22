@@ -471,6 +471,11 @@ Menu selection under Polylang: the header menu resolves through Polylang's per-l
 
 - `functions.php` — all theme setup, queries, nav, shortcodes
 - `inc/seo.php` — complete SEO module
+- `inc/rest-language.php` — bilingual REST contract (Stage 4.1): `?lang=pt|en`
+  collection filtering, the `conexao_language` record field, detail language
+  rules and the REST event-status gate; verified by
+  `tests/test-stage41-rest-language.php` and
+  `scripts/stage41-rest-verify.py` (see docs/routing.md §English rollout state)
 - `front-page.php` — homepage template
 - `archive.php` — shared archive template
 - `single-leisure.php` — leisure detail template
