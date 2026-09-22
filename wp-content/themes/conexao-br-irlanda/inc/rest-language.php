@@ -68,6 +68,16 @@ function conexao_rest_language_post_types(): array {
 }
 
 /**
+ * REST base for a post type (core renames post → posts).
+ *
+ * @param string $post_type Post type name.
+ * @return string
+ */
+function conexao_rest_language_post_type_rest_base( string $post_type ): string {
+	return 'post' === $post_type ? 'posts' : $post_type;
+}
+
+/**
  * Translated taxonomies (language-filtered term collections).
  *
  * @return string[]
@@ -155,7 +165,8 @@ function conexao_rest_language_route_supported( string $route ): bool {
 	}
 
 	foreach ( conexao_rest_language_post_types() as $post_type ) {
-		if ( preg_match( '#^/wp/v2/' . preg_quote( $post_type, '#' ) . '(?:/\d+)?$#', $route ) ) {
+		$base = preg_quote( conexao_rest_language_post_type_rest_base( $post_type ), '#' );
+		if ( preg_match( '#^/wp/v2/' . $base . '(?:/\d+)?$#', $route ) ) {
 			return true;
 		}
 	}
@@ -276,11 +287,12 @@ function conexao_rest_language_filter_posts_query( $args, $request ) {
 	}
 
 	// Resolve the post type from the route (the filter name is per-type but
-	// the args do not always carry post_type yet).
+	// the args do not always carry post_type yet; posts use the 'posts' base).
 	$route     = (string) $request->get_route();
 	$post_type = '';
 	foreach ( conexao_rest_language_post_types() as $candidate ) {
-		if ( preg_match( '#^/wp/v2/' . preg_quote( $candidate, '#' ) . '(?:/|$)#', $route ) ) {
+		$base = preg_quote( conexao_rest_language_post_type_rest_base( $candidate ), '#' );
+		if ( preg_match( '#^/wp/v2/' . $base . '(?:/|$)#', $route ) ) {
 			$post_type = $candidate;
 			break;
 		}
@@ -452,10 +464,9 @@ function conexao_rest_language_term_payload( int $term_id ): array {
 /**
  * Register the `conexao_language` field on the contract surface.
  *
- * Posts (7 types), terms (6 taxonomies). The field is read-only and respects
- * the standard `_fields` filtering. Search results are handled separately
- * (conexao_rest_language_search_response()) because the search controller has
- * no per-subtype additional-fields target.
+ * Posts (7 types), terms (6 taxonomies) and /wp/v2/search results (object
+ * type 'search-result'). The field is read-only and respects the standard
+ * `_fields` filtering.
  *
  * @return void
  */
@@ -516,6 +527,39 @@ function conexao_rest_language_register_fields(): void {
 			)
 		);
 	}
+
+	// /wp/v2/search results (object type 'search-result', the schema title
+	// of the search controller): injected through the standard
+	// additional-fields pipeline, which runs identically over HTTP and for
+	// in-process dispatches. Clients must never infer language from
+	// title/body text.
+	register_rest_field(
+		'search-result',
+		'conexao_language',
+		array(
+			'get_callback' => static function ( $prepared, $field_name, $request ) {
+				if ( ! is_array( $prepared ) || ! isset( $prepared['id'], $prepared['type'] ) ) {
+					return null;
+				}
+				$requested = $request instanceof WP_REST_Request ? conexao_rest_requested_lang( $request ) : '';
+
+				if ( 'post' === $prepared['type'] ) {
+					return conexao_rest_language_post_payload( (int) $prepared['id'], $requested );
+				}
+				if ( 'term' === $prepared['type'] ) {
+					return conexao_rest_language_term_payload( (int) $prepared['id'] );
+				}
+
+				return null;
+			},
+			'schema'       => array(
+				'description' => __( 'Language contract metadata for the search result (post or term language and translations).', 'conexao-br-irlanda' ),
+				'type'        => array( 'object', 'null' ),
+				'context'     => array( 'view', 'embed' ),
+				'readonly'    => true,
+			),
+		)
+	);
 }
 add_action( 'rest_api_init', 'conexao_rest_language_register_fields' );
 
@@ -570,8 +614,16 @@ function conexao_rest_language_detail_gate( $response, $handler, $request ) {
 		return $response; // Collection or non-post route.
 	}
 
+	// Map the REST base back to the post type (posts → post).
 	$post_type = $m[1];
-	$post_id   = (int) $m[2];
+	$bases     = array();
+	foreach ( conexao_rest_language_post_types() as $candidate ) {
+		$bases[ conexao_rest_language_post_type_rest_base( $candidate ) ] = $candidate;
+	}
+	if ( isset( $bases[ $post_type ] ) ) {
+		$post_type = $bases[ $post_type ];
+	}
+	$post_id = (int) $m[2];
 	if ( ! in_array( $post_type, conexao_rest_language_post_types(), true ) ) {
 		return $response;
 	}
@@ -656,54 +708,6 @@ function conexao_rest_language_unavailable_error( int $post_id, string $record_l
 	);
 }
 
-/**
- * Add `conexao_language` to /wp/v2/search results.
- *
- * The search controller has no per-subtype additional-fields target, so the
- * field is injected at post-dispatch for the search route only. Clients must
- * never infer language from title/body text.
- *
- * @param WP_REST_Response $response Response.
- * @param WP_REST_Server   $server   Server.
- * @param WP_REST_Request  $request  Request.
- * @return WP_REST_Response
- */
-function conexao_rest_language_search_response( $response, $server, $request ) {
-	if ( ! conexao_polylang_active() || ! $request instanceof WP_REST_Request ) {
-		return $response;
-	}
-
-	if ( ! preg_match( '#^/wp/v2/search(?:/|$)#', (string) $request->get_route() ) ) {
-		return $response;
-	}
-
-	if ( ! $response instanceof WP_REST_Response || is_wp_error( $response ) ) {
-		return $response;
-	}
-
-	$data = $response->get_data();
-	if ( ! is_array( $data ) ) {
-		return $response;
-	}
-
-	$requested = conexao_rest_requested_lang( $request );
-	$changed   = false;
-
-	foreach ( $data as $i => $item ) {
-		if ( ! is_array( $item ) || ! isset( $item['id'], $item['type'] ) || 'post' !== $item['type'] ) {
-			continue;
-		}
-		$data[ $i ]['conexao_language'] = conexao_rest_language_post_payload( (int) $item['id'], $requested );
-		$changed                        = true;
-	}
-
-	if ( $changed ) {
-		$response->set_data( $data );
-	}
-
-	return $response;
-}
-add_filter( 'rest_post_dispatch', 'conexao_rest_language_search_response', 10, 3 );
 
 /**
  * Register the per-type collection query filters.
