@@ -3604,6 +3604,28 @@ function conexao_nav_menu_args( $args ) {
 add_filter( 'wp_nav_menu_args', 'conexao_nav_menu_args' );
 
 /**
+ * Safe empty fallback for the header navigations.
+ *
+ * Replaces WordPress' wp_page_menu() as the wp_nav_menu() fallback for both
+ * the desktop primary navigation and the mobile drawer navigation: when the
+ * 'primary' theme location has no valid menu for the current language (for
+ * example while Polylang has no per-language assignment for a language yet,
+ * which makes Polylang nullify the location), the header must NOT silently
+ * render WordPress' full automatic page list. This fallback explicitly
+ * renders no navigation items instead — the page list overflowed the header
+ * and buried the curated menu.
+ *
+ * Re-introducing wp_page_menu here is a regression: see
+ * CONEXAO_BR_HEADER_NAVIGATION_REGRESSION_REPORT.md.
+ *
+ * @param array $args wp_nav_menu() arguments (unused).
+ * @return void
+ */
+function conexao_safe_nav_menu_fallback( $args = array() ) {
+	// Intentionally empty: render no primary navigation items.
+}
+
+/**
  * Determine whether an event's URL points to an external website.
  *
  * Compares the stored `_event_url` meta (the original source URL) with the
@@ -3726,23 +3748,35 @@ function conexao_modify_primary_nav_items( $items, $args ) {
 	}
 	$items = array_values( $items );
 
-	// 2. Change the "Home" label to "Início" (Portuguese-first portal).
-	//    The URL is left untouched so the homepage link still works.
+	// 2. Change the "Home" label to the canonical one for the current language:
+	//    "Início" on Portuguese (the Portuguese-first portal) or "Home" on
+	//    English — the label of the existing English front page. The URL is
+	//    left untouched so the homepage link still works. When no language
+	//    context exists (CLI/admin), the Portuguese default applies, so
+	//    single-language behaviour is byte-identical to the pre-Polylang theme.
+	$home_label = 'en' === conexao_current_language_slug()
+		? 'Home'
+		: __( 'Início', 'conexao-br-irlanda' );
 	foreach ( $items as $item ) {
 		$title = strtolower( trim( wp_strip_all_tags( $item->title ) ) );
 		if ( 'home' === $title || 'início' === $title || 'inicio' === $title ) {
-			$item->title = __( 'Início', 'conexao-br-irlanda' );
+			$item->title = $home_label;
 		}
 	}
 
-	// 3. Rename the "Lazer" navigation label to "Lazer e turismo".
-	//    Label-only change: the /lazer/ URL, the leisure post type and every
-	//    other attribute stay untouched, so object binding, deduplication and
-	//    active-state logic keep resolving this item to the "lazer" section.
+	// 3. Rename the "Lazer" navigation label to the canonical one for the
+	//    current language: "Lazer e turismo" (Portuguese) or "Leisure &amp;
+	//    Tourism" (English). Label-only change: the /lazer/ URL, the leisure
+	//    post type and every other attribute stay untouched, so object
+	//    binding, deduplication and active-state logic keep resolving this
+	//    item to the "lazer" section.
+	$lazer_label = 'en' === conexao_current_language_slug()
+		? 'Leisure & Tourism'
+		: __( 'Lazer e turismo', 'conexao-br-irlanda' );
 	foreach ( $items as $item ) {
 		$title = strtolower( trim( wp_strip_all_tags( $item->title ) ) );
 		if ( 'lazer' === $title || 'leisure' === $title ) {
-			$item->title = __( 'Lazer e turismo', 'conexao-br-irlanda' );
+			$item->title = $lazer_label;
 		}
 	}
 
@@ -3751,6 +3785,9 @@ function conexao_modify_primary_nav_items( $items, $args ) {
 	//    We intentionally do NOT look up a Page with slug "blog" — a Page
 	//    with that slug would shadow the posts archive and prevent published
 	//    posts from appearing on /blog/.
+	//    The destination goes through conexao_lang_url(): byte-identical to
+	//    home_url( '/blog/' ) on Portuguese; on English it resolves the
+	//    approved B1 destination (there is no per-language Blog archive).
 	$blog_item = array(
 		'ID'               => 0,
 		'db_id'            => 0,
@@ -3761,7 +3798,7 @@ function conexao_modify_primary_nav_items( $items, $args ) {
 		'type'             => 'custom',
 		'type_label'       => 'Custom Link',
 		'title'            => 'Blog',
-		'url'              => home_url( '/blog/' ),
+		'url'              => conexao_lang_url( '/blog/' ),
 		'classes'          => array( 'menu-item', 'menu-item-type-custom', 'menu-item-object-custom' ),
 		'attr_title'       => '',
 		'target'           => '',
@@ -3802,6 +3839,35 @@ function conexao_modify_primary_nav_items( $items, $args ) {
 add_filter( 'wp_nav_menu_objects', 'conexao_modify_primary_nav_items', 20, 2 );
 
 /**
+ * Language-aware URL for a primary-nav CPT archive section.
+ *
+ * Portuguese (the default language) keeps the canonical
+ * get_post_type_archive_link() behaviour byte-identical to the pre-Polylang
+ * theme. Any other current language resolves the same section to that
+ * language's archive URL (e.g. /en/eventos/) via
+ * conexao_language_archive_url() — the same rule Stage 3.3 applies to every
+ * internal theme link (see conexao_lang_url()).
+ *
+ * @param string $post_type     Post type backing the section.
+ * @param string $fallback_slug Canonical PT path segment (e.g. "eventos").
+ * @return string Absolute URL.
+ */
+function conexao_primary_nav_archive_url( $post_type, $fallback_slug ) {
+	$current = conexao_current_language_slug();
+	$default = conexao_default_language_slug();
+
+	if ( $current && $default && $current !== $default ) {
+		$archive = conexao_language_archive_url( $post_type, $current );
+		if ( '' !== $archive ) {
+			return $archive;
+		}
+	}
+
+	$link = get_post_type_archive_link( $post_type );
+	return $link ? $link : home_url( '/' . $fallback_slug . '/' );
+}
+
+/**
  * Canonical WordPress object bindings for each primary navigation section.
  *
  * Each top-level section maps to the WordPress object that actually backs it
@@ -3815,18 +3881,22 @@ add_filter( 'wp_nav_menu_objects', 'conexao_modify_primary_nav_items', 20, 2 );
  *   - taxonomy/archive pages where the bound post type is queried,
  *   - child/descendant pages of a section page.
  *
+ * URLs are language-aware: the default language (Portuguese) keeps the exact
+ * pre-Polylang destinations; other languages resolve through the Stage 3.3
+ * language-aware link helpers so the English header never links into the
+ * Portuguese URL space.
+ *
  * @return array
  */
 function conexao_primary_nav_sections() {
-	$archive_url = function ( $post_type, $fallback_slug ) {
-		$link = get_post_type_archive_link( $post_type );
-		return $link ? $link : home_url( '/' . $fallback_slug . '/' );
-	};
+	$archive_url = 'conexao_primary_nav_archive_url';
 
 	return array(
 		'início'     => array( 'key' => 'inicio', 'type' => 'custom', 'object' => 'custom', 'url' => home_url( '/' ), 'match' => array() ),
 		// Blog uses the native posts archive at /blog/ (not a static page).
-		'blog'       => array( 'key' => 'blog', 'type' => 'posts_archive', 'object' => 'post', 'url' => home_url( '/blog/' ), 'match' => array( 'blog' ) ),
+		// conexao_lang_url() is byte-identical on Portuguese and resolves the
+		// approved B1 destination on English (no per-language Blog archive).
+		'blog'       => array( 'key' => 'blog', 'type' => 'posts_archive', 'object' => 'post', 'url' => conexao_lang_url( '/blog/' ), 'match' => array( 'blog' ) ),
 		'guias'      => array( 'key' => 'guias', 'type' => 'post_type_archive', 'object' => 'guide', 'url' => $archive_url( 'guide', 'guias' ), 'match' => array( 'guias', 'guides' ) ),
 		'eventos'    => array( 'key' => 'eventos', 'type' => 'post_type_archive', 'object' => 'event', 'url' => $archive_url( 'event', 'eventos' ), 'match' => array( 'eventos', 'events' ) ),
 		// Cursos is a CPT archive (course_provider CPT), not a static page.
@@ -3885,10 +3955,27 @@ function conexao_bind_section_object( $item, $section ) {
 	if ( 'page' === $section['type'] && ! empty( $section['path'] ) ) {
 		$page = get_page_by_path( $section['path'] );
 		if ( $page ) {
+			$page_id = (int) $page->ID;
+
+			// English layer: bind the current language's LINKED translation of
+			// the canonical Portuguese page when one exists (e.g. /contato/ →
+			// /en/contact/) — the same rule Stage 3.3 applies to internal
+			// theme links. An English record is a linked translation of the
+			// same identity, never a second identity. Without a translation
+			// the approved B1 behaviour applies — the Portuguese page.
+			$current = conexao_current_language_slug();
+			$default = conexao_default_language_slug();
+			if ( $current && $default && $current !== $default && function_exists( 'pll_get_post' ) ) {
+				$translation = pll_get_post( $page_id, $current );
+				if ( $translation && 'publish' === get_post_status( (int) $translation ) ) {
+					$page_id = (int) $translation;
+				}
+			}
+
 			$item->type        = 'post_type';
 			$item->object      = 'page';
-			$item->object_id   = (int) $page->ID;
-			$item->url         = get_permalink( $page->ID );
+			$item->object_id   = $page_id;
+			$item->url         = get_permalink( $page_id );
 			$item->post_parent = $page->post_parent ? (int) $page->post_parent : 0;
 		}
 	}
@@ -3956,6 +4043,24 @@ function conexao_normalize_primary_nav_sections( $items, $args ) {
 			}
 		}
 
+		// Final fallback: the shared section-key resolver. It understands the
+		// canonical English titles (Home, Sponsors, Guides, …) and the bare
+		// homepage link — items the title/url lookup above cannot match (the
+		// home section carries no URL needle). Portuguese items never reach
+		// this branch (they match by title/URL above), so PT output is
+		// unchanged.
+		if ( null === $section ) {
+			$key = conexao_get_item_section_key( $item );
+			if ( null !== $key ) {
+				foreach ( $sections as $section_spec ) {
+					if ( $section_spec['key'] === $key ) {
+						$section = $section_spec;
+						break;
+					}
+				}
+			}
+		}
+
 		if ( null === $section ) {
 			continue;
 		}
@@ -4004,7 +4109,7 @@ function conexao_normalize_primary_nav_sections( $items, $args ) {
 			'type'             => 'custom',
 			'type_label'       => 'Custom Link',
 			'title'            => 'Blog',
-			'url'              => home_url( '/blog/' ),
+			'url'              => conexao_lang_url( '/blog/' ),
 			'classes'          => array( 'menu-item', 'menu-item-type-custom', 'menu-item-object-custom' ),
 			'attr_title'       => '',
 			'target'           => '',
@@ -4034,10 +4139,7 @@ function conexao_normalize_primary_nav_sections( $items, $args ) {
 	// Ensure a "Cursos" item bound to the /cursos/ CPT archive exists (inserted before
 	// "Empregos" if the theme's base filter did not already provide one).
 	if ( ! $has_cursos ) {
-		$cursos_url = get_post_type_archive_link( 'course_provider' );
-		if ( ! $cursos_url ) {
-			$cursos_url = home_url( '/cursos/' );
-		}
+		$cursos_url = conexao_primary_nav_archive_url( 'course_provider', 'cursos' );
 
 		$cursos_item = (object) array(
 			'ID'               => 0,
@@ -4092,12 +4194,14 @@ function conexao_normalize_primary_nav_sections( $items, $args ) {
 
 	// Ensure all CPT archive sections (Guias, Eventos, Empregos, Apoiadores)
 	// are always present in the navigation, even if the stored menu is missing them.
+	$is_en = 'en' === conexao_current_language_slug();
+
 	$cpt_sections = array(
-		'guias'      => array( 'post_type' => 'guide',   'title' => __( 'Guias', 'conexao-br-irlanda' ),      'url' => get_post_type_archive_link( 'guide' ) ? get_post_type_archive_link( 'guide' ) : home_url( '/guias/' ) ),
-		'eventos'    => array( 'post_type' => 'event',   'title' => __( 'Eventos', 'conexao-br-irlanda' ),    'url' => get_post_type_archive_link( 'event' ) ? get_post_type_archive_link( 'event' ) : home_url( '/eventos/' ) ),
-		'lazer'      => array( 'post_type' => 'leisure', 'title' => __( 'Lazer e turismo', 'conexao-br-irlanda' ), 'url' => get_post_type_archive_link( 'leisure' ) ? get_post_type_archive_link( 'leisure' ) : home_url( '/lazer/' ) ),
-		'empregos'   => array( 'post_type' => 'job',     'title' => __( 'Empregos', 'conexao-br-irlanda' ),   'url' => get_post_type_archive_link( 'job' ) ? get_post_type_archive_link( 'job' ) : home_url( '/empregos/' ) ),
-		'apoiadores' => array( 'post_type' => 'sponsor', 'title' => __( 'Apoiadores', 'conexao-br-irlanda' ), 'url' => get_post_type_archive_link( 'sponsor' ) ? get_post_type_archive_link( 'sponsor' ) : home_url( '/apoiadores/' ) ),
+		'guias'      => array( 'post_type' => 'guide',   'title' => $is_en ? 'Guides' : __( 'Guias', 'conexao-br-irlanda' ),                'url' => conexao_primary_nav_archive_url( 'guide', 'guias' ) ),
+		'eventos'    => array( 'post_type' => 'event',   'title' => $is_en ? 'Events' : __( 'Eventos', 'conexao-br-irlanda' ),              'url' => conexao_primary_nav_archive_url( 'event', 'eventos' ) ),
+		'lazer'      => array( 'post_type' => 'leisure', 'title' => $is_en ? 'Leisure & Tourism' : __( 'Lazer e turismo', 'conexao-br-irlanda' ), 'url' => conexao_primary_nav_archive_url( 'leisure', 'lazer' ) ),
+		'empregos'   => array( 'post_type' => 'job',     'title' => $is_en ? 'Jobs' : __( 'Empregos', 'conexao-br-irlanda' ),               'url' => conexao_primary_nav_archive_url( 'job', 'empregos' ) ),
+		'apoiadores' => array( 'post_type' => 'sponsor', 'title' => $is_en ? 'Sponsors' : __( 'Apoiadores', 'conexao-br-irlanda' ),         'url' => conexao_primary_nav_archive_url( 'sponsor', 'apoiadores' ) ),
 	);
 
 	foreach ( $cpt_sections as $section_key => $cpt_info ) {
@@ -4180,8 +4284,23 @@ add_filter( 'wp_nav_menu_objects', 'conexao_normalize_primary_nav_sections', 25,
  * @return array Modified menu item objects.
  */
 function conexao_fix_nav_active_states( $items ) {
-	// Determine the current request path.
+	// Determine the current request path. The active-state rules below match
+	// canonical Portuguese paths (/guias/, /empregos/, …), so the language
+	// prefix of an English request (/en/guias/) is stripped first — otherwise
+	// English pages would never receive their current-menu-item state. The
+	// homepage rule then treats /en/ exactly like /.
 	$current_path = conexao_get_current_path();
+
+	$lang_slug = conexao_current_language_slug();
+	$default   = conexao_default_language_slug();
+	if ( $lang_slug && $default && $lang_slug !== $default ) {
+		$prefix = '/' . $lang_slug;
+		if ( $current_path === $prefix ) {
+			$current_path = '/';
+		} elseif ( 0 === strpos( $current_path, $prefix . '/' ) ) {
+			$current_path = substr( $current_path, strlen( $prefix ) );
+		}
+	}
 
 	// Define explicit active-state rules for each section.
 	// Each rule maps a section key to a callback that returns true when
@@ -4301,22 +4420,33 @@ function conexao_get_item_section_key( $item ) {
 
 	// Map titles to section keys.
 	$title_map = array(
-		'início'          => 'inicio',
-		'inicio'          => 'inicio',
-		'home'            => 'inicio',
-		'blog'            => 'blog',
-		'guias'           => 'guias',
-		'guias práticos'  => 'guias',
-		'eventos'         => 'eventos',
-		'cursos'          => 'cursos',
-		'lazer'           => 'lazer',
-		'lazer e turismo' => 'lazer',
-		'empregos'        => 'empregos',
-		'apoiadores'      => 'apoiadores',
-		'irlanda'         => 'irlanda',
-		'sobre nós'       => 'sobre-nos',
-		'sobre nos'       => 'sobre-nos',
-		'contato'         => 'contato',
+		'início'            => 'inicio',
+		'inicio'            => 'inicio',
+		'home'              => 'inicio',
+		'blog'              => 'blog',
+		'guias'             => 'guias',
+		'guias práticos'    => 'guias',
+		'guides'            => 'guias',
+		'eventos'           => 'eventos',
+		'events'            => 'eventos',
+		'cursos'            => 'cursos',
+		'courses'           => 'cursos',
+		'lazer'             => 'lazer',
+		'lazer e turismo'   => 'lazer',
+		'leisure'           => 'lazer',
+		'leisure & tourism' => 'lazer',
+		'empregos'          => 'empregos',
+		'jobs'              => 'empregos',
+		'apoiadores'        => 'apoiadores',
+		'sponsors'          => 'apoiadores',
+		'irlanda'           => 'irlanda',
+		'ireland'           => 'irlanda',
+		'sobre nós'         => 'sobre-nos',
+		'sobre nos'         => 'sobre-nos',
+		'about'             => 'sobre-nos',
+		'about us'          => 'sobre-nos',
+		'contato'           => 'contato',
+		'contact'           => 'contato',
 	);
 
 	if ( isset( $title_map[ $title ] ) ) {

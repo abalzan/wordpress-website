@@ -447,6 +447,8 @@ Note: "Irlanda" is intentionally NOT a navigation item. The /irlanda/ page remai
 
 Note: "Sobre Nós" is intentionally NOT a navigation item either. The /sobre-nos/ page remains published and directly accessible at /sobre-nos/; it is simply not linked from the main navigation (desktop and mobile share the same `primary` menu). See `scripts/remove-sobre-nos-menu-item.php` for removing any legacy "Sobre Nós" item from an existing menu.
 
+Menu selection under Polylang: the header menu resolves through Polylang's per-language `nav_menus` option (see `scripts/assign-polylang-nav-menus.php` for PT and `scripts/create-en-primary-menu.php` for the EN "Main Menu" mirror; docs/routing.md §Navigation Architecture). The render-time nav layer is language-aware (language-resolved archive/page destinations, language-scoped active states), so both languages render their own curated menu. Both header `wp_nav_menu()` calls use the safe empty fallback `conexao_safe_nav_menu_fallback()` — never `wp_page_menu`'s automatic page list.
+
 ## Performance Optimizations
 
 - Emoji script/style removal

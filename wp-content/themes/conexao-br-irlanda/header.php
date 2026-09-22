@@ -104,7 +104,7 @@
 						'theme_location' => 'primary',
 						'menu_id'        => 'primary-menu',
 						'container'      => false,
-						'fallback_cb'    => 'wp_page_menu',
+						'fallback_cb'    => 'conexao_safe_nav_menu_fallback',
 						'depth'          => 3,
 					) );
 					?>
@@ -214,7 +214,7 @@
 					'theme_location' => 'primary',
 					'menu_class'     => 'mobile-menu',
 					'container'      => false,
-					'fallback_cb'    => 'wp_page_menu',
+					'fallback_cb'    => 'conexao_safe_nav_menu_fallback',
 					'depth'          => 3,
 				) );
 				?>

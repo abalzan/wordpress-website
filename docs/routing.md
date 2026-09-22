@@ -139,12 +139,18 @@ Portuguese destinations. Stage 3.3 closes that:
   `conexao_find_term_across_languages()`), e.g. `/en/guias/?categoria=documents`;
   otherwise they fall back to the plain English archive. A Portuguese term slug
   is never emitted under `/en/`.
-- **EN primary navigation**: no English menu is assigned to the `primary`
-  location in the local dataset, so the header falls back to WordPress'
-  page-list menu, which Polylang filters to the seven English pages
-  (language-consistent, but it does not expose the directory archives). In
-  production a per-language menu must be assigned — see the Stage 3.3 report
-  §19/§24.
+- **EN primary navigation**: an English menu ("Main Menu", term 2933 locally) is
+  assigned to the `primary` location through Polylang's per-language
+  `nav_menus` option, exactly like the Portuguese "Menu Principal" menu. It
+  mirrors the PT stored structure (custom links to the canonical PT paths +
+  page objects for Contact/About Us) with English titles; every destination is
+  resolved to the current language at render time by the theme's Stage 3.3
+  language-aware layer (`conexao_primary_nav_archive_url()`,
+  `conexao_bind_section_object()`, `conexao_lang_url()`), so `/en/` links never
+  fall back to the Portuguese URL space (approved B1 exceptions: `/empregos/`
+  — the jobs directory has no EN page — and `/blog/`).
+  See `scripts/create-en-primary-menu.php` and
+  CONEXAO_BR_EN_HEADER_NAVIGATION_FIX_REPORT.md.
 - **hreflang output** is emitted by the theme (`inc/seo.php`,
   `conexao_hreflang_links()`), which is the single SEO owner; Polylang's own
   `wp_head` rel-alternate set is additionally present in the local environment
@@ -245,3 +251,31 @@ Note: "Irlanda" is intentionally NOT a navigation item. The /irlanda/ page remai
 Note: "Sobre Nós" is intentionally NOT a navigation item either. The /sobre-nos/ page remains published and directly accessible at /sobre-nos/; it is simply not linked from the main navigation (desktop and mobile share the same `primary` menu). See `scripts/remove-sobre-nos-menu-item.php` for removing any legacy "Sobre Nós" item from an existing menu.
 
 Active-state resolution uses URL pattern matching in `conexao_fix_nav_active_states()`.
+
+### Menu selection with Polylang (per-language assignment)
+
+The plain WordPress location assignment (`nav_menu_locations.primary`) is NOT
+what resolves the header menu once Polylang is active. Polylang's
+`theme_mod_nav_menu_locations` filter overwrites every registered location
+with the per-language assignment in Polylang's `nav_menus` option
+(`nav_menus[stylesheet][location][language-slug]`), or with `0` when that
+per-language entry is missing — for every language, including Portuguese.
+A missing `['pt']` entry therefore silently degraded the header to the
+automatic page list (see CONEXAO_BR_HEADER_NAVIGATION_REGRESSION_REPORT.md).
+
+- Run `scripts/assign-polylang-nav-menus.php` (idempotent) to write
+  `nav_menus['primary']['pt'] = "Menu Principal"`, and
+  `scripts/create-en-primary-menu.php` (idempotent, data-only) to create the
+  English "Main Menu" mirror and write `nav_menus['primary']['en']`. Missing
+  per-language entries are the observed cause of the empty EN header.
+- The render-time nav layer is language-aware: `conexao_primary_nav_sections()`
+  resolves archive/page destinations through `conexao_lang_url()` /
+  `conexao_language_archive_url()` semantics, `conexao_bind_section_object()`
+  binds the linked translation of a page when one exists, and
+  `conexao_fix_nav_active_states()` strips the current language prefix before
+  matching its canonical PT path rules. On Portuguese (the default language)
+  every helper is byte-identical to the pre-Polylang behaviour.
+- Both header `wp_nav_menu()` calls (desktop + mobile drawer) use the safe
+  empty fallback `conexao_safe_nav_menu_fallback()` (functions.php): when the
+  location has no valid menu for the current language, the header renders no
+  navigation items. It must never be changed back to `wp_page_menu`.
