@@ -177,6 +177,52 @@ Portuguese destinations. Stage 3.3 closes that:
   (pre-existing since Stage 2, to be consolidated in Stage 4 — see the Stage 3.3
   report §14/§23).
 
+### English rollout state (Stage 4.5 — page translations)
+
+Stage 4.5 translates **every eligible public Page** (the website's editorial
+pages) into real linked Polylang translations. See
+`CONEXAO_BR_ENGLISH_STAGE_4_5_REPORT.md` and
+`docs/plugins/conexao-page-translation.md`.
+
+- **All 37 eligible pages get real EN translations** (the 7 Stage 3.2 pages
+  keep their approved slugs: `home`, `about-us`, `contact`, `jobs`,
+  `privacy-policy`, `terms-of-use`, `cookie-policy`). Topic hubs use natural
+  English slugs (`/en/housing/`, `/en/healthcare/`, `/en/documents/`, …),
+  county pages use `county-<name>` (`/en/county-dublin/`, …), and
+  `/irlanda/` becomes `/en/ireland/`.
+- **B2 retires for pages**: `conexao_b2_page_allowlist()` still exists (it
+  stays the mechanism for future content) but every page it allowlisted
+  (`irlanda` + the 9 counties) now has a real EN page, so no page renders the
+  B2 fallback anymore. B2 remains in force for the CPT allowlist
+  (event, leisure, sponsor, course_provider, job).
+- **B1 retires for pages**: every translated page's `/en/<pt-slug>/` URL now
+  resolves to the EN page (Polylang canonical) instead of the 302. The
+  missing-translation redirect stays for everything else (e.g. the excluded
+  `search` utility page).
+- **The Blog posts page is translated with a shared slug** (`/en/blog/`,
+  same `post_name`): Polylang Free needs the scoped `wp_unique_post_slug`
+  permit that `conexao-page-translation` installs while it runs, and
+  `conexao_lang_url_object()` normalises page lookups to the default-language
+  source when two pages share a slug. The EN nav Blog item now resolves to
+  `/en/blog/` (the EN posts archive — EN-language posts only).
+- **Theme chrome for EN pages** ships through the completed `en_US` gettext
+  catalog (`languages/en_US.po`/`.mo`, 384 entries — the Stage 1 follow-up):
+  homepage hero/quick-access/sections, page eyebrows, header/footer, filters,
+  empty states. Page eyebrows resolve through the translation group
+  (`page.php`), and the header CTA uses `conexao_lang_url( '/anuncie/' )`
+  so it resolves to `/en/advertise/` in English.
+- **Excluded technical pages** (documented with evidence in the Stage 4.5
+  report): the WordPress installer `about` sample, the shadowed legacy alias
+  pages (`sobre`, `termos`, `privacidade` — permanently 301'd before they can
+  render), the `search` utility page (sitemap-excluded, robots-disallowed,
+  body is a single search block) and the shadowed `lazer` page
+  (`/lazer/` is the leisure CPT archive, so the page's permalink never
+  renders).
+- **REST is unchanged**: the Stage 4.1 contract deliberately excluded
+  `page`, and Stage 4.5 does not expand it (`inc/rest-language.php` is
+  untouched). All Pages being translated does not change the Flutter-facing
+  REST surface.
+
 ### English rollout state (Stage 4.1 — bilingual REST contract)
 
 Polylang Free sets the REST *language context* from a `lang` parameter but

@@ -1,0 +1,65 @@
+# Conexão BR Irlanda — EN Page Translation (Stage 4.5)
+
+**Plugin:** `conexao-page-translation` · **Version:** 1.0.0 · **Scope:** WordPress website only (the Flutter app is frozen and out of scope).
+
+One-shot, auditable migration that creates the **linked English translation of every eligible public WordPress Page** through Polylang — the Stage 4.5 page rollout of the English architecture (`CONEXAO_BR_ENGLISH_ARCHITECTURE_DECISION.md`, Stages 1–4.3).
+
+## Why a plugin (not a REST script, not WP-CLI)
+
+- Production is **WordPress.com**: no SSH, no WP-CLI. The established production content-migration pattern in this project is an **admin-screen importer** (`conexao-leisure-migration`, `conexao-sponsor-migration`); this plugin follows it exactly (dry-run preview → confirm → apply → per-page report).
+- **Polylang Free 3.8.9 cannot link translations over the public REST API** (verified against the 3.8.9 sources: the `lang` parameter is honoured on write, but the `translations` relationship is only written from the admin forms). Linking needs Polylang's PHP API (`pll_set_post_language` + `pll_save_post_translations`), which this plugin runs.
+
+## What it does
+
+1. Loads the **human-authored** translation data from `includes/translation-map.php` (single source of truth — no machine translation; the Stage 3.2 approved wording is reused for the 7 previously translated pages).
+2. Creates each EN page **in dependency order**: front page → top-level pages → legal/utility (Phase 2 of the stage; a child is never created before its parent).
+3. Links PT ⇄ EN through Polylang and **verifies the link from both directions** before reporting success (`pll_get_post` pt→en and en→pt).
+4. Copies from the PT source: page template (`_wp_page_template`), menu order, featured media (media is shared), parent (translated parent when one exists) and pass-through custom fields (`_empregos_link`).
+5. Sets `conexao_meta_description` to the authored EN description.
+6. **Resolves internal links through the Polylang relationship** (`includes/apply.php` → `conexao_page_translation_resolve_path`): page links become the EN permalink path, archive links (`/guias/`, `/eventos/`, `/lazer/`…) become the EN archive URL, unresolved links stay PT (approved B1). Never string-prefix mangling.
+7. Takes a **PT snapshot before and after** the run and fails loudly if any PT field changed (Phase 23 gate: zero unintended PT changes).
+
+## Guarantees
+
+- **Never modifies a Portuguese page** (no update call ever targets a PT id).
+- **Idempotent**: existing EN translations are skipped (re-runs are safe; `update_existing` mode exists for repairs but is opt-in).
+- **Refuses slug collisions** instead of colliding.
+- **No cron, no frontend effect, no REST changes** — deactivate (or delete) after the rollout.
+
+## Shared slugs (`blog`, `newsletter`)
+
+Polylang Free has no shared-slug support (Pro feature). `blog` and `newsletter` are identical words in English, so their EN pages intentionally keep the PT `post_name` through a **scoped `wp_unique_post_slug` filter** (a one-shot transient names the exact permitted slug during that single `wp_insert_post` call). This keeps the documented URLs `/en/blog/` and `/en/newsletter/` (no `blog-2`). Polylang's pagename auto-translate disambiguates PT/EN requests by language, and `conexao_lang_url_object()` (theme `inc/polylang.php`) normalises lookups to the default-language source.
+
+## Admin screen
+
+Tools → **EN Page Translations**: current state table (PT page / planned EN slug / EN status), **Preview (dry run)** and **Apply** buttons (nonce + `manage_options`), and the full per-page report (created/exists/error + resolved link map).
+
+## Run paths
+
+| Environment | How | Notes |
+|---|---|---|
+| Local Docker / staging | `wp eval-file scripts/stage45-translate-pages.php` (dry run) or `... apply` | Loads the same map + engine; prints the relationship table. |
+| Production (WordPress.com) | Activate the plugin → Tools → EN Page Translations → Preview → Apply | Requires the Stage 4.3 English layer (Polylang Free 3.8.9 + the current theme ZIP) deployed first. |
+
+## Verification after the rollout
+
+```bash
+python3 scripts/stage45-verify-pages.py --phase after --out /tmp/s45-after   # HTTP matrix (123 rows)
+python3 scripts/stage45-pt-snapshot.py --compare stage45-work/pt-snapshot.json <fresh-snapshot>.json
+php wp-content/themes/conexao-br-irlanda/tests/test-stage45-pages.php       # relationship table + invariance
+```
+
+See `CONEXAO_BR_ENGLISH_STAGE_4_5_REPORT.md` for the full acceptance matrix.
+
+## Related files
+
+| File | Role |
+|---|---|
+| `includes/translation-map.php` | The human-authored EN data (37 pages) — single source of truth |
+| `includes/apply.php` | Creation/linking/verification engine + link localizer |
+| `scripts/stage45-translate-pages.php` | WP-CLI runner (local/staging) — same data, same engine |
+| `scripts/stage45-page-inventory.py` | Read-only page inventory builder (Phase 0) |
+| `scripts/stage45-validate-manifest.py` | Static manifest validation + JSON manifest render |
+| `scripts/stage45-pt-snapshot.py` | PT regression checkpoint (Phase 23) |
+| `scripts/stage45-verify-pages.py` | HTTP acceptance matrix (Phase 28) |
+| `scripts/stage45-translation-completeness-scan.py` | Untranslated-content review scanner (Phase 22) |

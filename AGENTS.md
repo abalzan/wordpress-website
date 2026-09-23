@@ -36,6 +36,7 @@ All under `wp-content/plugins/`. Load order matters:
 | `conexao-event-importer` | Local-only event import/export tooling (manual, no cron) | docs/plugins/conexao-event-importer.md |
 | `conexao-leisure-migration` | Lazer export/import (ZIP) | docs/plugins/conexao-leisure-migration.md |
 | `conexao-sponsor-migration` | Apoiadores export/import (JSON + embedded images) | docs/plugins/conexao-sponsor-migration.md |
+| `conexao-page-translation` | Stage 4.5 EN page-translation migration (admin importer; activate for the rollout, then remove) | docs/plugins/conexao-page-translation.md |
 
 ## Theme
 

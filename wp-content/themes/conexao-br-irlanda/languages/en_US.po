@@ -1,11 +1,13 @@
 # English (US) translations for the Conexão BR Irlanda theme.
 # The theme's source language is pt_BR; this catalog translates its static
-# UI strings into natural English. STAGE 2 SCOPE: the Stage 1 curated subset
+# UI strings into natural English. STAGE 1/2 SCOPE: the curated subset
 # (recurrence labels, navigation overrides, SEO title/description patterns,
-# breadcrumb root, JavaScript UI strings) plus the Stage 2 language-switcher
-# strings. Untranslated entries deliberately fall back to the Portuguese
-# source so nothing half-translated is ever emitted. Merged with the full POT
-# by `wp i18n update-po`; translations are human-authored, not machine-made.
+# breadcrumb root, JavaScript UI strings) plus the language-switcher strings.
+# STAGE 4.5 SCOPE: the catalog is COMPLETE — every remaining msgid was
+# translated (human-authored, not machine-made) so the EN pages' chrome
+# (homepage hero/quick-access/sections, page eyebrows, header/footer,
+# filters, empty states) renders in English. Untranslated entries can no
+# longer occur; verify with scripts/stage45-build-en-catalog.py --check.
 msgid ""
 msgstr "Project-Id-Version: Conexão BR Irlanda 1.0.0\nReport-Msgid-Bugs-To: https://github.com/abalzan/wordpress-website\nLast-Translator: Conexão BR Irlanda maintainers\nLanguage-Team: English (US)\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPOT-Creation-Date: 2026-09-21 00:00+0000\nPO-Revision-Date: 2026-09-21 00:00+0000\nLanguage: en_US\nPlural-Forms: nplurals=2; plural=(n != 1);\nX-Generator: human-authored curated catalog\n"
 

@@ -364,6 +364,55 @@ def probe(base, rows, out_prefix, phase, resume=False):
     return 0 if failed == 0 else 1
 
 
+def check_sitemap(base, out_prefix, manifest):
+    """Phase 15: every EN page appears exactly once in /sitemap.xml; no
+    redirecting /en/ URLs are listed. Returns (failures, rows)."""
+    rows = []
+    failures = []
+    body = b""
+    for attempt in range(4):
+        rec = get(base + "/sitemap.xml")
+        if rec["status"] == 200:
+            body = rec["body"]
+            break
+        time.sleep(10)
+    if not body:
+        return ["sitemap.xml not reachable"], []
+
+    text = body.decode("utf-8", "replace")
+    if "sitemapindex" in text[:600]:
+        child = re.search(r"<loc>([^<]+)</loc>", text)
+        if child and "image" not in child.group(1):
+            rec = get(child.group(1))
+            if rec["status"] == 200:
+                text = rec["body"].decode("utf-8", "replace")
+
+    locs = re.findall(r"<loc>([^<]+)</loc>", text)
+    producer = "theme" if "conexao" in text[:2000] or "<urlset" in text else "unknown"
+    dupes = sorted({l for l in locs if locs.count(l) > 1})
+
+    for it in manifest["items"]:
+        enu = base + it["en_url"]
+        count = locs.count(enu)
+        if it["pt_slug"] == "inicio":
+            continue  # the EN front page is the /en/ language home entry
+        rows.append({"url": enu, "count": count})
+        if count != 1:
+            failures.append(f"{enu} appears {count}× in the sitemap (expected exactly 1)")
+
+    # No redirecting /en/ URLs: the PT-slug EN aliases and the B1 utility page.
+    for bad in ["/en/search/", "/en/sobre/", "/en/termos/", "/en/privacidade/"]:
+        if any(l == base + bad for l in locs):
+            failures.append(f"redirecting URL {bad} listed in the sitemap")
+
+    if dupes:
+        failures.append(f"duplicate sitemap entries: {dupes[:5]}")
+
+    with open(out_prefix + "-sitemap.json", "w", encoding="utf-8") as fh:
+        json.dump({"producer": producer, "failures": failures, "en_urls": rows}, fh, indent=1)
+    return failures, rows
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--phase", choices=["before", "after"], required=True)
@@ -378,7 +427,13 @@ def main():
     snapshot = json.load(open(args.snapshot))
     rows = build_rows(args.phase, args.base.rstrip("/"), manifest, snapshot)
     print(f"== Stage 4.5 page matrix ({args.phase}): {len(rows)} rows ==")
-    sys.exit(probe(args.base.rstrip("/"), rows, args.out, args.phase, resume=args.resume))
+    rc = probe(args.base.rstrip("/"), rows, args.out, args.phase, resume=args.resume)
+    if args.phase == "after" and rc == 0:
+        failures, _ = check_sitemap(args.base.rstrip("/"), args.out, manifest)
+        for f in failures:
+            print(f"  [FAIL] sitemap {f}", flush=True)
+        rc = 1 if failures else 0
+    sys.exit(rc)
 
 
 if __name__ == "__main__":
