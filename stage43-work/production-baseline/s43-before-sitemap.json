@@ -1,0 +1,67 @@
+{
+ "base": "https://conexaobr.ie",
+ "phase": "before",
+ "generated": "2026-09-23T11:16:41Z",
+ "rows": [
+  {
+   "group": "sitemap",
+   "name": "sitemap_xml",
+   "path": "/sitemap.xml",
+   "kind": "sitemap",
+   "status": 200,
+   "location": null,
+   "x_wp_total": null,
+   "x_redirect_by": null,
+   "chain": [
+    {
+     "url": "https://conexaobr.ie/sitemap.xml",
+     "status": 200,
+     "location": null
+    }
+   ],
+   "info": {},
+   "bytes": 518
+  },
+  {
+   "group": "sitemap",
+   "name": "robots_txt",
+   "path": "/robots.txt",
+   "kind": "sitemap",
+   "status": 200,
+   "location": null,
+   "x_wp_total": null,
+   "x_redirect_by": null,
+   "chain": [
+    {
+     "url": "https://conexaobr.ie/robots.txt",
+     "status": 200,
+     "location": null
+    }
+   ],
+   "info": {},
+   "bytes": 331
+  },
+  {
+   "group": "sitemap",
+   "name": "theme_sitemap_index",
+   "path": "/sitemap_index.xml",
+   "kind": "sitemap",
+   "status": 200,
+   "location": null,
+   "x_wp_total": null,
+   "x_redirect_by": null,
+   "chain": [
+    {
+     "url": "https://conexaobr.ie/sitemap_index.xml",
+     "status": 200,
+     "location": null
+    }
+   ],
+   "info": {},
+   "bytes": 314254
+  }
+ ],
+ "checks": [],
+ "failed": 0,
+ "passed": 0
+}

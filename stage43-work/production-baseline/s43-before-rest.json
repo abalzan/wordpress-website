@@ -1,0 +1,238 @@
+{
+ "base": "https://conexaobr.ie",
+ "phase": "before",
+ "generated": "2026-09-23T11:16:26Z",
+ "rows": [
+  {
+   "group": "rest",
+   "name": "rest_event_pt",
+   "path": "/wp-json/wp/v2/event?lang=pt&per_page=1",
+   "kind": "rest",
+   "status": 200,
+   "location": null,
+   "x_wp_total": "1779",
+   "x_redirect_by": null,
+   "chain": [
+    {
+     "url": "https://conexaobr.ie/wp-json/wp/v2/event?lang=pt&per_page=1",
+     "status": 200,
+     "location": null
+    }
+   ],
+   "info": {},
+   "bytes": 4022
+  },
+  {
+   "group": "rest",
+   "name": "rest_event_en",
+   "path": "/wp-json/wp/v2/event?lang=en&per_page=1",
+   "kind": "rest",
+   "status": 200,
+   "location": null,
+   "x_wp_total": "1779",
+   "x_redirect_by": null,
+   "chain": [
+    {
+     "url": "https://conexaobr.ie/wp-json/wp/v2/event?lang=en&per_page=1",
+     "status": 200,
+     "location": null
+    }
+   ],
+   "info": {},
+   "bytes": 4022
+  },
+  {
+   "group": "rest",
+   "name": "rest_leisure_en",
+   "path": "/wp-json/wp/v2/leisure?lang=en&per_page=1",
+   "kind": "rest",
+   "status": 200,
+   "location": null,
+   "x_wp_total": "289",
+   "x_redirect_by": null,
+   "chain": [
+    {
+     "url": "https://conexaobr.ie/wp-json/wp/v2/leisure?lang=en&per_page=1",
+     "status": 200,
+     "location": null
+    }
+   ],
+   "info": {},
+   "bytes": 5098
+  },
+  {
+   "group": "rest",
+   "name": "rest_guide_en",
+   "path": "/wp-json/wp/v2/guide?lang=en&per_page=1",
+   "kind": "rest",
+   "status": 200,
+   "location": null,
+   "x_wp_total": "54",
+   "x_redirect_by": null,
+   "chain": [
+    {
+     "url": "https://conexaobr.ie/wp-json/wp/v2/guide?lang=en&per_page=1",
+     "status": 200,
+     "location": null
+    }
+   ],
+   "info": {},
+   "bytes": 8095
+  },
+  {
+   "group": "rest",
+   "name": "rest_posts_en",
+   "path": "/wp-json/wp/v2/posts?lang=en&per_page=1",
+   "kind": "rest",
+   "status": 200,
+   "location": null,
+   "x_wp_total": "36",
+   "x_redirect_by": null,
+   "chain": [
+    {
+     "url": "https://conexaobr.ie/wp-json/wp/v2/posts?lang=en&per_page=1",
+     "status": 200,
+     "location": null
+    }
+   ],
+   "info": {},
+   "bytes": 11811
+  },
+  {
+   "group": "rest",
+   "name": "rest_job_en",
+   "path": "/wp-json/wp/v2/job?lang=en&per_page=1",
+   "kind": "rest",
+   "status": 200,
+   "location": null,
+   "x_wp_total": "1",
+   "x_redirect_by": null,
+   "chain": [
+    {
+     "url": "https://conexaobr.ie/wp-json/wp/v2/job?lang=en&per_page=1",
+     "status": 200,
+     "location": null
+    }
+   ],
+   "info": {},
+   "bytes": 3751
+  },
+  {
+   "group": "rest",
+   "name": "rest_course_en",
+   "path": "/wp-json/wp/v2/course_provider?lang=en&per_page=1",
+   "kind": "rest",
+   "status": 200,
+   "location": null,
+   "x_wp_total": "11",
+   "x_redirect_by": null,
+   "chain": [
+    {
+     "url": "https://conexaobr.ie/wp-json/wp/v2/course_provider?lang=en&per_page=1",
+     "status": 200,
+     "location": null
+    }
+   ],
+   "info": {},
+   "bytes": 3223
+  },
+  {
+   "group": "rest",
+   "name": "rest_sponsor_en",
+   "path": "/wp-json/wp/v2/sponsor?lang=en&per_page=1",
+   "kind": "rest",
+   "status": 200,
+   "location": null,
+   "x_wp_total": "10",
+   "x_redirect_by": null,
+   "chain": [
+    {
+     "url": "https://conexaobr.ie/wp-json/wp/v2/sponsor?lang=en&per_page=1",
+     "status": 200,
+     "location": null
+    }
+   ],
+   "info": {},
+   "bytes": 4208
+  },
+  {
+   "group": "rest",
+   "name": "rest_search_en",
+   "path": "/wp-json/wp/v2/search?lang=en&per_page=1",
+   "kind": "rest",
+   "status": 200,
+   "location": null,
+   "x_wp_total": "2223",
+   "x_redirect_by": null,
+   "chain": [
+    {
+     "url": "https://conexaobr.ie/wp-json/wp/v2/search?lang=en&per_page=1",
+     "status": 200,
+     "location": null
+    }
+   ],
+   "info": {},
+   "bytes": 548
+  },
+  {
+   "group": "rest",
+   "name": "rest_invalid_lang",
+   "path": "/wp-json/wp/v2/event?lang=xx&per_page=1",
+   "kind": "rest",
+   "status": 200,
+   "location": null,
+   "x_wp_total": "1779",
+   "x_redirect_by": null,
+   "chain": [
+    {
+     "url": "https://conexaobr.ie/wp-json/wp/v2/event?lang=xx&per_page=1",
+     "status": 200,
+     "location": null
+    }
+   ],
+   "info": {},
+   "bytes": 4022
+  },
+  {
+   "group": "rest",
+   "name": "rest_terms_translated_category",
+   "path": "/wp-json/wp/v2/conexao_category?lang=en&per_page=3&_fields=id,slug,name",
+   "kind": "rest",
+   "status": 200,
+   "location": null,
+   "x_wp_total": "56",
+   "x_redirect_by": null,
+   "chain": [
+    {
+     "url": "https://conexaobr.ie/wp-json/wp/v2/conexao_category?lang=en&per_page=3&_fields=id,slug,name",
+     "status": 200,
+     "location": null
+    }
+   ],
+   "info": {},
+   "bytes": 147
+  },
+  {
+   "group": "rest",
+   "name": "rest_terms_shared_county",
+   "path": "/wp-json/wp/v2/conexao_county?lang=en&per_page=3&_fields=id,slug,name",
+   "kind": "rest",
+   "status": 200,
+   "location": null,
+   "x_wp_total": "26",
+   "x_redirect_by": null,
+   "chain": [
+    {
+     "url": "https://conexaobr.ie/wp-json/wp/v2/conexao_county?lang=en&per_page=3&_fields=id,slug,name",
+     "status": 200,
+     "location": null
+    }
+   ],
+   "info": {},
+   "bytes": 129
+  }
+ ],
+ "checks": [],
+ "failed": 0,
+ "passed": 0
+}

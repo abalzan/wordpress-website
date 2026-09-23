@@ -273,16 +273,22 @@ REST_ROWS = [
 ]
 
 SITEMAP_ROWS = [
-    ("sitemap", "sitemap_xml", "/sitemap.xml",
+    ("sitemap", "sitemap_xml", "/sitemap.xml", "sitemap",
      {"status": 200, "must_include": ["/"], "must_exclude_b2": True,
       "no_duplicates": True}),
-    ("sitemap", "robots_txt", "/robots.txt", {"status": 200}),
+    ("sitemap", "robots_txt", "/robots.txt", "sitemap", {"status": 200}),
+    ("sitemap", "theme_sitemap_index", "/sitemap_index.xml", "sitemap",
+     {"status": 200, "must_exclude_b2": True, "no_duplicates": True}),
 ]
 
 
 def eval_html(path, rec, chain, info, expect):
     """Evaluate expectations for an HTML row: list of (check, ok, detail)."""
-    checks = [(f"{path} status==200", rec["status"] == 200, f"status {rec['status']}")]
+    first = chain[0]["status"]
+    checks = [(f"{path} status==200 (no redirect)",
+               first == 200 and rec["status"] == 200,
+               f"first {first}, final {rec['status']}, "
+               f"hops {[c['status'] for c in chain]}")]
     if rec["status"] != 200:
         return checks
     if "canonical" in expect:
@@ -342,7 +348,8 @@ def eval_rest(path, rec, expect):
 
 
 def eval_sitemap(path, rec, expect):
-    checks = [(f"{path} status==200", rec["status"] == 200, f"status {rec['status']}")]
+    first = rec["status"]
+    checks = [(f"{path} status==200", first == 200, f"status {first}")]
     body = rec["body"].decode("utf-8", "replace")
     if not path.endswith(".xml") or rec["status"] != 200:
         return checks
@@ -386,10 +393,16 @@ def main():
             f"{cfg['WP_USERNAME']}:{cfg['WP_APPLICATION_PASSWORD']}".encode()).decode()
 
     groups = args.group.split(",")
+
+    def norm(row, kind):
+        return row if len(row) == 5 else (row[0], row[1], row[2], kind, row[3])
+
     rows = [r for r in ROWS if "all" in groups or r[0] in groups]
+    rows += [norm(r, "sitemap") for r in SITEMAP_ROWS
+             if "all" in groups or r[0] in groups]
     if args.include_rest or "all" in groups:
-        rows += [r for r in REST_ROWS if "all" in groups or r[0] in groups]
-        rows += [r for r in SITEMAP_ROWS if "all" in groups or r[0] in groups]
+        rows += [norm(r, "rest") for r in REST_ROWS
+                 if "all" in groups or r[0] in groups]
 
     raw_dir = args.out + "-raw"
     os.makedirs(raw_dir, exist_ok=True)

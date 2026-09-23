@@ -1,0 +1,409 @@
+{
+ "base": "https://conexaobr.ie",
+ "phase": "before",
+ "generated": "2026-09-23T11:15:35Z",
+ "rows": [
+  {
+   "group": "archives",
+   "name": "en_archive_guias",
+   "path": "/en/guias/",
+   "kind": "html",
+   "status": 404,
+   "location": null,
+   "x_wp_total": null,
+   "x_redirect_by": null,
+   "chain": [
+    {
+     "url": "https://conexaobr.ie/en/guias/",
+     "status": 404,
+     "location": null
+    }
+   ],
+   "info": {
+    "canonical": null,
+    "hreflang": [],
+    "html_lang": "en-US",
+    "title": "P\u00e1gina n\u00e3o encontrada | Conex\u00e3o BR",
+    "b2_notice": false,
+    "polylang": false,
+    "language_switcher": false
+   },
+   "bytes": 60147
+  },
+  {
+   "group": "archives",
+   "name": "en_archive_eventos",
+   "path": "/en/eventos/",
+   "kind": "html",
+   "status": 404,
+   "location": null,
+   "x_wp_total": null,
+   "x_redirect_by": null,
+   "chain": [
+    {
+     "url": "https://conexaobr.ie/en/eventos/",
+     "status": 404,
+     "location": null
+    }
+   ],
+   "info": {
+    "canonical": null,
+    "hreflang": [],
+    "html_lang": "en-US",
+    "title": "P\u00e1gina n\u00e3o encontrada | Conex\u00e3o BR",
+    "b2_notice": false,
+    "polylang": false,
+    "language_switcher": false
+   },
+   "bytes": 60074
+  },
+  {
+   "group": "archives",
+   "name": "en_archive_lazer",
+   "path": "/en/lazer/",
+   "kind": "html",
+   "status": 200,
+   "location": null,
+   "x_wp_total": null,
+   "x_redirect_by": null,
+   "chain": [
+    {
+     "url": "https://conexaobr.ie/en/lazer/",
+     "status": 301,
+     "location": "https://conexaobr.ie/lazer/",
+     "x_redirect_by": null
+    },
+    {
+     "url": "https://conexaobr.ie/lazer/",
+     "status": 200,
+     "location": null,
+     "x_redirect_by": null
+    }
+   ],
+   "info": {
+    "canonical": "https://conexaobr.ie/lazer/",
+    "hreflang": [],
+    "html_lang": "en-US",
+    "title": "Lazer & Turismo na Irlanda | Conex\u00e3o BR",
+    "b2_notice": false,
+    "polylang": false,
+    "language_switcher": false
+   },
+   "bytes": 147895
+  },
+  {
+   "group": "archives",
+   "name": "en_archive_apoiadores",
+   "path": "/en/apoiadores/",
+   "kind": "html",
+   "status": 404,
+   "location": null,
+   "x_wp_total": null,
+   "x_redirect_by": null,
+   "chain": [
+    {
+     "url": "https://conexaobr.ie/en/apoiadores/",
+     "status": 404,
+     "location": null
+    }
+   ],
+   "info": {
+    "canonical": null,
+    "hreflang": [],
+    "html_lang": "en-US",
+    "title": "P\u00e1gina n\u00e3o encontrada | Conex\u00e3o BR",
+    "b2_notice": false,
+    "polylang": false,
+    "language_switcher": false
+   },
+   "bytes": 60077
+  },
+  {
+   "group": "archives",
+   "name": "en_archive_cursos",
+   "path": "/en/cursos/",
+   "kind": "html",
+   "status": 404,
+   "location": null,
+   "x_wp_total": null,
+   "x_redirect_by": null,
+   "chain": [
+    {
+     "url": "https://conexaobr.ie/en/cursos/",
+     "status": 404,
+     "location": null
+    }
+   ],
+   "info": {
+    "canonical": null,
+    "hreflang": [],
+    "html_lang": "en-US",
+    "title": "P\u00e1gina n\u00e3o encontrada | Conex\u00e3o BR",
+    "b2_notice": false,
+    "polylang": false,
+    "language_switcher": false
+   },
+   "bytes": 60073
+  },
+  {
+   "group": "archives",
+   "name": "pt_archive_guias",
+   "path": "/guias/",
+   "kind": "html",
+   "status": 200,
+   "location": null,
+   "x_wp_total": null,
+   "x_redirect_by": null,
+   "chain": [
+    {
+     "url": "https://conexaobr.ie/guias/",
+     "status": 200,
+     "location": null
+    }
+   ],
+   "info": {
+    "canonical": "https://conexaobr.ie/guias/",
+    "hreflang": [],
+    "html_lang": "en-US",
+    "title": "Guias Pr\u00e1ticos | Conex\u00e3o BR",
+    "b2_notice": false,
+    "polylang": false,
+    "language_switcher": false
+   },
+   "bytes": 89560
+  },
+  {
+   "group": "archives",
+   "name": "pt_archive_eventos",
+   "path": "/eventos/",
+   "kind": "html",
+   "status": 200,
+   "location": null,
+   "x_wp_total": null,
+   "x_redirect_by": null,
+   "chain": [
+    {
+     "url": "https://conexaobr.ie/eventos/",
+     "status": 200,
+     "location": null
+    }
+   ],
+   "info": {
+    "canonical": "https://conexaobr.ie/eventos/",
+    "hreflang": [],
+    "html_lang": "en-US",
+    "title": "Eventos na Irlanda | Conex\u00e3o BR",
+    "b2_notice": false,
+    "polylang": false,
+    "language_switcher": false
+   },
+   "bytes": 250667
+  },
+  {
+   "group": "archives",
+   "name": "pt_archive_lazer",
+   "path": "/lazer/",
+   "kind": "html",
+   "status": 200,
+   "location": null,
+   "x_wp_total": null,
+   "x_redirect_by": null,
+   "chain": [
+    {
+     "url": "https://conexaobr.ie/lazer/",
+     "status": 200,
+     "location": null
+    }
+   ],
+   "info": {
+    "canonical": "https://conexaobr.ie/lazer/",
+    "hreflang": [],
+    "html_lang": "en-US",
+    "title": "Lazer & Turismo na Irlanda | Conex\u00e3o BR",
+    "b2_notice": false,
+    "polylang": false,
+    "language_switcher": false
+   },
+   "bytes": 147895
+  },
+  {
+   "group": "search",
+   "name": "en_search",
+   "path": "/en/?s=housing",
+   "kind": "html",
+   "status": 404,
+   "location": null,
+   "x_wp_total": null,
+   "x_redirect_by": null,
+   "chain": [
+    {
+     "url": "https://conexaobr.ie/en/?s=housing",
+     "status": 301,
+     "location": "https://conexaobr.ie/eventos/encore-halloween-edition-special-guest-1926/?s=housing",
+     "x_redirect_by": "WordPress"
+    },
+    {
+     "url": "https://conexaobr.ie/eventos/encore-halloween-edition-special-guest-1926/?s=housing",
+     "status": 404,
+     "location": null,
+     "x_redirect_by": null
+    }
+   ],
+   "info": {
+    "canonical": null,
+    "hreflang": [],
+    "html_lang": "en-US",
+    "title": "P\u00e1gina n\u00e3o encontrada | Conex\u00e3o BR",
+    "b2_notice": false,
+    "polylang": false,
+    "language_switcher": false
+   },
+   "bytes": 60189
+  },
+  {
+   "group": "search",
+   "name": "pt_search",
+   "path": "/?s=moradia",
+   "kind": "html",
+   "status": 200,
+   "location": null,
+   "x_wp_total": null,
+   "x_redirect_by": null,
+   "chain": [
+    {
+     "url": "https://conexaobr.ie/?s=moradia",
+     "status": 200,
+     "location": null
+    }
+   ],
+   "info": {
+    "canonical": "https://conexaobr.ie/?s=moradia",
+    "hreflang": [],
+    "html_lang": "en-US",
+    "title": "Busca: moradia | Conex\u00e3o BR",
+    "b2_notice": false,
+    "polylang": false,
+    "language_switcher": false
+   },
+   "bytes": 81659
+  },
+  {
+   "group": "filters",
+   "name": "en_filter_translated_category",
+   "path": "/en/guias/?categoria=documents",
+   "kind": "html",
+   "status": 404,
+   "location": null,
+   "x_wp_total": null,
+   "x_redirect_by": null,
+   "chain": [
+    {
+     "url": "https://conexaobr.ie/en/guias/?categoria=documents",
+     "status": 404,
+     "location": null
+    }
+   ],
+   "info": {
+    "canonical": null,
+    "hreflang": [],
+    "html_lang": "en-US",
+    "title": "P\u00e1gina n\u00e3o encontrada | Conex\u00e3o BR",
+    "b2_notice": false,
+    "polylang": false,
+    "language_switcher": false
+   },
+   "bytes": 60092
+  },
+  {
+   "group": "filters",
+   "name": "pt_filter_category",
+   "path": "/guias/?categoria=documentos",
+   "kind": "html",
+   "status": 200,
+   "location": null,
+   "x_wp_total": null,
+   "x_redirect_by": null,
+   "chain": [
+    {
+     "url": "https://conexaobr.ie/guias/?categoria=documentos",
+     "status": 200,
+     "location": null
+    }
+   ],
+   "info": {
+    "canonical": "https://conexaobr.ie/guias/",
+    "hreflang": [],
+    "html_lang": "en-US",
+    "title": "Guias Pr\u00e1ticos | Conex\u00e3o BR",
+    "b2_notice": false,
+    "polylang": false,
+    "language_switcher": false
+   },
+   "bytes": 78144
+  },
+  {
+   "group": "filters",
+   "name": "en_filter_shared_county",
+   "path": "/en/lazer/?county=dublin",
+   "kind": "html",
+   "status": 200,
+   "location": null,
+   "x_wp_total": null,
+   "x_redirect_by": null,
+   "chain": [
+    {
+     "url": "https://conexaobr.ie/en/lazer/?county=dublin",
+     "status": 301,
+     "location": "https://conexaobr.ie/lazer/?county=dublin",
+     "x_redirect_by": "WordPress"
+    },
+    {
+     "url": "https://conexaobr.ie/lazer/?county=dublin",
+     "status": 200,
+     "location": null,
+     "x_redirect_by": null
+    }
+   ],
+   "info": {
+    "canonical": "https://conexaobr.ie/lazer/",
+    "hreflang": [],
+    "html_lang": "en-US",
+    "title": "Lazer & Turismo na Irlanda | Conex\u00e3o BR",
+    "b2_notice": false,
+    "polylang": false,
+    "language_switcher": false
+   },
+   "bytes": 149706
+  },
+  {
+   "group": "filters",
+   "name": "pt_filter_shared_county",
+   "path": "/lazer/?county=dublin",
+   "kind": "html",
+   "status": 200,
+   "location": null,
+   "x_wp_total": null,
+   "x_redirect_by": null,
+   "chain": [
+    {
+     "url": "https://conexaobr.ie/lazer/?county=dublin",
+     "status": 200,
+     "location": null
+    }
+   ],
+   "info": {
+    "canonical": "https://conexaobr.ie/lazer/",
+    "hreflang": [],
+    "html_lang": "en-US",
+    "title": "Lazer & Turismo na Irlanda | Conex\u00e3o BR",
+    "b2_notice": false,
+    "polylang": false,
+    "language_switcher": false
+   },
+   "bytes": 149706
+  }
+ ],
+ "checks": [],
+ "failed": 0,
+ "passed": 0
+}

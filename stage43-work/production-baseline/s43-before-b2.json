@@ -1,0 +1,224 @@
+{
+ "base": "https://conexaobr.ie",
+ "phase": "before",
+ "generated": "2026-09-23T11:13:27Z",
+ "rows": [
+  {
+   "group": "b1",
+   "name": "b1_blog",
+   "path": "/en/blog/",
+   "kind": "redirect",
+   "status": 200,
+   "location": null,
+   "x_wp_total": null,
+   "x_redirect_by": null,
+   "chain": [
+    {
+     "url": "https://conexaobr.ie/en/blog/",
+     "status": 301,
+     "location": "https://conexaobr.ie/blog/",
+     "x_redirect_by": "WordPress"
+    },
+    {
+     "url": "https://conexaobr.ie/blog/",
+     "status": 200,
+     "location": null,
+     "x_redirect_by": null
+    }
+   ],
+   "info": {},
+   "bytes": 89228
+  },
+  {
+   "group": "b1",
+   "name": "b1_moradia",
+   "path": "/en/moradia/",
+   "kind": "redirect",
+   "status": 200,
+   "location": null,
+   "x_wp_total": null,
+   "x_redirect_by": null,
+   "chain": [
+    {
+     "url": "https://conexaobr.ie/en/moradia/",
+     "status": 301,
+     "location": "https://conexaobr.ie/moradia/",
+     "x_redirect_by": "WordPress"
+    },
+    {
+     "url": "https://conexaobr.ie/moradia/",
+     "status": 200,
+     "location": null,
+     "x_redirect_by": null
+    }
+   ],
+   "info": {},
+   "bytes": 56030
+  },
+  {
+   "group": "b1",
+   "name": "b1_europa",
+   "path": "/en/europa/",
+   "kind": "redirect",
+   "status": 200,
+   "location": null,
+   "x_wp_total": null,
+   "x_redirect_by": null,
+   "chain": [
+    {
+     "url": "https://conexaobr.ie/en/europa/",
+     "status": 301,
+     "location": "https://conexaobr.ie/europa/",
+     "x_redirect_by": "WordPress"
+    },
+    {
+     "url": "https://conexaobr.ie/europa/",
+     "status": 200,
+     "location": null,
+     "x_redirect_by": null
+    }
+   ],
+   "info": {},
+   "bytes": 57525
+  },
+  {
+   "group": "b2",
+   "name": "b2_irlanda",
+   "path": "/en/irlanda/",
+   "kind": "html",
+   "status": 200,
+   "location": null,
+   "x_wp_total": null,
+   "x_redirect_by": null,
+   "chain": [
+    {
+     "url": "https://conexaobr.ie/en/irlanda/",
+     "status": 301,
+     "location": "https://conexaobr.ie/irlanda/",
+     "x_redirect_by": "WordPress"
+    },
+    {
+     "url": "https://conexaobr.ie/irlanda/",
+     "status": 200,
+     "location": null,
+     "x_redirect_by": null
+    }
+   ],
+   "info": {
+    "canonical": "https://conexaobr.ie/irlanda/",
+    "hreflang": [],
+    "html_lang": "en-US",
+    "title": "Irlanda para Brasileiros &#8211; Conex\u00e3o BR",
+    "b2_notice": false,
+    "polylang": false,
+    "language_switcher": false
+   },
+   "bytes": 58058
+  },
+  {
+   "group": "b2",
+   "name": "b2_dublin",
+   "path": "/en/dublin/",
+   "kind": "html",
+   "status": 200,
+   "location": null,
+   "x_wp_total": null,
+   "x_redirect_by": null,
+   "chain": [
+    {
+     "url": "https://conexaobr.ie/en/dublin/",
+     "status": 301,
+     "location": "https://conexaobr.ie/dublin/",
+     "x_redirect_by": "WordPress"
+    },
+    {
+     "url": "https://conexaobr.ie/dublin/",
+     "status": 200,
+     "location": null,
+     "x_redirect_by": null
+    }
+   ],
+   "info": {
+    "canonical": "https://conexaobr.ie/dublin/",
+    "hreflang": [],
+    "html_lang": "en-US",
+    "title": "Condado de Dublin &#8211; Conex\u00e3o BR",
+    "b2_notice": false,
+    "polylang": false,
+    "language_switcher": false
+   },
+   "bytes": 57073
+  },
+  {
+   "group": "b2",
+   "name": "b2_cork",
+   "path": "/en/cork/",
+   "kind": "html",
+   "status": 200,
+   "location": null,
+   "x_wp_total": null,
+   "x_redirect_by": null,
+   "chain": [
+    {
+     "url": "https://conexaobr.ie/en/cork/",
+     "status": 301,
+     "location": "https://conexaobr.ie/cork/",
+     "x_redirect_by": "WordPress"
+    },
+    {
+     "url": "https://conexaobr.ie/cork/",
+     "status": 200,
+     "location": null,
+     "x_redirect_by": null
+    }
+   ],
+   "info": {
+    "canonical": "https://conexaobr.ie/cork/",
+    "hreflang": [],
+    "html_lang": "en-US",
+    "title": "Condado de Cork &#8211; Conex\u00e3o BR",
+    "b2_notice": false,
+    "polylang": false,
+    "language_switcher": false
+   },
+   "bytes": 57021
+  },
+  {
+   "group": "b2",
+   "name": "b2_galway",
+   "path": "/en/galway/",
+   "kind": "html",
+   "status": 200,
+   "location": null,
+   "x_wp_total": null,
+   "x_redirect_by": null,
+   "chain": [
+    {
+     "url": "https://conexaobr.ie/en/galway/",
+     "status": 301,
+     "location": "https://conexaobr.ie/galway/",
+     "x_redirect_by": "WordPress"
+    },
+    {
+     "url": "https://conexaobr.ie/galway/",
+     "status": 200,
+     "location": null,
+     "x_redirect_by": null
+    }
+   ],
+   "info": {
+    "canonical": "https://conexaobr.ie/galway/",
+    "hreflang": [],
+    "html_lang": "en-US",
+    "title": "Condado de Galway &#8211; Conex\u00e3o BR",
+    "b2_notice": false,
+    "polylang": false,
+    "language_switcher": false
+   },
+   "bytes": 57073
+  }
+ ],
+ "checks": [],
+ "failed": 0,
+ "passed": 0
+}
