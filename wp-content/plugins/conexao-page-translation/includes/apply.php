@@ -85,14 +85,17 @@ function conexao_page_translation_localize_links( string $content, string $lang 
 function conexao_page_translation_resolve_path( string $path, string $lang ): string {
 	$trimmed = trim( $path, '/' );
 
-	// (1) CPT archive roots → the language archive URL.
-	if ( '' !== $trimmed && false === strpos( $trimmed, '/' ) && function_exists( 'conexao_language_archive_url' ) ) {
-		foreach ( array( 'guide' => 'guias', 'event' => 'eventos', 'course_provider' => 'cursos', 'sponsor' => 'apoiadores', 'leisure' => 'lazer' ) as $post_type => $archive_slug ) {
-			if ( $trimmed === $archive_slug ) {
-				$archive = conexao_language_archive_url( $post_type, $lang );
-				if ( '' !== (string) $archive ) {
-					return (string) wp_parse_url( $archive, PHP_URL_PATH );
-				}
+	// (1) CPT archive roots → the language archive URL. Uses the theme's own
+	// helper (the single source of truth: registered post types with a real
+	// has_archive — so /empregos/, a PAGE, correctly falls through to the
+	// page lookup and /lazer/ resolves to the leisure archive).
+	if ( '' !== $trimmed && false === strpos( $trimmed, '/' )
+		&& function_exists( 'conexao_lang_url_archive_post_type' ) && function_exists( 'conexao_language_archive_url' ) ) {
+		$post_type = conexao_lang_url_archive_post_type( $path );
+		if ( '' !== $post_type && 'post' !== $post_type ) {
+			$archive = conexao_language_archive_url( $post_type, $lang );
+			if ( '' !== (string) $archive ) {
+				return (string) wp_parse_url( $archive, PHP_URL_PATH );
 			}
 		}
 	}
