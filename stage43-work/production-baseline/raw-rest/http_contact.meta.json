@@ -1,0 +1,17 @@
+{
+ "label": "http_contact",
+ "url": "https://conexaobr.ie/contact/",
+ "auth": false,
+ "follow": false,
+ "status": 301,
+ "location": "https://conexaobr.ie/contato/",
+ "content_type": "text/html; charset=UTF-8",
+ "x_redirect_by": "WordPress",
+ "x_ac": null,
+ "cache_control": "no-cache, must-revalidate, max-age=0, no-store, private",
+ "x_wp_total": null,
+ "x_wp_totalpages": null,
+ "elapsed_ms": 466,
+ "attempt": 1,
+ "body_len": 0
+}

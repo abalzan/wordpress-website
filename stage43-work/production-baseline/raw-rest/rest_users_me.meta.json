@@ -1,0 +1,17 @@
+{
+ "label": "rest_users_me",
+ "url": "https://conexaobr.ie/wp-json/wp/v2/users/me?context=edit",
+ "auth": true,
+ "follow": true,
+ "status": 200,
+ "location": null,
+ "content_type": "application/json; charset=UTF-8",
+ "x_redirect_by": null,
+ "x_ac": null,
+ "cache_control": "no-cache, must-revalidate, max-age=0, no-store, private",
+ "x_wp_total": null,
+ "x_wp_totalpages": null,
+ "elapsed_ms": 556,
+ "attempt": 1,
+ "body_len": 2864
+}

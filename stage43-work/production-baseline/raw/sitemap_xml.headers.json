@@ -1,0 +1,43 @@
+{
+  "final_headers": {
+    "Alt-Svc": "clear",
+    "Cache-Control": "max-age=300, must-revalidate",
+    "Connection": "close",
+    "Content-Encoding": "gzip",
+    "Content-Type": "text/xml; charset=UTF-8",
+    "Date": "Wed, 23 Sep 2026 10:49:46 GMT",
+    "Host-Header": "WordPress.com",
+    "Last-Modified": "Wed, 23 Sep 2026 10:38:23 GMT",
+    "Server": "nginx",
+    "Server-Timing": "a8c-cdn, dc;desc=dca, cache;desc=STALE;dur=1.0",
+    "Strict-Transport-Security": "max-age=31536000",
+    "Transfer-Encoding": "chunked",
+    "Vary": "accept, content-type, cookie",
+    "X-ac": "1.dca _atomic_dca STALE",
+    "X-hacker": "Want root?  Visit join.a8c.com and mention this header.",
+    "X-nananana": "Batcache-Set"
+  },
+  "final_status": 200,
+  "final_url": "https://conexaobr.ie/sitemap.xml",
+  "hops": [
+    {
+      "elapsed": 0.116,
+      "error": null,
+      "hop": 0,
+      "method": "GET",
+      "reason": "OK",
+      "redirect_target": null,
+      "status": 200,
+      "url": "https://conexaobr.ie/sitemap.xml"
+    }
+  ],
+  "probe": {
+    "key": "sitemap_xml",
+    "kind": "sitemap",
+    "method": "GET",
+    "url": "https://conexaobr.ie/sitemap.xml"
+  },
+  "status_chain": [
+    200
+  ]
+}

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--generator='jetpack-16.3-a.3'-->
+<!--Jetpack_Sitemap_Buffer_Master_XMLWriter-->
+<?xml-stylesheet type="text/xsl" href="//conexaobr.ie/sitemap-index.xsl"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+ <sitemap>
+  <loc>https://conexaobr.ie/sitemap-1.xml</loc>
+  <lastmod>2026-09-02T08:56:32Z</lastmod>
+ </sitemap>
+ <sitemap>
+  <loc>https://conexaobr.ie/image-sitemap-index-1.xml</loc>
+  <lastmod>2026-09-21T08:22:05Z</lastmod>
+ </sitemap>
+</sitemapindex>

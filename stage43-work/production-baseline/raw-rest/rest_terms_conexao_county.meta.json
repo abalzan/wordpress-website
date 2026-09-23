@@ -1,0 +1,17 @@
+{
+ "label": "rest_terms_conexao_county",
+ "url": "https://conexaobr.ie/wp-json/wp/v2/conexao_county?per_page=5&_fields=id,slug,name",
+ "auth": true,
+ "follow": true,
+ "status": 200,
+ "location": null,
+ "content_type": "application/json; charset=UTF-8",
+ "x_redirect_by": null,
+ "x_ac": null,
+ "cache_control": "no-cache, must-revalidate, max-age=0, no-store, private",
+ "x_wp_total": "26",
+ "x_wp_totalpages": "6",
+ "elapsed_ms": 418,
+ "attempt": 1,
+ "body_len": 215
+}

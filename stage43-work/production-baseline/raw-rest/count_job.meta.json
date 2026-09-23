@@ -1,0 +1,17 @@
+{
+ "label": "count_job",
+ "url": "https://conexaobr.ie/wp-json/wp/v2/job?per_page=1&_fields=id",
+ "auth": true,
+ "follow": true,
+ "status": 200,
+ "location": null,
+ "content_type": "application/json; charset=UTF-8",
+ "x_redirect_by": null,
+ "x_ac": null,
+ "cache_control": "no-cache, must-revalidate, max-age=0, no-store, private",
+ "x_wp_total": "1",
+ "x_wp_totalpages": "1",
+ "elapsed_ms": 419,
+ "attempt": 1,
+ "body_len": 14
+}

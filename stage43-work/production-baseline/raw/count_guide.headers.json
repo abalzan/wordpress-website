@@ -1,0 +1,48 @@
+{
+  "final_headers": {
+    "Access-Control-Allow-Headers": "Authorization, X-WP-Nonce, Content-Disposition, Content-MD5, Content-Type",
+    "Access-Control-Expose-Headers": "X-WP-Total, X-WP-TotalPages, Link",
+    "Allow": "GET",
+    "Alt-Svc": "clear",
+    "Connection": "close",
+    "Content-Encoding": "gzip",
+    "Content-Type": "application/json; charset=UTF-8",
+    "Date": "Wed, 23 Sep 2026 10:57:00 GMT",
+    "Host-Header": "WordPress.com",
+    "Link": "<https://conexaobr.ie/wp-json/wp/v2/guide?page=2>; rel=\"next\"",
+    "Server": "nginx",
+    "Server-Timing": "a8c-cdn, dc;desc=dca, cache;desc=STALE;dur=3.0",
+    "Strict-Transport-Security": "max-age=31536000",
+    "Transfer-Encoding": "chunked",
+    "Vary": "Origin",
+    "X-Content-Type-Options": "nosniff",
+    "X-Robots-Tag": "noindex",
+    "X-WP-Total": "54",
+    "X-WP-TotalPages": "6",
+    "X-ac": "4.dca _atomic_dca STALE",
+    "X-hacker": "Want root?  Visit join.a8c.com and mention this header."
+  },
+  "final_status": 200,
+  "final_url": "https://conexaobr.ie/wp-json/wp/v2/guide",
+  "hops": [
+    {
+      "elapsed": 0.155,
+      "error": null,
+      "hop": 0,
+      "method": "GET",
+      "reason": "OK",
+      "redirect_target": null,
+      "status": 200,
+      "url": "https://conexaobr.ie/wp-json/wp/v2/guide"
+    }
+  ],
+  "probe": {
+    "key": "count_guide",
+    "kind": "count",
+    "method": "GET",
+    "url": "https://conexaobr.ie/wp-json/wp/v2/guide"
+  },
+  "status_chain": [
+    200
+  ]
+}

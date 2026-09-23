@@ -1,0 +1,17 @@
+{
+ "label": "http_robots_txt",
+ "url": "https://conexaobr.ie/robots.txt",
+ "auth": false,
+ "follow": false,
+ "status": 403,
+ "location": null,
+ "content_type": "text/html",
+ "x_redirect_by": null,
+ "x_ac": null,
+ "cache_control": null,
+ "x_wp_total": null,
+ "x_wp_totalpages": null,
+ "elapsed_ms": 82,
+ "attempt": 1,
+ "body_len": 548
+}

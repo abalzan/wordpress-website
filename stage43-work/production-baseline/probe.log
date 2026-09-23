@@ -1,0 +1,53 @@
+base=https://conexaobr.ie auth=yes
+  rest_root -> 403 total=None
+  rest_plugins -> 403 total=None
+  rest_themes -> 403 total=None
+  rest_types -> 403 total=None
+  rest_taxonomies -> 403 total=None
+  rest_settings -> 403 total=None
+  rest_users_me -> 403 total=None
+  rest_page_sobrenos -> 403 total=None
+  rest_pages_lang_en -> 403 total=None
+  rest_conexao_v1 -> 403 total=None
+  rest_pll_v1 -> 403 total=None
+  rest_menus -> 403 total=None
+  rest_event_encore -> 403 total=None
+  count_pages -> 403 total=None
+  count_posts -> 403 total=None
+  count_media -> 403 total=None
+  count_guide -> 403 total=None
+  count_event -> 403 total=None
+  count_course_provider -> 403 total=None
+  count_job -> 403 total=None
+  count_sponsor -> 403 total=None
+  count_leisure -> 403 total=None
+  count_categories -> 403 total=None
+  count_tags -> 403 total=None
+  count_conexao_category -> 403 total=None
+  count_conexao_tag -> 403 total=None
+  count_conexao_county -> 403 total=None
+  count_conexao_town -> 403 total=None
+  http_en_root -> 403 loc=None
+  http_en_home -> 403 loc=None
+  http_inicio -> 403 loc=None
+  http_jobs -> 403 loc=None
+  http_about_us -> 403 loc=None
+  http_contact -> 403 loc=None
+  http_guides -> 403 loc=None
+  http_events -> 403 loc=None
+  http_courses -> 403 loc=None
+  http_sponsors -> 403 loc=None
+  http_ireland -> 403 loc=None
+  http_about -> 403 loc=None
+  http_privacidade -> 403 loc=None
+  http_termos -> 403 loc=None
+  http_sobre -> 403 loc=None
+  http_counties_dublin -> 403 loc=None
+  http_sitemap_xml -> 403 loc=None
+  http_sitemap_index_xml -> 403 loc=None
+  http_wp_sitemap_xml -> 403 loc=None
+  http_robots_txt -> 403 loc=None
+  http_follow_home -> 403
+  http_follow_guias -> 403
+  http_follow_eventos -> 403
+rows=51 -> rest-probe.json

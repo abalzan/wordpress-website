@@ -1,0 +1,17 @@
+{
+ "label": "rest_pages_lang_en",
+ "url": "https://conexaobr.ie/wp-json/wp/v2/pages?lang=en&per_page=5&_fields=id,slug,link",
+ "auth": true,
+ "follow": true,
+ "status": 200,
+ "location": null,
+ "content_type": "application/json; charset=UTF-8",
+ "x_redirect_by": null,
+ "x_ac": null,
+ "cache_control": "no-cache, must-revalidate, max-age=0, no-store, private",
+ "x_wp_total": "43",
+ "x_wp_totalpages": "9",
+ "elapsed_ms": 431,
+ "attempt": 1,
+ "body_len": 378
+}

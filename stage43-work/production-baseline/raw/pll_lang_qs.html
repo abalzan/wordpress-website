@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Hero LCP preload — emitted in <head> BEFORE the theme init script so the
+     browser's preload scanner discovers the fetch while parsing is unblocked.
+     Media conditions and URLs exactly match the <picture> sources in
+     front-page.php: mobile WebP ≤768px; desktop WebP ≥769px as a two-candidate
+     imagesrcset ladder (1600w + 2057w) with imagesizes="100vw", so the preload
+     resolves to the SAME candidate the <picture> srcset picks per device —
+     DPR-1 desktops fetch the 1600w derivative, DPR-2/wide screens the 2057w
+     master. The plain href fallback (the 2057w master) keeps legacy browsers
+     that predate imagesrcset behaving exactly as before. -->
+<link rel="preload" as="image" type="image/webp" fetchpriority="high" media="(max-width: 768px)" href="https://conexaobr.ie/wp-content/themes/conexao-br-irlanda/assets/images/conexaobr_Hero_image_mobile.webp">
+<link rel="preload" as="image" type="image/webp" fetchpriority="high" media="(min-width: 769px)" imagesrcset="https://conexaobr.ie/wp-content/themes/conexao-br-irlanda/assets/images/conexaobr_Hero_image-1600.webp 1600w, https://conexaobr.ie/wp-content/themes/conexao-br-irlanda/assets/images/conexaobr_Hero_image.webp 2057w" imagesizes="100vw" href="https://conexaobr.ie/wp-content/themes/conexao-br-irlanda/assets/images/conexaobr_Hero_image.webp">
+<link rel="profile" href="https://gmpg.org/xfn/11">
+<script>
+/* Theme initialization — runs before paint to prevent FOUC. */
+(function() {
+	try {
+		var stored = localStorage.getItem('conexao-theme');
+		var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+		var theme = stored || (prefersDark ? 'dark' : 'light');
+		document.documentElement.setAttribute('data-theme', theme);
+	} catch (e) {
+		document.documentElement.setAttribute('data-theme', 'light');
+	}
+})();
+</script>
+<title>Conexão BR | </title>
+<meta name='robots' content='max-image-preview:large' />
+<link rel='dns-prefetch' href='//secure.gravatar.com' />
+<link rel='dns-prefetch' href='//fonts-api.wp.com' />
+<link rel='dns-prefetch' href='//widgets.wp.com' />
+<link rel='dns-prefetch' href='//jetpack.wordpress.com' />
+<link rel='dns-prefetch' href='//s0.wp.com' />
+<link rel='dns-prefetch' href='//public-api.wordpress.com' />
+<link rel='dns-prefetch' href='//0.gravatar.com' />
+<link rel='dns-prefetch' href='//1.gravatar.com' />
+<link rel='dns-prefetch' href='//2.gravatar.com' />
+<link rel='preconnect' href='//i0.wp.com' />
+<link rel='preconnect' href='//c0.wp.com' />
+<link rel="alternate" type="application/rss+xml" title="Conexão BR &raquo; Feed" href="https://conexaobr.ie/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Conexão BR &raquo; Comments Feed" href="https://conexaobr.ie/comments/feed/" />
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<meta name="description" content="Conexão BR Irlanda - Portal da comunidade brasileira na Irlanda. Guias, eventos, cursos, empregos e mais." />
+<link rel="canonical" href="https://conexaobr.ie/" />
+	<meta property="og:type" content="article" />
+	<meta property="og:title" content="Início" />
+	<meta property="og:url" content="https://conexaobr.ie/" />
+	<meta property="og:description" content="Bem-vindo ao Conexão BR Irlanda, o portal da comunidade brasileira na Irlanda." />
+	<meta property="og:site_name" content="Conexão BR" />
+	<meta property="og:locale" content="pt_BR" />
+	<meta property="og:image" content="https://conexaobr.ie/wp-content/themes/conexao-br-irlanda/assets/images/conexao-social-card.svg" />
+	<meta property="og:image:alt" content="Início" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="Início" />
+	<meta name="twitter:description" content="Bem-vindo ao Conexão BR Irlanda, o portal da comunidade brasileira na Irlanda." />
+	<meta name="twitter:image" content="https://conexaobr.ie/wp-content/themes/conexao-br-irlanda/assets/images/conexao-social-card.svg" />
+	<style id="wp-img-auto-sizes-contain-inline-css">
+img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
+/*# sourceURL=wp-img-auto-sizes-contain-inline-css */
+</style>
+<style id="wp-block-library-inline-css">
+:root{--wp-block-synced-color:#7a00df;--wp-block-synced-color--rgb:122,0,223;--wp-bound-block-color:var(--wp-block-synced-color);--wp-editor-canvas-background:#ddd;--wp-admin-theme-color:#007cba;--wp-admin-theme-color--rgb:0,124,186;--wp-admin-theme-color-darker-10:#006ba1;--wp-admin-theme-color-darker-10--rgb:0,107,160.5;--wp-admin-theme-color-darker-20:#005a87;--wp-admin-theme-color-darker-20--rgb:0,90,135;--wp-admin-border-width-focus:2px}@media (min-resolution:192dpi){:root{--wp-admin-border-width-focus:1.5px}}.wp-element-button{cursor:pointer}:root .has-very-light-gray-background-color{background-color:#eee}:root .has-very-dark-gray-background-color{background-color:#313131}:root .has-very-light-gray-color{color:#eee}:root .has-very-dark-gray-color{color:#313131}:root .has-vivid-green-cyan-to-vivid-cyan-blue-gradient-background{background:linear-gradient(135deg,#00d084,#0693e3)}:root .has-purple-crush-gradient-background{background:linear-gradient(135deg,#34e2e4,#4721fb 50%,#ab1dfe)}:root .has-hazy-dawn-gradient-background{background:linear-gradient(135deg,#faaca8,#dad0ec)}:root .has-subdued-olive-gradient-background{background:linear-gradient(135deg,#fafae1,#67a671)}:root .has-atomic-cream-gradient-background{background:linear-gradient(135deg,#fdd79a,#004a59)}:root .has-nightshade-gradient-background{background:linear-gradient(135deg,#330968,#31cdcf)}:root .has-midnight-gradient-background{background:linear-gradient(135deg,#020381,#2874fc)}:root{--wp--preset--font-size--normal:16px;--wp--preset--font-size--huge:42px}.has-regular-font-size{font-size:1em}.has-larger-font-size{font-size:2.625em}.has-normal-font-size{font-size:var(--wp--preset--font-size--normal)}.has-huge-font-size{font-size:var(--wp--preset--font-size--huge)}:root .has-text-align-center{text-align:center}:root .has-text-align-left{text-align:left}:root .has-text-align-right{text-align:right}.has-fit-text{white-space:nowrap!important}#end-resizable-editor-section{display:none}.aligncenter{clear:both}.items-justified-left{justify-content:flex-start}.items-justified-center{justify-content:center}.items-justified-right{justify-content:flex-end}.items-justified-space-between{justify-content:space-between}.screen-reader-text{word-wrap:normal!important;border:0;clip-path:inset(50%);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;width:1px;word-break:normal!important}.screen-reader-text:focus{background-color:#ddd;clip-path:none;color:#444;display:block;font-size:1em;height:auto;left:5px;line-height:normal;padding:15px 23px 14px;text-decoration:none;top:5px;width:auto;z-index:100000}html :where(.has-border-color){border-style:solid}html :where([style^=border-color],[style*=";border-color"],[style*="; border-color"]){border-style:solid}html :where([style^=border-top-color],[style*=";border-top-color"],[style*="; border-top-color"]){border-top-style:solid}html :where([style^=border-right-color],[style*=";border-right-color"],[style*="; border-right-color"]){border-right-style:solid}html :where([style^=border-bottom-color],[style*=";border-bottom-color"],[style*="; border-bottom-color"]){border-bottom-style:solid}html :where([style^=border-left-color],[style*=";border-left-color"],[style*="; border-left-color"]){border-left-style:solid}html :where([style^=border-width],[style*=";border-width"],[style*="; border-width"]){border-style:solid}html :where([style^=border-top-width],[style*=";border-top-width"],[style*="; border-top-width"]){border-top-style:solid}html :where([style^=border-right-width],[style*=";border-right-width"],[style*="; border-right-width"]){border-right-style:solid}html :where([style^=border-bottom-width],[style*=";border-bottom-width"],[style*="; border-bottom-width"]){border-bottom-style:solid}html :where([style^=border-left-width],[style*=";border-left-width"],[style*="; border-left-width"]){border-left-style:solid}html :where(img[class*=wp-image-]){height:auto;max-width:100%}:where(figure){margin:0 0 1em}html :where(.is-position-sticky){--wp-admin--admin-bar--position-offset:var(--wp-admin--admin-bar--height,0px)}@media screen and (max-width:600px){html :where(.is-position-sticky){--wp-admin--admin-bar--position-offset:0px}}
+
+/*# sourceURL=https://conexaobr.ie/wp-content/plugins/gutenberg/build/styles/block-library/common.min.css */
+</style>
+<style id="wp-block-heading-inline-css">
+h1:where(.wp-block-heading).has-background,h2:where(.wp-block-heading).has-background,h3:where(.wp-block-heading).has-background,h4:where(.wp-block-heading).has-background,h5:where(.wp-block-heading).has-background,h6:where(.wp-block-heading).has-background{padding:var(--wp--style--block-background-padding,1.25em 2.375em)}h1.has-text-align-left[style*=writing-mode]:where([style*=vertical-lr]),h1.has-text-align-right[style*=writing-mode]:where([style*=vertical-rl]),h2.has-text-align-left[style*=writing-mode]:where([style*=vertical-lr]),h2.has-text-align-right[style*=writing-mode]:where([style*=vertical-rl]),h3.has-text-align-left[style*=writing-mode]:where([style*=vertical-lr]),h3.has-text-align-right[style*=writing-mode]:where([style*=vertical-rl]),h4.has-text-align-left[style*=writing-mode]:where([style*=vertical-lr]),h4.has-text-align-right[style*=writing-mode]:where([style*=vertical-rl]),h5.has-text-align-left[style*=writing-mode]:where([style*=vertical-lr]),h5.has-text-align-right[style*=writing-mode]:where([style*=vertical-rl]),h6.has-text-align-left[style*=writing-mode]:where([style*=vertical-lr]),h6.has-text-align-right[style*=writing-mode]:where([style*=vertical-rl]){rotate:180deg}
+/*# sourceURL=https://conexaobr.ie/wp-content/plugins/gutenberg/build/styles/block-library/heading/style.min.css */
+</style>
+<style id="wp-block-list-inline-css">
+ol,ul{box-sizing:border-box}:root :where(.wp-block-list.has-background){padding:var(--wp--style--block-background-padding,1.25em 2.375em)}
+/*# sourceURL=https://conexaobr.ie/wp-content/plugins/gutenberg/build/styles/block-library/list/style.min.css */
+</style>
+<style id="wp-block-paragraph-inline-css">
+.is-small-text{font-size:.875em}.is-regular-text{font-size:1em}.is-large-text{font-size:2.25em}.is-larger-text{font-size:3em}.has-drop-cap:not(:focus):first-letter{float:left;font-size:8.4em;font-style:normal;font-weight:100;line-height:.68;margin:.05em .1em 0 0;text-transform:uppercase}body.rtl .has-drop-cap:not(:focus):first-letter{float:none;margin-left:.1em}p.has-drop-cap.has-background{overflow:hidden}:root :where(p.has-background){padding:var(--wp--style--block-background-padding,1.25em 2.375em)}:where(p.has-text-color:not(.has-link-color)) a{color:inherit}p.has-text-align-left[style*="writing-mode:vertical-lr"],p.has-text-align-right[style*="writing-mode:vertical-rl"]{rotate:180deg}
+/*# sourceURL=https://conexaobr.ie/wp-content/plugins/gutenberg/build/styles/block-library/paragraph/style.min.css */
+</style>
+<style id="wp-block-library-inline-css-extra">
+.has-text-align-justify{text-align:justify;}
+/*# sourceURL=wp-block-library-inline-css */
+</style>
+
+<style id="classic-theme-styles-inline-css">
+.wp-block-button__link{background-color:#32373c;border-radius:9999px;box-shadow:none;color:#fff;font-size:1.125em;padding:calc(.667em + 2px) calc(1.333em + 2px);text-decoration:none}.wp-block-file__button{background:#32373c;color:#fff}.wp-block-accordion-heading{margin:0}.wp-block-accordion-heading__toggle{background-color:inherit!important;color:inherit!important}.wp-block-accordion-heading__toggle:not(:focus-visible){outline:none}.wp-block-accordion-heading__toggle:focus,.wp-block-accordion-heading__toggle:hover{background-color:inherit!important;border:none;box-shadow:none;color:inherit;padding:var(--wp--preset--spacing--20,1em) 0;text-decoration:none}.wp-block-accordion-heading__toggle:focus-visible{outline:auto;outline-offset:0}.wp-block-tab:not(.has-text-color){color:inherit!important}.wp-block-tab:not(.has-background){background-color:inherit!important}.wp-block-tab:focus,.wp-block-tab:hover{text-decoration:none}.wp-block-tab:focus-visible{outline:auto;outline-offset:0}
+/*# sourceURL=https://conexaobr.ie/wp-content/plugins/gutenberg/build/styles/block-library/classic.min.css */
+</style>
+
+<style id="conexao-content-inline-css">
+.conexao-card-grid { display:grid; gap:1.25rem; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); margin:1.5rem 0 3rem; }
+.conexao-card { background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 2px 12px rgba(22,52,43,.12); }
+.conexao-card a,.conexao-card>div { color:inherit; display:block; height:100%; text-decoration:none; }
+.conexao-card img { aspect-ratio: 4/3; display:block; height:auto; object-fit:cover; width:100%; }
+.conexao-card h3 { font-size:1rem; margin:0; padding:1rem; }
+.conexao-share { align-items:center; border-top:1px solid #d8e1dc; display:flex; flex-wrap:wrap; gap:.65rem; margin-top:2rem; padding-top:1.25rem; }
+.conexao-share a,.conexao-share button { background:#147a53; border:0; border-radius:999px; color:#fff; cursor:pointer; font:inherit; padding:.4rem .8rem; text-decoration:none; }
+.conexao-reading-time { color:#547067; font-size:.9rem; }
+
+/*# sourceURL=conexao-content-inline-css */
+</style>
+<style id="global-styles-inline-css">
+:root{--wp--preset--aspect-ratio--square: 1;--wp--preset--aspect-ratio--4-3: 4/3;--wp--preset--aspect-ratio--3-4: 3/4;--wp--preset--aspect-ratio--3-2: 3/2;--wp--preset--aspect-ratio--2-3: 2/3;--wp--preset--aspect-ratio--16-9: 16/9;--wp--preset--aspect-ratio--9-16: 9/16;--wp--preset--color--black: #000000;--wp--preset--color--cyan-bluish-gray: #abb8c3;--wp--preset--color--white: #ffffff;--wp--preset--color--pale-pink: #f78da7;--wp--preset--color--vivid-red: #cf2e2e;--wp--preset--color--luminous-vivid-orange: #ff6900;--wp--preset--color--luminous-vivid-amber: #fcb900;--wp--preset--color--light-green-cyan: #7bdcb5;--wp--preset--color--vivid-green-cyan: #00d084;--wp--preset--color--pale-cyan-blue: #8ed1fc;--wp--preset--color--vivid-cyan-blue: #0693e3;--wp--preset--color--vivid-purple: #9b51e0;--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple: linear-gradient(135deg,rgb(6,147,227) 0%,rgb(155,81,224) 100%);--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan: linear-gradient(135deg,rgb(122,220,180) 0%,rgb(0,208,130) 100%);--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange: linear-gradient(135deg,rgb(252,185,0) 0%,rgb(255,105,0) 100%);--wp--preset--gradient--luminous-vivid-orange-to-vivid-red: linear-gradient(135deg,rgb(255,105,0) 0%,rgb(207,46,46) 100%);--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray: linear-gradient(135deg,rgb(238,238,238) 0%,rgb(169,184,195) 100%);--wp--preset--gradient--cool-to-warm-spectrum: linear-gradient(135deg,rgb(74,234,220) 0%,rgb(151,120,209) 20%,rgb(207,42,186) 40%,rgb(238,44,130) 60%,rgb(251,105,98) 80%,rgb(254,248,76) 100%);--wp--preset--gradient--blush-light-purple: linear-gradient(135deg,rgb(255,206,236) 0%,rgb(152,150,240) 100%);--wp--preset--gradient--blush-bordeaux: linear-gradient(135deg,rgb(254,205,165) 0%,rgb(254,45,45) 50%,rgb(107,0,62) 100%);--wp--preset--gradient--luminous-dusk: linear-gradient(135deg,rgb(255,203,112) 0%,rgb(199,81,192) 50%,rgb(65,88,208) 100%);--wp--preset--gradient--pale-ocean: linear-gradient(135deg,rgb(255,245,203) 0%,rgb(182,227,212) 50%,rgb(51,167,181) 100%);--wp--preset--gradient--electric-grass: linear-gradient(135deg,rgb(202,248,128) 0%,rgb(113,206,126) 100%);--wp--preset--gradient--midnight: linear-gradient(135deg,rgb(2,3,129) 0%,rgb(40,116,252) 100%);--wp--preset--font-size--small: 13px;--wp--preset--font-size--medium: 20px;--wp--preset--font-size--large: 36px;--wp--preset--font-size--x-large: 42px;--wp--preset--spacing--20: 0.44rem;--wp--preset--spacing--30: 0.67rem;--wp--preset--spacing--40: 1rem;--wp--preset--spacing--50: 1.5rem;--wp--preset--spacing--60: 2.25rem;--wp--preset--spacing--70: 3.38rem;--wp--preset--spacing--80: 5.06rem;--wp--preset--shadow--natural: 6px 6px 9px rgba(0, 0, 0, 0.2);--wp--preset--shadow--deep: 12px 12px 50px rgba(0, 0, 0, 0.4);--wp--preset--shadow--sharp: 6px 6px 0px rgba(0, 0, 0, 0.2);--wp--preset--shadow--outlined: 6px 6px 0px -3px rgb(255, 255, 255), 6px 6px rgb(0, 0, 0);--wp--preset--shadow--crisp: 6px 6px 0px rgb(0, 0, 0);}.wp-block-button{--wp--preset--dimension--25: 25%;--wp--preset--dimension--50: 50%;--wp--preset--dimension--75: 75%;--wp--preset--dimension--100: 100%;}:where(body) { margin: 0; }:where(.is-layout-flex){gap: 0.5em;}:where(.is-layout-grid){gap: 0.5em;}body .is-layout-flex{display: flex;}.is-layout-flex{flex-wrap: wrap;align-items: center;}.is-layout-flex > :is(*, div){margin: 0;}body .is-layout-grid{display: grid;}.is-layout-grid > :is(*, div){margin: 0;}body{padding-top: 0px;padding-right: 0px;padding-bottom: 0px;padding-left: 0px;}:root :where(.wp-element-button, .wp-block-button__link){background-color: #32373c;border-width: 0;color: #fff;font-family: inherit;font-size: inherit;font-style: inherit;font-weight: inherit;letter-spacing: inherit;line-height: inherit;padding-top: calc(0.667em + 2px);padding-right: calc(1.333em + 2px);padding-bottom: calc(0.667em + 2px);padding-left: calc(1.333em + 2px);text-decoration: none;text-transform: inherit;}.has-black-color{color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-color{color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-color{color: var(--wp--preset--color--white) !important;}.has-pale-pink-color{color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-color{color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-color{color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-color{color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-color{color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-color{color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-color{color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-color{color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-color{color: var(--wp--preset--color--vivid-purple) !important;}.has-black-background-color{background-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-background-color{background-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-background-color{background-color: var(--wp--preset--color--white) !important;}.has-pale-pink-background-color{background-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-background-color{background-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-background-color{background-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-background-color{background-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-background-color{background-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-background-color{background-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-background-color{background-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-background-color{background-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-background-color{background-color: var(--wp--preset--color--vivid-purple) !important;}.has-black-border-color{border-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-border-color{border-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-border-color{border-color: var(--wp--preset--color--white) !important;}.has-pale-pink-border-color{border-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-border-color{border-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-border-color{border-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-border-color{border-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-border-color{border-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-border-color{border-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-border-color{border-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-border-color{border-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-border-color{border-color: var(--wp--preset--color--vivid-purple) !important;}.has-vivid-cyan-blue-to-vivid-purple-gradient-background{background: var(--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple) !important;}.has-light-green-cyan-to-vivid-green-cyan-gradient-background{background: var(--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan) !important;}.has-luminous-vivid-amber-to-luminous-vivid-orange-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange) !important;}.has-luminous-vivid-orange-to-vivid-red-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-orange-to-vivid-red) !important;}.has-very-light-gray-to-cyan-bluish-gray-gradient-background{background: var(--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray) !important;}.has-cool-to-warm-spectrum-gradient-background{background: var(--wp--preset--gradient--cool-to-warm-spectrum) !important;}.has-blush-light-purple-gradient-background{background: var(--wp--preset--gradient--blush-light-purple) !important;}.has-blush-bordeaux-gradient-background{background: var(--wp--preset--gradient--blush-bordeaux) !important;}.has-luminous-dusk-gradient-background{background: var(--wp--preset--gradient--luminous-dusk) !important;}.has-pale-ocean-gradient-background{background: var(--wp--preset--gradient--pale-ocean) !important;}.has-electric-grass-gradient-background{background: var(--wp--preset--gradient--electric-grass) !important;}.has-midnight-gradient-background{background: var(--wp--preset--gradient--midnight) !important;}.has-small-font-size{font-size: var(--wp--preset--font-size--small) !important;}.has-medium-font-size{font-size: var(--wp--preset--font-size--medium) !important;}.has-large-font-size{font-size: var(--wp--preset--font-size--large) !important;}.has-x-large-font-size{font-size: var(--wp--preset--font-size--x-large) !important;}
+/*# sourceURL=global-styles-inline-css */
+</style>
+
+<style id="jetpack-stats-inline-css">
+img#wpstats{display:none}
+/*# sourceURL=jetpack-stats-inline-css */
+</style>
+<link rel='stylesheet' id='conexao-fonts-css' href='https://fonts-api.wp.com/css2?family=Inter:wght@400;500;600;700&#038;family=Poppins:wght@500;600;700&#038;display=swap' media='print' onload="this.media='all'" />
+<noscript><link rel='stylesheet' id='conexao-fonts-css' href='https://fonts-api.wp.com/css2?family=Inter:wght@400;500;600;700&#038;family=Poppins:wght@500;600;700&#038;display=swap' media='all' /></noscript>
+<link rel='stylesheet' id='all-css-05b8917a0639f0a3adf0aeebf1a81762' href='https://conexaobr.ie/_static/??-eJydzFEOwjAMA9ALETo0TRsfiLMEYrEKkqImYuP2dEdgn7b1vLzpXixgkWKGwlOLWLnQrVKuLzbhxO6ItrgngeeHkX89oMfWHJY/H2awoJLxZxdXzrYLCtcnaRFs+qqX0zidh7Hvuv4HiKZg3Q==' type='text/css' media='all' />
+<style id="jetpack_likes-inline-css">
+#jp-post-flair{padding-top:.5em}#content div.sharedaddy,#main div.sharedaddy,div.sharedaddy{clear:both}div.sharedaddy h3.sd-title{display:inline-block;font-size:9pt;font-weight:700;line-height:1.2;margin:0 0 1em}div.sharedaddy h3.sd-title:before{border-top:1px solid #dcdcde;content:"";display:block;margin-bottom:1em;min-width:30px;width:100%}div.jetpack-likes-widget-wrapper{min-height:50px;position:relative;width:100%}div.jetpack-likes-widget-wrapper .sd-link-color{font-size:12px}div.jetpack-comment-likes-widget-wrapper{min-height:31px;position:relative;width:100%}div.jetpack-comment-likes-widget-wrapper iframe{margin-bottom:0}#likes-other-gravatars{background-color:#fff;border:1px solid #dcdcde;border-radius:4px;box-shadow:none;display:none;height:auto;max-height:240px;min-width:220px;overflow:auto;padding:9px 12px 10px;position:absolute;z-index:1000}#likes-other-gravatars *{line-height:normal}#likes-other-gravatars .likes-text{color:#101517;font-size:12px;font-weight:500;padding-bottom:8px}#likes-other-gravatars :is(li,ul){list-style-type:none;margin:0;padding:0;text-indent:0}#likes-other-gravatars li:before{content:""}#likes-other-gravatars ul.wpl-avatars{display:block;max-height:190px;overflow:auto}#likes-other-gravatars ul.wpl-avatars li{float:none;height:28px;margin:0 0 4px;width:196px}#likes-other-gravatars ul.wpl-avatars li a{align-items:center;border-bottom:none!important;display:flex;gap:8px;margin:0 2px 0 0;text-decoration:none}#likes-other-gravatars ul.wpl-avatars li a span{color:#2c3338;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#likes-other-gravatars ul.wpl-avatars li a img{background:none;border:none;border-radius:50%;box-sizing:border-box;margin:0!important;padding:1px!important;position:static}div.sd-box{border-top:1px solid #00000021}.jetpack-likes-widget-loaded iframe,.jetpack-likes-widget-loading .likes-widget-placeholder,.jetpack-likes-widget-unloaded .likes-widget-placeholder{display:block}.jetpack-likes-widget-loaded .likes-widget-placeholder,.jetpack-likes-widget-loading iframe,.jetpack-likes-widget-unloaded iframe{display:none}.comment-likes-widget,.entry-content .post-likes-widget,.post-likes-widget{border-width:0;margin:0}.comment-likes-widget-placeholder,.post-likes-widget-placeholder{border-width:0;margin:0;position:relative}.comment-likes-widget-placeholder{display:flex;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif;height:18px;position:absolute}.comment-likes-widget-placeholder:before{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' d='M0 0h24v24H0z'/%3E%3Cpath fill='%232ea2cc' d='m12 2 2.582 6.953L22 9.257l-5.822 4.602L18.18 21 12 16.89 5.82 21l2.002-7.14L2 9.256l7.418-.304'/%3E%3C/svg%3E");background-repeat:no-repeat;background-size:16px 16px;color:#2ea2cc;content:"";display:inline-block;height:16px;padding-right:5px;position:relative;top:3px;width:16px}.post-likes-widget-placeholder .button{display:none}:is(.comment-likes-widget-placeholder,.post-likes-widget-placeholder) .loading{color:#999;font-size:12px}.comment-likes-widget-placeholder .loading{align-self:center;color:#4e4e4e;margin-top:4px;padding-left:5px}div.sharedaddy.sd-like-enabled .sd-like h3{display:none}div.sharedaddy.sd-like-enabled .sd-like .post-likes-widget{float:none;position:absolute;top:0;width:100%}.comment-likes-widget{width:100%}.cs-rating,.pd-rating{display:block!important}.sd-gplus .sd-title{display:none}@media print{.jetpack-likes-widget-wrapper{display:none}}
+/*# sourceURL=https://conexaobr.ie/wp-content/plugins/jetpack/_inc/build/likes/style.min.css */
+</style>
+<style id="jetpack-global-styles-frontend-style-inline-css">
+:root { --font-headings: unset; --font-base: unset; --font-headings-default: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif; --font-base-default: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif;}
+/*# sourceURL=jetpack-global-styles-frontend-style-inline-css */
+</style>
+<script id="jetpack-mu-wpcom-settings-js-before">
+var JETPACK_MU_WPCOM_SETTINGS = {"assetsUrl":"https://conexaobr.ie/wp-content/mu-plugins/wpcomsh/jetpack_vendor/automattic/jetpack-mu-wpcom/src/build/"};
+//# sourceURL=jetpack-mu-wpcom-settings-js-before
+</script>
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://conexaobr.ie/xmlrpc.php?rsd" />
+
+<link rel='shortlink' href='https://wp.me/PhnpqN-9' />
+<script type="application/ld+json">{"@context":"https:\/\/schema.org","@type":"WebSite","name":"Conex\u00e3o BR","url":"https:\/\/conexaobr.ie\/","description":"","potentialAction":{"@type":"SearchAction","target":"https:\/\/conexaobr.ie\/?s={search_term_string}","query-input":"required name=search_term_string"}}</script>
+<script type="application/ld+json">{"@context":"https:\/\/schema.org","@type":"Organization","name":"Conex\u00e3o BR","url":"https:\/\/conexaobr.ie\/","logo":"https:\/\/conexaobr.ie\/wp-content\/themes\/conexao-br-irlanda\/assets\/images\/conexao-social-card.svg","sameAs":[]}</script>
+	<style type="text/css">
+		:root {
+			--conexao-primary: #0E6B3A;
+			--conexao-primary-dark: #0b552e;
+			--conexao-accent: #F68B1F;
+			--conexao-accent-dark: #c46f18;
+		}
+	</style>
+	<meta name="description" content="Bem-vindo ao Conexão BR Irlanda, o portal da comunidade brasileira na Irlanda." />
+
+<!-- Jetpack Open Graph Tags -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Conexão BR" />
+<meta property="og:url" content="https://conexaobr.ie/" />
+<meta property="og:site_name" content="Conexão BR" />
+<meta property="og:image" content="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/cropped-logo_conexao_br_irlanda.jpeg?fit=1600%2C534&#038;ssl=1" />
+<meta property="og:image:width" content="1600" />
+<meta property="og:image:height" content="534" />
+<meta property="og:image:alt" content="" />
+<meta property="og:locale" content="en_US" />
+<meta name="twitter:text:title" content="Início" />
+<meta name="twitter:image" content="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/cropped-cropped-logo_conexao_br_irlanda.jpeg?fit=240%2C240&amp;ssl=1" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:description" content="Visit the post for more." />
+
+<!-- End Jetpack Open Graph Tags -->
+<link rel="icon" href="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/cropped-cropped-logo_conexao_br_irlanda.jpeg?fit=32%2C32&#038;ssl=1" sizes="32x32" />
+<link rel="icon" href="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/cropped-cropped-logo_conexao_br_irlanda.jpeg?fit=192%2C192&#038;ssl=1" sizes="192x192" />
+<link rel="apple-touch-icon" href="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/cropped-cropped-logo_conexao_br_irlanda.jpeg?fit=180%2C180&#038;ssl=1" />
+<meta name="msapplication-TileImage" content="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/cropped-cropped-logo_conexao_br_irlanda.jpeg?fit=270%2C270&#038;ssl=1" />
+</head>
+
+<body class="home wp-singular page-template-default page page-id-9 wp-custom-logo wp-embed-responsive wp-theme-conexao-br-irlanda singular front-page">
+<a class="skip-link screen-reader-text" href="#primary">Pular para o conteúdo</a>
+<div id="page" class="site">
+	<a class="skip-link screen-reader-text" href="#primary">Pular para o conteúdo</a>
+
+	<header id="masthead" class="site-header">
+		
+		<!-- Main Header -->
+		<div class="main-header">
+			<div class="site-container">
+				<!-- Mobile Menu Toggle -->
+				<button class="mobile-menu-toggle" aria-label="Abrir menu" aria-controls="mobile-menu" aria-expanded="false">
+					<span class="hamburger-line"></span>
+					<span class="hamburger-line"></span>
+					<span class="hamburger-line"></span>
+				</button>
+
+				<!-- Logo -->
+				<div class="logo">
+					<a href="https://conexaobr.ie/" rel="home" class="site-logo-link">
+						<picture>
+							<source type="image/webp"
+								srcset="https://conexaobr.ie/wp-content/themes/conexao-br-irlanda/assets/images/logo_conexao_br_irlanda-240.webp 240w, https://conexaobr.ie/wp-content/themes/conexao-br-irlanda/assets/images/logo_conexao_br_irlanda.webp 480w"
+								sizes="(max-width: 768px) 96px, 72px">
+							<img
+								src="https://conexaobr.ie/wp-content/themes/conexao-br-irlanda/assets/images/logo_conexao_br_irlanda.jpeg"
+								srcset="https://conexaobr.ie/wp-content/themes/conexao-br-irlanda/assets/images/logo_conexao_br_irlanda-240.jpeg 240w, https://conexaobr.ie/wp-content/themes/conexao-br-irlanda/assets/images/logo_conexao_br_irlanda.jpeg 1600w"
+								sizes="(max-width: 768px) 96px, 72px"
+								width="480"
+								height="200"
+								alt="Conexão BR"
+								class="site-logo-img site-logo-img--light"
+								loading="eager"
+							>
+						</picture>
+						<picture>
+							<source type="image/webp"
+								srcset="https://conexaobr.ie/wp-content/themes/conexao-br-irlanda/assets/images/logo_dark_mode-240.webp 240w, https://conexaobr.ie/wp-content/themes/conexao-br-irlanda/assets/images/logo_dark_mode.webp 480w"
+								sizes="(max-width: 768px) 96px, 72px">
+							<img
+								src="https://conexaobr.ie/wp-content/themes/conexao-br-irlanda/assets/images/logo_dark_mode.jpeg"
+								srcset="https://conexaobr.ie/wp-content/themes/conexao-br-irlanda/assets/images/logo_dark_mode-240.jpeg 240w, https://conexaobr.ie/wp-content/themes/conexao-br-irlanda/assets/images/logo_dark_mode.jpeg 1600w"
+								sizes="(max-width: 768px) 96px, 72px"
+								width="480"
+								height="180"
+								alt="Conexão BR"
+								class="site-logo-img site-logo-img--dark"
+							>
+						</picture>
+					</a>
+				</div>
+
+				<!-- Primary Navigation -->
+				<nav id="site-navigation" class="primary-navigation" aria-label="Menu Principal">
+					<ul id="primary-menu" class="primary-menu"><li id="menu-item-11401" class="menu-item menu-item-home menu-item-type-custom menu-item-object-custom current-menu-item menu-item-11401 nav-item"><a href="https://conexaobr.ie/" class="nav-link">Início</a></li>
+<li id="menu-item-11407" class="menu-item menu-item-type-post_type_archive menu-item-object-sponsor menu-item-11407 nav-item"><a href="https://conexaobr.ie/apoiadores/" class="nav-link">Apoiadores</a></li>
+<li id="menu-item-11403" class="menu-item menu-item-type-post_type_archive menu-item-object-guide menu-item-11403 nav-item"><a href="https://conexaobr.ie/guias/" class="nav-link">Guias</a></li>
+<li id="menu-item-11404" class="menu-item menu-item-type-post_type_archive menu-item-object-event menu-item-11404 nav-item"><a href="https://conexaobr.ie/eventos/" class="nav-link">Eventos</a></li>
+<li id="menu-item-11405" class="menu-item menu-item-type-post_type_archive menu-item-object-course_provider menu-item-11405 nav-item"><a href="https://conexaobr.ie/cursos/" class="nav-link">Cursos</a></li>
+<li id="menu-item-0" class="menu-item menu-item-type-post_type_archive menu-item-object-leisure menu-item-0 nav-item"><a href="https://conexaobr.ie/lazer/" class="nav-link">Lazer e turismo</a></li>
+<li id="menu-item-11406" class="menu-item menu-item-type-post_type_archive menu-item-object-job menu-item-11406 nav-item"><a href="https://conexaobr.ie/empregos/" class="nav-link">Empregos</a></li>
+<li id="menu-item-11402" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-11402 nav-item"><a href="https://conexaobr.ie/blog/" class="nav-link">Blog</a></li>
+<li id="menu-item-11409" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-11409 nav-item"><a href="https://conexaobr.ie/contato/" class="nav-link">Contato</a></li>
+</ul>				</nav>
+
+				<!-- Header Actions -->
+				<div class="header-actions">
+					<button type="button" class="theme-toggle" aria-label="Alternar tema claro/escuro" aria-pressed="false">
+						<span class="theme-toggle-icon theme-toggle-icon--moon" aria-hidden="true">
+							<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+						</span>
+						<span class="theme-toggle-icon theme-toggle-icon--sun" aria-hidden="true">
+							<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+						</span>
+					</button>
+					<button type="button" class="mobile-search-toggle" aria-label="Abrir pesquisa" aria-controls="mobile-search" aria-expanded="false">
+						<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+					</button>
+					<div class="header-search">
+						<svg class="header-search-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+							<circle cx="11" cy="11" r="8"></circle>
+							<line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+						</svg>
+						<form role="search" method="get" class="search-form" action="https://conexaobr.ie/">
+							<label class="screen-reader-text" for="header-search-field">Pesquisar</label>
+							<input id="header-search-field" type="search" class="search-field" placeholder="Buscar no portal..." value="" name="s" />
+							<button type="submit" class="screen-reader-text header-search-submit">Buscar</button>
+						</form>
+					</div>
+					<a href="https://conexaobr.ie/anuncie/" class="header-cta">
+						<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+							<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+							<polyline points="17 8 12 3 7 8"></polyline>
+							<line x1="12" y1="3" x2="12" y2="15"></line>
+						</svg>
+						Anuncie Aqui					</a>
+
+					<!--
+						Compact top-bar "Anuncie Aqui" for mobile/tablet (<=1024px), where
+						the full-text .header-cta above is hidden. Measured space: a
+						full-text pill needs ~141px, which does not exist next to the
+						hamburger + logo + theme toggle + search at phone widths, so the
+						label only renders where it fits (>=480px) and the control stays a
+						48px icon pill below that — the drawer keeps the full-text label in
+						both cases (.mobile-menu-cta). Name is always "Anuncie Aqui"
+						(aria-label); the visible span is decorative with aria-hidden so the
+						name never depends on the icon or on the label being visible.
+					-->
+					<a href="https://conexaobr.ie/anuncie/" class="header-cta-compact" aria-label="Anuncie Aqui">
+						<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+							<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+							<polyline points="17 8 12 3 7 8"></polyline>
+							<line x1="12" y1="3" x2="12" y2="15"></line>
+						</svg>
+						<span class="header-cta-compact-label" aria-hidden="true">Anuncie Aqui</span>
+					</a>
+				</div>
+			</div>
+		</div>
+	</header>
+
+	<!-- Mobile Menu Overlay -->
+	<div id="mobile-menu" class="mobile-menu-overlay" aria-hidden="true">
+		<div class="mobile-menu-content">
+			<div class="mobile-menu-header">
+				<span class="mobile-menu-title">Menu</span>
+				<button class="mobile-menu-close" aria-label="Fechar menu">
+					<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+						<line x1="18" y1="6" x2="6" y2="18"></line>
+						<line x1="6" y1="6" x2="18" y2="18"></line>
+					</svg>
+				</button>
+			</div>
+			<div class="mobile-menu-search">
+				<form role="search" method="get" class="mobile-menu-search-form" action="https://conexaobr.ie/">
+					<label class="screen-reader-text" for="mobile-menu-search-field">Pesquisar</label>
+					<input id="mobile-menu-search-field" type="search" class="mobile-menu-search-field" placeholder="Buscar no portal..." value="" name="s" />
+					<button type="submit" class="mobile-menu-search-submit" aria-label="Buscar">
+						<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+					</button>
+				</form>
+			</div>
+			<nav class="mobile-menu-nav" aria-label="Menu Mobile">
+				<ul id="menu-menu-principal" class="mobile-menu"><li class="menu-item menu-item-home menu-item-type-custom menu-item-object-custom current-menu-item menu-item-11401 nav-item"><a href="https://conexaobr.ie/" class="nav-link">Início</a></li>
+<li class="menu-item menu-item-type-post_type_archive menu-item-object-sponsor menu-item-11407 nav-item"><a href="https://conexaobr.ie/apoiadores/" class="nav-link">Apoiadores</a></li>
+<li class="menu-item menu-item-type-post_type_archive menu-item-object-guide menu-item-11403 nav-item"><a href="https://conexaobr.ie/guias/" class="nav-link">Guias</a></li>
+<li class="menu-item menu-item-type-post_type_archive menu-item-object-event menu-item-11404 nav-item"><a href="https://conexaobr.ie/eventos/" class="nav-link">Eventos</a></li>
+<li class="menu-item menu-item-type-post_type_archive menu-item-object-course_provider menu-item-11405 nav-item"><a href="https://conexaobr.ie/cursos/" class="nav-link">Cursos</a></li>
+<li class="menu-item menu-item-type-post_type_archive menu-item-object-leisure menu-item-0 nav-item"><a href="https://conexaobr.ie/lazer/" class="nav-link">Lazer e turismo</a></li>
+<li class="menu-item menu-item-type-post_type_archive menu-item-object-job menu-item-11406 nav-item"><a href="https://conexaobr.ie/empregos/" class="nav-link">Empregos</a></li>
+<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-11402 nav-item"><a href="https://conexaobr.ie/blog/" class="nav-link">Blog</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-11409 nav-item"><a href="https://conexaobr.ie/contato/" class="nav-link">Contato</a></li>
+</ul>			</nav>
+
+			<!--
+				Primary conversion action (Anuncie Aqui) for the mobile drawer.
+
+				The desktop .header-cta is hidden at <=1024px to keep the compact
+				mobile header uncluttered, so the same action is surfaced here
+				instead: after the navigation list and before the social footer,
+				outside the scrollable .mobile-menu-nav (it is a persistent
+				non-shrinking sibling), so it can never be scrolled out of reach.
+				Same destination (/anuncie/), same design language and same upload
+				icon as the desktop CTA — see .mobile-menu-cta in header-nav.css.
+			-->
+			<div class="mobile-menu-cta-wrap">
+				<a href="https://conexaobr.ie/anuncie/" class="mobile-menu-cta">
+					<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+						<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+						<polyline points="17 8 12 3 7 8"></polyline>
+						<line x1="12" y1="3" x2="12" y2="15"></line>
+					</svg>
+					Anuncie Aqui				</a>
+			</div>
+
+			<div class="mobile-menu-footer">
+				<div class="mobile-menu-social">
+											<a href="https://www.instagram.com/conexaobr.ie/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+							<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+						</a>
+																<a href="https://wa.me/353899451428" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+							<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+						</a>
+									</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="mobile-search" class="mobile-search-overlay" aria-hidden="true">
+		<div class="mobile-search-overlay-content" role="dialog" aria-modal="true" aria-label="Pesquisar no site">
+			<form role="search" method="get" class="mobile-search-form" action="https://conexaobr.ie/">
+				<label class="screen-reader-text" for="mobile-search-field">Pesquisar</label>
+				<input id="mobile-search-field" type="search" class="mobile-search-field" placeholder="Buscar no portal..." value="" name="s" />
+				<button type="submit" class="mobile-search-submit">Buscar</button>
+				<button type="button" class="mobile-search-close" aria-label="Fechar pesquisa">&times;</button>
+			</form>
+		</div>
+	</div>
+
+	<div id="content" class="site-content">
+		
+<main id="primary" class="site-main">
+
+<!-- Hero Section -->
+<section class="hero-section" aria-label="Destaque da Comunidade">
+
+	<!-- Full-bleed cinematic hero image (project asset). The img is decorative:
+	     the overlaid copy carries the page message, so alt="" + aria-hidden. -->
+	<div class="hero-background" aria-hidden="true">
+		<picture>
+			<!-- Mobile (≤768px): dedicated 1.8:1 full-bleed compositions.
+			     WebP first (900×500, ≈100 KB — re-encoded from the PNG master
+			     at q85; 900 device px covers the mobile hero at DPR 2 up to
+			     450 CSS px, which spans every phone width this layout ships),
+			     PNG fallback (1683×935 — same 1.8:1 framing at higher
+			     resolution). The browser selects the matching asset
+			     automatically — no JavaScript. The width/height attributes
+			     give each source a truthful pre-load intrinsic-ratio hint
+			     (1.8:1); they never stretch the image because CSS fully
+			     determines the rendered box. -->
+			<source
+				media="(max-width: 768px)"
+				type="image/webp"
+				width="900"
+				height="500"
+				srcset="https://conexaobr.ie/wp-content/themes/conexao-br-irlanda/assets/images/conexaobr_Hero_image_mobile.webp">
+			<source
+				media="(max-width: 768px)"
+				width="1683"
+				height="935"
+				srcset="https://conexaobr.ie/wp-content/themes/conexao-br-irlanda/assets/images/conexaobr_Hero_image_mobile.png">
+			<!-- Desktop (≥769px): WebP first with a two-candidate responsive
+			     ladder (q88, visually lossless, same encoding as the master):
+			       - conexaobr_Hero_image-1600.webp (1600×594, ≈140 KB) — covers
+			         DPR-1 desktops rendering the hero at ≤1600 CSS px (the
+			         hero is full-bleed, so sizes="100vw" is exact). PageSpeed
+			         measured the hero rendering at ~1516×563 while the
+			         2057px master was being downloaded (~84.5 KiB waste).
+			       - conexaobr_Hero_image.webp (2057×764, ≈225 KB) — kept for
+			         DPR-2 / very wide screens where it is genuinely needed.
+			     PNG fallback for browsers without WebP support. Placed AFTER
+			     the mobile sources so mobile WebP-capable browsers keep
+			     matching the dedicated mobile asset first. -->
+			<source
+				media="(min-width: 769px)"
+				type="image/webp"
+				width="2057"
+				height="764"
+				sizes="100vw"
+				srcset="https://conexaobr.ie/wp-content/themes/conexao-br-irlanda/assets/images/conexaobr_Hero_image-1600.webp 1600w, https://conexaobr.ie/wp-content/themes/conexao-br-irlanda/assets/images/conexaobr_Hero_image.webp 2057w">
+			<!-- Desktop: cinematic composition (conexaobr_Hero_image.png,
+			     2057×764 intrinsic). The 3.71:1 hero slot is reserved by the
+			     .hero-section aspect-ratio rule in CSS — not by these
+			     attributes — so width/height only carry honest pre-load
+			     intrinsic metadata; object-fit:cover handles the crop. -->
+			<img class="hero-background-img"
+				src="https://conexaobr.ie/wp-content/themes/conexao-br-irlanda/assets/images/conexaobr_Hero_image.png"
+				width="2057"
+				height="764"
+				alt=""
+				loading="eager"
+				fetchpriority="high"
+				aria-hidden="true">
+		</picture>
+	</div>
+
+	<div class="site-container">
+		<!-- Two-column Hero composition (CSS in assets/css/main.css): hero copy
+		     left, Featured Apoiadores right at every breakpoint — including
+		     mobile (≤768px), where both zones share the full-bleed photo with
+		     mobile-tuned proportions (~55/45, ~58/42 on small phones). Without
+		     featured sponsors the modifier class is omitted and the hero stays
+		     single-column. -->
+		<div class="hero-content hero-content--with-sponsors">
+			<!-- Left column: Badge → Heading → Description → CTAs. Content and
+			     links unchanged; only wrapped for the two-column layout. -->
+			<div class="hero-copy">
+				<div class="hero-badge">
+					<span class="hero-badge-dot"></span>
+					Portal da Comunidade Brasileira				</div>
+				<h1 class="hero-title">Tudo que o brasileiro precisa para viver melhor na <span>Irlanda</span></h1>
+				<p class="hero-subtitle">Conectando a comunidade brasileira com informações, eventos, guias práticos e muito mais.</p>
+				<div class="hero-ctas">
+					<a href="https://conexaobr.ie/guias/" class="btn btn-primary">
+						<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+							<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+							<path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+						</svg>
+						Explorar Guias					</a>
+					<a href="https://conexaobr.ie/eventos/" class="btn btn-outline">
+						Ver Eventos					</a>
+				</div>
+			</div>
+						<!-- Right column: Featured Apoiadores carousel — the SAME working
+			     component moved into its own layout wrapper (query, ordering,
+			     links, JS and accessibility untouched). Rendered only when a
+			     supporter is marked "Apoiador em destaque", so no empty column
+			     is reserved otherwise. See template-parts/featured-sponsors.php. -->
+			<div class="hero-sponsors">
+				
+<div class="sponsors-carousel sponsors-carousel--hero" data-sponsors-carousel>
+
+	<!-- Polite live region announcing the current position while scrolling. -->
+	<p class="screen-reader-text" data-sponsors-status aria-live="polite"></p>
+
+	<!-- Stage: positions the integrated controls (arrows, dots) OVER the
+	     visible tile instead of in a separate row beneath it. -->
+	<div class="sponsors-carousel-stage">
+		<div class="sponsors-carousel-viewport"
+			tabindex="0"
+			role="group"
+			aria-roledescription="carousel"
+			aria-label="Apoiadores em destaque">
+			<ul class="sponsors-carousel-list">
+									<li class="sponsors-slide"
+						aria-roledescription="slide"
+						aria-label="Apoiador 1 de 9">
+						<a href="https://conexaobr.ie/apoiadores/new-life-tour/"
+							class="sponsor-tile"
+							aria-label="New Life Tour">
+						<!-- The logo area IS the tile: CSS stretches it over the
+						     full card surface (object-fit: contain keeps every
+						     asset's natural proportions — sponsor artwork is
+						     never cropped or recolored). The responsive <img>
+						     serves the single canonical "Imagem do Apoiador"
+						     on desktop AND mobile; with no usable image at
+						     all the fallback icon scales with the tile via
+						     CSS. -->
+						<span class="sponsor-tile-logo">
+															<img src="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/new-life-tour.jpeg?fit=200%2C300&#038;ssl=1" srcset="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/new-life-tour.jpeg?w=1024&amp;ssl=1 1024w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/new-life-tour.jpeg?resize=200%2C300&amp;ssl=1 200w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/new-life-tour.jpeg?resize=683%2C1024&amp;ssl=1 683w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/new-life-tour.jpeg?resize=768%2C1152&amp;ssl=1 768w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/new-life-tour.jpeg?resize=512%2C768&amp;ssl=1 512w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/new-life-tour.jpeg?resize=120%2C180&amp;ssl=1 120w" sizes="(min-width: 769px) 30vw, 46vw" width="200" height="300" alt="New Life Tour" loading="lazy" decoding="async" />													</span>
+							<!-- Name overlays the top of the image (scrim gradient
+							     in CSS) instead of occupying its own block below. -->
+							<span class="sponsor-tile-name">New Life Tour</span>
+						</a>
+					</li>
+									<li class="sponsors-slide"
+						aria-roledescription="slide"
+						aria-label="Apoiador 2 de 9">
+						<a href="https://conexaobr.ie/apoiadores/ademicon-consorcio/"
+							class="sponsor-tile"
+							aria-label="Ademicon | Consórcio">
+						<!-- The logo area IS the tile: CSS stretches it over the
+						     full card surface (object-fit: contain keeps every
+						     asset's natural proportions — sponsor artwork is
+						     never cropped or recolored). The responsive <img>
+						     serves the single canonical "Imagem do Apoiador"
+						     on desktop AND mobile; with no usable image at
+						     all the fallback icon scales with the tile via
+						     CSS. -->
+						<span class="sponsor-tile-logo">
+															<img src="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/ademicom.jpeg?fit=300%2C300&#038;ssl=1" srcset="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/ademicom.jpeg?w=1254&amp;ssl=1 1254w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/ademicom.jpeg?resize=300%2C300&amp;ssl=1 300w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/ademicom.jpeg?resize=1024%2C1024&amp;ssl=1 1024w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/ademicom.jpeg?resize=150%2C150&amp;ssl=1 150w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/ademicom.jpeg?resize=768%2C768&amp;ssl=1 768w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/ademicom.jpeg?resize=180%2C180&amp;ssl=1 180w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/ademicom.jpeg?resize=1080%2C1080&amp;ssl=1 1080w" sizes="(min-width: 769px) 30vw, 46vw" width="300" height="300" alt="Ademicon | Consórcio" loading="lazy" decoding="async" />													</span>
+							<!-- Name overlays the top of the image (scrim gradient
+							     in CSS) instead of occupying its own block below. -->
+							<span class="sponsor-tile-name">Ademicon | Consórcio</span>
+						</a>
+					</li>
+									<li class="sponsors-slide"
+						aria-roledescription="slide"
+						aria-label="Apoiador 3 de 9">
+						<a href="https://conexaobr.ie/apoiadores/euconnekt-services-seu-suporte-imigratorio-na-irlanda/"
+							class="sponsor-tile"
+							aria-label="Euconnekt Services — seu suporte imigratório na Irlanda!">
+						<!-- The logo area IS the tile: CSS stretches it over the
+						     full card surface (object-fit: contain keeps every
+						     asset's natural proportions — sponsor artwork is
+						     never cropped or recolored). The responsive <img>
+						     serves the single canonical "Imagem do Apoiador"
+						     on desktop AND mobile; with no usable image at
+						     all the fallback icon scales with the tile via
+						     CSS. -->
+						<span class="sponsor-tile-logo">
+															<img src="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/euconekt.jpeg?fit=212%2C300&#038;ssl=1" srcset="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/euconekt.jpeg?w=1131&amp;ssl=1 1131w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/euconekt.jpeg?resize=212%2C300&amp;ssl=1 212w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/euconekt.jpeg?resize=724%2C1024&amp;ssl=1 724w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/euconekt.jpeg?resize=768%2C1086&amp;ssl=1 768w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/euconekt.jpeg?resize=1086%2C1536&amp;ssl=1 1086w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/euconekt.jpeg?resize=512%2C724&amp;ssl=1 512w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/euconekt.jpeg?resize=127%2C180&amp;ssl=1 127w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/euconekt.jpeg?resize=1080%2C1528&amp;ssl=1 1080w" sizes="(min-width: 769px) 30vw, 46vw" width="212" height="300" alt="Euconnekt Services — seu suporte imigratório na Irlanda!" loading="lazy" decoding="async" />													</span>
+							<!-- Name overlays the top of the image (scrim gradient
+							     in CSS) instead of occupying its own block below. -->
+							<span class="sponsor-tile-name">Euconnekt Services — seu suporte imigratório na Irlanda!</span>
+						</a>
+					</li>
+									<li class="sponsors-slide"
+						aria-roledescription="slide"
+						aria-label="Apoiador 4 de 9">
+						<a href="https://conexaobr.ie/apoiadores/granny-made-buffet/"
+							class="sponsor-tile"
+							aria-label="Granny Made Buffet">
+						<!-- The logo area IS the tile: CSS stretches it over the
+						     full card surface (object-fit: contain keeps every
+						     asset's natural proportions — sponsor artwork is
+						     never cropped or recolored). The responsive <img>
+						     serves the single canonical "Imagem do Apoiador"
+						     on desktop AND mobile; with no usable image at
+						     all the fallback icon scales with the tile via
+						     CSS. -->
+						<span class="sponsor-tile-logo">
+															<img src="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/WhatsApp-Image-2026-08-28-at-8.50.09-AM.jpeg?fit=200%2C300&#038;ssl=1" srcset="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/WhatsApp-Image-2026-08-28-at-8.50.09-AM.jpeg?w=1024&amp;ssl=1 1024w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/WhatsApp-Image-2026-08-28-at-8.50.09-AM.jpeg?resize=200%2C300&amp;ssl=1 200w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/WhatsApp-Image-2026-08-28-at-8.50.09-AM.jpeg?resize=683%2C1024&amp;ssl=1 683w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/WhatsApp-Image-2026-08-28-at-8.50.09-AM.jpeg?resize=768%2C1152&amp;ssl=1 768w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/WhatsApp-Image-2026-08-28-at-8.50.09-AM.jpeg?resize=120%2C180&amp;ssl=1 120w" sizes="(min-width: 769px) 30vw, 46vw" width="200" height="300" alt="Granny Made Buffet" loading="lazy" decoding="async" />													</span>
+							<!-- Name overlays the top of the image (scrim gradient
+							     in CSS) instead of occupying its own block below. -->
+							<span class="sponsor-tile-name">Granny Made Buffet</span>
+						</a>
+					</li>
+									<li class="sponsors-slide"
+						aria-roledescription="slide"
+						aria-label="Apoiador 5 de 9">
+						<a href="https://conexaobr.ie/apoiadores/outside-the-chambers/"
+							class="sponsor-tile"
+							aria-label="Outside The Chambers">
+						<!-- The logo area IS the tile: CSS stretches it over the
+						     full card surface (object-fit: contain keeps every
+						     asset's natural proportions — sponsor artwork is
+						     never cropped or recolored). The responsive <img>
+						     serves the single canonical "Imagem do Apoiador"
+						     on desktop AND mobile; with no usable image at
+						     all the fallback icon scales with the tile via
+						     CSS. -->
+						<span class="sponsor-tile-logo">
+															<img src="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Virginia-1.jpeg?fit=200%2C300&#038;ssl=1" srcset="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Virginia-1.jpeg?w=1024&amp;ssl=1 1024w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Virginia-1.jpeg?resize=200%2C300&amp;ssl=1 200w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Virginia-1.jpeg?resize=683%2C1024&amp;ssl=1 683w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Virginia-1.jpeg?resize=768%2C1152&amp;ssl=1 768w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Virginia-1.jpeg?resize=120%2C180&amp;ssl=1 120w" sizes="(min-width: 769px) 30vw, 46vw" width="200" height="300" alt="Outside The Chambers" loading="lazy" decoding="async" />													</span>
+							<!-- Name overlays the top of the image (scrim gradient
+							     in CSS) instead of occupying its own block below. -->
+							<span class="sponsor-tile-name">Outside The Chambers</span>
+						</a>
+					</li>
+									<li class="sponsors-slide"
+						aria-roledescription="slide"
+						aria-label="Apoiador 6 de 9">
+						<a href="https://conexaobr.ie/apoiadores/janine-meira-escritora/"
+							class="sponsor-tile"
+							aria-label="Janine Meira - Escritora">
+						<!-- The logo area IS the tile: CSS stretches it over the
+						     full card surface (object-fit: contain keeps every
+						     asset's natural proportions — sponsor artwork is
+						     never cropped or recolored). The responsive <img>
+						     serves the single canonical "Imagem do Apoiador"
+						     on desktop AND mobile; with no usable image at
+						     all the fallback icon scales with the tile via
+						     CSS. -->
+						<span class="sponsor-tile-logo">
+															<img src="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/janine-1.jpeg?fit=227%2C300&#038;ssl=1" srcset="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/janine-1.jpeg?w=960&amp;ssl=1 960w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/janine-1.jpeg?resize=227%2C300&amp;ssl=1 227w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/janine-1.jpeg?resize=773%2C1024&amp;ssl=1 773w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/janine-1.jpeg?resize=768%2C1017&amp;ssl=1 768w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/janine-1.jpeg?resize=136%2C180&amp;ssl=1 136w" sizes="(min-width: 769px) 30vw, 46vw" width="227" height="300" alt="Janine Meira - Escritora" loading="lazy" decoding="async" />													</span>
+							<!-- Name overlays the top of the image (scrim gradient
+							     in CSS) instead of occupying its own block below. -->
+							<span class="sponsor-tile-name">Janine Meira - Escritora</span>
+						</a>
+					</li>
+									<li class="sponsors-slide"
+						aria-roledescription="slide"
+						aria-label="Apoiador 7 de 9">
+						<a href="https://conexaobr.ie/apoiadores/cris-freitas-beleza-a-domicilio/"
+							class="sponsor-tile"
+							aria-label="Cris Freitas – Beleza a Domicílio">
+						<!-- The logo area IS the tile: CSS stretches it over the
+						     full card surface (object-fit: contain keeps every
+						     asset's natural proportions — sponsor artwork is
+						     never cropped or recolored). The responsive <img>
+						     serves the single canonical "Imagem do Apoiador"
+						     on desktop AND mobile; with no usable image at
+						     all the fallback icon scales with the tile via
+						     CSS. -->
+						<span class="sponsor-tile-logo">
+															<img src="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/cris.jpeg?fit=200%2C300&#038;ssl=1" srcset="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/cris.jpeg?w=1024&amp;ssl=1 1024w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/cris.jpeg?resize=200%2C300&amp;ssl=1 200w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/cris.jpeg?resize=683%2C1024&amp;ssl=1 683w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/cris.jpeg?resize=768%2C1152&amp;ssl=1 768w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/cris.jpeg?resize=512%2C768&amp;ssl=1 512w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/cris.jpeg?resize=120%2C180&amp;ssl=1 120w" sizes="(min-width: 769px) 30vw, 46vw" width="200" height="300" alt="Cris Freitas – Beleza a Domicílio" loading="lazy" decoding="async" />													</span>
+							<!-- Name overlays the top of the image (scrim gradient
+							     in CSS) instead of occupying its own block below. -->
+							<span class="sponsor-tile-name">Cris Freitas – Beleza a Domicílio</span>
+						</a>
+					</li>
+									<li class="sponsors-slide"
+						aria-roledescription="slide"
+						aria-label="Apoiador 8 de 9">
+						<a href="https://conexaobr.ie/apoiadores/beleza-do-brasil-cosmeticos/"
+							class="sponsor-tile"
+							aria-label="Beleza do Brasil Cosméticos">
+						<!-- The logo area IS the tile: CSS stretches it over the
+						     full card surface (object-fit: contain keeps every
+						     asset's natural proportions — sponsor artwork is
+						     never cropped or recolored). The responsive <img>
+						     serves the single canonical "Imagem do Apoiador"
+						     on desktop AND mobile; with no usable image at
+						     all the fallback icon scales with the tile via
+						     CSS. -->
+						<span class="sponsor-tile-logo">
+															<img src="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/beleza.jpeg?fit=200%2C300&#038;ssl=1" srcset="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/beleza.jpeg?w=1024&amp;ssl=1 1024w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/beleza.jpeg?resize=200%2C300&amp;ssl=1 200w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/beleza.jpeg?resize=683%2C1024&amp;ssl=1 683w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/beleza.jpeg?resize=768%2C1152&amp;ssl=1 768w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/beleza.jpeg?resize=512%2C768&amp;ssl=1 512w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/beleza.jpeg?resize=120%2C180&amp;ssl=1 120w" sizes="(min-width: 769px) 30vw, 46vw" width="200" height="300" alt="Beleza do Brasil Cosméticos" loading="lazy" decoding="async" />													</span>
+							<!-- Name overlays the top of the image (scrim gradient
+							     in CSS) instead of occupying its own block below. -->
+							<span class="sponsor-tile-name">Beleza do Brasil Cosméticos</span>
+						</a>
+					</li>
+									<li class="sponsors-slide"
+						aria-roledescription="slide"
+						aria-label="Apoiador 9 de 9">
+						<a href="https://conexaobr.ie/apoiadores/ane-braga-brazilian-beauty/"
+							class="sponsor-tile"
+							aria-label="Ane Braga — Brazilian Beauty">
+						<!-- The logo area IS the tile: CSS stretches it over the
+						     full card surface (object-fit: contain keeps every
+						     asset's natural proportions — sponsor artwork is
+						     never cropped or recolored). The responsive <img>
+						     serves the single canonical "Imagem do Apoiador"
+						     on desktop AND mobile; with no usable image at
+						     all the fallback icon scales with the tile via
+						     CSS. -->
+						<span class="sponsor-tile-logo">
+															<img src="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/Ane-brazilian-beauty.jpeg?fit=200%2C300&#038;ssl=1" srcset="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/Ane-brazilian-beauty.jpeg?w=1024&amp;ssl=1 1024w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/Ane-brazilian-beauty.jpeg?resize=200%2C300&amp;ssl=1 200w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/Ane-brazilian-beauty.jpeg?resize=683%2C1024&amp;ssl=1 683w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/Ane-brazilian-beauty.jpeg?resize=768%2C1152&amp;ssl=1 768w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/Ane-brazilian-beauty.jpeg?resize=512%2C768&amp;ssl=1 512w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/Ane-brazilian-beauty.jpeg?resize=120%2C180&amp;ssl=1 120w" sizes="(min-width: 769px) 30vw, 46vw" width="200" height="300" alt="Ane Braga — Brazilian Beauty" loading="eager" decoding="async" />													</span>
+							<!-- Name overlays the top of the image (scrim gradient
+							     in CSS) instead of occupying its own block below. -->
+							<span class="sponsor-tile-name">Ane Braga — Brazilian Beauty</span>
+						</a>
+					</li>
+							</ul>
+		</div>
+
+		<!-- Prev/next arrows overlay the image, vertically centered. Same
+		     data attributes and accessible labels as the previous external
+		     row — the shared carousel JS binds them exactly as before. -->
+		<button type="button" class="sponsors-carousel-arrow sponsors-carousel-arrow--prev" data-sponsors-prev aria-label="Apoiador anterior">
+			<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+				<polyline points="15 18 9 12 15 6"></polyline>
+			</svg>
+		</button>
+		<button type="button" class="sponsors-carousel-arrow sponsors-carousel-arrow--next" data-sponsors-next aria-label="Próximo apoiador">
+			<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+				<polyline points="9 18 15 12 9 6"></polyline>
+			</svg>
+		</button>
+
+					<!-- Pagination dots: one per slide, bottom center of the tile.
+			     The shared carousel JS wires the clicks (jump + autoplay
+			     timer reset) and keeps .is-active / aria-current in sync
+			     while scrolling. -->
+			<div class="sponsors-carousel-dots" role="group" aria-label="Navegar entre apoiadores">
+									<button type="button"
+						class="sponsors-carousel-dot is-active"
+						data-sponsors-dot="0"
+						aria-label="Ir para Apoiador 1" aria-current="true"></button>
+									<button type="button"
+						class="sponsors-carousel-dot"
+						data-sponsors-dot="1"
+						aria-label="Ir para Apoiador 2"></button>
+									<button type="button"
+						class="sponsors-carousel-dot"
+						data-sponsors-dot="2"
+						aria-label="Ir para Apoiador 3"></button>
+									<button type="button"
+						class="sponsors-carousel-dot"
+						data-sponsors-dot="3"
+						aria-label="Ir para Apoiador 4"></button>
+									<button type="button"
+						class="sponsors-carousel-dot"
+						data-sponsors-dot="4"
+						aria-label="Ir para Apoiador 5"></button>
+									<button type="button"
+						class="sponsors-carousel-dot"
+						data-sponsors-dot="5"
+						aria-label="Ir para Apoiador 6"></button>
+									<button type="button"
+						class="sponsors-carousel-dot"
+						data-sponsors-dot="6"
+						aria-label="Ir para Apoiador 7"></button>
+									<button type="button"
+						class="sponsors-carousel-dot"
+						data-sponsors-dot="7"
+						aria-label="Ir para Apoiador 8"></button>
+									<button type="button"
+						class="sponsors-carousel-dot"
+						data-sponsors-dot="8"
+						aria-label="Ir para Apoiador 9"></button>
+							</div>
+			</div>
+</div>			</div>
+					</div>
+	</div>
+</section>
+
+<!-- Quick Access Categories -->
+<section class="quick-access-section" aria-labelledby="quick-access-heading">
+	<div class="site-container">
+		<h2 id="quick-access-heading" class="quick-access-heading">Acesso Rápido</h2>
+		<div class="quick-access-grid">
+			<a href="https://conexaobr.ie/guias/?categoria=moradia" class="quick-access-card">
+	<div class="quick-access-icon">
+		<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+			<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline>		</svg>
+	</div>
+	<span class="quick-access-label">Moradia</span>
+				<span class="quick-access-desc">Casas e apartamentos</span>
+	</a>
+<a href="https://conexaobr.ie/empregos/" class="quick-access-card quick-access-card--mobile-priority quick-access-card--priority-empregos">
+	<div class="quick-access-icon">
+		<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+			<rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>		</svg>
+	</div>
+	<span class="quick-access-label">Empregos</span>
+				<span class="quick-access-desc">Vagas de trabalho</span>
+	</a>
+<a href="https://conexaobr.ie/guias/?categoria=saude" class="quick-access-card">
+	<div class="quick-access-icon">
+		<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+			<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>		</svg>
+	</div>
+	<span class="quick-access-label">Saúde</span>
+				<span class="quick-access-desc">Acesso à saúde</span>
+	</a>
+<a href="https://conexaobr.ie/lazer/" class="quick-access-card quick-access-card--mobile-priority quick-access-card--priority-lazer">
+	<div class="quick-access-icon">
+		<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+			<circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>		</svg>
+	</div>
+	<span class="quick-access-label">Lazer</span>
+			<span class="quick-access-label quick-access-label--mobile">Lazer e turismo</span>
+				<span class="quick-access-desc">Lazer e turismo</span>
+	</a>
+<a href="https://conexaobr.ie/guias/?categoria=transporte" class="quick-access-card">
+	<div class="quick-access-icon">
+		<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+			<path d="M14 16H9m10 0h3v-3.15a1 1 0 0 0-.84-.99L16 11l-2.7-3.6a1 1 0 0 0-.8-.4H5.24a2 2 0 0 0-1.8 1.1l-.8 1.63A6 6 0 0 0 2 12.42V16h2"></path><circle cx="6.5" cy="16.5" r="2.5"></circle><circle cx="16.5" cy="16.5" r="2.5"></circle>		</svg>
+	</div>
+	<span class="quick-access-label">Transporte</span>
+				<span class="quick-access-desc">Como se locomover</span>
+	</a>
+<a href="https://conexaobr.ie/guias/?categoria=financas" class="quick-access-card">
+	<div class="quick-access-icon">
+		<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+			<line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>		</svg>
+	</div>
+	<span class="quick-access-label">Finanças</span>
+				<span class="quick-access-desc">Bancos e impostos</span>
+	</a>
+<a href="https://conexaobr.ie/guias/?categoria=beneficios" class="quick-access-card">
+	<div class="quick-access-icon">
+		<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+			<polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path>		</svg>
+	</div>
+	<span class="quick-access-label">Benefícios</span>
+				<span class="quick-access-desc">Auxílios e subsídios</span>
+	</a>
+<a href="https://conexaobr.ie/eventos/" class="quick-access-card">
+	<div class="quick-access-icon">
+		<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+			<rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>		</svg>
+	</div>
+	<span class="quick-access-label">Eventos</span>
+				<span class="quick-access-desc">Agenda da comunidade</span>
+	</a>
+<a href="https://conexaobr.ie/cursos/" class="quick-access-card">
+	<div class="quick-access-icon">
+		<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+			<path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 2.5 3 6 3s3 0 6-3v-5"></path>		</svg>
+	</div>
+	<span class="quick-access-label">Educação</span>
+				<span class="quick-access-desc">Cursos e escolas</span>
+	</a>
+<a href="https://conexaobr.ie/guias/?categoria=documentos" class="quick-access-card">
+	<div class="quick-access-icon">
+		<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+			<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline>		</svg>
+	</div>
+	<span class="quick-access-label">Documentos</span>
+				<span class="quick-access-desc">Vistos e PPS Number</span>
+	</a>
+<a href="https://conexaobr.ie/apoiadores/" class="quick-access-card quick-access-card--mobile-priority quick-access-card--priority-apoiadores quick-access-card--mobile-only">
+	<div class="quick-access-icon">
+		<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+			<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path>		</svg>
+	</div>
+	<span class="quick-access-label">Apoiadores</span>
+				<span class="quick-access-desc">Negócios parceiros</span>
+	</a>
+<a href="https://conexaobr.ie/blog/" class="quick-access-card quick-access-card--mobile-priority quick-access-card--priority-blog">
+	<div class="quick-access-icon">
+		<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+			<path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>		</svg>
+	</div>
+	<span class="quick-access-label">Blog</span>
+				<span class="quick-access-desc">Novidades e artigos</span>
+	</a>
+<a href="https://conexaobr.ie/guias/" class="quick-access-card quick-access-card--mobile-only">
+	<div class="quick-access-icon">
+		<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+			<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>		</svg>
+	</div>
+	<span class="quick-access-label">Guias</span>
+				<span class="quick-access-desc">Guias práticos</span>
+	</a>
+		</div>
+	</div>
+</section>
+
+<!-- Featured Content -->
+<section class="section section--featured">
+	<div class="site-container">
+		<div class="section-header">
+			<div class="section-header-left">
+				<span class="section-eyebrow">Conteúdo em Destaque</span>
+				<h2 class="section-title">Últimas Publicações</h2>
+			</div>
+			<a href="https://conexaobr.ie/blog/" class="section-link">
+				Ver todas				<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+					<line x1="5" y1="12" x2="19" y2="12"></line>
+					<polyline points="12 5 19 12 12 19"></polyline>
+				</svg>
+			</a>
+		</div>
+
+		<div class="featured-content-layout">
+			<div class="featured-main">
+											<article class="featured-article">
+																<div class="featured-article-content">
+																			<div class="featured-article-categories">
+											<span class="featured-article-category">Guia Prático</span>																							<span class="featured-article-category">Saúde</span>
+																					</div>
+																		<h3 class="featured-article-title"><a href="https://conexaobr.ie/guias/saude-da-mulher-irlanda-hse-servicos/">Saúde da Mulher na Irlanda: serviços do HSE, prevenção e onde buscar ajuda</a></h3>
+									<p class="featured-article-excerpt">A saúde da mulher envolve diferentes fases e necessidades ao longo da vida. Para quem mora na Irlanda, o HSE reúne informações e serviços oficiais em um único ponto de&hellip;</p>
+									<div class="featured-article-meta">
+										<span>
+											<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+												<circle cx="12" cy="12" r="10"></circle>
+												<polyline points="12 6 12 12 16 14"></polyline>
+											</svg>
+											September 6, 2026										</span>
+										<span>
+											<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+												<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+												<path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+											</svg>
+											3 min de leitura										</span>
+									</div>
+								</div>
+							</article>
+																								<div class="cards-grid" style="margin-top: 24px;">							<article class="post-card">
+																<div class="post-card-body">
+																	<div class="post-card-categories">
+										<span class="post-card-category">Guia Prático</span>																					<span class="post-card-category">Moradia</span>
+																			</div>
+																	<h3 class="post-card-title"><a href="https://conexaobr.ie/guias/como-comprar-casa-irlanda-mortgage/">Como comprar uma casa na Irlanda: financiamento, depósito, Help to Buy e First Home Scheme</a></h3>
+									<p class="post-card-excerpt">Comprar uma casa na Irlanda envolve organizar depósito, financiamento, documentação, impostos e custos da compra....</p>
+									<div class="post-card-meta">
+										<span>September 6, 2026</span>
+										<span>5 min de leitura</span>
+									</div>
+								</div>
+							</article>
+																																						<article class="post-card">
+																<div class="post-card-body">
+																	<div class="post-card-categories">
+										<span class="post-card-category">Guia Prático</span>																					<span class="post-card-category">Negócios</span>
+																			</div>
+																	<h3 class="post-card-title"><a href="https://conexaobr.ie/guias/small-claim-irlanda/">Como fazer uma Small Claim na Irlanda: guia passo a passo</a></h3>
+									<p class="post-card-excerpt">A Small Claims Procedure é um processo simplificado do District Court para determinadas disputas de...</p>
+									<div class="post-card-meta">
+										<span>September 6, 2026</span>
+										<span>3 min de leitura</span>
+									</div>
+								</div>
+							</article>
+																																						<article class="post-card">
+																<div class="post-card-body">
+																	<div class="post-card-categories">
+										<span class="post-card-category">Guia Prático</span>																					<span class="post-card-category">Negócios</span>
+																			</div>
+																	<h3 class="post-card-title"><a href="https://conexaobr.ie/guias/registrar-self-employed-irlanda/">Como se registrar como self-employed na Irlanda: guia prático</a></h3>
+									<p class="post-card-excerpt">Na Irlanda, trabalhar por conta própria normalmente envolve um registro fiscal no Revenue. Ser trabalhador...</p>
+									<div class="post-card-meta">
+										<span>September 6, 2026</span>
+										<span>3 min de leitura</span>
+									</div>
+								</div>
+							</article>
+																																						<article class="post-card">
+																<div class="post-card-body">
+																	<div class="post-card-categories">
+										<span class="post-card-category">Guia Prático</span>																					<span class="post-card-category">Negócios</span>
+																			</div>
+																	<h3 class="post-card-title"><a href="https://conexaobr.ie/guias/registrar-company-irlanda/">Como registrar uma company na Irlanda: passo a passo pelo CRO</a></h3>
+									<p class="post-card-excerpt">Se você decidiu criar uma company na Irlanda, o processo é diferente de trabalhar como...</p>
+									<div class="post-card-meta">
+										<span>September 6, 2026</span>
+										<span>3 min de leitura</span>
+									</div>
+								</div>
+							</article>
+							</div>																													</div>
+
+			<div class="featured-sidebar">
+				<!-- Most Read -->
+				<div class="sidebar-widget">
+					<h4 class="sidebar-widget-title">
+						<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+							<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+							<circle cx="12" cy="12" r="3"></circle>
+						</svg>
+						Mais Lidos					</h4>
+					<ul class="sidebar-list">
+														<li>
+									<a href="https://conexaobr.ie/guias/autismo-na-irlanda-diagnostico-hse-apoio/">
+										<span class="sidebar-list-number">1</span>
+										Autismo na Irlanda: Diagnóstico, HSE e Onde Buscar Apoio									</a>
+								</li>
+															<li>
+									<a href="https://conexaobr.ie/guias/beneficios-pais-solteiros-irlanda/">
+										<span class="sidebar-list-number">2</span>
+										Benefícios para Pais Solteiros na Irlanda: pagamentos, impostos e outros apoios									</a>
+								</li>
+															<li>
+									<a href="https://conexaobr.ie/2026/05/19/papo-de-empreendedor-com-um-toque-criativo-leve-e-motivador-para-inspirar-quem-pensa-em-empreende-13/">
+										<span class="sidebar-list-number">3</span>
+										Papo de Empreendedor: com um toque criativo, leve e motivador, para inspirar quem pensa em empreender — e também para provocar boas risadas e reflexões profundas 😉									</a>
+								</li>
+															<li>
+									<a href="https://conexaobr.ie/guias/leap-card-irlanda-como-usar/">
+										<span class="sidebar-list-number">4</span>
+										Leap Card na Irlanda: como usar o cartão de transporte e pagar menos									</a>
+								</li>
+															<li>
+									<a href="https://conexaobr.ie/guias/violencia-domestica-irlanda-onde-encontrar-ajuda/">
+										<span class="sidebar-list-number">5</span>
+										Violência Doméstica na Irlanda: Onde Encontrar Ajuda, Como Denunciar e Quais São Seus Direitos									</a>
+								</li>
+												</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- Precisa de ajuda? (compact utility shortcuts) -->
+<section class="help-section" aria-labelledby="help-section-heading">
+	<div class="site-container">
+		<div class="help-section-panel">
+			<h2 id="help-section-heading" class="help-section-heading">Precisa de ajuda?</h2>
+			<nav class="help-shortcuts" aria-label="Atalhos para as principais áreas do site">
+				<ul class="help-shortcuts-grid">
+					<li class="help-shortcut-item">
+	<a href="https://conexaobr.ie/guias/?categoria=moradia" class="help-shortcut">
+		<span class="help-shortcut-icon" aria-hidden="true">
+			<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+				<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline>			</svg>
+		</span>
+		<span class="help-shortcut-label">Moradia</span>
+	</a>
+</li>
+<li class="help-shortcut-item">
+	<a href="https://conexaobr.ie/empregos/" class="help-shortcut">
+		<span class="help-shortcut-icon" aria-hidden="true">
+			<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+				<rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>			</svg>
+		</span>
+		<span class="help-shortcut-label">Empregos</span>
+	</a>
+</li>
+<li class="help-shortcut-item">
+	<a href="https://conexaobr.ie/guias/?categoria=documentos" class="help-shortcut">
+		<span class="help-shortcut-icon" aria-hidden="true">
+			<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+				<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline>			</svg>
+		</span>
+		<span class="help-shortcut-label">Documentos</span>
+	</a>
+</li>
+<li class="help-shortcut-item">
+	<a href="https://conexaobr.ie/guias/?categoria=saude" class="help-shortcut">
+		<span class="help-shortcut-icon" aria-hidden="true">
+			<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+				<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>			</svg>
+		</span>
+		<span class="help-shortcut-label">Saúde</span>
+	</a>
+</li>
+<li class="help-shortcut-item">
+	<a href="https://conexaobr.ie/guias/?categoria=beneficios" class="help-shortcut">
+		<span class="help-shortcut-icon" aria-hidden="true">
+			<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+				<polyline points="20 12 20 22 4 22 4 12"></polyline><rect x="2" y="7" width="20" height="5"></rect><line x1="12" y1="22" x2="12" y2="7"></line><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path>			</svg>
+		</span>
+		<span class="help-shortcut-label">Benefícios</span>
+	</a>
+</li>
+<li class="help-shortcut-item">
+	<a href="https://conexaobr.ie/guias/?categoria=financas" class="help-shortcut">
+		<span class="help-shortcut-icon" aria-hidden="true">
+			<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+				<line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>			</svg>
+		</span>
+		<span class="help-shortcut-label">Finanças</span>
+	</a>
+</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</section>
+
+<!-- Latest News (Blog) -->
+<section class="section section--gray section--latest-news" aria-labelledby="latest-news-heading">
+	<div class="site-container">
+		<div class="section-header">
+			<div class="section-header-left">
+				<span class="section-eyebrow">Blog</span>
+				<h2 class="section-title" id="latest-news-heading">Últimas novidades</h2>
+			</div>
+			<a href="https://conexaobr.ie/blog/" class="section-link">
+				Ver todos				<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+					<line x1="5" y1="12" x2="19" y2="12"></line>
+					<polyline points="12 5 19 12 12 19"></polyline>
+				</svg>
+			</a>
+		</div>
+
+		<div class="cards-grid">
+								<article class="post-card">
+													<div class="post-card-image">
+								<a href="https://conexaobr.ie/2026/06/20/quem-voce-se-tornou-longe-de-casa/"><img fetchpriority="high" width="400" height="300" src="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/06/aeroporto.jpg?resize=400%2C300&amp;ssl=1" class="attachment-conexao-card size-conexao-card wp-post-image" alt="Quem você se tornou longe de casa?" loading="lazy" sizes="auto, (max-width: 768px) 92vw, 380px" decoding="async" srcset="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/06/aeroporto.jpg?resize=400%2C300&amp;ssl=1 400w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/06/aeroporto.jpg?resize=200%2C150&amp;ssl=1 200w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/06/aeroporto.jpg?zoom=2&amp;resize=400%2C300&amp;ssl=1 800w" data-attachment-id="11077" data-permalink="https://conexaobr.ie/2026/06/20/quem-voce-se-tornou-longe-de-casa/aeroporto/" data-orig-file="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/06/aeroporto.jpg?fit=1024%2C684&amp;ssl=1" data-orig-size="1024,684" data-comments-opened="1" data-image-meta="{&quot;aperture&quot;:&quot;0&quot;,&quot;credit&quot;:&quot;Getty Images/iStockphoto&quot;,&quot;camera&quot;:&quot;&quot;,&quot;caption&quot;:&quot;International airport terminal. Asian beautiful woman with luggage and walking in airport&quot;,&quot;created_timestamp&quot;:&quot;0&quot;,&quot;copyright&quot;:&quot;&quot;,&quot;focal_length&quot;:&quot;0&quot;,&quot;iso&quot;:&quot;0&quot;,&quot;shutter_speed&quot;:&quot;0&quot;,&quot;title&quot;:&quot;&quot;,&quot;orientation&quot;:&quot;0&quot;,&quot;alt&quot;:&quot;&quot;}" data-image-title="aeroporto" data-image-description="" data-image-caption="&lt;p&gt;International airport terminal. Asian beautiful woman with luggage and walking in airport&lt;/p&gt;
+" data-large-file="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/06/aeroporto.jpg?fit=1024%2C684&amp;ssl=1" /></a>
+							</div>
+												<div class="post-card-body">
+														<h3 class="post-card-title"><a href="https://conexaobr.ie/2026/06/20/quem-voce-se-tornou-longe-de-casa/">Quem você se tornou longe de casa?</a></h3>
+							<p class="post-card-excerpt">Texto escrito por: Aria Milioni Terapeuta Sistemica Instagram: https://www.instagram.com/ariaenergyhealing/ Existe uma armadilha silenciosa na experiência...</p>
+							<div class="post-card-meta">
+								<span>June 20, 2026</span>
+								<span>6 min de leitura</span>
+							</div>
+						</div>
+					</article>
+									<article class="post-card">
+													<div class="post-card-image">
+								<a href="https://conexaobr.ie/2026/06/20/dois-fatores-que-fazem-o-seu-negocio-ter-consistencia-nas-vendas/"><img fetchpriority="high" width="400" height="300" src="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/06/sacola-ao-cliente.jpg?resize=400%2C300&amp;ssl=1" class="attachment-conexao-card size-conexao-card wp-post-image" alt="DOIS FATORES QUE FAZEM O SEU NEGÓCIO TER CONSISTÊNCIA NAS VENDAS." loading="lazy" sizes="auto, (max-width: 768px) 92vw, 380px" decoding="async" srcset="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/06/sacola-ao-cliente.jpg?resize=400%2C300&amp;ssl=1 400w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/06/sacola-ao-cliente.jpg?resize=200%2C150&amp;ssl=1 200w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/06/sacola-ao-cliente.jpg?zoom=2&amp;resize=400%2C300&amp;ssl=1 800w" data-attachment-id="11079" data-permalink="https://conexaobr.ie/2026/06/20/dois-fatores-que-fazem-o-seu-negocio-ter-consistencia-nas-vendas/sacola-ao-cliente/" data-orig-file="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/06/sacola-ao-cliente.jpg?fit=1024%2C683&amp;ssl=1" data-orig-size="1024,683" data-comments-opened="1" data-image-meta="{&quot;aperture&quot;:&quot;0&quot;,&quot;credit&quot;:&quot;Getty Images/iStockphoto&quot;,&quot;camera&quot;:&quot;&quot;,&quot;caption&quot;:&quot;Beautiful female cafe owner in apron smiling and giving takeaway food paper bag to customer at coffee shop&quot;,&quot;created_timestamp&quot;:&quot;0&quot;,&quot;copyright&quot;:&quot;&quot;,&quot;focal_length&quot;:&quot;0&quot;,&quot;iso&quot;:&quot;0&quot;,&quot;shutter_speed&quot;:&quot;0&quot;,&quot;title&quot;:&quot;&quot;,&quot;orientation&quot;:&quot;0&quot;,&quot;alt&quot;:&quot;&quot;}" data-image-title="sacola ao cliente" data-image-description="" data-image-caption="&lt;p&gt;Beautiful female cafe owner in apron smiling and giving takeaway food paper bag to customer at coffee shop&lt;/p&gt;
+" data-large-file="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/06/sacola-ao-cliente.jpg?fit=1024%2C683&amp;ssl=1" /></a>
+							</div>
+												<div class="post-card-body">
+														<h3 class="post-card-title"><a href="https://conexaobr.ie/2026/06/20/dois-fatores-que-fazem-o-seu-negocio-ter-consistencia-nas-vendas/">DOIS FATORES QUE FAZEM O SEU NEGÓCIO TER CONSISTÊNCIA NAS VENDAS.</a></h3>
+							<p class="post-card-excerpt">Por Sonia Campos, Mestra em Ciência da Informação e Especialista em Business Intelligence. instagram: https://www.instagram.com/soninhafields/...</p>
+							<div class="post-card-meta">
+								<span>June 20, 2026</span>
+								<span>3 min de leitura</span>
+							</div>
+						</div>
+					</article>
+									<article class="post-card">
+													<div class="post-card-image">
+								<a href="https://conexaobr.ie/2026/06/14/as-relacoes-de-casal-na-nova-era/"><img fetchpriority="high" width="400" height="300" src="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/06/casal.jpg?resize=400%2C300&amp;ssl=1" class="attachment-conexao-card size-conexao-card wp-post-image" alt="As Relações de Casal na Nova Era" loading="lazy" sizes="auto, (max-width: 768px) 92vw, 380px" decoding="async" srcset="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/06/casal.jpg?resize=400%2C300&amp;ssl=1 400w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/06/casal.jpg?resize=200%2C150&amp;ssl=1 200w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/06/casal.jpg?zoom=2&amp;resize=400%2C300&amp;ssl=1 800w" data-attachment-id="11082" data-permalink="https://conexaobr.ie/2026/06/14/as-relacoes-de-casal-na-nova-era/portrait-of-a-happy-senior-couple-sitting-on-sofa-at-home/" data-orig-file="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/06/casal.jpg?fit=1024%2C682&amp;ssl=1" data-orig-size="1024,682" data-comments-opened="1" data-image-meta="{&quot;aperture&quot;:&quot;0&quot;,&quot;credit&quot;:&quot;Getty Images&quot;,&quot;camera&quot;:&quot;&quot;,&quot;caption&quot;:&quot;Portrait of a happy senior couple sitting on sofa at home&quot;,&quot;created_timestamp&quot;:&quot;0&quot;,&quot;copyright&quot;:&quot;&quot;,&quot;focal_length&quot;:&quot;0&quot;,&quot;iso&quot;:&quot;0&quot;,&quot;shutter_speed&quot;:&quot;0&quot;,&quot;title&quot;:&quot;Portrait of a happy senior couple sitting on sofa at home&quot;,&quot;orientation&quot;:&quot;0&quot;,&quot;alt&quot;:&quot;&quot;}" data-image-title="Portrait of a happy senior couple sitting on sofa at home" data-image-description="" data-image-caption="&lt;p&gt;Portrait of a happy senior couple sitting on sofa at home&lt;/p&gt;
+" data-large-file="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/06/casal.jpg?fit=1024%2C682&amp;ssl=1" /></a>
+							</div>
+												<div class="post-card-body">
+														<h3 class="post-card-title"><a href="https://conexaobr.ie/2026/06/14/as-relacoes-de-casal-na-nova-era/">As Relações de Casal na Nova Era</a></h3>
+							<p class="post-card-excerpt">Quando o propósito deixa de ser sobreviver juntos e passa a ser viver com consciência...</p>
+							<div class="post-card-meta">
+								<span>June 14, 2026</span>
+								<span>5 min de leitura</span>
+							</div>
+						</div>
+					</article>
+						</div>
+	</div>
+</section>
+
+<!-- Upcoming Events -->
+<section class="section section--events">
+	<div class="site-container">
+		<div class="section-header">
+			<div class="section-header-left">
+				<span class="section-eyebrow">Agenda</span>
+				<h2 class="section-title">Próximos Eventos</h2>
+				<p class="section-subtitle">Não perca os eventos da comunidade brasileira na Irlanda.</p>
+			</div>
+			<a href="https://conexaobr.ie/eventos/" class="section-link">
+				Ver todos				<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+					<line x1="5" y1="12" x2="19" y2="12"></line>
+					<polyline points="12 5 19 12 12 19"></polyline>
+				</svg>
+			</a>
+		</div>
+
+		<div class="events-grid events-grid--preview">
+			
+<article id="event-preview-12232" class="event-preview post-12232 event type-event status-publish has-post-thumbnail hentry conexao_county-cork conexao_town-cork">
+
+	<a class="event-preview-link" href="https://www.eventbrite.ie/e/lemoncello-tickets-1988513012951" target="_blank" rel="noopener noreferrer">
+
+		<div class="event-preview-media">
+							<img width="240" height="135" src="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/lemoncello-641c40faf7-641c40faf7-8.jpg?resize=240%2C135&amp;ssl=1" class="event-preview-img" alt="Lemoncello" loading="lazy" sizes="auto, (max-width: 480px) 76px, (max-width: 768px) 92px, 320px" decoding="async" srcset="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/lemoncello-641c40faf7-641c40faf7-8.jpg?w=640&amp;ssl=1 640w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/lemoncello-641c40faf7-641c40faf7-8.jpg?resize=300%2C169&amp;ssl=1 300w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/lemoncello-641c40faf7-641c40faf7-8.jpg?resize=240%2C135&amp;ssl=1 240w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/lemoncello-641c40faf7-641c40faf7-8.jpg?resize=512%2C288&amp;ssl=1 512w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/lemoncello-641c40faf7-641c40faf7-8.jpg?resize=320%2C180&amp;ssl=1 320w" data-attachment-id="24546" data-permalink="https://conexaobr.ie/eventos/lemoncello/lemoncello-10/" data-orig-file="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/lemoncello-641c40faf7-641c40faf7-8.jpg?fit=640%2C360&amp;ssl=1" data-orig-size="640,360" data-comments-opened="1" data-image-meta="{&quot;aperture&quot;:&quot;0&quot;,&quot;credit&quot;:&quot;&quot;,&quot;camera&quot;:&quot;&quot;,&quot;caption&quot;:&quot;&quot;,&quot;created_timestamp&quot;:&quot;0&quot;,&quot;copyright&quot;:&quot;&quot;,&quot;focal_length&quot;:&quot;0&quot;,&quot;iso&quot;:&quot;0&quot;,&quot;shutter_speed&quot;:&quot;0&quot;,&quot;title&quot;:&quot;&quot;,&quot;orientation&quot;:&quot;0&quot;,&quot;alt&quot;:&quot;&quot;}" data-image-title="Lemoncello" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/lemoncello-641c40faf7-641c40faf7-8.jpg?fit=640%2C360&amp;ssl=1" />					</div>
+
+		<div class="event-preview-body">
+			<h3 class="event-preview-title">Lemoncello</h3>
+
+							<p class="event-preview-meta">
+					<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+						<rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+						<line x1="16" y1="2" x2="16" y2="6"></line>
+						<line x1="8" y1="2" x2="8" y2="6"></line>
+						<line x1="3" y1="10" x2="21" y2="10"></line>
+					</svg>
+					23 Sep 2026											<span class="event-preview-meta-sep">&middot;</span>
+						<span class="event-preview-time">19:00 — 22:30</span>
+																			</p>
+			
+							<p class="event-preview-location">
+					<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+						<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+						<circle cx="12" cy="10" r="3"></circle>
+					</svg>
+					Cork				</p>
+					</div>
+
+	</a>
+
+</article>
+<article id="event-preview-12312" class="event-preview post-12312 event type-event status-publish has-post-thumbnail hentry conexao_county-cork conexao_town-cork">
+
+	<a class="event-preview-link" href="https://www.eventbrite.ie/e/maya-libbey-tickets-2000014022781" target="_blank" rel="noopener noreferrer">
+
+		<div class="event-preview-media">
+							<img width="240" height="135" src="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/maya-libbey-370dda638b-370dda638b-8.jpg?resize=240%2C135&amp;ssl=1" class="event-preview-img" alt="Maya Libbey" loading="lazy" sizes="auto, (max-width: 480px) 76px, (max-width: 768px) 92px, 320px" decoding="async" srcset="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/maya-libbey-370dda638b-370dda638b-8.jpg?resize=640%2C360&amp;ssl=1 640w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/maya-libbey-370dda638b-370dda638b-8.jpg?resize=240%2C135&amp;ssl=1 240w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/maya-libbey-370dda638b-370dda638b-8.jpg?zoom=2&amp;resize=240%2C135&amp;ssl=1 480w" data-attachment-id="24586" data-permalink="https://conexaobr.ie/eventos/maya-libbey/maya-libbey-10/" data-orig-file="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/maya-libbey-370dda638b-370dda638b-8.jpg?fit=640%2C905&amp;ssl=1" data-orig-size="640,905" data-comments-opened="1" data-image-meta="{&quot;aperture&quot;:&quot;0&quot;,&quot;credit&quot;:&quot;&quot;,&quot;camera&quot;:&quot;&quot;,&quot;caption&quot;:&quot;&quot;,&quot;created_timestamp&quot;:&quot;0&quot;,&quot;copyright&quot;:&quot;&quot;,&quot;focal_length&quot;:&quot;0&quot;,&quot;iso&quot;:&quot;0&quot;,&quot;shutter_speed&quot;:&quot;0&quot;,&quot;title&quot;:&quot;&quot;,&quot;orientation&quot;:&quot;0&quot;,&quot;alt&quot;:&quot;&quot;}" data-image-title="Maya Libbey" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/09/maya-libbey-370dda638b-370dda638b-8.jpg?fit=640%2C905&amp;ssl=1" />					</div>
+
+		<div class="event-preview-body">
+			<h3 class="event-preview-title">Maya Libbey</h3>
+
+							<p class="event-preview-meta">
+					<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+						<rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+						<line x1="16" y1="2" x2="16" y2="6"></line>
+						<line x1="8" y1="2" x2="8" y2="6"></line>
+						<line x1="3" y1="10" x2="21" y2="10"></line>
+					</svg>
+					23 Sep 2026											<span class="event-preview-meta-sep">&middot;</span>
+						<span class="event-preview-time">19:30 — 22:30</span>
+																			</p>
+			
+							<p class="event-preview-location">
+					<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+						<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+						<circle cx="12" cy="10" r="3"></circle>
+					</svg>
+					Cork				</p>
+					</div>
+
+	</a>
+
+</article>		</div>
+
+		<div class="events-section-footer">
+			<a href="https://conexaobr.ie/eventos/" class="events-section-link">
+				Ver todos os eventos				<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+					<line x1="5" y1="12" x2="19" y2="12"></line>
+					<polyline points="12 5 19 12 12 19"></polyline>
+				</svg>
+			</a>
+		</div>
+	</div>
+</section>
+
+<!-- Job Search Resources (single source of truth: conexao_job_resources(), same data as /empregos/) -->
+<section class="section section--gray section--jobs" aria-labelledby="jobs-home-title">
+	<div class="site-container">
+		<div class="section-header">
+			<div class="section-header-left">
+				<span class="section-eyebrow">Oportunidades</span>
+				<h2 class="section-title" id="jobs-home-title">Onde procurar emprego</h2>
+			</div>
+			<a href="https://conexaobr.ie/empregos/" class="section-link">Ver mais</a>
+		</div>
+			<div class="events-grid jobs-home-grid">
+								<article class="event-card job-resource-card">
+				<div class="event-card-body">
+					<h3 class="event-card-title">
+						<a href="https://www.jobs.ie/" title="(abre em nova aba)" target="_blank" rel="noopener noreferrer">Jobs.ie</a>
+					</h3>
+
+											<p class="event-card-excerpt">Encontre vagas de emprego em diversas áreas e regiões da Irlanda.</p>
+					
+					<a href="https://www.jobs.ie/" class="event-card-cta" title="(abre em nova aba)" aria-label="Acessar Jobs.ie (abre em nova aba)" target="_blank" rel="noopener noreferrer">
+						Acessar						<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+							<line x1="5" y1="12" x2="19" y2="12"></line>
+							<polyline points="12 5 19 12 12 19"></polyline>
+						</svg>
+					</a>
+				</div>
+			</article>
+								<article class="event-card job-resource-card">
+				<div class="event-card-body">
+					<h3 class="event-card-title">
+						<a href="https://ie.indeed.com/" title="(abre em nova aba)" target="_blank" rel="noopener noreferrer">Indeed Ireland</a>
+					</h3>
+
+											<p class="event-card-excerpt">Busca de vagas em todo o país, com filtros por área, salário e localização.</p>
+					
+					<a href="https://ie.indeed.com/" class="event-card-cta" title="(abre em nova aba)" aria-label="Acessar Indeed Ireland (abre em nova aba)" target="_blank" rel="noopener noreferrer">
+						Acessar						<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+							<line x1="5" y1="12" x2="19" y2="12"></line>
+							<polyline points="12 5 19 12 12 19"></polyline>
+						</svg>
+					</a>
+				</div>
+			</article>
+								<article class="event-card job-resource-card">
+				<div class="event-card-body">
+					<h3 class="event-card-title">
+						<a href="https://www.irishjobs.ie/" title="(abre em nova aba)" target="_blank" rel="noopener noreferrer">IrishJobs</a>
+					</h3>
+
+											<p class="event-card-excerpt">Uma das maiores plataformas de recrutamento da Irlanda, com vagas de grandes empresas.</p>
+					
+					<a href="https://www.irishjobs.ie/" class="event-card-cta" title="(abre em nova aba)" aria-label="Acessar IrishJobs (abre em nova aba)" target="_blank" rel="noopener noreferrer">
+						Acessar						<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+							<line x1="5" y1="12" x2="19" y2="12"></line>
+							<polyline points="12 5 19 12 12 19"></polyline>
+						</svg>
+					</a>
+				</div>
+			</article>
+			</div>
+		</div>
+</section>
+
+
+<section class="newsletter-section">
+	<div class="site-container">
+		<div class="newsletter-content">
+			<div class="newsletter-text">
+				<h2 class="newsletter-title">Fique por dentro de tudo!</h2>
+				<p class="newsletter-description">Receba as últimas notícias, eventos e guias práticos diretamente no seu email. Sem spam, apenas conteúdo relevante para brasileiros na Irlanda.</p>
+			</div>
+			<div class="newsletter-form">
+				<h3 class="newsletter-form-title">Assine nossa newsletter</h3>
+				<p class="newsletter-form-subtitle">Junte-se a milhares de brasileiros que já recebem nossas atualizações.</p>
+				<form class="newsletter-input-group" action="#" method="post">
+					<input type="email" class="newsletter-input" placeholder="Seu melhor email" required>
+					<button type="submit" class="newsletter-btn">Assinar</button>
+				</form>
+				<p class="newsletter-privacy">Ao assinar, você concorda com nossa política de privacidade.</p>
+			</div>
+		</div>
+	</div>
+</section>
+
+<section class="quote-section">
+	<div class="site-container">
+		<div class="quote-content">
+			<blockquote class="quote-text">"A vida é uma constante oportunidade de recomeçar. Cada dia é uma nova chance de construir algo melhor."</blockquote>
+			<p class="quote-author">— Mário Sérgio Cortella</p>
+		</div>
+	</div>
+</section>
+
+</main>
+
+
+	</div><!-- #content -->
+
+	<footer id="colophon" class="site-footer">
+		<div class="footer-main">
+			<div class="site-container">
+				<div class="footer-grid">
+					<!-- Brand Column -->
+					<div class="footer-brand">
+						<div class="footer-logo">
+							<a href="https://conexaobr.ie/" rel="home" class="site-logo-link">
+								<img
+									src="https://conexaobr.ie/wp-content/themes/conexao-br-irlanda/assets/images/logo_dark_mode-240.webp"
+									srcset="https://conexaobr.ie/wp-content/themes/conexao-br-irlanda/assets/images/logo_dark_mode-240.webp 240w, https://conexaobr.ie/wp-content/themes/conexao-br-irlanda/assets/images/logo_dark_mode.webp 480w"
+									sizes="(max-width: 768px) 240px, 480px"
+									width="480"
+									height="180"
+									alt="Conexão BR"
+									class="site-logo-img"
+									loading="lazy"
+								>
+							</a>
+						</div>
+						<p class="footer-about">
+							Conectando a comunidade brasileira na Irlanda com informações, eventos, cursos e muito mais. Sua revista digital para brasileiros na Irlanda.						</p>
+					</div>
+
+					<!-- Social Column -->
+					<div class="footer-column">
+						<h4 class="footer-column-title">Redes Sociais</h4>
+						<div class="footer-social">
+																						<a href="https://www.instagram.com/conexaobr.ie/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+									<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+								</a>
+																						<a href="https://wa.me/353899451428" class="footer-social-link--whatsapp" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+									<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+								</a>
+																				</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="footer-bottom">
+			<div class="site-container">
+				<div class="footer-copyright">
+					© 2025 Conexão BR Irlanda. Todos os direitos reservados.				</div>
+				<div class="footer-bottom-links">
+					<a href="https://conexaobr.ie/politica-de-privacidade/">Privacidade</a>
+					<span class="footer-bottom-sep" aria-hidden="true">·</span>
+					<a href="https://conexaobr.ie/termos-de-uso/">Termos</a>
+					<span class="footer-bottom-sep" aria-hidden="true">·</span>
+					<a href="https://conexaobr.ie/cookies/">Cookies</a>
+				</div>
+			</div>
+		</div>
+	</footer>
+</div><!-- #page -->
+
+<!-- wpcom_wp_footer -->
+<script type="speculationrules">
+{"prefetch":[{"source":"document","where":{"and":[{"href_matches":"/*"},{"not":{"href_matches":["/wp-*.php","/wp-admin/*","/wp-content/uploads/*","/wp-content/*","/wp-content/plugins/*","/wp-content/themes/conexao-br-irlanda/*","/*\\?(.+)"]}},{"not":{"selector_matches":"a[rel~=\"nofollow\"]"}},{"not":{"selector_matches":".no-prefetch, .no-prefetch a"}}]},"eagerness":"conservative"}]}
+</script>
+<meta id="bilmur" property="bilmur:data" content="" data-customproperties="{&quot;woo_active&quot;:&quot;0&quot;,&quot;logged_in&quot;:&quot;0&quot;,&quot;wptheme&quot;:&quot;conexao-br-irlanda&quot;,&quot;wptheme_is_block&quot;:&quot;0&quot;}" data-provider="wordpress.com" data-service="atomic"  data-site-tz="Europe/Dublin"  >
+<script defer src="https://s0.wp.com/wp-content/js/bilmur.min.js?m=202639"></script>
+	<aside class="whatsapp-float-region" aria-label="Fale com a Conexão BR">
+	<a href="https://wa.me/353899451428" class="whatsapp-float" target="_blank" rel="noopener noreferrer" aria-label="Fale conosco no WhatsApp">
+		<svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+	</a>
+	</aside>
+	<script data-wp-strategy="defer" defer id="conexao-main-js" src="https://conexaobr.ie/wp-content/themes/conexao-br-irlanda/assets/js/main.js?ver=1789573003"></script>
+<script id="jetpack-stats-js-before">
+_stq = window._stq || [];
+_stq.push([ "view", {"v":"ext","blog":"256777017","post":"9","tz":"1","srv":"conexaobr.ie","hp":"atomic","ac":"2","amp":"0","j":"1:16.3-a.3"} ]);
+_stq.push([ "clickTrackerInit", "256777017", "9" ]);
+//# sourceURL=jetpack-stats-js-before
+</script>
+<script data-wp-strategy="defer" defer fetchpriority="low" id="jetpack-stats-js" src="https://stats.wp.com/e-202639.js"></script>
+</body>
+</html>

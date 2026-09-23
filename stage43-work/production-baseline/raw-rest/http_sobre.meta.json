@@ -1,0 +1,17 @@
+{
+ "label": "http_sobre",
+ "url": "https://conexaobr.ie/sobre/",
+ "auth": false,
+ "follow": false,
+ "status": 301,
+ "location": "https://conexaobr.ie/sobre-nos/",
+ "content_type": "text/html; charset=UTF-8",
+ "x_redirect_by": "WordPress",
+ "x_ac": null,
+ "cache_control": null,
+ "x_wp_total": null,
+ "x_wp_totalpages": null,
+ "elapsed_ms": 466,
+ "attempt": 1,
+ "body_len": 0
+}

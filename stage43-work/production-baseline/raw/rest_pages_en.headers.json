@@ -1,0 +1,37 @@
+{
+  "final_headers": {
+    "Alt-Svc": "clear",
+    "Connection": "close",
+    "Content-Length": "1168",
+    "Content-Type": "text/html",
+    "Date": "Wed, 23 Sep 2026 10:56:12 GMT",
+    "ETag": "\"69bb1d6a-490\"",
+    "Server": "nginx",
+    "Server-Timing": "a8c-cdn, dc;desc=dca, cache;desc=MISS;dur=2.0",
+    "Strict-Transport-Security": "max-age=31536000",
+    "X-ac": "4.dca _atomic_dca MISS"
+  },
+  "final_status": 429,
+  "final_url": "https://conexaobr.ie/wp-json/wp/v2/pages?lang=en",
+  "hops": [
+    {
+      "elapsed": 0.115,
+      "error": null,
+      "hop": 0,
+      "method": "GET",
+      "reason": "Too Many Requests",
+      "redirect_target": null,
+      "status": 429,
+      "url": "https://conexaobr.ie/wp-json/wp/v2/pages?lang=en"
+    }
+  ],
+  "probe": {
+    "key": "rest_pages_en",
+    "kind": "rest",
+    "method": "GET",
+    "url": "https://conexaobr.ie/wp-json/wp/v2/pages?lang=en"
+  },
+  "status_chain": [
+    429
+  ]
+}
