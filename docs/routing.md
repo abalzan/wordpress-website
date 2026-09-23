@@ -147,10 +147,22 @@ Portuguese destinations. Stage 3.3 closes that:
   resolved to the current language at render time by the theme's Stage 3.3
   language-aware layer (`conexao_primary_nav_archive_url()`,
   `conexao_bind_section_object()`, `conexao_lang_url()`), so `/en/` links never
-  fall back to the Portuguese URL space (approved B1 exceptions: `/empregos/`
-  — the jobs directory has no EN page — and `/blog/`).
-  See `scripts/create-en-primary-menu.php` and
-  CONEXAO_BR_EN_HEADER_NAVIGATION_FIX_REPORT.md.
+  fall back to the Portuguese URL space.
+- **Jobs in the EN nav is page-backed**: the `job` CPT is registered with
+  `has_archive = false` (its `rewrite` slug stays `empregos` for job singles),
+  so `/empregos/` belongs to the static landing page and `/en/jobs/` is its
+  real linked Polylang translation. `conexao_primary_nav_sections()` therefore
+  models the Jobs section as a **page** (`path = empregos`), not a CPT archive,
+  and `conexao_bind_section_object()` resolves it to the linked EN translation
+  exactly like Contact/About Us. Modelling it as an archive returned an empty
+  archive URL and fell back to the Portuguese `/empregos/`, which switched an EN
+  visitor back to Portuguese — fixed in
+  CONEXAO_BR_EN_NAV_LANGUAGE_CONTEXT_FIX_REPORT.md.
+- **Approved B1 exception in the EN nav: `/blog/` only.** There is no per-language
+  posts archive (`/en/blog/` is a B1 302-only URL), so Blog keeps the Portuguese
+  destination; every other EN primary-nav item must stay in the `/en/` context.
+  See `scripts/create-en-primary-menu.php`, CONEXAO_BR_EN_HEADER_NAVIGATION_FIX_REPORT.md
+  and CONEXAO_BR_EN_NAV_LANGUAGE_CONTEXT_FIX_REPORT.md.
 - **hreflang output** is emitted by the theme (`inc/seo.php`,
   `conexao_hreflang_links()`), which is the single SEO owner; Polylang's own
   `wp_head` rel-alternate set is additionally present in the local environment

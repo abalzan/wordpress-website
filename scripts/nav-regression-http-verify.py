@@ -47,6 +47,12 @@ def fetch(path: str) -> str:
         return resp.read().decode("utf-8", errors="replace")
 
 
+def fetch_final(url: str):
+    """GET url, following redirects; return (final_url, body)."""
+    with urllib.request.urlopen(url, timeout=15) as resp:
+        return resp.geturl(), resp.read().decode("utf-8", "replace")
+
+
 def check(label: str, ok: bool, detail: str = "") -> None:
     global passed, failed
     if ok:
@@ -140,22 +146,51 @@ check(
     f"got {labels}",
 )
 check("EN home: Home is marked current (aria-current)", bool(re.search(r'<a href="[^"]*"[^>]*aria-current="page"[^>]* class="nav-link">Home</a>', nav)))
+# The ONLY destination an EN visitor may leave /en/ for is the documented B1
+# Blog exception (no EN posts archive; /en/blog/ is a B1 302-only URL). Jobs is
+# NOT an exception: it has a real linked EN translation (/en/jobs/).
+B1_ALLOWED_PT = ("/blog",)
 en_urls = re.findall(r'<a href="([^"]*)"', nav)
 check(
-    "EN home: nav destinations stay in the EN URL space (or approved B1 PT)",
+    "EN home: only the documented B1 Blog destination may leave /en/",
     all(
         u.startswith(BASE)
         and (
             u[len(BASE) :].rstrip("/") in ("/en", "")
             or u[len(BASE) :].startswith("/en/")
-            or u[len(BASE) :].rstrip("/") in ("/empregos", "/blog")  # approved B1 destinations
+            or u[len(BASE) :].rstrip("/") in B1_ALLOWED_PT
         )
         for u in en_urls
     ),
     f"got {en_urls}",
 )
+jobs_hrefs = [u for u in en_urls if "jobs" in u.lower() or "empregos" in u.lower()]
+check("EN home: Jobs nav item points at an /en/ destination", bool(jobs_hrefs) and all(u.startswith(BASE + "/en/") for u in jobs_hrefs), f"got {jobs_hrefs}")
+check("EN home: Jobs nav item is NOT the PT /empregos/", all(u.rstrip("/") != BASE + "/empregos" for u in jobs_hrefs), f"got {jobs_hrefs}")
 check("EN home: language switcher shows EN current + PT link", 'is-current" aria-current="true" lang="en">EN<' in html and 'hreflang="pt-BR"' in html)
 check("EN home: mobile drawer nav renders the EN menu", all(t in unescape(block(html, MOBILE_NAV_START, MOBILE_NAV_END)) for t in CANONICAL_EN))
+
+# --- EN nav destination end-to-end language context (follow every link) ----
+print("\n[EN nav destination language context - followed links]")
+en_pairs = [(unescape(t.strip()), u) for u, t in re.findall(r'<a href="([^"]*)"[^>]*>([^<]+)</a>', nav)]
+for title, href in en_pairs:
+    if not href.startswith(BASE):
+        continue
+    try:
+        final, body = fetch_final(href)
+    except Exception as exc:  # noqa: BLE001
+        check(f"EN nav '{title}': request succeeds", False, str(exc))
+        continue
+    lang_match = re.search(r'<html[^>]*\blang="([^"]*)"', body)
+    lang = lang_match.group(1) if lang_match else "?"
+    in_en = final.startswith(BASE + "/en/") or final.rstrip("/") == BASE + "/en"
+    if title == "Blog":
+        check("EN nav 'Blog': documented B1 exception (stays PT by policy)", (not in_en) and lang.lower().startswith("pt"), f"final={final} lang={lang}")
+    else:
+        check(f"EN nav '{title}': final URL stays in /en/", in_en, f"final={final}")
+        check(f"EN nav '{title}': resulting document language is EN", lang.lower().startswith("en"), f"lang={lang} final={final}")
+    if title == "Jobs":
+        check("EN nav 'Jobs': does NOT land on the Portuguese /empregos/", final.rstrip("/") != BASE + "/empregos", f"final={final}")
 
 # --- PT content page ---------------------------------------------------
 html = fetch("/contato/")

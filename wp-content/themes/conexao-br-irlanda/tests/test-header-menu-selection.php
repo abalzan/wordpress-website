@@ -12,7 +12,9 @@
  *    never the wp_page_menu page list, and never an empty nav when a valid
  *    per-language menu is assigned.
  *  - English destinations stay in the /en/ URL space (except the approved B1
- *    destinations /empregos/ and /blog/).
+ *    destination /blog/ — there is no EN posts archive). EN Jobs resolves
+ *    to the linked /en/jobs/ translation (see
+ *    CONEXAO_BR_EN_NAV_LANGUAGE_CONTEXT_FIX_REPORT.md).
  *  - The current-menu-item state lands on the right item in both languages
  *    (including the /en/ language-prefix path handling).
  *
@@ -138,12 +140,14 @@ if ( 'pt' === $language ) {
 	$bad = array();
 	foreach ( $matches_url[1] as $url ) {
 		$tail = untrailingslashit( (string) wp_parse_url( $url, PHP_URL_PATH ) );
-		$ok_url = '' === $tail || '/en' === $tail || 0 === strpos( $tail, '/en/' ) || in_array( $tail, array( '/empregos', '/blog' ), true );
+		$ok_url = '' === $tail || '/en' === $tail || 0 === strpos( $tail, '/en/' ) || '/blog' === $tail; // approved B1 exception: Blog only.
 		if ( ! $ok_url ) {
 			$bad[] = $tail;
 		}
 	}
-	check( 'E5 EN nav destinations stay in the EN URL space (B1 exceptions: /empregos/, /blog/)', array() === $bad, 'bad ' . wp_json_encode( $bad ) );
+	check( 'E5 EN nav destinations stay in the EN URL space (only B1 exception: /blog/)', array() === $bad, 'bad ' . wp_json_encode( $bad ) );
+	check( 'E5b EN Jobs item points at the linked EN translation /en/jobs/', (bool) preg_match( '#href="[^"]*/en/jobs/"#', (string) $rendered ) );
+	check( 'E5c EN Jobs item is NOT the Portuguese /empregos/', false === strpos( (string) $rendered, 'href="' . home_url( '/empregos/' ) . '"' ) && false === strpos( (string) $rendered, 'href="/empregos/"' ) );
 	check( 'E6 EN homepage marks Home current on /en/ (class level; aria-current is HTTP-verified)', (bool) preg_match( '/<li[^>]*current-menu-item[^>]*>\s*<a[^>]*>Home<\/a>/i', (string) $rendered ) );
 	check( 'E7 EN nav does not leak Portuguese labels', false === strpos( (string) $rendered, 'Apoiadores</a>' ) && false === strpos( (string) $rendered, 'Lazer e turismo</a>' ) && false === strpos( (string) $rendered, 'Início</a>' ) );
 

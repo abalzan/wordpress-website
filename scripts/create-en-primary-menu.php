@@ -87,6 +87,9 @@ $en_items = array(
 	array( 'title' => 'Events', 'type' => 'custom', 'path' => '/eventos/' ),
 	array( 'title' => 'Courses', 'type' => 'custom', 'path' => '/cursos/' ),
 	array( 'title' => 'Leisure & Tourism', 'type' => 'custom', 'path' => '/lazer/' ),
+	// Stored as the canonical PT path; the render-time language layer resolves it
+	// to the linked EN translation /en/jobs/ (Jobs is a page-backed section — see
+	// conexao_primary_nav_sections() / CONEXAO_BR_EN_NAV_LANGUAGE_CONTEXT_FIX_REPORT.md).
 	array( 'title' => 'Jobs', 'type' => 'custom', 'path' => '/empregos/' ),
 	array( 'title' => 'Blog', 'type' => 'custom', 'path' => '/blog/' ),
 	array( 'title' => 'About Us', 'type' => 'page', 'page_path' => 'sobre-nos' ),

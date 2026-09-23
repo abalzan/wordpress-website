@@ -167,6 +167,7 @@ reach the markup.
 | `conexao_relabel_posts_to_blog()` | Label override: "Posts" → "Blog" |
 | `conexao_modify_primary_nav_items()` | Nav item insertion/removal (priority 20) |
 | `conexao_normalize_primary_nav_sections()` | Nav binding + active state (priority 25) |
+| `conexao_bind_section_object()` | Binds a nav section to its canonical object; page sections resolve the current language’s LINKED Polylang translation (so EN Jobs binds to `/en/jobs/`). The Jobs section is page-backed (`path = empregos`) because the `job` CPT has `has_archive = false` — see CONEXAO_BR_EN_NAV_LANGUAGE_CONTEXT_FIX_REPORT.md |
 | `conexao_fix_nav_active_states()` | Active state conflict resolution |
 | `conexao_popular_posts()` | "Mais Lidos" query (ranks by `_conexao_view_count` recorded in `inc/post-views.php`) |
 | `conexao_latest_blog_posts()` | "Últimas novidades" homepage query — 3 newest Blog posts by publication date (transient-cached under `conexao_home_latest`) |
