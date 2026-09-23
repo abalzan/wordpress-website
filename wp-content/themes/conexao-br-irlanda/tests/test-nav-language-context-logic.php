@@ -1,0 +1,560 @@
+<?php
+/**
+ * EN primary-navigation LANGUAGE-CONTEXT logic test — runnable WITHOUT WordPress.
+ *
+ * Companion to tests/test-nav-language-context.php (live WP/DB) and to
+ * scripts/nav-regression-http-verify.py (running server).
+ *
+ * The regression fixed in CONEXAO_BR_EN_NAV_LANGUAGE_CONTEXT_FIX_REPORT.md was a
+ * render-time URL-resolution bug: the EN "Jobs" item resolved to the Portuguese
+ * /empregos/ because the Jobs section was modelled as a CPT archive while the
+ * `job` CPT is registered with has_archive = false, so the archive URL was empty
+ * and the code fell back to the Portuguese path. Nothing about that bug needs a
+ * database to reproduce — it is pure URL resolution.
+ *
+ * This script EXTRACTS the real navigation functions from functions.php and
+ * inc/polylang.php (token_get_all) and executes them unmodified against a small
+ * stubbed WordPress/Polylang layer emulating a bilingual site (PT + EN Polylang
+ * directory mode) with:
+ *   - the `empregos` PT page linked to the `jobs` EN translation (/en/jobs/),
+ *   - CPT archives for guide/event/leisure/sponsor/course_provider,
+ *   - `job` has_archive = false (the root cause),
+ *   - the native posts archive at /blog/ with NO EN archive (approved B1).
+ *
+ * Usage (from the project root):
+ *   php wp-content/themes/conexao-br-irlanda/tests/test-nav-language-context-logic.php
+ *
+ * Read-only. No WordPress, no database, no network.
+ *
+ * @package conexao-br-irlanda
+ */
+
+error_reporting( E_ALL );
+
+$GLOBALS['conexao_test_passed'] = 0;
+$GLOBALS['conexao_test_failed'] = 0;
+
+function check( string $label, bool $ok, string $detail = '' ): void {
+	if ( $ok ) {
+		++$GLOBALS['conexao_test_passed'];
+		echo "  PASS  {$label}\n";
+	} else {
+		++$GLOBALS['conexao_test_failed'];
+		echo "  FAIL  {$label}" . ( '' !== $detail ? "  [{$detail}]" : '' ) . "\n";
+	}
+}
+
+/**
+ * Extract every TOP-LEVEL named function definition from a PHP source file.
+ *
+ * @param string $source PHP source.
+ * @return array<string,string> name => code.
+ */
+function conexao_test_extract_functions( string $source ): array {
+	$tokens = token_get_all( $source );
+	$count  = count( $tokens );
+	$funcs  = array();
+	$depth  = 0;
+
+	for ( $i = 0; $i < $count; $i++ ) {
+		$token = $tokens[ $i ];
+
+		if ( is_array( $token ) && T_FUNCTION === $token[0] && 0 === $depth ) {
+			$j = $i + 1;
+			while ( $j < $count && is_array( $tokens[ $j ] ) && T_WHITESPACE === $tokens[ $j ][0] ) {
+				++$j;
+			}
+			if ( ! is_array( $tokens[ $j ] ) || T_STRING !== $tokens[ $j ][0] ) {
+				continue; // anonymous closure
+			}
+			$name = $tokens[ $j ][1];
+
+			$k       = $j;
+			$brace   = 0;
+			$started = false;
+			$end     = null;
+			for ( ; $k < $count; $k++ ) {
+				$c = is_array( $tokens[ $k ] ) ? $tokens[ $k ][1] : $tokens[ $k ];
+				if ( '{' === $c ) {
+					$started = true;
+					++$brace;
+				} elseif ( '}' === $c ) {
+					--$brace;
+					if ( $started && 0 === $brace ) {
+						$end = $k;
+						break;
+					}
+				}
+			}
+			if ( null === $end ) {
+				continue;
+			}
+
+			$code = '';
+			for ( $x = $i; $x <= $end; $x++ ) {
+				$code .= is_array( $tokens[ $x ] ) ? $tokens[ $x ][1] : $tokens[ $x ];
+			}
+			$funcs[ $name ] = $code;
+			$i              = $end;
+			continue;
+		}
+
+		$c = is_array( $token ) ? $token[1] : $token;
+		if ( '{' === $c ) {
+			++$depth;
+		} elseif ( '}' === $c ) {
+			--$depth;
+		}
+	}
+
+	return $funcs;
+}
+
+$theme_dir = dirname( __DIR__ );
+$extracted = array();
+foreach ( array( $theme_dir . '/functions.php', $theme_dir . '/inc/polylang.php' ) as $source ) {
+	$raw = file_get_contents( $source );
+	if ( false === $raw ) {
+		fwrite( STDERR, "Cannot read {$source}\n" );
+		exit( 2 );
+	}
+	foreach ( conexao_test_extract_functions( $raw ) as $name => $code ) {
+		$extracted[ $name ] = $code;
+	}
+}
+
+if ( ! isset( $extracted['conexao_primary_nav_sections'], $extracted['conexao_bind_section_object'], $extracted['conexao_lang_url'] ) ) {
+	fwrite( STDERR, "Failed to extract the navigation functions.\n" );
+	exit( 2 );
+}
+
+// ---------------------------------------------------------------------------
+// Stubbed WordPress + Polylang layer and the bilingual site model.
+// ---------------------------------------------------------------------------
+define( 'OBJECT', 1 );
+
+$GLOBALS['conexao_test_lang']  = 'pt';
+$GLOBALS['conexao_test_base']  = 'http://example.test';
+$GLOBALS['conexao_test_homes'] = array(
+	'pt' => 'http://example.test/',
+	'en' => 'http://example.test/en/',
+);
+
+// PT page => EN linked translation. Mirrors scripts/stage32-translate-pages.php.
+$GLOBALS['conexao_test_pages'] = array(
+	'inicio'    => array( 'id' => 10,  'url' => 'http://example.test/',           'en' => 1290, 'en_url' => 'http://example.test/en/' ),
+	'empregos'  => array( 'id' => 113, 'url' => 'http://example.test/empregos/',  'en' => 1130, 'en_url' => 'http://example.test/en/jobs/' ),
+	'contato'   => array( 'id' => 20,  'url' => 'http://example.test/contato/',   'en' => 200,  'en_url' => 'http://example.test/en/contact/' ),
+	'sobre-nos' => array( 'id' => 21,  'url' => 'http://example.test/sobre-nos/', 'en' => 210,  'en_url' => 'http://example.test/en/about-us/' ),
+	'irlanda'   => array( 'id' => 30,  'url' => 'http://example.test/irlanda/',   'en' => 0,    'en_url' => '' ), // B2, no linked EN page.
+);
+
+$GLOBALS['conexao_test_post_types'] = array(
+	'guide'           => array( 'has_archive' => 'guias',      'slug' => 'guias' ),
+	'event'           => array( 'has_archive' => 'eventos',    'slug' => 'eventos' ),
+	'leisure'         => array( 'has_archive' => 'lazer',      'slug' => 'lazer' ),
+	'sponsor'         => array( 'has_archive' => 'apoiadores', 'slug' => 'apoiadores' ),
+	'course_provider' => array( 'has_archive' => 'cursos',     'slug' => 'cursos' ),
+	// ROOT CAUSE of the bug: the job CPT has no archive; /empregos/ is a page.
+	'job'             => array( 'has_archive' => false,        'slug' => 'empregos' ),
+	'post'            => array( 'has_archive' => false,        'slug' => 'blog' ),
+);
+
+function pll_current_language( $field = '' ) {
+	$slug = $GLOBALS['conexao_test_lang'];
+	return 'slug' === $field ? $slug : ( 'pt' === $slug ? 'pt_BR' : 'en_US' );
+}
+function pll_default_language( $field = '' ) {
+	return 'slug' === $field ? 'pt' : 'pt_BR';
+}
+function pll_home_url( $lang = '' ) {
+	$lang = '' === $lang ? $GLOBALS['conexao_test_lang'] : $lang;
+	return $GLOBALS['conexao_test_homes'][ $lang ] ?? $GLOBALS['conexao_test_homes']['pt'];
+}
+function pll_languages_list( $args = array() ) {
+	return array( 'pt', 'en' );
+}
+function pll_get_post( $id, $lang = '' ) {
+	$id   = (int) $id;
+	$lang = '' === $lang ? $GLOBALS['conexao_test_lang'] : $lang;
+	foreach ( $GLOBALS['conexao_test_pages'] as $page ) {
+		if ( 'en' === $lang && (int) $page['id'] === $id && $page['en'] ) {
+			return (int) $page['en'];
+		}
+		if ( 'pt' === $lang && (int) $page['en'] === $id ) {
+			return (int) $page['id'];
+		}
+	}
+	return false;
+}
+function home_url( $path = '' ) {
+	$path = (string) $path;
+	if ( '' === $path || '/' === $path ) {
+		// Polylang rewrites the BARE home URL to the current language home.
+		return pll_home_url( $GLOBALS['conexao_test_lang'] );
+	}
+	return $GLOBALS['conexao_test_base'] . '/' . ltrim( $path, '/' );
+}
+function get_page_by_path( $path, $output = OBJECT, $type = 'page' ) {
+	$path = trim( (string) $path, '/' );
+	if ( isset( $GLOBALS['conexao_test_pages'][ $path ] ) ) {
+		return (object) array( 'ID' => $GLOBALS['conexao_test_pages'][ $path ]['id'], 'post_parent' => 0 );
+	}
+	return null;
+}
+
+function get_permalink( $id ) {
+	$id = (int) $id;
+	foreach ( $GLOBALS['conexao_test_pages'] as $page ) {
+		if ( (int) $page['id'] === $id ) {
+			return $page['url'];
+		}
+		if ( $page['en'] && (int) $page['en'] === $id ) {
+			return $page['en_url'];
+		}
+	}
+	return false;
+}
+function get_post_status( $id ) {
+	return 'publish';
+}
+function get_post_type_archive_link( $post_type ) {
+	$pt = $GLOBALS['conexao_test_post_types'][ $post_type ] ?? null;
+	if ( ! $pt || empty( $pt['has_archive'] ) ) {
+		return false;
+	}
+	return $GLOBALS['conexao_test_base'] . '/' . $pt['slug'] . '/';
+}
+function get_post_type_object( $post_type ) {
+	$pt = $GLOBALS['conexao_test_post_types'][ $post_type ] ?? null;
+	if ( ! $pt ) {
+		return null;
+	}
+	return (object) array(
+		'name'        => $post_type,
+		'has_archive' => $pt['has_archive'],
+		'rewrite'     => array( 'slug' => $pt['slug'] ),
+	);
+}
+function get_post_types( $args = array(), $output = 'names' ) {
+	$out = array();
+	foreach ( $GLOBALS['conexao_test_post_types'] as $name => $pt ) {
+		$out[ $name ] = get_post_type_object( $name );
+	}
+	return $out;
+}
+function _wp_menu_item_classes_by_context( &$items ) {
+	return $items; // WordPress menu-context logic — irrelevant to URL resolution.
+}
+function wp_strip_all_tags( $text ) {
+	return trim( strip_tags( (string) $text ) );
+}
+function __( $text, $domain = '' ) {
+	return $text;
+}
+function sanitize_text_field( $text ) {
+	return trim( (string) $text );
+}
+function wp_unslash( $text ) {
+	return $text;
+}
+function untrailingslashit( $string ) {
+	return rtrim( (string) $string, '/' );
+}
+function trailingslashit( $string ) {
+	return untrailingslashit( $string ) . '/';
+}
+function wp_parse_url( $url, $component = -1 ) {
+	return parse_url( $url, $component );
+}
+
+// ---------------------------------------------------------------------------
+// Load the REAL navigation functions.
+// ---------------------------------------------------------------------------
+$generated = "<?php\n" . implode( "\n\n", array_values( $extracted ) );
+$tmp       = tempnam( sys_get_temp_dir(), 'conexao_nav_' ) . '.php';
+file_put_contents( $tmp, $generated );
+require $tmp;
+unlink( $tmp );
+
+/**
+ * Build the EN "Main Menu" stored items (mirror of scripts/create-en-primary-menu.php):
+ * custom links to the canonical PT paths + page-object items, English titles.
+ *
+ * @return array<int,object>
+ */
+function conexao_test_pt_menu_items(): array {
+	$items = array();
+	foreach ( array(
+		array( 'Home', 'http://example.test/' ),
+		array( 'Apoiadores', 'http://example.test/apoiadores/' ),
+		array( 'Guias', 'http://example.test/guias/' ),
+		array( 'Eventos', 'http://example.test/eventos/' ),
+		array( 'Cursos', 'http://example.test/cursos/' ),
+		array( 'Empregos', 'http://example.test/empregos/' ),
+		array( 'Blog', 'http://example.test/blog/' ),
+	) as $spec ) {
+		$items[] = (object) array(
+			'ID' => 0, 'db_id' => 0, 'menu_item_parent' => 0, 'object_id' => 0,
+			'object' => 'custom', 'post_parent' => 0, 'type' => 'custom',
+			'type_label' => 'Custom Link', 'title' => $spec[0], 'url' => $spec[1],
+			'classes' => array( 'menu-item', 'menu-item-type-custom', 'menu-item-object-custom' ),
+			'attr_title' => '', 'target' => '', 'xfn' => '', 'description' => '', 'menu_order' => 0,
+		);
+	}
+	foreach ( array( array( 'Sobre Nós', 21 ), array( 'Contato', 20 ) ) as $spec ) {
+		$items[] = (object) array(
+			'ID' => 0, 'db_id' => 0, 'menu_item_parent' => 0, 'object_id' => $spec[1],
+			'object' => 'page', 'post_parent' => 0, 'type' => 'post_type',
+			'type_label' => 'Page', 'title' => $spec[0], 'url' => get_permalink( $spec[1] ),
+			'classes' => array( 'menu-item', 'menu-item-type-post_type', 'menu-item-object-page' ),
+			'attr_title' => '', 'target' => '', 'xfn' => '', 'description' => '', 'menu_order' => 0,
+		);
+	}
+	return $items;
+}
+
+function conexao_test_en_menu_items(): array {
+	$items = array();
+	foreach ( array(
+		array( 'Home', 'http://example.test/' ),
+		array( 'Sponsors', 'http://example.test/apoiadores/' ),
+		array( 'Guides', 'http://example.test/guias/' ),
+		array( 'Events', 'http://example.test/eventos/' ),
+		array( 'Courses', 'http://example.test/cursos/' ),
+		array( 'Leisure & Tourism', 'http://example.test/lazer/' ),
+		array( 'Jobs', 'http://example.test/empregos/' ),
+		array( 'Blog', 'http://example.test/blog/' ),
+	) as $spec ) {
+		$items[] = (object) array(
+			'ID'               => 0,
+			'db_id'            => 0,
+			'menu_item_parent' => 0,
+			'object_id'        => 0,
+			'object'           => 'custom',
+			'post_parent'      => 0,
+			'type'             => 'custom',
+			'type_label'       => 'Custom Link',
+			'title'            => $spec[0],
+			'url'              => $spec[1],
+			'classes'          => array( 'menu-item', 'menu-item-type-custom', 'menu-item-object-custom' ),
+			'attr_title'       => '',
+			'target'           => '',
+			'xfn'              => '',
+			'description'      => '',
+			'menu_order'       => 0,
+		);
+	}
+	// About Us + Contact are page-object items in the stored menu (About is removed
+	// at render by conexao_modify_primary_nav_items()).
+	foreach ( array( array( 'About Us', 21 ), array( 'Contact', 20 ) ) as $spec ) {
+		$items[] = (object) array(
+			'ID'               => 0,
+			'db_id'            => 0,
+			'menu_item_parent' => 0,
+			'object_id'        => $spec[1],
+			'object'           => 'page',
+			'post_parent'      => 0,
+			'type'             => 'post_type',
+			'type_label'       => 'Page',
+			'title'            => $spec[0],
+			'url'              => get_permalink( $spec[1] ),
+			'classes'          => array( 'menu-item', 'menu-item-type-post_type', 'menu-item-object-page' ),
+			'attr_title'       => '',
+			'target'           => '',
+			'xfn'              => '',
+			'description'      => '',
+			'menu_order'       => 0,
+		);
+	}
+	return $items;
+}
+
+/**
+ * Render the primary nav items for a language, mirroring the theme's registered
+ * render-time filter chain (override_guides 10, modify 20, normalize 25).
+ *
+ * @param string $lang  'pt' or 'en'.
+ * @param string $path  Request path (for active states).
+ * @return array<string,object> title => item.
+ */
+function conexao_test_render_nav( string $lang, string $path = '/' ): array {
+	$GLOBALS['conexao_test_lang'] = $lang;
+	$_SERVER['REQUEST_URI']       = $path;
+
+	$args = (object) array( 'theme_location' => 'primary' );
+	$items = ( 'pt' === $lang ) ? conexao_test_pt_menu_items() : conexao_test_en_menu_items();
+	$items = conexao_override_guides_menu_links( $items, $args );
+	$items = conexao_modify_primary_nav_items( $items, $args );
+	$items = conexao_normalize_primary_nav_sections( $items, $args );
+
+	$by_title = array();
+	foreach ( $items as $item ) {
+		$by_title[ trim( (string) $item->title ) ] = $item;
+	}
+	return $by_title;
+}
+
+echo "== EN primary-navigation LANGUAGE-CONTEXT logic test ==\n";
+
+
+$BASE = 'http://example.test';
+$EN   = $BASE . '/en/';
+$PT   = $BASE . '/';
+
+// ---------------------------------------------------------------------------
+/// A. EN navigation URL audit — every EN primary-nav destination.
+// ---------------------------------------------------------------------------
+echo "== A. EN primary-navigation URL audit ==\n";
+
+$en = conexao_test_render_nav( 'en', '/en/' );
+
+// title => expected final URL. Blog is the ONLY documented B1 exception: there
+// is no EN posts archive (native /blog/ archive; /en/blog/ is a B1 302).
+$expected_en = array(
+	'Home'             => $EN,
+	'Sponsors'         => $EN . 'apoiadores/',
+	'Guides'           => $EN . 'guias/',
+	'Events'           => $EN . 'eventos/',
+	'Courses'          => $EN . 'cursos/',
+	'Leisure & Tourism'=> $EN . 'lazer/',
+	'Jobs'             => $EN . 'jobs/',
+	'Blog'             => $PT . 'blog/',
+	'Contact'          => $EN . 'contact/',
+);
+
+check( 'A1 EN nav renders the canonical nine items', 9 === count( $en ), 'got ' . count( $en ) . ': ' . implode( ', ', array_keys( $en ) ) );
+
+foreach ( $expected_en as $title => $expected ) {
+	$actual = isset( $en[ $title ] ) ? untrailingslashit( (string) $en[ $title ]->url ) : '<missing>';
+	check( "A2 \"{$title}\" -> {$expected}", untrailingslashit( $expected ) === $actual, "got {$actual}" );
+}
+
+check( 'A3 "About Us" is removed from the rendered EN nav (render-time rule)', ! isset( $en['About Us'] ) );
+check( 'A4 no English nav item is empty', 0 === count( array_filter( $en, static function ( $i ) { return '' === trim( (string) $i->url ); } ) ) );
+
+// ---------------------------------------------------------------------------
+/// B. Jobs specifically.
+// ---------------------------------------------------------------------------
+echo "== B. Jobs ==\n";
+
+$jobs = isset( $en['Jobs'] ) ? $en['Jobs'] : null;
+check( 'B1 EN "Jobs" resolves to the linked EN translation /en/jobs/', $jobs && untrailingslashit( $jobs->url ) === untrailingslashit( $BASE . '/en/jobs/' ), $jobs ? $jobs->url : 'missing' );
+check( 'B2 EN "Jobs" no longer resolves to the Portuguese /empregos/', $jobs && untrailingslashit( $jobs->url ) !== untrailingslashit( $BASE . '/empregos/' ) );
+check( 'B3 the Jobs section spec is page-backed (path=empregos), not a CPT archive', 'page' === conexao_primary_nav_sections()['empregos']['type'] && 'empregos' === conexao_primary_nav_sections()['empregos']['path'] );
+check( 'B4 the `job` CPT still has no archive (root cause remains unchanged)', false === ( get_post_type_object( 'job' )->has_archive ) );
+
+// ---------------------------------------------------------------------------
+/// C. Blog specifically — approved B1 exception.
+// ---------------------------------------------------------------------------
+echo "== C. Blog ==\n";
+
+$blog = isset( $en['Blog'] ) ? $en['Blog'] : null;
+check( 'C1 EN "Blog" stays on the approved B1 Portuguese /blog/ destination', $blog && untrailingslashit( $blog->url ) === untrailingslashit( $BASE . '/blog/' ) );
+check( 'C2 Blog is the ONLY EN item that leaves the /en/ context', array( 'Blog' ) === conexao_test_en_items_outside_en() );
+
+// ---------------------------------------------------------------------------
+/// D. Translated items stay in EN.
+// ---------------------------------------------------------------------------
+echo "== D. Translated / archive items stay in EN ==\n";
+
+foreach ( array( 'Home', 'Sponsors', 'Guides', 'Events', 'Courses', 'Leisure & Tourism', 'Contact' ) as $title ) {
+	$url = isset( $en[ $title ] ) ? (string) $en[ $title ]->url : '';
+	check( "D1 \"{$title}\" is an EN-context destination", 0 === strpos( untrailingslashit( $url ), untrailingslashit( $EN ) ) || untrailingslashit( $url ) === untrailingslashit( $EN ), $url );
+}
+
+// ---------------------------------------------------------------------------
+/// E. PT regression — PT navigation unchanged.
+// ---------------------------------------------------------------------------
+echo "== E. PT regression ==\n";
+
+$pt = conexao_test_render_nav( 'pt', '/' );
+$expected_pt = array(
+	'Início'            => $PT,
+	'Apoiadores'        => $PT . 'apoiadores/',
+	'Guias'             => $PT . 'guias/',
+	'Eventos'           => $PT . 'eventos/',
+	'Cursos'            => $PT . 'cursos/',
+	'Lazer e turismo'   => $PT . 'lazer/',
+	'Empregos'          => $PT . 'empregos/',
+	'Blog'              => $PT . 'blog/',
+	'Contato'           => $PT . 'contato/',
+);
+foreach ( $expected_pt as $title => $expected ) {
+	$actual = isset( $pt[ $title ] ) ? untrailingslashit( (string) $pt[ $title ]->url ) : '<missing>';
+	check( "E1 PT \"{$title}\" -> {$expected}", untrailingslashit( $expected ) === $actual, "got {$actual}" );
+}
+check( 'E2 PT "Empregos" still points at the PT page /empregos/', isset( $pt['Empregos'] ) && untrailingslashit( $pt['Empregos']->url ) === untrailingslashit( $BASE . '/empregos/' ) );
+
+
+/**
+ * Titles of EN primary-nav items whose final resolved URL is NOT inside /en/.
+ * This is the LANGUAGE-LEAKAGE detector (Phase 13): it must return exactly the
+ * documented B1 exception(s) — nothing more.
+ *
+ * @return string[]
+ */
+function conexao_test_en_items_outside_en(): array {
+	$items   = conexao_test_render_nav( 'en', '/en/' );
+	$en_home = untrailingslashit( pll_home_url( 'en' ) );
+	$out     = array();
+	foreach ( $items as $title => $item ) {
+		$url = untrailingslashit( (string) $item->url );
+		if ( $url !== $en_home && 0 !== strpos( $url, $en_home . '/' ) ) {
+			$out[] = $title;
+		}
+	}
+	sort( $out );
+	return $out;
+}
+
+// ---------------------------------------------------------------------------
+/// F. Active states still work.
+// ---------------------------------------------------------------------------
+echo "== F. Active states ==\n";
+
+function conexao_test_is_active( array $items, string $title, string $class ): bool {
+	return isset( $items[ $title ] ) && in_array( $class, (array) $items[ $title ]->classes, true );
+}
+
+$active_en_jobs = conexao_test_render_nav( 'en', '/en/jobs/' );
+check( 'F1 EN /en/jobs/ marks "Jobs" as current-menu-item', conexao_test_is_active( $active_en_jobs, 'Jobs', 'current-menu-item' ) );
+check( 'F2 EN /en/jobs/ does NOT mark "Blog" or "Guides" as active', ! conexao_test_is_active( $active_en_jobs, 'Blog', 'current-menu-item' ) && ! conexao_test_is_active( $active_en_jobs, 'Guides', 'current-menu-item' ) );
+
+$active_en_guides = conexao_test_render_nav( 'en', '/en/guias/' );
+check( 'F3 EN /en/guias/ marks "Guides" as current-menu-item', conexao_test_is_active( $active_en_guides, 'Guides', 'current-menu-item' ) );
+
+$active_en_home = conexao_test_render_nav( 'en', '/en/' );
+check( 'F4 EN /en/ marks "Home" as current-menu-item', conexao_test_is_active( $active_en_home, 'Home', 'current-menu-item' ) );
+
+$active_pt_jobs = conexao_test_render_nav( 'pt', '/empregos/' );
+check( 'F5 PT /empregos/ marks "Empregos" as current-menu-item', conexao_test_is_active( $active_pt_jobs, 'Empregos', 'current-menu-item' ) );
+
+$active_pt_blog = conexao_test_render_nav( 'pt', '/blog/' );
+check( 'F6 /blog/ marks "Blog" as current-menu-item', conexao_test_is_active( $active_pt_blog, 'Blog', 'current-menu-item' ) );
+
+// ---------------------------------------------------------------------------
+/// G. Structural guards (no regression to the previous header fix).
+// ---------------------------------------------------------------------------
+echo "== G. Structural guards ==\n";
+
+$header_src = (string) file_get_contents( $theme_dir . '/header.php' );
+check( 'G1 header.php does NOT use wp_page_menu as the wp_nav_menu fallback', false === strpos( $header_src, 'wp_page_menu' ) );
+check( 'G2 BOTH wp_nav_menu() calls (desktop + mobile) use the safe empty fallback', 2 === substr_count( $header_src, "'fallback_cb'    => 'conexao_safe_nav_menu_fallback'," ) );
+check( 'G3 header.php contains NO hard-coded /en/empregos/ or /en/blog/ URL', false === strpos( $header_src, '/en/empregos/' ) && false === strpos( $header_src, '/en/blog/' ) );
+check( 'G4 header.php contains NO hard-coded /empregos/ or /blog/ navigation URL', false === strpos( $header_src, "'/empregos/" ) && false === strpos( $header_src, "'/blog/" ) );
+check( 'G5 desktop and mobile render the SAME primary theme location', 2 === substr_count( $header_src, "'theme_location'   => 'primary'," ) || 2 === substr_count( $header_src, "'theme_location' => 'primary'," ), 'shared menu location -> mobile gets the same corrected destinations' );
+
+// ---------------------------------------------------------------------------
+/// H. Language-leakage allowlist (Phase 13).
+// ---------------------------------------------------------------------------
+echo "== H. Language-leakage allowlist ==\n";
+
+$leaks = conexao_test_en_items_outside_en();
+check( 'H1 the ONLY EN nav item outside /en/ is the documented B1 Blog exception', array( 'Blog' ) === $leaks, 'got ' . implode( ', ', $leaks ) );
+check( 'H2 Jobs is NOT in the leakage list', ! in_array( 'Jobs', $leaks, true ) );
+check( 'H3 no EN translated page/archive item leaks to PT', array() === array_values( array_diff( $leaks, array( 'Blog' ) ) ) );
+
+echo "\n{$GLOBALS['conexao_test_passed']} passed, {$GLOBALS['conexao_test_failed']} failed.\n";
+exit( 0 === $GLOBALS['conexao_test_failed'] ? 0 : 1 );
+
