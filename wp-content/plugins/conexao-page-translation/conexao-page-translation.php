@@ -64,6 +64,8 @@ final class Conexao_Page_Translation_Admin {
 
 		wp_safe_redirect( admin_url( 'tools.php?page=' . self::PAGE_SLUG . '&ran=' . $mode ) );
 		exit;
+	}
+
 
 	/**
 	 * Render the current translation state + the last report.
@@ -175,4 +177,3 @@ final class Conexao_Page_Translation_Admin {
 
 add_action( 'plugins_loaded', array( 'Conexao_Page_Translation_Admin', 'init' ) );
 
-	}

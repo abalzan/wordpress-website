@@ -3202,15 +3202,23 @@ function conexao_b2_archive_widen_query( $query ) {
 add_action( 'pre_get_posts', 'conexao_b2_archive_widen_query', 30 );
 
 /**
- * STAGE 3.1 — B2 content for the static posts page (Blog).
+ * STAGE 3.1/5 — B2 content for the static posts page (Blog).
  *
- * The posts page is an approved B2 destination (`/blog/` → `/en/blog/`): under
- * `/en/` the Blog archive must render the Portuguese posts (PT content under
- * the English URL). Polylang creates ONE page-for-posts per language and scopes
- * the main query to the posts page's own language, so the posts-page query is
- * empty under the English URL. The archive is therefore served from an explicit
- * Portuguese-scoped query, reusing WordPress' own `posts_pre_query`
- * short-circuit so pagination and the `?categoria=` filter keep working.
+ * While the posts page has NO linked English translation it is an approved B2
+ * destination (`/blog/` → `/en/blog/`): under `/en/` the Blog archive renders the
+ * Portuguese posts (PT content under the English URL). Polylang creates ONE
+ * page-for-posts per language and scopes the main query to the posts page's own
+ * language, so the posts-page query would be empty under the English URL; the
+ * archive is therefore served from an explicit Portuguese-scoped query, reusing
+ * WordPress' own `posts_pre_query` short-circuit so pagination and the
+ * `?categoria=` filter keep working.
+ *
+ * STAGE 5 — once the Blog has a REAL English translation (linked EN posts page +
+ * translated EN posts, connexao-blog-translation), this whole path retires
+ * itself: `conexao_b2_posts_page_is_en_request()` is false, Polylang's own
+ * language-scoped posts-page query serves the English posts, and the fallback
+ * notice disappears (conexao_is_language_fallback() is false). No other change
+ * to the B2 architecture is involved.
  *
  * @return bool
  */
@@ -3226,6 +3234,17 @@ function conexao_b2_posts_page_is_en_request(): bool {
 	$posts_page_id = (int) get_option( 'page_for_posts' );
 
 	if ( $posts_page_id <= 0 ) {
+		return false;
+	}
+
+	// STAGE 5 — a real, published EN posts page (the linked translation of
+	// this posts page) RETIRES the fallback: `/en/blog/` then serves the
+	// English archive through WordPress/Polylang itself, so the Portuguese
+	// post set must never be substituted for it. The B2 architecture stays
+	// in force for every destination that has no EN record yet
+	// (conexao_should_render_b2_fallback() is the single B2 decision point:
+	// it returns false as soon as a published linked EN translation exists).
+	if ( function_exists( 'conexao_should_render_b2_fallback' ) && ! conexao_should_render_b2_fallback( $posts_page_id ) ) {
 		return false;
 	}
 

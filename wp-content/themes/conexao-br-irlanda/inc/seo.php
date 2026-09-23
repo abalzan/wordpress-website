@@ -188,8 +188,17 @@ function conexao_seo_canonical() {
 
 	if ( is_singular() ) {
 		$canonical = get_permalink();
-	} elseif ( is_front_page() || is_home() ) {
+	} elseif ( is_front_page() ) {
 		$canonical = home_url( '/' );
+	} elseif ( is_home() ) {
+		// The static posts page (Blog) is a real page record: its canonical is
+		// its OWN permalink in the current language — `/blog/` in Portuguese,
+		// `/en/blog/` in English once the linked EN posts page exists (Stage 5).
+		// A bare language home serving the posts index (no static front page)
+		// is still the home URL. This is what keeps the Blog archive
+		// self-canonical instead of pointing the archive at the site home.
+		$posts_page_id = ! empty( $GLOBALS['wp_query']->is_posts_page ) ? (int) get_option( 'page_for_posts' ) : 0;
+		$canonical     = $posts_page_id > 0 ? (string) get_permalink( $posts_page_id ) : home_url( '/' );
 	} elseif ( is_post_type_archive() ) {
 		$canonical = get_post_type_archive_link( get_query_var( 'post_type' ) );
 	} elseif ( is_tax() || is_category() || is_tag() ) {
@@ -1058,6 +1067,40 @@ function conexao_seo_sitemap() {
 				$en_page++;
 			} while ( count( $en_items ) === $sitemap_batch );
 		}
+	}
+
+	// Blog posts (`post`) — same contract as the CPT passes above: exactly one
+	// self-canonical entry per public URL, alternates only for REAL translation
+	// pairs, one pass per language (so the English translated posts are listed
+	// under their own /en/ URLs and the Portuguese originals keep theirs).
+	// B2 fallback and B1 redirect-only URLs are never emitted by any pass, and
+	// the posts page itself is already listed by the Pages pass above.
+	$blog_langs = array( $sitemap_lang );
+	if ( conexao_polylang_active() ) {
+		$blog_langs[] = 'en';
+	}
+	foreach ( array_unique( $blog_langs ) as $blog_lang ) {
+		$blog_page = 1;
+		do {
+			$blog_args = array(
+				'post_type'      => 'post',
+				'post_status'    => 'publish',
+				'posts_per_page' => $sitemap_batch,
+				'paged'          => $blog_page,
+				'fields'         => 'ids',
+				'no_found_rows'  => true,
+				'update_post_meta_cache' => false,
+				'update_post_term_cache' => false,
+			);
+			if ( '' !== $blog_lang ) {
+				$blog_args['lang'] = $blog_lang;
+			}
+			$blog_items = get_posts( $blog_args );
+			foreach ( $blog_items as $blog_item_id ) {
+				conexao_seo_sitemap_url( get_permalink( $blog_item_id ), '0.6', 'weekly', conexao_object_translation_links( (int) $blog_item_id ) );
+			}
+			$blog_page++;
+		} while ( count( $blog_items ) === $sitemap_batch );
 	}
 
 	// Taxonomies (categories + counties, only non-empty).

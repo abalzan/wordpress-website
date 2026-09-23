@@ -2,4 +2,4 @@
 dist/
 scripts/__pycache__/
 .agents/skills/
-.idea/
+.idea/.local/

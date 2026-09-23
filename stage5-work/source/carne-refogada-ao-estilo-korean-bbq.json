@@ -1,0 +1,142 @@
+{
+ "id": 10362,
+ "date": "2026-02-15T21:36:40",
+ "date_gmt": "2026-02-15T21:36:40",
+ "guid": {
+  "rendered": "https://tdcriativo.wixsite.com/post/carne-refogada-ao-estilo-korean-bbq"
+ },
+ "modified": "2026-02-15T21:36:40",
+ "modified_gmt": "2026-02-15T21:36:40",
+ "slug": "carne-refogada-ao-estilo-korean-bbq",
+ "status": "publish",
+ "type": "post",
+ "link": "https://conexaobr.ie/2026/02/15/carne-refogada-ao-estilo-korean-bbq/",
+ "title": {
+  "rendered": "Carne Refogada ao Estilo Korean BBQ"
+ },
+ "content": {
+  "rendered": "<h2>By: Chef Anderson Balico Food Content Creator &amp; Digital Marketing</h2>\n</p>\n</p>\n</p>\n</p>\n</p>\n<p><strong>Ingredientes</strong></p>\n<p><strong>400 g de tiras de carne bovina</strong></p>\n<p><strong>2 colheres de sopa do Tempero Orgânico Korean BBQ ÍON</strong></p>\n<p><strong>2 colheres de sopa de molho de soja (shoyu)</strong></p>\n<p><strong>1 colher de sopa de mel1 colher de sopa de Óleo de Girassol ÍON</strong></p>\n<p><strong>1 pimentão vermelho em fatias</strong></p>\n<p><strong>1 cebola em fatias</strong></p>\n<p><strong>1 cebolinha picada finamente</strong></p>\n</p>\n<p><strong>Modo de preparo: </strong></p>\n<p><strong>Misture a carne com o molho de soja, o mel e o tempero Korean BBQ. Deixe marinar por 15 minutos.</strong></p>\n<p><strong>Aqueça o óleo de girassol em uma frigideira ou wok bem quente e refogue a carne por cerca de 5 minutos, até dourar.</strong></p>\n<p><strong>Adicione a cebola e o pimentão vermelho e cozinhe por mais 3 a 4 minutos, até ficarem macios.</strong></p>\n</p>\n<p><strong>Finalize com a cebolinha e sirva com arroz ou macarrão.</strong></p>\n</p>\n<p><u><strong>@chefandersonbalico</strong></u></p>\n",
+  "protected": false
+ },
+ "excerpt": {
+  "rendered": "<p>By: Chef Anderson Balico Food Content Creator &#038; Digital Marketing Ingredientes 400 g de tiras de carne bovina 2 colheres de sopa do Tempero Orgânico Korean BBQ ÍON 2 colheres de sopa de molho de soja (shoyu) 1 colher de sopa de mel1 colher de sopa de Óleo de Girassol ÍON 1 pimentão vermelho em fatias 1 cebola em fatias 1 cebolinha picada finamente Modo de preparo: Misture a carne com o molho de soja, o mel e o tempero Korean BBQ. Deixe marinar por 15 minutos. Aqueça o óleo de girassol em uma&#8230;</p>\n",
+  "protected": false
+ },
+ "author": 283039559,
+ "featured_media": 0,
+ "comment_status": "open",
+ "ping_status": "closed",
+ "sticky": false,
+ "template": "",
+ "format": "standard",
+ "meta": {
+  "advanced_seo_description": "",
+  "jetpack_seo_html_title": "",
+  "jetpack_seo_noindex": false,
+  "jetpack_seo_schema_type": "",
+  "_jetpack_newsletter_access": "",
+  "_jetpack_dont_email_post_to_subs": false,
+  "_jetpack_newsletter_tier_id": 0,
+  "_jetpack_memberships_contains_paywalled_content": false,
+  "_wpcom_ai_launchpad_first_post": false,
+  "_jetpack_feature_clip_id": 0,
+  "_jetpack_memberships_contains_paid_content": false,
+  "footnotes": "",
+  "jetpack_publicize_message": "",
+  "jetpack_publicize_feature_enabled": true,
+  "jetpack_social_post_already_shared": false,
+  "jetpack_social_options": {
+   "image_generator_settings": {
+    "template": "highway",
+    "default_image_id": 0,
+    "font": "",
+    "enabled": false
+   },
+   "version": 2
+  },
+  "jetpack_post_was_ever_published": false
+ },
+ "categories": [
+  1455
+ ],
+ "tags": [],
+ "class_list": [
+  "post-10362",
+  "post",
+  "type-post",
+  "status-publish",
+  "format-standard",
+  "hentry",
+  "category-receitas"
+ ],
+ "jetpack_publicize_connections": [],
+ "jetpack_likes_enabled": true,
+ "jetpack_sharing_enabled": true,
+ "jetpack_shortlink": "https://wp.me/phnpqN-2H8",
+ "jetpack-related-posts": [],
+ "jetpack_featured_media_url": "",
+ "_links": {
+  "self": [
+   {
+    "href": "https://conexaobr.ie/wp-json/wp/v2/posts/10362",
+    "targetHints": {
+     "allow": [
+      "GET"
+     ]
+    }
+   }
+  ],
+  "collection": [
+   {
+    "href": "https://conexaobr.ie/wp-json/wp/v2/posts"
+   }
+  ],
+  "about": [
+   {
+    "href": "https://conexaobr.ie/wp-json/wp/v2/types/post"
+   }
+  ],
+  "author": [
+   {
+    "embeddable": true,
+    "href": "https://conexaobr.ie/wp-json/wp/v2/users/283039559"
+   }
+  ],
+  "replies": [
+   {
+    "embeddable": true,
+    "href": "https://conexaobr.ie/wp-json/wp/v2/comments?post=10362"
+   }
+  ],
+  "version-history": [
+   {
+    "count": 0,
+    "href": "https://conexaobr.ie/wp-json/wp/v2/posts/10362/revisions"
+   }
+  ],
+  "wp:attachment": [
+   {
+    "href": "https://conexaobr.ie/wp-json/wp/v2/media?parent=10362"
+   }
+  ],
+  "wp:term": [
+   {
+    "taxonomy": "category",
+    "embeddable": true,
+    "href": "https://conexaobr.ie/wp-json/wp/v2/categories?post=10362"
+   },
+   {
+    "taxonomy": "post_tag",
+    "embeddable": true,
+    "href": "https://conexaobr.ie/wp-json/wp/v2/tags?post=10362"
+   }
+  ],
+  "curies": [
+   {
+    "name": "wp",
+    "href": "https://api.w.org/{rel}",
+    "templated": true
+   }
+  ]
+ }
+}

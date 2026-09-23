@@ -569,11 +569,14 @@ function conexao_switch_language_in_current_url( string $target_slug ): string {
  * `has_archive = false`, so `get_post_type_archive_link( 'post' )` is false
  * and `conexao_lang_url_archive_post_type()` never reports `post`).
  *
- * Blog is an approved B2 destination: its URL in a non-default language is the
- * language home + the posts page's own path (`/blog/` → `/en/blog/`), which
- * renders the Portuguese posts under the English URL (B2 notice) instead of
- * redirecting the visitor back to the Portuguese `/blog/`. The path is derived
- * from the posts page permalink, so no slug and no `/en/` prefix are hard-coded.
+ * While the posts page has no EN translation, Blog is an approved B2 destination:
+ * its URL in a non-default language is the language home + the posts page's own
+ * path (`/blog/` → `/en/blog/`), which renders the Portuguese posts under the
+ * English URL (B2 notice) instead of redirecting the visitor back to the
+ * Portuguese `/blog/`. The path is derived from the posts page permalink, so no
+ * slug and no `/en/` prefix are hard-coded. Once the Blog has a real English
+ * translation (Stage 5: linked EN posts page + translated EN posts), the EN
+ * archive is a genuine English archive and the B2 rendering retires itself.
  *
  * A real linked Polylang translation always wins, so creating a genuine EN
  * posts page later keeps working with no code change.
@@ -1336,9 +1339,14 @@ function conexao_b2_page_allowlist(): array {
 		'laois',
 		// Ireland country guide hub (directory/information — decision §8).
 		'irlanda',
-		// Blog posts page - approved B2 (PT content under EN shell + notice)
-		// so /en/blog/ renders under the EN URL without redirecting to PT.
-		// See CONEXAO_BR_ENGLISH_BLOG_NAVIGATION_FIX.md for the decision record.
+		// Blog posts page - B2 WHILE it has no EN translation (PT content under
+		// the EN shell + notice, so /en/blog/ renders under the EN URL without
+		// redirecting to PT). See CONEXAO_BR_ENGLISH_BLOG_NAVIGATION_FIX_REPORT.md.
+		// STAGE 5: once the linked EN posts page exists this entry becomes inert for
+		// that site - conexao_should_render_b2_fallback() returns false as soon as a
+		// published linked EN translation exists, so /en/blog/ serves the real
+		// English archive. The entry is kept for installs that have not run the Blog
+		// translation yet (B2 is never a substitute for editorial translation).
 		'blog',
 	);
 
