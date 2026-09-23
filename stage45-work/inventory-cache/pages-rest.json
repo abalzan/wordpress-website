@@ -1,0 +1,948 @@
+[
+ {
+  "id": 11302,
+  "modified": "2026-09-02T08:38:52",
+  "slug": "categorias",
+  "status": "publish",
+  "link": "https://conexaobr.ie/categorias/",
+  "title": {
+   "rendered": "Categorias"
+  },
+  "content": {
+   "rendered": "<h2 class=\"wp-block-heading\">Todas as Categorias</h2>\n<p class=\"wp-block-paragraph\">Explore todas as categorias do Conexão BR Irlanda.</p>\n<ul class=\"wp-block-list\">\n<li><a href=\"/moradia/\">Moradia</a></li>\n<li><a href=\"/empregos/\">Empregos</a></li>\n<li><a href=\"/saude/\">Saúde</a></li>\n<li><a href=\"/familia/\">Família</a></li>\n<li><a href=\"/transporte/\">Transporte</a></li>\n<li><a href=\"/financas/\">Finanças</a></li>\n<li><a href=\"/beneficios/\">Benefícios</a></li>\n<li><a href=\"/educacao/\">Educação</a></li>\n<li><a href=\"/documentos/\">Documentos</a></li>\n<li><a href=\"/onde-comer/\">Onde Comer</a></li>\n<li><a href=\"/lazer/\">Lazer</a></li>\n<li><a href=\"/turismo/\">Turismo</a></li>\n<li><a href=\"/compras/\">Compras</a></li>\n<li><a href=\"/negocios/\">Negócios</a></li>\n<li><a href=\"/servicos/\">Serviços</a></li>\n<li><a href=\"/voluntariado/\">Voluntariado</a></li>\n<li><a href=\"/eventos/\">Eventos</a></li>\n<li><a href=\"/guias/\">Guias</a></li>\n</ul>",
+   "protected": false
+  },
+  "excerpt": {
+   "rendered": "<p>Todas as Categorias Explore todas as categorias do Conexão BR Irlanda. Moradia Empregos Saúde Família Transporte Finanças Benefícios Educação Documentos Onde Comer Lazer Turismo Compras Negócios Serviços Voluntariado Eventos Guias</p>\n",
+   "protected": false
+  },
+  "featured_media": 0,
+  "parent": 0,
+  "menu_order": 0,
+  "template": ""
+ },
+ {
+  "id": 11301,
+  "modified": "2026-09-02T08:38:52",
+  "slug": "voluntariado",
+  "status": "publish",
+  "link": "https://conexaobr.ie/voluntariado/",
+  "title": {
+   "rendered": "Voluntariado"
+  },
+  "content": {
+   "rendered": "<h2 class=\"wp-block-heading\">Voluntariado</h2>\n<p class=\"wp-block-paragraph\">Ajude a comunidade brasileira na Irlanda com informações sobre voluntariado.</p>\n<p class=\"wp-block-paragraph\">Conteúdo para esta seção está sendo preparado. Enquanto isso, explore nossos guias abaixo.</p>",
+   "protected": false
+  },
+  "excerpt": {
+   "rendered": "<p>Voluntariado Ajude a comunidade brasileira na Irlanda com informações sobre voluntariado. Conteúdo para esta seção está sendo preparado. Enquanto isso, explore nossos guias abaixo.</p>\n",
+   "protected": false
+  },
+  "featured_media": 0,
+  "parent": 0,
+  "menu_order": 0,
+  "template": ""
+ },
+ {
+  "id": 11300,
+  "modified": "2026-09-02T08:38:52",
+  "slug": "compras",
+  "status": "publish",
+  "link": "https://conexaobr.ie/compras/",
+  "title": {
+   "rendered": "Compras"
+  },
+  "content": {
+   "rendered": "<h2 class=\"wp-block-heading\">Compras</h2>\n<p class=\"wp-block-paragraph\">Ajude a comunidade brasileira na Irlanda com informações sobre compras.</p>\n<p class=\"wp-block-paragraph\">Conteúdo para esta seção está sendo preparado. Enquanto isso, explore nossos guias abaixo.</p>",
+   "protected": false
+  },
+  "excerpt": {
+   "rendered": "<p>Compras Ajude a comunidade brasileira na Irlanda com informações sobre compras. Conteúdo para esta seção está sendo preparado. Enquanto isso, explore nossos guias abaixo.</p>\n",
+   "protected": false
+  },
+  "featured_media": 0,
+  "parent": 0,
+  "menu_order": 0,
+  "template": ""
+ },
+ {
+  "id": 11299,
+  "modified": "2026-09-02T08:38:52",
+  "slug": "turismo",
+  "status": "publish",
+  "link": "https://conexaobr.ie/turismo/",
+  "title": {
+   "rendered": "Turismo"
+  },
+  "content": {
+   "rendered": "<h2 class=\"wp-block-heading\">Turismo</h2>\n<p class=\"wp-block-paragraph\">Ajude a comunidade brasileira na Irlanda com informações sobre turismo.</p>\n<p class=\"wp-block-paragraph\">Conteúdo para esta seção está sendo preparado. Enquanto isso, explore nossos guias abaixo.</p>",
+   "protected": false
+  },
+  "excerpt": {
+   "rendered": "<p>Turismo Ajude a comunidade brasileira na Irlanda com informações sobre turismo. Conteúdo para esta seção está sendo preparado. Enquanto isso, explore nossos guias abaixo.</p>\n",
+   "protected": false
+  },
+  "featured_media": 0,
+  "parent": 0,
+  "menu_order": 0,
+  "template": ""
+ },
+ {
+  "id": 11298,
+  "modified": "2026-09-02T08:38:52",
+  "slug": "lazer",
+  "status": "publish",
+  "link": "https://conexaobr.ie/lazer/",
+  "title": {
+   "rendered": "Lazer"
+  },
+  "content": {
+   "rendered": "<h2 class=\"wp-block-heading\">Lazer</h2>\n<p class=\"wp-block-paragraph\">Ajude a comunidade brasileira na Irlanda com informações sobre lazer.</p>\n<p class=\"wp-block-paragraph\">Conteúdo para esta seção está sendo preparado. Enquanto isso, explore nossos guias abaixo.</p>",
+   "protected": false
+  },
+  "excerpt": {
+   "rendered": "<p>Lazer Ajude a comunidade brasileira na Irlanda com informações sobre lazer. Conteúdo para esta seção está sendo preparado. Enquanto isso, explore nossos guias abaixo.</p>\n",
+   "protected": false
+  },
+  "featured_media": 0,
+  "parent": 0,
+  "menu_order": 0,
+  "template": ""
+ },
+ {
+  "id": 11297,
+  "modified": "2026-09-02T08:38:52",
+  "slug": "onde-comer",
+  "status": "publish",
+  "link": "https://conexaobr.ie/onde-comer/",
+  "title": {
+   "rendered": "Onde Comer"
+  },
+  "content": {
+   "rendered": "<h2 class=\"wp-block-heading\">Onde Comer</h2>\n<p class=\"wp-block-paragraph\">Ajude a comunidade brasileira na Irlanda com informações sobre onde comer.</p>\n<p class=\"wp-block-paragraph\">Conteúdo para esta seção está sendo preparado. Enquanto isso, explore nossos guias abaixo.</p>",
+   "protected": false
+  },
+  "excerpt": {
+   "rendered": "<p>Onde Comer Ajude a comunidade brasileira na Irlanda com informações sobre onde comer. Conteúdo para esta seção está sendo preparado. Enquanto isso, explore nossos guias abaixo.</p>\n",
+   "protected": false
+  },
+  "featured_media": 0,
+  "parent": 0,
+  "menu_order": 0,
+  "template": ""
+ },
+ {
+  "id": 11296,
+  "modified": "2026-09-02T08:38:52",
+  "slug": "documentos",
+  "status": "publish",
+  "link": "https://conexaobr.ie/documentos/",
+  "title": {
+   "rendered": "Documentos"
+  },
+  "content": {
+   "rendered": "<h2 class=\"wp-block-heading\">Documentos</h2>\n<p class=\"wp-block-paragraph\">Ajude a comunidade brasileira na Irlanda com informações sobre documentos.</p>\n<p class=\"wp-block-paragraph\">Conteúdo para esta seção está sendo preparado. Enquanto isso, explore nossos guias abaixo.</p>",
+   "protected": false
+  },
+  "excerpt": {
+   "rendered": "<p>Documentos Ajude a comunidade brasileira na Irlanda com informações sobre documentos. Conteúdo para esta seção está sendo preparado. Enquanto isso, explore nossos guias abaixo.</p>\n",
+   "protected": false
+  },
+  "featured_media": 0,
+  "parent": 0,
+  "menu_order": 0,
+  "template": ""
+ },
+ {
+  "id": 11295,
+  "modified": "2026-09-02T08:38:52",
+  "slug": "beneficios",
+  "status": "publish",
+  "link": "https://conexaobr.ie/beneficios/",
+  "title": {
+   "rendered": "Benefícios"
+  },
+  "content": {
+   "rendered": "<h2 class=\"wp-block-heading\">Benefícios</h2>\n<p class=\"wp-block-paragraph\">Ajude a comunidade brasileira na Irlanda com informações sobre benefícios.</p>\n<p class=\"wp-block-paragraph\">Conteúdo para esta seção está sendo preparado. Enquanto isso, explore nossos guias abaixo.</p>",
+   "protected": false
+  },
+  "excerpt": {
+   "rendered": "<p>Benefícios Ajude a comunidade brasileira na Irlanda com informações sobre benefícios. Conteúdo para esta seção está sendo preparado. Enquanto isso, explore nossos guias abaixo.</p>\n",
+   "protected": false
+  },
+  "featured_media": 0,
+  "parent": 0,
+  "menu_order": 0,
+  "template": ""
+ },
+ {
+  "id": 11294,
+  "modified": "2026-09-02T08:38:52",
+  "slug": "transporte",
+  "status": "publish",
+  "link": "https://conexaobr.ie/transporte/",
+  "title": {
+   "rendered": "Transporte"
+  },
+  "content": {
+   "rendered": "<h2 class=\"wp-block-heading\">Transporte</h2>\n<p class=\"wp-block-paragraph\">Ajude a comunidade brasileira na Irlanda com informações sobre transporte.</p>\n<p class=\"wp-block-paragraph\">Conteúdo para esta seção está sendo preparado. Enquanto isso, explore nossos guias abaixo.</p>",
+   "protected": false
+  },
+  "excerpt": {
+   "rendered": "<p>Transporte Ajude a comunidade brasileira na Irlanda com informações sobre transporte. Conteúdo para esta seção está sendo preparado. Enquanto isso, explore nossos guias abaixo.</p>\n",
+   "protected": false
+  },
+  "featured_media": 0,
+  "parent": 0,
+  "menu_order": 0,
+  "template": ""
+ },
+ {
+  "id": 11293,
+  "modified": "2026-09-02T08:38:52",
+  "slug": "saude",
+  "status": "publish",
+  "link": "https://conexaobr.ie/saude/",
+  "title": {
+   "rendered": "Saúde"
+  },
+  "content": {
+   "rendered": "<h2 class=\"wp-block-heading\">Saúde</h2>\n<p class=\"wp-block-paragraph\">Ajude a comunidade brasileira na Irlanda com informações sobre saúde.</p>\n<p class=\"wp-block-paragraph\">Conteúdo para esta seção está sendo preparado. Enquanto isso, explore nossos guias abaixo.</p>",
+   "protected": false
+  },
+  "excerpt": {
+   "rendered": "<p>Saúde Ajude a comunidade brasileira na Irlanda com informações sobre saúde. Conteúdo para esta seção está sendo preparado. Enquanto isso, explore nossos guias abaixo.</p>\n",
+   "protected": false
+  },
+  "featured_media": 0,
+  "parent": 0,
+  "menu_order": 0,
+  "template": ""
+ },
+ {
+  "id": 11086,
+  "modified": "2026-09-02T09:56:32",
+  "slug": "empregos",
+  "status": "publish",
+  "link": "https://conexaobr.ie/empregos/",
+  "title": {
+   "rendered": "Empregos"
+  },
+  "content": {
+   "rendered": "\n<p class=\"wp-block-paragraph\">As vagas mais recentes estão no nosso Instagram.<br>Acompanhe nossas publicações para encontrar novas oportunidades de trabalho na Irlanda.</p>\n",
+   "protected": false
+  },
+  "excerpt": {
+   "rendered": "<p>As vagas mais recentes estão no nosso Instagram.Acompanhe nossas publicações para encontrar novas oportunidades de trabalho na Irlanda.</p>\n",
+   "protected": false
+  },
+  "featured_media": 10959,
+  "parent": 0,
+  "menu_order": 0,
+  "template": "page-empregos.php"
+ },
+ {
+  "id": 63,
+  "modified": "2026-08-16T15:20:12",
+  "slug": "sobre",
+  "status": "publish",
+  "link": "https://conexaobr.ie/sobre/",
+  "title": {
+   "rendered": "Sobre"
+  },
+  "content": {
+   "rendered": "<p class=\"wp-block-paragraph\">Esta página foi movida. <a href=\"/sobre-nos/\">Clique aqui para acessar Sobre Nós</a>.</p>",
+   "protected": false
+  },
+  "excerpt": {
+   "rendered": "<p>Esta página foi movida. Clique aqui para acessar Sobre Nós.</p>\n",
+   "protected": false
+  },
+  "featured_media": 0,
+  "parent": 0,
+  "menu_order": 0,
+  "template": ""
+ },
+ {
+  "id": 62,
+  "modified": "2026-08-16T15:20:11",
+  "slug": "termos",
+  "status": "publish",
+  "link": "https://conexaobr.ie/termos/",
+  "title": {
+   "rendered": "Termos"
+  },
+  "content": {
+   "rendered": "<p class=\"wp-block-paragraph\">Esta página foi movida. <a href=\"/termos-de-uso/\">Clique aqui para acessar nossos Termos de Uso</a>.</p>",
+   "protected": false
+  },
+  "excerpt": {
+   "rendered": "<p>Esta página foi movida. Clique aqui para acessar nossos Termos de Uso.</p>\n",
+   "protected": false
+  },
+  "featured_media": 0,
+  "parent": 0,
+  "menu_order": 0,
+  "template": ""
+ },
+ {
+  "id": 61,
+  "modified": "2026-08-16T15:20:11",
+  "slug": "privacidade",
+  "status": "publish",
+  "link": "https://conexaobr.ie/privacidade/",
+  "title": {
+   "rendered": "Privacidade"
+  },
+  "content": {
+   "rendered": "<p class=\"wp-block-paragraph\">Esta página foi movida. <a href=\"/politica-de-privacidade/\">Clique aqui para acessar nossa Política de Privacidade</a>.</p>",
+   "protected": false
+  },
+  "excerpt": {
+   "rendered": "<p>Esta página foi movida. Clique aqui para acessar nossa Política de Privacidade.</p>\n",
+   "protected": false
+  },
+  "featured_media": 0,
+  "parent": 0,
+  "menu_order": 0,
+  "template": ""
+ },
+ {
+  "id": 45,
+  "modified": "2026-08-16T15:20:11",
+  "slug": "waterford",
+  "status": "publish",
+  "link": "https://conexaobr.ie/waterford/",
+  "title": {
+   "rendered": "Condado de Waterford"
+  },
+  "content": {
+   "rendered": "<h2 class=\"wp-block-heading\">Waterford para brasileiros</h2>\n<p class=\"wp-block-paragraph\">Guia completo sobre o condado de Waterford na Irlanda. Informações sobre moradia, eventos, negócios, guias, empregos e restaurantes.</p>\n<h3 class=\"wp-block-heading\">Eventos</h3>\n<p class=\"wp-block-paragraph\">Confira os eventos e atividades acontecendo no condado de Waterford.</p>\n<h3 class=\"wp-block-heading\">Negócios e Serviços</h3>\n<p class=\"wp-block-paragraph\">Encontre empresas e serviços brasileiros no condado de Waterford.</p>\n<h3 class=\"wp-block-heading\">Guias Práticos</h3>\n<p class=\"wp-block-paragraph\">Guias úteis para viver no condado de Waterford.</p>\n<h3 class=\"wp-block-heading\">Empregos</h3>\n<p class=\"wp-block-paragraph\">Oportunidades de trabalho no condado de Waterford.</p>\n<h3 class=\"wp-block-heading\">Restaurantes</h3>\n<p class=\"wp-block-paragraph\">Descubra restaurantes e opções gastronômicas no condado de Waterford.</p>",
+   "protected": false
+  },
+  "excerpt": {
+   "rendered": "<p>Waterford para brasileiros Guia completo sobre o condado de Waterford na Irlanda. Informações sobre moradia, eventos, negócios, guias, empregos e restaurantes. Eventos Confira os eventos e atividades acontecendo no condado&hellip;</p>\n",
+   "protected": false
+  },
+  "featured_media": 0,
+  "parent": 0,
+  "menu_order": 0,
+  "template": ""
+ },
+ {
+  "id": 44,
+  "modified": "2026-08-16T15:20:11",
+  "slug": "wicklow",
+  "status": "publish",
+  "link": "https://conexaobr.ie/wicklow/",
+  "title": {
+   "rendered": "Condado de Wicklow"
+  },
+  "content": {
+   "rendered": "<h2 class=\"wp-block-heading\">Wicklow para brasileiros</h2>\n<p class=\"wp-block-paragraph\">Guia completo sobre o condado de Wicklow na Irlanda. Informações sobre moradia, eventos, negócios, guias, empregos e restaurantes.</p>\n<h3 class=\"wp-block-heading\">Eventos</h3>\n<p class=\"wp-block-paragraph\">Confira os eventos e atividades acontecendo no condado de Wicklow.</p>\n<h3 class=\"wp-block-heading\">Negócios e Serviços</h3>\n<p class=\"wp-block-paragraph\">Encontre empresas e serviços brasileiros no condado de Wicklow.</p>\n<h3 class=\"wp-block-heading\">Guias Práticos</h3>\n<p class=\"wp-block-paragraph\">Guias úteis para viver no condado de Wicklow.</p>\n<h3 class=\"wp-block-heading\">Empregos</h3>\n<p class=\"wp-block-paragraph\">Oportunidades de trabalho no condado de Wicklow.</p>\n<h3 class=\"wp-block-heading\">Restaurantes</h3>\n<p class=\"wp-block-paragraph\">Descubra restaurantes e opções gastronômicas no condado de Wicklow.</p>",
+   "protected": false
+  },
+  "excerpt": {
+   "rendered": "<p>Wicklow para brasileiros Guia completo sobre o condado de Wicklow na Irlanda. Informações sobre moradia, eventos, negócios, guias, empregos e restaurantes. Eventos Confira os eventos e atividades acontecendo no condado&hellip;</p>\n",
+   "protected": false
+  },
+  "featured_media": 0,
+  "parent": 0,
+  "menu_order": 0,
+  "template": ""
+ },
+ {
+  "id": 43,
+  "modified": "2026-08-16T15:20:11",
+  "slug": "meath",
+  "status": "publish",
+  "link": "https://conexaobr.ie/meath/",
+  "title": {
+   "rendered": "Condado de Meath"
+  },
+  "content": {
+   "rendered": "<h2 class=\"wp-block-heading\">Meath para brasileiros</h2>\n<p class=\"wp-block-paragraph\">Guia completo sobre o condado de Meath na Irlanda. Informações sobre moradia, eventos, negócios, guias, empregos e restaurantes.</p>\n<h3 class=\"wp-block-heading\">Eventos</h3>\n<p class=\"wp-block-paragraph\">Confira os eventos e atividades acontecendo no condado de Meath.</p>\n<h3 class=\"wp-block-heading\">Negócios e Serviços</h3>\n<p class=\"wp-block-paragraph\">Encontre empresas e serviços brasileiros no condado de Meath.</p>\n<h3 class=\"wp-block-heading\">Guias Práticos</h3>\n<p class=\"wp-block-paragraph\">Guias úteis para viver no condado de Meath.</p>\n<h3 class=\"wp-block-heading\">Empregos</h3>\n<p class=\"wp-block-paragraph\">Oportunidades de trabalho no condado de Meath.</p>\n<h3 class=\"wp-block-heading\">Restaurantes</h3>\n<p class=\"wp-block-paragraph\">Descubra restaurantes e opções gastronômicas no condado de Meath.</p>",
+   "protected": false
+  },
+  "excerpt": {
+   "rendered": "<p>Meath para brasileiros Guia completo sobre o condado de Meath na Irlanda. Informações sobre moradia, eventos, negócios, guias, empregos e restaurantes. Eventos Confira os eventos e atividades acontecendo no condado&hellip;</p>\n",
+   "protected": false
+  },
+  "featured_media": 0,
+  "parent": 0,
+  "menu_order": 0,
+  "template": ""
+ },
+ {
+  "id": 42,
+  "modified": "2026-08-16T15:20:11",
+  "slug": "kildare",
+  "status": "publish",
+  "link": "https://conexaobr.ie/kildare/",
+  "title": {
+   "rendered": "Condado de Kildare"
+  },
+  "content": {
+   "rendered": "<h2 class=\"wp-block-heading\">Kildare para brasileiros</h2>\n<p class=\"wp-block-paragraph\">Guia completo sobre o condado de Kildare na Irlanda. Informações sobre moradia, eventos, negócios, guias, empregos e restaurantes.</p>\n<h3 class=\"wp-block-heading\">Eventos</h3>\n<p class=\"wp-block-paragraph\">Confira os eventos e atividades acontecendo no condado de Kildare.</p>\n<h3 class=\"wp-block-heading\">Negócios e Serviços</h3>\n<p class=\"wp-block-paragraph\">Encontre empresas e serviços brasileiros no condado de Kildare.</p>\n<h3 class=\"wp-block-heading\">Guias Práticos</h3>\n<p class=\"wp-block-paragraph\">Guias úteis para viver no condado de Kildare.</p>\n<h3 class=\"wp-block-heading\">Empregos</h3>\n<p class=\"wp-block-paragraph\">Oportunidades de trabalho no condado de Kildare.</p>\n<h3 class=\"wp-block-heading\">Restaurantes</h3>\n<p class=\"wp-block-paragraph\">Descubra restaurantes e opções gastronômicas no condado de Kildare.</p>",
+   "protected": false
+  },
+  "excerpt": {
+   "rendered": "<p>Kildare para brasileiros Guia completo sobre o condado de Kildare na Irlanda. Informações sobre moradia, eventos, negócios, guias, empregos e restaurantes. Eventos Confira os eventos e atividades acontecendo no condado&hellip;</p>\n",
+   "protected": false
+  },
+  "featured_media": 0,
+  "parent": 0,
+  "menu_order": 0,
+  "template": ""
+ },
+ {
+  "id": 41,
+  "modified": "2026-08-16T15:20:11",
+  "slug": "limerick",
+  "status": "publish",
+  "link": "https://conexaobr.ie/limerick/",
+  "title": {
+   "rendered": "Condado de Limerick"
+  },
+  "content": {
+   "rendered": "<h2 class=\"wp-block-heading\">Limerick para brasileiros</h2>\n<p class=\"wp-block-paragraph\">Guia completo sobre o condado de Limerick na Irlanda. Informações sobre moradia, eventos, negócios, guias, empregos e restaurantes.</p>\n<h3 class=\"wp-block-heading\">Eventos</h3>\n<p class=\"wp-block-paragraph\">Confira os eventos e atividades acontecendo no condado de Limerick.</p>\n<h3 class=\"wp-block-heading\">Negócios e Serviços</h3>\n<p class=\"wp-block-paragraph\">Encontre empresas e serviços brasileiros no condado de Limerick.</p>\n<h3 class=\"wp-block-heading\">Guias Práticos</h3>\n<p class=\"wp-block-paragraph\">Guias úteis para viver no condado de Limerick.</p>\n<h3 class=\"wp-block-heading\">Empregos</h3>\n<p class=\"wp-block-paragraph\">Oportunidades de trabalho no condado de Limerick.</p>\n<h3 class=\"wp-block-heading\">Restaurantes</h3>\n<p class=\"wp-block-paragraph\">Descubra restaurantes e opções gastronômicas no condado de Limerick.</p>",
+   "protected": false
+  },
+  "excerpt": {
+   "rendered": "<p>Limerick para brasileiros Guia completo sobre o condado de Limerick na Irlanda. Informações sobre moradia, eventos, negócios, guias, empregos e restaurantes. Eventos Confira os eventos e atividades acontecendo no condado&hellip;</p>\n",
+   "protected": false
+  },
+  "featured_media": 0,
+  "parent": 0,
+  "menu_order": 0,
+  "template": ""
+ },
+ {
+  "id": 40,
+  "modified": "2026-08-16T15:20:11",
+  "slug": "galway",
+  "status": "publish",
+  "link": "https://conexaobr.ie/galway/",
+  "title": {
+   "rendered": "Condado de Galway"
+  },
+  "content": {
+   "rendered": "<h2 class=\"wp-block-heading\">Galway para brasileiros</h2>\n<p class=\"wp-block-paragraph\">Guia completo sobre o condado de Galway na Irlanda. Informações sobre moradia, eventos, negócios, guias, empregos e restaurantes.</p>\n<h3 class=\"wp-block-heading\">Eventos</h3>\n<p class=\"wp-block-paragraph\">Confira os eventos e atividades acontecendo no condado de Galway.</p>\n<h3 class=\"wp-block-heading\">Negócios e Serviços</h3>\n<p class=\"wp-block-paragraph\">Encontre empresas e serviços brasileiros no condado de Galway.</p>\n<h3 class=\"wp-block-heading\">Guias Práticos</h3>\n<p class=\"wp-block-paragraph\">Guias úteis para viver no condado de Galway.</p>\n<h3 class=\"wp-block-heading\">Empregos</h3>\n<p class=\"wp-block-paragraph\">Oportunidades de trabalho no condado de Galway.</p>\n<h3 class=\"wp-block-heading\">Restaurantes</h3>\n<p class=\"wp-block-paragraph\">Descubra restaurantes e opções gastronômicas no condado de Galway.</p>",
+   "protected": false
+  },
+  "excerpt": {
+   "rendered": "<p>Galway para brasileiros Guia completo sobre o condado de Galway na Irlanda. Informações sobre moradia, eventos, negócios, guias, empregos e restaurantes. Eventos Confira os eventos e atividades acontecendo no condado&hellip;</p>\n",
+   "protected": false
+  },
+  "featured_media": 0,
+  "parent": 0,
+  "menu_order": 0,
+  "template": ""
+ },
+ {
+  "id": 39,
+  "modified": "2026-08-16T15:20:11",
+  "slug": "cork",
+  "status": "publish",
+  "link": "https://conexaobr.ie/cork/",
+  "title": {
+   "rendered": "Condado de Cork"
+  },
+  "content": {
+   "rendered": "<h2 class=\"wp-block-heading\">Cork para brasileiros</h2>\n<p class=\"wp-block-paragraph\">Guia completo sobre o condado de Cork na Irlanda. Informações sobre moradia, eventos, negócios, guias, empregos e restaurantes.</p>\n<h3 class=\"wp-block-heading\">Eventos</h3>\n<p class=\"wp-block-paragraph\">Confira os eventos e atividades acontecendo no condado de Cork.</p>\n<h3 class=\"wp-block-heading\">Negócios e Serviços</h3>\n<p class=\"wp-block-paragraph\">Encontre empresas e serviços brasileiros no condado de Cork.</p>\n<h3 class=\"wp-block-heading\">Guias Práticos</h3>\n<p class=\"wp-block-paragraph\">Guias úteis para viver no condado de Cork.</p>\n<h3 class=\"wp-block-heading\">Empregos</h3>\n<p class=\"wp-block-paragraph\">Oportunidades de trabalho no condado de Cork.</p>\n<h3 class=\"wp-block-heading\">Restaurantes</h3>\n<p class=\"wp-block-paragraph\">Descubra restaurantes e opções gastronômicas no condado de Cork.</p>",
+   "protected": false
+  },
+  "excerpt": {
+   "rendered": "<p>Cork para brasileiros Guia completo sobre o condado de Cork na Irlanda. Informações sobre moradia, eventos, negócios, guias, empregos e restaurantes. Eventos Confira os eventos e atividades acontecendo no condado&hellip;</p>\n",
+   "protected": false
+  },
+  "featured_media": 0,
+  "parent": 0,
+  "menu_order": 0,
+  "template": ""
+ },
+ {
+  "id": 38,
+  "modified": "2026-08-16T15:20:11",
+  "slug": "dublin",
+  "status": "publish",
+  "link": "https://conexaobr.ie/dublin/",
+  "title": {
+   "rendered": "Condado de Dublin"
+  },
+  "content": {
+   "rendered": "<h2 class=\"wp-block-heading\">Dublin para brasileiros</h2>\n<p class=\"wp-block-paragraph\">Guia completo sobre o condado de Dublin na Irlanda. Informações sobre moradia, eventos, negócios, guias, empregos e restaurantes.</p>\n<h3 class=\"wp-block-heading\">Eventos</h3>\n<p class=\"wp-block-paragraph\">Confira os eventos e atividades acontecendo no condado de Dublin.</p>\n<h3 class=\"wp-block-heading\">Negócios e Serviços</h3>\n<p class=\"wp-block-paragraph\">Encontre empresas e serviços brasileiros no condado de Dublin.</p>\n<h3 class=\"wp-block-heading\">Guias Práticos</h3>\n<p class=\"wp-block-paragraph\">Guias úteis para viver no condado de Dublin.</p>\n<h3 class=\"wp-block-heading\">Empregos</h3>\n<p class=\"wp-block-paragraph\">Oportunidades de trabalho no condado de Dublin.</p>\n<h3 class=\"wp-block-heading\">Restaurantes</h3>\n<p class=\"wp-block-paragraph\">Descubra restaurantes e opções gastronômicas no condado de Dublin.</p>",
+   "protected": false
+  },
+  "excerpt": {
+   "rendered": "<p>Dublin para brasileiros Guia completo sobre o condado de Dublin na Irlanda. Informações sobre moradia, eventos, negócios, guias, empregos e restaurantes. Eventos Confira os eventos e atividades acontecendo no condado&hellip;</p>\n",
+   "protected": false
+  },
+  "featured_media": 0,
+  "parent": 0,
+  "menu_order": 0,
+  "template": ""
+ },
+ {
+  "id": 37,
+  "modified": "2026-08-16T15:20:11",
+  "slug": "laois",
+  "status": "publish",
+  "link": "https://conexaobr.ie/laois/",
+  "title": {
+   "rendered": "Condado de Laois"
+  },
+  "content": {
+   "rendered": "<h2 class=\"wp-block-heading\">Laois para brasileiros</h2>\n<p class=\"wp-block-paragraph\">Guia completo sobre o condado de Laois na Irlanda. Informações sobre moradia, eventos, negócios, guias, empregos e restaurantes.</p>\n<h3 class=\"wp-block-heading\">Eventos</h3>\n<p class=\"wp-block-paragraph\">Confira os eventos e atividades acontecendo no condado de Laois.</p>\n<h3 class=\"wp-block-heading\">Negócios e Serviços</h3>\n<p class=\"wp-block-paragraph\">Encontre empresas e serviços brasileiros no condado de Laois.</p>\n<h3 class=\"wp-block-heading\">Guias Práticos</h3>\n<p class=\"wp-block-paragraph\">Guias úteis para viver no condado de Laois.</p>\n<h3 class=\"wp-block-heading\">Empregos</h3>\n<p class=\"wp-block-paragraph\">Oportunidades de trabalho no condado de Laois.</p>\n<h3 class=\"wp-block-heading\">Restaurantes</h3>\n<p class=\"wp-block-paragraph\">Descubra restaurantes e opções gastronômicas no condado de Laois.</p>",
+   "protected": false
+  },
+  "excerpt": {
+   "rendered": "<p>Laois para brasileiros Guia completo sobre o condado de Laois na Irlanda. Informações sobre moradia, eventos, negócios, guias, empregos e restaurantes. Eventos Confira os eventos e atividades acontecendo no condado&hellip;</p>\n",
+   "protected": false
+  },
+  "featured_media": 0,
+  "parent": 0,
+  "menu_order": 0,
+  "template": ""
+ },
+ {
+  "id": 36,
+  "modified": "2026-08-16T15:20:11",
+  "slug": "europa",
+  "status": "publish",
+  "link": "https://conexaobr.ie/europa/",
+  "title": {
+   "rendered": "Europa para Brasileiros"
+  },
+  "content": {
+   "rendered": "<h2 class=\"wp-block-heading\">Europa para brasileiros</h2>\n<p class=\"wp-block-paragraph\">Guia com informações sobre outros países europeus para brasileiros que desejam explorar a Europa.</p>\n<h3 class=\"wp-block-heading\">Portugal</h3>\n<p class=\"wp-block-paragraph\">Informações sobre Portugal para brasileiros: vistos, moradia, trabalho e mais.</p>\n<h3 class=\"wp-block-heading\">Espanha</h3>\n<p class=\"wp-block-paragraph\">Guia sobre a Espanha: cultura, oportunidades e informações para brasileiros.</p>\n<h3 class=\"wp-block-heading\">Itália</h3>\n<p class=\"wp-block-paragraph\">Descubra a Itália: cidadania italiana, oportunidades e estilo de vida.</p>\n<h3 class=\"wp-block-heading\">Alemanha</h3>\n<p class=\"wp-block-paragraph\">Informações sobre a Alemanha: mercado de trabalho, vistos e qualidade de vida.</p>\n<h3 class=\"wp-block-heading\">França</h3>\n<p class=\"wp-block-paragraph\">Guia sobre a França para brasileiros: imigração, cultura e oportunidades.</p>\n<h3 class=\"wp-block-heading\">Países Baixos (Holanda)</h3>\n<p class=\"wp-block-paragraph\">Informações sobre os Países Baixos: trabalho, moradia e estilo de vida.</p>\n<h3 class=\"wp-block-heading\">Bélgica</h3>\n<p class=\"wp-block-paragraph\">Guia sobre a Bélgica: oportunidades, cultura e informações para brasileiros.</p>",
+   "protected": false
+  },
+  "excerpt": {
+   "rendered": "<p>Europa para brasileiros Guia com informações sobre outros países europeus para brasileiros que desejam explorar a Europa. Portugal Informações sobre Portugal para brasileiros: vistos, moradia, trabalho e mais. Espanha Guia&hellip;</p>\n",
+   "protected": false
+  },
+  "featured_media": 0,
+  "parent": 0,
+  "menu_order": 0,
+  "template": ""
+ },
+ {
+  "id": 35,
+  "modified": "2026-08-16T15:20:11",
+  "slug": "irlanda",
+  "status": "publish",
+  "link": "https://conexaobr.ie/irlanda/",
+  "title": {
+   "rendered": "Irlanda para Brasileiros"
+  },
+  "content": {
+   "rendered": "<h2 class=\"wp-block-heading\">Irlanda para brasileiros</h2>\n<p class=\"wp-block-paragraph\">Guia completo sobre a Irlanda para brasileiros. Informações sobre moradia, saúde, imigração, transporte, educação e muito mais.</p>\n<h3 class=\"wp-block-heading\">Moradia</h3>\n<p class=\"wp-block-paragraph\">Encontre dicas e informações sobre aluguel de casas, apartamentos e acomodações na Irlanda.</p>\n<h3 class=\"wp-block-heading\">Saúde</h3>\n<p class=\"wp-block-paragraph\">Saiba como funciona o sistema de saúde irlandês, como se registrar em um GP e obter o Medical Card.</p>\n<h3 class=\"wp-block-heading\">Imigração</h3>\n<p class=\"wp-block-paragraph\">Informações sobre vistos, permissões de trabalho, IRP e cidadania irlandesa.</p>\n<h3 class=\"wp-block-heading\">Dirigir na Irlanda</h3>\n<p class=\"wp-block-paragraph\">Saiba como trocar sua CNH brasileira, obter a carteira de motorista irlandesa e as regras de trânsito.</p>\n<h3 class=\"wp-block-heading\">Bancos e Finanças</h3>\n<p class=\"wp-block-paragraph\">Guia para abrir conta bancária, entender impostos e gerenciar suas finanças na Irlanda.</p>\n<h3 class=\"wp-block-heading\">Educação</h3>\n<p class=\"wp-block-paragraph\">Informações sobre o sistema educacional irlandês, escolas, universidades e cursos.</p>\n<h3 class=\"wp-block-heading\">Emprego</h3>\n<p class=\"wp-block-paragraph\">Mercado de trabalho, direitos trabalhistas e oportunidades de emprego na Irlanda.</p>\n<h3 class=\"wp-block-heading\">Benefícios</h3>\n<p class=\"wp-block-paragraph\">Saiba quais benefícios sociais estão disponíveis e como solicitar cada um deles.</p>\n<h3 class=\"wp-block-heading\">Transporte</h3>\n<p class=\"wp-block-paragraph\">Como se locomover na Irlanda: transporte público, táxis, bicicletas e dicas de mobilidade.</p>",
+   "protected": false
+  },
+  "excerpt": {
+   "rendered": "<p>Irlanda para brasileiros Guia completo sobre a Irlanda para brasileiros. Informações sobre moradia, saúde, imigração, transporte, educação e muito mais. Moradia Encontre dicas e informações sobre aluguel de casas, apartamentos&hellip;</p>\n",
+   "protected": false
+  },
+  "featured_media": 0,
+  "parent": 0,
+  "menu_order": 0,
+  "template": ""
+ },
+ {
+  "id": 33,
+  "modified": "2026-08-16T15:20:11",
+  "slug": "servicos",
+  "status": "publish",
+  "link": "https://conexaobr.ie/servicos/",
+  "title": {
+   "rendered": "Serviços"
+  },
+  "content": {
+   "rendered": "<h2 class=\"wp-block-heading\">Serviços</h2>\n<p class=\"wp-block-paragraph\">Ajude a comunidade brasileira na Irlanda com informações sobre serviços.</p>\n<p class=\"wp-block-paragraph\">Conteúdo para esta seção está sendo preparado. Enquanto isso, explore nossos guias abaixo.</p>",
+   "protected": false
+  },
+  "excerpt": {
+   "rendered": "<p>Serviços Ajude a comunidade brasileira na Irlanda com informações sobre serviços. Conteúdo para esta seção está sendo preparado. Enquanto isso, explore nossos guias abaixo.</p>\n",
+   "protected": false
+  },
+  "featured_media": 0,
+  "parent": 0,
+  "menu_order": 0,
+  "template": ""
+ },
+ {
+  "id": 32,
+  "modified": "2026-08-16T15:20:11",
+  "slug": "negocios",
+  "status": "publish",
+  "link": "https://conexaobr.ie/negocios/",
+  "title": {
+   "rendered": "Negócios"
+  },
+  "content": {
+   "rendered": "<h2 class=\"wp-block-heading\">Negócios</h2>\n<p class=\"wp-block-paragraph\">Ajude a comunidade brasileira na Irlanda com informações sobre negócios.</p>\n<p class=\"wp-block-paragraph\">Conteúdo para esta seção está sendo preparado. Enquanto isso, explore nossos guias abaixo.</p>",
+   "protected": false
+  },
+  "excerpt": {
+   "rendered": "<p>Negócios Ajude a comunidade brasileira na Irlanda com informações sobre negócios. Conteúdo para esta seção está sendo preparado. Enquanto isso, explore nossos guias abaixo.</p>\n",
+   "protected": false
+  },
+  "featured_media": 0,
+  "parent": 0,
+  "menu_order": 0,
+  "template": ""
+ },
+ {
+  "id": 26,
+  "modified": "2026-08-16T15:20:11",
+  "slug": "educacao",
+  "status": "publish",
+  "link": "https://conexaobr.ie/educacao/",
+  "title": {
+   "rendered": "Educação"
+  },
+  "content": {
+   "rendered": "<h2 class=\"wp-block-heading\">Educação</h2>\n<p class=\"wp-block-paragraph\">Ajude a comunidade brasileira na Irlanda com informações sobre educação.</p>\n<p class=\"wp-block-paragraph\">Conteúdo para esta seção está sendo preparado. Enquanto isso, explore nossos guias abaixo.</p>",
+   "protected": false
+  },
+  "excerpt": {
+   "rendered": "<p>Educação Ajude a comunidade brasileira na Irlanda com informações sobre educação. Conteúdo para esta seção está sendo preparado. Enquanto isso, explore nossos guias abaixo.</p>\n",
+   "protected": false
+  },
+  "featured_media": 0,
+  "parent": 0,
+  "menu_order": 0,
+  "template": ""
+ },
+ {
+  "id": 24,
+  "modified": "2026-08-16T15:20:11",
+  "slug": "financas",
+  "status": "publish",
+  "link": "https://conexaobr.ie/financas/",
+  "title": {
+   "rendered": "Finanças"
+  },
+  "content": {
+   "rendered": "<h2 class=\"wp-block-heading\">Finanças</h2>\n<p class=\"wp-block-paragraph\">Ajude a comunidade brasileira na Irlanda com informações sobre finanças.</p>\n<p class=\"wp-block-paragraph\">Conteúdo para esta seção está sendo preparado. Enquanto isso, explore nossos guias abaixo.</p>",
+   "protected": false
+  },
+  "excerpt": {
+   "rendered": "<p>Finanças Ajude a comunidade brasileira na Irlanda com informações sobre finanças. Conteúdo para esta seção está sendo preparado. Enquanto isso, explore nossos guias abaixo.</p>\n",
+   "protected": false
+  },
+  "featured_media": 0,
+  "parent": 0,
+  "menu_order": 0,
+  "template": ""
+ },
+ {
+  "id": 22,
+  "modified": "2026-08-16T15:20:11",
+  "slug": "familia",
+  "status": "publish",
+  "link": "https://conexaobr.ie/familia/",
+  "title": {
+   "rendered": "Família"
+  },
+  "content": {
+   "rendered": "<h2 class=\"wp-block-heading\">Família</h2>\n<p class=\"wp-block-paragraph\">Ajude a comunidade brasileira na Irlanda com informações sobre família.</p>\n<p class=\"wp-block-paragraph\">Conteúdo para esta seção está sendo preparado. Enquanto isso, explore nossos guias abaixo.</p>",
+   "protected": false
+  },
+  "excerpt": {
+   "rendered": "<p>Família Ajude a comunidade brasileira na Irlanda com informações sobre família. Conteúdo para esta seção está sendo preparado. Enquanto isso, explore nossos guias abaixo.</p>\n",
+   "protected": false
+  },
+  "featured_media": 0,
+  "parent": 0,
+  "menu_order": 0,
+  "template": ""
+ },
+ {
+  "id": 20,
+  "modified": "2026-08-16T15:20:11",
+  "slug": "moradia",
+  "status": "publish",
+  "link": "https://conexaobr.ie/moradia/",
+  "title": {
+   "rendered": "Moradia"
+  },
+  "content": {
+   "rendered": "<h2 class=\"wp-block-heading\">Moradia</h2>\n<p class=\"wp-block-paragraph\">Ajude a comunidade brasileira na Irlanda com informações sobre moradia.</p>\n<p class=\"wp-block-paragraph\">Conteúdo para esta seção está sendo preparado. Enquanto isso, explore nossos guias abaixo.</p>",
+   "protected": false
+  },
+  "excerpt": {
+   "rendered": "<p>Moradia Ajude a comunidade brasileira na Irlanda com informações sobre moradia. Conteúdo para esta seção está sendo preparado. Enquanto isso, explore nossos guias abaixo.</p>\n",
+   "protected": false
+  },
+  "featured_media": 0,
+  "parent": 0,
+  "menu_order": 0,
+  "template": ""
+ },
+ {
+  "id": 19,
+  "modified": "2026-08-16T15:20:11",
+  "slug": "search",
+  "status": "publish",
+  "link": "https://conexaobr.ie/search/",
+  "title": {
+   "rendered": "Buscar"
+  },
+  "content": {
+   "rendered": "<form role=\"search\" method=\"get\" action=\"https://conexaobr.ie/\" class=\"wp-block-search__button-outside wp-block-search__text-button wp-block-search\" ><label class=\"wp-block-search__label\" for=\"wp-block-search__input-1\" >Search</label><div class=\"wp-block-search__inside-wrapper\" ><input class=\"wp-block-search__input\" id=\"wp-block-search__input-1\" placeholder=\"\" value=\"\" type=\"search\" name=\"s\" required /><button aria-label=\"Search\" class=\"wp-block-search__button wp-element-button\" type=\"submit\" >Search</button></div></form>",
+   "protected": false
+  },
+  "excerpt": {
+   "rendered": "",
+   "protected": false
+  },
+  "featured_media": 0,
+  "parent": 0,
+  "menu_order": 0,
+  "template": ""
+ },
+ {
+  "id": 18,
+  "modified": "2026-08-16T15:20:11",
+  "slug": "cookies",
+  "status": "publish",
+  "link": "https://conexaobr.ie/cookies/",
+  "title": {
+   "rendered": "Política de Cookies"
+  },
+  "content": {
+   "rendered": "<h2 class=\"wp-block-heading\">Política de Cookies</h2>\n<p class=\"wp-block-paragraph\">Este site utiliza cookies para melhorar sua experiência de navegação e fornecer conteúdo relevante.</p>\n<h3 class=\"wp-block-heading\">O que são cookies?</h3>\n<p class=\"wp-block-paragraph\">Cookies são pequenos arquivos de texto armazenados no seu navegador que nos ajudam a lembrar suas preferências e entender como você usa nosso site.</p>\n<h3 class=\"wp-block-heading\">Tipos de cookies que utilizamos</h3>\n<ul class=\"wp-block-list\"><li>Cookies essenciais: necessários para o funcionamento do site</li><li>Cookies de análise: para entender como você usa o site</li><li>Cookies de preferência: para lembrar suas escolhas</li></ul>",
+   "protected": false
+  },
+  "excerpt": {
+   "rendered": "<p>Política de Cookies Este site utiliza cookies para melhorar sua experiência de navegação e fornecer conteúdo relevante. O que são cookies? Cookies são pequenos arquivos de texto armazenados no seu&hellip;</p>\n",
+   "protected": false
+  },
+  "featured_media": 0,
+  "parent": 0,
+  "menu_order": 0,
+  "template": ""
+ },
+ {
+  "id": 17,
+  "modified": "2026-08-16T15:20:11",
+  "slug": "termos-de-uso",
+  "status": "publish",
+  "link": "https://conexaobr.ie/termos-de-uso/",
+  "title": {
+   "rendered": "Termos de Uso"
+  },
+  "content": {
+   "rendered": "<h2 class=\"wp-block-heading\">Termos de Uso</h2>\n<p class=\"wp-block-paragraph\">Ao acessar e usar o site Conexão BR Irlanda, você concorda com os seguintes termos e condições.</p>\n<h3 class=\"wp-block-heading\">Uso do Conteúdo</h3>\n<p class=\"wp-block-paragraph\">Todo o conteúdo deste site é fornecido apenas para fins informativos. Não nos responsabilizamos por decisões tomadas com base nas informações aqui publicadas.</p>\n<h3 class=\"wp-block-heading\">Links Externos</h3>\n<p class=\"wp-block-paragraph\">Nosso site pode conter links para sites externos. Não nos responsabilizamos pelo conteúdo ou práticas de privacidade desses sites.</p>",
+   "protected": false
+  },
+  "excerpt": {
+   "rendered": "<p>Termos de Uso Ao acessar e usar o site Conexão BR Irlanda, você concorda com os seguintes termos e condições. Uso do Conteúdo Todo o conteúdo deste site é fornecido&hellip;</p>\n",
+   "protected": false
+  },
+  "featured_media": 0,
+  "parent": 0,
+  "menu_order": 0,
+  "template": ""
+ },
+ {
+  "id": 16,
+  "modified": "2026-08-16T15:20:11",
+  "slug": "politica-de-privacidade",
+  "status": "publish",
+  "link": "https://conexaobr.ie/politica-de-privacidade/",
+  "title": {
+   "rendered": "Política de Privacidade"
+  },
+  "content": {
+   "rendered": "<h2 class=\"wp-block-heading\">Política de Privacidade</h2>\n<p class=\"wp-block-paragraph\">Esta Política de Privacidade descreve como o Conexão BR Irlanda coleta, usa e protege as informações pessoais dos usuários do nosso site.</p>\n<h3 class=\"wp-block-heading\">Informações que coletamos</h3>\n<p class=\"wp-block-paragraph\">Coletamos informações que você nos fornece voluntariamente, como nome e email ao assinar nossa newsletter, e informações de navegação através de cookies.</p>\n<h3 class=\"wp-block-heading\">Como usamos suas informações</h3>\n<p class=\"wp-block-paragraph\">Utilizamos suas informações para enviar newsletters, melhorar nosso conteúdo e personalizar sua experiência no site.</p>\n<h3 class=\"wp-block-heading\">Seus direitos</h3>\n<p class=\"wp-block-paragraph\">Você tem direito a acessar, corrigir ou excluir seus dados pessoais a qualquer momento. Entre em contato conosco para exercer esses direitos.</p>",
+   "protected": false
+  },
+  "excerpt": {
+   "rendered": "<p>Política de Privacidade Esta Política de Privacidade descreve como o Conexão BR Irlanda coleta, usa e protege as informações pessoais dos usuários do nosso site. Informações que coletamos Coletamos informações&hellip;</p>\n",
+   "protected": false
+  },
+  "featured_media": 0,
+  "parent": 0,
+  "menu_order": 0,
+  "template": ""
+ },
+ {
+  "id": 15,
+  "modified": "2026-08-16T15:20:11",
+  "slug": "anuncie",
+  "status": "publish",
+  "link": "https://conexaobr.ie/anuncie/",
+  "title": {
+   "rendered": "Anuncie Aqui"
+  },
+  "content": {
+   "rendered": "<h2 class=\"wp-block-heading\">Anuncie no Conexão BR Irlanda</h2>\n<p class=\"wp-block-paragraph\">Alcance a comunidade brasileira na Irlanda! Divulgue seu negócio, serviço ou evento para milhares de brasileiros em todo o país.</p>\n<h3 class=\"wp-block-heading\">Por que anunciar conosco?</h3>\n<ul class=\"wp-block-list\"><li>Público-alvo qualificado: brasileiros na Irlanda</li><li>Alta relevância e engajamento</li><li>Diversos formatos de anúncio</li><li>Presença em redes sociais e site</li></ul>\n<p class=\"wp-block-paragraph\">Entre em contato pelo WhatsApp <a href=\"https://wa.me/353899451428\">clique aqui</a> para saber mais.</p>",
+   "protected": false
+  },
+  "excerpt": {
+   "rendered": "<p>Anuncie no Conexão BR Irlanda Alcance a comunidade brasileira na Irlanda! Divulgue seu negócio, serviço ou evento para milhares de brasileiros em todo o país. Por que anunciar conosco? Público-alvo&hellip;</p>\n",
+   "protected": false
+  },
+  "featured_media": 0,
+  "parent": 0,
+  "menu_order": 0,
+  "template": ""
+ },
+ {
+  "id": 14,
+  "modified": "2026-08-16T15:20:11",
+  "slug": "revista",
+  "status": "publish",
+  "link": "https://conexaobr.ie/revista/",
+  "title": {
+   "rendered": "Revista Digital"
+  },
+  "content": {
+   "rendered": "<h2 class=\"wp-block-heading\">Revista Digital Conexão BR Irlanda</h2>\n<p class=\"wp-block-paragraph\">Nossa revista digital traz artigos especiais, entrevistas, histórias inspiradoras e conteúdo exclusivo para a comunidade brasileira na Irlanda.</p>\n<p class=\"wp-block-paragraph\">Em breve, novas edições estarão disponíveis aqui.</p>",
+   "protected": false
+  },
+  "excerpt": {
+   "rendered": "<p>Revista Digital Conexão BR Irlanda Nossa revista digital traz artigos especiais, entrevistas, histórias inspiradoras e conteúdo exclusivo para a comunidade brasileira na Irlanda. Em breve, novas edições estarão disponíveis aqui.</p>\n",
+   "protected": false
+  },
+  "featured_media": 0,
+  "parent": 0,
+  "menu_order": 0,
+  "template": ""
+ },
+ {
+  "id": 13,
+  "modified": "2026-08-16T15:20:11",
+  "slug": "newsletter",
+  "status": "publish",
+  "link": "https://conexaobr.ie/newsletter/",
+  "title": {
+   "rendered": "Newsletter"
+  },
+  "content": {
+   "rendered": "<h2 class=\"wp-block-heading\">Assine nossa Newsletter</h2>\n<p class=\"wp-block-paragraph\">Receba as últimas notícias, eventos e guias práticos diretamente no seu email. Sem spam, apenas conteúdo relevante para brasileiros na Irlanda.</p>\n<p class=\"wp-block-paragraph\">Junte-se a milhares de brasileiros que já recebem nossas atualizações semanais.</p>",
+   "protected": false
+  },
+  "excerpt": {
+   "rendered": "<p>Assine nossa Newsletter Receba as últimas notícias, eventos e guias práticos diretamente no seu email. Sem spam, apenas conteúdo relevante para brasileiros na Irlanda. Junte-se a milhares de brasileiros que&hellip;</p>\n",
+   "protected": false
+  },
+  "featured_media": 0,
+  "parent": 0,
+  "menu_order": 0,
+  "template": ""
+ },
+ {
+  "id": 12,
+  "modified": "2026-08-30T18:34:42",
+  "slug": "contato",
+  "status": "publish",
+  "link": "https://conexaobr.ie/contato/",
+  "title": {
+   "rendered": "Contato"
+  },
+  "content": {
+   "rendered": "\n<h2 class=\"wp-block-heading\">Entre em contato conosco</h2>\n\n\n\n<p class=\"wp-block-paragraph\">Tem uma sugestão, dúvida ou quer anunciar conosco? Mande uma mensagem!</p>\n\n\n\n<p class=\"wp-block-paragraph\"><a href=\"https://wa.me/353899451428\">Fale conosco pelo WhatsApp</a></p>\n\n\n\n<p class=\"wp-block-paragraph\">Email: <a href=\"mailto:tdcriativo@gmail.com\">tdcriativo@gmail.com</a></p>\n\n\n\n<p class=\"wp-block-paragraph\"></p>\n",
+   "protected": false
+  },
+  "excerpt": {
+   "rendered": "<p>Entre em contato conosco Tem uma sugestão, dúvida ou quer anunciar conosco? Mande uma mensagem! Fale conosco pelo WhatsApp Email: tdcriativo@gmail.com</p>\n",
+   "protected": false
+  },
+  "featured_media": 0,
+  "parent": 0,
+  "menu_order": 0,
+  "template": ""
+ },
+ {
+  "id": 11,
+  "modified": "2026-08-16T15:20:11",
+  "slug": "sobre-nos",
+  "status": "publish",
+  "link": "https://conexaobr.ie/sobre-nos/",
+  "title": {
+   "rendered": "Sobre Nós"
+  },
+  "content": {
+   "rendered": "<h2 class=\"wp-block-heading\">Quem somos</h2>\n<p class=\"wp-block-paragraph\">O Conexão BR Irlanda é o portal da comunidade brasileira na Irlanda. Nosso objetivo é conectar, informar e apoiar brasileiros que vivem ou planejam viver na Irlanda.</p>\n<h2 class=\"wp-block-heading\">Nossa Missão</h2>\n<p class=\"wp-block-paragraph\">Oferecer informações relevantes, guias práticos, eventos e uma rede de apoio para que cada brasileiro possa viver melhor na Irlanda.</p>\n<h2 class=\"wp-block-heading\">Nossa Visão</h2>\n<p class=\"wp-block-paragraph\">Ser a principal referência para a comunidade brasileira na Irlanda, promovendo integração, conhecimento e oportunidades.</p>\n<h2 class=\"wp-block-heading\">Nossos Valores</h2>\n<ul class=\"wp-block-list\"><li>Comunidade e solidariedade</li><li>Informação de qualidade e verificada</li><li>Inclusão e diversidade</li><li>Transparência e confiança</li></ul>",
+   "protected": false
+  },
+  "excerpt": {
+   "rendered": "<p>Quem somos O Conexão BR Irlanda é o portal da comunidade brasileira na Irlanda. Nosso objetivo é conectar, informar e apoiar brasileiros que vivem ou planejam viver na Irlanda. Nossa&hellip;</p>\n",
+   "protected": false
+  },
+  "featured_media": 0,
+  "parent": 0,
+  "menu_order": 0,
+  "template": ""
+ },
+ {
+  "id": 10,
+  "modified": "2026-08-16T15:20:11",
+  "slug": "blog",
+  "status": "publish",
+  "link": "https://conexaobr.ie/blog/",
+  "title": {
+   "rendered": "Blog"
+  },
+  "content": {
+   "rendered": "<p class=\"wp-block-paragraph\">Artigos e notícias para a comunidade brasileira na Irlanda.</p>",
+   "protected": false
+  },
+  "excerpt": {
+   "rendered": "<p>Artigos e notícias para a comunidade brasileira na Irlanda.</p>\n",
+   "protected": false
+  },
+  "featured_media": 0,
+  "parent": 0,
+  "menu_order": 0,
+  "template": ""
+ },
+ {
+  "id": 9,
+  "modified": "2026-08-16T15:20:11",
+  "slug": "inicio",
+  "status": "publish",
+  "link": "https://conexaobr.ie/",
+  "title": {
+   "rendered": "Início"
+  },
+  "content": {
+   "rendered": "<p class=\"wp-block-paragraph\">Bem-vindo ao Conexão BR Irlanda, o portal da comunidade brasileira na Irlanda.</p>",
+   "protected": false
+  },
+  "excerpt": {
+   "rendered": "<p>Bem-vindo ao Conexão BR Irlanda, o portal da comunidade brasileira na Irlanda.</p>\n",
+   "protected": false
+  },
+  "featured_media": 0,
+  "parent": 0,
+  "menu_order": 0,
+  "template": ""
+ },
+ {
+  "id": 1,
+  "modified": "2026-08-16T13:44:04",
+  "slug": "about",
+  "status": "publish",
+  "link": "https://conexaobr.ie/about/",
+  "title": {
+   "rendered": "About"
+  },
+  "content": {
+   "rendered": "\n<p class=\"wp-block-paragraph\">This is an example of a page. Unlike posts, which are displayed on your blog’s front page in the order they’re published, pages are better suited for more timeless content that you want to be easily accessible, like your About or Contact information. Click the Edit link to make changes to this page or <a title=\"Direct link to Add New Page in your Dashboard\" href=\"https://wordpress.com/page/256777017/new/\">add another page</a>.</p>\n",
+   "protected": false
+  },
+  "excerpt": {
+   "rendered": "<p>This is an example of a page. Unlike posts, which are displayed on your blog’s front page in the order they’re published, pages are better suited for more timeless content&hellip;</p>\n",
+   "protected": false
+  },
+  "featured_media": 0,
+  "parent": 0,
+  "menu_order": 0,
+  "template": ""
+ }
+]
