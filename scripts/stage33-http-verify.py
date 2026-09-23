@@ -113,14 +113,15 @@ for path in (
 
 print("\n-- B1 (302 to Portuguese) / B2 (PT content under EN URL) --")
 for path, target in (
-    ("/en/blog/", "/blog/"),
     ("/en/moradia/", "/moradia/"),
     ("/en/anuncie/", "/anuncie/"),
     ("/en/europa/", "/europa/"),
 ):
     expect_redirect(path, 302, target, "B1 untranslated")
 
-for path in ("/en/irlanda/", "/en/dublin/", "/en/cork/", "/en/galway/"):
+# Blog is an approved B2 destination: /en/blog/ renders the Portuguese posts
+# under the English URL (200) instead of redirecting back to the PT /blog/.
+for path in ("/en/irlanda/", "/en/dublin/", "/en/cork/", "/en/galway/", "/en/blog/"):
     expect_status(path, 200, "B2 fallback")
 
 print("\n-- English archives --")

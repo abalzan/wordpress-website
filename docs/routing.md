@@ -89,7 +89,8 @@ configured by `scripts/stage2-polylang-setup.php` + `inc/polylang.php` (see
   the sitemap): events, lazer, sponsors, courses, jobs, plus the explicit
   **page allowlist** `conexao_b2_page_allowlist()` — `/irlanda/` + the county
   pages (dublin, cork, galway, limerick, kildare, meath, wicklow, waterford,
-  laois). Everything else stays B1 (302 → PT) or serves a real translation.
+  laois) + the **Blog posts page** (`/blog/` → `/en/blog/`). Everything else
+  stays B1 (302 → PT) or serves a real translation.
 - **Taxonomy policy (Stage 3.2 correction)**: `conexao_category` and
   `conexao_tag` are Polylang-translated (shared concept identity via linked
   EN terms, e.g. `natureza` ↔ `nature`). **`conexao_county` and
@@ -125,8 +126,10 @@ Portuguese destinations. Stage 3.3 closes that:
   1. Polylang inactive / default language / empty language → `home_url( $path )`
      **byte-identical to the pre-Polylang output** (Portuguese cannot change);
   2. the path addresses a post type archive → `conexao_language_archive_url()`
-     (`/eventos/` → `/en/eventos/`); the Blog (`post`) archive is excluded, so
-     Blog keeps its approved B1 Portuguese destination;
+     (`/eventos/` → `/en/eventos/`); the Blog (`post`) archive is resolved
+     through the same helper, which checks for a translated Blog page
+     (page_for_posts) and falls back to the target-language home when no
+     translation exists — keeping the Blog navigation in the current language;
   3. the path addresses a page/object with a published translation → that
      translation's permalink (`/empregos/` → `/en/jobs/`,
      `/politica-de-privacidade/` → `/en/privacy-policy/`);
@@ -158,11 +161,16 @@ Portuguese destinations. Stage 3.3 closes that:
   archive URL and fell back to the Portuguese `/empregos/`, which switched an EN
   visitor back to Portuguese — fixed in
   CONEXAO_BR_EN_NAV_LANGUAGE_CONTEXT_FIX_REPORT.md.
-- **Approved B1 exception in the EN nav: `/blog/` only.** There is no per-language
-  posts archive (`/en/blog/` is a B1 302-only URL), so Blog keeps the Portuguese
-  destination; every other EN primary-nav item must stay in the `/en/` context.
-  See `scripts/create-en-primary-menu.php`, CONEXAO_BR_EN_HEADER_NAVIGATION_FIX_REPORT.md
-  and CONEXAO_BR_EN_NAV_LANGUAGE_CONTEXT_FIX_REPORT.md.
+- **Blog in the EN nav is a B2 destination: `/en/blog/`.** The posts page
+  (`page_for_posts`) has no EN translation, so Blog is allowlisted as B2:
+  `/en/blog/` renders the Portuguese posts under the English shell (notice +
+  canonical → PT) and the EN nav item resolves to `/en/blog/` — it never
+  redirects back to the Portuguese `/blog/`. `conexao_lang_url('/blog/')` is
+  byte-identical to `home_url('/blog/')` on Portuguese and resolves through
+  `conexao_posts_page_url()` for other languages. Every EN primary-nav item
+  now stays in the `/en/` context. See
+  CONEXAO_BR_ENGLISH_BLOG_NAVIGATION_FIX_REPORT.md, `scripts/create-en-primary-menu.php`
+  and CONEXAO_BR_EN_HEADER_NAVIGATION_FIX_REPORT.md.
 - **hreflang output** is emitted by the theme (`inc/seo.php`,
   `conexao_hreflang_links()`), which is the single SEO owner; Polylang's own
   `wp_head` rel-alternate set is additionally present in the local environment

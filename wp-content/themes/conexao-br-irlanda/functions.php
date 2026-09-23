@@ -3117,8 +3117,9 @@ add_action( 'pre_get_posts', 'conexao_content_archive_query', 20 );
  *
  * Events are handled inside conexao_content_archive_query() itself (their
  * post__in ID list is already language-curated); this hook covers the
- * remaining B2 types on any archive/search context. Guides/blog/pages keep
- * the B1 302 policy (never widened).
+ * remaining B2 types on any archive/search context. Guides and the remaining
+ * pages keep the B1 302 policy (never widened); the static posts page (Blog)
+ * is handled separately by conexao_b2_posts_page_pre_query().
  *
  * @param WP_Query $query Query object.
  * @return void
@@ -3199,6 +3200,101 @@ function conexao_b2_archive_widen_query( $query ) {
 	}
 }
 add_action( 'pre_get_posts', 'conexao_b2_archive_widen_query', 30 );
+
+/**
+ * STAGE 3.1 — B2 content for the static posts page (Blog).
+ *
+ * The posts page is an approved B2 destination (`/blog/` → `/en/blog/`): under
+ * `/en/` the Blog archive must render the Portuguese posts (PT content under
+ * the English URL). Polylang creates ONE page-for-posts per language and scopes
+ * the main query to the posts page's own language, so the posts-page query is
+ * empty under the English URL. The archive is therefore served from an explicit
+ * Portuguese-scoped query, reusing WordPress' own `posts_pre_query`
+ * short-circuit so pagination and the `?categoria=` filter keep working.
+ *
+ * @return bool
+ */
+function conexao_b2_posts_page_is_en_request(): bool {
+	if ( is_admin() ) {
+		return false;
+	}
+
+	if ( ! function_exists( 'conexao_polylang_active' ) || ! conexao_polylang_active() || ! function_exists( 'pll_home_url' ) ) {
+		return false;
+	}
+
+	$posts_page_id = (int) get_option( 'page_for_posts' );
+
+	if ( $posts_page_id <= 0 ) {
+		return false;
+	}
+
+	$pt_path = untrailingslashit( (string) wp_parse_url( (string) get_permalink( $posts_page_id ), PHP_URL_PATH ) );
+
+	if ( '' === $pt_path || '/' === $pt_path ) {
+		return false;
+	}
+
+	$en_home_path = untrailingslashit( (string) wp_parse_url( (string) pll_home_url( 'en' ), PHP_URL_PATH ) );
+
+	if ( '' === $en_home_path || '/' === $en_home_path ) {
+		$en_home_path = '/en';
+	}
+
+	$base         = $en_home_path . $pt_path;
+	$request_path = untrailingslashit( (string) wp_parse_url( (string) ( $_SERVER['REQUEST_URI'] ?? '' ), PHP_URL_PATH ) );
+
+	// The posts page itself and its paginated views (/en/blog/page/N/).
+	return $request_path === $base || 0 === strpos( $request_path, $base . '/' );
+}
+
+/**
+ * Serve the Portuguese posts on the B2 English Blog archive.
+ *
+ * @param WP_Post[]|null $posts Posts to short-circuit with (null lets core run).
+ * @param WP_Query       $query Query object.
+ * @return WP_Post[]|null
+ */
+function conexao_b2_posts_page_pre_query( $posts, $query ) {
+	if ( null !== $posts || ! $query instanceof WP_Query ) {
+		return $posts;
+	}
+
+	if ( ! $query->is_main_query() || ! $query->is_home() || ! conexao_b2_posts_page_is_en_request() ) {
+		return $posts;
+	}
+
+	$per_page = (int) $query->get( 'posts_per_page' );
+	$per_page = $per_page > 0 ? $per_page : (int) get_option( 'posts_per_page' );
+
+	$args = array(
+		'post_type'      => 'post',
+		'post_status'    => 'publish',
+		'paged'          => max( 1, (int) $query->get( 'paged' ) ),
+		'posts_per_page' => $per_page,
+		'tax_query'      => array(
+			array(
+				'taxonomy' => 'language',
+				'field'    => 'slug',
+				'terms'    => array( 'pt' ),
+				'operator' => 'IN',
+			),
+		),
+	);
+
+	$category = isset( $_GET['categoria'] ) ? sanitize_title( wp_unslash( $_GET['categoria'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	if ( '' !== $category ) {
+		$args['category_name'] = $category;
+	}
+
+	$blog = new WP_Query( $args );
+
+	$query->found_posts   = (int) $blog->found_posts;
+	$query->max_num_pages = (int) $blog->max_num_pages;
+
+	return $blog->posts;
+}
+add_filter( 'posts_pre_query', 'conexao_b2_posts_page_pre_query', 10, 2 );
 
 /**
  * STAGE 3.1 — B2 search widen + tax_query modification.
@@ -3796,8 +3892,10 @@ function conexao_modify_primary_nav_items( $items, $args ) {
 	//    with that slug would shadow the posts archive and prevent published
 	//    posts from appearing on /blog/.
 	//    The destination goes through conexao_lang_url(): byte-identical to
-	//    home_url( '/blog/' ) on Portuguese; on English it resolves the
-	//    approved B1 destination (there is no per-language Blog archive).
+	//    home_url( '/blog/' ) on Portuguese; on English it resolves through
+	//    conexao_language_archive_url(), which checks for a translated Blog
+	//    page (page_for_posts) and falls back to the EN home when no
+	//    translation exists — keeping the Blog navigation in English.
 	$blog_item = array(
 		'ID'               => 0,
 		'db_id'            => 0,
@@ -3904,8 +4002,10 @@ function conexao_primary_nav_sections() {
 	return array(
 		'início'     => array( 'key' => 'inicio', 'type' => 'custom', 'object' => 'custom', 'url' => home_url( '/' ), 'match' => array() ),
 		// Blog uses the native posts archive at /blog/ (not a static page).
-		// conexao_lang_url() is byte-identical on Portuguese and resolves the
-		// approved B1 destination on English (no per-language Blog archive).
+		// conexao_lang_url() is byte-identical on Portuguese. On English it
+		// resolves through conexao_language_archive_url(), which checks for a
+		// translated Blog page (page_for_posts) and falls back to the EN home
+		// when no translation exists — keeping the Blog navigation in English.
 		'blog'       => array( 'key' => 'blog', 'type' => 'posts_archive', 'object' => 'post', 'url' => conexao_lang_url( '/blog/' ), 'match' => array( 'blog' ) ),
 		'guias'      => array( 'key' => 'guias', 'type' => 'post_type_archive', 'object' => 'guide', 'url' => $archive_url( 'guide', 'guias' ), 'match' => array( 'guias', 'guides' ) ),
 		'eventos'    => array( 'key' => 'eventos', 'type' => 'post_type_archive', 'object' => 'event', 'url' => $archive_url( 'event', 'eventos' ), 'match' => array( 'eventos', 'events' ) ),
@@ -4230,12 +4330,16 @@ function conexao_normalize_primary_nav_sections( $items, $args ) {
 
 	foreach ( $cpt_sections as $section_key => $cpt_info ) {
 		$has_section = false;
+		$section_spec = isset( $sections[ $section_key ] ) ? $sections[ $section_key ] : null;
+		$match_patterns = $section_spec && isset( $section_spec['match'] ) ? $section_spec['match'] : array( $section_key );
 		foreach ( $items as $item ) {
 			$item_title = strtolower( trim( wp_strip_all_tags( $item->title ) ) );
 			$item_url   = untrailingslashit( (string) $item->url );
-			if ( $section_key === $item_title || false !== strpos( $item_url, '/' . $section_key ) ) {
-				$has_section = true;
-				break;
+			foreach ( $match_patterns as $pattern ) {
+				if ( $pattern === $item_title || false !== strpos( $item_url, '/' . $pattern ) ) {
+					$has_section = true;
+					break 2;
+				}
 			}
 		}
 

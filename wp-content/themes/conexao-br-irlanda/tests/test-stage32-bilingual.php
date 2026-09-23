@@ -71,11 +71,11 @@ s32_assert( (int) pll_get_post( $en_front, 'pt' ) === $pt_front, 'the front-page
 
 // ---------------------------------------------------------------------------
 echo "\n-- B2 page allowlist --\n";
-$expected_allowlist = array( 'dublin', 'cork', 'galway', 'limerick', 'kildare', 'meath', 'wicklow', 'waterford', 'laois', 'irlanda' );
+$expected_allowlist = array( 'dublin', 'cork', 'galway', 'limerick', 'kildare', 'meath', 'wicklow', 'waterford', 'laois', 'irlanda', 'blog' );
 $allowlist          = conexao_b2_page_allowlist();
 sort( $expected_allowlist );
 sort( $allowlist );
-s32_assert( $expected_allowlist === $allowlist, 'allowlist is exactly the approved county pages + irlanda' );
+s32_assert( $expected_allowlist === $allowlist, 'allowlist is exactly the approved county pages + irlanda + the blog posts page' );
 
 foreach ( array( 'irlanda', 'dublin', 'cork' ) as $slug ) {
 	$page = get_page_by_path( $slug );

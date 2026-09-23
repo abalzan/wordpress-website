@@ -168,6 +168,7 @@ reach the markup.
 | `conexao_modify_primary_nav_items()` | Nav item insertion/removal (priority 20) |
 | `conexao_normalize_primary_nav_sections()` | Nav binding + active state (priority 25) |
 | `conexao_bind_section_object()` | Binds a nav section to its canonical object; page sections resolve the current language’s LINKED Polylang translation (so EN Jobs binds to `/en/jobs/`). The Jobs section is page-backed (`path = empregos`) because the `job` CPT has `has_archive = false` — see CONEXAO_BR_EN_NAV_LANGUAGE_CONTEXT_FIX_REPORT.md |
+| `conexao_posts_page_url( $target_slug )` | Language-aware URL of the posts page (Blog). Returns a real linked translation when one exists, otherwise the language home + the posts page path (`/blog/` → `/en/blog/`) — the approved B2 destination. Blog is allowlisted in `conexao_b2_page_allowlist()` |
 | `conexao_fix_nav_active_states()` | Active state conflict resolution |
 | `conexao_popular_posts()` | "Mais Lidos" query (ranks by `_conexao_view_count` recorded in `inc/post-views.php`) |
 | `conexao_latest_blog_posts()` | "Últimas novidades" homepage query — 3 newest Blog posts by publication date (transient-cached under `conexao_home_latest`) |
@@ -433,7 +434,7 @@ Breadcrumb hierarchy (`conexao_seo_breadcrumb_data()`), rendered by `header.php`
 The primary navigation is dynamically modified at render time:
 
 1. Remove "Notícias" items
-2. Change "Home" label to "Início"
+2. Change "Home" label to "Início" (Portuguese) / "Home" (English)
 3. Insert fallback "Blog" item immediately before "Contato"
 4. Insert "Cursos" before "Empregos"
 5. Ensure Lazer section exists
@@ -441,6 +442,8 @@ The primary navigation is dynamically modified at render time:
 7. Fix active-state conflicts via URL pattern matching
 
 Canonical order: Início, Apoiadores, Guias, Eventos, Cursos, Lazer e turismo, Empregos, Blog, Contato.
+
+The Blog item is language-aware: it resolves to `/blog/` on Portuguese and to `/en/blog/` on English (an approved B2 destination — the posts page has no EN translation, so `/en/blog/` renders the Portuguese posts under the English shell instead of redirecting back to `/blog/`). See CONEXAO_BR_ENGLISH_BLOG_NAVIGATION_FIX_REPORT.md.
 
 The stored menu order is the WordPress-native `nav_menu_item` `menu_order` (desktop and mobile share the same `primary` menu, so one order covers both); see `scripts/reorder-primary-menu-blog-apoiadores.php`.
 

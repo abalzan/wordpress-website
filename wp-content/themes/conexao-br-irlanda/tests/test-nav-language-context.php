@@ -136,7 +136,9 @@ if ( $en_lang_set ) {
 		skip( 'A8 EN primary menu not assigned — render-time audit skipped' );
 	}
 	if ( $en_menu_id ) {
-		check( 'A8 (EN) only the documented B1 Blog destination leaves /en/', array( untrailingslashit( home_url( '/blog/' ) ) ) === $leaks, implode( ', ', $leaks ) );
+		// Blog is now a B2 destination: /en/blog/ renders PT content under the EN URL
+		// without redirecting to /blog/. So NO nav item should leave the /en/ context.
+		check( 'A8 (EN) NO nav item leaves the /en/ context (Blog is B2, not B1)', 0 === count( $leaks ), implode( ', ', $leaks ) );
 		check( 'A9 (EN) Jobs never leaks to PT', ! in_array( untrailingslashit( home_url( '/empregos/' ) ), $leaks, true ), implode( ', ', $leaks ) );
 	}
 } else {
@@ -149,8 +151,9 @@ echo "== B/C. Blog + EN audit ==\n";
 $blog_page_id = (int) get_option( 'page_for_posts' );
 if ( $blog_page_id ) {
 	$en_blog = (int) pll_get_post( $blog_page_id, 'en' );
-	// No EN Blog archive is expected: /en/blog/ is the approved B1 302-only URL.
-	check( 'B1 Blog has NO published EN archive/page translation (approved B1)', 0 === $en_blog || 'publish' !== get_post_status( $en_blog ), "en_id={$en_blog}" );
+	// Blog is now a B2 destination: /en/blog/ renders PT content under the EN URL
+	// without redirecting to /blog/. There is still no EN Blog page translation.
+	check( 'B1 Blog has NO published EN archive/page translation (B2 renders PT under EN)', 0 === $en_blog || 'publish' !== get_post_status( $en_blog ), "en_id={$en_blog}" );
 } else {
 	skip( 'B1 no page_for_posts configured' );
 }
@@ -163,10 +166,11 @@ $en_nav_targets = array(
 	'Courses'           => conexao_primary_nav_archive_url( 'course_provider', 'cursos' ),
 	'Leisure & Tourism' => conexao_primary_nav_archive_url( 'leisure', 'lazer' ),
 	'Jobs'              => conexao_primary_nav_archive_url( 'job', 'empregos' ),
-	'Blog'              => home_url( '/blog/' ),
+	'Blog'              => conexao_lang_url( '/blog/' ),
 	'Contact'           => home_url( '/contato/' ),
 );
 check( 'C1 every EN navigation item resolves to a non-empty URL', 0 === count( array_filter( $en_nav_targets, static function ( $u ) { return '' === trim( (string) $u ); } ) ) );
+check( 'C2 Blog resolves to /en/blog/ (B2, not PT /blog/)', false === strpos( untrailingslashit( $en_nav_targets['Blog'] ), '/blog/' ) || strpos( untrailingslashit( $en_nav_targets['Blog'] ), '/en/blog/' ) !== false, $en_nav_targets['Blog'] );
 
 // --- D. PT regression -------------------------------------------------------
 echo "== D. PT regression ==\n";

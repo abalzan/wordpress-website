@@ -1420,10 +1420,23 @@ function conexao_seo_missing_translation_redirect() {
 	// STAGE 3.1 — B2 fallback owns its response: an EN request for a B2
 	// record with no EN translation renders the PT record under the EN URL
 	// (200 + notice + PT canonical) instead of the B1 302.
-	if ( is_singular() && function_exists( 'conexao_should_render_b2_fallback' ) ) {
-		$candidate = get_queried_object_id();
-		if ( $candidate > 0 && conexao_should_render_b2_fallback( (int) $candidate ) ) {
-			return;
+	if ( function_exists( 'conexao_should_render_b2_fallback' ) ) {
+		// 1. B2 single records (events, Lazer, sponsors, courses, jobs).
+		if ( is_singular() ) {
+			$candidate = get_queried_object_id();
+			if ( $candidate > 0 && conexao_should_render_b2_fallback( (int) $candidate ) ) {
+				return;
+			}
+		}
+
+		// 2. B2 posts page (Blog) — /en/blog/ renders PT content under the EN URL
+		//    without redirecting to /blog/. The posts page is a real page object
+		//    (page_for_posts) that is allowlisted as B2.
+		if ( is_home() && ! empty( $GLOBALS['wp_query']->is_posts_page ) ) {
+			$posts_page_id = (int) get_option( 'page_for_posts' );
+			if ( $posts_page_id > 0 && conexao_should_render_b2_fallback( $posts_page_id ) ) {
+				return;
+			}
 		}
 	}
 

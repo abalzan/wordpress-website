@@ -85,6 +85,20 @@ function conexao_current_language_slug(): string {
 		return '';
 	}
 
+	// B2 fallback shell: the response is rendered in the language of the
+	// REQUESTED URL even though the resolved object belongs to another
+	// language. Polylang flips its own `curlang` to the object's language for
+	// the static posts page, which would otherwise leak Portuguese URLs and
+	// labels into the English shell (e.g. the Blog navigation item). Reading
+	// the captured requested language keeps the whole shell consistent.
+	if ( function_exists( 'conexao_is_language_fallback' ) && conexao_is_language_fallback() ) {
+		$requested = conexao_requested_language_slug();
+
+		if ( '' !== $requested ) {
+			return $requested;
+		}
+	}
+
 	$slug = pll_current_language( 'slug' );
 
 	return is_string( $slug ) ? $slug : '';
@@ -548,6 +562,57 @@ function conexao_switch_language_in_current_url( string $target_slug ): string {
 }
 
 /**
+ * Language-aware URL of the native posts page (Blog).
+ *
+ * The WordPress posts archive at `/blog/` is served by the `page_for_posts`
+ * page, NOT by a `post` post type archive (WordPress registers `post` with
+ * `has_archive = false`, so `get_post_type_archive_link( 'post' )` is false
+ * and `conexao_lang_url_archive_post_type()` never reports `post`).
+ *
+ * Blog is an approved B2 destination: its URL in a non-default language is the
+ * language home + the posts page's own path (`/blog/` → `/en/blog/`), which
+ * renders the Portuguese posts under the English URL (B2 notice) instead of
+ * redirecting the visitor back to the Portuguese `/blog/`. The path is derived
+ * from the posts page permalink, so no slug and no `/en/` prefix are hard-coded.
+ *
+ * A real linked Polylang translation always wins, so creating a genuine EN
+ * posts page later keeps working with no code change.
+ *
+ * @param string $target_slug Target language slug.
+ * @return string URL, or '' when no posts page is configured.
+ */
+function conexao_posts_page_url( string $target_slug ): string {
+	$posts_page_id = (int) get_option( 'page_for_posts' );
+
+	if ( $posts_page_id <= 0 ) {
+		return '';
+	}
+
+	// A real linked translation always wins.
+	if ( function_exists( 'pll_get_post' ) ) {
+		$translation = pll_get_post( $posts_page_id, $target_slug );
+
+		if ( $translation && (int) $translation !== $posts_page_id && 'publish' === get_post_status( (int) $translation ) ) {
+			$permalink = get_permalink( (int) $translation );
+
+			if ( $permalink ) {
+				return (string) $permalink;
+			}
+		}
+	}
+
+	// No translation: B2 — the target URL is the language home + the posts
+	// page's own path segment (derived, never hard-coded).
+	$pt_path = untrailingslashit( (string) wp_parse_url( (string) get_permalink( $posts_page_id ), PHP_URL_PATH ) );
+
+	if ( '' === $pt_path || '/' === $pt_path ) {
+		return '';
+	}
+
+	return trailingslashit( pll_home_url( $target_slug ) ) . ltrim( $pt_path, '/' ) . '/';
+}
+
+/**
  * Target-language archive URL of a post type.
  *
  * Archive slugs are NOT translated (Portuguese slugs are canonical in both
@@ -564,8 +629,16 @@ function conexao_language_archive_url( string $post_type, string $target_slug ):
 	}
 
 	if ( 'post' === $post_type ) {
-		// Blog: the EN home is the safe target until the Blog page/archive has
-		// a real EN URL in Stage 3.
+		// Blog: the native WordPress posts archive, served by the posts page
+		// (page_for_posts). Blog is an approved B2 destination, so the
+		// language-aware URL is the language home + the posts page path
+		// (/en/blog/) — never a redirect back to the Portuguese /blog/.
+		$posts_url = conexao_posts_page_url( $target_slug );
+
+		if ( '' !== $posts_url ) {
+			return $posts_url;
+		}
+
 		return trailingslashit( pll_home_url( $target_slug ) );
 	}
 
@@ -603,8 +676,9 @@ function conexao_language_archive_url( string $post_type, string $target_slug ):
  *     `/en/jobs/`).
  *  3. The path addresses a post type archive → the current language's archive
  *     URL (`conexao_language_archive_url()`): `/eventos/` → `/en/eventos/`.
- *     The Blog (`post`) archive is excluded: there is no per-language Blog
- *     archive, so Blog keeps its approved B1 Portuguese destination.
+ *     The posts page (the native Blog archive at `/blog/`) is handled before
+ *     that in step (2b): it is an approved B2 destination, so `/blog/` →
+ *     `/en/blog/` and never bounces back to the Portuguese `/blog/`.
  *  4. Everything else — a B1 page with no translation, a utility page, a path
  *     that does not resolve — returns `home_url( $path )`: the approved B1
  *     behaviour. No EN detail URL is ever invented for untranslated content,
@@ -635,11 +709,31 @@ function conexao_lang_url( string $path ): string {
 	// page also exists in the catalogue).
 	$post_type = conexao_lang_url_archive_post_type( $path );
 
-	if ( '' !== $post_type && 'post' !== $post_type ) {
+	if ( '' !== $post_type ) {
 		$archive = conexao_language_archive_url( $post_type, $current );
 
 		if ( '' !== $archive ) {
 			return $archive;
+		}
+	}
+
+	// (2b) Posts page (Blog) path. /blog/ is the native WordPress posts archive
+	// served by the page_for_posts page (WordPress registers `post` with
+	// has_archive = false, so the archive branch above never matches it).
+	// Blog is an approved B2 destination: in a non-default language it resolves
+	// to the language home + the posts page path (/en/blog/) and renders the
+	// Portuguese posts under the EN URL — never a redirect back to /blog/.
+	$posts_page_id = (int) get_option( 'page_for_posts' );
+
+	if ( $posts_page_id > 0 ) {
+		$posts_page_path = untrailingslashit( (string) wp_parse_url( (string) get_permalink( $posts_page_id ), PHP_URL_PATH ) );
+
+		if ( '' !== $posts_page_path && '/' !== $posts_page_path && untrailingslashit( $path ) === $posts_page_path ) {
+			$posts_url = conexao_posts_page_url( $current );
+
+			if ( '' !== $posts_url ) {
+				return $posts_url;
+			}
 		}
 	}
 
@@ -899,10 +993,15 @@ function conexao_language_switch_url( string $target_slug ): string {
 
 	// STAGE 3.1 — B2 fallback: the record's own language links to the record's
 	// real (canonical) permalink, never to another fake shell URL.
-	if ( conexao_is_language_fallback() && is_singular() ) {
-		$object_language = function_exists( 'pll_get_post_language' ) ? pll_get_post_language( get_queried_object_id(), 'slug' ) : '';
+	$is_posts_page = is_home() && ! empty( $GLOBALS['wp_query']->is_posts_page );
+
+	if ( conexao_is_language_fallback() && ( is_singular() || $is_posts_page ) ) {
+		$object_id       = $is_posts_page ? (int) get_option( 'page_for_posts' ) : (int) get_queried_object_id();
+		$object_language = ( $object_id > 0 && function_exists( 'pll_get_post_language' ) ) ? pll_get_post_language( $object_id, 'slug' ) : '';
+
 		if ( $target_slug === $object_language ) {
-			$permalink = get_permalink( get_queried_object_id() );
+			$permalink = $object_id > 0 ? get_permalink( $object_id ) : '';
+
 			if ( $permalink ) {
 				return $permalink;
 			}
@@ -1001,11 +1100,22 @@ add_filter( 'redirect_canonical', 'conexao_polylang_language_home_serves_front_p
  * @return bool
  */
 function conexao_is_language_fallback(): bool {
-	if ( ! conexao_polylang_active() || ! is_singular() || ! function_exists( 'pll_get_post_language' ) ) {
+	if ( ! conexao_polylang_active() || ! function_exists( 'pll_get_post_language' ) ) {
 		return false;
 	}
 
-	$object_id = get_queried_object_id();
+	// Two request shapes can render a fallback: a single record (event,
+	// leisure, sponsor, course, job, B2 page) and the static posts page
+	// (Blog, /blog/) — the latter is a real page object that resolves as
+	// is_home(), not is_singular().
+	$is_posts_page = is_home() && ! empty( $GLOBALS['wp_query']->is_posts_page );
+
+	if ( ! is_singular() && ! $is_posts_page ) {
+		return false;
+	}
+
+	$object_id = $is_posts_page ? (int) get_option( 'page_for_posts' ) : (int) get_queried_object_id();
+
 	if ( $object_id <= 0 ) {
 		return false;
 	}
@@ -1213,6 +1323,10 @@ function conexao_b2_page_allowlist(): array {
 		'laois',
 		// Ireland country guide hub (directory/information — decision §8).
 		'irlanda',
+		// Blog posts page - approved B2 (PT content under EN shell + notice)
+		// so /en/blog/ renders under the EN URL without redirecting to PT.
+		// See CONEXAO_BR_ENGLISH_BLOG_NAVIGATION_FIX.md for the decision record.
+		'blog',
 	);
 
 	return (array) apply_filters( 'conexao_b2_page_allowlist', $allowlist );
@@ -1442,6 +1556,18 @@ function conexao_polylang_language_redirect_is_temporary( $redirect_url, $langua
 		if ( is_post_type_archive() && conexao_is_b2_post_type( (string) get_query_var( 'post_type' ) ) ) {
 			return false;
 		}
+
+		// 3. B2 posts page (Blog) — /en/blog/ renders PT content under the EN URL
+		//    without redirecting to /blog/. The posts page is a real page object
+		//    (page_for_posts) that is allowlisted as B2, so the EN URL is a valid
+		//    B2 destination (PT content + EN chrome + B2 notice), never a 301/302
+		//    to the PT /blog/ URL.
+		if ( is_home() && ! empty( $GLOBALS['wp_query']->is_posts_page ) ) {
+			$posts_page_id = (int) get_option( 'page_for_posts' );
+			if ( $posts_page_id > 0 && function_exists( 'conexao_is_b2_page' ) && conexao_is_b2_page( $posts_page_id ) ) {
+				return false;
+			}
+		}
 	}
 
 	// Language mismatch: the approved B1/B2 Stage 2 behaviour is a temporary
@@ -1450,6 +1576,56 @@ function conexao_polylang_language_redirect_is_temporary( $redirect_url, $langua
 	exit;
 }
 add_filter( 'pll_check_canonical_url', 'conexao_polylang_language_redirect_is_temporary', 20, 2 );
+
+/**
+ * Restore the shell language while a B2 fallback is being rendered.
+ *
+ * Polylang flips its own `curlang` to the resolved object's language while it
+ * decides the canonical redirect. For a B2 fallback that redirect is suppressed
+ * (the Portuguese object is rendered under the English URL), but the flipped
+ * `curlang` would otherwise leak into the render: the per-language navigation
+ * menu, the bare `home_url()` and every `pll_*` shell string would resolve to
+ * the object's language instead of the language of the requested URL — exactly
+ * the defect that made the Blog navigation item switch back to Portuguese.
+ *
+ * Runs on `template_redirect` priority 5 — after Polylang's own redirect
+ * decision (priority 4) and before the template renders — and restores
+ * `curlang` to the REQUESTED language so the whole response stays in the
+ * visitor's language. It is a no-op for every non-B2 request and for a B2
+ * request whose current language already matches the URL.
+ *
+ * @return void
+ */
+function conexao_restore_b2_shell_language(): void {
+	if ( ! conexao_polylang_active() || ! function_exists( 'PLL' ) || ! function_exists( 'pll_languages_list' ) ) {
+		return;
+	}
+
+	if ( ! function_exists( 'conexao_is_language_fallback' ) || ! conexao_is_language_fallback() ) {
+		return;
+	}
+
+	$requested = conexao_requested_language_slug();
+
+	if ( '' === $requested ) {
+		return;
+	}
+
+	$pll       = PLL();
+	$languages = pll_languages_list( array( 'fields' => '' ) );
+
+	if ( ! $pll || ! is_array( $languages ) ) {
+		return;
+	}
+
+	foreach ( $languages as $language ) {
+		if ( isset( $language->slug ) && $requested === $language->slug ) {
+			$pll->curlang = $language;
+			break;
+		}
+	}
+}
+add_action( 'template_redirect', 'conexao_restore_b2_shell_language', 5 );
 
 /**
  * Does a translated post type have any published content in a language?
@@ -1710,8 +1886,12 @@ function conexao_polylang_canonical_url( $canonical ) {
 		return $canonical;
 	}
 
-	if ( is_singular() && conexao_is_language_fallback() ) {
-		$permalink = get_permalink( get_queried_object_id() );
+	$is_posts_page = is_home() && ! empty( $GLOBALS['wp_query']->is_posts_page );
+
+	if ( ( is_singular() || $is_posts_page ) && conexao_is_language_fallback() ) {
+		$object_id = $is_posts_page ? (int) get_option( 'page_for_posts' ) : (int) get_queried_object_id();
+		$permalink = $object_id > 0 ? get_permalink( $object_id ) : '';
+
 		if ( $permalink ) {
 			return $permalink;
 		}

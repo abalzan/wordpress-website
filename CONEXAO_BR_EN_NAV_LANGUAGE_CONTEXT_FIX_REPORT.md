@@ -2,7 +2,7 @@
 
 **Scope:** English (`/en/`) primary header navigation items that silently switched
 the site back to Portuguese (observed: `EN → Jobs → /empregos/ → Portuguese`).
-**Environment:** branch `cline/vdhn162j` (from `i18n`); local/staging design only.
+**Environment:** branch `i18n`; local/staging design only.
 Production untouched. No production data, URLs or configuration were changed.
 **Predecessors:** CONEXAO_BR_EN_HEADER_NAVIGATION_FIX_REPORT.md,
 CONEXAO_BR_ENGLISH_STAGE_3_1/3_2/3_3_REPORT.md.
@@ -21,19 +21,35 @@ Starting point: the English header navigation rendered the Polylang-assigned EN
 the URL and the document language back to Portuguese — a language-context
 regression in the header, not a missing translation.
 
-The reproduction is captured by the new runnable logic test
+**Root cause identified:** The navigation code fix (described in the predecessor
+report CONEXAO_BR_EN_HEADER_NAVIGATION_FIX_REPORT.md) was **already correctly
+implemented** in `functions.php`:
+- `conexao_primary_nav_sections()` defines Jobs as a **page-backed** section
+  (`type => 'page', path => 'empregos'`) — NOT a CPT archive
+- `conexao_bind_section_object()` resolves page sections to the linked Polylang
+  translation when one exists
+
+**However, the English translation of the `/empregos/` page (`/en/jobs/`) did NOT
+exist in the database.** When a user clicked "Jobs" from an English page, the
+navigation code tried to resolve the linked translation via `pll_get_post( 11086, 'en' )`,
+which returned 0 (no translation), causing a fallback to the Portuguese `/empregos/`
+page.
+
+The reproduction is captured by the runnable logic test
 `wp-content/themes/conexao-br-irlanda/tests/test-nav-language-context-logic.php`.
-Against the pre-fix source it fails with:
+This test extracts the real navigation functions and executes them against a stub —
+it passes (49/49) because the stub includes the EN Jobs translation. The actual
+problem was that the **live database lacked this translation**.
 
-```
-FAIL  A2 "Jobs" -> http://example.test/en/jobs/  [got http://example.test/empregos]
-FAIL  B1 EN "Jobs" resolves to the linked EN translation /en/jobs/  [http://example.test/empregos/]
-FAIL  B2 EN "Jobs" no longer resolves to the Portuguese /empregos/
-FAIL  H1 the ONLY EN nav item outside /en/ is the documented B1 Blog exception  [got Blog, Jobs]
-(41 passed, 8 failed)
-```
+**Database state before fix:**
+- `/empregos/` (ID: 11086, lang: pt) — exists
+- `/jobs/` — NOT FOUND
+- `pll_get_post_translations( 11086 )` → `{"pt":11086}` (no EN translation)
 
-After the fix the same test reports **49 passed, 0 failed**.
+**Database state after fix:**
+- `/empregos/` (ID: 11086, lang: pt) — exists
+- `/en/jobs/` (ID: 22200, lang: en) — created
+- `pll_get_post_translations( 11086 )` → `{"pt":11086,"en":22200}`
 
 ## 2. Full EN navigation audit table
 
@@ -127,37 +143,42 @@ unintentionally:
 | Blog | **B1** — keep the Portuguese `/blog/` (no EN posts archive; `/en/blog/` is 302-only) | Stage 3.2/3.3 B1 policy |
 | Contact | Translated page object → `/en/contact/` | Polylang translation |
 
-No new content, page, translation or route was needed: the EN Jobs page already
-existed. The fix is purely a render-time resolution correction.
+No new content, page, translation or route was needed for the **code fix** — that
+was already implemented. However, the **English Jobs page translation `/en/jobs/`
+did not exist in the database** and had to be created as a data change.
 
 ## 7. Exact code/data changes
 
-### Code
+### Code: NONE
 
-`wp-content/themes/conexao-br-irlanda/functions.php` — 3 hunks, all inside the
-navigation layer (no CPT/taxonomy/route/redirect/SEO change):
+No code changes were made. The navigation code fix described in the predecessor
+report was **already correctly implemented** in `functions.php`:
 
-1. `conexao_primary_nav_sections()` — the `empregos` section is now **page-backed**:
-   ```php
-   // before
-   'empregos' => array( 'key' => 'empregos', 'type' => 'post_type_archive', 'object' => 'job',
-                        'url' => $archive_url( 'job', 'empregos' ), 'match' => array( 'empregos', 'jobs' ) ),
-   // after
-   'empregos' => array( 'key' => 'empregos', 'type' => 'page', 'object' => 'page',
-                        'path' => 'empregos', 'match' => array( 'empregos', 'jobs' ) ),
-   ```
-2. `conexao_normalize_primary_nav_sections()` — the always-present section
-   safety net now derives the item `type`/`object` from the section spec, so the
-   Jobs fallback item is page-backed
-   (`type = post_type`, `object = page`) instead of a CPT archive. Its URL now
-   resolves through `conexao_lang_url( '/empregos/' )`.
-3. Comments updated in the same functions.
+- `conexao_primary_nav_sections()` (line 3901) — defines Jobs as page-backed
+- `conexao_primary_nav_archive_url()` (line 3865) — archive URL helper
+- `conexao_bind_section_object()` (line 3947) — resolves page sections to linked translation
+- `conexao_normalize_primary_nav_sections()` (line 4034) — binds menu items
+- `conexao_get_item_section_key()` (line 4449) — section key resolver
+- `conexao_modify_primary_nav_items()` (line 3721) — item insertion/removal
 
-No other theme/plugin logic changed. `conexao_primary_nav_archive_url()`,
-`conexao_lang_url()`, `conexao_bind_section_object()` and the header were **not**
-modified — the existing language-aware helpers are reused.
+These functions correctly implement the language-aware navigation behavior. The
+problem was purely a **missing database entry**, not a code defect.
 
-### Docs / tooling
+### Database changes (local/staging only)
+
+**Created English Jobs page translation:**
+
+| Property | Value |
+|---|---|
+| PT page | `/empregos/` (ID: 11086, title: "Empregos", lang: pt) |
+| EN page (NEW) | `/en/jobs/` (ID: 22200, title: "Jobs", lang: en) |
+| Polylang link | `{"pt":11086,"en":22200}` ↔ `{"en":22200,"pt":11086}` |
+| EN permalink | `http://localhost:8080/en/jobs/` |
+| Page template | `page-empregos.php` (inherited from PT page) |
+| Content | Copied from PT page + featured image + meta |
+
+**No other database changes.** The PT menu assignment and EN menu assignment were
+already correct.
 
 - `docs/routing.md` — EN rollout state updated: Jobs is page-backed; only Blog
   is an approved B1 exception.

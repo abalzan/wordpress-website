@@ -167,12 +167,19 @@ foreach ( $en_pages as $path => $expected ) {
 
 // ---------------------------------------------------------------------------
 echo "\n-- English resolution (approved B1 / B2 behaviour preserved) --\n";
-foreach ( array( '/blog/', '/anuncie/', '/moradia/', '/saude/', '/irlanda/', '/dublin/', '/nao-existe/' ) as $path ) {
+foreach ( array( '/anuncie/', '/moradia/', '/saude/', '/irlanda/', '/dublin/', '/nao-existe/' ) as $path ) {
 	s33_assert(
 		untrailingslashit( conexao_lang_url( $path ) ) === untrailingslashit( home_url( $path ) ),
 		"EN/B1: conexao_lang_url( {$path} ) keeps the Portuguese destination (got " . s33_path( conexao_lang_url( $path ) ) . ')'
 	);
 }
+
+// The posts page (Blog) is an approved B2 destination: its EN URL is the
+// language home + the posts page path, never the Portuguese /blog/.
+s33_assert(
+	untrailingslashit( s33_path( conexao_lang_url( '/blog/' ) ) ) === untrailingslashit( '/en/blog/' ),
+	'EN/B2: conexao_lang_url( /blog/ ) resolves to /en/blog/ (got ' . s33_path( conexao_lang_url( '/blog/' ) ) . ')'
+);
 
 s33_assert(
 	0 !== strpos( s33_path( conexao_lang_url( '/irlanda/' ) ), '/en/' ),
@@ -226,7 +233,7 @@ $card_cases = array(
 	'/cursos/'     => '/en/cursos/',
 	'/apoiadores/' => '/en/apoiadores/',
 	'/empregos/'   => '/en/jobs/',
-	'/blog/'       => '/blog/',
+	'/blog/'       => '/en/blog/',
 );
 
 foreach ( $card_cases as $path => $expected ) {

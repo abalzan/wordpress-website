@@ -19,7 +19,8 @@
  *   - the `empregos` PT page linked to the `jobs` EN translation (/en/jobs/),
  *   - CPT archives for guide/event/leisure/sponsor/course_provider,
  *   - `job` has_archive = false (the root cause),
- *   - the native posts archive at /blog/ with NO EN archive (approved B1).
+ *   - the posts page (`page_for_posts`) serving /blog/ with no EN translation
+ *     (approved B2: the EN Blog URL is /en/blog/, no redirect to /blog/).
  *
  * Usage (from the project root):
  *   php wp-content/themes/conexao-br-irlanda/tests/test-nav-language-context-logic.php
@@ -147,6 +148,10 @@ $GLOBALS['conexao_test_pages'] = array(
 	'contato'   => array( 'id' => 20,  'url' => 'http://example.test/contato/',   'en' => 200,  'en_url' => 'http://example.test/en/contact/' ),
 	'sobre-nos' => array( 'id' => 21,  'url' => 'http://example.test/sobre-nos/', 'en' => 210,  'en_url' => 'http://example.test/en/about-us/' ),
 	'irlanda'   => array( 'id' => 30,  'url' => 'http://example.test/irlanda/',   'en' => 0,    'en_url' => '' ), // B2, no linked EN page.
+	// Posts page (page_for_posts). The native WordPress posts archive /blog/
+	// is served by this page; it has no EN translation, so the EN Blog URL is
+	// the language home + its path (/en/blog/) — the approved B2 destination.
+	'blog'      => array( 'id' => 50,  'url' => 'http://example.test/blog/',      'en' => 0,    'en_url' => '' ),
 );
 
 $GLOBALS['conexao_test_post_types'] = array(
@@ -263,6 +268,18 @@ function untrailingslashit( $string ) {
 }
 function trailingslashit( $string ) {
 	return untrailingslashit( $string ) . '/';
+}
+function get_option( $name, $default = false ) {
+	if ( 'page_for_posts' === $name ) {
+		return 50; // the stub 'blog' page (page_for_posts).
+	}
+	return $default;
+}
+function is_home() {
+	return false;
+}
+function is_singular() {
+	return false;
 }
 function wp_parse_url( $url, $component = -1 ) {
 	return parse_url( $url, $component );
@@ -409,8 +426,9 @@ echo "== A. EN primary-navigation URL audit ==\n";
 
 $en = conexao_test_render_nav( 'en', '/en/' );
 
-// title => expected final URL. Blog is the ONLY documented B1 exception: there
-// is no EN posts archive (native /blog/ archive; /en/blog/ is a B1 302).
+// title => expected final URL. Blog is a B2 destination: /en/blog/ renders
+// PT content under the EN URL (no redirect), so the EN nav Blog item resolves
+// to /en/blog/ — not the PT /blog/ URL.
 $expected_en = array(
 	'Home'             => $EN,
 	'Sponsors'         => $EN . 'apoiadores/',
@@ -419,7 +437,7 @@ $expected_en = array(
 	'Courses'          => $EN . 'cursos/',
 	'Leisure & Tourism'=> $EN . 'lazer/',
 	'Jobs'             => $EN . 'jobs/',
-	'Blog'             => $PT . 'blog/',
+	'Blog'             => $EN . 'blog/',
 	'Contact'          => $EN . 'contact/',
 );
 
@@ -445,13 +463,13 @@ check( 'B3 the Jobs section spec is page-backed (path=empregos), not a CPT archi
 check( 'B4 the `job` CPT still has no archive (root cause remains unchanged)', false === ( get_post_type_object( 'job' )->has_archive ) );
 
 // ---------------------------------------------------------------------------
-/// C. Blog specifically — approved B1 exception.
+/// C. Blog specifically — B2 destination (PT content under EN URL, no redirect).
 // ---------------------------------------------------------------------------
 echo "== C. Blog ==\n";
 
 $blog = isset( $en['Blog'] ) ? $en['Blog'] : null;
-check( 'C1 EN "Blog" stays on the approved B1 Portuguese /blog/ destination', $blog && untrailingslashit( $blog->url ) === untrailingslashit( $BASE . '/blog/' ) );
-check( 'C2 Blog is the ONLY EN item that leaves the /en/ context', array( 'Blog' ) === conexao_test_en_items_outside_en() );
+check( 'C1 EN "Blog" resolves to the B2 /en/blog/ URL (PT content under EN shell)', $blog && untrailingslashit( $blog->url ) === untrailingslashit( $BASE . '/en/blog/' ) );
+check( 'C2 Blog does NOT leave the /en/ context (B2 renders under /en/blog/)', ! in_array( 'Blog', conexao_test_en_items_outside_en(), true ) );
 
 // ---------------------------------------------------------------------------
 /// D. Translated items stay in EN.
@@ -551,9 +569,9 @@ check( 'G5 desktop and mobile render the SAME primary theme location', 2 === sub
 echo "== H. Language-leakage allowlist ==\n";
 
 $leaks = conexao_test_en_items_outside_en();
-check( 'H1 the ONLY EN nav item outside /en/ is the documented B1 Blog exception', array( 'Blog' ) === $leaks, 'got ' . implode( ', ', $leaks ) );
+check( 'H1 NO EN nav item leaves the /en/ context (Blog is a B2 destination at /en/blog/)', array() === $leaks, 'got ' . implode( ', ', $leaks ) );
 check( 'H2 Jobs is NOT in the leakage list', ! in_array( 'Jobs', $leaks, true ) );
-check( 'H3 no EN translated page/archive item leaks to PT', array() === array_values( array_diff( $leaks, array( 'Blog' ) ) ) );
+check( 'H3 no EN nav item leaks to PT', array() === $leaks, 'got ' . implode( ', ', $leaks ) );
 
 echo "\n{$GLOBALS['conexao_test_passed']} passed, {$GLOBALS['conexao_test_failed']} failed.\n";
 exit( 0 === $GLOBALS['conexao_test_failed'] ? 0 : 1 );

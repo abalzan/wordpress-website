@@ -146,13 +146,13 @@ check(
     f"got {labels}",
 )
 check("EN home: Home is marked current (aria-current)", bool(re.search(r'<a href="[^"]*"[^>]*aria-current="page"[^>]* class="nav-link">Home</a>', nav)))
-# The ONLY destination an EN visitor may leave /en/ for is the documented B1
-# Blog exception (no EN posts archive; /en/blog/ is a B1 302-only URL). Jobs is
-# NOT an exception: it has a real linked EN translation (/en/jobs/).
-B1_ALLOWED_PT = ("/blog",)
+# Every EN navigation destination must stay in the /en/ URL space. Blog is an
+# approved B2 destination (/en/blog/ renders the PT posts under the EN URL), so
+# it no longer leaves /en/. Jobs has a real linked EN translation (/en/jobs/).
+B1_ALLOWED_PT = ()
 en_urls = re.findall(r'<a href="([^"]*)"', nav)
 check(
-    "EN home: only the documented B1 Blog destination may leave /en/",
+    "EN home: no EN nav destination leaves /en/",
     all(
         u.startswith(BASE)
         and (
@@ -184,11 +184,8 @@ for title, href in en_pairs:
     lang_match = re.search(r'<html[^>]*\blang="([^"]*)"', body)
     lang = lang_match.group(1) if lang_match else "?"
     in_en = final.startswith(BASE + "/en/") or final.rstrip("/") == BASE + "/en"
-    if title == "Blog":
-        check("EN nav 'Blog': documented B1 exception (stays PT by policy)", (not in_en) and lang.lower().startswith("pt"), f"final={final} lang={lang}")
-    else:
-        check(f"EN nav '{title}': final URL stays in /en/", in_en, f"final={final}")
-        check(f"EN nav '{title}': resulting document language is EN", lang.lower().startswith("en"), f"lang={lang} final={final}")
+    check(f"EN nav '{title}': final URL stays in /en/", in_en, f"final={final}")
+    check(f"EN nav '{title}': resulting document language is EN", lang.lower().startswith("en"), f"lang={lang} final={final}")
     if title == "Jobs":
         check("EN nav 'Jobs': does NOT land on the Portuguese /empregos/", final.rstrip("/") != BASE + "/empregos", f"final={final}")
 

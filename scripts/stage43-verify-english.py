@@ -177,7 +177,7 @@ ROWS = [
      {"status": 200, "canonical": "self", "html_lang": "en-US",
       "hreflang": ["en", "pt-BR", "x-default"], "switcher": True}),
 
-    ("b1", "b1_blog", "/en/blog/", "redirect", {"status": 302, "final": "/blog/"}),
+    ("b2", "b2_blog", "/en/blog/", "render", {"status": 200, "final": "/en/blog/"}),
     ("b1", "b1_moradia", "/en/moradia/", "redirect", {"status": 302, "final": "/moradia/"}),
     ("b1", "b1_europa", "/en/europa/", "redirect", {"status": 302, "final": "/europa/"}),
 
