@@ -143,7 +143,7 @@
 							<button type="submit" class="screen-reader-text header-search-submit"><?php esc_html_e( 'Buscar', 'conexao-br-irlanda' ); ?></button>
 						</form>
 					</div>
-					<a href="<?php echo esc_url( home_url( '/anuncie/' ) ); ?>" class="header-cta">
+					<a href="<?php echo esc_url( conexao_lang_url( '/anuncie/' ) ); ?>" class="header-cta">
 						<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
 							<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
 							<polyline points="17 8 12 3 7 8"></polyline>
@@ -163,7 +163,7 @@
 						(aria-label); the visible span is decorative with aria-hidden so the
 						name never depends on the icon or on the label being visible.
 					-->
-					<a href="<?php echo esc_url( home_url( '/anuncie/' ) ); ?>" class="header-cta-compact" aria-label="<?php esc_attr_e( 'Anuncie Aqui', 'conexao-br-irlanda' ); ?>">
+					<a href="<?php echo esc_url( conexao_lang_url( '/anuncie/' ) ); ?>" class="header-cta-compact" aria-label="<?php esc_attr_e( 'Anuncie Aqui', 'conexao-br-irlanda' ); ?>">
 						<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
 							<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
 							<polyline points="17 8 12 3 7 8"></polyline>
@@ -232,7 +232,7 @@
 				icon as the desktop CTA — see .mobile-menu-cta in header-nav.css.
 			-->
 			<div class="mobile-menu-cta-wrap">
-				<a href="<?php echo esc_url( home_url( '/anuncie/' ) ); ?>" class="mobile-menu-cta">
+				<a href="<?php echo esc_url( conexao_lang_url( '/anuncie/' ) ); ?>" class="mobile-menu-cta">
 					<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
 						<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
 						<polyline points="17 8 12 3 7 8"></polyline>

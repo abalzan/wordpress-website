@@ -16,7 +16,19 @@ $eyebrows   = array(
 	'sobre-nos' => _x( 'Conheça a Conexão BR', 'page header eyebrow', 'conexao-br-irlanda' ),
 	'irlanda'   => _x( 'Viver na Irlanda', 'page header eyebrow', 'conexao-br-irlanda' ),
 );
-$page_eyebrow = isset( $eyebrows[ $page_slug ] ) ? $eyebrows[ $page_slug ] : '';
+// Stage 4.5 — a rendered translation carries the EN slug (contact, about-us,
+// ireland), so look the eyebrow up by the default-language source slug. The
+// map keys stay PT (canonical); PT rendering is byte-identical to before.
+$eyebrow_slug = $page_slug;
+if ( ! isset( $eyebrows[ $eyebrow_slug ] )
+	&& function_exists( 'conexao_polylang_active' ) && conexao_polylang_active()
+	&& function_exists( 'pll_get_post' ) && function_exists( 'conexao_default_language_slug' ) ) {
+	$source_id = (int) pll_get_post( get_the_ID(), conexao_default_language_slug() );
+	if ( $source_id && $source_id !== (int) get_the_ID() ) {
+		$eyebrow_slug = (string) get_post_field( 'post_name', $source_id );
+	}
+}
+$page_eyebrow = isset( $eyebrows[ $eyebrow_slug ] ) ? $eyebrows[ $eyebrow_slug ] : '';
 ?>
 
 <div class="site-container">

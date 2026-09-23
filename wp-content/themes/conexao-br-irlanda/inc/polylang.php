@@ -778,6 +778,19 @@ function conexao_lang_url_object( string $path ) {
 
 	$object = get_page_by_path( $trimmed, OBJECT, 'page' );
 
+	// Stage 4.5 — shared slugs: the EN Blog/Newsletter pages intentionally
+	// reuse the PT post_name (blog, newsletter), so get_page_by_path() can
+	// return either record. Normalise to the default-language source so the
+	// translation lookup above (pll_get_post) always starts from the same
+	// canonical page. No-op for every unique-slug page and when the object
+	// already is the default-language record.
+	if ( $object instanceof WP_Post && conexao_polylang_active() && function_exists( 'pll_get_post' ) ) {
+		$default_id = (int) pll_get_post( (int) $object->ID, conexao_default_language_slug() );
+		if ( $default_id && $default_id !== (int) $object->ID ) {
+			$object = get_post( $default_id );
+		}
+	}
+
 	return $object instanceof WP_Post ? $object : null;
 }
 
