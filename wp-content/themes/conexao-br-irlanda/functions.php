@@ -3915,7 +3915,17 @@ function conexao_primary_nav_sections() {
 		// is "Lazer e turismo"; both labels resolve to the same section spec.
 		'lazer'           => array( 'key' => 'lazer', 'type' => 'post_type_archive', 'object' => 'leisure', 'url' => $archive_url( 'leisure', 'lazer' ), 'match' => array( 'lazer', 'leisure' ) ),
 		'lazer e turismo' => array( 'key' => 'lazer', 'type' => 'post_type_archive', 'object' => 'leisure', 'url' => $archive_url( 'leisure', 'lazer' ), 'match' => array( 'lazer', 'leisure' ) ),
-		'empregos'   => array( 'key' => 'empregos', 'type' => 'post_type_archive', 'object' => 'job', 'url' => $archive_url( 'job', 'empregos' ), 'match' => array( 'empregos', 'jobs' ) ),
+		// Jobs is a STATIC LANDING PAGE (/empregos/ -> page-empregos.php), not a
+		// CPT archive: the `job` CPT is registered with has_archive = false, so
+		// /empregos/ belongs to the page while job singles keep /empregos/{slug}/.
+		// Binding it as a page (like Contato / Sobre Nos) lets the existing
+		// translation-aware page binding resolve the LINKED EN translation
+		// (/en/jobs/) at render time -- the same rule Stage 3.3 applied to the EN
+		// homepage Jobs card through conexao_lang_url(). Treating it as a
+		// post_type_archive returned '' for the archive URL (has_archive = false)
+		// and fell back to the Portuguese /empregos/, which switched an EN visitor
+		// back to Portuguese. See CONEXAO_BR_EN_NAV_LANGUAGE_CONTEXT_FIX_REPORT.md.
+		'empregos'   => array( 'key' => 'empregos', 'type' => 'page', 'object' => 'page', 'path' => 'empregos', 'match' => array( 'empregos', 'jobs' ) ),
 		'apoiadores' => array( 'key' => 'apoiadores', 'type' => 'post_type_archive', 'object' => 'sponsor', 'url' => $archive_url( 'sponsor', 'apoiadores' ), 'match' => array( 'apoiadores', 'sponsors', 'sponsor' ) ),
 		'irlanda'    => array( 'key' => 'irlanda', 'type' => 'page', 'object' => 'page', 'path' => 'irlanda', 'match' => array( 'irlanda', 'ireland' ) ),
 		'sobre nós'  => array( 'key' => 'sobre-nos', 'type' => 'page', 'object' => 'page', 'path' => 'sobre-nos', 'match' => array( 'sobre-nos', 'sobre', 'sobre nós', 'about-us', 'about' ) ),
@@ -4202,15 +4212,19 @@ function conexao_normalize_primary_nav_sections( $items, $args ) {
 	}
 	$items = array_values( $items );
 
-	// Ensure all CPT archive sections (Guias, Eventos, Empregos, Apoiadores)
-	// are always present in the navigation, even if the stored menu is missing them.
+	// Ensure all section-backed navigation items (Guias, Eventos, Empregos,
+	// Apoiadores) are always present in the navigation, even if the stored menu
+	// is missing them. Jobs is page-backed (see conexao_primary_nav_sections()).
 	$is_en = 'en' === conexao_current_language_slug();
 
 	$cpt_sections = array(
 		'guias'      => array( 'post_type' => 'guide',   'title' => $is_en ? 'Guides' : __( 'Guias', 'conexao-br-irlanda' ),                'url' => conexao_primary_nav_archive_url( 'guide', 'guias' ) ),
 		'eventos'    => array( 'post_type' => 'event',   'title' => $is_en ? 'Events' : __( 'Eventos', 'conexao-br-irlanda' ),              'url' => conexao_primary_nav_archive_url( 'event', 'eventos' ) ),
 		'lazer'      => array( 'post_type' => 'leisure', 'title' => $is_en ? 'Leisure & Tourism' : __( 'Lazer e turismo', 'conexao-br-irlanda' ), 'url' => conexao_primary_nav_archive_url( 'leisure', 'lazer' ) ),
-		'empregos'   => array( 'post_type' => 'job',     'title' => $is_en ? 'Jobs' : __( 'Empregos', 'conexao-br-irlanda' ),               'url' => conexao_primary_nav_archive_url( 'job', 'empregos' ) ),
+		// Jobs is page-backed: conexao_lang_url( '/empregos/' ) resolves the linked
+		// EN translation (/en/jobs/) with the same helper Stage 3.3 uses; binding is
+		// then canonicalised by conexao_bind_section_object() below.
+		'empregos'   => array( 'post_type' => 'page',    'title' => $is_en ? 'Jobs' : __( 'Empregos', 'conexao-br-irlanda' ),               'url' => conexao_lang_url( '/empregos/' ) ),
 		'apoiadores' => array( 'post_type' => 'sponsor', 'title' => $is_en ? 'Sponsors' : __( 'Apoiadores', 'conexao-br-irlanda' ),         'url' => conexao_primary_nav_archive_url( 'sponsor', 'apoiadores' ) ),
 	);
 
@@ -4226,18 +4240,26 @@ function conexao_normalize_primary_nav_sections( $items, $args ) {
 		}
 
 		if ( ! $has_section ) {
+			// The section spec decides whether this is a CPT archive item or a
+			// page-backed item (Jobs); conexao_bind_section_object() then binds the
+			// canonical object/URL for the current language.
+			$section_spec = isset( $sections[ $section_key ] ) ? $sections[ $section_key ] : null;
+			$is_page_section = ( $section_spec && 'page' === $section_spec['type'] );
+			$item_type   = $is_page_section ? 'post_type' : 'post_type_archive';
+			$item_object = $is_page_section ? 'page' : $cpt_info['post_type'];
+
 			$cpt_item = (object) array(
 				'ID'               => 0,
 				'db_id'            => 0,
 				'menu_item_parent' => 0,
 				'object_id'        => 0,
-				'object'           => $cpt_info['post_type'],
+				'object'           => $item_object,
 				'post_parent'      => 0,
-				'type'             => 'post_type_archive',
+				'type'             => $item_type,
 				'type_label'       => $cpt_info['title'],
 				'title'            => $cpt_info['title'],
 				'url'              => $cpt_info['url'],
-				'classes'          => array( 'menu-item', 'menu-item-type-post_type_archive', 'menu-item-object-' . $cpt_info['post_type'] ),
+				'classes'          => array( 'menu-item', 'menu-item-type-' . $item_type, 'menu-item-object-' . $item_object ),
 				'attr_title'       => '',
 				'target'           => '',
 				'xfn'              => '',
