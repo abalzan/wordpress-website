@@ -18,12 +18,12 @@
         "linked": true
     },
     "counts": {
-        "total_records_any_status": 1,
+        "total_records_any_status": 2,
         "by_status": {
-            "publish": 1
+            "publish": 2
         },
         "published_pt": 1,
-        "published_en": 0
+        "published_en": 1
     },
     "pt": [
         {
@@ -37,7 +37,7 @@
             "menu_order": 0,
             "permalink": "http://127.0.0.1:8765/empregos/oportunidades/",
             "language": "pt",
-            "translation": 0,
+            "translation": 83,
             "excerpt": "",
             "content": "\n<p class=\"wp-block-paragraph\">No Conexão BR Irlanda, compartilhamos novas oportunidades de trabalho todos os dias — e agora ficou ainda mais fácil encontrar vagas perto de você! 📍</p>\n\n\n\n<p class=\"wp-block-paragraph\">👉 Nos nossos Destaques do Instagram, as vagas estão separadas por Condado, facilitando sua busca pela região onde você mora ou pretende trabalhar.</p>\n\n\n\n<p class=\"wp-block-paragraph\">📌 Atualize seu currículo<br>📌 Confira os Destaques por Condado<br>📌 Acompanhe as novas vagas diariamente<br>📌 Acesse nossos Guias Gratuitos para descobrir onde mais buscar emprego na Irlanda</p>\n\n\n\n<p class=\"wp-block-paragraph\">🌐 Mais informações no nosso instagram — <a href=\"https://www.instagram.com/reel/Dcd0YXqMrEK/?igsi=M3VrZm04aHV4czN6\">clique aqui</a></p>\n\n\n\n<p class=\"wp-block-paragraph\">💚 Salve este post e compartilhe com aquele amigo que também está procurando uma oportunidade na Irlanda.</p>\n\n\n\n<p class=\"wp-block-paragraph\"></p>\n\n\n\n<p class=\"wp-block-paragraph\">#EmpregoNaIrlanda #VagasNaIrlanda #BrasileirosNaIrlanda #TrabalhoNaIrlanda #ConexaoBRIrlanda #VagasDeEmprego #IrelandJobs #BrasileirosNaEuropa</p>\n\n\n\n<p class=\"wp-block-paragraph\"></p>\n",
             "content_hash": "eccc77a09e6fc25826c48e9d38d50331",
@@ -54,20 +54,54 @@
             "meta_desc": ""
         }
     ],
-    "en": [],
+    "en": [
+        {
+            "id": 83,
+            "slug": "opportunities",
+            "title": "Opportunities",
+            "status": "publish",
+            "date": "2026-08-25 16:24:34",
+            "modified": "2026-08-25 16:24:34",
+            "author": 0,
+            "menu_order": 0,
+            "permalink": "http://127.0.0.1:8765/en/empregos/opportunities/",
+            "language": "en",
+            "translation": 66,
+            "excerpt": "At Conexão BR Irlanda, we share new job opportunities every day — and finding openings near you just got even easier! In our Instagram Highlights, the openings are grouped by County…",
+            "content": "<p class=\"wp-block-paragraph\">At Conexão BR Irlanda, we share new job opportunities every day — and finding openings near you just got even easier! 📍</p>\n<p class=\"wp-block-paragraph\">👉 In our Instagram Highlights, the openings are grouped by County, making it easier to search the region where you live or plan to work.</p>\n<p class=\"wp-block-paragraph\">📌 Update your résumé<br>📌 Check the Highlights by County<br>📌 Follow the new openings daily<br>📌 Browse our free Guides to find out where else to look for work in Ireland</p>\n<p class=\"wp-block-paragraph\">🌐 More information on our Instagram — <a href=\"https://www.instagram.com/reel/Dcd0YXqMrEK/?igsi=M3VrZm04aHV4czN6\">click here</a></p>\n<p class=\"wp-block-paragraph\">💚 Save this post and share it with a friend who is also looking for an opportunity in Ireland.</p>\n<p class=\"wp-block-paragraph\"></p>\n<p class=\"wp-block-paragraph\">#JobsInIreland #JobOpeningsIreland #BraziliansInIreland #WorkInIreland #ConexaoBRIrlanda #JobVacancies #IrelandJobs #BraziliansInEurope</p>\n<p class=\"wp-block-paragraph\"></p>",
+            "content_hash": "dbf0df484d6421101ab297dd833cecc6",
+            "thumbnail": 63,
+            "template": "",
+            "taxonomies": {
+                "conexao_category": [],
+                "conexao_county": [],
+                "conexao_tag": []
+            },
+            "meta": {
+                "_thumbnail_id": "63",
+                "conexao_meta_description": "New job opportunities every day for the Brazilian community in Ireland — browse the openings grouped by county on the Conexão BR Irlanda Instagram."
+            },
+            "meta_desc": "New job opportunities every day for the Brazilian community in Ireland — browse the openings grouped by county on the Conexão BR Irlanda Instagram."
+        }
+    ],
     "all_statuses": [
         {
             "id": 66,
             "slug": "oportunidades",
+            "status": "publish"
+        },
+        {
+            "id": 83,
+            "slug": "opportunities",
             "status": "publish"
         }
     ],
     "audit": {
         "counts": {
             "total public PT jobs": 1,
-            "total public EN jobs": 0,
-            "translated job pairs verified": 0,
-            "eligible public PT jobs missing EN": 1,
+            "total public EN jobs": 1,
+            "translated job pairs verified": 1,
+            "eligible public PT jobs missing EN": 0,
             "EN jobs missing PT translation": 0,
             "jobs excluded (documented)": 0,
             "taxonomy terms used by PT jobs": 0,
@@ -76,15 +110,18 @@
             "Jobs page EN ID": 65,
             "Jobs page pair": "verified"
         },
-        "missing": [
+        "missing": [],
+        "en_without_pt": [],
+        "pairs": [
             {
-                "id": 66,
-                "slug": "oportunidades",
-                "title": "Oportunidades"
+                "pt_id": 66,
+                "pt_slug": "oportunidades",
+                "en_id": 83,
+                "en_slug": "opportunities",
+                "pt_url": "http://127.0.0.1:8765/empregos/oportunidades/",
+                "en_url": "http://127.0.0.1:8765/en/empregos/opportunities/"
             }
         ],
-        "en_without_pt": [],
-        "pairs": [],
         "excluded": [],
         "taxonomy": {
             "used": [],
@@ -95,6 +132,6 @@
             "en_id": 65,
             "status": "verified"
         },
-        "pass": false
+        "pass": true
     }
 }
