@@ -1,0 +1,1811 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="profile" href="https://gmpg.org/xfn/11">
+<script>
+/* Theme initialization — runs before paint to prevent FOUC. */
+(function() {
+	try {
+		var stored = localStorage.getItem('conexao-theme');
+		var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+		var theme = stored || (prefersDark ? 'dark' : 'light');
+		document.documentElement.setAttribute('data-theme', theme);
+	} catch (e) {
+		document.documentElement.setAttribute('data-theme', 'light');
+	}
+})();
+</script>
+<title>Lazer & Turismo na Irlanda | Conexão BR</title>
+<meta name='robots' content='max-image-preview:large' />
+<link rel='dns-prefetch' href='//secure.gravatar.com' />
+<link rel='dns-prefetch' href='//fonts-api.wp.com' />
+<link rel='dns-prefetch' href='//widgets.wp.com' />
+<link rel='dns-prefetch' href='//jetpack.wordpress.com' />
+<link rel='dns-prefetch' href='//s0.wp.com' />
+<link rel='dns-prefetch' href='//public-api.wordpress.com' />
+<link rel='dns-prefetch' href='//0.gravatar.com' />
+<link rel='dns-prefetch' href='//1.gravatar.com' />
+<link rel='dns-prefetch' href='//2.gravatar.com' />
+<link rel='preconnect' href='//i0.wp.com' />
+<link rel='preconnect' href='//c0.wp.com' />
+<link rel="alternate" type="application/rss+xml" title="Conexão BR &raquo; Feed" href="https://conexaobr.ie/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Conexão BR &raquo; Comments Feed" href="https://conexaobr.ie/comments/feed/" />
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="alternate" type="application/rss+xml" title="Conexão BR &raquo; Lazer e Turismo Feed" href="https://conexaobr.ie/lazer/feed/" />
+<meta name="robots" content="noindex, follow" />
+<meta name="description" content="Descubra lugares para visitar, natureza, cultura, turismo e coisas para fazer na Irlanda. Guia de lazer por condado." />
+<link rel="canonical" href="https://conexaobr.ie/lazer/" />
+	<meta property="og:type" content="website" />
+	<meta property="og:title" content="Lazer" />
+	<meta property="og:url" content="https://conexaobr.ie/lazer/" />
+	<meta property="og:description" content="Descubra lugares para visitar, natureza, cultura, turismo e coisas para fazer na Irlanda." />
+	<meta property="og:site_name" content="Conexão BR" />
+	<meta property="og:locale" content="pt_BR" />
+	<meta property="og:image" content="https://conexaobr.ie/wp-content/themes/conexao-br-irlanda/assets/images/conexao-social-card.svg" />
+	<meta property="og:image:alt" content="Lazer" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="Lazer" />
+	<meta name="twitter:description" content="Descubra lugares para visitar, natureza, cultura, turismo e coisas para fazer na Irlanda." />
+	<meta name="twitter:image" content="https://conexaobr.ie/wp-content/themes/conexao-br-irlanda/assets/images/conexao-social-card.svg" />
+	<style id="wp-img-auto-sizes-contain-inline-css">
+img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
+/*# sourceURL=wp-img-auto-sizes-contain-inline-css */
+</style>
+<style id="wp-block-library-inline-css">
+:root{--wp-block-synced-color:#7a00df;--wp-block-synced-color--rgb:122,0,223;--wp-bound-block-color:var(--wp-block-synced-color);--wp-editor-canvas-background:#ddd;--wp-admin-theme-color:#007cba;--wp-admin-theme-color--rgb:0,124,186;--wp-admin-theme-color-darker-10:#006ba1;--wp-admin-theme-color-darker-10--rgb:0,107,160.5;--wp-admin-theme-color-darker-20:#005a87;--wp-admin-theme-color-darker-20--rgb:0,90,135;--wp-admin-border-width-focus:2px}@media (min-resolution:192dpi){:root{--wp-admin-border-width-focus:1.5px}}.wp-element-button{cursor:pointer}:root .has-very-light-gray-background-color{background-color:#eee}:root .has-very-dark-gray-background-color{background-color:#313131}:root .has-very-light-gray-color{color:#eee}:root .has-very-dark-gray-color{color:#313131}:root .has-vivid-green-cyan-to-vivid-cyan-blue-gradient-background{background:linear-gradient(135deg,#00d084,#0693e3)}:root .has-purple-crush-gradient-background{background:linear-gradient(135deg,#34e2e4,#4721fb 50%,#ab1dfe)}:root .has-hazy-dawn-gradient-background{background:linear-gradient(135deg,#faaca8,#dad0ec)}:root .has-subdued-olive-gradient-background{background:linear-gradient(135deg,#fafae1,#67a671)}:root .has-atomic-cream-gradient-background{background:linear-gradient(135deg,#fdd79a,#004a59)}:root .has-nightshade-gradient-background{background:linear-gradient(135deg,#330968,#31cdcf)}:root .has-midnight-gradient-background{background:linear-gradient(135deg,#020381,#2874fc)}:root{--wp--preset--font-size--normal:16px;--wp--preset--font-size--huge:42px}.has-regular-font-size{font-size:1em}.has-larger-font-size{font-size:2.625em}.has-normal-font-size{font-size:var(--wp--preset--font-size--normal)}.has-huge-font-size{font-size:var(--wp--preset--font-size--huge)}:root .has-text-align-center{text-align:center}:root .has-text-align-left{text-align:left}:root .has-text-align-right{text-align:right}.has-fit-text{white-space:nowrap!important}#end-resizable-editor-section{display:none}.aligncenter{clear:both}.items-justified-left{justify-content:flex-start}.items-justified-center{justify-content:center}.items-justified-right{justify-content:flex-end}.items-justified-space-between{justify-content:space-between}.screen-reader-text{word-wrap:normal!important;border:0;clip-path:inset(50%);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;width:1px;word-break:normal!important}.screen-reader-text:focus{background-color:#ddd;clip-path:none;color:#444;display:block;font-size:1em;height:auto;left:5px;line-height:normal;padding:15px 23px 14px;text-decoration:none;top:5px;width:auto;z-index:100000}html :where(.has-border-color){border-style:solid}html :where([style^=border-color],[style*=";border-color"],[style*="; border-color"]){border-style:solid}html :where([style^=border-top-color],[style*=";border-top-color"],[style*="; border-top-color"]){border-top-style:solid}html :where([style^=border-right-color],[style*=";border-right-color"],[style*="; border-right-color"]){border-right-style:solid}html :where([style^=border-bottom-color],[style*=";border-bottom-color"],[style*="; border-bottom-color"]){border-bottom-style:solid}html :where([style^=border-left-color],[style*=";border-left-color"],[style*="; border-left-color"]){border-left-style:solid}html :where([style^=border-width],[style*=";border-width"],[style*="; border-width"]){border-style:solid}html :where([style^=border-top-width],[style*=";border-top-width"],[style*="; border-top-width"]){border-top-style:solid}html :where([style^=border-right-width],[style*=";border-right-width"],[style*="; border-right-width"]){border-right-style:solid}html :where([style^=border-bottom-width],[style*=";border-bottom-width"],[style*="; border-bottom-width"]){border-bottom-style:solid}html :where([style^=border-left-width],[style*=";border-left-width"],[style*="; border-left-width"]){border-left-style:solid}html :where(img[class*=wp-image-]){height:auto;max-width:100%}:where(figure){margin:0 0 1em}html :where(.is-position-sticky){--wp-admin--admin-bar--position-offset:var(--wp-admin--admin-bar--height,0px)}@media screen and (max-width:600px){html :where(.is-position-sticky){--wp-admin--admin-bar--position-offset:0px}}
+
+/*# sourceURL=https://conexaobr.ie/wp-content/plugins/gutenberg/build/styles/block-library/common.min.css */
+</style>
+<style id="wp-block-library-inline-css-extra">
+.has-text-align-justify{text-align:justify;}
+/*# sourceURL=wp-block-library-inline-css */
+</style>
+
+<style id="classic-theme-styles-inline-css">
+.wp-block-button__link{background-color:#32373c;border-radius:9999px;box-shadow:none;color:#fff;font-size:1.125em;padding:calc(.667em + 2px) calc(1.333em + 2px);text-decoration:none}.wp-block-file__button{background:#32373c;color:#fff}.wp-block-accordion-heading{margin:0}.wp-block-accordion-heading__toggle{background-color:inherit!important;color:inherit!important}.wp-block-accordion-heading__toggle:not(:focus-visible){outline:none}.wp-block-accordion-heading__toggle:focus,.wp-block-accordion-heading__toggle:hover{background-color:inherit!important;border:none;box-shadow:none;color:inherit;padding:var(--wp--preset--spacing--20,1em) 0;text-decoration:none}.wp-block-accordion-heading__toggle:focus-visible{outline:auto;outline-offset:0}.wp-block-tab:not(.has-text-color){color:inherit!important}.wp-block-tab:not(.has-background){background-color:inherit!important}.wp-block-tab:focus,.wp-block-tab:hover{text-decoration:none}.wp-block-tab:focus-visible{outline:auto;outline-offset:0}
+/*# sourceURL=https://conexaobr.ie/wp-content/plugins/gutenberg/build/styles/block-library/classic.min.css */
+</style>
+
+<style id="conexao-content-inline-css">
+.conexao-card-grid { display:grid; gap:1.25rem; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); margin:1.5rem 0 3rem; }
+.conexao-card { background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 2px 12px rgba(22,52,43,.12); }
+.conexao-card a,.conexao-card>div { color:inherit; display:block; height:100%; text-decoration:none; }
+.conexao-card img { aspect-ratio: 4/3; display:block; height:auto; object-fit:cover; width:100%; }
+.conexao-card h3 { font-size:1rem; margin:0; padding:1rem; }
+.conexao-share { align-items:center; border-top:1px solid #d8e1dc; display:flex; flex-wrap:wrap; gap:.65rem; margin-top:2rem; padding-top:1.25rem; }
+.conexao-share a,.conexao-share button { background:#147a53; border:0; border-radius:999px; color:#fff; cursor:pointer; font:inherit; padding:.4rem .8rem; text-decoration:none; }
+.conexao-reading-time { color:#547067; font-size:.9rem; }
+
+/*# sourceURL=conexao-content-inline-css */
+</style>
+<style id="global-styles-inline-css">
+:root{--wp--preset--aspect-ratio--square: 1;--wp--preset--aspect-ratio--4-3: 4/3;--wp--preset--aspect-ratio--3-4: 3/4;--wp--preset--aspect-ratio--3-2: 3/2;--wp--preset--aspect-ratio--2-3: 2/3;--wp--preset--aspect-ratio--16-9: 16/9;--wp--preset--aspect-ratio--9-16: 9/16;--wp--preset--color--black: #000000;--wp--preset--color--cyan-bluish-gray: #abb8c3;--wp--preset--color--white: #ffffff;--wp--preset--color--pale-pink: #f78da7;--wp--preset--color--vivid-red: #cf2e2e;--wp--preset--color--luminous-vivid-orange: #ff6900;--wp--preset--color--luminous-vivid-amber: #fcb900;--wp--preset--color--light-green-cyan: #7bdcb5;--wp--preset--color--vivid-green-cyan: #00d084;--wp--preset--color--pale-cyan-blue: #8ed1fc;--wp--preset--color--vivid-cyan-blue: #0693e3;--wp--preset--color--vivid-purple: #9b51e0;--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple: linear-gradient(135deg,rgb(6,147,227) 0%,rgb(155,81,224) 100%);--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan: linear-gradient(135deg,rgb(122,220,180) 0%,rgb(0,208,130) 100%);--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange: linear-gradient(135deg,rgb(252,185,0) 0%,rgb(255,105,0) 100%);--wp--preset--gradient--luminous-vivid-orange-to-vivid-red: linear-gradient(135deg,rgb(255,105,0) 0%,rgb(207,46,46) 100%);--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray: linear-gradient(135deg,rgb(238,238,238) 0%,rgb(169,184,195) 100%);--wp--preset--gradient--cool-to-warm-spectrum: linear-gradient(135deg,rgb(74,234,220) 0%,rgb(151,120,209) 20%,rgb(207,42,186) 40%,rgb(238,44,130) 60%,rgb(251,105,98) 80%,rgb(254,248,76) 100%);--wp--preset--gradient--blush-light-purple: linear-gradient(135deg,rgb(255,206,236) 0%,rgb(152,150,240) 100%);--wp--preset--gradient--blush-bordeaux: linear-gradient(135deg,rgb(254,205,165) 0%,rgb(254,45,45) 50%,rgb(107,0,62) 100%);--wp--preset--gradient--luminous-dusk: linear-gradient(135deg,rgb(255,203,112) 0%,rgb(199,81,192) 50%,rgb(65,88,208) 100%);--wp--preset--gradient--pale-ocean: linear-gradient(135deg,rgb(255,245,203) 0%,rgb(182,227,212) 50%,rgb(51,167,181) 100%);--wp--preset--gradient--electric-grass: linear-gradient(135deg,rgb(202,248,128) 0%,rgb(113,206,126) 100%);--wp--preset--gradient--midnight: linear-gradient(135deg,rgb(2,3,129) 0%,rgb(40,116,252) 100%);--wp--preset--font-size--small: 13px;--wp--preset--font-size--medium: 20px;--wp--preset--font-size--large: 36px;--wp--preset--font-size--x-large: 42px;--wp--preset--spacing--20: 0.44rem;--wp--preset--spacing--30: 0.67rem;--wp--preset--spacing--40: 1rem;--wp--preset--spacing--50: 1.5rem;--wp--preset--spacing--60: 2.25rem;--wp--preset--spacing--70: 3.38rem;--wp--preset--spacing--80: 5.06rem;--wp--preset--shadow--natural: 6px 6px 9px rgba(0, 0, 0, 0.2);--wp--preset--shadow--deep: 12px 12px 50px rgba(0, 0, 0, 0.4);--wp--preset--shadow--sharp: 6px 6px 0px rgba(0, 0, 0, 0.2);--wp--preset--shadow--outlined: 6px 6px 0px -3px rgb(255, 255, 255), 6px 6px rgb(0, 0, 0);--wp--preset--shadow--crisp: 6px 6px 0px rgb(0, 0, 0);}.wp-block-button{--wp--preset--dimension--25: 25%;--wp--preset--dimension--50: 50%;--wp--preset--dimension--75: 75%;--wp--preset--dimension--100: 100%;}:where(body) { margin: 0; }:where(.is-layout-flex){gap: 0.5em;}:where(.is-layout-grid){gap: 0.5em;}body .is-layout-flex{display: flex;}.is-layout-flex{flex-wrap: wrap;align-items: center;}.is-layout-flex > :is(*, div){margin: 0;}body .is-layout-grid{display: grid;}.is-layout-grid > :is(*, div){margin: 0;}body{padding-top: 0px;padding-right: 0px;padding-bottom: 0px;padding-left: 0px;}:root :where(.wp-element-button, .wp-block-button__link){background-color: #32373c;border-width: 0;color: #fff;font-family: inherit;font-size: inherit;font-style: inherit;font-weight: inherit;letter-spacing: inherit;line-height: inherit;padding-top: calc(0.667em + 2px);padding-right: calc(1.333em + 2px);padding-bottom: calc(0.667em + 2px);padding-left: calc(1.333em + 2px);text-decoration: none;text-transform: inherit;}.has-black-color{color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-color{color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-color{color: var(--wp--preset--color--white) !important;}.has-pale-pink-color{color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-color{color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-color{color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-color{color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-color{color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-color{color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-color{color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-color{color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-color{color: var(--wp--preset--color--vivid-purple) !important;}.has-black-background-color{background-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-background-color{background-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-background-color{background-color: var(--wp--preset--color--white) !important;}.has-pale-pink-background-color{background-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-background-color{background-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-background-color{background-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-background-color{background-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-background-color{background-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-background-color{background-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-background-color{background-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-background-color{background-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-background-color{background-color: var(--wp--preset--color--vivid-purple) !important;}.has-black-border-color{border-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-border-color{border-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-border-color{border-color: var(--wp--preset--color--white) !important;}.has-pale-pink-border-color{border-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-border-color{border-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-border-color{border-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-border-color{border-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-border-color{border-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-border-color{border-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-border-color{border-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-border-color{border-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-border-color{border-color: var(--wp--preset--color--vivid-purple) !important;}.has-vivid-cyan-blue-to-vivid-purple-gradient-background{background: var(--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple) !important;}.has-light-green-cyan-to-vivid-green-cyan-gradient-background{background: var(--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan) !important;}.has-luminous-vivid-amber-to-luminous-vivid-orange-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange) !important;}.has-luminous-vivid-orange-to-vivid-red-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-orange-to-vivid-red) !important;}.has-very-light-gray-to-cyan-bluish-gray-gradient-background{background: var(--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray) !important;}.has-cool-to-warm-spectrum-gradient-background{background: var(--wp--preset--gradient--cool-to-warm-spectrum) !important;}.has-blush-light-purple-gradient-background{background: var(--wp--preset--gradient--blush-light-purple) !important;}.has-blush-bordeaux-gradient-background{background: var(--wp--preset--gradient--blush-bordeaux) !important;}.has-luminous-dusk-gradient-background{background: var(--wp--preset--gradient--luminous-dusk) !important;}.has-pale-ocean-gradient-background{background: var(--wp--preset--gradient--pale-ocean) !important;}.has-electric-grass-gradient-background{background: var(--wp--preset--gradient--electric-grass) !important;}.has-midnight-gradient-background{background: var(--wp--preset--gradient--midnight) !important;}.has-small-font-size{font-size: var(--wp--preset--font-size--small) !important;}.has-medium-font-size{font-size: var(--wp--preset--font-size--medium) !important;}.has-large-font-size{font-size: var(--wp--preset--font-size--large) !important;}.has-x-large-font-size{font-size: var(--wp--preset--font-size--x-large) !important;}
+/*# sourceURL=global-styles-inline-css */
+</style>
+
+<style id="jetpack-stats-inline-css">
+img#wpstats{display:none}
+/*# sourceURL=jetpack-stats-inline-css */
+</style>
+<link rel='stylesheet' id='conexao-fonts-css' href='https://fonts-api.wp.com/css2?family=Inter:wght@400;500;600;700&#038;family=Poppins:wght@500;600;700&#038;display=swap' media='print' onload="this.media='all'" />
+<noscript><link rel='stylesheet' id='conexao-fonts-css' href='https://fonts-api.wp.com/css2?family=Inter:wght@400;500;600;700&#038;family=Poppins:wght@500;600;700&#038;display=swap' media='all' /></noscript>
+<link rel='stylesheet' id='all-css-e3d7399327ed21d9b0822cf98a00db0b' href='https://conexaobr.ie/_static/??-eJydjs0OgjAQhF/IWgwx6MH4KGZpN7CybUm3FXl7y4GTiT8cZybfl5lGZYJP6JNOPToUXSI+Iag2KooM3oIGEUxlEdEWhTqvZJaEbl+a3fSnoUewGJWHxybcAflNICNJjriJtRAH5YJ9o0fOHXnRd0wjmEHfyBvdcjCDaJloxPiNKNbMywGIIQvyOqi1+FWQiNGqDpgxzp/SIry6y6E5nY9NXVX1C+B/w3g=' type='text/css' media='all' />
+<style id="jetpack_likes-inline-css">
+#jp-post-flair{padding-top:.5em}#content div.sharedaddy,#main div.sharedaddy,div.sharedaddy{clear:both}div.sharedaddy h3.sd-title{display:inline-block;font-size:9pt;font-weight:700;line-height:1.2;margin:0 0 1em}div.sharedaddy h3.sd-title:before{border-top:1px solid #dcdcde;content:"";display:block;margin-bottom:1em;min-width:30px;width:100%}div.jetpack-likes-widget-wrapper{min-height:50px;position:relative;width:100%}div.jetpack-likes-widget-wrapper .sd-link-color{font-size:12px}div.jetpack-comment-likes-widget-wrapper{min-height:31px;position:relative;width:100%}div.jetpack-comment-likes-widget-wrapper iframe{margin-bottom:0}#likes-other-gravatars{background-color:#fff;border:1px solid #dcdcde;border-radius:4px;box-shadow:none;display:none;height:auto;max-height:240px;min-width:220px;overflow:auto;padding:9px 12px 10px;position:absolute;z-index:1000}#likes-other-gravatars *{line-height:normal}#likes-other-gravatars .likes-text{color:#101517;font-size:12px;font-weight:500;padding-bottom:8px}#likes-other-gravatars :is(li,ul){list-style-type:none;margin:0;padding:0;text-indent:0}#likes-other-gravatars li:before{content:""}#likes-other-gravatars ul.wpl-avatars{display:block;max-height:190px;overflow:auto}#likes-other-gravatars ul.wpl-avatars li{float:none;height:28px;margin:0 0 4px;width:196px}#likes-other-gravatars ul.wpl-avatars li a{align-items:center;border-bottom:none!important;display:flex;gap:8px;margin:0 2px 0 0;text-decoration:none}#likes-other-gravatars ul.wpl-avatars li a span{color:#2c3338;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#likes-other-gravatars ul.wpl-avatars li a img{background:none;border:none;border-radius:50%;box-sizing:border-box;margin:0!important;padding:1px!important;position:static}div.sd-box{border-top:1px solid #00000021}.jetpack-likes-widget-loaded iframe,.jetpack-likes-widget-loading .likes-widget-placeholder,.jetpack-likes-widget-unloaded .likes-widget-placeholder{display:block}.jetpack-likes-widget-loaded .likes-widget-placeholder,.jetpack-likes-widget-loading iframe,.jetpack-likes-widget-unloaded iframe{display:none}.comment-likes-widget,.entry-content .post-likes-widget,.post-likes-widget{border-width:0;margin:0}.comment-likes-widget-placeholder,.post-likes-widget-placeholder{border-width:0;margin:0;position:relative}.comment-likes-widget-placeholder{display:flex;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif;height:18px;position:absolute}.comment-likes-widget-placeholder:before{background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='none' d='M0 0h24v24H0z'/%3E%3Cpath fill='%232ea2cc' d='m12 2 2.582 6.953L22 9.257l-5.822 4.602L18.18 21 12 16.89 5.82 21l2.002-7.14L2 9.256l7.418-.304'/%3E%3C/svg%3E");background-repeat:no-repeat;background-size:16px 16px;color:#2ea2cc;content:"";display:inline-block;height:16px;padding-right:5px;position:relative;top:3px;width:16px}.post-likes-widget-placeholder .button{display:none}:is(.comment-likes-widget-placeholder,.post-likes-widget-placeholder) .loading{color:#999;font-size:12px}.comment-likes-widget-placeholder .loading{align-self:center;color:#4e4e4e;margin-top:4px;padding-left:5px}div.sharedaddy.sd-like-enabled .sd-like h3{display:none}div.sharedaddy.sd-like-enabled .sd-like .post-likes-widget{float:none;position:absolute;top:0;width:100%}.comment-likes-widget{width:100%}.cs-rating,.pd-rating{display:block!important}.sd-gplus .sd-title{display:none}@media print{.jetpack-likes-widget-wrapper{display:none}}
+/*# sourceURL=https://conexaobr.ie/wp-content/plugins/jetpack/_inc/build/likes/style.min.css */
+</style>
+<style id="jetpack-global-styles-frontend-style-inline-css">
+:root { --font-headings: unset; --font-base: unset; --font-headings-default: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif; --font-base-default: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif;}
+/*# sourceURL=jetpack-global-styles-frontend-style-inline-css */
+</style>
+<script id="jetpack-mu-wpcom-settings-js-before">
+var JETPACK_MU_WPCOM_SETTINGS = {"assetsUrl":"https://conexaobr.ie/wp-content/mu-plugins/wpcomsh/jetpack_vendor/automattic/jetpack-mu-wpcom/src/build/"};
+//# sourceURL=jetpack-mu-wpcom-settings-js-before
+</script>
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://conexaobr.ie/xmlrpc.php?rsd" />
+
+<script type="application/ld+json">{"@context":"https:\/\/schema.org","@type":"WebSite","name":"Conex\u00e3o BR","url":"https:\/\/conexaobr.ie\/","description":"","potentialAction":{"@type":"SearchAction","target":"https:\/\/conexaobr.ie\/?s={search_term_string}","query-input":"required name=search_term_string"}}</script>
+<script type="application/ld+json">{"@context":"https:\/\/schema.org","@type":"Organization","name":"Conex\u00e3o BR","url":"https:\/\/conexaobr.ie\/","logo":"https:\/\/conexaobr.ie\/wp-content\/themes\/conexao-br-irlanda\/assets\/images\/conexao-social-card.svg","sameAs":[]}</script>
+<script type="application/ld+json">{"@context":"https:\/\/schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"In\u00edcio","item":"https:\/\/conexaobr.ie\/"},{"@type":"ListItem","position":2,"name":"Lazer","item":"https:\/\/conexaobr.ie\/lazer\/"}]}</script>
+	<style type="text/css">
+		:root {
+			--conexao-primary: #0E6B3A;
+			--conexao-primary-dark: #0b552e;
+			--conexao-accent: #F68B1F;
+			--conexao-accent-dark: #c46f18;
+		}
+	</style>
+	
+<!-- Jetpack Open Graph Tags -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Lazer &amp; Turismo na Irlanda | Conexão BR" />
+<meta property="og:url" content="https://conexaobr.ie/lazer/" />
+<meta property="og:site_name" content="Conexão BR" />
+<meta property="og:image" content="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/cropped-logo_conexao_br_irlanda.jpeg?fit=1600%2C534&#038;ssl=1" />
+<meta property="og:image:width" content="1600" />
+<meta property="og:image:height" content="534" />
+<meta property="og:image:alt" content="" />
+<meta property="og:locale" content="en_US" />
+
+<!-- End Jetpack Open Graph Tags -->
+<link rel="icon" href="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/cropped-cropped-logo_conexao_br_irlanda.jpeg?fit=32%2C32&#038;ssl=1" sizes="32x32" />
+<link rel="icon" href="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/cropped-cropped-logo_conexao_br_irlanda.jpeg?fit=192%2C192&#038;ssl=1" sizes="192x192" />
+<link rel="apple-touch-icon" href="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/cropped-cropped-logo_conexao_br_irlanda.jpeg?fit=180%2C180&#038;ssl=1" />
+<meta name="msapplication-TileImage" content="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/cropped-cropped-logo_conexao_br_irlanda.jpeg?fit=270%2C270&#038;ssl=1" />
+</head>
+
+<body class="archive paged post-type-archive post-type-archive-leisure wp-custom-logo wp-embed-responsive paged-10 post-type-paged-10 wp-theme-conexao-br-irlanda blog-page">
+<a class="skip-link screen-reader-text" href="#primary">Pular para o conteúdo</a>
+<div id="page" class="site">
+	<a class="skip-link screen-reader-text" href="#primary">Pular para o conteúdo</a>
+
+	<header id="masthead" class="site-header">
+		
+		<!-- Main Header -->
+		<div class="main-header">
+			<div class="site-container">
+				<!-- Mobile Menu Toggle -->
+				<button class="mobile-menu-toggle" aria-label="Abrir menu" aria-controls="mobile-menu" aria-expanded="false">
+					<span class="hamburger-line"></span>
+					<span class="hamburger-line"></span>
+					<span class="hamburger-line"></span>
+				</button>
+
+				<!-- Logo -->
+				<div class="logo">
+					<a href="https://conexaobr.ie/" rel="home" class="site-logo-link">
+						<picture>
+							<source type="image/webp"
+								srcset="https://conexaobr.ie/wp-content/themes/conexao-br-irlanda/assets/images/logo_conexao_br_irlanda-240.webp 240w, https://conexaobr.ie/wp-content/themes/conexao-br-irlanda/assets/images/logo_conexao_br_irlanda.webp 480w"
+								sizes="(max-width: 768px) 96px, 72px">
+							<img
+								src="https://conexaobr.ie/wp-content/themes/conexao-br-irlanda/assets/images/logo_conexao_br_irlanda.jpeg"
+								srcset="https://conexaobr.ie/wp-content/themes/conexao-br-irlanda/assets/images/logo_conexao_br_irlanda-240.jpeg 240w, https://conexaobr.ie/wp-content/themes/conexao-br-irlanda/assets/images/logo_conexao_br_irlanda.jpeg 1600w"
+								sizes="(max-width: 768px) 96px, 72px"
+								width="480"
+								height="200"
+								alt="Conexão BR"
+								class="site-logo-img site-logo-img--light"
+								loading="eager"
+							>
+						</picture>
+						<picture>
+							<source type="image/webp"
+								srcset="https://conexaobr.ie/wp-content/themes/conexao-br-irlanda/assets/images/logo_dark_mode-240.webp 240w, https://conexaobr.ie/wp-content/themes/conexao-br-irlanda/assets/images/logo_dark_mode.webp 480w"
+								sizes="(max-width: 768px) 96px, 72px">
+							<img
+								src="https://conexaobr.ie/wp-content/themes/conexao-br-irlanda/assets/images/logo_dark_mode.jpeg"
+								srcset="https://conexaobr.ie/wp-content/themes/conexao-br-irlanda/assets/images/logo_dark_mode-240.jpeg 240w, https://conexaobr.ie/wp-content/themes/conexao-br-irlanda/assets/images/logo_dark_mode.jpeg 1600w"
+								sizes="(max-width: 768px) 96px, 72px"
+								width="480"
+								height="180"
+								alt="Conexão BR"
+								class="site-logo-img site-logo-img--dark"
+							>
+						</picture>
+					</a>
+				</div>
+
+				<!-- Primary Navigation -->
+				<nav id="site-navigation" class="primary-navigation" aria-label="Menu Principal">
+					<ul id="primary-menu" class="primary-menu"><li id="menu-item-11401" class="menu-item menu-item-home menu-item-type-custom menu-item-object-custom menu-item-11401 nav-item"><a href="https://conexaobr.ie/" class="nav-link">Início</a></li>
+<li id="menu-item-11407" class="menu-item menu-item-type-post_type_archive menu-item-object-sponsor menu-item-11407 nav-item"><a href="https://conexaobr.ie/apoiadores/" class="nav-link">Apoiadores</a></li>
+<li id="menu-item-11403" class="menu-item menu-item-type-post_type_archive menu-item-object-guide menu-item-11403 nav-item"><a href="https://conexaobr.ie/guias/" class="nav-link">Guias</a></li>
+<li id="menu-item-11404" class="menu-item menu-item-type-post_type_archive menu-item-object-event menu-item-11404 nav-item"><a href="https://conexaobr.ie/eventos/" class="nav-link">Eventos</a></li>
+<li id="menu-item-11405" class="menu-item menu-item-type-post_type_archive menu-item-object-course_provider menu-item-11405 nav-item"><a href="https://conexaobr.ie/cursos/" class="nav-link">Cursos</a></li>
+<li id="menu-item-0" class="menu-item menu-item-type-post_type_archive menu-item-object-leisure current-menu-item menu-item-0 nav-item"><a href="https://conexaobr.ie/lazer/" aria-current="page" class="nav-link">Lazer e turismo</a></li>
+<li id="menu-item-11406" class="menu-item menu-item-type-post_type_archive menu-item-object-job menu-item-11406 nav-item"><a href="https://conexaobr.ie/empregos/" class="nav-link">Empregos</a></li>
+<li id="menu-item-11402" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-11402 nav-item"><a href="https://conexaobr.ie/blog/" class="nav-link">Blog</a></li>
+<li id="menu-item-11409" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-11409 nav-item"><a href="https://conexaobr.ie/contato/" class="nav-link">Contato</a></li>
+</ul>				</nav>
+
+				<!-- Header Actions -->
+				<div class="header-actions">
+					<button type="button" class="theme-toggle" aria-label="Alternar tema claro/escuro" aria-pressed="false">
+						<span class="theme-toggle-icon theme-toggle-icon--moon" aria-hidden="true">
+							<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+						</span>
+						<span class="theme-toggle-icon theme-toggle-icon--sun" aria-hidden="true">
+							<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+						</span>
+					</button>
+					<button type="button" class="mobile-search-toggle" aria-label="Abrir pesquisa" aria-controls="mobile-search" aria-expanded="false">
+						<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+					</button>
+					<div class="header-search">
+						<svg class="header-search-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+							<circle cx="11" cy="11" r="8"></circle>
+							<line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+						</svg>
+						<form role="search" method="get" class="search-form" action="https://conexaobr.ie/">
+							<label class="screen-reader-text" for="header-search-field">Pesquisar</label>
+							<input id="header-search-field" type="search" class="search-field" placeholder="Buscar no portal..." value="" name="s" />
+							<button type="submit" class="screen-reader-text header-search-submit">Buscar</button>
+						</form>
+					</div>
+					<a href="https://conexaobr.ie/anuncie/" class="header-cta">
+						<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+							<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+							<polyline points="17 8 12 3 7 8"></polyline>
+							<line x1="12" y1="3" x2="12" y2="15"></line>
+						</svg>
+						Anuncie Aqui					</a>
+
+					<!--
+						Compact top-bar "Anuncie Aqui" for mobile/tablet (<=1024px), where
+						the full-text .header-cta above is hidden. Measured space: a
+						full-text pill needs ~141px, which does not exist next to the
+						hamburger + logo + theme toggle + search at phone widths, so the
+						label only renders where it fits (>=480px) and the control stays a
+						48px icon pill below that — the drawer keeps the full-text label in
+						both cases (.mobile-menu-cta). Name is always "Anuncie Aqui"
+						(aria-label); the visible span is decorative with aria-hidden so the
+						name never depends on the icon or on the label being visible.
+					-->
+					<a href="https://conexaobr.ie/anuncie/" class="header-cta-compact" aria-label="Anuncie Aqui">
+						<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+							<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+							<polyline points="17 8 12 3 7 8"></polyline>
+							<line x1="12" y1="3" x2="12" y2="15"></line>
+						</svg>
+						<span class="header-cta-compact-label" aria-hidden="true">Anuncie Aqui</span>
+					</a>
+				</div>
+			</div>
+		</div>
+	</header>
+
+	<!-- Mobile Menu Overlay -->
+	<div id="mobile-menu" class="mobile-menu-overlay" aria-hidden="true">
+		<div class="mobile-menu-content">
+			<div class="mobile-menu-header">
+				<span class="mobile-menu-title">Menu</span>
+				<button class="mobile-menu-close" aria-label="Fechar menu">
+					<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+						<line x1="18" y1="6" x2="6" y2="18"></line>
+						<line x1="6" y1="6" x2="18" y2="18"></line>
+					</svg>
+				</button>
+			</div>
+			<div class="mobile-menu-search">
+				<form role="search" method="get" class="mobile-menu-search-form" action="https://conexaobr.ie/">
+					<label class="screen-reader-text" for="mobile-menu-search-field">Pesquisar</label>
+					<input id="mobile-menu-search-field" type="search" class="mobile-menu-search-field" placeholder="Buscar no portal..." value="" name="s" />
+					<button type="submit" class="mobile-menu-search-submit" aria-label="Buscar">
+						<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+					</button>
+				</form>
+			</div>
+			<nav class="mobile-menu-nav" aria-label="Menu Mobile">
+				<ul id="menu-menu-principal" class="mobile-menu"><li class="menu-item menu-item-home menu-item-type-custom menu-item-object-custom menu-item-11401 nav-item"><a href="https://conexaobr.ie/" class="nav-link">Início</a></li>
+<li class="menu-item menu-item-type-post_type_archive menu-item-object-sponsor menu-item-11407 nav-item"><a href="https://conexaobr.ie/apoiadores/" class="nav-link">Apoiadores</a></li>
+<li class="menu-item menu-item-type-post_type_archive menu-item-object-guide menu-item-11403 nav-item"><a href="https://conexaobr.ie/guias/" class="nav-link">Guias</a></li>
+<li class="menu-item menu-item-type-post_type_archive menu-item-object-event menu-item-11404 nav-item"><a href="https://conexaobr.ie/eventos/" class="nav-link">Eventos</a></li>
+<li class="menu-item menu-item-type-post_type_archive menu-item-object-course_provider menu-item-11405 nav-item"><a href="https://conexaobr.ie/cursos/" class="nav-link">Cursos</a></li>
+<li class="menu-item menu-item-type-post_type_archive menu-item-object-leisure current-menu-item menu-item-0 nav-item"><a href="https://conexaobr.ie/lazer/" aria-current="page" class="nav-link">Lazer e turismo</a></li>
+<li class="menu-item menu-item-type-post_type_archive menu-item-object-job menu-item-11406 nav-item"><a href="https://conexaobr.ie/empregos/" class="nav-link">Empregos</a></li>
+<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-11402 nav-item"><a href="https://conexaobr.ie/blog/" class="nav-link">Blog</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-11409 nav-item"><a href="https://conexaobr.ie/contato/" class="nav-link">Contato</a></li>
+</ul>			</nav>
+
+			<!--
+				Primary conversion action (Anuncie Aqui) for the mobile drawer.
+
+				The desktop .header-cta is hidden at <=1024px to keep the compact
+				mobile header uncluttered, so the same action is surfaced here
+				instead: after the navigation list and before the social footer,
+				outside the scrollable .mobile-menu-nav (it is a persistent
+				non-shrinking sibling), so it can never be scrolled out of reach.
+				Same destination (/anuncie/), same design language and same upload
+				icon as the desktop CTA — see .mobile-menu-cta in header-nav.css.
+			-->
+			<div class="mobile-menu-cta-wrap">
+				<a href="https://conexaobr.ie/anuncie/" class="mobile-menu-cta">
+					<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+						<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+						<polyline points="17 8 12 3 7 8"></polyline>
+						<line x1="12" y1="3" x2="12" y2="15"></line>
+					</svg>
+					Anuncie Aqui				</a>
+			</div>
+
+			<div class="mobile-menu-footer">
+				<div class="mobile-menu-social">
+											<a href="https://www.instagram.com/conexaobr.ie/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+							<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+						</a>
+																<a href="https://wa.me/353899451428" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+							<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+						</a>
+									</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="mobile-search" class="mobile-search-overlay" aria-hidden="true">
+		<div class="mobile-search-overlay-content" role="dialog" aria-modal="true" aria-label="Pesquisar no site">
+			<form role="search" method="get" class="mobile-search-form" action="https://conexaobr.ie/">
+				<label class="screen-reader-text" for="mobile-search-field">Pesquisar</label>
+				<input id="mobile-search-field" type="search" class="mobile-search-field" placeholder="Buscar no portal..." value="" name="s" />
+				<button type="submit" class="mobile-search-submit">Buscar</button>
+				<button type="button" class="mobile-search-close" aria-label="Fechar pesquisa">&times;</button>
+			</form>
+		</div>
+	</div>
+
+	<div id="content" class="site-content">
+		<nav class="conexao-breadcrumbs" aria-label="Breadcrumb"><ol class="conexao-breadcrumb-list"><li class="conexao-breadcrumb-item"><a href="https://conexaobr.ie/" class="conexao-breadcrumb-link">Início</a><span class="conexao-breadcrumb-sep" aria-hidden="true">&rsaquo;</span></li><li class="conexao-breadcrumb-item"><span class="conexao-breadcrumb-current" aria-current="page">Lazer</span></li></ol></nav>
+
+<div class="site-container leisure-page">
+	<main id="primary" class="content-area">
+
+		
+<header class="page-header">
+			<span class="section-eyebrow">Lazer &amp; Turismo</span>
+	
+			<h1 class="page-title">Lazer</h1>
+	
+			<p class="page-description">Descubra lugares para visitar, natureza, cultura, turismo e coisas para fazer na Irlanda.</p>
+	</header>
+
+	<div class="leisure-filters" data-leisure-filters>
+
+	<h2 class="leisure-filters-title">Encontre o que fazer</h2>
+
+	<div class="leisure-filter-toolbar">
+					<div class="leisure-filter-group">
+				<div class="leisure-dropdown" data-dropdown>
+					<button
+						type="button"
+						class="leisure-dropdown-trigger"
+						aria-haspopup="listbox"
+						aria-expanded="false"
+						aria-controls="leisure-county-panel"
+						aria-label="Filtrar por County"
+						data-dropdown-trigger>
+												<span class="leisure-dropdown-label">County</span>
+						<span class="leisure-dropdown-caret" aria-hidden="true">▾</span>
+					</button>
+
+					<div class="leisure-dropdown-panel" id="leisure-county-panel" data-dropdown-panel>
+												<input
+							type="search"
+							class="leisure-dropdown-search"
+							data-dropdown-search
+							placeholder="Procurar county"
+							aria-label="Procurar county"
+							autocomplete="off">
+						<div class="leisure-dropdown-list" role="listbox" aria-label="Condado">
+														<a class="leisure-dropdown-link is-active" role="option" aria-selected="true" href="https://conexaobr.ie/lazer/">
+								<span class="leisure-checkmark" aria-hidden="true">✓</span>
+								<span>Todos</span>
+							</a>
+
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?county=carlow">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Carlow</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?county=cavan">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Cavan</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?county=clare">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Clare</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?county=cork">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Cork</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?county=donegal">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Donegal</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?county=dublin">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Dublin</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?county=galway">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Galway</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?county=kerry">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Kerry</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?county=kildare">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Kildare</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?county=kilkenny">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Kilkenny</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?county=laois">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Laois</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?county=leitrim">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Leitrim</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?county=limerick">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Limerick</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?county=longford">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Longford</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?county=louth">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Louth</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?county=mayo">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Mayo</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?county=meath">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Meath</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?county=monaghan">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Monaghan</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?county=offaly">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Offaly</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?county=roscommon">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Roscommon</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?county=sligo">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Sligo</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?county=tipperary">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Tipperary</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?county=waterford">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Waterford</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?county=westmeath">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Westmeath</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?county=wexford">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Wexford</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?county=wicklow">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Wicklow</span>
+								</a>
+													</div>
+						<p class="leisure-dropdown-empty" data-dropdown-empty hidden>Nenhum county encontrado.</p>
+					</div>
+				</div>
+			</div>
+		
+					<div class="leisure-filter-group">
+				<div class="leisure-dropdown" data-dropdown>
+					<button
+						type="button"
+						class="leisure-dropdown-trigger"
+						aria-haspopup="listbox"
+						aria-expanded="false"
+						aria-controls="leisure-category-panel"
+						aria-label="Filtrar por Tipo"
+						data-dropdown-trigger>
+												<span class="leisure-dropdown-label">Tipo</span>
+						<span class="leisure-dropdown-caret" aria-hidden="true">▾</span>
+					</button>
+
+					<div class="leisure-dropdown-panel" id="leisure-category-panel" data-dropdown-panel>
+												<div class="leisure-dropdown-list" role="listbox" aria-label="Tipo" aria-multiselectable="true">
+							<a class="leisure-dropdown-link is-active" role="option" aria-selected="true" href="https://conexaobr.ie/lazer/">
+								<span class="leisure-checkmark" aria-hidden="true">✓</span>
+								<span>Todos</span>
+							</a>
+
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?categoria=aventura">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Aventura</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?categoria=caminhadas">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Caminhadas</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?categoria=castelos">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Castelos</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?categoria=cidades">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Cidades</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?categoria=cultura">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Cultura</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?categoria=greenways">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Greenways</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?categoria=historia">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>História</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?categoria=ilhas">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Ilhas</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?categoria=jardins">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Jardins</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?categoria=museus">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Museus</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?categoria=natureza">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Natureza</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?categoria=patrimonio">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Patrimônio</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?categoria=praias">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Praias</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?categoria=vida-na-irlanda">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Vida na Irlanda</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?categoria=vida-selvagem">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Vida Selvagem</span>
+								</a>
+													</div>
+					</div>
+				</div>
+			</div>
+		
+					<div class="leisure-filter-group">
+				<div class="leisure-dropdown" data-dropdown>
+					<button
+						type="button"
+						class="leisure-dropdown-trigger"
+						aria-haspopup="listbox"
+						aria-expanded="false"
+						aria-controls="leisure-attribute-panel"
+						aria-label="Filtrar por Características"
+						data-dropdown-trigger>
+												<span class="leisure-dropdown-label">Características</span>
+						<span class="leisure-dropdown-caret" aria-hidden="true">▾</span>
+					</button>
+
+					<div class="leisure-dropdown-panel" id="leisure-attribute-panel" data-dropdown-panel>
+												<div class="leisure-dropdown-list" role="listbox" aria-label="Características" aria-multiselectable="true">
+							<a class="leisure-dropdown-link is-active" role="option" aria-selected="true" href="https://conexaobr.ie/lazer/">
+								<span class="leisure-checkmark" aria-hidden="true">✓</span>
+								<span>Todas</span>
+							</a>
+
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?atributo=acessivel">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Acessível</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?atributo=acesso-de-transporte-publico">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Acesso de transporte público</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?atributo=bicicleta">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Bicicleta</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?atributo=estacionamento">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Estacionamento</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?atributo=exterior">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Exterior</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?atributo=familias">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Famílias</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?atributo=gratuito">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Gratuito</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?atributo=gratuito-em-determinadas-condicoes">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Gratuito em determinadas condições</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?atributo=interior">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Interior</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?atributo=interior-exterior">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Interior + exterior</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?atributo=necessita-reserva">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Necessita reserva</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?atributo=pago">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Pago</span>
+								</a>
+																							<a class="leisure-dropdown-link " role="option" aria-selected="false" href="https://conexaobr.ie/lazer/?atributo=pet-friendly">
+									<span class="leisure-checkmark" aria-hidden="true"></span>
+									<span>Pet friendly</span>
+								</a>
+													</div>
+					</div>
+				</div>
+			</div>
+		
+	</div>
+
+	
+			<p class="leisure-results-count" role="status">
+			289 opções encontradas		</p>
+	
+			<div class="leisure-mobile-filter" data-mobile-filter>
+			<button
+				type="button"
+				class="leisure-mobile-filter-trigger"
+				aria-haspopup="dialog"
+				aria-expanded="false"
+				aria-controls="leisure-mobile-sheet"
+								data-mobile-trigger>
+				<span class="leisure-mobile-filter-icon" aria-hidden="true">
+					<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+						<line x1="4" y1="6" x2="20" y2="6"></line>
+						<line x1="7" y1="12" x2="17" y2="12"></line>
+						<line x1="10" y1="18" x2="14" y2="18"></line>
+					</svg>
+				</span>
+				<span class="leisure-mobile-filter-label">Filtrar</span>
+							</button>
+
+			<div class="leisure-mobile-sheet" data-mobile-sheet aria-hidden="true">
+				<div class="leisure-mobile-sheet-panel" role="dialog" aria-modal="true" aria-labelledby="leisure-mobile-sheet-title">
+					<div class="leisure-mobile-sheet-header">
+						<div class="leisure-mobile-sheet-handle" aria-hidden="true"></div>
+						<h2 class="leisure-mobile-sheet-title" id="leisure-mobile-sheet-title">Filtros</h2>
+						<button type="button" class="leisure-mobile-sheet-close" data-mobile-close aria-label="Fechar filtros">
+							<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+								<line x1="18" y1="6" x2="6" y2="18"></line>
+								<line x1="6" y1="6" x2="18" y2="18"></line>
+							</svg>
+						</button>
+					</div>
+
+					<form method="get" action="https://conexaobr.ie/lazer/" class="leisure-mobile-form" data-mobile-form>
+						<div class="leisure-mobile-sheet-body">
+													<fieldset class="leisure-mobile-section">
+								<legend class="leisure-mobile-section-legend">County</legend>
+																	<input
+										type="search"
+										class="leisure-mobile-search"
+										data-option-search
+										placeholder="Procurar county"
+										aria-label="Procurar county">
+																<div class="leisure-filter-options" data-option-list>
+									<label class="leisure-filter-option">
+										<input class="leisure-filter-radio" type="radio" name="county" value=""  checked='checked'>
+										<span>Todos</span>
+									</label>
+
+																			<label class="leisure-filter-option">
+											<input class="leisure-filter-radio" type="radio" name="county" value="carlow" >
+											<span>Carlow</span>
+										</label>
+																			<label class="leisure-filter-option">
+											<input class="leisure-filter-radio" type="radio" name="county" value="cavan" >
+											<span>Cavan</span>
+										</label>
+																			<label class="leisure-filter-option">
+											<input class="leisure-filter-radio" type="radio" name="county" value="clare" >
+											<span>Clare</span>
+										</label>
+																			<label class="leisure-filter-option">
+											<input class="leisure-filter-radio" type="radio" name="county" value="cork" >
+											<span>Cork</span>
+										</label>
+																			<label class="leisure-filter-option">
+											<input class="leisure-filter-radio" type="radio" name="county" value="donegal" >
+											<span>Donegal</span>
+										</label>
+																			<label class="leisure-filter-option">
+											<input class="leisure-filter-radio" type="radio" name="county" value="dublin" >
+											<span>Dublin</span>
+										</label>
+																			<label class="leisure-filter-option">
+											<input class="leisure-filter-radio" type="radio" name="county" value="galway" >
+											<span>Galway</span>
+										</label>
+																			<label class="leisure-filter-option">
+											<input class="leisure-filter-radio" type="radio" name="county" value="kerry" >
+											<span>Kerry</span>
+										</label>
+																			<label class="leisure-filter-option">
+											<input class="leisure-filter-radio" type="radio" name="county" value="kildare" >
+											<span>Kildare</span>
+										</label>
+																			<label class="leisure-filter-option">
+											<input class="leisure-filter-radio" type="radio" name="county" value="kilkenny" >
+											<span>Kilkenny</span>
+										</label>
+																			<label class="leisure-filter-option">
+											<input class="leisure-filter-radio" type="radio" name="county" value="laois" >
+											<span>Laois</span>
+										</label>
+																			<label class="leisure-filter-option">
+											<input class="leisure-filter-radio" type="radio" name="county" value="leitrim" >
+											<span>Leitrim</span>
+										</label>
+																			<label class="leisure-filter-option">
+											<input class="leisure-filter-radio" type="radio" name="county" value="limerick" >
+											<span>Limerick</span>
+										</label>
+																			<label class="leisure-filter-option">
+											<input class="leisure-filter-radio" type="radio" name="county" value="longford" >
+											<span>Longford</span>
+										</label>
+																			<label class="leisure-filter-option">
+											<input class="leisure-filter-radio" type="radio" name="county" value="louth" >
+											<span>Louth</span>
+										</label>
+																			<label class="leisure-filter-option">
+											<input class="leisure-filter-radio" type="radio" name="county" value="mayo" >
+											<span>Mayo</span>
+										</label>
+																			<label class="leisure-filter-option">
+											<input class="leisure-filter-radio" type="radio" name="county" value="meath" >
+											<span>Meath</span>
+										</label>
+																			<label class="leisure-filter-option">
+											<input class="leisure-filter-radio" type="radio" name="county" value="monaghan" >
+											<span>Monaghan</span>
+										</label>
+																			<label class="leisure-filter-option">
+											<input class="leisure-filter-radio" type="radio" name="county" value="offaly" >
+											<span>Offaly</span>
+										</label>
+																			<label class="leisure-filter-option">
+											<input class="leisure-filter-radio" type="radio" name="county" value="roscommon" >
+											<span>Roscommon</span>
+										</label>
+																			<label class="leisure-filter-option">
+											<input class="leisure-filter-radio" type="radio" name="county" value="sligo" >
+											<span>Sligo</span>
+										</label>
+																			<label class="leisure-filter-option">
+											<input class="leisure-filter-radio" type="radio" name="county" value="tipperary" >
+											<span>Tipperary</span>
+										</label>
+																			<label class="leisure-filter-option">
+											<input class="leisure-filter-radio" type="radio" name="county" value="waterford" >
+											<span>Waterford</span>
+										</label>
+																			<label class="leisure-filter-option">
+											<input class="leisure-filter-radio" type="radio" name="county" value="westmeath" >
+											<span>Westmeath</span>
+										</label>
+																			<label class="leisure-filter-option">
+											<input class="leisure-filter-radio" type="radio" name="county" value="wexford" >
+											<span>Wexford</span>
+										</label>
+																			<label class="leisure-filter-option">
+											<input class="leisure-filter-radio" type="radio" name="county" value="wicklow" >
+											<span>Wicklow</span>
+										</label>
+																	</div>
+																	<p class="leisure-filter-options-empty" data-option-empty hidden>Nenhum county encontrado</p>
+															</fieldset>
+						
+													<fieldset class="leisure-mobile-section">
+								<legend class="leisure-mobile-section-legend">Tipo</legend>
+																	<div class="leisure-filter-options">
+									<label class="leisure-filter-option">
+										<input class="leisure-filter-checkbox" type="checkbox" data-filter-clear  checked='checked'>
+										<span>Todos</span>
+									</label>
+
+																			<label class="leisure-filter-option">
+											<input class="leisure-filter-checkbox" type="checkbox" name="categoria[]" value="aventura" >
+											<span>Aventura</span>
+										</label>
+																			<label class="leisure-filter-option">
+											<input class="leisure-filter-checkbox" type="checkbox" name="categoria[]" value="caminhadas" >
+											<span>Caminhadas</span>
+										</label>
+																			<label class="leisure-filter-option">
+											<input class="leisure-filter-checkbox" type="checkbox" name="categoria[]" value="castelos" >
+											<span>Castelos</span>
+										</label>
+																			<label class="leisure-filter-option">
+											<input class="leisure-filter-checkbox" type="checkbox" name="categoria[]" value="cidades" >
+											<span>Cidades</span>
+										</label>
+																			<label class="leisure-filter-option">
+											<input class="leisure-filter-checkbox" type="checkbox" name="categoria[]" value="cultura" >
+											<span>Cultura</span>
+										</label>
+																			<label class="leisure-filter-option">
+											<input class="leisure-filter-checkbox" type="checkbox" name="categoria[]" value="greenways" >
+											<span>Greenways</span>
+										</label>
+																			<label class="leisure-filter-option">
+											<input class="leisure-filter-checkbox" type="checkbox" name="categoria[]" value="historia" >
+											<span>História</span>
+										</label>
+																			<label class="leisure-filter-option">
+											<input class="leisure-filter-checkbox" type="checkbox" name="categoria[]" value="ilhas" >
+											<span>Ilhas</span>
+										</label>
+																			<label class="leisure-filter-option">
+											<input class="leisure-filter-checkbox" type="checkbox" name="categoria[]" value="jardins" >
+											<span>Jardins</span>
+										</label>
+																			<label class="leisure-filter-option">
+											<input class="leisure-filter-checkbox" type="checkbox" name="categoria[]" value="museus" >
+											<span>Museus</span>
+										</label>
+																			<label class="leisure-filter-option">
+											<input class="leisure-filter-checkbox" type="checkbox" name="categoria[]" value="natureza" >
+											<span>Natureza</span>
+										</label>
+																			<label class="leisure-filter-option">
+											<input class="leisure-filter-checkbox" type="checkbox" name="categoria[]" value="patrimonio" >
+											<span>Patrimônio</span>
+										</label>
+																			<label class="leisure-filter-option">
+											<input class="leisure-filter-checkbox" type="checkbox" name="categoria[]" value="praias" >
+											<span>Praias</span>
+										</label>
+																			<label class="leisure-filter-option">
+											<input class="leisure-filter-checkbox" type="checkbox" name="categoria[]" value="vida-na-irlanda" >
+											<span>Vida na Irlanda</span>
+										</label>
+																			<label class="leisure-filter-option">
+											<input class="leisure-filter-checkbox" type="checkbox" name="categoria[]" value="vida-selvagem" >
+											<span>Vida Selvagem</span>
+										</label>
+																	</div>
+							</fieldset>
+																					<fieldset class="leisure-mobile-section">
+									<legend class="leisure-mobile-section-legend">Características</legend>
+																		<div class="leisure-filter-options">
+										<label class="leisure-filter-option">
+											<input class="leisure-filter-checkbox" type="checkbox" data-filter-clear  checked='checked'>
+											<span>Todas</span>
+										</label>
+
+																					<label class="leisure-filter-option">
+												<input class="leisure-filter-checkbox" type="checkbox" name="atributo[]" value="acessivel" >
+												<span>Acessível</span>
+											</label>
+																					<label class="leisure-filter-option">
+												<input class="leisure-filter-checkbox" type="checkbox" name="atributo[]" value="acesso-de-transporte-publico" >
+												<span>Acesso de transporte público</span>
+											</label>
+																					<label class="leisure-filter-option">
+												<input class="leisure-filter-checkbox" type="checkbox" name="atributo[]" value="bicicleta" >
+												<span>Bicicleta</span>
+											</label>
+																					<label class="leisure-filter-option">
+												<input class="leisure-filter-checkbox" type="checkbox" name="atributo[]" value="estacionamento" >
+												<span>Estacionamento</span>
+											</label>
+																					<label class="leisure-filter-option">
+												<input class="leisure-filter-checkbox" type="checkbox" name="atributo[]" value="exterior" >
+												<span>Exterior</span>
+											</label>
+																					<label class="leisure-filter-option">
+												<input class="leisure-filter-checkbox" type="checkbox" name="atributo[]" value="familias" >
+												<span>Famílias</span>
+											</label>
+																					<label class="leisure-filter-option">
+												<input class="leisure-filter-checkbox" type="checkbox" name="atributo[]" value="gratuito" >
+												<span>Gratuito</span>
+											</label>
+																					<label class="leisure-filter-option">
+												<input class="leisure-filter-checkbox" type="checkbox" name="atributo[]" value="gratuito-em-determinadas-condicoes" >
+												<span>Gratuito em determinadas condições</span>
+											</label>
+																					<label class="leisure-filter-option">
+												<input class="leisure-filter-checkbox" type="checkbox" name="atributo[]" value="interior" >
+												<span>Interior</span>
+											</label>
+																					<label class="leisure-filter-option">
+												<input class="leisure-filter-checkbox" type="checkbox" name="atributo[]" value="interior-exterior" >
+												<span>Interior + exterior</span>
+											</label>
+																					<label class="leisure-filter-option">
+												<input class="leisure-filter-checkbox" type="checkbox" name="atributo[]" value="necessita-reserva" >
+												<span>Necessita reserva</span>
+											</label>
+																					<label class="leisure-filter-option">
+												<input class="leisure-filter-checkbox" type="checkbox" name="atributo[]" value="pago" >
+												<span>Pago</span>
+											</label>
+																					<label class="leisure-filter-option">
+												<input class="leisure-filter-checkbox" type="checkbox" name="atributo[]" value="pet-friendly" >
+												<span>Pet friendly</span>
+											</label>
+																			</div>
+								</fieldset>
+													</div>
+
+					<div class="leisure-mobile-sheet-footer">
+						<a class="leisure-mobile-clear" href="https://conexaobr.ie/lazer/">Limpar</a>
+						<button type="submit" class="leisure-apply-button">Mostrar resultados</button>
+					</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+						<div class="leisure-results" data-leisure-results>
+		
+								<div class="events-grid" data-infinite-scroll>
+															
+<article id="post-10823" class="leisure-card leisure-card--external post-10823 leisure type-leisure status-publish has-post-thumbnail hentry conexao_category-historia conexao_county-tipperary">
+
+<div class="leisure-card-image-wrapper">
+<a class="leisure-card-image" href="https://heritageireland.ie/places-to-visit/swiss-cottage/" rel="noopener" tabindex="-1" aria-hidden="true">
+<img width="400" height="300" src="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Swiss-Cottage.jpg?resize=400%2C300&amp;ssl=1" class="attachment-conexao-card size-conexao-card wp-post-image" alt="Swiss Cottage, Tipperary, Irlanda" loading="lazy" decoding="async" srcset="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Swiss-Cottage.jpg?resize=400%2C300&amp;ssl=1 400w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Swiss-Cottage.jpg?resize=200%2C150&amp;ssl=1 200w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Swiss-Cottage.jpg?zoom=2&amp;resize=400%2C300&amp;ssl=1 800w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Swiss-Cottage.jpg?zoom=3&amp;resize=400%2C300&amp;ssl=1 1200w" sizes="auto, (max-width: 400px) 100vw, 400px" data-attachment-id="10824" data-permalink="https://conexaobr.ie/lazer/swiss-cottage/swiss-cottage-2/" data-orig-file="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Swiss-Cottage.jpg?fit=2560%2C1746&amp;ssl=1" data-orig-size="2560,1746" data-comments-opened="1" data-image-meta="{&quot;aperture&quot;:&quot;7.1&quot;,&quot;credit&quot;:&quot;&quot;,&quot;camera&quot;:&quot;DMC-G3&quot;,&quot;caption&quot;:&quot;&quot;,&quot;created_timestamp&quot;:&quot;1654107533&quot;,&quot;copyright&quot;:&quot;&quot;,&quot;focal_length&quot;:&quot;42&quot;,&quot;iso&quot;:&quot;160&quot;,&quot;shutter_speed&quot;:&quot;0.005&quot;,&quot;title&quot;:&quot;&quot;,&quot;orientation&quot;:&quot;1&quot;,&quot;alt&quot;:&quot;&quot;}" data-image-title="Swiss Cottage" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Swiss-Cottage.jpg?fit=1024%2C698&amp;ssl=1" /></a>
+
+<div class="leisure-card-attribution">
+Foto: Zairon, Licença: CC BY 4.0, Fonte: Wikimedia Commons<a href="https://commons.wikimedia.org/w/api.php/File:Cahir_Swiss_Cottage.jpg" class="leisure-card-attribution-link" target="_blank" rel="noopener noreferrer" aria-label="Ver fonte da imagem">
+↗
+</a>
+</div>
+</div>
+
+<div class="leisure-card-body">
+<span class="leisure-card-category">História</span>
+
+<h3 class="leisure-card-title"><a href="https://heritageireland.ie/places-to-visit/swiss-cottage/" rel="noopener">Swiss Cottage</a></h3>
+
+<div class="leisure-card-details">
+<span class="leisure-card-detail">
+<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"></path>
+<circle cx="12" cy="10" r="3"></circle>
+</svg>
+Tipperary<span class="leisure-card-time-sep">&middot;</span>
+<span class="leisure-card-town">Cahir</span>
+</span>
+</div>
+
+<p class="leisure-card-excerpt">Chalé ornamental de 1810, exemplo perfeito do estilo &quot;picturesque&quot;, com interior restaurado e floresta.</p>
+
+<ul class="leisure-card-attrs">
+<li class="leisure-card-attr"><span class="leisure-attr-dot"></span>Interior</li>
+</ul>
+
+<div class="leisure-card-actions">
+<a href="https://heritageireland.ie/places-to-visit/swiss-cottage/" class="leisure-card-cta" rel="noopener">
+Ver site oficial<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+<polyline points="15 3 21 3 21 9"></polyline>
+<line x1="10" y1="14" x2="21" y2="3"></line>
+</svg>
+</a>
+<a href="https://www.google.com/maps/search/?api=1&#038;query=Swiss%20Cottage%2C%20Cahir%2C%20Tipperary%2C%20Ireland" class="leisure-card-cta leisure-card-cta--map" target="_blank" rel="noopener noreferrer" aria-label="Ver localização de Swiss Cottage no mapa (abre em nova aba)">
+Ver no mapa<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"></path>
+<circle cx="12" cy="10" r="3"></circle>
+</svg>
+</a>
+</div>
+</div>
+</article>
+																				
+<article id="post-10821" class="leisure-card leisure-card--external post-10821 leisure type-leisure status-publish has-post-thumbnail hentry conexao_category-castelos conexao_county-tipperary">
+
+<div class="leisure-card-image-wrapper">
+<a class="leisure-card-image" href="https://heritageireland.ie/places-to-visit/cahir-castle/" rel="noopener" tabindex="-1" aria-hidden="true">
+<img width="400" height="300" src="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Cahir-Castle.jpg?resize=400%2C300&amp;ssl=1" class="attachment-conexao-card size-conexao-card wp-post-image" alt="Cahir Castle, Tipperary, Irlanda" loading="lazy" decoding="async" srcset="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Cahir-Castle.jpg?w=1098&amp;ssl=1 1098w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Cahir-Castle.jpg?resize=300%2C225&amp;ssl=1 300w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Cahir-Castle.jpg?resize=1024%2C767&amp;ssl=1 1024w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Cahir-Castle.jpg?resize=768%2C575&amp;ssl=1 768w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Cahir-Castle.jpg?resize=400%2C300&amp;ssl=1 400w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Cahir-Castle.jpg?resize=200%2C150&amp;ssl=1 200w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Cahir-Castle.jpg?resize=240%2C180&amp;ssl=1 240w" sizes="auto, (max-width: 400px) 100vw, 400px" data-attachment-id="10822" data-permalink="https://conexaobr.ie/lazer/cahir-castle/cahir-castle-2/" data-orig-file="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Cahir-Castle.jpg?fit=1098%2C822&amp;ssl=1" data-orig-size="1098,822" data-comments-opened="1" data-image-meta="{&quot;aperture&quot;:&quot;0&quot;,&quot;credit&quot;:&quot;&quot;,&quot;camera&quot;:&quot;&quot;,&quot;caption&quot;:&quot;&quot;,&quot;created_timestamp&quot;:&quot;0&quot;,&quot;copyright&quot;:&quot;&quot;,&quot;focal_length&quot;:&quot;0&quot;,&quot;iso&quot;:&quot;0&quot;,&quot;shutter_speed&quot;:&quot;0&quot;,&quot;title&quot;:&quot;&quot;,&quot;orientation&quot;:&quot;0&quot;,&quot;alt&quot;:&quot;&quot;}" data-image-title="Cahir Castle" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Cahir-Castle.jpg?fit=1024%2C767&amp;ssl=1" /></a>
+
+<div class="leisure-card-attribution">
+Foto: No machine-readable author provided. Valdoria~commonswiki assumed (based on copyright claims)., Fonte: Wikimedia Commons<a href="https://commons.wikimedia.org/w/api.php/File:Cahir-_castle-_Ireland..jpg" class="leisure-card-attribution-link" target="_blank" rel="noopener noreferrer" aria-label="Ver fonte da imagem">
+↗
+</a>
+</div>
+</div>
+
+<div class="leisure-card-body">
+<span class="leisure-card-category">Castelos</span>
+
+<h3 class="leisure-card-title"><a href="https://heritageireland.ie/places-to-visit/cahir-castle/" rel="noopener">Cahir Castle</a></h3>
+
+<div class="leisure-card-details">
+<span class="leisure-card-detail">
+<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"></path>
+<circle cx="12" cy="10" r="3"></circle>
+</svg>
+Tipperary<span class="leisure-card-time-sep">&middot;</span>
+<span class="leisure-card-town">Cahir</span>
+</span>
+</div>
+
+<p class="leisure-card-excerpt">Um dos castelos mais bem preservados da Irlanda, do século XIII, numa ilha do rio Suir.</p>
+
+<ul class="leisure-card-attrs">
+<li class="leisure-card-attr"><span class="leisure-attr-dot"></span>Exterior</li>
+<li class="leisure-card-attr"><span class="leisure-attr-dot"></span>Famílias</li>
+</ul>
+
+<div class="leisure-card-actions">
+<a href="https://heritageireland.ie/places-to-visit/cahir-castle/" class="leisure-card-cta" rel="noopener">
+Ver site oficial<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+<polyline points="15 3 21 3 21 9"></polyline>
+<line x1="10" y1="14" x2="21" y2="3"></line>
+</svg>
+</a>
+<a href="https://www.google.com/maps/search/?api=1&#038;query=Cahir%20Castle%2C%20Cahir%2C%20Tipperary%2C%20Ireland" class="leisure-card-cta leisure-card-cta--map" target="_blank" rel="noopener noreferrer" aria-label="Ver localização de Cahir Castle no mapa (abre em nova aba)">
+Ver no mapa<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"></path>
+<circle cx="12" cy="10" r="3"></circle>
+</svg>
+</a>
+</div>
+</div>
+</article>
+																				
+<article id="post-10819" class="leisure-card leisure-card--external post-10819 leisure type-leisure status-publish has-post-thumbnail hentry conexao_category-historia conexao_county-tipperary">
+
+<div class="leisure-card-image-wrapper">
+<a class="leisure-card-image" href="https://heritageireland.ie/places-to-visit/rock-of-cashel/" rel="noopener" tabindex="-1" aria-hidden="true">
+<img width="400" height="300" src="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Rock-of-Cashel.jpg?resize=400%2C300&amp;ssl=1" class="attachment-conexao-card size-conexao-card wp-post-image" alt="Rock of Cashel, Tipperary, Irlanda" loading="lazy" decoding="async" srcset="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Rock-of-Cashel.jpg?resize=400%2C300&amp;ssl=1 400w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Rock-of-Cashel.jpg?resize=200%2C150&amp;ssl=1 200w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Rock-of-Cashel.jpg?zoom=2&amp;resize=400%2C300&amp;ssl=1 800w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Rock-of-Cashel.jpg?zoom=3&amp;resize=400%2C300&amp;ssl=1 1200w" sizes="auto, (max-width: 400px) 100vw, 400px" data-attachment-id="10820" data-permalink="https://conexaobr.ie/lazer/rock-of-cashel/rock-of-cashel-2/" data-orig-file="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Rock-of-Cashel.jpg?fit=2048%2C2560&amp;ssl=1" data-orig-size="2048,2560" data-comments-opened="1" data-image-meta="{&quot;aperture&quot;:&quot;8&quot;,&quot;credit&quot;:&quot;JONATHAN BAKER&quot;,&quot;camera&quot;:&quot;NIKON D850&quot;,&quot;caption&quot;:&quot;&quot;,&quot;created_timestamp&quot;:&quot;1629219314&quot;,&quot;copyright&quot;:&quot;2018 JONATHAN BAKER&quot;,&quot;focal_length&quot;:&quot;38&quot;,&quot;iso&quot;:&quot;125&quot;,&quot;shutter_speed&quot;:&quot;0.02&quot;,&quot;title&quot;:&quot;&quot;,&quot;orientation&quot;:&quot;0&quot;,&quot;alt&quot;:&quot;&quot;}" data-image-title="Rock of Cashel" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Rock-of-Cashel.jpg?fit=819%2C1024&amp;ssl=1" /></a>
+
+<div class="leisure-card-attribution">
+Foto: Jonjobaker, Licença: CC BY-SA 4.0, Fonte: Wikimedia Commons<a href="https://commons.wikimedia.org/w/api.php/File:Cashel_-_Rock_of_Cashel_-_20210817165514.jpg" class="leisure-card-attribution-link" target="_blank" rel="noopener noreferrer" aria-label="Ver fonte da imagem">
+↗
+</a>
+</div>
+</div>
+
+<div class="leisure-card-body">
+<span class="leisure-card-category">História</span>
+
+<h3 class="leisure-card-title"><a href="https://heritageireland.ie/places-to-visit/rock-of-cashel/" rel="noopener">Rock of Cashel</a></h3>
+
+<div class="leisure-card-details">
+<span class="leisure-card-detail">
+<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"></path>
+<circle cx="12" cy="10" r="3"></circle>
+</svg>
+Tipperary<span class="leisure-card-time-sep">&middot;</span>
+<span class="leisure-card-town">Cashel</span>
+</span>
+</div>
+
+<p class="leisure-card-excerpt">Conjunto medieval espetacular sobre afloramento de calcário: catedral gótica, capela românica e torre redonda.</p>
+
+<ul class="leisure-card-attrs">
+<li class="leisure-card-attr"><span class="leisure-attr-dot"></span>Exterior</li>
+</ul>
+
+<div class="leisure-card-actions">
+<a href="https://heritageireland.ie/places-to-visit/rock-of-cashel/" class="leisure-card-cta" rel="noopener">
+Ver site oficial<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+<polyline points="15 3 21 3 21 9"></polyline>
+<line x1="10" y1="14" x2="21" y2="3"></line>
+</svg>
+</a>
+<a href="https://www.google.com/maps/search/?api=1&#038;query=Rock%20of%20Cashel%2C%20Cashel%2C%20Tipperary%2C%20Ireland" class="leisure-card-cta leisure-card-cta--map" target="_blank" rel="noopener noreferrer" aria-label="Ver localização de Rock of Cashel no mapa (abre em nova aba)">
+Ver no mapa<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"></path>
+<circle cx="12" cy="10" r="3"></circle>
+</svg>
+</a>
+</div>
+</div>
+</article>
+																				
+<article id="post-10817" class="leisure-card leisure-card--external post-10817 leisure type-leisure status-publish has-post-thumbnail hentry conexao_category-historia conexao_county-wexford">
+
+<div class="leisure-card-image-wrapper">
+<a class="leisure-card-image" href="https://heritageireland.ie/places-to-visit/tintern-abbey/" rel="noopener" tabindex="-1" aria-hidden="true">
+<img width="400" height="300" src="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Tintern-Abbey.jpg?resize=400%2C300&amp;ssl=1" class="attachment-conexao-card size-conexao-card wp-post-image" alt="Tintern Abbey, Wexford, Irlanda" loading="lazy" decoding="async" srcset="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Tintern-Abbey.jpg?resize=400%2C300&amp;ssl=1 400w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Tintern-Abbey.jpg?resize=200%2C150&amp;ssl=1 200w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Tintern-Abbey.jpg?zoom=2&amp;resize=400%2C300&amp;ssl=1 800w" sizes="auto, (max-width: 400px) 100vw, 400px" data-attachment-id="10818" data-permalink="https://conexaobr.ie/lazer/tintern-abbey-wexford/tintern-abbey/" data-orig-file="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Tintern-Abbey.jpg?fit=1000%2C1174&amp;ssl=1" data-orig-size="1000,1174" data-comments-opened="1" data-image-meta="{&quot;aperture&quot;:&quot;0&quot;,&quot;credit&quot;:&quot;&quot;,&quot;camera&quot;:&quot;&quot;,&quot;caption&quot;:&quot;&quot;,&quot;created_timestamp&quot;:&quot;0&quot;,&quot;copyright&quot;:&quot;&quot;,&quot;focal_length&quot;:&quot;0&quot;,&quot;iso&quot;:&quot;0&quot;,&quot;shutter_speed&quot;:&quot;0&quot;,&quot;title&quot;:&quot;&quot;,&quot;orientation&quot;:&quot;0&quot;,&quot;alt&quot;:&quot;&quot;}" data-image-title="Tintern Abbey" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Tintern-Abbey.jpg?fit=872%2C1024&amp;ssl=1" /></a>
+
+<div class="leisure-card-attribution">
+Foto: This image is available from the National Library of Wales You can view this image in its original context on the NLW Catalogue, Fonte: Wikimedia Commons<a href="https://commons.wikimedia.org/w/api.php/File:Tintern_Abbey_1133712.jpg" class="leisure-card-attribution-link" target="_blank" rel="noopener noreferrer" aria-label="Ver fonte da imagem">
+↗
+</a>
+</div>
+</div>
+
+<div class="leisure-card-body">
+<span class="leisure-card-category">História</span>
+
+<h3 class="leisure-card-title"><a href="https://heritageireland.ie/places-to-visit/tintern-abbey/" rel="noopener">Tintern Abbey</a></h3>
+
+<div class="leisure-card-details">
+<span class="leisure-card-detail">
+<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"></path>
+<circle cx="12" cy="10" r="3"></circle>
+</svg>
+Wexford<span class="leisure-card-time-sep">&middot;</span>
+<span class="leisure-card-town">Saltmills</span>
+</span>
+</div>
+
+<p class="leisure-card-excerpt">Abadia cisterciense fundada em 1200 por William Marshal, com colunata vitoriana e vale arborizado.</p>
+
+<ul class="leisure-card-attrs">
+<li class="leisure-card-attr"><span class="leisure-attr-dot"></span>Exterior</li>
+</ul>
+
+<div class="leisure-card-actions">
+<a href="https://heritageireland.ie/places-to-visit/tintern-abbey/" class="leisure-card-cta" rel="noopener">
+Ver site oficial<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+<polyline points="15 3 21 3 21 9"></polyline>
+<line x1="10" y1="14" x2="21" y2="3"></line>
+</svg>
+</a>
+<a href="https://www.google.com/maps/search/?api=1&#038;query=Tintern%20Abbey%2C%20Saltmills%2C%20Wexford%2C%20Ireland" class="leisure-card-cta leisure-card-cta--map" target="_blank" rel="noopener noreferrer" aria-label="Ver localização de Tintern Abbey no mapa (abre em nova aba)">
+Ver no mapa<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"></path>
+<circle cx="12" cy="10" r="3"></circle>
+</svg>
+</a>
+</div>
+</div>
+</article>
+																				
+<article id="post-10815" class="leisure-card leisure-card--external post-10815 leisure type-leisure status-publish has-post-thumbnail hentry conexao_category-castelos conexao_county-wexford">
+
+<div class="leisure-card-image-wrapper">
+<a class="leisure-card-image" href="https://heritageireland.ie/places-to-visit/ferns-castle/" rel="noopener" tabindex="-1" aria-hidden="true">
+<img width="400" height="300" src="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Ferns-Castle.jpg?resize=400%2C300&amp;ssl=1" class="attachment-conexao-card size-conexao-card wp-post-image" alt="Ferns Castle, Wexford, Irlanda" loading="lazy" decoding="async" srcset="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Ferns-Castle.jpg?resize=400%2C300&amp;ssl=1 400w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Ferns-Castle.jpg?resize=200%2C150&amp;ssl=1 200w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Ferns-Castle.jpg?resize=480%2C360&amp;ssl=1 480w" sizes="auto, (max-width: 400px) 100vw, 400px" data-attachment-id="10816" data-permalink="https://conexaobr.ie/lazer/ferns-castle/ferns-castle-2/" data-orig-file="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Ferns-Castle.jpg?fit=480%2C640&amp;ssl=1" data-orig-size="480,640" data-comments-opened="1" data-image-meta="{&quot;aperture&quot;:&quot;0&quot;,&quot;credit&quot;:&quot;&quot;,&quot;camera&quot;:&quot;&quot;,&quot;caption&quot;:&quot;&quot;,&quot;created_timestamp&quot;:&quot;0&quot;,&quot;copyright&quot;:&quot;&quot;,&quot;focal_length&quot;:&quot;0&quot;,&quot;iso&quot;:&quot;0&quot;,&quot;shutter_speed&quot;:&quot;0&quot;,&quot;title&quot;:&quot;&quot;,&quot;orientation&quot;:&quot;0&quot;,&quot;alt&quot;:&quot;&quot;}" data-image-title="Ferns Castle" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Ferns-Castle.jpg?fit=480%2C640&amp;ssl=1" /></a>
+
+<div class="leisure-card-attribution">
+Foto: Eirian Evans, Licença: CC BY-SA 2.0, Fonte: Wikimedia Commons<a href="https://commons.wikimedia.org/w/api.php/File:Ferns_Castle_-_geograph.org.uk_-_1543666.jpg" class="leisure-card-attribution-link" target="_blank" rel="noopener noreferrer" aria-label="Ver fonte da imagem">
+↗
+</a>
+</div>
+</div>
+
+<div class="leisure-card-body">
+<span class="leisure-card-category">Castelos</span>
+
+<h3 class="leisure-card-title"><a href="https://heritageireland.ie/places-to-visit/ferns-castle/" rel="noopener">Ferns Castle</a></h3>
+
+<div class="leisure-card-details">
+<span class="leisure-card-detail">
+<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"></path>
+<circle cx="12" cy="10" r="3"></circle>
+</svg>
+Wexford<span class="leisure-card-time-sep">&middot;</span>
+<span class="leisure-card-town">Ferns</span>
+</span>
+</div>
+
+<p class="leisure-card-excerpt">Castelo normando do século XIII com capela em cruz e vitrais modernos, na antiga capital dos reis de...</p>
+
+<ul class="leisure-card-attrs">
+<li class="leisure-card-attr"><span class="leisure-attr-dot"></span>Gratuito</li>
+<li class="leisure-card-attr"><span class="leisure-attr-dot"></span>Exterior</li>
+</ul>
+
+<div class="leisure-card-actions">
+<a href="https://heritageireland.ie/places-to-visit/ferns-castle/" class="leisure-card-cta" rel="noopener">
+Ver site oficial<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+<polyline points="15 3 21 3 21 9"></polyline>
+<line x1="10" y1="14" x2="21" y2="3"></line>
+</svg>
+</a>
+<a href="https://www.google.com/maps/search/?api=1&#038;query=Ferns%20Castle%2C%20Ferns%2C%20Wexford%2C%20Ireland" class="leisure-card-cta leisure-card-cta--map" target="_blank" rel="noopener noreferrer" aria-label="Ver localização de Ferns Castle no mapa (abre em nova aba)">
+Ver no mapa<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"></path>
+<circle cx="12" cy="10" r="3"></circle>
+</svg>
+</a>
+</div>
+</div>
+</article>
+																				
+<article id="post-10813" class="leisure-card leisure-card--external post-10813 leisure type-leisure status-publish has-post-thumbnail hentry conexao_category-vida-selvagem conexao_county-wexford">
+
+<div class="leisure-card-image-wrapper">
+<a class="leisure-card-image" href="https://www.npws.ie/protected-sites/nature-reserves/wexford-wildfowl-reserve" rel="noopener" tabindex="-1" aria-hidden="true">
+<img width="400" height="300" src="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Wexford-Wildfowl-Reserve.jpg?resize=400%2C300&amp;ssl=1" class="attachment-conexao-card size-conexao-card wp-post-image" alt="Wexford Wildfowl Reserve, Wexford, Irlanda" loading="lazy" decoding="async" srcset="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Wexford-Wildfowl-Reserve.jpg?w=640&amp;ssl=1 640w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Wexford-Wildfowl-Reserve.jpg?resize=300%2C225&amp;ssl=1 300w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Wexford-Wildfowl-Reserve.jpg?resize=400%2C300&amp;ssl=1 400w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Wexford-Wildfowl-Reserve.jpg?resize=200%2C150&amp;ssl=1 200w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Wexford-Wildfowl-Reserve.jpg?resize=240%2C180&amp;ssl=1 240w" sizes="auto, (max-width: 400px) 100vw, 400px" data-attachment-id="10814" data-permalink="https://conexaobr.ie/lazer/wexford-wildfowl-reserve/wexford-wildfowl-reserve-2/" data-orig-file="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Wexford-Wildfowl-Reserve.jpg?fit=640%2C480&amp;ssl=1" data-orig-size="640,480" data-comments-opened="1" data-image-meta="{&quot;aperture&quot;:&quot;0&quot;,&quot;credit&quot;:&quot;&quot;,&quot;camera&quot;:&quot;&quot;,&quot;caption&quot;:&quot;&quot;,&quot;created_timestamp&quot;:&quot;0&quot;,&quot;copyright&quot;:&quot;&quot;,&quot;focal_length&quot;:&quot;0&quot;,&quot;iso&quot;:&quot;0&quot;,&quot;shutter_speed&quot;:&quot;0&quot;,&quot;title&quot;:&quot;&quot;,&quot;orientation&quot;:&quot;0&quot;,&quot;alt&quot;:&quot;&quot;}" data-image-title="Wexford Wildfowl Reserve" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Wexford-Wildfowl-Reserve.jpg?fit=640%2C480&amp;ssl=1" /></a>
+
+<div class="leisure-card-attribution">
+Foto: David Hawgood, Licença: CC BY-SA 2.0, Fonte: Wikimedia Commons<a href="https://commons.wikimedia.org/w/api.php/File:Pump_house_at_Wexford_Wildfowl_Reserve_-_geograph.org.uk_-_1281123.jpg" class="leisure-card-attribution-link" target="_blank" rel="noopener noreferrer" aria-label="Ver fonte da imagem">
+↗
+</a>
+</div>
+</div>
+
+<div class="leisure-card-body">
+<span class="leisure-card-category">Vida Selvagem</span>
+
+<h3 class="leisure-card-title"><a href="https://www.npws.ie/protected-sites/nature-reserves/wexford-wildfowl-reserve" rel="noopener">Wexford Wildfowl Reserve</a></h3>
+
+<div class="leisure-card-details">
+<span class="leisure-card-detail">
+<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"></path>
+<circle cx="12" cy="10" r="3"></circle>
+</svg>
+Wexford<span class="leisure-card-time-sep">&middot;</span>
+<span class="leisure-card-town">Wexford</span>
+</span>
+</div>
+
+<p class="leisure-card-excerpt">Reserva natural no North Slob, refúgio de inverno de um terço da população mundial de gansos-de-frente-branca da Groenlândia.</p>
+
+<ul class="leisure-card-attrs">
+<li class="leisure-card-attr"><span class="leisure-attr-dot"></span>Gratuito</li>
+<li class="leisure-card-attr"><span class="leisure-attr-dot"></span>Exterior</li>
+</ul>
+
+<div class="leisure-card-actions">
+<a href="https://www.npws.ie/protected-sites/nature-reserves/wexford-wildfowl-reserve" class="leisure-card-cta" rel="noopener">
+Ver site oficial<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+<polyline points="15 3 21 3 21 9"></polyline>
+<line x1="10" y1="14" x2="21" y2="3"></line>
+</svg>
+</a>
+<a href="https://www.google.com/maps/search/?api=1&#038;query=Wexford%20Wildfowl%20Reserve%2C%20Wexford%2C%20Wexford%2C%20Ireland" class="leisure-card-cta leisure-card-cta--map" target="_blank" rel="noopener noreferrer" aria-label="Ver localização de Wexford Wildfowl Reserve no mapa (abre em nova aba)">
+Ver no mapa<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"></path>
+<circle cx="12" cy="10" r="3"></circle>
+</svg>
+</a>
+</div>
+</div>
+</article>
+																				
+<article id="post-10811" class="leisure-card leisure-card--external post-10811 leisure type-leisure status-publish has-post-thumbnail hentry conexao_category-praias conexao_county-wexford">
+
+<div class="leisure-card-image-wrapper">
+<a class="leisure-card-image" href="https://www.discoverireland.ie/wexford/curracloe-beach" rel="noopener" tabindex="-1" aria-hidden="true">
+<img width="400" height="300" src="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Curracloe-Beach.jpg?resize=400%2C300&amp;ssl=1" class="attachment-conexao-card size-conexao-card wp-post-image" alt="Curracloe Beach, Wexford, Irlanda" loading="lazy" decoding="async" srcset="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Curracloe-Beach.jpg?resize=400%2C300&amp;ssl=1 400w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Curracloe-Beach.jpg?resize=200%2C150&amp;ssl=1 200w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Curracloe-Beach.jpg?zoom=2&amp;resize=400%2C300&amp;ssl=1 800w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Curracloe-Beach.jpg?zoom=3&amp;resize=400%2C300&amp;ssl=1 1200w" sizes="auto, (max-width: 400px) 100vw, 400px" data-attachment-id="10812" data-permalink="https://conexaobr.ie/lazer/curracloe-beach/curracloe-beach-2/" data-orig-file="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Curracloe-Beach.jpg?fit=2560%2C1491&amp;ssl=1" data-orig-size="2560,1491" data-comments-opened="1" data-image-meta="{&quot;aperture&quot;:&quot;9&quot;,&quot;credit&quot;:&quot;&quot;,&quot;camera&quot;:&quot;Canon EOS 400D DIGITAL&quot;,&quot;caption&quot;:&quot;&quot;,&quot;created_timestamp&quot;:&quot;1183568582&quot;,&quot;copyright&quot;:&quot;&quot;,&quot;focal_length&quot;:&quot;55&quot;,&quot;iso&quot;:&quot;400&quot;,&quot;shutter_speed&quot;:&quot;0.00625&quot;,&quot;title&quot;:&quot;&quot;,&quot;orientation&quot;:&quot;1&quot;,&quot;alt&quot;:&quot;&quot;}" data-image-title="Curracloe Beach" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Curracloe-Beach.jpg?fit=1024%2C596&amp;ssl=1" /></a>
+
+<div class="leisure-card-attribution">
+Foto: Sarah777 at English Wikipedia, Fonte: Wikimedia Commons<a href="https://commons.wikimedia.org/w/api.php/File:IMG_Curracloe943.jpg" class="leisure-card-attribution-link" target="_blank" rel="noopener noreferrer" aria-label="Ver fonte da imagem">
+↗
+</a>
+</div>
+</div>
+
+<div class="leisure-card-body">
+<span class="leisure-card-category">Praias</span>
+
+<h3 class="leisure-card-title"><a href="https://www.discoverireland.ie/wexford/curracloe-beach" rel="noopener">Curracloe Beach</a></h3>
+
+<div class="leisure-card-details">
+<span class="leisure-card-detail">
+<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"></path>
+<circle cx="12" cy="10" r="3"></circle>
+</svg>
+Wexford<span class="leisure-card-time-sep">&middot;</span>
+<span class="leisure-card-town">Curracloe</span>
+</span>
+</div>
+
+<p class="leisure-card-excerpt">Praia de 11 km de areia fina, cenário da abertura de &quot;O Resgate do Soldado Ryan&quot;, com dunas...</p>
+
+<ul class="leisure-card-attrs">
+<li class="leisure-card-attr"><span class="leisure-attr-dot"></span>Gratuito</li>
+<li class="leisure-card-attr"><span class="leisure-attr-dot"></span>Exterior</li>
+<li class="leisure-card-attr"><span class="leisure-attr-dot"></span>Famílias</li>
+</ul>
+
+<div class="leisure-card-actions">
+<a href="https://www.discoverireland.ie/wexford/curracloe-beach" class="leisure-card-cta" rel="noopener">
+Ver mais<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+<line x1="5" y1="12" x2="19" y2="12"></line>
+<polyline points="12 5 19 12 12 19"></polyline>
+</svg>
+</a>
+<a href="https://www.google.com/maps/search/?api=1&#038;query=Curracloe%20Beach%2C%20Curracloe%2C%20Wexford%2C%20Ireland" class="leisure-card-cta leisure-card-cta--map" target="_blank" rel="noopener noreferrer" aria-label="Ver localização de Curracloe Beach no mapa (abre em nova aba)">
+Ver no mapa<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"></path>
+<circle cx="12" cy="10" r="3"></circle>
+</svg>
+</a>
+</div>
+</div>
+</article>
+																				
+<article id="post-10809" class="leisure-card leisure-card--external post-10809 leisure type-leisure status-publish has-post-thumbnail hentry conexao_category-ilhas conexao_county-wexford">
+
+<div class="leisure-card-image-wrapper">
+<a class="leisure-card-image" href="https://www.discoverireland.ie/wexford/saltee-islands" rel="noopener" tabindex="-1" aria-hidden="true">
+<img width="400" height="300" src="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Saltee-Islands.jpg?resize=400%2C300&amp;ssl=1" class="attachment-conexao-card size-conexao-card wp-post-image" alt="Saltee Islands, Wexford, Irlanda" loading="lazy" decoding="async" srcset="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Saltee-Islands.jpg?w=1024&amp;ssl=1 1024w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Saltee-Islands.jpg?resize=300%2C225&amp;ssl=1 300w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Saltee-Islands.jpg?resize=768%2C576&amp;ssl=1 768w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Saltee-Islands.jpg?resize=400%2C300&amp;ssl=1 400w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Saltee-Islands.jpg?resize=200%2C150&amp;ssl=1 200w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Saltee-Islands.jpg?resize=240%2C180&amp;ssl=1 240w" sizes="auto, (max-width: 400px) 100vw, 400px" data-attachment-id="10810" data-permalink="https://conexaobr.ie/lazer/saltee-islands/saltee-islands-2/" data-orig-file="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Saltee-Islands.jpg?fit=1024%2C768&amp;ssl=1" data-orig-size="1024,768" data-comments-opened="1" data-image-meta="{&quot;aperture&quot;:&quot;3.2&quot;,&quot;credit&quot;:&quot;Picasa&quot;,&quot;camera&quot;:&quot;&quot;,&quot;caption&quot;:&quot;&quot;,&quot;created_timestamp&quot;:&quot;1309005758&quot;,&quot;copyright&quot;:&quot;&quot;,&quot;focal_length&quot;:&quot;7.015&quot;,&quot;iso&quot;:&quot;80&quot;,&quot;shutter_speed&quot;:&quot;0.004&quot;,&quot;title&quot;:&quot;&quot;,&quot;orientation&quot;:&quot;0&quot;,&quot;alt&quot;:&quot;&quot;}" data-image-title="Saltee Islands" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Saltee-Islands.jpg?fit=1024%2C768&amp;ssl=1" /></a>
+
+<div class="leisure-card-attribution">
+Foto: KenSwe72, Fonte: Wikimedia Commons<a href="https://commons.wikimedia.org/w/api.php/File:Saltees_Islands.jpg" class="leisure-card-attribution-link" target="_blank" rel="noopener noreferrer" aria-label="Ver fonte da imagem">
+↗
+</a>
+</div>
+</div>
+
+<div class="leisure-card-body">
+<span class="leisure-card-category">Ilhas</span>
+
+<h3 class="leisure-card-title"><a href="https://www.discoverireland.ie/wexford/saltee-islands" rel="noopener">Saltee Islands</a></h3>
+
+<div class="leisure-card-details">
+<span class="leisure-card-detail">
+<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"></path>
+<circle cx="12" cy="10" r="3"></circle>
+</svg>
+Wexford<span class="leisure-card-time-sep">&middot;</span>
+<span class="leisure-card-town">Kilmore Quay</span>
+</span>
+</div>
+
+<p class="leisure-card-excerpt">Santuário de aves marinhas com uma das maiores colônias de gansos-patola da Irlanda, acessível por barco de Kilmore...</p>
+
+<ul class="leisure-card-attrs">
+<li class="leisure-card-attr"><span class="leisure-attr-dot"></span>Exterior</li>
+</ul>
+
+<div class="leisure-card-actions">
+<a href="https://www.discoverireland.ie/wexford/saltee-islands" class="leisure-card-cta" rel="noopener">
+Ver mais<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+<line x1="5" y1="12" x2="19" y2="12"></line>
+<polyline points="12 5 19 12 12 19"></polyline>
+</svg>
+</a>
+<a href="https://www.google.com/maps/search/?api=1&#038;query=Saltee%20Islands%2C%20Kilmore%20Quay%2C%20Wexford%2C%20Ireland" class="leisure-card-cta leisure-card-cta--map" target="_blank" rel="noopener noreferrer" aria-label="Ver localização de Saltee Islands no mapa (abre em nova aba)">
+Ver no mapa<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"></path>
+<circle cx="12" cy="10" r="3"></circle>
+</svg>
+</a>
+</div>
+</div>
+</article>
+																				
+<article id="post-10807" class="leisure-card leisure-card--external post-10807 leisure type-leisure status-publish has-post-thumbnail hentry conexao_category-museus conexao_county-wexford">
+
+<div class="leisure-card-image-wrapper">
+<a class="leisure-card-image" href="https://www.dunbrody.com/" rel="noopener" tabindex="-1" aria-hidden="true">
+<img width="400" height="300" src="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Dunbrody-Famine-Ship.jpg?resize=400%2C300&amp;ssl=1" class="attachment-conexao-card size-conexao-card wp-post-image" alt="Dunbrody Famine Ship, Wexford, Irlanda" loading="lazy" decoding="async" srcset="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Dunbrody-Famine-Ship.jpg?resize=400%2C300&amp;ssl=1 400w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Dunbrody-Famine-Ship.jpg?resize=200%2C150&amp;ssl=1 200w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Dunbrody-Famine-Ship.jpg?zoom=2&amp;resize=400%2C300&amp;ssl=1 800w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Dunbrody-Famine-Ship.jpg?zoom=3&amp;resize=400%2C300&amp;ssl=1 1200w" sizes="auto, (max-width: 400px) 100vw, 400px" data-attachment-id="10808" data-permalink="https://conexaobr.ie/lazer/dunbrody-famine-ship/dunbrody-famine-ship-2/" data-orig-file="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Dunbrody-Famine-Ship.jpg?fit=2560%2C1711&amp;ssl=1" data-orig-size="2560,1711" data-comments-opened="1" data-image-meta="{&quot;aperture&quot;:&quot;8&quot;,&quot;credit&quot;:&quot;&quot;,&quot;camera&quot;:&quot;NIKON D5200&quot;,&quot;caption&quot;:&quot;&quot;,&quot;created_timestamp&quot;:&quot;1376042949&quot;,&quot;copyright&quot;:&quot;&quot;,&quot;focal_length&quot;:&quot;20&quot;,&quot;iso&quot;:&quot;200&quot;,&quot;shutter_speed&quot;:&quot;0.004&quot;,&quot;title&quot;:&quot;&quot;,&quot;orientation&quot;:&quot;1&quot;,&quot;alt&quot;:&quot;&quot;}" data-image-title="Dunbrody Famine Ship" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Dunbrody-Famine-Ship.jpg?fit=1024%2C684&amp;ssl=1" /></a>
+
+<div class="leisure-card-attribution">
+Foto: Gfox228, Licença: CC BY 3.0, Fonte: Wikimedia Commons<a href="https://commons.wikimedia.org/w/api.php/File:Dunbrody_New_Ross_Ireland_-_panoramio.jpg" class="leisure-card-attribution-link" target="_blank" rel="noopener noreferrer" aria-label="Ver fonte da imagem">
+↗
+</a>
+</div>
+</div>
+
+<div class="leisure-card-body">
+<span class="leisure-card-category">Museus</span>
+
+<h3 class="leisure-card-title"><a href="https://www.dunbrody.com/" rel="noopener">Dunbrody Famine Ship</a></h3>
+
+<div class="leisure-card-details">
+<span class="leisure-card-detail">
+<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"></path>
+<circle cx="12" cy="10" r="3"></circle>
+</svg>
+Wexford<span class="leisure-card-time-sep">&middot;</span>
+<span class="leisure-card-town">New Ross</span>
+</span>
+</div>
+
+<p class="leisure-card-excerpt">Réplica fiel de um navio de emigrantes da Grande Fome, com tour imersivo sobre a travessia do Atlântico.</p>
+
+<ul class="leisure-card-attrs">
+<li class="leisure-card-attr"><span class="leisure-attr-dot"></span>Interior</li>
+</ul>
+
+<div class="leisure-card-actions">
+<a href="https://www.dunbrody.com/" class="leisure-card-cta" rel="noopener">
+Ver site oficial<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+<polyline points="15 3 21 3 21 9"></polyline>
+<line x1="10" y1="14" x2="21" y2="3"></line>
+</svg>
+</a>
+<a href="https://www.google.com/maps/search/?api=1&#038;query=Dunbrody%20Famine%20Ship%2C%20New%20Ross%2C%20Wexford%2C%20Ireland" class="leisure-card-cta leisure-card-cta--map" target="_blank" rel="noopener noreferrer" aria-label="Ver localização de Dunbrody Famine Ship no mapa (abre em nova aba)">
+Ver no mapa<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"></path>
+<circle cx="12" cy="10" r="3"></circle>
+</svg>
+</a>
+</div>
+</div>
+</article>
+																				
+<article id="post-10805" class="leisure-card leisure-card--external post-10805 leisure type-leisure status-publish has-post-thumbnail hentry conexao_category-patrimonio conexao_county-wexford">
+
+<div class="leisure-card-image-wrapper">
+<a class="leisure-card-image" href="https://hookheritage.ie/" rel="noopener" tabindex="-1" aria-hidden="true">
+<img width="400" height="300" src="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Hook-Lighthouse.jpg?resize=400%2C300&amp;ssl=1" class="attachment-conexao-card size-conexao-card wp-post-image" alt="Hook Lighthouse, Wexford, Irlanda" loading="lazy" decoding="async" srcset="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Hook-Lighthouse.jpg?resize=400%2C300&amp;ssl=1 400w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Hook-Lighthouse.jpg?resize=200%2C150&amp;ssl=1 200w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Hook-Lighthouse.jpg?zoom=2&amp;resize=400%2C300&amp;ssl=1 800w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Hook-Lighthouse.jpg?zoom=3&amp;resize=400%2C300&amp;ssl=1 1200w" sizes="auto, (max-width: 400px) 100vw, 400px" data-attachment-id="10806" data-permalink="https://conexaobr.ie/lazer/hook-lighthouse/hook-lighthouse-2/" data-orig-file="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Hook-Lighthouse.jpg?fit=2560%2C1704&amp;ssl=1" data-orig-size="2560,1704" data-comments-opened="1" data-image-meta="{&quot;aperture&quot;:&quot;13&quot;,&quot;credit&quot;:&quot;Bananenfalter&quot;,&quot;camera&quot;:&quot;DSLR-A390&quot;,&quot;caption&quot;:&quot;Hook Lighthouse&quot;,&quot;created_timestamp&quot;:&quot;1384796782&quot;,&quot;copyright&quot;:&quot;No copyright. The autor released this work to public domain.&quot;,&quot;focal_length&quot;:&quot;40&quot;,&quot;iso&quot;:&quot;100&quot;,&quot;shutter_speed&quot;:&quot;0.01&quot;,&quot;title&quot;:&quot;Hook Lighthouse&quot;,&quot;orientation&quot;:&quot;1&quot;,&quot;alt&quot;:&quot;&quot;}" data-image-title="Hook Lighthouse" data-image-description="" data-image-caption="" data-large-file="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/Hook-Lighthouse.jpg?fit=1024%2C682&amp;ssl=1" /></a>
+
+<div class="leisure-card-attribution">
+Foto: Bananenfalter, Fonte: Wikimedia Commons<a href="https://commons.wikimedia.org/w/api.php/File:Hook_head_lighthouse.jpg" class="leisure-card-attribution-link" target="_blank" rel="noopener noreferrer" aria-label="Ver fonte da imagem">
+↗
+</a>
+</div>
+</div>
+
+<div class="leisure-card-body">
+<span class="leisure-card-category">Patrimônio</span>
+
+<h3 class="leisure-card-title"><a href="https://hookheritage.ie/" rel="noopener">Hook Lighthouse</a></h3>
+
+<div class="leisure-card-details">
+<span class="leisure-card-detail">
+<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"></path>
+<circle cx="12" cy="10" r="3"></circle>
+</svg>
+Wexford<span class="leisure-card-time-sep">&middot;</span>
+<span class="leisure-card-town">Hook Peninsula</span>
+</span>
+</div>
+
+<p class="leisure-card-excerpt">Farol medieval em operação desde o século XIII — um dos mais antigos do mundo — com tours...</p>
+
+<ul class="leisure-card-attrs">
+<li class="leisure-card-attr"><span class="leisure-attr-dot"></span>Exterior</li>
+<li class="leisure-card-attr"><span class="leisure-attr-dot"></span>Interior</li>
+<li class="leisure-card-attr"><span class="leisure-attr-dot"></span>Famílias</li>
+</ul>
+
+<div class="leisure-card-actions">
+<a href="https://hookheritage.ie/" class="leisure-card-cta" rel="noopener">
+Ver site oficial<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+<path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+<polyline points="15 3 21 3 21 9"></polyline>
+<line x1="10" y1="14" x2="21" y2="3"></line>
+</svg>
+</a>
+<a href="https://www.google.com/maps/search/?api=1&#038;query=Hook%20Lighthouse%2C%20Hook%20Peninsula%2C%20Wexford%2C%20Ireland" class="leisure-card-cta leisure-card-cta--map" target="_blank" rel="noopener noreferrer" aria-label="Ver localização de Hook Lighthouse no mapa (abre em nova aba)">
+Ver no mapa<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"></path>
+<circle cx="12" cy="10" r="3"></circle>
+</svg>
+</a>
+</div>
+</div>
+</article>
+												</div>
+
+			<nav class="conexao-pagination" aria-label="Paginação">
+	<ul class="conexao-pagination__list">
+					<li class="conexao-pagination__item">
+				<a class="prev page-numbers" href="https://conexaobr.ie/lazer/page/9/">← Anterior</a>			</li>
+					<li class="conexao-pagination__item">
+				<a class="page-numbers" href="https://conexaobr.ie/lazer/">1</a>			</li>
+					<li class="conexao-pagination__item">
+				<span class="page-numbers dots">&hellip;</span>			</li>
+					<li class="conexao-pagination__item">
+				<a class="page-numbers" href="https://conexaobr.ie/lazer/page/8/">8</a>			</li>
+					<li class="conexao-pagination__item">
+				<a class="page-numbers" href="https://conexaobr.ie/lazer/page/9/">9</a>			</li>
+					<li class="conexao-pagination__item">
+				<span aria-current="page" class="page-numbers current">10</span>			</li>
+					<li class="conexao-pagination__item">
+				<a class="page-numbers" href="https://conexaobr.ie/lazer/page/11/">11</a>			</li>
+					<li class="conexao-pagination__item">
+				<a class="page-numbers" href="https://conexaobr.ie/lazer/page/12/">12</a>			</li>
+					<li class="conexao-pagination__item">
+				<span class="page-numbers dots">&hellip;</span>			</li>
+					<li class="conexao-pagination__item">
+				<a class="page-numbers" href="https://conexaobr.ie/lazer/page/29/">29</a>			</li>
+					<li class="conexao-pagination__item">
+				<a class="next page-numbers" href="https://conexaobr.ie/lazer/page/11/">Próximo →</a>			</li>
+			</ul>
+</nav>
+						</div>
+		
+	</main>
+</div>
+
+
+<section class="newsletter-section">
+	<div class="site-container">
+		<div class="newsletter-content">
+			<div class="newsletter-text">
+				<h2 class="newsletter-title">Fique por dentro de tudo!</h2>
+				<p class="newsletter-description">Receba as últimas notícias, eventos e guias práticos diretamente no seu email. Sem spam, apenas conteúdo relevante para brasileiros na Irlanda.</p>
+			</div>
+			<div class="newsletter-form">
+				<h3 class="newsletter-form-title">Assine nossa newsletter</h3>
+				<p class="newsletter-form-subtitle">Junte-se a milhares de brasileiros que já recebem nossas atualizações.</p>
+				<form class="newsletter-input-group" action="#" method="post">
+					<input type="email" class="newsletter-input" placeholder="Seu melhor email" required>
+					<button type="submit" class="newsletter-btn">Assinar</button>
+				</form>
+				<p class="newsletter-privacy">Ao assinar, você concorda com nossa política de privacidade.</p>
+			</div>
+		</div>
+	</div>
+</section>
+
+<section class="quote-section">
+	<div class="site-container">
+		<div class="quote-content">
+			<blockquote class="quote-text">"A vida é uma constante oportunidade de recomeçar. Cada dia é uma nova chance de construir algo melhor."</blockquote>
+			<p class="quote-author">— Mário Sérgio Cortella</p>
+		</div>
+	</div>
+</section>
+
+
+	</div><!-- #content -->
+
+	<footer id="colophon" class="site-footer">
+		<div class="footer-main">
+			<div class="site-container">
+				<div class="footer-grid">
+					<!-- Brand Column -->
+					<div class="footer-brand">
+						<div class="footer-logo">
+							<a href="https://conexaobr.ie/" rel="home" class="site-logo-link">
+								<img
+									src="https://conexaobr.ie/wp-content/themes/conexao-br-irlanda/assets/images/logo_dark_mode-240.webp"
+									srcset="https://conexaobr.ie/wp-content/themes/conexao-br-irlanda/assets/images/logo_dark_mode-240.webp 240w, https://conexaobr.ie/wp-content/themes/conexao-br-irlanda/assets/images/logo_dark_mode.webp 480w"
+									sizes="(max-width: 768px) 240px, 480px"
+									width="480"
+									height="180"
+									alt="Conexão BR"
+									class="site-logo-img"
+									loading="lazy"
+								>
+							</a>
+						</div>
+						<p class="footer-about">
+							Conectando a comunidade brasileira na Irlanda com informações, eventos, cursos e muito mais. Sua revista digital para brasileiros na Irlanda.						</p>
+					</div>
+
+					<!-- Social Column -->
+					<div class="footer-column">
+						<h4 class="footer-column-title">Redes Sociais</h4>
+						<div class="footer-social">
+																						<a href="https://www.instagram.com/conexaobr.ie/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+									<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+								</a>
+																						<a href="https://wa.me/353899451428" class="footer-social-link--whatsapp" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+									<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+								</a>
+																				</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="footer-bottom">
+			<div class="site-container">
+				<div class="footer-copyright">
+					© 2025 Conexão BR Irlanda. Todos os direitos reservados.				</div>
+				<div class="footer-bottom-links">
+					<a href="https://conexaobr.ie/politica-de-privacidade/">Privacidade</a>
+					<span class="footer-bottom-sep" aria-hidden="true">·</span>
+					<a href="https://conexaobr.ie/termos-de-uso/">Termos</a>
+					<span class="footer-bottom-sep" aria-hidden="true">·</span>
+					<a href="https://conexaobr.ie/cookies/">Cookies</a>
+				</div>
+			</div>
+		</div>
+	</footer>
+</div><!-- #page -->
+
+<!--  -->
+<script type="speculationrules">
+{"prefetch":[{"source":"document","where":{"and":[{"href_matches":"/*"},{"not":{"href_matches":["/wp-*.php","/wp-admin/*","/wp-content/uploads/*","/wp-content/*","/wp-content/plugins/*","/wp-content/themes/conexao-br-irlanda/*","/*\\?(.+)"]}},{"not":{"selector_matches":"a[rel~=\"nofollow\"]"}},{"not":{"selector_matches":".no-prefetch, .no-prefetch a"}}]},"eagerness":"conservative"}]}
+</script>
+<meta id="bilmur" property="bilmur:data" content="" data-customproperties="{&quot;woo_active&quot;:&quot;0&quot;,&quot;logged_in&quot;:&quot;0&quot;,&quot;wptheme&quot;:&quot;conexao-br-irlanda&quot;,&quot;wptheme_is_block&quot;:&quot;0&quot;}" data-provider="wordpress.com" data-service="atomic"  data-site-tz="Europe/Dublin"  >
+<script defer src="https://s0.wp.com/wp-content/js/bilmur.min.js?m=202639"></script>
+	<aside class="whatsapp-float-region" aria-label="Fale com a Conexão BR">
+	<a href="https://wa.me/353899451428" class="whatsapp-float" target="_blank" rel="noopener noreferrer" aria-label="Fale conosco no WhatsApp">
+		<svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+	</a>
+	</aside>
+			<div id="jp-carousel-loading-overlay" style="display: none;">
+			<div id="jp-carousel-loading-wrapper">
+				<span id="jp-carousel-library-loading"><svg class="jetpack-spinner" width="40" height="40" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><circle cx="50" cy="50" r="46" fill="none" stroke="#ddd" stroke-width="8"/><path d="M 50 4 A 46 46 0 0 1 96 50" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" dur="1.4s" from="0 50 50" to="360 50 50" repeatCount="indefinite"/></path></svg></span>
+			</div>
+		</div>
+		<div class="jp-carousel-overlay" style="display: none;">
+
+		<div class="jp-carousel-container">
+			<!-- The Carousel Swiper -->
+			<div
+				class="jp-carousel-wrap swiper jp-carousel-swiper-container jp-carousel-transitions"
+				itemscope
+				itemtype="https://schema.org/ImageGallery">
+				<div class="jp-carousel swiper-wrapper"></div>
+				<div class="jp-swiper-button-prev swiper-button-prev">
+					<svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<mask id="maskPrev" mask-type="alpha" maskUnits="userSpaceOnUse" x="8" y="6" width="9" height="12">
+							<path d="M16.2072 16.59L11.6496 12L16.2072 7.41L14.8041 6L8.8335 12L14.8041 18L16.2072 16.59Z" fill="white"/>
+						</mask>
+						<g mask="url(#maskPrev)">
+							<rect x="0.579102" width="23.8823" height="24" fill="#FFFFFF"/>
+						</g>
+					</svg>
+				</div>
+				<div class="jp-swiper-button-next swiper-button-next">
+					<svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<mask id="maskNext" mask-type="alpha" maskUnits="userSpaceOnUse" x="8" y="6" width="8" height="12">
+							<path d="M8.59814 16.59L13.1557 12L8.59814 7.41L10.0012 6L15.9718 12L10.0012 18L8.59814 16.59Z" fill="white"/>
+						</mask>
+						<g mask="url(#maskNext)">
+							<rect x="0.34375" width="23.8822" height="24" fill="#FFFFFF"/>
+						</g>
+					</svg>
+				</div>
+			</div>
+			<!-- The main close buton -->
+			<div class="jp-carousel-close-hint">
+				<svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<mask id="maskClose" mask-type="alpha" maskUnits="userSpaceOnUse" x="5" y="5" width="15" height="14">
+						<path d="M19.3166 6.41L17.9135 5L12.3509 10.59L6.78834 5L5.38525 6.41L10.9478 12L5.38525 17.59L6.78834 19L12.3509 13.41L17.9135 19L19.3166 17.59L13.754 12L19.3166 6.41Z" fill="white"/>
+					</mask>
+					<g mask="url(#maskClose)">
+						<rect x="0.409668" width="23.8823" height="24" fill="#FFFFFF"/>
+					</g>
+				</svg>
+			</div>
+			<!-- Image info, comments and meta -->
+			<div class="jp-carousel-info">
+				<div class="jp-carousel-info-footer">
+					<div class="jp-carousel-pagination-container">
+						<div class="jp-swiper-pagination swiper-pagination"></div>
+						<div class="jp-carousel-pagination"></div>
+					</div>
+					<div class="jp-carousel-photo-title-container">
+						<div class="jp-carousel-photo-caption"></div>
+					</div>
+					<div class="jp-carousel-photo-icons-container">
+						<a href="#" class="jp-carousel-icon-btn jp-carousel-icon-info" aria-label="Toggle photo metadata visibility">
+							<span class="jp-carousel-icon">
+								<svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<mask id="maskInfo" mask-type="alpha" maskUnits="userSpaceOnUse" x="2" y="2" width="21" height="20">
+										<path fill-rule="evenodd" clip-rule="evenodd" d="M12.7537 2C7.26076 2 2.80273 6.48 2.80273 12C2.80273 17.52 7.26076 22 12.7537 22C18.2466 22 22.7046 17.52 22.7046 12C22.7046 6.48 18.2466 2 12.7537 2ZM11.7586 7V9H13.7488V7H11.7586ZM11.7586 11V17H13.7488V11H11.7586ZM4.79292 12C4.79292 16.41 8.36531 20 12.7537 20C17.142 20 20.7144 16.41 20.7144 12C20.7144 7.59 17.142 4 12.7537 4C8.36531 4 4.79292 7.59 4.79292 12Z" fill="white"/>
+									</mask>
+									<g mask="url(#maskInfo)">
+										<rect x="0.8125" width="23.8823" height="24" fill="#FFFFFF"/>
+									</g>
+								</svg>
+							</span>
+						</a>
+												<a href="#" class="jp-carousel-icon-btn jp-carousel-icon-comments" aria-label="Toggle photo comments visibility">
+							<span class="jp-carousel-icon">
+								<svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<mask id="maskComments" mask-type="alpha" maskUnits="userSpaceOnUse" x="2" y="2" width="21" height="20">
+										<path fill-rule="evenodd" clip-rule="evenodd" d="M4.3271 2H20.2486C21.3432 2 22.2388 2.9 22.2388 4V16C22.2388 17.1 21.3432 18 20.2486 18H6.31729L2.33691 22V4C2.33691 2.9 3.2325 2 4.3271 2ZM6.31729 16H20.2486V4H4.3271V18L6.31729 16Z" fill="white"/>
+									</mask>
+									<g mask="url(#maskComments)">
+										<rect x="0.34668" width="23.8823" height="24" fill="#FFFFFF"/>
+									</g>
+								</svg>
+
+								<span class="jp-carousel-has-comments-indicator" aria-label="This image has comments."></span>
+							</span>
+						</a>
+											</div>
+				</div>
+				<div class="jp-carousel-info-extra">
+					<div class="jp-carousel-info-content-wrapper">
+						<div class="jp-carousel-photo-title-container">
+							<div class="jp-carousel-photo-title"></div>
+						</div>
+						<div class="jp-carousel-comments-wrapper">
+															<div id="jp-carousel-comments-loading">
+									<span>Loading Comments...</span>
+								</div>
+								<div class="jp-carousel-comments"></div>
+								<div id="jp-carousel-comment-form-container">
+									<span id="jp-carousel-comment-form-spinner"><svg class="jetpack-spinner" width="20" height="20" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><circle cx="50" cy="50" r="46" fill="none" stroke="#ddd" stroke-width="8"/><path d="M 50 4 A 46 46 0 0 1 96 50" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" dur="1.4s" from="0 50 50" to="360 50 50" repeatCount="indefinite"/></path></svg></span>
+									<div id="jp-carousel-comment-post-results"></div>
+																														<form id="jp-carousel-comment-form">
+												<label for="jp-carousel-comment-form-comment-field" class="screen-reader-text">Write a Comment...</label>
+												<textarea
+													name="comment"
+													class="jp-carousel-comment-form-field jp-carousel-comment-form-textarea"
+													id="jp-carousel-comment-form-comment-field"
+													placeholder="Write a Comment..."
+												></textarea>
+												<div id="jp-carousel-comment-form-submit-and-info-wrapper">
+													<div id="jp-carousel-comment-form-commenting-as">
+																													<fieldset>
+																<label for="jp-carousel-comment-form-email-field">Email (Required)</label>
+																<input type="text" name="email" class="jp-carousel-comment-form-field jp-carousel-comment-form-text-field" id="jp-carousel-comment-form-email-field" />
+															</fieldset>
+															<fieldset>
+																<label for="jp-carousel-comment-form-author-field">Name (Required)</label>
+																<input type="text" name="author" class="jp-carousel-comment-form-field jp-carousel-comment-form-text-field" id="jp-carousel-comment-form-author-field" />
+															</fieldset>
+															<fieldset>
+																<label for="jp-carousel-comment-form-url-field">Website</label>
+																<input type="text" name="url" class="jp-carousel-comment-form-field jp-carousel-comment-form-text-field" id="jp-carousel-comment-form-url-field" />
+															</fieldset>
+																											</div>
+													<input
+														type="submit"
+														name="submit"
+														class="jp-carousel-comment-form-button"
+														id="jp-carousel-comment-form-button-submit"
+														value="Post Comment" />
+												</div>
+											</form>
+																											</div>
+													</div>
+						<div class="jp-carousel-image-meta">
+							<div class="jp-carousel-title-and-caption">
+								<div class="jp-carousel-photo-info">
+									<div class="jp-carousel-caption" itemprop="caption description"></div>
+								</div>
+
+								<div class="jp-carousel-photo-description"></div>
+							</div>
+							<a class="jp-carousel-image-download" href="#" aria-label="Download image" target="_blank" style="display: none;">
+								<svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<mask id="mask0" mask-type="alpha" maskUnits="userSpaceOnUse" x="3" y="3" width="19" height="18">
+										<path fill-rule="evenodd" clip-rule="evenodd" d="M5.84615 5V19H19.7775V12H21.7677V19C21.7677 20.1 20.8721 21 19.7775 21H5.84615C4.74159 21 3.85596 20.1 3.85596 19V5C3.85596 3.9 4.74159 3 5.84615 3H12.8118V5H5.84615ZM14.802 5V3H21.7677V10H19.7775V6.41L9.99569 16.24L8.59261 14.83L18.3744 5H14.802Z" fill="white"/>
+									</mask>
+									<g mask="url(#mask0)">
+										<rect x="0.870605" width="23.8823" height="24" fill="#FFFFFF"/>
+									</g>
+								</svg>
+								<span class="jp-carousel-download-text"></span>
+							</a>
+							<div class="jp-carousel-image-map" style="display: none;"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		</div>
+		<script data-wp-strategy="defer" defer id="conexao-main-js" src="https://conexaobr.ie/wp-content/themes/conexao-br-irlanda/assets/js/main.js?ver=1789573003"></script>
+<script id="jetpack-carousel-js-extra">
+var jetpackSwiperLibraryPath = {"url":"https://conexaobr.ie/wp-content/plugins/jetpack/_inc/blocks/swiper.js"};
+var jetpackCarouselStrings = {"widths":[370,700,1000,1200,1400,2000],"is_logged_in":"","lang":"en","ajaxurl":"https://conexaobr.ie/wp-admin/admin-ajax.php","nonce":"fff6fa3eb9","display_exif":"1","display_comments":"1","single_image_gallery":"1","single_image_gallery_media_file":"","background_color":"black","comment":"Comment","post_comment":"Post Comment","write_comment":"Write a Comment...","loading_comments":"Loading Comments...","image_label":"Open image in full-screen.","download_original":"View full size \u003Cspan class=\"photo-size\"\u003E{0}\u003Cspan class=\"photo-size-times\"\u003E\u00d7\u003C/span\u003E{1}\u003C/span\u003E","no_comment_text":"Please be sure to submit some text with your comment.","no_comment_email":"Please provide an email address to comment.","no_comment_author":"Please provide your name to comment.","comment_post_error":"Sorry, but there was an error posting your comment. Please try again later.","comment_approved":"Your comment was approved.","comment_unapproved":"Your comment is in moderation.","camera":"Camera","aperture":"Aperture","shutter_speed":"Shutter Speed","focal_length":"Focal Length","copyright":"Copyright","comment_registration":"0","require_name_email":"1","login_url":"https://conexaobr.ie/wp-login.php?redirect_to=https%3A%2F%2Fconexaobr.ie%2Flazer%2Fswiss-cottage%2F","blog_id":"1","meta_data":["camera","aperture","shutter_speed","focal_length","copyright"]};
+//# sourceURL=jetpack-carousel-js-extra
+</script>
+<script type='text/javascript'  src='https://conexaobr.ie/wp-content/plugins/jetpack/_inc/build/carousel/jetpack-carousel.min.js?m=1785801844'></script>
+<script data-wp-strategy="defer" defer id="tiled-gallery-js" src="https://conexaobr.ie/wp-content/plugins/jetpack/_inc/build/tiled-gallery/tiled-gallery/tiled-gallery.min.js?ver=16.3-a.3"></script>
+<script id="jetpack-stats-js-before">
+_stq = window._stq || [];
+_stq.push([ "view", {"v":"ext","blog":"256777017","post":"0","tz":"1","srv":"conexaobr.ie","arch_results":"10","hp":"atomic","ac":"2","amp":"0","j":"1:16.3-a.3"} ]);
+_stq.push([ "clickTrackerInit", "256777017", "0" ]);
+//# sourceURL=jetpack-stats-js-before
+</script>
+<script data-wp-strategy="defer" defer fetchpriority="low" id="jetpack-stats-js" src="https://stats.wp.com/e-202639.js"></script>
+</body>
+</html>
