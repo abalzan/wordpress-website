@@ -51,7 +51,8 @@ English URLs wrap the same paths in `/en/`:
 | Lazer | `/lazer/` | `/en/lazer/` |
 | Courses | `/cursos/` | `/en/cursos/` |
 | Sponsors | `/apoiadores/` | `/en/apoiadores/` |
-| Empregos landing | `/empregos/` | `/en/jobs/` (real translation since Stage 3.2; `/en/empregos/` 302 → PT) |
+| Empregos landing | `/empregos/` | `/en/jobs/` (real translation since Stage 3.2; **lists the real EN Job CPT records since Stage 6** — one «Vagas»/"Openings" card per job, language-aware; `/en/empregos/` 302 → PT) |
+| Job singles | `/empregos/{slug}/` | `/en/empregos/{en-slug}/` (real EN translation since Stage 6; before that the approved B2 fallback — PT body under the EN shell + notice; once translated, the PT slug under `/en/` redirects to the PT job) |
 | Blog | `/blog/` | `/en/blog/` — **real English archive since Stage 5** (linked EN posts page + translated EN posts); before that, the approved B2 fallback (PT posts under the EN URL + notice). EN posts live at `/en/{en-slug}/`. |
 | County pages + `/irlanda/` | `/dublin/`, `/irlanda/`, … | `/en/dublin/`, `/en/irlanda/` (B2: PT body under EN shell + notice) |
 | Filters | `/eventos/?cidade=dublin` | `/en/eventos/?cidade=dublin` |

@@ -240,6 +240,8 @@ Empregos
   ↳ Jobs information (editable page body)
   ↳ Instagram / county guidance
   ↳ [ Ver vagas no Instagram ]  (optional; hidden when no link is set)
+  ↳ Vagas / Openings  (Stage 6 — the real job CPT records, language-aware)
+  ↳ Oportunidades de emprego  (unified opportunities directory)
 ```
 
 - **Editing**: everything is managed from wp-admin (Páginas → Empregos): title,
@@ -248,6 +250,18 @@ Empregos
   meta and renders a minimal "Jobs — Link" metabox. The button label is
   "Ver vagas no Instagram". When the URL is empty the button is not output at
   all; when external it opens in a new tab.
+- **Vagas section (Stage 6)**: `conexao_empregos_current_jobs()`
+  (`inc/empregos-landing.php`) lists the published `job` records in the current
+  language — PT jobs on `/empregos/`, EN jobs on `/en/jobs/` (plus, while a job
+  remains untranslated, its PT original as the approved B2 set — never both
+  languages of one identity; cards reuse the shared `.archive-grid` /
+  `.archive-card` markup and link to the record's own permalink). The ID list is
+  cached in a language-scoped transient and flushed on job save/delete. The
+  section is hidden entirely when no published job exists.
+- **Breadcrumb language awareness (Stage 6)**:
+  `conexao_empregos_page_url()` returns the linked translation's URL on a
+  non-default-language request (the EN Jobs crumb on an EN job detail points at
+  `/en/jobs/`, not `/empregos/`); on Portuguese it is byte-identical to before.
 - **Layout/CSS**: `main.css` — desktop uses a two-column portrait+text grid;
   mobile (≤768px) stacks into a single natural column. Colours come entirely
   from the design-system tokens, so light and dark mode are automatic.

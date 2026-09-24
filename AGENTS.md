@@ -38,6 +38,7 @@ All under `wp-content/plugins/`. Load order matters:
 | `conexao-sponsor-migration` | Apoiadores export/import (JSON + embedded images) | docs/plugins/conexao-sponsor-migration.md |
 | `conexao-page-translation` | Stage 4.5 EN page-translation migration (admin importer; activate for the rollout, then remove) | docs/plugins/conexao-page-translation.md |
 | `conexao-blog-translation` | Stage 5 Blog EN translation (EN posts page + one linked EN post per public PT post; admin importer + WP-CLI runner; no frontend effect — activate for the rollout, then remove) | docs/plugins/conexao-blog-translation.md |
+| `conexao-job-translation` | Stage 6 Job EN translation (one linked EN `job` per eligible public PT job; verbatim `_job_*` meta + shared media; Jobs page pair verified, never created; admin importer + WP-CLI runner; no frontend effect — activate for the rollout, then remove) | docs/plugins/conexao-job-translation.md |
 
 ## Theme
 

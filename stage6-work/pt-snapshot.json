@@ -1,7 +1,7 @@
 {
  "generated_by": "scripts/stage6-job-pt-snapshot.py",
- "before": "/workspace/stage6-work/job-inventory-clone-before.json",
- "after": "/workspace/stage6-work/job-inventory-clone-after.json",
+ "before": "stage6-work/job-inventory-clone-before.json",
+ "after": "stage6-work/job-inventory-clone-after.json",
  "pt_records_before": 1,
  "pt_records_after": 1,
  "pt_changes": 0,

@@ -1,6 +1,6 @@
 {
  "generated_by": "scripts/stage6-job-completeness-scan.py",
- "inventory": "/workspace/stage6-work/job-inventory-clone-after.json",
+ "inventory": "stage6-work/job-inventory-clone-after.json",
  "en_jobs": 1,
  "eligible_pt_missing_en": [],
  "en_without_pt": [],

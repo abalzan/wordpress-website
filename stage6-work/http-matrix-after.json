@@ -248,7 +248,7 @@
   {
    "check": "B2 probe job created",
    "pass": true,
-   "detail": "ID:90"
+   "detail": "ID:93"
   },
   {
    "check": "STATE A: untranslated PT job under /en/ is 200 (B2 shell)",

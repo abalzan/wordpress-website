@@ -15,6 +15,7 @@ This project contains 9 custom WordPress plugins. All are in `wp-content/plugins
 | conexao-sponsor-migration | `wp-content/plugins/conexao-sponsor-migration/` | 1.0.0 | Apoiadores JSON export/import with embedded Desktop/Mobile images | conexao-sponsor-migration.md |
 | conexao-page-translation | `wp-content/plugins/conexao-page-translation/` | 1.0.0 | Stage 4.5 EN page-translation migration (admin importer; Polylang-linked pages; PT originals never modified) | conexao-page-translation.md |
 | conexao-blog-translation | `wp-content/plugins/conexao-blog-translation/` | 1.0.0 | Stage 5 Blog EN translation (linked EN posts page + one linked EN translation per public PT post; PT originals never modified; no frontend effect) | conexao-blog-translation.md |
+| conexao-job-translation | `wp-content/plugins/conexao-job-translation/` | 1.0.0 | Stage 6 Job EN translation (one linked EN `job` per eligible public PT job; verbatim `_job_*` meta + shared media; Jobs page pair verified, never created; admin importer + WP-CLI runner; no frontend effect) | conexao-job-translation.md |
 
 ## Load Order
 
@@ -29,6 +30,7 @@ Plugins must be activated in this order (dependencies first):
 7. `conexao-sponsor-migration`
 8. `conexao-page-translation` *(migration tooling — activate for the Stage 4.5 rollout, then deactivate/remove)*
 9. `conexao-blog-translation` *(migration tooling — activate for the Stage 5 Blog rollout, then deactivate/remove)*
+10. `conexao-job-translation` *(migration tooling — activate for the Stage 6 Jobs rollout, then deactivate/remove)*
 
 `conexao-event-importer` declares `Requires Plugins: conexao-data-model, conexao-event-runtime`,
 so WordPress refuses to activate it (and keeps it from running) without the runtime plugin.
