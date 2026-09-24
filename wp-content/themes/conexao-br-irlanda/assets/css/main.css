@@ -7043,6 +7043,27 @@ input[type="button"] {
   border-top: 1px solid var(--color-border);
 }
 
+/* "Vagas" — the real Job CPT records on the Jobs landing page (Stage 6).
+   Same section rhythm as the opportunities directory below; the cards reuse
+   the shared .archive-grid/.archive-card component unchanged. */
+.empregos-jobs {
+  margin-top: var(--space-7);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--color-border);
+}
+
+.empregos-jobs-title {
+  font-size: clamp(1.375rem, 3vw, 1.75rem);
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: var(--space-4);
+  line-height: 1.2;
+}
+
+.empregos-jobs .archive-grid {
+  padding: 0;
+}
+
 .empregos-opportunities-title {
   font-size: clamp(1.375rem, 3vw, 1.75rem);
   font-weight: 700;

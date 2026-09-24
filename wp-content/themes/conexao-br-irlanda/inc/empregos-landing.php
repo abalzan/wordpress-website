@@ -152,14 +152,39 @@ function conexao_empregos_link( $post_id = 0 ) {
  * Used by the theme breadcrumb for job singles, which previously linked to the
  * (now disabled) job CPT archive.
  *
+ * Language-aware (Stage 6): on a non-default-language request the URL of the
+ * published, linked translation of the landing page is returned (the Stage 4.5
+ * EN Jobs page, `/en/jobs/`), so an English job detail breadcrumbs
+ * Home › Jobs › … instead of sending the visitor back to the Portuguese hub.
+ * On the default language (and whenever Polylang or the translation is
+ * missing) the behaviour is byte-identical to before.
+ *
  * @return string
  */
 function conexao_empregos_page_url() {
 	$page = get_page_by_path( 'empregos', OBJECT, 'page' );
-	if ( $page && 'publish' === $page->post_status ) {
-		return get_permalink( $page );
+	if ( ! $page || 'publish' !== $page->post_status ) {
+		return '';
 	}
-	return '';
+
+	if ( function_exists( 'conexao_polylang_active' ) && conexao_polylang_active() && function_exists( 'pll_get_post' ) ) {
+		$current = conexao_current_language_slug();
+		$default = conexao_default_language_slug();
+
+		if ( '' !== $current && '' !== $default && $current !== $default ) {
+			$translation = (int) pll_get_post( (int) $page->ID, $current );
+
+			if ( $translation > 0 && 'publish' === get_post_status( $translation ) ) {
+				$permalink = get_permalink( $translation );
+
+				if ( $permalink ) {
+					return (string) $permalink;
+				}
+			}
+		}
+	}
+
+	return get_permalink( $page );
 }
 
 /**
@@ -177,4 +202,116 @@ function conexao_empregos_featured_image_hint( $content, $post_id ) {
 
 	return $hint . $content;
 }
+
+/**
+ * Published `job` records for the Jobs landing page, in the CURRENT language.
+ *
+ * Stage 6 — the Jobs landing page lists the real Job CPT records (each card
+ * opens the job detail). The set follows the approved B2 archive contract
+ * (the same one Conexao_Event_Query implements for events):
+ *
+ *   - default-language request → published default-language jobs;
+ *   - English request          → published EN jobs PLUS published PT jobs that
+ *     have no EN translation yet (the B2 set) — a PT master that HAS a linked
+ *     EN translation is replaced by it, so one identity never appears twice;
+ *   - records with no language (legacy rows, Polylang inactive) stay visible.
+ *
+ * Card URLs are the records' own permalinks: an EN record links to its
+ * `/en/empregos/{slug}/` detail; an untranslated PT record links to its
+ * canonical Portuguese detail (the measured behaviour of every other B2
+ * archive — the EN-shell single remains reachable at `/en/empregos/{pt-slug}/`
+ * through the language switcher and direct URL).
+ *
+ * The ID list is cached in a language-scoped transient (architecture §18:
+ * PT and EN caches never share a key) and flushed on every job save/delete.
+ *
+ * @param int $limit Maximum number of jobs (newest first).
+ * @return int[] Published job IDs for the current language context.
+ */
+function conexao_empregos_current_jobs( int $limit = 12 ): array {
+	$cache_key = function_exists( 'conexao_lang_cache_key' )
+		? conexao_lang_cache_key( 'conexao_empregos_current_jobs' )
+		: 'conexao_empregos_current_jobs';
+
+	$cached = get_transient( $cache_key );
+	if ( false !== $cached && is_array( $cached ) ) {
+		return array_map( 'intval', $cached );
+	}
+
+	$query_args = array(
+		'post_type'      => 'job',
+		'post_status'    => 'publish',
+		'posts_per_page' => $limit,
+		'fields'         => 'ids',
+		'orderby'        => 'date',
+		'order'          => 'DESC',
+		'no_found_rows'  => true,
+	);
+
+	$current = function_exists( 'conexao_current_language_slug' ) ? conexao_current_language_slug() : '';
+	$default = function_exists( 'conexao_default_language_slug' ) ? conexao_default_language_slug() : '';
+
+	if ( '' !== $current && function_exists( 'pll_get_post_language' ) && function_exists( 'pll_get_post' ) ) {
+		// All languages — the language curation below decides membership
+		// (Polylang's automatic filter would hide the B2 set on EN requests).
+		$query_args['lang'] = '';
+	}
+
+	$ids = get_posts( $query_args );
+
+	if ( '' !== $current && function_exists( 'pll_get_post_language' ) ) {
+		$ids = array_values(
+			array_filter(
+				array_map( 'intval', $ids ),
+				static function ( int $id ) use ( $current, $default ): bool {
+					$language = (string) pll_get_post_language( $id, 'slug' );
+
+					// Legacy rows without a language stay visible everywhere.
+					if ( '' === $language ) {
+						return true;
+					}
+
+					if ( $language === $current ) {
+						return true;
+					}
+
+					// B2: a PT record with no EN translation belongs to the EN
+					// listing; once its translation exists the EN record is
+					// listed instead (never both).
+					if ( 'en' === $current && $language === $default && function_exists( 'pll_get_post' ) ) {
+						$translated = (int) pll_get_post( $id, 'en' );
+						return 0 === $translated || $translated === $id;
+					}
+
+					return false;
+				}
+			)
+		);
+	}
+
+	set_transient( $cache_key, $ids, 5 * MINUTE_IN_SECONDS );
+
+	return $ids;
+}
+
+/**
+ * Flush the Jobs landing listing cache in EVERY language on job save/delete.
+ *
+ * @param int $post_id Post ID.
+ * @return void
+ */
+function conexao_empregos_flush_jobs_cache( $post_id ): void {
+	if ( 'job' !== get_post_type( (int) $post_id ) ) {
+		return;
+	}
+
+	if ( function_exists( 'conexao_flush_language_cache' ) ) {
+		conexao_flush_language_cache( 'conexao_empregos_current_jobs' );
+	} else {
+		delete_transient( 'conexao_empregos_current_jobs' );
+	}
+}
+add_action( 'save_post_job', 'conexao_empregos_flush_jobs_cache' );
+add_action( 'delete_post', 'conexao_empregos_flush_jobs_cache' );
+
 add_filter( 'admin_post_thumbnail_html', 'conexao_empregos_featured_image_hint', 11, 2 );

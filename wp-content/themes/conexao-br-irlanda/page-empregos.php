@@ -113,6 +113,68 @@ get_header();
 		?>
 
 		<?php
+		// "Vagas" — the real Job CPT records, in the current language
+		// (Stage 6). The PT page lists the PT jobs; the EN page lists the EN
+		// jobs (plus, while one remains untranslated, its PT original as the
+		// approved B2 fallback set — never both languages of one identity).
+		// Cards reuse the shared archive-card markup and design tokens; every
+		// card opens the job detail in the card's own language. Hidden entirely
+		// when no published job exists (the existing empty-state convention).
+		$conexao_empregos_jobs = function_exists( 'conexao_empregos_current_jobs' ) ? conexao_empregos_current_jobs() : array();
+		if ( ! empty( $conexao_empregos_jobs ) ) :
+			?>
+			<section class="empregos-jobs" aria-labelledby="empregos-jobs-title">
+				<h2 id="empregos-jobs-title" class="empregos-jobs-title"><?php esc_html_e( 'Vagas', 'conexao-br-irlanda' ); ?></h2>
+				<div class="archive-grid">
+					<?php
+					foreach ( $conexao_empregos_jobs as $conexao_empregos_job_id ) :
+						$conexao_empregos_job = get_post( (int) $conexao_empregos_job_id );
+						if ( ! $conexao_empregos_job instanceof WP_Post ) {
+							continue;
+						}
+						$post = $conexao_empregos_job; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- template loop.
+						setup_postdata( $post );
+						$conexao_job_link = get_permalink();
+						?>
+						<article id="post-<?php the_ID(); ?>" <?php post_class( 'archive-card' ); ?>>
+							<?php if ( has_post_thumbnail() ) : ?>
+								<a href="<?php echo esc_url( $conexao_job_link ); ?>" class="archive-card-image" aria-hidden="true" tabindex="-1">
+									<?php the_post_thumbnail( 'conexao-card', array( 'loading' => 'lazy' ) ); ?>
+								</a>
+							<?php endif; ?>
+							<div class="archive-card-body">
+								<h3 class="archive-card-title"><a href="<?php echo esc_url( $conexao_job_link ); ?>"><?php the_title(); ?></a></h3>
+								<?php $conexao_job_excerpt = trim( wp_trim_words( get_the_excerpt(), 18, '...' ) ); ?>
+								<?php if ( '' !== $conexao_job_excerpt ) : ?>
+									<p class="archive-card-excerpt"><?php echo esc_html( $conexao_job_excerpt ); ?></p>
+								<?php endif; ?>
+								<div class="archive-card-meta">
+									<span>
+										<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+											<circle cx="12" cy="12" r="10"></circle>
+											<polyline points="12 6 12 12 16 14"></polyline>
+										</svg>
+										<?php echo esc_html( get_the_date() ); ?>
+									</span>
+									<span>
+										<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+											<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+											<path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+										</svg>
+										<?php echo esc_html( conexao_reading_time_text() ); ?>
+									</span>
+								</div>
+							</div>
+						</article>
+						<?php
+					endforeach;
+					wp_reset_postdata();
+					?>
+				</div>
+			</section>
+		<?php endif; ?>
+
+		<?php
 		// "Oportunidades de emprego" — the UNIFIED employment opportunities
 		// directory: recruitment agencies, official public-sector recruitment
 		// portals and Employment Permit-history employers in ONE shared,
