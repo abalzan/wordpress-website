@@ -37,6 +37,7 @@ All under `wp-content/plugins/`. Load order matters:
 | `conexao-leisure-migration` | Lazer export/import (ZIP) | docs/plugins/conexao-leisure-migration.md |
 | `conexao-sponsor-migration` | Apoiadores export/import (JSON + embedded images) | docs/plugins/conexao-sponsor-migration.md |
 | `conexao-page-translation` | Stage 4.5 EN page-translation migration (admin importer; activate for the rollout, then remove) | docs/plugins/conexao-page-translation.md |
+| `conexao-blog-translation` | Stage 5 Blog EN translation (EN posts page + one linked EN post per public PT post; admin importer + WP-CLI runner; no frontend effect — activate for the rollout, then remove) | docs/plugins/conexao-blog-translation.md |
 
 ## Theme
 
@@ -52,7 +53,7 @@ Active theme: `conexao-br-irlanda` (wp-content/themes/). Docs: docs/themes/conex
 | `job` | `/empregos/` | Job listings |
 | `sponsor` | `/apoiadores/` | Business directory |
 | `leisure` | `/lazer/` | Tourism directory; local images |
-| `post` | `/blog/` | Native posts (relabelled "Blog") |
+| `post` | `/blog/` | Native posts (relabelled "Blog"); `/en/blog/` is a real EN archive since Stage 5 (B2 fallback while untranslated) |
 
 Taxonomies: `conexao_category` (shared), `conexao_county` (shared), `conexao_tag` (shared), `conexao_town` (events only).
 

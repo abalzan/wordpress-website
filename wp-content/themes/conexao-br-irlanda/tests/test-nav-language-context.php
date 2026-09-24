@@ -11,7 +11,8 @@
  * counterpart (/en/jobs/) is a real linked Polylang translation.
  *
  * A. Jobs resolves to the linked /en/jobs/ translation, not /empregos/.
- * B. Blog stays on the documented B1 /blog/ destination.
+ * B. Blog: the approved EN destination is /en/blog/ — a real English archive
+ *    once the linked EN posts page exists (Stage 5), the B2 fallback before that.
  * C. every EN nav item is audited; only Blog may leave /en/.
  * D. the Portuguese destinations are unchanged.
  * E. no wp_page_menu fallback, no hard-coded nav URLs in header.php.
@@ -136,8 +137,8 @@ if ( $en_lang_set ) {
 		skip( 'A8 EN primary menu not assigned — render-time audit skipped' );
 	}
 	if ( $en_menu_id ) {
-		// Blog is now a B2 destination: /en/blog/ renders PT content under the EN URL
-		// without redirecting to /blog/. So NO nav item should leave the /en/ context.
+		// Blog's approved EN destination is /en/blog/ (real EN archive after Stage 5;
+		// B2 fallback before it), so NO nav item should leave the /en/ context.
 		check( 'A8 (EN) NO nav item leaves the /en/ context (Blog is B2, not B1)', 0 === count( $leaks ), implode( ', ', $leaks ) );
 		check( 'A9 (EN) Jobs never leaks to PT', ! in_array( untrailingslashit( home_url( '/empregos/' ) ), $leaks, true ), implode( ', ', $leaks ) );
 	}
@@ -151,9 +152,22 @@ echo "== B/C. Blog + EN audit ==\n";
 $blog_page_id = (int) get_option( 'page_for_posts' );
 if ( $blog_page_id ) {
 	$en_blog = (int) pll_get_post( $blog_page_id, 'en' );
-	// Blog is now a B2 destination: /en/blog/ renders PT content under the EN URL
-	// without redirecting to /blog/. There is still no EN Blog page translation.
-	check( 'B1 Blog has NO published EN archive/page translation (B2 renders PT under EN)', 0 === $en_blog || 'publish' !== get_post_status( $en_blog ), "en_id={$en_blog}" );
+	// STAGE 5 — the Blog translation state has exactly two approved shapes:
+	//   * no published linked EN posts page → B2 (PT posts under /en/blog/);
+	//   * a published linked EN posts page  → a REAL English archive.
+	// A published-and-linked pair must NOT stay B2; an untranslated posts page
+	// must NOT be treated as translated.
+	$en_blog_linked = $en_blog > 0 && $en_blog !== $blog_page_id
+		&& (int) pll_get_post( $en_blog, 'pt' ) === $blog_page_id;
+	$en_blog_published = $en_blog_linked && 'publish' === get_post_status( $en_blog );
+
+	if ( $en_blog_published ) {
+		check( 'B1 Blog has a published, linked EN posts page (real EN archive)', true, "en_id={$en_blog}" );
+		check( 'B2 Blog is NOT treated as a B2 fallback once translated', ! conexao_should_render_b2_fallback( $blog_page_id ) );
+	} else {
+		check( 'B1 Blog has NO published EN archive/page translation (B2 renders PT under EN)', 0 === $en_blog || ! $en_blog_published, "en_id={$en_blog}" );
+		check( 'B2 Blog is B2-eligible while untranslated', conexao_is_b2_page( $blog_page_id ) );
+	}
 } else {
 	skip( 'B1 no page_for_posts configured' );
 }
@@ -170,7 +184,7 @@ $en_nav_targets = array(
 	'Contact'           => home_url( '/contato/' ),
 );
 check( 'C1 every EN navigation item resolves to a non-empty URL', 0 === count( array_filter( $en_nav_targets, static function ( $u ) { return '' === trim( (string) $u ); } ) ) );
-check( 'C2 Blog resolves to /en/blog/ (B2, not PT /blog/)', false === strpos( untrailingslashit( $en_nav_targets['Blog'] ), '/blog/' ) || strpos( untrailingslashit( $en_nav_targets['Blog'] ), '/en/blog/' ) !== false, $en_nav_targets['Blog'] );
+check( 'C2 Blog resolves to /en/blog/ (never PT /blog/)', false === strpos( untrailingslashit( $en_nav_targets['Blog'] ), '/blog/' ) || strpos( untrailingslashit( $en_nav_targets['Blog'] ), '/en/blog/' ) !== false, $en_nav_targets['Blog'] );
 
 // --- D. PT regression -------------------------------------------------------
 echo "== D. PT regression ==\n";

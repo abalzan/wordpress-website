@@ -11,6 +11,8 @@
 | conexao-event-importer | 1.5.0 | `wp-content/plugins/conexao-event-importer/` |
 | conexao-leisure-migration | 2.0.0 | `wp-content/plugins/conexao-leisure-migration/` |
 | conexao-sponsor-migration | 1.0.0 | `wp-content/plugins/conexao-sponsor-migration/` |
+| conexao-page-translation | 1.0.0 | `wp-content/plugins/conexao-page-translation/` |
+| conexao-blog-translation | 1.0.0 | `wp-content/plugins/conexao-blog-translation/` |
 
 ## Themes
 

@@ -52,7 +52,7 @@ English URLs wrap the same paths in `/en/`:
 | Courses | `/cursos/` | `/en/cursos/` |
 | Sponsors | `/apoiadores/` | `/en/apoiadores/` |
 | Empregos landing | `/empregos/` | `/en/jobs/` (real translation since Stage 3.2; `/en/empregos/` 302 → PT) |
-| Blog | `/blog/` | `/en/blog/` (302 → PT until translated; EN posts live at `/en/{post-slug}/`) |
+| Blog | `/blog/` | `/en/blog/` — **real English archive since Stage 5** (linked EN posts page + translated EN posts); before that, the approved B2 fallback (PT posts under the EN URL + notice). EN posts live at `/en/{en-slug}/`. |
 | County pages + `/irlanda/` | `/dublin/`, `/irlanda/`, … | `/en/dublin/`, `/en/irlanda/` (B2: PT body under EN shell + notice) |
 | Filters | `/eventos/?cidade=dublin` | `/en/eventos/?cidade=dublin` |
 
@@ -161,8 +161,8 @@ Portuguese destinations. Stage 3.3 closes that:
   archive URL and fell back to the Portuguese `/empregos/`, which switched an EN
   visitor back to Portuguese — fixed in
   CONEXAO_BR_EN_NAV_LANGUAGE_CONTEXT_FIX_REPORT.md.
-- **Blog in the EN nav is a B2 destination: `/en/blog/`.** The posts page
-  (`page_for_posts`) has no EN translation, so Blog is allowlisted as B2:
+- **Blog in the EN nav is `/en/blog/`.** While the posts page
+  (`page_for_posts`) has no EN translation Blog is allowlisted as B2:
   `/en/blog/` renders the Portuguese posts under the English shell (notice +
   canonical → PT) and the EN nav item resolves to `/en/blog/` — it never
   redirects back to the Portuguese `/blog/`. `conexao_lang_url('/blog/')` is
@@ -190,6 +190,13 @@ pages) into real linked Polylang translations. See
   English slugs (`/en/housing/`, `/en/healthcare/`, `/en/documents/`, …),
   county pages use `county-<name>` (`/en/county-dublin/`, …), and
   `/irlanda/` becomes `/en/ireland/`.
+- **B2 retires for the Blog too (Stage 5)**: once the posts page has a
+  published linked EN translation *and* the EN posts exist, `/en/blog/` is a
+  genuine English archive (self-canonical, `hreflang` pair, EN pagination,
+  EN category labels, no fallback notice). The allowlist entry `blog` and the
+  `conexao_b2_posts_page_pre_query()` substitution remain in force only for
+  installs where no EN posts page exists yet. See
+  CONEXAO_BR_ENGLISH_BLOG_TRANSLATION_REPORT.md.
 - **B2 retires for pages**: `conexao_b2_page_allowlist()` still exists (it
   stays the mechanism for future content) but every page it allowlisted
   (`irlanda` + the 9 counties) now has a real EN page, so no page renders the
@@ -222,6 +229,37 @@ pages) into real linked Polylang translations. See
   `page`, and Stage 4.5 does not expand it (`inc/rest-language.php` is
   untouched). All Pages being translated does not change the Flutter-facing
   REST surface.
+
+### English rollout state (Stage 5 — Blog translation)
+
+Stage 5 gives the Blog a **real English translation**: the linked EN posts page
+(`/en/blog/`) plus one linked EN translation per public Portuguese post. See
+`CONEXAO_BR_ENGLISH_BLOG_TRANSLATION_REPORT.md` and
+`docs/plugins/conexao-blog-translation.md`.
+
+- **`/en/blog/` is a genuine English archive**: HTTP 200, `<html lang="en-US">`,
+  English archive chrome (theme `.mo` strings), English posts, English pagination,
+  English category labels, self-canonical `/en/blog/`, `hreflang` pair with
+  `/blog/`, and **no B2 fallback notice**. `/blog/` is unchanged and remains
+  self-canonical.
+- **Posts page pair**: the EN posts page is the linked Polylang translation of the
+  PT posts page and reuses the canonical `blog` path (`/blog/` ↔ `/en/blog/`).
+  Because WordPress resolves the posts-page path with a language-blind page
+  lookup, the theme resolves it explicitly in the requested language
+  (`conexao_resolve_posts_page_request()` + `conexao_mark_posts_page_query()` in
+  `inc/polylang.php`); the default language path stays byte-identical to core.
+- **Posts**: `/blog/{pt-slug}/` ↔ `/en/{en-slug}/` — natural English slugs derived
+  from the English title, no `-en`/`-2` suffixes, PT slugs untouched. EN posts
+  keep the PT featured image (shared media), date, author and taxonomy, and carry
+  the linked EN `category` terms.
+- **B2 for the Blog is retired automatically**: `conexao_should_render_b2_fallback()`
+  reports false as soon as the posts page has a published linked EN translation,
+  and the B2 post-set substitution
+  (`conexao_b2_posts_page_pre_query()`) only runs while no EN posts page exists.
+  The approved B2 architecture is untouched for every other destination.
+- **Sitemap**: the theme sitemap now lists blog posts in both languages (PT and
+  EN passes, mirrors a real translation pair, no duplicates, no fallback URLs).
+
 
 ### English rollout state (Stage 4.1 — bilingual REST contract)
 

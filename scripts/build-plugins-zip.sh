@@ -25,6 +25,7 @@ PLUGIN_SLUGS=(
     "conexao-leisure-migration"
     "conexao-sponsor-migration"
     "conexao-page-translation"
+    "conexao-blog-translation"
 )
 
 # Output destination (override with BUILD_OUTPUT_DIR env var if needed)
