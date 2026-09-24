@@ -1,0 +1,2028 @@
+{
+    "note": "authored against inventory 2026-09-24",
+    "entries": [
+        {
+            "seq": 1,
+            "id": 21197,
+            "slug": "dwyer-mcallister-cottage",
+            "title": "Dwyer McAllister Cottage",
+            "pt_excerpt": "Casa rural restaurada aos pés da montanha Keadeen, palco de um episódio da Rebelião de 1798 e hoje pequeno museu de época."
+        },
+        {
+            "seq": 2,
+            "id": 21196,
+            "slug": "national-botanic-gardens-kilmacurragh",
+            "title": "National Botanic Garden of Ireland – Kilmacurragh",
+            "pt_excerpt": "Jardim botânico no condado de Wicklow, parte dos Jardins Botânicos Nacionais, famoso pelos rododendros e pelas árvores raras numa antiga propriedade do século XIX."
+        },
+        {
+            "seq": 3,
+            "id": 21195,
+            "slug": "fore-abbey",
+            "title": "Fore Abbey",
+            "pt_excerpt": "Ruínas do mosteiro fundado por São Feichin no século VII, num vale tranquilo do condado de Westmeath, com as lendárias “Sete Maravilhas de Fore”."
+        },
+        {
+            "seq": 4,
+            "id": 21194,
+            "slug": "roscrea-heritage-centre-roscrea-castle-and-damer-house",
+            "title": "Roscrea Castle, Gardens and Damer House/Black Mills",
+            "pt_excerpt": "Conjunto no centro de Roscrea com um castelo do século XIII, a casa pré-paladiana Damer House e jardins murados com fonte."
+        },
+        {
+            "seq": 5,
+            "id": 21193,
+            "slug": "the-main-guard",
+            "title": "The Main Guard",
+            "pt_excerpt": "Antigo tribunal do século XVII no centro de Clonmel, com arcada de colunas de arenito restaurada e espaço de exposições."
+        },
+        {
+            "seq": 6,
+            "id": 21192,
+            "slug": "famine-warhouse-1848",
+            "title": "Famine Warhouse 1848",
+            "pt_excerpt": "Casa de lavoura perto de Ballingarry que foi palco de um cerco sangrento da Rebelião dos Jovens Irlandeses de 1848, hoje museu."
+        },
+        {
+            "seq": 7,
+            "id": 21191,
+            "slug": "st-marys-church-gowran",
+            "title": "St. Mary’s Church Gowran",
+            "pt_excerpt": "Igreja colegiada do final do século XIII, com túmulos medievais dos Butler e esculturas do “Mestre de Gowran”, hoje monumento nacional."
+        },
+        {
+            "seq": 8,
+            "id": 21190,
+            "slug": "kells-priory",
+            "title": "Kells Priory",
+            "pt_excerpt": "O maior recinto eclesiástico murado da Irlanda, fundado por volta de 1193 e conhecido localmente como os “Sete Castelos de Kells”."
+        },
+        {
+            "seq": 9,
+            "id": 21189,
+            "slug": "dungarvan-castle",
+            "title": "Dungarvan Castle",
+            "pt_excerpt": "Castelo anglo-normando de cerca de 1209 que protegia a entrada do porto de Dungarvan, com um raro “shell keep” poligonal."
+        },
+        {
+            "seq": 10,
+            "id": 21188,
+            "slug": "newmills-corn-and-flax-mills",
+            "title": "Newmills Corn and Flax Mills",
+            "pt_excerpt": "Conjunto industrial do século XIX perto de Letterkenny, com uma das maiores rodas de água em funcionamento do país, que servia a indústria do linho."
+        },
+        {
+            "seq": 11,
+            "id": 21187,
+            "slug": "glebe-house-and-gallery",
+            "title": "Glebe Gallery and Garden – Derek Hill House",
+            "pt_excerpt": "Casa regencial de 1828 perto de Letterkenny onde viveu o pintor Derek Hill, com uma coleção de arte que inclui Picasso, Renoir e Braque."
+        },
+        {
+            "seq": 12,
+            "id": 21186,
+            "slug": "doe-castle",
+            "title": "Doe Castle",
+            "pt_excerpt": "Fortaleza medieval dos séculos XV/XVI à beira-mar em Sheephaven Bay, antiga casa dos chefes MacSweeney; terrenos abertos todo o ano."
+        },
+        {
+            "seq": 13,
+            "id": 21185,
+            "slug": "ballyhack-castle",
+            "title": "Ballyhack Castle",
+            "pt_excerpt": "Casa-torre de cerca de 1450 sobre o estuário de Waterford, provavelmente construída pelos Cavaleiros Hospitalários de São João."
+        },
+        {
+            "seq": 14,
+            "id": 21184,
+            "slug": "ionad-culturtha-an-phiarsaigh-pearses-cottage",
+            "title": "Ionad Cultúrtha an Phiarsaigh Conamara- Pearse’s Cottage and Visitor Centre",
+            "pt_excerpt": "Centro cultural em Ros Muc, no coração da Gaeltacht de Connemara, onde Patrick Pearse construiu a sua casa de verão e que hoje se visita tal como ele a deixou."
+        },
+        {
+            "seq": 15,
+            "id": 21183,
+            "slug": "aughnanure-castle",
+            "title": "Aughnanure Castle",
+            "pt_excerpt": "Casa-torre tardo-medieval mais bem preservada de Connemara, sobre um afloramento rochoso do rio Drimneen, perto do Lough Corrib."
+        },
+        {
+            "seq": 16,
+            "id": 21182,
+            "slug": "athenry-castle",
+            "title": "Athenry Castle",
+            "pt_excerpt": "Casa-torre do século XIII que guardava um vau estratégico no rio Clareen, no centro de uma das vilas medievais mais bem preservadas da Irlanda."
+        },
+        {
+            "seq": 17,
+            "id": 21181,
+            "slug": "desmond-castle-newcastlewest",
+            "title": "Desmond Castle Newcastlewest",
+            "pt_excerpt": "Salão de banquetes medieval do século XV no centro de Newcastle West, com galeria de carvalho restaurada; acesso por visita guiada."
+        },
+        {
+            "seq": 18,
+            "id": 21180,
+            "slug": "desmond-castle-adare",
+            "title": "Adare Castle",
+            "pt_excerpt": "Castelo medieval fortificado nas margens do rio Maigue, com torre quadrada e fosso, ligado aos condes de Desmond; acesso pelo Adare Heritage Centre."
+        },
+        {
+            "seq": 19,
+            "id": 21179,
+            "slug": "askeaton-castle",
+            "title": "Askeaton Castle",
+            "pt_excerpt": "Ruínas de uma fortaleza medieval de 1199 no centro de Askeaton, antiga base dos condes de Desmond — atualmente fechada, apenas vista exterior."
+        },
+        {
+            "seq": 20,
+            "id": 21178,
+            "slug": "blasket-centre-ionad-an-bhlascaoid",
+            "title": "Ionad an Bhlascaoid – The Blasket Centre",
+            "pt_excerpt": "Centro de património dedicado à comunidade de língua irlandesa das Ilhas Blasket, com exposições interativas e miradouro sobre o Atlântico."
+        },
+        {
+            "seq": 21,
+            "id": 21177,
+            "slug": "listowel-castle",
+            "title": "Listowel Castle",
+            "pt_excerpt": "Castelo anglo-normando sobre o rio Feale, último reduto dos Fitzmaurice na Guerra dos Nove Anos, com acesso por visita guiada."
+        },
+        {
+            "seq": 22,
+            "id": 21176,
+            "slug": "ardfert-cathedral",
+            "title": "Ardfert Cathedral",
+            "pt_excerpt": "Conjunto de três igrejas medievais, a mais antiga do século XII, no local do mosteiro fundado por São Brandão, o Navegador."
+        },
+        {
+            "seq": 23,
+            "id": 21175,
+            "slug": "aras-an-uachtarain",
+            "title": "Áras an Uachtaráin",
+            "pt_excerpt": "Residência oficial do Presidente da Irlanda, no Phoenix Park, com visitas guiadas gratuitas aos sábados, sujeitas ao serviço do Estado."
+        },
+        {
+            "seq": 24,
+            "id": 21174,
+            "slug": "st-stephens-green",
+            "title": "St Stephen’s Green",
+            "pt_excerpt": "Um dos parques públicos mais conhecidos da Irlanda, no centro da zona comercial de Dublin, mantido no traçado vitoriano original."
+        },
+        {
+            "seq": 25,
+            "id": 21173,
+            "slug": "st-audens-church",
+            "title": "St Audoen’s Church and Visitor Centre",
+            "pt_excerpt": "A única igreja paroquial medieval que resta em Dublin, dedicada ao bispo de Rouen, com a Capela da Guilda de Santa Ana e o túmulo de Portlester."
+        },
+        {
+            "seq": 26,
+            "id": 21172,
+            "slug": "st-marys-abbey-chapter-house",
+            "title": "St. Mary’s Abbey – Chapter House – Cistercian Monastery",
+            "pt_excerpt": "Restos de um dos maiores e mais importantes mosteiros medievais da Irlanda, com acesso apenas por visita guiada e abertura sazonal."
+        },
+        {
+            "seq": 27,
+            "id": 21171,
+            "slug": "royal-hospital-kilmainham",
+            "title": "Royal Hospital Kilmainham",
+            "pt_excerpt": "Um dos edifícios mais emblemáticos de Dublin e o melhor exemplo irlandês de arquitetura do século XVII, hoje sede do Museu Irlandês de Arte Moderna."
+        },
+        {
+            "seq": 28,
+            "id": 21170,
+            "slug": "rathfarnham-castle",
+            "title": "Rathfarnham Castle",
+            "pt_excerpt": "Castelo isabelino do século XVI com quatro torres, remodelado no século XVIII, com retratos de família e exposições culturais."
+        },
+        {
+            "seq": 29,
+            "id": 21169,
+            "slug": "phoenix-park-peoples-flower-gardens",
+            "title": "Phoenix Park – People’s Flower Gardens",
+            "pt_excerpt": "Jardim de flores vitoriano de 9 hectares dentro do Phoenix Park, com lago ornamental, parque infantil e canteiros sazonais."
+        },
+        {
+            "seq": 30,
+            "id": 21168,
+            "slug": "phoenix-park-visitor-centre-ashtown-castle",
+            "title": "Phoenix Park Visitor Centre, Ashtown Castle and Biodiversity Centre",
+            "pt_excerpt": "Centro de visitantes do Phoenix Park ao lado do Castelo de Ashtown, uma casa-torre redescoberta, com jardim murado vitoriano e exposições."
+        },
+        {
+            "seq": 31,
+            "id": 21167,
+            "slug": "pearse-museum-st-endas-park",
+            "title": "Pearse Museum – St. Enda&#8217;s Park",
+            "pt_excerpt": "Museu na casa onde Patrick Pearse viveu e dirigiu a sua escola de ensino em irlandês entre 1910 e 1916, num parque de cerca de 20 hectares."
+        },
+        {
+            "seq": 32,
+            "id": 21166,
+            "slug": "iveagh-gardens",
+            "title": "Iveagh Gardens",
+            "pt_excerpt": "Conhecidos como o “jardim secreto” de Dublin, com labirinto de teixos, rosário, fontes e cascata, desenhados por Ninian Niven em 1865."
+        },
+        {
+            "seq": 33,
+            "id": 21165,
+            "slug": "irish-national-war-memorial-gardens",
+            "title": "Irish National War Memorial Gardens",
+            "pt_excerpt": "Jardins memoriais em Islandbridge, dedicados aos 49.400 soldados irlandeses mortos na Primeira Guerra Mundial, desenhados por Sir Edwin Lutyens."
+        },
+        {
+            "seq": 34,
+            "id": 21164,
+            "slug": "grangegorman-military-cemetery",
+            "title": "Grangegorman Military Cemetery",
+            "pt_excerpt": "O maior cemitério militar da Irlanda, aberto em 1876 para pessoal do Império Britânico, com túmulos das duas guerras mundiais."
+        },
+        {
+            "seq": 35,
+            "id": 21163,
+            "slug": "government-buildings",
+            "title": "Government Buildings",
+            "pt_excerpt": "Sede de departamentos do Estado irlandês e o último grande edifício público construído pelos britânicos na Irlanda, com visitas guiadas gratuitas aos sábados."
+        },
+        {
+            "seq": 36,
+            "id": 21162,
+            "slug": "garden-of-remembrance",
+            "title": "Garden of Remembrance",
+            "pt_excerpt": "Jardim memorial no centro de Dublin, dedicado a todos os que deram a vida pela liberdade irlandesa, com a escultura dos Filhos de Lir."
+        },
+        {
+            "seq": 37,
+            "id": 21161,
+            "slug": "farmleigh-house-and-estate",
+            "title": "Farmleigh House and Gardens",
+            "pt_excerpt": "Propriedade eduardiana de 78 acres dentro do Phoenix Park, usada como residência oficial de hóspedes do Estado, com jardins e parque abertos ao público."
+        },
+        {
+            "seq": 38,
+            "id": 21160,
+            "slug": "custom-house-visitor-centre",
+            "title": "Custom House Visitor Centre",
+            "pt_excerpt": "Centro de visitantes dedicado à história do edifício da Alfândega de Dublin, da autoria de James Gandon, e a mais de 230 anos de história irlandesa."
+        },
+        {
+            "seq": 39,
+            "id": 21159,
+            "slug": "casino-marino",
+            "title": "Casino Marino",
+            "pt_excerpt": "Pequeno templo de jardim neoclássico do século XVIII, com 16 salas decoradas, considerado uma obra-prima da arquitetura europeia."
+        },
+        {
+            "seq": 40,
+            "id": 21158,
+            "slug": "arbour-hill-cemetery",
+            "title": "Arbour Hill Cemetery",
+            "pt_excerpt": "Cemitério militar onde estão sepultados 14 dos líderes executados do Levante da Páscoa de 1916."
+        },
+        {
+            "seq": 41,
+            "id": 21157,
+            "slug": "fota-arboretum-and-gardens",
+            "title": "Fota Arboretum and Gardens",
+            "pt_excerpt": "Arboreto de 11 hectares na Ilha de Fota com uma das melhores coleções da Europa de árvores e arbustos raros ao ar livre."
+        },
+        {
+            "seq": 42,
+            "id": 21156,
+            "slug": "desmond-castle-kinsale",
+            "title": "Desmond Castle Kinsale",
+            "pt_excerpt": "Casa-torre urbana do início do século XVI no centro de Kinsale, que foi alfândega, prisão e armazém ao longo da sua história."
+        },
+        {
+            "seq": 43,
+            "id": 21155,
+            "slug": "barryscourt-castle",
+            "title": "Barryscourt Castle",
+            "pt_excerpt": "Um dos melhores exemplos de casa-torre irlandesa, construído entre 1392 e 1420, com salões restaurados e jardim de ervas."
+        },
+        {
+            "seq": 44,
+            "id": 21154,
+            "slug": "annes-grove-gardens",
+            "title": "Annes Grove Gardens",
+            "pt_excerpt": "Antiga propriedade da família Annesley no norte de Cork, com jardins paisagísticos de estilo Robinsoniano e uma coleção rara de arbustos floridos."
+        },
+        {
+            "seq": 45,
+            "id": 11724,
+            "slug": "national-design-craft-gallery",
+            "title": "National Design &#038; Craft Gallery",
+            "pt_excerpt": "Única galeria da Irlanda dedicada exclusivamente a design e artesanato, no Castle Yard do século XVIII, ao lado do Kilkenny Castle."
+        },
+        {
+            "seq": 46,
+            "id": 11723,
+            "slug": "cavan-cathedral",
+            "title": "Cavan Cathedral",
+            "pt_excerpt": "Catedral católica de Cavan, dedicada a São Patrício e São Félim, construída na década de 1940 e notável pelo interior com vitrais."
+        },
+        {
+            "seq": 47,
+            "id": 11722,
+            "slug": "jfk-arboretum",
+            "title": "The John F. Kennedy Arboretum",
+            "pt_excerpt": "Arboreto de 623 acres perto de New Ross, dedicado a John F. Kennedy, com mais de 5.000 tipos de árvores e mirante no Slieve Coillte."
+        },
+        {
+            "seq": 48,
+            "id": 11721,
+            "slug": "lough-muckno-leisure-park",
+            "title": "Lough Muckno Leisure Park",
+            "pt_excerpt": "Parque lacustre municipal em Castleblayney, com trilhas, parque infantil, pesca e desportos aquáticos, aberto todo o ano."
+        },
+        {
+            "seq": 49,
+            "id": 11720,
+            "slug": "old-head-of-kinsale",
+            "title": "Old Head of Kinsale",
+            "pt_excerpt": "Ponta rochosa cênica perto de Kinsale, com farol, signal tower e memorial do Lusitania; o percurso exterior e o mirante são de acesso livre."
+        },
+        {
+            "seq": 50,
+            "id": 11719,
+            "slug": "dursey-island",
+            "title": "Dursey Island",
+            "pt_excerpt": "Ilha habitada no fim da península de Beara, alcançada pelo único teleférico da Irlanda, com trilhas costeiras e colônias de aves marinhas."
+        },
+        {
+            "seq": 51,
+            "id": 11718,
+            "slug": "doagh-famine-village",
+            "title": "Doagh Famine Village",
+            "pt_excerpt": "Museu a céu aberto na península de Inishowen que conta a história de uma família de Donegal da Grande Fome até os dias atuais."
+        },
+        {
+            "seq": 52,
+            "id": 11717,
+            "slug": "the-model",
+            "title": "The Model",
+            "pt_excerpt": "Galeria de arte de Sligo e sede da Niland Collection, com importantes obras de Jack B. Yeats e entrada gratuita às galerias."
+        },
+        {
+            "seq": 53,
+            "id": 11716,
+            "slug": "joyce-tower-museum",
+            "title": "James Joyce Tower Museum",
+            "pt_excerpt": "Torre Martello de 1804 onde começa o Ulysses, hoje museu gratuito com coleção joyceana e vista para a baía de Dublin."
+        },
+        {
+            "seq": 54,
+            "id": 11715,
+            "slug": "derrigimlagh",
+            "title": "Derrigimlagh",
+            "pt_excerpt": "Turfeira de Connemara com dois marcos do século XX: as ruínas da estação de rádio transatlântica de Marconi e o memorial da travessia de Alcock e Brown."
+        },
+        {
+            "seq": 55,
+            "id": 11714,
+            "slug": "forty-foot",
+            "title": "The Forty Foot",
+            "pt_excerpt": "Ponto histórico de banho de mar em Sandycove, no extremo sul da baía de Dublin, com tradição de natação o ano inteiro."
+        },
+        {
+            "seq": 56,
+            "id": 11713,
+            "slug": "chester-beatty",
+            "title": "Chester Beatty",
+            "pt_excerpt": "Museu de culturas do mundo dentro do Dublin Castle, com entrada gratuita e coleções da Ásia, do Oriente Médio, do Norte da África e da Europa."
+        },
+        {
+            "seq": 57,
+            "id": 10891,
+            "slug": "king-johns-castle-carlingford",
+            "title": "King John&#8217;s Castle (Carlingford)",
+            "pt_excerpt": "Fortaleza normanda do século XII sobre o Carlingford Lough, com salão medieval e vista para as Mourne Mountains."
+        },
+        {
+            "seq": 58,
+            "id": 10889,
+            "slug": "mount-leinster-nine-stones",
+            "title": "Mount Leinster &#038; Nine Stones",
+            "pt_excerpt": "Ponto mais alto das Blackstairs Mountains (795 m), com mirante dos Nine Stones e vista para quatro condados."
+        },
+        {
+            "seq": 59,
+            "id": 10887,
+            "slug": "oak-park-forest-park",
+            "title": "Oak Park Forest Park",
+            "pt_excerpt": "Floresta de carvalhos e faías com trilhas, lagos e o Oak Park Lake, perto da cidade de Carlow."
+        },
+        {
+            "seq": 60,
+            "id": 10885,
+            "slug": "borris-house",
+            "title": "Borris House",
+            "pt_excerpt": "Casa ancestral dos MacMurrough Kavanagh, reis de Leinster, com salões Tudor e mercado de artesãos."
+        },
+        {
+            "seq": 61,
+            "id": 10883,
+            "slug": "huntington-castle-gardens",
+            "title": "Huntington Castle &#038; Gardens",
+            "pt_excerpt": "Castelo de 1625 da família Durdin-Robertson, com porões medievais, jardins murados e templo druídico."
+        },
+        {
+            "seq": 62,
+            "id": 10881,
+            "slug": "ducketts-grove",
+            "title": "Duckett&#8217;s Grove",
+            "pt_excerpt": "Ruínas góticas vitorianas da mansão Duckett, com walled gardens restaurados e parque público."
+        },
+        {
+            "seq": 63,
+            "id": 10879,
+            "slug": "altamont-gardens",
+            "title": "Altamont Gardens",
+            "pt_excerpt": "Jardins românticos do século XVIII com lago, arboreto e o \"corredor de azaleias\" — entrada gratuita."
+        },
+        {
+            "seq": 64,
+            "id": 10877,
+            "slug": "brownshill-dolmen",
+            "title": "Brownshill Dolmen",
+            "pt_excerpt": "Dólmen com a maior laje de cobertura da Europa: 100 toneladas de granito sobre pedras de suporte de 5.000 anos."
+        },
+        {
+            "seq": 65,
+            "id": 10875,
+            "slug": "millmount-fort-museum",
+            "title": "Millmount Fort &#038; Museum",
+            "pt_excerpt": "Fortaleza sobre motte normanda com vista de Drogheda, abrigando o museu municipal e a torre Martello."
+        },
+        {
+            "seq": 66,
+            "id": 10873,
+            "slug": "carlingford-lough-greenway",
+            "title": "Carlingford Lough Greenway",
+            "pt_excerpt": "Greenway de 10 km ao longo do lough, entre Carlingford e Newry, com vista para as Mourne Mountains."
+        },
+        {
+            "seq": 67,
+            "id": 10871,
+            "slug": "mellifont-abbey",
+            "title": "Mellifont Abbey",
+            "pt_excerpt": "Primeira abadia cisterciense da Irlanda (1142), com lavabo octogonal único e ruínas evocativas."
+        },
+        {
+            "seq": 68,
+            "id": 10869,
+            "slug": "monasterboice",
+            "title": "Monasterboice",
+            "pt_excerpt": "Sítio monástico com as alta cruzes mais famosas da Irlanda, incluindo a Muiredach's Cross do século X."
+        },
+        {
+            "seq": 69,
+            "id": 10867,
+            "slug": "proleek-dolmen",
+            "title": "Proleek Dolmen",
+            "pt_excerpt": "Dólmen megalítico com laje de 40 toneladas, cercado de lendas — quem acertar uma pedra no topo terá sorte."
+        },
+        {
+            "seq": 70,
+            "id": 10865,
+            "slug": "carlingford",
+            "title": "Carlingford",
+            "pt_excerpt": "Vila medieval preservada na costa do Carlingford Lough, com muralhas, castelo e o Carlingford Oyster Festival."
+        },
+        {
+            "seq": 71,
+            "id": 10863,
+            "slug": "mondello-park",
+            "title": "Mondello Park",
+            "pt_excerpt": "Único autódromo internacional da Irlanda, com corridas abertas ao público e experiências de pilotagem."
+        },
+        {
+            "seq": 72,
+            "id": 10861,
+            "slug": "lullymore-heritage-park",
+            "title": "Lullymore Heritage &#038; Discovery Park",
+            "pt_excerpt": "Parque de descoberta numa ilha de calcário na turfeira, com tren, playground, minigolfe e história da turfa."
+        },
+        {
+            "seq": 73,
+            "id": 10859,
+            "slug": "donadea-forest-park",
+            "title": "Donadea Forest Park",
+            "pt_excerpt": "Floresta com trilhas, lago, torre do castelo de Aylmer e o 9/11 Memorial Garden."
+        },
+        {
+            "seq": 74,
+            "id": 10857,
+            "slug": "maynooth-castle",
+            "title": "Maynooth Castle",
+            "pt_excerpt": "Fortaleza dos Fitzgerald, os poderosos condes de Kildare, no campus da universidade mais antiga da Irlanda."
+        },
+        {
+            "seq": 75,
+            "id": 10855,
+            "slug": "pollardstown-fen",
+            "title": "Pollardstown Fen",
+            "pt_excerpt": "Maior fen (pântano alcalino) da Irlanda, reserva natural com passarelas e plantas raras de origem glacial."
+        },
+        {
+            "seq": 76,
+            "id": 10853,
+            "slug": "bog-of-allen-nature-centre",
+            "title": "Bog of Allen Nature Centre",
+            "pt_excerpt": "Centro do Irish Peatland Conservation Council com jardim de sapos, turfeira visitável e exposições sobre pântanos."
+        },
+        {
+            "seq": 77,
+            "id": 10851,
+            "slug": "castletown-house",
+            "title": "Castletown House",
+            "pt_excerpt": "Mansão palladiana de 1722, a maior da Irlanda, com salões restaurados e parque aberto ao público."
+        },
+        {
+            "seq": 78,
+            "id": 10849,
+            "slug": "irish-national-stud-japanese-gardens",
+            "title": "Irish National Stud &#038; Japanese Gardens",
+            "pt_excerpt": "Haras nacional com garanhões campeões, museu do cavalo e os famosos Jardins Japoneses de 1906."
+        },
+        {
+            "seq": 79,
+            "id": 10847,
+            "slug": "curraghchase-forest-park",
+            "title": "Curraghchase Forest Park",
+            "pt_excerpt": "Parque florestal com ruínas da mansão De Vere, trilhas, lago e colônia de morcegos protegida."
+        },
+        {
+            "seq": 80,
+            "id": 10845,
+            "slug": "lough-gur",
+            "title": "Lough Gur",
+            "pt_excerpt": "Lago em forma de rim cercado por megálitos, círculos de pedra e o Grange Stone Circle, o maior da Irlanda."
+        },
+        {
+            "seq": 81,
+            "id": 10843,
+            "slug": "foynes-flying-boat-museum",
+            "title": "Foynes Flying Boat &#038; Maritime Museum",
+            "pt_excerpt": "Museu na antiga base do Pan Am, com réplica em tamanho real do Boeing 314 e a origem do Irish Coffee."
+        },
+        {
+            "seq": 82,
+            "id": 10841,
+            "slug": "adare-village",
+            "title": "Adare",
+            "pt_excerpt": "Vila considerada a mais bonita da Irlanda, com cottages de palha, mosteiros e o castelo dos Desmond."
+        },
+        {
+            "seq": 83,
+            "id": 10839,
+            "slug": "st-marys-cathedral-limerick",
+            "title": "St Mary&#8217;s Cathedral",
+            "pt_excerpt": "Catedral de 1168, o edifício em uso mais antigo de Limerick, com misericórdias medievais raras."
+        },
+        {
+            "seq": 84,
+            "id": 10837,
+            "slug": "hunt-museum",
+            "title": "Hunt Museum",
+            "pt_excerpt": "Coleção de arte e antiguidades dos Hunt, com Picasso, Renoir, Leonardo da Vinci e artefatos célticos."
+        },
+        {
+            "seq": 85,
+            "id": 10835,
+            "slug": "king-johns-castle-limerick",
+            "title": "King John&#8217;s Castle",
+            "pt_excerpt": "Castelo normando de 1210 às margens do Shannon, com exposições interativas sobre cercos e história medieval."
+        },
+        {
+            "seq": 86,
+            "id": 10833,
+            "slug": "holy-cross-abbey",
+            "title": "Holy Cross Abbey",
+            "pt_excerpt": "Abadia cisterciense restaurada do século XII, famosa pela relíquia da Vera Cruz e ainda local de culto."
+        },
+        {
+            "seq": 87,
+            "id": 10831,
+            "slug": "mitchelstown-cave",
+            "title": "Mitchelstown Cave",
+            "pt_excerpt": "Uma das maiores cavernas da Europa, com estalactites gigantes, salões enormes e acústica de concertos."
+        },
+        {
+            "seq": 88,
+            "id": 10829,
+            "slug": "ormond-castle",
+            "title": "Ormond Castle",
+            "pt_excerpt": "Casa isabelina única na Irlanda, construída por Tomás Butler, 10º Conde de Ormond, junto a torres medievais."
+        },
+        {
+            "seq": 89,
+            "id": 10827,
+            "slug": "the-vee-bay-lough",
+            "title": "The Vee &#038; Bay Lough",
+            "pt_excerpt": "Passo de montanha em forma de V com mirante sobre o vale do Suir e o lago glaciar Bay Lough."
+        },
+        {
+            "seq": 90,
+            "id": 10825,
+            "slug": "glen-of-aherlow",
+            "title": "Glen of Aherlow",
+            "pt_excerpt": "Vale cênico entre as Galtee Mountains, com trilhas, mirante do Christ the King e vilas charmosas."
+        },
+        {
+            "seq": 91,
+            "id": 10823,
+            "slug": "swiss-cottage",
+            "title": "Swiss Cottage",
+            "pt_excerpt": "Chalé ornamental de 1810, exemplo perfeito do estilo \"picturesque\", com interior restaurado e floresta."
+        },
+        {
+            "seq": 92,
+            "id": 10821,
+            "slug": "cahir-castle",
+            "title": "Cahir Castle",
+            "pt_excerpt": "Um dos castelos mais bem preservados da Irlanda, do século XIII, numa ilha do rio Suir."
+        },
+        {
+            "seq": 93,
+            "id": 10819,
+            "slug": "rock-of-cashel",
+            "title": "Rock of Cashel",
+            "pt_excerpt": "Conjunto medieval espetacular sobre afloramento de calcário: catedral gótica, capela românica e torre redonda."
+        },
+        {
+            "seq": 94,
+            "id": 10817,
+            "slug": "tintern-abbey-wexford",
+            "title": "Tintern Abbey",
+            "pt_excerpt": "Abadia cisterciense fundada em 1200 por William Marshal, com colunata vitoriana e vale arborizado."
+        },
+        {
+            "seq": 95,
+            "id": 10815,
+            "slug": "ferns-castle",
+            "title": "Ferns Castle",
+            "pt_excerpt": "Castelo normando do século XIII com capela em cruz e vitrais modernos, na antiga capital dos reis de Leinster."
+        },
+        {
+            "seq": 96,
+            "id": 10813,
+            "slug": "wexford-wildfowl-reserve",
+            "title": "Wexford Wildfowl Reserve",
+            "pt_excerpt": "Reserva natural no North Slob, refúgio de inverno de um terço da população mundial de gansos-de-frente-branca da Groenlândia."
+        },
+        {
+            "seq": 97,
+            "id": 10811,
+            "slug": "curracloe-beach",
+            "title": "Curracloe Beach",
+            "pt_excerpt": "Praia de 11 km de areia fina, cenário da abertura de \"O Resgate do Soldado Ryan\", com dunas e trilhas."
+        },
+        {
+            "seq": 98,
+            "id": 10809,
+            "slug": "saltee-islands",
+            "title": "Saltee Islands",
+            "pt_excerpt": "Santuário de aves marinhas com uma das maiores colônias de gansos-patola da Irlanda, acessível por barco de Kilmore Quay."
+        },
+        {
+            "seq": 99,
+            "id": 10807,
+            "slug": "dunbrody-famine-ship",
+            "title": "Dunbrody Famine Ship",
+            "pt_excerpt": "Réplica fiel de um navio de emigrantes da Grande Fome, com tour imersivo sobre a travessia do Atlântico."
+        },
+        {
+            "seq": 100,
+            "id": 10805,
+            "slug": "hook-lighthouse",
+            "title": "Hook Lighthouse",
+            "pt_excerpt": "Farol medieval em operação desde o século XIII — um dos mais antigos do mundo — com tours e café."
+        },
+        {
+            "seq": 101,
+            "id": 10803,
+            "slug": "johnstown-castle",
+            "title": "Johnstown Castle",
+            "pt_excerpt": "Castelo neogótico do século XIX com lagos, jardins e o Museu da Agricultura Irlandesa."
+        },
+        {
+            "seq": 102,
+            "id": 10801,
+            "slug": "irish-national-heritage-park",
+            "title": "Irish National Heritage Park",
+            "pt_excerpt": "Parque de 35 acres que recria 9.000 anos de história irlandesa: cabanas do mesolítico, crannóg, mosteiro e anel normando."
+        },
+        {
+            "seq": 103,
+            "id": 10799,
+            "slug": "coumshingaun-loop",
+            "title": "Coumshingaun Loop (Comeragh Mountains)",
+            "pt_excerpt": "Trilha circular em torno de um lago glaciar num circo de falésias — uma das caminhadas mais espetaculares do sul."
+        },
+        {
+            "seq": 104,
+            "id": 10797,
+            "slug": "ardmore-round-tower",
+            "title": "Ardmore Round Tower &#038; Cathedral",
+            "pt_excerpt": "Sítio monástico de São Declan com torre redonda de 30 m, catedral com esculturas e oratório primitivo."
+        },
+        {
+            "seq": 105,
+            "id": 10795,
+            "slug": "lismore-castle-gardens",
+            "title": "Lismore Castle Gardens",
+            "pt_excerpt": "Jardins históricos do castelo dos duques de Devonshire, com upper e lower gardens sobre o rio Blackwater."
+        },
+        {
+            "seq": 106,
+            "id": 10793,
+            "slug": "mount-congreve-gardens",
+            "title": "Mount Congreve Gardens",
+            "pt_excerpt": "Um dos maiores jardins privados da Europa, com 70 acres de azaleias, rododendros e bosques plantados por Ambrose Congreve."
+        },
+        {
+            "seq": 107,
+            "id": 10791,
+            "slug": "copper-coast-geopark",
+            "title": "Copper Coast Geopark",
+            "pt_excerpt": "Litoral de 25 km com falésias, praias e geologia vulcânica de 460 milhões de anos, patrimônio UNESCO."
+        },
+        {
+            "seq": 108,
+            "id": 10789,
+            "slug": "waterford-greenway",
+            "title": "Waterford Greenway",
+            "pt_excerpt": "Greenway de 46 km sobre antiga ferrovia, com viadutos, túnel e travessia do rio Suir — a mais popular da Irlanda."
+        },
+        {
+            "seq": 109,
+            "id": 10787,
+            "slug": "reginals-tower",
+            "title": "Reginald&#8217;s Tower",
+            "pt_excerpt": "Torre viking do século XIII, o edifício civil mais antigo da Irlanda em uso contínuo."
+        },
+        {
+            "seq": 110,
+            "id": 10785,
+            "slug": "waterford-treasures",
+            "title": "Waterford Treasures Museums",
+            "pt_excerpt": "Conjunto de museus sobre a Irlanda viking e medieval, no coração do Viking Triangle."
+        },
+        {
+            "seq": 111,
+            "id": 10783,
+            "slug": "house-of-waterford-crystal",
+            "title": "House of Waterford Crystal",
+            "pt_excerpt": "Fábrica e centro de visitantes do cristal Waterford, com tour pela produção e galeria de peças únicas."
+        },
+        {
+            "seq": 112,
+            "id": 10781,
+            "slug": "woodstock-gardens",
+            "title": "Woodstock Gardens",
+            "pt_excerpt": "Jardins vitorianos restaurados da mansão Tighe, com arboreto, avenue de teixos e vista do vale do Nore."
+        },
+        {
+            "seq": 113,
+            "id": 10779,
+            "slug": "jerpoint-park",
+            "title": "Jerpoint Park (Newtown Jerpoint)",
+            "pt_excerpt": "Cidade medieval perdida de Newtown Jerpoint, com igreja de São Nicolau e lendas sobre o santo."
+        },
+        {
+            "seq": 114,
+            "id": 10778,
+            "slug": "castlecomer-discovery-park",
+            "title": "Castlecomer Discovery Park",
+            "pt_excerpt": "Parque de aventura em 80 acres de floresta, com arborismo, zip lines, canoagem e trilhas."
+        },
+        {
+            "seq": 115,
+            "id": 10776,
+            "slug": "dunmore-cave",
+            "title": "Dunmore Cave",
+            "pt_excerpt": "Caverna de calcário com formações dramáticas e história ligada a um ataque viking do século X."
+        },
+        {
+            "seq": 116,
+            "id": 10774,
+            "slug": "smithwicks-experience",
+            "title": "Smithwick&#8217;s Experience",
+            "pt_excerpt": "Tour pela antiga cervejaria de Kilkenny, onde o ale Smithwick's é produzido desde 1710."
+        },
+        {
+            "seq": 117,
+            "id": 10772,
+            "slug": "rothe-house-garden",
+            "title": "Rothe House &#038; Garden",
+            "pt_excerpt": "Casa mercantil tudor do século XVII, única do tipo aberta ao público na Irlanda, com jardim de recriação histórica."
+        },
+        {
+            "seq": 118,
+            "id": 10770,
+            "slug": "jerpoint-abbey",
+            "title": "Jerpoint Abbey",
+            "pt_excerpt": "Abadia cisterciense do século XII com esculturas góticas excepcionais e figuras esculpidas nos túmulos."
+        },
+        {
+            "seq": 119,
+            "id": 10768,
+            "slug": "medieval-mile-museum",
+            "title": "Medieval Mile Museum",
+            "pt_excerpt": "Museu na igreja de St Mary sobre a Kilkenny medieval, com cripta e lápidas dos mercadores."
+        },
+        {
+            "seq": 120,
+            "id": 10766,
+            "slug": "kilkenny-castle",
+            "title": "Kilkenny Castle",
+            "pt_excerpt": "Castelo normando de 1195, sede dos duques de Ormonde por seis séculos, com jardins vitorianos."
+        },
+        {
+            "seq": 121,
+            "id": 10764,
+            "slug": "clare-island",
+            "title": "Clare Island",
+            "pt_excerpt": "Ilha da pirata Grace O'Malley na entrada de Clew Bay, com abadia muralhada, farol e trilhas costeiras."
+        },
+        {
+            "seq": 122,
+            "id": 10762,
+            "slug": "wild-nephin-ballycroy-national-park",
+            "title": "Wild Nephin Ballycroy National Park",
+            "pt_excerpt": "Parque nacional de turfeiras selvagens e montanhas Nephin, com centro de visitantes e céus escuros."
+        },
+        {
+            "seq": 123,
+            "id": 10760,
+            "slug": "great-western-greenway",
+            "title": "Great Western Greenway",
+            "pt_excerpt": "Greenway de 42 km sobre antiga ferrovia, de Westport a Achill, um dos passeios de bicicleta mais bonitos da Irlanda."
+        },
+        {
+            "seq": 124,
+            "id": 10758,
+            "slug": "ceide-fields",
+            "title": "Céide Fields",
+            "pt_excerpt": "Sistema agrícola neolítico de 5.500 anos, o mais extenso do mundo, sob a turfeira do norte de Mayo."
+        },
+        {
+            "seq": 125,
+            "id": 10756,
+            "slug": "downpatrick-head",
+            "title": "Downpatrick Head",
+            "pt_excerpt": "Cabeço com o sea stack Dún Briste (\"rota quebrada\"), igreja antiga e poço de São Patrício sobre o Atlântico."
+        },
+        {
+            "seq": 126,
+            "id": 10754,
+            "slug": "national-museum-country-life",
+            "title": "National Museum of Ireland – Country Life",
+            "pt_excerpt": "Museu nacional da vida rural irlandesa, num parque com jardins e moinho, entrada gratuita."
+        },
+        {
+            "seq": 127,
+            "id": 10752,
+            "slug": "westport-house",
+            "title": "Westport House &#038; Adventure Park",
+            "pt_excerpt": "Mansão georgiana da família Browne com parque de aventura, zoológico pequeno e terrenos históricos."
+        },
+        {
+            "seq": 128,
+            "id": 10750,
+            "slug": "keem-bay",
+            "title": "Keem Bay",
+            "pt_excerpt": "Baía em forma de ferradura com areia branca, eleita repetidamente entre as praias mais bonitas da Irlanda."
+        },
+        {
+            "seq": 129,
+            "id": 10748,
+            "slug": "achill-island",
+            "title": "Achill Island",
+            "pt_excerpt": "Maior ilha da Irlanda, ligada por ponte, com falésias de Croaghaun, praias selvagens e vila de Keel."
+        },
+        {
+            "seq": 130,
+            "id": 10746,
+            "slug": "croagh-patrick",
+            "title": "Croagh Patrick",
+            "pt_excerpt": "Montanha sagrada de São Patrício (764 m), com peregrinação anual e vista sobre Clew Bay e suas 365 ilhotas."
+        },
+        {
+            "seq": 131,
+            "id": 10744,
+            "slug": "eagles-flying",
+            "title": "Eagles Flying",
+            "pt_excerpt": "Centro irlandês de aves de rapina com demonstrações de voo de águias, falcões e corujas."
+        },
+        {
+            "seq": 132,
+            "id": 10742,
+            "slug": "drumcliffe",
+            "title": "Drumcliffe",
+            "pt_excerpt": "Sítio monástico do século VI com alta cruz e torre redonda, onde está o túmulo de W.B. Yeats."
+        },
+        {
+            "seq": 133,
+            "id": 10740,
+            "slug": "lissadell-house",
+            "title": "Lissadell House",
+            "pt_excerpt": "Mansão dos Gore-Booth, ligada a Constance Markievicz e a Yeats, com jardins e galeria de exposições."
+        },
+        {
+            "seq": 134,
+            "id": 10738,
+            "slug": "sligo-abbey",
+            "title": "Sligo Abbey",
+            "pt_excerpt": "Abadia dominicana do século XIII, única com altar-mor medieval original preservado na Irlanda."
+        },
+        {
+            "seq": 135,
+            "id": 10736,
+            "slug": "queen-maeves-trail-knocknarea",
+            "title": "Queen Maeve&#8217;s Trail (Knocknarea)",
+            "pt_excerpt": "Trilha até o cairn de pedra da rainha Medb no topo do Knocknarea, com vista de Sligo e do Atlântico."
+        },
+        {
+            "seq": 136,
+            "id": 10734,
+            "slug": "carrowmore-megalithic-cemetery",
+            "title": "Carrowmore Megalithic Cemetery",
+            "pt_excerpt": "Maior conjunto de túmulos megalíticos da Irlanda, com mais de 5.500 anos, sob o olhar do Knocknarea."
+        },
+        {
+            "seq": 137,
+            "id": 10732,
+            "slug": "strandhill-beach",
+            "title": "Strandhill Beach",
+            "pt_excerpt": "Praia de surf aos pés do Knocknarea, com escolas de surf, banhos de sargaço e pôr do sol famoso."
+        },
+        {
+            "seq": 138,
+            "id": 10730,
+            "slug": "benbulben",
+            "title": "Benbulben",
+            "pt_excerpt": "Mesa de calcário símbolo de Sligo, imortalizada por Yeats, com trilha na crista e caminhada fácil na base."
+        },
+        {
+            "seq": 139,
+            "id": 10728,
+            "slug": "ards-forest-park",
+            "title": "Ards Forest Park",
+            "pt_excerpt": "Península florestal com praias, ruínas franciscanas e trilhas costeiras de frente para Sheephaven Bay."
+        },
+        {
+            "seq": 140,
+            "id": 10726,
+            "slug": "errigal",
+            "title": "Errigal",
+            "pt_excerpt": "Montanha mais alta de Donegal (751 m), com subida íngreme e panorama sobre o Poisoned Glen."
+        },
+        {
+            "seq": 141,
+            "id": 10724,
+            "slug": "grianan-of-aileach",
+            "title": "Grianán of Aileach",
+            "pt_excerpt": "Fortaleza de pedra do século VI/VII no topo do Greenan Mountain, antiga sede dos reis de Tyrconnell."
+        },
+        {
+            "seq": 142,
+            "id": 10722,
+            "slug": "fanad-head-lighthouse",
+            "title": "Fanad Head Lighthouse",
+            "pt_excerpt": "Farol icônico de 1817 entre as praias de Fanad, com tours internos e hospedagem no farol."
+        },
+        {
+            "seq": 143,
+            "id": 10720,
+            "slug": "malin-head",
+            "title": "Malin Head",
+            "pt_excerpt": "Ponto mais ao norte da Irlanda, com torre de sinais napoleônica, locações de Star Wars e vistas do Atlântico."
+        },
+        {
+            "seq": 144,
+            "id": 10718,
+            "slug": "donegal-castle",
+            "title": "Donegal Castle",
+            "pt_excerpt": "Fortaleza dos O'Donnell restaurada com mansão jacobina anexa, no centro de Donegal Town."
+        },
+        {
+            "seq": 145,
+            "id": 10716,
+            "slug": "sliabh-liag",
+            "title": "Sliabh Liag (Slieve League)",
+            "pt_excerpt": "Falésias marinhas de quase 600 metros — entre as mais altas da Europa — com a trilha One Man’s Pass."
+        },
+        {
+            "seq": 146,
+            "id": 10714,
+            "slug": "glenveagh-national-park",
+            "title": "Glenveagh National Park",
+            "pt_excerpt": "Segundo maior parque nacional da Irlanda, com castelo, jardins, vales glaciais e águias-reais reintroduzidas."
+        },
+        {
+            "seq": 147,
+            "id": 10712,
+            "slug": "sliabh-beagh",
+            "title": "Sliabh Beagh",
+            "pt_excerpt": "Planalto de turfeira na fronteira com a Irlanda do Norte, com trilhas, mirante e centro de visitantes."
+        },
+        {
+            "seq": 148,
+            "id": 10710,
+            "slug": "patrick-kavanagh-centre",
+            "title": "Patrick Kavanagh Centre",
+            "pt_excerpt": "Centro dedicado ao poeta Patrick Kavanagh na igreja antiga de Inniskeen, sua terra natal."
+        },
+        {
+            "seq": 149,
+            "id": 10708,
+            "slug": "carrickmacross-lace-gallery",
+            "title": "Carrickmacross Lace Gallery",
+            "pt_excerpt": "Ateliê e galeria da famosa renda de Carrickmacross, técnica usada no vestido de noiva de Diana, princesa de Gales."
+        },
+        {
+            "seq": 150,
+            "id": 10706,
+            "slug": "monaghan-county-museum",
+            "title": "Monaghan County Museum",
+            "pt_excerpt": "Primeiro museu de condado da Irlanda, premiado, com coleções sobre artesanato, conflitos e vida rural."
+        },
+        {
+            "seq": 151,
+            "id": 10704,
+            "slug": "rossmore-forest-park",
+            "title": "Rossmore Forest Park",
+            "pt_excerpt": "Antiga propriedade dos Rossmore com trilhas, esculturas de madeira, lagos e ruínas de portais."
+        },
+        {
+            "seq": 152,
+            "id": 10702,
+            "slug": "castle-leslie-estate",
+            "title": "Castle Leslie Estate",
+            "pt_excerpt": "Propriedade da família Leslie desde 1660, com castelo vitoriano, centro equestre, lago e trilhas."
+        },
+        {
+            "seq": 153,
+            "id": 10700,
+            "slug": "belturbet-railway-station",
+            "title": "Belturbet Railway Station",
+            "pt_excerpt": "Estação ferroviária de bitola estreita restaurada, com museu ferroviário e vagões de época."
+        },
+        {
+            "seq": 154,
+            "id": 10698,
+            "slug": "cavan-county-museum",
+            "title": "Cavan County Museum",
+            "pt_excerpt": "Museu premiado com a maior réplica de trincheira da Primeira Guerra Mundial ao ar livre na Irlanda."
+        },
+        {
+            "seq": 155,
+            "id": 10696,
+            "slug": "shannon-pot",
+            "title": "Shannon Pot",
+            "pt_excerpt": "Nascente do rio Shannon, o mais longo da Irlanda, num poço cárstico nas encostas do Cuilcagh."
+        },
+        {
+            "seq": 156,
+            "id": 10694,
+            "slug": "dun-a-ri-forest-park",
+            "title": "Dún a Rí Forest Park",
+            "pt_excerpt": "Parque florestal com cabanas de gelo, ponte romana e lendas locais, nas margens do rio Cabra."
+        },
+        {
+            "seq": 157,
+            "id": 10692,
+            "slug": "killykeen-forest-park",
+            "title": "Killykeen Forest Park",
+            "pt_excerpt": "Penínsulas florestais entre as ilhotas do Lough Oughter, com trilhas, caiaque e pesca."
+        },
+        {
+            "seq": 158,
+            "id": 10690,
+            "slug": "cavan-burren-park",
+            "title": "Cavan Burren Park",
+            "pt_excerpt": "Paisagem cárstica com megálitos, dolmens e trilhas interpretativas no Geoparque Global Marble Arch Caves."
+        },
+        {
+            "seq": 159,
+            "id": 10688,
+            "slug": "sean-mac-diarmada-cottage",
+            "title": "Seán Mac Diarmada Cottage",
+            "pt_excerpt": "Casa natal de um dos signatários da Proclamação de 1916, preservada como museu no norte de Leitrim."
+        },
+        {
+            "seq": 160,
+            "id": 10686,
+            "slug": "lough-rynn-castle-gardens",
+            "title": "Lough Rynn Castle Gardens",
+            "pt_excerpt": "Jardins históricos da propriedade dos Clements, com labirinto, walled garden e vista para o lago."
+        },
+        {
+            "seq": 161,
+            "id": 10684,
+            "slug": "lough-allen",
+            "title": "Lough Allen",
+            "pt_excerpt": "Lago serrilhado no alto do Shannon, cercado pelas montanhas de Arigna e Sliabh an Iarainn."
+        },
+        {
+            "seq": 162,
+            "id": 10682,
+            "slug": "acres-lake-floating-boardwalk",
+            "title": "Acres Lake Floating Boardwalk",
+            "pt_excerpt": "Passarela flutuante de 600 m sobre o Lough Allen, parte do Shannon Blueway, com trilhas e caiaque."
+        },
+        {
+            "seq": 163,
+            "id": 10680,
+            "slug": "parkes-castle",
+            "title": "Parke&#8217;s Castle",
+            "pt_excerpt": "Castelo-forte do século XVII restaurado às margens do Lough Gill, com exposição sobre o plantation."
+        },
+        {
+            "seq": 164,
+            "id": 10678,
+            "slug": "glencar-waterfall",
+            "title": "Glencar Waterfall",
+            "pt_excerpt": "Cascata de 15 metros imortalizada por W.B. Yeats, perto de Sligo, com trilha curta e área de piquenique."
+        },
+        {
+            "seq": 165,
+            "id": 10676,
+            "slug": "roscommon-castle",
+            "title": "Roscommon Castle",
+            "pt_excerpt": "Castelo normando do século XIII em ruínas evocativas, com parque público e lago ao redor."
+        },
+        {
+            "seq": 166,
+            "id": 10674,
+            "slug": "lough-key-forest-park",
+            "title": "Lough Key Forest &#038; Activity Park",
+            "pt_excerpt": "Parque florestal com ilhas, torre de observação, zip line, bungalows e trilhas para todas as idades."
+        },
+        {
+            "seq": 167,
+            "id": 10672,
+            "slug": "arigna-mining-experience",
+            "title": "Arigna Mining Experience",
+            "pt_excerpt": "Tour guiado por mina de carvão real conduzido por ex-mineradores, nas colinas de Arigna."
+        },
+        {
+            "seq": 168,
+            "id": 10670,
+            "slug": "strokestown-park-famine-museum",
+            "title": "Strokestown Park &#038; National Famine Museum",
+            "pt_excerpt": "Mansão georgiana com o Museu Nacional da Grande Fome e jardins murados restaurados."
+        },
+        {
+            "seq": 169,
+            "id": 10668,
+            "slug": "boyle-abbey",
+            "title": "Boyle Abbey",
+            "pt_excerpt": "Abadia cisterciense do século XII com claustro impressionante, no coração de Boyle."
+        },
+        {
+            "seq": 170,
+            "id": 10666,
+            "slug": "rathcroghan",
+            "title": "Rathcroghan",
+            "pt_excerpt": "Capital real antiga de Connacht e porta de entrada para o outro mundo na mitologia irlandesa."
+        },
+        {
+            "seq": 171,
+            "id": 10664,
+            "slug": "lough-ree",
+            "title": "Lough Ree",
+            "pt_excerpt": "Grande lago do rio Shannon com ilhas, pesca, passeios de barco e praias fluviais."
+        },
+        {
+            "seq": 172,
+            "id": 10662,
+            "slug": "newcastle-wood",
+            "title": "Newcastle Wood",
+            "pt_excerpt": "Floresta de coníferas e folhosas com trilhas tranquilas perto de Ballymahon."
+        },
+        {
+            "seq": 173,
+            "id": 10660,
+            "slug": "royal-canal-greenway",
+            "title": "Royal Canal Greenway",
+            "pt_excerpt": "Greenway de 130 km ao longo do Royal Canal, de Dublin a Cloondara — o trecho final fica em Longford."
+        },
+        {
+            "seq": 174,
+            "id": 10658,
+            "slug": "granard-motte-bailey",
+            "title": "Granard Motte &#038; Bailey",
+            "pt_excerpt": "Motte normanda do século XII sobre morro antigo, com estátua de Santa Kitirine e vistas amplas."
+        },
+        {
+            "seq": 175,
+            "id": 10656,
+            "slug": "ardagh-heritage-village",
+            "title": "Ardagh Heritage Village",
+            "pt_excerpt": "Vila vencedora de prêmios de conservação, com verde central pitoresco e centro de interpretação."
+        },
+        {
+            "seq": 176,
+            "id": 10654,
+            "slug": "corlea-trackway",
+            "title": "Corlea Trackway Visitor Centre",
+            "pt_excerpt": "Centro que protege uma estrada de carvalho de 2.000 anos construída sobre a turfeira, única na Europa."
+        },
+        {
+            "seq": 177,
+            "id": 10653,
+            "slug": "glendeer-pet-farm",
+            "title": "Glendeer Pet Farm",
+            "pt_excerpt": "Fazenda de animais aberta ao público com cabras, cordeiros, aves e playground coberto."
+        },
+        {
+            "seq": 178,
+            "id": 10651,
+            "slug": "mullaghmeen-forest",
+            "title": "Mullaghmeen Forest",
+            "pt_excerpt": "Grande floresta de folhosas plantadas, com trilhas e vista para o Lough Derravaragh."
+        },
+        {
+            "seq": 179,
+            "id": 10649,
+            "slug": "kilbeggan-distillery",
+            "title": "Kilbeggan Distillery Experience",
+            "pt_excerpt": "Destilaria licenciada mais antiga do mundo (1757), com moinho a vapor funcionando e degustações."
+        },
+        {
+            "seq": 180,
+            "id": 10647,
+            "slug": "athlone-castle",
+            "title": "Athlone Castle Visitor Centre",
+            "pt_excerpt": "Castelo normando do século XII no rio Shannon, com museu interativo sobre o cerco de Athlone."
+        },
+        {
+            "seq": 181,
+            "id": 10645,
+            "slug": "belvedere-house-gardens",
+            "title": "Belvedere House Gardens &#038; Park",
+            "pt_excerpt": "Casa de campo do século XVIII com jardins, folly \"Jealous Wall\" e eventos familiares o ano inteiro."
+        },
+        {
+            "seq": 182,
+            "id": 10643,
+            "slug": "tullamore-dew-experience",
+            "title": "Tullamore D.E.W. Experience",
+            "pt_excerpt": "Centro de visitantes do whisky Tullamore D.E.W. num armazém do século XIX, com degustações guiadas."
+        },
+        {
+            "seq": 183,
+            "id": 10641,
+            "slug": "charleville-forest-castle",
+            "title": "Charleville Forest Castle",
+            "pt_excerpt": "Castelo neogótico do século XIX cercado por floresta antiga de carvalhos, com tours e eventos."
+        },
+        {
+            "seq": 184,
+            "id": 10639,
+            "slug": "lough-boora-discovery-park",
+            "title": "Lough Boora Discovery Park",
+            "pt_excerpt": "Parque de turfeiras regeneradas com esculturas ao ar livre, trilhas de caminhada e ciclismo e aves raras."
+        },
+        {
+            "seq": 185,
+            "id": 10637,
+            "slug": "birr-castle-demesne",
+            "title": "Birr Castle Demesne",
+            "pt_excerpt": "Propriedade científica dos Parsons com jardins premiados, o telescópio gigante do século XIX e centro de ciência."
+        },
+        {
+            "seq": 186,
+            "id": 10635,
+            "slug": "clonmacnoise",
+            "title": "Clonmacnoise",
+            "pt_excerpt": "Um dos mosteiros mais importantes da Europa medieval, às margens do rio Shannon, com torres redondas e alta cruzes."
+        },
+        {
+            "seq": 187,
+            "id": 10633,
+            "slug": "slieve-bloom-mountains",
+            "title": "Slieve Bloom Mountains",
+            "pt_excerpt": "Montanhas de turfeira e floresta entre Laois e Offaly, com trilhas, cachoeiras e mirantes panorâmicos."
+        },
+        {
+            "seq": 188,
+            "id": 10631,
+            "slug": "abbeyleix-heritage-house",
+            "title": "Abbeyleix Heritage House",
+            "pt_excerpt": "Centro de patrimônio que conta a história planejada da vila georgiana de Abbeyleix e do tapete local."
+        },
+        {
+            "seq": 189,
+            "id": 10629,
+            "slug": "timahoe-round-tower",
+            "title": "Timahoe Round Tower",
+            "pt_excerpt": "Torre redonda do século XII considerada uma das mais belas da Irlanda, com portal ricamente decorado."
+        },
+        {
+            "seq": 190,
+            "id": 10627,
+            "slug": "heywood-gardens",
+            "title": "Heywood Gardens",
+            "pt_excerpt": "Jardins formais dos séculos XVIII/XIX com terraços, lago e o famoso \"jardim secreto\" circular."
+        },
+        {
+            "seq": 191,
+            "id": 10625,
+            "slug": "emo-court",
+            "title": "Emo Court",
+            "pt_excerpt": "Mansão neoclássica do século XVIII com jardins e lago desenhados por Capability Brown; entrada gratuita."
+        },
+        {
+            "seq": 192,
+            "id": 10623,
+            "slug": "rock-of-dunamase",
+            "title": "Rock of Dunamase",
+            "pt_excerpt": "Fortaleza normanda em ruínas sobre afloramento rochoso, com vistas de 360° pelo interior de Laois."
+        },
+        {
+            "seq": 193,
+            "id": 10621,
+            "slug": "banna-strand",
+            "title": "Banna Strand",
+            "pt_excerpt": "Praia extensa de areia dourada ao norte de Tralee, com dunas e águas ideais para surf e banho."
+        },
+        {
+            "seq": 194,
+            "id": 10619,
+            "slug": "muckross-abbey",
+            "title": "Muckross Abbey",
+            "pt_excerpt": "Abadia franciscana do século XV com claustro e um enorme teixo central, no coração do parque nacional."
+        },
+        {
+            "seq": 195,
+            "id": 10617,
+            "slug": "gallarus-oratory",
+            "title": "Gallarus Oratory",
+            "pt_excerpt": "Oratório cristão primitivo em pedra seca, com mais de 1.200 anos, em forma de casco de barco invertido."
+        },
+        {
+            "seq": 196,
+            "id": 10615,
+            "slug": "derrynane-house",
+            "title": "Derrynane House &#038; National Historic Park",
+            "pt_excerpt": "Casa de Daniel O'Connell, o Libertador, dentro de um parque costeiro com praia e jardins subtropicais."
+        },
+        {
+            "seq": 197,
+            "id": 10613,
+            "slug": "kerry-cliffs",
+            "title": "Kerry Cliffs",
+            "pt_excerpt": "Falésias de mais de 300 metros com vista para Skellig Michael, no Anel de Skellig."
+        },
+        {
+            "seq": 198,
+            "id": 10611,
+            "slug": "valentia-island",
+            "title": "Valentia Island",
+            "pt_excerpt": "Ilha conectada por ponte e ferry, com pegadas de dinossauro, jardins subtropicais e o farol de Cromwell Point."
+        },
+        {
+            "seq": 199,
+            "id": 10609,
+            "slug": "skellig-michael",
+            "title": "Skellig Michael",
+            "pt_excerpt": "Patrimônio Mundial da UNESCO: mosteiro do século VI no topo de ilha rochosa no Atlântico, cenário de Star Wars."
+        },
+        {
+            "seq": 200,
+            "id": 10607,
+            "slug": "doneraile-park",
+            "title": "Doneraile Park",
+            "pt_excerpt": "Parque paisagístico do século XVIII com cervos, trilhas e playground, entrada gratuita."
+        },
+        {
+            "seq": 201,
+            "id": 10605,
+            "slug": "spike-island-cork",
+            "title": "Spike Island",
+            "pt_excerpt": "Ilha-fortaleza no porto de Cork, já a maior prisão do mundo, hoje museu premiado acessível por ferry."
+        },
+        {
+            "seq": 202,
+            "id": 10603,
+            "slug": "garnish-island",
+            "title": "Garnish Island",
+            "pt_excerpt": "Ilha-jardim na baía de Glengarriff, famosa pelos jardins italianos, torre martelo e focas no trajeto de barco."
+        },
+        {
+            "seq": 203,
+            "id": 10601,
+            "slug": "blackrock-castle-observatory",
+            "title": "Blackrock Castle Observatory",
+            "pt_excerpt": "Castelo do século XVI transformado em observatório de ciências astronômicas às margens do rio Lee."
+        },
+        {
+            "seq": 204,
+            "id": 10599,
+            "slug": "cork-city-gaol",
+            "title": "Cork City Gaol",
+            "pt_excerpt": "Antiga prisão vitoriana com figuras de cera e audioguia sobre dois séculos de vida carcerária."
+        },
+        {
+            "seq": 205,
+            "id": 10597,
+            "slug": "english-market-cork",
+            "title": "English Market",
+            "pt_excerpt": "Mercado coberto histórico do século XVIII, templo da gastronomia de Cork com bancas de peixe, queijos e quitandas."
+        },
+        {
+            "seq": 206,
+            "id": 10595,
+            "slug": "vandeleur-walled-garden",
+            "title": "Vandeleur Walled Garden",
+            "pt_excerpt": "Jardim murado do século XIX restaurado, com estufa vitoriana e café, no oeste de Clare."
+        },
+        {
+            "seq": 207,
+            "id": 10593,
+            "slug": "craggaunowen",
+            "title": "Craggaunowen",
+            "pt_excerpt": "Parque de história viva que recria a Irlanda pré-histórica e medieval, com crannóg e casa fortificada."
+        },
+        {
+            "seq": 208,
+            "id": 10591,
+            "slug": "spanish-point-beach",
+            "title": "Spanish Point Beach",
+            "pt_excerpt": "Baía de areia com águas calmas e história ligada à Armada Espanhola, popular para famílias e surf."
+        },
+        {
+            "seq": 209,
+            "id": 10589,
+            "slug": "holy-island-inis-cealtra",
+            "title": "Holy Island (Inis Cealtra)",
+            "pt_excerpt": "Ilha sagrada no Lough Derg com mosteiro do século VII, células de pedra e cruzes antigas."
+        },
+        {
+            "seq": 210,
+            "id": 10587,
+            "slug": "scattery-island",
+            "title": "Scattery Island",
+            "pt_excerpt": "Ilha monástica no estuário do Shannon, com torre redonda, ruínas de igrejas e colônia de focas."
+        },
+        {
+            "seq": 211,
+            "id": 10585,
+            "slug": "ennis-friary",
+            "title": "Ennis Friary",
+            "pt_excerpt": "Convento franciscano do século XIII com esculturas medievais notáveis, no centro de Ennis."
+        },
+        {
+            "seq": 212,
+            "id": 10583,
+            "slug": "thoor-ballylee",
+            "title": "Thoor Ballylee",
+            "pt_excerpt": "Torre normanda do século XIV onde viveu o poeta W.B. Yeats, chamada por ele de \"o lugar mais bonito do mundo\"."
+        },
+        {
+            "seq": 213,
+            "id": 10581,
+            "slug": "portumna-castle-gardens",
+            "title": "Portumna Castle &#038; Gardens",
+            "pt_excerpt": "Mansão fortificada do século XVII às margens do Lough Derg, com jardins restaurados e parque florestal."
+        },
+        {
+            "seq": 214,
+            "id": 10579,
+            "slug": "coole-park",
+            "title": "Coole Park",
+            "pt_excerpt": "Reserva natural e antiga propriedade de Lady Gregory, coração do Renascimento Literário irlandês."
+        },
+        {
+            "seq": 215,
+            "id": 10577,
+            "slug": "brigits-garden",
+            "title": "Brigit&#8217;s Garden",
+            "pt_excerpt": "Jardins inspirados nas festas celtas, com jardim solar, floresta antiga e playground natural."
+        },
+        {
+            "seq": 216,
+            "id": 10575,
+            "slug": "galway-city-museum",
+            "title": "Galway City Museum",
+            "pt_excerpt": "Museu moderno sobre a história de Galway, do período medieval à cultura das Ilhas Aran."
+        },
+        {
+            "seq": 217,
+            "id": 10573,
+            "slug": "spanish-arch-long-walk",
+            "title": "Spanish Arch &#038; Long Walk",
+            "pt_excerpt": "Arco do século XVI à beira do rio Corrib e as coloridas casas do Long Walk, cartão-postal de Galway."
+        },
+        {
+            "seq": 218,
+            "id": 10571,
+            "slug": "dowth",
+            "title": "Dowth Passage Tomb",
+            "pt_excerpt": "Terceiro grande túmulo de passagem do Brú na Bóinne, com 5.000 anos, aberto a visitas guiadas."
+        },
+        {
+            "seq": 219,
+            "id": 10569,
+            "slug": "sonairte-ecology-centre",
+            "title": "Sonairte Ecology Centre",
+            "pt_excerpt": "Centro de ecologia e horta orgânica numa fazenda histórica perto do mar, com trilhas e loja vegetariana."
+        },
+        {
+            "seq": 220,
+            "id": 10567,
+            "slug": "kells-historic-town",
+            "title": "Kells Historic Town",
+            "pt_excerpt": "Vila monástica histórica, antiga casa do Livro de Kells, com alta cruzes e torre redonda."
+        },
+        {
+            "seq": 221,
+            "id": 10565,
+            "slug": "bective-abbey",
+            "title": "Bective Abbey",
+            "pt_excerpt": "Ruínas de abadia cisterciense do século XII às margens do rio Boyne, cenário do filme Braveheart."
+        },
+        {
+            "seq": 222,
+            "id": 10563,
+            "slug": "emerald-park",
+            "title": "Emerald Park",
+            "pt_excerpt": "Parque temático e zoológico (antigo Tayto Park) com montanhas-russas, zoo e atrações para toda a família."
+        },
+        {
+            "seq": 223,
+            "id": 10561,
+            "slug": "wicklow-way",
+            "title": "The Wicklow Way",
+            "pt_excerpt": "A trilha de longa distância mais antiga da Irlanda: 131 km pelas montanhas de Wicklow, de Dublin a Clonegal."
+        },
+        {
+            "seq": 224,
+            "id": 10559,
+            "slug": "mount-usher-gardens",
+            "title": "Mount Usher Gardens",
+            "pt_excerpt": "Jardins românticos às margens do rio Vartry, com plantas de todo o mundo e estilo de jardim selvagem."
+        },
+        {
+            "seq": 225,
+            "id": 10557,
+            "slug": "killruddery-house-gardens",
+            "title": "Killruddery House &#038; Gardens",
+            "pt_excerpt": "Mansão do século XVII ainda habitada, com jardins formais, orangerie e mercado de produtores aos sábados."
+        },
+        {
+            "seq": 226,
+            "id": 10555,
+            "slug": "brittas-bay-beach",
+            "title": "Brittas Bay Beach",
+            "pt_excerpt": "Uma das melhores praias da costa leste, com 4 km de areia dourada e dunas protegidas."
+        },
+        {
+            "seq": 227,
+            "id": 10553,
+            "slug": "wicklow-historic-gaol",
+            "title": "Wicklow&#8217;s Historic Gaol",
+            "pt_excerpt": "Prisão histórica do século XVIII transformada em museu interativo sobre dois séculos de história sombria."
+        },
+        {
+            "seq": 228,
+            "id": 10551,
+            "slug": "russborough-house",
+            "title": "Russborough House",
+            "pt_excerpt": "Mansão palladiana do século XVIII com interior ornamentado, labirinto e vista para as montanhas de Wicklow."
+        },
+        {
+            "seq": 229,
+            "id": 10549,
+            "slug": "portmarnock-beach",
+            "title": "Portmarnock Beach (Velvet Strand)",
+            "pt_excerpt": "Longa praia de areia ao norte de Dublin, popular para caminhadas, banhos e esportes aquáticos."
+        },
+        {
+            "seq": 230,
+            "id": 10547,
+            "slug": "dun-laoghaire-east-pier",
+            "title": "Dún Laoghaire East Pier",
+            "pt_excerpt": "Calçadão marítimo de 1,3 km com vistas da baía de Dublin, ideal para caminhadas à beira-mar."
+        },
+        {
+            "seq": 231,
+            "id": 10545,
+            "slug": "glasnevin-cemetery-museum",
+            "title": "Glasnevin Cemetery Museum",
+            "pt_excerpt": "Cemitério histórico onde repousam os grandes nomes da independência irlandesa, com museu e visitas guiadas."
+        },
+        {
+            "seq": 232,
+            "id": 10543,
+            "slug": "national-botanic-gardens-dublin",
+            "title": "National Botanic Gardens",
+            "pt_excerpt": "Jardins botânicos nacionais com estufas vitorianas, mais de 15 mil espécies de plantas e entrada gratuita."
+        },
+        {
+            "seq": 233,
+            "id": 10541,
+            "slug": "epic-irish-emigration-museum",
+            "title": "EPIC The Irish Emigration Museum",
+            "pt_excerpt": "Museu interativo premiado que conta a história dos 10 milhões de irlandeses que emigraram pelo mundo."
+        },
+        {
+            "seq": 234,
+            "id": 10539,
+            "slug": "national-museum-archaeology",
+            "title": "National Museum of Ireland – Archaeology",
+            "pt_excerpt": "Museu nacional com tesouros da Irlanda antiga: artefatos vikings, ouro da Idade do Bronze e corpos de pântano."
+        },
+        {
+            "seq": 235,
+            "id": 10200,
+            "slug": "inch-beach",
+            "title": "Inch Beach",
+            "pt_excerpt": "Longa praia de areia na península de Dingle, popular para surf e caminhadas."
+        },
+        {
+            "seq": 236,
+            "id": 10199,
+            "slug": "dingle-peninsula",
+            "title": "Dingle Peninsula",
+            "pt_excerpt": "Península gaélica com praias selvagens, Slea Head e o centro urbano de Dingle."
+        },
+        {
+            "seq": 237,
+            "id": 10198,
+            "slug": "ring-of-kerry",
+            "title": "Ring of Kerry",
+            "pt_excerpt": "Rota cênica circular de 179 km pela península de Iveragh, com vistas costeiras espetaculares."
+        },
+        {
+            "seq": 238,
+            "id": 10197,
+            "slug": "gap-of-dunloe",
+            "title": "Gap of Dunloe",
+            "pt_excerpt": "Desfiladeiro glaciar entre montanhas, percorrido por carruagens e trilhas."
+        },
+        {
+            "seq": 239,
+            "id": 10196,
+            "slug": "torc-waterfall",
+            "title": "Torc Waterfall",
+            "pt_excerpt": "Cascata de 20 metros rodeada de floresta, nas encostas do Monte Torc."
+        },
+        {
+            "seq": 240,
+            "id": 10195,
+            "slug": "ross-castle",
+            "title": "Ross Castle",
+            "pt_excerpt": "Castelo do século XV às margens do Lago de Leane, com passeios de barco."
+        },
+        {
+            "seq": 241,
+            "id": 10194,
+            "slug": "muckross-house",
+            "title": "Muckross House",
+            "pt_excerpt": "Mansão vitoriana no coração do parque, com jardins e quintas tradicionais."
+        },
+        {
+            "seq": 242,
+            "id": 10193,
+            "slug": "killarney-national-park",
+            "title": "Killarney National Park",
+            "pt_excerpt": "Primeiro parque nacional da Irlanda, com lagos, montanhas e o castelo de Ross."
+        },
+        {
+            "seq": 243,
+            "id": 10192,
+            "slug": "mizen-head",
+            "title": "Mizen Head",
+            "pt_excerpt": "Ponto mais a sudoeste da Irlanda, com ponte sobre o desfiladeiro, sinal marítimo e vistas do Atlântico."
+        },
+        {
+            "seq": 244,
+            "id": 10191,
+            "slug": "charles-fort",
+            "title": "Charles Fort",
+            "pt_excerpt": "Forte em estrela do século XVII na entrada do porto de Kinsale."
+        },
+        {
+            "seq": 245,
+            "id": 10190,
+            "slug": "kinsale",
+            "title": "Kinsale",
+            "pt_excerpt": "Vila costeira pitoresca com ruas coloridas, gastronomia premiada e uma história marítima rica."
+        },
+        {
+            "seq": 246,
+            "id": 10189,
+            "slug": "jameson-distillery-midleton",
+            "title": "Jameson Distillery Midleton",
+            "pt_excerpt": "Destilaria histórica onde se produz o whisky Jameson, com visitas guiadas e degustações."
+        },
+        {
+            "seq": 247,
+            "id": 10188,
+            "slug": "fota-wildlife-park",
+            "title": "Fota Wildlife Park",
+            "pt_excerpt": "Parque de vida selvagem na ilha de Fota, com animais em recintos abertos e um castelo."
+        },
+        {
+            "seq": 248,
+            "id": 10187,
+            "slug": "titanic-experience-cobh",
+            "title": "Titanic Experience Cobh",
+            "pt_excerpt": "Museu interativo que recria a história do Titanic e da sua ligação com Cobh."
+        },
+        {
+            "seq": 249,
+            "id": 10186,
+            "slug": "cobh",
+            "title": "Cobh",
+            "pt_excerpt": "Cidade portuária histórica, última paragem do Titanic e porto de partida de milhões de emigrantes."
+        },
+        {
+            "seq": 250,
+            "id": 10185,
+            "slug": "blarney-castle",
+            "title": "Blarney Castle",
+            "pt_excerpt": "Castelo medieval famoso pela Pedra de Blarney, cujo beijo concede \"o dom da eloquência\"."
+        },
+        {
+            "seq": 251,
+            "id": 10184,
+            "slug": "kilkee-cliffs",
+            "title": "Kilkee Cliffs",
+            "pt_excerpt": "Passarela costeira ao longo de falésias com formações rochosas características."
+        },
+        {
+            "seq": 252,
+            "id": 10183,
+            "slug": "lahinch-beach",
+            "title": "Lahinch Beach",
+            "pt_excerpt": "Praia de areia popular para surf e banhos de mar na costa oeste da Irlanda."
+        },
+        {
+            "seq": 253,
+            "id": 10182,
+            "slug": "loop-head",
+            "title": "Loop Head",
+            "pt_excerpt": "Península com falésias e um farol clássico na entrada do estuário do Shannon."
+        },
+        {
+            "seq": 254,
+            "id": 10181,
+            "slug": "doolin-cave",
+            "title": "Doolin Cave",
+            "pt_excerpt": "Caverna com um dos maiores estalactites pendentes do mundo."
+        },
+        {
+            "seq": 255,
+            "id": 10180,
+            "slug": "aillwee-caves",
+            "title": "Aillwee Caves",
+            "pt_excerpt": "Sistema de cavernas no Burren com formações de pedra e uma cascata subterrânea."
+        },
+        {
+            "seq": 256,
+            "id": 10179,
+            "slug": "bunratty-castle-folk-park",
+            "title": "Bunratty Castle &amp; Folk Park",
+            "pt_excerpt": "Castelo do século XV restaurado com um parque folclórico que recria a vida rural irlandesa."
+        },
+        {
+            "seq": 257,
+            "id": 10178,
+            "slug": "burren-national-park",
+            "title": "Burren National Park",
+            "pt_excerpt": "Paisagem cárstica única de calcário com flora rara e trilhas no Condado de Clare."
+        },
+        {
+            "seq": 258,
+            "id": 10177,
+            "slug": "cliffs-of-moher",
+            "title": "Cliffs of Moher",
+            "pt_excerpt": "Falésias de 214 metros sobre o Oceano Atlântico, uma das atrações naturais mais famosas da Irlanda."
+        },
+        {
+            "seq": 259,
+            "id": 10176,
+            "slug": "galway-atlantaquaria",
+            "title": "Galway Atlantaquaria",
+            "pt_excerpt": "Aquário nacional da Irlanda, em Salthill, com vida marinha local e tanques interativos."
+        },
+        {
+            "seq": 260,
+            "id": 10175,
+            "slug": "diamond-hill",
+            "title": "Diamond Hill",
+            "pt_excerpt": "Trilha em Connemara com vistas panorâmicas da baía de Ballynakill e das Twelve Bens."
+        },
+        {
+            "seq": 261,
+            "id": 10174,
+            "slug": "dun-aonghasa",
+            "title": "Dún Aonghasa",
+            "pt_excerpt": "Forte de pedra pré-histórico na borda de um penhasco de 100 m na ilha de Inishmore."
+        },
+        {
+            "seq": 262,
+            "id": 10173,
+            "slug": "aran-islands",
+            "title": "Aran Islands",
+            "pt_excerpt": "Ilhas gaélicas na foz da Baía de Galway, famosas pelas fortalezas de pedra e cultura tradicional."
+        },
+        {
+            "seq": 263,
+            "id": 10172,
+            "slug": "sky-road",
+            "title": "Sky Road",
+            "pt_excerpt": "Rota costeira cênica ao redor da península de Kingstown, com vistas de Clifden e da baía."
+        },
+        {
+            "seq": 264,
+            "id": 10171,
+            "slug": "salthill",
+            "title": "Salthill",
+            "pt_excerpt": "Promenade litorânea de Galway, com praia, piscina de mar e vista para a baía."
+        },
+        {
+            "seq": 265,
+            "id": 10170,
+            "slug": "connemara-national-park",
+            "title": "Connemara National Park",
+            "pt_excerpt": "Parque nacional de montanhas, turfeiras e pôneis selvagens, com trilhas até o Diamond Hill."
+        },
+        {
+            "seq": 266,
+            "id": 10169,
+            "slug": "kylemore-abbey",
+            "title": "Kylemore Abbey",
+            "pt_excerpt": "Mosteiro e castelo do século XIX num cenário lacustre deslumbrante em Connemara."
+        },
+        {
+            "seq": 267,
+            "id": 10168,
+            "slug": "battle-of-the-boyne-visitor-centre",
+            "title": "Battle of the Boyne Visitor Centre",
+            "pt_excerpt": "Centro de visitantes que conta a história da Batalha do Boyne de 1690, na casa de Oldbridge."
+        },
+        {
+            "seq": 268,
+            "id": 10167,
+            "slug": "loughcrew",
+            "title": "Loughcrew",
+            "pt_excerpt": "Conjunto de túmulos de passagem neolíticos nas colinas de Loughcrew, com arte rupestre."
+        },
+        {
+            "seq": 269,
+            "id": 10166,
+            "slug": "slane-castle",
+            "title": "Slane Castle",
+            "pt_excerpt": "Castelo histórico às margens do rio Boyne, conhecido pelos seus concertos e destilaria."
+        },
+        {
+            "seq": 270,
+            "id": 10165,
+            "slug": "trim-castle",
+            "title": "Trim Castle",
+            "pt_excerpt": "O maior castelo anglo-normando da Irlanda, famoso por ter sido locação do filme \"Braveheart\"."
+        },
+        {
+            "seq": 271,
+            "id": 10164,
+            "slug": "hill-of-tara",
+            "title": "Hill of Tara",
+            "pt_excerpt": "Antiga sede dos Reis Supremos da Irlanda, com monumentos e vistas panorâmicas."
+        },
+        {
+            "seq": 272,
+            "id": 10163,
+            "slug": "knowth",
+            "title": "Knowth",
+            "pt_excerpt": "Grande túmulo de passagem neolítico com a maior coleção de arte megalítica da Europa ocidental."
+        },
+        {
+            "seq": 273,
+            "id": 10162,
+            "slug": "newgrange",
+            "title": "Newgrange",
+            "pt_excerpt": "Túmulo de passagem neolítico com mais de 5.000 anos, mais antigo que Stonehenge e as pirâmides."
+        },
+        {
+            "seq": 274,
+            "id": 10161,
+            "slug": "avondale-forest-park",
+            "title": "Avondale Forest Park",
+            "pt_excerpt": "Parque florestal com trilhas, passeios de copa de árvores e história ligada a Charles Stewart Parnell."
+        },
+        {
+            "seq": 275,
+            "id": 10160,
+            "slug": "sally-gap",
+            "title": "Sally Gap",
+            "pt_excerpt": "Passo de montanha cênico nas montanhas de Wicklow, rodeado de turfeiras e berços dos rios Liffey e Dargle."
+        },
+        {
+            "seq": 276,
+            "id": 10159,
+            "slug": "great-sugar-loaf",
+            "title": "Great Sugar Loaf",
+            "pt_excerpt": "Pico de montanha em forma de cúpula com vistas panorâmicas das montanhas de Wicklow e da costa."
+        },
+        {
+            "seq": 277,
+            "id": 10158,
+            "slug": "bray-head",
+            "title": "Bray Head",
+            "pt_excerpt": "Trilha costeira com uma grande cruz no topo e vistas da baía de Bray e das montanhas de Wicklow."
+        },
+        {
+            "seq": 278,
+            "id": 10157,
+            "slug": "powerscourt-waterfall",
+            "title": "Powerscourt Waterfall",
+            "pt_excerpt": "A cachoeira mais alta da Irlanda, com 121 metros, cercada por trilhas na floresta."
+        },
+        {
+            "seq": 279,
+            "id": 10156,
+            "slug": "powerscourt-estate",
+            "title": "Powerscourt Estate",
+            "pt_excerpt": "Mansão histórica com jardins premiados e o Terraço da Cachoeira; também há um centro de compras e café."
+        },
+        {
+            "seq": 280,
+            "id": 10155,
+            "slug": "glendalough",
+            "title": "Glendalough",
+            "pt_excerpt": "Assentamento monástico do século VI num vale glacial com lagos e trilhas."
+        },
+        {
+            "seq": 281,
+            "id": 10154,
+            "slug": "wicklow-mountains-national-park",
+            "title": "Wicklow Mountains National Park",
+            "pt_excerpt": "Parque nacional de montanhas, lagos e vales glaciais, conhecido como o \"Jardim da Irlanda\"."
+        },
+        {
+            "seq": 282,
+            "id": 10153,
+            "slug": "malahide-castle-gardens",
+            "title": "Malahide Castle &amp; Gardens",
+            "pt_excerpt": "Castelo de 800 anos com jardins exuberantes, localizado na vila litorânea de Malahide."
+        },
+        {
+            "seq": 283,
+            "id": 10152,
+            "slug": "howth-cliff-walk",
+            "title": "Howth Cliff Walk",
+            "pt_excerpt": "Trilha costeira espetacular ao redor da península de Howth, com vistas do mar da Irlanda."
+        },
+        {
+            "seq": 284,
+            "id": 10151,
+            "slug": "dublin-zoo",
+            "title": "Dublin Zoo",
+            "pt_excerpt": "Zoológico no Phoenix Park com animais de todo o mundo e programas de conservação."
+        },
+        {
+            "seq": 285,
+            "id": 10150,
+            "slug": "phoenix-park",
+            "title": "Phoenix Park",
+            "pt_excerpt": "Um dos maiores parques urbanos fechados da Europa, lar de veados selvagens, a residência presidencial e o Dublin Zoo."
+        },
+        {
+            "seq": 286,
+            "id": 10149,
+            "slug": "guinness-storehouse",
+            "title": "Guinness Storehouse",
+            "pt_excerpt": "A famosa fábrica e museu da cerveja Guinness, com o bar panorâmico Gravity no topo."
+        },
+        {
+            "seq": 287,
+            "id": 10148,
+            "slug": "kilmainham-gaol",
+            "title": "Kilmainham Gaol",
+            "pt_excerpt": "Prisão histórica que desempenhou papel central na luta pela independência irlandesa. Museu imperdível."
+        },
+        {
+            "seq": 288,
+            "id": 10147,
+            "slug": "dublin-castle",
+            "title": "Dublin Castle",
+            "pt_excerpt": "Castelo histórico no coração de Dublin, sede do governo britânico na Irlanda por séculos e agora um complexo de museus e salões de estado."
+        },
+        {
+            "seq": 289,
+            "id": 10146,
+            "slug": "trinity-college-book-of-kells",
+            "title": "Trinity College &amp; Book of Kells",
+            "pt_excerpt": "A icônica universidade irlandesa e o famoso Livro de Kells, um dos mais importantes manuscritos medievais do mundo."
+        }
+    ]
+}
