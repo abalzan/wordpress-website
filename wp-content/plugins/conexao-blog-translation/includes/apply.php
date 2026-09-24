@@ -246,7 +246,11 @@ function conexao_blog_translation_ensure_posts_page( array $page, bool $dry_run,
 			return $out;
 		}
 
-		set_transient( 'conexao_blog_translation_shared_slug', (string) $page['slug'], 5 * MINUTE_IN_SECONDS );
+		// The EN posts page intentionally reuses the canonical `blog` path, so the
+	// shared-slug filter must be active for the insert AND for every later
+	// update of that page's slug (otherwise wp_unique_post_slug() renames it
+	// to blog-2 the first time this migration is re-run).
+	set_transient( 'conexao_blog_translation_shared_slug', (string) $page['slug'], 5 * MINUTE_IN_SECONDS );
 		add_filter( 'wp_unique_post_slug', 'conexao_blog_translation_shared_slug', 10, 6 );
 
 		$en_id = wp_insert_post(
@@ -261,9 +265,6 @@ function conexao_blog_translation_ensure_posts_page( array $page, bool $dry_run,
 			),
 			true
 		);
-
-		remove_filter( 'wp_unique_post_slug', 'conexao_blog_translation_shared_slug', 10 );
-		delete_transient( 'conexao_blog_translation_shared_slug' );
 
 		if ( is_wp_error( $en_id ) ) {
 			$summary['posts_page'] = 'error: ' . $en_id->get_error_message();
@@ -295,6 +296,28 @@ function conexao_blog_translation_ensure_posts_page( array $page, bool $dry_run,
 		}
 	}
 
+	// Repair a drifted slug (a previous run, an editor, or a duplicate-slug
+	// fallback) so the English archive always lives at the declared path.
+	$en_page = get_post( $en_id );
+
+	if ( $en_page instanceof WP_Post && $en_page->post_name !== (string) $page['slug'] ) {
+		wp_update_post( array( 'ID' => $en_id, 'post_name' => (string) $page['slug'] ) );
+		$summary['posts_page'] = 'slug-repaired';
+	}
+
+	remove_filter( 'wp_unique_post_slug', 'conexao_blog_translation_shared_slug', 10 );
+	delete_transient( 'conexao_blog_translation_shared_slug' );
+
+	// The posts page is a routing object: its per-language URL and the rewrite
+	// rules that resolve it are derived from the Polylang language data, which is
+	// cached. Refresh both so /en/blog/ is routable immediately after the run
+	// (same refresh Polylang performs when the option itself changes).
+	if ( function_exists( 'PLL' ) && PLL() && isset( PLL()->model ) ) {
+		PLL()->model->clean_languages_cache();
+		pll_languages_list();
+	}
+	flush_rewrite_rules( false );
+
 	if ( ! conexao_blog_translation_pair_ok( $pt_id, $en_id ) ) {
 		$summary['posts_page'] = 'error: translation link verification failed';
 		++$summary['errors'];
@@ -305,6 +328,10 @@ function conexao_blog_translation_ensure_posts_page( array $page, bool $dry_run,
 		'pt_slug' => 'blog (posts page)',
 		'action'  => $summary['posts_page'],
 		'message' => sprintf( 'posts page #%d linked to EN posts page #%d (%s)', $pt_id, $en_id, get_permalink( $en_id ) ),
+		'pt_id'   => $pt_id,
+		'en_id'   => $en_id,
+		'en_url'  => (string) get_permalink( $en_id ),
+		'links'   => array(),
 	);
 
 	return array( 'pt_id' => $pt_id, 'en_id' => $en_id, 'status' => $summary['posts_page'] );
@@ -409,8 +436,9 @@ function conexao_blog_translation_run( array $args = array() ): array {
 
 		$en_id       = (int) pll_get_post( $pt_id, 'en' );
 		$existing    = $en_id > 0;
-		$en_content  = conexao_blog_translation_localize_links( (string) $en['content'], (array) $en['link_map'], $resolved_links );
-		$row['links'] = $resolved_links;
+		$resolved_links = array();
+		$en_content     = conexao_blog_translation_localize_links( (string) $en['en_content'], (array) $en['link_map'], $resolved_links );
+		$row['links']   = $resolved_links;
 
 		if ( $dry_run ) {
 			$row['action']  = $existing ? 'would-update' : 'would-create';
@@ -508,7 +536,8 @@ function conexao_blog_translation_run( array $args = array() ): array {
 
 			$en_id  = (int) $en_ids[ $pt_slug ]['en'];
 			$before = (string) get_post_field( 'post_content', $en_id );
-			$after  = conexao_blog_translation_localize_links( $before, $link_map, $resolved );
+			$resolved = array();
+			$after    = conexao_blog_translation_localize_links( $before, $link_map, $resolved );
 
 			if ( $after !== $before ) {
 				wp_update_post( array( 'ID' => $en_id, 'post_content' => $after ) );

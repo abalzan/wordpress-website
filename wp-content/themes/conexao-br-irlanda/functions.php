@@ -3240,12 +3240,15 @@ function conexao_b2_posts_page_is_en_request(): bool {
 	// STAGE 5 — a real, published EN posts page (the linked translation of
 	// this posts page) RETIRES the fallback: `/en/blog/` then serves the
 	// English archive through WordPress/Polylang itself, so the Portuguese
-	// post set must never be substituted for it. The B2 architecture stays
-	// in force for every destination that has no EN record yet
-	// (conexao_should_render_b2_fallback() is the single B2 decision point:
-	// it returns false as soon as a published linked EN translation exists).
-	if ( function_exists( 'conexao_should_render_b2_fallback' ) && ! conexao_should_render_b2_fallback( $posts_page_id ) ) {
-		return false;
+	// post set must never be substituted for it. Only the presence of that EN
+	// posts page changes anything here — every install that has not run the
+	// Blog translation keeps the exact pre-Stage-5 fallback behaviour.
+	if ( function_exists( 'pll_get_post' ) ) {
+		$en_posts_page = (int) pll_get_post( $posts_page_id, 'en' );
+
+		if ( $en_posts_page > 0 && $en_posts_page !== $posts_page_id && 'publish' === get_post_status( $en_posts_page ) ) {
+			return false;
+		}
 	}
 
 	$pt_path = untrailingslashit( (string) wp_parse_url( (string) get_permalink( $posts_page_id ), PHP_URL_PATH ) );

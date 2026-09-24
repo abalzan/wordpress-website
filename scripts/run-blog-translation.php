@@ -22,6 +22,9 @@ $argv_args = isset( $args ) ? (array) $args : array();
 $dry_run   = (bool) array_intersect( array( 'dry-run', '--dry-run' ), $argv_args );
 $json      = (bool) array_intersect( array( 'json', '--json' ), $argv_args );
 
+// WP-CLI's eval-file passes positional tokens (flags would be parsed as unknown
+// options), so `wp eval-file - dry-run json` is the supported invocation.
+
 if ( ! function_exists( 'conexao_blog_translation_run' ) ) {
 	echo "ERROR: activated plugin conexao-blog-translation is required.\n";
 	return;

@@ -84,8 +84,8 @@ def main():
         links = []
         for rule in (data.get("link_map") or []):
             links.append(
-                "{ 'from' => " + php_str(rule["from"]) + ", "
-                "'to_pt_post_slug' => " + php_str(rule["to_pt_post_slug"]) + " }"
+                "array( 'from' => " + php_str(rule["from"]) + ", "
+                "'to_pt_post_slug' => " + php_str(rule["to_pt_post_slug"]) + " )"
             )
         link_php = "array( " + ", ".join(links) + " )" if links else "array()"
 

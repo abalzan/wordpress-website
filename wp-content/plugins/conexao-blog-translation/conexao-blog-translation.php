@@ -1,5 +1,14 @@
 <?php
 /**
+ * Plugin Name: Conexão BR Irlanda — EN Blog Translation (Stage 5)
+ * Description: One-shot, auditable migration that turns the Blog from the approved B2 fallback into a real English translation: creates the linked EN posts page (so /en/blog/ is a genuine English archive), one linked EN translation per public Portuguese post (human-authored content in includes/translation-map.php), linked EN category terms, Polylang relationships verified in both directions, internal links resolved through the Polylang relationship, and a completeness audit whose gate is 'eligible public PT posts missing EN = 0'. Portuguese originals are never modified. Admin screen (Tools → EN Blog Translations) with dry-run preview; no frontend behaviour, safe to deactivate after the rollout.
+ * Version: 1.0.0
+ * Requires PHP: 7.4
+ * Text Domain: conexao-blog-translation
+ *
+ * @package Conexao_Blog_Translation
+ */
+/**
  * Conexão BR Irlanda — EN Blog Translation (Stage 5).
  *
  * Turns the Blog from the approved B2 fallback (`/en/blog/` rendering the

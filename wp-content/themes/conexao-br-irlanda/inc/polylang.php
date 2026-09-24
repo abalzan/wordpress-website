@@ -562,6 +562,110 @@ function conexao_switch_language_in_current_url( string $target_slug ): string {
 }
 
 /**
+ * STAGE 5 — resolve the posts-page request in the REQUESTED language.
+ *
+ * The static posts page (Blog) is identified by WordPress through the
+ * `page_for_posts` option, which Polylang filters per language. When the
+ * English posts page reuses the canonical `blog` path (the approved
+ * `/en/blog/` shape), the parsed request carries only `pagename=blog` and
+ * WordPress' language-blind page lookup returns the FIRST page with that
+ * slug — the Portuguese one — so the request looks like a language mismatch
+ * and Polylang's canonical redirect sends /en/blog/ back to /blog/.
+ *
+ * Rewriting that ambiguous slug to the explicit `page_id` of the posts page
+ * of the CURRENT language keeps WordPress and Polylang in agreement:
+ *  - EN with a real EN posts page  → /en/blog/ serves the English archive;
+ *  - EN without one (B2 fallback)  → `page_for_posts` falls back to the
+ *    Portuguese page, so this resolves to the exact page WordPress already
+ *    resolved and the approved fallback is untouched;
+ *  - PT                            → the same page as before (no-op).
+ *
+ * Only a request whose parsed path is exactly the posts page's own slug is
+ * touched — no other page, archive or URL shape can be affected.
+ *
+ * @param array $query_vars Parsed request query vars (WP `request` filter).
+ * @return array
+ */
+function conexao_resolve_posts_page_request( $query_vars ) {
+	if ( is_admin() || ! is_array( $query_vars ) || ! conexao_polylang_active() ) {
+		return $query_vars;
+	}
+
+	if ( empty( $query_vars['pagename'] ) || ! empty( $query_vars['page_id'] ) ) {
+		return $query_vars;
+	}
+
+	// Only a prefixed (non-default) language request can be ambiguous: the
+	// default language keeps WordPress' own resolution untouched, so its
+	// request handling is byte-identical to the pre-Stage-5 behaviour.
+	$requested = isset( $query_vars['lang'] ) ? sanitize_key( (string) $query_vars['lang'] ) : '';
+
+	if ( '' === $requested || $requested === conexao_default_language_slug() ) {
+		return $query_vars;
+	}
+
+	$posts_page_id = (int) get_option( 'page_for_posts' );
+
+	if ( $posts_page_id <= 0 ) {
+		return $query_vars;
+	}
+
+	$posts_page = get_post( $posts_page_id );
+
+	if ( ! $posts_page instanceof WP_Post || 'publish' !== $posts_page->post_status ) {
+		return $query_vars;
+	}
+
+	if ( trim( (string) $query_vars['pagename'], '/' ) !== $posts_page->post_name ) {
+		return $query_vars;
+	}
+
+	unset( $query_vars['pagename'] );
+	$query_vars['page_id'] = $posts_page_id;
+
+	return $query_vars;
+}
+add_filter( 'request', 'conexao_resolve_posts_page_request', 20 );
+
+/**
+ * STAGE 5 — give the resolved posts-page request the posts-page semantics.
+ *
+ * The companion of conexao_resolve_posts_page_request(): that filter hands
+ * WordPress the explicit `page_id` of the posts page of the requested
+ * language. The query must then behave like the posts archive (a posts loop
+ * honouring `?categoria=`, pagination and the archive filters) instead of a
+ * single-page query: the page id answered the ROUTING question, not the
+ * CONTENT question, so it is cleared here. Only a main query whose page_id
+ * is exactly the current language's posts page is touched, i.e. only the
+ * request shape created above — no other query on the site is affected.
+ *
+ * @param WP_Query $query Main query.
+ * @return void
+ */
+function conexao_mark_posts_page_query( $query ) {
+	if ( is_admin() || ! $query instanceof WP_Query || ! $query->is_main_query() ) {
+		return;
+	}
+
+	if ( ! conexao_polylang_active() ) {
+		return;
+	}
+
+	$posts_page_id = (int) get_option( 'page_for_posts' );
+
+	if ( $posts_page_id <= 0 || (int) $query->get( 'page_id' ) !== $posts_page_id ) {
+		return;
+	}
+
+	$query->is_page       = false;
+	$query->is_singular   = false;
+	$query->is_home       = true;
+	$query->is_posts_page = true;
+	$query->set( 'page_id', 0 );
+}
+add_action( 'pre_get_posts', 'conexao_mark_posts_page_query', 1 );
+
+/**
  * Language-aware URL of the native posts page (Blog).
  *
  * The WordPress posts archive at `/blog/` is served by the `page_for_posts`
