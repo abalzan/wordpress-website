@@ -3,3 +3,4 @@ dist/
 scripts/__pycache__/
 .agents/skills/
 .idea/.local/
+__pycache__/

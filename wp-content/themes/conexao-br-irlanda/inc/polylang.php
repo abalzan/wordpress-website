@@ -635,9 +635,10 @@ add_filter( 'request', 'conexao_resolve_posts_page_request', 20 );
  * language. The query must then behave like the posts archive (a posts loop
  * honouring `?categoria=`, pagination and the archive filters) instead of a
  * single-page query: the page id answered the ROUTING question, not the
- * CONTENT question, so it is cleared here. Only a main query whose page_id
- * is exactly the current language's posts page is touched, i.e. only the
- * request shape created above — no other query on the site is affected.
+ * CONTENT question, so it is cleared here. Only a main query whose page_id is
+ * exactly the posts page of the current language is touched: the shape created
+ * above, plus a hand-written `?page_id=<posts page>` request — which WordPress
+ * itself also answers with the posts archive. No other query is affected.
  *
  * @param WP_Query $query Main query.
  * @return void
