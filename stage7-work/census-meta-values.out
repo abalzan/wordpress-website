@@ -1,0 +1,685 @@
+records: 289
+
+== meta field value language census (unique-value counts by detected language) ==
+  _leisure_address: {'': 39, 'en': 11, 'pt': 3}
+  _leisure_county: {'': 289}
+  _leisure_discover_ireland: {'': 60, 'en': 24, 'tie': 5}
+  _leisure_free: {'pt': 40, '': 94}
+  _leisure_image_alt_text: {'pt': 43, 'en': 81, '': 152, 'tie': 12}
+  _leisure_image_attribution: {'pt': 282, 'tie': 3, 'en': 3}
+  _leisure_image_author: {'': 256, 'en': 22, 'pt': 4}
+  _leisure_image_license: {'': 231, 'en': 57}
+  _leisure_image_source: {'': 288}
+  _leisure_image_source_url: {'': 207, 'en': 70, 'tie': 9, 'pt': 2}
+  _leisure_image_status: {'': 288}
+  _leisure_official_website: {'': 132, 'en': 61, 'tie': 9, 'pt': 1}
+  _leisure_practical_last_checked: {'': 56}
+  _leisure_practical_notes: {'pt': 56}
+  _leisure_practical_source_url: {'': 30, 'en': 23, 'tie': 1}
+  _leisure_town: {'': 272, 'en': 10, 'pt': 2}
+  _leisure_website: {'en': 10, '': 29, 'tie': 1}
+
+== meta fields with ANY English-detected value ==
+  _leisure_official_website | national-botanic-gardens-kilmacurragh | 'https://heritageireland.ie/places-to-visit/national-botanic-gardens-kilmacurragh/'
+  _leisure_official_website | roscrea-heritage-centre-roscrea-castle-and-damer-house | 'https://heritageireland.ie/places-to-visit/roscrea-heritage-centre-roscrea-castle-and-damer-house/'
+  _leisure_official_website | dungarvan-castle | 'https://heritageireland.ie/places-to-visit/dungarvan-castle/'
+  _leisure_official_website | doe-castle | 'https://heritageireland.ie/places-to-visit/doe-castle/'
+  _leisure_official_website | ballyhack-castle | 'https://heritageireland.ie/places-to-visit/ballyhack-castle/'
+  _leisure_official_website | aughnanure-castle | 'https://heritageireland.ie/places-to-visit/aughnanure-castle/'
+  _leisure_official_website | athenry-castle | 'https://heritageireland.ie/places-to-visit/athenry-castle/'
+  _leisure_official_website | desmond-castle-newcastlewest | 'https://heritageireland.ie/places-to-visit/desmond-castle-newcastlewest/'
+  _leisure_official_website | desmond-castle-adare | 'https://heritageireland.ie/places-to-visit/adare-castle/'
+  _leisure_official_website | askeaton-castle | 'https://heritageireland.ie/places-to-visit/askeaton-castle/'
+  _leisure_official_website | listowel-castle | 'https://heritageireland.ie/places-to-visit/listowel-castle/'
+  _leisure_official_website | rathfarnham-castle | 'https://heritageireland.ie/places-to-visit/rathfarnham-castle/'
+  _leisure_official_website | phoenix-park-peoples-flower-gardens | 'https://heritageireland.ie/places-to-visit/phoenix-park-peoples-flower-gardens/'
+  _leisure_official_website | phoenix-park-visitor-centre-ashtown-castle | 'https://heritageireland.ie/places-to-visit/phoenix-park-visitor-centre-ashtown-castle/'
+  _leisure_official_website | iveagh-gardens | 'https://www.iveaghgardens.ie/'
+  _leisure_official_website | irish-national-war-memorial-gardens | 'https://heritageireland.ie/places-to-visit/irish-national-war-memorial-gardens/'
+  _leisure_official_website | garden-of-remembrance | 'https://heritageireland.ie/places-to-visit/garden-of-remembrance/'
+  _leisure_official_website | custom-house-visitor-centre | 'https://heritageireland.ie/places-to-visit/custom-house-visitor-centre/'
+  _leisure_official_website | fota-arboretum-and-gardens | 'https://heritageireland.ie/places-to-visit/fota-arboretum-and-gardens/'
+  _leisure_official_website | desmond-castle-kinsale | 'https://heritageireland.ie/places-to-visit/desmond-castle-kinsale/'
+  _leisure_official_website | barryscourt-castle | 'https://heritageireland.ie/places-to-visit/barryscourt-castle/'
+  _leisure_official_website | annes-grove-gardens | 'https://heritageireland.ie/places-to-visit/annes-grove-gardens/'
+  _leisure_official_website | king-johns-castle-carlingford | 'https://heritageireland.ie/places-to-visit/carlingford-castle/'
+  _leisure_official_website | huntington-castle-gardens | 'https://huntingtoncastle.com/'
+  _leisure_official_website | altamont-gardens | 'https://heritageireland.ie/places-to-visit/altamont-gardens/'
+  _leisure_official_website | maynooth-castle | 'https://heritageireland.ie/places-to-visit/maynooth-castle/'
+  _leisure_official_website | castletown-house | 'https://heritageireland.ie/places-to-visit/castletown-house-and-parklands/'
+  _leisure_official_website | king-johns-castle-limerick | 'https://kingjohnscastle.com/'
+  _leisure_official_website | ormond-castle | 'https://heritageireland.ie/places-to-visit/ormond-castle/'
+  _leisure_official_website | cahir-castle | 'https://heritageireland.ie/places-to-visit/cahir-castle/'
+  _leisure_official_website | ferns-castle | 'https://heritageireland.ie/places-to-visit/ferns-castle/'
+  _leisure_official_website | johnstown-castle | 'https://johnstowncastle.ie/'
+  _leisure_official_website | lismore-castle-gardens | 'https://lismorecastle.com/'
+  _leisure_official_website | house-of-waterford-crystal | 'https://www.waterfordvisitorcentre.com/'
+  _leisure_official_website | kilkenny-castle | 'https://www.kilkennycastle.ie/'
+  _leisure_official_website | clare-island | 'https://clareisland.ie/'
+  _leisure_official_website | donegal-castle | 'https://heritageireland.ie/places-to-visit/donegal-castle/'
+  _leisure_official_website | castle-leslie-estate | 'https://www.castleleslie.com/'
+  _leisure_official_website | parkes-castle | 'https://heritageireland.ie/places-to-visit/parkes-castle/'
+  _leisure_official_website | corlea-trackway | 'https://heritageireland.ie/places-to-visit/corlea-trackway-visitor-centre/'
+  _leisure_official_website | athlone-castle | 'https://www.athlonecastle.ie/'
+  _leisure_official_website | birr-castle-demesne | 'https://birrcastle.com/'
+  _leisure_official_website | heywood-gardens | 'https://heritageireland.ie/places-to-visit/heywood-gardens/'
+  _leisure_official_website | valentia-island | 'https://valentiaisland.ie/'
+  _leisure_official_website | spike-island-cork | 'https://www.spikeislandcork.ie/'
+  _leisure_official_website | garnish-island | 'https://heritageireland.ie/places-to-visit/ilnacullin-garinish-island/'
+  _leisure_official_website | portumna-castle-gardens | 'https://heritageireland.ie/places-to-visit/portumna-castle-and-gardens/'
+  _leisure_official_website | brigits-garden | 'https://brigitsgarden.ie/'
+  _leisure_official_website | dowth | 'https://heritageireland.ie/places-to-visit/bru-na-boinne-visitor-centre-newgrange-and-knowth/'
+  _leisure_official_website | national-botanic-gardens-dublin | 'https://botanicgardens.ie/'
+  _leisure_official_website | inch-beach | 'https://www.discoverireland.ie/kerry/inch-beach'
+  _leisure_official_website | ross-castle | 'https://www.rosscastlekillarney.com/'
+  _leisure_official_website | blarney-castle | 'https://blarneycastle.ie/'
+  _leisure_official_website | bunratty-castle-folk-park | 'https://www.bunrattycastle.ie/'
+  _leisure_official_website | aran-islands | 'https://www.arannislands.ie/'
+  _leisure_official_website | slane-castle | 'https://www.slanecastle.ie/'
+  _leisure_official_website | trim-castle | 'https://heritageireland.ie/places-to-visit/trim-castle/'
+  _leisure_official_website | powerscourt-waterfall | 'https://powerscourt.com/gardens-and-waterfall/'
+  _leisure_official_website | malahide-castle-gardens | 'https://www.malahidecastleandgardens.ie/'
+  _leisure_official_website | dublin-castle | 'https://www.dublincastle.ie/'
+  _leisure_official_website | trinity-college-book-of-kells | 'https://www.tcd.ie/visitors/book-of-kells/'
+  _leisure_practical_source_url | national-botanic-gardens-kilmacurragh | 'https://heritageireland.ie/places-to-visit/national-botanic-gardens-kilmacurragh/'
+  _leisure_practical_source_url | roscrea-heritage-centre-roscrea-castle-and-damer-house | 'https://heritageireland.ie/places-to-visit/roscrea-heritage-centre-roscrea-castle-and-damer-house/'
+  _leisure_practical_source_url | dungarvan-castle | 'https://heritageireland.ie/places-to-visit/dungarvan-castle/'
+  _leisure_practical_source_url | doe-castle | 'https://heritageireland.ie/places-to-visit/doe-castle/'
+  _leisure_practical_source_url | ballyhack-castle | 'https://heritageireland.ie/places-to-visit/ballyhack-castle/'
+  _leisure_practical_source_url | aughnanure-castle | 'https://heritageireland.ie/places-to-visit/aughnanure-castle/'
+  _leisure_practical_source_url | athenry-castle | 'https://heritageireland.ie/places-to-visit/athenry-castle/'
+  _leisure_practical_source_url | desmond-castle-newcastlewest | 'https://heritageireland.ie/places-to-visit/desmond-castle-newcastlewest/'
+  _leisure_practical_source_url | desmond-castle-adare | 'https://heritageireland.ie/places-to-visit/adare-castle/'
+  _leisure_practical_source_url | askeaton-castle | 'https://heritageireland.ie/places-to-visit/askeaton-castle/'
+  _leisure_practical_source_url | listowel-castle | 'https://heritageireland.ie/places-to-visit/listowel-castle/'
+  _leisure_practical_source_url | rathfarnham-castle | 'https://heritageireland.ie/places-to-visit/rathfarnham-castle/'
+  _leisure_practical_source_url | phoenix-park-peoples-flower-gardens | 'https://heritageireland.ie/places-to-visit/phoenix-park-peoples-flower-gardens/'
+  _leisure_practical_source_url | phoenix-park-visitor-centre-ashtown-castle | 'https://heritageireland.ie/places-to-visit/phoenix-park-visitor-centre-ashtown-castle/'
+  _leisure_practical_source_url | iveagh-gardens | 'https://www.iveaghgardens.ie/'
+  _leisure_practical_source_url | irish-national-war-memorial-gardens | 'https://heritageireland.ie/places-to-visit/irish-national-war-memorial-gardens/'
+  _leisure_practical_source_url | garden-of-remembrance | 'https://heritageireland.ie/places-to-visit/garden-of-remembrance/'
+  _leisure_practical_source_url | custom-house-visitor-centre | 'https://heritageireland.ie/places-to-visit/custom-house-visitor-centre/'
+  _leisure_practical_source_url | fota-arboretum-and-gardens | 'https://heritageireland.ie/places-to-visit/fota-arboretum-and-gardens/'
+  _leisure_practical_source_url | desmond-castle-kinsale | 'https://heritageireland.ie/places-to-visit/desmond-castle-kinsale/'
+  _leisure_practical_source_url | barryscourt-castle | 'https://heritageireland.ie/places-to-visit/barryscourt-castle/'
+  _leisure_practical_source_url | annes-grove-gardens | 'https://heritageireland.ie/places-to-visit/annes-grove-gardens/'
+  _leisure_practical_source_url | dursey-island | 'https://www.ireland.com/en-gb/destinations/county/cork/dursey-island/'
+  _leisure_address | roscrea-heritage-centre-roscrea-castle-and-damer-house | 'Castle Street, Roscrea, Co. Tipperary, E53 F652'
+  _leisure_address | dungarvan-castle | 'Castle Street, Dungarvan, Co. Waterford, X35 DV58'
+  _leisure_address | desmond-castle-newcastlewest | 'The Square, Newcastle West, Co. Limerick, V42 YD76'
+  _leisure_address | listowel-castle | 'The Square, Listowel, Co. Kerry, V31 RD93'
+  _leisure_address | irish-national-war-memorial-gardens | 'Islandbridge, Dublin 8, D08 T20W'
+  _leisure_address | barryscourt-castle | 'Barryscourt Castle, Carrigtwohill, Co. Cork, T45 Y290'
+  _leisure_address | annes-grove-gardens | 'Annes Grove, Castletownroche, Co. Cork, P51 K064'
+  _leisure_address | national-design-craft-gallery | 'Castle Yard, Kilkenny, R95 CAA6'
+  _leisure_address | old-head-of-kinsale | 'Old Head of Kinsale, Kinsale, Co. Cork'
+  _leisure_address | the-model | 'The Mall, Sligo, F91 TP20'
+  _leisure_address | chester-beatty | 'Chester Beatty, Dublin Castle, Dublin 2, D02 AD92'
+  _leisure_image_source_url | roscrea-heritage-centre-roscrea-castle-and-damer-house | 'https://commons.wikimedia.org/wiki/File:Roscrea_Castle_complex.jpg'
+  _leisure_image_source_url | dungarvan-castle | 'https://commons.wikimedia.org/wiki/File:Dungarvan_Castle_by_sea.jpg'
+  _leisure_image_source_url | doe-castle | 'https://commons.wikimedia.org/wiki/File:Doe_Castle_-_geograph.org.uk_-_7127970.jpg'
+  _leisure_image_source_url | ballyhack-castle | 'https://commons.wikimedia.org/wiki/File:Castles_of_Leinster_Ballyhack_Wexford_2_-_geograph.org.uk_-_7608891.jpg'
+  _leisure_image_source_url | aughnanure-castle | 'https://commons.wikimedia.org/wiki/File:Castles_of_Connacht_Aughnanure_Galway_3_-_geograph.org.uk_-_1953520.jpg'
+  _leisure_image_source_url | athenry-castle | 'https://commons.wikimedia.org/wiki/File:Athenry_Castle.jpg'
+  _leisure_image_source_url | desmond-castle-newcastlewest | 'https://commons.wikimedia.org/wiki/File:Newcastle_West.jpg'
+  _leisure_image_source_url | desmond-castle-adare | 'https://commons.wikimedia.org/wiki/File:Castles_of_Munster_Adare_Limerick_3_-_geograph.org.uk_-_3037466.jpg'
+  _leisure_image_source_url | askeaton-castle | 'https://commons.wikimedia.org/wiki/File:Askeaton_Castle_East_side_view.jpg'
+  _leisure_image_source_url | listowel-castle | 'https://commons.wikimedia.org/wiki/File:Listowel_Castle_-_geograph.org.uk_-_5968024.jpg'
+  _leisure_image_source_url | rathfarnham-castle | 'https://commons.wikimedia.org/wiki/File:IRL_Dublin_Rathfarnham_Castle_01.jpg'
+  _leisure_image_source_url | phoenix-park-visitor-centre-ashtown-castle | 'https://commons.wikimedia.org/wiki/File:Dublin_-_Ashtown_Castle_-_20210918150557.jpg'
+  _leisure_image_source_url | pearse-museum-st-endas-park | 'https://commons.wikimedia.org/wiki/File:Pearse_Museum_facade_from_gardens.jpg'
+  _leisure_image_source_url | iveagh-gardens | 'https://commons.wikimedia.org/wiki/File:Iveagh_Gardens_Dublin_-155735_48728220973.jpg'
+  _leisure_image_source_url | irish-national-war-memorial-gardens | 'https://commons.wikimedia.org/wiki/File:Dublin_-_Irish_National_War_Memorial_Gardens_-_20210727135123.jpg'
+  _leisure_image_source_url | garden-of-remembrance | 'https://commons.wikimedia.org/wiki/File:Statue_in_the_Garden_of_Remembrance_in_Dublin_-_geograph.org.uk_-_7589113.jpg'
+  _leisure_image_source_url | farmleigh-house-and-estate | 'https://commons.wikimedia.org/wiki/File:FARMLEIGH_HOUSE__GROUNDS_AND_GARDENS_PHOTOGRAPHED_APRIL_2017-127222.jpg'
+  _leisure_image_source_url | fota-arboretum-and-gardens | 'https://commons.wikimedia.org/wiki/File:Fota_Arboretum_and_Gardens_-_geograph.org.uk_-_5819268.jpg'
+  _leisure_image_source_url | desmond-castle-kinsale | 'https://commons.wikimedia.org/wiki/File:Desmond_Castle_-_geograph.org.uk_-_6051680.jpg'
+  _leisure_image_source_url | barryscourt-castle | 'https://commons.wikimedia.org/wiki/File:Barryscourt_Castle_Cork.JPG'
+  _leisure_image_source_url | national-design-craft-gallery | 'https://commons.wikimedia.org/wiki/File:Old_Stables,_Kilkenny_Castle,_Cill_Chainnigh,_%C3%89ire_(45680619435).jpg'
+  _leisure_image_source_url | dursey-island | 'https://commons.wikimedia.org/wiki/File:Dursey_Island_aerial_view.jpg'
+  _leisure_image_source_url | king-johns-castle-carlingford | 'https://commons.wikimedia.org/w/api.php/File:King_Johns_Castle_Carlingford_-_geograph.org.uk_-_491145.jpg'
+  _leisure_image_source_url | huntington-castle-gardens | 'https://commons.wikimedia.org/w/api.php/File:Huntington_Castle.jpg'
+  _leisure_image_source_url | altamont-gardens | 'https://commons.wikimedia.org/w/api.php/File:Snowdrops_in_Altamont_Garden.png'
+  _leisure_image_source_url | maynooth-castle | 'https://commons.wikimedia.org/w/api.php/File:Maynooth_Castle_view.jpg'
+  _leisure_image_source_url | castletown-house | 'https://commons.wikimedia.org/w/api.php/File:Jun2024._Lime_Avenue_aka_Celbridge_Avenue_leading_to_Castletown_House_Celbridge_Co_Kildare_Ireland_01.jpg'
+  _leisure_image_source_url | irish-national-stud-japanese-gardens | 'https://commons.wikimedia.org/w/api.php/File:Kildare_-_The_Japanese_Gardens_at_Tully_3764182284.jpg'
+  _leisure_image_source_url | king-johns-castle-limerick | 'https://commons.wikimedia.org/w/api.php/File:King_Johns_Castle_in_Limerick_2.jpg'
+  _leisure_image_source_url | cahir-castle | 'https://commons.wikimedia.org/w/api.php/File:Cahir-_castle-_Ireland..jpg'
+  _leisure_image_source_url | ferns-castle | 'https://commons.wikimedia.org/w/api.php/File:Ferns_Castle_-_geograph.org.uk_-_1543666.jpg'
+  _leisure_image_source_url | saltee-islands | 'https://commons.wikimedia.org/w/api.php/File:Saltees_Islands.jpg'
+  _leisure_image_source_url | johnstown-castle | 'https://commons.wikimedia.org/w/api.php/File:Murrintown_Johnstown_Castle_Estate_3.jpg'
+  _leisure_image_source_url | lismore-castle-gardens | 'https://commons.wikimedia.org/wiki/File:Yew_Avenue_in_Lismore_Castle_Gardens_County_Waterford_Ireland_(42039910785).jpg'
+  _leisure_image_source_url | castlecomer-discovery-park | 'https://commons.wikimedia.org/wiki/File:Fallow_deer_Discovery_Park_walled_garden.jpg'
+  _leisure_image_source_url | kilkenny-castle | 'https://commons.wikimedia.org/wiki/File:Ireland_Kilkenny_Castle_BW_2025-09-15_10-18-56.jpg'
+  _leisure_image_source_url | clare-island | 'https://commons.wikimedia.org/w/api.php/File:Clare_Island_views_Co_Mayo_04.jpg'
+  _leisure_image_source_url | achill-island | 'https://commons.wikimedia.org/w/api.php/File:Achill_Island-_Deserted_village.jpg'
+  _leisure_image_source_url | donegal-castle | 'https://commons.wikimedia.org/w/api.php/File:Donegal_Castle_Donegal_Ireland.jpg'
+  _leisure_image_source_url | castle-leslie-estate | 'https://commons.wikimedia.org/w/api.php/File:Formal_rear_garden_of_Leslie_Castle_-_geograph.org.uk_-_2514761.jpg'
+  _leisure_image_source_url | lough-rynn-castle-gardens | 'https://commons.wikimedia.org/w/api.php/File:Walled_gardens_from_far_side_of_Lough_Rynn.JPG'
+  _leisure_image_source_url | parkes-castle | 'https://commons.wikimedia.org/w/api.php/File:Parkes_Castle_Sweathouse.jpg'
+  _leisure_image_source_url | roscommon-castle | 'https://commons.wikimedia.org/w/api.php/File:Roscommon_Castle_Ireland_2024.jpg'
+  _leisure_image_source_url | newcastle-wood | 'https://commons.wikimedia.org/w/api.php/File:Wood_Newcastle_2017.jpg'
+  _leisure_image_source_url | corlea-trackway | 'https://commons.wikimedia.org/w/api.php/File:Corlea_Trackway_Visitor_Centre_-_geograph.org.uk_-_1947084.jpg'
+  _leisure_image_source_url | belvedere-house-gardens | 'https://commons.wikimedia.org/wiki/File:Mullingar_-_Belvedere_House_and_Gardens_-_20211014140102.jpg'
+  _leisure_image_source_url | charleville-forest-castle | 'https://commons.wikimedia.org/w/api.php/File:House_on_the_Estate_of_Charleville_Castle_Tullamore_-_panoramio.jpg'
+  _leisure_image_source_url | birr-castle-demesne | 'https://commons.wikimedia.org/w/api.php/File:Birr_Castle_Demesne.jpg'
+  _leisure_image_source_url | valentia-island | 'https://commons.wikimedia.org/w/api.php/File:Looking_west_to_Valentia_island_Co_Kerry_Ireland.jpg'
+  _leisure_image_source_url | spike-island-cork | 'https://commons.wikimedia.org/wiki/File:Fort_Mitchel,_Spike_Island_-_geograph.org.uk_-_7686086.jpg'
+  _leisure_image_source_url | garnish-island | 'https://commons.wikimedia.org/w/api.php/File:Ilnacullin_Garinish_Island_Garden_-_geograph.org.uk_-_1821966.jpg'
+  _leisure_image_source_url | blackrock-castle-observatory | 'https://commons.wikimedia.org/wiki/File:Blackrock_Castle,_Cork_-_geograph.org.uk_-_3051742.jpg'
+  _leisure_image_source_url | vandeleur-walled-garden | 'https://commons.wikimedia.org/w/api.php/File:Vandeleur_Walled_Garden_-_geograph.org.uk_-_12679.jpg'
+  _leisure_image_source_url | scattery-island | 'https://commons.wikimedia.org/w/api.php/File:Scattery_Island_07.jpg'
+  _leisure_image_source_url | portumna-castle-gardens | 'https://commons.wikimedia.org/w/api.php/File:Portumna_castle.jpg'
+  _leisure_image_source_url | brigits-garden | 'https://commons.wikimedia.org/w/api.php/File:Brigits_Garden_-_geograph.org.uk_-_140802.jpg'
+  _leisure_image_source_url | mount-usher-gardens | 'https://commons.wikimedia.org/w/api.php/File:Mount_Usher_Gardens_5_-_geograph.org.uk_-_4576091.jpg'
+  _leisure_image_source_url | portmarnock-beach | "https://commons.wikimedia.org/wiki/File:Portmarnock's_beach_is_nicknamed_The_Velvet_Strand_(3498070861).jpg"
+  _leisure_image_source_url | national-botanic-gardens-dublin | 'https://commons.wikimedia.org/w/api.php/File:National_Botanic_Gardens_Dublin_Ireland_Unsplash.jpg'
+  _leisure_image_source_url | ross-castle | 'https://commons.wikimedia.org/wiki/File:Ross_Castle,_Killarney_-_geograph.org.uk_-_5241796.jpg'
+  _leisure_image_source_url | muckross-house | 'https://commons.wikimedia.org/w/api.php/File:Killarney_Muckross_House_Gardens_2.jpg'
+  _leisure_image_source_url | fota-wildlife-park | 'https://commons.wikimedia.org/w/api.php/File:Fota_Wildlife_Park_is_set_on_the_scenic_Fota_Island_in_the_heart_of_Cork_Harbour_7170483003.jpg'
+  _leisure_image_source_url | blarney-castle | 'https://commons.wikimedia.org/w/api.php/File:Blarney_Castle_2017.jpg'
+  _leisure_image_source_url | lahinch-beach | 'https://commons.wikimedia.org/w/api.php/File:Liscannor-LahinchBeach.jpg'
+  _leisure_image_source_url | bunratty-castle-folk-park | 'https://commons.wikimedia.org/w/api.php/File:Bunratty_Folk_Park_-_Site_4_-_Castle_-_Entrance_to_Castle_Interior_-_geograph.org.uk_-_3114389.jpg'
+  _leisure_image_source_url | slane-castle | 'https://commons.wikimedia.org/w/api.php/File:20180403_143652_Slane_Castle.jpg'
+  _leisure_image_source_url | trim-castle | 'https://commons.wikimedia.org/w/api.php/File:Trim_Castle_6.jpg'
+  _leisure_image_source_url | powerscourt-estate | 'https://commons.wikimedia.org/w/api.php/File:Powerscourt_Gardens.JPG'
+  _leisure_image_source_url | malahide-castle-gardens | 'https://commons.wikimedia.org/w/api.php/File:County_Fingal_-_Malahide_Castle_-_20200928180330.jpg'
+  _leisure_image_source_url | dublin-castle | 'https://commons.wikimedia.org/w/api.php/File:Castle_Street_Dublin_Ireland_02.jpg'
+  _leisure_image_alt_text | the-main-guard | 'The Main Guard, Clonmel, Tipperary, Irlanda'
+  _leisure_image_alt_text | jfk-arboretum | 'The John F. Kennedy Arboretum, Wexford, Irlanda'
+  _leisure_image_alt_text | old-head-of-kinsale | 'Old Head of Kinsale, Cork, Irlanda'
+  _leisure_image_alt_text | dursey-island | 'Dursey Island, Cork, Irlanda'
+  _leisure_image_alt_text | the-model | 'The Model, Sligo, Irlanda'
+  _leisure_image_alt_text | forty-foot | 'The Forty Foot, Dublin, Irlanda'
+  _leisure_image_alt_text | king-johns-castle-carlingford | "King John's Castle (Carlingford), Louth, Irlanda"
+  _leisure_image_alt_text | huntington-castle-gardens | 'Huntington Castle & Gardens, Carlow, Irlanda'
+  _leisure_image_alt_text | altamont-gardens | 'Altamont Gardens, Carlow, Irlanda'
+  _leisure_image_alt_text | maynooth-castle | 'Maynooth Castle, Kildare, Irlanda'
+  _leisure_image_alt_text | bog-of-allen-nature-centre | 'Bog of Allen Nature Centre, Kildare, Irlanda'
+  _leisure_image_alt_text | castletown-house | 'Castletown House, Kildare, Irlanda'
+  _leisure_image_alt_text | irish-national-stud-japanese-gardens | 'Irish National Stud & Japanese Gardens, Kildare, Irlanda'
+  _leisure_image_alt_text | king-johns-castle-limerick | "King John's Castle, Limerick, Irlanda"
+  _leisure_image_alt_text | ormond-castle | 'Ormond Castle, Tipperary, Irlanda'
+  _leisure_image_alt_text | the-vee-bay-lough | 'The Vee & Bay Lough, Tipperary, Irlanda'
+  _leisure_image_alt_text | glen-of-aherlow | 'Glen of Aherlow, Tipperary, Irlanda'
+  _leisure_image_alt_text | cahir-castle | 'Cahir Castle, Tipperary, Irlanda'
+  _leisure_image_alt_text | rock-of-cashel | 'Rock of Cashel, Tipperary, Irlanda'
+  _leisure_image_alt_text | ferns-castle | 'Ferns Castle, Wexford, Irlanda'
+  _leisure_image_alt_text | curracloe-beach | 'Curracloe Beach, Wexford, Irlanda'
+  _leisure_image_alt_text | saltee-islands | 'Saltee Islands, Wexford, Irlanda'
+  _leisure_image_alt_text | johnstown-castle | 'Johnstown Castle, Wexford, Irlanda'
+  _leisure_image_alt_text | lismore-castle-gardens | 'Lismore Castle Gardens, Waterford, Irlanda'
+  _leisure_image_alt_text | mount-congreve-gardens | 'Mount Congreve Gardens, Waterford, Irlanda'
+  _leisure_image_alt_text | house-of-waterford-crystal | 'House of Waterford Crystal, Waterford, Irlanda'
+  _leisure_image_alt_text | woodstock-gardens | 'Woodstock Gardens, Kilkenny, Irlanda'
+  _leisure_image_alt_text | castlecomer-discovery-park | 'Castlecomer Discovery Park, Kilkenny, Irlanda'
+  _leisure_image_alt_text | rothe-house-garden | 'Rothe House & Garden, Kilkenny, Irlanda'
+  _leisure_image_alt_text | kilkenny-castle | 'Kilkenny Castle, Kilkenny, Irlanda'
+  _leisure_image_alt_text | clare-island | 'Clare Island, Mayo, Irlanda'
+  _leisure_image_alt_text | national-museum-country-life | 'National Museum of Ireland – Country Life, Mayo, Irlanda'
+  _leisure_image_alt_text | achill-island | 'Achill Island, Mayo, Irlanda'
+  _leisure_image_alt_text | strandhill-beach | 'Strandhill Beach, Sligo, Irlanda'
+  _leisure_image_alt_text | donegal-castle | 'Donegal Castle, Donegal, Irlanda'
+  _leisure_image_alt_text | castle-leslie-estate | 'Castle Leslie Estate, Monaghan, Irlanda'
+  _leisure_image_alt_text | lough-rynn-castle-gardens | 'Lough Rynn Castle Gardens, Leitrim, Irlanda'
+  _leisure_image_alt_text | parkes-castle | "Parke's Castle, Leitrim, Irlanda"
+  _leisure_image_alt_text | roscommon-castle | 'Roscommon Castle, Roscommon, Irlanda'
+  _leisure_image_alt_text | newcastle-wood | 'Newcastle Wood, Longford, Irlanda'
+  _leisure_image_alt_text | corlea-trackway | 'Corlea Trackway Visitor Centre, Longford, Irlanda'
+  _leisure_image_alt_text | athlone-castle | 'Athlone Castle Visitor Centre, Westmeath, Irlanda'
+  _leisure_image_alt_text | belvedere-house-gardens | 'Belvedere House Gardens & Park, Westmeath, Irlanda'
+  _leisure_image_alt_text | charleville-forest-castle | 'Charleville Forest Castle, Offaly, Irlanda'
+  _leisure_image_alt_text | birr-castle-demesne | 'Birr Castle Demesne, Offaly, Irlanda'
+  _leisure_image_alt_text | heywood-gardens | 'Heywood Gardens, Laois, Irlanda'
+  _leisure_image_alt_text | rock-of-dunamase | 'Rock of Dunamase, Laois, Irlanda'
+  _leisure_image_alt_text | valentia-island | 'Valentia Island, Kerry, Irlanda'
+  _leisure_image_alt_text | spike-island-cork | 'Spike Island, Cork, Irlanda'
+  _leisure_image_alt_text | garnish-island | 'Garnish Island, Cork, Irlanda'
+  _leisure_image_alt_text | blackrock-castle-observatory | 'Blackrock Castle Observatory, Cork, Irlanda'
+  _leisure_image_alt_text | vandeleur-walled-garden | 'Vandeleur Walled Garden, Clare, Irlanda'
+  _leisure_image_alt_text | spanish-point-beach | 'Spanish Point Beach, Clare, Irlanda'
+  _leisure_image_alt_text | holy-island-inis-cealtra | 'Holy Island (Inis Cealtra), Clare, Irlanda'
+  _leisure_image_alt_text | scattery-island | 'Scattery Island, Clare, Irlanda'
+  _leisure_image_alt_text | portumna-castle-gardens | 'Portumna Castle & Gardens, Galway, Irlanda'
+  _leisure_image_alt_text | brigits-garden | "Brigit's Garden, Galway, Irlanda"
+  _leisure_image_alt_text | wicklow-way | 'The Wicklow Way, Wicklow, Irlanda'
+  _leisure_image_alt_text | mount-usher-gardens | 'Mount Usher Gardens, Wicklow, Irlanda'
+  _leisure_image_alt_text | killruddery-house-gardens | 'Killruddery House & Gardens, Wicklow, Irlanda'
+  _leisure_image_alt_text | brittas-bay-beach | 'Brittas Bay Beach, Wicklow, Irlanda'
+  _leisure_image_alt_text | portmarnock-beach | 'Portmarnock Beach (Velvet Strand), Dublin, Irlanda'
+  _leisure_image_alt_text | national-botanic-gardens-dublin | 'National Botanic Gardens, Dublin, Irlanda'
+  _leisure_image_alt_text | epic-irish-emigration-museum | 'EPIC The Irish Emigration Museum, Dublin, Irlanda'
+  _leisure_image_alt_text | national-museum-archaeology | 'National Museum of Ireland – Archaeology, Dublin, Irlanda'
+  _leisure_image_alt_text | inch-beach | 'Inch Beach, Kerry, Irlanda'
+  _leisure_image_alt_text | ring-of-kerry | 'Ring of Kerry, Kerry, Irlanda'
+  _leisure_image_alt_text | gap-of-dunloe | 'Gap of Dunloe, Kerry, Irlanda'
+  _leisure_image_alt_text | ross-castle | 'Ross Castle, Kerry, Irlanda'
+  _leisure_image_alt_text | blarney-castle | 'Blarney Castle, Cork, Irlanda'
+  _leisure_image_alt_text | lahinch-beach | 'Lahinch Beach, Clare, Irlanda'
+  _leisure_image_alt_text | bunratty-castle-folk-park | 'Bunratty Castle & Folk Park, Clare, Irlanda'
+  _leisure_image_alt_text | cliffs-of-moher | 'Cliffs of Moher, Clare, Irlanda'
+  _leisure_image_alt_text | aran-islands | 'Aran Islands, Galway, Irlanda'
+  _leisure_image_alt_text | battle-of-the-boyne-visitor-centre | 'Battle of the Boyne Visitor Centre, Meath, Irlanda'
+  _leisure_image_alt_text | slane-castle | 'Slane Castle, Meath, Irlanda'
+  _leisure_image_alt_text | trim-castle | 'Trim Castle, Meath, Irlanda'
+  _leisure_image_alt_text | hill-of-tara | 'Hill of Tara, Meath, Irlanda'
+  _leisure_image_alt_text | malahide-castle-gardens | 'Malahide Castle & Gardens, Dublin, Irlanda'
+  _leisure_image_alt_text | dublin-castle | 'Dublin Castle, Dublin, Irlanda'
+  _leisure_image_alt_text | trinity-college-book-of-kells | 'Trinity College & Book of Kells, Dublin, Irlanda'
+  _leisure_town | desmond-castle-newcastlewest | 'Newcastle West'
+  _leisure_town | irish-national-war-memorial-gardens | 'Islandbridge'
+  _leisure_town | fota-arboretum-and-gardens | 'Fota Island'
+  _leisure_town | annes-grove-gardens | 'Castletownroche'
+  _leisure_town | lough-muckno-leisure-park | 'Castleblayney'
+  _leisure_town | castlecomer-discovery-park | 'Castlecomer'
+  _leisure_town | ceide-fields | 'Ballycastle'
+  _leisure_town | downpatrick-head | 'Ballycastle'
+  _leisure_town | mullaghmeen-forest | 'Castlepollard'
+  _leisure_town | loughcrew | 'Oldcastle'
+  _leisure_image_license | blasket-centre-ionad-an-bhlascaoid | 'CC BY 2.0'
+  _leisure_image_license | st-stephens-green | 'CC BY 3.0'
+  _leisure_image_license | st-marys-abbey-chapter-house | 'CC BY 4.0'
+  _leisure_image_license | grangegorman-military-cemetery | 'CC BY 3.0'
+  _leisure_image_license | jfk-arboretum | 'CC BY 3.0'
+  _leisure_image_license | the-model | 'CC BY 2.0'
+  _leisure_image_license | chester-beatty | 'CC BY 4.0'
+  _leisure_image_license | borris-house | 'CC BY 2.0'
+  _leisure_image_license | huntington-castle-gardens | 'CC BY 2.0'
+  _leisure_image_license | ducketts-grove | 'CC BY 2.0'
+  _leisure_image_license | carlingford | 'CC BY 3.0'
+  _leisure_image_license | lullymore-heritage-park | 'CC BY 2.0'
+  _leisure_image_license | donadea-forest-park | 'CC BY 3.0'
+  _leisure_image_license | swiss-cottage | 'CC BY 4.0'
+  _leisure_image_license | dunbrody-famine-ship | 'CC BY 3.0'
+  _leisure_image_license | johnstown-castle | 'CC BY 4.0'
+  _leisure_image_license | irish-national-heritage-park | 'CC BY 4.0'
+  _leisure_image_license | smithwicks-experience | 'CC BY 2.0'
+  _leisure_image_license | medieval-mile-museum | 'CC BY 4.0'
+  _leisure_image_license | downpatrick-head | 'CC BY 2.0'
+  _leisure_image_license | achill-island | 'CC BY 2.0'
+  _leisure_image_license | benbulben | 'CC BY 2.0'
+  _leisure_image_license | fanad-head-lighthouse | 'CC BY 3.0'
+  _leisure_image_license | sliabh-liag | 'CC BY 2.0'
+  _leisure_image_license | glencar-waterfall | 'CC BY 4.0'
+  _leisure_image_license | roscommon-castle | 'CC BY 4.0'
+  _leisure_image_license | mullaghmeen-forest | 'CC BY 2.5'
+  _leisure_image_license | lough-boora-discovery-park | 'CC BY 3.0'
+  _leisure_image_license | heywood-gardens | 'CC BY 2.0'
+  _leisure_image_license | muckross-abbey | 'CC BY 4.0'
+  _leisure_image_license | gallarus-oratory | 'CC BY 4.0'
+  _leisure_image_license | cork-city-gaol | 'CC BY 2.0'
+  _leisure_image_license | english-market-cork | 'CC BY 2.5'
+  _leisure_image_license | spanish-point-beach | 'CC BY 2.5'
+  _leisure_image_license | scattery-island | 'CC BY 2.0'
+  _leisure_image_license | ennis-friary | 'CC BY 4.0'
+  _leisure_image_license | portumna-castle-gardens | 'CC BY 2.5'
+  _leisure_image_license | spanish-arch-long-walk | 'CC BY 2.0'
+  _leisure_image_license | wicklow-historic-gaol | 'CC BY 3.0'
+  _leisure_image_license | epic-irish-emigration-museum | 'CC BY 2.0'
+  _leisure_image_license | national-museum-archaeology | 'CC BY 3.0'
+  _leisure_image_license | dingle-peninsula | 'CC BY 2.0'
+  _leisure_image_license | torc-waterfall | 'CC BY 3.0'
+  _leisure_image_license | muckross-house | 'CC BY 4.0'
+  _leisure_image_license | mizen-head | 'CC BY 4.0'
+  _leisure_image_license | loop-head | 'CC BY 2.0'
+  _leisure_image_license | cliffs-of-moher | 'CC BY 3.0'
+  _leisure_image_license | galway-atlantaquaria | 'CC BY 2.0'
+  _leisure_image_license | dun-aonghasa | 'CC BY 3.0'
+  _leisure_image_license | aran-islands | 'CC BY 2.0'
+  _leisure_image_license | slane-castle | 'CC BY 4.0'
+  _leisure_image_license | trim-castle | 'CC BY 2.0'
+  _leisure_image_license | hill-of-tara | 'CC BY 4.0'
+  _leisure_image_license | knowth | 'CC BY 2.0'
+  _leisure_image_license | wicklow-mountains-national-park | 'CC BY 4.0'
+  _leisure_image_license | howth-cliff-walk | 'CC BY 4.0'
+  _leisure_image_license | trinity-college-book-of-kells | 'CC BY 4.0'
+  _leisure_image_author | st-stephens-green | 'Dronepicr (edited by King of Hearts) Edit corrects CA and sharpens image'
+  _leisure_image_author | royal-hospital-kilmainham | 'William Murphy from Dublin, Ireland'
+  _leisure_image_author | phoenix-park-peoples-flower-gardens | 'William Murphy from Dublin, Ireland'
+  _leisure_image_author | iveagh-gardens | 'William Murphy from Dublin, Ireland'
+  _leisure_image_author | custom-house-visitor-centre | 'Jo and Steve Turner\xa0'
+  _leisure_image_author | arbour-hill-cemetery | 'The original uploader was Domer48 at English Wikipedia.'
+  _leisure_image_author | barryscourt-castle | 'The Speckled Bird'
+  _leisure_image_author | huntington-castle-gardens | 'Liam Hughes from Milwaukee, WI, USA'
+  _leisure_image_author | ducketts-grove | 'IrishFireside from Ishpeming, MI, USA'
+  _leisure_image_author | irish-national-stud-japanese-gardens | 'William Murphy from Dublin, Ireland'
+  _leisure_image_author | tintern-abbey-wexford | 'This image is available from the National Library of Wales You can view this image in its original context on the NLW Catalogue'
+  _leisure_image_author | rossmore-forest-park | 'Walking with a phone'
+  _leisure_image_author | kilbeggan-distillery | 'National Library of Ireland on The Commons'
+  _leisure_image_author | birr-castle-demesne | 'Birr Castle Demesne'
+  _leisure_image_author | heywood-gardens | 'Liam Hughes from Milwaukee, WI, USA'
+  _leisure_image_author | galway-city-museum | 'Unknown authorUnknown author'
+  _leisure_image_author | spanish-arch-long-walk | 'Robert Linsdell from St. Andrews, Canada'
+  _leisure_image_author | charles-fort | 'The Speckled Bird'
+  _leisure_image_author | fota-wildlife-park | 'William Murphy from Dublin, Ireland'
+  _leisure_image_author | burren-national-park | 'The Banner'
+  _leisure_image_author | galway-atlantaquaria | 'Miguel Mendez from Malahide, Ireland'
+  _leisure_image_author | bray-head | 'Laiwan at de.wikipedia. Later version(s) were uploaded by Hydro at de.wikipedia.'
+  _leisure_image_attribution | arbour-hill-cemetery | 'Foto: The original uploader was Domer48 at English Wikipedia., Fonte: Wikimedia Commons'
+  _leisure_image_attribution | tintern-abbey-wexford | 'Foto: This image is available from the National Library of Wales You can view this image in its original context on the NLW Catalogue, Fonte: Wikimedi'
+  _leisure_image_attribution | kilbeggan-distillery | 'Foto: National Library of Ireland on The Commons, Fonte: Wikimedia Commons'
+  _leisure_discover_ireland | dursey-island | 'https://www.discoverireland.ie/cork/dursey-island'
+  _leisure_discover_ireland | altamont-gardens | 'https://www.discoverireland.ie/carlow/altamont-gardens'
+  _leisure_discover_ireland | maynooth-castle | 'https://www.discoverireland.ie/kildare/maynooth-castle'
+  _leisure_discover_ireland | castletown-house | 'https://www.discoverireland.ie/kildare/castletown-house'
+  _leisure_discover_ireland | ormond-castle | 'https://www.discoverireland.ie/tipperary/ormond-castle'
+  _leisure_discover_ireland | cahir-castle | 'https://www.discoverireland.ie/tipperary/cahir-castle'
+  _leisure_discover_ireland | ferns-castle | 'https://www.discoverireland.ie/wexford/ferns-castle'
+  _leisure_discover_ireland | curracloe-beach | 'https://www.discoverireland.ie/wexford/curracloe-beach'
+  _leisure_discover_ireland | saltee-islands | 'https://www.discoverireland.ie/wexford/saltee-islands'
+  _leisure_discover_ireland | lismore-castle-gardens | 'https://www.discoverireland.ie/waterford/lismore-castle-gardens'
+  _leisure_discover_ireland | mount-congreve-gardens | 'https://www.discoverireland.ie/waterford/mount-congreve-gardens'
+  _leisure_discover_ireland | rothe-house-garden | 'https://www.discoverireland.ie/kilkenny/rothe-house-garden'
+  _leisure_discover_ireland | kilkenny-castle | 'https://www.discoverireland.ie/kilkenny/kilkenny-castle'
+  _leisure_discover_ireland | clare-island | 'https://www.discoverireland.ie/mayo/clare-island'
+  _leisure_discover_ireland | strandhill-beach | 'https://www.discoverireland.ie/sligo/strandhill-beach'
+  _leisure_discover_ireland | donegal-castle | 'https://www.discoverireland.ie/donegal/donegal-castle'
+  _leisure_discover_ireland | castle-leslie-estate | 'https://www.discoverireland.ie/monaghan/castle-leslie-estate'
+  _leisure_discover_ireland | roscommon-castle | 'https://www.discoverireland.ie/roscommon/roscommon-castle'
+  _leisure_discover_ireland | athlone-castle | 'https://www.discoverireland.ie/westmeath/athlone-castle'
+  _leisure_discover_ireland | heywood-gardens | 'https://www.discoverireland.ie/laois/heywood-gardens'
+  _leisure_discover_ireland | valentia-island | 'https://www.discoverireland.ie/valentia-island'
+  _leisure_discover_ireland | scattery-island | 'https://www.discoverireland.ie/clare/scattery-island'
+  _leisure_discover_ireland | mount-usher-gardens | 'https://www.discoverireland.ie/wicklow/mount-usher-gardens'
+  _leisure_discover_ireland | killruddery-house-gardens | 'https://www.discoverireland.ie/wicklow/killruddery-house-gardens'
+  _leisure_website | ross-castle | 'https://www.rosscastlekillarney.com/'
+  _leisure_website | blarney-castle | 'https://blarneycastle.ie/'
+  _leisure_website | bunratty-castle-folk-park | 'https://www.bunrattycastle.ie/'
+  _leisure_website | aran-islands | 'https://www.arannislands.ie/'
+  _leisure_website | slane-castle | 'https://www.slanecastle.ie/'
+  _leisure_website | trim-castle | 'https://heritageireland.ie/places-to-visit/trim-castle/'
+  _leisure_website | powerscourt-waterfall | 'https://powerscourt.com/gardens-and-waterfall/'
+  _leisure_website | malahide-castle-gardens | 'https://www.malahidecastleandgardens.ie/'
+  _leisure_website | dublin-castle | 'https://www.dublincastle.ie/'
+  _leisure_website | trinity-college-book-of-kells | 'https://www.tcd.ie/visitors/book-of-kells/'
+
+== FULL excerpt list (slug | detected | text) for manual review ==
+  [pt   ] dwyer-mcallister-cottage: Casa rural restaurada aos pés da montanha Keadeen, palco de um episódio da Rebelião de 1798 e hoje pequeno museu de época.
+  [pt   ] national-botanic-gardens-kilmacurragh: Jardim botânico no condado de Wicklow, parte dos Jardins Botânicos Nacionais, famoso pelos rododendros e pelas árvores raras numa antiga propriedade do século XIX.
+  [pt   ] fore-abbey: Ruínas do mosteiro fundado por São Feichin no século VII, num vale tranquilo do condado de Westmeath, com as lendárias “Sete Maravilhas de Fore”.
+  [pt   ] roscrea-heritage-centre-roscrea-castle-and-damer-house: Conjunto no centro de Roscrea com um castelo do século XIII, a casa pré-paladiana Damer House e jardins murados com fonte.
+  [pt   ] the-main-guard: Antigo tribunal do século XVII no centro de Clonmel, com arcada de colunas de arenito restaurada e espaço de exposições.
+  [pt   ] famine-warhouse-1848: Casa de lavoura perto de Ballingarry que foi palco de um cerco sangrento da Rebelião dos Jovens Irlandeses de 1848, hoje museu.
+  [pt   ] st-marys-church-gowran: Igreja colegiada do final do século XIII, com túmulos medievais dos Butler e esculturas do “Mestre de Gowran”, hoje monumento nacional.
+  [pt   ] kells-priory: O maior recinto eclesiástico murado da Irlanda, fundado por volta de 1193 e conhecido localmente como os “Sete Castelos de Kells”.
+  [pt   ] dungarvan-castle: Castelo anglo-normando de cerca de 1209 que protegia a entrada do porto de Dungarvan, com um raro “shell keep” poligonal.
+  [pt   ] newmills-corn-and-flax-mills: Conjunto industrial do século XIX perto de Letterkenny, com uma das maiores rodas de água em funcionamento do país, que servia a indústria do linho.
+  [pt   ] glebe-house-and-gallery: Casa regencial de 1828 perto de Letterkenny onde viveu o pintor Derek Hill, com uma coleção de arte que inclui Picasso, Renoir e Braque.
+  [pt   ] doe-castle: Fortaleza medieval dos séculos XV/XVI à beira-mar em Sheephaven Bay, antiga casa dos chefes MacSweeney; terrenos abertos todo o ano.
+  [pt   ] ballyhack-castle: Casa-torre de cerca de 1450 sobre o estuário de Waterford, provavelmente construída pelos Cavaleiros Hospitalários de São João.
+  [pt   ] ionad-culturtha-an-phiarsaigh-pearses-cottage: Centro cultural em Ros Muc, no coração da Gaeltacht de Connemara, onde Patrick Pearse construiu a sua casa de verão e que hoje se visita tal como ele a deixou.
+  [pt   ] aughnanure-castle: Casa-torre tardo-medieval mais bem preservada de Connemara, sobre um afloramento rochoso do rio Drimneen, perto do Lough Corrib.
+  [pt   ] athenry-castle: Casa-torre do século XIII que guardava um vau estratégico no rio Clareen, no centro de uma das vilas medievais mais bem preservadas da Irlanda.
+  [pt   ] desmond-castle-newcastlewest: Salão de banquetes medieval do século XV no centro de Newcastle West, com galeria de carvalho restaurada; acesso por visita guiada.
+  [pt   ] desmond-castle-adare: Castelo medieval fortificado nas margens do rio Maigue, com torre quadrada e fosso, ligado aos condes de Desmond; acesso pelo Adare Heritage Centre.
+  [pt   ] askeaton-castle: Ruínas de uma fortaleza medieval de 1199 no centro de Askeaton, antiga base dos condes de Desmond — atualmente fechada, apenas vista exterior.
+  [pt   ] blasket-centre-ionad-an-bhlascaoid: Centro de património dedicado à comunidade de língua irlandesa das Ilhas Blasket, com exposições interativas e miradouro sobre o Atlântico.
+  [pt   ] listowel-castle: Castelo anglo-normando sobre o rio Feale, último reduto dos Fitzmaurice na Guerra dos Nove Anos, com acesso por visita guiada.
+  [pt   ] ardfert-cathedral: Conjunto de três igrejas medievais, a mais antiga do século XII, no local do mosteiro fundado por São Brandão, o Navegador.
+  [pt   ] aras-an-uachtarain: Residência oficial do Presidente da Irlanda, no Phoenix Park, com visitas guiadas gratuitas aos sábados, sujeitas ao serviço do Estado.
+  [pt   ] st-stephens-green: Um dos parques públicos mais conhecidos da Irlanda, no centro da zona comercial de Dublin, mantido no traçado vitoriano original.
+  [pt   ] st-audens-church: A única igreja paroquial medieval que resta em Dublin, dedicada ao bispo de Rouen, com a Capela da Guilda de Santa Ana e o túmulo de Portlester.
+  [pt   ] st-marys-abbey-chapter-house: Restos de um dos maiores e mais importantes mosteiros medievais da Irlanda, com acesso apenas por visita guiada e abertura sazonal.
+  [pt   ] royal-hospital-kilmainham: Um dos edifícios mais emblemáticos de Dublin e o melhor exemplo irlandês de arquitetura do século XVII, hoje sede do Museu Irlandês de Arte Moderna.
+  [pt   ] rathfarnham-castle: Castelo isabelino do século XVI com quatro torres, remodelado no século XVIII, com retratos de família e exposições culturais.
+  [pt   ] phoenix-park-peoples-flower-gardens: Jardim de flores vitoriano de 9 hectares dentro do Phoenix Park, com lago ornamental, parque infantil e canteiros sazonais.
+  [pt   ] phoenix-park-visitor-centre-ashtown-castle: Centro de visitantes do Phoenix Park ao lado do Castelo de Ashtown, uma casa-torre redescoberta, com jardim murado vitoriano e exposições.
+  [pt   ] pearse-museum-st-endas-park: Museu na casa onde Patrick Pearse viveu e dirigiu a sua escola de ensino em irlandês entre 1910 e 1916, num parque de cerca de 20 hectares.
+  [pt   ] iveagh-gardens: Conhecidos como o “jardim secreto” de Dublin, com labirinto de teixos, rosário, fontes e cascata, desenhados por Ninian Niven em 1865.
+  [pt   ] irish-national-war-memorial-gardens: Jardins memoriais em Islandbridge, dedicados aos 49.400 soldados irlandeses mortos na Primeira Guerra Mundial, desenhados por Sir Edwin Lutyens.
+  [pt   ] grangegorman-military-cemetery: O maior cemitério militar da Irlanda, aberto em 1876 para pessoal do Império Britânico, com túmulos das duas guerras mundiais.
+  [pt   ] government-buildings: Sede de departamentos do Estado irlandês e o último grande edifício público construído pelos britânicos na Irlanda, com visitas guiadas gratuitas aos sábados.
+  [pt   ] garden-of-remembrance: Jardim memorial no centro de Dublin, dedicado a todos os que deram a vida pela liberdade irlandesa, com a escultura dos Filhos de Lir.
+  [pt   ] farmleigh-house-and-estate: Propriedade eduardiana de 78 acres dentro do Phoenix Park, usada como residência oficial de hóspedes do Estado, com jardins e parque abertos ao público.
+  [pt   ] custom-house-visitor-centre: Centro de visitantes dedicado à história do edifício da Alfândega de Dublin, da autoria de James Gandon, e a mais de 230 anos de história irlandesa.
+  [pt   ] casino-marino: Pequeno templo de jardim neoclássico do século XVIII, com 16 salas decoradas, considerado uma obra-prima da arquitetura europeia.
+  [pt   ] arbour-hill-cemetery: Cemitério militar onde estão sepultados 14 dos líderes executados do Levante da Páscoa de 1916.
+  [pt   ] fota-arboretum-and-gardens: Arboreto de 11 hectares na Ilha de Fota com uma das melhores coleções da Europa de árvores e arbustos raros ao ar livre.
+  [pt   ] desmond-castle-kinsale: Casa-torre urbana do início do século XVI no centro de Kinsale, que foi alfândega, prisão e armazém ao longo da sua história.
+  [pt   ] barryscourt-castle: Um dos melhores exemplos de casa-torre irlandesa, construído entre 1392 e 1420, com salões restaurados e jardim de ervas.
+  [pt   ] annes-grove-gardens: Antiga propriedade da família Annesley no norte de Cork, com jardins paisagísticos de estilo Robinsoniano e uma coleção rara de arbustos floridos.
+  [pt   ] national-design-craft-gallery: Única galeria da Irlanda dedicada exclusivamente a design e artesanato, no Castle Yard do século XVIII, ao lado do Kilkenny Castle.
+  [pt   ] cavan-cathedral: Catedral católica de Cavan, dedicada a São Patrício e São Félim, construída na década de 1940 e notável pelo interior com vitrais.
+  [pt   ] jfk-arboretum: Arboreto de 623 acres perto de New Ross, dedicado a John F. Kennedy, com mais de 5.000 tipos de árvores e mirante no Slieve Coillte.
+  [pt   ] lough-muckno-leisure-park: Parque lacustre municipal em Castleblayney, com trilhas, parque infantil, pesca e desportos aquáticos, aberto todo o ano.
+  [pt   ] old-head-of-kinsale: Ponta rochosa cênica perto de Kinsale, com farol, signal tower e memorial do Lusitania; o percurso exterior e o mirante são de acesso livre.
+  [pt   ] dursey-island: Ilha habitada no fim da península de Beara, alcançada pelo único teleférico da Irlanda, com trilhas costeiras e colônias de aves marinhas.
+  [pt   ] doagh-famine-village: Museu a céu aberto na península de Inishowen que conta a história de uma família de Donegal da Grande Fome até os dias atuais.
+  [pt   ] the-model: Galeria de arte de Sligo e sede da Niland Collection, com importantes obras de Jack B. Yeats e entrada gratuita às galerias.
+  [pt   ] joyce-tower-museum: Torre Martello de 1804 onde começa o Ulysses, hoje museu gratuito com coleção joyceana e vista para a baía de Dublin.
+  [pt   ] derrigimlagh: Turfeira de Connemara com dois marcos do século XX: as ruínas da estação de rádio transatlântica de Marconi e o memorial da travessia de Alcock e Brown.
+  [pt   ] forty-foot: Ponto histórico de banho de mar em Sandycove, no extremo sul da baía de Dublin, com tradição de natação o ano inteiro.
+  [pt   ] chester-beatty: Museu de culturas do mundo dentro do Dublin Castle, com entrada gratuita e coleções da Ásia, do Oriente Médio, do Norte da África e da Europa.
+  [pt   ] king-johns-castle-carlingford: Fortaleza normanda do século XII sobre o Carlingford Lough, com salão medieval e vista para as Mourne Mountains.
+  [pt   ] mount-leinster-nine-stones: Ponto mais alto das Blackstairs Mountains (795 m), com mirante dos Nine Stones e vista para quatro condados.
+  [pt   ] oak-park-forest-park: Floresta de carvalhos e faías com trilhas, lagos e o Oak Park Lake, perto da cidade de Carlow.
+  [pt   ] borris-house: Casa ancestral dos MacMurrough Kavanagh, reis de Leinster, com salões Tudor e mercado de artesãos.
+  [pt   ] huntington-castle-gardens: Castelo de 1625 da família Durdin-Robertson, com porões medievais, jardins murados e templo druídico.
+  [pt   ] ducketts-grove: Ruínas góticas vitorianas da mansão Duckett, com walled gardens restaurados e parque público.
+  [pt   ] altamont-gardens: Jardins românticos do século XVIII com lago, arboreto e o &#8220;corredor de azaleias&#8221; — entrada gratuita.
+  [pt   ] brownshill-dolmen: Dólmen com a maior laje de cobertura da Europa: 100 toneladas de granito sobre pedras de suporte de 5.000 anos.
+  [pt   ] millmount-fort-museum: Fortaleza sobre motte normanda com vista de Drogheda, abrigando o museu municipal e a torre Martello.
+  [pt   ] carlingford-lough-greenway: Greenway de 10 km ao longo do lough, entre Carlingford e Newry, com vista para as Mourne Mountains.
+  [pt   ] mellifont-abbey: Primeira abadia cisterciense da Irlanda (1142), com lavabo octogonal único e ruínas evocativas.
+  [pt   ] monasterboice: Sítio monástico com as alta cruzes mais famosas da Irlanda, incluindo a Muiredach&#8217;s Cross do século X.
+  [pt   ] proleek-dolmen: Dólmen megalítico com laje de 40 toneladas, cercado de lendas — quem acertar uma pedra no topo terá sorte.
+  [pt   ] carlingford: Vila medieval preservada na costa do Carlingford Lough, com muralhas, castelo e o Carlingford Oyster Festival.
+  [pt   ] mondello-park: Único autódromo internacional da Irlanda, com corridas abertas ao público e experiências de pilotagem.
+  [pt   ] lullymore-heritage-park: Parque de descoberta numa ilha de calcário na turfeira, com tren, playground, minigolfe e história da turfa.
+  [pt   ] donadea-forest-park: Floresta com trilhas, lago, torre do castelo de Aylmer e o 9/11 Memorial Garden.
+  [pt   ] maynooth-castle: Fortaleza dos Fitzgerald, os poderosos condes de Kildare, no campus da universidade mais antiga da Irlanda.
+  [pt   ] pollardstown-fen: Maior fen (pântano alcalino) da Irlanda, reserva natural com passarelas e plantas raras de origem glacial.
+  [pt   ] bog-of-allen-nature-centre: Centro do Irish Peatland Conservation Council com jardim de sapos, turfeira visitável e exposições sobre pântanos.
+  [pt   ] castletown-house: Mansão palladiana de 1722, a maior da Irlanda, com salões restaurados e parque aberto ao público.
+  [pt   ] irish-national-stud-japanese-gardens: Haras nacional com garanhões campeões, museu do cavalo e os famosos Jardins Japoneses de 1906.
+  [pt   ] curraghchase-forest-park: Parque florestal com ruínas da mansão De Vere, trilhas, lago e colônia de morcegos protegida.
+  [pt   ] lough-gur: Lago em forma de rim cercado por megálitos, círculos de pedra e o Grange Stone Circle, o maior da Irlanda.
+  [pt   ] foynes-flying-boat-museum: Museu na antiga base do Pan Am, com réplica em tamanho real do Boeing 314 e a origem do Irish Coffee.
+  [pt   ] adare-village: Vila considerada a mais bonita da Irlanda, com cottages de palha, mosteiros e o castelo dos Desmond.
+  [pt   ] st-marys-cathedral-limerick: Catedral de 1168, o edifício em uso mais antigo de Limerick, com misericórdias medievais raras.
+  [pt   ] hunt-museum: Coleção de arte e antiguidades dos Hunt, com Picasso, Renoir, Leonardo da Vinci e artefatos célticos.
+  [pt   ] king-johns-castle-limerick: Castelo normando de 1210 às margens do Shannon, com exposições interativas sobre cercos e história medieval.
+  [pt   ] holy-cross-abbey: Abadia cisterciense restaurada do século XII, famosa pela relíquia da Vera Cruz e ainda local de culto.
+  [pt   ] mitchelstown-cave: Uma das maiores cavernas da Europa, com estalactites gigantes, salões enormes e acústica de concertos.
+  [pt   ] ormond-castle: Casa isabelina única na Irlanda, construída por Tomás Butler, 10º Conde de Ormond, junto a torres medievais.
+  [pt   ] the-vee-bay-lough: Passo de montanha em forma de V com mirante sobre o vale do Suir e o lago glaciar Bay Lough.
+  [pt   ] glen-of-aherlow: Vale cênico entre as Galtee Mountains, com trilhas, mirante do Christ the King e vilas charmosas.
+  [pt   ] swiss-cottage: Chalé ornamental de 1810, exemplo perfeito do estilo &#8220;picturesque&#8221;, com interior restaurado e floresta.
+  [pt   ] cahir-castle: Um dos castelos mais bem preservados da Irlanda, do século XIII, numa ilha do rio Suir.
+  [pt   ] rock-of-cashel: Conjunto medieval espetacular sobre afloramento de calcário: catedral gótica, capela românica e torre redonda.
+  [pt   ] tintern-abbey-wexford: Abadia cisterciense fundada em 1200 por William Marshal, com colunata vitoriana e vale arborizado.
+  [pt   ] ferns-castle: Castelo normando do século XIII com capela em cruz e vitrais modernos, na antiga capital dos reis de Leinster.
+  [pt   ] wexford-wildfowl-reserve: Reserva natural no North Slob, refúgio de inverno de um terço da população mundial de gansos-de-frente-branca da Groenlândia.
+  [pt   ] curracloe-beach: Praia de 11 km de areia fina, cenário da abertura de &#8220;O Resgate do Soldado Ryan&#8221;, com dunas e trilhas.
+  [pt   ] saltee-islands: Santuário de aves marinhas com uma das maiores colônias de gansos-patola da Irlanda, acessível por barco de Kilmore Quay.
+  [pt   ] dunbrody-famine-ship: Réplica fiel de um navio de emigrantes da Grande Fome, com tour imersivo sobre a travessia do Atlântico.
+  [pt   ] hook-lighthouse: Farol medieval em operação desde o século XIII — um dos mais antigos do mundo — com tours e café.
+  [pt   ] johnstown-castle: Castelo neogótico do século XIX com lagos, jardins e o Museu da Agricultura Irlandesa.
+  [pt   ] irish-national-heritage-park: Parque de 35 acres que recria 9.000 anos de história irlandesa: cabanas do mesolítico, crannóg, mosteiro e anel normando.
+  [pt   ] coumshingaun-loop: Trilha circular em torno de um lago glaciar num circo de falésias — uma das caminhadas mais espetaculares do sul.
+  [pt   ] ardmore-round-tower: Sítio monástico de São Declan com torre redonda de 30 m, catedral com esculturas e oratório primitivo.
+  [pt   ] lismore-castle-gardens: Jardins históricos do castelo dos duques de Devonshire, com upper e lower gardens sobre o rio Blackwater.
+  [pt   ] mount-congreve-gardens: Um dos maiores jardins privados da Europa, com 70 acres de azaleias, rododendros e bosques plantados por Ambrose Congreve.
+  [pt   ] copper-coast-geopark: Litoral de 25 km com falésias, praias e geologia vulcânica de 460 milhões de anos, patrimônio UNESCO.
+  [pt   ] waterford-greenway: Greenway de 46 km sobre antiga ferrovia, com viadutos, túnel e travessia do rio Suir — a mais popular da Irlanda.
+  [pt   ] reginals-tower: Torre viking do século XIII, o edifício civil mais antigo da Irlanda em uso contínuo.
+  [pt   ] waterford-treasures: Conjunto de museus sobre a Irlanda viking e medieval, no coração do Viking Triangle.
+  [pt   ] house-of-waterford-crystal: Fábrica e centro de visitantes do cristal Waterford, com tour pela produção e galeria de peças únicas.
+  [pt   ] woodstock-gardens: Jardins vitorianos restaurados da mansão Tighe, com arboreto, avenue de teixos e vista do vale do Nore.
+  [pt   ] jerpoint-park: Cidade medieval perdida de Newtown Jerpoint, com igreja de São Nicolau e lendas sobre o santo.
+  [pt   ] castlecomer-discovery-park: Parque de aventura em 80 acres de floresta, com arborismo, zip lines, canoagem e trilhas.
+  [pt   ] dunmore-cave: Caverna de calcário com formações dramáticas e história ligada a um ataque viking do século X.
+  [pt   ] smithwicks-experience: Tour pela antiga cervejaria de Kilkenny, onde o ale Smithwick&#8217;s é produzido desde 1710.
+  [pt   ] rothe-house-garden: Casa mercantil tudor do século XVII, única do tipo aberta ao público na Irlanda, com jardim de recriação histórica.
+  [pt   ] jerpoint-abbey: Abadia cisterciense do século XII com esculturas góticas excepcionais e figuras esculpidas nos túmulos.
+  [pt   ] medieval-mile-museum: Museu na igreja de St Mary sobre a Kilkenny medieval, com cripta e lápidas dos mercadores.
+  [pt   ] kilkenny-castle: Castelo normando de 1195, sede dos duques de Ormonde por seis séculos, com jardins vitorianos.
+  [pt   ] clare-island: Ilha da pirata Grace O&#8217;Malley na entrada de Clew Bay, com abadia muralhada, farol e trilhas costeiras.
+  [pt   ] wild-nephin-ballycroy-national-park: Parque nacional de turfeiras selvagens e montanhas Nephin, com centro de visitantes e céus escuros.
+  [pt   ] great-western-greenway: Greenway de 42 km sobre antiga ferrovia, de Westport a Achill, um dos passeios de bicicleta mais bonitos da Irlanda.
+  [pt   ] ceide-fields: Sistema agrícola neolítico de 5.500 anos, o mais extenso do mundo, sob a turfeira do norte de Mayo.
+  [pt   ] downpatrick-head: Cabeço com o sea stack Dún Briste (&#8220;rota quebrada&#8221;), igreja antiga e poço de São Patrício sobre o Atlântico.
+  [pt   ] national-museum-country-life: Museu nacional da vida rural irlandesa, num parque com jardins e moinho, entrada gratuita.
+  [pt   ] westport-house: Mansão georgiana da família Browne com parque de aventura, zoológico pequeno e terrenos históricos.
+  [pt   ] keem-bay: Baía em forma de ferradura com areia branca, eleita repetidamente entre as praias mais bonitas da Irlanda.
+  [pt   ] achill-island: Maior ilha da Irlanda, ligada por ponte, com falésias de Croaghaun, praias selvagens e vila de Keel.
+  [pt   ] croagh-patrick: Montanha sagrada de São Patrício (764 m), com peregrinação anual e vista sobre Clew Bay e suas 365 ilhotas.
+  [pt   ] eagles-flying: Centro irlandês de aves de rapina com demonstrações de voo de águias, falcões e corujas.
+  [pt   ] drumcliffe: Sítio monástico do século VI com alta cruz e torre redonda, onde está o túmulo de W.B. Yeats.
+  [pt   ] lissadell-house: Mansão dos Gore-Booth, ligada a Constance Markievicz e a Yeats, com jardins e galeria de exposições.
+  [pt   ] sligo-abbey: Abadia dominicana do século XIII, única com altar-mor medieval original preservado na Irlanda.
+  [pt   ] queen-maeves-trail-knocknarea: Trilha até o cairn de pedra da rainha Medb no topo do Knocknarea, com vista de Sligo e do Atlântico.
+  [pt   ] carrowmore-megalithic-cemetery: Maior conjunto de túmulos megalíticos da Irlanda, com mais de 5.500 anos, sob o olhar do Knocknarea.
+  [pt   ] strandhill-beach: Praia de surf aos pés do Knocknarea, com escolas de surf, banhos de sargaço e pôr do sol famoso.
+  [pt   ] benbulben: Mesa de calcário símbolo de Sligo, imortalizada por Yeats, com trilha na crista e caminhada fácil na base.
+  [pt   ] ards-forest-park: Península florestal com praias, ruínas franciscanas e trilhas costeiras de frente para Sheephaven Bay.
+  [pt   ] errigal: Montanha mais alta de Donegal (751 m), com subida íngreme e panorama sobre o Poisoned Glen.
+  [pt   ] grianan-of-aileach: Fortaleza de pedra do século VI/VII no topo do Greenan Mountain, antiga sede dos reis de Tyrconnell.
+  [pt   ] fanad-head-lighthouse: Farol icônico de 1817 entre as praias de Fanad, com tours internos e hospedagem no farol.
+  [pt   ] malin-head: Ponto mais ao norte da Irlanda, com torre de sinais napoleônica, locações de Star Wars e vistas do Atlântico.
+  [pt   ] donegal-castle: Fortaleza dos O&#8217;Donnell restaurada com mansão jacobina anexa, no centro de Donegal Town.
+  [pt   ] sliabh-liag: Falésias marinhas de quase 600 metros — entre as mais altas da Europa — com a trilha One Man&#8217;s Pass.
+  [pt   ] glenveagh-national-park: Segundo maior parque nacional da Irlanda, com castelo, jardins, vales glaciais e águias-reais reintroduzidas.
+  [pt   ] sliabh-beagh: Planalto de turfeira na fronteira com a Irlanda do Norte, com trilhas, mirante e centro de visitantes.
+  [pt   ] patrick-kavanagh-centre: Centro dedicado ao poeta Patrick Kavanagh na igreja antiga de Inniskeen, sua terra natal.
+  [pt   ] carrickmacross-lace-gallery: Ateliê e galeria da famosa renda de Carrickmacross, técnica usada no vestido de noiva de Diana, princesa de Gales.
+  [pt   ] monaghan-county-museum: Primeiro museu de condado da Irlanda, premiado, com coleções sobre artesanato, conflitos e vida rural.
+  [pt   ] rossmore-forest-park: Antiga propriedade dos Rossmore com trilhas, esculturas de madeira, lagos e ruínas de portais.
+  [pt   ] castle-leslie-estate: Propriedade da família Leslie desde 1660, com castelo vitoriano, centro equestre, lago e trilhas.
+  [pt   ] belturbet-railway-station: Estação ferroviária de bitola estreita restaurada, com museu ferroviário e vagões de época.
+  [pt   ] cavan-county-museum: Museu premiado com a maior réplica de trincheira da Primeira Guerra Mundial ao ar livre na Irlanda.
+  [pt   ] shannon-pot: Nascente do rio Shannon, o mais longo da Irlanda, num poço cárstico nas encostas do Cuilcagh.
+  [pt   ] dun-a-ri-forest-park: Parque florestal com cabanas de gelo, ponte romana e lendas locais, nas margens do rio Cabra.
+  [pt   ] killykeen-forest-park: Penínsulas florestais entre as ilhotas do Lough Oughter, com trilhas, caiaque e pesca.
+  [pt   ] cavan-burren-park: Paisagem cárstica com megálitos, dolmens e trilhas interpretativas no Geoparque Global Marble Arch Caves.
+  [pt   ] sean-mac-diarmada-cottage: Casa natal de um dos signatários da Proclamação de 1916, preservada como museu no norte de Leitrim.
+  [pt   ] lough-rynn-castle-gardens: Jardins históricos da propriedade dos Clements, com labirinto, walled garden e vista para o lago.
+  [pt   ] lough-allen: Lago serrilhado no alto do Shannon, cercado pelas montanhas de Arigna e Sliabh an Iarainn.
+  [pt   ] acres-lake-floating-boardwalk: Passarela flutuante de 600 m sobre o Lough Allen, parte do Shannon Blueway, com trilhas e caiaque.
+  [pt   ] parkes-castle: Castelo-forte do século XVII restaurado às margens do Lough Gill, com exposição sobre o plantation.
+  [pt   ] glencar-waterfall: Cascata de 15 metros imortalizada por W.B. Yeats, perto de Sligo, com trilha curta e área de piquenique.
+  [pt   ] roscommon-castle: Castelo normando do século XIII em ruínas evocativas, com parque público e lago ao redor.
+  [pt   ] lough-key-forest-park: Parque florestal com ilhas, torre de observação, zip line, bungalows e trilhas para todas as idades.
+  [pt   ] arigna-mining-experience: Tour guiado por mina de carvão real conduzido por ex-mineradores, nas colinas de Arigna.
+  [pt   ] strokestown-park-famine-museum: Mansão georgiana com o Museu Nacional da Grande Fome e jardins murados restaurados.
+  [pt   ] boyle-abbey: Abadia cisterciense do século XII com claustro impressionante, no coração de Boyle.
+  [pt   ] rathcroghan: Capital real antiga de Connacht e porta de entrada para o outro mundo na mitologia irlandesa.
+  [pt   ] lough-ree: Grande lago do rio Shannon com ilhas, pesca, passeios de barco e praias fluviais.
+  [pt   ] newcastle-wood: Floresta de coníferas e folhosas com trilhas tranquilas perto de Ballymahon.
+  [pt   ] royal-canal-greenway: Greenway de 130 km ao longo do Royal Canal, de Dublin a Cloondara — o trecho final fica em Longford.
+  [pt   ] granard-motte-bailey: Motte normanda do século XII sobre morro antigo, com estátua de Santa Kitirine e vistas amplas.
+  [pt   ] ardagh-heritage-village: Vila vencedora de prêmios de conservação, com verde central pitoresco e centro de interpretação.
+  [pt   ] corlea-trackway: Centro que protege uma estrada de carvalho de 2.000 anos construída sobre a turfeira, única na Europa.
+  [pt   ] glendeer-pet-farm: Fazenda de animais aberta ao público com cabras, cordeiros, aves e playground coberto.
+  [pt   ] mullaghmeen-forest: Grande floresta de folhosas plantadas, com trilhas e vista para o Lough Derravaragh.
+  [pt   ] kilbeggan-distillery: Destilaria licenciada mais antiga do mundo (1757), com moinho a vapor funcionando e degustações.
+  [pt   ] athlone-castle: Castelo normando do século XII no rio Shannon, com museu interativo sobre o cerco de Athlone.
+  [pt   ] belvedere-house-gardens: Casa de campo do século XVIII com jardins, folly &#8220;Jealous Wall&#8221; e eventos familiares o ano inteiro.
+  [pt   ] tullamore-dew-experience: Centro de visitantes do whisky Tullamore D.E.W. num armazém do século XIX, com degustações guiadas.
+  [pt   ] charleville-forest-castle: Castelo neogótico do século XIX cercado por floresta antiga de carvalhos, com tours e eventos.
+  [pt   ] lough-boora-discovery-park: Parque de turfeiras regeneradas com esculturas ao ar livre, trilhas de caminhada e ciclismo e aves raras.
+  [pt   ] birr-castle-demesne: Propriedade científica dos Parsons com jardins premiados, o telescópio gigante do século XIX e centro de ciência.
+  [pt   ] clonmacnoise: Um dos mosteiros mais importantes da Europa medieval, às margens do rio Shannon, com torres redondas e alta cruzes.
+  [pt   ] slieve-bloom-mountains: Montanhas de turfeira e floresta entre Laois e Offaly, com trilhas, cachoeiras e mirantes panorâmicos.
+  [pt   ] abbeyleix-heritage-house: Centro de patrimônio que conta a história planejada da vila georgiana de Abbeyleix e do tapete local.
+  [pt   ] timahoe-round-tower: Torre redonda do século XII considerada uma das mais belas da Irlanda, com portal ricamente decorado.
+  [pt   ] heywood-gardens: Jardins formais dos séculos XVIII/XIX com terraços, lago e o famoso &#8220;jardim secreto&#8221; circular.
+  [pt   ] emo-court: Mansão neoclássica do século XVIII com jardins e lago desenhados por Capability Brown; entrada gratuita.
+  [pt   ] rock-of-dunamase: Fortaleza normanda em ruínas sobre afloramento rochoso, com vistas de 360° pelo interior de Laois.
+  [pt   ] banna-strand: Praia extensa de areia dourada ao norte de Tralee, com dunas e águas ideais para surf e banho.
+  [pt   ] muckross-abbey: Abadia franciscana do século XV com claustro e um enorme teixo central, no coração do parque nacional.
+  [pt   ] gallarus-oratory: Oratório cristão primitivo em pedra seca, com mais de 1.200 anos, em forma de casco de barco invertido.
+  [pt   ] derrynane-house: Casa de Daniel O&#8217;Connell, o Libertador, dentro de um parque costeiro com praia e jardins subtropicais.
+  [pt   ] kerry-cliffs: Falésias de mais de 300 metros com vista para Skellig Michael, no Anel de Skellig.
+  [pt   ] valentia-island: Ilha conectada por ponte e ferry, com pegadas de dinossauro, jardins subtropicais e o farol de Cromwell Point.
+  [pt   ] skellig-michael: Patrimônio Mundial da UNESCO: mosteiro do século VI no topo de ilha rochosa no Atlântico, cenário de Star Wars.
+  [pt   ] doneraile-park: Parque paisagístico do século XVIII com cervos, trilhas e playground, entrada gratuita.
+  [pt   ] spike-island-cork: Ilha-fortaleza no porto de Cork, já a maior prisão do mundo, hoje museu premiado acessível por ferry.
+  [pt   ] garnish-island: Ilha-jardim na baía de Glengarriff, famosa pelos jardins italianos, torre martelo e focas no trajeto de barco.
+  [pt   ] blackrock-castle-observatory: Castelo do século XVI transformado em observatório de ciências astronômicas às margens do rio Lee.
+  [pt   ] cork-city-gaol: Antiga prisão vitoriana com figuras de cera e audioguia sobre dois séculos de vida carcerária.
+  [pt   ] english-market-cork: Mercado coberto histórico do século XVIII, templo da gastronomia de Cork com bancas de peixe, queijos e quitandas.
+  [pt   ] vandeleur-walled-garden: Jardim murado do século XIX restaurado, com estufa vitoriana e café, no oeste de Clare.
+  [pt   ] craggaunowen: Parque de história viva que recria a Irlanda pré-histórica e medieval, com crannóg e casa fortificada.
+  [pt   ] spanish-point-beach: Baía de areia com águas calmas e história ligada à Armada Espanhola, popular para famílias e surf.
+  [pt   ] holy-island-inis-cealtra: Ilha sagrada no Lough Derg com mosteiro do século VII, células de pedra e cruzes antigas.
+  [pt   ] scattery-island: Ilha monástica no estuário do Shannon, com torre redonda, ruínas de igrejas e colônia de focas.
+  [pt   ] ennis-friary: Convento franciscano do século XIII com esculturas medievais notáveis, no centro de Ennis.
+  [pt   ] thoor-ballylee: Torre normanda do século XIV onde viveu o poeta W.B. Yeats, chamada por ele de &#8220;o lugar mais bonito do mundo&#8221;.
+  [pt   ] portumna-castle-gardens: Mansão fortificada do século XVII às margens do Lough Derg, com jardins restaurados e parque florestal.
+  [pt   ] coole-park: Reserva natural e antiga propriedade de Lady Gregory, coração do Renascimento Literário irlandês.
+  [pt   ] brigits-garden: Jardins inspirados nas festas celtas, com jardim solar, floresta antiga e playground natural.
+  [pt   ] galway-city-museum: Museu moderno sobre a história de Galway, do período medieval à cultura das Ilhas Aran.
+  [pt   ] spanish-arch-long-walk: Arco do século XVI à beira do rio Corrib e as coloridas casas do Long Walk, cartão-postal de Galway.
+  [pt   ] dowth: Terceiro grande túmulo de passagem do Brú na Bóinne, com 5.000 anos, aberto a visitas guiadas.
+  [pt   ] sonairte-ecology-centre: Centro de ecologia e horta orgânica numa fazenda histórica perto do mar, com trilhas e loja vegetariana.
+  [pt   ] kells-historic-town: Vila monástica histórica, antiga casa do Livro de Kells, com alta cruzes e torre redonda.
+  [pt   ] bective-abbey: Ruínas de abadia cisterciense do século XII às margens do rio Boyne, cenário do filme Braveheart.
+  [pt   ] emerald-park: Parque temático e zoológico (antigo Tayto Park) com montanhas-russas, zoo e atrações para toda a família.
+  [pt   ] wicklow-way: A trilha de longa distância mais antiga da Irlanda: 131 km pelas montanhas de Wicklow, de Dublin a Clonegal.
+  [pt   ] mount-usher-gardens: Jardins românticos às margens do rio Vartry, com plantas de todo o mundo e estilo de jardim selvagem.
+  [pt   ] killruddery-house-gardens: Mansão do século XVII ainda habitada, com jardins formais, orangerie e mercado de produtores aos sábados.
+  [pt   ] brittas-bay-beach: Uma das melhores praias da costa leste, com 4 km de areia dourada e dunas protegidas.
+  [pt   ] wicklow-historic-gaol: Prisão histórica do século XVIII transformada em museu interativo sobre dois séculos de história sombria.
+  [pt   ] russborough-house: Mansão palladiana do século XVIII com interior ornamentado, labirinto e vista para as montanhas de Wicklow.
+  [pt   ] portmarnock-beach: Longa praia de areia ao norte de Dublin, popular para caminhadas, banhos e esportes aquáticos.
+  [pt   ] dun-laoghaire-east-pier: Calçadão marítimo de 1,3 km com vistas da baía de Dublin, ideal para caminhadas à beira-mar.
+  [pt   ] glasnevin-cemetery-museum: Cemitério histórico onde repousam os grandes nomes da independência irlandesa, com museu e visitas guiadas.
+  [pt   ] national-botanic-gardens-dublin: Jardins botânicos nacionais com estufas vitorianas, mais de 15 mil espécies de plantas e entrada gratuita.
+  [pt   ] epic-irish-emigration-museum: Museu interativo premiado que conta a história dos 10 milhões de irlandeses que emigraram pelo mundo.
+  [pt   ] national-museum-archaeology: Museu nacional com tesouros da Irlanda antiga: artefatos vikings, ouro da Idade do Bronze e corpos de pântano.
+  [pt   ] inch-beach: Longa praia de areia na península de Dingle, popular para surf e caminhadas.
+  [pt   ] dingle-peninsula: Península gaélica com praias selvagens, Slea Head e o centro urbano de Dingle.
+  [pt   ] ring-of-kerry: Rota cênica circular de 179 km pela península de Iveragh, com vistas costeiras espetaculares.
+  [pt   ] gap-of-dunloe: Desfiladeiro glaciar entre montanhas, percorrido por carruagens e trilhas.
+  [pt   ] torc-waterfall: Cascata de 20 metros rodeada de floresta, nas encostas do Monte Torc.
+  [pt   ] ross-castle: Castelo do século XV às margens do Lago de Leane, com passeios de barco.
+  [pt   ] muckross-house: Mansão vitoriana no coração do parque, com jardins e quintas tradicionais.
+  [pt   ] killarney-national-park: Primeiro parque nacional da Irlanda, com lagos, montanhas e o castelo de Ross.
+  [pt   ] mizen-head: Ponto mais a sudoeste da Irlanda, com ponte sobre o desfiladeiro, sinal marítimo e vistas do Atlântico.
+  [pt   ] charles-fort: Forte em estrela do século XVII na entrada do porto de Kinsale.
+  [pt   ] kinsale: Vila costeira pitoresca com ruas coloridas, gastronomia premiada e uma história marítima rica.
+  [pt   ] jameson-distillery-midleton: Destilaria histórica onde se produz o whisky Jameson, com visitas guiadas e degustações.
+  [pt   ] fota-wildlife-park: Parque de vida selvagem na ilha de Fota, com animais em recintos abertos e um castelo.
+  [pt   ] titanic-experience-cobh: Museu interativo que recria a história do Titanic e da sua ligação com Cobh.
+  [pt   ] cobh: Cidade portuária histórica, última paragem do Titanic e porto de partida de milhões de emigrantes.
+  [pt   ] blarney-castle: Castelo medieval famoso pela Pedra de Blarney, cujo beijo concede &#8220;o dom da eloquência&#8221;.
+  [pt   ] kilkee-cliffs: Passarela costeira ao longo de falésias com formações rochosas características.
+  [pt   ] lahinch-beach: Praia de areia popular para surf e banhos de mar na costa oeste da Irlanda.
+  [pt   ] loop-head: Península com falésias e um farol clássico na entrada do estuário do Shannon.
+  [pt   ] doolin-cave: Caverna com um dos maiores estalactites pendentes do mundo.
+  [pt   ] aillwee-caves: Sistema de cavernas no Burren com formações de pedra e uma cascata subterrânea.
+  [pt   ] bunratty-castle-folk-park: Castelo do século XV restaurado com um parque folclórico que recria a vida rural irlandesa.
+  [pt   ] burren-national-park: Paisagem cárstica única de calcário com flora rara e trilhas no Condado de Clare.
+  [pt   ] cliffs-of-moher: Falésias de 214 metros sobre o Oceano Atlântico, uma das atrações naturais mais famosas da Irlanda.
+  [pt   ] galway-atlantaquaria: Aquário nacional da Irlanda, em Salthill, com vida marinha local e tanques interativos.
+  [pt   ] diamond-hill: Trilha em Connemara com vistas panorâmicas da baía de Ballynakill e das Twelve Bens.
+  [pt   ] dun-aonghasa: Forte de pedra pré-histórico na borda de um penhasco de 100 m na ilha de Inishmore.
+  [pt   ] aran-islands: Ilhas gaélicas na foz da Baía de Galway, famosas pelas fortalezas de pedra e cultura tradicional.
+  [pt   ] sky-road: Rota costeira cênica ao redor da península de Kingstown, com vistas de Clifden e da baía.
+  [pt   ] salthill: Promenade litorânea de Galway, com praia, piscina de mar e vista para a baía.
+  [pt   ] connemara-national-park: Parque nacional de montanhas, turfeiras e pôneis selvagens, com trilhas até o Diamond Hill.
+  [pt   ] kylemore-abbey: Mosteiro e castelo do século XIX num cenário lacustre deslumbrante em Connemara.
+  [pt   ] battle-of-the-boyne-visitor-centre: Centro de visitantes que conta a história da Batalha do Boyne de 1690, na casa de Oldbridge.
+  [pt   ] loughcrew: Conjunto de túmulos de passagem neolíticos nas colinas de Loughcrew, com arte rupestre.
+  [pt   ] slane-castle: Castelo histórico às margens do rio Boyne, conhecido pelos seus concertos e destilaria.
+  [pt   ] trim-castle: O maior castelo anglo-normando da Irlanda, famoso por ter sido locação do filme &#8220;Braveheart&#8221;.
+  [pt   ] hill-of-tara: Antiga sede dos Reis Supremos da Irlanda, com monumentos e vistas panorâmicas.
+  [pt   ] knowth: Grande túmulo de passagem neolítico com a maior coleção de arte megalítica da Europa ocidental.
+  [pt   ] newgrange: Túmulo de passagem neolítico com mais de 5.000 anos, mais antigo que Stonehenge e as pirâmides.
+  [pt   ] avondale-forest-park: Parque florestal com trilhas, passeios de copa de árvores e história ligada a Charles Stewart Parnell.
+  [pt   ] sally-gap: Passo de montanha cênico nas montanhas de Wicklow, rodeado de turfeiras e berços dos rios Liffey e Dargle.
+  [pt   ] great-sugar-loaf: Pico de montanha em forma de cúpula com vistas panorâmicas das montanhas de Wicklow e da costa.
+  [pt   ] bray-head: Trilha costeira com uma grande cruz no topo e vistas da baía de Bray e das montanhas de Wicklow.
+  [pt   ] powerscourt-waterfall: A cachoeira mais alta da Irlanda, com 121 metros, cercada por trilhas na floresta.
+  [pt   ] powerscourt-estate: Mansão histórica com jardins premiados e o Terraço da Cachoeira; também há um centro de compras e café.
+  [pt   ] glendalough: Assentamento monástico do século VI num vale glacial com lagos e trilhas.
+  [pt   ] wicklow-mountains-national-park: Parque nacional de montanhas, lagos e vales glaciais, conhecido como o &#8220;Jardim da Irlanda&#8221;.
+  [pt   ] malahide-castle-gardens: Castelo de 800 anos com jardins exuberantes, localizado na vila litorânea de Malahide.
+  [pt   ] howth-cliff-walk: Trilha costeira espetacular ao redor da península de Howth, com vistas do mar da Irlanda.
+  [pt   ] dublin-zoo: Zoológico no Phoenix Park com animais de todo o mundo e programas de conservação.
+  [pt   ] phoenix-park: Um dos maiores parques urbanos fechados da Europa, lar de veados selvagens, a residência presidencial e o Dublin Zoo.
+  [pt   ] guinness-storehouse: A famosa fábrica e museu da cerveja Guinness, com o bar panorâmico Gravity no topo.
+  [pt   ] kilmainham-gaol: Prisão histórica que desempenhou papel central na luta pela independência irlandesa. Museu imperdível.
+  [pt   ] dublin-castle: Castelo histórico no coração de Dublin, sede do governo britânico na Irlanda por séculos e agora um complexo de museus e salões de estado.
+  [pt   ] trinity-college-book-of-kells: A icônica universidade irlandesa e o famoso Livro de Kells, um dos mais importantes manuscritos medievais do mundo.

@@ -1,0 +1,97 @@
+{
+  "base": "https://conexaobr.ie",
+  "user_agent": "conexao-stage7-leisure-verify/1.0",
+  "paths": {
+    "/lazer/": {
+      "path": "/lazer/",
+      "status": 200,
+      "location": "",
+      "lang": "en-US",
+      "title": "Lazer & Turismo na Irlanda | Conexão BR",
+      "canonical": "https://conexaobr.ie/lazer/",
+      "hreflang": [],
+      "og_locale": "pt_BR",
+      "leisure_cards": 10,
+      "card_titles": [
+        "Dwyer McAllister Cottage",
+        "National Botanic Garden of Ireland – Kilmacurragh",
+        "Fore Abbey",
+        "Roscrea Castle, Gardens and Damer House/Black Mills",
+        "The Main Guard",
+        "Famine Warhouse 1848",
+        "St. Mary’s Church Gowran",
+        "Kells Priory",
+        "Dungarvan Castle",
+        "Newmills Corn and Flax Mills"
+      ],
+      "card_excerpts": [
+        "Casa rural restaurada aos pés da montanha Keadeen, palco de um episódio da Rebelião de 1798 e hoje...",
+        "Jardim botânico no condado de Wicklow, parte dos Jardins Botânicos Nacionais, famoso pelos rododendros e pelas árvores raras...",
+        "Ruínas do mosteiro fundado por São Feichin no século VII, num vale tranquilo do condado de Westmeath, com...",
+        "Conjunto no centro de Roscrea com um castelo do século XIII, a casa pré-paladiana Damer House e jardins...",
+        "Antigo tribunal do século XVII no centro de Clonmel, com arcada de colunas de arenito restaurada e espaço...",
+        "Casa de lavoura perto de Ballingarry que foi palco de um cerco sangrento da Rebelião dos Jovens Irlandeses...",
+        "Igreja colegiada do final do século XIII, com túmulos medievais dos Butler e esculturas do “Mestre de Gowran”,...",
+        "O maior recinto eclesiástico murado da Irlanda, fundado por volta de 1193 e conhecido localmente como os “Sete...",
+        "Castelo anglo-normando de cerca de 1209 que protegia a entrada do porto de Dungarvan, com um raro “shell...",
+        "Conjunto industrial do século XIX perto de Letterkenny, com uma das maiores rodas de água em funcionamento do..."
+      ],
+      "b2_notice": false,
+      "excerpt_vs_rest": {
+        "identical": 0,
+        "trim_18_words_then_dots": 10,
+        "mismatched": []
+      }
+    },
+    "/en/lazer/": {
+      "path": "/en/lazer/",
+      "status": 301,
+      "location": "https://conexaobr.ie/lazer/",
+      "lang": null,
+      "title": "",
+      "canonical": "",
+      "hreflang": [],
+      "og_locale": "",
+      "leisure_cards": 0,
+      "card_titles": [],
+      "card_excerpts": [],
+      "b2_notice": false
+    },
+    "/lazer/?county=dublin": {
+      "path": "/lazer/?county=dublin",
+      "status": 200,
+      "location": "",
+      "lang": "en-US",
+      "title": "Lazer & Turismo na Irlanda | Conexão BR",
+      "canonical": "https://conexaobr.ie/lazer/",
+      "hreflang": [],
+      "og_locale": "pt_BR",
+      "leisure_cards": 10,
+      "card_titles": [
+        "Áras an Uachtaráin",
+        "St Stephen’s Green",
+        "St Audoen’s Church and Visitor Centre",
+        "St. Mary’s Abbey – Chapter House – Cistercian Monastery",
+        "Royal Hospital Kilmainham",
+        "Rathfarnham Castle",
+        "Phoenix Park – People’s Flower Gardens",
+        "Phoenix Park Visitor Centre, Ashtown Castle and Biodiversity Centre",
+        "Pearse Museum – St. Enda&#8217;s Park",
+        "Iveagh Gardens"
+      ],
+      "card_excerpts": [
+        "Residência oficial do Presidente da Irlanda, no Phoenix Park, com visitas guiadas gratuitas aos sábados, sujeitas ao serviço...",
+        "Um dos parques públicos mais conhecidos da Irlanda, no centro da zona comercial de Dublin, mantido no traçado...",
+        "A única igreja paroquial medieval que resta em Dublin, dedicada ao bispo de Rouen, com a Capela da...",
+        "Restos de um dos maiores e mais importantes mosteiros medievais da Irlanda, com acesso apenas por visita guiada...",
+        "Um dos edifícios mais emblemáticos de Dublin e o melhor exemplo irlandês de arquitetura do século XVII, hoje...",
+        "Castelo isabelino do século XVI com quatro torres, remodelado no século XVIII, com retratos de família e exposições...",
+        "Jardim de flores vitoriano de 9 hectares dentro do Phoenix Park, com lago ornamental, parque infantil e canteiros...",
+        "Centro de visitantes do Phoenix Park ao lado do Castelo de Ashtown, uma casa-torre redescoberta, com jardim murado...",
+        "Museu na casa onde Patrick Pearse viveu e dirigiu a sua escola de ensino em irlandês entre 1910...",
+        "Conhecidos como o “jardim secreto” de Dublin, com labirinto de teixos, rosário, fontes e cascata, desenhados por Ninian..."
+      ],
+      "b2_notice": false
+    }
+  }
+}

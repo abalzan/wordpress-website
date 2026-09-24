@@ -1,0 +1,16 @@
+HTTP/2 301 
+server: nginx
+date: Thu, 24 Sep 2026 19:37:37 GMT
+content-type: text/html; charset=UTF-8
+location: https://conexaobr.ie/lazer/
+strict-transport-security: max-age=31536000
+x-hacker: Want root?  Visit join.a8c.com and mention this header.
+host-header: WordPress.com
+vary: accept, content-type, cookie
+expires: Wed, 11 Jan 1984 05:00:00 GMT
+cache-control: no-cache, must-revalidate, max-age=0, no-store, private
+x-redirect-by: WordPress
+x-ac: 2.dca _atomic_dca MISS
+alt-svc: clear
+server-timing: a8c-cdn, dc;desc=dca, cache;desc=MISS;dur=362.0
+
