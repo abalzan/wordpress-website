@@ -116,6 +116,7 @@ function conexao_page_translation_resolve_path( string $path, string $lang ): st
 	}
 
 	return '';
+}
 
 /**
  * Snapshot the PT-relevant fields of a page (Phase 23 checkpoint).
@@ -393,6 +394,4 @@ function conexao_page_translation_run( array $args = array() ): array {
 	}
 
 	return array( 'rows' => $rows, 'summary' => $summary );
-}
-
 }

@@ -101,6 +101,7 @@ function conexao_page_translation_map(): array {
 			'shared_slug' => true,
 			'content'  => '<!-- wp:paragraph --><p>Articles and news for the Brazilian community in Ireland.</p><!-- /wp:paragraph -->',
 			'meta_desc' => 'The Conexão BR Irlanda blog — articles, news and information for Brazilians in Ireland.',
+		),
 
 		// ------------------------------------------------------------------
 		// 3. Topic hub pages (class A). Content follows the exact PT hub
@@ -365,4 +366,3 @@ function conexao_page_translation_county( string $name ): array {
 	);
 }
 
-		),

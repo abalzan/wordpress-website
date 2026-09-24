@@ -1468,7 +1468,7 @@ function conexao_get_featured_sponsors() {
 		return $cached;
 	}
 
-	$query = new WP_Query( array(
+	$query_args = array(
 		'post_type'      => 'sponsor',
 		'post_status'    => 'publish',
 		'posts_per_page' => -1,
@@ -1480,7 +1480,27 @@ function conexao_get_featured_sponsors() {
 				'compare' => '=',
 			),
 		),
-	) );
+	);
+
+	// STAGE 7.x — B2 sponsor selection for the English homepage. The hero is
+	// a secondary query, so it does not inherit the archive's language scope.
+	// On an EN request, use the approved B2 set: published EN sponsors plus
+	// published PT sponsors that have no published EN translation. A PT
+	// master with an EN translation is replaced by that translation, never
+	// shown twice. This mirrors conexao_b2_archive_widen_query() and keeps
+	// the original PT query byte-for-byte unchanged.
+	if ( function_exists( 'conexao_polylang_active' ) && conexao_polylang_active() && function_exists( 'conexao_requested_language_slug' ) && 'en' === conexao_requested_language_slug() ) {
+		$query_args['lang'] = 'en,pt';
+
+		if ( function_exists( 'conexao_b2_translation_replaced_pt_ids' ) ) {
+			$replaced_pt_ids = conexao_b2_translation_replaced_pt_ids( array( 'sponsor' ) );
+			if ( ! empty( $replaced_pt_ids ) ) {
+				$query_args['post__not_in'] = array_map( 'intval', $replaced_pt_ids );
+			}
+		}
+	}
+
+	$query = new WP_Query( $query_args );
 
 	$sponsors = array();
 
