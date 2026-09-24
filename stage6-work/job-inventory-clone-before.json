@@ -1,0 +1,66 @@
+{
+    "generated_by": "scripts/stage6-job-inventory.php",
+    "site": "http://127.0.0.1:8765/",
+    "polylang": true,
+    "job_post_type": {
+        "has_archive": false,
+        "rewrite_slug": "empregos",
+        "public": true,
+        "b2_eligible": true,
+        "pll_translated": true
+    },
+    "jobs_page": {
+        "pt_id": 15,
+        "pt_url": "http://127.0.0.1:8765/empregos/",
+        "template": "page-empregos.php",
+        "en_id": 65,
+        "en_url": "http://127.0.0.1:8765/en/jobs/",
+        "linked": true
+    },
+    "counts": {
+        "total_records_any_status": 1,
+        "by_status": {
+            "publish": 1
+        },
+        "published_pt": 1,
+        "published_en": 0
+    },
+    "pt": [
+        {
+            "id": 66,
+            "slug": "oportunidades",
+            "title": "Oportunidades",
+            "status": "publish",
+            "date": "2026-08-25 16:24:34",
+            "modified": "2026-08-25 16:24:34",
+            "author": 0,
+            "menu_order": 0,
+            "permalink": "http://127.0.0.1:8765/empregos/oportunidades/",
+            "language": "pt",
+            "translation": 0,
+            "excerpt": "",
+            "content": "\n<p class=\"wp-block-paragraph\">No Conexão BR Irlanda, compartilhamos novas oportunidades de trabalho todos os dias — e agora ficou ainda mais fácil encontrar vagas perto de você! 📍</p>\n\n\n\n<p class=\"wp-block-paragraph\">👉 Nos nossos Destaques do Instagram, as vagas estão separadas por Condado, facilitando sua busca pela região onde você mora ou pretende trabalhar.</p>\n\n\n\n<p class=\"wp-block-paragraph\">📌 Atualize seu currículo<br>📌 Confira os Destaques por Condado<br>📌 Acompanhe as novas vagas diariamente<br>📌 Acesse nossos Guias Gratuitos para descobrir onde mais buscar emprego na Irlanda</p>\n\n\n\n<p class=\"wp-block-paragraph\">🌐 Mais informações no nosso instagram — <a href=\"https://www.instagram.com/reel/Dcd0YXqMrEK/?igsi=M3VrZm04aHV4czN6\">clique aqui</a></p>\n\n\n\n<p class=\"wp-block-paragraph\">💚 Salve este post e compartilhe com aquele amigo que também está procurando uma oportunidade na Irlanda.</p>\n\n\n\n<p class=\"wp-block-paragraph\"></p>\n\n\n\n<p class=\"wp-block-paragraph\">#EmpregoNaIrlanda #VagasNaIrlanda #BrasileirosNaIrlanda #TrabalhoNaIrlanda #ConexaoBRIrlanda #VagasDeEmprego #IrelandJobs #BrasileirosNaEuropa</p>\n\n\n\n<p class=\"wp-block-paragraph\"></p>\n",
+            "content_hash": "eccc77a09e6fc25826c48e9d38d50331",
+            "thumbnail": 63,
+            "template": "",
+            "taxonomies": {
+                "conexao_category": [],
+                "conexao_county": [],
+                "conexao_tag": []
+            },
+            "meta": {
+                "_thumbnail_id": "63"
+            },
+            "meta_desc": ""
+        }
+    ],
+    "en": [],
+    "all_statuses": [
+        {
+            "id": 66,
+            "slug": "oportunidades",
+            "status": "publish"
+        }
+    ],
+    "audit": null
+}
