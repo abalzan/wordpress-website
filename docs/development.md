@@ -8,6 +8,60 @@
 4. Access WordPress at http://localhost:8080.
 5. Complete the WordPress installation wizard (if first run).
 
+## Quality tooling (Stage C — static analysis)
+
+Composer is **development tooling only**: it exists for local/CI static
+analysis and is **never deployed** to production (production is
+WordPress.com; nothing from `vendor/` ships). Install it once after cloning:
+
+```bash
+composer install          # creates vendor/ (git-ignored)
+```
+
+The commands (definitions in `composer.json`, ruleset in `phpcs.xml.dist`,
+static analysis in `phpstan.neon.dist`):
+
+| Command | What it runs |
+|---|---|
+| `composer lint` | PHPCS (WordPress-Extra + WordPress-Docs + PHPCompatibilityWP). **Raw debt view** — exits non-zero while any legacy violation exists. |
+| `composer lint:fix` | PHPCBF (auto-fixes what PHPCS can fix). Run it on files you touched, then re-check the baseline. |
+| `composer analyse` | PHPStan level 5 with WordPress support (`phpstan-wordpress`) — exits 0 today because legacy errors are in the baseline. |
+| `composer check` | `composer lint` + `composer analyse` (green only when the PHPCS debt is fully paid down). |
+| `./scripts/lint.sh` | **The Stage C quality gate**: PHP syntax sweep (`php -l`) + PHPCS baseline check + `composer analyse`. Fails on any *new* violation. |
+
+- **PHPCS is the PHP coding standard gate**; **PHPStan is the static type
+  analyser**. `scripts/lint.sh` is the single entry point that fails a change
+  when it makes things worse.
+- **Legacy baselines.** The repository's pre-existing debt is recorded, not
+  fixed, by Stage C:
+  - `phpcs-baseline.json` — per-sniff legacy ERROR/WARNING counts. It **must
+    not grow**: any increased or new sniff count fails `./scripts/lint.sh`
+    (`NEW VIOLATIONS` output). After *deliberately* paying down debt,
+    regenerate it with
+    `php scripts/phpcs-baseline.php update <report.json> phpcs-baseline.json`
+    (generate the report with
+    `vendor/bin/phpcs -q --report=json > <report.json>`).
+  - `phpstan-baseline.neon` — the 298 legacy level-5 errors (generated
+    2026-09-25). It **must not grow**: a new error fails `composer analyse`.
+    After *deliberately* fixing legacy errors, regenerate it with
+    `vendor/bin/phpstan analyse --generate-baseline`.
+  - New violations introduced after Stage C are always visible (the gates
+    fail); shrinking the baselines is the expected direction.
+- **PHP floor**: PHPCS `testVersion` is `8.0-` (engineering standard §2.1).
+  The toolchain runs on PHP ≥ 8.0 (verified on 8.5). Runtime headers still
+  declare 7.4/8.0 in places — aligning them is later-stage work; Stage C
+  does not change runtime compatibility claims.
+- **CI (Stage D)** will run these same checks on every push/PR
+  (engineering standard §1.7). Until then, run `./scripts/lint.sh` locally
+  before committing PHP changes.
+- No Node/JS tooling is used or required (plain JS/CSS assets; adding a JS
+  build stack is a separate, explicit decision — engineering standard §2.2).
+
+The PHPStan bootstrap `docs/dev/phpstan-bootstrap.php` is development/static
+analysis only — it is **never loaded by WordPress** and never deployed; it
+only declares constants/types the analyser cannot discover (Polylang API
+stubs, theme/plugin constants).
+
 ## Restoring a Production UpdraftPlus Backup (Local Only)
 
 Production UpdraftPlus database dumps declare `SET NAMES latin1` and

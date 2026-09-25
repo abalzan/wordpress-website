@@ -54,6 +54,12 @@ it was verified.
 |---|---|
 | `2026-09-25-stage-b-repository-hygiene.md` | Stage B of the standardisation roadmap — baseline, cleanup inventory, verification numbers |
 
+Stage reports for the standardisation roadmap's repository-engineering stages
+(Stage C static quality tooling, …) live in
+[`site/`](site/) as
+`<date>-<stage>-<topic>.md`.
+
+
 Related: `docs/audit/` (engineering audits), `docs/engineering-standard.md`
 (the normative standard these reports are measured against).
 

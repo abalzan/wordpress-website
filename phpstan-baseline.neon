@@ -1,0 +1,1002 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Action callback returns string but should not return anything\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-admin-ux/includes/class-admin.php
+
+		-
+			message: "#^Property Conexao_Admin_Ux\\:\\:\\$editors is never read, only written\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-admin-ux/includes/class-admin.php
+
+		-
+			message: "#^Property Conexao_Admin_Ux\\:\\:\\$lists is never read, only written\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-admin-ux/includes/class-admin.php
+
+		-
+			message: "#^Strict comparison using \\=\\=\\= between 'mobile' and '_sponsor_desktop…'\\|'_sponsor_mobile…' will always evaluate to false\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-admin-ux/includes/class-editor.php
+
+		-
+			message: "#^Else branch is unreachable because ternary operator condition is always true\\.$#"
+			count: 3
+			path: wp-content/plugins/conexao-admin-ux/includes/class-fields.php
+
+		-
+			message: "#^Left side of && is always true\\.$#"
+			count: 3
+			path: wp-content/plugins/conexao-admin-ux/includes/class-fields.php
+
+		-
+			message: "#^Parameter \\#1 \\$text of function esc_attr expects string, int given\\.$#"
+			count: 2
+			path: wp-content/plugins/conexao-admin-ux/includes/class-fields.php
+
+		-
+			message: "#^Parameter \\#1 \\$text of function esc_attr expects string, int\\<0, max\\> given\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-admin-ux/includes/class-fields.php
+
+		-
+			message: "#^Parameter \\#2 \\$callback of function array_filter expects \\(callable\\(string\\)\\: bool\\)\\|null, 'strlen' given\\.$#"
+			count: 3
+			path: wp-content/plugins/conexao-admin-ux/includes/class-fields.php
+
+		-
+			message: "#^Static method Conexao_Admin_Ux_Fields\\:\\:is_event_recurrence_key\\(\\) is unused\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-admin-ux/includes/class-fields.php
+
+		-
+			message: "#^Offset 'local'\\|'none'\\|'pending' on array\\{none\\: string, pending\\: string, local\\: string\\} in isset\\(\\) always exists and is not nullable\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-admin-ux/includes/class-leisure-image-admin.php
+
+		-
+			message: "#^Right side of && is always true\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-admin-ux/includes/class-list.php
+
+		-
+			message: "#^Variable \\$terms in empty\\(\\) always exists and is not falsy\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-admin-ux/includes/class-list.php
+
+		-
+			message: "#^Property PLL\\:\\:\\$links \\(PLL_Links\\) in isset\\(\\) is not nullable\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-admin-ux/includes/class-translation-state.php
+
+		-
+			message: "#^Call to function is_wp_error\\(\\) with int\\<0, max\\> will always evaluate to false\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-admin-ux/includes/class-wikimedia-client.php
+
+		-
+			message: "#^Offset 'value' on array in isset\\(\\) always exists and is not nullable\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-admin-ux/includes/class-wikimedia-client.php
+
+		-
+			message: "#^Result of && is always true\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-admin-ux/includes/class-wikimedia-client.php
+
+		-
+			message: "#^Undefined variable\\: \\$file$#"
+			count: 1
+			path: wp-content/plugins/conexao-admin-ux/includes/class-wikimedia-client.php
+
+		-
+			message: "#^Variable \\$file in isset\\(\\) is never defined\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-admin-ux/includes/class-wikimedia-client.php
+
+		-
+			message: "#^is_wp_error\\(int\\<0, max\\>\\) will always evaluate to false\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-admin-ux/includes/class-wikimedia-client.php
+
+		-
+			message: "#^Function conexao_blog_translation_ensure_terms\\(\\) should return array\\<int, array\\{pt\\: int, en\\: int\\}\\> but returns array\\<int, int\\>\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-blog-translation/includes/apply.php
+
+		-
+			message: "#^Property PLL\\:\\:\\$model \\(PLL_Model\\) in isset\\(\\) is not nullable\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-blog-translation/includes/apply.php
+
+		-
+			message: "#^Call to function is_wp_error\\(\\) with int\\<0, max\\> will always evaluate to false\\.$#"
+			count: 3
+			path: wp-content/plugins/conexao-content/create-pages.php
+
+		-
+			message: "#^Call to sprintf contains 7 placeholders, 8 values given\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-content/create-pages.php
+
+		-
+			message: "#^Negated boolean expression is always true\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-content/create-pages.php
+
+		-
+			message: "#^is_wp_error\\(int\\<0, max\\>\\) will always evaluate to false\\.$#"
+			count: 3
+			path: wp-content/plugins/conexao-content/create-pages.php
+
+		-
+			message: "#^Call to function is_wp_error\\(\\) with array\\{term_id\\: string, term_taxonomy_id\\: string\\}\\|non\\-falsy\\-string will always evaluate to false\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-content/seed-leisure.php
+
+		-
+			message: "#^Call to function is_wp_error\\(\\) with int\\<0, max\\> will always evaluate to false\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-content/seed-leisure.php
+
+		-
+			message: "#^Negated boolean expression is always true\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-content/seed-leisure.php
+
+		-
+			message: "#^is_wp_error\\(array\\<string, string\\>\\|string\\) will always evaluate to false\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-content/seed-leisure.php
+
+		-
+			message: "#^is_wp_error\\(int\\<0, max\\>\\) will always evaluate to false\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-content/seed-leisure.php
+
+		-
+			message: "#^Parameter \\#1 \\$text of function esc_html expects string, int given\\.$#"
+			count: 10
+			path: wp-content/plugins/conexao-event-importer/includes/class-event-cleanup-admin.php
+
+		-
+			message: """
+				#^PHPDoc tag @return has invalid value \\(array\\{
+				  status\\: string,      Self\\:\\:IMPORT, Self\\:\\:PAST or Self\\:\\:INVALID\\.
+				  cutoff_label\\: string Human\\-readable cutoff instant used for the
+				                       comparison \\('Y\\-m\\-d H\\:i'\\); empty when invalid\\.
+				\\}\\)\\: Unexpected token "or", expected '\\}' at offset 284$#
+			"""
+			count: 1
+			path: wp-content/plugins/conexao-event-importer/includes/class-event-date-filter.php
+
+		-
+			message: "#^Else branch is unreachable because ternary operator condition is always true\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-event-importer/includes/class-event-export.php
+
+		-
+			message: "#^Right side of && is always true\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-event-importer/includes/class-event-export.php
+
+		-
+			message: "#^Strict comparison using \\=\\=\\= between false and non\\-falsy\\-string will always evaluate to false\\.$#"
+			count: 2
+			path: wp-content/plugins/conexao-event-importer/includes/class-event-export.php
+
+		-
+			message: "#^Call to function is_wp_error\\(\\) with 0 will always evaluate to false\\.$#"
+			count: 2
+			path: wp-content/plugins/conexao-event-importer/includes/class-event-image-handler.php
+
+		-
+			message: "#^Call to function is_wp_error\\(\\) with int\\<1, max\\> will always evaluate to false\\.$#"
+			count: 2
+			path: wp-content/plugins/conexao-event-importer/includes/class-event-image-handler.php
+
+		-
+			message: "#^Call to function is_wp_error\\(\\) with non\\-empty\\-array will always evaluate to false\\.$#"
+			count: 2
+			path: wp-content/plugins/conexao-event-importer/includes/class-event-image-handler.php
+
+		-
+			message: "#^Variable \\$url in empty\\(\\) always exists and is not falsy\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-event-importer/includes/class-event-image-handler.php
+
+		-
+			message: "#^is_wp_error\\(array\\) will always evaluate to false\\.$#"
+			count: 2
+			path: wp-content/plugins/conexao-event-importer/includes/class-event-image-handler.php
+
+		-
+			message: "#^is_wp_error\\(int\\) will always evaluate to false\\.$#"
+			count: 2
+			path: wp-content/plugins/conexao-event-importer/includes/class-event-image-handler.php
+
+		-
+			message: "#^is_wp_error\\(int\\<1, max\\>\\) will always evaluate to false\\.$#"
+			count: 2
+			path: wp-content/plugins/conexao-event-importer/includes/class-event-image-handler.php
+
+		-
+			message: "#^Parameter \\#1 \\$text of function esc_html expects string, int given\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-event-importer/includes/class-event-image-sync-admin.php
+
+		-
+			message: "#^Else branch is unreachable because ternary operator condition is always true\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-event-importer/includes/class-event-import.php
+
+		-
+			message: "#^Call to function is_wp_error\\(\\) with array\\{term_id\\: int\\|string, term_taxonomy_id\\: int\\|string\\} will always evaluate to false\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php
+
+		-
+			message: "#^Call to function is_wp_error\\(\\) with int\\<0, max\\> will always evaluate to false\\.$#"
+			count: 2
+			path: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php
+
+		-
+			message: "#^Else branch is unreachable because ternary operator condition is always true\\.$#"
+			count: 2
+			path: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php
+
+		-
+			message: "#^Offset 'post_id' on array\\{action\\: 'created', post_id\\: int, error\\?\\: string, reason\\?\\: string\\} in isset\\(\\) always exists and is not nullable\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php
+
+		-
+			message: "#^Offset 'post_id' on array\\{action\\: 'updated', post_id\\: int, error\\?\\: string, reason\\?\\: string\\} in isset\\(\\) always exists and is not nullable\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php
+
+		-
+			message: "#^Strict comparison using \\=\\=\\= between 'icalendar' and mixed~\\('eventbrite'\\|'heritage_week'\\|'icalendar'\\|null\\) will always evaluate to false\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php
+
+		-
+			message: "#^is_wp_error\\(array\\<string, int\\|string\\>\\) will always evaluate to false\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php
+
+		-
+			message: "#^is_wp_error\\(int\\<0, max\\>\\) will always evaluate to false\\.$#"
+			count: 2
+			path: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php
+
+		-
+			message: "#^Offset 'address' on array\\{county\\: mixed, town\\: mixed, venue\\: string, address\\: ''\\} in empty\\(\\) always exists and is always falsy\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-event-importer/includes/class-event-location.php
+
+		-
+			message: "#^Comparison operation \"\\<\" between int\\<0, max\\> and 0 is always false\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-event-importer/includes/class-event-multi-import.php
+
+		-
+			message: "#^Offset 'errors' on array\\{imported\\: int, updated\\: int, skipped\\: int, failed\\: int, errors\\: array\\} in isset\\(\\) always exists and is not nullable\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-event-importer/includes/class-event-multi-import.php
+
+		-
+			message: "#^Offset 'imported' on array\\{imported\\: int, updated\\: int, skipped\\: int, failed\\: int, errors\\: array\\} in isset\\(\\) always exists and is not nullable\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-event-importer/includes/class-event-multi-import.php
+
+		-
+			message: "#^Offset 'media_discovered' on array\\{imported\\: int, updated\\: int, skipped\\: int, failed\\: int, errors\\: array\\} in isset\\(\\) does not exist\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-event-importer/includes/class-event-multi-import.php
+
+		-
+			message: "#^Offset 'skipped' on array\\{imported\\: int, updated\\: int, skipped\\: int, failed\\: int, errors\\: array\\} in isset\\(\\) always exists and is not nullable\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-event-importer/includes/class-event-multi-import.php
+
+		-
+			message: "#^Offset 'updated' on array\\{imported\\: int, updated\\: int, skipped\\: int, failed\\: int, errors\\: array\\} in isset\\(\\) always exists and is not nullable\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-event-importer/includes/class-event-multi-import.php
+
+		-
+			message: "#^Offset 2 on array\\{string, numeric\\-string, ''\\|\\(non\\-falsy\\-string&numeric\\-string\\), 'AM'\\|'Am'\\|'aM'\\|'am'\\|'PM'\\|'Pm'\\|'pM'\\|'pm'\\} in isset\\(\\) always exists and is not nullable\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-event-importer/includes/class-event-normalizer.php
+
+		-
+			message: "#^Call to static method add_command\\(\\) on an unknown class WP_CLI\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-event-importer/includes/class-import-cli.php
+
+		-
+			message: "#^Call to static method error\\(\\) on an unknown class WP_CLI\\.$#"
+			count: 2
+			path: wp-content/plugins/conexao-event-importer/includes/class-import-cli.php
+
+		-
+			message: "#^Call to static method log\\(\\) on an unknown class WP_CLI\\.$#"
+			count: 9
+			path: wp-content/plugins/conexao-event-importer/includes/class-import-cli.php
+
+		-
+			message: "#^Call to static method success\\(\\) on an unknown class WP_CLI\\.$#"
+			count: 4
+			path: wp-content/plugins/conexao-event-importer/includes/class-import-cli.php
+
+		-
+			message: "#^Call to static method warning\\(\\) on an unknown class WP_CLI\\.$#"
+			count: 4
+			path: wp-content/plugins/conexao-event-importer/includes/class-import-cli.php
+
+		-
+			message: "#^Function WP_CLI\\\\Utils\\\\format_items not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-event-importer/includes/class-import-cli.php
+
+		-
+			message: "#^Parameter \\#1 \\$text of function esc_html expects string, int\\<0, max\\> given\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-event-importer/includes/class-import-log-admin.php
+
+		-
+			message: "#^Method Conexao_Import_Result\\:\\:get_run_id\\(\\) should return string but returns int\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-event-importer/includes/class-import-result.php
+
+		-
+			message: "#^Property Conexao_Import_Result\\:\\:\\$run_id \\(int\\) does not accept string\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-event-importer/includes/class-import-result.php
+
+		-
+			message: "#^Call to an undefined method DOMElement\\:\\:querySelector\\(\\)\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-event-importer/includes/sources/abstract-class-source.php
+
+		-
+			message: "#^Offset 'events' on array\\{events\\: array\\<array\\>, pagination\\: array, raw\\: array\\} in isset\\(\\) always exists and is not nullable\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-event-importer/includes/sources/class-eventbrite-source.php
+
+		-
+			message: "#^Call to an undefined method DOMNode\\:\\:getAttribute\\(\\)\\.$#"
+			count: 8
+			path: wp-content/plugins/conexao-event-importer/includes/sources/class-heritage-week-source.php
+
+		-
+			message: "#^Parameter \\#1 \\$card of method Conexao_Source_Heritage_Week\\:\\:extract_listing_event\\(\\) expects DOMElement, DOMNode given\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-event-importer/includes/sources/class-heritage-week-source.php
+
+		-
+			message: "#^Parameter \\#1 \\$img_node of method Conexao_Source_Heritage_Week\\:\\:collect_img_candidates\\(\\) expects DOMElement, DOMNode given\\.$#"
+			count: 2
+			path: wp-content/plugins/conexao-event-importer/includes/sources/class-heritage-week-source.php
+
+		-
+			message: "#^Variable \\$url in empty\\(\\) always exists and is not falsy\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-event-importer/includes/sources/class-heritage-week-source.php
+
+		-
+			message: "#^Call to an undefined method DOMNode\\:\\:getAttribute\\(\\)\\.$#"
+			count: 4
+			path: wp-content/plugins/conexao-event-importer/includes/sources/class-ivvcc-source.php
+
+		-
+			message: "#^Parameter \\#1 \\$card of static method Conexao_Source_Ivvcc\\:\\:parse_card\\(\\) expects DOMElement, DOMNode given\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-event-importer/includes/sources/class-ivvcc-source.php
+
+		-
+			message: "#^Call to an undefined method DOMNode\\:\\:getAttribute\\(\\)\\.$#"
+			count: 2
+			path: wp-content/plugins/conexao-event-importer/includes/sources/class-laois-tourism-source.php
+
+		-
+			message: "#^Method Conexao_Source_Laois_Tourism\\:\\:find_event_nodes\\(\\) should return array\\<DOMNodeList\\> but returns DOMNodeList\\<DOMNode\\>\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-event-importer/includes/sources/class-laois-tourism-source.php
+
+		-
+			message: "#^Parameter \\#1 \\$node of method Conexao_Source_Laois_Tourism\\:\\:extract_event\\(\\) expects DOMNode, DOMNodeList given\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-event-importer/includes/sources/class-laois-tourism-source.php
+
+		-
+			message: "#^Array has 2 duplicate keys with value 'may' \\('may', 'may'\\)\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-event-importer/includes/sources/class-mondello-park-source.php
+
+		-
+			message: "#^Call to an undefined method DOMNode\\:\\:getAttribute\\(\\)\\.$#"
+			count: 4
+			path: wp-content/plugins/conexao-event-importer/includes/sources/class-mondello-park-source.php
+
+		-
+			message: "#^Negated boolean expression is always false\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-event-importer/includes/sources/class-mondello-park-source.php
+
+		-
+			message: "#^Parameter \\#1 \\$node of method Conexao_Source_Mondello_Park\\:\\:extract_text\\(\\) expects DOMElement, DOMNode\\|null given\\.$#"
+			count: 4
+			path: wp-content/plugins/conexao-event-importer/includes/sources/class-mondello-park-source.php
+
+		-
+			message: "#^Call to an undefined method DOMNode\\:\\:getAttribute\\(\\)\\.$#"
+			count: 4
+			path: wp-content/plugins/conexao-event-importer/includes/sources/class-motorsport-ireland-source.php
+
+		-
+			message: "#^Call to an undefined method DOMNode\\:\\:getElementsByTagName\\(\\)\\.$#"
+			count: 2
+			path: wp-content/plugins/conexao-event-importer/includes/sources/class-motorsport-ireland-source.php
+
+		-
+			message: "#^Offset 'source_id' on array in isset\\(\\) always exists and is not nullable\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-event-importer/includes/sources/class-motorsport-ireland-source.php
+
+		-
+			message: "#^Parameter \\#1 \\$card of static method Conexao_Source_Motorsport_Ireland\\:\\:parse_listing_card\\(\\) expects DOMElement, DOMNode given\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-event-importer/includes/sources/class-motorsport-ireland-source.php
+
+		-
+			message: "#^Else branch is unreachable because ternary operator condition is always true\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-event-runtime/includes/class-event-query.php
+
+		-
+			message: "#^Property PLL\\:\\:\\$model \\(PLL_Model\\) in isset\\(\\) is not nullable\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/apply-2b2.php
+
+		-
+			message: "#^Function conexao_guide_en_bank not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-a.php
+
+		-
+			message: "#^Function conexao_guide_en_car not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-a.php
+
+		-
+			message: "#^Function conexao_guide_en_citizenship not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-a.php
+
+		-
+			message: "#^Function conexao_guide_en_gpreg not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-a.php
+
+		-
+			message: "#^Function conexao_guide_en_licence not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-a.php
+
+		-
+			message: "#^Function conexao_guide_en_medical not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-a.php
+
+		-
+			message: "#^Function conexao_guide_en_passport not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-a.php
+
+		-
+			message: "#^Function conexao_guide_en_pps not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-a.php
+
+		-
+			message: "#^Function conexao_guide_en_rent not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-a.php
+
+		-
+			message: "#^Function conexao_guide_en_taxes not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-a.php
+
+		-
+			message: "#^Function conexao_guide_en_childbenefit not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-b1.php
+
+		-
+			message: "#^Function conexao_guide_en_company not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-b1.php
+
+		-
+			message: "#^Function conexao_guide_en_immigration not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-b1.php
+
+		-
+			message: "#^Function conexao_guide_en_irprenewal not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-b1.php
+
+		-
+			message: "#^Function conexao_guide_en_mygovid not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-b1.php
+
+		-
+			message: "#^Function conexao_guide_en_socialwelfare not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-b1.php
+
+		-
+			message: "#^Function conexao_guide_en_eircode not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-b2.php
+
+		-
+			message: "#^Function conexao_guide_en_emergency not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-b2.php
+
+		-
+			message: "#^Function conexao_guide_en_motortax not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-b2.php
+
+		-
+			message: "#^Function conexao_guide_en_nct not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-b2.php
+
+		-
+			message: "#^Function conexao_guide_en_rights not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-b2.php
+
+		-
+			message: "#^Function conexao_guide_en_susi not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-b2.php
+
+		-
+			message: "#^Function conexao_guide_en_transport not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-b2.php
+
+		-
+			message: "#^Function conexao_guide_en_cao not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-b3.php
+
+		-
+			message: "#^Function conexao_guide_en_consumer not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-b3.php
+
+		-
+			message: "#^Function conexao_guide_en_garda not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-b3.php
+
+		-
+			message: "#^Function conexao_guide_en_gdpr not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-b3.php
+
+		-
+			message: "#^Function conexao_guide_en_hap not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-b3.php
+
+		-
+			message: "#^Function conexao_guide_en_myaccount not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-b3.php
+
+		-
+			message: "#^Function conexao_guide_en_rtb not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-b3.php
+
+		-
+			message: "#^Function conexao_guide_en_ehic not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-c.php
+
+		-
+			message: "#^Function conexao_guide_en_employment_permit not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-c.php
+
+		-
+			message: "#^Function conexao_guide_en_firstjob not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-c.php
+
+		-
+			message: "#^Function conexao_guide_en_hse_care not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-c.php
+
+		-
+			message: "#^Function conexao_guide_en_irp_first not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-c.php
+
+		-
+			message: "#^Function conexao_guide_en_irp_travel not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-c.php
+
+		-
+			message: "#^Function conexao_guide_en_leapcard not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-c.php
+
+		-
+			message: "#^Function conexao_guide_en_learner_permit not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-c.php
+
+		-
+			message: "#^Function conexao_guide_en_naric not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-c.php
+
+		-
+			message: "#^Function conexao_guide_en_soletrapper not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-c.php
+
+		-
+			message: "#^Function conexao_guide_en_financial_complaints not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-d1.php
+
+		-
+			message: "#^Function conexao_guide_en_legalaid not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-d1.php
+
+		-
+			message: "#^Function conexao_guide_en_marriage_birth not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-d1.php
+
+		-
+			message: "#^Function conexao_guide_en_ombudsman not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-d1.php
+
+		-
+			message: "#^Function conexao_guide_en_autism not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-d2.php
+
+		-
+			message: "#^Function conexao_guide_en_dv not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-d2.php
+
+		-
+			message: "#^Function conexao_guide_en_fly not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-d2.php
+
+		-
+			message: "#^Function conexao_guide_en_loneparents not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-d2.php
+
+		-
+			message: "#^Function conexao_guide_en_mental not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-d2.php
+
+		-
+			message: "#^Function conexao_guide_en_travel_checklist not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-d2.php
+
+		-
+			message: "#^Function conexao_guide_en_wrc not found\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-guide-translation/includes/guides-d2.php
+
+		-
+			message: "#^Property PLL\\:\\:\\$model \\(PLL_Model\\) in isset\\(\\) is not nullable\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-job-translation/includes/apply.php
+
+		-
+			message: "#^Call to function is_wp_error\\(\\) with int\\<1, max\\> will always evaluate to false\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-leisure-migration/includes/class-leisure-importer.php
+
+		-
+			message: "#^Call to function is_wp_error\\(\\) with non\\-empty\\-array will always evaluate to false\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-leisure-migration/includes/class-leisure-importer.php
+
+		-
+			message: "#^is_wp_error\\(array\\) will always evaluate to false\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-leisure-migration/includes/class-leisure-importer.php
+
+		-
+			message: "#^is_wp_error\\(int\\<1, max\\>\\) will always evaluate to false\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-leisure-migration/includes/class-leisure-importer.php
+
+		-
+			message: "#^Else branch is unreachable because ternary operator condition is always true\\.$#"
+			count: 2
+			path: wp-content/plugins/conexao-leisure-translation/includes/audit.php
+
+		-
+			message: "#^Call to function is_wp_error\\(\\) with int\\<1, max\\> will always evaluate to false\\.$#"
+			count: 2
+			path: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-importer.php
+
+		-
+			message: "#^Call to function is_wp_error\\(\\) with non\\-empty\\-array will always evaluate to false\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-importer.php
+
+		-
+			message: "#^Left side of && is always true\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-importer.php
+
+		-
+			message: "#^is_wp_error\\(array\\) will always evaluate to false\\.$#"
+			count: 1
+			path: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-importer.php
+
+		-
+			message: "#^is_wp_error\\(int\\<1, max\\>\\) will always evaluate to false\\.$#"
+			count: 2
+			path: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-importer.php
+
+		-
+			message: "#^Offset 'key' on array\\{key\\: 'apoiadores', icon\\: 'users', title\\: string, description\\: string, url\\: '/apoiadores/', mobile_priority\\: 'apoiadores', mobile_only\\: true\\}\\|array\\{key\\: 'beneficios', icon\\: 'gift', title\\: string, description\\: string, term\\: 'beneficios'\\}\\|array\\{key\\: 'blog', icon\\: 'pen', title\\: string, description\\: string, url\\: '/blog/', mobile_priority\\: 'blog'\\}\\|array\\{key\\: 'documentos', icon\\: 'file\\-text', title\\: string, description\\: string, term\\: 'documentos'\\}\\|array\\{key\\: 'educacao', icon\\: 'graduation\\-cap', title\\: string, description\\: string, url\\: '/cursos/'\\}\\|array\\{key\\: 'empregos', icon\\: 'briefcase', title\\: string, description\\: string, url\\: '/empregos/', mobile_priority\\: 'empregos'\\}\\|array\\{key\\: 'eventos', icon\\: 'calendar', title\\: string, description\\: string, url\\: '/eventos/'\\}\\|array\\{key\\: 'financas', icon\\: 'dollar', title\\: string, description\\: string, term\\: 'financas'\\}\\|array\\{key\\: 'guias', icon\\: 'book', title\\: string, description\\: string, guides\\: true, mobile_only\\: true\\}\\|array\\{key\\: 'lazer', icon\\: 'compass', title\\: string, description\\: string, url\\: '/lazer/', mobile_priority\\: 'lazer', mobile_label\\: string\\}\\|array\\{key\\: 'moradia', icon\\: 'home', title\\: string, description\\: string, term\\: 'moradia'\\}\\|array\\{key\\: 'saude', icon\\: 'heart', title\\: string, description\\: string, term\\: 'saude'\\}\\|array\\{key\\: 'transporte', icon\\: 'car', title\\: string, description\\: string, term\\: 'transporte'\\} in empty\\(\\) always exists and is not falsy\\.$#"
+			count: 1
+			path: wp-content/themes/conexao-br-irlanda/front-page.php
+
+		-
+			message: "#^Parameter \\#1 \\$text of function esc_html expects string, int\\<1, max\\> given\\.$#"
+			count: 1
+			path: wp-content/themes/conexao-br-irlanda/front-page.php
+
+		-
+			message: "#^Call to function is_wp_error\\(\\) with WP_Term will always evaluate to false\\.$#"
+			count: 6
+			path: wp-content/themes/conexao-br-irlanda/functions.php
+
+		-
+			message: "#^Else branch is unreachable because ternary operator condition is always true\\.$#"
+			count: 1
+			path: wp-content/themes/conexao-br-irlanda/functions.php
+
+		-
+			message: "#^Offset 'type' on array\\{type\\: string, url\\: string\\} in isset\\(\\) always exists and is not nullable\\.$#"
+			count: 1
+			path: wp-content/themes/conexao-br-irlanda/functions.php
+
+		-
+			message: "#^Offset 'url' on array\\{type\\: string, url\\: string\\} in isset\\(\\) always exists and is not nullable\\.$#"
+			count: 1
+			path: wp-content/themes/conexao-br-irlanda/functions.php
+
+		-
+			message: "#^Parameter \\#1 \\$text of function esc_attr expects string, int given\\.$#"
+			count: 2
+			path: wp-content/themes/conexao-br-irlanda/functions.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of function implode expects array\\<string\\>, array\\<array\\|string\\> given\\.$#"
+			count: 1
+			path: wp-content/themes/conexao-br-irlanda/functions.php
+
+		-
+			message: "#^Variable \\$counties in empty\\(\\) always exists and is not falsy\\.$#"
+			count: 1
+			path: wp-content/themes/conexao-br-irlanda/functions.php
+
+		-
+			message: "#^is_wp_error\\(WP_Term\\) will always evaluate to false\\.$#"
+			count: 6
+			path: wp-content/themes/conexao-br-irlanda/functions.php
+
+		-
+			message: "#^Parameter \\#1 \\$args of function wp_nav_menu expects array\\{menu\\?\\: int\\|string\\|WP_Term, menu_class\\?\\: string, menu_id\\?\\: string, container\\?\\: string, container_class\\?\\: string, container_id\\?\\: string, container_aria_label\\?\\: string, fallback_cb\\?\\: \\(callable\\(\\)\\: mixed\\)\\|false, \\.\\.\\.\\}, array\\{theme_location\\: 'primary', menu_class\\: 'mobile\\-menu', container\\: false, fallback_cb\\: 'conexao_safe_nav…', depth\\: 3\\} given\\.$#"
+			count: 1
+			path: wp-content/themes/conexao-br-irlanda/header.php
+
+		-
+			message: "#^Parameter \\#1 \\$args of function wp_nav_menu expects array\\{menu\\?\\: int\\|string\\|WP_Term, menu_class\\?\\: string, menu_id\\?\\: string, container\\?\\: string, container_class\\?\\: string, container_id\\?\\: string, container_aria_label\\?\\: string, fallback_cb\\?\\: \\(callable\\(\\)\\: mixed\\)\\|false, \\.\\.\\.\\}, array\\{theme_location\\: 'primary', menu_id\\: 'primary\\-menu', container\\: false, fallback_cb\\: 'conexao_safe_nav…', depth\\: 3\\} given\\.$#"
+			count: 1
+			path: wp-content/themes/conexao-br-irlanda/header.php
+
+		-
+			message: "#^Else branch is unreachable because ternary operator condition is always true\\.$#"
+			count: 2
+			path: wp-content/themes/conexao-br-irlanda/inc/permit-employers.php
+
+		-
+			message: "#^Variable \\$key in isset\\(\\) always exists and is not nullable\\.$#"
+			count: 1
+			path: wp-content/themes/conexao-br-irlanda/inc/permit-employers.php
+
+		-
+			message: "#^Access to an undefined property PLL\\:\\:\\$curlang\\.$#"
+			count: 1
+			path: wp-content/themes/conexao-br-irlanda/inc/polylang.php
+
+		-
+			message: "#^Action callback returns string but should not return anything\\.$#"
+			count: 2
+			path: wp-content/themes/conexao-br-irlanda/inc/polylang.php
+
+		-
+			message: "#^Else branch is unreachable because ternary operator condition is always true\\.$#"
+			count: 1
+			path: wp-content/themes/conexao-br-irlanda/inc/polylang.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of function implode expects array\\<string\\>, array\\<int, PLL_Language\\|string\\> given\\.$#"
+			count: 1
+			path: wp-content/themes/conexao-br-irlanda/inc/polylang.php
+
+		-
+			message: "#^Property PLL_Language\\:\\:\\$locale \\(string\\) in isset\\(\\) is not nullable\\.$#"
+			count: 1
+			path: wp-content/themes/conexao-br-irlanda/inc/polylang.php
+
+		-
+			message: "#^Property PLL_Language\\:\\:\\$name \\(string\\) in isset\\(\\) is not nullable\\.$#"
+			count: 1
+			path: wp-content/themes/conexao-br-irlanda/inc/polylang.php
+
+		-
+			message: "#^Property PLL_Language\\:\\:\\$slug \\(string\\) in isset\\(\\) is not nullable\\.$#"
+			count: 1
+			path: wp-content/themes/conexao-br-irlanda/inc/polylang.php
+
+		-
+			message: "#^Strict comparison using \\=\\=\\= between '' and non\\-empty\\-string\\|null will always evaluate to false\\.$#"
+			count: 1
+			path: wp-content/themes/conexao-br-irlanda/inc/polylang.php
+
+		-
+			message: "#^Else branch is unreachable because ternary operator condition is always true\\.$#"
+			count: 4
+			path: wp-content/themes/conexao-br-irlanda/inc/recruitment-agencies.php
+
+		-
+			message: "#^Else branch is unreachable because ternary operator condition is always true\\.$#"
+			count: 1
+			path: wp-content/themes/conexao-br-irlanda/inc/rest-language.php
+
+		-
+			message: "#^Variable \\$leisure_counties in empty\\(\\) always exists and is not falsy\\.$#"
+			count: 1
+			path: wp-content/themes/conexao-br-irlanda/inc/seo.php
+
+		-
+			message: "#^Variable \\$tax_query in empty\\(\\) always exists and is not falsy\\.$#"
+			count: 1
+			path: wp-content/themes/conexao-br-irlanda/inc/seo.php
+
+		-
+			message: "#^Call to function is_wp_error\\(\\) with WP_Term will always evaluate to false\\.$#"
+			count: 1
+			path: wp-content/themes/conexao-br-irlanda/page-landing.php
+
+		-
+			message: "#^is_wp_error\\(WP_Term\\) will always evaluate to false\\.$#"
+			count: 1
+			path: wp-content/themes/conexao-br-irlanda/page-landing.php
+
+		-
+			message: "#^Parameter \\#1 \\$text of function esc_attr expects string, int given\\.$#"
+			count: 2
+			path: wp-content/themes/conexao-br-irlanda/single-sponsor.php
+
+		-
+			message: "#^If condition is always false\\.$#"
+			count: 4
+			path: wp-content/themes/conexao-br-irlanda/template-parts/archive-header.php
+
+		-
+			message: "#^Offset 'description' on string on left side of \\?\\? does not exist\\.$#"
+			count: 1
+			path: wp-content/themes/conexao-br-irlanda/template-parts/archive-header.php
+
+		-
+			message: "#^Offset 'eyebrow' on string on left side of \\?\\? does not exist\\.$#"
+			count: 1
+			path: wp-content/themes/conexao-br-irlanda/template-parts/archive-header.php
+
+		-
+			message: "#^Offset 'filters' on string on left side of \\?\\? does not exist\\.$#"
+			count: 1
+			path: wp-content/themes/conexao-br-irlanda/template-parts/archive-header.php
+
+		-
+			message: "#^Offset 'title' on string on left side of \\?\\? does not exist\\.$#"
+			count: 1
+			path: wp-content/themes/conexao-br-irlanda/template-parts/archive-header.php
+
+		-
+			message: "#^Offset 0\\|1\\|2\\|3\\|4\\|5\\|6 on array\\{'DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB'\\} in isset\\(\\) always exists and is not nullable\\.$#"
+			count: 1
+			path: wp-content/themes/conexao-br-irlanda/template-parts/event-card.php
+
+		-
+			message: "#^Offset 1\\|2\\|3\\|4\\|5\\|6\\|7\\|8\\|9\\|10\\|11\\|12 on array\\{1\\: 'JAN', 2\\: 'FEV', 3\\: 'MAR', 4\\: 'ABR', 5\\: 'MAI', 6\\: 'JUN', 7\\: 'JUL', 8\\: 'AGO', \\.\\.\\.\\} in isset\\(\\) always exists and is not nullable\\.$#"
+			count: 2
+			path: wp-content/themes/conexao-br-irlanda/template-parts/event-card.php
+
+		-
+			message: "#^Offset 1\\|2\\|3\\|4\\|5\\|6\\|7\\|8\\|9\\|10\\|11\\|12 on array\\{1\\: 'janeiro', 2\\: 'fevereiro', 3\\: 'março', 4\\: 'abril', 5\\: 'maio', 6\\: 'junho', 7\\: 'julho', 8\\: 'agosto', \\.\\.\\.\\} in isset\\(\\) always exists and is not nullable\\.$#"
+			count: 1
+			path: wp-content/themes/conexao-br-irlanda/template-parts/event-card.php
+
+		-
+			message: "#^Call to function is_wp_error\\(\\) with array\\<WP_Term\\> will always evaluate to false\\.$#"
+			count: 3
+			path: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php
+
+		-
+			message: "#^is_wp_error\\(array\\<WP_Term\\>\\) will always evaluate to false\\.$#"
+			count: 3
+			path: wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php
+
+		-
+			message: "#^Variable \\$event_counties in empty\\(\\) always exists and is not falsy\\.$#"
+			count: 1
+			path: wp-content/themes/conexao-br-irlanda/template-parts/event-preview.php
+
+		-
+			message: "#^Variable \\$event_towns in empty\\(\\) always exists and is not falsy\\.$#"
+			count: 1
+			path: wp-content/themes/conexao-br-irlanda/template-parts/event-preview.php
+
+		-
+			message: "#^Call to function is_wp_error\\(\\) with array\\<WP_Term\\> will always evaluate to false\\.$#"
+			count: 1
+			path: wp-content/themes/conexao-br-irlanda/template-parts/guide-filters.php
+
+		-
+			message: "#^is_wp_error\\(array\\<WP_Term\\>\\) will always evaluate to false\\.$#"
+			count: 1
+			path: wp-content/themes/conexao-br-irlanda/template-parts/guide-filters.php
+
+		-
+			message: "#^Parameter \\#1 \\$text of function esc_html expects string, int given\\.$#"
+			count: 1
+			path: wp-content/themes/conexao-br-irlanda/template-parts/hero-events.php
+
+		-
+			message: "#^Call to function is_wp_error\\(\\) with array\\<WP_Term\\> will always evaluate to false\\.$#"
+			count: 3
+			path: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php
+
+		-
+			message: "#^is_wp_error\\(array\\<WP_Term\\>\\) will always evaluate to false\\.$#"
+			count: 3
+			path: wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php

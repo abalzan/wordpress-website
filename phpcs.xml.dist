@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<ruleset name="Conexao BR Irlanda">
+	<description>Coding standard for the Conexão BR Irlanda theme and custom plugins.</description>
+
+	<file>wp-content/themes/conexao-br-irlanda</file>
+	<file>wp-content/plugins</file>
+
+	<exclude-pattern>*/tests/*</exclude-pattern>
+	<exclude-pattern>*/vendor/*</exclude-pattern>
+	<exclude-pattern>*/node_modules/*</exclude-pattern>
+	<!-- Generated Stage 9 EN guide translation bodies: machine-generated content
+	     data inside the retired rollout plugin, not a maintained style target. -->
+	<exclude-pattern>wp-content/plugins/conexao-guide-translation/includes/body-*.php</exclude-pattern>
+
+	<arg name="extensions" value="php"/>
+	<arg name="basepath" value="."/>
+	<arg name="parallel" value="8"/>
+	<arg value="ps"/>
+
+	<config name="minimum_wp_version" value="6.4"/>
+	<config name="testVersion" value="8.0-"/>
+
+	<rule ref="WordPress-Extra"/>
+	<rule ref="WordPress-Docs"/>
+	<rule ref="PHPCompatibilityWP"/>
+
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="conexao-br-irlanda"/>
+				<element value="conexao-data-model"/>
+				<element value="conexao-content"/>
+				<element value="conexao-admin-ux"/>
+				<element value="conexao-event-runtime"/>
+				<element value="conexao-event-importer"/>
+				<element value="conexao-leisure-migration"/>
+				<element value="conexao-sponsor-migration"/>
+			</property>
+		</properties>
+	</rule>
+</ruleset>
