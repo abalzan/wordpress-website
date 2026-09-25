@@ -1,6 +1,28 @@
+# Local environment / secrets
 .env
+.env.local
+
+# Build output
 dist/
-scripts/__pycache__/
-.agents/skills/
-.idea/
+
+# Tooling caches
+vendor/
+node_modules/
 __pycache__/
+*.pyc
+phpcs.cache
+.phpunit.result.cache
+
+# Evidence / work trees (curated copies belong in docs/evidence/)
+*-work/
+*.body
+*.log
+.local/
+
+# Editors / OS
+.idea/
+.DS_Store
+Thumbs.db
+
+# Agent skill material that is not this repository's domain
+.agents/skills/

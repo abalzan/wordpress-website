@@ -1,0 +1,17 @@
+* text=auto eol=lf
+
+*.php   text
+*.json  text
+*.md    text
+*.yml   text
+*.yaml  text
+*.sh    text
+
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.webp binary
+*.svg  text
+*.mo   binary
+*.zip  binary
+*.tar.gz binary
