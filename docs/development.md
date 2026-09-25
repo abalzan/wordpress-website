@@ -51,9 +51,10 @@ static analysis in `phpstan.neon.dist`):
   The toolchain runs on PHP ≥ 8.0 (verified on 8.5). Runtime headers still
   declare 7.4/8.0 in places — aligning them is later-stage work; Stage C
   does not change runtime compatibility claims.
-- **CI (Stage D)** will run these same checks on every push/PR
-  (engineering standard §1.7). Until then, run `./scripts/lint.sh` locally
-  before committing PHP changes.
+- **CI**: see [Continuous integration (Stage D)](#continuous-integration-stage-d)
+  below — `.github/workflows/ci.yml` runs these same checks on every
+  push/PR. Locally, run `./scripts/lint.sh` before committing PHP changes
+  and `shellcheck scripts/*.sh` before committing shell changes.
 - No Node/JS tooling is used or required (plain JS/CSS assets; adding a JS
   build stack is a separate, explicit decision — engineering standard §2.2).
 
@@ -61,6 +62,75 @@ The PHPStan bootstrap `docs/dev/phpstan-bootstrap.php` is development/static
 analysis only — it is **never loaded by WordPress** and never deployed; it
 only declares constants/types the analyser cannot discover (Polylang API
 stubs, theme/plugin constants).
+
+## Continuous integration (Stage D)
+
+CI is defined by a single workflow: **`.github/workflows/ci.yml`** (name
+`WordPress CI`, engineering standard §1.7). It automates the Stage C quality
+system — it does not reimplement it. The authoritative policy stays in
+[engineering-standard.md](engineering-standard.md); this section only
+documents the contract.
+
+**Location:** `.github/workflows/ci.yml` (one canonical CI entrypoint).
+
+**Triggers:** every `push` (any branch, including feature branches),
+every `pull_request`, plus `workflow_dispatch` for a manual re-run. No path
+filters — a regression is caught regardless of which file changed. Obsolete
+runs for the same ref are cancelled via `concurrency` keyed on the workflow
+name + `github.ref`.
+
+**Runner / PHP:** `ubuntu-latest`, PHP **8.5** via `shivammathur/setup-php@v2`
+(`tools: composer:v2`). 8.5 is the version the Stage C toolchain was verified
+on; the declared compatibility **floor stays 8.0** (`phpcs.xml.dist`
+`testVersion: 8.0-`) — CI does not change that policy, and no `Requires PHP:`
+header is touched by this stage.
+
+**Permissions:** `contents: read` — nothing else. The workflow requires **no
+repository secrets** and no external service.
+
+**Cache:** only the Composer *download* cache (`~/.cache/composer`), keyed on
+`hashFiles('composer.lock')` so a changed lockfile invalidates it. `vendor/`,
+WordPress runtime state, credentials and data are never cached, and the
+install always runs from the lockfile, so a cache hit can never replace it.
+
+### Blocking gates
+
+| Command | Role |
+|---|---|
+| `composer validate --strict --no-interaction` | `composer.json` is well-formed and **`composer.lock` is in sync** with it. |
+| `composer install --no-interaction --prefer-dist --no-progress` | Deterministic install **from the committed lockfile**. CI never runs `composer update`. |
+| *(lockfile guard)* | Asserts `git diff -- composer.json composer.lock` is empty after the install — CI can never mutate the lockfile. |
+| `./scripts/lint.sh` | **The primary quality gate.** `[1/3]` PHP syntax sweep (`php -l` over every Git-known PHP file) · `[2/3]` PHPCS vs `phpcs-baseline.json` · `[3/3]` PHPStan level 5 via `composer analyse`. Fails on **new** syntax/style/type defects. |
+| `shellcheck scripts/*.sh` | Repository shell scripts. ShellCheck is installed explicitly from apt in the workflow (the runner's copy is not a documented guarantee). |
+
+A non-zero exit from any of these **fails the job**. There is no
+`continue-on-error` and no `|| true` on any of them.
+
+### Legacy PHPCS debt semantics
+
+The pre-Stage-C debt (3290 errors + 2672 warnings across 151 files, recorded
+in `phpcs-baseline.json`) **remains, and CI does not require it to be zero**:
+
+- `./scripts/lint.sh` is the blocking gate. It compares the fresh PHPCS report
+  against the baseline and fails on any *new* sniff or any sniff whose counts
+  grew — i.e. **debt must not grow**.
+- `composer lint` is run as a **non-blocking, clearly-labelled telemetry
+  step** (`continue-on-error: true`). It is the raw debt view and is red by
+  design. It never writes the baseline, never commits and never mutates
+  source. Its non-zero result cannot fail an otherwise-valid run.
+- A future debt-reduction stage is what will turn the raw command green.
+
+**PHPStan semantics:** level **5**, with the 298 legacy errors isolated in
+`phpstan-baseline.neon`. The baseline is part of the blocking gate and must
+not grow: a new PHPStan error fails `./scripts/lint.sh`. CI neither
+regenerates the baseline nor changes the level, and does not upgrade
+`phpstan/phpstan` (the 1.12.x "old version" notice is expected).
+
+**No production contact.** CI is read-only and offline with respect to the
+site: it reaches only the package registry to install dev dependencies. It
+never connects to conexaobr.ie, WordPress.com, a database, the REST API or
+Polylang, and it deploys nothing. Docker/integration tests and the unified
+test harness are **Stage E** — CI does not boot WordPress.
 
 ## Restoring a Production UpdraftPlus Backup (Local Only)
 

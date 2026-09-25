@@ -1,0 +1,116 @@
+# WordPress CI — Stage D of the engineering-standardisation roadmap.
+#
+# Automates the Stage C static quality system (docs/engineering-standard.md
+# §1.7; docs/development.md "Continuous integration (Stage D)"). This
+# workflow does NOT reimplement that system: it installs the committed
+# lockfile and calls the repository's existing commands.
+#
+# Blocking gates (a non-zero exit fails the job):
+#   1. composer validate --strict  — composer.json/lock consistency
+#   2. composer install            — from composer.lock, never `update`
+#   3. ./scripts/lint.sh           — PHP syntax + PHPCS no-new-violations
+#                                    + PHPStan level 5 (the Stage C gate)
+#   4. shellcheck scripts/*.sh     — repository shell scripts
+#
+# Non-blocking by design (telemetry only, never gates the run):
+#   composer lint — the RAW legacy PHPCS debt view. It is red by design while
+#   the recorded debt in phpcs-baseline.json exists (Stage C measured 3290
+#   errors + 2672 warnings across 151 files). The objective is "legacy debt
+#   must not grow", not "legacy debt is already zero", so this step is
+#   explicitly continue-on-error and clearly labelled. It never writes the
+#   baseline, never commits, never mutates source.
+#
+# This workflow is read-only and offline with respect to production: it
+# contacts only the package registry to install dev dependencies. It never
+# connects to conexaobr.ie, WordPress.com, a database, the REST API, or
+# Polylang, and it requires no repository secrets.
+
+name: WordPress CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+# Read-only: Stage D needs no write scopes.
+permissions:
+  contents: read
+
+# Superseded runs for the same ref are cancelled; refs are independent.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  static-quality:
+    name: Static quality (lint.sh + ShellCheck)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          # PHP 8.5 — the same toolchain PHP Stage C was verified on (8.5.8).
+          # The declared compatibility FLOOR is unchanged (8.0, phpcs
+          # testVersion: 8.0-); this stage does not alter that policy.
+          php-version: '8.5'
+          # Composer is pinned to v2 to match the committed lockfile's
+          # plugin API (composer-plugin-api ^2.2) and Stage C's Composer 2.10.
+          tools: composer:v2
+
+      - name: Report environment
+        run: |
+          php --version
+          composer --version
+
+      # Composer *download* cache only, keyed on the committed lockfile, so a
+      # changed lockfile invalidates it. This never caches vendor/, WordPress
+      # runtime state, credentials or database contents, and it can never
+      # replace the install: the install below runs on every run.
+      - name: Cache Composer downloads
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/composer
+          key: composer-downloads-${{ runner.os }}-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-downloads-${{ runner.os }}-
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate --strict --no-interaction
+
+      - name: Install dependencies from composer.lock
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Assert the lockfile was not modified
+        run: |
+          if ! git diff --quiet -- composer.json composer.lock; then
+            echo "::error::composer.json/composer.lock changed during CI — the lockfile must stay committed and untouched."
+            git diff -- composer.json composer.lock
+            exit 1
+          fi
+
+      - name: Quality gate — ./scripts/lint.sh
+        run: ./scripts/lint.sh
+
+      - name: ShellCheck
+        # setup-php does not provide ShellCheck; the runner image does, but
+        # its presence is not a documented guarantee, so install it
+        # explicitly via the maintained apt package.
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes shellcheck
+          shellcheck --version
+          shellcheck scripts/*.sh
+
+      - name: Telemetry (non-blocking) — raw legacy PHPCS debt
+        if: always()
+        continue-on-error: true
+        run: |
+          echo "### Raw legacy PHPCS debt (informational, non-blocking)" >&2
+          echo "This is the raw view of the pre-Stage-C debt recorded in" >&2
+          echo "phpcs-baseline.json. The blocking gate above is" >&2
+          echo "./scripts/lint.sh, which fails on NEW violations only." >&2
+          composer lint || echo "::warning::Raw PHPCS debt is non-zero by design (legacy baseline, Stage C). Not a CI failure." >&2
