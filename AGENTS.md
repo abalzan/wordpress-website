@@ -126,12 +126,15 @@ Task → Read first
 - Frontend/UI → docs/frontend.md
 - Deployment → docs/deployment.md
 - Local development → docs/development.md
+- **Engineering standard (how to build here) → docs/engineering-standard.md**
 - Plugin inventory → docs/plugins/README.md
 - Theme → docs/themes/conexao-br-irlanda.md
 - Inventory (machine-readable) → docs/project-inventory.md
+- Standardisation audit (2026-09-25) → docs/audit/2026-09-25-wordpress-engineering-standardisation-audit.md
 
 ## Documentation maintenance
 
+- **New work must follow `docs/engineering-standard.md`** (it is mandatory for new plugins, scripts, tests, migrations and docs). Existing code is grandfathered until that standard's adoption stages land.
 - New plugin / content type / route / deployment mechanism → update the relevant docs in the same change.
 - Plugin docs owned by plugin maintainers; theme docs by theme maintainers; architecture/README by the project maintainer.
 - Keep AGENTS.md short. Put depth in `docs/`.
