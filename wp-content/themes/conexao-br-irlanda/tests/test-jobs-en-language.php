@@ -404,14 +404,18 @@ s8_assert(
 	wp_date( $site_format, $timestamp )
 );
 
-// The RENDERED date is asserted end-to-end over HTTP by
-// scripts/jobs-en-language-verify.py, which is where the user-level contract
-// lives. It is deliberately not asserted here: in a bare CLI process
-// switch_to_locale() does not rebuild the WP_Locale month table on this WordPress
-// build, so an in-process date would measure the harness rather than the page.
-// What IS asserted here is the source-level contract the theme owns: the FORMAT
-// resolves per language, the default language is byte-identical, and no
-// Portuguese connector survives the English resolution.
+// The RENDERED date used to be asserted end-to-end over HTTP by
+// scripts/jobs-en-language-verify.py (the user-level contract). The Jobs landing
+// no longer renders dated content: the «Vagas»/"Openings" preview section — the
+// only dated surface on /empregos/ and /en/jobs/ — was removed by product
+// decision (rendering only; see the comment in page-empregos.php), and the
+// verifier now asserts its absence instead. It is also deliberately not asserted
+// here: in a bare CLI process switch_to_locale() does not rebuild the WP_Locale
+// month table on this WordPress build, so an in-process date would measure the
+// harness rather than the page. What IS asserted here is the source-level
+// contract the theme owns: the FORMAT resolves per language, the default
+// language is byte-identical, and no Portuguese connector survives the English
+// resolution.
 
 // ---------------------------------------------------------------------------
 echo "\n-- 6. Read time is language-aware --\n";

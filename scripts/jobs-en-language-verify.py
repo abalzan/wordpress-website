@@ -5,6 +5,13 @@ Proves the user-level contract of the Jobs surface: `/en/jobs/` is a genuine
 English presentation and `/empregos/` stays fully Portuguese, from the SAME
 data source, with no CSS/JS workaround and no frontend translation layer.
 
+The «Vagas»/“Openings” preview section (the real `job` records listed on the
+landing) was intentionally removed from both landing pages by product decision —
+rendering only: the job records, the language-aware query in
+inc/empregos-landing.php and the section CSS are retained. §12 asserts the
+section stays absent in either language; the card-level assertions whose only
+subject was that section are reported as SKIP instead.
+
     python3 scripts/jobs-en-language-verify.py --base http://localhost:8080
 
 Read-only: HTTP GET requests only; no credentials, no writes.
@@ -83,7 +90,7 @@ EN_EXPECTED = [
     "Healthcare / Care", "Nationwide", "Filter", "Filters", "Clear",
     "Show results", "No location found", "Warning",
     "Make sure you have the legal right to work in Ireland",
-    "Check the official rules", "opens in a new tab", "minute read",
+    "Check the official rules", "opens in a new tab",
     "opportunities found", "Next", "Previous", "registration:",
     "Food — Meat Processing", "Public healthcare (HSE)", "Nurses",
     "Healthcare professionals", "Production operators", "Food processing",
@@ -93,7 +100,7 @@ EN_EXPECTED = [
 
 # Portuguese strings that must still render on /empregos/.
 PT_EXPECTED = [
-    "Empregos", "Oportunidades", "Ver vagas no Instagram", "Vagas",
+    "Empregos", "Oportunidades", "Ver vagas no Instagram",
     "Oportunidades de emprego", "Tipo de oportunidade", "Área de trabalho",
     "Tipo de contrato", "Localização", "Todas", "Todos",
     "Agência de recrutamento", "Setor público", "Histórico de Employment Permits",
@@ -101,7 +108,7 @@ PT_EXPECTED = [
     "Limpeza", "Varejo", "Construção Civil", "Escritório / Administrativo",
     "Agricultura / Sazonal", "Saúde / Cuidados", "Nacional", "Temporário",
     "Permanente", "Licenciada", "Acompanhe nossas",
-    "min de leitura", "de agosto de", "oportunidades encontradas",
+    "oportunidades encontradas",
     "Próximo", "Filtrar", "Filtros", "Limpar", "Mostrar resultados",
     "Nenhuma", "Atenção", "Alimentos — Processamento de Carne", "Enfermeiros",
     "Saúde e Cuidados",
@@ -191,10 +198,21 @@ def main() -> int:
     print("\n-- 4. Dates and read time are language-correct --")
     en_dates = re.findall(r"\b\d{1,2} de \w+ de \d{4}\b", en_text)
     check(not en_dates, "no PT-style date on /en/jobs/", ", ".join(en_dates))
-    en_long = re.findall(r"\b[A-Z][a-z]+ \d{1,2}, \d{4}\b", en_text)
-    check(bool(en_long), "an English long date renders", str(en_long[:2]))
     check("de August" not in en_text, 'the mixed "25 de August de 2026" form is gone')
-    check("min de leitura" not in en_text, "the read time is English")
+    check("min de leitura" not in en_text, "no Portuguese read time on /en/jobs/")
+    # The «Vagas»/“Openings” preview section — removed from the Jobs landing by
+    # product decision (rendering only: see the comment in page-empregos.php) —
+    # was the only dated/read-time surface on /empregos/ and /en/jobs/. Its
+    # card-level date/read-time assertions therefore run only while that surface
+    # is rendered (restoring the section re-enables them). The source-level
+    # date-format and read-time contract stays asserted in-process by
+    # tests/test-jobs-en-language.php.
+    if "empregos-jobs" in en:
+        en_long = re.findall(r"\b[A-Z][a-z]+ \d{1,2}, \d{4}\b", en_text)
+        check(bool(en_long), "an English long date renders", str(en_long[:2]))
+        check("minute read" in en_text, "the read time is English")
+    else:
+        print("  SKIP: no dated/read-time surface on /en/jobs/ (the preview section is not rendered)")
 
     # -----------------------------------------------------------------------
     print("\n-- 5. Work area / location / contract / type labels --")
@@ -270,7 +288,10 @@ def main() -> int:
     check(not pt_attr_missing, "the PT accessibility/metadata layer is unchanged",
           ", ".join(pt_attr_missing))
     check("Our latest job openings" not in pt_text, "the PT page has no English body")
-    check("de agosto de" in pt_text, "the PT date presentation is preserved")
+    if "empregos-jobs" in pt:
+        check("de agosto de" in pt_text, "the PT date presentation is preserved")
+    else:
+        print("  SKIP: no dated surface on /empregos/ (the preview section is not rendered)")
     check('lang="pt-BR"' in pt, "the PT page declares pt-BR")
     check('lang="en-US"' in en, "the EN page declares en-US")
 
@@ -287,6 +308,19 @@ def main() -> int:
         found = [(n, text.count(n)) for n in PT_LEAKS if n in text]
         check(not found, f"{path} stays fully English",
               "; ".join(f"{n}×{c}" for n, c in found))
+
+    # -----------------------------------------------------------------------
+    print("\n-- 12. The «Vagas»/“Openings” preview section is intentionally absent --")
+    # Product decision: the section was removed from the Jobs landing pages
+    # (rendering only — the job records, the language-aware query in
+    # inc/empregos-landing.php and the section CSS are retained). /empregos/ and
+    # /en/jobs/ are rendered by the same template, so the section must be gone
+    # from both languages. If it is ever restored, update this guard (the
+    # card-level checks above re-enable themselves automatically).
+    check("empregos-jobs" not in pt, "PT /empregos/ renders no «Vagas» preview section")
+    check("empregos-jobs" not in en, "EN /en/jobs/ renders no “Openings” preview section")
+    _, pt_paged = fetch(base, "/empregos/?pagina=2")
+    check("empregos-jobs" not in pt_paged, "the section is absent on paginated PT views too")
 
     total = len(PASSED) + len(FAILED)
     print(f"\n== {len(PASSED)} passed, {len(FAILED)} failed (of {total}) ==")

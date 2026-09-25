@@ -68,8 +68,11 @@ pair itself plus the EN-slug uniqueness probe inside the `job` namespace.
   language-aware Jobs listing query on the landing template) and the
   language-aware `conexao_empregos_page_url()` (EN job breadcrumbs point at
   `/en/jobs/`).
-- `page-empregos.php` — the «Vagas»/“Openings” section listing the real job
-  records in the current language (B2 set semantics; PT masters replaced by
-  their EN translations are never listed twice).
+- `page-empregos.php` — the landing template. Its Stage 6 «Vagas»/“Openings”
+  section (the real job records in the current language, B2 set semantics; PT
+  masters replaced by their EN translations were never listed twice) was
+  **removed by product decision — rendering only**: the job records, the
+  language-aware query and the CSS are retained, so the section can be restored
+  unchanged (see the comment in `page-empregos.php`).
 
 See `docs/routing.md` § English for the URL contract.

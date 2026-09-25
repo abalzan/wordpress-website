@@ -7044,8 +7044,11 @@ input[type="button"] {
 }
 
 /* "Vagas" — the real Job CPT records on the Jobs landing page (Stage 6).
-   Same section rhythm as the opportunities directory below; the cards reuse
-   the shared .archive-grid/.archive-card component unchanged. */
+   Currently NOT rendered: the section was intentionally removed from
+   page-empregos.php (rendering only — the job records and the language-aware
+   query are intact). The styles are retained so the section can be restored
+   unchanged; the cards reuse the shared .archive-grid/.archive-card component
+   and the same section rhythm as the opportunities directory below. */
 .empregos-jobs {
   margin-top: var(--space-7);
   padding-top: var(--space-6);

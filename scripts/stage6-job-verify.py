@@ -13,6 +13,14 @@ Usage:
 `--wp-eval` is required in the `after` phase for the dynamic B2 state-A probe
 (a throwaway untranslated PT job is created, measured over HTTP and deleted).
 
+The «Vagas»/“Openings” preview section was later removed from the Jobs landing
+pages by product decision (rendering only — the job records, the language-aware
+query in inc/empregos-landing.php and the CSS are retained). The landing-card
+assertions below are therefore reported as SKIP while that surface is not
+rendered, so this matrix stays valid in both states; the query's membership /
+B2-set contract is asserted in-process by
+wp-content/themes/conexao-br-irlanda/tests/test-job-en-translation.php.
+
 Exit code is non-zero when any check fails.
 """
 import argparse
@@ -169,11 +177,18 @@ def main():
     check(html_lang(pt_landing).startswith("pt"), "PT /empregos/ lang is pt-BR", html_lang(pt_landing))
     check(canonical(pt_landing).rstrip("/").endswith("/empregos"), "PT /empregos/ self-canonical", canonical(pt_landing))
 
-    pt_cards = job_cards(jobs_section(pt_landing))
-    check(len(pt_cards) == len(pairs), "PT /empregos/ lists exactly the public PT jobs", f"{len(pt_cards)} cards vs {len(pairs)} pairs")
-    for pair in pairs:
-        found = [c for c in pt_cards if c[0].rstrip("/").endswith("/empregos/" + pair["pt_slug"])]
-        check(bool(found), f"PT card for {pair['pt_slug']} links to the PT job", str(pt_cards))
+    # The «Vagas»/“Openings” preview section is intentionally not rendered on
+    # the Jobs landing pages (rendering only — see the module docstring). While
+    # it is absent these card checks have no subject and are reported as SKIP.
+    pt_section = jobs_section(pt_landing)
+    if pt_section:
+        pt_cards = job_cards(pt_section)
+        check(len(pt_cards) == len(pairs), "PT /empregos/ lists exactly the public PT jobs", f"{len(pt_cards)} cards vs {len(pairs)} pairs")
+        for pair in pairs:
+            found = [c for c in pt_cards if c[0].rstrip("/").endswith("/empregos/" + pair["pt_slug"])]
+            check(bool(found), f"PT card for {pair['pt_slug']} links to the PT job", str(pt_cards))
+    else:
+        print("  SKIP: PT /empregos/ renders no «Vagas» preview section (intentionally removed)")
 
     status, _, _, en_landing = fetch(base, "/en/jobs/")
     check(status == 200, "EN /en/jobs/ is 200")
@@ -184,8 +199,11 @@ def main():
     check(hl.get("pt-BR", "").rstrip("/").endswith("/empregos"), "/en/jobs/ hreflang pt-BR → /empregos/", str(hl))
     check(hl.get("x-default") == hl.get("pt-BR"), "/en/jobs/ x-default → PT", str(hl))
 
-    en_cards = job_cards(jobs_section(en_landing))
-    if args.phase == "before":
+    en_section = jobs_section(en_landing)
+    en_cards = job_cards(en_section)
+    if not en_section:
+        print("  SKIP: EN /en/jobs/ renders no “Openings” preview section (intentionally removed)")
+    elif args.phase == "before":
         # B2 state: no EN jobs yet — the listing shows the PT records (B2 set),
         # never empty, linking to their canonical PT URLs.
         check(len(en_cards) == len(pairs), "BEFORE: /en/jobs/ shows the B2 set (PT jobs, EN chrome) — not empty", f"{len(en_cards)} cards")
@@ -328,14 +346,22 @@ def main():
                 check("language-fallback-notice" in probe_html, "STATE A: B2 notice present on the probe")
                 check("Conteúdo PT de sonda" in probe_html, "STATE A: probe renders the PT body under EN chrome")
                 check(canonical(probe_html).rstrip("/").endswith("/empregos/s6-b2-http-probe"), "STATE A: probe canonical → PT", canonical(probe_html))
-                # The probe joins the /en/jobs/ listing as a B2 card (PT URL).
+                # The probe used to join the /en/jobs/ listing as a B2 card. That
+                # listing section was removed by product decision (rendering
+                # only), so the landing renders no job cards at all now; the
+                # probe's B2 ELIGIBILITY stays asserted in-process by
+                # tests/test-job-en-translation.php.
                 _, _, _, en_landing_probe = fetch(base, "/en/jobs/")
-                probe_cards = job_cards(jobs_section(en_landing_probe))
-                check(
-                    any(c[0].rstrip("/").endswith("/empregos/s6-b2-http-probe") for c in probe_cards),
-                    "STATE A: the untranslated probe appears on /en/jobs/ as a B2 card (canonical PT URL)",
-                    str(probe_cards),
-                )
+                probe_section = jobs_section(en_landing_probe)
+                if probe_section:
+                    probe_cards = job_cards(probe_section)
+                    check(
+                        any(c[0].rstrip("/").endswith("/empregos/s6-b2-http-probe") for c in probe_cards),
+                        "STATE A: the untranslated probe appears on /en/jobs/ as a B2 card (canonical PT URL)",
+                        str(probe_cards),
+                    )
+                else:
+                    print("  SKIP: STATE A probe card — the “Openings” preview section is not rendered")
                 # Cleanup.
                 wp_eval(args.wp_eval, f"wp_delete_post({probe_id}, true); echo 'deleted';")
                 _, _, _, en_landing_after = fetch(base, "/en/jobs/")

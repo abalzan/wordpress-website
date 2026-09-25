@@ -240,7 +240,6 @@ Empregos
   ↳ Jobs information (editable page body)
   ↳ Instagram / county guidance
   ↳ [ Ver vagas no Instagram ]  (optional; hidden when no link is set)
-  ↳ Vagas / Openings  (Stage 6 — the real job CPT records, language-aware)
   ↳ Oportunidades de emprego  (unified opportunities directory)
 ```
 
@@ -250,14 +249,20 @@ Empregos
   meta and renders a minimal "Jobs — Link" metabox. The button label is
   "Ver vagas no Instagram". When the URL is empty the button is not output at
   all; when external it opens in a new tab.
-- **Vagas section (Stage 6)**: `conexao_empregos_current_jobs()`
-  (`inc/empregos-landing.php`) lists the published `job` records in the current
-  language — PT jobs on `/empregos/`, EN jobs on `/en/jobs/` (plus, while a job
-  remains untranslated, its PT original as the approved B2 set — never both
-  languages of one identity; cards reuse the shared `.archive-grid` /
-  `.archive-card` markup and link to the record's own permalink). The ID list is
-  cached in a language-scoped transient and flushed on job save/delete. The
-  section is hidden entirely when no published job exists.
+- **«Vagas» / “Openings” preview section — removed (rendering only)**: the
+  Stage 6 section that listed the `job` records on the landing pages is **no
+  longer rendered, in either language** (both landings share this template, so
+  `/empregos/` and `/en/jobs/` are covered by the same removal; the page now goes
+  straight from the Instagram CTA to the unified opportunities directory).
+  Nothing was deleted: the job records stay in the database, the language-aware
+  query `conexao_empregos_current_jobs()` (`inc/empregos-landing.php`) — the
+  published jobs in the current language (PT jobs on `/empregos/`, EN jobs on
+  `/en/jobs/`, plus the approved B2 set while a job remains untranslated; never
+  both languages of one identity), with a language-scoped transient flushed on
+  job save/delete — is retained and still exercised by
+  `tests/test-job-en-translation.php`, and the section styles stay in `main.css`
+  (`.empregos-jobs*`). Restore the section by re-adding the rendering block; see
+  the comment in `page-empregos.php`.
 - **Breadcrumb language awareness (Stage 6)**:
   `conexao_empregos_page_url()` returns the linked translation's URL on a
   non-default-language request (the EN Jobs crumb on an EN job detail points at
@@ -277,7 +282,7 @@ in both languages.
 | Layer | Where it is resolved | Rule |
 |---|---|---|
 | Page body | The linked EN page record (`conexao-page-translation` manifest) | Real English content in a real translation record — never a template hardcode. Applied by re-running the importer with `refresh`. The PT page is never written (PT gate `pt_changed = 0`). |
-| Job records | `conexao_empregos_current_jobs()` (Polylang) | EN record when published and linked; otherwise the approved B2 set. One identity is never shown twice and translated/untranslated content is never mixed. |
+| Job records | `conexao_empregos_current_jobs()` (Polylang) | Language-aware job listing: EN record when published and linked, otherwise the approved B2 set; one identity is never shown twice and translated/untranslated content is never mixed. **Not rendered on the landing since the Stage 6 «Vagas»/“Openings” preview section was removed** (rendering only — the query, the records and the CSS are retained). |
 | Work areas | `Conexao_Data_Model_Agency::job_types()` | The canonical **keys** are the language-neutral filter identity (`?area=warehouse`); only the **labels** are gettext-wrapped. Desktop and mobile read the same array, so their wording cannot diverge. |
 | Locations | `conexao_recruitment_agency_location_display()` | Real Irish place names are byte-identical in both languages; only the generic coverage words (`Nacional` → "Nationwide") and the country exonym (`Irlanda` → "Ireland") are UI labels. An unrecognised value is returned exactly as stored. |
 | Employer descriptors | `conexao_permit_employer_sector_display()` / `…_roles_display()` | Authored free text is normalized to a canonical key, then rendered through gettext. Unknown values pass through unchanged; the stored data and the Portuguese page are never modified. |

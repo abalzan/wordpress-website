@@ -3,8 +3,11 @@
  * Stage 6 — Job EN translation (in-process checks).
  *
  * Covers the completion gate and the content/architecture contract of the Job
- * translation (the HTTP matrix — rendering, canonical, hreflang, listing
- * membership, B2 transition — is covered by scripts/stage6-job-verify.py):
+ * translation (the HTTP matrix — rendering, canonical, hreflang, B2 transition —
+ * is covered by scripts/stage6-job-verify.py; the landing-listing membership is
+ * asserted in-process below, because the «Vagas»/"Openings" preview section was
+ * removed from the landing pages — rendering only — so its card checks there are
+ * SKIPped):
  *
  *  - the Jobs landing Page pair (PT `empregos` ↔ EN `jobs`) exists, is
  *    published, linked from both sides and keeps template parity (Stage 4.5
@@ -242,8 +245,10 @@ if ( is_wp_error( $probe_id ) ) {
 } else {
 	pll_set_post_language( $probe_id, 'pt' );
 	// B2 rendering is request-scoped (an EN request), which a CLI process
-	// cannot reproduce — the EN-request render of an untranslated job is
-	// asserted over HTTP by scripts/stage6-job-verify.py (state A). Here the
+	// cannot reproduce — the EN-request render of an untranslated job used to be
+	// asserted over HTTP by scripts/stage6-job-verify.py (state A), whose
+	// landing-card probe is now SKIPped because the «Vagas»/"Openings" preview
+	// section was removed from the landing pages (rendering only). Here the
 	// in-process preconditions are asserted instead.
 	s6_assert(
 		conexao_is_b2_post_type( 'job' ),
