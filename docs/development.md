@@ -147,6 +147,32 @@ docker compose exec wordpress php /var/www/html/wp-content/plugins/conexao-event
 docker compose exec wordpress php /var/www/html/wp-content/plugins/conexao-leisure-migration/tests/test-language-uuid.php
 ```
 
+## Multilingual (EN) development — Stage 9 (Guides)
+
+The Guide CPT is a **real English translation** since Stage 9: one linked EN
+`guide` per public PT guide + the linked EN `conexao_category` terms, so
+`/en/guias/` is a genuine English archive.
+
+```bash
+# 1. Local runner (LOCAL ONLY; loads the plugin itself)
+docker compose exec -T wordpress php \
+  /var/www/html/wp-content/themes/conexao-br-irlanda/tests/run-guide-translation.php dry-run
+docker compose exec -T wordpress php \
+  /var/www/html/wp-content/themes/conexao-br-irlanda/tests/run-guide-translation.php
+
+# 2. In-process suite (completeness gate, pairs, identity, filter, PT regression)
+docker compose exec -T wordpress php \
+  /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-guide-en-translation.php
+
+# 3. HTTP contract (archive, singles, canonical, hreflang, filter, pagination, sitemap)
+./scripts/stage9-guide-http-verify.sh
+```
+
+Production (WordPress.com, no WP-CLI) uses the plugin admin screen: **Tools → EN
+Guide Translations** (Preview, then Apply). See
+`docs/plugins/conexao-guide-translation.md` and
+`CONEXAO_BR_ENGLISH_GUIDES_TRANSLATION_REPORT.md`.
+
 Notes:
 
 - Polylang is installed in the container volume (`/var/www/html/wp-content/plugins/polylang`),

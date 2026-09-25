@@ -46,7 +46,7 @@ English URLs wrap the same paths in `/en/`:
 | Context | Portuguese | English |
 |---|---|---|
 | Home | `/` | `/en/` |
-| Guides | `/guias/` | `/en/guias/` |
+| Guides | `/guias/` | `/en/guias/` — **real English archive since Stage 9**: one linked EN `guide` per public PT guide (authored English title, body, excerpt, meta description) plus the linked EN `conexao_category` terms used by those guides. EN singles live at `/en/guias/{en-slug}/`; the PT slug under `/en/` is a replaced master and answers **302 → the PT guide**. `/en/guias/?categoria=documents` filters the EN archive; a slug from the other language resolves to the same concept through the Polylang term relationship. |
 | Events | `/eventos/` | `/en/eventos/` |
 | Lazer | `/lazer/` | `/en/lazer/` |
 | Courses | `/cursos/` | `/en/cursos/` |
@@ -143,6 +143,15 @@ Portuguese destinations. Stage 3.3 closes that:
   `conexao_find_term_across_languages()`), e.g. `/en/guias/?categoria=documents`;
   otherwise they fall back to the plain English archive. A Portuguese term slug
   is never emitted under `/en/`.
+- **Guides `?categoria=` filter (Stage 9)** is language-neutral at the query
+  level: `conexao_guide_category_filter_term_id()` (theme `functions.php`)
+  resolves the slug to a term in the **current** language — the current-language
+  slug first, otherwise the counterpart through `pll_get_term()`. This is what
+  lets a shared/legacy Portuguese slug (or a homepage Quick Access card) filter
+  `/en/guias/` with the English content instead of bouncing the visitor to
+  `/guias/`. An unknown slug yields an empty result set (never a
+  cross-language redirect). The filter bar itself always links with the current
+  language's slugs.
 - **EN primary navigation**: an English menu ("Main Menu", term 2933 locally) is
   assigned to the `primary` location through Polylang's per-language
   `nav_menus` option, exactly like the Portuguese "Menu Principal" menu. It

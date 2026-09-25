@@ -17,6 +17,7 @@ This project contains 10 custom WordPress plugins. All are in `wp-content/plugin
 | conexao-blog-translation | `wp-content/plugins/conexao-blog-translation/` | 1.0.0 | Stage 5 Blog EN translation (linked EN posts page + one linked EN translation per public PT post; PT originals never modified; no frontend effect) | conexao-blog-translation.md |
 | conexao-job-translation | `wp-content/plugins/conexao-job-translation/` | 1.0.0 | Stage 6 Job EN translation (one linked EN `job` per eligible public PT job; verbatim `_job_*` meta + shared media; Jobs page pair verified, never created; admin importer + WP-CLI runner; no frontend effect) | conexao-job-translation.md |
 | conexao-leisure-translation | `wp-content/plugins/conexao-leisure-translation/` | 1.0.0 | Stage 7 EN Leisure card descriptions (one authored EN description per published PT `leisure` record, stored as `_leisure_excerpt_en` on the SAME record — no duplicate records, no UUID changes, PT-drift-guarded, reversible; rendered by the theme on `/en/lazer/`) | conexao-leisure-translation.md |
+| conexao-guide-translation | `wp-content/plugins/conexao-guide-translation/` | 1.0.0 | Stage 9 EN Guide translation (one linked EN `guide` per eligible public PT guide + linked EN `conexao_category` terms; PT date/author/menu order preserved, body authored in English with the PT block structure; PT originals never modified; admin importer + local runner; no frontend effect) | conexao-guide-translation.md |
 
 ## Load Order
 
@@ -33,6 +34,7 @@ Plugins must be activated in this order (dependencies first):
 9. `conexao-blog-translation` *(migration tooling — activate for the Stage 5 Blog rollout, then deactivate/remove)*
 10. `conexao-job-translation` *(migration tooling — activate for the Stage 6 Jobs rollout, then deactivate/remove)*
 11. `conexao-leisure-translation` *(migration tooling — activate for the Stage 7 Leisure-description rollout, then deactivate/remove; no frontend effect)*
+12. `conexao-guide-translation` *(migration tooling — activate for the Stage 9 Guides rollout, then deactivate/remove; no frontend effect)*
 
 `conexao-event-importer` declares `Requires Plugins: conexao-data-model, conexao-event-runtime`,
 so WordPress refuses to activate it (and keeps it from running) without the runtime plugin.

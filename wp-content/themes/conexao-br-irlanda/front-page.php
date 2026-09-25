@@ -536,6 +536,18 @@ if ( ! empty( $latest_news_ids ) ) :
 				'update_post_term_cache' => false,
 			);
 
+			// B2 fallback: secondary queries do not inherit the archive's
+			// language scope, so Polylang would narrow this query to `en`
+			// only and filter out the curated PT fallback records in
+			// $front_upcoming_ids (EN records + PT records with no EN
+			// translation). Widen to EN+PT exactly like the /eventos/
+			// archive does in conexao_content_archive_query(); the ID list
+			// itself stays language-curated so no event ever appears twice.
+			// PT behaviour is byte-for-byte unchanged.
+			if ( function_exists( 'conexao_polylang_active' ) && conexao_polylang_active() && function_exists( 'conexao_requested_language_slug' ) && 'en' === conexao_requested_language_slug() ) {
+				$front_events_args['lang'] = 'en,pt';
+			}
+
 			if ( is_array( $front_upcoming_ids ) ) {
 				$front_events_args['post__in'] = empty( $front_upcoming_ids ) ? array( 0 ) : $front_upcoming_ids;
 				$front_events_args['orderby']  = 'post__in';

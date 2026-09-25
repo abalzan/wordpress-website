@@ -287,6 +287,66 @@ function conexao_get_guide_category_url( $identifier, $fallback_slug = '' ) {
 }
 
 /**
+ * Resolve a `?categoria=` slug for the Guide archive to a term ID in the
+ * CURRENT language (STAGE 9).
+ *
+ * `conexao_category` is a Polylang-translated taxonomy, so one concept has a
+ * Portuguese term and a linked English term, each with its own slug. The Guide
+ * filter bar links with the current language's slugs, but a shared or legacy
+ * URL (and the homepage Quick Access cards, which keep canonical Portuguese
+ * identifiers) can carry the other language's slug. Polylang scopes term
+ * lookups to the current language, so a plain `get_term_by()` would report the
+ * foreign slug as unknown and Polylang's front-end canonical would redirect the
+ * request to the Portuguese archive.
+ *
+ * Resolution (never a string replacement — always the real relationship):
+ *   1. a term with that slug in the current language wins;
+ *   2. otherwise the term is looked up across languages and mapped to its
+ *      counterpart in the current language through `pll_get_term()`;
+ *   3. otherwise 0, and the caller forces an empty result set so an unknown
+ *      filter can never show misleading content.
+ *
+ * @param string $slug Raw `?categoria=` value (unsanitised).
+ * @return int Term ID in the current language, or 0 when unknown.
+ */
+function conexao_guide_category_filter_term_id( $slug ) {
+	$slug = sanitize_title( (string) $slug );
+
+	if ( '' === $slug ) {
+		return 0;
+	}
+
+	// 1. Current-language term.
+	$current = get_term_by( 'slug', $slug, 'conexao_category' );
+
+	if ( $current instanceof WP_Term ) {
+		return (int) $current->term_id;
+	}
+
+	// 2. Term in any language, mapped through the Polylang relationship.
+	if ( ! function_exists( 'conexao_find_term_across_languages' ) || ! function_exists( 'pll_get_term' ) || ! conexao_polylang_active() ) {
+		return 0;
+	}
+
+	$foreign = conexao_find_term_across_languages( $slug, 'conexao_category' );
+
+	if ( ! $foreign instanceof WP_Term ) {
+		return 0;
+	}
+
+	$current_slug = function_exists( 'conexao_current_language_slug' ) ? conexao_current_language_slug() : '';
+	$counterpart  = $current_slug ? (int) pll_get_term( (int) $foreign->term_id, $current_slug ) : 0;
+
+	if ( $counterpart > 0 ) {
+		return $counterpart;
+	}
+
+	// A term whose concept has no counterpart in this language keeps the
+	// caller on the empty result set (never the foreign term itself).
+	return 0;
+}
+
+/**
  * Get taxonomy terms that are actually used by a specific post type.
  *
  * WordPress' get_terms() counts posts across every post type that shares a
@@ -3057,14 +3117,48 @@ function conexao_content_archive_query( $query ) {
 			$tax_query = array();
 		}
 
-		// Category filter via ?categoria=slug
+		/*
+		 * STAGE 9 — language-neutral ?categoria= resolution.
+		 *
+		 * `guide` is a Polylang-translated post type with a translated
+		 * `conexao_category` taxonomy, so each concept has a PT term and a
+		 * linked EN term with its own slug. Polylang scopes term lookups (and
+		 * the front-end language canonical) to the current language, so a
+		 * Portuguese slug on `/en/guias/?categoria=saude` used to be treated as
+		 * "content that only exists in Portuguese" and the request was answered
+		 * with a 302 to `/guias/?categoria=saude` instead of filtering the English
+		 * archive.
+		 *
+		 * Resolution order (mirrors the events archive rule, see
+		 * conexao_content_archive_query()):
+		 *   1. the slug as given (an EN term keeps matching exactly as before);
+		 *   2. the term that exists in another language, mapped to its
+		 *      counterpart in the current language through the REAL Polylang
+		 *      relationship (never a string replacement);
+		 *   3. an unknown slug forces no results, so a bogus filter can never
+		 *      produce misleading content.
+		 *
+		 * Portuguese requests are unchanged: the PT slug is term #1, so the
+		 * tax_query is byte-identical to the previous behaviour.
+		 */
 		$category = isset( $_GET['categoria'] ) ? sanitize_title( wp_unslash( $_GET['categoria'] ) ) : '';
 		if ( $category ) {
-			$tax_query[] = array(
-				'taxonomy' => 'conexao_category',
-				'field'    => 'slug',
-				'terms'    => $category,
-			);
+			$resolved_category = conexao_guide_category_filter_term_id( $category );
+
+			if ( $resolved_category > 0 ) {
+				$tax_query[] = array(
+					'taxonomy' => 'conexao_category',
+					'field'    => 'term_id',
+					'terms'    => $resolved_category,
+				);
+			} else {
+				// Unknown slug — force no results gracefully.
+				$tax_query[] = array(
+					'taxonomy' => 'conexao_category',
+					'field'    => 'slug',
+					'terms'    => '__conexao_no_such_guide_category__',
+				);
+			}
 		}
 
 		if ( ! empty( $tax_query ) ) {
