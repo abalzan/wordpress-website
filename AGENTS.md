@@ -120,6 +120,7 @@ See docs/development.md.
 
 Task → Read first
 
+- Full docs index → docs/README.md
 - Architecture → docs/architecture.md
 - Content model → docs/content-model.md
 - Routes → docs/routing.md
