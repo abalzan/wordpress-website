@@ -193,3 +193,22 @@ docker compose exec wordpress wp eval-file scripts/seed-course-providers.php
 docker compose exec wordpress wp eval-file scripts/run-event-import.php
 docker compose exec wordpress wp eval-file scripts/run-leisure-migration.php
 ```
+
+## Repository Hygiene
+
+Generated work trees and local tooling are **not** committed (engineering
+standard §1.3, enforced by the root `.gitignore`):
+
+- `stage*-work/` / `*-work/`, `*.body`, `*.log` — disposable probe output and
+  run logs. Regenerate on demand; distil findings into `docs/reports/` and
+  keep only curated machine-readable proof under `docs/evidence/<date>-<stage>/`
+  (see `docs/evidence/README.md`).
+- `.local/` — local toolchains. The repository previously shipped a 24 MB
+  PHP CLI under `.local/php/`; it was removed in Stage B. To run PHP outside
+  the container, use `docker compose exec wordpress php ...` (or `wp ...`
+  for WP-CLI scripts), install a system PHP CLI, or point the scripts that
+  accept it at your binary via `PHP_BIN=/path/to/php`.
+
+Historical stage reports live in `docs/reports/` (index in
+`docs/reports/README.md`); never add reports or evidence files at the
+repository root.
