@@ -52,6 +52,14 @@ Exported/imported meta includes the Phase 2 practical-information keys
 `_leisure_practical_last_checked`). The importer sanitizes them explicitly:
 `sanitize_textarea_field` for the notes, `esc_url_raw` for the source URL.
 
+STAGE 7 — the English card-description translation layer
+(`_leisure_excerpt_en`, one authored English description per record, rendered
+only on `/en/lazer/` by the theme's `conexao_leisure_card_excerpt()`) is part
+of the exported/imported meta too: the exporter emits it when non-empty and
+the importer stores it sanitized as plain text (empty values delete the meta),
+so a leisure ZIP round-trips the English descriptions with the dataset. See
+`docs/plugins/conexao-leisure-translation.md`.
+
 The Phase 3B `_leisure_internal_page` flag (keep the internal `/lazer/` page
 even when an Official Website / Discover Ireland URL is set) is also part of
 the supported meta: the exporter emits `'1'` when the flag is set (empty or

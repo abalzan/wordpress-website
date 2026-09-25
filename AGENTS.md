@@ -39,6 +39,7 @@ All under `wp-content/plugins/`. Load order matters:
 | `conexao-page-translation` | Stage 4.5 EN page-translation migration (admin importer; activate for the rollout, then remove) | docs/plugins/conexao-page-translation.md |
 | `conexao-blog-translation` | Stage 5 Blog EN translation (EN posts page + one linked EN post per public PT post; admin importer + WP-CLI runner; no frontend effect — activate for the rollout, then remove) | docs/plugins/conexao-blog-translation.md |
 | `conexao-job-translation` | Stage 6 Job EN translation (one linked EN `job` per eligible public PT job; verbatim `_job_*` meta + shared media; Jobs page pair verified, never created; admin importer + WP-CLI runner; no frontend effect — activate for the rollout, then remove) | docs/plugins/conexao-job-translation.md |
+| `conexao-leisure-translation` | Stage 7 EN Leisure card descriptions (one authored EN description per published PT `leisure` record, stored as `_leisure_excerpt_en` on the SAME record; slug-matched, PT-drift-guarded, uuid-safe, reversible; the theme renders it on `/en/lazer/` — activate for the rollout, then remove) | docs/plugins/conexao-leisure-translation.md |
 
 ## Theme
 
