@@ -123,6 +123,7 @@ function conexao_leisure_translation_run( $mode = 'preview' ) {
 
 	$is_apply  = ( 'apply' === $mode );
 	$is_remove = ( 'remove' === $mode );
+	$is_write  = ( 'preview' !== $mode );
 
 	foreach ( $manifest as $entry ) {
 		++$summary['entries'];
@@ -165,11 +166,20 @@ function conexao_leisure_translation_run( $mode = 'preview' ) {
 				$rows[] = array( 'slug' => $slug, 'id' => $post_id, 'action' => 'skip', 'message' => 'no EN description stored' );
 				continue;
 			}
-			if ( $is_apply ) {
+			if ( $is_write ) {
 				delete_post_meta( $post_id, CONEXAO_LEISURE_TRANSLATION_META );
+
+				$after_post = get_post( $post_id );
+				if ( (string) $after_post->post_excerpt !== $before['post_excerpt'] ) {
+					++$summary['pt_changed'];
+				}
+				if ( (string) get_post_meta( $post_id, '_leisure_uuid', true ) !== $before['_leisure_uuid']
+					|| (string) get_post_meta( $post_id, '_leisure_export_uuid', true ) !== $before['_leisure_export_uuid'] ) {
+					++$summary['uuid_changed'];
+				}
 			}
 			++$summary['removed'];
-			$rows[] = array( 'slug' => $slug, 'id' => $post_id, 'action' => $is_apply ? 'removed' : 'would-remove', 'message' => '' );
+			$rows[] = array( 'slug' => $slug, 'id' => $post_id, 'action' => $is_write ? 'removed' : 'would-remove', 'message' => '' );
 			continue;
 		}
 
