@@ -1619,6 +1619,50 @@ function conexao_b2_translation_replaced_pt_ids( array $post_types ): array {
 }
 
 /**
+ * STAGE 7 — language-aware Leisure card description.
+ *
+ * The Leisure archive card renders the record's description in
+ * `.leisure-card-excerpt` (template-parts/leisure-card.php):
+ * `esc_html( wp_trim_words( …, 18, '...' ) )`. This helper selects the
+ * description SOURCE for the request language; the presentation pipeline
+ * (18-word trim + escaping) stays entirely in the template, identical for
+ * both languages:
+ *
+ *  - PT request (or Polylang inactive, or any non-EN language) → the exact
+ *    existing value, `get_the_excerpt()` — byte-identical Stage ≤6 behaviour;
+ *  - EN request + an authored English description stored in the
+ *    `_leisure_excerpt_en` post meta of the SAME record → that translation
+ *    (the Stage 7 translation layer: no second identity, no duplicated
+ *    leisure record, `_leisure_uuid` / `_leisure_export_uuid` untouched);
+ *  - EN request + no authored EN description → the approved B2 fallback:
+ *    the Portuguese excerpt under the English shell (never an invented
+ *    translation).
+ *
+ * Storage rationale: Leisure is a B2 directory CPT whose approved EN model
+ * for this stage is a description translation layer on the existing PT
+ * records (Stage 7 scope), NOT linked EN leisure posts — so the multilingual
+ * store is a language-suffixed meta field on the same record, written by the
+ * one-shot conexao-leisure-translation rollout plugin and portable through
+ * the existing leisure-migration ZIP (both its exporter and importer carry
+ * the key).
+ *
+ * @param int|null $leisure_id Leisure post ID (defaults to the current loop post).
+ * @return string Description source for the current language.
+ */
+function conexao_leisure_card_excerpt( $leisure_id = 0 ): string {
+	$leisure_id = $leisure_id ? (int) $leisure_id : get_the_ID();
+
+	if ( $leisure_id && 'en' === conexao_current_language_slug() ) {
+		$en = trim( (string) get_post_meta( $leisure_id, '_leisure_excerpt_en', true ) );
+		if ( '' !== $en ) {
+			return $en;
+		}
+	}
+
+	return get_the_excerpt( $leisure_id ? $leisure_id : null );
+}
+
+/**
  * Take ownership of Polylang's language-mismatch redirect status.
  *
  * Polylang's frontend canonical sends a **301** when a URL is requested under

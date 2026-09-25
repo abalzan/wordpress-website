@@ -54,6 +54,10 @@ class Conexao_Lazer_Importer {
 		'_leisure_image_license',
 		'_leisure_image_attribution',
 		'_leisure_image_alt_text',
+		// STAGE 7 — English card-description translation layer (rendered only
+		// on /en/lazer/ by the theme's conexao_leisure_card_excerpt()).
+		// Language-suffixed meta on the SAME record — never a second identity.
+		'_leisure_excerpt_en',
 	);
 
 	protected $supported_taxonomies = array(
@@ -806,6 +810,11 @@ class Conexao_Lazer_Importer {
 				$value = $this->normalize_boolean_meta( $value );
 				break;
 			case '_leisure_practical_notes':
+				$value = is_scalar( $value ) ? sanitize_textarea_field( (string) $value ) : '';
+				break;
+			case '_leisure_excerpt_en':
+				// STAGE 7 — free-text authored English description; sanitized
+				// like the practical notes (plain text, line breaks kept).
 				$value = is_scalar( $value ) ? sanitize_textarea_field( (string) $value ) : '';
 				break;
 			case '_leisure_practical_source_url':
