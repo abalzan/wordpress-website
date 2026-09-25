@@ -262,6 +262,38 @@ Stage 5 gives the Blog a **real English translation**: the linked EN posts page
   EN passes, mirrors a real translation pair, no duplicates, no fallback URLs).
 
 
+### English rollout state (Stage 7 — Leisure card descriptions)
+
+Stage 7 translates the description rendered by `.leisure-card-excerpt` on the
+Leisure archive. See `CONEXAO_BR_ENGLISH_LEISURE_CARD_DESCRIPTION_REPORT.md` and
+`docs/plugins/conexao-leisure-translation.md`.
+
+- **The English layer is a description-level translation on the SAME records**:
+  one authored English description per published Portuguese `leisure` record,
+  stored in `_leisure_excerpt_en` post meta. No EN leisure records, no duplicated
+  records, no `_leisure_uuid` / `_leisure_export_uuid` changes (Leisure *records*
+  remain a B2 directory; only the card description is translated in this stage).
+- **Rendering**: the theme selects the description source per request language
+  (`conexao_leisure_card_excerpt()` in `inc/polylang.php`); the presentation
+  pipeline in `template-parts/leisure-card.php` (18-word `wp_trim_words()` +
+  `esc_html()`) is identical in both languages. PT requests keep the exact
+  pre-Stage-7 output (`get_the_excerpt()`).
+- **B2 preserved**: a record without an authored EN description still renders the
+  Portuguese description under the English shell (the approved fallback) — the
+  `/en/lazer/` archive, its `/page/N/` views and its `?county=` / `?categoria=`
+  filter views are otherwise unchanged (same cards, order, links, images).
+- **Language selection** rides the existing Polylang helpers
+  (`conexao_current_language_slug()`), never URL string guessing, and the
+  per-language rendering is intrinsically cache-safe (separate URLs, no archive
+  transient).
+- **Portability**: `conexao-leisure-migration`'s exporter/importer carry
+  `_leisure_excerpt_en`, so the field travels with the leisure dataset.
+- **Rollout**: `conexao-leisure-translation` (admin importer + WP-CLI runner) —
+  slug-matched, PT-drift-guarded, reversible (`remove`); activate for the
+  rollout, then deactivate/remove. Deployment ZIP via
+  `./scripts/build-plugins-zip.sh`.
+
+
 ### English rollout state (Stage 4.1 — bilingual REST contract)
 
 Polylang Free sets the REST *language context* from a `lang` parameter but

@@ -26,6 +26,8 @@ PLUGIN_SLUGS=(
     "conexao-sponsor-migration"
     "conexao-page-translation"
     "conexao-blog-translation"
+    "conexao-job-translation"
+    "conexao-leisure-translation"
 )
 
 # Output destination (override with BUILD_OUTPUT_DIR env var if needed)
@@ -111,3 +113,7 @@ echo "     - conexao-event-runtime   (production dependency)"
 echo "     - conexao-event-importer  (local-only tooling)"
 echo "     - conexao-leisure-migration"
 echo "     - conexao-sponsor-migration"
+echo "     - conexao-page-translation (Stage 4.5 rollout tooling)"
+echo "     - conexao-blog-translation (Stage 5 rollout tooling)"
+echo "     - conexao-job-translation  (Stage 6 rollout tooling)"
+echo "     - conexao-leisure-translation (Stage 7 rollout tooling)"
