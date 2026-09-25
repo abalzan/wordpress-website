@@ -4,7 +4,7 @@
 **Final classification: ENGLISH LEISURE CARD DESCRIPTIONS — PASS WITH LIMITATION**
 (the implementation is complete and fully verified against the real production
 dataset in a WordPress validation clone; the identified limitation is operational —
-production deployment, see §15/§16).
+production deployment, see §17/§18).
 
 | | |
 |---|---|
@@ -17,7 +17,7 @@ production deployment, see §15/§16).
 | Identity | `_leisure_uuid` / `_leisure_export_uuid` unchanged (measured 0 changes) |
 | HTTP acceptance | 4,783 checks, 0 failed (before 2,182 + after 2,601) |
 | In-process tests | Stage 7 suite 32/32; migration round-trip 9/9; 19 pre-existing theme suites identical before/after the change (0 regressions) |
-| Production deployment | NOT_EXECUTED (operator runbook §14) |
+| Production deployment | NOT_EXECUTED (operator runbook §17) |
 
 The Stage 7 authoritative translation source was **the Portuguese description the
 user sees today** — the manual `post_excerpt` of each published leisure record,
