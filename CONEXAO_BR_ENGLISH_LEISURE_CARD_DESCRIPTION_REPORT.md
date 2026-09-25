@@ -51,6 +51,13 @@ repository plus the real production dataset (read-only captures):
 Reproduction: `scripts/stage7-validation-clone-setup.sh` prints the exact command
 sequence (fetch, install, activate, seed, validate).
 
+**Reproducibility check (executed):** the documented path was run end-to-end a
+second time into a completely fresh clone (`/tmp/wpval2`, port 8766, everything
+re-fetched and re-installed from scratch) and produced the identical results:
+seed 289/0 errors, `before` matrix 2,182/2,182, apply 289 applied with 0 refused /
+0 errors / 0 PT changes / 0 UUID changes, audit gate PASS, `after` matrix
+2,601/2,601, Stage 7 suite 32/32, migration round-trip 9/9.
+
 Production itself was read-only touched via HTTPS (`https://conexaobr.ie`):
 `GET /lazer/` (29 archive pages) and the public REST API
 (`wp/v2/leisure`, `wp/v2/conexao_category`, `conexao_county`,

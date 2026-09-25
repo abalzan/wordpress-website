@@ -48,7 +48,12 @@ fi
 if [ ! -d "$WORK_DIR/polylang-$POLYLANG_VERSION" ]; then
 	echo "-- fetching Polylang $POLYLANG_VERSION (built distribution: it ships vendor/)"
 	curl -sL -o "polylang-$POLYLANG_VERSION.zip" "https://downloads.wordpress.org/plugin/polylang.$POLYLANG_VERSION.zip"
-	unzip -q -o "polylang-$POLYLANG_VERSION.zip"
+	# The archive contains a single top-level `polylang/` directory.
+	rm -rf "$WORK_DIR/polylang-$POLYLANG_VERSION.staging"
+	mkdir -p "$WORK_DIR/polylang-$POLYLANG_VERSION.staging"
+	unzip -q -o "polylang-$POLYLANG_VERSION.zip" -d "$WORK_DIR/polylang-$POLYLANG_VERSION.staging"
+	mv "$WORK_DIR/polylang-$POLYLANG_VERSION.staging/polylang" "$WORK_DIR/polylang-$POLYLANG_VERSION"
+	rm -rf "$WORK_DIR/polylang-$POLYLANG_VERSION.staging"
 fi
 
 if [ ! -d "$WORK_DIR/sqlite-database-integration-main" ]; then
