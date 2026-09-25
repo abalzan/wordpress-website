@@ -601,7 +601,10 @@ $new_tab_hint = esc_attr__( '(abre em nova aba)', 'conexao-br-irlanda' );
 				$agency_name     = esc_html( $item['title'] );
 				$job_type_labels = conexao_recruitment_agency_job_type_labels( conexao_recruitment_agency_meta( $agency, '_agency_job_types' ) );
 				$job_types       = $job_type_labels ? implode( ', ', $job_type_labels ) : '';
-				$location        = conexao_recruitment_agency_meta( $agency, '_agency_location' );
+				// Language-aware coverage string: the stored value stays the
+				// filter's source of truth, only generic words are localized
+				// (real place names pass through byte-identical).
+				$location        = conexao_recruitment_agency_location_display( conexao_recruitment_agency_meta( $agency, '_agency_location' ) );
 				$phone           = conexao_recruitment_agency_meta( $agency, '_agency_phone' );
 				$website         = esc_url( $item['url'] );
 				$temp            = in_array( 'temporario', (array) $item['contract_types'], true );

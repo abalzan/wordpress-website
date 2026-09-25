@@ -39,7 +39,9 @@ Tools → **EN Page Translations**: current state table (PT page / planned EN sl
 | Environment | How | Notes |
 |---|---|---|
 | Local Docker / staging | `wp eval-file scripts/stage45-translate-pages.php` (dry run) or `... apply` | Loads the same map + engine; prints the relationship table. |
+| Local Docker / staging (repair) | `wp eval-file scripts/stage45-translate-pages.php refresh [slug[,slug]]` | Re-applies the authored EN copy from the manifest to EN pages that ALREADY exist — the path used when the manifest copy is corrected or completed after a first run (e.g. the Jobs landing page). Never creates a second translation; the PT before/after gate still runs and must report `pt_changed = 0`. |
 | Production (WordPress.com) | Activate the plugin → Tools → EN Page Translations → Preview → Apply | Requires the Stage 4.3 English layer (Polylang Free 3.8.9 + the current theme ZIP) deployed first. |
+| Production (repair) | Activate the plugin → Tools → EN Page Translations → **Refresh existing EN pages** | Same contract as the local `refresh` mode; production has no WP-CLI, so the admin button is the production path. |
 
 ## Verification after the rollout
 
@@ -47,6 +49,8 @@ Tools → **EN Page Translations**: current state table (PT page / planned EN sl
 python3 scripts/stage45-verify-pages.py --phase after --out /tmp/s45-after   # HTTP matrix (123 rows)
 python3 scripts/stage45-pt-snapshot.py --compare stage45-work/pt-snapshot.json <fresh-snapshot>.json
 php wp-content/themes/conexao-br-irlanda/tests/test-stage45-pages.php       # relationship table + invariance
+python3 scripts/jobs-en-language-verify.py --base http://localhost:8080     # EN Jobs rendered language audit
+php wp-content/themes/conexao-br-irlanda/tests/test-jobs-en-language.php    # EN Jobs source-level contract
 ```
 
 See `CONEXAO_BR_ENGLISH_STAGE_4_5_REPORT.md` for the full acceptance matrix.

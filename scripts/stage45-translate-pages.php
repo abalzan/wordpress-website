@@ -16,8 +16,22 @@
  *   - Polylang must be active (deploy the EN layer first).
  *
  * Usage (local/staging only):
- *   wp eval-file scripts/stage45-translate-pages.php           # dry run
- *   wp eval-file scripts/stage45-translate-pages.php apply     # create
+ *   wp eval-file scripts/stage45-translate-pages.php                 # dry run
+ *   wp eval-file scripts/stage45-translate-pages.php apply           # create
+ *   wp eval-file scripts/stage45-translate-pages.php refresh         # re-apply
+ *                                                                     # manifest
+ *                                                                     # content to
+ *                                                                     # existing EN
+ *                                                                     # pages
+ *   wp eval-file scripts/stage45-translate-pages.php refresh emprego  # …scoped
+ *
+ * `refresh` re-applies the human-authored EN title/content/meta/template of an
+ * EXISTING EN translation from the manifest. It is how a corrected or
+ * completed manifest reaches a site whose EN pages were created by an earlier
+ * (incomplete) run — e.g. the EN Jobs landing page, whose body was authored
+ * after its first creation. It NEVER touches the Portuguese page (the PT
+ * before/after gate below still runs and must report `pt_changed = 0`), never
+ * creates a second translation, and is idempotent.
  *
  * @package Conexao_BR_Irlanda
  */
@@ -40,17 +54,52 @@ if ( ! defined( 'ABSPATH' ) ) {
 require_once WP_CONTENT_DIR . '/plugins/conexao-page-translation/includes/translation-map.php';
 require_once WP_CONTENT_DIR . '/plugins/conexao-page-translation/includes/apply.php';
 
-$apply = in_array( 'apply', (array) $argv, true );
+$args    = (array) ( isset( $argv ) ? $argv : array() );
+$apply   = in_array( 'apply', $args, true );
+$refresh = in_array( 'refresh', $args, true );
+
+// Optional scope: "refresh emprego" (or a comma-separated list) restricts the
+// run to those PT slugs. Useful to repair one page without touching the rest.
+$only = array();
+foreach ( $args as $arg ) {
+	if ( is_string( $arg ) && false !== strpos( $arg, ',' ) ) {
+		foreach ( explode( ',', $arg ) as $slug ) {
+			$slug = trim( $slug );
+			if ( '' !== $slug ) {
+				$only[] = $slug;
+			}
+		}
+		continue;
+	}
+	if ( is_string( $arg ) && ! in_array( $arg, array( 'apply', 'refresh', __FILE__ ), true ) && '' !== $arg && '/' !== substr( $arg, -1 ) ) {
+		$only[] = $arg;
+	}
+}
 
 echo "== Stage 4.5 — EN page translations ==\n";
-echo $apply ? "Mode: APPLY\n\n" : "Mode: DRY RUN (pass 'apply' to create)\n\n";
+if ( $refresh ) {
+	echo "Mode: REFRESH (re-apply the manifest to existing EN translations";
+	echo $only ? ' — scope: ' . implode( ', ', $only ) : '';
+	echo ")\n\n";
+} else {
+	echo $apply ? "Mode: APPLY\n\n" : "Mode: DRY RUN (pass 'apply' to create)\n\n";
+}
 
 if ( ! function_exists( 'pll_get_post' ) ) {
 	fwrite( STDERR, "ERROR: Polylang is not active.\n" );
 	exit( 1 );
 }
 
-$result = conexao_page_translation_run( array( 'dry_run' => ! $apply ) );
+$result = conexao_page_translation_run(
+	array(
+		// `refresh` IS a write (it re-applies the manifest copy to an existing
+		// EN page), so — like `apply` — it is only a preview when neither flag
+		// is given. The PT before/after gate still runs in every case.
+		'dry_run'         => ! ( $apply || $refresh ),
+		'update_existing' => $refresh,
+		'only'            => $only,
+	)
+);
 
 foreach ( $result['rows'] as $row ) {
 	printf(
@@ -76,10 +125,15 @@ printf(
 	$s['links_localized']
 );
 
-// Relationship table (Phase 11) — printed after an apply run.
-if ( $apply && 0 === $s['errors'] ) {
+// Relationship table (Phase 11) — printed after an apply/refresh run and
+// scoped to the same slugs the run covered (a scoped run must not print a
+// FAIL for every page it deliberately skipped).
+if ( ( $apply || $refresh ) && 0 === $s['errors'] ) {
 	echo "\nRelationship table (both directions verified at creation):\n";
 	foreach ( conexao_page_translation_map() as $pt_slug => $en ) {
+		if ( $only && ! in_array( $pt_slug, $only, true ) ) {
+			continue;
+		}
 		$pt_page = get_page_by_path( $pt_slug, OBJECT, 'page' );
 		if ( ! $pt_page ) {
 			continue;

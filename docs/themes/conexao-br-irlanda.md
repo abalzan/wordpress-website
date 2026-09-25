@@ -266,6 +266,36 @@ Empregos
   mobile (≤768px) stacks into a single natural column. Colours come entirely
   from the design-system tokens, so light and dark mode are automatic.
 
+#### Bilingual content standard (Stage 8)
+
+`/empregos/` and `/en/jobs/` are rendered by the SAME template from the SAME
+data, and every user-facing string is resolved for the requested language. The
+Jobs page is the reference implementation of the bilingual standard (the Blog
+established it); the design, layout, components and filter values are identical
+in both languages.
+
+| Layer | Where it is resolved | Rule |
+|---|---|---|
+| Page body | The linked EN page record (`conexao-page-translation` manifest) | Real English content in a real translation record — never a template hardcode. Applied by re-running the importer with `refresh`. The PT page is never written (PT gate `pt_changed = 0`). |
+| Job records | `conexao_empregos_current_jobs()` (Polylang) | EN record when published and linked; otherwise the approved B2 set. One identity is never shown twice and translated/untranslated content is never mixed. |
+| Work areas | `Conexao_Data_Model_Agency::job_types()` | The canonical **keys** are the language-neutral filter identity (`?area=warehouse`); only the **labels** are gettext-wrapped. Desktop and mobile read the same array, so their wording cannot diverge. |
+| Locations | `conexao_recruitment_agency_location_display()` | Real Irish place names are byte-identical in both languages; only the generic coverage words (`Nacional` → "Nationwide") and the country exonym (`Irlanda` → "Ireland") are UI labels. An unrecognised value is returned exactly as stored. |
+| Employer descriptors | `conexao_permit_employer_sector_display()` / `…_roles_display()` | Authored free text is normalized to a canonical key, then rendered through gettext. Unknown values pass through unchanged; the stored data and the Portuguese page are never modified. |
+| UI chrome | gettext (`languages/en_US.po`) | Filter labels, result count, empty states, warnings, CTA and every accessibility string. Official names, URLs, phone numbers, place names, years and the `Employment Permit` / `Department of Enterprise` references are never translated. |
+| Dates | `conexao_localized_date_format()` (`option_date_format`) + `conexao_localize_post_date()` (`get_the_date`) | The site's Portuguese `date_format` embeds the literal `de` connectors, so the locale switch alone produced `25 de August de 2026`. The format is now resolved per language through the catalog; the default language is byte-identical. |
+| Read time | `conexao_reading_time_text()` | Existing gettext plural (`_n`), no manual language branch. |
+
+Filter **values** are never translated: `?area=warehouse`, `?contrato=temporario`,
+`?localizacao=nacional`, `?tipo=agency` are stable slugs in both languages, and
+only the visible label changes.
+
+Verification:
+
+```bash
+php wp-content/themes/conexao-br-irlanda/tests/test-jobs-en-language.php   # source-level contract
+python3 scripts/jobs-en-language-verify.py --base http://localhost:8080   # rendered output
+```
+
 ### Employment Opportunities data + filter layer (`inc/employment-opportunities.php`)
 
 Shared module backing the unified /empregos/ directory. It gives every

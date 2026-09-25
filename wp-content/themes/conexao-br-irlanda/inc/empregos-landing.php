@@ -42,9 +42,13 @@ add_action( 'init', 'conexao_register_empregos_meta' );
 /**
  * Whether a given post is the Jobs landing page.
  *
- * True when the post is a page using the `page-empregos.php` template, or whose
- * slug is `empregos` (the two normally coincide), so the field also behaves on
- * already-published pages before a template is explicitly chosen.
+ * True when the post is a page using the `page-empregos.php` template, whose
+ * slug is `empregos`, or which is the linked Polylang translation of the
+ * canonical `empregos` page (Stage 4.5 EN `jobs` page). The translation clause
+ * is a defensive fallback only: the importer copies `_wp_page_template`, so
+ * the template check normally matches first. It exists so a translation that
+ * loses its template meta (manual edit, import edge-case) still renders the
+ * landing instead of silently falling back to `page.php`.
  *
  * @param WP_Post|int|null $post Post object, ID or null (current post).
  * @return bool
@@ -57,8 +61,49 @@ function conexao_is_empregos_landing( $post = null ) {
 	if ( 'empregos' === $post->post_name ) {
 		return true;
 	}
-	return 'page-empregos.php' === get_page_template_slug( $post->ID );
+	if ( 'page-empregos.php' === get_page_template_slug( $post->ID ) ) {
+		return true;
+	}
+	if ( function_exists( 'conexao_polylang_active' ) && conexao_polylang_active() && function_exists( 'pll_get_post' ) ) {
+		$source = get_page_by_path( 'empregos', OBJECT, 'page' );
+		if ( $source instanceof WP_Post && (int) pll_get_post( (int) $source->ID, 'en' ) === (int) $post->ID ) {
+			return true;
+		}
+	}
+	return false;
 }
+
+/**
+ * Force the Jobs landing template for the linked EN translation.
+ *
+ * WordPress resolves a page template from the `_wp_page_template` meta. When
+ * the EN `jobs` translation loses that meta it falls back to `page.php` (the
+ * observed empty `/en/jobs/` regression). This filter restores
+ * `page-empregos.php` for the linked translation of the canonical `empregos`
+ * page. Portuguese rendering is untouched (the PT page keeps its own stored
+ * template), and no other page is affected.
+ *
+ * @param string $template Resolved template path.
+ * @return string
+ */
+function conexao_empregos_landing_template( $template ) {
+	if ( is_admin() || ! function_exists( 'conexao_is_empregos_landing' ) ) {
+		return $template;
+	}
+	$queried = get_queried_object();
+	if ( ! $queried instanceof WP_Post || 'page' !== $queried->post_type ) {
+		return $template;
+	}
+	if ( 'page-empregos.php' === get_page_template_slug( $queried->ID ) ) {
+		return $template;
+	}
+	if ( ! conexao_is_empregos_landing( $queried ) ) {
+		return $template;
+	}
+	$candidate = locate_template( array( 'page-empregos.php' ) );
+	return $candidate ? $candidate : $template;
+}
+add_filter( 'template_include', 'conexao_empregos_landing_template', 20 );
 
 /**
  * Add the minimal admin field for the "Mais informações" link.
@@ -135,6 +180,11 @@ add_action( 'save_post_page', 'conexao_empregos_save_meta' );
 /**
  * The escaped CTA URL for a given Jobs landing page ('' when none).
  *
+ * Falls back to the canonical `empregos` source page when the queried
+ * translation carries no link of its own (a URL is never translated, so the
+ * PT value is valid in both languages). Keeps the CTA visible on `/en/jobs/`
+ * even when the EN translation lost its pass-through meta.
+ *
  * @param int $post_id Post ID (defaults to the current post).
  * @return string URL, escaped for output, or empty string.
  */
@@ -144,6 +194,12 @@ function conexao_empregos_link( $post_id = 0 ) {
 		return '';
 	}
 	$url = trim( (string) get_post_meta( $post_id, '_empregos_link', true ) );
+	if ( '' === $url ) {
+		$source = get_page_by_path( 'empregos', OBJECT, 'page' );
+		if ( $source instanceof WP_Post && (int) $source->ID !== (int) $post_id ) {
+			$url = trim( (string) get_post_meta( (int) $source->ID, '_empregos_link', true ) );
+		}
+	}
 	return $url ? esc_url( $url ) : '';
 }
 

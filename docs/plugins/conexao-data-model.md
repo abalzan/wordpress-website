@@ -100,11 +100,16 @@ Agências de Recrutamento directory, shared by the Admin UX editor
 (`multiselect` options) and the frontend card rendering (consistent
 labels — the same pattern as the Apoiador contact types).
 
-- `job_types()`: canonical key => pt-BR label (12 values: warehouse,
+- `job_types()`: canonical key => display label (12 values: warehouse,
   general_operative, factory_production, logistics, hospitality, cleaning,
   retail, construction_labour, driving_delivery, office_admin,
   agriculture_seasonal, healthcare — `healthcare` was added in 1.5.0 for
-  the validated healthcare-recruitment agencies).
+  the validated healthcare-recruitment agencies). The **keys** are the stable,
+  language-neutral storage/filter identity (`?area=warehouse`) and are never
+  renamed or translated; the **labels** run through gettext in the theme text
+  domain, so the Admin UX editor, the `/empregos/` filter and the opportunity
+  cards all render Portuguese on the default language and English on `/en/jobs/`
+  from this single registry (Stage 8).
 - Storage: `_agency_job_types` holds a comma-separated list of canonical
   keys (e.g. `warehouse,logistics`). The Admin UX save path whitelists every
   submitted value against `job_types()`; unknown values are dropped.

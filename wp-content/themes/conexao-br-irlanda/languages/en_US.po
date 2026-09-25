@@ -1849,3 +1849,118 @@ msgstr "Share on LinkedIn"
 #: template-parts/share-buttons.php:34
 msgid "Copiar link"
 msgstr "Copy link"
+
+#: wp-content/plugins/conexao-data-model/includes/class-agency.php:43
+msgid "Armazém"
+msgstr "Warehouse"
+
+#: wp-content/plugins/conexao-data-model/includes/class-agency.php:44
+msgid "Operacional Geral"
+msgstr "General Operative"
+
+#: wp-content/plugins/conexao-data-model/includes/class-agency.php:45
+msgid "Fábrica / Produção"
+msgstr "Factory / Production"
+
+#: wp-content/plugins/conexao-data-model/includes/class-agency.php:46
+msgid "Logística"
+msgstr "Logistics"
+
+#: wp-content/plugins/conexao-data-model/includes/class-agency.php:47
+msgid "Hotelaria"
+msgstr "Hospitality"
+
+#: wp-content/plugins/conexao-data-model/includes/class-agency.php:48
+msgid "Limpeza"
+msgstr "Cleaning"
+
+#: wp-content/plugins/conexao-data-model/includes/class-agency.php:49
+msgid "Varejo"
+msgstr "Retail"
+
+#: wp-content/plugins/conexao-data-model/includes/class-agency.php:50
+msgid "Construção Civil"
+msgstr "Construction"
+
+#: wp-content/plugins/conexao-data-model/includes/class-agency.php:51
+msgid "Condução / Entregas"
+msgstr "Driving / Delivery"
+
+#: wp-content/plugins/conexao-data-model/includes/class-agency.php:52
+msgid "Escritório / Administrativo"
+msgstr "Office / Administration"
+
+#: wp-content/plugins/conexao-data-model/includes/class-agency.php:53
+msgid "Agricultura / Sazonal"
+msgstr "Agriculture / Seasonal"
+
+#: wp-content/plugins/conexao-data-model/includes/class-agency.php:59
+msgid "Saúde / Cuidados"
+msgstr "Healthcare / Care"
+
+#: wp-content/themes/conexao-br-irlanda/inc/recruitment-agencies.php:190
+#: wp-content/themes/conexao-br-irlanda/inc/recruitment-agencies.php:143
+msgid "Nacional"
+msgstr "Nationwide"
+
+#: wp-content/themes/conexao-br-irlanda/inc/permit-employers.php:241
+msgid "Saúde e Cuidados"
+msgstr "Healthcare and Care"
+
+#: wp-content/themes/conexao-br-irlanda/inc/permit-employers.php:242
+msgid "Saúde pública (HSE)"
+msgstr "Public healthcare (HSE)"
+
+#: wp-content/themes/conexao-br-irlanda/inc/permit-employers.php:243
+msgid "Cuidados Domiciliários"
+msgstr "Home Care"
+
+#: wp-content/themes/conexao-br-irlanda/inc/permit-employers.php:244
+msgid "Alimentos — Processamento de Carne"
+msgstr "Food — Meat Processing"
+
+#: wp-content/themes/conexao-br-irlanda/inc/permit-employers.php:245
+msgid "Agroalimentar — Cogumelos"
+msgstr "Food Production — Mushrooms"
+
+#: wp-content/themes/conexao-br-irlanda/inc/permit-employers.php:263
+msgid "Enfermeiros"
+msgstr "Nurses"
+
+#: wp-content/themes/conexao-br-irlanda/inc/permit-employers.php:264
+msgid "Profissionais de saúde"
+msgstr "Healthcare professionals"
+
+#: wp-content/themes/conexao-br-irlanda/inc/permit-employers.php:265
+msgid "Healthcare Assistants"
+msgstr "Healthcare Assistants"
+
+#: wp-content/themes/conexao-br-irlanda/inc/permit-employers.php:266
+msgid "Equipe de apoio"
+msgstr "Support staff"
+
+#: wp-content/themes/conexao-br-irlanda/inc/permit-employers.php:267
+msgid "Operadores de produção"
+msgstr "Production operators"
+
+#: wp-content/themes/conexao-br-irlanda/inc/permit-employers.php:268
+msgid "Processamento de alimentos"
+msgstr "Food processing"
+
+#: wp-content/themes/conexao-br-irlanda/inc/permit-employers.php:269
+msgid "Colheita e processamento"
+msgstr "Harvesting and processing"
+
+#: wp-content/themes/conexao-br-irlanda/inc/permit-employers.php:270
+msgid "Cuidadores domiciliários (Home Carers)"
+msgstr "Home carers"
+
+#: wp-content/themes/conexao-br-irlanda/inc/i18n.php:226
+msgid "F j, Y"
+msgstr "F j, Y"
+#: wp-content/themes/conexao-br-irlanda/inc/recruitment-agencies.php:154
+msgid "Irlanda"
+msgstr "Ireland"
+#: wp-content/themes/conexao-br-irlanda/inc/recruitment-agencies.php:155
+msgid "irlanda"
+msgstr "Ireland"

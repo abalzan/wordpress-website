@@ -49,7 +49,7 @@ final class Conexao_Page_Translation_Admin {
 	}
 
 	/**
-	 * Execute the run (preview or apply) and redirect back with the report.
+	 * Execute the run (preview, apply or refresh) and redirect back with the report.
 	 */
 	public static function handle_run(): void {
 		if ( ! current_user_can( self::CAP ) ) {
@@ -57,9 +57,17 @@ final class Conexao_Page_Translation_Admin {
 		}
 		check_admin_referer( self::ACTION, '_conexao_pt_nonce' );
 
-		$mode = isset( $_POST['mode'] ) && 'apply' === $_POST['mode'] ? 'apply' : 'preview';
+		$mode = isset( $_POST['mode'] ) && 'apply' === $_POST['mode'] ? 'apply' : ( isset( $_POST['mode'] ) && 'refresh' === $_POST['mode'] ? 'refresh' : 'preview' );
 
-		$report = conexao_page_translation_run( array( 'dry_run' => ( 'apply' !== $mode ) ) );
+		$report = conexao_page_translation_run(
+			array(
+				'dry_run'         => ( 'apply' !== $mode && 'refresh' !== $mode ),
+				// 'refresh' re-applies the human-authored manifest to EN pages
+				// that already exist (e.g. a page whose EN copy was authored
+				// after its first creation). The PT gate still runs.
+				'update_existing' => ( 'refresh' === $mode ),
+			)
+		);
 		set_transient( 'conexao_page_translation_report', array( 'mode' => $mode, 'report' => $report ), 10 * MINUTE_IN_SECONDS );
 
 		wp_safe_redirect( admin_url( 'tools.php?page=' . self::PAGE_SLUG . '&ran=' . $mode ) );
@@ -123,17 +131,24 @@ final class Conexao_Page_Translation_Admin {
 
 		echo '<h2>Run</h2>';
 		echo '<p>Creation order: front page → top-level pages → legal/utility. Idempotent: existing EN translations are skipped. The Portuguese originals are never modified — a PT checkpoint is verified after the run.</p>';
+		echo '<p><strong>Refresh</strong> re-applies the authored English copy in the manifest to EN pages that already exist (use it when the manifest copy is corrected or completed after a first run — e.g. the Jobs landing page). It never creates a second translation, never touches the Portuguese page, and the PT checkpoint still runs.</p>';
 		echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '" style="display:inline-block;margin-right:1em">';
 		wp_nonce_field( self::ACTION, '_conexao_pt_nonce' );
 		echo '<input type="hidden" name="action" value="' . esc_attr( self::ACTION ) . '">';
 		echo '<input type="hidden" name="mode" value="preview">';
 		submit_button( 'Preview (dry run — writes nothing)', 'secondary', 'submit', false );
 		echo '</form> ';
-		echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '" style="display:inline-block" onsubmit="return confirm(\'Create the EN translations now? Portuguese pages are never modified.\');">';
+		echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '" style="display:inline-block;margin-right:1em" onsubmit="return confirm(\'Create the EN translations now? Portuguese pages are never modified.\');">';
 		wp_nonce_field( self::ACTION, '_conexao_pt_nonce' );
 		echo '<input type="hidden" name="action" value="' . esc_attr( self::ACTION ) . '">';
 		echo '<input type="hidden" name="mode" value="apply">';
 		submit_button( 'Apply (create EN translations)', 'primary', 'submit', false );
+		echo '</form> ';
+		echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '" onsubmit="return confirm(\'Re-apply the authored English content from the manifest to the EN pages that already exist?\\n\\nPortuguese pages are never modified.\');">';
+		wp_nonce_field( self::ACTION, '_conexao_pt_nonce' );
+		echo '<input type="hidden" name="action" value="' . esc_attr( self::ACTION ) . '">';
+		echo '<input type="hidden" name="mode" value="refresh">';
+		submit_button( 'Refresh existing EN pages (re-apply the manifest copy)', 'secondary', 'submit', false );
 		echo '</form>';
 
 		echo '</div>';

@@ -22,40 +22,48 @@ defined( 'ABSPATH' ) || exit;
 final class Conexao_Data_Model_Agency {
 
 	/**
-	 * Canonical job types: storage key => Portuguese display label.
+	 * Canonical job types: storage key => display label.
 	 *
 	 * These are the only values the Admin UX editor offers. Do not add
 	 * values without confirming they are supported by the underlying
 	 * research — agencies are never auto-tagged.
 	 *
+	 * The KEYS are the stable, language-neutral storage/filter identity
+	 * (`?area=warehouse`) and must never be renamed. The VALUES are display
+	 * labels only, so they run through gettext: Portuguese (the default
+	 * language) renders the source strings byte-identically, while the
+	 * English Jobs page renders the catalog's English labels. This is the
+	 * existing translation architecture — no duplicate terms, no
+	 * language-specific storage, no frontend string replacement.
+	 *
 	 * @return array<string,string>
 	 */
 	public static function job_types() {
 		return array(
-			'warehouse'            => 'Armazém',
-			'general_operative'    => 'Operacional Geral',
-			'factory_production'   => 'Fábrica / Produção',
-			'logistics'            => 'Logística',
-			'hospitality'          => 'Hotelaria',
-			'cleaning'             => 'Limpeza',
-			'retail'               => 'Varejo',
-			'construction_labour'  => 'Construção Civil',
-			'driving_delivery'     => 'Condução / Entregas',
-			'office_admin'         => 'Escritório / Administrativo',
-			'agriculture_seasonal' => 'Agricultura / Sazonal',
+			'warehouse'            => __( 'Armazém', 'conexao-br-irlanda' ),
+			'general_operative'    => __( 'Operacional Geral', 'conexao-br-irlanda' ),
+			'factory_production'   => __( 'Fábrica / Produção', 'conexao-br-irlanda' ),
+			'logistics'            => __( 'Logística', 'conexao-br-irlanda' ),
+			'hospitality'          => __( 'Hotelaria', 'conexao-br-irlanda' ),
+			'cleaning'             => __( 'Limpeza', 'conexao-br-irlanda' ),
+			'retail'               => __( 'Varejo', 'conexao-br-irlanda' ),
+			'construction_labour'  => __( 'Construção Civil', 'conexao-br-irlanda' ),
+			'driving_delivery'     => __( 'Condução / Entregas', 'conexao-br-irlanda' ),
+			'office_admin'         => __( 'Escritório / Administrativo', 'conexao-br-irlanda' ),
+			'agriculture_seasonal' => __( 'Agricultura / Sazonal', 'conexao-br-irlanda' ),
 			// Added for the 2026-09 Empregos expansion: several validated
 			// agencies (TTM, Servisource, Access Healthcare, Hollilander,
 			// Cpl) recruit healthcare professionals — a sector the original
 			// registry did not cover. Confirmed against each agency's own
 			// site before adding (agencies are never auto-tagged).
-			'healthcare'           => 'Saúde / Cuidados',
+			'healthcare'           => __( 'Saúde / Cuidados', 'conexao-br-irlanda' ),
 		);
 	}
 
 	/**
 	 * Display labels for a stored `_agency_job_types` value.
 	 *
-	 * Canonical keys are mapped to their Portuguese labels; anything else
+	 * Canonical keys are mapped to their (translated) labels; anything else
 	 * (legacy free-text segments) is passed through as its own label so
 	 * pre-existing records keep rendering exactly what was written.
 	 *

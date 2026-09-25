@@ -165,3 +165,135 @@ function conexao_js_i18n_strings(): array {
 		'nounCoursesPlural'       => __( 'cursos', 'conexao-br-irlanda' ),
 	);
 }
+
+/**
+ * 5. Language-aware `date_format`.
+ *
+ * WordPress stores ONE site-wide `date_format` option, authored for the
+ * default language. The site's approved Portuguese format is
+ * `j \d\e F \d\e Y` ("25 de agosto de 2026"), and because the literal "de"
+ * connectors live INSIDE that format string, switching only the locale (the
+ * Stage 2 `locale` filter) translated the month name but kept the Portuguese
+ * connectors — the observed `25 de August de 2026` on `/en/jobs/`.
+ *
+ * The connectors are user-facing text, so they belong in the catalog: this
+ * filter returns the site option unchanged while the default language is
+ * active (Portuguese output is byte-identical), and the locale-appropriate
+ * format on every other language. It is the WordPress-native
+ * `option_date_format` hook, so every consumer — `get_the_date()`,
+ * `date_i18n()`, `wp_date()` — is corrected at once; no template changes and
+ * no hardcoded English string in the codebase.
+ *
+ * The English entry is a real translation of the same pattern, and a locale
+ * with no catalog entry simply falls back to the site option (its own
+ * WordPress default), so an unknown language is never rendered in the
+ * wrong order.
+ *
+ * @param string $format Stored/site date format.
+ * @return string
+ */
+function conexao_localized_date_format( $format ) {
+	// inc/polylang.php (the language-context owner) loads after this file, so
+	// its helpers are checked at call time; without Polylang there is no
+	// language layer and the site option is used exactly as before.
+	if ( ! function_exists( 'conexao_current_language_slug' ) || ! function_exists( 'conexao_default_language_slug' ) ) {
+		return $format;
+	}
+
+	$current = conexao_current_language_slug();
+	$default = conexao_default_language_slug();
+
+	// Portuguese (and a site with no language layer at all) is untouched.
+	if ( '' === $current || '' === $default || $current === $default ) {
+		return $format;
+	}
+
+	/**
+	 * Filters the date format used for a non-default language.
+	 *
+	 * @param string $format   Site date format.
+	 * @param string $language Current language slug.
+	 */
+	$localized = apply_filters( 'conexao_localized_date_format', $format, $current );
+
+	return is_string( $localized ) && '' !== $localized ? $localized : $format;
+}
+add_filter( 'option_date_format', 'conexao_localized_date_format' );
+
+/**
+ * Apply the language-aware format to a rendered post date.
+ *
+ * `get_the_date()` resolves `get_option( 'date_format' )` into
+ * `get_post_time()` → `date_i18n()`, which formats the date BEFORE the
+ * `option_date_format` filter is consulted again inside the same request in
+ * some contexts (notably WP-CLI, where the option is read from a primed
+ * alloptions cache). This second, WordPress-native `get_the_date` filter is
+ * the render-time guarantee: every consumer of the post date — the Job card,
+ * archives, singular pages — gets the language-correct presentation, while
+ * Portuguese (the default language) is returned byte-identical because
+ * `conexao_localized_date_format()` short-circuits there.
+ *
+ * Only the FORMAT is touched: the timestamp, the timezone, the post and the
+ * published date itself are untouched, and no English string is hardcoded.
+ *
+ * @param string     $the_date Formatted date.
+ * @param string     $format   Requested format ('' means the site option).
+ * @param WP_Post|null $post   Post object.
+ * @return string
+ */
+function conexao_localize_post_date( $the_date, $format, $post = null ) {
+	// An explicit format from the caller always wins (it is already a choice).
+	if ( ! empty( $format ) ) {
+		return $the_date;
+	}
+
+	$current = function_exists( 'conexao_current_language_slug' ) ? conexao_current_language_slug() : '';
+	$default = function_exists( 'conexao_default_language_slug' ) ? conexao_default_language_slug() : '';
+
+	if ( '' === $current || '' === $default || $current === $default ) {
+		return $the_date;
+	}
+
+	$post_format = (string) get_option( 'date_format' );
+	$localized   = conexao_localized_date_format( $post_format );
+
+	if ( $localized === $post_format || '' === $localized ) {
+		return $the_date;
+	}
+
+	$timestamp = $post instanceof WP_Post
+		? (int) get_post_timestamp( $post )
+		: (int) get_post_time( 'U', true, $post );
+
+	if ( $timestamp <= 0 ) {
+		return $the_date;
+	}
+
+	return wp_date( $localized, $timestamp );
+}
+add_filter( 'get_the_date', 'conexao_localize_post_date', 10, 3 );
+
+/**
+ * The English long date pattern, in the site's catalog.
+ *
+ * Returned through gettext so the format is translated like any other user
+ * -facing string rather than hardcoded per language branch. Exposed as a
+ * helper so `conexao_localized_date_format()` and the tests share one source.
+ *
+ * @return string
+ */
+function conexao_english_date_format(): string {
+	return __( 'F j, Y', 'conexao-br-irlanda' );
+}
+
+/**
+ * Apply the English date pattern to a non-default language.
+ *
+ * @param string $format   Site date format.
+ * @param string $language Current language slug.
+ * @return string
+ */
+function conexao_localized_date_format_english( $format, $language ) {
+	return 'en' === $language ? conexao_english_date_format() : $format;
+}
+add_filter( 'conexao_localized_date_format', 'conexao_localized_date_format_english', 10, 2 );
