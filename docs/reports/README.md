@@ -53,10 +53,11 @@ it was verified.
 | Report | Content |
 |---|---|
 | `2026-09-25-stage-b-repository-hygiene.md` | Stage B of the standardisation roadmap — baseline, cleanup inventory, verification numbers |
+| `2026-09-26-stage-g-plugin-registry-lifecycle.md` | Stage G — `plugins.json` registry + lifecycle; generated load order, build list, Compose mounts and plugin docs, with a blocking CI drift gate |
 
 Stage reports for the standardisation roadmap's repository-engineering stages
-(Stage C static quality tooling, …) live in
-[`site/`](site/) as
+(Stage C static quality tooling, Stage D CI, Stage E test harness, Stage F theme
+modularisation, …) live in [`site/`](site/) as
 `<date>-<stage>-<topic>.md`.
 
 
