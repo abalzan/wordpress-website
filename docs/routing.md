@@ -411,6 +411,25 @@ Runs at `template_redirect` priority 2 (Stage 3.2: before Polylang's language ca
 - Legacy `/blog/categories/{slug}` → `/category/{slug}/`
 - Direct 301 map with ~60+ entries
 
+**The priority-2 registration is a permanent invariant, not an accident.** The
+legacy table must run before Polylang's language canonical (priority 4),
+otherwise a newly created EN page whose slug collides with a legacy path would
+win and the production 301 to the canonical PT URL would be lost. The Stage L
+gate `test-redirect-precedence.php` enforces all of this on every default test
+run:
+
+- the legacy path is detected and keeps its **301**;
+- the destination is the **PT** path, never `/en/`;
+- a conflicting EN page with the same slug does **not** take precedence
+  (the suite creates that page, asserts the collision is real, and deletes it);
+- `conexao_seo_redirects` is still registered on `template_redirect` at a
+  priority lower than 4.
+
+The HTTP acceptance matrix rows `legacy-301-*` in
+`tests/acceptance/matrices/routing.json` cover the same property over real
+requests. The in-process gate is the permanent one; the matrix rows are the
+request-level regression.
+
 ### 3. Leisure External Redirect (PHP — `conexao_leisure_redirect()`)
 
 Runs at `template_redirect` priority 6. Redirects individual leisure posts to their configured external URL (Official Website or Discover Ireland URL) via 302 if one is set. Classification is centralized in `conexao_leisure_external_url()` (inc/seo/redirects.php) — the sitemap, the archive cards and the related-destinations selector read the same function. Phase 3B: a record with the `_leisure_internal_page` flag keeps its internal page and its official/Discover Ireland URLs become display-only reference links; every record without the flag classifies and redirects exactly as before.
@@ -475,3 +494,5 @@ automatic page list (see CONEXAO_BR_HEADER_NAVIGATION_REGRESSION_REPORT.md).
   location has no valid menu for the current language, the header renders no
   navigation items. It must never be changed back to `wp_page_menu`.
 _Last verified: 2026-09-26 by Stage I — Scripts Standardisation_
+
+_Last verified: 2026-09-26 by Stage L — Permanent Invariant Gates_

@@ -1,0 +1,118 @@
+Stage L — deliberate FAILURE PROOFS (negative) and POSITIVE proofs
+Generated: 2026-09-26
+Branch: i18n
+Start SHA: 7bc2c3528b9e1346b220ee8e42a804296ce0553e
+
+Every proof below was executed and returned the REAL exit code shown. Proofs
+that touched the live local database or a git-tracked file were reverted
+immediately and the revert is proven by the post-proof re-run.
+
+=====================================================================
+NEGATIVE PROOFS — each gate demonstrated to FAIL (exit 1)
+=====================================================================
+
+A. TAXONOMY POLICY  -> exit 1
+   Injected a FORBIDDEN suffixed county term `dublin-en` (a duplicate of the
+   shared proper-name term `dublin`) into conexao_county, tagged `en`.
+   Gate output:
+     FAIL: conexao_county: no per-language suffixed duplicate terms
+           — 1 violation(s): {"slugs":["dublin-en"]}
+     15 passed, 3 failed
+     violations: 284 (283 pre-existing, 1 new)
+   The 1 injected term is reported as NEW (not pre-existing) — the
+   baseline classification works.
+   Reverted: term 4608 deleted; re-run reported 282 terms, 0 new. CLEAN.
+
+B. TRANSLATION COMPLETENESS  -> exit 1
+   Created a synthetic eligible PT `post` with no EN translation
+   (slug `stage-l-completeness-proof`).
+   Gate output:
+     post  eligible PT=43 translated=0 allowlisted=0 missing EN=43
+     16 passed, 4 failed
+     violations: 74 (74 pre-existing, 0 new)
+   Eligible PT posts rose 42 -> 43 and the fixture slug appears in the
+   gate's own sample list.
+   Reverted: post 28235 deleted; re-run reported 42 / 73. CLEAN.
+
+C. CACHE SCOPING (static half)  -> exit 1
+   In a THROWAWAY repository copy, injected an unscoped key:
+     get_transient( 'conexao_gate_unscoped_proof' )
+     set_transient( 'conexao_gate_unscoped_proof', array(), 300 )
+   Gate output:
+     - wp-content/themes/conexao-br-irlanda/inc/cache.php:18 get_transient(...)
+     - wp-content/themes/conexao-br-irlanda/inc/cache.php:19 set_transient(...)
+     2 passed, 2 failed
+   The real repository was never modified.
+
+D. REDIRECT PRECEDENCE  -> exit 1
+   Regressed the hook priority in the real (git-tracked) file
+   inc/seo/redirects.php from 2 to 9 — i.e. AFTER Polylang's canonical at
+   priority 4 — then restored it with `git checkout --`.
+   Gate output:
+     - redirect:hook_priority_regression: 1 (the legacy redirect runs BEFORE
+       Polylang language canonical (priority 4))
+     detail: {"legacy_priority":9,"polylang_priority":null}
+     14 passed, 1 failed
+   Reverted: `git status --short` for the file was empty. CLEAN.
+
+E. DOCUMENTATION DRIFT  -> exit 1
+   In a THROWAWAY repository copy, hand-edited a GENERATED registry region
+   in docs/deployment.md (`conexao-event-runtime` -> `...-DRIFT`).
+   Gate output:
+     Stage G registry drift   exit=1
+       - docs/deployment.md :: docs/deployment.md activation order
+     FAIL: Stage G registry drift gate failed (exit 1)
+   This proves the Stage L gate really ORCHESTRATES the existing Stage G
+   gate rather than reimplementing a weaker version of it.
+
+F. i18n CATALOGUE FRESHNESS  -> exit 1
+   In a THROWAWAY repository copy with a synthetic git history, committed a
+   change to a gettext-bearing source (page.php) dated AFTER its .pot.
+   Gate output:
+     conexao-br-irlanda  catalogue=1577836800 newest-source=1790377200
+                         (wp-content/themes/conexao-br-irlanda/page.php) STALE
+     FAIL: conexao-br-irlanda: .../conexao-br-irlanda.pot is older than
+           .../page.php by 212540400s
+     7 passed, 1 failed
+
+G. AGGREGATION  -> exit 1
+   The aggregate reports FAIL and exits non-zero while other gates pass:
+     Gates: 7 total, 4 passed, 3 failed, 0 blocked
+     Assertions: 79 passed, 12 failed
+     Violations: 361 (361 pre-existing, 0 new)
+     AGGREGATE: FAIL
+   No passing gate hides a failing one, and the failed count is accurate.
+
+=====================================================================
+POSITIVE PROOFS — each gate demonstrated to PASS on valid data
+=====================================================================
+
+A. Taxonomy policy — valid shared terms pass
+   282 shared terms inspected, 0 suffixed, 0 duplicate slugs,
+   16 translated term pairs all linked in both directions.
+   The only failures are the pre-existing language-tag findings.
+
+B. Translation completeness — allowlisted records counted explicitly
+   event 1504 allowlisted, leisure 293, course_provider 10, sponsor 3,
+   job 1/1 translated, page 11 B2-allowlisted.
+   Total allowlisted reported: 1821 (by documented B2 policy).
+   B1 types guide/page/post correctly report their real missing-EN counts.
+
+C. Cache scoping — language-scoped keys pass
+   Static: 106 production PHP files scanned, 0 unscoped conexao_* keys, exit 0.
+
+D. Redirect precedence — normal legacy redirect wins
+   15 passed, 0 failed, exit 0. The conflicting EN page fixture is created,
+   proven to collide, and removed (`fixture_left_behind: 0`).
+
+E. Documentation drift — generated docs are current
+   Stage G registry OK (13 plugins, 22 generated regions current, zero writes);
+   Stage I 290 passed; Stage K 247 passed; 14 passed, 0 failed, exit 0.
+
+F. i18n catalogue freshness — a fresh catalogue passes
+   In the throwaway copy where every file shares one commit timestamp:
+     7 passed, 0 failed, exit 0 (all catalogues fresh).
+
+G. Aggregation — all gates green
+   Verified individually above: cache_scoping 9/0, cache_scoping_static 2/0,
+   redirect_precedence 15/0, documentation_drift 14/0 all exit 0.

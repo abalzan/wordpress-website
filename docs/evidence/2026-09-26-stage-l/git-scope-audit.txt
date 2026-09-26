@@ -1,0 +1,95 @@
+Stage L — git scope audit (Phase 16)
+Generated: 2026-09-26T13:36:15Z
+
+=== git status --short ===
+ M .github/workflows/ci.yml
+ M AGENTS.md
+ M README.md
+ M docs/README.md
+ M docs/architecture.md
+ M docs/content-model.md
+ M docs/deployment.md
+ M docs/frontend.md
+ M docs/routing.md
+ M docs/templates/plan.md
+ M docs/templates/report.md
+ M docs/testing.md
+ M scripts/README.md
+?? docs/evidence/2026-09-26-stage-l/
+?? scripts/i18n-check.sh
+?? scripts/verify-permanent-gates.py
+?? tests/baseline/
+?? tests/lib/permanent-gates.php
+?? tests/scripts/verify-cache-key-scoping.py
+?? tests/scripts/verify-documentation-drift.py
+?? tests/scripts/verify-i18n-freshness.py
+?? wp-content/themes/conexao-br-irlanda/tests/test-cache-language-scoping.php
+?? wp-content/themes/conexao-br-irlanda/tests/test-redirect-precedence.php
+?? wp-content/themes/conexao-br-irlanda/tests/test-taxonomy-policy.php
+?? wp-content/themes/conexao-br-irlanda/tests/test-translation-completeness.php
+
+=== Files changed (tracked, modified) ===
+.github/workflows/ci.yml
+AGENTS.md
+README.md
+docs/README.md
+docs/architecture.md
+docs/content-model.md
+docs/deployment.md
+docs/frontend.md
+docs/routing.md
+docs/templates/plan.md
+docs/templates/report.md
+docs/testing.md
+scripts/README.md
+
+=== Untracked (new) files ===
+docs/evidence/2026-09-26-stage-l/failure-proofs.txt
+docs/evidence/2026-09-26-stage-l/gate-output.txt
+docs/evidence/2026-09-26-stage-l/gate.json
+docs/evidence/2026-09-26-stage-l/git-scope-audit.txt
+docs/evidence/2026-09-26-stage-l/regression-comparison.txt
+docs/evidence/2026-09-26-stage-l/test-summary.txt
+scripts/i18n-check.sh
+scripts/verify-permanent-gates.py
+tests/baseline/permanent-gates.json
+tests/lib/permanent-gates.php
+tests/scripts/verify-cache-key-scoping.py
+tests/scripts/verify-documentation-drift.py
+tests/scripts/verify-i18n-freshness.py
+wp-content/themes/conexao-br-irlanda/tests/test-cache-language-scoping.php
+wp-content/themes/conexao-br-irlanda/tests/test-redirect-precedence.php
+wp-content/themes/conexao-br-irlanda/tests/test-taxonomy-policy.php
+wp-content/themes/conexao-br-irlanda/tests/test-translation-completeness.php
+
+=== wp-content/ diff (RUNTIME) ===
+  (empty above = NO runtime/WordPress file was modified)
+
+=== New files under wp-content/ (tests only?) ===
+wp-content/themes/conexao-br-irlanda/tests/test-cache-language-scoping.php
+wp-content/themes/conexao-br-irlanda/tests/test-redirect-precedence.php
+wp-content/themes/conexao-br-irlanda/tests/test-taxonomy-policy.php
+wp-content/themes/conexao-br-irlanda/tests/test-translation-completeness.php
+
+=== compose.yaml / .htaccess diff ===
+  (empty above = unchanged)
+
+=== .github/workflows/ci.yml diff ===
+ .github/workflows/ci.yml | 42 +++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 41 insertions(+), 1 deletion(-)
+
+=== scripts/ diff ===
+ scripts/README.md | 2 ++
+ 1 file changed, 2 insertions(+)
+
+=== docs/ diff ===
+ docs/README.md           | 28 ++++++++++++++++++++++++++
+ docs/architecture.md     |  3 ++-
+ docs/content-model.md    |  3 ++-
+ docs/deployment.md       |  2 ++
+ docs/frontend.md         | 28 ++++++++++++++++++++++++++
+ docs/routing.md          | 21 ++++++++++++++++++++
+ docs/templates/plan.md   |  2 ++
+ docs/templates/report.md |  2 +-
+ docs/testing.md          | 51 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 9 files changed, 137 insertions(+), 3 deletions(-)

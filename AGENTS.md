@@ -119,8 +119,16 @@ docker compose up -d                       # start the local site (see docs/deve
 ./scripts/run-tests.sh --scripts           # script-contract gates only
 ./scripts/lint.sh                          # PHP syntax + PHPCS + PHPStan
 php scripts/generate-registry-docs.php --check   # registry drift gate (0 writes)
+python3 scripts/verify-permanent-gates.py # Stage L permanent invariants -> gate.json
 ./scripts/verify-release.sh                # whole release workflow, proven locally
 ```
+
+The **permanent invariant gates** (Stage L: taxonomy policy, translation
+completeness, language-scoped caching, legacy redirect precedence,
+documentation drift, i18n freshness) run inside `./scripts/run-tests.sh` — they
+are discovered by convention, so there is no second runner. They fail closed.
+See [`docs/testing.md`](docs/testing.md) §"The permanent invariant gates" for
+what each gate proves, how to read a red gate, and where `gate.json` lives.
 
 Full command reference: [`docs/testing.md`](docs/testing.md) and
 [`scripts/README.md`](scripts/README.md).

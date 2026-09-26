@@ -41,6 +41,32 @@ layer of `./scripts/run-tests.sh`.
 | [evidence/README.md](evidence/README.md) | Standing rule for machine-readable evidence + contents map |
 | [project-inventory.md](project-inventory.md) | Project/plugin inventory (versions generated from plugin headers) |
 
+### Permanent invariant gates (Stage L)
+
+Six standing, fail-closed gates turn the engineering standard's safety rules
+into CI-enforced checks. They run in the **default** suite
+(`./scripts/run-tests.sh`) and are discovered by convention — no separate
+runner, no hand-maintained list.
+
+| Domain | Enforces | Where it is documented |
+|---|---|---|
+| Taxonomy policy | shared `conexao_county`/`conexao_town`; translated `conexao_category`/`conexao_tag` linked both ways | [testing.md](testing.md) §"The permanent invariant gates" |
+| Translation completeness | `eligible public PT <type> missing EN = 0` | [testing.md](testing.md) |
+| Language-scoped caching | no unscoped `conexao_*` cache key; PT ≠ EN at runtime | [testing.md](testing.md), [frontend.md](frontend.md) |
+| Legacy EN→PT redirect precedence | the legacy 301 to PT still wins over a colliding EN page | [testing.md](testing.md), [routing.md](routing.md) |
+| Documentation drift | generated regions, script catalogue, `_Last verified:` markers, no root reports | [testing.md](testing.md) |
+| i18n catalogue freshness | a `.pot` is never older than the PHP defining its strings | [testing.md](testing.md), §9.3 of the standard |
+
+```bash
+python3 scripts/verify-permanent-gates.py   # run every gate, write gate.json
+./scripts/i18n-check.sh                     # §9.3's documented entry point
+```
+
+A failed gate means a real repository/data violation. Gates are never
+downgraded to warnings; the recorded baseline only labels a violation
+`pre_existing` vs `new` for reporting, and never suppresses it. Machine-readable
+evidence: [evidence/2026-09-26-stage-l/gate.json](evidence/2026-09-26-stage-l/gate.json).
+
 ## The plugin registry (single source of truth)
 
 **[`plugins.json`](../plugins.json) is the authoritative plugin list.** It owns
@@ -139,3 +165,5 @@ manual/historical/production-only classification. The authoritative policy is
 [engineering-standard.md §8](engineering-standard.md).
 
 _Last verified: 2026-09-26 by Stage I — Scripts Standardisation_
+
+_Last verified: 2026-09-26 by Stage L — Permanent Invariant Gates_

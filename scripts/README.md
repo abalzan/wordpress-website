@@ -243,6 +243,8 @@ target/source, writes? and last-verified date.
 | `scripts/verify-import.php` | Verify the import result | read-only | none | read-only | local WordPress | No | 2026-09-26 |
 | `scripts/verify-recurrence-presentation.php` | Verify recurrence presentation output | read-only | none | read-only | local WordPress | No | 2026-09-26 |
 | `scripts/mp-live-ticket-check.php` | Probe whether linked ticket pages still respond | read-only | none | read-only | local WordPress + third-party ticket sites | No | 2026-09-26 |
+| `scripts/i18n-check.sh` | i18n catalogue freshness: fail when a `.pot` is older than the PHP defining its strings (standard §9.3) | read-only | none | read-only | local repository (no WordPress, no network) | No | 2026-09-26 |
+| `scripts/verify-permanent-gates.py` | Stage L aggregate: run every permanent invariant gate and write `docs/evidence/<date>-stage-l/gate.json` | read-only | `--out`, `--list` | read-only | local repository + local WordPress | No | 2026-09-26 |
 
 ### Manual / ad-hoc test scripts
 

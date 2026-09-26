@@ -111,3 +111,4 @@ See `docs/themes/conexao-br-irlanda.md` §Runtime Architecture for the full modu
 - Handles: titles, meta descriptions, canonical URLs, hreflang, Open Graph, Twitter Cards, schema.org, breadcrumbs, XML sitemap, robots.txt, redirects.
 - WordPress core sitemap disabled in favor of custom lightweight sitemap.
 - English-to-Portuguese redirects at two levels: `.htaccess` (Apache) and `inc/seo/redirects.php` (PHP).
+_Last verified: 2026-09-26 by Stage L — Permanent Invariant Gates_

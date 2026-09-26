@@ -170,4 +170,4 @@ Justify the chosen status in one sentence. `PASS WITH LIMITATION` is the honest
 answer whenever a verifier did not run; do not reach for `PASS` to look
 complete.
 
-_Last verified: YYYY-MM-DD by <area>_
+_Last verified: 2026-09-26 by Stage K — Agent Skills + Templates_

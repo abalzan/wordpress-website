@@ -1,0 +1,67 @@
+Stage L — PHASE 0 BASELINE INVENTORY (recorded before any Stage L edit)
+Generated: 2026-09-26
+Branch: i18n
+Stage L START SHA (resolved from Git, not from prose): 7bc2c3528b9e1346b220ee8e42a804296ce0553e
+
+GIT CHECKPOINT RESOLUTION
+  git branch --show-current  -> i18n
+  git rev-parse HEAD         -> 7bc2c3528b9e1346b220ee8e42a804296ce0553e
+  git rev-parse HEAD^        -> 669a3c26a8c34fba3d866e869cb2992b945e5c33
+  git status --short         -> (clean)
+  git log --oneline -4       -> 7bc2c35 stage-k: record the Stage K final commit hash
+                                669a3c2 stage-k: add WordPress agent skills and governance templates
+                                0f5c586 Add deployment verification scripts and integrity checks
+                                b421e0a docs: correct the shared-library count in the Stage I docs
+  The Stage K commit is 7bc2c35 (a bookkeeping follow-up to 669a3c2). The
+  previous report's ambiguity is resolved: BOTH belong to Stage K, and the
+  clean starting point for Stage L is the tip after both, 7bc2c35.
+
+=====================================================================
+EXISTING INVARIANT COVERAGE (found, NOT re-invented)
+=====================================================================
+
+Stage E documented four permanent invariants in
+docs/reports/site/2026-09-25-stage-e-test-harness.md §"Permanent invariants
+(PHASE 33)". That table is the starting point for Stage L, not a blank slate:
+
+  | Invariant | Stage E location | Stage E state | Stage L action |
+  |---|---|---|---|
+  | Taxonomy policy (no suffixed county/town) | test-polylang-foundation.php, test-stage33-bilingual.php | covered, CURRENTLY FAILING | PROMOTED into a named permanent gate (test-taxonomy-policy.php) |
+  | Translated terms linked both ways | test-stage32/33-bilingual.php | covered, currently failing | folded into the same taxonomy gate |
+  | Completeness `missing EN = 0` | test-guide-en-translation.php, test-blog-en-translation.php, test-job-en-translation.php | covered, currently failing | CONSOLIDATED into ONE per-content-type gate over all runtime-discovered types |
+  | Cache scoping | tests/acceptance/matrices/routing.json (cache-separation-*) + Stage E live transient audit | covered and passing | KEPT (matrix rows untouched) + NEW permanent static+runtime gate |
+  | Redirect precedence | routing.json legacy-301-* rows (8) | covered and passing | KEPT (matrix rows untouched) + NEW permanent in-process gate |
+  | Registry drift | generate-registry-docs.php --check (Stage G) | passing | REUSED by the documentation gate, not reimplemented |
+  | Script contract | tests/scripts/verify-script-conventions.py (Stage I) | passing | REUSED by the documentation gate |
+  | Agent governance | tests/scripts/verify-agent-governance.py (Stage K) | passing | REUSED by the documentation gate |
+  | Release integrity | tests/scripts/verify-release-integrity.py (Stage J) | passing | left as its own CI job; unchanged |
+  | i18n freshness | — | MISSING ENTIRELY (scripts/i18n-check.sh did not exist) | CREATED |
+
+WHAT WAS MISSING OR ONLY PARTIALLY COVERED
+  - Completeness existed only for guide / blog / job, and each suite asserted a
+    hard-coded expectation. There was no single gate over EVERY public content
+    type, and no count of allowlisted records.
+  - The taxonomy invariant was asserted inside unrelated stage suites, so a
+    policy regression surfaced as a confusing "stage33" failure.
+  - Cache scoping had NO static check at all: an unscoped key introduced in a
+    future change would only have been caught by the HTTP rows if the affected
+    page happened to be in the matrix.
+  - i18n freshness did not exist in any form.
+
+PRE-EXISTING DATA DEBT MEASURED AT THE BASELINE (the data did not change)
+  - conexao_county: 32 terms, all language-tagged `pt`
+  - conexao_town:   250 terms, all language-tagged `pt`  (282 total — matches
+    the "got 282 language-assigned shared terms" figure already recorded in the
+    Stage E report, so this is proven pre-existing, not a Stage L finding)
+  - conexao_category: 58 PT terms, 0 EN terms; 0 broken bidirectional links
+  - guide: 53 eligible PT, 52 translated, 1 missing EN
+  - post:  42 eligible PT, 0 translated, 42 missing EN
+  - page:  44 eligible PT, 4 translated, 11 B2-allowlisted, 29 missing EN
+  - B2 allowlisted by documented policy: 1821 records
+  - i18n: 6 of 8 catalogues older than their newest gettext-bearing source
+
+BASELINE DEFAULT-RUNNER RESULT (before any Stage L change)
+  In-process PHP suites: 50 total, 35 passed, 15 failed
+  Assertions: 3306 passed, 59 failed
+  Script-contract suites: 3 total, 3 passed, 0 failed
+  HTTP acceptance suites: 3 total, 3 passed, 0 failed

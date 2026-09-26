@@ -1,0 +1,37 @@
+{
+	"$comment": [
+		"Stage L permanent-invariant baseline.",
+		"This file RECORDS pre-existing repository/data debt so a gate can say",
+		"'pre-existing' instead of 'Stage L regression'.",
+		"It NEVER SUPPRESSES A FAILURE. Every key listed here still fails, still",
+		"prints FAIL and still exits non-zero. It exists for reporting only, so",
+		"that the blocking invariant is not weakened to buy a green CI run.",
+		"Captured from the pre-Stage-L dataset at start SHA 7bc2c3528b9e1346b220ee8e42a804296ce0553e.",
+		"Proven against the baseline by the Stage L regression comparison."
+	],
+	"recorded_at_sha": "7bc2c3528b9e1346b220ee8e42a804296ce0553e",
+	"gates": {
+		"taxonomy_policy": [
+			"taxonomy:conexao_county:language_tagged_terms",
+			"taxonomy:conexao_town:language_tagged_terms"
+		],
+		"translation_completeness": [
+			"post_type:post:missing_en",
+			"post_type:page:missing_en",
+			"post_type:guide:missing_en",
+			"post_type:guide:malformed_relationships"
+		],
+		"cache_scoping": [],
+		"cache_scoping_static": [],
+		"redirect_precedence": [],
+		"documentation_drift": [],
+		"i18n_freshness": [
+			"i18n:conexao-br-irlanda:stale_catalogue",
+			"i18n:conexao-data-model:stale_catalogue",
+			"i18n:conexao-admin-ux:stale_catalogue",
+			"i18n:conexao-event-runtime:stale_catalogue",
+			"i18n:conexao-event-importer:stale_catalogue",
+			"i18n:conexao-leisure-migration:stale_catalogue"
+		]
+	}
+}

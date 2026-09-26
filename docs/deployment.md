@@ -291,3 +291,5 @@ See [`docs/plugins/conexao-translation-rollout.md`](plugins/conexao-translation-
 8. Test event import
 9. Test leisure import (if applicable)
 10. Verify sitemap at `/sitemap.xml`
+
+_Last verified: 2026-09-26 by Stage L — Permanent Invariant Gates_

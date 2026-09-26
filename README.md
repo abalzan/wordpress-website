@@ -163,3 +163,4 @@ Never hand-edit a generated block; edit `plugins.json` and re-run `--write`.
 ## Documentation
 
 See `AGENTS.md` for AI-agent orientation and `docs/` for detailed documentation.
+_Last verified: 2026-09-26 by Stage L — Permanent Invariant Gates_

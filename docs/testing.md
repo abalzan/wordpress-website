@@ -35,6 +35,49 @@ It is discovered by convention (`tests/scripts/verify-*.py`), so it is blocking
 in CI with no workflow change. Run it alone with
 `python3 tests/scripts/verify-agent-governance.py`.
 
+### The permanent invariant gates (Stage L)
+
+Engineering standard §6.3 makes four invariants permanent, and §9.3 adds the
+i18n freshness check. Stage L turns them into **standing, fail-closed gates**
+that run in the default suite. They are ordinary suites — discovered by the
+same conventions, no special runner, no hand-maintained list.
+
+| Gate | Proves | Suite | Layer |
+|---|---|---|---|
+| Taxonomy policy | `conexao_county`/`conexao_town` are shared: no per-language suffixed duplicates, no duplicate slugs, no language tag. `conexao_category`/`conexao_tag` are translated and every pair is linked **both ways**. The shared/translated split is read from the runtime (`conexao_polylang_translated_taxonomies()` + `PLL()->model`), never re-declared in the test. | `test-taxonomy-policy.php` | In-process PHP |
+| Translation completeness | `eligible public PT <type> missing EN = 0` for every public content type discovered at runtime. B2 fallback types (`conexao_b2_post_types()`) and the B2 page allowlist (`conexao_b2_page_allowlist()`) are exempt **by documented policy** and are counted and reported. Malformed/one-way links are counted separately. | `test-translation-completeness.php` | In-process PHP |
+| Language-scoped caching | (a) **static**: a `token_get_all` scan of production source finds no unscoped `conexao_*` transient/object-cache key; (b) **runtime**: PT and EN keys differ, an EN read never returns the PT value, and `conexao_flush_language_cache()` clears every language variant. | `verify-cache-key-scoping.py`, `test-cache-language-scoping.php` | Script contract + in-process PHP |
+| Legacy EN→PT redirect precedence | A legacy EN path keeps its **301** to the **PT** destination even when a newly created EN page has the same slug, and the legacy table still runs before Polylang's canonical. The conflicting page is created and deleted inside the suite. | `test-redirect-precedence.php` | In-process PHP |
+| Documentation drift | Orchestrates the Stage G/I/K gates (it does not reimplement them) and owns the §9.2 rules: `_Last verified:` markers on the living reference set, no root-level report/evidence file, `AGENTS.md` stays orientation, the authoritative sources still exist. | `verify-documentation-drift.py` | Script contract |
+| i18n catalogue freshness | A `.pot` is never older than the PHP defining its strings. Signal: **git commit time**, not mtime (a fresh clone gives every file the checkout time, so mtime cannot express this rule). | `verify-i18n-freshness.py`, `scripts/i18n-check.sh` | Script contract |
+
+Run them all and get one machine-readable summary:
+
+```bash
+python3 scripts/verify-permanent-gates.py            # runs every gate, writes gate.json
+python3 scripts/verify-permanent-gates.py --list     # list the gates
+./scripts/i18n-check.sh                              # §9.3's documented entry point
+```
+
+#### Reading a failed gate
+
+A permanent gate **fails closed**: a real violation exits non-zero, and a
+missing prerequisite prints `insufficient data:` and also fails. A gate is never
+downgraded to a warning, never skipped, and never satisfied by an allowlist.
+
+Each gate separates **pre-existing debt** from a **new regression**:
+
+- `tests/baseline/permanent-gates.json` records the violations that already
+  existed when Stage L started.
+- A violation listed there still **fails** and still exits non-zero. The
+  baseline only changes the *label* printed in the summary and in `gate.json`
+  (`pre_existing` vs `new`). It never suppresses anything.
+- `new > 0` means **you** introduced a violation. `new = 0` with `failed > 0`
+  means the repository already had the debt and Stage L merely made it visible.
+
+Evidence lands in `docs/evidence/2026-09-26-stage-l/gate.json`, generated from
+real execution output by `scripts/verify-permanent-gates.py` — never hand-edited.
+
 `./scripts/verify-release.sh` runs the whole release workflow end to end locally
 (registry gate → build → manifest → allowlist/hash verification → determinism →
 exclusion proof → HTTP verification). It is the single command to run before
@@ -430,7 +473,15 @@ convention-based, and CI calls the same command you do.
 | `tests/scripts/verify-release-integrity.py` | `SCRIPT_CONTRACT` (Stage J) | yes — blocking, also its own CI job |
 | `tests/scripts/verify-agent-governance.py` | `SCRIPT_CONTRACT` (Stage K) | yes — blocking; the agent-governance contract |
 | `tests/acceptance/verify-release-http.py` | `HTTP_ACCEPTANCE` (Stage J) | yes — blocking; runs the release smoke matrix |
+| `tests/scripts/verify-cache-key-scoping.py` | `SCRIPT_CONTRACT` (Stage L) | yes — blocking; static half of the cache-scoping invariant |
+| `tests/scripts/verify-documentation-drift.py` | `SCRIPT_CONTRACT` (Stage L) | yes — blocking; documentation drift |
+| `tests/scripts/verify-i18n-freshness.py` | `SCRIPT_CONTRACT` (Stage L) | yes — blocking; i18n catalogue freshness |
+| `wp-content/themes/conexao-br-irlanda/tests/test-taxonomy-policy.php` | `PERMANENT_INVARIANT` (Stage L) | yes — blocking; §6.3 taxonomy policy |
+| `wp-content/themes/conexao-br-irlanda/tests/test-translation-completeness.php` | `PERMANENT_INVARIANT` (Stage L) | yes — blocking; §6.1 completeness |
+| `wp-content/themes/conexao-br-irlanda/tests/test-cache-language-scoping.php` | `PERMANENT_INVARIANT` (Stage L) | yes — blocking; §6.1 cache scoping |
+| `wp-content/themes/conexao-br-irlanda/tests/test-redirect-precedence.php` | `PERMANENT_INVARIANT` (Stage L) | yes — blocking; §6.3 redirect precedence |
 
 _Last verified: 2026-09-26 by Stage I — Scripts Standardisation_
 _Last verified: 2026-09-26 by Stage J — Build, Release & Deploy Verification_
 _Last verified: 2026-09-26 by Stage K — Agent Skills + Templates_
+_Last verified: 2026-09-26 by Stage L — Permanent Invariant Gates_

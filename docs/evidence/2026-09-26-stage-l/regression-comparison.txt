@@ -1,0 +1,49 @@
+Stage L — regression comparison
+Generated: 2026-09-26T13:35:56Z
+
+Failing suites BEFORE (15):
+plugin/conexao-event-importer/test-county-registry.php
+plugin/conexao-event-importer/test-error-handling.php
+plugin/conexao-event-importer/test-ivvcc-importer.php
+plugin/conexao-event-importer/test-town-sanitization.php
+theme/conexao-br-irlanda/test-blog-en-translation.php
+theme/conexao-br-irlanda/test-event-location-filters.php
+theme/conexao-br-irlanda/test-guide-en-translation.php
+theme/conexao-br-irlanda/test-header-menu-selection.php (pt)
+theme/conexao-br-irlanda/test-leisure-card-excerpt-language.php
+theme/conexao-br-irlanda/test-leisure-related-events.php
+theme/conexao-br-irlanda/test-polylang-foundation.php
+theme/conexao-br-irlanda/test-stage32-bilingual.php
+theme/conexao-br-irlanda/test-stage33-bilingual.php
+theme/conexao-br-irlanda/test-stage41-rest-language.php
+theme/conexao-br-irlanda/test-stage45-pages.php
+
+Failing suites AFTER (17):
+plugin/conexao-event-importer/test-county-registry.php
+plugin/conexao-event-importer/test-error-handling.php
+plugin/conexao-event-importer/test-ivvcc-importer.php
+plugin/conexao-event-importer/test-town-sanitization.php
+theme/conexao-br-irlanda/test-blog-en-translation.php
+theme/conexao-br-irlanda/test-event-location-filters.php
+theme/conexao-br-irlanda/test-guide-en-translation.php
+theme/conexao-br-irlanda/test-header-menu-selection.php (pt)
+theme/conexao-br-irlanda/test-leisure-card-excerpt-language.php
+theme/conexao-br-irlanda/test-leisure-related-events.php
+theme/conexao-br-irlanda/test-polylang-foundation.php
+theme/conexao-br-irlanda/test-stage32-bilingual.php
+theme/conexao-br-irlanda/test-stage33-bilingual.php
+theme/conexao-br-irlanda/test-stage41-rest-language.php
+theme/conexao-br-irlanda/test-stage45-pages.php
+theme/conexao-br-irlanda/test-taxonomy-policy.php
+theme/conexao-br-irlanda/test-translation-completeness.php
+
+NEWLY FAILING (introduced by Stage L):
+theme/conexao-br-irlanda/test-taxonomy-policy.php
+theme/conexao-br-irlanda/test-translation-completeness.php
+
+NEWLY PASSING (regressions fixed):
+(none)
+
+The two newly-failing suites are the new permanent gates, failing on
+PRE-EXISTING data debt (all violations classified pre-existing, new=0).
+No previously-failing suite changed state, and no previously-passing suite regressed.

@@ -164,3 +164,5 @@ command that produces a number:
 The conditions that make this task done — restated from
 `docs/engineering-standard.md` §14, not invented. The task is not complete
 until every applicable item holds and the report contains real numbers.
+
+_Last verified: 2026-09-26 by Stage L — Permanent Invariant Gates_
