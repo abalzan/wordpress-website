@@ -23,7 +23,7 @@ because the git remote requires credentials unavailable in this environment.
 |---|---|
 | Branch | `i18n` |
 | Starting HEAD | `837b71c6d092be223daffc98d32da285ad18d8dc` — "stage D: record the Stage D commit hash in the report baseline table" |
-| Final HEAD | see §17 (this commit) |
+| Final HEAD | `d6e1ba0e31aea08e16b57f72d23e77c9248881e0` — "stage E: unified test harness (shared bootstrap, shared assertions, one runner, Docker CI job)" (completed by the immediately following documentation commit, which cannot contain its own hash) |
 | `git status --short` at start | **clean** |
 | Tracked files | **616** before Stage E |
 | PHP files under `wp-content/` | **310** before Stage E |

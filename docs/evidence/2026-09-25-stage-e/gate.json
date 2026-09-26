@@ -1,6 +1,6 @@
 {
   "stage": "E",
-  "commit": "837b71c6d092be223daffc98d32da285ad18d8dc",
+  "commit": "d6e1ba0e31aea08e16b57f72d23e77c9248881e0",
   "branch": "i18n",
   "recorded": "2026-09-25",
   "status": "PASS WITH LIMITATION",
@@ -117,5 +117,6 @@
       "verified_against": "the unmodified file from HEAD, run against the same database, still reports 112 passed, 11 failed",
       "effect": "coverage increase; the failure set is unchanged"
     }
-  }
+  },
+  "commit_note": "The harness implementation commit. This gate.json is completed by the immediately following documentation commit, which cannot contain its own hash."
 }
