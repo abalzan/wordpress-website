@@ -1,0 +1,65 @@
+########## STAGE N BATCH 2 of 6 (6 records) ##########
+
+--- DRY-RUN ---
+
+script: run-en-translation.php
+target: http://LOCAL-INSTANCE (local, local)
+mode:   dry-run
+scope:  The guide / page / post stages registered by the conexao-en-translation plugin. Dry-run by default; --apply creates the EN records; --remove deletes them. A PT record is only ever read.
+\n=== stage: en-post (mode: dry-run, operation: run) ===
+  created=6 updated=0 skipped=14 removed=0 conflicts=0 errors=0 PT-drift=0
+    skipped      guia-pratico-para-brasileiros-em-laois        EN translation already linked and verified
+    skipped      guia-para-quem-esta-com-dificuldades-financeiras EN translation already linked and verified
+    skipped      auxilios-para-familias-atipicas-na-irlanda    EN translation already linked and verified
+    skipped      auxilios-e-apoio-relacionados-a-saude-e-bem-estar-na-irlanda EN translation already linked and verified
+    skipped      dica-de-saude-para-quem-viaja                 EN translation already linked and verified
+    skipped      turismo-e-lazer-em-co-laois-na-irlanda        EN translation already linked and verified
+    skipped      informacoes-para-as-mulheres-na-irlanda       EN translation already linked and verified
+    skipped      carne-refogada-ao-estilo-korean-bbq           EN translation already linked and verified
+    skipped      sol-e-lua-equilibrando-consciencia-e-emocoesdurante-o-inverno-norte-europeu EN translation already linked and verified
+    skipped      o-inverno-do-ego-um-renascimento-poetico      EN translation already linked and verified
+    skipped      o-sol-que-habita-em-nos                       EN translation already linked and verified
+    skipped      o-calor-que-nasce-do-inverno                  EN translation already linked and verified
+    skipped      preparando-o-corpo-para-o-inverno             EN translation already linked and verified
+    skipped      movimento-e-medicina                          EN translation already linked and verified
+    would-create dois-anos-novos-um-medido-pelo-homem-outro-sentido-pela-terra EN record would be created, linked and verified
+    would-create coragem-a-estrela-que-ilumina-o-caminho-do-empreendedor-especial-de-natal EN record would be created, linked and verified
+    would-create 1-cuidando-de-si-em-terra-estrangeira         EN record would be created, linked and verified
+    would-create 2-saude-mental-e-imigracao-o-que-ninguem-conta EN record would be created, linked and verified
+    would-create como-voce-se-sente-nessa-epoca-do-ano         EN record would be created, linked and verified
+    would-create construindo-rede-de-apoio-longe-de-casa       EN record would be created, linked and verified
+  GATE FAIL: eligible PT=20 with EN=14 missing EN=6 conflicts=0 PT drift=0
+
+summary: created=6, updated=0, skipped=14, removed=0, errors=1, conflicts=0, pt_changed=0, gate_failures=1
+
+--- APPLY ---
+
+script: run-en-translation.php
+target: http://LOCAL-INSTANCE (local, local)
+mode:   apply
+scope:  The guide / page / post stages registered by the conexao-en-translation plugin. Dry-run by default; --apply creates the EN records; --remove deletes them. A PT record is only ever read.
+\n=== stage: en-post (mode: apply, operation: run) ===
+  created=6 updated=0 skipped=14 removed=0 conflicts=0 errors=0 PT-drift=0
+    skipped      guia-pratico-para-brasileiros-em-laois        EN translation already linked and verified
+    skipped      guia-para-quem-esta-com-dificuldades-financeiras EN translation already linked and verified
+    skipped      auxilios-para-familias-atipicas-na-irlanda    EN translation already linked and verified
+    skipped      auxilios-e-apoio-relacionados-a-saude-e-bem-estar-na-irlanda EN translation already linked and verified
+    skipped      dica-de-saude-para-quem-viaja                 EN translation already linked and verified
+    skipped      turismo-e-lazer-em-co-laois-na-irlanda        EN translation already linked and verified
+    skipped      informacoes-para-as-mulheres-na-irlanda       EN translation already linked and verified
+    skipped      carne-refogada-ao-estilo-korean-bbq           EN translation already linked and verified
+    skipped      sol-e-lua-equilibrando-consciencia-e-emocoesdurante-o-inverno-norte-europeu EN translation already linked and verified
+    skipped      o-inverno-do-ego-um-renascimento-poetico      EN translation already linked and verified
+    skipped      o-sol-que-habita-em-nos                       EN translation already linked and verified
+    skipped      o-calor-que-nasce-do-inverno                  EN translation already linked and verified
+    skipped      preparando-o-corpo-para-o-inverno             EN translation already linked and verified
+    skipped      movimento-e-medicina                          EN translation already linked and verified
+    created      dois-anos-novos-um-medido-pelo-homem-outro-sentido-pela-terra EN record created and linked; 6 field(s) copied
+    created      coragem-a-estrela-que-ilumina-o-caminho-do-empreendedor-especial-de-natal EN record created and linked; 6 field(s) copied
+    created      1-cuidando-de-si-em-terra-estrangeira         EN record created and linked; 6 field(s) copied
+    created      2-saude-mental-e-imigracao-o-que-ninguem-conta EN record created and linked; 6 field(s) copied
+    created      como-voce-se-sente-nessa-epoca-do-ano         EN record created and linked; 6 field(s) copied
+    created      construindo-rede-de-apoio-longe-de-casa       EN record created and linked; 6 field(s) copied
+  GATE PASS: eligible PT=20 with EN=20 missing EN=0 conflicts=0 PT drift=0
+
+summary: created=6, updated=0, skipped=14, removed=0, errors=0, conflicts=0, pt_changed=0, gate_failures=0

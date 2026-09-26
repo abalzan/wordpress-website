@@ -68,7 +68,7 @@ that produced it**, never the gate. Each debt class has one documented remedy:
 |---|---|---|
 | `taxonomy:*:language_tagged_terms` | a seed/import that assigns a language to a shared taxonomy — today the seed is already correct, so a failure means something re-tagged the term | `php scripts/remediate-shared-taxonomy-language.php --dry-run` then `--apply` |
 | `taxonomy:*:suffixed_duplicate_terms` | a `dublin-en`-style duplicate exists | remove the duplicate; never create the translated term |
-| `post_type:*:missing_en` | the EN translation was never authored | `php scripts/run-en-translation.php --dry-run --only=<type>`, add the row to the stage manifest, then `--apply` |
+| `post_type:*:missing_en` | the EN translation was never authored | `php scripts/run-en-translation.php --dry-run --only=<type>`, add the row to the stage manifest, then `--apply`. `post` is now complete (34 → 0 in Stage N); the Blog rows live in `includes/blog-translation-data.php` |
 | `post_type:*:malformed_relationships` | an EN record with no PT master | `php scripts/remove-en-orphan-fixtures.php --dry-run`; a genuine orphan is a maintainer decision, the script only removes provable stage fixtures |
 | `i18n:*:stale_catalogue` | a gettext-bearing source is newer than its `.pot` | `./scripts/i18n-make-pot.sh --apply` (regenerate; never hand-edit a catalogue) |
 
@@ -509,4 +509,4 @@ convention-based, and CI calls the same command you do.
 _Last verified: 2026-09-26 by Stage I — Scripts Standardisation_
 _Last verified: 2026-09-26 by Stage J — Build, Release & Deploy Verification_
 _Last verified: 2026-09-26 by Stage K — Agent Skills + Templates_
-_Last verified: 2026-09-26 by Stage M — Permanent Invariant Debt Remediation_
+_Last verified: 2026-09-26 by Stage N — Remaining EN Blog Translations_

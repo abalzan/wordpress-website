@@ -18,7 +18,7 @@ the authored English and the WordPress-bound adapter.
 | | |
 |---|---|
 | Folder | `wp-content/plugins/conexao-en-translation/` |
-| Authored copy | `includes/manifest-data.php` (keyed by PT post type, then PT slug) |
+| Authored copy | `includes/manifest-data.php` (Stage M: guide + page + the first 8 Blog rows) and `includes/blog-translation-data.php` (Stage N: the remaining 34 Blog rows), each keyed by PT slug |
 | Adapter + config | `includes/stage-fields.php`, `includes/stage-config.php` |
 | Manifest shape | `includes/translation-map.php` |
 | Runner | `scripts/run-en-translation.php` |
@@ -76,6 +76,66 @@ A conflict is a *hard stop*, never a silent overwrite: an EN slug already used
 by an unlinked record, or an existing EN record whose pair link is broken, is
 reported and left alone for a maintainer to resolve.
 
+## Stage N — the remaining 34 Blog translations
+
+Stage M closed the `post` debt only partially (8 of 42). Stage N authored the
+remaining **34** PT blog posts in a separate, versioned data file
+(`includes/blog-translation-data.php`, data version `blog-v1`) and merged it
+into the `post` manifest in `includes/translation-map.php`. The merge is a
+**union keyed by PT slug** and fails closed on a duplicate slug, so no PT slug
+can ever reach the engine twice.
+
+`conexao_en_translation_blog_batches()` records the batch each row was applied
+in — six batches of 4–6 posts, applied cumulatively, dry-run → snapshot →
+`--apply` → gate after each one. The manifest is cumulative precisely so that a
+re-run reports the earlier batches as `skipped`: the idempotence proof and the
+batch record are the same artefact.
+
+The shared engine, the stage adapter and the runner were **not** changed. The
+only non-data edits are the plugin header (version 1.1.0 plus the new file in
+its `require_once` list) and the merge in `translation-map.php`.
+
+### Editorial rules applied to every row
+
+- the third-party byline is preserved; a **name** is a proper noun and is never
+  translated, while the **role** ("Terapeuta Sistônica" → "Systemic Therapist")
+  is;
+- every Instagram handle and every external URL is preserved byte-for-byte,
+  including the advertising parameters on the support-organisation links;
+- headings, lists, emphasis and block structure mirror the PT source;
+- a preserved Portuguese **bibliography** is cited, not translated — a citation
+  is not prose;
+- no internal `conexaobr.ie` link is invented. None of the 34 PT sources contains
+  a single `href`, so there was no Blog internal link to localise and none was
+  fabricated.
+
+### Result
+
+`post_type:post:missing_en` went **34 → 0**, and the permanent-gate aggregate is
+**7/7 passing, 0 violations**. The 42 eligible public PT blog posts now each have
+exactly one linked EN translation. No allowlist was added, and
+`conexao_b2_post_types()` / `conexao_b2_page_allowlist()` are untouched.
+
+### The EN blog archive is still B2 — a policy fact, not debt
+
+`/en/blog/` continues to serve the Portuguese posts with the B2 fallback notice.
+That is **not** a translation gap, and this stage must not "fix" it without
+changing the allowlist count:
+
+- the Blog **archive** is the static posts page (`page_for_posts`, slug `blog`),
+  and `blog` is on `conexao_b2_page_allowlist()` by policy;
+- the documented retirement condition (`inc/b2-fallback.php`, Stage 5 comment) is
+  *"a real, published EN posts page"* — a linked EN translation of the `blog`
+  **page record**;
+- creating that page record would move `blog` out of the allowlist and change the
+  aggregate allowlist count from **1821 to 1820**, which this stage's acceptance
+  criteria forbid.
+
+The correct action is therefore to leave the policy alone and report the finding.
+The B1 obligation this stage *does* own — each translated post resolving in the EN
+context — is met: all 42 EN posts return 200 under `/en/…`, self-canonical, with
+a correct PT/en hreflang pair and **no** B2 notice (see the HTTP evidence).
+
 ## Rollback
 
 `allow_remove: true`, so the rollback is a first-class operation:
@@ -103,10 +163,10 @@ php wp-content/themes/conexao-br-irlanda/tests/test-translation-completeness.php
 | **Build** | no |
 | **Compose mount** | yes |
 | **Dependencies** | `conexao-translation-rollout` |
-| **Version** | 1.0.0 (authoritative source: `wp-content/plugins/conexao-en-translation/conexao-en-translation.php` header) |
+| **Version** | 1.1.0 (authoritative source: `wp-content/plugins/conexao-en-translation/conexao-en-translation.php` header) |
 | **Registry** | [`plugins.json`](../../plugins.json) |
 
 > **Local-only tooling.** Not a production steady-state dependency.
 <!-- END GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
 
-_Last verified: 2026-09-26 by Stage M — Permanent Invariant Debt Remediation_
+_Last verified: 2026-09-26 by Stage N — Remaining EN Blog Translations_

@@ -310,6 +310,15 @@ Stage 5 gives the Blog a **real English translation**: the linked EN posts page
   and the B2 post-set substitution
   (`conexao_b2_posts_page_pre_query()`) only runs while no EN posts page exists.
   The approved B2 architecture is untouched for every other destination.
+  **Stage N state (2026-09-26):** every eligible public PT blog post now has a
+  linked EN translation (`post_type:post:missing_en = 0`, 42/42), and each EN post
+  resolves in the EN context with no B2 notice. The **archive** at `/en/blog/`
+  still serves the PT posts with the B2 notice, because the retirement condition
+  is a linked EN translation of the `blog` **page record** and `blog` is on
+  `conexao_b2_page_allowlist()`. Translating that page record would move it out
+  of the allowlist and change the aggregate allowlist count, so it is left to a
+  maintainer decision that explicitly accepts that count change. See
+  [`plugins/conexao-en-translation.md`](plugins/conexao-en-translation.md).
 - **Sitemap**: the theme sitemap now lists blog posts in both languages (PT and
   EN passes, mirrors a real translation pair, no duplicates, no fallback URLs).
 
@@ -538,4 +547,4 @@ automatic page list (see CONEXAO_BR_HEADER_NAVIGATION_REGRESSION_REPORT.md).
   navigation items. It must never be changed back to `wp_page_menu`.
 _Last verified: 2026-09-26 by Stage I — Scripts Standardisation_
 
-_Last verified: 2026-09-26 by Stage M — Permanent Invariant Debt Remediation_
+_Last verified: 2026-09-26 by Stage N — Remaining EN Blog Translations_

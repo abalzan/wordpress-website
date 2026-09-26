@@ -1,0 +1,48 @@
+
+script: zz-stage-n-validate.php
+target: http://LOCAL-INSTANCE (local, local)
+mode:   read-only
+scope:  Read-only. Writes nothing.
+=== Stage N Blog EN validation ===
+records checked : 34
+failures        : 0
+total EN words  : 18735
+total PT words  : 20007
+handles checked : 26
+urls checked    : 45
+bylines checked : 24
+
+sol-e-lua-equilibrando-consciencia-e-emocoesdurante-o-in -> sun-and-moon-balancing-consciousness-and-emotions- ratio=0.97 words   433->  393 OK
+o-inverno-do-ego-um-renascimento-poetico                 -> the-winter-of-the-ego-a-poetic-rebirth             ratio=0.99 words   283->  264 OK
+o-sol-que-habita-em-nos                                  -> the-sun-that-lives-in-us                           ratio=1.04 words   290->  310 OK
+o-calor-que-nasce-do-inverno                             -> the-warmth-born-of-winter                          ratio=0.99 words   465->  450 OK
+preparando-o-corpo-para-o-inverno                        -> preparing-the-body-for-winter                      ratio=0.97 words   776->  721 OK
+movimento-e-medicina                                     -> movement-is-medicine                               ratio=0.92 words   293->  252 OK
+dois-anos-novos-um-medido-pelo-homem-outro-sentido-pela- -> two-new-years-one-measured-by-man-the-other-felt-b ratio=0.99 words   635->  562 OK
+coragem-a-estrela-que-ilumina-o-caminho-do-empreendedor- -> courage-the-star-that-lights-the-entrepreneurs-pat ratio=1.06 words   340->  332 OK
+1-cuidando-de-si-em-terra-estrangeira                    -> 1-caring-for-yourself-in-a-foreign-land            ratio=0.99 words   516->  491 OK
+2-saude-mental-e-imigracao-o-que-ninguem-conta           -> 2-mental-health-and-immigration-what-nobody-tells- ratio=1.01 words   752->  701 OK
+como-voce-se-sente-nessa-epoca-do-ano                    -> how-are-you-feeling-at-this-time-of-year           ratio=0.99 words   529->  505 OK
+construindo-rede-de-apoio-longe-de-casa                  -> building-a-support-network-far-from-home           ratio=1.00 words   582->  533 OK
+alinhar-o-invisivel-para-harmonizar-o-cotidiano          -> aligning-the-invisible-to-harmonise-everyday-life  ratio=0.98 words   420->  374 OK
+proposito-o-sentido-que-nos-move-por-dentro              -> purpose-the-meaning-that-moves-us-from-within      ratio=1.01 words   527->  560 OK
+entre-o-silencio-do-inverno-e-o-primeiro-sopro-da-primav -> between-the-silence-of-winter-and-the-first-breath ratio=1.00 words   523->  485 OK
+quando-a-terra-desperta-a-primavera-e-o-novo-ano-astrolo -> when-the-earth-awakens-spring-and-the-astrological ratio=1.05 words   414->  402 OK
+capacitacao-em-laois-irlanda-capacitacao-em-laois-irland -> training-in-laois-ireland                          ratio=0.99 words   542->  469 OK
+cursos-e-apoio-para-empreendedores                       -> courses-and-support-for-entrepreneurs              ratio=0.96 words   872->  752 OK
+gestao-financeira-o-alicerce-invisivel-de-todo-negocio-q -> financial-management-the-invisible-foundation-of-e ratio=1.03 words   450->  460 OK
+trabalho-em-laoistrabalho-em-laois                       -> working-in-laois                                   ratio=0.93 words   632->  570 OK
+bolo-cocada-molhadinho                                   -> moist-coconut-cake                                 ratio=0.95 words   212->  199 OK
+primavera-o-chamado-silencioso-para-florescer-com-consci -> spring-the-quiet-call-to-bloom-with-consciousness  ratio=0.96 words   409->  393 OK
+primavera-chegou-um-convite-para-renovar-tambem-a-sua-al -> spring-has-arrived-an-invitation-to-refresh-your-e ratio=0.96 words  1090->  996 OK
+escalar-e-necessario-crescer-com-consistencia-e-o-proxim -> scaling-is-necessary-growing-with-consistency-is-t ratio=1.01 words   529->  510 OK
+atividade-fisica-nao-deve-ser-um-projeto-de-verao-deve-s -> physical-activity-should-not-be-a-summer-project-b ratio=0.95 words   298->  277 OK
+a-caneta-emagrece-e-o-espirito-corre-atras               -> the-weight-loss-pen-and-the-spirit-running-along-b ratio=1.01 words   867->  835 OK
+canetas-emagrecedoras-emagrecer-ficou-mais-facil-mas-e-a -> weight-loss-injections-losing-weight-got-easier-bu ratio=0.97 words   966->  861 OK
+cupcake-da-granny                                        -> grannys-cupcake                                    ratio=0.95 words   227->  201 OK
+papo-de-empreendedor-com-um-toque-criativo-leve-e-motiva -> entrepreneur-chat-a-creative-light-and-motivating- ratio=1.03 words   781->  800 OK
+a-medicacao-pode-ajudar-a-abrir-a-porta-mas-o-treino-e-a -> medication-can-open-the-door-but-training-and-habi ratio=0.96 words   614->  564 OK
+o-que-todo-pequeno-empreendedor-precisa-aprender-para-fa -> what-every-small-entrepreneur-needs-to-learn-to-gr ratio=0.99 words  1364-> 1301 OK
+as-relacoes-de-casal-na-nova-era                         -> couple-relationships-in-the-new-era                ratio=0.97 words   960->  899 OK
+dois-fatores-que-fazem-o-seu-negocio-ter-consistencia-na -> two-factors-that-give-your-business-sales-consiste ratio=0.97 words   403->  365 OK
+quem-voce-se-tornou-longe-de-casa                        -> who-you-became-far-from-home                       ratio=0.98 words  1013->  948 OK

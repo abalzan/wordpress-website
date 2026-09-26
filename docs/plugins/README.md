@@ -20,7 +20,7 @@ Load order is the row order. Dependencies always precede their dependents.
 | 6 | `conexao-leisure-migration` | tooling | active | no | yes | yes | - | 2.1.0 | [conexao-leisure-migration](./conexao-leisure-migration.md) |
 | 7 | `conexao-sponsor-migration` | tooling | active | no | yes | yes | - | 1.1.0 | [conexao-sponsor-migration](./conexao-sponsor-migration.md) |
 | 8 | `conexao-translation-rollout` | tooling | active | no | no | yes | - | 1.0.0 | [conexao-translation-rollout](./conexao-translation-rollout.md) |
-| 9 | `conexao-en-translation` | tooling | active | no | no | yes | `conexao-translation-rollout` | 1.0.0 | [conexao-en-translation](./conexao-en-translation.md) |
+| 9 | `conexao-en-translation` | tooling | active | no | no | yes | `conexao-translation-rollout` | 1.1.0 | [conexao-en-translation](./conexao-en-translation.md) |
 | 10 | `conexao-page-translation` | rollout | retired | no | no | yes | - | 1.0.0 | [conexao-page-translation](./conexao-page-translation.md) |
 | 11 | `conexao-blog-translation` | rollout | retired | no | no | yes | - | 1.0.0 | [conexao-blog-translation](./conexao-blog-translation.md) |
 | 12 | `conexao-job-translation` | rollout | retired | no | no | yes | - | 1.0.0 | [conexao-job-translation](./conexao-job-translation.md) |

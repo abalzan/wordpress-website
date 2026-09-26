@@ -309,4 +309,4 @@ Image fields:
 - `_event_source` (e.g. `laois_tourism`) + `_event_source_id` (external ID) form the primary deduplication key.
 - Export adds a UUID meta for cross-instance matching.
 - Matching order: UUID → source+source_id → URL → content title+date.
-_Last verified: 2026-09-26 by Stage M — Permanent Invariant Debt Remediation_
+_Last verified: 2026-09-26 by Stage N — Remaining EN Blog Translations_

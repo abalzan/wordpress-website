@@ -1,0 +1,96 @@
+########## STAGE N BATCH 4 of 6 (active manifest rows: 8124) ##########
+
+--- DRY-RUN ---
+
+script: run-en-translation.php
+target: http://LOCAL-INSTANCE (local, local)
+mode:   dry-run
+scope:  The guide / page / post stages registered by the conexao-en-translation plugin. Dry-run by default; --apply creates the EN records; --remove deletes them. A PT record is only ever read.
+\n=== stage: en-post (mode: dry-run, operation: run) ===
+  created=0 updated=0 skipped=32 removed=0 conflicts=0 errors=0 PT-drift=0
+    skipped      guia-pratico-para-brasileiros-em-laois        EN translation already linked and verified
+    skipped      guia-para-quem-esta-com-dificuldades-financeiras EN translation already linked and verified
+    skipped      auxilios-para-familias-atipicas-na-irlanda    EN translation already linked and verified
+    skipped      auxilios-e-apoio-relacionados-a-saude-e-bem-estar-na-irlanda EN translation already linked and verified
+    skipped      dica-de-saude-para-quem-viaja                 EN translation already linked and verified
+    skipped      turismo-e-lazer-em-co-laois-na-irlanda        EN translation already linked and verified
+    skipped      informacoes-para-as-mulheres-na-irlanda       EN translation already linked and verified
+    skipped      carne-refogada-ao-estilo-korean-bbq           EN translation already linked and verified
+    skipped      sol-e-lua-equilibrando-consciencia-e-emocoesdurante-o-inverno-norte-europeu EN translation already linked and verified
+    skipped      o-inverno-do-ego-um-renascimento-poetico      EN translation already linked and verified
+    skipped      o-sol-que-habita-em-nos                       EN translation already linked and verified
+    skipped      o-calor-que-nasce-do-inverno                  EN translation already linked and verified
+    skipped      preparando-o-corpo-para-o-inverno             EN translation already linked and verified
+    skipped      movimento-e-medicina                          EN translation already linked and verified
+    skipped      dois-anos-novos-um-medido-pelo-homem-outro-sentido-pela-terra EN translation already linked and verified
+    skipped      coragem-a-estrela-que-ilumina-o-caminho-do-empreendedor-especial-de-natal EN translation already linked and verified
+    skipped      1-cuidando-de-si-em-terra-estrangeira         EN translation already linked and verified
+    skipped      2-saude-mental-e-imigracao-o-que-ninguem-conta EN translation already linked and verified
+    skipped      como-voce-se-sente-nessa-epoca-do-ano         EN translation already linked and verified
+    skipped      construindo-rede-de-apoio-longe-de-casa       EN translation already linked and verified
+    skipped      alinhar-o-invisivel-para-harmonizar-o-cotidiano EN translation already linked and verified
+    skipped      proposito-o-sentido-que-nos-move-por-dentro   EN translation already linked and verified
+    skipped      entre-o-silencio-do-inverno-e-o-primeiro-sopro-da-primavera EN translation already linked and verified
+    skipped      quando-a-terra-desperta-a-primavera-e-o-novo-ano-astrologico-1 EN translation already linked and verified
+    skipped      capacitacao-em-laois-irlanda-capacitacao-em-laois-irlanda EN translation already linked and verified
+    skipped      cursos-e-apoio-para-empreendedores            EN translation already linked and verified
+    skipped      gestao-financeira-o-alicerce-invisivel-de-todo-negocio-que-prospera EN translation already linked and verified
+    skipped      trabalho-em-laoistrabalho-em-laois            EN translation already linked and verified
+    skipped      bolo-cocada-molhadinho                        EN translation already linked and verified
+    skipped      primavera-o-chamado-silencioso-para-florescer-com-consciencia EN translation already linked and verified
+    skipped      primavera-chegou-um-convite-para-renovar-tambem-a-sua-alimentacao EN translation already linked and verified
+    skipped      escalar-e-necessario-crescer-com-consistencia-e-o-proximo-nivel-do-seu-negocio EN translation already linked and verified
+  GATE PASS: eligible PT=32 with EN=32 missing EN=0 conflicts=0 PT drift=0
+
+summary: created=0, updated=0, skipped=32, removed=0, errors=0, conflicts=0, pt_changed=0, gate_failures=0
+
+--- APPLY ---
+
+script: run-en-translation.php
+target: http://LOCAL-INSTANCE (local, local)
+mode:   apply
+scope:  The guide / page / post stages registered by the conexao-en-translation plugin. Dry-run by default; --apply creates the EN records; --remove deletes them. A PT record is only ever read.
+\n=== stage: en-post (mode: apply, operation: run) ===
+  created=0 updated=0 skipped=32 removed=0 conflicts=0 errors=0 PT-drift=0
+    skipped      guia-pratico-para-brasileiros-em-laois        EN translation already linked and verified
+    skipped      guia-para-quem-esta-com-dificuldades-financeiras EN translation already linked and verified
+    skipped      auxilios-para-familias-atipicas-na-irlanda    EN translation already linked and verified
+    skipped      auxilios-e-apoio-relacionados-a-saude-e-bem-estar-na-irlanda EN translation already linked and verified
+    skipped      dica-de-saude-para-quem-viaja                 EN translation already linked and verified
+    skipped      turismo-e-lazer-em-co-laois-na-irlanda        EN translation already linked and verified
+    skipped      informacoes-para-as-mulheres-na-irlanda       EN translation already linked and verified
+    skipped      carne-refogada-ao-estilo-korean-bbq           EN translation already linked and verified
+    skipped      sol-e-lua-equilibrando-consciencia-e-emocoesdurante-o-inverno-norte-europeu EN translation already linked and verified
+    skipped      o-inverno-do-ego-um-renascimento-poetico      EN translation already linked and verified
+    skipped      o-sol-que-habita-em-nos                       EN translation already linked and verified
+    skipped      o-calor-que-nasce-do-inverno                  EN translation already linked and verified
+    skipped      preparando-o-corpo-para-o-inverno             EN translation already linked and verified
+    skipped      movimento-e-medicina                          EN translation already linked and verified
+    skipped      dois-anos-novos-um-medido-pelo-homem-outro-sentido-pela-terra EN translation already linked and verified
+    skipped      coragem-a-estrela-que-ilumina-o-caminho-do-empreendedor-especial-de-natal EN translation already linked and verified
+    skipped      1-cuidando-de-si-em-terra-estrangeira         EN translation already linked and verified
+    skipped      2-saude-mental-e-imigracao-o-que-ninguem-conta EN translation already linked and verified
+    skipped      como-voce-se-sente-nessa-epoca-do-ano         EN translation already linked and verified
+    skipped      construindo-rede-de-apoio-longe-de-casa       EN translation already linked and verified
+    skipped      alinhar-o-invisivel-para-harmonizar-o-cotidiano EN translation already linked and verified
+    skipped      proposito-o-sentido-que-nos-move-por-dentro   EN translation already linked and verified
+    skipped      entre-o-silencio-do-inverno-e-o-primeiro-sopro-da-primavera EN translation already linked and verified
+    skipped      quando-a-terra-desperta-a-primavera-e-o-novo-ano-astrologico-1 EN translation already linked and verified
+    skipped      capacitacao-em-laois-irlanda-capacitacao-em-laois-irlanda EN translation already linked and verified
+    skipped      cursos-e-apoio-para-empreendedores            EN translation already linked and verified
+    skipped      gestao-financeira-o-alicerce-invisivel-de-todo-negocio-que-prospera EN translation already linked and verified
+    skipped      trabalho-em-laoistrabalho-em-laois            EN translation already linked and verified
+    skipped      bolo-cocada-molhadinho                        EN translation already linked and verified
+    skipped      primavera-o-chamado-silencioso-para-florescer-com-consciencia EN translation already linked and verified
+    skipped      primavera-chegou-um-convite-para-renovar-tambem-a-sua-alimentacao EN translation already linked and verified
+    skipped      escalar-e-necessario-crescer-com-consistencia-e-o-proximo-nivel-do-seu-negocio EN translation already linked and verified
+  GATE PASS: eligible PT=32 with EN=32 missing EN=0 conflicts=0 PT drift=0
+
+summary: created=0, updated=0, skipped=32, removed=0, errors=0, conflicts=0, pt_changed=0, gate_failures=0
+
+--- PERMANENT GATE ---
+          - post_type:post:missing_en: 4 (post: eligible public PT records missing a linked EN translation = 0)
+          allowlisted: 1821 (by documented policy)
+Gates: 7 total, 5 passed, 2 failed, 0 blocked
+Assertions: 84 passed, 2 failed
+Violations: 4 (4 pre-existing, 0 new)

@@ -1,0 +1,49 @@
+
+script: run-en-translation.php
+target: http://LOCAL-INSTANCE (local, local)
+mode:   dry-run
+scope:  The guide / page / post stages registered by the conexao-en-translation plugin. Dry-run by default; --apply creates the EN records; --remove deletes them. A PT record is only ever read.
+\n=== stage: en-post (mode: dry-run, operation: run) ===
+  created=12 updated=0 skipped=8 removed=0 conflicts=0 errors=0 PT-drift=0
+    skipped      guia-pratico-para-brasileiros-em-laois        EN translation already linked and verified
+    skipped      guia-para-quem-esta-com-dificuldades-financeiras EN translation already linked and verified
+    skipped      auxilios-para-familias-atipicas-na-irlanda    EN translation already linked and verified
+    skipped      auxilios-e-apoio-relacionados-a-saude-e-bem-estar-na-irlanda EN translation already linked and verified
+    skipped      dica-de-saude-para-quem-viaja                 EN translation already linked and verified
+    skipped      turismo-e-lazer-em-co-laois-na-irlanda        EN translation already linked and verified
+    skipped      informacoes-para-as-mulheres-na-irlanda       EN translation already linked and verified
+    skipped      carne-refogada-ao-estilo-korean-bbq           EN translation already linked and verified
+    would-create sol-e-lua-equilibrando-consciencia-e-emocoesdurante-o-inverno-norte-europeu EN record would be created, linked and verified
+    would-create o-inverno-do-ego-um-renascimento-poetico      EN record would be created, linked and verified
+    would-create o-sol-que-habita-em-nos                       EN record would be created, linked and verified
+    would-create o-calor-que-nasce-do-inverno                  EN record would be created, linked and verified
+    would-create preparando-o-corpo-para-o-inverno             EN record would be created, linked and verified
+    would-create movimento-e-medicina                          EN record would be created, linked and verified
+    would-create dois-anos-novos-um-medido-pelo-homem-outro-sentido-pela-terra EN record would be created, linked and verified
+    would-create coragem-a-estrela-que-ilumina-o-caminho-do-empreendedor-especial-de-natal EN record would be created, linked and verified
+    would-create 1-cuidando-de-si-em-terra-estrangeira         EN record would be created, linked and verified
+    would-create 2-saude-mental-e-imigracao-o-que-ninguem-conta EN record would be created, linked and verified
+    would-create como-voce-se-sente-nessa-epoca-do-ano         EN record would be created, linked and verified
+    would-create construindo-rede-de-apoio-longe-de-casa       EN record would be created, linked and verified
+  GATE FAIL: eligible PT=20 with EN=8 missing EN=12 conflicts=0 PT drift=0
+
+summary: created=12, updated=0, skipped=8, removed=0, errors=1, conflicts=0, pt_changed=0, gate_failures=1
+
+=== GUARD PROOF (Stage N, before the first apply) ===
+A. Dry-run performs zero writes.
+   Content counts captured before the dry-run above:
+     post_type=post  post_status=publish  count=42  linkedEN=8
+   Content counts captured immediately after the same dry-run:
+     post_type=post  post_status=publish  count=42  linkedEN=8
+   Unchanged. The dry-run reported created=12 (as "would-create") and wrote
+   nothing.
+
+B. Apply mode is explicit and an ambiguous mode fails closed.
+   $ php scripts/run-en-translation.php --maybe-apply
+   ERROR: unknown argument "--maybe-apply". Run with --help to see the supported arguments.
+   exit=2   (non-zero: an unrecognised mode never falls through into apply)
+
+C. Dry-run is the default.
+   scripts/run-en-translation.php with no mode flag resolves to mode=dry-run
+   (the runner passes 'dry_run' => ( 'dry-run' === $ctx['mode'] ) ), so a missing
+   or wrong flag cannot default to writing.
