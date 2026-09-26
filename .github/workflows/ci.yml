@@ -8,9 +8,11 @@
 # Blocking gates (a non-zero exit fails the job):
 #   1. composer validate --strict  — composer.json/lock consistency
 #   2. composer install            — from composer.lock, never `update`
-#   3. ./scripts/lint.sh           — PHP syntax + PHPCS no-new-violations
+#   3. registry drift gate         — plugins.json + generated regions
+#                                    (Stage G; `generate-registry-docs.php --check`)
+#   4. ./scripts/lint.sh           — PHP syntax + PHPCS no-new-violations
 #                                    + PHPStan level 5 (the Stage C gate)
-#   4. shellcheck scripts/*.sh     — repository shell scripts
+#   5. shellcheck scripts/*.sh     — repository shell scripts
 #
 # Non-blocking by design (telemetry only, never gates the run):
 #   composer lint — the RAW legacy PHPCS debt view. It is red by design while
@@ -91,6 +93,20 @@ jobs:
             git diff -- composer.json composer.lock
             exit 1
           fi
+
+      - name: Plugin registry drift gate (Stage G)
+        # plugins.json is the single authoritative plugin registry: load order,
+        # production activation order, release build list, Compose mounts and
+        # the plugin lifecycle documentation are all generated from it.
+        #
+        # --check validates the registry against the real repository (slug
+        # uniqueness, lifecycle enums, dependencies vs the plugins' own
+        # "Requires Plugins" headers, dependency order, cycles, orphan plugin
+        # directories) and then fails when any generated region is stale.
+        # It performs ZERO writes, so the gate can never repair the tree.
+        #
+        # Blocking (no continue-on-error): stale generated output is a failure.
+        run: php scripts/generate-registry-docs.php --check
 
       - name: Quality gate — ./scripts/lint.sh
         run: ./scripts/lint.sh
