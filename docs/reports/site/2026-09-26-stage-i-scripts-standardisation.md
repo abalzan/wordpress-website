@@ -72,7 +72,7 @@ current CI, tests or current docs genuinely depended on it.
 | quality/tooling | 5 | `run-tests.sh`, `lint.sh`, `generate-registry-docs.php`, `phpcs-baseline.php` | current, catalogued |
 | local activation / menu / content ops | 21 | `activate-admin-ux.php`, `assign-polylang-nav-menus.php`, `cleanup-sponsor-fields.php` | current, catalogued |
 | manual test scripts | 8 | `test-event-crud.php`, `test-admin-ux-e2e-http.sh` | current, catalogued as not-harness-run |
-| library | 4 | `lib/bootstrap.php`, `lib/rest.py`, `lib/plan.py`, `lib/__init__.py` | shared, not runnable commands |
+| library | 3 | `lib/bootstrap.php`, `lib/rest.py`, `lib/plan.py` | shared, not runnable commands |
 | historical | 43 | `stage32-*`, `stage45-*`, `ivvcc-*`, `c3-production-*`, lazer stage C/D builders | provenance only |
 | diagnostic | 3 | `heritage-images-debug.php`, `event-location-coverage.py`, `mondello-phase1-diagnostics.py` | ad-hoc helpers |
 
@@ -113,6 +113,9 @@ built their own plan shape. One fixed bucket order (`create`/`update`/`skip`/
 plan can never leak an `Authorization` value into evidence.
 
 API: `PlanBuilder`, `build_plan()`, `write_plan()`.
+
+`lib/` is imported by path insertion, the same way the acceptance suites import
+`tests/acceptance/lib`; there is no `__init__.py` and nothing to install.
 
 ## 4. CLI contract
 
@@ -340,7 +343,7 @@ was refused before any request.
 | Stage I final SHA | `c6b01093333b8d9ce9037a20844dc91591ed479f` |
 | Stage I commits | 7 (helpers · classification · standardisation · catalogue · tests · docs · evidence) |
 | Current runnable scripts | 71 (PHP 51, Python 12, Bash 8) |
-| Historical / diagnostic / library | 43 / 3 / 4 |
+| Historical / diagnostic / library | 43 / 3 / 3 |
 | Shared libraries | `scripts/lib/bootstrap.php`, `scripts/lib/rest.py`, `scripts/lib/plan.py` |
 | Catalogue completeness | 71/71 — gate 275/275 |
 | Test baseline | identical to Stage H; no new failures |

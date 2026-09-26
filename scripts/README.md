@@ -67,7 +67,9 @@ scope:  Creates/updates English translation records for the job stage only. ...
 | `scripts/lib/bootstrap.php` | **The canonical PHP bootstrap.** The only place in `scripts/` allowed to locate and load WordPress. Resolves `wp-load.php` from `CONEXAO_WP_ROOT`, the repository root or `/var/www/html`; sets `WP_USE_THEMES=false`; parses the standard CLI flags; prints the run header and summary; classifies the target and enforces the production write guard. |
 | `scripts/lib/rest.py` | **The shared Python REST client.** Centralises base-URL resolution (`CONEXAO_SITE_URL`, else the local site — never production), Basic auth from `WP_USERNAME` / `WP_APPLICATION_PASSWORD`, retries with backoff, `X-WP-TotalPages` pagination, timeouts, JSON decoding and error handling. Standard library only. |
 | `scripts/lib/plan.py` | Shared machine-readable plan helper. Fixed bucket order (`create`/`update`/`skip`/`conflicts`), deterministic output, secret-bearing keys stripped. Justified: several current write scripts and the Stage H engine each needed a plan shape. |
-| `scripts/lib/__init__.py` | Makes `lib/` importable as a package. |
+
+`lib/` is imported by path insertion, the same way the acceptance suites import
+`tests/acceptance/lib` — there is no `__init__.py` and no package to install.
 
 ### PHP usage
 
@@ -257,8 +259,8 @@ development and are not covered by `./scripts/run-tests.sh`.
 
 ## Shared libraries (not runnable commands)
 
-`scripts/lib/bootstrap.php`, `scripts/lib/rest.py`, `scripts/lib/plan.py`,
-`scripts/lib/__init__.py` — see "Shared libraries" above. Also
+`scripts/lib/bootstrap.php`, `scripts/lib/rest.py`, `scripts/lib/plan.py` —
+see "Shared libraries" above. Also
 `scripts/data/` holds static dataset files consumed by the seeders
 (`leisure-expansion-data-*.php`, image retry overrides, URL verification
 report). They are data, not scripts.
