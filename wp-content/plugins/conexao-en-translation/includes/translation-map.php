@@ -37,14 +37,39 @@ function conexao_en_translation_post_types(): array {
 /**
  * The authored English translations, keyed by PT post type then PT slug.
  *
+ * The Blog (`post`) rows come from the separately versioned
+ * `blog-translation-data.php`, so the Stage M record in `manifest-data.php`
+ * stays a Stage M record while Stage N's Blog data keeps its own reviewable
+ * file. Both halves are merged here into the single per-type manifest the
+ * shared engine validates; the merge is a union keyed by PT slug, so a slug may
+ * only ever appear once.
+ *
  * @return array<string,array<string,array>>
  */
 function conexao_en_translation_map(): array {
-	if ( ! function_exists( 'conexao_en_translation_manifest_data' ) ) {
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/manifest-data.php';
+	$data = array();
+
+	if ( function_exists( 'conexao_en_translation_manifest_data' ) ) {
+		$data = conexao_en_translation_manifest_data();
 	}
 
-	return conexao_en_translation_manifest_data();
+	if ( function_exists( 'conexao_en_translation_manifest_data_blog_v1' ) ) {
+		$blog = conexao_en_translation_manifest_data_blog_v1();
+
+		// Union, never overwrite: a duplicate PT slug across the two data files
+		// is a manifest defect, and a blind array_merge would silently let the
+		// later file win. Failing closed here keeps a second identity from ever
+		// reaching the engine.
+		foreach ( $blog as $pt_slug => $row ) {
+			if ( isset( $data['post'][ $pt_slug ] ) ) {
+				return $data;
+			}
+		}
+
+		$data['post'] = isset( $data['post'] ) ? array_merge( $data['post'], $blog ) : $blog;
+	}
+
+	return $data;
 }
 
 /**
