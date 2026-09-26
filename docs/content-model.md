@@ -38,6 +38,39 @@ Permit explanation). See
 `docs/research/2026-09-empregos-agencies-and-employment-permits.md` for the
 validated data and editorial rules.
 
+## The Blog posts page (Stage O)
+
+`/blog/` is not a CPT archive: it is the **static posts page** — the `page`
+record whose ID is stored in the `page_for_posts` option. The Blog *archive* is
+therefore a `page` record, and its English counterpart is a `page` record too.
+
+| Field | PT | EN |
+|---|---|---|
+| post type | `page` | `page` |
+| post_name | `blog` | `blog` (**shared slug on purpose**: `/blog/` ↔ `/en/blog/`) |
+| Polylang language | `pt` | `en` |
+| status | `publish` | `publish` |
+| parent | 0 | 0 |
+| `conexao_meta_description` | Portuguese | authored English |
+
+- Identity: the **PT page slug `blog`** — never a local post ID.
+- The EN record is a *linked translation*, never a fork: the pair is verified
+  bidirectionally (`pll_get_post(pt,'en') === en` **and**
+  `pll_get_post(en,'pt') === pt`).
+- The body is a short authored-English archive introduction. The visible
+  archive (heading, description, category filter) is template-driven by
+  `home.php`, so no page body is fabricated for the layout.
+- No taxonomy: the PT posts page carries zero terms in `conexao_category`,
+  `conexao_county`, `conexao_tag` and `conexao_town`.
+- **Blog `post` records are a different identity and stay B1.** The 42 EN
+  `post` records are not allowlisted anywhere: `post` is not in
+  `conexao_b2_post_types()` and there is no per-post allowlist key.
+  `post_type:post:missing_en = 0` because every eligible public PT post is
+  genuinely translated, not because anything is exempted.
+- Authored by the `en-blog-page` stage of `conexao-en-translation`
+  (`includes/blog-page-data.php`, version `blog-page-v1`), applied through the
+  shared `conexao-translation-rollout` engine.
+
 ## Taxonomies
 
 Registered by `conexao-data-model` (method `register_taxonomies()`).
@@ -309,4 +342,4 @@ Image fields:
 - `_event_source` (e.g. `laois_tourism`) + `_event_source_id` (external ID) form the primary deduplication key.
 - Export adds a UUID meta for cross-instance matching.
 - Matching order: UUID → source+source_id → URL → content title+date.
-_Last verified: 2026-09-26 by Stage N — Remaining EN Blog Translations_
+_Last verified: 2026-09-26 by Stage O — Enable the Real English Blog Archive_

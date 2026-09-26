@@ -19,8 +19,9 @@
  * WordPress-bound adapter and the declarative config live beside it.
  *
  * Usage:
- *   php scripts/run-en-translation.php --dry-run              # all three types
+ *   php scripts/run-en-translation.php --dry-run              # all stages
  *   php scripts/run-en-translation.php --dry-run --only=guide
+ *   php scripts/run-en-translation.php --dry-run --only=blog-page
  *   php scripts/run-en-translation.php --apply --only=guide
  *   php scripts/run-en-translation.php --remove --apply --only=guide   # rollback
  *
@@ -32,15 +33,15 @@ require_once __DIR__ . '/lib/bootstrap.php';
 $ctx = conexao_script_boot(
 	array(
 		'script'             => 'run-en-translation.php',
-		'purpose'            => 'Run the Stage M EN translation rollout for the B1 content types through the shared conexao-translation-rollout engine: one linked EN translation per eligible public PT record, PT sources never modified.',
-		'scope'              => 'The guide / page / post stages registered by the conexao-en-translation plugin. Dry-run by default; --apply creates the EN records; --remove deletes them. A PT record is only ever read.',
-		'safety'             => 'local-only; dry-run by default; --apply required to write; --only=<post_type> limits the stage; the engine verifies PT immutability and reports PT drift as a gate failure',
+		'purpose'            => 'Run the EN translation rollout stages through the shared conexao-translation-rollout engine: one linked EN translation per eligible public PT record, PT sources never modified. Stage M/N close the B1 guide/page/post debt; Stage O adds the Blog posts page (en-blog-page), which is what makes /en/blog/ a real English archive instead of the B2 fallback.',
+		'scope'              => 'The en-guide / en-page / en-post / en-blog-page stages registered by the conexao-en-translation plugin. Dry-run by default; --apply creates the EN records; --remove deletes them. A PT record is only ever read.',
+		'safety'             => 'local-only; dry-run by default; --apply required to write; --only=<stage> limits the stage; the engine verifies PT immutability and reports PT drift as a gate failure',
 		'target_description' => 'the WordPress install the script is connected to (site URL printed in the header)',
-		'modes_description'  => '--dry-run (default) prints the plan and writes nothing. --apply creates and links the EN records. --remove reverses a previous apply. --only=<post_type> selects one stage.',
+		'modes_description'  => '--dry-run (default) prints the plan and writes nothing. --apply creates and links the EN records. --remove reverses a previous apply. --only=<stage> selects one stage.',
 		'arguments'          => "--dry-run            Plan only, zero writes (default).\n"
 			. "                    --apply              Create and link the EN records.\n"
 			. "                    --remove             Delete the EN records this stage owns (rollback).\n"
-			. "                    --only=<post_type>   guide | page | post (default: all three).\n"
+			. "                    --only=<stage>       guide | page | post | blog-page (default: all four).\n"
 			. "                    --json               Machine-readable output.\n"
 			. '                    --help               This message.',
 		'writes'             => true,
@@ -67,21 +68,37 @@ if ( function_exists( 'conexao_en_translation_register_stages' ) ) {
 	conexao_en_translation_register_stages();
 }
 
-$available = conexao_en_translation_post_types();
+$available = conexao_en_translation_stage_ids();
 $only      = isset( $ctx['extra']['only'] ) ? (string) $ctx['extra']['only'] : '';
 
+// Accept either a stage id (`en-page`, `en-blog-page`) or the bare selector
+// the older stages are documented with (`page`). The stage list is read from
+// the plugin, so there is still exactly ONE place that knows which stages
+// exist and exactly ONE runner that drives them.
 if ( '' !== $only && ! in_array( $only, $available, true ) ) {
-	conexao_script_fail(
-		sprintf(
-			'unknown post type "%s". Available: %s',
-			$only,
-			implode( ', ', $available )
-		)
-	);
+	$aliased = 'en-' . $only;
+
+	if ( in_array( $aliased, $available, true ) ) {
+		$only = $aliased;
+	} else {
+		conexao_script_fail(
+			sprintf(
+				'unknown stage "%s". Available: %s',
+				$only,
+				implode( ', ', $available )
+			)
+		);
+	}
 }
 
-$stages    = ( '' === $only ) ? $available : array( $only );
-$operation = ! empty( $ctx['extra']['remove'] ) ? 'remove' : 'run';
+// `--remove` is a VALUELESS flag. The shared bootstrap records a value for an
+// extra flag only when it is passed as `--flag=value`, so `$ctx['extra']['remove']`
+// stays empty for the documented `--remove` form. Reading the raw token list as
+// well keeps both spellings working and makes the documented rollback actually
+// delete the EN records instead of silently re-running the apply.
+$operation = ( ! empty( $ctx['extra']['remove'] ) || in_array( '--remove', (array) $ctx['tokens'], true ) ) ? 'remove' : 'run';
+
+$stages = ( '' === $only ) ? $available : array( $only );
 
 $totals_local  = array(
 	'created'    => 0,
@@ -96,24 +113,28 @@ $gate_failures = 0;
 $empty_stages  = array();
 $results       = array();
 
-foreach ( $stages as $the_post_type ) {
+foreach ( $stages as $the_stage ) {
+	$config = Conexao_Translation_Rollout_Engine::get_stage( $the_stage );
+
+	if ( null === $config ) {
+		conexao_script_fail( sprintf( 'stage "%s" is not registered with the shared engine.', $the_stage ) );
+	}
+
+	$manifest = call_user_func( $config['manifest_callback'] );
+
 	// A stage with no authored manifest rows is a no-op, not a failure. The
 	// shared engine requires a non-empty manifest, so it is reported here
-	// instead: the debt for that type is simply already closed.
-	if ( array() === conexao_en_translation_manifest_for( $the_post_type )['records'] ) {
-		$empty_stages[] = $the_post_type;
-		echo '\n=== stage: en-' . esc_html( $the_post_type ) . " ===\n";
+	// instead: the debt for that stage is simply already closed. The manifest
+	// is read from the REGISTERED stage config, never recomputed here, so the
+	// runner can never disagree with the engine about what a stage contains.
+	if ( ! is_array( $manifest ) || array() === ( $manifest['records'] ?? array() ) ) {
+		$empty_stages[] = $the_stage;
+		echo "\n=== stage: " . esc_html( $the_stage ) . " ===\n";
 		echo "  no authored translations in the manifest: nothing to do.\n";
 		continue;
 	}
 
-	$config = Conexao_Translation_Rollout_Engine::get_stage( 'en-' . $the_post_type );
-
-	if ( null === $config ) {
-		conexao_script_fail( sprintf( 'stage "en-%s" is not registered with the shared engine.', $the_post_type ) );
-	}
-
-	echo '\n=== stage: en-' . esc_html( $the_post_type ) . ' (mode: ' . esc_html( (string) $ctx['mode'] ) . ', operation: ' . esc_html( $operation ) . ") ===\n";
+	echo "\n=== stage: " . esc_html( $the_stage ) . ' (mode: ' . esc_html( (string) $ctx['mode'] ) . ', operation: ' . esc_html( $operation ) . ") ===\n";
 
 	$result = call_user_func(
 		$config['run_callback'],
@@ -124,7 +145,7 @@ foreach ( $stages as $the_post_type ) {
 	);
 
 	if ( is_wp_error( $result ) ) {
-		conexao_script_fail( sprintf( 'stage en-%s failed: %s', $the_post_type, $result->get_error_message() ) );
+		conexao_script_fail( sprintf( 'stage %s failed: %s', $the_stage, $result->get_error_message() ) );
 	}
 
 	$stage_summary = $result['summary'];
@@ -133,7 +154,7 @@ foreach ( $stages as $the_post_type ) {
 		$totals_local[ $key ] += (int) ( $stage_summary[ $key ] ?? 0 );
 	}
 
-	$results[ $the_post_type ] = $result;
+	$results[ $the_stage ] = $result;
 
 	printf(
 		'  created=%d updated=%d skipped=%d removed=%d conflicts=%d errors=%d PT-drift=%d' . "\n",

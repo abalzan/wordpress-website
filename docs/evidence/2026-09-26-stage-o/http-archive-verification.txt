@@ -1,0 +1,21 @@
+### PHASE 9/11 — /en/blog/ HTTP + SEO/language metadata
+--- /en/blog/ ---
+status=200
+html_lang: <html lang="en-US"
+canonical: <link rel="canonical" href="http://localhost:8080/en/blog/"
+hreflang:
+  <link rel="alternate" hreflang="en" href="http://localhost:8080/en/blog/"
+  <link rel="alternate" hreflang="pt-BR" href="http://localhost:8080/blog/"
+  <link rel="alternate" hreflang="x-default" href="http://localhost:8080/blog/"
+b2_notice_count: 0
+b2_notice_text: 
+--- /blog/ ---
+status=200
+html_lang: <html lang="pt-BR"
+canonical: <link rel="canonical" href="http://localhost:8080/blog/"
+hreflang:
+  <link rel="alternate" hreflang="pt-BR" href="http://localhost:8080/blog/"
+  <link rel="alternate" hreflang="en" href="http://localhost:8080/en/blog/"
+  <link rel="alternate" hreflang="x-default" href="http://localhost:8080/blog/"
+b2_notice_count: 0
+b2_notice_text: 

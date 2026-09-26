@@ -295,15 +295,43 @@
       "note": "The /en/ language layer resolves (stage2 §3) and serves English markup."
     },
     {
-      "id": "en-b2-fallback-en-blog",
+      "id": "en-archive-en-blog",
       "url": "/en/blog/",
       "expect_status": 200,
       "expect_contains": [
         "<html lang=\"en-US\">",
+        "rel=\"canonical\" href=\"",
+        "/en/blog/",
+        "hreflang=\"en\"",
+        "hreflang=\"pt-BR\"",
+        "hreflang=\"x-default\""
+      ],
+      "expect_absent": [
         "language-fallback-notice"
       ],
-      "expect_absent": [],
-      "note": "With no linked EN Blog page in this dataset, /en/blog/ serves the B2 fallback: 200, an English shell and the language-fallback-notice (Stage 3.2 B2 policy). Once the EN page exists this row must become the real-EN-archive check."
+      "note": "Stage O: /en/blog/ is the REAL English archive (a linked, published EN translation of the PT blog posts page) — 200, an English shell, no B2 fallback notice, self-canonical to /en/blog/, and the full en / pt-BR / x-default hreflang set."
+    },
+    {
+      "id": "en-archive-en-blog-page-2",
+      "url": "/en/blog/page/2/",
+      "expect_status": 200,
+      "expect_contains": [
+        "<html lang=\"en-US\">"
+      ],
+      "expect_absent": [
+        "language-fallback-notice"
+      ],
+      "note": "EN Blog pagination page 2 serves the English archive, not the B2 PT-substituted fallback (Stage O pagination check)."
+    },
+    {
+      "id": "en-archive-en-blog-page-99",
+      "url": "/en/blog/page/99/",
+      "expect_status": 404,
+      "expect_contains": [],
+      "expect_absent": [
+        "language-fallback-notice"
+      ],
+      "note": "A page beyond the last valid EN Blog archive page is a 404, never a silently empty or PT-substituted archive (Stage O pagination bound)."
     },
     {
       "id": "en-b2-302-en-empregos",

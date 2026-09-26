@@ -1,0 +1,113 @@
+### PRE-DRY-RUN STATE
+{
+    "captured_by": "scripts/zz-stage-o-snapshot.php",
+    "pt_blog_page_id": 10,
+    "pt_page_for_posts": 10,
+    "pt_slug": "blog",
+    "pt_snapshot": {
+        "post_name": "blog",
+        "post_title": "Blog",
+        "post_content": "<!-- wp:paragraph --><p>Artigos e notícias para a comunidade brasileira na Irlanda.</p><!-- /wp:paragraph -->",
+        "post_excerpt": "",
+        "post_status": "publish",
+        "post_date": "2026-08-16 15:20:11",
+        "post_date_gmt": "2026-08-16 14:20:11",
+        "post_author": 283039558,
+        "menu_order": 0,
+        "post_parent": 0,
+        "thumbnail": 0,
+        "terms": {
+            "conexao_category": [],
+            "conexao_county": [],
+            "conexao_tag": [],
+            "conexao_town": []
+        },
+        "language": "pt",
+        "meta_desc": "Blog do Conexão BR Irlanda - Artigos, notícias e informações para brasileiros na Irlanda."
+    },
+    "pt_snapshot_sha256": "d50c56a93ba9bdb5eb888a1562e30bd1f9735f0ca2db919d52b03cf76db3f770",
+    "pt_en_link": 0,
+    "pt_page_count": 77,
+    "en_blog_page_count": 1,
+    "b2_allowlist": [
+        "dublin",
+        "cork",
+        "galway",
+        "limerick",
+        "kildare",
+        "meath",
+        "wicklow",
+        "waterford",
+        "laois",
+        "irlanda",
+        "blog"
+    ],
+    "should_render_b2": false,
+    "blog_post_counts": {
+        "pt": 42,
+        "en": 42
+    }
+}
+
+### DRY-RUN (default, no --apply)
+script: run-en-translation.php
+target: http://localhost:8080 (local, local)
+mode:   dry-run
+scope:  The en-guide / en-page / en-post / en-blog-page stages registered by the conexao-en-translation plugin. Dry-run by default; --apply creates the EN records; --remove deletes them. A PT record is only ever read.
+=== stage: en-blog-page (mode: dry-run, operation: run) ===
+  created=1 updated=0 skipped=0 removed=0 conflicts=0 errors=0 PT-drift=0
+    would-create blog                                          EN record would be created, linked and verified
+  GATE FAIL: eligible PT=1 with EN=0 missing EN=1 conflicts=0 PT drift=0
+summary: created=1, updated=0, skipped=0, removed=0, errors=1, conflicts=0, pt_changed=0, gate_failures=1
+dry-run exit=0
+
+### POST-DRY-RUN STATE
+{
+    "captured_by": "scripts/zz-stage-o-snapshot.php",
+    "pt_blog_page_id": 10,
+    "pt_page_for_posts": 10,
+    "pt_slug": "blog",
+    "pt_snapshot": {
+        "post_name": "blog",
+        "post_title": "Blog",
+        "post_content": "<!-- wp:paragraph --><p>Artigos e notícias para a comunidade brasileira na Irlanda.</p><!-- /wp:paragraph -->",
+        "post_excerpt": "",
+        "post_status": "publish",
+        "post_date": "2026-08-16 15:20:11",
+        "post_date_gmt": "2026-08-16 14:20:11",
+        "post_author": 283039558,
+        "menu_order": 0,
+        "post_parent": 0,
+        "thumbnail": 0,
+        "terms": {
+            "conexao_category": [],
+            "conexao_county": [],
+            "conexao_tag": [],
+            "conexao_town": []
+        },
+        "language": "pt",
+        "meta_desc": "Blog do Conexão BR Irlanda - Artigos, notícias e informações para brasileiros na Irlanda."
+    },
+    "pt_snapshot_sha256": "d50c56a93ba9bdb5eb888a1562e30bd1f9735f0ca2db919d52b03cf76db3f770",
+    "pt_en_link": 0,
+    "pt_page_count": 77,
+    "en_blog_page_count": 1,
+    "b2_allowlist": [
+        "dublin",
+        "cork",
+        "galway",
+        "limerick",
+        "kildare",
+        "meath",
+        "wicklow",
+        "waterford",
+        "laois",
+        "irlanda",
+        "blog"
+    ],
+    "should_render_b2": false,
+    "blog_post_counts": {
+        "pt": 42,
+        "en": 42
+    }
+}

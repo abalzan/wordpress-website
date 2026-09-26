@@ -1,0 +1,11 @@
+### PHASE 10 — EN Blog pagination (N derived from runtime)
+posts_per_page=10, valid EN pages N=5, first invalid page=6
+page 1: status=200 lang=en-US b2_notice=0 posts=10 canonical=http://localhost:8080/en/blog/
+page 2: status=200 lang=en-US b2_notice=0 posts=10 canonical=http://localhost:8080/en/blog/
+page 3: status=200 lang=en-US b2_notice=0 posts=10 canonical=http://localhost:8080/en/blog/
+page 4: status=200 lang=en-US b2_notice=0 posts=10 canonical=http://localhost:8080/en/blog/
+page 5: status=200 lang=en-US b2_notice=0 posts=2 canonical=http://localhost:8080/en/blog/
+page 6 (first invalid): status=404
+
+TOTAL distinct EN posts rendered across all pages = 42 (expected 42)
+PT fallback substitutions = 0 (every page: 0 PT post links, 0 B2 notices)

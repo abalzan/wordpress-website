@@ -1,0 +1,40 @@
+### STAGE O STATIC + RELEASE VERIFICATION
+
+--- 1. PHP syntax (repository-wide, via lint.sh stage 1) ---
+==> [1/3] PHP syntax check (php -l, 448 files)
+OK: no PHP parse errors.
+==> [2/3] PHPCS (WordPress-Extra + WordPress-Docs + PHPCompatibilityWP) + legacy baseline gate
+
+--- 2. PHPCS (WordPress standards, in the container which has the required extensions) ---
+....... 7 / 7 (100%)
+
+
+Time: 851ms; Memory: 22MB
+
+
+--- 3. Python compilation ---
+OK: no Python syntax errors
+
+--- 4. Shell syntax ---
+OK: no shell syntax errors
+
+--- 5. Registry drift ---
+registry OK: 14 plugins validated, 23 generated regions current (zero writes).
+
+--- 6. Script contract ---
+305 passed, 0 failed
+
+--- 7. Release integrity ---
+210 passed, 0 failed
+
+--- 8. Documentation drift ---
+14 passed, 0 failed
+GATE-RESULT {"gate": "documentation_drift", "status": "pass", "passed": 14, "failed": 0, "violations": 0, "details": []}
+
+--- 9. i18n freshness ---
+8 passed, 0 failed
+GATE-RESULT {"gate": "i18n_freshness", "status": "pass", "passed": 8, "failed": 0, "violations": 0, "pre_existing": 0, "new": 0, "details": []}
+
+--- 10. Cache-key scoping ---
+2 passed, 0 failed
+GATE-RESULT {"gate": "cache_scoping_static", "status": "pass", "passed": 2, "failed": 0, "violations": 0, "details": []}

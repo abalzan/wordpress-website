@@ -1,0 +1,33 @@
+### GIT SCOPE AUDIT — Stage O
+
+branch: i18n
+start SHA: a188fb3ff60488c872635dc65dc5dc72888cfb5b
+
+--- changed files ---
+ M docs/architecture.md
+ M docs/content-model.md
+ M docs/evidence/2026-09-26-stage-l/gate.json
+ M docs/evidence/README.md
+ M docs/plugins/README.md
+ M docs/plugins/conexao-en-translation.md
+ M docs/project-inventory.md
+ M docs/routing.md
+ M docs/testing.md
+ M scripts/README.md
+ M scripts/run-en-translation.php
+ M tests/acceptance/matrices/routing.json
+ M wp-content/plugins/conexao-en-translation/conexao-en-translation.php
+ M wp-content/plugins/conexao-en-translation/includes/stage-config.php
+?? docs/evidence/2026-09-26-stage-o/
+?? wp-content/plugins/conexao-en-translation/includes/blog-page-data.php
+
+--- FORBIDDEN paths: must show NO changes ---
+  wp-content/plugins/conexao-translation-rollout : 0 change(s)
+  tests/lib/permanent-gates.php : 0 change(s)
+  tests/baseline/permanent-gates.json : 0 change(s)
+  wp-content/themes : 0 change(s)
+  wp-content/plugins/conexao-blog-translation : 0 change(s)
+  wp-content/plugins/conexao-page-translation : 0 change(s)
+  plugins.json : 0 change(s)
+  wp-content/plugins/conexao-en-translation/includes/blog-translation-data.php : 0 change(s)
+  wp-content/plugins/conexao-en-translation/includes/manifest-data.php : 0 change(s)

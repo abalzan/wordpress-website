@@ -53,7 +53,7 @@ English URLs wrap the same paths in `/en/`:
 | Sponsors | `/apoiadores/` | `/en/apoiadores/` |
 | Empregos landing | `/empregos/` | `/en/jobs/` (real translation since Stage 3.2; **fully bilingual since Stage 8** — the same template, layout and filter values render every user-facing string in the requested language; `/en/empregos/` 302 → PT). The Stage 6 «Vagas»/"Openings" card preview was **removed by product decision (rendering only)** — the EN job records remain real translations at `/en/empregos/{en-slug}/` and the language-aware listing query is retained) |
 | Job singles | `/empregos/{slug}/` | `/en/empregos/{en-slug}/` (real EN translation since Stage 6; before that the approved B2 fallback — PT body under the EN shell + notice; once translated, the PT slug under `/en/` redirects to the PT job) |
-| Blog | `/blog/` | `/en/blog/` — **real English archive since Stage 5** (linked EN posts page + translated EN posts); before that, the approved B2 fallback (PT posts under the EN URL + notice). EN posts live at `/en/{en-slug}/`. |
+| Blog | `/blog/` | `/en/blog/` — **real English archive, complete since Stage O** (linked, published EN posts page created by stage `en-blog-page` + the 42 translated EN posts). Before Stage O it was the approved B2 fallback (PT posts under the EN URL + notice). EN posts live at `/en/{en-slug}/`; the archive paginates `/en/blog/page/N/`. |
 | County pages + `/irlanda/` | `/dublin/`, `/irlanda/`, … | `/en/dublin/`, `/en/irlanda/` (B2: PT body under EN shell + notice) |
 | Filters | `/eventos/?cidade=dublin` | `/en/eventos/?cidade=dublin` |
 
@@ -200,13 +200,22 @@ pages) into real linked Polylang translations. See
   English slugs (`/en/housing/`, `/en/healthcare/`, `/en/documents/`, …),
   county pages use `county-<name>` (`/en/county-dublin/`, …), and
   `/irlanda/` becomes `/en/ireland/`.
-- **B2 retires for the Blog too (Stage 5)**: once the posts page has a
-  published linked EN translation *and* the EN posts exist, `/en/blog/` is a
-  genuine English archive (self-canonical, `hreflang` pair, EN pagination,
-  EN category labels, no fallback notice). The allowlist entry `blog` and the
-  `conexao_b2_posts_page_pre_query()` substitution remain in force only for
-  installs where no EN posts page exists yet. See
-  CONEXAO_BR_ENGLISH_BLOG_TRANSLATION_REPORT.md.
+- **B2 has RETIRED for the Blog (Stage 5 policy, completed in Stage O)**: the
+  posts page now HAS a published, linked EN translation (created by the
+  `en-blog-page` stage of `conexao-en-translation`, data
+  `includes/blog-page-data.php`, version `blog-page-v1`), so `/en/blog/` is a
+  genuine English archive: 200, self-canonical to `/en/blog/`, the full
+  `en` / `pt-BR` / `x-default` hreflang set, EN-only posts, EN pagination, no
+  `language-fallback-notice`. The `blog` string stays in
+  `conexao_b2_page_allowlist()` because that function is the *policy
+  definition* — it is what an install without the EN posts page needs — but on
+  this site it is inert: `conexao_should_render_b2_fallback( blog )` returns
+  `false` and `conexao_b2_posts_page_is_en_request()` returns `false`, so the
+  `conexao_b2_posts_page_pre_query()` substitution is never reached. The
+  **aggregate** permanent-gate allowlist count therefore moved **1821 → 1820**:
+  the `blog` page record is now counted as *translated* rather than
+  *allowlisted*, and it moved on its own. Nothing in the gate, the baseline or
+  the allowlist function was edited to produce that number.
 - **B2 retires for pages**: `conexao_b2_page_allowlist()` still exists (it
   stays the mechanism for future content) but every page it allowlisted
   (`irlanda` + the 9 counties) now has a real EN page, so no page renders the
@@ -310,14 +319,14 @@ Stage 5 gives the Blog a **real English translation**: the linked EN posts page
   and the B2 post-set substitution
   (`conexao_b2_posts_page_pre_query()`) only runs while no EN posts page exists.
   The approved B2 architecture is untouched for every other destination.
-  **Stage N state (2026-09-26):** every eligible public PT blog post now has a
+  **Stage N state (2026-09-26):** every eligible public PT blog post has a
   linked EN translation (`post_type:post:missing_en = 0`, 42/42), and each EN post
   resolves in the EN context with no B2 notice. The **archive** at `/en/blog/`
-  still serves the PT posts with the B2 notice, because the retirement condition
-  is a linked EN translation of the `blog` **page record** and `blog` is on
-  `conexao_b2_page_allowlist()`. Translating that page record would move it out
-  of the allowlist and change the aggregate allowlist count, so it is left to a
-  maintainer decision that explicitly accepts that count change. See
+  still served the PT posts with the B2 notice, because the retirement condition
+  is a linked EN translation of the `blog` **page record**.
+  **Stage O state (2026-09-26):** that page record now exists (stage
+  `en-blog-page`), so `/en/blog/` renders the 42 English posts and the B2
+  notice is gone for good. See
   [`plugins/conexao-en-translation.md`](plugins/conexao-en-translation.md).
 - **Sitemap**: the theme sitemap now lists blog posts in both languages (PT and
   EN passes, mirrors a real translation pair, no duplicates, no fallback URLs).
