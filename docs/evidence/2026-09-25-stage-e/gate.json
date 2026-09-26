@@ -81,7 +81,15 @@
     "secrets": 0,
     "continue_on_error_on_tests": false,
     "github_run_observed": false,
-    "github_run_note": "GitHub run not observed: the git remote requires credentials unavailable in this environment."
+    "github_run_note": "GitHub run not observed: the git remote requires credentials unavailable in this environment.",
+    "setup_sequence_executed_locally": true,
+    "defects_found_and_fixed_by_executing_the_setup": [
+      "hard-coded Compose container name (project name is derived from the checkout dir) -> WP_CONTAINER=$(docker compose ps -q wordpress)",
+      "--network container:X shares only the network namespace, leaving /var/www/html EMPTY in the CLI container -> added --volumes-from \"$WP_CONTAINER\" (inherits the named volume AND the theme/plugin bind mounts)",
+      "UID mismatch: volume owned by 33:33 (Debian wordpress:latest) vs wordpress:cli running as 82:82 (Alpine) -> wp plugin install failed with Permission denied -> added --user 33:33 -e HOME=/tmp",
+      "fresh docker run does not inherit WORDPRESS_DB_* env vars that wp-config.php reads -> credentials read back from the running container, none hard-coded"
+    ],
+    "validation": "YAML valid; actionlint 0 findings; every integration run: block ShellCheck-clean; full setup sequence re-run to completion (theme + 6 plugins + Polylang 3.8.9 active)"
   },
   "migration_completeness": {
     "original_maintained_php_suites": 46,

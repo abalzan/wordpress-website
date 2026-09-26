@@ -179,21 +179,70 @@ jobs:
           docker compose logs wordpress
           exit 1
 
+      # The CI-local WordPress is addressed through the running container, not
+      # through a hard-coded container name (the Compose project name is derived
+      # from the checkout directory) and not through a guessed volume path.
+      #
+      # `--volumes-from` is what makes this work: the CLI container inherits the
+      # WordPress container's named volume AND its bind mounts, so the
+      # repository theme and plugins are present at /var/www/html. Sharing only
+      # the network (`--network container:…`) would leave /var/www/html EMPTY.
+      #
+      # `--user 33:33` is required to WRITE: the volume is owned by 33:33
+      # (Debian `wordpress:latest`), while the `wordpress:cli` image is Alpine
+      # and runs as 82:82, so `wp plugin install` fails with "Permission denied"
+      # without this.
+      # The database credentials are read back from the running container
+      # because wp-config.php reads them from the environment, which a fresh
+      # `docker run` does not inherit. No credential is hard-coded.
       - name: Install WordPress (WP-CLI, single site, no prompts)
         run: |
           set -euo pipefail
-          docker run --rm --network container:wordpress-website-wordpress-1 \
-            -v "$PWD:/var/www/html-src" --entrypoint wp wordpress:cli \
-            core install --path=/var/www/html --url=http://localhost:8080 \
-            --title="Conexao BR Ireland (CI)" --admin_user=ci --admin_password=ci \
-            --admin_email=ci@example.invalid --skip-email
+          WP_CONTAINER="$(docker compose ps -q wordpress)"
+          [ -n "$WP_CONTAINER" ] || { echo "::error::no wordpress container"; exit 1; }
+          for v in WORDPRESS_DB_HOST WORDPRESS_DB_NAME WORDPRESS_DB_USER WORDPRESS_DB_PASSWORD; do
+            val="$(docker inspect -f '{{range .Config.Env}}{{println .}}{{end}}' "$WP_CONTAINER" \
+                   | grep "^$v=" | head -1 | cut -d= -f2-)"
+            export "$v=$val"
+          done
+          wp() {
+            docker run --rm --network "container:$WP_CONTAINER" --volumes-from "$WP_CONTAINER" \
+              --user 33:33 -e HOME=/tmp \
+              -e WORDPRESS_DB_HOST -e WORDPRESS_DB_NAME \
+              -e WORDPRESS_DB_USER -e WORDPRESS_DB_PASSWORD \
+              --entrypoint wp wordpress:cli --path=/var/www/html --allow-root "$@"
+          }
+          # The CI workflow has no wp-config.php yet; the image generates it
+          # from the environment on first boot, so the core install is only
+          # needed when it is absent.
+          if ! docker exec "$WP_CONTAINER" test -f /var/www/html/wp-config.php; then
+            echo "wp-config.php is missing; the stack did not initialise"
+            docker compose logs wordpress
+            exit 1
+          fi
+          if ! wp core is-installed --network=localhost 2>/dev/null; then
+            wp core install --url=http://localhost:8080 \
+              --title="Conexao BR Ireland (CI)" --admin_user=ci --admin_password=ci \
+              --admin_email=ci@example.invalid --skip-email
+          else
+            echo "WordPress already installed; skipping core install"
+          fi
 
       - name: Activate the repository theme and plugins
         run: |
           set -euo pipefail
+          WP_CONTAINER="$(docker compose ps -q wordpress)"
+          for v in WORDPRESS_DB_HOST WORDPRESS_DB_NAME WORDPRESS_DB_USER WORDPRESS_DB_PASSWORD; do
+            val="$(docker inspect -f '{{range .Config.Env}}{{println .}}{{end}}' "$WP_CONTAINER" \
+                   | grep "^$v=" | head -1 | cut -d= -f2-)"
+            export "$v=$val"
+          done
           wp() {
-            docker run --rm --network container:wordpress-website-wordpress-1 \
-              -v "$PWD:/var/www/html-src" --entrypoint wp wordpress:cli "$@"
+            docker run --rm --network "container:$WP_CONTAINER" --volumes-from "$WP_CONTAINER" \
+              --user 33:33 -e HOME=/tmp \
+              -e WORDPRESS_DB_HOST -e WORDPRESS_DB_NAME \
+              -e WORDPRESS_DB_USER -e WORDPRESS_DB_PASSWORD \
+              --entrypoint wp wordpress:cli --path=/var/www/html --allow-root "$@"
           }
           wp theme activate conexao-br-irlanda
           # The repository's own plugins, mounted by compose.yaml.
@@ -203,7 +252,7 @@ jobs:
             wp plugin activate "$slug"
           done
           # Polylang Free, pinned version. Third-party, installed (not vendored).
-          wp plugin install polylang --version="$POLYLANG_VERSION" --force
+          wp plugin is-installed polylang || wp plugin install polylang --version="$POLYLANG_VERSION" --force
           wp plugin activate polylang
           wp plugin list
 

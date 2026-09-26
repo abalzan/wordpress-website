@@ -425,8 +425,30 @@ raw-debt telemetry). A second job was **added**:
   `pull_request_target`; no write scopes; no production host; the acceptance base
   URL is an explicit local variable and the harness independently refuses
   production.
-- **Validation:** the workflow parses as valid YAML and `actionlint` reports
-  **0 findings**.
+- **Validation:** the workflow parses as valid YAML, `actionlint` reports
+  **0 findings**, and every `run:` block in the integration job is
+  **ShellCheck-clean**.
+- **The setup sequence was executed for real** against a live Compose stack
+  (not just authored). Doing so exposed and fixed two defects that would have
+  made the first CI run fail for environmental reasons:
+  1. **`--network container:<hard-coded-name>` was wrong twice over.** The
+     Compose project name is derived from the checkout directory, so the
+     hard-coded `wordpress-website-wordpress-1` is fragile; and sharing only
+     the network namespace leaves `/var/www/html` **empty** in the CLI
+     container, so `wp core install` and `wp plugin activate` had nothing to
+     act on. Replaced with `WP_CONTAINER="$(docker compose ps -q wordpress)"`
+     plus **`--volumes-from "$WP_CONTAINER"`**, which inherits the named volume
+     *and* the theme/plugin bind mounts.
+  2. **UID mismatch blocked every write.** The volume is owned by `33:33`
+     (Debian `wordpress:latest`) while `wordpress:cli` is Alpine and runs as
+     `82:82`, so `wp plugin install polylang` failed with *Permission denied*.
+     Fixed with `--user 33:33 -e HOME=/tmp`.
+  The database credentials are read back from the running container (they are
+  not inherited by a fresh `docker run`, and `wp-config.php` reads them from the
+  environment), so **no credential is hard-coded** in the workflow.
+  With both fixes the full sequence was re-run to completion: WordPress
+  detected as installed, theme activated, all six repository plugins activated,
+  Polylang 3.8.9 installed and active, `wp plugin list` succeeding.
 
 **GitHub run status: NOT OBSERVED.** The git remote
 
