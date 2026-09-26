@@ -75,7 +75,7 @@ Rules:
 - **Caches are per language** (`conexao_*_pt` / `conexao_*_en`).
 
 Language assignment, URL mode and the translated post types/taxonomies are
-configured by `scripts/stage2-polylang-setup.php` + `inc/i18n/guard.php` (see
+configured by `scripts/run-polylang-setup.php` + `inc/i18n/guard.php` (see
 `docs/development.md` § Multilingual (EN) development).
 
 ### English rollout state (Stage 3.2)
@@ -349,7 +349,7 @@ system. Owner: **`inc/rest-language.php`** (theme, loaded from
   key.
 - Verification: `wp-content/themes/conexao-br-irlanda/tests/test-stage41-rest-language.php`
   (in-process REST dispatch, 212 assertions) and
-  `scripts/stage41-rest-verify.py` (wire-level matrix, writes
+  `scripts/verify-rest-english.py` (wire-level matrix, writes
   `stage41-rest-matrix.json`). Local/staging only — nothing deployed.
 
 ### Filters (Query Parameters)
@@ -474,3 +474,4 @@ automatic page list (see CONEXAO_BR_HEADER_NAVIGATION_REGRESSION_REPORT.md).
   empty fallback `conexao_safe_nav_menu_fallback()` (functions.php): when the
   location has no valid menu for the current language, the header renders no
   navigation items. It must never be changed back to `wp_page_menu`.
+_Last verified: 2026-09-26 by Stage I — Scripts Standardisation_

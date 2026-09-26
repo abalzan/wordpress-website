@@ -13,6 +13,9 @@
 #   4. ./scripts/lint.sh           — PHP syntax + PHPCS no-new-violations
 #                                    + PHPStan level 5 (the Stage C gate)
 #   5. shellcheck scripts/*.sh     — repository shell scripts
+#   6. ./scripts/run-tests.sh      — integration job: in-process PHP suites +
+#                                    the Stage I script-contract gate +
+#                                    HTTP acceptance (all blocking)
 #
 # Non-blocking by design (telemetry only, never gates the run):
 #   composer lint — the RAW legacy PHPCS debt view. It is red by design while
@@ -286,6 +289,13 @@ jobs:
           curl -s -o /dev/null -w 'front page: %{http_code}\n' http://localhost:8080/
 
       # PHASE 50: the runner owns discovery. The job never hardcodes suite names.
+      #
+      # Stage I: ./scripts/run-tests.sh runs three layers — the in-process PHP
+      # suites, the script-contract gate (tests/scripts/verify-*.py, which needs
+      # neither WordPress nor the network) and the HTTP acceptance suites. The
+      # script-contract gate is therefore BLOCKING here, with no second
+      # workflow and no duplicated job. It can also be run on its own with
+      # `./scripts/run-tests.sh --scripts`.
       - name: Run the shared test harness
         run: ./scripts/run-tests.sh
 

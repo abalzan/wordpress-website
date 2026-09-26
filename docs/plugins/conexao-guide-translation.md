@@ -32,7 +32,7 @@ Owner: project maintainer. Introduced by Stage 9.
 | Admin screen | Tools → **EN Guide Translations** |
 | WP-CLI | `wp-content/themes/conexao-br-irlanda/tests/run-guide-translation.php` (`php <file> [dry-run] [json]`) |
 | In-process test | `wp-content/themes/conexao-br-irlanda/tests/test-guide-en-translation.php` |
-| HTTP verification | `scripts/stage9-guide-http-verify.sh [base-url]` |
+| HTTP verification | `scripts/verify-guides-http.sh [base-url]` |
 | Frontend effect | **none** (importer only — the rendering contract lives in the theme) |
 | Safe to deactivate | yes, after the rollout |
 | Depends on | Polylang (the English language layer must exist first) |
@@ -145,3 +145,5 @@ in the theme:
 
     rewrite rules are refreshed, so the new `/en/guias/…` routes work in the
     same request cycle.
+
+_Last verified: 2026-09-26 by Stage I — Scripts Standardisation_

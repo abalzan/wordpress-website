@@ -1,0 +1,16 @@
+# Stage I — script regression matrix (measured 2026-09-26)
+
+## Contract matrix (run inside the WordPress container, Stage H engine loaded)
+SCRIPT                           ARGS                 EXPECT   ACTUAL   RESULT
+run-job-translation.php          '--help'             0        0        OK
+run-job-translation.php          '--bogus'            2        2        OK
+run-job-translation.php          '--dry-run --apply'  2        2        OK
+run-job-translation.php          '--dry-run'          0        0        OK
+run-job-translation.php          '--apply'            0        0        OK
+run-job-translation.php          ''                   0        0        OK
+job-translation-inventory.php    '--help'             0        0        OK
+job-translation-inventory.php    '--bogus'            2        2        OK
+job-translation-inventory.php    '--dry-run --apply'  2        2        OK
+job-translation-inventory.php    '--dry-run'          0        0        OK
+job-translation-inventory.php    '--apply'            0        0        OK
+job-translation-inventory.php    ''                   0        0        OK

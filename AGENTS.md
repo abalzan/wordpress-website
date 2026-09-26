@@ -119,6 +119,7 @@ See docs/routing.md.
 | Recruitment agencies / Empregos agency directory | docs/plugins/conexao-data-model.md, theme inc/recruitment-agencies.php |
 | Templates/components | docs/themes/conexao-br-irlanda.md |
 | Run/extend the test suite | docs/testing.md, `./scripts/run-tests.sh --help` |
+| Write or run a repository script | `scripts/README.md` (authoritative catalogue), docs/development.md |
 | CSS/design | docs/frontend.md, theme assets/css/ |
 | SEO/redirects/sitemap | theme `inc/seo/` (see `redirects.php`, `sitemap.php`) |
 | Language policy (Polylang) | theme `inc/i18n/` |
@@ -129,7 +130,8 @@ See docs/routing.md.
 
 ```bash
 docker compose up -d          # http://localhost:8080
-./scripts/run-tests.sh        # ALL tests: in-process PHP + HTTP acceptance
+./scripts/run-tests.sh        # ALL tests: in-process PHP + script contract + HTTP acceptance
+./scripts/run-tests.sh --scripts   # the Stage I script-contract gate only
 docker compose exec wordpress wp ...   # WP-CLI
 ./scripts/build-plugins-zip.sh  # → dist/*.zip
 ./scripts/build-theme-zip.sh    # → dist/conexao-br-irlanda.zip
@@ -137,12 +139,31 @@ docker compose exec wordpress wp ...   # WP-CLI
 
 ## Tests
 
-`./scripts/run-tests.sh` is the single test command (in-process PHP + HTTP
-acceptance, one aggregate exit code). Shared bootstrap: `tests/bootstrap.php`.
-Shared assertions: `tests/lib/assertions.php`. Acceptance + matrices:
-`tests/acceptance/`. Suites are discovered by convention
-(`<component>/tests/test-*.php`, `tests/acceptance/verify-*-http.py`) — never
-from a hardcoded list. See [docs/testing.md](docs/testing.md).
+`./scripts/run-tests.sh` is the single test command (in-process PHP +
+script-contract + HTTP acceptance, one aggregate exit code). Shared bootstrap:
+`tests/bootstrap.php`. Shared assertions: `tests/lib/assertions.php`.
+Acceptance + matrices: `tests/acceptance/`. Script conventions:
+`tests/scripts/`. Suites are discovered by convention
+(`<component>/tests/test-*.php`, `tests/scripts/verify-*.py`,
+`tests/acceptance/verify-*-http.py`) — never from a hardcoded list. See
+[docs/testing.md](docs/testing.md).
+
+## Scripts
+
+**`scripts/README.md` is the authoritative script catalogue** (purpose, safety
+level, arguments, default mode, target, write behaviour, last verified).
+
+- `scripts/lib/bootstrap.php` — the canonical PHP bootstrap: the only place in
+  `scripts/` allowed to locate and load WordPress, plus the standard CLI
+  contract, run header and production write guard.
+- `scripts/lib/rest.py` — the shared Python REST client (target, credentials,
+  retries, pagination, errors). Credentials come from `WP_USERNAME` /
+  `WP_APPLICATION_PASSWORD` only.
+- Write-capable scripts use `--dry-run` (the default; zero writes) / `--apply`,
+  print `script`/`target`/`mode`/`scope` and a `summary:`, and refuse an
+  unconfirmed production write.
+- `scripts/historical/` = provenance only, not supported tooling.
+  `scripts/diagnostics/` = ad-hoc helpers, not the supported workflow.
 
 See docs/development.md.
 
@@ -170,3 +191,5 @@ Task → Read first
 - **Plugin lifecycle rule:** `plugins.json` is the single source of truth for plugin load order, dependencies, production activation order, release build inclusion and local Compose mounts. Edit it, then run `php scripts/generate-registry-docs.php --write`. Never hand-edit a region marked `GENERATED PLUGIN REGISTRY`, and never add a second plugin list. `--check` is a blocking CI gate.
 - Plugin docs owned by plugin maintainers; theme docs by theme maintainers; architecture/README by the project maintainer.
 - Keep AGENTS.md short. Put depth in `docs/`.
+
+_Last verified: 2026-09-26 by Stage I — Scripts Standardisation_

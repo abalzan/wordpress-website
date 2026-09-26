@@ -60,7 +60,8 @@ To add, remove or re-classify a plugin: edit `plugins.json`, add its doc under
 | Document | What it is |
 |---|---|
 | [development.md](development.md) | Local setup, Docker, the dev-only quality toolchain (`composer lint` / `analyse` / `./scripts/lint.sh`), and the one test command |
-| [testing.md](testing.md) | **How to run and write tests** — the two-layer model, `./scripts/run-tests.sh`, the shared bootstrap/assertions, prerequisites, fixtures, acceptance base URL, CI |
+| [testing.md](testing.md) | **How to run and write tests** — the three-layer model, `./scripts/run-tests.sh`, the shared bootstrap/assertions, prerequisites, fixtures, acceptance base URL, CI |
+| [../scripts/README.md](../scripts/README.md) | **The authoritative script catalogue** — every current script with safety level, arguments, default mode, target and last-verified date, plus the new-script contract |
 | [deployment.md](deployment.md) | Build ZIPs, deployment to WordPress.com, verification |
 
 ## Frontend
@@ -92,10 +93,12 @@ To add, remove or re-classify a plugin: edit `plugins.json`, add its doc under
 
 ## Testing
 
-One command runs every maintained test — in-process PHP plus HTTP acceptance:
+One command runs every maintained test — in-process PHP, the Stage I
+script-contract gate and HTTP acceptance:
 
 ```bash
-./scripts/run-tests.sh
+./scripts/run-tests.sh            # all layers
+./scripts/run-tests.sh --scripts   # script-contract gate only
 ```
 
 See **[testing.md](testing.md)** for the model, the shared bootstrap and
@@ -103,4 +106,4 @@ assertion library, data prerequisites, the acceptance base URL and the
 manual/historical/production-only classification. The authoritative policy is
 [engineering-standard.md §8](engineering-standard.md).
 
-_Last verified: 2026-09-25 by Stage E (unified test harness)_
+_Last verified: 2026-09-26 by Stage I — Scripts Standardisation_

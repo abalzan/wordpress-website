@@ -258,11 +258,11 @@ docker compose exec -T wordpress wp plugin install polylang --version=3.8.9 --al
 docker compose exec -T wordpress wp plugin activate polylang --allow-root
 
 # 2. Configure languages + assign existing content to pt_BR (idempotent)
-docker compose exec -T wordpress wp eval-file - --allow-root < scripts/stage2-polylang-setup.php
-#    dry run:  ... < scripts/stage2-polylang-setup.php dry-run
+docker compose exec -T wordpress wp eval-file - --allow-root < scripts/run-polylang-setup.php
+#    dry run:  ... < scripts/run-polylang-setup.php dry-run
 
 # 3. Verify the URL/SEO/cache/REST matrix (HTTP level)
-./scripts/stage2-http-verify.sh http://localhost:8080
+./scripts/verify-polylang-http.sh http://localhost:8080
 
 # 4. Stage 2 gates (language, identity, status, UUID, taxonomy)
 docker compose exec wordpress php /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-polylang-foundation.php
@@ -282,13 +282,13 @@ only a versioned data manifest and a small configuration; it never copies
 
 ```bash
 # Preview (dry run) — zero writes
-cat scripts/stage6-job-translate.php | docker compose exec -T wordpress \
+cat scripts/run-job-translation.php | docker compose exec -T wordpress \
   wp eval-file - --allow-root -- dry-run
-cat scripts/stage6-job-translate.php | docker compose exec -T wordpress \
+cat scripts/run-job-translation.php | docker compose exec -T wordpress \
   wp eval-file - --allow-root -- dry-run json
 
 # Apply (LOCAL/STAGING ONLY)
-cat scripts/stage6-job-translate.php | docker compose exec -T wordpress \
+cat scripts/run-job-translation.php | docker compose exec -T wordpress \
   wp eval-file - --allow-root
 
 # Engine + migrated-stage suites
@@ -325,7 +325,7 @@ docker compose exec -T wordpress php \
   /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-guide-en-translation.php
 
 # 3. HTTP contract (archive, singles, canonical, hreflang, filter, pagination, sitemap)
-./scripts/stage9-guide-http-verify.sh
+./scripts/verify-guides-http.sh
 ```
 
 Production (WordPress.com, no WP-CLI) uses the plugin admin screen: **Tools → EN
@@ -346,13 +346,55 @@ Notes:
 
 ## Running Scripts
 
-Utility scripts are in `scripts/`. Most are WP-CLI eval files:
+Utility scripts are in `scripts/`. **`scripts/README.md` is the authoritative
+catalogue**: it lists every current runnable script with its purpose, safety
+level, arguments, default mode, target and last-verified date, and it is the
+place to look for the correct invocation of anything below.
+
+Most PHP scripts are WP-CLI eval files:
 
 ```bash
 docker compose exec wordpress wp eval-file scripts/seed-course-providers.php
 docker compose exec wordpress wp eval-file scripts/run-event-import.php
 docker compose exec wordpress wp eval-file scripts/run-leisure-migration.php
 ```
+
+### Script contract (Stage I)
+
+Every current script follows one entry contract:
+
+| Flag | Meaning |
+|---|---|
+| `--help` | Purpose, target, scope, safety, modes, arguments, environment. Exit 0. |
+| `--dry-run` | Plan only. **The default for a write-capable script.** Zero writes. |
+| `--apply` | The only write mode. Mutually exclusive with `--dry-run`. |
+| `--confirm-production` | Required before a write against a production target. |
+| `--json` | Machine-readable result on stdout (the run header moves to stderr). |
+
+Every run prints what/where/mode/result — `script:`, `target:`, `mode:`,
+`scope:` at the start and a `summary:` line at the end:
+
+```bash
+docker compose exec -T wordpress wp eval-file scripts/run-job-translation.php \
+  --allow-root -- --dry-run
+```
+
+**No script defaults to a production write.** The target comes from
+`CONEXAO_SITE_URL` (PHP and Python) or `--base-url` / `--site`, and defaults to
+the local stack; production must be named explicitly and confirmed.
+
+Shared helpers, used by new scripts rather than re-implemented per script:
+
+- `scripts/lib/bootstrap.php` — the canonical PHP bootstrap. The only place in
+  `scripts/` allowed to locate and load WordPress, plus the CLI parser, run
+  header, target classification and production write guard.
+- `scripts/lib/rest.py` — the shared Python REST client (base URL,
+  `WP_USERNAME`/`WP_APPLICATION_PASSWORD` auth, retries, pagination, errors).
+- `scripts/lib/plan.py` — the shared machine-readable plan document.
+
+`scripts/historical/` holds one-shot stage scripts kept for provenance only —
+they are **not** supported tooling. `scripts/diagnostics/` holds ad-hoc
+investigation helpers that are not part of the supported workflow.
 
 ## Tests (Stage E — unified test harness)
 
@@ -362,11 +404,22 @@ aggregate exit code:
 ```bash
 docker compose up -d                 # local WordPress must be running first
 
-./scripts/run-tests.sh               # in-process PHP + HTTP acceptance
+./scripts/run-tests.sh               # all layers
 ./scripts/run-tests.sh --only theme  # one component
+./scripts/run-tests.sh --scripts     # the Stage I script-contract gate only
 ./scripts/run-tests.sh --acceptance  # HTTP acceptance only
 ./scripts/run-tests.sh --list        # discovered suites + manual suites
 ```
+
+- **Three layers, one command, one exit code:** in-process PHP suites, the
+  Stage I **script-contract** layer (`tests/scripts/verify-*.py` — static,
+  no WordPress, no network, so it runs anywhere) and HTTP acceptance.
+  There is no second test runner.
+- The script-contract gate is **blocking** in CI. It fails when a current
+  runnable script is missing from `scripts/README.md`, when a current script
+  hard-codes a production target or contains a credential, when a PHP script
+  resolves `wp-load.php` itself instead of using `scripts/lib/bootstrap.php`,
+  or when a current document still references a renamed/removed script path.
 
 - **Local Docker is a requirement.** The in-process suites need a real
   WordPress (they run inside the `wordpress` container, where `wp-load.php`
@@ -397,3 +450,5 @@ standard §1.3, enforced by the root `.gitignore`):
 Historical stage reports live in `docs/reports/` (index in
 `docs/reports/README.md`); never add reports or evidence files at the
 repository root.
+
+_Last verified: 2026-09-26 by Stage I — Scripts Standardisation_

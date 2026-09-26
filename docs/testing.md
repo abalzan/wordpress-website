@@ -7,14 +7,15 @@ wins.
 
 ---
 
-## The two-layer model
+## The three-layer model
 
 | Layer | What it proves | Where it lives | How it runs |
 |---|---|---|---|
 | **In-process PHP** | Functions, queries, policies, taxonomies, language logic, metadata and cache logic against a **real** WordPress | `wp-content/<kind>/<component>/tests/test-<area>-<behaviour>.php` | one PHP process per suite |
+| **Script contract** (Stage I) | The `scripts/` estate obeys its contract: shared bootstrap/REST use, no hard-coded production target, no credentials, catalogue completeness, no stale renamed paths | `tests/scripts/verify-*.py` | one Python process per suite; static, no WordPress, no network |
 | **HTTP acceptance** | What a real request returns: status, redirects, canonical, hreflang, sitemap, filters | `tests/acceptance/verify-<area>-http.py` + `tests/acceptance/matrices/*.json` | one Python process per suite |
 
-Both run through **one** command with **one** aggregate exit code:
+All three run through **one** command with **one** aggregate exit code:
 
 ```bash
 ./scripts/run-tests.sh
@@ -31,7 +32,8 @@ verdict.
 
 | Command | What it does |
 |---|---|
-| `./scripts/run-tests.sh` | in-process PHP **and** HTTP acceptance |
+| `./scripts/run-tests.sh` | all three layers |
+| `./scripts/run-tests.sh --scripts` | the script-contract gate only (static; needs no stack) |
 | `./scripts/run-tests.sh --acceptance` | HTTP acceptance layer only |
 | `./scripts/run-tests.sh --php` | in-process PHP layer only |
 | `./scripts/run-tests.sh --only theme` | only the theme's maintained suites |
@@ -331,8 +333,8 @@ matters, and Stage E records it explicitly:
   intact and are not treated as current regression coverage. A stage
   verification script's existence does **not** mean the runner executes it.
 
-- **Production verifiers** (`scripts/c3-production-http-verify.py`,
-  `scripts/c3-production-verify.py`) intentionally target `conexaobr.ie`. They
+- **Production verifiers** (`scripts/historical/c3-production-http-verify.py`,
+  `scripts/historical/c3-production-verify.py`) intentionally target `conexaobr.ie`. They
   are manual operator tools, are never part of CI, and are never redirected
   toward the local site and relabelled as the same test.
 
@@ -395,6 +397,7 @@ convention-based, and CI calls the same command you do.
 
 | `wp-content/plugins/conexao-event-runtime/tests/test-plugin-separation.php` | `MANUAL_TEST` | no — see below |
 | `scripts/stage*-verify.*`, `scripts/c2-*.php` | `HISTORICAL_VERIFICATION` / `DIAGNOSTIC` | no |
-| `scripts/c3-production-*.py` | `PRODUCTION_ONLY` | never |
+| `scripts/historical/c3-production-*.py` | `PRODUCTION_ONLY` | never |
+| `tests/scripts/verify-*.py` | `SCRIPT_CONTRACT` | yes — blocking |
 
-_Last verified: 2026-09-25 by Stage E (unified test harness)_
+_Last verified: 2026-09-26 by Stage I — Scripts Standardisation_

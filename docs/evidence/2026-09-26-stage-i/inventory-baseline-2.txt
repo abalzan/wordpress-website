@@ -1,0 +1,24 @@
+# Stage I — re-measured duplication baseline (pre-change)
+
+measured_at: 2026-09-26
+baseline_sha: 1068a7b145f1f0b4d13b3b0212415c169a3331da
+scope: files under scripts/ (scripts/lib/* excluded where noted)
+
+## Hard-coded production URL literals
+conexaobr_ie_hits_total            44
+conexaobr_ie_hits_excl_lib         44   (scripts/lib did not exist at baseline)
+scripts_with_hardcoded_prod_url    22
+
+## REST duplication (Python, excl. scripts/lib)
+python_scripts                     34
+with_urllib_request                24
+with_own_basic_auth                11
+WpRest_class_definitions            5
+with_retry_loop                    10
+with_X_WP_TotalPages                2
+
+## Dry-run convention styles
+files_with_--dry-run               12
+files_with_--apply                  2
+php_with_bare_'dry-run'_token        8
+php_with_DRY_RUN_envvar             1

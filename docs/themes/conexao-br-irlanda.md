@@ -600,7 +600,7 @@ runs slightly over is preferred over an artificial split.
   collection filtering, the `conexao_language` record field, detail language
   rules and the REST event-status gate; verified by
   `tests/test-stage41-rest-language.php` and
-  `scripts/stage41-rest-verify.py` (see docs/routing.md §English rollout state)
+  `scripts/verify-rest-english.py` (see docs/routing.md §English rollout state)
 - `front-page.php` — homepage template
 - `archive.php` — shared archive template
 - `single-leisure.php` — leisure detail template
@@ -609,3 +609,4 @@ runs slightly over is preferred over an artificial split.
 - `tests/test-leisure-attribute-normalization.php` — leisure attribute environment normalization tests (`Interior + exterior` suppresses redundant `Interior`/`Exterior`, including the legacy-meta fallback; card renders through the shared helper; run: `docker compose exec wordpress php /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-leisure-attribute-normalization.php`)
 - `tests/test-leisure-card-excerpt-language.php` — Stage 7 leisure card-description language selection (`conexao_leisure_card_excerpt()`: PT unchanged, EN translation via `_leisure_excerpt_en`, B2 fallback when absent; renders the real card template part in each language; rollout-engine invariants: preview/drift-refusal/idempotency/remove rollback; run: `docker compose exec wordpress php /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-leisure-card-excerpt-language.php`)
 - `assets/js/main.js` — frontend JavaScript
+_Last verified: 2026-09-26 by Stage I — Scripts Standardisation_

@@ -591,7 +591,7 @@ Both run through `scripts/run-tests.sh` (to be created), which MUST print a per-
 
 # Today's equivalent (per suite, inside the container)
 docker compose exec wordpress php /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-polylang-foundation.php
-./scripts/stage9-guide-http-verify.sh
+./scripts/verify-guides-http.sh
 ```
 
 ---
@@ -814,3 +814,5 @@ Every change (human or agent) MUST satisfy all applicable items:
 
 _Last verified: 2026-09-25 by the WordPress engineering standardisation audit (proposal stage — no code changed)._
 
+
+_Last verified: 2026-09-26 by Stage I — Scripts Standardisation_
