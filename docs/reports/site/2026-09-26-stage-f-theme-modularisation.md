@@ -11,7 +11,7 @@ changes, no Polylang/REST behaviour changes, no Flutter/mobile work.
 |---|---|
 | Branch | `i18n` |
 | Starting HEAD | `ff7ddf4421c698ba607441f5995f99a6baabdd9a` (stage E: record the final Stage E commit hash…) |
-| Final HEAD | see §19 |
+| Final HEAD | `e674adda5dde071b6405e9ad8490b2d27354a693` (`theme: modularise runtime PHP`) |
 | Tracked files (start) | 631 |
 | Tracked files (end) | 645 |
 | Theme PHP files (start → end) | 76 → 107 |
