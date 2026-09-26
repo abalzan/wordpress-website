@@ -5,38 +5,6 @@ conexao test harness
   base url:      http://localhost:8080
 
 In-process PHP suites (serial, one process per suite)
-[PASS] plugin/conexao-admin-ux/test-recurrence-admin.php — 60 passed, 0 failed
-[PASS] plugin/conexao-admin-ux/test-translation-state.php — 23 passed, 0 failed
-[FAIL] plugin/conexao-event-importer/test-county-registry.php — 471 passed, 2 failed (exit 1)
-           FAIL: First seed: 52 sources inserted
-           FAIL: First seed: 0 skipped
-[FAIL] plugin/conexao-event-importer/test-error-handling.php — 54 passed, 1 failed (exit 1)
-           PASS: Fatal error sets status to failed
-           PASS: Fatal errors list has 1 entry
-           FAIL: History entry was added
-[PASS] plugin/conexao-event-importer/test-event-address.php — 76 passed, 0 failed
-[PASS] plugin/conexao-event-importer/test-event-image-sync.php — 30 passed, 0 failed
-[PASS] plugin/conexao-event-importer/test-eventbrite-importer.php — 68 passed, 0 failed
-[PASS] plugin/conexao-event-importer/test-export-language.php — 58 passed, 0 failed
-[PASS] plugin/conexao-event-importer/test-import-log.php — 53 passed, 0 failed
-[FAIL] plugin/conexao-event-importer/test-ivvcc-importer.php — 45 passed, 1 failed (exit 1)
-           FAIL: different ID+URL does not collapse
-[PASS] plugin/conexao-event-importer/test-language-identity.php — 29 passed, 0 failed
-[PASS] plugin/conexao-event-importer/test-mondello-park-importer.php — 142 passed, 0 failed
-[PASS] plugin/conexao-event-importer/test-motorsport-ireland-importer.php — 90 passed, 0 failed
-[PASS] plugin/conexao-event-importer/test-past-event-filter.php — 29 passed, 0 failed
-[PASS] plugin/conexao-event-importer/test-reappearing-event-lifecycle.php — 5 passed, 0 failed
-[FAIL] plugin/conexao-event-importer/test-town-sanitization.php — 32 passed, 1 failed (exit 1)
-           FAIL: no Eircode-contaminated or non-town terms in conexao_town
-[PASS] plugin/conexao-event-runtime/test-event-language-gate.php — 18 passed, 0 failed
-[PASS] plugin/conexao-event-runtime/test-event-query.php — 41 passed, 0 failed
-[PASS] plugin/conexao-event-runtime/test-event-recurrence.php — 90 passed, 0 failed
-[PASS] plugin/conexao-job-translation/test-job-engine-migration.php — 16 passed, 0 failed
-[PASS] plugin/conexao-leisure-migration/test-excerpt-en-roundtrip.php — 9 passed, 0 failed
-[PASS] plugin/conexao-leisure-migration/test-language-uuid.php — 16 passed, 0 failed
-[PASS] plugin/conexao-translation-rollout/test-future-stage-smoke.php — 13 passed, 0 failed
-[PASS] plugin/conexao-translation-rollout/test-rollout-failure-proofs.php — 12 passed, 0 failed
-[PASS] plugin/conexao-translation-rollout/test-translation-rollout-engine.php — 21 passed, 0 failed
 [FAIL] theme/conexao-br-irlanda/test-blog-en-translation.php — 19 passed, 9 failed (exit 1)
            FAIL: the posts page has an EN translation — en_id=0
            FAIL: the posts page pair is linked from both sides
@@ -77,15 +45,15 @@ In-process PHP suites (serial, one process per suite)
 [PASS] theme/conexao-br-irlanda/test-sponsor-archive-ordering.php — 15 passed, 0 failed
 [FAIL] theme/conexao-br-irlanda/test-stage32-bilingual.php — 32 passed, 11 failed (exit 1)
            FAIL: the PT phoenix-park master is in the replacement set (its EN translation exists)
-         [26-Sep-2026 11:39:46 UTC] PHP Warning:  Undefined array key 0 in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-stage32-bilingual.php on line 94
+         [26-Sep-2026 11:36:32 UTC] PHP Warning:  Undefined array key 0 in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-stage32-bilingual.php on line 94
          Warning: Undefined array key 0 in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-stage32-bilingual.php on line 94
-         [26-Sep-2026 11:39:46 UTC] PHP Warning:  Undefined array key 0 in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-stage32-bilingual.php on line 98
+         [26-Sep-2026 11:36:32 UTC] PHP Warning:  Undefined array key 0 in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-stage32-bilingual.php on line 98
          Warning: Undefined array key 0 in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-stage32-bilingual.php on line 98
            FAIL: the PT event master is replaced by its EN translation
-         [26-Sep-2026 11:39:46 UTC] PHP Warning:  Undefined array key 0 in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-stage32-bilingual.php on line 118
+         [26-Sep-2026 11:36:32 UTC] PHP Warning:  Undefined array key 0 in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-stage32-bilingual.php on line 118
          Warning: Undefined array key 0 in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-stage32-bilingual.php on line 118
            FAIL: the EN guide carries its linked EN category terms (documents, work)
-         [26-Sep-2026 11:39:46 UTC] PHP Warning:  Undefined array key 0 in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-stage32-bilingual.php on line 124
+         [26-Sep-2026 11:36:32 UTC] PHP Warning:  Undefined array key 0 in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-stage32-bilingual.php on line 124
 [FAIL] theme/conexao-br-irlanda/test-stage33-bilingual.php — 170 passed, 14 failed (exit 1)
            FAIL: EN page: conexao_lang_url( /politica-de-privacidade/ ) === /en/privacy-policy/ (got /politica-de-privacidade/)
            FAIL: EN page: conexao_lang_url( /termos-de-uso/ ) === /en/terms-of-use/ (got /termos-de-uso/)
@@ -120,27 +88,19 @@ In-process PHP suites (serial, one process per suite)
            FAIL: politica-de-privacidade: meta description contains no untranslated Portuguese
            FAIL: termos-de-uso: meta description contains no untranslated Portuguese
 [PASS] theme/conexao-br-irlanda/test-stage7-hero-sponsors.php — 10 passed, 0 failed
-
-Script-contract suites (static, no WordPress, no network)
-[PASS] tests/scripts/verify-script-conventions.py
-         275 passed, 0 failed
+no script-contract suites discovered under tests/scripts/
 
 HTTP acceptance suites (base: http://localhost:8080)
 [PASS] tests/acceptance/verify-guides-en-http.py — 18 passed, 0 failed
 [PASS] tests/acceptance/verify-routing-http.py — 59 passed, 0 failed
 
 ----------------------------------------
-In-process PHP suites: 50 total, 35 passed, 15 failed
-Assertions: 3306 passed, 59 failed
-Script-contract suites: 1 total, 1 passed, 0 failed
+In-process PHP suites: 25 total, 14 passed, 11 failed
+Assertions: 1805 passed, 54 failed
 HTTP acceptance suites: 2 total, 2 passed, 0 failed
 ----------------------------------------
 TESTS FAILED
 failing suites:
-  - plugin/conexao-event-importer/test-county-registry.php
-  - plugin/conexao-event-importer/test-error-handling.php
-  - plugin/conexao-event-importer/test-ivvcc-importer.php
-  - plugin/conexao-event-importer/test-town-sanitization.php
   - theme/conexao-br-irlanda/test-blog-en-translation.php
   - theme/conexao-br-irlanda/test-event-location-filters.php
   - theme/conexao-br-irlanda/test-guide-en-translation.php
@@ -152,4 +112,4 @@ failing suites:
   - theme/conexao-br-irlanda/test-stage33-bilingual.php
   - theme/conexao-br-irlanda/test-stage41-rest-language.php
   - theme/conexao-br-irlanda/test-stage45-pages.php
-full suite output kept in /tmp/tmp.y72RHBZt5m
+full suite output kept in /tmp/tmp.R0iLgGbvGN
