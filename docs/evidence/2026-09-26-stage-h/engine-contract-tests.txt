@@ -1,0 +1,30 @@
+Shared engine + migrated-stage contract tests (Stage H), via the existing
+Stage E harness (./scripts/run-tests.sh) and the in-process container runs.
+
+$ ./scripts/run-tests.sh --only conexao-translation-rollout
+  [PASS] plugin/conexao-translation-rollout/test-translation-rollout-engine.php  — 21 passed, 0 failed
+  [PASS] plugin/conexao-translation-rollout/test-rollout-failure-proofs.php       — 12 passed, 0 failed
+  [PASS] plugin/conexao-translation-rollout/test-future-stage-smoke.php           — 13 passed, 0 failed
+  In-process PHP suites: 3 total, 3 passed, 0 failed
+
+$ ./scripts/run-tests.sh --only conexao-job-translation
+  [PASS] plugin/conexao-job-translation/test-job-engine-migration.php            — 16 passed, 0 failed
+  In-process PHP suites: 1 total, 1 passed, 0 failed
+
+Suite coverage (all discovered by convention wp-content/plugins/*/tests/test-*.php):
+  test-translation-rollout-engine.php : config validation, manifest validation
+    (missing key / language mismatch / malformed row / duplicate stable identity),
+    dry-run categories, stable identity, snapshot diff, numeric gate PASS/FAIL,
+    stage registration, dry-run zero-writes, idempotent apply, PT-drift primitive.
+  test-rollout-failure-proofs.php     : failure matrix A/B/C/D/E/F + live local
+    idempotence and PT-drift fixtures with full cleanup.
+  test-future-stage-smoke.php         : Phase 17 architecture proof - a synthetic
+    stage registers itself, supplies a manifest + small config, and receives
+    inventory/plan/snapshot/apply/verify/gate from the engine with no copied
+    orchestration; remove is refused unless declared safe.
+  test-job-engine-migration.php       : the migrated stage has no generic
+    orchestration left, keeps its stage-specific field mapping, its manifest is
+    byte-equivalent to the historical map, and its dry-run plan is deterministic.
+
+Shared-engine assertions: 46
+Selected-stage assertions:  16

@@ -1,0 +1,30 @@
+Registry check (Stage H)
+  php scripts/generate-registry-docs.php --check -> exit 0
+  registry OK: 13 plugins validated, 22 generated regions current (zero writes).
+
+Build verification (Stage H)
+  rm -rf dist && ./scripts/build-plugins-zip.sh -> exit 0
+  Build set (build:true, registry order):
+    conexao-admin-ux.zip
+    conexao-content.zip
+    conexao-data-model.zip
+    conexao-event-importer.zip
+    conexao-event-runtime.zip
+    conexao-leisure-migration.zip
+    conexao-sponsor-migration.zip
+  ZIP count: 7  (expected 7 - unchanged from Stage G)
+  conexao-translation-rollout in build set: NO (class tooling, build:false)
+  retired rollouts in build set: NONE (page/blog/job/leisure/guide all build:false)
+
+  No test/fixture/dev debris in any ZIP:
+    conexao-admin-ux.zip: 0 test/fixture/log entries
+    conexao-content.zip: 0 test/fixture/log entries
+    conexao-data-model.zip: 0 test/fixture/log entries
+    conexao-event-importer.zip: 0 test/fixture/log entries
+    conexao-event-runtime.zip: 0 test/fixture/log entries
+    conexao-leisure-migration.zip: 0 test/fixture/log entries
+    conexao-sponsor-migration.zip: 0 test/fixture/log entries
+
+Registry failure proof: an invalid engine registry state makes
+generate-registry-docs.php --check exit 1 and build-plugins-zip.sh refuse to
+package (exit 1). See registry-check.txt.

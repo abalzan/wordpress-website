@@ -717,11 +717,6 @@ parameters:
 			path: wp-content/plugins/conexao-guide-translation/includes/guides-d2.php
 
 		-
-			message: "#^Property PLL\\:\\:\\$model \\(PLL_Model\\) in isset\\(\\) is not nullable\\.$#"
-			count: 1
-			path: wp-content/plugins/conexao-job-translation/includes/apply.php
-
-		-
 			message: "#^Call to function is_wp_error\\(\\) with int\\<1, max\\> will always evaluate to false\\.$#"
 			count: 1
 			path: wp-content/plugins/conexao-leisure-migration/includes/class-leisure-importer.php

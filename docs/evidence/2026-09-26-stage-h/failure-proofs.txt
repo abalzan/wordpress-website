@@ -1,0 +1,8 @@
+A invalid-config: engine->run() returns WP_Error, zero writes (engine suite: 1 assertion)
+B malformed-manifest: engine->run() returns WP_Error, zero writes (engine suite: 1 assertion)
+C duplicate-stable-identity: duplicate en_slug rejected by validate_manifest, zero writes (1 assertion)
+D pt-drift: mutated protected PT field detected by snapshot diff -> 1 "PT SOURCE CHANGED" error row, pt_changed=1, gate FAIL
+E idempotence: second apply create=0 update=0 (failure-proof suite, live local fixtures)
+F missing-gate: calculate_gate(missing_en=1) -> FAIL, never a false PASS
+G capability: anonymous request lacks manage_options -> BLOCKED before any write; job record count unchanged (2 before / 2 after)
+H nonce: missing/invalid nonce -> check_admin_referer dies ("Este link expirou"), exit 1, zero writes

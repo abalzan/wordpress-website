@@ -73,6 +73,7 @@ dependencies and never left active on production:
 - `conexao-event-importer`
 - `conexao-leisure-migration`
 - `conexao-sponsor-migration`
+- `conexao-translation-rollout`
 
 ### Retired rollout plugins (historical tooling)
 
@@ -190,6 +191,32 @@ Notes:
 - **Local**: Full admin access, WP_DEBUG enabled, `WORDPRESS_DEBUG=1`
 - **Production**: WordPress.com managed, WP_DEBUG disabled, caching enabled
 - **Domain-specific configuration**: None required — all paths are relative
+
+## Translation Rollouts (Stage H)
+
+Translation rollouts are **not** part of the normal production release. The
+shared engine `conexao-translation-rollout` is `tooling` / `production: false` /
+`build: false`: it is locally mounted for development and tests, and it is
+**never** in a release plugin ZIP, exactly like the retired one-shot rollouts.
+
+To run an actual rollout on production, install the engine plus the stage
+plugin manually (ZIP upload or a repo checkout), then use the **admin
+workflow** — production is WordPress.com and has **no WP-CLI**:
+
+1. Tools → **Translation Rollouts** (or the stage's own legacy screen, for the
+   four rollouts not yet migrated).
+2. Select the registered stage.
+3. **Preview (dry run)** first — it performs zero writes and prints the
+   `create` / `update` / `skip` / `conflicts` plan plus the numeric gate.
+4. **Apply** — writes, then re-verifies that the PT originals are unchanged
+   (`pt_drift` must be 0) and recalculates the gate
+   (`eligible public PT <type> missing EN = 0`).
+5. **Remove** only for a stage that declares `allow_remove`; otherwise follow
+   that stage's documented recovery.
+
+The engine registers its admin action with `manage_options` and a nonce, never
+writes on page load or on GET, and performs no content write on activation.
+See [`docs/plugins/conexao-translation-rollout.md`](plugins/conexao-translation-rollout.md).
 
 ## Deployment Checklist
 

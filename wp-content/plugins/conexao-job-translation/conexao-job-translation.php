@@ -44,160 +44,28 @@ defined( 'ABSPATH' ) || exit;
 define( 'CONEXAO_JOB_TRANSLATION_FILE', __FILE__ );
 define( 'CONEXAO_JOB_TRANSLATION_DIR', plugin_dir_path( __FILE__ ) );
 
+// Stage H (shared rollout engine): this plugin is now a DATA + CONFIG
+// consumer. The authored English translations live in includes/translation-map.php,
+// the job-specific field mapping in includes/stage-fields.php, and the
+// declarative stage config in includes/stage-config.php. Every lifecycle step
+// (inventory, manifest validation, dry-run plan, snapshot, apply, verify,
+// numeric gate) is owned by conexao-translation-rollout.
 require_once CONEXAO_JOB_TRANSLATION_DIR . 'includes/translation-map.php';
-require_once CONEXAO_JOB_TRANSLATION_DIR . 'includes/apply.php';
-require_once CONEXAO_JOB_TRANSLATION_DIR . 'includes/audit.php';
+require_once CONEXAO_JOB_TRANSLATION_DIR . 'includes/stage-fields.php';
+require_once CONEXAO_JOB_TRANSLATION_DIR . 'includes/stage-config.php';
 
 /**
- * Admin screen: Tools → EN Job Translations.
+ * Register this stage with the shared engine.
+ *
+ * Deferred to `plugins_loaded` so the registration does not depend on the
+ * activation order WordPress happened to write into `active_plugins` (the
+ * engine plugin may be listed after this one). Registration is a pure
+ * in-memory declaration: it performs zero writes, and the engine never writes
+ * on plugin bootstrap or activation.
  */
-final class Conexao_Job_Translation_Admin {
-
-	const CAP       = 'manage_options';
-	const PAGE_SLUG = 'conexao-job-translation';
-	const ACTION    = 'conexao_job_translation_run';
-
-	public static function init(): void {
-		add_action( 'admin_menu', array( __CLASS__, 'register_menu' ) );
-		add_action( 'admin_post_' . self::ACTION, array( __CLASS__, 'handle_run' ) );
-	}
-
-	public static function register_menu(): void {
-		add_management_page(
-			'EN Job Translations',
-			'EN Job Translations',
-			self::CAP,
-			self::PAGE_SLUG,
-			array( __CLASS__, 'render' )
-		);
-	}
-
-	/**
-	 * Execute the run (preview or apply) and redirect back with the report.
-	 */
-	public static function handle_run(): void {
-		if ( ! current_user_can( self::CAP ) ) {
-			wp_die( 'forbidden' );
-		}
-		check_admin_referer( self::ACTION, '_conexao_jt_nonce' );
-
-		$mode = isset( $_POST['mode'] ) && 'apply' === $_POST['mode'] ? 'apply' : 'preview';
-
-		$report = conexao_job_translation_run( array( 'dry_run' => 'apply' !== $mode ) );
-
-		set_transient(
-			'conexao_job_translation_report_' . get_current_user_id(),
-			array(
-				'mode'   => $mode,
-				'report' => $report,
-			),
-			5 * MINUTE_IN_SECONDS
-		);
-
-		wp_safe_redirect( admin_url( 'tools.php?page=' . self::PAGE_SLUG ) );
-		exit;
-	}
-
-	/**
-	 * Render the admin screen: audit table + dry-run/apply controls.
-	 */
-	public static function render(): void {
-		if ( ! current_user_can( self::CAP ) ) {
-			wp_die( 'forbidden' );
-		}
-
-		$report = get_transient( 'conexao_job_translation_report_' . get_current_user_id() );
-		if ( $report ) {
-			delete_transient( 'conexao_job_translation_report_' . get_current_user_id() );
-		}
-
-		echo '<div class="wrap"><h1>EN Job Translations (Stage 6)</h1>';
-
-		if ( ! function_exists( 'pll_languages_list' ) ) {
-			echo '<div class="notice notice-error"><p><strong>Polylang is not active.</strong> Deploy the English language layer first (docs/routing.md § English), then run this migration.</p></div></div>';
-			return;
-		}
-
-		if ( $report ) {
-			self::render_report( $report['mode'], $report['report'] );
-		}
-
-		$audit = conexao_job_translation_audit();
-		echo '<h2>Completeness audit</h2>';
-		echo '<table class="widefat striped"><tbody>';
-		foreach ( $audit['counts'] as $label => $value ) {
-			printf( '<tr><th style="width:360px">%s</th><td>%s</td></tr>', esc_html( (string) $label ), esc_html( (string) $value ) );
-		}
-		printf(
-			'<tr><th>Gate: eligible public PT jobs missing EN</th><td><strong style="color:%s">%d</strong></td></tr>',
-			$audit['pass'] ? '#008a20' : '#b32d2e',
-			(int) $audit['counts']['eligible public PT jobs missing EN']
-		);
-		echo '</tbody></table>';
-
-		if ( ! empty( $audit['missing'] ) ) {
-			echo '<h3>Public PT jobs still missing an EN translation</h3><ul>';
-			foreach ( $audit['missing'] as $row ) {
-				printf( '<li><code>%s</code> (#%d %s)</li>', esc_html( (string) $row['slug'] ), (int) $row['id'], esc_html( (string) $row['title'] ) );
-			}
-			echo '</ul>';
-		}
-
-		if ( ! empty( $audit['en_without_pt'] ) ) {
-			echo '<h3>EN jobs with no PT sibling (must be 0)</h3><ul>';
-			foreach ( $audit['en_without_pt'] as $row ) {
-				printf( '<li><code>%s</code> (#%d)</li>', esc_html( (string) $row['slug'] ), (int) $row['id'] );
-			}
-			echo '</ul>';
-		}
-
-		echo '<h2>Run the migration</h2>';
-		echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '">';
-		wp_nonce_field( self::ACTION, '_conexao_jt_nonce' );
-		echo '<input type="hidden" name="action" value="' . esc_attr( self::ACTION ) . '" />';
-		echo '<p><button class="button" name="mode" value="preview">Preview (dry run)</button> ';
-		echo '<button class="button button-primary" name="mode" value="apply">Apply</button></p>';
-		echo '</form>';
-
-		echo '</div>';
-	}
-
-	/**
-	 * Render a run report.
-	 *
-	 * @param string $mode   'preview' or 'apply'.
-	 * @param array  $report Report from conexao_job_translation_run().
-	 */
-	private static function render_report( string $mode, array $report ): void {
-		$s = $report['summary'];
-		printf(
-			'<div class="notice notice-%s"><p><strong>%s</strong> — jobs created %d, updated %d, skipped %d, errors %d; meta fields copied %d; jobs page: %s; PT sources changed: %d.</p></div>',
-			$s['errors'] ? 'error' : 'success',
-			esc_html( 'apply' === $mode ? 'Applied' : 'Preview (dry run)' ),
-			(int) $s['created'],
-			(int) $s['updated'],
-			(int) $s['skipped'],
-			(int) $s['errors'],
-			(int) $s['meta_copied'],
-			esc_html( (string) $s['jobs_page'] ),
-			(int) $s['pt_changed']
-		);
-
-		echo '<table class="widefat striped"><thead><tr><th>PT slug</th><th>PT</th><th>EN</th><th>EN URL</th><th>Action</th><th>Message</th></tr></thead><tbody>';
-		foreach ( $report['rows'] as $row ) {
-			printf(
-				'<tr><td><code>%s</code></td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>',
-				esc_html( (string) $row['pt_slug'] ),
-				$row['pt_id'] ? '#' . (int) $row['pt_id'] : '—',
-				$row['en_id'] ? '#' . (int) $row['en_id'] : '—',
-				$row['en_url'] ? esc_html( (string) $row['en_url'] ) : '—',
-				esc_html( (string) $row['action'] ),
-				esc_html( (string) $row['message'] )
-			);
-		}
-		echo '</tbody></table>';
+function conexao_job_translation_register_stage(): void {
+	if ( class_exists( 'Conexao_Translation_Rollout_Engine' ) ) {
+		Conexao_Translation_Rollout_Engine::register_stage( conexao_job_translation_engine_config() );
 	}
 }
-
-Conexao_Job_Translation_Admin::init();
-
+add_action( 'plugins_loaded', 'conexao_job_translation_register_stage' );

@@ -262,6 +262,13 @@ jobs:
           }
           wp theme activate conexao-br-irlanda
           # The repository's own plugins, mounted by compose.yaml.
+          #
+          # conexao-translation-rollout (the shared translation-rollout engine,
+          # Stage H) is deliberately NOT activated here: it is local-only
+          # tooling, never a production plugin, and its suites load the engine
+          # class by path. They are still discovered by convention
+          # (wp-content/plugins/*/tests/test-*.php) and run by
+          # ./scripts/run-tests.sh below, so the engine gate is blocking.
           for slug in conexao-data-model conexao-content conexao-event-runtime \
                       conexao-admin-ux conexao-event-importer conexao-leisure-migration \
                       conexao-sponsor-migration; do

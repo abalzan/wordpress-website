@@ -10,7 +10,7 @@
  * relationship state.
  *
  * Usage (from the project root):
- *   cat scripts/stage6-job-inventory.php | docker compose exec -T wordpress wp eval-file - --allow-root
+ *   cat scripts/stage6-job-inventory.php | docker compose exec -T WordPress wp eval-file - --allow-root
  *   wp eval-file scripts/stage6-job-inventory.php -- out=/path/to/job-inventory.json
  *
  * LOCAL / STAGING ONLY.
@@ -65,10 +65,14 @@ function conexao_stage6_inventory_job( int $post_id ): array {
 
 	$taxonomies = array();
 	foreach ( array( 'conexao_category', 'conexao_county', 'conexao_tag' ) as $taxonomy ) {
-		$terms = wp_get_post_terms( $post_id, $taxonomy );
+		$terms                   = wp_get_post_terms( $post_id, $taxonomy );
 		$taxonomies[ $taxonomy ] = is_wp_error( $terms ) ? array() : array_map(
 			static function ( $term ) {
-				return array( 'id' => (int) $term->term_id, 'slug' => (string) $term->slug, 'name' => (string) $term->name );
+				return array(
+					'id'   => (int) $term->term_id,
+					'slug' => (string) $term->slug,
+					'name' => (string) $term->name,
+				);
 			},
 			$terms
 		);
@@ -127,7 +131,7 @@ $en_ids = get_posts( array_merge( $query_base, array( 'lang' => 'en' ) ) );
 
 $by_status = array();
 foreach ( $all_ids as $id ) {
-	$status = (string) get_post_status( $id );
+	$status               = (string) get_post_status( $id );
 	$by_status[ $status ] = isset( $by_status[ $status ] ) ? $by_status[ $status ] + 1 : 1;
 }
 
@@ -166,11 +170,24 @@ $inventory = array(
 	'en'            => array_map( 'conexao_stage6_inventory_job', $en_ids ),
 	'all_statuses'  => array_map(
 		static function ( $id ) {
-			return array( 'id' => (int) $id, 'slug' => (string) get_post_field( 'post_name', $id ), 'status' => (string) get_post_status( $id ) );
+			return array(
+				'id'     => (int) $id,
+				'slug'   => (string) get_post_field( 'post_name', $id ),
+				'status' => (string) get_post_status( $id ),
+			);
 		},
 		$all_ids
 	),
-	'audit'         => function_exists( 'conexao_job_translation_audit' ) ? conexao_job_translation_audit() : null,
+	// Stage H: the completeness audit is the shared engine's numeric gate.
+	'gate'          => (
+		class_exists( 'Conexao_Translation_Rollout_Engine' ) && function_exists( 'conexao_job_translation_engine_config' )
+			? Conexao_Translation_Rollout_Engine::run(
+				conexao_job_translation_engine_config(),
+				conexao_job_translation_engine_adapter(),
+				array( 'dry_run' => true )
+			)['gate']
+			: null
+	),
 );
 
 $json = wp_json_encode( $inventory, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
@@ -182,4 +199,3 @@ if ( '' !== $out_file ) {
 }
 
 echo $json, "\n";
-

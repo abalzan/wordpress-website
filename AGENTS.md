@@ -43,15 +43,16 @@ authoritative registry. Edit the registry and run
 | 5 | `conexao-event-importer` | tooling | active | no | yes | yes | `docs/plugins/conexao-event-importer.md` |
 | 6 | `conexao-leisure-migration` | tooling | active | no | yes | yes | `docs/plugins/conexao-leisure-migration.md` |
 | 7 | `conexao-sponsor-migration` | tooling | active | no | yes | yes | `docs/plugins/conexao-sponsor-migration.md` |
-| 8 | `conexao-page-translation` | rollout | retired | no | no | yes | `docs/plugins/conexao-page-translation.md` |
-| 9 | `conexao-blog-translation` | rollout | retired | no | no | yes | `docs/plugins/conexao-blog-translation.md` |
-| 10 | `conexao-job-translation` | rollout | retired | no | no | yes | `docs/plugins/conexao-job-translation.md` |
-| 11 | `conexao-leisure-translation` | rollout | retired | no | no | yes | `docs/plugins/conexao-leisure-translation.md` |
-| 12 | `conexao-guide-translation` | rollout | retired | no | no | yes | `docs/plugins/conexao-guide-translation.md` |
+| 8 | `conexao-translation-rollout` | tooling | active | no | no | yes | `docs/plugins/conexao-translation-rollout.md` |
+| 9 | `conexao-page-translation` | rollout | retired | no | no | yes | `docs/plugins/conexao-page-translation.md` |
+| 10 | `conexao-blog-translation` | rollout | retired | no | no | yes | `docs/plugins/conexao-blog-translation.md` |
+| 11 | `conexao-job-translation` | rollout | retired | no | no | yes | `docs/plugins/conexao-job-translation.md` |
+| 12 | `conexao-leisure-translation` | rollout | retired | no | no | yes | `docs/plugins/conexao-leisure-translation.md` |
+| 13 | `conexao-guide-translation` | rollout | retired | no | no | yes | `docs/plugins/conexao-guide-translation.md` |
 
 **Production steady state** (platform, `production: true`) - activate in this order: conexao-data-model -> conexao-content -> conexao-admin-ux -> conexao-event-runtime.
 
-**Local-only tooling** (never production): conexao-event-importer, conexao-leisure-migration, conexao-sponsor-migration.
+**Local-only tooling** (never production): conexao-event-importer, conexao-leisure-migration, conexao-sponsor-migration, conexao-translation-rollout.
 
 **Retired rollout plugins** (historical tooling, *activate → apply → remove*; not a production dependency and not in any release ZIP): conexao-page-translation, conexao-blog-translation, conexao-job-translation, conexao-leisure-translation, conexao-guide-translation.
 <!-- END GENERATED PLUGIN REGISTRY: AGENTS.md plugin inventory -->
@@ -114,6 +115,7 @@ See docs/routing.md.
 | Lazer data/migration | docs/plugins/conexao-leisure-migration.md |
 | Apoiador data/migration | docs/plugins/conexao-sponsor-migration.md |
 | Admin UI/statuses | plugins/conexao-admin-ux |
+| Add/change a translation rollout | docs/plugins/conexao-translation-rollout.md (shared engine: stage config + data manifest, no `apply.php`/`audit.php` copies) |
 | Recruitment agencies / Empregos agency directory | docs/plugins/conexao-data-model.md, theme inc/recruitment-agencies.php |
 | Templates/components | docs/themes/conexao-br-irlanda.md |
 | Run/extend the test suite | docs/testing.md, `./scripts/run-tests.sh --help` |

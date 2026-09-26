@@ -271,6 +271,42 @@ docker compose exec wordpress php /var/www/html/wp-content/plugins/conexao-event
 docker compose exec wordpress php /var/www/html/wp-content/plugins/conexao-leisure-migration/tests/test-language-uuid.php
 ```
 
+## Translation rollouts — the shared engine (Stage H)
+
+Every one-shot EN translation stage runs on the shared engine
+`conexao-translation-rollout`, which owns the whole content-change contract:
+inventory → manifest → dry-run plan → snapshot → apply → verify + numeric gate,
+plus a remove/rollback path for stages that declare it safe. A stage supplies
+only a versioned data manifest and a small configuration; it never copies
+`apply.php` / `audit.php` / an admin class.
+
+```bash
+# Preview (dry run) — zero writes
+cat scripts/stage6-job-translate.php | docker compose exec -T wordpress \
+  wp eval-file - --allow-root -- dry-run
+cat scripts/stage6-job-translate.php | docker compose exec -T wordpress \
+  wp eval-file - --allow-root -- dry-run json
+
+# Apply (LOCAL/STAGING ONLY)
+cat scripts/stage6-job-translate.php | docker compose exec -T wordpress \
+  wp eval-file - --allow-root
+
+# Engine + migrated-stage suites
+./scripts/run-tests.sh --only conexao-translation-rollout
+./scripts/run-tests.sh --only conexao-job-translation
+```
+
+Production (WordPress.com, no WP-CLI) uses the shared admin screen: **Tools →
+Translation Rollouts** (Preview, then Apply). The contract, the stage-config
+and data-manifest shapes, the gate, and the recipe for adding the next rollout
+are documented in
+[`docs/plugins/conexao-translation-rollout.md`](plugins/conexao-translation-rollout.md).
+
+**Never run a rollout against production casually.** Dry-run is mandatory
+before apply, snapshots precede writes, the gate must be numeric, PT stays
+canonical, EN is a linked translation, and local post IDs are not portable
+identifiers.
+
 ## Multilingual (EN) development — Stage 9 (Guides)
 
 The Guide CPT is a **real English translation** since Stage 9: one linked EN

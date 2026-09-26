@@ -57,7 +57,9 @@
       "production": true,
       "build": true,
       "mount": true,
-      "dependencies": ["conexao-data-model"],
+      "dependencies": [
+        "conexao-data-model"
+      ],
       "version_source": "wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php",
       "documentation": "docs/plugins/conexao-event-runtime.md"
     },
@@ -69,7 +71,10 @@
       "production": false,
       "build": true,
       "mount": true,
-      "dependencies": ["conexao-data-model", "conexao-event-runtime"],
+      "dependencies": [
+        "conexao-data-model",
+        "conexao-event-runtime"
+      ],
       "version_source": "wp-content/plugins/conexao-event-importer/conexao-event-importer.php",
       "documentation": "docs/plugins/conexao-event-importer.md"
     },
@@ -97,7 +102,18 @@
       "version_source": "wp-content/plugins/conexao-sponsor-migration/conexao-sponsor-migration.php",
       "documentation": "docs/plugins/conexao-sponsor-migration.md"
     },
-
+    {
+      "slug": "conexao-translation-rollout",
+      "name": "Conexão BR Irlanda — Translation Rollout Engine (Stage H)",
+      "class": "tooling",
+      "status": "active",
+      "production": false,
+      "build": false,
+      "mount": true,
+      "dependencies": [],
+      "version_source": "wp-content/plugins/conexao-translation-rollout/conexao-translation-rollout.php",
+      "documentation": "docs/plugins/conexao-translation-rollout.md"
+    },
     {
       "slug": "conexao-page-translation",
       "name": "Conexão BR Irlanda — EN Page Translation (Stage 4.5)",

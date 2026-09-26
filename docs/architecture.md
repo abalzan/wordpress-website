@@ -43,16 +43,46 @@ Plugins load in registry order, and dependencies always precede their dependents
 5. **conexao-event-importer** (`tooling`, active) v1.7.1. **Never required on production.** Declared dependencies (`Requires Plugins` header): `conexao-data-model`, `conexao-event-runtime`.
 6. **conexao-leisure-migration** (`tooling`, active) v2.1.0. **Never required on production.**
 7. **conexao-sponsor-migration** (`tooling`, active) v1.1.0. **Never required on production.**
-8. **conexao-page-translation** (`rollout`, retired) v1.0.0. Retired rollout tooling - *activate → apply → remove*. Not a production dependency.
-9. **conexao-blog-translation** (`rollout`, retired) v1.0.0. Retired rollout tooling - *activate → apply → remove*. Not a production dependency.
-10. **conexao-job-translation** (`rollout`, retired) v1.0.0. Retired rollout tooling - *activate → apply → remove*. Not a production dependency.
-11. **conexao-leisure-translation** (`rollout`, retired) v1.0.0. Retired rollout tooling - *activate → apply → remove*. Not a production dependency.
-12. **conexao-guide-translation** (`rollout`, retired) v1.0.0. Retired rollout tooling - *activate → apply → remove*. Not a production dependency.
+8. **conexao-translation-rollout** (`tooling`, active) v1.0.0. **Never required on production.**
+9. **conexao-page-translation** (`rollout`, retired) v1.0.0. Retired rollout tooling - *activate → apply → remove*. Not a production dependency.
+10. **conexao-blog-translation** (`rollout`, retired) v1.0.0. Retired rollout tooling - *activate → apply → remove*. Not a production dependency.
+11. **conexao-job-translation** (`rollout`, retired) v1.0.0. Retired rollout tooling - *activate → apply → remove*. Not a production dependency.
+12. **conexao-leisure-translation** (`rollout`, retired) v1.0.0. Retired rollout tooling - *activate → apply → remove*. Not a production dependency.
+13. **conexao-guide-translation** (`rollout`, retired) v1.0.0. Retired rollout tooling - *activate → apply → remove*. Not a production dependency.
 
 The authoritative registry is [`plugins.json`](../plugins.json): the load order, the
 production activation order, the release build list and the local Compose mount list are
 all derived from it by `scripts/generate-registry-docs.php`.
 <!-- END GENERATED PLUGIN REGISTRY: docs/architecture.md plugin load order -->
+
+## Translation Rollout Architecture (Stage H)
+
+```text
+shared engine (conexao-translation-rollout)
+    ↓  register_stage( config )
+stage config (includes/stage-config.php)   ← identity, fields, gate, remove policy
+    ↓  manifest_callback
+versioned stage data (translation-map.php / data/*.json)   ← authored EN copy
+    ↓
+inventory → manifest validation → dry-run plan → snapshot → apply → verify + numeric gate
+```
+
+| Concern | Owner |
+|---|---|
+| inventory, dry-run plan, snapshot orchestration, apply traversal, PT-drift guard, verify counters, numeric gate, result formatting, admin capability/nonce flow, remove traversal | `conexao-translation-rollout` (shared engine) |
+| authored translated copy, portable stable keys, stage identity and languages, field mapping, eligibility, landing-page verification, remove-safety declaration | the stage plugin |
+
+A retired rollout that has been migrated becomes **data + configuration only**.
+`conexao-job-translation` is the first: its `includes/apply.php`,
+`includes/audit.php` and per-stage admin class were removed in Stage H, leaving
+`includes/translation-map.php` (data), `includes/stage-fields.php` (job field
+mapping) and `includes/stage-config.php` (configuration). The other four
+retired rollouts (`page`, `blog`, `leisure`, `guide`) still own their historical
+orchestration and are unchanged.
+
+Adding a rollout therefore requires **one data manifest + one small stage
+config + one gate/test**, and no copied orchestration. See
+[`docs/plugins/conexao-translation-rollout.md`](plugins/conexao-translation-rollout.md).
 
 ## Theme Architecture
 

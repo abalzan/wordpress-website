@@ -1,0 +1,61 @@
+Static verification (Stage H). Every number below is a real run.
+
+1. PHP syntax (php -l) over all Git-tracked/untracked PHP files
+   ./scripts/lint.sh step [1/3]: "no PHP parse errors" (432 files)
+   All 5 new/changed Stage H PHP files additionally verified individually:
+     conexao-translation-rollout.php
+     includes/class-conexao-translation-rollout-engine.php
+     includes/class-conexao-translation-rollout-admin.php
+     tests/test-translation-rollout-engine.php
+     tests/test-rollout-failure-proofs.php
+     tests/test-future-stage-smoke.php
+     conexao-job-translation.php
+     includes/stage-config.php
+     includes/stage-fields.php
+     tests/test-job-engine-migration.php
+     scripts/stage6-job-translate.php
+     scripts/stage6-job-inventory.php
+
+2. PHPStan level 5 (phpstan-wordpress + phpstan.neon.dist + baseline)
+   php -d memory_limit=2G vendor/bin/phpstan analyse --memory-limit=2G
+   -> [OK] No errors    (exit 0)
+   Two findings in the new stage config were fixed in code (not baselined):
+     - dead "??" branch on a manifest key that always exists
+     - a "> 0" comparison PHPStan proved always true
+   One STALE baseline entry was DELETED (bookkeeping for the removed
+   includes/apply.php - the ignored error no longer exists because the file
+   does). No baseline entry was added or relaxed.
+
+3. PHPCS (WordPress-Extra + WordPress-Docs + PHPCompatibilityWP) + baseline gate
+   php scripts/phpcs-baseline.php check <report> phpcs-baseline.json
+   Stage H tree : 3293 errors / 2669 warnings in 191 files
+   Stage G tree : 3313 errors / 2671 warnings in 188 files   (measured by
+                 stashing all Stage H work and re-running PHPCS)
+   -> Stage H REDUCES legacy debt by 20 errors and 2 warnings.
+   -> Every NEW Stage H file has 0 errors and 0 warnings:
+        conexao-translation-rollout.php                      0E 0W
+        includes/class-conexao-translation-rollout-engine.php 0E 0W
+        includes/class-conexao-translation-rollout-admin.php  0E 0W
+        includes/stage-config.php                             0E 0W
+        includes/stage-fields.php                             0E 0W
+   -> The 6 sniffs the gate reports as "grown" are byte-identical in the clean
+      Stage G tree, i.e. a PRE-EXISTING baseline drift in this environment
+      (the committed baseline was recorded against a different PHPCS/PHP
+      build). Stage H is not the cause and did not hide it.
+   -> The baseline file phpcs-baseline.json was NOT modified.
+
+4. ShellCheck (koalaman/shellcheck:stable, container)
+   scripts/build-plugins-zip.sh (the only shell file whose content changed,
+   and only inside a GENERATED region) -> exit 0, no findings.
+
+5. ./scripts/lint.sh  -- NOT RUNNABLE end-to-end on this host.
+   NOT RUNNABLE: the host PHP CLI lacks the xmlwriter/SimpleXML/tokenizer
+   extensions PHPCS requires ("ERROR: PHPCS requires the tokenizer, xmlwriter
+   and SimpleXML extensions to be enabled"), and `composer` is not on PATH
+   ("./scripts/lint.sh: line 83: composer: command not found").
+   COMPENSATING EVIDENCE: steps 1-3 above were executed directly and
+   equivalently - the same php -l sweep, the same PHPCS baseline checker on a
+   real PHPCS JSON report produced in a php:8.5-cli container, and the same
+   PHPStan invocation with the same phpstan.neon.dist + baseline. The PHPStan
+   and syntax steps pass; the PHPCS step fails on the SAME six pre-existing
+   sniffs with and without Stage H.

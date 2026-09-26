@@ -77,6 +77,7 @@ To add, remove or re-classify a plugin: edit `plugins.json`, add its doc under
 |---|---|
 | [plugins/README.md](plugins/README.md) | Plugin inventory, load order, lifecycle statuses |
 | [plugins/conexao-*.md](plugins/) | One doc per custom plugin (purpose, data, verification) |
+| [plugins/conexao-translation-rollout.md](plugins/conexao-translation-rollout.md) | **The shared translation-rollout engine** — the six-step lifecycle, the stage-config and data-manifest contracts, the numeric gate, the remove/rollback contract, and how to add the next rollout |
 
 ## History and reference
 

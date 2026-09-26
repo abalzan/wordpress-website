@@ -1,0 +1,28 @@
+registry OK: 13 plugins validated, 22 generated regions current (zero writes).
+exit=0
+
+Registry FAILURE PROOF (Phase 25) - both defects injected then reverted:
+
+1) nonexistent documentation path (docs/plugins/does-not-exist.md)
+   $ php scripts/generate-registry-docs.php --check
+   ERROR: generated-target validation failed:
+     - generated target does not exist: docs/plugins/does-not-exist.md
+   exit 1
+   $ ./scripts/build-plugins-zip.sh
+   ERROR: plugin registry check failed - refusing to build.
+   exit 1   (nothing packaged)
+
+2) engine build=true (registry/generated-list drift)
+   $ php scripts/generate-registry-docs.php --check
+   ERROR: generated output is stale. Stale generated regions:
+     - scripts/build-plugins-zip.sh :: release build list
+     - AGENTS.md / README.md / docs/plugins/README.md / docs/deployment.md
+     - docs/project-inventory.md
+     - docs/plugins/conexao-translation-rollout.md :: plugin lifecycle metadata
+   exit 1
+   $ ./scripts/build-plugins-zip.sh
+   ERROR: plugin registry check failed - refusing to build.
+   exit 1   (nothing packaged)
+
+Both defects reverted; --check returns to exit 0 and the working tree contains
+no injected defect.
