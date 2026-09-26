@@ -1,6 +1,12 @@
 <?php
 /**
- * run-en-translation.php — run the Stage M EN translation rollout (Stage M).
+ * EN translation runner for the B1 content types.
+ *
+ * Stage M. Purpose: run the `guide` / `page` / `post` stages of the shared
+ * translation rollout engine (conexao-translation-rollout) against the
+ * local/staging WordPress. Engineering standard 4.1 and 5.2.
+ * translation rollout engine (conexao-translation-rollout) against the
+ * local/staging WordPress. Engineering standard 4.1 and 5.2.
  *
  * A thin CLI in front of the SHARED translation-rollout engine
  * (`conexao-translation-rollout`). It performs no planning, no counting and no
@@ -36,11 +42,14 @@ $ctx = conexao_script_boot(
 			. "                    --remove             Delete the EN records this stage owns (rollback).\n"
 			. "                    --only=<post_type>   guide | page | post (default: all three).\n"
 			. "                    --json               Machine-readable output.\n"
-			. "                    --help               This message.",
+			. '                    --help               This message.',
 		'writes'             => true,
 		'read_only'          => false,
 		'production_capable' => false,
-		'extra_flags'        => array( '--only' => 'only', '--remove' => 'remove' ),
+		'extra_flags'        => array(
+			'--only'   => 'only',
+			'--remove' => 'remove',
+		),
 	)
 );
 
@@ -71,10 +80,10 @@ if ( '' !== $only && ! in_array( $only, $available, true ) ) {
 	);
 }
 
-$stages = ( '' === $only ) ? $available : array( $only );
-$mode   = ! empty( $ctx['extra']['remove'] ) ? 'remove' : 'run';
+$stages    = ( '' === $only ) ? $available : array( $only );
+$operation = ! empty( $ctx['extra']['remove'] ) ? 'remove' : 'run';
 
-$totals = array(
+$totals_local  = array(
 	'created'    => 0,
 	'updated'    => 0,
 	'skipped'    => 0,
@@ -87,70 +96,70 @@ $gate_failures = 0;
 $empty_stages  = array();
 $results       = array();
 
-foreach ( $stages as $post_type ) {
+foreach ( $stages as $the_post_type ) {
 	// A stage with no authored manifest rows is a no-op, not a failure. The
 	// shared engine requires a non-empty manifest, so it is reported here
 	// instead: the debt for that type is simply already closed.
-	if ( array() === conexao_en_translation_manifest_for( $post_type )['records'] ) {
-		$empty_stages[] = $post_type;
-		echo "\n=== stage: en-{$post_type} ===\n";
+	if ( array() === conexao_en_translation_manifest_for( $the_post_type )['records'] ) {
+		$empty_stages[] = $the_post_type;
+		echo '\n=== stage: en-' . esc_html( $the_post_type ) . " ===\n";
 		echo "  no authored translations in the manifest: nothing to do.\n";
 		continue;
 	}
 
-	$config = Conexao_Translation_Rollout_Engine::get_stage( 'en-' . $post_type );
+	$config = Conexao_Translation_Rollout_Engine::get_stage( 'en-' . $the_post_type );
 
 	if ( null === $config ) {
-		conexao_script_fail( sprintf( 'stage "en-%s" is not registered with the shared engine.', $post_type ) );
+		conexao_script_fail( sprintf( 'stage "en-%s" is not registered with the shared engine.', $the_post_type ) );
 	}
 
-	echo "\n=== stage: en-{$post_type} (mode: {$ctx['mode']}, operation: {$mode}) ===\n";
+	echo '\n=== stage: en-' . esc_html( $the_post_type ) . ' (mode: ' . esc_html( (string) $ctx['mode'] ) . ', operation: ' . esc_html( $operation ) . ") ===\n";
 
 	$result = call_user_func(
 		$config['run_callback'],
 		array(
 			'dry_run' => ( 'dry-run' === $ctx['mode'] ),
-			'mode'    => $mode,
+			'mode'    => $operation,
 		)
 	);
 
 	if ( is_wp_error( $result ) ) {
-		conexao_script_fail( sprintf( 'stage en-%s failed: %s', $post_type, $result->get_error_message() ) );
+		conexao_script_fail( sprintf( 'stage en-%s failed: %s', $the_post_type, $result->get_error_message() ) );
 	}
 
-	$summary = $result['summary'];
+	$stage_summary = $result['summary'];
 
 	foreach ( array( 'created', 'updated', 'skipped', 'removed', 'errors', 'conflicts', 'pt_changed' ) as $key ) {
-		$totals[ $key ] += (int) ( $summary[ $key ] ?? 0 );
+		$totals_local[ $key ] += (int) ( $stage_summary[ $key ] ?? 0 );
 	}
 
-	$results[ $post_type ] = $result;
+	$results[ $the_post_type ] = $result;
 
 	printf(
-		"  created=%d updated=%d skipped=%d removed=%d conflicts=%d errors=%d PT-drift=%d\n",
-		$summary['created'],
-		$summary['updated'],
-		$summary['skipped'],
-		$summary['removed'],
-		$summary['conflicts'],
-		$summary['errors'],
-		$summary['pt_changed']
+		'  created=%d updated=%d skipped=%d removed=%d conflicts=%d errors=%d PT-drift=%d' . "\n",
+		(int) $stage_summary['created'],
+		(int) $stage_summary['updated'],
+		(int) $stage_summary['skipped'],
+		(int) $stage_summary['removed'],
+		(int) $stage_summary['conflicts'],
+		(int) $stage_summary['errors'],
+		(int) $stage_summary['pt_changed']
 	);
 
 	foreach ( (array) $result['rows'] as $row ) {
 		printf(
-			"    %-12s %-45s %s\n",
-			(string) ( $row['action'] ?? '' ),
-			(string) ( $row['stable_key'] ?? '' ),
-			(string) ( $row['message'] ?? '' )
+			'    %-12s %-45s %s' . "\n",
+			esc_html( (string) ( $row['action'] ?? '' ) ),
+			esc_html( (string) ( $row['stable_key'] ?? '' ) ),
+			esc_html( (string) ( $row['message'] ?? '' ) )
 		);
 	}
 
 	// -- numeric gate --
 	$gate = $result['gate'];
 	printf(
-		"  GATE %s: eligible PT=%d with EN=%d missing EN=%d conflicts=%d PT drift=%d\n",
-		(string) $gate['gate'],
+		'  GATE %s: eligible PT=%d with EN=%d missing EN=%d conflicts=%d PT drift=%d' . "\n",
+		esc_html( (string) $gate['gate'] ),
 		(int) $gate['eligible_public_pt'],
 		(int) $gate['with_en'],
 		(int) $gate['missing_en'],
@@ -168,9 +177,9 @@ echo "\n";
 if ( $ctx['json'] ) {
 	echo wp_json_encode(
 		array(
-			'stages'        => $results,
-			'empty_stages'  => $empty_stages,
-			'totals'        => $totals,
+			'stages'       => $results,
+			'empty_stages' => $empty_stages,
+			'totals'       => $totals_local,
 		),
 		JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE
 	) . "\n";
@@ -180,8 +189,11 @@ exit(
 	conexao_script_summary(
 		$ctx,
 		array_merge(
-			$totals,
-			array( 'gate_failures' => $gate_failures, 'errors' => $totals['errors'] + $gate_failures )
+			$totals_local,
+			array(
+				'gate_failures' => $gate_failures,
+				'errors'        => $totals_local['errors'] + $gate_failures,
+			)
 		)
 	)
 );

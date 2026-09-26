@@ -240,6 +240,49 @@ pages) into real linked Polylang translations. See
   untouched). All Pages being translated does not change the Flutter-facing
   REST surface.
 
+### English rollout state (Stage M — closing the measured completeness debt)
+
+Stage 4.5 recorded the pages above as *excluded technical pages*, but the
+permanent `translation_completeness` gate measures **eligible public PT
+records**, and a published page is eligible whatever its editorial merit. The
+two documents therefore disagreed, and the gate was the one that decided.
+
+Stage M resolves the disagreement by **translating them faithfully as
+published** rather than by relaxing either side:
+
+- the `about` sample page and the `jobs-2` page (a duplicate of the real
+  `/empregos/` landing) are translated as they stand. Deleting or rewriting
+  them would be a PT content change, which an EN change may not make; inventing
+  real content to replace them would be a second, worse defect. They remain
+  published, and they remain a maintainer decision;
+- the `sobre` / `termos` / `privacidade` legacy aliases get EN translations
+  whose links point at the **EN** target page, so a visitor is never sent from
+  an English URL back to a Portuguese one;
+- the `search` utility page gets a minimal EN page so the search block renders
+  in the EN shell.
+
+The gate is the authority on *whether* coverage is complete, and it is unchanged.
+If a maintainer later decides these pages should not exist at all, that is a PT
+content change with its own plan — not a change to the gate.
+
+EN coverage is now produced by the shared
+[`conexao-translation-rollout`](../plugins/conexao-translation-rollout.md) engine
+through the [`conexao-en-translation`](../plugins/conexao-en-translation.md)
+stage:
+
+```bash
+php scripts/run-en-translation.php --dry-run            # plan, zero writes
+php scripts/run-en-translation.php --apply --only=guide # one content type
+php scripts/run-en-translation.php --remove --apply     # rollback
+```
+
+**Blog posts are still partly untranslated.** `post` is a B1 type with no B2
+fallback, so every eligible PT post owes an EN record; the gate keeps reporting
+the real number and the EN blog stays a partial archive until the remaining
+authoring is done. This is recorded as open work, not as a policy exemption:
+adding an EN allowlist for blog posts would buy a green run by hiding real debt,
+which the standard forbids.
+
 ### English rollout state (Stage 5 — Blog translation)
 
 Stage 5 gives the Blog a **real English translation**: the linked EN posts page
@@ -495,4 +538,4 @@ automatic page list (see CONEXAO_BR_HEADER_NAVIGATION_REGRESSION_REPORT.md).
   navigation items. It must never be changed back to `wp_page_menu`.
 _Last verified: 2026-09-26 by Stage I — Scripts Standardisation_
 
-_Last verified: 2026-09-26 by Stage L — Permanent Invariant Gates_
+_Last verified: 2026-09-26 by Stage M — Permanent Invariant Debt Remediation_

@@ -40,7 +40,9 @@ function conexao_en_translation_post_types(): array {
  * @return array<string,array<string,array>>
  */
 function conexao_en_translation_map(): array {
-	require_once CONEXAO_EN_TRANSLATION_DIR . 'includes/manifest-data.php';
+	if ( ! function_exists( 'conexao_en_translation_manifest_data' ) ) {
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/manifest-data.php';
+	}
 
 	return conexao_en_translation_manifest_data();
 }
@@ -53,7 +55,7 @@ function conexao_en_translation_map(): array {
  */
 function conexao_en_translation_manifest_for( string $post_type ): array {
 	$map     = conexao_en_translation_map();
-	$records = isset( $map[ $post_type ] ) && is_array( $map[ $post_type ] ) ? $map[ $post_type ] : array();
+	$records = isset( $map[ $post_type ] ) ? $map[ $post_type ] : array();
 
 	$out = array();
 

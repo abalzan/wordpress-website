@@ -59,6 +59,31 @@ python3 scripts/verify-permanent-gates.py --list     # list the gates
 ./scripts/i18n-check.sh                              # §9.3's documented entry point
 ```
 
+#### Repairing a failed gate
+
+A gate reports a violation; repairing it means fixing the **data or the tool
+that produced it**, never the gate. Each debt class has one documented remedy:
+
+| Gate failure | Root cause to check first | Repair |
+|---|---|---|
+| `taxonomy:*:language_tagged_terms` | a seed/import that assigns a language to a shared taxonomy — today the seed is already correct, so a failure means something re-tagged the term | `php scripts/remediate-shared-taxonomy-language.php --dry-run` then `--apply` |
+| `taxonomy:*:suffixed_duplicate_terms` | a `dublin-en`-style duplicate exists | remove the duplicate; never create the translated term |
+| `post_type:*:missing_en` | the EN translation was never authored | `php scripts/run-en-translation.php --dry-run --only=<type>`, add the row to the stage manifest, then `--apply` |
+| `post_type:*:malformed_relationships` | an EN record with no PT master | `php scripts/remove-en-orphan-fixtures.php --dry-run`; a genuine orphan is a maintainer decision, the script only removes provable stage fixtures |
+| `i18n:*:stale_catalogue` | a gettext-bearing source is newer than its `.pot` | `./scripts/i18n-make-pot.sh --apply` (regenerate; never hand-edit a catalogue) |
+
+The last two rows matter: `i18n-make-pot.sh` is the **generator** that
+`i18n-check.sh` was written to police. Before it existed the repository had a
+freshness check with no remedy, so every source edit silently made a catalogue
+stale and the only visible fix was a hand-edit. The generator is what stops the
+debt recurring.
+
+EN translations are produced through the **shared**
+[`conexao-translation-rollout`](../plugins/conexao-translation-rollout.md) engine
+via the [`conexao-en-translation`](../plugins/conexao-en-translation.md) stage.
+There is one engine and one authored manifest; a stage is configuration, not a
+second implementation.
+
 #### Reading a failed gate
 
 A permanent gate **fails closed**: a real violation exits non-zero, and a
@@ -484,4 +509,4 @@ convention-based, and CI calls the same command you do.
 _Last verified: 2026-09-26 by Stage I — Scripts Standardisation_
 _Last verified: 2026-09-26 by Stage J — Build, Release & Deploy Verification_
 _Last verified: 2026-09-26 by Stage K — Agent Skills + Templates_
-_Last verified: 2026-09-26 by Stage L — Permanent Invariant Gates_
+_Last verified: 2026-09-26 by Stage M — Permanent Invariant Debt Remediation_

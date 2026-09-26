@@ -55,6 +55,37 @@ Registered by `conexao-data-model` (method `register_taxonomies()`).
 
 **Counties**: All 26 Republic of Ireland counties.
 
+### Language neutrality of the proper-name taxonomies
+
+`conexao_county` and `conexao_town` are **shared proper-name taxonomies**. A term is
+language-neutral, which means:
+
+- it carries **no** Polylang language assignment (`pll_get_term_language()` is `false`);
+- it has **no** term translation and **no** per-language suffixed duplicate
+  (`dublin`, never `dublin-en` / `dublin-pt`);
+- the same physical term is used by records of either language, so `?county=` /
+  `?cidade=` resolve identically in the PT and EN contexts.
+
+This is a **data** invariant as well as a policy one. A freshly seeded term is
+already language-neutral because the seed uses a bare `wp_insert_term()` on a
+taxonomy Polylang does not translate. Terms created *before* the Stage 3.2
+policy correction still carry a stale language assignment, which is residue of
+the period when these taxonomies were translated; it is removed once, with
+
+```bash
+php scripts/remediate-shared-taxonomy-language.php --dry-run
+php scripts/remediate-shared-taxonomy-language.php --apply
+```
+
+The script reads the shared/translated split from `PLL()->model->get_translated_taxonomies()`
+at runtime rather than from a list of its own, refuses any term with a real
+cross-language counterpart, and never creates, renames, re-slugs, merges or
+deletes a term. The permanent `test-taxonomy-policy.php` gate enforces the
+invariant from then on.
+
+`conexao_category` and `conexao_tag` are Polylang-**translated**: one shared
+concept identity per term-translation pair, linked in both directions.
+
 **Leisure attributes** (`conexao_leisure_attribute`, leisure only — Phase 2
 vocabulary): Famílias, Exterior, Interior, Interior + exterior, Gratuito,
 Pet friendly, Acessível, Estacionamento, Necessita reserva, **Pago**,
@@ -278,4 +309,4 @@ Image fields:
 - `_event_source` (e.g. `laois_tourism`) + `_event_source_id` (external ID) form the primary deduplication key.
 - Export adds a UUID meta for cross-instance matching.
 - Matching order: UUID → source+source_id → URL → content title+date.
-_Last verified: 2026-09-26 by Stage L — Permanent Invariant Gates_
+_Last verified: 2026-09-26 by Stage M — Permanent Invariant Debt Remediation_

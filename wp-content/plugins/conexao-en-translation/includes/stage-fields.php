@@ -29,23 +29,23 @@ function conexao_en_translation_snapshot( int $post_id ): array {
 
 	$terms = array();
 	foreach ( array( 'conexao_category', 'conexao_county', 'conexao_tag', 'conexao_town' ) as $taxonomy ) {
-		$ids = wp_get_post_terms( $post_id, $taxonomy, array( 'fields' => 'ids' ) );
+		$ids                = wp_get_post_terms( $post_id, $taxonomy, array( 'fields' => 'ids' ) );
 		$terms[ $taxonomy ] = is_wp_error( $ids ) ? array() : array_map( 'intval', $ids );
 	}
 
 	return array(
-		'post_name'   => $post->post_name,
-		'post_title'  => $post->post_title,
-		'post_content'=> $post->post_content,
-		'post_excerpt'=> $post->post_excerpt,
-		'post_status' => $post->post_status,
-		'post_date'   => $post->post_date,
-		'post_author' => (int) $post->post_author,
-		'menu_order'  => (int) $post->menu_order,
-		'thumbnail'   => (int) get_post_thumbnail_id( $post_id ),
-		'terms'       => $terms,
-		'language'    => function_exists( 'pll_get_post_language' ) ? (string) pll_get_post_language( $post_id, 'slug' ) : '',
-		'meta_desc'   => (string) get_post_meta( $post_id, 'conexao_meta_description', true ),
+		'post_name'    => $post->post_name,
+		'post_title'   => $post->post_title,
+		'post_content' => $post->post_content,
+		'post_excerpt' => $post->post_excerpt,
+		'post_status'  => $post->post_status,
+		'post_date'    => $post->post_date,
+		'post_author'  => (int) $post->post_author,
+		'menu_order'   => (int) $post->menu_order,
+		'thumbnail'    => (int) get_post_thumbnail_id( $post_id ),
+		'terms'        => $terms,
+		'language'     => function_exists( 'pll_get_post_language' ) ? (string) pll_get_post_language( $post_id, 'slug' ) : '',
+		'meta_desc'    => (string) get_post_meta( $post_id, 'conexao_meta_description', true ),
 	);
 }
 
@@ -80,16 +80,16 @@ function conexao_en_translation_pair_ok( int $pt_id, int $en_id ): bool {
  * @return int Number of fields written.
  */
 function conexao_en_translation_copy_fields( int $pt_id, int $en_id, array $row ): int {
-	$pt  = get_post( $pt_id );
+	$pt     = get_post( $pt_id );
 	$copied = 0;
 
 	if ( $pt instanceof WP_Post ) {
 		$update = array(
-			'ID'           => $en_id,
-			'post_date'    => $pt->post_date,
-			'post_date_gmt'=> $pt->post_date_gmt,
-			'post_author'  => (int) $pt->post_author,
-			'menu_order'   => (int) $pt->menu_order,
+			'ID'            => $en_id,
+			'post_date'     => $pt->post_date,
+			'post_date_gmt' => $pt->post_date_gmt,
+			'post_author'   => (int) $pt->post_author,
+			'menu_order'    => (int) $pt->menu_order,
 		);
 		wp_update_post( $update );
 		$copied += 4;

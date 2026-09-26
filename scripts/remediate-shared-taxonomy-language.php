@@ -1,7 +1,8 @@
 <?php
 /**
- * remediate-shared-taxonomy-language.php — remove stale language tags from
- * SHARED proper-name taxonomy terms (Stage M).
+ * Remove stale language tags from SHARED proper-name taxonomy terms.
+ *
+ * Stage M, engineering standard 6.1 / 6.3.
  *
  * Engineering standard §6.1 / §6.3 and AGENTS.md: `conexao_county` and
  * `conexao_town` are SHARED proper-name taxonomies. ONE physical term per
@@ -58,7 +59,7 @@ $ctx = conexao_script_boot(
 		'arguments'          => "--dry-run   Plan only, zero writes (default).\n"
 			. "                --apply     Clear the stale language assignment on the listed terms.\n"
 			. "                --json      Emit the machine-readable result and snapshot.\n"
-			. "                --help      This message.",
+			. '                --help      This message.',
 		'writes'             => true,
 		'read_only'          => false,
 		'production_capable' => false,
@@ -155,16 +156,16 @@ $conflicts      = array();
 $scanned_total  = 0;
 
 foreach ( $taxonomies as $taxonomy ) {
-	$terms = conexao_stage_m_all_terms( $taxonomy );
+	$tax_terms = conexao_stage_m_all_terms( $taxonomy );
 
-	if ( is_wp_error( $terms ) ) {
-		conexao_script_fail( sprintf( 'cannot read terms of %s: %s', $taxonomy, $terms->get_error_message() ) );
+	if ( is_wp_error( $tax_terms ) ) {
+		conexao_script_fail( sprintf( 'cannot read terms of %s: %s', $taxonomy, $tax_terms->get_error_message() ) );
 	}
 
 	$scanned = 0;
 	$tagged  = 0;
 
-	foreach ( (array) $terms as $term ) {
+	foreach ( (array) $tax_terms as $term ) {
 		++$scanned;
 
 		$language = pll_get_term_language( (int) $term->term_id, 'slug' );
@@ -207,11 +208,11 @@ foreach ( $taxonomies as $taxonomy ) {
 	$scanned_total += $scanned;
 
 	printf(
-		"  %-20s terms=%-5d language-tagged=%-5d to-clear=%d\n",
-		$taxonomy,
-		$scanned,
-		$tagged,
-		isset( $plan[ $taxonomy ] ) ? $plan[ $taxonomy ] : 0
+		'  %-20s terms=%-5d language-tagged=%-5d to-clear=%d' . "\n",
+		esc_html( $taxonomy ),
+		(int) $scanned,
+		(int) $tagged,
+		isset( $plan[ $taxonomy ] ) ? (int) $plan[ $taxonomy ] : 0
 	);
 }
 
@@ -224,8 +225,8 @@ if ( ! empty( $conflicts ) ) {
 		fprintf(
 			STDERR,
 			"ERROR: conflict on %s/%s: %s (counterpart term_id=%d). Refusing to apply.\n",
-			$conflict['taxonomy'],
-			$conflict['slug'],
+			esc_html( (string) $conflict['taxonomy'] ),
+			esc_html( (string) $conflict['slug'] ),
 			$conflict['reason'],
 			$conflict['counterpart']
 		);
@@ -264,7 +265,7 @@ if ( 'dry-run' !== $ctx['mode'] && 'apply' !== $ctx['mode'] ) {
 
 if ( 'dry-run' === $ctx['mode'] ) {
 	echo "MODE: dry-run - ZERO writes performed.\n";
-	echo "plan: clear the stale language assignment on {$to_clear} shared term(s).\n";
+	echo 'plan: clear the stale language assignment on ' . (int) $to_clear . " shared term(s).\n";
 	echo "no term is created, renamed, re-slugged, merged or deleted.\n";
 
 	exit(
@@ -319,10 +320,16 @@ $result['cleared'] = $cleared;
 $result['failed']  = $failed;
 
 echo "MODE: apply\n";
-echo "cleared {$cleared} of {$to_clear} shared term language assignment(s).\n";
+echo 'cleared ' . (int) $cleared . ' of ' . (int) $to_clear . " shared term language assignment(s).\n";
 
 foreach ( $failed as $entry ) {
-	fprintf( STDERR, "ERROR: %s/%s (term_id=%d) still reports a language after the write.\n", $entry['taxonomy'], $entry['slug'], $entry['term_id'] );
+	fprintf(
+		STDERR,
+		"ERROR: %s/%s (term_id=%d) still reports a language after the write.\n",
+		esc_html( (string) $entry['taxonomy'] ),
+		esc_html( (string) $entry['slug'] ),
+		(int) $entry['term_id']
+	);
 }
 
 exit(

@@ -1,0 +1,40 @@
+Stage M — test summary (before vs after)
+Generated: 2026-09-26
+Start SHA: ed9470517aabd9cf27939729d9cb19a855d4af45
+Branch: i18n
+
+=== BEFORE (pre-remediation baseline) ===
+In-process PHP suites: 54 total, 37 passed, 17 failed
+Assertions: 3362 passed, 65 failed
+Script-contract suites: 6 total, 5 passed, 1 failed
+HTTP acceptance suites: 3 total, 3 passed, 0 failed
+
+=== AFTER (post-remediation) ===
+In-process PHP suites: 54 total, 40 passed, 14 failed
+Assertions: 3385 passed, 56 failed
+Script-contract suites: 6 total, 6 passed, 0 failed
+HTTP acceptance suites: 3 total, 3 passed, 0 failed
+
+=== NEWLY FIXED (failing at baseline, passing now) ===
+  theme/conexao-br-irlanda/test-guide-en-translation.php
+  theme/conexao-br-irlanda/test-polylang-foundation.php
+  theme/conexao-br-irlanda/test-taxonomy-policy.php
+
+=== NEWLY FAILING (regressions) ===
+  (none)
+
+=== STILL FAILING (pre-existing, not in Stage M scope) ===
+plugin/conexao-event-importer/test-county-registry.php
+plugin/conexao-event-importer/test-error-handling.php
+plugin/conexao-event-importer/test-ivvcc-importer.php
+plugin/conexao-event-importer/test-town-sanitization.php
+theme/conexao-br-irlanda/test-blog-en-translation.php
+theme/conexao-br-irlanda/test-event-location-filters.php
+theme/conexao-br-irlanda/test-header-menu-selection.php (pt)
+theme/conexao-br-irlanda/test-leisure-card-excerpt-language.php
+theme/conexao-br-irlanda/test-leisure-related-events.php
+theme/conexao-br-irlanda/test-stage32-bilingual.php
+theme/conexao-br-irlanda/test-stage33-bilingual.php
+theme/conexao-br-irlanda/test-stage41-rest-language.php
+theme/conexao-br-irlanda/test-stage45-pages.php
+theme/conexao-br-irlanda/test-translation-completeness.php

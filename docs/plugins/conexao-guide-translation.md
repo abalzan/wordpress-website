@@ -101,9 +101,14 @@ Owner: project maintainer. Introduced by Stage 9.
 ```
 eligible public PT guides missing EN  = 0
 taxonomy terms used by PT guides missing EN = 0
-EN guides missing PT translation = 1 (documented: the pre-existing
-    stage42-contract-fixture-en / stage32-editorial-translation editorial
-    fixtures from earlier stages — reported, never created or modified here)
+EN guides missing PT translation = 0
+    (was 1: the pre-existing stage32-editorial-translation fixture from the
+    Stage 3.2 stage. Stage M removed it as an orphan fixture — it had no PT
+    master, no meta, no terms and no image, and its own "en" link pointed at
+    itself. See docs/evidence/2026-09-26-stage-m/ and
+    scripts/remove-en-orphan-fixtures.php. The linked
+    stage42-contract-fixture-en / stage32-editorial-source pair is a valid
+    bidirectional fixture and is deliberately still present.)
 PT sources changed (must be 0)
 ```
 

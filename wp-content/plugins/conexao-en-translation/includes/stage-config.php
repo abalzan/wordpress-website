@@ -73,10 +73,17 @@ function conexao_en_translation_engine_adapter( string $post_type ): array {
 				return false;
 			}
 
-			// ANY other record already holding the slug makes the EN URL
-			// ambiguous, whether or not that record is itself translated. This
-			// is deliberately stricter than "is it linked": creating a second
-			// page on a live slug is a duplicate-identity defect in the URL
+			// The record that holds the slug is the EN translation this PT
+			// record is already (or should be) paired with. That is the
+			// existing translation, not a clash, and it is what makes a
+			// re-run idempotent.
+			if ( (int) pll_get_post( $hit->ID, 'pt' ) === $pt_id ) {
+				return false;
+			}
+
+			// ANY other record holding the slug makes the EN URL ambiguous.
+			// This is deliberately stricter than "is it linked at all": a
+			// second page on a live slug is a duplicate identity in the URL
 			// space, which the standard forbids just as firmly as a duplicate
 			// database record.
 			return true;
@@ -90,16 +97,16 @@ function conexao_en_translation_engine_adapter( string $post_type ): array {
 
 			$en_id = wp_insert_post(
 				array(
-					'post_type'    => $post_type,
-					'post_name'    => (string) $row['en_slug'],
-					'post_title'   => (string) $row['en_title'],
-					'post_content' => (string) $row['en_content'],
-					'post_excerpt' => (string) $row['en_excerpt'],
-					'post_status'  => 'publish',
-					'post_date'    => $pt->post_date,
-					'post_date_gmt'=> $pt->post_date_gmt,
-					'post_author'  => (int) $pt->post_author,
-					'menu_order'   => (int) $pt->menu_order,
+					'post_type'     => $post_type,
+					'post_name'     => (string) $row['en_slug'],
+					'post_title'    => (string) $row['en_title'],
+					'post_content'  => (string) $row['en_content'],
+					'post_excerpt'  => (string) $row['en_excerpt'],
+					'post_status'   => 'publish',
+					'post_date'     => $pt->post_date,
+					'post_date_gmt' => $pt->post_date_gmt,
+					'post_author'   => (int) $pt->post_author,
+					'menu_order'    => (int) $pt->menu_order,
 				),
 				true
 			);
@@ -168,24 +175,24 @@ function conexao_en_translation_engine_adapter( string $post_type ): array {
  */
 function conexao_en_translation_engine_config( string $post_type ): array {
 	return array(
-		'stage'                  => 'en-' . $post_type,
-		'source_post_type'       => $post_type,
-		'source_lang'            => 'pt',
-		'target_lang'            => 'en',
-		'manifest_callback'      => static function () use ( $post_type ) {
+		'stage'                   => 'en-' . $post_type,
+		'source_post_type'        => $post_type,
+		'source_lang'             => 'pt',
+		'target_lang'             => 'en',
+		'manifest_callback'       => static function () use ( $post_type ) {
 			return conexao_en_translation_manifest_for( $post_type );
 		},
-		'snapshot_callback'      => 'conexao_en_translation_snapshot',
-		'build_en_args_callback' => static function () use ( $post_type ) {
+		'snapshot_callback'       => 'conexao_en_translation_snapshot',
+		'build_en_args_callback'  => static function () use ( $post_type ) {
 			return conexao_en_translation_manifest_for( $post_type );
 		},
-		'copy_fields_callback'   => 'conexao_en_translation_copy_fields',
-		'verify_landing_callback'=> null,
-		'extra_gate_callback'    => null,
+		'copy_fields_callback'    => 'conexao_en_translation_copy_fields',
+		'verify_landing_callback' => null,
+		'extra_gate_callback'     => null,
 		// Removal is safe and is the documented rollback: it deletes only the EN
 		// records this manifest owns, and never touches a PT original.
-		'allow_remove'           => true,
-		'run_callback'           => static function ( array $args = array() ) use ( $post_type ) {
+		'allow_remove'            => true,
+		'run_callback'            => static function ( array $args = array() ) use ( $post_type ) {
 			return Conexao_Translation_Rollout_Engine::run(
 				conexao_en_translation_engine_config( $post_type ),
 				conexao_en_translation_engine_adapter( $post_type ),

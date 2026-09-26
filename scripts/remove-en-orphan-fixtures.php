@@ -1,7 +1,8 @@
 <?php
 /**
- * remove-en-orphan-fixtures.php — remove EN records that have no PT master
- * (Stage M).
+ * Remove EN records that have no PT master.
+ *
+ * Stage M, engineering standard 6.1.
  *
  * Engineering standard §6.1: English is a LAYER, never a fork. "An EN record is
  * a *linked translation* of the same identity. Two identities for the same
@@ -61,7 +62,7 @@ $ctx = conexao_script_boot(
 			. "                    --apply           Remove the listed fixture records.\n"
 			. "                    --restore <file>  Re-create records from a snapshot.\n"
 			. "                    --json            Emit the machine-readable result.\n"
-			. "                    --help            This message.",
+			. '                    --help            This message.',
 		'writes'             => true,
 		'read_only'          => false,
 		'production_capable' => false,
@@ -117,56 +118,87 @@ if ( '' !== $restore_file ) {
 	}
 
 	if ( 'dry-run' === $ctx['mode'] ) {
-		printf( "MODE: dry-run - would restore %d record(s) from %s\n", count( $records ), $snapshot_file );
+		printf(
+			'MODE: dry-run - would restore %d record(s) from %s' . "\n",
+			count( $records ),
+			esc_html( $snapshot_file )
+		);
 		foreach ( $records as $record ) {
-			printf( "  would restore: %s/%s (was id %d)\n", $record['post_type'], $record['post_name'], (int) $record['ID'] );
+			printf(
+				'  would restore: %s/%s (was id %d)' . "\n",
+				esc_html( (string) $record['post_type'] ),
+				esc_html( (string) $record['post_name'] ),
+				(int) $record['ID']
+			);
 		}
-		exit( conexao_script_summary( $ctx, array( 'to_restore' => count( $records ), 'restored' => 0, 'errors' => 0 ) ) );
+		exit(
+			conexao_script_summary(
+				$ctx,
+				array(
+					'to_restore' => count( $records ),
+					'restored'   => 0,
+					'errors'     => 0,
+				)
+			)
+		);
 	}
 
 	$restored = 0;
 
 	foreach ( $records as $record ) {
-		$post_id = wp_insert_post(
+		$restored_id = wp_insert_post(
 			array(
-				'post_title'   => (string) $record['post_title'],
-				'post_name'    => (string) $record['post_name'],
-				'post_content' => (string) $record['post_content'],
-				'post_excerpt' => (string) $record['post_excerpt'],
-				'post_status'  => (string) $record['post_status'],
-				'post_type'    => (string) $record['post_type'],
-				'post_date'    => (string) $record['post_date'],
-				'post_date_gmt'=> (string) $record['post_date_gmt'],
-				'post_author'  => (int) $record['post_author'],
-				'post_parent'  => (int) $record['post_parent'],
-				'menu_order'   => (int) $record['menu_order'],
+				'post_title'    => (string) $record['post_title'],
+				'post_name'     => (string) $record['post_name'],
+				'post_content'  => (string) $record['post_content'],
+				'post_excerpt'  => (string) $record['post_excerpt'],
+				'post_status'   => (string) $record['post_status'],
+				'post_type'     => (string) $record['post_type'],
+				'post_date'     => (string) $record['post_date'],
+				'post_date_gmt' => (string) $record['post_date_gmt'],
+				'post_author'   => (int) $record['post_author'],
+				'post_parent'   => (int) $record['post_parent'],
+				'menu_order'    => (int) $record['menu_order'],
 			),
 			true
 		);
 
-		if ( is_wp_error( $post_id ) ) {
-			fprintf( STDERR, "ERROR: could not restore %s: %s\n", $record['post_name'], $post_id->get_error_message() );
+		if ( is_wp_error( $restored_id ) ) {
+			fprintf( STDERR, "ERROR: could not restore %s: %s\n", $record['post_name'], $restored_id->get_error_message() );
 			continue;
 		}
 
-		pll_set_post_language( (int) $post_id, (string) $record['language'] );
+		pll_set_post_language( (int) $restored_id, (string) $record['language'] );
 
 		foreach ( (array) ( $record['meta'] ?? array() ) as $key => $value ) {
-			update_post_meta( (int) $post_id, (string) $key, $value );
+			update_post_meta( (int) $restored_id, (string) $key, $value );
 		}
 
-		foreach ( (array) ( $record['terms'] ?? array() ) as $taxonomy => $term_ids ) {
+		foreach ( (array) ( $record['terms'] ?? array() ) as $the_taxonomy => $term_ids ) {
 			if ( ! empty( $term_ids ) ) {
-				wp_set_post_terms( (int) $post_id, array_map( 'intval', (array) $term_ids ), (string) $taxonomy );
+				wp_set_post_terms( (int) $restored_id, array_map( 'intval', (array) $term_ids ), (string) $the_taxonomy );
 			}
 		}
 
 		++$restored;
 	}
 
-	printf( "MODE: apply\nrestored %d record(s) from %s\n", $restored, $snapshot_file );
+	printf(
+		"MODE: apply\nrestored %d record(s) from %s\n",
+		(int) $restored,
+		esc_html( $snapshot_file )
+	);
 
-	exit( conexao_script_summary( $ctx, array( "to_restore" => count( $records ), "restored" => $restored, "errors" => 0 ) ) );
+	exit(
+		conexao_script_summary(
+			$ctx,
+			array(
+				'to_restore' => count( $records ),
+				'restored'   => $restored,
+				'errors'     => 0,
+			)
+		)
+	);
 }
 
 // ---------------------------------------------------------------------------
@@ -176,14 +208,14 @@ if ( '' !== $restore_file ) {
 $candidates = array();
 $kept       = array();
 
-foreach ( get_post_types( array( 'public' => true ), 'names' ) as $post_type ) {
-	if ( 'attachment' === $post_type ) {
+foreach ( get_post_types( array( 'public' => true ), 'names' ) as $the_post_type ) {
+	if ( 'attachment' === $the_post_type ) {
 		continue;
 	}
 
 	$en_ids = get_posts(
 		array(
-			'post_type'      => $post_type,
+			'post_type'      => $the_post_type,
 			'post_status'    => 'publish',
 			'posts_per_page' => -1,
 			'fields'         => 'ids',
@@ -201,9 +233,9 @@ foreach ( get_post_types( array( 'public' => true ), 'names' ) as $post_type ) {
 			continue;
 		}
 
-		$post = get_post( $en_id );
+		$the_post = get_post( $en_id );
 
-		if ( ! $post instanceof WP_Post ) {
+		if ( ! $the_post instanceof WP_Post ) {
 			continue;
 		}
 
@@ -211,16 +243,16 @@ foreach ( get_post_types( array( 'public' => true ), 'names' ) as $post_type ) {
 			return 1 === preg_match( '/stage[0-9]+|fixture|contract[-_ ]?fixture|test[-_ ]/i', $value );
 		};
 
-		$is_fixture = $marker( (string) $post->post_name ) && $marker( (string) $post->post_title );
+		$is_fixture = $marker( (string) $the_post->post_name ) && $marker( (string) $the_post->post_title );
 
 		if ( ! $is_fixture ) {
 			// A genuine orphaned translation is a CONTENT decision. It is
 			// reported loudly and never removed by this script.
 			$kept[] = array(
 				'id'     => $en_id,
-				'type'   => $post_type,
-				'slug'   => $post->post_name,
-				'title'  => $post->post_title,
+				'type'   => $the_post_type,
+				'slug'   => $the_post->post_name,
+				'title'  => $the_post->post_title,
 				'reason' => 'EN record with no PT master that is NOT a stage fixture: removing it is a content decision, so it is left untouched',
 			);
 			continue;
@@ -232,37 +264,37 @@ foreach ( get_post_types( array( 'public' => true ), 'names' ) as $post_type ) {
 		}
 
 		$terms = array();
-		foreach ( array( 'conexao_category', 'conexao_county', 'conexao_tag', 'conexao_town' ) as $taxonomy ) {
-			$ids = wp_get_post_terms( $en_id, $taxonomy, array( 'fields' => 'ids' ) );
-			if ( ! is_wp_error( $ids ) && ! empty( $ids ) ) {
-				$terms[ $taxonomy ] = array_map( 'intval', $ids );
+		foreach ( array( 'conexao_category', 'conexao_county', 'conexao_tag', 'conexao_town' ) as $the_taxonomy ) {
+			$term_ids = wp_get_post_terms( $en_id, $the_taxonomy, array( 'fields' => 'ids' ) );
+			if ( ! is_wp_error( $term_ids ) && ! empty( $term_ids ) ) {
+				$terms[ $the_taxonomy ] = array_map( 'intval', $term_ids );
 			}
 		}
 
 		$candidates[] = array(
-			'ID'                => $en_id,
-			'post_type'         => $post_type,
-			'post_title'        => $post->post_title,
-			'post_name'         => $post->post_name,
-			'post_content'      => $post->post_content,
-			'post_excerpt'      => $post->post_excerpt,
-			'post_status'       => $post->post_status,
-			'post_date'         => $post->post_date,
-			'post_date_gmt'     => $post->post_date_gmt,
-			'post_modified'     => $post->post_modified,
-			'post_author'       => (int) $post->post_author,
-			'post_parent'       => (int) $post->post_parent,
-			'menu_order'        => (int) $post->menu_order,
-			'comment_status'    => $post->comment_status,
-			'ping_status'       => $post->ping_status,
-			'post_password'     => $post->post_password,
-			'to_ping'           => $post->to_ping,
-			'pinged'            => $post->pinged,
-			'guid'              => $post->guid,
-			'post_mime_type'    => $post->post_mime_type,
-			'language'          => (string) pll_get_post_language( $en_id, 'slug' ),
-			'meta'              => $meta,
-			'terms'             => $terms,
+			'ID'             => $en_id,
+			'post_type'      => $the_post_type,
+			'post_title'     => $the_post->post_title,
+			'post_name'      => $the_post->post_name,
+			'post_content'   => $the_post->post_content,
+			'post_excerpt'   => $the_post->post_excerpt,
+			'post_status'    => $the_post->post_status,
+			'post_date'      => $the_post->post_date,
+			'post_date_gmt'  => $the_post->post_date_gmt,
+			'post_modified'  => $the_post->post_modified,
+			'post_author'    => (int) $the_post->post_author,
+			'post_parent'    => (int) $the_post->post_parent,
+			'menu_order'     => (int) $the_post->menu_order,
+			'comment_status' => $the_post->comment_status,
+			'ping_status'    => $the_post->ping_status,
+			'post_password'  => $the_post->post_password,
+			'to_ping'        => $the_post->to_ping,
+			'pinged'         => $the_post->pinged,
+			'guid'           => $the_post->guid,
+			'post_mime_type' => $the_post->post_mime_type,
+			'language'       => (string) pll_get_post_language( $en_id, 'slug' ),
+			'meta'           => $meta,
+			'terms'          => $terms,
 		);
 	}
 }
@@ -275,29 +307,29 @@ echo "\n";
 
 foreach ( $candidates as $record ) {
 	printf(
-		"  remove: %-10s id=%-6d slug=%-32s (%s)\n",
-		$record['post_type'],
+		'  remove: %-10s id=%-6d slug=%-32s (%s)' . "\n",
+		esc_html( (string) $record['post_type'] ),
 		(int) $record['ID'],
-		$record['post_name'],
-		$record['post_title']
+		esc_html( (string) $record['post_name'] ),
+		esc_html( (string) $record['post_title'] )
 	);
 }
 
 foreach ( $kept as $record ) {
 	printf(
-		"  KEEP:   %-10s id=%-6d slug=%-32s (%s)\n",
-		$record['type'],
+		'  KEEP:   %-10s id=%-6d slug=%-32s (%s)' . "\n",
+		esc_html( (string) $record['type'] ),
 		(int) $record['id'],
-		$record['slug'],
-		$record['reason']
+		esc_html( (string) $record['slug'] ),
+		esc_html( (string) $record['reason'] )
 	);
 }
 
 $snapshot = array(
-	'stage'         => 'M — permanent invariant debt remediation',
-	'change'        => 'removed published EN records that had no PT master and were provably one-shot stage fixtures',
-	'restore_with'  => 'php scripts/remove-en-orphan-fixtures.php --apply --restore <this file>',
-	'records'       => $candidates,
+	'stage'        => 'M — permanent invariant debt remediation',
+	'change'       => 'removed published EN records that had no PT master and were provably one-shot stage fixtures',
+	'restore_with' => 'php scripts/remove-en-orphan-fixtures.php --apply --restore <this file>',
+	'records'      => $candidates,
 );
 
 if ( 'dry-run' === $ctx['mode'] ) {
@@ -341,10 +373,10 @@ $snapshot['removed'] = $removed;
 $snapshot['failed']  = $failed;
 
 echo "\nMODE: apply\n";
-echo 'removed ' . $removed . ' of ' . count( $candidates ) . " EN fixture record(s).\n";
+echo 'removed ' . (int) $removed . ' of ' . count( $candidates ) . " EN fixture record(s).\n";
 
 foreach ( $failed as $slug ) {
-	fprintf( STDERR, "ERROR: could not remove %s\n", $slug );
+	fprintf( STDERR, "ERROR: could not remove %s\n", esc_html( (string) $slug ) );
 }
 
 echo "snapshot (replay with --restore):\n" . wp_json_encode( $snapshot, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE ) . "\n";
