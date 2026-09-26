@@ -1,6 +1,6 @@
 {
   "stage": "E",
-  "commit": "d6e1ba0e31aea08e16b57f72d23e77c9248881e0",
+  "commit": "e37b634f97d9cdaacf41b9458a79c8b272fe4366",
   "branch": "i18n",
   "recorded": "2026-09-25",
   "status": "PASS WITH LIMITATION",
@@ -126,5 +126,5 @@
       "effect": "coverage increase; the failure set is unchanged"
     }
   },
-  "commit_note": "The harness implementation commit. This gate.json is completed by the immediately following documentation commit, which cannot contain its own hash."
+  "commit_note": "Final Stage E commit (CI setup fixes). The harness implementation commit is d6e1ba0. This gate.json is completed by the immediately following documentation commit, which cannot contain its own hash."
 }
