@@ -1,0 +1,201 @@
+Stage M — PHASE 0 CHECKPOINT AND CURRENT DEBT INVENTORY
+Recorded BEFORE any Stage M edit.
+Branch: i18n
+Stage M START SHA (resolved from Git, not from prose): ed9470517aabd9cf27939729d9cb19a855d4af45
+Date: 2026-09-26
+
+=====================================================================
+GIT CHECKPOINT
+=====================================================================
+  git branch --show-current  -> i18n
+  git rev-parse HEAD         -> ed9470517aabd9cf27939729d9cb19a855d4af45
+  git status --short         -> (clean, empty)
+  git log --oneline -3       -> ed94705 stage-l: add permanent invariant gates
+                                7bc2c35 stage-k: record the Stage K final commit hash
+                                669a3c2 stage-k: add WordPress agent skills and governance templates
+  The Stage L final checkpoint is resolved FROM GIT as ed94705, the tip of
+  branch i18n. Stage L is committed and the working tree is clean.
+
+=====================================================================
+CURRENT PERMANENT-GATE AGGREGATE (re-inventoried, not assumed)
+=====================================================================
+Command: python3 scripts/verify-permanent-gates.py --out /tmp/stage-m-baseline-gate.json
+Exit code: 1
+
+  [FAIL   ] taxonomy                   taxonomy_policy   exit=1 16 passed, 2 failed, 282 violation(s) (282 pre-existing, 0 new), 0 allowlisted
+            - taxonomy:conexao_county:language_tagged_terms: 32
+            - taxonomy:conexao_town:language_tagged_terms: 250
+  [FAIL   ] translation_completeness   translation_completeness exit=1 16 passed, 4 failed, 73 violation(s) (73 pre-existing, 0 new), 1821 allowlisted
+            - post_type:guide:missing_en: 1
+            - post_type:guide:malformed_relationships: 1
+            - post_type:page:missing_en: 29
+            - post_type:post:missing_en: 42
+            allowlisted: 1821 (by documented policy)
+  [PASS   ] cache_scoping              cache_scoping            exit=0  9 passed, 0 failed
+  [PASS   ] cache_scoping              cache_scoping_static     exit=0  2 passed, 0 failed
+  [PASS   ] redirect_precedence        redirect_precedence      exit=0 15 passed, 0 failed
+  [PASS   ] documentation_drift        documentation_drift      exit=0 14 passed, 0 failed
+  [FAIL   ] i18n_freshness             i18n_freshness           exit=1  7 passed, 6 failed, 6 violation(s) (6 pre-existing, 0 new), 0 allowlisted
+
+  Gates: 7 total, 4 passed, 3 failed, 0 blocked
+  Assertions: 79 passed, 12 failed
+  Violations: 361 (361 pre-existing, 0 new)
+  AGGREGATE: FAIL
+
+COMPARISON WITH THE STAGE L BASELINE: IDENTICAL. The debt has not changed,
+grown or shrunk. Stage L's 361 / 361 pre-existing / 0 new is re-confirmed by
+a fresh run at the Stage M start SHA. Stage M therefore works from the
+current authoritative measurement, not from Stage L prose.
+
+
+=====================================================================
+ORIGIN ANALYSIS — WHY THE TAXONOMY DEBT EXISTS (done BEFORE any change)
+=====================================================================
+Measured storage: Polylang 3.8.9 stores TERM language as an object-term
+relationship in its internal `term_language` taxonomy, NOT in a DB column.
+Every term-language count below comes from that relationship table:
+
+  SELECT target.taxonomy, lang.slug, COUNT(*)
+    FROM wp_term_relationships tr
+    JOIN wp_term_taxonomy langtt ON langtt.term_taxonomy_id=tr.term_taxonomy_id
+                              AND langtt.taxonomy='term_language'
+    JOIN wp_terms lang ON lang.term_id=langtt.term_id
+    JOIN wp_term_taxonomy target ON target.term_id=tr.object_id
+   WHERE target.taxonomy IN ('conexao_county','conexao_town','conexao_category','conexao_tag')
+   GROUP BY target.taxonomy, lang.slug;
+
+  conexao_category  pll_pt  58
+  conexao_category  pll_en  16
+  conexao_county    pll_pt  32
+  conexao_town      pll_pt 250
+
+This EXACTLY accounts for the 32 + 250 = 282 taxonomy gate violations, and
+proves the translated category/tag terms are unaffected (58 PT / 16 EN).
+
+Origin, proven rather than assumed:
+
+1. NO CURRENT CODE CREATES THE TAGS. `conexao_polylang_translated_taxonomies()`
+   (theme inc/i18n/guard.php) declares ONLY conexao_category and conexao_tag
+   as Polylang-translated. conexao_county and conexao_town are declared shared.
+
+2. THE SEED IS ALREADY CORRECT. `Conexao_Data_Model_Relationships::seed_terms()`
+   (wp-content/plugins/conexao-data-model/includes/class-relationships.php)
+   uses a bare `wp_insert_term( $term, 'conexao_county' )`. Because the
+   taxonomy is no longer translated, that call no longer assigns a language.
+
+3. PROVEN EMPIRICALLY: inserting a throwaway term `ZZ StageM Probe County`
+   into conexao_county at the Stage M start SHA returned lang=false (NO
+   language), and the probe term was deleted immediately. A freshly seeded
+   county/town term is ALREADY language-neutral.
+
+CONCLUSION: the 282 language tags are HISTORICAL RESIDUE from the period
+before the Stage 3.2 policy correction, when county/town WERE Polylang
+translated and Polylang tagged them on insert. Nothing in the current
+repository regenerates them, so the SOURCE of this debt is already correct and
+must not be changed. The remediation is a data cleanup that removes the stale
+`term_language` relationships. There is no seed/import defect to repair.
+
+Dependency checks performed BEFORE changing anything:
+  - Every county/town term sits in a `term_translations` group of size 1
+    (384 groups, all of size 1), i.e. no term has a cross-language counterpart,
+
+=====================================================================
+ORIGIN ANALYSIS — TRANSLATION DEBT (72 missing + 1 malformed)
+=====================================================================
+Discovered from the runtime (never from a hard-coded list), per content type:
+
+  course_provider  eligible=10   missing=0  malformed=0
+  event            eligible=1503 missing=0  malformed=0
+  guide            eligible=53   missing=1  malformed=0  EN-orphans=1
+  job              eligible=1    missing=0  malformed=0
+  leisure          eligible=293  missing=0  malformed=0
+  page             eligible=44   missing=29 malformed=0
+  post             eligible=42   missing=42 malformed=0
+  sponsor          eligible=3    missing=0  malformed=0
+
+THE MALFORMED GUIDE RELATIONSHIP IS A TEST FIXTURE, NOT CONTENT:
+  EN guide id=22184  slug=stage32-editorial-translation
+      title   "[STAGE32-EDITORIAL] translation"
+      content "Stage 3.2 editorial state fixture."
+      EN=22184  PT=0  -> an EN record with NO PT master. This is exactly the
+      malformed relationship the gate counts (en_without_pt).
+  It is published, English, and describes itself as a fixture. It is not
+  editorial content and no PT guide references it.
+  Related: EN id=22198 slug=stage42-contract-fixture-en -> PT master 22183
+  slug=stage32-editorial-source. Those two are also fixtures, but they ARE
+  linked bidirectionally, so they are NOT violations and must not be touched.
+
+THE MISSING GUIDE EN TRANSLATION IS REAL CONTENT:
+  PT guide id=22415 slug=outono-irlanda-alimentacao-bem-estar
+     title "O outono chegou à Irlanda… e o nosso corpo também sente essa mudança"
+     date 2026-09-25, status publish, content length 5116, excerpt length 208
+     EN=0. Genuine, recent, eligible PT editorial content with no EN
+     translation: a TRUE missing translation, not a fixture.
+
+THE 29 MISSING PAGES are real PT pages: categorias, sobre, compras, turismo,
+negocios, servicos, voluntariado, europa, privacidade, termos, search,
+
+=====================================================================
+ORIGIN ANALYSIS — i18n STALE CATALOGUES
+=====================================================================
+  conexao-br-irlanda        STALE (newest source: home.php)
+  conexao-data-model        STALE (newest source: includes/class-agency.php)
+  conexao-admin-ux          STALE (newest source: includes/class-translation-state.php)
+  conexao-event-runtime     STALE (newest source: conexao-event-runtime.php)
+  conexao-event-importer    STALE (newest source: includes/class-event-export.php)
+  conexao-leisure-migration STALE (newest source: includes/class-leisure-exporter.php)
+  conexao-content           fresh
+  conexao-sponsor-migration fresh
+
+Origin: the existing catalogues carry `X-Generator: WP-CLI 2.12.0` and were
+generated by `wp i18n make-pot`; the plugin .pot files predate later source
+edits. The ROOT CAUSE is that the repository has a freshness CHECK
+(`scripts/i18n-check.sh`, added by Stage L) but NO generation script: audit
+finding F-04 already recommended `i18n-make-pot.sh` and it was never built.
+That missing generator is the source of repeated staleness, and it is the
+thing Stage M must fix, not just this one diff.
+
+=====================================================================
+BASELINE DEFAULT-RUNNER RESULT (pre-remediation)
+=====================================================================
+Captured verbatim to docs/evidence/2026-09-26-stage-m/test-summary.txt.
+The 15 pre-Stage-L failing suites are re-measured at the Stage M start SHA
+and compared in the final report; no pre-existing failure is assumed.
+
+=====================================================================
+TOOLING AVAILABLE IN THIS ENVIRONMENT
+=====================================================================
+  python3, php 8.3 (container), bash, git, xgettext 0.23.2, msgmerge
+  docker compose: local WordPress up, DB healthy -> the real in-process gates
+                  CAN run, not just the static ones.
+  WP-CLI: NOT preinstalled. Obtained for this stage at /tmp/wp-cli.phar,
+          version 2.12.0 — the exact version recorded in the existing .pot
+          headers, so catalogue regeneration is byte-reproducible. It is a
+          build tool in /tmp and is NOT committed to the repository.
+  Unavailable/limited tooling is reported in the final report's limitations.
+
+NO MUTATION HAS BEEN PERFORMED. This file is the Phase 0 checkpoint.
+
+newsletter, revista, anuncie, politica-de-privacidade, termos-de-uso, cookies,
+moradia, saude, familia, transporte, financas, beneficios, educacao,
+documentos, onde-comer, lazer, jobs-2, about.
+  NOTE: `about` (id=1) is the untouched WordPress DEFAULT sample page whose
+  body still carries the wordpress.com "Click the Edit link" placeholder, and
+  `jobs-2` (id=22201) is a DUPLICATE of the real `/empregos/` page (id=11086)
+  with identical body text. Both need classification before any EN creation.
+
+THE 42 MISSING POSTS are real, dated PT blog posts (2025-12 -> 2026-06), all
+  with EN=0. Zero EN `post` records exist in the whole dataset.
+
+THE 1821 ALLOWLISTED records come from the EXISTING documented B2 policy
+  (`conexao_b2_post_types()` = event/leisure/sponsor/course_provider/job;
+   `conexao_b2_page_allowlist()` = 9 county pages + irlanda + blog). Verified
+  per type: event 1503, leisure 293, course_provider 10, sponsor 3, job 0,
+  page 11. This number is policy-derived and must not be changed to hide debt.
+
+    so no translation relationship depends on the language tag.
+  - No suffixed duplicates and no duplicate slugs exist: the taxonomy gate's
+    other two checks already report 0.
+  - conexao_county/conexao_town are queried by SLUG in the theme
+    (`?county=`, `?cidade=`), never by language, so removing the tag changes no
+    filter behaviour.

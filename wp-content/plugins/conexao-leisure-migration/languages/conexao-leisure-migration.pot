@@ -1,9 +1,9 @@
-# Copyright (C) 2026 
-# This file is distributed under the same license as the Conexão BR Irlanda — Lazer Migration plugin.
+# Copyright (C) 2026 Conexao BR Irlanda
+# This file is distributed under the GNU General Public License v2 or later.
 msgid ""
 msgstr ""
 "Project-Id-Version: Conexão BR Irlanda — Lazer Migration 2.1.0\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/conexao-leisure-migration\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/conexao-br-irlanda\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -14,536 +14,422 @@ msgstr ""
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: conexao-leisure-migration\n"
 
-#. Plugin Name of the plugin
-#: conexao-leisure-migration.php
-msgid "Conexão BR Irlanda — Lazer Migration"
-msgstr ""
-
-#. Description of the plugin
-#: conexao-leisure-migration.php
-msgid "Export and import the /lazer/ (leisure) dataset as a self-contained ZIP package containing data.json and the actual image files from the Media Library. Imports into another installation with dry-run preview, dedupe by stable UUID + image ID, Media Library attachment creation, legacy-data cleanup, and post-import verification. Production images are always local — no dependency on Wikimedia Commons for delivery."
-msgstr ""
 
 #: includes/class-leisure-exporter.php:291
 msgid "Could not create the export package temp directory."
 msgstr ""
-
 #: includes/class-leisure-exporter.php:298
 msgid "Could not create the export package images directory."
 msgstr ""
-
 #: includes/class-leisure-exporter.php:334
 msgid "Could not write data.json in the export package."
 msgstr ""
-
 #: includes/class-leisure-exporter.php:349
 msgid "The ZipArchive PHP extension is required to build the export package."
 msgstr ""
-
 #: includes/class-leisure-exporter.php:355
 msgid "Could not create the export ZIP archive."
 msgstr ""
-
 #: includes/class-leisure-importer.php:85
 msgid "Invalid file upload."
 msgstr ""
-
 #: includes/class-leisure-importer.php:90
 msgid "The uploaded file exceeds the upload_max_filesize directive in php.ini."
 msgstr ""
-
 #: includes/class-leisure-importer.php:91
 msgid "The uploaded file exceeds the MAX_FILE_SIZE directive specified in the form."
 msgstr ""
-
 #: includes/class-leisure-importer.php:92
 msgid "The uploaded file was only partially uploaded."
 msgstr ""
-
 #: includes/class-leisure-importer.php:93
 msgid "No file was uploaded."
 msgstr ""
-
 #: includes/class-leisure-importer.php:94
 msgid "Missing a temporary folder."
 msgstr ""
-
 #: includes/class-leisure-importer.php:95
 msgid "Failed to write file to disk."
 msgstr ""
-
 #: includes/class-leisure-importer.php:96
 msgid "A PHP extension stopped the file upload."
 msgstr ""
-
 #: includes/class-leisure-importer.php:98
 msgid "Unknown upload error."
 msgstr ""
-
 #: includes/class-leisure-importer.php:103
 #: includes/class-leisure-importer.php:190
 msgid "The uploaded file could not be read."
 msgstr ""
-
 #: includes/class-leisure-importer.php:107
 msgid "The uploaded file is too large. Maximum size is 100 MB."
 msgstr ""
-
 #: includes/class-leisure-importer.php:112
 #: includes/class-leisure-importer.php:125
 msgid "Only .zip export packages are supported."
 msgstr ""
-
 #: includes/class-leisure-importer.php:120
 msgid "The export file could not be found or read."
 msgstr ""
-
 #: includes/class-leisure-importer.php:139
 #: includes/class-leisure-importer.php:217
 msgid "The ZipArchive PHP extension is required to import the export package."
 msgstr ""
-
 #: includes/class-leisure-importer.php:145
 #: includes/class-leisure-importer.php:223
 msgid "The uploaded file is not a valid ZIP archive."
 msgstr ""
-
 #: includes/class-leisure-importer.php:152
 #: includes/class-leisure-importer.php:242
 msgid "The ZIP package does not contain a data.json file."
 msgstr ""
-
 #: includes/class-leisure-importer.php:159
 msgid "Could not read data.json from the ZIP package."
 msgstr ""
-
 #: includes/class-leisure-importer.php:195
 msgid "The uploaded file is not valid JSON."
 msgstr ""
-
 #: includes/class-leisure-importer.php:199
 msgid "This file is not a valid Conexão Lazer export."
 msgstr ""
-
 #: includes/class-leisure-importer.php:203
 msgid "The export file contains no Lazer item data."
 msgstr ""
-
 #: includes/class-leisure-importer.php:232
 msgid "Could not create the import temp directory."
 msgstr ""
-
 #: includes/class-leisure-importer.php:249
 msgid "data.json is not valid JSON."
 msgstr ""
-
 #: includes/class-leisure-importer.php:413
 msgid "Item is missing both a title and a slug."
 msgstr ""
-
 #: includes/class-leisure-importer.php:734
 msgid "Registro em outro idioma: o importador não grava em traduções."
 msgstr ""
-
 #: includes/class-leisure-importer.php:965
 msgid "Image file could not be read."
 msgstr ""
-
 #: includes/class-leisure-importer.php:969
 msgid "Image file exceeds the maximum size."
 msgstr ""
-
 #: includes/class-leisure-importer.php:975
 msgid "Image file has an unsupported extension."
 msgstr ""
-
 #: includes/class-leisure-importer.php:981
 msgid "Could not open image file."
 msgstr ""
-
 #: includes/class-leisure-importer.php:998
 msgid "Image file contents are not a valid image."
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:43
 #: includes/class-leisure-transfer-admin.php:44
 #: includes/class-leisure-transfer-admin.php:283
 msgid "Exportar Lazer"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:52
 #: includes/class-leisure-transfer-admin.php:53
 #: includes/class-leisure-transfer-admin.php:353
 msgid "Importar Lazer"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:61
 #: includes/class-leisure-transfer-admin.php:514
 msgid "Manutenção Lazer"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:62
 msgid "Manutenção"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:71
 msgid "You do not have permission to export Lazer data."
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:135
 #: includes/class-leisure-transfer-admin.php:182
 msgid "You do not have permission to import Lazer data."
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:249
 msgid "You do not have permission to run Lazer maintenance."
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:284
 msgid "Export all /lazer/ locations from this installation into a self-contained ZIP package. The package includes the actual image files from the Media Library, so the production website can import them as local images without depending on Wikimedia Commons or any other external host."
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:287
 msgid "Available locations"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:290
 msgid "Lazer location ready to export"
 msgid_plural "Lazer locations ready to export"
 msgstr[0] ""
 msgstr[1] ""
-
 #: includes/class-leisure-transfer-admin.php:296
 msgid "Download Export Package (ZIP)"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:301
 msgid "What is exported"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:303
 msgid "Title, full description, short description, status, and slug"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:304
 msgid "County, town, and address"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:305
 msgid "Official website URL and Discover Ireland URL (kept separate)"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:306
 msgid "Featured / priority flag and all useful attributes"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:307
 msgid "Categories, counties, and tags"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:308
 msgid "The actual image files from the Media Library"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:309
 msgid "Image metadata — alt text, source, author, license, attribution"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:310
 msgid "A stable unique ID per item and per image (so re-imports never duplicate)"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:354
 msgid "Upload a Lazer export package (ZIP) to import /lazer/ locations into this installation. The importer validates the package, shows a preview, and only writes data after you confirm. Images are imported as local Media Library attachments."
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:358
 msgid "Import error"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:362
 msgid "Please choose a ZIP export package to upload."
 msgstr ""
-
 #. translators: %s: maximum upload size, e.g. "64 MB"
 #: includes/class-leisure-transfer-admin.php:366
 #, php-format
 msgid "The selected file exceeds the maximum upload size (%s). Increase the PHP upload_max_filesize / post_max_size limits, or split the export package."
 msgstr ""
-
 #. translators: %s: maximum POST body size, e.g. "64 MB"
 #: includes/class-leisure-transfer-admin.php:372
 #, php-format
 msgid "The upload was rejected by the server because it exceeded the POST size limit (%s). Increase the PHP post_max_size limit, or split the export package."
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:376
 msgid "The file could not be imported."
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:385
 msgid "Import preview (dry run)"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:386
 msgid "Nothing was written yet. Review the numbers below and confirm to run the real import."
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:392
 msgid "Import complete"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:398
 msgid "Preview"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:398
 msgid "Result"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:400
 #, php-format
 msgid "Lazer items found in file: %d"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:401
 #, php-format
 msgid "New items to create: %d"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:402
 #, php-format
 msgid "Existing items to update: %d"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:403
 #, php-format
 msgid "Items skipped: %d"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:404
 #, php-format
 msgid "Items failed: %d"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:405
 #, php-format
 msgid "Images to import: %d"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:406
 #, php-format
 msgid "Images to reuse: %d"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:407
 #, php-format
 msgid "Images missing: %d"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:408
 #, php-format
 msgid "Taxonomy terms to create: %d"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:409
 #, php-format
 msgid "Taxonomy terms matched: %d"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:414
 msgid "Errors"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:424
 msgid "Post-import verification"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:426
 #, php-format
 msgid "Total Lazer locations on site: %d"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:427
 #, php-format
 msgid "Published: %d"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:428
 #, php-format
 msgid "With featured image: %d"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:429
 #, php-format
 msgid "With stable ID: %d"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:430
 #, php-format
 msgid "With Official Website URL: %d"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:431
 #, php-format
 msgid "With Discover Ireland URL: %d"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:438
 msgid "Upload Export Package"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:444
 msgid "Export package (.zip)"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:446
 #, php-format
 msgid "Maximum upload size: %s."
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:450
 msgid "If a location already exists"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:452
 msgid "Update the existing location"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:453
 msgid "Skip the existing location"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:455
 msgid "Locations are matched by stable unique ID, then slug, then title."
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:460
 msgid "Confirm: this will write data to the site."
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:462
 msgid "Confirm & Import Now"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:464
 msgid "Preview Import (Dry Run)"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:476
 #, php-format
 msgid "The selected file is larger than the maximum upload size (%s). Choose a smaller export package or increase the PHP upload limits."
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:484
 msgid "What happens on import"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:486
 msgid "The ZIP package is validated before any data is written."
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:487
 msgid "Only /lazer/ (leisure) content is affected — events, guides, jobs, courses, blog posts, pages and supporters are untouched."
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:488
 msgid "Existing locations are matched by stable ID, slug or title, and updated or skipped."
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:489
 msgid "Image files from the package are imported into the WordPress Media Library as local attachments."
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:490
 msgid "Existing images are reused (no duplicates) via stable image identifiers."
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:491
 msgid "Wikimedia Commons source/author/license/attribution metadata is preserved as reference only."
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:492
 msgid "Taxonomies are matched by name; missing terms are created (no duplicates)."
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:493
 msgid "Official Website and Discover Ireland URLs are kept separate and independent."
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:515
 msgid "Clean up legacy data from the old external-image architecture. This operation is conservative: it only removes data that belongs to the old external-hotlink delivery model and never deletes valid Media Library images, attribution/license metadata, or images used by other content."
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:519
 msgid "Cleanup complete"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:521
 #, php-format
 msgid "Removed %d external image URL(s) and updated %d external status(es) across %d item(s)."
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:528
 msgid "Cleanup cancelled"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:529
 msgid "You must type CLEANUP to confirm the operation."
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:534
 msgid "Legacy data preview"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:536
 #, php-format
 msgid "Legacy external image URLs: %d"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:537
 #, php-format
 msgid "Items with \"external\" image status: %d"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:538
 #, php-format
 msgid "Affected Lazer items: %d"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:542
 msgid "Legacy meta keys in database"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:551
 msgid "Affected items"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:555
 msgid "Title"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:556
 msgid "External URL"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:557
 msgid "Status"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:571
 #, php-format
 msgid "Showing first 20 of %d items."
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:578
 msgid "Type CLEANUP to confirm"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:581
 msgid "Run Cleanup"
 msgstr ""
-
 #: includes/class-leisure-transfer-admin.php:584
 msgid "No legacy external-image data found. Nothing to clean up."
+msgstr ""
+
+#. Name of the plugin
+#: wp-content/plugins/conexao-leisure-migration/conexao-leisure-migration.php:1
+msgid "Conexão BR Irlanda — Lazer Migration"
+msgstr ""
+
+#. Description of the plugin
+#: wp-content/plugins/conexao-leisure-migration/conexao-leisure-migration.php:1
+msgid "Export and import the /lazer/ (leisure) dataset as a self-contained ZIP package containing data.json and the actual image files from the Media Library. Imports into another installation with dry-run preview, dedupe by stable UUID + image ID, Media Library attachment creation, legacy-data cleanup, and post-import verification. Production images are always local — no dependency on Wikimedia Commons for delivery."
+msgstr ""
+
+#. Version of the plugin
+#: wp-content/plugins/conexao-leisure-migration/conexao-leisure-migration.php:1
+msgid "2.1.0"
 msgstr ""

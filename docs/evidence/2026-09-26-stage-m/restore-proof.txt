@@ -1,0 +1,11 @@
+Stage M — taxonomy restore proof (Phase 10 / rollback sufficiency)
+Generated: 2026-09-26
+
+The snapshot docs/evidence/2026-09-26-stage-m/taxonomy-snapshot.json (+ town-terms-prechange.txt)
+was replayed in full against the live database to PROVE it is sufficient to
+restore the pre-change state:
+
+  restored 282 of 282 terms to language=pt
+  language-tagged shared terms after restore: 282 (pre-change value was 282)
+
+The dataset was then returned to the remediated state by re-running the apply.

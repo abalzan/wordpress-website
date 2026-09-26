@@ -1,9 +1,9 @@
-# Copyright (C) 2026 
-# This file is distributed under the same license as the Conexão BR Irlanda — Event Importer (Local Tools) plugin.
+# Copyright (C) 2026 Conexao BR Irlanda
+# This file is distributed under the GNU General Public License v2 or later.
 msgid ""
 msgstr ""
 "Project-Id-Version: Conexão BR Irlanda — Event Importer (Local Tools) 1.7.1\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/conexao-event-importer\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/conexao-br-irlanda\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -14,206 +14,153 @@ msgstr ""
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: conexao-event-importer\n"
 
-#. Plugin Name of the plugin
-#: conexao-event-importer.php
-msgid "Conexão BR Irlanda — Event Importer (Local Tools)"
-msgstr ""
-
-#. Description of the plugin
-#: conexao-event-importer.php
-msgid "Local-only event import/export tooling. Fetches, normalizes, deduplicates, and imports events from configured external sources into the local WordPress database. Event images are downloaded into the Media Library locally, then the complete event data (with embedded images) is exported to JSON for import into the production WordPress.com site. Production-critical event runtime behavior (meta/taxonomy registration, _event_status, public query filtering, status admin UI) lives in the separate \"Conexão BR Irlanda — Event Runtime\" plugin."
-msgstr ""
 
 #: conexao-event-importer.php:93
 msgid "Conexão BR Irlanda — Event Importer (Local Tools) requires the \"Conexão BR Irlanda — Event Runtime\" plugin to be installed and active."
 msgstr ""
-
 #: conexao-event-importer.php:201
 msgid "Importing… please wait. Do not close this page."
 msgstr ""
-
 #: conexao-event-importer.php:202
 #, php-format
 msgid "Importing file %1$d of %2$d…"
 msgstr ""
-
 #: conexao-event-importer.php:203
 #, php-format
 msgid "File %d: completed successfully."
 msgstr ""
-
 #: conexao-event-importer.php:204
 #, php-format
 msgid "File %d: failed."
 msgstr ""
-
 #: conexao-event-importer.php:205
 msgid "Import completed successfully."
 msgstr ""
-
 #: conexao-event-importer.php:206
 msgid "Import stopped after a failure."
 msgstr ""
-
 #: conexao-event-importer.php:207
 msgid "All files processed."
 msgstr ""
-
 #: conexao-event-importer.php:208
 #, php-format
 msgid "Retrying file %d…"
 msgstr ""
-
 #: conexao-event-importer.php:209
 msgid "Could not clean up temporary files."
 msgstr ""
-
 #: conexao-event-importer.php:210
 msgid "Network error. Please check your connection and retry."
 msgstr ""
-
 #: conexao-event-importer.php:211
 msgid "Server error. Please check the logs."
 msgstr ""
-
 #: includes/class-event-cleanup-admin.php:41
 #: includes/class-event-cleanup-admin.php:101
 msgid "Event Cleanup"
 msgstr ""
-
 #: includes/class-event-cleanup-admin.php:42
 msgid "Cleanup"
 msgstr ""
-
 #: includes/class-event-cleanup-admin.php:54
 msgid "You do not have permission to run the event cleanup."
 msgstr ""
-
 #: includes/class-event-cleanup-admin.php:102
 msgid "Manually deletes past events and their exclusively-owned images. Only media that was imported by the event importer and is no longer used by any other event, page, post, or content is removed — when in doubt, images are kept."
 msgstr ""
-
 #: includes/class-event-cleanup-admin.php:107
 msgid "Cleanup complete"
 msgstr ""
-
 #: includes/class-event-cleanup-admin.php:110
 #, php-format
 msgid "Events found: %d"
 msgstr ""
-
 #: includes/class-event-cleanup-admin.php:111
 #, php-format
 msgid "Events deleted: %d"
 msgstr ""
-
 #: includes/class-event-cleanup-admin.php:112
 #, php-format
 msgid "Images deleted: %d"
 msgstr ""
-
 #: includes/class-event-cleanup-admin.php:113
 #, php-format
 msgid "Images preserved: %d"
 msgstr ""
-
 #: includes/class-event-cleanup-admin.php:115
 #, php-format
 msgid "Errors: %d"
 msgstr ""
-
 #: includes/class-event-cleanup-admin.php:123
 msgid "Last cleanup"
 msgstr ""
-
 #: includes/class-event-cleanup-admin.php:130
 msgid "Past events found (last run)"
 msgstr ""
-
 #: includes/class-event-cleanup-admin.php:137
 msgid "Events deleted (last run)"
 msgstr ""
-
 #: includes/class-event-cleanup-admin.php:144
 msgid "Images deleted (last run)"
 msgstr ""
-
 #: includes/class-event-cleanup-admin.php:151
 msgid "Images preserved (last run)"
 msgstr ""
-
 #: includes/class-event-cleanup-admin.php:160
 msgid "Errors from the last cleanup run"
 msgstr ""
-
 #: includes/class-event-cleanup-admin.php:171
 #: includes/class-event-cleanup-admin.php:177
 msgid "Run Cleanup Now"
 msgstr ""
-
 #: includes/class-event-cleanup-admin.php:172
 msgid "Deletes past events and their exclusively-owned images. Events whose end date/time has passed are removed; images imported by the event importer are deleted only when they are no longer used by any other content."
 msgstr ""
-
 #: includes/class-event-cleanup-admin.php:182
 #: includes/class-event-image-sync-admin.php:192
 msgid "What happens"
 msgstr ""
-
 #: includes/class-event-cleanup-admin.php:184
 msgid "Events whose end date/time has passed are deleted."
 msgstr ""
-
 #: includes/class-event-cleanup-admin.php:185
 msgid "Events without an end date are skipped (manual review territory)."
 msgstr ""
-
 #: includes/class-event-cleanup-admin.php:186
 msgid "Only images imported by the event importer are considered for deletion."
 msgstr ""
-
 #: includes/class-event-cleanup-admin.php:187
 msgid "Images still used by another event, page, post, or content are preserved."
 msgstr ""
-
 #: includes/class-event-cleanup-admin.php:188
 msgid "Manually uploaded media unrelated to the event is never deleted."
 msgstr ""
-
 #: includes/class-event-cleanup-admin.php:189
 msgid "If there is any uncertainty, the image is kept."
 msgstr ""
-
 #: includes/class-event-cleanup-admin.php:195
 msgid "Cleanup History"
 msgstr ""
-
 #: includes/class-event-cleanup-admin.php:199
 #: includes/class-event-sources.php:1149
 #: includes/class-event-sources.php:1215
 msgid "Time"
 msgstr ""
-
 #: includes/class-event-cleanup-admin.php:200
 msgid "Events Found"
 msgstr ""
-
 #: includes/class-event-cleanup-admin.php:201
 msgid "Events Deleted"
 msgstr ""
-
 #: includes/class-event-cleanup-admin.php:202
 msgid "Images Evaluated"
 msgstr ""
-
 #: includes/class-event-cleanup-admin.php:203
 msgid "Images Deleted"
 msgstr ""
-
 #: includes/class-event-cleanup-admin.php:204
 msgid "Images Preserved"
 msgstr ""
-
 #: includes/class-event-cleanup-admin.php:205
 #: includes/class-event-sources.php:1157
 #: includes/class-event-sources.php:1223
@@ -221,467 +168,373 @@ msgstr ""
 #: includes/class-event-transfer-admin.php:827
 msgid "Errors"
 msgstr ""
-
 #. translators: %1$d: Event ID, %2$s: Error message.
 #: includes/class-event-cleanup.php:88
 #, php-format
 msgid "Event #%1$d: %2$s"
 msgstr ""
-
 #. translators: %1$d: Events found, %2$d: Events deleted, %3$d: Images deleted, %4$d: Images preserved.
 #: includes/class-event-cleanup.php:106
 #, php-format
 msgid "Cleanup run: %1$d events found, %2$d deleted, %3$d images deleted, %4$d preserved."
 msgstr ""
-
 #: includes/class-event-cleanup.php:210
 msgid "Could not delete the event post."
 msgstr ""
-
 #. translators: %s: file path
 #: includes/class-event-export.php:292
 #, php-format
 msgid "Could not open the temporary export file for writing: %s"
 msgstr ""
-
 #: includes/class-event-export.php:303
 msgid "Could not write the export manifest to the temporary file."
 msgstr ""
-
 #. translators: %d: event post ID
 #: includes/class-event-export.php:342
 #: includes/class-event-export.php:732
 #, php-format
 msgid "Could not JSON-encode event #%d; export aborted."
 msgstr ""
-
 #: includes/class-event-export.php:351
 msgid "Could not write an event to the temporary export file."
 msgstr ""
-
 #: includes/class-event-export.php:384
 msgid "Could not finish writing the temporary export file."
 msgstr ""
-
 #: includes/class-event-export.php:388
 msgid "Could not flush the temporary export file to disk."
 msgstr ""
-
 #. translators: 1: expected event count, 2: written event count
 #: includes/class-event-export.php:396
 #, php-format
 msgid "Export aborted: expected %1$d events but wrote %2$d. The dataset changed during the export; please retry."
 msgstr ""
-
 #. translators: 1: minimum part size, 2: maximum part size
 #: includes/class-event-export.php:437
 #, php-format
 msgid "Invalid part size: choose between %1$d and %2$d events per part."
 msgstr ""
-
 #. translators: %s: directory path
 #: includes/class-event-export.php:449
 #, php-format
 msgid "Could not create the export directory: %s"
 msgstr ""
-
 #. translators: 1: part number, 2: failure reason
 #: includes/class-event-export.php:504
 #, php-format
 msgid "Part %1$d failed: %2$s. The run was aborted; parts generated before the failure remain on disk."
 msgstr ""
-
 #. translators: %s: manifest path
 #: includes/class-event-export.php:622
 #, php-format
 msgid "All parts were generated but the manifest could not be written: %s"
 msgstr ""
-
 #. translators: 1: expected event count, 2: found event count
 #: includes/class-event-export.php:679
 #, php-format
 msgid "Export aborted: expected %1$d events in this part but found %2$d. The dataset changed during the export; please retry."
 msgstr ""
-
 #. translators: %s: file path
 #: includes/class-event-export.php:692
 #, php-format
 msgid "Could not open the part file for writing: %s"
 msgstr ""
-
 #: includes/class-event-export.php:702
 msgid "Could not write the part manifest."
 msgstr ""
-
 #: includes/class-event-export.php:741
 msgid "Could not write an event to the part file."
 msgstr ""
-
 #: includes/class-event-export.php:788
 msgid "Could not finish writing the part file."
 msgstr ""
-
 #: includes/class-event-export.php:792
 msgid "Could not flush the part file to disk."
 msgstr ""
-
 #: includes/class-event-export.php:956
 msgid "Event export failed: could not create a temporary file."
 msgstr ""
-
 #. translators: %s: failure reason
 #: includes/class-event-export.php:965
 #: includes/class-event-transfer-admin.php:277
 #, php-format
 msgid "Event export failed: %s"
 msgstr ""
-
 #: includes/class-event-export.php:973
 msgid "Event export failed: the temporary export file is empty."
 msgstr ""
-
 #: includes/class-event-export.php:987
 msgid "Event export failed: the temporary export file is incomplete."
 msgstr ""
-
 #: includes/class-event-image-handler.php:177
 #: includes/class-event-image-handler.php:294
 #: includes/class-event-import.php:51
 #: includes/class-event-sources.php:570
 msgid "Unknown upload error."
 msgstr ""
-
 #: includes/class-event-image-handler.php:194
 #: includes/class-event-image-handler.php:309
 msgid "Event Image"
 msgstr ""
-
 #: includes/class-event-image-handler.php:210
 #: includes/class-event-image-handler.php:325
 msgid "Unknown error."
 msgstr ""
-
 #: includes/class-event-image-handler.php:445
 msgid "Event has no banner image URL."
 msgstr ""
-
 #: includes/class-event-image-handler.php:454
 msgid "Banner image is already stored locally."
 msgstr ""
-
 #: includes/class-event-image-handler.php:465
 msgid "Failed to download the external image."
 msgstr ""
-
 #: includes/class-event-image-handler.php:474
 msgid "Event image synced into the Media Library."
 msgstr ""
-
 #: includes/class-event-image-sync-admin.php:40
 #: includes/class-event-image-sync-admin.php:41
 #: includes/class-event-image-sync-admin.php:149
 #: includes/class-event-image-sync-admin.php:187
 msgid "Sync Event Images"
 msgstr ""
-
 #: includes/class-event-image-sync-admin.php:53
 msgid "You do not have permission to sync event images."
 msgstr ""
-
 #: includes/class-event-image-sync-admin.php:150
 msgid "Scans existing events for images still hosted on external servers (e.g. Eventbrite) and downloads them into the WordPress Media Library. The downloaded image is set as the event's banner and featured image, so event cards no longer depend on external image servers."
 msgstr ""
-
 #: includes/class-event-image-sync-admin.php:155
 msgid "Image sync complete"
 msgstr ""
-
 #: includes/class-event-image-sync-admin.php:157
 #, php-format
 msgid "Processed %d events; %d image(s) downloaded into the Media Library."
 msgstr ""
-
 #: includes/class-event-image-sync-admin.php:164
 msgid "Some images could not be downloaded"
 msgstr ""
-
 #: includes/class-event-image-sync-admin.php:177
 msgid "Pending events"
 msgstr ""
-
 #: includes/class-event-image-sync-admin.php:180
 msgid "event still uses an external image"
 msgid_plural "events still use an external image"
 msgstr[0] ""
 msgstr[1] ""
-
 #: includes/class-event-image-sync-admin.php:182
 msgid "The sync runs in batches of 50 events per request to stay within safe execution limits. Run it again to process the next batch."
 msgstr ""
-
 #: includes/class-event-image-sync-admin.php:194
 msgid "Events with an existing local WordPress image are skipped."
 msgstr ""
-
 #: includes/class-event-image-sync-admin.php:195
 msgid "External images are downloaded with validated JPEG/PNG/WebP/GIF magic bytes and size checks."
 msgstr ""
-
 #: includes/class-event-image-sync-admin.php:196
 msgid "Each attachment is created through the WordPress Media Library and normal image sizes (srcset, thumbnail) are generated."
 msgstr ""
-
 #: includes/class-event-image-sync-admin.php:197
 msgid "The same image used by several events is downloaded only once (deduplicated by source URL)."
 msgstr ""
-
 #: includes/class-event-image-sync-admin.php:198
 msgid "Event cards render the local WordPress image URL after the sync."
 msgstr ""
-
 #: includes/class-event-image-sync-admin.php:199
 msgid "Downloads that fail are logged and listed on this page with a link to the event."
 msgstr ""
-
 #: includes/class-event-import.php:38
 msgid "Invalid file upload."
 msgstr ""
-
 #: includes/class-event-import.php:43
 #: includes/class-event-sources.php:562
 msgid "The uploaded file exceeds the upload_max_filesize directive in php.ini."
 msgstr ""
-
 #: includes/class-event-import.php:44
 msgid "The uploaded file exceeds the MAX_FILE_SIZE directive specified in the form."
 msgstr ""
-
 #: includes/class-event-import.php:45
 #: includes/class-event-sources.php:564
 msgid "The uploaded file was only partially uploaded."
 msgstr ""
-
 #: includes/class-event-import.php:46
 #: includes/class-event-sources.php:565
 msgid "No file was uploaded."
 msgstr ""
-
 #: includes/class-event-import.php:47
 #: includes/class-event-sources.php:566
 msgid "Missing a temporary folder."
 msgstr ""
-
 #: includes/class-event-import.php:48
 #: includes/class-event-sources.php:567
 msgid "Failed to write file to disk."
 msgstr ""
-
 #: includes/class-event-import.php:49
 #: includes/class-event-sources.php:568
 msgid "A PHP extension stopped the file upload."
 msgstr ""
-
 #: includes/class-event-import.php:56
 #: includes/class-event-import.php:74
 msgid "The uploaded file could not be read."
 msgstr ""
-
 #: includes/class-event-import.php:62
 msgid "The uploaded file is too large. Maximum size is 64 MB."
 msgstr ""
-
 #: includes/class-event-import.php:68
 msgid "Only .json export files are supported."
 msgstr ""
-
 #: includes/class-event-import.php:79
 msgid "The uploaded file is not valid JSON."
 msgstr ""
-
 #: includes/class-event-import.php:84
 msgid "This file is not a valid Conexão event export."
 msgstr ""
-
 #: includes/class-event-import.php:88
 msgid "The export file contains no event data."
 msgstr ""
-
 #: includes/class-event-import.php:165
 msgid "Event is missing a title."
 msgstr ""
-
 #: includes/class-event-importer.php:145
 msgid "No active event sources are configured. Enable at least one source to import events."
 msgstr ""
-
 #: includes/class-event-importer.php:281
 msgid "Event source not found."
 msgstr ""
-
 #. translators: %s: source name
 #: includes/class-event-importer.php:311
 #, php-format
 msgid "Import started for %s."
 msgstr ""
-
 #: includes/class-event-importer.php:319
 msgid "No import handler is registered for this event source."
 msgstr ""
-
 #. translators: %s: source name
 #: includes/class-event-importer.php:338
 #, php-format
 msgid "Failed to fetch events from %1$s. HTTP status: %2$d."
 msgstr ""
-
 #. translators: %s: source name
 #: includes/class-event-importer.php:357
 #, php-format
 msgid "Failed to fetch events from %s. The source may be temporarily unavailable."
 msgstr ""
-
 #. translators: %s: source name
 #: includes/class-event-importer.php:376
 #, php-format
 msgid "The %s source returned an invalid response. No events were imported."
 msgstr ""
-
 #: includes/class-event-importer.php:421
 msgid "Skipped: the event date could not be evaluated (missing, malformed, or unparseable date)."
 msgstr ""
-
 #. translators: %s: event title
 #: includes/class-event-importer.php:428
 #, php-format
 msgid "Event skipped (invalid date): %s"
 msgstr ""
-
 #. translators: %s: event end date/time
 #: includes/class-event-importer.php:443
 #, php-format
 msgid "Skipped: the event has already ended (%s)."
 msgstr ""
-
 #. translators: 1: event title, 2: event end date/time
 #: includes/class-event-importer.php:452
 #, php-format
 msgid "Event skipped (past): %1$s — ended %2$s."
 msgstr ""
-
 #: includes/class-event-importer.php:469
 #: includes/class-event-importer.php:712
 msgid "(untitled event)"
 msgstr ""
-
 #. translators: %s: list of missing/invalid required fields
 #: includes/class-event-importer.php:472
 #, php-format
 msgid "Skipped: missing required data (%s)."
 msgstr ""
-
 #. translators: 1: event title, 2: validation problems
 #: includes/class-event-importer.php:481
 #, php-format
 msgid "Event skipped (incomplete): %1$s — %2$s."
 msgstr ""
-
 #. translators: %s: event title
 #: includes/class-event-importer.php:508
 #, php-format
 msgid "Event created: %s"
 msgstr ""
-
 #. translators: %s: event title
 #: includes/class-event-importer.php:526
 #, php-format
 msgid "Event updated: %s"
 msgstr ""
-
 #. translators: 1: event title, 2: skip reason
 #: includes/class-event-importer.php:550
 #, php-format
 msgid "Event skipped: %1$s. %2$s"
 msgstr ""
-
 #: includes/class-event-importer.php:563
 msgid "The event could not be saved to WordPress."
 msgstr ""
-
 #. translators: 1: event title, 2: error message
 #: includes/class-event-importer.php:570
 #, php-format
 msgid "Failed to import event: %1$s. %2$s"
 msgstr ""
-
 #: includes/class-event-importer.php:584
 msgid "(unknown event)"
 msgstr ""
-
 #: includes/class-event-importer.php:587
 #: includes/class-event-importer.php:740
 msgid "An unexpected error interrupted this event."
 msgstr ""
-
 #. translators: 1: event title, 2: error message
 #: includes/class-event-importer.php:595
 #, php-format
 msgid "Unexpected error importing \"%1$s\": %2$s"
 msgstr ""
-
 #. translators: 1: source name, 2: created count, 3: updated count, 4: total skipped, 5: skipped as past, 6: skipped with invalid date, 7: failed count
 #: includes/class-event-importer.php:631
 #, php-format
 msgid "Import of %1$s completed: %2$d created, %3$d updated, %4$d skipped (%5$d past, %6$d invalid date), %7$d failed."
 msgstr ""
-
 #: includes/class-event-importer.php:692
 msgid "Would skip: the event date could not be evaluated (missing, malformed, or unparseable date)."
 msgstr ""
-
 #. translators: %s: event end date/time
 #: includes/class-event-importer.php:703
 #, php-format
 msgid "Would skip: the event has already ended (%s)."
 msgstr ""
-
 #. translators: %s: list of missing/invalid required fields
 #: includes/class-event-importer.php:717
 #, php-format
 msgid "Would skip: missing required data (%s)."
 msgstr ""
-
 #. translators: 1: source name, 2: found count, 3: would-create count, 4: would-update count, 5: would-skip count
 #: includes/class-event-importer.php:756
 #, php-format
 msgid "Dry-run of %1$s completed: %2$d found, %3$d would be created, %4$d would be updated, %5$d would be skipped (past, invalid date, or incomplete data). Nothing was written."
 msgstr ""
-
 #. translators: %d: number of failed events
 #: includes/class-event-importer.php:852
 #, php-format
 msgid "%d event(s) failed to import."
 msgstr ""
-
 #. translators: %d: number of failed events
 #: includes/class-event-importer.php:860
 #, php-format
 msgid "%d event(s) failed but the rest were imported."
 msgstr ""
-
 #: includes/class-event-importer.php:873
 msgid "Unknown import failure."
 msgstr ""
-
 #: includes/class-event-importer.php:895
 msgid "Import failed. See details below."
 msgstr ""
-
 #. translators: %d: number of events found
 #: includes/class-event-importer.php:901
 #, php-format
 msgid "%d events found"
 msgstr ""
-
 #. translators: %d: number of events created
 #. translators: %d: count
 #: includes/class-event-importer.php:907
@@ -689,7 +542,6 @@ msgstr ""
 #, php-format
 msgid "%d created"
 msgstr ""
-
 #. translators: %d: number of events updated
 #. translators: %d: count
 #: includes/class-event-importer.php:914
@@ -697,7 +549,6 @@ msgstr ""
 #, php-format
 msgid "%d updated"
 msgstr ""
-
 #. translators: %d: number of unchanged events
 #. translators: %d: count
 #: includes/class-event-importer.php:921
@@ -705,14 +556,12 @@ msgstr ""
 #, php-format
 msgid "%d unchanged"
 msgstr ""
-
 #. translators: 1: total skipped, 2: skipped because already ended, 3: skipped with invalid dates
 #: includes/class-event-importer.php:932
 #: includes/class-event-sources.php:659
 #, php-format
 msgid "%1$d skipped (%2$d past, %3$d invalid date)"
 msgstr ""
-
 #. translators: %d: number of skipped events
 #. translators: %d: count
 #: includes/class-event-importer.php:940
@@ -720,7 +569,6 @@ msgstr ""
 #, php-format
 msgid "%d skipped"
 msgstr ""
-
 #. translators: %d: number of failed events
 #. translators: %d: count
 #: includes/class-event-importer.php:948
@@ -728,568 +576,451 @@ msgstr ""
 #, php-format
 msgid "%d failed"
 msgstr ""
-
 #. translators: %s: event title
 #: includes/class-event-importer.php:1065
 #, php-format
 msgid "Event skipped (language conflict): %s was matched to a translated record. The importer only writes to records in the import language."
 msgstr ""
-
 #: includes/class-event-importer.php:1078
 msgid "Matched a translated record: the importer never writes to another language."
 msgstr ""
-
 #. translators: 1: event title, 2: error message
 #: includes/class-event-importer.php:1209
 #, php-format
 msgid "The event \"%1$s\" was imported but taxonomy assignment failed: %2$s"
 msgstr ""
-
 #. translators: 1: event title
 #: includes/class-event-importer.php:1273
 #, php-format
 msgid "The image for \"%1$s\" could not be downloaded. The external Eventbrite image URL will be used instead."
 msgstr ""
-
 #: includes/class-event-multi-import.php:53
 #: includes/class-event-multi-import.php:332
 msgid "No files were uploaded."
 msgstr ""
-
 #: includes/class-event-multi-import.php:70
 msgid "Could not create the staging directory."
 msgstr ""
-
 #: includes/class-event-multi-import.php:77
 msgid "Could not create the batch directory."
 msgstr ""
-
 #. translators: %s: file name
 #: includes/class-event-multi-import.php:96
 #, php-format
 msgid "Could not stage file: %s"
 msgstr ""
-
 #: includes/class-event-multi-import.php:158
 msgid "Invalid batch token."
 msgstr ""
-
 #: includes/class-event-multi-import.php:164
 msgid "Invalid file index."
 msgstr ""
-
 #: includes/class-event-multi-import.php:172
 msgid "Batch not found or expired."
 msgstr ""
-
 #: includes/class-event-multi-import.php:180
 msgid "Batch metadata is corrupted."
 msgstr ""
-
 #: includes/class-event-multi-import.php:193
 msgid "File not found in batch."
 msgstr ""
-
 #: includes/class-event-multi-import.php:199
 msgid "Staged file is missing from disk."
 msgstr ""
-
 #: includes/class-event-multi-import.php:206
 msgid "SHA-256 hash mismatch. The file may have been corrupted."
 msgstr ""
-
 #. translators: %s: file name
 #: includes/class-event-multi-import.php:444
 #, php-format
 msgid "Hash verification failed for %s: the file does not match the manifest. Import blocked."
 msgstr ""
-
 #: includes/class-event-multi-import.php:547
 msgid "The uploaded manifest is not a Conexão event export manifest."
 msgstr ""
-
 #. translators: 1: manifest version, 2: expected version
 #: includes/class-event-multi-import.php:556
 #, php-format
 msgid "The manifest schema version (%1$s) is not supported. Expected %2$s."
 msgstr ""
-
 #: includes/class-event-multi-import.php:566
 msgid "The manifest is not a multipart export manifest."
 msgstr ""
-
 #: includes/class-event-multi-import.php:573
 msgid "The manifest does not list any parts."
 msgstr ""
-
 #. translators: %d: part number
 #: includes/class-event-multi-import.php:585
 #, php-format
 msgid "The manifest lists part %d more than once."
 msgstr ""
-
 #. translators: 1: expected part number, 2: found part number
 #: includes/class-event-multi-import.php:601
 #, php-format
 msgid "The manifest is missing part %1$d (found %2$d). Parts must be contiguous from 1."
 msgstr ""
-
 #. translators: %s: file name
 #: includes/class-event-multi-import.php:735
 #, php-format
 msgid "The uploaded file %s could not be read (no temporary file)."
 msgstr ""
-
 #. translators: %s: file name
 #: includes/class-event-multi-import.php:747
 #, php-format
 msgid "The uploaded file %s is empty."
 msgstr ""
-
 #. translators: %s: file name
 #: includes/class-event-multi-import.php:760
 #: includes/class-event-multi-import.php:785
 #, php-format
 msgid "The uploaded file %s could not be read."
 msgstr ""
-
 #. translators: %s: file name
 #: includes/class-event-multi-import.php:773
 #, php-format
 msgid "The uploaded file %s appears to be an HTML error response, not a JSON export."
 msgstr ""
-
 #. translators: %s: file name
 #: includes/class-event-multi-import.php:799
 #, php-format
 msgid "The uploaded file %s is not valid JSON."
 msgstr ""
-
 #. translators: %s: file name
 #: includes/class-event-multi-import.php:812
 #, php-format
 msgid "The uploaded file %s is not a valid Conexão event export."
 msgstr ""
-
 #. translators: 1: file name, 2: file version, 3: expected version
 #: includes/class-event-multi-import.php:823
 #, php-format
 msgid "The uploaded file %1$s uses export version %2$s, which is not supported. Expected %3$s."
 msgstr ""
-
 #. translators: %s: file name
 #: includes/class-event-multi-import.php:836
 #, php-format
 msgid "The uploaded file %s contains no event data."
 msgstr ""
-
 #. translators: %s: file name
 #: includes/class-event-multi-import.php:848
 #, php-format
 msgid "The uploaded file %s contains an empty event list."
 msgstr ""
-
 #: includes/class-event-normalizer.php:144
 msgid "Título ausente"
 msgstr ""
-
 #: includes/class-event-normalizer.php:148
 msgid "Data de início ausente"
 msgstr ""
-
 #: includes/class-event-normalizer.php:152
 msgid "URL de origem ausente"
 msgstr ""
-
 #: includes/class-event-normalizer.php:167
 msgid "Localização não identificada"
 msgstr ""
-
 #: includes/class-event-sources.php:362
 #: includes/class-event-sources.php:363
 #: includes/class-event-sources.php:1081
 msgid "Event Import"
 msgstr ""
-
 #: includes/class-event-sources.php:373
 #: includes/class-event-sources.php:374
 #: includes/class-event-sources.php:422
 msgid "Event Sources"
 msgstr ""
-
 #: includes/class-event-sources.php:382
 #: includes/class-event-sources.php:383
 #: includes/class-event-sources.php:1145
 #: includes/class-event-sources.php:1195
 msgid "Import History"
 msgstr ""
-
 #: includes/class-event-sources.php:408
 msgid "Source status updated."
 msgstr ""
-
 #: includes/class-event-sources.php:423
 msgid "Manage the sources from which events are imported. Only active sources are processed during an import run."
 msgstr ""
-
 #. translators: %s: Source name.
 #: includes/class-event-sources.php:435
 #, php-format
 msgid "Delete Event Source?\\n\\nAre you sure you want to delete \"%s\"?\\n\\nThis will remove the Event Source configuration. Imported events will remain in the database."
 msgstr ""
-
 #: includes/class-event-sources.php:514
 msgid "Source saved."
 msgstr ""
-
 #: includes/class-event-sources.php:527
 #, php-format
 msgid "ICS file upload failed: %s"
 msgstr ""
-
 #: includes/class-event-sources.php:534
 msgid "ICS file is too large. Maximum size is 5MB."
 msgstr ""
-
 #: includes/class-event-sources.php:541
 msgid "Failed to read uploaded ICS file."
 msgstr ""
-
 #: includes/class-event-sources.php:547
 msgid "The uploaded file does not appear to be a valid iCalendar (.ics) file."
 msgstr ""
-
 #: includes/class-event-sources.php:563
 msgid "The uploaded file exceeds the MAX_FILE_SIZE directive specified in the HTML form."
 msgstr ""
-
 #: includes/class-event-sources.php:604
 msgid "The import could not be completed. No result was returned."
 msgstr ""
-
 #: includes/class-event-sources.php:618
 msgid "Import completed"
 msgstr ""
-
 #: includes/class-event-sources.php:621
 msgid "Import could not be completed"
 msgstr ""
-
 #: includes/class-event-sources.php:624
 msgid "Import completed with errors"
 msgstr ""
-
 #: includes/class-event-sources.php:627
 msgid "Import completed with warnings"
 msgstr ""
-
 #: includes/class-event-sources.php:630
 msgid "All sources"
 msgstr ""
-
 #. translators: %d: count
 #: includes/class-event-sources.php:650
 #, php-format
 msgid "%d duplicates"
 msgstr ""
-
 #: includes/class-event-sources.php:672
 msgid "No events found"
 msgstr ""
-
 #: includes/class-event-sources.php:701
 msgid "Technical details"
 msgstr ""
-
 #. translators: %d: number of failed events
 #: includes/class-event-sources.php:716
 #, php-format
 msgid "View %d failed event(s)"
 msgstr ""
-
 #: includes/class-event-sources.php:729
 msgid "Technical detail"
 msgstr ""
-
 #: includes/class-event-sources.php:736
 msgid "Additional failures are available in the import history."
 msgstr ""
-
 #: includes/class-event-sources.php:744
 msgid "The remaining events continued importing normally."
 msgstr ""
-
 #: includes/class-event-sources.php:750
 msgid "View / Download Import Logs"
 msgstr ""
-
 #: includes/class-event-sources.php:768
 #: includes/class-event-sources.php:785
 msgid "Unable to delete the Event Source. Please try again."
 msgstr ""
-
 #. translators: %s: Source name.
 #: includes/class-event-sources.php:781
 #, php-format
 msgid "Event Source \"%s\" was deleted successfully."
 msgstr ""
-
 #: includes/class-event-sources.php:797
 #: includes/class-event-sources.php:963
 #: includes/class-event-sources.php:1038
 msgid "iCalendar / Webcal"
 msgstr ""
-
 #: includes/class-event-sources.php:798
 #: includes/class-event-sources.php:964
 #: includes/class-event-sources.php:1039
 msgid "Website"
 msgstr ""
-
 #: includes/class-event-sources.php:799
 #: includes/class-event-sources.php:965
 #: includes/class-event-sources.php:1040
 msgid "Facebook"
 msgstr ""
-
 #: includes/class-event-sources.php:800
 #: includes/class-event-sources.php:966
 #: includes/class-event-sources.php:1041
 msgid "Instagram"
 msgstr ""
-
 #: includes/class-event-sources.php:801
 #: includes/class-event-sources.php:967
 #: includes/class-event-sources.php:1042
 msgid "Eventbrite"
 msgstr ""
-
 #: includes/class-event-sources.php:802
 #: includes/class-event-sources.php:968
 #: includes/class-event-sources.php:1043
 msgid "National Heritage Week"
 msgstr ""
-
 #: includes/class-event-sources.php:815
 msgid "Heritage Week / Website"
 msgstr ""
-
 #: includes/class-event-sources.php:830
 #: includes/class-event-sources.php:949
 #: includes/class-event-sources.php:1012
 msgid "Name"
 msgstr ""
-
 #: includes/class-event-sources.php:831
 msgid "Feed URL"
 msgstr ""
-
 #: includes/class-event-sources.php:832
 #: includes/class-event-sources.php:960
 #: includes/class-event-sources.php:1035
 msgid "Type"
 msgstr ""
-
 #: includes/class-event-sources.php:833
 #: includes/class-event-sources.php:1158
 #: includes/class-event-sources.php:1224
 msgid "Status"
 msgstr ""
-
 #: includes/class-event-sources.php:834
 msgid "Last Import"
 msgstr ""
-
 #: includes/class-event-sources.php:835
 msgid "Events Imported"
 msgstr ""
-
 #: includes/class-event-sources.php:836
 #: includes/class-import-log-admin.php:118
 msgid "Actions"
 msgstr ""
-
 #: includes/class-event-sources.php:845
 msgid "Calendar feed source"
 msgstr ""
-
 #: includes/class-event-sources.php:858
 msgid "County: Laois · Category: Heritage"
 msgstr ""
-
 #: includes/class-event-sources.php:863
 #: includes/class-event-sources.php:981
 #: includes/class-event-sources.php:1056
 msgid "Active"
 msgstr ""
-
 #: includes/class-event-sources.php:865
 msgid "Inactive"
 msgstr ""
-
 #: includes/class-event-sources.php:884
 msgid "Import Now"
 msgstr ""
-
 #: includes/class-event-sources.php:886
 msgid "Edit"
 msgstr ""
-
 #: includes/class-event-sources.php:891
 msgid "Disable"
 msgstr ""
-
 #: includes/class-event-sources.php:891
 msgid "Enable"
 msgstr ""
-
 #: includes/class-event-sources.php:897
 msgid "Delete"
 msgstr ""
-
 #: includes/class-event-sources.php:939
 msgid "Add New Source"
 msgstr ""
-
 #: includes/class-event-sources.php:945
 #: includes/class-event-sources.php:1008
 msgid "Source ID"
 msgstr ""
-
 #: includes/class-event-sources.php:953
 #: includes/class-event-sources.php:1016
 msgid "URL"
 msgstr ""
-
 #: includes/class-event-sources.php:956
 msgid "For iCalendar sources, use webcal:// or https:// URLs."
 msgstr ""
-
 #: includes/class-event-sources.php:973
 #: includes/class-event-sources.php:1048
 msgid "County (optional)"
 msgstr ""
-
 #: includes/class-event-sources.php:977
 #: includes/class-event-sources.php:1052
 msgid "Category (optional)"
 msgstr ""
-
 #: includes/class-event-sources.php:985
 msgid "Add Source"
 msgstr ""
-
 #: includes/class-event-sources.php:1001
 msgid "Edit Source"
 msgstr ""
-
 #: includes/class-event-sources.php:1019
 msgid "For iCalendar sources, use webcal:// or https:// URLs. Leave empty if uploading an ICS file."
 msgstr ""
-
 #: includes/class-event-sources.php:1023
 msgid "Upload ICS File"
 msgstr ""
-
 #: includes/class-event-sources.php:1027
 msgid "Upload an .ics file to import events from. This overrides the URL above."
 msgstr ""
-
 #: includes/class-event-sources.php:1029
 msgid "A file is currently loaded."
 msgstr ""
-
 #: includes/class-event-sources.php:1060
 msgid "Save Source"
 msgstr ""
-
 #: includes/class-event-sources.php:1085
 msgid "Last successful import"
 msgstr ""
-
 #: includes/class-event-sources.php:1101
 msgid "Sources"
 msgstr ""
-
 #: includes/class-event-sources.php:1116
 msgid "Run Import"
 msgstr ""
-
 #: includes/class-event-sources.php:1121
 msgid "Import Events Now"
 msgstr ""
-
 #: includes/class-event-sources.php:1126
 #: includes/class-event-transfer-admin.php:49
 #: includes/class-event-transfer-admin.php:50
 #: includes/class-event-transfer-admin.php:555
 msgid "Export Events"
 msgstr ""
-
 #: includes/class-event-sources.php:1141
 #: includes/class-event-sources.php:1210
 msgid "No imports yet."
 msgstr ""
-
 #: includes/class-event-sources.php:1150
 #: includes/class-event-sources.php:1216
 msgid "Source"
 msgstr ""
-
 #: includes/class-event-sources.php:1151
 #: includes/class-event-sources.php:1217
 msgid "Found"
 msgstr ""
-
 #: includes/class-event-sources.php:1152
 #: includes/class-event-sources.php:1218
 msgid "New"
 msgstr ""
-
 #: includes/class-event-sources.php:1153
 #: includes/class-event-sources.php:1219
 msgid "Updated"
 msgstr ""
-
 #: includes/class-event-sources.php:1154
 #: includes/class-event-sources.php:1220
 msgid "Unchanged"
 msgstr ""
-
 #: includes/class-event-sources.php:1155
 #: includes/class-event-sources.php:1221
 msgid "Duplicates"
 msgstr ""
-
 #: includes/class-event-sources.php:1156
 #: includes/class-event-sources.php:1222
 msgid "Skipped"
 msgstr ""
-
 #: includes/class-event-sources.php:1202
 #, php-format
 msgid "For detailed import logs (including failures and API errors), see the <a href=\"%s\">Import Logs</a> page."
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:58
 #: includes/class-event-transfer-admin.php:59
 #: includes/class-event-transfer-admin.php:631
 #: includes/class-event-transfer-admin.php:705
 msgid "Import Events"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:71
 #: includes/class-event-transfer-admin.php:246
 msgid "You do not have permission to export events."
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:84
 #: includes/class-event-transfer-admin.php:134
 #: includes/class-event-transfer-admin.php:190
 #: includes/class-event-transfer-admin.php:220
 msgid "You do not have permission to import events."
 msgstr ""
-
 #. translators: %d: number of parts generated before the failure
 #: includes/class-event-transfer-admin.php:286
 #, php-format
@@ -1297,541 +1028,435 @@ msgid "%d part was generated before the failure."
 msgid_plural "%d parts were generated before the failure."
 msgstr[0] ""
 msgstr[1] ""
-
 #: includes/class-event-transfer-admin.php:309
 msgid "You do not have permission to download export files."
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:318
 msgid "Invalid export download request."
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:323
 msgid "Export directory not found."
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:328
 msgid "Export file not found."
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:333
 msgid "Export file is empty."
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:418
 msgid "Multipart export"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:419
 msgid "The manifest could not be read. The generated parts may still be on disk."
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:429
 msgid "Multipart export ready"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:431
 msgid "Validated"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:431
 msgid "Validation failed"
 msgstr ""
-
 #. translators: 1: run name, 2: part count, 3: event count, 4: image count
 #: includes/class-event-transfer-admin.php:438
 #, php-format
 msgid "Run: %1$s — %2$d parts, %3$d events, %4$d embedded images."
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:449
 msgid "Part"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:450
 msgid "Events"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:451
 msgid "Images"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:452
 msgid "Size"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:453
 msgid "SHA-256 (first 12)"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:454
 msgid "Download"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:473
 msgid "Manifest"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:477
 msgid "Download manifest"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:484
 msgid "Import each part in order (part 01 first) on the destination site using the Import Events screen. Every part is an independent, complete export file."
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:556
 msgid "Export all events from this installation into a portable JSON file. You can then import this file into another WordPress installation running the same event structure."
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:560
 #, php-format
 msgid "Invalid part size: choose a value between %1$d and %2$d."
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:567
 msgid "Available Events"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:570
 msgid "event ready to export"
 msgid_plural "events ready to export"
 msgstr[0] ""
 msgstr[1] ""
-
 #: includes/class-event-transfer-admin.php:576
 msgid "Download Export File"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:581
 #: includes/class-event-transfer-admin.php:591
 msgid "Export in parts"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:582
 msgid "Generate several independent export files, each containing a bounded subset of events. Every part is a complete, importable export file; parts never overlap, and together they cover every selected event exactly once. A validation manifest is generated alongside the parts."
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:587
 msgid "Part size (events per file)"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:589
 #, php-format
 msgid "Allowed range: %1$d–%2$d events per part. Generation can take a minute or two; the page reloads with the results and download links."
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:596
 msgid "What is exported"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:598
 msgid "Event title, description, excerpt, status, and slug"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:599
 msgid "Event dates and times (start/end)"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:600
 msgid "Location, venue, address, and county"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:601
 msgid "Categories, counties, tags, and towns"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:602
 msgid "External URLs, organizer, price, and registration info"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:603
 msgid "Featured image references (downloaded on import)"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:604
 msgid "Event status (published, draft, expired, etc.)"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:632
 msgid "Upload an event export file (JSON) to import events into this installation."
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:636
 msgid "Import error"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:640
 msgid "Please choose an event export file (.json) to upload."
 msgstr ""
-
 #. translators: %s: maximum upload size, e.g. "64 MB"
 #: includes/class-event-transfer-admin.php:644
 #, php-format
 msgid "The selected file exceeds the maximum upload size (%s). Increase the PHP upload_max_filesize / post_max_size limits, or split the export file."
 msgstr ""
-
 #. translators: %s: maximum POST body size, e.g. "64 MB"
 #: includes/class-event-transfer-admin.php:650
 #, php-format
 msgid "The upload was rejected by the server because it exceeded the POST size limit (%s). Increase the PHP post_max_size limit, or split the export file."
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:654
 msgid "The file could not be uploaded."
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:663
 msgid "Import complete"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:665
 #, php-format
 msgid "Imported: %d"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:666
 #, php-format
 msgid "Updated: %d"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:667
 #, php-format
 msgid "Skipped: %d"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:668
 #: includes/class-event-transfer-admin.php:813
 #, php-format
 msgid "Failed: %d"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:685
 msgid "Upload Export File"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:691
 msgid "Export file (.json)"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:693
 #, php-format
 msgid "Maximum upload size: %s."
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:697
 #: includes/class-event-transfer-admin.php:752
 msgid "If an event already exists"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:699
 #: includes/class-event-transfer-admin.php:754
 msgid "Update the existing event"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:700
 #: includes/class-event-transfer-admin.php:755
 msgid "Skip the existing event"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:702
 msgid "Events are matched by their unique export ID, source ID, source URL, or title + date."
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:716
 #, php-format
 msgid "The selected file is larger than the maximum upload size (%s). Choose a smaller export file or increase the PHP upload limits."
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:724
 msgid "What happens on import"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:726
 msgid "The file is validated before any data is written."
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:727
 msgid "Event posts are created with their metadata and taxonomies."
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:728
 msgid "Featured images are downloaded into the Media Library when possible."
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:729
 msgid "Existing events are updated or skipped based on your selection."
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:730
 msgid "Importing the same file twice will not create duplicates."
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:736
 msgid "Import Multiple Export Files"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:738
 msgid "Import several export files sequentially (for example, a multipart export). Each file is processed independently, one at a time, so large imports stay within the PHP memory limit."
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:746
 msgid "Export files (.json)"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:748
 msgid "Select one or more export files. If you have a multipart manifest, include it and the files will be imported in the correct order."
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:759
 msgid "Import Multiple Files"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:799
 msgid "Multi-file import"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:802
 msgid " — stopped after a failure. Earlier parts remain imported."
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:804
 msgid " — manifest validation failed."
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:806
 msgid " — no files uploaded."
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:811
 #, php-format
 msgid "Files processed: %d"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:812
 #, php-format
 msgid "Successful: %d"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:814
 #, php-format
 msgid "Not processed: %d"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:815
 #, php-format
 msgid "Events discovered: %d"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:816
 #, php-format
 msgid "Events created: %d"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:817
 #, php-format
 msgid "Events updated: %d"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:818
 #, php-format
 msgid "Images: %d"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:819
 #, php-format
 msgid "Total duration: %ss"
 msgstr ""
-
 #: includes/class-event-transfer-admin.php:820
 #, php-format
 msgid "Peak memory: %s"
 msgstr ""
-
 #. translators: %s: error message
 #: includes/class-eventbrite-client.php:102
 #, php-format
 msgid "Eventbrite request failed: %s"
 msgstr ""
-
 #: includes/class-eventbrite-client.php:127
 msgid "Eventbrite returned 401 Unauthorized. The discovery page may require authentication."
 msgstr ""
-
 #. translators: %s: URL
 #: includes/class-eventbrite-client.php:142
 #, php-format
 msgid "Eventbrite returned 404 Not Found for %s. The discovery URL may have changed."
 msgstr ""
-
 #. translators: %d: HTTP status code
 #: includes/class-eventbrite-client.php:161
 #, php-format
 msgid "Eventbrite returned HTTP %d. Retrying with a short delay."
 msgstr ""
-
 #. translators: %d: HTTP status code
 #: includes/class-eventbrite-client.php:180
 #, php-format
 msgid "Eventbrite returned an unexpected HTTP %d response."
 msgstr ""
-
 #. translators: %d: number of retries
 #: includes/class-eventbrite-client.php:198
 #, php-format
 msgid "Eventbrite could not be reached after %d attempts. The discovery page may be temporarily unavailable, or Eventbrite may be rate-limiting this site."
 msgstr ""
-
 #: includes/class-import-log-admin.php:42
 #: includes/class-import-log-admin.php:43
 #: includes/class-import-log-admin.php:82
 msgid "Import Logs"
 msgstr ""
-
 #: includes/class-import-log-admin.php:55
 msgid "You do not have permission to view the import logs."
 msgstr ""
-
 #: includes/class-import-log-admin.php:84
 msgid "Review and download logs from previous Eventbrite and event-source imports. Logs help diagnose failed imports, API errors, and network problems."
 msgstr ""
-
 #: includes/class-import-log-admin.php:89
 msgid "Download Import Logs (.log)"
 msgstr ""
-
 #: includes/class-import-log-admin.php:91
 msgid "This will permanently delete ALL Event Importer logs. This cannot be undone. Continue?"
 msgstr ""
-
 #: includes/class-import-log-admin.php:92
 msgid "Clear Logs"
 msgstr ""
-
 #: includes/class-import-log-admin.php:97
 msgid "No log entries yet. Run an import to generate logs."
 msgstr ""
-
 #. translators: %d: number of log entries retained
 #: includes/class-import-log-admin.php:104
 #, php-format
 msgid "%d log entries are retained (newest first). Old entries are pruned automatically after 90 days."
 msgstr ""
-
 #: includes/class-import-log-admin.php:112
 msgid "Import Runs"
 msgstr ""
-
 #: includes/class-import-log-admin.php:116
 msgid "Run ID"
 msgstr ""
-
 #: includes/class-import-log-admin.php:117
 msgid "Entries"
 msgstr ""
-
 #: includes/class-import-log-admin.php:138
 msgid "Download This Run"
 msgstr ""
-
 #: includes/class-import-log-admin.php:142
 msgid "Collapse"
 msgstr ""
-
 #: includes/class-import-log-admin.php:146
 msgid "View"
 msgstr ""
-
 #. translators: %s: run ID
 #: includes/class-import-log-admin.php:165
 #, php-format
 msgid "Log entries for run %s"
 msgstr ""
-
 #: includes/class-import-log-admin.php:169
 msgid "Latest log entries"
 msgstr ""
-
 #: includes/class-import-log-admin.php:189
 #: includes/class-import-log-admin.php:208
 msgid "You do not have permission to download the import logs."
 msgstr ""
-
 #: includes/class-import-log-admin.php:213
 msgid "Invalid import run."
 msgstr ""
-
 #: includes/class-import-log-admin.php:236
 msgid "You do not have permission to clear the import logs."
 msgstr ""
-
 #: includes/class-import-result.php:107
 msgid "Event created."
 msgstr ""
-
 #: includes/class-import-result.php:124
 msgid "Event updated with new data."
 msgstr ""
-
 #: includes/class-import-result.php:141
 msgid "Event data has not changed."
 msgstr ""
-
 #: includes/class-import-result.php:158
 msgid "Duplicate event skipped (already exists)."
 msgstr ""
-
 #: includes/class-import-result.php:176
 msgid "Event skipped."
 msgstr ""
-
 #: includes/class-import-result.php:227
 msgid "Event import failed."
 msgstr ""
-
 #: includes/class-import-settings.php:92
 #: includes/class-import-settings.php:124
 msgid "Import Settings"
 msgstr ""
-
 #: includes/class-import-settings.php:93
 msgid "Settings"
 msgstr ""
-
 #: includes/class-import-settings.php:118
 msgid "Settings saved."
 msgstr ""
-
 #: includes/class-import-settings.php:126
 msgid "Event Importer is a manual, local-only tool. Click “Import Events Now” on the Dashboard to fetch events from the configured sources."
 msgstr ""
-
 #: includes/class-import-settings.php:134
 msgid "Eventbrite API token"
 msgstr ""
-
 #: includes/class-import-settings.php:137
 msgid "Leave empty to keep HTML-scraping mode (works on residential connections only). On hosts whose IPs Eventbrite blocks (e.g. WordPress.com), set a personal OAuth token from developers.eventbrite.com."
 msgstr ""
-
 #: includes/class-import-settings.php:141
 msgid "Save Settings"
 msgstr ""
-
 #. translators: %s: failure reason
 #: includes/class-source-health.php:102
 #, php-format
 msgid "Import failure recorded: %s"
 msgstr ""
-
 #. translators: 1: last completed page, 2: total pages
 #: includes/sources/class-eventbrite-source.php:148
 #, php-format
 msgid "Eventbrite import reached its time budget after page %1$d/%2$d — remaining pages will be picked up by the next run."
 msgstr ""
-
 #. translators: 1: where[] value, 2: last completed page
 #: includes/sources/class-heritage-week-source.php:128
 #, php-format
 msgid "Heritage Week import reached its time budget after where[]=%1$s page %2$d — remaining will be picked up by the next run."
+msgstr ""
+
+#. Name of the plugin
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:1
+msgid "Conexão BR Irlanda — Event Importer (Local Tools)"
+msgstr ""
+
+#. Description of the plugin
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:1
+msgid "Local-only event import/export tooling. Fetches, normalizes, deduplicates, and imports events from configured external sources into the local WordPress database. Event images are downloaded into the Media Library locally, then the complete event data (with embedded images) is exported to JSON for import into the production WordPress.com site. Production-critical event runtime behavior (meta/taxonomy registration, _event_status, public query filtering, status admin UI) lives in the separate \"Conexão BR Irlanda — Event Runtime\" plugin."
+msgstr ""
+
+#. Version of the plugin
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:1
+msgid "1.7.1"
 msgstr ""

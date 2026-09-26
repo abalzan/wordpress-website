@@ -1,9 +1,9 @@
-# Copyright (C) 2026 Conexão BR Irlanda
-# This file is distributed under the same license as the Conexão BR Irlanda - Content plugin.
+# Copyright (C) 2026 Conexao BR Irlanda
+# This file is distributed under the GNU General Public License v2 or later.
 msgid ""
 msgstr ""
 "Project-Id-Version: Conexão BR Irlanda - Content 1.0.0\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/conexao-content\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/conexao-br-irlanda\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -14,25 +14,30 @@ msgstr ""
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: conexao-content\n"
 
-#. Plugin Name of the plugin
-#: conexao-content.php
-msgid "Conexão BR Irlanda - Content"
-msgstr ""
-
-#. Description of the plugin
-#: conexao-content.php
-msgid "Secao de conteudo, shortcodes, e helpers para o portal Conexão BR Irlanda"
-msgstr ""
-
-#. Author of the plugin
-#: conexao-content.php
-msgid "Conexão BR Irlanda"
-msgstr ""
 
 #: conexao-content.php:199
 msgid "Nenhuma categoria encontrada."
 msgstr ""
-
 #: conexao-content.php:206
 msgid "Todos"
+msgstr ""
+
+#. Name of the plugin
+#: wp-content/plugins/conexao-content/conexao-content.php:1
+msgid "Conexão BR Irlanda - Content"
+msgstr ""
+
+#. Description of the plugin
+#: wp-content/plugins/conexao-content/conexao-content.php:1
+msgid "Secao de conteudo, shortcodes, e helpers para o portal Conexão BR Irlanda"
+msgstr ""
+
+#. Author of the plugin
+#: wp-content/plugins/conexao-content/conexao-content.php:1
+msgid "Conexão BR Irlanda"
+msgstr ""
+
+#. Version of the plugin
+#: wp-content/plugins/conexao-content/conexao-content.php:1
+msgid "1.0.0"
 msgstr ""

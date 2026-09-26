@@ -1,0 +1,29 @@
+Stage M — i18n catalogue diff analysis (Phase 8)
+Rule: regeneration may ADD strings (new source) and refresh POT-Creation-Date.
+      It may NOT silently REMOVE a user-facing string or a translation key.
+
+conexao-admin-ux.pot               old=102 new=103 removed=0 added=1
+    ADDED:   1.0.6
+
+conexao-content.pot                old=5 new=6 removed=0 added=1
+    ADDED:   1.0.0
+
+conexao-data-model.pot             old=4 new=5 removed=0 added=1
+    ADDED:   1.6.0
+
+conexao-event-importer.pot         old=384 new=385 removed=0 added=1
+    ADDED:   1.7.1
+
+conexao-event-runtime.pot          old=16 new=17 removed=0 added=1
+    ADDED:   1.2.1
+
+conexao-leisure-migration.pot      old=123 new=124 removed=0 added=1
+    ADDED:   2.1.0
+
+conexao-sponsor-migration.pot      old=52 new=53 removed=0 added=1
+    ADDED:   1.1.0
+
+conexao-br-irlanda.pot             old=407 new=408 removed=0 added=1
+    ADDED:   1.0.0
+
+TOTAL user-facing strings REMOVED: 0

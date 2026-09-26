@@ -1,0 +1,11 @@
+
+script: remediate-shared-taxonomy-language.php
+target: http://localhost:8080 (local, local)
+mode:   apply
+scope:  Terms of every taxonomy Polylang does NOT translate. Read-only by default; --apply clears the language assignment only. No term is created, renamed, re-slugged, merged or deleted.
+  conexao_county       terms=32    language-tagged=32    to-clear=32
+  conexao_town         terms=250   language-tagged=250   to-clear=250
+
+MODE: apply
+cleared 282 of 282 shared term language assignment(s).
+summary: scanned=282, to_clear=282, cleared=282, errors=0

@@ -1,9 +1,9 @@
-# Copyright (C) 2026 
-# This file is distributed under the same license as the Conexão BR Irlanda — Admin UX plugin.
+# Copyright (C) 2026 Conexao BR Irlanda
+# This file is distributed under the GNU General Public License v2 or later.
 msgid ""
 msgstr ""
 "Project-Id-Version: Conexão BR Irlanda — Admin UX 1.0.6\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/conexao-admin-ux\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/conexao-br-irlanda\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -14,433 +14,340 @@ msgstr ""
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: conexao-admin-ux\n"
 
-#. Plugin Name of the plugin
-#: conexao-admin-ux.php
-msgid "Conexão BR Irlanda — Admin UX"
-msgstr ""
-
-#. Description of the plugin
-#: conexao-admin-ux.php
-msgid "Reusable, professional CMS admin experience for Eventos, Notícias, Guias, Empregos and Apoiadores. Replaces generic meta boxes with structured sections, clear statuses, bulk actions, duplicate/archive workflows and dashboard summaries."
-msgstr ""
 
 #: includes/class-actions.php:93
 msgid "Conteúdo inválido para duplicação."
 msgstr ""
-
 #: includes/class-actions.php:98
 msgid "Você não tem permissão para duplicar conteúdo."
 msgstr ""
-
 #: includes/class-admin.php:234
 msgid "Link inválido. Tente novamente."
 msgstr ""
-
 #: includes/class-admin.php:282
 #: includes/class-editor.php:113
 #: includes/class-editor.php:321
 #: includes/class-list.php:582
 msgid "Excluir permanentemente? Esta ação não pode ser desfeita."
 msgstr ""
-
 #: includes/class-admin.php:283
 #: includes/class-editor.php:114
 #: includes/class-editor.php:315
 msgid "Arquivar este conteúdo? Ele deixará de aparecer no site público."
 msgstr ""
-
 #: includes/class-editor.php:170
 msgid "Publicação"
 msgstr ""
-
 #: includes/class-editor.php:264
 msgid "Onde este conteúdo aparece"
 msgstr ""
-
 #: includes/class-editor.php:266
 #: includes/class-list.php:553
 msgid "Ver no site ↗"
 msgstr ""
-
 #: includes/class-editor.php:270
 #: includes/class-list.php:557
 msgid "Visualizar rascunho ↗"
 msgstr ""
-
 #: includes/class-editor.php:274
 msgid "Página pública:"
 msgstr ""
-
 #: includes/class-editor.php:280
 #: includes/class-leisure-image-admin.php:472
 msgid "Status"
 msgstr ""
-
 #: includes/class-editor.php:296
 #: includes/class-editor.php:300
 msgid "Salvar rascunho"
 msgstr ""
-
 #: includes/class-editor.php:297
 msgid "Publicar"
 msgstr ""
-
 #: includes/class-editor.php:299
 msgid "Atualizar"
 msgstr ""
-
 #: includes/class-editor.php:315
 #: includes/class-list.php:574
 msgid "Arquivar"
 msgstr ""
-
 #: includes/class-editor.php:321
 #: includes/class-list.php:582
 msgid "Excluir permanentemente"
 msgstr ""
-
 #: includes/class-editor.php:326
 #, php-format
 msgid "Voltar para %s"
 msgstr ""
-
 #: includes/class-editor.php:358
 msgid "Importado automaticamente"
 msgstr ""
-
 #: includes/class-editor.php:363
 msgid "Fonte"
 msgstr ""
-
 #: includes/class-editor.php:366
 msgid "Importado"
 msgstr ""
-
 #: includes/class-editor.php:369
 msgid "Última verificação"
 msgstr ""
-
 #: includes/class-editor.php:372
 msgid "Abrir evento original ↗"
 msgstr ""
-
 #: includes/class-editor.php:820
 msgid "Não foi possível publicar."
 msgstr ""
-
 #: includes/class-editor.php:828
 msgid "Preencha os campos obrigatórios antes de publicar."
 msgstr ""
-
 #: includes/class-fields.php:188
 msgid "— Selecionar —"
 msgstr ""
-
 #: includes/class-fields.php:218
 msgid "Nenhuma opção disponível."
 msgstr ""
-
 #: includes/class-fields.php:278
 msgid "Nenhuma imagem selecionada"
 msgstr ""
-
 #: includes/class-fields.php:280
 msgid "Selecionar imagem"
 msgstr ""
-
 #: includes/class-fields.php:281
 msgid "Remover"
 msgstr ""
-
 #: includes/class-fields.php:307
 msgid "Nenhum contato adicional."
 msgstr ""
-
 #: includes/class-fields.php:308
 msgid "Adicionar contato"
 msgstr ""
-
 #: includes/class-fields.php:321
 #: includes/class-list.php:293
 msgid "Sim"
 msgstr ""
-
 #: includes/class-fields.php:328
 msgid "—"
 msgstr ""
-
 #: includes/class-fields.php:700
 msgid "Tipo de contato"
 msgstr ""
-
 #: includes/class-fields.php:701
 msgid "Tipo…"
 msgstr ""
-
 #: includes/class-fields.php:714
 msgid "nome@exemplo.com"
 msgstr ""
-
 #: includes/class-fields.php:716
 msgid "https://wa.me/353… ou número com DDI"
 msgstr ""
-
 #: includes/class-fields.php:717
 msgid "https://"
 msgstr ""
-
 #: includes/class-fields.php:719
 msgid "Link do contato"
 msgstr ""
-
 #: includes/class-fields.php:722
 msgid "Mover para cima"
 msgstr ""
-
 #: includes/class-fields.php:723
 msgid "Mover para baixo"
 msgstr ""
-
 #: includes/class-fields.php:724
 msgid "Remover contato"
 msgstr ""
-
 #: includes/class-leisure-image-admin.php:51
 msgid "Buscando no Wikimedia Commons..."
 msgstr ""
-
 #: includes/class-leisure-image-admin.php:52
 msgid "Nenhuma imagem com licença adequada encontrada no Wikimedia Commons."
 msgstr ""
-
 #: includes/class-leisure-image-admin.php:53
 #: includes/class-leisure-image-admin.php:516
 msgid "Autor:"
 msgstr ""
-
 #: includes/class-leisure-image-admin.php:54
 #: includes/class-leisure-image-admin.php:519
 msgid "Licença:"
 msgstr ""
-
 #: includes/class-leisure-image-admin.php:55
 #: includes/class-leisure-image-admin.php:508
 msgid "Fonte:"
 msgstr ""
-
 #: includes/class-leisure-image-admin.php:56
 msgid "Tamanho:"
 msgstr ""
-
 #: includes/class-leisure-image-admin.php:57
 msgid "Aprovar e importar"
 msgstr ""
-
 #: includes/class-leisure-image-admin.php:58
 msgid "Rejeitar"
 msgstr ""
-
 #: includes/class-leisure-image-admin.php:59
 msgid "Escolher outra"
 msgstr ""
-
 #: includes/class-leisure-image-admin.php:60
 msgid "Importar esta imagem do Wikimedia Commons para a biblioteca de mídia e associá-la a este local?"
 msgstr ""
-
 #: includes/class-leisure-image-admin.php:71
 msgid "Imagens dos Locais"
 msgstr ""
-
 #: includes/class-leisure-image-admin.php:72
 msgid "Imagens"
 msgstr ""
-
 #: includes/class-leisure-image-admin.php:88
 #: includes/class-leisure-image-admin.php:293
 #: includes/class-leisure-image-admin.php:296
 msgid "Você não tem permissão para editar locais."
 msgstr ""
-
 #: includes/class-leisure-image-admin.php:421
 msgid "Imagens dos Locais de Lazer"
 msgstr ""
-
 #: includes/class-leisure-image-admin.php:423
 msgid "Associe a imagem e a fonte de cada local da página /lazer/. Use apenas imagens com direitos adequados (biblioteca de mídia, Wikimedia Commons, site oficial do local que permita o uso, ou foto própria). Não use imagens do Discover Ireland sem permissão — a página oficial pode ser guardada como referência."
 msgstr ""
-
 #: includes/class-leisure-image-admin.php:427
 msgid "Imagem/fonte atualizada com sucesso."
 msgstr ""
-
 #: includes/class-leisure-image-admin.php:429
 #, php-format
 msgid "%d local(is) marcado(s) como \"Imagem pendente\"."
 msgstr ""
-
 #: includes/class-leisure-image-admin.php:431
 msgid "Local inválido. Nenhuma alteração foi feita."
 msgstr ""
-
 #: includes/class-leisure-image-admin.php:435
 msgid "Estatísticas de imagens"
 msgstr ""
-
 #: includes/class-leisure-image-admin.php:438
 msgid " locais com imagem importada da biblioteca de mídia"
 msgstr ""
-
 #: includes/class-leisure-image-admin.php:440
 msgid " com imagem pendente"
 msgstr ""
-
 #: includes/class-leisure-image-admin.php:447
 msgid "Marcar todos sem imagem como \"Imagem pendente\""
 msgstr ""
-
 #: includes/class-leisure-image-admin.php:453
 msgid "Buscar no Wikimedia Commons"
 msgstr ""
-
 #: includes/class-leisure-image-admin.php:454
 msgid "Digite o nome do local para procurar imagens com licença adequada no Wikimedia Commons. Clique em \"Buscar\" para ver as sugestências."
 msgstr ""
-
 #: includes/class-leisure-image-admin.php:456
 msgid "Ex.: Cliffs of Moher"
 msgstr ""
-
 #: includes/class-leisure-image-admin.php:457
 msgid "Buscar"
 msgstr ""
-
 #: includes/class-leisure-image-admin.php:463
 msgid "Locais"
 msgstr ""
-
 #: includes/class-leisure-image-admin.php:469
 msgid "Local"
 msgstr ""
-
 #: includes/class-leisure-image-admin.php:470
 msgid "Imagem / Fonte"
 msgstr ""
-
 #: includes/class-leisure-image-admin.php:471
 msgid "Autor / Licença"
 msgstr ""
-
 #: includes/class-leisure-image-admin.php:473
 msgid "Ações"
 msgstr ""
-
 #: includes/class-leisure-image-admin.php:505
 msgid "Sem imagem"
 msgstr ""
-
 #: includes/class-leisure-image-admin.php:511
 msgid "Ver página de origem"
 msgstr ""
-
 #: includes/class-leisure-image-admin.php:528
 msgid "Nenhuma"
 msgstr ""
-
 #: includes/class-leisure-image-admin.php:529
 #: includes/class-leisure-image-admin.php:578
 msgid "Imagem pendente"
 msgstr ""
-
 #: includes/class-leisure-image-admin.php:530
 msgid "Local (mídia)"
 msgstr ""
-
 #: includes/class-leisure-image-admin.php:540
 msgid "Buscar no Wikimedia"
 msgstr ""
-
 #: includes/class-leisure-image-admin.php:548
 msgid "URL da página de origem (ex.: Discover Ireland)"
 msgstr ""
-
 #: includes/class-leisure-image-admin.php:551
 msgid "Fonte da imagem"
 msgstr ""
-
 #: includes/class-leisure-image-admin.php:554
 msgid "Fotógrafo / autor"
 msgstr ""
-
 #: includes/class-leisure-image-admin.php:557
 msgid "Licença"
 msgstr ""
-
 #: includes/class-leisure-image-admin.php:560
 msgid "Texto alternativo (alt)"
 msgstr ""
-
 #: includes/class-leisure-image-admin.php:563
 msgid "Atribuição completa (fotógrafo + licença + fonte)"
 msgstr ""
-
 #: includes/class-leisure-image-admin.php:572
 msgid "Salvar referência"
 msgstr ""
-
 #: includes/class-leisure-image-admin.php:578
 msgid "Definir como \"Imagem pendente\" e remover a imagem atual?"
 msgstr ""
-
 #: includes/class-leisure-image-admin.php:587
 msgid "Nenhum local de lazer encontrado."
 msgstr ""
-
 #: includes/class-list.php:63
 msgid "Título"
 msgstr ""
-
 #: includes/class-list.php:168
 msgid "Ativa"
 msgstr ""
-
 #: includes/class-list.php:173
 msgid "Inativa"
 msgstr ""
-
 #: includes/class-list.php:200
 msgid "Manual"
 msgstr ""
-
 #: includes/class-list.php:335
 msgid "Todas as fontes"
 msgstr ""
-
 #: includes/class-list.php:361
 msgid "Todos os condados"
 msgstr ""
-
 #: includes/class-list.php:533
 #, php-format
 msgid "%d %s com sucesso."
 msgstr ""
-
 #: includes/class-list.php:566
 msgid "Duplicar"
 msgstr ""
-
 #: includes/class-list.php:582
 msgid "Excluir"
 msgstr ""
-
 #: includes/class-wikimedia-client.php:284
 msgid "Tipo de arquivo n\\u00e3o suportado."
 msgstr ""
-
 #: includes/class-wikimedia-client.php:293
 msgid "N\\u00e3o foi poss\\u00edvel ler o arquivo baixado."
 msgstr ""
-
 #: includes/class-wikimedia-client.php:304
 msgid "Tipo de arquivo n\\u00e3o permitido."
+msgstr ""
+
+#. Name of the plugin
+#: wp-content/plugins/conexao-admin-ux/conexao-admin-ux.php:1
+msgid "Conexão BR Irlanda — Admin UX"
+msgstr ""
+
+#. Description of the plugin
+#: wp-content/plugins/conexao-admin-ux/conexao-admin-ux.php:1
+msgid "Reusable, professional CMS admin experience for Eventos, Notícias, Guias, Empregos and Apoiadores. Replaces generic meta boxes with structured sections, clear statuses, bulk actions, duplicate/archive workflows and dashboard summaries."
+msgstr ""
+
+#. Version of the plugin
+#: wp-content/plugins/conexao-admin-ux/conexao-admin-ux.php:1
+msgid "1.0.6"
 msgstr ""
