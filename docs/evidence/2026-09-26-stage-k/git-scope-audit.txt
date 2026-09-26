@@ -1,0 +1,50 @@
+# Stage K — Git scope audit
+
+## Tracked modifications
+
+```
+$ git diff --stat
+ .gitignore              |  10 +-
+ AGENTS.md               | 293 ++++++++++++++++++++++--------------------------
+ docs/README.md          |  25 +++++
+ docs/evidence/README.md |   1 +
+ docs/testing.md         |  12 ++
+ 5 files changed, 177 insertions(+), 164 deletions(-)
+```
+
+## Rename (history-preserving relocation)
+
+```
+R  skills-lock.json -> .agents/legacy-flutter-skills/skills-lock.json
+```
+
+## Newly added
+
+```
+?? .agents/legacy-flutter-skills/README.md
+?? .agents/skills/                        (10 skill directories)
+?? .github/PULL_REQUEST_TEMPLATE.md
+?? docs/evidence/2026-09-26-stage-k/      (this evidence set)
+?? docs/templates/                        (plan.md, report.md)
+?? tests/scripts/verify-agent-governance.py
+```
+
+## Runtime areas — MUST be empty
+
+```
+$ git diff --name-only -- wp-content compose.yaml .htaccess .github/workflows scripts
+(no output)
+```
+
+Result: **0** files changed under `wp-content/` (neither the theme nor any
+plugin), **0** under `scripts/`, and **0** in `compose.yaml`, `.htaccess` or
+`.github/workflows/`.
+
+No WordPress runtime behaviour, content, route, REST contract or Polylang
+behaviour was touched, and no production configuration or state was changed.
+The CI workflow needed no edit: the new gate is discovered by the existing
+convention `tests/scripts/verify-*.py`, so `./scripts/run-tests.sh` picks it up
+and CI blocks on it automatically.
+
+The external Flutter/mobile repository was not touched. Every change in this
+audit is inside this WordPress repository.

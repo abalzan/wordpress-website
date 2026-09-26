@@ -1,0 +1,55 @@
+# Stage K — negative / failure proofs of the agent-governance gate
+#
+# A verifier that has never been shown to fail is not a verifier. Every proof
+# below was executed against a THROWAWAY COPY of the repository at /tmp/k-neg
+# (a tar copy of this checkout, with .git/vendor/dist excluded). The real
+# repository was never modified; `git status --short` proves it.
+#
+# Baseline on the copy, before any proof:
+#   python3 tests/scripts/verify-agent-governance.py -> exit 0, 247 passed, 0 failed
+#
+# Proof H uses the Stage I script-contract gate, because an undocumented script
+# in scripts/ is that gate's contract, not the governance gate's.
+#
+=== Proof A: a required template is missing ===
+exit=1
+FAIL: docs/templates/plan.md is missing (the task plan template); engineering standard §13.2 requires it
+FAIL: .agents/skills/wp-update-docs/SKILL.md references 'docs/templates/plan.md', which does not exist in this repository
+Stage K governance verification: 223 passed, 2 failed
+
+=== Proof B: a required skill is missing ===
+exit=1
+FAIL: required Stage K skill 'wp-release-deploy' is missing from .agents/skills/
+Stage K governance verification: 235 passed, 1 failed
+
+=== Proof C: a skill is missing one mandatory section ===
+exit=1
+FAIL: .agents/skills/wp-security-review/SKILL.md is missing required section(s): Guardrails
+Stage K governance verification: 247 passed, 1 failed
+
+=== Proof D: a skill references a nonexistent repository path ===
+exit=1
+FAIL: .agents/skills/wp-frontend-perf/SKILL.md references 'docs/does-not-exist-anymore.md', which does not exist in this repository
+Stage K governance verification: 247 passed, 1 failed
+=== Proof E: an obsolete Flutter/Dart skill appears in the active namespace ===
+exit=1
+FAIL: .agents/skills/flutter-use-http-package/SKILL.md is missing required section(s): When to use, Required reading, Guardrails, Verification, Definition of done
+FAIL: .agents/skills/flutter-use-http-package/SKILL.md must start with a '# <Skill Name>' title
+FAIL: .agents/skills/flutter-use-http-package/ is a Dart/Flutter/mobile skill; it does not belong in this repository's active WordPress skill namespace (retired material belongs under .agents/legacy-flutter-skills/)
+Stage K governance verification: 255 passed, 4 failed
+
+=== Proof F: AGENTS.md loses its engineering-standard reference ===
+exit=1
+FAIL: AGENTS.md does not point at the engineering standard (docs/engineering-standard.md); an agent must be able to find the authoritative source from the entry point
+Stage K governance verification: 246 passed, 1 failed
+
+=== Proof G: the PR template is missing ===
+exit=1
+FAIL: .github/PULL_REQUEST_TEMPLATE.md is missing (the pull-request template); engineering standard §13.2 requires it
+Stage K governance verification: 218 passed, 1 failed
+
+=== Proof H: a new governance script undocumented in scripts/README.md ===
+--- Stage I script-contract gate against the same fixture ---
+exit=1
+FAIL: scripts/verify-governance-proof.sh is not catalogued in scripts/README.md
+286 passed, 1 failed

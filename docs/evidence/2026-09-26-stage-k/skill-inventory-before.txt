@@ -1,0 +1,36 @@
+# Stage K — skill inventory BEFORE (baseline 0f5c586)
+
+Active namespace .agents/skills/ (git-ignored at baseline; 23 skills, all Dart/Flutter, 0 WordPress):
+
+```
+  dart-add-unit-test
+  dart-build-cli-app
+  dart-collect-coverage
+  dart-fix-runtime-errors
+  dart-generate-test-mocks
+  dart-migrate-to-checks-package
+  dart-resolve-package-conflicts
+  dart-run-static-analysis
+  dart-setup-ffi-assets
+  dart-use-ffigen
+  dart-use-pattern-matching
+  dart-use-primary-constructors
+  dart-write-documentation
+  flutter-add-integration-test
+  flutter-add-widget-preview
+  flutter-add-widget-test
+  flutter-apply-architecture-best-practices
+  flutter-build-responsive-layout
+  flutter-fix-layout-issues
+  flutter-implement-json-serialization
+  flutter-setup-declarative-routing
+  flutter-setup-localization
+  flutter-use-http-package
+```
+
+Count: 23 (13 dart-*, 10 flutter-*)
+
+skills-lock.json: tracked at the repository ROOT; pins those same 23 Dart/Flutter
+skills with source "flutter/agent-plugins".
+
+WordPress-domain skills at baseline: 0

@@ -25,6 +25,16 @@ so a release gate is never exercised for the first time at release time:
 | `tests/scripts/verify-release-integrity.py` | The two release invariants: `plugins.json` derives the artifact allowlist, and `release.json` records exactly what was built. Builds the real artifacts **twice** and proves they are byte-identical, proves no `tests/`/`fixtures/`/`*.json` report ships, and **proves the verifier fails on a tampered artifact** and on a non-allowlisted one. | Script contract (no WordPress, no network) |
 | `tests/acceptance/verify-release-http.py` | The **fixed** release smoke matrix against the local site, plus one single per post type and the PT/EN language-layer checks. It imports the same matrix file and the same check functions as `scripts/verify-deploy.py`, so the gate and the regression suite cannot drift. | HTTP acceptance |
 
+### The governance suite (Stage K)
+
+| Suite | Proves | Layer |
+|---|---|---|
+| `tests/scripts/verify-agent-governance.py` | The agent-governance contract of engineering standard §13: the WordPress skills exist under `.agents/skills/`, each has `SKILL.md` with the six required sections in order, every repository path a skill references actually exists, no obsolete Dart/Flutter/mobile skill sits in the active namespace, no second plugin registry was introduced, `AGENTS.md` points at the standard and the templates, the PR template carries the standard's checks, the documentation index exposes the workflow, and no governance file hard-codes a local URL, a credential or an external path. Static, no WordPress, no network, zero writes. | Script contract (no WordPress, no network) |
+
+It is discovered by convention (`tests/scripts/verify-*.py`), so it is blocking
+in CI with no workflow change. Run it alone with
+`python3 tests/scripts/verify-agent-governance.py`.
+
 `./scripts/verify-release.sh` runs the whole release workflow end to end locally
 (registry gate → build → manifest → allowlist/hash verification → determinism →
 exclusion proof → HTTP verification). It is the single command to run before
@@ -418,7 +428,9 @@ convention-based, and CI calls the same command you do.
 | `scripts/historical/c3-production-*.py` | `PRODUCTION_ONLY` | never |
 | `tests/scripts/verify-*.py` | `SCRIPT_CONTRACT` | yes — blocking |
 | `tests/scripts/verify-release-integrity.py` | `SCRIPT_CONTRACT` (Stage J) | yes — blocking, also its own CI job |
+| `tests/scripts/verify-agent-governance.py` | `SCRIPT_CONTRACT` (Stage K) | yes — blocking; the agent-governance contract |
 | `tests/acceptance/verify-release-http.py` | `HTTP_ACCEPTANCE` (Stage J) | yes — blocking; runs the release smoke matrix |
 
 _Last verified: 2026-09-26 by Stage I — Scripts Standardisation_
 _Last verified: 2026-09-26 by Stage J — Build, Release & Deploy Verification_
+_Last verified: 2026-09-26 by Stage K — Agent Skills + Templates_

@@ -1,0 +1,51 @@
+# Stage K — skill inventory AFTER
+
+## Active WordPress skills: .agents/skills/ (tracked)
+
+```
+  wp-add-admin-screen          # Add an admin screen
+  wp-add-content-type          # Add a content type
+  wp-frontend-perf             # Frontend performance
+  wp-http-acceptance-matrix    # Write an HTTP acceptance matrix
+  wp-plugin-registry           # Update the plugin registry
+  wp-release-deploy            # Release and deploy
+  wp-security-review           # Security review
+  wp-translation-rollout       # Add a translation rollout
+  wp-update-docs               # Update documentation
+  wp-write-in-process-test     # Write an in-process test
+```
+
+Active skill count: 10
+
+## Retired (provenance only, NOT active): .agents/legacy-flutter-skills/
+
+```
+  README.md
+  dart-add-unit-test
+  dart-build-cli-app
+  dart-collect-coverage
+  dart-fix-runtime-errors
+  dart-generate-test-mocks
+  dart-migrate-to-checks-package
+  dart-resolve-package-conflicts
+  dart-run-static-analysis
+  dart-setup-ffi-assets
+  dart-use-ffigen
+  dart-use-pattern-matching
+  dart-use-primary-constructors
+  dart-write-documentation
+  flutter-add-integration-test
+  flutter-add-widget-preview
+  flutter-add-widget-test
+  flutter-apply-architecture-best-practices
+  flutter-build-responsive-layout
+  flutter-fix-layout-issues
+  flutter-implement-json-serialization
+  flutter-setup-declarative-routing
+  flutter-setup-localization
+  flutter-use-http-package
+  skills-lock.json
+```
+
+Retired skill directories: 23 Dart/Flutter (git-ignored, relocated not deleted)
+Retired lock file: .agents/legacy-flutter-skills/skills-lock.json (git mv from the root)

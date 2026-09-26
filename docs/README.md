@@ -5,6 +5,31 @@ to each document; it is navigation only — the standards live in the linked
 documents themselves. New docs belong under `docs/` and must be added here
 in the same change.
 
+## Working with this repository as an agent
+
+If you are an AI agent (or a human following the same discipline), start at
+[`AGENTS.md`](../AGENTS.md), then the engineering standard, then the skill that
+matches your task:
+
+| Document | What it is |
+|---|---|
+| [../AGENTS.md](../AGENTS.md) | **Start here** — scope, safety rules, what is authoritative, the workflow |
+| [engineering-standard.md](engineering-standard.md) | The authoritative engineering standard (WP-ES) — read this before changing code |
+| [../.agents/skills/](../.agents/skills/) | **The WordPress agent skills** — one directory per skill, each an executable workflow (`When to use → Required reading → Steps → Guardrails → Verification → Definition of done`) |
+| [templates/plan.md](templates/plan.md) | **Plan template** — copy it before multi-file work, and before any content, route or English/Polylang change |
+| [templates/report.md](templates/report.md) | **Report template** — copy it to `docs/reports/` to close a stage or feature with real verification numbers and stated limitations |
+| [../.github/PULL_REQUEST_TEMPLATE.md](../.github/PULL_REQUEST_TEMPLATE.md) | The pull-request template aligned with the same standard |
+| [testing.md](testing.md) | How to run and write tests, and the stage classification of each suite |
+
+The skills are WordPress-domain only. The retired Dart/Flutter skill set that
+predated them is kept for provenance under
+[`.agents/legacy-flutter-skills/`](../.agents/legacy-flutter-skills/) and is
+**not** an active skill set.
+
+The agent-governance contract is machine-checked by
+`tests/scripts/verify-agent-governance.py`, which runs with the script-contract
+layer of `./scripts/run-tests.sh`.
+
 ## Standards, audits and engineering
 
 | Document | What it is |

@@ -24,5 +24,11 @@ phpcs.cache
 .DS_Store
 Thumbs.db
 
-# Agent skill material that is not this repository's domain
-.agents/skills/
+# Agent skill material
+#
+# The ACTIVE agent skills are WordPress-domain and tracked: .agents/skills/.
+# The retired Flutter/Dart skill set (wrong domain for this repository) is kept
+# for provenance under .agents/legacy-flutter-skills/ and is not tracked as
+# active skills. See docs/evidence/2026-09-26-stage-k/.
+.agents/legacy-flutter-skills/dart-*/
+.agents/legacy-flutter-skills/flutter-*/
