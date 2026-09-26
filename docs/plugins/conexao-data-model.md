@@ -1,7 +1,21 @@
 # Conexão Data Model
 
+<!-- BEGIN GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
+| | |
+|---|---|
+| **Status** | active |
+| **Class** | platform |
+| **Production** | yes |
+| **Build** | yes |
+| **Compose mount** | yes |
+| **Dependencies** | none |
+| **Version** | 1.6.0 (authoritative source: `wp-content/plugins/conexao-data-model/conexao-data-model.php` header) |
+| **Registry** | [`plugins.json`](../../plugins.json) |
+
+> **Production platform plugin.** Part of the production steady state.
+<!-- END GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
+
 - **Path**: `wp-content/plugins/conexao-data-model/`
-- **Version**: 1.6.0
 - **Purpose**: Registers custom post types, shared taxonomies, and editorial meta fields.
 
 ## Responsibilities

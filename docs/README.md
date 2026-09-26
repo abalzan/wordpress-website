@@ -14,7 +14,38 @@ in the same change.
 | [reports/README.md](reports/README.md) | Index of dated stage/feature reports + the no-root-reports rule |
 | [reports/site/](reports/site/) | Repository-engineering stage reports (Stage B repository hygiene, Stage C static quality tooling, …) |
 | [evidence/README.md](evidence/README.md) | Standing rule for machine-readable evidence + contents map |
-| [project-inventory.md](project-inventory.md) | Project/plugin inventory (machine-readable map) |
+| [project-inventory.md](project-inventory.md) | Project/plugin inventory (versions generated from plugin headers) |
+
+## The plugin registry (single source of truth)
+
+**[`plugins.json`](../plugins.json) is the authoritative plugin list.** It owns
+plugin load order, dependencies, lifecycle class/status, the production
+activation order, release build inclusion and local Compose mounts.
+
+Every derived list is generated from it by
+[`scripts/generate-registry-docs.php`](../scripts/generate-registry-docs.php)
+and is marked in the file it lives in, so no list is maintained twice:
+
+```bash
+php scripts/generate-registry-docs.php --check   # validate + drift gate (zero writes)
+php scripts/generate-registry-docs.php --write   # regenerate the marked regions
+```
+
+| Generated region | File |
+|---|---|
+| Plugin inventory table | `AGENTS.md` |
+| Plugin registry summary | `README.md` |
+| Load order + lifecycle table | `docs/plugins/README.md` |
+| Per-plugin lifecycle metadata | `docs/plugins/conexao-*.md` |
+| Production activation order | `docs/deployment.md` |
+| Plugin inventory (versions) | `docs/project-inventory.md` |
+| Plugin load order | `docs/architecture.md` |
+| Release build list | `scripts/build-plugins-zip.sh` |
+| Local Compose mounts | `compose.yaml` |
+
+`php scripts/generate-registry-docs.php --check` is a **blocking** CI gate.
+To add, remove or re-classify a plugin: edit `plugins.json`, add its doc under
+`docs/plugins/`, then run `--write`. Never hand-edit a generated block.
 
 ## Architecture and content model
 

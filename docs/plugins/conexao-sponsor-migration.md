@@ -1,5 +1,20 @@
 # conexao-sponsor-migration
 
+<!-- BEGIN GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
+| | |
+|---|---|
+| **Status** | active |
+| **Class** | tooling |
+| **Production** | no |
+| **Build** | yes |
+| **Compose mount** | yes |
+| **Dependencies** | none |
+| **Version** | 1.1.0 (authoritative source: `wp-content/plugins/conexao-sponsor-migration/conexao-sponsor-migration.php` header) |
+| **Registry** | [`plugins.json`](../../plugins.json) |
+
+> **Local-only tooling.** Not a production steady-state dependency.
+<!-- END GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
+
 Apoiadores (sponsors) export/import for moving the supporter dataset between
 installations (e.g. local → production). JSON payload with **embedded image
 bytes** — the destination site recreates every Media Library attachment

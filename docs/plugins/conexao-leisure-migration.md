@@ -1,5 +1,20 @@
 # Conexão Leisure Migration
 
+<!-- BEGIN GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
+| | |
+|---|---|
+| **Status** | active |
+| **Class** | tooling |
+| **Production** | no |
+| **Build** | yes |
+| **Compose mount** | yes |
+| **Dependencies** | none |
+| **Version** | 2.1.0 (authoritative source: `wp-content/plugins/conexao-leisure-migration/conexao-leisure-migration.php` header) |
+| **Registry** | [`plugins.json`](../../plugins.json) |
+
+> **Local-only tooling.** Not a production steady-state dependency.
+<!-- END GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
+
 - **Path**: `wp-content/plugins/conexao-leisure-migration/`
 - **Version**: 2.1.0
 - **Purpose**: Export and import the /lazer/ (leisure) dataset as a self-contained ZIP package containing data.json and actual image files from the Media Library. Production images are always local — no dependency on Wikimedia Commons for delivery.

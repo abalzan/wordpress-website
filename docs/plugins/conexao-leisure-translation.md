@@ -1,5 +1,23 @@
 # Conexão Leisure Translation
 
+<!-- BEGIN GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
+| | |
+|---|---|
+| **Status** | retired |
+| **Class** | rollout |
+| **Production** | no |
+| **Build** | no |
+| **Compose mount** | yes |
+| **Dependencies** | none |
+| **Version** | 1.0.0 (authoritative source: `wp-content/plugins/conexao-leisure-translation/conexao-leisure-translation.php` header) |
+| **Registry** | [`plugins.json`](../../plugins.json) |
+
+> **Lifecycle: activate → apply → remove.** This is a retired one-shot rollout plugin.
+> It is **not** a production steady-state dependency and is **not** included in a
+> release plugin ZIP. It is kept in the repository (and locally mounted) only so the
+> historical importer stays reproducible.
+<!-- END GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
+
 - **Path**: `wp-content/plugins/conexao-leisure-translation/`
 - **Version**: 1.0.0
 - **Purpose**: Stage 7 rollout — author the English card description of every published Portuguese `leisure` record (`_leisure_excerpt_en` post meta) so `/en/lazer/` renders English `.leisure-card-excerpt` text. The English layer is a **description-level translation on the same records**: no linked EN leisure posts, no duplicate records, no UUID changes.

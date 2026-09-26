@@ -29,9 +29,45 @@ Copy `.env.example` to `.env` only when overriding defaults. All defaults work o
 ### Build
 
 ```bash
-./scripts/build-plugins-zip.sh   # packages all plugins into dist/
+./scripts/build-plugins-zip.sh   # packages the registry's build:true plugins into dist/
 ./scripts/build-theme-zip.sh     # packages the theme into dist/
 ```
+
+## Plugins
+
+<!-- BEGIN GENERATED PLUGIN REGISTRY: README.md plugin registry -->
+### Plugin registry
+
+**The authoritative plugin list is [`plugins.json`](plugins.json)** - it owns load order,
+dependencies, lifecycle status, the production activation order, release build inclusion
+and local Compose mounts. The table below is generated from it by
+`scripts/generate-registry-docs.php`; every derived list in this repository comes from
+that one file.
+
+| # | Plugin | Class | Status | Production | Build | Compose mount | Docs |
+|---|--------|-------|--------|------------|-------|---------------|------|
+| 1 | `conexao-data-model` | platform | active | yes | yes | yes | [conexao-data-model](docs/plugins/conexao-data-model.md) |
+| 2 | `conexao-content` | platform | active | yes | yes | yes | [conexao-content](docs/plugins/conexao-content.md) |
+| 3 | `conexao-admin-ux` | platform | active | yes | yes | yes | [conexao-admin-ux](docs/plugins/conexao-admin-ux.md) |
+| 4 | `conexao-event-runtime` | platform | active | yes | yes | yes | [conexao-event-runtime](docs/plugins/conexao-event-runtime.md) |
+| 5 | `conexao-event-importer` | tooling | active | no | yes | yes | [conexao-event-importer](docs/plugins/conexao-event-importer.md) |
+| 6 | `conexao-leisure-migration` | tooling | active | no | yes | yes | [conexao-leisure-migration](docs/plugins/conexao-leisure-migration.md) |
+| 7 | `conexao-sponsor-migration` | tooling | active | no | yes | yes | [conexao-sponsor-migration](docs/plugins/conexao-sponsor-migration.md) |
+| 8 | `conexao-page-translation` | rollout | retired | no | no | yes | [conexao-page-translation](docs/plugins/conexao-page-translation.md) |
+| 9 | `conexao-blog-translation` | rollout | retired | no | no | yes | [conexao-blog-translation](docs/plugins/conexao-blog-translation.md) |
+| 10 | `conexao-job-translation` | rollout | retired | no | no | yes | [conexao-job-translation](docs/plugins/conexao-job-translation.md) |
+| 11 | `conexao-leisure-translation` | rollout | retired | no | no | yes | [conexao-leisure-translation](docs/plugins/conexao-leisure-translation.md) |
+| 12 | `conexao-guide-translation` | rollout | retired | no | no | yes | [conexao-guide-translation](docs/plugins/conexao-guide-translation.md) |
+
+**Production steady state** (platform, `production: true`) - activate in this order: conexao-data-model -> conexao-content -> conexao-admin-ux -> conexao-event-runtime.
+
+**Local-only tooling** (never production): conexao-event-importer, conexao-leisure-migration, conexao-sponsor-migration.
+
+**Retired rollout plugins** (historical tooling, *activate → apply → remove*; not a production dependency and not in any release ZIP): conexao-page-translation, conexao-blog-translation, conexao-job-translation, conexao-leisure-translation, conexao-guide-translation.
+
+Versions are **not** duplicated in the registry: the WordPress plugin header is the
+authoritative source, and each entry records only where to read it (`version_source`).
+<!-- END GENERATED PLUGIN REGISTRY: README.md plugin registry -->
 
 ## Production
 
@@ -44,6 +80,7 @@ Copy `.env.example` to `.env` only when overriding defaults. All defaults work o
 ## Project Structure
 
 ```
+├── plugins.json                       # Authoritative plugin registry (load order, build, mounts, lifecycle)
 ├── compose.yaml                    # Docker Compose
 ├── .htaccess                       # Rewrite rules, caching, security
 ├── docker/                         # Apache config, entrypoint
@@ -51,13 +88,7 @@ Copy `.env.example` to `.env` only when overriding defaults. All defaults work o
 ├── content-inventory/              # Migration inventory CSVs
 ├── docs/                           # Project documentation
 └── wp-content/
-    ├── plugins/
-    │   ├── conexao-data-model      # CPTs, taxonomies, meta
-    │   ├── conexao-content         # Pages, shortcodes
-    │   ├── conexao-admin-ux        # Custom admin UI
-    │   ├── conexao-event-runtime   # Event runtime (production dependency)
-    │   ├── conexao-event-importer  # Event import/export tooling (local-only)
-    │   └── conexao-leisure-migration # Lazer export/import
+    ├── plugins/                    # Custom plugins (inventory: plugins.json)
     └── themes/
         └── conexao-br-irlanda      # Active theme
 ```
@@ -100,7 +131,21 @@ Copy `.env.example` to `.env` only when overriding defaults. All defaults work o
 - Reuse existing dark-mode CSS variables.
 - Preserve attribution/license metadata for imported images.
 - Avoid page-specific CSS hacks when a shared component can be fixed.
-- All custom plugins must be loaded in order: data-model → content → admin-ux → event-importer → leisure-migration.
+- Custom plugin load order, production activation order, release build list and local
+  Compose mounts all come from `plugins.json`; see the plugin registry section below.
+
+## Plugin registry workflow
+
+`plugins.json` is the **only** authoritative plugin list. Every derived list
+(load order, production activation order, release build list, Compose mounts,
+lifecycle documentation) is generated from it:
+
+```bash
+php scripts/generate-registry-docs.php --check   # validate + drift gate (zero writes)
+php scripts/generate-registry-docs.php --write   # regenerate the marked regions
+```
+
+Never hand-edit a generated block; edit `plugins.json` and re-run `--write`.
 
 ## Documentation
 

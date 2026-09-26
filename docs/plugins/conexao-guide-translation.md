@@ -1,5 +1,23 @@
 # conexao-guide-translation
 
+<!-- BEGIN GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
+| | |
+|---|---|
+| **Status** | retired |
+| **Class** | rollout |
+| **Production** | no |
+| **Build** | no |
+| **Compose mount** | yes |
+| **Dependencies** | none |
+| **Version** | 1.0.0 (authoritative source: `wp-content/plugins/conexao-guide-translation/conexao-guide-translation.php` header) |
+| **Registry** | [`plugins.json`](../../plugins.json) |
+
+> **Lifecycle: activate → apply → remove.** This is a retired one-shot rollout plugin.
+> It is **not** a production steady-state dependency and is **not** included in a
+> release plugin ZIP. It is kept in the repository (and locally mounted) only so the
+> historical importer stays reproducible.
+<!-- END GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
+
 **Purpose:** turn the Guide CPT from the approved **B1 302 policy** (`/en/guias/`
 did not have an English archive; every guide detail URL 302'd to Portuguese)
 into a **real English translation**: one linked EN translation per eligible

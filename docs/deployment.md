@@ -28,6 +28,68 @@
 ## Build Process
 
 ### Plugins
+
+<!-- BEGIN GENERATED PLUGIN REGISTRY: docs/deployment.md activation order -->
+Generated from [`plugins.json`](../../plugins.json) by
+`scripts/generate-registry-docs.php`. Do not hand-edit this section.
+
+### Production activation order
+
+The filtered subset of the registry load order where `production: true`. It contains no
+`production: false` entry:
+
+1. `conexao-data-model`
+2. `conexao-content`
+3. `conexao-admin-ux`
+4. `conexao-event-runtime`
+
+Production needs exactly these 4 platform plugins. They are the only
+plugins that must be installed **and active** on production.
+
+### Release build output
+
+```bash
+./scripts/build-plugins-zip.sh
+```
+
+Produces one ZIP per `build: true` entry (7 files), in registry order:
+
+- `dist/conexao-data-model.zip`
+- `dist/conexao-content.zip`
+- `dist/conexao-admin-ux.zip`
+- `dist/conexao-event-runtime.zip`
+- `dist/conexao-event-importer.zip`
+- `dist/conexao-leisure-migration.zip`
+- `dist/conexao-sponsor-migration.zip`
+
+Import via WordPress Admin -> Plugins -> Add New -> Upload Plugin, then activate in
+the production order above.
+
+### Local-only tooling (not production)
+
+Built and mounted so a developer can run them locally, but **not** production
+dependencies and never left active on production:
+
+- `conexao-event-importer`
+- `conexao-leisure-migration`
+- `conexao-sponsor-migration`
+
+### Retired rollout plugins (historical tooling)
+
+These one-shot English-rollout plugins have already been applied. They are **not** part
+of a normal production release: each is `build: false` (no ZIP is produced) and none is
+activated in the production steady state. They remain in the repository, and are locally
+mounted only so the historical importer stays reproducible.
+
+**Lifecycle: activate → apply → remove.**
+
+- `conexao-page-translation` - activate → apply → remove
+- `conexao-blog-translation` - activate → apply → remove
+- `conexao-job-translation` - activate → apply → remove
+- `conexao-leisure-translation` - activate → apply → remove
+- `conexao-guide-translation` - activate → apply → remove
+<!-- END GENERATED PLUGIN REGISTRY: docs/deployment.md activation order -->
+
 ## Environment Differences
 
 - **Local**: Full admin access, WP_DEBUG enabled, `WORDPRESS_DEBUG=1`

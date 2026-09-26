@@ -1,5 +1,20 @@
 # Conexão Admin UX
 
+<!-- BEGIN GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
+| | |
+|---|---|
+| **Status** | active |
+| **Class** | platform |
+| **Production** | yes |
+| **Build** | yes |
+| **Compose mount** | yes |
+| **Dependencies** | none |
+| **Version** | 1.0.6 (authoritative source: `wp-content/plugins/conexao-admin-ux/conexao-admin-ux.php` header) |
+| **Registry** | [`plugins.json`](../../plugins.json) |
+
+> **Production platform plugin.** Part of the production steady state.
+<!-- END GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
+
 - **Path**: `wp-content/plugins/conexao-admin-ux/`
 - **Version**: 1.0.6
 - **Purpose**: Professional, reusable CMS admin experience for all custom content types. Replaces generic meta boxes with structured sections, clear statuses, bulk actions, duplicate/archive workflows, dashboard summaries, and leisure image management.

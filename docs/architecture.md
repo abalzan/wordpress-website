@@ -32,14 +32,27 @@ compose.yaml
 
 ## Plugin Architecture
 
-Plugins must load in this dependency order:
+<!-- BEGIN GENERATED PLUGIN REGISTRY: docs/architecture.md plugin load order -->
+Generated from [`plugins.json`](../plugins.json) by `scripts/generate-registry-docs.php`.
+Plugins load in registry order, and dependencies always precede their dependents.
 
-1. **conexao-data-model** — Registers CPTs, taxonomies, meta fields. Other plugins depend on these types existing.
-2. **conexao-content** — Creates static pages and shortcodes. Depends on data-model types for grid shortcodes.
-3. **conexao-admin-ux** — Enhances admin UI for all supported types. Depends on data-model types.
-4. **conexao-event-runtime** — Production event runtime: event meta registration, the `conexao_town` taxonomy, the `_event_status` gate on public event queries, and the event status admin UI. Depends on the event CPT from data-model. **Required on production.**
-5. **conexao-event-importer** — Local-only event aggregation/import/export tooling. Depends on data-model and the event runtime (`Requires Plugins` header). **Never required on production.**
-6. **conexao-leisure-migration** — Leisure export/import. Can self-register leisure CPT if data-model is absent (fallback).
+1. **conexao-data-model** (`platform`, active) v1.6.0. **Required on production.**
+2. **conexao-content** (`platform`, active) v1.0.0. **Required on production.**
+3. **conexao-admin-ux** (`platform`, active) v1.0.6. **Required on production.**
+4. **conexao-event-runtime** (`platform`, active) v1.2.1. **Required on production.** Declared dependencies (`Requires Plugins` header): `conexao-data-model`.
+5. **conexao-event-importer** (`tooling`, active) v1.7.1. **Never required on production.** Declared dependencies (`Requires Plugins` header): `conexao-data-model`, `conexao-event-runtime`.
+6. **conexao-leisure-migration** (`tooling`, active) v2.1.0. **Never required on production.**
+7. **conexao-sponsor-migration** (`tooling`, active) v1.1.0. **Never required on production.**
+8. **conexao-page-translation** (`rollout`, retired) v1.0.0. Retired rollout tooling - *activate → apply → remove*. Not a production dependency.
+9. **conexao-blog-translation** (`rollout`, retired) v1.0.0. Retired rollout tooling - *activate → apply → remove*. Not a production dependency.
+10. **conexao-job-translation** (`rollout`, retired) v1.0.0. Retired rollout tooling - *activate → apply → remove*. Not a production dependency.
+11. **conexao-leisure-translation** (`rollout`, retired) v1.0.0. Retired rollout tooling - *activate → apply → remove*. Not a production dependency.
+12. **conexao-guide-translation** (`rollout`, retired) v1.0.0. Retired rollout tooling - *activate → apply → remove*. Not a production dependency.
+
+The authoritative registry is [`plugins.json`](../plugins.json): the load order, the
+production activation order, the release build list and the local Compose mount list are
+all derived from it by `scripts/generate-registry-docs.php`.
+<!-- END GENERATED PLUGIN REGISTRY: docs/architecture.md plugin load order -->
 
 ## Theme Architecture
 

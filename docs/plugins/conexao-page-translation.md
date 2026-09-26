@@ -1,5 +1,23 @@
 # Conexão BR Irlanda — EN Page Translation (Stage 4.5)
 
+<!-- BEGIN GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
+| | |
+|---|---|
+| **Status** | retired |
+| **Class** | rollout |
+| **Production** | no |
+| **Build** | no |
+| **Compose mount** | yes |
+| **Dependencies** | none |
+| **Version** | 1.0.0 (authoritative source: `wp-content/plugins/conexao-page-translation/conexao-page-translation.php` header) |
+| **Registry** | [`plugins.json`](../../plugins.json) |
+
+> **Lifecycle: activate → apply → remove.** This is a retired one-shot rollout plugin.
+> It is **not** a production steady-state dependency and is **not** included in a
+> release plugin ZIP. It is kept in the repository (and locally mounted) only so the
+> historical importer stays reproducible.
+<!-- END GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
+
 **Plugin:** `conexao-page-translation` · **Version:** 1.0.0 · **Scope:** WordPress website only (the Flutter app is frozen and out of scope).
 
 One-shot, auditable migration that creates the **linked English translation of every eligible public WordPress Page** through Polylang — the Stage 4.5 page rollout of the English architecture (`CONEXAO_BR_ENGLISH_ARCHITECTURE_DECISION.md`, Stages 1–4.3).

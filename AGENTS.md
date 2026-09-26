@@ -19,7 +19,7 @@ compose.yaml                      # Local Docker (WordPress + MySQL)
 docker/                           # Apache AllowOverride + permission entrypoint
 scripts/                          # WP-CLI/build/seed/migration scripts (PHP + bash)
 content-inventory/                # Wix migration inventory CSVs
-wp-content/plugins/               # 6 custom plugins (see below)
+wp-content/plugins/               # Custom plugins — inventory: plugins.json (see below)
 wp-content/themes/conexao-br-irlanda/  # Active theme (only theme)
 ```
 
@@ -27,20 +27,34 @@ wp-content/themes/conexao-br-irlanda/  # Active theme (only theme)
 
 All under `wp-content/plugins/`. Load order matters:
 
-| Plugin | Purpose | Docs |
-|---|---|---|
-| `conexao-data-model` | CPTs, taxonomies, meta | docs/plugins/conexao-data-model.md |
-| `conexao-content` | Static pages + shortcodes | docs/plugins/conexao-content.md |
-| `conexao-admin-ux` | Custom wp-admin UI + statuses | docs/plugins/conexao-admin-ux.md |
-| `conexao-event-runtime` | Production event runtime (event meta, `conexao_town`, `_event_status` gate, status admin UI, recurring-event model + evaluator + query helper) | docs/plugins/conexao-event-runtime.md |
-| `conexao-event-importer` | Local-only event import/export tooling (manual, no cron) | docs/plugins/conexao-event-importer.md |
-| `conexao-leisure-migration` | Lazer export/import (ZIP) | docs/plugins/conexao-leisure-migration.md |
-| `conexao-sponsor-migration` | Apoiadores export/import (JSON + embedded images) | docs/plugins/conexao-sponsor-migration.md |
-| `conexao-page-translation` | Stage 4.5 EN page-translation migration (admin importer; activate for the rollout, then remove) | docs/plugins/conexao-page-translation.md |
-| `conexao-blog-translation` | Stage 5 Blog EN translation (EN posts page + one linked EN post per public PT post; admin importer + WP-CLI runner; no frontend effect — activate for the rollout, then remove) | docs/plugins/conexao-blog-translation.md |
-| `conexao-job-translation` | Stage 6 Job EN translation (one linked EN `job` per eligible public PT job; verbatim `_job_*` meta + shared media; Jobs page pair verified, never created; admin importer + WP-CLI runner; no frontend effect — activate for the rollout, then remove) | docs/plugins/conexao-job-translation.md |
-| `conexao-leisure-translation` | Stage 7 EN Leisure card descriptions (one authored EN description per published PT `leisure` record, stored as `_leisure_excerpt_en` on the SAME record; slug-matched, PT-drift-guarded, uuid-safe, reversible; the theme renders it on `/en/lazer/` — activate for the rollout, then remove) | docs/plugins/conexao-leisure-translation.md |
-| `conexao-guide-translation` | Stage 9 EN Guide translation (one linked EN `guide` per eligible public PT guide + linked EN `conexao_category` terms; PT date/author/menu order preserved, body authored in English with the PT block structure; gate `eligible public PT guides missing EN = 0`; admin importer + local runner; no frontend effect — activate for the rollout, then remove) | docs/plugins/conexao-guide-translation.md |
+<!-- BEGIN GENERATED PLUGIN REGISTRY: AGENTS.md plugin inventory -->
+All custom plugins live in `wp-content/plugins/`. **Load order matters.**
+
+This table is generated from [`plugins.json`](../plugins.json) - the single
+authoritative registry. Edit the registry and run
+`php scripts/generate-registry-docs.php --write`; never hand-edit this table.
+
+| # | Plugin | Class | Status | Production | Build | Compose mount | Documentation |
+|---|--------|-------|--------|------------|-------|---------------|---------------|
+| 1 | `conexao-data-model` | platform | active | yes | yes | yes | `docs/plugins/conexao-data-model.md` |
+| 2 | `conexao-content` | platform | active | yes | yes | yes | `docs/plugins/conexao-content.md` |
+| 3 | `conexao-admin-ux` | platform | active | yes | yes | yes | `docs/plugins/conexao-admin-ux.md` |
+| 4 | `conexao-event-runtime` | platform | active | yes | yes | yes | `docs/plugins/conexao-event-runtime.md` |
+| 5 | `conexao-event-importer` | tooling | active | no | yes | yes | `docs/plugins/conexao-event-importer.md` |
+| 6 | `conexao-leisure-migration` | tooling | active | no | yes | yes | `docs/plugins/conexao-leisure-migration.md` |
+| 7 | `conexao-sponsor-migration` | tooling | active | no | yes | yes | `docs/plugins/conexao-sponsor-migration.md` |
+| 8 | `conexao-page-translation` | rollout | retired | no | no | yes | `docs/plugins/conexao-page-translation.md` |
+| 9 | `conexao-blog-translation` | rollout | retired | no | no | yes | `docs/plugins/conexao-blog-translation.md` |
+| 10 | `conexao-job-translation` | rollout | retired | no | no | yes | `docs/plugins/conexao-job-translation.md` |
+| 11 | `conexao-leisure-translation` | rollout | retired | no | no | yes | `docs/plugins/conexao-leisure-translation.md` |
+| 12 | `conexao-guide-translation` | rollout | retired | no | no | yes | `docs/plugins/conexao-guide-translation.md` |
+
+**Production steady state** (platform, `production: true`) - activate in this order: conexao-data-model -> conexao-content -> conexao-admin-ux -> conexao-event-runtime.
+
+**Local-only tooling** (never production): conexao-event-importer, conexao-leisure-migration, conexao-sponsor-migration.
+
+**Retired rollout plugins** (historical tooling, *activate → apply → remove*; not a production dependency and not in any release ZIP): conexao-page-translation, conexao-blog-translation, conexao-job-translation, conexao-leisure-translation, conexao-guide-translation.
+<!-- END GENERATED PLUGIN REGISTRY: AGENTS.md plugin inventory -->
 
 ## Theme
 
@@ -107,6 +121,7 @@ See docs/routing.md.
 | SEO/redirects/sitemap | theme `inc/seo/` (see `redirects.php`, `sitemap.php`) |
 | Language policy (Polylang) | theme `inc/i18n/` |
 | Deploy/build ZIPs | docs/deployment.md, scripts/ |
+| Plugin registry / lifecycle / load order | `plugins.json` (authoritative), `php scripts/generate-registry-docs.php --check` |
 
 ## Running the project
 
@@ -150,5 +165,6 @@ Task → Read first
 
 - **New work must follow `docs/engineering-standard.md`** (it is mandatory for new plugins, scripts, tests, migrations and docs). Existing code is grandfathered until that standard's adoption stages land.
 - New plugin / content type / route / deployment mechanism → update the relevant docs in the same change.
+- **Plugin lifecycle rule:** `plugins.json` is the single source of truth for plugin load order, dependencies, production activation order, release build inclusion and local Compose mounts. Edit it, then run `php scripts/generate-registry-docs.php --write`. Never hand-edit a region marked `GENERATED PLUGIN REGISTRY`, and never add a second plugin list. `--check` is a blocking CI gate.
 - Plugin docs owned by plugin maintainers; theme docs by theme maintainers; architecture/README by the project maintainer.
 - Keep AGENTS.md short. Put depth in `docs/`.

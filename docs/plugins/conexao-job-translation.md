@@ -1,5 +1,23 @@
 # conexao-job-translation
 
+<!-- BEGIN GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
+| | |
+|---|---|
+| **Status** | retired |
+| **Class** | rollout |
+| **Production** | no |
+| **Build** | no |
+| **Compose mount** | yes |
+| **Dependencies** | none |
+| **Version** | 1.0.0 (authoritative source: `wp-content/plugins/conexao-job-translation/conexao-job-translation.php` header) |
+| **Registry** | [`plugins.json`](../../plugins.json) |
+
+> **Lifecycle: activate → apply → remove.** This is a retired one-shot rollout plugin.
+> It is **not** a production steady-state dependency and is **not** included in a
+> release plugin ZIP. It is kept in the repository (and locally mounted) only so the
+> historical importer stays reproducible.
+<!-- END GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
+
 **Purpose:** turn the Job CPT from the approved **B2 fallback** (`/en/empregos/{pt-slug}/`
 rendering the Portuguese record under the English URL + notice) into a **real
 English translation**: exactly one linked EN translation per eligible public

@@ -1,5 +1,20 @@
 # Conexão BR Irlanda — Event Runtime
 
+<!-- BEGIN GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
+| | |
+|---|---|
+| **Status** | active |
+| **Class** | platform |
+| **Production** | yes |
+| **Build** | yes |
+| **Compose mount** | yes |
+| **Dependencies** | `conexao-data-model` |
+| **Version** | 1.2.1 (authoritative source: `wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php` header) |
+| **Registry** | [`plugins.json`](../../plugins.json) |
+
+> **Production platform plugin.** Part of the production steady state.
+<!-- END GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
+
 - **Path**: `wp-content/plugins/conexao-event-runtime/`
 - **Version**: 1.2.1
 - **Requires Plugins**: `conexao-data-model`

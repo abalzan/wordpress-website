@@ -1,5 +1,20 @@
 # Conexão BR Irlanda — Event Importer (Local Tools)
 
+<!-- BEGIN GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
+| | |
+|---|---|
+| **Status** | active |
+| **Class** | tooling |
+| **Production** | no |
+| **Build** | yes |
+| **Compose mount** | yes |
+| **Dependencies** | `conexao-data-model`, `conexao-event-runtime` |
+| **Version** | 1.7.1 (authoritative source: `wp-content/plugins/conexao-event-importer/conexao-event-importer.php` header) |
+| **Registry** | [`plugins.json`](../../plugins.json) |
+
+> **Local-only tooling.** Not a production steady-state dependency.
+<!-- END GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
+
 - **Path**: `wp-content/plugins/conexao-event-importer/`
 - **Version**: 1.7.1
 - **Requires Plugins**: `conexao-data-model`, `conexao-event-runtime`

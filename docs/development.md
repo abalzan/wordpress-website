@@ -238,7 +238,7 @@ docker compose exec wordpress wp user list
 1. All custom plugins are in `wp-content/plugins/conexao-*`.
 2. When adding meta fields, register them via `register_post_meta()`.
 3. When adding CPTs/taxonomies, add them to `conexao-data-model`.
-4. Follow the plugin load order: data-model → content → admin-ux → event-importer → leisure-migration.
+4. Follow the plugin load order in `plugins.json` (the authoritative registry).
 
 ## Testing Responsive Behavior
 

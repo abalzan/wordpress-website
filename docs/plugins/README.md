@@ -1,47 +1,74 @@
 # Plugins
 
-This project contains 10 custom WordPress plugins. All are in `wp-content/plugins/`.
+<!-- BEGIN GENERATED PLUGIN REGISTRY: docs/plugins/README.md load order -->
+This project contains **12 custom WordPress plugins**, all in
+`wp-content/plugins/`. The authoritative registry is [`plugins.json`](../../plugins.json);
+the tables below are generated from it by `scripts/generate-registry-docs.php` and must
+not be hand-edited.
 
-## Plugin Inventory
+## Load order and lifecycle
 
-| Plugin | Path | Version | Purpose | Docs |
-|--------|------|---------|---------|------|
-| conexao-data-model | `wp-content/plugins/conexao-data-model/` | 1.3.0 | CPTs, taxonomies, editorial meta | conexao-data-model.md |
-| conexao-content | `wp-content/plugins/conexao-content/` | 1.0.0 | Static pages, shortcodes | conexao-content.md |
-| conexao-admin-ux | `wp-content/plugins/conexao-admin-ux/` | 1.0.0 | Custom admin UI, statuses, bulk actions | conexao-admin-ux.md |
-| conexao-event-runtime | `wp-content/plugins/conexao-event-runtime/` | 1.0.0 | **Production** event runtime: event meta, `conexao_town`, `_event_status` gate, status admin UI | conexao-event-runtime.md |
-| conexao-event-importer | `wp-content/plugins/conexao-event-importer/` | 1.5.0 | Local-only event import + export to production (manual, no cron) | conexao-event-importer.md |
-| conexao-leisure-migration | `wp-content/plugins/conexao-leisure-migration/` | 2.0.0 | Lazer ZIP export/import with images | conexao-leisure-migration.md |
-| conexao-sponsor-migration | `wp-content/plugins/conexao-sponsor-migration/` | 1.0.0 | Apoiadores JSON export/import with embedded Desktop/Mobile images | conexao-sponsor-migration.md |
-| conexao-page-translation | `wp-content/plugins/conexao-page-translation/` | 1.0.0 | Stage 4.5 EN page-translation migration (admin importer; Polylang-linked pages; PT originals never modified) | conexao-page-translation.md |
-| conexao-blog-translation | `wp-content/plugins/conexao-blog-translation/` | 1.0.0 | Stage 5 Blog EN translation (linked EN posts page + one linked EN translation per public PT post; PT originals never modified; no frontend effect) | conexao-blog-translation.md |
-| conexao-job-translation | `wp-content/plugins/conexao-job-translation/` | 1.0.0 | Stage 6 Job EN translation (one linked EN `job` per eligible public PT job; verbatim `_job_*` meta + shared media; Jobs page pair verified, never created; admin importer + WP-CLI runner; no frontend effect) | conexao-job-translation.md |
-| conexao-leisure-translation | `wp-content/plugins/conexao-leisure-translation/` | 1.0.0 | Stage 7 EN Leisure card descriptions (one authored EN description per published PT `leisure` record, stored as `_leisure_excerpt_en` on the SAME record — no duplicate records, no UUID changes, PT-drift-guarded, reversible; rendered by the theme on `/en/lazer/`) | conexao-leisure-translation.md |
-| conexao-guide-translation | `wp-content/plugins/conexao-guide-translation/` | 1.0.0 | Stage 9 EN Guide translation (one linked EN `guide` per eligible public PT guide + linked EN `conexao_category` terms; PT date/author/menu order preserved, body authored in English with the PT block structure; PT originals never modified; admin importer + local runner; no frontend effect) | conexao-guide-translation.md |
+Load order is the row order. Dependencies always precede their dependents.
 
-## Load Order
+| # | Plugin | Class | Status | Production | Build | Mount | Dependencies | Version | Docs |
+|---|--------|-------|--------|------------|-------|-------|--------------|---------|------|
+| 1 | `conexao-data-model` | platform | active | yes | yes | yes | - | 1.6.0 | [conexao-data-model](./conexao-data-model.md) |
+| 2 | `conexao-content` | platform | active | yes | yes | yes | - | 1.0.0 | [conexao-content](./conexao-content.md) |
+| 3 | `conexao-admin-ux` | platform | active | yes | yes | yes | - | 1.0.6 | [conexao-admin-ux](./conexao-admin-ux.md) |
+| 4 | `conexao-event-runtime` | platform | active | yes | yes | yes | `conexao-data-model` | 1.2.1 | [conexao-event-runtime](./conexao-event-runtime.md) |
+| 5 | `conexao-event-importer` | tooling | active | no | yes | yes | `conexao-data-model`, `conexao-event-runtime` | 1.7.1 | [conexao-event-importer](./conexao-event-importer.md) |
+| 6 | `conexao-leisure-migration` | tooling | active | no | yes | yes | - | 2.1.0 | [conexao-leisure-migration](./conexao-leisure-migration.md) |
+| 7 | `conexao-sponsor-migration` | tooling | active | no | yes | yes | - | 1.1.0 | [conexao-sponsor-migration](./conexao-sponsor-migration.md) |
+| 8 | `conexao-page-translation` | rollout | retired | no | no | yes | - | 1.0.0 | [conexao-page-translation](./conexao-page-translation.md) |
+| 9 | `conexao-blog-translation` | rollout | retired | no | no | yes | - | 1.0.0 | [conexao-blog-translation](./conexao-blog-translation.md) |
+| 10 | `conexao-job-translation` | rollout | retired | no | no | yes | - | 1.0.0 | [conexao-job-translation](./conexao-job-translation.md) |
+| 11 | `conexao-leisure-translation` | rollout | retired | no | no | yes | - | 1.0.0 | [conexao-leisure-translation](./conexao-leisure-translation.md) |
+| 12 | `conexao-guide-translation` | rollout | retired | no | no | yes | - | 1.0.0 | [conexao-guide-translation](./conexao-guide-translation.md) |
 
-Plugins must be activated in this order (dependencies first):
+**Production steady state** (platform, `production: true`) - activate in this order: conexao-data-model -> conexao-content -> conexao-admin-ux -> conexao-event-runtime.
 
-1. `conexao-data-model`
-2. `conexao-content`
-3. `conexao-admin-ux`
-4. `conexao-event-runtime`
-5. `conexao-event-importer` *(local tooling only — not needed on production)*
-6. `conexao-leisure-migration`
-7. `conexao-sponsor-migration`
-8. `conexao-page-translation` *(migration tooling — activate for the Stage 4.5 rollout, then deactivate/remove)*
-9. `conexao-blog-translation` *(migration tooling — activate for the Stage 5 Blog rollout, then deactivate/remove)*
-10. `conexao-job-translation` *(migration tooling — activate for the Stage 6 Jobs rollout, then deactivate/remove)*
-11. `conexao-leisure-translation` *(migration tooling — activate for the Stage 7 Leisure-description rollout, then deactivate/remove; no frontend effect)*
-12. `conexao-guide-translation` *(migration tooling — activate for the Stage 9 Guides rollout, then deactivate/remove; no frontend effect)*
+**Local-only tooling** (never production): conexao-event-importer, conexao-leisure-migration, conexao-sponsor-migration.
 
-`conexao-event-importer` declares `Requires Plugins: conexao-data-model, conexao-event-runtime`,
-so WordPress refuses to activate it (and keeps it from running) without the runtime plugin.
+**Retired rollout plugins** (historical tooling, *activate → apply → remove*; not a production dependency and not in any release ZIP): conexao-page-translation, conexao-blog-translation, conexao-job-translation, conexao-leisure-translation, conexao-guide-translation.
+
+### Dependency evidence
+
+Dependencies are **not** inferred. They are read from the plugins' own
+`Requires Plugins:` headers, and the generator fails when the registry and the headers
+disagree. Only these headers declare a dependency today:
+
+- `conexao-event-runtime` -> `Requires Plugins: conexao-data-model`
+- `conexao-event-importer` -> `Requires Plugins: conexao-data-model, conexao-event-runtime`
+
+WordPress therefore refuses to activate `conexao-event-importer` (and keeps it from
+running) without the event runtime plugin.
+
+### Lifecycle vocabulary
+
+| Term | Meaning |
+|------|---------|
+| `class: platform` | Production runtime the site depends on. |
+| `class: tooling` | Local-only operational tooling. Never a production dependency. |
+| `class: rollout` | One-shot English-rollout plugin. **Retired** - documented as *activate → apply → remove*. Not a production dependency, never in a release ZIP. |
+| `status: active` | In the current lifecycle. |
+| `status: retired` | Rollout already applied; kept for history only. |
+| `production: true` | Part of the production steady state (activation order). |
+| `build: true` | Included in release plugin ZIPs by `scripts/build-plugins-zip.sh`. |
+| `mount: true` | Bind-mounted locally by `compose.yaml`. Local development only; it never implies production activation. |
 
 ## Third-Party Plugins
 
-No third-party plugins are bundled in this repository. The project relies only on these 10 custom plugins and core WordPress functionality (plus Polylang Free 3.8.9 for the English layer — see `CONEXAO_BR_ENGLISH_ARCHITECTURE_DECISION.md`).
+No third-party plugins are bundled in this repository. The project relies only on these
+12 custom plugins and core WordPress functionality (plus Polylang Free 3.8.9 for the
+English layer).
+
+## Regenerating this page
+
+```bash
+php scripts/generate-registry-docs.php --check   # validate + drift gate (zero writes)
+php scripts/generate-registry-docs.php --write   # write generated regions
+```
+<!-- END GENERATED PLUGIN REGISTRY: docs/plugins/README.md load order -->
 
 ## Building
 
@@ -49,4 +76,6 @@ No third-party plugins are bundled in this repository. The project relies only o
 ./scripts/build-plugins-zip.sh
 ```
 
-Output: `dist/*.zip` — one ZIP per plugin, structured for WordPress plugin upload.
+Output: `dist/*.zip` — one ZIP per registry entry with `build: true`, each
+structured for WordPress plugin upload. The list is generated from
+`plugins.json`; retired rollout plugins are never packaged.
