@@ -23,45 +23,21 @@
  *   docker compose exec wordpress php /var/www/html/wp-content/plugins/conexao-leisure-migration/tests/test-language-uuid.php
  */
 
-$wp_load = dirname( dirname( dirname( dirname( __DIR__ ) ) ) ) . '/wp-load.php';
 
 // Deterministic request context for Polylang in a CLI process.
-$_SERVER['HTTP_HOST']   = $_SERVER['HTTP_HOST'] ?? 'localhost';
-$_SERVER['REQUEST_URI'] = $_SERVER['REQUEST_URI'] ?? '/';
 
-if ( file_exists( $wp_load ) ) {
-	require_once $wp_load;
-} else {
-	require_once '/var/www/html/wp-load.php';
-}
+// Shared Stage E test bootstrap: the only place allowed to locate wp-load.php.
+require_once dirname( __DIR__, 4 ) . '/tests/bootstrap.php';
 
 $passed  = 0;
 $failed  = 0;
 $created = array();
 
-function uuid_assert( $condition, $message ) {
-	global $passed, $failed;
-	if ( $condition ) {
-		$passed++;
-		echo "  PASS: {$message}\n";
-	} else {
-		$failed++;
-		echo "  FAIL: {$message}\n";
-	}
-}
 
-echo "== Stage 2 — Lazer UUID × language ==\n";
-
-if ( ! function_exists( 'pll_set_post_language' ) ) {
-	echo "  SKIP: Polylang is not active in this environment.\n";
-	exit( 0 );
-}
-
-if ( ! class_exists( 'Conexao_Lazer_Importer' ) ) {
-	echo "  SKIP: the Lazer migration plugin is not active in this environment.\n";
-	exit( 0 );
-}
-
+test_prerequisite_hint( 'polylang' );
+test_require( function_exists( 'pll_set_post_language' ), 'polylang', 'test prerequisite is available: function_exists( pll_set_post_language )', 'activate the Polylang plugin (docker compose exec wordpress wp plugin activate polylang)' );
+test_prerequisite_hint( 'activate-plugin:conexao-leisure-migration' );
+test_require( class_exists( 'Conexao_Lazer_Importer' ), 'activate-plugin:conexao-leisure-migration', 'test prerequisite is available: class_exists( Conexao_Lazer_Importer )', 'activate the conexao-leisure-migration plugin' );
 $uuid = 'stage2-lazer-uuid-0001';
 
 // The language guard hooks save_post_leisure: creating the record through the
@@ -84,8 +60,8 @@ if ( is_wp_error( $pt_id ) ) {
 $created[] = (int) $pt_id;
 update_post_meta( $pt_id, Conexao_Lazer_Exporter::UUID_META_KEY, $uuid );
 
-uuid_assert( 'pt' === pll_get_post_language( $pt_id, 'slug' ), 'migration language guard assigned pt to the imported Lazer record' );
-uuid_assert( $uuid === (string) get_post_meta( $pt_id, Conexao_Lazer_Exporter::UUID_META_KEY, true ), 'the export UUID is stored unchanged' );
+assert_true( 'pt' === pll_get_post_language( $pt_id, 'slug' ), 'migration language guard assigned pt to the imported Lazer record' );
+assert_true( $uuid === (string) get_post_meta( $pt_id, Conexao_Lazer_Exporter::UUID_META_KEY, true ), 'the export UUID is stored unchanged' );
 
 $external_before = conexao_leisure_external_url( $pt_id );
 
@@ -112,12 +88,12 @@ update_post_meta( $en_id, Conexao_Lazer_Exporter::UUID_META_KEY, $uuid );
 
 // Saving the translation again must not move it into the default language.
 do_action( 'save_post_leisure', (int) $en_id, get_post( $en_id ), true );
-uuid_assert( 'en' === pll_get_post_language( (int) $en_id, 'slug' ), 'language guard never reassigns an existing translation' );
+assert_true( 'en' === pll_get_post_language( (int) $en_id, 'slug' ), 'language guard never reassigns an existing translation' );
 
-uuid_assert( $uuid === (string) get_post_meta( (int) $en_id, Conexao_Lazer_Exporter::UUID_META_KEY, true ), 'the translation shares the UUID verbatim (no new UUID)' );
+assert_true( $uuid === (string) get_post_meta( (int) $en_id, Conexao_Lazer_Exporter::UUID_META_KEY, true ), 'the translation shares the UUID verbatim (no new UUID)' );
 
 $translations = pll_get_post_translations( $pt_id );
-uuid_assert( isset( $translations['pt'], $translations['en'] ), 'translation group links the PT master and EN translation' );
+assert_true( isset( $translations['pt'], $translations['en'] ), 'translation group links the PT master and EN translation' );
 
 // --- No duplicate UUID / no competing import target. ---------------------
 $importer     = new Conexao_Lazer_Importer();
@@ -125,7 +101,7 @@ $find_by_uuid = new ReflectionMethod( 'Conexao_Lazer_Importer', 'find_by_uuid' )
 $find_by_uuid->setAccessible( true );
 
 $resolved = $find_by_uuid->invoke( $importer, $uuid );
-uuid_assert( $pt_id === $resolved, "UUID matching resolves the Portuguese master (#{$resolved})" );
+assert_true( $pt_id === $resolved, "UUID matching resolves the Portuguese master (#{$resolved})" );
 
 $count_uuid = static function ( $lang ) use ( $uuid ) {
 	return count(
@@ -147,15 +123,15 @@ $count_uuid = static function ( $lang ) use ( $uuid ) {
 	);
 };
 
-uuid_assert( 1 === $count_uuid( 'pt' ), 'exactly one record carries the UUID in the import language' );
-uuid_assert( 1 === $count_uuid( 'en' ), 'exactly one English translation carries the UUID (none orphaned)' );
-uuid_assert( 2 === $count_uuid( '' ), 'across all languages the UUID exists exactly twice: master + translation' );
+assert_true( 1 === $count_uuid( 'pt' ), 'exactly one record carries the UUID in the import language' );
+assert_true( 1 === $count_uuid( 'en' ), 'exactly one English translation carries the UUID (none orphaned)' );
+assert_true( 2 === $count_uuid( '' ), 'across all languages the UUID exists exactly twice: master + translation' );
 
 // --- The importer refuses to write to the translation. -------------------
 $is_target = new ReflectionMethod( 'Conexao_Lazer_Importer', 'is_import_target' );
 $is_target->setAccessible( true );
-uuid_assert( true === $is_target->invoke( $importer, $pt_id ), 'PT master is a valid Lazer import target' );
-uuid_assert( false === $is_target->invoke( $importer, (int) $en_id ), 'EN translation is NOT a Lazer import target' );
+assert_true( true === $is_target->invoke( $importer, $pt_id ), 'PT master is a valid Lazer import target' );
+assert_true( false === $is_target->invoke( $importer, (int) $en_id ), 'EN translation is NOT a Lazer import target' );
 
 $update_item = new ReflectionMethod( 'Conexao_Lazer_Importer', 'update_item' );
 $update_item->setAccessible( true );
@@ -178,16 +154,15 @@ $result = $update_item->invokeArgs(
 	array( (int) $en_id, $item, '', 'Test Destination', &$stats )
 );
 
-uuid_assert( is_wp_error( $result ), 'the Lazer importer refuses to update a translation (returns WP_Error)' );
-uuid_assert( $en_content_before === get_post_field( 'post_content', $en_id ), 'translated Lazer content is untouched by the refused import' );
+assert_true( is_wp_error( $result ), 'the Lazer importer refuses to update a translation (returns WP_Error)' );
+assert_true( $en_content_before === get_post_field( 'post_content', $en_id ), 'translated Lazer content is untouched by the refused import' );
 
 // --- External-resource classification is unchanged. ----------------------
-uuid_assert( $external_before === conexao_leisure_external_url( $pt_id ), 'external-resource classification unchanged by the language layer' );
+assert_true( $external_before === conexao_leisure_external_url( $pt_id ), 'external-resource classification unchanged by the language layer' );
 
 // --- Cleanup -------------------------------------------------------------
 foreach ( array_unique( $created ) as $post_id ) {
 	wp_delete_post( (int) $post_id, true );
 }
 
-echo "\nLazer UUID gate: {$passed} passed, {$failed} failed\n";
-exit( $failed > 0 ? 1 : 0 );
+test_finish();

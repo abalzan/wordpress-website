@@ -3,6 +3,9 @@
  * Regression test -- reappearing-event lifecycle (Events Expansion C2 blocker).
  * Proves BOTH sides of the fix.
  */
+// Shared Stage E test bootstrap: the only place allowed to locate wp-load.php.
+require_once dirname( __DIR__, 4 ) . '/tests/bootstrap.php';
+
 set_time_limit( 0 );
 
 // WP-CLI already bootstraps WordPress; only a plain PHP invocation needs
@@ -10,7 +13,6 @@ set_time_limit( 0 );
 // constants). `wp eval-file` additionally passes positional args in $args
 // instead of $argv, so read both.
 if ( ! defined( 'WPINC' ) ) {
-	require '/var/www/html/wp-load.php';
 }
 require_once WP_PLUGIN_DIR . '/conexao-event-importer/conexao-event-importer.php';
 
@@ -37,12 +39,6 @@ if ( false !== strpos( $explicit, 'cleanup-only' ) ) {
 $source_slug = 'c2_lifecycle_test';
 $run_token   = substr( md5( uniqid( 'c2-lifecycle', true ) ), 0, 10 );
 $fail        = 0;
-
-function lc_ok( $label, $cond, $detail = '' ) {
-	global $fail;
-	echo ( $cond ? '[ OK ] ' : '[FAIL] ' ) . $label . ( '' !== $detail ? ' -- ' . $detail : '' ) . "\n";
-	if ( ! $cond ) { $fail++; }
-}
 
 function lc_cleanup( $source_slug ) {
 	global $wpdb;
@@ -142,7 +138,7 @@ if ( $public_mode ) {
 	$normalized = lc_normalized( $source_slug, $sid, $url, 'C2 Public-Hide Test Event', '2027-01-15', '10:00' );
 	$pid        = lc_make_snf( $normalized );
 
-	lc_ok( 'test event created and marked source_not_found', get_post( $pid ) instanceof WP_Post, 'id=' . $pid );
+	assert_true( get_post( $pid ) instanceof WP_Post, 'test event created and marked source_not_found', 'id=' . $pid );
 
 	$q = new WP_Query( array(
 		'post_type'      => 'event',
@@ -155,14 +151,14 @@ if ( $public_mode ) {
 			array( 'key' => '_event_source_id', 'value' => $sid ),
 		),
 	) );
-	lc_ok( 'public WP_Query hides source_not_found event', ! in_array( (int) $pid, array_map( 'intval', $q->posts ), true ), 'ids=' . wp_json_encode( $q->posts ) );
+	assert_true( ! in_array( (int) $pid, array_map( 'intval', $q->posts ), true ), 'public WP_Query hides source_not_found event', 'ids=' . wp_json_encode( $q->posts ) );
 
-	lc_ok( 'public deduplicator does not match source_not_found event', 0 === $dedup->find( $normalized ) );
+	assert_true( 0 === $dedup->find( $normalized ), 'public deduplicator does not match source_not_found event');
 
 	$all = new WP_Query( array( 'post_type' => 'event', 'post_status' => 'publish', 'posts_per_page' => -1, 'fields' => 'ids', 'no_found_rows' => true ) );
-	lc_ok( 'public archive query excludes source_not_found event', ! in_array( (int) $pid, array_map( 'intval', $all->posts ), true ) );
+	assert_true( ! in_array( (int) $pid, array_map( 'intval', $all->posts ), true ), 'public archive query excludes source_not_found event');
 
-	lc_ok( 'event still exists in DB (hidden by gate, not deleted)', get_post( $pid ) && 'source_not_found' === Conexao_Event_Status::get_status( $pid ) );
+	assert_true( get_post( $pid ) && 'source_not_found' === Conexao_Event_Status::get_status( $pid ), 'event still exists in DB (hidden by gate, not deleted)');
 
 	lc_cleanup( $source_slug );
 }
@@ -179,16 +175,16 @@ if ( $cli_mode ) {
 	$nA   = lc_normalized( $source_slug, $sidA, $urlA, 'C2 Reappearing Unchanged Test', '2027-01-15', '10:00' );
 	$pidA = lc_make_snf( $nA );
 
-	lc_ok( 'CLI: SNF event exists (unchanged scenario)', get_post( $pidA ) && 'source_not_found' === Conexao_Event_Status::get_status( $pidA ), 'id=' . $pidA );
+	assert_true( get_post( $pidA ) && 'source_not_found' === Conexao_Event_Status::get_status( $pidA ), 'CLI: SNF event exists (unchanged scenario)', 'id=' . $pidA );
 
 	$foundA = (int) $dedup->find( $nA );
-	lc_ok( 'CLI: deduplicator finds source_not_found event', $foundA === (int) $pidA, 'found=' . var_export( $foundA, true ) );
+	assert_true( $foundA === (int) $pidA, 'CLI: deduplicator finds source_not_found event', 'found=' . var_export( $foundA, true ) );
 
 	$resA = $upsert->invoke( $engine, $nA, $foundA );
-	lc_ok( 'CLI: upsert matched the existing event (no creation)', isset( $resA['post_id'] ) && (int) $resA['post_id'] === (int) $pidA, wp_json_encode( $resA ) );
-	lc_ok( 'CLI: unchanged scenario — no duplicate (identity count = 1)', 1 === lc_count_identity( $source_slug, $sidA ) );
-	lc_ok( 'CLI: unchanged event restored to published', 'published' === Conexao_Event_Status::get_status( $pidA ) );
-	lc_ok( 'CLI: source identity unchanged', $source_slug === get_post_meta( $pidA, '_event_source', true ) && $sidA === get_post_meta( $pidA, '_event_source_id', true ) );
+	assert_true( isset( $resA['post_id'] ) && (int) $resA['post_id'] === (int) $pidA, 'CLI: upsert matched the existing event (no creation)', wp_json_encode( $resA ) );
+	assert_true( 1 === lc_count_identity( $source_slug, $sidA ), 'CLI: unchanged scenario — no duplicate (identity count = 1)');
+	assert_true( 'published' === Conexao_Event_Status::get_status( $pidA ), 'CLI: unchanged event restored to published');
+	assert_true( $source_slug === get_post_meta( $pidA, '_event_source', true ) && $sidA === get_post_meta( $pidA, '_event_source_id', true ), 'CLI: source identity unchanged');
 
 	// ---- Scenario B: reappearing event with CHANGED data (title) ----
 	$sidB = 'reappear-changed-' . $run;
@@ -197,14 +193,14 @@ if ( $cli_mode ) {
 	$pidB = lc_make_snf( $nB );
 
 	$foundB = (int) $dedup->find( $nB );
-	lc_ok( 'CLI: deduplicator finds second source_not_found event', $foundB === (int) $pidB, 'found=' . var_export( $foundB, true ) );
+	assert_true( $foundB === (int) $pidB, 'CLI: deduplicator finds second source_not_found event', 'found=' . var_export( $foundB, true ) );
 
 	$nB2 = $nB; $nB2['title'] = 'C2 Reappearing Changed Test (updated title)';
 	$resB = $upsert->invoke( $engine, $nB2, $foundB );
-	lc_ok( 'CLI: changed event updated (not created)', isset( $resB['post_id'] ) && (int) $resB['post_id'] === (int) $pidB && 'updated' === $resB['action'], wp_json_encode( $resB ) );
-	lc_ok( 'CLI: changed scenario — no duplicate (identity count = 1)', 1 === lc_count_identity( $source_slug, $sidB ) );
-	lc_ok( 'CLI: changed event restored to published', 'published' === Conexao_Event_Status::get_status( $pidB ) );
-	lc_ok( 'CLI: updated title persisted', 'C2 Reappearing Changed Test (updated title)' === get_post_field( 'post_title', $pidB ) );
+	assert_true( isset( $resB['post_id'] ) && (int) $resB['post_id'] === (int) $pidB && 'updated' === $resB['action'], 'CLI: changed event updated (not created)', wp_json_encode( $resB ) );
+	assert_true( 1 === lc_count_identity( $source_slug, $sidB ), 'CLI: changed scenario — no duplicate (identity count = 1)');
+	assert_true( 'published' === Conexao_Event_Status::get_status( $pidB ), 'CLI: changed event restored to published');
+	assert_true( 'C2 Reappearing Changed Test (updated title)' === get_post_field( 'post_title', $pidB ), 'CLI: updated title persisted');
 
 // ---- Scenario C: full lifecycle A->B->D->E->F->G->H (task section 10) ----
 	// Step C ("public query hides it") is covered by the PUBLIC phase of this
@@ -219,22 +215,23 @@ if ( $cli_mode ) {
 	update_post_meta( $pidC, '_event_url', $nC['source_url'] );
 	update_post_meta( $pidC, '_event_source_url', $nC['source_url'] );
 	Conexao_Event_Status::set_status( $pidC, Conexao_Event_Status::PUBLISHED ); // A: published
-	lc_ok( 'C: (A) event is published', 'published' === Conexao_Event_Status::get_status( $pidC ) );
+	assert_true( 'published' === Conexao_Event_Status::get_status( $pidC ), 'C: (A) event is published');
 
 	Conexao_Event_Status::set_status( $pidC, Conexao_Event_Status::SOURCE_NOT_FOUND ); // B: disappears
-	lc_ok( 'C: (B) event now source_not_found', 'source_not_found' === Conexao_Event_Status::get_status( $pidC ) );
+	assert_true( 'source_not_found' === Conexao_Event_Status::get_status( $pidC ), 'C: (B) event now source_not_found');
 
 	$foundC = (int) $dedup->find( $nC ); // D: internal importer lookup must still find it
-	lc_ok( 'C: (D) internal importer lookup finds source_not_found event', $foundC === (int) $pidC, 'found=' . var_export( $foundC, true ) );
+	assert_true( $foundC === (int) $pidC, 'C: (D) internal importer lookup finds source_not_found event', 'found=' . var_export( $foundC, true ) );
 
 	$resC = $upsert->invoke( $engine, $nC, $foundC ); // E: source import runs again with event present
-	lc_ok( 'C: (E/F) existing event matched and restored to published', isset( $resC['post_id'] ) && (int) $resC['post_id'] === (int) $pidC && 'published' === Conexao_Event_Status::get_status( $pidC ), wp_json_encode( $resC ) );
-	lc_ok( 'C: (G) created count = 0 for this event', 'created' !== ( $resC['action'] ?? '' ) );
-	lc_ok( 'C: (H) no duplicate exists (identity count = 1)', 1 === lc_count_identity( $source_slug, $sidC ) );
-	lc_ok( 'C: source identity unchanged', $source_slug === get_post_meta( $pidC, '_event_source', true ) && $sidC === get_post_meta( $pidC, '_event_source_id', true ) );
+	assert_true( isset( $resC['post_id'] ) && (int) $resC['post_id'] === (int) $pidC && 'published' === Conexao_Event_Status::get_status( $pidC ), 'C: (E/F) existing event matched and restored to published', wp_json_encode( $resC ) );
+	assert_true( 'created' !== ( $resC['action'] ?? '' ), 'C: (G) created count = 0 for this event');
+	assert_true( 1 === lc_count_identity( $source_slug, $sidC ), 'C: (H) no duplicate exists (identity count = 1)');
+	assert_true( $source_slug === get_post_meta( $pidC, '_event_source', true ) && $sidC === get_post_meta( $pidC, '_event_source_id', true ), 'C: source identity unchanged');
 
 	lc_cleanup( $source_slug );
 }
 
 echo 'REAPPEARING-EVENT LIFECYCLE: ' . ( 0 === $fail ? 'ALL PASS (0 failures)' : $fail . ' FAILURE(S)' ) . PHP_EOL;
-exit( 0 === $fail ? 0 : 1 );
+
+test_finish();

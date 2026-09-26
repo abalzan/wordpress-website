@@ -32,24 +32,11 @@
  * @package conexao-br-irlanda
  */
 
-$_SERVER['HTTP_HOST']   = $_SERVER['HTTP_HOST'] ?? 'localhost';
-$_SERVER['REQUEST_URI'] = $_SERVER['REQUEST_URI'] ?? '/';
-
 // Works both standalone (php <this-file> from anywhere) and via `wp eval-file`
 // (where WordPress is already loaded).
-if ( ! defined( 'ABSPATH' ) ) {
-	$candidates = array(
-		dirname( dirname( dirname( dirname( __DIR__ ) ) ) ) . '/wp-load.php', // theme inside a WP install.
-		rtrim( (string) getcwd(), '/' ) . '/wp-load.php',                     // run from the WP root.
-		'/var/www/html/wp-load.php',                                          // local Docker default.
-	);
-	foreach ( $candidates as $candidate ) {
-		if ( file_exists( $candidate ) ) {
-			require_once $candidate;
-			break;
-		}
-	}
-}
+
+// Shared Stage E test bootstrap: the only place allowed to locate wp-load.php.
+require_once dirname( __DIR__, 4 ) . '/tests/bootstrap.php';
 
 $theme_functions = get_template_directory() . '/functions.php';
 if ( file_exists( $theme_functions ) && ! function_exists( 'conexao_leisure_card_excerpt' ) ) {
@@ -58,23 +45,6 @@ if ( file_exists( $theme_functions ) && ! function_exists( 'conexao_leisure_card
 
 $passed = 0;
 $failed = 0;
-
-function s7_assert( $condition, $message, $detail = '' ) {
-	global $passed, $failed;
-
-	if ( $condition ) {
-		$passed++;
-		echo "  PASS: {$message}\n";
-		return;
-	}
-
-	$failed++;
-	echo "  FAIL: {$message}" . ( '' !== $detail ? " — {$detail}" : '' ) . "\n";
-}
-
-function s7_section( $title ) {
-	echo "\n=== {$title} ===\n";
-}
 
 /**
  * The card's rendered excerpt text == wp_trim_words() of the description
@@ -132,23 +102,19 @@ function s7_render_card_excerpt( $post_id ) {
 
 // --- Bootstrap sanity -----------------------------------------------------------
 
-s7_section( 'Bootstrap' );
+test_section( 'Bootstrap' );
 
 if ( ! function_exists( 'conexao_leisure_card_excerpt' ) ) {
-	s7_assert( false, 'conexao_leisure_card_excerpt() exists (theme inc/polylang.php)' );
-	echo "\nThe Stage 7 helper is missing — install the Stage 7 theme files.\n";
-	echo "\n{$passed} passed, {$failed} failed\n";
+	assert_true( false, 'conexao_leisure_card_excerpt() exists (theme inc/polylang.php)' );
 	exit( 1 );
 }
 
-s7_assert( true, 'conexao_leisure_card_excerpt() exists (theme inc/polylang.php)' );
-s7_assert( function_exists( 'conexao_current_language_slug' ), 'conexao_current_language_slug() exists' );
-s7_assert( function_exists( 'pll_set_post_language' ), 'Polylang is active' );
+assert_true( true, 'conexao_leisure_card_excerpt() exists (theme inc/polylang.php)' );
+assert_true( function_exists( 'conexao_current_language_slug' ), 'conexao_current_language_slug() exists' );
+assert_true( function_exists( 'pll_set_post_language' ), 'Polylang is active' );
 
 $polylang_ok = function_exists( 'PLL' ) && PLL() && function_exists( 'pll_default_language' );
 if ( ! $polylang_ok ) {
-	echo "\nPolylang inactive — dataset assertions skipped.\n";
-	echo "\n{$passed} passed, {$failed} failed\n";
 	exit( $failed ? 1 : 0 );
 }
 
@@ -172,7 +138,6 @@ $temp_id = wp_insert_post(
 );
 
 if ( is_wp_error( $temp_id ) || ! $temp_id ) {
-	echo "\nFATAL: could not create the temporary leisure record.\n";
 	exit( 1 );
 }
 
@@ -191,60 +156,60 @@ register_shutdown_function(
 
 // --- Language selection ----------------------------------------------------------
 
-s7_section( 'PT request → existing Portuguese pipeline (unchanged)' );
+test_section( 'PT request → existing Portuguese pipeline (unchanged)' );
 
 $previous = s7_set_language( $default_lang );
 
-s7_assert(
+assert_true(
 	conexao_leisure_card_excerpt( $temp_id ) === get_the_excerpt( $temp_id ),
 	'helper returns the exact get_the_excerpt() value on PT'
 );
-s7_assert(
+assert_true(
 	s7_render_card_excerpt( $temp_id ) === s7_expected_card_excerpt( $pt_text ),
 	'.leisure-card-excerpt renders the trimmed PT description'
 );
-s7_assert(
+assert_true(
 	s7_render_card_excerpt( $temp_id ) === s7_expected_card_excerpt( get_the_excerpt( $temp_id ) ),
 	'PT card output == the pre-existing 18-word pipeline byte-for-byte'
 );
 
-s7_section( 'EN request, no EN description → approved B2 fallback' );
+test_section( 'EN request, no EN description → approved B2 fallback' );
 
 s7_set_language( 'en' );
 
-s7_assert(
+assert_true(
 	conexao_leisure_card_excerpt( $temp_id ) === get_the_excerpt( $temp_id ),
 	'helper falls back to the PT description (B2) when no EN description exists'
 );
-s7_assert(
+assert_true(
 	s7_render_card_excerpt( $temp_id ) === s7_expected_card_excerpt( $pt_text ),
 	'.leisure-card-excerpt renders the PT description (B2 fallback)'
 );
 
-s7_section( 'EN request + authored EN description → English card' );
+test_section( 'EN request + authored EN description → English card' );
 
 update_post_meta( $temp_id, '_leisure_excerpt_en', $en_text );
 
-s7_assert(
+assert_true(
 	conexao_leisure_card_excerpt( $temp_id ) === $en_text,
 	'helper returns the authored EN description'
 );
-s7_assert(
+assert_true(
 	s7_render_card_excerpt( $temp_id ) === s7_expected_card_excerpt( $en_text ),
 	'.leisure-card-excerpt renders the trimmed EN description'
 );
-s7_assert(
+assert_true(
 	s7_render_card_excerpt( $temp_id ) !== s7_expected_card_excerpt( $pt_text ),
 	'EN card does NOT render the Portuguese description (the Stage 7 rule)'
 );
 
 s7_set_language( $default_lang );
 
-s7_assert(
+assert_true(
 	s7_render_card_excerpt( $temp_id ) === s7_expected_card_excerpt( $pt_text ),
 	'PT card still renders the PT description while the EN meta exists'
 );
-s7_assert(
+assert_true(
 	conexao_leisure_card_excerpt( $temp_id ) === get_the_excerpt( $temp_id ),
 	'PT request never reads the EN meta'
 );
@@ -253,16 +218,16 @@ delete_post_meta( $temp_id, '_leisure_excerpt_en' );
 
 // --- Rollout engine invariants ---------------------------------------------------
 
-s7_section( 'Rollout engine: preview / drift / idempotency / remove' );
+test_section( 'Rollout engine: preview / drift / idempotency / remove' );
 
 $engine_available = function_exists( 'conexao_leisure_translation_run' ) && function_exists( 'conexao_leisure_translation_manifest' );
-s7_assert( $engine_available, 'rollout engine loaded (activate conexao-leisure-translation to exercise it)' );
+assert_true( $engine_available, 'rollout engine loaded (activate conexao-leisure-translation to exercise it)' );
 
 if ( $engine_available ) {
 	$preview = conexao_leisure_translation_run( 'preview' );
-	s7_assert( 0 === $preview['summary']['errors'], 'preview runs without errors' );
-	s7_assert( 0 === $preview['summary']['pt_changed'], 'preview reports 0 PT changes' );
-	s7_assert( 0 === $preview['summary']['uuid_changed'], 'preview reports 0 UUID changes' );
+	assert_true( 0 === $preview['summary']['errors'], 'preview runs without errors' );
+	assert_true( 0 === $preview['summary']['pt_changed'], 'preview reports 0 PT changes' );
+	assert_true( 0 === $preview['summary']['uuid_changed'], 'preview reports 0 UUID changes' );
 
 	// A record whose PT excerpt no longer matches the authored source must be
 	// refused (stale translations never silently land). Preview computes the
@@ -300,12 +265,12 @@ if ( $engine_available ) {
 				break;
 			}
 		}
-		s7_assert(
+		assert_true(
 			$row && 'refused-pt-drift' === $row['action'],
 			'PT-drift record is refused, never silently applied',
 			$row ? $row['action'] . ': ' . $row['message'] : 'row missing'
 		);
-		s7_assert(
+		assert_true(
 			$pt_before === (string) get_post_meta( $drift_id, '_leisure_excerpt_en', true ),
 			'preview writes nothing to the drifted record'
 		);
@@ -317,7 +282,7 @@ if ( $engine_available ) {
 				'post_excerpt' => $original,
 			)
 		);
-		s7_assert( $original === (string) get_post( $drift_id )->post_excerpt, 'drift probe restored the PT excerpt' );
+		assert_true( $original === (string) get_post( $drift_id )->post_excerpt, 'drift probe restored the PT excerpt' );
 	}
 
 	// The write / idempotency / rollback round-trip only runs where the
@@ -342,15 +307,15 @@ if ( $engine_available ) {
 		$uuid_before = get_post_meta( $temp_id, '_leisure_uuid', true );
 
 		$second = conexao_leisure_translation_run( 'apply' );
-		s7_assert( 0 === $second['summary']['errors'], 're-apply runs without errors' );
-		s7_assert( 0 === $second['summary']['pt_changed'], 're-apply reports 0 PT changes' );
-		s7_assert( 0 === $second['summary']['uuid_changed'], 're-apply reports 0 UUID changes' );
-		s7_assert(
+		assert_true( 0 === $second['summary']['errors'], 're-apply runs without errors' );
+		assert_true( 0 === $second['summary']['pt_changed'], 're-apply reports 0 PT changes' );
+		assert_true( 0 === $second['summary']['uuid_changed'], 're-apply reports 0 UUID changes' );
+		assert_true(
 			$applied_count === ( $second['summary']['applied'] + $second['summary']['skipped_identical'] + $second['summary']['refused'] ),
 			're-apply accounts for every already-applied record (idempotent)',
 			'applied ' . $second['summary']['applied'] . ' / skipped ' . $second['summary']['skipped_identical']
 		);
-		s7_assert(
+		assert_true(
 			$uuid_before === get_post_meta( $temp_id, '_leisure_uuid', true ),
 			'_leisure_uuid untouched by the engine'
 		);
@@ -358,11 +323,11 @@ if ( $engine_available ) {
 		// Full rollback round-trip: remove → nothing left; apply → restored.
 		$before_remove = $applied_count;
 		$removed       = conexao_leisure_translation_run( 'remove' );
-		s7_assert(
+		assert_true(
 			$before_remove === $removed['summary']['removed'],
 			"remove deletes every EN description ({$removed['summary']['removed']} removed)"
 		);
-		s7_assert(
+		assert_true(
 			0 === count(
 				get_posts(
 					array(
@@ -381,13 +346,12 @@ if ( $engine_available ) {
 		);
 
 		$restored = conexao_leisure_translation_run( 'apply' );
-		s7_assert(
+		assert_true(
 			$before_remove === $restored['summary']['applied'],
 			"apply restores every EN description after the rollback ({$restored['summary']['applied']} applied)"
 		);
-		s7_assert( $pt_text === get_post( $temp_id )->post_excerpt, 'PT excerpt untouched across apply/remove' );
+		assert_true( $pt_text === get_post( $temp_id )->post_excerpt, 'PT excerpt untouched across apply/remove' );
 	} else {
-		echo "  rollout not applied on this install — write/rollback round-trip skipped\n";
 	}
 }
 
@@ -396,7 +360,7 @@ if ( $engine_available ) {
 
 // --- Dataset-level contract (runs on the real published records when present) ----
 
-s7_section( 'Dataset-level EN completeness + acceptance contract' );
+test_section( 'Dataset-level EN completeness + acceptance contract' );
 
 $dataset = get_posts(
 	array(
@@ -433,22 +397,19 @@ foreach ( $dataset as $record ) {
 	$rendered = s7_render_card_excerpt( $record->ID );
 	if ( $rendered !== s7_expected_card_excerpt( $en ) ) {
 		$en_leakage++;
-		echo "  leakage: {$record->post_name}\n";
 	}
 	s7_set_language( pll_default_language( 'slug' ) );
 }
 
-s7_assert( 0 === $en_leakage, "no published record renders a wrong (PT) description on EN ({$en_leakage} wrong of {$with_en})" );
+assert_true( 0 === $en_leakage, "no published record renders a wrong (PT) description on EN ({$en_leakage} wrong of {$with_en})" );
 
 if ( $with_en > 0 ) {
-	s7_assert( 0 === count( $missing ), "every published record with an EN description set renders EN ({$with_en} with, {$without_en} without)" );
-	echo "  dataset: {$with_en} records with EN descriptions, {$without_en} without (B2 fallback)\n";
+	assert_true( 0 === count( $missing ), "every published record with an EN description set renders EN ({$with_en} with, {$without_en} without)" );
 } else {
-	echo "  dataset: no EN descriptions on this install (rollout not applied) — B2 fallback is the contract here\n";
 }
 
 // The meta key must never be consumed outside the leisure description layer.
-s7_assert(
+assert_true(
 	0 === count(
 		get_posts(
 			array(
@@ -471,6 +432,4 @@ s7_assert(
 s7_set_language( $previous ? $previous : $default_lang );
 wp_delete_post( $temp_id, true );
 
-echo "\n{$passed} passed, {$failed} failed\n";
-exit( $failed ? 1 : 0 );
-
+test_finish();

@@ -24,31 +24,13 @@
  *   docker compose exec wordpress php /var/www/html/wp-content/plugins/conexao-event-runtime/tests/test-event-query.php
  */
 
-$wp_load = dirname( dirname( dirname( dirname( __DIR__ ) ) ) ) . '/wp-load.php';
-if ( file_exists( $wp_load ) ) {
-	require_once $wp_load;
-} else {
-	require_once '/var/www/html/wp-load.php';
-}
+
+// Shared Stage E test bootstrap: the only place allowed to locate wp-load.php.
+require_once dirname( __DIR__, 4 ) . '/tests/bootstrap.php';
 
 $passed        = 0;
 $failed        = 0;
 $test_post_ids = array();
-
-function test_assert( $condition, $message ) {
-	global $passed, $failed;
-	if ( $condition ) {
-		$passed++;
-		echo "  PASS: {$message}\n";
-	} else {
-		$failed++;
-		echo "  FAIL: {$message}\n";
-	}
-}
-
-function test_section( $title ) {
-	echo "\n=== {$title} ===\n";
-}
 
 function create_test_event( $title, $meta = array() ) {
 	global $test_post_ids;
@@ -61,7 +43,6 @@ function create_test_event( $title, $meta = array() ) {
 		true
 	);
 	if ( is_wp_error( $post_id ) ) {
-		echo "  FATAL: could not create test event: {$post_id->get_error_message()}\n";
 		exit( 1 );
 	}
 	foreach ( $meta as $key => $value ) {
@@ -81,7 +62,6 @@ function query_weekday_offset( $days ) {
 	return (int) Conexao_Event_Query::today()->modify( ( $days >= 0 ? '+' : '' ) . $days . ' day' )->format( 'N' );
 }
 
-echo "Running event query helper tests...\n";
 echo 'Site: ' . home_url() . ' — timezone: ' . wp_timezone()->getName() . ' — today: ' . query_day_offset( 0 ) . "\n";
 
 // Start from a clean cache window so saved test events are all visible.
@@ -101,15 +81,15 @@ $far_future_one_time = create_test_event( 'One-time far future', array( '_event_
 
 $ids = Conexao_Event_Query::upcoming_event_ids();
 
-test_assert( in_array( $today_one_time, $ids, true ), 'one-time today is in the list' );
-test_assert( in_array( $future_one_time, $ids, true ), 'one-time future is in the list' );
-test_assert( in_array( $plain_one_time, $ids, true ), 'event with no recurrence metadata is in the list' );
-test_assert( in_array( $far_future_one_time, $ids, true ), 'one-time beyond the 7-day window is still in the list (archive semantics)' );
-test_assert( ! in_array( $past_one_time, $ids, true ), 'one-time past is NOT in the list' );
+assert_true( in_array( $today_one_time, $ids, true ), 'one-time today is in the list' );
+assert_true( in_array( $future_one_time, $ids, true ), 'one-time future is in the list' );
+assert_true( in_array( $plain_one_time, $ids, true ), 'event with no recurrence metadata is in the list' );
+assert_true( in_array( $far_future_one_time, $ids, true ), 'one-time beyond the 7-day window is still in the list (archive semantics)' );
+assert_true( ! in_array( $past_one_time, $ids, true ), 'one-time past is NOT in the list' );
 
-test_assert( Conexao_Event_Query::next_occurrence_date( $today_one_time ) === query_day_offset( 0 ), 'one-time today: next occurrence = stored date' );
-test_assert( Conexao_Event_Query::next_occurrence_date( $future_one_time ) === query_day_offset( 10 ), 'one-time future: next occurrence = stored date' );
-test_assert( null === Conexao_Event_Query::next_occurrence_date( $past_one_time ), 'one-time past: no next occurrence' );
+assert_true( Conexao_Event_Query::next_occurrence_date( $today_one_time ) === query_day_offset( 0 ), 'one-time today: next occurrence = stored date' );
+assert_true( Conexao_Event_Query::next_occurrence_date( $future_one_time ) === query_day_offset( 10 ), 'one-time future: next occurrence = stored date' );
+assert_true( null === Conexao_Event_Query::next_occurrence_date( $past_one_time ), 'one-time past: no next occurrence' );
 
 // ---------------------------------------------------------------------------
 // 2. Weekly recurrence in the query list
@@ -169,18 +149,18 @@ $weekly_mismatch = create_test_event( 'Weekly weekday mismatch', array(
 
 $ids = Conexao_Event_Query::upcoming_event_ids();
 
-test_assert( in_array( $weekly_active, $ids, true ), 'weekly active today is in the list' );
-test_assert( ! in_array( $weekly_not_started, $ids, true ), 'weekly not started (beyond window) is NOT in the list' );
-test_assert( ! in_array( $weekly_ended, $ids, true ), 'weekly ended is NOT in the list' );
-test_assert( in_array( $weekly_twice, $ids, true ), 'twice-weekly active series is in the list' );
-test_assert( in_array( $weekly_open, $ids, true ), 'open-ended weekly series is in the list' );
-test_assert( in_array( $weekly_mismatch, $ids, true ), 'weekly series with start/weekday mismatch is in the list' );
-test_assert( count( array_keys( $ids, $weekly_active, true ) ) === 1, 'weekly event appears exactly once (no per-occurrence results)' );
+assert_true( in_array( $weekly_active, $ids, true ), 'weekly active today is in the list' );
+assert_true( ! in_array( $weekly_not_started, $ids, true ), 'weekly not started (beyond window) is NOT in the list' );
+assert_true( ! in_array( $weekly_ended, $ids, true ), 'weekly ended is NOT in the list' );
+assert_true( in_array( $weekly_twice, $ids, true ), 'twice-weekly active series is in the list' );
+assert_true( in_array( $weekly_open, $ids, true ), 'open-ended weekly series is in the list' );
+assert_true( in_array( $weekly_mismatch, $ids, true ), 'weekly series with start/weekday mismatch is in the list' );
+assert_true( count( array_keys( $ids, $weekly_active, true ) ) === 1, 'weekly event appears exactly once (no per-occurrence results)' );
 
-test_assert( Conexao_Event_Query::next_occurrence_date( $weekly_active ) === query_day_offset( 0 ), 'weekly active today: next occurrence is today' );
-test_assert( Conexao_Event_Query::next_occurrence_date( $weekly_twice ) === query_day_offset( 0 ), 'twice-weekly: next occurrence is today' );
-test_assert( Conexao_Event_Query::next_occurrence_date( $weekly_mismatch ) === query_day_offset( 0 ), 'weekday mismatch: weekday drives the schedule, not the start date' );
-test_assert( null === Conexao_Event_Query::next_occurrence_date( $weekly_ended ), 'weekly ended: no next occurrence' );
+assert_true( Conexao_Event_Query::next_occurrence_date( $weekly_active ) === query_day_offset( 0 ), 'weekly active today: next occurrence is today' );
+assert_true( Conexao_Event_Query::next_occurrence_date( $weekly_twice ) === query_day_offset( 0 ), 'twice-weekly: next occurrence is today' );
+assert_true( Conexao_Event_Query::next_occurrence_date( $weekly_mismatch ) === query_day_offset( 0 ), 'weekday mismatch: weekday drives the schedule, not the start date' );
+assert_true( null === Conexao_Event_Query::next_occurrence_date( $weekly_ended ), 'weekly ended: no next occurrence' );
 
 // ---------------------------------------------------------------------------
 // 3. Status gate (published / legacy no-status)
@@ -205,8 +185,8 @@ $draft_weekly = create_test_event( 'Weekly draft status', array(
 
 $ids = Conexao_Event_Query::upcoming_event_ids();
 
-test_assert( ! in_array( $expired_weekly, $ids, true ), 'expired recurring event is NOT in the list' );
-test_assert( ! in_array( $draft_weekly, $ids, true ), 'draft recurring event is NOT in the list' );
+assert_true( ! in_array( $expired_weekly, $ids, true ), 'expired recurring event is NOT in the list' );
+assert_true( ! in_array( $draft_weekly, $ids, true ), 'draft recurring event is NOT in the list' );
 
 // ---------------------------------------------------------------------------
 // 4. Sorting: next occurrence ascending
@@ -217,10 +197,10 @@ $events = Conexao_Event_Query::upcoming_events();
 $dates  = array_values( $events );
 $sorted = $dates;
 sort( $sorted );
-test_assert( $dates === $sorted, 'list is sorted by next occurrence ascending' );
-test_assert( count( $events ) === count( array_unique( array_keys( $events ) ) ), 'list keys are unique event IDs' );
-test_assert( $events[ $today_one_time ] === query_day_offset( 0 ), 'today occurrences sort first' );
-test_assert( reset( $dates ) === query_day_offset( 0 ), 'first entry is today' );
+assert_true( $dates === $sorted, 'list is sorted by next occurrence ascending' );
+assert_true( count( $events ) === count( array_unique( array_keys( $events ) ) ), 'list keys are unique event IDs' );
+assert_true( $events[ $today_one_time ] === query_day_offset( 0 ), 'today occurrences sort first' );
+assert_true( reset( $dates ) === query_day_offset( 0 ), 'first entry is today' );
 
 // ---------------------------------------------------------------------------
 // 5. post__in + orderby post__in integration (archive pattern)
@@ -238,7 +218,7 @@ $q           = new WP_Query( array(
 	'no_found_rows'  => true,
 ) );
 $q_ids = wp_list_pluck( $q->posts, 'ID' );
-test_assert( $q_ids === array_map( 'intval', $ordered_ids ), 'WP_Query with post__in + orderby post__in preserves the ordered list' );
+assert_true( $q_ids === array_map( 'intval', $ordered_ids ), 'WP_Query with post__in + orderby post__in preserves the ordered list' );
 
 // Taxonomy filters keep narrowing the same ID list (archive ?categoria pattern).
 $term_result = wp_insert_term( 'RECQ Test Category', 'conexao_category' );
@@ -260,10 +240,10 @@ if ( $term_id ) {
 		),
 		'no_found_rows'  => true,
 	) );
-	test_assert( wp_list_pluck( $filtered->posts, 'ID' ) === array( $today_one_time ), 'tax_query narrows the post__in list (filters keep working)' );
+	assert_true( wp_list_pluck( $filtered->posts, 'ID' ) === array( $today_one_time ), 'tax_query narrows the post__in list (filters keep working)' );
 	wp_delete_term( $term_id, 'conexao_category' );
 } else {
-	test_assert( false, 'could not create test category term' );
+	assert_true( false, 'could not create test category term' );
 }
 
 // Empty list stays deterministic ("no upcoming events", not "all events").
@@ -274,7 +254,7 @@ $empty_q = new WP_Query( array(
 	'orderby'       => 'post__in',
 	'no_found_rows' => true,
 ) );
-test_assert( 0 === $empty_q->post_count, 'empty ID list yields zero results (no filter leak)' );
+assert_true( 0 === $empty_q->post_count, 'empty ID list yields zero results (no filter leak)' );
 
 // ---------------------------------------------------------------------------
 // 6. Cache behavior (date-keyed transient)
@@ -291,21 +271,21 @@ if ( function_exists( 'pll_current_language' ) && function_exists( 'pll_default_
 }
 $today_key = 'conexao_event_upcoming_' . Conexao_Event_Query::today()->format( 'Ymd' ) . $today_suffix;
 $cached    = get_transient( $today_key );
-test_assert( is_array( $cached ) && array_keys( $cached ) === $ordered_ids, 'date-keyed transient stores the ordered ID map' );
+assert_true( is_array( $cached ) && array_keys( $cached ) === $ordered_ids, 'date-keyed transient stores the ordered ID map' );
 
 if ( function_exists( 'pll_current_language' ) ) {
 	test_section( 'Language-scoped cache' );
 	$other_key = 'conexao_event_upcoming_' . Conexao_Event_Query::today()->format( 'Ymd' ) . '_en';
-	test_assert( $other_key !== $today_key, 'PT and EN event transients use different keys (no cross-language hits)' );
+	assert_true( $other_key !== $today_key, 'PT and EN event transients use different keys (no cross-language hits)' );
 }
-test_assert( Conexao_Event_Query::upcoming_event_ids() === array_map( 'intval', $ordered_ids ), 'cached read matches fresh evaluation' );
+assert_true( Conexao_Event_Query::upcoming_event_ids() === array_map( 'intval', $ordered_ids ), 'cached read matches fresh evaluation' );
 
 Conexao_Event_Query::flush_cache();
-test_assert( false === get_transient( $today_key ), 'flush_cache() deletes the date-keyed transient' );
+assert_true( false === get_transient( $today_key ), 'flush_cache() deletes the date-keyed transient' );
 
 // Uncached evaluation with an explicit $from produces the same map shape.
 $from_events = Conexao_Event_Query::upcoming_events( Conexao_Event_Query::today() );
-test_assert( array_keys( $from_events ) === $ordered_ids, 'explicit $from evaluation matches the cached list' );
+assert_true( array_keys( $from_events ) === $ordered_ids, 'explicit $from evaluation matches the cached list' );
 
 // ---------------------------------------------------------------------------
 // 7. Multi-day events: candidate SQL + query behavior
@@ -340,18 +320,18 @@ $md_future = create_test_event( 'MD future', array(
 
 $md_ids = Conexao_Event_Query::upcoming_event_ids();
 
-test_assert( in_array( $md_in_progress, $md_ids, true ), 'O: in-progress multi-day event is in the list' );
-test_assert( in_array( $md_starts_today, $md_ids, true ), 'O: multi-day event starting today is in the list' );
-test_assert( ! in_array( $md_ended, $md_ids, true ), 'O: multi-day event ended yesterday is NOT in the list' );
-test_assert( in_array( $md_future, $md_ids, true ), 'O: future multi-day event is in the list' );
+assert_true( in_array( $md_in_progress, $md_ids, true ), 'O: in-progress multi-day event is in the list' );
+assert_true( in_array( $md_starts_today, $md_ids, true ), 'O: multi-day event starting today is in the list' );
+assert_true( ! in_array( $md_ended, $md_ids, true ), 'O: multi-day event ended yesterday is NOT in the list' );
+assert_true( in_array( $md_future, $md_ids, true ), 'O: future multi-day event is in the list' );
 
 // P. Pagination: multi-day event appears once (one post, one result).
 $md_events = Conexao_Event_Query::upcoming_events();
 $md_count = isset( $md_events[ $md_in_progress ] ) ? 1 : 0;
-test_assert( 1 === $md_count, 'P: multi-day event appears exactly once' );
+assert_true( 1 === $md_count, 'P: multi-day event appears exactly once' );
 
 // Next occurrence for in-progress multi-day event is today.
-test_assert(
+assert_true(
 	Conexao_Event_Query::next_occurrence_date( $md_in_progress ) === query_day_offset( 0 ),
 	'in-progress multi-day: next occurrence is today'
 );
@@ -377,17 +357,17 @@ if ( $md_term_id ) {
 		),
 		'no_found_rows' => true,
 	) );
-	test_assert(
+	assert_true(
 		wp_list_pluck( $md_filtered->posts, 'ID' ) === array( $md_in_progress ),
 		'O: taxonomy filter works for multi-day events'
 	);
 	wp_delete_term( $md_term_id, 'conexao_category' );
 } else {
-	test_assert( false, 'could not create multi-day test category term' );
+	assert_true( false, 'could not create multi-day test category term' );
 }
 
 // Q. Weekly recurrence behavior unchanged: expired weekly still excluded.
-test_assert( ! in_array( $expired_weekly, $md_ids, true ), 'Q: expired weekly event still excluded after multi-day changes' );
+assert_true( ! in_array( $expired_weekly, $md_ids, true ), 'Q: expired weekly event still excluded after multi-day changes' );
 
 // ---------------------------------------------------------------------------
 // Cleanup
@@ -397,7 +377,4 @@ foreach ( $test_post_ids as $test_post_id ) {
 }
 Conexao_Event_Query::flush_cache();
 
-echo "\n=== Results ===\n";
-echo "Passed: {$passed}\n";
-echo "Failed: {$failed}\n";
-exit( $failed > 0 ? 1 : 0 );
+test_finish();

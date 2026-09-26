@@ -24,45 +24,21 @@
  *   docker compose exec wordpress php /var/www/html/wp-content/plugins/conexao-event-runtime/tests/test-event-language-gate.php
  */
 
-$wp_load = dirname( dirname( dirname( dirname( __DIR__ ) ) ) ) . '/wp-load.php';
 
 // Deterministic request context for Polylang in a CLI process.
-$_SERVER['HTTP_HOST']   = $_SERVER['HTTP_HOST'] ?? 'localhost';
-$_SERVER['REQUEST_URI'] = $_SERVER['REQUEST_URI'] ?? '/';
 
-if ( file_exists( $wp_load ) ) {
-	require_once $wp_load;
-} else {
-	require_once '/var/www/html/wp-load.php';
-}
+// Shared Stage E test bootstrap: the only place allowed to locate wp-load.php.
+require_once dirname( __DIR__, 4 ) . '/tests/bootstrap.php';
 
 $passed  = 0;
 $failed  = 0;
 $created = array();
 
-function gate_assert( $condition, $message ) {
-	global $passed, $failed;
-	if ( $condition ) {
-		$passed++;
-		echo "  PASS: {$message}\n";
-	} else {
-		$failed++;
-		echo "  FAIL: {$message}\n";
-	}
-}
 
-echo "== Stage 2 — Event status gate × language ==\n";
-
-if ( ! function_exists( 'pll_set_post_language' ) ) {
-	echo "  SKIP: Polylang is not active in this environment.\n";
-	exit( 0 );
-}
-
-if ( ! class_exists( 'Conexao_Event_Query' ) ) {
-	echo "  SKIP: the event runtime plugin is not active in this environment.\n";
-	exit( 0 );
-}
-
+test_prerequisite_hint( 'polylang' );
+test_require( function_exists( 'pll_set_post_language' ), 'polylang', 'test prerequisite is available: function_exists( pll_set_post_language )', 'activate the Polylang plugin (docker compose exec wordpress wp plugin activate polylang)' );
+test_prerequisite_hint( 'activate-plugin:conexao-event-runtime' );
+test_require( class_exists( 'Conexao_Event_Query' ), 'activate-plugin:conexao-event-runtime', 'test prerequisite is available: class_exists( Conexao_Event_Query )', 'activate the conexao-event-runtime plugin' );
 /**
  * Create an event fixture.
  *
@@ -132,22 +108,22 @@ if ( ! is_wp_error( $en_id ) ) {
 	}
 }
 
-gate_assert( $pt_id > 0 && ! is_wp_error( $en_id ), 'fixtures created (PT master + linked EN translation)' );
-gate_assert( 'pt' === pll_get_post_language( $pt_id, 'slug' ), 'PT fixture is in the pt language' );
-gate_assert( 'en' === pll_get_post_language( (int) $en_id, 'slug' ), 'EN fixture is in the en language' );
+assert_true( $pt_id > 0 && ! is_wp_error( $en_id ), 'fixtures created (PT master + linked EN translation)' );
+assert_true( 'pt' === pll_get_post_language( $pt_id, 'slug' ), 'PT fixture is in the pt language' );
+assert_true( 'en' === pll_get_post_language( (int) $en_id, 'slug' ), 'EN fixture is in the en language' );
 
 // --- 1. Language separation of the public event list. --------------------
 gate_switch_language( 'pt' );
 Conexao_Event_Query::flush_cache();
 $pt_ids = Conexao_Event_Query::upcoming_event_ids();
-gate_assert( in_array( $pt_id, $pt_ids, true ), 'PT context lists the Portuguese event' );
-gate_assert( ! in_array( (int) $en_id, $pt_ids, true ), 'PT context does NOT list the English translation' );
+assert_true( in_array( $pt_id, $pt_ids, true ), 'PT context lists the Portuguese event' );
+assert_true( ! in_array( (int) $en_id, $pt_ids, true ), 'PT context does NOT list the English translation' );
 
 gate_switch_language( 'en' );
 Conexao_Event_Query::flush_cache();
 $en_ids = Conexao_Event_Query::upcoming_event_ids();
-gate_assert( in_array( (int) $en_id, $en_ids, true ), 'EN context lists the English translation' );
-gate_assert( ! in_array( $pt_id, $en_ids, true ), 'EN context does NOT list the Portuguese event' );
+assert_true( in_array( (int) $en_id, $en_ids, true ), 'EN context lists the English translation' );
+assert_true( ! in_array( $pt_id, $en_ids, true ), 'EN context does NOT list the Portuguese event' );
 
 // --- 2. The status gate hides hidden events in BOTH languages. -----------
 foreach ( array( 'expired', 'rejected', 'source_not_found' ) as $hidden_status ) {
@@ -163,8 +139,8 @@ foreach ( array( 'expired', 'rejected', 'source_not_found' ) as $hidden_status )
 	Conexao_Event_Query::flush_cache();
 	$en_hidden = Conexao_Event_Query::upcoming_event_ids();
 
-	gate_assert( ! in_array( $pt_id, $pt_hidden, true ), "status '{$hidden_status}' hides the event in the PT context" );
-	gate_assert( ! in_array( (int) $en_id, $en_hidden, true ), "status '{$hidden_status}' hides the event in the EN context" );
+	assert_true( ! in_array( $pt_id, $pt_hidden, true ), "status '{$hidden_status}' hides the event in the PT context" );
+	assert_true( ! in_array( (int) $en_id, $en_hidden, true ), "status '{$hidden_status}' hides the event in the EN context" );
 }
 
 // --- 3. The gate composes with the real public query (pre_get_posts). ----
@@ -185,8 +161,8 @@ $query = new WP_Query(
 		'post__in'       => array( $pt_id, (int) $en_id ),
 	)
 );
-gate_assert( in_array( $pt_id, $query->posts, true ), 'public event query returns the published PT event' );
-gate_assert( ! in_array( (int) $en_id, $query->posts, true ), 'public event query filters out the EN record in the PT context' );
+assert_true( in_array( $pt_id, $query->posts, true ), 'public event query returns the published PT event' );
+assert_true( ! in_array( (int) $en_id, $query->posts, true ), 'public event query filters out the EN record in the PT context' );
 
 update_post_meta( $pt_id, '_event_status', 'expired' );
 Conexao_Event_Query::flush_cache();
@@ -201,7 +177,7 @@ $query_hidden = new WP_Query(
 		'post__in'       => array( $pt_id ),
 	)
 );
-gate_assert( ! in_array( $pt_id, $query_hidden->posts, true ), 'the _event_status gate still filters the public query (expired hidden)' );
+assert_true( ! in_array( $pt_id, $query_hidden->posts, true ), 'the _event_status gate still filters the public query (expired hidden)' );
 
 // --- Cleanup -------------------------------------------------------------
 gate_switch_language( 'pt' );
@@ -210,5 +186,4 @@ foreach ( array_unique( $created ) as $post_id ) {
 }
 Conexao_Event_Query::flush_cache();
 
-echo "\nevent status gate: {$passed} passed, {$failed} failed\n";
-exit( $failed > 0 ? 1 : 0 );
+test_finish();

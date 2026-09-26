@@ -16,15 +16,9 @@
  * @package Conexao_BR_Irlanda
  */
 
-$_SERVER['HTTP_HOST']   = 'localhost:8080';
-$_SERVER['REQUEST_URI'] = '/en/';
 
-$wp_load = dirname( dirname( dirname( dirname( __DIR__ ) ) ) ) . '/wp-load.php';
-if ( file_exists( $wp_load ) ) {
-	require_once $wp_load;
-} else {
-	require_once '/var/www/html/wp-load.php';
-}
+// Shared Stage E test bootstrap: the only place allowed to locate wp-load.php.
+require_once dirname( __DIR__, 4 ) . '/tests/bootstrap.php';
 
 $theme_functions = get_template_directory() . '/functions.php';
 if ( file_exists( $theme_functions ) ) {
@@ -34,17 +28,6 @@ if ( file_exists( $theme_functions ) ) {
 $passed = 0;
 $failed = 0;
 $fixture_ids = array();
-
-function s7_assert( $condition, $message, $detail = '' ) {
-	global $passed, $failed;
-	if ( $condition ) {
-		++$passed;
-		echo "  PASS: {$message}\n";
-		return;
-	}
-	++$failed;
-	echo "  FAIL: {$message}" . ( '' !== $detail ? " — {$detail}" : '' ) . "\n";
-}
 
 function s7_set_language( $slug ) {
 	if ( ! function_exists( 'PLL' ) || ! PLL() || ! isset( PLL()->model ) ) {
@@ -79,12 +62,10 @@ function s7_cleanup_fixtures() {
 }
 register_shutdown_function( 's7_cleanup_fixtures' );
 
-echo "== Stage 7.x — English Hero Sponsors ==\n";
 
-s7_assert( function_exists( 'conexao_get_featured_sponsors' ), 'featured sponsor data helper is loaded' );
-s7_assert( function_exists( 'pll_get_post' ), 'Polylang is active' );
+assert_true( function_exists( 'conexao_get_featured_sponsors' ), 'featured sponsor data helper is loaded' );
+assert_true( function_exists( 'pll_get_post' ), 'Polylang is active' );
 if ( $failed > 0 || ! function_exists( 'conexao_get_featured_sponsors' ) || ! function_exists( 'pll_get_post' ) ) {
-	echo "\n{$passed} passed, {$failed} failed\n";
 	exit( 1 );
 }
 
@@ -93,8 +74,8 @@ if ( $failed > 0 || ! function_exists( 'conexao_get_featured_sponsors' ) || ! fu
 s7_set_language( 'en' );
 s7_flush_sponsor_cache();
 $english_sponsors = conexao_get_featured_sponsors();
-s7_assert( count( $english_sponsors ) > 0, 'EN homepage receives eligible B2 sponsor data', 'count=' . count( $english_sponsors ) );
-s7_assert( count( $english_sponsors ) === count( array_unique( array_column( $english_sponsors, 'permalink' ) ) ), 'EN sponsor set has no duplicate permalink identities' );
+assert_true( count( $english_sponsors ) > 0, 'EN homepage receives eligible B2 sponsor data', 'count=' . count( $english_sponsors ) );
+assert_true( count( $english_sponsors ) === count( array_unique( array_column( $english_sponsors, 'permalink' ) ) ), 'EN sponsor set has no duplicate permalink identities' );
 
 // Polylang's current language is enough for query selection, but gettext is
 // also locale-driven; switch the CLI locale explicitly for markup assertions.
@@ -107,8 +88,8 @@ load_theme_textdomain( 'conexao-br-irlanda', get_template_directory() . '/langua
 ob_start();
 get_template_part( 'template-parts/featured-sponsors' );
 $markup = (string) ob_get_clean();
-s7_assert( false !== strpos( $markup, 'sponsors-carousel sponsors-carousel--hero' ), 'EN Hero uses the existing sponsors-carousel--hero component' );
-s7_assert( substr_count( $markup, 'class="sponsors-slide"' ) === count( $english_sponsors ), 'EN Hero renders one slide per selected sponsor' );
+assert_true( false !== strpos( $markup, 'sponsors-carousel sponsors-carousel--hero' ), 'EN Hero uses the existing sponsors-carousel--hero component' );
+assert_true( substr_count( $markup, 'class="sponsors-slide"' ) === count( $english_sponsors ), 'EN Hero renders one slide per selected sponsor' );
 // The HTTP acceptance matrix verifies the English gettext labels in the
 // real request lifecycle. The CLI WordPress gettext catalog can retain the
 // bootstrap locale even after a direct Polylang language switch, so this
@@ -130,7 +111,7 @@ $en_id = wp_insert_post( array(
 	'post_name'   => 'stage7-en-hero-sponsor',
 ), true );
 if ( is_wp_error( $pt_id ) || is_wp_error( $en_id ) ) {
-	s7_assert( false, 'temporary linked PT/EN sponsor pair can be created', is_wp_error( $pt_id ) ? $pt_id->get_error_message() : $en_id->get_error_message() );
+	assert_true( false, 'temporary linked PT/EN sponsor pair can be created', is_wp_error( $pt_id ) ? $pt_id->get_error_message() : $en_id->get_error_message() );
 } else {
 	$pt_id = (int) $pt_id;
 	$en_id = (int) $en_id;
@@ -144,14 +125,13 @@ if ( is_wp_error( $pt_id ) || is_wp_error( $en_id ) ) {
 	s7_flush_sponsor_cache();
 	$english_after_pair = conexao_get_featured_sponsors();
 	$english_permalinks  = array_column( $english_after_pair, 'permalink' );
-	s7_assert( in_array( get_permalink( $en_id ), $english_permalinks, true ), 'linked EN sponsor translation is selected' );
-	s7_assert( ! in_array( get_permalink( $pt_id ), $english_permalinks, true ), 'PT master is replaced, not displayed beside its EN translation' );
-	s7_assert( 1 === count( array_filter( $english_permalinks, static function ( $url ) use ( $pt_id, $en_id ) {
+	assert_true( in_array( get_permalink( $en_id ), $english_permalinks, true ), 'linked EN sponsor translation is selected' );
+	assert_true( ! in_array( get_permalink( $pt_id ), $english_permalinks, true ), 'PT master is replaced, not displayed beside its EN translation' );
+	assert_true( 1 === count( array_filter( $english_permalinks, static function ( $url ) use ( $pt_id, $en_id ) {
 		return $url === get_permalink( $pt_id ) || $url === get_permalink( $en_id );
 	} ) ), 'mixed translation state has one visible representation for the identity' );
 }
 
-s7_assert( 'conexao_home_sponsors_pt' !== conexao_lang_cache_key( 'conexao_home_sponsors' ) || 'pt' === conexao_current_language_slug(), 'PT and EN sponsor caches remain language-scoped' );
+assert_true( 'conexao_home_sponsors_pt' !== conexao_lang_cache_key( 'conexao_home_sponsors' ) || 'pt' === conexao_current_language_slug(), 'PT and EN sponsor caches remain language-scoped' );
 
-echo "\n{$passed} passed, {$failed} failed\n";
-exit( $failed > 0 ? 1 : 0 );
+test_finish();

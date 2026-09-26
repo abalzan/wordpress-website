@@ -21,12 +21,9 @@
  */
 
 // --- Bootstrap WordPress (plugins + theme option). ---
-$wp_load = dirname( dirname( dirname( dirname( __DIR__ ) ) ) ) . '/wp-load.php';
-if ( file_exists( $wp_load ) ) {
-	require_once $wp_load;
-} else {
-	require_once '/var/www/html/wp-load.php';
-}
+
+// Shared Stage E test bootstrap: the only place allowed to locate wp-load.php.
+require_once dirname( __DIR__, 4 ) . '/tests/bootstrap.php';
 
 $theme_functions = get_template_directory() . '/functions.php';
 if ( file_exists( $theme_functions ) ) {
@@ -36,24 +33,12 @@ if ( file_exists( $theme_functions ) ) {
 $passed = 0;
 $failed = 0;
 
-function t_assert( $condition, $message ) {
-	global $passed, $failed;
-	if ( $condition ) {
-		$passed++;
-		echo "  PASS: {$message}\n";
-	} else {
-		$failed++;
-		echo "  FAIL: {$message}\n";
-	}
-}
-
 function t_strict( $expected, $actual, $message ) {
-	t_assert( $expected === $actual, $message . ( $expected === $actual ? '' : ' — expected ' . var_export( $expected, true ) . ', got ' . var_export( $actual, true ) ) );
+	assert_true( $expected === $actual, $message . ( $expected === $actual ? '' : ' — expected ' . var_export( $expected, true ) . ', got ' . var_export( $actual, true ) ) );
 }
 
 $domain = 'conexao-br-irlanda';
 
-echo "== Stage 1 i18n foundation ==\n";
 
 // --- Locale model (Phase 5/7). ---
 t_strict( 'pt_BR', get_locale(), 'site locale is pt_BR' );
@@ -84,10 +69,10 @@ $expected_keys = array(
 	'moreLoadedOneTemplate', 'moreLoadedManyTemplate', 'nounEvents',
 	'nounEventsPlural', 'nounCourses', 'nounCoursesPlural',
 );
-t_assert( count( array_diff( $expected_keys, array_keys( $js ) ) ) === 0, 'JS i18n payload contains all expected keys' );
+assert_true( count( array_diff( $expected_keys, array_keys( $js ) ) ) === 0, 'JS i18n payload contains all expected keys' );
 t_strict( '%d filtro ativo', $js['filterCountOne'], 'JS payload singular filter label' );
-t_assert( $js['filterCountOne'] !== $js['filterCountMany'], 'JS payload filter label has distinct singular/plural forms' );
-t_assert( $js['moreLoadedOneTemplate'] !== $js['moreLoadedManyTemplate'], 'JS payload load-more status has distinct singular/plural forms' );
+assert_true( $js['filterCountOne'] !== $js['filterCountMany'], 'JS payload filter label has distinct singular/plural forms' );
+assert_true( $js['moreLoadedOneTemplate'] !== $js['moreLoadedManyTemplate'], 'JS payload load-more status has distinct singular/plural forms' );
 t_strict( 'Mais %1$d %2$s carregado.', $js['moreLoadedOneTemplate'], 'JS payload singular load-more wording is exact PT' );
 
 // --- Plugin textdomain loaders (Phase 4). ---
@@ -111,11 +96,11 @@ foreach ( $plugins as $plugin ) {
 			&& false !== strpos( (string) file_get_contents( $main_file ), 'load_plugin_textdomain(' )
 			&& false !== strpos( (string) file_get_contents( $main_file ), "'" . $plugin . "'" );
 	}
-	t_assert( $registered, "plugin textdomain loader registered: {$plugin}" );
+	assert_true( $registered, "plugin textdomain loader registered: {$plugin}" );
 }
 
 // --- Dates (Phase 6). ---
-t_assert(
+assert_true(
 	false !== strpos( date_i18n( 'F', strtotime( '2026-09-06' ) ), 'etembro' ),
 	'dates render Portuguese month names ("setembro")'
 );
@@ -124,10 +109,9 @@ t_assert(
 // Stage 1 deliberately shipped without an hreflang emitter or a language
 // switcher; Stage 2 adds both (inc/polylang.php). These checks now assert the
 // invariants the Stage 1 foundation still guarantees in the PT context.
-t_assert( function_exists( 'conexao_seo_hreflang' ), 'hreflang emitter registered (Stage 2)' );
-t_assert( function_exists( 'conexao_language_switcher' ), 'language switcher helper exists (Stage 2)' );
+assert_true( function_exists( 'conexao_seo_hreflang' ), 'hreflang emitter registered (Stage 2)' );
+assert_true( function_exists( 'conexao_language_switcher' ), 'language switcher helper exists (Stage 2)' );
 t_strict( 'pt_BR', conexao_og_locale(), 'og:locale is pt_BR in the Portuguese context' );
-t_assert( is_array( conexao_hreflang_links() ), 'hreflang link resolver returns an array' );
+assert_true( is_array( conexao_hreflang_links() ), 'hreflang link resolver returns an array' );
 
-echo "\ni18n foundation: {$passed} passed, {$failed} failed\n";
-exit( $failed > 0 ? 1 : 0 );
+test_finish();

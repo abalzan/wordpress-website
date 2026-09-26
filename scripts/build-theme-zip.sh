@@ -47,8 +47,13 @@ rm -f "${OUTPUT_ZIP}"
 # zip root (WordPress requires this structure for theme import).
 pushd "$(dirname "${THEME_DIR}")" >/dev/null
 
-# Exclude common junk/version-control files and OS metadata.
+# Exclude tests, fixtures, common junk/version-control files and OS metadata.
+# The theme's tests/ directory is development/test-only and must never be
+# installed on production (engineering standard §8.2: tests and fixtures are
+# excluded from release ZIPs). Stage E fixed this — the theme ZIP previously
+# shipped all 24 theme test files.
 zip -r "${OUTPUT_ZIP}" "${THEME_SLUG}" \
+    -x "*/tests/*" \
     -x "*/.git/*" \
     -x "*/node_modules/*" \
     -x "*/.DS_Store" \

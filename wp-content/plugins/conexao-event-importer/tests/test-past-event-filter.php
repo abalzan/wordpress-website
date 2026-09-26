@@ -9,32 +9,14 @@
  * Usage: docker compose exec wordpress php /var/www/html/wp-content/plugins/conexao-event-importer/tests/test-past-event-filter.php
  */
 
-$wp_load = dirname( dirname( dirname( dirname( __DIR__ ) ) ) ) . '/wp-load.php';
-if ( file_exists( $wp_load ) ) {
-	require_once $wp_load;
-} else {
-	require_once '/var/www/html/wp-load.php';
-}
+
+// Shared Stage E test bootstrap: the only place allowed to locate wp-load.php.
+require_once dirname( __DIR__, 4 ) . '/tests/bootstrap.php';
 
 require_once WP_PLUGIN_DIR . '/conexao-event-importer/conexao-event-importer.php';
 
 $passed = 0;
 $failed = 0;
-
-function test_assert( $condition, $message ) {
-	global $passed, $failed;
-	if ( $condition ) {
-		$passed++;
-		echo "  PASS: {$message}\n";
-	} else {
-		$failed++;
-		echo "  FAIL: {$message}\n";
-	}
-}
-
-function test_section( $title ) {
-	echo "\n=== {$title} ===\n";
-}
 
 /**
  * Build a Y-m-d / H:i pair relative to now using the site timezone.
@@ -47,7 +29,6 @@ function rel_datetime( $modifier ) {
 	return array( $dt->format( 'Y-m-d' ), $dt->format( 'H:i' ) );
 }
 
-echo "Running past-event filter tests...\n";
 echo 'Site timezone: ' . wp_timezone()->getName() . "\n";
 echo 'Now: ' . current_datetime()->format( 'Y-m-d H:i:s' ) . "\n";
 
@@ -63,7 +44,7 @@ $check = Conexao_Event_Date_Filter::evaluate( array(
 	'end_date'   => '',
 	'end_time'   => '',
 ) );
-test_assert( Conexao_Event_Date_Filter::IMPORT === $check['status'], 'Event starting in 10 days imports' );
+assert_true( Conexao_Event_Date_Filter::IMPORT === $check['status'], 'Event starting in 10 days imports' );
 
 list( $tomorrow_date, $tomorrow_time ) = rel_datetime( '+1 day' );
 $check = Conexao_Event_Date_Filter::evaluate( array(
@@ -72,7 +53,7 @@ $check = Conexao_Event_Date_Filter::evaluate( array(
 	'end_date'   => '',
 	'end_time'   => '',
 ) );
-test_assert( Conexao_Event_Date_Filter::IMPORT === $check['status'], 'Tomorrow date-only event imports' );
+assert_true( Conexao_Event_Date_Filter::IMPORT === $check['status'], 'Tomorrow date-only event imports' );
 
 // ---------------------------------------------------------------------------
 // Test 2: Events happening today
@@ -86,7 +67,7 @@ $check = Conexao_Event_Date_Filter::evaluate( array(
 	'end_date'   => '',
 	'end_time'   => '',
 ) );
-test_assert( Conexao_Event_Date_Filter::IMPORT === $check['status'], 'Today date-only event imports (runs until end of day)' );
+assert_true( Conexao_Event_Date_Filter::IMPORT === $check['status'], 'Today date-only event imports (runs until end of day)' );
 
 list( $later_date, $later_time ) = rel_datetime( '+2 hours' );
 $check = Conexao_Event_Date_Filter::evaluate( array(
@@ -95,7 +76,7 @@ $check = Conexao_Event_Date_Filter::evaluate( array(
 	'end_date'   => '',
 	'end_time'   => '',
 ) );
-test_assert( Conexao_Event_Date_Filter::IMPORT === $check['status'], 'Today event starting in 2 hours imports' );
+assert_true( Conexao_Event_Date_Filter::IMPORT === $check['status'], 'Today event starting in 2 hours imports' );
 
 list( $earlier_date, $earlier_time ) = rel_datetime( '-2 hours' );
 $check = Conexao_Event_Date_Filter::evaluate( array(
@@ -104,7 +85,7 @@ $check = Conexao_Event_Date_Filter::evaluate( array(
 	'end_date'   => '',
 	'end_time'   => '',
 ) );
-test_assert( Conexao_Event_Date_Filter::PAST === $check['status'], 'Today event whose only start time already passed is skipped' );
+assert_true( Conexao_Event_Date_Filter::PAST === $check['status'], 'Today event whose only start time already passed is skipped' );
 
 // ---------------------------------------------------------------------------
 // Test 3: Multi-day events use the end date as cutoff
@@ -119,7 +100,7 @@ $check = Conexao_Event_Date_Filter::evaluate( array(
 	'end_date'   => $future_end_date,
 	'end_time'   => $future_end_time,
 ) );
-test_assert( Conexao_Event_Date_Filter::IMPORT === $check['status'], 'Multi-day event in progress (ends in 2 days) imports' );
+assert_true( Conexao_Event_Date_Filter::IMPORT === $check['status'], 'Multi-day event in progress (ends in 2 days) imports' );
 
 // Started days ago, ended yesterday.
 list( $old_start_date, $old_start_time ) = rel_datetime( '-10 days' );
@@ -130,7 +111,7 @@ $check = Conexao_Event_Date_Filter::evaluate( array(
 	'end_date'   => $yesterday_end_date,
 	'end_time'   => $yesterday_end_time,
 ) );
-test_assert( Conexao_Event_Date_Filter::PAST === $check['status'], 'Multi-day event that ended yesterday is skipped' );
+assert_true( Conexao_Event_Date_Filter::PAST === $check['status'], 'Multi-day event that ended yesterday is skipped' );
 
 // Ended earlier today.
 list( $ended_today_date, $ended_today_time ) = rel_datetime( '-1 hour' );
@@ -140,7 +121,7 @@ $check = Conexao_Event_Date_Filter::evaluate( array(
 	'end_date'   => $ended_today_date,
 	'end_time'   => $ended_today_time,
 ) );
-test_assert( Conexao_Event_Date_Filter::PAST === $check['status'], 'Multi-day event that ended an hour ago today is skipped' );
+assert_true( Conexao_Event_Date_Filter::PAST === $check['status'], 'Multi-day event that ended an hour ago today is skipped' );
 
 // ---------------------------------------------------------------------------
 // Test 4: Past events are never imported
@@ -154,7 +135,7 @@ $check = Conexao_Event_Date_Filter::evaluate( array(
 	'end_date'   => '',
 	'end_time'   => '',
 ) );
-test_assert( Conexao_Event_Date_Filter::PAST === $check['status'], 'Event from last week is skipped' );
+assert_true( Conexao_Event_Date_Filter::PAST === $check['status'], 'Event from last week is skipped' );
 
 $check = Conexao_Event_Date_Filter::evaluate( array(
 	'start_date' => $last_week_date,
@@ -162,7 +143,7 @@ $check = Conexao_Event_Date_Filter::evaluate( array(
 	'end_date'   => '',
 	'end_time'   => '',
 ) );
-test_assert( Conexao_Event_Date_Filter::PAST === $check['status'], 'Date-only event from last week is skipped' );
+assert_true( Conexao_Event_Date_Filter::PAST === $check['status'], 'Date-only event from last week is skipped' );
 
 // ---------------------------------------------------------------------------
 // Test 5: Invalid/missing dates are safely reported
@@ -175,7 +156,7 @@ $check = Conexao_Event_Date_Filter::evaluate( array(
 	'end_date'   => '',
 	'end_time'   => '',
 ) );
-test_assert( Conexao_Event_Date_Filter::INVALID === $check['status'], 'Missing start date is invalid' );
+assert_true( Conexao_Event_Date_Filter::INVALID === $check['status'], 'Missing start date is invalid' );
 
 $check = Conexao_Event_Date_Filter::evaluate( array(
 	'start_date' => 'not-a-date',
@@ -183,7 +164,7 @@ $check = Conexao_Event_Date_Filter::evaluate( array(
 	'end_date'   => '',
 	'end_time'   => '',
 ) );
-test_assert( Conexao_Event_Date_Filter::INVALID === $check['status'], 'Unparseable start date is invalid' );
+assert_true( Conexao_Event_Date_Filter::INVALID === $check['status'], 'Unparseable start date is invalid' );
 
 $check = Conexao_Event_Date_Filter::evaluate( array(
 	'start_date' => '2026-02-30', // Impossible calendar date.
@@ -191,10 +172,10 @@ $check = Conexao_Event_Date_Filter::evaluate( array(
 	'end_date'   => '',
 	'end_time'   => '',
 ) );
-test_assert( Conexao_Event_Date_Filter::INVALID === $check['status'], 'Impossible calendar date (Feb 30) is invalid' );
+assert_true( Conexao_Event_Date_Filter::INVALID === $check['status'], 'Impossible calendar date (Feb 30) is invalid' );
 
 $check = Conexao_Event_Date_Filter::evaluate( array() );
-test_assert( Conexao_Event_Date_Filter::INVALID === $check['status'], 'Empty event data is invalid (never treated as future)' );
+assert_true( Conexao_Event_Date_Filter::INVALID === $check['status'], 'Empty event data is invalid (never treated as future)' );
 
 // A valid start with a garbage end date falls back to the start date.
 list( $tomorrow_date2, ) = rel_datetime( '+1 day' );
@@ -204,7 +185,7 @@ $check = Conexao_Event_Date_Filter::evaluate( array(
 	'end_date'   => 'garbage-end-date',
 	'end_time'   => '',
 ) );
-test_assert( Conexao_Event_Date_Filter::IMPORT === $check['status'], 'Garbage end date falls back to valid start date' );
+assert_true( Conexao_Event_Date_Filter::IMPORT === $check['status'], 'Garbage end date falls back to valid start date' );
 
 // ---------------------------------------------------------------------------
 // Test 6: Timezone-aware comparison (site timezone, not UTC assumption)
@@ -214,7 +195,7 @@ test_section( 'Timezone Handling' );
 // The filter must build its cutoff in the site timezone. Verify the cutoff
 // label matches a site-timezone construction of the same fields.
 $tz_name = wp_timezone()->getName();
-test_assert( ! empty( $tz_name ), 'Site timezone is configured (' . $tz_name . ')' );
+assert_true( ! empty( $tz_name ), 'Site timezone is configured (' . $tz_name . ')' );
 
 list( $in_3_days, $at_noon ) = rel_datetime( '+3 days' );
 $check = Conexao_Event_Date_Filter::evaluate( array(
@@ -223,8 +204,8 @@ $check = Conexao_Event_Date_Filter::evaluate( array(
 	'end_date'   => '',
 	'end_time'   => '',
 ) );
-test_assert( Conexao_Event_Date_Filter::IMPORT === $check['status'], 'Cutoff evaluated against site-timezone now' );
-test_assert( $in_3_days . ' ' . $at_noon === $check['cutoff_label'], 'Cutoff label reflects the event date/time' );
+assert_true( Conexao_Event_Date_Filter::IMPORT === $check['status'], 'Cutoff evaluated against site-timezone now' );
+assert_true( $in_3_days . ' ' . $at_noon === $check['cutoff_label'], 'Cutoff label reflects the event date/time' );
 
 // ---------------------------------------------------------------------------
 // Test 7: Integration with the normalizer output shape
@@ -244,7 +225,7 @@ $normalized = $normalizer->normalize( array(
 	'location'   => 'Portlaoise, Laois',
 ) );
 $check = Conexao_Event_Date_Filter::evaluate( $normalized );
-test_assert( Conexao_Event_Date_Filter::PAST === $check['status'], 'Normalized past event evaluates as past' );
+assert_true( Conexao_Event_Date_Filter::PAST === $check['status'], 'Normalized past event evaluates as past' );
 
 list( $norm_future_date, ) = rel_datetime( '+30 days' );
 $normalized = $normalizer->normalize( array(
@@ -256,7 +237,7 @@ $normalized = $normalizer->normalize( array(
 	'location'   => 'Portlaoise, Laois',
 ) );
 $check = Conexao_Event_Date_Filter::evaluate( $normalized );
-test_assert( Conexao_Event_Date_Filter::IMPORT === $check['status'], 'Normalized future event evaluates as importable' );
+assert_true( Conexao_Event_Date_Filter::IMPORT === $check['status'], 'Normalized future event evaluates as importable' );
 
 // ---------------------------------------------------------------------------
 // Test 8: Import result counters
@@ -270,24 +251,22 @@ $result->add_skipped_past( 'Old Event', 'Skipped: the event has already ended (2
 $result->add_skipped_invalid_date( 'Broken Event', 'Skipped: the event date could not be evaluated.' );
 
 $counts = $result->get_counts();
-test_assert( 1 === $counts['created'], 'Created count unaffected by skips' );
-test_assert( 1 === $counts['skipped_past'], 'skipped_past counter increments' );
-test_assert( 1 === $counts['skipped_invalid_date'], 'skipped_invalid_date counter increments' );
-test_assert( 2 === $counts['skipped'], 'Generic skipped counter includes past + invalid-date skips' );
+assert_true( 1 === $counts['created'], 'Created count unaffected by skips' );
+assert_true( 1 === $counts['skipped_past'], 'skipped_past counter increments' );
+assert_true( 1 === $counts['skipped_invalid_date'], 'skipped_invalid_date counter increments' );
+assert_true( 2 === $counts['skipped'], 'Generic skipped counter includes past + invalid-date skips' );
 
 $stats = $result->get_stats();
-test_assert( isset( $stats['skipped_past'] ) && 1 === $stats['skipped_past'], 'get_stats exposes skipped_past' );
-test_assert( isset( $stats['skipped_invalid_date'] ) && 1 === $stats['skipped_invalid_date'], 'get_stats exposes skipped_invalid_date' );
+assert_true( isset( $stats['skipped_past'] ) && 1 === $stats['skipped_past'], 'get_stats exposes skipped_past' );
+assert_true( isset( $stats['skipped_invalid_date'] ) && 1 === $stats['skipped_invalid_date'], 'get_stats exposes skipped_invalid_date' );
 
 $skipped_events = $result->get_skipped_events();
-test_assert( 2 === count( $skipped_events ), 'Both date-skips appear in get_skipped_events()' );
-test_assert( 'Skipped: the event has already ended (2026-08-20 18:00).' === $skipped_events[0]['message'], 'Past-skip reason recorded verbatim' );
-test_assert( 'warning' === $result->get_status(), 'Skips upgrade status to warning' );
+assert_true( 2 === count( $skipped_events ), 'Both date-skips appear in get_skipped_events()' );
+assert_true( 'Skipped: the event has already ended (2026-08-20 18:00).' === $skipped_events[0]['message'], 'Past-skip reason recorded verbatim' );
+assert_true( 'warning' === $result->get_status(), 'Skips upgrade status to warning' );
 
 // ---------------------------------------------------------------------------
 // Summary
 // ---------------------------------------------------------------------------
-echo "\n=== Results ===\n";
-echo "Passed: {$passed}\n";
-echo "Failed: {$failed}\n";
-exit( $failed > 0 ? 1 : 0 );
+
+test_finish();

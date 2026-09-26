@@ -22,39 +22,16 @@
  * @package Conexao_Lazer_Migration
  */
 
-$_SERVER['HTTP_HOST']   = $_SERVER['HTTP_HOST'] ?? 'localhost';
-$_SERVER['REQUEST_URI'] = $_SERVER['REQUEST_URI'] ?? '/';
 
-if ( ! defined( 'ABSPATH' ) ) {
-	foreach ( array(
-		dirname( dirname( dirname( dirname( __DIR__ ) ) ) ) . '/wp-load.php',
-		'/var/www/html/wp-load.php',
-	) as $candidate ) {
-		if ( file_exists( $candidate ) ) {
-			require_once $candidate;
-			break;
-		}
-	}
-}
+// Shared Stage E test bootstrap: the only place allowed to locate wp-load.php.
+require_once dirname( __DIR__, 4 ) . '/tests/bootstrap.php';
 
 if ( ! class_exists( 'Conexao_Lazer_Exporter' ) || ! class_exists( 'Conexao_Lazer_Importer' ) ) {
-	echo "FATAL: activate conexao-leisure-migration first.\n";
 	exit( 1 );
 }
 
 $passed = 0;
 $failed = 0;
-
-function s7m_assert( $condition, $message, $detail = '' ) {
-	global $passed, $failed;
-	if ( $condition ) {
-		$passed++;
-		echo "  PASS: {$message}\n";
-		return;
-	}
-	$failed++;
-	echo "  FAIL: {$message}" . ( '' !== $detail ? " — {$detail}" : '' ) . "\n";
-}
 
 $meta_key = '_leisure_excerpt_en';
 
@@ -65,7 +42,7 @@ $exporter            = $exporter_reflection->newInstanceWithoutConstructor();
 
 $export_keys_prop = $exporter_reflection->getProperty( 'export_meta_keys' );
 $export_keys_prop->setAccessible( true );
-s7m_assert(
+assert_true(
 	in_array( $meta_key, (array) $export_keys_prop->getValue( $exporter ), true ),
 	'exporter meta list carries ' . $meta_key
 );
@@ -74,7 +51,7 @@ $importer_reflection = new ReflectionClass( 'Conexao_Lazer_Importer' );
 $importer            = $importer_reflection->newInstanceWithoutConstructor();
 $allowed_prop        = $importer_reflection->getProperty( 'allowed_meta_keys' );
 $allowed_prop->setAccessible( true );
-s7m_assert(
+assert_true(
 	in_array( $meta_key, (array) $allowed_prop->getValue( $importer ), true ),
 	'importer allowed-meta list carries ' . $meta_key
 );
@@ -94,7 +71,6 @@ $post_id = wp_insert_post(
 );
 
 if ( is_wp_error( $post_id ) || ! $post_id ) {
-	echo "FATAL: could not create the probe record.\n";
 	exit( 1 );
 }
 
@@ -104,18 +80,18 @@ $export_item = $exporter_reflection->getMethod( 'export_item' );
 $export_item->setAccessible( true );
 $item = $export_item->invoke( $exporter, get_post( $post_id ), 1 );
 
-s7m_assert(
+assert_true(
 	isset( $item['meta'][ $meta_key ] ) && 'Authored English description for the round-trip probe.' === $item['meta'][ $meta_key ],
 	'export_item() emits the authored EN description'
 );
-s7m_assert(
+assert_true(
 	'Descrição portuguesa original.' === $item['post']['excerpt'],
 	'export_item() keeps the Portuguese excerpt untouched'
 );
 
 delete_post_meta( $post_id, $meta_key );
 $item = $export_item->invoke( $exporter, get_post( $post_id ), 2 );
-s7m_assert(
+assert_true(
 	! isset( $item['meta'][ $meta_key ] ),
 	'records without an EN description export no empty value'
 );
@@ -131,16 +107,15 @@ $save_meta->invoke(
 	array( 'meta' => array( $meta_key => 'Text with <script>evil()</script> tags and a & entity. ' ) )
 );
 $stored = (string) get_post_meta( $post_id, $meta_key, true );
-s7m_assert( '' !== $stored, 'import stores a non-empty authored description' );
-s7m_assert( false === strpos( $stored, '<script>' ), 'import strips HTML tags from the description', $stored );
-s7m_assert( false !== strpos( $stored, '&' ), 'import preserves text entities', $stored );
+assert_true( '' !== $stored, 'import stores a non-empty authored description' );
+assert_true( false === strpos( $stored, '<script>' ), 'import strips HTML tags from the description', $stored );
+assert_true( false !== strpos( $stored, '&' ), 'import preserves text entities', $stored );
 
 $save_meta->invoke( $importer, $post_id, array( 'meta' => array( $meta_key => '' ) ) );
-s7m_assert( '' === (string) get_post_meta( $post_id, $meta_key, true ), 'import of an empty value deletes the meta' );
+assert_true( '' === (string) get_post_meta( $post_id, $meta_key, true ), 'import of an empty value deletes the meta' );
 
 // --- 4. Cleanup -------------------------------------------------------------------
 
 wp_delete_post( $post_id, true );
 
-echo "\n{$passed} passed, {$failed} failed\n";
-exit( $failed ? 1 : 0 );
+test_finish();

@@ -30,42 +30,15 @@
  * @package conexao-br-irlanda
  */
 
-$_SERVER['HTTP_HOST']   = $_SERVER['HTTP_HOST'] ?? 'localhost';
-$_SERVER['REQUEST_URI'] = $_SERVER['REQUEST_URI'] ?? '/';
 
-$wp_load = dirname( dirname( dirname( dirname( __DIR__ ) ) ) ) . '/wp-load.php';
-if ( file_exists( $wp_load ) ) {
-	require_once $wp_load;
-} else {
-	require_once '/var/www/html/wp-load.php';
-}
+// Shared Stage E test bootstrap: the only place allowed to locate wp-load.php.
+require_once dirname( __DIR__, 4 ) . '/tests/bootstrap.php';
 
 require_once WP_CONTENT_DIR . '/plugins/conexao-page-translation/includes/translation-map.php';
 require_once WP_CONTENT_DIR . '/plugins/conexao-page-translation/includes/apply.php';
 
 $passed = 0;
 $failed = 0;
-
-/**
- * Assert a condition.
- *
- * @param bool   $condition Condition.
- * @param string $message   Message.
- * @param string $detail    Extra detail on failure.
- * @return void
- */
-function s8_assert( $condition, $message, $detail = '' ) {
-	global $passed, $failed;
-
-	if ( $condition ) {
-		++$passed;
-		echo "  PASS: {$message}\n";
-		return;
-	}
-
-	++$failed;
-	echo "  FAIL: {$message}" . ( '' !== $detail ? " — {$detail}" : '' ) . "\n";
-}
 
 /**
  * Run a callback with the request language context set to $slug.
@@ -118,23 +91,18 @@ function s8_in_language( string $slug, callable $callback ) {
 	return $result;
 }
 
-echo "== Stage 8 — EN Jobs page language standard ==\n";
 
-if ( ! function_exists( 'pll_get_post' ) ) {
-	echo "  SKIP: Polylang is not active.\n";
-	exit( 0 );
-}
-
+test_prerequisite_hint( 'polylang' );
+test_require( function_exists( 'pll_get_post' ), 'polylang', 'test prerequisite is available: function_exists( pll_get_post )', 'activate the Polylang plugin' );
 // ---------------------------------------------------------------------------
-echo "\n-- 1. EN Jobs landing page carries real English content --\n";
 
 $pt_page = get_page_by_path( 'empregos', OBJECT, 'page' );
 $en_id   = $pt_page ? (int) pll_get_post( (int) $pt_page->ID, 'en' ) : 0;
 
-s8_assert( $pt_page instanceof WP_Post, 'the PT Jobs landing page exists' );
-s8_assert( $en_id > 0 && $en_id !== (int) $pt_page->ID, 'the Jobs page has an EN translation', "en_id={$en_id}" );
-s8_assert( $en_id > 0 && (int) pll_get_post( $en_id, 'pt' ) === (int) $pt_page->ID, 'the Jobs page pair is linked from both sides' );
-s8_assert( $en_id > 0 && 'publish' === get_post_status( $en_id ), 'the EN Jobs page is published' );
+assert_true( $pt_page instanceof WP_Post, 'the PT Jobs landing page exists' );
+assert_true( $en_id > 0 && $en_id !== (int) $pt_page->ID, 'the Jobs page has an EN translation', "en_id={$en_id}" );
+assert_true( $en_id > 0 && (int) pll_get_post( $en_id, 'pt' ) === (int) $pt_page->ID, 'the Jobs page pair is linked from both sides' );
+assert_true( $en_id > 0 && 'publish' === get_post_status( $en_id ), 'the EN Jobs page is published' );
 
 $manifest    = conexao_page_translation_map();
 $jobs_spec   = $manifest['empregos'] ?? array();
@@ -142,47 +110,46 @@ $en_post     = $en_id ? get_post( $en_id ) : null;
 $en_content  = $en_post ? $en_post->post_content : '';
 $en_rendered = $en_id ? trim( wp_strip_all_tags( $en_content ) ) : '';
 
-s8_assert( 'jobs' === ( $jobs_spec['en_slug'] ?? '' ), "the manifest owns the EN Jobs slug 'jobs'" );
-s8_assert(
+assert_true( 'jobs' === ( $jobs_spec['en_slug'] ?? '' ), "the manifest owns the EN Jobs slug 'jobs'" );
+assert_true(
 	$en_id > 0 && $en_post->post_title === $jobs_spec['title'],
 	'the EN Jobs page title is the authored English title',
 	$en_id ? $en_post->post_title : ''
 );
-s8_assert(
+assert_true(
 	$en_id > 0 && false !== strpos( $en_content, $jobs_spec['content'] ),
 	'the EN Jobs body is the authored English body from the manifest (not a template hardcode)'
 );
-s8_assert( $en_id > 0 && '' !== $en_rendered, 'the EN Jobs body is not empty' );
-s8_assert(
+assert_true( $en_id > 0 && '' !== $en_rendered, 'the EN Jobs body is not empty' );
+assert_true(
 	$en_id > 0 && false === strpos( $en_rendered, 'As vagas mais recentes' )
 		&& false === strpos( $en_rendered, 'Acompanhe nossas' ),
 	'no Portuguese prose from the PT body survives on the EN Jobs page',
 	$en_rendered
 );
-s8_assert(
+assert_true(
 	$en_id > 0 && '' !== (string) get_post_meta( $en_id, 'conexao_meta_description', true ),
 	'the EN Jobs page has an English meta description'
 );
-s8_assert(
+assert_true(
 	$en_id > 0 && false === strpos( (string) get_post_meta( $en_id, 'conexao_meta_description', true ), 'vagas' ),
 	'the EN Jobs meta description is not the Portuguese one'
 );
 
 // The Portuguese source must be untouched by the English layer.
 $pt_now = conexao_page_translation_snapshot_page( (int) $pt_page->ID );
-s8_assert(
+assert_true(
 	'Empregos' === $pt_now['title'] && false !== strpos( $pt_now['content'], 'As vagas mais recentes' ),
 	'the PT Jobs page content is unchanged (Portuguese source preserved)'
 );
-s8_assert( 'page-empregos.php' === $pt_now['template'], 'the PT Jobs page keeps its template' );
-s8_assert(
+assert_true( 'page-empregos.php' === $pt_now['template'], 'the PT Jobs page keeps its template' );
+assert_true(
 	(int) get_post_thumbnail_id( (int) $pt_page->ID ) === (int) get_post_thumbnail_id( $en_id ),
 	'the EN Jobs page shares the PT featured media (no duplicated attachment)'
 );
 
 
 // ---------------------------------------------------------------------------
-echo "\n-- 2. Work-area registry: one source, language-aware labels --\n";
 
 $expected_areas = array(
 	'warehouse'            => array( 'pt' => 'Armazém', 'en' => 'Warehouse' ),
@@ -204,12 +171,12 @@ restore_previous_locale();
 $pt_areas = conexao_recruitment_agency_areas();
 
 foreach ( $expected_areas as $key => $labels ) {
-	s8_assert(
+	assert_true(
 		isset( $en_areas[ $key ] ) && $en_areas[ $key ] === $labels['en'],
 		"work area '{$key}' renders '{$labels['en']}' in English",
 		$en_areas[ $key ] ?? '(missing)'
 	);
-	s8_assert(
+	assert_true(
 		isset( $pt_areas[ $key ] ) && $pt_areas[ $key ] === $labels['pt'],
 		"work area '{$key}' still renders '{$labels['pt']}' in Portuguese",
 		$pt_areas[ $key ] ?? '(missing)'
@@ -217,50 +184,49 @@ foreach ( $expected_areas as $key => $labels ) {
 }
 
 // The filter slugs are the language-neutral identity and must never change.
-s8_assert(
+assert_true(
 	array_keys( $en_areas ) === array_keys( $pt_areas ),
 	'the work-area keys are identical in both languages (one registry, no duplicates)'
 );
-s8_assert(
+assert_true(
 	array_key_exists( 'warehouse', $en_areas ) && ! array_key_exists( 'armazem', $en_areas ),
 	'no translated/suffixed work-area key was introduced (?area=warehouse stays valid)'
 );
 
 // Card labels use the same registry as the filter.
-s8_assert(
+assert_true(
 	conexao_recruitment_agency_job_type_labels( 'warehouse,logistics' ) === array( 'Armazém', 'Logística' ),
 	'job-type card labels keep the Portuguese source strings by default',
 	implode( ', ', conexao_recruitment_agency_job_type_labels( 'warehouse,logistics' ) )
 );
-s8_assert(
+assert_true(
 	array( 'Desconhecido' ) === conexao_recruitment_agency_job_type_labels( 'Desconhecido' ),
 	'an unknown legacy job-type value still passes through unchanged'
 );
 
 // ---------------------------------------------------------------------------
-echo "\n-- 3. Location values: generic words localized, place names untouched --\n";
 
-s8_assert(
+assert_true(
 	'Nacional' === conexao_recruitment_agency_location_display( 'Nacional' ),
 	'"Nacional" is unchanged in Portuguese',
 	conexao_recruitment_agency_location_display( 'Nacional' )
 );
-s8_assert(
+assert_true(
 	'Nacional (Dublin)' === conexao_recruitment_agency_location_display( 'Nacional (Dublin)' ),
 	'"Nacional (Dublin)" keeps its parenthetical place name in Portuguese',
 	conexao_recruitment_agency_location_display( 'Nacional (Dublin)' )
 );
-s8_assert(
+assert_true(
 	'Dublin, Cork, Athlone' === conexao_recruitment_agency_location_display( 'Dublin, Cork, Athlone' ),
 	'a pure place-name coverage string is returned byte-identical',
 	conexao_recruitment_agency_location_display( 'Dublin, Cork, Athlone' )
 );
-s8_assert(
+assert_true(
 	'Deansgrange, Co. Dublin; Dundalk, Co. Louth' === conexao_recruitment_agency_location_display( 'Deansgrange, Co. Dublin; Dundalk, Co. Louth' ),
 	'an address-style coverage string is returned byte-identical'
 );
-s8_assert( '' === conexao_recruitment_agency_location_display( '   ' ), 'an empty coverage string stays empty' );
-s8_assert(
+assert_true( '' === conexao_recruitment_agency_location_display( '   ' ), 'an empty coverage string stays empty' );
+assert_true(
 	'Local-desconhecido' === conexao_recruitment_agency_location_display( 'Local-desconhecido' ),
 	'an unknown coverage value is never dropped or mangled'
 );
@@ -271,18 +237,18 @@ $en_location_label = conexao_recruitment_agency_location_display( 'Nacional (Irl
 restore_previous_locale();
 $pt_locations = conexao_recruitment_agency_locations();
 
-s8_assert(
+assert_true(
 	'Nationwide' === ( $en_locations['nacional']['label'] ?? '' ),
 	'the nationwide location option label is English on the EN page',
 	$en_locations['nacional']['label'] ?? '(missing)'
 );
-s8_assert(
+assert_true(
 	'Nacional' === ( $pt_locations['nacional']['label'] ?? '' ),
 	'the nationwide location option label is unchanged in Portuguese',
 	$pt_locations['nacional']['label'] ?? '(missing)'
 );
-s8_assert( 'Nationwide (Ireland)' === $en_location_label, '"Nacional (Irlanda)" is fully English on the EN page', $en_location_label );
-s8_assert(
+assert_true( 'Nationwide (Ireland)' === $en_location_label, '"Nacional (Irlanda)" is fully English on the EN page', $en_location_label );
+assert_true(
 	'Nacional (Irlanda)' === conexao_recruitment_agency_location_display( 'Nacional (Irlanda)' ),
 	'the Portuguese coverage string is unchanged'
 );
@@ -302,16 +268,15 @@ foreach ( $place_slugs as $slug ) {
 		break;
 	}
 }
-s8_assert( $place_ok, 'every real Irish place name is identical in both languages', $place_detail );
+assert_true( $place_ok, 'every real Irish place name is identical in both languages', $place_detail );
 
 // Filter slugs stay canonical.
-s8_assert(
+assert_true(
 	array( 'nacional', 'dublin' ) === conexao_recruitment_agency_location_slugs( 'Nacional, Dublin' ),
 	'location filter slugs are unchanged (?localizacao=nacional|dublin)'
 );
 
 // ---------------------------------------------------------------------------
-echo "\n-- 4. Employment-Permit employer descriptors --\n";
 
 $employer_ids = get_posts(
 	array(
@@ -323,7 +288,7 @@ $employer_ids = get_posts(
 	)
 );
 
-s8_assert( ! empty( $employer_ids ), 'the install has Employment-Permit employer records to audit' );
+assert_true( ! empty( $employer_ids ), 'the install has Employment-Permit employer records to audit' );
 
 $pt_sectors   = array();
 $en_sectors   = array();
@@ -367,25 +332,24 @@ $pt_role_text   = $unique( $pt_roles_all );
 $en_role_text   = $unique( $en_roles_all );
 $en_loc_text    = $unique( $en_locs );
 
-s8_assert( '' !== $pt_sector_text, 'employer sectors are stored', $pt_sector_text );
-s8_assert( $en_sector_text !== $pt_sector_text, 'employer sectors are language-aware', "en={$en_sector_text}" );
-s8_assert( false === strpos( $en_sector_text, 'Saúde' ), 'no Portuguese sector text leaks into the English view', $en_sector_text );
-s8_assert( false === strpos( $en_role_text, 'Enfermeiros' ), 'no Portuguese role text leaks into the English view', $en_role_text );
-s8_assert( false === strpos( $en_loc_text, 'Nacional' ), 'no generic Portuguese location word leaks into the English view', $en_loc_text );
-s8_assert( false === strpos( $en_loc_text, 'Irlanda' ), 'the country exonym is not left Portuguese in the English view', $en_loc_text );
+assert_true( '' !== $pt_sector_text, 'employer sectors are stored', $pt_sector_text );
+assert_true( $en_sector_text !== $pt_sector_text, 'employer sectors are language-aware', "en={$en_sector_text}" );
+assert_true( false === strpos( $en_sector_text, 'Saúde' ), 'no Portuguese sector text leaks into the English view', $en_sector_text );
+assert_true( false === strpos( $en_role_text, 'Enfermeiros' ), 'no Portuguese role text leaks into the English view', $en_role_text );
+assert_true( false === strpos( $en_loc_text, 'Nacional' ), 'no generic Portuguese location word leaks into the English view', $en_loc_text );
+assert_true( false === strpos( $en_loc_text, 'Irlanda' ), 'the country exonym is not left Portuguese in the English view', $en_loc_text );
 
 // Portuguese is byte-identical to the stored data.
-s8_assert( $pt_sector_text === $unique( $stored_sectors ), 'Portuguese employer sectors are exactly the stored values (source data unchanged)' );
-s8_assert( $pt_role_text === $unique( $stored_roles ), 'Portuguese employer roles are exactly the stored values (source data unchanged)' );
+assert_true( $pt_sector_text === $unique( $stored_sectors ), 'Portuguese employer sectors are exactly the stored values (source data unchanged)' );
+assert_true( $pt_role_text === $unique( $stored_roles ), 'Portuguese employer roles are exactly the stored values (source data unchanged)' );
 
 
 // ---------------------------------------------------------------------------
-echo "\n-- 5. Dates follow the requested language --\n";
 
 $site_format = get_option( 'date_format' );
 
 $pt_filtered = conexao_localized_date_format( $site_format );
-s8_assert( $site_format === $pt_filtered, 'the date format is untouched for the default language', "{$site_format} vs {$pt_filtered}" );
+assert_true( $site_format === $pt_filtered, 'the date format is untouched for the default language', "{$site_format} vs {$pt_filtered}" );
 
 $en_filtered = s8_in_language(
 	'en',
@@ -394,11 +358,11 @@ $en_filtered = s8_in_language(
 	}
 );
 
-s8_assert( 'F j, Y' === $en_filtered, 'the date format is English on a non-default language', $en_filtered );
-s8_assert( false === strpos( $en_filtered, '\d\e' ), 'no Portuguese "de" connector survives in the English date format', $en_filtered );
+assert_true( 'F j, Y' === $en_filtered, 'the date format is English on a non-default language', $en_filtered );
+assert_true( false === strpos( $en_filtered, '\d\e' ), 'no Portuguese "de" connector survives in the English date format', $en_filtered );
 
 $timestamp = strtotime( '2026-08-25 12:00:00' );
-s8_assert(
+assert_true(
 	'25 de agosto de 2026' === wp_date( $site_format, $timestamp ),
 	'the Portuguese date presentation is preserved',
 	wp_date( $site_format, $timestamp )
@@ -418,7 +382,6 @@ s8_assert(
 // resolution.
 
 // ---------------------------------------------------------------------------
-echo "\n-- 6. Read time is language-aware --\n";
 
 switch_to_locale( 'en_US' );
 $en_read      = conexao_reading_time_text();
@@ -427,12 +390,11 @@ $catalog_many = sprintf( _n( '%d minute read', '%d minutes read', 3, 'conexao-br
 restore_previous_locale();
 $pt_read = conexao_reading_time_text();
 
-s8_assert( false !== strpos( $en_read, 'minute read' ), 'the English read time is "N minute(s) read"', $en_read );
-s8_assert( false === strpos( $en_read, 'leitura' ), 'no Portuguese read-time text in English', $en_read );
-s8_assert( false !== strpos( $pt_read, 'min de leitura' ), 'the Portuguese read time is unchanged', $pt_read );
+assert_true( false !== strpos( $en_read, 'minute read' ), 'the English read time is "N minute(s) read"', $en_read );
+assert_true( false === strpos( $en_read, 'leitura' ), 'no Portuguese read-time text in English', $en_read );
+assert_true( false !== strpos( $pt_read, 'min de leitura' ), 'the Portuguese read time is unchanged', $pt_read );
 
 // ---------------------------------------------------------------------------
-echo "\n-- 7. Opportunity types / contract types / UI strings --\n";
 
 switch_to_locale( 'en_US' );
 $en_types = conexao_employment_opportunity_types();
@@ -441,40 +403,40 @@ restore_previous_locale();
 $pt_types = conexao_employment_opportunity_types();
 $pt_state = conexao_employment_opportunities_filter_state();
 
-s8_assert( 'Recruitment agency' === ( $en_types['agency'] ?? '' ), 'opportunity type: agency', $en_types['agency'] ?? '' );
-s8_assert( 'Public sector' === ( $en_types['public_sector'] ?? '' ), 'opportunity type: public sector', $en_types['public_sector'] ?? '' );
-s8_assert( 'Employment Permit history' === ( $en_types['permit_history'] ?? '' ), 'opportunity type: permit history', $en_types['permit_history'] ?? '' );
-s8_assert( 'Agência de recrutamento' === ( $pt_types['agency'] ?? '' ), 'Portuguese opportunity type is unchanged', $pt_types['agency'] ?? '' );
-s8_assert( 'Setor público' === ( $pt_types['public_sector'] ?? '' ), 'Portuguese public-sector type is unchanged', $pt_types['public_sector'] ?? '' );
-s8_assert( 'Histórico de Employment Permits' === ( $pt_types['permit_history'] ?? '' ), 'Portuguese permit-history type is unchanged', $pt_types['permit_history'] ?? '' );
+assert_true( 'Recruitment agency' === ( $en_types['agency'] ?? '' ), 'opportunity type: agency', $en_types['agency'] ?? '' );
+assert_true( 'Public sector' === ( $en_types['public_sector'] ?? '' ), 'opportunity type: public sector', $en_types['public_sector'] ?? '' );
+assert_true( 'Employment Permit history' === ( $en_types['permit_history'] ?? '' ), 'opportunity type: permit history', $en_types['permit_history'] ?? '' );
+assert_true( 'Agência de recrutamento' === ( $pt_types['agency'] ?? '' ), 'Portuguese opportunity type is unchanged', $pt_types['agency'] ?? '' );
+assert_true( 'Setor público' === ( $pt_types['public_sector'] ?? '' ), 'Portuguese public-sector type is unchanged', $pt_types['public_sector'] ?? '' );
+assert_true( 'Histórico de Employment Permits' === ( $pt_types['permit_history'] ?? '' ), 'Portuguese permit-history type is unchanged', $pt_types['permit_history'] ?? '' );
 
-s8_assert( 'All' === ( $en_state['tipo_options'][''] ?? '' ), 'the "All" option is English', $en_state['tipo_options'][''] ?? '' );
-s8_assert( 'Todas' === ( $pt_state['tipo_options'][''] ?? '' ), 'the Portuguese "Todas" option is unchanged', $pt_state['tipo_options'][''] ?? '' );
-s8_assert( 'Temporary' === ( $en_state['contrato_options']['temporario'] ?? '' ), 'contract type: Temporary', $en_state['contrato_options']['temporario'] ?? '' );
-s8_assert( 'Permanent' === ( $en_state['contrato_options']['permanente'] ?? '' ), 'contract type: Permanent', $en_state['contrato_options']['permanente'] ?? '' );
-s8_assert( 'Temporário' === ( $pt_state['contrato_options']['temporario'] ?? '' ), 'Portuguese contract type is unchanged', $pt_state['contrato_options']['temporario'] ?? '' );
-s8_assert( 'Permanente' === ( $pt_state['contrato_options']['permanente'] ?? '' ), 'Portuguese permanent contract is unchanged', $pt_state['contrato_options']['permanente'] ?? '' );
+assert_true( 'All' === ( $en_state['tipo_options'][''] ?? '' ), 'the "All" option is English', $en_state['tipo_options'][''] ?? '' );
+assert_true( 'Todas' === ( $pt_state['tipo_options'][''] ?? '' ), 'the Portuguese "Todas" option is unchanged', $pt_state['tipo_options'][''] ?? '' );
+assert_true( 'Temporary' === ( $en_state['contrato_options']['temporario'] ?? '' ), 'contract type: Temporary', $en_state['contrato_options']['temporario'] ?? '' );
+assert_true( 'Permanent' === ( $en_state['contrato_options']['permanente'] ?? '' ), 'contract type: Permanent', $en_state['contrato_options']['permanente'] ?? '' );
+assert_true( 'Temporário' === ( $pt_state['contrato_options']['temporario'] ?? '' ), 'Portuguese contract type is unchanged', $pt_state['contrato_options']['temporario'] ?? '' );
+assert_true( 'Permanente' === ( $pt_state['contrato_options']['permanente'] ?? '' ), 'Portuguese permanent contract is unchanged', $pt_state['contrato_options']['permanente'] ?? '' );
 
 // The FILTER VALUES are the language-neutral identity and must not be translated.
-s8_assert(
+assert_true(
 	array_key_exists( 'warehouse', $en_state['area_options'] )
 		&& array_key_exists( 'temporario', $en_state['contrato_options'] )
 		&& array_key_exists( 'nacional', $en_state['location_options'] ),
 	'internal filter values (?area=warehouse, ?contrato=temporario, ?localizacao=nacional) are unchanged'
 );
-s8_assert(
+assert_true(
 	array_keys( $en_state['area_options'] ) === array_keys( $pt_state['area_options'] ),
 	'the offered area VALUES are identical in both languages (only labels differ)'
 );
-s8_assert(
+assert_true(
 	array_keys( $en_state['location_options'] ) === array_keys( $pt_state['location_options'] ),
 	'the offered location VALUES are identical in both languages (only labels differ)'
 );
-s8_assert(
+assert_true(
 	array_key_exists( 'agency', $en_state['tipo_options'] ) && array_key_exists( 'permit_history', $en_state['tipo_options'] ),
 	'internal opportunity-type values (?tipo=agency|permit_history) are unchanged'
 );
-s8_assert(
+assert_true(
 	isset( $en_state['area_options']['warehouse'], $pt_state['area_options']['warehouse'] )
 		&& $en_state['area_options']['warehouse'] !== $pt_state['area_options']['warehouse'],
 	'the SAME work-area value carries a different LABEL per language (label vs value are separate)'
@@ -503,24 +465,23 @@ $count_pt = sprintf(
 );
 $empty_pt = __( 'Nenhuma oportunidade encontrada com esses filtros.', 'conexao-br-irlanda' );
 
-s8_assert( '43 opportunities found' === $count_en, 'the result count is English and pluralized', $count_en );
-s8_assert( 'No opportunities found with these filters.' === $empty_en, 'the empty state is English', $empty_en );
-s8_assert( 'No location found' === $no_loc_en, 'the location empty state is English', $no_loc_en );
-s8_assert( 'Clear' === $clear_en, 'the clear action is English', $clear_en );
-s8_assert( 'Show results' === $apply_en, 'the apply action is English', $apply_en );
-s8_assert( 'Filter' === $filter_en, 'the mobile filter button is English', $filter_en );
-s8_assert( 'Filters' === $sheets_en, 'the mobile filter dialog title is English', $sheets_en );
-s8_assert( '43 oportunidades encontradas' === $count_pt, 'the Portuguese result count is unchanged', $count_pt );
-s8_assert( 'Nenhuma oportunidade encontrada com esses filtros.' === $empty_pt, 'the Portuguese empty state is unchanged', $empty_pt );
+assert_true( '43 opportunities found' === $count_en, 'the result count is English and pluralized', $count_en );
+assert_true( 'No opportunities found with these filters.' === $empty_en, 'the empty state is English', $empty_en );
+assert_true( 'No location found' === $no_loc_en, 'the location empty state is English', $no_loc_en );
+assert_true( 'Clear' === $clear_en, 'the clear action is English', $clear_en );
+assert_true( 'Show results' === $apply_en, 'the apply action is English', $apply_en );
+assert_true( 'Filter' === $filter_en, 'the mobile filter button is English', $filter_en );
+assert_true( 'Filters' === $sheets_en, 'the mobile filter dialog title is English', $sheets_en );
+assert_true( '43 oportunidades encontradas' === $count_pt, 'the Portuguese result count is unchanged', $count_pt );
+assert_true( 'Nenhuma oportunidade encontrada com esses filtros.' === $empty_pt, 'the Portuguese empty state is unchanged', $empty_pt );
 
 // The employment-safety warning keeps its official references and full meaning.
-s8_assert( false !== strpos( $warning_en, 'never pay' ) && false !== strpos( $warning_en, 'Employment Permit' ), 'the safety warning is English and keeps the official term', $warning_en );
-s8_assert( false !== strpos( $warning_en, 'legitimate recruitment agency' ), 'the safety warning keeps its full meaning (not shortened)', $warning_en );
-s8_assert( false !== strpos( $permit_en, 'Department of Enterprise' ), 'the official Department of Enterprise reference is preserved', $permit_en );
-s8_assert( false !== strpos( $permit_en, 'does not guarantee current sponsorship' ), 'the permit caveat is preserved in English', $permit_en );
+assert_true( false !== strpos( $warning_en, 'never pay' ) && false !== strpos( $warning_en, 'Employment Permit' ), 'the safety warning is English and keeps the official term', $warning_en );
+assert_true( false !== strpos( $warning_en, 'legitimate recruitment agency' ), 'the safety warning keeps its full meaning (not shortened)', $warning_en );
+assert_true( false !== strpos( $permit_en, 'Department of Enterprise' ), 'the official Department of Enterprise reference is preserved', $permit_en );
+assert_true( false !== strpos( $permit_en, 'does not guarantee current sponsorship' ), 'the permit caveat is preserved in English', $permit_en );
 
 // ---------------------------------------------------------------------------
-echo "\n-- 8. Language-aware URLs, no string replacement --\n";
 
 $pt_url = conexao_empregos_page_url();
 $en_url = s8_in_language(
@@ -530,12 +491,11 @@ $en_url = s8_in_language(
 	}
 );
 
-s8_assert( false !== strpos( (string) $pt_url, '/empregos/' ), 'the PT jobs URL stays canonical', (string) $pt_url );
-s8_assert( $en_url !== $pt_url, 'the EN request resolves a different jobs URL', (string) $en_url );
-s8_assert( '' !== $en_url, 'conexao_empregos_page_url() resolves on the EN language' );
+assert_true( false !== strpos( (string) $pt_url, '/empregos/' ), 'the PT jobs URL stays canonical', (string) $pt_url );
+assert_true( $en_url !== $pt_url, 'the EN request resolves a different jobs URL', (string) $en_url );
+assert_true( '' !== $en_url, 'conexao_empregos_page_url() resolves on the EN language' );
 
 $pt_source = conexao_page_translation_snapshot_page( (int) $pt_page->ID );
-s8_assert( 'empregos' === $pt_source['name'], 'the canonical PT path is still "empregos" (no translated slug)' );
+assert_true( 'empregos' === $pt_source['name'], 'the canonical PT path is still "empregos" (no translated slug)' );
 
-echo "\nstage 8 EN Jobs language: {$passed} passed, {$failed} failed\n";
-exit( $failed > 0 ? 1 : 0 );
+test_finish();

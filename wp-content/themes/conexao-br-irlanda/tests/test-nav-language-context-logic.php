@@ -30,20 +30,20 @@
  * @package conexao-br-irlanda
  */
 
+// This suite is deliberately STANDALONE (no WordPress, no database, no
+// network): it parses theme source with token_get_all() and provides its own
+// WordPress function stubs below. It therefore does NOT load tests/bootstrap.php
+// — doing so would redeclare those stubs. It still uses the shared assertion
+// API via the library alone, which is the only permitted exception to the
+// "one bootstrap" rule (engineering standard §8.2 lists this suite as the
+// standalone/static layer).
+define( 'CONEXAO_TESTS_ROOT', dirname( __DIR__, 4 ) . '/tests' );
+require_once CONEXAO_TESTS_ROOT . '/lib/assertions.php';
+
 error_reporting( E_ALL );
 
 $GLOBALS['conexao_test_passed'] = 0;
 $GLOBALS['conexao_test_failed'] = 0;
-
-function check( string $label, bool $ok, string $detail = '' ): void {
-	if ( $ok ) {
-		++$GLOBALS['conexao_test_passed'];
-		echo "  PASS  {$label}\n";
-	} else {
-		++$GLOBALS['conexao_test_failed'];
-		echo "  FAIL  {$label}" . ( '' !== $detail ? "  [{$detail}]" : '' ) . "\n";
-	}
-}
 
 /**
  * Extract every TOP-LEVEL named function definition from a PHP source file.
@@ -412,7 +412,6 @@ function conexao_test_render_nav( string $lang, string $path = '/' ): array {
 	return $by_title;
 }
 
-echo "== EN primary-navigation LANGUAGE-CONTEXT logic test ==\n";
 
 
 $BASE = 'http://example.test';
@@ -422,7 +421,6 @@ $PT   = $BASE . '/';
 // ---------------------------------------------------------------------------
 /// A. EN navigation URL audit — every EN primary-nav destination.
 // ---------------------------------------------------------------------------
-echo "== A. EN primary-navigation URL audit ==\n";
 
 $en = conexao_test_render_nav( 'en', '/en/' );
 
@@ -441,50 +439,46 @@ $expected_en = array(
 	'Contact'          => $EN . 'contact/',
 );
 
-check( 'A1 EN nav renders the canonical nine items', 9 === count( $en ), 'got ' . count( $en ) . ': ' . implode( ', ', array_keys( $en ) ) );
+assert_true( 9 === count( $en ), 'A1 EN nav renders the canonical nine items', 'got ' . count( $en ) . ': ' . implode( ', ', array_keys( $en ) ) );
 
 foreach ( $expected_en as $title => $expected ) {
 	$actual = isset( $en[ $title ] ) ? untrailingslashit( (string) $en[ $title ]->url ) : '<missing>';
-	check( "A2 \"{$title}\" -> {$expected}", untrailingslashit( $expected ) === $actual, "got {$actual}" );
+	assert_true( untrailingslashit( $expected ) === $actual, "A2 \"{$title}\" -> {$expected}", "got {$actual}" );
 }
 
-check( 'A3 "About Us" is removed from the rendered EN nav (render-time rule)', ! isset( $en['About Us'] ) );
-check( 'A4 no English nav item is empty', 0 === count( array_filter( $en, static function ( $i ) { return '' === trim( (string) $i->url ); } ) ) );
+assert_true( ! isset( $en['About Us'] ), 'A3 "About Us" is removed from the rendered EN nav (render-time rule)');
+assert_true( 0 === count( array_filter( $en, static function ( $i ) { return '' === trim( (string) $i->url ); } ) ), 'A4 no English nav item is empty');
 
 // ---------------------------------------------------------------------------
 /// B. Jobs specifically.
 // ---------------------------------------------------------------------------
-echo "== B. Jobs ==\n";
 
 $jobs = isset( $en['Jobs'] ) ? $en['Jobs'] : null;
-check( 'B1 EN "Jobs" resolves to the linked EN translation /en/jobs/', $jobs && untrailingslashit( $jobs->url ) === untrailingslashit( $BASE . '/en/jobs/' ), $jobs ? $jobs->url : 'missing' );
-check( 'B2 EN "Jobs" no longer resolves to the Portuguese /empregos/', $jobs && untrailingslashit( $jobs->url ) !== untrailingslashit( $BASE . '/empregos/' ) );
-check( 'B3 the Jobs section spec is page-backed (path=empregos), not a CPT archive', 'page' === conexao_primary_nav_sections()['empregos']['type'] && 'empregos' === conexao_primary_nav_sections()['empregos']['path'] );
-check( 'B4 the `job` CPT still has no archive (root cause remains unchanged)', false === ( get_post_type_object( 'job' )->has_archive ) );
+assert_true( $jobs && untrailingslashit( $jobs->url ) === untrailingslashit( $BASE . '/en/jobs/' ), 'B1 EN "Jobs" resolves to the linked EN translation /en/jobs/', $jobs ? $jobs->url : 'missing' );
+assert_true( $jobs && untrailingslashit( $jobs->url ) !== untrailingslashit( $BASE . '/empregos/' ), 'B2 EN "Jobs" no longer resolves to the Portuguese /empregos/');
+assert_true( 'page' === conexao_primary_nav_sections()['empregos']['type'] && 'empregos' === conexao_primary_nav_sections()['empregos']['path'], 'B3 the Jobs section spec is page-backed (path=empregos), not a CPT archive');
+assert_true( false === ( get_post_type_object( 'job' )->has_archive ), 'B4 the `job` CPT still has no archive (root cause remains unchanged)');
 
 // ---------------------------------------------------------------------------
 /// C. Blog specifically — B2 destination (PT content under EN URL, no redirect).
 // ---------------------------------------------------------------------------
-echo "== C. Blog ==\n";
 
 $blog = isset( $en['Blog'] ) ? $en['Blog'] : null;
-check( 'C1 EN "Blog" resolves to the B2 /en/blog/ URL (PT content under EN shell)', $blog && untrailingslashit( $blog->url ) === untrailingslashit( $BASE . '/en/blog/' ) );
-check( 'C2 Blog does NOT leave the /en/ context (B2 renders under /en/blog/)', ! in_array( 'Blog', conexao_test_en_items_outside_en(), true ) );
+assert_true( $blog && untrailingslashit( $blog->url ) === untrailingslashit( $BASE . '/en/blog/' ), 'C1 EN "Blog" resolves to the B2 /en/blog/ URL (PT content under EN shell)');
+assert_true( ! in_array( 'Blog', conexao_test_en_items_outside_en(), true ), 'C2 Blog does NOT leave the /en/ context (B2 renders under /en/blog/)');
 
 // ---------------------------------------------------------------------------
 /// D. Translated items stay in EN.
 // ---------------------------------------------------------------------------
-echo "== D. Translated / archive items stay in EN ==\n";
 
 foreach ( array( 'Home', 'Sponsors', 'Guides', 'Events', 'Courses', 'Leisure & Tourism', 'Contact' ) as $title ) {
 	$url = isset( $en[ $title ] ) ? (string) $en[ $title ]->url : '';
-	check( "D1 \"{$title}\" is an EN-context destination", 0 === strpos( untrailingslashit( $url ), untrailingslashit( $EN ) ) || untrailingslashit( $url ) === untrailingslashit( $EN ), $url );
+	assert_true( 0 === strpos( untrailingslashit( $url ), untrailingslashit( $EN ) ) || untrailingslashit( $url ) === untrailingslashit( $EN ), "D1 \"{$title}\" is an EN-context destination", $url );
 }
 
 // ---------------------------------------------------------------------------
 /// E. PT regression — PT navigation unchanged.
 // ---------------------------------------------------------------------------
-echo "== E. PT regression ==\n";
 
 $pt = conexao_test_render_nav( 'pt', '/' );
 $expected_pt = array(
@@ -500,9 +494,9 @@ $expected_pt = array(
 );
 foreach ( $expected_pt as $title => $expected ) {
 	$actual = isset( $pt[ $title ] ) ? untrailingslashit( (string) $pt[ $title ]->url ) : '<missing>';
-	check( "E1 PT \"{$title}\" -> {$expected}", untrailingslashit( $expected ) === $actual, "got {$actual}" );
+	assert_true( untrailingslashit( $expected ) === $actual, "E1 PT \"{$title}\" -> {$expected}", "got {$actual}" );
 }
-check( 'E2 PT "Empregos" still points at the PT page /empregos/', isset( $pt['Empregos'] ) && untrailingslashit( $pt['Empregos']->url ) === untrailingslashit( $BASE . '/empregos/' ) );
+assert_true( isset( $pt['Empregos'] ) && untrailingslashit( $pt['Empregos']->url ) === untrailingslashit( $BASE . '/empregos/' ), 'E2 PT "Empregos" still points at the PT page /empregos/');
 
 
 /**
@@ -529,50 +523,45 @@ function conexao_test_en_items_outside_en(): array {
 // ---------------------------------------------------------------------------
 /// F. Active states still work.
 // ---------------------------------------------------------------------------
-echo "== F. Active states ==\n";
 
 function conexao_test_is_active( array $items, string $title, string $class ): bool {
 	return isset( $items[ $title ] ) && in_array( $class, (array) $items[ $title ]->classes, true );
 }
 
 $active_en_jobs = conexao_test_render_nav( 'en', '/en/jobs/' );
-check( 'F1 EN /en/jobs/ marks "Jobs" as current-menu-item', conexao_test_is_active( $active_en_jobs, 'Jobs', 'current-menu-item' ) );
-check( 'F2 EN /en/jobs/ does NOT mark "Blog" or "Guides" as active', ! conexao_test_is_active( $active_en_jobs, 'Blog', 'current-menu-item' ) && ! conexao_test_is_active( $active_en_jobs, 'Guides', 'current-menu-item' ) );
+assert_true( conexao_test_is_active( $active_en_jobs, 'Jobs', 'current-menu-item' ), 'F1 EN /en/jobs/ marks "Jobs" as current-menu-item');
+assert_true( ! conexao_test_is_active( $active_en_jobs, 'Blog', 'current-menu-item' ) && ! conexao_test_is_active( $active_en_jobs, 'Guides', 'current-menu-item' ), 'F2 EN /en/jobs/ does NOT mark "Blog" or "Guides" as active');
 
 $active_en_guides = conexao_test_render_nav( 'en', '/en/guias/' );
-check( 'F3 EN /en/guias/ marks "Guides" as current-menu-item', conexao_test_is_active( $active_en_guides, 'Guides', 'current-menu-item' ) );
+assert_true( conexao_test_is_active( $active_en_guides, 'Guides', 'current-menu-item' ), 'F3 EN /en/guias/ marks "Guides" as current-menu-item');
 
 $active_en_home = conexao_test_render_nav( 'en', '/en/' );
-check( 'F4 EN /en/ marks "Home" as current-menu-item', conexao_test_is_active( $active_en_home, 'Home', 'current-menu-item' ) );
+assert_true( conexao_test_is_active( $active_en_home, 'Home', 'current-menu-item' ), 'F4 EN /en/ marks "Home" as current-menu-item');
 
 $active_pt_jobs = conexao_test_render_nav( 'pt', '/empregos/' );
-check( 'F5 PT /empregos/ marks "Empregos" as current-menu-item', conexao_test_is_active( $active_pt_jobs, 'Empregos', 'current-menu-item' ) );
+assert_true( conexao_test_is_active( $active_pt_jobs, 'Empregos', 'current-menu-item' ), 'F5 PT /empregos/ marks "Empregos" as current-menu-item');
 
 $active_pt_blog = conexao_test_render_nav( 'pt', '/blog/' );
-check( 'F6 /blog/ marks "Blog" as current-menu-item', conexao_test_is_active( $active_pt_blog, 'Blog', 'current-menu-item' ) );
+assert_true( conexao_test_is_active( $active_pt_blog, 'Blog', 'current-menu-item' ), 'F6 /blog/ marks "Blog" as current-menu-item');
 
 // ---------------------------------------------------------------------------
 /// G. Structural guards (no regression to the previous header fix).
 // ---------------------------------------------------------------------------
-echo "== G. Structural guards ==\n";
 
 $header_src = (string) file_get_contents( $theme_dir . '/header.php' );
-check( 'G1 header.php does NOT use wp_page_menu as the wp_nav_menu fallback', false === strpos( $header_src, 'wp_page_menu' ) );
-check( 'G2 BOTH wp_nav_menu() calls (desktop + mobile) use the safe empty fallback', 2 === substr_count( $header_src, "'fallback_cb'    => 'conexao_safe_nav_menu_fallback'," ) );
-check( 'G3 header.php contains NO hard-coded /en/empregos/ or /en/blog/ URL', false === strpos( $header_src, '/en/empregos/' ) && false === strpos( $header_src, '/en/blog/' ) );
-check( 'G4 header.php contains NO hard-coded /empregos/ or /blog/ navigation URL', false === strpos( $header_src, "'/empregos/" ) && false === strpos( $header_src, "'/blog/" ) );
-check( 'G5 desktop and mobile render the SAME primary theme location', 2 === substr_count( $header_src, "'theme_location'   => 'primary'," ) || 2 === substr_count( $header_src, "'theme_location' => 'primary'," ), 'shared menu location -> mobile gets the same corrected destinations' );
+assert_true( false === strpos( $header_src, 'wp_page_menu' ), 'G1 header.php does NOT use wp_page_menu as the wp_nav_menu fallback');
+assert_true( 2 === substr_count( $header_src, "'fallback_cb'    => 'conexao_safe_nav_menu_fallback'," ), 'G2 BOTH wp_nav_menu() calls (desktop + mobile) use the safe empty fallback');
+assert_true( false === strpos( $header_src, '/en/empregos/' ) && false === strpos( $header_src, '/en/blog/' ), 'G3 header.php contains NO hard-coded /en/empregos/ or /en/blog/ URL');
+assert_true( false === strpos( $header_src, "'/empregos/" ) && false === strpos( $header_src, "'/blog/" ), 'G4 header.php contains NO hard-coded /empregos/ or /blog/ navigation URL');
+assert_true( 2 === substr_count( $header_src, "'theme_location'   => 'primary'," ) || 2 === substr_count( $header_src, "'theme_location' => 'primary'," ), 'G5 desktop and mobile render the SAME primary theme location', 'shared menu location -> mobile gets the same corrected destinations' );
 
 // ---------------------------------------------------------------------------
 /// H. Language-leakage allowlist (Phase 13).
 // ---------------------------------------------------------------------------
-echo "== H. Language-leakage allowlist ==\n";
 
 $leaks = conexao_test_en_items_outside_en();
-check( 'H1 NO EN nav item leaves the /en/ context (Blog is a B2 destination at /en/blog/)', array() === $leaks, 'got ' . implode( ', ', $leaks ) );
-check( 'H2 Jobs is NOT in the leakage list', ! in_array( 'Jobs', $leaks, true ) );
-check( 'H3 no EN nav item leaks to PT', array() === $leaks, 'got ' . implode( ', ', $leaks ) );
+assert_true( array() === $leaks, 'H1 NO EN nav item leaves the /en/ context (Blog is a B2 destination at /en/blog/)', 'got ' . implode( ', ', $leaks ) );
+assert_true( ! in_array( 'Jobs', $leaks, true ), 'H2 Jobs is NOT in the leakage list');
+assert_true( array() === $leaks, 'H3 no EN nav item leaks to PT', 'got ' . implode( ', ', $leaks ) );
 
-echo "\n{$GLOBALS['conexao_test_passed']} passed, {$GLOBALS['conexao_test_failed']} failed.\n";
-exit( 0 === $GLOBALS['conexao_test_failed'] ? 0 : 1 );
-
+test_finish();

@@ -1,0 +1,85 @@
+{
+  "description": "Stage 9 English guide archive: archive presence, B2 absence, self-canonical, hreflang set, pagination and category filters. Migrated from scripts/stage9-guide-http-verify.sh.",
+  "base_url_default": "http://localhost:8080",
+  "rows": [
+    {
+      "id": "pt-guides-200",
+      "url": "/guias/",
+      "expect_status": 200,
+      "expect_contains": [
+        "rel=\"canonical\" href=\"",
+        "/guias/"
+      ],
+      "expect_absent": [
+        "language-fallback-notice"
+      ],
+      "note": "The PT guides archive is 200 and self-canonical, with no B2 notice."
+    },
+    {
+      "id": "en-guides-200",
+      "url": "/en/guias/",
+      "expect_status": 200,
+      "expect_contains": [
+        "rel=\"canonical\" href=\"",
+        "/en/guias/",
+        "hreflang=\"pt-BR\"",
+        "hreflang=\"en\"",
+        "hreflang=\"x-default\""
+      ],
+      "expect_absent": [
+        "language-fallback-notice"
+      ],
+      "note": "Stage 9: /en/guias/ is a real English archive (no B2 notice), self-canonical, with the full PT/en/x-default hreflang set."
+    },
+    {
+      "id": "pt-guides-page-2",
+      "url": "/guias/page/2/",
+      "expect_status": 200,
+      "expect_contains": [],
+      "expect_absent": [],
+      "note": "PT guides pagination page 2 serves (stage9 pagination check)."
+    },
+    {
+      "id": "en-guides-page-2",
+      "url": "/en/guias/page/2/",
+      "expect_status": 200,
+      "expect_contains": [],
+      "expect_absent": [],
+      "note": "EN guides pagination page 2 serves (stage9 pagination check)."
+    },
+    {
+      "id": "en-filter-en-slug",
+      "url": "/en/guias/?categoria=documents",
+      "expect_status": 200,
+      "expect_contains": [],
+      "expect_absent": [
+        "language-fallback-notice"
+      ],
+      "note": "The EN category filter accepts the EN term slug and serves the EN archive (stage9 category-filter check)."
+    },
+    {
+      "id": "en-filter-pt-slug",
+      "url": "/en/guias/?categoria=saude",
+      "expect_status": 200,
+      "expect_contains": [],
+      "expect_absent": [],
+      "note": "An EN filter request using a PT term slug still answers 200 in the EN context instead of bouncing to PT (stage9 category-filter check)."
+    },
+    {
+      "id": "en-filter-unknown-slug",
+      "url": "/en/guias/?categoria=naoexiste",
+      "expect_status": 200,
+      "expect_contains": [],
+      "expect_absent": [],
+      "note": "An unknown category slug yields an empty 200 result, not an error (stage9 filter check)."
+    },
+    {
+      "id": "pt-filter-200",
+      "url": "/guias/?categoria=documentos",
+      "expect_status": 200,
+      "expect_contains": [],
+      "expect_absent": [],
+      "note": "The PT category filter is unchanged by the EN rollout (stage9 PT-invariance check)."
+    }
+  ]
+}

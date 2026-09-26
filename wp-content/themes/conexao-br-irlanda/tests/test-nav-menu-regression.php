@@ -27,87 +27,65 @@
  * @package conexao-br-irlanda
  */
 
-$_SERVER['HTTP_HOST']   = $_SERVER['HTTP_HOST'] ?? 'localhost';
-$_SERVER['REQUEST_URI'] = $_SERVER['REQUEST_URI'] ?? '/';
 
-$wp_load = dirname( dirname( dirname( dirname( __DIR__ ) ) ) ) . '/wp-load.php';
-if ( file_exists( $wp_load ) ) {
-	require_once $wp_load;
-} else {
-	require_once '/var/www/html/wp-load.php';
-}
+// Shared Stage E test bootstrap: the only place allowed to locate wp-load.php.
+require_once dirname( __DIR__, 4 ) . '/tests/bootstrap.php';
 
 $passed = 0;
 $failed = 0;
 
-function check( string $label, bool $ok ): void {
-	global $passed, $failed;
-	if ( $ok ) {
-		++$passed;
-		echo "  PASS  {$label}\n";
-	} else {
-		++$failed;
-		echo "  FAIL  {$label}\n";
-	}
-}
-
-echo "== A. PT primary menu ==\n";
 
 $registered = get_registered_nav_menus();
-check( "A1 'primary' nav menu location is registered", isset( $registered['primary'] ) );
-check( "A2 'footer'/'social' locations remain registered", isset( $registered['footer'], $registered['social'] ) );
+assert_true( isset( $registered['primary'] ), "A1 'primary' nav menu location is registered");
+assert_true( isset( $registered['footer'], $registered['social'] ), "A2 'footer'/'social' locations remain registered");
 
-check( 'A3 a menu is assigned to the primary location', has_nav_menu( 'primary' ) );
+assert_true( has_nav_menu( 'primary' ), 'A3 a menu is assigned to the primary location');
 $locations       = get_nav_menu_locations();
 $primary_menu_id = (int) ( $locations['primary'] ?? 0 );
-check( 'A4 primary location assignment is non-zero', $primary_menu_id > 0 );
+assert_true( $primary_menu_id > 0, 'A4 primary location assignment is non-zero');
 
 $primary_menu = wp_get_nav_menu_object( 'Menu Principal' );
-check( 'A5 curated menu "Menu Principal" exists', (bool) $primary_menu );
-check( 'A6 "Menu Principal" is the menu assigned to primary', (int) ( $primary_menu->term_id ?? 0 ) === $primary_menu_id );
+assert_true( (bool) $primary_menu, 'A5 curated menu "Menu Principal" exists');
+assert_true( (int) ( $primary_menu->term_id ?? 0 ) === $primary_menu_id, 'A6 "Menu Principal" is the menu assigned to primary');
 
 // Polylang per-language assignment — the actual regression cause. Polylang's
 // theme_mod_nav_menu_locations filter resolves the location EXCLUSIVELY from
 // nav_menus[stylesheet][location][lang]; without the 'pt' entry every
 // language (including PT) lost the menu and hit the fallback.
 $polylang_active = function_exists( 'pll_current_language' );
-check( 'A7 Polylang is active', $polylang_active );
+assert_true( $polylang_active, 'A7 Polylang is active');
 
 if ( $polylang_active ) {
 	$stylesheet = (string) get_option( 'stylesheet' );
 	$options    = get_option( 'polylang', array() );
 	$pll_pt     = (int) ( $options['nav_menus'][ $stylesheet ]['primary']['pt'] ?? 0 );
-	check( 'A8 Polylang nav_menus[primary][pt] is assigned', $pll_pt > 0 );
-	check( 'A9 Polylang nav_menus[primary][pt] points at "Menu Principal"', $pll_pt === $primary_menu_id );
+	assert_true( $pll_pt > 0, 'A8 Polylang nav_menus[primary][pt] is assigned');
+	assert_true( $pll_pt === $primary_menu_id, 'A9 Polylang nav_menus[primary][pt] points at "Menu Principal"');
 
 	$pll_en = (int) ( $options['nav_menus'][ $stylesheet ]['primary']['en'] ?? 0 );
-	check(
-		'A10 EN per-language state is coherent (no EN menu yet, or a valid one assigned)',
-		0 === $pll_en || wp_get_nav_menu_object( $pll_en ) !== false
-	);
+	assert_true( 0 === $pll_en || wp_get_nav_menu_object( $pll_en ) !== false, 'A10 EN per-language state is coherent (no EN menu yet, or a valid one assigned)');
 
 	$en_exists = (bool) pll_languages_list( array( 'slug' => 'en' ) );
-	check( 'A11 EN language exists (EN layer intact)', $en_exists );
+	assert_true( $en_exists, 'A11 EN language exists (EN layer intact)');
 }
 
-echo "== C. EN primary menu ==\n";
 
 // The EN header regression: with no English menu and no per-language
 // assignment, Polylang nullified the 'primary' location on /en/ and the
 // header rendered its safe empty fallback. The EN menu must exist and be
 // assigned through the same per-language mechanism the PT menu uses.
 $en_menu = wp_get_nav_menu_object( 'Main Menu' );
-check( 'C1 English menu "Main Menu" exists', (bool) $en_menu );
+assert_true( (bool) $en_menu, 'C1 English menu "Main Menu" exists');
 $en_menu_id = (int) ( $en_menu->term_id ?? 0 );
 
 $stylesheet = (string) get_option( 'stylesheet' );
 $options    = get_option( 'polylang', array() );
 $pll_en     = (int) ( $options['nav_menus'][ $stylesheet ]['primary']['en'] ?? 0 );
-check( 'C2 Polylang nav_menus[primary][en] is assigned', $pll_en > 0 );
-check( 'C3 Polylang nav_menus[primary][en] points at "Main Menu"', $pll_en === $en_menu_id );
+assert_true( $pll_en > 0, 'C2 Polylang nav_menus[primary][en] is assigned');
+assert_true( $pll_en === $en_menu_id, 'C3 Polylang nav_menus[primary][en] points at "Main Menu"');
 
 $pll_pt = (int) ( $options['nav_menus'][ $stylesheet ]['primary']['pt'] ?? 0 );
-check( 'C4 PT assignment is untouched by the EN work (still "Menu Principal")', $pll_pt === $primary_menu_id );
+assert_true( $pll_pt === $primary_menu_id, 'C4 PT assignment is untouched by the EN work (still "Menu Principal")');
 
 // Stored EN menu content mirrors the PT menu's stored structure: the same
 // canonical destinations (URLs are resolved per language at render time),
@@ -124,9 +102,7 @@ foreach ( $en_items as $item ) {
 	$en_titles[] = html_entity_decode( trim( wp_strip_all_tags( $item->title ) ), ENT_QUOTES, 'UTF-8' );
 	$en_urls[]   = untrailingslashit( (string) $item->url );
 }
-check(
-	'C5 EN menu stores the canonical curated destinations (Home, Sponsors, Guides, Events, Courses, Leisure & Tourism, Jobs, Blog, About Us, Contact)',
-	array(
+assert_true( array(
 		'/',
 		'/apoiadores/',
 		'/guias/',
@@ -142,26 +118,17 @@ check(
 			return trailingslashit( (string) wp_parse_url( $url, PHP_URL_PATH ) );
 		},
 		$en_urls
-	),
-	'got ' . wp_json_encode( $en_urls )
-);
+	), 'C5 EN menu stores the canonical curated destinations (Home, Sponsors, Guides, Events, Courses, Leisure & Tourism, Jobs, Blog, About Us, Contact)', 'got ' . wp_json_encode( $en_urls ) );
 $expected_en_titles = array( 'Home', 'Sponsors', 'Guides', 'Events', 'Courses', 'Leisure & Tourism', 'Jobs', 'Blog', 'About Us', 'Contact' );
-check(
-	'C6 EN menu stores English titles (existing EN labels of the linked objects/directories)',
-	$expected_en_titles === $en_titles,
-	'got ' . wp_json_encode( $en_titles )
-);
-check(
-	'C7 EN stored menu has no "Notícias" item',
-	0 === count( array_filter( $en_urls, static function ( $url ) {
+assert_true( $expected_en_titles === $en_titles, 'C6 EN menu stores English titles (existing EN labels of the linked objects/directories)', 'got ' . wp_json_encode( $en_titles ) );
+assert_true( 0 === count( array_filter( $en_urls, static function ( $url ) {
 		return false !== strpos( $url, '/noticias' );
-	} ) )
-);
+	} ) ), 'C7 EN stored menu has no "Notícias" item');
 
 // Language-aware render-time helpers (guarded: no language context in CLI →
 // PT behaviour must be byte-identical).
-check( 'C8 language-aware archive URL helper exists', function_exists( 'conexao_primary_nav_archive_url' ) );
-check( 'C9 language-aware label/url helpers preserve PT defaults in no-language context', conexao_lang_url( '/blog/' ) === home_url( '/blog/' ) && conexao_primary_nav_archive_url( 'event', 'eventos' ) === ( get_post_type_archive_link( 'event' ) ? get_post_type_archive_link( 'event' ) : home_url( '/eventos/' ) ) );
+assert_true( function_exists( 'conexao_primary_nav_archive_url' ), 'C8 language-aware archive URL helper exists');
+assert_true( conexao_lang_url( '/blog/' ) === home_url( '/blog/' ) && conexao_primary_nav_archive_url( 'event', 'eventos' ) === ( get_post_type_archive_link( 'event' ) ? get_post_type_archive_link( 'event' ) : home_url( '/eventos/' ) ), 'C9 language-aware label/url helpers preserve PT defaults in no-language context');
 
 // Curated stored menu content. Canonical order is enforced by menu_order +
 // the documented render-time filters, never by this test.
@@ -180,34 +147,30 @@ foreach ( $expected_urls as $suffix ) {
 		$missing[] = $suffix;
 	}
 }
-check( 'A12 stored menu carries the canonical curated destinations (Início, Apoiadores, Guias, Eventos, Cursos, Empregos, Blog, Contato)', array() === $missing );
+assert_true( array() === $missing, 'A12 stored menu carries the canonical curated destinations (Início, Apoiadores, Guias, Eventos, Cursos, Empregos, Blog, Contato)');
 $noticias = array_filter( $urls, static function ( $url ) {
 	return false !== strpos( $url, '/noticias' );
 } );
-check( 'A13 stored menu has no "Notícias" item', 0 === count( $noticias ) );
+assert_true( 0 === count( $noticias ), 'A13 stored menu has no "Notícias" item');
 
-check( 'A14 render-time nav modifier conexao_modify_primary_nav_items() exists (Início rename, Sobre Nós removal, Lazer e turismo insertion, Blog fallback insert)', function_exists( 'conexao_modify_primary_nav_items' ) );
-check( 'A15 render-time nav normalizer conexao_normalize_primary_nav_sections() exists', function_exists( 'conexao_normalize_primary_nav_sections' ) );
+assert_true( function_exists( 'conexao_modify_primary_nav_items' ), 'A14 render-time nav modifier conexao_modify_primary_nav_items() exists (Início rename, Sobre Nós removal, Lazer e turismo insertion, Blog fallback insert)');
+assert_true( function_exists( 'conexao_normalize_primary_nav_sections' ), 'A15 render-time nav normalizer conexao_normalize_primary_nav_sections() exists');
 
-echo "== B. Fallback safety ==\n";
 
 $header_src = (string) file_get_contents( CONEXAO_THEME_DIR . '/header.php' );
-check( 'B1 header.php does not use wp_page_menu as wp_nav_menu fallback', false === strpos( $header_src, 'wp_page_menu' ) );
+assert_true( false === strpos( $header_src, 'wp_page_menu' ), 'B1 header.php does not use wp_page_menu as wp_nav_menu fallback');
 $count = substr_count( $header_src, "'fallback_cb'    => 'conexao_safe_nav_menu_fallback'," );
-check( 'B2 BOTH wp_nav_menu calls (desktop + mobile drawer) use the safe empty fallback', 2 === $count );
+assert_true( 2 === $count, 'B2 BOTH wp_nav_menu calls (desktop + mobile drawer) use the safe empty fallback');
 
-check( 'B3 safe fallback helper exists', function_exists( 'conexao_safe_nav_menu_fallback' ) );
+assert_true( function_exists( 'conexao_safe_nav_menu_fallback' ), 'B3 safe fallback helper exists');
 ob_start();
 conexao_safe_nav_menu_fallback( array( 'theme_location' => 'primary' ) );
 $emitted = ob_get_clean();
-check( 'B4 safe fallback renders no markup (explicitly empty output)', '' === trim( (string) $emitted ) );
+assert_true( '' === trim( (string) $emitted ), 'B4 safe fallback renders no markup (explicitly empty output)');
 
-echo "== F. Regression guards ==\n";
 
-check( 'F1 nav-menu class/args filters still registered (nav-item/nav-link classes preserved)', function_exists( 'conexao_nav_menu_args' ) && function_exists( 'conexao_nav_menu_css_class' ) );
-check( 'F2 guides-link override filter still active', function_exists( 'conexao_override_guides_menu_links' ) );
-check( 'F3 language switcher renderer still present', function_exists( 'conexao_language_switcher' ) );
+assert_true( function_exists( 'conexao_nav_menu_args' ) && function_exists( 'conexao_nav_menu_css_class' ), 'F1 nav-menu class/args filters still registered (nav-item/nav-link classes preserved)');
+assert_true( function_exists( 'conexao_override_guides_menu_links' ), 'F2 guides-link override filter still active');
+assert_true( function_exists( 'conexao_language_switcher' ), 'F3 language switcher renderer still present');
 
-echo "\n{$passed} passed, {$failed} failed.\n";
-exit( 0 === $failed ? 0 : 1 );
-
+test_finish();

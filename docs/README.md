@@ -28,7 +28,8 @@ in the same change.
 
 | Document | What it is |
 |---|---|
-| [development.md](development.md) | Local setup, Docker, the dev-only quality toolchain (`composer lint` / `analyse` / `./scripts/lint.sh`) |
+| [development.md](development.md) | Local setup, Docker, the dev-only quality toolchain (`composer lint` / `analyse` / `./scripts/lint.sh`), and the one test command |
+| [testing.md](testing.md) | **How to run and write tests** — the two-layer model, `./scripts/run-tests.sh`, the shared bootstrap/assertions, prerequisites, fixtures, acceptance base URL, CI |
 | [deployment.md](deployment.md) | Build ZIPs, deployment to WordPress.com, verification |
 
 ## Frontend
@@ -59,10 +60,15 @@ in the same change.
 
 ## Testing
 
-The unified in-process test harness (`tests/` + `scripts/run-tests.sh`) does
-not exist yet — it is Stage E of the standardisation roadmap
-([engineering-standard.md §15](engineering-standard.md)). Until then,
-per-plugin/theme in-process suites are run individually as documented in
-[development.md](development.md).
+One command runs every maintained test — in-process PHP plus HTTP acceptance:
 
-_Last verified: 2026-09-25 by Stage C (static quality tooling)_
+```bash
+./scripts/run-tests.sh
+```
+
+See **[testing.md](testing.md)** for the model, the shared bootstrap and
+assertion library, data prerequisites, the acceptance base URL and the
+manual/historical/production-only classification. The authoritative policy is
+[engineering-standard.md §8](engineering-standard.md).
+
+_Last verified: 2026-09-25 by Stage E (unified test harness)_

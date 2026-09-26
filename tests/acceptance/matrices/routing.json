@@ -1,0 +1,584 @@
+{
+  "description": "Routing, /en/ language layer, legacy redirects, canonical, hreflang, cache separation, search, REST language scoping, robots/sitemap/404/feed. Migrated from scripts/stage2-http-verify.sh and scripts/stage33-http-verify.py.",
+  "base_url_default": "http://localhost:8080",
+  "rows": [
+    {
+      "id": "pt-200-",
+      "url": "/",
+      "expect_status": 200,
+      "expect_contains": [
+        "<html lang=\"pt-BR\">"
+      ],
+      "expect_absent": [
+        "<html lang=\"en-US\">"
+      ],
+      "note": "Portuguese URL is canonical and must keep serving 200 (stage2 §1)."
+    },
+    {
+      "id": "pt-200-guias",
+      "url": "/guias/",
+      "expect_status": 200,
+      "expect_contains": [
+        "<html lang=\"pt-BR\">"
+      ],
+      "expect_absent": [
+        "<html lang=\"en-US\">"
+      ],
+      "note": "Portuguese URL is canonical and must keep serving 200 (stage2 §1)."
+    },
+    {
+      "id": "pt-200-eventos",
+      "url": "/eventos/",
+      "expect_status": 200,
+      "expect_contains": [
+        "<html lang=\"pt-BR\">"
+      ],
+      "expect_absent": [
+        "<html lang=\"en-US\">"
+      ],
+      "note": "Portuguese URL is canonical and must keep serving 200 (stage2 §1)."
+    },
+    {
+      "id": "pt-200-lazer",
+      "url": "/lazer/",
+      "expect_status": 200,
+      "expect_contains": [
+        "<html lang=\"pt-BR\">"
+      ],
+      "expect_absent": [
+        "<html lang=\"en-US\">"
+      ],
+      "note": "Portuguese URL is canonical and must keep serving 200 (stage2 §1)."
+    },
+    {
+      "id": "pt-200-blog",
+      "url": "/blog/",
+      "expect_status": 200,
+      "expect_contains": [
+        "<html lang=\"pt-BR\">"
+      ],
+      "expect_absent": [
+        "<html lang=\"en-US\">"
+      ],
+      "note": "Portuguese URL is canonical and must keep serving 200 (stage2 §1)."
+    },
+    {
+      "id": "pt-200-cursos",
+      "url": "/cursos/",
+      "expect_status": 200,
+      "expect_contains": [
+        "<html lang=\"pt-BR\">"
+      ],
+      "expect_absent": [
+        "<html lang=\"en-US\">"
+      ],
+      "note": "Portuguese URL is canonical and must keep serving 200 (stage2 §1)."
+    },
+    {
+      "id": "pt-200-empregos",
+      "url": "/empregos/",
+      "expect_status": 200,
+      "expect_contains": [
+        "<html lang=\"pt-BR\">"
+      ],
+      "expect_absent": [
+        "<html lang=\"en-US\">"
+      ],
+      "note": "Portuguese URL is canonical and must keep serving 200 (stage2 §1)."
+    },
+    {
+      "id": "pt-200-apoiadores",
+      "url": "/apoiadores/",
+      "expect_status": 200,
+      "expect_contains": [
+        "<html lang=\"pt-BR\">"
+      ],
+      "expect_absent": [
+        "<html lang=\"en-US\">"
+      ],
+      "note": "Portuguese URL is canonical and must keep serving 200 (stage2 §1)."
+    },
+    {
+      "id": "pt-200-irlanda",
+      "url": "/irlanda/",
+      "expect_status": 200,
+      "expect_contains": [
+        "<html lang=\"pt-BR\">"
+      ],
+      "expect_absent": [
+        "<html lang=\"en-US\">"
+      ],
+      "note": "Portuguese URL is canonical and must keep serving 200 (stage2 §1)."
+    },
+    {
+      "id": "pt-200-sobre-nos",
+      "url": "/sobre-nos/",
+      "expect_status": 200,
+      "expect_contains": [
+        "<html lang=\"pt-BR\">"
+      ],
+      "expect_absent": [
+        "<html lang=\"en-US\">"
+      ],
+      "note": "Portuguese URL is canonical and must keep serving 200 (stage2 §1)."
+    },
+    {
+      "id": "pt-200-contato",
+      "url": "/contato/",
+      "expect_status": 200,
+      "expect_contains": [
+        "<html lang=\"pt-BR\">"
+      ],
+      "expect_absent": [
+        "<html lang=\"en-US\">"
+      ],
+      "note": "Portuguese URL is canonical and must keep serving 200 (stage2 §1)."
+    },
+    {
+      "id": "pt-200-moradia",
+      "url": "/moradia/",
+      "expect_status": 200,
+      "expect_contains": [
+        "<html lang=\"pt-BR\">"
+      ],
+      "expect_absent": [
+        "<html lang=\"en-US\">"
+      ],
+      "note": "Portuguese URL is canonical and must keep serving 200 (stage2 §1)."
+    },
+    {
+      "id": "pt-200-saude",
+      "url": "/saude/",
+      "expect_status": 200,
+      "expect_contains": [
+        "<html lang=\"pt-BR\">"
+      ],
+      "expect_absent": [
+        "<html lang=\"en-US\">"
+      ],
+      "note": "Portuguese URL is canonical and must keep serving 200 (stage2 §1)."
+    },
+    {
+      "id": "legacy-301-guides",
+      "url": "/guides/",
+      "expect_status": 301,
+      "expect_contains": [],
+      "expect_absent": [],
+      "note": "Legacy English URL keeps its permanent 301 to the PT path; architecture rule 1 (PT slugs canonical)."
+    },
+    {
+      "id": "legacy-301-events",
+      "url": "/events/",
+      "expect_status": 301,
+      "expect_contains": [],
+      "expect_absent": [],
+      "note": "Legacy English URL keeps its permanent 301 to the PT path; architecture rule 1 (PT slugs canonical)."
+    },
+    {
+      "id": "legacy-301-courses",
+      "url": "/courses/",
+      "expect_status": 301,
+      "expect_contains": [],
+      "expect_absent": [],
+      "note": "Legacy English URL keeps its permanent 301 to the PT path; architecture rule 1 (PT slugs canonical)."
+    },
+    {
+      "id": "legacy-301-jobs",
+      "url": "/jobs/",
+      "expect_status": 301,
+      "expect_contains": [],
+      "expect_absent": [],
+      "note": "Legacy English URL keeps its permanent 301 to the PT path; architecture rule 1 (PT slugs canonical)."
+    },
+    {
+      "id": "legacy-301-sponsors",
+      "url": "/sponsors/",
+      "expect_status": 301,
+      "expect_contains": [],
+      "expect_absent": [],
+      "note": "Legacy English URL keeps its permanent 301 to the PT path; architecture rule 1 (PT slugs canonical)."
+    },
+    {
+      "id": "legacy-301-ireland",
+      "url": "/ireland/",
+      "expect_status": 301,
+      "expect_contains": [],
+      "expect_absent": [],
+      "note": "Legacy English URL keeps its permanent 301 to the PT path; architecture rule 1 (PT slugs canonical)."
+    },
+    {
+      "id": "legacy-301-about-us",
+      "url": "/about-us/",
+      "expect_status": 301,
+      "expect_contains": [],
+      "expect_absent": [],
+      "note": "Legacy English URL keeps its permanent 301 to the PT path; architecture rule 1 (PT slugs canonical)."
+    },
+    {
+      "id": "legacy-301-contact",
+      "url": "/contact/",
+      "expect_status": 301,
+      "expect_contains": [],
+      "expect_absent": [],
+      "note": "Legacy English URL keeps its permanent 301 to the PT path; architecture rule 1 (PT slugs canonical)."
+    },
+    {
+      "id": "en-200-en",
+      "url": "/en/",
+      "expect_status": 200,
+      "expect_contains": [
+        "<html lang=\"en-US\">"
+      ],
+      "expect_absent": [
+        "<html lang=\"pt-BR\">"
+      ],
+      "note": "The /en/ language layer resolves (stage2 §3) and serves English markup."
+    },
+    {
+      "id": "en-200-en-guias",
+      "url": "/en/guias/",
+      "expect_status": 200,
+      "expect_contains": [
+        "<html lang=\"en-US\">"
+      ],
+      "expect_absent": [
+        "<html lang=\"pt-BR\">"
+      ],
+      "note": "The /en/ language layer resolves (stage2 §3) and serves English markup."
+    },
+    {
+      "id": "en-200-en-eventos",
+      "url": "/en/eventos/",
+      "expect_status": 200,
+      "expect_contains": [
+        "<html lang=\"en-US\">"
+      ],
+      "expect_absent": [
+        "<html lang=\"pt-BR\">"
+      ],
+      "note": "The /en/ language layer resolves (stage2 §3) and serves English markup."
+    },
+    {
+      "id": "en-200-en-lazer",
+      "url": "/en/lazer/",
+      "expect_status": 200,
+      "expect_contains": [
+        "<html lang=\"en-US\">"
+      ],
+      "expect_absent": [
+        "<html lang=\"pt-BR\">"
+      ],
+      "note": "The /en/ language layer resolves (stage2 §3) and serves English markup."
+    },
+    {
+      "id": "en-200-en-cursos",
+      "url": "/en/cursos/",
+      "expect_status": 200,
+      "expect_contains": [
+        "<html lang=\"en-US\">"
+      ],
+      "expect_absent": [
+        "<html lang=\"pt-BR\">"
+      ],
+      "note": "The /en/ language layer resolves (stage2 §3) and serves English markup."
+    },
+    {
+      "id": "en-200-en-apoiadores",
+      "url": "/en/apoiadores/",
+      "expect_status": 200,
+      "expect_contains": [
+        "<html lang=\"en-US\">"
+      ],
+      "expect_absent": [
+        "<html lang=\"pt-BR\">"
+      ],
+      "note": "The /en/ language layer resolves (stage2 §3) and serves English markup."
+    },
+    {
+      "id": "en-b2-fallback-en-blog",
+      "url": "/en/blog/",
+      "expect_status": 200,
+      "expect_contains": [
+        "<html lang=\"en-US\">",
+        "language-fallback-notice"
+      ],
+      "expect_absent": [],
+      "note": "With no linked EN Blog page in this dataset, /en/blog/ serves the B2 fallback: 200, an English shell and the language-fallback-notice (Stage 3.2 B2 policy). Once the EN page exists this row must become the real-EN-archive check."
+    },
+    {
+      "id": "en-b2-302-en-empregos",
+      "url": "/en/empregos/",
+      "expect_status": 302,
+      "expect_contains": [],
+      "expect_absent": [],
+      "note": "An untranslated EN page falls back to PT with 302, never a permanent 301 (stage2 §3; a 301 would be wrong permanent language routing)."
+    },
+    {
+      "id": "en-b2-fallback-en-irlanda",
+      "url": "/en/irlanda/",
+      "expect_status": 200,
+      "expect_contains": [
+        "<html lang=\"en-US\">",
+        "language-fallback-notice"
+      ],
+      "expect_absent": [],
+      "note": "With no linked EN Ireland page in this dataset, /en/irlanda/ serves the B2 fallback: 200, an English shell and the language-fallback-notice (Stage 3.2 B2 policy). Once the EN page exists this row must become the real-EN-archive check."
+    },
+    {
+      "id": "pt-og-locale",
+      "url": "/",
+      "expect_status": 200,
+      "expect_contains": [
+        "property=\"og:locale\" content=\"pt_BR\""
+      ],
+      "expect_absent": [],
+      "note": "PT pages declare og:locale pt_BR (stage2 §4)."
+    },
+    {
+      "id": "en-og-locale",
+      "url": "/en/",
+      "expect_status": 200,
+      "expect_contains": [
+        "property=\"og:locale\" content=\"en_US\""
+      ],
+      "expect_absent": [
+        "property=\"og:locale\" content=\"pt_BR\""
+      ],
+      "note": "EN pages declare og:locale en_US and never the PT locale (stage2 §4)."
+    },
+    {
+      "id": "pt-home-canonical",
+      "url": "/",
+      "expect_status": 200,
+      "expect_contains": [
+        "rel=\"canonical\" href=\"",
+        "/\""
+      ],
+      "expect_absent": [],
+      "note": "PT home is self-canonical (stage2 §5)."
+    },
+    {
+      "id": "pt-archive-canonical",
+      "url": "/eventos/",
+      "expect_status": 200,
+      "expect_contains": [
+        "rel=\"canonical\" href=\"",
+        "/eventos/\""
+      ],
+      "expect_absent": [],
+      "note": "PT archive is self-canonical (stage2 §5)."
+    },
+    {
+      "id": "en-archive-canonical",
+      "url": "/en/eventos/",
+      "expect_status": 200,
+      "expect_contains": [
+        "rel=\"canonical\" href=\"",
+        "/en/eventos/\""
+      ],
+      "expect_absent": [],
+      "note": "EN archive is self-canonical to its own EN URL (stage2 §5)."
+    },
+    {
+      "id": "pt-home-hreflang-default",
+      "url": "/",
+      "expect_status": 200,
+      "expect_contains": [
+        "hreflang=\"x-default\""
+      ],
+      "expect_absent": [],
+      "note": "PT home declares an x-default alternate (stage2 §6)."
+    },
+    {
+      "id": "en-home-hreflang-both",
+      "url": "/en/",
+      "expect_status": 200,
+      "expect_contains": [
+        "hreflang=\"en\"",
+        "hreflang=\"pt-BR\""
+      ],
+      "expect_absent": [],
+      "note": "EN home declares both the en and pt-BR alternates (stage2 §6)."
+    },
+    {
+      "id": "en-archive-hreflang",
+      "url": "/en/eventos/",
+      "expect_status": 200,
+      "expect_contains": [
+        "hreflang=\"en\"",
+        "hreflang=\"pt-BR\""
+      ],
+      "expect_absent": [],
+      "note": "EN archive declares its own en alternate and the PT alternate (stage2 §6)."
+    },
+    {
+      "id": "cache-separation-en",
+      "url": "/en/",
+      "expect_status": 200,
+      "expect_contains": [
+        "<html lang=\"en-US\">",
+        "property=\"og:locale\" content=\"en_US\""
+      ],
+      "expect_absent": [
+        "<html lang=\"pt-BR\">"
+      ],
+      "note": "An EN request after a PT request must not be served PT-cached HTML (architecture rule 9: language-scoped caches)."
+    },
+    {
+      "id": "cache-separation-pt",
+      "url": "/",
+      "expect_status": 200,
+      "expect_contains": [
+        "<html lang=\"pt-BR\">",
+        "property=\"og:locale\" content=\"pt_BR\""
+      ],
+      "expect_absent": [
+        "<html lang=\"en-US\">"
+      ],
+      "note": "A PT request after an EN request must not be served EN-cached HTML (architecture rule 9: language-scoped caches)."
+    },
+    {
+      "id": "pt-search",
+      "url": "/?s=dublin",
+      "expect_status": 200,
+      "expect_contains": [
+        "<html lang=\"pt-BR\">"
+      ],
+      "expect_absent": [],
+      "note": "PT search responds in the PT context (stage2 §8)."
+    },
+    {
+      "id": "en-search",
+      "url": "/en/?s=dublin",
+      "expect_status": 200,
+      "expect_contains": [
+        "<html lang=\"en-US\">"
+      ],
+      "expect_absent": [],
+      "note": "EN search responds in the EN context without redirecting to PT (stage2 §8)."
+    },
+    {
+      "id": "rest-en-guide",
+      "url": "/wp-json/wp/v2/guide?lang=en",
+      "expect_status": 200,
+      "expect_contains": [],
+      "expect_absent": [],
+      "note": "The guide REST collection answers 200 in the EN language (stage2 §9)."
+    },
+    {
+      "id": "rest-en-event",
+      "url": "/wp-json/wp/v2/event?lang=en",
+      "expect_status": 200,
+      "expect_contains": [],
+      "expect_absent": [],
+      "note": "The event REST collection answers 200 in the EN language (stage2 §9)."
+    },
+    {
+      "id": "robots-disallow-en-search",
+      "url": "/robots.txt",
+      "expect_status": 200,
+      "expect_contains": [
+        "Disallow: /en/?s=",
+        "Disallow: /en/search/"
+      ],
+      "expect_absent": [],
+      "note": "robots.txt disallows the EN search endpoints (stage2 §10)."
+    },
+    {
+      "id": "sitemap-serves",
+      "url": "/sitemap.xml",
+      "expect_status": 200,
+      "expect_contains": [],
+      "expect_absent": [],
+      "note": "The XML sitemap serves (stage2 §10)."
+    },
+    {
+      "id": "unknown-pt-url-404",
+      "url": "/nao-existe-xyz/",
+      "expect_status": 404,
+      "expect_contains": [],
+      "expect_absent": [],
+      "note": "An unknown PT URL is a 404, not a soft 200 (stage2 §10)."
+    },
+    {
+      "id": "feed-serves",
+      "url": "/feed/",
+      "expect_status": 200,
+      "expect_contains": [],
+      "expect_absent": [],
+      "note": "The PT feed serves (stage2 §10)."
+    },
+    {
+      "id": "rest-pt-guide",
+      "url": "/wp-json/wp/v2/guide?lang=pt",
+      "expect_status": 200,
+      "expect_contains": [],
+      "expect_absent": [],
+      "note": "The guide REST collection answers 200 for the documented PT language value lang=pt (inc/rest-language.php:13-16)."
+    },
+    {
+      "id": "rest-invalid-lang-guide",
+      "url": "/wp-json/wp/v2/guide?lang=pt-br",
+      "expect_status": 400,
+      "expect_contains": [
+        "conexao_rest_invalid_lang"
+      ],
+      "expect_absent": [],
+      "note": "An unsupported REST lang value is rejected with 400 conexao_rest_invalid_lang rather than silently falling back (inc/rest-language.php:17-19)."
+    },
+    {
+      "id": "rest-pt-event",
+      "url": "/wp-json/wp/v2/event?lang=pt",
+      "expect_status": 200,
+      "expect_contains": [],
+      "expect_absent": [],
+      "note": "The event REST collection answers 200 for the documented PT language value lang=pt (inc/rest-language.php:13-16)."
+    },
+    {
+      "id": "rest-invalid-lang-event",
+      "url": "/wp-json/wp/v2/event?lang=pt-br",
+      "expect_status": 400,
+      "expect_contains": [
+        "conexao_rest_invalid_lang"
+      ],
+      "expect_absent": [],
+      "note": "An unsupported REST lang value is rejected with 400 conexao_rest_invalid_lang rather than silently falling back (inc/rest-language.php:17-19)."
+    },
+    {
+      "id": "rest-pt-leisure",
+      "url": "/wp-json/wp/v2/leisure?lang=pt",
+      "expect_status": 200,
+      "expect_contains": [],
+      "expect_absent": [],
+      "note": "The leisure REST collection answers 200 for the documented PT language value lang=pt (inc/rest-language.php:13-16)."
+    },
+    {
+      "id": "rest-invalid-lang-leisure",
+      "url": "/wp-json/wp/v2/leisure?lang=pt-br",
+      "expect_status": 400,
+      "expect_contains": [
+        "conexao_rest_invalid_lang"
+      ],
+      "expect_absent": [],
+      "note": "An unsupported REST lang value is rejected with 400 conexao_rest_invalid_lang rather than silently falling back (inc/rest-language.php:17-19)."
+    },
+    {
+      "id": "rest-pt-posts",
+      "url": "/wp-json/wp/v2/posts?lang=pt",
+      "expect_status": 200,
+      "expect_contains": [],
+      "expect_absent": [],
+      "note": "The posts REST collection answers 200 for the documented PT language value lang=pt (inc/rest-language.php:13-16)."
+    },
+    {
+      "id": "rest-invalid-lang-posts",
+      "url": "/wp-json/wp/v2/posts?lang=pt-br",
+      "expect_status": 400,
+      "expect_contains": [
+        "conexao_rest_invalid_lang"
+      ],
+      "expect_absent": [],
+      "note": "An unsupported REST lang value is rejected with 400 conexao_rest_invalid_lang rather than silently falling back (inc/rest-language.php:17-19)."
+    }
+  ]
+}

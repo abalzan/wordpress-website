@@ -29,29 +29,12 @@
  * @package conexao-br-irlanda
  */
 
-$_SERVER['HTTP_HOST']   = $_SERVER['HTTP_HOST'] ?? 'localhost';
-$_SERVER['REQUEST_URI'] = $_SERVER['REQUEST_URI'] ?? '/';
 
-$wp_load = dirname( dirname( dirname( dirname( __DIR__ ) ) ) ) . '/wp-load.php';
-if ( file_exists( $wp_load ) ) {
-	require_once $wp_load;
-} else {
-	require_once '/var/www/html/wp-load.php';
-}
+// Shared Stage E test bootstrap: the only place allowed to locate wp-load.php.
+require_once dirname( __DIR__, 4 ) . '/tests/bootstrap.php';
 
 $passed = 0;
 $failed = 0;
-
-function s33_assert( $condition, $message ) {
-	global $passed, $failed;
-	if ( $condition ) {
-		$passed++;
-		echo "  PASS: {$message}\n";
-	} else {
-		$failed++;
-		echo "  FAIL: {$message}\n";
-	}
-}
 
 /**
  * Switch the request language context the way Polylang does while routing.
@@ -82,18 +65,13 @@ function s33_path( $url ) {
 	return (string) wp_parse_url( (string) $url, PHP_URL_PATH );
 }
 
-echo "== Stage 3.3 — English navigation / link resolution ==\n";
 
 if ( ! function_exists( 'conexao_lang_url' ) ) {
-	echo "  SKIP: conexao_lang_url() is missing.\n";
 	exit( 1 );
 }
 
-if ( ! function_exists( 'pll_current_language' ) ) {
-	echo "  SKIP: Polylang is not active.\n";
-	exit( 0 );
-}
-
+test_prerequisite_hint( 'polylang' );
+test_require( function_exists( 'pll_current_language' ), 'polylang', 'test prerequisite is available: function_exists( pll_current_language )', 'activate the Polylang plugin' );
 // ---------------------------------------------------------------------------
 // Paths exercised by the theme chrome (cards, section links, footer).
 $paths = array(
@@ -118,21 +96,19 @@ $paths = array(
 );
 
 // ---------------------------------------------------------------------------
-echo "\n-- Portuguese invariance (default language context) --\n";
 s33_set_language( 'pt' );
-s33_assert( 'pt' === conexao_current_language_slug(), "current language is 'pt' in the default context" );
+assert_true( 'pt' === conexao_current_language_slug(), "current language is 'pt' in the default context" );
 
 foreach ( $paths as $path ) {
-	s33_assert(
+	assert_true(
 		untrailingslashit( conexao_lang_url( $path ) ) === untrailingslashit( home_url( $path ) ),
 		"PT: conexao_lang_url( {$path} ) === home_url( {$path} )"
 	);
 }
 
 // ---------------------------------------------------------------------------
-echo "\n-- English resolution (real EN destinations) --\n";
 s33_set_language( 'en' );
-s33_assert( 'en' === conexao_current_language_slug(), "current language is 'en' in the English context" );
+assert_true( 'en' === conexao_current_language_slug(), "current language is 'en' in the English context" );
 
 $en_archives = array(
 	'/eventos/'    => '/en/eventos/',
@@ -143,7 +119,7 @@ $en_archives = array(
 );
 
 foreach ( $en_archives as $path => $expected ) {
-	s33_assert(
+	assert_true(
 		untrailingslashit( s33_path( conexao_lang_url( $path ) ) ) === untrailingslashit( $expected ),
 		"EN archive: conexao_lang_url( {$path} ) === {$expected} (got " . s33_path( conexao_lang_url( $path ) ) . ')'
 	);
@@ -159,16 +135,15 @@ $en_pages = array(
 );
 
 foreach ( $en_pages as $path => $expected ) {
-	s33_assert(
+	assert_true(
 		untrailingslashit( s33_path( conexao_lang_url( $path ) ) ) === untrailingslashit( $expected ),
 		"EN page: conexao_lang_url( {$path} ) === {$expected} (got " . s33_path( conexao_lang_url( $path ) ) . ')'
 	);
 }
 
 // ---------------------------------------------------------------------------
-echo "\n-- English resolution (approved B1 / B2 behaviour preserved) --\n";
 foreach ( array( '/anuncie/', '/moradia/', '/saude/', '/irlanda/', '/dublin/', '/nao-existe/' ) as $path ) {
-	s33_assert(
+	assert_true(
 		untrailingslashit( conexao_lang_url( $path ) ) === untrailingslashit( home_url( $path ) ),
 		"EN/B1: conexao_lang_url( {$path} ) keeps the Portuguese destination (got " . s33_path( conexao_lang_url( $path ) ) . ')'
 	);
@@ -176,28 +151,27 @@ foreach ( array( '/anuncie/', '/moradia/', '/saude/', '/irlanda/', '/dublin/', '
 
 // The posts page (Blog) is an approved B2 destination: its EN URL is the
 // language home + the posts page path, never the Portuguese /blog/.
-s33_assert(
+assert_true(
 	untrailingslashit( s33_path( conexao_lang_url( '/blog/' ) ) ) === untrailingslashit( '/en/blog/' ),
 	'EN/B2: conexao_lang_url( /blog/ ) resolves to /en/blog/ (got ' . s33_path( conexao_lang_url( '/blog/' ) ) . ')'
 );
 
-s33_assert(
+assert_true(
 	0 !== strpos( s33_path( conexao_lang_url( '/irlanda/' ) ), '/en/' ),
 	'EN: a B2 page (/irlanda/) is never auto-promoted to an EN URL'
 );
 
 // ---------------------------------------------------------------------------
-echo "\n-- Guides category cards (language-aware term + archive) --\n";
 s33_set_language( 'pt' );
 
 $pt_moradia    = conexao_get_guide_category_url( 'moradia', 'moradia' );
 $pt_documentos = conexao_get_guide_category_url( 'documentos', 'documentos' );
 
-s33_assert(
+assert_true(
 	'/guias' === untrailingslashit( s33_path( $pt_moradia ) ) && 'categoria=moradia' === wp_parse_url( $pt_moradia, PHP_URL_QUERY ),
 	'PT: card "Moradia" still resolves to /guias/?categoria=moradia (got ' . $pt_moradia . ')'
 );
-s33_assert(
+assert_true(
 	'categoria=documentos' === wp_parse_url( $pt_documentos, PHP_URL_QUERY ),
 	'PT: card "Documentos" still resolves with the Portuguese slug (got ' . $pt_documentos . ')'
 );
@@ -208,25 +182,24 @@ $en_documentos = conexao_get_guide_category_url( 'documentos', 'documentos' );
 $en_financas   = conexao_get_guide_category_url( 'financas', 'financas' );
 $en_moradia    = conexao_get_guide_category_url( 'moradia', 'moradia' );
 
-s33_assert(
+assert_true(
 	'/en/guias' === untrailingslashit( s33_path( $en_documentos ) ) && 'categoria=documents' === wp_parse_url( $en_documentos, PHP_URL_QUERY ),
 	'EN: card "Documentos" resolves to /en/guias/?categoria=documents (linked EN term with EN guides) (got ' . $en_documentos . ')'
 );
-s33_assert(
+assert_true(
 	'categoria=finances' === wp_parse_url( $en_financas, PHP_URL_QUERY ),
 	'EN: card "Finanças" resolves with the linked EN slug "finances" (got ' . $en_financas . ')'
 );
-s33_assert(
+assert_true(
 	'/en/guias' === untrailingslashit( s33_path( $en_moradia ) ) && '' === (string) wp_parse_url( $en_moradia, PHP_URL_QUERY ),
 	'EN: card "Moradia" (no linked EN term with EN guides) falls back to the plain EN archive (got ' . $en_moradia . ')'
 );
-s33_assert(
+assert_true(
 	false === strpos( $en_moradia . $en_documentos . $en_financas, '/guias/?categoria=moradia' ),
 	'EN: no Portuguese term slug is ever placed under /en/'
 );
 
 // ---------------------------------------------------------------------------
-echo "\n-- Quick-access card markup (template level) --\n";
 $card_cases = array(
 	'/eventos/'    => '/en/eventos/',
 	'/lazer/'      => '/en/lazer/',
@@ -248,7 +221,7 @@ foreach ( $card_cases as $path => $expected ) {
 	);
 	$markup = (string) ob_get_clean();
 
-	s33_assert(
+	assert_true(
 		false !== strpos( $markup, 'href="' . home_url( $expected ) . '"' ),
 		"EN card markup for {$path} links to {$expected}"
 	);
@@ -268,14 +241,13 @@ foreach ( $card_cases as $path => $expected ) {
 	);
 	$markup = (string) ob_get_clean();
 
-	s33_assert(
+	assert_true(
 		false !== strpos( $markup, 'href="' . home_url( $path ) . '"' ),
 		"PT card markup for {$path} is unchanged"
 	);
 }
 
 // ---------------------------------------------------------------------------
-echo "\n-- Help shortcut markup (template level) --\n";
 s33_set_language( 'en' );
 
 ob_start();
@@ -289,15 +261,14 @@ get_template_part(
 );
 $shortcut = (string) ob_get_clean();
 
-s33_assert(
+assert_true(
 	false !== strpos( $shortcut, 'href="' . home_url( '/en/jobs/' ) . '"' ),
 	'EN help shortcut resolves /empregos/ to /en/jobs/'
 );
 
 // ---------------------------------------------------------------------------
-echo "\n-- Footer legal links (template level) --\n";
 $footer = file_get_contents( get_stylesheet_directory() . '/footer.php' );
-s33_assert(
+assert_true(
 	false !== strpos( $footer, "conexao_lang_url( '/politica-de-privacidade/' )" )
 	&& false !== strpos( $footer, "conexao_lang_url( '/termos-de-uso/' )" )
 	&& false !== strpos( $footer, "conexao_lang_url( '/cookies/' )" ),
@@ -305,7 +276,6 @@ s33_assert(
 );
 
 // ---------------------------------------------------------------------------
-echo "\n-- Stage 3.2 pilot EN terms (12) --\n";
 $term_map = array(
 	'conexao_category' => array(
 		'documentos'  => 'documents',
@@ -345,24 +315,23 @@ foreach ( $term_map as $taxonomy => $map ) {
 		);
 
 		if ( is_wp_error( $pt_terms ) || is_wp_error( $en_terms ) || ! $pt_terms || ! $en_terms ) {
-			s33_assert( false, "term pair {$taxonomy}:{$pt_slug} <=> {$en_slug} exists" );
+			assert_true( false, "term pair {$taxonomy}:{$pt_slug} <=> {$en_slug} exists" );
 			continue;
 		}
 
 		$linked = pll_get_term( (int) $pt_terms[0]->term_id, 'en' );
 		$term_count++;
 
-		s33_assert(
+		assert_true(
 			(int) $en_terms[0]->term_id === (int) $linked,
 			"term pair {$taxonomy}:{$pt_slug} <=> {$en_slug} is linked in Polylang"
 		);
 	}
 }
 
-s33_assert( 12 === $term_count, "all 12 Stage 3.2 EN terms are present and linked (got {$term_count})" );
+assert_true( 12 === $term_count, "all 12 Stage 3.2 EN terms are present and linked (got {$term_count})" );
 
 // ---------------------------------------------------------------------------
-echo "\n-- Shared county / town contract (Stage 3.2 policy) --\n";
 $location_taxonomies = array( 'conexao_county', 'conexao_town' );
 
 foreach ( $location_taxonomies as $taxonomy ) {
@@ -376,7 +345,7 @@ foreach ( $location_taxonomies as $taxonomy ) {
 	);
 
 	if ( is_wp_error( $terms ) ) {
-		s33_assert( false, "{$taxonomy} terms are readable" );
+		assert_true( false, "{$taxonomy} terms are readable" );
 		continue;
 	}
 
@@ -394,8 +363,8 @@ foreach ( $location_taxonomies as $taxonomy ) {
 		}
 	}
 
-	s33_assert( array() === $suffixed, "{$taxonomy}: no suffixed duplicate terms (" . implode( ', ', $suffixed ) . ')' );
-	s33_assert( 0 === $langful, "{$taxonomy}: every term is language-neutral (shared), {$langful} language-tagged" );
+	assert_true( array() === $suffixed, "{$taxonomy}: no suffixed duplicate terms (" . implode( ', ', $suffixed ) . ')' );
+	assert_true( 0 === $langful, "{$taxonomy}: every term is language-neutral (shared), {$langful} language-tagged" );
 }
 
 // An EN record and its PT master must carry the SAME county/town term ids.
@@ -419,7 +388,7 @@ foreach ( $en_leisure_terms as $en_id ) {
 		$en_terms     = wp_get_post_terms( $en_id, $taxonomy, array( 'fields' => 'ids' ) );
 		$master_terms = wp_get_post_terms( $master, $taxonomy, array( 'fields' => 'ids' ) );
 
-		s33_assert(
+		assert_true(
 			! is_wp_error( $en_terms ) && ! is_wp_error( $master_terms ) && $en_terms === $master_terms,
 			"leisure #{$en_id} shares the exact {$taxonomy} term ids with its PT master #{$master}"
 		);
@@ -427,7 +396,6 @@ foreach ( $en_leisure_terms as $en_id ) {
 }
 
 // ---------------------------------------------------------------------------
-echo "\n-- EN records use linked EN terms; PT masters keep PT terms --\n";
 $pilot_types = array( 'guide', 'event', 'leisure', 'sponsor', 'course_provider', 'job' );
 $pairs       = 0;
 
@@ -454,7 +422,7 @@ foreach ( $pilot_types as $post_type ) {
 		$master_cats = wp_get_post_terms( $master, 'conexao_category', array( 'fields' => 'ids' ) );
 
 		if ( is_wp_error( $en_cats ) || is_wp_error( $master_cats ) ) {
-			s33_assert( false, "{$post_type} #{$en_id}: category terms readable" );
+			assert_true( false, "{$post_type} #{$en_id}: category terms readable" );
 			continue;
 		}
 
@@ -472,7 +440,7 @@ foreach ( $pilot_types as $post_type ) {
 
 		$mapped = array_values( array_unique( $mapped ) );
 
-		s33_assert(
+		assert_true(
 			array() === array_diff( $en_cats, $mapped ),
 			"{$post_type} EN #{$en_id}: every category is the linked EN term of a master term (or the shared master term)"
 		);
@@ -483,18 +451,15 @@ foreach ( $pilot_types as $post_type ) {
 			$master_languages[] = (string) pll_get_term_language( $master_term_id );
 		}
 
-		s33_assert(
+		assert_true(
 			array() === array_diff( array_unique( $master_languages ), array( 'pt' ) ),
 			"{$post_type} PT master #{$master}: category terms stay Portuguese"
 		);
 	}
 }
 
-s33_assert( $pairs > 0, "at least one PT/EN pilot pair was inspected (got {$pairs})" );
+assert_true( $pairs > 0, "at least one PT/EN pilot pair was inspected (got {$pairs})" );
 
 // ---------------------------------------------------------------------------
-echo "\nstage 3.3 bilingual: {$passed} passed, {$failed} failed\n";
-exit( $failed > 0 ? 1 : 0 );
 
-
-
+test_finish();

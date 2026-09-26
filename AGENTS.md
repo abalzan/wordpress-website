@@ -101,6 +101,7 @@ See docs/routing.md.
 | Admin UI/statuses | plugins/conexao-admin-ux |
 | Recruitment agencies / Empregos agency directory | docs/plugins/conexao-data-model.md, theme inc/recruitment-agencies.php |
 | Templates/components | docs/themes/conexao-br-irlanda.md |
+| Run/extend the test suite | docs/testing.md, `./scripts/run-tests.sh --help` |
 | CSS/design | docs/frontend.md, theme assets/css/ |
 | SEO/redirects/sitemap | theme inc/seo.php |
 | Deploy/build ZIPs | docs/deployment.md, scripts/ |
@@ -109,10 +110,20 @@ See docs/routing.md.
 
 ```bash
 docker compose up -d          # http://localhost:8080
+./scripts/run-tests.sh        # ALL tests: in-process PHP + HTTP acceptance
 docker compose exec wordpress wp ...   # WP-CLI
 ./scripts/build-plugins-zip.sh  # → dist/*.zip
 ./scripts/build-theme-zip.sh    # → dist/conexao-br-irlanda.zip
 ```
+
+## Tests
+
+`./scripts/run-tests.sh` is the single test command (in-process PHP + HTTP
+acceptance, one aggregate exit code). Shared bootstrap: `tests/bootstrap.php`.
+Shared assertions: `tests/lib/assertions.php`. Acceptance + matrices:
+`tests/acceptance/`. Suites are discovered by convention
+(`<component>/tests/test-*.php`, `tests/acceptance/verify-*-http.py`) — never
+from a hardcoded list. See [docs/testing.md](docs/testing.md).
 
 See docs/development.md.
 

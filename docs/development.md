@@ -318,6 +318,31 @@ docker compose exec wordpress wp eval-file scripts/run-event-import.php
 docker compose exec wordpress wp eval-file scripts/run-leisure-migration.php
 ```
 
+## Tests (Stage E — unified test harness)
+
+The repository has **one** test command. It runs both layers and returns one
+aggregate exit code:
+
+```bash
+docker compose up -d                 # local WordPress must be running first
+
+./scripts/run-tests.sh               # in-process PHP + HTTP acceptance
+./scripts/run-tests.sh --only theme  # one component
+./scripts/run-tests.sh --acceptance  # HTTP acceptance only
+./scripts/run-tests.sh --list        # discovered suites + manual suites
+```
+
+- **Local Docker is a requirement.** The in-process suites need a real
+  WordPress (they run inside the `wordpress` container, where `wp-load.php`
+  lives) and the acceptance suites need the site answering on
+  `http://localhost:8080`. Without them the runner reports
+  `BLOCKED: HTTP acceptance environment unavailable` and exits non-zero — it
+  never silently downgrades to a partial run.
+- **Production is never a target.** The acceptance base URL defaults to
+  `http://localhost:8080`; a `conexaobr.ie` base URL is refused.
+- Full reference: **[docs/testing.md](testing.md)**. The authoritative policy is
+  still [engineering-standard.md](engineering-standard.md) §8.
+
 ## Repository Hygiene
 
 Generated work trees and local tooling are **not** committed (engineering

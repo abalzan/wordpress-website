@@ -53,6 +53,12 @@ services:
       - ./docker/entrypoint-fix-permissions.sh:/usr/local/bin/entrypoint-fix-permissions.sh:ro
       - ./docker/php/uploads.ini:/usr/local/etc/php/conf.d/zz-conexao-uploads.ini:ro
       - ./docker/mu-plugins:/var/www/html/wp-content/mu-plugins
+      # Stage E test harness (dev-only mounts). The shared bootstrap is the
+      # only place allowed to locate wp-load.php, so the WordPress container
+      # needs the repository's tests/ and scripts/ trees to execute suites.
+      # These are development/test assets and are never part of a release ZIP.
+      - ./tests:/var/www/html/tests
+      - ./scripts:/var/www/html/scripts
 
 volumes:
   db_data:

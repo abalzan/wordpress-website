@@ -28,34 +28,17 @@
  * @package conexao-br-irlanda
  */
 
-$_SERVER['HTTP_HOST']   = $_SERVER['HTTP_HOST'] ?? 'localhost';
-$_SERVER['REQUEST_URI'] = $_SERVER['REQUEST_URI'] ?? '/';
 
-$wp_load = dirname( dirname( dirname( dirname( __DIR__ ) ) ) ) . '/wp-load.php';
-if ( file_exists( $wp_load ) ) {
-	require_once $wp_load;
-} else {
-	require_once '/var/www/html/wp-load.php';
-}
+// Shared Stage E test bootstrap: the only place allowed to locate wp-load.php.
+require_once dirname( __DIR__, 4 ) . '/tests/bootstrap.php';
 
 $passed  = 0;
 $failed  = 0;
 $skipped = 0;
 
-function check( string $label, bool $ok, string $detail = '' ): void {
-	global $passed, $failed;
-	if ( $ok ) {
-		++$passed;
-		echo "  PASS  {$label}\n";
-	} else {
-		++$failed;
-		echo "  FAIL  {$label}" . ( '' !== $detail ? "  [{$detail}]" : '' ) . "\n";
-	}
-}
 function skip( string $label ): void {
 	global $skipped;
 	++$skipped;
-	echo "  SKIP  {$label}\n";
 }
 
 /**
@@ -77,25 +60,22 @@ function conexao_test_set_language( string $slug ): bool {
 	return function_exists( 'pll_current_language' ) && $slug === pll_current_language( 'slug' );
 }
 
-echo "== EN primary-navigation language-context regression (live WP) ==\n";
 
 $has_polylang = function_exists( 'pll_current_language' ) && function_exists( 'pll_get_post' );
-check( 'A0 Polylang active', $has_polylang );
+assert_true( $has_polylang, 'A0 Polylang active');
 
 if ( ! $has_polylang ) {
-	echo "\n{$passed} passed, {$failed} failed, {$skipped} skipped (Polylang inactive).\n";
 	exit( 1 );
 }
 
 // --- A. Jobs: page-backed + real linked EN translation -----------------------
-echo "== A. Jobs ==\n";
 
 $sections = conexao_primary_nav_sections();
-check( 'A1 Jobs section spec is page-backed (path=empregos)', isset( $sections['empregos'] ) && 'page' === $sections['empregos']['type'] && 'empregos' === $sections['empregos']['path'] );
-check( 'A2 `job` CPT keeps has_archive = false', false === ( get_post_type_object( 'job' )->has_archive ) );
+assert_true( isset( $sections['empregos'] ) && 'page' === $sections['empregos']['type'] && 'empregos' === $sections['empregos']['path'], 'A1 Jobs section spec is page-backed (path=empregos)');
+assert_true( false === ( get_post_type_object( 'job' )->has_archive ), 'A2 `job` CPT keeps has_archive = false');
 
 $empregos_page = get_page_by_path( 'empregos' );
-check( 'A3 PT Empregos landing page exists', (bool) $empregos_page );
+assert_true( (bool) $empregos_page, 'A3 PT Empregos landing page exists');
 
 $en_jobs_url = '';
 if ( $empregos_page ) {
@@ -104,18 +84,18 @@ if ( $empregos_page ) {
 		$en_jobs_url = (string) get_permalink( $en_id );
 	}
 }
-check( 'A4 the PT Empregos page has a published linked EN translation', '' !== $en_jobs_url, 'no EN translation' );
+assert_true( '' !== $en_jobs_url, 'A4 the PT Empregos page has a published linked EN translation', 'no EN translation' );
 if ( '' !== $en_jobs_url ) {
-	check( 'A5 the linked EN Jobs translation lives under /en/', false !== strpos( $en_jobs_url, '/en/' ), $en_jobs_url );
+	assert_true( false !== strpos( $en_jobs_url, '/en/' ), 'A5 the linked EN Jobs translation lives under /en/', $en_jobs_url );
 }
 
 $en_lang_set = conexao_test_set_language( 'en' );
 if ( $en_lang_set ) {
 	$resolved = conexao_lang_url( '/empregos/' );
-	check( 'A6 (EN) conexao_lang_url( /empregos/ ) resolves to the EN translation', untrailingslashit( $resolved ) === untrailingslashit( $en_jobs_url ), "got {$resolved}" );
+	assert_true( untrailingslashit( $resolved ) === untrailingslashit( $en_jobs_url ), 'A6 (EN) conexao_lang_url( /empregos/ ) resolves to the EN translation', "got {$resolved}" );
 
 	$resolved2 = conexao_primary_nav_archive_url( 'job', 'empregos' );
-	check( 'A7 (EN) the Jobs item no longer resolves to the PT /empregos/', untrailingslashit( $resolved2 ) !== untrailingslashit( home_url( '/empregos/' ) ), "got {$resolved2}" );
+	assert_true( untrailingslashit( $resolved2 ) !== untrailingslashit( home_url( '/empregos/' ) ), 'A7 (EN) the Jobs item no longer resolves to the PT /empregos/', "got {$resolved2}" );
 
 	$leaks      = array();
 	$en_menu_id = (int) ( get_option( 'polylang' )['nav_menus'][ get_option( 'stylesheet' ) ]['primary']['en'] ?? 0 );
@@ -139,15 +119,14 @@ if ( $en_lang_set ) {
 	if ( $en_menu_id ) {
 		// Blog's approved EN destination is /en/blog/ (real EN archive after Stage 5;
 		// B2 fallback before it), so NO nav item should leave the /en/ context.
-		check( 'A8 (EN) NO nav item leaves the /en/ context (Blog is B2, not B1)', 0 === count( $leaks ), implode( ', ', $leaks ) );
-		check( 'A9 (EN) Jobs never leaks to PT', ! in_array( untrailingslashit( home_url( '/empregos/' ) ), $leaks, true ), implode( ', ', $leaks ) );
+		assert_true( 0 === count( $leaks ), 'A8 (EN) NO nav item leaves the /en/ context (Blog is B2, not B1)', implode( ', ', $leaks ) );
+		assert_true( ! in_array( untrailingslashit( home_url( '/empregos/' ) ), $leaks, true ), 'A9 (EN) Jobs never leaks to PT', implode( ', ', $leaks ) );
 	}
 } else {
 	skip( 'A6–A9 EN language context not settable in this CLI context — render-time resolution NOT_TESTABLE here (covered by tests/test-nav-language-context-logic.php and the HTTP verifier)' );
 }
 
 // --- B/C. Blog + full EN audit (data-level) ---------------------------------
-echo "== B/C. Blog + EN audit ==\n";
 
 $blog_page_id = (int) get_option( 'page_for_posts' );
 if ( $blog_page_id ) {
@@ -162,11 +141,11 @@ if ( $blog_page_id ) {
 	$en_blog_published = $en_blog_linked && 'publish' === get_post_status( $en_blog );
 
 	if ( $en_blog_published ) {
-		check( 'B1 Blog has a published, linked EN posts page (real EN archive)', true, "en_id={$en_blog}" );
-		check( 'B2 Blog is NOT treated as a B2 fallback once translated', ! conexao_should_render_b2_fallback( $blog_page_id ) );
+		assert_true( true, 'B1 Blog has a published, linked EN posts page (real EN archive)', "en_id={$en_blog}" );
+		assert_true( ! conexao_should_render_b2_fallback( $blog_page_id ), 'B2 Blog is NOT treated as a B2 fallback once translated');
 	} else {
-		check( 'B1 Blog has NO published EN archive/page translation (B2 renders PT under EN)', 0 === $en_blog || ! $en_blog_published, "en_id={$en_blog}" );
-		check( 'B2 Blog is B2-eligible while untranslated', conexao_is_b2_page( $blog_page_id ) );
+		assert_true( 0 === $en_blog || ! $en_blog_published, 'B1 Blog has NO published EN archive/page translation (B2 renders PT under EN)', "en_id={$en_blog}" );
+		assert_true( conexao_is_b2_page( $blog_page_id ), 'B2 Blog is B2-eligible while untranslated');
 	}
 } else {
 	skip( 'B1 no page_for_posts configured' );
@@ -183,25 +162,21 @@ $en_nav_targets = array(
 	'Blog'              => conexao_lang_url( '/blog/' ),
 	'Contact'           => home_url( '/contato/' ),
 );
-check( 'C1 every EN navigation item resolves to a non-empty URL', 0 === count( array_filter( $en_nav_targets, static function ( $u ) { return '' === trim( (string) $u ); } ) ) );
-check( 'C2 Blog resolves to /en/blog/ (never PT /blog/)', false === strpos( untrailingslashit( $en_nav_targets['Blog'] ), '/blog/' ) || strpos( untrailingslashit( $en_nav_targets['Blog'] ), '/en/blog/' ) !== false, $en_nav_targets['Blog'] );
+assert_true( 0 === count( array_filter( $en_nav_targets, static function ( $u ) { return '' === trim( (string) $u ); } ) ), 'C1 every EN navigation item resolves to a non-empty URL');
+assert_true( false === strpos( untrailingslashit( $en_nav_targets['Blog'] ), '/blog/' ) || strpos( untrailingslashit( $en_nav_targets['Blog'] ), '/en/blog/' ) !== false, 'C2 Blog resolves to /en/blog/ (never PT /blog/)', $en_nav_targets['Blog'] );
 
 // --- D. PT regression -------------------------------------------------------
-echo "== D. PT regression ==\n";
 
 conexao_test_set_language( 'pt' );
-check( 'D1 (PT) Jobs resolves to the PT page /empregos/', untrailingslashit( conexao_primary_nav_archive_url( 'job', 'empregos' ) ) === untrailingslashit( home_url( '/empregos/' ) ), conexao_primary_nav_archive_url( 'job', 'empregos' ) );
-check( 'D2 (PT) Blog resolves to /blog/', untrailingslashit( conexao_lang_url( '/blog/' ) ) === untrailingslashit( home_url( '/blog/' ) ) );
-check( 'D3 (PT) guides archive unchanged', untrailingslashit( conexao_primary_nav_archive_url( 'guide', 'guias' ) ) === untrailingslashit( home_url( '/guias/' ) ) );
+assert_true( untrailingslashit( conexao_primary_nav_archive_url( 'job', 'empregos' ) ) === untrailingslashit( home_url( '/empregos/' ) ), 'D1 (PT) Jobs resolves to the PT page /empregos/', conexao_primary_nav_archive_url( 'job', 'empregos' ) );
+assert_true( untrailingslashit( conexao_lang_url( '/blog/' ) ) === untrailingslashit( home_url( '/blog/' ) ), 'D2 (PT) Blog resolves to /blog/');
+assert_true( untrailingslashit( conexao_primary_nav_archive_url( 'guide', 'guias' ) ) === untrailingslashit( home_url( '/guias/' ) ), 'D3 (PT) guides archive unchanged');
 
 // --- E. Structural guards ---------------------------------------------------
-echo "== E. Structural guards ==\n";
 
 $header_src = (string) file_get_contents( CONEXAO_THEME_DIR . '/header.php' );
-check( 'E1 header.php does NOT use wp_page_menu as wp_nav_menu fallback', false === strpos( $header_src, 'wp_page_menu' ) );
-check( 'E2 BOTH wp_nav_menu() calls use the safe empty fallback', 2 === substr_count( $header_src, "'fallback_cb'    => 'conexao_safe_nav_menu_fallback'," ) );
-check( 'E3 no hard-coded /en/empregos/ or /en/blog/ in header.php', false === strpos( $header_src, '/en/empregos/' ) && false === strpos( $header_src, '/en/blog/' ) );
+assert_true( false === strpos( $header_src, 'wp_page_menu' ), 'E1 header.php does NOT use wp_page_menu as wp_nav_menu fallback');
+assert_true( 2 === substr_count( $header_src, "'fallback_cb'    => 'conexao_safe_nav_menu_fallback'," ), 'E2 BOTH wp_nav_menu() calls use the safe empty fallback');
+assert_true( false === strpos( $header_src, '/en/empregos/' ) && false === strpos( $header_src, '/en/blog/' ), 'E3 no hard-coded /en/empregos/ or /en/blog/ in header.php');
 
-echo "\n{$passed} passed, {$failed} failed, {$skipped} skipped.\n";
-exit( 0 === $failed ? 0 : 1 );
-
+test_finish();

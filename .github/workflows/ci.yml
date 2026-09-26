@@ -114,3 +114,110 @@ jobs:
           echo "phpcs-baseline.json. The blocking gate above is" >&2
           echo "./scripts/lint.sh, which fails on NEW violations only." >&2
           composer lint || echo "::warning::Raw PHPCS debt is non-zero by design (legacy baseline, Stage C). Not a CI failure." >&2
+
+  # ---------------------------------------------------------------------
+  # Stage E — Docker/WordPress integration job.
+  #
+  # Runs the shared test harness (scripts/run-tests.sh): the in-process PHP
+  # suites and the HTTP acceptance suites against a LOCAL, EPHEMERAL
+  # WordPress. The Stage D static-quality job above is unchanged; this job
+  # owns the two-layer test contract and nothing else.
+  #
+  # Safety:
+  #   - no production host, no production credentials, no repository secrets;
+  #   - the database is an ephemeral CI-local container, destroyed on cleanup;
+  #   - CONEXAO_TEST_BASE_URL is an explicit local URL and the harness itself
+  #     refuses any production host (tests/acceptance/lib/http_client.py);
+  #   - no continue-on-error on the test step: a real failure fails the job.
+  # ---------------------------------------------------------------------
+  integration:
+    name: Integration tests (Docker WordPress + run-tests.sh)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    env:
+      # The CI-local WordPress. Never a production host.
+      CONEXAO_TEST_BASE_URL: http://localhost:8080
+      # Pinned third-party dependency, per docs/development.md and the Stage 2
+      # report. Not "latest".
+      POLYLANG_VERSION: 3.8.9
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Start the local WordPress stack (ephemeral)
+        run: docker compose up -d
+
+      - name: Wait for WordPress to be ready
+        # An actual readiness check, not `sleep 10`: poll the front page until
+        # it serves a 200 (or a redirect to the installer, which still proves
+        # PHP + MySQL are answering). Also require the DB healthcheck.
+        run: |
+          set -euo pipefail
+          # 1. Database healthy.
+          for i in $(seq 1 60); do
+            if [ "$(docker inspect -f '{{.State.Health.Status}}' "$(docker compose ps -q db)" 2>/dev/null)" = "healthy" ]; then
+              echo "db healthy"
+              break
+            fi
+            if [ "$i" -eq 60 ]; then echo "::error::database never became healthy"; docker compose logs db; exit 1; fi
+            sleep 2
+          done
+          # 2. HTTP serving.
+          for i in $(seq 1 90); do
+            code="$(curl -s -o /dev/null -w '%{http_code}' --max-time 5 http://localhost:8080/ || true)"
+            case "$code" in
+              200|301|302)
+                echo "WordPress is serving (status $code)"
+                exit 0
+                ;;
+            esac
+            sleep 2
+          done
+          echo "::error::WordPress did not become ready"
+          docker compose logs wordpress
+          exit 1
+
+      - name: Install WordPress (WP-CLI, single site, no prompts)
+        run: |
+          set -euo pipefail
+          docker run --rm --network container:wordpress-website-wordpress-1 \
+            -v "$PWD:/var/www/html-src" --entrypoint wp wordpress:cli \
+            core install --path=/var/www/html --url=http://localhost:8080 \
+            --title="Conexao BR Ireland (CI)" --admin_user=ci --admin_password=ci \
+            --admin_email=ci@example.invalid --skip-email
+
+      - name: Activate the repository theme and plugins
+        run: |
+          set -euo pipefail
+          wp() {
+            docker run --rm --network container:wordpress-website-wordpress-1 \
+              -v "$PWD:/var/www/html-src" --entrypoint wp wordpress:cli "$@"
+          }
+          wp theme activate conexao-br-irlanda
+          # The repository's own plugins, mounted by compose.yaml.
+          for slug in conexao-data-model conexao-content conexao-event-runtime \
+                      conexao-admin-ux conexao-event-importer conexao-leisure-migration \
+                      conexao-sponsor-migration; do
+            wp plugin activate "$slug"
+          done
+          # Polylang Free, pinned version. Third-party, installed (not vendored).
+          wp plugin install polylang --version="$POLYLANG_VERSION" --force
+          wp plugin activate polylang
+          wp plugin list
+
+      - name: Report the test environment
+        run: |
+          set -euo pipefail
+          docker compose ps
+          curl -s -o /dev/null -w 'front page: %{http_code}\n' http://localhost:8080/
+
+      # PHASE 50: the runner owns discovery. The job never hardcodes suite names.
+      - name: Run the shared test harness
+        run: ./scripts/run-tests.sh
+
+      - name: Teardown (never masks the test exit status)
+        if: always()
+        run: |
+          docker compose down -v --remove-orphans || true
