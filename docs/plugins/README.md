@@ -1,7 +1,7 @@
 # Plugins
 
 <!-- BEGIN GENERATED PLUGIN REGISTRY: docs/plugins/README.md load order -->
-This project contains **13 custom WordPress plugins**, all in
+This project contains **14 custom WordPress plugins**, all in
 `wp-content/plugins/`. The authoritative registry is [`plugins.json`](../../plugins.json);
 the tables below are generated from it by `scripts/generate-registry-docs.php` and must
 not be hand-edited.
@@ -20,15 +20,16 @@ Load order is the row order. Dependencies always precede their dependents.
 | 6 | `conexao-leisure-migration` | tooling | active | no | yes | yes | - | 2.1.0 | [conexao-leisure-migration](./conexao-leisure-migration.md) |
 | 7 | `conexao-sponsor-migration` | tooling | active | no | yes | yes | - | 1.1.0 | [conexao-sponsor-migration](./conexao-sponsor-migration.md) |
 | 8 | `conexao-translation-rollout` | tooling | active | no | no | yes | - | 1.0.0 | [conexao-translation-rollout](./conexao-translation-rollout.md) |
-| 9 | `conexao-page-translation` | rollout | retired | no | no | yes | - | 1.0.0 | [conexao-page-translation](./conexao-page-translation.md) |
-| 10 | `conexao-blog-translation` | rollout | retired | no | no | yes | - | 1.0.0 | [conexao-blog-translation](./conexao-blog-translation.md) |
-| 11 | `conexao-job-translation` | rollout | retired | no | no | yes | - | 1.0.0 | [conexao-job-translation](./conexao-job-translation.md) |
-| 12 | `conexao-leisure-translation` | rollout | retired | no | no | yes | - | 1.0.0 | [conexao-leisure-translation](./conexao-leisure-translation.md) |
-| 13 | `conexao-guide-translation` | rollout | retired | no | no | yes | - | 1.0.0 | [conexao-guide-translation](./conexao-guide-translation.md) |
+| 9 | `conexao-en-translation` | tooling | active | no | no | yes | `conexao-translation-rollout` | 1.0.0 | [conexao-en-translation](./conexao-en-translation.md) |
+| 10 | `conexao-page-translation` | rollout | retired | no | no | yes | - | 1.0.0 | [conexao-page-translation](./conexao-page-translation.md) |
+| 11 | `conexao-blog-translation` | rollout | retired | no | no | yes | - | 1.0.0 | [conexao-blog-translation](./conexao-blog-translation.md) |
+| 12 | `conexao-job-translation` | rollout | retired | no | no | yes | - | 1.0.0 | [conexao-job-translation](./conexao-job-translation.md) |
+| 13 | `conexao-leisure-translation` | rollout | retired | no | no | yes | - | 1.0.0 | [conexao-leisure-translation](./conexao-leisure-translation.md) |
+| 14 | `conexao-guide-translation` | rollout | retired | no | no | yes | - | 1.0.0 | [conexao-guide-translation](./conexao-guide-translation.md) |
 
 **Production steady state** (platform, `production: true`) - activate in this order: conexao-data-model -> conexao-content -> conexao-admin-ux -> conexao-event-runtime.
 
-**Local-only tooling** (never production): conexao-event-importer, conexao-leisure-migration, conexao-sponsor-migration, conexao-translation-rollout.
+**Local-only tooling** (never production): conexao-event-importer, conexao-leisure-migration, conexao-sponsor-migration, conexao-translation-rollout, conexao-en-translation.
 
 **Retired rollout plugins** (historical tooling, *activate → apply → remove*; not a production dependency and not in any release ZIP): conexao-page-translation, conexao-blog-translation, conexao-job-translation, conexao-leisure-translation, conexao-guide-translation.
 
@@ -60,7 +61,7 @@ running) without the event runtime plugin.
 ## Third-Party Plugins
 
 No third-party plugins are bundled in this repository. The project relies only on these
-13 custom plugins and core WordPress functionality (plus Polylang Free 3.8.9 for the
+14 custom plugins and core WordPress functionality (plus Polylang Free 3.8.9 for the
 English layer).
 
 ## Regenerating this page

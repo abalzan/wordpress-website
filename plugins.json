@@ -115,6 +115,20 @@
       "documentation": "docs/plugins/conexao-translation-rollout.md"
     },
     {
+      "slug": "conexao-en-translation",
+      "name": "Conexão BR Irlanda — EN Translation (Stage M)",
+      "class": "tooling",
+      "status": "active",
+      "production": false,
+      "build": false,
+      "mount": true,
+      "dependencies": [
+        "conexao-translation-rollout"
+      ],
+      "version_source": "wp-content/plugins/conexao-en-translation/conexao-en-translation.php",
+      "documentation": "docs/plugins/conexao-en-translation.md"
+    },
+    {
       "slug": "conexao-page-translation",
       "name": "Conexão BR Irlanda — EN Page Translation (Stage 4.5)",
       "class": "rollout",
