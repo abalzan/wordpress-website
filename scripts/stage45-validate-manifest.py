@@ -11,7 +11,7 @@ Checks (Phase 2/4/5/8/11 gates, as far as static analysis allows):
      in the mandatory creation order (front page first, legal last);
   2. every PT source exists in the production inventory;
   3. EN slugs are unique, URL-safe, free of collisions with existing pages,
-     legacy redirect source paths (inc/seo.php) and WordPress core routes;
+     legacy redirect source paths (inc/seo/redirects.php) and WordPress core routes;
   4. shared slugs are exactly the reviewed allowlist (blog, newsletter);
   5. block structure parity: the EN content uses the same Gutenberg block
      sequence (type + level) as the PT original's rendered content;
@@ -35,7 +35,7 @@ import sys
 MAP_PHP = "wp-content/plugins/conexao-page-translation/includes/translation-map.php"
 INVENTORY_PY = "scripts/stage45-page-inventory.py"
 
-# Legacy redirect source paths (inc/seo.php conexao_seo_redirects()). All rules
+# Legacy redirect source paths (inc/seo/redirects.php conexao_seo_redirects()). All rules
 # are root-anchored, so /en/<slug>/ can never match them; flagged anyway so the
 # choice is conscious.
 LEGACY_REDIRECT_SOURCES = {

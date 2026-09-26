@@ -36,7 +36,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *   2. pages with a published translation → the translation's permalink path;
  *   3. everything else              → unchanged (approved B1 behaviour).
  *
- * This mirrors conexao_lang_url() (inc/polylang.php) but takes an explicit
+ * This mirrors conexao_lang_url() (inc/i18n/urls.php) but takes an explicit
  * language instead of reading the request language, because the importer
  * runs in an admin (language-neutral) context.
  *

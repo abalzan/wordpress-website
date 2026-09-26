@@ -86,7 +86,8 @@ See docs/routing.md.
 8. **Preserve image attribution/license metadata** (`_leisure_image_author`, `_license`, `_attribution`, etc.).
 9. **Public event queries must respect `_event_status`** (published or no status). The event-runtime plugin enforces this via `pre_get_posts`.
 10. **Front page caching:** transients (`conexao_home_*`, `conexao_404_*`) are invalidated on save. Keep new homepage queries cached.
-11. **English is an additional language layer, never a fork.** Polylang adds `/en/`; Portuguese URLs/slugs/identity stay canonical. An English record is a *linked translation* of the same Event/Lazer identity — never a second identity record. Theme language logic lives only in `inc/polylang.php` + `inc/seo.php`; theme/plugin code reads locale through `conexao_current_locale()`. Transient/object caches must be language-scoped. See docs/routing.md §English and docs/reports/CONEXAO_BR_ENGLISH_STAGE_2_REPORT.md.
+11. **English is an additional language layer, never a fork.** Polylang adds `/en/`; Portuguese URLs/slugs/identity stay canonical. An English record is a *linked translation* of the same Event/Lazer identity — never a second identity record. Theme language logic lives only in `inc/i18n/` (plus the SEO modules in `inc/seo/`); theme/plugin code reads locale through `conexao_current_locale()`. Transient/object caches must be language-scoped. See docs/routing.md §English and docs/reports/CONEXAO_BR_ENGLISH_STAGE_2_REPORT.md.
+12. **Theme runtime is loader + modules.** `functions.php` is loader-only (constants + `require_once`); logic lives in `inc/*.php` with one concern per file. Language policy → `inc/i18n/`, SEO output → `inc/seo/`, bilingual REST → `inc/rest-language.php`. Public `conexao_*` function names and the filter/action surface are stable across modules. See docs/themes/conexao-br-irlanda.md §Runtime Architecture.
 
 ## Common tasks — where to look
 
@@ -103,7 +104,8 @@ See docs/routing.md.
 | Templates/components | docs/themes/conexao-br-irlanda.md |
 | Run/extend the test suite | docs/testing.md, `./scripts/run-tests.sh --help` |
 | CSS/design | docs/frontend.md, theme assets/css/ |
-| SEO/redirects/sitemap | theme inc/seo.php |
+| SEO/redirects/sitemap | theme `inc/seo/` (see `redirects.php`, `sitemap.php`) |
+| Language policy (Polylang) | theme `inc/i18n/` |
 | Deploy/build ZIPs | docs/deployment.md, scripts/ |
 
 ## Running the project

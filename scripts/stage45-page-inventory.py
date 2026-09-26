@@ -10,7 +10,7 @@ Page on https://conexaobr.ie required by the Stage 4.5 task (Phase 0):
     template, page depth, front-page / posts-page flags;
   * current Polylang / EN-translation state (none deployed yet — measured);
   * current B1/B2 classification per the repo architecture
-    (inc/polylang.php `conexao_b2_page_allowlist()`);
+    (inc/i18n/fallback.php `conexao_b2_page_allowlist()`);
   * SEO metadata state captured from the live HTML head
     (<title>, meta description, canonical, robots, html lang, hreflang, og);
   * Gutenberg-block usage, internal links and external links in the content;
@@ -24,8 +24,8 @@ Data sources (all read-only):
   2. Public HTML      GET /<slug>/                            (head metadata);
   3. Public sitemap   GET /sitemap.xml + first child sitemap;
   4. Repository       page seed (plugins/conexao-content/create-pages.php),
-                      legacy redirect map (theme inc/seo.php), B2 page
-                      allowlist (theme inc/polylang.php).
+                      legacy redirect map (theme inc/seo/redirects.php), B2 page
+                      allowlist (theme inc/i18n/fallback.php).
 
 GET requests only. No POST/PUT/PATCH/DELETE. No credentials. The WordPress.com
 edge rate-limits (429) uncached requests, so the collector paces itself and
@@ -51,7 +51,7 @@ import urllib.request
 BASE = "https://conexaobr.ie"
 UA = "ConexaoBR-Stage45-Inventory/1.0 (read-only)"
 
-# B2 page allowlist (mirror of inc/polylang.php conexao_b2_page_allowlist()).
+# B2 page allowlist (mirror of inc/i18n/fallback.php conexao_b2_page_allowlist()).
 B2_PAGE_ALLOWLIST = (
     "irlanda", "dublin", "cork", "galway", "limerick",
     "kildare", "meath", "wicklow", "waterford", "laois",
@@ -125,7 +125,7 @@ CLASSIFICATION = {
         "class": "H", "action": "exclude",
         "reason": "Search utility page: body is a single wp:search block (no editorial content); excluded from "
                   "the sitemap and disallowed in robots.txt by the theme; not linked from any menu or template.",
-        "evidence": "inc/seo.php $excluded_pages contains 'search'; robots.txt 'Disallow: /search/' and "
+        "evidence": "inc/seo/redirects.php $excluded_pages contains 'search'; robots.txt 'Disallow: /search/' and "
                     "'/en/search/'; content = one search form (2 words); no menu item; 404 template uses "
                     "get_search_form() (/?s=), not this page.",
     },
@@ -171,27 +171,27 @@ CLASSIFICATION = {
         "reason": "Obsolete alias page: its whole body is a 'page moved' notice and the URL is never served — "
                   "the theme issues a permanent 301 /privacidade -> /politica-de-privacidade/ before the page "
                   "can render. Not public editorial content; excluded from the sitemap.",
-        "evidence": "inc/seo.php legacy redirect map ('/privacidade' => '/politica-de-privacidade/'); HTTP 301 "
+        "evidence": "inc/seo/redirects.php legacy redirect map ('/privacidade' => '/politica-de-privacidade/'); HTTP 301 "
                     "measured 2026-09-23; sitemap $excluded_pages; create-pages.php 'FOOTER REDIRECT PAGES'.",
     },
     "termos": {
         "class": "H", "action": "exclude",
         "reason": "Obsolete alias page (301 /termos -> /termos-de-uso/); body is a 'page moved' notice; "
                   "sitemap-excluded; never rendered.",
-        "evidence": "inc/seo.php redirect map; HTTP 301 measured 2026-09-23; sitemap $excluded_pages.",
+        "evidence": "inc/seo/redirects.php redirect map; HTTP 301 measured 2026-09-23; sitemap $excluded_pages.",
     },
     "sobre": {
         "class": "H", "action": "exclude",
         "reason": "Obsolete alias page (301 /sobre -> /sobre-nos/); body is a 'page moved' notice; "
                   "sitemap-excluded; never rendered.",
-        "evidence": "inc/seo.php redirect map; HTTP 301 measured 2026-09-23; sitemap $excluded_pages.",
+        "evidence": "inc/seo/redirects.php redirect map; HTTP 301 measured 2026-09-23; sitemap $excluded_pages.",
     },
     "about": {
         "class": "H", "action": "exclude",
         "reason": "WordPress installer sample page ('This is an example of a page…', links to "
                   "wordpress.com/page/new) — boilerplate placeholder, never site content; additionally "
                   "shadowed: /about/ 301 -> /sobre-nos/ (theme redirect map + .htaccess), so it is unreachable.",
-        "evidence": "WP.com default page boilerplate (content); HTTP 301 measured 2026-09-23; inc/seo.php "
+        "evidence": "WP.com default page boilerplate (content); HTTP 301 measured 2026-09-23; inc/seo/redirects.php "
                     "'/about' => '/sobre-nos/'; .htaccess 'RewriteRule ^about/?$'.",
     },
     "lazer": {

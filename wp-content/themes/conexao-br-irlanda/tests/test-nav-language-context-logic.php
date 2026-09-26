@@ -12,8 +12,10 @@
  * and the code fell back to the Portuguese path. Nothing about that bug needs a
  * database to reproduce — it is pure URL resolution.
  *
- * This script EXTRACTS the real navigation functions from functions.php and
- * inc/polylang.php (token_get_all) and executes them unmodified against a small
+ * This script EXTRACTS the real navigation functions from inc/navigation.php
+ * and inc/i18n/urls.php (Stage F modules cut from the former functions.php and
+ * inc/polylang.php monoliths) with token_get_all, and executes them unmodified
+ * against a small
  * stubbed WordPress/Polylang layer emulating a bilingual site (PT + EN Polylang
  * directory mode) with:
  *   - the `empregos` PT page linked to the `jobs` EN translation (/en/jobs/),
@@ -113,7 +115,36 @@ function conexao_test_extract_functions( string $source ): array {
 
 $theme_dir = dirname( __DIR__ );
 $extracted = array();
-foreach ( array( $theme_dir . '/functions.php', $theme_dir . '/inc/polylang.php' ) as $source ) {
+// Stage F: the navigation language-context logic now lives in the focused
+// modules cut from the old functions.php / inc/polylang.php monoliths. The
+// functions under test are still extracted from the real theme SOURCE with
+// token_get_all and executed unmodified - only the file paths changed.
+//
+//   inc/navigation.php  -> conexao_primary_nav_sections, conexao_bind_section_object,
+//                          conexao_modify_primary_nav_items
+//   inc/i18n/*          -> the whole language-policy set the nav code calls
+//                          (conexao_lang_url, conexao_language_archive_url,
+//                          conexao_current_language_slug,
+//                          conexao_default_language_slug, conexao_lang_term,
+//                          conexao_lang_cache_key, conexao_polylang_active, ...)
+//   inc/queries.php     -> conexao_get_guides_archive_url
+//
+// inc/i18n/ is included as a set because its modules call each other (urls ->
+// locale -> guard), and the stubs below only cover WordPress/Polylang. Only
+// functions (never the module-level add_filter/add_action calls) are
+// extracted, so no hook is registered by this suite.
+$nav_sources = array(
+	$theme_dir . '/inc/navigation.php',
+	$theme_dir . '/inc/i18n/guard.php',
+	$theme_dir . '/inc/i18n/locale.php',
+	$theme_dir . '/inc/i18n/urls.php',
+	$theme_dir . '/inc/i18n/terms.php',
+	$theme_dir . '/inc/i18n/fallback.php',
+	$theme_dir . '/inc/i18n/hreflang.php',
+	$theme_dir . '/inc/i18n/switcher.php',
+	$theme_dir . '/inc/queries.php',
+);
+foreach ( $nav_sources as $source ) {
 	$raw = file_get_contents( $source );
 	if ( false === $raw ) {
 		fwrite( STDERR, "Cannot read {$source}\n" );

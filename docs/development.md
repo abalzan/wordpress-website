@@ -249,7 +249,7 @@ docker compose exec wordpress wp user list
 ## Multilingual (EN) development — Stage 2
 
 English support (`/en/`) is provided by **Polylang 3.8.9 (Free)** and the theme's
-single integration layer `wp-content/themes/conexao-br-irlanda/inc/polylang.php`.
+single integration layer `wp-content/themes/conexao-br-irlanda/inc/i18n/`.
 See `CONEXAO_BR_ENGLISH_STAGE_2_REPORT.md` for the full gate results.
 
 ```bash
@@ -303,7 +303,7 @@ Notes:
   **not** committed to this repository. Deactivating it restores single-language
   behaviour (every integration helper is capability-guarded).
 - Translated post types/taxonomies are declared in code (`pll_get_post_types` /
-  `pll_get_taxonomies` in `inc/polylang.php`), so local/staging/production cannot drift.
+  `pll_get_taxonomies` in `inc/i18n/guard.php`), so local/staging/production cannot drift.
 - Local PHP uses opcache with `validate_timestamps=On` and
   `revalidate_freq=2`; when editing theme PHP during a request-heavy loop, allow
   ~2 s or the previous bytecode may still be served.

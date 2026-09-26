@@ -19,7 +19,7 @@
  *        redirect_lang = 0
  *        media_support = 0 (media is shared, not per-language)
  *      Translated post types / taxonomies are NOT stored here: they are
- *      declared in code (theme inc/polylang.php, `pll_get_post_types` /
+ *      declared in code (theme inc/i18n/guard.php, `pll_get_post_types` /
  *      `pll_get_taxonomies`) so local, staging and production cannot drift.
  *   3. Assigns the default language (pt_BR) to every pre-existing
  *      post/term that has no language yet, using Polylang's own

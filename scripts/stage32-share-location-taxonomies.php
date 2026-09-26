@@ -3,7 +3,7 @@
  * Stage 3.2 — make conexao_county / conexao_town truly SHARED taxonomies.
  *
  * LOCAL / STAGING ONLY. Companion to the Stage 3.2 policy correction in the
- * theme (inc/polylang.php, conexao_polylang_translated_taxonomies()):
+ * theme (inc/i18n/guard.php, conexao_polylang_translated_taxonomies()):
  * county and town terms are proper nouns and are NOT Polylang-translated
  * anymore (architecture decision §1: "Counties/towns are shared — no
  * per-language duplicate terms").

@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Conexão BR Irlanda — EN Leisure Descriptions (Stage 7)
- * Description: One-shot, auditable rollout of the Stage 7 Leisure card-description translation layer: writes the human-authored English description (`_leisure_excerpt_en` post meta, data/stage7-leisure-descriptions.json) onto the EXISTING Portuguese `leisure` records — matched by slug, guarded by a PT-drift check that refuses to apply when the Portuguese excerpt no longer matches the authored source. It never creates posts, never touches `_leisure_uuid` / `_leisure_export_uuid`, post_excerpt, content, title, taxonomies or the language assignment (the theme renders the field; see inc/polylang.php conexao_leisure_card_excerpt()). Admin screen (Tools → EN Leisure Descriptions) with dry-run preview and a Remove rollback; no frontend behaviour, safe to deactivate after the rollout.
+ * Description: One-shot, auditable rollout of the Stage 7 Leisure card-description translation layer: writes the human-authored English description (`_leisure_excerpt_en` post meta, data/stage7-leisure-descriptions.json) onto the EXISTING Portuguese `leisure` records — matched by slug, guarded by a PT-drift check that refuses to apply when the Portuguese excerpt no longer matches the authored source. It never creates posts, never touches `_leisure_uuid` / `_leisure_export_uuid`, post_excerpt, content, title, taxonomies or the language assignment (the theme renders the field; see inc/i18n/fallback.php conexao_leisure_card_excerpt()). Admin screen (Tools → EN Leisure Descriptions) with dry-run preview and a Remove rollback; no frontend behaviour, safe to deactivate after the rollout.
  * Version: 1.0.0
  * Requires PHP: 7.4
  * Text Domain: conexao-leisure-translation
@@ -34,7 +34,7 @@
  *      the approved B2 fallback re-engages automatically).
  *
  * The theme owns the rendering: `conexao_leisure_card_excerpt()`
- * (theme inc/polylang.php) reads `_leisure_excerpt_en` on EN requests and
+ * (theme inc/i18n/fallback.php) reads `_leisure_excerpt_en` on EN requests and
  * falls back to the exact existing Portuguese pipeline otherwise.
  *
  * @package Conexao_Leisure_Translation

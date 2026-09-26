@@ -232,7 +232,7 @@ T = {
     (None, "Remover imagem"): "Remove image",
 
 
-    # inc/seo.php + index.php + page templates
+    # inc/seo/ + index.php + page templates
     (None, "Breadcrumb"): "Breadcrumb",
     (None, "Ler mais →"): "Read more →",
     (None, "Empregos — Página de Difusão"): "Empregos — Página de Difusão",

@@ -783,43 +783,55 @@ parameters:
 
 		-
 			message: "#^Call to function is_wp_error\\(\\) with WP_Term will always evaluate to false\\.$#"
-			count: 6
-			path: wp-content/themes/conexao-br-irlanda/functions.php
+			count: 3
+			path: wp-content/themes/conexao-br-irlanda/inc/archive-query.php
+		-
+			message: "#^Call to function is_wp_error\\(\\) with WP_Term will always evaluate to false\\.$#"
+			count: 3
+			path: wp-content/themes/conexao-br-irlanda/inc/queries.php
 
 		-
 			message: "#^Else branch is unreachable because ternary operator condition is always true\\.$#"
 			count: 1
-			path: wp-content/themes/conexao-br-irlanda/functions.php
+			path: wp-content/themes/conexao-br-irlanda/inc/events.php
+		-
+			message: "#^Else branch is unreachable because ternary operator condition is always true\\.$#"
+			count: 1
+			path: wp-content/themes/conexao-br-irlanda/inc/i18n/terms.php
 
 		-
 			message: "#^Offset 'type' on array\\{type\\: string, url\\: string\\} in isset\\(\\) always exists and is not nullable\\.$#"
 			count: 1
-			path: wp-content/themes/conexao-br-irlanda/functions.php
+			path: wp-content/themes/conexao-br-irlanda/inc/sponsors.php
 
 		-
 			message: "#^Offset 'url' on array\\{type\\: string, url\\: string\\} in isset\\(\\) always exists and is not nullable\\.$#"
 			count: 1
-			path: wp-content/themes/conexao-br-irlanda/functions.php
+			path: wp-content/themes/conexao-br-irlanda/inc/sponsors.php
 
 		-
 			message: "#^Parameter \\#1 \\$text of function esc_attr expects string, int given\\.$#"
 			count: 2
-			path: wp-content/themes/conexao-br-irlanda/functions.php
+			path: wp-content/themes/conexao-br-irlanda/inc/sponsors.php
 
 		-
 			message: "#^Parameter \\#2 \\$array of function implode expects array\\<string\\>, array\\<array\\|string\\> given\\.$#"
 			count: 1
-			path: wp-content/themes/conexao-br-irlanda/functions.php
+			path: wp-content/themes/conexao-br-irlanda/inc/b2-fallback.php
 
 		-
 			message: "#^Variable \\$counties in empty\\(\\) always exists and is not falsy\\.$#"
 			count: 1
-			path: wp-content/themes/conexao-br-irlanda/functions.php
+			path: wp-content/themes/conexao-br-irlanda/inc/leisure.php
 
 		-
 			message: "#^is_wp_error\\(WP_Term\\) will always evaluate to false\\.$#"
-			count: 6
-			path: wp-content/themes/conexao-br-irlanda/functions.php
+			count: 3
+			path: wp-content/themes/conexao-br-irlanda/inc/archive-query.php
+		-
+			message: "#^is_wp_error\\(WP_Term\\) will always evaluate to false\\.$#"
+			count: 3
+			path: wp-content/themes/conexao-br-irlanda/inc/queries.php
 
 		-
 			message: "#^Parameter \\#1 \\$args of function wp_nav_menu expects array\\{menu\\?\\: int\\|string\\|WP_Term, menu_class\\?\\: string, menu_id\\?\\: string, container\\?\\: string, container_class\\?\\: string, container_id\\?\\: string, container_aria_label\\?\\: string, fallback_cb\\?\\: \\(callable\\(\\)\\: mixed\\)\\|false, \\.\\.\\.\\}, array\\{theme_location\\: 'primary', menu_class\\: 'mobile\\-menu', container\\: false, fallback_cb\\: 'conexao_safe_nav…', depth\\: 3\\} given\\.$#"
@@ -844,42 +856,39 @@ parameters:
 		-
 			message: "#^Access to an undefined property PLL\\:\\:\\$curlang\\.$#"
 			count: 1
-			path: wp-content/themes/conexao-br-irlanda/inc/polylang.php
+			path: wp-content/themes/conexao-br-irlanda/inc/i18n/fallback.php
 
 		-
 			message: "#^Action callback returns string but should not return anything\\.$#"
 			count: 2
-			path: wp-content/themes/conexao-br-irlanda/inc/polylang.php
+			path: wp-content/themes/conexao-br-irlanda/inc/i18n/locale.php
 
-		-
-			message: "#^Else branch is unreachable because ternary operator condition is always true\\.$#"
-			count: 1
-			path: wp-content/themes/conexao-br-irlanda/inc/polylang.php
+
 
 		-
 			message: "#^Parameter \\#2 \\$array of function implode expects array\\<string\\>, array\\<int, PLL_Language\\|string\\> given\\.$#"
 			count: 1
-			path: wp-content/themes/conexao-br-irlanda/inc/polylang.php
+			path: wp-content/themes/conexao-br-irlanda/inc/i18n/fallback.php
 
 		-
 			message: "#^Property PLL_Language\\:\\:\\$locale \\(string\\) in isset\\(\\) is not nullable\\.$#"
 			count: 1
-			path: wp-content/themes/conexao-br-irlanda/inc/polylang.php
+			path: wp-content/themes/conexao-br-irlanda/inc/i18n/locale.php
 
 		-
 			message: "#^Property PLL_Language\\:\\:\\$name \\(string\\) in isset\\(\\) is not nullable\\.$#"
 			count: 1
-			path: wp-content/themes/conexao-br-irlanda/inc/polylang.php
+			path: wp-content/themes/conexao-br-irlanda/inc/i18n/switcher.php
 
 		-
 			message: "#^Property PLL_Language\\:\\:\\$slug \\(string\\) in isset\\(\\) is not nullable\\.$#"
 			count: 1
-			path: wp-content/themes/conexao-br-irlanda/inc/polylang.php
+			path: wp-content/themes/conexao-br-irlanda/inc/i18n/locale.php
 
 		-
 			message: "#^Strict comparison using \\=\\=\\= between '' and non\\-empty\\-string\\|null will always evaluate to false\\.$#"
 			count: 1
-			path: wp-content/themes/conexao-br-irlanda/inc/polylang.php
+			path: wp-content/themes/conexao-br-irlanda/inc/i18n/locale.php
 
 		-
 			message: "#^Else branch is unreachable because ternary operator condition is always true\\.$#"
@@ -894,12 +903,12 @@ parameters:
 		-
 			message: "#^Variable \\$leisure_counties in empty\\(\\) always exists and is not falsy\\.$#"
 			count: 1
-			path: wp-content/themes/conexao-br-irlanda/inc/seo.php
+			path: wp-content/themes/conexao-br-irlanda/inc/seo/schema.php
 
 		-
 			message: "#^Variable \\$tax_query in empty\\(\\) always exists and is not falsy\\.$#"
 			count: 1
-			path: wp-content/themes/conexao-br-irlanda/inc/seo.php
+			path: wp-content/themes/conexao-br-irlanda/inc/seo/related.php
 
 		-
 			message: "#^Call to function is_wp_error\\(\\) with WP_Term will always evaluate to false\\.$#"

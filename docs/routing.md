@@ -66,16 +66,16 @@ Rules:
   `/en/…` paths can never match them (all rules are anchored to the root path).
 - **Untranslated content is answered with a 302 to the Portuguese URL** while no
   English version exists — never a 301, never a fake English detail page.
-  `conexao_seo_missing_translation_redirect()` (theme `inc/seo.php`) issues the
+  `conexao_seo_missing_translation_redirect()` (theme `inc/seo/redirects.php`) issues the
   302 and `conexao_polylang_language_redirect_is_temporary()` intercepts
   Polylang's own 301 for exactly these requests.
-- **Canonical + hreflang are owned by `inc/seo.php`**: self-canonical PT/EN
+- **Canonical + hreflang are owned by `inc/seo/`**: self-canonical PT/EN
   URLs, `hreflang="pt-BR"`, `hreflang="en"`, `hreflang="x-default"` — only where
   a real translation relationship or a content-backed language archive exists.
 - **Caches are per language** (`conexao_*_pt` / `conexao_*_en`).
 
 Language assignment, URL mode and the translated post types/taxonomies are
-configured by `scripts/stage2-polylang-setup.php` + `inc/polylang.php` (see
+configured by `scripts/stage2-polylang-setup.php` + `inc/i18n/guard.php` (see
 `docs/development.md` § Multilingual (EN) development).
 
 ### English rollout state (Stage 3.2)
@@ -84,7 +84,7 @@ configured by `scripts/stage2-polylang-setup.php` + `inc/polylang.php` (see
   the PT front page). `pll_home_url('en')` = `/en/`; `/en/home/` 301 → `/en/`
   (mirroring `/inicio/` 301 → `/`). Declared through Polylang's
   `pll_additional_language_data` / `pll_language_home_url` filters plus a
-  self-heal guard in `inc/polylang.php` (Polylang builds its language list
+  self-heal guard in `inc/i18n/guard.php` (Polylang builds its language list
   before the theme loads).
 - **B2 fallback** (PT record under EN shell + notice, canonical → PT, not in
   the sitemap): events, lazer, sponsors, courses, jobs, plus the explicit
@@ -122,7 +122,7 @@ home URL (`PLL_Frontend_Filters_Links::home_url()` returns the URL untouched as
 soon as `$path` is non-empty), so the English homepage still linked to
 Portuguese destinations. Stage 3.3 closes that:
 
-- **`conexao_lang_url( $path )`** (`inc/polylang.php`) resolves a canonical
+- **`conexao_lang_url( $path )`** (`inc/i18n/urls.php`) resolves a canonical
   Portuguese path to the destination the current language must reach:
   1. Polylang inactive / default language / empty language → `home_url( $path )`
      **byte-identical to the pre-Polylang output** (Portuguese cannot change);
@@ -181,7 +181,7 @@ Portuguese destinations. Stage 3.3 closes that:
   now stays in the `/en/` context. See
   CONEXAO_BR_ENGLISH_BLOG_NAVIGATION_FIX_REPORT.md, `scripts/create-en-primary-menu.php`
   and CONEXAO_BR_EN_HEADER_NAVIGATION_FIX_REPORT.md.
-- **hreflang output** is emitted by the theme (`inc/seo.php`,
+- **hreflang output** is emitted by the theme (`inc/seo/hreflang.php`,
   `conexao_hreflang_links()`), which is the single SEO owner; Polylang's own
   `wp_head` rel-alternate set is additionally present in the local environment
   (pre-existing since Stage 2, to be consolidated in Stage 4 — see the Stage 3.3
@@ -257,7 +257,7 @@ Stage 5 gives the Blog a **real English translation**: the linked EN posts page
   Because WordPress resolves the posts-page path with a language-blind page
   lookup, the theme resolves it explicitly in the requested language
   (`conexao_resolve_posts_page_request()` + `conexao_mark_posts_page_query()` in
-  `inc/polylang.php`); the default language path stays byte-identical to core.
+    `inc/i18n/urls.php`); the default language path stays byte-identical to core.
 - **Posts**: `/blog/{pt-slug}/` ↔ `/en/{en-slug}/` — natural English slugs derived
   from the English title, no `-en`/`-2` suffixes, PT slugs untouched. EN posts
   keep the PT featured image (shared media), date, author and taxonomy, and carry
@@ -283,7 +283,7 @@ Leisure archive. See `CONEXAO_BR_ENGLISH_LEISURE_CARD_DESCRIPTION_REPORT.md` and
   records, no `_leisure_uuid` / `_leisure_export_uuid` changes (Leisure *records*
   remain a B2 directory; only the card description is translated in this stage).
 - **Rendering**: the theme selects the description source per request language
-  (`conexao_leisure_card_excerpt()` in `inc/polylang.php`); the presentation
+  (`conexao_leisure_card_excerpt()` in `inc/i18n/fallback.php`); the presentation
   pipeline in `template-parts/leisure-card.php` (18-word `wp_trim_words()` +
   `esc_html()`) is identical in both languages. PT requests keep the exact
   pre-Stage-7 output (`get_the_excerpt()`).
@@ -310,7 +310,7 @@ does **not** filter post collections by language and exposes no translation
 relationships (confirmed in the Stage 3.3 report §26). Stage 4.1 closes that
 gap inside the existing REST API — no new endpoints, no second routing
 system. Owner: **`inc/rest-language.php`** (theme, loaded from
-`functions.php` after `inc/polylang.php`; every hook guarded by
+`inc/rest-language.php` after `inc/i18n/`; every hook guarded by
 `conexao_polylang_active()`, so a single-language site is unaffected).
 
 - **Request model** on the existing endpoints: `?lang=pt`, `?lang=en`, or no
@@ -400,7 +400,7 @@ Legacy Wix redirects:
 /counties/{slug}/ → /{slug}/
 ```
 
-### 2. PHP (inc/seo.php — `conexao_seo_redirects()`)
+### 2. PHP (inc/seo/redirects.php — `conexao_seo_redirects()`)
 
 Runs at `template_redirect` priority 2 (Stage 3.2: before Polylang's language canonical at priority 4, so legacy 301s keep precedence over slug collisions with EN pages). Handles:
 
@@ -413,7 +413,7 @@ Runs at `template_redirect` priority 2 (Stage 3.2: before Polylang's language ca
 
 ### 3. Leisure External Redirect (PHP — `conexao_leisure_redirect()`)
 
-Runs at `template_redirect` priority 6. Redirects individual leisure posts to their configured external URL (Official Website or Discover Ireland URL) via 302 if one is set. Classification is centralized in `conexao_leisure_external_url()` (inc/seo.php) — the sitemap, the archive cards and the related-destinations selector read the same function. Phase 3B: a record with the `_leisure_internal_page` flag keeps its internal page and its official/Discover Ireland URLs become display-only reference links; every record without the flag classifies and redirects exactly as before.
+Runs at `template_redirect` priority 6. Redirects individual leisure posts to their configured external URL (Official Website or Discover Ireland URL) via 302 if one is set. Classification is centralized in `conexao_leisure_external_url()` (inc/seo/redirects.php) — the sitemap, the archive cards and the related-destinations selector read the same function. Phase 3B: a record with the `_leisure_internal_page` flag keeps its internal page and its official/Discover Ireland URLs become display-only reference links; every record without the flag classifies and redirects exactly as before.
 
 ## Template Routing
 

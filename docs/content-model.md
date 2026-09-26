@@ -241,7 +241,7 @@ upcoming-event list (`Conexao_Event_Query::upcoming_events()` via
 `conexao_leisure_related_events()`, theme functions.php). Never category /
 keywords / title similarity / free text / geographic distance; no second event
 query system; no per-page transient. Internal singles also emit
-`TouristAttraction` JSON-LD (inc/seo.php) with only actually-stored
+`TouristAttraction` JSON-LD (inc/seo/schema.php) with only actually-stored
 name/description/image/place. `_leisure_duration` and `_leisure_best_time`
 remain editorial fields: they render on the single page ONLY when actual data
 exists (never empty labels).

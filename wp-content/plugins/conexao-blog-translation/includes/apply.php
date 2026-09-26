@@ -19,7 +19,7 @@
  *     destination post (pll_get_post), never by replacing strings;
  *   - a real EN posts page is created and linked so `/en/blog/` stops being a
  *     B2 fallback (the theme retires the fallback automatically once the
- *     posts page has a linked EN translation — see inc/polylang.php).
+ *     posts page has a linked EN translation — see inc/i18n/fallback.php).
  *
  * @package Conexao_Blog_Translation
  */

@@ -18,7 +18,7 @@ get_header();
 		// STAGE 3.1/3.2 — B2 fallback notice: /en/blog/ renders the Portuguese
 		// posts under the English URL (Blog is an approved B2 destination), so
 		// it shows the approved English notice above the archive. Emits nothing
-		// on the normal Portuguese /blog/ (see inc/polylang.php).
+		// on the normal Portuguese /blog/ (see inc/i18n/fallback.php).
 		if ( function_exists( 'conexao_b2_fallback_notice' ) ) {
 			conexao_b2_fallback_notice();
 		}

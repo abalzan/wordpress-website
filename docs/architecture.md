@@ -46,9 +46,14 @@ Plugins must load in this dependency order:
 The active theme `conexao-br-irlanda` is a custom block-theme-compatible theme:
 
 - **Template hierarchy**: Standard WordPress with `single-leisure.php` for the leisure CPT
-- **SEO**: Built into `inc/seo.php` (titles, meta, canonical, OG, schema, sitemap, redirects, robots.txt)
+- **Runtime layout**: `functions.php` is a **loader only** (theme constants + `require_once` of the `inc/` modules in a documented order). All theme logic lives in focused `inc/*.php` modules, one concern per file.
+- **Language policy**: `inc/i18n.php` (locale foundation, `conexao_current_locale()`) plus `inc/i18n/` (Polylang guard, locale, URLs, terms, B2 fallback, hreflang, switcher)
+- **SEO**: Built into `inc/seo/` (titles, meta, canonical, hreflang, OG, schema, sitemap, robots, redirects)
+- **REST**: `inc/rest-language.php` is the single owner of the bilingual REST contract
 - **CSS**: Design system CSS variables → header-nav → main → leisure → dark-mode (cascading enqueue)
 - **JS**: Single `assets/js/main.js` (deferred) — mobile menu, theme toggle, search, leisure filters, copy buttons
+
+See `docs/themes/conexao-br-irlanda.md` §Runtime Architecture for the full module map and load order.
 
 ## Data Flow
 
@@ -59,7 +64,7 @@ The active theme `conexao-br-irlanda` is a custom block-theme-compatible theme:
 
 ## SEO Architecture
 
-- Built into theme (`inc/seo.php`), no plugin dependency.
-- Handles: titles, meta descriptions, canonical URLs, Open Graph, Twitter Cards, schema.org, breadcrumbs, XML sitemap, robots.txt, redirects.
+- Built into theme (`inc/seo/`), no plugin dependency.
+- Handles: titles, meta descriptions, canonical URLs, hreflang, Open Graph, Twitter Cards, schema.org, breadcrumbs, XML sitemap, robots.txt, redirects.
 - WordPress core sitemap disabled in favor of custom lightweight sitemap.
-- English-to-Portuguese redirects at two levels: `.htaccess` (Apache) and `inc/seo.php` (PHP).
+- English-to-Portuguese redirects at two levels: `.htaccess` (Apache) and `inc/seo/redirects.php` (PHP).

@@ -76,7 +76,7 @@ foreach ( array( 'conexao_category', 'conexao_tag', 'category', 'post_tag' ) as 
 // deliberately NOT translated: one shared term per county/town, no
 // per-language duplicates, identical filter behaviour in both languages
 // (decision §1: "Counties/towns are shared — no per-language duplicate
-// terms"; see inc/polylang.php conexao_polylang_translated_taxonomies()).
+// terms"; see inc/i18n/guard.php conexao_polylang_translated_taxonomies()).
 foreach ( array( 'conexao_county', 'conexao_town' ) as $tax ) {
 	assert_true( ! in_array( $tax, $taxonomies, true ), "location taxonomy deliberately SHARED (not translated): {$tax}" );
 }
