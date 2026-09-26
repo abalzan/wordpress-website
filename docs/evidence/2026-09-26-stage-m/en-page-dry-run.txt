@@ -1,0 +1,40 @@
+
+script: run-en-translation.php
+target: http://localhost:8080 (local, local)
+mode:   dry-run
+scope:  The guide / page / post stages registered by the conexao-en-translation plugin. Dry-run by default; --apply creates the EN records; --remove deletes them. A PT record is only ever read.
+
+=== stage: en-page (mode: dry-run, operation: run) ===
+  created=28 updated=0 skipped=0 removed=0 conflicts=1 errors=1 PT-drift=0
+    error        sobre                                         EN slug already used by an unlinked record (refusing to duplicate)
+    would-create politica-de-privacidade                       EN record would be created, linked and verified
+    would-create termos-de-uso                                 EN record would be created, linked and verified
+    would-create cookies                                       EN record would be created, linked and verified
+    would-create privacidade                                   EN record would be created, linked and verified
+    would-create termos                                        EN record would be created, linked and verified
+    would-create about                                         EN record would be created, linked and verified
+    would-create jobs-2                                        EN record would be created, linked and verified
+    would-create newsletter                                    EN record would be created, linked and verified
+    would-create revista                                       EN record would be created, linked and verified
+    would-create anuncie                                       EN record would be created, linked and verified
+    would-create europa                                        EN record would be created, linked and verified
+    would-create search                                        EN record would be created, linked and verified
+    would-create moradia                                       EN record would be created, linked and verified
+    would-create saude                                         EN record would be created, linked and verified
+    would-create familia                                       EN record would be created, linked and verified
+    would-create transporte                                    EN record would be created, linked and verified
+    would-create financas                                      EN record would be created, linked and verified
+    would-create beneficios                                    EN record would be created, linked and verified
+    would-create educacao                                      EN record would be created, linked and verified
+    would-create documentos                                    EN record would be created, linked and verified
+    would-create onde-comer                                    EN record would be created, linked and verified
+    would-create lazer                                         EN record would be created, linked and verified
+    would-create turismo                                       EN record would be created, linked and verified
+    would-create compras                                       EN record would be created, linked and verified
+    would-create negocios                                      EN record would be created, linked and verified
+    would-create servicos                                      EN record would be created, linked and verified
+    would-create voluntariado                                  EN record would be created, linked and verified
+    would-create categorias                                    EN record would be created, linked and verified
+  GATE FAIL: eligible PT=29 with EN=0 missing EN=29 conflicts=1 PT drift=0
+
+summary: created=28, updated=0, skipped=0, removed=0, errors=2, conflicts=1, pt_changed=0, gate_failures=1

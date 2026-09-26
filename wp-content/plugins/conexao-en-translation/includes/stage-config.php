@@ -64,11 +64,22 @@ function conexao_en_translation_engine_adapter( string $post_type ): array {
 
 			$hit = get_page_by_path( $en_slug, OBJECT, $post_type );
 
-			// A collision only matters when the slug belongs to an UNLINKED
-			// record: reusing the slug of the PT record itself is not a clash.
-			return $hit instanceof WP_Post
-				&& (int) $hit->ID !== $pt_id
-				&& 0 !== (int) pll_get_post( (int) $hit->ID, 'pt' );
+			if ( ! $hit instanceof WP_Post ) {
+				return false;
+			}
+
+			// Re-using the PT record's own slug is not a clash.
+			if ( (int) $hit->ID === $pt_id ) {
+				return false;
+			}
+
+			// ANY other record already holding the slug makes the EN URL
+			// ambiguous, whether or not that record is itself translated. This
+			// is deliberately stricter than "is it linked": creating a second
+			// page on a live slug is a duplicate-identity defect in the URL
+			// space, which the standard forbids just as firmly as a duplicate
+			// database record.
+			return true;
 		},
 		'create_en'      => static function ( int $pt_id, array $row ) use ( $post_type ) {
 			$pt = get_post( $pt_id );
