@@ -1,7 +1,7 @@
 {
   "stage": "L — permanent invariant gates",
-  "generated_at": "2026-09-26T17:07:49Z",
-  "repository_sha": "050465ba073108eed26407f5b3b60a0e6015e5da",
+  "generated_at": "2026-09-26T17:46:30Z",
+  "repository_sha": "7778d7644aba94eca7d3717e569d98afbf3cf15a",
   "status": "pass",
   "gates": {
     "taxonomy_policy": {
@@ -570,7 +570,7 @@
       "prerequisites": [],
       "details": [],
       "output_tail": [
-        "   historical/audit documents without the marker (reported, not gated): 72",
+        "   historical/audit documents without the marker (reported, not gated): 77",
         "",
         "   -- §9.2 no root-level report/evidence file --",
         "   root files scanned: 16, offenders: 0",

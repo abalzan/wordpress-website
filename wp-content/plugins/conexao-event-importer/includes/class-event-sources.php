@@ -145,7 +145,47 @@ class Conexao_Event_Sources {
 				// stay inactive until explicitly activated in wp-admin).
 				$sources[ $default_id ]       = $default_source;
 				$sources[ $default_id ]['id'] = $default_id;
-				$changed = true;
+				$changed                      = true;
+				continue;
+			}
+
+			/*
+			 * STAGE 7.x — self-heal a DRIFTED county hint.
+			 *
+			 * A source's `county` is not decoration: it is the per-source
+			 * taxonomy hint that Conexao_Source_ICalendar /
+			 * Conexao_Source_Eventbrite copy onto every event they emit, and
+			 * Conexao_Event_Importer::save_event_taxonomies() turns into a
+			 * `conexao_county` term. The Events archive filters on exactly
+			 * that term (?county=<slug>), so an empty hint means every event
+			 * from that source is permanently invisible to the county
+			 * filter.
+			 *
+			 * The drift is reachable through wp-admin: "Add Source" renders
+			 * the County input EMPTY (only a placeholder, no value), so
+			 * re-creating or re-saving a shipped source without retyping the
+			 * county silently persists ''. handle_save_source() then stores
+			 * that empty string, and because get_all() only ever ADDED
+			 * missing sources it never restored the declared default — the
+			 * shipped county was lost for good.
+			 *
+			 * Repair rule (deliberately narrow, and idempotent):
+			 *   - only for a source id that SHIPS a default county;
+			 *   - only when the STORED county is empty/absent;
+			 *   - a non-empty stored county is NEVER overwritten, so a
+			 *     deliberate operator override always wins.
+			 *
+			 * `conexao_county` is a shared geography taxonomy (AGENTS.md), so
+			 * this writes no new term and no language-scoped term: it only
+			 * restores the hint that decides which EXISTING shared term the
+			 * importer assigns.
+			 */
+			$default_county = isset( $default_source['county'] ) ? trim( (string) $default_source['county'] ) : '';
+			$stored_county  = isset( $sources[ $default_id ]['county'] ) ? trim( (string) $sources[ $default_id ]['county'] ) : '';
+
+			if ( '' !== $default_county && '' === $stored_county ) {
+				$sources[ $default_id ]['county'] = $default_county;
+				$changed                          = true;
 			}
 		}
 

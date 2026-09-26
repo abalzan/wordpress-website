@@ -1141,6 +1141,27 @@ class Conexao_Event_Importer_Engine {
 				// once per event (idempotent re-imports write nothing).
 				$this->maybe_backfill_map_url( $post_id, $normalized );
 
+				/*
+				 * STAGE 7.x — reconcile taxonomies on the fast path too.
+				 *
+				 * The county/category hints live on the SOURCE config, not in
+				 * the event payload's change-detection fields, so a source
+				 * whose hint was repaired (or newly configured) after its
+				 * events were first imported produces an "unchanged" event
+				 * that still has no `conexao_county` term — and this early
+				 * return below would skip save_event_taxonomies() forever.
+				 * That is exactly how the Laois Tourism events ended up with
+				 * no county: invisible to /eventos?county=laois even though
+				 * the source declares Laois.
+				 *
+				 * save_event_taxonomies() is itself idempotent — it assigns
+				 * only the terms the normalized data actually carries — so
+				 * calling it here cannot create a term that the update path
+				 * would not have created, and it repairs the assignment for
+				 * every future run.
+				 */
+				$this->save_event_taxonomies( $post_id, $normalized );
+
 				// Update last checked timestamp only.
 				update_post_meta( $post_id, '_event_last_checked', current_time( 'mysql' ) );
 

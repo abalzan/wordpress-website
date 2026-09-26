@@ -1,0 +1,262 @@
+{
+  "label": "AFTER",
+  "base": "http://localhost:8080",
+  "requests": [
+    {
+      "url": "/eventos/",
+      "http": 200,
+      "cards": 10,
+      "target_posts": []
+    },
+    {
+      "url": "/en/eventos/",
+      "http": 200,
+      "cards": 10,
+      "target_posts": []
+    },
+    {
+      "url": "/eventos/?county=laois",
+      "http": 200,
+      "cards": 10,
+      "target_posts": [
+        "100001",
+        "100002",
+        "100003",
+        "100004",
+        "100005",
+        "100006",
+        "100007",
+        "100008"
+      ]
+    },
+    {
+      "url": "/en/eventos/?county=laois",
+      "http": 200,
+      "cards": 10,
+      "target_posts": [
+        "100001",
+        "100002",
+        "100003",
+        "100004",
+        "100005",
+        "100006",
+        "100007",
+        "100008"
+      ]
+    },
+    {
+      "url": "/eventos/?county=dublin",
+      "http": 200,
+      "cards": 10,
+      "target_posts": []
+    },
+    {
+      "url": "/eventos/?county=kerry",
+      "http": 200,
+      "cards": 10,
+      "target_posts": []
+    },
+    {
+      "url": "/eventos/?county=cork",
+      "http": 200,
+      "cards": 10,
+      "target_posts": []
+    },
+    {
+      "url": "/eventos/?county=donegal",
+      "http": 200,
+      "cards": 10,
+      "target_posts": []
+    },
+    {
+      "url": "/eventos/page/1/",
+      "http": 200,
+      "cards": 10,
+      "target_posts": []
+    },
+    {
+      "url": "/eventos/page/2/",
+      "http": 200,
+      "cards": 10,
+      "target_posts": []
+    },
+    {
+      "url": "/eventos/page/3/",
+      "http": 200,
+      "cards": 10,
+      "target_posts": []
+    },
+    {
+      "url": "/eventos/page/4/",
+      "http": 200,
+      "cards": 10,
+      "target_posts": []
+    },
+    {
+      "url": "/eventos/page/5/",
+      "http": 200,
+      "cards": 10,
+      "target_posts": []
+    },
+    {
+      "url": "/eventos/page/6/",
+      "http": 200,
+      "cards": 10,
+      "target_posts": []
+    },
+    {
+      "url": "/eventos/page/13/",
+      "http": 200,
+      "cards": 10,
+      "target_posts": [
+        "100001",
+        "100002",
+        "100003",
+        "100004",
+        "100005",
+        "100006"
+      ]
+    },
+    {
+      "url": "/eventos/page/14/",
+      "http": 200,
+      "cards": 10,
+      "target_posts": [
+        "100007",
+        "100008",
+        "100009",
+        "100010",
+        "100011",
+        "100012",
+        "100013",
+        "100014",
+        "100015",
+        "100016"
+      ]
+    },
+    {
+      "url": "/eventos/page/20/",
+      "http": 200,
+      "cards": 10,
+      "target_posts": [
+        "100017",
+        "100018",
+        "100019",
+        "100020",
+        "100021"
+      ]
+    },
+    {
+      "url": "/eventos/page/23/",
+      "http": 200,
+      "cards": 10,
+      "target_posts": [
+        "100022",
+        "100023",
+        "100024"
+      ]
+    },
+    {
+      "url": "/eventos/page/25/",
+      "http": 200,
+      "cards": 10,
+      "target_posts": [
+        "100025",
+        "100026",
+        "100027"
+      ]
+    },
+    {
+      "url": "/eventos/page/28/",
+      "http": 200,
+      "cards": 10,
+      "target_posts": [
+        "100028"
+      ]
+    },
+    {
+      "url": "/eventos/page/32/",
+      "http": 200,
+      "cards": 10,
+      "target_posts": [
+        "100029",
+        "100030"
+      ]
+    },
+    {
+      "url": "/eventos/?county=laois&paged=1",
+      "http": 200,
+      "cards": 10,
+      "target_posts": [
+        "100001",
+        "100002",
+        "100003",
+        "100004",
+        "100005",
+        "100006",
+        "100007",
+        "100008"
+      ]
+    },
+    {
+      "url": "/eventos/?county=laois&paged=2",
+      "http": 200,
+      "cards": 10,
+      "target_posts": [
+        "100009",
+        "100010",
+        "100011",
+        "100012",
+        "100013",
+        "100014",
+        "100015",
+        "100016",
+        "100017",
+        "100018"
+      ]
+    },
+    {
+      "url": "/eventos/?county=laois&paged=3",
+      "http": 200,
+      "cards": 10,
+      "target_posts": [
+        "100019",
+        "100020",
+        "100021",
+        "100022",
+        "100023",
+        "100024",
+        "100025",
+        "100026",
+        "100027"
+      ]
+    },
+    {
+      "url": "/eventos/?county=laois&paged=4",
+      "http": 200,
+      "cards": 10,
+      "target_posts": [
+        "100028",
+        "100029",
+        "100030"
+      ]
+    },
+    {
+      "url": "/eventos/?county=laois&paged=5",
+      "http": 200,
+      "cards": 10,
+      "target_posts": []
+    },
+    {
+      "url": "/eventos/?county=laois&paged=6",
+      "http": 404,
+      "cards": 0,
+      "target_posts": []
+    }
+  ],
+  "targets_in_county_filter": 30,
+  "targets_in_plain_archive_pages": 30,
+  "http_failures": [
+    "/eventos/?county=laois&paged=6"
+  ]
+}

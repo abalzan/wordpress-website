@@ -249,6 +249,33 @@ Create a free token at [developers.eventbrite.com](https://www.eventbrite.com/de
 - Events are deduplicated by the feed's native `UID`.
 - `CATEGORIES` maps to the event category (first entry); per-source `county`/`category` hints apply when the feed omits them.
 
+### The per-source `county` hint (Stage 7.x)
+
+A source's `county` field is **not decoration**. It is the only thing that gives
+an imported event a `conexao_county` term, and the `/eventos` archive filters on
+exactly that term (`?county=<slug>`). An empty hint therefore makes every event
+from that source permanently invisible to the county filter.
+
+Two rules protect it:
+
+1. **`get_all()` self-heals a drifted hint.** When a stored source's `county`
+   is empty but the source **ships** a default county, the default is restored
+   and persisted. A *non-empty* stored value is never overwritten, so a
+   deliberate operator override always wins. The drift was reachable through
+   wp-admin: the "Add Source" form renders the County input empty (placeholder
+   only), and `handle_save_source()` persists whatever is submitted — so
+   re-adding a shipped source without retyping the county silently wiped it.
+2. **The `"unchanged"` fast path reconciles taxonomies.** An event whose
+   payload is unchanged returns early from `upsert_event()`. That path now calls
+   `save_event_taxonomies()` too, so an event imported while the hint was empty
+   acquires its county term on the next run instead of being stuck forever.
+
+Events imported before the hint existed are repaired once by
+`scripts/repair-event-county-terms.php` (dry-run by default). It assigns the
+**existing** shared `conexao_county` term and never creates one — counties are
+shared geography, so there is one physical term per county and no per-language
+term (see the taxonomy policy in `AGENTS.md`).
+
 ## Workflow (manual, on-demand)
 
 1. On the **local** Docker WordPress, open **Event Import → Dashboard** and click **Import Events Now** (or run `wp conexao-events import`). Each source can also be imported individually from Event Sources.
