@@ -38,17 +38,22 @@ services:
       - wordpress_data:/var/www/html
       - ./.htaccess:/var/www/html/.htaccess:ro
       - ./wp-content/themes/conexao-br-irlanda:/var/www/html/wp-content/themes/conexao-br-irlanda
-      - ./wp-content/plugins/conexao-content:/var/www/html/wp-content/plugins/conexao-content
+      # BEGIN GENERATED PLUGIN REGISTRY: plugin mounts
+      # Source of truth: plugins.json (mount: true), in load order. Do not edit by hand.
+      # Regenerate: php scripts/generate-registry-docs.php --write
       - ./wp-content/plugins/conexao-data-model:/var/www/html/wp-content/plugins/conexao-data-model
-      - ./wp-content/plugins/conexao-event-importer:/var/www/html/wp-content/plugins/conexao-event-importer
-      - ./wp-content/plugins/conexao-event-runtime:/var/www/html/wp-content/plugins/conexao-event-runtime
+      - ./wp-content/plugins/conexao-content:/var/www/html/wp-content/plugins/conexao-content
       - ./wp-content/plugins/conexao-admin-ux:/var/www/html/wp-content/plugins/conexao-admin-ux
+      - ./wp-content/plugins/conexao-event-runtime:/var/www/html/wp-content/plugins/conexao-event-runtime
+      - ./wp-content/plugins/conexao-event-importer:/var/www/html/wp-content/plugins/conexao-event-importer
       - ./wp-content/plugins/conexao-leisure-migration:/var/www/html/wp-content/plugins/conexao-leisure-migration
       - ./wp-content/plugins/conexao-sponsor-migration:/var/www/html/wp-content/plugins/conexao-sponsor-migration
       - ./wp-content/plugins/conexao-page-translation:/var/www/html/wp-content/plugins/conexao-page-translation
       - ./wp-content/plugins/conexao-blog-translation:/var/www/html/wp-content/plugins/conexao-blog-translation
       - ./wp-content/plugins/conexao-job-translation:/var/www/html/wp-content/plugins/conexao-job-translation
+      - ./wp-content/plugins/conexao-leisure-translation:/var/www/html/wp-content/plugins/conexao-leisure-translation
       - ./wp-content/plugins/conexao-guide-translation:/var/www/html/wp-content/plugins/conexao-guide-translation
+# END GENERATED PLUGIN REGISTRY: plugin mounts
       - ./docker/apache-allowoverride.conf:/etc/apache2/conf-enabled/apache-allowoverride.conf:ro
       - ./docker/entrypoint-fix-permissions.sh:/usr/local/bin/entrypoint-fix-permissions.sh:ro
       - ./docker/php/uploads.ini:/usr/local/etc/php/conf.d/zz-conexao-uploads.ini:ro
