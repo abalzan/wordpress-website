@@ -1,0 +1,12 @@
+
+script: remove-en-orphan-fixtures.php
+target: http://localhost:8080 (local, local)
+mode:   dry-run
+scope:  EN records with no PT master whose slug and title both carry a stage marker and that nothing references. Dry-run by default; --apply removes them and writes a restorable snapshot. No real translation is ever touched and no PT master is ever fabricated.
+
+  remove: guide      id=22184  slug=stage32-editorial-translation    ([STAGE32-EDITORIAL] translation)
+
+MODE: dry-run - ZERO writes performed.
+plan: remove 1 EN fixture record(s) with no PT master.
+no PT master is fabricated and no real translation is touched.
+summary: to_remove=1, removed=0, kept=0, errors=0
