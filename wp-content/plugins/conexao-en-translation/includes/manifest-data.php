@@ -470,8 +470,72 @@ function conexao_en_translation_manifest_data(): array {
 ',
 			),
 		),
-		// post — 0 record(s)
+		// post — 8 record(s)
 		'post' => array(
+			'guia-pratico-para-brasileiros-em-laois' => array(
+				'en_slug' => 'practical-guide-for-brazilians-in-laois',
+				'en_title' => 'A Practical Guide for Brazilians in Laois',
+				'en_excerpt' => '',
+				'en_meta_description' => '',
+				'en_content' => '<p></p>
+',
+			),
+			'guia-para-quem-esta-com-dificuldades-financeiras' => array(
+				'en_slug' => 'guide-for-those-facing-financial-difficulties',
+				'en_title' => 'A Guide for Anyone Facing Financial Difficulties',
+				'en_excerpt' => '',
+				'en_meta_description' => '',
+				'en_content' => '<p></p>
+',
+			),
+			'auxilios-para-familias-atipicas-na-irlanda' => array(
+				'en_slug' => 'support-for-extraordinary-families-in-ireland',
+				'en_title' => 'Support for Non-Standard Families in Ireland',
+				'en_excerpt' => '',
+				'en_meta_description' => '',
+				'en_content' => '<p></p>
+',
+			),
+			'auxilios-e-apoio-relacionados-a-saude-e-bem-estar-na-irlanda' => array(
+				'en_slug' => 'health-and-wellbeing-support-in-ireland',
+				'en_title' => 'Health and Wellbeing Support in Ireland',
+				'en_excerpt' => '',
+				'en_meta_description' => '',
+				'en_content' => '<p></p>
+',
+			),
+			'dica-de-saude-para-quem-viaja' => array(
+				'en_slug' => 'a-health-tip-for-travellers',
+				'en_title' => 'A Health Tip for Travellers',
+				'en_excerpt' => 'Text: Patricia Vidal. Instagram: https://www.instagram.com/coachpatriciavidal/',
+				'en_meta_description' => '',
+				'en_content' => '<p>Text: Patricia Vidal</p><p>Instagram: <u>https://www.instagram.com/coachpatriciavidal/</u></p><p></p><p></p><p></p>
+',
+			),
+			'turismo-e-lazer-em-co-laois-na-irlanda' => array(
+				'en_slug' => 'tourism-and-leisure-in-county-laois-ireland',
+				'en_title' => 'Tourism and Leisure in County Laois, Ireland',
+				'en_excerpt' => 'One of the most complete sites for our region is Laois Tourism, where you will find attractions, dining recommendations and events across the county.',
+				'en_meta_description' => '',
+				'en_content' => '<p></p><p> One of the most complete sites for our region <strong>is</strong> <u>Laois Tourism</u>, where you will find attractions, dining recommendations and events across the county.</p><p></p><p></p>
+',
+			),
+			'informacoes-para-as-mulheres-na-irlanda' => array(
+				'en_slug' => 'information-for-women-in-ireland',
+				'en_title' => 'Information for Women in Ireland',
+				'en_excerpt' => 'A practical guide for women in Ireland, published as a flip book.',
+				'en_meta_description' => '',
+				'en_content' => '<p><u>https://heyzine.com/flip-book/CartilhaDM.html#page/1</u></p><p></p><p></p><p></p><p></p>
+',
+			),
+			'carne-refogada-ao-estilo-korean-bbq' => array(
+				'en_slug' => 'korean-bbq-style-stir-fried-beef',
+				'en_title' => 'Korean BBQ Style Stir-Fried Beef',
+				'en_excerpt' => 'By: Chef Anderson Balico, Food Content Creator & Digital Marketing.',
+				'en_meta_description' => '',
+				'en_content' => '<h2>By: Chef Anderson Balico, Food Content Creator &amp; Digital Marketing</h2><p></p><p></p><p></p><p><strong>Ingredients</strong></p><p><strong>400 g of strips of beef</strong></p><p><strong>2 tablespoons of Korean BBQ ÍON Organic Seasoning</strong></p><p><strong>2 tablespoons of soy sauce (shoyu)</strong></p><p><strong>1 tablespoon of honey</strong></p><p><strong>1 tablespoon of ÍON sunflower oil</strong></p><p><strong>1 red pepper, sliced</strong></p><p><strong>1 onion, sliced</strong></p><p><strong>1 spring onion, finely chopped</strong></p><p></p><p><strong>Method:</strong></p><p><strong>Coat the beef with the soy sauce, honey and Korean BBQ seasoning. Leave to marinate for 15 minutes.</strong></p><p><strong>Heat the sunflower oil in a very hot frying pan or wok and stir-fry the beef for about 5 minutes, until golden.</strong></p><p><strong>Add the onion and red pepper and cook for a further 3 to 4 minutes, until tender.</strong></p><p></p><p><strong>Finish with the spring onion and serve with rice or pasta.</strong></p><p></p><p><u><strong>@chefandersonbalico</strong></u></p>
+',
+			),
 		),
 	);
 }
