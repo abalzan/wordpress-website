@@ -33,6 +33,18 @@ Copy `.env.example` to `.env` only when overriding defaults. All defaults work o
 ./scripts/build-theme-zip.sh     # packages the theme into dist/
 ```
 
+Both builds are deterministic and emit `dist/release.json`, which records the
+version, git SHA, file count and SHA-256 of every artifact that was actually
+built, alongside the allowlist `plugins.json` permits.
+
+```bash
+python3 scripts/release-manifest.py --verify       # allowlist + hash verification
+./scripts/verify-release.sh                         # prove the whole release workflow locally
+python3 scripts/verify-deploy.py --site <url>       # read-only HTTP check of a deployment
+```
+
+Release procedure, tag convention and rollback: **[docs/releases.md](docs/releases.md)**.
+
 ## Plugins
 
 <!-- BEGIN GENERATED PLUGIN REGISTRY: README.md plugin registry -->

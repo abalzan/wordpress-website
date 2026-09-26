@@ -12,10 +12,17 @@
 #                                    (Stage G; `generate-registry-docs.php --check`)
 #   4. ./scripts/lint.sh           — PHP syntax + PHPCS no-new-violations
 #                                    + PHPStan level 5 (the Stage C gate)
-#   5. shellcheck scripts/*.sh     — repository shell scripts
+#   5. shellcheck scripts/*.sh + scripts/lib/*.sh
+#                                    — repository shell scripts and the
+#                                      sourced shell library
 #   6. ./scripts/run-tests.sh      — integration job: in-process PHP suites +
 #                                    the Stage I script-contract gate +
 #                                    HTTP acceptance (all blocking)
+#
+# A third job, `release-integrity` (Stage J), blocks on the two release
+# invariants: that `plugins.json` determines the artifact allowlist, and that
+# `dist/release.json` records exactly what was built — including proving the
+# verifier REJECTS a tampered artifact. It needs no WordPress and no network.
 #
 # Non-blocking by design (telemetry only, never gates the run):
 #   composer lint — the RAW legacy PHPCS debt view. It is red by design while
@@ -123,6 +130,9 @@ jobs:
           sudo apt-get install --yes shellcheck
           shellcheck --version
           shellcheck scripts/*.sh
+          # The shared shell library is sourced, not executed, so scripts/*.sh
+          # alone would leave it unchecked (Stage J added scripts/lib/zip-build.sh).
+          shellcheck scripts/lib/*.sh
 
       - name: Telemetry (non-blocking) — raw legacy PHPCS debt
         if: always()
@@ -133,6 +143,78 @@ jobs:
           echo "phpcs-baseline.json. The blocking gate above is" >&2
           echo "./scripts/lint.sh, which fails on NEW violations only." >&2
           composer lint || echo "::warning::Raw PHPCS debt is non-zero by design (legacy baseline, Stage C). Not a CI failure." >&2
+
+  # ---------------------------------------------------------------------
+  # Stage J — release integrity.
+  #
+  # The two release invariants are enforced here, without a WordPress, without
+  # a database and without a network:
+  #
+  #   1. plugins.json determines what can be released (the artifact allowlist).
+  #   2. release.json records exactly what was actually built (version, git
+  #      SHA, file count, SHA-256), and verification REJECTS a tampered,
+  #      stale or non-allowlisted artifact.
+  #
+  # The job builds the real artifacts into a temporary directory twice, proves
+  # they are byte-identical, proves no test/fixture/report file ships, and
+  # proves the verifier actually fails on a tampered artifact. It never uploads
+  # anything, never contacts a deployed site and never touches production.
+  #
+  # The HTTP half of the release gate (the smoke matrix) runs in the
+  # `integration` job above, against the local Compose stack.
+  # ---------------------------------------------------------------------
+  release-integrity:
+    name: Release integrity (manifest + allowlist)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # The manifest records the commit SHA, so a shallow clone would record
+          # a grafted/incorrect SHA. Fetch the full history.
+          fetch-depth: 0
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          tools: composer:v2
+
+      - name: Report environment
+        run: |
+          php --version
+          python3 --version
+          zip -v | head -2
+
+      - name: Plugin registry drift gate
+        # The allowlist is derived from plugins.json, so a stale generated
+        # region means the registry and the build disagree.
+        run: php scripts/generate-registry-docs.php --check
+
+      - name: Release-integrity gate
+        # Builds twice, checks determinism, exclusions, the manifest contract,
+        # allowlist enforcement and negative (tamper) proofs.
+        run: python3 tests/scripts/verify-release-integrity.py
+
+      - name: Build and verify the release record
+        # The same commands a release performs locally, so a break in the
+        # build or the manifest is caught here rather than at release time.
+        run: |
+          set -euo pipefail
+          BUILD_OUTPUT_DIR="${RUNNER_TEMP}/dist" ./scripts/build-plugins-zip.sh
+          BUILD_OUTPUT_DIR="${RUNNER_TEMP}/dist" ./scripts/build-theme-zip.sh
+          python3 scripts/release-manifest.py --verify --dist "${RUNNER_TEMP}/dist"
+
+      - name: Upload the release manifest as evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-manifest
+          path: ${{ runner.temp }}/dist/release.json
+          if-no-files-found: warn
+          retention-days: 30
 
   # ---------------------------------------------------------------------
   # Stage E — Docker/WordPress integration job.

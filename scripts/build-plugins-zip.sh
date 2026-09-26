@@ -89,57 +89,61 @@ if [[ "${REGISTRY_BUILD_COUNT}" != "${#PLUGIN_SLUGS[@]}" ]]; then
 fi
 
 # --- Build -------------------------------------------------------------------
+#
+# Packaging itself lives in scripts/lib/zip-build.sh so the exclusion rules and
+# the determinism guarantees have exactly ONE implementation shared with the
+# theme build (engineering standard §11; "two places is a bug").
+
+# shellcheck source=scripts/lib/zip-build.sh
+source "${PROJECT_ROOT}/scripts/lib/zip-build.sh"
 
 mkdir -p "${OUTPUT_DIR}"
 
+BUILT_COUNT=0
+
 for slug in "${PLUGIN_SLUGS[@]}"; do
-    PLUGIN_DIR="${PLUGINS_DIR}/${slug}"
     OUTPUT_ZIP="${OUTPUT_DIR}/${slug}.zip"
 
-    echo "Packaging plugin: ${slug}"
-    echo "  Source:    ${PLUGIN_DIR}"
-    echo "  Output:    ${OUTPUT_ZIP}"
+    printf 'Packaging plugin: %s\n' "${slug}"
 
-    # Remove any previous build
-    rm -f "${OUTPUT_ZIP}"
+    # The packager prints "<slug> <file-count> <bytes> <sha256>" and fails loudly
+    # on an empty or unwritable artifact.
+    RECORD="$(conexao_zip_package "${PLUGINS_DIR}" "${slug}" "${OUTPUT_ZIP}" plugin)" || exit 1
 
-    # Create the zip from the plugins directory so the plugin folder appears at
-    # the zip root (WordPress requires this structure for plugin import).
-    pushd "${PLUGINS_DIR}" >/dev/null
+    read -r _rec_slug FILE_COUNT BYTES SHA256 <<<"${RECORD}"
+    BUILT_COUNT=$((BUILT_COUNT + 1))
 
-    # Exclude tests, fixtures, common junk/version-control files and OS metadata.
-    zip -r "${OUTPUT_ZIP}" "${slug}" \
-        -x "*/tests/*" \
-        -x "*/.git/*" \
-        -x "*/node_modules/*" \
-        -x "*/.DS_Store" \
-        -x "*/Thumbs.db" \
-        -x "*.swp" \
-        -x "*~" \
-        >/dev/null
-
-    popd >/dev/null
-
-    if [[ ! -f "${OUTPUT_ZIP}" ]]; then
-        echo "ERROR: Build failed for ${slug} - output file not created." >&2
-        exit 1
-    fi
-
-    SIZE="$(du -h "${OUTPUT_ZIP}" | cut -f1)"
-    FILE_COUNT="$(unzip -l "${OUTPUT_ZIP}" 2>/dev/null | tail -1 | awk '{print $2}')"
-
-    echo "  Size:    ${SIZE}"
-    echo "  Files:   ${FILE_COUNT}"
-    echo ""
+    printf '  Output:  %s\n' "${OUTPUT_ZIP}"
+    printf '  Files:   %s\n' "${FILE_COUNT}"
+    printf '  Bytes:   %s\n' "${BYTES}"
+    printf '  SHA-256: %s\n' "${SHA256}"
+    printf '\n'
 done
 
-echo "✓ All plugins packaged successfully:"
+printf '✓ Packaged %d plugin artifact(s):\n' "${BUILT_COUNT}"
 for slug in "${PLUGIN_SLUGS[@]}"; do
-    if [[ -f "${OUTPUT_DIR}/${slug}.zip" ]]; then
-        echo "  - ${OUTPUT_DIR}/${slug}.zip"
-    fi
+    printf '  - %s\n' "${OUTPUT_DIR}/${slug}.zip"
 done
+
+# --- Release manifest --------------------------------------------------------
+#
+# §11 MUST: every build emits dist/release.json. It is written after the
+# artifacts exist, so it records what was ACTUALLY built (sha256, size, file
+# count) next to what the registry PERMITS (the allowlist). A theme that has not
+# been built yet is recorded as built:false rather than being invented.
 echo ""
+echo "Emitting release manifest:"
+
+MANIFEST_CMD=(python3 "${PROJECT_ROOT}/scripts/release-manifest.py" --write
+              --dist "${OUTPUT_DIR}" --root "${PROJECT_ROOT}")
+if ! command -v python3 &>/dev/null; then
+    echo "ERROR: python3 is required to emit the release manifest." >&2
+    exit 1
+fi
+"${MANIFEST_CMD[@]}" || exit 1
+
+echo ""
+
 echo "To import:"
 echo "  1. Go to WordPress Admin → Plugins → Add New → Upload Plugin"
 echo "  2. Select each .zip file and click 'Install Now'"

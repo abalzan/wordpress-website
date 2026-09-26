@@ -43,6 +43,12 @@ php scripts/generate-registry-docs.php --write   # regenerate the marked regions
 | Release build list | `scripts/build-plugins-zip.sh` |
 | Local Compose mounts | `compose.yaml` |
 
+The release **artifact allowlist** is likewise derived from `plugins.json` (the
+`build: true` entries in load order, plus the theme) by
+`scripts/lib/release.py`, and is recorded — together with the version, git SHA,
+file count and SHA-256 of every artifact that was actually built — in
+`dist/release.json`. See [`docs/releases.md`](releases.md).
+
 `php scripts/generate-registry-docs.php --check` is a **blocking** CI gate.
 To add, remove or re-classify a plugin: edit `plugins.json`, add its doc under
 `docs/plugins/`, then run `--write`. Never hand-edit a generated block.
@@ -63,6 +69,7 @@ To add, remove or re-classify a plugin: edit `plugins.json`, add its doc under
 | [testing.md](testing.md) | **How to run and write tests** — the three-layer model, `./scripts/run-tests.sh`, the shared bootstrap/assertions, prerequisites, fixtures, acceptance base URL, CI |
 | [../scripts/README.md](../scripts/README.md) | **The authoritative script catalogue** — every current script with safety level, arguments, default mode, target and last-verified date, plus the new-script contract |
 | [deployment.md](deployment.md) | Build ZIPs, deployment to WordPress.com, verification |
+| [releases.md](releases.md) | **The release contract** — artifact allowlist, `dist/release.json`, tag convention, deployment verification, rollback procedure and production constraints |
 
 ## Frontend
 

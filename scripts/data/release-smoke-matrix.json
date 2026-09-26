@@ -1,0 +1,157 @@
+{
+  "description": "The FIXED deployment smoke matrix for a release (engineering standard §11 MUST: 'homepage, every archive, one single per CPT, /en/ pairs, canonical, hreflang, sitemap, 404'). It is deliberately small and stable: a release gate must not change shape between releases, only its recorded result. Rows are relative paths so the same file verifies the LOCAL build (tests/acceptance) and a deployed site (scripts/verify-deploy.py). Per-CPT singles are discovered over the public REST API at run time and checked by scripts/verify-deploy.py, because hard-coding a slug would make the gate rot as soon as content is renamed.",
+  "schema": {
+    "id": "unique within the matrix",
+    "url": "relative path starting with '/'",
+    "expect_status": "integer HTTP status; redirects are asserted unfollowed",
+    "expect_contains": "strings that MUST appear in the body",
+    "expect_absent": "strings that MUST NOT appear in the body",
+    "note": "why the row exists"
+  },
+  "rows": [
+    {
+      "id": "smoke-home-pt",
+      "url": "/",
+      "expect_status": 200,
+      "expect_contains": ["<html lang=\"pt-BR\">"],
+      "expect_absent": ["<html lang=\"en-US\">"],
+      "note": "The Portuguese front page is the canonical entry point of the site and must serve 200 in pt-BR."
+    },
+    {
+      "id": "smoke-home-en",
+      "url": "/en/",
+      "expect_status": 200,
+      "expect_contains": ["<html lang=\"en-US\">"],
+      "expect_absent": [],
+      "note": "The English layer must be reachable at /en/ after a release; a missing language layer is the most common release regression."
+    },
+    {
+      "id": "smoke-archive-guias",
+      "url": "/guias/",
+      "expect_status": 200,
+      "expect_contains": ["<html lang=\"pt-BR\">", "rel=\"canonical\""],
+      "expect_absent": [],
+      "note": "Every CPT archive must load in Portuguese and emit a self-canonical link (standard §11 'every archive')."
+    },
+    {
+      "id": "smoke-archive-eventos",
+      "url": "/eventos/",
+      "expect_status": 200,
+      "expect_contains": ["<html lang=\"pt-BR\">", "rel=\"canonical\""],
+      "expect_absent": [],
+      "note": "The event archive must load; the event runtime plugin is in the production steady state."
+    },
+    {
+      "id": "smoke-archive-cursos",
+      "url": "/cursos/",
+      "expect_status": 200,
+      "expect_contains": ["<html lang=\"pt-BR\">", "rel=\"canonical\""],
+      "expect_absent": [],
+      "note": "The course-provider directory archive must load."
+    },
+    {
+      "id": "smoke-archive-empregos",
+      "url": "/empregos/",
+      "expect_status": 200,
+      "expect_contains": ["<html lang=\"pt-BR\">", "rel=\"canonical\""],
+      "expect_absent": [],
+      "note": "The unified opportunities directory archive must load."
+    },
+    {
+      "id": "smoke-archive-apoiadores",
+      "url": "/apoiadores/",
+      "expect_status": 200,
+      "expect_contains": ["<html lang=\"pt-BR\">", "rel=\"canonical\""],
+      "expect_absent": [],
+      "note": "The sponsor directory archive must load."
+    },
+    {
+      "id": "smoke-archive-lazer",
+      "url": "/lazer/",
+      "expect_status": 200,
+      "expect_contains": ["<html lang=\"pt-BR\">", "rel=\"canonical\""],
+      "expect_absent": [],
+      "note": "The tourism directory archive must load. Lazer is a separate content type and must never render an event calendar."
+    },
+    {
+      "id": "smoke-archive-blog",
+      "url": "/blog/",
+      "expect_status": 200,
+      "expect_contains": ["<html lang=\"pt-BR\">", "rel=\"canonical\""],
+      "expect_absent": [],
+      "note": "The native-post archive relabelled 'Blog' must load."
+    },
+    {
+      "id": "smoke-en-pair-guias",
+      "url": "/en/guias/",
+      "expect_status": 200,
+      "expect_contains": ["<html lang=\"en-US\">", "hreflang="],
+      "expect_absent": [],
+      "note": "The /en/ pair of the guide archive must serve English with hreflang alternates (standard §11 '/en/ pairs')."
+    },
+    {
+      "id": "smoke-en-pair-eventos",
+      "url": "/en/eventos/",
+      "expect_status": 200,
+      "expect_contains": ["<html lang=\"en-US\">", "hreflang="],
+      "expect_absent": [],
+      "note": "The /en/ pair of the event archive must serve English with hreflang alternates."
+    },
+    {
+      "id": "smoke-en-pair-lazer",
+      "url": "/en/lazer/",
+      "expect_status": 200,
+      "expect_contains": ["<html lang=\"en-US\">", "hreflang="],
+      "expect_absent": [],
+      "note": "The /en/ pair of the tourism archive must serve English with hreflang alternates."
+    },
+    {
+      "id": "smoke-en-pair-blog",
+      "url": "/en/blog/",
+      "expect_status": 200,
+      "expect_contains": ["<html lang=\"en-US\">", "hreflang="],
+      "expect_absent": [],
+      "note": "The /en/ blog archive is a real English archive since Stage 5 and must serve English."
+    },
+    {
+      "id": "smoke-sitemap",
+      "url": "/sitemap.xml",
+      "expect_status": 200,
+      "expect_contains": ["<?xml", "sitemaps.org"],
+      "expect_absent": [],
+      "note": "The XML sitemap must serve after a release (standard §11 'sitemap'). The fragment is deliberately the XML prolog plus the schema namespace, because Jetpack serves a <sitemapindex> pointing at per-post-type sitemaps rather than a bare <urlset>; asserting <urlset> would make the gate red on a healthy site."
+    },
+    {
+      "id": "smoke-robots",
+      "url": "/robots.txt",
+      "expect_status": 200,
+      "expect_contains": [],
+      "expect_absent": [],
+      "note": "robots.txt must keep serving; a missing robots file is a common upload regression."
+    },
+    {
+      "id": "smoke-404-pt",
+      "url": "/nao-existe-xyz-stage-j/",
+      "expect_status": 404,
+      "expect_contains": [],
+      "expect_absent": [],
+      "note": "An unknown Portuguese URL must be a hard 404, not a soft 200 (standard §11 '404')."
+    },
+    {
+      "id": "smoke-404-en",
+      "url": "/en/nao-existe-xyz-stage-j/",
+      "expect_status": 404,
+      "expect_contains": [],
+      "expect_absent": [],
+      "note": "An unknown English URL must be a hard 404 too; the /en/ layer must not swallow unknown paths."
+    },
+    {
+      "id": "smoke-legacy-redirect",
+      "url": "/guides/",
+      "expect_status": 301,
+      "expect_contains": [],
+      "expect_absent": [],
+      "note": "A legacy English slug must still 301 to its canonical Portuguese URL, proving the redirect layer survived the release."
+    }
+  ]
+}

@@ -15,6 +15,24 @@ wins.
 | **Script contract** (Stage I) | The `scripts/` estate obeys its contract: shared bootstrap/REST use, no hard-coded production target, no credentials, catalogue completeness, no stale renamed paths | `tests/scripts/verify-*.py` | one Python process per suite; static, no WordPress, no network |
 | **HTTP acceptance** | What a real request returns: status, redirects, canonical, hreflang, sitemap, filters | `tests/acceptance/verify-<area>-http.py` + `tests/acceptance/matrices/*.json` | one Python process per suite |
 
+### The release suites (Stage J)
+
+The release contract has its own coverage on both sides of the deployment line,
+so a release gate is never exercised for the first time at release time:
+
+| Suite | Proves | Layer |
+|---|---|---|
+| `tests/scripts/verify-release-integrity.py` | The two release invariants: `plugins.json` derives the artifact allowlist, and `release.json` records exactly what was built. Builds the real artifacts **twice** and proves they are byte-identical, proves no `tests/`/`fixtures/`/`*.json` report ships, and **proves the verifier fails on a tampered artifact** and on a non-allowlisted one. | Script contract (no WordPress, no network) |
+| `tests/acceptance/verify-release-http.py` | The **fixed** release smoke matrix against the local site, plus one single per post type and the PT/EN language-layer checks. It imports the same matrix file and the same check functions as `scripts/verify-deploy.py`, so the gate and the regression suite cannot drift. | HTTP acceptance |
+
+`./scripts/verify-release.sh` runs the whole release workflow end to end locally
+(registry gate → build → manifest → allowlist/hash verification → determinism →
+exclusion proof → HTTP verification). It is the single command to run before
+relying on the release machinery, and it never touches production.
+
+See [releases.md](releases.md) for the contract these suites enforce.
+
+
 All three run through **one** command with **one** aggregate exit code:
 
 ```bash
@@ -399,5 +417,8 @@ convention-based, and CI calls the same command you do.
 | `scripts/stage*-verify.*`, `scripts/c2-*.php` | `HISTORICAL_VERIFICATION` / `DIAGNOSTIC` | no |
 | `scripts/historical/c3-production-*.py` | `PRODUCTION_ONLY` | never |
 | `tests/scripts/verify-*.py` | `SCRIPT_CONTRACT` | yes — blocking |
+| `tests/scripts/verify-release-integrity.py` | `SCRIPT_CONTRACT` (Stage J) | yes — blocking, also its own CI job |
+| `tests/acceptance/verify-release-http.py` | `HTTP_ACCEPTANCE` (Stage J) | yes — blocking; runs the release smoke matrix |
 
 _Last verified: 2026-09-26 by Stage I — Scripts Standardisation_
+_Last verified: 2026-09-26 by Stage J — Build, Release & Deploy Verification_

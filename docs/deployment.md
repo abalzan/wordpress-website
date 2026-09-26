@@ -91,6 +91,67 @@ mounted only so the historical importer stays reproducible.
 - `conexao-guide-translation` - activate → apply → remove
 <!-- END GENERATED PLUGIN REGISTRY: docs/deployment.md activation order -->
 
+## The release process
+
+The full contract — the release record, the tag convention, deployment
+verification and the rollback procedure — is documented in
+[`docs/releases.md`](releases.md) and normative in
+[`docs/engineering-standard.md` §11](engineering-standard.md#11-deployment-and-release-standard).
+This section is the short version and the entry point.
+
+### Before you deploy
+
+```bash
+./scripts/lint.sh && ./scripts/run-tests.sh     # 1. gates
+./scripts/build-plugins-zip.sh                  # 2. build + dist/release.json
+./scripts/build-theme-zip.sh
+python3 scripts/release-manifest.py --verify    # 3. allowlist + hash verification
+```
+
+Each build emits `dist/release.json`, which records the version, git SHA,
+built-at, file count, byte size and SHA-256 of every artifact that actually
+exists, alongside the allowlist `plugins.json` permits. The artifacts are built
+**deterministically**: two builds of the same source produce byte-identical ZIPs,
+so the recorded hash is a real claim. Verify that locally, end to end, with:
+
+```bash
+./scripts/verify-release.sh
+```
+
+That runs the whole workflow — registry gate, build, manifest, allowlist/hash
+verification, a determinism re-build, an exclusion proof and HTTP verification
+against the **local** site. It is the fastest way to know the release machinery
+works before relying on it.
+
+### After you deploy
+
+```bash
+python3 scripts/verify-deploy.py --site https://<host> \
+    --out docs/evidence/<date>-<release>/deploy-<tag>.json
+```
+
+Read-only, GET-only, no credentials, and `--site` is required with no default so
+a mistyped run cannot probe the wrong site. It runs the fixed release smoke
+matrix (homepage, every archive, one single per post type, `/en/` pairs,
+canonical, hreflang, sitemap, 404) plus the PT/EN language-layer checks. Then
+record the release in [`docs/releases.md`](releases.md) and keep the previous
+artifacts for the rollback described there.
+
+### Production constraints
+
+| Constraint | Consequence |
+|---|---|
+| No SSH / SFTP | Deployment is a manual ZIP upload through wp-admin |
+| No WP-CLI | Activation is an admin action; no scripted migrations |
+| No filesystem or database access | `dist/` on a maintainer machine is the only place artifacts exist |
+
+Because production has no CLI, every production capability must also have an
+admin screen (engineering standard §0.12). The release tooling in this repository
+is deliberately build-and-verify only: it never uploads, never activates and
+never writes content.
+
+
+
 ## Environment Differences
 
 - **Local**: Full admin access, WP_DEBUG enabled, `WORDPRESS_DEBUG=1`

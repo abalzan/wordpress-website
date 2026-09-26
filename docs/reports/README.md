@@ -61,6 +61,17 @@ Stage reports for the standardisation roadmap's repository-engineering stages
 modularisation, …) live in [`site/`](site/) as
 `<date>-<stage>-<topic>.md`.
 
+| Repository-engineering stage report | What it covers |
+|---|---|
+| `site/2026-09-25-stage-c-static-quality-tooling.md` | Stage C — `scripts/lint.sh`, PHPCS/PHPStan baselines |
+| `site/2026-09-25-stage-d-ci.md` | Stage D — the blocking CI workflow |
+| `site/2026-09-25-stage-e-test-harness.md` | Stage E — the three-layer `scripts/run-tests.sh` harness |
+| `site/2026-09-26-stage-f-theme-modularisation.md` | Stage F — theme module split |
+| `site/2026-09-26-stage-g-plugin-registry-lifecycle.md` | Stage G — the `plugins.json` registry + drift gate |
+| `site/2026-09-26-stage-h-shared-rollout-engine.md` | Stage H — the shared translation-rollout engine |
+| `site/2026-09-26-stage-i-scripts-standardisation.md` | Stage I — script classification, bootstrap/REST libraries, catalogue |
+| **`site/2026-09-26-stage-j-build-release-deploy-verification.md`** | **Stage J — the release contract: registry-derived artifact allowlist, deterministic packaging, `dist/release.json`, `scripts/verify-deploy.py` with a fixed smoke matrix, the release-integrity CI gate and the documented rollback procedure** |
+
 
 Related: `docs/audit/` (engineering audits), `docs/engineering-standard.md`
 (the normative standard these reports are measured against).

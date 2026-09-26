@@ -102,7 +102,8 @@ See docs/routing.md.
 9. **Public event queries must respect `_event_status`** (published or no status). The event-runtime plugin enforces this via `pre_get_posts`.
 10. **Front page caching:** transients (`conexao_home_*`, `conexao_404_*`) are invalidated on save. Keep new homepage queries cached.
 11. **English is an additional language layer, never a fork.** Polylang adds `/en/`; Portuguese URLs/slugs/identity stay canonical. An English record is a *linked translation* of the same Event/Lazer identity — never a second identity record. Theme language logic lives only in `inc/i18n/` (plus the SEO modules in `inc/seo/`); theme/plugin code reads locale through `conexao_current_locale()`. Transient/object caches must be language-scoped. See docs/routing.md §English and docs/reports/CONEXAO_BR_ENGLISH_STAGE_2_REPORT.md.
-12. **Theme runtime is loader + modules.** `functions.php` is loader-only (constants + `require_once`); logic lives in `inc/*.php` with one concern per file. Language policy → `inc/i18n/`, SEO output → `inc/seo/`, bilingual REST → `inc/rest-language.php`. Public `conexao_*` function names and the filter/action surface are stable across modules. See docs/themes/conexao-br-irlanda.md §Runtime Architecture.
+12. **Theme runtime is loader + modules.** `functions.php` is loader-only (constants + `require_once`); logic lives with one concern per file in `inc/*.php`. Language policy → `inc/i18n/`, SEO output → `inc/seo/`, bilingual REST → `inc/rest-language.php`. Public `conexao_*` function names and the filter/action surface are stable across modules. See docs/themes/conexao-br-irlanda.md §Runtime Architecture.
+13. **Release: the registry decides what may ship; the manifest records what did.** The artifact allowlist is *derived* from `plugins.json` (`build: true`, in load order, plus the theme) — never hand-maintained. Every build emits `dist/release.json` recording, per artifact, the version (read from the component header), the git SHA, the file count and the SHA-256. Packaging rules and determinism live once in `scripts/lib/zip-build.sh`; the release record lives once in `scripts/lib/release.py`. `scripts/verify-deploy.py` is GET-only and requires an explicit `--site`. See docs/releases.md.
 
 ## Common tasks — where to look
 
@@ -124,6 +125,7 @@ See docs/routing.md.
 | SEO/redirects/sitemap | theme `inc/seo/` (see `redirects.php`, `sitemap.php`) |
 | Language policy (Polylang) | theme `inc/i18n/` |
 | Deploy/build ZIPs | docs/deployment.md, scripts/ |
+| **Release: manifest, tag, verification, rollback** | **docs/releases.md**, `./scripts/verify-release.sh` |
 | Plugin registry / lifecycle / load order | `plugins.json` (authoritative), `php scripts/generate-registry-docs.php --check` |
 
 ## Running the project
@@ -133,9 +135,19 @@ docker compose up -d          # http://localhost:8080
 ./scripts/run-tests.sh        # ALL tests: in-process PHP + script contract + HTTP acceptance
 ./scripts/run-tests.sh --scripts   # the Stage I script-contract gate only
 docker compose exec wordpress wp ...   # WP-CLI
-./scripts/build-plugins-zip.sh  # → dist/*.zip
-./scripts/build-theme-zip.sh    # → dist/conexao-br-irlanda.zip
+./scripts/build-plugins-zip.sh  # → dist/*.zip + dist/release.json
+./scripts/build-theme-zip.sh    # → dist/conexao-br-irlanda.zip + dist/release.json
+./scripts/verify-release.sh     # the whole release workflow, proven locally
+python3 scripts/verify-deploy.py --site <url>   # read-only HTTP deployment check
 ```
+
+## Releases
+
+`plugins.json` determines **what can be released** (the artifact allowlist);
+`dist/release.json` records **what was actually built** (version, git SHA,
+file count, byte size, SHA-256). Artifacts are built deterministically, so the
+recorded hash is reproducible. `scripts/verify-deploy.py` then checks the
+deployed site over HTTP without mutating it. See [docs/releases.md](docs/releases.md).
 
 ## Tests
 
@@ -177,6 +189,7 @@ Task → Read first
 - Routes → docs/routing.md
 - Frontend/UI → docs/frontend.md
 - Deployment → docs/deployment.md
+- **Releases (manifest, tag, verification, rollback) → docs/releases.md**
 - Local development → docs/development.md
 - **Engineering standard (how to build here) → docs/engineering-standard.md**
 - Plugin inventory → docs/plugins/README.md
