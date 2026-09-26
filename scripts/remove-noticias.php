@@ -13,15 +13,8 @@
  *   php scripts/remove-noticias.php   (if wp-load.php is discoverable)
  */
 
-$wp_load = dirname( __DIR__ ) . '/wp-load.php';
-if ( file_exists( $wp_load ) ) {
-	require_once $wp_load;
-} elseif ( file_exists( '/var/www/html/wp-load.php' ) ) {
-	require_once '/var/www/html/wp-load.php';
-} else {
-	fwrite( STDERR, "Unable to locate wp-load.php. Run via: wp eval-file scripts/remove-noticias.php --allow-root\n" );
-	exit( 1 );
-}
+require_once __DIR__ . '/lib/bootstrap.php';
+conexao_script_load_wordpress();
 
 echo "=== Removing Notícias (news post type) ===\n";
 

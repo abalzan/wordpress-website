@@ -48,22 +48,8 @@
  */
 
 // Ensure we're in WordPress context.
-if ( ! defined( 'ABSPATH' ) ) {
-	define( 'WP_USE_THEMES', false );
-	// Locate wp-load.php by walking up from this file's directory.
-	$dir = dirname( __FILE__ );
-	while ( $dir !== dirname( $dir ) ) {
-		if ( file_exists( $dir . '/wp-load.php' ) ) {
-			require_once( $dir . '/wp-load.php' );
-			break;
-		}
-		$dir = dirname( $dir );
-	}
-	if ( ! defined( 'ABSPATH' ) ) {
-		fwrite( STDERR, "Could not locate wp-load.php. Run inside WordPress.\n" );
-		exit( 1 );
-	}
-}
+require_once __DIR__ . '/lib/bootstrap.php';
+conexao_script_load_wordpress();
 
 echo "=== English primary menu creation + Polylang assignment ===\n";
 

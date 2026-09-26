@@ -23,28 +23,14 @@
  * @package Conexao_Admin_Ux
  */
 
-// Allow running via WP-CLI, plain PHP CLI, or browser.
+// Allow running via WP-CLI, plain PHP CLI, or browser. The shared bootstrap
+// loads WordPress only when it is not already present (WP-CLI), so the
+// WP_CLI fast path is preserved exactly.
 $is_cli = ( defined( 'WP_CLI' ) && WP_CLI ) || 'cli' === php_sapi_name();
 
-if ( defined( 'WP_CLI' ) && WP_CLI ) {
-	// Running via WP-CLI - WordPress is already loaded.
-} else {
-	$wp_load_candidates = array(
-		dirname( __FILE__, 2 ) . '/wp-load.php',
-		'/var/www/html/wp-load.php',
-		dirname( __FILE__, 4 ) . '/wp-load.php',
-	);
-	$loaded = false;
-	foreach ( $wp_load_candidates as $candidate ) {
-		if ( file_exists( $candidate ) ) {
-			require_once $candidate;
-			$loaded = true;
-			break;
-		}
-	}
-	if ( ! $loaded ) {
-		die( 'Could not find wp-load.php' );
-	}
+if ( ! ( defined( 'WP_CLI' ) && WP_CLI ) ) {
+	require_once __DIR__ . '/lib/bootstrap.php';
+	conexao_script_load_wordpress();
 }
 
 if ( ! $is_cli && ! current_user_can( 'manage_options' ) ) {

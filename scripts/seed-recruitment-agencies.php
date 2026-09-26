@@ -9,12 +9,8 @@
  * document before running on production.
  */
 
-$wp_load = dirname( __DIR__ ) . '/wp-load.php';
-if ( file_exists( $wp_load ) ) {
-	require_once $wp_load;
-} else {
-	require_once '/var/www/html/wp-load.php';
-}
+require_once __DIR__ . '/lib/bootstrap.php';
+conexao_script_load_wordpress();
 
 if ( ! post_type_exists( 'recruitment_agency' ) ) {
 	fwrite( STDERR, "Erro: o post type 'recruitment_agency' não está registrado. Ative o plugin conexao-data-model.\n" );

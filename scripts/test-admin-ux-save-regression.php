@@ -23,12 +23,8 @@
 
 define( 'WP_ADMIN', true );
 
-$wp_load = '/var/www/html/wp-load.php';
-if ( ! file_exists( $wp_load ) ) {
-	fwrite( STDERR, "wp-load.php not found. Run inside the WordPress container.\n" );
-	exit( 1 );
-}
-require_once $wp_load;
+require_once __DIR__ . '/lib/bootstrap.php';
+conexao_script_load_wordpress();
 
 // Admin UX components boot on admin_init, which never fires outside a real
 // wp-admin request — boot them explicitly so save_post_{type} hooks register

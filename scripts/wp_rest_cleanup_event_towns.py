@@ -7,7 +7,7 @@ Works via WordPress REST API (requires Application Passwords on WP.com,
 or basic auth on self-hosted).
 
 Usage:
-    python wp_rest_cleanup_event_towns.py --site https://conexaobr.ie [--execute]
+    python scripts/wp_rest_cleanup_event_towns.py --site <SITE_URL> [--execute]
     python wp_rest_cleanup_event_towns.py --help
 
 Authentication is read from .env file (WP_USERNAME, WP_APPLICATION_PASSWORD)
@@ -329,15 +329,15 @@ def main() -> int:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  # Dry run (audit only):
-  python wp_rest_cleanup_event_towns.py --site https://conexaobr.ie
+  # Dry run (audit only) against the LOCAL stack:
+  python scripts/wp_rest_cleanup_event_towns.py --site http://localhost:8080
 
-  # Actually perform the cleanup:
-  python wp_rest_cleanup_event_towns.py --site https://conexaobr.ie --execute
+  # A production run must be explicit and confirmed:
+  python scripts/wp_rest_cleanup_event_towns.py --site <PRODUCTION_SITE> --confirm-production --execute
 
   # Backup first, then cleanup:
-  python wp_rest_backup_towns.py --site https://conexaobr.ie
-  python wp_rest_cleanup_event_towns.py --site https://conexaobr.ie --execute
+  python scripts/wp_rest_backup_towns.py --site http://localhost:8080
+  python scripts/wp_rest_cleanup_event_towns.py --site http://localhost:8080 --execute
 
 Credentials are read from .env file (WP_USERNAME, WP_APPLICATION_PASSWORD).
 You can also pass them via --user/--password or environment variables.

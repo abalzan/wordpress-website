@@ -28,7 +28,11 @@
  *
  * @package Conexao_BR_Irlanda
  * @subpackage Dev_Tooling
- */
+  *
+ * Bootstrap exception: static PHPCS baseline tool. It reads a JSON report and
+ * the baseline file and never loads WordPress, so scripts/lib/bootstrap.php is
+ * deliberately not used. Current, not historical.
+*/
 
 if ( PHP_SAPI !== 'cli' ) {
 	exit( 'CLI only.' );

@@ -8,16 +8,8 @@
  */
 
 // Bootstrap WordPress.
-$wp_load = '/var/www/html/wp-load.php';
-if ( ! file_exists( $wp_load ) ) {
-	// Try relative path.
-	$wp_load = dirname( __DIR__ ) . '/wp-load.php';
-}
-if ( ! file_exists( $wp_load ) ) {
-	fwrite( STDERR, "Cannot find wp-load.php\n" );
-	exit( 1 );
-}
-require_once $wp_load;
+require_once __DIR__ . '/lib/bootstrap.php';
+conexao_script_load_wordpress();
 
 // Include the guide update script.
 $update_script = __DIR__ . '/update-guides-content.php';

@@ -13,9 +13,8 @@
  * @package Conexao_Leisure_Translation
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	require_once dirname( __DIR__ ) . '/wp-load.php';
-}
+require_once __DIR__ . '/lib/bootstrap.php';
+conexao_script_load_wordpress();
 
 $argv_args = isset( $args ) ? (array) $args : array();
 $mode      = 'preview';

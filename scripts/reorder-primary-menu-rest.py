@@ -42,7 +42,7 @@ Usage:
     python3 scripts/reorder-primary-menu-rest.py             # reorder
 
 Options:
-    --base-url URL   Site base URL (default: WP_BASE_URL env or https://conexaobr.ie)
+    --base-url URL   Site base URL (default: $CONEXAO_SITE_URL, else the local site)
     --menu-id ID     Menu term ID (default: resolve the menu assigned to "primary")
     --dry-run        List what would be renumbered without writing.
 
@@ -267,7 +267,7 @@ def main():
     parser = argparse.ArgumentParser(
         description="Reorder the 'primary' nav menu (order-only) via the WP REST API."
     )
-    parser.add_argument("--base-url", default=None, help="Site base URL (default: WP_BASE_URL env or https://conexaobr.ie)")
+    parser.add_argument("--base-url", default=None, help="Site base URL (default: $CONEXAO_SITE_URL, else the local site)")
     parser.add_argument("--menu-id", type=int, default=None, help="Menu term ID (default: resolve the menu assigned to 'primary')")
     parser.add_argument("--dry-run", action="store_true", help="Preview what would be renumbered without writing.")
     args = parser.parse_args()
@@ -283,7 +283,7 @@ def main():
             "(Application Passwords)."
         )
 
-    base_url = args.base_url or os.environ.get("WP_BASE_URL", "https://conexaobr.ie")
+    base_url = args.base_url or os.environ.get("CONEXAO_SITE_URL", rest_mod.LOCAL_BASE_URL)
     rest = WpRest(base_url, user, app_password)
 
     # --- Sanity check: authentication -----------------------------------

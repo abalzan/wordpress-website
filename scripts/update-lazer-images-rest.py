@@ -57,7 +57,7 @@ Usage:
     python3 scripts/update-lazer-images-rest.py --force --delete-old
 
 Options:
-    --base-url URL   Site base URL (default: https://conexaobr.ie)
+    --base-url URL   Site base URL (default: $CONEXAO_SITE_URL, else the local site)
     --slug S         Only process this slug (repeatable / comma-separated)
     --width N        Commons scaled download width in px (default: 2560)
     --force          Update even when the stored source URL already matches
@@ -80,7 +80,10 @@ import urllib.parse
 import urllib.request
 import uuid
 
-USER_AGENT = "ConexaoBR-lazer-image-audit/1.0 (https://conexaobr.ie; contact@conexaobr.ie)"
+# REST etiquette requires a contactable User-Agent. This is an identity
+# string sent to the site being audited, never an operational target: the
+# target itself is resolved from CONEXAO_SITE_URL / --base-url.
+USER_AGENT = "ConexaoBR-lazer-image-audit/1.0 (+https://conexaobr.ie; contact@conexaobr.ie)"
 
 COMMONS_FILE_PATH = "https://commons.wikimedia.org/wiki/Special:FilePath/"
 COMMONS_FILE_PAGE = "https://commons.wikimedia.org/wiki/File:"
@@ -638,7 +641,7 @@ def main():
     parser = argparse.ArgumentParser(
         description="Update the /lazer/ listing images via the WordPress REST API."
     )
-    parser.add_argument("--base-url", default=os.environ.get("WP_BASE_URL", "https://conexaobr.ie"))
+    parser.add_argument("--base-url", default=os.environ.get("CONEXAO_SITE_URL", rest_mod.LOCAL_BASE_URL))
     parser.add_argument("--slug", action="append", default=[],
                         help="Only process this slug (repeatable or comma-separated).")
     parser.add_argument("--width", type=int, default=2560,
@@ -796,8 +799,9 @@ def main():
     if args.dry_run:
         print("\n(--dry-run: nenhuma alteração foi gravada.)")
     elif updated:
-        print("\nVerifique https://conexaobr.ie/lazer/ — o cache de borda da WordPress.com "
-              "é purgado ao gravar o post. Se necessário, regrave a página no wp-admin.")
+        _target = args.base_url or os.environ.get("CONEXAO_SITE_URL", "http://localhost:8080")
+        print(f"\nVerifique {_target}/lazer/ — o cache de borda é purgado ao gravar o "
+              "post. Se necessário, regrave a página no wp-admin.")
     if meta_warning:
         print("\nAVISO: parte dos metadados de atribuição não foi gravada — confirme que o "
               "plugin conexao-data-model atualizado está ativo em produção.")

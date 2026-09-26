@@ -1,5 +1,18 @@
 <?php
-require '/var/www/html/wp-load.php';
+/**
+ * mp-live-ticket-check.php — live ticket-availability probe for events.
+ *
+ * Purpose: report, per event, whether the linked ticket page still responds.
+ * Safety: read-only. It performs HTTP GETs to third-party ticket sites and
+ * writes nothing to WordPress.
+ * Scope: reports ticket reachability for the events it queries. It creates,
+ * updates and deletes nothing, in WordPress or elsewhere.
+ *
+ * @package Conexao_BR_Scripts
+ */
+
+require_once __DIR__ . '/lib/bootstrap.php';
+conexao_script_load_wordpress();
 require_once WP_PLUGIN_DIR . '/conexao-event-importer/conexao-event-importer.php';
 
 if ( ! class_exists( 'Mp_Live_Ticket_Check' ) ) {

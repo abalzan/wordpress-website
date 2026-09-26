@@ -24,21 +24,8 @@
  * Media Library attachments it creates for leisure images.
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	define( 'WP_USE_THEMES', false );
-	$dir = dirname( __FILE__ );
-	while ( $dir !== dirname( $dir ) ) {
-		if ( file_exists( $dir . '/wp-load.php' ) ) {
-			require_once $dir . '/wp-load.php';
-			break;
-		}
-		$dir = dirname( $dir );
-	}
-	if ( ! defined( 'ABSPATH' ) ) {
-		fwrite( STDERR, "Unable to locate wp-load.php\n" );
-		exit( 1 );
-	}
-}
+require_once __DIR__ . '/lib/bootstrap.php';
+conexao_script_load_wordpress();
 
 if ( ! class_exists( 'Conexao_Lazer_Exporter' ) || ! class_exists( 'Conexao_Lazer_Importer' ) ) {
 	fwrite( STDERR, "ERROR: The Conexão Lazer Migration plugin is not active.\n" );

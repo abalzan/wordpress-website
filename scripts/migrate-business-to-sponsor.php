@@ -14,21 +14,8 @@
  * migration is verified.
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	// Locate wp-load.php by walking up from this file's directory.
-	$dir = dirname( __FILE__ );
-	while ( $dir !== dirname( $dir ) ) {
-		if ( file_exists( $dir . '/wp-load.php' ) ) {
-			require_once $dir . '/wp-load.php';
-			break;
-		}
-		$dir = dirname( $dir );
-	}
-	if ( ! defined( 'ABSPATH' ) ) {
-		fwrite( STDERR, "Unable to locate wp-load.php. Run via: wp eval-file migrate-business-to-sponsor.php --allow-root\n" );
-		exit( 1 );
-	}
-}
+require_once __DIR__ . '/lib/bootstrap.php';
+conexao_script_load_wordpress();
 
 global $wpdb;
 

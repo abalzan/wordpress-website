@@ -26,7 +26,11 @@
  * Exit codes: 0 = clean, 1 = validation or drift failure, 2 = usage error.
  *
  * @package Conexao_BR_Irlanda
- */
+  *
+ * Bootstrap exception: static registry tool. It reads plugins.json and the
+ * working tree and never loads WordPress, so scripts/lib/bootstrap.php is
+ * deliberately not used. Current, not historical.
+*/
 
 declare(strict_types=1);
 

@@ -14,9 +14,8 @@
  * @package Conexao_Blog_Translation
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	require_once dirname( __DIR__ ) . '/wp-load.php';
-}
+require_once __DIR__ . '/lib/bootstrap.php';
+conexao_script_load_wordpress();
 
 $argv_args = isset( $args ) ? (array) $args : array();
 $dry_run   = (bool) array_intersect( array( 'dry-run', '--dry-run' ), $argv_args );

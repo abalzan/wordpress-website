@@ -1,43 +1,47 @@
-#!/usr/bin/env python3
 """
 REST seeder for the "Empresas com histórico de Employment Permits" directory
 (Empregos landing).
 
-WordPress.com-compatible companion to scripts/seed-permit-employers.php
-(which requires wp-load.php). Seeds the SAME 13 employer records through the
-WordPress REST API using an Application Password. The data below MUST stay
-identical to conexao_seed_permit_employers() in the PHP seeder.
+Purpose: seed the approved 13-employer dataset through the WordPress REST API.
+Safety: production-capable-write. Dry-run is the default and writes nothing.
+Scope:
+  Creates/updates `permit_employer` records for the 13 approved employers only.
+  Does not touch any other post type, user, option or term.
+  The dataset must stay identical to conexao_seed_permit_employers() in the
+  PHP seeder (scripts/seed-permit-employers.php).
 
-The `permit_employer` CPT and every `_employer_*` meta except
-`_employer_notes` are registered with `show_in_rest => true`
-(conexao-data-model >= 1.5.0). `_employer_notes` is REST-hidden by design
-and is not seeded here.
+Uses the shared REST client (scripts/lib/rest.py): base URL resolution,
+credentials, retries and error handling are centralised there.
 
 Usage:
     export WP_USERNAME='your-wpcom-username'
     export WP_APPLICATION_PASSWORD='xxxx xxxx xxxx xxxx xxxx xxxx'
 
-    python3 scripts/seed-permit-employers-rest.py --dry-run   # preview
-    python3 scripts/seed-permit-employers-rest.py             # seed (upsert)
+    python3 scripts/seed-permit-employers-rest.py --dry-run   # preview (default)
+    python3 scripts/seed-permit-employers-rest.py --apply     # seed (upsert)
 
-Options:
-    --base-url URL   Site base URL (default: https://conexaobr.ie)
-    --dry-run        List what would be created/updated without writing.
+Arguments:
+    --dry-run                 Plan only. The default. Zero writes.
+    --apply                   Perform the upsert.
+    --base-url URL            Target. Default $CONEXAO_SITE_URL, else the
+                              local site. There is no production default.
+    --confirm-production      Required before a write against a production target.
+    --json                    Emit the machine-readable plan on stdout.
 
-Idempotent: existing employers are matched by slug and updated, missing
-ones are created — the same behaviour as the PHP seeder.
+Idempotent: existing employers are matched by slug and updated, missing ones are
+created — the same behaviour as the PHP seeder.
 
 Requires Python 3.8+ (standard library only).
 """
 
 import argparse
-import base64
-import json
 import os
 import sys
-import time
-import urllib.error
-import urllib.request
+
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "lib"))
+
+import rest as conexao_rest  # noqa: E402  (path set above, like the acceptance suites)
+from plan import PlanBuilder  # noqa: E402
 
 # ---------------------------------------------------------------------------
 # Employer data — matches the APPROVED local dataset (local Docker DB, dumped
@@ -92,36 +96,38 @@ def build_meta(employer):
 
 
 class WpRest:
+    """Adapter preserving this script's original REST call semantics.
+
+    The endpoint paths, the retry count (3, 4xx never retried), the timeout
+    (30s) and the pagination rule (per_page=100, stop on a short page) are
+    exactly what this script used before Stage I; only the implementation moved
+    into scripts/lib/rest.py.
+    """
+
     def __init__(self, base_url, user, app_password):
-        self.base_url = base_url.rstrip("/")
-        token = base64.b64encode(f"{user}:{app_password}".encode()).decode()
-        self.headers = {
-            "Authorization": f"Basic {token}",
-            "Content-Type": "application/json",
-            "User-Agent": "conexao-br-permit-employer-seeder/1.0",
-        }
+        self._client = conexao_rest.RestClient(
+            base_url,
+            user_agent="conexao-br-permit-employer-seeder/1.0",
+            authenticated=False,  # credentials supplied explicitly below
+            timeout=30,
+            retries=3,
+        )
+        self.base_url = self._client.base_url
+        self.headers = conexao_rest.default_headers(
+            "conexao-br-permit-employer-seeder/1.0", authenticated=False
+        )
+        token = conexao_rest.basic_auth_header(user, app_password)
+        self.headers["Authorization"] = token
+        self._client.headers = self.headers
 
     def request(self, method, path, payload=None):
+        """GET/POST a wp/v2 path with the original retry policy."""
         url = f"{self.base_url}/wp-json/wp/v2/{path}"
-        data = json.dumps(payload).encode() if payload is not None else None
-        req = urllib.request.Request(url, data=data, headers=self.headers, method=method)
-        # Small retry loop — the WordPress.com edge occasionally returns 5xx.
-        last_error = None
-        for attempt in range(3):
-            try:
-                with urllib.request.urlopen(req, timeout=30) as resp:
-                    body = resp.read().decode()
-                    return json.loads(body) if body else None
-            except urllib.error.HTTPError as e:
-                detail = e.read().decode("utf-8", "replace")[:400]
-                # 4xx errors are deterministic — do not retry those.
-                if e.code < 500:
-                    raise RuntimeError(f"HTTP {e.code} on {method} {path}: {detail}") from e
-                last_error = RuntimeError(f"HTTP {e.code} on {method} {path}: {detail}")
-            except urllib.error.URLError as e:
-                last_error = RuntimeError(f"Network error on {method} {path}: {e.reason}")
-            time.sleep(2 * (attempt + 1))
-        raise last_error
+        return self._client.request(method, url, payload)
+
+    def assert_write_allowed(self, confirm_production=False):
+        """Delegate the production write guard to the shared client."""
+        return self._client.assert_write_allowed(confirm_production)
 
     def list_employers(self):
         """All existing permit_employer posts (id + slug), paged."""
@@ -143,10 +149,17 @@ class WpRest:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Seed employment-permit employers via the WP REST API.")
-    parser.add_argument("--base-url", default=os.environ.get("WP_BASE_URL", "https://conexaobr.ie"))
-    parser.add_argument("--dry-run", action="store_true", help="Preview without writing.")
+    parser = argparse.ArgumentParser(
+        description="Seed employment-permit employers via the WP REST API."
+    )
+    conexao_rest.add_common_arguments(parser)
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument("--dry-run", action="store_true", help="Plan only (default).")
+    group.add_argument("--apply", action="store_true", help="Perform the upsert.")
     args = parser.parse_args()
+
+    # Stage I contract: dry-run is the default; --apply is the only write mode.
+    dry_run = not args.apply
 
     user = os.environ.get("WP_USERNAME")
     app_password = os.environ.get("WP_APPLICATION_PASSWORD")
@@ -157,26 +170,49 @@ def main():
             "(Application Passwords)."
         )
 
-    rest = WpRest(args.base_url, user, app_password)
+    client = WpRest(args.base_url, user, app_password)
+
+    scope = (
+        "Creates/updates permit_employer records for the 13 approved employers "
+        "only. Touches no other post type, user, option or term."
+    )
+    mode = "dry-run" if dry_run else "apply"
+    conexao_rest.print_header(
+        "seed-permit-employers-rest.py", client.base_url, mode, scope
+    )
+
+    # Production write guard: refuse an unconfirmed production apply.
+    if not dry_run:
+        try:
+            client.assert_write_allowed(args.confirm_production)
+        except conexao_rest.ProductionTargetError as error:
+            sys.exit(f"ERROR: {error}")
+
+    plan = PlanBuilder(
+        "seed-permit-employers-rest.py", client.base_url, mode=mode, scope=scope
+    )
 
     # --- Sanity check: authentication ---------------------------------------
     try:
-        me = rest.request("GET", "users/me?context=edit&_fields=id,name")
-    except RuntimeError as e:
-        sys.exit(f"Erro de autenticação em {args.base_url}: {e}")
+        me = client.request("GET", "users/me?context=edit&_fields=id,name")
+    except conexao_rest.RestError as e:
+        sys.exit(f"Erro de autenticação em {client.base_url}: {e}")
     print(f"Autenticado como: {me.get('name', '?')} (ID {me.get('id', '?')})")
 
     # --- Sanity check: CPT availability (registered by conexao-data-model) --
     try:
-        existing = rest.list_employers()
-    except RuntimeError as e:
-        sys.exit(f"Erro ao listar permit_employer: {e}\n"
-                 "(O CPT é registrado pelo plugin conexao-data-model >= 1.5.0 — confirme que está ativo.)")
+        existing = client.list_employers()
+    except conexao_rest.RestError as e:
+        sys.exit(
+            f"Erro ao listar permit_employer: {e}\n"
+            "(O CPT é registrado pelo plugin conexao-data-model >= 1.5.0 — "
+            "confirme que está ativo.)"
+        )
     print(f"Empregadores existentes: {len(existing)}")
 
-    # --- Upsert (same semantics as the PHP seeder) ---------------------------
+    # --- Upsert (same semantics as the PHP seeder) --------------------------
     created = updated = 0
-    action = "SERIA " if args.dry_run else ""
+    action = "SERIA " if dry_run else ""
     for employer in EMPLOYERS:
         payload = {
             "title": employer["name"],
@@ -187,22 +223,45 @@ def main():
         }
         post_id = existing.get(employer["slug"])
         permit_label = employer["permit"]
+        row = {"slug": employer["slug"], "title": employer["name"],
+               "permit": permit_label, "id": post_id}
         try:
             if post_id:
                 print(f"  {action}ATUALIZAR #{post_id} {employer['name']} [{permit_label}]")
-                if not args.dry_run:
-                    rest.request("POST", f"permit_employer/{post_id}", payload)
+                if not dry_run:
+                    client.request("POST", f"permit_employer/{post_id}", payload)
+                plan.add("update", row)
                 updated += 1
             else:
                 print(f"  {action}CRIAR        {employer['name']} [{permit_label}]")
-                if not args.dry_run:
-                    rest.request("POST", "permit_employer", payload)
+                if not dry_run:
+                    client.request("POST", "permit_employer", payload)
+                plan.add("create", row)
                 created += 1
-        except RuntimeError as e:
+        except conexao_rest.RestError as e:
+            plan.add_error(f"{employer['name']}: {e}")
             sys.exit(f"Erro ao salvar {employer['name']}: {e}")
 
-    print(f"\n=== Resumo ===\nTotal:       {len(EMPLOYERS)}\nCriados:     {created}\nAtualizados: {updated}")
+    summary = {
+        "create": created,
+        "update": updated,
+        "skip": 0,
+        "conflicts": 0,
+        "errors": 0,
+        "total": len(EMPLOYERS),
+    }
+    if args.json:
+        plan.write()
+    else:
+        print(
+            f"\n=== Resumo ===\nTotal:       {len(EMPLOYERS)}\n"
+            f"Criados:     {created}\nAtualizados: {updated}"
+        )
+    return conexao_rest.print_summary(
+        "seed-permit-employers-rest.py", client.base_url, mode, scope, summary,
+        as_json=args.json, json_out=args.json_out,
+    )
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

@@ -2,16 +2,20 @@
 #
 # run-tests.sh — the canonical test entrypoint (Stage E, engineering standard §8).
 #
-# Runs the two test layers through one command and one aggregate exit code:
+# Runs the test layers through one command and one aggregate exit code:
 #
 #   1. In-process PHP   — real WordPress bootstrap, one OS process per suite.
-#   2. HTTP acceptance  — real requests against the LOCAL WordPress.
+#   2. Script contract  — static checks over scripts/ (Stage I). No WordPress,
+#                         no network, no production.
+#   3. HTTP acceptance  — real requests against the LOCAL WordPress.
 #
 # Usage:
-#   ./scripts/run-tests.sh                    # both layers
+#   ./scripts/run-tests.sh                    # all layers
+#   ./scripts/run-tests.sh --scripts          # script-contract gate only
 #   ./scripts/run-tests.sh --acceptance       # HTTP acceptance only
 #   ./scripts/run-tests.sh --php              # in-process PHP only
 #   ./scripts/run-tests.sh --only theme       # one component
+#   ./scripts/run-tests.sh --only scripts     # the Stage I script gate
 #   ./scripts/run-tests.sh --only conexao-event-runtime
 #   ./scripts/run-tests.sh --list             # list discovered suites
 #   ./scripts/run-tests.sh --help
@@ -20,6 +24,7 @@
 #   CONEXAO_TEST_BASE_URL   Acceptance base URL. DEFAULT http://localhost:8080.
 #                           A production host (conexaobr.ie) is REJECTED.
 #   CONEXAO_TEST_WP_ROOT    Directory containing wp-load.php (in-process layer).
+#   CONEXAO_REPO_ROOT       Repository root for the script-contract layer.
 #
 # Safety: this runner never contacts production, never uses production
 # credentials and never writes to a production database.
@@ -71,6 +76,7 @@ DO_LIST=0
 while [ $# -gt 0 ]; do
 	case "$1" in
 		--acceptance) MODE="acceptance" ;;
+		--scripts)    MODE="scripts" ;;
 		--php)        MODE="php" ;;
 		--only)
 			shift
@@ -99,6 +105,7 @@ require_cmd() {
 #   in-process: wp-content/themes/<theme>/tests/test-*.php
 #               wp-content/plugins/<plugin>/tests/test-*.php
 #   acceptance: tests/acceptance/verify-*-http.py
+#   scripts:    tests/scripts/verify-*.py   (Stage I script-contract gate)
 
 discover_php_suites() {
 	local f
@@ -116,9 +123,24 @@ discover_acceptance_suites() {
 	done | LC_ALL=C sort
 }
 
-# Component of a suite path: the theme or plugin slug.
+# Stage I script-contract suites. They are STATIC checks over the repository's
+# scripts/ tree: no WordPress, no HTTP, no production. They run on the host with
+# plain python3, so they work with or without the Docker stack.
+discover_script_suites() {
+	local f
+	for f in tests/scripts/verify-*.py; do
+		[ -f "$f" ] || continue
+		printf '%s\n' "$f"
+	done | LC_ALL=C sort
+}
+
+# Component of a suite path: the theme or plugin slug, or a layer name.
 component_of() {
-	printf '%s' "$1" | awk -F/ '{ if ($1=="wp-content") print $3; else print "acceptance" }'
+	printf '%s' "$1" | awk -F/ '{
+		if ($1 == "wp-content") { print $3 }
+		else if ($1 == "tests" && $2 == "scripts") { print "scripts" }
+		else { print "acceptance" }
+	}'
 }
 
 # Pretty suite name, e.g. plugin/conexao-event-runtime/test-event-query.php
@@ -149,7 +171,10 @@ filter_suites() {
 # Unknown --only filters must fail loudly, never run everything (PHASE 25).
 validate_filter() {
 	local known
-	known="$(discover_php_suites | while IFS= read -r p; do component_of "$p"; done | LC_ALL=C sort -u)"
+	known="$( { discover_php_suites | while IFS= read -r p; do component_of "$p"; done
+		discover_script_suites | while IFS= read -r p; do component_of "$p"; done
+		discover_acceptance_suites | while IFS= read -r p; do component_of "$p"; done
+	} | LC_ALL=C sort -u)"
 	if grep -qxF "$ONLY" <<<"$known"; then return 0; fi
 	if [ "$ONLY" = "theme" ] || [ "$ONLY" = "plugin" ]; then return 0; fi
 	fail "unknown test component: $ONLY"
@@ -293,12 +318,17 @@ if [ "$DO_LIST" = "1" ]; then
 	done < <(discover_php_suites | filter_suites)
 	head1 "Manual suites (documented, NOT run by default)"
 	report_manual_suites
+	head1 "Script-contract suites"
+	while IFS= read -r p; do
+		[ -n "$p" ] || continue
+		printf '  %s\n' "$p"
+	done < <(discover_script_suites)
 	head1 "HTTP acceptance suites"
 	while IFS= read -r p; do
 		printf '  %s\n' "$p"
 	done < <(discover_acceptance_suites)
 	log ""
-	log "components: $(discover_php_suites | while IFS= read -r p; do component_of "$p"; done | LC_ALL=C sort -u | tr '\n' ' ')"
+	log "components: $( { discover_php_suites; discover_script_suites; discover_acceptance_suites; } | while IFS= read -r p; do component_of "$p"; done | LC_ALL=C sort -u | tr '\n' ' ')"
 	exit 0
 fi
 
@@ -429,10 +459,70 @@ acceptance_available() {
 	esac
 }
 
+# --- Script-contract layer (Stage I) ---------------------------------------
+#
+# Static, repository-local checks over the scripts/ estate. They need neither
+# WordPress nor a running site, so they run on the host with plain python3 and
+# can never contact production. They are part of THIS harness (one runner, one
+# aggregate exit code) — there is no second test entrypoint.
+#
+# The suites are discovered by convention: tests/scripts/verify-*.py.
+
+run_script_layer() {
+	local suites total=0 passed=0 failed=0
+	suites="$(discover_script_suites | filter_suites)"
+
+	if [ -z "$suites" ]; then
+		log "no script-contract suites discovered under tests/scripts/"
+		return 0
+	fi
+
+	head1 "Script-contract suites (static, no WordPress, no network)"
+
+	require_cmd python3
+
+	local suite
+	while IFS= read -r suite <&3; do
+		[ -n "$suite" ] || continue
+		total=$((total + 1))
+		local out_file out code
+		out_file="$WORK_DIR/$(printf '%s' "$suite" | tr '/' '_').out"
+
+		set +e
+		# The suites are repository-local and must work from any cwd; they
+		# resolve their own repository root.
+		CONEXAO_REPO_ROOT="$REPO_ROOT" \
+			timeout "$SUITE_TIMEOUT" python3 "$suite" >"$out_file" 2>&1
+		code=$?
+		set -e
+
+		out="$(cat "$out_file")"
+		if [ "$code" -eq 0 ]; then
+			passed=$((passed + 1))
+			printf '%s[PASS]%s %s\n' "$C_PASS" "$C_RESET" "$suite"
+			printf '%s' "$out" | grep -aE '^[0-9]+ passed' | sed 's/^/         /'
+		elif [ "$code" -eq 124 ]; then
+			failed=$((failed + 1))
+			printf '%s[TIMEOUT]%s %s (exceeded %ss)\n' "$C_FAIL" "$C_RESET" "$suite" "$SUITE_TIMEOUT"
+		else
+			failed=$((failed + 1))
+			printf '%s[FAIL]%s %s (exit %s)\n' "$C_FAIL" "$C_RESET" "$suite" "$code"
+			printf '%s' "$out" | grep -aE 'FAIL' | head -25 | sed 's/^/         /'
+			cp "$out_file" "$WORK_DIR/FAILED-$(printf '%s' "$suite" | tr '/' '_').log" 2>/dev/null || true
+		fi
+	done 3<<<"$suites"
+
+	SCRIPT_TOTAL=$total; SCRIPT_PASSED=$passed; SCRIPT_FAILED=$failed
+
+	if [ "$failed" -gt 0 ]; then
+		return 1
+	fi
+	return 0
+}
+
 run_acceptance_layer() {
 	local suites total=0 passed=0 failed=0 blocked=0
 	suites="$(discover_acceptance_suites)"
-
 	reject_production_base_url
 
 	if [ -z "$suites" ]; then
@@ -516,6 +606,8 @@ log "  base url:      $BASE_URL"
 
 PHP_RC=0
 ACCEPT_RC=0
+SCRIPT_RC=0
+SCRIPT_TOTAL=0; SCRIPT_PASSED=0; SCRIPT_FAILED=0
 
 case "$MODE" in
 	php)
@@ -524,8 +616,12 @@ case "$MODE" in
 	acceptance)
 		run_acceptance_layer || ACCEPT_RC=1
 		;;
+	scripts)
+		run_script_layer || SCRIPT_RC=1
+		;;
 	both)
 		run_php_layer || PHP_RC=1
+		run_script_layer || SCRIPT_RC=1
 		run_acceptance_layer || ACCEPT_RC=1
 		;;
 esac
@@ -543,7 +639,10 @@ fi
 if [ "$PHP_ASSERT_PASS" -gt 0 ] || [ "$PHP_ASSERT_FAIL" -gt 0 ]; then
 	log "Assertions: $PHP_ASSERT_PASS passed, $PHP_ASSERT_FAIL failed"
 fi
-if [ "$MODE" != "php" ]; then
+if [ "$SCRIPT_TOTAL" -gt 0 ] || [ "$MODE" = "scripts" ]; then
+	log "Script-contract suites: $SCRIPT_TOTAL total, $SCRIPT_PASSED passed, $SCRIPT_FAILED failed"
+fi
+if [ "$MODE" != "php" ] && [ "$MODE" != "scripts" ]; then
 	log "HTTP acceptance suites: $ACCEPT_TOTAL total, $ACCEPT_PASSED passed, $ACCEPT_FAILED failed"
 	if [ "$ACCEPT_BLOCKED" -gt 0 ]; then
 		log "  acceptance environment: BLOCKED"
@@ -551,7 +650,7 @@ if [ "$MODE" != "php" ]; then
 fi
 log "----------------------------------------"
 
-if [ "$PHP_RC" -ne 0 ] || [ "$ACCEPT_RC" -ne 0 ]; then
+if [ "$PHP_RC" -ne 0 ] || [ "$ACCEPT_RC" -ne 0 ] || [ "$SCRIPT_RC" -ne 0 ]; then
 	printf '%sTESTS FAILED%s\n' "$C_FAIL" "$C_RESET"
 	if [ -n "$PHP_FAILED_NAMES" ]; then
 		log "failing suites:"

@@ -11,7 +11,11 @@
  * are never modified. Run again after replacing either logo master.
  *
  * @package Conexao_BR_Irlanda
- */
+  *
+ * Bootstrap exception: runs only through WP-CLI (wp eval-file), which has
+ * already loaded WordPress, so scripts/lib/bootstrap.php is deliberately not
+ * required. Current, not historical.
+*/
 
 $theme_images = get_template_directory() . '/assets/images';
 
