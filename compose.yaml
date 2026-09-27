@@ -29,6 +29,15 @@ services:
       WORDPRESS_DB_USER: ${WORDPRESS_DB_USER:-wordpress}
       WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD:-wordpress}
       WORDPRESS_DEBUG: ${WORDPRESS_DEBUG:-1}
+      # Local development only: mark the environment as `local` so WordPress
+      # enables Application Passwords over plain HTTP on http://localhost:8080.
+      # Without this, wp_get_environment_type() falls back to `production` and
+      # every Basic-auth REST call (the Python scripts/*-rest.py tooling, the
+      # HTTP acceptance suites) fails with 401 rest_not_logged_in.
+      # This is a local-Docker concern only; production is WordPress.com and
+      # never reads this variable.
+      WORDPRESS_CONFIG_EXTRA: |
+        define( 'WP_ENVIRONMENT_TYPE', 'local' );
       # Local DB must match the utf8mb4 charset/collation used by the restore
       # script (scripts/restore-updraft-db.sh). Never set these to latin1.
       WORDPRESS_DB_CHARSET: utf8mb4

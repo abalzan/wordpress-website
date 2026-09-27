@@ -219,6 +219,7 @@ target/source, writes? and last-verified date.
 |---|---|---|---|---|---|---|---|
 | `scripts/activate-admin-ux.php` | Activate the Admin UX plugin and its dependencies, locally | local-write | none | apply | local WordPress | Yes (options only) | 2026-09-26 |
 | `scripts/activate-event-importer.php` | Activate the event importer, locally | local-write | none | apply | local WordPress | Yes (options only) | 2026-09-26 |
+| `scripts/ensure-local-test-user.php` | Recreate the local test account and its REST application password after a database restore | local-write | `--dry-run`, `--apply`, `--json`, `--help`; `WP_USERNAME`, `WP_APPLICATION_PASSWORD` from env | dry-run | local WordPress only (refuses production) | Yes (`--apply`) | 2026-09-27 |
 
 ### Event town terms (REST)
 

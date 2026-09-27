@@ -1,0 +1,31 @@
+== PHASE 2: REPRODUCED DUPLICATE-MSGID DEFECT (pristine baseline) ==
+catalogue: wp-content/plugins/conexao-event-importer/languages/conexao-event-importer.pot
+md5: e1035d8730a0d30556c4c83e6c23ae4f  wp-content/plugins/conexao-event-importer/languages/conexao-event-importer.pot
+sha256: 1fb18c4f8059e47bbdb84ed1c5916afec1a9609d001d37c3cc76fea09ddac5a9  wp-content/plugins/conexao-event-importer/languages/conexao-event-importer.pot
+lines/bytes:    1474   51308
+msgid entries: 389
+msgctxt entries: 0
+source-reference lines (#:): 484
+absolute local path occurrences (/home/andrei): 0
+POT-Creation-Date occurrences: 1
+empty-msgid header blocks: 1
+
+$ msgfmt --check --statistics -o /dev/null <pot>
+wp-content/plugins/conexao-event-importer/languages/conexao-event-importer.pot:1463: duplicate message definition...
+wp-content/plugins/conexao-event-importer/languages/conexao-event-importer.pot:1451: ...this is the location of the first definition
+wp-content/plugins/conexao-event-importer/languages/conexao-event-importer.pot:1468: duplicate message definition...
+wp-content/plugins/conexao-event-importer/languages/conexao-event-importer.pot:1455: ...this is the location of the first definition
+wp-content/plugins/conexao-event-importer/languages/conexao-event-importer.pot:1473: duplicate message definition...
+wp-content/plugins/conexao-event-importer/languages/conexao-event-importer.pot:1459: ...this is the location of the first definition
+msgfmt: found 3 fatal errors
+exit=1
+
+$ msgcat <pot> -o /dev/null
+wp-content/plugins/conexao-event-importer/languages/conexao-event-importer.pot:1463: duplicate message definition...
+wp-content/plugins/conexao-event-importer/languages/conexao-event-importer.pot:1451: ...this is the location of the first definition
+wp-content/plugins/conexao-event-importer/languages/conexao-event-importer.pot:1468: duplicate message definition...
+wp-content/plugins/conexao-event-importer/languages/conexao-event-importer.pot:1455: ...this is the location of the first definition
+wp-content/plugins/conexao-event-importer/languages/conexao-event-importer.pot:1473: duplicate message definition...
+wp-content/plugins/conexao-event-importer/languages/conexao-event-importer.pot:1459: ...this is the location of the first definition
+msgcat: found 3 fatal errors
+exit=1

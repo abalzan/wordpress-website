@@ -1,0 +1,37 @@
+0| SELECT option_value FROM wp_options WHERE option_name = 'WPLANG' LIMIT 1
+1| SELECT term_id, meta_key, meta_value FROM wp_termmeta WHERE term_id IN (74) ORDER BY meta_id ASC
+2| SELECT option_name, option_value FROM wp_options WHERE option_name IN ('_site_transient_wp_theme_files_patterns-8d40664e42ea231e60c62509a509bde8','_site_transient_timeout_wp_theme_files_patterns-8d406
+3| SELECT option_value FROM wp_options WHERE option_name = 'can_compress_scripts' LIMIT 1
+4| SELECT wp_posts.ID FROM wp_posts LEFT JOIN wp_term_relationships ON (wp_posts.ID = wp_term_relationships.object_id) WHERE 1=1 AND ( wp_term_relationships.term_taxonomy_id IN (74) ) AND wp_posts.post_t
+5| SELECT SQL_CALC_FOUND_ROWS wp_posts.ID FROM wp_posts LEFT JOIN wp_term_relationships ON (wp_posts.ID = wp_term_relationships.object_id) WHERE 1=1 AND ( wp_term_relationships.term_taxonomy_id IN (74,71
+6| SELECT FOUND_ROWS()
+7| SELECT wp_posts.* FROM wp_posts WHERE ID IN (1236,1237,1238,1239,1240,1230,1231,1232,1233,1234)
+8| SELECT post_id, meta_key, meta_value FROM wp_postmeta WHERE post_id IN (1236,1237,1238,1239,1240,1230,1231,1232,1233,1234) ORDER BY meta_id ASC
+9| SELECT DISTINCT t.term_id, tr.object_id FROM wp_terms AS t INNER JOIN wp_term_taxonomy AS tt ON t.term_id = tt.term_id INNER JOIN wp_term_relationships AS tr ON tr.term_taxonomy_id = tt.term_taxonomy_
+10| SELECT t.*, tt.* FROM wp_terms AS t INNER JOIN wp_term_taxonomy AS tt ON t.term_id = tt.term_id WHERE t.term_id IN (71)
+11| SELECT DISTINCT t.term_id, tr.object_id FROM wp_terms AS t INNER JOIN wp_term_taxonomy AS tt ON t.term_id = tt.term_id INNER JOIN wp_term_relationships AS tr ON tr.term_taxonomy_id = tt.term_taxonomy_
+12| SELECT DISTINCT t.term_id, tr.object_id FROM wp_terms AS t INNER JOIN wp_term_taxonomy AS tt ON t.term_id = tt.term_id INNER JOIN wp_term_relationships AS tr ON tr.term_taxonomy_id = tt.term_taxonomy_
+13| SELECT pll_tr.term_taxonomy_id, COUNT( * ) AS num_posts FROM wp_posts INNER JOIN wp_term_relationships AS pll_tr ON pll_tr.object_id = wp_posts.ID WHERE post_status = 'publish' AND wp_posts.post_type 
+14| SELECT wp_posts.ID FROM wp_posts LEFT JOIN wp_term_relationships ON (wp_posts.ID = wp_term_relationships.object_id) WHERE 1=1 AND ( wp_term_relationships.term_taxonomy_id IN (71) ) AND wp_posts.post_t
+15| SELECT t.term_id FROM wp_terms AS t INNER JOIN wp_term_taxonomy AS tt ON t.term_id = tt.term_id WHERE tt.taxonomy IN ('wp_theme') AND t.name IN ('conexao-br-irlanda') LIMIT 1
+16| SELECT wp_posts.ID FROM wp_posts WHERE 1=1 AND ( 0 = 1 ) AND wp_posts.post_type = 'wp_global_styles' AND ((wp_posts.post_status = 'publish')) GROUP BY wp_posts.ID ORDER BY wp_posts.post_date DESC LIMI
+17| SELECT option_value FROM wp_options WHERE option_name = 'site_logo' LIMIT 1
+18| SELECT * FROM wp_posts WHERE ID = 5 LIMIT 1
+19| SELECT DISTINCT t.term_id, tr.object_id FROM wp_terms AS t INNER JOIN wp_term_taxonomy AS tt ON t.term_id = tt.term_id INNER JOIN wp_term_relationships AS tr ON tr.term_taxonomy_id = tt.term_taxonomy_
+20|  SELECT ID, post_name, post_parent, post_type FROM wp_posts WHERE post_name IN ('anuncie') AND post_type IN ('page','attachment') 
+21| SELECT * FROM wp_posts WHERE ID = 10 LIMIT 1
+22| SELECT DISTINCT t.term_id, tr.object_id FROM wp_terms AS t INNER JOIN wp_term_taxonomy AS tt ON t.term_id = tt.term_id INNER JOIN wp_term_relationships AS tr ON tr.term_taxonomy_id = tt.term_taxonomy_
+23| SELECT wp_posts.ID FROM wp_posts LEFT JOIN wp_term_relationships ON (wp_posts.ID = wp_term_relationships.object_id) WHERE 1=1 AND ( wp_term_relationships.term_taxonomy_id IN (74,71) ) AND wp_posts.pos
+24| SELECT DISTINCT t.term_id FROM wp_terms AS t INNER JOIN wp_term_taxonomy AS tt ON t.term_id = tt.term_id INNER JOIN wp_term_relationships AS tr ON tr.term_taxonomy_id = tt.term_taxonomy_id WHERE tt.ta
+25| SELECT DISTINCT t.term_id FROM wp_terms AS t INNER JOIN wp_term_taxonomy AS tt ON t.term_id = tt.term_id INNER JOIN wp_term_relationships AS tr ON tr.term_taxonomy_id = tt.term_taxonomy_id WHERE tt.ta
+26| SELECT DISTINCT t.term_id FROM wp_terms AS t INNER JOIN wp_term_taxonomy AS tt ON t.term_id = tt.term_id INNER JOIN wp_term_relationships AS tr ON tr.term_taxonomy_id = tt.term_taxonomy_id WHERE tt.ta
+27|  SELECT ID, post_name, post_parent, post_type FROM wp_posts WHERE post_name IN ('politica-de-privacidade') AND post_type IN ('page','attachment') 
+28| SELECT * FROM wp_posts WHERE ID = 11 LIMIT 1
+29| SELECT DISTINCT t.term_id, tr.object_id FROM wp_terms AS t INNER JOIN wp_term_taxonomy AS tt ON t.term_id = tt.term_id INNER JOIN wp_term_relationships AS tr ON tr.term_taxonomy_id = tt.term_taxonomy_
+30|  SELECT ID, post_name, post_parent, post_type FROM wp_posts WHERE post_name IN ('termos-de-uso') AND post_type IN ('page','attachment') 
+31| SELECT * FROM wp_posts WHERE ID = 12 LIMIT 1
+32| SELECT DISTINCT t.term_id, tr.object_id FROM wp_terms AS t INNER JOIN wp_term_taxonomy AS tt ON t.term_id = tt.term_id INNER JOIN wp_term_relationships AS tr ON tr.term_taxonomy_id = tt.term_taxonomy_
+33|  SELECT ID, post_name, post_parent, post_type FROM wp_posts WHERE post_name IN ('cookies') AND post_type IN ('page','attachment') 
+34| SELECT * FROM wp_posts WHERE ID = 13 LIMIT 1
+35| SELECT DISTINCT t.term_id, tr.object_id FROM wp_terms AS t INNER JOIN wp_term_taxonomy AS tt ON t.term_id = tt.term_id INNER JOIN wp_term_relationships AS tr ON tr.term_taxonomy_id = tt.term_taxonomy_
+-->
