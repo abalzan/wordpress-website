@@ -1,0 +1,31 @@
+# 11 - Source / architecture integrity
+
+## Modular architecture
+  inc/ modules (recursive)                       43
+  inc/seo.php (consolidated)                     absent (correct)
+  inc/seo/ modules                               canonical.php hreflang.php meta.php open-graph.php redirects.php related.php robots.php schema.php sitemap.php titles.php 
+
+## functions.php is a loader (not a monolith)
+  functions.php lines                            112
+  require_once statements                        43
+  (597b04e was 3937 lines - the recovery restored the 112-line loader)
+
+## No duplicate runtime declarations
+  duplicate conexao_* definitions                0
+  unique conexao_* functions declared            282
+
+## Recovered features present (production files only, tests/ excluded)
+  homepage content-type helper                   inc/content.php:87 conexao_content_type_label()
+    used by front-page.php                       2 call sites
+  cache scoping helper                           inc/i18n/urls.php:29 conexao_lang_cache_key()
+    404.php scoped cache keys                    4 (was 4 unscoped at 597b04e)
+  aria-current in filter templates               7 in leisure-filters.php
+  obsolete role=listbox in PRODUCTION            0
+  obsolete role=option in PRODUCTION             0
+  aria-multiselectable in PRODUCTION             0
+  (the only remaining hits are NEGATIVE ASSERTIONS inside tests/, which prove their absence)
+
+## Diffs
+  git diff b47d098 -- theme : 0
+  git diff cd800be -- theme : 0
+  BOTH ZERO = theme byte-identical to the recovered baseline; no closeout source change.

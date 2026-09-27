@@ -1,0 +1,82 @@
+# 07 - Browser verification (Chromium / Playwright, desktop + mobile)
+
+Engine: Playwright Chromium. viewports: Desktop 1440x900, Mobile 390x844 (is_mobile+has_touch).
+11 routes x 2 viewports = 22 navigations. Local Docker only.
+
+## Results matrix
+  viewport  route           HTTP  html lang overflow  listbox  option  multi  aria-current nav   errors
+  desktop  /en/           200  en-US  False    0       0      0     6         True 0     
+  desktop  /en/cursos/    200  en-US  False    0       0      0     6         True 0     
+  desktop  /en/lazer/     200  en-US  False    0       0      0     8         True 0     
+  desktop  /en/blog/      200  en-US  False    0       0      0     6         True 0     
+  desktop  /en/guias/     200  en-US  False    0       0      0     5         True 0     
+  desktop  /en/eventos/   200  en-US  False    0       0      0     9         True 0     
+  desktop  /              200  pt-BR  False    0       0      0     5         True 0     
+  desktop  /cursos/       200  pt-BR  False    0       0      0     6         True 0     
+  desktop  /lazer/        200  pt-BR  False    0       0      0     8         True 0     
+  desktop  /blog/         200  pt-BR  False    0       0      0     6         True 0     
+  desktop  /eventos/      200  pt-BR  False    0       0      0     9         True 0     
+  mobile   /en/           200  en-US  False    0       0      0     6         True 0     
+  mobile   /en/cursos/    200  en-US  False    0       0      0     6         True 0     
+  mobile   /en/lazer/     200  en-US  False    0       0      0     8         True 0     
+  mobile   /en/blog/      200  en-US  False    0       0      0     6         True 0     
+  mobile   /en/guias/     200  en-US  False    0       0      0     5         True 0     
+  mobile   /en/eventos/   200  en-US  False    0       0      0     9         True 0     
+  mobile   /              200  pt-BR  False    0       0      0     5         True 0     
+  mobile   /cursos/       200  pt-BR  False    0       0      0     6         True 0     
+  mobile   /lazer/        200  pt-BR  False    0       0      0     8         True 0     
+  mobile   /blog/         200  pt-BR  False    0       0      0     6         True 0     
+  mobile   /eventos/      200  pt-BR  False    0       0      0     9         True 0     
+
+## Assertions
+  - correct language shell  : PASS  every EN page <html lang="en-US">, every PT page <html lang="pt-BR">
+  - expected EN routes render : PASS  all 6 EN routes HTTP 200 in BOTH viewports
+  - no PHP notices/errors     : PASS  0 page errors on all 22 navigations
+  - no horizontal overflow     : PASS  scrollWidth <= clientWidth on all 22 (overflow=False everywhere)
+  - no obsolete role=listbox   : PASS  0 elements on all 22
+  - no obsolete role=option    : PASS  0 elements on all 22
+  - no aria-multiselectable    : PASS  0 elements on all 22
+  - active filter aria-current : PASS  5-9 aria-current elements per page, present on every route/viewport
+  - no broken navigation       : PASS  header nav present on all 22; no recovery-induced nav failure
+  - no runtime failures        : PASS  no pageerror on any navigation
+
+## The only console output: uploaded-media 404s (KNOWN LOCAL LIMITATION)
+  29 identical "Failed to load resource: 404" messages, ALL of them wp-content/uploads/*.
+  The uploads volume is absent locally, so every referenced derivative 404s.
+
+  Proof it is NOT a code regression - the SAME files 404 on PT and EN:
+  === EN /en/ : 3 HTTP>=400 responses
+      404  /wp-content/uploads/2026/06/casal-400x300.jpg
+      404  /wp-content/uploads/2026/06/sacola-ao-cliente-400x300.jpg
+      404  /wp-content/uploads/2026/06/aeroporto-400x300.jpg
+  === PT / : 7 HTTP>=400 responses
+      404  /wp-content/uploads/2026/08/janine-1-768x1017.jpeg
+      404  /wp-content/uploads/2026/06/casal-400x300.jpg
+      404  /wp-content/uploads/2026/08/Virginia-1-683x1024.jpeg
+      404  /wp-content/uploads/2026/06/sacola-ao-cliente-400x300.jpg
+      404  /wp-content/uploads/2026/08/ademicom-768x768.jpeg
+      404  /wp-content/uploads/2026/08/yoga-sauna-session-2ef49de240-768x960.jpg
+  === EN /en/lazer/ : 10 HTTP>=400 responses
+      404  /wp-content/uploads/2026/08/Huntington-Castle-038-Gardens-400x300.jpg
+      404  /wp-content/uploads/2026/08/Oak-Park-Forest-Park-400x300.png
+      404  /wp-content/uploads/2026/08/Mellifont-Abbey-400x300.jpg
+      404  /wp-content/uploads/2026/08/Borris-House-400x300.jpg
+      404  /wp-content/uploads/2026/08/Mount-Leinster-038-Nine-Stones-400x300.jpg
+      404  /wp-content/uploads/2026/08/King-John8217s-Castle-Carlingford-400x300.jpg
+  === PT /lazer/ : 10 HTTP>=400 responses
+      404  /wp-content/uploads/2026/08/Borris-House-400x300.jpg
+      404  /wp-content/uploads/2026/08/Mount-Leinster-038-Nine-Stones-400x300.jpg
+      404  /wp-content/uploads/2026/08/Oak-Park-Forest-Park-400x300.png
+      404  /wp-content/uploads/2026/08/King-John8217s-Castle-Carlingford-400x300.jpg
+      404  /wp-content/uploads/2026/08/Huntington-Castle-038-Gardens-400x300.jpg
+      404  /wp-content/uploads/2026/08/Mellifont-Abbey-400x300.jpg
+
+  /lazer/ 404s are byte-identical across languages:
+    PT /lazer/      -> 10 uploads 404 (Borris-House, Mount-Leinster, Oak-Park, King-John8217s, Huntington-Castle, Mellifont ...)
+    EN /en/lazer/   -> the SAME 10 uploads 404
+  EN homepage simply shows FEWER (3) because /en/ renders less content, not because
+  the EN path handles media differently. Media mutation is out of scope, and the
+  recovered theme is byte-identical to b47d098 (git diff = 0), so no source change
+  could have caused it.
+
+  => Correctly classified as a local uploaded-media limitation, NOT a code regression.

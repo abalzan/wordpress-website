@@ -1,0 +1,40 @@
+# 00 - Frozen starting state (verified before any work)
+
+## Git
+  HEAD                        : cd800be1b76c84ffa07c61554b521cfefd1b8f17
+  branch                      : i18n
+  expected recovered baseline  : cd800be1b76c84ffa07c61554b521cfefd1b8f17  -> MATCHES
+
+  git status --short (before work):
+  (empty - clean tree)
+
+  git log -5 --oneline --decorate:
+    cd800be (HEAD -> i18n) Restore the verified b47d098 theme baseline after the 597b04e regression
+    bd81ba5 (tag: recovery-snapshot-before-restore) docs: add report on English `Artigo` label investigation on `/en/`
+    597b04e Refactor code structure for improved readability and maintainability
+    b47d098 Add investigation report and SQL logs for `/en/lazer/` archive performance
+    b32fba3 Add the i18n catalogue freshness investigation report and evidence
+
+  rollback tag:
+    recovery-snapshot-before-restore -> refs/tags/recovery-snapshot-before-restore
+    points at: bd81ba59d800970d6e1e6e542d76ccb664fdbd24
+    (bd81ba5, the pre-restore snapshot - PRESERVED, not moved)
+
+  recovery source restored : b47d098
+    theme diff b47d098..HEAD  : 0
+      (0 = theme byte-identical to the verified source)
+  destructive baseline     : 597b04e
+    theme diff 597b04e..HEAD  :  104 files changed, 24878 insertions(+), 5919 deletions(-)
+
+## Docker
+  NAME                            IMAGE              COMMAND                  SERVICE     CREATED       STATUS                 PORTS
+  wordpress-website-db-1          mysql:latest       "docker-entrypoint.s…"   db          6 hours ago   Up 6 hours (healthy)   3306/tcp, 33060/tcp
+  wordpress-website-wordpress-1   wordpress:latest   "/usr/local/bin/entr…"   wordpress   4 hours ago   Up 2 hours             0.0.0.0:8080->80/tcp, [::]:8080->80/tcp
+
+## Scope confirmations
+  - WordPress repository only: alalzan/wordpress-website (this repo)
+  - Flutter/mobile repository : NOT accessed, not inspected, not built, not tested
+  - Production                : NOT contacted. No deploy, no publish, no production write,
+                                no production SSH/WP-CLI, no production DB/FS change.
+  - Mode                      : forward-only. No reset, revert, cherry-pick, merge,
+                                history rewrite, force-push or blanket rollback.

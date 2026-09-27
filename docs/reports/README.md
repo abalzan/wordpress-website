@@ -74,7 +74,19 @@ modularisation, …) live in [`site/`](site/) as
 | `2026-09-27-en-leisure-descriptions.md` | Stage 7 — EN Leisure card descriptions applied through the shared `en-leisure-description` stage (289 descriptions; `missing_en = 0`; `pt_drift = 0`); supersedes the retired `conexao-leisure-translation` lifecycle |
 
 
-Related: `docs/audit/` (engineering audits), `docs/engineering-standard.md`
+## Baseline recovery (2026-09-27)
+
+The `597b04e` theme regression and its forward recovery. Read in order: the
+assessment establishes the damage, the implementation restores it, and the closeout
+investigates the one remaining translation finding and establishes the baseline.
+
+| Report | Content |
+|---|---|
+| `2026-09-27-baseline-recovery-assessment.md` | Assessment of the `597b04e` regression — what it destroyed (120 functions lost, `inc/` cut 43 → 8, all 5 theme catalogues and 22 test files deleted) and the recovery options |
+| `2026-09-27-baseline-recovery-implementation.md` | Forward reconstruction from `b47d098` (commit `cd800be`); no revert/reset/cherry-pick/merge; full verification numbers; triage of the one "new" permanent-gate violation |
+| `2026-09-27-recovery-closeout.md` | **Final closeout** — the one new translation-completeness finding proven pre-existing (reproduces on `597b04e`; importer record predates the language guard), full runner byte-identical to the recovered baseline, 7 permanent gates, HTTP + browser verification, negative proofs, POT/catalogue/architecture integrity. Status: **PASS WITH LIMITATION** |
+
+## Related: `docs/audit/` (engineering audits), `docs/engineering-standard.md`
 (the normative standard these reports are measured against).
 
-_Last verified: 2026-09-27 by the EN Leisure description rollout_
+_Last verified: 2026-09-27 by the recovery closeout_

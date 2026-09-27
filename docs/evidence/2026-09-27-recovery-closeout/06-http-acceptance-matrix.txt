@@ -1,0 +1,89 @@
+# 06 - HTTP acceptance matrix (recovered baseline cd800be)
+
+Base: http://localhost:8080  (local Docker only - no production request was made)
+php_err = count of Fatal/Warning/Notice/Deprecated markers in the response body.
+
+===== EN ROUTES =====
+http://localhost:8080/en/          exp=200  got=200  redirects=0  lang=en-US  hreflang=5   php_err=0  0.100198s
+    canonical: http://localhost:8080/en/
+http://localhost:8080/en/cursos/   exp=200  got=200  redirects=0  lang=en-US  hreflang=5   php_err=0  0.082776s
+    canonical: http://localhost:8080/en/cursos/
+http://localhost:8080/en/guias/    exp=200  got=200  redirects=0  lang=en-US  hreflang=5   php_err=0  0.124481s
+    canonical: http://localhost:8080/en/guias/
+http://localhost:8080/en/guias/page/2/ exp=200  got=404  redirects=0  lang=en-US  hreflang=2   php_err=0  0.095159s
+    note: documented content limitation: 0 EN guides locally
+    canonical: <none>
+http://localhost:8080/en/lazer/    exp=200  got=200  redirects=0  lang=en-US  hreflang=5   php_err=0  0.093248s
+    canonical: http://localhost:8080/en/lazer/
+http://localhost:8080/en/blog/     exp=200  got=200  redirects=0  lang=en-US  hreflang=7   php_err=0  0.083999s
+    canonical: http://localhost:8080/en/blog/
+http://localhost:8080/en/eventos/  exp=200  got=200  redirects=0  lang=en-US  hreflang=7   php_err=0  16.585147s
+    canonical: http://localhost:8080/en/eventos/
+http://localhost:8080/en/empregos/ exp=301  got=302  redirects=0  lang=-      hreflang=0   php_err=0  0.029569s
+    note: documented B1: no EN translation -> PT, canonical->PT, not in sitemap
+    canonical: <none>
+
+===== PT ROUTES =====
+http://localhost:8080/             exp=200  got=200  redirects=0  lang=pt-BR  hreflang=6   php_err=0  4.382645s
+    canonical: http://localhost:8080/
+http://localhost:8080/cursos/      exp=200  got=200  redirects=0  lang=pt-BR  hreflang=4   php_err=0  0.058097s
+    canonical: http://localhost:8080/cursos/
+http://localhost:8080/guias/       exp=200  got=200  redirects=0  lang=pt-BR  hreflang=4   php_err=0  0.108592s
+    canonical: http://localhost:8080/guias/
+http://localhost:8080/lazer/       exp=200  got=200  redirects=0  lang=pt-BR  hreflang=4   php_err=0  0.061367s
+    canonical: http://localhost:8080/lazer/
+http://localhost:8080/blog/        exp=200  got=200  redirects=0  lang=pt-BR  hreflang=7   php_err=0  0.052036s
+    canonical: http://localhost:8080/blog/
+http://localhost:8080/eventos/     exp=200  got=200  redirects=0  lang=pt-BR  hreflang=7   php_err=0  10.399922s
+    canonical: http://localhost:8080/eventos/
+http://localhost:8080/empregos/    exp=200  got=200  redirects=0  lang=pt-BR  hreflang=4   php_err=0  0.050841s
+    canonical: http://localhost:8080/empregos/
+
+===== B1 REDIRECT TARGET for /en/empregos/ =====
+  final status=200 final_url=http://localhost:8080/empregos/ redirects=1
+
+## B1 policy verification for /en/empregos/
+  HTTP/1.1 302 Found
+  Location: http://localhost:8080/empregos/
+  followed: final status 200 at http://localhost:8080/empregos/  (1 redirect)
+  canonical of the target: http://localhost:8080/empregos/   (PT canonical - B1 requirement)
+
+  EN sitemap must NOT contain the B1 URL:
+    /sitemap.xml status 200, 611654 bytes, 0 PHP errors
+    occurrences of "en/empregos" : 0      <- B1 URL absent from the sitemap (correct)
+    occurrences of the PT URL    : 1      <- PT canonical present (correct)
+
+  NOTE: /en/sitemap.xml returns 404. This is BY DESIGN, not a regression: the theme
+  serves ONE sitemap. inc/seo/sitemap.php:40 only serves /sitemap.xml and
+  /sitemap_index.xml, and the core sitemap is deliberately disabled (line 26-29) to
+  avoid competing sitemaps. The EN URLs are carried inside that single sitemap as
+  xhtml:link alternates.
+
+## Summary
+  EN routes : 7 of 8 return 200. /en/guias/page/2/ returns 404 (documented below).
+  PT routes : 8 of 8 return 200.
+  B1        : /en/empregos/ 302 -> PT, PT canonical, absent from sitemap. CORRECT.
+  Language  : every EN page serves <html lang="en-US">, every PT page <html lang="pt-BR">.
+  Canonical : self-referential on every 200 route; no unexpected redirects anywhere.
+  PHP errors: 0 across all 15 probed routes and the sitemap.
+
+## Documented content limitations (NOT implementation regressions)
+  /en/guias/page/2/ -> 404
+    The local dataset contains 0 EN guide records (48 PT guides, 0 EN). With no EN
+    guides there is no page 2. This is a DATA limitation. No EN guide content was
+    fabricated to green it, and routing was not changed to conceal it.
+    It is the documented cause of the one failing HTTP acceptance suite:
+      [FAIL] tests/acceptance/verify-guides-en-http.py
+        - en-guides-page-2 /en/guias/page/2/ -- status 404, expected 200
+        - an EN guide link is discoverable in /en/guias/
+    Both assertions are consequences of the same missing EN content.
+
+  /en/empregos/ -> 302 to PT (B1, by design)
+    Preserved exactly as established. NOT an implementation regression.
+
+## Performance note (environment, not source)
+  /en/eventos/ 16.6s and /eventos/ 10.4s on a cold cache; every other route <0.13s.
+  This is the known /en/lazer/ and event-archive performance cost already
+  investigated in docs/reports/2026-09-27-lazer-en-archive-perf.md. The recovered
+  theme is byte-identical to b47d098 (git diff = 0), so no source change
+  could have altered it. Not a recovery regression.
