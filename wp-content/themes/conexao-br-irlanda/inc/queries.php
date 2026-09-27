@@ -435,9 +435,31 @@ function conexao_event_filter_url( array $filters, $base = '' ) {
  * discovers which categories are actually in use so the Cursos filter bar
  * never shows empty or irrelevant categories.
  *
- * Results are cached in the object cache for 5 minutes.
+ * Language boundary: `course_provider` is a documented B2 post type and there
+ * are NO EN provider records, so this SECONDARY query is issued against the PT
+ * records only. It goes through the same shared
+ * `conexao_b2_widen_query_args()` boundary every other B2 filter helper uses,
+ * which adds `lang => en,pt` on an EN request. Without it Polylang narrowed
+ * this query to English, it matched zero posts, and /en/cursos/ rendered no
+ * filter bar at all — the same defect fixed for the events archive in
+ * conexao_get_event_towns(). PT requests and any non-B2 post type are
+ * untouched, and a caller that already set `lang` keeps its explicit scope.
  *
- * @return array Array of associative arrays with 'name' and 'slug' keys.
+ * Each row carries BOTH the canonical Portuguese `name`/`slug` pair and a
+ * `label` for presentation:
+ *  - `name`  — the stored Portuguese value, kept VERBATIM. It is the value the
+ *    `?categoria=` meta_query matches on in conexao_content_archive_query(), so
+ *    it must never be replaced by a display string or the filter would stop
+ *    matching the `_provider_category` meta;
+ *  - `slug`  — sanitize_title() of `name`, so the filter URL is identical in
+ *    both languages (one identity, one URL, no taxonomy migration);
+ *  - `label` — the language-aware display value for the current request only
+ *    (conexao_provider_category_label()).
+ *
+ * Results are cached in the object cache for 5 minutes under the existing
+ * language-scoped key, so PT and EN never share a cache entry.
+ *
+ * @return array Array of associative arrays with 'name', 'slug' and 'label' keys.
  */
 function conexao_get_provider_categories() {
 	$cache_key = conexao_lang_cache_key( 'conexao_provider_categories' );
@@ -447,7 +469,7 @@ function conexao_get_provider_categories() {
 		return $cached;
 	}
 
-	$providers = get_posts( array(
+	$args = array(
 		'post_type'              => 'course_provider',
 		'post_status'            => 'publish',
 		'posts_per_page'         => -1,
@@ -461,7 +483,9 @@ function conexao_get_provider_categories() {
 		'no_found_rows'          => true,
 		'update_post_meta_cache' => true,
 		'update_post_term_cache' => false,
-	) );
+	);
+
+	$providers = get_posts( conexao_b2_widen_query_args( $args, 'course_provider' ) );
 
 	if ( empty( $providers ) ) {
 		wp_cache_set( $cache_key, array(), 'conexao_filters', 300 );
@@ -476,15 +500,24 @@ function conexao_get_provider_categories() {
 
 		if ( $category && ! isset( $seen[ $category ] ) ) {
 			$seen[ $category ] = true;
-			$result[] = array(
-				'name' => $category,
-				'slug' => sanitize_title( $category ),
+			$result[]          = array(
+				// Canonical PT value: never translated, because it is what the
+				// ?categoria= meta_query matches on and what ?categoria= is built
+				// from. Changing it would silently break the filter.
+				'name'  => $category,
+				'slug'  => sanitize_title( $category ),
+				// Presentation value for THIS request only. On a PT request this
+				// is byte-identical to 'name'.
+				'label' => conexao_provider_category_label( $category ),
 			);
 		}
 	}
 
+	// Sort on the presentation value so each language lists its own categories
+	// alphabetically. On a PT request 'label' === 'name', so the Portuguese
+	// order is byte-identical to the pre-existing name-ordered result.
 	usort( $result, function( $a, $b ) {
-		return strcasecmp( $a['name'], $b['name'] );
+		return strcasecmp( $a['label'], $b['label'] );
 	} );
 
 	wp_cache_set( $cache_key, $result, 'conexao_filters', 300 );

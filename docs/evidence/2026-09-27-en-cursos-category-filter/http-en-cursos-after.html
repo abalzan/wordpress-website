@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="profile" href="https://gmpg.org/xfn/11">
+<script>
+/* Theme initialization — runs before paint to prevent FOUC. */
+(function() {
+	try {
+		var stored = localStorage.getItem('conexao-theme');
+		var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+		var theme = stored || (prefersDark ? 'dark' : 'light');
+		document.documentElement.setAttribute('data-theme', theme);
+	} catch (e) {
+		document.documentElement.setAttribute('data-theme', 'light');
+	}
+})();
+</script>
+<title>Cursos &#8211; Conexão BR</title>
+<meta name='robots' content='max-image-preview:large' />
+<link rel='dns-prefetch' href='//secure.gravatar.com' />
+<link rel='dns-prefetch' href='//fonts.googleapis.com' />
+<link rel='preconnect' href='//c0.wp.com' />
+<link rel="alternate" type="application/rss+xml" title="Conexão BR &raquo; Feed" href="http://localhost:8080/en/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Conexão BR &raquo; Comments Feed" href="http://localhost:8080/en/comments/feed/" />
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="alternate" type="application/rss+xml" title="Conexão BR &raquo; Cursos Feed" href="http://localhost:8080/en/cursos/feed/" />
+<link rel="canonical" href="http://localhost:8080/en/cursos/" />
+<link rel="alternate" hreflang="pt-BR" href="http://localhost:8080/cursos/" />
+<link rel="alternate" hreflang="en" href="http://localhost:8080/en/cursos/" />
+<link rel="alternate" hreflang="x-default" href="http://localhost:8080/cursos/" />
+	<meta property="og:type" content="website" />
+	<meta property="og:title" content="Courses" />
+	<meta property="og:url" content="http://localhost:8080/en/cursos/" />
+	<meta property="og:description" content="" />
+	<meta property="og:site_name" content="Conexão BR" />
+	<meta property="og:locale" content="en_US" />
+	<meta property="og:image" content="http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/images/conexao-social-card.svg" />
+	<meta property="og:image:alt" content="Courses" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="Courses" />
+	<meta name="twitter:description" content="" />
+	<meta name="twitter:image" content="http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/images/conexao-social-card.svg" />
+	
+<!-- No Concat CSS conexao-fonts => Maybe Not Static File https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Poppins:wght@500;600;700&amp;display=swap -->
+<style id="wp-img-auto-sizes-contain-inline-css">
+img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
+/*# sourceURL=wp-img-auto-sizes-contain-inline-css */
+</style>
+<style id="wp-block-library-inline-css">
+:root{--wp-block-synced-color:#7a00df;--wp-block-synced-color--rgb:122,0,223;--wp-bound-block-color:var(--wp-block-synced-color);--wp-editor-canvas-background:#ddd;--wp-admin-theme-color:#007cba;--wp-admin-theme-color--rgb:0,124,186;--wp-admin-theme-color-darker-10:#006ba1;--wp-admin-theme-color-darker-10--rgb:0,107,160.5;--wp-admin-theme-color-darker-20:#005a87;--wp-admin-theme-color-darker-20--rgb:0,90,135;--wp-admin-border-width-focus:2px}@media (min-resolution:192dpi){:root{--wp-admin-border-width-focus:1.5px}}.wp-element-button{cursor:pointer}:root .has-very-light-gray-background-color{background-color:#eee}:root .has-very-dark-gray-background-color{background-color:#313131}:root .has-very-light-gray-color{color:#eee}:root .has-very-dark-gray-color{color:#313131}:root .has-vivid-green-cyan-to-vivid-cyan-blue-gradient-background{background:linear-gradient(135deg,#00d084,#0693e3)}:root .has-purple-crush-gradient-background{background:linear-gradient(135deg,#34e2e4,#4721fb 50%,#ab1dfe)}:root .has-hazy-dawn-gradient-background{background:linear-gradient(135deg,#faaca8,#dad0ec)}:root .has-subdued-olive-gradient-background{background:linear-gradient(135deg,#fafae1,#67a671)}:root .has-atomic-cream-gradient-background{background:linear-gradient(135deg,#fdd79a,#004a59)}:root .has-nightshade-gradient-background{background:linear-gradient(135deg,#330968,#31cdcf)}:root .has-midnight-gradient-background{background:linear-gradient(135deg,#020381,#2874fc)}:root{--wp--preset--font-size--normal:16px;--wp--preset--font-size--huge:42px}.has-regular-font-size{font-size:1em}.has-larger-font-size{font-size:2.625em}.has-normal-font-size{font-size:var(--wp--preset--font-size--normal)}.has-huge-font-size{font-size:var(--wp--preset--font-size--huge)}:root .has-text-align-center{text-align:center}:root .has-text-align-left{text-align:left}:root .has-text-align-right{text-align:right}.has-fit-text{white-space:nowrap!important}#end-resizable-editor-section{display:none}.aligncenter{clear:both}.items-justified-left{justify-content:flex-start}.items-justified-center{justify-content:center}.items-justified-right{justify-content:flex-end}.items-justified-space-between{justify-content:space-between}.screen-reader-text{word-wrap:normal!important;border:0;clip-path:inset(50%);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;width:1px;word-break:normal!important}.screen-reader-text:focus{background-color:#ddd;clip-path:none;color:#444;display:block;font-size:1em;height:auto;left:5px;line-height:normal;padding:15px 23px 14px;text-decoration:none;top:5px;width:auto;z-index:100000}html :where(.has-border-color){border-style:solid}html :where([style^=border-color],[style*=";border-color"],[style*="; border-color"]){border-style:solid}html :where([style^=border-top-color],[style*=";border-top-color"],[style*="; border-top-color"]){border-top-style:solid}html :where([style^=border-right-color],[style*=";border-right-color"],[style*="; border-right-color"]){border-right-style:solid}html :where([style^=border-bottom-color],[style*=";border-bottom-color"],[style*="; border-bottom-color"]){border-bottom-style:solid}html :where([style^=border-left-color],[style*=";border-left-color"],[style*="; border-left-color"]){border-left-style:solid}html :where([style^=border-width],[style*=";border-width"],[style*="; border-width"]){border-style:solid}html :where([style^=border-top-width],[style*=";border-top-width"],[style*="; border-top-width"]){border-top-style:solid}html :where([style^=border-right-width],[style*=";border-right-width"],[style*="; border-right-width"]){border-right-style:solid}html :where([style^=border-bottom-width],[style*=";border-bottom-width"],[style*="; border-bottom-width"]){border-bottom-style:solid}html :where([style^=border-left-width],[style*=";border-left-width"],[style*="; border-left-width"]){border-left-style:solid}html :where(img[class*=wp-image-]){height:auto;max-width:100%}:where(figure){margin:0 0 1em}html :where(.is-position-sticky){--wp-admin--admin-bar--position-offset:var(--wp-admin--admin-bar--height,0px)}@media screen and (max-width:600px){html :where(.is-position-sticky){--wp-admin--admin-bar--position-offset:0px}}
+
+/*# sourceURL=http://localhost:8080/wp-content/plugins/gutenberg/build/styles/block-library/common.min.css */
+</style>
+<style id="classic-theme-styles-inline-css">
+.wp-block-button__link{background-color:#32373c;border-radius:9999px;box-shadow:none;color:#fff;font-size:1.125em;padding:calc(.667em + 2px) calc(1.333em + 2px);text-decoration:none}.wp-block-file__button{background:#32373c;color:#fff}.wp-block-accordion-heading{margin:0}.wp-block-accordion-heading__toggle{background-color:inherit!important;color:inherit!important}.wp-block-accordion-heading__toggle:not(:focus-visible){outline:none}.wp-block-accordion-heading__toggle:focus,.wp-block-accordion-heading__toggle:hover{background-color:inherit!important;border:none;box-shadow:none;color:inherit;padding:var(--wp--preset--spacing--20,1em) 0;text-decoration:none}.wp-block-accordion-heading__toggle:focus-visible{outline:auto;outline-offset:0}.wp-block-tab:not(.has-text-color){color:inherit!important}.wp-block-tab:not(.has-background){background-color:inherit!important}.wp-block-tab:focus,.wp-block-tab:hover{text-decoration:none}.wp-block-tab:focus-visible{outline:auto;outline-offset:0}
+/*# sourceURL=http://localhost:8080/wp-content/plugins/gutenberg/build/styles/block-library/classic.min.css */
+</style>
+
+<style id="conexao-content-inline-css">
+.conexao-card-grid { display:grid; gap:1.25rem; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); margin:1.5rem 0 3rem; }
+.conexao-card { background:#fff; border-radius:12px; overflow:hidden; box-shadow:0 2px 12px rgba(22,52,43,.12); }
+.conexao-card a,.conexao-card>div { color:inherit; display:block; height:100%; text-decoration:none; }
+.conexao-card img { aspect-ratio: 4/3; display:block; height:auto; object-fit:cover; width:100%; }
+.conexao-card h3 { font-size:1rem; margin:0; padding:1rem; }
+.conexao-share { align-items:center; border-top:1px solid #d8e1dc; display:flex; flex-wrap:wrap; gap:.65rem; margin-top:2rem; padding-top:1.25rem; }
+.conexao-share a,.conexao-share button { background:#147a53; border:0; border-radius:999px; color:#fff; cursor:pointer; font:inherit; padding:.4rem .8rem; text-decoration:none; }
+.conexao-reading-time { color:#547067; font-size:.9rem; }
+
+/*# sourceURL=conexao-content-inline-css */
+</style>
+<style id="global-styles-inline-css">
+:root{--wp--preset--aspect-ratio--square: 1;--wp--preset--aspect-ratio--4-3: 4/3;--wp--preset--aspect-ratio--3-4: 3/4;--wp--preset--aspect-ratio--3-2: 3/2;--wp--preset--aspect-ratio--2-3: 2/3;--wp--preset--aspect-ratio--16-9: 16/9;--wp--preset--aspect-ratio--9-16: 9/16;--wp--preset--color--black: #000000;--wp--preset--color--cyan-bluish-gray: #abb8c3;--wp--preset--color--white: #ffffff;--wp--preset--color--pale-pink: #f78da7;--wp--preset--color--vivid-red: #cf2e2e;--wp--preset--color--luminous-vivid-orange: #ff6900;--wp--preset--color--luminous-vivid-amber: #fcb900;--wp--preset--color--light-green-cyan: #7bdcb5;--wp--preset--color--vivid-green-cyan: #00d084;--wp--preset--color--pale-cyan-blue: #8ed1fc;--wp--preset--color--vivid-cyan-blue: #0693e3;--wp--preset--color--vivid-purple: #9b51e0;--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple: linear-gradient(135deg,rgb(6,147,227) 0%,rgb(155,81,224) 100%);--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan: linear-gradient(135deg,rgb(122,220,180) 0%,rgb(0,208,130) 100%);--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange: linear-gradient(135deg,rgb(252,185,0) 0%,rgb(255,105,0) 100%);--wp--preset--gradient--luminous-vivid-orange-to-vivid-red: linear-gradient(135deg,rgb(255,105,0) 0%,rgb(207,46,46) 100%);--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray: linear-gradient(135deg,rgb(238,238,238) 0%,rgb(169,184,195) 100%);--wp--preset--gradient--cool-to-warm-spectrum: linear-gradient(135deg,rgb(74,234,220) 0%,rgb(151,120,209) 20%,rgb(207,42,186) 40%,rgb(238,44,130) 60%,rgb(251,105,98) 80%,rgb(254,248,76) 100%);--wp--preset--gradient--blush-light-purple: linear-gradient(135deg,rgb(255,206,236) 0%,rgb(152,150,240) 100%);--wp--preset--gradient--blush-bordeaux: linear-gradient(135deg,rgb(254,205,165) 0%,rgb(254,45,45) 50%,rgb(107,0,62) 100%);--wp--preset--gradient--luminous-dusk: linear-gradient(135deg,rgb(255,203,112) 0%,rgb(199,81,192) 50%,rgb(65,88,208) 100%);--wp--preset--gradient--pale-ocean: linear-gradient(135deg,rgb(255,245,203) 0%,rgb(182,227,212) 50%,rgb(51,167,181) 100%);--wp--preset--gradient--electric-grass: linear-gradient(135deg,rgb(202,248,128) 0%,rgb(113,206,126) 100%);--wp--preset--gradient--midnight: linear-gradient(135deg,rgb(2,3,129) 0%,rgb(40,116,252) 100%);--wp--preset--font-size--small: 13px;--wp--preset--font-size--medium: 20px;--wp--preset--font-size--large: 36px;--wp--preset--font-size--x-large: 42px;--wp--preset--spacing--20: 0.44rem;--wp--preset--spacing--30: 0.67rem;--wp--preset--spacing--40: 1rem;--wp--preset--spacing--50: 1.5rem;--wp--preset--spacing--60: 2.25rem;--wp--preset--spacing--70: 3.38rem;--wp--preset--spacing--80: 5.06rem;--wp--preset--shadow--natural: 6px 6px 9px rgba(0, 0, 0, 0.2);--wp--preset--shadow--deep: 12px 12px 50px rgba(0, 0, 0, 0.4);--wp--preset--shadow--sharp: 6px 6px 0px rgba(0, 0, 0, 0.2);--wp--preset--shadow--outlined: 6px 6px 0px -3px rgb(255, 255, 255), 6px 6px rgb(0, 0, 0);--wp--preset--shadow--crisp: 6px 6px 0px rgb(0, 0, 0);}.wp-block-button{--wp--preset--dimension--25: 25%;--wp--preset--dimension--50: 50%;--wp--preset--dimension--75: 75%;--wp--preset--dimension--100: 100%;}:where(body) { margin: 0; }:where(.is-layout-flex){gap: 0.5em;}:where(.is-layout-grid){gap: 0.5em;}body .is-layout-flex{display: flex;}.is-layout-flex{flex-wrap: wrap;align-items: center;}.is-layout-flex > :is(*, div){margin: 0;}body .is-layout-grid{display: grid;}.is-layout-grid > :is(*, div){margin: 0;}body{padding-top: 0px;padding-right: 0px;padding-bottom: 0px;padding-left: 0px;}:root :where(.wp-element-button, .wp-block-button__link){background-color: #32373c;border-width: 0;color: #fff;font-family: inherit;font-size: inherit;font-style: inherit;font-weight: inherit;letter-spacing: inherit;line-height: inherit;padding-top: calc(0.667em + 2px);padding-right: calc(1.333em + 2px);padding-bottom: calc(0.667em + 2px);padding-left: calc(1.333em + 2px);text-decoration: none;text-transform: inherit;}.has-black-color{color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-color{color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-color{color: var(--wp--preset--color--white) !important;}.has-pale-pink-color{color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-color{color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-color{color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-color{color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-color{color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-color{color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-color{color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-color{color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-color{color: var(--wp--preset--color--vivid-purple) !important;}.has-black-background-color{background-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-background-color{background-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-background-color{background-color: var(--wp--preset--color--white) !important;}.has-pale-pink-background-color{background-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-background-color{background-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-background-color{background-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-background-color{background-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-background-color{background-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-background-color{background-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-background-color{background-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-background-color{background-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-background-color{background-color: var(--wp--preset--color--vivid-purple) !important;}.has-black-border-color{border-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-border-color{border-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-border-color{border-color: var(--wp--preset--color--white) !important;}.has-pale-pink-border-color{border-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-border-color{border-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-border-color{border-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-border-color{border-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-border-color{border-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-border-color{border-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-border-color{border-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-border-color{border-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-border-color{border-color: var(--wp--preset--color--vivid-purple) !important;}.has-vivid-cyan-blue-to-vivid-purple-gradient-background{background: var(--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple) !important;}.has-light-green-cyan-to-vivid-green-cyan-gradient-background{background: var(--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan) !important;}.has-luminous-vivid-amber-to-luminous-vivid-orange-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange) !important;}.has-luminous-vivid-orange-to-vivid-red-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-orange-to-vivid-red) !important;}.has-very-light-gray-to-cyan-bluish-gray-gradient-background{background: var(--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray) !important;}.has-cool-to-warm-spectrum-gradient-background{background: var(--wp--preset--gradient--cool-to-warm-spectrum) !important;}.has-blush-light-purple-gradient-background{background: var(--wp--preset--gradient--blush-light-purple) !important;}.has-blush-bordeaux-gradient-background{background: var(--wp--preset--gradient--blush-bordeaux) !important;}.has-luminous-dusk-gradient-background{background: var(--wp--preset--gradient--luminous-dusk) !important;}.has-pale-ocean-gradient-background{background: var(--wp--preset--gradient--pale-ocean) !important;}.has-electric-grass-gradient-background{background: var(--wp--preset--gradient--electric-grass) !important;}.has-midnight-gradient-background{background: var(--wp--preset--gradient--midnight) !important;}.has-small-font-size{font-size: var(--wp--preset--font-size--small) !important;}.has-medium-font-size{font-size: var(--wp--preset--font-size--medium) !important;}.has-large-font-size{font-size: var(--wp--preset--font-size--large) !important;}.has-x-large-font-size{font-size: var(--wp--preset--font-size--x-large) !important;}
+/*# sourceURL=global-styles-inline-css */
+</style>
+
+<link rel='stylesheet' id='conexao-fonts-css' href='https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&#038;family=Poppins:wght@500;600;700&#038;display=swap' media='print' onload="this.media='all'" />
+<noscript><link rel='stylesheet' id='conexao-fonts-css' href='https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&#038;family=Poppins:wght@500;600;700&#038;display=swap' media='all' /></noscript>
+<link data-handles='conexao-design-system,conexao-header-nav,conexao-main,conexao-dark-mode,jetpack-swiper-library,jetpack-carousel,tiled-gallery' rel='stylesheet' id='all-css-db255c404ac1cf7ca502dff96a80449f' href='http://localhost:8080/_static/??-eJydjkkOwjAQBD/EMEFiCQfEU9DEHiUm3uRxCPk9ziEnJJYcu1tVahwjqOAz+4y5Y8eCJfKTAjQJTLLkNSGJcC6LCGoW03qQSTK7bWk2+K+iY9KcwNNjHe/I+HWkptSDC5rf8GiH1njBO+dIqseb8QobG1QvKKOJnL4ixTvY+QKlMAjbZYCl+NmQjWUNLVnLafqUZuPVXXanc7U/HKu6fgGp163Y' type='text/css' media='all' />
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://localhost:8080/xmlrpc.php?rsd" />
+<meta name="generator" content="WordPress 7.1" />
+<script type="application/ld+json">{"@context":"https:\/\/schema.org","@type":"WebSite","name":"Conex\u00e3o BR","url":"http:\/\/localhost:8080\/en\/","description":"","inLanguage":"en-US","potentialAction":{"@type":"SearchAction","target":"http:\/\/localhost:8080\/en\/?s={search_term_string}","query-input":"required name=search_term_string"}}</script>
+<script type="application/ld+json">{"@context":"https:\/\/schema.org","@type":"Organization","name":"Conex\u00e3o BR","url":"http:\/\/localhost:8080\/en\/","logo":"http:\/\/localhost:8080\/wp-content\/themes\/conexao-br-irlanda\/assets\/images\/conexao-social-card.svg","sameAs":[]}</script>
+<script type="application/ld+json">{"@context":"https:\/\/schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"http:\/\/localhost:8080\/en\/"},{"@type":"ListItem","position":2,"name":"Courses","item":"http:\/\/localhost:8080\/en\/cursos\/"}]}</script>
+	<style type="text/css">
+		:root {
+			--conexao-primary: #0E6B3A;
+			--conexao-primary-dark: #0b552e;
+			--conexao-accent: #F68B1F;
+			--conexao-accent-dark: #c46f18;
+		}
+	</style>
+	
+<!-- Jetpack Open Graph Tags -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Cursos &#8211; Conexão BR" />
+<meta property="og:url" content="http://localhost:8080/en/cursos/" />
+<meta property="og:site_name" content="Conexão BR" />
+<meta property="og:image" content="http://localhost:8080/wp-content/uploads/2026/08/cropped-logo_conexao_br_irlanda.jpeg" />
+<meta property="og:image:width" content="1600" />
+<meta property="og:image:height" content="534" />
+<meta property="og:image:alt" content="" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:locale:alternate" content="pt_BR" />
+
+<!-- End Jetpack Open Graph Tags -->
+</head>
+
+<body class="archive post-type-archive post-type-archive-course_provider wp-custom-logo wp-embed-responsive wp-theme-conexao-br-irlanda blog-page">
+<a class="skip-link screen-reader-text" href="#primary">Skip to content</a>
+<div id="page" class="site">
+	<a class="skip-link screen-reader-text" href="#primary">Skip to content</a>
+
+	<header id="masthead" class="site-header">
+		
+		<!-- Main Header -->
+		<div class="main-header">
+			<div class="site-container">
+				<!-- Mobile Menu Toggle -->
+				<button class="mobile-menu-toggle" aria-label="Open menu" aria-controls="mobile-menu" aria-expanded="false">
+					<span class="hamburger-line"></span>
+					<span class="hamburger-line"></span>
+					<span class="hamburger-line"></span>
+				</button>
+
+				<!-- Logo -->
+				<div class="logo">
+					<a href="http://localhost:8080/en/" rel="home" class="site-logo-link">
+						<picture>
+							<source type="image/webp"
+								srcset="http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/images/logo_conexao_br_irlanda-240.webp 240w, http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/images/logo_conexao_br_irlanda.webp 480w"
+								sizes="(max-width: 768px) 96px, 72px">
+							<img
+								src="http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/images/logo_conexao_br_irlanda.jpeg"
+								srcset="http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/images/logo_conexao_br_irlanda-240.jpeg 240w, http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/images/logo_conexao_br_irlanda.jpeg 1600w"
+								sizes="(max-width: 768px) 96px, 72px"
+								width="480"
+								height="200"
+								alt="Conexão BR"
+								class="site-logo-img site-logo-img--light"
+								loading="eager"
+							>
+						</picture>
+						<picture>
+							<source type="image/webp"
+								srcset="http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/images/logo_dark_mode-240.webp 240w, http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/images/logo_dark_mode.webp 480w"
+								sizes="(max-width: 768px) 96px, 72px">
+							<img
+								src="http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/images/logo_dark_mode.jpeg"
+								srcset="http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/images/logo_dark_mode-240.jpeg 240w, http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/images/logo_dark_mode.jpeg 1600w"
+								sizes="(max-width: 768px) 96px, 72px"
+								width="480"
+								height="180"
+								alt="Conexão BR"
+								class="site-logo-img site-logo-img--dark"
+							>
+						</picture>
+					</a>
+				</div>
+
+				<!-- Primary Navigation -->
+				<nav id="site-navigation" class="primary-navigation" aria-label="Main Menu">
+					<ul id="primary-menu" class="primary-menu"><li id="menu-item-22188" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-22188 nav-item"><a href="http://localhost:8080/en/" class="nav-link">Home</a></li>
+<li id="menu-item-22189" class="menu-item menu-item-type-post_type_archive menu-item-object-sponsor menu-item-22189 nav-item"><a href="http://localhost:8080/en/apoiadores/" class="nav-link">Sponsors</a></li>
+<li id="menu-item-22190" class="menu-item menu-item-type-post_type_archive menu-item-object-guide menu-item-22190 nav-item"><a href="http://localhost:8080/en/guias/" class="nav-link">Guides</a></li>
+<li id="menu-item-22191" class="menu-item menu-item-type-post_type_archive menu-item-object-event menu-item-22191 nav-item"><a href="http://localhost:8080/en/eventos/" class="nav-link">Events</a></li>
+<li id="menu-item-22192" class="menu-item menu-item-type-post_type_archive menu-item-object-course_provider current-menu-item menu-item-22192 nav-item"><a href="http://localhost:8080/en/cursos/" aria-current="page" class="nav-link">Courses</a></li>
+<li id="menu-item-22193" class="menu-item menu-item-type-post_type_archive menu-item-object-leisure menu-item-22193 nav-item"><a href="http://localhost:8080/en/lazer/" class="nav-link">Leisure &amp; Tourism</a></li>
+<li id="menu-item-22194" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-22194 nav-item"><a href="http://localhost:8080/en/jobs/" class="nav-link">Jobs</a></li>
+<li id="menu-item-22195" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-22195 nav-item"><a href="http://localhost:8080/en/blog/" class="nav-link">Blog</a></li>
+<li id="menu-item-22197" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-22197 nav-item"><a href="http://localhost:8080/en/contact/" class="nav-link">Contact</a></li>
+</ul>				</nav>
+
+				<!-- Header Actions -->
+				<div class="header-actions">
+					<div class="language-switcher language-switcher--desktop" role="group" aria-label="Site language">
+						<a
+				class="language-switcher-item"
+				href="http://localhost:8080/cursos/"
+				hreflang="pt-BR"
+				lang="pt-BR"
+								aria-label="View in Português"
+			>PT</a>
+								<span class="language-switcher-item is-current" aria-current="true" lang="en">EN</span>
+			</div>
+					<button type="button" class="theme-toggle" aria-label="Toggle light/dark theme" aria-pressed="false">
+						<span class="theme-toggle-icon theme-toggle-icon--moon" aria-hidden="true">
+							<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+						</span>
+						<span class="theme-toggle-icon theme-toggle-icon--sun" aria-hidden="true">
+							<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+						</span>
+					</button>
+					<button type="button" class="mobile-search-toggle" aria-label="Open search" aria-controls="mobile-search" aria-expanded="false">
+						<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+					</button>
+					<div class="header-search">
+						<svg class="header-search-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+							<circle cx="11" cy="11" r="8"></circle>
+							<line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+						</svg>
+						<form role="search" method="get" class="search-form" action="http://localhost:8080/en/">
+							<label class="screen-reader-text" for="header-search-field">Search</label>
+							<input id="header-search-field" type="search" class="search-field" placeholder="Search the portal..." value="" name="s" />
+							<button type="submit" class="screen-reader-text header-search-submit">Search</button>
+						</form>
+					</div>
+					<a href="http://localhost:8080/en/advertise/" class="header-cta">
+						<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+							<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+							<polyline points="17 8 12 3 7 8"></polyline>
+							<line x1="12" y1="3" x2="12" y2="15"></line>
+						</svg>
+						Advertise					</a>
+
+					<!--
+						Compact top-bar "Anuncie Aqui" for mobile/tablet (<=1024px), where
+						the full-text .header-cta above is hidden. Measured space: a
+						full-text pill needs ~141px, which does not exist next to the
+						hamburger + logo + theme toggle + search at phone widths, so the
+						label only renders where it fits (>=480px) and the control stays a
+						48px icon pill below that — the drawer keeps the full-text label in
+						both cases (.mobile-menu-cta). Name is always "Anuncie Aqui"
+						(aria-label); the visible span is decorative with aria-hidden so the
+						name never depends on the icon or on the label being visible.
+					-->
+					<a href="http://localhost:8080/en/advertise/" class="header-cta-compact" aria-label="Advertise">
+						<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+							<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+							<polyline points="17 8 12 3 7 8"></polyline>
+							<line x1="12" y1="3" x2="12" y2="15"></line>
+						</svg>
+						<span class="header-cta-compact-label" aria-hidden="true">Advertise</span>
+					</a>
+				</div>
+			</div>
+		</div>
+	</header>
+
+	<!-- Mobile Menu Overlay -->
+	<div id="mobile-menu" class="mobile-menu-overlay" aria-hidden="true">
+		<div class="mobile-menu-content">
+			<div class="mobile-menu-header">
+				<span class="mobile-menu-title">Menu</span>
+				<button class="mobile-menu-close" aria-label="Close menu">
+					<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+						<line x1="18" y1="6" x2="6" y2="18"></line>
+						<line x1="6" y1="6" x2="18" y2="18"></line>
+					</svg>
+				</button>
+			</div>
+			<div class="mobile-menu-language">
+				<div class="language-switcher language-switcher--mobile" role="group" aria-label="Site language">
+						<a
+				class="language-switcher-item"
+				href="http://localhost:8080/cursos/"
+				hreflang="pt-BR"
+				lang="pt-BR"
+								aria-label="View in Português"
+			>PT</a>
+								<span class="language-switcher-item is-current" aria-current="true" lang="en">EN</span>
+			</div>
+			</div>
+			<div class="mobile-menu-search">
+				<form role="search" method="get" class="mobile-menu-search-form" action="http://localhost:8080/en/">
+					<label class="screen-reader-text" for="mobile-menu-search-field">Search</label>
+					<input id="mobile-menu-search-field" type="search" class="mobile-menu-search-field" placeholder="Search the portal..." value="" name="s" />
+					<button type="submit" class="mobile-menu-search-submit" aria-label="Search">
+						<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+					</button>
+				</form>
+			</div>
+			<nav class="mobile-menu-nav" aria-label="Mobile Menu">
+				<ul id="menu-main-menu" class="mobile-menu"><li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-home menu-item-22188 nav-item"><a href="http://localhost:8080/en/" class="nav-link">Home</a></li>
+<li class="menu-item menu-item-type-post_type_archive menu-item-object-sponsor menu-item-22189 nav-item"><a href="http://localhost:8080/en/apoiadores/" class="nav-link">Sponsors</a></li>
+<li class="menu-item menu-item-type-post_type_archive menu-item-object-guide menu-item-22190 nav-item"><a href="http://localhost:8080/en/guias/" class="nav-link">Guides</a></li>
+<li class="menu-item menu-item-type-post_type_archive menu-item-object-event menu-item-22191 nav-item"><a href="http://localhost:8080/en/eventos/" class="nav-link">Events</a></li>
+<li class="menu-item menu-item-type-post_type_archive menu-item-object-course_provider current-menu-item menu-item-22192 nav-item"><a href="http://localhost:8080/en/cursos/" aria-current="page" class="nav-link">Courses</a></li>
+<li class="menu-item menu-item-type-post_type_archive menu-item-object-leisure menu-item-22193 nav-item"><a href="http://localhost:8080/en/lazer/" class="nav-link">Leisure &amp; Tourism</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-22194 nav-item"><a href="http://localhost:8080/en/jobs/" class="nav-link">Jobs</a></li>
+<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-22195 nav-item"><a href="http://localhost:8080/en/blog/" class="nav-link">Blog</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-22197 nav-item"><a href="http://localhost:8080/en/contact/" class="nav-link">Contact</a></li>
+</ul>			</nav>
+
+			<!--
+				Primary conversion action (Anuncie Aqui) for the mobile drawer.
+
+				The desktop .header-cta is hidden at <=1024px to keep the compact
+				mobile header uncluttered, so the same action is surfaced here
+				instead: after the navigation list and before the social footer,
+				outside the scrollable .mobile-menu-nav (it is a persistent
+				non-shrinking sibling), so it can never be scrolled out of reach.
+				Same destination (/anuncie/), same design language and same upload
+				icon as the desktop CTA — see .mobile-menu-cta in header-nav.css.
+			-->
+			<div class="mobile-menu-cta-wrap">
+				<a href="http://localhost:8080/en/advertise/" class="mobile-menu-cta">
+					<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+						<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+						<polyline points="17 8 12 3 7 8"></polyline>
+						<line x1="12" y1="3" x2="12" y2="15"></line>
+					</svg>
+					Advertise				</a>
+			</div>
+
+			<div class="mobile-menu-footer">
+				<div class="mobile-menu-social">
+											<a href="https://www.instagram.com/conexaobr.ie/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+							<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+						</a>
+																<a href="https://wa.me/353899451428" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+							<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+						</a>
+									</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="mobile-search" class="mobile-search-overlay" aria-hidden="true">
+		<div class="mobile-search-overlay-content" role="dialog" aria-modal="true" aria-label="Search the site">
+			<form role="search" method="get" class="mobile-search-form" action="http://localhost:8080/en/">
+				<label class="screen-reader-text" for="mobile-search-field">Search</label>
+				<input id="mobile-search-field" type="search" class="mobile-search-field" placeholder="Search the portal..." value="" name="s" />
+				<button type="submit" class="mobile-search-submit">Search</button>
+				<button type="button" class="mobile-search-close" aria-label="Close search">&times;</button>
+			</form>
+		</div>
+	</div>
+
+	<div id="content" class="site-content">
+		<nav class="conexao-breadcrumbs" aria-label="Breadcrumb"><ol class="conexao-breadcrumb-list"><li class="conexao-breadcrumb-item"><a href="http://localhost:8080/en/" class="conexao-breadcrumb-link">Home</a><span class="conexao-breadcrumb-sep" aria-hidden="true">&rsaquo;</span></li><li class="conexao-breadcrumb-item"><span class="conexao-breadcrumb-current" aria-current="page">Courses</span></li></ol></nav>
+
+<div class="site-container courses-page">
+	<main id="primary" class="content-area">
+
+		
+<header class="page-header">
+			<span class="section-eyebrow">Learning &amp; Training</span>
+	
+			<h1 class="page-title">Courses</h1>
+	
+			<p class="page-description">Find courses, training and learning opportunities in Ireland.</p>
+	</header>
+
+	<nav class="events-filter-bar providers-filter-bar" aria-label="Filter courses by category">
+	<span class="events-filter-label">Courses</span>
+
+	<a class="events-filter-link is-active" href="http://localhost:8080/en/cursos/" aria-current="true">
+		All	</a>
+
+					<a class="events-filter-link " href="http://localhost:8080/en/cursos/?categoria=negocios">
+			Business		</a>
+					<a class="events-filter-link " href="http://localhost:8080/en/cursos/?categoria=diretorios-de-cursos">
+			Course Directories		</a>
+					<a class="events-filter-link " href="http://localhost:8080/en/cursos/?categoria=educacao">
+			Education		</a>
+					<a class="events-filter-link " href="http://localhost:8080/en/cursos/?categoria=cursos-online">
+			Online Courses		</a>
+					<a class="events-filter-link " href="http://localhost:8080/en/cursos/?categoria=formacao-profissional">
+			Vocational Training		</a>
+	</nav>
+
+				
+								<div class="events-grid" data-load-more>
+															<article id="post-200" class="provider-card post-200 course_provider type-course_provider status-publish hentry">
+	<a class="provider-card-link" href="https://www.fetchcourses.ie/" target="_blank" rel="noopener noreferrer">
+		<div class="provider-card-logo">
+							<img class="provider-card-logo-img provider-card-logo-img--fallback" src="http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/images/courses/provider-placeholder.svg" alt="FETCH Courses" loading="lazy">
+					</div>
+		<div class="provider-card-body">
+							<span class="provider-card-category">Education</span>
+						<h3 class="provider-card-title">FETCH Courses</h3>
+						<p class="provider-card-excerpt">Find training and continuing education courses throughout Ireland, including apprenticeships, traineeships, PLC courses, adult education and other FET opportunities.</p>
+							<div class="provider-card-meta">
+					<span class="provider-card-detail">
+						<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+						Irlanda					</span>
+				</div>
+						<span class="provider-card-cta">
+				See courses				<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+			</span>
+		</div>
+	</a>
+</article>																				<article id="post-201" class="provider-card post-201 course_provider type-course_provider status-publish hentry">
+	<a class="provider-card-link" href="https://www.qualifax.ie/" target="_blank" rel="noopener noreferrer">
+		<div class="provider-card-logo">
+							<img class="provider-card-logo-img provider-card-logo-img--fallback" src="http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/images/courses/provider-placeholder.svg" alt="Qualifax" loading="lazy">
+					</div>
+		<div class="provider-card-body">
+							<span class="provider-card-category">Education</span>
+						<h3 class="provider-card-title">Qualifax</h3>
+						<p class="provider-card-excerpt">Ireland&#039;s national database for courses and student guidance, helping students, jobseekers and adults explore education and training options.</p>
+							<div class="provider-card-meta">
+					<span class="provider-card-detail">
+						<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+						Irlanda					</span>
+				</div>
+						<span class="provider-card-cta">
+				See courses				<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+			</span>
+		</div>
+	</a>
+</article>																				<article id="post-202" class="provider-card post-202 course_provider type-course_provider status-publish hentry">
+	<a class="provider-card-link" href="https://springboardcourses.ie/" target="_blank" rel="noopener noreferrer">
+		<div class="provider-card-logo">
+							<img class="provider-card-logo-img provider-card-logo-img--fallback" src="http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/images/courses/provider-placeholder.svg" alt="Springboard+" loading="lazy">
+					</div>
+		<div class="provider-card-body">
+							<span class="provider-card-category">Vocational Training</span>
+						<h3 class="provider-card-title">Springboard+</h3>
+						<p class="provider-card-excerpt">Discover subsidised further education courses designed to help people requalify, build skills and develop new career opportunities.</p>
+							<div class="provider-card-meta">
+					<span class="provider-card-detail">
+						<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+						Irlanda					</span>
+				</div>
+						<span class="provider-card-cta">
+				See courses				<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+			</span>
+		</div>
+	</a>
+</article>																				<article id="post-489" class="provider-card post-489 course_provider type-course_provider status-publish has-post-thumbnail hentry">
+	<a class="provider-card-link" href="https://www.skillnetireland.ie/" target="_blank" rel="noopener noreferrer">
+		<div class="provider-card-logo">
+							<img class="provider-card-logo-img provider-card-logo-img--fallback" src="http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/images/courses/provider-placeholder.svg" alt="Skillnet Ireland" loading="lazy">
+					</div>
+		<div class="provider-card-body">
+							<span class="provider-card-category">Vocational Training</span>
+						<h3 class="provider-card-title">Skillnet Ireland</h3>
+						<p class="provider-card-excerpt">Discover training and reskilling opportunities designed around the needs of companies, employees and industry sectors throughout Ireland.</p>
+							<div class="provider-card-meta">
+					<span class="provider-card-detail">
+						<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+						Irlanda					</span>
+				</div>
+						<span class="provider-card-cta">
+				See courses				<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+			</span>
+		</div>
+	</a>
+</article>																				<article id="post-490" class="provider-card post-490 course_provider type-course_provider status-publish has-post-thumbnail hentry">
+	<a class="provider-card-link" href="https://www.ecollege.ie/" target="_blank" rel="noopener noreferrer">
+		<div class="provider-card-logo">
+							<img class="provider-card-logo-img provider-card-logo-img--fallback" src="http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/images/courses/provider-placeholder.svg" alt="SOLAS eCollege" loading="lazy">
+					</div>
+		<div class="provider-card-body">
+							<span class="provider-card-category">Online Courses</span>
+						<h3 class="provider-card-title">SOLAS eCollege</h3>
+						<p class="provider-card-excerpt">SOLAS online learning and skills development, including digital skills, IT, project management, business and other areas.</p>
+							<div class="provider-card-meta">
+					<span class="provider-card-detail">
+						<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+						Online / Irlanda					</span>
+				</div>
+						<span class="provider-card-cta">
+				See courses				<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+			</span>
+		</div>
+	</a>
+</article>																				<article id="post-491" class="provider-card post-491 course_provider type-course_provider status-publish hentry">
+	<a class="provider-card-link" href="https://www.localenterprise.ie/" target="_blank" rel="noopener noreferrer">
+		<div class="provider-card-logo">
+							<img class="provider-card-logo-img provider-card-logo-img--fallback" src="http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/images/courses/provider-placeholder.svg" alt="Local Enterprise Office" loading="lazy">
+					</div>
+		<div class="provider-card-body">
+							<span class="provider-card-category">Business</span>
+						<h3 class="provider-card-title">Local Enterprise Office</h3>
+						<p class="provider-card-excerpt">Training programmes and business courses for those starting, developing or growing a business in Ireland.</p>
+							<div class="provider-card-meta">
+					<span class="provider-card-detail">
+						<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+						Irlanda					</span>
+				</div>
+						<span class="provider-card-cta">
+				See courses				<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+			</span>
+		</div>
+	</a>
+</article>																				<article id="post-492" class="provider-card post-492 course_provider type-course_provider status-publish hentry">
+	<a class="provider-card-link" href="https://www.courses.ie/" target="_blank" rel="noopener noreferrer">
+		<div class="provider-card-logo">
+							<img class="provider-card-logo-img provider-card-logo-img--fallback" src="http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/images/courses/provider-placeholder.svg" alt="Courses.ie" loading="lazy">
+					</div>
+		<div class="provider-card-body">
+							<span class="provider-card-category">Course Directories</span>
+						<h3 class="provider-card-title">Courses.ie</h3>
+						<p class="provider-card-excerpt">Explore thousands of courses from colleges, universities, training providers and independent educators throughout Ireland.</p>
+							<div class="provider-card-meta">
+					<span class="provider-card-detail">
+						<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+						Irlanda					</span>
+				</div>
+						<span class="provider-card-cta">
+				See courses				<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+			</span>
+		</div>
+	</a>
+</article>																				<article id="post-493" class="provider-card post-493 course_provider type-course_provider status-publish has-post-thumbnail hentry">
+	<a class="provider-card-link" href="https://www.etbi.ie/" target="_blank" rel="noopener noreferrer">
+		<div class="provider-card-logo">
+							<img class="provider-card-logo-img provider-card-logo-img--fallback" src="http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/images/courses/provider-placeholder.svg" alt="Education and Training Boards Ireland" loading="lazy">
+					</div>
+		<div class="provider-card-body">
+							<span class="provider-card-category">Education</span>
+						<h3 class="provider-card-title">Education and Training Boards Ireland</h3>
+						<p class="provider-card-excerpt">Find education and training opportunities offered through the network of Education and Training Boards in Ireland.</p>
+							<div class="provider-card-meta">
+					<span class="provider-card-detail">
+						<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+						Irlanda					</span>
+				</div>
+						<span class="provider-card-cta">
+				See courses				<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+			</span>
+		</div>
+	</a>
+</article>																				<article id="post-10063" class="provider-card post-10063 course_provider type-course_provider status-publish hentry">
+	<a class="provider-card-link" href="https://apprenticeship.ie/" target="_blank" rel="noopener noreferrer">
+		<div class="provider-card-logo">
+							<img class="provider-card-logo-img provider-card-logo-img--fallback" src="http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/images/courses/provider-placeholder.svg" alt="Apprenticeship.ie" loading="lazy">
+					</div>
+		<div class="provider-card-body">
+							<span class="provider-card-category">Vocational Training</span>
+						<h3 class="provider-card-title">Apprenticeship.ie</h3>
+						<p class="provider-card-excerpt">National portal to find apprenticeships in Ireland, combining on-the-job training with off-the-job training and opportunities across many occupational areas.</p>
+							<div class="provider-card-meta">
+					<span class="provider-card-detail">
+						<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+						Irlanda					</span>
+				</div>
+						<span class="provider-card-cta">
+				See courses				<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+			</span>
+		</div>
+	</a>
+</article>																				<article id="post-10064" class="provider-card post-10064 course_provider type-course_provider status-publish hentry">
+	<a class="provider-card-link" href="https://microcreds.ie/" target="_blank" rel="noopener noreferrer">
+		<div class="provider-card-logo">
+							<img class="provider-card-logo-img provider-card-logo-img--fallback" src="http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/images/courses/provider-placeholder.svg" alt="MicroCreds" loading="lazy">
+					</div>
+		<div class="provider-card-body">
+							<span class="provider-card-category">Vocational Training</span>
+						<h3 class="provider-card-title">MicroCreds</h3>
+						<p class="provider-card-excerpt">Explore short, flexible micro-credentials awarded by Irish universities, with options in areas such as business, technology, education, health and other...</p>
+							<div class="provider-card-meta">
+					<span class="provider-card-detail">
+						<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+						Online / Irlanda					</span>
+				</div>
+						<span class="provider-card-cta">
+				See courses				<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+			</span>
+		</div>
+	</a>
+</article>												</div>
+
+			
+				
+	</main>
+</div>
+
+
+<section class="newsletter-section">
+	<div class="site-container">
+		<div class="newsletter-content">
+			<div class="newsletter-text">
+				<h2 class="newsletter-title">Stay on top of everything!</h2>
+				<p class="newsletter-description">Get the latest news, events and practical guides straight to your inbox. No spam, only content relevant to Brazilians in Ireland.</p>
+			</div>
+			<div class="newsletter-form">
+				<h3 class="newsletter-form-title">Subscribe to our newsletter</h3>
+				<p class="newsletter-form-subtitle">Join thousands of Brazilians who already receive our updates.</p>
+				<form class="newsletter-input-group" action="#" method="post">
+					<input type="email" class="newsletter-input" placeholder="Your best email" required>
+					<button type="submit" class="newsletter-btn">Subscribe</button>
+				</form>
+				<p class="newsletter-privacy">By subscribing, you agree to our privacy policy.</p>
+			</div>
+		</div>
+	</div>
+</section>
+
+<section class="quote-section">
+	<div class="site-container">
+		<div class="quote-content">
+			<blockquote class="quote-text">"Life is a constant opportunity to start over. Every day is a new chance to build something better."</blockquote>
+			<p class="quote-author">— Mário Sérgio Cortella</p>
+		</div>
+	</div>
+</section>
+
+
+	</div><!-- #content -->
+
+	<footer id="colophon" class="site-footer">
+		<div class="footer-main">
+			<div class="site-container">
+				<div class="footer-grid">
+					<!-- Brand Column -->
+					<div class="footer-brand">
+						<div class="footer-logo">
+							<a href="http://localhost:8080/en/" rel="home" class="site-logo-link">
+								<img
+									src="http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/images/logo_dark_mode-240.webp"
+									srcset="http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/images/logo_dark_mode-240.webp 240w, http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/images/logo_dark_mode.webp 480w"
+									sizes="(max-width: 768px) 240px, 480px"
+									width="480"
+									height="180"
+									alt="Conexão BR"
+									class="site-logo-img"
+									loading="lazy"
+								>
+							</a>
+						</div>
+						<p class="footer-about">
+							Connecting the Brazilian community in Ireland with information, events, courses and much more. Your digital magazine for Brazilians in Ireland.						</p>
+					</div>
+
+					<!-- Social Column -->
+					<div class="footer-column">
+						<h4 class="footer-column-title">Social Media</h4>
+						<div class="footer-social">
+																						<a href="https://www.instagram.com/conexaobr.ie/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+									<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+								</a>
+																						<a href="https://wa.me/353899451428" class="footer-social-link--whatsapp" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+									<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+								</a>
+																				</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="footer-bottom">
+			<div class="site-container">
+				<div class="footer-copyright">
+					© 2025 Conexão BR Irlanda. All rights reserved.				</div>
+				<div class="footer-bottom-links">
+					<a href="http://localhost:8080/en/privacy-policy/">Privacy</a>
+					<span class="footer-bottom-sep" aria-hidden="true">·</span>
+					<a href="http://localhost:8080/en/terms-of-use/">Terms</a>
+					<span class="footer-bottom-sep" aria-hidden="true">·</span>
+					<a href="http://localhost:8080/en/cookie-policy/">Cookies</a>
+				</div>
+			</div>
+		</div>
+	</footer>
+</div><!-- #page -->
+
+<script type="speculationrules">
+{"prefetch":[{"source":"document","where":{"and":[{"href_matches":"/*"},{"not":{"href_matches":["/wp-*.php","/wp-admin/*","/wp-content/uploads/*","/wp-content/*","/wp-content/plugins/*","/wp-content/themes/conexao-br-irlanda/*","/*\\?(.+)"]}},{"not":{"selector_matches":"a[rel~=\"nofollow\"]"}},{"not":{"selector_matches":".no-prefetch, .no-prefetch a"}}]},"eagerness":"conservative"}]}
+</script>
+	<aside class="whatsapp-float-region" aria-label="Talk to Conexão BR">
+	<a href="https://wa.me/353899451428" class="whatsapp-float" target="_blank" rel="noopener noreferrer" aria-label="Chat with us on WhatsApp">
+		<svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+	</a>
+	</aside>
+			<div id="jp-carousel-loading-overlay">
+			<div id="jp-carousel-loading-wrapper">
+				<span id="jp-carousel-library-loading"><svg class="jetpack-spinner" width="40" height="40" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><circle cx="50" cy="50" r="46" fill="none" stroke="#ddd" stroke-width="8"/><path d="M 50 4 A 46 46 0 0 1 96 50" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" dur="1.4s" from="0 50 50" to="360 50 50" repeatCount="indefinite"/></path></svg></span>
+			</div>
+		</div>
+		<div class="jp-carousel-overlay" style="display: none;">
+
+		<div class="jp-carousel-container">
+			<!-- The Carousel Swiper -->
+			<div
+				class="jp-carousel-wrap swiper jp-carousel-swiper-container jp-carousel-transitions"
+				itemscope
+				itemtype="https://schema.org/ImageGallery">
+				<div class="jp-carousel swiper-wrapper"></div>
+				<div class="jp-swiper-button-prev swiper-button-prev">
+					<svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<mask id="maskPrev" mask-type="alpha" maskUnits="userSpaceOnUse" x="8" y="6" width="9" height="12">
+							<path d="M16.2072 16.59L11.6496 12L16.2072 7.41L14.8041 6L8.8335 12L14.8041 18L16.2072 16.59Z" fill="white"/>
+						</mask>
+						<g mask="url(#maskPrev)">
+							<rect x="0.579102" width="23.8823" height="24" fill="#FFFFFF"/>
+						</g>
+					</svg>
+				</div>
+				<div class="jp-swiper-button-next swiper-button-next">
+					<svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<mask id="maskNext" mask-type="alpha" maskUnits="userSpaceOnUse" x="8" y="6" width="8" height="12">
+							<path d="M8.59814 16.59L13.1557 12L8.59814 7.41L10.0012 6L15.9718 12L10.0012 18L8.59814 16.59Z" fill="white"/>
+						</mask>
+						<g mask="url(#maskNext)">
+							<rect x="0.34375" width="23.8822" height="24" fill="#FFFFFF"/>
+						</g>
+					</svg>
+				</div>
+			</div>
+			<!-- The main close buton -->
+			<div class="jp-carousel-close-hint">
+				<svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<mask id="maskClose" mask-type="alpha" maskUnits="userSpaceOnUse" x="5" y="5" width="15" height="14">
+						<path d="M19.3166 6.41L17.9135 5L12.3509 10.59L6.78834 5L5.38525 6.41L10.9478 12L5.38525 17.59L6.78834 19L12.3509 13.41L17.9135 19L19.3166 17.59L13.754 12L19.3166 6.41Z" fill="white"/>
+					</mask>
+					<g mask="url(#maskClose)">
+						<rect x="0.409668" width="23.8823" height="24" fill="#FFFFFF"/>
+					</g>
+				</svg>
+			</div>
+			<!-- Image info, comments and meta -->
+			<div class="jp-carousel-info">
+				<div class="jp-carousel-info-footer">
+					<div class="jp-carousel-pagination-container">
+						<div class="jp-swiper-pagination swiper-pagination"></div>
+						<div class="jp-carousel-pagination"></div>
+					</div>
+					<div class="jp-carousel-photo-title-container">
+						<div class="jp-carousel-photo-caption"></div>
+					</div>
+					<div class="jp-carousel-photo-icons-container">
+						<a href="#" class="jp-carousel-icon-btn jp-carousel-icon-info" aria-label="Toggle photo metadata visibility">
+							<span class="jp-carousel-icon">
+								<svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<mask id="maskInfo" mask-type="alpha" maskUnits="userSpaceOnUse" x="2" y="2" width="21" height="20">
+										<path fill-rule="evenodd" clip-rule="evenodd" d="M12.7537 2C7.26076 2 2.80273 6.48 2.80273 12C2.80273 17.52 7.26076 22 12.7537 22C18.2466 22 22.7046 17.52 22.7046 12C22.7046 6.48 18.2466 2 12.7537 2ZM11.7586 7V9H13.7488V7H11.7586ZM11.7586 11V17H13.7488V11H11.7586ZM4.79292 12C4.79292 16.41 8.36531 20 12.7537 20C17.142 20 20.7144 16.41 20.7144 12C20.7144 7.59 17.142 4 12.7537 4C8.36531 4 4.79292 7.59 4.79292 12Z" fill="white"/>
+									</mask>
+									<g mask="url(#maskInfo)">
+										<rect x="0.8125" width="23.8823" height="24" fill="#FFFFFF"/>
+									</g>
+								</svg>
+							</span>
+						</a>
+												<a href="#" class="jp-carousel-icon-btn jp-carousel-icon-comments" aria-label="Toggle photo comments visibility">
+							<span class="jp-carousel-icon">
+								<svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<mask id="maskComments" mask-type="alpha" maskUnits="userSpaceOnUse" x="2" y="2" width="21" height="20">
+										<path fill-rule="evenodd" clip-rule="evenodd" d="M4.3271 2H20.2486C21.3432 2 22.2388 2.9 22.2388 4V16C22.2388 17.1 21.3432 18 20.2486 18H6.31729L2.33691 22V4C2.33691 2.9 3.2325 2 4.3271 2ZM6.31729 16H20.2486V4H4.3271V18L6.31729 16Z" fill="white"/>
+									</mask>
+									<g mask="url(#maskComments)">
+										<rect x="0.34668" width="23.8823" height="24" fill="#FFFFFF"/>
+									</g>
+								</svg>
+
+								<span class="jp-carousel-has-comments-indicator" aria-label="This image has comments."></span>
+							</span>
+						</a>
+											</div>
+				</div>
+				<div class="jp-carousel-info-extra">
+					<div class="jp-carousel-info-content-wrapper">
+						<div class="jp-carousel-photo-title-container">
+							<div class="jp-carousel-photo-title"></div>
+						</div>
+						<div class="jp-carousel-comments-wrapper">
+															<div id="jp-carousel-comments-loading">
+									<span>Loading Comments...</span>
+								</div>
+								<div class="jp-carousel-comments"></div>
+								<div id="jp-carousel-comment-form-container">
+									<span id="jp-carousel-comment-form-spinner"><svg class="jetpack-spinner" width="20" height="20" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"><circle cx="50" cy="50" r="46" fill="none" stroke="#ddd" stroke-width="8"/><path d="M 50 4 A 46 46 0 0 1 96 50" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" dur="1.4s" from="0 50 50" to="360 50 50" repeatCount="indefinite"/></path></svg></span>
+									<div id="jp-carousel-comment-post-results"></div>
+																														<form id="jp-carousel-comment-form">
+												<label for="jp-carousel-comment-form-comment-field" class="screen-reader-text">Write a Comment...</label>
+												<textarea
+													name="comment"
+													class="jp-carousel-comment-form-field jp-carousel-comment-form-textarea"
+													id="jp-carousel-comment-form-comment-field"
+													placeholder="Write a Comment..."
+												></textarea>
+												<div id="jp-carousel-comment-form-submit-and-info-wrapper">
+													<div id="jp-carousel-comment-form-commenting-as">
+																													<fieldset>
+																<label for="jp-carousel-comment-form-email-field">Email (Required)</label>
+																<input type="text" name="email" class="jp-carousel-comment-form-field jp-carousel-comment-form-text-field" id="jp-carousel-comment-form-email-field" />
+															</fieldset>
+															<fieldset>
+																<label for="jp-carousel-comment-form-author-field">Name (Required)</label>
+																<input type="text" name="author" class="jp-carousel-comment-form-field jp-carousel-comment-form-text-field" id="jp-carousel-comment-form-author-field" />
+															</fieldset>
+															<fieldset>
+																<label for="jp-carousel-comment-form-url-field">Website</label>
+																<input type="text" name="url" class="jp-carousel-comment-form-field jp-carousel-comment-form-text-field" id="jp-carousel-comment-form-url-field" />
+															</fieldset>
+																											</div>
+													<input
+														type="submit"
+														name="submit"
+														class="jp-carousel-comment-form-button"
+														id="jp-carousel-comment-form-button-submit"
+														value="Post Comment" />
+												</div>
+											</form>
+																											</div>
+													</div>
+						<div class="jp-carousel-image-meta">
+							<div class="jp-carousel-title-and-caption">
+								<div class="jp-carousel-photo-info">
+									<div class="jp-carousel-caption" itemprop="caption description"></div>
+								</div>
+
+								<div class="jp-carousel-photo-description"></div>
+							</div>
+							<a class="jp-carousel-image-download" href="#" aria-label="Download image" target="_blank" style="display: none;">
+								<svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+									<mask id="mask0" mask-type="alpha" maskUnits="userSpaceOnUse" x="3" y="3" width="19" height="18">
+										<path fill-rule="evenodd" clip-rule="evenodd" d="M5.84615 5V19H19.7775V12H21.7677V19C21.7677 20.1 20.8721 21 19.7775 21H5.84615C4.74159 21 3.85596 20.1 3.85596 19V5C3.85596 3.9 4.74159 3 5.84615 3H12.8118V5H5.84615ZM14.802 5V3H21.7677V10H19.7775V6.41L9.99569 16.24L8.59261 14.83L18.3744 5H14.802Z" fill="white"/>
+									</mask>
+									<g mask="url(#mask0)">
+										<rect x="0.870605" width="23.8823" height="24" fill="#FFFFFF"/>
+									</g>
+								</svg>
+								<span class="jp-carousel-download-text"></span>
+							</a>
+							<div class="jp-carousel-image-map" style="display: none;"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		</div>
+		
+<!-- No Concat JS conexao-main => Has Inline Content -->
+
+<!-- No Concat JS tiled-gallery => Requested Strategy defer -->
+<script id="conexao-main-js-before">
+window.ConexaoI18n = {"submenuToggleTemplate":"Open submenu for %s","linkCopied":"Link copied","filterLabel":"Filter","filterCountOne":"%d active filter","filterCountMany":"%d active filters","sponsorPositionTemplate":"Sponsor %1$d of %2$d","loading":"Loading...","loadMore":"Load more","loadMoreFailed":"Could not load more content.","loadMoreFailedRetry":"Could not load more content. Please try again.","retry":"Try again","reachedEnd":"You have reached the end.","moreLoadedOneTemplate":"%1$d more %2$s loaded.","moreLoadedManyTemplate":"%1$d more %2$s loaded.","nounEvents":"event","nounEventsPlural":"events","nounCourses":"course","nounCoursesPlural":"courses"};
+//# sourceURL=conexao-main-js-before
+</script>
+<script data-wp-strategy="defer" defer id="conexao-main-js" src="http://localhost:8080/wp-content/themes/conexao-br-irlanda/assets/js/main.js?ver=1789983973"></script>
+<script id="jetpack-carousel-js-extra">
+var jetpackSwiperLibraryPath = {"url":"http://localhost:8080/wp-content/plugins/jetpack/_inc/blocks/swiper.js"};
+var jetpackCarouselStrings = {"widths":[370,700,1000,1200,1400,2000],"is_logged_in":"","lang":"en","ajaxurl":"http://localhost:8080/wp-admin/admin-ajax.php","nonce":"992870ed92","display_exif":"1","display_comments":"1","single_image_gallery":"1","single_image_gallery_media_file":"","background_color":"black","comment":"Comment","post_comment":"Post Comment","write_comment":"Write a Comment...","loading_comments":"Loading Comments...","image_label":"Open image in full-screen.","download_original":"View full size \u003Cspan class=\"photo-size\"\u003E{0}\u003Cspan class=\"photo-size-times\"\u003E\u00d7\u003C/span\u003E{1}\u003C/span\u003E","no_comment_text":"Please be sure to submit some text with your comment.","no_comment_email":"Please provide an email address to comment.","no_comment_author":"Please provide your name to comment.","comment_post_error":"Sorry, but there was an error posting your comment. Please try again later.","comment_approved":"Your comment was approved.","comment_unapproved":"Your comment is in moderation.","camera":"Camera","aperture":"Aperture","shutter_speed":"Shutter Speed","focal_length":"Focal Length","copyright":"Copyright","comment_registration":"0","require_name_email":"1","login_url":"http://localhost:8080/wp-login.php?redirect_to=http%3A%2F%2Flocalhost%3A8080%2Fcursos%2Ffetch-courses%2F","blog_id":"1","meta_data":["camera","aperture","shutter_speed","focal_length","copyright"]};
+//# sourceURL=jetpack-carousel-js-extra
+</script>
+<script data-handles='jetpack-carousel'  type='text/javascript' src='http://localhost:8080/wp-content/plugins/jetpack/_inc/build/carousel/jetpack-carousel.min.js?m=1787858487'></script>
+<script data-wp-strategy="defer" defer id="tiled-gallery-js" src="http://localhost:8080/wp-content/plugins/jetpack/_inc/build/tiled-gallery/tiled-gallery/tiled-gallery.min.js?ver=16.2-a.3"></script>
+</body>
+</html>

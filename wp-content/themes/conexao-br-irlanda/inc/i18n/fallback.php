@@ -589,6 +589,94 @@ function conexao_provider_card_excerpt( $provider_id = 0 ): string {
 }
 
 /**
+ * The English presentation value for a stored `_provider_category` label.
+ *
+ * `/en/cursos/` is a B2 destination: there are no EN `course_provider` records,
+ * so the English archive renders the Portuguese records under the English
+ * shell. `_provider_category` is FREE-TEXT post meta, not a taxonomy, so unlike
+ * `conexao_category` there is no linked EN term to resolve — the Portuguese
+ * label has no English counterpart anywhere in the data. This function is the
+ * presentation layer that supplies one.
+ *
+ * Deliberately a PRESENTATION mapping and nothing else:
+ *  - it NEVER writes English into `_provider_category`, so the PT canonical
+ *    data, the `?categoria=` slug and the meta_query that filters on it are all
+ *    untouched (the meta is the identity; this is the chrome);
+ *  - it NEVER creates a taxonomy term or an EN provider post;
+ *  - a PT (or non-EN) request returns the stored value VERBATIM, so Portuguese
+ *    output is byte-identical to before;
+ *  - an unknown or unrecognised value returns exactly what is stored — never
+ *    invented, never dropped, never silently mapped onto a wrong concept. This
+ *    is the same contract as conexao_permit_employer_label_display(), the
+ *    theme's existing precedent for language-aware display of a free-text meta
+ *    value, and it reuses the SAME normalisation rule.
+ *
+ * The English strings are ordinary gettext entries in the theme catalogue
+ * (en_US), so this adds no second localization mechanism: the catalogue is
+ * translated in one place and PT needs no entry because PT returns the stored
+ * value directly.
+ *
+ * @param string $category Stored `_provider_category` value.
+ * @return string Display label for the current request language.
+ */
+function conexao_provider_category_label( $category ): string {
+	$category = is_string( $category ) ? trim( $category ) : '';
+
+	if ( '' === $category ) {
+		return '';
+	}
+
+	// PT (and any non-EN language, and a site without Polylang) is already
+	// correct: return the stored value untouched.
+	if ( 'en' !== conexao_current_language_slug() ) {
+		return $category;
+	}
+
+	// Keys are the output of conexao_provider_category_key() — accent-stripped,
+	// lower-cased and with dashes normalised to SPACES (the shared free-text
+	// meta normalisation), so "Cursos Online", "cursos online" and
+	// "Cursos-Online" all resolve to the same entry.
+	$labels = array(
+		'cursos online'         => __( 'Online Courses', 'conexao-br-irlanda' ),
+		'diretorios de cursos'  => __( 'Course Directories', 'conexao-br-irlanda' ),
+		'educacao'              => __( 'Education', 'conexao-br-irlanda' ),
+		'formacao profissional' => __( 'Vocational Training', 'conexao-br-irlanda' ),
+		'negocios'              => __( 'Business', 'conexao-br-irlanda' ),
+	);
+
+	$key = conexao_provider_category_key( $category );
+
+	// Unknown value: return exactly what is stored (never invented, never lost).
+	return isset( $labels[ $key ] ) ? $labels[ $key ] : $category;
+}
+
+/**
+ * Normalise a stored provider category to its accent/case-insensitive lookup key.
+ *
+ * The shared normalisation used by the free-text meta display helpers
+ * (conexao_permit_employer_label_key()): accents removed, case folded, dashes
+ * normalised to spaces and whitespace collapsed. `_provider_category` is
+ * hand-entered free text, so a maintainer typing "Educacao" or "educação"
+ * must resolve to the same presentation value.
+ *
+ * @param string $category Stored `_provider_category` value.
+ * @return string Normalised lookup key.
+ */
+function conexao_provider_category_key( $category ): string {
+	$category = is_string( $category ) ? trim( $category ) : '';
+
+	if ( function_exists( 'remove_accents' ) ) {
+		$category = remove_accents( $category );
+	}
+
+	$category = strtolower( $category );
+	$category = str_replace( array( '—', '–', '-' ), ' ', $category );
+	$category = preg_replace( '/\s+/', ' ', $category );
+
+	return trim( (string) $category );
+}
+
+/**
  * Take ownership of Polylang's language-mismatch redirect status.
  *
  * Polylang's frontend canonical sends a **301** when a URL is requested under

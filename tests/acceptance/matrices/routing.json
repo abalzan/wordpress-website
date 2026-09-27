@@ -800,6 +800,92 @@
       ],
       "expect_absent": [],
       "note": "Selected town/city works on EN with the active state reflected (same shared ?cidade= parameter as PT)."
+    },
+    {
+      "id": "en-cursos-category-filter-bar-renders",
+      "url": "/en/cursos/",
+      "expect_status": 200,
+      "expect_contains": [
+        "class=\"events-filter-bar providers-filter-bar\"",
+        "aria-label=\"Filter courses by category\"",
+        "categoria=educacao",
+        "categoria=formacao-profissional",
+        "categoria=cursos-online",
+        "categoria=diretorios-de-cursos",
+        "categoria=negocios"
+      ],
+      "expect_absent": [
+        ">Cursos Online<",
+        ">Educação<",
+        ">Negócios<",
+        ">Formação Profissional<",
+        ">Diretórios de Cursos<"
+      ],
+      "note": "STAGE 9 root cause: conexao_get_provider_categories() issued a secondary get_posts() that was NOT widened for the B2 course_provider post type, so Polylang narrowed it to English, it matched zero PT providers and /en/cursos/ rendered NO filter bar. The helper now goes through the shared conexao_b2_widen_query_args() boundary (lang => en,pt on an EN request), exactly as the events filter helpers already do. The five expected provider categories are discovered and every link stays under /en/cursos/. No EN course_provider record and no taxonomy term was created."
+    },
+    {
+      "id": "en-cursos-category-labels-are-english",
+      "url": "/en/cursos/",
+      "expect_status": 200,
+      "expect_contains": [
+        "provider-card-category\">Online Courses",
+        "provider-card-category\">Course Directories",
+        "provider-card-category\">Education",
+        "provider-card-category\">Vocational Training",
+        "provider-card-category\">Business"
+      ],
+      "expect_absent": [
+        "provider-card-category\">Cursos Online",
+        "provider-card-category\">Diretórios de Cursos",
+        "provider-card-category\">Educação",
+        "provider-card-category\">Formação Profissional",
+        "provider-card-category\">Negócios"
+      ],
+      "note": "_provider_category is free-text post meta, not a taxonomy, so there is no linked EN term to resolve. conexao_provider_category_label() supplies the English PRESENTATION value only: it never writes English into the PT meta, never creates a term, and returns an unknown value unchanged. The canonical Portuguese 'name' and 'slug' used by the ?categoria= meta_query are untouched, so filter URLs are identical in both languages."
+    },
+    {
+      "id": "en-cursos-category-filter-selection-works",
+      "url": "/en/cursos/?categoria=educacao",
+      "expect_status": 200,
+      "expect_contains": [
+        "<html lang=\"en-US\">",
+        "categoria=educacao\" aria-current=\"true\"",
+        "provider-card-category\">Education"
+      ],
+      "expect_absent": [
+        "provider-card-category\">Negócios",
+        "provider-card-category\">Cursos Online"
+      ],
+      "note": "Selecting a category on /en/cursos/ filters the result set and stays in EN: the language is not flipped, the active state is marked, and the cards render English labels. The filter matches the same _provider_category meta value as /cursos/, so PT and EN select the identical record set."
+    },
+    {
+      "id": "en-cursos-unknown-category-yields-no-results",
+      "url": "/en/cursos/?categoria=nao-existe",
+      "expect_status": 200,
+      "expect_contains": [
+        "<html lang=\"en-US\">"
+      ],
+      "expect_absent": [
+        "<article id=\"post-"
+      ],
+      "note": "An unknown category slug on the English archive produces zero results instead of misleading content, matching the pre-existing PT rule (the slug resolves to a sentinel meta value). Proves the EN widening did not make the filter permissive."
+    },
+    {
+      "id": "pt-cursos-category-labels-stay-portuguese",
+      "url": "/cursos/",
+      "expect_status": 200,
+      "expect_contains": [
+        "provider-card-category\">Cursos Online",
+        "provider-card-category\">Educação",
+        "provider-card-category\">Negócios",
+        "aria-label=\"Filtrar cursos por categoria\"",
+        "categoria=educacao\""
+      ],
+      "expect_absent": [
+        "provider-card-category\">Online Courses",
+        "provider-card-category\">Business"
+      ],
+      "note": "PT immutability at the render level: on a PT request conexao_provider_category_label() returns the stored Portuguese value verbatim, so the Portuguese archive and its filter bar are byte-identical before and after the change (same SHA-256 in the evidence)."
     }
   ]
 }

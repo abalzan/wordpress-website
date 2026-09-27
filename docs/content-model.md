@@ -221,6 +221,18 @@ image, body) plus one minimal field:
   theme reads it through `conexao_provider_card_excerpt()` on EN requests only;
   the PT render path (`get_the_excerpt()`) never reads it, so Portuguese output
   is unaffected. A record with no value keeps the approved B2 fallback.
+- `_provider_category` is **free-text meta, not a taxonomy**, so it has no linked
+  EN term to resolve like `conexao_category` does. Stage 9 therefore adds a
+  presentation layer, `conexao_provider_category_label()`
+  (`inc/i18n/fallback.php`): on a PT request it returns the stored value
+  **verbatim**; on an EN request it maps the five shipped values to English
+  (`Cursos Online` → Online Courses, `Diretórios de Cursos` → Course
+  Directories, `Educação` → Education, `Formação Profissional` → Vocational
+  Training, `Negócios` → Business) through the ordinary `en_US` gettext
+  catalogue. The stored meta is **never** rewritten, no taxonomy term and no EN
+  provider record is created, and an unknown value is returned unchanged (never
+  invented, never dropped). The `?categoria=` slug is `sanitize_title()` of the
+  Portuguese value in both languages, so the filter URL is one identity.
 
 ### Recruitment Agency
 

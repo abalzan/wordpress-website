@@ -1964,3 +1964,24 @@ msgstr "Ireland"
 #: wp-content/themes/conexao-br-irlanda/inc/recruitment-agencies.php:155
 msgid "irlanda"
 msgstr "Ireland"
+
+# STAGE 9 — English presentation labels for the B2 `course_provider`
+# `_provider_category` free-text meta on /en/cursos/. PT is unaffected: the
+# stored Portuguese value is returned verbatim there (see
+# conexao_provider_category_label()), so only these EN msgstr entries are
+# needed. No taxonomy term, no EN provider record, no change to the stored meta.
+#: wp-content/themes/conexao-br-irlanda/inc/i18n/fallback.php:636
+msgid "Online Courses"
+msgstr "Online Courses"
+#: wp-content/themes/conexao-br-irlanda/inc/i18n/fallback.php:637
+msgid "Course Directories"
+msgstr "Course Directories"
+#: wp-content/themes/conexao-br-irlanda/inc/i18n/fallback.php:638
+msgid "Education"
+msgstr "Education"
+#: wp-content/themes/conexao-br-irlanda/inc/i18n/fallback.php:639
+msgid "Vocational Training"
+msgstr "Vocational Training"
+#: wp-content/themes/conexao-br-irlanda/inc/i18n/fallback.php:640
+msgid "Business"
+msgstr "Business"

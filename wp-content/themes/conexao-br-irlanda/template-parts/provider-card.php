@@ -9,12 +9,21 @@
  * @package Conexao_BR_Irlanda
  */
 
-$provider_id       = get_the_ID();
-$provider_url      = get_post_meta( $provider_id, '_provider_url', true );
-$provider_category = get_post_meta( $provider_id, '_provider_category', true );
-$provider_location = get_post_meta( $provider_id, '_provider_location', true );
-$provider_logo     = get_post_meta( $provider_id, '_provider_logo', true );
-$logo_id           = absint( $provider_logo );
+/*
+ * STAGE 9 — language-aware category presentation. The stored
+ * `_provider_category` meta is free-text Portuguese and is NEVER rewritten; only
+ * the DISPLAY value is localized, so a PT request renders the original
+ * Portuguese label exactly as before and an EN request renders the English
+ * presentation label. An unknown value falls through unchanged, and the
+ * esc_html() in the markup still escapes whatever comes back.
+ */
+$provider_id             = get_the_ID();
+$provider_url            = get_post_meta( $provider_id, '_provider_url', true );
+$provider_category       = get_post_meta( $provider_id, '_provider_category', true );
+$provider_category_label = conexao_provider_category_label( $provider_category );
+$provider_location       = get_post_meta( $provider_id, '_provider_location', true );
+$provider_logo           = get_post_meta( $provider_id, '_provider_logo', true );
+$logo_id                 = absint( $provider_logo );
 
 if ( ! $logo_id && has_post_thumbnail( $provider_id ) ) {
 	$logo_id = get_post_thumbnail_id( $provider_id );
@@ -33,8 +42,8 @@ $target_attrs = ' target="_blank" rel="noopener noreferrer"';
 			<?php endif; ?>
 		</div>
 		<div class="provider-card-body">
-			<?php if ( $provider_category ) : ?>
-				<span class="provider-card-category"><?php echo esc_html( $provider_category ); ?></span>
+			<?php if ( $provider_category_label ) : ?>
+				<span class="provider-card-category"><?php echo esc_html( $provider_category_label ); ?></span>
 			<?php endif; ?>
 			<h3 class="provider-card-title"><?php the_title(); ?></h3>
 			<?php

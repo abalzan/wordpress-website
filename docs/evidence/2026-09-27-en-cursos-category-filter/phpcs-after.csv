@@ -1,0 +1,56 @@
+EEEE 4 / 4 (100%)
+
+
+File,Line,Column,Type,Message,Source,Severity,Fixable
+"wp-content/themes/conexao-br-irlanda/inc/queries.php",84,1,error,"Missing doc comment for function conexao_get_guides_archive_url()",Squiz.Commenting.FunctionComment.Missing,5,0
+"wp-content/themes/conexao-br-irlanda/inc/queries.php",172,5,error,"Expected 1 space before comment text but found 4; use block comment if you need indentation",Squiz.Commenting.InlineComment.SpacingBefore,5,1
+"wp-content/themes/conexao-br-irlanda/inc/queries.php",174,18,error,"Opening parenthesis of a multi-line function call must be the last content on the line",PEAR.Functions.FunctionCallSignature.ContentAfterOpenBracket,5,1
+"wp-content/themes/conexao-br-irlanda/inc/queries.php",177,11,error,"Closing parenthesis of a multi-line function call must be on a line by itself",PEAR.Functions.FunctionCallSignature.CloseBracketLine,5,1
+"wp-content/themes/conexao-br-irlanda/inc/queries.php",265,1,error,"Doc comment for parameter \"$extra_args\" missing",Squiz.Commenting.FunctionComment.MissingParamTag,5,0
+"wp-content/themes/conexao-br-irlanda/inc/queries.php",288,16,warning,"Equals sign not aligned with surrounding assignments; expected 2 spaces but found 1 space",Generic.Formatting.MultipleStatementAlignment.NotSameWarning,5,1
+"wp-content/themes/conexao-br-irlanda/inc/queries.php",290,16,warning,"Equals sign not aligned with surrounding assignments; expected 5 spaces but found 4 spaces",Generic.Formatting.MultipleStatementAlignment.NotSameWarning,5,1
+"wp-content/themes/conexao-br-irlanda/inc/queries.php",296,17,error,"Opening parenthesis of a multi-line function call must be the last content on the line",PEAR.Functions.FunctionCallSignature.ContentAfterOpenBracket,5,1
+"wp-content/themes/conexao-br-irlanda/inc/queries.php",296,28,error,"Opening parenthesis of a multi-line function call must be the last content on the line",PEAR.Functions.FunctionCallSignature.ContentAfterOpenBracket,5,1
+"wp-content/themes/conexao-br-irlanda/inc/queries.php",296,57,error,"Opening parenthesis of a multi-line function call must be the last content on the line",PEAR.Functions.FunctionCallSignature.ContentAfterOpenBracket,5,1
+"wp-content/themes/conexao-br-irlanda/inc/queries.php",304,8,error,"Only one argument is allowed per line in a multi-line function call",PEAR.Functions.FunctionCallSignature.MultipleArguments,5,1
+"wp-content/themes/conexao-br-irlanda/inc/queries.php",304,8,error,"Only one argument is allowed per line in a multi-line function call",PEAR.Functions.FunctionCallSignature.MultipleArguments,5,1
+"wp-content/themes/conexao-br-irlanda/inc/queries.php",304,8,error,"Only one argument is allowed per line in a multi-line function call",PEAR.Functions.FunctionCallSignature.MultipleArguments,5,1
+"wp-content/themes/conexao-br-irlanda/inc/queries.php",304,20,error,"Closing parenthesis of a multi-line function call must be on a line by itself",PEAR.Functions.FunctionCallSignature.CloseBracketLine,5,1
+"wp-content/themes/conexao-br-irlanda/inc/queries.php",304,23,error,"Only one argument is allowed per line in a multi-line function call",PEAR.Functions.FunctionCallSignature.MultipleArguments,5,1
+"wp-content/themes/conexao-br-irlanda/inc/queries.php",304,23,error,"Only one argument is allowed per line in a multi-line function call",PEAR.Functions.FunctionCallSignature.MultipleArguments,5,1
+"wp-content/themes/conexao-br-irlanda/inc/queries.php",304,34,error,"Closing parenthesis of a multi-line function call must be on a line by itself",PEAR.Functions.FunctionCallSignature.CloseBracketLine,5,1
+"wp-content/themes/conexao-br-irlanda/inc/queries.php",304,36,error,"Closing parenthesis of a multi-line function call must be on a line by itself",PEAR.Functions.FunctionCallSignature.CloseBracketLine,5,1
+"wp-content/themes/conexao-br-irlanda/inc/queries.php",311,14,error,"Opening parenthesis of a multi-line function call must be the last content on the line",PEAR.Functions.FunctionCallSignature.ContentAfterOpenBracket,5,1
+"wp-content/themes/conexao-br-irlanda/inc/queries.php",311,46,error,"Only one argument is allowed per line in a multi-line function call",PEAR.Functions.FunctionCallSignature.MultipleArguments,5,1
+"wp-content/themes/conexao-br-irlanda/inc/queries.php",311,57,error,"Only one argument is allowed per line in a multi-line function call",PEAR.Functions.FunctionCallSignature.MultipleArguments,5,1
+"wp-content/themes/conexao-br-irlanda/inc/queries.php",314,7,error,"Closing parenthesis of a multi-line function call must be on a line by itself",PEAR.Functions.FunctionCallSignature.CloseBracketLine,5,1
+"wp-content/themes/conexao-br-irlanda/inc/queries.php",519,5,error,"Opening parenthesis of a multi-line function call must be the last content on the line",PEAR.Functions.FunctionCallSignature.ContentAfterOpenBracket,5,1
+"wp-content/themes/conexao-br-irlanda/inc/queries.php",519,21,error,"Only one argument is allowed per line in a multi-line function call",PEAR.Functions.FunctionCallSignature.MultipleArguments,5,1
+"wp-content/themes/conexao-br-irlanda/inc/queries.php",519,21,error,"Expected 1 space after FUNCTION keyword; 0 found",Squiz.Functions.MultiLineFunctionDeclaration.SpaceAfterFunction,5,1
+"wp-content/themes/conexao-br-irlanda/inc/queries.php",521,7,error,"Closing parenthesis of a multi-line function call must be on a line by itself",PEAR.Functions.FunctionCallSignature.CloseBracketLine,5,1
+"wp-content/themes/conexao-br-irlanda/inc/queries.php",527,1,error,"Missing doc comment for function conexao_related_posts()",Squiz.Commenting.FunctionComment.Missing,5,0
+"wp-content/themes/conexao-br-irlanda/inc/queries.php",529,5,error,"Inline control structures are not allowed",Generic.ControlStructures.InlineControlStructure.NotAllowed,5,1
+"wp-content/themes/conexao-br-irlanda/inc/queries.php",531,20,error,"Opening parenthesis of a multi-line function call must be the last content on the line",PEAR.Functions.FunctionCallSignature.ContentAfterOpenBracket,5,1
+"wp-content/themes/conexao-br-irlanda/inc/queries.php",532,31,warning,"Array double arrow not aligned correctly; expected 11 space(s) between \"'category__in'\" and double arrow, but found 8.",WordPress.Arrays.MultipleStatementAlignment.DoubleArrowNotAligned,5,1
+"wp-content/themes/conexao-br-irlanda/inc/queries.php",533,31,warning,"Array double arrow not aligned correctly; expected 11 space(s) between \"'post__not_in'\" and double arrow, but found 8.",WordPress.Arrays.MultipleStatementAlignment.DoubleArrowNotAligned,5,1
+"wp-content/themes/conexao-br-irlanda/inc/queries.php",534,31,warning,"Array double arrow not aligned correctly; expected 9 space(s) between \"'posts_per_page'\" and double arrow, but found 6.",WordPress.Arrays.MultipleStatementAlignment.DoubleArrowNotAligned,5,1
+"wp-content/themes/conexao-br-irlanda/inc/queries.php",535,31,warning,"Array double arrow not aligned correctly; expected 4 space(s) between \"'ignore_sticky_posts'\" and double arrow, but found 1.",WordPress.Arrays.MultipleStatementAlignment.DoubleArrowNotAligned,5,1
+"wp-content/themes/conexao-br-irlanda/inc/queries.php",536,31,warning,"Array double arrow not aligned correctly; expected 10 space(s) between \"'no_found_rows'\" and double arrow, but found 7.",WordPress.Arrays.MultipleStatementAlignment.DoubleArrowNotAligned,5,1
+"wp-content/themes/conexao-br-irlanda/inc/queries.php",539,7,error,"Closing parenthesis of a multi-line function call must be on a line by itself",PEAR.Functions.FunctionCallSignature.CloseBracketLine,5,1
+"wp-content/themes/conexao-br-irlanda/inc/queries.php",545,56,error,"Newline required after opening brace",Squiz.ControlStructures.ControlSignature.NewlineAfterOpenBrace,5,1
+"wp-content/themes/conexao-br-irlanda/inc/queries.php",558,5,error,"Opening PHP tag must be on a line by itself",Squiz.PHP.EmbeddedPhp.ContentAfterOpen,5,1
+"wp-content/themes/conexao-br-irlanda/inc/queries.php",602,21,error,"Opening parenthesis of a multi-line function call must be the last content on the line",PEAR.Functions.FunctionCallSignature.ContentAfterOpenBracket,5,1
+"wp-content/themes/conexao-br-irlanda/inc/queries.php",612,7,error,"Closing parenthesis of a multi-line function call must be on a line by itself",PEAR.Functions.FunctionCallSignature.CloseBracketLine,5,1
+"wp-content/themes/conexao-br-irlanda/inc/queries.php",621,23,error,"Opening parenthesis of a multi-line function call must be the last content on the line",PEAR.Functions.FunctionCallSignature.ContentAfterOpenBracket,5,1
+"wp-content/themes/conexao-br-irlanda/inc/queries.php",630,11,error,"Closing parenthesis of a multi-line function call must be on a line by itself",PEAR.Functions.FunctionCallSignature.CloseBracketLine,5,1
+"wp-content/themes/conexao-br-irlanda/inc/queries.php",668,18,error,"Opening parenthesis of a multi-line function call must be the last content on the line",PEAR.Functions.FunctionCallSignature.ContentAfterOpenBracket,5,1
+"wp-content/themes/conexao-br-irlanda/inc/queries.php",678,7,error,"Closing parenthesis of a multi-line function call must be on a line by itself",PEAR.Functions.FunctionCallSignature.CloseBracketLine,5,1
+"wp-content/themes/conexao-br-irlanda/inc/i18n/fallback.php",745,9,error,"Expected 1 space before comment text but found 4; use block comment if you need indentation",Squiz.Commenting.InlineComment.SpacingBefore,5,1
+"wp-content/themes/conexao-br-irlanda/inc/i18n/fallback.php",746,9,error,"Expected 1 space before comment text but found 4; use block comment if you need indentation",Squiz.Commenting.InlineComment.SpacingBefore,5,1
+"wp-content/themes/conexao-br-irlanda/inc/i18n/fallback.php",747,9,error,"Expected 1 space before comment text but found 4; use block comment if you need indentation",Squiz.Commenting.InlineComment.SpacingBefore,5,1
+"wp-content/themes/conexao-br-irlanda/inc/i18n/fallback.php",748,9,error,"Expected 1 space before comment text but found 4; use block comment if you need indentation",Squiz.Commenting.InlineComment.SpacingBefore,5,1
+"wp-content/themes/conexao-br-irlanda/template-parts/course-filters.php",38,28,warning,"Processing form data without nonce verification.",WordPress.Security.NonceVerification.Recommended,5,0
+"wp-content/themes/conexao-br-irlanda/template-parts/course-filters.php",38,79,warning,"Processing form data without nonce verification.",WordPress.Security.NonceVerification.Recommended,5,0
+"wp-content/themes/conexao-br-irlanda/template-parts/course-filters.php",56,45,error,"Overriding WordPress globals is prohibited. Found assignment to $cat",WordPress.WP.GlobalVariablesOverride.Prohibited,5,0
+"wp-content/themes/conexao-br-irlanda/template-parts/provider-card.php",36,92,error,"All output should be run through an escaping function (see the Security sections in the WordPress Developer Handbooks), found '$target_attrs'.",WordPress.Security.EscapeOutput.OutputNotEscaped,5,0
+"wp-content/themes/conexao-br-irlanda/template-parts/provider-card.php",39,222,error,"When a multi-item array is declared with explicit keys, each value should start on a new line.",WordPress.Arrays.ArrayDeclarationSpacing.AssociativeArrayFound,5,1

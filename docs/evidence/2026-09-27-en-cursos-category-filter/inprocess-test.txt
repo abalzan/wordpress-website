@@ -1,0 +1,74 @@
+
+=== Fixture ===
+  PASS: the temporary course_provider fixture was created
+
+=== Query boundary (per-language process): PT unchanged, EN B2 widened ===
+  PASS: the PT probe process completed
+  PASS: the EN probe process completed
+  PASS: a PT request resolves the requested language as PT
+  PASS: a PT request receives NO injected lang argument
+  PASS: a B1 post type (guide) is never widened on a PT request
+  PASS: a PT request discovers the published provider categories
+  PASS: PT labels equal PT names
+  PASS: an EN request resolves the requested language as EN
+  PASS: an EN request widens the B2 course_provider query to en,pt
+  PASS: a non-B2 post type (guide) is never widened on an EN request
+  PASS: an explicit caller-supplied lang is preserved, never overridden
+  PASS: the shared helper still widens the events B2 query (no regression)
+  PASS: the shared helper still widens the leisure B2 query (no regression)
+  PASS: the events B2 query is not widened on a PT request
+  PASS: an EN request discovers the B2 PT provider records (filter bar can render)
+  PASS: the EN request discovers exactly the same category set as the PT request
+  PASS: the canonical PT name values are identical in both languages
+  PASS: the filter slugs are identical in both languages (one identity, one URL)
+  PASS: every discovered category renders an English label on /en/cursos/
+
+=== Category labels: PT verbatim, EN English, unknown safe ===
+  PASS: a PT request returns "Cursos Online" verbatim
+  PASS: an EN request renders "Cursos Online" as "Online Courses"
+  PASS: a PT request returns "Diretórios de Cursos" verbatim
+  PASS: an EN request renders "Diretórios de Cursos" as "Course Directories"
+  PASS: a PT request returns "Educação" verbatim
+  PASS: an EN request renders "Educação" as "Education"
+  PASS: a PT request returns "Formação Profissional" verbatim
+  PASS: an EN request renders "Formação Profissional" as "Vocational Training"
+  PASS: a PT request returns "Negócios" verbatim
+  PASS: an EN request renders "Negócios" as "Business"
+  PASS: an unaccented variant of a known category resolves to the same English label
+  PASS: a differently cased / padded variant resolves to the same English label
+  PASS: a dash-separated variant resolves to the same English label
+
+=== Rendering: EN filter bar and provider card ===
+  PASS: the EN request renders the provider filter bar
+  PASS: the EN filter bar shows the English category label
+  PASS: the EN filter bar does not leak the Portuguese label
+  PASS: the EN filter link stays under /en/cursos/
+  PASS: the PT request still renders the filter bar
+  PASS: the PT filter bar shows the Portuguese label
+  PASS: the PT filter bar never shows the English label
+  PASS: the EN provider card shows the English category label
+  PASS: the EN card does not leak the Portuguese category
+  PASS: an unknown value with markup is escaped in the card
+  PASS: no raw script tag is emitted by the card
+
+=== Rendering: PT output is unchanged ===
+  PASS: the PT filter link stays under /cursos/
+  PASS: the PT card shows the stored Portuguese category
+  PASS: the PT card keeps the "provider-card" structure
+  PASS: the PT card keeps the "provider-card-link" structure
+  PASS: the PT card keeps the "provider-card-body" structure
+  PASS: the PT card keeps the "provider-card-title" structure
+  PASS: the PT card keeps the "provider-card-cta" structure
+  PASS: the PT card keeps the "provider-card-excerpt" structure
+  PASS: the provider external link is preserved
+  PASS: the provider link target/rel attributes are preserved
+  PASS: the STAGE 8 description block is still rendered
+
+=== Regression: event / leisure B2 helpers and B2 policy ===
+  PASS: conexao_get_event_towns() still returns an array on an EN request
+  PASS: conexao_get_terms_for_post_type() still returns an array for events on EN
+  PASS: a B1 post type (guide) is never widened on a PT request either
+  PASS: course_provider remains a B2 post type (policy unchanged)
+  PASS: zero EN course_provider records exist (no EN identity was created)
+
+60 passed, 0 failed
