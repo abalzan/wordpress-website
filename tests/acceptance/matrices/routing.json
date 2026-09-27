@@ -335,6 +335,65 @@
       "note": "The /en/ language layer resolves (stage2 §3) and serves English markup."
     },
     {
+      "id": "en-cursos-fetch-card-excerpt-is-english",
+      "url": "/en/cursos/",
+      "expect_status": 200,
+      "expect_contains": [
+        "Find training and continuing education courses throughout Ireland"
+      ],
+      "expect_absent": [
+        "Encontre cursos de formação e educação continuada em toda a Irlanda"
+      ],
+      "note": "Stage 8 EN course-provider descriptions: the FETCH Courses card on the English archive renders the authored English description from `_provider_excerpt_en` instead of the Portuguese B2 fallback. Same card, same 20-word trim, card structure/classes/CTA unchanged, English payload only."
+    },
+    {
+      "id": "en-cursos-no-portuguese-card-excerpt-leak",
+      "url": "/en/cursos/",
+      "expect_status": 200,
+      "expect_contains": [
+        "class=\"provider-card-excerpt\""
+      ],
+      "expect_absent": [
+        "<p class=\"provider-card-excerpt\">Encontre cursos de formação e educação continuada em toda a Irlanda",
+        "<p class=\"provider-card-excerpt\">A base de dados nacional da Irlanda para cursos e orientação",
+        "<p class=\"provider-card-excerpt\">Descubra cursos superiores subsidiados criados para ajudar as pessoas",
+        "<p class=\"provider-card-excerpt\">Descubra oportunidades de formação e requalificação desenhadas em torno",
+        "<p class=\"provider-card-excerpt\">Aprendizagem online e desenvolvimento de competências da SOLAS",
+        "<p class=\"provider-card-excerpt\">Programas de formação e cursos de negócios para quem está a iniciar",
+        "<p class=\"provider-card-excerpt\">Explore milhares de cursos de faculdades, universidades",
+        "<p class=\"provider-card-excerpt\">Encontre oportunidades de educação e formação oferecidas através da rede",
+        "<p class=\"provider-card-excerpt\">Portal nacional para encontrar apprenticeships na Irlanda",
+        "<p class=\"provider-card-excerpt\">Explore micro-credenciais curtas, flexíveis e acreditadas"
+      ],
+      "note": "No Portuguese `.provider-card-excerpt` leaks into any English card on /en/cursos/. A record with no authored English description keeps the approved B2 fallback by design; this asserts the shipped 10-row dataset leaves none."
+    },
+    {
+      "id": "pt-cursos-card-excerpt-stays-portuguese",
+      "url": "/cursos/",
+      "expect_status": 200,
+      "expect_contains": [
+        "Encontre cursos de formação e educação continuada em toda a Irlanda"
+      ],
+      "expect_absent": [
+        "Find training and continuing education courses"
+      ],
+      "note": "PT immutability at the render level: the Portuguese archive still renders the Portuguese description. Stage 8 writes only `_provider_excerpt_en` and the PT pipeline (`get_the_excerpt()`) is untouched, so /cursos/ is byte-identical before and after the apply."
+    },
+    {
+      "id": "en-cursos-canonical-and-hreflang",
+      "url": "/en/cursos/",
+      "expect_status": 200,
+      "expect_contains": [
+        "rel=\"canonical\" href=\"http://localhost:8080/en/cursos/\"",
+        "hreflang=\"pt-BR\" href=\"http://localhost:8080/cursos/\"",
+        "hreflang=\"en\" href=\"http://localhost:8080/en/cursos/\""
+      ],
+      "expect_absent": [
+        "rel=\"canonical\" href=\"http://localhost:8080/cursos/\""
+      ],
+      "note": "The English Cursos archive keeps its self-canonical EN URL and the documented pt-BR <-> en hreflang pair after the description rollout. course_provider stays a B2 post type: the stage creates no EN record, so routing, canonical and hreflang are NOT changed by it."
+    },
+    {
       "id": "en-200-en-apoiadores",
       "url": "/en/apoiadores/",
       "expect_status": 200,

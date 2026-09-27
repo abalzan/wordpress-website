@@ -1,0 +1,69 @@
+
+=== Bootstrap ===
+  PASS: conexao_provider_card_excerpt() exists (theme inc/i18n/fallback.php)
+  PASS: conexao_current_language_slug() exists
+  PASS: Polylang is active
+
+=== PT request → existing Portuguese pipeline (unchanged) ===
+  PASS: helper returns the exact get_the_excerpt() value on PT
+  PASS: .provider-card-excerpt renders the trimmed PT description
+  PASS: PT card output == the pre-existing 20-word pipeline byte-for-byte
+
+=== EN request, no EN description → approved B2 fallback ===
+  PASS: helper falls back to the PT description (B2) when no EN description exists
+  PASS: .provider-card-excerpt renders the PT description (B2 fallback)
+
+=== EN request + authored EN description → English card ===
+  PASS: helper returns the authored EN description
+  PASS: .provider-card-excerpt renders the trimmed EN description
+  PASS: EN card does NOT render the Portuguese description (the Stage 8 rule)
+  PASS: PT card still renders the PT description while the EN meta exists
+  PASS: PT request never reads the EN meta
+
+=== Rollout engine: preview / drift refusal / idempotency / remove ===
+  PASS: shared rollout engine + en-course-provider-description stage are loaded
+  PASS: the stage declares its own identity
+  PASS: the stage declares remove as safe (single reproducible field)
+  PASS: the stage declares the course_provider post type
+  PASS: preview returns a report
+  PASS: preview reports 0 PT changes
+  PASS: preview reports 0 errors
+  PASS: preview reports 0 conflicts against the shipped dataset
+
+=== PT-drift detection: normalisation is narrow, not a blanket pass ===
+  PASS: entity encoding is not mistaken for content drift
+  PASS: an en/em dash difference is not mistaken for content drift
+  PASS: a whitespace run difference is not mistaken for content drift
+  PASS: a REAL change to the Portuguese words is still detected as drift
+  PASS: case is NOT folded — a genuine edit is never normalised away
+  PASS: accents are NOT folded — a genuine edit is never normalised away
+
+=== Negative: a drifted PT source is refused, not silently translated ===
+  PASS: a drifted PT source is reported as a hard stage conflict
+  PASS: a drifted record is NOT reported as already translated
+  PASS: the refused record was not written
+  PASS: an empty expected source disables the drift guard rather than faking a conflict
+
+=== Negative: an existing, valid EN description is not clobbered ===
+  PASS: re-writing an already-correct description is a no-op (idempotent)
+  PASS: the stored English description is byte-identical after the no-op write
+
+=== Negative: remove deletes only the English field, never PT data ===
+  PASS: remove_en() deletes only _provider_excerpt_en
+  PASS: remove_en() leaves the PT excerpt untouched
+  PASS: remove_en() leaves the PT title untouched
+
+=== Shipped dataset: every published provider has an English description ===
+  PASS: every published provider with a PT description has an EN description (10/10)
+  PASS: every EN description is recognisably English (10/10)
+  PASS: no EN description is a verbatim copy of its Portuguese source
+  PASS: no published provider renders a wrong (PT) description on EN (0 wrong of 10)
+
+=== Named example: FETCH Courses renders the authored English ===
+  PASS: the fetch-courses provider record exists
+  PASS: FETCH Courses carries an English description
+  PASS: the FETCH Courses EN card renders the authored English description
+  PASS: the FETCH Courses EN card no longer renders the Portuguese description
+  PASS: the FETCH Courses PT card still renders the Portuguese description
+
+45 passed, 0 failed

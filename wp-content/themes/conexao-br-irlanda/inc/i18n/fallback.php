@@ -542,6 +542,53 @@ function conexao_leisure_card_excerpt( $leisure_id = 0 ): string {
 }
 
 /**
+ * STAGE 8 — the course-provider card description source (language-aware).
+ *
+ * The exact counterpart of `conexao_leisure_card_excerpt()` for the Cursos
+ * directory. `/en/cursos` is a B2 destination (`course_provider` is in
+ * `conexao_b2_post_types()`), so the same approved B2 fallback applies — but the
+ * provider card previously had NO language-aware read path at all: it called
+ * `get_the_excerpt()` directly, so every English card showed Portuguese text and
+ * there was nowhere for a translation to live.
+ *
+ * This helper selects the description SOURCE for the request language; the
+ * presentation pipeline (20-word trim + escaping) stays entirely in the
+ * template, identical for both languages:
+ *
+ *  - PT request (or Polylang inactive, or any non-EN language) → the exact
+ *    existing value, `get_the_excerpt()` — byte-identical previous behaviour;
+ *  - EN request + an authored English description stored in the
+ *    `_provider_excerpt_en` post meta of the SAME record → that translation
+ *    (one identity, no second provider record, `_provider_url` /
+ *    `_provider_category` / `_provider_location` / `_provider_logo` untouched);
+ *  - EN request + no authored EN description → the approved B2 fallback:
+ *    the Portuguese excerpt under the English shell (never an invented
+ *    translation).
+ *
+ * Storage rationale: `course_provider` is a B2 directory CPT, so the EN layer is
+ * a description translation on the existing PT records, exactly as Leisure is —
+ * NOT linked EN provider posts. The authored English is written by the
+ * `en-course-provider-description` stage on the shared
+ * `conexao-translation-rollout` engine and is portable as a versioned dataset
+ * in `conexao-en-translation`.
+ *
+ * @param int|null $provider_id Course provider post ID (defaults to the current loop post).
+ * @return string Description source for the current language.
+ */
+function conexao_provider_card_excerpt( $provider_id = 0 ): string {
+	$provider_id = $provider_id ? (int) $provider_id : get_the_ID();
+
+	if ( $provider_id && 'en' === conexao_current_language_slug() ) {
+		$en = trim( (string) get_post_meta( $provider_id, '_provider_excerpt_en', true ) );
+		if ( '' !== $en ) {
+			return $en;
+		}
+	}
+
+	return get_the_excerpt( $provider_id ? $provider_id : null );
+}
+
+/**
  * Take ownership of Polylang's language-mismatch redirect status.
  *
  * Polylang's frontend canonical sends a **301** when a URL is requested under

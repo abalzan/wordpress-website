@@ -1,0 +1,21 @@
+
+script: run-en-translation.php
+target: http://localhost:8080 (local, local)
+mode:   dry-run
+scope:  The en-guide / en-page / en-post / en-blog-page stages registered by the conexao-en-translation plugin. Dry-run by default; --apply creates the EN records; --remove deletes them. A PT record is only ever read.
+
+=== stage: en-course-provider-description (mode: dry-run, operation: run) ===
+  created=10 updated=0 skipped=0 removed=0 conflicts=0 errors=0 PT-drift=0
+    would-create fetch-courses                                 EN record would be created, linked and verified
+    would-create qualifax                                      EN record would be created, linked and verified
+    would-create springboard-plus                              EN record would be created, linked and verified
+    would-create skillnet-ireland                              EN record would be created, linked and verified
+    would-create solas-ecollege                                EN record would be created, linked and verified
+    would-create local-enterprise-office                       EN record would be created, linked and verified
+    would-create courses-ie                                    EN record would be created, linked and verified
+    would-create etbi                                          EN record would be created, linked and verified
+    would-create apprenticeship-ie                             EN record would be created, linked and verified
+    would-create microcreds                                    EN record would be created, linked and verified
+  GATE FAIL: eligible PT=10 with EN=0 missing EN=10 conflicts=0 PT drift=0
+
+summary: created=10, updated=0, skipped=0, removed=0, errors=1, conflicts=0, pt_changed=0, gate_failures=1

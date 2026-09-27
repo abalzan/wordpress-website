@@ -211,6 +211,16 @@ image, body) plus one minimal field:
 
 - `_provider_logo` (integer — attachment ID)
 - `_provider_category` (string), `_provider_location`, `_provider_url`, `_provider_status`, `_provider_order` (integer)
+- `_provider_excerpt_en` (string) — the **authored English card description**
+  (Stage 8). Written by the `en-course-provider-description` stage of the shared
+  `conexao-translation-rollout` engine, operated through
+  `conexao-en-translation` (a versioned, slug-keyed dataset). It is an
+  English-only field on the **same** PT record, because `course_provider` is a
+  documented B2 post type: `/en/cursos/` renders the PT records under the English
+  shell, so there is no linked EN provider post and no second identity. The
+  theme reads it through `conexao_provider_card_excerpt()` on EN requests only;
+  the PT render path (`get_the_excerpt()`) never reads it, so Portuguese output
+  is unaffected. A record with no value keeps the approved B2 fallback.
 
 ### Recruitment Agency
 

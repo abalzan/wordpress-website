@@ -173,15 +173,16 @@ stage's own reason string, instead of falling through to the engine's generic
 `EN record exists but the pair link is broken` text.
 
 It exists for stages whose eligibility rule is richer than
-exists / linked / slug-collision — in practice the
-[`en-leisure-description`](conexao-en-translation.md) stage, which must refuse to
-write an English description whose Portuguese source has changed since the
-translation was authored. Without it the stage would have had to either reuse a
+exists / linked / slug-collision — in practice the two authored
+description-field stages, [`en-leisure-description`](conexao-en-translation.md)
+and [`en-course-provider-description`](conexao-en-translation.md), which must
+refuse to write an English description whose Portuguese source has changed since
+the translation was authored. Without it the stage would have had to either reuse a
 misleading reason string or re-implement plan traversal, which the ownership
 boundary above forbids.
 
-The key is **optional and additive**: no existing stage sets it, so every current
-stage's plan, counters and gate are byte-identical to before.
+The key is **optional and additive**: the record-creating stages do not set it, so
+their plans, counters and gates are byte-identical to before.
 
 ## Hard warnings
 

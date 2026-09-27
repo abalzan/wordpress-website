@@ -18,8 +18,8 @@ the authored English and the WordPress-bound adapter.
 | | |
 |---|---|
 | Folder | `wp-content/plugins/conexao-en-translation/` |
-| Authored copy | `includes/manifest-data.php` (Stage M: guide + page + the first 8 Blog rows), `includes/blog-translation-data.php` (Stage N: the remaining 34 Blog rows), `includes/blog-page-data.php` (Stage O: the single Blog **posts page** row) and `includes/leisure-description-data.php` (Stage 7: the 289 Leisure card descriptions) — four separate versioned datasets, each keyed by PT slug |
-| Adapter + config | `includes/stage-fields.php`, `includes/stage-config.php` (Stage O adds the `en-blog-page` stage: shared-slug filter, routing-cache refresh, shared-slug duplicate guard) and `includes/leisure-description-stage.php` (Stage 7 adds the `en-leisure-description` stage) |
+| Authored copy | `includes/manifest-data.php` (Stage M: guide + page + the first 8 Blog rows), `includes/blog-translation-data.php` (Stage N: the remaining 34 Blog rows), `includes/blog-page-data.php` (Stage O: the single Blog **posts page** row), `includes/leisure-description-data.php` (Stage 7: the 289 Leisure card descriptions) and `includes/course-provider-description-data.php` (Stage 8: the 10 course-provider card descriptions) — five separate versioned datasets, each keyed by PT slug |
+| Adapter + config | `includes/stage-fields.php`, `includes/stage-config.php` (Stage O adds the `en-blog-page` stage: shared-slug filter, routing-cache refresh, shared-slug duplicate guard), `includes/leisure-description-stage.php` (Stage 7 adds the `en-leisure-description` stage) and `includes/course-provider-description-stage.php` (Stage 8 adds the `en-course-provider-description` stage) |
 | Manifest shape | `includes/translation-map.php` |
 | Runner | `scripts/run-en-translation.php` |
 | Admin screen | none (the rollout is operated through the shared engine's screen and the runner script) |
@@ -279,6 +279,70 @@ says the entry is retained for installs that have not run the translation), but
 B2 path is unreachable here. No gate, baseline, threshold or allowlist function
 was edited to produce any of these numbers.
 
+## Stage 8 — the `en-course-provider-description` stage
+
+The Cursos archive is a **B2** type, exactly like Lazer: `course_provider` is in
+`conexao_b2_post_types()`, so `/en/cursos/` serves the Portuguese records under the
+English shell. Stage 8 does not change that policy. It translates the one thing
+the B2 fallback got wrong for a reader — the **card description** — by writing an
+authored English field onto the **same** PT record.
+
+It exists because the provider card was the one B2 card with **no** language-aware
+read path at all: `template-parts/provider-card.php` called `get_the_excerpt()`
+directly, so there was neither data nor anywhere to put it. Stage 7 Leisure
+already had `conexao_leisure_card_excerpt()`; Stage 8 adds the exact counterpart
+`conexao_provider_card_excerpt()`.
+
+| | |
+|---|---|
+| Stage id | `en-course-provider-description` |
+| Strategy | **authored EN field on the same record** (`_provider_excerpt_en` post meta). Creating linked EN `course_provider` posts would change the B2 policy, canonical/hreflang/sitemap behaviour and duplicate identities. |
+| Dataset | `includes/course-provider-description-data.php` — **10 rows**, keyed by PT slug, each `{pt_source, pt_title, en_description}` |
+| Adapter + config | `includes/course-provider-description-stage.php` |
+| Records created | **0** — there is no `wp_insert_post()` path in the stage at all |
+| Fields written | **1** — `_provider_excerpt_en` on the existing PT record |
+| Numeric gate | `eligible_public_pt = 10`, `with_en = 10`, **`missing_en = 0`**, `conflicts = 0`, `pt_drift = 0` |
+| `allow_remove` | `true` — the EN layer is a single reproducible field, so remove is a safe first-class rollback |
+| B2 / completeness | `course_provider` stays a B2 type with **0** linked EN records; the permanent `translation_completeness` gate numbers are unchanged (`eligible 10, translated 0, allowlisted 10, missing_en 0, malformed 0`) |
+
+The field name follows the existing `_leisure_excerpt_en` convention inside this
+post type's own `_provider_*` meta namespace. `_leisure_excerpt_en` is **not**
+reused: wrong post type, wrong namespace.
+
+### Engine mapping
+
+Identical to Stage 7 (see the table above and the equivalent rows for
+`en-leisure-description`): `find_pt()` resolves the published PT
+`course_provider` for the slug (language-unfiltered, `suppress_filters`),
+`find_en_for_pt()` reports "already translated" only when a non-empty
+`_provider_excerpt_en` is stored and raises the additive `stage_conflict` key
+when the PT `post_excerpt` has drifted, `create_en()`/`repair_en()` perform the
+one `update_post_meta()` write, `link_pair()` is a deliberate no-op (there is no
+second identity to link), `pair_ok()` asserts the stored value equals the
+authored English, `remove_en()` deletes the field, and `slug_collision()` is
+always false because the stage mints no slug.
+
+The PT snapshot deliberately **excludes** `_provider_excerpt_en` (it is the field
+this stage owns) and **includes** everything that defines the Portuguese record:
+title, slug, content, excerpt, status, date, author, menu order, thumbnail, the
+four taxonomy assignments, the Polylang language and the `_provider_*` meta.
+
+The drift normaliser is the Stage 7 one, reused unchanged (HTML entities,
+whitespace runs, typographic punctuation; never case, accents or word
+characters), so a representation difference is not content drift but a real
+Portuguese edit is still refused.
+
+### Result
+
+| Metric | Before Stage 8 | After Stage 8 |
+|---|---|---|
+| `/en/cursos` provider descriptions | 0 English (10 Portuguese) | **10 English, 0 leaks** |
+| `_provider_excerpt_en` rows | 0 | **10** |
+| `course_provider` records / EN records | 10 / 0 | 10 / **0** (unchanged) |
+| `/cursos` rendered output | Portuguese | **byte-identical** |
+| PT drift | — | **0** |
+| Stage gate | `missing_en = 10` (FAIL) | **`missing_en = 0`** (PASS) |
+
 ## Rollback
 
 `allow_remove: true`, so the rollback is a first-class operation:
@@ -306,7 +370,7 @@ php wp-content/themes/conexao-br-irlanda/tests/test-translation-completeness.php
 | **Build** | no |
 | **Compose mount** | yes |
 | **Dependencies** | `conexao-translation-rollout` |
-| **Version** | 1.3.0 (authoritative source: `wp-content/plugins/conexao-en-translation/conexao-en-translation.php` header) |
+| **Version** | 1.4.0 (authoritative source: `wp-content/plugins/conexao-en-translation/conexao-en-translation.php` header) |
 | **Registry** | [`plugins.json`](../../plugins.json) |
 
 > **Local-only tooling.** Not a production steady-state dependency.

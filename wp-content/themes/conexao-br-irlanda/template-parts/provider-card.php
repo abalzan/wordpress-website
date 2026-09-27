@@ -37,7 +37,15 @@ $target_attrs = ' target="_blank" rel="noopener noreferrer"';
 				<span class="provider-card-category"><?php echo esc_html( $provider_category ); ?></span>
 			<?php endif; ?>
 			<h3 class="provider-card-title"><?php the_title(); ?></h3>
-			<p class="provider-card-excerpt"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 20, '...' ) ); ?></p>
+			<?php
+			// STAGE 8 — language-aware description source. PT keeps the exact
+			// pre-existing pipeline (get_the_excerpt()); an EN request renders the
+			// authored English description when one exists and keeps the approved
+			// B2 fallback (the PT excerpt) when it does not. The presentation
+			// pipeline below (20-word trim + esc_html) is IDENTICAL for both
+			// languages.
+			?>
+			<p class="provider-card-excerpt"><?php echo esc_html( wp_trim_words( conexao_provider_card_excerpt( $provider_id ), 20, '...' ) ); ?></p>
 			<?php if ( $provider_location ) : ?>
 				<div class="provider-card-meta">
 					<span class="provider-card-detail">
