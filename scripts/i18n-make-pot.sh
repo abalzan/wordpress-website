@@ -26,6 +26,13 @@
 #   `.po` or `.mo` (a translated catalogue is hand-maintained by a translator
 #   and must survive a regeneration), and it never touches any source file.
 #
+#   `<component-slug>` scopes which catalogue is WRITTEN. It never scopes which
+#   files are SCANNED: extraction always covers the union of every component
+#   directory, because a string belongs to the catalogue of the domain it
+#   declares wherever it lives. Source references are written repository-
+#   relative, so a committed catalogue never carries a local checkout path and
+#   two machines regenerate byte-identical output.
+#
 # Safety:
 #   - No WordPress, no database, no network, no production endpoint.
 #   - Never runs against production content; it only reads the repository.
@@ -112,6 +119,26 @@ XGETTEXT_VERSION="$("${XGETTEXT[@]}" --version 2>/dev/null | head -1)"
 # The gate correctly treats "no catalogue and no strings" as nothing to keep
 # fresh, so this script must not invent an empty .pot for them.
 
+UNION_DISCOVERY="$(python3 - "$REPO_ROOT" <<'PY'
+import importlib.util, os, sys
+
+repo = sys.argv[1]
+gate = os.path.join(repo, "tests", "scripts", "verify-i18n-freshness.py")
+spec = importlib.util.spec_from_file_location("i18n_gate", gate)
+mod = importlib.util.module_from_spec(spec)
+# The gate only runs main() as __main__, so importing it performs no work.
+spec.loader.exec_module(mod)
+
+# The UNION of source roots is always every component, NEVER narrowed by --only.
+# A string belongs to the catalogue of the DOMAIN it declares, wherever the file
+# lives (conexao-data-model/includes/class-agency.php tags its 12 job-type labels
+# with the THEME domain), so restricting the scan to the selected component's own
+# directory would silently drop real user-facing strings from its catalogue.
+for slug, directory in mod.components():
+    print(f"{slug}\t{directory}")
+PY
+)"
+
 DISCOVERY="$(python3 - "$REPO_ROOT" "$ONLY" <<'PY'
 import importlib.util, os, sys
 
@@ -143,9 +170,16 @@ COMPONENTS=""
 SKIPPED_COMPONENTS=""
 ALL_DIRS=""
 
+# ALL_DIRS is the union of EVERY component directory, independent of --only, so
+# a component catalogue still collects the strings that other components tag
+# with its domain.
+while IFS=$'\t' read -r udir; do
+    [ -n "$udir" ] || continue
+    ALL_DIRS="${ALL_DIRS}${ALL_DIRS:+ }${udir}"
+done <<< "$UNION_DISCOVERY"
+
 while IFS=$'\t' read -r slug dir state; do
     [ -n "$slug" ] || continue
-    ALL_DIRS="${ALL_DIRS}${ALL_DIRS:+ }${dir}"
     if [ "$state" = "has-strings" ]; then
         COMPONENTS="${COMPONENTS}${slug}"$'\t'"${dir}"$'\n'
     else
@@ -210,6 +244,61 @@ kept = [b for b in blocks if block_domains(b) <= {domain}]
 
 with open(path, "w", encoding="utf-8") as fh:
     fh.write("\n".join(header + [l for b in kept for l in b] + [""]))
+PY
+}
+
+# Rewrite xgettext's absolute source references to repository-relative ones.
+#
+# xgettext records the filename exactly as it was given on the file list, and
+# the file list is built from the absolute component directories the freshness
+# gate resolves. Left alone, every reference in a committed catalogue would
+# carry the maintainer's checkout path (`/home/<user>/...`), which is
+# machine-specific noise, breaks a byte-reproducible build and leaks a local
+# path into a tracked artefact. `wp i18n make-pot` records paths relative to
+# the source root, so this restores that property.
+#
+# It is a pure reference rewrite: msgid and msgstr values are never touched, so
+# no translation can be altered or orphaned by it.
+make_references_relative() {
+    local pot="$1" base="$2"
+    POT_BASE="$base" POT_REPO="$REPO_ROOT" python3 - "$pot" <<'PY'
+import os, re, sys
+
+path = sys.argv[1]
+base = os.environ.get("POT_BASE", "")
+repo = os.environ["POT_REPO"]
+
+# Longest prefix first, so the container prefix wins over the host path.
+prefixes = sorted({p for p in (base, repo) if p}, key=len, reverse=True)
+# `#: path:line`, possibly several per line, optionally with a `.domain` suffix.
+REF_RE = re.compile(r"^#:\s*(.*)$")
+
+
+def strip_ref(ref: str) -> str:
+    for prefix in prefixes:
+        normalized = prefix.rstrip("/") + "/"
+        if ref.startswith(normalized):
+            return ref[len(normalized):]
+    return ref
+
+
+with open(path, encoding="utf-8") as fh:
+    lines = fh.read().split("\n")
+
+changed = 0
+for index, line in enumerate(lines):
+    match = REF_RE.match(line)
+    if not match:
+        continue
+    refs = match.group(1).split()
+    rewritten = [strip_ref(ref) for ref in refs]
+    if rewritten != refs:
+        changed += 1
+        lines[index] = "#: " + " ".join(rewritten)
+
+if changed:
+    with open(path, "w", encoding="utf-8") as fh:
+        fh.write("\n".join(lines))
 PY
 }
 
@@ -496,9 +585,14 @@ while IFS=$'\t' read -r slug dir; do
         continue
     fi
 
-    # </dev/null matters: when xgettext runs through `docker compose exec` the
-    # child would otherwise consume this loop's stdin and the run would stop
-    # after the first component.
+    # The file list is fed on STDIN (--files-from=-), so stdin must reach
+    # xgettext. It must NOT be redirected from /dev/null: doing so silently
+    # replaces the piped list with an empty one, xgettext extracts nothing,
+    # never creates --output and still exits 0 - so the old catalogue survives
+    # untouched and add_header_strings() then appends DUPLICATE header blocks.
+    # The docker-compose concern the old comment described does not apply here:
+    # the `find` loop reads from a process substitution, not from this
+    # command's stdin, so nothing downstream can consume it.
     if printf '%s' "$file_list" | "${XGETTEXT[@]}" \
         --from-code=UTF-8 \
         --language=PHP \
@@ -511,8 +605,9 @@ while IFS=$'\t' read -r slug dir; do
         --copyright-holder="Conexao BR Irlanda" \
         --msgid-bugs-address="https://wordpress.org/support/plugin/conexao-br-irlanda" \
         --files-from=- \
-        --output="$out_pot" </dev/null >/dev/null 2>&1 \
-        && filter_pot_by_domain "$out_pot" "$slug"; then
+        --output="$out_pot" >/dev/null 2>&1 \
+        && filter_pot_by_domain "$out_pot" "$slug" \
+        && make_references_relative "$out_pot" "$base"; then
         # The POT header is normalised to this component afterwards, and the
         # component's own header strings are re-added, exactly as make-pot did.
         normalize_pot_header "$out_pot" "$slug" "$dir"
