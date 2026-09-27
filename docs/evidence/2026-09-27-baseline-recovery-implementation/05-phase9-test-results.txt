@@ -1,0 +1,107 @@
+# 05 - Phase 9: full suite, BEFORE vs AFTER the recovery (same machine, same DB)
+
+Runner: ./scripts/run-tests.sh   (in-process PHP + script-contract + HTTP acceptance)
+The BEFORE run is the actual 597b04e worktree (recovery stashed). The AFTER run is the recovered tree.
+Full logs: 09-run-tests-AFTER-recovery.txt, 10-run-tests-BEFORE-recovery-597b04e.txt
+
+## Aggregate
+| Metric | BEFORE (597b04e) | AFTER (recovered) |
+|---|---:|---:|
+| In-process PHP suites | 33 total, 23 passed, 10 failed | 59 total, 39 passed, 20 failed |
+| Assertions | 1768 passed, 24 failed | 2900 passed, 102 failed |
+| Script-contract suites | 6 total, 2 passed, 4 failed | 6 total, 6 passed, 0 failed |
+| HTTP acceptance suites | 3 total, 0 passed, 3 failed | 3 total, 0 passed, 3 failed |
+
+## Suite count rose 33 -> 59 because 26 deleted test FILES were restored and are running again.
+## Assertion count rose 1768 -> 2900 because restored suites execute again.
+## Script-contract 2/6 -> 6/6: cache-key-scoping, i18n-freshness, documentation-drift AND agent-governance all green.
+
+## Failure classification (set difference on the exact suite lists)
+
+### FIXED by the recovery (failed at 597b04e, pass after) - 4
+  plugin/conexao-admin-ux/test-translation-state.php
+  plugin/conexao-event-importer/test-export-language.php
+  plugin/conexao-event-importer/test-language-identity.php
+  plugin/conexao-event-runtime/test-event-language-gate.php
+
+### NEWLY FAILING - 14
+  *** ZERO of these are recovery-induced regressions. ***
+  Every one of these 14 test FILES DID NOT EXIST at 597b04e (deleted by the destructive commit) and was
+  restored from b47d098. They are the pre-existing b47d098 suites re-entering the run, not new breakage:
+    theme/conexao-br-irlanda/test-blog-en-translation.php
+    theme/conexao-br-irlanda/test-guide-en-translation.php
+    theme/conexao-br-irlanda/test-header-menu-selection.php
+    theme/conexao-br-irlanda/test-header-menu-selection.php
+    theme/conexao-br-irlanda/test-i18n-foundation.php
+    theme/conexao-br-irlanda/test-job-en-translation.php
+    theme/conexao-br-irlanda/test-jobs-en-language.php
+    theme/conexao-br-irlanda/test-nav-language-context.php
+    theme/conexao-br-irlanda/test-polylang-foundation.php
+    theme/conexao-br-irlanda/test-stage32-bilingual.php
+    theme/conexao-br-irlanda/test-stage33-bilingual.php
+    theme/conexao-br-irlanda/test-stage41-rest-language.php
+    theme/conexao-br-irlanda/test-stage45-pages.php
+    theme/conexao-br-irlanda/test-translation-completeness.php
+
+  Proof that none existed at 597b04e: `git cat-file -e 597b04e:<path>` fails for all 14.
+
+### FAILING IN BOTH (pre-existing, unchanged by the recovery) - 6
+  plugin/conexao-event-importer/test-ivvcc-importer.php
+  plugin/conexao-event-importer/test-town-sanitization.php
+  plugin/conexao-leisure-migration/test-excerpt-en-roundtrip.php
+  plugin/conexao-leisure-migration/test-language-uuid.php
+  theme/conexao-br-irlanda/test-event-location-filters.php
+  theme/conexao-br-irlanda/test-leisure-attribute-normalization.php
+
+  Per-suite assertion counts before vs after:
+    test-ivvcc-importer                  before[45 passed, 1 failed] after[45 passed, 1 failed] SAME
+    test-town-sanitization               before[82 passed, 1 failed] after[82 passed, 1 failed] SAME
+    test-leisure-attribute-normalization before[20 passed, 2 failed] after[20 passed, 2 failed] SAME
+    test-event-location-filters          before[44 passed, 1 failed] after[62 passed, 1 failed] IMPROVED (more assertions execute post-restore)
+
+## Targeted verification demanded by the task (all RESTORED and PASSING)
+  [PASS] plugin/conexao-admin-ux/test-translation-state.php — 23 passed, 0 failed
+  [PASS] plugin/conexao-event-importer/test-export-language.php — 58 passed, 0 failed
+  [PASS] plugin/conexao-event-importer/test-language-identity.php — 29 passed, 0 failed
+  [PASS] plugin/conexao-event-runtime/test-event-language-gate.php — 18 passed, 0 failed
+  [FAIL] theme/conexao-br-irlanda/test-blog-en-translation.php — 26 passed, 2 failed (exit 1)
+  [PASS] theme/conexao-br-irlanda/test-cache-language-scoping.php — 9 passed, 0 failed
+  [PASS] theme/conexao-br-irlanda/test-course-provider-card-excerpt-language.php — 45 passed, 0 failed
+  [PASS] theme/conexao-br-irlanda/test-en-course-provider-category-filter.php — 60 passed, 0 failed
+  [PASS] theme/conexao-br-irlanda/test-filter-link-aria-semantics.php — 103 passed, 0 failed
+  [PASS] theme/conexao-br-irlanda/test-homepage-content-type-label.php — 29 passed, 0 failed
+  [PASS] theme/conexao-br-irlanda/test-leisure-card-excerpt-language.php — 35 passed, 0 failed
+  [PASS] theme/conexao-br-irlanda/test-leisure-multiselect-filters.php — 64 passed, 0 failed
+  [PASS] theme/conexao-br-irlanda/test-redirect-precedence.php — 15 passed, 0 failed
+  [PASS] theme/conexao-br-irlanda/test-taxonomy-policy.php — 18 passed, 0 failed
+
+================================================================================
+ADDENDUM - after the local rewrite_rules flush (see 06-phase11-http-routes.txt)
+================================================================================
+
+| Metric                  | 597b04e (pre) | recovered, no flush | recovered + flush |
+|-------------------------|---------------|---------------------|-------------------|
+| In-process PHP suites   | 33 t/23p/10f  | 59 t/39p/20f       | 59 t/39p/20f      |
+| Assertions              | 1768p/24f     | 2900p/102f         | 2900p/102f        |
+| Script-contract suites  | 6 t/2p/4f     | 6 t/6p/0f          | 6 t/6p/0f         |
+| HTTP acceptance suites  | 0p/3f         | 0p/3f              | 1p/2f             |
+
+The in-process FAILING SUITE LIST is byte-identical before and after the flush
+(diff of the two sorted lists is empty): the flush changed no in-process result.
+
+HTTP acceptance after the flush:
+  [PASS] tests/acceptance/verify-release-http.py - 42 passed, 0 failed
+         (was: 3 matrix rows failed - en-pair-guias, en-pair-eventos, en-pair-lazer)
+  [FAIL] tests/acceptance/verify-guides-en-http.py
+         en-guides-200 /en/guias/  NOW PASSES (was "status 404, expected 200")
+         remaining 2 rows are strictly CONTENT-dependent, not code:
+           - en-guides-page-2  /en/guias/page/2/ : the dataset contains 0 EN guide
+             records, so page 2 of the archive is legitimately 404.
+           - "an EN guide link is discoverable in /en/guias/" : with 0 EN guides
+             there is no EN guide link to discover.
+         Both are the same content gap the translation_completeness permanent gate
+         reports as "guide: eligible public PT records missing a linked EN
+         translation = 0" -> 48 violations. Creating EN guide translations is a
+         CONTENT change (forbidden here), not a recovery task.
+
+Full log: 09b-run-tests-AFTER-recovery-with-flush.txt

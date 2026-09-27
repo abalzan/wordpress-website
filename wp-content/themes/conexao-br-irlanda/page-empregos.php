@@ -113,6 +113,28 @@ get_header();
 		?>
 
 		<?php
+		// "Vagas" / "Openings" preview section — INTENTIONALLY not rendered on
+		// the Jobs landing page any more. This template renders BOTH languages
+		// (/empregos/ and /en/jobs/), so the removal covers Portuguese and
+		// English alike: the page now goes straight from the Instagram /
+		// vacancies landing content to the unified employment opportunities
+		// directory below.
+		//
+		// The removal is RENDERING-ONLY — nothing was deleted:
+		//   - the job records themselves are untouched in the database;
+		//   - the language-aware listing query is retained at
+		//     inc/empregos-landing.php → conexao_empregos_current_jobs() (PT
+		//     jobs on /empregos/, EN jobs on /en/jobs/, plus the approved B2 set
+		//     while a job remains untranslated) and is still exercised by
+		//     tests/test-job-en-translation.php;
+		//   - the section styles are retained in main.css (.empregos-jobs*).
+		// To bring the section back, restore the rendering block — the shared
+		// .archive-grid/.archive-card cards, newest first, hidden when the query
+		// returns no published job. See the git history of this file or
+		// CONEXAO_BR_ENGLISH_JOBS_TRANSLATION_REPORT.md (Stage 6).
+		?>
+
+		<?php
 		// "Oportunidades de emprego" — the UNIFIED employment opportunities
 		// directory: recruitment agencies, official public-sector recruitment
 		// portals and Employment Permit-history employers in ONE shared,

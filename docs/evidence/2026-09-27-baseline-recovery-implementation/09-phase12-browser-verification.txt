@@ -1,0 +1,62 @@
+# 09 - Phase 12: browser verification (Playwright + Chromium 151.0.7922.34)
+
+Tooling WAS available: python playwright module + bundled Chromium.
+Viewports: desktop 1440x900, mobile 390x844. Redirects followed by the browser.
+
+| viewport | route | status | html lang | canonical | hreflang | PHP notices | role=listbox | role=option | aria-multiselectable | aria-current=true | h-overflow |
+|---|---|---:|---|---|---:|---:|---:|---:|---:|---:|---|
+| desktop | /en/ | 200 | en-US | yes | 3 | 0 | 0 | 0 | 0 | 2 | False |
+| desktop | /en/cursos/ | 200 | en-US | yes | 3 | 0 | 0 | 0 | 0 | 3 | False |
+| desktop | /en/guias/ | 200 | en-US | yes | 3 | 0 | 0 | 0 | 0 | 2 | False |
+| desktop | /en/lazer/ | 200 | en-US | yes | 3 | 0 | 0 | 0 | 0 | 4 | False |
+| desktop | /en/eventos/ | 200 | en-US | yes | 5 | 0 | 0 | 0 | 0 | 5 | False |
+| desktop | /en/empregos/ | 200 | pt-BR | yes | 2 | 0 | 0 | 0 | 0 | 3 | False |
+| desktop | /en/blog/ | 200 | en-US | yes | 5 | 0 | 0 | 0 | 0 | 2 | False |
+| mobile | /en/ | 200 | en-US | yes | 3 | 0 | 0 | 0 | 0 | 2 | False |
+| mobile | /en/cursos/ | 200 | en-US | yes | 3 | 0 | 0 | 0 | 0 | 3 | False |
+| mobile | /en/guias/ | 200 | en-US | yes | 3 | 0 | 0 | 0 | 0 | 2 | False |
+| mobile | /en/lazer/ | 200 | en-US | yes | 3 | 0 | 0 | 0 | 0 | 4 | False |
+| mobile | /en/eventos/ | 200 | en-US | yes | 5 | 0 | 0 | 0 | 0 | 5 | False |
+| mobile | /en/empregos/ | 200 | pt-BR | yes | 2 | 0 | 0 | 0 | 0 | 3 | False |
+| mobile | /en/blog/ | 200 | en-US | yes | 5 | 0 | 0 | 0 | 0 | 2 | False |
+
+## Accessibility semantics (the restored invariants), computed in the live DOM
+  role="listbox"           : 0 on every page and viewport  (was present at 597b04e)
+  role="option"            : 0 on every page and viewport  (was present at 597b04e)
+  orphan aria-multiselectable: 0 on every page and viewport
+  aria-current="true"     : present on every page (2-5 per page) = active filters/labels
+  horizontal overflow       : false on every page and viewport
+  PHP Warning/Notice/Deprecated/Fatal rendered: 0 on every page and viewport
+
+## Language shell / canonical / hreflang
+  Every EN archive renders <html lang="en-US"> with a canonical URL and 3-5 hreflang
+  alternates. PT routes (measured separately) render lang="pt-BR".
+
+## The two observed items, and why neither is a code regression
+
+1. Console 404s on /en/ and /en/eventos/ are MISSING UPLOADED MEDIA, not code:
+     404  http://localhost:8080/wp-content/uploads/2026/06/aeroporto-400x300.jpg
+     404  http://localhost:8080/wp-content/uploads/2026/06/sacola-ao-cliente-400x300.jpg
+     404  http://localhost:8080/wp-content/uploads/2026/06/casal-400x300.jpg
+   These are attachment files absent from the local uploads volume. The task forbids
+   media/content mutation, and no code change can create them. The SAME 404s are
+   present on the PT pages, so the EN layer is not singled out.
+
+2. The EN homepage renders no .post-card-category chips, so the translated label is
+   not visible on /en/ in this dataset. That is a CONTENT fact, not a code fact:
+   the featured/latest blocks draw from the PT records (42 PT posts, and the
+   homepage query is not B2-widened for post). The translation boundary itself is
+   proven by the restored unit suite test-homepage-content-type-label.php (29/29),
+   and is proved live elsewhere: /en/blog/ renders the CATEGORY LINK LABEL
+   'Uncategorized' - the English catalogue string - and not the Portuguese msgid.
+   That is direct evidence the restored POT/PO/MO + load_theme_textdomain path is
+   live, which is precisely what was broken at 597b04e (the 'Artigo' PT leak).
+
+## Not verified in the browser (recorded honestly)
+  - Filter keyboard interaction on a populated filter widget: the local dataset
+    renders zero filter options on /lazer/ and /eventos/ (pre-existing limitation
+    already recorded in the a11y report and in the assessment, section 18.4). The
+    ARIA semantics were therefore verified by source + unit suite (103 assertions)
+    and by the computed DOM counts above, not by live keypress interaction.
+  - /en/empregos/ renders lang="pt-BR": correct, because that route applies the
+    documented B1 302-to-PT policy (no EN page translation exists).

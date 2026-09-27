@@ -9,12 +9,21 @@
  * @package Conexao_BR_Irlanda
  */
 
-$provider_id       = get_the_ID();
-$provider_url      = get_post_meta( $provider_id, '_provider_url', true );
-$provider_category = get_post_meta( $provider_id, '_provider_category', true );
-$provider_location = get_post_meta( $provider_id, '_provider_location', true );
-$provider_logo     = get_post_meta( $provider_id, '_provider_logo', true );
-$logo_id           = absint( $provider_logo );
+/*
+ * STAGE 9 — language-aware category presentation. The stored
+ * `_provider_category` meta is free-text Portuguese and is NEVER rewritten; only
+ * the DISPLAY value is localized, so a PT request renders the original
+ * Portuguese label exactly as before and an EN request renders the English
+ * presentation label. An unknown value falls through unchanged, and the
+ * esc_html() in the markup still escapes whatever comes back.
+ */
+$provider_id             = get_the_ID();
+$provider_url            = get_post_meta( $provider_id, '_provider_url', true );
+$provider_category       = get_post_meta( $provider_id, '_provider_category', true );
+$provider_category_label = conexao_provider_category_label( $provider_category );
+$provider_location       = get_post_meta( $provider_id, '_provider_location', true );
+$provider_logo           = get_post_meta( $provider_id, '_provider_logo', true );
+$logo_id                 = absint( $provider_logo );
 
 if ( ! $logo_id && has_post_thumbnail( $provider_id ) ) {
 	$logo_id = get_post_thumbnail_id( $provider_id );
@@ -33,11 +42,19 @@ $target_attrs = ' target="_blank" rel="noopener noreferrer"';
 			<?php endif; ?>
 		</div>
 		<div class="provider-card-body">
-			<?php if ( $provider_category ) : ?>
-				<span class="provider-card-category"><?php echo esc_html( $provider_category ); ?></span>
+			<?php if ( $provider_category_label ) : ?>
+				<span class="provider-card-category"><?php echo esc_html( $provider_category_label ); ?></span>
 			<?php endif; ?>
 			<h3 class="provider-card-title"><?php the_title(); ?></h3>
-			<p class="provider-card-excerpt"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 20, '...' ) ); ?></p>
+			<?php
+			// STAGE 8 — language-aware description source. PT keeps the exact
+			// pre-existing pipeline (get_the_excerpt()); an EN request renders the
+			// authored English description when one exists and keeps the approved
+			// B2 fallback (the PT excerpt) when it does not. The presentation
+			// pipeline below (20-word trim + esc_html) is IDENTICAL for both
+			// languages.
+			?>
+			<p class="provider-card-excerpt"><?php echo esc_html( wp_trim_words( conexao_provider_card_excerpt( $provider_id ), 20, '...' ) ); ?></p>
 			<?php if ( $provider_location ) : ?>
 				<div class="provider-card-meta">
 					<span class="provider-card-detail">

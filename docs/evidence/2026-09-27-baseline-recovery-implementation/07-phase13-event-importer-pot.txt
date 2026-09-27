@@ -1,0 +1,54 @@
+# 07 - Phase 13: event-importer POT repair - regression proof that it SURVIVED the recovery
+
+File: wp-content/plugins/conexao-event-importer/languages/conexao-event-importer.pot
+
+## 1. The recovery did not touch it
+  git diff HEAD -- <pot>            : 0 lines  (empty = untouched)
+  worktree sha256 : 6221c0ab009f860156f095c2e3ba619db9c0fa13125533c39180110b98d3b75e
+  HEAD     sha256 : 6221c0ab009f860156f095c2e3ba619db9c0fa13125533c39180110b98d3b75e
+  => identical.
+
+## 2. Repaired state reproduced exactly (documented targets in the task vs measured)
+| Metric | required | measured |
+|---|---:|---:|
+| duplicate msgids | 0 | 0 |
+| entries (parsed) | 385 | 385 |
+| unique (msgctxt,msgid) | 385 | 385 |
+| deterministic body hash | 519d16cd | 519d16cd1e4d62be926e8dc518d9f587 |
+
+## 3. msgfmt and msgcat
+  msgfmt -c   : SUCCESS (exit 0)
+  msgcat       : SUCCESS (exit 0)
+
+## 4. Other metrics match the previously verified repaired state
+  bytes      : 70646   (documented: 70646)
+  lines      : 1573   (documented: 1573)
+  #: refs    : 481   (documented: 481)
+  POT-Creation-Date lines: 1   (documented: 1)
+
+## 5. Contrast: the pre-repair b47d098 catalogue (proves the repair is real and was kept)
+  b47d098: entries (real msgid entries) : 388
+  b47d098: unique (msgctxt,msgid)       : 385
+  b47d098: DUPLICATE KEYS               : 3
+  b47d098: source-ref (#:) lines        : 484
+  b47d098: body md5 (excl POT-Creation-Date): 7ae020d720e7079dd3f8e7fca969fae0
+  b47d098: bytes=51308 lines=1474
+  now    : 385 entries, 0 duplicates
+  => the repaired catalogue was preserved, NOT reverted to the b47d098 version.
+
+## 6. No unrelated event-importer catalogue changes
+  git diff b47d098 -- wp-content/plugins/conexao-event-importer/ :
+     .../languages/conexao-event-importer.pot           | 1199 +++++++++++---------
+     1 file changed, 649 insertions(+), 550 deletions(-)
+  => the ONLY event-importer difference from b47d098 is the repaired .pot.
+  No .po/.mo was regenerated or altered.
+
+## 7. Its report and evidence are intact
+  docs/reports/2026-09-27-event-importer-pot-duplicate-msgids.md : present
+  docs/evidence/2026-09-27-event-importer-pot/ : 20 files
+  historical evidence rewritten by this task: 0 (git diff shows no modification to docs/evidence/2026-09-27-event-importer-pot/)
+
+  NOTE on the msgfmt warnings: the header still carries the gettext initial default values
+  (PO-Revision-Date, Last-Translator, Language-Team) and no Language field. These are
+  present in the committed repaired file, are byte-identical to the previously verified
+  repaired state, and are cosmetic header metadata - not a regression, not re-edited.

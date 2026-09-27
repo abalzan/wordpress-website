@@ -72,11 +72,11 @@
 					?>
 				</div>
 				<div class="footer-bottom-links">
-					<a href="<?php echo esc_url( home_url( '/politica-de-privacidade/' ) ); ?>"><?php esc_html_e( 'Privacidade', 'conexao-br-irlanda' ); ?></a>
+					<a href="<?php echo esc_url( conexao_lang_url( '/politica-de-privacidade/' ) ); ?>"><?php esc_html_e( 'Privacidade', 'conexao-br-irlanda' ); ?></a>
 					<span class="footer-bottom-sep" aria-hidden="true">·</span>
-					<a href="<?php echo esc_url( home_url( '/termos-de-uso/' ) ); ?>"><?php esc_html_e( 'Termos', 'conexao-br-irlanda' ); ?></a>
+					<a href="<?php echo esc_url( conexao_lang_url( '/termos-de-uso/' ) ); ?>"><?php esc_html_e( 'Termos', 'conexao-br-irlanda' ); ?></a>
 					<span class="footer-bottom-sep" aria-hidden="true">·</span>
-					<a href="<?php echo esc_url( home_url( '/cookies/' ) ); ?>"><?php esc_html_e( 'Cookies', 'conexao-br-irlanda' ); ?></a>
+					<a href="<?php echo esc_url( conexao_lang_url( '/cookies/' ) ); ?>"><?php esc_html_e( 'Cookies', 'conexao-br-irlanda' ); ?></a>
 				</div>
 			</div>
 		</div>

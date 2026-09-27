@@ -151,7 +151,14 @@ echo esc_html( $display_attr );
 <?php endif; ?>
 </div>
 
-<p class="leisure-card-excerpt"><?php echo esc_html( wp_trim_words( get_the_excerpt(), 18, '...' ) ); ?></p>
+<?php
+// STAGE 7 — language-aware description source. PT keeps the exact
+// pre-existing pipeline (get_the_excerpt()); an EN request renders the
+// authored English description when one exists and keeps the approved
+// B2 fallback (PT excerpt) when it does not. The presentation pipeline
+// below (18-word trim + esc_html) is IDENTICAL for both languages.
+?>
+<p class="leisure-card-excerpt"><?php echo esc_html( wp_trim_words( conexao_leisure_card_excerpt( $leisure_id ), 18, '...' ) ); ?></p>
 
 <?php if ( ! empty( $leisure_attr_names ) ) : ?>
 <?php

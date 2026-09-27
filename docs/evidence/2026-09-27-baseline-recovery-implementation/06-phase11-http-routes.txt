@@ -1,0 +1,83 @@
+# 06 - Phase 11: HTTP acceptance - route matrix, and the REWRITE-RULE finding
+
+Base: http://localhost:8080 (local Docker). Redirects NOT followed.
+
+## THE CRITICAL FINDING: stale rewrite_rules in the local DB
+
+Restoring the source was necessary but NOT sufficient. The stored rewrite_rules
+option had been generated while the destructive functions.php was active, so the EN
+CPT-archive rules that the restored theme registers were ABSENT from the database:
+
+  before flush: 84 rules carrying an en/ prefix, of which 0 for a CPT archive
+  after  flush: 92 rules carrying an en/ prefix for a CPT archive   (0 -> 92)
+
+The rules existed ONLY for the PT roots (guias/?$ => index.php?post_type=guide,
+eventos/?$ => index.php?post_type=event, lazer/?$ => index.php?post_type=leisure)
+with no en/ counterpart. That is exactly why /en/guias/ and /en/eventos/ returned
+404 and /en/lazer/ redirected to PT even after a byte-perfect source restore.
+
+A local flush_rewrite_rules(true) - the documented operation also performed by
+scripts/flush-navigation-rules.php - regenerated them. This is a LOCAL DATABASE
+operation only: no production write, no code change, no file committed.
+
+## Route matrix AFTER source restore + rewrite flush
+
+  /en/             200  lang=en-US  hreflang_links=5 canonical=Y php_errors=0 b2notice=0 
+  /en/cursos/      200  lang=en-US  hreflang_links=5 canonical=Y php_errors=0 b2notice=0 
+  /en/guias/       200  lang=en-US  hreflang_links=5 canonical=Y php_errors=0 b2notice=0 
+  /en/lazer/       200  lang=en-US  hreflang_links=5 canonical=Y php_errors=0 b2notice=0 
+  /en/blog/        200  lang=en-US  hreflang_links=7 canonical=Y php_errors=0 b2notice=0 
+  /en/eventos/     200  lang=en-US  hreflang_links=7 canonical=Y php_errors=0 b2notice=0 
+  /en/empregos/    302  lang=-      hreflang_links=0 canonical=n php_errors=0 b2notice=0 -> http://localhost:8080/empregos/
+  /                200  lang=pt-BR  hreflang_links=6 canonical=Y php_errors=0 b2notice=0 
+  /cursos/         200  lang=pt-BR  hreflang_links=4 canonical=Y php_errors=0 b2notice=0 
+  /guias/          200  lang=pt-BR  hreflang_links=4 canonical=Y php_errors=0 b2notice=0 
+  /lazer/          200  lang=pt-BR  hreflang_links=4 canonical=Y php_errors=0 b2notice=0 
+  /blog/           200  lang=pt-BR  hreflang_links=7 canonical=Y php_errors=0 b2notice=0 
+  /eventos/        200  lang=pt-BR  hreflang_links=7 canonical=Y php_errors=0 b2notice=0 
+  /empregos/       200  lang=pt-BR  hreflang_links=4 canonical=Y php_errors=0 b2notice=0 
+
+
+## vs the assessment baseline (at 597b04e)
+
+| Route | at 597b04e | now | required by task | verdict |
+|---|---|---|---|---|
+| /en/ | 200, PT labels leaked | 200 lang=en-US | must work | REPAIRED |
+| /en/cursos/ | 301 -> a single PT post | 200 lang=en-US | must not redirect to the PT post | REPAIRED |
+| /en/guias/ | 404 | 200 lang=en-US | must no longer be 404 | REPAIRED |
+| /en/lazer/ | 301 -> /lazer/ | 200 lang=en-US | must no longer redirect to PT | REPAIRED |
+| /en/blog/ | 301 -> /blog/ | 200 lang=en-US, real EN archive | must remain the real EN archive | REPAIRED |
+| /en/eventos/ | 404 | 200 lang=en-US | must no longer be 404 | REPAIRED |
+| /en/empregos/ | 301 -> /empregos/ | 302 -> PT | must no longer redirect to PT | NOT REPAIRED - see below |
+
+All 7 PT routes: 200, lang=pt-BR, canonical present, zero PHP warnings/errors.
+Every EN route: 0 PHP warnings, 0 fatal errors, 0 notices in the rendered body.
+Every EN archive emits hreflang alternates (5-7 links) and a canonical URL.
+
+## /en/empregos/ - why it still 302s (documented policy, NOT a regression)
+
+Measured:
+  page "empregos" ID=11293 lang=pt   (no EN translation exists)
+  conexao_b2_page_allowlist() = dublin, cork, galway, limerick, kildare, meath,
+                                wicklow, waterford, laois, irlanda, blog
+                                (empregos is NOT listed)
+
+The restored code therefore applies the documented B1 policy, which is the CORRECT
+behaviour, quoting the restored source itself:
+  inc/i18n/fallback.php:271  "B1 = Guides, Blog posts, key narrative static pages:
+                                keep the approved 302 policy until a real
+                                translation exists (never render fallback)."
+  inc/i18n/fallback.php:304  "B2 is never a catch-all and never a substitute for
+                                editorial translation."
+  docs/routing.md:94         "stays B1 (302 -> PT) or serves a real translation."
+
+The same content gap is reported independently by the translation_completeness
+permanent gate: "page: eligible public PT records missing a linked EN translation
+= 0" -> 4 violations (empregos, contato, sobre-nos, inicio).
+
+Making this route return 200 would require CREATING EN page translations, i.e. a
+content change: forbidden by constraint 3 (no content mutation) and out of scope
+for a code recovery. It is a pre-existing content gap, identical at b47d098, and
+is NOT a code regression. The B2 fallback architecture itself is restored and
+demonstrably working (B2-eligible types: event, leisure, sponsor, course_provider,
+job; and /en/eventos/ + /en/lazer/ + /en/cursos/ now serve lang=en-US).

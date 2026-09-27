@@ -31,15 +31,12 @@
  */
 
 // --- Bootstrap WordPress (plugins + theme option). ---
-$wp_load = dirname( dirname( dirname( dirname( __DIR__ ) ) ) ) . '/wp-load.php';
-if ( file_exists( $wp_load ) ) {
-	require_once $wp_load;
-} else {
-	require_once '/var/www/html/wp-load.php';
-}
 
 // Load the active theme so the helpers under test are defined.
 // The active theme is not auto-loaded by wp-load.php in a CLI context.
+// Shared Stage E test bootstrap: the only place allowed to locate wp-load.php.
+require_once dirname( __DIR__, 4 ) . '/tests/bootstrap.php';
+
 $theme_functions = get_template_directory() . '/functions.php';
 if ( file_exists( $theme_functions ) ) {
 	require_once $theme_functions;
@@ -49,21 +46,6 @@ $passed        = 0;
 $failed        = 0;
 $created_posts = array();
 $created_terms = array();
-
-function t_assert( $condition, $message ) {
-	global $passed, $failed;
-	if ( $condition ) {
-		$passed++;
-		echo "  PASS: {$message}\n";
-	} else {
-		$failed++;
-		echo "  FAIL: {$message}\n";
-	}
-}
-
-function t_section( $title ) {
-	echo "\n=== {$title} ===\n";
-}
 
 /** @return int Term ID for a conexao_leisure_attribute term (created if missing). */
 function attr_test_term( $name, $slug ) {
@@ -75,7 +57,6 @@ function attr_test_term( $name, $slug ) {
 	}
 	$inserted = wp_insert_term( $name, 'conexao_leisure_attribute', array( 'slug' => $slug ) );
 	if ( is_wp_error( $inserted ) ) {
-		echo "  FATAL: could not create attribute term: {$inserted->get_error_message()}\n";
 		exit( 1 );
 	}
 	$created_terms[] = (int) $inserted['term_id'];
@@ -94,7 +75,6 @@ function attr_test_create_leisure( $title ) {
 		true
 	);
 	if ( is_wp_error( $post_id ) ) {
-		echo "  FATAL: could not create test leisure: {$post_id->get_error_message()}\n";
 		exit( 1 );
 	}
 	$created_posts[] = (int) $post_id;
@@ -116,7 +96,7 @@ function attr_test_assert_set( $post_id, $expected_slugs, $message ) {
 	sort( $actual );
 	$expected = (array) $expected_slugs;
 	sort( $expected );
-	t_assert( $actual === $expected, $message . ' — got [' . implode( ', ', $actual ) . ']' );
+	assert_true( $actual === $expected, $message . ' — got [' . implode( ', ', $actual ) . ']' );
 }
 
 // ---------------------------------------------------------------------------
@@ -127,7 +107,7 @@ attr_test_term( 'Interior + exterior', 'interior-exterior' );
 // ---------------------------------------------------------------------------
 // 1-3. Single environment attributes
 // ---------------------------------------------------------------------------
-t_section( 'Single Environment Attributes' );
+test_section( 'Single Environment Attributes' );
 
 $p = attr_test_create_leisure( 'so interior' );
 attr_test_assign( $p, array( 'interior' ) );
@@ -144,7 +124,7 @@ attr_test_assert_set( $p, array( 'interior-exterior' ), 'only Interior + exterio
 // ---------------------------------------------------------------------------
 // 4. Interior + Exterior without the combined attribute
 // ---------------------------------------------------------------------------
-t_section( 'Interior and Exterior Together (no combined attribute)' );
+test_section( 'Interior and Exterior Together (no combined attribute)' );
 
 $p = attr_test_create_leisure( 'interior e exterior' );
 attr_test_assign( $p, array( 'interior', 'exterior' ) );
@@ -153,7 +133,7 @@ attr_test_assert_set( $p, array( 'interior', 'exterior' ), 'Interior + Exterior 
 // ---------------------------------------------------------------------------
 // 5-7. Combined attribute wins over the individual ones (taxonomy)
 // ---------------------------------------------------------------------------
-t_section( 'Combined Attribute Suppresses Individuals (taxonomy)' );
+test_section( 'Combined Attribute Suppresses Individuals (taxonomy)' );
 
 $p = attr_test_create_leisure( 'combo + interior' );
 attr_test_assign( $p, array( 'interior-exterior', 'interior' ) );
@@ -170,7 +150,7 @@ attr_test_assert_set( $p, array( 'interior-exterior' ), 'Interior + exterior + I
 // ---------------------------------------------------------------------------
 // 8. Combined attribute + unrelated attributes
 // ---------------------------------------------------------------------------
-t_section( 'Combined Attribute With Unrelated Attributes' );
+test_section( 'Combined Attribute With Unrelated Attributes' );
 
 $p = attr_test_create_leisure( 'combo + unrelated' );
 attr_test_assign( $p, array( 'interior-exterior', 'familias', 'estacionamento', 'acessivel' ) );
@@ -181,12 +161,12 @@ attr_test_assert_set(
 );
 
 $names = conexao_leisure_attributes( $p );
-t_assert( 'Interior + exterior' === $names['interior-exterior'], 'combined display name is exactly "Interior + exterior"' );
+assert_true( 'Interior + exterior' === $names['interior-exterior'], 'combined display name is exactly "Interior + exterior"' );
 
 // ---------------------------------------------------------------------------
 // 9. Legacy meta fallback (merged BEFORE normalization)
 // ---------------------------------------------------------------------------
-t_section( 'Legacy Meta Fallback' );
+test_section( 'Legacy Meta Fallback' );
 
 // The exact production pattern (e.g. Huntington Castle): combined term plus
 // legacy indoor/outdoor checkbox meta.
@@ -213,7 +193,7 @@ attr_test_assert_set( $p, array( 'interior', 'exterior' ), 'legacy indoor + outd
 // ---------------------------------------------------------------------------
 // 10. Card rendering — real template part
 // ---------------------------------------------------------------------------
-t_section( 'Card Rendering (leisure-card.php)' );
+test_section( 'Card Rendering (leisure-card.php)' );
 
 $p = attr_test_create_leisure( 'card combo' );
 attr_test_assign( $p, array( 'interior-exterior', 'familias' ) );
@@ -230,11 +210,11 @@ if ( $test_post instanceof WP_Post ) {
 	wp_reset_postdata();
 }
 
-t_assert( '' !== $card_html, 'card template renders without errors' );
-t_assert( 1 === substr_count( $card_html, 'Interior + exterior' ), 'card renders the combined attribute exactly once' );
-t_assert( false === strpos( $card_html, '>Interior<' ), 'card does not render redundant Interior' );
-t_assert( false === strpos( $card_html, '>Exterior<' ), 'card does not render redundant Exterior' );
-t_assert( false !== strpos( $card_html, 'Famílias' ), 'card still renders unrelated attributes (Famílias)' );
+assert_true( '' !== $card_html, 'card template renders without errors' );
+assert_true( 1 === substr_count( $card_html, 'Interior + exterior' ), 'card renders the combined attribute exactly once' );
+assert_true( false === strpos( $card_html, '>Interior<' ), 'card does not render redundant Interior' );
+assert_true( false === strpos( $card_html, '>Exterior<' ), 'card does not render redundant Exterior' );
+assert_true( false !== strpos( $card_html, 'Famílias' ), 'card still renders unrelated attributes (Famílias)' );
 
 // Card priority contract preserved: without the combined attribute, the
 // individual Interior renders on the card in its usual priority slot.
@@ -248,17 +228,17 @@ if ( $test_post instanceof WP_Post ) {
 	$card_html = ob_get_clean();
 	wp_reset_postdata();
 }
-t_assert( false !== strpos( $card_html, '>Interior<' ), 'card still renders Interior when it is the only environment attribute' );
+assert_true( false !== strpos( $card_html, '>Interior<' ), 'card still renders Interior when it is the only environment attribute' );
 
 // ---------------------------------------------------------------------------
 // 11. Single page / card agreement through the shared helper
 // ---------------------------------------------------------------------------
-t_section( 'Single Page and Card Use the Shared Helper' );
+test_section( 'Single Page and Card Use the Shared Helper' );
 
 $card_src   = file_get_contents( get_template_directory() . '/template-parts/leisure-card.php' );
 $single_src = file_get_contents( get_template_directory() . '/single-leisure.php' );
-t_assert( false !== strpos( $card_src, 'conexao_leisure_attributes(' ), 'leisure-card.php resolves attributes via the shared helper' );
-t_assert( false !== strpos( $single_src, 'conexao_leisure_attributes(' ), 'single-leisure.php resolves attributes via the shared helper' );
+assert_true( false !== strpos( $card_src, 'conexao_leisure_attributes(' ), 'leisure-card.php resolves attributes via the shared helper' );
+assert_true( false !== strpos( $single_src, 'conexao_leisure_attributes(' ), 'single-leisure.php resolves attributes via the shared helper' );
 
 // ---------------------------------------------------------------------------
 // Cleanup
@@ -279,8 +259,6 @@ $leftover = get_posts(
 		'fields'      => 'ids',
 	)
 );
-t_assert( empty( $leftover ), 'no temporary test posts remain' );
+assert_true( empty( $leftover ), 'no temporary test posts remain' );
 
-echo "\n----------------------------------------\n";
-echo "RESULT: {$passed} passed, {$failed} failed\n";
-exit( $failed > 0 ? 1 : 0 );
+test_finish();

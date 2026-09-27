@@ -1,0 +1,68 @@
+# 04 - Phase 3/4: source + catalogue restoration (before/after)
+
+## The recovery, in two commands
+  git checkout b47d098 -- wp-content/themes/conexao-br-irlanda
+  git rm wp-content/themes/conexao-br-irlanda/inc/seo.php
+(NOT a revert/reset/cherry-pick/merge: history is intact, this is a forward commit.)
+
+## Before / after
+| Metric | b47d098 (target) | 597b04e (before) | after recovery |
+|---|---:|---:|---:|
+| inc/ modules | 43 | 8 | 43 |
+| functions.php lines | 112 | 3937 | 112 |
+| theme conexao_* functions | 282 | 162 | 282 |
+| theme catalogue files | 5 | 0 | 5 |
+| theme test files | 33 | 7 | 33 |
+| inc/seo.php present | no | YES | no |
+
+## EXACT MATCH PROOF
+  $ git diff b47d098 -- wp-content/themes/conexao-br-irlanda | wc -l
+0
+  => 0 lines: the recovered theme tree is byte-identical to the verified baseline.
+
+## Loader architecture restored
+  functions.php = 112 lines, 43 require_once calls, 0 business logic.
+  The documented load-order constraints are back: inc/i18n.php first, then inc/i18n/*, then
+  inc/rest-language.php and inc/seo/* (which build on conexao_current_locale()).
+
+## Restored i18n surface (the functions the assessment named as LOST)
+  conexao_current_locale()                       inc/i18n.php
+  conexao_lang_cache_key()                       inc/i18n/urls.php
+  conexao_content_type_label()                   inc/content.php
+  conexao_provider_category_label()              inc/i18n/fallback.php
+  conexao_leisure_card_excerpt()                 inc/i18n/fallback.php
+  conexao_language_archive_url()                 inc/i18n/urls.php
+  conexao_polylang_active()                      inc/i18n/guard.php
+  conexao_seo_hreflang()                         inc/seo/hreflang.php
+  conexao_seo_in_language()                      inc/seo/meta.php
+  conexao_seo_missing_translation_redirect()     inc/seo/redirects.php
+  conexao_seo_disable_jetpack_og_on_b2()         inc/seo/open-graph.php
+
+## Catalogue restoration (restored, NOT regenerated)
+  pot sha256 worktree : 92bd15340ca9cc9c19bd8f8d3e25aab4a186512465371329824fe403c23c52d2
+  pot sha256 b47d098  : 92bd15340ca9cc9c19bd8f8d3e25aab4a186512465371329824fe403c23c52d2
+  en_US.po msgids     : 419  (b47d098: 419)
+  pot msgids          : 429  (b47d098: 429)
+  msgfmt -c en_US.po : OK
+  msgfmt -c pt_BR.po : OK
+
+  REGENERATION DECISION: NOT required and NOT performed.
+  The restored source is byte-identical to b47d098 and the restored catalogue is
+  byte-identical to b47d098, so regeneration would be a no-op. The gate
+  verify-i18n-freshness.py PASSES 8/8, proving catalogue<->source coherence.
+  Constraint 14 respected: source was restored FIRST; the catalogue was never used
+  as a shortcut, and no generated catalogue file was hand-edited.
+
+## Generator + governance untouched
+  scripts/i18n-make-pot.sh sha256 identical at b47d098 / 597b04e / now = de137d4a...7918d
+  plugins.json diff: 0 lines
+  .agents/ diff    : 0 lines
+  AGENTS.md diff   : 0 lines
+  scripts/ diff    : 0 lines
+
+## PHP syntax + duplicates
+  full theme lint : 116 files, 0 errors
+  runtime (non-test) duplicate function declarations: 0
+  (the only same-named helper in the tree is s7_set_language, a TEST-only helper
+   defined in two separate test files; each suite runs in its own PHP process. It is
+   identical at b47d098 and is therefore pre-existing and out of scope.)

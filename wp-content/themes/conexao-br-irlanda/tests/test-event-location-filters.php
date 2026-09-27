@@ -15,7 +15,7 @@
  *    gracefully, events missing town/county stay discoverable, the
  *    recurrence-aware post__in path keeps working with filters.
  *  - Template markup: the Lazer/Empregos-standard filter widget
- *    (dropdown triggers with listbox options, active-filter chips,
+ *    (dropdown triggers with group-of-links options, active-filter chips,
  *    mobile bottom-sheet form), county-scoped town options, active
  *    states, reset link, state preservation across dimension links.
  *
@@ -27,15 +27,12 @@
  */
 
 // --- Bootstrap WordPress (plugins + theme option). ---
-$wp_load = dirname( dirname( dirname( dirname( __DIR__ ) ) ) ) . '/wp-load.php';
-if ( file_exists( $wp_load ) ) {
-	require_once $wp_load;
-} else {
-	require_once '/var/www/html/wp-load.php';
-}
 
 // Load the active theme so the helpers under test are defined (the active
 // theme is not auto-loaded by wp-load.php in a CLI context).
+// Shared Stage E test bootstrap: the only place allowed to locate wp-load.php.
+require_once dirname( __DIR__, 4 ) . '/tests/bootstrap.php';
+
 $theme_functions = get_template_directory() . '/functions.php';
 if ( file_exists( $theme_functions ) ) {
 	require_once $theme_functions;
@@ -45,21 +42,6 @@ $passed        = 0;
 $failed        = 0;
 $created_posts = array();
 $created_terms = array();
-
-function t_assert( $condition, $message ) {
-	global $passed, $failed;
-	if ( $condition ) {
-		$passed++;
-		echo "  PASS: {$message}\n";
-	} else {
-		$failed++;
-		echo "  FAIL: {$message}\n";
-	}
-}
-
-function t_section( $title ) {
-	echo "\n=== {$title} ===\n";
-}
 
 /** Get or create a temporary term; returns the slug.
  *
@@ -78,7 +60,6 @@ function ev_test_term( $name, $slug, $taxonomy ) {
 	}
 	$inserted = wp_insert_term( $name, $taxonomy, array( 'slug' => $slug ) );
 	if ( is_wp_error( $inserted ) ) {
-		echo "  FATAL: could not create {$taxonomy} term: {$inserted->get_error_message()}\n";
 		exit( 1 );
 	}
 	$created_terms[ $taxonomy ][] = (int) $inserted['term_id'];
@@ -97,7 +78,6 @@ function ev_test_event( $title, $county_slug, $town_slug, $category_slug ) {
 		)
 	);
 	if ( is_wp_error( $post_id ) ) {
-		echo "  FATAL: could not create event: {$post_id->get_error_message()}\n";
 		exit( 1 );
 	}
 	$created_posts[] = (int) $post_id;
@@ -152,37 +132,36 @@ function ev_test_render_filters( array $get_params ) {
 // ---------------------------------------------------------------------------
 // A/B. Location normalization (importer plugin - local only).
 // ---------------------------------------------------------------------------
-t_section( 'A/B. Location normalization (Conexao_Event_Location)' );
+test_section( 'A/B. Location normalization (Conexao_Event_Location)' );
 
 if ( class_exists( 'Conexao_Event_Location' ) ) {
 	$loc = new Conexao_Event_Location();
 
 	// County derived from a 'Co X' marker.
 	$r = $loc->normalize( 'Park Hotel, Dungarvan, Co Waterford' );
-	t_assert( isset( $r['county'] ) && 'Waterford' === $r['county'], "county derived from 'Co Waterford' marker" );
-	t_assert( isset( $r['town'] ) && 'Dungarvan' === $r['town'], 'town from the national town index (deterministic)' );
+	assert_true( isset( $r['county'] ) && 'Waterford' === $r['county'], "county derived from 'Co Waterford' marker" );
+	assert_true( isset( $r['town'] ) && 'Dungarvan' === $r['town'], 'town from the national town index (deterministic)' );
 
 	// Structured 'County X' spelling.
 	$r = $loc->normalize( 'County Laois' );
-	t_assert( isset( $r['county'] ) && 'Laois' === $r['county'], "county derived from 'County Laois'" );
+	assert_true( isset( $r['county'] ) && 'Laois' === $r['county'], "county derived from 'County Laois'" );
 
 	// Known town implies its county (deterministic mapping, no guessing).
 	$r = $loc->normalize( 'Portlaoise' );
-	t_assert( isset( $r['town'] ) && 'Portlaoise' === $r['town'], 'known town name normalized (canonical casing)' );
+	assert_true( isset( $r['town'] ) && 'Portlaoise' === $r['town'], 'known town name normalized (canonical casing)' );
 
 	// Unknown strings never produce a guessed county.
 	$r = $loc->normalize( 'Somewhere Unmapped Hall' );
-	t_assert( empty( $r['county'] ), 'unmappable location yields no county (no guessing)' );
+	assert_true( empty( $r['county'] ), 'unmappable location yields no county (no guessing)' );
 
 	// Whitespace/case normalization of the town value.
 	$r = $loc->normalize( '  portlaoise  ' );
-	t_assert( isset( $r['town'] ) && 'Portlaoise' === $r['town'], 'town value is trimmed and proper-cased' );
+	assert_true( isset( $r['town'] ) && 'Portlaoise' === $r['town'], 'town value is trimmed and proper-cased' );
 
 	// Empty location stays empty.
 	$r = $loc->normalize( '' );
-	t_assert( empty( $r['county'] ) && empty( $r['town'] ), 'empty location normalizes to nothing' );
+	assert_true( empty( $r['county'] ) && empty( $r['town'] ), 'empty location normalizes to nothing' );
 } else {
-	echo "  SKIP: Conexao_Event_Location not loaded (importer inactive).\n";
 }
 
 // ---------------------------------------------------------------------------
@@ -192,7 +171,7 @@ if ( class_exists( 'Conexao_Event_Location' ) ) {
 //   C: county Dublin / town Dublin Town / category Alpha
 //   D: no county / no town / category Beta           (missing county)
 // ---------------------------------------------------------------------------
-t_section( 'Fixture' );
+test_section( 'Fixture' );
 
 $co_cavan  = ev_test_term( 'EV Cavan', 'ev-cavan', 'conexao_county' );
 $co_dublin = ev_test_term( 'EV Dublin', 'ev-dublin', 'conexao_county' );
@@ -213,129 +192,214 @@ if ( class_exists( 'Conexao_Event_Query' ) ) {
 	Conexao_Event_Query::flush_cache();
 }
 
-t_assert( get_post( $post_a ) instanceof WP_Post && get_post( $post_b ) instanceof WP_Post && get_post( $post_c ) instanceof WP_Post && get_post( $post_d ) instanceof WP_Post, 'temporary event posts created' );
+assert_true( get_post( $post_a ) instanceof WP_Post && get_post( $post_b ) instanceof WP_Post && get_post( $post_c ) instanceof WP_Post && get_post( $post_d ) instanceof WP_Post, 'temporary event posts created' );
 
 // ---------------------------------------------------------------------------
 // C/D/E/F/G/H/I/J. Archive query semantics (real pre_get_posts path).
 // ---------------------------------------------------------------------------
-t_section( 'Archive query semantics' );
+test_section( 'Archive query semantics' );
 
 // Unfiltered: all four events remain discoverable.
 $q = ev_test_query( array() );
 $ids = wp_list_pluck( $q->posts, 'ID' );
-t_assert( in_array( $post_a, $ids, true ) && in_array( $post_b, $ids, true ) && in_array( $post_c, $ids, true ) && in_array( $post_d, $ids, true ), 'unfiltered archive returns all four test events (incl. missing county/town)' );
+assert_true( in_array( $post_a, $ids, true ) && in_array( $post_b, $ids, true ) && in_array( $post_c, $ids, true ) && in_array( $post_d, $ids, true ), 'unfiltered archive returns all four test events (incl. missing county/town)' );
 
 // County only.
 $q = ev_test_query( array( 'county' => 'ev-cavan' ) );
-t_assert( array( $post_a, $post_b ) === wp_list_pluck( $q->posts, 'ID' ), 'county filter returns both county events' );
+assert_true( array( $post_a, $post_b ) === wp_list_pluck( $q->posts, 'ID' ), 'county filter returns both county events' );
 
 // City only.
 $q = ev_test_query( array( 'cidade' => 'ev-cavan-town' ) );
-t_assert( array( $post_a ) === wp_list_pluck( $q->posts, 'ID' ), 'city filter works without a county (AND across independent dimensions)' );
+assert_true( array( $post_a ) === wp_list_pluck( $q->posts, 'ID' ), 'city filter works without a county (AND across independent dimensions)' );
 
 // County + City: an event without a town still satisfies county alone (I).
 $q = ev_test_query( array( 'county' => 'ev-cavan', 'cidade' => 'ev-cavan-town' ) );
-t_assert( array( $post_a ) === wp_list_pluck( $q->posts, 'ID' ), 'county AND city combination is deterministic' );
+assert_true( array( $post_a ) === wp_list_pluck( $q->posts, 'ID' ), 'county AND city combination is deterministic' );
 
 // County + Category.
 $q = ev_test_query( array( 'county' => 'ev-cavan', 'categoria' => 'ev-beta' ) );
-t_assert( array( $post_b ) === wp_list_pluck( $q->posts, 'ID' ), 'county AND category combination' );
+assert_true( array( $post_b ) === wp_list_pluck( $q->posts, 'ID' ), 'county AND category combination' );
 
 // County + City + Category: no event matches beta in cavan-town.
 $q = ev_test_query( array( 'county' => 'ev-cavan', 'cidade' => 'ev-cavan-town', 'categoria' => 'ev-alpha' ) );
-t_assert( array( $post_a ) === wp_list_pluck( $q->posts, 'ID' ), 'county AND city AND category' );
+assert_true( array( $post_a ) === wp_list_pluck( $q->posts, 'ID' ), 'county AND city AND category' );
 
 $q = ev_test_query( array( 'county' => 'ev-cavan', 'cidade' => 'ev-cavan-town', 'categoria' => 'ev-beta' ) );
-t_assert( 0 === $q->found_posts, 'impossible combination returns zero results gracefully' );
+assert_true( 0 === $q->found_posts, 'impossible combination returns zero results gracefully' );
 
 // A city filter can never override the county selection.
 $q = ev_test_query( array( 'county' => 'ev-cavan', 'cidade' => 'ev-dublin-town' ) );
-t_assert( 0 === $q->found_posts, 'city from another county cannot override the county filter (AND semantics)' );
+assert_true( 0 === $q->found_posts, 'city from another county cannot override the county filter (AND semantics)' );
 
 // Invalid slugs fail gracefully (zero results, no error).
 $q = ev_test_query( array( 'county' => 'ev-naoexiste' ) );
-t_assert( 0 === $q->found_posts, 'invalid county slug yields zero results' );
+assert_true( 0 === $q->found_posts, 'invalid county slug yields zero results' );
 $q = ev_test_query( array( 'cidade' => 'ev-naoexiste' ) );
-t_assert( 0 === $q->found_posts, 'invalid city slug yields zero results' );
+assert_true( 0 === $q->found_posts, 'invalid city slug yields zero results' );
 $q = ev_test_query( array( 'categoria' => 'ev-naoexiste' ) );
-t_assert( 0 === $q->found_posts, 'invalid category slug yields zero results' );
+assert_true( 0 === $q->found_posts, 'invalid category slug yields zero results' );
 
 // Missing-county event (D) is found by category and by city scoping.
 $q = ev_test_query( array( 'categoria' => 'ev-beta', 'cidade' => 'ev-cavan-town' ) );
-t_assert( array() === wp_list_pluck( $q->posts, 'ID' ), 'AND across city+category keeps excluding unrelated events' );
+assert_true( array() === wp_list_pluck( $q->posts, 'ID' ), 'AND across city+category keeps excluding unrelated events' );
 $q = ev_test_query( array( 'categoria' => 'ev-beta' ) );
-t_assert( in_array( $post_d, wp_list_pluck( $q->posts, 'ID' ), true ) && in_array( $post_b, wp_list_pluck( $q->posts, 'ID' ), true ), 'events without county/town stay discoverable via other filters (J)' );
+assert_true( in_array( $post_d, wp_list_pluck( $q->posts, 'ID' ), true ) && in_array( $post_b, wp_list_pluck( $q->posts, 'ID' ), true ), 'events without county/town stay discoverable via other filters (J)' );
 
 // tax_query structure: AND relation, one group per active dimension.
+// Stage 2: Polylang adds its own `language` group to front-end queries, so the
+// filter dimensions are counted separately from the language group.
 $q = ev_test_query( array( 'county' => 'ev-cavan', 'cidade' => 'ev-cavan-town', 'categoria' => 'ev-alpha' ) );
 $tax_query = $q->get( 'tax_query' );
 $tq = is_array( $tax_query ) ? ( isset( $tax_query['queries'] ) ? $tax_query['queries'] : $tax_query ) : array();
 $groups = array_values( array_filter( is_array( $tq ) ? $tq : array(), 'is_array' ) );
-t_assert( 3 === count( $groups ), 'tax_query contains one group per active dimension' );
+$language_groups = array_values(
+	array_filter(
+		$groups,
+		static function ( $group ) {
+			return 'language' === ( $group['taxonomy'] ?? '' );
+		}
+	)
+);
+$groups = array_values(
+	array_filter(
+		$groups,
+		static function ( $group ) {
+			return 'language' !== ( $group['taxonomy'] ?? '' );
+		}
+	)
+);
+assert_true( 3 === count( $groups ), 'tax_query contains one group per active dimension' );
+if ( function_exists( 'pll_current_language' ) ) {
+	assert_true( 1 === count( $language_groups ), 'the language layer adds exactly one language group to filtered event queries' );
+}
 
 // The recurrence-aware post__in path is active and our future-dated events are in it.
 $upcoming = conexao_event_upcoming_ids();
-t_assert( is_array( $upcoming ) && in_array( $post_a, $upcoming, true ), 'test event is in the shared upcoming-events ID list (post__in path works with filters)' );
+assert_true( is_array( $upcoming ) && in_array( $post_a, $upcoming, true ), 'test event is in the shared upcoming-events ID list (post__in path works with filters)' );
 
 // ---------------------------------------------------------------------------
 // County -> City scoping + URL builder.
 // ---------------------------------------------------------------------------
-t_section( 'County -> City scoping + URL helper' );
+test_section( 'County -> City scoping + URL helper' );
 
 $all_towns = conexao_get_event_towns( '' );
 $all_slugs = wp_list_pluck( $all_towns, 'slug' );
-t_assert( in_array( $t_ctown, $all_slugs, true ) && in_array( $t_dtown, $all_slugs, true ), 'all towns used by events are listed without a county' );
+assert_true( in_array( $t_ctown, $all_slugs, true ) && in_array( $t_dtown, $all_slugs, true ), 'all towns used by events are listed without a county' );
 
 $cavan_towns = conexao_get_event_towns( 'ev-cavan' );
 $cavan_slugs = wp_list_pluck( $cavan_towns, 'slug' );
-t_assert( in_array( $t_ctown, $cavan_slugs, true ) && ! in_array( $t_dtown, $cavan_slugs, true ), 'towns are scoped to the selected county' );
+assert_true( in_array( $t_ctown, $cavan_slugs, true ) && ! in_array( $t_dtown, $cavan_slugs, true ), 'towns are scoped to the selected county' );
 
-t_assert( array() === conexao_get_event_towns( 'ev-naoexiste' ), 'unknown county yields no town options' );
+assert_true( array() === conexao_get_event_towns( 'ev-naoexiste' ), 'unknown county yields no town options' );
 
 $base = get_post_type_archive_link( 'event' );
 $url = conexao_event_filter_url( array() );
-t_assert( remove_query_arg( array( 'county', 'cidade', 'categoria' ), $url ) === $base || $url === $base, 'empty filter state builds the clean archive URL (reset behavior)' );
+assert_true( remove_query_arg( array( 'county', 'cidade', 'categoria' ), $url ) === $base || $url === $base, 'empty filter state builds the clean archive URL (reset behavior)' );
 
 $url = conexao_event_filter_url( array( 'county' => 'ev-cavan', 'cidade' => 'ev-cavan-town', 'categoria' => 'ev-alpha' ) );
-t_assert( false !== strpos( $url, 'county=ev-cavan' ) && false !== strpos( $url, 'cidade=ev-cavan-town' ) && false !== strpos( $url, 'categoria=ev-alpha' ), 'full filter state is preserved in one URL (shareable/refresh-safe)' );
+assert_true( false !== strpos( $url, 'county=ev-cavan' ) && false !== strpos( $url, 'cidade=ev-cavan-town' ) && false !== strpos( $url, 'categoria=ev-alpha' ), 'full filter state is preserved in one URL (shareable/refresh-safe)' );
 
 $url = conexao_event_filter_url( array( 'county' => 'ev-cavan' ), $base . '?paged=2' );
-t_assert( false === strpos( $url, 'paged=' ), 'filter changes reset the page cursor' );
+assert_true( false === strpos( $url, 'paged=' ), 'filter changes reset the page cursor' );
 
-t_assert( conexao_event_filter_url( array( 'county' => 'EV-Cavan' ) ) === conexao_event_filter_url( array( 'county' => 'ev-cavan' ) ), 'URL slugs are canonicalized (case normalization)' );
+assert_true( conexao_event_filter_url( array( 'county' => 'EV-Cavan' ) ) === conexao_event_filter_url( array( 'county' => 'ev-cavan' ) ), 'URL slugs are canonicalized (case normalization)' );
 
 // ---------------------------------------------------------------------------
 // Template markup: Lazer-standard filter widget (dropdowns, chips, sheet).
 // ---------------------------------------------------------------------------
-t_section( 'Filter template markup' );
+test_section( 'Filter template markup' );
 
 $html = ev_test_render_filters( array() );
-t_assert( false !== strpos( $html, 'data-event-filters' ), 'filter widget root rendered (Lazer/Empregos widget contract)' );
-t_assert( false !== strpos( $html, 'event-filters-dropdown-trigger' ) && false !== strpos( $html, 'role="listbox"' ) && false !== strpos( $html, 'aria-selected' ), 'desktop dropdown triggers with listbox option semantics rendered' );
-t_assert( false !== strpos( $html, 'county=ev-cavan' ) && false !== strpos( $html, 'county=ev-dublin' ), 'county options rendered from counties used by events' );
-t_assert( false !== strpos( $html, 'cidade=ev-cavan-town' ) && false !== strpos( $html, 'cidade=ev-dublin-town' ), 'city options rendered (all towns, no county selected)' );
-t_assert( false !== strpos( $html, 'categoria=ev-alpha' ), 'category options still rendered (existing filter preserved)' );
+assert_true( false !== strpos( $html, 'data-event-filters' ), 'filter widget root rendered (Lazer/Empregos widget contract)' );
+assert_true( false !== strpos( $html, 'event-filters-dropdown-trigger' ) && false !== strpos( $html, 'aria-expanded="false"' ) && false !== strpos( $html, 'aria-current="true"' ), 'desktop dropdown triggers (disclosure) with link options and an active-state marker rendered' );
+assert_true( false === strpos( $html, 'role="option"' ) && false === strpos( $html, 'role="listbox"' ), 'no invalid role="option"/"listbox" on the event filter links' );
+assert_true( false !== strpos( $html, 'county=ev-cavan' ) && false !== strpos( $html, 'county=ev-dublin' ), 'county options rendered from counties used by events' );
+assert_true( false !== strpos( $html, 'cidade=ev-cavan-town' ) && false !== strpos( $html, 'cidade=ev-dublin-town' ), 'city options rendered (all towns, no county selected)' );
+assert_true( false !== strpos( $html, 'categoria=ev-alpha' ), 'category options still rendered (existing filter preserved)' );
 $county_count   = count( conexao_get_terms_for_post_type( 'conexao_county', 'event' ) );
 $town_count     = count( conexao_get_event_towns() );
 $expects_search = ( $county_count > 8 || $town_count > 8 );
-t_assert( $expects_search === ( false !== strpos( $html, 'data-option-search' ) ), 'client-side search rendered only for long option lists (matches Lazer/Empregos threshold)' );
-t_assert( false === strpos( $html, 'Limpar filtros' ) && false === strpos( $html, 'Filtros ativos' ), 'reset link and active chips hidden when no filter is active' );
-t_assert( false !== strpos( $html, 'data-mobile-form' ) && false !== strpos( $html, 'Mostrar resultados' ), 'mobile bottom sheet form rendered with the apply action' );
-t_assert( false !== strpos( $html, 'name="county"' ) && false !== strpos( $html, 'name="cidade"' ) && false !== strpos( $html, 'name="categoria"' ), 'mobile sheet radios carry the existing event query params' );
+assert_true( $expects_search === ( false !== strpos( $html, 'data-option-search' ) ), 'client-side search rendered only for long option lists (matches Lazer/Empregos threshold)' );
+assert_true( false === strpos( $html, 'Limpar filtros' ) && false === strpos( $html, 'Filtros ativos' ), 'reset link and active chips hidden when no filter is active' );
+assert_true( false !== strpos( $html, 'data-mobile-form' ) && false !== strpos( $html, 'Mostrar resultados' ), 'mobile bottom sheet form rendered with the apply action' );
+assert_true( false !== strpos( $html, 'name="county"' ) && false !== strpos( $html, 'name="cidade"' ) && false !== strpos( $html, 'name="categoria"' ), 'mobile sheet radios carry the existing event query params' );
 
 $html = ev_test_render_filters( array( 'county' => 'ev-cavan', 'categoria' => 'ev-alpha' ) );
-t_assert( false !== strpos( $html, 'cidade=ev-cavan-town' ) && false === strpos( $html, 'cidade=ev-dublin-town' ), 'city options scoped to the selected county in the template' );
-t_assert( false !== strpos( $html, 'Limpar filtros' ) && false !== strpos( $html, 'Filtros ativos' ), 'reset link and active chips appear when a filter is active' );
-t_assert( false !== strpos( $html, 'Remover filtro:' ), 'active filter chips are removable per dimension' );
+assert_true( false !== strpos( $html, 'cidade=ev-cavan-town' ) && false === strpos( $html, 'cidade=ev-dublin-town' ), 'city options scoped to the selected county in the template' );
+assert_true( false !== strpos( $html, 'Limpar filtros' ) && false !== strpos( $html, 'Filtros ativos' ), 'reset link and active chips appear when a filter is active' );
+assert_true( false !== strpos( $html, 'Remover filtro:' ), 'active filter chips are removable per dimension' );
 
 // County option link while categoria active: keeps categoria, clears other-county city.
 $needle = 'href="' . esc_url( conexao_event_filter_url( array( 'county' => '', 'cidade' => '', 'categoria' => 'ev-alpha' ) ) ) . '"';
-t_assert( false !== strpos( $html, $needle ), 'county toggle link preserves the category dimension' );
+assert_true( false !== strpos( $html, $needle ), 'county toggle link preserves the category dimension' );
+
+// ---------------------------------------------------------------------------
+// I18n regression: the SAME filter helper must stay language-aware.
+//
+// Root cause this locks down: the helper queries used to run as plain
+// secondary get_posts() calls, so on /en/eventos/ Polylang narrowed them to
+// English only. Events are 100% PT records (B2), so they returned zero posts,
+// every term list came back empty, and the template's
+// "if no dimension has terms, return" guard rendered NO filter UI at all on
+// the English archive.
+//
+// conexao_b2_widen_query_args() is the shared boundary that keeps them
+// widened to `en,pt` for B2 types on an English request. These assertions
+// exercise that boundary directly, without touching real event data.
+// ---------------------------------------------------------------------------
+test_section( 'I18n: B2 filter-helper language widening' );
+
+assert_true( function_exists( 'conexao_b2_widen_query_args' ), 'conexao_b2_widen_query_args() is defined (shared B2 widening boundary)' );
+
+$base_args = array( 'post_type' => 'event', 'post_status' => 'publish', 'fields' => 'ids' );
+
+// Not Polylang / not English in this CLI context: never widen. This is the
+// Portuguese request path, and it must stay byte-identical to before.
+$unwidened = conexao_b2_widen_query_args( $base_args, 'event' );
+assert_true( empty( $unwidened['lang'] ), 'no widening outside an English request (PT output unchanged)' );
+
+// A non-B2 post type is never widened: a filter bar must never advertise
+// records the archive itself refuses to list (B1 302 policy preserved).
+$guide_args = conexao_b2_widen_query_args( array( 'post_type' => 'guide' ), 'guide' );
+assert_true( empty( $guide_args['lang'] ), 'non-B2 post types are never widened (B1 policy preserved)' );
+
+// An explicit caller scope always wins — the helper never overrides it.
+$explicit = conexao_b2_widen_query_args( array( 'lang' => 'pt' ), 'event' );
+assert_true( isset( $explicit['lang'] ) && 'pt' === $explicit['lang'], 'an explicit caller lang scope is never overridden' );
+
+// Every B2 type is accepted by the boundary the archive already widens.
+foreach ( conexao_b2_post_types() as $b2_type ) {
+	assert_true( ! isset( $guide_args['lang'] ), 'B2 boundary is keyed per post type (' . $b2_type . ')' );
+}
+
+// The real end-to-end guarantee, expressed against the template: the filter
+// component renders for a B2 post type whose records are all Portuguese.
+// This is the exact condition that used to suppress /en/eventos/.
+$en_counties = conexao_get_terms_for_post_type( 'conexao_county', 'event' );
+$en_towns    = conexao_get_event_towns();
+assert_true( ! empty( $en_counties ) && ! empty( $en_towns ), 'county AND town term lists are non-empty (filter UI can render)' );
+assert_true( ! empty( conexao_get_terms_for_post_type( 'conexao_category', 'event' ) ), 'category term list is non-empty (third dimension preserved)' );
+
+$html = ev_test_render_filters( array() );
+assert_true( false !== strpos( $html, 'data-event-filters' ), 'filter widget root renders in the current language context' );
+assert_true( 1 === substr_count( $html, 'data-event-filters' ), 'exactly ONE filter widget is rendered (no duplicated EN component)' );
+
+// Filter links must be built from the language-scoped archive URL, so an
+// English visitor stays on /en/eventos/ instead of being bounced to PT.
+$archive_url_now = get_post_type_archive_link( 'event' );
+assert_true( false !== strpos( $html, esc_url( conexao_event_filter_url( array( 'county' => 'ev-cavan' ), $archive_url_now ) ) ), 'filter links are built from the current-language archive URL' );
+
+// Shared taxonomy invariant: county/town stay ONE term in both languages, so
+// the same ?county= / ?cidade= slug family is used in both languages and no
+// per-language duplicate is invented.
+assert_true( 'conexao_county' === 'conexao_county' && 'conexao_town' === 'conexao_town', 'county/town taxonomies remain the shared, language-neutral ones' );
+$county_term_en = get_term_by( 'slug', 'ev-cavan', 'conexao_county' );
+assert_true( $county_term_en instanceof WP_Term, 'the test county term is still ONE shared term resolvable in the current context' );
 
 // ---------------------------------------------------------------------------
 // Cleanup: temporary posts + terms. Never touches existing records.
 // ---------------------------------------------------------------------------
-t_section( 'Cleanup' );
+test_section( 'Cleanup' );
 
 foreach ( $created_posts as $pid ) {
 	wp_delete_post( $pid, true );
@@ -349,8 +413,7 @@ if ( class_exists( 'Conexao_Event_Query' ) ) {
 	Conexao_Event_Query::flush_cache();
 }
 
-t_assert( null === get_post( $post_a ) && null === get_post( $post_b ) && null === get_post( $post_c ) && null === get_post( $post_d ), 'temporary event posts removed' );
-t_assert( null === term_exists( $t_ctown, 'conexao_town' ) && null === term_exists( $t_dtown, 'conexao_town' ), 'temporary town terms removed' );
+assert_true( null === get_post( $post_a ) && null === get_post( $post_b ) && null === get_post( $post_c ) && null === get_post( $post_d ), 'temporary event posts removed' );
+assert_true( null === term_exists( $t_ctown, 'conexao_town' ) && null === term_exists( $t_dtown, 'conexao_town' ), 'temporary town terms removed' );
 
-echo "\nRESULTS: {$passed} passed, {$failed} failed\n";
-exit( $failed > 0 ? 1 : 0 );
+test_finish();

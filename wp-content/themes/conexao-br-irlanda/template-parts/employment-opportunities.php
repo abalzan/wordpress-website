@@ -228,7 +228,6 @@ $new_tab_hint = esc_attr__( '(abre em nova aba)', 'conexao-br-irlanda' );
 					<button
 						type="button"
 						class="agency-filters-dropdown-trigger<?php echo $state['tipo'] ? ' is-selected' : ''; ?>"
-						aria-haspopup="listbox"
 						aria-expanded="false"
 						aria-controls="empregos-opportunities-tipo-panel"
 						aria-label="<?php echo esc_attr( $tipo_trigger_aria ); ?>"
@@ -241,15 +240,15 @@ $new_tab_hint = esc_attr__( '(abre em nova aba)', 'conexao-br-irlanda' );
 					</button>
 
 					<div class="agency-filters-dropdown-panel" id="empregos-opportunities-tipo-panel" data-dropdown-panel>
-						<div class="agency-filters-dropdown-list" role="listbox" aria-label="<?php esc_attr_e( 'Tipo de oportunidade', 'conexao-br-irlanda' ); ?>">
-							<a class="agency-filters-dropdown-link <?php echo '' === $state['tipo'] ? 'is-active' : ''; ?>" role="option" aria-selected="<?php echo '' === $state['tipo'] ? 'true' : 'false'; ?>" href="<?php echo esc_url( $remove_tipo_url ); ?>">
+						<div class="agency-filters-dropdown-list" aria-label="<?php esc_attr_e( 'Tipo de oportunidade', 'conexao-br-irlanda' ); ?>">
+							<a class="agency-filters-dropdown-link <?php echo '' === $state['tipo'] ? 'is-active' : ''; ?>" href="<?php echo esc_url( $remove_tipo_url ); ?>"<?php echo '' === $state['tipo'] ? ' aria-current="true"' : ''; ?>>
 								<span class="agency-filters-checkmark" aria-hidden="true"><?php echo '' === $state['tipo'] ? '✓' : ''; ?></span>
 								<span><?php echo esc_html( $state['tipo_options'][''] ); ?></span>
 							</a>
 							<?php foreach ( $state['tipo_options'] as $tipo_slug => $tipo_label ) : ?>
 								<?php if ( '' === $tipo_slug ) { continue; } ?>
 								<?php $tipo_is_active = ( $state['tipo'] === $tipo_slug ); ?>
-								<a class="agency-filters-dropdown-link <?php echo $tipo_is_active ? 'is-active' : ''; ?>" role="option" aria-selected="<?php echo $tipo_is_active ? 'true' : 'false'; ?>" href="<?php echo esc_url( $opportunity_filter_url( $tipo_slug, $state['area'], $state['location'], $state['contrato'] ) ); ?>">
+								<a class="agency-filters-dropdown-link <?php echo $tipo_is_active ? 'is-active' : ''; ?>" href="<?php echo esc_url( $opportunity_filter_url( $tipo_slug, $state['area'], $state['location'], $state['contrato'] ) ); ?>"<?php echo $tipo_is_active ? ' aria-current="true"' : ''; ?>>
 									<span class="agency-filters-checkmark" aria-hidden="true"><?php echo $tipo_is_active ? '✓' : ''; ?></span>
 									<span><?php echo esc_html( $tipo_label ); ?></span>
 								</a>
@@ -264,7 +263,6 @@ $new_tab_hint = esc_attr__( '(abre em nova aba)', 'conexao-br-irlanda' );
 						<button
 							type="button"
 							class="agency-filters-dropdown-trigger<?php echo $state['area'] ? ' is-selected' : ''; ?>"
-							aria-haspopup="listbox"
 							aria-expanded="false"
 							aria-controls="empregos-opportunities-area-panel"
 							aria-label="<?php echo esc_attr( $area_trigger_aria ); ?>"
@@ -277,14 +275,14 @@ $new_tab_hint = esc_attr__( '(abre em nova aba)', 'conexao-br-irlanda' );
 						</button>
 
 						<div class="agency-filters-dropdown-panel" id="empregos-opportunities-area-panel" data-dropdown-panel>
-							<div class="agency-filters-dropdown-list" role="listbox" aria-label="<?php esc_attr_e( 'Área de trabalho', 'conexao-br-irlanda' ); ?>">
-								<a class="agency-filters-dropdown-link <?php echo '' === $state['area'] ? 'is-active' : ''; ?>" role="option" aria-selected="<?php echo '' === $state['area'] ? 'true' : 'false'; ?>" href="<?php echo esc_url( $remove_area_url ); ?>">
+							<div class="agency-filters-dropdown-list" aria-label="<?php esc_attr_e( 'Área de trabalho', 'conexao-br-irlanda' ); ?>">
+								<a class="agency-filters-dropdown-link <?php echo '' === $state['area'] ? 'is-active' : ''; ?>" href="<?php echo esc_url( $remove_area_url ); ?>"<?php echo '' === $state['area'] ? ' aria-current="true"' : ''; ?>>
 									<span class="agency-filters-checkmark" aria-hidden="true"><?php echo '' === $state['area'] ? '✓' : ''; ?></span>
 									<span><?php esc_html_e( 'Todas', 'conexao-br-irlanda' ); ?></span>
 								</a>
 								<?php foreach ( $state['area_options'] as $area_slug => $area_label ) : ?>
 									<?php $area_is_active = ( $state['area'] === $area_slug ); ?>
-									<a class="agency-filters-dropdown-link <?php echo $area_is_active ? 'is-active' : ''; ?>" role="option" aria-selected="<?php echo $area_is_active ? 'true' : 'false'; ?>" href="<?php echo esc_url( $opportunity_filter_url( $state['tipo'], $area_slug, $state['location'], $state['contrato'] ) ); ?>">
+									<a class="agency-filters-dropdown-link <?php echo $area_is_active ? 'is-active' : ''; ?>" href="<?php echo esc_url( $opportunity_filter_url( $state['tipo'], $area_slug, $state['location'], $state['contrato'] ) ); ?>"<?php echo $area_is_active ? ' aria-current="true"' : ''; ?>>
 										<span class="agency-filters-checkmark" aria-hidden="true"><?php echo $area_is_active ? '✓' : ''; ?></span>
 										<span><?php echo esc_html( $area_label ); ?></span>
 									</a>
@@ -301,7 +299,6 @@ $new_tab_hint = esc_attr__( '(abre em nova aba)', 'conexao-br-irlanda' );
 						<button
 							type="button"
 							class="agency-filters-dropdown-trigger<?php echo $state['location'] ? ' is-selected' : ''; ?>"
-							aria-haspopup="listbox"
 							aria-expanded="false"
 							aria-controls="empregos-opportunities-location-panel"
 							aria-label="<?php echo esc_attr( $location_trigger_aria ); ?>"
@@ -325,14 +322,14 @@ $new_tab_hint = esc_attr__( '(abre em nova aba)', 'conexao-br-irlanda' );
 									aria-label="<?php esc_attr_e( 'Procurar localização', 'conexao-br-irlanda' ); ?>"
 									autocomplete="off">
 							<?php endif; ?>
-							<div class="agency-filters-dropdown-list" role="listbox" aria-label="<?php esc_attr_e( 'Localização', 'conexao-br-irlanda' ); ?>" data-option-scope>
-								<a class="agency-filters-dropdown-link <?php echo '' === $state['location'] ? 'is-active' : ''; ?>" role="option" aria-selected="<?php echo '' === $state['location'] ? 'true' : 'false'; ?>" href="<?php echo esc_url( $remove_location_url ); ?>">
+							<div class="agency-filters-dropdown-list" aria-label="<?php esc_attr_e( 'Localização', 'conexao-br-irlanda' ); ?>" data-option-scope>
+								<a class="agency-filters-dropdown-link <?php echo '' === $state['location'] ? 'is-active' : ''; ?>" href="<?php echo esc_url( $remove_location_url ); ?>"<?php echo '' === $state['location'] ? ' aria-current="true"' : ''; ?>>
 									<span class="agency-filters-checkmark" aria-hidden="true"><?php echo '' === $state['location'] ? '✓' : ''; ?></span>
 									<span><?php esc_html_e( 'Todas', 'conexao-br-irlanda' ); ?></span>
 								</a>
 								<?php foreach ( $state['location_options'] as $location_slug => $location_label ) : ?>
 									<?php $location_is_active = ( $state['location'] === $location_slug ); ?>
-									<a class="agency-filters-dropdown-link <?php echo $location_is_active ? 'is-active' : ''; ?>" role="option" aria-selected="<?php echo $location_is_active ? 'true' : 'false'; ?>" data-option-item href="<?php echo esc_url( $opportunity_filter_url( $state['tipo'], $state['area'], $location_slug, $state['contrato'] ) ); ?>">
+									<a class="agency-filters-dropdown-link <?php echo $location_is_active ? 'is-active' : ''; ?>"<?php echo $location_is_active ? ' aria-current="true"' : ''; ?> data-option-item href="<?php echo esc_url( $opportunity_filter_url( $state['tipo'], $state['area'], $location_slug, $state['contrato'] ) ); ?>">
 										<span class="agency-filters-checkmark" aria-hidden="true"><?php echo $location_is_active ? '✓' : ''; ?></span>
 										<span><?php echo esc_html( $location_label ); ?></span>
 									</a>
@@ -351,7 +348,6 @@ $new_tab_hint = esc_attr__( '(abre em nova aba)', 'conexao-br-irlanda' );
 						<button
 							type="button"
 							class="agency-filters-dropdown-trigger<?php echo $state['contrato'] ? ' is-selected' : ''; ?>"
-							aria-haspopup="listbox"
 							aria-expanded="false"
 							aria-controls="empregos-opportunities-contrato-panel"
 							aria-label="<?php echo esc_attr( $contrato_trigger_aria ); ?>"
@@ -364,14 +360,14 @@ $new_tab_hint = esc_attr__( '(abre em nova aba)', 'conexao-br-irlanda' );
 						</button>
 
 						<div class="agency-filters-dropdown-panel" id="empregos-opportunities-contrato-panel" data-dropdown-panel>
-							<div class="agency-filters-dropdown-list" role="listbox" aria-label="<?php esc_attr_e( 'Tipo de contrato', 'conexao-br-irlanda' ); ?>">
-								<a class="agency-filters-dropdown-link <?php echo '' === $state['contrato'] ? 'is-active' : ''; ?>" role="option" aria-selected="<?php echo '' === $state['contrato'] ? 'true' : 'false'; ?>" href="<?php echo esc_url( $remove_contrato_url ); ?>">
+							<div class="agency-filters-dropdown-list" aria-label="<?php esc_attr_e( 'Tipo de contrato', 'conexao-br-irlanda' ); ?>">
+								<a class="agency-filters-dropdown-link <?php echo '' === $state['contrato'] ? 'is-active' : ''; ?>" href="<?php echo esc_url( $remove_contrato_url ); ?>"<?php echo '' === $state['contrato'] ? ' aria-current="true"' : ''; ?>>
 									<span class="agency-filters-checkmark" aria-hidden="true"><?php echo '' === $state['contrato'] ? '✓' : ''; ?></span>
 									<span><?php esc_html_e( 'Todos', 'conexao-br-irlanda' ); ?></span>
 								</a>
 								<?php foreach ( $state['contrato_options'] as $contrato_slug => $contrato_label ) : ?>
 									<?php $contrato_is_active = ( $state['contrato'] === $contrato_slug ); ?>
-									<a class="agency-filters-dropdown-link <?php echo $contrato_is_active ? 'is-active' : ''; ?>" role="option" aria-selected="<?php echo $contrato_is_active ? 'true' : 'false'; ?>" href="<?php echo esc_url( $opportunity_filter_url( $state['tipo'], $state['area'], $state['location'], $contrato_slug ) ); ?>">
+									<a class="agency-filters-dropdown-link <?php echo $contrato_is_active ? 'is-active' : ''; ?>" href="<?php echo esc_url( $opportunity_filter_url( $state['tipo'], $state['area'], $state['location'], $contrato_slug ) ); ?>"<?php echo $contrato_is_active ? ' aria-current="true"' : ''; ?>>
 										<span class="agency-filters-checkmark" aria-hidden="true"><?php echo $contrato_is_active ? '✓' : ''; ?></span>
 										<span><?php echo esc_html( $contrato_label ); ?></span>
 									</a>
@@ -601,7 +597,10 @@ $new_tab_hint = esc_attr__( '(abre em nova aba)', 'conexao-br-irlanda' );
 				$agency_name     = esc_html( $item['title'] );
 				$job_type_labels = conexao_recruitment_agency_job_type_labels( conexao_recruitment_agency_meta( $agency, '_agency_job_types' ) );
 				$job_types       = $job_type_labels ? implode( ', ', $job_type_labels ) : '';
-				$location        = conexao_recruitment_agency_meta( $agency, '_agency_location' );
+				// Language-aware coverage string: the stored value stays the
+				// filter's source of truth, only generic words are localized
+				// (real place names pass through byte-identical).
+				$location        = conexao_recruitment_agency_location_display( conexao_recruitment_agency_meta( $agency, '_agency_location' ) );
 				$phone           = conexao_recruitment_agency_meta( $agency, '_agency_phone' );
 				$website         = esc_url( $item['url'] );
 				$temp            = in_array( 'temporario', (array) $item['contract_types'], true );

@@ -1,0 +1,47 @@
+# 10 - Phase 10: permanent invariant gates (fail-closed, unmodified)
+
+== Stage L permanent invariant gates ==
+   repository: /home/andrei/IdeaProjects/wordpress-website
+   sha:        bd81ba59d800970d6e1e6e542d76ccb664fdbd24
+
+[PASS   ] taxonomy                   taxonomy_policy          exit=0 18 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[FAIL   ] translation_completeness   translation_completeness exit=1 17 passed, 3 failed, 53 violation(s) (52 pre-existing, 1 new), 2054 allowlisted
+          violations: 53 (52 pre-existing, 1 new)
+          - post_type:event:malformed_relationships: 1 (event: every translation relationship is a bidirectional link to a PT master)
+          - post_type:guide:missing_en: 48 (guide: eligible public PT records missing a linked EN translation = 0)
+          - post_type:page:missing_en: 4 (page: eligible public PT records missing a linked EN translation = 0)
+          allowlisted: 2054 (by documented policy)
+[PASS   ] cache_scoping              cache_scoping            exit=0 9 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[PASS   ] cache_scoping              cache_scoping_static     exit=0 2 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[PASS   ] redirect_precedence        redirect_precedence      exit=0 15 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[PASS   ] documentation_drift        documentation_drift      exit=0 14 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[PASS   ] i18n_freshness             i18n_freshness           exit=0 8 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+
+----------------------------------------
+Gates: 7 total, 6 passed, 1 failed, 0 blocked
+Assertions: 83 passed, 3 failed
+Violations: 53 (52 pre-existing, 1 new)
+AGGREGATE: FAIL
+----------------------------------------
+gate.json written: docs/evidence/2026-09-26-stage-l/gate.json
+
+One or more permanent invariant gates FAILED. This is a real repository/data violation, not a harness problem: the gates are blocking by design and must not be weakened to obtain a green run.
+
+## Gate-by-gate, at 597b04e (from the assessment, evidence 09) vs now
+
+| Gate | at 597b04e | now |
+|---|---|---|
+| taxonomy_policy | PASS 18/0 | PASS 18/0 |
+| translation_completeness | **not runnable** (test file deleted) | FAIL 17/3, 53 violations (52 pre-existing, 1 data anomaly triaged) |
+| cache_scoping | **not runnable** (test file deleted) | PASS 9/0 |
+| cache_scoping_static | **FAIL 2/4** | PASS 2/0 |
+| redirect_precedence | **not runnable** (test file deleted) | PASS 15/0 |
+| documentation_drift | PASS 14/0 | PASS 14/0 |
+| i18n_freshness | **FAIL (theme catalogue missing)** | PASS 8/0 |
+
+  5/7 passable gates green at 597b04e -> 6/7 at recovery. The 7th is fail-closed by design.
+
+## Nothing was weakened
+  tests/baseline/permanent-gates.json : unchanged since b47d098 (git diff = 0 lines)
+  tests/scripts/verify-*.py           : unchanged (0 diff lines)
+  No threshold, no allowlist entry, no skip flag was added. The aggregate is still FAIL.

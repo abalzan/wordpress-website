@@ -1,0 +1,137 @@
+# 02 - Phase 1: restoration manifest (derived from the real b47d098 tree + the b47d098..597b04e delta)
+
+## Method (not an assumption list)
+Every path is taken from git ls-tree b47d098 and git diff --name-status b47d098 597b04e.
+
+## A. Theme paths at b47d098, absent at 597b04e => RESTORE
+  + wp-content/themes/conexao-br-irlanda/inc/admin.php
+  + wp-content/themes/conexao-br-irlanda/inc/archive-filters.php
+  + wp-content/themes/conexao-br-irlanda/inc/archive-query.php
+  + wp-content/themes/conexao-br-irlanda/inc/assets.php
+  + wp-content/themes/conexao-br-irlanda/inc/b2-fallback.php
+  + wp-content/themes/conexao-br-irlanda/inc/cache.php
+  + wp-content/themes/conexao-br-irlanda/inc/content.php
+  + wp-content/themes/conexao-br-irlanda/inc/customizer.php
+  + wp-content/themes/conexao-br-irlanda/inc/events.php
+  + wp-content/themes/conexao-br-irlanda/inc/i18n.php
+  + wp-content/themes/conexao-br-irlanda/inc/i18n/fallback.php
+  + wp-content/themes/conexao-br-irlanda/inc/i18n/guard.php
+  + wp-content/themes/conexao-br-irlanda/inc/i18n/hreflang.php
+  + wp-content/themes/conexao-br-irlanda/inc/i18n/locale.php
+  + wp-content/themes/conexao-br-irlanda/inc/i18n/switcher.php
+  + wp-content/themes/conexao-br-irlanda/inc/i18n/terms.php
+  + wp-content/themes/conexao-br-irlanda/inc/i18n/urls.php
+  + wp-content/themes/conexao-br-irlanda/inc/leisure.php
+  + wp-content/themes/conexao-br-irlanda/inc/navigation.php
+  + wp-content/themes/conexao-br-irlanda/inc/performance.php
+  + wp-content/themes/conexao-br-irlanda/inc/queries.php
+  + wp-content/themes/conexao-br-irlanda/inc/rest-language.php
+  + wp-content/themes/conexao-br-irlanda/inc/seo/canonical.php
+  + wp-content/themes/conexao-br-irlanda/inc/seo/hreflang.php
+  + wp-content/themes/conexao-br-irlanda/inc/seo/meta.php
+  + wp-content/themes/conexao-br-irlanda/inc/seo/open-graph.php
+  + wp-content/themes/conexao-br-irlanda/inc/seo/redirects.php
+  + wp-content/themes/conexao-br-irlanda/inc/seo/related.php
+  + wp-content/themes/conexao-br-irlanda/inc/seo/robots.php
+  + wp-content/themes/conexao-br-irlanda/inc/seo/schema.php
+  + wp-content/themes/conexao-br-irlanda/inc/seo/sitemap.php
+  + wp-content/themes/conexao-br-irlanda/inc/seo/titles.php
+  + wp-content/themes/conexao-br-irlanda/inc/setup.php
+  + wp-content/themes/conexao-br-irlanda/inc/shortcodes.php
+  + wp-content/themes/conexao-br-irlanda/inc/sponsors.php
+  + wp-content/themes/conexao-br-irlanda/inc/ui.php
+  + wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot
+  + wp-content/themes/conexao-br-irlanda/languages/en_US.mo
+  + wp-content/themes/conexao-br-irlanda/languages/en_US.po
+  + wp-content/themes/conexao-br-irlanda/languages/pt_BR.mo
+  + wp-content/themes/conexao-br-irlanda/languages/pt_BR.po
+  + wp-content/themes/conexao-br-irlanda/template-parts/language-switcher.php
+  + wp-content/themes/conexao-br-irlanda/tests/run-guide-translation.php
+  + wp-content/themes/conexao-br-irlanda/tests/test-blog-en-translation.php
+  + wp-content/themes/conexao-br-irlanda/tests/test-cache-language-scoping.php
+  + wp-content/themes/conexao-br-irlanda/tests/test-course-provider-card-excerpt-language.php
+  + wp-content/themes/conexao-br-irlanda/tests/test-en-course-provider-category-filter.php
+  + wp-content/themes/conexao-br-irlanda/tests/test-filter-link-aria-semantics.php
+  + wp-content/themes/conexao-br-irlanda/tests/test-guide-en-translation.php
+  + wp-content/themes/conexao-br-irlanda/tests/test-header-menu-selection.php
+  + wp-content/themes/conexao-br-irlanda/tests/test-homepage-content-type-label.php
+  + wp-content/themes/conexao-br-irlanda/tests/test-i18n-foundation.php
+  + wp-content/themes/conexao-br-irlanda/tests/test-job-en-translation.php
+  + wp-content/themes/conexao-br-irlanda/tests/test-jobs-en-language.php
+  + wp-content/themes/conexao-br-irlanda/tests/test-leisure-card-excerpt-language.php
+  + wp-content/themes/conexao-br-irlanda/tests/test-nav-language-context-logic.php
+  + wp-content/themes/conexao-br-irlanda/tests/test-nav-language-context.php
+  + wp-content/themes/conexao-br-irlanda/tests/test-nav-menu-regression.php
+  + wp-content/themes/conexao-br-irlanda/tests/test-polylang-foundation.php
+  + wp-content/themes/conexao-br-irlanda/tests/test-recurrence-i18n.php
+  + wp-content/themes/conexao-br-irlanda/tests/test-redirect-precedence.php
+  + wp-content/themes/conexao-br-irlanda/tests/test-stage32-bilingual.php
+  + wp-content/themes/conexao-br-irlanda/tests/test-stage33-bilingual.php
+  + wp-content/themes/conexao-br-irlanda/tests/test-stage41-rest-language.php
+  + wp-content/themes/conexao-br-irlanda/tests/test-stage45-pages.php
+  + wp-content/themes/conexao-br-irlanda/tests/test-stage7-hero-sponsors.php
+  + wp-content/themes/conexao-br-irlanda/tests/test-taxonomy-policy.php
+  + wp-content/themes/conexao-br-irlanda/tests/test-translation-completeness.php
+
+## B. Theme paths present at both, changed by 597b04e => RESTORE to b47d098
+  justification: 597b04e ADDED 0 theme functions and net-removed 108; its surviving-file edits are
+  verified reverts plus an inlined test bootstrap duplicating tests/bootstrap.php.
+  ~ wp-content/themes/conexao-br-irlanda/404.php
+  ~ wp-content/themes/conexao-br-irlanda/assets/css/dark-mode.css
+  ~ wp-content/themes/conexao-br-irlanda/assets/css/header-nav.css
+  ~ wp-content/themes/conexao-br-irlanda/assets/css/main.css
+  ~ wp-content/themes/conexao-br-irlanda/assets/js/main.js
+  ~ wp-content/themes/conexao-br-irlanda/footer.php
+  ~ wp-content/themes/conexao-br-irlanda/front-page.php
+  ~ wp-content/themes/conexao-br-irlanda/functions.php
+  ~ wp-content/themes/conexao-br-irlanda/header.php
+  ~ wp-content/themes/conexao-br-irlanda/home.php
+  ~ wp-content/themes/conexao-br-irlanda/inc/employment-opportunities.php
+  ~ wp-content/themes/conexao-br-irlanda/inc/empregos-landing.php
+  ~ wp-content/themes/conexao-br-irlanda/inc/permit-employers.php
+  ~ wp-content/themes/conexao-br-irlanda/inc/recruitment-agencies.php
+  ~ wp-content/themes/conexao-br-irlanda/page-empregos.php
+  ~ wp-content/themes/conexao-br-irlanda/page.php
+  ~ wp-content/themes/conexao-br-irlanda/single-leisure.php
+  ~ wp-content/themes/conexao-br-irlanda/single-sponsor.php
+  ~ wp-content/themes/conexao-br-irlanda/single.php
+  ~ wp-content/themes/conexao-br-irlanda/template-parts/course-filters.php
+  ~ wp-content/themes/conexao-br-irlanda/template-parts/employment-opportunities.php
+  ~ wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php
+  ~ wp-content/themes/conexao-br-irlanda/template-parts/help-shortcut-card.php
+  ~ wp-content/themes/conexao-br-irlanda/template-parts/hero-events.php
+  ~ wp-content/themes/conexao-br-irlanda/template-parts/leisure-card.php
+  ~ wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php
+  ~ wp-content/themes/conexao-br-irlanda/template-parts/provider-card.php
+  ~ wp-content/themes/conexao-br-irlanda/template-parts/quick-access-card.php
+  ~ wp-content/themes/conexao-br-irlanda/tests/test-event-location-filters.php
+  ~ wp-content/themes/conexao-br-irlanda/tests/test-guide-breadcrumb-filter.php
+  ~ wp-content/themes/conexao-br-irlanda/tests/test-leisure-attribute-normalization.php
+  ~ wp-content/themes/conexao-br-irlanda/tests/test-leisure-card-map-action.php
+  ~ wp-content/themes/conexao-br-irlanda/tests/test-leisure-multiselect-filters.php
+  ~ wp-content/themes/conexao-br-irlanda/tests/test-leisure-related-events.php
+  ~ wp-content/themes/conexao-br-irlanda/tests/test-sponsor-archive-ordering.php
+
+## C. Theme path added by 597b04e => REMOVE (incompatible with the restored architecture)
+  - wp-content/themes/conexao-br-irlanda/inc/seo.php
+
+## D. NON-theme changes in the same commit => PRESERVE (untouched by this recovery)
+  keep A	docs/evidence/2026-09-27-event-importer-pot/03-duplicate-blocks-in-context.txt
+  keep A	docs/evidence/2026-09-27-event-importer-pot/04-source-trace-of-duplicates.txt
+  keep A	docs/evidence/2026-09-27-event-importer-pot/05-generator-verification.txt
+  keep A	docs/evidence/2026-09-27-event-importer-pot/06-deterministic-regeneration.txt
+  keep A	docs/evidence/2026-09-27-event-importer-pot/07-outcome-and-comparison.txt
+  keep A	docs/evidence/2026-09-27-event-importer-pot/08-po-mo-hashes-AFTER.txt
+  keep A	docs/evidence/2026-09-27-event-importer-pot/09-catalogue-validation.txt
+  keep A	docs/evidence/2026-09-27-event-importer-pot/10-isolated-before-after.txt
+  keep A	docs/evidence/2026-09-27-event-importer-pot/11-permanent-gates-MAIN-WORKTREE.json
+  keep A	docs/evidence/2026-09-27-event-importer-pot/11-permanent-gates-MAIN-WORKTREE.txt
+  keep A	docs/evidence/2026-09-27-event-importer-pot/12-permanent-gates.txt
+  keep A	docs/evidence/2026-09-27-event-importer-pot/13-run-tests-WITH-change.txt
+  keep A	docs/evidence/2026-09-27-event-importer-pot/14-run-tests-WITHOUT-change-BASELINE.txt
+  keep A	docs/evidence/2026-09-27-event-importer-pot/15-http-regression.txt
+  keep A	docs/evidence/2026-09-27-event-importer-pot/16-static-analysis-and-scope.txt
+  keep A	docs/evidence/2026-09-27-event-importer-pot/17-failure-proofs.txt
+  keep A	docs/evidence/2026-09-27-event-importer-pot/18-final-acceptance-sweep.txt
+  keep A	docs/reports/2026-09-27-event-importer-pot-duplicate-msgids.md
+  keep M	wp-content/plugins/conexao-event-importer/languages/conexao-event-importer.pot
