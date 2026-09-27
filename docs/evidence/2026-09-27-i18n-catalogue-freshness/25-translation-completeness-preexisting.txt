@@ -1,0 +1,11 @@
+== translation_completeness: the "1 new" violation is NOT caused by this task ==
+
+Run at the PREVIOUS commit 8f07f30 (before this task, POT + generator reverted):
+  15 passed, 5 failed, 35 violations (34 pre-existing, 1 new)
+  sample: guia-de-teste-local, local-test-guide, hello-world, local-en-post
+
+Run after this task:
+  15 passed, 5 failed, 35 violations (34 pre-existing, 1 new)
+  IDENTICAL. These are local-database test fixtures
+  (guia-de-teste-local, local-test-guide, hello-world, local-en-post),
+  i.e. pre-existing dataset state, not a catalogue effect.

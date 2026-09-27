@@ -1,0 +1,25 @@
+diff --git a/wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot b/wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot
+index 901128e..ce8e82a 100644
+--- a/wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot
++++ b/wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot
+@@ -1543,0 +1544,20 @@ msgstr "irlanda"
++#. Name of the theme
++#: wp-content/themes/conexao-br-irlanda/style.css:1
++msgid "Conexão BR Irlanda - Community Portal"
++msgstr ""
++#. URI of the theme
++#: wp-content/themes/conexao-br-irlanda/style.css:1
++msgid "https://conexaobr.ie"
++msgstr ""
++#. Author of the theme
++#: wp-content/themes/conexao-br-irlanda/style.css:1
++msgid "Conexão BR Irlanda"
++msgstr ""
++#. Description of the theme
++#: wp-content/themes/conexao-br-irlanda/style.css:1
++msgid "Modern Community Portal theme for Conexão BR Irlanda - a digital magazine and community hub for Brazilians in Ireland. Features a modern portal design with green/orange palette, responsive layout, and full Gutenberg support."
++msgstr ""
++#. Version of the theme
++#: wp-content/themes/conexao-br-irlanda/style.css:1
++msgid "1.0.0"
++msgstr ""

@@ -1,0 +1,15 @@
+== Stage L i18n catalogue freshness gate ==
+   repo:  /home/andrei/IdeaProjects/wordpress-website
+   signal: git commit time per file (mtime is not reproducible in CI)
+   conexao-br-irlanda       catalogue=1790528252 newest-source=1790525550 (wp-content/themes/conexao-br-irlanda/front-page.php) fresh
+   conexao-data-model       catalogue=1790431901 newest-source=1790335165 (wp-content/plugins/conexao-data-model/includes/class-agency.php) fresh
+   conexao-content          catalogue=1790431901 newest-source=1789985903 (wp-content/plugins/conexao-content/conexao-content.php) fresh
+   conexao-admin-ux         catalogue=1790431901 newest-source=1790016943 (wp-content/plugins/conexao-admin-ux/includes/class-translation-state.php) fresh
+   conexao-event-runtime    catalogue=1790431901 newest-source=1790016943 (wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php) fresh
+   conexao-event-importer   catalogue=1790495204 newest-source=1790446037 (wp-content/plugins/conexao-event-importer/includes/class-event-importer.php) fresh
+   conexao-leisure-migration catalogue=1790431901 newest-source=1790325155 (wp-content/plugins/conexao-leisure-migration/includes/class-leisure-exporter.php) fresh
+   conexao-sponsor-migration catalogue=1790431901 newest-source=1789994211 (wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-importer.php) fresh
+
+   stale catalogues: 0
+8 passed, 0 failed
+GATE-RESULT {"gate": "i18n_freshness", "status": "pass", "passed": 8, "failed": 0, "violations": 0, "pre_existing": 0, "new": 0, "details": []}

@@ -1,0 +1,25 @@
+conexao test harness
+  repository:    /home/andrei/IdeaProjects/wordpress-website
+  php:           8.5.4
+  environment:   host (docker compose exec)
+  base url:      http://localhost:8080
+
+Script-contract suites (static, no WordPress, no network)
+[PASS] tests/scripts/verify-agent-governance.py
+[PASS] tests/scripts/verify-cache-key-scoping.py
+         2 passed, 0 failed
+[PASS] tests/scripts/verify-documentation-drift.py
+         14 passed, 0 failed
+[FAIL] tests/scripts/verify-i18n-freshness.py (exit 1)
+         FAIL: conexao-br-irlanda: wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot is older than wp-content/themes/conexao-br-irlanda/front-page.php by 93649s — regenerate the catalogue with `wp i18n make-pot` (never hand-edit)
+[PASS] tests/scripts/verify-release-integrity.py
+         210 passed, 0 failed
+[PASS] tests/scripts/verify-script-conventions.py
+         313 passed, 0 failed
+
+----------------------------------------
+In-process PHP suites: 0 total, 0 passed, 0 failed
+Script-contract suites: 6 total, 5 passed, 1 failed
+----------------------------------------
+TESTS FAILED
+full suite output kept in /tmp/tmp.OvVcrOoB0H

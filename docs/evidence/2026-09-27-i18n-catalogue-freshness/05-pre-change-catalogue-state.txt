@@ -1,0 +1,19 @@
+== PRE-CHANGE catalogue fingerprints ==
+fd99b4b7eaa1d2c52b846b651e95d8af  wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot
+f6cbb244bd3689ac98c0c7d5453abf85  wp-content/themes/conexao-br-irlanda/languages/en_US.po
+d754135e3771e42bdc820ff5890718ad  wp-content/themes/conexao-br-irlanda/languages/en_US.mo
+16f92300e705a38354acdcf667fa9037  wp-content/themes/conexao-br-irlanda/languages/pt_BR.po
+50ea800799d2f7f07be4a198747281e1  wp-content/themes/conexao-br-irlanda/languages/pt_BR.mo
+
+== PRE-CHANGE msgid counts ==
+conexao-br-irlanda.pot   msgid=415
+en_US.po                 msgid=419
+pt_BR.po                 msgid=414
+
+== PRE-CHANGE msgfmt statistics ==
+en_US.po: 418 translated messages.
+pt_BR.po: 413 translated messages.
+
+== PRE-CHANGE po/mo sync ==
+en_US IN-SYNC
+pt_BR IN-SYNC

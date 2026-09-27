@@ -1,0 +1,31 @@
+== SCOPE OF THE GENERATOR DEFECT (scripts/i18n-make-pot.sh:514) ==
+
+The generator builds a file list on stdin and pipes it to:
+    printf "%s" "$file_list" | xgettext ... --files-from=- --output="$out_pot" </dev/null
+
+xgettext reads the file list from STDIN. The trailing </dev/null replaces STDIN
+with /dev/null, so xgettext receives an EMPTY list, extracts nothing, never creates
+--output, and still exits 0. The old catalogue is left untouched, then
+add_header_strings() appends 5 style.css blocks AGAIN -> duplicate msgids.
+
+== OBSERVED BEHAVIOUR OF THE UNFIXED GENERATOR (theme only) ==
+  diffstat: 1 file changed, 20 insertions(+)
+  first 1543 lines byte-identical to the pre-existing POT
+  5 duplicate msgid blocks appended (msgcat: "found 5 fatal errors")
+  16 genuinely-missing source strings STILL absent (fallback.php: 0 refs)
+  i18n_freshness gate: STILL FAIL (unchanged)
+
+== OBSERVED BEHAVIOUR WITH </dev/null REMOVED ==
+  417 msgids, msgfmt --check clean (0 duplicate errors)
+  all 16 previously-missing strings now present
+  BUT: 601 reference lines contain the absolute local path
+       /home/andrei/IdeaProjects/wordpress-website/... (1698-line diff)
+
+== CORRUPTION SPREAD TO THE PLUGIN CATALOGUES BY THE SAME BROKEN RUN (88e8ec0) ==
+  conexao-data-model: msgids=6 duplicate_msgid_errors=0
+  conexao-content: msgids=7 duplicate_msgid_errors=0
+  conexao-admin-ux: msgids=104 duplicate_msgid_errors=0
+  conexao-event-runtime: msgids=18 duplicate_msgid_errors=0
+  conexao-event-importer: msgids=389 duplicate_msgid_errors=3
+  conexao-leisure-migration: msgids=125 duplicate_msgid_errors=0
+  conexao-sponsor-migration: msgids=54 duplicate_msgid_errors=0

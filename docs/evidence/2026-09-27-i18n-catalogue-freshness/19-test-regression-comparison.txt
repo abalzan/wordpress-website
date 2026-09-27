@@ -1,0 +1,15 @@
+== FINAL TEST REGRESSION COMPARISON ==
+baseline (pristine HEAD, committed by previous task): 34 passed / 24 failed of 58
+after    (this task)                              : 35 passed / 24 failed of 59
+
+The +1 suite is test-filter-link-aria-semantics.php, committed at HEAD by the previous task.
+It PASSES in both runs. No PHP source was changed by this task.
+
+== NEW failures introduced by this task ==
+  (NONE)
+
+== failures no longer present ==
+  (NONE)
+
+i18n_freshness remains FAIL in this run because the regenerated catalogue is
+not yet COMMITTED, and the gate signal is git commit time (not mtime).

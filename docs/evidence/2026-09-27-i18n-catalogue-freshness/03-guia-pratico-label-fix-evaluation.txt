@@ -1,0 +1,36 @@
+== conexao_content_type_label() (inc/content.php:87-99) ==
+ * which WordPress returns null) fall back to the registered label, or to an
+ * empty string, so a label is never lost and the caller's existing
+ * `if ( $content_type )` guard keeps its meaning.
+ *
+ * @param string $post_type Post type name, e.g. 'guide'.
+ * @return string Translated singular label, or '' when it cannot be resolved.
+ */
+function conexao_content_type_label( $post_type ) {
+	$object = get_post_type_object( $post_type );
+
+	if ( ! $object || ! isset( $object->labels->singular_name ) || '' === $object->labels->singular_name ) {
+		return '';
+	}
+
+	// The msgid is the registered (Portuguese) label, which is exactly what
+	// the en_US catalogue already carries — e.g. "Guia Prático" -> "Practical
+	// Guide" (en_US.po, referenced from inc/seo/titles.php). No new msgid and
+	// no catalogue change is needed for this fix.
+	return __( $object->labels->singular_name, 'conexao-br-irlanda' );
+}
+
+
+== proof: the msgid is DYNAMIC (a PHP variable), so xgettext cannot extract it as a literal ==
+   __( $object->labels->singular_name, ... )  ->  no new msgid, no catalogue change needed
+
+== Guia Pratico -> Practical Guide already in en_US.po ==
+117-#. translators: %s is the guide title.
+118-#: inc/seo.php:36
+119:msgid "Guia Prático"
+120-msgstr "Practical Guide"
+121-
+
+== and present in the compiled .mo ==
+msgid "Guia Prático"
+msgstr "Practical Guide"

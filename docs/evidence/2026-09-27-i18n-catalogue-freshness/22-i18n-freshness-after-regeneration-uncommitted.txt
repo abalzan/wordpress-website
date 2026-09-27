@@ -1,0 +1,17 @@
+== Stage L i18n catalogue freshness gate ==
+   repo:  /home/andrei/IdeaProjects/wordpress-website
+   signal: git commit time per file (mtime is not reproducible in CI)
+   conexao-br-irlanda       catalogue=1790431901 newest-source=1790525550 (wp-content/themes/conexao-br-irlanda/front-page.php) STALE
+   conexao-data-model       catalogue=1790431901 newest-source=1790335165 (wp-content/plugins/conexao-data-model/includes/class-agency.php) fresh
+   conexao-content          catalogue=1790431901 newest-source=1789985903 (wp-content/plugins/conexao-content/conexao-content.php) fresh
+   conexao-admin-ux         catalogue=1790431901 newest-source=1790016943 (wp-content/plugins/conexao-admin-ux/includes/class-translation-state.php) fresh
+   conexao-event-runtime    catalogue=1790431901 newest-source=1790016943 (wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php) fresh
+   conexao-event-importer   catalogue=1790495204 newest-source=1790446037 (wp-content/plugins/conexao-event-importer/includes/class-event-importer.php) fresh
+   conexao-leisure-migration catalogue=1790431901 newest-source=1790325155 (wp-content/plugins/conexao-leisure-migration/includes/class-leisure-exporter.php) fresh
+   conexao-sponsor-migration catalogue=1790431901 newest-source=1789994211 (wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-importer.php) fresh
+
+   stale catalogues: 1
+FAIL: conexao-br-irlanda: wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot is older than wp-content/themes/conexao-br-irlanda/front-page.php by 93649s — regenerate the catalogue with `wp i18n make-pot` (never hand-edit)
+8 passed, 1 failed
+  stale catalogues: 1 pre-existing, 0 new
+GATE-RESULT {"gate": "i18n_freshness", "status": "fail", "passed": 8, "failed": 1, "violations": 1, "pre_existing": 1, "new": 0, "details": [{"component": "conexao-br-irlanda", "catalogue": "wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot", "newest_source": "wp-content/themes/conexao-br-irlanda/front-page.php", "catalogue_ts": 1790431901, "newest_source_ts": 1790525550, "lag_seconds": 93649}]}
