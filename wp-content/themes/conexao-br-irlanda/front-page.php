@@ -124,7 +124,7 @@ $hero_has_sponsors = ! empty( conexao_get_featured_sponsors() );
 						</svg>
 						<?php esc_html_e( 'Explorar Guias', 'conexao-br-irlanda' ); ?>
 					</a>
-					<a href="<?php echo esc_url( conexao_lang_url( '/eventos/' ) ); ?>" class="btn btn-outline">
+					<a href="<?php echo esc_url( home_url( '/eventos/' ) ); ?>" class="btn btn-outline">
 						<?php esc_html_e( 'Ver Eventos', 'conexao-br-irlanda' ); ?>
 					</a>
 				</div>
@@ -217,7 +217,7 @@ $hero_has_sponsors = ! empty( conexao_get_featured_sponsors() );
 				<span class="section-eyebrow"><?php esc_html_e( 'Conteúdo em Destaque', 'conexao-br-irlanda' ); ?></span>
 				<h2 class="section-title"><?php esc_html_e( 'Últimas Publicações', 'conexao-br-irlanda' ); ?></h2>
 			</div>
-			<a href="<?php echo esc_url( conexao_lang_url( '/blog/' ) ); ?>" class="section-link">
+			<a href="<?php echo esc_url( home_url( '/blog/' ) ); ?>" class="section-link">
 				<?php esc_html_e( 'Ver todas', 'conexao-br-irlanda' ); ?>
 				<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
 					<line x1="5" y1="12" x2="19" y2="12"></line>
@@ -266,7 +266,7 @@ $hero_has_sponsors = ! empty( conexao_get_featured_sponsors() );
 									$content_type = get_post_type_object( get_post_type() );
 									if ( $content_type || ( $categories && ! is_wp_error( $categories ) ) ) : ?>
 										<div class="featured-article-categories">
-											<?php if ( $content_type ) : ?><span class="featured-article-category"><?php echo esc_html( conexao_content_type_label( get_post_type() ) ); ?></span><?php endif; ?>
+											<?php if ( $content_type ) : ?><span class="featured-article-category"><?php echo esc_html( $content_type->labels->singular_name ); ?></span><?php endif; ?>
 											<?php if ( $categories && ! is_wp_error( $categories ) ) : ?>
 												<span class="featured-article-category"><?php echo esc_html( $categories[0]->name ); ?></span>
 											<?php endif; ?>
@@ -306,7 +306,7 @@ $hero_has_sponsors = ! empty( conexao_get_featured_sponsors() );
 								$content_type = get_post_type_object( get_post_type() );
 								if ( $content_type || ( $cats && ! is_wp_error( $cats ) ) ) : ?>
 									<div class="post-card-categories">
-										<?php if ( $content_type ) : ?><span class="post-card-category"><?php echo esc_html( conexao_content_type_label( get_post_type() ) ); ?></span><?php endif; ?>
+										<?php if ( $content_type ) : ?><span class="post-card-category"><?php echo esc_html( $content_type->labels->singular_name ); ?></span><?php endif; ?>
 										<?php if ( $cats && ! is_wp_error( $cats ) ) : ?>
 											<span class="post-card-category"><?php echo esc_html( $cats[0]->name ); ?></span>
 										<?php endif; ?>
@@ -443,7 +443,7 @@ if ( ! empty( $latest_news_ids ) ) :
 				<span class="section-eyebrow"><?php esc_html_e( 'Blog', 'conexao-br-irlanda' ); ?></span>
 				<h2 class="section-title" id="latest-news-heading"><?php esc_html_e( 'Últimas novidades', 'conexao-br-irlanda' ); ?></h2>
 			</div>
-			<a href="<?php echo esc_url( conexao_lang_url( '/blog/' ) ); ?>" class="section-link">
+			<a href="<?php echo esc_url( home_url( '/blog/' ) ); ?>" class="section-link">
 				<?php esc_html_e( 'Ver todos', 'conexao-br-irlanda' ); ?>
 				<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
 					<line x1="5" y1="12" x2="19" y2="12"></line>
@@ -506,7 +506,7 @@ if ( ! empty( $latest_news_ids ) ) :
 				<h2 class="section-title"><?php esc_html_e( 'Próximos Eventos', 'conexao-br-irlanda' ); ?></h2>
 				<p class="section-subtitle"><?php esc_html_e( 'Não perca os eventos da comunidade brasileira na Irlanda.', 'conexao-br-irlanda' ); ?></p>
 			</div>
-			<a href="<?php echo esc_url( conexao_lang_url( '/eventos/' ) ); ?>" class="section-link">
+			<a href="<?php echo esc_url( home_url( '/eventos/' ) ); ?>" class="section-link">
 				<?php esc_html_e( 'Ver todos', 'conexao-br-irlanda' ); ?>
 				<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
 					<line x1="5" y1="12" x2="19" y2="12"></line>
@@ -536,18 +536,6 @@ if ( ! empty( $latest_news_ids ) ) :
 				'update_post_term_cache' => false,
 			);
 
-			// B2 fallback: secondary queries do not inherit the archive's
-			// language scope, so Polylang would narrow this query to `en`
-			// only and filter out the curated PT fallback records in
-			// $front_upcoming_ids (EN records + PT records with no EN
-			// translation). Widen to EN+PT exactly like the /eventos/
-			// archive does in conexao_content_archive_query(); the ID list
-			// itself stays language-curated so no event ever appears twice.
-			// PT behaviour is byte-for-byte unchanged.
-			if ( function_exists( 'conexao_polylang_active' ) && conexao_polylang_active() && function_exists( 'conexao_requested_language_slug' ) && 'en' === conexao_requested_language_slug() ) {
-				$front_events_args['lang'] = 'en,pt';
-			}
-
 			if ( is_array( $front_upcoming_ids ) ) {
 				$front_events_args['post__in'] = empty( $front_upcoming_ids ) ? array( 0 ) : $front_upcoming_ids;
 				$front_events_args['orderby']  = 'post__in';
@@ -572,7 +560,7 @@ if ( ! empty( $latest_news_ids ) ) :
 		</div>
 
 		<div class="events-section-footer">
-			<a href="<?php echo esc_url( conexao_lang_url( '/eventos/' ) ); ?>" class="events-section-link">
+			<a href="<?php echo esc_url( home_url( '/eventos/' ) ); ?>" class="events-section-link">
 				<?php esc_html_e( 'Ver todos os eventos', 'conexao-br-irlanda' ); ?>
 				<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
 					<line x1="5" y1="12" x2="19" y2="12"></line>
@@ -591,7 +579,7 @@ if ( ! empty( $latest_news_ids ) ) :
 				<span class="section-eyebrow"><?php esc_html_e( 'Oportunidades', 'conexao-br-irlanda' ); ?></span>
 				<h2 class="section-title" id="jobs-home-title"><?php esc_html_e( 'Onde procurar emprego', 'conexao-br-irlanda' ); ?></h2>
 			</div>
-			<a href="<?php echo esc_url( conexao_lang_url( '/empregos/' ) ); ?>" class="section-link"><?php esc_html_e( 'Ver mais', 'conexao-br-irlanda' ); ?></a>
+			<a href="<?php echo esc_url( home_url( '/empregos/' ) ); ?>" class="section-link"><?php esc_html_e( 'Ver mais', 'conexao-br-irlanda' ); ?></a>
 		</div>
 		<?php get_template_part( 'template-parts/job-resources', 'preview' ); ?>
 	</div>

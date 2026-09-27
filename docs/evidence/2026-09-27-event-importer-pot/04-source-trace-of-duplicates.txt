@@ -1,0 +1,44 @@
+== PHASE 4: SOURCE TRACE OF THE THREE DUPLICATED MSGIDS ==
+
+DUPLICATED MSGID 1: "Conexão BR Irlanda — Event Importer (Local Tools)"
+DUPLICATED MSGID 2: "Local-only event import/export tooling. Fetches, normalizes, ..."
+DUPLICATED MSGID 3: "1.7.1"
+
+-- Declared source reference in BOTH copies (identical) --
+1449:#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:1
+1453:#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:1
+1457:#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:1
+1462:#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:1
+1467:#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:1
+1472:#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:1
+
+The ONLY declared reference is wp-content/plugins/conexao-event-importer/conexao-event-importer.php:1
+i.e. the PLUGIN DOCBLOCK HEADER, not a gettext call site.
+
+-- The plugin docblock that declares them (conexao-event-importer.php:1-10) --
+<?php
+/**
+ * Plugin Name: Conexão BR Irlanda — Event Importer (Local Tools)
+ * Description: Local-only event import/export tooling. Fetches, normalizes, deduplicates, and imports events from configured external sources into the local WordPress database. Event images are downloaded into the Media Library locally, then the complete event data (with embedded images) is exported to JSON for import into the production WordPress.com site. Production-critical event runtime behavior (meta/taxonomy registration, _event_status, public query filtering, status admin UI) lives in the separate "Conexão BR Irlanda — Event Runtime" plugin.
+ * Version: 1.7.1
+ * Requires Plugins: conexao-data-model, conexao-event-runtime
+ * Text Domain: conexao-event-importer
+ *
+ * @package Conexao_Event_Importer
+ */
+
+-- Are these strings in ANY gettext call? --
+grep plugin Name outside languages/:
+wp-content/plugins/conexao-event-importer/conexao-event-importer.php:3: * Plugin Name: Conexão BR Irlanda — Event Importer (Local Tools)
+wp-content/plugins/conexao-event-importer/conexao-event-importer.php:93:			esc_html_e( 'Conexão BR Irlanda — Event Importer (Local Tools) requires the "Conexão BR Irlanda — Event Runtime" plugin to be installed and active.', 'conexao-event-importer' );
+
+grep for 1.7.1 in php outside languages/:
+wp-content/plugins/conexao-event-importer/conexao-event-importer.php:5: * Version: 1.7.1
+wp-content/plugins/conexao-event-importer/conexao-event-importer.php:15:define( 'CONEXAO_EVENT_IMPORTER_VERSION', '1.7.1' );
+
+-- CONCLUSION --
+The strings are NOT extracted from a gettext call. They are synthesised by
+add_header_strings() in scripts/i18n-make-pot.sh from the plugin docblock, which is
+what wp i18n make-pot also does for Plugin Name/Description/Version. There is
+ONE logical msgid per string, so the duplication is an artefact of the broken
+generator run 88e8ec0, not a source defect and not a context problem.

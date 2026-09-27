@@ -15,19 +15,15 @@ if ( empty( $card['title'] ) ) {
 
 // Resolve the destination URL. Cards that carry a 'term' key resolve to the
 // existing /guias/ archive filter (the same tax_query used by the filter bar),
-// using the real conexao_category term slug — and, in an English request, the
-// linked English term (see conexao_get_guide_category_url()). Cards with an
-// explicit 'url' hold the canonical PORTUGUESE path and are resolved through
-// conexao_lang_url(), so an English visitor reaches the real English
-// destination whenever one exists (Stage 3.3) while the Portuguese output
-// stays byte-identical. Cards flagged with 'guides' point to the canonical
-// Guides archive.
+// using the real conexao_category term slug. Cards with an explicit 'url' keep
+// their existing destination (e.g. /eventos/, /categorias/). Cards flagged with
+// 'guides' point to the canonical Guides archive.
 if ( ! empty( $card['guides'] ) ) {
 	$card_url = conexao_get_guides_archive_url();
 } elseif ( ! empty( $card['term'] ) ) {
 	$card_url = conexao_get_guide_category_url( $card['term'], $card['term'] );
 } elseif ( ! empty( $card['url'] ) ) {
-	$card_url = conexao_lang_url( $card['url'] );
+	$card_url = home_url( $card['url'] );
 } else {
 	$card_url = '';
 }

@@ -1,0 +1,25 @@
+== PHASE 11: HTTP REGRESSION (only the POT differs between the two captures) ==
+
+Method: the site was captured with the repaired POT, then with the defective POT
+reverted in place, then the repaired POT restored. Nothing else changed.
+
+path           before  after   md5 (identical in both)            verdict
+------------------------------------------------------------------------------------
+/              200     200     152cfed9652d6622bcfa47696a81a88f   IDENTICAL
+/en/           200     200     72adfb8a0828f574f144496e782ac39c   IDENTICAL
+/cursos/       200     200     dcb89276018ea8bf260afa80fef771b8   IDENTICAL
+/en/cursos/    200     200     fe0788160ea3b69e29f644cd5d80ee99   IDENTICAL
+/lazer/        200     200     f5e6ed08d332d9120850859eceaa07a0   IDENTICAL
+/en/lazer/     200     200     fca5674e1524a4438f5aa013cbb2b9b0   IDENTICAL
+/eventos/      200     200     77ed120888e47c8338869d302552737e   IDENTICAL
+/en/eventos/   200     200     852da862b9ad96c20c4376a0d70635ee   IDENTICAL
+
+VERDICT: all 8 required routes (4 PT + 4 EN) return HTTP 200 and are BYTE-IDENTICAL
+before and after. No translation regression, no unexpected missing string, no
+language inversion and no layout change.
+
+NOTE on the wider HTTP acceptance suite: 3/3 suites fail in this environment,
+but IDENTICALLY with and without this change (evidence 13 vs 14). Those failures
+are hreflang / canonical / EN-layer assertions whose implementing theme files
+(inc/seo/hreflang.php, inc/seo/canonical.php, inc/i18n/*) were DELETED from the
+worktree by the concurrent external refactor. Not caused by this change.

@@ -15,12 +15,8 @@
  * only appears while a filter is active, and a lightweight result-count
  * line. Each dropdown is a real hyperlink menu anchored directly below its
  * trigger button, so the URL is always shareable and refresh/back-forward
- * safe. Every option is a plain navigational <a> (native link role — NOT a
- * listbox option): the dropdown is a disclosure button (aria-expanded +
- * aria-controls) over a named group of hyperlinks, and the active option is
- * marked with aria-current="true", the same convention already used by
- * guide-filters.php / course-filters.php. Tipo and Características are true
- * multi-select dimensions: every option link toggles its slug inside the
+ * safe. Tipo and Características are true multi-select listboxes
+ * (aria-multiselectable): every option link toggles its slug inside the
  * shared filter-state snapshot, selections accumulate across open/close
  * cycles, and the group label ("Todos" / "Todas") is a reset action that
  * clears ONLY its own dimension. All option URLs are built through the
@@ -259,6 +255,7 @@ $leisure_total = ( isset( $wp_query ) && $wp_query instanceof WP_Query ) ? (int)
 					<button
 						type="button"
 						class="leisure-dropdown-trigger<?php echo $current_county ? ' is-selected' : ''; ?>"
+						aria-haspopup="listbox"
 						aria-expanded="false"
 						aria-controls="leisure-county-panel"
 						aria-label="<?php echo esc_attr( $county_trigger_aria ); ?>"
@@ -280,17 +277,17 @@ $leisure_total = ( isset( $wp_query ) && $wp_query instanceof WP_Query ) ? (int)
 							placeholder="<?php esc_attr_e( 'Procurar county', 'conexao-br-irlanda' ); ?>"
 							aria-label="<?php esc_attr_e( 'Procurar county', 'conexao-br-irlanda' ); ?>"
 							autocomplete="off">
-						<div class="leisure-dropdown-list" aria-label="<?php esc_attr_e( 'Condado', 'conexao-br-irlanda' ); ?>">
+						<div class="leisure-dropdown-list" role="listbox" aria-label="<?php esc_attr_e( 'Condado', 'conexao-br-irlanda' ); ?>">
 							<?php // Localização stays single-select; its option URLs are built from the shared
 							      // state snapshot, so switching/clearing it preserves Tipo and Características. ?>
-							<a class="leisure-dropdown-link <?php echo empty( $current_county ) ? 'is-active' : ''; ?>" href="<?php echo esc_url( $leisure_state_url( array( 'county' => '' ) ) ); ?>"<?php echo empty( $current_county ) ? ' aria-current="true"' : ''; ?>>
+							<a class="leisure-dropdown-link <?php echo empty( $current_county ) ? 'is-active' : ''; ?>" role="option" aria-selected="<?php echo empty( $current_county ) ? 'true' : 'false'; ?>" href="<?php echo esc_url( $leisure_state_url( array( 'county' => '' ) ) ); ?>">
 								<span class="leisure-checkmark" aria-hidden="true"><?php echo empty( $current_county ) ? '✓' : ''; ?></span>
 								<span><?php esc_html_e( 'Todos', 'conexao-br-irlanda' ); ?></span>
 							</a>
 
 							<?php foreach ( $county_terms as $term ) : ?>
 								<?php $is_active = ( $current_county === $term->slug ); ?>
-								<a class="leisure-dropdown-link <?php echo $is_active ? 'is-active' : ''; ?>" href="<?php echo esc_url( $leisure_state_url( array( 'county' => $term->slug ) ) ); ?>"<?php echo $is_active ? ' aria-current="true"' : ''; ?>>
+								<a class="leisure-dropdown-link <?php echo $is_active ? 'is-active' : ''; ?>" role="option" aria-selected="<?php echo $is_active ? 'true' : 'false'; ?>" href="<?php echo esc_url( $leisure_state_url( array( 'county' => $term->slug ) ) ); ?>">
 									<span class="leisure-checkmark" aria-hidden="true"><?php echo $is_active ? '✓' : ''; ?></span>
 									<span><?php echo esc_html( $term->name ); ?></span>
 								</a>
@@ -308,6 +305,7 @@ $leisure_total = ( isset( $wp_query ) && $wp_query instanceof WP_Query ) ? (int)
 					<button
 						type="button"
 						class="leisure-dropdown-trigger<?php echo ! empty( $current_categories ) ? ' is-selected' : ''; ?>"
+						aria-haspopup="listbox"
 						aria-expanded="false"
 						aria-controls="leisure-category-panel"
 						aria-label="<?php echo esc_attr( $category_trigger_aria ); ?>"
@@ -325,8 +323,8 @@ $leisure_total = ( isset( $wp_query ) && $wp_query instanceof WP_Query ) ? (int)
 							  // selections accumulate across open/close cycles and every URL
 							  // stays shareable. "Todos" is the reset action for this dimension
 							  // only — it clears categoria and never touches county/atributo. ?>
-						<div class="leisure-dropdown-list" aria-label="<?php esc_attr_e( 'Tipo', 'conexao-br-irlanda' ); ?>">
-							<a class="leisure-dropdown-link <?php echo empty( $current_categories ) ? 'is-active' : ''; ?>" href="<?php echo esc_url( $leisure_state_url( array( 'categoria' => array() ) ) ); ?>"<?php echo empty( $current_categories ) ? ' aria-current="true"' : ''; ?>>
+						<div class="leisure-dropdown-list" role="listbox" aria-label="<?php esc_attr_e( 'Tipo', 'conexao-br-irlanda' ); ?>" aria-multiselectable="true">
+							<a class="leisure-dropdown-link <?php echo empty( $current_categories ) ? 'is-active' : ''; ?>" role="option" aria-selected="<?php echo empty( $current_categories ) ? 'true' : 'false'; ?>" href="<?php echo esc_url( $leisure_state_url( array( 'categoria' => array() ) ) ); ?>">
 								<span class="leisure-checkmark" aria-hidden="true"><?php echo empty( $current_categories ) ? '✓' : ''; ?></span>
 								<span><?php esc_html_e( 'Todos', 'conexao-br-irlanda' ); ?></span>
 							</a>
@@ -336,7 +334,7 @@ $leisure_total = ( isset( $wp_query ) && $wp_query instanceof WP_Query ) ? (int)
 								$new_categories = $leisure_toggle_slug( $current_categories, $term->slug );
 								$is_active      = in_array( $term->slug, $current_categories, true );
 								?>
-								<a class="leisure-dropdown-link <?php echo $is_active ? 'is-active' : ''; ?>" href="<?php echo esc_url( $leisure_state_url( array( 'categoria' => $new_categories ) ) ); ?>"<?php echo $is_active ? ' aria-current="true"' : ''; ?>>
+								<a class="leisure-dropdown-link <?php echo $is_active ? 'is-active' : ''; ?>" role="option" aria-selected="<?php echo $is_active ? 'true' : 'false'; ?>" href="<?php echo esc_url( $leisure_state_url( array( 'categoria' => $new_categories ) ) ); ?>">
 									<span class="leisure-checkmark" aria-hidden="true"><?php echo $is_active ? '✓' : ''; ?></span>
 									<span><?php echo esc_html( $term->name ); ?></span>
 								</a>
@@ -353,6 +351,7 @@ $leisure_total = ( isset( $wp_query ) && $wp_query instanceof WP_Query ) ? (int)
 					<button
 						type="button"
 						class="leisure-dropdown-trigger<?php echo ! empty( $current_attributes ) ? ' is-selected' : ''; ?>"
+						aria-haspopup="listbox"
 						aria-expanded="false"
 						aria-controls="leisure-attribute-panel"
 						aria-label="<?php echo esc_attr( $attribute_trigger_aria ); ?>"
@@ -367,11 +366,11 @@ $leisure_total = ( isset( $wp_query ) && $wp_query instanceof WP_Query ) ? (int)
 					<div class="leisure-dropdown-panel" id="leisure-attribute-panel" data-dropdown-panel>
 						<?php // Características uses the exact same multi-select model as Tipo:
 							  // toggle hyperlinks over the existing conexao_leisure_attribute
-							  // vocabulary, "Todas" as the
+							  // vocabulary, aria-multiselectable listbox, "Todas" as the
 							  // reset action for this dimension only (clears atributo,
 							  // preserves county + categoria). ?>
-						<div class="leisure-dropdown-list" aria-label="<?php esc_attr_e( 'Características', 'conexao-br-irlanda' ); ?>">
-							<a class="leisure-dropdown-link <?php echo empty( $current_attributes ) ? 'is-active' : ''; ?>" href="<?php echo esc_url( $leisure_state_url( array( 'atributo' => array() ) ) ); ?>"<?php echo empty( $current_attributes ) ? ' aria-current="true"' : ''; ?>>
+						<div class="leisure-dropdown-list" role="listbox" aria-label="<?php esc_attr_e( 'Características', 'conexao-br-irlanda' ); ?>" aria-multiselectable="true">
+							<a class="leisure-dropdown-link <?php echo empty( $current_attributes ) ? 'is-active' : ''; ?>" role="option" aria-selected="<?php echo empty( $current_attributes ) ? 'true' : 'false'; ?>" href="<?php echo esc_url( $leisure_state_url( array( 'atributo' => array() ) ) ); ?>">
 								<span class="leisure-checkmark" aria-hidden="true"><?php echo empty( $current_attributes ) ? '✓' : ''; ?></span>
 								<span><?php esc_html_e( 'Todas', 'conexao-br-irlanda' ); ?></span>
 							</a>
@@ -381,7 +380,7 @@ $leisure_total = ( isset( $wp_query ) && $wp_query instanceof WP_Query ) ? (int)
 								$new_attributes = $leisure_toggle_slug( $current_attributes, $term->slug );
 								$is_active      = in_array( $term->slug, $current_attributes, true );
 								?>
-								<a class="leisure-dropdown-link <?php echo $is_active ? 'is-active' : ''; ?>" href="<?php echo esc_url( $leisure_state_url( array( 'atributo' => $new_attributes ) ) ); ?>"<?php echo $is_active ? ' aria-current="true"' : ''; ?>>
+								<a class="leisure-dropdown-link <?php echo $is_active ? 'is-active' : ''; ?>" role="option" aria-selected="<?php echo $is_active ? 'true' : 'false'; ?>" href="<?php echo esc_url( $leisure_state_url( array( 'atributo' => $new_attributes ) ) ); ?>">
 									<span class="leisure-checkmark" aria-hidden="true"><?php echo $is_active ? '✓' : ''; ?></span>
 									<span><?php echo esc_html( $term->name ); ?></span>
 								</a>

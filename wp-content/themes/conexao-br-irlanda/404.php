@@ -22,9 +22,7 @@
 				<ul class="error-404-list">
 					<?php
 					// Single query for popular guides, cached in transient (5 min).
-					// Stage 2: the key is language-scoped, so the PT and EN 404
-					// pages can never share a cached list.
-					$popular_guides = get_transient( conexao_lang_cache_key( 'conexao_404_guides' ) );
+					$popular_guides = get_transient( 'conexao_404_guides' );
 					if ( false === $popular_guides ) {
 						$guide_query = new WP_Query( array(
 							'post_type'      => 'guide',
@@ -40,7 +38,7 @@
 							endwhile;
 						}
 						wp_reset_postdata();
-						set_transient( conexao_lang_cache_key( 'conexao_404_guides' ), $popular_guides, 300 );
+						set_transient( 'conexao_404_guides', $popular_guides, 300 );
 					}
 					if ( ! empty( $popular_guides ) ) :
 						foreach ( $popular_guides as $guide ) : ?>
@@ -61,7 +59,7 @@
 				<ul class="error-404-list">
 					<?php
 					// Single query for upcoming events, cached in transient (5 min).
-					$upcoming_events = get_transient( conexao_lang_cache_key( 'conexao_404_events' ) );
+					$upcoming_events = get_transient( 'conexao_404_events' );
 					if ( false === $upcoming_events ) {
 						// Recurrence: consume the shared ordered upcoming-event ID
 						// list (Conexao_Event_Query) when the event runtime is
@@ -98,7 +96,7 @@
 							endwhile;
 						}
 						wp_reset_postdata();
-						set_transient( conexao_lang_cache_key( 'conexao_404_events' ), $upcoming_events, 300 );
+						set_transient( 'conexao_404_events', $upcoming_events, 300 );
 					}
 					if ( ! empty( $upcoming_events ) ) :
 						foreach ( $upcoming_events as $event_item ) : ?>

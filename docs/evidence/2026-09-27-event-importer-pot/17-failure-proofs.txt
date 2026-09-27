@@ -1,0 +1,52 @@
+== FAILURE PROOF: the validator CAN fail (it is not a rubber stamp) ==
+
+Proof 1: the duplicate detector detects the defect it is meant to detect.
+  Fixture: the tracked catalogue as it was at task start (the defective one),
+  placed in a throwaway location. The REAL catalogue is not touched.
+/tmp/proof-defective.pot:1459: ...this is the location of the first definition
+msgfmt: found 3 fatal errors
+  exit=1  <-- FAILS on the defective catalogue
+
+Proof 2: the same detector passes the repaired catalogue.
+  duplicate errors found: 0
+  exit=0
+
+Proof 3: the generator is a real regeneration, not a copy.
+  Re-running the canonical generator on the REPAIRED catalogue must not be a no-op:
+  before re-run: 99ddae75a28602ca
+  after  re-run: 6221c0ab009f8601
+  differs -> 99ddae75a28602ca vs 6221c0ab009f8601
+
+Proof 4: the freshness gate is sensitive in BOTH directions.
+  Touching a catalogue source makes it stale:
+       conexao-event-importer   catalogue=1790495204 newest-source=1790536181 (wp-content/plugins/conexao-event-importer/conexao-event-importer.php) STALE
+       stale catalogues: 1
+    FAIL: conexao-event-importer: wp-content/plugins/conexao-event-importer/languages/conexao-event-importer.pot is older than wp-content/plugins/conexao-event-importer/conexao-event-importer.php by 40977s — regenerate the catalogue with `wp i18n make-pot` (never hand-edit)
+    8 passed, 1 failed
+      stale catalogues: 1 pre-existing, 0 new
+    GATE-RESULT {"gate": "i18n_freshness", "status": "fail", "passed": 8, "failed": 1, "violations": 1, "pre_existing": 1, "new": 0, "details": [{"component": "conexao-event-importer", "catalogue": "wp-content/plugins/conexao-event-importer/languages/conexao-event-importer.pot", "newest_source": "wp-content/plugins/conexao-event-importer/conexao-event-importer.php", "catalogue_ts": 1790495204, "newest_source_ts": 1790536181, "lag_seconds": 40977}]}
+  (the event-importer row goes stale, proving the gate is not hard-coded green)
+
+  CLARIFICATION on Proof 3: the two hashes differ ONLY in the wall-clock
+  POT-Creation-Date line (20:09 vs 20:00), which the generator re-stamps on
+  every run. The catalogue BODY is byte-identical:
+    diff <(grep -v POT-Creation-Date gen-A) <(grep -v POT-Creation-Date current)
+    -> no output, i.e. IDENTICAL.
+  So the generator is IDEMPOTENT in content: re-running it neither re-adds
+  the 3 duplicate blocks (which is exactly what the broken one did) nor
+  changes a single msgid, reference, comment or flag.
+  This is the decisive contrast with the root-cause defect.
+
+== FINAL CATALOGUE STATE (the file left in the working tree) ==
+path   : wp-content/plugins/conexao-event-importer/languages/conexao-event-importer.pot
+sha256 : 6221c0ab009f860156f095c2e3ba619db9c0fa13125533c39180110b98d3b75e
+bytes  : 70646   lines: 1573
+entries: 385   unique(msgctxt,msgid): 385   DUPLICATES: 0
+msgfmt --check exit: 0    msgcat exit: 0
+absolute local paths: 0
+true header blocks: 1
+
+NOTE: evidence files 06/07 quote the 20:00 run hash 99ddae75...; the file now
+carries 6221c0ab... because the Proof-3 idempotence re-run re-stamped only
+POT-Creation-Date. Both are canonical generator output with an identical body
+(body md5 519d16cd1e4d62be926e8dc518d9f587 in every run).

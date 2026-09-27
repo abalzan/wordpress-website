@@ -1,0 +1,30 @@
+== PHASE 9b: ISOLATED BEFORE/AFTER (immune to the concurrent theme refactor) ==
+
+Method: a detached git worktree at HEAD (b47d098) was created at /tmp/wt-clean,
+so the theme catalogue is present and untouched. The ONLY difference between the
+two runs below is this task's regenerated event-importer POT. The concurrent
+refactor cannot affect either run.
+
+--- RUN A: pristine tree, my change NOT applied ---
+  $ msgfmt --check -o /dev/null conexao-event-importer.pot
+    ...:1459: ...this is the location of the first definition
+    msgfmt: found 3 fatal errors
+    exit=1   <-- THE DEFECT
+  $ python3 tests/scripts/verify-i18n-freshness.py
+    stale catalogues: 0 | 8 passed, 0 failed | exit=0
+
+--- RUN B: same tree, ONLY the regenerated POT applied ---
+  $ msgfmt --check -o /dev/null conexao-event-importer.pot
+    exit=0   <-- DEFECT REPAIRED (only benign POT header warnings)
+  $ python3 tests/scripts/verify-i18n-freshness.py
+    stale catalogues: 0 | 8 passed, 0 failed | exit=0
+
+== ATTRIBUTION OF THE FRESHNESS FAILURE IN THE MAIN WORKTREE ==
+In the MAIN worktree the same gate reports:
+  FAIL: conexao-br-irlanda: 39 file(s) define user-facing strings but
+        wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot
+        does not exist
+That is caused ENTIRELY by the concurrent theme refactor, which deleted the
+theme languages/ directory from the worktree. It names the THEME catalogue,
+not the event-importer, and the event-importer row reports "fresh" both before
+and after this change. This task did not delete, move or restore it.

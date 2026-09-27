@@ -29,12 +29,15 @@
  */
 
 // --- Bootstrap WordPress (plugins + theme option). ---
+$wp_load = dirname( dirname( dirname( dirname( __DIR__ ) ) ) ) . '/wp-load.php';
+if ( file_exists( $wp_load ) ) {
+	require_once $wp_load;
+} else {
+	require_once '/var/www/html/wp-load.php';
+}
 
 // Load the active theme so the helpers under test are defined.
 // The active theme is not auto-loaded by wp-load.php in a CLI context.
-// Shared Stage E test bootstrap: the only place allowed to locate wp-load.php.
-require_once dirname( __DIR__, 4 ) . '/tests/bootstrap.php';
-
 $theme_functions = get_template_directory() . '/functions.php';
 if ( file_exists( $theme_functions ) ) {
 	require_once $theme_functions;
@@ -45,6 +48,21 @@ $failed        = 0;
 $created_posts = array();
 $created_terms = array();
 
+function t_assert( $condition, $message ) {
+	global $passed, $failed;
+	if ( $condition ) {
+		$passed++;
+		echo "  PASS: {$message}\n";
+	} else {
+		$failed++;
+		echo "  FAIL: {$message}\n";
+	}
+}
+
+function t_section( $title ) {
+	echo "\n=== {$title} ===\n";
+}
+
 /** @return int Term ID for a conexao_county term (created if missing). */
 function leisure_test_county( $name, $slug ) {
 	$existing = term_exists( $slug, 'conexao_county' );
@@ -54,6 +72,7 @@ function leisure_test_county( $name, $slug ) {
 	}
 	$inserted = wp_insert_term( $name, 'conexao_county', array( 'slug' => $slug ) );
 	if ( is_wp_error( $inserted ) ) {
+		echo "  FATAL: could not create county term: {$inserted->get_error_message()}\n";
 		exit( 1 );
 	}
 	$created_terms[] = (int) $inserted['term_id'];
@@ -71,6 +90,7 @@ function leisure_test_create_leisure( $title, $county_term_id = 0, $internal = t
 		true
 	);
 	if ( is_wp_error( $post_id ) ) {
+		echo "  FATAL: could not create test leisure: {$post_id->get_error_message()}\n";
 		exit( 1 );
 	}
 
@@ -104,6 +124,7 @@ function leisure_test_create_event( $title, $county_term_id, $meta = array() ) {
 		true
 	);
 	if ( is_wp_error( $post_id ) ) {
+		echo "  FATAL: could not create test event: {$post_id->get_error_message()}\n";
 		exit( 1 );
 	}
 	if ( ! isset( $meta['_event_status'] ) ) {
@@ -129,12 +150,15 @@ function ph3c_weekday_offset( $days ) {
 	return (int) Conexao_Event_Query::today()->modify( ( $days >= 0 ? '+' : '' ) . $days . ' day' )->format( 'N' );
 }
 
+echo "Running leisure related-events tests...\n";
 echo 'Site: ' . home_url() . ' — timezone: ' . wp_timezone()->getName() . ' — today: ' . ph3c_day_offset( 0 ) . "\n";
 
 if ( ! function_exists( 'conexao_leisure_related_events' ) ) {
+	echo "  FATAL: theme helper conexao_leisure_related_events() not loaded.\n";
 	exit( 1 );
 }
 if ( ! class_exists( 'Conexao_Event_Query' ) ) {
+	echo "  FATAL: event runtime Conexao_Event_Query not loaded.\n";
 	exit( 1 );
 }
 
@@ -149,7 +173,7 @@ $county_omega = leisure_test_county( 'Teste Omega (PH3C)', 'ph3c-test-county-ome
 // ---------------------------------------------------------------------------
 // 1. Same-county upcoming events, runtime order, max 3, no duplicates
 // ---------------------------------------------------------------------------
-test_section( 'Same-County Upcoming Events' );
+t_section( 'Same-County Upcoming Events' );
 
 $ev_today  = leisure_test_create_event( 'Alfa hoje', $county_a, array( '_event_date' => ph3c_day_offset( 0 ) ) );
 $ev_plus2  = leisure_test_create_event( 'Alfa +2', $county_a, array( '_event_date' => ph3c_day_offset( 2 ) ) );
@@ -167,24 +191,24 @@ $related   = conexao_leisure_related_events( $leisure_a );
 
 $related_ids = wp_list_pluck( $related, 'ID' );
 
-assert_true( count( $related ) === 3, 'returns at most 3 events (got ' . count( $related ) . ')' );
-assert_true( in_array( $ev_today, $related_ids, true ), 'includes the same-county event dated today' );
-assert_true( in_array( $ev_plus2, $related_ids, true ), 'includes the same-county event on +2' );
-assert_true( in_array( $ev_plus5, $related_ids, true ), 'includes the same-county event on +5' );
-assert_true( ! in_array( $ev_plus10, $related_ids, true ), 'caps at 3 (excludes the 4th same-county event)' );
-assert_true( ! in_array( $ev_omega1, $related_ids, true ), 'excludes cross-county events' );
-assert_true( ! in_array( $ev_past, $related_ids, true ), 'excludes past events (not in the upcoming set)' );
-assert_true( ! in_array( $ev_hidden, $related_ids, true ), 'excludes non-published (_event_status) events' );
-assert_true( count( $related_ids ) === count( array_unique( $related_ids ) ), 'no duplicate events' );
+t_assert( count( $related ) === 3, 'returns at most 3 events (got ' . count( $related ) . ')' );
+t_assert( in_array( $ev_today, $related_ids, true ), 'includes the same-county event dated today' );
+t_assert( in_array( $ev_plus2, $related_ids, true ), 'includes the same-county event on +2' );
+t_assert( in_array( $ev_plus5, $related_ids, true ), 'includes the same-county event on +5' );
+t_assert( ! in_array( $ev_plus10, $related_ids, true ), 'caps at 3 (excludes the 4th same-county event)' );
+t_assert( ! in_array( $ev_omega1, $related_ids, true ), 'excludes cross-county events' );
+t_assert( ! in_array( $ev_past, $related_ids, true ), 'excludes past events (not in the upcoming set)' );
+t_assert( ! in_array( $ev_hidden, $related_ids, true ), 'excludes non-published (_event_status) events' );
+t_assert( count( $related_ids ) === count( array_unique( $related_ids ) ), 'no duplicate events' );
 
 // Ordering: must equal the runtime's authoritative occurrence order, narrowed
 // to the same-county subset — never re-sorted arbitrarily.
 $runtime_order = array_values( array_intersect( conexao_event_upcoming_ids(), $related_ids ) );
-assert_true( $related_ids === $runtime_order, 'order preserves the event runtime occurrence ordering' );
+t_assert( $related_ids === $runtime_order, 'order preserves the event runtime occurrence ordering' );
 // ---------------------------------------------------------------------------
 // 2. Recurring events (existing next-occurrence logic)
 // ---------------------------------------------------------------------------
-test_section( 'Recurring Events' );
+t_section( 'Recurring Events' );
 
 // A weekly series in Alfa with its next occurrence on the weekday 4 days out
 // will appear AND be capped/uniqued exactly once per post.
@@ -200,21 +224,21 @@ $related_recur = conexao_leisure_related_events( $leisure_a );
 $recur_ids     = wp_list_pluck( $related_recur, 'ID' );
 $count_recur   = count( array_keys( $recur_ids, $weekly_recur, true ) );
 
-assert_true( in_array( $weekly_recur, $recur_ids, true ), 'includes the recurring event (next-occurrence logic)' );
-assert_true( count( $recur_ids ) === count( array_unique( $recur_ids ) ), 'recurring event set stays duplicate-free' );
+t_assert( in_array( $weekly_recur, $recur_ids, true ), 'includes the recurring event (next-occurrence logic)' );
+t_assert( count( $recur_ids ) === count( array_unique( $recur_ids ) ), 'recurring event set stays duplicate-free' );
 
 // The card display date for the recurring event must be its next occurrence
 // (same runtime helper the event-card component uses).
 if ( function_exists( 'conexao_event_display_date' ) ) {
 	$expected_next = conexao_event_display_date( $weekly_recur );
-	assert_true( $expected_next === ph3c_day_offset( 4 ), 'recurring event next occurrence resolves to +4' );
-	assert_true( '' !== conexao_event_recurrence_label( $weekly_recur ), 'recurring event has a recurrence label for the card' );
+	t_assert( $expected_next === ph3c_day_offset( 4 ), 'recurring event next occurrence resolves to +4' );
+	t_assert( '' !== conexao_event_recurrence_label( $weekly_recur ), 'recurring event has a recurrence label for the card' );
 }
 
 // ---------------------------------------------------------------------------
 // 3. Multi-day event active today
 // ---------------------------------------------------------------------------
-test_section( 'Multi-Day Events' );
+t_section( 'Multi-Day Events' );
 
 // Started yesterday, ends tomorrow — active today (active-date logic).
 $multiday = leisure_test_create_event( 'Alfa multi-dia', $county_a, array(
@@ -225,28 +249,28 @@ $multiday = leisure_test_create_event( 'Alfa multi-dia', $county_a, array(
 $related_multi = conexao_leisure_related_events( $leisure_a );
 $multi_ids     = wp_list_pluck( $related_multi, 'ID' );
 
-assert_true( in_array( $multiday, $multi_ids, true ), 'includes the multi-day event active today' );
+t_assert( in_array( $multiday, $multi_ids, true ), 'includes the multi-day event active today' );
 
 // ---------------------------------------------------------------------------
 // 4. No county / county without events => nothing rendered
 // ---------------------------------------------------------------------------
-test_section( 'No-Events States' );
+t_section( 'No-Events States' );
 
 $leisure_no_county = leisure_test_create_leisure( 'Lazer sem condado', 0 );
-assert_true( array() === conexao_leisure_related_events( $leisure_no_county ), 'destination without a county returns empty' );
+t_assert( array() === conexao_leisure_related_events( $leisure_no_county ), 'destination without a county returns empty' );
 
 $leisure_zeta = leisure_test_create_leisure( 'Lazer Zeta', $county_zeta );
-assert_true( array() === conexao_leisure_related_events( $leisure_zeta ), 'county with no upcoming events returns empty' );
+t_assert( array() === conexao_leisure_related_events( $leisure_zeta ), 'county with no upcoming events returns empty' );
 
 // ---------------------------------------------------------------------------
 // 5. External destinations never surface events
 // ---------------------------------------------------------------------------
-test_section( 'External Destinations' );
+t_section( 'External Destinations' );
 
 $leisure_external = leisure_test_create_leisure( 'Lazer externo', $county_a, false );
-assert_true( array() === conexao_leisure_related_events( $leisure_external ), 'external (redirecting) record returns empty' );
+t_assert( array() === conexao_leisure_related_events( $leisure_external ), 'external (redirecting) record returns empty' );
 if ( function_exists( 'conexao_leisure_external_url' ) ) {
-	assert_true( (bool) conexao_leisure_external_url( $leisure_external ), 'test record classifies as external (setup sanity)' );
+	t_assert( (bool) conexao_leisure_external_url( $leisure_external ), 'test record classifies as external (setup sanity)' );
 }
 
 // ---------------------------------------------------------------------------
@@ -260,4 +284,6 @@ foreach ( $created_terms as $term_id ) {
 }
 Conexao_Event_Query::flush_cache();
 
-test_finish();
+echo "\n----------------------------------------\n";
+echo "RESULT: {$passed} passed, {$failed} failed\n";
+exit( $failed > 0 ? 1 : 0 );

@@ -1,0 +1,28 @@
+== PHASE 6: DETERMINISTIC REGENERATION ==
+Command (canonical workflow, repository-documented):
+    ./scripts/i18n-make-pot.sh conexao-event-importer
+
+Dry run first:
+    ./scripts/i18n-make-pot.sh --dry-run conexao-event-importer   -> regenerated=1 skipped=0 failed=0, exit 0
+
+== RUN HASHES ==
+run1 (unpinned)          : faa7b1bc2d4f8bc2a26fd28dd4aed14d3e9422d32b2ffecafba040cce9f0c1c2
+run2 (unpinned, ~75s)    : 99ddae75a28602ca9dddf1a784ddd1077a7577c224b66954b0dd374c38d49ebb
+run3 (SOURCE_DATE_EPOCH) : faa7b1bc2d4f8bc2a26fd28dd4aed14d3e9422d32b2ffecafba040cce9f0c1c2
+run4 (SOURCE_DATE_EPOCH) : faa7b1bc2d4f8bc2a26fd28dd4aed14d3e9422d32b2ffecafba040cce9f0c1c2
+
+== DETERMINISM ANALYSIS ==
+Two runs separated by 75 seconds: the ONLY differing byte is the wall-clock
+stamp xgettext writes:
+  run1: "POT-Creation-Date: 2026-09-27 19:58+0100"
+  run2: "POT-Creation-Date: 2026-09-27 20:00+0100"
+Body content (that line excluded) is IDENTICAL:
+  body md5 run1: 519d16cd1e4d62be926e8dc518d9f587
+  body md5 run2: 519d16cd1e4d62be926e8dc518d9f587
+Runs 3 and 4, launched back-to-back in the same clock minute, are
+byte-identical INCLUDING the timestamp (faa7b1bc...).
+
+VERDICT: the extraction is fully deterministic. The only run-to-run variance is
+the POT-Creation-Date field, which is xgettext's own wall-clock stamp and is not
+controlled by this script. This is identical to the behaviour accepted for the
+theme catalogue in the prior task (88bdf22).

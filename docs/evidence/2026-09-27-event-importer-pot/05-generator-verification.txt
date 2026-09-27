@@ -1,0 +1,77 @@
+== PHASE 5: VERIFICATION OF THE REPAIRED GENERATOR (scripts/i18n-make-pot.sh @ 88bdf22) ==
+
+V1. xgettext receives the intended file list (stdin NOT emptied).
+    Defect was:  printf %s "$file_list" | "${XGETTEXT[@]}" ... </dev/null
+    Current source (line 596) contains NO </dev/null:
+    if printf '%s' "$file_list" | "${XGETTEXT[@]}" \
+        --from-code=UTF-8 \
+        --language=PHP \
+        --keyword=__ --keyword=_e --keyword=_x:1,2c --keyword=_n:1,2 \
+        --keyword=esc_html__ --keyword=esc_attr__ \
+        --keyword=esc_html_e --keyword=esc_attr_e \
+        --keyword=esc_html_x:1,2c --keyword=esc_attr_x:1,2c \
+        --add-comments=translators \
+        --package-name="$slug" \
+        --copyright-holder="Conexao BR Irlanda" \
+        --msgid-bugs-address="https://wordpress.org/support/plugin/conexao-br-irlanda" \
+        --files-from=- \
+        --output="$out_pot" >/dev/null 2>&1 \
+        && filter_pot_by_domain "$out_pot" "$slug" \
+        && make_references_relative "$out_pot" "$base"; then
+        # The POT header is normalised to this component afterwards, and the
+    grep for </dev/null in the xgettext invocation:
+    (none) -> stdin is intact
+
+V2. Component scanning is NOT narrowed by --only.
+    ALL_DIRS is built from UNION_DISCOVERY (every component), independent of --only.
+# ALL_DIRS is the union of EVERY component directory, independent of --only, so
+# a component catalogue still collects the strings that other components tag
+# with its domain.
+while IFS=$'\t' read -r udir; do
+    [ -n "$udir" ] || continue
+    ALL_DIRS="${ALL_DIRS}${ALL_DIRS:+ }${udir}"
+done <<< "$UNION_DISCOVERY"
+
+V3. Absolute local paths are not emitted into tracked catalogues.
+    make_references_relative() rewrites repo/container prefixes away (line 262).
+make_references_relative() {
+    local pot="$1" base="$2"
+    POT_BASE="$base" POT_REPO="$REPO_ROOT" python3 - "$pot" <<'PY'
+import os, re, sys
+
+path = sys.argv[1]
+base = os.environ.get("POT_BASE", "")
+repo = os.environ["POT_REPO"]
+
+# Longest prefix first, so the container prefix wins over the host path.
+prefixes = sorted({p for p in (base, repo) if p}, key=len, reverse=True)
+# `#: path:line`, possibly several per line, optionally with a `.domain` suffix.
+REF_RE = re.compile(r"^#:\s*(.*)$")
+
+
+V4. Header blocks are not duplicated.
+    add_header_strings() appends only entries absent from the generated body (line 456-465).
+existing = set()
+for line in body:
+    if line.startswith("msgid "):
+        existing.add(line)
+
+added = []
+for label, value in fields:
+    entry = f'msgid "{value}"\nmsgstr ""'
+    if entry in existing:
+        continue
+    added.append(
+        f'\n#. {label} of the {"theme" if is_theme else "plugin"}\n'
+        f'#: {rel}:1\nmsgid "{po_escape(value)}"\nmsgstr ""\n'
+    )
+
+
+V5. Output is deterministic -- proven empirically in Phase 6 (two runs byte-identical).
+
+NOTE (latent observation, NOT changed in this task): the dedupe guard in
+add_header_strings() compares a two-line string (msgid + msgstr) against a set of
+single msgid lines, so it can never match. It is harmless in the canonical flow
+because xgettext --output overwrites the catalogue and does not extract the
+docblock Plugin Name/Description/Version, so nothing is added twice. Recorded
+for the record; see Phase 7 for the empirical proof that output is duplicate-free.

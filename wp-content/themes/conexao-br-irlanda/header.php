@@ -104,7 +104,7 @@
 						'theme_location' => 'primary',
 						'menu_id'        => 'primary-menu',
 						'container'      => false,
-						'fallback_cb'    => 'conexao_safe_nav_menu_fallback',
+						'fallback_cb'    => 'wp_page_menu',
 						'depth'          => 3,
 					) );
 					?>
@@ -112,15 +112,6 @@
 
 				<!-- Header Actions -->
 				<div class="header-actions">
-					<?php
-					/*
-					 * Language switcher (Stage 2): PT / EN toggle, rendered
-					 * next to the theme toggle so it rides along with the
-					 * existing header actions row on every breakpoint. Its
-					 * mobile counterpart lives in the mobile menu drawer.
-					 */
-					conexao_language_switcher( array( 'context' => 'desktop' ) );
-					?>
 					<button type="button" class="theme-toggle" aria-label="<?php esc_attr_e( 'Alternar tema claro/escuro', 'conexao-br-irlanda' ); ?>" aria-pressed="false">
 						<span class="theme-toggle-icon theme-toggle-icon--moon" aria-hidden="true">
 							<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
@@ -143,7 +134,7 @@
 							<button type="submit" class="screen-reader-text header-search-submit"><?php esc_html_e( 'Buscar', 'conexao-br-irlanda' ); ?></button>
 						</form>
 					</div>
-					<a href="<?php echo esc_url( conexao_lang_url( '/anuncie/' ) ); ?>" class="header-cta">
+					<a href="<?php echo esc_url( home_url( '/anuncie/' ) ); ?>" class="header-cta">
 						<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
 							<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
 							<polyline points="17 8 12 3 7 8"></polyline>
@@ -163,7 +154,7 @@
 						(aria-label); the visible span is decorative with aria-hidden so the
 						name never depends on the icon or on the label being visible.
 					-->
-					<a href="<?php echo esc_url( conexao_lang_url( '/anuncie/' ) ); ?>" class="header-cta-compact" aria-label="<?php esc_attr_e( 'Anuncie Aqui', 'conexao-br-irlanda' ); ?>">
+					<a href="<?php echo esc_url( home_url( '/anuncie/' ) ); ?>" class="header-cta-compact" aria-label="<?php esc_attr_e( 'Anuncie Aqui', 'conexao-br-irlanda' ); ?>">
 						<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
 							<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
 							<polyline points="17 8 12 3 7 8"></polyline>
@@ -188,17 +179,6 @@
 					</svg>
 				</button>
 			</div>
-			<div class="mobile-menu-language">
-				<?php
-				/*
-				 * Mobile language switcher (Stage 2). Lives inside the existing
-				 * drawer, above the search form, so it is always reachable
-				 * without scrolling (the drawer body scrolls; this row does
-				 * not).
-				 */
-				conexao_language_switcher( array( 'context' => 'mobile' ) );
-				?>
-			</div>
 			<div class="mobile-menu-search">
 				<form role="search" method="get" class="mobile-menu-search-form" action="<?php echo esc_url( home_url( '/' ) ); ?>">
 					<label class="screen-reader-text" for="mobile-menu-search-field"><?php esc_html_e( 'Pesquisar', 'conexao-br-irlanda' ); ?></label>
@@ -214,7 +194,7 @@
 					'theme_location' => 'primary',
 					'menu_class'     => 'mobile-menu',
 					'container'      => false,
-					'fallback_cb'    => 'conexao_safe_nav_menu_fallback',
+					'fallback_cb'    => 'wp_page_menu',
 					'depth'          => 3,
 				) );
 				?>
@@ -232,7 +212,7 @@
 				icon as the desktop CTA — see .mobile-menu-cta in header-nav.css.
 			-->
 			<div class="mobile-menu-cta-wrap">
-				<a href="<?php echo esc_url( conexao_lang_url( '/anuncie/' ) ); ?>" class="mobile-menu-cta">
+				<a href="<?php echo esc_url( home_url( '/anuncie/' ) ); ?>" class="mobile-menu-cta">
 					<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
 						<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
 						<polyline points="17 8 12 3 7 8"></polyline>

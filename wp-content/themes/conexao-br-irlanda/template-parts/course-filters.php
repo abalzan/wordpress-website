@@ -59,7 +59,7 @@ if ( empty( $provider_categories ) ) {
 		$is_active = ( $current_category === $cat['slug'] );
 		?>
 		<a class="events-filter-link <?php echo $is_active ? 'is-active' : ''; ?>" href="<?php echo esc_url( $url ); ?>"<?php echo $is_active ? ' aria-current="true"' : ''; ?>>
-			<?php echo esc_html( $cat['label'] ); ?>
+			<?php echo esc_html( $cat['name'] ); ?>
 		</a>
 	<?php endforeach; ?>
 </nav>

@@ -1,0 +1,43 @@
+== PHASE 9: CATALOGUE VALIDATION ==
+catalogue: wp-content/plugins/conexao-event-importer/languages/conexao-event-importer.pot
+
+--- 1. msgfmt --check --statistics (the duplicate-msgid validator) ---
+wp-content/plugins/conexao-event-importer/languages/conexao-event-importer.pot:4: warning: header field 'PO-Revision-Date' still has the initial default value
+wp-content/plugins/conexao-event-importer/languages/conexao-event-importer.pot:4: warning: header field 'Last-Translator' still has the initial default value
+wp-content/plugins/conexao-event-importer/languages/conexao-event-importer.pot:4: warning: header field 'Language-Team' still has the initial default value
+wp-content/plugins/conexao-event-importer/languages/conexao-event-importer.pot:4: warning: header field 'Language' missing in header
+0 translated messages, 385 untranslated messages.
+exit=0
+
+--- 2. msgcat (duplicate message definition detector) ---
+exit=0
+
+--- 3. independent structural parse (no gettext tools) ---
+wp-content/plugins/conexao-event-importer/languages/conexao-event-importer.pot
+  entries=385  unique(msgctxt,msgid)=385  duplicate-keys=0  msgctxt-entries=0
+
+--- 4. structural counters ---
+msgid lines                 : 386
+source-reference (#:) lines : 481
+absolute local paths        : 0
+true header blocks          : 1 (verified: only line 3 is a header; the other 56 ^msgid "" lines are multi-line msgid wrapping)
+POT-Creation-Date lines     : 1
+msgctxt entries             : 0
+
+--- 5. i18n freshness gate (tests/scripts/verify-i18n-freshness.py) ---
+== Stage L i18n catalogue freshness gate ==
+   repo:  /home/andrei/IdeaProjects/wordpress-website
+   signal: git commit time per file (mtime is not reproducible in CI)
+   conexao-data-model       catalogue=1790431901 newest-source=1790335165 (wp-content/plugins/conexao-data-model/includes/class-agency.php) fresh
+   conexao-content          catalogue=1790431901 newest-source=1789985903 (wp-content/plugins/conexao-content/conexao-content.php) fresh
+   conexao-admin-ux         catalogue=1790431901 newest-source=1790016943 (wp-content/plugins/conexao-admin-ux/includes/class-translation-state.php) fresh
+   conexao-event-runtime    catalogue=1790431901 newest-source=1790016943 (wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php) fresh
+   conexao-event-importer   catalogue=1790495204 newest-source=1790446037 (wp-content/plugins/conexao-event-importer/includes/class-event-importer.php) fresh
+   conexao-leisure-migration catalogue=1790431901 newest-source=1790325155 (wp-content/plugins/conexao-leisure-migration/includes/class-leisure-exporter.php) fresh
+   conexao-sponsor-migration catalogue=1790431901 newest-source=1789994211 (wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-importer.php) fresh
+
+   stale catalogues: 0
+FAIL: conexao-br-irlanda: 39 file(s) define user-facing strings but wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot does not exist
+8 passed, 1 failed
+GATE-RESULT {"gate": "i18n_freshness", "status": "fail", "passed": 8, "failed": 1, "violations": 0, "pre_existing": 0, "new": 0, "details": []}
+exit=1

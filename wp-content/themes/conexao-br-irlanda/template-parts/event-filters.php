@@ -10,14 +10,10 @@
  * /empregos/ agency directory (employment-opportunities.php):
  *   - Desktop: substantial dropdown triggers ("Localização", "Cidade",
  *     "Categoria") with an active dot indicator and caret, each opening a
- *     real hyperlink menu anchored below its trigger.
+ *     real hyperlink menu (role="listbox") anchored below its trigger.
  *     Every option is a real <a> built through conexao_event_filter_url(),
- *     with a checkmark/selected state; the group is a named set of
- *     hyperlinks (the trigger is a disclosure button via aria-expanded +
- *     aria-controls) and the active option carries aria-current="true" —
- *     the options are navigational links, never listbox options. The
- *     group's "Todas"/"Todos" option is the reset action for that
- *     dimension only.
+ *     with a checkmark/selected state and aria-selected; the group's
+ *     "Todas"/"Todos" option is the reset action for that dimension only.
  *     Long option lists (counties/towns) get a client-side search field
  *     that filters the server-rendered options — purely cosmetic, no
  *     extra request and no change to the underlying links.
@@ -175,6 +171,7 @@ $event_total = ( isset( $wp_query ) && $wp_query instanceof WP_Query ) ? (int) $
 					<button
 						type="button"
 						class="event-filters-dropdown-trigger<?php echo $current_county ? ' is-selected' : ''; ?>"
+						aria-haspopup="listbox"
 						aria-expanded="false"
 						aria-controls="event-filters-county-panel"
 						aria-label="<?php echo esc_attr( $event_trigger_aria( __( 'County', 'conexao-br-irlanda' ), $active_county_name ) ); ?>"
@@ -198,11 +195,11 @@ $event_total = ( isset( $wp_query ) && $wp_query instanceof WP_Query ) ? (int) $
 								aria-label="<?php esc_attr_e( 'Procurar county', 'conexao-br-irlanda' ); ?>"
 								autocomplete="off">
 						<?php endif; ?>
-						<div class="event-filters-dropdown-list" aria-label="<?php esc_attr_e( 'County', 'conexao-br-irlanda' ); ?>" data-option-list>
+						<div class="event-filters-dropdown-list" role="listbox" aria-label="<?php esc_attr_e( 'County', 'conexao-br-irlanda' ); ?>" data-option-list>
 							<?php // "Todas" is the reset action for THIS dimension only:
 							      // it clears ?county= and preserves cidade + categoria
 							      // (a town filter stays valid without a county). ?>
-							<a class="event-filters-dropdown-link <?php echo '' === $current_county ? 'is-active' : ''; ?>" href="<?php echo esc_url( $event_state_url( array( 'county' => '' ) ) ); ?>"<?php echo '' === $current_county ? ' aria-current="true"' : ''; ?>>
+							<a class="event-filters-dropdown-link <?php echo '' === $current_county ? 'is-active' : ''; ?>" role="option" aria-selected="<?php echo '' === $current_county ? 'true' : 'false'; ?>" href="<?php echo esc_url( $event_state_url( array( 'county' => '' ) ) ); ?>">
 								<span class="event-filters-checkmark" aria-hidden="true"><?php echo '' === $current_county ? '✓' : ''; ?></span>
 								<span><?php esc_html_e( 'Todas', 'conexao-br-irlanda' ); ?></span>
 							</a>
@@ -217,7 +214,7 @@ $event_total = ( isset( $wp_query ) && $wp_query instanceof WP_Query ) ? (int) $
 								}
 								$county_is_active = ( $term->slug === $current_county );
 								?>
-								<a class="event-filters-dropdown-link <?php echo $county_is_active ? 'is-active' : ''; ?>"<?php echo $county_is_active ? ' aria-current="true"' : ''; ?> data-option-item href="<?php echo esc_url( $event_state_url( $county_link_state ) ); ?>">
+								<a class="event-filters-dropdown-link <?php echo $county_is_active ? 'is-active' : ''; ?>" role="option" aria-selected="<?php echo $county_is_active ? 'true' : 'false'; ?>" data-option-item href="<?php echo esc_url( $event_state_url( $county_link_state ) ); ?>">
 									<span class="event-filters-checkmark" aria-hidden="true"><?php echo $county_is_active ? '✓' : ''; ?></span>
 									<span><?php echo esc_html( $term->name ); ?></span>
 								</a>
@@ -237,6 +234,7 @@ $event_total = ( isset( $wp_query ) && $wp_query instanceof WP_Query ) ? (int) $
 					<button
 						type="button"
 						class="event-filters-dropdown-trigger<?php echo $current_town ? ' is-selected' : ''; ?>"
+						aria-haspopup="listbox"
 						aria-expanded="false"
 						aria-controls="event-filters-town-panel"
 						aria-label="<?php echo esc_attr( $event_trigger_aria( __( 'Cidade', 'conexao-br-irlanda' ), $active_town_name ) ); ?>"
@@ -258,16 +256,16 @@ $event_total = ( isset( $wp_query ) && $wp_query instanceof WP_Query ) ? (int) $
 								aria-label="<?php esc_attr_e( 'Procurar cidade', 'conexao-br-irlanda' ); ?>"
 								autocomplete="off">
 						<?php endif; ?>
-						<div class="event-filters-dropdown-list" aria-label="<?php esc_attr_e( 'Cidade', 'conexao-br-irlanda' ); ?>" data-option-list>
+						<div class="event-filters-dropdown-list" role="listbox" aria-label="<?php esc_attr_e( 'Cidade', 'conexao-br-irlanda' ); ?>" data-option-list>
 							<?php // Town options are already scoped to the selected county
 							      // (server-side cascade). "Todas" clears ONLY ?cidade=. ?>
-							<a class="event-filters-dropdown-link <?php echo '' === $current_town ? 'is-active' : ''; ?>" href="<?php echo esc_url( $event_state_url( array( 'cidade' => '' ) ) ); ?>"<?php echo '' === $current_town ? ' aria-current="true"' : ''; ?>>
+							<a class="event-filters-dropdown-link <?php echo '' === $current_town ? 'is-active' : ''; ?>" role="option" aria-selected="<?php echo '' === $current_town ? 'true' : 'false'; ?>" href="<?php echo esc_url( $event_state_url( array( 'cidade' => '' ) ) ); ?>">
 								<span class="event-filters-checkmark" aria-hidden="true"><?php echo '' === $current_town ? '✓' : ''; ?></span>
 								<span><?php esc_html_e( 'Todas', 'conexao-br-irlanda' ); ?></span>
 							</a>
 							<?php foreach ( $town_terms as $term ) : ?>
 								<?php $town_is_active = ( $term->slug === $current_town ); ?>
-								<a class="event-filters-dropdown-link <?php echo $town_is_active ? 'is-active' : ''; ?>"<?php echo $town_is_active ? ' aria-current="true"' : ''; ?> data-option-item href="<?php echo esc_url( $event_state_url( array( 'cidade' => $town_is_active ? '' : $term->slug ) ) ); ?>">
+								<a class="event-filters-dropdown-link <?php echo $town_is_active ? 'is-active' : ''; ?>" role="option" aria-selected="<?php echo $town_is_active ? 'true' : 'false'; ?>" data-option-item href="<?php echo esc_url( $event_state_url( array( 'cidade' => $town_is_active ? '' : $term->slug ) ) ); ?>">
 									<span class="event-filters-checkmark" aria-hidden="true"><?php echo $town_is_active ? '✓' : ''; ?></span>
 									<span><?php echo esc_html( $term->name ); ?></span>
 								</a>
@@ -287,6 +285,7 @@ $event_total = ( isset( $wp_query ) && $wp_query instanceof WP_Query ) ? (int) $
 					<button
 						type="button"
 						class="event-filters-dropdown-trigger<?php echo $current_category ? ' is-selected' : ''; ?>"
+						aria-haspopup="listbox"
 						aria-expanded="false"
 						aria-controls="event-filters-category-panel"
 						aria-label="<?php echo esc_attr( $event_trigger_aria( __( 'Categoria', 'conexao-br-irlanda' ), $active_category_name ) ); ?>"
@@ -299,14 +298,14 @@ $event_total = ( isset( $wp_query ) && $wp_query instanceof WP_Query ) ? (int) $
 					</button>
 
 					<div class="event-filters-dropdown-panel" id="event-filters-category-panel" data-dropdown-panel>
-						<div class="event-filters-dropdown-list" aria-label="<?php esc_attr_e( 'Categoria', 'conexao-br-irlanda' ); ?>">
-							<a class="event-filters-dropdown-link <?php echo '' === $current_category ? 'is-active' : ''; ?>" href="<?php echo esc_url( $event_state_url( array( 'categoria' => '' ) ) ); ?>"<?php echo '' === $current_category ? ' aria-current="true"' : ''; ?>>
+						<div class="event-filters-dropdown-list" role="listbox" aria-label="<?php esc_attr_e( 'Categoria', 'conexao-br-irlanda' ); ?>">
+							<a class="event-filters-dropdown-link <?php echo '' === $current_category ? 'is-active' : ''; ?>" role="option" aria-selected="<?php echo '' === $current_category ? 'true' : 'false'; ?>" href="<?php echo esc_url( $event_state_url( array( 'categoria' => '' ) ) ); ?>">
 								<span class="event-filters-checkmark" aria-hidden="true"><?php echo '' === $current_category ? '✓' : ''; ?></span>
 								<span><?php esc_html_e( 'Todos', 'conexao-br-irlanda' ); ?></span>
 							</a>
 							<?php foreach ( $category_terms as $term ) : ?>
 								<?php $category_is_active = ( $term->slug === $current_category ); ?>
-								<a class="event-filters-dropdown-link <?php echo $category_is_active ? 'is-active' : ''; ?>" href="<?php echo esc_url( $event_state_url( array( 'categoria' => $category_is_active ? '' : $term->slug ) ) ); ?>"<?php echo $category_is_active ? ' aria-current="true"' : ''; ?>>
+								<a class="event-filters-dropdown-link <?php echo $category_is_active ? 'is-active' : ''; ?>" role="option" aria-selected="<?php echo $category_is_active ? 'true' : 'false'; ?>" href="<?php echo esc_url( $event_state_url( array( 'categoria' => $category_is_active ? '' : $term->slug ) ) ); ?>">
 									<span class="event-filters-checkmark" aria-hidden="true"><?php echo $category_is_active ? '✓' : ''; ?></span>
 									<span><?php echo esc_html( $term->name ); ?></span>
 								</a>

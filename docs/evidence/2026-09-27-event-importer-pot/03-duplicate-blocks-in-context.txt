@@ -1,0 +1,47 @@
+== PHASE 3: THE THREE DUPLICATED ENTRIES, IN CONTEXT ==
+
+Lines 1448-1474 of the tracked catalogue (the tail). The first three blocks are
+the plugin-header strings as extracted; the last three blocks are byte-identical
+repeats appended at the end of the file.
+
+  1448	#. Name of the plugin
+  1449	#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:1
+  1450	msgid "Conexão BR Irlanda — Event Importer (Local Tools)"
+  1451	msgstr ""
+  1452	#. Description of the plugin
+  1453	#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:1
+  1454	msgid "Local-only event import/export tooling. Fetches, normalizes, deduplicates, and imports events from configured external sources into the local WordPress database. Event images are downloaded into the Media Library locally, then the complete event data (with embedded images) is exported to JSON for import into the production WordPress.com site. Production-critical event runtime behavior (meta/taxonomy registration, _event_status, public query filtering, status admin UI) lives in the separate \"Conexão BR Irlanda — Event Runtime\" plugin."
+  1455	msgstr ""
+  1456	#. Version of the plugin
+  1457	#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:1
+  1458	msgid "1.7.1"
+  1459	msgstr ""
+  1460	
+  1461	#. Name of the plugin
+  1462	#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:1
+  1463	msgid "Conexão BR Irlanda — Event Importer (Local Tools)"
+  1464	msgstr ""
+  1465	
+  1466	#. Description of the plugin
+  1467	#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:1
+  1468	msgid "Local-only event import/export tooling. Fetches, normalizes, deduplicates, and imports events from configured external sources into the local WordPress database. Event images are downloaded into the Media Library locally, then the complete event data (with embedded images) is exported to JSON for import into the production WordPress.com site. Production-critical event runtime behavior (meta/taxonomy registration, _event_status, public query filtering, status admin UI) lives in the separate \"Conexão BR Irlanda — Event Runtime\" plugin."
+  1469	msgstr ""
+  1470	
+  1471	#. Version of the plugin
+  1472	#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:1
+  1473	msgid "1.7.1"
+  1474	msgstr ""
+
+== BYTE COMPARISON OF EACH PAIR ==
+pair1 (Name):        BYTE-IDENTICAL
+pair2 (Description): BYTE-IDENTICAL
+pair3 (Version):     BYTE-IDENTICAL
+
+== ADJACENCY / SEPARATION ==
+The three duplicates are NOT adjacent to their originals: originals at lines
+1448-1459, duplicates at 1461-1474, i.e. a separate appended run of blocks.
+
+== msgctxt ==
+msgctxt occurrences in the whole file: 0
+No msgctxt anywhere, so the duplicates are NOT distinguished by context: they are
+accidental duplication of the SAME gettext msgid (Outcome C).

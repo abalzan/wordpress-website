@@ -1991,15 +1991,6 @@
   color: var(--color-text-secondary);
 }
 
-/* STAGE 3.1 — B2 fallback notice: same amber token treatment in dark mode
-   (reuses the existing variables; no new color system). */
-[data-theme="dark"] .language-fallback-notice {
-  --conexao-warning-bg: #2e2314;
-  --conexao-warning-border: #f59e42;
-  --conexao-warning-text: #f59e42;
-  color: var(--color-text-secondary);
-}
-
 /* ===== 39a. EMPREGOS — UNIFIED DIRECTORY GREEN-TEXT PILLS =====
    .agency-card-flag--perm and .empregos-permit-indicator--verified paint
    green text on the --conexao-primary-50 tint. The dark theme re-maps

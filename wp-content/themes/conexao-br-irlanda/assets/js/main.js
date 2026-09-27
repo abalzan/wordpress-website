@@ -5,18 +5,6 @@
 (function() {
 	'use strict';
 
-	// ===== Localized UI strings (Stage 1 i18n foundation) =====
-	// PHP injects `window.ConexaoI18n` next to this file via
-	// wp_add_inline_script() — the single gettext source is
-	// conexao_js_i18n_strings() in inc/i18n.php. The literals below are
-	// fallbacks for the (never expected) case where the inline payload is
-	// stripped; they keep the current Portuguese wording.
-	var i18n = window.ConexaoI18n || {};
-
-	function t(key, fallback) {
-		return (i18n && i18n[key]) ? i18n[key] : fallback;
-	}
-
 	// ===== DOM Ready =====
 	document.addEventListener('DOMContentLoaded', function() {
 		initThemeToggle();
@@ -149,7 +137,7 @@
 				const toggle = document.createElement('button');
 				toggle.type = 'button';
 				toggle.className = 'mobile-submenu-toggle';
-				toggle.setAttribute('aria-label', t('submenuToggleTemplate', 'Abrir submenu de %s').replace('%s', link.textContent.trim()));
+				toggle.setAttribute('aria-label', 'Abrir submenu de ' + link.textContent.trim());
 				toggle.setAttribute('aria-expanded', 'false');
 				toggle.addEventListener('click', function() {
 					const expanded = toggle.getAttribute('aria-expanded') === 'true';
@@ -244,7 +232,7 @@
 	function showCopySuccess(button, originalText) {
 		// Plugin buttons use text content, theme buttons use innerHTML (SVG icons)
 		if (originalText !== undefined) {
-			button.textContent = t('linkCopied', 'Link copiado');
+			button.textContent = 'Link copiado';
 			setTimeout(function() {
 				button.textContent = originalText;
 			}, 2000);
@@ -790,12 +778,7 @@
 					badge.textContent = String(count);
 					trigger.appendChild(badge);
 				}
-				// Pluralization is resolved against the PHP-injected gettext
-				// strings: exactly one active filter uses the singular form.
-				var countForm = count === 1
-					? t('filterCountOne', '%d filtro ativo')
-					: t('filterCountMany', '%d filtros ativos');
-				trigger.setAttribute('aria-label', t('filterLabel', 'Filtrar') + ' (' + countForm.replace('%d', String(count)) + ')');
+				trigger.setAttribute('aria-label', 'Filtrar (' + count + ' filtros ativos)');
 			} else {
 				if (badge) badge.remove();
 				trigger.removeAttribute('aria-label');
@@ -1446,7 +1429,7 @@
 					status.textContent = '';
 					return;
 				}
-				status.textContent = t('sponsorPositionTemplate', 'Apoiador %1$d de %2$d').replace('%1$d', String(active + 1)).replace('%2$d', String(slides.length));
+				status.textContent = 'Apoiador ' + (active + 1) + ' de ' + slides.length;
 			}
 
 			function scrollToIndex(index) {
@@ -1720,18 +1703,18 @@
 			spinner.className = 'infinite-scroll__spinner';
 			spinner.setAttribute('aria-hidden', 'true');
 			status.appendChild(spinner);
-			status.appendChild(document.createTextNode(t('loading', 'Carregando...')));
+			status.appendChild(document.createTextNode('Carregando...'));
 		}
 
 		function setStatusError() {
 			clearStatus();
 			var text = document.createElement('span');
 			text.className = 'infinite-scroll__error';
-			text.textContent = t('loadMoreFailed', 'Não foi possível carregar mais conteúdo.');
+			text.textContent = 'Não foi possível carregar mais conteúdo.';
 			var retry = document.createElement('button');
 			retry.type = 'button';
 			retry.className = 'infinite-scroll__retry';
-			retry.textContent = t('retry', 'Tentar novamente');
+			retry.textContent = 'Tentar novamente';
 			retry.addEventListener('click', function() {
 				if (busy) return;
 				errored = false;
@@ -1848,7 +1831,7 @@
 			clearStatus();
 			var end = document.createElement('span');
 			end.className = 'infinite-scroll__end';
-			end.textContent = t('reachedEnd', 'Você chegou ao fim.');
+			end.textContent = 'Você chegou ao fim.';
 			status.appendChild(end);
 		}
 	}
@@ -1881,8 +1864,7 @@
 		var nextUrl = nextLink.getAttribute('href');
 		var busy = false;     // only one request at a time
 		var finished = false;
-		var nounSingular = grid.closest('.events-page') ? t('nounEvents', 'evento') : t('nounCourses', 'curso');
-		var noun = grid.closest('.events-page') ? t('nounEventsPlural', 'eventos') : t('nounCoursesPlural', 'cursos');
+		var noun = grid.closest('.events-page') ? 'eventos' : 'cursos';
 
 		// Hide the numeric pagination visually while keeping it in the
 		// markup for no-JS visitors, crawlers and keyboard fallbacks.
@@ -1897,7 +1879,7 @@
 		var button = document.createElement('button');
 		button.type = 'button';
 		button.className = 'load-more__button';
-		button.textContent = t('loadMore', 'Carregar mais');
+		button.textContent = 'Carregar mais';
 		button.addEventListener('click', loadNext); // single handler, never re-bound
 
 		var status = document.createElement('p');
@@ -1913,7 +1895,7 @@
 			// Disabled while a request is active: duplicate clicks can
 			// never start a second request (loadNext also re-checks `busy`).
 			button.disabled = loading;
-			button.textContent = loading ? t('loading', 'Carregando...') : t('loadMore', 'Carregar mais');
+			button.textContent = loading ? 'Carregando...' : 'Carregar mais';
 		}
 
 		function clearStatus() {
@@ -1955,17 +1937,10 @@
 				nextUrl = following;
 				setLoading(false);
 
-				// Plural announcement — the PHP payload carries the singular
-				// and plural forms ("Mais 1 evento carregado." /
-				// "Mais 3 eventos carregados.").
+				// Polite announcement — focus stays where the user left it.
 				if (added > 0) {
 					clearStatus();
-					var moreForm = added === 1
-						? t('moreLoadedOneTemplate', 'Mais %1$d %2$s carregado.').replace('%2$s', nounSingular)
-						: t('moreLoadedManyTemplate', 'Mais %1$d %2$s carregados.').replace('%2$s', noun);
-					status.appendChild(document.createTextNode(
-						moreForm.replace('%1$d', String(added))
-					));
+					status.appendChild(document.createTextNode('Mais ' + added + ' ' + noun + ' carregados.'));
 				}
 			}).catch(function() {
 				// Network/server/parse failure: recoverable. Re-enable the
@@ -1974,7 +1949,7 @@
 				busy = false;
 				setLoading(false);
 				clearStatus();
-				status.appendChild(document.createTextNode(t('loadMoreFailedRetry', 'Não foi possível carregar mais conteúdo. Tente novamente.')));
+				status.appendChild(document.createTextNode('Não foi possível carregar mais conteúdo. Tente novamente.'));
 			});
 		}
 
@@ -2013,7 +1988,7 @@
 			clearStatus();
 			var end = document.createElement('span');
 			end.className = 'infinite-scroll__end';
-			end.textContent = t('reachedEnd', 'Você chegou ao fim.');
+			end.textContent = 'Você chegou ao fim.';
 			status.appendChild(end);
 		}
 	}

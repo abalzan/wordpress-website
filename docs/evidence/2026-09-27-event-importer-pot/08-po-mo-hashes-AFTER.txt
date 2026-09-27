@@ -1,0 +1,37 @@
+== PHASE 8: TRANSLATION INTEGRITY ==
+date: 2026-09-27T19:04:05Z
+
+### IMPORTANT CONTEXT: a CONCURRENT PROCESS refactored the theme mid-task.
+At 19:56:58 +0100, while this task was running, HEAD moved b32fba3 -> b47d098
+and the theme was rewritten in the working tree (68 files deleted, 36 modified),
+including removal of the whole languages/ directory. That change is NOT mine: my
+only write is wp-content/plugins/conexao-event-importer/languages/conexao-event-importer.pot
+(confirmed by git status --short over wp-content/plugins/, scripts/, tests/, docs/).
+The worktree copies of the four translation files are therefore currently absent.
+
+== PROOF OF BYTE-IDENTITY (git object identity, independent of the worktree) ==
+sha256 recorded at task start, 18:56:55Z (evidence 02), BEFORE the concurrent change:
+    22b1798b9366cafb838ae9b398d1836b0e331d50c0d218b58b35516f6a41e912  wp-content/themes/conexao-br-irlanda/languages/en_US.po
+    b1fa80c1f508a9601955873a6a000744cd365467a016f2ea3de6e770f5c09efb  wp-content/themes/conexao-br-irlanda/languages/en_US.mo
+    a85c434f39f8e1ecac5551e1a1ccc807a1085449a875ecce324b6a6a80a9dc02  wp-content/themes/conexao-br-irlanda/languages/pt_BR.po
+    bee15adfdccd141e07ca4cc8d973bb7f4defaf4d4c7b8442e3c82b21139937b0  wp-content/themes/conexao-br-irlanda/languages/pt_BR.mo
+
+git blob id at task start (b32fba3) vs at current HEAD (b47d098):
+    en_US.po    5a4839c26c82  IDENTICAL BLOB
+    en_US.mo    7a756c73d519  IDENTICAL BLOB
+    pt_BR.po    3bed27fce114  IDENTICAL BLOB
+    pt_BR.mo    db935b21a424  IDENTICAL BLOB
+
+Cross-check: sha256 of the blob at current HEAD vs the sha256 recorded at start.
+    en_US.po    recorded=22b1798b9366cafb..  head=22b1798b9366cafb..  MATCH
+    en_US.mo    recorded=b1fa80c1f508a960..  head=b1fa80c1f508a960..  MATCH
+    pt_BR.po    recorded=a85c434f39f8e1ec..  head=a85c434f39f8e1ec..  MATCH
+    pt_BR.mo    recorded=bee15adfdccd141e..  head=bee15adfdccd141e..  MATCH
+
+== VERDICT ==
+en_US.po, en_US.mo, pt_BR.po and pt_BR.mo are BYTE-IDENTICAL: identical git blob
+ids across the concurrent commit, and the sha256 values recorded at task start
+match the committed content exactly. The concurrent theme refactor did not
+alter any of them, and this task never wrote to them.
+The worktree copies are temporarily absent because of that external refactor,
+which this task deliberately did not revert, absorb or "fix".
