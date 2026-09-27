@@ -15,7 +15,7 @@
  *    gracefully, events missing town/county stay discoverable, the
  *    recurrence-aware post__in path keeps working with filters.
  *  - Template markup: the Lazer/Empregos-standard filter widget
- *    (dropdown triggers with listbox options, active-filter chips,
+ *    (dropdown triggers with group-of-links options, active-filter chips,
  *    mobile bottom-sheet form), county-scoped town options, active
  *    states, reset link, state preservation across dimension links.
  *
@@ -311,7 +311,8 @@ test_section( 'Filter template markup' );
 
 $html = ev_test_render_filters( array() );
 assert_true( false !== strpos( $html, 'data-event-filters' ), 'filter widget root rendered (Lazer/Empregos widget contract)' );
-assert_true( false !== strpos( $html, 'event-filters-dropdown-trigger' ) && false !== strpos( $html, 'role="listbox"' ) && false !== strpos( $html, 'aria-selected' ), 'desktop dropdown triggers with listbox option semantics rendered' );
+assert_true( false !== strpos( $html, 'event-filters-dropdown-trigger' ) && false !== strpos( $html, 'aria-expanded="false"' ) && false !== strpos( $html, 'aria-current="true"' ), 'desktop dropdown triggers (disclosure) with link options and an active-state marker rendered' );
+assert_true( false === strpos( $html, 'role="option"' ) && false === strpos( $html, 'role="listbox"' ), 'no invalid role="option"/"listbox" on the event filter links' );
 assert_true( false !== strpos( $html, 'county=ev-cavan' ) && false !== strpos( $html, 'county=ev-dublin' ), 'county options rendered from counties used by events' );
 assert_true( false !== strpos( $html, 'cidade=ev-cavan-town' ) && false !== strpos( $html, 'cidade=ev-dublin-town' ), 'city options rendered (all towns, no county selected)' );
 assert_true( false !== strpos( $html, 'categoria=ev-alpha' ), 'category options still rendered (existing filter preserved)' );

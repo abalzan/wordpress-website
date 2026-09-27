@@ -886,6 +886,113 @@
         "provider-card-category\">Business"
       ],
       "note": "PT immutability at the render level: on a PT request conexao_provider_category_label() returns the stored Portuguese value verbatim, so the Portuguese archive and its filter bar are byte-identical before and after the change (same SHA-256 in the evidence)."
+    },
+    {
+      "id": "en-home-no-pt-content-type-label",
+      "url": "/en/",
+      "expect_status": 200,
+      "expect_contains": [
+        "Practical Guide"
+      ],
+      "expect_absent": [
+        "Guia Prático"
+      ],
+      "note": "The EN homepage content-type chip renders the English label. The Portuguese label was leaking here because the template echoed the CPT's registered singular_name, which register_post_type() never translates."
+    },
+    {
+      "id": "pt-home-keeps-pt-content-type-label",
+      "url": "/",
+      "expect_status": 200,
+      "expect_contains": [
+        "Guia Prático"
+      ],
+      "expect_absent": [],
+      "note": "The PT homepage is canonical and keeps its Portuguese content-type label; PT output is unchanged by the EN label fix."
+    },
+    {
+      "id": "a11y-empregos-filter-links-are-not-options",
+      "url": "/empregos/",
+      "expect_status": 200,
+      "expect_contains": [
+        "class=\"agency-filters-dropdown-link",
+        "aria-current=\"true\""
+      ],
+      "expect_absent": [
+        "role=\"option\"",
+        "role=\"listbox\"",
+        "aria-selected",
+        "aria-haspopup=\"listbox\""
+      ],
+      "note": "Accessibility semantics: the desktop filter options are real navigational hyperlinks, so they must not carry role=\"option\" and the group must not claim to be a listbox. This row fails if the invalid role=\"option\" markup is ever reintroduced. /empregos/ renders the directory filters, so this is the live proof that the options keep their href and are marked as links with an aria-current active state."
+    },
+    {
+      "id": "a11y-empregos-filter-state-no-option-role",
+      "url": "/empregos/?tipo=agency",
+      "expect_status": 200,
+      "expect_contains": [
+        "agency-filters-dropdown-link",
+        "aria-current=\"true\""
+      ],
+      "expect_absent": [
+        "role=\"option\""
+      ],
+      "note": "A filtered employment URL still renders the widget and still marks the active option, without the invalid role=\"option\". Proves the correction holds in the active state, not only in the empty one."
+    },
+    {
+      "id": "a11y-en-empregos-b1-still-302",
+      "url": "/en/empregos/",
+      "expect_status": 302,
+      "expect_contains": [],
+      "expect_absent": [],
+      "note": "B1 routing is unchanged by the accessibility correction: the untranslated EN employment page still 302s to /empregos/ (never a 301)."
+    },
+    {
+      "id": "a11y-lazer-no-option-role",
+      "url": "/lazer/",
+      "expect_status": 200,
+      "expect_contains": [
+        "<html lang=\"pt-BR\">"
+      ],
+      "expect_absent": [
+        "role=\"option\""
+      ],
+      "note": "Accessibility semantics: the desktop filter options are real navigational hyperlinks, so they must not carry role=\"option\" and the group must not claim to be a listbox. This row fails if the invalid role=\"option\" markup is ever reintroduced. NOTE: the local dataset has no published leisure records, so the widget renders zero options here; the leisure markup itself is covered in-process by test-filter-link-aria-semantics.php."
+    },
+    {
+      "id": "a11y-en-lazer-no-option-role",
+      "url": "/en/lazer/",
+      "expect_status": 200,
+      "expect_contains": [
+        "<html lang=\"en-US\">"
+      ],
+      "expect_absent": [
+        "role=\"option\""
+      ],
+      "note": "The English leisure archive keeps its EN shell and carries no role=\"option\" markup. Same local-dataset caveat as the PT row."
+    },
+    {
+      "id": "a11y-eventos-no-option-role",
+      "url": "/eventos/",
+      "expect_status": 200,
+      "expect_contains": [
+        "<html lang=\"pt-BR\">"
+      ],
+      "expect_absent": [
+        "role=\"option\""
+      ],
+      "note": "Accessibility semantics: the desktop filter options are real navigational hyperlinks, so they must not carry role=\"option\" and the group must not claim to be a listbox. This row fails if the invalid role=\"option\" markup is ever reintroduced. NOTE: the local dataset has no taxonomised published events, so the widget renders zero options here; the event markup itself is covered in-process."
+    },
+    {
+      "id": "a11y-en-eventos-no-option-role",
+      "url": "/en/eventos/",
+      "expect_status": 200,
+      "expect_contains": [
+        "<html lang=\"en-US\">"
+      ],
+      "expect_absent": [
+        "role=\"option\""
+      ],
+      "note": "The English events archive keeps its EN shell and carries no role=\"option\" markup. Same local-dataset caveat as the PT row."
     }
   ]
 }

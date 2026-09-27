@@ -57,6 +57,47 @@ function conexao_reading_time() {
 	return $minutes;
 }
 
+/**
+ * Translated singular label for a post type, for use in card chips.
+ *
+ * `register_post_type()` labels are LITERAL strings: WordPress never
+ * translates them, and this project registers its CPT labels as raw
+ * Portuguese source strings (see conexao-data-model.php). A template that
+ * echoes `$post_type_object->labels->singular_name` directly therefore shows
+ * the Portuguese label on EVERY language, which is how "Guia Prático" leaked
+ * onto the English homepage.
+ *
+ * This helper runs the registered label through gettext using the theme text
+ * domain (loaded by inc/setup.php). It is deliberately presentation-layer:
+ * the CPT registration is NOT modified, so wp-admin, the REST API and the
+ * Portuguese source of truth are all untouched.
+ *
+ * Why this is safe for Portuguese: pt_BR is an identity catalogue by design
+ * (engineering-standard §9.3), so `__()` returns the identical string on a PT
+ * request and the rendered output is byte-identical to before.
+ *
+ * Post types with no catalogue entry (and unregistered/nonexistent types, for
+ * which WordPress returns null) fall back to the registered label, or to an
+ * empty string, so a label is never lost and the caller's existing
+ * `if ( $content_type )` guard keeps its meaning.
+ *
+ * @param string $post_type Post type name, e.g. 'guide'.
+ * @return string Translated singular label, or '' when it cannot be resolved.
+ */
+function conexao_content_type_label( $post_type ) {
+	$object = get_post_type_object( $post_type );
+
+	if ( ! $object || ! isset( $object->labels->singular_name ) || '' === $object->labels->singular_name ) {
+		return '';
+	}
+
+	// The msgid is the registered (Portuguese) label, which is exactly what
+	// the en_US catalogue already carries — e.g. "Guia Prático" -> "Practical
+	// Guide" (en_US.po, referenced from inc/seo/titles.php). No new msgid and
+	// no catalogue change is needed for this fix.
+	return __( $object->labels->singular_name, 'conexao-br-irlanda' );
+}
+
 function conexao_reading_time_text() {
 	$minutes = conexao_reading_time();
 	return sprintf( _n( '%d min de leitura', '%d min de leitura', $minutes, 'conexao-br-irlanda' ), $minutes );

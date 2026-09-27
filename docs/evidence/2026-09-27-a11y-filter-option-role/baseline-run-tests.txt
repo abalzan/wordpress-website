@@ -1,0 +1,253 @@
+conexao test harness
+  repository:    /home/andrei/IdeaProjects/wordpress-website
+  php:           8.5.4
+  environment:   host (docker compose exec)
+  base url:      http://localhost:8080
+
+In-process PHP suites (serial, one process per suite)
+[PASS] plugin/conexao-admin-ux/test-recurrence-admin.php — 60 passed, 0 failed
+[PASS] plugin/conexao-admin-ux/test-translation-state.php — 23 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-county-registry.php — 473 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-error-handling.php — 55 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-event-address.php — 76 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-event-image-sync.php — 30 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-eventbrite-importer.php — 68 passed, 0 failed
+[FAIL] plugin/conexao-event-importer/test-export-language.php (exit 1)
+           insufficient data: activate-plugin:conexao-event-importer
+           FAIL: test prerequisite is available: class_exists( Conexao_Event_Export )
+[PASS] plugin/conexao-event-importer/test-import-log.php — 53 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-ivvcc-importer.php — 46 passed, 0 failed
+[FAIL] plugin/conexao-event-importer/test-language-identity.php (exit 1)
+           insufficient data: activate-plugin:conexao-event-importer
+           FAIL: test prerequisite is available: class_exists( Conexao_Event_Importer )
+[PASS] plugin/conexao-event-importer/test-mondello-park-importer.php — 142 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-motorsport-ireland-importer.php — 90 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-past-event-filter.php — 29 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-reappearing-event-lifecycle.php — 5 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-source-county-hint.php — 18 passed, 0 failed
+[FAIL] plugin/conexao-event-importer/test-town-sanitization.php — 78 passed, 5 failed (exit 1)
+           FAIL: clean term 'Oranmore' exists (was contaminated)
+           FAIL: clean term 'Galway' exists (was 'Galway, Ireland')
+           FAIL: legitimate town 'Cork' still exists
+           FAIL: legitimate town 'Cobh' still exists
+           FAIL: legitimate town 'Corofin' still exists
+[PASS] plugin/conexao-event-runtime/test-event-language-gate.php — 18 passed, 0 failed
+[PASS] plugin/conexao-event-runtime/test-event-query.php — 41 passed, 0 failed
+[FAIL] plugin/conexao-event-runtime/test-event-recurrence.php — 88 passed, 2 failed (exit 1)
+           FAIL: timezone: UTC Wed 23:30 maps to Thu in Dublin -> no occurrence
+           FAIL: timezone: UTC Tue 23:30 maps to Wed in Dublin -> occurs
+[PASS] plugin/conexao-job-translation/test-job-engine-migration.php — 16 passed, 0 failed
+[FAIL] plugin/conexao-leisure-migration/test-excerpt-en-roundtrip.php (exit 1)
+[FAIL] plugin/conexao-leisure-migration/test-language-uuid.php (exit 1)
+           insufficient data: activate-plugin:conexao-leisure-migration
+           FAIL: test prerequisite is available: class_exists( Conexao_Lazer_Importer )
+[PASS] plugin/conexao-translation-rollout/test-future-stage-smoke.php — 13 passed, 0 failed
+[PASS] plugin/conexao-translation-rollout/test-rollout-failure-proofs.php — 12 passed, 0 failed
+[PASS] plugin/conexao-translation-rollout/test-translation-rollout-engine.php — 21 passed, 0 failed
+[FAIL] theme/conexao-br-irlanda/test-blog-en-translation.php — 19 passed, 9 failed (exit 1)
+           FAIL: the posts page has an EN translation — en_id=0
+           FAIL: the posts page pair is linked from both sides
+           FAIL: the EN posts page is published
+           FAIL: the EN posts page is assigned to en
+           FAIL: the EN posts page lives at /en/blog/
+           FAIL: GATE: every public PT post has a published EN translation — hello-world
+           FAIL: no EN post exists without its PT sibling — local-en-post
+           FAIL: blog posts use at least one category term — used=0
+           FAIL: the EN posts page has a permalink
+[PASS] theme/conexao-br-irlanda/test-cache-language-scoping.php — 9 passed, 0 failed
+[FAIL] theme/conexao-br-irlanda/test-course-provider-card-excerpt-language.php — 14 passed, 2 failed (exit 1)
+           FAIL: shared rollout engine + en-course-provider-description stage are loaded
+           FAIL: the fetch-courses provider record exists
+[FAIL] theme/conexao-br-irlanda/test-en-course-provider-category-filter.php — 59 passed, 1 failed (exit 1)
+           FAIL: every discovered category renders an English label on /en/cursos/ — expected ["Business","Course Directories","Education","Online Courses","Vocational Training"], got ["Online Courses"]
+[PASS] theme/conexao-br-irlanda/test-event-location-filters.php — 55 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-guide-breadcrumb-filter.php — 36 passed, 0 failed
+[FAIL] theme/conexao-br-irlanda/test-guide-en-translation.php (exit 1)
+           insufficient data: activate-plugin:conexao-guide-translation
+           FAIL: test prerequisite is available: function_exists( conexao_guide_translation_audit )
+[FAIL] theme/conexao-br-irlanda/test-header-menu-selection.php (pt) — 5 passed, 7 failed (exit 1)
+           FAIL: S3 the primary location has a valid menu
+           FAIL: S4 the primary location assignment is non-zero
+           FAIL: S6 the Menu Principal menu is the menu selected for primary
+           FAIL: P1 PT nav renders the curated menu (not the empty fallback)
+           FAIL: P2 PT nav renders the canonical PT labels
+           FAIL: P3 PT nav renders all nine canonical labels
+           FAIL: P5 PT homepage marks Início current
+[FAIL] theme/conexao-br-irlanda/test-header-menu-selection.php (en) — 7 passed, 9 failed (exit 1)
+           FAIL: S3 the primary location has a valid menu
+           FAIL: S4 the primary location assignment is non-zero
+           FAIL: S5 the Main Menu menu exists
+           FAIL: E1 EN nav renders the curated EN menu (not the empty fallback)
+           FAIL: E2 EN nav renders all nine EN labels
+           FAIL: E3 EN nav renders the canonical EN labels (Home, Sponsors, Guides, Events, Courses, Leisure & Tourism, Jobs, Blog, Contact) — missing ["Home","Sponsors","Guides","Events","Courses","Leisure &amp; Tourism","Jobs","Blog","Contact"]
+           FAIL: E5b EN Jobs item points at the linked EN translation /en/jobs/
+           FAIL: E6 EN homepage marks Home current on /en/ (class level; aria-current is HTTP-verified)
+           FAIL: E8 EN Contact item points at the EN contact page
+[PASS] theme/conexao-br-irlanda/test-homepage-content-type-label.php — 29 passed, 0 failed
+[FAIL] theme/conexao-br-irlanda/test-i18n-foundation.php — 28 passed, 1 failed (exit 1)
+           FAIL: dates render Portuguese month names ("setembro")
+[FAIL] theme/conexao-br-irlanda/test-job-en-translation.php — 20 passed, 9 failed (exit 1)
+           FAIL: the Jobs page has an EN translation — en_id=0
+           FAIL: the Jobs page pair is linked from both sides
+           FAIL: the EN Jobs page is published
+           FAIL: the EN Jobs page is assigned to en
+           FAIL: the EN Jobs page lives at /en/jobs/
+           FAIL: Jobs page template parity (page-empregos.php on both)
+           FAIL: the site has public PT jobs — 0
+           FAIL: a translated PT job is no longer B2-eligible (real EN wins)
+           FAIL: the jobs listing helper returns the public jobs
+[FAIL] theme/conexao-br-irlanda/test-jobs-en-language.php — 82 passed, 21 failed (exit 1)
+           FAIL: the Jobs page has an EN translation — en_id=0
+           FAIL: the Jobs page pair is linked from both sides
+           FAIL: the EN Jobs page is published
+           FAIL: the EN Jobs page title is the authored English title
+           FAIL: the EN Jobs body is the authored English body from the manifest (not a template hardcode)
+           FAIL: the EN Jobs body is not empty
+           FAIL: no Portuguese prose from the PT body survives on the EN Jobs page
+           FAIL: the EN Jobs page has an English meta description
+           FAIL: the EN Jobs meta description is not the Portuguese one
+           FAIL: the PT Jobs page content is unchanged (Portuguese source preserved)
+[PASS] theme/conexao-br-irlanda/test-leisure-attribute-normalization.php — 22 passed, 0 failed
+[FAIL] theme/conexao-br-irlanda/test-leisure-card-excerpt-language.php — 15 passed, 1 failed (exit 1)
+           FAIL: shared rollout engine + en-leisure-description stage are loaded
+[PASS] theme/conexao-br-irlanda/test-leisure-card-map-action.php — 44 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-leisure-multiselect-filters.php — 63 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-leisure-related-events.php — 19 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-nav-language-context-logic.php — 49 passed, 0 failed
+[FAIL] theme/conexao-br-irlanda/test-nav-language-context.php — 14 passed, 1 failed (exit 1)
+           FAIL: A4 the PT Empregos page has a published linked EN translation — no EN translation
+[FAIL] theme/conexao-br-irlanda/test-nav-menu-regression.php — 22 passed, 9 failed (exit 1)
+           FAIL: A3 a menu is assigned to the primary location
+           FAIL: A4 primary location assignment is non-zero
+           FAIL: A6 "Menu Principal" is the menu assigned to primary
+           FAIL: A8 Polylang nav_menus[primary][pt] is assigned
+           FAIL: C1 English menu "Main Menu" exists
+           FAIL: C2 Polylang nav_menus[primary][en] is assigned
+           FAIL: C5 EN menu stores the canonical curated destinations (Home, Sponsors, Guides, Events, Courses, Leisure & Tourism, Jobs, Blog, About Us, Contact) — got []
+           FAIL: C6 EN menu stores English titles (existing EN labels of the linked objects/directories) — got []
+           FAIL: A12 stored menu carries the canonical curated destinations (Início, Apoiadores, Guias, Eventos, Cursos, Empregos, Blog, Contato)
+[PASS] theme/conexao-br-irlanda/test-polylang-foundation.php — 52 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-recurrence-i18n.php — 12 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-redirect-precedence.php — 15 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-sponsor-archive-ordering.php — 15 passed, 0 failed
+[FAIL] theme/conexao-br-irlanda/test-stage32-bilingual.php — 27 passed, 16 failed (exit 1)
+         [27-Sep-2026 15:23:30 UTC] PHP Warning:  Undefined array key 0 in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-stage32-bilingual.php on line 90
+         Warning: Undefined array key 0 in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-stage32-bilingual.php on line 90
+           FAIL: the PT phoenix-park master is in the replacement set (its EN translation exists)
+         [27-Sep-2026 15:23:30 UTC] PHP Warning:  Undefined array key 0 in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-stage32-bilingual.php on line 94
+         Warning: Undefined array key 0 in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-stage32-bilingual.php on line 94
+         Warning: Undefined array key 0 in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-stage32-bilingual.php on line 98
+           FAIL: the PT event master is replaced by its EN translation
+         [27-Sep-2026 15:23:30 UTC] PHP Warning:  Undefined array key 0 in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-stage32-bilingual.php on line 98
+           FAIL: the Natureza term has a linked EN translation
+           FAIL: the EN term carries a natural English slug (got 'nature')
+[FAIL] theme/conexao-br-irlanda/test-stage33-bilingual.php — 52 passed, 26 failed (exit 1)
+           FAIL: EN page: conexao_lang_url( /empregos/ ) === /en/jobs/ (got /empregos/)
+           FAIL: EN page: conexao_lang_url( /sobre-nos/ ) === /en/about-us/ (got /sobre-nos/)
+           FAIL: EN page: conexao_lang_url( /contato/ ) === /en/contact/ (got /contato/)
+           FAIL: EN page: conexao_lang_url( /politica-de-privacidade/ ) === /en/privacy-policy/ (got /politica-de-privacidade/)
+           FAIL: EN page: conexao_lang_url( /termos-de-uso/ ) === /en/terms-of-use/ (got /termos-de-uso/)
+           FAIL: EN page: conexao_lang_url( /cookies/ ) === /en/cookie-policy/ (got /cookies/)
+           FAIL: PT: card "Moradia" still resolves to /guias/?categoria=moradia (got http://localhost:8080/guias/)
+           FAIL: PT: card "Documentos" still resolves with the Portuguese slug (got http://localhost:8080/guias/)
+           FAIL: EN: card "Documentos" resolves to /en/guias/?categoria=documents (linked EN term with EN guides) (got http://localhost:8080/en/guias/)
+           FAIL: EN: card "Finanças" resolves with the linked EN slug "finances" (got http://localhost:8080/en/guias/)
+[FAIL] theme/conexao-br-irlanda/test-stage41-rest-language.php (exit 1)
+           FAIL: fixture present: event PT master (#0)
+           FAIL: fixture present: event EN translation (#0)
+           FAIL: fixture present: event EN source (#0)
+           FAIL: fixture present: event PT b2 (#0)
+           FAIL: fixture present: event expired (#0)
+           FAIL: fixture present: event rejected (#0)
+           FAIL: fixture present: event removed (#0)
+           FAIL: fixture present: leisure PT master (#0)
+           FAIL: fixture present: leisure EN (#0)
+           FAIL: fixture present: leisure b2 (#0)
+[FAIL] theme/conexao-br-irlanda/test-stage45-pages.php — 328 passed, 11 failed (exit 1)
+           FAIL: inicio: meta description contains no untranslated Portuguese
+           FAIL: sobre-nos: meta description contains no untranslated Portuguese
+           FAIL: contato: meta description contains no untranslated Portuguese
+           FAIL: blog: meta description contains no untranslated Portuguese
+           FAIL: categorias: meta description contains no untranslated Portuguese
+           FAIL: newsletter: meta description contains no untranslated Portuguese
+           FAIL: revista: meta description contains no untranslated Portuguese
+           FAIL: anuncie: meta description contains no untranslated Portuguese
+           FAIL: politica-de-privacidade: meta description contains no untranslated Portuguese
+           FAIL: termos-de-uso: meta description contains no untranslated Portuguese
+[FAIL] theme/conexao-br-irlanda/test-stage7-hero-sponsors.php — 8 passed, 2 failed (exit 1)
+           FAIL: EN homepage receives eligible B2 sponsor data — count=0
+           FAIL: EN Hero uses the existing sponsors-carousel--hero component
+[PASS] theme/conexao-br-irlanda/test-taxonomy-policy.php — 18 passed, 0 failed
+[FAIL] theme/conexao-br-irlanda/test-translation-completeness.php — 15 passed, 5 failed (exit 1)
+           FAIL: guide: eligible public PT records missing a linked EN translation = 0 — 1 violation(s): {"eligible":1,"translated":0,"allowlisted":0,"sample":["guia-de-teste-local"]}
+           FAIL: guide: every translation relationship is a bidirectional link to a PT master — 1 violation(s): {"sample":["en_without_pt:local-test-guide"]}
+           FAIL: page: eligible public PT records missing a linked EN translation = 0 — 31 violation(s): {"eligible":43,"translated":1,"allowlisted":11,"sample":["categorias","sobre","termos","privacidade","europa","voluntariado","servicos","negocios","compras","turismo"]}
+           FAIL: post: eligible public PT records missing a linked EN translation = 0 — 1 violation(s): {"eligible":1,"translated":0,"allowlisted":0,"sample":["hello-world"]}
+           FAIL: post: every translation relationship is a bidirectional link to a PT master — 1 violation(s): {"sample":["en_without_pt:local-en-post"]}
+
+Script-contract suites (static, no WordPress, no network)
+[PASS] tests/scripts/verify-agent-governance.py
+[PASS] tests/scripts/verify-cache-key-scoping.py
+         2 passed, 0 failed
+[PASS] tests/scripts/verify-documentation-drift.py
+         14 passed, 0 failed
+[FAIL] tests/scripts/verify-i18n-freshness.py (exit 1)
+         FAIL: conexao-br-irlanda: wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot is older than wp-content/themes/conexao-br-irlanda/inc/i18n/fallback.php by 87215s — regenerate the catalogue with `wp i18n make-pot` (never hand-edit)
+[PASS] tests/scripts/verify-release-integrity.py
+         210 passed, 0 failed
+[PASS] tests/scripts/verify-script-conventions.py
+         313 passed, 0 failed
+
+HTTP acceptance suites (base: http://localhost:8080)
+[FAIL] tests/acceptance/verify-guides-en-http.py (exit 1)
+           FAIL  pt-guides-page-2 /guias/page/2/  -- status 404, expected 200
+           FAIL  en-guides-page-2 /en/guias/page/2/  -- status 404, expected 200
+           FAIL  the EN guide exposes its PT sibling
+[PASS] tests/acceptance/verify-release-http.py — 29 passed, 0 failed
+[FAIL] tests/acceptance/verify-routing-http.py (exit 1)
+           FAIL  en-lazer-card-excerpt-is-english /en/lazer/  -- missing fragment: 'Restored farmhouse at the foot of Keadeen mountain'
+           FAIL  en-lazer-no-portuguese-card-excerpt-leak /en/lazer/  -- missing fragment: 'class="leisure-card-excerpt"'
+           FAIL  en-lazer-canonical-and-hreflang /en/lazer/  -- missing fragment: 'hreflang="pt-BR" href="http://localhost:8080/lazer/"'
+           FAIL  pt-lazer-card-excerpt-stays-portuguese /lazer/  -- missing fragment: 'Casa rural restaurada aos pés da montanha Keadeen'
+           FAIL  en-cursos-fetch-card-excerpt-is-english /en/cursos/  -- missing fragment: 'Find training and continuing education courses throughout Ireland'
+           FAIL  en-cursos-no-portuguese-card-excerpt-leak /en/cursos/  -- missing fragment: 'class="provider-card-excerpt"'
+           FAIL  pt-cursos-card-excerpt-stays-portuguese /cursos/  -- missing fragment: 'Encontre cursos de formação e educação continuada em toda a Irlanda'
+           FAIL  en-cursos-canonical-and-hreflang /en/cursos/  -- missing fragment: 'hreflang="pt-BR" href="http://localhost:8080/cursos/"'
+           FAIL  en-archive-en-blog /en/blog/  -- missing fragment: '/en/blog/'; missing fragment: 'hreflang="en"'; unexpected fragment: 'language-fallback-notice'
+           FAIL  en-archive-en-blog-page-2 /en/blog/page/2/  -- status 404, expected 200
+
+----------------------------------------
+In-process PHP suites: 58 total, 34 passed, 24 failed
+  prerequisite failures:         4
+Assertions: 2608 passed, 137 failed
+Script-contract suites: 6 total, 5 passed, 1 failed
+HTTP acceptance suites: 3 total, 1 passed, 2 failed
+----------------------------------------
+TESTS FAILED
+failing suites:
+  - plugin/conexao-event-importer/test-export-language.php
+  - plugin/conexao-event-importer/test-language-identity.php
+  - plugin/conexao-event-importer/test-town-sanitization.php
+  - plugin/conexao-event-runtime/test-event-recurrence.php
+  - plugin/conexao-leisure-migration/test-excerpt-en-roundtrip.php
+  - plugin/conexao-leisure-migration/test-language-uuid.php
+  - theme/conexao-br-irlanda/test-blog-en-translation.php
+  - theme/conexao-br-irlanda/test-course-provider-card-excerpt-language.php
+  - theme/conexao-br-irlanda/test-en-course-provider-category-filter.php
+  - theme/conexao-br-irlanda/test-guide-en-translation.php
+  - theme/conexao-br-irlanda/test-header-menu-selection.php (pt)
+  - theme/conexao-br-irlanda/test-header-menu-selection.php (en)
+  - theme/conexao-br-irlanda/test-i18n-foundation.php
+  - theme/conexao-br-irlanda/test-job-en-translation.php
+  - theme/conexao-br-irlanda/test-jobs-en-language.php
+  - theme/conexao-br-irlanda/test-leisure-card-excerpt-language.php
+  - theme/conexao-br-irlanda/test-nav-language-context.php
+  - theme/conexao-br-irlanda/test-nav-menu-regression.php
+  - theme/conexao-br-irlanda/test-stage32-bilingual.php
+  - theme/conexao-br-irlanda/test-stage33-bilingual.php
+  - theme/conexao-br-irlanda/test-stage41-rest-language.php
+  - theme/conexao-br-irlanda/test-stage45-pages.php
+  - theme/conexao-br-irlanda/test-stage7-hero-sponsors.php
+  - theme/conexao-br-irlanda/test-translation-completeness.php
+full suite output kept in /tmp/tmp.Hif1Z6bEe4
+EXIT=1

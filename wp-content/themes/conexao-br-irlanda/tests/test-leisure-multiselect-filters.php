@@ -11,7 +11,7 @@
  *  - The leisure branch of conexao_content_archive_query(): OR within a
  *    multi-select dimension (tax_query IN), AND between dimensions, single
  *    slugs unchanged, invalid slugs ignored safely.
- *  - Template markup: aria-multiselectable listboxes, active states,
+ *  - Template markup: group-of-links filter options, active states,
  *    "Todos"/"Todas" as a per-dimension reset, cross-dimension preservation,
  *    multi-select trigger labels, per-value chips, mobile checkbox groups
  *    with nameless section-reset checkboxes.
@@ -306,14 +306,18 @@ $html = ms_test_render_filters( array(
 	'atributo'  => 'ms-exterior,ms-familias,ms-exterior',
 ) );
 
-assert_true( false !== strpos( $html, 'aria-multiselectable="true"' ), 'multi-select listboxes declare aria-multiselectable' );
-assert_true( 2 === substr_count( $html, 'aria-multiselectable="true"' ), 'exactly Tipo and Características are multi-select (Localização stays single-select)' );
+// The multi-select dimensions are groups of hyperlinks, NOT listboxes:
+// aria-multiselectable is only valid on a listbox, so it is gone. The
+// multi-select behaviour itself is proven by the toggle URLs below.
+assert_true( false === strpos( $html, 'aria-multiselectable' ), 'no orphan aria-multiselectable (only valid on a listbox)' );
+assert_true( false === strpos( $html, 'role="listbox"' ), 'the multi-select groups are not advertised as listboxes' );
+assert_true( false === strpos( $html, 'role="option"' ), 'no invalid role="option" on any multi-select option link' );
 
-// Selected Tipo option is aria-selected=true and its link REMOVES that slug
-// (toggle semantics) while keeping the other selections.
-$natureza_toggle = preg_match( '/aria-selected="true"[^>]*href="[^"]*categoria=ms-cultura[^"]*"/', $html )
-	|| preg_match( '/href="[^"]*categoria=ms-cultura[^"]*"[^>]*aria-selected="true"/', $html );
-assert_true( (bool) $natureza_toggle, 'selected Tipo option: aria-selected=true, link removes only that slug' );
+// The selected Tipo option is aria-current="true" and its link REMOVES that
+// slug (toggle semantics) while keeping the other selections.
+$natureza_toggle = preg_match( '/aria-current="true"[^>]*href="[^"]*categoria=ms-cultura[^"]*"/', $html )
+	|| preg_match( '/href="[^"]*categoria=ms-cultura[^"]*"[^>]*aria-current="true"/', $html );
+assert_true( (bool) $natureza_toggle, 'selected Tipo option: aria-current="true", link removes only that slug' );
 
 // All URL assertions below run against a decoded copy of the markup:
 // esc_url() escapes ampersands (&#038;) and commas may appear raw or as %2C
@@ -348,7 +352,7 @@ assert_true( false === strpos( $html, 'pagina=' ), 'no filter URL carries a pagi
 // State: nothing selected — the three group reset options are the only
 // active options, triggers show the group names.
 $html = ms_test_render_filters( array() );
-assert_true( 3 === substr_count( $html, 'aria-selected="true"' ), 'exactly the three group reset options are active with no filters' );
+assert_true( 3 === substr_count( $html, 'aria-current="true"' ), 'exactly the three group reset options are active with no filters' );
 assert_true( false !== strpos( $html, '>Tipo</span>' ), 'Tipo trigger shows the group name when nothing is selected' );
 assert_true( false !== strpos( $html, '>Características</span>' ), 'Características trigger shows the group name when nothing is selected' );
 assert_true( false === strpos( $html, 'selecionados' ), 'no count label when nothing is selected' );
@@ -359,7 +363,7 @@ $html = ms_test_render_filters( array( 'categoria' => 'ms-natureza' ) );
 assert_true( false !== strpos( $html, '>MS Natureza</span>' ), 'single Tipo selection shows its label on the trigger' );
 preg_match( '/leisure-category-panel.*?(<\/div>\s*<\/div>\s*<\/div>)/s', $html, $tipo_region );
 if ( $tipo_region ) {
-	assert_true( 1 === substr_count( $tipo_region[0], 'aria-selected="true"' ), 'with one Tipo selected, only that option (not Todos) is active' );
+	assert_true( 1 === substr_count( $tipo_region[0], 'aria-current="true"' ), 'with one Tipo selected, only that option (not Todos) is active' );
 }
 
 // ---------------------------------------------------------------------------

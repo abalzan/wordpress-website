@@ -1,0 +1,56 @@
+PASS  pt-empregos: HTTP 200 -- status=200
+PASS  pt-empregos: filter options rendered -- options=4
+PASS  pt-empregos: no option has role="option"
+PASS  pt-empregos: COMPUTED AX role is never "option" -- roles=link
+PASS  pt-empregos: COMPUTED AX role is "link" for every option -- link
+PASS  pt-empregos: every option exposes an accessible name -- ["Todas","Agência de recrutamento","Setor público","Histórico de Employment Permits"]
+PASS  pt-empregos: no orphan aria-selected
+PASS  pt-empregos: every option has a real href
+PASS  pt-empregos: keyboard reaches an option link -- {"tag":"A","isOption":true,"text":"✓\n\t\t\t\t\t\t\t\tTodas"}
+PASS  pt-empregos: trigger keeps aria-expanded + aria-controls -- triggerVisible=true
+PASS  pt-empregos: trigger no longer claims a listbox popup -- aria-haspopup=null
+PASS  pt-empregos: option group keeps an accessible name -- {"roleAttr":null,"computedRole":"generic","name":"Tipo de oportunidade"}
+PASS  pt-empregos: no console errors
+PASS  pt-empregos: option list has a real layout box -- {"x":127,"y":482.5,"width":266,"height":166}
+PASS  pt-empregos: no horizontal overflow
+PASS  pt-empregos-filtered: HTTP 200 -- status=200
+PASS  pt-empregos-filtered: filter options rendered -- options=4
+PASS  pt-empregos-filtered: no option has role="option"
+PASS  pt-empregos-filtered: COMPUTED AX role is never "option" -- roles=link
+PASS  pt-empregos-filtered: COMPUTED AX role is "link" for every option -- link
+PASS  pt-empregos-filtered: every option exposes an accessible name -- ["Todas","Agência de recrutamento","Setor público","Histórico de Employment Permits"]
+PASS  pt-empregos-filtered: no orphan aria-selected
+PASS  pt-empregos-filtered: every option has a real href
+PASS  pt-empregos-filtered: keyboard reaches an option link -- {"tag":"A","isOption":true,"text":"Todas"}
+PASS  pt-empregos-filtered: trigger keeps aria-expanded + aria-controls -- triggerVisible=true
+PASS  pt-empregos-filtered: trigger no longer claims a listbox popup -- aria-haspopup=null
+PASS  pt-empregos-filtered: option group keeps an accessible name -- {"roleAttr":null,"computedRole":"generic","name":"Tipo de oportunidade"}
+PASS  pt-empregos-filtered: no console errors
+PASS  pt-empregos-filtered: option list has a real layout box -- {"x":127,"y":482.5,"width":266,"height":166}
+PASS  pt-empregos-filtered: no horizontal overflow
+PASS  pt-empregos-filtered: exactly one option is aria-current -- n=1
+PASS  pt-empregos-filtered: aria-current matches is-active
+PASS  pt-lazer: HTTP 200 -- status=200
+PASS  pt-lazer: no role="option" in filter markup -- options=0
+PASS  pt-lazer: no console errors
+PASS  pt-lazer: no horizontal overflow
+PASS  en-lazer: HTTP 200 -- status=200
+PASS  en-lazer: no role="option" in filter markup -- options=0
+PASS  en-lazer: no console errors
+PASS  en-lazer: no horizontal overflow
+PASS  pt-eventos: HTTP 200 -- status=200
+PASS  pt-eventos: no role="option" in filter markup -- options=0
+PASS  pt-eventos: no console errors
+PASS  pt-eventos: no horizontal overflow
+PASS  en-eventos: HTTP 200 -- status=200
+PASS  en-eventos: no role="option" in filter markup -- options=0
+PASS  en-eventos: no console errors
+PASS  en-eventos: no horizontal overflow
+PASS  routing: /en/empregos/ still 302s to PT (B1 unchanged) -- status=302
+PASS  mobile: HTTP 200
+PASS  mobile: no option has role="option"
+PASS  mobile: no console errors
+PASS  mobile: no horizontal overflow
+
+53 passed, 0 failed
+EXIT=0

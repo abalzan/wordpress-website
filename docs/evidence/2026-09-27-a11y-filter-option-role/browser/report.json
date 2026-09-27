@@ -1,0 +1,563 @@
+{
+  "base": "http://localhost:8080",
+  "checks": [
+    {
+      "name": "pt-empregos: HTTP 200",
+      "ok": true,
+      "detail": "status=200"
+    },
+    {
+      "name": "pt-empregos: filter options rendered",
+      "ok": true,
+      "detail": "options=4"
+    },
+    {
+      "name": "pt-empregos: no option has role=\"option\"",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "pt-empregos: COMPUTED AX role is never \"option\"",
+      "ok": true,
+      "detail": "roles=link"
+    },
+    {
+      "name": "pt-empregos: COMPUTED AX role is \"link\" for every option",
+      "ok": true,
+      "detail": "link"
+    },
+    {
+      "name": "pt-empregos: every option exposes an accessible name",
+      "ok": true,
+      "detail": "[\"Todas\",\"Agência de recrutamento\",\"Setor público\",\"Histórico de Employment Permits\"]"
+    },
+    {
+      "name": "pt-empregos: no orphan aria-selected",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "pt-empregos: every option has a real href",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "pt-empregos: keyboard reaches an option link",
+      "ok": true,
+      "detail": "{\"tag\":\"A\",\"isOption\":true,\"text\":\"✓\\n\\t\\t\\t\\t\\t\\t\\t\\tTodas\"}"
+    },
+    {
+      "name": "pt-empregos: trigger keeps aria-expanded + aria-controls",
+      "ok": true,
+      "detail": "triggerVisible=true"
+    },
+    {
+      "name": "pt-empregos: trigger no longer claims a listbox popup",
+      "ok": true,
+      "detail": "aria-haspopup=null"
+    },
+    {
+      "name": "pt-empregos: option group keeps an accessible name",
+      "ok": true,
+      "detail": "{\"roleAttr\":null,\"computedRole\":\"generic\",\"name\":\"Tipo de oportunidade\"}"
+    },
+    {
+      "name": "pt-empregos: no console errors",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "pt-empregos: option list has a real layout box",
+      "ok": true,
+      "detail": "{\"x\":127,\"y\":482.5,\"width\":266,\"height\":166}"
+    },
+    {
+      "name": "pt-empregos: no horizontal overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "pt-empregos-filtered: HTTP 200",
+      "ok": true,
+      "detail": "status=200"
+    },
+    {
+      "name": "pt-empregos-filtered: filter options rendered",
+      "ok": true,
+      "detail": "options=4"
+    },
+    {
+      "name": "pt-empregos-filtered: no option has role=\"option\"",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "pt-empregos-filtered: COMPUTED AX role is never \"option\"",
+      "ok": true,
+      "detail": "roles=link"
+    },
+    {
+      "name": "pt-empregos-filtered: COMPUTED AX role is \"link\" for every option",
+      "ok": true,
+      "detail": "link"
+    },
+    {
+      "name": "pt-empregos-filtered: every option exposes an accessible name",
+      "ok": true,
+      "detail": "[\"Todas\",\"Agência de recrutamento\",\"Setor público\",\"Histórico de Employment Permits\"]"
+    },
+    {
+      "name": "pt-empregos-filtered: no orphan aria-selected",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "pt-empregos-filtered: every option has a real href",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "pt-empregos-filtered: keyboard reaches an option link",
+      "ok": true,
+      "detail": "{\"tag\":\"A\",\"isOption\":true,\"text\":\"Todas\"}"
+    },
+    {
+      "name": "pt-empregos-filtered: trigger keeps aria-expanded + aria-controls",
+      "ok": true,
+      "detail": "triggerVisible=true"
+    },
+    {
+      "name": "pt-empregos-filtered: trigger no longer claims a listbox popup",
+      "ok": true,
+      "detail": "aria-haspopup=null"
+    },
+    {
+      "name": "pt-empregos-filtered: option group keeps an accessible name",
+      "ok": true,
+      "detail": "{\"roleAttr\":null,\"computedRole\":\"generic\",\"name\":\"Tipo de oportunidade\"}"
+    },
+    {
+      "name": "pt-empregos-filtered: no console errors",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "pt-empregos-filtered: option list has a real layout box",
+      "ok": true,
+      "detail": "{\"x\":127,\"y\":482.5,\"width\":266,\"height\":166}"
+    },
+    {
+      "name": "pt-empregos-filtered: no horizontal overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "pt-empregos-filtered: exactly one option is aria-current",
+      "ok": true,
+      "detail": "n=1"
+    },
+    {
+      "name": "pt-empregos-filtered: aria-current matches is-active",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "pt-lazer: HTTP 200",
+      "ok": true,
+      "detail": "status=200"
+    },
+    {
+      "name": "pt-lazer: no role=\"option\" in filter markup",
+      "ok": true,
+      "detail": "options=0"
+    },
+    {
+      "name": "pt-lazer: no console errors",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "pt-lazer: no horizontal overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "en-lazer: HTTP 200",
+      "ok": true,
+      "detail": "status=200"
+    },
+    {
+      "name": "en-lazer: no role=\"option\" in filter markup",
+      "ok": true,
+      "detail": "options=0"
+    },
+    {
+      "name": "en-lazer: no console errors",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "en-lazer: no horizontal overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "pt-eventos: HTTP 200",
+      "ok": true,
+      "detail": "status=200"
+    },
+    {
+      "name": "pt-eventos: no role=\"option\" in filter markup",
+      "ok": true,
+      "detail": "options=0"
+    },
+    {
+      "name": "pt-eventos: no console errors",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "pt-eventos: no horizontal overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "en-eventos: HTTP 200",
+      "ok": true,
+      "detail": "status=200"
+    },
+    {
+      "name": "en-eventos: no role=\"option\" in filter markup",
+      "ok": true,
+      "detail": "options=0"
+    },
+    {
+      "name": "en-eventos: no console errors",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "en-eventos: no horizontal overflow",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "routing: /en/empregos/ still 302s to PT (B1 unchanged)",
+      "ok": true,
+      "detail": "status=302"
+    },
+    {
+      "name": "mobile: HTTP 200",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile: no option has role=\"option\"",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile: no console errors",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "mobile: no horizontal overflow",
+      "ok": true,
+      "detail": ""
+    }
+  ],
+  "pages": {
+    "pt-empregos": {
+      "url": "/empregos/",
+      "status": 200,
+      "options": [
+        {
+          "roleAttr": null,
+          "ariaCurrent": "true",
+          "ariaSelected": null,
+          "href": "http://localhost:8080/empregos/#empregos-opportunities-title",
+          "text": "✓\n\t\t\t\t\t\t\t\tTodas",
+          "hasIsActive": true,
+          "computedRole": "link",
+          "accessibleName": "Todas"
+        },
+        {
+          "roleAttr": null,
+          "ariaCurrent": null,
+          "ariaSelected": null,
+          "href": "http://localhost:8080/empregos/?tipo=agency#empregos-opportunities-title",
+          "text": "Agência de recrutamento",
+          "hasIsActive": false,
+          "computedRole": "link",
+          "accessibleName": "Agência de recrutamento"
+        },
+        {
+          "roleAttr": null,
+          "ariaCurrent": null,
+          "ariaSelected": null,
+          "href": "http://localhost:8080/empregos/?tipo=public_sector#empregos-opportunities-title",
+          "text": "Setor público",
+          "hasIsActive": false,
+          "computedRole": "link",
+          "accessibleName": "Setor público"
+        },
+        {
+          "roleAttr": null,
+          "ariaCurrent": null,
+          "ariaSelected": null,
+          "href": "http://localhost:8080/empregos/?tipo=permit_history#empregos-opportunities-title",
+          "text": "Histórico de Employment Permits",
+          "hasIsActive": false,
+          "computedRole": "link",
+          "accessibleName": "Histórico de Employment Permits"
+        }
+      ],
+      "trigger": {
+        "tag": "BUTTON",
+        "ariaExpanded": "false",
+        "ariaControls": "empregos-opportunities-tipo-panel",
+        "ariaHasPopup": null,
+        "name": "Filtrar por Tipo de oportunidade"
+      },
+      "group": {
+        "roleAttr": null,
+        "computedRole": "generic",
+        "name": "Tipo de oportunidade"
+      },
+      "consoleErrors": [],
+      "triggerVisible": true,
+      "listBox": {
+        "x": 127,
+        "y": 482.5,
+        "width": 266,
+        "height": 166
+      },
+      "screenshot": "/home/andrei/IdeaProjects/wordpress-website/.tmp-a11y-verify/out/pt-empregos.png",
+      "keyboardReachesOption": true,
+      "focusedOption": {
+        "tag": "A",
+        "isOption": true,
+        "text": "✓\n\t\t\t\t\t\t\t\tTodas"
+      },
+      "focusOutline": {
+        "outlineStyle": "solid",
+        "outlineWidth": "3px"
+      },
+      "horizontalOverflow": false
+    },
+    "pt-empregos-filtered": {
+      "url": "/empregos/?tipo=agency",
+      "status": 200,
+      "options": [
+        {
+          "roleAttr": null,
+          "ariaCurrent": null,
+          "ariaSelected": null,
+          "href": "http://localhost:8080/empregos/#empregos-opportunities-title",
+          "text": "Todas",
+          "hasIsActive": false,
+          "computedRole": "link",
+          "accessibleName": "Todas"
+        },
+        {
+          "roleAttr": null,
+          "ariaCurrent": "true",
+          "ariaSelected": null,
+          "href": "http://localhost:8080/empregos/?tipo=agency#empregos-opportunities-title",
+          "text": "✓\n\t\t\t\t\t\t\t\t\tAgência de recrutamento",
+          "hasIsActive": true,
+          "computedRole": "link",
+          "accessibleName": "Agência de recrutamento"
+        },
+        {
+          "roleAttr": null,
+          "ariaCurrent": null,
+          "ariaSelected": null,
+          "href": "http://localhost:8080/empregos/?tipo=public_sector#empregos-opportunities-title",
+          "text": "Setor público",
+          "hasIsActive": false,
+          "computedRole": "link",
+          "accessibleName": "Setor público"
+        },
+        {
+          "roleAttr": null,
+          "ariaCurrent": null,
+          "ariaSelected": null,
+          "href": "http://localhost:8080/empregos/?tipo=permit_history#empregos-opportunities-title",
+          "text": "Histórico de Employment Permits",
+          "hasIsActive": false,
+          "computedRole": "link",
+          "accessibleName": "Histórico de Employment Permits"
+        }
+      ],
+      "trigger": {
+        "tag": "BUTTON",
+        "ariaExpanded": "false",
+        "ariaControls": "empregos-opportunities-tipo-panel",
+        "ariaHasPopup": null,
+        "name": "Filtrar por Tipo de oportunidade. Filtro ativo: Agência de recrutamento"
+      },
+      "group": {
+        "roleAttr": null,
+        "computedRole": "generic",
+        "name": "Tipo de oportunidade"
+      },
+      "consoleErrors": [],
+      "triggerVisible": true,
+      "listBox": {
+        "x": 127,
+        "y": 482.5,
+        "width": 266,
+        "height": 166
+      },
+      "screenshot": "/home/andrei/IdeaProjects/wordpress-website/.tmp-a11y-verify/out/pt-empregos-filtered.png",
+      "keyboardReachesOption": true,
+      "focusedOption": {
+        "tag": "A",
+        "isOption": true,
+        "text": "Todas"
+      },
+      "focusOutline": {
+        "outlineStyle": "solid",
+        "outlineWidth": "3px"
+      },
+      "horizontalOverflow": false
+    },
+    "pt-lazer": {
+      "url": "/lazer/",
+      "status": 200,
+      "options": [],
+      "trigger": null,
+      "group": {
+        "roleAttr": null,
+        "computedRole": null,
+        "name": null,
+        "absent": true
+      },
+      "consoleErrors": [],
+      "triggerVisible": false,
+      "listBox": null,
+      "screenshot": "/home/andrei/IdeaProjects/wordpress-website/.tmp-a11y-verify/out/pt-lazer.png",
+      "keyboardReachesOption": false,
+      "horizontalOverflow": false
+    },
+    "en-lazer": {
+      "url": "/en/lazer/",
+      "status": 200,
+      "options": [],
+      "trigger": null,
+      "group": {
+        "roleAttr": null,
+        "computedRole": null,
+        "name": null,
+        "absent": true
+      },
+      "consoleErrors": [],
+      "triggerVisible": false,
+      "listBox": null,
+      "screenshot": "/home/andrei/IdeaProjects/wordpress-website/.tmp-a11y-verify/out/en-lazer.png",
+      "keyboardReachesOption": false,
+      "horizontalOverflow": false
+    },
+    "pt-eventos": {
+      "url": "/eventos/",
+      "status": 200,
+      "options": [],
+      "trigger": null,
+      "group": {
+        "roleAttr": null,
+        "computedRole": null,
+        "name": null,
+        "absent": true
+      },
+      "consoleErrors": [],
+      "triggerVisible": false,
+      "listBox": null,
+      "screenshot": "/home/andrei/IdeaProjects/wordpress-website/.tmp-a11y-verify/out/pt-eventos.png",
+      "keyboardReachesOption": false,
+      "horizontalOverflow": false
+    },
+    "en-eventos": {
+      "url": "/en/eventos/",
+      "status": 200,
+      "options": [],
+      "trigger": null,
+      "group": {
+        "roleAttr": null,
+        "computedRole": null,
+        "name": null,
+        "absent": true
+      },
+      "consoleErrors": [],
+      "triggerVisible": false,
+      "listBox": null,
+      "screenshot": "/home/andrei/IdeaProjects/wordpress-website/.tmp-a11y-verify/out/en-eventos.png",
+      "keyboardReachesOption": false,
+      "horizontalOverflow": false
+    },
+    "pt-empregos-mobile": {
+      "url": "/empregos/",
+      "status": 200,
+      "options": [
+        {
+          "roleAttr": null,
+          "ariaCurrent": "true",
+          "ariaSelected": null,
+          "href": "http://localhost:8080/empregos/#empregos-opportunities-title",
+          "text": "✓\n\t\t\t\t\t\t\t\tTodas",
+          "hasIsActive": true,
+          "computedRole": "none",
+          "accessibleName": null
+        },
+        {
+          "roleAttr": null,
+          "ariaCurrent": null,
+          "ariaSelected": null,
+          "href": "http://localhost:8080/empregos/?tipo=agency#empregos-opportunities-title",
+          "text": "Agência de recrutamento",
+          "hasIsActive": false,
+          "computedRole": "none",
+          "accessibleName": null
+        },
+        {
+          "roleAttr": null,
+          "ariaCurrent": null,
+          "ariaSelected": null,
+          "href": "http://localhost:8080/empregos/?tipo=public_sector#empregos-opportunities-title",
+          "text": "Setor público",
+          "hasIsActive": false,
+          "computedRole": "none",
+          "accessibleName": null
+        },
+        {
+          "roleAttr": null,
+          "ariaCurrent": null,
+          "ariaSelected": null,
+          "href": "http://localhost:8080/empregos/?tipo=permit_history#empregos-opportunities-title",
+          "text": "Histórico de Employment Permits",
+          "hasIsActive": false,
+          "computedRole": "none",
+          "accessibleName": null
+        }
+      ],
+      "trigger": null,
+      "group": {
+        "roleAttr": null,
+        "computedRole": "none",
+        "name": null
+      },
+      "consoleErrors": [],
+      "triggerVisible": false,
+      "listBox": null,
+      "screenshot": "/home/andrei/IdeaProjects/wordpress-website/.tmp-a11y-verify/out/pt-empregos-mobile.png",
+      "keyboardReachesOption": false,
+      "horizontalOverflow": false
+    }
+  },
+  "summary": {
+    "passed": 53,
+    "failed": 0,
+    "total": 53
+  }
+}

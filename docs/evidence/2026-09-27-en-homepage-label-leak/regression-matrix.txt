@@ -1,0 +1,16 @@
+ROUTE                 STATUS  lang        GuiaPratico  PracticalGuide  B2notice
+-------------------------------------------------------------------------
+/                     200     pt-BR       1            0               0
+/en/                  200     en-US       0            1               0
+/cursos/              200     pt-BR       0            0               0
+/en/cursos/           200     en-US       0            0               0
+/lazer/               200     pt-BR       0            0               0
+/en/lazer/            200     en-US       0            0               0
+/eventos/             200     pt-BR       0            0               0
+/en/eventos/          200     en-US       0            0               0
+/empregos/            200     pt-BR       0            0               0
+/en/empregos/         302                 0            0               0
+/guias/               200     pt-BR       0            0               0
+/en/guias/            200     en-US       0            7               0
+/blog/                200     pt-BR       0            0               0
+/en/blog/             200     en-US       0            0               1

@@ -266,7 +266,7 @@ $hero_has_sponsors = ! empty( conexao_get_featured_sponsors() );
 									$content_type = get_post_type_object( get_post_type() );
 									if ( $content_type || ( $categories && ! is_wp_error( $categories ) ) ) : ?>
 										<div class="featured-article-categories">
-											<?php if ( $content_type ) : ?><span class="featured-article-category"><?php echo esc_html( $content_type->labels->singular_name ); ?></span><?php endif; ?>
+											<?php if ( $content_type ) : ?><span class="featured-article-category"><?php echo esc_html( conexao_content_type_label( get_post_type() ) ); ?></span><?php endif; ?>
 											<?php if ( $categories && ! is_wp_error( $categories ) ) : ?>
 												<span class="featured-article-category"><?php echo esc_html( $categories[0]->name ); ?></span>
 											<?php endif; ?>
@@ -306,7 +306,7 @@ $hero_has_sponsors = ! empty( conexao_get_featured_sponsors() );
 								$content_type = get_post_type_object( get_post_type() );
 								if ( $content_type || ( $cats && ! is_wp_error( $cats ) ) ) : ?>
 									<div class="post-card-categories">
-										<?php if ( $content_type ) : ?><span class="post-card-category"><?php echo esc_html( $content_type->labels->singular_name ); ?></span><?php endif; ?>
+										<?php if ( $content_type ) : ?><span class="post-card-category"><?php echo esc_html( conexao_content_type_label( get_post_type() ) ); ?></span><?php endif; ?>
 										<?php if ( $cats && ! is_wp_error( $cats ) ) : ?>
 											<span class="post-card-category"><?php echo esc_html( $cats[0]->name ); ?></span>
 										<?php endif; ?>
