@@ -1,0 +1,37 @@
+# 01 — Phase 0: frozen state (597b04e)
+
+$ git rev-parse HEAD
+597b04e085afb9d2651cb7906b43e2c2b551c2f1
+
+$ git rev-parse --abbrev-ref HEAD
+i18n
+
+$ git log -1 --format=...
+597b04e085afb9d2651cb7906b43e2c2b551c2f1
+Andrei <andreibalzan@gmail.com>
+Sun Sep 27 20:18:13 2026 +0100
+Refactor code structure for improved readability and maintainability
+
+
+$ git status --short
+?? docs/evidence/2026-09-27-baseline-recovery/
+?? docs/evidence/2026-09-27-en-artigo-label-leak/
+?? docs/reports/2026-09-27-en-artigo-label-leak.md
+
+$ git log --oneline origin/i18n..HEAD   (unpushed)
+597b04e Refactor code structure for improved readability and maintainability
+b47d098 Add investigation report and SQL logs for `/en/lazer/` archive performance
+b32fba3 Add the i18n catalogue freshness investigation report and evidence
+88bdf22 Regenerate the stale theme i18n catalogue and repair the generator
+8f07f30 Add regression tests for ARIA semantics in filter links and homepage content-type labels
+8496245 Add tests for provider category filter and English label presentation
+
+$ git show --name-status --format= 597b04e | awk {print \$1} | sort | uniq -c
+     19 A
+     68 D
+     36 M
+
+$ docker compose ps
+NAME                            IMAGE              COMMAND                  SERVICE     CREATED       STATUS                 PORTS
+wordpress-website-db-1          mysql:latest       "docker-entrypoint.s…"   db          5 hours ago   Up 5 hours (healthy)   3306/tcp, 33060/tcp
+wordpress-website-wordpress-1   wordpress:latest   "/usr/local/bin/entr…"   wordpress   2 hours ago   Up 51 minutes          0.0.0.0:8080->80/tcp, [::]:8080->80/tcp

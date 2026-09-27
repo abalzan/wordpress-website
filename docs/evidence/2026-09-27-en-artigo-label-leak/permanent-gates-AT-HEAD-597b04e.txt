@@ -1,0 +1,25 @@
+== Stage L permanent invariant gates ==
+   repository: /home/andrei/IdeaProjects/wordpress-website
+   sha:        597b04e085afb9d2651cb7906b43e2c2b551c2f1
+
+[FAIL   ] taxonomy                   taxonomy_policy          exit=1 0 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[FAIL   ] translation_completeness   translation_completeness exit=1 0 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[FAIL   ] cache_scoping              cache_scoping            exit=1 0 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[FAIL   ] cache_scoping              cache_scoping_static     exit=1 2 passed, 4 failed, 4 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+          - wp-content/themes/conexao-br-irlanda/404.php:25 get_transient( 'conexao_404_guides' )
+          - wp-content/themes/conexao-br-irlanda/404.php:41 set_transient( 'conexao_404_guides' )
+          - wp-content/themes/conexao-br-irlanda/404.php:62 get_transient( 'conexao_404_events' )
+          - wp-content/themes/conexao-br-irlanda/404.php:99 set_transient( 'conexao_404_events' )
+[FAIL   ] redirect_precedence        redirect_precedence      exit=1 0 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[FAIL   ] documentation_drift        documentation_drift      exit=1 13 passed, 1 failed, 1 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[FAIL   ] i18n_freshness             i18n_freshness           exit=1 8 passed, 1 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+
+----------------------------------------
+Gates: 7 total, 0 passed, 7 failed, 0 blocked
+Assertions: 23 passed, 6 failed
+Violations: 0 (0 pre-existing, 0 new)
+AGGREGATE: FAIL
+----------------------------------------
+gate.json written: docs/evidence/2026-09-26-stage-l/gate.json
+
+One or more permanent invariant gates FAILED. This is a real repository/data violation, not a harness problem: the gates are blocking by design and must not be weakened to obtain a green run.

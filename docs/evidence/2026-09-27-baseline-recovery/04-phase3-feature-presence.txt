@@ -1,0 +1,13 @@
+# 04 — Phase 3: named previously-verified features, presence matrix
+
+FUNCTION                                      b47d098    597b04e    STATUS
+conexao_content_type_label                    1          0          LOST
+conexao_provider_category_label               1          0          LOST
+conexao_leisure_card_excerpt                  1          0          LOST
+conexao_b2_archive_widen_query                1          0          LOST
+conexao_current_locale                        1          0          LOST
+conexao_language_switcher                     1          0          LOST
+conexao_rest_language_validate_request        1          0          LOST
+conexao_seo_hreflang                          1          0          LOST
+conexao_get_provider_categories               1          1          PRESENT
+conexao_event_filter_url                      1          1          PRESENT

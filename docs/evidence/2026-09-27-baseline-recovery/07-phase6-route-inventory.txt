@@ -1,0 +1,39 @@
+# 07 — Phase 6: route regression inventory (read-only HTTP, local Docker)
+
+Target: http://localhost:8080 (compose service wordpress, 597b04e worktree)
+
+## Status + redirect
+ROUTE            STATUS REDIRECT_LOCATION
+/                200 
+/cursos/         200 
+/en/             200 
+/en/cursos/      301 http://localhost:8080/2026/03/19/cursos-e-apoio-para-empreendedores/
+/en/guias/       404 
+/en/lazer/       301 http://localhost:8080/lazer/
+/en/blog/        301 http://localhost:8080/blog/
+/eventos/        200 
+/en/eventos/     404 
+/empregos/       200 
+/en/empregos/    301 http://localhost:8080/empregos/
+
+## /en/cursos/ followed to final
+final=http://localhost:8080/2026/03/19/cursos-e-apoio-para-empreendedores/ code=200
+
+## html lang + title
+/     : <html lang="pt-BR"
+/en/  : <html lang="en-US"
+
+## hreflang occurrences on /
+hreflang count: 2
+
+## canonical on /en/
+<link rel="canonical" href="http://localhost:8080/en/" />
+
+## EN homepage label sample (Artigo leak context)
+      1 Artigos
+      2 Courses
+      2 Events
+      2 Guides
+      2 Leisure
+
+## NOTE: these are the MEASURED values at the broken baseline. Nothing was fixed.
