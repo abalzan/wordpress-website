@@ -1445,6 +1445,18 @@ msgstr ""
 #, php-format
 msgid "Heritage Week import reached its time budget after where[]=%1$s page %2$d — remaining will be picked up by the next run."
 msgstr ""
+#. Name of the plugin
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:1
+msgid "Conexão BR Irlanda — Event Importer (Local Tools)"
+msgstr ""
+#. Description of the plugin
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:1
+msgid "Local-only event import/export tooling. Fetches, normalizes, deduplicates, and imports events from configured external sources into the local WordPress database. Event images are downloaded into the Media Library locally, then the complete event data (with embedded images) is exported to JSON for import into the production WordPress.com site. Production-critical event runtime behavior (meta/taxonomy registration, _event_status, public query filtering, status admin UI) lives in the separate \"Conexão BR Irlanda — Event Runtime\" plugin."
+msgstr ""
+#. Version of the plugin
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:1
+msgid "1.7.1"
+msgstr ""
 
 #. Name of the plugin
 #: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:1

@@ -56,6 +56,36 @@ class Conexao_Event_Location {
 	);
 
 	/**
+	 * Counties that have NO town of the same name (lowercase keys).
+	 *
+	 * A source locality field regularly carries only the county (Eventbrite
+	 * `address.city` is "Laois" for a venue whose address resolves no further,
+	 * e.g. "Gorteenameale Eco Trail, Laois, Laois"). When that value is
+	 * accepted as a town, the county name is copied into `conexao_town` and a
+	 * fabricated locality is published on the /eventos "cidade" filter.
+	 *
+	 * This list exists because the naive rule "a county name is never a town"
+	 * is FALSE in Ireland: Cavan, Wicklow, Kildare, Carlow, Donegal,
+	 * Monaghan, Longford, Leitrim and Louth are all real towns that share
+	 * their county's name, as are the cities Cork, Dublin, Galway, Kilkenny,
+	 * Sligo, Waterford and Wexford. Rejecting those would delete legitimate
+	 * data, so only the counties below — which have no same-named town — are
+	 * rejected as a town value.
+	 *
+	 * 'laois' is the county whose county town is Portlaoise; there is no town
+	 * named Laois. Keep this list to counties with no same-named town ONLY.
+	 *
+	 * @var array
+	 */
+	protected $counties_without_town = array(
+		'clare',
+		'kerry',
+		'laois',
+		'meath',
+		'offaly',
+	);
+
+	/**
 	 * Known Irish counties for nationwide location derivation.
 	 *
 	 * Generalized from the original Laois-only behavior so nationwide
@@ -268,6 +298,52 @@ class Conexao_Event_Location {
 	}
 
 	/**
+	 * Determine whether a locality value is really just a county name.
+	 *
+	 * A county is not a locality. When a source's locality field carries
+	 * nothing but a county (Eventbrite `address.city` = "Laois"), the county
+	 * must never be promoted to a town: the event keeps its `conexao_county`
+	 * term and simply has no `conexao_town` term.
+	 *
+	 * This is deliberately NOT the blanket rule "a county name is never a
+	 * town" — that is false in Ireland, where Cavan, Wicklow, Kildare,
+	 * Carlow, Longford, Monaghan and Donegal are real towns sharing their
+	 * county's name, as are Cork, Dublin, Galway, Kilkenny, Sligo,
+	 * Waterford and Wexford. Only the counties listed in
+	 * $counties_without_town are rejected, because only those have no town
+	 * of the same name.
+	 *
+	 * Surrounding county markers are stripped first, so "Co. Laois",
+	 * "County Laois" and "Laois, Ireland" are all recognised as the county
+	 * "Laois" and rejected as a town.
+	 *
+	 * @param string $value Raw locality value.
+	 * @return bool True when the value is only a county name.
+	 */
+	public function is_county_only_value( $value ) {
+		$value = trim( (string) $value );
+		if ( '' === $value ) {
+			return false;
+		}
+
+		// Strip a trailing country: "Laois, Ireland" / "Laois Ireland".
+		$value = preg_replace( '/,?\s+ireland$/i', '', $value );
+
+		// Strip a leading county marker: "Co Laois", "Co. Laois",
+		// "County Laois". Requires a separator after "co" so a town whose
+		// name merely starts with "co" (Cobh, Cork, Cong) is untouched.
+		$value = preg_replace( '/^(?:co(?:unty)?\.?)\s+/i', '', $value );
+
+		$value = trim( preg_replace( '/\s+/', ' ', $value ), " ,-." );
+
+		if ( '' === $value ) {
+			return false;
+		}
+
+		return in_array( strtolower( $value ), $this->counties_without_town, true );
+	}
+
+	/**
 	 * Sanitize a town value by stripping Eircode fragments.
 	 *
 	 * Eventbrite and other sources may supply a locality that concatenates
@@ -277,11 +353,14 @@ class Conexao_Event_Location {
 	 *   - removes any Irish Eircode (routing key + unique id)
 	 *   - collapses leftover whitespace/separators
 	 *   - returns '' when the value was a standalone Eircode
+	 *   - returns '' when the value is only a county name (see
+	 *     is_county_only_value()), so a county is never copied into the
+	 *     town taxonomy
 	 *
 	 * Values are otherwise preserved as-is: no fuzzy matching, no
-	 * geographic inference. A value consisting only of an Eircode yields
-	 * '' so the caller can leave the town classification empty rather
-	 * than fabricating a locality.
+	 * geographic inference. A value consisting only of an Eircode, or only
+	 * of a county name, yields '' so the caller can leave the town
+	 * classification empty rather than fabricating a locality.
 	 *
 	 * @param string $town Raw town value.
 	 * @return string Cleaned town name, or '' when no valid locality remains.
@@ -306,6 +385,13 @@ class Conexao_Event_Location {
 		// that collapses to punctuation/separators only is not a
 		// locality. Do not fabricate a town.
 		if ( '' === $cleaned || ! preg_match( '/[A-Za-z]/', $cleaned ) ) {
+			return '';
+		}
+
+		// A county name is not a locality. Reject it so the county is
+		// never copied into conexao_town; the event stays reachable
+		// through its conexao_county term alone.
+		if ( $this->is_county_only_value( $cleaned ) ) {
 			return '';
 		}
 

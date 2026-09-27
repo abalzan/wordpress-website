@@ -140,6 +140,102 @@ $normalized = $normalizer->normalize( $raw );
 assert_true( 'Oranmore' === $normalized['town'], "normalizer: town sanitized to 'Oranmore' (got: '{$normalized['town']}')" );
 assert_true( '123 Main St, Oranmore, H91 72H3' === $normalized['address'], "normalizer: address metadata preserved (got: '{$normalized['address']}')" );
 
+test_section( 'is_county_only_value() — a county is not a town' );
+
+// Counties with NO town of the same name are rejected as a town value.
+assert_true( $loc->is_county_only_value( 'Laois' ), "Laois is a county, not a town" );
+assert_true( $loc->is_county_only_value( 'laois' ), "match is case-insensitive" );
+assert_true( $loc->is_county_only_value( '  Laois  ' ), "surrounding whitespace tolerated" );
+assert_true( $loc->is_county_only_value( 'Clare' ), "Clare is a county, not a town" );
+assert_true( $loc->is_county_only_value( 'Kerry' ), "Kerry is a county, not a town" );
+assert_true( $loc->is_county_only_value( 'Meath' ), "Meath is a county, not a town" );
+assert_true( $loc->is_county_only_value( 'Offaly' ), "Offaly is a county, not a town" );
+
+// County markers around the name are recognised.
+assert_true( $loc->is_county_only_value( 'Co. Laois' ), "'Co. Laois' recognised as the county" );
+assert_true( $loc->is_county_only_value( 'Co Laois' ), "'Co Laois' recognised as the county" );
+assert_true( $loc->is_county_only_value( 'County Laois' ), "'County Laois' recognised as the county" );
+assert_true( $loc->is_county_only_value( 'Laois, Ireland' ), "'Laois, Ireland' recognised as the county" );
+assert_true( $loc->is_county_only_value( 'Laois Ireland' ), "'Laois Ireland' recognised as the county" );
+
+// A county name that IS also a real town must NOT be rejected. This is the
+// guard against over-correction: Cavan, Wicklow, Kildare, Carlow, Longford,
+// Monaghan and Donegal are genuine towns, as are the cities Cork, Dublin,
+// Galway, Kilkenny, Sligo, Waterford and Wexford.
+foreach ( array( 'Cork', 'Dublin', 'Galway', 'Kilkenny', 'Sligo', 'Waterford', 'Wexford',
+	'Cavan', 'Wicklow', 'Kildare', 'Limerick', 'Carlow', 'Longford', 'Monaghan', 'Donegal', 'Leitrim' ) as $real_town ) {
+	assert_true( ! $loc->is_county_only_value( $real_town ), "'{$real_town}' is a real town and must be kept" );
+}
+
+// Towns that merely start with "co" must survive the county-marker strip.
+assert_true( ! $loc->is_county_only_value( 'Cobh' ), "'Cobh' is a town starting with 'Co'" );
+assert_true( ! $loc->is_county_only_value( 'Cong' ), "'Cong' is a town starting with 'Co'" );
+assert_true( ! $loc->is_county_only_value( 'Newtown' ), "'Newtown' is a town, not a county" );
+assert_true( ! $loc->is_county_only_value( '' ), "empty value is not a county" );
+
+test_section( 'sanitize_town() — county names are rejected' );
+
+assert_true( '' === $loc->sanitize_town( 'Laois' ), "Laois → '' (county, not a town)" );
+assert_true( '' === $loc->sanitize_town( 'Co. Laois' ), "'Co. Laois' → ''" );
+assert_true( '' === $loc->sanitize_town( 'Laois, Ireland' ), "'Laois, Ireland' → ''" );
+
+// Genuine towns that share a county's name are preserved untouched.
+foreach ( array( 'Cork', 'Dublin', 'Galway', 'Cavan', 'Wicklow', 'Kildare' ) as $real_town ) {
+	assert_true( $real_town === $loc->sanitize_town( $real_town ), "'{$real_town}' preserved as a town" );
+}
+
+test_section( 'ensure_town() — a county never creates a town term' );
+
+$laois_town_before = term_exists( 'Laois', 'conexao_town' );
+$term_id = $loc->ensure_town( 'Laois' );
+assert_true( 0 === $term_id, "ensure_town('Laois') returns 0 — no term is created" );
+
+$laois_town_after = term_exists( 'Laois', 'conexao_town' );
+assert_true(
+	(bool) $laois_town_before === (bool) $laois_town_after,
+	'ensure_town(\'Laois\') creates no new conexao_town term (term state unchanged)'
+);
+
+test_section( 'Normalizer integration — county is kept, town is not invented' );
+
+$normalizer = new Conexao_Event_Normalizer( $loc );
+
+// The exact shape a Laois-scoped source emits: county hint "Laois" and an
+// address whose locality resolves no further than the county.
+$laois_raw = array(
+	'title'       => 'Happy Hiking - Hill Skills Day',
+	'url'         => 'https://example.com/e/laois-1',
+	'start_date'  => '2026-12-30',
+	'start_time'  => '10:00',
+	'end_date'    => '2026-12-30',
+	'end_time'    => '12:00',
+	'description' => 'Test event.',
+	'image'       => '',
+	'source'      => 'laois_tourism',
+	'source_id'   => 'stage-p-1',
+	'location'    => 'Gorteenameale Eco Trail, Laois, Laois',
+	'venue'       => 'Gorteenameale',
+	'county'      => 'Laois',
+	'town'        => 'Laois',
+	'address'     => 'Gorteenameale Eco Trail, Laois, Laois',
+);
+
+$normalized = $normalizer->normalize( $laois_raw );
+assert_true( 'Laois' === $normalized['county'], "normalizer: county 'Laois' is retained (got: '{$normalized['county']}')" );
+assert_true( '' === $normalized['town'], "normalizer: town is empty, not 'Laois' (got: '{$normalized['town']}')" );
+assert_true( 'Gorteenameale' === $normalized['venue'], "normalizer: venue preserved (got: '{$normalized['venue']}')" );
+assert_true( 'Gorteenameale' === $normalized['event_location'], "normalizer: _event_location still shows the venue (got: '{$normalized['event_location']}')" );
+assert_true( empty( $normalized['validation_errors'] ), 'normalizer: county-only event is NOT rejected as unlocated' );
+
+// A real town supplied by the source still imports.
+$portlaoise_raw              = $laois_raw;
+$portlaoise_raw['source_id'] = 'stage-p-2';
+$portlaoise_raw['title']     = 'Lasta at Dunamaise Arts Centre';
+$portlaoise_raw['town']      = 'Portlaoise';
+$normalized = $normalizer->normalize( $portlaoise_raw );
+assert_true( 'Laois' === $normalized['county'], "normalizer: county 'Laois' retained with a real town" );
+assert_true( 'Portlaoise' === $normalized['town'], "normalizer: real town 'Portlaoise' still imported (got: '{$normalized['town']}')" );
+
 test_section( 'Database state verification' );
 
 $terms = get_terms( array(
