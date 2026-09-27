@@ -164,6 +164,25 @@ touching content. The page load and every GET perform no writes.
 
 No `apply.php`, no `audit.php`, no admin class is copied.
 
+## Additive extension: `stage_conflict`
+
+`build_plan()` and `collect_states()` accept one optional state key,
+`stage_conflict` (default `''`). When a stage's `find_en_for_pt()` returns a
+non-empty value for it, the row is planned as a **hard conflict** with the
+stage's own reason string, instead of falling through to the engine's generic
+`EN record exists but the pair link is broken` text.
+
+It exists for stages whose eligibility rule is richer than
+exists / linked / slug-collision — in practice the
+[`en-leisure-description`](conexao-en-translation.md) stage, which must refuse to
+write an English description whose Portuguese source has changed since the
+translation was authored. Without it the stage would have had to either reuse a
+misleading reason string or re-implement plan traversal, which the ownership
+boundary above forbids.
+
+The key is **optional and additive**: no existing stage sets it, so every current
+stage's plan, counters and gate are byte-identical to before.
+
 ## Hard warnings
 
 - **Never run a rollout command against production casually.** Production is
@@ -191,4 +210,4 @@ No `apply.php`, no `audit.php`, no admin class is copied.
 php scripts/generate-registry-docs.php --check
 ```
 
-_Last verified: 2026-09-26 by Stage H — Shared Translation Rollout Engine_
+_Last verified: 2026-09-27 by the EN Leisure description rollout — additive `stage_conflict` state key_

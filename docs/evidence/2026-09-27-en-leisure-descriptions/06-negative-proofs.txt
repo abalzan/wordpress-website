@@ -1,0 +1,31 @@
+== Proof 1: the engine's PT-drift guard refuses a stale translation ==
+  PASS: a drifted source is not reported as translated
+  PASS: a drifted source declares a stage conflict
+  PASS: a drifted source is NOT planned for create
+  PASS: a drifted source IS planned as a conflict
+  PASS: the refused record was not written
+  PASS: the drift probe restored the PT excerpt
+  PASS: a restored source declares NO conflict
+  PASS: a restored, already-translated record is reported as translated
+  PASS: a curly vs straight apostrophe is not content drift
+  PASS: an HTML entity vs its decoded character is not content drift
+  PASS: an em dash vs a hyphen is not content drift
+  PASS: curly vs straight double quotes are not content drift
+  PASS: a real word change IS still detected as drift
+  PASS: case is NOT folded, so a case change is still drift
+== Proof 2: the write is idempotent and touches one field only ==
+  PASS: re-writing an identical description adds no meta row
+  PASS: the stored value is still the authored English
+== Proof 3: a record with no authored English is never written ==
+  PASS: an empty English description is refused with a WP_Error
+  PASS: the refused write left the stored value unchanged
+== Proof 4: remove deletes only the English field ==
+  PASS: remove clears the English description
+  PASS: remove leaves the PT excerpt intact
+  PASS: remove leaves the PT title intact
+  PASS: remove does NOT delete the post
+== Proof 5: the manifest fails closed on a duplicate key / bad shape ==
+  PASS: a duplicate en_slug fails closed
+  PASS: a language mismatch fails closed
+
+24 passed, 0 failed

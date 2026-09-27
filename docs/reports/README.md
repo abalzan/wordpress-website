@@ -71,9 +71,10 @@ modularisation, …) live in [`site/`](site/) as
 | `site/2026-09-26-stage-h-shared-rollout-engine.md` | Stage H — the shared translation-rollout engine |
 | `site/2026-09-26-stage-i-scripts-standardisation.md` | Stage I — script classification, bootstrap/REST libraries, catalogue |
 | **`site/2026-09-26-stage-j-build-release-deploy-verification.md`** | **Stage J — the release contract: registry-derived artifact allowlist, deterministic packaging, `dist/release.json`, `scripts/verify-deploy.py` with a fixed smoke matrix, the release-integrity CI gate and the documented rollback procedure** |
+| `2026-09-27-en-leisure-descriptions.md` | Stage 7 — EN Leisure card descriptions applied through the shared `en-leisure-description` stage (289 descriptions; `missing_en = 0`; `pt_drift = 0`); supersedes the retired `conexao-leisure-translation` lifecycle |
 
 
 Related: `docs/audit/` (engineering audits), `docs/engineering-standard.md`
 (the normative standard these reports are measured against).
 
-_Last verified: 2026-09-25 by repository hygiene (Stage B)_
+_Last verified: 2026-09-27 by the EN Leisure description rollout_

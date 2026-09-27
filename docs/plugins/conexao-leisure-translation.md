@@ -18,6 +18,35 @@
 > historical importer stays reproducible.
 <!-- END GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
 
+## Lifecycle status: superseded by the shared engine
+
+**The lifecycle in this plugin is no longer the executed path.** It is a
+hand-copied `apply.php` + `audit.php` pair written before the shared
+`conexao-translation-rollout` engine existed, and re-activating it to run the
+rollout would introduce a **second translation lifecycle** — the exact thing
+engineering standard §4.1 and the task's constraints forbid.
+
+| Concern | Owner now |
+|---|---|
+| Authored English descriptions (289 rows) | **`conexao-en-translation` → `includes/leisure-description-data.php`** (moved here verbatim) |
+| Inventory, dry-run, snapshot, apply, PT-drift guard, numeric gate, remove | **`Conexao_Translation_Rollout_Engine`** via stage `en-leisure-description` |
+| The field it writes | `_leisure_excerpt_en` — unchanged; the theme still reads it through `conexao_leisure_card_excerpt()` |
+
+```bash
+# the executed path (shared engine, shared runner)
+php scripts/run-en-translation.php --dry-run --only=leisure-description
+php scripts/run-en-translation.php --apply  --only=leisure-description
+php scripts/run-en-translation.php --remove --apply --only=leisure-description
+```
+
+The plugin **stays in the repository, retired and inactive**, for the reason the
+registry records for every retired rollout plugin: historical reproducibility.
+Nothing in it is loaded, required or called at runtime any more, and
+`plugins.json` still classifies it `retired` / `production: no` / `build: no`.
+
+See [`conexao-en-translation.md`](conexao-en-translation.md) §"Stage 7 — the
+`en-leisure-description` stage" for the stage, its gate and its rollback.
+
 - **Path**: `wp-content/plugins/conexao-leisure-translation/`
 - **Version**: 1.0.0
 - **Purpose**: Stage 7 rollout — author the English card description of every published Portuguese `leisure` record (`_leisure_excerpt_en` post meta) so `/en/lazer/` renders English `.leisure-card-excerpt` text. The English layer is a **description-level translation on the same records**: no linked EN leisure posts, no duplicate records, no UUID changes.
@@ -76,3 +105,5 @@ The new meta key is part of the leisure migration contract: `conexao-leisure-mig
 - The manifest's `pt_excerpt` is the authoritative translation source captured from production; if a PT description changes, the entry is refused until the translation is re-authored.
 - Slug matching is language-unfiltered (`lang => ''`): the records are Portuguese and Polylang would otherwise scope the lookup.
 - This stage does not translate Leisure titles, detail pages or taxonomies, and does not create EN Leisure records.
+
+_Last verified: 2026-09-27 by the EN Leisure description rollout — lifecycle superseded by the shared engine_

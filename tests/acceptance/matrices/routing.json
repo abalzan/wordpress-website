@@ -271,6 +271,58 @@
       "note": "The /en/ language layer resolves (stage2 §3) and serves English markup."
     },
     {
+      "id": "en-lazer-card-excerpt-is-english",
+      "url": "/en/lazer/",
+      "expect_status": 200,
+      "expect_contains": [
+        "Restored farmhouse at the foot of Keadeen mountain"
+      ],
+      "expect_absent": [
+        "Casa rural restaurada aos pés da montanha Keadeen"
+      ],
+      "note": "Stage 7 EN leisure descriptions: the Dwyer McAllister Cottage card on the English archive renders the authored English description from `_leisure_excerpt_en` instead of the Portuguese B2 fallback. Same card, same 18-word trim, English payload only."
+    },
+    {
+      "id": "en-lazer-no-portuguese-card-excerpt-leak",
+      "url": "/en/lazer/",
+      "expect_status": 200,
+      "expect_contains": [
+        "class=\"leisure-card-excerpt\""
+      ],
+      "expect_absent": [
+        "<p class=\"leisure-card-excerpt\">Ruínas do mosteiro fundado por São Feichin",
+        "<p class=\"leisure-card-excerpt\">Jardim botânico no condado de Wicklow",
+        "<p class=\"leisure-card-excerpt\">Antigo tribunal do século XVII no centro de Clonmel"
+      ],
+      "note": "No Portuguese `.leisure-card-excerpt` leaks into any English card on the first page of /en/lazer/. A record with no authored English description keeps the approved B2 fallback by design; this asserts the shipped dataset leaves none on page 1."
+    },
+    {
+      "id": "en-lazer-canonical-and-hreflang",
+      "url": "/en/lazer/",
+      "expect_status": 200,
+      "expect_contains": [
+        "rel=\"canonical\" href=\"http://localhost:8080/en/lazer/\"",
+        "hreflang=\"pt-BR\" href=\"http://localhost:8080/lazer/\"",
+        "hreflang=\"en\" href=\"http://localhost:8080/en/lazer/\""
+      ],
+      "expect_absent": [
+        "rel=\"canonical\" href=\"http://localhost:8080/lazer/\""
+      ],
+      "note": "The English Leisure archive keeps its self-canonical EN URL and the documented pt-BR <-> en hreflang pair after the description rollout. Routing, canonical and hreflang are NOT changed by this stage; the EN URL must not collapse to the PT canonical."
+    },
+    {
+      "id": "pt-lazer-card-excerpt-stays-portuguese",
+      "url": "/lazer/",
+      "expect_status": 200,
+      "expect_contains": [
+        "Casa rural restaurada aos pés da montanha Keadeen"
+      ],
+      "expect_absent": [
+        "Restored farmhouse at the foot of Keadeen mountain"
+      ],
+      "note": "PT immutability at the render level: the Portuguese archive still renders the Portuguese description. The Stage 7 stage writes only `_leisure_excerpt_en` and the PT pipeline (`get_the_excerpt()`) is untouched."
+    },
+    {
       "id": "en-200-en-cursos",
       "url": "/en/cursos/",
       "expect_status": 200,

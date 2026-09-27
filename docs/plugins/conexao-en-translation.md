@@ -18,13 +18,88 @@ the authored English and the WordPress-bound adapter.
 | | |
 |---|---|
 | Folder | `wp-content/plugins/conexao-en-translation/` |
-| Authored copy | `includes/manifest-data.php` (Stage M: guide + page + the first 8 Blog rows), `includes/blog-translation-data.php` (Stage N: the remaining 34 Blog rows) and `includes/blog-page-data.php` (Stage O: the single Blog **posts page** row) — three separate versioned datasets, each keyed by PT slug |
-| Adapter + config | `includes/stage-fields.php`, `includes/stage-config.php` (Stage O adds the `en-blog-page` stage: shared-slug filter, routing-cache refresh, shared-slug duplicate guard) |
+| Authored copy | `includes/manifest-data.php` (Stage M: guide + page + the first 8 Blog rows), `includes/blog-translation-data.php` (Stage N: the remaining 34 Blog rows), `includes/blog-page-data.php` (Stage O: the single Blog **posts page** row) and `includes/leisure-description-data.php` (Stage 7: the 289 Leisure card descriptions) — four separate versioned datasets, each keyed by PT slug |
+| Adapter + config | `includes/stage-fields.php`, `includes/stage-config.php` (Stage O adds the `en-blog-page` stage: shared-slug filter, routing-cache refresh, shared-slug duplicate guard) and `includes/leisure-description-stage.php` (Stage 7 adds the `en-leisure-description` stage) |
 | Manifest shape | `includes/translation-map.php` |
 | Runner | `scripts/run-en-translation.php` |
 | Admin screen | none (the rollout is operated through the shared engine's screen and the runner script) |
 | Frontend effect | **none** — it creates EN content records only; no template, route or runtime hook |
 | Safe to deactivate | yes, after the rollout has been applied and verified |
+
+## Stage 7 — the `en-leisure-description` stage
+
+The Leisure archive is a **B2** type: `/en/lazer/` serves the Portuguese records
+under the English shell. Stage 7 does not change that policy. It translates the
+one thing the B2 fallback got wrong for a reader — the **card description** —
+by writing an authored English field onto the **same** PT record.
+
+| | |
+|---|---|
+| Stage id | `en-leisure-description` |
+| Strategy | **authored EN field on the same record** (`_leisure_excerpt_en` post meta). The alternative the `wp-translation-rollout` skill sanctions, and the correct one here: creating linked EN `leisure` posts would change the B2 policy, canonical/hreflang/sitemap behaviour and duplicate identities. |
+| Dataset | `includes/leisure-description-data.php` — **289 rows**, keyed by PT slug, each `{pt_source, pt_title, en_description}` |
+| Adapter + config | `includes/leisure-description-stage.php` |
+| Records created | **0** — there is no `wp_insert_post()` path in the stage at all |
+| Fields written | **1** — `_leisure_excerpt_en` on the existing PT record |
+| Numeric gate | `eligible_public_pt = 289`, `with_en = 289`, **`missing_en = 0`**, `conflicts = 0`, `pt_drift = 0` |
+| `allow_remove` | `true` — the EN layer is a single reproducible field, so remove is a safe first-class rollback |
+| Supersedes | the retired `conexao-leisure-translation` plugin's private `apply.php` / `audit.php` lifecycle |
+
+### How a field-on-the-same-record stage maps onto the engine
+
+The engine's vocabulary is record-oriented; the stage maps it explicitly rather
+than pretending:
+
+| Engine concept | This stage |
+|---|---|
+| `find_pt()` | the published PT `leisure` record for the manifest slug (`lang => ''` — the records are PT) |
+| `find_en_for_pt()` | "already translated" **iff** a non-empty `_leisure_excerpt_en` is stored; also reports a `stage_conflict` when the PT source has drifted |
+| `create_en()` / `repair_en()` | the one `update_post_meta()` write |
+| `link_pair()` | a **deliberate no-op** — there is no second identity, so there is no pair to link |
+| `pair_ok()` | the stored value equals the authored English, byte-for-byte |
+| `remove_en()` | `delete_post_meta()` — the B2 fallback re-engages automatically |
+| `slug_collision()` | always `false` — the stage mints no slug, so no URL can collide |
+
+### PT-drift guard
+
+Every dataset row carries the Portuguese description the English was authored
+against. If the live `post_excerpt` no longer matches, the row is declared a
+**hard conflict**: nothing is written and the numeric gate fails, so a stale
+translation can never silently land.
+
+The comparison is **normalised on both sides** (HTML entities decoded,
+whitespace collapsed, typographic punctuation folded). This is what separates an
+encoding artifact from a content change: the authored dataset was captured from a
+REST response, so 11 of its titles arrive as `King John&#8217;s Castle`, and
+`sliabh-liag` carries `One Man’s Pass` (U+2019) where the restored local record
+has `One Man's Pass` (U+0027). Neither is a content change, and neither is
+allowed to block the rollout. Case, accents and word characters are **not**
+folded, so a real edit to the Portuguese still refuses.
+
+### Ineligible records
+
+A published record whose `post_excerpt` is **empty** has no Portuguese source to
+translate. Such a record is **ineligible by rule** — not allowlisted — and no
+gate is edited to accommodate it. The rule is asserted by
+`test-leisure-card-excerpt-language.php`, which reports the eligible and
+ineligible counts separately.
+
+### Usage
+
+```bash
+# dry run (zero writes)
+php scripts/run-en-translation.php --dry-run --only=leisure-description
+
+# apply
+php scripts/run-en-translation.php --apply --only=leisure-description
+
+# rollback: deletes only _leisure_excerpt_en and re-asserts PT immutability
+php scripts/run-en-translation.php --remove --apply --only=leisure-description
+```
+
+On production the same operations run through the shared engine's **Tools →
+Translation Rollouts** screen (Preview → Apply → Remove), because WordPress.com
+has no WP-CLI.
 
 ## Why this stage exists
 
@@ -231,10 +306,10 @@ php wp-content/themes/conexao-br-irlanda/tests/test-translation-completeness.php
 | **Build** | no |
 | **Compose mount** | yes |
 | **Dependencies** | `conexao-translation-rollout` |
-| **Version** | 1.2.0 (authoritative source: `wp-content/plugins/conexao-en-translation/conexao-en-translation.php` header) |
+| **Version** | 1.3.0 (authoritative source: `wp-content/plugins/conexao-en-translation/conexao-en-translation.php` header) |
 | **Registry** | [`plugins.json`](../../plugins.json) |
 
 > **Local-only tooling.** Not a production steady-state dependency.
 <!-- END GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
 
-_Last verified: 2026-09-26 by Stage N — Remaining EN Blog Translations_
+_Last verified: 2026-09-27 by the EN Leisure description rollout — Stage 7 `en-leisure-description` on the shared engine_

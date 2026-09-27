@@ -358,10 +358,27 @@ Leisure archive. See `CONEXAO_BR_ENGLISH_LEISURE_CARD_DESCRIPTION_REPORT.md` and
   transient).
 - **Portability**: `conexao-leisure-migration`'s exporter/importer carry
   `_leisure_excerpt_en`, so the field travels with the leisure dataset.
-- **Rollout**: `conexao-leisure-translation` (admin importer + WP-CLI runner) —
-  slug-matched, PT-drift-guarded, reversible (`remove`); activate for the
-  rollout, then deactivate/remove. Deployment ZIP via
-  `./scripts/build-plugins-zip.sh`.
+- **Rollout**: executed by the shared
+  [`conexao-translation-rollout`](conexao-translation-rollout.md) engine through
+  stage `en-leisure-description`, owned by `conexao-en-translation`
+  (dataset `includes/leisure-description-data.php`, adapter/config
+  `includes/leisure-description-stage.php`). Driven by the shared runner
+  `scripts/run-en-translation.php` (`--dry-run` / `--apply` / `--remove
+  --only=leisure-description`) or by the engine's **Tools → Translation Rollouts**
+  screen. **The retired `conexao-leisure-translation` plugin is no longer the
+  executed path** — its hand-copied lifecycle was superseded; see
+  [`plugins/conexao-leisure-translation.md`](plugins/conexao-leisure-translation.md).
+  The numeric gate is `eligible public PT leisure = 289`, `with EN = 289`,
+  **`missing EN = 0`**, `conflicts = 0`, `PT drift = 0`.
+- **Ineligible by rule**: a published record with an **empty** `post_excerpt` has
+  no Portuguese source to translate and is excluded by rule, not by allowlist. No
+  gate, baseline or threshold is edited to accommodate it.
+- **PT-drift guard**: a row whose live `post_excerpt` no longer matches the
+  Portuguese source the English was authored against is a **hard conflict** — it
+  is not written and it fails the numeric gate. The comparison normalises HTML
+  entities, whitespace and typographic punctuation on both sides so an
+  encoding artifact is not mistaken for a content change, while case, accents and
+  word characters are not folded, so a real edit still refuses.
 
 
 ### English rollout state (Stage 4.1 — bilingual REST contract)
@@ -557,3 +574,5 @@ automatic page list (see CONEXAO_BR_HEADER_NAVIGATION_REGRESSION_REPORT.md).
 _Last verified: 2026-09-26 by Stage I — Scripts Standardisation_
 
 _Last verified: 2026-09-26 by Stage N — Remaining EN Blog Translations_
+
+_Last verified: 2026-09-27 by the EN Leisure description rollout — Stage 7 executed by the shared `en-leisure-description` stage; B2 policy, canonical, hreflang and sitemap unchanged_

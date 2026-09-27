@@ -218,22 +218,30 @@ delete_post_meta( $temp_id, '_leisure_excerpt_en' );
 
 // --- Rollout engine invariants ---------------------------------------------------
 
-test_section( 'Rollout engine: preview / drift / idempotency / remove' );
+test_section( 'Rollout engine: dry-run / drift refusal / idempotency (shared engine stage)' );
 
-$engine_available = function_exists( 'conexao_leisure_translation_run' ) && function_exists( 'conexao_leisure_translation_manifest' );
-assert_true( $engine_available, 'rollout engine loaded (activate conexao-leisure-translation to exercise it)' );
+$engine_available = class_exists( 'Conexao_Translation_Rollout_Engine' )
+	&& function_exists( 'conexao_en_translation_leisure_description_config' );
+assert_true( $engine_available, 'shared rollout engine + en-leisure-description stage are loaded' );
 
 if ( $engine_available ) {
-	$preview = conexao_leisure_translation_run( 'preview' );
-	assert_true( 0 === $preview['summary']['errors'], 'preview runs without errors' );
-	assert_true( 0 === $preview['summary']['pt_changed'], 'preview reports 0 PT changes' );
-	assert_true( 0 === $preview['summary']['uuid_changed'], 'preview reports 0 UUID changes' );
+	$stage_config  = conexao_en_translation_leisure_description_config();
+	$stage_adapter = conexao_en_translation_leisure_description_adapter();
+	$run_stage     = static function ( array $args ) use ( $stage_config, $stage_adapter ) {
+		return Conexao_Translation_Rollout_Engine::run( $stage_config, $stage_adapter, $args );
+	};
 
-	// A record whose PT excerpt no longer matches the authored source must be
-	// refused (stale translations never silently land). Preview computes the
-	// same refusal without writing anything, so the real record's excerpt is
-	// temporarily drifted and restored around the probe.
-	$target = get_posts(
+	assert_true( 'en-leisure-description' === $stage_config['stage'], 'the stage declares its own identity' );
+	assert_true( true === $stage_config['allow_remove'], 'the stage declares remove as safe (single reproducible field)' );
+
+	// 1. Dry run. Zero writes by construction, and the gate must still report
+	//    the pre-apply state honestly.
+	$preview = $run_stage( array( 'dry_run' => true ) );
+	assert_true( ! is_wp_error( $preview ), 'dry-run returns a report' );
+	assert_true( 0 === $preview['summary']['pt_changed'], 'dry-run reports 0 PT changes' );
+	assert_true( 0 === $preview['summary']['errors'], 'dry-run reports 0 errors' );
+
+	$dwyer = get_posts(
 		array(
 			'post_type'        => 'leisure',
 			'name'             => 'dwyer-mcallister-cottage',
@@ -245,113 +253,96 @@ if ( $engine_available ) {
 		)
 	);
 
-	if ( ! empty( $target ) ) {
-		$drift_id  = (int) $target[0]->ID;
-		$original  = (string) $target[0]->post_excerpt;
-		$pt_before = (string) get_post_meta( $drift_id, '_leisure_excerpt_en', true );
+	if ( ! empty( $dwyer ) ) {
+		$dwyer_id  = (int) $dwyer[0]->ID;
+		$en_before = (string) get_post_meta( $dwyer_id, '_leisure_excerpt_en', true );
 
+		$planned = 0;
+		foreach ( $preview['rows'] as $candidate ) {
+			if ( 'dwyer-mcallister-cottage' === ( $candidate['stable_key'] ?? '' ) ) {
+				$planned = 1;
+				break;
+			}
+		}
+		assert_true( 1 === $planned, 'the dry-run plan accounts for the Dwyer record' );
+		assert_true(
+			$en_before === (string) get_post_meta( $dwyer_id, '_leisure_excerpt_en', true ),
+			'the dry-run wrote nothing to the Dwyer record'
+		);
+
+		// 2. PT-drift refusal: a record whose Portuguese source no longer matches
+		//    the authored one must be REFUSED, never silently translated. The
+		//    real record's excerpt is drifted and restored around the probe.
+		$original = (string) $dwyer[0]->post_excerpt;
 		wp_update_post(
 			array(
-				'ID'           => $drift_id,
+				'ID'           => $dwyer_id,
 				'post_excerpt' => 'Descrição alterada depois de a tradução ter sido escrita.',
 			)
 		);
 
-		$run = conexao_leisure_translation_run( 'preview' );
-		$row = null;
-		foreach ( $run['rows'] as $candidate ) {
-			if ( (int) $candidate['id'] === $drift_id ) {
-				$row = $candidate;
+		$drifted = $run_stage( array( 'dry_run' => true ) );
+		$refused = false;
+		foreach ( $drifted['rows'] as $candidate ) {
+			if ( 'dwyer-mcallister-cottage' === ( $candidate['stable_key'] ?? '' )
+				&& 'error' === ( $candidate['action'] ?? '' )
+				&& false !== strpos( (string) ( $candidate['message'] ?? '' ), 'PT source changed' ) ) {
+				$refused = true;
 				break;
 			}
 		}
-		assert_true(
-			$row && 'refused-pt-drift' === $row['action'],
-			'PT-drift record is refused, never silently applied',
-			$row ? $row['action'] . ': ' . $row['message'] : 'row missing'
-		);
-		assert_true(
-			$pt_before === (string) get_post_meta( $drift_id, '_leisure_excerpt_en', true ),
-			'preview writes nothing to the drifted record'
-		);
+		assert_true( $refused, 'a drifted PT source is refused as a hard conflict' );
+		assert_true( 'FAIL' === $drifted['gate']['gate'], 'the refused record fails the numeric gate' );
+		assert_true( $en_before === (string) get_post_meta( $dwyer_id, '_leisure_excerpt_en', true ), 'the refused record was not written' );
 
-		// Restore the original Portuguese excerpt — the record is untouched.
 		wp_update_post(
 			array(
-				'ID'           => $drift_id,
+				'ID'           => $dwyer_id,
 				'post_excerpt' => $original,
 			)
 		);
-		assert_true( $original === (string) get_post( $drift_id )->post_excerpt, 'drift probe restored the PT excerpt' );
+		assert_true( $original === (string) get_post( $dwyer_id )->post_excerpt, 'the drift probe restored the PT excerpt' );
 	}
 
-	// The write / idempotency / rollback round-trip only runs where the
-	// rollout is ALREADY applied (the validation clone / post-rollout site):
-	// it must never introduce the EN layer as a side effect of running tests.
-	$applied_count = count(
-		get_posts(
-			array(
-				'post_type'        => 'leisure',
-				'post_status'      => 'publish',
-				'numberposts'      => -1,
-				'lang'             => '',
-				'suppress_filters' => true,
-				'no_found_rows'    => true,
-				'meta_key'         => '_leisure_excerpt_en',
-				'fields'           => 'ids',
-			)
+	// 3. Idempotency. Only asserted where the EN layer is already applied, so
+	//    running the suite can never introduce the English descriptions as a
+	//    side effect.
+	$applied_count = 0;
+	foreach ( $dataset_pre = get_posts(
+		array(
+			'post_type'        => 'leisure',
+			'post_status'      => 'publish',
+			'numberposts'      => -1,
+			'lang'             => '',
+			'suppress_filters' => true,
+			'no_found_rows'    => true,
 		)
-	);
+	) as $record ) {
+		if ( '' !== trim( (string) get_post_meta( $record->ID, '_leisure_excerpt_en', true ) ) ) {
+			++$applied_count;
+		}
+	}
 
 	if ( $applied_count > 0 ) {
-		$uuid_before = get_post_meta( $temp_id, '_leisure_uuid', true );
+		$pt_excerpt_before = (string) get_post( $temp_id )->post_excerpt;
+		$uuid_before       = (string) get_post_meta( $temp_id, '_leisure_uuid', true );
 
-		$second = conexao_leisure_translation_run( 'apply' );
-		assert_true( 0 === $second['summary']['errors'], 're-apply runs without errors' );
-		assert_true( 0 === $second['summary']['pt_changed'], 're-apply reports 0 PT changes' );
-		assert_true( 0 === $second['summary']['uuid_changed'], 're-apply reports 0 UUID changes' );
-		assert_true(
-			$applied_count === ( $second['summary']['applied'] + $second['summary']['skipped_identical'] + $second['summary']['refused'] ),
-			're-apply accounts for every already-applied record (idempotent)',
-			'applied ' . $second['summary']['applied'] . ' / skipped ' . $second['summary']['skipped_identical']
-		);
-		assert_true(
-			$uuid_before === get_post_meta( $temp_id, '_leisure_uuid', true ),
-			'_leisure_uuid untouched by the engine'
-		);
-
-		// Full rollback round-trip: remove → nothing left; apply → restored.
-		$before_remove = $applied_count;
-		$removed       = conexao_leisure_translation_run( 'remove' );
-		assert_true(
-			$before_remove === $removed['summary']['removed'],
-			"remove deletes every EN description ({$removed['summary']['removed']} removed)"
-		);
-		assert_true(
-			0 === count(
-				get_posts(
-					array(
-						'post_type'        => 'leisure',
-						'post_status'      => 'publish',
-						'numberposts'      => -1,
-						'lang'             => '',
-						'suppress_filters' => true,
-						'no_found_rows'    => true,
-						'meta_key'         => '_leisure_excerpt_en',
-						'fields'           => 'ids',
-					)
-				)
-			),
-			'no EN description left after remove (rollback complete)'
-		);
-
-		$restored = conexao_leisure_translation_run( 'apply' );
-		assert_true(
-			$before_remove === $restored['summary']['applied'],
-			"apply restores every EN description after the rollback ({$restored['summary']['applied']} applied)"
-		);
-		assert_true( $pt_text === get_post( $temp_id )->post_excerpt, 'PT excerpt untouched across apply/remove' );
+		$second = $run_stage( array( 'dry_run' => false ) );
+		assert_true( 0 === $second['summary']['created'], 'a re-apply creates nothing (idempotent)' );
+		assert_true( 0 === $second['summary']['updated'], 'a re-apply updates nothing (idempotent)' );
+		assert_true( 0 === $second['summary']['pt_changed'], 'a re-apply reports 0 PT changes' );
+		assert_true( 0 === $second['summary']['errors'], 'a re-apply reports 0 errors' );
+		assert_true( 'PASS' === $second['gate']['gate'], 'the gate passes once the layer is applied' );
+		assert_true( 0 === $second['gate']['missing_en'], "the numeric gate is missing_en = 0 ({$second['gate']['missing_en']})" );
+		assert_true( 0 === $second['gate']['conflicts'], 'the numeric gate reports 0 conflicts' );
+		assert_true( 0 === $second['gate']['pt_drift'], 'the numeric gate reports 0 PT drift' );
+		assert_true( $uuid_before === (string) get_post_meta( $temp_id, '_leisure_uuid', true ), '_leisure_uuid untouched by the stage' );
+		assert_true( $pt_excerpt_before === (string) get_post( $temp_id )->post_excerpt, 'PT excerpt untouched by the stage' );
 	} else {
+		assert_true(
+			true,
+			'EN layer not applied in this environment: idempotency not exercised (run --apply first)'
+		);
 	}
 }
 
@@ -403,9 +394,107 @@ foreach ( $dataset as $record ) {
 
 assert_true( 0 === $en_leakage, "no published record renders a wrong (PT) description on EN ({$en_leakage} wrong of {$with_en})" );
 
-if ( $with_en > 0 ) {
-	assert_true( 0 === count( $missing ), "every published record with an EN description set renders EN ({$with_en} with, {$without_en} without)" );
-} else {
+// Every published record that HAS a Portuguese description must also have the
+// authored English one. A record with an empty Portuguese description has
+// nothing to translate, so it is ineligible BY RULE (not allowlisted) and is
+// reported separately rather than counted as a gap.
+$pt_with_text = 0;
+$ineligible   = 0;
+$missing_text = array();
+
+foreach ( $dataset as $record ) {
+	if ( 'stage7-test-leisure-record' === $record->post_name ) {
+		continue;
+	}
+
+	if ( '' === trim( (string) $record->post_excerpt ) ) {
+		++$ineligible;
+		continue;
+	}
+
+	++$pt_with_text;
+	$en = trim( (string) get_post_meta( $record->ID, '_leisure_excerpt_en', true ) );
+	if ( '' === $en ) {
+		$missing_text[] = $record->post_name;
+	}
+}
+
+if ( $pt_with_text > 0 ) {
+	assert_true(
+		0 === count( $missing_text ),
+		sprintf(
+			'every published record with a PT description has an EN description (%d eligible, %d missing%s)',
+			$pt_with_text,
+			count( $missing_text ),
+			count( $missing_text ) ? ': ' . implode( ', ', array_slice( $missing_text, 0, 5 ) ) : ''
+		)
+	);
+	assert_true(
+		$with_en >= $pt_with_text,
+		sprintf( 'the EN description count covers the eligible set (%d with EN, %d eligible PT, %d ineligible)', $with_en, $pt_with_text, $ineligible )
+	);
+}
+
+// The stored English must be the AUTHORED English, byte-for-byte, for every
+// manifest row whose record is live. This is what proves the rollout applied
+// the reviewed dataset rather than something generated at apply time.
+if ( function_exists( 'conexao_en_translation_leisure_description_data_v1' ) ) {
+	$authored = conexao_en_translation_leisure_description_data_v1();
+	$by_slug  = array();
+	foreach ( $dataset as $record ) {
+		$by_slug[ $record->post_name ] = $record;
+	}
+
+	$exact = 0;
+	$wrong = array();
+
+	foreach ( $authored as $slug => $row ) {
+		if ( ! isset( $by_slug[ $slug ] ) ) {
+			continue;
+		}
+		$stored = trim( (string) get_post_meta( $by_slug[ $slug ]->ID, '_leisure_excerpt_en', true ) );
+		if ( $stored === trim( (string) $row['en_description'] ) ) {
+			++$exact;
+			continue;
+		}
+		$wrong[] = $slug;
+	}
+
+	assert_true(
+		0 === count( $wrong ),
+		sprintf( 'every applied EN description matches the authored dataset (%d exact%s)', $exact, count( $wrong ) ? ', wrong: ' . implode( ', ', array_slice( $wrong, 0, 5 ) ) : '' )
+	);
+
+	// The authored English must be a real translation: never identical to the
+	// Portuguese source it was authored from.
+	$untranslated = array();
+	foreach ( $authored as $slug => $row ) {
+		if ( ! isset( $by_slug[ $slug ] ) ) {
+			continue;
+		}
+		if ( trim( (string) $row['en_description'] ) === trim( (string) $row['pt_source'] ) ) {
+			$untranslated[] = $slug;
+		}
+	}
+	assert_true( 0 === count( $untranslated ), 'no EN description is a copy of its Portuguese source' );
+}
+
+// The specific record named in the defect report must render English on EN and
+// Portuguese on PT, through the real card template part.
+if ( isset( $by_slug['dwyer-mcallister-cottage'] ) ) {
+	$dwyer_record = $by_slug['dwyer-mcallister-cottage'];
+	$dwyer_pt     = (string) $dwyer_record->post_excerpt;
+	$dwyer_en     = trim( (string) get_post_meta( $dwyer_record->ID, '_leisure_excerpt_en', true ) );
+
+	s7_set_language( 'en' );
+	$dwyer_rendered_en = s7_render_card_excerpt( $dwyer_record->ID );
+	s7_set_language( pll_default_language( 'slug' ) );
+	$dwyer_rendered_pt = s7_render_card_excerpt( $dwyer_record->ID );
+
+	assert_true( '' !== $dwyer_en, 'the Dwyer McAllister Cottage record carries an EN description' );
+	assert_true( $dwyer_rendered_en === s7_expected_card_excerpt( $dwyer_en ), 'the Dwyer card renders the authored EN description' );
+	assert_true( $dwyer_rendered_en !== s7_expected_card_excerpt( $dwyer_pt ), 'the Dwyer EN card no longer renders the Portuguese description' );
+	assert_true( $dwyer_rendered_pt === s7_expected_card_excerpt( $dwyer_pt ), 'the Dwyer PT card still renders the Portuguese description' );
 }
 
 // The meta key must never be consumed outside the leisure description layer.

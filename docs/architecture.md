@@ -44,7 +44,7 @@ Plugins load in registry order, and dependencies always precede their dependents
 6. **conexao-leisure-migration** (`tooling`, active) v2.1.0. **Never required on production.**
 7. **conexao-sponsor-migration** (`tooling`, active) v1.1.0. **Never required on production.**
 8. **conexao-translation-rollout** (`tooling`, active) v1.0.0. **Never required on production.**
-9. **conexao-en-translation** (`tooling`, active) v1.2.0. **Never required on production.** Declared dependencies (`Requires Plugins` header): `conexao-translation-rollout`.
+9. **conexao-en-translation** (`tooling`, active) v1.3.0. **Never required on production.** Declared dependencies (`Requires Plugins` header): `conexao-translation-rollout`.
 10. **conexao-page-translation** (`rollout`, retired) v1.0.0. Retired rollout tooling - *activate → apply → remove*. Not a production dependency.
 11. **conexao-blog-translation** (`rollout`, retired) v1.0.0. Retired rollout tooling - *activate → apply → remove*. Not a production dependency.
 12. **conexao-job-translation** (`rollout`, retired) v1.0.0. Retired rollout tooling - *activate → apply → remove*. Not a production dependency.

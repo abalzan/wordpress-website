@@ -464,9 +464,9 @@ function conexao_en_translation_blog_page_config(): array {
 /**
  * The stage identifiers this plugin registers with the shared engine.
  *
- * The three B1 post types plus the Stage O Blog posts page. The runner reads
- * this list, so there is still exactly ONE place that knows which stages
- * exist and exactly ONE runner.
+ * The three B1 post types, the Stage O Blog posts page and the Stage 7 Leisure
+ * card-description stage. The runner reads this list, so there is still exactly
+ * ONE place that knows which stages exist and exactly ONE runner.
  *
  * @return string[] Stage identifiers.
  */
@@ -478,6 +478,7 @@ function conexao_en_translation_stage_ids(): array {
 	}
 
 	$ids[] = 'en-blog-page';
+	$ids[] = 'en-leisure-description';
 
 	return $ids;
 }

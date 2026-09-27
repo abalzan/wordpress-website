@@ -256,6 +256,19 @@ final class Conexao_Translation_Rollout_Engine {
 				continue;
 			}
 
+			// A stage may declare a record unusable for a reason the shared
+			// vocabulary above cannot express — e.g. a field-on-the-same-record
+			// stage refusing to write an English description because the
+			// Portuguese source it was authored against has since changed. The
+			// row becomes a hard conflict (so the numeric gate fails and nothing
+			// is written) and the stage supplies the reason. Absent by default,
+			// so every existing stage's plan is unchanged.
+			if ( '' !== (string) $state['stage_conflict'] ) {
+				$item['reason']      = (string) $state['stage_conflict'];
+				$plan['conflicts'][] = $item;
+				continue;
+			}
+
 			if ( $state['slug_collision'] ) {
 				$item['reason']      = 'EN slug already used by an unlinked record (refusing to duplicate)';
 				$plan['conflicts'][] = $item;
@@ -303,6 +316,7 @@ final class Conexao_Translation_Rollout_Engine {
 			'pair_ok'         => false,
 			'en_slug_matches' => true,
 			'slug_collision'  => false,
+			'stage_conflict'  => '',
 		);
 
 		if ( ! isset( $states[ $stable_key ] ) || ! is_array( $states[ $stable_key ] ) ) {
@@ -504,6 +518,7 @@ final class Conexao_Translation_Rollout_Engine {
 				'pair_ok'         => ! empty( $en['pair_ok'] ),
 				'en_slug_matches' => array_key_exists( 'en_slug_matches', $en ) ? (bool) $en['en_slug_matches'] : true,
 				'slug_collision'  => (bool) call_user_func( $adapter['slug_collision'], $en_slug, $pt_id ),
+				'stage_conflict'  => isset( $en['stage_conflict'] ) ? (string) $en['stage_conflict'] : '',
 			);
 
 			// The authored stable key is the only portable identity, so every
