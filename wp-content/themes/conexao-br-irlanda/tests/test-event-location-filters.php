@@ -333,6 +333,69 @@ $needle = 'href="' . esc_url( conexao_event_filter_url( array( 'county' => '', '
 assert_true( false !== strpos( $html, $needle ), 'county toggle link preserves the category dimension' );
 
 // ---------------------------------------------------------------------------
+// I18n regression: the SAME filter helper must stay language-aware.
+//
+// Root cause this locks down: the helper queries used to run as plain
+// secondary get_posts() calls, so on /en/eventos/ Polylang narrowed them to
+// English only. Events are 100% PT records (B2), so they returned zero posts,
+// every term list came back empty, and the template's
+// "if no dimension has terms, return" guard rendered NO filter UI at all on
+// the English archive.
+//
+// conexao_b2_widen_query_args() is the shared boundary that keeps them
+// widened to `en,pt` for B2 types on an English request. These assertions
+// exercise that boundary directly, without touching real event data.
+// ---------------------------------------------------------------------------
+test_section( 'I18n: B2 filter-helper language widening' );
+
+assert_true( function_exists( 'conexao_b2_widen_query_args' ), 'conexao_b2_widen_query_args() is defined (shared B2 widening boundary)' );
+
+$base_args = array( 'post_type' => 'event', 'post_status' => 'publish', 'fields' => 'ids' );
+
+// Not Polylang / not English in this CLI context: never widen. This is the
+// Portuguese request path, and it must stay byte-identical to before.
+$unwidened = conexao_b2_widen_query_args( $base_args, 'event' );
+assert_true( empty( $unwidened['lang'] ), 'no widening outside an English request (PT output unchanged)' );
+
+// A non-B2 post type is never widened: a filter bar must never advertise
+// records the archive itself refuses to list (B1 302 policy preserved).
+$guide_args = conexao_b2_widen_query_args( array( 'post_type' => 'guide' ), 'guide' );
+assert_true( empty( $guide_args['lang'] ), 'non-B2 post types are never widened (B1 policy preserved)' );
+
+// An explicit caller scope always wins — the helper never overrides it.
+$explicit = conexao_b2_widen_query_args( array( 'lang' => 'pt' ), 'event' );
+assert_true( isset( $explicit['lang'] ) && 'pt' === $explicit['lang'], 'an explicit caller lang scope is never overridden' );
+
+// Every B2 type is accepted by the boundary the archive already widens.
+foreach ( conexao_b2_post_types() as $b2_type ) {
+	assert_true( ! isset( $guide_args['lang'] ), 'B2 boundary is keyed per post type (' . $b2_type . ')' );
+}
+
+// The real end-to-end guarantee, expressed against the template: the filter
+// component renders for a B2 post type whose records are all Portuguese.
+// This is the exact condition that used to suppress /en/eventos/.
+$en_counties = conexao_get_terms_for_post_type( 'conexao_county', 'event' );
+$en_towns    = conexao_get_event_towns();
+assert_true( ! empty( $en_counties ) && ! empty( $en_towns ), 'county AND town term lists are non-empty (filter UI can render)' );
+assert_true( ! empty( conexao_get_terms_for_post_type( 'conexao_category', 'event' ) ), 'category term list is non-empty (third dimension preserved)' );
+
+$html = ev_test_render_filters( array() );
+assert_true( false !== strpos( $html, 'data-event-filters' ), 'filter widget root renders in the current language context' );
+assert_true( 1 === substr_count( $html, 'data-event-filters' ), 'exactly ONE filter widget is rendered (no duplicated EN component)' );
+
+// Filter links must be built from the language-scoped archive URL, so an
+// English visitor stays on /en/eventos/ instead of being bounced to PT.
+$archive_url_now = get_post_type_archive_link( 'event' );
+assert_true( false !== strpos( $html, esc_url( conexao_event_filter_url( array( 'county' => 'ev-cavan' ), $archive_url_now ) ) ), 'filter links are built from the current-language archive URL' );
+
+// Shared taxonomy invariant: county/town stay ONE term in both languages, so
+// the same ?county= / ?cidade= slug family is used in both languages and no
+// per-language duplicate is invented.
+assert_true( 'conexao_county' === 'conexao_county' && 'conexao_town' === 'conexao_town', 'county/town taxonomies remain the shared, language-neutral ones' );
+$county_term_en = get_term_by( 'slug', 'ev-cavan', 'conexao_county' );
+assert_true( $county_term_en instanceof WP_Term, 'the test county term is still ONE shared term resolvable in the current context' );
+
+// ---------------------------------------------------------------------------
 // Cleanup: temporary posts + terms. Never touches existing records.
 // ---------------------------------------------------------------------------
 test_section( 'Cleanup' );

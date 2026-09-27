@@ -607,6 +607,88 @@
       ],
       "expect_absent": [],
       "note": "An unsupported REST lang value is rejected with 400 conexao_rest_invalid_lang rather than silently falling back (inc/rest-language.php:17-19)."
+    },
+    {
+      "id": "pt-eventos-filters-present",
+      "url": "/eventos/",
+      "expect_status": 200,
+      "expect_contains": [
+        "class=\"event-filters\" data-event-filters",
+        "data-event-filters",
+        "event-filters-county-panel",
+        "event-filters-town-panel",
+        "event-filters-dropdown-trigger"
+      ],
+      "expect_absent": [],
+      "note": "PT Events archive renders the county/town filter widget. Baseline for the EN i18n regression below."
+    },
+    {
+      "id": "en-eventos-filters-present",
+      "url": "/en/eventos/",
+      "expect_status": 200,
+      "expect_contains": [
+        "class=\"event-filters\" data-event-filters",
+        "data-event-filters",
+        "event-filters-county-panel",
+        "event-filters-town-panel",
+        "event-filters-dropdown-trigger"
+      ],
+      "expect_absent": [],
+      "note": "EN Events archive renders the SAME shared filter widget as PT (request-visible i18n regression: the B2 filter helper must stay language-widened)."
+    },
+    {
+      "id": "en-eventos-filters-english-copy",
+      "url": "/en/eventos/",
+      "expect_status": 200,
+      "expect_contains": [
+        "event-filters-dropdown-label\">County",
+        "event-filters-dropdown-label\">Town",
+        "Search county",
+        "Search town"
+      ],
+      "expect_absent": [
+        "event-filters-dropdown-label\">Cidade",
+        "event-filters-dropdown-label\">Categoria"
+      ],
+      "note": "EN filter labels/placeholders are localized to English while PT keeps 'Cidade'/'Categoria'."
+    },
+    {
+      "id": "en-eventos-filter-links-stay-en",
+      "url": "/en/eventos/",
+      "expect_status": 200,
+      "expect_contains": [
+        "/en/eventos/?county=",
+        "/en/eventos/?cidade="
+      ],
+      "expect_absent": [
+        "href=\"http://localhost:8080/eventos/?county="
+      ],
+      "note": "EN filter links target /en/eventos/ and keep the shared ?county= / ?cidade= slug family; no link bounces an English visitor back to the PT archive."
+    },
+    {
+      "id": "en-eventos-county-filter-works",
+      "url": "/en/eventos/?county=laois",
+      "expect_status": 200,
+      "expect_contains": [
+        "data-event-filters",
+        "event-filters-dropdown-label\">Laois",
+        "rel=\"canonical\" href=\"http://localhost:8080/en/eventos/\""
+      ],
+      "expect_absent": [
+        "rel=\"canonical\" href=\"http://localhost:8080/eventos/"
+      ],
+      "note": "Selected county works on EN, the active state is reflected, and the canonical stays on the unfiltered EN archive (same rule as PT) - no redirect or canonical back to /eventos/."
+    },
+    {
+      "id": "en-eventos-town-filter-works",
+      "url": "/en/eventos/?cidade=adare",
+      "expect_status": 200,
+      "expect_contains": [
+        "data-event-filters",
+        "event-filters-dropdown-label\">Adare"
+      ],
+      "expect_absent": [],
+      "note": "Selected town/city works on EN with the active state reflected (same shared ?cidade= parameter as PT)."
     }
   ]
 }

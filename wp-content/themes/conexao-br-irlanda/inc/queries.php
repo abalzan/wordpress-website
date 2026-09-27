@@ -14,6 +14,73 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Widen a secondary post query for a B2 content type on an English request.
+ *
+ * B2 = "Portuguese content served under an English URL" (see
+ * conexao_b2_post_types()). The B2 archives are already language-widened on
+ * the MAIN query: conexao_content_archive_query() sets `lang` to `en,pt` for
+ * the events archive, and conexao_b2_archive_widen_query() does the same for
+ * the remaining B2 archives. Polylang's is_already_filtered() then skips its
+ * own narrowing, so the archive lists the PT records that have no EN
+ * translation.
+ *
+ * A SECONDARY query issued by a filter helper (get_posts() inside
+ * conexao_get_terms_for_post_type() / conexao_get_event_towns()) does not
+ * inherit that widening, because conexao_b2_archive_widen_query() is scoped to
+ * $query->is_main_query(). On /en/eventos/ Polylang therefore narrowed those
+ * helper queries to English only. Events are 100% PT records (the B2 model —
+ * there are no EN event records at all), so the helper queries returned ZERO
+ * posts, every term list came back empty, and template-parts/event-filters.php
+ * hit its `if ( ! $has_county && ! $has_town && ! $has_category ) return;`
+ * guard and rendered nothing at all. The archive itself kept showing its
+ * events, which is exactly the reported symptom: a correct EN Events archive
+ * with no filter UI.
+ *
+ * This helper applies the SAME `lang => en,pt` widening the main query already
+ * uses, so a filter bar describes exactly the records its own archive lists.
+ * It is the shared boundary every B2 filter helper goes through — there is no
+ * English special case downstream and no duplicated component.
+ *
+ * Deliberately NOT applied to:
+ *  - non-B2 post types (guides, posts, pages keep the B1 302 policy, and a
+ *    filter bar must never advertise records the archive refuses to list);
+ *  - a caller that already set `lang` itself (its explicit scope wins);
+ *  - requests that are not English (a PT request is already correct).
+ *
+ * The returned term objects are NOT re-mapped to the current language: the
+ * shared `conexao_county` / `conexao_town` taxonomies are deliberately
+ * language-neutral (one term, both languages — see the guard in
+ * inc/i18n/guard.php), so the same term name and the same `?county=` /
+ * `?cidade=` slug are correct in both languages by design. Nothing here
+ * creates, renames or re-tags a term.
+ *
+ * @param array  $args      Query arguments to widen.
+ * @param string $post_type Post type the query targets.
+ * @return array Query arguments, unchanged when no widening applies.
+ */
+function conexao_b2_widen_query_args( array $args, $post_type ) {
+	if ( ! empty( $args['lang'] ) ) {
+		return $args;
+	}
+
+	if ( ! function_exists( 'conexao_polylang_active' ) || ! conexao_polylang_active() ) {
+		return $args;
+	}
+
+	if ( ! function_exists( 'conexao_requested_language_slug' ) || 'en' !== conexao_requested_language_slug() ) {
+		return $args;
+	}
+
+	if ( ! function_exists( 'conexao_is_b2_post_type' ) || ! conexao_is_b2_post_type( $post_type ) ) {
+		return $args;
+	}
+
+	$args['lang'] = 'en,pt';
+
+	return $args;
+}
+
 function conexao_get_guides_archive_url() {
 	$archive_link = get_post_type_archive_link( 'guide' );
 
@@ -226,7 +293,7 @@ function conexao_get_terms_for_post_type( $taxonomy, $post_type, $extra_args = a
 		return $cached;
 	}
 
-	$post_ids = get_posts( array_merge( array(
+	$post_ids = get_posts( conexao_b2_widen_query_args( array_merge( array(
 		'post_type'              => $post_type,
 		'post_status'            => 'publish',
 		'posts_per_page'         => -1,
@@ -234,7 +301,7 @@ function conexao_get_terms_for_post_type( $taxonomy, $post_type, $extra_args = a
 		'no_found_rows'          => true,
 		'update_post_meta_cache' => false,
 		'update_post_term_cache' => false,
-	), $extra_args ) );
+	), $extra_args ), $post_type ) );
 
 	if ( empty( $post_ids ) ) {
 		wp_cache_set( $cache_key, array(), 'conexao_filters', 300 );
@@ -302,7 +369,7 @@ function conexao_get_event_towns( $county_slug = '' ) {
 		);
 	}
 
-	$post_ids = get_posts( $args );
+	$post_ids = get_posts( conexao_b2_widen_query_args( $args, 'event' ) );
 
 	if ( empty( $post_ids ) ) {
 		wp_cache_set( $cache_key, array(), 'conexao_filters', 300 );
