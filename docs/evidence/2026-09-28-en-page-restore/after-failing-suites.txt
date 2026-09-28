@@ -1,0 +1,18 @@
+plugin/conexao-event-importer/test-ivvcc-importer.php
+plugin/conexao-event-importer/test-town-sanitization.php
+plugin/conexao-leisure-migration/test-excerpt-en-roundtrip.php
+plugin/conexao-leisure-migration/test-language-uuid.php
+theme/conexao-br-irlanda/test-blog-en-translation.php
+theme/conexao-br-irlanda/test-event-location-filters.php
+theme/conexao-br-irlanda/test-guide-en-translation.php
+theme/conexao-br-irlanda/test-header-menu-selection.php (pt)
+theme/conexao-br-irlanda/test-i18n-foundation.php
+theme/conexao-br-irlanda/test-job-en-translation.php
+theme/conexao-br-irlanda/test-jobs-en-language.php
+theme/conexao-br-irlanda/test-leisure-attribute-normalization.php
+theme/conexao-br-irlanda/test-polylang-foundation.php
+theme/conexao-br-irlanda/test-stage32-bilingual.php
+theme/conexao-br-irlanda/test-stage33-bilingual.php
+theme/conexao-br-irlanda/test-stage41-rest-language.php
+theme/conexao-br-irlanda/test-stage45-pages.php
+theme/conexao-br-irlanda/test-translation-completeness.php

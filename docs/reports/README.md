@@ -97,6 +97,7 @@ recovered code unchanged.
 |---|---|
 | `2026-09-28-en-archive-route-404-plan.md` | The investigation plan (route work; scenarios, non-goals, verification gates) |
 | `2026-09-28-en-archive-route-404.md` | **Root cause proven: the registration code is byte-identical to the verified `b47d098` baseline; the 404s are the stale local `rewrite_rules` failure mode (no `en/`-prefixed CPT-archive rules). The minimal fix is the documented local rewrite flush (`scripts/flush-blog-rewrite-rules.php`) — a local DB operation, not a code change — now recorded in `docs/routing.md`. No code, gate or expectation changed. Status: BLOCKED (no runtime in the task environment to execute the flush).** |
+| `2026-09-28-en-guides-archive-blocked.md` | **`/en/guias/` is not a bug.** Measured: 48 published PT guides, **0 EN guide records**, 0 translation relationships, 0 EN `conexao_category` terms. `guide` is a **B1** type (`conexao_b2_post_types()` excludes it; `docs/routing.md:436`) so the EN-only query is correct and `conexao_b2_widen_query_args()` must never apply. The empty archive is the documented, enforced contract, and the fix is a content rollout (`conexao-guide-translation`, authored English already committed) which is not authorised here. No code changed, no gate weakened, 0 new failures. Status: **BLOCKED — EN guide content is required but absent** |
 
 ## Related: `docs/audit/` (engineering audits), `docs/engineering-standard.md`
 (the normative standard these reports are measured against).

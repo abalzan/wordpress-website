@@ -1,0 +1,120 @@
+{
+    "inicio": {
+        "title": "Início",
+        "content": "<!-- wp:paragraph --><p>Bem-vindo ao Conexão BR Irlanda, o portal da comunidade brasileira na Irlanda.</p><!-- /wp:paragraph -->",
+        "excerpt": "",
+        "status": "publish",
+        "name": "inicio",
+        "parent": 0,
+        "menu_order": 0,
+        "template": "",
+        "meta_desc": "Conexão BR Irlanda - Portal da comunidade brasileira na Irlanda. Guias, eventos, cursos, empregos e mais.",
+        "ID": 9,
+        "post_type": "page",
+        "content_sha256": "afd2327ec0e83ef431fd09ee110f7ae207959adb8e24636e531d76c40e4bb060",
+        "content_len": 129,
+        "excerpt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "lang": "pt",
+        "en_translation": 0,
+        "post_modified": "2026-08-16 15:20:11",
+        "featured_media": 0,
+        "meta_keys": [
+            "_yoast_wpseo_metadesc",
+            "conexao_meta_description",
+            "_last_editor_used_jetpack"
+        ],
+        "meta": {
+            "_yoast_wpseo_metadesc": "Conexão BR Irlanda - Portal da comunidade brasileira na Irlanda. Guias, eventos, cursos, empregos e mais.",
+            "conexao_meta_description": "Conexão BR Irlanda - Portal da comunidade brasileira na Irlanda. Guias, eventos, cursos, empregos e mais.",
+            "_last_editor_used_jetpack": "block-editor"
+        },
+        "taxonomies": []
+    },
+    "sobre-nos": {
+        "title": "Sobre Nós",
+        "content": "<!-- wp:heading --><h2>Quem somos</h2><!-- /wp:heading -->\n<!-- wp:paragraph --><p>O Conexão BR Irlanda é o portal da comunidade brasileira na Irlanda. Nosso objetivo é conectar, informar e apoiar brasileiros que vivem ou planejam viver na Irlanda.</p><!-- /wp:paragraph -->\n<!-- wp:heading --><h2>Nossa Missão</h2><!-- /wp:heading -->\n<!-- wp:paragraph --><p>Oferecer informações relevantes, guias práticos, eventos e uma rede de apoio para que cada brasileiro possa viver melhor na Irlanda.</p><!-- /wp:paragraph -->\n<!-- wp:heading --><h2>Nossa Visão</h2><!-- /wp:heading -->\n<!-- wp:paragraph --><p>Ser a principal referência para a comunidade brasileira na Irlanda, promovendo integração, conhecimento e oportunidades.</p><!-- /wp:paragraph -->\n<!-- wp:heading --><h2>Nossos Valores</h2><!-- /wp:heading -->\n<!-- wp:list --><ul><li>Comunidade e solidariedade</li><li>Informação de qualidade e verificada</li><li>Inclusão e diversidade</li><li>Transparência e confiança</li></ul><!-- /wp:list -->",
+        "excerpt": "",
+        "status": "publish",
+        "name": "sobre-nos",
+        "parent": 0,
+        "menu_order": 0,
+        "template": "",
+        "meta_desc": "Conheça o Conexão BR Irlanda, o portal da comunidade brasileira na Irlanda. Nossa missão, visão e valores.",
+        "ID": 11,
+        "post_type": "page",
+        "content_sha256": "0693128773f566c08f5f555cad2c1a1e029045be7a5af2646f6618a8bded63f4",
+        "content_len": 1016,
+        "excerpt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "lang": "pt",
+        "en_translation": 0,
+        "post_modified": "2026-08-16 15:20:11",
+        "featured_media": 0,
+        "meta_keys": [
+            "_yoast_wpseo_metadesc",
+            "conexao_meta_description",
+            "_last_editor_used_jetpack"
+        ],
+        "meta": {
+            "_yoast_wpseo_metadesc": "Conheça o Conexão BR Irlanda, o portal da comunidade brasileira na Irlanda. Nossa missão, visão e valores.",
+            "conexao_meta_description": "Conheça o Conexão BR Irlanda, o portal da comunidade brasileira na Irlanda. Nossa missão, visão e valores.",
+            "_last_editor_used_jetpack": "block-editor"
+        },
+        "taxonomies": []
+    },
+    "contato": {
+        "title": "Contato",
+        "content": "<!-- wp:heading --><h2>Entre em contato conosco</h2><!-- /wp:heading -->\n<!-- wp:paragraph --><p>Tem uma sugestão, dúvida ou quer anunciar conosco? Mande uma mensagem!</p><!-- /wp:paragraph -->\n<!-- wp:paragraph --><p><a href=\"https://wa.me/353899451428\">Fale conosco pelo WhatsApp</a></p><!-- /wp:paragraph -->\n<!-- wp:paragraph --><p>Email: contato@conexaobr.ie</p><!-- /wp:paragraph -->",
+        "excerpt": "",
+        "status": "publish",
+        "name": "contato",
+        "parent": 0,
+        "menu_order": 0,
+        "template": "",
+        "meta_desc": "Entre em contato com a equipe do Conexão BR Irlanda. Tire dúvidas, envie sugestões ou saiba como anunciar.",
+        "ID": 12,
+        "post_type": "page",
+        "content_sha256": "47825e0b869bfe27de32d90f9c67fa7c4c16f7d247af6e5833f217dbbb1fcc61",
+        "content_len": 391,
+        "excerpt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "lang": "pt",
+        "en_translation": 0,
+        "post_modified": "2026-08-16 15:20:11",
+        "featured_media": 0,
+        "meta_keys": [
+            "_yoast_wpseo_metadesc",
+            "conexao_meta_description"
+        ],
+        "meta": {
+            "_yoast_wpseo_metadesc": "Entre em contato com a equipe do Conexão BR Irlanda. Tire dúvidas, envie sugestões ou saiba como anunciar.",
+            "conexao_meta_description": "Entre em contato com a equipe do Conexão BR Irlanda. Tire dúvidas, envie sugestões ou saiba como anunciar."
+        },
+        "taxonomies": []
+    },
+    "empregos": {
+        "title": "Empregos",
+        "content": "<!-- wp:paragraph --><p>Informações sobre oportunidades de emprego para a comunidade brasileira na Irlanda. Este conteúdo é editável — substitua-o pelos detalhes sobre como as oportunidades são partilhadas, orientações de Instagram e dicas por condado.</p><!-- /wp:paragraph -->",
+        "excerpt": "",
+        "status": "publish",
+        "name": "empregos",
+        "parent": 0,
+        "menu_order": 0,
+        "template": "page-empregos.php",
+        "meta_desc": "",
+        "ID": 11293,
+        "post_type": "page",
+        "content_sha256": "a164e39c7b175367f7072cbb9fd7db06d910b49ebc938da67eaf639e370addf5",
+        "content_len": 288,
+        "excerpt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "lang": "pt",
+        "en_translation": 0,
+        "post_modified": "2026-09-27 19:04:11",
+        "featured_media": 0,
+        "meta_keys": [
+            "_wp_page_template"
+        ],
+        "meta": {
+            "_wp_page_template": "page-empregos.php"
+        },
+        "taxonomies": []
+    }
+}

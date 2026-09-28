@@ -1,0 +1,29 @@
+GUIDE INVENTORY — measured 2026-09-28 against local Docker WordPress
+SHA 726004a2d1abca6dd7ebe35c8a1ca468a24e825d
+
+Metric                           | Count
+---------------------------------|-----
+Published PT guides              |   48
+Published EN guides              |    0
+PT guides with EN translation    |    0
+PT guides without EN translation |   48
+Orphan EN guides                 |    0
+
+PT guide IDs (48):
+5001,5000,10007,10001,10002,10003,10004,10005,10006,10008,10009,10010,10011,
+10012,10013,10014,10015,10016,481,486,485,484,483,482,480,479,478,477,476,475,
+474,473,472,469,464,465,466,467,468,470,471,457,463,462,461,460,459,458
+
+EN guide IDs: (none)
+
+conexao_is_b2_post_type('guide') = false
+polylang language term rows for guide: 48 x pt, 0 x en
+post_translations relationships touching a guide: 0
+
+conexao_category terms:
+  PT terms existing: 40
+  EN terms existing: 0
+  PT terms actually used by the 48 published guides: 13
+    beneficios 2, documentos 7, educacao 3, empregos 3, financas 3,
+    imigracao-e-vistos 5, impostos-e-revenue 3, justica-e-seguranca 2,
+    moradia 3, negocios 2, saude 5, servicos-publicos 2, transporte 8

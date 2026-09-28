@@ -1,0 +1,9 @@
+/empregos/     <title>Empregos &#8211; Conexão BR</title> <link rel="canonical" href="http://localhost:8080/empregos/" 
+/inicio/       
+/contato/      <title>Contato &#8211; Conexão BR</title> <link rel="canonical" href="http://localhost:8080/contato/" 
+/sobre-nos/    <title>Sobre Nós &#8211; Conexão BR</title> <link rel="canonical" href="http://localhost:8080/sobre-nos/" 
+/en/blog/      <title>Conexão BR | </title> <link rel="canonical" href="http://localhost:8080/en/blog/" 
+/en/guias/     <title>Practical Guides | Conexão BR</title> <link rel="canonical" href="http://localhost:8080/en/guias/" 
+/en/lazer/     <title>Leisure & Tourism in Ireland | Conexão BR</title> <link rel="canonical" href="http://localhost:8080/en/lazer/" 
+/en/eventos/   <title>Events in Ireland | Conexão BR</title> <link rel="canonical" href="http://localhost:8080/en/eventos/" 
+/en/cursos/    <title>Cursos &#8211; Conexão BR</title> <link rel="canonical" href="http://localhost:8080/en/cursos/" 

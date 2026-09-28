@@ -125,7 +125,7 @@ final class Conexao_Translation_Rollout_Engine {
 			}
 		}
 
-		foreach ( array( 'extra_gate_callback', 'verify_landing_callback', 'run_callback' ) as $key ) {
+		foreach ( array( 'extra_gate_callback', 'verify_landing_callback', 'run_callback', 'taxonomy_callback', 'taxonomy_gate_callback' ) as $key ) {
 			if ( isset( $config[ $key ] ) && null !== $config[ $key ] && ! is_callable( $config[ $key ] ) ) {
 				return new WP_Error(
 					'conexao_rollout_bad_config',
@@ -429,6 +429,13 @@ final class Conexao_Translation_Rollout_Engine {
 			$extra = (int) call_user_func( $config['extra_gate_callback'] );
 		}
 
+		// A stage that owns a translated taxonomy folds its own taxonomy failures
+		// into the same numeric gate, so an untranslated or duplicated term fails
+		// the rollout instead of passing silently.
+		if ( ! empty( $config['taxonomy_gate_callback'] ) && is_callable( $config['taxonomy_gate_callback'] ) ) {
+			$extra += (int) call_user_func( $config['taxonomy_gate_callback'] );
+		}
+
 		$landing = array( 'status' => 'not-applicable' );
 
 		if ( ! empty( $config['verify_landing_callback'] ) && is_callable( $config['verify_landing_callback'] ) ) {
@@ -702,6 +709,53 @@ final class Conexao_Translation_Rollout_Engine {
 	}
 
 	/**
+	 * The taxonomy capability is OPTIONAL and ADDITIVE.
+	 *
+	 * A stage whose records must be filed under a *translated* taxonomy needs the
+	 * EN counterpart terms to exist before the records are filed under them. The
+	 * engine owned no term-creation step, so a stage had to re-implement one — the
+	 * exact thing this class exists to prevent. These two keys close that gap
+	 * WITHOUT a second engine and WITHOUT a second lifecycle:
+	 *
+	 *   - `taxonomy_callback`      stage-owned, engine-invoked. Performs the
+	 *                               taxonomy work in dry-run or apply mode and
+	 *                               returns a counters array.
+	 *   - `taxonomy_gate_callback` stage-owned, engine-invoked. Returns an
+	 *                               integer FAILURE count folded into the numeric
+	 *                               gate, so a taxonomy problem fails closed
+	 *                               instead of passing silently.
+	 *
+	 * Both keys are absent from every pre-existing stage, so those stages' plans,
+	 * counters and gates are byte-identical to before (asserted by
+	 * test-translation-rollout-engine.php). The engine still owns the ordering:
+	 * taxonomy first (dry-run aware), then the record plan, then apply.
+	 *
+	 * @param array $config Stage configuration.
+	 * @return bool True when the stage declares a taxonomy capability.
+	 */
+	private static function has_taxonomy( array $config ): bool {
+		return ! empty( $config['taxonomy_callback'] ) && is_callable( $config['taxonomy_callback'] );
+	}
+
+	/**
+	 * Invoke the stage's taxonomy capability. No-op when the stage declares none.
+	 *
+	 * @param array  $config  Stage configuration.
+	 * @param bool   $dry_run Whether this is a dry-run (must perform zero writes).
+	 * @param string $mode    Run mode (run|remove).
+	 * @return array<string,mixed> Counters reported by the stage.
+	 */
+	private static function run_taxonomy( array $config, bool $dry_run, string $mode ): array {
+		if ( ! self::has_taxonomy( $config ) ) {
+			return array();
+		}
+
+		$result = call_user_func( $config['taxonomy_callback'], $dry_run, $mode );
+
+		return is_array( $result ) ? $result : array();
+	}
+
+	/**
 	 * PT-drift gate: every snapshotted PT record must compare identical. The
 	 * only permitted difference is a Polylang language backfill from empty to
 	 * the source language on a record that had none.
@@ -797,6 +851,13 @@ final class Conexao_Translation_Rollout_Engine {
 			'slug'      => 0,
 			'title'     => 0,
 		);
+
+		// The taxonomy step runs BEFORE the record plan and is dry-run aware: the
+		// EN counterpart terms must exist before a record can be filed under
+		// them, and a dry-run must still perform zero writes. A stage that
+		// declares no taxonomy capability is entirely unaffected.
+		$taxonomy = self::run_taxonomy( $config, ! empty( $args['dry_run'] ), $mode );
+
 		$states  = self::collect_states( $config, $adapter, $manifest, $match );
 		$plan    = self::build_plan( $manifest, $states );
 		$summary = array(
@@ -812,6 +873,7 @@ final class Conexao_Translation_Rollout_Engine {
 			'match'                  => $match,
 			'fallback_slug_matches'  => 0,
 			'fallback_title_matches' => 0,
+			'taxonomy'               => $taxonomy,
 		);
 		$rows    = array();
 

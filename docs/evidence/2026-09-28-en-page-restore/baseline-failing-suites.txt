@@ -1,0 +1,21 @@
+[FAIL] plugin/conexao-event-importer/test-ivvcc-importer.php|1
+[FAIL] plugin/conexao-event-importer/test-town-sanitization.php|1
+[FAIL] plugin/conexao-leisure-migration/test-excerpt-en-roundtrip.php
+[FAIL] plugin/conexao-leisure-migration/test-language-uuid.php
+[FAIL] tests/acceptance/verify-guides-en-http.py
+[FAIL] theme/conexao-br-irlanda/test-blog-en-translation.php|2
+[FAIL] theme/conexao-br-irlanda/test-event-location-filters.php|1
+[FAIL] theme/conexao-br-irlanda/test-guide-en-translation.php
+[FAIL] theme/conexao-br-irlanda/test-header-menu-selection.php (en)|4
+[FAIL] theme/conexao-br-irlanda/test-header-menu-selection.php (pt)|1
+[FAIL] theme/conexao-br-irlanda/test-i18n-foundation.php|1
+[FAIL] theme/conexao-br-irlanda/test-job-en-translation.php|8
+[FAIL] theme/conexao-br-irlanda/test-jobs-en-language.php|21
+[FAIL] theme/conexao-br-irlanda/test-leisure-attribute-normalization.php|2
+[FAIL] theme/conexao-br-irlanda/test-nav-language-context.php|1
+[FAIL] theme/conexao-br-irlanda/test-polylang-foundation.php|2
+[FAIL] theme/conexao-br-irlanda/test-stage32-bilingual.php|19
+[FAIL] theme/conexao-br-irlanda/test-stage33-bilingual.php|24
+[FAIL] theme/conexao-br-irlanda/test-stage41-rest-language.php
+[FAIL] theme/conexao-br-irlanda/test-stage45-pages.php|11
+[FAIL] theme/conexao-br-irlanda/test-translation-completeness.php|2

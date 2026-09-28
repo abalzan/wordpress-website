@@ -1,7 +1,7 @@
 {
   "stage": "L — permanent invariant gates",
-  "generated_at": "2026-09-28T08:03:52Z",
-  "repository_sha": "e7303ba47d0080e3778ba7e70dd5b9c29f44e170",
+  "generated_at": "2026-09-28T10:36:15Z",
+  "repository_sha": "726004a2d1abca6dd7ebe35c8a1ca468a24e825d",
   "status": "fail",
   "gates": {
     "taxonomy_policy": {
@@ -125,12 +125,12 @@
       "command": "docker compose exec -T wordpress php /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-translation-completeness.php",
       "exit_code": 1,
       "status": "fail",
-      "passed": 17,
-      "failed": 3,
-      "violations": 53,
-      "pre_existing": 52,
-      "new": 1,
-      "allowlisted": 2054,
+      "passed": 19,
+      "failed": 1,
+      "violations": 48,
+      "pre_existing": 48,
+      "new": 0,
+      "allowlisted": 1833,
       "prerequisites": [
         "polylang",
         "published PT content"
@@ -160,20 +160,18 @@
           "count": 0,
           "label": "event: eligible public PT records missing a linked EN translation = 0",
           "detail": {
-            "eligible": 1797,
+            "eligible": 1576,
             "translated": 0,
-            "allowlisted": 1797,
+            "allowlisted": 1576,
             "sample": []
           }
         },
         {
           "key": "post_type:event:malformed_relationships",
-          "count": 1,
+          "count": 0,
           "label": "event: every translation relationship is a bidirectional link to a PT master",
           "detail": {
-            "sample": [
-              "en_without_pt:mabon-full-moon-day-retreat"
-            ]
+            "sample": []
           }
         },
         {
@@ -246,18 +244,13 @@
         },
         {
           "key": "post_type:page:missing_en",
-          "count": 4,
+          "count": 0,
           "label": "page: eligible public PT records missing a linked EN translation = 0",
           "detail": {
             "eligible": 43,
-            "translated": 29,
+            "translated": 33,
             "allowlisted": 10,
-            "sample": [
-              "empregos",
-              "contato",
-              "sobre-nos",
-              "inicio"
-            ]
+            "sample": []
           }
         },
         {
@@ -308,18 +301,18 @@
         }
       ],
       "output_tail": [
+        "  PASS: post: every translation relationship is a bidirectional link to a PT master",
+        "  sponsor          eligible PT=3 translated=0 allowlisted=3 missing EN=0 malformed=0",
         "  PASS: sponsor: eligible public PT records missing a linked EN translation = 0",
         "  PASS: sponsor: every translation relationship is a bidirectional link to a PT master",
         "  PASS: every discovered content type was evaluated (no type silently skipped)",
         "",
-        "17 passed, 3 failed",
-        "  violations: 53 (52 pre-existing, 1 new)",
-        "    - post_type:event:malformed_relationships: 1 (event: every translation relationship is a bidirectional link to a PT master)",
+        "19 passed, 1 failed",
+        "  violations: 48 (48 pre-existing, 0 new)",
         "    - post_type:guide:missing_en: 48 (guide: eligible public PT records missing a linked EN translation = 0)",
-        "    - post_type:page:missing_en: 4 (page: eligible public PT records missing a linked EN translation = 0)",
-        "  allowlisted: 2054 (by documented policy)",
-        "    first 20: course_provider:microcreds, course_provider:apprenticeship-ie, course_provider:etbi, course_provider:courses-ie, course_provider:local-enterprise-office, course_provider:solas-ecollege, course_provider:skillnet-ireland, course_provider:springboard-plus, course_provider:qualifax, course_provider:fetch-courses, event:art-class-for-beginners, event:80s-90s-music-bingo-night, event:happy-hiking-day-at-clonaslee-trailhead, event:community-biodiversity-action-plan, event:paint-sip-at-bobs-bar, event:mountmellick-library-open-day, event:chair-yoga-at-portlaoise-library, event:the-fright-crawl-corks-1-halloween-bar-crawl-2026-sat-oct-31, event:paint-your-own-canvas-neon-paint-experience, event:clouds",
-        "GATE-RESULT {\"gate\":\"translation_completeness\",\"status\":\"fail\",\"passed\":17,\"failed\":3,\"violations\":53,\"pre_existing\":52,\"new\":1,\"prerequisites\":[\"polylang\",\"published PT content\"],\"allowlisted\":[\"course_provider:microcreds\",\"course_provider:apprenticeship-ie\",\"course_provider:etbi\",\"course_provider:courses-ie\",\"course_provider:local-enterprise-office\",\"course_provider:solas-ecollege\",\"course_provider:skillnet-ireland\",\"course_provider:springboard-plus\",\"course_provider:qualifax\",\"course_provider:fetch-courses\",\"event:art-class-for-beginners\",\"event:80s-90s-music-bingo-night\",\"event:happy-hiking-day-at-clonaslee-trailhead\",\"event:community-biodiversity-action-plan\",\"event:paint-sip-at-bobs-bar\",\"event:mountmellick-library-open-day\",\"event:chair-yoga-at-portlaoise-library\",\"event:the-fright-crawl-corks-1-halloween-bar-crawl-2026-sat-oct-31\",\"event:paint-your-own-canvas-neon-paint-experience\",\"event:clouds\"],\"allowlisted_count\":2054,\"details\":[{\"key\":\"post_type:course_provider:missing_en\",\"count\":0,\"label\":\"course_provider: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":10,\"translated\":0,\"allowlisted\":10,\"sample\":[]}},{\"key\":\"post_type:course_provider:malformed_relationships\",\"count\":0,\"label\":\"course_provider: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:event:missing_en\",\"count\":0,\"label\":\"event: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":1797,\"translated\":0,\"allowlisted\":1797,\"sample\":[]}},{\"key\":\"post_type:event:malformed_relationships\",\"count\":1,\"label\":\"event: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[\"en_without_pt:mabon-full-moon-day-retreat\"]}},{\"key\":\"post_type:guide:missing_en\",\"count\":48,\"label\":\"guide: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":48,\"translated\":0,\"allowlisted\":0,\"sample\":[\"autismo-viagem-aviao-irlanda-dublin-cork-airport\",\"autismo-na-irlanda-diagnostico-hse-apoio\",\"reclamacao-trabalhista-wrc-irlanda-brasileiros\",\"checklist-viagem-internacional-irlanda-brasileiros-irp\",\"reclamar-servico-publico-irlanda-ombudsman\",\"reclamar-banco-seguro-servico-financeiro-irlanda\",\"casamento-registro-nascimento-irlanda-brasileiros\",\"assistencia-juridica-legal-aid-irlanda-brasileiros\",\"leap-card-irlanda-como-usar\",\"learner-permit-theory-test-irlanda-cnh-brasileira\"]}},{\"key\":\"post_type:guide:malformed_relationships\",\"count\":0,\"label\":\"guide: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:job:missing_en\",\"count\":0,\"label\":\"job: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":1,\"translated\":0,\"allowlisted\":1,\"sample\":[]}},{\"key\":\"post_type:job:malformed_relationships\",\"count\":0,\"label\":\"job: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:leisure:missing_en\",\"count\":0,\"label\":\"leisure: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":233,\"translated\":0,\"allowlisted\":233,\"sample\":[]}},{\"key\":\"post_type:leisure:malformed_relationships\",\"count\":0,\"label\":\"leisure: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:page:missing_en\",\"count\":4,\"label\":\"page: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":43,\"translated\":29,\"allowlisted\":10,\"sample\":[\"empregos\",\"contato\",\"sobre-nos\",\"inicio\"]}},{\"key\":\"post_type:page:malformed_relationships\",\"count\":0,\"label\":\"page: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:post:missing_en\",\"count\":0,\"label\":\"post: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":42,\"translated\":42,\"allowlisted\":0,\"sample\":[]}},{\"key\":\"post_type:post:malformed_relationships\",\"count\":0,\"label\":\"post: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:sponsor:missing_en\",\"count\":0,\"label\":\"sponsor: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":3,\"translated\":0,\"allowlisted\":3,\"sample\":[]}},{\"key\":\"post_type:sponsor:malformed_relationships\",\"count\":0,\"label\":\"sponsor: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}}]}"
+        "  allowlisted: 1833 (by documented policy)",
+        "    first 20: course_provider:microcreds, course_provider:apprenticeship-ie, course_provider:etbi, course_provider:courses-ie, course_provider:local-enterprise-office, course_provider:solas-ecollege, course_provider:skillnet-ireland, course_provider:springboard-plus, course_provider:qualifax, course_provider:fetch-courses, event:the-fright-crawl-corks-1-halloween-bar-crawl-2026-sat-oct-31, event:clouds, event:navigating-new-risks-cyber-oil-and-pi-realities-for-the-modern-seafarer, event:friends-of-the-south-infirmary-smart-table-quiz, event:abba-bottomless-drag-brunch-with-mockie-ah-2, event:cushion-concerts-at-the-library-2-5-years-2, event:fish56octagon, event:mtrpls-x-distort-x-catacombs-sunil-sharpe-rebecca-delle-piane, event:from-idea-to-icon-live-with-joseph-joseph, event:2hats1usb-are-taking-over-cork-with-jagermeisters-save-the-night",
+        "GATE-RESULT {\"gate\":\"translation_completeness\",\"status\":\"fail\",\"passed\":19,\"failed\":1,\"violations\":48,\"pre_existing\":48,\"new\":0,\"prerequisites\":[\"polylang\",\"published PT content\"],\"allowlisted\":[\"course_provider:microcreds\",\"course_provider:apprenticeship-ie\",\"course_provider:etbi\",\"course_provider:courses-ie\",\"course_provider:local-enterprise-office\",\"course_provider:solas-ecollege\",\"course_provider:skillnet-ireland\",\"course_provider:springboard-plus\",\"course_provider:qualifax\",\"course_provider:fetch-courses\",\"event:the-fright-crawl-corks-1-halloween-bar-crawl-2026-sat-oct-31\",\"event:clouds\",\"event:navigating-new-risks-cyber-oil-and-pi-realities-for-the-modern-seafarer\",\"event:friends-of-the-south-infirmary-smart-table-quiz\",\"event:abba-bottomless-drag-brunch-with-mockie-ah-2\",\"event:cushion-concerts-at-the-library-2-5-years-2\",\"event:fish56octagon\",\"event:mtrpls-x-distort-x-catacombs-sunil-sharpe-rebecca-delle-piane\",\"event:from-idea-to-icon-live-with-joseph-joseph\",\"event:2hats1usb-are-taking-over-cork-with-jagermeisters-save-the-night\"],\"allowlisted_count\":1833,\"details\":[{\"key\":\"post_type:course_provider:missing_en\",\"count\":0,\"label\":\"course_provider: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":10,\"translated\":0,\"allowlisted\":10,\"sample\":[]}},{\"key\":\"post_type:course_provider:malformed_relationships\",\"count\":0,\"label\":\"course_provider: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:event:missing_en\",\"count\":0,\"label\":\"event: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":1576,\"translated\":0,\"allowlisted\":1576,\"sample\":[]}},{\"key\":\"post_type:event:malformed_relationships\",\"count\":0,\"label\":\"event: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:guide:missing_en\",\"count\":48,\"label\":\"guide: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":48,\"translated\":0,\"allowlisted\":0,\"sample\":[\"autismo-viagem-aviao-irlanda-dublin-cork-airport\",\"autismo-na-irlanda-diagnostico-hse-apoio\",\"reclamacao-trabalhista-wrc-irlanda-brasileiros\",\"checklist-viagem-internacional-irlanda-brasileiros-irp\",\"reclamar-servico-publico-irlanda-ombudsman\",\"reclamar-banco-seguro-servico-financeiro-irlanda\",\"casamento-registro-nascimento-irlanda-brasileiros\",\"assistencia-juridica-legal-aid-irlanda-brasileiros\",\"leap-card-irlanda-como-usar\",\"learner-permit-theory-test-irlanda-cnh-brasileira\"]}},{\"key\":\"post_type:guide:malformed_relationships\",\"count\":0,\"label\":\"guide: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:job:missing_en\",\"count\":0,\"label\":\"job: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":1,\"translated\":0,\"allowlisted\":1,\"sample\":[]}},{\"key\":\"post_type:job:malformed_relationships\",\"count\":0,\"label\":\"job: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:leisure:missing_en\",\"count\":0,\"label\":\"leisure: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":233,\"translated\":0,\"allowlisted\":233,\"sample\":[]}},{\"key\":\"post_type:leisure:malformed_relationships\",\"count\":0,\"label\":\"leisure: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:page:missing_en\",\"count\":0,\"label\":\"page: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":43,\"translated\":33,\"allowlisted\":10,\"sample\":[]}},{\"key\":\"post_type:page:malformed_relationships\",\"count\":0,\"label\":\"page: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:post:missing_en\",\"count\":0,\"label\":\"post: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":42,\"translated\":42,\"allowlisted\":0,\"sample\":[]}},{\"key\":\"post_type:post:malformed_relationships\",\"count\":0,\"label\":\"post: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:sponsor:missing_en\",\"count\":0,\"label\":\"sponsor: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":3,\"translated\":0,\"allowlisted\":3,\"sample\":[]}},{\"key\":\"post_type:sponsor:malformed_relationships\",\"count\":0,\"label\":\"sponsor: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}}]}"
       ]
     },
     "cache_scoping": {
@@ -588,7 +581,7 @@
       "prerequisites": [],
       "details": [],
       "output_tail": [
-        "   historical/audit documents without the marker (reported, not gated): 88",
+        "   historical/audit documents without the marker (reported, not gated): 90",
         "",
         "   -- §9.2 no root-level report/evidence file --",
         "   root files scanned: 16, offenders: 0",
@@ -633,10 +626,10 @@
       ]
     }
   },
-  "total_passed": 83,
-  "total_failed": 3,
-  "total_violations": 53,
-  "total_pre_existing": 52,
-  "total_new": 1,
+  "total_passed": 85,
+  "total_failed": 1,
+  "total_violations": 48,
+  "total_pre_existing": 48,
+  "total_new": 0,
   "total_blocked": 0
 }

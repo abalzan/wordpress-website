@@ -1,0 +1,18 @@
+URI=/guias/
+pll_current_language=pt
+is_b2_post_type(guide)=false
+query_vars[lang]='pt'
+query_vars[post_type]='guide'
+query_vars[tax_query]=''
+---
+FOUND=48 post_count=10
+===
+URI=/en/guias/
+pll_current_language=en
+is_b2_post_type(guide)=false
+query_vars[lang]='en'
+query_vars[post_type]='guide'
+query_vars[tax_query]=''
+---
+FOUND=0 post_count=0
+===
