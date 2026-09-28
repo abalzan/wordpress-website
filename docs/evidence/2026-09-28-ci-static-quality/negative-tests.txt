@@ -1,0 +1,42 @@
+# Negative tests — each sabotage was removed; nothing is left behind
+
+## 1. PHPCS gate (lint.sh) is still fail-closed
+Disposable probe: a temporary file in the theme adding
+  WordPress.WP.I18n.NonSingularStringLiteralText (the sniff this task removed)
+  and one Squiz.Strings.DoubleQuoteUsage.NotRequired.
+
+$ ./scripts/lint.sh        # with the probe in place
+PHPCS legacy baseline: 3211 errors / 2668 warnings in 203 files (baseline: 3290 / 2672).
+NEW VIOLATIONS - sniffs not in the baseline:
+  + WordPress.WP.I18n.NonSingularStringLiteralText (1 errors, 0 warnings)
+NEW VIOLATIONS - per-sniff counts grew:
+  + Squiz.Strings.DoubleQuoteUsage.NotRequired 12/0 -> 13/0 (errors/warnings)
+FAILED: the PHPCS baseline grew. Fix the new violations, or pay down debt and regenerate the baseline deliberately.
+lint: FAILED (see the check output above)
+EXIT=1
+
+$ rm <probe>; ./scripts/lint.sh
+lint: OK (syntax clean, no new PHPCS violations, PHPStan clean)
+EXIT=0
+
+## 2. Plugin-registry drift gate (Stage G) is still fail-closed
+$ php scripts/generate-registry-docs.php --check
+registry OK: 14 plugins validated, 23 generated regions current (zero writes).   rc=0
+
+$ # sabotage: point a plugins.json documentation path at a missing file
+$ php scripts/generate-registry-docs.php --check
+ERROR: generated-target validation failed:
+  - generated target does not exist: docs/plugins/conexao-data-model-SABOTAGE.md
+rc=1
+
+$ # restore plugins.json
+$ php scripts/generate-registry-docs.php --check
+registry OK: 14 plugins validated, 23 generated regions current (zero writes).   rc=0
+$ git status --short   # empty: no sabotage left behind
+
+## 3. Integration activation is fail-closed (proved by the real CI logs)
+Run 36404340440 (before the activation fix): step 6 failed with
+  Warning: Failed to activate plugin. The plugin generated unexpected output.
+  Error: No plugins activated.
+and the JOB failed — a non-zero activation was never ignored.
+Run 36405985197 (after the fix): step 6 success, and step 8 ran the harness.

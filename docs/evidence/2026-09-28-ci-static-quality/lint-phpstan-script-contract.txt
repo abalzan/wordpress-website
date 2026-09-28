@@ -1,0 +1,26 @@
+# PHPStan (level 5, phpstan.neon.dist + baseline) — after
+$ vendor/bin/phpstan analyse --memory-limit=2G --no-progress
+ [OK] No errors                                                                 
+EXIT=0
+
+# ./scripts/lint.sh — after
+==> [1/3] PHP syntax check (php -l, 463 files)
+OK: no PHP parse errors.
+==> [2/3] PHPCS (WordPress-Extra + WordPress-Docs + PHPCompatibilityWP) + legacy baseline gate
+PHPCS legacy baseline: 3208 errors / 2668 warnings in 202 files (baseline: 3290 / 2672).
+Debt paid down in 20 sniff(s) - regenerate the baseline deliberately when convenient (scripts/phpcs-baseline.php update).
+OK: no new PHPCS violations against the baseline.
+==> [3/3] PHPStan level 5 via composer analyse (phpstan.neon.dist + baseline)
+lint: OK (syntax clean, no new PHPCS violations, PHPStan clean)
+EXIT=0
+
+# Script-contract layer (permanent script-contract gates included)
+$ ./scripts/run-tests.sh --scripts
+[PASS] tests/scripts/verify-agent-governance.py
+[PASS] tests/scripts/verify-cache-key-scoping.py      2 passed, 0 failed
+[PASS] tests/scripts/verify-documentation-drift.py   14 passed, 0 failed
+[PASS] tests/scripts/verify-i18n-freshness.py         8 passed, 0 failed
+[PASS] tests/scripts/verify-release-integrity.py    210 passed, 0 failed
+[PASS] tests/scripts/verify-script-conventions.py   317 passed, 0 failed
+Script-contract suites: 6 total, 6 passed, 0 failed
+ALL TESTS PASSED
