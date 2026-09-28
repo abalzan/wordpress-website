@@ -78,6 +78,38 @@ Language assignment, URL mode and the translated post types/taxonomies are
 configured by `scripts/run-polylang-setup.php` + `inc/i18n/guard.php` (see
 `docs/development.md` § Multilingual (EN) development).
 
+### EN archive route resolution (rewrite rules and the local flush)
+
+`/en/` archive URLs (`/en/apoiadores/`, `/en/eventos/`, `/en/guias/`,
+`/en/lazer/`, `/en/cursos/`, `/en/blog/`) are resolved by WordPress **rewrite
+rules stored in the database**, not by theme code. The theme registers no
+rewrite rule of its own (`grep add_rewrite_rule inc/` is empty); the rules are
+generated **at flush time** from the `conexao-data-model` CPT registration plus
+the theme's translated-post-types declaration (`inc/i18n/guard.php` via
+`pll_get_post_types`) — Polylang emits the `en/`-prefixed variants of every
+archive permastruct **for translated post types only**.
+
+The failure mode this creates: a `rewrite_rules` set generated while that
+declaration is absent carries no `en/`-prefixed CPT-archive rule at all, so
+those routes fall through to page-name lookup and return **404 even though the
+code is byte-identical and correct**. This was proven during the baseline
+recovery: after a byte-perfect theme restore, `/en/guias/` and `/en/eventos/`
+still 404'd until a local flush took the `en/`-prefixed CPT-archive rules from
+**0 to 92** (`docs/evidence/2026-09-27-baseline-recovery-implementation/06-phase11-http-routes.txt`).
+The same applies to any local database restored from a snapshot that predates
+the current registration state (see `scripts/restore-updraft-db.sh`).
+
+The documented remedy is a **local database operation, never a code fix**: run
+`scripts/flush-blog-rewrite-rules.php` (a pure `flush_rewrite_rules()`; see
+`scripts/README.md` for the run command) or save Settings → Permalinks in local
+wp-admin, then verify with `./scripts/run-tests.sh --acceptance`. Do **not** use
+`scripts/flush-navigation-rules.php` for this — it also deletes pages and
+rebuilds menus. Production is unaffected by local flushes: the documented
+release sequence uploads the theme **before** activating the platform plugins,
+and `conexao-data-model::activate()` flushes with the declarations live, so
+production regenerates the full rule set on every release (see
+[`docs/releases.md`](releases.md)).
+
 ### English rollout state (Stage 3.2)
 
 - **`/en/` serves the English homepage directly** (the linked translation of
@@ -576,3 +608,5 @@ _Last verified: 2026-09-26 by Stage I — Scripts Standardisation_
 _Last verified: 2026-09-26 by Stage N — Remaining EN Blog Translations_
 
 _Last verified: 2026-09-27 by the EN Leisure description rollout — Stage 7 executed by the shared `en-leisure-description` stage; B2 policy, canonical, hreflang and sitemap unchanged_
+
+_Last verified: 2026-09-28 by the EN archive route 404 investigation — EN archive route resolution (flush-generated rewrite rules) and the documented local flush documented; no route, redirect or expectation changed_

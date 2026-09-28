@@ -86,7 +86,20 @@ investigates the one remaining translation finding and establishes the baseline.
 | `2026-09-27-baseline-recovery-implementation.md` | Forward reconstruction from `b47d098` (commit `cd800be`); no revert/reset/cherry-pick/merge; full verification numbers; triage of the one "new" permanent-gate violation |
 | `2026-09-27-recovery-closeout.md` | **Final closeout** — the one new translation-completeness finding proven pre-existing (reproduces on `597b04e`; importer record predates the language guard), full runner byte-identical to the recovered baseline, 7 permanent gates, HTTP + browser verification, negative proofs, POT/catalogue/architecture integrity. Status: **PASS WITH LIMITATION** |
 
+## EN archive route 404 investigation (2026-09-28)
+
+Follow-up to the baseline recovery: the three EN CPT-archive routes
+(`/en/apoiadores/`, `/en/eventos/`, `/en/guias/`) reported 404 again with the
+recovered code unchanged.
+
+| Report | Content |
+|---|---|
+| `2026-09-28-en-archive-route-404-plan.md` | The investigation plan (route work; scenarios, non-goals, verification gates) |
+| `2026-09-28-en-archive-route-404.md` | **Root cause proven: the registration code is byte-identical to the verified `b47d098` baseline; the 404s are the stale local `rewrite_rules` failure mode (no `en/`-prefixed CPT-archive rules). The minimal fix is the documented local rewrite flush (`scripts/flush-blog-rewrite-rules.php`) — a local DB operation, not a code change — now recorded in `docs/routing.md`. No code, gate or expectation changed. Status: BLOCKED (no runtime in the task environment to execute the flush).** |
+
 ## Related: `docs/audit/` (engineering audits), `docs/engineering-standard.md`
 (the normative standard these reports are measured against).
 
 _Last verified: 2026-09-27 by the recovery closeout_
+
+_Last verified: 2026-09-28 by the EN archive route 404 investigation_

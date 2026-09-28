@@ -1,0 +1,101 @@
+# 07 — History searches for the three route slugs and the routing capability
+
+## git log --grep (commit messages) — the route/architecture history
+
+$ git log --all --oneline --grep='route' | head -8
+e7303ba chore(i18n): close out baseline recovery verification
+bd81ba5 docs: add report on English `Artigo` label investigation on `/en/`
+c2c4c94 stage-m: translate the 29 missing EN pages
+669a3c2 stage-k: add WordPress agent skills and governance templates
+e674add theme: modularise runtime PHP
+d6e1ba0 stage E: unified test harness (shared bootstrap, shared assertions, one runner, Docker CI job)
+1a46143 Add comprehensive documentation for development, frontend, plugins, and themes
+
+$ git log --all --oneline --grep='archive' | head -8
+e7303ba chore(i18n): close out baseline recovery verification
+cd800be Restore the verified b47d098 theme baseline after the 597b04e regression
+b47d098 Add investigation report and SQL logs for `/en/lazer/` archive performance
+7778d76 stage-o: enable real English blog archive
+0f80931 stage-n: document the Blog translation stage and archive its evidence
+ee92efc Stage 5: real EN Blog archive working (posts-page resolution, canonical, sitemap), 36/36 translations applied and verified (60/60 HTTP checks)
+95c27fc Stage 4.5: manifest validator + JSON manifest render + PT regression snapshot tool; fix empregos archive/page resolution in link localizer
+6fce555 Stage 3.2: controlled English content rollout
+
+$ git log --all --oneline --grep='english' -i | head -8
+cd800be Restore the verified b47d098 theme baseline after the 597b04e regression
+bd81ba5 docs: add report on English `Artigo` label investigation on `/en/`
+b47d098 Add investigation report and SQL logs for `/en/lazer/` archive performance
+8f07f30 Add regression tests for ARIA semantics in filter links and homepage content-type labels
+8496245 Add tests for provider category filter and English label presentation
+3cc6564 Add English course-provider descriptions and rollout stage
+53f1781 Add English description stage for leisure records
+7778d76 stage-o: enable real English blog archive
+
+## git log -S (content history), bounded to tests/acceptance, docs/routing.md,
+## scripts/data/ and the theme tree
+
+=== git log --all -S"apoiadores" -- tests/acceptance/ docs/routing.md scripts/data/ wp-content/themes ===
+cd800be Restore the verified b47d098 theme baseline after the 597b04e regression
+597b04e Refactor code structure for improved readability and maintainability
+0f5c586 Add deployment verification scripts and integrity checks for release process
+e674add theme: modularise runtime PHP
+d6e1ba0 stage E: unified test harness (shared bootstrap, shared assertions, one runner, Docker CI job)
+543328c Stage 4.5: EN page translation plugin + WP-CLI runner + full en_US catalog (384 strings) + theme fixes (page eyebrows, header CTA, shared-slug determinism)
+9272851 test+docs: live-WP nav language-context test, HTTP verifier allowlist, routing/theme docs
+f72b8d6 test: add runnable nav language-context logic test (executes real nav functions)
+43146aa Add Polylang navigation menu assignment and regression tests
+0be970c Stage 3.3: language-aware internal link resolution (EN nav/cards/footer) + focus tests
+8ac39b1 Add language switcher template and tests for Polylang foundation
+ef7858c Add i18n tests for Stage 1 implementation
+ed09497 feat: implement custom ordering for Apoiadores archive and add related tests
+Auto packing the repository in background for optimum performance.
+See "git help gc" for manual housekeeping.
+=== git log --all -S"eventos" -- tests/acceptance/ docs/routing.md scripts/data/ wp-content/themes ===
+cd800be Restore the verified b47d098 theme baseline after the 597b04e regression
+597b04e Refactor code structure for improved readability and maintainability
+8f07f30 Add regression tests for ARIA semantics in filter links and homepage content-type labels
+61131a4 feat: Implement B2 filter helper language widening for event queries
+d3ae9fb fix: prevent erroneous county names from being assigned as towns in event taxonomy
+0f5c586 Add deployment verification scripts and integrity checks for release process
+e674add theme: modularise runtime PHP
+d6e1ba0 stage E: unified test harness (shared bootstrap, shared assertions, one runner, Docker CI job)
+7b96ac2 Add Stage 9: English translations for guides and terms
+543328c Stage 4.5: EN page translation plugin + WP-CLI runner + full en_US catalog (384 strings) + theme fixes (page eyebrows, header CTA, shared-slug determinism)
+9272851 test+docs: live-WP nav language-context test, HTTP verifier allowlist, routing/theme docs
+f72b8d6 test: add runnable nav language-context logic test (executes real nav functions)
+e70c755 Stage 4.1: REST language test suite (212 assertions) + rest_base fixes
+43146aa Add Polylang navigation menu assignment and regression tests
+1088bd4 Stage 3.3: HTTP verification script, translation-state inventory, routing docs
+=== git log --all -S"guias" -- tests/acceptance/ docs/routing.md scripts/data/ wp-content/themes ===
+cd800be Restore the verified b47d098 theme baseline after the 597b04e regression
+597b04e Refactor code structure for improved readability and maintainability
+0f5c586 Add deployment verification scripts and integrity checks for release process
+e674add theme: modularise runtime PHP
+d6e1ba0 stage E: unified test harness (shared bootstrap, shared assertions, one runner, Docker CI job)
+7b96ac2 Add Stage 9: English translations for guides and terms
+543328c Stage 4.5: EN page translation plugin + WP-CLI runner + full en_US catalog (384 strings) + theme fixes (page eyebrows, header CTA, shared-slug determinism)
+9272851 test+docs: live-WP nav language-context test, HTTP verifier allowlist, routing/theme docs
+f72b8d6 test: add runnable nav language-context logic test (executes real nav functions)
+43146aa Add Polylang navigation menu assignment and regression tests
+1088bd4 Stage 3.3: HTTP verification script, translation-state inventory, routing docs
+0be970c Stage 3.3: language-aware internal link resolution (EN nav/cards/footer) + focus tests
+8ac39b1 Add language switcher template and tests for Polylang foundation
+ef7858c Add i18n tests for Stage 1 implementation
+46007e9 feat(breadcrumbs): Update guide category crumb to link to filtered archive instead of taxonomy term archive. Add implementation report and automated tests for breadcrumb navigation.
+=== git log --all -S"pll_get_post_types" -- tests/acceptance/ docs/routing.md scripts/data/ wp-content/themes ===
+cd800be Restore the verified b47d098 theme baseline after the 597b04e regression
+597b04e Refactor code structure for improved readability and maintainability
+e674add theme: modularise runtime PHP
+8ac39b1 Add language switcher template and tests for Polylang foundation
+Auto packing the repository in background for optimum performance.
+See "git help gc" for manual housekeeping.
+Auto packing the repository in background for optimum performance.
+See "git help gc" for manual housekeeping.
+Auto packing the repository in background for optimum performance.
+See "git help gc" for manual housekeeping.
+
+[Reading: the three slugs and the pll_get_post_types declaration first appear with the
+ Stage 1 Polylang foundation + the archive stages (ed09497 apoiadores ordering,
+ 7b96ac2 Stage 9 guides), are consolidated by the theme modularisation (e674add), are
+ REMOVED by the destructive 597b04e, and are RESTORED by cd800be. The two commits that
+ appear at the TOP of every -S list are exactly the regression and its recovery.]
