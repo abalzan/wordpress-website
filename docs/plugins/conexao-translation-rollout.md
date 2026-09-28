@@ -9,7 +9,7 @@
 | **Build** | no |
 | **Compose mount** | yes |
 | **Dependencies** | none |
-| **Version** | 1.0.0 (authoritative source: `wp-content/plugins/conexao-translation-rollout/conexao-translation-rollout.php` header) |
+| **Version** | 1.1.0 (authoritative source: `wp-content/plugins/conexao-translation-rollout/conexao-translation-rollout.php` header) |
 | **Registry** | [`plugins.json`](../../plugins.json) |
 
 > **Local-only tooling.** Not a production steady-state dependency.
@@ -83,10 +83,35 @@ Optional keys: `verify_landing_callback` (an extra gate input, e.g. a landing
 page pair that an earlier stage owns), `extra_gate_callback` (additional
 failure count), `allowlist` (documented gate exclusions), `allow_remove`
 (**only** `true` when removal is proven safe; otherwise the engine refuses
-`remove` with a `WP_Error`).
+`remove` with a `WP_Error`), and the translated-taxonomy pair
+`taxonomy_callback` / `taxonomy_gate_callback` (see below).
 
 `validate_config()` fails closed on a missing/blank required key, a malformed
 stage identifier, a non-callable required callback or a non-array allowlist.
+
+## Optional capability: a translated taxonomy
+
+A stage whose records are filed under a **translated** taxonomy needs the
+counterpart terms to exist before the records can be filed under them. The engine
+owned no term-creation step, so a stage had to re-implement one — the exact thing
+this class exists to prevent. Two optional keys close that gap:
+
+| Key | Signature | Meaning |
+|---|---|---|
+| `taxonomy_callback` | `function ( bool $dry_run, string $mode ): array` | Performs the stage's taxonomy work and returns counters. Invoked by the **engine**, **before** the record plan, and dry-run aware, so a dry-run reports the same plan and still writes nothing. The counters land in `summary['taxonomy']`. |
+| `taxonomy_gate_callback` | `function (): int` | Returns a **failure count**, folded into `extra_failures` so it fails the same numeric PASS\|FAIL gate. |
+
+Both are **additive and inert** for every stage that does not declare them: the
+keys are optional, `run_taxonomy()` returns `array()`, `summary['taxonomy']` is
+`array()`, and such a stage's plan, counters and gate are byte-identical to
+before. `test-translation-rollout-engine.php` asserts exactly that, alongside the
+dry-run/no-write and fail-closed properties.
+
+The engine owns the **ordering and the verdict**; the stage owns only the term
+data and the Polylang calls. No second engine, no second lifecycle, and the
+translated/shared policy stays a stage declaration: a stage that owns
+`conexao_category` must never list `conexao_county` / `conexao_town`, which stay
+shared one-term taxonomies.
 
 ## Data-manifest contract
 
@@ -212,3 +237,5 @@ php scripts/generate-registry-docs.php --check
 ```
 
 _Last verified: 2026-09-27 by the EN Leisure description rollout — additive `stage_conflict` state key_
+
+_Last verified: 2026-09-28 by the B1 English Guides content rollout — the additive optional taxonomy keys (`taxonomy_callback` / `taxonomy_gate_callback`)_

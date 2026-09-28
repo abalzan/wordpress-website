@@ -1,0 +1,4131 @@
+{
+    "stage": "B1 English Guides content rollout",
+    "captured_before_any_write": true,
+    "dataset_version": {
+        "guide_data": "f99969734298d15590230ba3ac75ff23bb0dc8c3514a23ed9b4f7e6424fbe0e3",
+        "guide_terms": "92eb5fa85258bc553a0ed6a8f3201f7661a0b905fba0ed5431a8d149b0671135",
+        "en_translation_plugin": "1.5.0",
+        "engine_version": "1.1.0"
+    },
+    "counts": {
+        "pt_guides": 48,
+        "en_guide_records_pre": 0,
+        "en_conexao_category_terms_pre": 0
+    },
+    "pt_guides": {
+        "abrir-conta-bancaria-2": {
+            "id": 460,
+            "slug": "abrir-conta-bancaria-2",
+            "title": "Abrir uma Conta Bancária na Irlanda",
+            "content_sha256": "34cfc08d3672cbed86d507e746eeb5c621a77e0fde5e657a67bcb2cb96a6edea",
+            "content_bytes": 4469,
+            "excerpt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "excerpt_bytes": 0,
+            "status": "publish",
+            "date": "2026-08-15 09:03:47",
+            "date_gmt": "2026-08-15 09:03:47",
+            "author": 283039558,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Guia passo a passo para abrir uma conta bancária na Irlanda. Documentos necessários, bancos, custos e informações verificadas em fontes oficiais.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "financas"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "f2ca89231482d23dd912ced3c3bc6204f2054d9eeaf76b6c5db9325175e73ab7"
+        },
+        "abrir-empresa-2": {
+            "id": 469,
+            "slug": "abrir-empresa-2",
+            "title": "Abrir uma Empresa na Irlanda: Guia Completo",
+            "content_sha256": "aae8d08d5258f0264068647c27380033394c854d361084d26c3ca1583b1bfcb4",
+            "content_bytes": 4291,
+            "excerpt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "excerpt_bytes": 0,
+            "status": "publish",
+            "date": "2026-08-15 09:03:48",
+            "date_gmt": "2026-08-15 09:03:48",
+            "author": 283039558,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Guia para abrir empresa na Irlanda. Tipos de empresa, registro no CRO, obrigações fiscais e informações verificadas em fontes oficiais.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "negocios"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "3f66a1680f268fbdede85ca6ea12d73f4431d71b6ccf5162c1774bfd1b413610"
+        },
+        "alugar-casa-2": {
+            "id": 461,
+            "slug": "alugar-casa-2",
+            "title": "Alugar uma Casa na Irlanda: Guia Completo",
+            "content_sha256": "7da7a9af5b3f9420653376614e568eda8e4869ebe576dd5b8823e8464fed3ead",
+            "content_bytes": 5402,
+            "excerpt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "excerpt_bytes": 0,
+            "status": "publish",
+            "date": "2026-08-15 09:03:47",
+            "date_gmt": "2026-08-15 09:03:47",
+            "author": 283039558,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Guia completo para alugar casa na Irlanda. Onde procurar, documentos necessários, direitos do inquilino, custos e informações verificadas em fontes oficiais.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "moradia"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "b589d60c07c50603487bfad4e211387e7777c40d2a94d3eb7a90954afebfcb5b"
+        },
+        "assistencia-juridica-legal-aid-irlanda-brasileiros": {
+            "id": 10011,
+            "slug": "assistencia-juridica-legal-aid-irlanda-brasileiros",
+            "title": "Assistência jurídica na Irlanda: como solicitar Civil Legal Aid",
+            "content_sha256": "60e1f3aa1f61d1cf5992e176f36c61b9009d50473fee2d1239850d37eb6a0025",
+            "content_bytes": 5924,
+            "excerpt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "excerpt_bytes": 0,
+            "status": "publish",
+            "date": "2026-08-18 12:00:00",
+            "date_gmt": "2026-08-18 11:00:00",
+            "author": 283039559,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Veja como funciona a assistência jurídica civil do Legal Aid Board, quem pode solicitar, como funciona o means test e quais contribuições podem existir.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "justica-e-seguranca"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "49525eabea2e628a35841aa89d4943e0b2d99debf647842577a503ef67d96d28"
+        },
+        "autismo-na-irlanda-diagnostico-hse-apoio": {
+            "id": 5000,
+            "slug": "autismo-na-irlanda-diagnostico-hse-apoio",
+            "title": "Autismo na Irlanda: Diagnóstico, HSE e Onde Buscar Apoio",
+            "content_sha256": "f08ccf9a878641d5c19a6228761973fa5efa27ac336d0e3d01f67a16ffcf267f",
+            "content_bytes": 11425,
+            "excerpt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "excerpt_bytes": 0,
+            "status": "publish",
+            "date": "2026-08-19 00:00:00",
+            "date_gmt": "2026-08-19 00:00:00",
+            "author": 283039559,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Entenda como funciona o diagnóstico de autismo na Irlanda, quais serviços o HSE oferece, onde buscar apoio e quais organizações podem ajudar brasileiros e famílias.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "saude"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "10d4fbe3830acd668d16228ac2b482b73bd6ebd925f20dd4e2f02756f07eebae"
+        },
+        "autismo-viagem-aviao-irlanda-dublin-cork-airport": {
+            "id": 5001,
+            "slug": "autismo-viagem-aviao-irlanda-dublin-cork-airport",
+            "title": "Autismo e Viagens de Avião na Irlanda: Dublin e Cork Airport",
+            "content_sha256": "da7d82ff157e40649fa6a4b1b8e42f339fba5d09ea6b80a98564a66ce02421cc",
+            "content_bytes": 19803,
+            "excerpt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "excerpt_bytes": 0,
+            "status": "publish",
+            "date": "2026-08-19 00:00:00",
+            "date_gmt": "2026-08-19 00:00:00",
+            "author": 283039559,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Guia para pessoas autistas e famílias viajando pela Irlanda: Important Flyer, Sunflower, salas sensoriais, assistência no aeroporto, Aer Lingus e preparação.",
+                "_guide_status": "published",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "transporte"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "fe249b169ffd69826c3d4f062332e299522e97baa7b4fc0b977e6037d12fe982"
+        },
+        "cao": {
+            "id": 482,
+            "slug": "cao",
+            "title": "CAO na Irlanda: Como se Candidatar à Universidade",
+            "content_sha256": "536475af0a0c9df341a6546192d9bc78291933c298f36a2767ba8e71f439a817",
+            "content_bytes": 3802,
+            "excerpt_sha256": "2600eba6410863ed84c83bdadebc4ffa25cb2ff64e10e3dde3f670edc325b0e8",
+            "excerpt_bytes": 191,
+            "status": "publish",
+            "date": "2026-08-17 13:13:42",
+            "date_gmt": "2026-08-17 13:13:42",
+            "author": 283039558,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Guia sobre o CAO (Central Applications Office) na Irlanda. Como se candidatar, prazos, taxas e informações verificadas em fontes oficiais.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "educacao"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "bf879a699fc0f35a5e95f3d31136aaab1dd6a0d2a3831903f8a8092021f32ba5"
+        },
+        "carteira-de-motorista-2": {
+            "id": 463,
+            "slug": "carteira-de-motorista-2",
+            "title": "Carteira de Motorista na Irlanda: Como Trocar a CNH",
+            "content_sha256": "61c434b50e483dc0e9d14077957b403ae1d44d5118cbbcf0ee5219e9820ade72",
+            "content_bytes": 4542,
+            "excerpt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "excerpt_bytes": 0,
+            "status": "publish",
+            "date": "2026-08-15 09:03:47",
+            "date_gmt": "2026-08-15 09:03:47",
+            "author": 283039558,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Guia para obter a carteira de motorista na Irlanda. Troca da CNH brasileira, documentos, custos e informações verificadas em fontes oficiais.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "transporte"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "30a4ec9ce0d6be4620b9cc21224d92e6b9aa28e0857250aa84c64f32ba7c8e52"
+        },
+        "casamento-registro-nascimento-irlanda-brasileiros": {
+            "id": 10012,
+            "slug": "casamento-registro-nascimento-irlanda-brasileiros",
+            "title": "Casamento e registro de nascimento na Irlanda: guia para famílias brasileiras",
+            "content_sha256": "72c9c8c1b74f3ff492fdd1cd1e3bbdd0563e9e661d336d549fd317f8a9b2279c",
+            "content_bytes": 6093,
+            "excerpt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "excerpt_bytes": 0,
+            "status": "publish",
+            "date": "2026-08-18 12:00:00",
+            "date_gmt": "2026-08-18 11:00:00",
+            "author": 283039559,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Entenda como registrar nascimento na Irlanda e como funciona o casamento civil, incluindo aviso prévio, documentos, taxas e cuidados para estrangeiros.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "documentos"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "be5d4ed45ec492f6f53c30e59d4776b9961be5078529c01a41a14cd611acb268"
+        },
+        "checklist-viagem-internacional-irlanda-brasileiros-irp": {
+            "id": 10015,
+            "slug": "checklist-viagem-internacional-irlanda-brasileiros-irp",
+            "title": "Primeira viagem internacional com IRP: checklist de documentos para brasileiros",
+            "content_sha256": "24f57305c26904d893a1d5458555443584b9c12e7dff7f052f0153e3b3893b68",
+            "content_bytes": 4828,
+            "excerpt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "excerpt_bytes": 0,
+            "status": "publish",
+            "date": "2026-08-18 12:00:00",
+            "date_gmt": "2026-08-18 11:00:00",
+            "author": 283039559,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Checklist prático para brasileiros residentes na Irlanda antes de viajar: passaporte, IRP, destino, retorno e documentos de emergência.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "imigracao-e-vistos"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "d69fd5737efc353463978849afeb80644bb2eb494c25161e10e9229fd035be40"
+        },
+        "child-benefit-2": {
+            "id": 467,
+            "slug": "child-benefit-2",
+            "title": "Child Benefit na Irlanda: Guia Completo",
+            "content_sha256": "f664212945b095094f66d22cebbfaf70ffc162f5dc0d537704f60980c0b942a2",
+            "content_bytes": 3588,
+            "excerpt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "excerpt_bytes": 0,
+            "status": "publish",
+            "date": "2026-08-15 09:03:48",
+            "date_gmt": "2026-08-15 09:03:48",
+            "author": 283039558,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Guia sobre o Child Benefit na Irlanda. Valor, requisitos, como solicitar e informações verificadas em fontes oficiais.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "beneficios"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "0ee82470e87695e9e00df7c1d603eb9e87e5ecde9dc89a6d6f3324ff6423b9f1"
+        },
+        "cidadania-irlandesa-2": {
+            "id": 465,
+            "slug": "cidadania-irlandesa-2",
+            "title": "Cidadania Irlandesa: Guia Completo de Naturalização",
+            "content_sha256": "e4ade2a8fb47165cd074f312ff5b6032998629842488928e78341af40b6d2b82",
+            "content_bytes": 5683,
+            "excerpt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "excerpt_bytes": 0,
+            "status": "publish",
+            "date": "2026-08-15 09:03:48",
+            "date_gmt": "2026-08-15 09:03:48",
+            "author": 283039558,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Guia sobre cidadania irlandesa. Requisitos de residência, processo de naturalização, taxas e informações verificadas em fontes oficiais.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "documentos"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "ec113ef80d910017df8170e7032221d43cf5998c16bfad414f780fac54795c62"
+        },
+        "comprar-carro-2": {
+            "id": 462,
+            "slug": "comprar-carro-2",
+            "title": "Comprar um Carro na Irlanda: Guia Completo",
+            "content_sha256": "2339a0a909a0c62d01b8b9b7c5d8a476b730c1d34ef4fafd5ccea51623906b61",
+            "content_bytes": 4512,
+            "excerpt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "excerpt_bytes": 0,
+            "status": "publish",
+            "date": "2026-08-15 09:03:47",
+            "date_gmt": "2026-08-15 09:03:47",
+            "author": 283039558,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Guia para comprar carro na Irlanda. Documentação, NCT, motor tax, seguro e informações verificadas em fontes oficiais.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "transporte"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "db6b88682a2a62e3b5561bce13d08e8a3097d2165099847445deb521bf0f8cca"
+        },
+        "direitos-consumidor": {
+            "id": 483,
+            "slug": "direitos-consumidor",
+            "title": "Direitos do Consumidor na Irlanda: Guia Completo",
+            "content_sha256": "ca4d5afa28f0e07b5f0adb21be2c60fb30524dd0b86c29ca0211ad1f86cddea3",
+            "content_bytes": 3906,
+            "excerpt_sha256": "9460bf0c23ab905cc4508c3da4ccd575a40d50c4e207b043e13e75f5852f416f",
+            "excerpt_bytes": 197,
+            "status": "publish",
+            "date": "2026-08-17 13:13:42",
+            "date_gmt": "2026-08-17 13:13:42",
+            "author": 283039558,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Guia sobre direitos do consumidor na Irlanda. Devoluções, garantias, compras online e informações verificadas em fontes oficiais.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "financas"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "37e6e6e343839885be0f43770f0545c38ff6450291797f560263713bb54b230e"
+        },
+        "direitos-trabalhistas": {
+            "id": 473,
+            "slug": "direitos-trabalhistas",
+            "title": "Direitos Trabalhistas na Irlanda: Guia Completo",
+            "content_sha256": "3811d8957754daf8137bc5044b61a475da6acfdf0d95f0a8aacc4c22dbcaa993",
+            "content_bytes": 4962,
+            "excerpt_sha256": "078a772fe7c76c9dd80ad3a6ec086eb6b53b5d6ff21cf027ecdddc0b5eabc7e6",
+            "excerpt_bytes": 219,
+            "status": "publish",
+            "date": "2026-08-17 13:13:41",
+            "date_gmt": "2026-08-17 13:13:41",
+            "author": 283039558,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Guia sobre direitos trabalhistas na Irlanda. Salário mínimo, férias, horas de trabalho, aviso prévio e informações verificadas em fontes oficiais.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "empregos"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "93b17163e07026d9b7bf02174644646d87b65ff616d82d74ee21ec7b013e28d1"
+        },
+        "ehic-irlanda-brasileiros-residentes": {
+            "id": 10007,
+            "slug": "ehic-irlanda-brasileiros-residentes",
+            "title": "EHIC na Irlanda: como brasileiros residentes podem obter o Cartão Europeu de Seguro de Doença",
+            "content_sha256": "bcc92e548dccf14e60abb3cbd0f6e64ffe57035e3a5b8e785822e86de0fe9cec",
+            "content_bytes": 5190,
+            "excerpt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "excerpt_bytes": 0,
+            "status": "publish",
+            "date": "2026-08-18 12:00:00",
+            "date_gmt": "2026-08-18 11:00:00",
+            "author": 283039559,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Saiba quem pode solicitar o EHIC na Irlanda, quais documentos o HSE pede, onde ele é válido e por que não substitui seguro de viagem.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "saude"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "d3ae5c00d76f9a7d2f0d176e10721ef3ab3b0983ed4f3f1065ceca32c44c3ec4"
+        },
+        "eircode": {
+            "id": 479,
+            "slug": "eircode",
+            "title": "Eircode na Irlanda: O que é e Como Encontrar",
+            "content_sha256": "3fdbaf942a3b53abe0734240eb4be84d23c95ff9eb63c6ca691dd9109ef884f3",
+            "content_bytes": 2894,
+            "excerpt_sha256": "19ef9bf8b24a5b6706fc273909f2a5ea04fff817b317f0cfaf596044f03c0b39",
+            "excerpt_bytes": 171,
+            "status": "publish",
+            "date": "2026-08-17 13:13:41",
+            "date_gmt": "2026-08-17 13:13:41",
+            "author": 283039558,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Guia sobre o Eircode na Irlanda. O que é, como encontrar, por que é importante e informações verificadas em fontes oficiais.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "documentos"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "a1e2cb5cd1e9324d911ec0a926ab26821f2385263e86b34e163b8bdbd691d273"
+        },
+        "employment-permit-irlanda-brasileiros": {
+            "id": 10003,
+            "slug": "employment-permit-irlanda-brasileiros",
+            "title": "Employment Permit na Irlanda: quando um brasileiro precisa de permissão para trabalhar",
+            "content_sha256": "59a2d29c3afc0842264547921186471ead8ed516430eb504919d8171b620df10",
+            "content_bytes": 6366,
+            "excerpt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "excerpt_bytes": 0,
+            "status": "publish",
+            "date": "2026-08-18 12:00:00",
+            "date_gmt": "2026-08-18 11:00:00",
+            "author": 283039559,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Entenda quando brasileiros precisam de Employment Permit para trabalhar na Irlanda, as diferenças entre Critical Skills e General Employment Permit e os principais passos.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "empregos"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "7a1344def0fa0ecfa8cfcebb79fd00c257ce4dfd452c91bc0470ece31e7be4ba"
+        },
+        "garda": {
+            "id": 485,
+            "slug": "garda",
+            "title": "Garda na Irlanda: Polícia e Emergências",
+            "content_sha256": "bceefba552443df79bf38b100dd2dbd83477dd5c7b55216a36a0f0f97f2571c5",
+            "content_bytes": 3466,
+            "excerpt_sha256": "ed88feeb93a639daf27d20fc6abaa65b57ebc6dd1e85941d56af9fa5f971d095",
+            "excerpt_bytes": 196,
+            "status": "publish",
+            "date": "2026-08-17 13:13:42",
+            "date_gmt": "2026-08-17 13:13:42",
+            "author": 283039558,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Guia sobre a Garda (polícia) na Irlanda. Números de emergência, como interagir e informações verificadas em fontes oficiais.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "justica-e-seguranca"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "ac438ae5fb073f98290ceacba49114acaa70404ffaf69d197eae92418b74929b"
+        },
+        "gp-registration-2": {
+            "id": 459,
+            "slug": "gp-registration-2",
+            "title": "Como se registrar em um GP (Médico de Família) na Irlanda",
+            "content_sha256": "ed990288e0824e5dd6a7391e62b420936d436fdc094a46a38b613ba45d60f301",
+            "content_bytes": 4320,
+            "excerpt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "excerpt_bytes": 0,
+            "status": "publish",
+            "date": "2026-08-15 09:03:47",
+            "date_gmt": "2026-08-15 09:03:47",
+            "author": 283039558,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Guia para se registrar em um GP (médico de família) na Irlanda. Como encontrar, quanto custa, documentos necessários e informações verificadas em fontes oficiais.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "saude"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "d37bd3efdcb2fb1029b2c19a76f9bb5b6cb64c45b34341673f21a2466193096b"
+        },
+        "hap": {
+            "id": 480,
+            "slug": "hap",
+            "title": "HAP na Irlanda: Auxílio para Pagar Aluguel",
+            "content_sha256": "93f4f48f8551d3aefdc51a65facbc211badaaf1429df750ebc98b5b83c756d89",
+            "content_bytes": 3661,
+            "excerpt_sha256": "3314746c1cc50e62a3642f1ad9980dae70174b9951f2e3cdb2130068d3de2fbb",
+            "excerpt_bytes": 175,
+            "status": "publish",
+            "date": "2026-08-17 13:13:42",
+            "date_gmt": "2026-08-17 13:13:42",
+            "author": 283039558,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Guia sobre o HAP (Housing Assistance Payment) na Irlanda. Quem pode solicitar, como funciona e informações verificadas em fontes oficiais.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "moradia"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "e4b606e08cb70e706b262dd4ecf51acb696e0a2afc9a7102a36c2cb849e5ec4c"
+        },
+        "hse-irlanda-gp-out-of-hours-injury-unit-emergency-department": {
+            "id": 10006,
+            "slug": "hse-irlanda-gp-out-of-hours-injury-unit-emergency-department",
+            "title": "HSE na Irlanda: quando procurar GP, GP out-of-hours, Injury Unit ou Emergency Department",
+            "content_sha256": "d7c676f19a1e43fca333023372061558b162ad1643538e5cb5ba757486e8fc22",
+            "content_bytes": 5685,
+            "excerpt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "excerpt_bytes": 0,
+            "status": "publish",
+            "date": "2026-08-18 12:00:00",
+            "date_gmt": "2026-08-18 11:00:00",
+            "author": 283039559,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Entenda onde procurar atendimento médico na Irlanda: GP, GP out-of-hours, Injury Unit e Emergency Department, incluindo custos e quando ligar para 112 ou 999.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "saude"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "cf38c928eb93fbc1deed6b8ce5ee542a3b058e33ec8b9bce4fa0890b1d2a1025"
+        },
+        "impostos-2": {
+            "id": 464,
+            "slug": "impostos-2",
+            "title": "Impostos na Irlanda: Guia Completo (Income Tax, USC, PRSI)",
+            "content_sha256": "4772c42b6b81a8cdf7781e42dff39f6a44dca39d8b6b5f18ae7d5115888a2b78",
+            "content_bytes": 6109,
+            "excerpt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "excerpt_bytes": 0,
+            "status": "publish",
+            "date": "2026-08-15 09:03:48",
+            "date_gmt": "2026-08-15 09:03:48",
+            "author": 283039558,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Guia completo sobre impostos na Irlanda. Income Tax, USC, PRSI, PAYE, créditos fiscais e como declarar. Informação verificada em fontes oficiais.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "impostos-e-revenue"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "dfe7487d490f57f57b1e5587ac5a01e1080ee50e4a282abc6ee0809e0fd572f3"
+        },
+        "irp-renewal-2": {
+            "id": 471,
+            "slug": "irp-renewal-2",
+            "title": "Renovação do IRP na Irlanda: Guia Completo",
+            "content_sha256": "d957dd999926a050a9960fe0b2a68a9ae71ecac8b5ad9e872a24d9b0fd09abe7",
+            "content_bytes": 3872,
+            "excerpt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "excerpt_bytes": 0,
+            "status": "publish",
+            "date": "2026-08-15 09:03:48",
+            "date_gmt": "2026-08-15 09:03:48",
+            "author": 283039558,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Guia para renovação do IRP (Irish Residence Permit) na Irlanda. Documentos, taxas, processo e informações verificadas em fontes oficiais.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "imigracao-e-vistos"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "84f8bfa4e80aec2e6f0e1b49c3cbcc1faa0f15af5674afb297e045038629eca7"
+        },
+        "leap-card-irlanda-como-usar": {
+            "id": 10010,
+            "slug": "leap-card-irlanda-como-usar",
+            "title": "Leap Card na Irlanda: como usar o cartão de transporte e pagar menos",
+            "content_sha256": "46f2dc7c8d68d429e828919b957660acdc6896f21113ddb48786835955954814",
+            "content_bytes": 5024,
+            "excerpt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "excerpt_bytes": 0,
+            "status": "publish",
+            "date": "2026-08-18 12:00:00",
+            "date_gmt": "2026-08-18 11:00:00",
+            "author": 283039559,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Aprenda como funciona o TFI Leap Card, onde usar, como recarregar, quais limites de tarifa existem e o que fazer se perder o cartão.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "transporte"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "ee52f423c09472bf2ef37cee0d013217db13f4f01c3def1cf04c00b0d0416eb6"
+        },
+        "learner-permit-theory-test-irlanda-cnh-brasileira": {
+            "id": 10009,
+            "slug": "learner-permit-theory-test-irlanda-cnh-brasileira",
+            "title": "CNH brasileira na Irlanda: quando você precisa fazer theory test e learner permit",
+            "content_sha256": "baec746f96e8fd6894534a53539429bd900ed4b5962c0fa43397e551edb56d51",
+            "content_bytes": 5649,
+            "excerpt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "excerpt_bytes": 0,
+            "status": "publish",
+            "date": "2026-08-18 12:00:00",
+            "date_gmt": "2026-08-18 11:00:00",
+            "author": 283039559,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Entenda o caminho para brasileiros que não podem trocar a CNH estrangeira: theory test, learner permit, EDT e driving test.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "transporte"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "3cf6ae70f1eee947fd1cf8d51ab3de14c08b256639dc620655414a53dd16a1d5"
+        },
+        "medical-card-2": {
+            "id": 458,
+            "slug": "medical-card-2",
+            "title": "Medical Card na Irlanda: Guia Completo",
+            "content_sha256": "fd34da0e0632615dc0ed44108a8d3cf4200a5f309e0f14f60e354686cf0ba085",
+            "content_bytes": 5679,
+            "excerpt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "excerpt_bytes": 0,
+            "status": "publish",
+            "date": "2026-08-15 09:03:47",
+            "date_gmt": "2026-08-15 09:03:47",
+            "author": 283039558,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Guia completo sobre o Medical Card na Irlanda. Quem tem direito, limites de renda, benefícios, como solicitar e informações verificadas em fontes oficiais.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "saude"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "1b84b87374a1a6cf702ea19a0fd99f35b8f81d282abf97b279bc72273586871f"
+        },
+        "motor-tax": {
+            "id": 478,
+            "slug": "motor-tax",
+            "title": "Motor Tax na Irlanda: Como Pagar",
+            "content_sha256": "8d591f66fae2604263a7a6b5eb930aee96645c2e66590cf3c2312d9b3cd9e094",
+            "content_bytes": 3228,
+            "excerpt_sha256": "bcd6a3ce989e213e18c755cf72cccebf1c266dc35e6af940c1c21315bca393d4",
+            "excerpt_bytes": 158,
+            "status": "publish",
+            "date": "2026-08-17 13:13:41",
+            "date_gmt": "2026-08-17 13:13:41",
+            "author": 283039558,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Guia sobre o Motor Tax na Irlanda. Como pagar, valores, requisitos e informações verificadas em fontes oficiais.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "transporte"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "21dc6db726fc1d7d4dc7b893a6527f04e379c93ff4da5b9604b5c8d170ec7c63"
+        },
+        "mygovid": {
+            "id": 472,
+            "slug": "mygovid",
+            "title": "MyGovID na Irlanda: Como Criar e Usar",
+            "content_sha256": "2b3eea5c87d911b5016697f5276514016e8955e18c02a0400db8d59617af76e6",
+            "content_bytes": 3469,
+            "excerpt_sha256": "ef0285c15766d31bb85a63baccbbfdd8b7a918a776ac12db277f45fd4e044966",
+            "excerpt_bytes": 181,
+            "status": "publish",
+            "date": "2026-08-17 13:13:41",
+            "date_gmt": "2026-08-17 13:13:41",
+            "author": 283039558,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Guia sobre o MyGovID na Irlanda. O que é, como criar conta, níveis de verificação e serviços acessíveis. Informação verificada em fontes oficiais.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "documentos"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "b4435da8dc521ce25552eaac6c15febac8cb3644ac1cfd12aa01ebda5cd72294"
+        },
+        "nct": {
+            "id": 477,
+            "slug": "nct",
+            "title": "NCT na Irlanda: Guia da Inspeção Técnica",
+            "content_sha256": "165ff5cb66d50095056d68977a3a0803368f947ff33c6db7bf4274a1c07272b2",
+            "content_bytes": 3383,
+            "excerpt_sha256": "bfed4499840485da9191c0617c8151d606509c6b9e07139944fc6bdb2ad2792a",
+            "excerpt_bytes": 182,
+            "status": "publish",
+            "date": "2026-08-17 13:13:41",
+            "date_gmt": "2026-08-17 13:13:41",
+            "author": 283039558,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Guia sobre o NCT (National Car Test) na Irlanda. Quem precisa, quando fazer, custos e informações verificadas em fontes oficiais.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "transporte"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "a8ef0c31c633dcd4715a56a29ff116a4d15e0169439a3e471b8bcdcadd92f407"
+        },
+        "passaporte-irlandes-2": {
+            "id": 466,
+            "slug": "passaporte-irlandes-2",
+            "title": "Passaporte Irlandês: Como Solicitar",
+            "content_sha256": "7b09db042c3ad018e6b819e62e6cb329dcb502686ac7fd6066fa9a99b82c4b21",
+            "content_bytes": 4572,
+            "excerpt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "excerpt_bytes": 0,
+            "status": "publish",
+            "date": "2026-08-15 09:03:48",
+            "date_gmt": "2026-08-15 09:03:48",
+            "author": 283039558,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Guia para solicitar o passaporte irlandês. Documentos, taxas, prazos e processo online. Informação verificada em fontes oficiais.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "documentos"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "60e2cf6506e1a54df28cb77183d0fcd33cfc510aa0d30d313d58585699e17685"
+        },
+        "pps-number-2": {
+            "id": 457,
+            "slug": "pps-number-2",
+            "title": "Como conseguir um PPS Number na Irlanda",
+            "content_sha256": "38eb3cce18ad1a0649bcc80a9de40a4b1b4ac384ccd558f656fe1e5d8d9fe193",
+            "content_bytes": 5712,
+            "excerpt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "excerpt_bytes": 0,
+            "status": "publish",
+            "date": "2026-08-15 09:03:47",
+            "date_gmt": "2026-08-15 09:03:47",
+            "author": 283039558,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Guia completo sobre como conseguir seu PPS Number na Irlanda. Documentos necessários, processo passo a passo, custos e prazos. Informação verificada em fontes oficiais.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "documentos"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "acffb03cdfecd190f2698f1a93f824c49e5a1d65c1a56516560c2d8c97603794"
+        },
+        "primeira-inscricao-irp-irlanda-brasileiros": {
+            "id": 10001,
+            "slug": "primeira-inscricao-irp-irlanda-brasileiros",
+            "title": "Primeira inscrição no IRP na Irlanda: passo a passo para brasileiros",
+            "content_sha256": "9fe9ba26bce5b49a9e8d602866a98165e472a53aeaf2b285dbd7f15bc329b9a2",
+            "content_bytes": 6841,
+            "excerpt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "excerpt_bytes": 0,
+            "status": "publish",
+            "date": "2026-08-18 12:00:00",
+            "date_gmt": "2026-08-18 11:00:00",
+            "author": 283039559,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Veja como funciona a primeira inscrição no IRP para brasileiros e outros cidadãos de fora da UE\/EEE, quais documentos preparar, quanto custa e onde acompanhar o processo.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "imigracao-e-vistos"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "6a6b64272dec40b24f8481b75e4756299236325eca7b841edd08661e3c5bda5a"
+        },
+        "primeiro-emprego-irlanda-emergency-tax": {
+            "id": 10004,
+            "slug": "primeiro-emprego-irlanda-emergency-tax",
+            "title": "Primeiro emprego na Irlanda: como evitar o Emergency Tax",
+            "content_sha256": "988cf138ab6eb8a2426c45cafc450279fc52808598bd3e1265d1e0ecac17e911",
+            "content_bytes": 5705,
+            "excerpt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "excerpt_bytes": 0,
+            "status": "publish",
+            "date": "2026-08-18 12:00:00",
+            "date_gmt": "2026-08-18 11:00:00",
+            "author": 283039559,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Começou seu primeiro emprego na Irlanda? Veja como registrar o emprego no Revenue, usar o myAccount, evitar Emergency Tax e conferir seu Tax Credit Certificate.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "impostos-e-revenue"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "f0c155fb145848a00b1112ad523d32b7f827a8ace62d7d922342f07df4cf4573"
+        },
+        "protecao-dados": {
+            "id": 484,
+            "slug": "protecao-dados",
+            "title": "Proteção de Dados na Irlanda: Seus Direitos (GDPR)",
+            "content_sha256": "4c38364138a6741bfa63bc957782a39f6963abfc049a05e38f09853aab9ea255",
+            "content_bytes": 3495,
+            "excerpt_sha256": "ec01e12c4357e689240feb3dc9f478cddffa4f4bcd84e3afc1687b582728f102",
+            "excerpt_bytes": 177,
+            "status": "publish",
+            "date": "2026-08-17 13:13:42",
+            "date_gmt": "2026-08-17 13:13:42",
+            "author": 283039558,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Guia sobre proteção de dados na Irlanda. Seus direitos sob o GDPR, como exercê-los e informações verificadas em fontes oficiais.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "documentos"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "ca6ebf2780e1b3576df2ed3c84288e7197fd8b5c18f49510e5156c3b5ad2b016"
+        },
+        "reclamacao-trabalhista-wrc-irlanda-brasileiros": {
+            "id": 10016,
+            "slug": "reclamacao-trabalhista-wrc-irlanda-brasileiros",
+            "title": "Como registrar e acompanhar uma reclamação trabalhista no WRC",
+            "content_sha256": "2b5be34cd0429ecbe557278d78976a02cb65ed97b7438184582736a632f3dfa2",
+            "content_bytes": 5413,
+            "excerpt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "excerpt_bytes": 0,
+            "status": "publish",
+            "date": "2026-08-18 12:00:00",
+            "date_gmt": "2026-08-18 11:00:00",
+            "author": 283039559,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Entenda como apresentar uma reclamação ou disputa trabalhista ao Workplace Relations Commission (WRC) e o que guardar antes de iniciar o processo.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "empregos"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "f7c2d9b2a5be5d95788167a3a35689579d1f68fd061e6908181f612cdbe8df24"
+        },
+        "reclamar-banco-seguro-servico-financeiro-irlanda": {
+            "id": 10013,
+            "slug": "reclamar-banco-seguro-servico-financeiro-irlanda",
+            "title": "Como reclamar de banco, seguro ou serviço financeiro na Irlanda",
+            "content_sha256": "0b38286085c66fa6d5c126cdb4a5f30d6830a1bd1ab07f142b4b86f86411fa53",
+            "content_bytes": 6069,
+            "excerpt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "excerpt_bytes": 0,
+            "status": "publish",
+            "date": "2026-08-18 12:00:00",
+            "date_gmt": "2026-08-18 11:00:00",
+            "author": 283039559,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Saiba como verificar se uma instituição financeira é autorizada na Irlanda e como reclamar de banco, seguro, crédito ou outro serviço financeiro.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "financas"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "715413b30cb15d4a15ef848966b368bd7848278ce7fad9f9319ac8c3fa044099"
+        },
+        "reclamar-servico-publico-irlanda-ombudsman": {
+            "id": 10014,
+            "slug": "reclamar-servico-publico-irlanda-ombudsman",
+            "title": "Como reclamar de um serviço público na Irlanda: quando usar o Ombudsman",
+            "content_sha256": "aeb239d01b71874d6aeb0d2dc32e9bd630d797979dbff2b8ec0eade602c8e7a2",
+            "content_bytes": 5174,
+            "excerpt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "excerpt_bytes": 0,
+            "status": "publish",
+            "date": "2026-08-18 12:00:00",
+            "date_gmt": "2026-08-18 11:00:00",
+            "author": 283039559,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Veja como reclamar de um departamento do governo, autoridade local ou serviço público na Irlanda e quando o Office of the Ombudsman pode analisar a reclamação.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "servicos-publicos"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "1f14c6a15ec7ab1a25d073a79c08328fac1f9e26c15a229a396737e9bfbbe020"
+        },
+        "reconhecer-diploma-brasileiro-na-irlanda-naric-qqi": {
+            "id": 10008,
+            "slug": "reconhecer-diploma-brasileiro-na-irlanda-naric-qqi",
+            "title": "Como reconhecer diploma brasileiro na Irlanda: guia NARIC e QQI",
+            "content_sha256": "4275639e790c67f885b37f4fb3884de4f6c96e2d4de9ca63593f4247c5304eed",
+            "content_bytes": 5661,
+            "excerpt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "excerpt_bytes": 0,
+            "status": "publish",
+            "date": "2026-08-18 12:00:00",
+            "date_gmt": "2026-08-18 11:00:00",
+            "author": 283039559,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Veja como usar o NARIC Ireland\/QQI para comparar uma qualificação brasileira com o National Framework of Qualifications (NFQ) e quais são os limites da comparação.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "educacao"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "2a6fd57e71d00f0991efb177f40f9248eff33cc1cede5358f6f41610afc37785"
+        },
+        "revenue-myaccount": {
+            "id": 486,
+            "slug": "revenue-myaccount",
+            "title": "Revenue MyAccount na Irlanda: Como Usar",
+            "content_sha256": "fe3497fe4bf9773a82d4eaa386359f06669989677b23150ff5bd4f3a14e5dcdd",
+            "content_bytes": 3576,
+            "excerpt_sha256": "cf6fd688237cf4a62f43276c30cf7625c12b0f56e5155c582c9978619c1fc4ab",
+            "excerpt_bytes": 199,
+            "status": "publish",
+            "date": "2026-08-17 13:13:42",
+            "date_gmt": "2026-08-17 13:13:42",
+            "author": 283039558,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Guia sobre o Revenue MyAccount na Irlanda. Como criar conta, verificar créditos fiscais, solicitar reembolso e informações verificadas em fontes oficiais.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "impostos-e-revenue"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "cfe0d0ad93934601c2b8836b8e40ddf9ccb6d5ecc6a1ce268f4ec2bf29fdef61"
+        },
+        "rtb": {
+            "id": 481,
+            "slug": "rtb",
+            "title": "RTB na Irlanda: Seus Direitos como Inquilino",
+            "content_sha256": "bb787a5981cc932ff783b64b8a1fdd6aa5f8f43b897e2e735df1bfb1dda34e86",
+            "content_bytes": 3719,
+            "excerpt_sha256": "854503f594f358db2850e5b4266ee4949da714b6447eca0f40aa82a0927ede4c",
+            "excerpt_bytes": 194,
+            "status": "publish",
+            "date": "2026-08-17 13:13:42",
+            "date_gmt": "2026-08-17 13:13:42",
+            "author": 283039558,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Guia sobre o RTB (Residential Tenancies Board) na Irlanda. Seus direitos como inquilino, como registrar disputas e informações verificadas em fontes oficiais.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "moradia"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "2a6ef4512725f45da33b0a6ec1ce27a3d9e370318b5566642cf6ee0bdf40f393"
+        },
+        "servicos-emergencia": {
+            "id": 476,
+            "slug": "servicos-emergencia",
+            "title": "Serviços de Emergência na Irlanda: 112 e 999",
+            "content_sha256": "948ef75cce188ffd3e7cdbdcf518cd6214d99e4a3d95d6c2637f3cb3f55fa082",
+            "content_bytes": 3643,
+            "excerpt_sha256": "6031089c2f877eb018d238cee9596d5b2e9a73e909d892fcc3602515ea06f004",
+            "excerpt_bytes": 179,
+            "status": "publish",
+            "date": "2026-08-17 13:13:41",
+            "date_gmt": "2026-08-17 13:13:41",
+            "author": 283039558,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Guia sobre serviços de emergência na Irlanda. Números 112 e 999, como ligar, Eircode e informações verificadas em fontes oficiais.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "servicos-publicos"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "965be48539dd9d11710e26957aa89c622f2c4977c837cbcfd4795a29fc438130"
+        },
+        "social-welfare-2": {
+            "id": 468,
+            "slug": "social-welfare-2",
+            "title": "Social Welfare na Irlanda: Guia de Benefícios",
+            "content_sha256": "4df8f296e8993250d060c24e47b976d2455d34ec430502bf92ebb74a47078940",
+            "content_bytes": 4140,
+            "excerpt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "excerpt_bytes": 0,
+            "status": "publish",
+            "date": "2026-08-15 09:03:48",
+            "date_gmt": "2026-08-15 09:03:48",
+            "author": 283039558,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Guia sobre o Social Welfare na Irlanda. Benefícios disponíveis, requisitos, como solicitar e informações verificadas em fontes oficiais.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "beneficios"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "021cfc6b7d1d20996e95b9facc96f19873000112ca49cc617e0e443cd2698f92"
+        },
+        "sole-trader-autonomo-irlanda-brasileiros": {
+            "id": 10005,
+            "slug": "sole-trader-autonomo-irlanda-brasileiros",
+            "title": "Como trabalhar como autônomo (sole trader) na Irlanda",
+            "content_sha256": "682ce7c6a3566bb9706a6a878af0b5ad4d6a3affe6bde0bf2fe55e938740b4d9",
+            "content_bytes": 5870,
+            "excerpt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "excerpt_bytes": 0,
+            "status": "publish",
+            "date": "2026-08-18 12:00:00",
+            "date_gmt": "2026-08-18 11:00:00",
+            "author": 283039559,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Veja como organizar o registro fiscal como sole trader na Irlanda, quando registrar Income Tax, como usar o ROS e quais critérios de self-assessment observar.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "negocios"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "365003c5a1d0c69731cf74fcd4bc166fab426362fee0ae5e43edd658701a5173"
+        },
+        "susi": {
+            "id": 475,
+            "slug": "susi",
+            "title": "SUSI na Irlanda: Como Solicitar Bolsa de Estudos",
+            "content_sha256": "e32942d0f6378318860ce89ea29227564e3452030f31165693bdaef6515aa37d",
+            "content_bytes": 3649,
+            "excerpt_sha256": "de4caa4e121900dd015c836f5019a8874a8e53f254d6aeccf916ef40625c3370",
+            "excerpt_bytes": 182,
+            "status": "publish",
+            "date": "2026-08-17 13:13:41",
+            "date_gmt": "2026-08-17 13:13:41",
+            "author": 283039558,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Guia sobre o SUSI na Irlanda. Quem pode solicitar, tipos de bolsa, como aplicar e informações verificadas em fontes oficiais.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "educacao"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "1ab40ead87c24af3cfda17a0a35f661d5e5ee89f64f15b1e511302d223dbb1de"
+        },
+        "transporte-publico": {
+            "id": 474,
+            "slug": "transporte-publico",
+            "title": "Transporte Público na Irlanda: Guia Completo",
+            "content_sha256": "a8410a66694d2166caf9dcdfcc686b947a6629f097a72e7aee0109fea3ca1383",
+            "content_bytes": 3737,
+            "excerpt_sha256": "f51e77e9fe2b7050c582dbb91aadeac0156dc8d4b1f13be3533347a5ece9fe34",
+            "excerpt_bytes": 197,
+            "status": "publish",
+            "date": "2026-08-17 13:13:41",
+            "date_gmt": "2026-08-17 13:13:41",
+            "author": 283039558,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Guia sobre transporte público na Irlanda. Ônibus, trem, Luas, Leap Card e informações verificadas em fontes oficiais.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "transporte"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "0e9a885df2963593be8476906cf95e632d13bd64f688f499ef997645a7115d29"
+        },
+        "viajar-fora-irlanda-com-irp-brasileiros": {
+            "id": 10002,
+            "slug": "viajar-fora-irlanda-com-irp-brasileiros",
+            "title": "Viajar para fora da Irlanda com IRP: o que brasileiros precisam saber",
+            "content_sha256": "02e35fd6d8bb8e878677a8a3379debfbd51f81b48966bea5e992fc89c64805f0",
+            "content_bytes": 6079,
+            "excerpt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "excerpt_bytes": 0,
+            "status": "publish",
+            "date": "2026-08-18 12:00:00",
+            "date_gmt": "2026-08-18 11:00:00",
+            "author": 283039559,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Entenda quando o IRP permite retornar à Irlanda sem visto de reentrada, o que fazer se o cartão estiver perdido ou vencido e quais cuidados tomar antes de viajar.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "imigracao-e-vistos"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "4e021ab5a0b390d65fef55344de4a719718146745066176272e2c180cb4f18af"
+        },
+        "visto-irlanda-2": {
+            "id": 470,
+            "slug": "visto-irlanda-2",
+            "title": "Vistos e Imigração na Irlanda: Guia Completo",
+            "content_sha256": "f5db7cbf05b5ed2a5da1f547adc9ffdfc5e03b91bcd9ef1ae4710496eed7e623",
+            "content_bytes": 5592,
+            "excerpt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "excerpt_bytes": 0,
+            "status": "publish",
+            "date": "2026-08-15 09:03:48",
+            "date_gmt": "2026-08-15 09:03:48",
+            "author": 283039558,
+            "menu_order": 0,
+            "thumbnail": 0,
+            "lang": "pt",
+            "meta": {
+                "conexao_meta_description": "Guia sobre vistos e imigração na Irlanda. Tipos de permissão (Stamps), Employment Permit, IRP e informações verificadas em fontes oficiais.",
+                "_guide_status": "",
+                "_conexao_featured": ""
+            },
+            "terms": {
+                "conexao_category": [
+                    "imigracao-e-vistos"
+                ],
+                "conexao_county": [],
+                "conexao_tag": [],
+                "conexao_town": []
+            },
+            "record_sha256": "93968e4813aed4f990ef4ab1ea1f103821945243ce9ca265505cdd18bb025846"
+        }
+    },
+    "taxonomy_terms": {
+        "conexao_category": [
+            {
+                "term_id": 1691,
+                "slug": "autocross",
+                "name": "Autocross",
+                "count": 10,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1700,
+                "slug": "autotest",
+                "name": "Autotest",
+                "count": 4,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1424,
+                "slug": "aventura",
+                "name": "Aventura",
+                "count": 4,
+                "lang": "pt",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1365,
+                "slug": "beneficios",
+                "name": "Benefícios",
+                "count": 2,
+                "lang": "pt",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1423,
+                "slug": "caminhadas",
+                "name": "Caminhadas",
+                "count": 13,
+                "lang": "pt",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1703,
+                "slug": "car-racing",
+                "name": "Car Racing",
+                "count": 2,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1427,
+                "slug": "castelos",
+                "name": "Castelos",
+                "count": 26,
+                "lang": "pt",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1430,
+                "slug": "cidades",
+                "name": "Cidades",
+                "count": 6,
+                "lang": "pt",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1690,
+                "slug": "circuit-racing",
+                "name": "Circuit Racing",
+                "count": 3,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1461,
+                "slug": "comedy",
+                "name": "Comedy",
+                "count": 4,
+                "lang": "pt",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1458,
+                "slug": "community",
+                "name": "Community",
+                "count": 17,
+                "lang": "pt",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1421,
+                "slug": "cultura",
+                "name": "Cultura",
+                "count": 10,
+                "lang": "pt",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1368,
+                "slug": "documentos",
+                "name": "Documentos",
+                "count": 7,
+                "lang": "pt",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1702,
+                "slug": "drifting",
+                "name": "Drifting",
+                "count": 2,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1367,
+                "slug": "educacao",
+                "name": "Educação",
+                "count": 3,
+                "lang": "pt",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1360,
+                "slug": "empregos",
+                "name": "Empregos",
+                "count": 3,
+                "lang": "pt",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1693,
+                "slug": "endurance-trial",
+                "name": "Endurance Trial",
+                "count": 3,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1362,
+                "slug": "familia",
+                "name": "Família",
+                "count": 0,
+                "lang": "pt",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1460,
+                "slug": "festivals",
+                "name": "Festivals",
+                "count": 4,
+                "lang": "pt",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1364,
+                "slug": "financas",
+                "name": "Finanças",
+                "count": 3,
+                "lang": "pt",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1432,
+                "slug": "greenways",
+                "name": "Greenways",
+                "count": 4,
+                "lang": "pt",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1383,
+                "slug": "heritage",
+                "name": "Heritage",
+                "count": 0,
+                "lang": "pt",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1459,
+                "slug": "heritage-week",
+                "name": "Heritage Week",
+                "count": 0,
+                "lang": "pt",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1420,
+                "slug": "historia",
+                "name": "História",
+                "count": 56,
+                "lang": "pt",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1431,
+                "slug": "ilhas",
+                "name": "Ilhas",
+                "count": 9,
+                "lang": "pt",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1412,
+                "slug": "imigracao-e-vistos",
+                "name": "Imigração e Vistos",
+                "count": 5,
+                "lang": "pt",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1411,
+                "slug": "impostos-e-revenue",
+                "name": "Impostos e Revenue",
+                "count": 3,
+                "lang": "pt",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1425,
+                "slug": "jardins",
+                "name": "Jardins",
+                "count": 16,
+                "lang": "pt",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1414,
+                "slug": "justica-e-seguranca",
+                "name": "Justiça e Segurança",
+                "count": 2,
+                "lang": "pt",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1696,
+                "slug": "karting",
+                "name": "Karting",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1697,
+                "slug": "mayo-motorsport-club",
+                "name": "Mayo Motorsport Club",
+                "count": 2,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1457,
+                "slug": "member",
+                "name": "Member",
+                "count": 42,
+                "lang": "pt",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1695,
+                "slug": "midget-car-race",
+                "name": "Midget Car Race",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1359,
+                "slug": "moradia",
+                "name": "Moradia",
+                "count": 3,
+                "lang": "pt",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1694,
+                "slug": "multi-venue-autotest",
+                "name": "Multi Venue Autotest",
+                "count": 4,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1426,
+                "slug": "museus",
+                "name": "Museus",
+                "count": 17,
+                "lang": "pt",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1964,
+                "slug": "music",
+                "name": "Music",
+                "count": 4,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1419,
+                "slug": "natureza",
+                "name": "Natureza",
+                "count": 52,
+                "lang": "pt",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1699,
+                "slug": "navigation-trial",
+                "name": "Navigation Trial",
+                "count": 6,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1370,
+                "slug": "negocios",
+                "name": "Negócios",
+                "count": 2,
+                "lang": "pt",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1366,
+                "slug": "onde-comer",
+                "name": "Onde Comer",
+                "count": 0,
+                "lang": "pt",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1433,
+                "slug": "outros",
+                "name": "Outros",
+                "count": 0,
+                "lang": "pt",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1429,
+                "slug": "patrimonio",
+                "name": "Patrimônio",
+                "count": 2,
+                "lang": "pt",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1422,
+                "slug": "praias",
+                "name": "Praias",
+                "count": 10,
+                "lang": "pt",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1689,
+                "slug": "rally",
+                "name": "Rally",
+                "count": 11,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1698,
+                "slug": "rallycross",
+                "name": "Rallycross",
+                "count": 2,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1701,
+                "slug": "rallysprint",
+                "name": "Rallysprint",
+                "count": 3,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1361,
+                "slug": "saude",
+                "name": "Saúde",
+                "count": 5,
+                "lang": "pt",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1413,
+                "slug": "servicos-publicos",
+                "name": "Serviços Públicos",
+                "count": 2,
+                "lang": "pt",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1692,
+                "slug": "sporting-trial",
+                "name": "Sporting Trial",
+                "count": 8,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1607,
+                "slug": "test",
+                "name": "Test",
+                "count": 0,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1966,
+                "slug": "test-pt",
+                "name": "Test",
+                "count": 0,
+                "lang": "pt",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1363,
+                "slug": "transporte",
+                "name": "Transporte",
+                "count": 8,
+                "lang": "pt",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1371,
+                "slug": "treinamento",
+                "name": "Treinamento",
+                "count": 0,
+                "lang": "pt",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1369,
+                "slug": "turismo",
+                "name": "Turismo",
+                "count": 0,
+                "lang": "pt",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1451,
+                "slug": "vida-na-irlanda",
+                "name": "Vida na Irlanda",
+                "count": 1,
+                "lang": "pt",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1428,
+                "slug": "vida-selvagem",
+                "name": "Vida Selvagem",
+                "count": 7,
+                "lang": "pt",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+        ],
+        "conexao_county": [
+            {
+                "term_id": 1448,
+                "slug": "carlow",
+                "name": "Carlow",
+                "count": 41,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1435,
+                "slug": "cavan",
+                "name": "Cavan",
+                "count": 39,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1445,
+                "slug": "clare",
+                "name": "Clare",
+                "count": 89,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1374,
+                "slug": "cork",
+                "name": "Cork",
+                "count": 421,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1437,
+                "slug": "donegal",
+                "name": "Donegal",
+                "count": 86,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1372,
+                "slug": "dublin",
+                "name": "Dublin",
+                "count": 367,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1375,
+                "slug": "galway",
+                "name": "Galway",
+                "count": 202,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1450,
+                "slug": "kerry",
+                "name": "Kerry",
+                "count": 76,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1377,
+                "slug": "kildare",
+                "name": "Kildare",
+                "count": 78,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1447,
+                "slug": "kilkenny",
+                "name": "Kilkenny",
+                "count": 74,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1373,
+                "slug": "laois",
+                "name": "Laois",
+                "count": 125,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1439,
+                "slug": "leitrim",
+                "name": "Leitrim",
+                "count": 53,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1376,
+                "slug": "limerick",
+                "name": "Limerick",
+                "count": 35,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1443,
+                "slug": "longford",
+                "name": "Longford",
+                "count": 16,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1434,
+                "slug": "louth",
+                "name": "Louth",
+                "count": 62,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1441,
+                "slug": "mayo",
+                "name": "Mayo",
+                "count": 73,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1378,
+                "slug": "meath",
+                "name": "Meath",
+                "count": 129,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1436,
+                "slug": "monaghan",
+                "name": "Monaghan",
+                "count": 21,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1444,
+                "slug": "offaly",
+                "name": "Offaly",
+                "count": 37,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1642,
+                "slug": "ph3c-test-county-alfa",
+                "name": "Teste Alfa (PH3C)",
+                "count": 0,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1644,
+                "slug": "ph3c-test-county-omega",
+                "name": "Teste Omega (PH3C)",
+                "count": 0,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1643,
+                "slug": "ph3c-test-county-zeta",
+                "name": "Teste Zeta (PH3C)",
+                "count": 0,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1440,
+                "slug": "roscommon",
+                "name": "Roscommon",
+                "count": 16,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1438,
+                "slug": "sligo",
+                "name": "Sligo",
+                "count": 78,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1446,
+                "slug": "tipperary",
+                "name": "Tipperary",
+                "count": 48,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1380,
+                "slug": "waterford",
+                "name": "Waterford",
+                "count": 60,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1442,
+                "slug": "westmeath",
+                "name": "Westmeath",
+                "count": 54,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1449,
+                "slug": "wexford",
+                "name": "Wexford",
+                "count": 57,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1379,
+                "slug": "wicklow",
+                "name": "Wicklow",
+                "count": 57,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+        ],
+        "conexao_tag": [],
+        "conexao_town": [
+            {
+                "term_id": 1387,
+                "slug": "abbeyleix",
+                "name": "Abbeyleix",
+                "count": 4,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1810,
+                "slug": "adare",
+                "name": "Adare",
+                "count": 2,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1778,
+                "slug": "allagheemore",
+                "name": "Allagheemore",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1819,
+                "slug": "anglesborough",
+                "name": "Anglesborough",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1944,
+                "slug": "annamoe",
+                "name": "Annamoe",
+                "count": 2,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1947,
+                "slug": "annamore",
+                "name": "Annamore",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1723,
+                "slug": "ardara",
+                "name": "Ardara",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1933,
+                "slug": "arklow",
+                "name": "Arklow",
+                "count": 3,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1736,
+                "slug": "arranmore-island",
+                "name": "Arranmore Island",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1859,
+                "slug": "ashbourne",
+                "name": "Ashbourne",
+                "count": 9,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1905,
+                "slug": "athboy",
+                "name": "Athboy",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1754,
+                "slug": "athenry",
+                "name": "Athenry",
+                "count": 2,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1921,
+                "slug": "athlone",
+                "name": "Athlone",
+                "count": 14,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1783,
+                "slug": "athy",
+                "name": "Athy",
+                "count": 2,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1943,
+                "slug": "aughavannagh",
+                "name": "Aughavannagh",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1823,
+                "slug": "aughnacliffe",
+                "name": "Aughnacliffe",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1742,
+                "slug": "bailieborough",
+                "name": "Bailieborough",
+                "count": 5,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1839,
+                "slug": "balla",
+                "name": "Balla",
+                "count": 2,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1922,
+                "slug": "ballaghaderreen",
+                "name": "Ballaghaderreen",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1838,
+                "slug": "ballina",
+                "name": "Ballina",
+                "count": 9,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1797,
+                "slug": "ballinaglera",
+                "name": "Ballinaglera",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1610,
+                "slug": "ballinamore",
+                "name": "Ballinamore",
+                "count": 20,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1735,
+                "slug": "ballintra",
+                "name": "Ballintra",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1728,
+                "slug": "ballybofey",
+                "name": "Ballybofey",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1770,
+                "slug": "ballybunion",
+                "name": "Ballybunion",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1740,
+                "slug": "ballyconnell",
+                "name": "Ballyconnell",
+                "count": 2,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1841,
+                "slug": "ballyhaunis",
+                "name": "Ballyhaunis",
+                "count": 2,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1824,
+                "slug": "ballymahon",
+                "name": "Ballymahon",
+                "count": 3,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1787,
+                "slug": "ballymany",
+                "name": "Ballymany",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1820,
+                "slug": "ballyorgan",
+                "name": "Ballyorgan",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1726,
+                "slug": "ballyshannon",
+                "name": "Ballyshannon",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1713,
+                "slug": "ballyteige",
+                "name": "Ballyteige",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1684,
+                "slug": "ballyvourney",
+                "name": "Ballyvourney",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1916,
+                "slug": "banagher",
+                "name": "Banagher",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1777,
+                "slug": "banna-mountain",
+                "name": "Banna Mountain",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1750,
+                "slug": "barna",
+                "name": "Barna",
+                "count": 2,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1848,
+                "slug": "belmullet",
+                "name": "Belmullet",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1881,
+                "slug": "bettystown",
+                "name": "Bettystown",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1913,
+                "slug": "birr",
+                "name": "Birr",
+                "count": 2,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1831,
+                "slug": "blackrock",
+                "name": "Blackrock",
+                "count": 6,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1790,
+                "slug": "blackwood",
+                "name": "Blackwood",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1685,
+                "slug": "blessington",
+                "name": "Blessington",
+                "count": 8,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1920,
+                "slug": "boyle",
+                "name": "Boyle",
+                "count": 3,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1936,
+                "slug": "bray",
+                "name": "Bray",
+                "count": 9,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1818,
+                "slug": "bulgaden",
+                "name": "Bulgaden",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1721,
+                "slug": "bundoran",
+                "name": "Bundoran",
+                "count": 20,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1949,
+                "slug": "caher",
+                "name": "Caher",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1771,
+                "slug": "caherciveen",
+                "name": "Caherciveen",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1746,
+                "slug": "caherlistrane",
+                "name": "Caherlistrane",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1772,
+                "slug": "cahersiveen",
+                "name": "Cahersiveen",
+                "count": 2,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1951,
+                "slug": "cahir",
+                "name": "Cahir",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1809,
+                "slug": "cappamore",
+                "name": "Cappamore",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1827,
+                "slug": "carlingford",
+                "name": "Carlingford",
+                "count": 3,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1738,
+                "slug": "carlow",
+                "name": "Carlow",
+                "count": 34,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1958,
+                "slug": "carrick-on-suir",
+                "name": "Carrick-on-Suir",
+                "count": 3,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1910,
+                "slug": "carrickmacross",
+                "name": "Carrickmacross",
+                "count": 6,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1948,
+                "slug": "cashel",
+                "name": "Cashel",
+                "count": 4,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1834,
+                "slug": "castlebar",
+                "name": "Castlebar",
+                "count": 24,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1909,
+                "slug": "castleblayney",
+                "name": "Castleblayney",
+                "count": 2,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1927,
+                "slug": "castlepollard",
+                "name": "Castlepollard",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1919,
+                "slug": "castlerea",
+                "name": "Castlerea",
+                "count": 2,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1918,
+                "slug": "castlereagh",
+                "name": "Castlereagh",
+                "count": 2,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1682,
+                "slug": "castletown",
+                "name": "Castletown",
+                "count": 5,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1739,
+                "slug": "cavan",
+                "name": "Cavan",
+                "count": 23,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1791,
+                "slug": "celbridge",
+                "name": "Celbridge",
+                "count": 2,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1780,
+                "slug": "clane",
+                "name": "Clane",
+                "count": 6,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1712,
+                "slug": "clare",
+                "name": "Clare",
+                "count": 4,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1748,
+                "slug": "claregalway",
+                "name": "Claregalway",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1837,
+                "slug": "claremorris",
+                "name": "Claremorris",
+                "count": 2,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1749,
+                "slug": "clarinbridge",
+                "name": "Clarinbridge",
+                "count": 3,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1898,
+                "slug": "clonalvy",
+                "name": "Clonalvy",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1888,
+                "slug": "clonard",
+                "name": "Clonard",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1393,
+                "slug": "clonaslee",
+                "name": "Clonaslee",
+                "count": 0,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1953,
+                "slug": "clonmel",
+                "name": "Clonmel",
+                "count": 10,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1929,
+                "slug": "clonmellon",
+                "name": "Clonmellon",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1686,
+                "slug": "clonskeagh",
+                "name": "Clonskeagh",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1962,
+                "slug": "co-clare-ireland",
+                "name": "Co Clare Ireland",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1705,
+                "slug": "cobh",
+                "name": "Cobh",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1889,
+                "slug": "collon",
+                "name": "Collon",
+                "count": 2,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1850,
+                "slug": "cong",
+                "name": "Cong",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1960,
+                "slug": "cootehill",
+                "name": "Cootehill",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1704,
+                "slug": "cork",
+                "name": "Cork",
+                "count": 406,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1718,
+                "slug": "corofin",
+                "name": "Corofin",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1752,
+                "slug": "craughwell",
+                "name": "Craughwell",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1764,
+                "slug": "creachmhaoil",
+                "name": "Creachmhaoil",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1851,
+                "slug": "creagh",
+                "name": "Creagh",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1813,
+                "slug": "croom",
+                "name": "Croom",
+                "count": 3,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1709,
+                "slug": "crusheen",
+                "name": "Crusheen",
+                "count": 3,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1915,
+                "slug": "daingean",
+                "name": "Daingean",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1926,
+                "slug": "delvin",
+                "name": "Delvin",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1766,
+                "slug": "dingle",
+                "name": "Dingle",
+                "count": 5,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1388,
+                "slug": "donaghmore",
+                "name": "Donaghmore",
+                "count": 0,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1722,
+                "slug": "donegal",
+                "name": "Donegal",
+                "count": 5,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1828,
+                "slug": "drogheda",
+                "name": "Drogheda",
+                "count": 27,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1803,
+                "slug": "dromahair",
+                "name": "Dromahair",
+                "count": 6,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1801,
+                "slug": "drumshanbo",
+                "name": "Drumshanbo",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1611,
+                "slug": "dublin",
+                "name": "Dublin",
+                "count": 352,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1871,
+                "slug": "duleek",
+                "name": "Duleek",
+                "count": 2,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1732,
+                "slug": "dun-na-ngall",
+                "name": "Dún na nGall",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1862,
+                "slug": "dunboyne",
+                "name": "Dunboyne",
+                "count": 4,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1825,
+                "slug": "dundalk",
+                "name": "Dundalk",
+                "count": 16,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1683,
+                "slug": "dungarvan",
+                "name": "Dungarvan",
+                "count": 10,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1392,
+                "slug": "durrow",
+                "name": "Durrow",
+                "count": 2,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1914,
+                "slug": "edenderry",
+                "name": "Edenderry",
+                "count": 2,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1794,
+                "slug": "enfield",
+                "name": "Enfield",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1708,
+                "slug": "ennis",
+                "name": "Ennis",
+                "count": 25,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1940,
+                "slug": "enniskerry",
+                "name": "Enniskerry",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1707,
+                "slug": "ennistimon",
+                "name": "Ennistimon",
+                "count": 24,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1955,
+                "slug": "fethard",
+                "name": "Fethard",
+                "count": 4,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1814,
+                "slug": "foynes",
+                "name": "Foynes",
+                "count": 3,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1745,
+                "slug": "galway",
+                "name": "Galway",
+                "count": 145,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1908,
+                "slug": "glaslough",
+                "name": "Glaslough",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1776,
+                "slug": "glenbeigh",
+                "name": "Glenbeigh",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1932,
+                "slug": "glendalough",
+                "name": "Glendalough",
+                "count": 2,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1805,
+                "slug": "glenfarne",
+                "name": "Glenfarne",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1807,
+                "slug": "glenville",
+                "name": "Glenville",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1864,
+                "slug": "gormanston",
+                "name": "Gormanston",
+                "count": 6,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1860,
+                "slug": "gormanstown",
+                "name": "Gormanstown",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1751,
+                "slug": "gort",
+                "name": "Gort",
+                "count": 6,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1734,
+                "slug": "gortahork",
+                "name": "Gortahork",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1681,
+                "slug": "graiguecullen",
+                "name": "Graiguecullen",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1941,
+                "slug": "greystones",
+                "name": "Greystones",
+                "count": 3,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1730,
+                "slug": "gweedore",
+                "name": "Gweedore",
+                "count": 5,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1761,
+                "slug": "headford",
+                "name": "Headford",
+                "count": 3,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1880,
+                "slug": "hill-of-tara",
+                "name": "Hill of Tara",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1811,
+                "slug": "hospital",
+                "name": "Hospital",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1759,
+                "slug": "indreabhan",
+                "name": "Indreabhán",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1758,
+                "slug": "inis-oirr",
+                "name": "Inis Oírr",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1854,
+                "slug": "innfield",
+                "name": "Innfield",
+                "count": 11,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1793,
+                "slug": "johnstown-bridge",
+                "name": "Johnstown Bridge",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1868,
+                "slug": "julianstown",
+                "name": "Julianstown",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1853,
+                "slug": "kells",
+                "name": "Kells",
+                "count": 23,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1688,
+                "slug": "kenmare",
+                "name": "Kenmare",
+                "count": 5,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1769,
+                "slug": "kerry",
+                "name": "Kerry",
+                "count": 7,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1928,
+                "slug": "kilbeggan",
+                "name": "Kilbeggan",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1725,
+                "slug": "kilcar",
+                "name": "Kilcar",
+                "count": 2,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1792,
+                "slug": "kilcock",
+                "name": "Kilcock",
+                "count": 3,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1939,
+                "slug": "kilcoole",
+                "name": "Kilcoole",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1785,
+                "slug": "kilcullen",
+                "name": "Kilcullen",
+                "count": 2,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1789,
+                "slug": "kildare",
+                "name": "Kildare",
+                "count": 3,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1717,
+                "slug": "kilfenora",
+                "name": "Kilfenora",
+                "count": 2,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1817,
+                "slug": "kilfinnane",
+                "name": "Kilfinnane",
+                "count": 2,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1795,
+                "slug": "kilkenny",
+                "name": "Kilkenny",
+                "count": 65,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1786,
+                "slug": "kill",
+                "name": "Kill",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1957,
+                "slug": "killaloe",
+                "name": "Killaloe",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1765,
+                "slug": "killarney",
+                "name": "Killarney",
+                "count": 13,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1679,
+                "slug": "killenard",
+                "name": "Killenard",
+                "count": 2,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1389,
+                "slug": "killeshin",
+                "name": "Killeshin",
+                "count": 5,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1774,
+                "slug": "killorglin",
+                "name": "Killorglin",
+                "count": 4,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1930,
+                "slug": "killucan",
+                "name": "Killucan",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1727,
+                "slug": "killybegs",
+                "name": "Killybegs",
+                "count": 2,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1942,
+                "slug": "kilmacanoge",
+                "name": "Kilmacanoge",
+                "count": 3,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1946,
+                "slug": "kilmacanogue",
+                "name": "Kilmacanogue",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1816,
+                "slug": "kilmallock",
+                "name": "Kilmallock",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1719,
+                "slug": "kilrush",
+                "name": "kilrush",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1846,
+                "slug": "kiltamagh",
+                "name": "Kiltamagh",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1763,
+                "slug": "kinvara",
+                "name": "Kinvara",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1835,
+                "slug": "knock",
+                "name": "Knock",
+                "count": 2,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1678,
+                "slug": "laois",
+                "name": "Laois",
+                "count": 3,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1950,
+                "slug": "lattin",
+                "name": "Lattin",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1729,
+                "slug": "letterkenny",
+                "name": "Letterkenny",
+                "count": 20,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1733,
+                "slug": "lifford",
+                "name": "Lifford",
+                "count": 4,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1710,
+                "slug": "limerick",
+                "name": "Limerick",
+                "count": 3,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1963,
+                "slug": "lisdoonvara",
+                "name": "Lisdoonvara",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1706,
+                "slug": "lisdoonvarna",
+                "name": "Lisdoonvarna",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1715,
+                "slug": "lissane",
+                "name": "Lissane",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1773,
+                "slug": "listowel",
+                "name": "Listowel",
+                "count": 3,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1836,
+                "slug": "logmore",
+                "name": "Logmore",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1821,
+                "slug": "longford",
+                "name": "Longford",
+                "count": 5,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1872,
+                "slug": "longwood",
+                "name": "Longwood",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1812,
+                "slug": "lough-gur",
+                "name": "Lough Gur",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1753,
+                "slug": "loughrea",
+                "name": "Loughrea",
+                "count": 8,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1847,
+                "slug": "louisburgh",
+                "name": "Louisburgh",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1762,
+                "slug": "maigh-cuilinn",
+                "name": "Maigh Cuilinn",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1844,
+                "slug": "mallaranny",
+                "name": "Mallaranny",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1799,
+                "slug": "manorhamilton",
+                "name": "Manorhamilton",
+                "count": 6,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1788,
+                "slug": "maynooth",
+                "name": "Maynooth",
+                "count": 6,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1858,
+                "slug": "meath",
+                "name": "Meath",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1720,
+                "slug": "milltown-malbay",
+                "name": "Milltown Malbay",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1743,
+                "slug": "miltown-malbay",
+                "name": "Miltown Malbay",
+                "count": 2,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1925,
+                "slug": "moate",
+                "name": "Moate",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1802,
+                "slug": "mohill",
+                "name": "Mohill",
+                "count": 2,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1907,
+                "slug": "monaghan",
+                "name": "Monaghan",
+                "count": 6,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1784,
+                "slug": "monasterevin",
+                "name": "Monasterevin",
+                "count": 3,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1882,
+                "slug": "mornington",
+                "name": "Mornington",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1961,
+                "slug": "mountain-view",
+                "name": "Mountain View",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1384,
+                "slug": "mountmellick",
+                "name": "Mountmellick",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1680,
+                "slug": "mountrath",
+                "name": "Mountrath",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1760,
+                "slug": "moycullen",
+                "name": "Moycullen",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1822,
+                "slug": "moyne",
+                "name": "Moyne",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1741,
+                "slug": "mullagh",
+                "name": "Mullagh",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1924,
+                "slug": "mullingar",
+                "name": "Mullingar",
+                "count": 28,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1845,
+                "slug": "mulranny",
+                "name": "Mulranny",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1808,
+                "slug": "mungret",
+                "name": "Mungret",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1842,
+                "slug": "murrisk",
+                "name": "Murrisk",
+                "count": 2,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1779,
+                "slug": "naas",
+                "name": "Naas",
+                "count": 13,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1855,
+                "slug": "navan",
+                "name": "Navan",
+                "count": 26,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1956,
+                "slug": "nenagh",
+                "name": "Nenagh",
+                "count": 2,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1954,
+                "slug": "new-inn",
+                "name": "New Inn",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1781,
+                "slug": "newbridge",
+                "name": "Newbridge",
+                "count": 5,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1815,
+                "slug": "newcastle",
+                "name": "Newcastle",
+                "count": 8,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1716,
+                "slug": "newmarket-on-fergus",
+                "name": "Newmarket on Fergus",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1934,
+                "slug": "newtown",
+                "name": "Newtown",
+                "count": 2,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1912,
+                "slug": "offaly",
+                "name": "Offaly",
+                "count": 2,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1756,
+                "slug": "oranmore",
+                "name": "Oranmore",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1755,
+                "slug": "oughterard",
+                "name": "Oughterard",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1731,
+                "slug": "pettigo",
+                "name": "Pettigo",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1385,
+                "slug": "portarlington",
+                "name": "Portarlington",
+                "count": 4,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1386,
+                "slug": "portlaoise",
+                "name": "Portlaoise",
+                "count": 25,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1744,
+                "slug": "quin",
+                "name": "Quin",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1737,
+                "slug": "ramelton",
+                "name": "Ramelton",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1391,
+                "slug": "rathdowney",
+                "name": "Rathdowney",
+                "count": 0,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1775,
+                "slug": "rathmore",
+                "name": "Rathmore",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1879,
+                "slug": "ratoath",
+                "name": "Ratoath",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1830,
+                "slug": "ravensdale",
+                "name": "Ravensdale",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1945,
+                "slug": "redcross",
+                "name": "Redcross",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1959,
+                "slug": "roscrea",
+                "name": "Roscrea",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1806,
+                "slug": "rossinver",
+                "name": "Rossinver",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1937,
+                "slug": "roundwood",
+                "name": "Roundwood",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1798,
+                "slug": "shannon",
+                "name": "Shannon",
+                "count": 12,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1867,
+                "slug": "skreen",
+                "name": "Skreen",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1896,
+                "slug": "skryne",
+                "name": "Skryne",
+                "count": 2,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1829,
+                "slug": "slane",
+                "name": "Slane",
+                "count": 2,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1687,
+                "slug": "sligo",
+                "name": "Sligo",
+                "count": 70,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1767,
+                "slug": "sneem",
+                "name": "Sneem",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1747,
+                "slug": "spiddle",
+                "name": "Spiddle",
+                "count": 4,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1852,
+                "slug": "srahmore",
+                "name": "Srahmore",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1865,
+                "slug": "stamullin",
+                "name": "Stamullin",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1390,
+                "slug": "stradbally",
+                "name": "Stradbally",
+                "count": 4,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1782,
+                "slug": "straffan",
+                "name": "Straffan",
+                "count": 8,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1724,
+                "slug": "stranorlar",
+                "name": "Stranorlar",
+                "count": 11,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1917,
+                "slug": "strokestown",
+                "name": "Strokestown",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1857,
+                "slug": "summerhill",
+                "name": "Summerhill",
+                "count": 4,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1861,
+                "slug": "tara",
+                "name": "Tara",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1833,
+                "slug": "termonfeckin",
+                "name": "Termonfeckin",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1952,
+                "slug": "thurles",
+                "name": "Thurles",
+                "count": 10,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1768,
+                "slug": "tralee",
+                "name": "Tralee",
+                "count": 14,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1856,
+                "slug": "trim",
+                "name": "Trim",
+                "count": 11,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1757,
+                "slug": "tuam",
+                "name": "Tuam",
+                "count": 2,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1711,
+                "slug": "tulla",
+                "name": "Tulla",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1911,
+                "slug": "tullamore",
+                "name": "Tullamore",
+                "count": 23,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1714,
+                "slug": "university-of-limerick",
+                "name": "University of Limerick",
+                "count": 1,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1923,
+                "slug": "waterford",
+                "name": "Waterford",
+                "count": 41,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1840,
+                "slug": "westport",
+                "name": "Westport",
+                "count": 11,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1931,
+                "slug": "wexford",
+                "name": "Wexford",
+                "count": 48,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1938,
+                "slug": "wicklow",
+                "name": "Wicklow",
+                "count": 2,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+                "term_id": 1935,
+                "slug": "wicklow-town",
+                "name": "Wicklow Town",
+                "count": 2,
+                "lang": "",
+                "description_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+        ]
+    },
+    "whole_snapshot_sha256": "9924c011ca08222fb3ad3008fe7c641e2ef9e7a72bcbf908a0b5c0c94b2c0e58"
+}

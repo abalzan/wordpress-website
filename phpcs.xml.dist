@@ -12,6 +12,14 @@
 	     data inside the retired rollout plugin, not a maintained style target. -->
 	<exclude-pattern>wp-content/plugins/conexao-guide-translation/includes/body-*.php</exclude-pattern>
 
+	<!-- Generated EN guide translation dataset: the same class of artefact as the
+	     Stage 9 bodies above — machine-generated authored translation CONTENT keyed
+	     by Portuguese slug, emitted once and then hand-reviewed, not maintained
+	     source. Excluded from the style gate for the same reason; the maintained
+	     stage code around it (guide-stage.php, stage-config.php, translation-map.php)
+	     stays fully in scope. -->
+	<exclude-pattern>wp-content/plugins/conexao-en-translation/includes/guide-translation-data.php</exclude-pattern>
+
 	<arg name="extensions" value="php"/>
 	<arg name="basepath" value="."/>
 	<arg name="parallel" value="8"/>

@@ -69,6 +69,23 @@ function conexao_en_translation_map(): array {
 		$data['post'] = isset( $data['post'] ) ? array_merge( $data['post'], $blog ) : $blog;
 	}
 
+	// The `en-guide` rows live in their own versioned file, for the same reason
+	// the Blog rows do: it keeps the Guide dataset reviewable on its own. Merged
+	// with the identical fail-closed union — a PT slug may only ever appear once,
+	// because two rows for one PT guide is two identities for one thing, which is
+	// the fork the standard forbids.
+	if ( function_exists( 'conexao_en_translation_guide_data_v1' ) ) {
+		$guides = conexao_en_translation_guide_data_v1();
+
+		foreach ( $guides as $pt_slug => $row ) {
+			if ( isset( $data['guide'][ $pt_slug ] ) ) {
+				return $data;
+			}
+		}
+
+		$data['guide'] = isset( $data['guide'] ) ? array_merge( $data['guide'], $guides ) : $guides;
+	}
+
 	return $data;
 }
 

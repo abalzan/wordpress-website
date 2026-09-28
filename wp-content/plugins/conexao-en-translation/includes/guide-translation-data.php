@@ -26,8 +26,7 @@ defined( 'ABSPATH' ) || exit;
  */
 function conexao_en_translation_guide_data_v1(): array {
 	return array(
-		// PT guide: pps-number-2
-		'pps-number-2' => array(
+		'pps-number-2'                                           => array(
 			'en_slug'             => 'pps-number-ireland',
 			'en_title'            => 'How to get a PPS Number in Ireland',
 			'en_excerpt'          => 'What the PPS Number is, who needs it, which documents to prepare, how to apply, what it costs and how long it takes.',
@@ -103,8 +102,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: medical-card-2
-		'medical-card-2' => array(
+		'medical-card-2'                                         => array(
 			'en_slug'             => 'medical-card-ireland-complete-guide',
 			'en_title'            => 'Medical Card in Ireland: Complete Guide',
 			'en_excerpt'          => 'What the Medical Card is, who qualifies, the income limits, what it covers and how to apply through the HSE.',
@@ -178,8 +176,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: gp-registration-2
-		'gp-registration-2' => array(
+		'gp-registration-2'                                      => array(
 			'en_slug'             => 'how-to-register-with-a-gp-in-ireland',
 			'en_title'            => 'How to register with a GP (family doctor) in Ireland',
 			'en_excerpt'          => 'How to find a GP, how to register, what it costs and what to do out of hours or in an emergency.',
@@ -249,8 +246,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: abrir-conta-bancaria-2
-		'abrir-conta-bancaria-2' => array(
+		'abrir-conta-bancaria-2'                                 => array(
 			'en_slug'             => 'how-to-open-a-bank-account-in-ireland',
 			'en_title'            => 'Opening a Bank Account in Ireland',
 			'en_excerpt'          => 'Why you need an Irish bank account, which documents to bring, how to apply and what it costs.',
@@ -318,8 +314,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: alugar-casa-2
-		'alugar-casa-2' => array(
+		'alugar-casa-2'                                          => array(
 			'en_slug'             => 'renting-a-house-in-ireland-complete-guide',
 			'en_title'            => 'Renting a House in Ireland: Complete Guide',
 			'en_excerpt'          => 'Where to look for a rental, what documents you need, what it costs and your rights as a tenant in Ireland.',
@@ -403,8 +398,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: comprar-carro-2
-		'comprar-carro-2' => array(
+		'comprar-carro-2'                                        => array(
 			'en_slug'             => 'buying-a-car-in-ireland-complete-guide',
 			'en_title'            => 'Buying a Car in Ireland: Complete Guide',
 			'en_excerpt'          => 'How to buy a car in Ireland: what you need, the buying steps, the NCT, Motor Tax and insurance.',
@@ -471,8 +465,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: carteira-de-motorista-2
-		'carteira-de-motorista-2' => array(
+		'carteira-de-motorista-2'                                => array(
 			'en_slug'             => 'driving-licence-in-ireland-how-to-exchange-your-cnh',
 			'en_title'            => 'Driving Licence in Ireland: How to Exchange Your CNH',
 			'en_excerpt'          => 'How Brazilians exchange their Brazilian driving licence for an Irish one through the NDLS, and what it requires.',
@@ -538,8 +531,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: impostos-2
-		'impostos-2' => array(
+		'impostos-2'                                             => array(
 			'en_slug'             => 'taxes-in-ireland-complete-guide-income-tax-usc-prsi',
 			'en_title'            => 'Taxes in Ireland: Complete Guide (Income Tax, USC, PRSI)',
 			'en_excerpt'          => 'How Income Tax, USC, PRSI and PAYE work in Ireland, what tax credits you get and how to register with Revenue.',
@@ -617,8 +609,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: cidadania-irlandesa-2
-		'cidadania-irlandesa-2' => array(
+		'cidadania-irlandesa-2'                                  => array(
 			'en_slug'             => 'irish-citizenship-complete-naturalisation-guide',
 			'en_title'            => 'Irish Citizenship: Complete Naturalisation Guide',
 			'en_excerpt'          => 'Who can apply for Irish citizenship by naturalisation, the residence requirements, fees and the process.',
@@ -700,8 +691,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: passaporte-irlandes-2
-		'passaporte-irlandes-2' => array(
+		'passaporte-irlandes-2'                                  => array(
 			'en_slug'             => 'irish-passport-how-to-apply',
 			'en_title'            => 'Irish Passport: How to Apply',
 			'en_excerpt'          => 'Who can apply for an Irish passport, what you need, the fees and how long it takes.',
@@ -777,8 +767,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: child-benefit-2
-		'child-benefit-2' => array(
+		'child-benefit-2'                                        => array(
 			'en_slug'             => 'child-benefit-in-ireland-complete-guide',
 			'en_title'            => 'Child Benefit in Ireland: Complete Guide',
 			'en_excerpt'          => 'What Child Benefit is, who qualifies, how much it pays and how to apply through MyWelfare.',
@@ -836,8 +825,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: social-welfare-2
-		'social-welfare-2' => array(
+		'social-welfare-2'                                       => array(
 			'en_slug'             => 'social-welfare-in-ireland-benefits-guide',
 			'en_title'            => 'Social Welfare in Ireland: Benefits Guide',
 			'en_excerpt'          => 'The main Irish social welfare payments, who qualifies and how to apply through MyWelfare.',
@@ -899,8 +887,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: abrir-empresa-2
-		'abrir-empresa-2' => array(
+		'abrir-empresa-2'                                        => array(
 			'en_slug'             => 'how-to-open-a-company-in-ireland-complete-guide',
 			'en_title'            => 'Opening a Company in Ireland: Complete Guide',
 			'en_excerpt'          => 'Types of company in Ireland, how to register with the CRO and Revenue, and what it costs.',
@@ -962,8 +949,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: visto-irlanda-2
-		'visto-irlanda-2' => array(
+		'visto-irlanda-2'                                        => array(
 			'en_slug'             => 'visas-and-immigration-in-ireland-complete-guide',
 			'en_title'            => 'Visas and Immigration in Ireland: Complete Guide',
 			'en_excerpt'          => 'Which permissions (Stamps) exist in Ireland, who needs a visa and how to register with immigration.',
@@ -1041,8 +1027,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: irp-renewal-2
-		'irp-renewal-2' => array(
+		'irp-renewal-2'                                          => array(
 			'en_slug'             => 'irp-renewal-in-ireland-complete-guide',
 			'en_title'            => 'IRP Renewal in Ireland: Complete Guide',
 			'en_excerpt'          => 'Who has to renew the Irish Residence Permit, what you need and how to renew it online.',
@@ -1106,8 +1091,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: mygovid
-		'mygovid' => array(
+		'mygovid'                                                => array(
 			'en_slug'             => 'mygovid-in-ireland-how-to-create-and-use',
 			'en_title'            => 'MyGovID in Ireland: How to Create and Use It',
 			'en_excerpt'          => 'What MyGovID is, which levels exist and how to create a verified account.',
@@ -1170,8 +1154,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: direitos-trabalhistas
-		'direitos-trabalhistas' => array(
+		'direitos-trabalhistas'                                  => array(
 			'en_slug'             => 'employment-rights-in-ireland-complete-guide',
 			'en_title'            => 'Employment Rights in Ireland: Complete Guide',
 			'en_excerpt'          => 'Minimum wage, annual leave, working hours, written contracts and where to get help.',
@@ -1245,8 +1228,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: transporte-publico
-		'transporte-publico' => array(
+		'transporte-publico'                                     => array(
 			'en_slug'             => 'public-transport-in-ireland-complete-guide',
 			'en_title'            => 'Public Transport in Ireland: Complete Guide',
 			'en_excerpt'          => 'Buses, trains, Luas and DART in Ireland, and how to pay with the Leap Card.',
@@ -1308,8 +1290,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: susi
-		'susi' => array(
+		'susi'                                                   => array(
 			'en_slug'             => 'susi-in-ireland-how-to-apply-for-a-grant',
 			'en_title'            => 'SUSI in Ireland: How to Apply for a Grant',
 			'en_excerpt'          => 'Who can apply for a SUSI student grant in Ireland, the types of grant and how to apply.',
@@ -1372,8 +1353,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: servicos-emergencia
-		'servicos-emergencia' => array(
+		'servicos-emergencia'                                    => array(
 			'en_slug'             => 'emergency-services-in-ireland-112-and-999',
 			'en_title'            => 'Emergency Services in Ireland: 112 and 999',
 			'en_excerpt'          => 'How to reach emergency services in Ireland, what to say and why your Eircode matters.',
@@ -1431,8 +1411,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: nct
-		'nct' => array(
+		'nct'                                                    => array(
 			'en_slug'             => 'nct-in-ireland-vehicle-inspection-guide',
 			'en_title'            => 'NCT in Ireland: Vehicle Inspection Guide',
 			'en_excerpt'          => 'What the NCT is, which cars need it, how often and what it costs.',
@@ -1493,8 +1472,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: motor-tax
-		'motor-tax' => array(
+		'motor-tax'                                              => array(
 			'en_slug'             => 'motor-tax-in-ireland-how-to-pay',
 			'en_title'            => 'Motor Tax in Ireland: How to Pay',
 			'en_excerpt'          => 'How to pay the Irish motor tax online, what it costs and what you need first.',
@@ -1547,8 +1525,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: eircode
-		'eircode' => array(
+		'eircode'                                                => array(
 			'en_slug'             => 'eircode-in-ireland-what-it-is-and-how-to-find-it',
 			'en_title'            => 'Eircode in Ireland: What It Is and How to Find It',
 			'en_excerpt'          => 'What an Eircode is, who needs one and how to look it up for any Irish address.',
@@ -1601,8 +1578,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: hap
-		'hap' => array(
+		'hap'                                                    => array(
 			'en_slug'             => 'hap-in-ireland-help-paying-your-rent',
 			'en_title'            => 'HAP in Ireland: Help Paying Your Rent',
 			'en_excerpt'          => 'What the Housing Assistance Payment is, who qualifies and how to apply through your local authority.',
@@ -1661,8 +1637,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: rtb
-		'rtb' => array(
+		'rtb'                                                    => array(
 			'en_slug'             => 'rtb-in-ireland-your-rights-as-a-tenant',
 			'en_title'            => 'RTB in Ireland: Your Rights as a Tenant',
 			'en_excerpt'          => 'What the Residential Tenancies Board does and how to register a dispute.',
@@ -1730,8 +1705,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: cao
-		'cao' => array(
+		'cao'                                                    => array(
 			'en_slug'             => 'cao-in-ireland-how-to-apply-to-university',
 			'en_title'            => 'CAO in Ireland: How to Apply to University',
 			'en_excerpt'          => 'What the CAO is, who applies through it, the key dates and the application fee.',
@@ -1791,8 +1765,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: direitos-consumidor
-		'direitos-consumidor' => array(
+		'direitos-consumidor'                                    => array(
 			'en_slug'             => 'consumer-rights-in-ireland-complete-guide',
 			'en_title'            => 'Consumer Rights in Ireland: Complete Guide',
 			'en_excerpt'          => 'Returns, guarantees, online shopping and where to complain about a problem.',
@@ -1853,8 +1826,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: protecao-dados
-		'protecao-dados' => array(
+		'protecao-dados'                                         => array(
 			'en_slug'             => 'data-protection-in-ireland-your-rights-gdpr',
 			'en_title'            => 'Data Protection in Ireland: Your Rights (GDPR)',
 			'en_excerpt'          => 'Your rights under the GDPR in Ireland and how to exercise them.',
@@ -1911,8 +1883,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: garda
-		'garda' => array(
+		'garda'                                                  => array(
 			'en_slug'             => 'garda-in-ireland-police-and-emergencies',
 			'en_title'            => 'An Garda Síochána in Ireland: Police and Emergencies',
 			'en_excerpt'          => 'How to contact An Garda Síochána, emergency numbers and what to expect.',
@@ -1970,8 +1941,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: revenue-myaccount
-		'revenue-myaccount' => array(
+		'revenue-myaccount'                                      => array(
 			'en_slug'             => 'revenue-myaccount-in-ireland-how-to-use-it',
 			'en_title'            => 'Revenue MyAccount in Ireland: How to Use It',
 			'en_excerpt'          => 'How to create a Revenue MyAccount and what you can do with it.',
@@ -2036,8 +2006,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: primeira-inscricao-irp-irlanda-brasileiros
-		'primeira-inscricao-irp-irlanda-brasileiros' => array(
+		'primeira-inscricao-irp-irlanda-brasileiros'             => array(
 			'en_slug'             => 'first-irp-registration-in-ireland-step-by-step-for-brazilians',
 			'en_title'            => 'First IRP Registration in Ireland: Step-by-Step for Brazilians',
 			'en_excerpt'          => 'How the first registration of your Irish immigration permission works, which documents to prepare and what it costs.',
@@ -2105,8 +2074,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: viajar-fora-irlanda-com-irp-brasileiros
-		'viajar-fora-irlanda-com-irp-brasileiros' => array(
+		'viajar-fora-irlanda-com-irp-brasileiros'                => array(
 			'en_slug'             => 'travelling-outside-ireland-with-irp-what-brazilians-need-to-know',
 			'en_title'            => 'Travelling Outside Ireland with an IRP: What Brazilians Need to Know',
 			'en_excerpt'          => 'When you can return to Ireland without a re-entry visa, and what to do if your IRP is lost or expired.',
@@ -2171,8 +2139,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: employment-permit-irlanda-brasileiros
-		'employment-permit-irlanda-brasileiros' => array(
+		'employment-permit-irlanda-brasileiros'                  => array(
 			'en_slug'             => 'employment-permit-in-ireland-when-a-brazilian-needs-one',
 			'en_title'            => 'Employment Permit in Ireland: When a Brazilian Needs One',
 			'en_excerpt'          => 'When Brazilians need an Employment Permit, the difference between Critical Skills and General, and the main steps.',
@@ -2241,8 +2208,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: primeiro-emprego-irlanda-emergency-tax
-		'primeiro-emprego-irlanda-emergency-tax' => array(
+		'primeiro-emprego-irlanda-emergency-tax'                 => array(
 			'en_slug'             => 'first-job-in-ireland-how-to-avoid-emergency-tax',
 			'en_title'            => 'First Job in Ireland: How to Avoid Emergency Tax',
 			'en_excerpt'          => 'Register your first job with Revenue, use myAccount and check your Tax Credit Certificate.',
@@ -2314,8 +2280,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: sole-trader-autonomo-irlanda-brasileiros
-		'sole-trader-autonomo-irlanda-brasileiros' => array(
+		'sole-trader-autonomo-irlanda-brasileiros'               => array(
 			'en_slug'             => 'how-to-work-as-a-sole-trader-in-ireland',
 			'en_title'            => 'How to Work as a Sole Trader in Ireland',
 			'en_excerpt'          => 'Sole trader tax registration, self-assessment and how ROS is used in Ireland.',
@@ -2387,7 +2352,6 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: hse-irlanda-gp-out-of-hours-injury-unit-emergency-department
 		'hse-irlanda-gp-out-of-hours-injury-unit-emergency-department' => array(
 			'en_slug'             => 'hse-in-ireland-gp-out-of-hours-injury-unit-or-emergency-department',
 			'en_title'            => 'HSE in Ireland: When to See a GP, GP Out-of-Hours, Injury Unit or Emergency Department',
@@ -2457,8 +2421,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: ehic-irlanda-brasileiros-residentes
-		'ehic-irlanda-brasileiros-residentes' => array(
+		'ehic-irlanda-brasileiros-residentes'                    => array(
 			'en_slug'             => 'ehic-in-ireland-for-resident-brazilians',
 			'en_title'            => 'EHIC in Ireland: How Resident Brazilians Can Get the European Health Insurance Card',
 			'en_excerpt'          => 'Who can apply for an EHIC in Ireland, what the HSE asks for and where it is valid.',
@@ -2526,8 +2489,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: reconhecer-diploma-brasileiro-na-irlanda-naric-qqi
-		'reconhecer-diploma-brasileiro-na-irlanda-naric-qqi' => array(
+		'reconhecer-diploma-brasileiro-na-irlanda-naric-qqi'     => array(
 			'en_slug'             => 'how-to-recognise-a-brazilian-diploma-in-ireland-naric-and-qqi-guide',
 			'en_title'            => 'How to Get a Brazilian Diploma Recognised in Ireland: NARIC and QQI Guide',
 			'en_excerpt'          => 'How to compare a Brazilian qualification with the Irish NFQ and what the limits are.',
@@ -2596,8 +2558,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: leap-card-irlanda-como-usar
-		'leap-card-irlanda-como-usar' => array(
+		'leap-card-irlanda-como-usar'                            => array(
 			'en_slug'             => 'leap-card-in-ireland-how-to-use-it-and-pay-less',
 			'en_title'            => 'Leap Card in Ireland: How to Use the Transport Card and Pay Less',
 			'en_excerpt'          => 'How the TFI Leap Card works, where to use it, how to top it up and what to do if you lose it.',
@@ -2664,8 +2625,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: learner-permit-theory-test-irlanda-cnh-brasileira
-		'learner-permit-theory-test-irlanda-cnh-brasileira' => array(
+		'learner-permit-theory-test-irlanda-cnh-brasileira'      => array(
 			'en_slug'             => 'brazilian-driving-licence-in-ireland-theory-test-and-learner-permit',
 			'en_title'            => 'Brazilian Driving Licence in Ireland: When You Need the Theory Test and Learner Permit',
 			'en_excerpt'          => 'The route for Brazilians who cannot exchange their licence: theory test, learner permit, EDT and driving test.',
@@ -2737,8 +2697,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: assistencia-juridica-legal-aid-irlanda-brasileiros
-		'assistencia-juridica-legal-aid-irlanda-brasileiros' => array(
+		'assistencia-juridica-legal-aid-irlanda-brasileiros'     => array(
 			'en_slug'             => 'legal-aid-in-ireland-how-to-apply-for-civil-legal-aid',
 			'en_title'            => 'Legal Aid in Ireland: How to Apply for Civil Legal Aid',
 			'en_excerpt'          => 'How Civil Legal Aid works, who can apply, the means test and possible contributions.',
@@ -2810,8 +2769,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: casamento-registro-nascimento-irlanda-brasileiros
-		'casamento-registro-nascimento-irlanda-brasileiros' => array(
+		'casamento-registro-nascimento-irlanda-brasileiros'      => array(
 			'en_slug'             => 'marriage-and-birth-registration-in-ireland-guide-for-brazilian-families',
 			'en_title'            => 'Marriage and Birth Registration in Ireland: A Guide for Brazilian Families',
 			'en_excerpt'          => 'How to register a birth and how civil marriage works, including notice and fees.',
@@ -2880,8 +2838,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: reclamar-banco-seguro-servico-financeiro-irlanda
-		'reclamar-banco-seguro-servico-financeiro-irlanda' => array(
+		'reclamar-banco-seguro-servico-financeiro-irlanda'       => array(
 			'en_slug'             => 'how-to-complain-about-a-bank-insurer-or-financial-service-in-ireland',
 			'en_title'            => 'How to Complain About a Bank, Insurer or Financial Service in Ireland',
 			'en_excerpt'          => 'Check that a firm is authorised and complain about a bank, insurer or financial service.',
@@ -2955,8 +2912,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: reclamar-servico-publico-irlanda-ombudsman
-		'reclamar-servico-publico-irlanda-ombudsman' => array(
+		'reclamar-servico-publico-irlanda-ombudsman'             => array(
 			'en_slug'             => 'how-to-complain-about-a-public-service-in-ireland-when-to-use-the-ombudsman',
 			'en_title'            => 'How to Complain About a Public Service in Ireland: When to Use the Ombudsman',
 			'en_excerpt'          => 'Complain about a government department, local authority or public service in Ireland.',
@@ -3022,7 +2978,6 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: checklist-viagem-internacional-irlanda-brasileiros-irp
 		'checklist-viagem-internacional-irlanda-brasileiros-irp' => array(
 			'en_slug'             => 'first-international-trip-with-irp-documents-checklist-for-brazilians',
 			'en_title'            => 'First International Trip with an IRP: Documents Checklist for Brazilians',
@@ -3091,8 +3046,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: reclamacao-trabalhista-wrc-irlanda-brasileiros
-		'reclamacao-trabalhista-wrc-irlanda-brasileiros' => array(
+		'reclamacao-trabalhista-wrc-irlanda-brasileiros'         => array(
 			'en_slug'             => 'how-to-file-and-track-a-workplace-complaint-with-the-wrc',
 			'en_title'            => 'How to File and Track a Workplace Complaint with the WRC',
 			'en_excerpt'          => 'How to file a complaint or dispute with the Workplace Relations Commission and what to keep.',
@@ -3159,8 +3113,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: beneficios-pais-solteiros-irlanda
-		'beneficios-pais-solteiros-irlanda' => array(
+		'beneficios-pais-solteiros-irlanda'                      => array(
 			'en_slug'             => 'benefits-for-lone-parents-in-ireland-payments-tax-and-other-supports',
 			'en_title'            => 'Benefits for Lone Parents in Ireland: Payments, Tax and Other Supports',
 			'en_excerpt'          => 'Which payments, tax credits and supports may exist for lone parents in Ireland.',
@@ -3284,8 +3237,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: violencia-domestica-irlanda-onde-encontrar-ajuda
-		'violencia-domestica-irlanda-onde-encontrar-ajuda' => array(
+		'violencia-domestica-irlanda-onde-encontrar-ajuda'       => array(
 			'en_slug'             => 'domestic-violence-in-ireland-where-to-find-help-report-and-your-rights',
 			'en_title'            => 'Domestic Violence in Ireland: Where to Find Help, How to Report and Your Rights',
 			'en_excerpt'          => 'Where to seek help, how to contact the Garda, protective orders and immigration rights.',
@@ -3470,8 +3422,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: inverno-irlanda-depressao-sazonal-saude-mental
-		'inverno-irlanda-depressao-sazonal-saude-mental' => array(
+		'inverno-irlanda-depressao-sazonal-saude-mental'         => array(
 			'en_slug'             => 'winter-in-ireland-and-mental-health-seasonal-depression-loneliness-and-where-to-find-help',
 			'en_title'            => '🌧️ Winter in Ireland and Mental Health: Seasonal Depression, Loneliness and Where to Find Help',
 			'en_excerpt'          => 'Recognise the signs of seasonal depression, when to seek help and which services are available in Ireland.',
@@ -3626,8 +3577,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: autismo-na-irlanda-diagnostico-hse-apoio
-		'autismo-na-irlanda-diagnostico-hse-apoio' => array(
+		'autismo-na-irlanda-diagnostico-hse-apoio'               => array(
 			'en_slug'             => 'autism-in-ireland-diagnosis-hse-and-where-to-find-support',
 			'en_title'            => 'Autism in Ireland: Diagnosis, HSE and Where to Find Support',
 			'en_excerpt'          => 'How autism assessment works in Ireland for children and adults, and what support exists.',
@@ -3725,8 +3675,7 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		// PT guide: autismo-viagem-aviao-irlanda-dublin-cork-airport
-		'autismo-viagem-aviao-irlanda-dublin-cork-airport' => array(
+		'autismo-viagem-aviao-irlanda-dublin-cork-airport'       => array(
 			'en_slug'             => 'autism-and-air-travel-in-ireland-dublin-and-cork-airport',
 			'en_title'            => 'Autism and Air Travel in Ireland: Dublin and Cork Airport',
 			'en_excerpt'          => 'Important Flyer, Sunflower, sensory rooms and what to do if you lose the card.',

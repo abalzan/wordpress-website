@@ -1,14 +1,21 @@
 <?php
 /**
- * Stage 9 — Guide EN translation (in-process checks).
+ * EN Guide translation (in-process checks) — owned by the SHARED rollout engine.
  *
- * Mirrors tests/test-job-en-translation.php (Stage 6) and asserts the
- * content/architecture contract of the Guide translation:
+ * This suite originally consumed `conexao_guide_translation_audit()` from the
+ * RETIRED `conexao-guide-translation` plugin. That plugin's lifecycle is
+ * retired: it stays dormant and is not activated, and its authored DATA now lives
+ * in the `en-guide` stage of `conexao-en-translation`
+ * (`includes/guide-translation-data.php` + `includes/guide-terms-data.php`).
+ *
+ * So the contract is now asserted against the shared engine's own stage, which
+ * is the only translation lifecycle in the repository. The assertions themselves
+ * are unchanged — they are the real content contract, not an implementation
+ * detail:
  *
  *  - every public Portuguese `guide` has exactly ONE linked, published EN
  *    translation (the gate: eligible public PT guides missing EN = 0);
- *  - the only EN guide without a PT sibling is the pre-existing Stage 4.2
- *    contract fixture (documented, not created by this stage);
+ *  - no EN guide exists without a PT sibling (0 orphans, 0 duplicates);
  *  - EN guides keep the shared record identity of their PT sibling (date,
  *    author, menu order) and carry genuine English content — the body is not a
  *    copy of the Portuguese one and leaks no Portuguese stop-words;
@@ -20,7 +27,7 @@
  * Usage (from the project root or the WordPress root):
  *   php wp-content/themes/conexao-br-irlanda/tests/test-guide-en-translation.php
  *
- * Read-only. Requires Polylang + a completed Guide translation run.
+ * Read-only. Requires Polylang + the `en-guide` stage applied.
  *
  * @package conexao-br-irlanda
  */
@@ -35,23 +42,78 @@ $failed = 0;
 
 test_prerequisite_hint( 'polylang' );
 test_require( function_exists( 'pll_get_post' ), 'polylang', 'test prerequisite is available: function_exists( pll_get_post )', 'activate the Polylang plugin' );
-test_prerequisite_hint( 'activate-plugin:conexao-guide-translation' );
-test_require( function_exists( 'conexao_guide_translation_audit' ), 'activate-plugin:conexao-guide-translation', 'test prerequisite is available: function_exists( conexao_guide_translation_audit )', 'activate the conexao-guide-translation plugin' );
-$audit = conexao_guide_translation_audit();
+test_require( function_exists( 'conexao_en_translation_manifest_for' ), 'conexao-en-translation', 'the shared EN translation stage layer is loaded', 'activate the conexao-en-translation plugin' );
+test_require( function_exists( 'conexao_en_translation_guide_taxonomy_gate' ), 'conexao-en-translation', 'the en-guide taxonomy capability is loaded', 'activate the conexao-en-translation plugin' );
 
-assert_true( 0 === (int) $audit['counts']['eligible public PT guides missing EN'], 'eligible public PT guides missing EN = 0', 'missing: ' . wp_json_encode( array_column( $audit['missing'], 'slug' ) ) );
-assert_true( 0 === (int) $audit['counts']['taxonomy terms missing EN'], 'taxonomy terms used by PT guides missing EN = 0', wp_json_encode( $audit['taxonomy']['missing'] ) );
-assert_true( (int) $audit['counts']['translated guide pairs verified'] === (int) $audit['counts']['total public PT guides'], 'one EN translation per public PT guide', $audit['counts']['translated guide pairs verified'] . ' pairs vs ' . $audit['counts']['total public PT guides'] . ' PT guides' );
+// ---------------------------------------------------------------------------
+// Inventory, read straight from the live site. The counts are NOT taken from a
+// stage report: this suite proves the DATA, while the stage's own numeric gate is
+// proved by the permanent translation-completeness gate and by the rollout run.
+// ---------------------------------------------------------------------------
+$manifest  = conexao_en_translation_manifest_for( 'guide' );
+$pt_guides = get_posts( array( 'post_type' => 'guide', 'post_status' => 'publish', 'lang' => 'pt', 'posts_per_page' => -1, 'fields' => 'ids', 'orderby' => 'post_name', 'order' => 'ASC' ) );
+$en_guides = get_posts( array( 'post_type' => 'guide', 'post_status' => 'publish', 'lang' => 'en', 'posts_per_page' => -1, 'fields' => 'ids', 'orderby' => 'post_name', 'order' => 'ASC' ) );
 
-// The stray EN records are the pre-existing Stage 3.2 / 4.2 editorial
-// fixtures that were already in the database before this stage (they are
-// reported, never created or modified here).
-$stray    = wp_list_pluck( $audit['en_without_pt'], 'slug' );
-$stray_ok = array( 'stage42-contract-fixture-en', 'stage32-editorial-translation' );
-assert_true( array() === array_diff( $stray, $stray_ok ), 'no EN guide without a PT translation (except the documented editorial fixtures)', wp_json_encode( $stray ) );
+$pairs            = array();
+$missing          = array();
+$en_without_pt    = array();
+$link_failures    = 0;
+$en_not_published = 0;
+$en_slug_counts   = array();
+
+foreach ( $en_guides as $en_id ) {
+	$en_slug_counts[] = (string) get_post_field( 'post_name', (int) $en_id );
+}
+
+foreach ( $pt_guides as $pt_id ) {
+	$pt_id  = (int) $pt_id;
+	$pt_key = (string) get_post_field( 'post_name', $pt_id );
+	$en_id  = (int) pll_get_post( $pt_id, 'en' );
+
+	if ( $en_id <= 0 ) {
+		$missing[] = $pt_key;
+		continue;
+	}
+
+	$pairs[] = array(
+		'pt_id'    => $pt_id,
+		'en_id'    => $en_id,
+		'pt_slug'  => $pt_key,
+		'en_slug'  => (string) get_post_field( 'post_name', $en_id ),
+		'expected' => isset( $manifest['records'][ $pt_key ] ) ? $manifest['records'][ $pt_key ] : array(),
+	);
+
+	if ( (int) pll_get_post( $en_id, 'pt' ) !== $pt_id ) {
+		++$link_failures;
+	}
+
+	if ( 'publish' !== (string) get_post_status( $en_id ) ) {
+		++$en_not_published;
+	}
+}
+
+foreach ( $en_guides as $en_id ) {
+	if ( (int) pll_get_post( (int) $en_id, 'pt' ) <= 0 ) {
+		$en_without_pt[] = (string) get_post_field( 'post_name', (int) $en_id );
+	}
+}
+
+$counts = array(
+	'total public PT guides'          => count( $pt_guides ),
+	'total public EN guides'          => count( $en_guides ),
+	'translated guide pairs verified' => count( $pairs ),
+);
+
+assert_true( 0 === count( $missing ), 'eligible public PT guides missing EN = 0', 'missing: ' . wp_json_encode( $missing ) );
+assert_true( count( $pairs ) === count( $pt_guides ), 'one EN translation per public PT guide', $counts['translated guide pairs verified'] . ' pairs vs ' . $counts['total public PT guides'] . ' PT guides' );
+assert_true( array() === $en_without_pt, 'no EN guide without a PT translation (0 orphans)', wp_json_encode( $en_without_pt ) );
+assert_true( count( $en_slug_counts ) === count( array_unique( $en_slug_counts ) ), 'no duplicate EN guide translations (one record per EN slug)' );
+assert_true( 0 === $link_failures, 'every PT->EN pair also resolves EN->PT' );
+assert_true( 0 === $en_not_published, 'every EN guide is published' );
+assert_true( 0 === (int) conexao_en_translation_guide_taxonomy_gate(), 'taxonomy terms used by PT guides missing EN = 0', 'taxonomy gate failures: ' . conexao_en_translation_guide_taxonomy_gate() );
 
 $pt_stopwords = array( ' voce', ' nao ', ' sao ', ' informacoes ', ' obrigatorio ', ' preenchimento ', ' como solicitar', ' onde solicitar', ' ultima verificacao' );
-foreach ( $audit['pairs'] as $pair ) {
+foreach ( $pairs as $pair ) {
 	$pt  = get_post( (int) $pair['pt_id'] );
 	$en  = get_post( (int) $pair['en_id'] );
 	$tag = $pair['pt_slug'];
@@ -90,7 +152,7 @@ foreach ( $audit['pairs'] as $pair ) {
 	$en_terms = array_map( 'intval', wp_get_post_terms( (int) $en->ID, 'conexao_category', array( 'fields' => 'ids' ) ) );
 	$expected = array();
 	foreach ( $pt_terms as $pt_term_id ) {
-		$expected[] = conexao_guide_translation_en_term_id( $pt_term_id );
+		$expected[] = function_exists( 'pll_get_term' ) ? (int) pll_get_term( (int) $pt_term_id, 'en' ) : 0;
 	}
 	$expected = array_filter( $expected );
 	assert_true( ! empty( $en_terms ) && array() === array_diff( $expected, $en_terms ), "{$tag}: EN guide uses the EN category term(s)", wp_json_encode( array( 'expected' => $expected, 'actual' => $en_terms ) ) );
@@ -120,7 +182,7 @@ if ( function_exists( 'conexao_guide_category_filter_term_id' ) ) {
 	assert_true( false, 'conexao_guide_category_filter_term_id() is available' );
 }
 
-foreach ( array_slice( $audit['pairs'], 0, 5 ) as $pair ) {
+foreach ( array_slice( $pairs, 0, 5 ) as $pair ) {
 	$pt = get_post( (int) $pair['pt_id'] );
 	assert_true( $pt instanceof WP_Post && 'guide' === $pt->post_type && 'publish' === $pt->post_status, "{$pair['pt_slug']}: PT record is a published guide" );
 	assert_true( $pt->post_name === $pair['pt_slug'], "{$pair['pt_slug']}: PT slug unchanged" );

@@ -16,8 +16,8 @@ source. Do not hand-edit this table.
 | conexao-event-importer | 1.7.1 | tooling | active | no | yes | yes | `wp-content/plugins/conexao-event-importer/` |
 | conexao-leisure-migration | 2.1.0 | tooling | active | no | yes | yes | `wp-content/plugins/conexao-leisure-migration/` |
 | conexao-sponsor-migration | 1.1.0 | tooling | active | no | yes | yes | `wp-content/plugins/conexao-sponsor-migration/` |
-| conexao-translation-rollout | 1.0.0 | tooling | active | no | no | yes | `wp-content/plugins/conexao-translation-rollout/` |
-| conexao-en-translation | 1.4.0 | tooling | active | no | no | yes | `wp-content/plugins/conexao-en-translation/` |
+| conexao-translation-rollout | 1.1.0 | tooling | active | no | no | yes | `wp-content/plugins/conexao-translation-rollout/` |
+| conexao-en-translation | 1.5.0 | tooling | active | no | no | yes | `wp-content/plugins/conexao-en-translation/` |
 | conexao-page-translation | 1.0.0 | rollout | retired | no | no | yes | `wp-content/plugins/conexao-page-translation/` |
 | conexao-blog-translation | 1.0.0 | rollout | retired | no | no | yes | `wp-content/plugins/conexao-blog-translation/` |
 | conexao-job-translation | 1.0.0 | rollout | retired | no | no | yes | `wp-content/plugins/conexao-job-translation/` |

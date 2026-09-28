@@ -55,6 +55,32 @@ function conexao_en_translation_guide_terms(): array {
 }
 
 /**
+ * The form WordPress actually STORES for a term name/description.
+ *
+ * `wp_insert_term()` runs the value through `sanitize_term_field( …, 'db' )`,
+ * which applies KSES: a bare `&` is stored as `&amp;`. So the authored
+ * `'Immigration & Visas'` is stored as `'Immigration &amp; Visas'`.
+ *
+ * This matters twice, and both are correctness, not cosmetics:
+ *
+ *   - REPAIR: comparing the stored term against the raw authored string would
+ *     make every term containing `&` differ on EVERY run, so the idempotence
+ *     guarantee ("a re-run reports zero writes") would be false.
+ *   - GATE: comparing the two raw strings would report a correct term as wrong.
+ *
+ * This is the same discipline the retired Stage 9 importer applied to the guide
+ * bodies through its `g_content()` helper, and the same narrow normalisation the
+ * `en-leisure-description` and `en-course-provider-description` stages use for
+ * their PT-drift comparison: normalise to the stored form, never invent content.
+ *
+ * @param string $value Authored term field.
+ * @return string The stored form of that value.
+ */
+function conexao_en_translation_guide_term_stored( string $value ): string {
+	return wp_kses( $value, array() );
+}
+
+/**
  * Create/link the EN `conexao_category` terms the EN guides are filed under.
  *
  * Invoked by the shared engine through the optional `taxonomy_callback` key,
@@ -106,11 +132,17 @@ function conexao_en_translation_guide_taxonomy_run( bool $dry_run, string $mode 
 						$update['slug'] = (string) $en['slug'];
 					}
 
-					if ( $en_term->name !== (string) $en['name'] ) {
+					// Compared in the STORED form, so a term whose authored name
+					// contains `&` is not rewritten on every run.
+					$authored_name = conexao_en_translation_guide_term_stored( (string) $en['name'] );
+
+					if ( $en_term->name !== $authored_name ) {
 						$update['name'] = (string) $en['name'];
 					}
 
-					if ( '' !== (string) $en['description'] && $en_term->description !== (string) $en['description'] ) {
+					$authored_description = conexao_en_translation_guide_term_stored( (string) $en['description'] );
+
+					if ( '' !== $authored_description && $en_term->description !== $authored_description ) {
 						$update['description'] = (string) $en['description'];
 					}
 
@@ -193,7 +225,10 @@ function conexao_en_translation_guide_taxonomy_run( bool $dry_run, string $mode 
  * @return array<string,int> Removal counters.
  */
 function conexao_en_translation_guide_taxonomy_remove( array $terms, string $taxonomy, bool $dry_run, string $mode ): array {
-	$counters = array( 'en_terms_removed' => 0, 'errors' => 0 );
+	$counters = array(
+		'en_terms_removed' => 0,
+		'errors'           => 0,
+	);
 
 	if ( 'remove' !== $mode || $dry_run ) {
 		return $counters;
@@ -283,6 +318,19 @@ function conexao_en_translation_guide_taxonomy_gate(): int {
 		if ( (string) $en_term->slug !== (string) $en['slug'] ) {
 			++$failures;
 		}
+
+		// The name and description are asserted in their STORED form, because that
+		// is the form the site legitimately holds (see
+		// conexao_en_translation_guide_term_stored()).
+		if ( conexao_en_translation_guide_term_stored( (string) $en['name'] ) !== (string) $en_term->name ) {
+			++$failures;
+		}
+
+		$authored_description = conexao_en_translation_guide_term_stored( (string) $en['description'] );
+
+		if ( '' !== $authored_description && (string) $en_term->description !== $authored_description ) {
+			++$failures;
+		}
 	}
 
 	// The SHARED proper-name taxonomies must still be shared: no per-language
@@ -320,4 +368,3 @@ function conexao_en_translation_guide_taxonomy_gate(): int {
 
 	return $failures;
 }
-

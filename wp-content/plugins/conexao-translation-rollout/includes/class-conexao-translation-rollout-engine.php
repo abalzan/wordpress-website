@@ -846,18 +846,17 @@ final class Conexao_Translation_Rollout_Engine {
 			return new WP_Error( 'conexao_rollout_no_remove', 'This stage does not support remove (zero writes).' );
 		}
 
-		$match   = array(
-			'stable-id' => 0,
-			'slug'      => 0,
-			'title'     => 0,
-		);
-
 		// The taxonomy step runs BEFORE the record plan and is dry-run aware: the
 		// EN counterpart terms must exist before a record can be filed under
 		// them, and a dry-run must still perform zero writes. A stage that
 		// declares no taxonomy capability is entirely unaffected.
 		$taxonomy = self::run_taxonomy( $config, ! empty( $args['dry_run'] ), $mode );
 
+		$match   = array(
+			'stable-id' => 0,
+			'slug'      => 0,
+			'title'     => 0,
+		);
 		$states  = self::collect_states( $config, $adapter, $manifest, $match );
 		$plan    = self::build_plan( $manifest, $states );
 		$summary = array(

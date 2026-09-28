@@ -18,13 +18,75 @@ the authored English and the WordPress-bound adapter.
 | | |
 |---|---|
 | Folder | `wp-content/plugins/conexao-en-translation/` |
-| Authored copy | `includes/manifest-data.php` (Stage M: guide + page + the first 8 Blog rows), `includes/blog-translation-data.php` (Stage N: the remaining 34 Blog rows), `includes/blog-page-data.php` (Stage O: the single Blog **posts page** row), `includes/leisure-description-data.php` (Stage 7: the 289 Leisure card descriptions) and `includes/course-provider-description-data.php` (Stage 8: the 10 course-provider card descriptions) — five separate versioned datasets, each keyed by PT slug |
-| Adapter + config | `includes/stage-fields.php`, `includes/stage-config.php` (Stage O adds the `en-blog-page` stage: shared-slug filter, routing-cache refresh, shared-slug duplicate guard), `includes/leisure-description-stage.php` (Stage 7 adds the `en-leisure-description` stage) and `includes/course-provider-description-stage.php` (Stage 8 adds the `en-course-provider-description` stage) |
+| Authored copy | `includes/guide-translation-data.php` (the **51-row EN Guide dataset** — see "The `en-guide` stage" below), `includes/guide-terms-data.php` (the **13** EN `conexao_category` terms used by those guides), `includes/manifest-data.php` (Stage M: the 1 earlier guide row + 29 pages + the first 8 Blog rows), `includes/blog-translation-data.php` (Stage N: the remaining 34 Blog rows), `includes/blog-page-data.php` (Stage O: the single Blog **posts page** row), `includes/leisure-description-data.php` (Stage 7: the 289 Leisure card descriptions) and `includes/course-provider-description-data.php` (Stage 8: the 10 course-provider card descriptions) — separate versioned datasets, each keyed by PT slug |
+| Adapter + config | `includes/stage-fields.php`, `includes/stage-config.php` (Stage O adds the `en-blog-page` stage: shared-slug filter, routing-cache refresh, shared-slug duplicate guard), `includes/guide-stage.php` (the `en-guide` translated-taxonomy capability), `includes/leisure-description-stage.php` (Stage 7 adds the `en-leisure-description` stage) and `includes/course-provider-description-stage.php` (Stage 8 adds the `en-course-provider-description` stage) |
 | Manifest shape | `includes/translation-map.php` |
 | Runner | `scripts/run-en-translation.php` |
 | Admin screen | none (the rollout is operated through the shared engine's screen and the runner script) |
 | Frontend effect | **none** — it creates EN content records only; no template, route or runtime hook |
 | Safe to deactivate | yes, after the rollout has been applied and verified |
+
+## The `en-guide` stage — the real English Guides archive
+
+`guide` is a **B1** type: `/en/guias/` must be populated by real, authored EN
+`guide` records and must **never** render the Portuguese body under an English
+shell. `conexao_b2_post_types()` deliberately omits `guide`, so nothing about the
+B1/B2 policy changed to make this work — the archive was empty only because the EN
+records did not exist yet.
+
+| | |
+|---|---|
+| Stage id | `en-guide` |
+| Strategy | **linked EN record** (one real, published, Polylang-linked EN `guide` per eligible public PT guide) |
+| Dataset | `includes/guide-translation-data.php` — **51 rows** keyed by PT slug, each `{en_slug, en_title, en_excerpt, en_meta_description, en_content}` |
+| Term dataset | `includes/guide-terms-data.php` — **13 rows** keyed by PT term slug, the EN `conexao_category` terms the published PT guides actually use |
+| Adapter + config | `includes/guide-stage.php` (taxonomy capability) + the shared `includes/stage-config.php` config for `guide` |
+| Records created | **48** EN `guide` posts + **13** EN `conexao_category` terms |
+| Numeric gate | `eligible_public_pt = 48`, `with_en = 48`, **`missing_en = 0`**, `conflicts = 0`, `pt_drift = 0`, `extra_failures = 0` |
+| `allow_remove` | `true` — remove deletes only the EN records and EN terms this stage owns |
+
+### Why the data was imported, not re-authored
+
+The complete authored English for these guides already existed in the **retired**
+[`conexao-guide-translation`](conexao-guide-translation.md) plugin (Stage 9). That
+plugin's *lifecycle* is retired and stays dormant — it is not activated, and it is
+not a second translation engine. Its *data* is authoritative, so it was imported
+into this stage once, mechanically, rather than re-translated. Concretely: the
+`en-guide` manifest previously held **1** row whose PT guide does not exist on
+this site, so `/en/guias/` had nothing to show.
+
+Three of the 51 rows have no PT guide on this site
+(`beneficios-pais-solteiros-irlanda`,
+`inverno-irlanda-depressao-sazonal-saude-mental`,
+`violencia-domestica-irlanda-onde-encontrar-ajuda`). They are **portable
+exclusions**: the shared engine reports each one as
+`PT record absent in this site (documented exclusion)`, so the dataset stays
+portable and nothing is silently dropped.
+
+### The translated-taxonomy capability
+
+An EN guide must be filed under the **EN counterpart** of its PT
+`conexao_category` term, so the EN term has to exist first. The shared engine
+originally owned no term-creation step, which meant a stage had to re-implement a
+lifecycle to get one — forbidden. The engine therefore gained two **optional,
+additive** keys, `taxonomy_callback` and `taxonomy_gate_callback`; the engine
+still owns the ordering (taxonomy before the record plan, dry-run aware) and
+folds the taxonomy failure count into the same numeric gate. Only `en-guide`
+declares them, so every other stage's plan, counters and gate are unchanged.
+
+`conexao_en_translation_guide_term_stored()` is worth knowing about:
+`wp_insert_term()` runs a term name through KSES, so the authored
+`'Immigration & Visas'` is stored as `'Immigration &amp; Visas'`. The repair
+comparison and the taxonomy gate both normalise to the **stored** form, without
+which a term containing `&` would be rewritten on every run and the idempotence
+guarantee would be false.
+
+### Taxonomy policy
+
+`conexao_category` is **translated**; `conexao_county` and `conexao_town` are
+**shared** and are never created, renamed, re-slugged, duplicated or translated
+here. `conexao_en_translation_guide_taxonomy_gate()` re-asserts that on every run
+(0 failures), alongside the permanent `test-taxonomy-policy.php` gate.
 
 ## Stage 7 — the `en-leisure-description` stage
 
@@ -370,10 +432,12 @@ php wp-content/themes/conexao-br-irlanda/tests/test-translation-completeness.php
 | **Build** | no |
 | **Compose mount** | yes |
 | **Dependencies** | `conexao-translation-rollout` |
-| **Version** | 1.4.0 (authoritative source: `wp-content/plugins/conexao-en-translation/conexao-en-translation.php` header) |
+| **Version** | 1.5.0 (authoritative source: `wp-content/plugins/conexao-en-translation/conexao-en-translation.php` header) |
 | **Registry** | [`plugins.json`](../../plugins.json) |
 
 > **Local-only tooling.** Not a production steady-state dependency.
 <!-- END GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
 
 _Last verified: 2026-09-27 by the EN Leisure description rollout — Stage 7 `en-leisure-description` on the shared engine_
+
+_Last verified: 2026-09-28 by the B1 English Guides content rollout — the `en-guide` stage now owns the 51-row Guide dataset + 13 EN `conexao_category` terms and applies them through the shared engine (48/48, `missing_en = 0`)_

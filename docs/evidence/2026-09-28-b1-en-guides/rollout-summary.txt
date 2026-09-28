@@ -1,0 +1,104 @@
+B1 English Guides content rollout — numeric before/after
+Branch i18n | start SHA 846fd018b2f88dc0e10c6d47a2c9b8e693772e3d
+
+GUIDES
+                                     BEFORE   AFTER
+  published PT guides                      48      48
+  published EN guides                       0      48
+  PT guides with EN translation             0      48
+  PT guides without EN translation         48       0
+  orphan EN guides                          0       0
+  duplicate EN guide translations           0       0
+  PT/EN language mismatches               n/a       0
+  PT->EN link failures                    n/a       0
+  EN guides not published                 n/a       0
+
+CATEGORY TERMS (conexao_category, TRANSLATED)
+  PT terms used by published PT guides     13      13
+  EN terms present                          0      13
+  terms translated correctly               0/13  13/13
+  taxonomy gate failures                   n/a       0
+
+SHARED TAXONOMIES (must stay shared and unchanged)
+  conexao_county terms                    29      29   new=0  en-tagged=0  dup slugs=0
+  conexao_town terms                     247     247   new=0  en-tagged=0  dup slugs=0
+  conexao_tag terms                        0       0
+
+PT IMMUTABILITY (vs pt-snapshot-pre.json, per-record SHA-256)
+  PT records compared                      48      48
+  PT records CHANGED                        -       0
+  PT title changes                         -       0
+  PT slug changes                          -       0
+  PT content changes                       -       0
+  PT excerpt changes                       -       0
+  PT status changes                        -       0
+  PT taxonomy changes                      -       0
+  unrelated post changes                   -       0
+  whole_snapshot_sha256 = 9924c011ca08222fb3ad3008fe7c641e2ef9e7a72bcbf908a0b5c0c94b2c0e58
+
+ROLLOUT RUNS (php scripts/run-en-translation.php --only=guide)
+  dry-run (before apply)  created=48 skipped=4 conflicts=0 PT-drift=0 gate=FAIL (expected pre-apply)
+                         taxonomy: en_terms_planned=13 created=0, extra_failures=13 (fails closed)
+                         zero writes proven: EN guides 0, EN terms 0 after the dry-run
+  apply (1st)            created=48 updated=0 skipped=4 conflicts=0 PT-drift=0  GATE PASS
+                         taxonomy: en_terms_created=13, en_terms_linked=13
+                         gate: eligible_public_pt=48 with_en=48 missing_en=0 conflicts=0
+                               pt_drift=0 extra_failures=0
+  dry-run (2nd)          created=0 updated=0 skipped=52 conflicts=0  GATE PASS
+  apply (2nd, idempotence) created=0 updated=0 skipped=52 conflicts=0 PT-drift=0  GATE PASS
+                         taxonomy: en_terms_present=13 planned=0 created=0
+
+  documented exclusions (4, PT guide absent in this site):
+    outono-irlanda-alimentacao-bem-estar        (Stage M row; PT record does not exist)
+    beneficios-pais-solteiros-irlanda
+    inverno-irlanda-depressao-sazonal-saude-mental
+    violencia-domestica-irlanda-onde-encontrar-ajuda
+
+PERMANENT GATES (python3 scripts/verify-permanent-gates.py)
+                                    BEFORE            AFTER
+  gates total/passed/failed      7 / 6 / 1      7 / 7 / 0
+  assertions passed/failed       85 / 1         86 / 0
+  violations                     48 (48 pre-existing, 0 new)   0
+  AGGREGATE                      FAIL           PASS
+  translation_completeness      FAIL 48 violations (post_type:guide:missing_en: 48)
+                                 PASS 0 violations
+  taxonomy_policy                PASS 18/0       PASS 18/0
+  cache_scoping                  PASS 9/0        PASS 9/0
+  cache_scoping_static           PASS 2/0        PASS 2/0
+  redirect_precedence            PASS 15/0       PASS 15/0
+  documentation_drift            PASS 14/0       PASS 14/0
+  i18n_freshness                 PASS 8/0        PASS 8/0
+  No gate, threshold, baseline or allowlist was edited or allowlisted.
+
+TEST SUITE (./scripts/run-tests.sh)
+                                    BEFORE            AFTER
+  in-process suites                 60                60
+  passed / failed              42 / 18           44 / 16
+  assertions passed             2928              3669
+  assertions failed               76                64
+  script-contract             6/6 pass         6/6 pass
+  HTTP acceptance guides-en     2 failed          18 passed / 0 failed
+  HTTP acceptance release      42/0             42/0
+  HTTP acceptance routing      3 rows failed      2 rows failed (both pre-existing
+                                 (2 lazer card-excerpt +            Lazer card-excerpt
+                                 1 en-home-label)                   fragments; NO guide
+                                                                    row fails;
+                                                                    rest-invalid-lang-guide PASSES)
+  suites fixed: test-guide-en-translation.php, test-translation-completeness.php
+  NEW failing suites introduced: 0
+  prerequisite failures: 1 -> 1
+  NEW failing suites introduced        0
+
+  suites fixed by this change:
+    theme/conexao-br-irlanda/test-guide-en-translation.php
+    theme/conexao-br-irlanda/test-translation-completeness.php
+  16 suites fail identically before and after (pre-existing, unrelated to guides).
+
+STATIC ANALYSIS
+  php -l (466 files)                              OK, no parse errors
+  PHPCS (WordPress-Extra + Docs + PHPCompat)    OK: no NEW violations vs baseline
+                                                 3207 errors / 2668 warnings
+                                                 (baseline 3290 / 2672 -> debt PAID DOWN
+                                                  in 20 sniffs; baseline NOT regenerated)
+  PHPStan level 5 (vendor/bin/phpstan analyse)   [OK] No errors, exit 0
+  git diff --check                               clean

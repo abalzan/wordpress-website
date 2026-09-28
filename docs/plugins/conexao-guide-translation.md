@@ -18,6 +18,18 @@
 > historical importer stays reproducible.
 <!-- END GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
 
+> **Superseded (2026-09-28).** This plugin is **inactive and its lifecycle will not
+> run again.** The Guide EN translation it authored is now applied through the
+> shared engine: the authored data was imported into the `en-guide` stage of
+> [`conexao-en-translation`](conexao-en-translation.md)
+> (`includes/guide-translation-data.php`, 51 rows, plus `includes/guide-terms-data.php`,
+> 13 EN `conexao_category` terms), and the rollout was executed with
+> `php scripts/run-en-translation.php --apply --only=guide`. This plugin is **not**
+> re-activated: re-running its private `apply.php` would be a second, independent
+> translation lifecycle. The files below are retained for provenance only, and the
+> counts it reports ("15 in the measured dataset") predate the shared engine's
+> 13-term scope.
+
 **Purpose:** turn the Guide CPT from the approved **B1 302 policy** (`/en/guias/`
 did not have an English archive; every guide detail URL 302'd to Portuguese)
 into a **real English translation**: one linked EN translation per eligible
@@ -152,3 +164,5 @@ in the theme:
     same request cycle.
 
 _Last verified: 2026-09-26 by Stage I — Scripts Standardisation_
+
+_Last verified: 2026-09-28 by the B1 English Guides content rollout — authored data imported into the shared `en-guide` stage; this plugin stays inactive_

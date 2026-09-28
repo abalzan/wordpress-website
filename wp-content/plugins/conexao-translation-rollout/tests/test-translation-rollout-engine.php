@@ -102,4 +102,71 @@ assert_true( ! is_wp_error( $drifted ), 'drift check run completes' );
 $before = array( 'post_title' => 'A', 'language' => 'pt' );
 $after = array( 'post_title' => 'CHANGED', 'language' => 'pt' );
 assert_true( array() !== Conexao_Translation_Rollout_Engine::diff_snapshots( $before, $after ), 'PT drift detected by snapshot diff' );
+
+/*
+ * ---------------------------------------------------------------------------
+ * The OPTIONAL taxonomy capability (`taxonomy_callback` / `taxonomy_gate_callback`).
+ *
+ * Contract: a stage that declares it gets its taxonomy step invoked by the
+ * ENGINE, dry-run aware, before the record plan; its failure count is folded
+ * into the same numeric gate. A stage that does not declare it is untouched.
+ * ---------------------------------------------------------------------------
+ */
+
+$tax_calls = array();
+
+// (1) The keys are optional: a stage without them validates and runs unchanged.
+assert_true( ! array_key_exists( 'taxonomy_callback', $base_config ), 'a stage declares no taxonomy callback by default' );
+assert_true( array() === $dry['summary']['taxonomy'], 'a stage without a taxonomy callback reports an empty taxonomy payload' );
+
+// (2) A non-callable taxonomy key fails closed, like every other optional key.
+$bad_tax = $base_config;
+$bad_tax['taxonomy_callback'] = 'conexao_not_a_function_at_all';
+assert_true( is_wp_error( Conexao_Translation_Rollout_Engine::validate_config( $bad_tax ) ), 'a non-callable taxonomy_callback fails closed' );
+
+$bad_tax_gate = $base_config;
+$bad_tax_gate['taxonomy_gate_callback'] = 'conexao_not_a_function_at_all';
+assert_true( is_wp_error( Conexao_Translation_Rollout_Engine::validate_config( $bad_tax_gate ) ), 'a non-callable taxonomy_gate_callback fails closed' );
+
+// (3) A stage that DOES declare it: invoked, dry-run aware, and reported.
+$tax_store = array(
+	'a' => array( 'pt' => array( 'id' => 1, 'status' => 'publish' ), 'en' => array( 'en_id' => 0, 'en_status' => 'absent', 'pair_ok' => false, 'en_slug_matches' => true ), 'snap' => array( 'post_title' => 'A', 'language' => 'pt' ) ),
+	'b' => array( 'pt' => array( 'id' => 2, 'status' => 'publish' ), 'en' => array( 'en_id' => 0, 'en_status' => 'absent', 'pair_ok' => false, 'en_slug_matches' => true ), 'snap' => array( 'post_title' => 'B', 'language' => 'pt' ) ),
+);
+$tax_config = rollout_fake_stage( $base_manifest, $tax_store );
+$tax_config['stage']                  = 'fake-taxonomy';
+$tax_config['taxonomy_callback']      = static function ( $dry_run, $mode = 'run' ) use ( &$tax_calls ) {
+	$tax_calls[] = array( 'dry_run' => (bool) $dry_run, 'mode' => (string) $mode );
+	return array( 'taxonomy' => 'fake_tax', 'created' => 0, 'en_terms_planned' => 2 );
+};
+$tax_config['taxonomy_gate_callback'] = static function () { return 0; };
+
+assert_true( true === Conexao_Translation_Rollout_Engine::validate_config( $tax_config ), 'a stage declaring the taxonomy keys validates' );
+
+$tax_adapter = rollout_fake_adapter( $tax_store );
+$tax_dry     = Conexao_Translation_Rollout_Engine::run( $tax_config, $tax_adapter, array( 'dry_run' => true ) );
+assert_true( ! is_wp_error( $tax_dry ), 'a taxonomy stage dry-runs' );
+assert_true( 1 === count( $tax_calls ) && true === $tax_calls[0]['dry_run'], 'the engine invokes taxonomy_callback with dry_run=true' );
+assert_true( 'fake_tax' === ( $tax_dry['summary']['taxonomy']['taxonomy'] ?? '' ), 'the taxonomy payload is reported in the run summary' );
+assert_true( 0 === (int) $tax_store['a']['en']['en_id'], 'a taxonomy dry-run still writes no records' );
+
+$tax_apply = Conexao_Translation_Rollout_Engine::run( $tax_config, $tax_adapter, array( 'dry_run' => false ) );
+assert_true( ! is_wp_error( $tax_apply ) && 2 === (int) $tax_apply['summary']['created'], 'a taxonomy stage applies its records normally' );
+assert_true( 2 === count( $tax_calls ) && false === $tax_calls[1]['dry_run'], 'the engine invokes taxonomy_callback with dry_run=false on apply' );
+
+// (4) A taxonomy FAILURE must fail the shared numeric gate (fail closed).
+$tax_store2 = array(
+	'a' => array( 'pt' => array( 'id' => 1, 'status' => 'publish' ), 'en' => array( 'en_id' => 0, 'en_status' => 'absent', 'pair_ok' => false, 'en_slug_matches' => true ), 'snap' => array( 'post_title' => 'A', 'language' => 'pt' ) ),
+	'b' => array( 'pt' => array( 'id' => 2, 'status' => 'publish' ), 'en' => array( 'en_id' => 0, 'en_status' => 'absent', 'pair_ok' => false, 'en_slug_matches' => true ), 'snap' => array( 'post_title' => 'B', 'language' => 'pt' ) ),
+);
+$tax_fail_config             = rollout_fake_stage( $base_manifest, $tax_store2 );
+$tax_fail_config['stage']                  = 'fake-taxonomy-fail';
+$tax_fail_config['taxonomy_callback']      = static function () { return array( 'taxonomy' => 'fake_tax' ); };
+$tax_fail_config['taxonomy_gate_callback'] = static function () { return 2; };
+$tax_fail = Conexao_Translation_Rollout_Engine::run( $tax_fail_config, rollout_fake_adapter( $tax_store2 ), array( 'dry_run' => true ) );
+assert_true( ! is_wp_error( $tax_fail ), 'a failing taxonomy stage still returns a report' );
+assert_true( 'FAIL' === $tax_fail['gate']['gate'], 'a taxonomy failure fails the shared numeric gate' );
+assert_true( 2 === (int) $tax_fail['gate']['extra_failures'], 'the taxonomy failure count is reported in extra_failures' );
+assert_true( 2 === (int) $tax_fail['gate']['missing_en'] && 0 === (int) $tax_fail['gate']['conflicts'] && 0 === (int) $tax_fail['gate']['pt_drift'], 'the taxonomy failure is additive to the record gate and does not fabricate record or PT-drift numbers' );
+
 test_finish();

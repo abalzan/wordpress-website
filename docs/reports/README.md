@@ -99,9 +99,20 @@ recovered code unchanged.
 | `2026-09-28-en-archive-route-404.md` | **Root cause proven: the registration code is byte-identical to the verified `b47d098` baseline; the 404s are the stale local `rewrite_rules` failure mode (no `en/`-prefixed CPT-archive rules). The minimal fix is the documented local rewrite flush (`scripts/flush-blog-rewrite-rules.php`) — a local DB operation, not a code change — now recorded in `docs/routing.md`. No code, gate or expectation changed. Status: BLOCKED (no runtime in the task environment to execute the flush).** |
 | `2026-09-28-en-guides-archive-blocked.md` | **`/en/guias/` is not a bug.** Measured: 48 published PT guides, **0 EN guide records**, 0 translation relationships, 0 EN `conexao_category` terms. `guide` is a **B1** type (`conexao_b2_post_types()` excludes it; `docs/routing.md:436`) so the EN-only query is correct and `conexao_b2_widen_query_args()` must never apply. The empty archive is the documented, enforced contract, and the fix is a content rollout (`conexao-guide-translation`, authored English already committed) which is not authorised here. No code changed, no gate weakened, 0 new failures. Status: **BLOCKED — EN guide content is required but absent** |
 
+## B1 English Guides content rollout (2026-09-28)
+
+The authorised follow-up to the BLOCKED finding above. The empty archive was a
+**content** gap, not a route, query, template or taxonomy gap.
+
+| Report | Content |
+|---|---|
+| `2026-09-28-b1-en-guides-rollout.md` | **The fix, applied through the existing shared architecture.** The shared `en-guide` stage's authored manifest held only 1 row (whose PT guide is absent here), so the retired `conexao-guide-translation` plugin's **authored data** was imported into the `en-guide` stage (51 guide rows + 13 `conexao_category` terms) and run with `scripts/run-en-translation.php --only=guide` — its **lifecycle stays dormant**, so there is no second translation engine. The engine gained two **optional** keys (`taxonomy_callback` / `taxonomy_gate_callback`) so term creation stays engine-owned. Result: **48/48** published linked EN guides, **13/13** terms, **0** PT mutations against a per-record SHA-256 snapshot, 4 documented exclusions, idempotent second run (0 creates), acceptance matrix 18/18, permanent gates **7/7 with 0 violations (48 → 0)**, 0 new test failures. `guide` stays **B1**: no B2 widening, no fallback. Status: **PASS WITH LIMITATION** (only `composer`/PHPStan-via-`lint.sh` unavailable; the analysis passes when run with the vendored PHPStan) |
+
 ## Related: `docs/audit/` (engineering audits), `docs/engineering-standard.md`
 (the normative standard these reports are measured against).
 
 _Last verified: 2026-09-27 by the recovery closeout_
 
 _Last verified: 2026-09-28 by the EN archive route 404 investigation_
+
+_Last verified: 2026-09-28 by the B1 English Guides content rollout_

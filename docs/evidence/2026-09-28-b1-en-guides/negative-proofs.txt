@@ -1,0 +1,11 @@
+=== PROOF 1: the taxonomy gate fails on a wrong authored EN slug ===
+baseline taxonomy gate (real data): 0 failures
+with ONE mutated expected slug: 1 failures  -> gate would FAIL
+DB still reports: 0 failures (unmutated, nothing written)
+
+=== PROOF 2: the engine's record gate fails when an EN pair is missing ===
+sample PT guide id=5001 slug=autismo-viagem-aviao-irlanda-dublin-cork-airport
+its real EN id=33930 -> pair resolves, counted as translated
+gate with missing_en=1: FAIL
+gate with pt_drift=1:    FAIL
+gate with all zero:      PASS

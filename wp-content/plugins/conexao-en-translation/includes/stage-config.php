@@ -174,7 +174,7 @@ function conexao_en_translation_engine_adapter( string $post_type ): array {
  * @return array<string,mixed>
  */
 function conexao_en_translation_engine_config( string $post_type ): array {
-	return array(
+	$config = array(
 		'stage'                   => 'en-' . $post_type,
 		'source_post_type'        => $post_type,
 		'source_lang'             => 'pt',
@@ -200,6 +200,25 @@ function conexao_en_translation_engine_config( string $post_type ): array {
 			);
 		},
 	);
+
+	/*
+	 * The `guide` stage is the only one whose records are filed under a
+	 * TRANSLATED taxonomy: every EN guide is filed under the EN counterpart of
+	 * its PT `conexao_category` term, so those terms must exist first. It
+	 * therefore declares the engine's OPTIONAL taxonomy capability. `page` and
+	 * `post` do not, so their configs, plans, counters and gates are unchanged.
+	 *
+	 * The callbacks live in guide-stage.php and are the stage-owned half only:
+	 * the engine still owns the ordering (taxonomy before the record plan,
+	 * dry-run aware) and folds the taxonomy failure count into the same numeric
+	 * gate.
+	 */
+	if ( 'guide' === $post_type && function_exists( 'conexao_en_translation_guide_taxonomy_run' ) ) {
+		$config['taxonomy_callback']      = 'conexao_en_translation_guide_taxonomy_run';
+		$config['taxonomy_gate_callback'] = 'conexao_en_translation_guide_taxonomy_gate';
+	}
+
+	return $config;
 }
 
 /*

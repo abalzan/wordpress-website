@@ -46,7 +46,7 @@ English URLs wrap the same paths in `/en/`:
 | Context | Portuguese | English |
 |---|---|---|
 | Home | `/` | `/en/` |
-| Guides | `/guias/` | `/en/guias/` — **real English archive since Stage 9**: one linked EN `guide` per public PT guide (authored English title, body, excerpt, meta description) plus the linked EN `conexao_category` terms used by those guides. EN singles live at `/en/guias/{en-slug}/`; the PT slug under `/en/` is a replaced master and answers **302 → the PT guide**. `/en/guias/?categoria=documents` filters the EN archive; a slug from the other language resolves to the same concept through the Polylang term relationship. |
+| Guides | `/guias/` | `/en/guias/` — **real English archive, applied 2026-09-28**: one linked EN `guide` per public PT guide (48/48), plus the 13 linked EN `conexao_category` terms those guides use. `guide` stays **B1** — no B2 fallback and no query widening were introduced; the archive was previously empty only because the EN records did not exist. EN singles live at `/en/guias/{en-slug}/` and are self-canonical with the `pt-BR`/`en`/`x-default` set; the PT slug under `/en/` is a replaced master and answers **302 → the PT guide**. `/en/guias/?categoria=documents` filters the EN archive; a slug from the other language resolves to the same concept through the Polylang term relationship. Authored data + the translated-taxonomy step live in the `en-guide` stage of `conexao-en-translation` and are applied by the shared `conexao-translation-rollout` engine (`scripts/run-en-translation.php --only=guide`); the retired `conexao-guide-translation` plugin stays dormant. |
 | Events | `/eventos/` | `/en/eventos/` |
 | Lazer | `/lazer/` | `/en/lazer/` |
 | Courses | `/cursos/` | `/en/cursos/` |
@@ -631,3 +631,5 @@ See `docs/reports/2026-09-28-en-archive-404-fix.md`.
 
 _Last verified: 2026-09-28 by the EN archive 404 fix — the three routes were
 restored, `/en/cursos/` recovered from a stray 301, PT unchanged_
+
+_Last verified: 2026-09-28 by the B1 English Guides content rollout — 48/48 linked EN guides + 13 EN `conexao_category` terms applied through the shared `en-guide` stage; `guide` remains B1, no fallback, no B2 widening, canonical/hreflang/redirect policy unchanged_
