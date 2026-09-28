@@ -78,8 +78,15 @@ function conexao_language_switcher_data(): array {
  * @return bool
  */
 function conexao_is_language_switcher_enabled(): bool {
-	return defined( 'CONEXAO_LANGUAGE_SWITCHER_ENABLED' )
-		&& CONEXAO_LANGUAGE_SWITCHER_ENABLED;
+	// The defined() check is a separate early return, not part of an && chain:
+	// the constant is a compile-time value here, so a short-circuit expression
+	// reads as dead code to static analysis even though the runtime result is
+	// the same. Semantics are unchanged — undefined means disabled.
+	if ( ! defined( 'CONEXAO_LANGUAGE_SWITCHER_ENABLED' ) ) {
+		return false;
+	}
+
+	return (bool) constant( 'CONEXAO_LANGUAGE_SWITCHER_ENABLED' );
 }
 
 /**
