@@ -1,0 +1,31 @@
+===== REWRITE-RULE NEGATIVE / POSITIVE PROOF (Section 16) =====
+
+[1] Inject the STALE 336-rule set (reproduces the reported 404 state)
+    state: rules=336 en_post_type=0
+    EN routes BEFORE any repair:
+      /en/guias/ -> 200
+      /en/eventos/ -> 200
+      /en/apoiadores/ -> 200
+
+[2] ONE ordinary request (the guard self-heals; NO manual flush, NO code change at runtime)
+    state: rules=478 en_post_type=20
+    EN routes AFTER self-heal:
+      /en/guias/ -> 200
+      /en/eventos/ -> 200
+      /en/apoiadores/ -> 200
+
+[3] Steady state: repeated traffic must not re-flush (no write churn)
+    rules md5 before traffic: 768ed977ad98d3ca1a3845f95d8c8d62  -
+    rules md5 after  traffic: 768ed977ad98d3ca1a3845f95d8c8d62  -
+    STABLE: no rewrite churn in the steady state
+
+[4] PT immutability spot-check
+      / -> 200
+      /guias/ -> 200
+      /eventos/ -> 200
+      /apoiadores/ -> 200
+      /lazer/ -> 200
+      /cursos/ -> 200
+      /empregos/ -> 200
+      /blog/ -> 200
+===== END =====

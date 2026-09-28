@@ -1,0 +1,26 @@
+== Stage L permanent invariant gates ==
+   repository: /home/andrei/IdeaProjects/wordpress-website
+   sha:        e7303ba47d0080e3778ba7e70dd5b9c29f44e170
+
+[PASS   ] taxonomy                   taxonomy_policy          exit=0 18 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[FAIL   ] translation_completeness   translation_completeness exit=1 17 passed, 3 failed, 53 violation(s) (52 pre-existing, 1 new), 2054 allowlisted
+          violations: 53 (52 pre-existing, 1 new)
+          - post_type:event:malformed_relationships: 1 (event: every translation relationship is a bidirectional link to a PT master)
+          - post_type:guide:missing_en: 48 (guide: eligible public PT records missing a linked EN translation = 0)
+          - post_type:page:missing_en: 4 (page: eligible public PT records missing a linked EN translation = 0)
+          allowlisted: 2054 (by documented policy)
+[PASS   ] cache_scoping              cache_scoping            exit=0 9 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[PASS   ] cache_scoping              cache_scoping_static     exit=0 2 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[PASS   ] redirect_precedence        redirect_precedence      exit=0 15 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[PASS   ] documentation_drift        documentation_drift      exit=0 14 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[PASS   ] i18n_freshness             i18n_freshness           exit=0 8 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+
+----------------------------------------
+Gates: 7 total, 6 passed, 1 failed, 0 blocked
+Assertions: 83 passed, 3 failed
+Violations: 53 (52 pre-existing, 1 new)
+AGGREGATE: FAIL
+----------------------------------------
+gate.json written: docs/evidence/2026-09-26-stage-l/gate.json
+
+One or more permanent invariant gates FAILED. This is a real repository/data violation, not a harness problem: the gates are blocking by design and must not be weakened to obtain a green run.

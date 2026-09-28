@@ -1,0 +1,13 @@
+{
+  "event_county_filter_links": 26,
+  "first_county_href": "http://localhost:8080/en/eventos/?county=carlow",
+  "county_filter_status": "http://localhost:8080/en/eventos/?county=carlow",
+  "county_filter_lang": "en-US",
+  "event_town_filter_links": 215,
+  "first_town_href": "http://localhost:8080/en/eventos/?cidade=abbeyleix",
+  "guias_status": 200,
+  "guias_lang": "en-US",
+  "guias_canonical": "http://localhost:8080/en/guias/",
+  "guias_pagination_links": 0,
+  "guias_page2_status": 404
+}

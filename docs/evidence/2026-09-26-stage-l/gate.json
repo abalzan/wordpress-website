@@ -1,7 +1,7 @@
 {
   "stage": "L — permanent invariant gates",
-  "generated_at": "2026-09-27T20:28:50Z",
-  "repository_sha": "bd81ba59d800970d6e1e6e542d76ccb664fdbd24",
+  "generated_at": "2026-09-28T08:03:52Z",
+  "repository_sha": "e7303ba47d0080e3778ba7e70dd5b9c29f44e170",
   "status": "fail",
   "gates": {
     "taxonomy_policy": {
@@ -588,7 +588,7 @@
       "prerequisites": [],
       "details": [],
       "output_tail": [
-        "   historical/audit documents without the marker (reported, not gated): 86",
+        "   historical/audit documents without the marker (reported, not gated): 88",
         "",
         "   -- §9.2 no root-level report/evidence file --",
         "   root files scanned: 16, offenders: 0",
@@ -618,7 +618,7 @@
       "prerequisites": [],
       "details": [],
       "output_tail": [
-        "   conexao-br-irlanda       catalogue=1790536693 newest-source=1790536693 (wp-content/themes/conexao-br-irlanda/404.php) fresh",
+        "   conexao-br-irlanda       catalogue=1790540977 newest-source=1790540977 (wp-content/themes/conexao-br-irlanda/404.php) fresh",
         "   conexao-data-model       catalogue=1790431901 newest-source=1790335165 (wp-content/plugins/conexao-data-model/includes/class-agency.php) fresh",
         "   conexao-content          catalogue=1790431901 newest-source=1789985903 (wp-content/plugins/conexao-content/conexao-content.php) fresh",
         "   conexao-admin-ux         catalogue=1790431901 newest-source=1790016943 (wp-content/plugins/conexao-admin-ux/includes/class-translation-state.php) fresh",

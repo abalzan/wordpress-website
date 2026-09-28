@@ -219,3 +219,132 @@ function conexao_polylang_language_home_ensure(): void {
 // Runs at theme load: after Polylang's bootstrap (PLL() exists) and after the
 // declaration filters above are registered.
 conexao_polylang_language_home_ensure();
+
+/**
+ * The post types whose public archive is served in BOTH languages under the
+ * `/en/` directory.
+ *
+ * This is NOT a new source of truth: it is derived at read time from the
+ * translated post types this theme already declares above
+ * (`conexao_polylang_translated_post_types()`), intersected with the post
+ * types that actually have a public archive. Re-deriving it here means a
+ * change to the translation policy automatically changes what is protected —
+ * there is no second hand-maintained list.
+ *
+ * @return string[] Post type names with a public, non-empty archive.
+ */
+function conexao_polylang_language_archive_post_types(): array {
+	if ( ! conexao_polylang_active() || ! function_exists( 'PLL' ) || ! PLL() ) {
+		return array();
+	}
+
+	$archives = array();
+
+	foreach ( array_keys( PLL()->model->get_translated_post_types() ) as $post_type ) {
+		$object = get_post_type_object( $post_type );
+
+		if ( $object && ! empty( $object->has_archive ) && ! empty( $object->public ) ) {
+			$archives[] = (string) $post_type;
+		}
+	}
+
+	return $archives;
+}
+
+/**
+ * STAGE 3.2 — keep the `/en/` post-type archive rewrite rules authoritative.
+ *
+ * Polylang builds the `/en/<archive>/` rules by filtering the PER-POST-TYPE
+ * `{$post_type}_rewrite_rules` sets (`PLL_Links_Directory::rewrite_rules()`).
+ * Those filters are attached on `wp_loaded` at priority 9
+ * (`PLL_Links_Permalinks::do_prepare_rewrite_rules()`), and only once
+ * `self::$can_filter_rewrite_rules` is true.
+ *
+ * Any `flush_rewrite_rules()` that runs BEFORE that point therefore persists
+ * a rule set that is missing every `(en)/<archive>` rule: the Portuguese
+ * archives keep working, the English ones resolve to no rule at all and WordPress
+ * answers 404. That is the exact regression this guard repairs — the
+ * repository's registration code is correct and the persisted rule set is not.
+ *
+ * It is a self-heal in the same spirit as
+ * `conexao_polylang_language_home_ensure()` above, and deliberately NOT:
+ *
+ *  - a route allowlist or a hardcoded `(en)/…` URL handler (it never inspects
+ *    the request, never serves a route, and never suppresses a 404: it only
+ *    repairs the persisted rule set),
+ *  - a redirect (it issues none),
+ *  - a second routing system (it delegates entirely to
+ *    `flush_rewrite_rules()`, i.e. to Polylang's own generation).
+ *
+ * Steady state: one `get_option()` and a scan of the expected rule keys, no
+ * writes. It writes only when the persisted rules are actually missing the
+ * English archives, and it runs at `wp_loaded` priority 20 — strictly after
+ * Polylang's priority-9 prepare step, so the regenerated rules are complete.
+ *
+ * @return void
+ */
+function conexao_polylang_rewrite_rules_ensure(): void {
+	if ( ! conexao_polylang_active() || ! function_exists( 'PLL' ) || ! PLL() ) {
+		return;
+	}
+
+	$post_types = conexao_polylang_language_archive_post_types();
+
+	if ( empty( $post_types ) ) {
+		return;
+	}
+
+	// The rewrite API is only meaningful with a pretty permalink structure;
+	// without one there is no rule set to repair.
+	if ( '' === (string) get_option( 'permalink_structure' ) ) {
+		return;
+	}
+
+	$rules = get_option( 'rewrite_rules' );
+
+	// Nothing persisted yet: WordPress itself flushes on the first request
+	// that needs the rules, and there is no incomplete state to repair.
+	if ( ! is_array( $rules ) || empty( $rules ) ) {
+		return;
+	}
+
+	foreach ( $post_types as $post_type ) {
+		$object = get_post_type_object( $post_type );
+		$slug   = is_array( $object->rewrite ) && ! empty( $object->rewrite['slug'] ) ? $object->rewrite['slug'] : $post_type;
+
+		// Polylang emits one language-prefixed variant per non-default
+		// language, and marks the default-language variant explicitly with
+		// `lang=`. A complete rule set satisfies both.
+		$has_language_variant = false;
+		$has_default_variant  = false;
+
+		foreach ( $rules as $regex => $query ) {
+			if ( false === strpos( (string) $regex, '/' . $slug ) ) {
+				continue;
+			}
+
+			if ( false !== strpos( (string) $query, 'post_type=' . $post_type ) ) {
+				if ( false !== strpos( (string) $regex, ')/' ) ) {
+					$has_language_variant = true;
+				}
+
+				if ( false !== strpos( (string) $query, 'lang=' ) ) {
+					$has_default_variant = true;
+				}
+			}
+		}
+
+		if ( $has_language_variant && $has_default_variant ) {
+			continue;
+		}
+
+		// Stale or partial rule set (the 404 state). Regenerate once, now that
+		// Polylang's rewrite filters are attached. flush_rewrite_rules() writes
+		// the option; the current request keeps serving the already-parsed
+		// query, and the next request reads the repaired rules.
+		flush_rewrite_rules( false );
+
+		return;
+	}
+}
+add_action( 'wp_loaded', 'conexao_polylang_rewrite_rules_ensure', 20 );

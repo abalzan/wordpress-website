@@ -1,0 +1,49 @@
+# 02 - Root cause: a rewrite flush that ran BEFORE Polylang's rewrite filters
+
+## Mechanism (Polylang 3.8.9, links-permalinks.php / links-directory.php)
+  PLL_Links_Permalinks::init()          -> add_action( 'wp_loaded', 'do_prepare_rewrite_rules', 9 )
+  do_prepare_rewrite_rules()            -> self::$can_filter_rewrite_rules = true
+  prepare_rewrite_rules()               -> PLL_Links_Directory attaches the PER-POST-TYPE
+                                           filters guide_rewrite_rules, event_rewrite_rules,
+                                           sponsor_rewrite_rules, leisure_rewrite_rules,
+                                           course_provider_rewrite_rules, ...
+  PLL_Links_Directory::rewrite_rules()  -> emits the "(en)/<archive>" variants
+
+  So the (en)/ archive rules ONLY exist if the flush happens at/after wp_loaded@9.
+
+## Proof that the filters are attached per-CPT in a normal front-end request
+  (temporary mu-plugin probe, since removed)
+  {
+    "wp_loaded_fired": true,
+    "links_model_class": "PLL_Links_Directory",
+    "can_filter_rewrite_rules": true,
+    "polylang_rewrite_filters_attached": {
+      "guide_rewrite_rules": 1, "event_rewrite_rules": 1, "sponsor_rewrite_rules": 1,
+      "leisure_rewrite_rules": 1, "course_provider_rewrite_rules": 1
+    }
+  }
+
+## Decisive negative test: reproduce the 336-rule set EXACTLY
+  A flush issued with Polylang's rewrite filters removed produced:
+    NO-POLYLANG-FLUSH: total=336 en_post_type=0
+    >>> MATCHES STALE 336-RULE SET
+
+  336 rules / 0 EN post_type rules == the state that produced the three 404s.
+
+## Why a flush can precede wp_loaded@9 here
+  Three plugins call flush_rewrite_rules() from register_activation_hook:
+    conexao-data-model    (conexao-data-model.php:468 activate / :472 deactivate)
+    conexao-event-runtime (conexao-event-runtime.php:454 activate / :465 deactivate)
+    conexao-content       (conexao-content.php:63 activate)
+  Activation hooks run inside the activation request, BEFORE wp_loaded. A
+  plugin activation/deactivation during theme switching (the 597b04e -> cd800be
+  cycle; wp_options.theme_switched is set) therefore persists exactly the
+  rule set observed. The theme is a bind mount, so a theme file change is not
+  itself the cause.
+
+## The repository code is NOT at fault
+  git diff b47d098 HEAD -- wp-content/themes/   => EMPTY
+  git diff b47d098 HEAD -- wp-content/plugins/  => EMPTY (except the event-importer
+    .pot, deliberately preserved from 597b04e by cd800be)
+  b47d098 is the verified baseline where evidence 06 of the recovery closeout
+  records /en/guias/ = 200 and /en/eventos/ = 200.

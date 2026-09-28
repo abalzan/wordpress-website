@@ -1,0 +1,19 @@
+# 11 - Remaining failures: all PROVEN pre-existing, none caused by this fix
+
+## A. verify-routing-http.py : 86 passed, 3 failed
+   (baseline: the suite TIMED OUT and produced no result at all)
+   1. en-home-no-pt-content-type-label  /en/  missing 'Practical Guide'
+      PROVEN pre-existing: with the fix REVERTED (git checkout guard.php),
+      /en/ still contains 0 occurrences of 'Practical Guide'. The page renders
+      the chip as 'Guides' - a catalogue/content matter, not routing.
+   2. en-guides-page-2  /en/guias/page/2/  404
+   3. an EN guide link is discoverable in /en/guias/
+
+## B. verify-guides-en-http.py : 7 passed, 2 failed
+   Rows 2 and 3 above, same root cause.
+   PROVEN pre-existing data limitation: the local DB has
+        EN guide records = 0   (PT guide records = 48)
+   With 0 EN guides there is no page 2 and no EN single link. The archive
+   itself (/en/guias/) is 200, EN shell, self-canonical - the route is fixed;
+   only its pagination/content completeness is blocked by missing content.
+   No EN guide was fabricated to green this row.
