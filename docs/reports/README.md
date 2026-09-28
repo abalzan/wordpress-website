@@ -66,6 +66,7 @@ modularisation, …) live in [`site/`](site/) as
 | `site/2026-09-25-stage-c-static-quality-tooling.md` | Stage C — `scripts/lint.sh`, PHPCS/PHPStan baselines |
 | `site/2026-09-25-stage-d-ci.md` | Stage D — the blocking CI workflow |
 | `site/2026-09-25-stage-e-test-harness.md` | Stage E — the three-layer `scripts/run-tests.sh` harness |
+| `site/2026-09-28-ci-integration-fixture.md` | CI integration setup recovery — initializes Polylang on a fresh site, seeds the authored Jobs page in the disposable test DB, and keeps non-deterministic content-dependent suites manual-only |
 | `site/2026-09-26-stage-f-theme-modularisation.md` | Stage F — theme module split |
 | `site/2026-09-26-stage-g-plugin-registry-lifecycle.md` | Stage G — the `plugins.json` registry + drift gate |
 | `site/2026-09-26-stage-h-shared-rollout-engine.md` | Stage H — the shared translation-rollout engine |
@@ -120,3 +121,5 @@ _Last verified: 2026-09-28 by the EN archive route 404 investigation_
 _Last verified: 2026-09-28 by the B1 English Guides content rollout_
 
 _Last verified: 2026-09-28 by the EN Jobs URL consistency change_
+
+_Last verified: 2026-09-28 by CI integration setup recovery_

@@ -58,10 +58,43 @@ function conexao_language_switcher_data(): array {
 }
 
 /**
+ * Is the language switcher exposed in the UI?
+ *
+ * The single visibility condition for the switcher, read once at the shared
+ * rendering boundary (conexao_language_switcher() below) so the desktop
+ * header row and the mobile menu drawer can never disagree and the condition
+ * is never duplicated across templates.
+ *
+ * This is UI EXPOSURE only. A false value removes the switcher markup; it does
+ * NOT disable English. EN content, /en/ routes, canonical URLs, hreflang,
+ * Polylang registrations and PT/EN translation relationships are untouched,
+ * and the switcher's own data layer
+ * (conexao_language_switcher_data() / conexao_language_switch_url()) keeps
+ * working so re-enabling needs no other change.
+ *
+ * Re-enable by changing CONEXAO_LANGUAGE_SWITCHER_ENABLED from false to true
+ * in functions.php.
+ *
+ * @return bool
+ */
+function conexao_is_language_switcher_enabled(): bool {
+	return defined( 'CONEXAO_LANGUAGE_SWITCHER_ENABLED' )
+		&& CONEXAO_LANGUAGE_SWITCHER_ENABLED;
+}
+
+/**
  * Render the language switcher.
  *
  * Text labels ("PT" / "EN") — concise and consistent with the existing design
  * system (no flags: flags are not part of the site's visual language).
+ *
+ * The visibility condition is applied here, at the shared rendering boundary,
+ * so BOTH call sites (header.php desktop context and header.php mobile
+ * context) are governed by the single CONEXAO_LANGUAGE_SWITCHER_ENABLED flag
+ * and by no other condition. When the flag is false the renderer returns
+ * before the template part is loaded, so the switcher container — and any
+ * language-switcher ARIA markup — is absent from the document entirely rather
+ * than merely hidden with CSS.
  *
  * @param array $args {
  *     @type string $context 'desktop' or 'mobile' — styling class.
@@ -69,5 +102,9 @@ function conexao_language_switcher_data(): array {
  * @return void
  */
 function conexao_language_switcher( $args = array() ) {
+	if ( ! conexao_is_language_switcher_enabled() ) {
+		return;
+	}
+
 	get_template_part( 'template-parts/language-switcher', null, $args );
 }

@@ -505,6 +505,43 @@ Note: "Sobre Nós" is intentionally NOT a navigation item either. The /sobre-nos
 
 Menu selection under Polylang: the header menu resolves through Polylang's per-language `nav_menus` option (see `scripts/assign-polylang-nav-menus.php` for PT and `scripts/create-en-primary-menu.php` for the EN "Main Menu" mirror; docs/routing.md §Navigation Architecture). The render-time nav layer is language-aware (language-resolved archive/page destinations, language-scoped active states), so both languages render their own curated menu. Both header `wp_nav_menu()` calls use the safe empty fallback `conexao_safe_nav_menu_fallback()` — never `wp_page_menu`'s automatic page list.
 
+### Language switcher exposure flag
+
+`CONEXAO_LANGUAGE_SWITCHER_ENABLED` is a **UI exposure** flag. It controls only
+whether the PT/EN language switcher is rendered; it does **not** control
+English.
+
+| Item | Value |
+|---|---|
+| Constant | `CONEXAO_LANGUAGE_SWITCHER_ENABLED` (defined in `functions.php`, guarded by `! defined()` so `wp-config.php` can override) |
+| Shipped default | `false` |
+| Reader helper | `conexao_is_language_switcher_enabled()` — `inc/i18n/switcher.php` |
+| Visibility condition | The single `if ( ! conexao_is_language_switcher_enabled() ) { return; }` inside `conexao_language_switcher()` |
+| Call sites | `header.php` desktop (`context => desktop`) and mobile drawer (`context => mobile`) — both go through that one shared renderer, so there is deliberately **no** separate desktop/mobile flag |
+| Gate | `tests/test-language-switcher-flag.php` (permanent gate, runs in `./scripts/run-tests.sh`) |
+
+The switcher is **intentionally disabled during EN validation.**
+
+**To re-enable:** change `CONEXAO_LANGUAGE_SWITCHER_ENABLED` from `false` to
+`true` in `functions.php`. That single value is the whole re-enable action — no
+template, Polylang, routing, redirect, content or database change is required.
+The switcher's data layer (`conexao_language_switcher_data()` and
+`conexao_language_switch_url()`) is deliberately left intact while disabled, so
+the pre-existing markup — PT current-language indicator, EN link, EN
+destination, `hreflang`, `lang` and the ARIA attributes — returns unchanged.
+
+While the flag is `false` the switcher is **absent from the rendered HTML**, not
+merely hidden: the container, its items and its ARIA markup are all omitted, so
+no empty `<div class="language-switcher …">` and no orphaned
+`role="group"` / `aria-label="Idioma do site"` are left behind.
+
+**Unaffected by the flag** (this is exposure only, not a language change):
+English content, Portuguese content, Polylang configuration and language
+registrations, PT↔EN translation relationships, `/en/` and PT routes, canonical
+URLs, `hreflang`, rewrite rules, redirects, navigation destinations, the
+translation engines, language detection and URL generation. Direct `/en/` URLs
+keep working exactly as before.
+
 ## Performance Optimizations
 
 - Emoji script/style removal
@@ -533,7 +570,7 @@ inc/
 │   ├── terms.php          # translated category/tag resolution
 │   ├── fallback.php       # B2 (PT fallback) policy
 │   ├── hreflang.php       # hreflang data + canonical bridge
-│   └── switcher.php       # language switcher data + renderer
+│   └── switcher.php       # language switcher data + renderer (UI exposure flag)
 ├── rest-language.php      # bilingual REST contract (unchanged, single owner)
 ├── seo/                   # SEO (was inc/seo.php)
 │   ├── titles.php         # <title> + archive headings
@@ -610,5 +647,6 @@ runs slightly over is preferred over an artificial split.
 - `tests/test-leisure-related-events.php` — Phase 3C related-events helper tests (run: `docker compose exec wordpress php /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-leisure-related-events.php`)
 - `tests/test-leisure-attribute-normalization.php` — leisure attribute environment normalization tests (`Interior + exterior` suppresses redundant `Interior`/`Exterior`, including the legacy-meta fallback; card renders through the shared helper; run: `docker compose exec wordpress php /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-leisure-attribute-normalization.php`)
 - `tests/test-leisure-card-excerpt-language.php` — Stage 7 leisure card-description language selection (`conexao_leisure_card_excerpt()`: PT unchanged, EN translation via `_leisure_excerpt_en`, B2 fallback when absent; renders the real card template part in each language; rollout-engine invariants: preview/drift-refusal/idempotency/remove rollback; run: `docker compose exec wordpress php /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-leisure-card-excerpt-language.php`)
+- `tests/test-language-switcher-flag.php` — language-switcher exposure gate. Proves the DISABLED state renders no switcher markup at all in either context (count 0 for the container, `--desktop`, `--mobile` and items, with no orphaned ARIA and nothing merely CSS-hidden), that desktop and mobile share the single `CONEXAO_LANGUAGE_SWITCHER_ENABLED` flag through one shared renderer, that the switcher is only hidden and never removed (data layer still resolves both languages), and that English/Polylang/routing/SEO output is identical on both sides of the flag. The ENABLED state is proven in a child process that pre-defines the same constant as `true`, so flipping that one value is verified to restore the pre-existing markup (run: `docker compose exec wordpress php /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-language-switcher-flag.php`)
 - `assets/js/main.js` — frontend JavaScript
-_Last verified: 2026-09-26 by Stage I — Scripts Standardisation_
+_Last verified: 2026-09-28 by the language-switcher exposure flag change (UI exposure only; `CONEXAO_LANGUAGE_SWITCHER_ENABLED = false`)_

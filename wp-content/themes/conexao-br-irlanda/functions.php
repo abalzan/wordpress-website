@@ -17,6 +17,33 @@ define( 'CONEXAO_THEME_VERSION', '1.0.0' );
 define( 'CONEXAO_THEME_DIR', get_template_directory() );
 define( 'CONEXAO_THEME_URI', get_template_directory_uri() );
 
+/*
+ * Language switcher exposure.
+ *
+ * This is a UI EXPOSURE flag only. It controls whether the PT/EN language
+ * switcher is rendered; it does not control English itself.
+ *
+ * The language switcher is intentionally disabled during EN validation.
+ * Re-enable by changing CONEXAO_LANGUAGE_SWITCHER_ENABLED from false to true.
+ *
+ * Re-enabling requires THIS ONE VALUE and nothing else — no template, Polylang,
+ * routing, redirect, content or database change. While the flag is false:
+ *
+ *   - the switcher is not emitted into the HTML at all (no container, no
+ *     orphan ARIA, no hidden-but-present control) — see
+ *     conexao_is_language_switcher_enabled() in inc/i18n/switcher.php, the
+ *     single shared rendering boundary used by the desktop header row and the
+ *     mobile menu drawer alike;
+ *   - English content, /en/ routes, canonical URLs, hreflang, Polylang
+ *     language registrations and PT/EN translation relationships are entirely
+ *     unaffected, and direct /en/ URLs keep working.
+ *
+ * @var bool
+ */
+if ( ! defined( 'CONEXAO_LANGUAGE_SWITCHER_ENABLED' ) ) {
+	define( 'CONEXAO_LANGUAGE_SWITCHER_ENABLED', false );
+}
+
 // ---------------------------------------------------------------------------
 // Load order.
 //

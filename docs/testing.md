@@ -454,7 +454,7 @@ measured inventory, the size budget and the rules are in
                        |
           +------------+------------+
           |                         |
-     static-quality            integration
+     static-quality            integration (manual)
    Stage C/D gates        Docker Compose (ephemeral)
                                  |
                         ./scripts/run-tests.sh
@@ -467,10 +467,16 @@ measured inventory, the size budget and the rules are in
 - `static-quality` is the Stage D job, **unchanged**: `composer validate`,
   `composer install`, `./scripts/lint.sh`, `shellcheck scripts/*.sh`, and the
   non-blocking raw-debt telemetry.
-- `integration` starts the Compose stack, **waits for real readiness** (DB
-  healthcheck + an HTTP 200 from the front page, not `sleep 10`), installs
-  WordPress and the pinned Polylang, activates the repository theme/plugins,
-  and runs `./scripts/run-tests.sh`.
+- `integration` is `workflow_dispatch`-only under engineering-standard §1.7:
+  several maintained suites assert against migrated site content, but the repo
+  has no deterministic synthetic database fixture yet. The job starts the
+  Compose stack, waits for readiness, installs WordPress and pinned Polylang,
+  configures `pt`/`en`, activates the required test plugins, applies the
+  authored Jobs-page stage, and runs `./scripts/run-tests.sh`.
+- The manual job is not yet a green full-suite gate. Do not make it a required
+  push/PR check until the content-dependent suites are made deterministic with
+  synthetic fixtures; never solve this by weakening assertions or committing a
+  database dump.
 - The integration database is **ephemeral** (`docker compose down -v` on
   cleanup). No developer's volume is reused and no database data is committed.
 - No secrets, no write permissions, no `pull_request_target`, no
@@ -508,5 +514,7 @@ convention-based, and CI calls the same command you do.
 
 _Last verified: 2026-09-26 by Stage I — Scripts Standardisation_
 _Last verified: 2026-09-26 by Stage J — Build, Release & Deploy Verification_
+
+_Last verified: 2026-09-28 by CI integration setup recovery_
 _Last verified: 2026-09-26 by Stage K — Agent Skills + Templates_
 _Last verified: 2026-09-26 by Stage O — Enable the Real English Blog Archive_

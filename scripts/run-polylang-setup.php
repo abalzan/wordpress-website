@@ -39,6 +39,17 @@ conexao_script_load_wordpress();
 
 $dry_run = (bool) array_intersect( array( 'dry-run', '--dry-run' ), (array) $args );
 
+if ( ! function_exists( 'pll_languages_list' ) && class_exists( 'Polylang' ) ) {
+	add_filter(
+		'pll_context',
+		static function () {
+			return 'PLL_Frontend';
+		},
+		PHP_INT_MAX
+	);
+	(new Polylang())->init();
+}
+
 if ( ! function_exists( 'pll_languages_list' ) ) {
 	echo "ERROR: Polylang is not active. Install/activate it first.\n";
 	return;

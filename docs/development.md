@@ -126,11 +126,13 @@ not grow: a new PHPStan error fails `./scripts/lint.sh`. CI neither
 regenerates the baseline nor changes the level, and does not upgrade
 `phpstan/phpstan` (the 1.12.x "old version" notice is expected).
 
-**No production contact.** CI is read-only and offline with respect to the
-site: it reaches only the package registry to install dev dependencies. It
-never connects to conexaobr.ie, WordPress.com, a database, the REST API or
-Polylang, and it deploys nothing. Docker/integration tests and the unified
-test harness are **Stage E** — CI does not boot WordPress.
+**No production contact.** CI is read-only with respect to production: it
+never connects to conexaobr.ie or WordPress.com and deploys nothing. The
+Docker integration job is available only through `workflow_dispatch` while the
+content-dependent suites still require a deterministic synthetic site fixture.
+It provisions an isolated WordPress database, configures Polylang through the
+repository setup script, and runs the shared harness; it is not a required
+push/PR check until that fixture makes the complete suite deterministic.
 
 ## Restoring a Production UpdraftPlus Backup (Local Only)
 
@@ -452,3 +454,5 @@ Historical stage reports live in `docs/reports/` (index in
 repository root.
 
 _Last verified: 2026-09-26 by Stage I — Scripts Standardisation_
+
+_Last verified: 2026-09-28 by CI integration setup recovery_

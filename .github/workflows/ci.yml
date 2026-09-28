@@ -15,19 +15,10 @@
 #   5. shellcheck scripts/*.sh + scripts/lib/*.sh
 #                                    — repository shell scripts and the
 #                                      sourced shell library
-#   6. ./scripts/run-tests.sh      — integration job: in-process PHP suites +
-#                                    the Stage I script-contract gate +
-#                                    HTTP acceptance (all blocking), which now
-#                                    INCLUDES the Stage L permanent invariant
-#                                    gates (taxonomy policy, translation
-#                                    completeness, language-scoped caching,
-#                                    legacy redirect precedence, documentation
-#                                    drift, i18n catalogue freshness), all
-#                                    discovered by the runner's conventions
-#   7. python3 scripts/verify-permanent-gates.py
-#                                    — additive machine-readable summary of the
-#                                    permanent gates (blocking), writing
-#                                    docs/evidence/<date>-stage-l/gate.json
+#   6-7. Integration checks       — manual-only until the content-dependent
+#                                    suites have a deterministic synthetic DB:
+#                                    ./scripts/run-tests.sh and the Stage L
+#                                    permanent-gate evidence summary
 #
 # A third job, `release-integrity` (Stage J), blocks on the two release
 # invariants: that `plugins.json` determines the artifact allowlist, and that
@@ -240,8 +231,11 @@ jobs:
   #   - CONEXAO_TEST_BASE_URL is an explicit local URL and the harness itself
   #     refuses any production host (tests/acceptance/lib/http_client.py);
   #   - no continue-on-error on the test step: a real failure fails the job.
+  # The job is manual-only under engineering-standard.md §1.7 until the
+  # content-dependent suite has a deterministic synthetic site fixture.
   # ---------------------------------------------------------------------
   integration:
+    if: github.event_name == 'workflow_dispatch'
     name: Integration tests (Docker WordPress + run-tests.sh)
     runs-on: ubuntu-latest
     timeout-minutes: 45
@@ -358,12 +352,8 @@ jobs:
           wp theme activate conexao-br-irlanda
           # The repository's own plugins, mounted by compose.yaml.
           #
-          # conexao-translation-rollout (the shared translation-rollout engine,
-          # Stage H) is deliberately NOT activated here: it is local-only
-          # tooling, never a production plugin, and its suites load the engine
-          # class by path. They are still discovered by convention
-          # (wp-content/plugins/*/tests/test-*.php) and run by
-          # ./scripts/run-tests.sh below, so the engine gate is blocking.
+          # Activate the platform and test tooling required by the in-process
+          # suites. These local-only plugins are never included in production.
           for slug in conexao-data-model conexao-content conexao-event-runtime \
                       conexao-admin-ux conexao-event-importer conexao-leisure-migration \
                       conexao-sponsor-migration; do
@@ -372,6 +362,15 @@ jobs:
           # Polylang Free, pinned version. Third-party, installed (not vendored).
           wp plugin is-installed polylang || wp plugin install polylang --version="$POLYLANG_VERSION" --force
           wp plugin activate polylang
+          wp rewrite structure '/%postname%/' --hard
+          wp eval-file /var/www/html/scripts/run-polylang-setup.php dry-run
+          wp eval-file /var/www/html/scripts/run-polylang-setup.php
+          wp plugin activate conexao-translation-rollout
+          wp plugin activate conexao-en-translation
+          docker compose exec -T wordpress env HTTP_HOST=localhost REQUEST_URI=/ \
+            php /var/www/html/scripts/run-en-translation.php --dry-run --only=jobs-page
+          docker compose exec -T wordpress env HTTP_HOST=localhost REQUEST_URI=/ \
+            php /var/www/html/scripts/run-en-translation.php --apply --only=jobs-page
           wp plugin list
 
       - name: Report the test environment

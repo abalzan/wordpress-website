@@ -118,6 +118,14 @@
 					 * next to the theme toggle so it rides along with the
 					 * existing header actions row on every breakpoint. Its
 					 * mobile counterpart lives in the mobile menu drawer.
+					 *
+					 * Exposure is governed by the single flag
+					 * CONEXAO_LANGUAGE_SWITCHER_ENABLED, read inside
+					 * conexao_language_switcher() — the shared rendering
+					 * boundary this call site and the mobile one both go
+					 * through. While the flag is false nothing is emitted
+					 * here at all; no condition is duplicated in this
+					 * template. Re-enable by setting that flag to true.
 					 */
 					conexao_language_switcher( array( 'context' => 'desktop' ) );
 					?>
@@ -195,6 +203,12 @@
 				 * drawer, above the search form, so it is always reachable
 				 * without scrolling (the drawer body scrolls; this row does
 				 * not).
+				 *
+				 * Same shared renderer and same single
+				 * CONEXAO_LANGUAGE_SWITCHER_ENABLED flag as the desktop
+				 * context above — there is deliberately no separate mobile
+				 * flag. While the flag is false nothing is emitted here, not
+				 * even an empty wrapper.
 				 */
 				conexao_language_switcher( array( 'context' => 'mobile' ) );
 				?>

@@ -1,0 +1,21 @@
+# Regression comparison — baseline vs post-change
+
+Same environment: local Docker stack, http://localhost:8080, serial runner.
+
+Metric                             | BEFORE                 | AFTER                 
+-----------------------------------|------------------------|------------------------
+In-process PHP suites              | 62 total, 45 pass, 17 fail | 62 total, 46 pass, 16 fail
+Assertions                         | 3681 passed, 68 failed | 3741 passed, 68 failed
+Prerequisite failures              | 1                      | 1                     
+Script-contract suites             | 6 total, 6 pass, 0 fail | 6 total, 6 pass, 0 fail
+HTTP acceptance suites             | 3 total, 1 pass, 2 fail | 3 total, 2 pass, 1 fail
+
+## Failing suites RESOLVED by this change (in baseline, gone after)
+  [FAIL] tests/acceptance/verify-guides-en-http.py
+  [FAIL] theme/conexao-br-irlanda/test-language-switcher-en-flag.php
+
+## NEW failures introduced (in post, absent from baseline)
+  (none — the diff of new failures is EMPTY)
+
+## Assertion failure count is UNCHANGED at 68.
+## Note: verify-routing-http.py still fails AFTER (it is a pre-existing failure, see report 12).

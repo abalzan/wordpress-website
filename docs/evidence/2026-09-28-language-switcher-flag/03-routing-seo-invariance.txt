@@ -1,0 +1,24 @@
+# EN and PT routes, canonical, hreflang — while the switcher is DISABLED
+
+## Status codes and redirects
+  / -> 200
+  /en/ -> 200
+  /en/guias/ -> 200
+  /en/empregos/ -> 200
+  /guias/ -> 200
+  /empregos/ -> 200
+
+## canonical + hreflang on /en/guias/
+<link rel="alternate" hreflang="en" href="http://localhost:8080/en/guias/" />
+<link rel="alternate" hreflang="pt-BR" href="http://localhost:8080/guias/" />
+<link rel="alternate" hreflang="x-default" href="http://localhost:8080/guias/" />
+<link rel="canonical" href="http://localhost:8080/en/guias/" />
+
+## canonical + hreflang on /guias/ (PT)
+<link rel="alternate" hreflang="en" href="http://localhost:8080/en/guias/" />
+<link rel="alternate" hreflang="pt-BR" href="http://localhost:8080/guias/" />
+<link rel="alternate" hreflang="x-default" href="http://localhost:8080/guias/" />
+<link rel="canonical" href="http://localhost:8080/guias/" />
+
+## No language-switcher markup anywhere in the EN documents above
+  (see 01-disabled-rendered-counts.txt: 0 occurrences on all six URLs)

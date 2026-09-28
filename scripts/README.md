@@ -184,7 +184,7 @@ target/source, writes? and last-verified date.
 | `scripts/run-blog-translation.php` | Run the Blog EN translation rollout | local-write | `--dry-run`, `--json` | dry-run | local/staging WordPress | Yes (apply) | 2026-09-26 |
 | `scripts/run-leisure-translation.php` | Run the Leisure EN description rollout | local-write | `preview` (default), `apply`, `remove`, `audit`, `json` | preview (dry-run) | local/staging WordPress | Yes (`apply`/`remove`) | 2026-09-26 |
 | `scripts/run-leisure-migration.php` | Run the Lazer content migration | local-write | `dry-run` (default), `apply` | dry-run | local/staging WordPress | Yes (apply) | 2026-09-26 |
-| `scripts/run-polylang-setup.php` | Create the pt/en Polylang languages, assert the URL config, assign default language (idempotent) | local-write | `--dry-run` | dry-run | local/staging WordPress | Yes (apply) | 2026-09-26 |
+| `scripts/run-polylang-setup.php` | Bootstrap Polylang's API on a fresh install, create the pt/en languages, assert the URL config, assign default language (idempotent) | local-write | `--dry-run` | dry-run | local/staging WordPress | Yes (apply) | 2026-09-28 |
 | `scripts/run-event-import.php` | Run the event importer and report results | local-write | none | apply | local WordPress | Yes | 2026-09-26 |
 | `scripts/run-eventbrite-import.php` | One-off Eventbrite Laois import | local-write | none | apply | local WordPress | Yes | 2026-09-26 |
 | `scripts/run-guide-updates.php` | Apply the guide content update script | local-write | none | apply | local WordPress | Yes | 2026-09-26 |
@@ -347,3 +347,5 @@ A new script is not finished until it satisfies all of the following.
 - retain its provenance (the original name and behaviour are preserved).
 
 _Last verified: 2026-09-26 by Stage I — Scripts Standardisation_
+
+_Last verified: 2026-09-28 by CI integration setup recovery_
