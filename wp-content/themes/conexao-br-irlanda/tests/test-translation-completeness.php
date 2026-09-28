@@ -144,12 +144,25 @@ foreach ( $content_types as $post_type ) {
 		// EN-side records: they must point back at a PT master. An EN record
 		// with no PT master is a malformed relationship (a forked identity),
 		// which §6.1 forbids ("never a fork").
+		//
+		// EXCEPTION — source-inherited EN. An event whose upstream source is
+		// already English has no Portuguese original to translate: the EN
+		// record IS the record (docs/routing.md: clients distinguish "real EN"
+		// from "source-inherited EN" through the conexao_language field, and
+		// test-stage32-bilingual.php asserts the same contract). It is not a
+		// fork, so it is not counted as a malformed relationship.
 		if ( $other_lang === $language ) {
 			$master = (int) pll_get_post( (int) $id, $default_lang );
+
 			if ( $master <= 0 || $master === (int) $id ) {
-				$malformed++;
-				if ( count( $malformed_notes ) < 10 ) {
-					$malformed_notes[] = 'en_without_pt:' . $post->post_name;
+				$is_source_inherited = class_exists( 'Conexao_Event_Source_Language' )
+					&& 'en' === get_post_meta( (int) $id, '_event_source_language', true );
+
+				if ( ! $is_source_inherited ) {
+					$malformed++;
+					if ( count( $malformed_notes ) < 10 ) {
+						$malformed_notes[] = 'en_without_pt:' . $post->post_name;
+					}
 				}
 			}
 			continue;

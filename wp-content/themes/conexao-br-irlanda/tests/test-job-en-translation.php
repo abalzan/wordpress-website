@@ -55,9 +55,12 @@ assert_true( $en_page_id > 0 && (int) pll_get_post( $en_page_id, 'pt' ) === $pt_
 assert_true( 'publish' === get_post_status( $en_page_id ), 'the EN Jobs page is published' );
 assert_true( $en_page_id > 0 && 'en' === pll_get_post_language( $en_page_id, 'slug' ), 'the EN Jobs page is assigned to en' );
 assert_true( $pt_page_id > 0 && 'pt' === pll_get_post_language( $pt_page_id, 'slug' ), 'the PT Jobs page is still assigned to pt' );
+// Since the EN Jobs URL consistency change the EN Jobs page reuses the PT
+// `empregos` post_name, so it is a shared-slug pair like /en/blog/ and
+// resolves at /en/empregos/. The former /en/jobs/ slug is retired.
 assert_true(
-	$en_page_id > 0 && get_permalink( $en_page_id ) === trailingslashit( home_url( '/en/jobs/' ) ),
-	'the EN Jobs page lives at /en/jobs/',
+	$en_page_id > 0 && get_permalink( $en_page_id ) === trailingslashit( home_url( '/en/empregos/' ) ),
+	'the EN Jobs page lives at /en/empregos/ (shared-slug pair with PT)',
 	$en_page_id > 0 ? (string) get_permalink( $en_page_id ) : ''
 );
 assert_true(

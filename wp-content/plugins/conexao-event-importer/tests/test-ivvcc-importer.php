@@ -157,16 +157,24 @@ assert_true( '' === $d['image'], 'page URL never treated as event image' );
 // 14. Deduplicator against DB.
 test_section( '14: deduplicator (DB)' );
 $dedup = new Conexao_Event_Deduplicator();
-$probe_title = 'IVVCC Dedupe Probe ' . time();
-$post_id = wp_insert_post( array( 'post_type' => 'event', 'post_title' => $probe_title, 'post_status' => 'publish' ) );
+// The probe identity is derived from the run so it can never collide with a
+// really imported event. Hard-coded source IDs made this assertion depend on
+// whatever the local database happened to contain: a real event carrying
+// source_id 559758 made "different ID+URL does not collapse" fail even though
+// the deduplicator was correct.
+$probe_nonce     = (string) time() . wp_generate_password( 6, false, false );
+$probe_source_id = 'test-probe-' . $probe_nonce;
+$probe_url       = 'https://www.ivvcc.ie/events/test-probe-' . $probe_nonce . '/';
+$probe_title     = 'IVVCC Dedupe Probe ' . $probe_nonce;
+$post_id         = wp_insert_post( array( 'post_type' => 'event', 'post_title' => $probe_title, 'post_status' => 'publish' ) );
 update_post_meta( $post_id, '_event_source', 'ivvcc' );
-update_post_meta( $post_id, '_event_source_id', '555047' );
+update_post_meta( $post_id, '_event_source_id', $probe_source_id );
 update_post_meta( $post_id, '_event_date', '2026-09-19' );
-update_post_meta( $post_id, '_event_source_url', 'https://www.ivvcc.ie/events/ivvcc-11th-brass-brigade-run/' );
-update_post_meta( $post_id, '_event_url', 'https://www.ivvcc.ie/events/ivvcc-11th-brass-brigade-run/' );
-assert_true( (int) $post_id === (int) $dedup->find( array( 'source' => 'ivvcc', 'source_id' => '555047', 'source_url' => 'https://other.example/x', 'title' => 'Other title', 'start_date' => '2026-01-01' ) ), 'same ivvcc+ID => same event' );
-assert_true( (int) $post_id === (int) $dedup->find( array( 'source' => 'ivvcc', 'source_id' => 'other', 'source_url' => 'https://www.ivvcc.ie/events/ivvcc-11th-brass-brigade-run/', 'title' => 'Other', 'start_date' => '2026-01-01' ) ), 'same canonical URL => same event' );
-$other = $dedup->find( array( 'source' => 'ivvcc', 'source_id' => '559758', 'source_url' => 'https://www.ivvcc.ie/events/blessington-vintage-car-and-motorcycle-club-6/', 'title' => 'Blessington XYZ ' . time(), 'start_date' => '2026-12-13' ) );
+update_post_meta( $post_id, '_event_source_url', $probe_url );
+update_post_meta( $post_id, '_event_url', $probe_url );
+assert_true( (int) $post_id === (int) $dedup->find( array( 'source' => 'ivvcc', 'source_id' => $probe_source_id, 'source_url' => 'https://other.example/x', 'title' => 'Other title', 'start_date' => '2026-01-01' ) ), 'same ivvcc+ID => same event' );
+assert_true( (int) $post_id === (int) $dedup->find( array( 'source' => 'ivvcc', 'source_id' => 'other', 'source_url' => $probe_url, 'title' => 'Other', 'start_date' => '2026-01-01' ) ), 'same canonical URL => same event' );
+$other = $dedup->find( array( 'source' => 'ivvcc', 'source_id' => $probe_source_id . '-other', 'source_url' => $probe_url . '-other/', 'title' => 'Blessington XYZ ' . $probe_nonce, 'start_date' => '2026-12-13' ) );
 assert_true( 0 === (int) $other, 'different ID+URL does not collapse' );
 
 // 15. Update preserves manual fields.

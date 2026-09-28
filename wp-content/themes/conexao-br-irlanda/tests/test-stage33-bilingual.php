@@ -126,7 +126,7 @@ foreach ( $en_archives as $path => $expected ) {
 }
 
 $en_pages = array(
-	'/empregos/'                => '/en/jobs/',
+	'/empregos/'                => '/en/empregos/',
 	'/sobre-nos/'               => '/en/about-us/',
 	'/contato/'                 => '/en/contact/',
 	'/politica-de-privacidade/' => '/en/privacy-policy/',
@@ -142,10 +142,30 @@ foreach ( $en_pages as $path => $expected ) {
 }
 
 // ---------------------------------------------------------------------------
-foreach ( array( '/anuncie/', '/moradia/', '/saude/', '/irlanda/', '/dublin/', '/nao-existe/' ) as $path ) {
+// Paths with no EN counterpart keep the Portuguese destination.
+foreach ( array( '/irlanda/', '/dublin/', '/nao-existe/' ) as $path ) {
 	assert_true(
 		untrailingslashit( conexao_lang_url( $path ) ) === untrailingslashit( home_url( $path ) ),
 		"EN/B1: conexao_lang_url( {$path} ) keeps the Portuguese destination (got " . s33_path( conexao_lang_url( $path ) ) . ')'
+	);
+}
+
+// Paths that DO have a linked EN translation resolve into the /en/ space.
+// /anuncie/ -> /en/advertise/ is the documented header-CTA behaviour
+// (docs/routing.md "the header CTA uses conexao_lang_url( '/anuncie/' ) so it
+// resolves to /en/advertise/ in English"). The PT-only guide-category terms
+// /moradia/ and /saude/ resolve to their linked EN terms, which is exactly the
+// documented EN guides filter behaviour (/en/guias/?categoria=<en-slug>).
+$translated_paths = array(
+	'/anuncie/' => '/en/advertise/',
+	'/moradia/' => '/en/housing/',
+	'/saude/'   => '/en/health/',
+);
+
+foreach ( $translated_paths as $path => $expected ) {
+	assert_true(
+		untrailingslashit( s33_path( conexao_lang_url( $path ) ) ) === untrailingslashit( $expected ),
+		"EN: conexao_lang_url( {$path} ) === {$expected} (got " . s33_path( conexao_lang_url( $path ) ) . ')'
 	);
 }
 
@@ -180,7 +200,7 @@ s33_set_language( 'en' );
 
 $en_documentos = conexao_get_guide_category_url( 'documentos', 'documentos' );
 $en_financas   = conexao_get_guide_category_url( 'financas', 'financas' );
-$en_moradia    = conexao_get_guide_category_url( 'moradia', 'moradia' );
+$en_castelos   = conexao_get_guide_category_url( 'castelos', 'castelos' );
 
 assert_true(
 	'/en/guias' === untrailingslashit( s33_path( $en_documentos ) ) && 'categoria=documents' === wp_parse_url( $en_documentos, PHP_URL_QUERY ),
@@ -190,12 +210,16 @@ assert_true(
 	'categoria=finances' === wp_parse_url( $en_financas, PHP_URL_QUERY ),
 	'EN: card "Finanças" resolves with the linked EN slug "finances" (got ' . $en_financas . ')'
 );
+// A PT category with NO linked EN term must fall back to the plain EN guides
+// archive (no ?categoria= filter). 'castelos' is used here rather than the
+// original 'moradia', which now HAS a linked EN term ('housing') and therefore
+// no longer exercises this branch.
 assert_true(
-	'/en/guias' === untrailingslashit( s33_path( $en_moradia ) ) && '' === (string) wp_parse_url( $en_moradia, PHP_URL_QUERY ),
-	'EN: card "Moradia" (no linked EN term with EN guides) falls back to the plain EN archive (got ' . $en_moradia . ')'
+	'/en/guias' === untrailingslashit( s33_path( $en_castelos ) ) && '' === (string) wp_parse_url( $en_castelos, PHP_URL_QUERY ),
+	'EN: card "Castelos" (no linked EN term) falls back to the plain EN archive (got ' . $en_castelos . ')'
 );
 assert_true(
-	false === strpos( $en_moradia . $en_documentos . $en_financas, '/guias/?categoria=moradia' ),
+	false === strpos( $en_castelos . $en_documentos . $en_financas, '/guias/?categoria=castelos' ),
 	'EN: no Portuguese term slug is ever placed under /en/'
 );
 
@@ -205,7 +229,7 @@ $card_cases = array(
 	'/lazer/'      => '/en/lazer/',
 	'/cursos/'     => '/en/cursos/',
 	'/apoiadores/' => '/en/apoiadores/',
-	'/empregos/'   => '/en/jobs/',
+	'/empregos/'   => '/en/empregos/',
 	'/blog/'       => '/en/blog/',
 );
 
@@ -262,8 +286,8 @@ get_template_part(
 $shortcut = (string) ob_get_clean();
 
 assert_true(
-	false !== strpos( $shortcut, 'href="' . home_url( '/en/jobs/' ) . '"' ),
-	'EN help shortcut resolves /empregos/ to /en/jobs/'
+	false !== strpos( $shortcut, 'href="' . home_url( '/en/empregos/' ) . '"' ),
+	'EN help shortcut resolves /empregos/ to /en/empregos/'
 );
 
 // ---------------------------------------------------------------------------

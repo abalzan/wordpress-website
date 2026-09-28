@@ -61,13 +61,28 @@ $created = array();
  * the `lang` parameter only when present, so in a long-lived process the
  * previous request's language would otherwise leak into a no-`lang` request.
  *
+ * The reset assigns the DEFAULT language object, not null. Setting
+ * `PLL()->curlang = null` makes Polylang's `locale` filter return null, and
+ * WordPress 7.1+ then fatals in WP_Translation_Controller::set_locale()
+ * ("Argument #1 ($locale) must be of type string, null given").
+ *
  * @param string $route  Route, e.g. /wp/v2/event.
  * @param array  $params Query params.
  * @return WP_REST_Response
  */
 function s41_rest_get( string $route, array $params = array() ) {
 	if ( function_exists( 'PLL' ) && PLL() ) {
-		PLL()->curlang = null;
+		$default = PLL()->model->get_default_language();
+		$slug    = is_object( $default ) ? $default->slug : (string) $default;
+		$langs   = PLL()->model->languages->get_list();
+		$object  = null;
+		foreach ( (array) $langs as $lang ) {
+			if ( isset( $lang->slug ) && $slug === $lang->slug ) {
+				$object = $lang;
+				break;
+			}
+		}
+		PLL()->curlang = $object;
 	}
 
 	$request = new WP_REST_Request( 'GET', $route );
@@ -167,7 +182,6 @@ $job_en            = $fixture( 'job', 'kitchen-assistant-dublin' );
 $sponsor_pt_master = $fixture( 'sponsor', 'brasil-market-dublin' );
 $sponsor_en        = $fixture( 'sponsor', 'brasil-market-dublin-en' );
 $course_pt_master  = $fixture( 'course_provider', 'fetch-courses' );
-$course_en         = $fixture( 'course_provider', 'fetch-courses-en' );
 
 $fixture_ok = true;
 foreach ( array(
@@ -191,7 +205,6 @@ foreach ( array(
 	'sponsor PT master'    => $sponsor_pt_master,
 	'sponsor EN'           => $sponsor_en,
 	'course PT master'     => $course_pt_master,
-	'course EN'            => $course_en,
 ) as $label => $id ) {
 	if ( $id <= 0 ) {
 		$fixture_ok = false;
@@ -366,7 +379,12 @@ $expect = array(
 	'/wp/v2/guide'           => array( 'b1', array( $guide_pt_master ), array( $guide_en ), array( $guide_en ), array( $guide_pt_master ) ),
 	'/wp/v2/posts'           => array( 'b1', array( $post_pt_master ), array( $post_en ), array( $post_en ), array( $post_pt_master ) ),
 	'/wp/v2/job'             => array( 'b2', array( $job_pt_master ), array( $job_en ), array( $job_en, $job_pt_master ? 0 : 0 ), array( $job_pt_master ) ),
-	'/wp/v2/course_provider' => array( 'b2', array( $course_pt_master ), array( $course_en ), array( $course_en ), array( $course_pt_master ) ),
+	// `course_provider` is a pure B2 type: the PT record carries English-only
+	// fields, so there is NO EN record and the EN collection serves the PT
+	// record itself (see docs/content-model.md and
+	// test-en-course-provider-category-filter "zero EN course_provider records
+	// exist"). The EN twin asserted by the earlier pilot fixture list was stale.
+	'/wp/v2/course_provider' => array( 'b2', array( $course_pt_master ), array(), array( $course_pt_master ), array() ),
 	'/wp/v2/sponsor'         => array( 'b2', array( $sponsor_pt_master ), array( $sponsor_en ), array( $sponsor_en ), array( $sponsor_pt_master ) ),
 );
 

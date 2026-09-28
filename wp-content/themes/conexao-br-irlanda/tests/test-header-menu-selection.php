@@ -13,7 +13,7 @@
  *    per-language menu is assigned.
  *  - English destinations stay in the /en/ URL space (except the approved B1
  *    destination /blog/ — there is no EN posts archive). EN Jobs resolves
- *    to the linked /en/jobs/ translation (see
+ *    to the linked /en/empregos/ shared-slug translation (see
  *    CONEXAO_BR_EN_NAV_LANGUAGE_CONTEXT_FIX_REPORT.md).
  *  - The current-menu-item state lands on the right item in both languages
  *    (including the /en/ language-prefix path handling).

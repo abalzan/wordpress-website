@@ -101,8 +101,14 @@ function attr_test_assert_set( $post_id, $expected_slugs, $message ) {
 
 // ---------------------------------------------------------------------------
 // Vocabulary
-// ---------------------------------------------------------------------------
+// Names are the human-facing PT labels the theme stores. attr_test_assign()
+// passes SLUGS to attr_test_term(), so any term later asserted by its display
+// name must be created here with that exact name first; otherwise it is
+// created with the slug as its name and the display-name assertion cannot pass.
 attr_test_term( 'Interior + exterior', 'interior-exterior' );
+attr_test_term( 'Famílias', 'familias' );
+attr_test_term( 'Interior', 'interior' );
+attr_test_term( 'Exterior', 'exterior' );
 
 // ---------------------------------------------------------------------------
 // 1-3. Single environment attributes

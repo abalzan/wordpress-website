@@ -341,7 +341,13 @@ assert_true( false !== strpos( $html, 'Oportunidades de emprego' ), 'employment:
 
 $html = a11y_test_render( 'employment-opportunities.php', array( 'tipo' => 'agency' ) );
 $info = a11y_assert_option_semantics( $html, 'agency-filters', 'employment active' );
-assert_true( 1 === $info['current'], 'employment: exactly the selected tipo is aria-current (got ' . $info['current'] . ')' );
+// One aria-current link per filter GROUP, not one for the whole widget: the
+// employment widget renders four independent groups (tipo, area, localizacao,
+// contrato) and each group marks its own current option — the reset option
+// ("Todas"/"Todos") when that dimension has no selection. Selecting tipo=agency
+// therefore yields 1 (tipo) + 3 (the other three groups' reset options) = 4,
+// exactly as the unfiltered render already showed.
+assert_true( 4 === $info['current'], 'employment: the selected tipo plus the 3 unselected groups are aria-current (got ' . $info['current'] . ')' );
 assert_true( false !== strpos( $html, 'Filtros ativos' ), 'employment: active-filter chip row still rendered' );
 
 

@@ -36,14 +36,29 @@ add_filter( 'nav_menu_css_class', 'conexao_nav_menu_css_class', 10, 3 );
 /**
  * Add the theme's primary-nav link attributes to a menu item.
  *
+ * The nav-menu item is a WP_Post carrying WordPress' dynamic menu-item
+ * properties, `classes` among them (it is what wp_nav_menu() itself reads to
+ * emit current-menu-item), so it is typed as an object rather than a bare
+ * WP_Post.
+ *
  * @param array    $atts Link attributes.
- * @param WP_Post  $item Menu item data object.
+ * @param object   $item Menu item, carrying the dynamic `classes` array.
  * @param stdClass $args Menu arguments object.
  * @return array Filtered link attributes.
  */
 function conexao_nav_menu_link_attributes( $atts, $item, $args ) {
 	if ( 'primary' === $args->theme_location ) {
 		$atts['class'] = 'nav-link';
+
+		// Mirror the visual active state (current-menu-item, applied by
+		// conexao_fix_nav_active_states()) onto the rendered link as
+		// aria-current="page", so assistive technology announces the
+		// current section. The class is styling-only; this is its
+		// accessible equivalent and the two are always set together.
+		$classes = isset( $item->classes ) ? (array) $item->classes : array();
+		if ( in_array( 'current-menu-item', $classes, true ) ) {
+			$atts['aria-current'] = 'page';
+		}
 	}
 	return $atts;
 }
