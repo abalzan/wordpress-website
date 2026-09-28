@@ -1,0 +1,55 @@
+
+Notice: $_SERVER['HTTP_HOST'] or $_SERVER['REQUEST_URI'] are required but not set. in /var/www/html/wp-content/plugins/polylang/src/functions.php on line 81
+{
+    "11293": {
+        "slug": "empregos",
+        "lang": "pt",
+        "title_md5": "05fceefbda005663b01fbf30748130ae",
+        "title": "Empregos",
+        "content_md5": "bef2ffb30150acc4e861d3fc9981a020",
+        "content_len": 288,
+        "excerpt_md5": "d41d8cd98f00b204e9800998ecf8427e",
+        "status": "publish",
+        "type": "page",
+        "template": "page-empregos.php",
+        "parent": 0,
+        "permalink": "http://localhost:8080/empregos/",
+        "menu_order": 0,
+        "translations": {
+            "pt": 11293,
+            "en": 33309
+        },
+        "pt_of_en": 11293,
+        "en_of_pt": 33309,
+        "meta": {
+            "_wp_page_template": "5dc2878e49ef831833b9f8d1cd04ebd9"
+        },
+        "tax": []
+    },
+    "33309": {
+        "slug": "jobs",
+        "lang": "en",
+        "title_md5": "12ceff2290bb9039beaa8f36d5dec226",
+        "title": "Jobs",
+        "content_md5": "5e8e4dbac865c4ce8c8211b06600d13e",
+        "content_len": 158,
+        "excerpt_md5": "d41d8cd98f00b204e9800998ecf8427e",
+        "status": "publish",
+        "type": "page",
+        "template": "page-empregos.php",
+        "parent": 0,
+        "permalink": "http://localhost:8080/en/jobs/",
+        "menu_order": 0,
+        "translations": {
+            "en": 33309,
+            "pt": 11293
+        },
+        "pt_of_en": 11293,
+        "en_of_pt": 33309,
+        "meta": {
+            "_wp_page_template": "5dc2878e49ef831833b9f8d1cd04ebd9",
+            "conexao_meta_description": "dc8e3b80e4cb2c20528ea5de7b449510"
+        },
+        "tax": []
+    }
+}

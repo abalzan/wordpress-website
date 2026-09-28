@@ -51,7 +51,7 @@ English URLs wrap the same paths in `/en/`:
 | Lazer | `/lazer/` | `/en/lazer/` |
 | Courses | `/cursos/` | `/en/cursos/` |
 | Sponsors | `/apoiadores/` | `/en/apoiadores/` |
-| Empregos landing | `/empregos/` | `/en/jobs/` (real translation since Stage 3.2; **fully bilingual since Stage 8** — the same template, layout and filter values render every user-facing string in the requested language; `/en/empregos/` 302 → PT). The Stage 6 «Vagas»/"Openings" card preview was **removed by product decision (rendering only)** — the EN job records remain real translations at `/en/empregos/{en-slug}/` and the language-aware listing query is retained) |
+| Empregos landing | `/empregos/` | `/en/empregos/` (real translation; **fully bilingual since Stage 8** — the same template, layout and filter values render every user-facing string in the requested language). The EN record reuses the PT `empregos` `post_name`, so this is a **shared-slug** pair exactly like `/en/blog/`, and the approved shape is one canonical path in two languages. EN job records are real translations at `/en/empregos/{en-slug}/`; the Stage 6 «Vagas»/"Openings" card preview was **removed by product decision (rendering only)** and the language-aware listing query is retained. The former EN slug `jobs` (`/en/jobs/`) is retired and resolves as a plain 404 — the root-anchored legacy table deliberately owns only EN→PT, never `/en/` paths (see "Shared-slug pages" below) |
 | Job singles | `/empregos/{slug}/` | `/en/empregos/{en-slug}/` (real EN translation since Stage 6; before that the approved B2 fallback — PT body under the EN shell + notice; once translated, the PT slug under `/en/` redirects to the PT job) |
 | Blog | `/blog/` | `/en/blog/` — **real English archive, complete since Stage O** (linked, published EN posts page created by stage `en-blog-page` + the 42 translated EN posts). Before Stage O it was the approved B2 fallback (PT posts under the EN URL + notice). EN posts live at `/en/{en-slug}/`; the archive paginates `/en/blog/page/N/`. |
 | County pages + `/irlanda/` | `/dublin/`, `/irlanda/`, … | `/en/dublin/`, `/en/irlanda/` (B2: PT body under EN shell + notice) |
@@ -164,7 +164,7 @@ Portuguese destinations. Stage 3.3 closes that:
      (page_for_posts) and falls back to the target-language home when no
      translation exists — keeping the Blog navigation in the current language;
   3. the path addresses a page/object with a published translation → that
-     translation's permalink (`/empregos/` → `/en/jobs/`,
+     translation's permalink (`/empregos/` → `/en/empregos/`,
      `/politica-de-privacidade/` → `/en/privacy-policy/`);
   4. otherwise → `home_url( $path )`: B1 (untranslated) and B2 pages are never
      auto-promoted to an invented EN URL.
@@ -195,7 +195,7 @@ Portuguese destinations. Stage 3.3 closes that:
   fall back to the Portuguese URL space.
 - **Jobs in the EN nav is page-backed**: the `job` CPT is registered with
   `has_archive = false` (its `rewrite` slug stays `empregos` for job singles),
-  so `/empregos/` belongs to the static landing page and `/en/jobs/` is its
+  so `/empregos/` belongs to the static landing page and `/en/empregos/` is its
   real linked Polylang translation. `conexao_primary_nav_sections()` therefore
   models the Jobs section as a **page** (`path = empregos`), not a CPT archive,
   and `conexao_bind_section_object()` resolves it to the linked EN translation
@@ -609,6 +609,53 @@ _Last verified: 2026-09-26 by Stage N — Remaining EN Blog Translations_
 
 _Last verified: 2026-09-27 by the EN Leisure description rollout — Stage 7 executed by the shared `en-leisure-description` stage; B2 policy, canonical, hreflang and sitemap unchanged_
 
+### Shared-slug pages (`/en/blog/` and `/en/empregos/`)
+
+Two page pairs deliberately reuse the PT `post_name` in both languages, so one
+canonical path serves two languages: `/blog/` ↔ `/en/blog/` and `/empregos/` ↔
+`/en/empregos/`. The PT record is **never** modified and the EN record stays a
+*linked translation*, not a second identity — a shared slug is a routing shape,
+not a fork.
+
+WordPress resolves `pagename` with a **language-blind** lookup, so when two
+pages hold one slug it returns the FIRST match — the Portuguese one. The request
+then looks like a language mismatch, and the B1 missing-translation rule answers
+**302 → the PT URL**, making the English page unreachable at its own URL. Two
+existing helpers repair that, both on the WP `request` filter at priority 20:
+
+- `conexao_resolve_posts_page_request()` — the Blog. The posts page is addressed
+  by the `page_for_posts` **option**, not by its slug, so it needs its own
+  resolution (Stage 5).
+- `conexao_resolve_shared_slug_page_request()` — every other shared-slug page
+  (today only the Jobs landing). It hands WordPress the explicit `page_id` of
+  the record in the **requested** language.
+
+The second is a no-op unless **all** of the following hold, which is what keeps
+it from capturing any ordinary page: the request is a prefixed (non-default)
+language request; the path is a single page slug (no hierarchy, no CPT);
+**more than one** published page holds that slug; and the two records are a
+**linked Polylang pair** in opposite languages. An unpaired duplicate on one
+slug is deliberately left alone rather than being silently bound to a language.
+On the default language it never runs, so Portuguese request handling is
+byte-identical to the pre-existing behaviour.
+
+The invariant is permanent and gated by
+`wp-content/themes/conexao-br-irlanda/tests/test-en-jobs-shared-slug.php`
+(gate `shared_slug_page`), which proves the EN/PT Jobs pair resolves per
+language, that a **unique**-slug page and a CPT slug are never rewritten, that
+an unpaired duplicate is not bound, that PT is untouched, and that the site's
+real shared-slug pairs are exactly `blog` and `empregos` — a third would mean
+the resolver's reach had grown.
+
+The shared slug is created through the content workflow, never by hand: the
+`en-jobs-page` stage of `conexao-en-translation` (data
+`includes/jobs-page-data.php`, version `jobs-page-v1`) reuses the same
+`wp_unique_post_slug` permit the Blog stage uses, applied by
+`scripts/run-en-translation.php --only=jobs-page`. That permit is required, not
+cosmetic: without it WordPress silently renames the EN page to `empregos-2` and
+breaks the route. Authored EN title, body and meta description are carried
+verbatim in the manifest, so repairing the slug cannot rewrite content.
+
 ### The `/en/<archive>` rewrite rules are a self-healed invariant
 
 The `/en/<archive>/` rules for every translated post type with a public archive
@@ -633,3 +680,5 @@ _Last verified: 2026-09-28 by the EN archive 404 fix — the three routes were
 restored, `/en/cursos/` recovered from a stray 301, PT unchanged_
 
 _Last verified: 2026-09-28 by the B1 English Guides content rollout — 48/48 linked EN guides + 13 EN `conexao_category` terms applied through the shared `en-guide` stage; `guide` remains B1, no fallback, no B2 widening, canonical/hreflang/redirect policy unchanged_
+
+_Last verified: 2026-09-28 by the EN Jobs URL consistency change — the EN Jobs landing now shares the PT `empregos` post_name and resolves at `/en/empregos/` (200, self-canonical) through `conexao_resolve_shared_slug_page_request()`; applied via the `en-jobs-page` stage with `PT-drift=0`; `/en/jobs/` retired to 404 with no new redirect rule; PT `/empregos/`, the Polylang pair, canonical and hreflang unchanged_

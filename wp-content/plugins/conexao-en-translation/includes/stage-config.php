@@ -278,8 +278,8 @@ function conexao_en_translation_blog_page_shared_slug(): string {
  * @param string $original_slug Original slug.
  * @return string
  */
-function conexao_en_translation_blog_page_shared_slug_filter( $slug, $post_id, $post_status, $post_type, $post_parent, $original_slug ) {
-	$desired = get_transient( 'conexao_en_translation_blog_page_shared_slug' );
+function conexao_en_translation_shared_page_slug_filter( $slug, $post_id, $post_status, $post_type, $post_parent, $original_slug ) {
+	$desired = get_transient( 'conexao_en_translation_shared_page_slug' );
 
 	if ( ! $desired || 'page' !== $post_type || (string) $original_slug !== (string) $desired ) {
 		return $slug;
@@ -289,7 +289,7 @@ function conexao_en_translation_blog_page_shared_slug_filter( $slug, $post_id, $
 }
 
 /**
- * Arm the shared-slug filter for the duration of one write.
+ * Arm the shared-page-slug filter for the duration of one stage's writes.
  *
  * ## Why the scope is a whole callback, not a single `wp_insert_post()`
  *
@@ -305,26 +305,52 @@ function conexao_en_translation_blog_page_shared_slug_filter( $slug, $post_id, $
  * own `run_callback`, which is exactly "the apply of this one record" and
  * nothing else. A dry-run performs zero writes, so arming it there is inert.
  *
+ * ## Shared by every page stage that reuses a PT post_name
+ *
+ * This is the ONE implementation of that scope. `en-blog-page` and
+ * `en-jobs-page` both need it, and a second copy of the transient + filter
+ * pair would be a second, silently-conflicting permit for the same core hook.
+ * Both stages arm THIS filter with their own slug, and only one stage runs at
+ * a time (the runner is serial), so the transient always holds exactly the
+ * slug the running stage owns.
+ *
+ * @param string   $desired Slug the running stage may share with its PT page.
+ * @param callable $write   The work to perform while the filter is active.
+ * @param mixed    $args    Optional second argument forwarded to `$write`.
+ * @return mixed Whatever `$write` returns.
+ */
+function conexao_en_translation_with_shared_page_slug( string $desired, callable $write, $args = null ) {
+	if ( '' === $desired ) {
+		return $write( $args );
+	}
+
+	set_transient( 'conexao_en_translation_shared_page_slug', $desired, 5 * MINUTE_IN_SECONDS );
+	add_filter( 'wp_unique_post_slug', 'conexao_en_translation_shared_page_slug_filter', 10, 6 );
+
+	try {
+		return $write( $args );
+	} finally {
+		remove_filter( 'wp_unique_post_slug', 'conexao_en_translation_shared_page_slug_filter', 10 );
+		delete_transient( 'conexao_en_translation_shared_page_slug' );
+	}
+}
+
+/**
+ * Backwards-compatible alias for the Stage O Blog posts page.
+ *
+ * Kept so the documented `en-blog-page` behaviour and its existing callers are
+ * unchanged; it now delegates to the single shared implementation above.
+ *
  * @param callable $write The work to perform while the filter is active.
  * @param mixed    $args  Optional second argument forwarded to `$write`.
  * @return mixed Whatever `$write` returns.
  */
 function conexao_en_translation_blog_page_with_shared_slug( callable $write, $args = null ) {
-	$desired = conexao_en_translation_blog_page_shared_slug();
-
-	if ( '' === $desired ) {
-		return $write( $args );
-	}
-
-	set_transient( 'conexao_en_translation_blog_page_shared_slug', $desired, 5 * MINUTE_IN_SECONDS );
-	add_filter( 'wp_unique_post_slug', 'conexao_en_translation_blog_page_shared_slug_filter', 10, 6 );
-
-	try {
-		return $write( $args );
-	} finally {
-		remove_filter( 'wp_unique_post_slug', 'conexao_en_translation_blog_page_shared_slug_filter', 10 );
-		delete_transient( 'conexao_en_translation_blog_page_shared_slug' );
-	}
+	return conexao_en_translation_with_shared_page_slug(
+		conexao_en_translation_blog_page_shared_slug(),
+		$write,
+		$args
+	);
 }
 
 /**
@@ -481,12 +507,73 @@ function conexao_en_translation_blog_page_config(): array {
 }
 
 /**
+ * The EN Jobs landing page stage (`en-jobs-page`).
+ *
+ * The second single-record page stage, after the Stage O Blog posts page, and
+ * the exact same shape: the same shared engine, the same WordPress-bound
+ * primitives, the same duplicate guard, the same shared-page-slug permit. It
+ * is a separate stage for the same two reasons Stage O documents — SCOPE (the
+ * `page` stage's manifest owns 30 unrelated rows, including the `jobs-2` and
+ * `newsletter` slug repairs Stage O deliberately did not perform) and SHARED
+ * SLUG (`/en/empregos/` must reuse the PT `empregos` post_name).
+ *
+ * It is NOT a second translation mechanism: orchestration, planning, counting,
+ * snapshot comparison, the numeric gate and rollback all still come from
+ * `Conexao_Translation_Rollout_Engine::run()`.
+ *
+ * @return array<string,mixed>
+ */
+function conexao_en_translation_jobs_page_config(): array {
+	$config = conexao_en_translation_engine_config( 'page' );
+
+	$config['stage']                  = 'en-jobs-page';
+	$config['manifest_callback']      = 'conexao_en_translation_jobs_page_manifest';
+	$config['build_en_args_callback'] = 'conexao_en_translation_jobs_page_manifest';
+	$config['run_callback']           = static function ( array $args = array() ) {
+		$desired = conexao_en_translation_jobs_page_shared_slug();
+
+		return conexao_en_translation_with_shared_page_slug(
+			$desired,
+			static function ( array $run_args ) {
+				return Conexao_Translation_Rollout_Engine::run(
+					conexao_en_translation_jobs_page_config(),
+					conexao_en_translation_blog_page_adapter(),
+					$run_args
+				);
+			},
+			$args
+		);
+	};
+
+	return $config;
+}
+
+/**
+ * The slug the Jobs stage must keep shared between the PT and EN records.
+ *
+ * Reads the SAME manifest the engine is given, so there is no second list of
+ * records and no second place that decides what the EN slug is.
+ *
+ * @return string PT/EN shared slug, or '' when the manifest declares none.
+ */
+function conexao_en_translation_jobs_page_shared_slug(): string {
+	foreach ( conexao_en_translation_jobs_page_manifest()['records'] as $stable_key => $row ) {
+		if ( (string) $row['en_slug'] === (string) $stable_key ) {
+			return (string) $stable_key;
+		}
+	}
+
+	return '';
+}
+
+/**
  * The stage identifiers this plugin registers with the shared engine.
  *
- * The three B1 post types, the Stage O Blog posts page, the Stage 7 Leisure
- * card-description stage and the course-provider card-description stage. The
- * runner reads this list, so there is still exactly ONE place that knows which
- * stages exist and exactly ONE runner.
+ * The three B1 post types, the Stage O Blog posts page, the EN Jobs landing
+ * page, the Stage 7 Leisure card-description stage and the
+ * course-provider card-description stage. The runner reads this list, so there
+ * is still exactly ONE place that knows which stages exist and exactly ONE
+ * runner.
  *
  * @return string[] Stage identifiers.
  */
@@ -498,6 +585,7 @@ function conexao_en_translation_stage_ids(): array {
 	}
 
 	$ids[] = 'en-blog-page';
+	$ids[] = 'en-jobs-page';
 	$ids[] = 'en-leisure-description';
 	$ids[] = 'en-course-provider-description';
 

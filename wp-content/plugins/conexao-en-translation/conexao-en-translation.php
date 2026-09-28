@@ -32,6 +32,7 @@ require_once CONEXAO_EN_TRANSLATION_DIR . 'includes/guide-translation-data.php';
 require_once CONEXAO_EN_TRANSLATION_DIR . 'includes/guide-terms-data.php';
 require_once CONEXAO_EN_TRANSLATION_DIR . 'includes/blog-translation-data.php';
 require_once CONEXAO_EN_TRANSLATION_DIR . 'includes/blog-page-data.php';
+require_once CONEXAO_EN_TRANSLATION_DIR . 'includes/jobs-page-data.php';
 require_once CONEXAO_EN_TRANSLATION_DIR . 'includes/leisure-description-data.php';
 require_once CONEXAO_EN_TRANSLATION_DIR . 'includes/course-provider-description-data.php';
 require_once CONEXAO_EN_TRANSLATION_DIR . 'includes/translation-map.php';
@@ -64,6 +65,10 @@ function conexao_en_translation_register_stages(): void {
 
 	if ( function_exists( 'conexao_en_translation_blog_page_config' ) ) {
 		Conexao_Translation_Rollout_Engine::register_stage( conexao_en_translation_blog_page_config() );
+	}
+
+	if ( function_exists( 'conexao_en_translation_jobs_page_config' ) ) {
+		Conexao_Translation_Rollout_Engine::register_stage( conexao_en_translation_jobs_page_config() );
 	}
 
 	if ( function_exists( 'conexao_en_translation_leisure_description_config' ) ) {

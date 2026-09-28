@@ -34,14 +34,14 @@ $ctx = conexao_script_boot(
 	array(
 		'script'             => 'run-en-translation.php',
 		'purpose'            => 'Run the EN translation rollout stages through the shared conexao-translation-rollout engine: one linked EN translation per eligible public PT record, PT sources never modified. Stage M/N close the B1 guide/page/post debt; Stage O adds the Blog posts page (en-blog-page), which is what makes /en/blog/ a real English archive instead of the B2 fallback.',
-		'scope'              => 'The en-guide / en-page / en-post / en-blog-page stages registered by the conexao-en-translation plugin. Dry-run by default; --apply creates the EN records; --remove deletes them. A PT record is only ever read.',
+		'scope'              => 'The en-guide / en-page / en-post / en-blog-page / en-jobs-page stages registered by the conexao-en-translation plugin. Dry-run by default; --apply creates the EN records; --remove deletes them. A PT record is only ever read.',
 		'safety'             => 'local-only; dry-run by default; --apply required to write; --only=<stage> limits the stage; the engine verifies PT immutability and reports PT drift as a gate failure',
 		'target_description' => 'the WordPress install the script is connected to (site URL printed in the header)',
 		'modes_description'  => '--dry-run (default) prints the plan and writes nothing. --apply creates and links the EN records. --remove reverses a previous apply. --only=<stage> selects one stage.',
 		'arguments'          => "--dry-run            Plan only, zero writes (default).\n"
 			. "                    --apply              Create and link the EN records.\n"
 			. "                    --remove             Delete the EN records this stage owns (rollback).\n"
-			. "                    --only=<stage>       guide | page | post | blog-page (default: all four).\n"
+			. "                    --only=<stage>       guide | page | post | blog-page | jobs-page (default: all).\n"
 			. "                    --json               Machine-readable output.\n"
 			. '                    --help               This message.',
 		'writes'             => true,

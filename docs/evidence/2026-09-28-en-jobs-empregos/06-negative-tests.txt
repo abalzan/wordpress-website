@@ -1,0 +1,52 @@
+=== NEGATIVE TESTS (2026-09-28) ===
+
+-- 1. /en/empregos/ must NOT resolve to PT content --
+status=200
+html lang: <html lang="en-US"
+canonical: rel="canonical" href="http://localhost:8080/en/empregos/"
+
+-- 2. no second Jobs page / no duplicate --
+0
+
+-- 3. PT does not redirect to EN --
+GET /empregos/ -> 200 (redirect_url=)
+
+-- 4. EN does not redirect back to PT --
+GET /en/empregos/ -> 200 (redirect_url=)
+
+-- 5. no redirect loop on /en/empregos/ (follow 10 redirects) --
+final=http://localhost:8080/en/empregos/ redirects=0 code=200
+
+-- 6. no duplicate canonical for the EN jobs page --
+EN page canonical count: 1
+PT page canonical count: 1
+
+-- 7. unrelated /en/* routes unchanged (sample) --
+  /en/               200
+  /en/guias/         200
+  /en/blog/          200
+  /en/cursos/        200
+  /en/apoiadores/    200
+  /en/lazer/         200
+  /en/contact/       200
+  /en/about-us/      200
+  /en/housing/       200
+
+-- 8. unrelated page slugs unchanged --
+  /sobre-nos/ 200
+  /contato/   200
+  /blog/      200
+
+-- 9. /en/jobs/ is not a valid duplicate route --
+  /en/jobs/ -> 301 -> http://localhost:8080/eventos/jobs-training-fair/
+
+-- 9b. NOTE: /en/jobs/ 301 target is PRE-EXISTING core behaviour, not ours --
+     WordPress redirect_guess_404_permalink() guesses a slug on a 404.
+     Baseline evidence (recorded BEFORE any change, 2026-09-28 12:5x):
+       /en/courses/  -> 301 http://localhost:8080/en/2026/03/19/courses-and-support-for-entrepreneurs/
+       /en/post/foo/ -> 301 http://localhost:8080/eventos/foodies-new-friends-cork/
+     The theme has NO handler for this (grep redirect_guess_404_permalink in wp-content: no matches).
+     docs/reports/CONEXAO_BR_ENGLISH_STAGE_2_REPORT.md:388 and STAGE_4_3:511-513 already
+     document it as pre-existing WordPress core behaviour, explicitly "not produced by the
+     legacy redirect table". The Jobs URL work adds no rule and does not change it.
+     Consequence: /en/jobs/ does NOT resolve to a Jobs page and is NOT canonical.

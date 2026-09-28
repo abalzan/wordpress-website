@@ -167,9 +167,10 @@ reach the markup.
 | `conexao_relabel_posts_to_blog()` | Label override: "Posts" → "Blog" |
 | `conexao_modify_primary_nav_items()` | Nav item insertion/removal (priority 20) |
 | `conexao_normalize_primary_nav_sections()` | Nav binding + active state (priority 25) |
-| `conexao_bind_section_object()` | Binds a nav section to its canonical object; page sections resolve the current language’s LINKED Polylang translation (so EN Jobs binds to `/en/jobs/`). The Jobs section is page-backed (`path = empregos`) because the `job` CPT has `has_archive = false` — see CONEXAO_BR_EN_NAV_LANGUAGE_CONTEXT_FIX_REPORT.md |
+| `conexao_bind_section_object()` | Binds a nav section to its canonical object; page sections resolve the current language’s LINKED Polylang translation (so EN Jobs binds to `/en/empregos/`). The Jobs section is page-backed (`path = empregos`) because the `job` CPT has `has_archive = false` — see CONEXAO_BR_EN_NAV_LANGUAGE_CONTEXT_FIX_REPORT.md |
 | `conexao_posts_page_url( $target_slug )` | Language-aware URL of the posts page (Blog). Returns a real linked translation when one exists, otherwise the language home + the posts page path (`/blog/` → `/en/blog/`) — the approved B2 destination. Blog is allowlisted in `conexao_b2_page_allowlist()`; once the linked EN posts page exists (Stage 5) the EN Blog is a real English archive |
 | `conexao_resolve_posts_page_request( $query_vars )` / `conexao_mark_posts_page_query( $query )` | Stage 5: resolve the posts-page request in the REQUESTED language. The posts page path is shared by both languages, so WordPress' language-blind page lookup would return the Portuguese page for `/en/blog/`; the request filter hands WordPress the posts page of the current language, and the query filter restores posts-archive semantics (`is_home` + `is_posts_page`, no `page_id`) so pagination and `?categoria=` keep working. Default-language requests are untouched |
+| `conexao_resolve_shared_slug_page_request( $query_vars )` | Resolves a **shared-slug page** request in the requested language. WordPress' `pagename` lookup is language-blind, so when the PT and EN records of one page deliberately share a `post_name` (`/empregos/` ↔ `/en/empregos/`, the shape `/blog/` already used) it returns the PT record and the B1 rule 302s the EN URL back to PT. This hands WordPress the explicit `page_id` of the record in the requested language. No-op unless the request is a non-default language, the path is a single page slug held by **more than one** published page, and those two records are a **linked Polylang pair** — so a unique-slug page, a CPT slug, an unpaired duplicate and every Portuguese request are untouched. Gated by `tests/test-en-jobs-shared-slug.php` |
 | `conexao_fix_nav_active_states()` | Active state conflict resolution |
 | `conexao_popular_posts()` | "Mais Lidos" query (ranks by `_conexao_view_count` recorded in `inc/post-views.php`) |
 | `conexao_latest_blog_posts()` | "Últimas novidades" homepage query — 3 newest Blog posts by publication date (transient-cached under `conexao_home_latest`) |
@@ -252,12 +253,12 @@ Empregos
 - **«Vagas» / “Openings” preview section — removed (rendering only)**: the
   Stage 6 section that listed the `job` records on the landing pages is **no
   longer rendered, in either language** (both landings share this template, so
-  `/empregos/` and `/en/jobs/` are covered by the same removal; the page now goes
+  `/empregos/` and `/en/empregos/` are covered by the same removal; the page now goes
   straight from the Instagram CTA to the unified opportunities directory).
   Nothing was deleted: the job records stay in the database, the language-aware
   query `conexao_empregos_current_jobs()` (`inc/empregos-landing.php`) — the
   published jobs in the current language (PT jobs on `/empregos/`, EN jobs on
-  `/en/jobs/`, plus the approved B2 set while a job remains untranslated; never
+  `/en/empregos/`, plus the approved B2 set while a job remains untranslated; never
   both languages of one identity), with a language-scoped transient flushed on
   job save/delete — is retained and still exercised by
   `tests/test-job-en-translation.php`, and the section styles stay in `main.css`
@@ -266,14 +267,14 @@ Empregos
 - **Breadcrumb language awareness (Stage 6)**:
   `conexao_empregos_page_url()` returns the linked translation's URL on a
   non-default-language request (the EN Jobs crumb on an EN job detail points at
-  `/en/jobs/`, not `/empregos/`); on Portuguese it is byte-identical to before.
+  `/en/empregos/`, not `/empregos/`); on Portuguese it is byte-identical to before.
 - **Layout/CSS**: `main.css` — desktop uses a two-column portrait+text grid;
   mobile (≤768px) stacks into a single natural column. Colours come entirely
   from the design-system tokens, so light and dark mode are automatic.
 
 #### Bilingual content standard (Stage 8)
 
-`/empregos/` and `/en/jobs/` are rendered by the SAME template from the SAME
+`/empregos/` and `/en/empregos/` are rendered by the SAME template from the SAME
 data, and every user-facing string is resolved for the requested language. The
 Jobs page is the reference implementation of the bilingual standard (the Blog
 established it); the design, layout, components and filter values are identical

@@ -158,6 +158,20 @@ function conexao_switch_language_in_current_url( string $target_slug ): string {
  * Only a request whose parsed path is exactly the posts page's own slug is
  * touched — no other page, archive or URL shape can be affected.
  *
+ * ## Shared-slug PAGES (the Jobs landing)
+ *
+ * The same ambiguity, and the same explicit-`page_id` fix, applies to an
+ * ordinary Page whose EN translation deliberately reuses the PT `post_name`
+ * — today the Jobs landing (`/empregos/` ↔ `/en/empregos/`). WordPress'
+ * language-blind page lookup returns the FIRST page with that slug (the
+ * Portuguese one), so the request looks like a language mismatch and the
+ * missing-translation rule 302s `/en/empregos/` back to `/empregos/`.
+ *
+ * `conexao_resolve_shared_slug_page_request()` applies the identical fix and is
+ * proven separately: it is a NO-OP unless the requested slug is held by a
+ * published page in BOTH languages AND those two pages are a linked Polylang
+ * pair — i.e. exactly the deliberate shared-slug case.
+ *
  * @param array $query_vars Parsed request query vars (WP `request` filter).
  * @return array
  */
@@ -201,6 +215,125 @@ function conexao_resolve_posts_page_request( $query_vars ) {
 	return $query_vars;
 }
 add_filter( 'request', 'conexao_resolve_posts_page_request', 20 );
+
+/**
+ * Resolve a SHARED-SLUG page request in the REQUESTED language.
+ *
+ * ## The problem
+ *
+ * WordPress resolves `pagename` with a language-blind lookup, so when the PT
+ * and EN records of one page deliberately share a `post_name` (the approved
+ * `/empregos/` ↔ `/en/empregos/` shape, mirroring `/blog/` ↔ `/en/blog/`),
+ * `/en/empregos/` resolves to the PORTUGUESE record. The request then looks
+ * like a language mismatch and `conexao_seo_missing_translation_redirect()`
+ * answers 302 → `/empregos/`, so the English landing page is unreachable at
+ * its own URL.
+ *
+ * This hands WordPress the explicit `page_id` of the record in the REQUESTED
+ * language — the identical mechanism, and the identical `request` filter
+ * contract, as `conexao_resolve_posts_page_request()` above. The Blog needs
+ * its own copy only because the posts page is addressed by the
+ * `page_for_posts` OPTION rather than by its slug.
+ *
+ * ## Why it is provably narrow
+ *
+ * It is a NO-OP unless ALL of the following hold, so no unique-slug page, no
+ * unpaired page, no archive and no default-language request can be affected:
+ *
+ *   1. the request is a prefixed (non-default) language request;
+ *   2. the parsed path is a single page slug (no hierarchy, no CPT);
+ *   3. MORE THAN ONE published page holds that slug — the shared-slug case. A
+ *      slug held by exactly one page is WordPress' own unambiguous answer and
+ *      is returned untouched;
+ *   4. the record in the REQUESTED language is published and its
+ *      `pll_get_post( $id, $default )` is a DIFFERENT published record — the
+ *      two are a linked translation PAIR, never two identities.
+ *
+ * Condition 4 is what makes this safe: an unpaired duplicate on the same slug
+ * (which WordPress would otherwise resolve arbitrarily) is left alone rather
+ * than being silently bound to a language.
+ *
+ * @param array $query_vars Parsed request query vars (WP `request` filter).
+ * @return array
+ */
+function conexao_resolve_shared_slug_page_request( $query_vars ) {
+	if ( is_admin() || ! is_array( $query_vars ) || ! conexao_polylang_active() ) {
+		return $query_vars;
+	}
+
+	// An explicit `page_id` is already unambiguous.
+	if ( empty( $query_vars['pagename'] ) || ! empty( $query_vars['page_id'] ) ) {
+		return $query_vars;
+	}
+
+	$requested = isset( $query_vars['lang'] ) ? sanitize_key( (string) $query_vars['lang'] ) : '';
+
+	// Default language: WordPress' own resolution is already correct.
+	if ( '' === $requested || conexao_default_language_slug() === $requested ) {
+		return $query_vars;
+	}
+
+	$slug = trim( (string) $query_vars['pagename'], '/' );
+
+	// A hierarchical path is a child page, not a single shared-slug root.
+	if ( '' === $slug || false !== strpos( $slug, '/' ) ) {
+		return $query_vars;
+	}
+
+	if ( ! function_exists( 'pll_get_post' ) || ! function_exists( 'pll_get_post_language' ) ) {
+		return $query_vars;
+	}
+
+	// Only pages participate: a CPT or any non-page post type is never a
+	// shared-slug page, and its own query vars are left untouched.
+	$candidates = get_posts(
+		array(
+			'post_type'      => 'page',
+			'post_status'    => 'publish',
+			'name'           => $slug,
+			'posts_per_page' => -1,
+			'fields'         => 'ids',
+			'lang'           => '',
+			'no_found_rows'  => true,
+		)
+	);
+
+	$candidates = array_map( 'intval', (array) $candidates );
+
+	// Condition 3: a single holder is not ambiguous.
+	if ( count( $candidates ) < 2 ) {
+		return $query_vars;
+	}
+
+	$default      = conexao_default_language_slug();
+	$requested_id = 0;
+	$counterpart  = 0;
+
+	foreach ( $candidates as $candidate_id ) {
+		$language = (string) pll_get_post_language( $candidate_id );
+
+		if ( $language === $requested ) {
+			$requested_id = $candidate_id;
+		} elseif ( $language === $default ) {
+			$counterpart = $candidate_id;
+		}
+	}
+
+	// Condition 4: only a linked PAIR is bound to the requested language.
+	if ( $requested_id <= 0 || $counterpart <= 0 || $requested_id === $counterpart ) {
+		return $query_vars;
+	}
+
+	if ( (int) pll_get_post( $requested_id, $default ) !== $counterpart ) {
+		return $query_vars;
+	}
+
+	unset( $query_vars['pagename'] );
+	$query_vars['page_id'] = $requested_id;
+
+	return $query_vars;
+}
+add_filter( 'request', 'conexao_resolve_shared_slug_page_request', 20 );
 
 /**
  * STAGE 5 — give the resolved posts-page request the posts-page semantics.

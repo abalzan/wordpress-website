@@ -126,7 +126,14 @@ if ( 'pt' === $language ) {
 		}
 	}
 	assert_true( array() === $bad, 'E5 EN nav destinations stay in the EN URL space (only B1 exception: /blog/)', 'bad ' . wp_json_encode( $bad ) );
-	assert_true( (bool) preg_match( '#href="[^"]*/en/jobs/"#', (string) $rendered ), 'E5b EN Jobs item points at the linked EN translation /en/jobs/');
+	// The EN Jobs landing is a SHARED-SLUG page: the EN record reuses the PT
+	// `empregos` post_name, so the approved shape is `/en/empregos/`
+	// (docs/routing.md §"Shared-slug pages"), mirroring `/en/blog/`. The
+	// assertion checks the DESTINATION, which is resolved at render time
+	// through conexao_bind_section_object() → pll_get_post() → get_permalink(),
+	// so it proves the Polylang binding still drives the nav and not a
+	// hard-coded string.
+	assert_true( (bool) preg_match( '#href="[^"]*/en/empregos/"#', (string) $rendered ), 'E5b EN Jobs item points at the linked EN translation /en/empregos/ (shared-slug shape)');
 	assert_true( false === strpos( (string) $rendered, 'href="' . home_url( '/empregos/' ) . '"' ) && false === strpos( (string) $rendered, 'href="/empregos/"' ), 'E5c EN Jobs item is NOT the Portuguese /empregos/');
 	assert_true( (bool) preg_match( '/<li[^>]*current-menu-item[^>]*>\s*<a[^>]*>Home<\/a>/i', (string) $rendered ), 'E6 EN homepage marks Home current on /en/ (class level; aria-current is HTTP-verified)');
 	assert_true( false === strpos( (string) $rendered, 'Apoiadores</a>' ) && false === strpos( (string) $rendered, 'Lazer e turismo</a>' ) && false === strpos( (string) $rendered, 'Início</a>' ), 'E7 EN nav does not leak Portuguese labels');

@@ -18,8 +18,8 @@ the authored English and the WordPress-bound adapter.
 | | |
 |---|---|
 | Folder | `wp-content/plugins/conexao-en-translation/` |
-| Authored copy | `includes/guide-translation-data.php` (the **51-row EN Guide dataset** — see "The `en-guide` stage" below), `includes/guide-terms-data.php` (the **13** EN `conexao_category` terms used by those guides), `includes/manifest-data.php` (Stage M: the 1 earlier guide row + 29 pages + the first 8 Blog rows), `includes/blog-translation-data.php` (Stage N: the remaining 34 Blog rows), `includes/blog-page-data.php` (Stage O: the single Blog **posts page** row), `includes/leisure-description-data.php` (Stage 7: the 289 Leisure card descriptions) and `includes/course-provider-description-data.php` (Stage 8: the 10 course-provider card descriptions) — separate versioned datasets, each keyed by PT slug |
-| Adapter + config | `includes/stage-fields.php`, `includes/stage-config.php` (Stage O adds the `en-blog-page` stage: shared-slug filter, routing-cache refresh, shared-slug duplicate guard), `includes/guide-stage.php` (the `en-guide` translated-taxonomy capability), `includes/leisure-description-stage.php` (Stage 7 adds the `en-leisure-description` stage) and `includes/course-provider-description-stage.php` (Stage 8 adds the `en-course-provider-description` stage) |
+| Authored copy | `includes/guide-translation-data.php` (the **51-row EN Guide dataset** — see "The `en-guide` stage" below), `includes/guide-terms-data.php` (the **13** EN `conexao_category` terms used by those guides), `includes/manifest-data.php` (Stage M: the 1 earlier guide row + 29 pages + the first 8 Blog rows), `includes/blog-translation-data.php` (Stage N: the remaining 34 Blog rows), `includes/blog-page-data.php` (Stage O: the single Blog **posts page** row), `includes/jobs-page-data.php` (the single EN **Jobs landing page** row, `jobs-page-v1`), `includes/leisure-description-data.php` (Stage 7: the 289 Leisure card descriptions) and `includes/course-provider-description-data.php` (Stage 8: the 10 course-provider card descriptions) — separate versioned datasets, each keyed by PT slug |
+| Adapter + config | `includes/stage-fields.php`, `includes/stage-config.php` (Stage O adds the `en-blog-page` stage: shared-slug filter, routing-cache refresh, shared-slug duplicate guard; the `en-jobs-page` stage reuses all three, with `conexao_en_translation_with_shared_page_slug()` as the single shared-slug permit), `includes/guide-stage.php` (the `en-guide` translated-taxonomy capability), `includes/leisure-description-stage.php` (Stage 7 adds the `en-leisure-description` stage) and `includes/course-provider-description-stage.php` (Stage 8 adds the `en-course-provider-description` stage) |
 | Manifest shape | `includes/translation-map.php` |
 | Runner | `scripts/run-en-translation.php` |
 | Admin screen | none (the rollout is operated through the shared engine's screen and the runner script) |
@@ -317,6 +317,39 @@ the PT record shadows the generic `slug_collision` check, so an unlinked page
 already sitting on the shared slug would have been invisible and a second EN
 identity could have been created beside it. The guard reports that record as a
 hard conflict instead, which is what the negative proofs exercise.
+
+#### The `en-jobs-page` stage
+
+A third stage, and the **second** single-record page stage, applied through the
+same shared engine and the same runner
+(`scripts/run-en-translation.php --only=jobs-page`). It reuses the Stage O
+mechanics rather than copying them: the same engine adapter, the same
+shared-slug duplicate guard, and the **same** `wp_unique_post_slug` permit —
+`conexao_en_translation_with_shared_page_slug()` is now the single
+implementation, and `conexao_en_translation_blog_page_with_shared_slug()` is a
+thin alias over it, so the two stages cannot hold conflicting permits for the
+same core hook.
+
+It exists for the same two reasons:
+
+1. **Scope.** `en-page` owns 30 unrelated rows; applying it would perform the
+   `jobs-2` / `newsletter` repairs this stage must not touch.
+2. **Shared slug.** `/en/empregos/` must reuse the PT `empregos` `post_name`,
+   so the EN Jobs landing is the **shared-slug** shape already used by
+   `/en/blog/`, rather than a second translated slug.
+
+The stage writes **one field on one EN record**: `post_name` (`jobs` →
+`empregos`). The authored EN title, body, excerpt and meta description are
+carried verbatim in `includes/jobs-page-data.php` (version `jobs-page-v1`) so
+that repairing the slug through the engine's `update` path cannot rewrite
+content; the PT page is only ever read and the apply reports `PT-drift=0`.
+
+Note the data-level change is not sufficient on its own: WordPress resolves
+`pagename` language-blind, so two pages on one slug made the request resolve to
+the PT record and `/en/empregos/` still answered 302 → `/empregos/`. The
+companion theme helper `conexao_resolve_shared_slug_page_request()`
+(`inc/i18n/urls.php`) resolves that ambiguity — see
+[`docs/routing.md` §"Shared-slug pages"](../routing.md).
 
 #### Result
 

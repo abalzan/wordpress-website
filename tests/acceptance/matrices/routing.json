@@ -445,12 +445,51 @@
       "note": "A page beyond the last valid EN Blog archive page is a 404, never a silently empty or PT-substituted archive (Stage O pagination bound)."
     },
     {
-      "id": "en-b2-302-en-empregos",
+      "id": "jobs-en-new",
       "url": "/en/empregos/",
-      "expect_status": 302,
+      "expect_status": 200,
+      "expect_contains": [
+        "<html lang=\"en-US\">",
+        "rel=\"canonical\" href=\"http://localhost:8080/en/empregos/\""
+      ],
+      "expect_absent": [
+        "<html lang=\"pt-BR\">"
+      ],
+      "note": "The EN Jobs landing resolves at the PT-derived path and is self-canonical. The EN record reuses the PT `empregos` post_name, so the PT and EN pages form a shared-slug pair resolved in the requested language by conexao_resolve_shared_slug_page_request()."
+    },
+    {
+      "id": "jobs-en-hreflang",
+      "url": "/en/empregos/",
+      "expect_status": 200,
+      "expect_contains": [
+        "hreflang=\"en\" href=\"http://localhost:8080/en/empregos/\"",
+        "hreflang=\"pt-BR\" href=\"http://localhost:8080/empregos/\"",
+        "hreflang=\"x-default\" href=\"http://localhost:8080/empregos/\""
+      ],
+      "expect_absent": [],
+      "note": "The EN Jobs page declares the correct bidirectional hreflang pair: en self, pt-BR the PT Jobs page, x-default the PT page."
+    },
+    {
+      "id": "jobs-pt",
+      "url": "/empregos/",
+      "expect_status": 200,
+      "expect_contains": [
+        "<html lang=\"pt-BR\">",
+        "rel=\"canonical\" href=\"http://localhost:8080/empregos/\"",
+        "hreflang=\"en\" href=\"http://localhost:8080/en/empregos/\""
+      ],
+      "expect_absent": [
+        "<html lang=\"en-US\">"
+      ],
+      "note": "The PT Jobs URL is unchanged and still canonical; its hreflang now advertises /en/empregos/ as the EN counterpart."
+    },
+    {
+      "id": "jobs-legacy-301-pt",
+      "url": "/jobs/",
+      "expect_status": 301,
       "expect_contains": [],
       "expect_absent": [],
-      "note": "An untranslated EN page falls back to PT with 302, never a permanent 301 (stage2 §3; a 301 would be wrong permanent language routing)."
+      "note": "The root-anchored legacy EN path keeps its permanent 301 to the PT path; architecture rule 1 (PT slugs canonical). Unchanged by the EN Jobs URL work."
     },
     {
       "id": "en-b2-fallback-en-irlanda",
@@ -939,12 +978,16 @@
       "note": "A filtered employment URL still renders the widget and still marks the active option, without the invalid role=\"option\". Proves the correction holds in the active state, not only in the empty one."
     },
     {
-      "id": "a11y-en-empregos-b1-still-302",
+      "id": "a11y-en-empregos-real-english-page",
       "url": "/en/empregos/",
-      "expect_status": 302,
-      "expect_contains": [],
-      "expect_absent": [],
-      "note": "B1 routing is unchanged by the accessibility correction: the untranslated EN employment page still 302s to /empregos/ (never a 301)."
+      "expect_status": 200,
+      "expect_contains": [
+        "<html lang=\"en-US\">"
+      ],
+      "expect_absent": [
+        "<html lang=\"pt-BR\">"
+      ],
+      "note": "The EN employment page is a real English page (shared-slug shape), not the B1 302 fallback. This row originally asserted the pre-change 302 contract; the EN Jobs landing is now a linked EN translation at the PT-derived path, and the accessibility correction is orthogonal to that routing change."
     },
     {
       "id": "a11y-lazer-no-option-role",
