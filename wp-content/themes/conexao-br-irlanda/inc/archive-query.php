@@ -2,7 +2,7 @@
 /**
  * Archive query shaping for the CPT archives
  *
- * conexao_content_archive_query(): the pre_get_posts layer that applies the
+ * The conexao_content_archive_query() pre_get_posts layer applies the
  * per-post-type archive filters (county/city/category/environment and the
  * Blog category filter) with the language-scoped ordering rules.
  *
@@ -89,7 +89,7 @@ function conexao_content_archive_query( $query ) {
 			}
 		}
 
-		// Town/city filter via ?cidade=slug
+		// Town/city filter via ?cidade=slug.
 		$town = isset( $_GET['cidade'] ) ? sanitize_title( wp_unslash( $_GET['cidade'] ) ) : '';
 		if ( $town ) {
 			$town_term = get_term_by( 'slug', $town, 'conexao_town' );
@@ -109,7 +109,7 @@ function conexao_content_archive_query( $query ) {
 			}
 		}
 
-		// Category filter via ?categoria=slug (e.g., "treinamento")
+		// Category filter via ?categoria=slug, e.g. "treinamento".
 		$category = isset( $_GET['categoria'] ) ? sanitize_title( wp_unslash( $_GET['categoria'] ) ) : '';
 		if ( $category ) {
 			/*

@@ -2,7 +2,7 @@
 /**
  * Homepage transients and their invalidation
  *
- * conexao_homepage_query() and conexao_homepage_cache_invalidate(): the
+ * Homepage transients: conexao_homepage_query() and conexao_homepage_cache_invalidate() cover the
  * conexao_home_* / conexao_404_* transient layer and the save/delete/
  * insert hooks that invalidate it. Cache keys stay language-scoped through
  * conexao_lang_cache_key() (owned by inc/i18n/).

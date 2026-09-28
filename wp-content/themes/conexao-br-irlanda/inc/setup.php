@@ -2,7 +2,7 @@
 /**
  * Theme supports, menus, widgets and image sizes
  *
- * add_theme_support(), navigation menus, widget areas, editor styles and the
+ * Registers add_theme_support(), navigation menus, widget areas, editor styles and the
  * registered image sizes. Runs on after_setup_theme / widgets_init.
  *
  * @package Conexao_BR_Irlanda
@@ -18,24 +18,33 @@ if ( ! defined( 'ABSPATH' ) ) {
 function conexao_theme_setup() {
 	add_theme_support( 'title-tag' );
 	add_theme_support( 'post-thumbnails' );
-	add_theme_support( 'custom-logo', array(
-		'height'      => 80,
-		'width'       => 240,
-		'flex-height' => true,
-		'flex-width'  => true,
-	) );
-	add_theme_support( 'html5', array(
-		'search-form', 'comment-form', 'comment-list', 'gallery', 'caption', 'style', 'script',
-	) );
+	add_theme_support(
+		'custom-logo',
+		array(
+			'height'      => 80,
+			'width'       => 240,
+			'flex-height' => true,
+			'flex-width'  => true,
+		)
+	);
+	add_theme_support(
+		'html5',
+		array(
+			'search-form', 'comment-form', 'comment-list', 'gallery', 'caption', 'style', 'script',
+		)
+	);
 	add_theme_support( 'automatic-feed-links' );
 	add_theme_support( 'responsive-embeds' );
 	add_theme_support( 'align-wide' );
 	add_theme_support( 'wp-block-styles' );
 	add_theme_support( 'editor-styles' );
 	add_theme_support( 'customize-selective-refresh-widgets' );
-	add_theme_support( 'custom-header', array(
-		'default-image' => '', 'width' => 1920, 'height' => 400, 'flex-height' => true, 'flex-width' => true,
-	) );
+	add_theme_support(
+		'custom-header',
+		array(
+			'default-image' => '', 'width' => 1920, 'height' => 400, 'flex-height' => true, 'flex-width' => true,
+		)
+	);
 	add_theme_support( 'custom-background', array( 'default-color' => 'f5f7f8' ) );
 
 	register_nav_menus( array(
@@ -102,6 +111,11 @@ function conexao_editor_styles() {
 	) );
 }
 add_action( 'after_setup_theme', 'conexao_editor_styles' );
+/**
+ * Register the theme's image sizes.
+ *
+ * @return void
+ */
 function conexao_image_sizes() {
 	add_image_size( 'conexao-card', 400, 300, true );
 	add_image_size( 'conexao-hero', 1200, 600, true );
@@ -131,17 +145,26 @@ function conexao_image_sizes() {
 }
 add_action( 'after_setup_theme', 'conexao_image_sizes' );
 
+/**
+ * Add the theme's image sizes to the media library chooser.
+ *
+ * @param array $sizes Registered image sizes, keyed by name.
+ * @return array Filtered image sizes.
+ */
 function conexao_custom_image_sizes( $sizes ) {
-	return array_merge( $sizes, array(
-		'conexao-card'         => __( 'Card do Portal', 'conexao-br-irlanda' ),
-		'conexao-hero'         => __( 'Hero do Portal', 'conexao-br-irlanda' ),
-		'conexao-thumb'        => __( 'Miniatura do Portal', 'conexao-br-irlanda' ),
-		'conexao-event-preview' => __( 'Prévia de Evento (16:9)', 'conexao-br-irlanda' ),
-		'conexao-sponsor-tile'  => __( 'Tile do Apoiador (512px)', 'conexao-br-irlanda' ),
-		'conexao-event-banner' => __( 'Banner de Evento', 'conexao-br-irlanda' ),
-		'conexao-provider-logo' => __( 'Logo de Provedor de Cursos', 'conexao-br-irlanda' ),
-		'conexao-job-portrait' => __( 'Vaga Vertical (Instagram)', 'conexao-br-irlanda' ),
-	) );
+	return array_merge(
+		$sizes,
+		array(
+			'conexao-card'         => __( 'Card do Portal', 'conexao-br-irlanda' ),
+			'conexao-hero'         => __( 'Hero do Portal', 'conexao-br-irlanda' ),
+			'conexao-thumb'        => __( 'Miniatura do Portal', 'conexao-br-irlanda' ),
+			'conexao-event-preview' => __( 'Prévia de Evento (16:9)', 'conexao-br-irlanda' ),
+			'conexao-sponsor-tile'  => __( 'Tile do Apoiador (512px)', 'conexao-br-irlanda' ),
+			'conexao-event-banner' => __( 'Banner de Evento', 'conexao-br-irlanda' ),
+			'conexao-provider-logo' => __( 'Logo de Provedor de Cursos', 'conexao-br-irlanda' ),
+			'conexao-job-portrait' => __( 'Vaga Vertical (Instagram)', 'conexao-br-irlanda' ),
+		)
+	);
 }
 add_filter( 'image_size_names_choose', 'conexao_custom_image_sizes' );
 

@@ -2,7 +2,7 @@
 /**
  * Document titles and archive heading text
  *
- * conexao_seo_title() (the pre_get_document_title filter) plus the archive
+ * The conexao_seo_title() pre_get_document_title filter plus the archive
  * title/description helpers used by archive.php for the section heading and
  * intro copy.
  *

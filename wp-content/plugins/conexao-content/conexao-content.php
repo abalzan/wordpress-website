@@ -57,10 +57,19 @@ add_action( 'wp_enqueue_scripts', 'conexao_content_enqueue_styles' );
  *
  * When the plugin is activated, create all required pages and navigation menus.
  * This ensures the site works correctly after a fresh install or rebuild.
+ *
+ * create-pages.php is a standalone CLI script that prints progress while it
+ * runs, and WordPress treats ANY output from an activation hook as a failure
+ * ("The plugin generated unexpected output."). WP-CLI then refuses the
+ * activation outright, so a fresh install could not activate this plugin at
+ * all. The script's progress output is therefore buffered and discarded: the
+ * pages and menus are still created, and activation stays silent.
  */
 function conexao_content_activate() {
-    require_once CONEXAO_CONTENT_DIR . 'create-pages.php';
-    flush_rewrite_rules();
+	ob_start();
+	require_once CONEXAO_CONTENT_DIR . 'create-pages.php';
+	ob_end_clean();
+	flush_rewrite_rules();
 }
 register_activation_hook( __FILE__, 'conexao_content_activate' );
 

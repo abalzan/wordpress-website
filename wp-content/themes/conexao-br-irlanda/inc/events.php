@@ -230,4 +230,3 @@ function conexao_event_recurrence_end( $event_id ): ?string {
 	}
 	return Conexao_Event_Recurrence::recurrence_end( (int) $event_id );
 }
-

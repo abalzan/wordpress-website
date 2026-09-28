@@ -280,8 +280,8 @@ function conexao_seo_missing_translation_redirect() {
 		}
 
 		// 2. B2 posts page (Blog) — /en/blog/ renders PT content under the EN URL
-		//    without redirecting to /blog/. The posts page is a real page object
-		//    (page_for_posts) that is allowlisted as B2.
+		// without redirecting to /blog/. The posts page is a real page object
+		// (page_for_posts) that is allowlisted as B2.
 		if ( is_home() && ! empty( $GLOBALS['wp_query']->is_posts_page ) ) {
 			$posts_page_id = (int) get_option( 'page_for_posts' );
 			if ( $posts_page_id > 0 && conexao_should_render_b2_fallback( $posts_page_id ) ) {

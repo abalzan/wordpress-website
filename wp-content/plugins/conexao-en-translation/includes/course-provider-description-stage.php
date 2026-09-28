@@ -75,15 +75,15 @@ function conexao_en_translation_course_provider_normalize( string $value ): stri
 	$value = strtr(
 		$value,
 		array(
-			"\xE2\x80\x99" => "'",  // right single quotation mark
-			"\xE2\x80\x98" => "'",  // left single quotation mark
-			"\xE2\x80\x9B" => "'",  // single high-reversed-9 quotation mark
-			"\xE2\x80\x9C" => '"',  // left double quotation mark
-			"\xE2\x80\x9D" => '"',  // right double quotation mark
-			"\xE2\x80\x93" => '-',  // en dash
-			"\xE2\x80\x94" => '-',  // em dash
-			"\xE2\x80\xA6" => '...', // horizontal ellipsis
-			"\xC2\xA0"     => ' ',  // no-break space
+			"\xE2\x80\x99" => "'",  // right single quotation mark.
+			"\xE2\x80\x98" => "'",  // left single quotation mark.
+			"\xE2\x80\x9B" => "'",  // single high-reversed-9 quotation mark.
+			"\xE2\x80\x9C" => '"',  // left double quotation mark.
+			"\xE2\x80\x9D" => '"',  // right double quotation mark.
+			"\xE2\x80\x93" => '-',  // en dash.
+			"\xE2\x80\x94" => '-',  // em dash.
+			"\xE2\x80\xA6" => '...', // horizontal ellipsis.
+			"\xC2\xA0"     => ' ',  // no-break space.
 		)
 	);
 
@@ -441,6 +441,7 @@ function conexao_en_translation_course_provider_description_adapter(): array {
 			return true;
 		},
 		'pair_ok'        => static function ( int $pt_id, int $en_id ) {
+			unset( $en_id );
 			$row = conexao_en_translation_course_provider_row_for_post( $pt_id );
 
 			if ( empty( $row ) ) {

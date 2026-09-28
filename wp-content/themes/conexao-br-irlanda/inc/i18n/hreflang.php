@@ -16,9 +16,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 
 /**
- * hreflang attribute value for a Polylang language slug.
+ * Hreflang attribute value for a Polylang language slug.
  *
- * pt → "pt-BR", en → "en" (a bare "en" covers English for all regions; the
+ * The mapping is pt → "pt-BR" and en → "en" (a bare "en" covers English for all regions; the
  * site has no per-region English variant).
  *
  * @param string $slug Language slug.
@@ -70,12 +70,12 @@ function conexao_hreflang_links(): array {
 	}
 
 	// 2. Language homes and the posts page.
-	//    - `/` and `/en/` are both real, router-served home URLs (note that a
-	//      secondary-language home is `is_home()` without `is_posts_page`, and
-	//      that `/en/` is NOT `is_front_page()` while the Portuguese front page
-	//      has no EN translation).
-	//    - The static posts page (`/blog/`) is an ordinary page record, so it
-	//      follows the singular rule: translation links, otherwise x-default.
+	// - `/` and `/en/` are both real, router-served home URLs (note that a
+	// secondary-language home is `is_home()` without `is_posts_page`, and
+	// that `/en/` is NOT `is_front_page()` while the Portuguese front page
+	// has no EN translation).
+	// - The static posts page (`/blog/`) is an ordinary page record, so it
+	// follows the singular rule: translation links, otherwise x-default.
 	if ( is_front_page() || ( is_home() && empty( $GLOBALS['wp_query']->is_posts_page ) ) ) {
 		foreach ( $languages as $language ) {
 			if ( ! is_object( $language ) || empty( $language->slug ) ) {
@@ -155,7 +155,7 @@ function conexao_hreflang_links(): array {
 /**
  * Append the x-default alternate (the default-language URL) to a link set.
  *
- * x-default is omitted when the default language has no link of its own: it
+ * The x-default alternate is omitted when the default language has no link of its own: it
  * must never point at a URL that would itself redirect.
  *
  * @param array[] $links   hreflang => array( hreflang, url ).

@@ -81,6 +81,11 @@ function conexao_b2_widen_query_args( array $args, $post_type ) {
 	return $args;
 }
 
+/**
+ * The Guides archive URL, with a fallback for a missing archive link.
+ *
+ * @return string Guides archive URL.
+ */
 function conexao_get_guides_archive_url() {
 	$archive_link = get_post_type_archive_link( 'guide' );
 
@@ -169,7 +174,7 @@ function conexao_get_guide_category_url( $identifier, $fallback_slug = '' ) {
 	}
 
 	// 3. Match by term name (case-insensitive) — covers labels like
-	//    "Moradia e Aluguel" being passed directly, or accented labels.
+	// "Moradia e Aluguel" being passed directly, or accented labels.
 	if ( ! $term ) {
 		$terms = get_terms( array(
 			'taxonomy'   => 'conexao_category',
@@ -524,6 +529,11 @@ function conexao_get_provider_categories() {
 	return $result;
 }
 
+/**
+ * Render the related posts block for the current post.
+ *
+ * @return void
+ */
 function conexao_related_posts() {
 	$categories = wp_get_post_categories( get_the_ID() );
 	if ( empty( $categories ) ) return;

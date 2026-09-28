@@ -182,4 +182,3 @@ function conexao_dequeue_gravatar_patterns() {
 	}
 }
 add_action( 'wp_enqueue_scripts', 'conexao_dequeue_gravatar_patterns', 100 );
-

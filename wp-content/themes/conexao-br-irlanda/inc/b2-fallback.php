@@ -175,7 +175,7 @@ function conexao_b2_search_widen_query( $query ) {
 	$new_tax_query = array();
 	foreach ( $tax_query as $clause ) {
 		if ( is_array( $clause ) && isset( $clause['taxonomy'] ) && 'language' === $clause['taxonomy'] ) {
-			continue; // Skip Polylang's language clause
+			continue; // Skip Polylang's language clause.
 		}
 		$new_tax_query[] = $clause;
 	}
@@ -253,9 +253,9 @@ function conexao_b2_search_query_clauses( $clauses, $query ) {
 	global $wpdb;
 
 	// Build the B2 WHERE condition: a post is EN-visible in search when:
-	//   (language = 'en')  <- real EN content, any type
+	// (language = 'en')  <- real EN content, any type
 	// OR
-	//   (language = 'pt' AND post_type IN (B2 types))  <- PT fallback only for B2 types
+	// (language = 'pt' AND post_type IN (B2 types))  <- PT fallback only for B2 types.
 	$b2_types = function_exists( 'conexao_b2_post_types' ) ? conexao_b2_post_types() : array();
 	$b2_types_literal = empty( $b2_types ) ? '' : "'" . implode( "','", array_map( 'esc_sql', $b2_types ) ) . "'";
 

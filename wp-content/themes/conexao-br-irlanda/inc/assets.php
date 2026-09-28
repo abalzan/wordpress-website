@@ -2,7 +2,7 @@
 /**
  * Asset registration and versioned loading
  *
- * conexao_asset_version() (filemtime cache-busting) and the stylesheet/
+ * Assets: conexao_asset_version() (filemtime cache-busting) and the stylesheet/
  * script enqueue chain, plus the Google Fonts preconnect and non-blocking
  * font handling and the hero image preload.
  *
@@ -13,11 +13,22 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * The cache-busting version for a theme asset.
+ *
+ * @param string $relative_path Asset path relative to the theme root.
+ * @return string filemtime() as a string, or the theme version.
+ */
 function conexao_asset_version( $relative_path ) {
 	$file = CONEXAO_THEME_DIR . '/' . ltrim( $relative_path, '/' );
 	return file_exists( $file ) ? (string) filemtime( $file ) : CONEXAO_THEME_VERSION;
 }
 
+/**
+ * Enqueue the theme's stylesheets and scripts.
+ *
+ * @return void
+ */
 function conexao_enqueue_scripts() {
 	// Only load the font weights actually used in the design.
 	// Inter: 400 (body), 500 (nav), 600 (buttons/headings), 700 (headings).

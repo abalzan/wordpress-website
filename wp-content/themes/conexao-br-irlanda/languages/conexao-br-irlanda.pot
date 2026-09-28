@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-27 17:54+0100\n"
+"POT-Creation-Date: 2026-09-28 09:33+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 
 
@@ -34,7 +34,7 @@ msgid "Guias Práticos"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/404.php:17
 #: wp-content/themes/conexao-br-irlanda/front-page.php:166
-#: wp-content/themes/conexao-br-irlanda/inc/navigation.php:665
+#: wp-content/themes/conexao-br-irlanda/inc/navigation.php:694
 #: wp-content/themes/conexao-br-irlanda/inc/seo/schema.php:431
 #: wp-content/themes/conexao-br-irlanda/inc/seo/titles.php:122
 msgid "Eventos"
@@ -193,7 +193,7 @@ msgstr ""
 msgid "Casas e apartamentos"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/front-page.php:160
-#: wp-content/themes/conexao-br-irlanda/inc/navigation.php:670
+#: wp-content/themes/conexao-br-irlanda/inc/navigation.php:699
 #: wp-content/themes/conexao-br-irlanda/inc/seo/schema.php:432
 #: wp-content/themes/conexao-br-irlanda/inc/seo/titles.php:48
 #: wp-content/themes/conexao-br-irlanda/inc/seo/titles.php:125
@@ -214,8 +214,8 @@ msgstr ""
 msgid "Lazer"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/front-page.php:162
-#: wp-content/themes/conexao-br-irlanda/inc/navigation.php:224
-#: wp-content/themes/conexao-br-irlanda/inc/navigation.php:666
+#: wp-content/themes/conexao-br-irlanda/inc/navigation.php:253
+#: wp-content/themes/conexao-br-irlanda/inc/navigation.php:695
 msgid "Lazer e turismo"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/front-page.php:163
@@ -252,7 +252,7 @@ msgstr ""
 msgid "Vistos e PPS Number"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/front-page.php:174
-#: wp-content/themes/conexao-br-irlanda/inc/navigation.php:671
+#: wp-content/themes/conexao-br-irlanda/inc/navigation.php:700
 #: wp-content/themes/conexao-br-irlanda/inc/seo/schema.php:433
 #: wp-content/themes/conexao-br-irlanda/inc/seo/titles.php:53
 #: wp-content/themes/conexao-br-irlanda/inc/seo/titles.php:128
@@ -273,7 +273,7 @@ msgstr ""
 msgid "Novidades e artigos"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/front-page.php:183
-#: wp-content/themes/conexao-br-irlanda/inc/navigation.php:664
+#: wp-content/themes/conexao-br-irlanda/inc/navigation.php:693
 #: wp-content/themes/conexao-br-irlanda/template-parts/guide-filters.php:36
 msgid "Guias"
 msgstr ""
@@ -341,7 +341,7 @@ msgstr ""
 msgid "Abrir menu"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/header.php:101
-#: wp-content/themes/conexao-br-irlanda/inc/setup.php:42
+#: wp-content/themes/conexao-br-irlanda/inc/setup.php:51
 msgid "Menu Principal"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/header.php:124
@@ -431,7 +431,12 @@ msgid ""
 "Imagem da vaga: use uma imagem vertical, preferencialmente 1080 × 1920 px "
 "(formato Instagram Stories)."
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/content.php:103
+#. translators: %s is the guide title.
+#: wp-content/themes/conexao-br-irlanda/inc/content.php:110
+#: wp-content/themes/conexao-br-irlanda/inc/seo/titles.php:37
+msgid "Guia Prático"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/inc/content.php:126
 #, php-format
 msgid "%d min de leitura"
 msgid_plural "%d min de leitura"
@@ -649,19 +654,19 @@ msgstr ""
 #: wp-content/themes/conexao-br-irlanda/inc/i18n/fallback.php:37
 msgid "This content is displayed in Portuguese."
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/i18n/fallback.php:640
+#: wp-content/themes/conexao-br-irlanda/inc/i18n/fallback.php:641
 msgid "Online Courses"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/i18n/fallback.php:641
+#: wp-content/themes/conexao-br-irlanda/inc/i18n/fallback.php:642
 msgid "Course Directories"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/i18n/fallback.php:642
+#: wp-content/themes/conexao-br-irlanda/inc/i18n/fallback.php:643
 msgid "Education"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/i18n/fallback.php:643
+#: wp-content/themes/conexao-br-irlanda/inc/i18n/fallback.php:644
 msgid "Vocational Training"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/i18n/fallback.php:644
+#: wp-content/themes/conexao-br-irlanda/inc/i18n/fallback.php:645
 msgid "Business"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/inc/job-resources.php:63
@@ -748,7 +753,7 @@ msgstr ""
 #: wp-content/themes/conexao-br-irlanda/single-leisure.php:299
 msgid "Mais informações"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/navigation.php:208
+#: wp-content/themes/conexao-br-irlanda/inc/navigation.php:237
 #: wp-content/themes/conexao-br-irlanda/inc/seo/schema.php:318
 msgid "Início"
 msgstr ""
@@ -791,7 +796,7 @@ msgstr ""
 #: wp-content/themes/conexao-br-irlanda/inc/permit-employers.php:270
 msgid "Cuidadores domiciliários (Home Carers)"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/queries.php:543
+#: wp-content/themes/conexao-br-irlanda/inc/queries.php:553
 msgid "Posts Relacionados"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/inc/recruitment-agencies.php:143
@@ -927,10 +932,6 @@ msgstr ""
 #: wp-content/themes/conexao-br-irlanda/inc/seo/schema.php:455
 msgid "Breadcrumb"
 msgstr ""
-#. translators: %s is the guide title.
-#: wp-content/themes/conexao-br-irlanda/inc/seo/titles.php:37
-msgid "Guia Prático"
-msgstr ""
 #: wp-content/themes/conexao-br-irlanda/inc/seo/titles.php:41
 #: wp-content/themes/conexao-br-irlanda/inc/seo/titles.php:72
 msgid "Eventos na Irlanda"
@@ -978,46 +979,46 @@ msgid ""
 "Descubra lugares para visitar, natureza, cultura, turismo e coisas para "
 "fazer na Irlanda."
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/setup.php:43
+#: wp-content/themes/conexao-br-irlanda/inc/setup.php:52
 msgid "Menu Rodapé"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/setup.php:44
+#: wp-content/themes/conexao-br-irlanda/inc/setup.php:53
 msgid "Menu Social"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/setup.php:57
+#: wp-content/themes/conexao-br-irlanda/inc/setup.php:66
 msgid "Sidebar Principal"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/setup.php:58
+#: wp-content/themes/conexao-br-irlanda/inc/setup.php:67
 msgid "Rodapé - Coluna 1"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/setup.php:59
+#: wp-content/themes/conexao-br-irlanda/inc/setup.php:68
 msgid "Rodapé - Coluna 2"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/setup.php:60
+#: wp-content/themes/conexao-br-irlanda/inc/setup.php:69
 msgid "Rodapé - Coluna 3"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/setup.php:136
+#: wp-content/themes/conexao-br-irlanda/inc/setup.php:158
 msgid "Card do Portal"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/setup.php:137
+#: wp-content/themes/conexao-br-irlanda/inc/setup.php:159
 msgid "Hero do Portal"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/setup.php:138
+#: wp-content/themes/conexao-br-irlanda/inc/setup.php:160
 msgid "Miniatura do Portal"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/setup.php:139
+#: wp-content/themes/conexao-br-irlanda/inc/setup.php:161
 msgid "Prévia de Evento (16:9)"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/setup.php:140
+#: wp-content/themes/conexao-br-irlanda/inc/setup.php:162
 msgid "Tile do Apoiador (512px)"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/setup.php:141
+#: wp-content/themes/conexao-br-irlanda/inc/setup.php:163
 msgid "Banner de Evento"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/setup.php:142
+#: wp-content/themes/conexao-br-irlanda/inc/setup.php:164
 msgid "Logo de Provedor de Cursos"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/setup.php:143
+#: wp-content/themes/conexao-br-irlanda/inc/setup.php:165
 msgid "Vaga Vertical (Instagram)"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/inc/sponsors.php:398

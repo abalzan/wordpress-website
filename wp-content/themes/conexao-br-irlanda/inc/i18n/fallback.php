@@ -616,7 +616,8 @@ function conexao_provider_card_excerpt( $provider_id = 0 ): string {
  * translated in one place and PT needs no entry because PT returns the stored
  * value directly.
  *
- * @param string $category Stored `_provider_category` value.
+ * @param mixed $category Stored `_provider_category` value; post meta is untyped,
+ *                         so a non-string (null) must be accepted without a notice.
  * @return string Display label for the current request language.
  */
 function conexao_provider_category_label( $category ): string {
@@ -659,7 +660,8 @@ function conexao_provider_category_label( $category ): string {
  * hand-entered free text, so a maintainer typing "Educacao" or "educação"
  * must resolve to the same presentation value.
  *
- * @param string $category Stored `_provider_category` value.
+ * @param mixed $category Stored `_provider_category` value; post meta is untyped,
+ *                         so a non-string (null) must be accepted without a notice.
  * @return string Normalised lookup key.
  */
 function conexao_provider_category_key( $category ): string {
@@ -742,10 +744,10 @@ function conexao_polylang_language_redirect_is_temporary( $redirect_url, $langua
 		}
 
 		// 3. B2 posts page (Blog) — /en/blog/ renders PT content under the EN URL
-		//    without redirecting to /blog/. The posts page is a real page object
-		//    (page_for_posts) that is allowlisted as B2, so the EN URL is a valid
-		//    B2 destination (PT content + EN chrome + B2 notice), never a 301/302
-		//    to the PT /blog/ URL.
+		// without redirecting to /blog/. The posts page is a real page object
+		// (page_for_posts) that is allowlisted as B2, so the EN URL is a valid
+		// B2 destination (PT content + EN chrome + B2 notice), never a 301/302
+		// to the PT /blog/ URL.
 		if ( is_home() && ! empty( $GLOBALS['wp_query']->is_posts_page ) ) {
 			$posts_page_id = (int) get_option( 'page_for_posts' );
 			if ( $posts_page_id > 0 && function_exists( 'conexao_is_b2_page' ) && conexao_is_b2_page( $posts_page_id ) ) {

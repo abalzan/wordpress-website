@@ -2,7 +2,7 @@
 /**
  * Primary navigation shaping and active-state resolution
  *
- * nav_menu_* filters, the Guides/primary menu item rewriting, the section
+ * The nav_menu_* filters, the Guides/primary menu item rewriting, the section
  * normalisation that binds a section to each menu item, and the current-path
  * active-state resolution. Language-aware URL resolution is delegated to
  * inc/i18n/ (conexao_lang_url, conexao_language_archive_url).
@@ -14,6 +14,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Add the theme's primary-nav classes to a menu item.
+ *
+ * @param string[] $classes CSS classes for the item.
+ * @param WP_Post  $item    Menu item data object.
+ * @param stdClass $args    Menu arguments object.
+ * @return string[] Filtered CSS classes.
+ */
 function conexao_nav_menu_css_class( $classes, $item, $args ) {
 	if ( 'primary' === $args->theme_location ) {
 		$classes[] = 'nav-item';
@@ -25,6 +33,14 @@ function conexao_nav_menu_css_class( $classes, $item, $args ) {
 }
 add_filter( 'nav_menu_css_class', 'conexao_nav_menu_css_class', 10, 3 );
 
+/**
+ * Add the theme's primary-nav link attributes to a menu item.
+ *
+ * @param array    $atts Link attributes.
+ * @param WP_Post  $item Menu item data object.
+ * @param stdClass $args Menu arguments object.
+ * @return array Filtered link attributes.
+ */
 function conexao_nav_menu_link_attributes( $atts, $item, $args ) {
 	if ( 'primary' === $args->theme_location ) {
 		$atts['class'] = 'nav-link';
@@ -33,6 +49,12 @@ function conexao_nav_menu_link_attributes( $atts, $item, $args ) {
 }
 add_filter( 'nav_menu_link_attributes', 'conexao_nav_menu_link_attributes', 10, 3 );
 
+/**
+ * Add the sub-menu class to a sub-menu.
+ *
+ * @param string[] $classes CSS classes for the sub-menu.
+ * @return string[] Filtered CSS classes.
+ */
 function conexao_submenu_class( $classes ) {
 	$classes[] = 'sub-menu';
 	return $classes;
@@ -113,6 +135,13 @@ function conexao_event_link_target_attrs( $event_id ) {
 	return '';
 }
 
+/**
+ * Point the primary menu's Guides items at the Guides archive URL.
+ *
+ * @param array    $items Menu items.
+ * @param stdClass $args  Menu arguments object.
+ * @return array Filtered menu items.
+ */
 function conexao_override_guides_menu_links( $items, $args ) {
 	if ( 'primary' !== $args->theme_location ) {
 		return $items;
@@ -178,9 +207,9 @@ function conexao_modify_primary_nav_items( $items, $args ) {
 	$items = array_values( $items );
 
 	// 1b. Remove the "Sobre Nós" item entirely from the main navigation.
-	//     The /sobre-nos/ page itself stays published and directly accessible;
-	//     only its navigation entry is removed (desktop + mobile share this
-	//     same 'primary' menu location).
+	// The /sobre-nos/ page itself stays published and directly accessible;
+	// only its navigation entry is removed (desktop + mobile share this
+	// same 'primary' menu location).
 	foreach ( $items as $key => $item ) {
 		$title    = strtolower( trim( wp_strip_all_tags( $item->title ) ) );
 		$item_url = untrailingslashit( (string) $item->url );
@@ -198,11 +227,11 @@ function conexao_modify_primary_nav_items( $items, $args ) {
 	$items = array_values( $items );
 
 	// 2. Change the "Home" label to the canonical one for the current language:
-	//    "Início" on Portuguese (the Portuguese-first portal) or "Home" on
-	//    English — the label of the existing English front page. The URL is
-	//    left untouched so the homepage link still works. When no language
-	//    context exists (CLI/admin), the Portuguese default applies, so
-	//    single-language behaviour is byte-identical to the pre-Polylang theme.
+	// "Início" on Portuguese (the Portuguese-first portal) or "Home" on
+	// English — the label of the existing English front page. The URL is
+	// left untouched so the homepage link still works. When no language
+	// context exists (CLI/admin), the Portuguese default applies, so
+	// single-language behaviour is byte-identical to the pre-Polylang theme.
 	$home_label = 'en' === conexao_current_language_slug()
 		? 'Home'
 		: __( 'Início', 'conexao-br-irlanda' );
@@ -214,11 +243,11 @@ function conexao_modify_primary_nav_items( $items, $args ) {
 	}
 
 	// 3. Rename the "Lazer" navigation label to the canonical one for the
-	//    current language: "Lazer e turismo" (Portuguese) or "Leisure &amp;
-	//    Tourism" (English). Label-only change: the /lazer/ URL, the leisure
-	//    post type and every other attribute stay untouched, so object
-	//    binding, deduplication and active-state logic keep resolving this
-	//    item to the "lazer" section.
+	// current language: "Lazer e turismo" (Portuguese) or "Leisure &amp;
+	// Tourism" (English). Label-only change: the /lazer/ URL, the leisure
+	// post type and every other attribute stay untouched, so object
+	// binding, deduplication and active-state logic keep resolving this
+	// item to the "lazer" section.
 	$lazer_label = 'en' === conexao_current_language_slug()
 		? 'Leisure & Tourism'
 		: __( 'Lazer e turismo', 'conexao-br-irlanda' );
@@ -230,15 +259,15 @@ function conexao_modify_primary_nav_items( $items, $args ) {
 	}
 
 	// 4. Ensure a "Blog" item exists even if the stored menu lacks one.
-	//    The Blog section uses the native WordPress posts archive at /blog/.
-	//    We intentionally do NOT look up a Page with slug "blog" — a Page
-	//    with that slug would shadow the posts archive and prevent published
-	//    posts from appearing on /blog/.
-	//    The destination goes through conexao_lang_url(): byte-identical to
-	//    home_url( '/blog/' ) on Portuguese; on English it resolves through
-	//    conexao_language_archive_url(), which checks for a translated Blog
-	//    page (page_for_posts) and falls back to the EN home when no
-	//    translation exists — keeping the Blog navigation in English.
+	// The Blog section uses the native WordPress posts archive at /blog/.
+	// We intentionally do NOT look up a Page with slug "blog" — a Page
+	// with that slug would shadow the posts archive and prevent published
+	// posts from appearing on /blog/.
+	// The destination goes through conexao_lang_url(): byte-identical to
+	// home_url( '/blog/' ) on Portuguese; on English it resolves through
+	// conexao_language_archive_url(), which checks for a translated Blog
+	// page (page_for_posts) and falls back to the EN home when no
+	// translation exists — keeping the Blog navigation in English.
 	$blog_item = array(
 		'ID'               => 0,
 		'db_id'            => 0,

@@ -79,7 +79,7 @@ function conexao_seo_robots_txt( $output, $public ) {
 	$custom .= "Disallow: /xmlrpc.php\n";
 	$custom .= "Disallow: /wp-json/\n";
 	$custom .= "\n";
-	$custom .= "Sitemap: " . home_url( '/sitemap.xml' ) . "\n";
+	$custom .= 'Sitemap: ' . home_url( '/sitemap.xml' ) . "\n";
 
 	return $custom;
 }

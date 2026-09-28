@@ -1,6 +1,6 @@
 <?php
 /**
- * hreflang alternate output
+ * Hreflang alternate output
  *
  * Emits the <link rel="alternate" hreflang> set in wp_head. The DATA comes
  * from conexao_hreflang_links() in inc/i18n/hreflang.php, which owns the

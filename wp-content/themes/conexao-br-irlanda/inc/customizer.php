@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 function conexao_customize_register( $wp_customize ) {
-	// Colors Section
+	// Colors Section.
 	$wp_customize->add_section( 'conexao_colors', array( 'title' => __( 'Cores do Portal', 'conexao-br-irlanda' ), 'priority' => 30 ) );
 	$wp_customize->add_setting( 'conexao_primary_color', array( 'default' => '#0E6B3A', 'sanitize_callback' => 'sanitize_hex_color' ) );
 	$wp_customize->add_control( new WP_Customize_Color_Control( $wp_customize, 'conexao_primary_color', array(
@@ -25,7 +25,7 @@ function conexao_customize_register( $wp_customize ) {
 		'label' => __( 'Cor de Destaque (Laranja)', 'conexao-br-irlanda' ), 'section' => 'conexao_colors',
 	) ) );
 
-	// Social Section
+	// Social Section.
 	$wp_customize->add_section( 'conexao_social', array( 'title' => __( 'Redes Sociais', 'conexao-br-irlanda' ), 'priority' => 40 ) );
 	$social_fields = array(
 		'conexao_instagram' => array( __( 'Instagram URL', 'conexao-br-irlanda' ), 'https://www.instagram.com/conexaobr.ie/' ),
@@ -37,7 +37,7 @@ function conexao_customize_register( $wp_customize ) {
 		$wp_customize->add_control( $id, array( 'label' => $data[0], 'section' => 'conexao_social', 'type' => 'url' ) );
 	}
 
-	// Hero Section
+	// Hero Section.
 	$wp_customize->add_section( 'conexao_hero', array( 'title' => __( 'Hero Section', 'conexao-br-irlanda' ), 'priority' => 35 ) );
 	$wp_customize->add_setting( 'conexao_hero_title', array(
 		'default' => __( 'Tudo que o brasileiro precisa para viver melhor na <span>Irlanda</span>', 'conexao-br-irlanda' ),
@@ -59,7 +59,7 @@ function conexao_customize_register( $wp_customize ) {
 	// Customizer hero-image setting. The green text-safe zone and the
 	// castle/family/flags composition are part of that fixed asset.
 
-	// Footer Section
+	// Footer Section.
 	$wp_customize->add_section( 'conexao_footer', array( 'title' => __( 'Rodapé', 'conexao-br-irlanda' ), 'priority' => 50 ) );
 	$wp_customize->add_setting( 'conexao_footer_text', array(
 		'default' => __( '© 2025 Conexão BR Irlanda. Todos os direitos reservados.', 'conexao-br-irlanda' ),

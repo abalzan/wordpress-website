@@ -442,7 +442,7 @@ function conexao_leisure_hero_image( $leisure_id, $alt = '' ) {
 	}
 
 	// Base the ladder on a proportional size so the srcset includes the small
-	// rungs; `sizes` below picks per viewport. (medium_large = 768px.)
+	// rungs; `sizes` below picks per viewport (medium_large = 768px).
 	$size = 'medium_large';
 	$src  = wp_get_attachment_image_url( $attachment_id, $size );
 	if ( ! $src ) {
@@ -471,4 +471,3 @@ function conexao_leisure_hero_image( $leisure_id, $alt = '' ) {
 		)
 	);
 }
-

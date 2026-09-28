@@ -334,7 +334,7 @@ class Conexao_Event_Location {
 		// name merely starts with "co" (Cobh, Cork, Cong) is untouched.
 		$value = preg_replace( '/^(?:co(?:unty)?\.?)\s+/i', '', $value );
 
-		$value = trim( preg_replace( '/\s+/', ' ', $value ), " ,-." );
+		$value = trim( preg_replace( '/\s+/', ' ', $value ), ' ,-.' );
 
 		if ( '' === $value ) {
 			return false;

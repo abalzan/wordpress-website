@@ -22,6 +22,12 @@ function conexao_excerpt_length( $length ) {
 }
 add_filter( 'excerpt_length', 'conexao_excerpt_length' );
 
+/**
+ * Replace the default excerpt "more" string with an ellipsis.
+ *
+ * @param string $more Default more string.
+ * @return string Filtered more string.
+ */
 function conexao_excerpt_more( $more ) {
 	return '&hellip;';
 }
@@ -68,9 +74,10 @@ function conexao_reading_time() {
  * onto the English homepage.
  *
  * This helper runs the registered label through gettext using the theme text
- * domain (loaded by inc/setup.php). It is deliberately presentation-layer:
- * the CPT registration is NOT modified, so wp-admin, the REST API and the
- * Portuguese source of truth are all untouched.
+ * domain (loaded by inc/setup.php), for the labels the catalogue actually
+ * carries. It is deliberately presentation-layer: the CPT registration is
+ * NOT modified, so wp-admin, the REST API and the Portuguese source of truth
+ * are all untouched.
  *
  * Why this is safe for Portuguese: pt_BR is an identity catalogue by design
  * (engineering-standard §9.3), so `__()` returns the identical string on a PT
@@ -91,13 +98,29 @@ function conexao_content_type_label( $post_type ) {
 		return '';
 	}
 
-	// The msgid is the registered (Portuguese) label, which is exactly what
-	// the en_US catalogue already carries — e.g. "Guia Prático" -> "Practical
-	// Guide" (en_US.po, referenced from inc/seo/titles.php). No new msgid and
-	// no catalogue change is needed for this fix.
-	return __( $object->labels->singular_name, 'conexao-br-irlanda' );
+	$label = (string) $object->labels->singular_name;
+
+	// A gettext msgid must be a string LITERAL
+	// (WordPress.WP.I18n.NonSingularStringLiteralText), so the one registered
+	// label the theme catalogue actually carries is named explicitly — which
+	// is exactly what the lookup did: "Guia Prático" -> "Practical Guide"
+	// (en_US.po, referenced from inc/seo/titles.php). No new msgid and no
+	// catalogue change is needed for this fix.
+	if ( 'Guia Prático' === $label ) {
+		return __( 'Guia Prático', 'conexao-br-irlanda' );
+	}
+
+	// Every other registered label has no catalogue entry, and a msgid with
+	// no entry returns itself — so the registered label is returned verbatim
+	// and no label is ever lost.
+	return $label;
 }
 
+/**
+ * The human-readable reading time for the current post.
+ *
+ * @return string Reading time text.
+ */
 function conexao_reading_time_text() {
 	$minutes = conexao_reading_time();
 	return sprintf( _n( '%d min de leitura', '%d min de leitura', $minutes, 'conexao-br-irlanda' ), $minutes );

@@ -69,7 +69,7 @@ function conexao_sponsor_carousel_image( $sponsor_id, $sponsor_title = '', $eage
 	// 512px 'conexao-sponsor-tile' derivative — and lets `sizes` below pick
 	// the right one per viewport. (wp_get_attachment_image_srcset() excludes
 	// candidates smaller than the requested size, so requesting the 512px
-	// tile directly would drop the 300px rung.)
+	// tile directly would drop the 300px rung).
 	$size = 'medium';
 	$src  = wp_get_attachment_image_url( $attachment_id, $size );
 	if ( ! $src ) {
