@@ -87,7 +87,20 @@ investigates the one remaining translation finding and establishes the baseline.
 | `2026-09-27-recovery-closeout.md` | **Final closeout** — the one new translation-completeness finding proven pre-existing (reproduces on `597b04e`; importer record predates the language guard), full runner byte-identical to the recovered baseline, 7 permanent gates, HTTP + browser verification, negative proofs, POT/catalogue/architecture integrity. Status: **PASS WITH LIMITATION** |
 | `2026-09-28-en-archive-404-fix.md` | **Fix `/en/apoiadores/`, `/en/eventos/`, `/en/guias/`** — root cause is a persisted `rewrite_rules` set flushed before Polylang attaches its rewrite filters (336 rules / 0 `(en)/` post_type, reproduced exactly by disabling those filters); NOT caused by `597b04e` (theme byte-identical to `b47d098`, where the routes were 200). Adds a `wp_loaded@20` self-heal in `inc/i18n/guard.php` (no allowlist, no redirect, no new routing system) + a 17-assertion suite. Runner 59→60 suites / +17 assertions / 0 new failures; gates byte-identical; PT immutable. Status: **PASS WITH LIMITATION** |
 
+## EN archive route 404 investigation (2026-09-28)
+
+Follow-up to the baseline recovery: the three EN CPT-archive routes
+(`/en/apoiadores/`, `/en/eventos/`, `/en/guias/`) reported 404 again with the
+recovered code unchanged.
+
+| Report | Content |
+|---|---|
+| `2026-09-28-en-archive-route-404-plan.md` | The investigation plan (route work; scenarios, non-goals, verification gates) |
+| `2026-09-28-en-archive-route-404.md` | **Root cause proven: the registration code is byte-identical to the verified `b47d098` baseline; the 404s are the stale local `rewrite_rules` failure mode (no `en/`-prefixed CPT-archive rules). The minimal fix is the documented local rewrite flush (`scripts/flush-blog-rewrite-rules.php`) — a local DB operation, not a code change — now recorded in `docs/routing.md`. No code, gate or expectation changed. Status: BLOCKED (no runtime in the task environment to execute the flush).** |
+
 ## Related: `docs/audit/` (engineering audits), `docs/engineering-standard.md`
 (the normative standard these reports are measured against).
 
 _Last verified: 2026-09-27 by the recovery closeout_
+
+_Last verified: 2026-09-28 by the EN archive route 404 investigation_

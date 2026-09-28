@@ -1,0 +1,103 @@
+# 04 — The route contract: acceptance + release rows for the three routes
+
+The three routes are ALREADY permanent acceptance requirements at 200.
+No row was added or changed by this task (see the plan §15).
+
+## tests/acceptance/matrices/routing.json + guides-en.json — dump of the relevant rows
+
+\$ python3 (matrix row dump: id, url, expect_status, contains, absent, note)
+== routing.json: Routing, /en/ language layer, legacy redirects, canonical, hreflang, cache separation, search, REST 
+  pt-200-guias                             /guias/                      -> 200
+    contains: ['<html lang="pt-BR">']
+    absent  : ['<html lang="en-US">']
+    note    : Portuguese URL is canonical and must keep serving 200 (stage2 §1).
+  pt-200-eventos                           /eventos/                    -> 200
+    contains: ['<html lang="pt-BR">']
+    absent  : ['<html lang="en-US">']
+    note    : Portuguese URL is canonical and must keep serving 200 (stage2 §1).
+  pt-200-apoiadores                        /apoiadores/                 -> 200
+    contains: ['<html lang="pt-BR">']
+    absent  : ['<html lang="en-US">']
+    note    : Portuguese URL is canonical and must keep serving 200 (stage2 §1).
+  en-200-en-guias                          /en/guias/                   -> 200
+    contains: ['<html lang="en-US">']
+    absent  : ['<html lang="pt-BR">']
+    note    : The /en/ language layer resolves (stage2 §3) and serves English markup.
+  en-200-en-eventos                        /en/eventos/                 -> 200
+    contains: ['<html lang="en-US">']
+    absent  : ['<html lang="pt-BR">']
+    note    : The /en/ language layer resolves (stage2 §3) and serves English markup.
+  en-200-en-apoiadores                     /en/apoiadores/              -> 200
+    contains: ['<html lang="en-US">']
+    absent  : ['<html lang="pt-BR">']
+    note    : The /en/ language layer resolves (stage2 §3) and serves English markup.
+  pt-archive-canonical                     /eventos/                    -> 200
+    contains: ['rel="canonical" href="', '/eventos/"']
+    absent  : []
+    note    : PT archive is self-canonical (stage2 §5).
+  en-archive-canonical                     /en/eventos/                 -> 200
+    contains: ['rel="canonical" href="', '/en/eventos/"']
+    absent  : []
+    note    : EN archive is self-canonical to its own EN URL (stage2 §5).
+  en-archive-hreflang                      /en/eventos/                 -> 200
+    contains: ['hreflang="en"', 'hreflang="pt-BR"']
+    absent  : []
+    note    : EN archive declares its own en alternate and the PT alternate (stage2 §6).
+  pt-eventos-filters-present               /eventos/                    -> 200
+    contains: ['class="event-filters" data-event-filters', 'data-event-filters', 'event-filters-county-panel', 'event-filters-town-panel', 'event-filters-dropdown-trigger']
+    absent  : []
+    note    : PT Events archive renders the county/town filter widget. Baseline for the EN i18n regression below.
+  en-eventos-filters-present               /en/eventos/                 -> 200
+    contains: ['class="event-filters" data-event-filters', 'data-event-filters', 'event-filters-county-panel', 'event-filters-town-panel', 'event-filters-dropdown-trigger']
+    absent  : []
+    note    : EN Events archive renders the SAME shared filter widget as PT (request-visible i18n regression: the B2 filter helper must stay language-wide
+  en-eventos-filters-english-copy          /en/eventos/                 -> 200
+    contains: ['event-filters-dropdown-label">County', 'event-filters-dropdown-label">Town', 'Search county', 'Search town']
+    absent  : ['event-filters-dropdown-label">Cidade', 'event-filters-dropdown-label">Categoria']
+    note    : EN filter labels/placeholders are localized to English while PT keeps 'Cidade'/'Categoria'.
+  en-eventos-filter-links-stay-en          /en/eventos/                 -> 200
+    contains: ['/en/eventos/?county=', '/en/eventos/?cidade=']
+    absent  : ['href="http://localhost:8080/eventos/?county=']
+    note    : EN filter links target /en/eventos/ and keep the shared ?county= / ?cidade= slug family; no link bounces an English visitor back to the PT a
+  a11y-eventos-no-option-role              /eventos/                    -> 200
+    contains: ['<html lang="pt-BR">']
+    absent  : ['role="option"']
+    note    : Accessibility semantics: the desktop filter options are real navigational hyperlinks, so they must not carry role="option" and the group mus
+  a11y-en-eventos-no-option-role           /en/eventos/                 -> 200
+    contains: ['<html lang="en-US">']
+    absent  : ['role="option"']
+    note    : The English events archive keeps its EN shell and carries no role="option" markup. Same local-dataset caveat as the PT row.
+== guides-en.json: Stage 9 English guide archive: archive presence, B2 absence, self-canonical, hreflang set, paginatio
+  pt-guides-200                            /guias/                      -> 200
+    contains: ['rel="canonical" href="', '/guias/']
+    absent  : ['language-fallback-notice']
+    note    : The PT guides archive is 200 and self-canonical, with no B2 notice.
+  en-guides-200                            /en/guias/                   -> 200
+    contains: ['rel="canonical" href="', '/en/guias/', 'hreflang="pt-BR"', 'hreflang="en"', 'hreflang="x-default"']
+    absent  : ['language-fallback-notice']
+    note    : Stage 9: /en/guias/ is a real English archive (no B2 notice), self-canonical, with the full PT/en/x-default hreflang set.
+
+## Release smoke matrix (18 fixed rows) — EN pair rows
+
+\$ python3 -c dump of rows whose url contains /en/
+  smoke-home-en            /en/             -> 200
+  smoke-en-pair-guias      /en/guias/       -> 200
+  smoke-en-pair-eventos    /en/eventos/     -> 200
+  smoke-en-pair-lazer      /en/lazer/       -> 200
+  smoke-en-pair-blog       /en/blog/        -> 200
+  smoke-404-en             /en/nao-existe-xyz-stage-j/ -> 404
+  total rows: 18
+
+[=> the release smoke matrix asserts /en/guias/ + /en/eventos/ (200) but does NOT
+   include an /en/apoiadores/ pair row. The matrix is deliberately fixed at 18 rows
+   (docs/releases.md: "It deliberately does not grow between releases"), so this
+   task records the gap as a recommendation and changes no gate.]
+
+## docs/routing.md — the documented route contract lines for the three routes
+
+49:| Guides | `/guias/` | `/en/guias/` — **real English archive since Stage 9**: one linked EN `guide` per public PT guide (authored English title, body, excerpt, meta description) plus the linked EN `conexao_category` terms used by those guides. EN singles live at `/en/guias/{en-slug}/`; the PT slug under `/en/` is a replaced master and answers **302 → the PT guide**. `/en/guias/?categoria=documents` filters the EN archive; a slug from the other language resolves to the same concept through the Polylang term relationship. |
+50:| Events | `/eventos/` | `/en/eventos/` |
+53:| Sponsors | `/apoiadores/` | `/en/apoiadores/` |
+58:| Filters | `/eventos/?cidade=dublin` | `/en/eventos/?cidade=dublin` |
+130:     (`/eventos/` → `/en/eventos/`); the Blog (`post`) archive is resolved
+143:  `conexao_find_term_across_languages()`), e.g. `/en/guias/?categoria=documents`;

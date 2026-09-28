@@ -1,0 +1,121 @@
+# 06 — Script-contract gates: before vs after this documentation change
+
+Command: ./scripts/run-tests.sh --scripts
+This environment boundary, stated up front: this sandbox has NO php binary and NO
+Docker stack, so the three php-dependent suites fail HERE on the missing toolchain
+(FileNotFoundError: php / php: command not found). On the closeout host (php
+present) the recorded result is 6/6 — the failures are environment gaps, not
+repository regressions. What this file proves: the change introduced ZERO new failures
+(the failing set is byte-identical before vs after, except the ephemeral mktemp path).
+
+## BEFORE (baseline, at e7303ba before any change)
+
+conexao test harness
+  repository:    /workspace
+  php:           n/a (container)
+  environment:   host (local php)
+  base url:      http://localhost:8080
+
+Script-contract suites (static, no WordPress, no network)
+[PASS] tests/scripts/verify-agent-governance.py
+[FAIL] tests/scripts/verify-cache-key-scoping.py (exit 1)
+[FAIL] tests/scripts/verify-documentation-drift.py (exit 1)
+[PASS] tests/scripts/verify-i18n-freshness.py
+         8 passed, 0 failed
+[FAIL] tests/scripts/verify-release-integrity.py (exit 1)
+         FAIL: build-plugins-zip.sh failed: /workspace/scripts/build-plugins-zip.sh: line 29: php: command not found
+         FAIL: conexao-data-model: the manifest does not record a file count
+         FAIL: conexao-data-model: the manifest does not record a byte size
+         FAIL: conexao-data-model: the manifest does not record a SHA-256
+         FAIL: conexao-data-model: the manifest names an artifact that was not built
+         FAIL: conexao-content: the manifest does not record a file count
+         FAIL: conexao-content: the manifest does not record a byte size
+         FAIL: conexao-content: the manifest does not record a SHA-256
+         FAIL: conexao-content: the manifest names an artifact that was not built
+         FAIL: conexao-admin-ux: the manifest does not record a file count
+         FAIL: conexao-admin-ux: the manifest does not record a byte size
+         FAIL: conexao-admin-ux: the manifest does not record a SHA-256
+         FAIL: conexao-admin-ux: the manifest names an artifact that was not built
+         FAIL: conexao-event-runtime: the manifest does not record a file count
+         FAIL: conexao-event-runtime: the manifest does not record a byte size
+         FAIL: conexao-event-runtime: the manifest does not record a SHA-256
+         FAIL: conexao-event-runtime: the manifest names an artifact that was not built
+         FAIL: conexao-event-importer: the manifest does not record a file count
+         FAIL: conexao-event-importer: the manifest does not record a byte size
+         FAIL: conexao-event-importer: the manifest does not record a SHA-256
+         FAIL: conexao-event-importer: the manifest names an artifact that was not built
+         FAIL: conexao-leisure-migration: the manifest does not record a file count
+         FAIL: conexao-leisure-migration: the manifest does not record a byte size
+         FAIL: conexao-leisure-migration: the manifest does not record a SHA-256
+         FAIL: conexao-leisure-migration: the manifest names an artifact that was not built
+[PASS] tests/scripts/verify-script-conventions.py
+         317 passed, 0 failed
+
+----------------------------------------
+In-process PHP suites: 0 total, 0 passed, 0 failed
+Script-contract suites: 6 total, 3 passed, 3 failed
+----------------------------------------
+TESTS FAILED
+full suite output kept in /tmp/tmp.mJTegaZGwx
+
+## AFTER (with the documentation change in the working tree)
+
+conexao test harness
+  repository:    /workspace
+  php:           n/a (container)
+  environment:   host (local php)
+  base url:      http://localhost:8080
+
+Script-contract suites (static, no WordPress, no network)
+[PASS] tests/scripts/verify-agent-governance.py
+[FAIL] tests/scripts/verify-cache-key-scoping.py (exit 1)
+[FAIL] tests/scripts/verify-documentation-drift.py (exit 1)
+[PASS] tests/scripts/verify-i18n-freshness.py
+         8 passed, 0 failed
+[FAIL] tests/scripts/verify-release-integrity.py (exit 1)
+         FAIL: build-plugins-zip.sh failed: /workspace/scripts/build-plugins-zip.sh: line 29: php: command not found
+         FAIL: conexao-data-model: the manifest does not record a file count
+         FAIL: conexao-data-model: the manifest does not record a byte size
+         FAIL: conexao-data-model: the manifest does not record a SHA-256
+         FAIL: conexao-data-model: the manifest names an artifact that was not built
+         FAIL: conexao-content: the manifest does not record a file count
+         FAIL: conexao-content: the manifest does not record a byte size
+         FAIL: conexao-content: the manifest does not record a SHA-256
+         FAIL: conexao-content: the manifest names an artifact that was not built
+         FAIL: conexao-admin-ux: the manifest does not record a file count
+         FAIL: conexao-admin-ux: the manifest does not record a byte size
+         FAIL: conexao-admin-ux: the manifest does not record a SHA-256
+         FAIL: conexao-admin-ux: the manifest names an artifact that was not built
+         FAIL: conexao-event-runtime: the manifest does not record a file count
+         FAIL: conexao-event-runtime: the manifest does not record a byte size
+         FAIL: conexao-event-runtime: the manifest does not record a SHA-256
+         FAIL: conexao-event-runtime: the manifest names an artifact that was not built
+         FAIL: conexao-event-importer: the manifest does not record a file count
+         FAIL: conexao-event-importer: the manifest does not record a byte size
+         FAIL: conexao-event-importer: the manifest does not record a SHA-256
+         FAIL: conexao-event-importer: the manifest names an artifact that was not built
+         FAIL: conexao-leisure-migration: the manifest does not record a file count
+         FAIL: conexao-leisure-migration: the manifest does not record a byte size
+         FAIL: conexao-leisure-migration: the manifest does not record a SHA-256
+         FAIL: conexao-leisure-migration: the manifest names an artifact that was not built
+[PASS] tests/scripts/verify-script-conventions.py
+         317 passed, 0 failed
+
+----------------------------------------
+In-process PHP suites: 0 total, 0 passed, 0 failed
+Script-contract suites: 6 total, 3 passed, 3 failed
+----------------------------------------
+TESTS FAILED
+full suite output kept in /tmp/tmp.XCHERnlkaC
+
+## Sorted failing-suite diff (before vs after)
+
+[identical — the empty diff proves zero new failures]
+
+## Full-output diff (informational)
+
+47c47
+< full suite output kept in /tmp/tmp.mJTegaZGwx
+---
+> full suite output kept in /tmp/tmp.XCHERnlkaC
+[the only difference is the mktemp work-dir path — an ephemeral per-run artifact]
