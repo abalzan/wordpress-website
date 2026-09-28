@@ -357,16 +357,16 @@ function conexao_en_translation_course_provider_snapshot_callback( int $post_id 
  */
 function conexao_en_translation_course_provider_description_config(): array {
 	return array(
-		'stage'            => 'en-course-provider-description',
-		'source_post_type' => 'course_provider',
-		'source_lang'      => 'pt',
-		'target_lang'      => 'en',
+		'stage'                  => 'en-course-provider-description',
+		'source_post_type'       => 'course_provider',
+		'source_lang'            => 'pt',
+		'target_lang'            => 'en',
 		// Removing the field is a first-class rollback: it deletes only
 		// `_provider_excerpt_en` and re-asserts PT immutability, and the approved
 		// B2 fallback re-engages automatically. The EN layer here is a single
 		// reproducible field, so remove is safe to claim — the same justification
 		// the Stage 7 Leisure description stage records.
-		'allow_remove'     => true,
+		'allow_remove'           => true,
 
 		'manifest_callback'      => 'conexao_en_translation_course_provider_manifest_callback',
 		'snapshot_callback'      => 'conexao_en_translation_course_provider_snapshot_callback',

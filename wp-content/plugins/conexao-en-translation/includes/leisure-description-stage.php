@@ -191,11 +191,11 @@ function conexao_en_translation_leisure_find_pt( string $slug ) {
  */
 function conexao_en_translation_leisure_find_en_for_pt( int $pt_id, string $expected_en = '', string $expected_source = '' ) {
 	$absent = array(
-		'en_id'             => 0,
-		'en_status'         => 'absent',
-		'pair_ok'           => false,
-		'en_slug_matches'   => true,
-		'stage_conflict'    => '',
+		'en_id'           => 0,
+		'en_status'       => 'absent',
+		'pair_ok'         => false,
+		'en_slug_matches' => true,
+		'stage_conflict'  => '',
 	);
 
 	if ( $pt_id <= 0 ) {
@@ -369,15 +369,15 @@ function conexao_en_translation_leisure_manifest_callback(): array {
  */
 function conexao_en_translation_leisure_description_config(): array {
 	return array(
-		'stage'            => 'en-leisure-description',
-		'source_post_type' => 'leisure',
-		'source_lang'      => 'pt',
-		'target_lang'      => 'en',
+		'stage'                  => 'en-leisure-description',
+		'source_post_type'       => 'leisure',
+		'source_lang'            => 'pt',
+		'target_lang'            => 'en',
 		// Removing the field is a first-class rollback: it deletes only
 		// `_leisure_excerpt_en` and re-asserts PT immutability, and the approved
 		// B2 fallback re-engages automatically. Unlike the job stage, the EN
 		// layer here is a single reproducible field, so remove is safe to claim.
-		'allow_remove'     => true,
+		'allow_remove'           => true,
 
 		'manifest_callback'      => 'conexao_en_translation_leisure_manifest_callback',
 		'snapshot_callback'      => 'conexao_en_translation_leisure_snapshot_callback',
