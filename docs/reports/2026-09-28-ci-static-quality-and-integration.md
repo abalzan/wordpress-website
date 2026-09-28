@@ -12,8 +12,11 @@
 
 ## 0. Headline result (the three CI jobs, real GitHub Actions)
 
-Run [`36405985197`](https://github.com/abalzan/wordpress-website/actions/runs/36405985197),
-head `f537afb`, branch `cline/jh8t5rpj`:
+Run [`36405985197`](https://github.com/abalzan/wordpress-website/actions/runs/36405985197)
+(head `f537afb`), re-confirmed unchanged on this report's own head `3521969` by run
+[`36407629522`](https://github.com/abalzan/wordpress-website/actions/runs/36407629522)
+(the intervening diff is documentation only, so the source under test is
+identical). Branch `cline/jh8t5rpj`:
 
 | Job | Before (run 36404340440 / 36396821598, head `726004a`) | After |
 |---|---|---|
