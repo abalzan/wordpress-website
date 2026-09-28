@@ -141,8 +141,8 @@ Composer is **never** deployed (production is WordPress.com). It exists only for
     "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
     "wp-coding-standards/wpcs": "^3.1",
     "phpcompatibility/phpcompatibility-wp": "^2.1",
-    "szepeviktor/phpstan-wordpress": "^1.3",
-    "phpstan/phpstan": "^1.11"
+    "szepeviktor/phpstan-wordpress": "^2.0",
+    "phpstan/phpstan": "^2.2"
   },
   "config": {
     "allow-plugins": {
@@ -224,6 +224,12 @@ parameters:
 ```
 
 `docs/dev/phpstan-bootstrap.php` (new) defines the constants the theme expects outside WordPress (`ABSPATH`, `CONEXAO_THEME_DIR`, `CONEXAO_THEME_URI`) and stubs the WordPress functions PHPStan cannot resolve. Legacy violations are recorded in `phpstan-baseline.neon`, which MUST NOT grow.
+
+`phpstan.neon.dist` also carries a single documented `ignoreErrors` entry for
+`requireOnce.fileNotFound`. WordPress core is not committed to this
+repository, so `require_once ABSPATH . 'wp-admin/...'` cannot be resolved on
+disk; the requires are correct WordPress and MUST NOT be "fixed" by pointing
+them elsewhere.
 
 ### 1.7 `.github/workflows/ci.yml` (MUST)
 

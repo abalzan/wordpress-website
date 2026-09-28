@@ -120,11 +120,20 @@ in `phpcs-baseline.json`) **remains, and CI does not require it to be zero**:
   source. Its non-zero result cannot fail an otherwise-valid run.
 - A future debt-reduction stage is what will turn the raw command green.
 
-**PHPStan semantics:** level **5**, with the 298 legacy errors isolated in
+**PHPStan semantics:** level **5**, with the 331 legacy errors isolated in
 `phpstan-baseline.neon`. The baseline is part of the blocking gate and must
 not grow: a new PHPStan error fails `./scripts/lint.sh`. CI neither
 regenerates the baseline nor changes the level, and does not upgrade
-`phpstan/phpstan` (the 1.12.x "old version" notice is expected).
+`phpstan/phpstan`.
+
+**Version floor.** `phpstan/phpstan` is pinned at `^2.2` and
+`szepeviktor/phpstan-wordpress` at `^2.0`. The two MUST be upgraded together:
+the 1.x line of the WordPress extension hard-requires `phpstan/phpstan:
+^1.10.31`, so raising PHPStan alone is unsatisfiable. The 1.12.x "old
+version" notice is gone as of this upgrade. The baseline was re-generated
+once for the 2.x rule set (the stricter always-true/impossible-type checks
+report additional pre-existing debt); it is **frozen again at 331 from this
+point** and must not grow.
 
 **No production contact.** CI is read-only with respect to production: it
 never connects to conexaobr.ie or WordPress.com and deploys nothing. The

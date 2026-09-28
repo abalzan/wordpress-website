@@ -64,7 +64,8 @@ class Conexao_Source_Laois_Tourism extends Conexao_Source_Base {
 	 * Find event container nodes using flexible selectors.
 	 *
 	 * @param DOMXPath $xpath XPath object.
-	 * @return DOMNodeList[]
+	 * @return DOMNodeList|array<int, never> The first selector that matches,
+	 *                                      or an empty array when none match.
 	 */
 	protected function find_event_nodes( $xpath ) {
 		$selectors = array(

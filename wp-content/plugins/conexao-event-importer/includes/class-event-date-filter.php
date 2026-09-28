@@ -37,11 +37,10 @@ class Conexao_Event_Date_Filter {
 	 *
 	 * @param array $event Normalized event array (expects the start_date,
 	 *                     start_time, end_date and end_time keys).
-	 * @return array{
-	 *   status: string,      Self::IMPORT, Self::PAST or Self::INVALID.
-	 *   cutoff_label: string Human-readable cutoff instant used for the
-	 *                        comparison ('Y-m-d H:i'); empty when invalid.
-	 * }
+	 * @return array{status: string, cutoff_label: string} `status` is one of
+	 *         `Self::IMPORT`, `Self::PAST` or `Self::INVALID`. `cutoff_label`
+	 *         is the human-readable cutoff instant used for the comparison,
+	 *         formatted 'Y-m-d H:i'; empty when invalid.
 	 */
 	public static function evaluate( $event ) {
 		$now = current_datetime();

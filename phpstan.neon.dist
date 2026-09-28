@@ -15,3 +15,13 @@ parameters:
         - wp-content/plugins/conexao-guide-translation/includes/body-*.php
     bootstrapFiles:
         - %currentWorkingDirectory%/docs/dev/phpstan-bootstrap.php
+    ignoreErrors:
+        # Analysis-environment artifact, not a code defect. WordPress core is
+        # NOT committed to this repository (it is provided by WordPress.com and
+        # by the Docker image), so `require_once ABSPATH . 'wp-admin/...'`
+        # cannot be resolved on disk: docs/dev/phpstan-bootstrap.php defines
+        # ABSPATH as './', and ./wp-admin/ does not exist here. These requires
+        # are correct, idiomatic WordPress and must stay as they are.
+        -
+            identifier: requireOnce.fileNotFound
+            path: wp-content/*
