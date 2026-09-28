@@ -24,8 +24,13 @@
 # Sourced, never executed.
 
 # Guard against double-sourcing (both build scripts use `set -euo pipefail`).
+#
+# The header documents that this file is SOURCED, never executed, so `return`
+# is always valid here; the former `2>/dev/null || true` was a guard for a
+# mode the library never runs in, and ShellCheck reports it as unreachable
+# (SC2317) once the sourced file is analysed with its callers.
 if [ -n "${CONEXAO_ZIP_BUILD_LOADED:-}" ]; then
-    return 0 2>/dev/null || true
+    return 0
 fi
 CONEXAO_ZIP_BUILD_LOADED=1
 
