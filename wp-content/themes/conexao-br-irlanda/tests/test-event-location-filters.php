@@ -81,8 +81,14 @@ function ev_test_event( $title, $county_slug, $town_slug, $category_slug ) {
 		exit( 1 );
 	}
 	$created_posts[] = (int) $post_id;
-	// Future date so the upcoming-events query includes it.
-	update_post_meta( $post_id, '_event_date', gmdate( 'Y-m-d', strtotime( '+30 days' ) ) );
+	// Future date so the upcoming-events query includes it, and deliberately
+	// the NEAREST future date (+1 day): the events archive is fed the runtime's
+	// occurrence-ordered ID list and returns only posts_per_page rows per page,
+	// so a fixture dated further out would be pushed past the first page by the
+	// site's real upcoming events and the assertions would silently depend on
+	// the database being nearly empty. +1 day pins these fixtures to the front
+	// of the ordering on a clean fixture DB and on a populated one alike.
+	update_post_meta( $post_id, '_event_date', gmdate( 'Y-m-d', strtotime( '+1 day' ) ) );
 	if ( $county_slug ) {
 		wp_set_object_terms( $post_id, array( $county_slug ), 'conexao_county', false );
 	}
@@ -99,6 +105,21 @@ function ev_test_event( $title, $county_slug, $town_slug, $category_slug ) {
  * Run the event main-query filtering exactly like the archive would: the
  * new query is swapped in as the "main query", $_GET is set, then
  * pre_get_posts runs inside WP_Query::query() - the real hook path.
+ *
+ * No argument is added and nothing about the query is narrowed: this helper
+ * always runs the production archive query verbatim, because the semantics
+ * under test (county/town/category AND-combination, invalid-slug handling,
+ * discoverability of records with no location terms) live entirely inside the
+ * real pre_get_posts hook.
+ *
+ * Determinism against a populated database comes from the FIXTURE DATE, not
+ * from a narrowed query. The events archive is fed a pre-computed ID list
+ * ordered by next occurrence (see inc/archive-query.php + the event runtime),
+ * and the first page holds only posts_per_page rows. These fixtures are
+ * therefore dated +1 day, which places them at the very front of the
+ * occurrence ordering ahead of the site's real upcoming events. The suite is
+ * thus deterministic on a clean fixture DB and on the populated,
+ * production-shaped DB alike, with zero product-code changes.
  */
 function ev_test_query( array $get_params ) {
 	$tmp_get                 = $_GET;

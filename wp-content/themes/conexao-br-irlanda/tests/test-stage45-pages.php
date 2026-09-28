@@ -55,10 +55,35 @@ foreach ( $map as $pt_slug => $spec ) {
 sort( $shared );
 assert_true( array( 'blog', 'newsletter' ) === $shared, 'the shared-slug allowlist is exactly blog + newsletter' );
 
+// The untranslated-Portuguese guard. It must be BRAND-AWARE: the manifest's
+// own contract (includes/translation-map.php, "brand names, official
+// organisation/programme names, URLs, emails and Irish proper nouns are never
+// translated") requires the brand "Conexão BR Irlanda" to survive verbatim in
+// every English meta description. A raw diacritic scan therefore flags the
+// brand's own "ç"/"ã" as untranslated Portuguese and fails 11 of the 37 pages
+// against correct, authored data.
+//
+// The check is scoped to the text that is actually prose: the approved
+// non-translatable names are removed first, THEN any remaining Portuguese
+// diacritic is a genuine translation failure. It stays fail-closed — the
+// assertion is not weakened, it is made correct.
+$approved_names = array(
+	'Conexão BR Irlanda',
+	'Conexao BR Irlanda',
+);
 foreach ( $map as $pt_slug => $spec ) {
+	// Authored English must be present and the approved EN slug shape held.
 	assert_true( ! preg_match( '/-en$/', $spec['en_slug'] ), "EN slug '{$spec['en_slug']}' has no -en suffix" );
 	assert_true( ! empty( $spec['title'] ) && ! empty( $spec['meta_desc'] ), "{$pt_slug}: EN title and meta description are authored" );
-	assert_true( false === strpos( $spec['meta_desc'], 'ã' ) && false === strpos( $spec['meta_desc'], 'ç' ), "{$pt_slug}: meta description contains no untranslated Portuguese" );
+
+	$prose = (string) $spec['meta_desc'];
+	foreach ( $approved_names as $name ) {
+		$prose = str_ireplace( $name, ' ', $prose );
+	}
+	assert_true(
+		false === strpos( $prose, 'ã' ) && false === strpos( $prose, 'ç' ),
+		"{$pt_slug}: meta description contains no untranslated Portuguese (brand names excluded by contract)"
+	);
 }
 
 // Every PT source must exist as a published page.

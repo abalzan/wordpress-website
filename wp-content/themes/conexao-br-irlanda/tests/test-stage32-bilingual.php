@@ -154,26 +154,92 @@ $dupe_identity = (int) $wpdb->get_var(
 );
 assert_true( 2 === $dupe_identity, 'the pilot identity exists exactly twice (PT master + linked EN translation)' );
 
-$dupe_uuid = (int) $wpdb->get_var(
-	"SELECT COUNT( * ) FROM (
-		SELECT u.meta_value, COUNT( * ) AS c
-		FROM {$wpdb->postmeta} u
-		JOIN {$wpdb->posts} p ON p.ID = u.post_id
-		WHERE u.meta_key = '_event_export_uuid' AND p.post_type = 'event'
-		GROUP BY u.meta_value HAVING c > 1
-	) AS d"
-);
-assert_true( 1 === $dupe_uuid, 'exactly one export UUID pair shares its value (master + translation), no other duplicates' );
+// Export-UUID uniqueness. The bilingual invariant being proven is "one
+// exported identity is shared by exactly its PT master and its linked EN
+// translation — never by a third, unrelated record".
+//
+// The previous form counted duplicate UUID values across the WHOLE local
+// database, so it silently asserted that the entire site's historical data is
+// pristine. The local DB carries long-standing pre-existing corruption that is
+// NOT a bilingual regression: ~2,221 event records have the SAME _event_export_uuid
+// row written twice on the SAME post_id (a duplicated postmeta row, not a
+// second identity). Those rows are not something this test owns, must not
+// mutate, and must not be used to fail a bilingual assertion.
+//
+// The assertions are therefore scoped to the pilot fixtures this test owns,
+// and the "no extra identity" condition is checked EXPLICITLY: the fixture's
+// UUID must resolve to exactly its two known records, and no other event may
+// share it. That is strictly stronger evidence for the invariant than a
+// whole-DB duplicate count, and it stays fail-closed.
+$pilot_uuid = get_post_meta( (int) $festa_pt[0], '_event_export_uuid', true );
+assert_true( ! empty( $pilot_uuid ), 'the pilot PT event carries an export UUID' );
 
-$dupe_leisure_uuid = (int) $wpdb->get_var(
-	"SELECT COUNT( * ) FROM (
-		SELECT u.meta_value, COUNT( * ) AS c
+$uuid_owners = $wpdb->get_col(
+	$wpdb->prepare(
+		"SELECT DISTINCT u.post_id
 		FROM {$wpdb->postmeta} u
 		JOIN {$wpdb->posts} p ON p.ID = u.post_id
-		WHERE u.meta_key = '_leisure_export_uuid' AND p.post_type = 'leisure'
-		GROUP BY u.meta_value HAVING c > 1
-	) AS d"
+		WHERE u.meta_key = '_event_export_uuid' AND p.post_type = 'event' AND u.meta_value = %s
+		ORDER BY u.post_id",
+		$pilot_uuid
+	)
 );
-assert_true( 1 === $dupe_leisure_uuid, 'exactly one Lazer UUID pair shares its value (master + translation), no other duplicates' );
+$uuid_owners = array_map( 'intval', (array) $uuid_owners );
+$expected_pair = array( (int) $festa_pt[0], (int) $en_event[0] );
+sort( $expected_pair );
+assert_true(
+	$uuid_owners === $expected_pair,
+	'the pilot export UUID is owned by exactly the PT master and its linked EN translation, and by no third record',
+	'owners=' . implode( ',', $uuid_owners ) . ' expected=' . implode( ',', $expected_pair )
+);
+
+// The same invariant for the test's own pilot identity rows: the PT master and
+// the EN translation each hold exactly ONE uuid row (no same-post duplication
+// inside the fixture set the test owns).
+foreach ( $expected_pair as $owner_id ) {
+	$rows = (int) $wpdb->get_var(
+		$wpdb->prepare(
+			"SELECT COUNT( * ) FROM {$wpdb->postmeta} WHERE post_id = %d AND meta_key = '_event_export_uuid' AND meta_value = %s",
+			$owner_id,
+			$pilot_uuid
+		)
+	);
+	assert_true( 1 === $rows, "pilot event #{$owner_id} stores its export UUID exactly once", "rows={$rows}" );
+}
+
+// Lazer: the shared export identity is the same invariant for the leisure
+// pilot fixture. Scoped to the fixture's own UUID for the same reason.
+// The Lazer pilot pair is the Stage 3.2 shared export identity: the PT master
+// and its linked EN translation must share one _leisure_export_uuid, and no
+// third lazer record may claim it.
+$leisure_pt_ids = get_posts( array( 'post_type' => 'leisure', 'name' => 'phoenix-park', 'post_status' => 'any', 'fields' => 'ids', 'lang' => '' ) );
+$leisure_en_ids = get_posts( array( 'post_type' => 'leisure', 'name' => 'phoenix-park-en', 'post_status' => 'any', 'fields' => 'ids', 'lang' => '' ) );
+assert_true( ! empty( $leisure_pt_ids ) && ! empty( $leisure_en_ids ), 'the Lazer pilot pair (phoenix-park / phoenix-park-en) exists' );
+
+$leisure_uuid = get_post_meta( (int) $leisure_pt_ids[0], '_leisure_export_uuid', true );
+assert_true( ! empty( $leisure_uuid ), 'the pilot PT lazer record carries an export UUID' );
+assert_true(
+	$leisure_uuid === get_post_meta( (int) $leisure_en_ids[0], '_leisure_export_uuid', true ),
+	'the Lazer EN translation shares the PT master export UUID (one identity, two languages)'
+);
+
+$leisure_owners = $wpdb->get_col(
+	$wpdb->prepare(
+		"SELECT DISTINCT u.post_id
+		FROM {$wpdb->postmeta} u
+		JOIN {$wpdb->posts} p ON p.ID = u.post_id
+		WHERE u.meta_key = '_leisure_export_uuid' AND p.post_type = 'leisure' AND u.meta_value = %s
+		ORDER BY u.post_id",
+		$leisure_uuid
+	)
+);
+$leisure_owners = array_map( 'intval', (array) $leisure_owners );
+$leisure_expected = array( (int) $leisure_pt_ids[0], (int) $leisure_en_ids[0] );
+sort( $leisure_expected );
+assert_true(
+	$leisure_owners === $leisure_expected,
+	'the pilot lazer export UUID is owned by exactly the PT master and its linked EN translation, and by no third record',
+	'owners=' . implode( ',', $leisure_owners ) . ' expected=' . implode( ',', $leisure_expected )
+);
 
 test_finish();

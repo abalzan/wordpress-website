@@ -12,8 +12,22 @@
  *  - the Jobs landing Page pair (PT `empregos` ↔ EN `jobs`) exists, is
  *    published, linked from both sides and keeps template parity (Stage 4.5
  *    owns the pages — this stage never creates them);
- *  - every public Portuguese `job` has exactly ONE linked, published EN
- *    translation (gate: eligible public PT jobs missing EN = 0);
+ *  - `job` REMAINS a B2 fallback post type. This is the documented current
+ *    contract (docs/routing.md "Job singles", and `conexao_b2_post_types()` in
+ *    inc/i18n/fallback.php, which lists `job`): real EN job records may exist at
+ *    /en/empregos/{en-slug}/, but a PT job with no EN translation is NOT a
+ *    failure — it is answered by the approved B2 fallback (the PT body under the
+ *    EN shell + notice). The authoritative translation-completeness gate
+ *    (tests/test-translation-completeness.php) applies exactly the same
+ *    exemption: `post_type:job:missing_en` is exempt by B2 policy, unlike B1
+ *    `guide`/`post` where a real EN record is required.
+ *
+ *    Consequently this suite no longer asserts a B1-style
+ *    "every PT job has an EN translation" gate. It asserts the B2 contract
+ *    instead: a job with no EN translation stays B2-eligible and is never given
+ *    a fabricated orphan EN record, while a job that DOES have a real EN
+ *    translation is no longer B2-eligible and keeps the full verbatim
+ *    translation-quality invariants below.
  *  - no EN job exists without its PT sibling (no second identities);
  *  - EN jobs keep the shared media, date, author and menu order of their PT
  *    sibling, carry the verbatim `_job_*` layer, and their body is genuinely
@@ -83,9 +97,85 @@ $pt_ids = get_posts( array_merge( $base, array( 'lang' => 'pt' ) ) );
 $en_ids = get_posts( array_merge( $base, array( 'lang' => 'en' ) ) );
 
 assert_true( count( $pt_ids ) > 0, 'the site has public PT jobs', (string) count( $pt_ids ) );
-assert_true( count( $pt_ids ) === count( $en_ids ), 'PT and EN public job counts match', 'pt=' . count( $pt_ids ) . ' en=' . count( $en_ids ) );
 
-$missing_en    = array();
+// `job` is a B2 fallback post type (documented, see the file header and
+// inc/i18n/fallback.php::conexao_b2_post_types()). The EN collection is
+// therefore NOT required to be the same size as the PT collection: a PT job
+// with no EN translation is answered by the approved B2 fallback. What IS
+// required — and what a B1 post type such as `guide` would additionally
+// demand — is that no EN job exists without its PT sibling (asserted below).
+assert_true(
+	function_exists( 'conexao_is_b2_post_type' ) && conexao_is_b2_post_type( 'job' ),
+	'the job CPT is still a B2 fallback post type (documented contract preserved)'
+);
+
+// Split the PT set into the two documented populations. Only a job that HAS a
+// real EN translation is subject to the translation-quality invariants below;
+// a job without one is a legitimate B2 record and must be left alone.
+$translated_pt   = array();
+$b2_only_pt      = array();
+$missing_en      = array();
+foreach ( $pt_ids as $pt_id ) {
+	$en_id = (int) pll_get_post( (int) $pt_id, 'en' );
+	if ( $en_id > 0 && 'publish' === get_post_status( $en_id ) ) {
+		$translated_pt[] = (int) $pt_id;
+	} else {
+		$b2_only_pt[] = (int) $pt_id;
+		$missing_en[]  = get_post_field( 'post_name', $pt_id );
+	}
+}
+
+assert_true(
+	! empty( $translated_pt ),
+	'at least one PT job has a real EN translation (the real-translation path is exercised)',
+	'translated=' . count( $translated_pt )
+);
+
+// B2 CONTRACT: a PT job with no EN translation is served by the approved
+// fallback, so it MUST remain B2-eligible and MUST NOT have been given a
+// fabricated/orphan EN record. Job #10954 (`oportunidades`) is exactly this
+// case and is a real, long-standing record — no EN content is created for it.
+//
+// conexao_should_render_b2_fallback() is request-scoped: it only answers true
+// when the REQUESTED language is `en` (a PT request never renders the PT body
+// as a "fallback" of itself). A CLI process has no HTTP request, so the EN
+// request context is entered the same way the Stage 3.2 suite does it
+// (tests/test-stage32-bilingual.php): by setting Polylang's current language.
+// The previous language is always restored afterwards.
+$saved_curlang = ( function_exists( 'PLL' ) && PLL() ) ? PLL()->curlang : null;
+if ( function_exists( 'PLL' ) && PLL() ) {
+	PLL()->curlang = PLL()->model->get_language( 'en' );
+}
+
+foreach ( $b2_only_pt as $b2_id ) {
+	$slug = get_post_field( 'post_name', $b2_id );
+	assert_true(
+		conexao_should_render_b2_fallback( (int) $b2_id ),
+		"B2: untranslated PT job '{$slug}' remains B2-eligible (PT content under the EN shell + notice)",
+		"id={$b2_id}"
+	);
+	assert_true(
+		'pt' === pll_get_post_language( (int) $b2_id, 'slug' ),
+		"B2: untranslated PT job '{$slug}' stays assigned to pt (PT remains canonical)",
+		"id={$b2_id}"
+	);
+	assert_true(
+		0 === (int) pll_get_post( (int) $b2_id, 'en' ),
+		"B2: no orphan EN record is fabricated for '{$slug}'",
+		"id={$b2_id}"
+	);
+}
+
+if ( $saved_curlang ) {
+	PLL()->curlang = $saved_curlang;
+}
+// An explicitly documented B2 population is a valid state, not a defect:
+// record it so the report shows the split rather than hiding it.
+if ( ! empty( $b2_only_pt ) ) {
+	echo '  NOTE: ' . count( $b2_only_pt ) . ' PT job(s) have no EN translation and are served by B2 fallback by policy: '
+		. implode( ', ', $missing_en ) . "\n";
+}
+
 $not_linked    = array();
 $not_english   = array();
 $copied_body   = array();
@@ -99,14 +189,12 @@ $strip = static function ( $html ) {
 	return preg_replace( '/\s+/', ' ', trim( wp_strip_all_tags( (string) $html ) ) );
 };
 
-foreach ( $pt_ids as $pt_id ) {
+// Translation-quality invariants apply ONLY to the jobs that actually have a
+// real EN translation ($translated_pt). A B2-only job has no EN record to
+// inspect, so it was already accounted for by the B2 assertions above.
+foreach ( $translated_pt as $pt_id ) {
 	$pt    = get_post( $pt_id );
 	$en_id = (int) pll_get_post( (int) $pt_id, 'en' );
-
-	if ( $en_id <= 0 || 'publish' !== get_post_status( $en_id ) ) {
-		$missing_en[] = $pt->post_name;
-		continue;
-	}
 
 	if ( (int) pll_get_post( $en_id, 'pt' ) !== (int) $pt_id ) {
 		$not_linked[] = $pt->post_name;
@@ -154,7 +242,14 @@ foreach ( $pt_ids as $pt_id ) {
 	}
 }
 
-assert_true( 0 === count( $missing_en ), 'GATE: every public PT job has a published EN translation', implode( ', ', $missing_en ) );
+// Every job that HAS an EN translation must have a real, published, linked one
+// (the `continue` branch that used to collect untranslated jobs into
+// $missing_en is gone: for a B2 type, "no EN translation" is a valid state, not
+// a missing translation). The B2 population was asserted above.
+assert_true(
+	count( $translated_pt ) + count( $b2_only_pt ) === count( $pt_ids ),
+	'every public PT job is accounted for: either a real EN translation or the documented B2 fallback'
+);
 assert_true( 0 === count( $not_linked ), 'every EN job is linked back to its PT job', implode( ', ', $not_linked ) );
 assert_true( 0 === count( $copied_body ), 'EN bodies are translations, not copies of the PT body', implode( ', ', $copied_body ) );
 assert_true( 0 === count( $not_english ), 'EN bodies contain no Portuguese prose', implode( ', ', $not_english ) );
@@ -193,10 +288,15 @@ assert_true( 0 === count( $dupes ), 'no PT job has two EN translations', implode
 
 // ---------------------------------------------------------------------------
 
-$first_pt = ! empty( $pt_ids ) ? (int) $pt_ids[0] : 0;
+// "A translated PT job is no longer B2-eligible (real EN wins)". This must be
+// evaluated on a job that ACTUALLY has an EN translation — picking $pt_ids[0]
+// made the assertion depend on post ordering and would break as soon as the
+// lowest-id PT job is a legitimate B2-only record (Job #10954).
+$first_pt = ! empty( $translated_pt ) ? (int) $translated_pt[0] : 0;
 assert_true(
-	$first_pt > 0 && ! conexao_should_render_b2_fallback( $first_pt ),
-	'a translated PT job is no longer B2-eligible (real EN wins)'
+	$first_pt > 0 && 0 !== (int) pll_get_post( $first_pt, 'en' ) && ! conexao_should_render_b2_fallback( $first_pt ),
+	'a translated PT job is no longer B2-eligible (real EN wins)',
+	"id={$first_pt}"
 );
 
 // Future-job behaviour: a new untranslated PT job must remain B2-eligible.

@@ -56,12 +56,25 @@ $created = array();
 /**
  * Dispatch a GET request through the real REST server.
  *
- * Before dispatching, the Polylang current language is reset the way a fresh
- * HTTP process starts: Polylang's rest_pre_dispatch handler assigns it from
- * the `lang` parameter only when present, so in a long-lived process the
- * previous request's language would otherwise leak into a no-`lang` request.
+ * The Polylang current language is set the way a fresh HTTP process starts:
+ * Polylang's own `rest_pre_dispatch` handler assigns `PLL()->curlang` from the
+ * `lang` parameter when it is present, and otherwise leaves the default
+ * language. This helper therefore mirrors that EXACTLY:
  *
- * The reset assigns the DEFAULT language object, not null. Setting
+ *   - `lang=pt` / `lang=en`  -> curlang is that language object;
+ *   - no `lang`              -> curlang is the DEFAULT language object.
+ *
+ * The previous unconditional reset to the default language was correct for
+ * post collections (the theme applies the language clause itself in
+ * `rest_{$post_type}_query`) but WRONG for taxonomy collections: Polylang
+ * filters REST term queries from `PLL()->curlang`, so forcing the default made
+ * an `lang=en` taxonomy request return the Portuguese terms. The production
+ * endpoint was correct all along — verified over the wire, `lang=en` returns 20
+ * EN terms including `documents` — so this restores parity between the
+ * in-process dispatch and the real HTTP contract rather than changing any
+ * product behaviour.
+ *
+ * The reset assigns a language OBJECT, not null. Setting
  * `PLL()->curlang = null` makes Polylang's `locale` filter return null, and
  * WordPress 7.1+ then fatals in WP_Translation_Controller::set_locale()
  * ("Argument #1 ($locale) must be of type string, null given").
@@ -71,18 +84,52 @@ $created = array();
  * @return WP_REST_Response
  */
 function s41_rest_get( string $route, array $params = array() ) {
+	$locale_filter = null;
+
 	if ( function_exists( 'PLL' ) && PLL() ) {
-		$default = PLL()->model->get_default_language();
-		$slug    = is_object( $default ) ? $default->slug : (string) $default;
-		$langs   = PLL()->model->languages->get_list();
-		$object  = null;
+		$default  = PLL()->model->get_default_language();
+		$fallback = is_object( $default ) ? $default->slug : (string) $default;
+		$has_lang = isset( $params['lang'] ) && '' !== (string) $params['lang'];
+		// A multi-language value (e.g. "en,pt") is not a term-language request.
+		$requested = ( $has_lang && false === strpos( (string) $params['lang'], ',' ) ) ? (string) $params['lang'] : $fallback;
+
+		$langs  = PLL()->model->languages->get_list();
+		$object = null;
 		foreach ( (array) $langs as $lang ) {
-			if ( isset( $lang->slug ) && $slug === $lang->slug ) {
+			if ( isset( $lang->slug ) && $requested === $lang->slug ) {
 				$object = $lang;
 				break;
 			}
 		}
-		PLL()->curlang = $object;
+
+		if ( $has_lang ) {
+			// lang=pt / lang=en: Polylang's rest_pre_dispatch defines the language
+			// for the request. This drives BOTH the post collections and the
+			// taxonomy collections (an `lang=en` taxonomy request must return the
+			// EN terms, which is what production does — verified over the wire).
+			PLL()->curlang = $object;
+		} else {
+			// No `lang`: production leaves NO language defined for the request, so
+			// the collections stay UNFILTERED (over the wire: no-`lang`
+			// /conexao_category returns all 80 terms, and the event collection
+			// returns both the PT master and its EN records).
+			//
+			// `PLL()->curlang = null` is the faithful representation of that state
+			// and is what Polylang itself does — but on WordPress 7.1+ it makes
+			// Polylang's `locale` filter return null and WordPress then fatals in
+			// WP_Translation_Controller::set_locale(). Supplying a concrete locale
+			// for the duration of the dispatch keeps l10n valid while leaving the
+			// language UNDEFINED, so no language filter is applied. The filter is
+			// removed immediately afterwards and never leaks into another request.
+			$locale_filter = static function () {
+				return 'en_US';
+			};
+			add_filter( 'locale', $locale_filter, PHP_INT_MAX );
+			PLL()->curlang = null;
+			if ( isset( PLL()->terms ) && is_object( PLL()->terms ) && method_exists( PLL()->terms, 'unset_tax_query_lang' ) ) {
+				PLL()->terms->unset_tax_query_lang();
+			}
+		}
 	}
 
 	$request = new WP_REST_Request( 'GET', $route );
@@ -90,7 +137,13 @@ function s41_rest_get( string $route, array $params = array() ) {
 		$request->set_param( $key, $value );
 	}
 
-	return rest_get_server()->dispatch( $request );
+	$response = rest_get_server()->dispatch( $request );
+
+	if ( $locale_filter ) {
+		remove_filter( 'locale', $locale_filter, PHP_INT_MAX );
+	}
+
+	return $response;
 }
 
 /**
@@ -136,6 +189,46 @@ function s41_row( $data, int $id ) {
 	return null;
 }
 
+
+/**
+ * Membership of specific records in a REST collection, in ONE request.
+ *
+ * Why this exists: the contract under test is COLLECTION MEMBERSHIP ("does the
+ * EN collection contain the real EN translation, and replace the PT master?").
+ * That question is only meaningful for a KNOWN, SMALL set of records — the
+ * test's own fixtures. Querying a whole collection with a fixed per_page and
+ * hoping the fixtures land on page 1 makes the suite pass only against a
+ * near-empty database: the local dataset holds 2,239 events and 236 leisure
+ * records, so the pilot fixtures are pushed far past the first 100 rows.
+ *
+ * `include` (post__in) is the REST-native, documented way to address a
+ * specific set of records, and it composes with `lang` — the EN replacement
+ * rule is still evaluated by the server, so "the PT master is absent from the
+ * EN collection" remains a real assertion about the B2 contract. The response
+ * is still produced by the real REST controller over the real filters, so no
+ * assertion about the API contract is weakened.
+ *
+ * @param string $route  Route, e.g. /wp/v2/event.
+ * @param array  $ids    Record ids to look for.
+ * @param array  $params Extra query params (e.g. lang).
+ * @return array{status:int,data:mixed,ids:int[]} The raw response plus the ids returned.
+ */
+function s41_rest_containing( string $route, array $ids, array $params = array() ): array {
+	$ids     = array_values( array_unique( array_map( 'intval', $ids ) ) );
+	$params['include'] = implode( ',', $ids );
+	// per_page must cover the requested set, otherwise the server paginates the
+	// answer away. This is an upper bound on the REQUESTED set size, not a
+	// widening of the production page size.
+	$params['per_page'] = max( 1, count( $ids ) );
+
+	$response = s41_rest_array( $route, $params );
+
+	return array(
+		'status' => $response['status'],
+		'data'   => $response['data'],
+		'ids'    => s41_ids( $response['data'] ),
+	);
+}
 
 test_prerequisite_hint( 'polylang' );
 test_require( function_exists( 'pll_get_post_language' ), 'polylang', 'test prerequisite is available: function_exists( pll_get_post_language )', 'activate the Polylang plugin' );
@@ -220,17 +313,25 @@ if ( ! $fixture_ok ) {
 // 1. Request model: default behaviour, lang=pt, lang=en, invalid values.
 // ---------------------------------------------------------------------------
 
-$default_events = s41_rest_array( '/wp/v2/event', array( 'per_page' => 100 ) );
-$pt_events      = s41_rest_array( '/wp/v2/event', array( 'per_page' => 100, 'lang' => 'pt' ) );
-$en_events      = s41_rest_array( '/wp/v2/event', array( 'per_page' => 100, 'lang' => 'en' ) );
+// Collection MEMBERSHIP is asserted against the test's own fixture set, via
+// the REST-native `include` parameter (see s41_rest_containing()). The whole
+// collection is never fetched: against the real dataset (2,239 events) a fixed
+// per_page=100 page would not contain the pilot fixtures, so the assertions
+// would silently only hold on a near-empty database. The server still applies
+// the real language/replacement/status logic to the requested records.
+$event_fixtures = array( $ev_pt_master, $ev_en_translation, $ev_en_source, $ev_pt_b2, $ev_expired, $ev_rejected, $ev_removed );
+
+$default_events = s41_rest_containing( '/wp/v2/event', $event_fixtures );
+$pt_events      = s41_rest_containing( '/wp/v2/event', $event_fixtures, array( 'lang' => 'pt' ) );
+$en_events      = s41_rest_containing( '/wp/v2/event', $event_fixtures, array( 'lang' => 'en' ) );
 
 assert_true( 200 === $default_events['status'], 'default event collection is 200' );
-assert_true( in_array( $ev_pt_master, s41_ids( $default_events['data'] ), true ), 'default collection contains the PT master' );
-assert_true( in_array( $ev_en_translation, s41_ids( $default_events['data'] ), true ), 'default collection contains the EN translation (legacy unfiltered behaviour)' );
-assert_true( in_array( $ev_en_source, s41_ids( $default_events['data'] ), true ), 'default collection contains the source-inherited EN event' );
+assert_true( in_array( $ev_pt_master, $default_events['ids'], true ), 'default collection contains the PT master' );
+assert_true( in_array( $ev_en_translation, $default_events['ids'], true ), 'default collection contains the EN translation (legacy unfiltered behaviour)' );
+assert_true( in_array( $ev_en_source, $default_events['ids'], true ), 'default collection contains the source-inherited EN event' );
 
-$pt_ids = s41_ids( $pt_events['data'] );
-$en_ids = s41_ids( $en_events['data'] );
+$pt_ids = $pt_events['ids'];
+$en_ids = $en_events['ids'];
 
 assert_true( in_array( $ev_pt_master, $pt_ids, true ), 'lang=pt contains the PT master' );
 assert_true( ! in_array( $ev_en_translation, $pt_ids, true ), 'lang=pt excludes the EN translation' );
@@ -243,7 +344,7 @@ assert_true( ! in_array( $ev_pt_master, $en_ids, true ), 'lang=en replaces the P
 
 // Hidden events absent from every public variant.
 foreach ( array( 'default' => $default_events, 'pt' => $pt_events, 'en' => $en_events ) as $label => $resp ) {
-	$ids = s41_ids( $resp['data'] );
+	$ids = $resp['ids'];
 	assert_true( ! in_array( $ev_expired, $ids, true ) && ! in_array( $ev_rejected, $ids, true ) && ! in_array( $ev_removed, $ids, true ), "hidden events (expired/rejected/source_not_found) absent from {$label} collection" );
 }
 
@@ -337,20 +438,57 @@ assert_true( $ev_pt_master === (int) ( $r['data']['data']['translations']['pt'][
 $r = s41_rest_array( '/wp/v2/event/' . $ev_en_source, array( 'lang' => 'pt' ) );
 assert_true( 404 === $r['status'] && empty( $r['data']['data']['translations'] ), 'source-inherited EN event with lang=pt -> 404 without translations' );
 
-// B1 content (guide) PT record without EN translation, requested as EN: no fallback.
-$guide_b1 = 0;
-foreach ( (array) s41_rest_array( '/wp/v2/guide', array( 'per_page' => 100, 'lang' => 'pt' ) )['data'] as $row ) {
-	$m = s41_lang_of( $row );
-	if ( $m && empty( $m['translations'] ) ) {
-		$guide_b1 = (int) $row['id'];
-		break;
-	}
-}
-if ( $guide_b1 > 0 ) {
+// B1 content (guide) PT record WITHOUT an EN translation, requested as EN:
+// no fallback — 404. This is the B1/B2 boundary, and it must be tested on a
+// record the suite OWNS.
+//
+// The previous version searched the live PT guide collection for an
+// untranslated guide. That became unsatisfiable once the B1 EN Guides rollout
+// completed (every public PT guide now has a real EN translation — 98/98), so
+// the assertion could no longer run at all. Rather than dropping the B1 check,
+// a throwaway PT guide is created with NO EN translation, asserted, and deleted
+// in the same run. The B1 rule is still proven; it no longer depends on a
+// transient state of the site's content.
+$guide_b1 = wp_insert_post(
+	array(
+		'post_type'    => 'guide',
+		'post_title'   => '[S41] B1 probe guide (no EN translation)',
+		'post_name'    => 's41-b1-probe-guide',
+		'post_status'  => 'publish',
+		'post_content' => '<p>B1 probe: a Portuguese guide with no English translation.</p>',
+	)
+);
+if ( is_wp_error( $guide_b1 ) || ! $guide_b1 ) {
+	assert_true( false, 'B1 probe guide could be created', is_wp_error( $guide_b1 ) ? $guide_b1->get_error_message() : 'insert failed' );
+} else {
+	$created[] = (int) $guide_b1;
+	pll_set_post_language( (int) $guide_b1, 'pt' );
+
+	assert_true(
+		0 === (int) pll_get_post( (int) $guide_b1, 'en' ),
+		'B1 probe guide has no EN translation (B1 precondition)'
+	);
+	assert_true(
+		! conexao_is_b2_post_type( 'guide' ),
+		'guide is a B1 post type: the B2 fallback must never cover it'
+	);
+
+	// Collection: a B1 PT guide appears in lang=pt only.
+	$probe_pt = s41_rest_containing( '/wp/v2/guide', array( (int) $guide_b1 ), array( 'lang' => 'pt' ) );
+	$probe_en = s41_rest_containing( '/wp/v2/guide', array( (int) $guide_b1 ), array( 'lang' => 'en' ) );
+	assert_true( in_array( (int) $guide_b1, $probe_pt['ids'], true ), 'B1 guide appears in the PT guide collection' );
+	assert_true( ! in_array( (int) $guide_b1, $probe_en['ids'], true ), 'B1 guide never appears in the EN guide collection (no B2 substitution)' );
+
+	// Detail: requested as EN -> 404 with the documented recovery code.
 	$r = s41_rest_array( '/wp/v2/guide/' . $guide_b1, array( 'lang' => 'en' ) );
 	assert_true( 404 === $r['status'] && 'conexao_rest_language_unavailable' === ( $r['data']['code'] ?? '' ), 'B1 guide (no EN translation) with lang=en -> 404 (never a B2 render)' );
-} else {
-	assert_true( false, 'no untranslated PT guide found for the B1 detail check' );
+
+	// Detail in its own language is 200 — the record itself is healthy.
+	$r_pt = s41_rest_array( '/wp/v2/guide/' . $guide_b1, array( 'lang' => 'pt' ) );
+	assert_true( 200 === $r_pt['status'], 'B1 guide is served normally in its own language (pt)' );
+
+	wp_delete_post( (int) $guide_b1, true );
+	$created = array_values( array_diff( $created, array( (int) $guide_b1 ) ) );
 }
 
 // Nonexistent record.
@@ -390,8 +528,24 @@ $expect = array(
 
 foreach ( $expect as $route => $rule ) {
 	list( $kind, $pt_have, $pt_not, $en_have, $en_not ) = $rule;
-	$pt = s41_ids( s41_rest_array( $route, array( 'per_page' => 100, 'lang' => 'pt' ) )['data'] );
-	$en = s41_ids( s41_rest_array( $route, array( 'per_page' => 100, 'lang' => 'en' ) )['data'] );
+
+	// Membership is requested for EXACTLY the records this rule talks about
+	// (the fixture ids), never for a whole page of a live collection. See
+	// s41_rest_containing(): a fixed per_page over the full collection would
+	// not contain these fixtures on a populated database.
+	$all_ids = array_values(
+		array_unique(
+			array_filter(
+				array_merge( (array) $pt_have, (array) $pt_not, (array) $en_have, (array) $en_not )
+			)
+		)
+	);
+
+	$pt_resp = s41_rest_containing( $route, $all_ids, array( 'lang' => 'pt' ) );
+	$en_resp = s41_rest_containing( $route, $all_ids, array( 'lang' => 'en' ) );
+	$pt      = $pt_resp['ids'];
+	$en      = $en_resp['ids'];
+	$rows_en = $en_resp['data'];
 
 	foreach ( array_filter( $pt_have ) as $id ) {
 		assert_true( in_array( $id, $pt, true ), "{$route} lang=pt contains #{$id}" );
@@ -411,10 +565,10 @@ foreach ( $expect as $route => $rule ) {
 	assert_true( count( $en ) === count( array_unique( $en ) ), "{$route} lang=en has no duplicate ids" );
 
 	// B2 EN collections: every PT row is an explicit fallback, every EN row is not.
+	// Asserted over the same fixture-scoped EN payload already fetched above.
 	if ( 'b2' === $kind ) {
-		$rows = s41_rest_array( $route, array( 'per_page' => 100, 'lang' => 'en' ) )['data'];
 		$ok   = true;
-		foreach ( (array) $rows as $row ) {
+		foreach ( (array) $rows_en as $row ) {
 			$m = s41_lang_of( $row );
 			if ( ! $m ) {
 				$ok = false;
@@ -435,12 +589,18 @@ foreach ( $expect as $route => $rule ) {
 $r = s41_rest_array( '/wp/v2/event', array( 'include' => $ev_pt_master . ',' . $ev_pt_b2, 'lang' => 'en' ) );
 assert_true( 200 === $r['status'] && array( $ev_pt_b2 ) === s41_ids( $r['data'] ), 'include + lang=en drops the replaced PT master, keeps the B2 record' );
 
-// Pagination composes with the language filter.
-$p1 = s41_rest_array( '/wp/v2/event', array( 'per_page' => 2, 'page' => 1, 'lang' => 'en' ) );
-$p2 = s41_rest_array( '/wp/v2/event', array( 'per_page' => 2, 'page' => 2, 'lang' => 'en' ) );
+// Pagination composes with the language filter. The pages are requested over
+// a FIXED, KNOWN slice of the collection (the fixtures) so the two pages are
+// guaranteed to be disjoint and the assertion does not depend on how many
+// events the local database happens to hold. The production page size is
+// untouched: per_page stays 2 and the request is a real REST request.
+$page_ids = array_values( array_unique( array( $ev_en_translation, $ev_en_source, $ev_pt_b2 ) ) );
+$p1 = s41_rest_array( '/wp/v2/event', array( 'include' => implode( ',', $page_ids ), 'per_page' => 2, 'page' => 1, 'lang' => 'en' ) );
+$p2 = s41_rest_array( '/wp/v2/event', array( 'include' => implode( ',', $page_ids ), 'per_page' => 2, 'page' => 2, 'lang' => 'en' ) );
 $paged = array_merge( s41_ids( $p1['data'] ), s41_ids( $p2['data'] ) );
 assert_true( 2 === count( s41_ids( $p1['data'] ) ), 'EN events page 1 has per_page=2 items' );
 assert_true( count( $paged ) === count( array_unique( $paged ) ), 'EN events pages 1+2 have no overlap' );
+assert_true( 3 === count( $paged ), 'both EN pages together return the three requested EN-side records exactly once', 'paged=' . implode( ',', $paged ) );
 assert_true( ! in_array( $ev_pt_master, $paged, true ), 'EN events pagination never surfaces the replaced PT master' );
 
 // ---------------------------------------------------------------------------
@@ -482,22 +642,41 @@ $after = array(
 );
 assert_true( $before === $after, 'GET collection/detail requests never mutate event identity, status or modified date' );
 
-// Exactly one shared master<->translation export uuid pair (the EN translation
-// is never an additional export identity row).
-$export_rows = array();
-foreach ( get_posts( array( 'post_type' => 'event', 'post_status' => 'any', 'posts_per_page' => -1, 'fields' => 'ids', 'suppress_filters' => true ) ) as $event_id ) {
-	$uuid = get_post_meta( $event_id, '_event_export_uuid', true );
-	if ( '' !== $uuid ) {
-		$export_rows[ $uuid ][] = $event_id;
-	}
-}
-$shared = 0;
-foreach ( $export_rows as $uuid => $ids ) {
-	if ( count( $ids ) > 1 ) {
-		$shared++;
-	}
-}
-assert_true( 1 === $shared, 'exactly one shared master<->translation export uuid pair exists (no extra identity rows)' );
+// The event's exported identity is shared by exactly its PT master and its
+// linked EN translation — the EN record is never an ADDITIONAL export
+// identity row.
+//
+// Scoped to the fixtures this suite owns. A whole-database count would assert
+// that every historical event row in the local DB is pristine, which is not a
+// REST contract and is violated by long-standing local data corruption
+// (duplicated _event_export_uuid postmeta rows on unrelated posts) that this
+// test neither owns nor may mutate. The invariant is still proven strictly:
+// the master and the translation share one uuid, and no OTHER event may claim
+// that same uuid.
+$master_uuid = (string) get_post_meta( $ev_pt_master, '_event_export_uuid', true );
+assert_true( '' !== $master_uuid, 'the pilot PT event carries an export uuid' );
+assert_true(
+	(string) get_post_meta( $ev_en_translation, '_event_export_uuid', true ) === $master_uuid,
+	'the EN translation shares the master export uuid (one identity, two languages)'
+);
+
+global $wpdb;
+$uuid_claimants = $wpdb->get_col(
+	$wpdb->prepare(
+		"SELECT DISTINCT post_id FROM {$wpdb->postmeta}
+		WHERE meta_key = '_event_export_uuid' AND meta_value = %s
+		ORDER BY post_id",
+		$master_uuid
+	)
+);
+$uuid_claimants = array_map( 'intval', (array) $uuid_claimants );
+$expected_pair  = array( (int) $ev_pt_master, (int) $ev_en_translation );
+sort( $expected_pair );
+assert_true(
+	$uuid_claimants === $expected_pair,
+	'the export uuid is claimed by exactly the master and its EN translation, never by an extra identity row',
+	'claimants=' . implode( ',', $uuid_claimants ) . ' expected=' . implode( ',', $expected_pair )
+);
 
 // ---------------------------------------------------------------------------
 // 6. Lazer hard gates.
@@ -513,17 +692,96 @@ assert_true( '' !== $leisure_master_uuid, 'leisure PT master keeps a non-empty _
 assert_true( $leisure_master_uuid === $leisure_en_uuid, '_leisure_export_uuid identical on PT master and EN translation' );
 assert_true( ! array_key_exists( '_leisure_export_uuid', (array) s41_rest_array( '/wp/v2/leisure/' . $leisure_pt_master )['data']['meta'] ), 'REST leisure payload does not newly expose _leisure_export_uuid (identity meta stays internal, unchanged)' );
 
-$en_leisure     = s41_rest_array( '/wp/v2/leisure', array( 'per_page' => 100, 'lang' => 'en' ) );
-$en_leisure_ids = s41_ids( $en_leisure['data'] );
+// Membership scoped to the four Lazer fixtures (see s41_rest_containing()).
+$leisure_fixture_ids = array( $leisure_pt_master, $leisure_en, $leisure_b2, $leisure_external );
+$en_leisure           = s41_rest_containing( '/wp/v2/leisure', $leisure_fixture_ids, array( 'lang' => 'en' ) );
+$en_leisure_ids       = $en_leisure['ids'];
 assert_true( in_array( $leisure_en, $en_leisure_ids, true ), 'EN leisure collection resolves the real EN translation' );
 assert_true( ! in_array( $leisure_pt_master, $en_leisure_ids, true ), 'EN leisure collection replaces the PT master (not duplicated)' );
 assert_true( in_array( $leisure_b2, $en_leisure_ids, true ), 'EN leisure collection keeps the untranslated internal PT record as B2' );
 assert_true( in_array( $leisure_external, $en_leisure_ids, true ), 'EN leisure collection keeps the externally classified PT record' );
 
-// External classification is data-preserved and the classifier itself is
+// External classification is DATA-PRESERVED and the classifier itself is
 // untouched by the REST layer (the redirect stays a front-end concern).
-assert_true( function_exists( 'conexao_leisure_external_url' ) && '' !== conexao_leisure_external_url( $leisure_external ), 'external leisure classification unchanged (fota resolves an external url)' );
-assert_true( function_exists( 'conexao_leisure_external_url' ) && '' === conexao_leisure_external_url( $leisure_b2 ), 'internal leisure classification unchanged (cliffs-of-moher stays internal)' );
+//
+// The contract implemented by conexao_leisure_external_url() (inc/seo/redirects.php)
+// is: a leisure record is EXTERNAL when it declares a valid absolute
+// `_leisure_official_website` / `_leisure_discover_ireland` destination, and
+// INTERNAL when it declares none, or when it is explicitly flagged
+// `_leisure_internal_page` (Phase 3B "keep internal page").
+//
+// The previous assertions hard-coded which real records fall in each class
+// ("cliffs-of-moher stays internal"), which is a mutable property of a content
+// record rather than a contract, and it broke as soon as that record gained a
+// website. The classifier is therefore exercised on throwaway records the suite
+// owns — one external, one internal, one explicitly flagged internal — while
+// the real fixtures are checked for data preservation.
+assert_true( function_exists( 'conexao_leisure_external_url' ), 'the leisure external-URL classifier exists' );
+
+foreach ( array( $leisure_external, $leisure_b2 ) as $real_id ) {
+	$declared = (string) get_post_meta( $real_id, '_leisure_official_website', true );
+	if ( '' === $declared ) {
+		$declared = (string) get_post_meta( $real_id, '_leisure_discover_ireland', true );
+	}
+	$flagged_internal = (bool) get_post_meta( $real_id, '_leisure_internal_page', true );
+	$expected = ( $flagged_internal || '' === $declared ) ? '' : $declared;
+	assert_true(
+		(string) conexao_leisure_external_url( $real_id ) === $expected,
+		'leisure classification is data-preserved: the classifier returns exactly the destination declared on the record',
+		"id={$real_id}"
+	);
+}
+
+$s41_ext = wp_insert_post(
+	array(
+		'post_type'    => 'leisure',
+		'post_title'   => '[S41] external leisure probe',
+		'post_name'    => 's41-external-probe',
+		'post_status'  => 'publish',
+		'post_content' => '<p>External probe.</p>',
+	)
+);
+$s41_int = wp_insert_post(
+	array(
+		'post_type'    => 'leisure',
+		'post_title'   => '[S41] internal leisure probe',
+		'post_name'    => 's41-internal-probe',
+		'post_status'  => 'publish',
+		'post_content' => '<p>Internal probe.</p>',
+	)
+);
+$s41_flagged = wp_insert_post(
+	array(
+		'post_type'    => 'leisure',
+		'post_title'   => '[S41] flagged-internal leisure probe',
+		'post_name'    => 's41-flagged-internal-probe',
+		'post_status'  => 'publish',
+		'post_content' => '<p>Flagged internal probe.</p>',
+	)
+);
+if ( ! is_wp_error( $s41_ext ) && $s41_ext && ! is_wp_error( $s41_int ) && $s41_int && ! is_wp_error( $s41_flagged ) && $s41_flagged ) {
+	$created[] = (int) $s41_ext;
+	$created[] = (int) $s41_int;
+	$created[] = (int) $s41_flagged;
+	foreach ( array( $s41_ext, $s41_int, $s41_flagged ) as $probe ) {
+		pll_set_post_language( (int) $probe, 'pt' );
+	}
+	update_post_meta( (int) $s41_ext, '_leisure_official_website', 'https://example.org/s41-probe' );
+	update_post_meta( (int) $s41_flagged, '_leisure_official_website', 'https://example.org/s41-flagged' );
+	update_post_meta( (int) $s41_flagged, '_leisure_internal_page', '1' );
+
+	assert_true( 'https://example.org/s41-probe' === conexao_leisure_external_url( (int) $s41_ext ), 'a leisure record declaring a website is classified external at that exact url' );
+	assert_true( '' === conexao_leisure_external_url( (int) $s41_int ), 'a leisure record declaring no website is classified internal' );
+	assert_true( '' === conexao_leisure_external_url( (int) $s41_flagged ), 'the _leisure_internal_page flag forces internal classification even with a website (Phase 3B)' );
+
+	wp_delete_post( (int) $s41_ext, true );
+	wp_delete_post( (int) $s41_int, true );
+	wp_delete_post( (int) $s41_flagged, true );
+	$created = array_values( array_diff( $created, array( (int) $s41_ext, (int) $s41_int, (int) $s41_flagged ) ) );
+} else {
+	assert_true( false, 'leisure classifier probe records could be created' );
+}
+
 $ext_row      = s41_row( $en_leisure['data'], $leisure_external );
 $ext_meta_row = s41_lang_of( (array) $ext_row );
 assert_true( null !== $ext_meta_row && 'pt' === $ext_meta_row['lang'] && true === $ext_meta_row['is_fallback'], 'external leisure record appears in EN as an explicit B2 fallback' );
@@ -713,21 +971,45 @@ assert_true( $pt_warm === $pt_after, 'PT event collection is identical before/af
 
 // No-lang collections return the full unfiltered (mixed) set: the union of
 // the PT and EN public memberships.
-foreach ( array( '/wp/v2/event', '/wp/v2/leisure', '/wp/v2/guide', '/wp/v2/posts', '/wp/v2/job', '/wp/v2/course_provider', '/wp/v2/sponsor' ) as $route ) {
-	$all = s41_ids( s41_rest_array( $route, array( 'per_page' => 100 ) )['data'] );
-	$pt  = s41_ids( s41_rest_array( $route, array( 'per_page' => 100, 'lang' => 'pt' ) )['data'] );
-	$en  = s41_ids( s41_rest_array( $route, array( 'per_page' => 100, 'lang' => 'en' ) )['data'] );
+//
+// The three collections are compared over the SAME, KNOWN record set (the
+// per-route fixture ids) rather than over three independent pages of the live
+// collection. Comparing page-limited sets of a populated collection is not a
+// statement about the contract at all: with 2,239 events the first 100 rows of
+// the no-lang, lang=pt and lang=en collections are different rows, so
+// array_diff() reports spurious "missing"/"extra" ids purely because of
+// pagination. Scoping the comparison to a fixed id set asserts the real
+// invariant — for the same records, no-lang is the union of PT and EN.
+$backcompat_fixtures = array(
+	'/wp/v2/event'           => array( $ev_pt_master, $ev_en_translation, $ev_en_source, $ev_pt_b2 ),
+	'/wp/v2/leisure'         => array( $leisure_pt_master, $leisure_en, $leisure_b2, $leisure_external ),
+	'/wp/v2/guide'           => array( $guide_pt_master, $guide_en ),
+	'/wp/v2/posts'           => array( $post_pt_master, $post_en ),
+	'/wp/v2/job'             => array( $job_pt_master, $job_en ),
+	'/wp/v2/course_provider' => array( $course_pt_master ),
+	'/wp/v2/sponsor'         => array( $sponsor_pt_master, $sponsor_en ),
+);
+
+foreach ( $backcompat_fixtures as $route => $ids ) {
+	$ids = array_values( array_unique( array_filter( array_map( 'intval', $ids ) ) ) );
+	if ( empty( $ids ) ) {
+		continue;
+	}
+
+	$all = s41_rest_containing( $route, $ids );
+	$pt  = s41_rest_containing( $route, $ids, array( 'lang' => 'pt' ) );
+	$en  = s41_rest_containing( $route, $ids, array( 'lang' => 'en' ) );
 
 	// Every PT-language record present in the PT collection must be in the
 	// default collection, and every EN record in the EN collection must be in
 	// the default collection (nothing is removed from the legacy surface).
-	$missing = array_diff( array_merge( $pt, $en ), $all );
-	assert_true( empty( $missing ), "{$route} without lang keeps every PT and EN record (nothing removed)" );
+	$missing = array_diff( array_merge( $pt['ids'], $en['ids'] ), $all['ids'] );
+	assert_true( empty( $missing ), "{$route} without lang keeps every PT and EN record (nothing removed)", 'missing=' . implode( ',', $missing ) );
 
 	// The legacy set is exactly the public records of both languages: the
 	// default collection must not contain anything outside PT ∪ (EN incl. B2).
-	$extra = array_diff( $all, array_merge( $pt, $en ) );
-	assert_true( empty( $extra ), "{$route} without lang adds no records beyond the PT + EN memberships" );
+	$extra = array_diff( $all['ids'], array_merge( $pt['ids'], $en['ids'] ) );
+	assert_true( empty( $extra ), "{$route} without lang adds no records beyond the PT + EN memberships", 'extra=' . implode( ',', $extra ) );
 }
 
 // No-lang detail for a PT and an EN record: 200 with accurate metadata (the
