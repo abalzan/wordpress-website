@@ -130,6 +130,16 @@ are discovered by convention, so there is no second runner. They fail closed.
 See [`docs/testing.md`](docs/testing.md) §"The permanent invariant gates" for
 what each gate proves, how to read a red gate, and where `gate.json` lives.
 
+**CI.** `.github/workflows/ci.yml` is the single CI entrypoint and runs three
+**blocking** jobs on every `push` and `pull_request` (and on
+`workflow_dispatch`): **static quality**, **release integrity** and
+**integration**. The integration job is a required blocking check: it builds the
+deterministic synthetic site from the committed fixtures in an ephemeral
+Docker WordPress and runs `./scripts/run-tests.sh`. It is no longer
+`workflow_dispatch`-only and no longer waits on deterministic fixtures — that
+requirement was satisfied, not dropped (see
+[`docs/reports/2026-09-29-stage-p-ci-readiness.md`](docs/reports/2026-09-29-stage-p-ci-readiness.md)).
+
 Full command reference: [`docs/testing.md`](docs/testing.md) and
 [`scripts/README.md`](scripts/README.md).
 

@@ -270,7 +270,9 @@ so no workflow input semantics change. Upgrading to a *higher* major than this
 list is not a routine maintenance step: it requires its own change, because a
 newer major may add or alter inputs.
 
-The optional `integration` job (boot `compose.yaml`, seed, run `scripts/run-tests.sh`) MUST be added once §8's runner exists; it becomes a required check only after the suite is deterministic.
+The `integration` job (boot `compose.yaml`, seed, run `scripts/run-tests.sh`) is a **required blocking check** on `push`, `pull_request` and `workflow_dispatch`, alongside `static` and `release-integrity`.
+
+The requirement for deterministic fixtures is **not** waived — it was satisfied, not removed. The job was `workflow_dispatch`-only until the content-dependent suites could run against a committed deterministic synthetic site rather than an empty database, where they would otherwise 404 on pagination or pass *vacuously*. Promotion was earned on two consecutive fresh hosted `workflow_dispatch` runs (GitHub Actions runs 36575383129 and 36579787054, branch `i18n`) that completed with no manual intervention, and the job now blocks every push and pull request. Determinism MUST continue to come from committed fixtures: never from a committed database dump and never from weakening an assertion. The job retains ordinary CI failure semantics, so infrastructure failures fail it like any other CI failure.
 
 ### 1.8 `plugins.json` — the plugin registry (MUST)
 

@@ -53,7 +53,9 @@ suites.
 The GitHub Actions `integration` job needs a site with real content. Before
 Stage P it had none, which is why that job was `workflow_dispatch`-only: the
 content-dependent suites either 404'd on page 2 or, worse, passed **vacuously**
-over an empty population.
+over an empty population. Stage P supplied that site, and hosted determinism was
+then proven on two consecutive fresh `workflow_dispatch` runs, so `integration`
+is now a **required blocking** push/PR check.
 
 These are committed PHP **data** files, not fixtures a parser reads, but they
 are governed by the same rules and are listed here so the inventory stays the

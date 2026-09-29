@@ -149,11 +149,14 @@ point** and must not grow.
 
 **No production contact.** CI is read-only with respect to production: it
 never connects to conexaobr.ie or WordPress.com and deploys nothing. The
-Docker integration job is available only through `workflow_dispatch` while the
-content-dependent suites still require a deterministic synthetic site fixture.
-It provisions an isolated WordPress database, configures Polylang through the
-repository setup script, and runs the shared harness; it is not a required
-push/PR check until that fixture makes the complete suite deterministic.
+Docker integration job is a **required blocking push/PR check**: it
+provisions an isolated WordPress database, configures Polylang through the
+repository setup script, builds the deterministic synthetic site from the
+committed fixtures, and runs the shared harness. It used to be
+`workflow_dispatch`-only while the content-dependent suites still lacked a
+deterministic synthetic site; that requirement is now satisfied. It remains
+an ordinary blocking integration job, so normal CI failure semantics —
+including infrastructure failures — still fail the run.
 
 ## Restoring a Production UpdraftPlus Backup (Local Only)
 

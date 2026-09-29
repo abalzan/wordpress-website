@@ -15,10 +15,10 @@
 #   5. shellcheck scripts/*.sh + scripts/lib/*.sh
 #                                    — repository shell scripts and the
 #                                      sourced shell library
-#   6-7. Integration checks       — manual-only until the content-dependent
-#                                    suites have a deterministic synthetic DB:
+#   6-7. Integration checks       — blocking on push and pull_request, on the
+#                                    deterministic synthetic site:
 #                                    ./scripts/run-tests.sh and the Stage L
-#                                    permanent-gate evidence summary
+#                                    permanent-gate evidence summary.
 #
 # A third job, `release-integrity` (Stage J), blocks on the two release
 # invariants: that `plugins.json` determines the artifact allowlist, and that
@@ -239,11 +239,21 @@ jobs:
   #   - CONEXAO_TEST_BASE_URL is an explicit local URL and the harness itself
   #     refuses any production host (tests/acceptance/lib/http_client.py);
   #   - no continue-on-error on the test step: a real failure fails the job.
-  # The job is manual-only under engineering-standard.md §1.7 until the
-  # content-dependent suite has a deterministic synthetic site fixture.
+  # Graduated to a blocking check (engineering-standard.md §1.7). The job used
+  # to be `workflow_dispatch`-only, because the content-dependent suites had no
+  # deterministic site: on a fresh database they either 404'd on page 2 or —
+  # worse — passed VACUOUSLY over an empty population. That gap is closed by the
+  # committed synthetic fixtures built below, and hosted determinism was proven
+  # on two consecutive fresh `workflow_dispatch` runs (GitHub Actions runs
+  # 36575383129 and 36579787054, branch `i18n`), so the job now runs on every
+  # push and pull_request and blocks the workflow like the other two jobs.
+  #
+  # This is still a blocking INTEGRATION job with normal CI failure semantics:
+  # it is not advisory, not `continue-on-error`, and a red runner or a slow
+  # third-party image fails the run exactly as any CI infrastructure failure
+  # would.
   # ---------------------------------------------------------------------
   integration:
-    if: github.event_name == 'workflow_dispatch'
     name: Integration tests (Docker WordPress + run-tests.sh)
     runs-on: ubuntu-latest
     timeout-minutes: 45

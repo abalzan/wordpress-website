@@ -447,15 +447,16 @@ measured inventory, the size budget and the rules are in
 
 ## CI
 
-`.github/workflows/ci.yml` has two independent jobs:
+`.github/workflows/ci.yml` has independent jobs:
 
 ```
                  GitHub Actions
                        |
-          +------------+------------+
-          |                         |
-     static-quality            integration (manual)
-   Stage C/D gates        Docker Compose (ephemeral)
+          +------------+------------+------------+
+          |            |            |            |
+     static-quality    release-      integration     (all blocking)
+   Stage C/D gates    integrity      Docker Compose  (no advisory job,
+                     (manifest)     (ephemeral)      no path filters)
                                  |
                         ./scripts/run-tests.sh
                                  |
@@ -467,16 +468,24 @@ measured inventory, the size budget and the rules are in
 - `static-quality` is the Stage D job, **unchanged**: `composer validate`,
   `composer install`, `./scripts/lint.sh`, `shellcheck scripts/*.sh`, and the
   non-blocking raw-debt telemetry.
-- `integration` is `workflow_dispatch`-only under engineering-standard §1.7:
-  several maintained suites assert against migrated site content, but the repo
-  has no deterministic synthetic database fixture yet. The job starts the
+- `integration` is a **required blocking check** on `push`, `pull_request` and
+  `workflow_dispatch` under engineering-standard §1.7. The job starts the
   Compose stack, waits for readiness, installs WordPress and pinned Polylang,
-  configures `pt`/`en`, activates the required test plugins, applies the
-  authored Jobs-page stage, and runs `./scripts/run-tests.sh`.
-- The manual job is not yet a green full-suite gate. Do not make it a required
-  push/PR check until the content-dependent suites are made deterministic with
-  synthetic fixtures; never solve this by weakening assertions or committing a
-  database dump.
+  configures `pt`/`en`, activates the required test plugins, builds the
+  deterministic synthetic site from the committed fixtures, and runs
+  `./scripts/run-tests.sh`.
+- The job was `workflow_dispatch`-only until the content-dependent suites had a
+  deterministic synthetic site — previously they either 404'd on page 2 or, worse,
+  passed **vacuously** over an empty population. That requirement is now
+  satisfied by the committed fixtures, and hosted determinism was proven on two
+  consecutive fresh `workflow_dispatch` runs (GitHub Actions runs 36575383129
+  and 36579787054, branch `i18n`); see
+  [`reports/2026-09-29-stage-p-ci-readiness.md`](reports/2026-09-29-stage-p-ci-readiness.md).
+  The requirement itself is unchanged and still binding: **never** satisfy
+  determinism by weakening assertions or committing a database dump.
+- This is a blocking integration job with ordinary CI failure semantics. It is
+  not perfect and not immune to infrastructure failure — a red runner, a slow
+  image pull or a flaky network fails the run as any CI job would.
 - The integration database is **ephemeral** (`docker compose down -v` on
   cleanup). No developer's volume is reused and no database data is committed.
 - No secrets, no write permissions, no `pull_request_target`, no
