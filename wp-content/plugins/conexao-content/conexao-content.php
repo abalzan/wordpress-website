@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Conexão BR Irlanda - Content
  * Description: Secao de conteudo, shortcodes, e helpers para o portal Conexão BR Irlanda
- * Version: 1.0.0
+ * Version: 1.0.1
  * Requires at least: 6.0
  * Requires PHP: 7.4
  * Author: Conexão BR Irlanda
@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'CONEXAO_CONTENT_VERSION', '1.0.0' );
+define( 'CONEXAO_CONTENT_VERSION', '1.0.1' );
 define( 'CONEXAO_CONTENT_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CONEXAO_CONTENT_URI', plugin_dir_url( __FILE__ ) );
 

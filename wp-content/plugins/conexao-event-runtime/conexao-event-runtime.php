@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Conexão BR Irlanda — Event Runtime
  * Description: Production event runtime. Registers event metadata and the Town/City taxonomy, owns the _event_status visibility gate for public event queries, and provides the event status admin UI. Contains no import/export tooling — see Conexão BR Irlanda Event Importer (local-only).
- * Version: 1.2.1
+ * Version: 1.2.2
  * Requires Plugins: conexao-data-model
  * Text Domain: conexao-event-runtime
  *
@@ -12,7 +12,7 @@
 defined( 'ABSPATH' ) || exit;
 
 define( 'CONEXAO_EVENT_RUNTIME_FILE', __FILE__ );
-define( 'CONEXAO_EVENT_RUNTIME_VERSION', '1.2.1' );
+define( 'CONEXAO_EVENT_RUNTIME_VERSION', '1.2.2' );
 define( 'CONEXAO_EVENT_RUNTIME_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CONEXAO_EVENT_RUNTIME_URL', plugin_dir_url( __FILE__ ) );
 

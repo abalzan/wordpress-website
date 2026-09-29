@@ -9,7 +9,7 @@
 | **Build** | yes |
 | **Compose mount** | yes |
 | **Dependencies** | none |
-| **Version** | 1.6.0 (authoritative source: `wp-content/plugins/conexao-data-model/conexao-data-model.php` header) |
+| **Version** | 1.6.1 (authoritative source: `wp-content/plugins/conexao-data-model/conexao-data-model.php` header) |
 | **Registry** | [`plugins.json`](../../plugins.json) |
 
 > **Production platform plugin.** Part of the production steady state.

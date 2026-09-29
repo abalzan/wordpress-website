@@ -36,10 +36,10 @@ compose.yaml
 Generated from [`plugins.json`](../plugins.json) by `scripts/generate-registry-docs.php`.
 Plugins load in registry order, and dependencies always precede their dependents.
 
-1. **conexao-data-model** (`platform`, active) v1.6.0. **Required on production.**
-2. **conexao-content** (`platform`, active) v1.0.0. **Required on production.**
-3. **conexao-admin-ux** (`platform`, active) v1.0.6. **Required on production.**
-4. **conexao-event-runtime** (`platform`, active) v1.2.1. **Required on production.** Declared dependencies (`Requires Plugins` header): `conexao-data-model`.
+1. **conexao-data-model** (`platform`, active) v1.6.1. **Required on production.**
+2. **conexao-content** (`platform`, active) v1.0.1. **Required on production.**
+3. **conexao-admin-ux** (`platform`, active) v1.0.7. **Required on production.**
+4. **conexao-event-runtime** (`platform`, active) v1.2.2. **Required on production.** Declared dependencies (`Requires Plugins` header): `conexao-data-model`.
 5. **conexao-event-importer** (`tooling`, active) v1.7.1. **Never required on production.** Declared dependencies (`Requires Plugins` header): `conexao-data-model`, `conexao-event-runtime`.
 6. **conexao-leisure-migration** (`tooling`, active) v2.1.0. **Never required on production.**
 7. **conexao-sponsor-migration** (`tooling`, active) v1.1.0. **Never required on production.**
@@ -113,3 +113,4 @@ See `docs/themes/conexao-br-irlanda.md` §Runtime Architecture for the full modu
 - WordPress core sitemap disabled in favor of custom lightweight sitemap.
 - English-to-Portuguese redirects at two levels: `.htaccess` (Apache) and `inc/seo/redirects.php` (PHP).
 _Last verified: 2026-09-26 by Stage L — Permanent Invariant Gates_
+_Last verified: 2026-09-29 by the production artifact version bump (generated plugin registry regions regenerated)_

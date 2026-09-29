@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Conexão BR Irlanda Data Model
  * Description: Content types, shared taxonomies, and editorial fields for the Conexão BR Irlanda portal.
- * Version: 1.6.0
+ * Version: 1.6.1
  * Text Domain: conexao-data-model
  *
  * @package Conexao_BR_Irlanda_Data_Model
@@ -20,7 +20,7 @@ require_once CONEXAO_DATA_MODEL_DIR . 'includes/class-agency.php';
 
 final class Conexao_Data_Model {
 
-	const VERSION = '1.6.0';
+	const VERSION = '1.6.1';
 
 	/** @var Conexao_Data_Model|null */
 	private static $instance = null;

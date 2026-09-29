@@ -1,7 +1,7 @@
 # Conexão BR Irlanda Theme
 
 - **Path**: `wp-content/themes/conexao-br-irlanda/`
-- **Version**: 1.0.0
+- **Version**: 1.0.1
 - **Status**: Active (only theme in repository)
 - **Parent theme**: None (standalone custom theme)
 
@@ -650,3 +650,4 @@ runs slightly over is preferred over an artificial split.
 - `tests/test-language-switcher-flag.php` — language-switcher exposure gate. Proves the DISABLED state renders no switcher markup at all in either context (count 0 for the container, `--desktop`, `--mobile` and items, with no orphaned ARIA and nothing merely CSS-hidden), that desktop and mobile share the single `CONEXAO_LANGUAGE_SWITCHER_ENABLED` flag through one shared renderer, that the switcher is only hidden and never removed (data layer still resolves both languages), and that English/Polylang/routing/SEO output is identical on both sides of the flag. The ENABLED state is proven in a child process that pre-defines the same constant as `true`, so flipping that one value is verified to restore the pre-existing markup (run: `docker compose exec wordpress php /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-language-switcher-flag.php`)
 - `assets/js/main.js` — frontend JavaScript
 _Last verified: 2026-09-28 by the language-switcher exposure flag change (UI exposure only; `CONEXAO_LANGUAGE_SWITCHER_ENABLED = false`)_
+_Last verified: 2026-09-29 by the production theme version bump (1.0.0 → 1.0.1; `style.css` + `CONEXAO_THEME_VERSION`)_

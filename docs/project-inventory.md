@@ -9,10 +9,10 @@ source. Do not hand-edit this table.
 
 | Slug | Version | Class | Status | Production | Build | Mount | Path |
 |------|---------|-------|--------|------------|-------|-------|------|
-| conexao-data-model | 1.6.0 | platform | active | yes | yes | yes | `wp-content/plugins/conexao-data-model/` |
-| conexao-content | 1.0.0 | platform | active | yes | yes | yes | `wp-content/plugins/conexao-content/` |
-| conexao-admin-ux | 1.0.6 | platform | active | yes | yes | yes | `wp-content/plugins/conexao-admin-ux/` |
-| conexao-event-runtime | 1.2.1 | platform | active | yes | yes | yes | `wp-content/plugins/conexao-event-runtime/` |
+| conexao-data-model | 1.6.1 | platform | active | yes | yes | yes | `wp-content/plugins/conexao-data-model/` |
+| conexao-content | 1.0.1 | platform | active | yes | yes | yes | `wp-content/plugins/conexao-content/` |
+| conexao-admin-ux | 1.0.7 | platform | active | yes | yes | yes | `wp-content/plugins/conexao-admin-ux/` |
+| conexao-event-runtime | 1.2.2 | platform | active | yes | yes | yes | `wp-content/plugins/conexao-event-runtime/` |
 | conexao-event-importer | 1.7.1 | tooling | active | no | yes | yes | `wp-content/plugins/conexao-event-importer/` |
 | conexao-leisure-migration | 2.1.0 | tooling | active | no | yes | yes | `wp-content/plugins/conexao-leisure-migration/` |
 | conexao-sponsor-migration | 1.1.0 | tooling | active | no | yes | yes | `wp-content/plugins/conexao-sponsor-migration/` |

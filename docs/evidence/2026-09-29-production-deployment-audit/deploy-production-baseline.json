@@ -1,0 +1,216 @@
+{
+  "site": "https://conexaobr.ie",
+  "matrix": "scripts/data/release-smoke-matrix.json",
+  "rows": 18,
+  "failing_rows": 13,
+  "passed": 20,
+  "failed": 21,
+  "ok": false,
+  "checks": [
+    {
+      "label": "smoke-home-pt /",
+      "ok": false,
+      "detail": "missing fragment: '<html lang=\"pt-BR\">'; unexpected fragment: '<html lang=\"en-US\">'"
+    },
+    {
+      "label": "smoke-home-en /en/",
+      "ok": false,
+      "detail": "status 301, expected 200; missing fragment: '<html lang=\"en-US\">'"
+    },
+    {
+      "label": "smoke-archive-guias /guias/",
+      "ok": false,
+      "detail": "missing fragment: '<html lang=\"pt-BR\">'"
+    },
+    {
+      "label": "smoke-archive-eventos /eventos/",
+      "ok": false,
+      "detail": "missing fragment: '<html lang=\"pt-BR\">'"
+    },
+    {
+      "label": "smoke-archive-cursos /cursos/",
+      "ok": false,
+      "detail": "missing fragment: '<html lang=\"pt-BR\">'"
+    },
+    {
+      "label": "smoke-archive-empregos /empregos/",
+      "ok": false,
+      "detail": "missing fragment: '<html lang=\"pt-BR\">'"
+    },
+    {
+      "label": "smoke-archive-apoiadores /apoiadores/",
+      "ok": false,
+      "detail": "missing fragment: '<html lang=\"pt-BR\">'"
+    },
+    {
+      "label": "smoke-archive-lazer /lazer/",
+      "ok": false,
+      "detail": "missing fragment: '<html lang=\"pt-BR\">'"
+    },
+    {
+      "label": "smoke-archive-blog /blog/",
+      "ok": false,
+      "detail": "missing fragment: '<html lang=\"pt-BR\">'"
+    },
+    {
+      "label": "smoke-en-pair-guias /en/guias/",
+      "ok": false,
+      "detail": "status 404, expected 200; missing fragment: 'hreflang='"
+    },
+    {
+      "label": "smoke-en-pair-eventos /en/eventos/",
+      "ok": false,
+      "detail": "status 404, expected 200; missing fragment: 'hreflang='"
+    },
+    {
+      "label": "smoke-en-pair-lazer /en/lazer/",
+      "ok": false,
+      "detail": "status 301, expected 200; missing fragment: '<html lang=\"en-US\">'; missing fragment: 'hreflang='"
+    },
+    {
+      "label": "smoke-en-pair-blog /en/blog/",
+      "ok": false,
+      "detail": "status 301, expected 200; missing fragment: '<html lang=\"en-US\">'; missing fragment: 'hreflang='"
+    },
+    {
+      "label": "smoke-sitemap /sitemap.xml (status 200)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "label": "smoke-robots /robots.txt (status 200)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "label": "smoke-404-pt /nao-existe-xyz-stage-j/ (status 404)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "label": "smoke-404-en /en/nao-existe-xyz-stage-j/ (status 404)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "label": "smoke-legacy-redirect /guides/ (status 301)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "label": "guide: single /guias/profissoes-na-irlanda/",
+      "ok": true,
+      "detail": "status=200 Location=''"
+    },
+    {
+      "label": "guide: single is canonical",
+      "ok": true,
+      "detail": "/guias/profissoes-na-irlanda/"
+    },
+    {
+      "label": "guide: single declares hreflang alternates",
+      "ok": false,
+      "detail": "/guias/profissoes-na-irlanda/"
+    },
+    {
+      "label": "event: single /eventos/art-class-for-beginners/",
+      "ok": true,
+      "detail": "status=200 Location=''"
+    },
+    {
+      "label": "event: single is canonical",
+      "ok": true,
+      "detail": "/eventos/art-class-for-beginners/"
+    },
+    {
+      "label": "event: single declares hreflang alternates",
+      "ok": false,
+      "detail": "/eventos/art-class-for-beginners/"
+    },
+    {
+      "label": "course_provider: single /cursos/hseland/",
+      "ok": true,
+      "detail": "status=200 Location=''"
+    },
+    {
+      "label": "course_provider: single is canonical",
+      "ok": true,
+      "detail": "/cursos/hseland/"
+    },
+    {
+      "label": "course_provider: single declares hreflang alternates",
+      "ok": false,
+      "detail": "/cursos/hseland/"
+    },
+    {
+      "label": "job: single /empregos/oportunidades/",
+      "ok": true,
+      "detail": "status=200 Location=''"
+    },
+    {
+      "label": "job: single is canonical",
+      "ok": true,
+      "detail": "/empregos/oportunidades/"
+    },
+    {
+      "label": "job: single declares hreflang alternates",
+      "ok": false,
+      "detail": "/empregos/oportunidades/"
+    },
+    {
+      "label": "sponsor: single /apoiadores/ane-braga-brazilian-beauty/",
+      "ok": true,
+      "detail": "status=200 Location=''"
+    },
+    {
+      "label": "sponsor: single is canonical",
+      "ok": true,
+      "detail": "/apoiadores/ane-braga-brazilian-beauty/"
+    },
+    {
+      "label": "sponsor: single declares hreflang alternates",
+      "ok": false,
+      "detail": "/apoiadores/ane-braga-brazilian-beauty/"
+    },
+    {
+      "label": "leisure: single redirects off-site as designed",
+      "ok": true,
+      "detail": "status=302 Location='https://heritageireland.ie/places-to-visit/dwyer-mcallister-cottage/'"
+    },
+    {
+      "label": "post: single /2026/09/27/outono-irlanda-alimentacao-bem-estar/",
+      "ok": true,
+      "detail": "status=200 Location=''"
+    },
+    {
+      "label": "post: single is canonical",
+      "ok": true,
+      "detail": "/2026/09/27/outono-irlanda-alimentacao-bem-estar/"
+    },
+    {
+      "label": "front page serves 200",
+      "ok": true,
+      "detail": "status=200"
+    },
+    {
+      "label": "front page is the Portuguese document",
+      "ok": false,
+      "detail": ""
+    },
+    {
+      "label": "front page declares hreflang alternates",
+      "ok": false,
+      "detail": ""
+    },
+    {
+      "label": "/en/ serves 200",
+      "ok": false,
+      "detail": "status=301"
+    },
+    {
+      "label": "legacy /guides/ redirects to the canonical /guias/",
+      "ok": true,
+      "detail": "status=301 Location='https://conexaobr.ie/guias/'"
+    }
+  ]
+}

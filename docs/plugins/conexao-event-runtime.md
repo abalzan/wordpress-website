@@ -9,14 +9,14 @@
 | **Build** | yes |
 | **Compose mount** | yes |
 | **Dependencies** | `conexao-data-model` |
-| **Version** | 1.2.1 (authoritative source: `wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php` header) |
+| **Version** | 1.2.2 (authoritative source: `wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php` header) |
 | **Registry** | [`plugins.json`](../../plugins.json) |
 
 > **Production platform plugin.** Part of the production steady state.
 <!-- END GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
 
 - **Path**: `wp-content/plugins/conexao-event-runtime/`
-- **Version**: 1.2.1
+- **Version**: 1.2.2
 - **Requires Plugins**: `conexao-data-model`
 - **Purpose**: **Production dependency.** Owns all event runtime behavior the live site needs: event meta registration, the `conexao_town` taxonomy, the `_event_status` visibility gate on public event queries, and the event status admin UI. Contains **no** import/export tooling.
 
