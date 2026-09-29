@@ -1,0 +1,6 @@
+# pll/v1 routes (proves no assignment surface)
+/pll/v1 ['GET']
+/pll/v1/languages ['GET', 'POST']
+/pll/v1/languages/(?P<slug>[a-z][a-z0-9_-]*) ['GET']
+/pll/v1/languages/(?P<term_id>[\d]+) ['DELETE', 'GET', 'PATCH', 'POST', 'PUT']
+/pll/v1/settings ['GET', 'PATCH', 'POST', 'PUT']

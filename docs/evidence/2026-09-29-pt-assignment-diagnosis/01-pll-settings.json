@@ -1,0 +1,20 @@
+# Production read-only snapshot 2026-09-29T20:14:07Z
+
+## pll/v1/settings
+{
+    "force_lang": 1,
+    "domains": [],
+    "hide_default": true,
+    "rewrite": true,
+    "redirect_lang": false,
+    "browser": false,
+    "media_support": false,
+    "post_types": [],
+    "taxonomies": [],
+    "sync": [],
+    "default_lang": "pt",
+    "nav_menus": [],
+    "first_activation": 1790697615,
+    "previous_version": "",
+    "version": "3.8.10"
+}

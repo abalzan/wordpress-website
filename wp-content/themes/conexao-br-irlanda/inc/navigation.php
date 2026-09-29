@@ -90,25 +90,165 @@ function conexao_nav_menu_args( $args ) {
 add_filter( 'wp_nav_menu_args', 'conexao_nav_menu_args' );
 
 /**
- * Safe empty fallback for the header navigations.
+ * The canonical primary-navigation section order.
+ *
+ * Single source of truth for BOTH the stored-menu render path and the
+ * no-menu fallback, so the two can never drift apart. This is the documented
+ * nine-item order: Início, Apoiadores, Guias, Eventos, Cursos, Lazer e turismo,
+ * Empregos, Blog, Contato. "Sobre Nós" and "Irlanda" are deliberately absent
+ * (Sobre Nós is removed from the navigation by
+ * conexao_modify_primary_nav_items(); neither belongs in the header).
+ *
+ * @return array[] Ordered list of array( 'key' => section key, 'title' => label ).
+ */
+function conexao_canonical_primary_nav_order() {
+	$is_en = 'en' === conexao_current_language_slug();
+
+	return array(
+		array( 'key' => 'inicio', 'title' => $is_en ? 'Home' : __( 'Início', 'conexao-br-irlanda' ) ),
+		array( 'key' => 'apoiadores', 'title' => $is_en ? 'Sponsors' : __( 'Apoiadores', 'conexao-br-irlanda' ) ),
+		array( 'key' => 'guias', 'title' => $is_en ? 'Guides' : __( 'Guias', 'conexao-br-irlanda' ) ),
+		array( 'key' => 'eventos', 'title' => $is_en ? 'Events' : __( 'Eventos', 'conexao-br-irlanda' ) ),
+		array( 'key' => 'cursos', 'title' => $is_en ? 'Courses' : __( 'Cursos', 'conexao-br-irlanda' ) ),
+		array( 'key' => 'lazer', 'title' => $is_en ? 'Leisure & Tourism' : __( 'Lazer e turismo', 'conexao-br-irlanda' ) ),
+		array( 'key' => 'empregos', 'title' => $is_en ? 'Jobs' : __( 'Empregos', 'conexao-br-irlanda' ) ),
+		array( 'key' => 'blog', 'title' => 'Blog' ),
+		array( 'key' => 'contato', 'title' => $is_en ? 'Contact' : __( 'Contato', 'conexao-br-irlanda' ) ),
+	);
+}
+
+/**
+ * Build the canonical primary-navigation items from the section engine.
+ *
+ * Used only by the no-menu fallback. Every item is bound through the existing
+ * conexao_bind_section_object(), so destinations, object bindings and
+ * active-state resolution are byte-identical to the stored-menu path: URLs stay
+ * language-aware (conexao_primary_nav_archive_url / conexao_lang_url / the
+ * linked Polylang page translation) and no URL, slug or route is hard-coded
+ * here. Calling conexao_normalize_primary_nav_sections() afterwards applies the
+ * same active-state and binding pass the stored menu gets.
+ *
+ * Pure and idempotent: it reads no option, writes nothing, and returns a fresh
+ * array on every call, so rendering the desktop nav and the mobile drawer (and
+ * both languages) never share or mutate state.
+ *
+ * @return array Ordered menu item objects in the canonical order.
+ */
+function conexao_canonical_primary_nav_items() {
+	$sections = conexao_primary_nav_sections();
+	$items    = array();
+	$order    = 0;
+
+	foreach ( conexao_canonical_primary_nav_order() as $entry ) {
+		$section = null;
+		foreach ( $sections as $candidate ) {
+			if ( $candidate['key'] === $entry['key'] ) {
+				$section = $candidate;
+				break;
+			}
+		}
+		if ( null === $section ) {
+			continue;
+		}
+
+		$item = (object) array(
+			'ID'               => 0,
+			'db_id'            => 0,
+			'menu_item_parent' => 0,
+			'object_id'        => 0,
+			'object'           => 'custom',
+			'post_parent'      => 0,
+			'type'             => 'custom',
+			'type_label'       => 'Custom Link',
+			'title'            => $entry['title'],
+			'url'              => isset( $section['url'] ) ? $section['url'] : '',
+			'classes'          => array( 'menu-item' ),
+			'attr_title'       => '',
+			'target'           => '',
+			'xfn'              => '',
+			'description'      => '',
+			'menu_order'       => $order,
+		);
+		++$order;
+
+		// Same canonical object/URL binding the stored-menu path uses.
+		conexao_bind_section_object( $item, $section );
+		$items[] = $item;
+	}
+
+	return $items;
+}
+
+/**
+ * Safe fallback for the header navigations: render the canonical navigation.
  *
  * Replaces WordPress' wp_page_menu() as the wp_nav_menu() fallback for both
- * the desktop primary navigation and the mobile drawer navigation: when the
- * 'primary' theme location has no valid menu for the current language (for
- * example while Polylang has no per-language assignment for a language yet,
- * which makes Polylang nullify the location), the header must NOT silently
- * render WordPress' full automatic page list. This fallback explicitly
- * renders no navigation items instead — the page list overflowed the header
- * and buried the curated menu.
+ * the desktop primary navigation and the mobile drawer navigation. When the
+ * 'primary' theme location has no valid menu for the current language — for
+ * example when Polylang has no per-language assignment for that language, so
+ * PLL_Frontend_Nav_Menu::nav_menu_locations() nullifies the location to 0 —
+ * wp_nav_menu() has no menu and calls this callback.
  *
- * Re-introducing wp_page_menu here is a regression: see
- * CONEXAO_BR_HEADER_NAVIGATION_REGRESSION_REPORT.md.
+ * The header must stay navigable in that state, so this renders the theme's
+ * own canonical nine sections (conexao_canonical_primary_nav_items()) instead
+ * of nothing. They come from the same section engine and the same render-time
+ * filters the stored menu uses — this is not a hard-coded menu, and it never
+ * overrides a real, wp-admin-managed menu: this callback is only reached when
+ * no menu was found at all.
  *
- * @param array $args wp_nav_menu() arguments (unused).
+ * Re-introducing wp_page_menu here is a regression: it renders WordPress' full
+ * automatic page list, which overflowed the header and buried the curated menu
+ * (see CONEXAO_BR_HEADER_NAVIGATION_REGRESSION_REPORT.md).
+ *
+ * @param array $args wp_nav_menu() arguments.
  * @return void
  */
 function conexao_safe_nav_menu_fallback( $args = array() ) {
-	// Intentionally empty: render no primary navigation items.
+	$args = wp_parse_args(
+		(array) $args,
+		array(
+			'theme_location' => 'primary',
+			'menu_id'        => 'primary-menu',
+			'menu_class'     => 'primary-menu',
+			'items_wrap'     => '<ul id="%1$s" class="%2$s">%3$s</ul>',
+			'depth'          => 3,
+		)
+	);
+
+	// This callback only ever backs the 'primary' location; any other location
+	// keeps WordPress' own default behaviour.
+	if ( 'primary' !== $args['theme_location'] ) {
+		return;
+	}
+
+	$items = conexao_canonical_primary_nav_items();
+	if ( empty( $items ) ) {
+		return;
+	}
+
+	// Reuse the stored-menu shaping pass (canonical object binding, section
+	// dedup, active-state resolution) so both paths emit the same markup and
+	// the same current-menu-item / aria-current behaviour.
+	$nav_args        = (object) $args;
+	$nav_args->depth = (int) $args['depth'];
+	$items           = conexao_normalize_primary_nav_sections( $items, $nav_args );
+
+	if ( empty( $items ) ) {
+		return;
+	}
+
+	// WordPress' own walker, so the emitted markup (menu-item / nav-item /
+	// nav-link classes, aria-current, submenu toggles) is identical to the
+	// stored-menu path and to the CSS that styles .primary-navigation ul.
+	$inner = walk_nav_menu_tree( $items, $nav_args->depth, $nav_args );
+	if ( '' === trim( $inner ) ) {
+		return;
+	}
+
+	$wrap_id = $args['menu_id'] ? $args['menu_id'] : 'menu-' . sanitize_html_class( $args['menu_class'] );
+
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $inner is walker-escaped markup.
+	printf( $args['items_wrap'], esc_attr( $wrap_id ), esc_attr( $args['menu_class'] ), $inner );
 }
 
 /**

@@ -581,7 +581,7 @@ assert_true( conexao_test_is_active( $active_pt_blog, 'Blog', 'current-menu-item
 
 $header_src = (string) file_get_contents( $theme_dir . '/header.php' );
 assert_true( false === strpos( $header_src, 'wp_page_menu' ), 'G1 header.php does NOT use wp_page_menu as the wp_nav_menu fallback');
-assert_true( 2 === substr_count( $header_src, "'fallback_cb'    => 'conexao_safe_nav_menu_fallback'," ), 'G2 BOTH wp_nav_menu() calls (desktop + mobile) use the safe empty fallback');
+assert_true( 2 === substr_count( $header_src, "'fallback_cb'    => 'conexao_safe_nav_menu_fallback'," ), 'G2 BOTH wp_nav_menu() calls (desktop + mobile) use the canonical fallback');
 assert_true( false === strpos( $header_src, '/en/empregos/' ) && false === strpos( $header_src, '/en/blog/' ), 'G3 header.php contains NO hard-coded /en/empregos/ or /en/blog/ URL');
 assert_true( false === strpos( $header_src, "'/empregos/" ) && false === strpos( $header_src, "'/blog/" ), 'G4 header.php contains NO hard-coded /empregos/ or /blog/ navigation URL');
 assert_true( 2 === substr_count( $header_src, "'theme_location'   => 'primary'," ) || 2 === substr_count( $header_src, "'theme_location' => 'primary'," ), 'G5 desktop and mobile render the SAME primary theme location', 'shared menu location -> mobile gets the same corrected destinations' );

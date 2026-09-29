@@ -1,0 +1,23 @@
+LOCAL MECHANISM PROOF — docker compose (local WordPress, Polylang 3.8.9), read+throwaway
+Purpose: determine whether Polylang's mass-assignment routine sees the six post types
+when the theme declares them ONLY through pll_get_post_types (settings option = []).
+
+STEP 1 — read-only inspection
+  languages: pt,en
+  default: pt
+  post get_translated_object_types(): post,page,wp_block,guide,event,leisure,sponsor,job,course_provider
+  term get_translated_object_types(): category,post_tag,conexao_category,conexao_tag
+  option post_types: []          <-- STORED OPTION IS EMPTY
+  option taxonomies: []          <-- STORED OPTION IS EMPTY
+  => the six types are present ANYWAY, purely from the theme filter.
+
+STEP 2 — throwaway negative/positive proof (3 guide posts, language row stripped)
+  walk list : post,page,wp_block,guide,event,leisure,sponsor,job,course_provider
+  objects_with_no_lang posts: 3
+  all 3 probes visible to the assignment query: YES
+  AFTER set_language_in_mass -> 'pt','pt','pt'
+
+STEP 3 — cleanup verification
+  leftover ZZ_PROBE posts: none
+  local pt count (was 416 before probes): 416
+  objects_with_no_lang posts: 0

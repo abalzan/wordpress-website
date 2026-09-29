@@ -1,0 +1,334 @@
+{
+  "polylang_rest_routes": {
+    "/pll/v1": [
+      {
+        "methods": [
+          "GET"
+        ],
+        "args": [
+          "context",
+          "namespace"
+        ]
+      }
+    ],
+    "/pll/v1/languages": [
+      {
+        "methods": [
+          "GET"
+        ],
+        "args": []
+      },
+      {
+        "methods": [
+          "POST"
+        ],
+        "args": [
+          "flag_code",
+          "is_rtl",
+          "locale",
+          "name",
+          "no_default_cat",
+          "slug",
+          "term_group"
+        ]
+      }
+    ],
+    "/pll/v1/languages/(?P<term_id>[\\d]+)": [
+      {
+        "methods": [
+          "GET"
+        ],
+        "args": [
+          "context",
+          "term_id"
+        ]
+      },
+      {
+        "methods": [
+          "POST",
+          "PUT",
+          "PATCH"
+        ],
+        "args": [
+          "flag_code",
+          "is_rtl",
+          "locale",
+          "name",
+          "slug",
+          "term_group",
+          "term_id"
+        ]
+      },
+      {
+        "methods": [
+          "DELETE"
+        ],
+        "args": [
+          "term_id"
+        ]
+      }
+    ],
+    "/pll/v1/languages/(?P<slug>[a-z][a-z0-9_-]*)": [
+      {
+        "methods": [
+          "GET"
+        ],
+        "args": [
+          "context",
+          "slug"
+        ]
+      }
+    ],
+    "/pll/v1/settings": [
+      {
+        "methods": [
+          "GET"
+        ],
+        "args": []
+      },
+      {
+        "methods": [
+          "POST",
+          "PUT",
+          "PATCH"
+        ],
+        "args": [
+          "browser",
+          "default_lang",
+          "domains",
+          "force_lang",
+          "hide_default",
+          "media_support",
+          "nav_menus",
+          "post_types",
+          "redirect_lang",
+          "rewrite",
+          "sync",
+          "taxonomies"
+        ]
+      }
+    ]
+  },
+  "post_type_writable_language_field": {
+    "guide": {
+      "post_args": [
+        "author",
+        "conexao_category",
+        "conexao_county",
+        "conexao_tag",
+        "content",
+        "date",
+        "date_gmt",
+        "excerpt",
+        "featured_media",
+        "jetpack_likes_enabled",
+        "jetpack_sharing_enabled",
+        "menu_order",
+        "meta",
+        "password",
+        "slug",
+        "status",
+        "template",
+        "title"
+      ],
+      "has_lang": false,
+      "has_language": false
+    },
+    "event": {
+      "post_args": [
+        "author",
+        "conexao_category",
+        "conexao_county",
+        "conexao_tag",
+        "conexao_town",
+        "content",
+        "date",
+        "date_gmt",
+        "excerpt",
+        "featured_media",
+        "jetpack_likes_enabled",
+        "jetpack_sharing_enabled",
+        "menu_order",
+        "meta",
+        "password",
+        "slug",
+        "status",
+        "template",
+        "title"
+      ],
+      "has_lang": false,
+      "has_language": false
+    },
+    "leisure": {
+      "post_args": [
+        "author",
+        "conexao_category",
+        "conexao_county",
+        "conexao_leisure_attribute",
+        "conexao_tag",
+        "content",
+        "date",
+        "date_gmt",
+        "excerpt",
+        "featured_media",
+        "jetpack_likes_enabled",
+        "jetpack_sharing_enabled",
+        "menu_order",
+        "meta",
+        "password",
+        "slug",
+        "status",
+        "template",
+        "title"
+      ],
+      "has_lang": false,
+      "has_language": false
+    },
+    "sponsor": {
+      "post_args": [
+        "author",
+        "conexao_category",
+        "conexao_county",
+        "conexao_tag",
+        "content",
+        "date",
+        "date_gmt",
+        "excerpt",
+        "featured_media",
+        "jetpack_likes_enabled",
+        "jetpack_sharing_enabled",
+        "menu_order",
+        "meta",
+        "password",
+        "slug",
+        "status",
+        "template",
+        "title"
+      ],
+      "has_lang": false,
+      "has_language": false
+    },
+    "job": {
+      "post_args": [
+        "author",
+        "conexao_category",
+        "conexao_county",
+        "conexao_tag",
+        "content",
+        "date",
+        "date_gmt",
+        "excerpt",
+        "featured_media",
+        "jetpack_likes_enabled",
+        "jetpack_sharing_enabled",
+        "menu_order",
+        "meta",
+        "password",
+        "slug",
+        "status",
+        "template",
+        "title"
+      ],
+      "has_lang": false,
+      "has_language": false
+    },
+    "course_provider": {
+      "post_args": [
+        "conexao_category",
+        "conexao_county",
+        "conexao_tag",
+        "content",
+        "date",
+        "date_gmt",
+        "excerpt",
+        "featured_media",
+        "jetpack_likes_enabled",
+        "jetpack_sharing_enabled",
+        "meta",
+        "password",
+        "slug",
+        "status",
+        "template",
+        "title"
+      ],
+      "has_lang": false,
+      "has_language": false
+    }
+  },
+  "language_taxonomy_exposed": false,
+  "language_rest_route_status": 404,
+  "plugins_installed": [
+    "akismet/akismet",
+    "classic-editor/classic-editor",
+    "conexao-content/conexao-content",
+    "conexao-data-model/conexao-data-model",
+    "conexao-admin-ux/conexao-admin-ux",
+    "conexao-event-importer/conexao-event-importer",
+    "conexao-event-runtime/conexao-event-runtime",
+    "conexao-leisure-migration/conexao-leisure-migration",
+    "polldaddy/polldaddy",
+    "crowdsignal-forms/crowdsignal-forms",
+    "gravatar-enhanced/gravatar-enhanced",
+    "gutenberg/gutenberg",
+    "jetpack/jetpack",
+    "layout-grid/index",
+    "page-optimize/page-optimize",
+    "polylang/polylang",
+    "updraftplus/updraftplus",
+    "wordpress-importer/wordpress-importer"
+  ],
+  "rollout_engine_installed": false,
+  "abilities_api": {
+    "status": 200,
+    "names": [
+      "core/get-site-info",
+      "core/get-user-info",
+      "core/get-environment-info",
+      "jetpack-forms/list-forms",
+      "jetpack-forms/get-form",
+      "jetpack-forms/create-form",
+      "jetpack-forms/delete-form",
+      "jetpack-forms/get-responses",
+      "jetpack-forms/update-response",
+      "jetpack-forms/bulk-update-responses",
+      "jetpack-forms/get-status-counts",
+      "akismet/get-stats",
+      "akismet/comment-check"
+    ]
+  },
+  "polylang_settings": {
+    "force_lang": 1,
+    "domains": [],
+    "hide_default": true,
+    "rewrite": true,
+    "redirect_lang": false,
+    "browser": false,
+    "media_support": false,
+    "post_types": [],
+    "taxonomies": [],
+    "sync": [],
+    "default_lang": "pt",
+    "nav_menus": [],
+    "first_activation": 1790697615,
+    "previous_version": "",
+    "version": "3.8.10"
+  },
+  "languages": [
+    {
+      "slug": "en",
+      "name": "English",
+      "locale": "en_US",
+      "is_default": false,
+      "term_id": 1744,
+      "language_count": 0
+    },
+    {
+      "slug": "pt",
+      "name": "Português",
+      "locale": "pt_BR",
+      "is_default": true,
+      "term_id": 1747,
+      "language_count": 0
+    }
+  ]
+}

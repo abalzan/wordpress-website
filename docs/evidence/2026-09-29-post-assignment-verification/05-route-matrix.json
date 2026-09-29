@@ -1,0 +1,129 @@
+[
+ {
+  "path": "/",
+  "status": 200,
+  "html_lang": "pt-BR",
+  "canonical": "https://conexaobr.ie/",
+  "hreflang": [
+   "en",
+   "pt",
+   "x-default"
+  ],
+  "location": ""
+ },
+ {
+  "path": "/en/",
+  "status": 200,
+  "html_lang": "en-US",
+  "canonical": "https://conexaobr.ie/en/",
+  "hreflang": [
+   "en",
+   "pt",
+   "x-default"
+  ],
+  "location": ""
+ },
+ {
+  "path": "/guias/",
+  "status": 200,
+  "html_lang": "pt-BR",
+  "canonical": "https://conexaobr.ie/guias/",
+  "hreflang": [
+   "pt",
+   "x-default"
+  ],
+  "location": ""
+ },
+ {
+  "path": "/en/guias/",
+  "status": 200,
+  "html_lang": "en-US",
+  "canonical": "https://conexaobr.ie/en/guias/",
+  "hreflang": [
+   "en"
+  ],
+  "location": ""
+ },
+ {
+  "path": "/eventos/",
+  "status": 200,
+  "html_lang": "pt-BR",
+  "canonical": "https://conexaobr.ie/eventos/",
+  "hreflang": [
+   "pt",
+   "x-default"
+  ],
+  "location": ""
+ },
+ {
+  "path": "/en/eventos/",
+  "status": 200,
+  "html_lang": "en-US",
+  "canonical": "https://conexaobr.ie/en/eventos/",
+  "hreflang": [
+   "en"
+  ],
+  "location": ""
+ },
+ {
+  "path": "/lazer/",
+  "status": 200,
+  "html_lang": "pt-BR",
+  "canonical": "https://conexaobr.ie/lazer/",
+  "hreflang": [
+   "pt",
+   "x-default"
+  ],
+  "location": ""
+ },
+ {
+  "path": "/en/lazer/",
+  "status": 200,
+  "html_lang": "en-US",
+  "canonical": "https://conexaobr.ie/en/lazer/",
+  "hreflang": [
+   "en"
+  ],
+  "location": ""
+ },
+ {
+  "path": "/empregos/",
+  "status": 200,
+  "html_lang": "pt-BR",
+  "canonical": "https://conexaobr.ie/empregos/",
+  "hreflang": [
+   "x-default"
+  ],
+  "location": ""
+ },
+ {
+  "path": "/en/empregos/",
+  "status": 200,
+  "html_lang": "en-US",
+  "canonical": "https://conexaobr.ie/empregos/",
+  "hreflang": [
+   "x-default"
+  ],
+  "location": ""
+ },
+ {
+  "path": "/blog/",
+  "status": 200,
+  "html_lang": "pt-BR",
+  "canonical": "https://conexaobr.ie/blog/",
+  "hreflang": [
+   "x-default"
+  ],
+  "location": ""
+ },
+ {
+  "path": "/en/blog/",
+  "status": 200,
+  "html_lang": "en-US",
+  "canonical": "https://conexaobr.ie/blog/",
+  "hreflang": [
+   "x-default"
+  ],
+  "location": ""
+ }
+]

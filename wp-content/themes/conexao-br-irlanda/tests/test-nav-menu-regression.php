@@ -160,13 +160,65 @@ assert_true( function_exists( 'conexao_normalize_primary_nav_sections' ), 'A15 r
 $header_src = (string) file_get_contents( CONEXAO_THEME_DIR . '/header.php' );
 assert_true( false === strpos( $header_src, 'wp_page_menu' ), 'B1 header.php does not use wp_page_menu as wp_nav_menu fallback');
 $count = substr_count( $header_src, "'fallback_cb'    => 'conexao_safe_nav_menu_fallback'," );
-assert_true( 2 === $count, 'B2 BOTH wp_nav_menu calls (desktop + mobile drawer) use the safe empty fallback');
+assert_true( 2 === $count, 'B2 BOTH wp_nav_menu calls (desktop + mobile drawer) use the canonical fallback');
 
 assert_true( function_exists( 'conexao_safe_nav_menu_fallback' ), 'B3 safe fallback helper exists');
+
+/*
+ * B4 — the fallback must render the CANONICAL navigation, not nothing.
+ *
+ * This assertion previously required empty output. That encoded the
+ * production regression: when Polylang has no per-language nav_menus
+ * assignment it nullifies the 'primary' location to 0, wp_nav_menu() finds no
+ * menu and calls this fallback — so an empty fallback produced a header with
+ * a completely empty <nav id="site-navigation">. The fallback now renders the
+ * theme's own canonical nine sections, so the header stays navigable.
+ *
+ * The safety property that caused the original report (never fall back to
+ * WordPress' full page list) is still asserted below.
+ */
+$canonical = conexao_canonical_primary_nav_items();
+assert_true( 9 === count( $canonical ), 'B4a canonical item builder returns exactly the nine canonical sections', 'got ' . count( $canonical ) );
+
+$canonical_titles = wp_list_pluck( $canonical, 'title' );
+$expected_titles  = array( 'Início', 'Apoiadores', 'Guias', 'Eventos', 'Cursos', 'Lazer e turismo', 'Empregos', 'Blog', 'Contato' );
+assert_true( $expected_titles === $canonical_titles, 'B4b canonical items are the documented nine, in the documented order', 'got ' . wp_json_encode( $canonical_titles ) );
+
+// Idempotent / pure: a second call must produce the same result, not mutate.
+$again = conexao_canonical_primary_nav_items();
+assert_true( wp_list_pluck( $again, 'title' ) === $canonical_titles, 'B4c canonical item builder is idempotent (same order and labels on a second call)');
+$repeat = array_map(
+	static function ( $item ) {
+		return $item->url;
+	},
+	$canonical
+);
+assert_true( $repeat === array_map( static function ( $item ) { return $item->url; }, $again ), 'B4d canonical items are not mutated by repeated calls (URLs stable)');
+
 ob_start();
-conexao_safe_nav_menu_fallback( array( 'theme_location' => 'primary' ) );
+conexao_safe_nav_menu_fallback( array( 'theme_location' => 'primary', 'menu_id' => 'primary-menu', 'menu_class' => 'primary-menu' ) );
 $emitted = ob_get_clean();
-assert_true( '' === trim( (string) $emitted ), 'B4 safe fallback renders no markup (explicitly empty output)');
+$emitted = (string) $emitted;
+
+assert_true( '' !== trim( $emitted ), 'B4e safe fallback renders the canonical navigation instead of nothing' );
+assert_true( false !== strpos( $emitted, 'id="primary-menu"' ), 'B4f safe fallback keeps the primary-menu id the CSS and tests target' );
+assert_true( 9 === (int) preg_match_all( '/nav-link/', $emitted ), 'B4g safe fallback renders all nine canonical items', 'got ' . (int) preg_match_all( '/nav-link/', $emitted ) );
+
+$emitted_titles = array();
+if ( preg_match_all( '/<a href="[^"]*"[^>]*>([^<]+)<\/a>/', $emitted, $m ) ) {
+	$emitted_titles = $m[1];
+}
+assert_true( $expected_titles === $emitted_titles, 'B4h safe fallback renders the canonical nine in the canonical order', 'got ' . wp_json_encode( $emitted_titles ) );
+
+// The original regression this fallback exists for must stay fixed.
+assert_true( ! preg_match( '/<li class="page_item[^\"]*"\s/', $emitted ), 'B4i safe fallback never renders the WordPress page-list (wp_page_menu) output' );
+assert_true( false === strpos( $emitted, 'page-item' ), 'B4j safe fallback emits no page-item classes' );
+
+// Non-primary locations keep WordPress' own default behaviour.
+ob_start();
+conexao_safe_nav_menu_fallback( array( 'theme_location' => 'footer' ) );
+$other = ob_get_clean();
+assert_true( '' === trim( (string) $other ), 'B5 the canonical fallback is scoped to the primary location only (footer renders nothing)' );
 
 
 assert_true( function_exists( 'conexao_nav_menu_args' ) && function_exists( 'conexao_nav_menu_css_class' ), 'F1 nav-menu class/args filters still registered (nav-item/nav-link classes preserved)');

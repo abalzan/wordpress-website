@@ -1,0 +1,145 @@
+{
+  "audit": "production-polylang-configuration",
+  "date": "2026-09-29",
+  "branch": "i18n",
+  "git_head": "33114c6dec671df6d07f097a0bb570454af0a8cd",
+  "mode": "read-only",
+  "target": "https://conexaobr.ie",
+  "access": {
+    "mechanism": "repository shared REST client scripts/lib/rest.py + WP application password from repository .env",
+    "authenticated_user_slug": "conexaobradmin",
+    "authenticated_user_id": 283039558,
+    "wp_api_root_status": 200,
+    "site_name": "Conexão BR",
+    "site_url": "https://conexaobr.ie",
+    "timezone_string": "Europe/Dublin",
+    "gmt_offset": 1,
+    "active_theme": "conexao-br-irlanda",
+    "active_theme_version": "1.0.0",
+    "wp_version": "not obtainable read-only over the REST surface",
+    "php_version": "not obtainable read-only over the REST surface",
+    "note": "users/me returns an empty capabilities map on WordPress.com; plugin/theme endpoints remain readable, which is the access this audit needed."
+  },
+  "polylang": {
+    "installed": true,
+    "active": true,
+    "plugin_slug": "polylang/polylang",
+    "version": "3.8.10",
+    "requires_wp": "6.5",
+    "requires_php": "7.4",
+    "previous_version": "",
+    "first_activation_unix": 1790697615,
+    "first_activation_utc": "2026-09-29T16:00:15+00:00",
+    "pro_or_addon_present": false,
+    "other_multilingual_plugin_active": false,
+    "total_plugins_installed": 18,
+    "settings_endpoint": {
+      "force_lang": 1,
+      "domains": [],
+      "hide_default": true,
+      "rewrite": true,
+      "redirect_lang": false,
+      "browser": false,
+      "media_support": false,
+      "post_types": [],
+      "taxonomies": [],
+      "sync": [],
+      "default_lang": "",
+      "nav_menus": [],
+      "version": "3.8.10"
+    },
+    "languages_endpoint": [],
+    "rest_namespace_present": true,
+    "rest_namespace_listed_in_index": false,
+    "rest_namespace_control_bogus": "404 rest_no_route",
+    "verdict": "installed + active + healthy (no init error) + NOT CONFIGURED (zero languages)"
+  },
+  "runtime": {
+    "pll_rest_routes": [
+      "/pll/v1",
+      "/pll/v1/languages",
+      "/pll/v1/languages/(?P<slug>[a-z][a-z0-9_-]*)",
+      "/pll/v1/languages/(?P<term_id>[\\d]+)",
+      "/pll/v1/settings"
+    ],
+    "language_taxonomy_registered": false,
+    "rest_lang_filtering": "inactive — ?lang=pt and ?lang=en return identical X-WP-Total for every post type and identical Portuguese slugs",
+    "conexao_language_rest_field": "absent (deployed theme is the master build, which contains no inc/rest-language.php)",
+    "hreflang_attributes_sitewide_on_10_pt_pages": 0,
+    "browser_negotiation": "none — Accept-Language: en-GB on / returns 200, no redirect (matches browser:false)"
+  },
+  "content": {
+    "counts": {
+      "pages": 43,
+      "posts": 37,
+      "guide": 56,
+      "event": 1808,
+      "leisure": 289,
+      "job": 1,
+      "sponsor": 10,
+      "course_provider": 11,
+      "recruitment_agency": 27,
+      "permit_employer": 13
+    },
+    "lang_pt_equals_lang_en_for_every_type": true,
+    "translation_linked_pairs": 0,
+    "orphan_en_records": 0,
+    "polylang_meta_on_records": "none",
+    "post_lang_field": "empty for every sampled post",
+    "term_counts": {
+      "conexao_category": 58,
+      "conexao_tag": 0,
+      "conexao_county": 26,
+      "conexao_town": 251,
+      "conexao_leisure_attribute": 13
+    },
+    "taxonomy_language_state": "no term carries a language; Polylang taxonomies option is [] so no taxonomy is translated"
+  },
+  "frontend": {
+    "matrix": {
+      "/":             {"status": 200, "html_lang": "en-US", "canonical": "https://conexaobr.ie/", "hreflang": 0, "location": null},
+      "/en/":          {"status": 301, "html_lang": null, "canonical": null, "hreflang": 0, "location": "https://conexaobr.ie/eventos/encore-halloween-edition-special-guest-1926/", "x_redirect_by": "WordPress"},
+      "/guias/":       {"status": 200, "html_lang": "en-US", "canonical": "https://conexaobr.ie/guias/", "hreflang": 0, "location": null},
+      "/en/guias/":    {"status": 404, "html_lang": "en-US", "canonical": null, "hreflang": 0, "location": null},
+      "/eventos/":     {"status": 200, "html_lang": "en-US", "canonical": "https://conexaobr.ie/eventos/", "hreflang": 0, "location": null},
+      "/en/eventos/":  {"status": 404, "html_lang": "en-US", "canonical": null, "hreflang": 0, "location": null},
+      "/lazer/":       {"status": 200, "html_lang": "en-US", "canonical": "https://conexaobr.ie/lazer/", "hreflang": 0, "location": null},
+      "/en/lazer/":    {"status": 301, "html_lang": null, "canonical": null, "hreflang": 0, "location": "https://conexaobr.ie/lazer/", "x_redirect_by": "WordPress"},
+      "/empregos/":    {"status": 200, "html_lang": "en-US", "canonical": "https://conexaobr.ie/empregos/", "hreflang": 0, "location": null},
+      "/en/empregos/": {"status": 301, "html_lang": null, "canonical": null, "hreflang": 0, "location": "https://conexaobr.ie/empregos/", "x_redirect_by": "WordPress"},
+      "/blog/":        {"status": 200, "html_lang": "en-US", "canonical": "https://conexaobr.ie/", "hreflang": 0, "location": null},
+      "/en/blog/":     {"status": 301, "html_lang": null, "canonical": null, "hreflang": 0, "location": "https://conexaobr.ie/blog/", "x_redirect_by": "WordPress"}
+    },
+    "language_switcher_rendered": false,
+    "hreflang_total_on_10_pt_pages": 0
+  },
+  "deployed_artifact_fingerprint": {
+    "production_main_css_md5": "a4bab9a49b7dd0bdcce665f2380ce423",
+    "production_main_css_bytes": 192920,
+    "master_main_css_md5": "a4bab9a49b7dd0bdcce665f2380ce423",
+    "master_main_css_bytes": 192920,
+    "i18n_main_css_md5": "a367b7950e0511958a3768d284a4d35b",
+    "i18n_main_css_bytes": 196327,
+    "conclusion": "production theme == master build; the i18n bilingual layer is NOT deployed",
+    "supporting_probes": {
+      "inc_seo.php_master_only": 200,
+      "inc_events.php_i18n_only": 404,
+      "inc_queries.php_i18n_only": 404,
+      "inc_navigation.php_i18n_only": 404,
+      "inc_leisure.php_i18n_only": 404,
+      "languages_en_US.mo_i18n_only": 404
+    }
+  },
+  "write_protection": {
+    "production_writes": 0,
+    "content_mutations": 0,
+    "taxonomy_mutations": 0,
+    "menu_mutations": 0,
+    "option_or_theme_mod_mutations": 0,
+    "plugin_activation_changes": 0,
+    "http_methods_used": ["GET"],
+    "post_audit_state_recheck": "pll/v1/settings byte-identical to the first observation; plugin inventory 18 with identical statuses and versions; every content X-WP-Total identical; active theme unchanged",
+    "read_side_write_risk_assessed": "master inc/post-views.php records _conexao_view_count only on is_singular(post|guide) front-end requests for logged-out non-bot users. This audit issued no singular post or guide request (home, archives, 404s, unfollowed redirects and REST only), so no view counter was incremented."
+  }
+}
+

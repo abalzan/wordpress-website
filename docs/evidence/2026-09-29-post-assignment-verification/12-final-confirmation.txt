@@ -1,0 +1,19 @@
+FINAL CONFIRMATION (fresh read, cache-bypassed)
+
+  guide              unfiltered=56    ?lang=pt=0  ?lang=en=0
+  event              unfiltered=1808  ?lang=pt=0  ?lang=en=0
+  leisure            unfiltered=289   ?lang=pt=0  ?lang=en=0
+  sponsor            unfiltered=10    ?lang=pt=0  ?lang=en=0
+  job                unfiltered=1     ?lang=pt=0  ?lang=en=0
+  course_provider    unfiltered=11    ?lang=pt=0  ?lang=en=0
+  SUM                unfiltered=2175  ?lang=pt=0  ?lang=en=0
+
+  REQUIRED sum(?lang=pt) = 2175   ->  ACTUAL 0  => FAIL
+  REQUIRED sum(?lang=en) = 0      ->  ACTUAL 0  => PASS
+
+  Any record modified in the last 2 hours (would indicate the operator action):
+    25028 2026-09-27T18:52:17 post outono-irlanda-alimentacao-bem-estar
+    10387 2026-08-26T08:30:34 post as-relacoes-de-casal-na-nova-era
+    10388 2026-08-26T08:26:48 post dois-fatores-que-fazem-o-seu-negocio-ter
+    10389 2026-08-26T08:22:17 post quem-voce-se-tornou-longe-de-casa
+    10386 2026-05-28T15:01:39 post o-que-todo-pequeno-empreendedor-precisa-

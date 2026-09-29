@@ -599,10 +599,21 @@ automatic page list (see CONEXAO_BR_HEADER_NAVIGATION_REGRESSION_REPORT.md).
   `conexao_fix_nav_active_states()` strips the current language prefix before
   matching its canonical PT path rules. On Portuguese (the default language)
   every helper is byte-identical to the pre-Polylang behaviour.
-- Both header `wp_nav_menu()` calls (desktop + mobile drawer) use the safe
-  empty fallback `conexao_safe_nav_menu_fallback()` (functions.php): when the
-  location has no valid menu for the current language, the header renders no
-  navigation items. It must never be changed back to `wp_page_menu`.
+- Both header `wp_nav_menu()` calls (desktop + mobile drawer) use the canonical
+  fallback `conexao_safe_nav_menu_fallback()` (`inc/navigation.php`): when the
+  location has no valid menu for the current language, the header renders the
+  theme's own canonical nine sections
+  (`conexao_canonical_primary_nav_order()` / `..._items()`), built from the same
+  `conexao_primary_nav_sections()` engine and shaped by the same
+  `conexao_normalize_primary_nav_sections()` pass the stored menu uses — so the
+  header stays navigable and the markup/active states are identical to the
+  stored-menu path. It must never be changed back to `wp_page_menu`, whose
+  automatic page list overflowed the header. **The fallback never overrides a
+  real menu:** `wp_nav_menu()` only reaches it when no menu was found at all.
+  (`inc/navigation.php` is the location; this line previously pointed at
+  `functions.php`, which is now a loader only.)
+  _Updated 2026-09-29 by the header regression fix — the fallback used to render
+  nothing, which is exactly what emptied the production header._
 _Last verified: 2026-09-26 by Stage I — Scripts Standardisation_
 
 _Last verified: 2026-09-26 by Stage N — Remaining EN Blog Translations_

@@ -176,7 +176,7 @@ assert_true( untrailingslashit( conexao_primary_nav_archive_url( 'guide', 'guias
 
 $header_src = (string) file_get_contents( CONEXAO_THEME_DIR . '/header.php' );
 assert_true( false === strpos( $header_src, 'wp_page_menu' ), 'E1 header.php does NOT use wp_page_menu as wp_nav_menu fallback');
-assert_true( 2 === substr_count( $header_src, "'fallback_cb'    => 'conexao_safe_nav_menu_fallback'," ), 'E2 BOTH wp_nav_menu() calls use the safe empty fallback');
+assert_true( 2 === substr_count( $header_src, "'fallback_cb'    => 'conexao_safe_nav_menu_fallback'," ), 'E2 BOTH wp_nav_menu() calls use the canonical fallback');
 assert_true( false === strpos( $header_src, '/en/empregos/' ) && false === strpos( $header_src, '/en/blog/' ), 'E3 no hard-coded /en/empregos/ or /en/blog/ in header.php');
 
 test_finish();

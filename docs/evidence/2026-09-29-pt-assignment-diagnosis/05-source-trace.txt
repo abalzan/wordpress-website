@@ -1,0 +1,46 @@
+POLYLANG 3.8.10 SOURCE TRACE — polylang 3.8.10 (downloads.wordpress.org), read-only
+
+1) Admin action entry point
+   src/settings/settings.php:230-235
+     case 'content-default-lang':
+       check_admin_referer( 'content-default-lang' );
+       $this->model->set_language_in_mass();
+   src/settings/settings.php:335  the link is rendered ONLY by
+     notice_objects_with_no_lang() (settings.php:330-338), hooked at settings.php:129
+     on the Polylang "Languages" screen, and only when get_objects_with_no_lang(1) is truthy.
+
+2) The routine
+   src/model.php:573-615  PLL_Model::set_language_in_mass()
+     -> $this->get_objects_with_no_lang( 1000, $types )      ($types = array() = all)
+     -> per type: $object->set_language_in_mass( ids, lang )
+     -> src/translatable-object.php:656-686  INSERT INTO wp_term_relationships
+     -> recursion until 0 remain.
+
+3) WHICH POST TYPES IT WALKS  <-- decisive
+   src/model.php:498-511  loops translatable_objects ('post','term'), calls
+       $object->get_objects_with_no_lang( $limit )   <-- NO $args passed
+   src/translatable-object.php:523-539 -> query_objects_with_no_lang()
+   src/translatable-object-with-types-trait.php:30-35
+       if ( empty( $args ) ) {
+           $args = $this->get_translated_object_types();   <-- the six come from HERE
+       }
+   src/translated-post.php:158-195
+       $post_types = array( 'post','page','wp_block' );
+       if ( ! empty( $this->options['post_types'] ) ) { merge }   // empty in production
+       $post_types = apply_filters( 'pll_get_post_types', $post_types, false );  // $is_settings = FALSE
+       return $filter ? array_intersect( $post_types, get_post_types() ) : $post_types;
+
+   => the mass-assignment path calls the filter with $is_settings = FALSE, so the theme
+      guard (guard.php:50-60) DOES add guide/event/leisure/sponsor/job/course_provider.
+
+4) Where $is_settings = TRUE is used (settings SCREEN only)
+   src/settings/settings-cpt.php:66-70
+       $this->post_types = apply_filters( 'pll_get_post_types', $public_post_types, true );
+       $programmatically_active = apply_filters( 'pll_get_post_types', array(), false );
+       $this->disabled_post_types = array_intersect( $programmatically_active, $this->post_types );
+   src/settings/settings-cpt.php:103-110 renders each type as
+       checked( $disabled || in_array($post_type, $this->options['post_types']) )  + disabled
+   => the six types RENDER AS CHECKED-AND-DISABLED. The stored option stays [] by design.
+
+CONCLUSION: the empty stored option is a DISPLAY artifact, not the blocker.
+            State B ("persisted settings prevent the routine from seeing them") is REFUTED.
