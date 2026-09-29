@@ -93,6 +93,18 @@ repository secrets** and no external service.
 WordPress runtime state, credentials and data are never cached, and the
 install always runs from the lockfile, so a cache hit can never replace it.
 
+**Action runtime (Node 24).** Every GitHub Action the workflow references runs
+on **Node 24**: `actions/checkout@v5`, `actions/cache@v5` and
+`actions/upload-artifact@v6`. GitHub removed Node 20 from GitHub-hosted
+runners (final removal 2026-09-23), so a `node20` action can no longer run
+natively — the runner would previously force it onto Node 24 and log a
+deprecation warning. Each version above is the lowest major of that action that
+declares `runs.using: node24` while keeping the previous major's input names
+and defaults, so checkout depth, artifact names/paths/retention, cache keys and
+every workflow input are unchanged. The approved set is normative in
+[engineering-standard.md](engineering-standard.md) §1.7; moving to a higher
+major is a separate change, not routine upkeep.
+
 ### Blocking gates
 
 | Command | Role |

@@ -37,6 +37,14 @@
 # contacts only the package registry to install dev dependencies. It never
 # connects to conexaobr.ie, WordPress.com, a database, the REST API, or
 # Polylang, and it requires no repository secrets.
+#
+# Action runtime: every `uses:` below resolves to a release whose
+# `runs.using` is `node24` — actions/checkout@v5, actions/cache@v5,
+# actions/upload-artifact@v6 (shivammathur/setup-php@v2 is already node24).
+# Node 20 was removed from GitHub-hosted runners on 2026-09-23, so a node20
+# action cannot run natively any more. The approved set and the rule for
+# changing it are normative in engineering-standard.md §1.7; do not bump an
+# action major as routine upkeep, because a newer major may change inputs.
 
 name: WordPress CI
 
@@ -62,7 +70,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
@@ -85,7 +93,7 @@ jobs:
       # runtime state, credentials or database contents, and it can never
       # replace the install: the install below runs on every run.
       - name: Cache Composer downloads
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: ~/.cache/composer
           key: composer-downloads-${{ runner.os }}-${{ hashFiles('composer.lock') }}
@@ -171,7 +179,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           # The manifest records the commit SHA, so a shallow clone would record
           # a grafted/incorrect SHA. Fetch the full history.
@@ -210,7 +218,7 @@ jobs:
 
       - name: Upload the release manifest as evidence
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: release-manifest
           path: ${{ runner.temp }}/dist/release.json
@@ -249,7 +257,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Start the local WordPress stack (ephemeral)
         run: docker compose up -d
@@ -413,7 +421,7 @@ jobs:
 
       - name: Upload the permanent-gate result as evidence
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: permanent-gate-result
           path: docs/evidence/2026-09-26-stage-l/gate.json

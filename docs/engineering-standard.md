@@ -246,7 +246,7 @@ jobs:
     name: Static analysis
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.2'
@@ -259,6 +259,16 @@ jobs:
       - name: Shell lint
         run: sudo apt-get update && sudo apt-get install -y shellcheck && shellcheck scripts/*.sh
 ```
+
+GitHub Actions MUST be referenced at a release whose `runs.using` is `node24`.
+Node 20 was removed from GitHub-hosted runners (final removal 2026-09-23), so
+an action that still declares `node20` can no longer run natively and MUST NOT
+be added. The approved set is `actions/checkout@v5`, `actions/cache@v5` and
+`actions/upload-artifact@v6`; each is the lowest major of that action that
+targets `node24` while keeping the previous major's input names and defaults,
+so no workflow input semantics change. Upgrading to a *higher* major than this
+list is not a routine maintenance step: it requires its own change, because a
+newer major may add or alter inputs.
 
 The optional `integration` job (boot `compose.yaml`, seed, run `scripts/run-tests.sh`) MUST be added once §8's runner exists; it becomes a required check only after the suite is deterministic.
 
