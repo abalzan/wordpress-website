@@ -46,6 +46,57 @@ suites.
 | Largest single fixture | **576,595** (`mi-listing.html`) |
 | Fixture file count | **9** |
 | New fixture bytes added by Stage E | **0** |
+| New fixture bytes added by Stage P (CI synthetic site) | **23,971** (3 PHP data files, no binary) |
+
+### Stage P — the CI synthetic-site dataset
+
+The GitHub Actions `integration` job needs a site with real content. Before
+Stage P it had none, which is why that job was `workflow_dispatch`-only: the
+content-dependent suites either 404'd on page 2 or, worse, passed **vacuously**
+over an empty population.
+
+These are committed PHP **data** files, not fixtures a parser reads, but they
+are governed by the same rules and are listed here so the inventory stays the
+single place the budget is measured.
+
+| File | Bytes | Records | Purpose |
+|---|---:|---:|---|
+| `scripts/data/ci-fixture-guides.php` | 7,526 | 51 PT guides | PT half of the `en-guide` pairs; covers all 13 authored `conexao_category` terms |
+| `scripts/data/ci-fixture-posts.php` | 6,537 | 40 PT posts | PT half of the `en-post` pairs; makes `/blog/page/2/` and `/en/blog/page/2/` real |
+| `scripts/data/ci-fixture-events.php` | 9,908 | 3 events, 3 sponsors, 6 shared terms | Laois/Adare filter rows, recurrence, sponsor singles, and the SHARED county/town terms |
+| **Total** | **23,971** | | |
+
+Orchestrated by exactly one script, `scripts/bootstrap-ci-fixtures.php`, which
+is a thin coordinator: it owns **order** and nothing else. Every real unit of
+work is either a committed dataset (above) or an **existing** repository script
+it invokes — the existing `seed-*.php` directory seeders and the existing
+`en-*` stages run through the existing `scripts/run-en-translation.php` and the
+shared `conexao-translation-rollout` engine. There is no second fixture
+lifecycle and no second translation engine.
+
+Why the slugs are *those* slugs: every guide and post fixture uses a PT slug
+that already exists as an **authored English row** in the `en-guide` /
+`en-post` manifests. The shared engine resolves records by PT slug, so a
+fixture under any other slug would be a B1 record with no authored English and
+would fail translation completeness for a reason unrelated to the code under
+test. Creating the PT half of pairs the repository already ships is what lets
+the existing stages do real work instead of being no-ops.
+
+### Rules for the Stage P CI dataset
+
+- **Synthetic.** Every body is a generated placeholder that states its own
+  synthetic nature. No production copy, no scraped body, no personal data.
+- **Slug is the only identity.** No local post/term ID is ever identity.
+- **Idempotent.** Every record is create-or-repair keyed by slug, and the
+  orchestrator *proves* it: a second run reports `created=0 repaired=0`.
+- **No database dump.** Committed PHP data only — see the "Do not commit a
+  database dump as a fixture" rule above, which this honours.
+- **Shared taxonomies stay shared.** `conexao_county` / `conexao_town` terms
+  are never given a language and never duplicated per language. The orchestrator
+  asserts this explicitly (`shared_taxonomy` in the audit).
+- **Excluded from release artifacts.** They live under `scripts/`, which is
+  never packaged; `tests/scripts/verify-release-integrity.py` proves no
+  `tests/`, `fixtures/` or `*.json` report ships, and these files ship in no ZIP.
 
 Rules:
 

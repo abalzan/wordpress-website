@@ -94,11 +94,56 @@ assert_true(
 
 echo "\n  content types under test: " . implode( ', ', $content_types ) . "\n";
 
-// The documented B2 policy (authoritative, owned by inc/i18n/fallback.php).
-$b2_post_types = (array) conexao_b2_post_types();
-$b2_pages      = (array) conexao_b2_page_allowlist();
-$default_lang  = pll_default_language( 'slug' );
-$other_lang    = 'en';
+// ---------------------------------------------------------------------------
+// ANTI-VACUITY: an empty population must FAIL, not pass.
+//
+// The invariant this gate enforces is "eligible public PT records missing a
+// linked EN translation = 0". On an empty registered content type that reduces
+// to `0 = 0`: the gate goes green without having proved that a single record
+// has, or lacks, an English translation. That is a vacuous pass, and a
+// vacuous permanent gate is worse than no gate, because it reports safety it
+// never checked.
+//
+// So the gate now ALSO requires that the B1 types it evaluates actually have a
+// population to evaluate. The floors are the ones documented in
+// `conexao_ci_fixture_minimums()` — the deterministic CI fixture set — and they
+// are not arbitrary: each is the minimum a MAINTAINED contract needs.
+//
+//   guide  >= 11   /guias/ and /en/guias/ paginate at 10 per page, so the
+//                   `pt-guides-page-2` / `en-guides-page-2` acceptance rows
+//                   are 404 below 11 published guides.
+//   post   >= 11   same reason, for `en-archive-en-blog-page-2` (/en/blog/page/2/).
+//   page   >=  1   the `en-page` stage authors real page translations; zero
+//                   published pages means the bilingual page layer was never
+//                   exercised at all.
+//
+// WHY THESE TYPES ONLY. B2 types (event, leisure, sponsor, course_provider, job)
+// are deliberately exempt: a B2 type with no EN record is the DOCUMENTED,
+// CORRECT outcome, so demanding English coverage of them would change the
+// bilingual policy to satisfy a test — exactly what the standard forbids. The
+// anti-vacuity floor applies only to types that are B1 by policy, where English
+// coverage is genuinely required.
+//
+// This does NOT create EN records to satisfy itself, does not weaken the
+// completeness arithmetic below, and still fails on a genuinely missing EN
+// translation: it only refuses to declare victory over nothing.
+// ---------------------------------------------------------------------------
+$b2_post_types  = (array) conexao_b2_post_types();
+$b2_pages       = (array) conexao_b2_page_allowlist();
+$default_lang   = pll_default_language( 'slug' );
+$other_lang     = 'en';
+
+// The documented B1 population floors. Hard-coded HERE rather than imported
+// from the CI fixture dataset on purpose: this gate is a permanent invariant
+// about the SITE, so it must not become coupled to a test-only data file. If
+// the two ever disagree, the gate still holds the site to the real contract.
+$b1_population_floors = array(
+	'guide' => 11,
+	'post'  => 11,
+	'page'  => 1,
+);
+
+echo "\n  anti-vacuity: a B1 type with an empty population is a FAILURE, not a pass\n";
 
 // ---------------------------------------------------------------------------
 // Per content type: eligible PT records missing a linked EN translation.
@@ -223,6 +268,29 @@ foreach ( $content_types as $post_type ) {
 		$missing,
 		$malformed
 	);
+
+	// THE anti-vacuity invariant, checked BEFORE the completeness arithmetic is
+	// interpreted. On a B1 type the `missing = 0` result below is only
+	// meaningful when there was a population to be missing from: `eligible = 0`
+	// makes `missing = 0` trivially true. So the floor is enforced as a NAMED
+	// gate violation, which means it is reported in gate.json, classified
+	// against the baseline like every other violation, and fails the run.
+	//
+	// It is deliberately narrow: only types with a documented floor, and only
+	// when the floor is not met. A B2 type is never subject to it, because
+	// "no EN record" is the documented, correct state for a B2 type and
+	// demanding English coverage of one would change the bilingual policy to
+	// satisfy a test.
+	if ( isset( $b1_population_floors[ $post_type ] ) ) {
+		$floor = (int) $b1_population_floors[ $post_type ];
+
+		conexao_gate_violation(
+			"post_type:{$post_type}:empty_population",
+			$eligible >= $floor ? 0 : 1,
+			"{$post_type}: the B1 population has enough PT records for the invariant to be non-vacuous (eligible PT >= {$floor})",
+			array( 'eligible' => $eligible, 'floor' => $floor )
+		);
+	}
 
 	// THE invariant: eligible public PT records missing EN = 0.
 	conexao_gate_violation(

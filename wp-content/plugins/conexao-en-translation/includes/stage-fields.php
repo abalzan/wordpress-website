@@ -99,6 +99,28 @@ function conexao_en_translation_copy_fields( int $pt_id, int $en_id, array $row 
 			set_post_thumbnail( $en_id, $thumbnail );
 			++$copied;
 		}
+
+		// The PAGE TEMPLATE, for `page` records only.
+		//
+		// A page template is language-neutral presentation, exactly like the
+		// date, author or featured image above: `/empregos/` is rendered by
+		// `page-empregos.php` in BOTH languages, and the EN translation must be
+		// the same hub, not a generic page. `test-job-en-translation.php`
+		// asserts the parity directly ("Jobs page template parity"), and
+		// `test-jobs-en-language.php` asserts the EN page renders the Jobs
+		// template, so without this the EN landing silently degrades to the
+		// default page template.
+		//
+		// It is copied only for `page`, and only when the PT record actually has
+		// one, so a page with no template never has an empty value written over
+		// its EN record.
+		if ( 'page' === (string) $pt->post_type ) {
+			$pt_template = (string) get_page_template_slug( $pt_id );
+			if ( '' !== $pt_template ) {
+				update_post_meta( $en_id, '_wp_page_template', $pt_template );
+				++$copied;
+			}
+		}
 	}
 
 	// Shared proper-name terms: the SAME term in both languages by policy.

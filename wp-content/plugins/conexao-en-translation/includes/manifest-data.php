@@ -140,8 +140,56 @@ function conexao_en_translation_manifest_data(): array {
 ',
 			),
 		),
-		// page — 29 record(s).
+		// page — 32 record(s).
+		//
+		// The three rows below (`inicio`, `sobre-nos`, `contato`) are the CORE
+		// bilingual pages. Their English was authored in the now-retired
+		// `conexao-page-translation` plugin and is reproduced here VERBATIM, so
+		// the retired plugin can never be needed again and the maintained
+		// `conexao-en-translation` plugin is the single owner of every authored
+		// English string in the repository. Nothing is re-authored: these are the
+		// same words, the same slugs and the same meta descriptions the retired
+		// plugin used in production.
+		//
+		// They are required, not optional: without them `/en/` has no front page,
+		// no About and no Contact, so `test-header-menu-selection.php` (E5/E8 —
+		// the EN nav must stay in the EN URL space and the Contact item must
+		// point at the EN contact page) and `test-stage32-bilingual.php` (the
+		// English homepage is the linked translation of the PT front page)
+		// cannot be satisfied on a site built from nothing.
 		'page'  => array(
+			'inicio'                  => array(
+				'en_slug'             => 'home',
+				'en_title'            => 'Home',
+				'en_excerpt'          => '',
+				'en_meta_description' => 'Conexão BR Irlanda — the portal of the Brazilian community in Ireland. Guides, events, courses, jobs and more.',
+				'en_content'          => '<!-- wp:paragraph --><p>Welcome to Conexão BR Irlanda, the portal of the Brazilian community in Ireland.</p><!-- /wp:paragraph -->',
+			),
+			'sobre-nos'               => array(
+				'en_slug'             => 'about-us',
+				'en_title'            => 'About Us',
+				'en_excerpt'          => '',
+				'en_meta_description' => 'Meet Conexão BR Irlanda, the portal of the Brazilian community in Ireland. Our mission, vision and values.',
+				'en_content'          => '<!-- wp:heading --><h2>Who we are</h2><!-- /wp:heading -->
+<!-- wp:paragraph --><p>Conexão BR Irlanda is the portal of the Brazilian community in Ireland. Our goal is to connect, inform and support Brazilians who live in Ireland or plan to move here.</p><!-- /wp:paragraph -->
+<!-- wp:heading --><h2>Our Mission</h2><!-- /wp:heading -->
+<!-- wp:paragraph --><p>To provide relevant information, practical guides, events and a support network so that every Brazilian can live better in Ireland.</p><!-- /wp:paragraph -->
+<!-- wp:heading --><h2>Our Vision</h2><!-- /wp:heading -->
+<!-- wp:paragraph --><p>To be the main reference for the Brazilian community in Ireland, promoting integration, knowledge and opportunities.</p><!-- /wp:paragraph -->
+<!-- wp:heading --><h2>Our Values</h2><!-- /wp:heading -->
+<!-- wp:list --><ul><li>Community and solidarity</li><li>Quality, verified information</li><li>Inclusion and diversity</li><li>Transparency and trust</li></ul><!-- /wp:list -->',
+			),
+			'contato'                 => array(
+				'en_slug'             => 'contact',
+				'en_title'            => 'Contact',
+				'en_excerpt'          => '',
+				'en_meta_description' => 'Get in touch with the Conexão BR Irlanda team. Ask questions, send suggestions or find out how to advertise.',
+				'en_content'          => '<!-- wp:heading --><h2>Get in touch with us</h2><!-- /wp:heading -->
+<!-- wp:paragraph --><p>Have a suggestion, a question or want to advertise with us? Send us a message!</p><!-- /wp:paragraph -->
+<!-- wp:paragraph --><p><a href="https://wa.me/353899451428">Talk to us on WhatsApp</a></p><!-- /wp:paragraph -->
+<!-- wp:paragraph --><p>Email: <a href="mailto:tdcriativo@gmail.com">tdcriativo@gmail.com</a></p><!-- /wp:paragraph -->
+<!-- wp:paragraph --><p></p><!-- /wp:paragraph -->',
+			),
 			'politica-de-privacidade' => array(
 				'en_slug'             => 'privacy-policy',
 				'en_title'            => 'Privacy Policy',
@@ -217,16 +265,22 @@ function conexao_en_translation_manifest_data(): array {
 <!-- /wp:paragraph -->
 ',
 			),
-			'jobs-2'                  => array(
-				'en_slug'             => 'jobs-2',
-				'en_title'            => 'Jobs',
-				'en_excerpt'          => '',
-				'en_meta_description' => '',
-				'en_content'          => '<!-- wp:paragraph -->
-<p>The most recent openings are on our Instagram.<br>Follow our posts to find new job opportunities in Ireland.</p>
-<!-- /wp:paragraph -->
-',
-			),
+			// `jobs-2` was REMOVED from this manifest.
+			//
+			// It was a legacy row for the Jobs landing page, authored before the
+			// dedicated `en-jobs-page` stage existed. It is now owned by that
+			// stage, which deliberately reuses the PT `empregos` post_name so
+			// `/en/empregos/` is a real shared-slug pair. Keeping the row here
+			// made the `en-page` stage mint a SECOND English Jobs page
+			// (`empregos-2`, `empregos-3`, …), because this stage resolves
+			// records independently of the dedicated one. The result was a page
+			// slug collision and a broken Jobs page pair.
+			//
+			// One record, one owner: the maintained `conexao-en-translation`
+			// plugin now holds the Jobs page English in exactly ONE place,
+			// `includes/jobs-page-data.php`, reached through the `en-jobs-page`
+			// stage. The retired `conexao-page-translation` plugin remains
+			// historical tooling and is not consulted.
 			'newsletter'              => array(
 				'en_slug'             => 'newsletter',
 				'en_title'            => 'Newsletter',

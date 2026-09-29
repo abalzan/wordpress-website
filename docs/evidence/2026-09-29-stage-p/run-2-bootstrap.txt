@@ -1,0 +1,182 @@
+script: bootstrap-ci-fixtures.php
+target: http://localhost:8080 (local, local)
+mode:   apply
+scope:  The WordPress install this script is connected to. Only committed fixture data and existing seeders/stages are used. No production target, no credential, no network fetch of content, no developer-database dependency.
+
+=== step 1: canonical PT pages (asserted, created by plugin activation) ===
+  all 9 canonical PT pages present
+
+=== step 1b: retire core drafts that collide with authored EN slugs ===
+  privacy-policy: core draft (ID 3) trashed, freeing the authored EN slug
+  terms-of-use: not present, nothing to do
+
+=== step 1d: site locale ===
+  locale: pt_BR (correct)
+
+=== step 1e: site timezone ===
+  timezone: Europe/Dublin (correct)
+
+=== step 1f: retire the WordPress sample page ===
+  sample-page: WordPress scaffolding (ID 2) trashed
+
+=== step 1c: retire the WordPress sample post ===
+  hello-world: sample post (ID 1) trashed, so the B1 post gate is not blocked by WordPress scaffolding
+
+=== step 2: synthetic PT guides ===
+  dataset: 51 guides across 13 PT categories
+  created=51 repaired=0
+
+=== step 3: synthetic PT blog posts ===
+  dataset: 34 posts
+  created=34 repaired=0
+
+=== step 4: synthetic sponsors, events and shared county/town terms ===
+  sponsors: created=3 repaired=0
+  shared terms: created=18 (county=3, town=14; SHARED, never per-language)
+
+=== step 4b: named cross-language fixture pairs ===
+[29-Sep-2026 13:08:28 UTC] PHP Warning:  Undefined array key "leisure_created" in /var/www/html/scripts/bootstrap-ci-fixtures.php on line 216
+
+Warning: Undefined array key "leisure_created" in /var/www/html/scripts/bootstrap-ci-fixtures.php on line 216
+  named pairs: PT=14 EN=6 link-failures=0
+  translated PT terms: 12 across 2 taxonomies
+  translated EN terms: created=9 (stage-authored terms left untouched)
+  jobs: created=3 repaired=0 (dataset: 1)
+  /empregos/ body: set to the authored Portuguese copy (placeholder replaced)
+  events: created=20 repaired=0
+  event query cache flushed
+
+=== step 5: existing directory seeders ===
+
+--- php scripts/seed-course-providers.php 
+  === Seed Providers (Cursos) ===
+  === Resumo ===
+  Total:      8
+  Criados:    8
+  Atualizados: 0
+
+--- php scripts/seed-recruitment-agencies.php 
+  === Seed Recruitment Agencies ===
+  === Resumo ===
+  Total:      27
+  Criadas:    27
+
+--- php scripts/seed-permit-employers.php 
+  === Seed Permit Employers ===
+  === Resumo ===
+  Total:       13
+  Criados:     13
+  Atualizados: 0
+
+--- php scripts/seed-leisure-locations.php 
+  Seeding /lazer/ locations...
+
+--- php scripts/seed-leisure-expansion.php 
+  CREATED: Doneraile Park (ID: 326, /lazer/doneraile-park/)
+  CREATED: Donegal Castle (ID: 382, /lazer/donegal-castle/)
+  === Summary ===
+
+--- php scripts/seed-recurrence-test-events.php cleanup
+  Removed 0 [REC-TEST] events and flushed the recurrence cache.
+
+--- php scripts/seed-recurrence-test-events.php 
+  Seeding [REC-TEST] events — today: 2026-09-29 (Tuesday)
+  Done. Clean up with: php scripts/seed-recurrence-test-events.php cleanup
+
+=== step 6: EN translation stages (shared engine, existing runner) ===
+
+--- php scripts/run-en-translation.php --apply --only=page
+  === stage: en-page (mode: apply, operation: run) ===
+  created=30 updated=0 skipped=1 removed=0 conflicts=0 errors=0 PT-drift=0
+  GATE PASS: eligible PT=30 with EN=30 missing EN=0 conflicts=0 PT drift=0
+  summary: created=30, updated=0, skipped=1, removed=0, errors=0, conflicts=0, pt_changed=0, gate_failures=0
+
+--- php scripts/run-en-translation.php --apply --only=guide
+  === stage: en-guide (mode: apply, operation: run) ===
+  created=51 updated=0 skipped=1 removed=0 conflicts=0 errors=0 PT-drift=0
+  GATE PASS: eligible PT=51 with EN=51 missing EN=0 conflicts=0 PT drift=0
+  summary: created=51, updated=0, skipped=1, removed=0, errors=0, conflicts=0, pt_changed=0, gate_failures=0
+
+--- php scripts/run-en-translation.php --apply --only=post
+  === stage: en-post (mode: apply, operation: run) ===
+  created=34 updated=0 skipped=8 removed=0 conflicts=0 errors=0 PT-drift=0
+  GATE PASS: eligible PT=34 with EN=34 missing EN=0 conflicts=0 PT drift=0
+  summary: created=34, updated=0, skipped=8, removed=0, errors=0, conflicts=0, pt_changed=0, gate_failures=0
+
+--- php scripts/run-en-translation.php --apply --only=blog-page
+  === stage: en-blog-page (mode: apply, operation: run) ===
+  created=1 updated=0 skipped=0 removed=0 conflicts=0 errors=0 PT-drift=0
+  GATE PASS: eligible PT=1 with EN=1 missing EN=0 conflicts=0 PT drift=0
+  summary: created=1, updated=0, skipped=0, removed=0, errors=0, conflicts=0, pt_changed=0, gate_failures=0
+
+--- php scripts/run-en-translation.php --apply --only=jobs-page
+  === stage: en-jobs-page (mode: apply, operation: run) ===
+  created=1 updated=0 skipped=0 removed=0 conflicts=0 errors=0 PT-drift=0
+  GATE PASS: eligible PT=1 with EN=1 missing EN=0 conflicts=0 PT drift=0
+  summary: created=1, updated=0, skipped=0, removed=0, errors=0, conflicts=0, pt_changed=0, gate_failures=0
+
+--- php scripts/run-en-translation.php --apply --only=leisure-description
+  === stage: en-leisure-description (mode: apply, operation: run) ===
+  created=246 updated=0 skipped=43 removed=0 conflicts=0 errors=0 PT-drift=0
+  created      donegal-castle                                EN record created and linked; 0 field(s) copied
+  created      doneraile-park                                EN record created and linked; 0 field(s) copied
+  GATE PASS: eligible PT=246 with EN=246 missing EN=0 conflicts=0 PT drift=0
+  summary: created=246, updated=0, skipped=43, removed=0, errors=0, conflicts=0, pt_changed=0, gate_failures=0
+
+--- php scripts/run-en-translation.php --apply --only=course-provider-description
+  === stage: en-course-provider-description (mode: apply, operation: run) ===
+  created=8 updated=0 skipped=2 removed=0 conflicts=0 errors=0 PT-drift=0
+  GATE PASS: eligible PT=8 with EN=8 missing EN=0 conflicts=0 PT drift=0
+  summary: created=8, updated=0, skipped=2, removed=0, errors=0, conflicts=0, pt_changed=0, gate_failures=0
+
+--- php scripts/run-job-translation.php --apply
+  jobs: created 1, updated 0, skipped 0, errors 0
+  -- numeric gate --
+  missing EN (gate condition)                0
+  extra gate failures                        0
+  GATE: PASS
+  summary: create=1, update=0, skip=0, conflicts=0, errors=0, gate=PASS, pt_changed=0
+  archive order: aged 242 leisure record(s) to 2026-01-02 09:00:00 so the pinned card leads page 1
+
+=== step 7: EN primary menu + Polylang per-language nav assignment ===
+
+--- php scripts/assign-polylang-nav-menus.php 
+  === Polylang primary-menu assignment ===
+  Menu Principal found (term_id 69, 9 items).
+  Wrote Polylang nav_menus['conexao-br-irlanda']['primary']['pt'] = 69 (was 0).
+  Note: EN unassigned — create/assign the EN menu with scripts/create-en-primary-menu.php (until then the EN header uses the safe empty fallback).
+  Done.
+
+--- php scripts/create-en-primary-menu.php 
+  === English primary menu creation + Polylang assignment ===
+  Created nav menu 'Main Menu' (term_id 333).
+  Populated 10 EN menu items (mirror of the PT menu's stored structure).
+  Wrote Polylang nav_menus['conexao-br-irlanda']['primary']['en'] = 333 (was 0).
+  Done.
+
+=== step 8: rewrite rules ===
+  rewrite rules flushed
+
+=== step 9: fixture audit ===
+  guide             104 (floor   11) OK
+  post               70 (floor   11) OK
+  page               74 (floor   34) OK
+  sponsor             5 (floor    3) OK
+  leisure           247 (floor    1) OK
+  course_provider     8 (floor    1) OK
+  event              26 (floor    3) OK
+  county_terms       26 (floor   11) OK
+  town_terms         22 (floor   18) OK
+  job                 4 (floor    1) OK
+  guide_en           52 (floor   11) OK
+  post_en            35 (floor   11) OK
+  shared_taxonomy     0 (floor    0) OK
+  duplicate_slugs     0 (floor    0) OK
+  nav_menu         pt=69 en=333 items=10 dupes=0 OK
+  pt_drift            0 (floor    0) OK
+  orphan_en           0 (floor    0) OK
+
+  created this run:  151
+  repaired this run: 0
+  note: records were created, so this was the first run against this database.
+summary: created=151, updated=0, errors=0, skipped=0, conflicts=0, pt_changed=0

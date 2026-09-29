@@ -28,8 +28,8 @@
  *      duplicated and no identity meta is touched.
  *
  * Usage (from the project root):
- *   docker compose exec -T wordpress wp eval-file - --allow-root < scripts/run-polylang-setup.php
- *   docker compose exec -T wordpress wp eval-file - --allow-root < scripts/run-polylang-setup.php -- --dry-run
+ *   docker compose exec -T WordPress wp eval-file - --allow-root < scripts/run-polylang-setup.php
+ *   docker compose exec -T WordPress wp eval-file - --allow-root < scripts/run-polylang-setup.php -- --dry-run
  *
  * @package Conexao_BR_Irlanda
  */
@@ -47,7 +47,7 @@ if ( ! function_exists( 'pll_languages_list' ) && class_exists( 'Polylang' ) ) {
 		},
 		PHP_INT_MAX
 	);
-	(new Polylang())->init();
+	( new Polylang() )->init();
 }
 
 if ( ! function_exists( 'pll_languages_list' ) ) {
@@ -100,6 +100,33 @@ if ( ! $dry_run ) {
 $default = PLL()->model->get_default_language();
 echo '  default language: ' . ( $default ? $default->slug . ' (' . $default->locale . ')' : 'MISSING' ) . "\n";
 
+// The WordPress LOCALE (`WPLANG`) must match the default Polylang language.
+//
+// Polylang owns the multilingual routing; `WPLANG` owns the single WordPress
+// locale that the rest of the stack reads through `get_locale()` — the
+// `html lang` attribute, `og:locale`, and every `date_i18n()` call. A fresh
+// install leaves `WPLANG` unset, so `get_locale()` returns `en_US` even though
+// Polylang's default is `pt_BR`. The two then disagree, and the disagreement is
+// user-visible: the site renders `lang="en-US"` and English month names while
+// serving Portuguese content.
+//
+// Polylang normally maintains this option itself once a default language is
+// set, so this is a post-condition rather than a competing configuration: it
+// is ASSERTED, and only repaired when it is unset, so this script can never
+// override a deliberately chosen locale.
+echo "\n-- 1b. WordPress locale (WPLANG) --\n";
+$wplang = (string) get_option( 'WPLANG', '' );
+if ( $default && 'pt_BR' === (string) $default->locale && 'pt_BR' !== $wplang ) {
+	if ( $dry_run ) {
+		echo "  WPLANG = '{$wplang}' WOULD be set to 'pt_BR' (to match the default language)\n";
+	} else {
+		update_option( 'WPLANG', 'pt_BR' );
+		echo "  WPLANG = '{$wplang}' → 'pt_BR' (matches the default language)\n";
+	}
+} else {
+	echo "  WPLANG = '" . ( '' !== $wplang ? $wplang : '(unset)' ) . "' (unchanged)\n";
+}
+
 echo "\n-- 2. URL configuration --\n";
 $expected = array(
 	'force_lang'    => 1,
@@ -109,14 +136,14 @@ $expected = array(
 	'redirect_lang' => false,
 	'media_support' => false,
 );
-$changed = false;
+$changed  = false;
 foreach ( $expected as $key => $value ) {
 	$current = PLL()->options[ $key ];
 	if ( $current === $value ) {
 		echo "  {$key} = " . var_export( $current, true ) . " (unchanged)\n";
 		continue;
 	}
-	echo "  {$key} = " . var_export( $current, true ) . " → " . var_export( $value, true ) . "\n";
+	echo "  {$key} = " . var_export( $current, true ) . ' → ' . var_export( $value, true ) . "\n";
 	if ( ! $dry_run ) {
 		$result = PLL()->options->set( $key, $value );
 		if ( $result->has_errors() ) {

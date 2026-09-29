@@ -1,7 +1,7 @@
 {
   "stage": "L — permanent invariant gates",
-  "generated_at": "2026-09-29T07:03:09Z",
-  "repository_sha": "c99df5349531d3ff3e099773943c7e6195437383",
+  "generated_at": "2026-09-29T13:14:52Z",
+  "repository_sha": "dbf8b13b260b588e80351f82098c6e9e9e84d760",
   "status": "pass",
   "gates": {
     "taxonomy_policy": {
@@ -112,7 +112,7 @@
         "  PASS: conexao_tag: every translated term pair is linked in BOTH directions",
         "  PASS: the gate inspected a real shared-term population",
         "",
-        "  inspected: 275 shared terms, 20 translated term pairs",
+        "  inspected: 52 shared terms, 20 translated term pairs",
         "",
         "18 passed, 0 failed",
         "GATE-RESULT {\"gate\":\"taxonomy_policy\",\"status\":\"pass\",\"passed\":18,\"failed\":0,\"violations\":0,\"pre_existing\":0,\"new\":0,\"prerequisites\":[\"polylang\",\"conexao_county + conexao_town + conexao_category terms\"],\"allowlisted\":[],\"allowlisted_count\":0,\"details\":[{\"key\":\"taxonomy:conexao_county:suffixed_duplicate_terms\",\"count\":0,\"label\":\"conexao_county: no per-language suffixed duplicate terms\",\"detail\":{\"slugs\":[]}},{\"key\":\"taxonomy:conexao_county:duplicate_slugs\",\"count\":0,\"label\":\"conexao_county: no duplicate term slugs\",\"detail\":{\"slugs\":[]}},{\"key\":\"taxonomy:conexao_county:language_tagged_terms\",\"count\":0,\"label\":\"conexao_county: every shared term is language-neutral (no language tag)\",\"detail\":{\"sample\":[]}},{\"key\":\"taxonomy:conexao_town:suffixed_duplicate_terms\",\"count\":0,\"label\":\"conexao_town: no per-language suffixed duplicate terms\",\"detail\":{\"slugs\":[]}},{\"key\":\"taxonomy:conexao_town:duplicate_slugs\",\"count\":0,\"label\":\"conexao_town: no duplicate term slugs\",\"detail\":{\"slugs\":[]}},{\"key\":\"taxonomy:conexao_town:language_tagged_terms\",\"count\":0,\"label\":\"conexao_town: every shared term is language-neutral (no language tag)\",\"detail\":{\"sample\":[]}},{\"key\":\"taxonomy:conexao_category:en_terms_without_pt_link\",\"count\":0,\"label\":\"conexao_category: every EN term has a PT master\",\"detail\":{\"slugs\":[]}},{\"key\":\"taxonomy:conexao_category:missing_reverse_link\",\"count\":0,\"label\":\"conexao_category: every translated term pair is linked in BOTH directions\",\"detail\":{\"pairs\":[]}},{\"key\":\"taxonomy:conexao_tag:en_terms_without_pt_link\",\"count\":0,\"label\":\"conexao_tag: every EN term has a PT master\",\"detail\":{\"slugs\":[]}},{\"key\":\"taxonomy:conexao_tag:missing_reverse_link\",\"count\":0,\"label\":\"conexao_tag: every translated term pair is linked in BOTH directions\",\"detail\":{\"pairs\":[]}}]}"
@@ -125,12 +125,12 @@
       "command": "docker compose exec -T wordpress php /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-translation-completeness.php",
       "exit_code": 0,
       "status": "pass",
-      "passed": 20,
+      "passed": 23,
       "failed": 0,
       "violations": 0,
       "pre_existing": 0,
       "new": 0,
-      "allowlisted": 1898,
+      "allowlisted": 289,
       "prerequisites": [
         "polylang",
         "published PT content"
@@ -141,9 +141,9 @@
           "count": 0,
           "label": "course_provider: eligible public PT records missing a linked EN translation = 0",
           "detail": {
-            "eligible": 10,
+            "eligible": 8,
             "translated": 0,
-            "allowlisted": 10,
+            "allowlisted": 8,
             "sample": []
           }
         },
@@ -160,9 +160,9 @@
           "count": 0,
           "label": "event: eligible public PT records missing a linked EN translation = 0",
           "detail": {
-            "eligible": 1582,
+            "eligible": 24,
             "translated": 1,
-            "allowlisted": 1581,
+            "allowlisted": 23,
             "sample": []
           }
         },
@@ -175,12 +175,21 @@
           }
         },
         {
+          "key": "post_type:guide:empty_population",
+          "count": 0,
+          "label": "guide: the B1 population has enough PT records for the invariant to be non-vacuous (eligible PT >= 11)",
+          "detail": {
+            "eligible": 52,
+            "floor": 11
+          }
+        },
+        {
           "key": "post_type:guide:missing_en",
           "count": 0,
           "label": "guide: eligible public PT records missing a linked EN translation = 0",
           "detail": {
-            "eligible": 49,
-            "translated": 49,
+            "eligible": 52,
+            "translated": 52,
             "allowlisted": 0,
             "sample": []
           }
@@ -199,8 +208,8 @@
           "label": "job: eligible public PT records missing a linked EN translation = 0",
           "detail": {
             "eligible": 2,
-            "translated": 1,
-            "allowlisted": 1,
+            "translated": 2,
+            "allowlisted": 0,
             "sample": []
           }
         },
@@ -217,9 +226,9 @@
           "count": 0,
           "label": "leisure: eligible public PT records missing a linked EN translation = 0",
           "detail": {
-            "eligible": 291,
+            "eligible": 246,
             "translated": 1,
-            "allowlisted": 290,
+            "allowlisted": 245,
             "sample": []
           }
         },
@@ -232,12 +241,21 @@
           }
         },
         {
+          "key": "post_type:page:empty_population",
+          "count": 0,
+          "label": "page: the B1 population has enough PT records for the invariant to be non-vacuous (eligible PT >= 1)",
+          "detail": {
+            "eligible": 42,
+            "floor": 1
+          }
+        },
+        {
           "key": "post_type:page:missing_en",
           "count": 0,
           "label": "page: eligible public PT records missing a linked EN translation = 0",
           "detail": {
-            "eligible": 43,
-            "translated": 33,
+            "eligible": 42,
+            "translated": 32,
             "allowlisted": 10,
             "sample": []
           }
@@ -251,12 +269,21 @@
           }
         },
         {
+          "key": "post_type:post:empty_population",
+          "count": 0,
+          "label": "post: the B1 population has enough PT records for the invariant to be non-vacuous (eligible PT >= 11)",
+          "detail": {
+            "eligible": 35,
+            "floor": 11
+          }
+        },
+        {
           "key": "post_type:post:missing_en",
           "count": 0,
           "label": "post: eligible public PT records missing a linked EN translation = 0",
           "detail": {
-            "eligible": 46,
-            "translated": 46,
+            "eligible": 35,
+            "translated": 35,
             "allowlisted": 0,
             "sample": []
           }
@@ -274,9 +301,9 @@
           "count": 0,
           "label": "sponsor: eligible public PT records missing a linked EN translation = 0",
           "detail": {
-            "eligible": 7,
+            "eligible": 4,
             "translated": 1,
-            "allowlisted": 6,
+            "allowlisted": 3,
             "sample": []
           }
         },
@@ -290,18 +317,18 @@
         }
       ],
       "output_tail": [
-        "  post             eligible PT=46 translated=46 allowlisted=0 missing EN=0 malformed=0",
+        "  PASS: post: the B1 population has enough PT records for the invariant to be non-vacuous (eligible PT >= 11)",
         "  PASS: post: eligible public PT records missing a linked EN translation = 0",
         "  PASS: post: every translation relationship is a bidirectional link to a PT master",
-        "  sponsor          eligible PT=7 translated=1 allowlisted=6 missing EN=0 malformed=0",
+        "  sponsor          eligible PT=4 translated=1 allowlisted=3 missing EN=0 malformed=0",
         "  PASS: sponsor: eligible public PT records missing a linked EN translation = 0",
         "  PASS: sponsor: every translation relationship is a bidirectional link to a PT master",
         "  PASS: every discovered content type was evaluated (no type silently skipped)",
         "",
-        "20 passed, 0 failed",
-        "  allowlisted: 1898 (by documented policy)",
-        "    first 20: course_provider:microcreds, course_provider:apprenticeship-ie, course_provider:etbi, course_provider:courses-ie, course_provider:local-enterprise-office, course_provider:solas-ecollege, course_provider:skillnet-ireland, course_provider:springboard-plus, course_provider:qualifax, course_provider:fetch-courses, event:encontro-de-brasileiros-limerick, event:brazilian-film-night-dublin, event:brazilian-day-galway-2026, event:workshop-de-curriculo-dublin, event:feijoada-beneficente-cork, event:the-fright-crawl-corks-1-halloween-bar-crawl-2026-sat-oct-31, event:clouds, event:navigating-new-risks-cyber-oil-and-pi-realities-for-the-modern-seafarer, event:friends-of-the-south-infirmary-smart-table-quiz, event:abba-bottomless-drag-brunch-with-mockie-ah-2",
-        "GATE-RESULT {\"gate\":\"translation_completeness\",\"status\":\"pass\",\"passed\":20,\"failed\":0,\"violations\":0,\"pre_existing\":0,\"new\":0,\"prerequisites\":[\"polylang\",\"published PT content\"],\"allowlisted\":[\"course_provider:microcreds\",\"course_provider:apprenticeship-ie\",\"course_provider:etbi\",\"course_provider:courses-ie\",\"course_provider:local-enterprise-office\",\"course_provider:solas-ecollege\",\"course_provider:skillnet-ireland\",\"course_provider:springboard-plus\",\"course_provider:qualifax\",\"course_provider:fetch-courses\",\"event:encontro-de-brasileiros-limerick\",\"event:brazilian-film-night-dublin\",\"event:brazilian-day-galway-2026\",\"event:workshop-de-curriculo-dublin\",\"event:feijoada-beneficente-cork\",\"event:the-fright-crawl-corks-1-halloween-bar-crawl-2026-sat-oct-31\",\"event:clouds\",\"event:navigating-new-risks-cyber-oil-and-pi-realities-for-the-modern-seafarer\",\"event:friends-of-the-south-infirmary-smart-table-quiz\",\"event:abba-bottomless-drag-brunch-with-mockie-ah-2\"],\"allowlisted_count\":1898,\"details\":[{\"key\":\"post_type:course_provider:missing_en\",\"count\":0,\"label\":\"course_provider: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":10,\"translated\":0,\"allowlisted\":10,\"sample\":[]}},{\"key\":\"post_type:course_provider:malformed_relationships\",\"count\":0,\"label\":\"course_provider: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:event:missing_en\",\"count\":0,\"label\":\"event: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":1582,\"translated\":1,\"allowlisted\":1581,\"sample\":[]}},{\"key\":\"post_type:event:malformed_relationships\",\"count\":0,\"label\":\"event: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:guide:missing_en\",\"count\":0,\"label\":\"guide: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":49,\"translated\":49,\"allowlisted\":0,\"sample\":[]}},{\"key\":\"post_type:guide:malformed_relationships\",\"count\":0,\"label\":\"guide: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:job:missing_en\",\"count\":0,\"label\":\"job: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":2,\"translated\":1,\"allowlisted\":1,\"sample\":[]}},{\"key\":\"post_type:job:malformed_relationships\",\"count\":0,\"label\":\"job: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:leisure:missing_en\",\"count\":0,\"label\":\"leisure: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":291,\"translated\":1,\"allowlisted\":290,\"sample\":[]}},{\"key\":\"post_type:leisure:malformed_relationships\",\"count\":0,\"label\":\"leisure: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:page:missing_en\",\"count\":0,\"label\":\"page: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":43,\"translated\":33,\"allowlisted\":10,\"sample\":[]}},{\"key\":\"post_type:page:malformed_relationships\",\"count\":0,\"label\":\"page: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:post:missing_en\",\"count\":0,\"label\":\"post: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":46,\"translated\":46,\"allowlisted\":0,\"sample\":[]}},{\"key\":\"post_type:post:malformed_relationships\",\"count\":0,\"label\":\"post: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:sponsor:missing_en\",\"count\":0,\"label\":\"sponsor: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":7,\"translated\":1,\"allowlisted\":6,\"sample\":[]}},{\"key\":\"post_type:sponsor:malformed_relationships\",\"count\":0,\"label\":\"sponsor: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}}]}"
+        "23 passed, 0 failed",
+        "  allowlisted: 289 (by documented policy)",
+        "    first 20: course_provider:etbi, course_provider:courses-ie, course_provider:local-enterprise-office, course_provider:solas-ecollege, course_provider:skillnet-ireland, course_provider:springboard-plus, course_provider:qualifax, course_provider:fetch-courses, event:rec-test-9-normal-event-no-recurrence-meta, event:rec-test-8-weekly-weekday-mismatch-tuesday-started-sunday, event:rec-test-7-weekly-open-ended-tuesday, event:rec-test-6-weekly-twice-tuesday-thursday, event:rec-test-5-weekly-tuesday-ended, event:rec-test-4-weekly-sunday-not-started, event:rec-test-3-weekly-tuesday-active-today, event:rec-test-2-one-time-past, event:rec-test-1-one-time-future, event:evento-ci-cobertura-07, event:evento-ci-cobertura-10, event:evento-ci-cobertura-09",
+        "GATE-RESULT {\"gate\":\"translation_completeness\",\"status\":\"pass\",\"passed\":23,\"failed\":0,\"violations\":0,\"pre_existing\":0,\"new\":0,\"prerequisites\":[\"polylang\",\"published PT content\"],\"allowlisted\":[\"course_provider:etbi\",\"course_provider:courses-ie\",\"course_provider:local-enterprise-office\",\"course_provider:solas-ecollege\",\"course_provider:skillnet-ireland\",\"course_provider:springboard-plus\",\"course_provider:qualifax\",\"course_provider:fetch-courses\",\"event:rec-test-9-normal-event-no-recurrence-meta\",\"event:rec-test-8-weekly-weekday-mismatch-tuesday-started-sunday\",\"event:rec-test-7-weekly-open-ended-tuesday\",\"event:rec-test-6-weekly-twice-tuesday-thursday\",\"event:rec-test-5-weekly-tuesday-ended\",\"event:rec-test-4-weekly-sunday-not-started\",\"event:rec-test-3-weekly-tuesday-active-today\",\"event:rec-test-2-one-time-past\",\"event:rec-test-1-one-time-future\",\"event:evento-ci-cobertura-07\",\"event:evento-ci-cobertura-10\",\"event:evento-ci-cobertura-09\"],\"allowlisted_count\":289,\"details\":[{\"key\":\"post_type:course_provider:missing_en\",\"count\":0,\"label\":\"course_provider: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":8,\"translated\":0,\"allowlisted\":8,\"sample\":[]}},{\"key\":\"post_type:course_provider:malformed_relationships\",\"count\":0,\"label\":\"course_provider: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:event:missing_en\",\"count\":0,\"label\":\"event: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":24,\"translated\":1,\"allowlisted\":23,\"sample\":[]}},{\"key\":\"post_type:event:malformed_relationships\",\"count\":0,\"label\":\"event: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:guide:empty_population\",\"count\":0,\"label\":\"guide: the B1 population has enough PT records for the invariant to be non-vacuous (eligible PT >= 11)\",\"detail\":{\"eligible\":52,\"floor\":11}},{\"key\":\"post_type:guide:missing_en\",\"count\":0,\"label\":\"guide: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":52,\"translated\":52,\"allowlisted\":0,\"sample\":[]}},{\"key\":\"post_type:guide:malformed_relationships\",\"count\":0,\"label\":\"guide: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:job:missing_en\",\"count\":0,\"label\":\"job: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":2,\"translated\":2,\"allowlisted\":0,\"sample\":[]}},{\"key\":\"post_type:job:malformed_relationships\",\"count\":0,\"label\":\"job: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:leisure:missing_en\",\"count\":0,\"label\":\"leisure: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":246,\"translated\":1,\"allowlisted\":245,\"sample\":[]}},{\"key\":\"post_type:leisure:malformed_relationships\",\"count\":0,\"label\":\"leisure: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:page:empty_population\",\"count\":0,\"label\":\"page: the B1 population has enough PT records for the invariant to be non-vacuous (eligible PT >= 1)\",\"detail\":{\"eligible\":42,\"floor\":1}},{\"key\":\"post_type:page:missing_en\",\"count\":0,\"label\":\"page: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":42,\"translated\":32,\"allowlisted\":10,\"sample\":[]}},{\"key\":\"post_type:page:malformed_relationships\",\"count\":0,\"label\":\"page: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:post:empty_population\",\"count\":0,\"label\":\"post: the B1 population has enough PT records for the invariant to be non-vacuous (eligible PT >= 11)\",\"detail\":{\"eligible\":35,\"floor\":11}},{\"key\":\"post_type:post:missing_en\",\"count\":0,\"label\":\"post: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":35,\"translated\":35,\"allowlisted\":0,\"sample\":[]}},{\"key\":\"post_type:post:malformed_relationships\",\"count\":0,\"label\":\"post: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:sponsor:missing_en\",\"count\":0,\"label\":\"sponsor: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":4,\"translated\":1,\"allowlisted\":3,\"sample\":[]}},{\"key\":\"post_type:sponsor:malformed_relationships\",\"count\":0,\"label\":\"sponsor: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}}]}"
       ]
     },
     "cache_scoping": {
@@ -615,7 +642,7 @@
       ]
     }
   },
-  "total_passed": 86,
+  "total_passed": 89,
   "total_failed": 0,
   "total_violations": 0,
   "total_pre_existing": 0,

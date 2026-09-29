@@ -1,0 +1,737 @@
+script: bootstrap-ci-fixtures.php
+target: http://localhost:8080 (local, local)
+mode:   apply
+scope:  The WordPress install this script is connected to. Only committed fixture data and existing seeders/stages are used. No production target, no credential, no network fetch of content, no developer-database dependency.
+
+=== step 1: canonical PT pages (asserted, created by plugin activation) ===
+  all 9 canonical PT pages present
+
+=== step 1b: retire core drafts that collide with authored EN slugs ===
+  privacy-policy: status 'publish' (not draft) — left untouched
+  terms-of-use: status 'publish' (not draft) — left untouched
+
+=== step 1d: site locale ===
+  locale: pt_BR (correct)
+
+=== step 1e: site timezone ===
+  timezone: Europe/Dublin (correct)
+
+=== step 1f: retire the WordPress sample page ===
+  sample-page: not present, nothing to do
+
+=== step 1c: retire the WordPress sample post ===
+  hello-world: not present, nothing to do
+
+=== step 2: synthetic PT guides ===
+  dataset: 51 guides across 13 PT categories
+  created=0 repaired=0
+
+=== step 3: synthetic PT blog posts ===
+  dataset: 34 posts
+  created=0 repaired=0
+
+=== step 4: synthetic sponsors, events and shared county/town terms ===
+  sponsors: created=0 repaired=0
+  shared terms: created=0 (county=3, town=14; SHARED, never per-language)
+
+=== step 4b: named cross-language fixture pairs ===
+  named pairs: PT=14 EN=6 link-failures=0
+  translated PT terms: 12 across 2 taxonomies
+  translated EN terms: created=0 (stage-authored terms left untouched)
+  jobs: created=0 repaired=0 (dataset: 1)
+  /empregos/ body: already the authored Portuguese copy
+  events: created=0 repaired=0
+  event query cache flushed
+
+=== step 5: existing directory seeders ===
+
+--- php scripts/seed-course-providers.php 
+  === Seed Providers (Cursos) ===
+  === Resumo ===
+  Total:      8
+  Criados:    0
+  Atualizados: 8
+
+--- php scripts/seed-recruitment-agencies.php 
+  === Seed Recruitment Agencies ===
+  === Resumo ===
+  Total:      27
+  Criadas:    0
+
+--- php scripts/seed-permit-employers.php 
+  === Seed Permit Employers ===
+  === Resumo ===
+  Total:       13
+  Criados:     0
+  Atualizados: 13
+
+--- php scripts/seed-leisure-locations.php 
+  Seeding /lazer/ locations...
+
+--- php scripts/seed-leisure-expansion.php 
+  DUPLICATE-SKIP: National Museum of Ireland – Archaeology (national-museum-archaeology) — slug 'national-museum-archaeology' already exists
+  DUPLICATE-SKIP: EPIC The Irish Emigration Museum (epic-irish-emigration-museum) — slug 'epic-irish-emigration-museum' already exists
+  DUPLICATE-SKIP: National Botanic Gardens (national-botanic-gardens-dublin) — slug 'national-botanic-gardens-dublin' already exists
+  DUPLICATE-SKIP: Glasnevin Cemetery Museum (glasnevin-cemetery-museum) — slug 'glasnevin-cemetery-museum' already exists
+  DUPLICATE-SKIP: Dún Laoghaire East Pier (dun-laoghaire-east-pier) — slug 'dun-laoghaire-east-pier' already exists
+  DUPLICATE-SKIP: Portmarnock Beach (Velvet Strand) (portmarnock-beach) — slug 'portmarnock-beach' already exists
+  DUPLICATE-SKIP: Russborough House (russborough-house) — slug 'russborough-house' already exists
+  DUPLICATE-SKIP: Wicklow's Historic Gaol (wicklow-historic-gaol) — slug 'wicklow-historic-gaol' already exists
+  DUPLICATE-SKIP: Brittas Bay Beach (brittas-bay-beach) — slug 'brittas-bay-beach' already exists
+  DUPLICATE-SKIP: Killruddery House & Gardens (killruddery-house-gardens) — slug 'killruddery-house-gardens' already exists
+  DUPLICATE-SKIP: Mount Usher Gardens (mount-usher-gardens) — slug 'mount-usher-gardens' already exists
+  DUPLICATE-SKIP: The Wicklow Way (wicklow-way) — slug 'wicklow-way' already exists
+  DUPLICATE-SKIP: Emerald Park (emerald-park) — slug 'emerald-park' already exists
+  DUPLICATE-SKIP: Bective Abbey (bective-abbey) — slug 'bective-abbey' already exists
+  DUPLICATE-SKIP: Kells Historic Town (kells-historic-town) — slug 'kells-historic-town' already exists
+  DUPLICATE-SKIP: Sonairte Ecology Centre (sonairte-ecology-centre) — slug 'sonairte-ecology-centre' already exists
+  DUPLICATE-SKIP: Dowth Passage Tomb (dowth) — slug 'dowth' already exists
+  DUPLICATE-SKIP: Spanish Arch & Long Walk (spanish-arch-long-walk) — slug 'spanish-arch-long-walk' already exists
+  DUPLICATE-SKIP: Galway City Museum (galway-city-museum) — slug 'galway-city-museum' already exists
+  DUPLICATE-SKIP: Brigit's Garden (brigits-garden) — slug 'brigits-garden' already exists
+  DUPLICATE-SKIP: Coole Park (coole-park) — slug 'coole-park' already exists
+  DUPLICATE-SKIP: Portumna Castle & Gardens (portumna-castle-gardens) — slug 'portumna-castle-gardens' already exists
+  DUPLICATE-SKIP: Thoor Ballylee (thoor-ballylee) — slug 'thoor-ballylee' already exists
+  DUPLICATE-SKIP: Ennis Friary (ennis-friary) — slug 'ennis-friary' already exists
+  DUPLICATE-SKIP: Scattery Island (scattery-island) — slug 'scattery-island' already exists
+  DUPLICATE-SKIP: Holy Island (Inis Cealtra) (holy-island-inis-cealtra) — slug 'holy-island-inis-cealtra' already exists
+  DUPLICATE-SKIP: Spanish Point Beach (spanish-point-beach) — slug 'spanish-point-beach' already exists
+  DUPLICATE-SKIP: Craggaunowen (craggaunowen) — slug 'craggaunowen' already exists
+  DUPLICATE-SKIP: Vandeleur Walled Garden (vandeleur-walled-garden) — slug 'vandeleur-walled-garden' already exists
+  DUPLICATE-SKIP: English Market (english-market-cork) — slug 'english-market-cork' already exists
+  DUPLICATE-SKIP: Cork City Gaol (cork-city-gaol) — slug 'cork-city-gaol' already exists
+  DUPLICATE-SKIP: Blackrock Castle Observatory (blackrock-castle-observatory) — slug 'blackrock-castle-observatory' already exists
+  DUPLICATE-SKIP: Garnish Island (garnish-island) — slug 'garnish-island' already exists
+  DUPLICATE-SKIP: Spike Island (spike-island-cork) — slug 'spike-island-cork' already exists
+  DUPLICATE-SKIP: Doneraile Park (doneraile-park) — slug 'doneraile-park' already exists
+  DUPLICATE-SKIP: Skellig Michael (skellig-michael) — slug 'skellig-michael' already exists
+  DUPLICATE-SKIP: Valentia Island (valentia-island) — slug 'valentia-island' already exists
+  DUPLICATE-SKIP: Kerry Cliffs (kerry-cliffs) — slug 'kerry-cliffs' already exists
+  DUPLICATE-SKIP: Derrynane House & National Historic Park (derrynane-house) — slug 'derrynane-house' already exists
+  DUPLICATE-SKIP: Gallarus Oratory (gallarus-oratory) — slug 'gallarus-oratory' already exists
+  DUPLICATE-SKIP: Muckross Abbey (muckross-abbey) — slug 'muckross-abbey' already exists
+  DUPLICATE-SKIP: Banna Strand (banna-strand) — slug 'banna-strand' already exists
+  DUPLICATE-SKIP: Rock of Dunamase (rock-of-dunamase) — slug 'rock-of-dunamase' already exists
+  DUPLICATE-SKIP: Emo Court (emo-court) — slug 'emo-court' already exists
+  DUPLICATE-SKIP: Heywood Gardens (heywood-gardens) — slug 'heywood-gardens' already exists
+  DUPLICATE-SKIP: Timahoe Round Tower (timahoe-round-tower) — slug 'timahoe-round-tower' already exists
+  DUPLICATE-SKIP: Abbeyleix Heritage House (abbeyleix-heritage-house) — slug 'abbeyleix-heritage-house' already exists
+  DUPLICATE-SKIP: Slieve Bloom Mountains (slieve-bloom-mountains) — slug 'slieve-bloom-mountains' already exists
+  DUPLICATE-SKIP: Clonmacnoise (clonmacnoise) — slug 'clonmacnoise' already exists
+  DUPLICATE-SKIP: Birr Castle Demesne (birr-castle-demesne) — slug 'birr-castle-demesne' already exists
+  DUPLICATE-SKIP: Lough Boora Discovery Park (lough-boora-discovery-park) — slug 'lough-boora-discovery-park' already exists
+  DUPLICATE-SKIP: Charleville Forest Castle (charleville-forest-castle) — slug 'charleville-forest-castle' already exists
+  DUPLICATE-SKIP: Tullamore D.E.W. Experience (tullamore-dew-experience) — slug 'tullamore-dew-experience' already exists
+  DUPLICATE-SKIP: Belvedere House Gardens & Park (belvedere-house-gardens) — slug 'belvedere-house-gardens' already exists
+  DUPLICATE-SKIP: Athlone Castle Visitor Centre (athlone-castle) — slug 'athlone-castle' already exists
+  DUPLICATE-SKIP: Kilbeggan Distillery Experience (kilbeggan-distillery) — slug 'kilbeggan-distillery' already exists
+  DUPLICATE-SKIP: Mullaghmeen Forest (mullaghmeen-forest) — slug 'mullaghmeen-forest' already exists
+  DUPLICATE-SKIP: Glendeer Pet Farm (glendeer-pet-farm) — slug 'glendeer-pet-farm' already exists
+  DUPLICATE-SKIP: Corlea Trackway Visitor Centre (corlea-trackway) — slug 'corlea-trackway' already exists
+  DUPLICATE-SKIP: Ardagh Heritage Village (ardagh-heritage-village) — slug 'ardagh-heritage-village' already exists
+  DUPLICATE-SKIP: Granard Motte & Bailey (granard-motte-bailey) — slug 'granard-motte-bailey' already exists
+  DUPLICATE-SKIP: Royal Canal Greenway (royal-canal-greenway) — slug 'royal-canal-greenway' already exists
+  DUPLICATE-SKIP: Newcastle Wood (newcastle-wood) — slug 'newcastle-wood' already exists
+  DUPLICATE-SKIP: Lough Ree (lough-ree) — slug 'lough-ree' already exists
+  DUPLICATE-SKIP: Rathcroghan (rathcroghan) — slug 'rathcroghan' already exists
+  DUPLICATE-SKIP: Boyle Abbey (boyle-abbey) — slug 'boyle-abbey' already exists
+  DUPLICATE-SKIP: Strokestown Park & National Famine Museum (strokestown-park-famine-museum) — slug 'strokestown-park-famine-museum' already exists
+  DUPLICATE-SKIP: Arigna Mining Experience (arigna-mining-experience) — slug 'arigna-mining-experience' already exists
+  DUPLICATE-SKIP: Lough Key Forest & Activity Park (lough-key-forest-park) — slug 'lough-key-forest-park' already exists
+  DUPLICATE-SKIP: Roscommon Castle (roscommon-castle) — slug 'roscommon-castle' already exists
+  DUPLICATE-SKIP: Glencar Waterfall (glencar-waterfall) — slug 'glencar-waterfall' already exists
+  DUPLICATE-SKIP: Parke's Castle (parkes-castle) — slug 'parkes-castle' already exists
+  DUPLICATE-SKIP: Acres Lake Floating Boardwalk (acres-lake-floating-boardwalk) — slug 'acres-lake-floating-boardwalk' already exists
+  DUPLICATE-SKIP: Lough Allen (lough-allen) — slug 'lough-allen' already exists
+  DUPLICATE-SKIP: Lough Rynn Castle Gardens (lough-rynn-castle-gardens) — slug 'lough-rynn-castle-gardens' already exists
+  DUPLICATE-SKIP: Seán Mac Diarmada Cottage (sean-mac-diarmada-cottage) — slug 'sean-mac-diarmada-cottage' already exists
+  DUPLICATE-SKIP: Cavan Burren Park (cavan-burren-park) — slug 'cavan-burren-park' already exists
+  DUPLICATE-SKIP: Killykeen Forest Park (killykeen-forest-park) — slug 'killykeen-forest-park' already exists
+  DUPLICATE-SKIP: Dún a Rí Forest Park (dun-a-ri-forest-park) — slug 'dun-a-ri-forest-park' already exists
+  DUPLICATE-SKIP: Shannon Pot (shannon-pot) — slug 'shannon-pot' already exists
+  DUPLICATE-SKIP: Cavan County Museum (cavan-county-museum) — slug 'cavan-county-museum' already exists
+  DUPLICATE-SKIP: Belturbet Railway Station (belturbet-railway-station) — slug 'belturbet-railway-station' already exists
+  DUPLICATE-SKIP: Castle Leslie Estate (castle-leslie-estate) — slug 'castle-leslie-estate' already exists
+  DUPLICATE-SKIP: Rossmore Forest Park (rossmore-forest-park) — slug 'rossmore-forest-park' already exists
+  DUPLICATE-SKIP: Monaghan County Museum (monaghan-county-museum) — slug 'monaghan-county-museum' already exists
+  DUPLICATE-SKIP: Carrickmacross Lace Gallery (carrickmacross-lace-gallery) — slug 'carrickmacross-lace-gallery' already exists
+  DUPLICATE-SKIP: Patrick Kavanagh Centre (patrick-kavanagh-centre) — slug 'patrick-kavanagh-centre' already exists
+  DUPLICATE-SKIP: Sliabh Beagh (sliabh-beagh) — slug 'sliabh-beagh' already exists
+  DUPLICATE-SKIP: Glenveagh National Park (glenveagh-national-park) — slug 'glenveagh-national-park' already exists
+  DUPLICATE-SKIP: Sliabh Liag (Slieve League) (sliabh-liag) — slug 'sliabh-liag' already exists
+  DUPLICATE-SKIP: Donegal Castle (donegal-castle) — slug 'donegal-castle' already exists
+  DUPLICATE-SKIP: Malin Head (malin-head) — slug 'malin-head' already exists
+  DUPLICATE-SKIP: Fanad Head Lighthouse (fanad-head-lighthouse) — slug 'fanad-head-lighthouse' already exists
+  DUPLICATE-SKIP: Grianán of Aileach (grianan-of-aileach) — slug 'grianan-of-aileach' already exists
+  DUPLICATE-SKIP: Errigal (errigal) — slug 'errigal' already exists
+  DUPLICATE-SKIP: Ards Forest Park (ards-forest-park) — slug 'ards-forest-park' already exists
+  DUPLICATE-SKIP: Benbulben (benbulben) — slug 'benbulben' already exists
+  DUPLICATE-SKIP: Strandhill Beach (strandhill-beach) — slug 'strandhill-beach' already exists
+  DUPLICATE-SKIP: Carrowmore Megalithic Cemetery (carrowmore-megalithic-cemetery) — slug 'carrowmore-megalithic-cemetery' already exists
+  DUPLICATE-SKIP: Queen Maeve's Trail (Knocknarea) (queen-maeves-trail-knocknarea) — slug 'queen-maeves-trail-knocknarea' already exists
+  DUPLICATE-SKIP: Sligo Abbey (sligo-abbey) — slug 'sligo-abbey' already exists
+  DUPLICATE-SKIP: Lissadell House (lissadell-house) — slug 'lissadell-house' already exists
+  DUPLICATE-SKIP: Drumcliffe (drumcliffe) — slug 'drumcliffe' already exists
+  DUPLICATE-SKIP: Eagles Flying (eagles-flying) — slug 'eagles-flying' already exists
+  DUPLICATE-SKIP: Croagh Patrick (croagh-patrick) — slug 'croagh-patrick' already exists
+  DUPLICATE-SKIP: Achill Island (achill-island) — slug 'achill-island' already exists
+  DUPLICATE-SKIP: Keem Bay (keem-bay) — slug 'keem-bay' already exists
+  DUPLICATE-SKIP: Westport House & Adventure Park (westport-house) — slug 'westport-house' already exists
+  DUPLICATE-SKIP: National Museum of Ireland – Country Life (national-museum-country-life) — slug 'national-museum-country-life' already exists
+  DUPLICATE-SKIP: Downpatrick Head (downpatrick-head) — slug 'downpatrick-head' already exists
+  DUPLICATE-SKIP: Céide Fields (ceide-fields) — slug 'ceide-fields' already exists
+  DUPLICATE-SKIP: Great Western Greenway (great-western-greenway) — slug 'great-western-greenway' already exists
+  DUPLICATE-SKIP: Wild Nephin Ballycroy National Park (wild-nephin-ballycroy-national-park) — slug 'wild-nephin-ballycroy-national-park' already exists
+  DUPLICATE-SKIP: Clare Island (clare-island) — slug 'clare-island' already exists
+  DUPLICATE-SKIP: Kilkenny Castle (kilkenny-castle) — slug 'kilkenny-castle' already exists
+  DUPLICATE-SKIP: Medieval Mile Museum (medieval-mile-museum) — slug 'medieval-mile-museum' already exists
+  DUPLICATE-SKIP: Jerpoint Abbey (jerpoint-abbey) — slug 'jerpoint-abbey' already exists
+  DUPLICATE-SKIP: Rothe House & Garden (rothe-house-garden) — slug 'rothe-house-garden' already exists
+  DUPLICATE-SKIP: Smithwick's Experience (smithwicks-experience) — slug 'smithwicks-experience' already exists
+  DUPLICATE-SKIP: Dunmore Cave (dunmore-cave) — slug 'dunmore-cave' already exists
+  DUPLICATE-SKIP: Castlecomer Discovery Park (castlecomer-discovery-park) — slug 'castlecomer-discovery-park' already exists
+  DUPLICATE-SKIP: Jerpoint Park (Newtown Jerpoint) (jerpoint-park) — slug 'jerpoint-park' already exists
+  DUPLICATE-SKIP: Woodstock Gardens (woodstock-gardens) — slug 'woodstock-gardens' already exists
+  DUPLICATE-SKIP: House of Waterford Crystal (house-of-waterford-crystal) — slug 'house-of-waterford-crystal' already exists
+  DUPLICATE-SKIP: Waterford Treasures Museums (waterford-treasures) — slug 'waterford-treasures' already exists
+  DUPLICATE-SKIP: Reginald's Tower (reginals-tower) — slug 'reginals-tower' already exists
+  DUPLICATE-SKIP: Waterford Greenway (waterford-greenway) — slug 'waterford-greenway' already exists
+  DUPLICATE-SKIP: Copper Coast Geopark (copper-coast-geopark) — slug 'copper-coast-geopark' already exists
+  DUPLICATE-SKIP: Mount Congreve Gardens (mount-congreve-gardens) — slug 'mount-congreve-gardens' already exists
+  DUPLICATE-SKIP: Lismore Castle Gardens (lismore-castle-gardens) — slug 'lismore-castle-gardens' already exists
+  DUPLICATE-SKIP: Ardmore Round Tower & Cathedral (ardmore-round-tower) — slug 'ardmore-round-tower' already exists
+  DUPLICATE-SKIP: Coumshingaun Loop (Comeragh Mountains) (coumshingaun-loop) — slug 'coumshingaun-loop' already exists
+  DUPLICATE-SKIP: Irish National Heritage Park (irish-national-heritage-park) — slug 'irish-national-heritage-park' already exists
+  DUPLICATE-SKIP: Johnstown Castle (johnstown-castle) — slug 'johnstown-castle' already exists
+  DUPLICATE-SKIP: Hook Lighthouse (hook-lighthouse) — slug 'hook-lighthouse' already exists
+  DUPLICATE-SKIP: Dunbrody Famine Ship (dunbrody-famine-ship) — slug 'dunbrody-famine-ship' already exists
+  DUPLICATE-SKIP: Saltee Islands (saltee-islands) — slug 'saltee-islands' already exists
+  DUPLICATE-SKIP: Curracloe Beach (curracloe-beach) — slug 'curracloe-beach' already exists
+  DUPLICATE-SKIP: Wexford Wildfowl Reserve (wexford-wildfowl-reserve) — slug 'wexford-wildfowl-reserve' already exists
+  DUPLICATE-SKIP: Ferns Castle (ferns-castle) — slug 'ferns-castle' already exists
+  DUPLICATE-SKIP: Tintern Abbey (tintern-abbey-wexford) — slug 'tintern-abbey-wexford' already exists
+  DUPLICATE-SKIP: Rock of Cashel (rock-of-cashel) — slug 'rock-of-cashel' already exists
+  DUPLICATE-SKIP: Cahir Castle (cahir-castle) — slug 'cahir-castle' already exists
+  DUPLICATE-SKIP: Swiss Cottage (swiss-cottage) — slug 'swiss-cottage' already exists
+  DUPLICATE-SKIP: Glen of Aherlow (glen-of-aherlow) — slug 'glen-of-aherlow' already exists
+  DUPLICATE-SKIP: The Vee & Bay Lough (the-vee-bay-lough) — slug 'the-vee-bay-lough' already exists
+  DUPLICATE-SKIP: Ormond Castle (ormond-castle) — slug 'ormond-castle' already exists
+  DUPLICATE-SKIP: Mitchelstown Cave (mitchelstown-cave) — slug 'mitchelstown-cave' already exists
+  DUPLICATE-SKIP: Holy Cross Abbey (holy-cross-abbey) — slug 'holy-cross-abbey' already exists
+  DUPLICATE-SKIP: King John's Castle (king-johns-castle-limerick) — slug 'king-johns-castle-limerick' already exists
+  DUPLICATE-SKIP: Hunt Museum (hunt-museum) — slug 'hunt-museum' already exists
+  DUPLICATE-SKIP: St Mary's Cathedral (st-marys-cathedral-limerick) — slug 'st-marys-cathedral-limerick' already exists
+  DUPLICATE-SKIP: Adare (adare-village) — slug 'adare-village' already exists
+  DUPLICATE-SKIP: Foynes Flying Boat & Maritime Museum (foynes-flying-boat-museum) — slug 'foynes-flying-boat-museum' already exists
+  DUPLICATE-SKIP: Lough Gur (lough-gur) — slug 'lough-gur' already exists
+  DUPLICATE-SKIP: Curraghchase Forest Park (curraghchase-forest-park) — slug 'curraghchase-forest-park' already exists
+  DUPLICATE-SKIP: Irish National Stud & Japanese Gardens (irish-national-stud-japanese-gardens) — slug 'irish-national-stud-japanese-gardens' already exists
+  DUPLICATE-SKIP: Castletown House (castletown-house) — slug 'castletown-house' already exists
+  DUPLICATE-SKIP: Bog of Allen Nature Centre (bog-of-allen-nature-centre) — slug 'bog-of-allen-nature-centre' already exists
+  DUPLICATE-SKIP: Pollardstown Fen (pollardstown-fen) — slug 'pollardstown-fen' already exists
+  DUPLICATE-SKIP: Maynooth Castle (maynooth-castle) — slug 'maynooth-castle' already exists
+  DUPLICATE-SKIP: Donadea Forest Park (donadea-forest-park) — slug 'donadea-forest-park' already exists
+  DUPLICATE-SKIP: Lullymore Heritage & Discovery Park (lullymore-heritage-park) — slug 'lullymore-heritage-park' already exists
+  DUPLICATE-SKIP: Mondello Park (mondello-park) — slug 'mondello-park' already exists
+  DUPLICATE-SKIP: Carlingford (carlingford) — slug 'carlingford' already exists
+  DUPLICATE-SKIP: King John's Castle (Carlingford) (king-johns-castle-carlingford) — slug 'king-johns-castle-carlingford' already exists
+  DUPLICATE-SKIP: Proleek Dolmen (proleek-dolmen) — slug 'proleek-dolmen' already exists
+  DUPLICATE-SKIP: Monasterboice (monasterboice) — slug 'monasterboice' already exists
+  DUPLICATE-SKIP: Mellifont Abbey (mellifont-abbey) — slug 'mellifont-abbey' already exists
+  DUPLICATE-SKIP: Carlingford Lough Greenway (carlingford-lough-greenway) — slug 'carlingford-lough-greenway' already exists
+  DUPLICATE-SKIP: Millmount Fort & Museum (millmount-fort-museum) — slug 'millmount-fort-museum' already exists
+  DUPLICATE-SKIP: Brownshill Dolmen (brownshill-dolmen) — slug 'brownshill-dolmen' already exists
+  DUPLICATE-SKIP: Altamont Gardens (altamont-gardens) — slug 'altamont-gardens' already exists
+  DUPLICATE-SKIP: Duckett's Grove (ducketts-grove) — slug 'ducketts-grove' already exists
+  DUPLICATE-SKIP: Huntington Castle & Gardens (huntington-castle-gardens) — slug 'huntington-castle-gardens' already exists
+  DUPLICATE-SKIP: Borris House (borris-house) — slug 'borris-house' already exists
+  DUPLICATE-SKIP: Oak Park Forest Park (oak-park-forest-park) — slug 'oak-park-forest-park' already exists
+  DUPLICATE-SKIP: Mount Leinster & Nine Stones (mount-leinster-nine-stones) — slug 'mount-leinster-nine-stones' already exists
+  DUPLICATE-SKIP: Chester Beatty (chester-beatty) — slug 'chester-beatty' already exists
+  DUPLICATE-SKIP: The Forty Foot (forty-foot) — slug 'forty-foot' already exists
+  DUPLICATE-SKIP: Derrigimlagh (derrigimlagh) — slug 'derrigimlagh' already exists
+  DUPLICATE-SKIP: James Joyce Tower Museum (joyce-tower-museum) — slug 'joyce-tower-museum' already exists
+  DUPLICATE-SKIP: The Model (the-model) — slug 'the-model' already exists
+  DUPLICATE-SKIP: Doagh Famine Village (doagh-famine-village) — slug 'doagh-famine-village' already exists
+  DUPLICATE-SKIP: Dursey Island (dursey-island) — slug 'dursey-island' already exists
+  DUPLICATE-SKIP: Old Head of Kinsale (old-head-of-kinsale) — slug 'old-head-of-kinsale' already exists
+  DUPLICATE-SKIP: Lough Muckno Leisure Park (lough-muckno-leisure-park) — slug 'lough-muckno-leisure-park' already exists
+  DUPLICATE-SKIP: The John F. Kennedy Arboretum (jfk-arboretum) — slug 'jfk-arboretum' already exists
+  DUPLICATE-SKIP: Cavan Cathedral (cavan-cathedral) — slug 'cavan-cathedral' already exists
+  DUPLICATE-SKIP: National Design & Craft Gallery (national-design-craft-gallery) — slug 'national-design-craft-gallery' already exists
+  === Summary ===
+
+--- php scripts/seed-recurrence-test-events.php cleanup
+  Removed 9 [REC-TEST] events and flushed the recurrence cache.
+
+--- php scripts/seed-recurrence-test-events.php 
+  Seeding [REC-TEST] events — today: 2026-09-29 (Tuesday)
+  Done. Clean up with: php scripts/seed-recurrence-test-events.php cleanup
+
+=== step 6: EN translation stages (shared engine, existing runner) ===
+
+--- php scripts/run-en-translation.php --apply --only=page
+  === stage: en-page (mode: apply, operation: run) ===
+  created=0 updated=1 skipped=30 removed=0 conflicts=0 errors=0 PT-drift=0
+  skipped      inicio                                        EN translation already linked and verified
+  skipped      sobre-nos                                     EN translation already linked and verified
+  skipped      contato                                       EN translation already linked and verified
+  skipped      politica-de-privacidade                       EN translation already linked and verified
+  skipped      termos-de-uso                                 EN translation already linked and verified
+  skipped      cookies                                       EN translation already linked and verified
+  skipped      privacidade                                   EN translation already linked and verified
+  skipped      termos                                        EN translation already linked and verified
+  skipped      sobre                                         EN translation already linked and verified
+  skipped      revista                                       EN translation already linked and verified
+  skipped      anuncie                                       EN translation already linked and verified
+  skipped      europa                                        EN translation already linked and verified
+  skipped      search                                        EN translation already linked and verified
+  skipped      moradia                                       EN translation already linked and verified
+  skipped      saude                                         EN translation already linked and verified
+  skipped      familia                                       EN translation already linked and verified
+  skipped      transporte                                    EN translation already linked and verified
+  skipped      financas                                      EN translation already linked and verified
+  skipped      beneficios                                    EN translation already linked and verified
+  skipped      educacao                                      EN translation already linked and verified
+  skipped      documentos                                    EN translation already linked and verified
+  skipped      onde-comer                                    EN translation already linked and verified
+  skipped      lazer                                         EN translation already linked and verified
+  skipped      turismo                                       EN translation already linked and verified
+  skipped      compras                                       EN translation already linked and verified
+  skipped      negocios                                      EN translation already linked and verified
+  skipped      servicos                                      EN translation already linked and verified
+  skipped      voluntariado                                  EN translation already linked and verified
+  skipped      categorias                                    EN translation already linked and verified
+  GATE PASS: eligible PT=30 with EN=30 missing EN=0 conflicts=0 PT drift=0
+  summary: created=0, updated=1, skipped=30, removed=0, errors=0, conflicts=0, pt_changed=0, gate_failures=0
+
+--- php scripts/run-en-translation.php --apply --only=guide
+  === stage: en-guide (mode: apply, operation: run) ===
+  created=0 updated=0 skipped=52 removed=0 conflicts=0 errors=0 PT-drift=0
+  skipped      pps-number-2                                  EN translation already linked and verified
+  skipped      medical-card-2                                EN translation already linked and verified
+  skipped      gp-registration-2                             EN translation already linked and verified
+  skipped      abrir-conta-bancaria-2                        EN translation already linked and verified
+  skipped      alugar-casa-2                                 EN translation already linked and verified
+  skipped      comprar-carro-2                               EN translation already linked and verified
+  skipped      carteira-de-motorista-2                       EN translation already linked and verified
+  skipped      impostos-2                                    EN translation already linked and verified
+  skipped      cidadania-irlandesa-2                         EN translation already linked and verified
+  skipped      passaporte-irlandes-2                         EN translation already linked and verified
+  skipped      child-benefit-2                               EN translation already linked and verified
+  skipped      social-welfare-2                              EN translation already linked and verified
+  skipped      abrir-empresa-2                               EN translation already linked and verified
+  skipped      visto-irlanda-2                               EN translation already linked and verified
+  skipped      irp-renewal-2                                 EN translation already linked and verified
+  skipped      mygovid                                       EN translation already linked and verified
+  skipped      direitos-trabalhistas                         EN translation already linked and verified
+  skipped      transporte-publico                            EN translation already linked and verified
+  skipped      susi                                          EN translation already linked and verified
+  skipped      servicos-emergencia                           EN translation already linked and verified
+  skipped      nct                                           EN translation already linked and verified
+  skipped      motor-tax                                     EN translation already linked and verified
+  skipped      eircode                                       EN translation already linked and verified
+  skipped      hap                                           EN translation already linked and verified
+  skipped      rtb                                           EN translation already linked and verified
+  skipped      cao                                           EN translation already linked and verified
+  skipped      direitos-consumidor                           EN translation already linked and verified
+  skipped      protecao-dados                                EN translation already linked and verified
+  skipped      garda                                         EN translation already linked and verified
+  skipped      revenue-myaccount                             EN translation already linked and verified
+  skipped      primeira-inscricao-irp-irlanda-brasileiros    EN translation already linked and verified
+  skipped      viajar-fora-irlanda-com-irp-brasileiros       EN translation already linked and verified
+  skipped      employment-permit-irlanda-brasileiros         EN translation already linked and verified
+  skipped      primeiro-emprego-irlanda-emergency-tax        EN translation already linked and verified
+  skipped      sole-trader-autonomo-irlanda-brasileiros      EN translation already linked and verified
+  skipped      hse-irlanda-gp-out-of-hours-injury-unit-emergency-department EN translation already linked and verified
+  skipped      ehic-irlanda-brasileiros-residentes           EN translation already linked and verified
+  skipped      reconhecer-diploma-brasileiro-na-irlanda-naric-qqi EN translation already linked and verified
+  skipped      leap-card-irlanda-como-usar                   EN translation already linked and verified
+  skipped      learner-permit-theory-test-irlanda-cnh-brasileira EN translation already linked and verified
+  skipped      assistencia-juridica-legal-aid-irlanda-brasileiros EN translation already linked and verified
+  skipped      casamento-registro-nascimento-irlanda-brasileiros EN translation already linked and verified
+  skipped      reclamar-banco-seguro-servico-financeiro-irlanda EN translation already linked and verified
+  skipped      reclamar-servico-publico-irlanda-ombudsman    EN translation already linked and verified
+  skipped      checklist-viagem-internacional-irlanda-brasileiros-irp EN translation already linked and verified
+  skipped      reclamacao-trabalhista-wrc-irlanda-brasileiros EN translation already linked and verified
+  skipped      beneficios-pais-solteiros-irlanda             EN translation already linked and verified
+  skipped      violencia-domestica-irlanda-onde-encontrar-ajuda EN translation already linked and verified
+  skipped      inverno-irlanda-depressao-sazonal-saude-mental EN translation already linked and verified
+  skipped      autismo-na-irlanda-diagnostico-hse-apoio      EN translation already linked and verified
+  skipped      autismo-viagem-aviao-irlanda-dublin-cork-airport EN translation already linked and verified
+  GATE PASS: eligible PT=51 with EN=51 missing EN=0 conflicts=0 PT drift=0
+  summary: created=0, updated=0, skipped=52, removed=0, errors=0, conflicts=0, pt_changed=0, gate_failures=0
+
+--- php scripts/run-en-translation.php --apply --only=post
+  === stage: en-post (mode: apply, operation: run) ===
+  created=0 updated=0 skipped=42 removed=0 conflicts=0 errors=0 PT-drift=0
+  skipped      sol-e-lua-equilibrando-consciencia-e-emocoesdurante-o-inverno-norte-europeu EN translation already linked and verified
+  skipped      o-inverno-do-ego-um-renascimento-poetico      EN translation already linked and verified
+  skipped      o-sol-que-habita-em-nos                       EN translation already linked and verified
+  skipped      o-calor-que-nasce-do-inverno                  EN translation already linked and verified
+  skipped      preparando-o-corpo-para-o-inverno             EN translation already linked and verified
+  skipped      movimento-e-medicina                          EN translation already linked and verified
+  skipped      dois-anos-novos-um-medido-pelo-homem-outro-sentido-pela-terra EN translation already linked and verified
+  skipped      coragem-a-estrela-que-ilumina-o-caminho-do-empreendedor-especial-de-natal EN translation already linked and verified
+  skipped      1-cuidando-de-si-em-terra-estrangeira         EN translation already linked and verified
+  skipped      2-saude-mental-e-imigracao-o-que-ninguem-conta EN translation already linked and verified
+  skipped      como-voce-se-sente-nessa-epoca-do-ano         EN translation already linked and verified
+  skipped      construindo-rede-de-apoio-longe-de-casa       EN translation already linked and verified
+  skipped      alinhar-o-invisivel-para-harmonizar-o-cotidiano EN translation already linked and verified
+  skipped      proposito-o-sentido-que-nos-move-por-dentro   EN translation already linked and verified
+  skipped      entre-o-silencio-do-inverno-e-o-primeiro-sopro-da-primavera EN translation already linked and verified
+  skipped      quando-a-terra-desperta-a-primavera-e-o-novo-ano-astrologico-1 EN translation already linked and verified
+  skipped      capacitacao-em-laois-irlanda-capacitacao-em-laois-irlanda EN translation already linked and verified
+  skipped      cursos-e-apoio-para-empreendedores            EN translation already linked and verified
+  skipped      gestao-financeira-o-alicerce-invisivel-de-todo-negocio-que-prospera EN translation already linked and verified
+  skipped      trabalho-em-laoistrabalho-em-laois            EN translation already linked and verified
+  skipped      bolo-cocada-molhadinho                        EN translation already linked and verified
+  skipped      primavera-o-chamado-silencioso-para-florescer-com-consciencia EN translation already linked and verified
+  skipped      primavera-chegou-um-convite-para-renovar-tambem-a-sua-alimentacao EN translation already linked and verified
+  skipped      escalar-e-necessario-crescer-com-consistencia-e-o-proximo-nivel-do-seu-negocio EN translation already linked and verified
+  skipped      atividade-fisica-nao-deve-ser-um-projeto-de-verao-deve-ser-um-projeto-de-vida EN translation already linked and verified
+  skipped      a-caneta-emagrece-e-o-espirito-corre-atras    EN translation already linked and verified
+  skipped      canetas-emagrecedoras-emagrecer-ficou-mais-facil-mas-e-a-saude EN translation already linked and verified
+  skipped      cupcake-da-granny                             EN translation already linked and verified
+  skipped      papo-de-empreendedor-com-um-toque-criativo-leve-e-motivador-para-inspirar-quem-pensa-em-empreende-13 EN translation already linked and verified
+  skipped      a-medicacao-pode-ajudar-a-abrir-a-porta-mas-o-treino-e-a-mudanca-de-habitos-que-vao-manter-os-resul EN translation already linked and verified
+  skipped      o-que-todo-pequeno-empreendedor-precisa-aprender-para-fazer-o-negocio-crescer-por-que-entender-toda EN translation already linked and verified
+  skipped      as-relacoes-de-casal-na-nova-era              EN translation already linked and verified
+  skipped      dois-fatores-que-fazem-o-seu-negocio-ter-consistencia-nas-vendas EN translation already linked and verified
+  skipped      quem-voce-se-tornou-longe-de-casa             EN translation already linked and verified
+  GATE PASS: eligible PT=34 with EN=34 missing EN=0 conflicts=0 PT drift=0
+  summary: created=0, updated=0, skipped=42, removed=0, errors=0, conflicts=0, pt_changed=0, gate_failures=0
+
+--- php scripts/run-en-translation.php --apply --only=blog-page
+  === stage: en-blog-page (mode: apply, operation: run) ===
+  created=0 updated=0 skipped=1 removed=0 conflicts=0 errors=0 PT-drift=0
+  skipped      blog                                          EN translation already linked and verified
+  GATE PASS: eligible PT=1 with EN=1 missing EN=0 conflicts=0 PT drift=0
+  summary: created=0, updated=0, skipped=1, removed=0, errors=0, conflicts=0, pt_changed=0, gate_failures=0
+
+--- php scripts/run-en-translation.php --apply --only=jobs-page
+  === stage: en-jobs-page (mode: apply, operation: run) ===
+  created=0 updated=0 skipped=1 removed=0 conflicts=0 errors=0 PT-drift=0
+  skipped      empregos                                      EN translation already linked and verified
+  GATE PASS: eligible PT=1 with EN=1 missing EN=0 conflicts=0 PT drift=0
+  summary: created=0, updated=0, skipped=1, removed=0, errors=0, conflicts=0, pt_changed=0, gate_failures=0
+
+--- php scripts/run-en-translation.php --apply --only=leisure-description
+  === stage: en-leisure-description (mode: apply, operation: run) ===
+  created=0 updated=0 skipped=289 removed=0 conflicts=0 errors=0 PT-drift=0
+  skipped      dwyer-mcallister-cottage                      EN translation already linked and verified
+  skipped      national-design-craft-gallery                 EN translation already linked and verified
+  skipped      cavan-cathedral                               EN translation already linked and verified
+  skipped      jfk-arboretum                                 EN translation already linked and verified
+  skipped      lough-muckno-leisure-park                     EN translation already linked and verified
+  skipped      old-head-of-kinsale                           EN translation already linked and verified
+  skipped      dursey-island                                 EN translation already linked and verified
+  skipped      doagh-famine-village                          EN translation already linked and verified
+  skipped      the-model                                     EN translation already linked and verified
+  skipped      joyce-tower-museum                            EN translation already linked and verified
+  skipped      derrigimlagh                                  EN translation already linked and verified
+  skipped      forty-foot                                    EN translation already linked and verified
+  skipped      chester-beatty                                EN translation already linked and verified
+  skipped      king-johns-castle-carlingford                 EN translation already linked and verified
+  skipped      mount-leinster-nine-stones                    EN translation already linked and verified
+  skipped      oak-park-forest-park                          EN translation already linked and verified
+  skipped      borris-house                                  EN translation already linked and verified
+  skipped      huntington-castle-gardens                     EN translation already linked and verified
+  skipped      ducketts-grove                                EN translation already linked and verified
+  skipped      altamont-gardens                              EN translation already linked and verified
+  skipped      brownshill-dolmen                             EN translation already linked and verified
+  skipped      millmount-fort-museum                         EN translation already linked and verified
+  skipped      carlingford-lough-greenway                    EN translation already linked and verified
+  skipped      mellifont-abbey                               EN translation already linked and verified
+  skipped      monasterboice                                 EN translation already linked and verified
+  skipped      proleek-dolmen                                EN translation already linked and verified
+  skipped      carlingford                                   EN translation already linked and verified
+  skipped      mondello-park                                 EN translation already linked and verified
+  skipped      lullymore-heritage-park                       EN translation already linked and verified
+  skipped      donadea-forest-park                           EN translation already linked and verified
+  skipped      maynooth-castle                               EN translation already linked and verified
+  skipped      pollardstown-fen                              EN translation already linked and verified
+  skipped      bog-of-allen-nature-centre                    EN translation already linked and verified
+  skipped      castletown-house                              EN translation already linked and verified
+  skipped      irish-national-stud-japanese-gardens          EN translation already linked and verified
+  skipped      curraghchase-forest-park                      EN translation already linked and verified
+  skipped      lough-gur                                     EN translation already linked and verified
+  skipped      foynes-flying-boat-museum                     EN translation already linked and verified
+  skipped      adare-village                                 EN translation already linked and verified
+  skipped      st-marys-cathedral-limerick                   EN translation already linked and verified
+  skipped      hunt-museum                                   EN translation already linked and verified
+  skipped      king-johns-castle-limerick                    EN translation already linked and verified
+  skipped      holy-cross-abbey                              EN translation already linked and verified
+  skipped      mitchelstown-cave                             EN translation already linked and verified
+  skipped      ormond-castle                                 EN translation already linked and verified
+  skipped      the-vee-bay-lough                             EN translation already linked and verified
+  skipped      glen-of-aherlow                               EN translation already linked and verified
+  skipped      swiss-cottage                                 EN translation already linked and verified
+  skipped      cahir-castle                                  EN translation already linked and verified
+  skipped      rock-of-cashel                                EN translation already linked and verified
+  skipped      tintern-abbey-wexford                         EN translation already linked and verified
+  skipped      ferns-castle                                  EN translation already linked and verified
+  skipped      wexford-wildfowl-reserve                      EN translation already linked and verified
+  skipped      curracloe-beach                               EN translation already linked and verified
+  skipped      saltee-islands                                EN translation already linked and verified
+  skipped      dunbrody-famine-ship                          EN translation already linked and verified
+  skipped      hook-lighthouse                               EN translation already linked and verified
+  skipped      johnstown-castle                              EN translation already linked and verified
+  skipped      irish-national-heritage-park                  EN translation already linked and verified
+  skipped      coumshingaun-loop                             EN translation already linked and verified
+  skipped      ardmore-round-tower                           EN translation already linked and verified
+  skipped      lismore-castle-gardens                        EN translation already linked and verified
+  skipped      mount-congreve-gardens                        EN translation already linked and verified
+  skipped      copper-coast-geopark                          EN translation already linked and verified
+  skipped      waterford-greenway                            EN translation already linked and verified
+  skipped      reginals-tower                                EN translation already linked and verified
+  skipped      waterford-treasures                           EN translation already linked and verified
+  skipped      house-of-waterford-crystal                    EN translation already linked and verified
+  skipped      woodstock-gardens                             EN translation already linked and verified
+  skipped      jerpoint-park                                 EN translation already linked and verified
+  skipped      castlecomer-discovery-park                    EN translation already linked and verified
+  skipped      dunmore-cave                                  EN translation already linked and verified
+  skipped      smithwicks-experience                         EN translation already linked and verified
+  skipped      rothe-house-garden                            EN translation already linked and verified
+  skipped      jerpoint-abbey                                EN translation already linked and verified
+  skipped      medieval-mile-museum                          EN translation already linked and verified
+  skipped      kilkenny-castle                               EN translation already linked and verified
+  skipped      clare-island                                  EN translation already linked and verified
+  skipped      wild-nephin-ballycroy-national-park           EN translation already linked and verified
+  skipped      great-western-greenway                        EN translation already linked and verified
+  skipped      ceide-fields                                  EN translation already linked and verified
+  skipped      downpatrick-head                              EN translation already linked and verified
+  skipped      national-museum-country-life                  EN translation already linked and verified
+  skipped      westport-house                                EN translation already linked and verified
+  skipped      keem-bay                                      EN translation already linked and verified
+  skipped      achill-island                                 EN translation already linked and verified
+  skipped      croagh-patrick                                EN translation already linked and verified
+  skipped      eagles-flying                                 EN translation already linked and verified
+  skipped      drumcliffe                                    EN translation already linked and verified
+  skipped      lissadell-house                               EN translation already linked and verified
+  skipped      sligo-abbey                                   EN translation already linked and verified
+  skipped      queen-maeves-trail-knocknarea                 EN translation already linked and verified
+  skipped      carrowmore-megalithic-cemetery                EN translation already linked and verified
+  skipped      strandhill-beach                              EN translation already linked and verified
+  skipped      benbulben                                     EN translation already linked and verified
+  skipped      ards-forest-park                              EN translation already linked and verified
+  skipped      errigal                                       EN translation already linked and verified
+  skipped      grianan-of-aileach                            EN translation already linked and verified
+  skipped      fanad-head-lighthouse                         EN translation already linked and verified
+  skipped      malin-head                                    EN translation already linked and verified
+  skipped      donegal-castle                                EN translation already linked and verified
+  skipped      sliabh-liag                                   EN translation already linked and verified
+  skipped      glenveagh-national-park                       EN translation already linked and verified
+  skipped      sliabh-beagh                                  EN translation already linked and verified
+  skipped      patrick-kavanagh-centre                       EN translation already linked and verified
+  skipped      carrickmacross-lace-gallery                   EN translation already linked and verified
+  skipped      monaghan-county-museum                        EN translation already linked and verified
+  skipped      rossmore-forest-park                          EN translation already linked and verified
+  skipped      castle-leslie-estate                          EN translation already linked and verified
+  skipped      belturbet-railway-station                     EN translation already linked and verified
+  skipped      cavan-county-museum                           EN translation already linked and verified
+  skipped      shannon-pot                                   EN translation already linked and verified
+  skipped      dun-a-ri-forest-park                          EN translation already linked and verified
+  skipped      killykeen-forest-park                         EN translation already linked and verified
+  skipped      cavan-burren-park                             EN translation already linked and verified
+  skipped      sean-mac-diarmada-cottage                     EN translation already linked and verified
+  skipped      lough-rynn-castle-gardens                     EN translation already linked and verified
+  skipped      lough-allen                                   EN translation already linked and verified
+  skipped      acres-lake-floating-boardwalk                 EN translation already linked and verified
+  skipped      parkes-castle                                 EN translation already linked and verified
+  skipped      glencar-waterfall                             EN translation already linked and verified
+  skipped      roscommon-castle                              EN translation already linked and verified
+  skipped      lough-key-forest-park                         EN translation already linked and verified
+  skipped      arigna-mining-experience                      EN translation already linked and verified
+  skipped      strokestown-park-famine-museum                EN translation already linked and verified
+  skipped      boyle-abbey                                   EN translation already linked and verified
+  skipped      rathcroghan                                   EN translation already linked and verified
+  skipped      lough-ree                                     EN translation already linked and verified
+  skipped      newcastle-wood                                EN translation already linked and verified
+  skipped      royal-canal-greenway                          EN translation already linked and verified
+  skipped      granard-motte-bailey                          EN translation already linked and verified
+  skipped      ardagh-heritage-village                       EN translation already linked and verified
+  skipped      corlea-trackway                               EN translation already linked and verified
+  skipped      glendeer-pet-farm                             EN translation already linked and verified
+  skipped      mullaghmeen-forest                            EN translation already linked and verified
+  skipped      kilbeggan-distillery                          EN translation already linked and verified
+  skipped      athlone-castle                                EN translation already linked and verified
+  skipped      belvedere-house-gardens                       EN translation already linked and verified
+  skipped      tullamore-dew-experience                      EN translation already linked and verified
+  skipped      charleville-forest-castle                     EN translation already linked and verified
+  skipped      lough-boora-discovery-park                    EN translation already linked and verified
+  skipped      birr-castle-demesne                           EN translation already linked and verified
+  skipped      clonmacnoise                                  EN translation already linked and verified
+  skipped      slieve-bloom-mountains                        EN translation already linked and verified
+  skipped      abbeyleix-heritage-house                      EN translation already linked and verified
+  skipped      timahoe-round-tower                           EN translation already linked and verified
+  skipped      heywood-gardens                               EN translation already linked and verified
+  skipped      emo-court                                     EN translation already linked and verified
+  skipped      rock-of-dunamase                              EN translation already linked and verified
+  skipped      banna-strand                                  EN translation already linked and verified
+  skipped      muckross-abbey                                EN translation already linked and verified
+  skipped      gallarus-oratory                              EN translation already linked and verified
+  skipped      derrynane-house                               EN translation already linked and verified
+  skipped      kerry-cliffs                                  EN translation already linked and verified
+  skipped      valentia-island                               EN translation already linked and verified
+  skipped      skellig-michael                               EN translation already linked and verified
+  skipped      doneraile-park                                EN translation already linked and verified
+  skipped      spike-island-cork                             EN translation already linked and verified
+  skipped      garnish-island                                EN translation already linked and verified
+  skipped      blackrock-castle-observatory                  EN translation already linked and verified
+  skipped      cork-city-gaol                                EN translation already linked and verified
+  skipped      english-market-cork                           EN translation already linked and verified
+  skipped      vandeleur-walled-garden                       EN translation already linked and verified
+  skipped      craggaunowen                                  EN translation already linked and verified
+  skipped      spanish-point-beach                           EN translation already linked and verified
+  skipped      holy-island-inis-cealtra                      EN translation already linked and verified
+  skipped      scattery-island                               EN translation already linked and verified
+  skipped      ennis-friary                                  EN translation already linked and verified
+  skipped      thoor-ballylee                                EN translation already linked and verified
+  skipped      portumna-castle-gardens                       EN translation already linked and verified
+  skipped      coole-park                                    EN translation already linked and verified
+  skipped      brigits-garden                                EN translation already linked and verified
+  skipped      galway-city-museum                            EN translation already linked and verified
+  skipped      spanish-arch-long-walk                        EN translation already linked and verified
+  skipped      dowth                                         EN translation already linked and verified
+  skipped      sonairte-ecology-centre                       EN translation already linked and verified
+  skipped      kells-historic-town                           EN translation already linked and verified
+  skipped      bective-abbey                                 EN translation already linked and verified
+  skipped      emerald-park                                  EN translation already linked and verified
+  skipped      wicklow-way                                   EN translation already linked and verified
+  skipped      mount-usher-gardens                           EN translation already linked and verified
+  skipped      killruddery-house-gardens                     EN translation already linked and verified
+  skipped      brittas-bay-beach                             EN translation already linked and verified
+  skipped      wicklow-historic-gaol                         EN translation already linked and verified
+  skipped      russborough-house                             EN translation already linked and verified
+  skipped      portmarnock-beach                             EN translation already linked and verified
+  skipped      dun-laoghaire-east-pier                       EN translation already linked and verified
+  skipped      glasnevin-cemetery-museum                     EN translation already linked and verified
+  skipped      national-botanic-gardens-dublin               EN translation already linked and verified
+  skipped      epic-irish-emigration-museum                  EN translation already linked and verified
+  skipped      national-museum-archaeology                   EN translation already linked and verified
+  skipped      inch-beach                                    EN translation already linked and verified
+  skipped      dingle-peninsula                              EN translation already linked and verified
+  skipped      ring-of-kerry                                 EN translation already linked and verified
+  skipped      gap-of-dunloe                                 EN translation already linked and verified
+  skipped      torc-waterfall                                EN translation already linked and verified
+  skipped      ross-castle                                   EN translation already linked and verified
+  skipped      muckross-house                                EN translation already linked and verified
+  skipped      killarney-national-park                       EN translation already linked and verified
+  skipped      mizen-head                                    EN translation already linked and verified
+  skipped      charles-fort                                  EN translation already linked and verified
+  skipped      kinsale                                       EN translation already linked and verified
+  skipped      jameson-distillery-midleton                   EN translation already linked and verified
+  skipped      fota-wildlife-park                            EN translation already linked and verified
+  skipped      titanic-experience-cobh                       EN translation already linked and verified
+  skipped      cobh                                          EN translation already linked and verified
+  skipped      blarney-castle                                EN translation already linked and verified
+  skipped      kilkee-cliffs                                 EN translation already linked and verified
+  skipped      lahinch-beach                                 EN translation already linked and verified
+  skipped      loop-head                                     EN translation already linked and verified
+  skipped      doolin-cave                                   EN translation already linked and verified
+  skipped      aillwee-caves                                 EN translation already linked and verified
+  skipped      bunratty-castle-folk-park                     EN translation already linked and verified
+  skipped      burren-national-park                          EN translation already linked and verified
+  skipped      cliffs-of-moher                               EN translation already linked and verified
+  skipped      galway-atlantaquaria                          EN translation already linked and verified
+  skipped      diamond-hill                                  EN translation already linked and verified
+  skipped      dun-aonghasa                                  EN translation already linked and verified
+  skipped      aran-islands                                  EN translation already linked and verified
+  skipped      sky-road                                      EN translation already linked and verified
+  skipped      salthill                                      EN translation already linked and verified
+  skipped      connemara-national-park                       EN translation already linked and verified
+  skipped      kylemore-abbey                                EN translation already linked and verified
+  skipped      battle-of-the-boyne-visitor-centre            EN translation already linked and verified
+  skipped      loughcrew                                     EN translation already linked and verified
+  skipped      slane-castle                                  EN translation already linked and verified
+  skipped      trim-castle                                   EN translation already linked and verified
+  skipped      hill-of-tara                                  EN translation already linked and verified
+  skipped      knowth                                        EN translation already linked and verified
+  skipped      newgrange                                     EN translation already linked and verified
+  skipped      avondale-forest-park                          EN translation already linked and verified
+  skipped      sally-gap                                     EN translation already linked and verified
+  skipped      great-sugar-loaf                              EN translation already linked and verified
+  skipped      bray-head                                     EN translation already linked and verified
+  skipped      powerscourt-waterfall                         EN translation already linked and verified
+  skipped      powerscourt-estate                            EN translation already linked and verified
+  skipped      glendalough                                   EN translation already linked and verified
+  skipped      wicklow-mountains-national-park               EN translation already linked and verified
+  skipped      malahide-castle-gardens                       EN translation already linked and verified
+  skipped      howth-cliff-walk                              EN translation already linked and verified
+  skipped      dublin-zoo                                    EN translation already linked and verified
+  skipped      phoenix-park                                  EN translation already linked and verified
+  skipped      guinness-storehouse                           EN translation already linked and verified
+  skipped      kilmainham-gaol                               EN translation already linked and verified
+  skipped      dublin-castle                                 EN translation already linked and verified
+  skipped      trinity-college-book-of-kells                 EN translation already linked and verified
+  GATE PASS: eligible PT=246 with EN=246 missing EN=0 conflicts=0 PT drift=0
+  summary: created=0, updated=0, skipped=289, removed=0, errors=0, conflicts=0, pt_changed=0, gate_failures=0
+
+--- php scripts/run-en-translation.php --apply --only=course-provider-description
+  === stage: en-course-provider-description (mode: apply, operation: run) ===
+  created=0 updated=0 skipped=10 removed=0 conflicts=0 errors=0 PT-drift=0
+  skipped      fetch-courses                                 EN translation already linked and verified
+  skipped      qualifax                                      EN translation already linked and verified
+  skipped      springboard-plus                              EN translation already linked and verified
+  skipped      skillnet-ireland                              EN translation already linked and verified
+  skipped      solas-ecollege                                EN translation already linked and verified
+  skipped      local-enterprise-office                       EN translation already linked and verified
+  skipped      courses-ie                                    EN translation already linked and verified
+  skipped      etbi                                          EN translation already linked and verified
+  GATE PASS: eligible PT=8 with EN=8 missing EN=0 conflicts=0 PT drift=0
+  summary: created=0, updated=0, skipped=10, removed=0, errors=0, conflicts=0, pt_changed=0, gate_failures=0
+
+--- php scripts/run-job-translation.php --apply
+  jobs: created 0, updated 0, skipped 1, errors 0
+  oportunidades                            → skipped      EN translation already linked and verified
+  -- numeric gate --
+  missing EN (gate condition)                0
+  extra gate failures                        0
+  GATE: PASS
+  summary: create=0, update=0, skip=1, conflicts=0, errors=0, gate=PASS, pt_changed=0
+  archive order: aged 242 leisure record(s) to 2026-01-02 09:00:00 so the pinned card leads page 1
+
+=== step 7: EN primary menu + Polylang per-language nav assignment ===
+
+--- php scripts/assign-polylang-nav-menus.php 
+  === Polylang primary-menu assignment ===
+  Menu Principal found (term_id 69, 9 items).
+  Polylang nav_menus['conexao-br-irlanda']['primary']['pt'] already = 69. No change.
+  Note: EN already has nav_menus['conexao-br-irlanda']['primary']['en'] = 333 — left untouched.
+  nav_menu_locations.primary already = 69. No change.
+  Done.
+
+--- php scripts/create-en-primary-menu.php 
+  === English primary menu creation + Polylang assignment ===
+  Nav menu 'Main Menu' found (term_id 333, 10 items).
+  Menu already populated — no items created or modified.
+  Polylang nav_menus['conexao-br-irlanda']['primary']['en'] already = 333. No change.
+  Done.
+
+=== step 8: rewrite rules ===
+  rewrite rules flushed
+
+=== step 9: fixture audit ===
+  guide             104 (floor   11) OK
+  post               70 (floor   11) OK
+  page               74 (floor   34) OK
+  sponsor             5 (floor    3) OK
+  leisure           247 (floor    1) OK
+  course_provider     8 (floor    1) OK
+  event              24 (floor    3) OK
+  county_terms       29 (floor   11) OK
+  town_terms         23 (floor   18) OK
+  job                 4 (floor    1) OK
+  guide_en           52 (floor   11) OK
+  post_en            35 (floor   11) OK
+  shared_taxonomy     0 (floor    0) OK
+  duplicate_slugs     0 (floor    0) OK
+  nav_menu         pt=69 en=333 items=10 dupes=0 OK
+  pt_drift            0 (floor    0) OK
+  orphan_en           0 (floor    0) OK
+
+  created this run:  0
+  repaired this run: 0
+  note: nothing created and nothing repaired — the bootstrap is IDEMPOTENT on this database.
+summary: created=0, updated=0, errors=0, skipped=0, conflicts=0, pt_changed=0

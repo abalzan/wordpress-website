@@ -16,7 +16,25 @@ services:
       retries: 20
 
   wordpress:
-    image: wordpress:latest
+    # A thin, committed Dockerfile over the official image — see docker/wordpress/Dockerfile.
+    #
+    # The official `wordpress:latest` image ships WITHOUT gettext locales
+    # (/usr/share/i18n/locales is empty), so PHP's setlocale(LC_TIME) falls back
+    # to "C" and date_i18n() renders ENGLISH month names in every language.
+    #
+    # That is not cosmetic: test-i18n-foundation.php asserts that dates render
+    # PORTUGUESE month names ("setembro") in the PT context, a real product
+    # contract of the bilingual site. Without a locale that assertion cannot pass
+    # on ANY machine — including a fresh CI runner — so the locale is part of the
+    # test environment's definition, exactly like the PHP version is.
+    #
+    # The Dockerfile is committed, pinned and built once and cached by Docker, so
+    # it costs nothing after the first build. It affects this LOCAL/CI stack
+    # only; the WordPress.com production deployment carries its own locale
+    # configuration and never reads this file.
+    build:
+      context: ./docker/wordpress
+    image: conexao-local/wordpress:latest
     restart: unless-stopped
     depends_on:
       db:
