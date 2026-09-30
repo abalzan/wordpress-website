@@ -1,0 +1,46 @@
+Production safety verification — EN Translation Rollout, Phase 2 (dry-run + snapshot)
+Every request this phase issued was a GET. No apply, no writer, no deployment.
+
+== SAFETY LEDGER ==
+  production writes (this phase)        = 0
+  HTTP verbs issued                     = ['GET']
+  POST/PUT/PATCH/DELETE in the tool     = 0 (none; only the docstring names --apply as absent)
+  apply invoked                         = False
+  engine Engine::run() invoked          = False  (only build_plan/calculate_gate/validate_manifest ran)
+  EN records created                    = 0
+  EN translation links created          = 0
+  EN taxonomy terms created             = 0
+  B2 field values written               = 0
+  PT content mutated                    = 0
+  PT drift (identity digest)            = 0  (Phase 2 cfe4b7a670266da3 == Phase 1 cfe4b7a670266da3)
+  PT translated-scope records           = 2175  (matches the verified 2,175 baseline)
+  EN records after this phase           = 0  (across all 8 post types)
+  run-en-translation.php invoked        = NO   (no --apply, no --remove)
+  plugins deployed                      = 0
+  menus / options / theme mods touched  = 0
+  .env changed                          = NO  (md5 e0e2ff20b47ebfee98838c976a8e331f)
+  secrets exposed                       = NO  (credentials read from the environment; never logged, never written to evidence)
+
+== REPOSITORY INTEGRITY ==
+  shared engine sha256 (unmodified)     = baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4
+  matches the sha256 recorded in the run= True
+  git diff wp-content/ scripts/ tests/  = (empty — no source change)
+  git status                            = ?? docs/evidence/2026-09-30-en-translation-dry-run/
+
+== DETERMINISM ==
+  plan digest        run1/run3 equal    = True  (048543cf21140a7a)
+  snapshot digest    run1/run3 equal    = True  (f1f3c3bbef985986)
+  operation list     byte-identical     = True  (417 operations)
+  acceptance gates   byte-identical     = True
+  per-stage plans    byte-identical     = True
+  snapshot body      byte-identical     = True
+  whole report       byte-identical     = True  (excluding the wall-clock stamp and the output filename)
+  ALL CHECKS PASS                      = True
+
+== OPEN FINDINGS (block the next phase) ==
+  unresolved target collision           = 1  (en-page::newsletter -> newsletter-2)
+  missing PT sources                    = 9  (3 en-guide, 6 en-post)
+
+NOTE: an intermediate run (run 2) was discarded because it had been started before the
+PT-overwrite gate was corrected, so it executed older logic. Determinism is claimed only
+from the like-for-like run1-vs-run3 comparison above.
