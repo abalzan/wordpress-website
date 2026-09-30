@@ -1,7 +1,7 @@
 {
   "stage": "L — permanent invariant gates",
-  "generated_at": "2026-09-29T20:57:23Z",
-  "repository_sha": "33114c6dec671df6d07f097a0bb570454af0a8cd",
+  "generated_at": "2026-09-30T17:44:36Z",
+  "repository_sha": "9dc92325ed50d58b8de5f3ac97a005615e99b068",
   "status": "fail",
   "gates": {
     "taxonomy_policy": {
@@ -130,7 +130,7 @@
       "violations": 0,
       "pre_existing": 0,
       "new": 0,
-      "allowlisted": 289,
+      "allowlisted": 319,
       "prerequisites": [
         "polylang",
         "published PT content"
@@ -160,9 +160,9 @@
           "count": 0,
           "label": "event: eligible public PT records missing a linked EN translation = 0",
           "detail": {
-            "eligible": 24,
+            "eligible": 54,
             "translated": 1,
-            "allowlisted": 23,
+            "allowlisted": 53,
             "sample": []
           }
         },
@@ -326,9 +326,9 @@
         "  PASS: every discovered content type was evaluated (no type silently skipped)",
         "",
         "23 passed, 0 failed",
-        "  allowlisted: 289 (by documented policy)",
-        "    first 20: course_provider:etbi, course_provider:courses-ie, course_provider:local-enterprise-office, course_provider:solas-ecollege, course_provider:skillnet-ireland, course_provider:springboard-plus, course_provider:qualifax, course_provider:fetch-courses, event:rec-test-9-normal-event-no-recurrence-meta, event:rec-test-8-weekly-weekday-mismatch-tuesday-started-sunday, event:rec-test-7-weekly-open-ended-tuesday, event:rec-test-6-weekly-twice-tuesday-thursday, event:rec-test-5-weekly-tuesday-ended, event:rec-test-4-weekly-sunday-not-started, event:rec-test-3-weekly-tuesday-active-today, event:rec-test-2-one-time-past, event:rec-test-1-one-time-future, event:evento-ci-cobertura-07, event:evento-ci-cobertura-10, event:evento-ci-cobertura-09",
-        "GATE-RESULT {\"gate\":\"translation_completeness\",\"status\":\"pass\",\"passed\":23,\"failed\":0,\"violations\":0,\"pre_existing\":0,\"new\":0,\"prerequisites\":[\"polylang\",\"published PT content\"],\"allowlisted\":[\"course_provider:etbi\",\"course_provider:courses-ie\",\"course_provider:local-enterprise-office\",\"course_provider:solas-ecollege\",\"course_provider:skillnet-ireland\",\"course_provider:springboard-plus\",\"course_provider:qualifax\",\"course_provider:fetch-courses\",\"event:rec-test-9-normal-event-no-recurrence-meta\",\"event:rec-test-8-weekly-weekday-mismatch-tuesday-started-sunday\",\"event:rec-test-7-weekly-open-ended-tuesday\",\"event:rec-test-6-weekly-twice-tuesday-thursday\",\"event:rec-test-5-weekly-tuesday-ended\",\"event:rec-test-4-weekly-sunday-not-started\",\"event:rec-test-3-weekly-tuesday-active-today\",\"event:rec-test-2-one-time-past\",\"event:rec-test-1-one-time-future\",\"event:evento-ci-cobertura-07\",\"event:evento-ci-cobertura-10\",\"event:evento-ci-cobertura-09\"],\"allowlisted_count\":289,\"details\":[{\"key\":\"post_type:course_provider:missing_en\",\"count\":0,\"label\":\"course_provider: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":8,\"translated\":0,\"allowlisted\":8,\"sample\":[]}},{\"key\":\"post_type:course_provider:malformed_relationships\",\"count\":0,\"label\":\"course_provider: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:event:missing_en\",\"count\":0,\"label\":\"event: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":24,\"translated\":1,\"allowlisted\":23,\"sample\":[]}},{\"key\":\"post_type:event:malformed_relationships\",\"count\":0,\"label\":\"event: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:guide:empty_population\",\"count\":0,\"label\":\"guide: the B1 population has enough PT records for the invariant to be non-vacuous (eligible PT >= 11)\",\"detail\":{\"eligible\":52,\"floor\":11}},{\"key\":\"post_type:guide:missing_en\",\"count\":0,\"label\":\"guide: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":52,\"translated\":52,\"allowlisted\":0,\"sample\":[]}},{\"key\":\"post_type:guide:malformed_relationships\",\"count\":0,\"label\":\"guide: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:job:missing_en\",\"count\":0,\"label\":\"job: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":2,\"translated\":2,\"allowlisted\":0,\"sample\":[]}},{\"key\":\"post_type:job:malformed_relationships\",\"count\":0,\"label\":\"job: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:leisure:missing_en\",\"count\":0,\"label\":\"leisure: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":246,\"translated\":1,\"allowlisted\":245,\"sample\":[]}},{\"key\":\"post_type:leisure:malformed_relationships\",\"count\":0,\"label\":\"leisure: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:page:empty_population\",\"count\":0,\"label\":\"page: the B1 population has enough PT records for the invariant to be non-vacuous (eligible PT >= 1)\",\"detail\":{\"eligible\":42,\"floor\":1}},{\"key\":\"post_type:page:missing_en\",\"count\":0,\"label\":\"page: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":42,\"translated\":32,\"allowlisted\":10,\"sample\":[]}},{\"key\":\"post_type:page:malformed_relationships\",\"count\":0,\"label\":\"page: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:post:empty_population\",\"count\":0,\"label\":\"post: the B1 population has enough PT records for the invariant to be non-vacuous (eligible PT >= 11)\",\"detail\":{\"eligible\":35,\"floor\":11}},{\"key\":\"post_type:post:missing_en\",\"count\":0,\"label\":\"post: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":35,\"translated\":35,\"allowlisted\":0,\"sample\":[]}},{\"key\":\"post_type:post:malformed_relationships\",\"count\":0,\"label\":\"post: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:sponsor:missing_en\",\"count\":0,\"label\":\"sponsor: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":4,\"translated\":1,\"allowlisted\":3,\"sample\":[]}},{\"key\":\"post_type:sponsor:malformed_relationships\",\"count\":0,\"label\":\"sponsor: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}}]}"
+        "  allowlisted: 319 (by documented policy)",
+        "    first 20: course_provider:etbi, course_provider:courses-ie, course_provider:local-enterprise-office, course_provider:solas-ecollege, course_provider:skillnet-ireland, course_provider:springboard-plus, course_provider:qualifax, course_provider:fetch-courses, event:weaving-and-nature-print-workshop, event:akira-film-at-dunamaise-arts-centre, event:introduction-to-ayurveda, event:the-shaking-bog-presents-riverine, event:assembly-on-alcohol-harms, event:the-magnificent-interiors-of-emo-court, event:abbeyleix-applefest-2026, event:laois-forestry-rally-2026, event:transmitter-at-kavanaghs-bar-venue, event:mick-creagh-one-man-show, event:bingo-loco-at-midlands-park-hotel, event:kirtan-practice-at-arunachala",
+        "GATE-RESULT {\"gate\":\"translation_completeness\",\"status\":\"pass\",\"passed\":23,\"failed\":0,\"violations\":0,\"pre_existing\":0,\"new\":0,\"prerequisites\":[\"polylang\",\"published PT content\"],\"allowlisted\":[\"course_provider:etbi\",\"course_provider:courses-ie\",\"course_provider:local-enterprise-office\",\"course_provider:solas-ecollege\",\"course_provider:skillnet-ireland\",\"course_provider:springboard-plus\",\"course_provider:qualifax\",\"course_provider:fetch-courses\",\"event:weaving-and-nature-print-workshop\",\"event:akira-film-at-dunamaise-arts-centre\",\"event:introduction-to-ayurveda\",\"event:the-shaking-bog-presents-riverine\",\"event:assembly-on-alcohol-harms\",\"event:the-magnificent-interiors-of-emo-court\",\"event:abbeyleix-applefest-2026\",\"event:laois-forestry-rally-2026\",\"event:transmitter-at-kavanaghs-bar-venue\",\"event:mick-creagh-one-man-show\",\"event:bingo-loco-at-midlands-park-hotel\",\"event:kirtan-practice-at-arunachala\"],\"allowlisted_count\":319,\"details\":[{\"key\":\"post_type:course_provider:missing_en\",\"count\":0,\"label\":\"course_provider: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":8,\"translated\":0,\"allowlisted\":8,\"sample\":[]}},{\"key\":\"post_type:course_provider:malformed_relationships\",\"count\":0,\"label\":\"course_provider: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:event:missing_en\",\"count\":0,\"label\":\"event: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":54,\"translated\":1,\"allowlisted\":53,\"sample\":[]}},{\"key\":\"post_type:event:malformed_relationships\",\"count\":0,\"label\":\"event: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:guide:empty_population\",\"count\":0,\"label\":\"guide: the B1 population has enough PT records for the invariant to be non-vacuous (eligible PT >= 11)\",\"detail\":{\"eligible\":52,\"floor\":11}},{\"key\":\"post_type:guide:missing_en\",\"count\":0,\"label\":\"guide: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":52,\"translated\":52,\"allowlisted\":0,\"sample\":[]}},{\"key\":\"post_type:guide:malformed_relationships\",\"count\":0,\"label\":\"guide: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:job:missing_en\",\"count\":0,\"label\":\"job: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":2,\"translated\":2,\"allowlisted\":0,\"sample\":[]}},{\"key\":\"post_type:job:malformed_relationships\",\"count\":0,\"label\":\"job: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:leisure:missing_en\",\"count\":0,\"label\":\"leisure: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":246,\"translated\":1,\"allowlisted\":245,\"sample\":[]}},{\"key\":\"post_type:leisure:malformed_relationships\",\"count\":0,\"label\":\"leisure: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:page:empty_population\",\"count\":0,\"label\":\"page: the B1 population has enough PT records for the invariant to be non-vacuous (eligible PT >= 1)\",\"detail\":{\"eligible\":42,\"floor\":1}},{\"key\":\"post_type:page:missing_en\",\"count\":0,\"label\":\"page: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":42,\"translated\":32,\"allowlisted\":10,\"sample\":[]}},{\"key\":\"post_type:page:malformed_relationships\",\"count\":0,\"label\":\"page: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:post:empty_population\",\"count\":0,\"label\":\"post: the B1 population has enough PT records for the invariant to be non-vacuous (eligible PT >= 11)\",\"detail\":{\"eligible\":35,\"floor\":11}},{\"key\":\"post_type:post:missing_en\",\"count\":0,\"label\":\"post: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":35,\"translated\":35,\"allowlisted\":0,\"sample\":[]}},{\"key\":\"post_type:post:malformed_relationships\",\"count\":0,\"label\":\"post: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:sponsor:missing_en\",\"count\":0,\"label\":\"sponsor: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":4,\"translated\":1,\"allowlisted\":3,\"sample\":[]}},{\"key\":\"post_type:sponsor:malformed_relationships\",\"count\":0,\"label\":\"sponsor: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}}]}"
       ]
     },
     "cache_scoping": {
@@ -597,13 +597,13 @@
       "prerequisites": [],
       "details": [],
       "output_tail": [
-        "   historical/audit documents without the marker (reported, not gated): 106",
+        "   historical/audit documents without the marker (reported, not gated): 120",
         "",
         "   -- §9.2 no root-level report/evidence file --",
         "   root files scanned: 17, offenders: 0",
         "",
         "   -- §9.2 AGENTS.md remains orientation --",
-        "   AGENTS.md lines: 197",
+        "   AGENTS.md lines: 198",
         "",
         "   -- authoritative sources referenced by the governance layer --",
         "   authoritative sources checked: 7",
@@ -618,14 +618,22 @@
       "command": "python3 tests/scripts/verify-i18n-freshness.py",
       "exit_code": 1,
       "status": "fail",
-      "passed": 8,
-      "failed": 2,
-      "violations": 2,
-      "pre_existing": 1,
+      "passed": 9,
+      "failed": 3,
+      "violations": 3,
+      "pre_existing": 2,
       "new": 1,
       "allowlisted": 0,
       "prerequisites": [],
       "details": [
+        {
+          "component": "conexao-br-irlanda",
+          "catalogue": "wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot",
+          "newest_source": "wp-content/themes/conexao-br-irlanda/inc/navigation.php",
+          "catalogue_ts": 1790623531,
+          "newest_source_ts": 1790716014,
+          "lag_seconds": 92483
+        },
         {
           "component": "conexao-content",
           "catalogue": "wp-content/plugins/conexao-content/languages/conexao-content.pot",
@@ -644,25 +652,25 @@
         }
       ],
       "output_tail": [
-        "   conexao-admin-ux         catalogue=1790623531 newest-source=1790016943 (wp-content/plugins/conexao-admin-ux/includes/class-translation-state.php) fresh",
         "   conexao-event-runtime    catalogue=1790623531 newest-source=1790699556 (wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php) STALE",
         "   conexao-event-importer   catalogue=1790623531 newest-source=1790446037 (wp-content/plugins/conexao-event-importer/includes/class-event-importer.php) fresh",
         "   conexao-leisure-migration catalogue=1790623531 newest-source=1790325155 (wp-content/plugins/conexao-leisure-migration/includes/class-leisure-exporter.php) fresh",
         "   conexao-sponsor-migration catalogue=1790623531 newest-source=1789994211 (wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-importer.php) fresh",
         "",
-        "   stale catalogues: 2",
+        "   stale catalogues: 3",
+        "FAIL: conexao-br-irlanda: wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot is older than wp-content/themes/conexao-br-irlanda/inc/navigation.php by 92483s — regenerate the catalogue with `wp i18n make-pot` (never hand-edit)",
         "FAIL: conexao-content: wp-content/plugins/conexao-content/languages/conexao-content.pot is older than wp-content/plugins/conexao-content/conexao-content.php by 76025s — regenerate the catalogue with `wp i18n make-pot` (never hand-edit)",
         "FAIL: conexao-event-runtime: wp-content/plugins/conexao-event-runtime/languages/conexao-event-runtime.pot is older than wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php by 76025s — regenerate the catalogue with `wp i18n make-pot` (never hand-edit)",
-        "8 passed, 2 failed",
-        "  stale catalogues: 1 pre-existing, 1 new",
-        "GATE-RESULT {\"gate\": \"i18n_freshness\", \"status\": \"fail\", \"passed\": 8, \"failed\": 2, \"violations\": 2, \"pre_existing\": 1, \"new\": 1, \"details\": [{\"component\": \"conexao-content\", \"catalogue\": \"wp-content/plugins/conexao-content/languages/conexao-content.pot\", \"newest_source\": \"wp-content/plugins/conexao-content/conexao-content.php\", \"catalogue_ts\": 1790623531, \"newest_source_ts\": 1790699556, \"lag_seconds\": 76025}, {\"component\": \"conexao-event-runtime\", \"catalogue\": \"wp-content/plugins/conexao-event-runtime/languages/conexao-event-runtime.pot\", \"newest_source\": \"wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php\", \"catalogue_ts\": 1790623531, \"newest_source_ts\": 1790699556, \"lag_seconds\": 76025}]}"
+        "9 passed, 3 failed",
+        "  stale catalogues: 2 pre-existing, 1 new",
+        "GATE-RESULT {\"gate\": \"i18n_freshness\", \"status\": \"fail\", \"passed\": 9, \"failed\": 3, \"violations\": 3, \"pre_existing\": 2, \"new\": 1, \"details\": [{\"component\": \"conexao-br-irlanda\", \"catalogue\": \"wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot\", \"newest_source\": \"wp-content/themes/conexao-br-irlanda/inc/navigation.php\", \"catalogue_ts\": 1790623531, \"newest_source_ts\": 1790716014, \"lag_seconds\": 92483}, {\"component\": \"conexao-content\", \"catalogue\": \"wp-content/plugins/conexao-content/languages/conexao-content.pot\", \"newest_source\": \"wp-content/plugins/conexao-content/conexao-content.php\", \"catalogue_ts\": 1790623531, \"newest_source_ts\": 1790699556, \"lag_seconds\": 76025}, {\"component\": \"conexao-event-runtime\", \"catalogue\": \"wp-content/plugins/conexao-event-runtime/languages/conexao-event-runtime.pot\", \"newest_source\": \"wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php\", \"catalogue_ts\": 1790623531, \"newest_source_ts\": 1790699556, \"lag_seconds\": 76025}]}"
       ]
     }
   },
-  "total_passed": 89,
-  "total_failed": 2,
-  "total_violations": 2,
-  "total_pre_existing": 1,
+  "total_passed": 90,
+  "total_failed": 3,
+  "total_violations": 3,
+  "total_pre_existing": 2,
   "total_new": 1,
   "total_blocked": 0
 }

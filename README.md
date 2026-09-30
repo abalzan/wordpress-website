@@ -67,15 +67,16 @@ that one file.
 | 7 | `conexao-sponsor-migration` | tooling | active | no | yes | yes | [conexao-sponsor-migration](docs/plugins/conexao-sponsor-migration.md) |
 | 8 | `conexao-translation-rollout` | tooling | active | no | no | yes | [conexao-translation-rollout](docs/plugins/conexao-translation-rollout.md) |
 | 9 | `conexao-en-translation` | tooling | active | no | no | yes | [conexao-en-translation](docs/plugins/conexao-en-translation.md) |
-| 10 | `conexao-page-translation` | rollout | retired | no | no | yes | [conexao-page-translation](docs/plugins/conexao-page-translation.md) |
-| 11 | `conexao-blog-translation` | rollout | retired | no | no | yes | [conexao-blog-translation](docs/plugins/conexao-blog-translation.md) |
-| 12 | `conexao-job-translation` | rollout | retired | no | no | yes | [conexao-job-translation](docs/plugins/conexao-job-translation.md) |
-| 13 | `conexao-leisure-translation` | rollout | retired | no | no | yes | [conexao-leisure-translation](docs/plugins/conexao-leisure-translation.md) |
-| 14 | `conexao-guide-translation` | rollout | retired | no | no | yes | [conexao-guide-translation](docs/plugins/conexao-guide-translation.md) |
+| 10 | `conexao-translation-automation` | tooling | active | no | no | yes | [conexao-translation-automation](docs/plugins/conexao-translation-automation.md) |
+| 11 | `conexao-page-translation` | rollout | retired | no | no | yes | [conexao-page-translation](docs/plugins/conexao-page-translation.md) |
+| 12 | `conexao-blog-translation` | rollout | retired | no | no | yes | [conexao-blog-translation](docs/plugins/conexao-blog-translation.md) |
+| 13 | `conexao-job-translation` | rollout | retired | no | no | yes | [conexao-job-translation](docs/plugins/conexao-job-translation.md) |
+| 14 | `conexao-leisure-translation` | rollout | retired | no | no | yes | [conexao-leisure-translation](docs/plugins/conexao-leisure-translation.md) |
+| 15 | `conexao-guide-translation` | rollout | retired | no | no | yes | [conexao-guide-translation](docs/plugins/conexao-guide-translation.md) |
 
 **Production steady state** (platform, `production: true`) - activate in this order: conexao-data-model -> conexao-content -> conexao-admin-ux -> conexao-event-runtime.
 
-**Local-only tooling** (never production): conexao-event-importer, conexao-leisure-migration, conexao-sponsor-migration, conexao-translation-rollout, conexao-en-translation.
+**Local-only tooling** (never production): conexao-event-importer, conexao-leisure-migration, conexao-sponsor-migration, conexao-translation-rollout, conexao-en-translation, conexao-translation-automation.
 
 **Retired rollout plugins** (historical tooling, *activate → apply → remove*; not a production dependency and not in any release ZIP): conexao-page-translation, conexao-blog-translation, conexao-job-translation, conexao-leisure-translation, conexao-guide-translation.
 

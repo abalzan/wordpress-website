@@ -129,6 +129,20 @@
       "documentation": "docs/plugins/conexao-en-translation.md"
     },
     {
+      "slug": "conexao-translation-automation",
+      "name": "Conexão BR Irlanda — Translation Automation (Stage 1 boundary)",
+      "class": "tooling",
+      "status": "active",
+      "production": false,
+      "build": false,
+      "mount": true,
+      "dependencies": [
+        "conexao-translation-rollout"
+      ],
+      "version_source": "wp-content/plugins/conexao-translation-automation/conexao-translation-automation.php",
+      "documentation": "docs/plugins/conexao-translation-automation.md"
+    },
+    {
       "slug": "conexao-page-translation",
       "name": "Conexão BR Irlanda — EN Page Translation (Stage 4.5)",
       "class": "rollout",

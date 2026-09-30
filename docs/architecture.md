@@ -45,11 +45,12 @@ Plugins load in registry order, and dependencies always precede their dependents
 7. **conexao-sponsor-migration** (`tooling`, active) v1.1.0. **Never required on production.**
 8. **conexao-translation-rollout** (`tooling`, active) v1.1.0. **Never required on production.**
 9. **conexao-en-translation** (`tooling`, active) v1.5.0. **Never required on production.** Declared dependencies (`Requires Plugins` header): `conexao-translation-rollout`.
-10. **conexao-page-translation** (`rollout`, retired) v1.0.0. Retired rollout tooling - *activate → apply → remove*. Not a production dependency.
-11. **conexao-blog-translation** (`rollout`, retired) v1.0.0. Retired rollout tooling - *activate → apply → remove*. Not a production dependency.
-12. **conexao-job-translation** (`rollout`, retired) v1.0.0. Retired rollout tooling - *activate → apply → remove*. Not a production dependency.
-13. **conexao-leisure-translation** (`rollout`, retired) v1.0.0. Retired rollout tooling - *activate → apply → remove*. Not a production dependency.
-14. **conexao-guide-translation** (`rollout`, retired) v1.0.0. Retired rollout tooling - *activate → apply → remove*. Not a production dependency.
+10. **conexao-translation-automation** (`tooling`, active) v0.1.0. **Never required on production.** Declared dependencies (`Requires Plugins` header): `conexao-translation-rollout`.
+11. **conexao-page-translation** (`rollout`, retired) v1.0.0. Retired rollout tooling - *activate → apply → remove*. Not a production dependency.
+12. **conexao-blog-translation** (`rollout`, retired) v1.0.0. Retired rollout tooling - *activate → apply → remove*. Not a production dependency.
+13. **conexao-job-translation** (`rollout`, retired) v1.0.0. Retired rollout tooling - *activate → apply → remove*. Not a production dependency.
+14. **conexao-leisure-translation** (`rollout`, retired) v1.0.0. Retired rollout tooling - *activate → apply → remove*. Not a production dependency.
+15. **conexao-guide-translation** (`rollout`, retired) v1.0.0. Retired rollout tooling - *activate → apply → remove*. Not a production dependency.
 
 The authoritative registry is [`plugins.json`](../plugins.json): the load order, the
 production activation order, the release build list and the local Compose mount list are

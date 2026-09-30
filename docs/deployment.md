@@ -75,6 +75,7 @@ dependencies and never left active on production:
 - `conexao-sponsor-migration`
 - `conexao-translation-rollout`
 - `conexao-en-translation`
+- `conexao-translation-automation`
 
 ### Retired rollout plugins (historical tooling)
 
