@@ -1,5 +1,11 @@
 # Update documentation
 
+## Purpose
+
+Decide **where** a change's documentation goes, update it in the same commit,
+keep every generated region generated, and stop drift before it starts — the
+change → document map plus the drift gates are the mechanism.
+
 ## When to use
 
 Any change that alters what a maintainer or an agent must know. Documentation is
@@ -8,6 +14,13 @@ task, and never as a separate "docs pass".
 
 Use this skill together with the skill for the change itself; this one decides
 *where* the documentation goes and how drift is prevented.
+
+## When not to use
+
+- The operational procedure of the change itself — the domain skill owns it;
+  this skill owns where its documentation lands.
+- Historical reports are **never rewritten** to match current procedures —
+  `docs/reports/` and `docs/evidence/` are archives (see Guardrails).
 
 ## Required reading
 
@@ -33,6 +46,26 @@ Use this skill together with the skill for the change itself; this one decides
 | Build, manifest, deploy or rollback | `docs/releases.md` (and the release log row) |
 | REST contract | `docs/routing.md` §English, and the HTTP matrix |
 | Agent skills or governance | `docs/README.md`, `AGENTS.md`, and the CI gate in `tests/scripts/` |
+
+## Authoritative sources
+
+- `docs/engineering-standard.md` §9 owns the documentation rules (layout,
+  ownership, the "two places is a bug" rule, `_Last verified_` markers) and
+  §13.2 owns the agent rules — never restate them; link them.
+- `plugins.json` + `scripts/generate-registry-docs.php` own every generated
+  region; `scripts/README.md` owns the script catalogue; `docs/README.md` owns
+  the documentation index — the three lists that must stay in sync are all
+  generated or gate-checked, never hand-copied.
+- `.agents/skills/README.md` owns the agent-skill index; the governance gate
+  `tests/scripts/verify-agent-governance.py` checks it against the actual
+  skill set.
+
+## Preconditions
+
+- The change's own work is complete or in progress in the same commit —
+  documentation is never a separate follow-up.
+- For a report: the verification numbers exist first (a report without real
+  numbers is written too early).
 
 ## Steps
 
@@ -98,6 +131,28 @@ git status --short                               # only intended doc changes
 - Each touched document ends with an updated `_Last verified_` line.
 - The report from `docs/templates/report.md` contains **real** verification
   numbers and an explicit limitations section.
+
+## Failure handling
+
+- **A drift gate is red:** fix the source or regenerate — never edit a
+  generated region by hand to match a stale expectation.
+- **A document references a path that no longer exists:** fix the reference
+  (the governance gate checks every skill path) — never delete the check.
+- **The same list is being maintained in two places:** stop; make it generated
+  from its source or CI-checked, and remove the second copy in the same
+  change.
+- **A living document drifted from a change made earlier:** correct it now and
+  record the correction; do not preserve a stale fact for stability — history
+  belongs in `docs/reports/`, not in living reference docs.
+
+## Evidence and reporting
+
+- Reports are written from `docs/templates/report.md`, placed under
+  `docs/reports/` (or `docs/reports/site/`), with machine evidence under
+  `docs/evidence/<date>-<stage>/` — never at the repository root.
+- Each touched living document ends with an updated
+  `_Last verified: YYYY-MM-DD by <area>_` line; the drift gate owns the living
+  set and reports the historical corpus separately.
 
 ## Definition of done
 

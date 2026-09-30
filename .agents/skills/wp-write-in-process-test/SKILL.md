@@ -1,13 +1,27 @@
 # Write an in-process test
 
+## Purpose
+
+Write a test in the **in-process PHP layer** — functions, queries, policies,
+taxonomies, language logic, metadata and cache logic exercised against a real
+WordPress — using the shared bootstrap, the shared assertions and
+convention-based discovery, so no suite list is ever maintained.
+
 ## When to use
 
-Any change to PHP behaviour needs a test that fails when the change is reverted.
-This is the **in-process PHP layer**: functions, queries, policies, taxonomies,
-language logic, metadata and cache logic, exercised against a real WordPress.
+Any change to PHP behaviour needs a test that fails when the change is
+reverted. For request-visible behaviour, `wp-http-acceptance-matrix` is also
+required: new feature work ships **one in-process suite plus one HTTP matrix
+addition**.
 
-For request-visible behaviour use `wp-http-acceptance-matrix` as well. New
-feature work ships **one in-process suite plus one HTTP matrix addition**.
+## When not to use
+
+- Request-visible behaviour alone — `wp-http-acceptance-matrix` (the two
+  layers pair up for feature work).
+- Running, diagnosing and comparing the whole contract — `wp-run-tests`.
+- Static gates (script contract, registry, drift, i18n freshness) — they are
+  Python suites under `tests/scripts/`, discovered the same way; no PHP is
+  written for them.
 
 ## Required reading
 
@@ -19,6 +33,22 @@ feature work ships **one in-process suite plus one HTTP matrix addition**.
 - `tests/lib/assertions.php` — the shared assertion API.
 - An existing suite in the component you are testing, e.g.
   `wp-content/plugins/conexao-event-runtime/tests/`.
+
+## Authoritative sources
+
+- `tests/bootstrap.php` is the single bootstrap — the only place allowed to
+  locate the WordPress loader; `tests/lib/assertions.php` is the only
+  assertion library. Both are normative; a suite that bypasses either is a
+  defect.
+- `docs/testing.md` owns the harness example, the prerequisite mechanism and
+  the suite classification; `docs/engineering-standard.md` §8 owns the rules.
+- `./scripts/run-tests.sh` owns discovery — never maintain a suite list.
+
+## Preconditions
+
+- The local Docker Compose site is up (suites run inside it, where the
+  WordPress loader lives).
+- You have read an existing suite in the component you are testing.
 
 ## Steps
 
@@ -97,6 +127,27 @@ php -l <path/to/suite.php>                        # syntax
   the suite fails, then restore. If it still passes, the test is vacuous.
 - Compare the failing-suite list against the baseline — a new failure is a
   regression, not noise.
+
+## Failure handling
+
+- **The suite is not discovered:** the file name or path violates the
+  convention — fix the name; never add it to a list.
+- **The suite fails on a missing prerequisite:** that is the designed
+  behaviour — ensure the seeding hint is accurate and the prerequisite message
+  says exactly how to fix the environment.
+- **The suite passes even with the change reverted:** it is vacuous — add the
+  assertion that discriminates (an assertion that fails when reverted).
+- **The suite needs data that does not exist:** declare it as a prerequisite
+  (fail loudly); never silently skip, and never weaken the assertion to match
+  whatever data happens to be present.
+
+## Evidence and reporting
+
+- Paste the real `N passed, M failed` numbers and the discovery proof
+  (`--list`) into the report; keep raw output under
+  `docs/evidence/<date>-<stage>/`.
+- Record the revert-proof (fails reverted, passes restored) as the evidence
+  that the suite discriminates.
 
 ## Definition of done
 

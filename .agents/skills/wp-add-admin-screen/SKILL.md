@@ -1,5 +1,12 @@
 # Add an admin screen
 
+## Purpose
+
+Give a maintainer a capability through wp-admin — safely: capability and nonce
+on every path, no writes on page load, a dry-run preview before every write —
+because **production has no CLI**: anything operated in production must be an
+admin screen, not a shell command.
+
 ## When to use
 
 A capability must be operable by a maintainer through wp-admin — a rollout
@@ -7,8 +14,13 @@ control, a bulk edit, a diagnostic, an import trigger, a status filter. This
 skill exists because **production has no CLI**: anything operated in production
 needs an admin screen, not a shell command.
 
-Use `wp-write-in-process-test` for the test layer and `wp-security-review`
-before shipping.
+## When not to use
+
+- The test layer of an admin screen — `wp-write-in-process-test`; run the
+  contract with `wp-run-tests`.
+- Security review of the finished screen — `wp-security-review` (pair them).
+- English-coverage rollout screens — the engine screen contract comes from
+  `wp-translation-rollout`.
 
 ## Required reading
 
@@ -20,6 +32,20 @@ before shipping.
   `wp-content/plugins/conexao-admin-ux/includes/class-list.php` — the existing menu, screen and list-table
   conventions to extend.
 - `docs/releases.md` §Production constraints — why no WP-CLI exists.
+
+## Authoritative sources
+
+- `wp-content/plugins/conexao-admin-ux/` owns admin UX; its existing classes
+  are the conventions to extend — never invent a parallel screen stack.
+- `wp-content/plugins/conexao-translation-rollout/includes/class-conexao-translation-rollout-admin.php`
+  is the worked example of Preview → Apply → Remove; `scripts/lib/plan.py`
+  owns the shared machine-readable plan shape.
+- `docs/engineering-standard.md` §4.2 owns the capability/nonce/dry-run MUSTs.
+
+## Preconditions
+
+- The owning plugin is decided (step 1) before writing.
+- The write the screen performs has a documented dry-run preview design.
 
 ## Steps
 
@@ -95,6 +121,27 @@ before shipping.
 - The screen's own regression suite prints `N passed, 0 failed` and exits 0.
 - Report real numbers. If an admin E2E check could not be run in the
   environment, record it as **not tested** — never as verified.
+
+## Failure handling
+
+- **A write path cannot be previewed as a dry run:** expose the previewable
+  plan or do not ship the write — "apply blind" is the defect this skill
+  exists to prevent; state the limitation in the report if the capability
+  genuinely cannot be previewed.
+- **A screen needs to run in production but has no admin surface:** do not
+  invent an unmaintainable path; record the limitation and design the admin
+  screen instead (standard §0.12).
+- **Notices are being built as raw HTML:** switch to the shared
+  `add_settings_error()`-style mechanism — raw HTML notices are a defect,
+  not a style choice.
+
+## Evidence and reporting
+
+- The negative proofs (capability-less user gets nothing; nonce-less POST
+  writes nothing) go in the report with the suite numbers, and evidence under
+  `docs/evidence/<date>-<stage>/`.
+- Any admin E2E check that could not run in the environment is recorded as
+  **not tested** — never as verified.
 
 ## Definition of done
 

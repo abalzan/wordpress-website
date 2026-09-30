@@ -1,13 +1,27 @@
 # Add a content type
 
+## Purpose
+
+Register or change a content type the safe way: prove a new CPT is actually
+needed, keep schema in the one owning plugin, decide taxonomy and language
+policy deliberately, and ship registration + routes + tests + docs in one
+change.
+
 ## When to use
 
 A task asks for a new or changed post type, taxonomy, meta field, archive or
 single route. **First prove a new CPT is actually needed** — most "add a CPT"
 requests are a taxonomy term, a meta field, or a filter on an existing type.
 
-Do not use this skill for admin screens, tests, English rollouts or releases:
-those have their own skills.
+## When not to use
+
+- Admin screens — `wp-add-admin-screen`.
+- Tests — `wp-write-in-process-test`, `wp-http-acceptance-matrix`,
+  `wp-run-tests`.
+- English coverage for the new type — `wp-translation-rollout` (this skill
+  only decides and declares the language policy).
+- Bulk content writes into an existing type — `wp-content-change`.
+- Building or deploying a release — `wp-release-deploy`.
 
 ## Required reading
 
@@ -19,6 +33,22 @@ those have their own skills.
 - `docs/routing.md` — the URL the new type will occupy.
 - `docs/plugins/conexao-data-model.md` — the only place schema is registered.
 - `plugins.json` — the authoritative plugin registry (see `wp-plugin-registry`).
+
+## Authoritative sources
+
+- `docs/content-model.md` owns the current types, taxonomies, meta and
+  language policy — update it in the same change; never restate its tables.
+- `plugins.json` owns the plugin set and lifecycle facts; a schema change
+  inside `conexao-data-model` needs no registry entry, but the plugin version
+  header is the authoritative version.
+- `docs/routing.md` owns the URL the type occupies; the rewrite slug is part
+  of the public URL contract.
+
+## Preconditions
+
+- The local Docker Compose site is running for the in-process and HTTP
+  verification.
+- The CPT-needed decision is recorded (step 1) before any code is written.
 
 ## Steps
 
@@ -108,6 +138,30 @@ php scripts/generate-registry-docs.php --check        # no registry drift
   not planned, and any theme change must be explained.
 - Record the real numbers in the report (from `docs/templates/report.md`). If a
   verifier could not run, say so — never write "should work".
+
+## Failure handling
+
+- **The CPT decision is wrong halfway:** stop and re-decide — a taxonomy term
+  or meta field introduced "temporarily" alongside a CPT is the duplication
+  this skill exists to prevent.
+- **A second registration already exists in the theme or another plugin:**
+  that is a defect — remove it and declare `Requires Plugins:` instead;
+  never leave both.
+- **A matrix row fails over HTTP:** the archive/single contract in
+  `docs/routing.md` wins over the implementation — fix the code or, if the
+  route contract genuinely changed, update `docs/routing.md` deliberately.
+- **The completeness gate is non-zero after declaring a translated type:**
+  that is expected until EN coverage exists — record the number and hand the
+  coverage work to `wp-translation-rollout`; never mark the type untranslated
+  to silence the gate.
+
+## Evidence and reporting
+
+- Real numbers from `--only conexao-data-model`, the acceptance suite and the
+  registry drift check go in the report (from `docs/templates/report.md`), with
+  evidence under `docs/evidence/<date>-<stage>/`.
+- The report records the CPT decision and its rationale either way — a
+  rejected CPT is a finding, not an omission.
 
 ## Definition of done
 

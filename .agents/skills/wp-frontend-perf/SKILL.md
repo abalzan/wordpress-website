@@ -1,5 +1,12 @@
 # Frontend performance
 
+## Purpose
+
+Keep a template, query, asset, image or caching change **measurable** —
+count queries before/after, scope every cache key by language, register
+invalidation, and prove no accidental behaviour change — without turning a
+review discipline into a refactor licence.
+
 ## When to use
 
 A change touches templates, queries, assets, images or caching — anything that
@@ -9,6 +16,14 @@ still a performance change.
 
 Use this skill to keep an improvement measurable and to avoid an accidental
 regression. It is a review-and-verify discipline, not a licence to refactor.
+
+## When not to use
+
+- A behaviour change (routes, language behaviour, canonical/hreflang, sitemap)
+  — that needs its own plan and skill (`wp-add-content-type`,
+  `wp-translation-rollout`); here it counts as an accidental regression.
+- Test-layer mechanics — `wp-write-in-process-test`,
+  `wp-http-acceptance-matrix`, `wp-run-tests`.
 
 ## Required reading
 
@@ -22,6 +37,23 @@ regression. It is a review-and-verify discipline, not a licence to refactor.
   and invalidation) and `wp-content/themes/conexao-br-irlanda/inc/queries.php` (shared query helpers).
 - `wp-content/themes/conexao-br-irlanda/inc/assets.php` (enqueue order and
   `conexao_asset_version()`).
+
+## Authoritative sources
+
+- `docs/frontend.md` owns the **transient invalidation matrix** (post type →
+  transient keys → languages cleared) — update it in the same commit; it is
+  the single record of cache invalidation, not this skill.
+- `wp-content/themes/conexao-br-irlanda/inc/i18n/` owns language-scoped
+  cache keys (`conexao_lang_cache_key()`) and the flush helpers; no other
+  module invents cache scoping.
+- `wp-content/themes/conexao-br-irlanda/inc/assets.php` owns the enqueue
+  order and `conexao_asset_version()`.
+
+## Preconditions
+
+- A before-measurement exists (query count, cache behaviour, response state)
+  — an improvement with no before number cannot be verified.
+- The touched routes are known, so HTTP before/after comparison is possible.
 
 ## Steps
 
@@ -97,6 +129,27 @@ regression. It is a review-and-verify discipline, not a licence to refactor.
 - The transient invalidation matrix in `docs/frontend.md` is current.
 - `docs/frontend.md` and `docs/themes/conexao-br-irlanda.md` are updated when
   structure, assets or caching changed.
+
+## Failure handling
+
+- **The before/after HTTP comparison differs:** that is a behaviour change —
+  stop, treat it as its own change with its own plan, or revert it.
+- **A profiler is unavailable:** say so and report what *was* measured (query
+  count, cache hit/miss, response time if measured) — a numberless
+  "faster" is a reporting defect, not a verified improvement.
+- **A cached query has no invalidation path:** that is a correctness bug, not
+  a performance win — register invalidation or remove the caching.
+- **An unscoped `conexao_*` cache key appears:** the language-scoping gate is
+  red for a reason — route the key through `conexao_lang_cache_key()`; never
+  exempt the key to get green.
+
+## Evidence and reporting
+
+- Before/after query counts (or the real measurement actually taken), the
+  HTTP before/after comparison, and the updated invalidation matrix are
+  recorded in the report, with raw output under
+  `docs/evidence/<date>-<stage>/`.
+- Limitations (e.g. no profiler available) are stated in the report.
 
 ## Definition of done
 

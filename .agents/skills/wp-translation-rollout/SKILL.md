@@ -1,11 +1,29 @@
 # Add a translation rollout
 
+## Purpose
+
+Add English coverage for a content type through the **shared rollout engine**:
+a versioned manifest keyed by stable identifiers, a dry-run preview, a
+pre-apply PT snapshot, an idempotent apply, and a numeric completeness gate —
+with PT provably untouched and the `/en/` layer resolving per
+`docs/routing.md`'s B1/B2 policy.
+
 ## When to use
 
 Adding English coverage for a content type, re-running an existing rollout, or
 extending the `/en/` layer. This is a **content-writing** change: it creates and
 updates real records, so the six-step content-change contract (§5.2) is
 mandatory and dry-run is not optional.
+
+## When not to use
+
+- Non-EN content writes (menus, terms, meta, imports) — the same six-step
+  contract, but under `wp-content-change`.
+- Declaring or changing the content type or its language policy —
+  `wp-add-content-type` (this skill consumes the declared policy).
+- A rollout engine capability change — extend the shared engine
+  (`docs/plugins/conexao-translation-rollout.md` §"Adding the next rollout");
+  never fork the lifecycle into a stage plugin.
 
 ## Required reading
 
@@ -20,6 +38,32 @@ mandatory and dry-run is not optional.
 - `docs/content-model.md` — identity meta and the shared/taxonomy policy.
 - `wp-content/plugins/conexao-translation-rollout/includes/class-conexao-translation-rollout-engine.php`
   and the engine's admin class.
+
+## Authoritative sources
+
+- `docs/content-model.md` owns the content types, identity meta and the
+  taxonomy translated/shared policy; `docs/routing.md` §English rollout state
+  owns the current B1/B2 policy and approved translated post types — read them,
+  never restate their lists.
+- `docs/plugins/conexao-translation-rollout.md` owns the **shared engine**
+  contract: stage config + data manifest, the numeric gate, the
+  remove/rollback contract, and how to add the next rollout. No per-stage
+  apply/audit script copies.
+- `plugins.json` owns the plugin lifecycle facts (the engine and the retired
+  rollout plugins are `production: false`, `build: false`).
+- `tests/baseline/permanent-gates.json` records pre-existing completeness
+  findings so a gate result can be classified as pre-existing — it never
+  suppresses one.
+
+## Preconditions
+
+- The post type's translation policy is already declared in code through
+  Polylang in `wp-content/themes/conexao-br-irlanda/inc/i18n/` (a translated
+  type with no EN coverage fails the completeness gate by design).
+- The stage's manifest data is authored and versioned, keyed by stable
+  identifiers.
+- The engine and stage plugin are active on the local Compose site for the
+  dry-run/apply cycle.
 
 ## Steps
 
@@ -114,6 +158,40 @@ php scripts/generate-registry-docs.php --check               # registry consiste
   with exact assertion counts.
 - The dry-run output is saved as evidence; it must show zero writes performed.
 - Report the pre-existing failures separately from this rollout's results.
+
+## Failure handling
+
+- **PT drift is non-zero after apply:** stop — restore from the pre-apply
+  snapshot, treat it as a defect, and re-run the whole verification; PT
+  immutability is absolute, not a threshold.
+- **The dry run reports conflicts:** resolve the identity conflict in the
+  manifest (duplicate stable key, wrong master, language mismatch) — never
+  apply over a conflict and "fix up after".
+- **The completeness gate will not reach 0:** either the manifest is missing
+  records (author them) or the record is a documented B2/exclusion case
+  (`conexao_b2_post_types()`, `conexao_b2_page_allowlist()`, deleted-source
+  exclusions) — widen the *documented* exclusion policy deliberately, never
+  the gate. A pre-existing finding reproduces on the base commit and is
+  recorded as pre-existing, never as fixed by your rollout.
+- **A second run of apply is not a no-op:** the engine's idempotence is
+  broken — fix the engine before proceeding.
+- **Orphaned EN fixtures appear (an EN record with no PT master):** use the
+  documented orphan-removal path (`scripts/remove-en-orphan-fixtures.php`,
+  dry-run first); a *genuine* orphan is a maintainer decision, never an
+  automatic delete.
+- **The rollout must run on production:** it is executed by a maintainer
+  through the admin screen (Preview → Apply) — the repository ships the plan,
+  never a production mutation; see `wp-production-operations`.
+
+## Evidence and reporting
+
+- Under `docs/evidence/<date>-<stage>/`: the inventory, the dry-run plan
+  (proving zero writes), the pre-apply PT snapshot, the apply output with
+  per-strategy match counts, the idempotence re-run, the PT-unchanged proof
+  (fields compared), and `gate.json`.
+- The report separates this rollout's results from pre-existing failures,
+  states the gate number (0 or the explicit allowlist), and links the engine
+  doc and `docs/routing.md` §English rollout state as updated.
 
 ## Definition of done
 

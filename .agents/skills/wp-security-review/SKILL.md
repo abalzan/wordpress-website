@@ -1,13 +1,26 @@
 # Security review
 
+## Purpose
+
+Review a change for the security defects this repository actually produces —
+missing capability checks, missing nonces, unescaped output, unprepared SQL,
+leaked secrets, REST boundary violations — and prove every guard **negatively**
+(blocks when it should).
+
 ## When to use
 
 Any change that reads a request, writes to the database, registers a REST or
 AJAX endpoint, touches an admin screen, handles media, or moves data between
-environments. Run this review **before** shipping, not after.
+environments. Run this review **before** shipping, not after. Pair it with
+`wp-add-admin-screen` (nonce/capability surface) and content-writing work
+(`wp-content-change`, `wp-translation-rollout`) for data movement.
 
-Pair it with `wp-add-admin-screen` (nonce/capability surface) and
-`wp-content-rollout`-style work (data movement).
+## When not to use
+
+- Performance or query-count review — `wp-frontend-perf`.
+- Test-layer mechanics — `wp-write-in-process-test`, `wp-run-tests`.
+- There is no "later": a change shipped without this review is a finding in
+  itself, not an acceptable state.
 
 ## Required reading
 
@@ -18,6 +31,22 @@ Pair it with `wp-add-admin-screen` (nonce/capability surface) and
 - `docs/plugins/` — each plugin doc states its own boundary and admin surface.
 - `scripts/lib/rest.py` and `scripts/lib/bootstrap.php` — the shared clients
   that already implement the credential and target rules.
+
+## Authoritative sources
+
+- `docs/engineering-standard.md` §2.1, §4.2, §7 and §0 principle 8 own the
+  normative rules — this skill is their review procedure, not a second rule set.
+- `wp-content/themes/conexao-br-irlanda/inc/rest-language.php` owns the
+  bilingual REST boundary — the single module that registers REST language
+  filters/fields.
+- `scripts/lib/rest.py` and `scripts/lib/bootstrap.php` are the shared clients
+  that already implement the credential and target rules — reuse them; never
+  restates their guards in a new script.
+
+## Preconditions
+
+- The change is implemented (this reviews real code, not intentions).
+- The owning plugin for each touched concern is known (step 10).
 
 ## Steps
 
@@ -95,6 +124,27 @@ php -l <changed file>                             # syntax
   no credential literal and no hard-coded production target in `scripts/`.
 - Any finding you could not test is reported as **not tested**, with the reason.
 - No security claim in the report is made without the check that supports it.
+
+## Failure handling
+
+- **A guard is missing:** fix the code; a compensating document note is not a
+  fix. A capability or nonce guard that "will be added later" is a defect
+  shipped now.
+- **A guard cannot be tested in this environment:** report it as **not
+  tested** with the reason — never as verified; CI is the authoritative re-run.
+- **A finding sits in code the task did not touch:** record it as a follow-up
+  finding with its exact location; do not fix unrelated defects inside this
+  change (scope creep), and do not leave it unrecorded.
+- **A public REST endpoint seems necessary:** it is an explicit allowlist
+  decision — justify it in the report and document it in `docs/routing.md`
+  §English before release; its language behaviour must mirror the front end.
+
+## Evidence and reporting
+
+- Every finding is reported with the exact path and what proves it; every
+  clean area is reported as reviewed, not as "assumed fine".
+- Negative-proof evidence (the guard blocked the bad input) goes under
+  `docs/evidence/<date>-<stage>/` and the numbers into the report.
 
 ## Definition of done
 

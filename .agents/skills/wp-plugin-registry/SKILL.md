@@ -1,5 +1,12 @@
 # Update the plugin registry
 
+## Purpose
+
+Change what this repository's plugins **are** — add, remove, re-classify,
+re-order, re-scope (production/build/mount) — through the single authoritative
+registry `plugins.json`, regenerating every derived region and never creating
+a second plugin list anywhere.
+
 ## When to use
 
 Adding, removing, re-classifying or re-ordering a plugin; changing whether it
@@ -9,6 +16,15 @@ stack; changing a dependency or a documentation path.
 `plugins.json` is the **single source of truth** for all of that. This skill
 exists to keep it that way: the failure mode being prevented is a *second*
 registry — a hand-maintained plugin list somewhere that silently disagrees.
+
+## When not to use
+
+- Building or verifying a release from the registry — `wp-release-deploy`
+  (it consumes what this skill edits).
+- A plugin's own code changes — the owning plugin's skill; this skill is only
+  about registry metadata.
+- The script catalogue — `scripts/README.md` is a *separate* single source of
+  truth; do not merge the two.
 
 ## Required reading
 
@@ -35,6 +51,25 @@ registry — a hand-maintained plugin list somewhere that silently disagrees.
 | `dependencies` | Slugs that must be activated first | registry validation |
 | `version_source` | The main plugin file whose header `Version` is authoritative | version rendering (versions are **not** duplicated here) |
 | `documentation` | Path to the plugin doc carrying the generated lifecycle block | `docs/plugins/<slug>.md` |
+
+## Authoritative sources
+
+- **`plugins.json`** is the registry itself — `load_order` with `class`,
+  `status`, `production`, `build`, `mount`, `dependencies`, `version_source`,
+  `documentation`, plus the `conventions` block that defines each field.
+- `scripts/generate-registry-docs.php` owns every generated region derived
+  from it (the plugin docs' lifecycle blocks, `docs/deployment.md`'s
+  activation order, `docs/plugins/README.md`'s load-order table,
+  `AGENTS.md`'s plugin inventory).
+- The component **header** owns each version (`version_source`); versions are
+  deliberately not duplicated into the registry.
+
+## Preconditions
+
+- The plugin exists (or is being added) with its main file, header and
+  `docs/plugins/<slug>.md` doc.
+- The intended lifecycle semantics are decided (class, status, production,
+  build, mount) before the registry is edited.
 
 ## Steps
 
@@ -112,6 +147,29 @@ python3 tests/scripts/verify-release-integrity.py     # allowlist still derived,
   derived from `plugins.json`, and a `retired` + `build: true` entry is refused.
 - A nonexistent `documentation` or `version_source` path is a failure, not a
   warning.
+
+## Failure handling
+
+- **The drift gate reports a region is stale:** you edited the registry (or a
+  header) and did not regenerate — run `--write`, then `--check` for zero
+  writes. Never hand-edit the region to match.
+- **A generated diff contains unrelated churn:** the registry edit touched
+  more than intended — revert and re-edit precisely; unrelated churn hides
+  real rows.
+- **A dependency validation fails (dependent before dependency):** the order
+  is wrong or the dependency is genuinely missing — never reorder to "fix" a
+  symptom of a real dependency error.
+- **A `documentation` or `version_source` path does not exist:** that is a
+  failure, not a warning — create the doc or fix the path before proceeding.
+
+## Evidence and reporting
+
+- `--check` output (registry valid, every generated region current, zero
+  writes) and the expected-rows diff go into the report, with evidence under
+  `docs/evidence/<date>-<stage>/`.
+- `tests/scripts/verify-release-integrity.py` (allowlist derived; a retired
+  build-enabled entry refused) and `tests/scripts/verify-agent-governance.py`
+  (no second registry anywhere) results are recorded alongside.
 
 ## Definition of done
 

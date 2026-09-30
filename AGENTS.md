@@ -20,19 +20,25 @@ Portuguese/English site served by Polylang. Local development runs in Docker
 
 Then, for the kind of work you are doing, the matching agent skill in
 [`.agents/skills/`](.agents/skills/) and the documents it lists under
-**Required reading**. Each skill is an executable workflow, not a summary:
+**Required reading**. Each skill is an executable workflow, not a summary;
+the full index with the skill → canonical-docs map is
+[`.agents/skills/README.md`](.agents/skills/README.md):
 
 | Skill | Use it for |
 |---|---|
 | [`wp-add-content-type`](.agents/skills/wp-add-content-type/SKILL.md) | a new/changed post type, taxonomy, meta field, archive or route |
 | [`wp-add-admin-screen`](.agents/skills/wp-add-admin-screen/SKILL.md) | a maintainer capability operated through wp-admin |
-| [`wp-write-in-process-test`](.agents/skills/wp-write-in-process-test/SKILL.md) | an in-process PHP test suite |
+| [`wp-write-in-process-test`](.agents/skills/wp-write-in-process-test/SKILL.md) | writing an in-process PHP test suite |
 | [`wp-http-acceptance-matrix`](.agents/skills/wp-http-acceptance-matrix/SKILL.md) | an HTTP acceptance row or matrix |
+| [`wp-run-tests`](.agents/skills/wp-run-tests/SKILL.md) | running the full test contract, diagnosing failures, comparing regressions |
+| [`wp-content-change`](.agents/skills/wp-content-change/SKILL.md) | a content-writing change that is not EN coverage or schema (menus, terms, meta, migrations) |
+| [`wp-translation-rollout`](.agents/skills/wp-translation-rollout/SKILL.md) | English coverage for a content type, or extending the `/en/` layer |
+| [`wp-add-strings`](.agents/skills/wp-add-strings/SKILL.md) | adding/changing user-facing strings (text domains, catalogue regeneration) |
 | [`wp-release-deploy`](.agents/skills/wp-release-deploy/SKILL.md) | build, manifest, deploy, verify, rollback |
+| [`wp-production-operations`](.agents/skills/wp-production-operations/SKILL.md) | read-only production audits and explicitly authorised production actions |
 | [`wp-update-docs`](.agents/skills/wp-update-docs/SKILL.md) | keeping documentation and the index current |
 | [`wp-security-review`](.agents/skills/wp-security-review/SKILL.md) | capabilities, nonces, escaping, SQL, secrets |
 | [`wp-frontend-perf`](.agents/skills/wp-frontend-perf/SKILL.md) | templates, queries, caching, assets |
-| [`wp-translation-rollout`](.agents/skills/wp-translation-rollout/SKILL.md) | English coverage for a content type |
 | [`wp-plugin-registry`](.agents/skills/wp-plugin-registry/SKILL.md) | adding/re-classifying a plugin, build or mount facts |
 
 ## Scope: what you may and may not touch
@@ -65,24 +71,23 @@ twice.
 
 ## Workflow: plan, build, verify, report
 
-1. **Plan.** For multi-file work, or anything touching content, routes or
+1. **Pick the skill** for the kind of work (the table above; the full index is
+   `.agents/skills/README.md`) and follow it: it names the required reading,
+   the steps, the guardrails and the verification for that domain.
+2. **Plan.** For multi-file work, or anything touching content, routes or
    English/Polylang, fill in **[`docs/templates/plan.md`](docs/templates/plan.md)**.
-2. **Reuse, do not reinvent.** Prefer the existing shared engines and helpers
-   over new copies; copying a plugin, script or engine requires a written
-   justification in the report. Known shared pieces: `scripts/lib/bootstrap.php`
-   and `scripts/lib/rest.py` (scripts), `scripts/lib/zip-build.sh` and
-   `scripts/lib/release.py` (packaging and the release record),
-   `scripts/lib/plan.py` (machine-readable plans), the
-   `conexao-translation-rollout` engine (rollout lifecycle), `tests/bootstrap.php`
-   and `tests/lib/assertions.php` (tests), and
-   `scripts/generate-registry-docs.php` (every generated registry region).
-3. **Verify with real numbers.** Run the checks the skill names and paste the
-   actual output. `./scripts/run-tests.sh` is the single test command (in-process
-   PHP + script contract + HTTP acceptance, one aggregate exit code).
-4. **Report.** Fill in **[`docs/templates/report.md`](docs/templates/report.md)**
-   and put machine evidence in `docs/evidence/<date>-<stage>/`. Never add a
-   report or evidence file at the repository root. No claim of "fully verified"
-   when a verifier was unavailable — use `PASS WITH LIMITATION` and say why.
+3. **Reuse, do not reinvent.** The shared engines and helpers are catalogued
+   in `scripts/README.md` and in each skill's **Authoritative sources**;
+   copying a plugin, script or engine requires a written justification in the
+   report.
+4. **Verify with real numbers** (`wp-run-tests`): `./scripts/run-tests.sh` is
+   the single test command — in-process PHP + script contract + HTTP
+   acceptance, one aggregate exit code.
+5. **Report** (`wp-update-docs`): fill in
+   **[`docs/templates/report.md`](docs/templates/report.md)** and put machine
+   evidence in `docs/evidence/<date>-<stage>/`. Never add a report or evidence
+   file at the repository root. No claim of "fully verified" when a verifier
+   was unavailable — use `PASS WITH LIMITATION` and say why.
 
 ## Safety rules that are not negotiable
 
@@ -145,8 +150,6 @@ Full command reference: [`docs/testing.md`](docs/testing.md) and
 
 ## Plugins (custom, this repo)
 
-## Plugins (custom, this repo)
-
 All under `wp-content/plugins/`. Load order matters:
 
 <!-- BEGIN GENERATED PLUGIN REGISTRY: AGENTS.md plugin inventory -->
@@ -183,15 +186,24 @@ authoritative registry. Edit the registry and run
 
 ## Where to go next
 
-| Task | Read first |
-|---|---|
-| Full documentation index | [`docs/README.md`](docs/README.md) |
-| Architecture / content model / routes | `docs/architecture.md`, `docs/content-model.md`, `docs/routing.md` |
-| Frontend, CSS, theme | `docs/frontend.md`, `docs/themes/conexao-br-irlanda.md` |
-| Build and deploy | `docs/deployment.md`, `docs/releases.md` |
-| Local development and quality tooling | `docs/development.md` |
-| Testing model and conventions | `docs/testing.md` |
-| Per-plugin purpose, data and verification | `docs/plugins/conexao-*.md` |
-| Stage/feature history | `docs/reports/`, `docs/evidence/` |
+Task → skill → canonical docs. The full index is
+[`.agents/skills/README.md`](.agents/skills/README.md).
 
-_Last verified: 2026-09-26 by Stage K — Agent Skills + Templates_
+| Task | Skill | Canonical docs |
+|---|---|---|
+| New or changed content type | `wp-add-content-type` | `docs/content-model.md`, `docs/routing.md` |
+| English translation work | `wp-translation-rollout` | `docs/content-model.md`, `docs/routing.md`, `docs/testing.md` |
+| Any other content write (menus, terms, meta, imports) | `wp-content-change` | `docs/engineering-standard.md` §5.2, `scripts/README.md` |
+| Writing / running tests | `wp-write-in-process-test`, `wp-http-acceptance-matrix`, `wp-run-tests` | `docs/testing.md` |
+| Production deployment / release | `wp-release-deploy` | `docs/releases.md`, `docs/deployment.md`, `docs/testing.md` |
+| Production audit or authorised production action | `wp-production-operations` | `docs/releases.md`, `docs/deployment.md` |
+| Adding user-facing strings | `wp-add-strings` | `docs/engineering-standard.md` §9.3, `scripts/README.md` |
+| Security review | `wp-security-review` | `docs/engineering-standard.md` §2.1/§4.2/§7 |
+| Frontend / performance work | `wp-frontend-perf` | `docs/frontend.md`, `docs/themes/conexao-br-irlanda.md` |
+| Adding / re-classifying a plugin | `wp-plugin-registry` | `plugins.json`, `docs/plugins/README.md` |
+| Updating documentation | `wp-update-docs` | `docs/README.md`, `docs/engineering-standard.md` §9 |
+| Architecture / full documentation index | — | `docs/architecture.md`, `docs/README.md` |
+| Local development and quality tooling | — | `docs/development.md` |
+| Stage/feature history (archive, not instructions) | — | `docs/reports/`, `docs/evidence/` |
+
+_Last verified: 2026-09-30 by the agent-skills documentation migration_

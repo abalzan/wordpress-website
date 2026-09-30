@@ -1,9 +1,12 @@
 # Release and deploy
 
-## When to use
+## Purpose
 
-Building release artifacts, recording a release, verifying a deployment, or
-rolling one back. Two invariants define this repository's release contract:
+Build deterministic release artifacts from the registry-derived allowlist,
+record exactly what was built in `dist/release.json`, hand a maintainer the
+documented manual deployment for WordPress.com, verify a deployment read-only,
+and keep rollback prepared. Two invariants define this repository's release
+contract:
 
 1. **`plugins.json` determines what may ship** — the artifact allowlist is
    *derived*, never hand-maintained.
@@ -11,7 +14,24 @@ rolling one back. Two invariants define this repository's release contract:
    git SHA, file count, byte size and SHA-256 per artifact.
 
 The third question — *does the deployed site behave?* — is answered separately
-by `scripts/verify-deploy.py`, which observes without mutating.
+by `scripts/verify-deploy.py`, which observes without mutating. Operating on
+the production state itself (audits, authorised production actions) is
+`wp-production-operations`.
+
+## When to use
+
+- Building release artifacts (plugin ZIPs, theme ZIP) and the release record.
+- Preparing a deployment: what to upload, in what order, to which steady state.
+- Verifying a deployment over HTTP, or rolling one back.
+- Any change to the release machinery itself (allowlist, manifest, packager).
+
+## When not to use
+
+- Read-only production audits and authorised production changes —
+  `wp-production-operations` (this skill builds and records; that one
+  operates).
+- Running the test contract — `wp-run-tests` (step 1 depends on it).
+- Editing the plugin registry — `wp-plugin-registry` (it feeds this one).
 
 ## Required reading
 
@@ -23,6 +43,27 @@ by `scripts/verify-deploy.py`, which observes without mutating.
 - `docs/deployment.md` — the generated production activation order.
 - `plugins.json` — the authoritative registry (see `wp-plugin-registry`).
 - `scripts/README.md` — the build and verification script entries.
+
+## Authoritative sources
+
+- `docs/releases.md` owns the release contract: the two invariants, the
+  artifact rules and exclusion list, the tag convention, the manifest schema,
+  deployment-verification semantics and **rollback semantics** (including what
+  a rollback does **not** cover).
+- `plugins.json` owns the allowlist source; `scripts/lib/release.py` is the one
+  record implementation; `scripts/lib/zip-build.sh` owns the packaging rules
+  and the determinism guarantee — never a second packager.
+- `docs/deployment.md` owns the generated production activation order and the
+  production environment constraints.
+
+## Preconditions
+
+- `./scripts/lint.sh` and `./scripts/run-tests.sh` are green (step 1 — a
+  release does not fix tests).
+- The versions to ship are already bumped in the **component headers** (the
+  authoritative version source), not in any side table.
+- The previous artifacts and previous `dist/release.json` are kept somewhere
+  durable outside `dist/` (it is git-ignored) — they are the rollback substrate.
 
 ## Steps
 
@@ -57,6 +98,11 @@ by `scripts/verify-deploy.py`, which observes without mutating.
    (platform plugins first), through wp-admin, and activates/deactivates to
    reach the steady state in `docs/deployment.md`. The tooling is
    build-and-verify only: it contains no upload, activation or mutating path.
+   **Update an already-active plugin in place** (upload the new ZIP over it so
+   WordPress replaces it and it stays active): **never deactivate +
+   reactivate to "refresh"** — activation hooks are not re-runnable, and
+   `conexao-content`'s activation re-creates pages and rebuilds the
+   `Menu Principal` / `Menu Rodapé` navigation menus.
 7. **Verify the deployment over HTTP.**
    ```bash
    python3 scripts/verify-deploy.py --site https://conexaobr.ie
@@ -67,9 +113,16 @@ by `scripts/verify-deploy.py`, which observes without mutating.
 8. **Record and tag.** Add a row to the release log in `docs/releases.md` with
    versions, git SHA, verification result and the rollback note, using the tag
    convention there.
-9. **Rollback.** Follow `docs/releases.md` §Rollback: previous ZIPs, previous
-   plugin/theme state, re-verify over HTTP. Record what rollback does **not**
-   cover (content changes need their own reversal).
+9. **Rollback.** Prepare it *before* deploying (previous `dist/release.json`,
+   previous plugin set + theme version, and each content change's own
+   snapshot). To roll back: decide **code fault or content fault** — they
+   roll back differently. A code fault: re-upload the previous ZIPs and
+   activate in `plugins.json` order, re-activate the previous theme, then
+   re-verify with `python3 scripts/verify-deploy.py --site <url>`. A content
+   fault: restore from that change's own snapshot or documented recovery —
+   never improvise SQL. A single faulty plugin: deactivate it in wp-admin,
+   re-verify, and decide. Record what rollback does **not** cover (content
+   changes need their own reversal) and the result in `docs/releases.md`.
 
 ## Guardrails
 
@@ -105,6 +158,33 @@ python3 scripts/verify-deploy.py --site <url>     # read-only, explicit target
   as verified.
 - `scripts/verify-deploy.py` without `--site` must exit non-zero (a negative
   proof worth repeating).
+
+## Failure handling
+
+- **A gate is red before building:** stop — a release never fixes tests; fix
+  the change or defer the release.
+- **`--verify` reports a mismatch (hash, version, allowlist):** the record and
+  the artifacts disagree — rebuild and re-record; never hand-edit
+  `dist/release.json`.
+- **Two builds are not byte-identical:** the determinism contract is broken —
+  find the nondeterministic input (mtimes, permissions, ordering) before
+  proceeding; a "close enough" match is a failure.
+- **Deployment verification fails after upload:** roll back (step 9) — an
+  unverified production state is not a state you walk away from.
+- **A release was prepared but not deployed:** record exactly that — the
+  release log stays empty until someone actually deploys; a prepared release
+  is not a performed release.
+
+## Evidence and reporting
+
+- The per-step output of `./scripts/verify-release.sh`, the manifest
+  verification result, and the deploy-verification JSON (saved with `--out`
+  under `docs/evidence/<date>-<release>/`) go into the release record and the
+  report.
+- `git status --short` must show no `dist/` and no unexpected `wp-content`
+  change; paste the real per-step output. If a step could not run (no Docker,
+  no network, no deployed site), record it as **blocked** or **not tested** —
+  never as verified.
 
 ## Definition of done
 

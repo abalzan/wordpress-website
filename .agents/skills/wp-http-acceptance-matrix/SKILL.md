@@ -1,5 +1,11 @@
 # Write an HTTP acceptance matrix
 
+## Purpose
+
+Prove **what a real request returns** — status, redirects, canonical, hreflang,
+sitemap, filters, language pairs — by adding rows to the repository's fixed
+HTTP acceptance matrices, validated in full before any request is made.
+
 ## When to use
 
 Anything **request-visible** needs an HTTP row: a new or changed route, an
@@ -7,6 +13,14 @@ archive or single, a filter, pagination, a redirect, a canonical or hreflang
 emission, a sitemap entry, a REST language parameter, or a language-pair URL.
 This layer proves what a real request returns; the in-process layer
 (`wp-write-in-process-test`) proves internal behaviour.
+
+## When not to use
+
+- Internal behaviour that no request can observe —
+  `wp-write-in-process-test`.
+- Running the full contract / regression comparison — `wp-run-tests`.
+- Production verification — `scripts/verify-deploy.py` under
+  `wp-production-operations`; the acceptance layer never targets production.
 
 ## Required reading
 
@@ -21,6 +35,22 @@ This layer proves what a real request returns; the in-process layer
 - `tests/acceptance/matrices/routing.json` and
   `tests/acceptance/matrices/guides-en.json` — existing rows
   to imitate, and `scripts/data/release-smoke-matrix.json` for the release set.
+
+## Authoritative sources
+
+- `tests/acceptance/lib/matrix.py` is **the** schema and loader — never
+  re-implement either; `tests/acceptance/lib/http_client.py` is the shared
+  client including its production-host refusal.
+- `scripts/data/release-smoke-matrix.json` is the **fixed** release smoke
+  matrix — it deliberately does not grow between releases.
+- `docs/testing.md` owns the acceptance layer model and the base URL; the
+  route contract being asserted lives in `docs/routing.md`.
+
+## Preconditions
+
+- The local Compose site is up and answering on the acceptance base URL
+  (`CONEXAO_TEST_BASE_URL`; default and overrides in `docs/testing.md`).
+- The existing rows were read before new ones are written.
 
 ## Steps
 
@@ -94,6 +124,25 @@ CONEXAO_TEST_BASE_URL=<local site> \
   If it passes, the row is vacuous and must be rewritten.
 - Regression comparison: the failing-row list must be identical before and
   after the change.
+
+## Failure handling
+
+- **A row fails:** the contract in `docs/routing.md` decides — either the code
+  is wrong (fix the code) or the documented contract genuinely changed (update
+  `docs/routing.md` deliberately, in the same change).
+- **The matrix fails validation before any request:** fix the row's fields;
+  never delete a failing row to get green.
+- **The environment is unavailable (no local site):** the runner reports
+  blocked and exits non-zero — report it as blocked, never as passed.
+- **A row was proven vacuous (a wrong expectation passes):** rewrite the row
+  on stable fragments; volatile class names are not contract.
+
+## Evidence and reporting
+
+- Matrices, capture summaries and exact `N passed, M failed` counts go under
+  `docs/evidence/<date>-<stage>/` and into the report; state the number of rows.
+- The negative proof (a deliberately wrong `expect_contains` failed the row)
+  is recorded — it is the proof the row discriminates.
 
 ## Definition of done
 
