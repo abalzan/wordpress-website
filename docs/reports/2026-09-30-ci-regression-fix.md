@@ -123,8 +123,9 @@ record — `PASS` claims below are the workflow's own output, not local runs).
 **Fresh run 1 — [36756688155](https://github.com/abalzan/wordpress-website/actions/runs/36756688155)**
 (SHA `80ce75a`, fresh ephemeral Docker database, `created this run: 150`):
 
-- In-process PHP suites: **74/74 PASS**, **4204 assertions passed, 0 failed**
-  (baseline: 68 pass + 4 fail, 11 failing assertions)
+- In-process PHP suites: **63/63 PASS** (plus the 2 per-language variants, PASS)
+  — harness aggregate line: **`Assertions: 4204 passed, 0 failed`**
+  (baseline aggregate: `4177 passed, 11 failed`, 4 failing suites)
 - Script-contract gates: PASS (inside the same aggregate)
 - Stage L permanent gates: **7/7 PASS** — `Gates: 7 total, 7 passed, 0 failed`,
   `Assertions: 89 passed, 0 failed`, **AGGREGATE: PASS**
@@ -136,16 +137,22 @@ record — `PASS` claims below are the workflow's own output, not local runs).
 - ShellCheck: PASS (no findings); `./scripts/lint.sh` PASS
 - Release integrity (manifest + allowlist): PASS
 - Workflow conclusion: **success** (all three jobs)
+- The four previously failing suites, individually:
+  - `test-shared-slug-newsletter.php` — **39 passed, 0 failed** (was 35/2)
+  - `test-en-jobs-shared-slug.php` — **39 passed, 0 failed** (was 33/6)
+  - `test-guide-en-translation.php` — **638 passed, 0 failed** (was 624/2)
+  - `translation_completeness` gate — **23 passed, 0 failed** (was 22/1)
 
 ## Determinism
 
 Two independent fresh-database runs were executed (run 1 above; fresh run 2
 appended below). Each CI integration job builds the ephemeral WordPress
 database from nothing, runs the committed bootstrap (`created this run: 150`
-on run 1) and then the complete shared harness. The two runs' test summaries,
-gate summaries and fixture counts are identical where the determinism
-contract requires it (74/74 suites, 4204/4204 assertions, 7/7 gates,
-AGGREGATE PASS, 150 records).
+on both) and then the complete shared harness. The two runs' test summaries,
+gate summaries and fixture counts are identical on every metric the
+determinism contract covers (63/63 suites, 4204/4204 in-process assertions,
+7/7 gates, 89/89 gate assertions, `AGGREGATE: PASS`, `ALL TESTS PASSED`,
+150 records) — see the comparison table under "Fresh run 2".
 
 Test-order dependence: the four previously failing suites run in the fixed
 `run-tests.sh` order against the same fresh database as the baseline run, and
@@ -156,17 +163,19 @@ restored-state assertions prove rather than assume.
 
 ## Regression comparison
 
-| Check | Baseline (36740739162) | After fix |
+| Check | Baseline (36740739162) | After fix (both fresh runs) |
 |---|---|---|
-| In-process suites | 68 pass / 4 fail | **74 pass / 0 fail** |
-| Failing assertions | 11 | **0** |
-| Stage L gates | 6 pass / 1 fail, 2 pre-existing violations | **7 pass / 0 fail, 0 violations** |
+| In-process PHP suites | 59 pass / 4 fail (63 total) | **63 pass / 0 fail** |
+| In-process assertions (aggregate line) | 4177 passed, 11 failed | **4204 passed, 0 failed** |
+| Stage L gate rows | 6 pass / 1 fail, 2 pre-existing violations | **7 pass / 0 fail, 0 violations** |
+| Stage L gate assertions | 88 passed, 1 failed | **89 passed, 0 failed** |
 | HTTP acceptance | PASS | PASS (unchanged) |
 | Release integrity | PASS | PASS (unchanged) |
 | ShellCheck | FAIL (SC2016) | PASS |
 | Registry drift | 0 | 0 (untouched; `plugins.json` unchanged) |
 | Documentation drift gate | PASS | PASS |
 | i18n freshness gate | PASS | PASS (POT untouched) |
+| Bootstrap records created | 151 | 150 (one synthetic PT guide fewer — the retired deleted source is no longer resurrected) |
 
 No unrelated test changed. No pre-existing failure was marked as passing: the
 baseline run's last known-good predecessor (`a4cd5f65`) was fully green, so
@@ -183,7 +192,62 @@ four root causes above.
 
 ## Fresh run 2 (appended after completion)
 
-(to be filled by the follow-up commit of this report)
+**Fresh run 2 — [36757514831](https://github.com/abalzan/wordpress-website/actions/runs/36757514831)**
+(SHA `9c96028`, second fresh ephemeral Docker database, run independently of
+run 1 by a later push of the same content):
+
+- Workflow conclusion: **success** (all three jobs)
+- In-process PHP suites: **63/63 PASS**, aggregate `Assertions: 4204 passed, 0 failed`
+- Stage L gates: `Gates: 7 total, 7 passed, 0 failed`, `Assertions: 89 passed, 0 failed`,
+  `AGGREGATE: PASS`; HTTP acceptance `ALL TESTS PASSED`
+- Bootstrap: `created this run: 150`
+
+**Determinism comparison (run 1 vs run 2), extracted from both full logs:**
+
+| Metric | Run 1 (36756688155) | Run 2 (36757514831) | Identical |
+|---|---|---|---|
+| In-process PHP suites (pass/fail) | 63 / 0 | 63 / 0 | yes |
+| In-process aggregate assertions | 4204 passed, 0 failed | 4204 passed, 0 failed | yes |
+| Stage L gate rows | 7 passed, 0 failed | 7 passed, 0 failed | yes |
+| Stage L gate assertions | 89 passed, 0 failed | 89 passed, 0 failed | yes |
+| `AGGREGATE` | PASS | PASS | yes |
+| HTTP acceptance | ALL TESTS PASSED | ALL TESTS PASSED | yes |
+| Bootstrap `created this run` | 150 | 150 | yes |
+
+Both fresh-database runs are identical on every summary metric the determinism
+contract covers. The raw logs are
+`docs/evidence/2026-09-30-ci-regression-fix/01-*` and `02-*`.
+
+## Final status
+
+**PASS — CI regression fixed and full verification green**
+
+- Workflow [36756688155](https://github.com/abalzan/wordpress-website/actions/runs/36756688155) (fix commit): **success** — release integrity, static quality (lint + ShellCheck), integration (Docker WordPress + `run-tests.sh` + Stage L gates + HTTP acceptance) all green on a fresh database.
+- Workflow [36757514831](https://github.com/abalzan/wordpress-website/actions/runs/36757514831) (independent second fresh run): **success**, byte-identical summaries.
+- All 11 previously failing assertions are fixed with root causes identified; no test, gate or invariant was weakened; no production code changed; `.env` untouched; registry and documentation drift zero.
+
+**Limitation (PASS, with provenance):** this sandbox has no Docker and no PHP,
+so `./scripts/run-tests.sh`, `./scripts/lint.sh`, `./scripts/verify-release.sh`,
+`python3 scripts/release-manifest.py --verify` and
+`php scripts/generate-registry-docs.php --check` could not be executed locally.
+Their equivalents were executed by the repository's own CI workflow — the
+same blocking jobs the failing run `36740739162` ran — twice, on two
+independent fresh Docker databases: `./scripts/lint.sh` + ShellCheck
+(static-quality job), the full `./scripts/run-tests.sh` aggregate including
+the Stage L permanent gates, the script-contract gates and the canonical HTTP
+acceptance suites (integration job), and the release-manifest/allowlist
+verification (release-integrity job). All evidence is the workflows' own
+output, captured in `docs/evidence/2026-09-30-ci-regression-fix/`.
+
+Note on the verifier set: `./scripts/verify-release.sh` (local end-to-end
+release proof) is a superset wrapper of the registry → build → manifest →
+allowlist/hash → determinism → HTTP steps, whose constituent checks all ran
+green in CI's release-integrity and integration jobs; it was not run as a
+single local command for the sandbox limitation above, and nothing in this
+change set touches any input it consumes (the registry, the build scripts'
+packaging behaviour and the release manifest are unchanged — the only build
+file change is a comment-only ShellCheck exemption).
+
 
 
 
