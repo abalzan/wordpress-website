@@ -2,7 +2,7 @@
 
 | | |
 |---|---|
-| **Status** | **Proposal — not yet enforced.** Produced by the [2026-09-25 standardisation audit](audit/2026-09-25-wordpress-engineering-standardisation-audit.md). Adoption is sequenced in §15. |
+| **Status** | **Adopted and enforced.** Produced by the [2026-09-25 standardisation audit](audit/2026-09-25-wordpress-engineering-standardisation-audit.md); the §15 adoption roadmap is complete and the permanent invariant gates + CI make the safety rules fail-closed. Legacy debt is recorded in baselines — never exempted. |
 | **Version** | 1.0 (proposed) |
 | **Scope** | The WordPress website repository (`wp-content/`, `scripts/`, `docker/`, `docs/`, build/deploy). **Flutter/mobile is explicitly out of scope.** |
 | **Audience** | Maintainers, contributors and AI agents working on this repository |
@@ -488,7 +488,7 @@ Rules: content-model changes MUST be additive/backwards compatible; a rename req
 
 ### 5.2 The content-change contract (MUST for anything that writes content)
 
-Every migration, seed, rollout or bulk edit follows exactly these six steps, whatever the language or implementation:
+Every migration, seed, rollout or bulk edit follows exactly these six steps, whatever the language or implementation. (The executable workflows: `wp-content-change` for a content write that is not EN coverage or schema; `wp-translation-rollout` for English coverage — both under `.agents/skills/`.)
 
 1. **Inventory** — read-only; produce a machine-readable list of target records with a stable identifier and current relevant state. Kept as evidence.
 2. **Manifest / data file** — authored data (translations, mappings, values) lives in a versioned file (`translation-map.php`, JSON…), never inline in the engine.
@@ -537,13 +537,20 @@ Every migration, seed, rollout or bulk edit follows exactly these six steps, wha
 
 ### 6.2 Procedure — adding EN coverage for a content type
 
-1. **Decide the strategy**: linked EN records (preferred for CPTs/posts/pages) vs. an authored EN field on the same record (as used for Leisure card descriptions — `_leisure_excerpt_en`). Record the decision and rationale in the report.
-2. **Author the data** in a versioned manifest (one entry per PT record, keyed by stable identifier + slug).
-3. **Register the translation policy** (translated post type + its translated taxonomies; shared taxonomies stay shared).
-4. **Build the rollout** on the shared engine (§4.1 `rollout`) with dry-run, PT-drift guard, idempotent apply, `--remove` and an admin screen.
-5. **Wire the theme** so EN requests resolve to the EN record/field while PT requests are untouched (URL resolvers, archive filters, breadcrumbs, sitemap, hreflang).
-6. **Gate and evidence**: completeness gate = 0, PT-unchanged assertion, HTTP matrix rows (archive / single / filter / pagination / canonical / hreflang / sitemap) stored under `docs/evidence/`.
-7. **Document**: `docs/routing.md` §English rollout state, the plugin doc, `docs/content-model.md` if meta changed, `AGENTS.md` if counts changed.
+The executable workflow is the `wp-translation-rollout` skill
+(`.agents/skills/wp-translation-rollout/SKILL.md`); it applies the §5.2
+six-step content-change contract through the shared rollout engine. This
+section states what every rollout MUST satisfy, whatever performs it:
+
+| Requirement | Level |
+|---|---|
+| The strategy (linked EN records, preferred for CPTs/posts/pages, vs. an authored EN field on the same record — the Leisure card description precedent, `_leisure_excerpt_en`) is decided and recorded in the report before data is authored | MUST |
+| Data is a versioned manifest, one entry per PT record, keyed by a stable identifier + slug (never local post IDs) | MUST |
+| The translation policy is registered in code (`pll_get_post_types` / `pll_get_taxonomies` in `inc/i18n/`); shared taxonomies stay shared | MUST |
+| The rollout runs on the shared engine (§4.1 `rollout`) with a dry-run preview, a PT-drift guard, an idempotent apply, a `--remove` path and an admin screen | MUST |
+| The theme resolves EN requests to the EN record/field while PT requests stay untouched (URL resolvers, archive filters, breadcrumbs, sitemap, hreflang, language switcher) | MUST |
+| It ends with the completeness gate = 0 (or a documented allowlist), the PT-unchanged assertion, and HTTP matrix rows (archive / single / filter / pagination / canonical / hreflang / sitemap) stored under `docs/evidence/` | MUST |
+| `docs/routing.md` §English rollout state, the plugin doc and `docs/content-model.md` (if meta changed) are updated in the same change | MUST |
 
 ### 6.3 Permanent invariant tests (MUST)
 
@@ -622,6 +629,7 @@ docker compose exec wordpress php /var/www/html/wp-content/themes/conexao-br-irl
 |---|---|---|
 | `AGENTS.md` | Orientation: project, stack, layout, plugin table, content model, routes, architecture rules, task index | Project maintainer |
 | `README.md` | Human entry point: stack, local dev, build, deploy, structure | Project maintainer |
+| `.agents/skills/` | The operational layer: one executable `SKILL.md` per reusable agent workflow (§13.1); indexed by `.agents/skills/README.md` | Project maintainer |
 | `docs/architecture.md`, `docs/content-model.md`, `docs/routing.md`, `docs/frontend.md`, `docs/deployment.md`, `docs/development.md` | Evergreen reference | Project maintainer |
 | `docs/plugins/<slug>.md` | Per-plugin doc (metadata block per §4.1) | Plugin maintainer |
 | `docs/themes/conexao-br-irlanda.md` | Theme reference | Theme maintainer |
@@ -708,7 +716,9 @@ The theme's `pt_BR` catalogue is an identity catalogue by design (the source lan
 | Production constraints are explicit: no WP-CLI, no SSH, no filesystem access | MUST |
 | Local restore is only ever performed with `scripts/restore-updraft-db.sh` (never a raw `mysql < dump`) | MUST |
 
-Normative release sequence:
+Normative release sequence (the executable workflow, including rollback, is
+the `wp-release-deploy` skill — `.agents/skills/wp-release-deploy/SKILL.md`;
+production operations are the `wp-production-operations` skill):
 
 ```bash
 ./scripts/lint.sh && ./scripts/run-tests.sh     # 1. gates
@@ -739,25 +749,38 @@ python3 scripts/verify-deploy.py --site https://conexaobr.ie    # 5. verify over
 
 ## 13. AI-agent standard
 
-### 13.1 Skills
+### 13.1 Skills and the knowledge-ownership boundary
 
-This repository MUST maintain WordPress-domain skills under `.agents/skills/`, each following: **When to use → Required reading → Steps → Guardrails → Verification → Definition of done**.
+This repository MUST maintain WordPress-domain skills under `.agents/skills/`,
+one directory per skill, each an executable `SKILL.md` following the standard
+format, in this order:
 
-| Skill | Minimum content |
-|---|---|
-| `wp-add-content-type` | data-model registration, taxonomy/sitemap decision, docs, test |
-| `wp-add-admin-screen` | capability, nonce, list table, dry-run preview, notices, escaping |
-| `wp-add-theme-component` | template part, design-system + dark-mode variables, asset versioning, a11y |
-| `wp-add-string-i18n` | text domain per component + catalogue regeneration |
-| `wp-content-rollout` | the §5.2 six-step contract, evidence layout, gate format |
-| `wp-add-translation-rollout` | §6.2 procedure, shared engine, invariant tests, routing doc update |
-| `wp-rest-contract-change` | `inc/rest-language.php` rules + HTTP matrix |
-| `wp-write-in-process-test` | bootstrap + assertions + naming + prerequisites |
-| `wp-http-acceptance-matrix` | harness, matrix schema, evidence storage |
-| `wp-release-deploy` | §11 sequence, activation order, verification, rollback |
-| `wp-update-docs` | change → document map (appendix) + drift checks |
-| `wp-security-review` | nonce/capability/escaping/prepared-statement checklist |
-| `wp-frontend-perf` | transient caching + invalidation matrix, enqueue discipline |
+**Purpose → When to use → When not to use → Required reading → Authoritative
+sources → Preconditions → Steps → Guardrails → Verification → Failure handling
+→ Evidence and reporting → Definition of done.**
+
+The authoritative skill set, and each skill's primary canonical dependencies,
+are listed in `.agents/skills/README.md` — the single skill index. It is
+CI-checked against the actual skill directories by
+`tests/scripts/verify-agent-governance.py`, which also enforces this format,
+every referenced repository path, the WordPress-only scope sentence in every
+skill, and the absence of a second plugin registry in any skill. A skill is
+added, renamed or retired by changing the directory **and** the index in the
+same change; this standard never enumerates the set by hand.
+
+What each kind of document owns — never the same thing twice:
+
+| Layer | Owns | Never contains |
+|---|---|---|
+| `.agents/skills/` | Reusable operational workflows: the steps, guardrails, verification sequence and failure handling for a kind of work | Registry tables, route lists, version numbers or any list that has an authoritative source |
+| `docs/` (canonical) | Durable project truth: architecture, content model, routing, policy, release contract, testing model, plugin specifications | Step-by-step procedures that belong to a skill |
+| `docs/reports/`, `docs/evidence/` | The historical record: what happened, how it was verified, what was decided | Current instructions |
+
+A skill MUST declare its authoritative inputs in its **Authoritative
+sources** section and reference them rather than copying their content. A
+procedure MUST have exactly one operational home — the matching skill; when a
+canonical document needs to mention a procedure it links the skill instead of
+duplicating the steps.
 
 ### 13.2 Rules for agents
 
@@ -765,11 +788,14 @@ This repository MUST maintain WordPress-domain skills under `.agents/skills/`, e
 |---|---|
 | Read `AGENTS.md` + this standard before changing code | MUST |
 | Use `docs/templates/plan.md` before multi-file work and `docs/templates/report.md` after | MUST |
+| Select the skill that matches the task and follow it; the index is `.agents/skills/README.md` | MUST |
 | Prefer shared engines/helpers over new copies; copying a plugin or script requires a written justification | MUST |
 | Never modify PT content, URLs, Polylang configuration, `.htaccess` redirects or REST contracts without explicit instruction | MUST |
 | Never introduce a second source of truth for a list (`plugins.json` is authoritative) | MUST |
+| A procedure has one operational home: the skill; canonical documents link it, they do not duplicate it | MUST |
 | Run the verification and paste real numbers into the report — no "should work" | MUST |
 | Keep documentation updated in the same change | MUST |
+| Never treat a historical report or evidence file as the current procedure | MUST |
 | Never touch the Flutter/mobile repository, app, tests, docs or REST clients from this repository's tasks | MUST |
 
 ---
@@ -834,3 +860,5 @@ _Last verified: 2026-09-25 by the WordPress engineering standardisation audit (p
 
 
 _Last verified: 2026-09-26 by Stage I — Scripts Standardisation_
+
+_Last verified: 2026-09-30 by the agent-skills documentation migration (skills own procedures; docs own facts; §13.1 hand-maintained skill table removed in favour of the CI-checked index)_
