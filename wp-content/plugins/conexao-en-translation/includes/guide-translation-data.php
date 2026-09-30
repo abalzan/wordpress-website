@@ -465,7 +465,17 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		'carteira-de-motorista-2'                                => array(
+		// RE-KEYED 2026-09-30 (EN rollout blocker resolution). The authored key was
+		// `carteira-de-motorista-2`, the PT guide this row was authored against when
+		// it carried id 463. That record no longer exists in production: the guide id
+		// range 457-486 has exactly one gap, at 463, and the replacement guide
+		// `carteira-motorista-brasileiros` (production id 25031, created 2026-09-29)
+		// carries the same subject — its PT title is "Carteira de Motorista na Irlanda
+		// para Brasileiros: CNH, IDP e Reduced EDT", the documented successor of the
+		// former "Carteira de Motorista na Irlanda: Como Trocar a CNH" (id 463). The
+		// ONLY change is the stable key; every authored EN field below is byte-unchanged.
+		// Evidence: docs/reports/2026-09-30-en-rollout-blocker-resolution.md
+		'carteira-motorista-brasileiros'                => array(
 			'en_slug'             => 'driving-licence-in-ireland-how-to-exchange-your-cnh',
 			'en_title'            => 'Driving Licence in Ireland: How to Exchange Your CNH',
 			'en_excerpt'          => 'How Brazilians exchange their Brazilian driving licence for an Irish one through the NDLS, and what it requires.',

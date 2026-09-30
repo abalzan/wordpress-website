@@ -1,0 +1,72 @@
+EN rollout blocker resolution - read-only mutation snapshot verification
+target: https://conexaobr.ie (production)   verbs: GET only   production writes: 0
+snapshot: 03-mutation-snapshot.json    plan: 02-dry-run-plan.json
+
+== 1. the snapshot is readable and structurally complete ==
+   entries                  : 419
+   taxonomy terms           : 13
+   object_count (declared)  : 432
+   1:1 reconciliation       : 419 + 13 == 432 -> True
+   plan operations          : 419
+   snapshot digest          : b177ce5935de6ed80a89165d1bf3f3d300279949b2f3a29d0f529da26549d049
+
+== 2. every plan operation has exactly one snapshot entry, and vice versa ==
+   plan keys unique           : True  (419 rows)
+   snapshot keys unique       : True  (419 rows)
+   plan set == snapshot set   : True
+   in plan but not snapshot   : []
+   in snapshot but not plan   : []
+
+== 3. required fields, per B1/B2 class (the two shapes are deliberately different) ==
+   B1 rows 120, missing required fields: (none)
+   B2 rows 299, missing required fields: (none)
+
+== 4. B1/B2 classification and planned operation ==
+   B1 CREATE     120
+   B2 CREATE     299
+
+== 5. target identity - the newsletter row specifically ==
+   stage                   : en-page
+   source_pt_id            : 13
+   source_slug             : newsletter
+   source_post_type        : page
+   planned_operation       : CREATE
+   target_slug             : newsletter
+   target_post_type        : page
+   target_lang             : en
+   target_type             : post
+   target_exists           : False
+   write_targets           : ['new EN post row', 'Polylang language + pair']
+   pt_mutation             : none - the PT record is only read
+   translation_relationship: pll_set_post_language(en) + pll_save_post_translations
+   => the snapshot targets slug 'newsletter', NOT 'newsletter-2'.
+
+== 6. PT protection: no PT record is ever overwritten ==
+   B1 entries whose pt_mutation is not 'none'  : 0  []
+   B2 entries not a single-field, no-row-change : 0  []
+   B2 write_targets distinct values            : [('_leisure_excerpt_en',), ('_provider_excerpt_en',)]
+   gate pt_overwrite_attempts                  : 0
+   gate unexpected_pt_mutation_operations       : 0
+   gate b2_creates_en_records                  : 0
+   B2 entries with creates_en_record=true       : 0  (B2 must never create a second identity)
+   B2 target_meta_key values                   : ['_leisure_excerpt_en', '_provider_excerpt_en']
+   every B2 meta key is EN-namespaced          : True
+
+== 7. every B1 create targets a NEW identity; the PT source is only read ==
+   B1 entries                          : 120
+   B1 CREATE entries                   : 120
+   all have a resolved PT id           : True
+   all report target_exists=false      : True
+   all target the 'en' language        : True
+   all reuse the PT post_name (shared) : ['newsletter', 'blog', 'empregos'] (expected: blog, empregos, newsletter)
+
+== 8. taxonomy operations ==
+   terms: 13   gate taxonomy_creates=13  conflicts=0  missing_source=0
+   taxonomies touched                  : ['conexao_category']
+   any shared taxonomy touched         : []
+
+== 9. the snapshot and the plan agree on the PT baseline ==
+   plan PT identity digest : cfe4b7a670266da32ba635f3f46994328143d3de77a914aa52491d42e3a6f853
+   matches the baseline    : True
+
+RECONCILES 1:1 AND CARRIES NO PT OVERWRITE : True

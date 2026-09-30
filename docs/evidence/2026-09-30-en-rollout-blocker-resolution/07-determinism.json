@@ -1,0 +1,60 @@
+{
+ "generated_at_utc": "2026-09-30T08:30:10Z",
+ "runs": [
+  {
+   "label": "run 1",
+   "plan": "docs/evidence/2026-09-30-en-rollout-blocker-resolution/02-dry-run-plan.json",
+   "snapshot": "docs/evidence/2026-09-30-en-rollout-blocker-resolution/03-mutation-snapshot.json",
+   "live_read": "uncached production read",
+   "plan_sha256": "61f1122937f390618a87787e16369703721101a5f64d20874984c252465b63fe",
+   "snapshot_sha256": "58ca84e7b7300c2d75de0dae3c52ba7a9e850ad0f58e63ec191aa98b27ef5aeb",
+   "plan_digest": "9c245082e490542e47ceaa6ebba7025249f06ad369b1480a9dbb86ffada1e96f",
+   "snapshot_digest": "b177ce5935de6ed80a89165d1bf3f3d300279949b2f3a29d0f529da26549d049",
+   "operations": 419,
+   "pt_identity_digest": "cfe4b7a670266da32ba635f3f46994328143d3de77a914aa52491d42e3a6f853"
+  },
+  {
+   "label": "run 2",
+   "plan": "/tmp/plan-run2.json",
+   "snapshot": "/tmp/snap-run2.json",
+   "live_read": "independent uncached production read",
+   "plan_sha256": "492265b40f16c65e2160492ed84e041ca13b286093d43d36819d5f7694462e1c",
+   "snapshot_sha256": "58ca84e7b7300c2d75de0dae3c52ba7a9e850ad0f58e63ec191aa98b27ef5aeb",
+   "plan_digest": "9c245082e490542e47ceaa6ebba7025249f06ad369b1480a9dbb86ffada1e96f",
+   "snapshot_digest": "b177ce5935de6ed80a89165d1bf3f3d300279949b2f3a29d0f529da26549d049",
+   "operations": 419,
+   "pt_identity_digest": "cfe4b7a670266da32ba635f3f46994328143d3de77a914aa52491d42e3a6f853"
+  }
+ ],
+ "plan_byte_identical_raw": false,
+ "plan_byte_identical_content": true,
+ "plan_raw_differing_leaves": {
+  "/report/generated_at_utc": [
+   "2026-09-30T08:30:10Z",
+   "2026-09-30T08:35:13Z"
+  ],
+  "/report/snapshot/path": [
+   "03-mutation-snapshot.json",
+   "snap-run2.json"
+  ]
+ },
+ "plan_raw_differing_leaves_are_all_non_content": true,
+ "documented_non_content_fields": [
+  "/report/generated_at_utc",
+  "/report/snapshot/path"
+ ],
+ "snapshot_byte_identical": true,
+ "plan_digest_equal": true,
+ "snapshot_digest_equal": true,
+ "operations_identical": true,
+ "counts_identical": true,
+ "counts_differing": [],
+ "newsletter_target_identical": true,
+ "newsletter_resolved_slug": "newsletter",
+ "missing_source_classification_identical": true,
+ "missing_source_count": 7,
+ "pt_identity_baseline_identical": true,
+ "unresolved_slug_conflicts": 0,
+ "pt_overwrite_attempts": 0,
+ "all_checks_pass": true
+}

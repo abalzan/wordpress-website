@@ -48,13 +48,26 @@ conexao_gate_open(
 	'shared_slug_page',
 	'A page whose EN translation reuses the PT post_name resolves to the record of the REQUESTED '
 	. 'language, and only when the two records are a linked translation pair.',
-	array( 'polylang', 'conexao_resolve_shared_slug_page_request()' )
+	array( 'polylang', 'conexao_resolve_shared_slug_page_request()', 'conexao_en_translation_shared_page_slug_filter()' )
 );
 
 conexao_gate_require(
 	function_exists( 'conexao_resolve_shared_slug_page_request' ),
 	'theme-active',
 	'test prerequisite is available: conexao_resolve_shared_slug_page_request()'
+);
+
+// A shared-slug FIXTURE can only be created with the same scoped
+// `wp_unique_post_slug` permit the production stage arms: without it WordPress
+// uniquifies the second page to `<slug>-2` and the fixture would be testing
+// nothing. This is a declared DATA PREREQUISITE, not a best-effort nicety — when
+// the permit is unavailable the gate reports `insufficient data:` and exits
+// non-zero instead of fataling inside `wp_insert_post()`.
+conexao_gate_require(
+	function_exists( 'conexao_en_translation_shared_page_slug_filter' ),
+	'plugin-conexao-en-translation-active',
+	'test prerequisite is available: conexao_en_translation_shared_page_slug_filter() (the shared-slug permit)',
+	'activate the conexao-en-translation plugin, or run this suite on an install where it is active'
 );
 
 /**
@@ -132,6 +145,95 @@ function conexao_jobs_gate_resolve( string $slug, string $lang ): array {
 		'changed' => ( $out !== $vars ),
 		'vars'    => $out,
 	);
+}
+
+/**
+ * Read the FRONT-END URLs of two records in a FRESH WordPress request.
+ *
+ * ## Why a child process is not optional here
+ *
+ * Polylang memoises the translated URL of a record the first time it is asked
+ * for in a request, and this suite creates the PT↔EN pair in the very request
+ * that would ask for it. Polylang therefore answers with the value it had
+ * before the pair existed, and NO in-process cache clear reaches it: the memo
+ * lives in Polylang's own link directory, not in the WordPress object cache
+ * (`wp_cache_flush()`, `clean_post_cache()` and
+ * `conexao_en_translation_blog_page_refresh_routing_cache()` were all measured
+ * to leave it untouched).
+ *
+ * The production path never has this problem: the EN record is created by one
+ * request and served by the next. Asserting the canonical/hreflang contract
+ * therefore requires crossing a real request boundary, which is exactly what a
+ * short child process does. The child only READS: it loads `wp-load.php`,
+ * returns two permalinks and the translation links as JSON, and writes nothing.
+ *
+ * The whole point of the assertion is that the two languages resolve to two
+ * DIFFERENT URLs, so reading them in the same memoised request would prove
+ * nothing at all.
+ *
+ * @param int $pt_id PT record id.
+ * @param int $en_id EN record id.
+ * @return array{pt:string,en:string,links:array,ran:bool}
+ */
+function conexao_jobs_gate_fresh_request_urls( int $pt_id, int $en_id ): array {
+	$empty = array(
+		'pt'   => '',
+		'en'   => '',
+		'links' => array(),
+		'ran'  => false,
+	);
+
+	if ( ! function_exists( 'exec' ) || '' === (string) PHP_BINARY ) {
+		return $empty;
+	}
+
+	$child = trailingslashit( ABSPATH ) . 'conexao-shared-slug-gate-reader.php';
+
+	$code = '<?php require __DIR__ . "/wp-load.php";'
+		. 'echo "CONEXAO-GATE-READ" . json_encode(array('
+		. '"pt" => get_permalink( ' . (int) $pt_id . ' ),'
+		. '"en" => get_permalink( ' . (int) $en_id . ' ),'
+		. '"links" => function_exists( "conexao_object_translation_links" )'
+		. ' ? conexao_object_translation_links( ' . (int) $pt_id . ' ) : array(),'
+		. ')) . "\n";';
+
+	if ( false === file_put_contents( $child, $code ) ) {
+		return $empty;
+	}
+
+	$output = array();
+	$status = 0;
+
+	exec( escapeshellarg( (string) PHP_BINARY ) . ' ' . escapeshellarg( $child ) . ' 2>/dev/null', $output, $status );
+
+	@unlink( $child );
+
+	if ( 0 !== (int) $status ) {
+		return $empty;
+	}
+
+	foreach ( (array) $output as $line ) {
+		$position = strpos( (string) $line, 'CONEXAO-GATE-READ' );
+
+		if ( false === $position ) {
+			continue;
+		}
+
+		$decoded = json_decode( substr( (string) $line, $position + strlen( 'CONEXAO-GATE-READ' ) ), true );
+
+		if ( ! is_array( $decoded ) ) {
+			continue;
+		}
+
+		return array(
+			'pt'    => (string) ( $decoded['pt'] ?? '' ),
+			'en'    => (string) ( $decoded['en'] ?? '' ),
+			'links' => (array) ( $decoded['links'] ?? array() ),
+			'ran'   => true,
+		);
+	}
+
+	return $empty;
 }
 
 // ---------------------------------------------------------------------------
@@ -303,6 +405,299 @@ conexao_gate_violation(
 	( count( $real_shared ) <= 2 ) ? 0 : 1,
 	'no unexpected additional shared-slug page pair exists',
 	array( 'pairs' => $real_shared, 'count' => count( $real_shared ) )
+);
+
+// ---------------------------------------------------------------------------
+// 8. `newsletter` — the THIRD declared shared-slug page (B1, not B2).
+//
+// `/newsletter/` ↔ `/en/newsletter/` reuses one canonical path in two
+// languages, exactly like `/blog/` and `/empregos/`. This section proves the
+// SAME resolver answers correctly for the real `newsletter` slug, and that the
+// exception stays narrow: it needs a published, linked PT↔EN pair, and nothing
+// else reaches it.
+//
+// Fixture discipline: the temporary EN `newsletter` record is created, linked,
+// asserted and DELETED inside this section, and the PT page's original
+// translation link is restored and re-asserted before the section ends.
+// ---------------------------------------------------------------------------
+
+$pt_newsletter = get_page_by_path( 'newsletter', OBJECT, 'page' );
+
+conexao_gate_require(
+	$pt_newsletter instanceof WP_Post,
+	'page-newsletter-exists',
+	'the PT newsletter page exists'
+);
+
+// The PT page's translation state is captured BEFORE anything is touched, so the
+// restore can be proven rather than assumed.
+$newsletter_pt_id     = $pt_newsletter instanceof WP_Post ? (int) $pt_newsletter->ID : 0;
+$newsletter_pt_slug   = $pt_newsletter instanceof WP_Post ? (string) $pt_newsletter->post_name : '';
+$newsletter_pt_status = $pt_newsletter instanceof WP_Post ? (string) $pt_newsletter->post_status : '';
+$newsletter_en_before = $newsletter_pt_id > 0 ? (int) pll_get_post( $newsletter_pt_id, 'en' ) : 0;
+
+// NEGATIVE (pre-pair): today no EN `newsletter` record shares the slug, so the
+// resolver must leave the request completely alone. This is the state production
+// is in, and it is exactly why `/en/newsletter/` currently answers with the
+// Portuguese body instead of an English page.
+$newsletter_before = conexao_jobs_gate_resolve( 'newsletter', 'en' );
+
+conexao_gate_violation(
+	'newsletter:unpaired_slug_rewritten',
+	$newsletter_before['changed'] ? 1 : 0,
+	'an EN request for newsletter is NOT rewritten while only the PT page holds the slug',
+	array( 'pt_id' => $newsletter_pt_id, 'vars' => $newsletter_before['vars'] )
+);
+
+// POSITIVE 1: a linked PT + EN pair may share the slug, and the EN record really
+// lands on `newsletter` — the permit holds, so no `newsletter-2` is produced.
+$newsletter_en = conexao_jobs_gate_make_page( 'newsletter', 'en', $newsletter_pt_id );
+
+conexao_gate_violation(
+	'newsletter:pair_fixture_missing',
+	$newsletter_en > 0 ? 0 : 1,
+	'the temporary EN newsletter fixture was created',
+	array( 'pt_id' => $newsletter_pt_id, 'en_id' => $newsletter_en )
+);
+
+if ( $newsletter_en > 0 ) {
+	conexao_gate_violation(
+		'newsletter:en_slug_not_shared',
+		( 'newsletter' === (string) get_post_field( 'post_name', $newsletter_en ) ) ? 0 : 1,
+		'the EN newsletter page retains the authored slug newsletter (not newsletter-2)',
+		array(
+			'pt_slug' => (string) get_post_field( 'post_name', $newsletter_pt_id ),
+			'en_slug' => (string) get_post_field( 'post_name', $newsletter_en ),
+		)
+	);
+
+	conexao_gate_violation(
+		'newsletter:pair_not_bidirectional',
+		( (int) pll_get_post( $newsletter_en, 'pt' ) === $newsletter_pt_id ) ? 0 : 1,
+		'the EN newsletter page is linked back to the PT newsletter page',
+		array( 'en_id' => $newsletter_en, 'pt_of_en' => (int) pll_get_post( $newsletter_en, 'pt' ) )
+	);
+
+	// POSITIVE 2: an EN request for the shared slug resolves to the EN record.
+	$newsletter_en_request = conexao_jobs_gate_resolve( 'newsletter', 'en' );
+
+	conexao_gate_violation(
+		'newsletter:en_request_not_resolved',
+		( $newsletter_en_request['changed'] && (int) ( $newsletter_en_request['vars']['page_id'] ?? 0 ) === $newsletter_en ) ? 0 : 1,
+		'an EN request for newsletter resolves to the EN newsletter record',
+		array( 'resolved' => $newsletter_en_request['vars'], 'expected_page_id' => $newsletter_en )
+	);
+
+	conexao_gate_violation(
+		'newsletter:en_request_keeps_pagename',
+		empty( $newsletter_en_request['vars']['pagename'] ) ? 0 : 1,
+		'the resolved EN newsletter request no longer carries the ambiguous pagename',
+		array( 'vars' => $newsletter_en_request['vars'] )
+	);
+
+	// POSITIVE 3: a PT request is untouched — WordPress' own answer stands.
+	$newsletter_pt_request = conexao_jobs_gate_resolve( 'newsletter', 'pt' );
+
+	conexao_gate_violation(
+		'newsletter:pt_request_rewritten',
+		$newsletter_pt_request['changed'] ? 1 : 0,
+		'a default-language request for newsletter is never rewritten by the shared-slug resolver',
+		array( 'vars' => $newsletter_pt_request['vars'] )
+	);
+
+	// POSITIVE 4 + 5: language-correct canonicals and the hreflang relationship.
+	// The canonical of a shared-slug page is its OWN language URL, and the two
+	// languages advertise each other — this is what
+	// `conexao_object_translation_links()` feeds to both the canonical/hreflang
+	// emitter and the theme sitemap.
+	//
+	// Read in a FRESH request: this suite creates the pair in this very request,
+	// and Polylang's per-request URL memo would otherwise answer for the state
+	// that existed before the pair did. See the reader's docblock.
+	$newsletter_urls = conexao_jobs_gate_fresh_request_urls( $newsletter_pt_id, $newsletter_en );
+
+	conexao_gate_violation(
+		'newsletter:fresh_request_reader_failed',
+		$newsletter_urls['ran'] ? 0 : 1,
+		'the shared-slug gate could read the newsletter URLs in a fresh request',
+		array( 'urls' => $newsletter_urls )
+	);
+
+	$newsletter_pt_link = $newsletter_urls['pt'];
+	$newsletter_en_link = $newsletter_urls['en'];
+
+	conexao_gate_violation(
+		'newsletter:canonical_not_language_correct',
+		( '' !== $newsletter_pt_link && '' !== $newsletter_en_link && $newsletter_pt_link !== $newsletter_en_link ) ? 0 : 1,
+		'the PT and EN newsletter pages have two DISTINCT, language-correct self-canonical URLs',
+		array( 'pt_permalink' => $newsletter_pt_link, 'en_permalink' => $newsletter_en_link )
+	);
+
+	conexao_gate_violation(
+		'newsletter:canonical_missing_language_prefix',
+		( '' !== $newsletter_pt_link && false !== strpos( $newsletter_pt_link, '/newsletter/' ) && false === strpos( $newsletter_pt_link, '/en/newsletter/' ) ) ? 0 : 1,
+		'the PT newsletter canonical is the unprefixed /newsletter/ path',
+		array( 'pt_permalink' => $newsletter_pt_link )
+	);
+
+	conexao_gate_violation(
+		'newsletter:en_canonical_missing_language_prefix',
+		( false !== strpos( $newsletter_en_link, '/en/newsletter/' ) ) ? 0 : 1,
+		'the EN newsletter canonical is the /en/newsletter/ path, NOT the PT URL',
+		array( 'en_permalink' => $newsletter_en_link )
+	);
+
+	$newsletter_links = (array) $newsletter_urls['links'];
+
+	conexao_gate_violation(
+		'newsletter:hreflang_pt_missing',
+		isset( $newsletter_links['pt'] ) ? 0 : 1,
+		'the PT newsletter page emits a pt-BR hreflang alternate',
+		array( 'links' => $newsletter_links )
+	);
+
+	conexao_gate_violation(
+		'newsletter:hreflang_en_missing',
+		isset( $newsletter_links['en'] ) ? 0 : 1,
+		'the PT newsletter page emits an en hreflang alternate to the EN newsletter record',
+		array( 'links' => $newsletter_links )
+	);
+
+	// The alternates must be DISTINCT from each other and must each be the URL of
+	// the record in that language. Without the distinctness check this assertion
+	// would pass vacuously whenever both alternates collapse onto one URL.
+	conexao_gate_violation(
+		'newsletter:hreflang_alternates_collapsed',
+		( isset( $newsletter_links['pt'], $newsletter_links['en'] )
+			&& (string) $newsletter_links['pt']['url'] !== (string) $newsletter_links['en']['url'] ) ? 0 : 1,
+		'the pt-BR and en hreflang alternates are two DIFFERENT URLs, not one collapsed URL',
+		array( 'links' => $newsletter_links )
+	);
+
+	conexao_gate_violation(
+		'newsletter:hreflang_en_points_elsewhere',
+		( isset( $newsletter_links['en'] ) && $newsletter_en_link === (string) $newsletter_links['en']['url']
+			&& $newsletter_pt_link === (string) ( $newsletter_links['pt']['url'] ?? '' ) ) ? 0 : 1,
+		'each hreflang alternate points at the permalink of the record in its own language',
+		array( 'links' => $newsletter_links, 'pt_permalink' => $newsletter_pt_link, 'en_permalink' => $newsletter_en_link )
+	);
+}
+
+// The remaining newsletter negatives and the fixture teardown. They live
+// OUTSIDE the `if ( $newsletter_en > 0 )` block above only in the sense of
+// readability; every one of them needs the pair, so they are guarded the same
+// way and are otherwise reported as a violation, never skipped silently.
+if ( $newsletter_en > 0 ) {
+	// NEGATIVE: an EN page on the shared slug with NO valid PT counterpart does
+	// not gain the exception. The link is severed and the request must fall back
+	// to WordPress' own answer.
+	pll_save_post_translations( array( 'pt' => $newsletter_pt_id ) );
+
+	$newsletter_orphan = conexao_jobs_gate_resolve( 'newsletter', 'en' );
+
+	conexao_gate_violation(
+		'newsletter:en_without_pt_bound_to_language',
+		$newsletter_orphan['changed'] ? 1 : 0,
+		'an EN newsletter page with no valid PT counterpart is NOT bound to the requested language',
+		array( 'vars' => $newsletter_orphan['vars'], 'en_id' => $newsletter_en )
+	);
+
+	// Restore the pair for the remaining negative case.
+	pll_set_post_language( $newsletter_en, 'en' );
+	pll_save_post_translations( array( 'pt' => $newsletter_pt_id, 'en' => $newsletter_en ) );
+
+	// NEGATIVE: TWO PT pages on one slug do not gain the exception. A second
+	// Portuguese page is added to the shared slug, the English side is no longer
+	// unambiguously paired, and the resolver must refuse to bind it.
+	$newsletter_second_pt = conexao_jobs_gate_make_page( 'newsletter', 'pt' );
+
+	$newsletter_two_pt = conexao_jobs_gate_resolve( 'newsletter', 'en' );
+
+	conexao_gate_violation(
+		'newsletter:two_pt_pages_bound_to_language',
+		( (int) ( $newsletter_two_pt['vars']['page_id'] ?? 0 ) === $newsletter_en ) ? 0 : 1,
+		'two PT pages on the shared slug do NOT hand the EN request to the EN record',
+		array( 'second_pt' => $newsletter_second_pt, 'vars' => $newsletter_two_pt['vars'] )
+	);
+
+	if ( $newsletter_second_pt > 0 ) {
+		wp_delete_post( $newsletter_second_pt, true );
+	}
+
+	// NEGATIVE: a linked pair with DIFFERENT slugs keeps working normally — the
+	// ordinary translated-slug shape needs no shared-slug resolution at all.
+	$distinct_pt = conexao_jobs_gate_make_page( 'en-jobs-shared-slug-gate-distinct', 'pt' );
+	$distinct_en = conexao_jobs_gate_make_page( 'en-jobs-shared-slug-gate-distinct-en', 'en', $distinct_pt );
+
+	$distinct_request = conexao_jobs_gate_resolve( 'en-jobs-shared-slug-gate-distinct', 'en' );
+
+	conexao_gate_violation(
+		'shared_slug:distinct_slug_pair_rewritten',
+		$distinct_request['changed'] ? 1 : 0,
+		'a linked pair with DIFFERENT slugs is left to WordPress (no shared-slug rewriting)',
+		array( 'pt' => $distinct_pt, 'en' => $distinct_en, 'vars' => $distinct_request['vars'] )
+	);
+
+	// Cleanup: remove the temporary EN newsletter record and restore the PT
+	// page's ORIGINAL translation link, so the install ends exactly as it began.
+	wp_delete_post( $newsletter_en, true );
+
+	if ( function_exists( 'pll_save_post_translations' ) ) {
+		if ( $newsletter_en_before > 0 ) {
+			pll_set_post_language( $newsletter_en_before, 'en' );
+			pll_save_post_translations( array( 'pt' => $newsletter_pt_id, 'en' => $newsletter_en_before ) );
+		} else {
+			pll_save_post_translations( array( 'pt' => $newsletter_pt_id ) );
+		}
+	}
+
+	conexao_gate_violation(
+		'newsletter:pt_link_not_restored',
+		( (int) pll_get_post( $newsletter_pt_id, 'en' ) === $newsletter_en_before ) ? 0 : 1,
+		"the PT newsletter page's original EN translation link is restored exactly",
+		array( 'before' => $newsletter_en_before, 'after' => (int) pll_get_post( $newsletter_pt_id, 'en' ) )
+	);
+
+	foreach ( array( $distinct_pt, $distinct_en ) as $fixture_id ) {
+		if ( $fixture_id > 0 ) {
+			wp_delete_post( $fixture_id, true );
+		}
+	}
+}
+
+$newsletter_survivors = array_map(
+	'intval',
+	(array) get_posts(
+		array(
+			'post_type'      => 'page',
+			'post_status'    => 'any',
+			'name'           => 'newsletter',
+			'posts_per_page' => -1,
+			'fields'         => 'ids',
+			'lang'           => '',
+		)
+	)
+);
+
+conexao_gate_violation(
+	'newsletter:fixture_left_behind',
+	( array( $newsletter_pt_id ) === $newsletter_survivors ) ? 0 : 1,
+	'the newsletter shared-slug fixtures were removed and only the real PT page holds the slug',
+	array( 'survivors' => $newsletter_survivors, 'pt_id' => $newsletter_pt_id )
+);
+
+conexao_gate_violation(
+	'newsletter:pt_record_unchanged',
+	( $newsletter_pt_slug === (string) get_post_field( 'post_name', $newsletter_pt_id )
+		&& $newsletter_pt_status === (string) get_post_field( 'post_status', $newsletter_pt_id ) ) ? 0 : 1,
+	'the real PT newsletter page was never modified by this gate',
+	array(
+		'pt_id'      => $newsletter_pt_id,
+		'slug'       => $newsletter_pt_slug,
+		'status'     => $newsletter_pt_status,
+		'slug_now'   => (string) get_post_field( 'post_name', $newsletter_pt_id ),
+		'status_now' => (string) get_post_field( 'post_status', $newsletter_pt_id ),
+	)
 );
 
 // Cleanup — the fixtures must never survive the gate.

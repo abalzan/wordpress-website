@@ -620,13 +620,13 @@ _Last verified: 2026-09-26 by Stage N — Remaining EN Blog Translations_
 
 _Last verified: 2026-09-27 by the EN Leisure description rollout — Stage 7 executed by the shared `en-leisure-description` stage; B2 policy, canonical, hreflang and sitemap unchanged_
 
-### Shared-slug pages (`/en/blog/` and `/en/empregos/`)
+### Shared-slug pages (`/en/blog/`, `/en/empregos/` and `/en/newsletter/`)
 
-Two page pairs deliberately reuse the PT `post_name` in both languages, so one
-canonical path serves two languages: `/blog/` ↔ `/en/blog/` and `/empregos/` ↔
-`/en/empregos/`. The PT record is **never** modified and the EN record stays a
-*linked translation*, not a second identity — a shared slug is a routing shape,
-not a fork.
+Page pairs that deliberately reuse the PT `post_name` in both languages, so one
+canonical path serves two languages: `/blog/` ↔ `/en/blog/`, `/empregos/` ↔
+`/en/empregos/` and `/newsletter/` ↔ `/en/newsletter/`. The PT record is
+**never** modified and the EN record stays a *linked translation*, not a second
+identity — a shared slug is a routing shape, not a fork.
 
 WordPress resolves `pagename` with a **language-blind** lookup, so when two
 pages hold one slug it returns the FIRST match — the Portuguese one. The request
@@ -638,8 +638,8 @@ existing helpers repair that, both on the WP `request` filter at priority 20:
   by the `page_for_posts` **option**, not by its slug, so it needs its own
   resolution (Stage 5).
 - `conexao_resolve_shared_slug_page_request()` — every other shared-slug page
-  (today only the Jobs landing). It hands WordPress the explicit `page_id` of
-  the record in the **requested** language.
+  (the Jobs landing and the Newsletter). It hands WordPress the explicit
+  `page_id` of the record in the **requested** language.
 
 The second is a no-op unless **all** of the following hold, which is what keeps
 it from capturing any ordinary page: the request is a prefixed (non-default)
@@ -650,13 +650,35 @@ slug is deliberately left alone rather than being silently bound to a language.
 On the default language it never runs, so Portuguese request handling is
 byte-identical to the pre-existing behaviour.
 
+**Which pages may share a slug is declared by the data, not by a list.** A stage
+declares one by authoring a row whose `en_slug` equals its PT stable key;
+`conexao_en_translation_shared_page_slug_for( $stage )` reads that declaration
+out of the stage's own manifest and returns the ONE slug, or `''` (no
+declaration, or an ambiguous one — fail closed). The scoped
+`wp_unique_post_slug` permit is armed only for that one slug, only for post type
+`page`, and only for the duration of that stage's own writes
+(`conexao_en_translation_with_shared_page_slug()`), so granting the exception to
+one page never widens it to any other: `en-page` declares exactly one of its 31
+rows, and `en-guide` / `en-post` / the B2 stages declare none and hold no
+exception at all. The permit is always paired with the stage-level duplicate
+guard (`conexao_en_translation_shared_slug_page_adapter()`), so an unpaired
+duplicate already sitting on the shared slug is reported as a hard conflict
+instead of being given a second EN identity. `newsletter` remains **B1** and is
+deliberately absent from `conexao_b2_page_allowlist()`.
+
 The invariant is permanent and gated by
 `wp-content/themes/conexao-br-irlanda/tests/test-en-jobs-shared-slug.php`
-(gate `shared_slug_page`), which proves the EN/PT Jobs pair resolves per
-language, that a **unique**-slug page and a CPT slug are never rewritten, that
-an unpaired duplicate is not bound, that PT is untouched, and that the site's
-real shared-slug pairs are exactly `blog` and `empregos` — a third would mean
-the resolver's reach had grown.
+(gate `shared_slug_page`) plus the plugin contract
+`wp-content/plugins/conexao-en-translation/tests/test-shared-slug-newsletter.php`.
+Together they prove the EN/PT Jobs and Newsletter pairs resolve per language,
+that a **unique**-slug page and a CPT slug are never rewritten, that an
+unpaired duplicate is not bound, that two PT pages on one slug gain nothing, that
+an EN page with no PT counterpart gains nothing, that a linked pair with
+different slugs is left alone, that the two languages get two DISTINCT
+language-correct self-canonicals with correct hreflang, that the exception
+reaches exactly one row of a 31-row stage, and that the site's real shared-slug
+pairs are exactly `blog`, `empregos` and — once the rollout applies it —
+`newsletter`.
 
 The shared slug is created through the content workflow, never by hand: the
 `en-jobs-page` stage of `conexao-en-translation` (data
@@ -693,3 +715,5 @@ restored, `/en/cursos/` recovered from a stray 301, PT unchanged_
 _Last verified: 2026-09-28 by the B1 English Guides content rollout — 48/48 linked EN guides + 13 EN `conexao_category` terms applied through the shared `en-guide` stage; `guide` remains B1, no fallback, no B2 widening, canonical/hreflang/redirect policy unchanged_
 
 _Last verified: 2026-09-28 by the EN Jobs URL consistency change — the EN Jobs landing now shares the PT `empregos` post_name and resolves at `/en/empregos/` (200, self-canonical) through `conexao_resolve_shared_slug_page_request()`; applied via the `en-jobs-page` stage with `PT-drift=0`; `/en/jobs/` retired to 404 with no new redirect rule; PT `/empregos/`, the Polylang pair, canonical and hreflang unchanged_
+
+_Last verified: 2026-09-30 by the EN rollout blocker resolution — `newsletter` adopted as the third declared shared-slug B1 page (Option A). The permit is now read from each stage's own manifest by `conexao_en_translation_shared_page_slug_for()` instead of a hard-coded list, and is always paired with the shared-slug duplicate guard. The regenerated read-only dry-run plans `en-page::newsletter` at target slug `newsletter` (never `newsletter-2`); `unresolved_slug_conflicts` 1 → 0. `newsletter` was NOT added to the B2 page allowlist. Production untouched: 0 writes, 0 EN records, 0 links; `/newsletter/` still PT and `/en/newsletter-2/` still 404_

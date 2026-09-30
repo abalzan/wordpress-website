@@ -344,6 +344,80 @@ carried verbatim in `includes/jobs-page-data.php` (version `jobs-page-v1`) so
 that repairing the slug through the engine's `update` path cannot rewrite
 content; the PT page is only ever read and the apply reports `PT-drift=0`.
 
+#### The shared-slug policy, and `newsletter` as the third shared-slug page
+
+The permit, the duplicate guard and the routing resolver are **one** mechanism
+shared by every page stage that needs them. What changed on 2026-09-30 is not
+the mechanism but **where the decision is recorded**: previously only
+`en-blog-page` and `en-jobs-page` armed it, by construction, and there was no
+single place that answered "may this stage reuse a PT `post_name`?".
+
+`conexao_en_translation_shared_page_slug_for( $stage )` is that place. It reads
+the stage's **own manifest** (via
+`conexao_en_translation_stage_manifest()`) and returns the ONE slug the stage
+declares — where "declares" means a row whose `en_slug` equals its PT stable
+key. There is no allowlist, no slug constant and no per-page branch:
+
+| stage | declared shared slug | holds the permit |
+|---|---|---|
+| `en-blog-page` | `blog` | yes |
+| `en-jobs-page` | `empregos` | yes |
+| `en-page` | `newsletter` | yes (since 2026-09-30) |
+| `en-guide` | — | no |
+| `en-post` | — | no |
+| B2 field stages | — | no |
+| an unknown stage | — | no (fail closed) |
+
+It is **fail-closed in both directions**: zero declared slugs returns `''`, and
+*more than one* also returns `''`. A stage in that ambiguous state gets no
+exception, WordPress uniquifies normally, and the resulting drift is reported by
+the dry-run instead of being silently permitted.
+
+`conexao_en_translation_stage_adapter()` pairs the permit with the guard in one
+decision, so the exception can never be armed without the duplicate protection
+that makes it safe. The guard itself
+(`conexao_en_translation_shared_slug_page_adapter()`, generalised from the
+former `conexao_en_translation_blog_page_adapter()`, which remains as a thin
+wrapper) fires **only** for the one declared slug — that scoping is what lets a
+31-row stage such as `en-page` hold the permit without altering the generic
+collision rules of its other 30 rows. `en-page` declares exactly one of 31.
+
+`newsletter` therefore resolves at `/en/newsletter/` and never at
+`/en/newsletter-2/`. It stays **B1**: it is deliberately absent from
+`conexao_b2_page_allowlist()`, and the theme's own comment already classified
+the narrative/utility pages (category hubs, `newsletter`, `revista`, `anuncie`,
+`search`) as B1. The retired `conexao-page-translation` plugin had declared
+`'newsletter' => array( 'en_slug' => 'newsletter', 'shared_slug' => true )`, so
+this restores a documented intent rather than inventing one.
+
+Two permanent contracts cover it:
+`wp-content/plugins/conexao-en-translation/tests/test-shared-slug-newsletter.php`
+(the policy, the permit's narrowness and the guard) and the `shared_slug_page`
+permanent gate in
+`wp-content/themes/conexao-br-irlanda/tests/test-en-jobs-shared-slug.php` (the
+runtime resolution, canonical and hreflang). Both are discovered by convention
+(`wp-content/plugins/*/tests/test-*.php`, `wp-content/themes/*/tests/test-*.php`).
+
+#### The two re-keyed source identities (2026-09-30)
+
+Two authored rows pointed at a PT identity that production no longer serves
+under that key. Both were corrected as **source-identity** changes only, with
+the authored English carried across byte-for-byte (verified by payload
+SHA-256, see
+`docs/reports/2026-09-30-en-rollout-blocker-resolution.md`):
+
+- `outono-irlanda-alimentacao-bem-estar` moved from the `guide` block to the
+  `post` block of `includes/manifest-data.php`: the real PT record is a
+  **`post`** (production id 25028), not a `guide`.
+- `carteira-de-motorista-2` → `carteira-motorista-brasileiros` in
+  `includes/guide-translation-data.php`: the PT guide the row was authored
+  against (id 463) was removed and its successor is production id 25031.
+
+Seven further authored rows have **no** real PT source and are classified
+`NO_REAL_PT_SOURCE`, an explicit editorial decision — not a silent exclusion and
+not a deletion. They are listed with their evidence in
+`docs/evidence/2026-09-30-en-rollout-blocker-resolution/05-source-resolution-table.txt`.
+
 Note the data-level change is not sufficient on its own: WordPress resolves
 `pagename` language-blind, so two pages on one slug made the request resolve to
 the PT record and `/en/empregos/` still answered 302 → `/empregos/`. The
