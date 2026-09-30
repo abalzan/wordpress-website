@@ -1,0 +1,13 @@
+# Baseline (Stage 0) — frozen repository state before any edit
+
+Captured: 2026-09-30, on branch i18n, before creating the migration branch.
+
+```
+$ git branch --show-current && git rev-parse HEAD && git status --short | wc -l
+cline/64pw31bv
+5a75417018c79ebbc6b9ac0ae976e1469c002db8
+1
+
+$ git log --oneline -1
+5a75417 docs: note the two additional confirmation CI runs in the CI regression fix report
+```

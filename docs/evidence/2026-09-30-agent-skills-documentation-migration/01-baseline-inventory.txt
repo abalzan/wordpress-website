@@ -1,0 +1,34 @@
+# Baseline (Stage 0) — documentation and skill inventory
+
+All numbers are git-tracked file counts at the frozen baseline commit 5a75417018c79ebbc6b9ac0ae976e1469c002db8 (branch i18n), so before/after comparisons are exact and unaffected by the migration's own evidence files.
+
+## File counts (git ls-tree at the baseline commit)
+
+```
+docs/ (all tracked files): 749
+docs/ markdown: 191
+docs/reports/: 82
+docs/evidence/: 593
+.agents/skills/ SKILL.md: 10
+.agents/legacy-flutter-skills/ tracked: 2
+```
+
+## Line counts of the key living documents (working tree, unmodified)
+
+```
+0
+   197 AGENTS.md
+   169 docs/README.md
+   836 docs/engineering-standard.md
+   529 docs/testing.md
+   719 docs/routing.md
+   367 docs/content-model.md
+   482 docs/development.md
+   299 docs/deployment.md
+   350 docs/releases.md
+   353 scripts/README.md
+  4301 total
+
+docs/ markdown, total tracked lines at baseline: 62031
+.agents/skills/ SKILL.md, total tracked lines at baseline: 1195
+```
