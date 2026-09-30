@@ -22,12 +22,36 @@ require_once CONEXAO_TRANSLATION_AUTOMATION_DIR . 'includes/class-conexao-transl
 require_once CONEXAO_TRANSLATION_AUTOMATION_DIR . 'includes/class-conexao-translation-automation-environment.php';
 require_once CONEXAO_TRANSLATION_AUTOMATION_DIR . 'includes/class-conexao-translation-automation-orchestrator.php';
 
+// --- Stage 3: change detection, provider boundary, trigger, audit. -------
+//
+// Load order matters: the digest and state classes are dependencies of the
+// inventory, which is a dependency of the change detector, which the trigger
+// uses. Each file only declares behaviour; nothing here performs a write at
+// load time.
+require_once CONEXAO_TRANSLATION_AUTOMATION_DIR . 'includes/class-conexao-translation-automation-digest.php';
+require_once CONEXAO_TRANSLATION_AUTOMATION_DIR . 'includes/class-conexao-translation-automation-source-state.php';
+require_once CONEXAO_TRANSLATION_AUTOMATION_DIR . 'includes/class-conexao-translation-automation-inventory.php';
+require_once CONEXAO_TRANSLATION_AUTOMATION_DIR . 'includes/class-conexao-translation-automation-change-detector.php';
+require_once CONEXAO_TRANSLATION_AUTOMATION_DIR . 'includes/class-conexao-translation-automation-provider.php';
+require_once CONEXAO_TRANSLATION_AUTOMATION_DIR . 'includes/class-conexao-translation-automation-provider-result.php';
+require_once CONEXAO_TRANSLATION_AUTOMATION_DIR . 'includes/class-conexao-translation-automation-audit.php';
+require_once CONEXAO_TRANSLATION_AUTOMATION_DIR . 'includes/class-conexao-translation-automation-hooks.php';
+require_once CONEXAO_TRANSLATION_AUTOMATION_DIR . 'includes/class-conexao-translation-automation-trigger.php';
+
 /**
- * The plugin's public surface: ONE entry point, the orchestrator.
+ * The plugin's public surface.
  *
- * There is deliberately NO hook registration here — no `admin_menu`,
- * `admin_post_*`, `rest_api_init` and no WP-Cron. Stage 1 ships an
- * authorisation-gated internal API only, so there is no HTTP surface an
- * unauthenticated caller could reach and no scheduled path that could fire
- * unattended. Later stages add the trigger, never a second engine.
+ * There is deliberately NO HTTP surface: no `admin_menu`, no `admin_post_*`,
+ * no `rest_api_init` and no `__return_true` permission callback, so no
+ * unauthenticated caller can reach the engine, the detector or the trigger.
+ *
+ * There is also NO cron. The trigger model is explicit invocation plus the
+ * hook marker, so nothing fires unattended. WordPress.com pv-cron reliability
+ * is therefore not on the critical path — see
+ * `Conexao_Translation_Automation_Trigger`.
+ *
+ * The one side effect of loading this plugin is `Hooks::register()`, which
+ * attaches the wake-up listeners. Those listeners may ONLY set the wake-up
+ * marker; they perform no translation, no content write and no engine call.
  */
+Conexao_Translation_Automation_Hooks::register();

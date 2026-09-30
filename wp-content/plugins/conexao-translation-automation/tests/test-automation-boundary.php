@@ -256,15 +256,38 @@ $hits = conexao_automation_token_hits(
 );
 assert_true( array() === $hits, 'no content/menu/Polylang write call exists' . ( $hits ? ': ' . implode( ', ', $hits ) : '' ) );
 
-// STAGE 2: the option writes are now real, but they are INFRASTRUCTURE ONLY.
-// The plugin writes exactly two options, both declared here as constants, and
-// it must write nothing else. This asserts the allowlist rather than a blanket
-// ban, so a future content write still fails the suite while the lock and the
-// apply-state record remain permitted.
+// STAGE 3: the option writes are still INFRASTRUCTURE ONLY, but there are now
+// five of them. Each is a declared constant of a class in this plugin, each is
+// namespaced to `conexao_translation_automation_*`, and none of them is content,
+// a menu, a term, a Polylang relationship or a translation. This remains an
+// ALLOWLIST rather than a blanket ban, so a future content write still fails
+// the suite while these five infrastructure records remain permitted.
+//
+//   lock          the site-wide run lock (Stage 2)
+//   apply state   the pending-apply plan/snapshot identity (Stage 2)
+//   source state  the accepted PT translation baseline (Stage 3)
+//   audit         the bounded run trail (Stage 3)
+//   wake-up       the reconciliation-needed marker (Stage 3)
+//
+// Note what is deliberately NOT here: no option carrying PT or EN CONTENT.
+// The source state stores digests only, and the audit stores digests and
+// statuses only, so no option can become a content store.
 $ALLOWED_OPTIONS = array(
 	Conexao_Translation_Automation_Lock::OPTION,
 	Conexao_Translation_Automation_Apply_Gate::STATE_OPTION,
+	Conexao_Translation_Automation_Source_State::OPTION,
+	Conexao_Translation_Automation_Audit::OPTION,
+	Conexao_Translation_Automation_Hooks::MARKER_OPTION,
 );
+
+// Every allowed option must be namespaced to this plugin, so a future entry
+// cannot smuggle in a shared option name.
+foreach ( $ALLOWED_OPTIONS as $allowed_option ) {
+	assert_true(
+		0 === strpos( (string) $allowed_option, 'conexao_translation_automation_' ),
+		sprintf( 'the allowed option "%s" is namespaced to this plugin', (string) $allowed_option )
+	);
+}
 
 $option_writes   = array();
 $option_writers = array( 'update_option', 'add_option', 'delete_option' );
@@ -296,11 +319,13 @@ foreach ( $option_writers as $fn ) {
 				}
 
 				if ( null === $resolved && preg_match( '/([A-Za-z_]+)::([A-Z_]+)/', $arg, $cm ) ) {
-					// `self::` cannot be resolved via constant(), so map the
-					// declaring class explicitly before reading the constant.
-					$class = 'self' === $cm[1] ? conexao_automation_class_name() : $cm[1];
+					// `self::` cannot be resolved via constant(), so map it to
+					// the class DECLARED IN THE FILE BEING SCANNED. Hardcoding a
+					// single class would silently fail to resolve every other
+					// class's constants.
+					$class = 'self' === $cm[1] ? conexao_automation_declaring_class( $file ) : $cm[1];
 
-					if ( class_exists( $class ) && defined( $class . '::' . $cm[2] ) ) {
+					if ( '' !== $class && class_exists( $class ) && defined( $class . '::' . $cm[2] ) ) {
 						$resolved = constant( $class . '::' . $cm[2] );
 					}
 				}
@@ -315,7 +340,7 @@ foreach ( $option_writers as $fn ) {
 
 assert_true(
 	array() === $option_writes,
-	'option writes are limited to the two declared infrastructure options'
+	'option writes are limited to the five declared infrastructure options'
 	. ( $option_writes ? ': ' . implode( ', ', $option_writes ) : '' )
 );
 
@@ -353,13 +378,24 @@ assert_true(
 );
 
 /**
- * The plugin class that owns the infrastructure option constants, used to
- * resolve a `self::CONSTANT` reference found by this file's source scan.
+ * The plugin class declared in a given source file.
  *
- * @return string
+ * Used to resolve a `self::CONSTANT` reference found by this file's scan. It
+ * must be derived from the FILE being scanned, not hardcoded: Stage 3 added
+ * three more classes with their own option constants, and a hardcoded class
+ * silently failed to resolve theirs.
+ *
+ * @param string $file Absolute path to a plugin source file.
+ * @return string Class name, or '' when the file declares none.
  */
-function conexao_automation_class_name(): string {
-	return 'Conexao_Translation_Automation_Apply_Gate';
+function conexao_automation_declaring_class( string $file ): string {
+	$body = (string) file_get_contents( $file );
+
+	if ( preg_match( '/^(?:final |abstract )?(?:class|interface) ([A-Za-z_]+)/m', $body, $m ) ) {
+		return $m[1];
+	}
+
+	return '';
 }
 
 	/**

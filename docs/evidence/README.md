@@ -64,3 +64,26 @@ _Last verified: 2026-09-30 by the EN Translation Rollout — Phase 1 production 
 | `lint.txt` | `./scripts/lint.sh` — syntax clean, no new PHPCS violations, PHPStan level 5 clean. |
 
 Cited by `docs/reports/2026-09-30-stage-2-engine-promotion-lock-safety.md`.
+
+## 2026-09-30 — Stage 3: change detection, provider boundary, trigger and audit
+
+| File | What it is |
+|---|---|
+| `00-baseline-tests.log` | The full suite **before** any Stage 3 edit: 67 in-process suites / 4,521 assertions passing, with the single pre-existing `i18n_freshness` failure. The source of the catalogue-freshness comparison in the report. |
+| `01-stage3-tests.log` | The full `./scripts/run-tests.sh` after Stage 3: **72 in-process suites (71 passed)**, 5,084 assertions, 8 script-contract suites (7 passed), 3/3 HTTP acceptance. |
+| `02-lint.txt` | `./scripts/lint.sh` — `lint: OK (syntax clean, no new PHPCS violations, PHPStan clean)`. |
+| `03-stage3-structural-gate.txt` | `tests/scripts/verify-stage3-automation.py` — **116 checks**: engine byte-identity, registry classification and load order, no second engine, no WordPress content write, provider interface-only, no vendor, no cron, no public route, namespaced options, no credentials. |
+| `04-release-integrity.txt` | `verify-release-integrity.py` — 229/229; deterministic plugin builds. |
+| `05-stage2-promotion-gate.txt` | `verify-stage2-promotion.py` — 28/28; the Stage 2 promotion invariants still hold unchanged. |
+| `06-cache-scoping-gate.txt` | `verify-cache-key-scoping.py` — 2/2. The Stage 2 admin-user-scope exemption is unchanged and Stage 3 adds no cache key. |
+| `07-registry-check.txt` | `generate-registry-docs.php --check` — 15 plugins validated, 24 generated regions current, zero writes. |
+| `08-engine-digest-after.txt` | SHA-256 of all three `conexao-translation-rollout` source files after Stage 3. **Identical to the Stage 2 baseline.** |
+| `09-stage3-suites.txt` | Per-suite results for all nine `conexao-translation-automation` suites. |
+| `10-no-provider-no-cron-no-route.txt` | Source scan proving no transient/object-cache key, no outbound HTTP, no vendor, no cron and no public route in the plugin. Includes the note explaining why two grep hits are docblock prose and not executable code. |
+| `11-pre-existing-failure-attribution.txt` | The controlled experiment attributing `test-en-jobs-shared-slug.php`: the identical failure reproduces with **all Stage 3 changes stashed**, so it is not a Stage 3 regression. |
+| `12-digest-runtime-proof.txt` | Runtime proof of the digest contract against a **real live PT record**: same state → same digest; EN translation changed → same digest; `post_excerpt` edited → different digest; key reorder → same digest; payload excludes the B2 EN meta key. |
+| `13-change-stat.txt` | The exact change set. `plugins.json` is **unchanged**, and no engine file appears. |
+
+Cited by `docs/reports/2026-09-30-stage-3-change-detection-provider-trigger.md`.
+
+_Last verified: 2026-09-30 by Stage 3 — change detection, provider boundary, trigger and audit_

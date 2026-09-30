@@ -1,0 +1,26 @@
+ATTRIBUTION OF THE PRE-EXISTING test-en-jobs-shared-slug.php FAILURE
+===========================================================
+
+Symptom (current local DB):
+  an EN request for newsletter resolves to the real linked EN newsletter record
+  {"pt_id":8,"en_id":509,"vars":{"pagename":"newsletter","lang":"en"}}
+  -> 38 passed, 1 failed
+
+Cause: the linked EN record 509 holds post_name "newsletter-2", not the shared
+slug "newsletter", so the shared-slug resolver correctly declines to bind it.
+
+Controlled experiment (Stage 3 changes REMOVED):
+  $ git stash push -u -m stage3-wip
+  $ docker compose restart wordpress
+  $ docker compose exec -T wordpress php \\
+      wp-content/themes/conexao-br-irlanda/tests/test-en-jobs-shared-slug.php
+
+  Result WITHOUT any Stage 3 code:
+    38 passed, 1 failed   (identical failure, same assertion, same ids)
+
+Conclusion: NOT a Stage 3 regression. Local install data, reproduced with the
+stage changes absent. Recorded, not fixed by mutating the DB or the test.
+
+Local record state observed:
+  ID 8   page  newsletter    publish  lang=pt
+  ID 509 page  newsletter-2  publish  lang=en   (linked bidirectionally to 8)

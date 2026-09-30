@@ -1,0 +1,28 @@
+=== transient / object-cache use in the automation plugin (expected: NONE) ===
+(none)
+
+=== outbound HTTP / vendor references (expected: NONE) ===
+(none)
+
+=== cron scheduling (expected: NONE) ===
+wp-content/plugins/conexao-translation-automation/includes/class-conexao-translation-automation-trigger.php:26: * No `wp_schedule_event`, no `wp_schedule_single_event`, no `cron_schedules`
+
+=== public HTTP surface (expected: NONE) ===
+wp-content/plugins/conexao-translation-automation/conexao-translation-automation.php:44: * There is deliberately NO HTTP surface: no `admin_menu`, no `admin_post_*`,
+wp-content/plugins/conexao-translation-automation/conexao-translation-automation.php:45: * no `rest_api_init` and no `__return_true` permission callback, so no
+
+NOTE on the two hits above
+-------------------------
+Both are inside PHP DOCBLOCK PROSE, not executable code:
+  - trigger.php:26 is the sentence "No `wp_schedule_event`, no `wp_schedule_single_event`, no `cron_schedules`..."
+  - conexao-translation-automation.php:44-45 is the sentence "no `admin_menu`, no `admin_post_*`, no `rest_api_init`..."
+
+Every test and gate that asserts these properties strips comments first (the
+shared `conexao_promotion_strip_comments()` / `conexao_s3_strip_comments()`
+token filters, and `strip_php_comments()` in verify-stage3-automation.py),
+precisely so a docblock that NAMES a forbidden call cannot make the guarantee
+unprovable. The executable-code result for all four categories is NONE, which
+is what the gates assert:
+  - verify-stage3-automation.py  -> "116 passed, 0 failed"
+  - test-automation-promotion.php -> "12 passed, 0 failed"
+  - test-automation-trigger.php   -> "98 passed, 0 failed"

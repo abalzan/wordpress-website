@@ -122,13 +122,14 @@ function conexao_promotion_strip_comments( string $source ): string {
 	return $out;
 }
 
-// STAGE 2: still no cron. B2 remains unresolved and this stage must not
-// quietly resolve it.
+// STAGE 3: the plugin still schedules nothing. B2 was resolved by NOT
+// depending on pv-cron, not by adding a cron job, so this assertion is
+// UNCHANGED and still must hold.
 $hits = conexao_promotion_token_hits(
 	array( 'wp_schedule_event', 'wp_schedule_single_event', 'wp_next_scheduled', 'wp_unschedule_event', 'cron_schedules', 'as_enqueue_async_action' ),
 	''
 );
-assert_true( array() === $hits, 'the plugin still schedules nothing (B2 stays open)' . ( $hits ? ': ' . implode( ', ', $hits ) : '' ) );
+assert_true( array() === $hits, 'the plugin still schedules nothing: the trigger model does not depend on pv-cron' . ( $hits ? ': ' . implode( ', ', $hits ) : '' ) );
 
 // Still no public surface.
 $hits = conexao_promotion_token_hits(
@@ -144,24 +145,28 @@ $hits = conexao_promotion_token_hits(
 );
 assert_true( array() === $hits, 'the plugin still registers no activation/deactivation/uninstall hook' . ( $hits ? ': ' . implode( ', ', $hits ) : '' ) );
 
-// Still no provider and no network client. Stage 2 defines no provider.
+// STAGE 3: there is now a provider INTERFACE and a validator, but still NO
+// implementation and NO network client. The assertion is narrowed to what
+// Stage 3 actually promises: no vendor, no HTTP client, no outbound call.
 $hits = conexao_promotion_token_hits(
-	array( 'wp_remote_post', 'wp_remote_get', 'wp_remote_request', 'curl_exec', 'OpenAI', 'anthropic' ),
+	array( 'wp_remote_post', 'wp_remote_get', 'wp_remote_request', 'curl_exec', 'fsockopen', 'OpenAI', 'anthropic', 'Claude', 'Gemini', 'deepl' ),
 	''
 );
-assert_true( array() === $hits, 'the plugin makes no network call and embeds no provider' . ( $hits ? ': ' . implode( ', ', $hits ) : '' ) );
+assert_true( array() === $hits, 'the plugin makes no network call and embeds no vendor' . ( $hits ? ': ' . implode( ', ', $hits ) : '' ) );
 
 // Still no second translation engine, and no reimplementation of the engine's
 // own vocabulary (plan categories, gate keys) outside the engine.
 $hits = conexao_promotion_token_hits( array( 'class Conexao_Translation_Rollout_Engine', "'would-create'", "'would-update'" ), '' );
 assert_true( array() === $hits, 'the plugin neither redeclares the engine nor reimplements its plan vocabulary' . ( $hits ? ': ' . implode( ', ', $hits ) : '' ) );
 
-// The only class this plugin declares are its four own boundary classes.
+// The plugin declares only its own boundary classes. Stage 3 added the
+// change-detection, provider, trigger and audit classes; the list below is the
+// COMPLETE set, so a future stray class still fails here.
 $declared = array();
 foreach ( $php_files as $file ) {
 	$body = (string) file_get_contents( $file );
 
-	if ( preg_match_all( '/^(?:final |abstract )?class ([A-Za-z_]+)/m', $body, $m ) ) {
+	if ( preg_match_all( '/^(?:final |abstract )?(?:class|interface) ([A-Za-z_]+)/m', $body, $m ) ) {
 		foreach ( $m[1] as $c ) {
 			$declared[] = $c;
 		}
@@ -174,10 +179,30 @@ $expected_classes = array(
 	'Conexao_Translation_Automation_Apply_Gate',
 	'Conexao_Translation_Automation_Environment',
 	'Conexao_Translation_Automation_Orchestrator',
+	'Conexao_Translation_Automation_Digest',
+	'Conexao_Translation_Automation_Source_State',
+	'Conexao_Translation_Automation_Inventory',
+	'Conexao_Translation_Automation_Change_Detector',
+	'Conexao_Translation_Automation_Provider_Interface',
+	'Conexao_Translation_Automation_Provider_Result',
+	'Conexao_Translation_Automation_Audit',
+	'Conexao_Translation_Automation_Hooks',
+	'Conexao_Translation_Automation_Trigger',
 );
 sort( $declared );
 sort( $expected_classes );
-assert_true( $expected_classes === $declared, 'the plugin declares exactly its five boundary classes, and no others' );
+assert_true( $expected_classes === $declared, 'the plugin declares exactly its own boundary classes, and no others' );
+
+// STAGE 3: the interface exists but is IMPLEMENTED BY NOBODY. This is the
+// structural proof that no provider can be reached at runtime.
+$implementations = array();
+foreach ( get_declared_classes() as $declared_class ) {
+	if ( in_array( 'Conexao_Translation_Automation_Provider_Interface', class_implements( $declared_class ) ?: array(), true ) ) {
+		$implementations[] = $declared_class;
+	}
+}
+
+assert_true( array() === $implementations, 'the provider interface is implemented by nobody: there is NO provider' );
 
 // ---------------------------------------------------------------------------
 // 3. No credentials anywhere in the plugin source

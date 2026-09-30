@@ -198,4 +198,111 @@ path.
 
 Run with `./scripts/run-tests.sh --only conexao-translation-automation`.
 
-_Last verified: 2026-09-30 by Stage 2 — engine promotion, lock and apply safety_
+## Stage 3: change detection, provider boundary, trigger, audit
+
+Stage 3 adds the four pieces between the Stage 2 boundary and a future real
+translation, and deliberately stops short of performing one.
+
+### The ownership rule, unchanged
+
+`Conexao_Translation_Rollout_Engine` is still the ONLY mutation authority.
+Stage 3 adds **zero** WordPress content writes to this plugin — asserted
+structurally, not documented.
+
+| Concern | Owner |
+|---|---|
+| inventory, manifest, plan, snapshot, apply, verify, gate | **the shared engine** |
+| source projection + digest, change set, reconciliation | `…_Digest`, `…_Inventory`, `…_Change_Detector` |
+| accepted PT baseline, its version and its fail-closed rules | `…_Source_State` |
+| provider contract and its validator | `…_Provider_Interface`, `…_Provider_Result` |
+| run trail and its retention | `…_Audit` |
+| wake-up hints | `…_Hooks` |
+| when to reconcile, and in which mode | `…_Trigger` |
+
+### Change detection
+
+A translatable change is *one* thing: the record's translation-relevant
+projection changed. Each stage declares its own field list, cross-checked
+against the live engine registry on every run, so a renamed post type cannot
+silently change what is hashed.
+
+| Profile | Stages | Digested |
+|---|---|---|
+| `b1` | `en-guide`, `en-page`, `en-post`, `en-blog-page`, `en-jobs-page` | title, content, excerpt, slug, meta description + the translated taxonomies (by slug) |
+| `b2` | `en-leisure-description`, `en-course-provider-description` | title, excerpt, slug — the field the B2 stage's own drift guard compares |
+
+Deliberately **excluded**, each on repository evidence: the EN meta key a B2
+stage owns, the shared `conexao_county` / `conexao_town` taxonomies, and the
+language-neutral fields (`post_date`, `post_author`, `menu_order`, thumbnail)
+the engine merely copies. EN records are refused outright.
+
+### Persisted state
+
+One `wp_options` row, `conexao_translation_automation_source_state`,
+`autoload = false`, holding **digests only** — never PT content.
+
+Every abnormal state is a distinct, named status and every one of them is a
+hard failure except `missing`:
+
+`missing` · `corrupt` · `incompatible` · `unexpected_stage` · `invalid`
+
+**`missing` never means "translate everything".** It yields
+`bootstrap_required`, proposes zero work, and writes no baseline as a side
+effect. Adopting a first baseline is a separate, explicit `bootstrap` act that
+still mutates nothing.
+
+### Provider
+
+An **interface and a validator only**. No implementation, no HTTP client, no
+vendor. Proven three ways: the contract is an `interface`, no class implements
+it, and a static scan finds zero `wp_remote_*` / `curl_*` / vendor references.
+
+`unknown response → hard record failure`. Missing field, wrong type, missing or
+mismatched identity, mismatched source digest, wrong target language, any extra
+key, any **mutation instruction**, malformed JSON, partial response and unknown
+status are all refused with no partial acceptance. The result digest is computed
+by the validator, so a provider cannot grade its own homework.
+
+Request identity is deterministic over (source digest, stage, field set) and
+excludes the run id, so "nothing changed" is recognisable without demanding
+deterministic provider wording.
+
+### Trigger
+
+**Explicit invocation plus the hook marker. No cron.** B2 is resolved by
+*removing* the pv-cron dependency: reconciliation truth is the full inventory
+diff, so a missed wake-up is recovered by the next reconciliation and a
+duplicate one finds no work. Nothing is scheduled, and no admin screen, REST
+route or AJAX handler exists.
+
+A hook may set **one boolean**. Nothing else.
+
+### Audit
+
+`wp_options`, `autoload = false`, **20 records**, oldest pruned first,
+successful and failed runs retained identically. `assert_no_secrets()` runs on
+the write path, so a record carrying a credential is refused rather than
+written.
+
+### New persistence
+
+Five `wp_options` rows, all namespaced to `conexao_translation_automation_*`,
+all infrastructure: lock, apply state, source state, audit, wake-up marker.
+**No transient or object-cache key is introduced**, so the Stage 2
+admin-user-scope cache exemption is untouched.
+
+### Tests
+
+| Suite | Assertions |
+|---|---|
+| `test-automation-change-detection.php` | 108 |
+| `test-automation-provider.php` | 222 |
+| `test-automation-trigger.php` | 98 |
+| `test-automation-audit.php` | 80 |
+| `test-automation-hooks.php` | 50 |
+| `tests/scripts/verify-stage3-automation.py` | 116 |
+
+Full detail:
+`docs/reports/2026-09-30-stage-3-change-detection-provider-trigger.md`.
+
+_Last verified: 2026-09-30 by Stage 3 — change detection, provider boundary, trigger and audit_
