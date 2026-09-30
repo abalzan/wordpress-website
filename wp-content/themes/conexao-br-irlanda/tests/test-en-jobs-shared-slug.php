@@ -398,13 +398,20 @@ conexao_gate_violation(
 	array( 'pairs' => $real_shared )
 );
 
-// The Blog posts page and the Jobs landing are the only two deliberate
-// shared-slug pairs; a third would mean the filter's reach had grown.
+// The Blog posts page, the Jobs landing and the Newsletter page are the three
+// DECLARED shared-slug pages (each declared by its own stage manifest row
+// whose en_slug equals its PT stable key — see
+// `conexao_en_translation_shared_page_slug_for()`). Any OTHER slug forming a
+// pt+en pair on one post_name would mean the filter's reach had grown beyond
+// the declared set.
+$declared_shared_slugs = array( 'blog', 'empregos', 'newsletter' );
+$undeclared_shared      = array_values( array_diff( $real_shared, $declared_shared_slugs ) );
+
 conexao_gate_violation(
-	'shared_slug:unexpected_new_pair',
-	( count( $real_shared ) <= 2 ) ? 0 : 1,
-	'no unexpected additional shared-slug page pair exists',
-	array( 'pairs' => $real_shared, 'count' => count( $real_shared ) )
+	'shared_slug:undeclared_pair',
+	empty( $undeclared_shared ) ? 0 : 1,
+	'every real shared-slug pt+en page pair is one of the three declared slugs (blog, empregos, newsletter)',
+	array( 'pairs' => $real_shared, 'declared' => $declared_shared_slugs, 'undeclared' => $undeclared_shared )
 );
 
 // ---------------------------------------------------------------------------
@@ -416,9 +423,14 @@ conexao_gate_violation(
 // exception stays narrow: it needs a published, linked PT↔EN pair, and nothing
 // else reaches it.
 //
-// Fixture discipline: the temporary EN `newsletter` record is created, linked,
-// asserted and DELETED inside this section, and the PT page's original
-// translation link is restored and re-asserted before the section ends.
+// Fixture discipline: the EN `newsletter` record under test is created, linked,
+// asserted and DELETED inside this section when no EN record holds the slug
+// yet (the pre-pair production state). When the REAL linked EN record already
+// holds the slug (the post-pair synthetic CI state, produced by the shared
+// engine's own `en-page` stage), that record IS the pair under test: no
+// duplicate EN fixture is created, the real record is never deleted, and the
+// PT page's original translation link is restored and re-asserted before the
+// section ends.
 // ---------------------------------------------------------------------------
 
 $pt_newsletter = get_page_by_path( 'newsletter', OBJECT, 'page' );
@@ -436,28 +448,61 @@ $newsletter_pt_slug   = $pt_newsletter instanceof WP_Post ? (string) $pt_newslet
 $newsletter_pt_status = $pt_newsletter instanceof WP_Post ? (string) $pt_newsletter->post_status : '';
 $newsletter_en_before = $newsletter_pt_id > 0 ? (int) pll_get_post( $newsletter_pt_id, 'en' ) : 0;
 
-// NEGATIVE (pre-pair): today no EN `newsletter` record shares the slug, so the
-// resolver must leave the request completely alone. This is the state production
-// is in, and it is exactly why `/en/newsletter/` currently answers with the
-// Portuguese body instead of an English page.
+// NEGATIVE (pre-pair) / POSITIVE (post-pair): the EN half of the newsletter
+// pair may or may not exist yet.
+//
+// - PRE-PAIR (the state production is in today): only the PT page holds the
+//   slug, so the resolver must leave the request completely alone. This is
+//   exactly why `/en/newsletter/` currently answers with the Portuguese body
+//   in production.
+// - POST-PAIR (the synthetic CI database runs the real `en-page` stage of
+//   the SHARED engine, which authors the EN newsletter as a shared-slug B1
+//   page): the REAL linked EN record already holds the slug, and the resolver
+//   must bind the EN request to it.
+//
+// Both expectations are asserted; which one runs is decided by the install's
+// actual state, and neither is skipped silently.
 $newsletter_before = conexao_jobs_gate_resolve( 'newsletter', 'en' );
 
-conexao_gate_violation(
-	'newsletter:unpaired_slug_rewritten',
-	$newsletter_before['changed'] ? 1 : 0,
-	'an EN request for newsletter is NOT rewritten while only the PT page holds the slug',
-	array( 'pt_id' => $newsletter_pt_id, 'vars' => $newsletter_before['vars'] )
-);
+if ( $newsletter_en_before > 0 ) {
+	conexao_gate_violation(
+		'newsletter:paired_slug_not_resolved',
+		( $newsletter_before['changed'] && (int) ( $newsletter_before['vars']['page_id'] ?? 0 ) === $newsletter_en_before ) ? 0 : 1,
+		'an EN request for newsletter resolves to the real linked EN newsletter record',
+		array( 'pt_id' => $newsletter_pt_id, 'en_id' => $newsletter_en_before, 'vars' => $newsletter_before['vars'] )
+	);
+} else {
+	conexao_gate_violation(
+		'newsletter:unpaired_slug_rewritten',
+		$newsletter_before['changed'] ? 1 : 0,
+		'an EN request for newsletter is NOT rewritten while only the PT page holds the slug',
+		array( 'pt_id' => $newsletter_pt_id, 'vars' => $newsletter_before['vars'] )
+	);
+}
 
 // POSITIVE 1: a linked PT + EN pair may share the slug, and the EN record really
 // lands on `newsletter` — the permit holds, so no `newsletter-2` is produced.
-$newsletter_en = conexao_jobs_gate_make_page( 'newsletter', 'en', $newsletter_pt_id );
+//
+// POST-PAIR discipline: when the REAL linked EN record already holds the slug,
+// THAT record is the pair under test. A second EN page on the same slug would
+// be exactly the duplicate EN identity the engine's own shared-slug guard
+// refuses, so no fixture is created and the real record is never deleted.
+$newsletter_en_is_real = (
+	$newsletter_en_before > 0
+	&& 'newsletter' === (string) get_post_field( 'post_name', $newsletter_en_before )
+);
+
+if ( $newsletter_en_is_real ) {
+	$newsletter_en = $newsletter_en_before;
+} else {
+	$newsletter_en = conexao_jobs_gate_make_page( 'newsletter', 'en', $newsletter_pt_id );
+}
 
 conexao_gate_violation(
 	'newsletter:pair_fixture_missing',
 	$newsletter_en > 0 ? 0 : 1,
-	'the temporary EN newsletter fixture was created',
-	array( 'pt_id' => $newsletter_pt_id, 'en_id' => $newsletter_en )
+	'the EN newsletter record under test exists (the real linked record, or a temporary fixture)',
+	array( 'pt_id' => $newsletter_pt_id, 'en_id' => $newsletter_en, 'en_is_real' => $newsletter_en_is_real )
 );
 
 if ( $newsletter_en > 0 ) {
@@ -638,9 +683,13 @@ if ( $newsletter_en > 0 ) {
 		array( 'pt' => $distinct_pt, 'en' => $distinct_en, 'vars' => $distinct_request['vars'] )
 	);
 
-	// Cleanup: remove the temporary EN newsletter record and restore the PT
-	// page's ORIGINAL translation link, so the install ends exactly as it began.
-	wp_delete_post( $newsletter_en, true );
+	// Cleanup: remove the temporary EN newsletter record (a REAL linked EN
+	// record is never deleted — it is the site's own content, not this gate's
+	// fixture) and restore the PT page's ORIGINAL translation link, so the
+	// install ends exactly as it began.
+	if ( ! $newsletter_en_is_real ) {
+		wp_delete_post( $newsletter_en, true );
+	}
 
 	if ( function_exists( 'pll_save_post_translations' ) ) {
 		if ( $newsletter_en_before > 0 ) {
@@ -679,11 +728,23 @@ $newsletter_survivors = array_map(
 	)
 );
 
+// The pages that must survive this gate: the real PT page, plus — in the
+// POST-PAIR state — the REAL linked EN record the shared engine's `en-page`
+// stage authored (it legitimately holds the slug; it is not a gate fixture).
+$newsletter_expected_survivors = array( $newsletter_pt_id );
+
+if ( $newsletter_en_is_real ) {
+	$newsletter_expected_survivors[] = $newsletter_en;
+}
+
+sort( $newsletter_survivors );
+sort( $newsletter_expected_survivors );
+
 conexao_gate_violation(
 	'newsletter:fixture_left_behind',
-	( array( $newsletter_pt_id ) === $newsletter_survivors ) ? 0 : 1,
-	'the newsletter shared-slug fixtures were removed and only the real PT page holds the slug',
-	array( 'survivors' => $newsletter_survivors, 'pt_id' => $newsletter_pt_id )
+	( $newsletter_expected_survivors === $newsletter_survivors ) ? 0 : 1,
+	'the newsletter shared-slug fixtures were removed and only the real pages hold the slug',
+	array( 'survivors' => $newsletter_survivors, 'expected' => $newsletter_expected_survivors, 'pt_id' => $newsletter_pt_id )
 );
 
 conexao_gate_violation(

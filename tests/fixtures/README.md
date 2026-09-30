@@ -63,7 +63,7 @@ single place the budget is measured.
 
 | File | Bytes | Records | Purpose |
 |---|---:|---:|---|
-| `scripts/data/ci-fixture-guides.php` | 7,526 | 51 PT guides | PT half of the `en-guide` pairs; covers all 13 authored `conexao_category` terms |
+| `scripts/data/ci-fixture-guides.php` | 7,526 | 50 PT guides | PT half of the `en-guide` pairs; covers all 13 authored `conexao_category` terms; excludes the permanently deleted `learner-permit-theory-test-irlanda-cnh-brasileira` source and carries the re-keyed `carteira-motorista-brasileiros` instead of the retired `carteira-de-motorista-2` |
 | `scripts/data/ci-fixture-posts.php` | 6,537 | 40 PT posts | PT half of the `en-post` pairs; makes `/blog/page/2/` and `/en/blog/page/2/` real |
 | `scripts/data/ci-fixture-events.php` | 9,908 | 3 events, 3 sponsors, 6 shared terms | Laois/Adare filter rows, recurrence, sponsor singles, and the SHARED county/town terms |
 | **Total** | **23,971** | | |
