@@ -21,6 +21,29 @@
  * nothing to do with the code under test. This dataset therefore creates
  * the PT half of a pair whose EN half the repository ALREADY ships.
  *
+ * THE DATASET TRACKS THE MANIFEST'S STABLE KEYS EXACTLY, and the 2026-09-30 EN
+ * rollout reconciliation is encoded here rather than left implicit
+ * (`docs/reports/2026-09-30-en-rollout-blocker-resolution.md`):
+ *
+ *   - `carteira-de-motorista-2` was RE-KEYED to `carteira-motorista-brasileiros`.
+ *     The old PT guide was permanently deleted in production (its id range has
+ *     exactly one gap, at 463) and the authored EN row now resolves against the
+ *     real successor guide. This dataset must therefore create the PT record
+ *     under the SUCCESSOR slug, or the authored English would have no PT half
+ *     and the completeness gate would fail for a fixture reason.
+ *   - `learner-permit-theory-test-irlanda-cnh-brasileira` was RETIRED: its PT
+ *     source was permanently deleted and the authored EN row was withdrawn with
+ *     operator authorisation (recorded in
+ *     `wp-content/plugins/conexao-en-translation/includes/exclusions-data.php`,
+ *     classification `NO_REAL_PT_SOURCE`). No PT record is created for it here.
+ *     Creating one would be a FAKE PT identity — a record that does not exist in
+ *     production — and the retired row must not reappear as an eligible PT
+ *     record merely to give the fixture site a population.
+ *
+ * Both directions are fail-closed by the existing gate: a fixture slug with no
+ * authored EN row, or an authored row with no PT record, makes the permanent
+ * `translation_completeness` gate report `missing_en` and the run fails.
+ *
  * CATEGORY COVERAGE IS LOAD-BEARING, not decorative. The en-guide stage
  * also runs a taxonomy gate over every authored `conexao_category` term
  * (13 of them, in guide-terms-data.php). Between them these 51 records
@@ -57,7 +80,7 @@ function conexao_ci_fixture_guides(): array {
 		'abrir-conta-bancaria-2'                           => 'financas',
 		'alugar-casa-2'                                    => 'moradia',
 		'comprar-carro-2'                                  => 'transporte',
-		'carteira-de-motorista-2'                          => 'transporte',
+		'carteira-motorista-brasileiros'                   => 'transporte',
 		'impostos-2'                                       => 'impostos-e-revenue',
 		'cidadania-irlandesa-2'                            => 'documentos',
 		'passaporte-irlandes-2'                            => 'documentos',
@@ -90,7 +113,6 @@ function conexao_ci_fixture_guides(): array {
 		'ehic-irlanda-brasileiros-residentes'              => 'saude',
 		'reconhecer-diploma-brasileiro-na-irlanda-naric-qqi' => 'educacao',
 		'leap-card-irlanda-como-usar'                      => 'transporte',
-		'learner-permit-theory-test-irlanda-cnh-brasileira' => 'transporte',
 		'assistencia-juridica-legal-aid-irlanda-brasileiros' => 'justica-e-seguranca',
 		'casamento-registro-nascimento-irlanda-brasileiros' => 'documentos',
 		'reclamar-banco-seguro-servico-financeiro-irlanda' => 'financas',

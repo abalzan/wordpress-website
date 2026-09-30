@@ -73,6 +73,13 @@ fi
 
 registry_fact() {
     # registry_fact <slug> <key> -> "true" / "false" / "absent" from plugins.json
+    #
+    # The PHP source below is single-quoted ON PURPOSE: `$argv`, `$slug`, `$key`
+    # and `$reg` are PHP variables that the SHELL must not expand. SC2016 is a
+    # false positive for this construct, so the suppression is scoped to this one
+    # command (the established mechanism, as in scripts/i18n-make-pot.sh) rather
+    # than disabled for the file or for the rule globally.
+    # shellcheck disable=SC2016
     php -r '
         $slug = $argv[1];
         $key  = $argv[2];

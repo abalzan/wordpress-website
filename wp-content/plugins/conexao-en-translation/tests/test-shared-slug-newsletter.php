@@ -71,6 +71,36 @@ function conexao_newsletter_gate_permit_released() {
 	);
 }
 
+/**
+ * Every page currently holding the declared shared slug, as a sorted id set.
+ *
+ * The suite proves its own fixtures are removed by comparing the slug's
+ * population BEFORE the fixtures exist with the population AFTER they are
+ * deleted. A hard-coded local post id would be a cross-environment identity
+ * (engineering standard 0.4), and it would also be wrong on any install where
+ * the `en-page` stage has been applied: the real PT page then has a real linked
+ * EN translation on the same slug, which is the approved state and must survive.
+ *
+ * @return int[] Sorted ids.
+ */
+function conexao_newsletter_gate_pages_on_slug(): array {
+	$ids = get_posts(
+		array(
+			'post_type'      => 'page',
+			'post_status'    => 'any',
+			'name'           => 'newsletter',
+			'posts_per_page' => -1,
+			'fields'         => 'ids',
+			'lang'           => '',
+		)
+	);
+
+	$ids = array_map( 'intval', (array) $ids );
+	sort( $ids );
+
+	return $ids;
+}
+
 // ---------------------------------------------------------------------------
 // 1. The policy is derived from the stage manifests, per stage.
 // ---------------------------------------------------------------------------
@@ -277,20 +307,41 @@ if ( $pt_newsletter instanceof WP_Post ) {
 		'the PT record holding the shared slug is never reported as a duplicate'
 	);
 
-	// A LINKED but drifted EN translation is not a duplicate either: it is the
-	// existing translation, and the engine's `update` path repairs its slug. This
-	// is the pre-existing `newsletter-2` debt this policy exists to prevent
-	// recurring, so the case is proven rather than assumed.
-	$drifted_en = (int) pll_get_post( $real_pt_id, 'en' );
-	if ( $drifted_en > 0 && $drifted_en !== $real_pt_id ) {
-		$drifted = call_user_func( $guarded['find_en_for_pt'], $real_pt_id, 'newsletter' );
+	// A LINKED EN translation is never a duplicate: it is the existing
+	// translation, and the engine's `update` path owns it (it repairs a drifted
+	// slug and leaves a correct one alone).
+	//
+	// Whether that record's slug has DRIFTED is a fact about the INSTALL, not
+	// about the policy: on a site built from the repository's authored manifest
+	// the permit makes the stage write the authored slug directly, while a site
+	// that predates the permit still carries the `newsletter-2` debt. The guard
+	// must therefore report the STORED slug exactly — claiming "drifted" for a
+	// record already on the authored slug would plan a needless repair, and
+	// claiming "matching" for a drifted record would plan a create. Both
+	// directions are asserted against the record itself, so neither is assumed.
+	$linked_en = (int) pll_get_post( $real_pt_id, 'en' );
+
+	if ( $linked_en > 0 && $linked_en !== $real_pt_id ) {
+		$linked      = call_user_func( $guarded['find_en_for_pt'], $real_pt_id, 'newsletter' );
+		$linked_slug = (string) get_post_field( 'post_name', $linked_en );
+
 		assert_true(
-			! empty( $drifted['pair_ok'] ),
-			'a linked EN translation is accepted even when its slug has drifted (the engine repairs it on apply)'
+			! empty( $linked['pair_ok'] ),
+			'a linked EN translation is accepted as the pair, so the engine plans an update and never a create'
+		);
+		assert_equals(
+			( 'newsletter' === $linked_slug ),
+			! empty( $linked['en_slug_matches'] ),
+			'the stored slug of the linked EN record is reported exactly'
+		);
+		assert_equals(
+			$linked_en,
+			(int) ( $linked['en_id'] ?? 0 ),
+			'the linked EN record is the record the guard reports, not a duplicate on the slug'
 		);
 		assert_true(
-			! $drifted['en_slug_matches'],
-			'the drifted slug is reported as the engine\'s repairable `update` case, not as a create'
+			empty( $linked['duplicate'] ),
+			'the linked EN record is never reported as a duplicate of itself'
 		);
 	} else {
 		assert_true(
@@ -310,6 +361,12 @@ assert_true(
 	empty( $other['duplicate'] ),
 	'a non-shared row of the same stage is not inspected by the shared-slug duplicate guard'
 );
+
+// The slug's population BEFORE this suite creates anything. The real newsletter
+// records — the PT page and, once the `en-page` stage has been applied, its
+// linked EN translation — must be exactly what is left when the fixtures below
+// are removed again.
+$newsletter_pre_fixture_ids = conexao_newsletter_gate_pages_on_slug();
 
 // POSITIVE: an unpaired second page on the shared slug IS a duplicate, so the
 // engine refuses to create a second EN identity beside it.
@@ -345,21 +402,13 @@ foreach ( array( $fixture_pt, $fixture_en ) as $fixture_id ) {
 	}
 }
 
-$survivors = get_posts(
-	array(
-		'post_type'      => 'page',
-		'post_status'    => 'any',
-		'name'           => 'newsletter',
-		'posts_per_page' => -1,
-		'fields'         => 'ids',
-		'lang'           => '',
-	)
-);
-$expected_survivors = $pt_newsletter instanceof WP_Post ? array( (int) $pt_newsletter->ID ) : array();
+// The slug must end up holding EXACTLY what it held before this suite ran: the
+// real PT page and, on an install where the EN translation exists, the real EN
+// page. Anything else means a fixture survived or a real record was destroyed.
 assert_equals(
-	$expected_survivors,
-	array_map( 'intval', (array) $survivors ),
-	'the shared-slug guard fixtures were removed and the real newsletter page is untouched'
+	$newsletter_pre_fixture_ids,
+	conexao_newsletter_gate_pages_on_slug(),
+	'the shared-slug guard fixtures were removed and the real newsletter records are untouched'
 );
 
 test_finish( 'conexao-en-translation shared-slug newsletter' );

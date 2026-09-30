@@ -148,6 +148,37 @@ function conexao_jobs_gate_resolve( string $slug, string $lang ): array {
 }
 
 /**
+ * Every page currently holding one slug, as a sorted set of ids.
+ *
+ * Used to prove that this suite's fixtures are removed and the REAL records are
+ * untouched, by comparing the slug's population BEFORE the fixtures are created
+ * with the population AFTER they are deleted. A hard-coded local post id would
+ * be a cross-environment identity (engineering standard 0.4) and would also be
+ * wrong on any install whose newsletter pair exists — which is exactly the
+ * approved state the `en-page` stage produces.
+ *
+ * @param string $slug Page slug.
+ * @return int[] Sorted ids.
+ */
+function conexao_jobs_gate_pages_on_slug( string $slug ): array {
+	$ids = get_posts(
+		array(
+			'post_type'      => 'page',
+			'post_status'    => 'any',
+			'name'           => $slug,
+			'posts_per_page' => -1,
+			'fields'         => 'ids',
+			'lang'           => '',
+		)
+	);
+
+	$ids = array_map( 'intval', (array) $ids );
+	sort( $ids );
+
+	return $ids;
+}
+
+/**
  * Read the FRONT-END URLs of two records in a FRESH WordPress request.
  *
  * ## Why a child process is not optional here
@@ -398,13 +429,40 @@ conexao_gate_violation(
 	array( 'pairs' => $real_shared )
 );
 
-// The Blog posts page and the Jobs landing are the only two deliberate
-// shared-slug pairs; a third would mean the filter's reach had grown.
+// Blast radius. The declared shared slugs are read from the stages' OWN
+// manifests — never from a second list in this file — so this assertion cannot
+// drift away from the policy it is checking. `newsletter` joined `blog` and
+// `empregos` when the EN newsletter page was authored (an approved B1
+// shared-slug page), so the site legitimately carries three pairs; what the
+// gate forbids is a FOURTH slug reaching the resolver, i.e. an ordinary page
+// being captured by it.
+$declared_shared = array();
+foreach ( array( 'en-blog-page', 'en-jobs-page', 'en-page' ) as $shared_stage ) {
+	$declared_slug = conexao_en_translation_shared_page_slug_for( $shared_stage );
+
+	if ( '' !== $declared_slug ) {
+		$declared_shared[] = $declared_slug;
+	}
+}
+
+sort( $declared_shared );
+
+$undeclared = array_values( array_diff( $real_shared, $declared_shared ) );
+
 conexao_gate_violation(
 	'shared_slug:unexpected_new_pair',
-	( count( $real_shared ) <= 2 ) ? 0 : 1,
-	'no unexpected additional shared-slug page pair exists',
-	array( 'pairs' => $real_shared, 'count' => count( $real_shared ) )
+	( array() === $undeclared ) ? 0 : 1,
+	'every real shared-slug page pair is a slug a stage DECLARES (no page is captured by the resolver)',
+	array( 'pairs' => $real_shared, 'declared' => $declared_shared, 'undeclared' => $undeclared )
+);
+
+// ... and the approved newsletter pair really is present, so the assertion
+// above cannot pass merely because that pair went missing.
+conexao_gate_violation(
+	'shared_slug:newsletter_pair_missing',
+	in_array( 'newsletter', $real_shared, true ) ? 0 : 1,
+	'the approved shared-slug newsletter pair (PT and EN on one slug) exists',
+	array( 'pairs' => $real_shared )
 );
 
 // ---------------------------------------------------------------------------
@@ -436,28 +494,71 @@ $newsletter_pt_slug   = $pt_newsletter instanceof WP_Post ? (string) $pt_newslet
 $newsletter_pt_status = $pt_newsletter instanceof WP_Post ? (string) $pt_newsletter->post_status : '';
 $newsletter_en_before = $newsletter_pt_id > 0 ? (int) pll_get_post( $newsletter_pt_id, 'en' ) : 0;
 
-// NEGATIVE (pre-pair): today no EN `newsletter` record shares the slug, so the
-// resolver must leave the request completely alone. This is the state production
-// is in, and it is exactly why `/en/newsletter/` currently answers with the
-// Portuguese body instead of an English page.
+// The slug's population BEFORE this suite creates anything. The real newsletter
+// records — the PT page and, once the `en-page` stage has been applied, its
+// linked EN translation — must be exactly what is left when the fixtures are
+// removed again. Captured as a SET rather than as a hard-coded id.
+$newsletter_pre_ids = conexao_jobs_gate_pages_on_slug( 'newsletter' );
+
+// The install's REAL pairing state decides what "correct" means here, and BOTH
+// states are legitimate:
+//
+//   * PAIRED — the repository's own authored `en-page` manifest has been
+//     applied, so the PT page has a linked EN translation holding the same slug.
+//     That pair is the whole reason the shared-slug permit exists, and an EN
+//     request MUST resolve to the EN record;
+//   * UNPAIRED — no linked EN record exists, so the resolver must be a total
+//     no-op and `/en/newsletter/` keeps WordPress' own answer.
+//
+// Asserting only the UNPAIRED state (as this gate first did) makes it fail on
+// exactly the site the repository's authored data produces: a test defect, not a
+// resolver defect. The expectation is therefore DERIVED from the install, and it
+// stays fail-closed in both directions — an unpaired slug that IS rewritten
+// fails, and a paired slug that is NOT handed to its EN record fails.
 $newsletter_before = conexao_jobs_gate_resolve( 'newsletter', 'en' );
 
-conexao_gate_violation(
-	'newsletter:unpaired_slug_rewritten',
-	$newsletter_before['changed'] ? 1 : 0,
-	'an EN request for newsletter is NOT rewritten while only the PT page holds the slug',
-	array( 'pt_id' => $newsletter_pt_id, 'vars' => $newsletter_before['vars'] )
-);
+if ( $newsletter_en_before > 0 ) {
+	conexao_gate_violation(
+		'newsletter:paired_slug_not_resolved',
+		( $newsletter_before['changed'] && (int) ( $newsletter_before['vars']['page_id'] ?? 0 ) === $newsletter_en_before ) ? 0 : 1,
+		'the real linked PT/EN newsletter pair resolves an EN request to the EN record',
+		array( 'pt_id' => $newsletter_pt_id, 'en_id' => $newsletter_en_before, 'vars' => $newsletter_before['vars'] )
+	);
+} else {
+	conexao_gate_violation(
+		'newsletter:unpaired_slug_rewritten',
+		$newsletter_before['changed'] ? 1 : 0,
+		'an EN request for newsletter is NOT rewritten while only the PT page holds the slug',
+		array( 'pt_id' => $newsletter_pt_id, 'vars' => $newsletter_before['vars'] )
+	);
+}
 
 // POSITIVE 1: a linked PT + EN pair may share the slug, and the EN record really
 // lands on `newsletter` — the permit holds, so no `newsletter-2` is produced.
-$newsletter_en = conexao_jobs_gate_make_page( 'newsletter', 'en', $newsletter_pt_id );
+//
+// Where the `en-page` stage has already been applied, the REAL EN record IS that
+// pair and is used directly: creating a SECOND EN page on the shared slug would
+// be a duplicate identity, and re-pointing the PT page's translation group at a
+// fixture would corrupt the very state the rest of this section asserts. The
+// fixture path remains for an install that has no EN newsletter yet, and only a
+// fixture this gate itself created is ever deleted.
+$newsletter_en_fixture = 0;
+$newsletter_en         = $newsletter_en_before;
+
+if ( $newsletter_en <= 0 ) {
+	$newsletter_en_fixture = conexao_jobs_gate_make_page( 'newsletter', 'en', $newsletter_pt_id );
+	$newsletter_en         = $newsletter_en_fixture;
+}
 
 conexao_gate_violation(
-	'newsletter:pair_fixture_missing',
+	'newsletter:en_record_missing',
 	$newsletter_en > 0 ? 0 : 1,
-	'the temporary EN newsletter fixture was created',
-	array( 'pt_id' => $newsletter_pt_id, 'en_id' => $newsletter_en )
+	'the EN newsletter record exists (the real linked translation, or the temporary fixture)',
+	array(
+		'pt_id'           => $newsletter_pt_id,
+		'en_id'           => $newsletter_en,
+		'created_fixture' => $newsletter_en_fixture,
+	)
 );
 
 if ( $newsletter_en > 0 ) {
@@ -638,9 +739,13 @@ if ( $newsletter_en > 0 ) {
 		array( 'pt' => $distinct_pt, 'en' => $distinct_en, 'vars' => $distinct_request['vars'] )
 	);
 
-	// Cleanup: remove the temporary EN newsletter record and restore the PT
-	// page's ORIGINAL translation link, so the install ends exactly as it began.
-	wp_delete_post( $newsletter_en, true );
+	// Cleanup: remove ONLY a fixture this gate created, and restore the PT page's
+	// ORIGINAL translation link, so the install ends exactly as it began. The
+	// real EN newsletter record (when the `en-page` stage has been applied) is
+	// never deleted by a test.
+	if ( $newsletter_en_fixture > 0 ) {
+		wp_delete_post( $newsletter_en_fixture, true );
+	}
 
 	if ( function_exists( 'pll_save_post_translations' ) ) {
 		if ( $newsletter_en_before > 0 ) {
@@ -665,25 +770,20 @@ if ( $newsletter_en > 0 ) {
 	}
 }
 
-$newsletter_survivors = array_map(
-	'intval',
-	(array) get_posts(
-		array(
-			'post_type'      => 'page',
-			'post_status'    => 'any',
-			'name'           => 'newsletter',
-			'posts_per_page' => -1,
-			'fields'         => 'ids',
-			'lang'           => '',
-		)
-	)
-);
+$newsletter_survivors = conexao_jobs_gate_pages_on_slug( 'newsletter' );
 
+// The slug must end up holding EXACTLY what it held before this suite ran: the
+// real PT page and, on an install where the EN translation exists, the real EN
+// page. Anything else means a fixture survived or a real record was destroyed.
 conexao_gate_violation(
 	'newsletter:fixture_left_behind',
-	( array( $newsletter_pt_id ) === $newsletter_survivors ) ? 0 : 1,
-	'the newsletter shared-slug fixtures were removed and only the real PT page holds the slug',
-	array( 'survivors' => $newsletter_survivors, 'pt_id' => $newsletter_pt_id )
+	( $newsletter_pre_ids === $newsletter_survivors ) ? 0 : 1,
+	'the newsletter shared-slug fixtures were removed and the real newsletter records are untouched',
+	array(
+		'before'    => $newsletter_pre_ids,
+		'survivors' => $newsletter_survivors,
+		'pt_id'     => $newsletter_pt_id,
+	)
 );
 
 conexao_gate_violation(
