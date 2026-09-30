@@ -1,0 +1,43 @@
+{
+  "captured_at_utc": "2026-09-30 (Stage 0, read-only)",
+  "target": "https://conexaobr.ie",
+  "http_verbs_used": [
+    "GET"
+  ],
+  "production_writes": 0,
+  "total_plugins_installed": 18,
+  "conexao_plugins": [
+    {
+      "plugin": "conexao-content/conexao-content",
+      "status": "active",
+      "version": "1.0.0"
+    },
+    {
+      "plugin": "conexao-data-model/conexao-data-model",
+      "status": "active",
+      "version": "1.6.1"
+    },
+    {
+      "plugin": "conexao-admin-ux/conexao-admin-ux",
+      "status": "active",
+      "version": "1.0.6"
+    },
+    {
+      "plugin": "conexao-event-importer/conexao-event-importer",
+      "status": "active",
+      "version": "1.7.1"
+    },
+    {
+      "plugin": "conexao-event-runtime/conexao-event-runtime",
+      "status": "active",
+      "version": "1.2.1"
+    },
+    {
+      "plugin": "conexao-leisure-migration/conexao-leisure-migration",
+      "status": "active",
+      "version": "2.1.0"
+    }
+  ],
+  "rollout_plugins_present": [],
+  "finding": "conexao-translation-rollout and conexao-en-translation are NOT installed in production. All four platform plugins are active. The EN rollout is applied, so the temporary tooling was removed after the Phase 3 apply."
+}

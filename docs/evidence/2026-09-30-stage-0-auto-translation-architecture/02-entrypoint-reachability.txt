@@ -1,0 +1,31 @@
+AUTOMATION ENTRY-POINT REACHABILITY AUDIT (Stage 0, read-only, GET only)
+================================================================
+
+[A] Registered HTTP/REST surface in the two rollout plugins (source grep)
+    register_rest_route / rest_api_init / WP_REST_Controller / wp_ajax_
+      -> 0 hits
+    wp_schedule_event / wp_schedule_single_event / cron hooks
+      -> 0 hits
+    WP_CLI commands in the rollout plugins
+      -> 0 hits
+
+[B] The only apply entry point in source
+    class-conexao-translation-rollout-admin.php:48  add_action( 'admin_post_' . ACTION, 'handle_run' )
+    class-conexao-translation-rollout-admin.php:74  current_user_can( 'manage_options' )  -> wp_die 403
+    class-conexao-translation-rollout-admin.php:78  check_admin_referer( ACTION, NONCE )
+    Engine::run() is invoked ONLY from that handler, from the stage run_callbacks,
+    and from scripts/run-en-translation.php (which requires a WordPress install on disk).
+
+[C] Live production REST route census (GET /wp-json/, unauthenticated)
+    total routes: 665
+    routes matching rollout/translation: 0 []
+
+[D] Live admin reachability with the repository application password (GET only)
+    GET /wp-admin/tools.php        -> HTTP 302 -> /wp-login.php?...&reauth=1
+    GET /wp-admin/admin-post.php   -> HTTP 200, 0-byte body (handler unreachable)
+    => An application password authenticates REST, not the wp-admin COOKIE SESSION
+       that current_user_can()+check_admin_referer() are evaluated against.
+
+[E] Production plugin inventory (GET /wp-json/wp/v2/plugins, authenticated)
+    18 plugins installed. conexao-translation-rollout: ABSENT.
+    conexao-en-translation: ABSENT. All 4 platform plugins ACTIVE.
