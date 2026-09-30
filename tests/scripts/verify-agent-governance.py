@@ -19,22 +19,34 @@ What it asserts:
    1. The governance files exist: AGENTS.md, docs/templates/plan.md,
       docs/templates/report.md, .github/PULL_REQUEST_TEMPLATE.md.
    2. .agents/skills/ exists and every skill directory has a SKILL.md.
-   3. Every active SKILL.md has the six required sections, in order.
-   4. Every required Stage K WordPress skill is present.
+   3. Every active SKILL.md has the twelve required sections, in order.
+   4. Every required WordPress skill is present.
    5. Every repository path a skill references actually exists (no invented
       paths, no dangling documentation references).
    6. The active skill set contains no obsolete Dart/Flutter/mobile skills, and
       the retired material lives outside the active namespace.
    7. No skill introduces a second plugin registry or contradicts plugins.json.
-   8. AGENTS.md points at the engineering standard, the templates and
+   8. Every path a skill references actually exists; no skill carries a
+      generated region (generated lists are referenced, never copied).
+   8b. The skill index .agents/skills/README.md exists, matches the actual
+      skill directories exactly (no drift, no phantom/retired references) and
+      references only real paths.
+   8c. Every active skill is linked from AGENTS.md (discoverable from the
+      entry point).
+   8d. Every active skill is named in docs/README.md (the human index agrees
+      with the skill set).
+   8e. Every active skill carries the WordPress-only scope sentence.
+   8f. Every skill's Authoritative sources section declares at least one
+      canonical authoritative source (the dependency model).
+   9. AGENTS.md points at the engineering standard, the templates and
       plugins.json.
-   9. The PR template carries the core engineering-standard checks.
-  10. docs/README.md exposes the templates and the agent skills.
-  11. The plan and report templates carry the content/route/Polylang/verification
+  10. The PR template carries the core engineering-standard checks.
+  11. docs/README.md exposes the templates and the agent skills.
+  12. The plan and report templates carry the content/route/Polylang/verification
       and rollback sections the standard requires.
-  12. No governance file introduces a localhost URL, a hard-coded credential or
-      an external filesystem path.
-  13. The Stage K surface is documentation-only: no runtime file under
+  13. No governance file (including the skills and the skill index) introduces
+      a localhost URL, a hard-coded credential or an external filesystem path.
+  14. The Stage K surface is documentation-only: no runtime file under
       wp-content/ is introduced by the governance layer.
 
 Exit code: 0 when every check passes, 1 otherwise. Every failure is printed
@@ -61,29 +73,73 @@ PR_TEMPLATE = os.path.join(".github", "PULL_REQUEST_TEMPLATE.md")
 DOCS_INDEX = os.path.join("docs", "README.md")
 REGISTRY = "plugins.json"
 
-# The six sections §13.1 requires of every active skill, in order.
+# The twelve sections §13.1 requires of every active skill, in order (the
+# standard skill format of the 2026-09-30 agent-skills documentation migration).
 REQUIRED_SECTIONS = (
+    "Purpose",
     "When to use",
+    "When not to use",
     "Required reading",
+    "Authoritative sources",
+    "Preconditions",
     "Steps",
     "Guardrails",
     "Verification",
+    "Failure handling",
+    "Evidence and reporting",
     "Definition of done",
 )
 
-# The Stage K WordPress skill set (engineering standard §13.1 plus the registry
-# skill). These are the domains this repository actually has.
+# The WordPress skill domains this repository MUST have. The full, current set
+# (and each skill's primary canonical dependencies) is indexed by
+# .agents/skills/README.md; this tuple protects the minimum domains against
+# an index-and-directory edited together.
 REQUIRED_SKILLS = (
     "wp-add-content-type",
     "wp-add-admin-screen",
     "wp-write-in-process-test",
     "wp-http-acceptance-matrix",
+    "wp-run-tests",
+    "wp-content-change",
+    "wp-translation-rollout",
+    "wp-add-strings",
     "wp-release-deploy",
+    "wp-production-operations",
     "wp-update-docs",
     "wp-security-review",
     "wp-frontend-perf",
-    "wp-translation-rollout",
     "wp-plugin-registry",
+)
+
+# The single skill index (engineering standard §13.1). It is the one list of
+# active skills and must match the actual directories exactly.
+SKILLS_INDEX = os.path.join(".agents", "skills", "README.md")
+
+# The sentence every active skill must carry: the permanent WordPress-only
+# scope rule (the Flutter/mobile repository is never touched from here).
+REQUIRED_SCOPE_SENTENCE = "Never touch the Flutter/mobile repository"
+
+# The canonical authoritative sources a skill's "Authoritative sources"
+# section must reference at least one of (the canonical dependency model:
+# every skill must declare its authoritative inputs).
+AUTHORITATIVE_SOURCES = (
+    "AGENTS.md",
+    "plugins.json",
+    "docs/README.md",
+    "docs/engineering-standard.md",
+    "docs/architecture.md",
+    "docs/content-model.md",
+    "docs/routing.md",
+    "docs/frontend.md",
+    "docs/deployment.md",
+    "docs/development.md",
+    "docs/testing.md",
+    "docs/releases.md",
+    "docs/themes/conexao-br-irlanda.md",
+    "scripts/README.md",
+    "tests/bootstrap.php",
+    "tests/lib/assertions.php",
+    "tests/baseline/permanent-gates.json",
 )
 
 # Anything whose name says Dart/Flutter/mobile does not belong in the ACTIVE
@@ -196,7 +252,7 @@ def main() -> int:
             f".agents/skills/{name}/ has no SKILL.md; a skill IS its SKILL.md",
         )
 
-    # -- 4. Every active skill has the six required sections, in order ------
+    # -- 4. Every active skill has the required sections, in order ------------
     section_report: list[str] = []
     for name in skills:
         skill_file = os.path.join(SKILLS_DIR, name, "SKILL.md")
@@ -380,6 +436,130 @@ def main() -> int:
         check(False, message)
     if not missing_paths:
         note("every repository path referenced by an active skill exists")
+
+    # -- 8b. The skill index matches the actual active skills -----------------
+    # .agents/skills/README.md is the single list of active skills (§13.1). It
+    # must list exactly the directories that exist: no index drift, no phantom
+    # skills, no silently retired ones. The index is the discovery surface for
+    # a new agent — a mismatch is a wrong instruction, not a formatting issue.
+    index_path = os.path.join(REPO_ROOT, SKILLS_INDEX)
+    if check(
+        os.path.isfile(index_path),
+        f"{SKILLS_INDEX} is missing; it is the single skill index (§13.1) — "
+        "skill selection starts here",
+    ):
+        index_body = read(index_path)
+        indexed = set(re.findall(r"`(wp-[a-z0-9-]+)`", index_body))
+        actual = set(skills)
+        for missing_in_index in sorted(actual - indexed):
+            check(
+                False,
+                f"{SKILLS_INDEX} does not list the active skill "
+                f"'{missing_in_index}' — the index and the skill directories "
+                "must match in the same change",
+            )
+        for phantom in sorted(indexed - actual):
+            check(
+                False,
+                f"{SKILLS_INDEX} lists '{phantom}', which is not a directory "
+                "under .agents/skills/ — a retired or renamed skill reference "
+                "was left behind in the index",
+            )
+        if actual and indexed == actual:
+            note(f"skill index matches the active skill set ({len(actual)} skills)")
+        # The index references real repository paths, like the skills do.
+        for token in sorted(set(PATH_RE.findall(index_body))):
+            candidate = token.rstrip("/")
+            if not os.path.exists(os.path.join(REPO_ROOT, candidate)):
+                check(
+                    False,
+                    f"{SKILLS_INDEX} references '{token}', which does not "
+                    "exist in this repository",
+                )
+
+    # -- 8c. Every active skill is discoverable from AGENTS.md ----------------
+    # The entry point must link every skill: a skill that exists but is not
+    # reachable from AGENTS.md is effectively retired for a new agent.
+    agents_entry = (
+        read(os.path.join(REPO_ROOT, AGENTS_MD))
+        if os.path.isfile(os.path.join(REPO_ROOT, AGENTS_MD))
+        else ""
+    )
+    for name in skills:
+        check(
+            f".agents/skills/{name}/SKILL.md" in agents_entry,
+            f"{AGENTS_MD} does not link the active skill '{name}' "
+            f"(.agents/skills/{name}/SKILL.md); every skill must be reachable "
+            "from the entry point",
+        )
+
+    # -- 8d. Every active skill is named in the documentation index -----------
+    # docs/README.md is the human index; it must name every active skill so a
+    # maintainer and an agent see the same set.
+    docs_index_body = (
+        read(os.path.join(REPO_ROOT, DOCS_INDEX))
+        if os.path.isfile(os.path.join(REPO_ROOT, DOCS_INDEX))
+        else ""
+    )
+    for name in skills:
+        check(
+            name in docs_index_body,
+            f"{DOCS_INDEX} does not mention the active skill '{name}'; the "
+            "documentation index and the skill set must agree",
+        )
+
+    # -- 8e. Every active skill carries the WordPress-only scope sentence ------
+    # The permanent scope rule (never touch the Flutter/mobile repository)
+    # must appear in every skill, not only in AGENTS.md.
+    for name in skills:
+        skill_file = os.path.join(SKILLS_DIR, name, "SKILL.md")
+        if not os.path.isfile(skill_file):
+            continue
+        check(
+            REQUIRED_SCOPE_SENTENCE in read(skill_file),
+            f".agents/skills/{name}/SKILL.md does not carry the required "
+            "scope sentence ('Never touch the Flutter/mobile repository'); "
+            "the permanent WordPress-only scope rule belongs in every skill",
+        )
+
+    # -- 8f. Every skill declares authoritative inputs (the dependency model) -
+    # §13.1: a skill MUST declare its authoritative inputs and reference them
+    # rather than copying their content. A skill that declares none is a
+    # summary, not an operational workflow anchored to the canonical truth.
+    def section_body(body: str, heading: str) -> str:
+        lines = body.splitlines()
+        capture = False
+        out: list[str] = []
+        for line in lines:
+            if line.startswith("## "):
+                if capture:
+                    break
+                capture = line[3:].strip() == heading
+                continue
+            if capture:
+                out.append(line)
+        return "\n".join(out)
+
+    for name in skills:
+        skill_file = os.path.join(SKILLS_DIR, name, "SKILL.md")
+        if not os.path.isfile(skill_file):
+            continue
+        sources_section = section_body(read(skill_file), "Authoritative sources")
+        check(
+            any(source in sources_section for source in AUTHORITATIVE_SOURCES),
+            f".agents/skills/{name}/SKILL.md declares no authoritative source "
+            "in its 'Authoritative sources' section; every skill must anchor "
+            "to the canonical documents it depends on",
+        )
+        check(
+            not any(
+                line.lstrip().startswith("<!-- BEGIN GENERATED")
+                for line in read(skill_file).splitlines()
+            ),
+            f".agents/skills/{name}/SKILL.md contains a generated-region "
+            "marker on its own line; skills reference generated lists, they "
+            "never carry them",
+        )
 
     # -- 9. AGENTS.md points at the authoritative sources -------------------
     agents_path = os.path.join(REPO_ROOT, AGENTS_MD)
@@ -587,6 +767,8 @@ def main() -> int:
         )
     if os.path.isfile(docs_index):
         governance_files.append(DOCS_INDEX)
+    if os.path.isfile(os.path.join(REPO_ROOT, SKILLS_INDEX)):
+        governance_files.append(SKILLS_INDEX)
 
     localhost_re = re.compile(r"https?://(?:localhost|127\.0\.0\.1)(?::\d+)?")
     external_path_re = re.compile(r"(?:^|[\s`'\"(])/(?:home|Users|var/folders|mnt)/")

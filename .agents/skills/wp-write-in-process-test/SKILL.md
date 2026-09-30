@@ -111,6 +111,7 @@ addition**.
 - Every new function needs a docblock with `@param` and `@return`
   (`scripts/lint.sh` enforces it).
 - Assertions report what actually happened; never soften a failure into a skip.
+- Never touch the Flutter/mobile repository from this task.
 
 ## Verification
 

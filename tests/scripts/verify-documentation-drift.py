@@ -57,8 +57,10 @@ GATE_ID = "documentation_drift"
 
 LAST_VERIFIED = re.compile(r"^_Last verified: \d{4}-\d{2}-\d{2} by .+_$", re.M)
 
-# The living reference documents §9.1 gives an owner to, plus the index and the
-# two Stage K templates. These are the documents that must stay current.
+# The living reference documents §9.1 gives an owner to, plus the index, the
+# two Stage K templates and the skill index (the 2026-09-30 agent-skills
+# documentation migration made .agents/skills/README.md a living governance
+# document). These are the documents that must stay current.
 LIVING_DOCS = (
     "AGENTS.md",
     "README.md",
@@ -75,6 +77,7 @@ LIVING_DOCS = (
     "docs/templates/plan.md",
     "docs/templates/report.md",
     "docs/themes/conexao-br-irlanda.md",
+    ".agents/skills/README.md",
 )
 
 # The authoritative sources Stage K governance must keep pointing at.

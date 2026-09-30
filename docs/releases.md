@@ -3,7 +3,10 @@
 The release contract for this repository is engineering standard
 [§11](engineering-standard.md#11-deployment-and-release-standard). This document
 is its operational companion: the sequence, the record, the tag convention, the
-verification and the rollback procedure.
+verification and the rollback procedure. The executable end-to-end workflow —
+including the deploy and rollback steps — is the **`wp-release-deploy`** skill
+(`.agents/skills/wp-release-deploy/SKILL.md`); operating on production itself is
+the `wp-production-operations` skill.
 
 Everything here is proven locally by `./scripts/verify-release.sh`, which runs the
 whole workflow — build, manifest, allowlist/hash verification, determinism,
@@ -230,7 +233,9 @@ verify-only: it never uploads, never activates and never writes content.
 ## Rollback
 
 Production has no CLI and no shell, so a rollback is an **admin operation using
-artifacts you kept**. Prepare it *before* you deploy.
+artifacts you kept**. Prepare it *before* you deploy; the executable steps are
+in the `wp-release-deploy` skill (`.agents/skills/wp-release-deploy/SKILL.md`,
+step "Rollback"). This section owns the **semantics**:
 
 ### Before deploying, record this
 
@@ -244,22 +249,21 @@ artifacts you kept**. Prepare it *before* you deploy.
    rollout, record its own rollback (see §0.7: snapshots before writes). A code
    rollback does **not** undo a content change.
 
-### To roll back
+### Rollback rules
 
-| Step | Action | Why |
-|---|---|---|
-| 1 | Decide: is the fault in the **code** or in the **content**? | They roll back differently. |
-| 2 | **Code fault:** re-upload the previous plugin/theme ZIPs from step 1 above (Appearance → Themes → Add New → Upload Theme; Plugins → Add New → Upload Plugin). | The previous manifest gives you the exact artifacts. |
-| 3 | **Activate in `plugins.json` order** (`data-model → content → admin-ux → event-runtime`), and re-activate the previous theme. | Order is a dependency invariant, not a preference. |
-| 4 | **Verify the rollback** with the same gate used for the release: `python3 scripts/verify-deploy.py --site https://<host>` | An unverified rollback is an unverified state. |
-| 5 | **Content fault:** restore from the content snapshot / re-run the documented recovery for that rollout. Never improvise SQL. | Content and code are independent. |
-| 6 | Record the rollback in this file: what was rolled back, to which SHA, and the verification result. | The next release must know. |
-
-Deactivating a plugin is the fastest partial rollback when a single plugin is the
-cause: deactivate it in wp-admin, re-verify, and decide whether the site is
-acceptable in that state. Because the steady state is exactly the
-`production: true` subset of the registry, "all platform plugins active in order"
-is always a known-good configuration to fall back to.
+- **Decide code fault vs content fault first** — they roll back differently
+  (re-upload previous artifacts in `plugins.json` order vs restore that
+  change's own snapshot or documented recovery; never improvised SQL).
+- **Update in place, never deactivate/reactivate to "refresh"** — activation
+  hooks are not re-runnable (e.g. `conexao-content` activation rebuilds pages
+  and the navigation menus).
+- **Deactivating a single faulty plugin** is the fastest partial rollback;
+  the steady state (`production: true` subset, all active in order) is always
+  a known-good fallback.
+- **Every rollback is verified** with the same gate used for the release:
+  `python3 scripts/verify-deploy.py --site https://<host>`.
+- **Record the rollback** in this file: what was rolled back, to which SHA, and
+  the verification result.
 
 ### What a rollback does **not** cover
 
@@ -348,3 +352,4 @@ result. Add a row **in the same change** that prepares the release.
 
 _Last verified: 2026-09-26 by Stage J — Build, Release & Deploy Verification_
 _Last verified: 2026-09-29 by the production artifact version bump (5 artifacts bumped to the next patch version; release record regenerated; no deployment)_
+_Last verified: 2026-09-30 by the agent-skills documentation migration (rollback steps moved to the wp-release-deploy skill; this document keeps the rollback semantics)_

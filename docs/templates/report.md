@@ -22,6 +22,7 @@
 | **Date** | |
 | **Author / agent** | |
 | **Branch** | |
+| **Skill(s) followed** | `.agents/skills/<skill>/SKILL.md` (and the canonical docs its Authoritative sources declared) |
 | **Start SHA** | |
 | **Final SHA** | |
 | **Working tree at finish** | clean / dirty (list anything dirty and why) |

@@ -5,6 +5,14 @@ normative policy is [engineering-standard.md](engineering-standard.md) §8; this
 document is the practical companion to it. Where they disagree, the standard
 wins.
 
+Division of labour: this document owns the **testing model** — the three
+layers, the suite classification, the permanent gates, the baseline policy, the
+fixtures and the acceptance semantics. The executable runner workflow — what
+to run, in what order, how to diagnose a failure, how to compare regressions
+and when to stop — is the **`wp-run-tests`** skill
+(`.agents/skills/wp-run-tests/SKILL.md`). Writing suites is
+`wp-write-in-process-test` (in-process) and `wp-http-acceptance-matrix` (HTTP).
+
 ---
 
 ## The three-layer model
@@ -527,3 +535,4 @@ _Last verified: 2026-09-26 by Stage J — Build, Release & Deploy Verification_
 _Last verified: 2026-09-28 by CI integration setup recovery_
 _Last verified: 2026-09-26 by Stage K — Agent Skills + Templates_
 _Last verified: 2026-09-26 by Stage O — Enable the Real English Blog Archive_
+_Last verified: 2026-09-30 by the agent-skills documentation migration (the model stays here; the runner workflow is the wp-run-tests skill)_

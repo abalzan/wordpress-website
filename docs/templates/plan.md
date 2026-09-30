@@ -17,6 +17,7 @@
 | **Date** | |
 | **Author / agent** | |
 | **Branch** | |
+| **Applicable skill(s)** | `.agents/skills/<skill>/SKILL.md` — the executable workflow this task follows |
 | **Repository baseline (starting SHA)** | |
 | **Plan status** | draft \| approved \| superseded |
 
@@ -34,7 +35,8 @@ adjacent work you are refusing so a reviewer does not read it as an oversight.
 The documents that constrain this change, read before starting. At minimum,
 `AGENTS.md` and `docs/engineering-standard.md`; add the specific ones
 (`docs/routing.md`, `docs/content-model.md`, the plugin doc, `docs/releases.md`,
-`scripts/README.md`).
+`scripts/README.md`). Name the applicable skill from `.agents/skills/` and the
+authoritative documents its **Authoritative sources** section declares.
 
 ## 4. Current-state findings
 

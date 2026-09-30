@@ -97,51 +97,24 @@ mounted only so the historical importer stays reproducible.
 
 ## The release process
 
-The full contract — the release record, the tag convention, deployment
+The release contract — the release record, the tag convention, deployment
 verification and the rollback procedure — is documented in
 [`docs/releases.md`](releases.md) and normative in
 [`docs/engineering-standard.md` §11](engineering-standard.md#11-deployment-and-release-standard).
-This section is the short version and the entry point.
-
-### Before you deploy
-
-```bash
-./scripts/lint.sh && ./scripts/run-tests.sh     # 1. gates
-./scripts/build-plugins-zip.sh                  # 2. build + dist/release.json
-./scripts/build-theme-zip.sh
-python3 scripts/release-manifest.py --verify    # 3. allowlist + hash verification
-```
-
-Each build emits `dist/release.json`, which records the version, git SHA,
-built-at, file count, byte size and SHA-256 of every artifact that actually
-exists, alongside the allowlist `plugins.json` permits. The artifacts are built
-**deterministically**: two builds of the same source produce byte-identical ZIPs,
-so the recorded hash is a real claim. Verify that locally, end to end, with:
+The executable workflow — gates, build, record, manual upload, verification,
+rollback — is the **`wp-release-deploy`** skill
+(`.agents/skills/wp-release-deploy/SKILL.md`). One command proves the whole
+machinery locally before relying on it:
 
 ```bash
-./scripts/verify-release.sh
+./scripts/verify-release.sh   # registry gate, build, manifest, hashes,
+                              # determinism, exclusion proof, HTTP — local only
 ```
 
-That runs the whole workflow — registry gate, build, manifest, allowlist/hash
-verification, a determinism re-build, an exclusion proof and HTTP verification
-against the **local** site. It is the fastest way to know the release machinery
-works before relying on it.
+Nothing here uploads, activates or mutates: the release tooling is deliberately
+build-and-verify only.
 
-### After you deploy
-
-```bash
-python3 scripts/verify-deploy.py --site https://<host> \
-    --out docs/evidence/<date>-<release>/deploy-<tag>.json
-```
-
-Read-only, GET-only, no credentials, and `--site` is required with no default so
-a mistyped run cannot probe the wrong site. It runs the fixed release smoke
-matrix (homepage, every archive, one single per post type, `/en/` pairs,
-canonical, hreflang, sitemap, 404) plus the PT/EN language-layer checks. Then
-record the release in [`docs/releases.md`](releases.md) and keep the previous
-artifacts for the rollback described there.
-
-### Production constraints
+## Production constraints
 
 | Constraint | Consequence |
 |---|---|
@@ -153,14 +126,6 @@ Because production has no CLI, every production capability must also have an
 admin screen (engineering standard §0.12). The release tooling in this repository
 is deliberately build-and-verify only: it never uploads, never activates and
 never writes content.
-
-
-
-## Environment Differences
-
-- **Local**: Full admin access, WP_DEBUG enabled, `WORDPRESS_DEBUG=1`
-- **Production**: WordPress.com managed, WP_DEBUG disabled, caching enabled
-- **Domain-specific configuration**: None required — all paths are relative
 
 ## Media thumbnails for new image sizes
 
@@ -181,31 +146,6 @@ theme update. The `scripts/generate-logo-derivatives.php` script creates the
 240px header-logo derivatives from the theme assets (already committed; run
 it only if the logo masters are ever replaced).
 
-## Deployment Checklist
-
-```bash
-./scripts/build-plugins-zip.sh
-```
-
-Output: `dist/conexao-data-model.zip`, `dist/conexao-content.zip`, `dist/conexao-admin-ux.zip`, `dist/conexao-event-runtime.zip`, `dist/conexao-event-importer.zip`, `dist/conexao-leisure-migration.zip`
-
-Import via WordPress Admin → Plugins → Add New → Upload Plugin. Activate in load order.
-
-**Production** needs: data-model, content, admin-ux, **event-runtime**. The
-event importer (local tooling) should **not** be installed or active on
-production — see docs/plugins/conexao-event-runtime.md for the activation and
-migration plan.
-
-### Theme
-
-```bash
-./scripts/build-theme-zip.sh
-```
-
-Output: `dist/conexao-br-irlanda.zip`
-
-Import via WordPress Admin → Appearance → Themes → Add New → Upload Theme.
-
 ## Media Handling
 
 - **Local development**: Media uploaded via WordPress admin goes into the Docker volume.
@@ -213,43 +153,25 @@ Import via WordPress Admin → Appearance → Themes → Add New → Upload Them
 - **Migration**: Lazer export/import ZIPs carry actual image files; production always uses local Media Library attachments.
 - **No hotlinking**: Production leisure images are never served from Wikimedia Commons or external CDNs. Wikimedia metadata is attribution-only.
 
-## Data Migration Workflows
+## Data migration and rollout procedures
 
-### Lazer (Leisure/Tourism)
+The import/export screens and their procedures are documented where they are
+owned; every content write follows the six-step content-change contract
+(engineering standard §5.2; executable workflow: the **`wp-content-change`**
+skill, `.agents/skills/wp-content-change/SKILL.md` — dry-run first, stable
+identifiers only, idempotent apply, numeric gate).
 
-1. Export from source: WordPress Admin → Lazer → Exportar Lazer → download ZIP
-2. Import to target: WordPress Admin → Lazer → Importar Lazer → upload ZIP → preview → confirm
-3. ZIP contains: `data.json` + actual image files from Media Library
-4. Matching: stable UUID → slug → title (never WordPress post IDs)
+| Operation | Screen / script | Owned by |
+|---|---|---|
+| Lazer (leisure) dataset transfer | Lazer → *Exportar Lazer* / *Importar Lazer* (dry-run preview + confirm) | [`plugins/conexao-leisure-migration.md`](plugins/conexao-leisure-migration.md) |
+| Sponsors transfer | Apoiadores Migration → *Exportar Apoiadores* / *Importar Apoiadores* | [`plugins/conexao-sponsor-migration.md`](plugins/conexao-sponsor-migration.md) |
+| Events import/export | Event Import → Export / Import (JSON; matching `source + source_id` → UUID) | [`plugins/conexao-event-importer.md`](plugins/conexao-event-importer.md) |
+| Production leisure image corrections (no PHP/CLI on WordPress.com) | `scripts/update-lazer-images-rest.py` (`--dry-run` first; REST + application password from the environment) | [`../scripts/README.md`](../scripts/README.md) |
 
-### Lazer image refresh (REST, no PHP/CLI)
-
-Production is WordPress.com (no SSH/SFTP/CLI), so image corrections cannot be
-run from a PHP script. Use the standard-library REST script instead — it
-uploads the replacement image to the Media Library, sets the featured image
-(the theme's hero/card image) and rewrites the `_leisure_image_*` attribution
-meta using the exact same format as the PHP importer:
-
-```bash
-export WP_USERNAME='…'
-export WP_APPLICATION_PASSWORD='…'   # wp-admin → Perfil → Senhas de aplicativo
-python3 scripts/update-lazer-images-rest.py --dry-run   # preview
-python3 scripts/update-lazer-images-rest.py             # apply
-```
-
-Notes:
-- Matches listings by **slug**; idempotent (skips when `_leisure_image_source_url`
-  already matches); never deletes the old attachment unless `--delete-old`.
-- Requires the `conexao-data-model` update that adds an `auth_callback` to
-  `register_leisure_meta()` — without it the attribution meta is read-only over
-  REST (`403 rest_cannot_update`). Deploy that plugin update first.
-
-
-### Events
-
-1. Export: WordPress Admin → Event Import → Export Events → JSON download
-2. Import: WordPress Admin → Event Import → Import Events → upload JSON
-3. Matching: source + source_id → UUID → URL → content
+Matching across environments is always stable UUID → slug → title (never
+WordPress post IDs). The REST image refresh requires the `conexao-data-model`
+update that adds an `auth_callback` to `register_leisure_meta()` — without it
+the attribution meta is read-only over REST; deploy that plugin update first.
 
 ## Environment Differences
 
@@ -257,43 +179,28 @@ Notes:
 - **Production**: WordPress.com managed, WP_DEBUG disabled, caching enabled
 - **Domain-specific configuration**: None required — all paths are relative
 
-## Translation Rollouts (Stage H)
+## Translation rollouts
 
-Translation rollouts are **not** part of the normal production release. The
-shared engine `conexao-translation-rollout` is `tooling` / `production: false` /
-`build: false`: it is locally mounted for development and tests, and it is
-**never** in a release plugin ZIP, exactly like the retired one-shot rollouts.
+The registry is authoritative for the engine's lifecycle: `conexao-translation-rollout`
+is a `platform` plugin and part of the production steady state (see the generated
+activation order above). The retired one-shot rollout plugins are historical
+tooling and never in a release ZIP.
 
-To run an actual rollout on production, install the engine plus the stage
-plugin manually (ZIP upload or a repo checkout), then use the **admin
-workflow** — production is WordPress.com and has **no WP-CLI**:
-
-1. Tools → **Translation Rollouts** (or the stage's own legacy screen, for the
-   four rollouts not yet migrated).
-2. Select the registered stage.
-3. **Preview (dry run)** first — it performs zero writes and prints the
-   `create` / `update` / `skip` / `conflicts` plan plus the numeric gate.
-4. **Apply** — writes, then re-verifies that the PT originals are unchanged
-   (`pt_drift` must be 0) and recalculates the gate
-   (`eligible public PT <type> missing EN = 0`).
-5. **Remove** only for a stage that declares `allow_remove`; otherwise follow
-   that stage's documented recovery.
+Running an actual rollout on production is an **admin workflow** — production
+is WordPress.com and has **no WP-CLI**. The executable workflow is the
+**`wp-translation-rollout`** skill (`.agents/skills/wp-translation-rollout/SKILL.md`);
+the screen contract (Preview → Apply → Remove) is owned by
+[`docs/plugins/conexao-translation-rollout.md`](plugins/conexao-translation-rollout.md)
+§"Admin workflow". In short: Tools → **Translation Rollouts** → select the
+registered stage → **Preview** (zero writes; prints the
+`create`/`update`/`skip`/`conflicts` plan plus the numeric gate) → **Apply**
+(writes, then re-verifies PT-unchanged — `pt_drift` must be 0 — and
+recalculates the gate) → **Remove** only for a stage that declares
+`allow_remove`, otherwise that stage's documented recovery.
 
 The engine registers its admin action with `manage_options` and a nonce, never
 writes on page load or on GET, and performs no content write on activation.
-See [`docs/plugins/conexao-translation-rollout.md`](plugins/conexao-translation-rollout.md).
-
-## Deployment Checklist
-
-1. Build plugin ZIPs (`./scripts/build-plugins-zip.sh`)
-2. Build theme ZIP (`./scripts/build-theme-zip.sh`)
-3. Upload and activate plugins in load order on production
-4. Upload and activate theme on production
-5. Verify all CPT archives load
-6. Verify redirects work (English → Portuguese)
-7. Run any required seed scripts
-8. Test event import
-9. Test leisure import (if applicable)
-10. Verify sitemap at `/sitemap.xml`
 
 _Last verified: 2026-09-26 by Stage L — Permanent Invariant Gates_
+
+_Last verified: 2026-09-30 by the agent-skills documentation migration (release/migration/rollout procedures moved to the skills; stale engine lifecycle facts corrected against plugins.json — the engine was promoted to platform on 2026-09-30)_
