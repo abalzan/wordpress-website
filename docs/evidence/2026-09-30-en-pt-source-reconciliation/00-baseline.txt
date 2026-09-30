@@ -1,0 +1,46 @@
+BASELINE — EN PT SOURCE RECONCILIATION (read-only investigation)
+generated: 2026-09-30T11:35:02Z
+
+HEAD SHA            : 6bc4a6be8654cc083a162445491227a278ce0a47
+branch              : i18n
+
+--- working tree status (porcelain) ---
+ M docs/reports/README.md
+ M scripts/README.md
+?? docs/evidence/2026-09-30-en-pt-source-reconciliation/
+?? docs/evidence/2026-09-30-temporary-en-translation-plugins/
+?? docs/reports/2026-09-30-temporary-en-translation-plugins.md
+?? scripts/build-temporary-plugins-zip.sh
+
+--- digests of the read-only artefacts this phase relies on ---
+2fef48615ed7bca04eb2155919150e8c4e7779620375d1c365c968dafcf586cc  docs/evidence/2026-09-30-en-rollout-blocker-resolution/01-en-inventory-manifest.json
+d644a01eaf148e02ef81268b989b9bdcd7b784409d65296f9f34db6569e736fb  docs/evidence/2026-09-30-en-rollout-blocker-resolution/00-repository-stage-manifests.json
+76dc9b8c2432a128b2ffd019bc85d9765538bcb9b11d3a6b55db765bd83a8a51  docs/evidence/2026-09-30-en-translation-dry-run/02-dry-run-plan.json
+
+--- authored EN data files at HEAD (unmodified by this phase) ---
+5abbc64580737222e692aa7feb4ab3d99ad681cfa5a4d59d102f374edb6f9326  wp-content/plugins/conexao-en-translation/includes/blog-page-data.php
+eaf675f2a3873ead7fbdec0c068e74908736041251ee63595228ad8c505f58c8  wp-content/plugins/conexao-en-translation/includes/blog-translation-data.php
+fdc3ed5211a391a3cd5bddf2b524a3d40847a5aa5c883757ff9d526d463027c8  wp-content/plugins/conexao-en-translation/includes/course-provider-description-data.php
+a7da9295f56181d756b75249dc49e3c2f8eb5ad918737948d79b3d212cf9fbfc  wp-content/plugins/conexao-en-translation/includes/course-provider-description-stage.php
+e134d295cd39e9a20e76d1f99b078b2cb0fb7e6dab55bea89c849646cd3653d9  wp-content/plugins/conexao-en-translation/includes/guide-stage.php
+d3335157ddc6e3fa09cbaae3cc3ca9831c352e4d312e05f501304d58c69c673e  wp-content/plugins/conexao-en-translation/includes/guide-terms-data.php
+1e16f25a2e0450564686f3b977242b3a844020b9dca90cc478d87909ee8efc39  wp-content/plugins/conexao-en-translation/includes/guide-translation-data.php
+5c165b691bf057c8a5104666926138711517cf82c53909c0d1c9a0d6ec9375ae  wp-content/plugins/conexao-en-translation/includes/jobs-page-data.php
+6bbd472f272102599a637895d072f32c7cf177e5fabb36228707878dd58ccb3e  wp-content/plugins/conexao-en-translation/includes/leisure-description-data.php
+64fccfdd2b6512378f1b923601d4bbd32ce400df654f8052350f2df1cd11fafb  wp-content/plugins/conexao-en-translation/includes/leisure-description-stage.php
+3b86f148ba60d9c7023a852e37d71661a195be00128cdf0688f39fffbff81d4a  wp-content/plugins/conexao-en-translation/includes/manifest-data.php
+9c1889b809c30a548d32b3d24ffd2825f7da6dee744778f7d51823e3f741b531  wp-content/plugins/conexao-en-translation/includes/stage-config.php
+b8e6a6201696a96f7dfb8c65034f15f4a9cc1ba8d3547ed9710dd1eb00c01027  wp-content/plugins/conexao-en-translation/includes/stage-fields.php
+5b81eca2e0dbd130732835d19b03e398d15e46ffc9eeea37c574d95b02d8b3d3  wp-content/plugins/conexao-en-translation/includes/translation-map.php
+
+--- engine (unmodified) ---
+baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4  wp-content/plugins/conexao-translation-rollout/includes/class-conexao-translation-rollout-engine.php
+
+--- previous dry-run / blocker reports (NOT overwritten) ---
+-rw-rw-r-- 1 andrei andrei 20898 Sep 30 09:41 docs/reports/2026-09-30-en-rollout-blocker-resolution.md
+-rw-rw-r-- 1 andrei andrei 18993 Sep 30 08:37 docs/reports/2026-09-30-en-translation-dry-run.md
+
+--- .env unchanged (values never printed) ---
+e99381586ae3a724848b0685a66fae8478759bff4b20501325c34df5054eae24  .env
+
+PT protection baseline: production was READ ONLY (GET). 0 writes. No PT record created/updated/deleted.

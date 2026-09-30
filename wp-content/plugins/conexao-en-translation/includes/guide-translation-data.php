@@ -2635,78 +2635,19 @@ function conexao_en_translation_guide_data_v1(): array {
 
 ',
 		),
-		'learner-permit-theory-test-irlanda-cnh-brasileira'      => array(
-			'en_slug'             => 'brazilian-driving-licence-in-ireland-theory-test-and-learner-permit',
-			'en_title'            => 'Brazilian Driving Licence in Ireland: When You Need the Theory Test and Learner Permit',
-			'en_excerpt'          => 'The route for Brazilians who cannot exchange their licence: theory test, learner permit, EDT and driving test.',
-			'en_meta_description' => 'Understand the route for Brazilians who cannot exchange a foreign licence: theory test, learner permit, EDT and driving test.',
-			'en_content'          => '<!-- wp:paragraph --><p><strong>Meta description:</strong> Understand the route for Brazilians who cannot exchange their foreign licence: theory test, learner permit, EDT and driving test.</p><!-- /wp:paragraph -->
-<!-- wp:paragraph --><p><strong>Suggested URL:</strong> /guias/learner-permit-theory-test-irlanda-cnh-brasileira/</p><!-- /wp:paragraph -->
-<!-- wp:heading --><h2>Introduction</h2><!-- /wp:heading -->
-<!-- wp:paragraph --><p>Exchanging a foreign licence depends on exchange agreements. When the licence cannot be exchanged, the driver may have to follow the Irish process to obtain the licence.</p><!-- /wp:paragraph -->
-<!-- wp:heading --><h2>Who this guide is for</h2><!-- /wp:heading -->
-<!-- wp:paragraph --><p>Brazilians with a foreign driving licence who need to understand the route to an Irish licence when no exchange applies.</p><!-- /wp:paragraph -->
-<!-- wp:heading --><h2>Step by step</h2><!-- /wp:heading -->
-<!-- wp:list --><ul>
-<li>First check with the NDLS whether your licence is eligible for exchange.</li>
-<li>If you need the learner driver route, pass the Driver Theory Test for the correct category.</li>
-<li>Apply for the first learner permit through the NDLS, noting identity, address, ordinary residence, PPSN and reports where applicable.</li>
-<li>If you hold a full licence from a country with no exchange agreement, check whether you are entitled to the Reduced EDT Programme.</li>
-<li>For the first learner permit, the RSA states it must be held for at least six months and the required training completed before the driving test.</li>
-<li>Book the driving test once all the requirements are met.</li>
-</ul><!-- /wp:list -->
-<!-- wp:heading --><h2>Documents and information needed</h2><!-- /wp:heading -->
-<!-- wp:list --><ul>
-<li>Passport or an accepted document.</li>
-<li>PPSN.</li>
-<li>Proof of address where required.</li>
-<li>Proof of ordinary residence where applicable.</li>
-<li>Theory test certificate.</li>
-<li>Eye or medical report, if required.</li>
-</ul><!-- /wp:list -->
-<!-- wp:heading --><h2>Costs and fees</h2><!-- /wp:heading -->
-<!-- wp:paragraph --><p>The theory test, learner permit, lessons and driving test each have their own costs. Check RSA/NDLS for the current amounts.</p><!-- /wp:paragraph -->
-<!-- wp:heading --><h2>Timelines and important dates</h2><!-- /wp:heading -->
-<!-- wp:paragraph --><p>The RSA states that the learner permit must be applied for within two years of passing the theory test; after that the certificate expires.</p><!-- /wp:paragraph -->
-<!-- wp:heading --><h2>Common mistakes and points to note</h2><!-- /wp:heading -->
-<!-- wp:list --><ul>
-<li>Driving unaccompanied with a learner permit.</li>
-<li>Booking the theory test on an unofficial site.</li>
-<li>Ignoring the six months for the first learner permit.</li>
-<li>Assuming a Brazilian licence is automatically exchangeable.</li>
-</ul><!-- /wp:list -->
-<!-- wp:heading --><h2>Official sources</h2><!-- /wp:heading -->
-<!-- wp:list --><ul>
-<li><a href="https://www.rsa.ie/services/learner-drivers/learner-permit/what-it-is" target="_blank" rel="noopener noreferrer">RSA - learner permit</a></li>
-<li><a href="https://www.rsa.ie/services/learner-drivers/learner-permit/apply-for-your-first-permit" target="_blank" rel="noopener noreferrer">RSA - first permit</a></li>
-<li><a href="https://www.rsa.ie/services/learner-drivers/theory-test/what-it-is" target="_blank" rel="noopener noreferrer">RSA - theory test</a></li>
-<li><a href="https://www.ndls.ie/" target="_blank" rel="noopener noreferrer">NDLS</a></li>
-</ul><!-- /wp:list -->
-<!-- wp:heading --><h2>Useful links</h2><!-- /wp:heading -->
-<!-- wp:list --><ul>
-<li><a href="https://www.rsa.ie/services/learner-drivers/learner-permit/what-it-is" target="_blank" rel="noopener noreferrer">RSA - learner permit</a></li>
-<li><a href="https://www.rsa.ie/services/learner-drivers/learner-permit/apply-for-your-first-permit" target="_blank" rel="noopener noreferrer">RSA - first permit</a></li>
-<li><a href="https://www.rsa.ie/services/learner-drivers/theory-test/what-it-is" target="_blank" rel="noopener noreferrer">RSA - theory test</a></li>
-<li><a href="https://www.ndls.ie/" target="_blank" rel="noopener noreferrer">NDLS</a></li>
-</ul><!-- /wp:list -->
-<!-- wp:heading --><h2>Frequently asked questions</h2><!-- /wp:heading -->
-<!-- wp:heading --><h3>Can I exchange my Brazilian licence directly?</h3><!-- /wp:heading -->
-<!-- wp:paragraph --><p>It depends on the exchange rules in force. Check with the NDLS before starting the process.</p><!-- /wp:paragraph -->
-<!-- wp:heading --><h3>Do I need to take the theory test?</h3><!-- /wp:heading -->
-<!-- wp:paragraph --><p>For the first learner permit, the RSA states that you must pass the theory test for the category.</p><!-- /wp:paragraph -->
-<!-- wp:heading --><h3>How long do I hold a learner permit?</h3><!-- /wp:heading -->
-<!-- wp:paragraph --><p>For the first learner permit, the RSA states six months, in addition to the required training.</p><!-- /wp:paragraph -->
-<!-- wp:heading --><h3>Can I drive on my own?</h3><!-- /wp:heading -->
-<!-- wp:paragraph --><p>No. The learner permit rules require an accompanying driver according to the category and the applicable conditions.</p><!-- /wp:paragraph -->
-<!-- wp:paragraph --><p><strong>Official links:</strong> <a href="https://theorytest.ie/book-your-theory-test/" target="_blank" rel="noopener noreferrer">Book the Driver Theory Test</a> · <a href="https://www.rsa.ie/services/learner-drivers/learner-permit/apply-for-your-first-permit" target="_blank" rel="noopener noreferrer">Apply for your first Learner Permit</a> · <a href="https://www.ndls.ie/learner-driver/learner-permit.html" target="_blank" rel="noopener noreferrer">NDLS - Learner Permit</a></p><!-- /wp:paragraph -->
-<!-- wp:heading --><h2>Last checked</h2><!-- /wp:heading -->
-<!-- wp:paragraph --><p>Information checked on 18 August 2026. Reconfirm fees, deadlines, forms, occupation lists, opening hours and procedures before publication and before advising readers on a specific case.</p><!-- /wp:paragraph -->
-<!-- wp:heading --><h2>Important notice</h2><!-- /wp:heading -->
-<!-- wp:paragraph --><p>For information only; it does not replace RSA/NDLS guidance or legal advice.</p><!-- /wp:paragraph -->
-<!-- wp:separator --><hr class="wp-block-separator has-alpha-channel-opacity"/><!-- /wp:separator -->
-
-',
-		),
+		// `learner-permit-theory-test-irlanda-cnh-brasileira` (EN slug
+		// `brazilian-driving-licence-in-ireland-theory-test-and-learner-permit`)
+		// was REMOVED from this dataset on 2026-09-30 with operator authorisation.
+		// Its PT source — the guide whose historical id was 10009 — was
+		// permanently deleted and cannot be found in production in ANY state:
+		// not published, not in the trash, not under any other post type. The
+		// only same-subject live guide (25031) is a DIFFERENT article and is
+		// already the accepted source of the `carteira-motorista-brasileiros`
+		// row, so it cannot be reused here without creating a duplicate source.
+		// The retirement is recorded, not forgotten, in
+		// `includes/exclusions-data.php` (classification NO_REAL_PT_SOURCE) and
+		// evidenced in docs/reports/2026-09-30-en-pt-source-reconciliation.md.
+		// No PT record is recreated and no PT identity is invented.
 		'assistencia-juridica-legal-aid-irlanda-brasileiros'     => array(
 			'en_slug'             => 'legal-aid-in-ireland-how-to-apply-for-civil-legal-aid',
 			'en_title'            => 'Legal Aid in Ireland: How to Apply for Civil Legal Aid',

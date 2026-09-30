@@ -1,0 +1,51 @@
+TEMPORARY ZIP INTEGRITY — dist/temporary/
+========================================================================
+
+conexao-translation-rollout
+------------------------------------------------------------------------
+  [PASS] conexao-translation-rollout.zip exists
+  [PASS] archive root is exactly 'conexao-translation-rollout/' (got ['conexao-translation-rollout'])
+  [PASS] contains the plugin main file conexao-translation-rollout/conexao-translation-rollout.php
+  file count:   4
+  bytes:        11742
+  sha256:       5b87fbc533c352197e6bf6be14b49d27537323a8370862ec7bb8031bb3d15d5b
+  plugin name:  Conexao Translation Rollout Engine
+  version:      1.1.0
+  requires php: 8.0
+  requires wp:  (undeclared)
+  requires plg: (none)
+  [PASS] declares a Version header
+  [PASS] ships only .php runtime files (+ documented .md): []
+  [PASS] no .env / log / editor-junk files: []
+  [PASS] no tests/fixtures/docs/reports/caches/vendor dirs: []
+  [PASS] no unrelated plugin directories: []
+  [PASS] no Flutter/mobile files: []
+  [PASS] no credential literals: []
+  [PASS] every shipped file is byte-identical to wp-content/plugins/: []
+  [PASS] every shipped .php file parses: []
+
+conexao-en-translation
+------------------------------------------------------------------------
+  [PASS] conexao-en-translation.zip exists
+  [PASS] archive root is exactly 'conexao-en-translation/' (got ['conexao-en-translation'])
+  [PASS] contains the plugin main file conexao-en-translation/conexao-en-translation.php
+  file count:   15
+  bytes:        191905
+  sha256:       f6f9c87986d34a321c3b1925b052c59cd93e7040f01e11719142912accc9669a
+  plugin name:  Conexão BR Irlanda — EN Translation (Stage M / Stage N / Stage O / Stage 7 leisure / course providers)
+  version:      1.5.0
+  requires php: 7.4
+  requires wp:  (undeclared)
+  requires plg: conexao-translation-rollout
+  [PASS] declares a Version header
+  [PASS] ships only .php runtime files (+ documented .md): []
+  [PASS] no .env / log / editor-junk files: []
+  [PASS] no tests/fixtures/docs/reports/caches/vendor dirs: []
+  [PASS] no unrelated plugin directories: []
+  [PASS] no Flutter/mobile files: []
+  [PASS] no credential literals: []
+  [PASS] every shipped file is byte-identical to wp-content/plugins/: []
+  [PASS] every shipped .php file parses: []
+
+========================================================================
+assertions: 24 total, 24 passed, 0 failed

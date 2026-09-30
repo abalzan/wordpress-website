@@ -18,7 +18,7 @@ the authored English and the WordPress-bound adapter.
 | | |
 |---|---|
 | Folder | `wp-content/plugins/conexao-en-translation/` |
-| Authored copy | `includes/guide-translation-data.php` (the **51-row EN Guide dataset** — see "The `en-guide` stage" below), `includes/guide-terms-data.php` (the **13** EN `conexao_category` terms used by those guides), `includes/manifest-data.php` (Stage M: the 1 earlier guide row + 29 pages + the first 8 Blog rows), `includes/blog-translation-data.php` (Stage N: the remaining 34 Blog rows), `includes/blog-page-data.php` (Stage O: the single Blog **posts page** row), `includes/jobs-page-data.php` (the single EN **Jobs landing page** row, `jobs-page-v1`), `includes/leisure-description-data.php` (Stage 7: the 289 Leisure card descriptions) and `includes/course-provider-description-data.php` (Stage 8: the 10 course-provider card descriptions) — separate versioned datasets, each keyed by PT slug |
+| Authored copy | `includes/guide-translation-data.php` (the **50-row EN Guide dataset** — see "The `en-guide` stage" below), `includes/guide-terms-data.php` (the **13** EN `conexao_category` terms used by those guides), `includes/manifest-data.php` (Stage M: the 1 earlier guide row + 29 pages + the first 8 Blog rows), `includes/blog-translation-data.php` (Stage N: the remaining 34 Blog rows), `includes/blog-page-data.php` (Stage O: the single Blog **posts page** row), `includes/jobs-page-data.php` (the single EN **Jobs landing page** row, `jobs-page-v1`), `includes/leisure-description-data.php` (Stage 7: the 289 Leisure card descriptions) and `includes/course-provider-description-data.php` (Stage 8: the 10 course-provider card descriptions) — separate versioned datasets, each keyed by PT slug. `includes/exclusions-data.php` records the authored EN rows **retired** because their PT source was permanently deleted |
 | Adapter + config | `includes/stage-fields.php`, `includes/stage-config.php` (Stage O adds the `en-blog-page` stage: shared-slug filter, routing-cache refresh, shared-slug duplicate guard; the `en-jobs-page` stage reuses all three, with `conexao_en_translation_with_shared_page_slug()` as the single shared-slug permit), `includes/guide-stage.php` (the `en-guide` translated-taxonomy capability), `includes/leisure-description-stage.php` (Stage 7 adds the `en-leisure-description` stage) and `includes/course-provider-description-stage.php` (Stage 8 adds the `en-course-provider-description` stage) |
 | Manifest shape | `includes/translation-map.php` |
 | Runner | `scripts/run-en-translation.php` |
@@ -38,7 +38,7 @@ records did not exist yet.
 |---|---|
 | Stage id | `en-guide` |
 | Strategy | **linked EN record** (one real, published, Polylang-linked EN `guide` per eligible public PT guide) |
-| Dataset | `includes/guide-translation-data.php` — **51 rows** keyed by PT slug, each `{en_slug, en_title, en_excerpt, en_meta_description, en_content}` |
+| Dataset | `includes/guide-translation-data.php` — **50 rows** keyed by PT slug, each `{en_slug, en_title, en_excerpt, en_meta_description, en_content}` |
 | Term dataset | `includes/guide-terms-data.php` — **13 rows** keyed by PT term slug, the EN `conexao_category` terms the published PT guides actually use |
 | Adapter + config | `includes/guide-stage.php` (taxonomy capability) + the shared `includes/stage-config.php` config for `guide` |
 | Records created | **48** EN `guide` posts + **13** EN `conexao_category` terms |
@@ -55,13 +55,31 @@ into this stage once, mechanically, rather than re-translated. Concretely: the
 `en-guide` manifest previously held **1** row whose PT guide does not exist on
 this site, so `/en/guias/` had nothing to show.
 
-Three of the 51 rows have no PT guide on this site
+Three of the 50 rows have no PT guide on this site
 (`beneficios-pais-solteiros-irlanda`,
 `inverno-irlanda-depressao-sazonal-saude-mental`,
 `violencia-domestica-irlanda-onde-encontrar-ajuda`). They are **portable
 exclusions**: the shared engine reports each one as
 `PT record absent in this site (documented exclusion)`, so the dataset stays
 portable and nothing is silently dropped.
+
+### Retired rows — a different exclusion
+
+A row whose PT source was **permanently deleted** is not portable: it can never
+resolve on any site, so keeping it would only ever produce a permanent
+`documented exclusion`. One such row is retired, and the retirement is recorded
+in `includes/exclusions-data.php` rather than left implicit:
+
+| Retired PT stable key | EN slug | Classification | Reason |
+|---|---|---|---|
+| `learner-permit-theory-test-irlanda-cnh-brasileira` | `brazilian-driving-licence-in-ireland-theory-test-and-learner-permit` | `NO_REAL_PT_SOURCE` | PT source permanently deleted; operator-authorized exclusion |
+
+The registry is **read-only and is never fed to the engine**: a retired row must
+not reappear as a plan object. It exists so a future contributor who meets the
+missing row can see it was retired on purpose, with the investigation that
+established the deletion
+(`docs/reports/2026-09-30-en-pt-source-reconciliation.md`). The retirement is
+source-identity only — no PT record was recreated and no PT identity invented.
 
 ### The translated-taxonomy capability
 
@@ -547,4 +565,4 @@ php wp-content/themes/conexao-br-irlanda/tests/test-translation-completeness.php
 
 _Last verified: 2026-09-27 by the EN Leisure description rollout — Stage 7 `en-leisure-description` on the shared engine_
 
-_Last verified: 2026-09-28 by the B1 English Guides content rollout — the `en-guide` stage now owns the 51-row Guide dataset + 13 EN `conexao_category` terms and applies them through the shared engine (48/48, `missing_en = 0`)_
+_Last verified: 2026-09-30 — the `en-guide` stage owns the 50-row Guide dataset + 13 EN `conexao_category` terms and applies them through the shared engine. One authored row (`learner-permit-theory-test-irlanda-cnh-brasileira`) was retired on 2026-09-30 because its PT source was permanently deleted; the retirement is recorded in `includes/exclusions-data.php`._

@@ -1,0 +1,347 @@
+[
+  {
+    "name": "home-en",
+    "requested": "/en/",
+    "hops": 1,
+    "chain": "200 /en/",
+    "final_status": 200,
+    "final_path": "/en/",
+    "canonical": "https://conexaobr.ie/en/",
+    "html_lang": "en-US",
+    "title": "Conexão BR | ",
+    "hreflang": [
+      "en=/en/",
+      "pt-BR=/",
+      "x-default=/"
+    ],
+    "b2_notice_present": false,
+    "bytes": 118856
+  },
+  {
+    "name": "blog-en",
+    "requested": "/en/blog/",
+    "hops": 1,
+    "chain": "200 /en/blog/",
+    "final_status": 200,
+    "final_path": "/en/blog/",
+    "canonical": "https://conexaobr.ie/en/blog/",
+    "html_lang": "en-US",
+    "title": "Conexão BR | ",
+    "hreflang": [
+      "en=/en/blog/",
+      "pt-BR=/blog/",
+      "x-default=/blog/"
+    ],
+    "b2_notice_present": false,
+    "bytes": 86260
+  },
+  {
+    "name": "blog-en-p2",
+    "requested": "/en/blog/page/2/",
+    "hops": 1,
+    "chain": "200 /en/blog/page/2/",
+    "final_status": 200,
+    "final_path": "/en/blog/page/2/",
+    "canonical": "https://conexaobr.ie/en/blog/",
+    "html_lang": "en-US",
+    "title": "Conexão BR | ",
+    "hreflang": [
+      "en=/en/blog/",
+      "pt-BR=/blog/",
+      "x-default=/blog/"
+    ],
+    "b2_notice_present": false,
+    "bytes": 79177
+  },
+  {
+    "name": "empregos-en",
+    "requested": "/en/empregos/",
+    "hops": 1,
+    "chain": "200 /en/empregos/",
+    "final_status": 200,
+    "final_path": "/en/empregos/",
+    "canonical": "https://conexaobr.ie/en/empregos/",
+    "html_lang": "en-US",
+    "title": "Jobs – Conexão BR",
+    "hreflang": [
+      "en=/en/empregos/",
+      "pt-BR=/empregos/",
+      "x-default=/empregos/"
+    ],
+    "b2_notice_present": false,
+    "bytes": 146553
+  },
+  {
+    "name": "newsletter-en",
+    "requested": "/en/newsletter/",
+    "hops": 1,
+    "chain": "200 /en/newsletter/",
+    "final_status": 200,
+    "final_path": "/en/newsletter/",
+    "canonical": "https://conexaobr.ie/en/newsletter/",
+    "html_lang": "en-US",
+    "title": "Newsletter – Conexão BR",
+    "hreflang": [
+      "en=/en/newsletter/",
+      "pt-BR=/newsletter/",
+      "x-default=/newsletter/"
+    ],
+    "b2_notice_present": false,
+    "bytes": 57708
+  },
+  {
+    "name": "cursos-en",
+    "requested": "/en/cursos/",
+    "hops": 1,
+    "chain": "200 /en/cursos/",
+    "final_status": 200,
+    "final_path": "/en/cursos/",
+    "canonical": "https://conexaobr.ie/en/cursos/",
+    "html_lang": "en-US",
+    "title": "Cursos – Conexão BR",
+    "hreflang": [
+      "en=/en/cursos/",
+      "pt-BR=/cursos/",
+      "x-default=/cursos/"
+    ],
+    "b2_notice_present": false,
+    "bytes": 82266
+  },
+  {
+    "name": "guias-en",
+    "requested": "/en/guias/",
+    "hops": 1,
+    "chain": "200 /en/guias/",
+    "final_status": 200,
+    "final_path": "/en/guias/",
+    "canonical": "https://conexaobr.ie/en/guias/",
+    "html_lang": "en-US",
+    "title": "Practical Guides | Conexão BR",
+    "hreflang": [
+      "en=/en/guias/",
+      "pt-BR=/guias/",
+      "x-default=/guias/"
+    ],
+    "b2_notice_present": false,
+    "bytes": 81916
+  },
+  {
+    "name": "eventos-en",
+    "requested": "/en/eventos/",
+    "hops": 1,
+    "chain": "200 /en/eventos/",
+    "final_status": 200,
+    "final_path": "/en/eventos/",
+    "canonical": "https://conexaobr.ie/en/eventos/",
+    "html_lang": "en-US",
+    "title": "Events in Ireland | Conexão BR",
+    "hreflang": [
+      "en=/en/eventos/"
+    ],
+    "b2_notice_present": false,
+    "bytes": 61836
+  },
+  {
+    "name": "lazer-en",
+    "requested": "/en/lazer/",
+    "hops": 1,
+    "chain": "200 /en/lazer/",
+    "final_status": 200,
+    "final_path": "/en/lazer/",
+    "canonical": "https://conexaobr.ie/en/lazer/",
+    "html_lang": "en-US",
+    "title": "Leisure & Tourism in Ireland | Conexão BR",
+    "hreflang": [
+      "en=/en/lazer/"
+    ],
+    "b2_notice_present": false,
+    "bytes": 62077
+  },
+  {
+    "name": "lazer-en-p2",
+    "requested": "/en/lazer/page/2/",
+    "hops": 1,
+    "chain": "200 /en/lazer/page/2/",
+    "final_status": 200,
+    "final_path": "/en/lazer/page/2/",
+    "canonical": "https://conexaobr.ie/en/lazer/",
+    "html_lang": "en-US",
+    "title": "Leisure & Tourism in Ireland | Conexão BR",
+    "hreflang": [
+      "en=/en/lazer/",
+      "pt-BR=/lazer/",
+      "x-default=/lazer/"
+    ],
+    "b2_notice_present": false,
+    "bytes": 144507
+  },
+  {
+    "name": "apoiadores-en",
+    "requested": "/en/apoiadores/",
+    "hops": 1,
+    "chain": "200 /en/apoiadores/",
+    "final_status": 200,
+    "final_path": "/en/apoiadores/",
+    "canonical": "https://conexaobr.ie/en/apoiadores/",
+    "html_lang": "en-US",
+    "title": "Supporters in Ireland | Conexão BR",
+    "hreflang": [
+      "en=/en/apoiadores/",
+      "pt-BR=/apoiadores/",
+      "x-default=/apoiadores/"
+    ],
+    "b2_notice_present": false,
+    "bytes": 83477
+  },
+  {
+    "name": "guias-cat-en",
+    "requested": "/en/guias/?categoria=documents",
+    "hops": 1,
+    "chain": "200 /en/guias/?categoria=documents",
+    "final_status": 200,
+    "final_path": "/en/guias/",
+    "canonical": "https://conexaobr.ie/en/guias/",
+    "html_lang": "en-US",
+    "title": "Practical Guides | Conexão BR",
+    "hreflang": [
+      "en=/en/guias/",
+      "pt-BR=/guias/",
+      "x-default=/guias/"
+    ],
+    "b2_notice_present": false,
+    "bytes": 76754
+  },
+  {
+    "name": "eventos-cidade",
+    "requested": "/en/eventos/?cidade=dublin",
+    "hops": 1,
+    "chain": "200 /en/eventos/?cidade=dublin",
+    "final_status": 200,
+    "final_path": "/en/eventos/",
+    "canonical": "https://conexaobr.ie/en/eventos/",
+    "html_lang": "en-US",
+    "title": "Events in Ireland | Conexão BR",
+    "hreflang": [
+      "en=/en/eventos/",
+      "pt-BR=/eventos/",
+      "x-default=/eventos/"
+    ],
+    "b2_notice_present": false,
+    "bytes": 246736
+  },
+  {
+    "name": "jobs-en-retired",
+    "requested": "/en/jobs/",
+    "hops": 1,
+    "chain": "200 /en/jobs/",
+    "final_status": 200,
+    "final_path": "/en/jobs/",
+    "canonical": "https://conexaobr.ie/eventos/jobs-training-fair/",
+    "html_lang": "pt-BR",
+    "title": "Jobs & Training Fair | Eventos na Irlanda | Conexão BR",
+    "hreflang": [
+      "x-default=/eventos/jobs-training-fair/"
+    ],
+    "b2_notice_present": false,
+    "bytes": 57822
+  },
+  {
+    "name": "home-pt",
+    "requested": "/",
+    "hops": 1,
+    "chain": "200 /",
+    "final_status": 200,
+    "final_path": "/",
+    "canonical": "https://conexaobr.ie/",
+    "html_lang": "pt-BR",
+    "title": "Conexão BR | ",
+    "hreflang": [
+      "en=/en/",
+      "pt-BR=/",
+      "x-default=/"
+    ],
+    "b2_notice_present": false,
+    "bytes": 125255
+  },
+  {
+    "name": "blog-pt",
+    "requested": "/blog/",
+    "hops": 1,
+    "chain": "200 /blog/",
+    "final_status": 200,
+    "final_path": "/blog/",
+    "canonical": "https://conexaobr.ie/blog/",
+    "html_lang": "pt-BR",
+    "title": "Conexão BR | ",
+    "hreflang": [
+      "en=/en/blog/",
+      "pt-BR=/blog/",
+      "x-default=/blog/"
+    ],
+    "b2_notice_present": false,
+    "bytes": 90456
+  },
+  {
+    "name": "empregos-pt",
+    "requested": "/empregos/",
+    "hops": 1,
+    "chain": "200 /empregos/",
+    "final_status": 200,
+    "final_path": "/empregos/",
+    "canonical": "https://conexaobr.ie/empregos/",
+    "html_lang": "pt-BR",
+    "title": "Empregos – Conexão BR",
+    "hreflang": [
+      "x-default=/empregos/"
+    ],
+    "b2_notice_present": false,
+    "bytes": 146250
+  },
+  {
+    "name": "newsletter-pt",
+    "requested": "/newsletter/",
+    "hops": 1,
+    "chain": "200 /newsletter/",
+    "final_status": 200,
+    "final_path": "/newsletter/",
+    "canonical": "https://conexaobr.ie/newsletter/",
+    "html_lang": "pt-BR",
+    "title": "Newsletter – Conexão BR",
+    "hreflang": [
+      "x-default=/newsletter/"
+    ],
+    "b2_notice_present": false,
+    "bytes": 57354
+  },
+  {
+    "name": "cursos-pt",
+    "requested": "/cursos/",
+    "hops": 1,
+    "chain": "200 /cursos/",
+    "final_status": 200,
+    "final_path": "/cursos/",
+    "canonical": "https://conexaobr.ie/cursos/",
+    "html_lang": "en-US",
+    "title": "Cursos – Conexão BR",
+    "hreflang": [],
+    "b2_notice_present": false,
+    "bytes": 80941
+  },
+  {
+    "name": "guias-pt",
+    "requested": "/guias/",
+    "hops": 1,
+    "chain": "200 /guias/",
+    "final_status": 200,
+    "final_path": "/guias/",
+    "canonical": "https://conexaobr.ie/guias/",
+    "html_lang": "pt-BR",
+    "title": "Guias Práticos | Conexão BR",
+    "hreflang": [
+      "pt-BR=/guias/",
+      "x-default=/guias/"
+    ],
+    "b2_notice_present": false,
+    "bytes": 62371
+  }
+]

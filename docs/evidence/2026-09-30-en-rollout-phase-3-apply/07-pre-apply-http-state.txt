@@ -1,0 +1,14 @@
+PRE-APPLY PRODUCTION EN ROUTE STATE (GET only, 0 writes)
+captured: 2026-09-30, target https://conexaobr.ie
+
+ROUTE              HTTP   CANONICAL                                     NOTE
+/en/               200    https://conexaobr.ie/en/                      self-canonical EN
+/en/blog/          200    https://conexaobr.ie/blog/                    canonical->PT (B2 fallback, expected pre-apply)
+/en/empregos/      200    https://conexaobr.ie/empregos/                canonical->PT (B2 fallback, expected pre-apply)
+/en/newsletter/    200    https://conexaobr.ie/newsletter/              canonical->PT (B2 fallback, expected pre-apply)
+/en/guias/         200    https://conexaobr.ie/en/guias/                self-canonical EN
+/lazer/            200    https://conexaobr.ie/lazer/                   self-canonical EN
+/blog/             200    https://conexaobr.ie/blog/                    self-canonical EN
+/empregos/         200    https://conexaobr.ie/empregos/                self-canonical EN
+/newsletter/       200    https://conexaobr.ie/newsletter/              self-canonical EN
+/guias/            200    https://conexaobr.ie/guias/                   self-canonical EN

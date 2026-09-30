@@ -1,0 +1,84 @@
+{
+  "meta_key": "_leisure_excerpt_en",
+  "authored_rows": 289,
+  "archive_pages_read": 53,
+  "partitions_used": "1 unfiltered + 26 county partitions",
+  "en_description_rendered": 220,
+  "coverage_pct": 76.1,
+  "not_found": 69,
+  "not_found_with_pt_instead": 13,
+  "missing_sample": [
+    {
+      "slug": "aillwee-caves",
+      "pt_text_present": false
+    },
+    {
+      "slug": "aran-islands",
+      "pt_text_present": true
+    },
+    {
+      "slug": "arbour-hill-cemetery",
+      "pt_text_present": true
+    },
+    {
+      "slug": "ards-forest-park",
+      "pt_text_present": false
+    },
+    {
+      "slug": "blarney-castle",
+      "pt_text_present": false
+    },
+    {
+      "slug": "bray-head",
+      "pt_text_present": false
+    },
+    {
+      "slug": "bunratty-castle-folk-park",
+      "pt_text_present": false
+    },
+    {
+      "slug": "burren-national-park",
+      "pt_text_present": false
+    },
+    {
+      "slug": "casino-marino",
+      "pt_text_present": false
+    },
+    {
+      "slug": "charles-fort",
+      "pt_text_present": false
+    },
+    {
+      "slug": "chester-beatty",
+      "pt_text_present": false
+    },
+    {
+      "slug": "cliffs-of-moher",
+      "pt_text_present": false
+    },
+    {
+      "slug": "cobh",
+      "pt_text_present": true
+    },
+    {
+      "slug": "connemara-national-park",
+      "pt_text_present": false
+    },
+    {
+      "slug": "custom-house-visitor-centre",
+      "pt_text_present": false
+    }
+  ],
+  "rendered_sample": [
+    "abbeyleix-heritage-house",
+    "achill-island",
+    "acres-lake-floating-boardwalk",
+    "adare-village",
+    "altamont-gardens",
+    "annes-grove-gardens",
+    "aras-an-uachtarain",
+    "ardagh-heritage-village",
+    "ardfert-cathedral",
+    "ardmore-round-tower"
+  ]
+}

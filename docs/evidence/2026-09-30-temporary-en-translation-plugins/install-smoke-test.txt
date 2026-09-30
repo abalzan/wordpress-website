@@ -1,0 +1,66 @@
+### STEP 1 — deactivate the bind-mounted copies (so the ARTIFACT is what loads)
+active_plugins before: 10
+active_plugins after:  8
+deactivated:
+  - conexao-translation-rollout/conexao-translation-rollout.php
+  - conexao-en-translation/conexao-en-translation.php
+snapshot saved to /tmp/temp-install-smoke.active_plugins
+
+### STEP 2 — install the EXTRACTED artifacts, exercise them, then remove them
+TEMPORARY PLUGIN INSTALLATION SMOKE TEST (local disposable only)
+========================================================================
+
+precondition: the bind-mounted copies are DEACTIVATED in this process
+  [PASS] Conexao_Translation_Rollout_Engine is NOT already loaded (the bind mount is out of the way)
+  [PASS] the EN stage layer is NOT already loaded (the bind mount is out of the way)
+
+EXTRACT + RECOGNISE
+  [PASS] the artifact dist/temporary/conexao-translation-rollout.zip is present
+  [PASS] conexao-translation-rollout: the artifact extracts cleanly (the Plugin_Upgrader path)
+  [PASS] conexao-translation-rollout: the extracted tree is a valid plugin directory (conexao-translation-rollout/conexao-translation-rollout.php)
+  [PASS] conexao-translation-rollout: the extracted tree ships no tests/ directory
+  [PASS] conexao-translation-rollout: WordPress parses the Plugin Name "Conexao Translation Rollout Engine"
+  [PASS] conexao-translation-rollout: WordPress parses the Version 1.1.0
+  [PASS] the artifact dist/temporary/conexao-en-translation.zip is present
+  [PASS] conexao-en-translation: the artifact extracts cleanly (the Plugin_Upgrader path)
+  [PASS] conexao-en-translation: the extracted tree is a valid plugin directory (conexao-en-translation/conexao-en-translation.php)
+  [PASS] conexao-en-translation: the extracted tree ships no tests/ directory
+  [PASS] conexao-en-translation: WordPress parses the Plugin Name "Conexão BR Irlanda — EN Translation (Stage M / Stage N / Stage O / Stage 7 leisure / course providers)"
+  [PASS] conexao-en-translation: WordPress parses the Version 1.5.0
+
+LOAD THE EXTRACTED ARTIFACTS (engine first, then the EN stage layer)
+  [PASS] conexao-translation-rollout: the extracted engine loads with NO fatal error and declares Conexao_Translation_Rollout_Engine
+  [PASS] conexao-translation-rollout: the extracted plugin published its version constant (1.1.0)
+  [PASS] conexao-translation-rollout: the extracted engine exposes its full lifecycle surface
+  [PASS] conexao-en-translation: the extracted EN stage layer loads with NO fatal error
+  [PASS] conexao-en-translation: the extracted stage layer resolved its own directory inside the extracted tree
+  [PASS] conexao-en-translation: the running code really is the EXTRACTED artifact, not the working tree
+  [PASS] conexao-en-translation: all seven stage IDs resolve from the extracted artifact
+  [PASS] conexao-en-translation: the extracted EN plugin DETECTED the extracted shared engine and registered its stages
+  [PASS] conexao-en-translation: the shared-slug policy loaded from the extracted artifact and resolves "newsletter"
+
+REMOVAL
+  [PASS] the extracted plugin tree is removed (no filesystem residue)
+  [PASS] neither plugin left an install-tracking option behind (no database residue)
+  [PASS] neither plugin was added to active_plugins (the artifact is installed-then-removed, never left active)
+
+========================================================================
+assertions: 26 total, 26 passed, 0 failed
+production installs: 0   production activations: 0
+========================================================================
+STEP 2 exit: 0
+
+### STEP 3 — restore the exact active_plugins snapshot
+snapshot entries: 10
+restored entries: 10
+exact match: YES
+  - conexao-admin-ux/conexao-admin-ux.php
+  - conexao-content/conexao-content.php
+  - conexao-data-model/conexao-data-model.php
+  - conexao-en-translation/conexao-en-translation.php
+  - conexao-event-importer/conexao-event-importer.php
+  - conexao-event-runtime/conexao-event-runtime.php
+  - conexao-leisure-migration/conexao-leisure-migration.php
+  - conexao-sponsor-migration/conexao-sponsor-migration.php
+  - conexao-translation-rollout/conexao-translation-rollout.php
+  - polylang/polylang.php

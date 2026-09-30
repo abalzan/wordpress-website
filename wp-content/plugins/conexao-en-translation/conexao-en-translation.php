@@ -29,6 +29,7 @@ define( 'CONEXAO_EN_TRANSLATION_DIR', plugin_dir_path( __FILE__ ) );
  */
 require_once CONEXAO_EN_TRANSLATION_DIR . 'includes/manifest-data.php';
 require_once CONEXAO_EN_TRANSLATION_DIR . 'includes/guide-translation-data.php';
+require_once CONEXAO_EN_TRANSLATION_DIR . 'includes/exclusions-data.php';
 require_once CONEXAO_EN_TRANSLATION_DIR . 'includes/guide-terms-data.php';
 require_once CONEXAO_EN_TRANSLATION_DIR . 'includes/blog-translation-data.php';
 require_once CONEXAO_EN_TRANSLATION_DIR . 'includes/blog-page-data.php';

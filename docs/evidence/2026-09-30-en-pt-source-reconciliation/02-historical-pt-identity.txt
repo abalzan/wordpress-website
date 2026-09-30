@@ -1,0 +1,91 @@
+HISTORICAL PT IDENTITY OF THE SEVEN AUTHORED EN ROWS
+==============================================================================
+
+These are the PT records the seven authored EN rows were ACTUALLY translated
+from, recovered from committed repository evidence (no production access needed).
+This is Level-1 evidence: an explicit, recorded historical mapping.
+
+SOURCES
+-------
+A) docs/evidence/2026-09-26-stage-m  -> commit a5f4de4 "stage-m: EN blog
+   translations, batch 1 of N (8 of 42)" carried scripts/_tmp-posts.json, a dump
+   of the 42 PT posts that had no EN translation yet. That is the PT corpus the
+   en-post rows were authored against, with real post IDs.
+B) docs/evidence/2026-09-28-b1-en-guides/pt-snapshot-pre.json -> the PT guide
+   snapshot captured before the EN-Guides rollout, keyed by PT stable key with
+   the real guide ID.
+C) docs/evidence/2026-09-28-b1-en-guides/dry-run.json + second-run-idempotence.json
+   -> independently records stable_key -> pt_id for the guide rows.
+
+------------------------------------------------------------------------------
+ROW 1  en-stage=en-guide  authored PT key = learner-permit-theory-test-irlanda-cnh-brasileira
+  historical PT id   : 10009
+  historical PT slug : learner-permit-theory-test-irlanda-cnh-brasileira
+  historical PT title: CNH brasileira na Irlanda: quando você precisa fazer theory test e learner permit
+  published          : 2026-08-18 12:00:00
+  PT content bytes   : 5649  sha256=baec746f96e8fd6894534a53539429bd900ed4b5962c0fa43397e551edb56d51
+  PT meta description: Entenda o caminho para brasileiros que não podem trocar a CNH estrangeira: theory test, learner permit, EDT e driving test.
+  terms              : {'conexao_category': ['transporte'], 'conexao_county': [], 'conexao_tag': [], 'conexao_town': []}
+------------------------------------------------------------------------------
+ROW 2  en-stage=en-post  authored PT key = auxilios-e-apoio-relacionados-a-saude-e-bem-estar-na-irlanda
+  historical PT id   : 10373
+  historical PT slug : auxilios-e-apoio-relacionados-a-saude-e-bem-estar-na-irlanda
+  historical PT title: Auxílios e Apoio Relacionados a Saúde e Bem-Estar na Irlanda
+  published          : 2026-03-20 11:08:34
+  PT content length  : 7 bytes
+  PT content         : '<p></p>'
+------------------------------------------------------------------------------
+ROW 3  en-stage=en-post  authored PT key = auxilios-para-familias-atipicas-na-irlanda
+  historical PT id   : 10374
+  historical PT slug : auxilios-para-familias-atipicas-na-irlanda
+  historical PT title: Auxílios para Famílias Atípicas na Irlanda
+  published          : 2026-03-20 11:10:52
+  PT content length  : 7 bytes
+  PT content         : '<p></p>'
+------------------------------------------------------------------------------
+ROW 4  en-stage=en-post  authored PT key = cursos-e-apoio-para-empreendedores
+  historical PT id   : 10369
+  historical PT slug : cursos-e-apoio-para-empreendedores
+  historical PT title: Cursos e Apoio para Empreendedores
+  published          : 2026-03-19 16:46:20
+  PT content length  : 6333 bytes
+  PT content         : '<p>\u200b\u200b</p><p>\u200b📊 Laois Partnership</p><p>https://laoispartnership.ie/</p><p>https://www.instagram.com/laoispartnershipcompany/</p><p>\u200b</p><p>A Laois Partnership Company apoia empresas e empreendedores através de:</p><p></p><p>✔ programas de desenvolvimento rural (como LEADER) com subvenções e formação empresarial</p><p>✔ o SICAP, com mentoring, ajuda no plano de negócios e ligações a redes de apoio<'
+------------------------------------------------------------------------------
+ROW 5  en-stage=en-post  authored PT key = dica-de-saude-para-quem-viaja
+  historical PT id   : 10367
+  historical PT slug : dica-de-saude-para-quem-viaja
+  historical PT title: Dica de Saúde Para Quem Viaja
+  published          : 2026-03-17 20:43:02
+  PT content length  : 119 bytes
+  PT content         : '<p>Texto: Patricia Vidal</p><p>Instagram: <u>https://www.instagram.com/coachpatriciavidal/</u></p><p></p><p></p><p></p>'
+------------------------------------------------------------------------------
+ROW 6  en-stage=en-post  authored PT key = guia-para-quem-esta-com-dificuldades-financeiras
+  historical PT id   : 10375
+  historical PT slug : guia-para-quem-esta-com-dificuldades-financeiras
+  historical PT title: Guia Para quem está com Dificuldades Financeiras
+  published          : 2026-03-20 11:13:33
+  PT content length  : 7 bytes
+  PT content         : '<p></p>'
+------------------------------------------------------------------------------
+ROW 7  en-stage=en-post  authored PT key = guia-pratico-para-brasileiros-em-laois
+  historical PT id   : 10376
+  historical PT slug : guia-pratico-para-brasileiros-em-laois
+  historical PT title: Guia Prático para Brasileiros em Laois
+  published          : 2026-03-20 11:15:20
+  PT content length  : 7 bytes
+  PT content         : '<p></p>'
+
+==============================================================================
+THE SIX POST IDs ARE AN EXACT, CONTIGUOUS SET OF GAPS IN PRODUCTION
+==============================================================================
+
+Local-instance PT post ids present in commit a5f4de4's capture : 10348..10389 (42 ids)
+Live production PT post ids in the same band                    : 36 ids
+Ids in the local capture but NOT in production                  : 10367, 10369, 10373,
+                                                                     10374, 10375, 10376
+Ids in production but NOT in the local capture                  : (none)
+
+That is exactly the six historical sources of rows 2-7, and nothing else. These
+records were DELETED from production after the local instance captured them; they
+were not renamed, not re-typed and not moved to another post type.
+

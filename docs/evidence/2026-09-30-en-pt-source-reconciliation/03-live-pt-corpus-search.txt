@@ -1,0 +1,295 @@
+LIVE PT RECORDS: 136
+
+=== A. EXACT SLUG, live published PT corpus (all 3 collections) ===
+  row1 learner-permit-theory-test-irlanda-cnh-brasileira          all=0 in_guide=0
+  row2 auxilios-e-apoio-relacionados-a-saude-e-bem-estar-na-irlan all=0 in_post=0
+  row3 auxilios-para-familias-atipicas-na-irlanda                 all=0 in_post=0
+  row4 cursos-e-apoio-para-empreendedores                         all=0 in_post=0
+  row5 dica-de-saude-para-quem-viaja                              all=0 in_post=0
+  row6 guia-para-quem-esta-com-dificuldades-financeiras           all=0 in_post=0
+  row7 guia-pratico-para-brasileiros-em-laois                     all=0 in_post=0
+
+=== B. HISTORICAL PT ID PRESENCE (live) ===
+  row1 pt_id=10009: ABSENT
+  row2 pt_id=10373: ABSENT
+  row3 pt_id=10374: ABSENT
+  row4 pt_id=10369: ABSENT
+  row5 pt_id=10367: ABSENT
+  row6 pt_id=10375: ABSENT
+  row7 pt_id=10376: ABSENT
+
+=== C. DISTINCTIVE-ENTITY SEARCH (all live PT records) ===
+  "laois partnership" -> 2
+       10368 [posts  ] capacitacao-em-laois-irlanda-capacitacao-em-laois-irland | Capacitação em Laois
+       10371 [posts  ] trabalho-em-laoistrabalho-em-laois                       | Trabalho em Laois
+  "laoispartnership.ie" -> 1
+       10368 [posts  ] capacitacao-em-laois-irlanda-capacitacao-em-laois-irland | Capacitação em Laois
+  "sicap" -> 2
+       10368 [posts  ] capacitacao-em-laois-irlanda-capacitacao-em-laois-irland | Capacitação em Laois
+       10371 [posts  ] trabalho-em-laoistrabalho-em-laois                       | Trabalho em Laois
+  "leader 2023" -> 0
+  "laois chamber alliance" -> 0
+  "local enterprise office" -> 0
+  "coachpatriciavidal" -> 1
+       10386 [posts  ] o-que-todo-pequeno-empreendedor-precisa-aprender-para-fa | O Que Todo Pequeno Empreendedor Precisa Aprender
+  "patricia vidal" -> 1
+       10386 [posts  ] o-que-todo-pequeno-empreendedor-precisa-aprender-para-fa | O Que Todo Pequeno Empreendedor Precisa Aprender
+  "ndls" -> 1
+       25031 [guide  ] carteira-motorista-brasileiros                           | Carteira de Motorista na Irlanda para Brasileiro
+  "rsa.ie" -> 0
+  "reduced edt" -> 1
+       25031 [guide  ] carteira-motorista-brasileiros                           | Carteira de Motorista na Irlanda para Brasileiro
+  "theory test" -> 1
+       25031 [guide  ] carteira-motorista-brasileiros                           | Carteira de Motorista na Irlanda para Brasileiro
+  "prova de teoria" -> 0
+  "permisso de aprendizagem" -> 0
+  "learner permit" -> 1
+       25031 [guide  ] carteira-motorista-brasileiros                           | Carteira de Motorista na Irlanda para Brasileiro
+  "jogo da lorena" -> 0
+  "atipica" -> 0
+  "dificuldades financeiras" -> 0
+  "r32 vy22" -> 0
+  "laois business awards" -> 0
+
+=== D. ID-SET GAPS around the historical IDs ===
+  posts: 37 ids, range 10348..25028
+    posts 10340-10400 present: [10348, 10349, 10350, 10351, 10352, 10353, 10354, 10355, 10356, 10357, 10358, 10359, 10360, 10361, 10362, 10363, 10364, 10365, 10366, 10368, 10370, 10371, 10372, 10377, 10378, 10379, 10380, 10381, 10382, 10383, 10384, 10385, 10386, 10387, 10388, 10389]
+    MISSING in band: [10340, 10341, 10342, 10343, 10344, 10345, 10346, 10347, 10367, 10369, 10373, 10374, 10375, 10376, 10390, 10391, 10392, 10393, 10394, 10395, 10396, 10397, 10398, 10399, 10400]
+  guide: 56 ids, range 457..25034
+    MISSING in 10001-10016: [10009]
+    MISSING in 457-486: [463]
+
+=== E. EN-LINK STATE of the two live successors (conflict check) ===
+  25028 [posts] outono-irlanda-alimentacao-bem-estar status=publish lang=None fallback=False translations=[]
+      title: O outono chegou à Irlanda… e o nosso corpo também sente essa mudança
+      link : https://conexaobr.ie/2026/09/27/outono-irlanda-alimentacao-bem-estar/
+  25031 [guide] carteira-motorista-brasileiros status=publish lang=None fallback=False translations=[]
+      title: Carteira de Motorista na Irlanda para Brasileiros: CNH, IDP e Reduced EDT
+      link : https://conexaobr.ie/guias/carteira-motorista-brasileiros/
+
+=== F. TOKEN / SEQUENCE SIMILARITY RANKING vs the authored EN bodies ===
+
+==============================================================================
+ROW 4: authored EN (full translation of historical PT 10369)
+==============================================================================
+hist PT 10369 title: Cursos e Apoio para Empreendedores
+EN row4 title      : Courses and Support for Entrepreneurs
+hist PT len=5736  EN len=5530
+jaccard(histPT, authoredEN) = 0.1122
+
+Best live candidates by token overlap with the authored EN body:
+  0.0815   10368 [posts ] capacitacao-em-laois-irlanda-capacitacao-em-laois-irland | Capacitação em Laois
+  0.0357       1 [pages ] about                                                    | About
+  0.0260   10371 [posts ] trabalho-em-laoistrabalho-em-laois                       | Trabalho em Laois
+  0.0211    5000 [guide ] autismo-na-irlanda-diagnostico-hse-apoio                 | Autismo na Irlanda: Diagnóstico, HSE e Ond
+  0.0185     475 [guide ] susi                                                     | SUSI na Irlanda: Como Solicitar Bolsa de E
+  0.0182     469 [guide ] abrir-empresa-2                                          | Abrir uma Empresa na Irlanda: Guia Complet
+
+Detail on the top live candidate (Laois/SICAP cluster):
+  --- 10368 capacitacao-em-laois-irlanda-capacitacao-em-laois-irlanda jaccard=0.0815
+      title: Capacitação em Laois
+      date : 2026-03-19T16:37:24  status=publish
+      norm : aqui está uma lista de locais em co. laois, irlanda, onde você poderá encontrar cursos de inglês, outras línguas, formação profissional, capacitação para o mercado de trabalho e apoio a empreendedores, com links e contactos para facilitar a sua pesquisa 👇 📘 cu
+      sim(histPT10369, this) = 0.0240
+  --- 1 about jaccard=0.0357
+      title: About
+      date : 2026-08-16T13:44:04  status=publish
+      norm : this is an example of a page. unlike posts, which are displayed on your blog’s front page in the order they’re published, pages are better suited for more timeless content that you want to be easily accessible, like your about or contact information. click the
+      sim(histPT10369, this) = 0.0017
+
+==============================================================================
+ROW 1: authored EN guide (historical PT guide 10009)
+==============================================================================
+hist guide 10009 title: CNH brasileira na Irlanda: quando você precisa fazer theory test e learner permit
+EN row1 title        : Brazilian Driving Licence in Ireland: When You Need the Theory Test and Learner Permit
+hist meta            : Entenda o caminho para brasileiros que não podem trocar a CNH estrangeira: theory test, learner permit, EDT e driving test.
+EN meta              : Understand the route for Brazilians who cannot exchange a foreign licence: theory test, learner permit, EDT and driving test.
+
+Best live candidates by token overlap with the authored EN guide:
+  0.0431   25031 [guide ] carteira-motorista-brasileiros                         | Carteira de Motorista na Irlanda para Brasil
+  0.0326   10004 [guide ] primeiro-emprego-irlanda-emergency-tax                 | Primeiro emprego na Irlanda: como evitar o E
+  0.0271   10008 [guide ] reconhecer-diploma-brasileiro-na-irlanda-naric-qqi     | Como reconhecer diploma brasileiro na Irland
+  0.0262   10011 [guide ] assistencia-juridica-legal-aid-irlanda-brasileiros     | Assistência jurídica na Irlanda: como solici
+  0.0261     465 [guide ] cidadania-irlandesa-2                                  | Cidadania Irlandesa: Guia Completo de Natura
+  0.0244   10007 [guide ] ehic-irlanda-brasileiros-residentes                    | EHIC na Irlanda: como brasileiros residentes
+
+  --- 25031 carteira-motorista-brasileiros jaccard=0.0431
+      title: Carteira de Motorista na Irlanda para Brasileiros: CNH, IDP e Reduced EDT
+      date : 2026-09-29T07:16:00
+      norm : posso dirigir na irlanda com a cnh brasileira? se você é brasileiro e está planejando viajar ou morar na irlanda, uma das dúvidas mais importantes é: posso dirigir com a minha cnh brasileira? para brasileiros, a resposta depende da sua situação. o brasil não é um país reconhecido pela irlanda para t
+  --- 10004 primeiro-emprego-irlanda-emergency-tax jaccard=0.0326
+      title: Primeiro emprego na Irlanda: como evitar o Emergency Tax
+      date : 2026-08-18T12:00:00
+      norm : meta description: começou seu primeiro emprego na irlanda? veja como registrar o emprego no revenue, usar o myaccount, evitar emergency tax e conferir seu tax credit certificate. url sugerida: /guias/primeiro-emprego-irlanda-emergency-tax/ introdução o primeiro salário pode vir com retenção maior do
+
+=== G. ROW 5 CANDIDATE 10386 IN DETAIL (rejected) ===
+
+==============================================================================
+ROW 5 DEEP CANDIDATE CHECK: live post 10386 vs authored EN row
+==============================================================================
+id=10386 collection=posts type=post
+slug   : o-que-todo-pequeno-empreendedor-precisa-aprender-para-fazer-o-negocio-crescer-por-que-entender-toda
+status : publish   date=2026-05-28T15:01:39  modified=2026-05-28T15:01:39
+link   : https://conexaobr.ie/2026/05/28/o-que-todo-pequeno-empreendedor-precisa-aprender-para-fazer-o-negocio-crescer-por-que-entender-toda/
+PT title: O Que Todo Pequeno Empreendedor Precisa Aprender Para Fazer o Negócio Crescer. Por que entender todas as áreas da empresa pode ser o diferencial entre crescer ou fechar as portas?
+
+HISTORICAL PT (stage-M capture, id 10367):
+  id=10367 slug=dica-de-saude-para-quem-viaja
+  title   : Dica de Saúde Para Quem Viaja
+  date    : 2026-03-17 20:43:02
+  content : '<p>Texto: Patricia Vidal</p><p>Instagram: <u>https://www.instagram.com/coachpatriciavidal/</u></p><p></p><p></p><p></p>'
+  excerpt : 'Texto: Patricia Vidal Instagram: https://www.instagram.com/coachpatriciavidal/'
+
+LIVE PT 10386 content (raw, first 900):
+<p>Olá, me chamo Tatiane e esse tema me pegou muito quando comecei a Dunamase Hampers, e bateu com a Mini Entrevista da Cristiane (vou deixar o link aqui):</p>
+<p><u><a href="https://tdcriativo.wixsite.com/brasileirosnairlanda/post/papo-de-empreendedor-com-um-toque-criativo-leve-e-motivador-para-inspirar-quem-pensa-em-empreende-13" rel="nofollow">https://tdcriativo.wixsite.com/brasileirosnairlanda/post/papo-de-empreendedor-com-um-toque-criativo-leve-e-motivador-para-inspirar-quem-pensa-em-empreende-13</a></u></p>
+</p>
+<p>Sendo muito sincera, eu amava fazer cestas de presentes, mas descobri que amo tudo que envolve esse mundo do Empreendedorismo, sendo assim nasceu a TD Criativo, <u><a href="https://www.instagram.com/coachpatriciavidal/" rel="nofollow">https://www.instagram.com/coachpatriciavidal/</a></u> e em seguida, o projeto ConexãoBr <u><a href="https://www.instagram.com/conexaobr.ie
+
+LIVE PT 10386 excerpt:
+Olá, me chamo Tatiane e esse tema me pegou muito quando comecei a Dunamase Hampers, e bateu com a Mini Entrevista da Cristiane (vou deixar o link aqui): https://tdcriativo.wixsite.com/brasileirosnairlanda/post/papo-de-empreendedor-com-um-toque-criativo-leve-e-motivador-para-inspirar-quem-pensa-em-empreende-13 Sendo muito sincera, eu amava fazer cestas de presentes, mas descobri que amo tudo que en
+
+AUTHORED EN row5:
+  title    : A Health Tip for Travellers
+  slug     : a-health-tip-for-travellers
+  excerpt  : Text: Patricia Vidal. Instagram: https://www.instagram.com/coachpatriciavidal/
+  content  : '<p>Text: Patricia Vidal</p><p>Instagram: <u>https://www.instagram.com/coachpatriciavidal/</u></p><p></p><p></p><p></p>\n'
+
+live10386 norm : 'olá, me chamo tatiane e esse tema me pegou muito quando comecei a dunamase hampers, e bateu com a mini entrevista da cristiane (vou deixar o link aqui): https://tdcriativo.wixsite.com/brasileirosnairlanda/post/papo-de-empreendedor-com-um-toque-criativo-leve-e-motivador-para-inspirar-quem-pensa-em-empreende-13 sendo muito sincera, eu amava fazer cestas de presentes, mas descobri que amo tudo que envolve esse mundo do empreendedorismo, sendo assim nasceu a td criativo, https://www.instagram.com/coachpatriciavidal/ e em seguida, o projeto conexãobr https://www.instagram.com/conexaobr.ie/ que é um braço da nossa revista virtual (indicação especialmente da patricia vidal:) https://www.instagram.com/coachpatriciavidal/ empreender é, para muitos, a realização de um sonho. a possibilidade de transformar uma habilidade, paixão ou necessidade do mercado em renda faz com que milhares de pessoas iniciem pequenos negócios todos os anos. no entanto, existe uma realidade que raramente é mostrada nas redes sociais: no início, o empreendedor precisa aprender a exercer várias funções ao mesmo tempo. antes de conseguir contratar profissionais especializados ou montar uma equipe, é comum que o empreendedor seja o financeiro, o vendedor, o responsável pelo marketing, pelas compras, pelo atendimento ao cliente e até pela resolução de problemas diários. embora desafiador, compreender o básico de cada área não é apenas uma necessidade — é uma estratégia de sobrevivência e crescimento do negócio. segundo michael gerber (2001), muitos pequenos negócios fracassam porque o empreendedor domina apenas a parte técnica do serviço ou produto, mas não aprende a administrar a empresa como um sistema. em outras palavras, saber fazer algo bem não significa, necessariamente, saber gerir um negócio. 1. controle financeiro: sem números, não existe gestão uma das maiores dificuldades dos pequenos empreendedores está na gestão financeira. controlar entradas, saídas, lucros, despesas e fluxo de caixa é essencial para a saúde da empresa. muitos negócios fecham não porque não vendem, mas porque não conseguem administrar corretamente o dinheiro que entra. de acordo com dornelas (2022), o controle financeiro permite que o empreendedor tome decisões estratégicas, reduza desperdícios e tenha previsibilidade para crescer. o fluxo de caixa ajuda a responder perguntas importantes: – quanto minha empresa realmente está lucrando? – estou cobrando o suficiente? – posso investir neste momento? – estou misturando dinheiro pessoal com o da empresa? como afirma chiavenato (2021), “o que não é controlado, não pode ser melhorado”. dica prática: mesmo sem contratar um contador no início, planilhas simples ou aplicativos financeiros podem ajudar no acompanhamento diário. 2. formação de preço: cobrar certo é sobreviver um dos erros mais comuns entre pequenos empreendedores é definir preços com base no concorrente ou no “achismo”. muitos cobram apenas para “não perder o cliente”, sem calcular custos, tempo investido, materiais, impostos, deslocamento e margem de lucro. segundo kotler e keller (2019), a precificação deve considerar três fatores principais: custos quanto custa produzir ou entregar o serviço. valor percebido quanto o cliente percebe valor no que você oferece. estratégia de posicionamento qual imagem sua marca deseja transmitir ao mercado. quando o preço é mal calculado, o empreendedor pode trabalhar muito e, ainda assim, não ter lucro. como destaca sebrae (2023), empresas financeiramente sustentáveis precisam ter uma política clara de formação de preço. mais informações nesse artigo com a querida sonia https://tdcriativo.wixsite.com/brasileirosnairlanda/post/gest%c3%a3o-financeira-o-alicerce-invis%c3%advel-de-todo-neg%c3%b3cio-que-prospera 3. estratégia de vendas: quem não aprende a vender, sofre vender não significa insistir ou pressionar pessoas. na verdade, vender é entender necessidades e oferecer soluções. daniel pink (2013) defende que, no mundo atual, todos somos vendedores de alguma forma — inclusive empreendedores. uma boa estratégia de vendas envolve: atrair mostrar seu produto ou serviço para as pessoas certas. conversar compreender as dores e necessidades do cliente. fechar apresentar soluções e facilitar a decisão de compra. empresas que investem no relacionamento com clientes tendem a vender mais e construir autoridade. 4. cobrança: profissionalismo também significa saber cobrar muitos pequenos empreendedores sentem vergonha ou desconforto em cobrar clientes. no entanto, a cobrança faz parte da gestão empresarial. segundo robbins e coulter (2020), processos organizados reduzem conflitos e fortalecem a imagem profissional do negócio. ter contratos, prazos definidos, mensagens organizadas e comunicação clara evita desgastes futuros. cobrar não é falta de educação. cobrar é respeitar o próprio trabalho. 5. compras e controle de estoque comprar demais pode gerar desperdício. comprar de menos pode gerar perda de vendas. o equilíbrio é essencial. segundo slack e brandon-jones (2022), uma boa gestão de estoque reduz custos operacionais e melhora a eficiência da empresa. o empreendedor precisa aprender: – quanto comprar – quando comprar – qual fornecedor oferece melhor custo-benefício – o que realmente vende ter organização nessa área evita dinheiro parado e aumenta a lucratividade. 6. marketing e redes sociais: sua empresa precisa ser vista hoje, muitas empresas têm nas redes sociais sua principal vitrine. no entanto, postar aleatoriamente não significa fazer marketing. kotler, kartajaya e setiawan (2021) afirmam que o marketing moderno envolve relacionamento, posicionamento e construção de valor. perguntas importantes: – minha marca transmite confiança? – meu perfil mostra profissionalismo? – estou criando conteúdo que resolve dúvidas do cliente? empresas que se posicionam bem nas redes sociais conseguem maior alcance, credibilidade e vendas. 7. fotos do produto ou serviço: a primeira impressão importa nas redes sociais, a imagem vende. uma boa foto transmite qualidade, organização e profissionalismo. segundo solomon (2020), consumidores são altamente influenciados por estímulos visuais durante o processo de decisão de compra. não é necessário começar com equipamentos caros. mas é importante investir em: – boa iluminação – ambiente organizado – imagens nítidas – antes e depois (quando aplicável) – apresentação visual profissional muitas vezes, o cliente compra primeiro com os olhos. 8. atendimento e pós-venda: clientes bons voltam conquistar um cliente custa mais caro do que manter um cliente satisfeito. segundo kotler e keller (2019), fidelizar clientes aumenta o lucro e fortalece a reputação da marca. o pós-venda pode incluir: – mensagem de agradecimento – pedido de feedback – promoções para clientes antigos – follow-up após o serviço clientes bem atendidos não apenas retornam — eles indicam. e indicação ainda é uma das formas mais poderosas de marketing. 9. organização e estratégia: crescer sem direção é difícil empresas não crescem apenas por esforço. crescem por organização. peter drucker (2006) afirmava que eficiência é fazer bem feito; estratégia é fazer o que realmente importa. ter metas, planejamento e visão ajuda o empreendedor a sair do modo sobrevivência. pequenas ações consistentes geram grandes resultados ao longo do tempo. conclusão empreender exige coragem, aprendizado e adaptação. no início, é normal precisar assumir várias funções. isso não significa fracasso — significa construção. a boa notícia é que ninguém precisa saber tudo de uma vez. o segredo está em aprender continuamente, buscar capacitação e melhorar um passo de cada vez. como dizia peter drucker: “a melhor maneira de prever o futuro é criá-lo.” se você é pequeno empreendedor, continue aprendendo. o crescimento do seu negócio começa no conhecimento que você decide adquirir hoje. referências bibliográficas chiavenato, idalberto. introdução à teoria geral da administração. 10. ed. são paulo: atlas, 2021. dornelas, josé carlos assis. empreendedorismo: transformando ideias em negócios. 8. ed. são paulo: atlas, 2022. drucker, peter f. the effective executive. new york: harper business, 2006. gerber, michael e. o mito do empreendedor. são paulo: fundamento, 2001. kotler, philip; keller, kevin lane. administração de marketing. 15. ed. são paulo: pearson, 2019. kotler, philip; kartajaya, hermawan; setiawan, iwan. marketing 5.0. rio de janeiro: sextante, 2021. pink, daniel h. to sell is human. new york: riverhead books, 2013. robbins, stephen p.; coulter, mary. administração. são paulo: pearson, 2020. sebrae. gestão financeira para pequenos negócios. brasília: sebrae, 2023. slack, nigel; brandon-jones, alistair. operations and process management. 7. ed. london: pearson, 2022. solomon, michael. consumer behavior: buying, having and being. 13. ed. new york: pearson, 2020.acho que esse formato vai ficar muito forte na revista virtual: profissional, educativo e com autoridade, mas ainda acessível para o pequeno empreendedor da comunidade.'
+hist10367 norm : 'texto: patricia vidal instagram: https://www.instagram.com/coachpatriciavidal/'
+authored EN    : 'text: patricia vidal instagram: https://www.instagram.com/coachpatriciavidal/'
+
+sim(live10386, hist10367) = 0.0136
+sim(live10386, authoredEN) = 0.0134
+sim(hist10367, authoredEN) = 0.9935
+
+URLs live10386 : ['https://tdcriativo.wixsite.com/brasileirosnairlanda/post/gest%c3%a3o-financeira-o-alicerce-invis%c3%advel-de-todo-neg%c3%b3cio-que-prospera', 'https://tdcriativo.wixsite.com/brasileirosnairlanda/post/papo-de-empreendedor-com-um-toque-criativo-leve-e-motivador-para-inspirar-quem-pensa-em-empreende-13', 'https://www.instagram.com/coachpatriciavidal/', 'https://www.instagram.com/conexaobr.ie/']
+URLs EN row5   : ['https://www.instagram.com/coachpatriciavidal/']
+URL overlap    : ['https://www.instagram.com/coachpatriciavidal/']
+
+=== H. ROW 1 vs LIVE GUIDE 25031 IN DETAIL ===
+
+live published PT guides: 56
+guide ids 10001-10016 present: [10001, 10002, 10003, 10004, 10005, 10006, 10007, 10008, 10010, 10011, 10012, 10013, 10014, 10015, 10016]
+guide ids 457-486 present   : [457, 458, 459, 460, 461, 462, 464, 465, 466, 467, 468, 469, 470, 471, 472, 473, 474, 475, 476, 477, 478, 479, 480, 481, 482, 483, 484, 485, 486]
+
+==============================================================================
+LIVE GUIDE 25031  (already the accepted PT source of ROW 2)
+==============================================================================
+slug  : carteira-motorista-brasileiros
+title : Carteira de Motorista na Irlanda para Brasileiros: CNH, IDP e Reduced EDT
+date  : 2026-09-29T07:16:00   status=publish
+link  : https://conexaobr.ie/guias/carteira-motorista-brasileiros/
+body  : 9201 normalised chars
+
+FULL NORMALISED BODY:
+posso dirigir na irlanda com a cnh brasileira? se você é brasileiro e está planejando viajar ou morar na irlanda, uma das dúvidas mais importantes é: posso dirigir com a minha cnh brasileira? para brasileiros, a resposta depende da sua situação. o brasil não é um país reconhecido pela irlanda para troca direta de carteira de motorista. se você estiver na irlanda como visitante temporário, poderá dirigir com sua cnh brasileira válida acompanhada de uma international driving permit (idp) , observadas as regras aplicáveis. se você passar a ser normalmente residente na irlanda, precisará seguir o processo irlandês para obter uma carteira de motorista, porque a cnh brasileira não pode ser trocada diretamente por uma carteira irlandesa. brasileiros podem trocar a cnh pela carteira irlandesa? não por troca direta, atualmente. a irlanda permite a troca de carteiras emitidas por países e territórios que possuem acordo de troca com a irlanda e são classificados como recognised states . o brasil não está na lista atual de países reconhecidos para esse tipo de troca. brasileiro precisa de idp para dirigir na irlanda? sim, para dirigir como visitante com uma cnh brasileira. como o brasil não é um estado reconhecido para troca de carteira na irlanda, o rsa informa que quem possui uma carteira nacional válida de um país não reconhecido pode dirigir durante uma visita temporária de até 12 meses quando possui também uma international driving permit (idp) emitida pelo seu país. a idp funciona como uma tradução padronizada da sua carteira de motorista. ela não substitui a cnh brasileira . você deve levar consigo a cnh original válida juntamente com a idp. se você é brasileiro, não confunda a idp com uma carteira de motorista irlandesa. a idp não permite trocar a cnh brasileira pela carteira irlandesa. por quanto tempo posso dirigir como visitante? o rsa informa que um visitante pode dirigir na irlanda com uma carteira estrangeira válida de um país não reconhecido durante uma visita temporária de até 12 meses , desde que sejam cumpridos os requisitos aplicáveis, incluindo a idp quando exigida. atenção: esses 12 meses não devem ser interpretados como uma autorização automática para todo brasileiro que se muda para a irlanda. quando você passa a ter residência normal na irlanda, precisa seguir o processo irlandês para obter uma carteira. o que acontece quando o brasileiro passa a morar na irlanda? quando você passa a ser normalmente residente na irlanda, a cnh brasileira não pode ser simplesmente trocada pela carteira irlandesa. o processo passa a envolver o driver theory test , o learner permit , treinamento de direção, o driving test e, depois da aprovação, a solicitação da carteira irlandesa. o ndls considera, em geral, que você tem residência normal na irlanda quando, devido aos seus vínculos pessoais e profissionais, costuma viver no país por pelo menos 185 dias em cada ano-calendário . brasileiros precisam fazer 12 aulas de direção? não necessariamente. brasileiros que já possuem uma carteira de motorista estrangeira podem ser elegíveis para o reduced essential driver training (reduced edt) . o programa normal de essential driver training (edt) tem 12 sessões de uma hora . o reduced edt permite que determinados motoristas com carteira estrangeira façam apenas 6 sessões de uma hora . importante: as 6 sessões não são automáticas apenas por você ser brasileiro . você precisa solicitar o reduced edt e cumprir os requisitos definidos pelo rsa/ndls. quem pode solicitar o reduced edt? para um brasileiro com cnh brasileira, o reduced edt pode ser aplicável porque o brasil não possui acordo de troca de carteira com a irlanda. atualmente, os principais requisitos incluem: ter uma carteira de motorista estrangeira válida ; ter possuído essa carteira por pelo menos 2 anos antes da emissão do learner permit irlandês; a carteira não pode estar vencida há mais de 6 meses no momento em que a solicitação é recebida; ser residente na irlanda ; possuir um irish learner permit . o rsa analisa a solicitação. se o reduced edt for aprovado, você fará 6 sessões em vez das 12 sessões do programa completo. e também posso evitar os 6 meses de espera? possivelmente, sim. o reduced edt pode vir acompanhado de uma isenção da regra de espera de 6 meses para fazer o driving test. para a isenção dos 6 meses, o rsa informa que você precisa ter possuído sua carteira estrangeira por pelo menos 6 meses . a aprovação é separada e depende dos requisitos aplicáveis à sua situação. por isso, não assuma que todo brasileiro automaticamente poderá fazer a prova prática imediatamente. primeiro solicite a redução/isenção e aguarde a decisão do ndls. como funciona o processo para um brasileiro residente faça o driver theory test. solicite o irish learner permit. solicite o reduced edt , se você cumprir os requisitos para fazer 6 sessões. faça as 6 sessões de edt se o pedido for aprovado. caso não seja aprovado, poderá ser necessário completar as 12 sessões. solicite a isenção da regra dos 6 meses , se você também cumprir os requisitos. faça o driving test quando estiver elegível. depois de aprovado, solicite a carteira de motorista irlandesa . quais documentos podem ser importantes? para o processo de reduced edt, o rsa pode exigir uma letter of entitlement ou driver statement emitida pela autoridade que concedeu sua carteira estrangeira. esse documento deve comprovar informações como seu nome, endereço, data de nascimento, número da carteira, data de início, validade e categoria da carteira. se o documento não estiver em inglês ou irlandês, pode ser necessária uma tradução certificada. para brasileiros, é importante organizar essa documentação com antecedência junto ao órgão responsável pela cnh no brasil. minha cnh brasileira precisa estar válida? sim. para solicitar o reduced edt, o rsa exige uma carteira estrangeira válida e estabelece regras específicas para carteiras vencidas. a carteira não pode estar vencida há mais de 6 meses no momento em que o pedido é recebido. se sua cnh estiver vencida há mais tempo, você pode não ser elegível para o reduced edt e deverá verificar diretamente com o ndls quais regras se aplicam ao seu caso. perguntas frequentes brasileiro precisa de idp para dirigir na irlanda? sim, quando estiver dirigindo como visitante com uma cnh brasileira. o rsa informa que titulares de uma carteira válida de um país não reconhecido precisam ter uma international driving permit para dirigir durante uma visita temporária. a idp deve ser usada junto com a carteira nacional válida. posso trocar minha cnh brasileira pela carteira irlandesa? não. o brasil não está atualmente entre os países reconhecidos para troca direta de carteira de motorista na irlanda. tenho cnh brasileira há mais de 2 anos. preciso fazer 12 aulas? você pode ser elegível para fazer apenas 6 sessões de edt. o reduced edt está disponível para determinados titulares de carteiras estrangeiras que não podem ser trocadas. entre os requisitos estão ter a carteira há pelo menos 2 anos, ser residente na irlanda, possuir irish learner permit e cumprir as demais condições do rsa. as 6 aulas são automáticas para brasileiros? não. é necessário solicitar o reduced edt e receber a aprovação. se o pedido não for aprovado, você poderá precisar completar as 12 sessões do edt. posso fazer o driving test antes de esperar 6 meses? você pode solicitar uma isenção da regra dos 6 meses se cumprir os requisitos. para essa isenção, o rsa informa que você precisa ter possuído a carteira estrangeira por pelo menos 6 meses. a aprovação deve ser obtida antes de fazer o teste sem cumprir o período normal de espera. tenho que levar a cnh brasileira junto com a idp? sim. a idp não substitui sua carteira nacional. ela funciona como uma tradução padronizada e deve ser apresentada juntamente com a cnh brasileira válida. o que acontece depois que eu tiro o learner permit? depois que você obtém o learner permit, as regras aplicáveis aos learner drivers passam a valer. isso inclui as exigências de acompanhamento e as demais condições da licença. sua carteira estrangeira não elimina automaticamente essas regras. resumo para brasileiros situação o que fazer brasileiro visitando a irlanda cnh brasileira válida + idp , observadas as regras para visitantes brasileiro que passa a residir na irlanda seguir o processo irlandês para obter a carteira cnh brasileira não pode ser trocada diretamente pela carteira irlandesa edt normal 12 sessões de uma hora reduced edt 6 sessões de uma hora , se aprovado e elegível experiência mínima para reduced edt carteira estrangeira mantida por pelo menos 2 anos isenção da espera de 6 meses pode ser solicitada; requisitos específicos se aplicam brasil na lista de recognised states não fontes oficiais este guia tem finalidade informativa. regras de habilitação podem mudar, por isso confirme os requisitos diretamente nas fontes oficiais antes de iniciar o processo. última verificação: 29 de setembro de 2026 rsa – exchange a foreign driving licence rsa – reduced edt rsa – reduced edt: eligibility and application ndls – frequently asked questions ndls – international driving permit rsa – essential driver training (edt)
+
+==============================================================================
+Does 25031 carry ROW 1's subject (theory test / learner permit)?
+==============================================================================
+historical guide 10009 PT title : CNH brasileira na Irlanda: quando você precisa fazer theory test e learner permit
+row1 authored EN title          : Brazilian Driving Licence in Ireland: When You Need the Theory Test and Learner Permit
+row1 EN body normalised length  : 3082
+
+  'theory test'          in 25031 body: True
+  'learner permit'       in 25031 body: True
+  'ndls'                 in 25031 body: True
+  'rsa'                  in 25031 body: True
+  'edt'                  in 25031 body: True
+  'reduced edt'          in 25031 body: True
+  'driving test'         in 25031 body: True
+  'six months'           in 25031 body: False
+  'jogo da lorena'       in 25031 body: False
+  'troca'                in 25031 body: True
+  'trocar'               in 25031 body: True
+  'can exchange'         in 25031 body: False
+
+==============================================================================
+ROW 1 EN body vs 25031 body — is the EN a translation of 25031?
+==============================================================================
+SequenceMatcher ratio : 0.0064
+token jaccard         : 0.0444
+EN URLs  : []
+25031 URLs: []
+shared   : []
+EN-only  : []
+
+EN row1 body (normalised), first 1400 chars:
+meta description: understand the route for brazilians who cannot exchange their foreign licence: theory test, learner permit, edt and driving test. suggested url: /guias/learner-permit-theory-test-irlanda-cnh-brasileira/ introduction exchanging a foreign licence depends on exchange agreements. when the licence cannot be exchanged, the driver may have to follow the irish process to obtain the licence. who this guide is for brazilians with a foreign driving licence who need to understand the route to an irish licence when no exchange applies. step by step first check with the ndls whether your licence is eligible for exchange. if you need the learner driver route, pass the driver theory test for the correct category. apply for the first learner permit through the ndls, noting identity, address, ordinary residence, ppsn and reports where applicable. if you hold a full licence from a country with no exchange agreement, check whether you are entitled to the reduced edt programme. for the first learner permit, the rsa states it must be held for at least six months and the required training completed before the driving test. book the driving test once all the requirements are met. documents and information needed passport or an accepted document. ppsn. proof of address where required. proof of ordinary residence where applicable. theory test certificate. eye or medical report, if requ
+
+==============================================================================
+OTHER live guides: any subject overlap with row 1?
+==============================================================================
+  jaccard=0.0431 id=25031 carteira-motorista-brasileiros                   | Carteira de Motorista na Irlanda para Brasilei
+  jaccard=0.0326 id=10004 primeiro-emprego-irlanda-emergency-tax           | Primeiro emprego na Irlanda: como evitar o Eme
+  jaccard=0.0271 id=10008 reconhecer-diploma-brasileiro-na-irlanda-naric-q | Como reconhecer diploma brasileiro na Irlanda:
+  jaccard=0.0262 id=10011 assistencia-juridica-legal-aid-irlanda-brasileir | Assistência jurídica na Irlanda: como solicita
+  jaccard=0.0261 id=465 cidadania-irlandesa-2                            | Cidadania Irlandesa: Guia Completo de Naturali
+  jaccard=0.0244 id=10007 ehic-irlanda-brasileiros-residentes              | EHIC na Irlanda: como brasileiros residentes p
+
+=== I. ROWS 2,3,6,7 — EMPTY-BODY AND TITLE-LEVEL PROBES ===
+
+live published PT records read: 136
+PT sources already claimed by an authored EN row: 2268
+  25028 claimed by: ('en-post', 'outono-irlanda-alimentacao-bem-estar')
+  25031 claimed by: ('en-guide', 'carteira-motorista-brasileiros')
+  10368 claimed by: ('en-post', 'capacitacao-em-laois-irlanda-capacitacao-em-laois-irlanda')
+  10386 claimed by: ('en-post', 'o-que-todo-pequeno-empreendedor-precisa-aprender-para-fazer-o-negocio-crescer-por-que-entender-toda')
+
+authored EN slugs of the seven rows (target slugs):
+  learner-permit-theory-test-irlanda-cnh-brasileira        -> brazilian-driving-licence-in-ireland-theory-test-and-learner-permit
+  auxilios-e-apoio-relacionados-a-saude-e-bem-estar-na-irl -> health-and-wellbeing-support-in-ireland
+  auxilios-para-familias-atipicas-na-irlanda               -> support-for-extraordinary-families-in-ireland
+  cursos-e-apoio-para-empreendedores                       -> courses-and-support-for-entrepreneurs
+  dica-de-saude-para-quem-viaja                            -> a-health-tip-for-travellers
+  guia-para-quem-esta-com-dificuldades-financeiras         -> guide-for-those-facing-financial-difficulties
+  guia-pratico-para-brasileiros-em-laois                   -> practical-guide-for-brazilians-in-laois
+
+==============================================================================
+ROW 4 — the only row whose EN is a FULL translation of substantive PT
+==============================================================================
+historical PT 10369: Cursos e Apoio para Empreendedores  (6333 bytes)
+Distinctive PT strings that MUST appear in any true successor:
+  'laoispartnership.ie'                histPT=True  live hits=1 [(10368, 'capacitacao-em-laois-irlanda-capacitacao')]
+  'laoispartnershipcompany'            histPT=True  live hits=0 []
+  'sicap'                              histPT=True  live hits=2 [(10368, 'capacitacao-em-laois-irlanda-capacitacao'), (10371, 'trabalho-em-laoistrabalho-em-laois')]
+  'leader 2023'                        histPT=True  live hits=0 []
+  'laois chamber alliance'             histPT=True  live hits=0 []
+  'r32 vy22'                           histPT=True  live hits=0 []
+  '057'                                histPT=True  live hits=1 [(10371, 'trabalho-em-laoistrabalho-em-laois')]
+  'laois business awards'              histPT=True  live hits=0 []
+  'laois.ie/business-and-economy'      histPT=True  live hits=0 []
+  'back to work enterprise allowance'  histPT=True  live hits=1 [(11161, 'beneficios-pais-solteiros-irlanda')]
+
+Per-candidate max token jaccard vs authored EN body:
+  jaccard=0.0813 seq=0.0079 id=10368 [posts] capacitacao-em-laois-irlanda-capacitacao-em-laois-ir | Capacitação em Laois
+  jaccard=0.0356 seq=0.0017 id=1 [pages] about | About
+  jaccard=0.0260 seq=0.0171 id=10371 [posts] trabalho-em-laoistrabalho-em-laois | Trabalho em Laois
+  jaccard=0.0210 seq=0.0060 id=5000 [guide] autismo-na-irlanda-diagnostico-hse-apoio | Autismo na Irlanda: Diagnóstico, HSE e O
+  jaccard=0.0185 seq=0.0044 id=475 [guide] susi | SUSI na Irlanda: Como Solicitar Bolsa de
+
+==============================================================================
+ROWS 2, 3, 6, 7 — EN body is EMPTY ('<p></p>')
+==============================================================================
+The authored EN body is 8 bytes: '<p></p>'. The historical PT body was
+7 bytes: '<p></p>'. The English is a FAITHFUL, COMPLETE translation of an
+empty PT placeholder. There is no content to content-match against, so for
+these four rows a content match is not merely weak, it is IMPOSSIBLE.
+Only title-level evidence exists. Their PT titles are:
+  auxilios-e-apoio-relacionados-a-saude-e-bem-estar-na-irl title='Auxílios e Apoio Relacionados a Saúde e Bem-Estar na Irlanda'
+  auxilios-para-familias-atipicas-na-irlanda               title='Auxílios para Famílias Atípicas na Irlanda'
+  guia-para-quem-esta-com-dificuldades-financeiras         title='Guia Para quem está com Dificuldades Financeiras'
+  guia-pratico-para-brasileiros-em-laois                   title='Guia Prático para Brasileiros em Laois'
+
+Title-level probe across the live corpus (a title match would be the ONLY
+possible evidence class for these rows):
+  auxilios-e-apoio-relacionados-a-saude-e-bem-estar-na exact_title=0 partial=1
+       -> 11293 [pages] saude | Saúde
+  auxilios-para-familias-atipicas-na-irlanda           exact_title=0 partial=1
+       -> 22 [pages] familia | Família
+  guia-para-quem-esta-com-dificuldades-financeiras     exact_title=0 partial=0
+  guia-pratico-para-brasileiros-em-laois               exact_title=0 partial=0
+
+Empty-body live posts (the only records that could carry an empty EN body):
+  count: 0 []

@@ -1,0 +1,34 @@
+=== 1. IS GUIDE 10009 IN THE TRASH SET? ===
+  present: False
+  trashed guide ids: [463, 24974]
+
+=== 2. ANY TRASHED RECORD WITH ROW 1's SLUG (incl. __trashed variants) ===
+  exact            : []
+  __trashed variant: []
+
+=== 3. ANY RECORD (live or trashed) WHOSE CONTENT CARRIES ROW 1's SUBJECT ===
+  records examined: 154 (136 published, 18 trashed)
+  'learner permit'     -> [(25031, 'published', 'guide')]
+  'theory test'        -> [(25031, 'published', 'guide')]
+  'jogo da lorena'     -> []
+  'reduced edt'        -> [(25031, 'published', 'guide')]
+  'ndls'               -> [(25031, 'published', 'guide'), (463, 'trash', 'guide')]
+
+=== 4. ROW 1's HISTORICAL IDENTITY vs EVERY CANDIDATE ===
+  historical guide 10009 title : CNH brasileira na Irlanda: quando você precisa fazer theory test e learner permit
+  historical content sha256    : baec746f96e8fd6894534a53539429bd900ed4b5962c0fa43397e551edb56d51  (5649 bytes)
+  authored EN title            : Brazilian Driving Licence in Ireland: When You Need the Theory Test and Learner Permit
+
+  Top 6 candidates by token jaccard (published AND trashed):
+    jaccard=0.0431 id= 25031 published [guide ] carteira-motorista-brasileiros               | Carteira de Motorista na Irlanda para Br
+    jaccard=0.0385 id=   463 trash     [guide ] carteira-de-motorista-2__trashed             | Carteira de Motorista na Irlanda: Como T
+    jaccard=0.0326 id= 10004 published [guide ] primeiro-emprego-irlanda-emergency-tax       | Primeiro emprego na Irlanda: como evitar
+    jaccard=0.0271 id= 10008 published [guide ] reconhecer-diploma-brasileiro-na-irlanda-nar | Como reconhecer diploma brasileiro na Ir
+    jaccard=0.0262 id= 10011 published [guide ] assistencia-juridica-legal-aid-irlanda-brasi | Assistência jurídica na Irlanda: como so
+    jaccard=0.0261 id=   465 published [guide ] cidadania-irlandesa-2                        | Cidadania Irlandesa: Guia Completo de Na
+
+  NOTE: no candidate reaches even a weak score. The authored EN body of row 1
+  is a structured guide (Introduction / Who this is for / Step by step /
+  Documents / Costs / Timelines / Common mistakes / Official sources) whose PT
+  original was guide 10009. That record is GONE from production in every state,
+  including the trash, and no live or trashed record reproduces its content.

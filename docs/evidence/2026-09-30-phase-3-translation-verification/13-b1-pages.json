@@ -1,0 +1,371 @@
+{
+  "authored_page_rows": 33,
+  "ok": [
+    {
+      "stage": "en-blog-page",
+      "pt_slug": "blog",
+      "en_slug": "blog",
+      "en_path": "/en/blog/",
+      "status": 200,
+      "final": "/en/blog/",
+      "title": "Conexão BR | ",
+      "html_lang_en": true,
+      "canonical": "/en/blog/"
+    },
+    {
+      "stage": "en-jobs-page",
+      "pt_slug": "empregos",
+      "en_slug": "empregos",
+      "en_path": "/en/empregos/",
+      "status": 200,
+      "final": "/en/empregos/",
+      "title": "Jobs &#8211; Conexão BR",
+      "html_lang_en": true,
+      "canonical": "/en/empregos/"
+    },
+    {
+      "stage": "en-page",
+      "pt_slug": "about",
+      "en_slug": "about-page",
+      "en_path": "/en/about-page/",
+      "status": 200,
+      "final": "/en/about-page/",
+      "title": "About &#8211; Conexão BR",
+      "html_lang_en": true,
+      "canonical": "/en/about-page/"
+    },
+    {
+      "stage": "en-page",
+      "pt_slug": "anuncie",
+      "en_slug": "advertise",
+      "en_path": "/en/advertise/",
+      "status": 200,
+      "final": "/en/advertise/",
+      "title": "Advertise Here &#8211; Conexão BR",
+      "html_lang_en": true,
+      "canonical": "/en/advertise/"
+    },
+    {
+      "stage": "en-page",
+      "pt_slug": "beneficios",
+      "en_slug": "benefits",
+      "en_path": "/en/benefits/",
+      "status": 200,
+      "final": "/en/benefits/",
+      "title": "Benefits &#8211; Conexão BR",
+      "html_lang_en": true,
+      "canonical": "/en/benefits/"
+    },
+    {
+      "stage": "en-page",
+      "pt_slug": "categorias",
+      "en_slug": "categories",
+      "en_path": "/en/categories/",
+      "status": 200,
+      "final": "/en/categories/",
+      "title": "Categories &#8211; Conexão BR",
+      "html_lang_en": true,
+      "canonical": "/en/categories/"
+    },
+    {
+      "stage": "en-page",
+      "pt_slug": "compras",
+      "en_slug": "shopping",
+      "en_path": "/en/shopping/",
+      "status": 200,
+      "final": "/en/shopping/",
+      "title": "Shopping &#8211; Conexão BR",
+      "html_lang_en": true,
+      "canonical": "/en/shopping/"
+    },
+    {
+      "stage": "en-page",
+      "pt_slug": "contato",
+      "en_slug": "contact",
+      "en_path": "/en/contact/",
+      "status": 200,
+      "final": "/en/contact/",
+      "title": "Contact &#8211; Conexão BR",
+      "html_lang_en": true,
+      "canonical": "/en/contact/"
+    },
+    {
+      "stage": "en-page",
+      "pt_slug": "cookies",
+      "en_slug": "cookie-policy",
+      "en_path": "/en/cookie-policy/",
+      "status": 200,
+      "final": "/en/cookie-policy/",
+      "title": "Cookie Policy &#8211; Conexão BR",
+      "html_lang_en": true,
+      "canonical": "/en/cookie-policy/"
+    },
+    {
+      "stage": "en-page",
+      "pt_slug": "documentos",
+      "en_slug": "documents",
+      "en_path": "/en/documents/",
+      "status": 200,
+      "final": "/en/documents/",
+      "title": "Documents &#8211; Conexão BR",
+      "html_lang_en": true,
+      "canonical": "/en/documents/"
+    },
+    {
+      "stage": "en-page",
+      "pt_slug": "educacao",
+      "en_slug": "education",
+      "en_path": "/en/education/",
+      "status": 200,
+      "final": "/en/education/",
+      "title": "Education &#8211; Conexão BR",
+      "html_lang_en": true,
+      "canonical": "/en/education/"
+    },
+    {
+      "stage": "en-page",
+      "pt_slug": "europa",
+      "en_slug": "europe",
+      "en_path": "/en/europe/",
+      "status": 200,
+      "final": "/en/europe/",
+      "title": "Europe for Brazilians &#8211; Conexão BR",
+      "html_lang_en": true,
+      "canonical": "/en/europe/"
+    },
+    {
+      "stage": "en-page",
+      "pt_slug": "familia",
+      "en_slug": "family",
+      "en_path": "/en/family/",
+      "status": 200,
+      "final": "/en/family/",
+      "title": "Family &#8211; Conexão BR",
+      "html_lang_en": true,
+      "canonical": "/en/family/"
+    },
+    {
+      "stage": "en-page",
+      "pt_slug": "financas",
+      "en_slug": "finance",
+      "en_path": "/en/finance/",
+      "status": 200,
+      "final": "/en/finance/",
+      "title": "Finance &#8211; Conexão BR",
+      "html_lang_en": true,
+      "canonical": "/en/finance/"
+    },
+    {
+      "stage": "en-page",
+      "pt_slug": "lazer",
+      "en_slug": "leisure",
+      "en_path": "/en/leisure/",
+      "status": 200,
+      "final": "/en/leisure/",
+      "title": "Leisure &#8211; Conexão BR",
+      "html_lang_en": true,
+      "canonical": "/en/leisure/"
+    },
+    {
+      "stage": "en-page",
+      "pt_slug": "moradia",
+      "en_slug": "housing",
+      "en_path": "/en/housing/",
+      "status": 200,
+      "final": "/en/housing/",
+      "title": "Housing &#8211; Conexão BR",
+      "html_lang_en": true,
+      "canonical": "/en/housing/"
+    },
+    {
+      "stage": "en-page",
+      "pt_slug": "negocios",
+      "en_slug": "business",
+      "en_path": "/en/business/",
+      "status": 200,
+      "final": "/en/business/",
+      "title": "Business &#8211; Conexão BR",
+      "html_lang_en": true,
+      "canonical": "/en/business/"
+    },
+    {
+      "stage": "en-page",
+      "pt_slug": "newsletter",
+      "en_slug": "newsletter",
+      "en_path": "/en/newsletter/",
+      "status": 200,
+      "final": "/en/newsletter/",
+      "title": "Newsletter &#8211; Conexão BR",
+      "html_lang_en": true,
+      "canonical": "/en/newsletter/"
+    },
+    {
+      "stage": "en-page",
+      "pt_slug": "onde-comer",
+      "en_slug": "where-to-eat",
+      "en_path": "/en/where-to-eat/",
+      "status": 200,
+      "final": "/en/where-to-eat/",
+      "title": "Where to Eat &#8211; Conexão BR",
+      "html_lang_en": true,
+      "canonical": "/en/where-to-eat/"
+    },
+    {
+      "stage": "en-page",
+      "pt_slug": "politica-de-privacidade",
+      "en_slug": "privacy-policy",
+      "en_path": "/en/privacy-policy/",
+      "status": 200,
+      "final": "/en/privacy-policy/",
+      "title": "Privacy Policy &#8211; Conexão BR",
+      "html_lang_en": true,
+      "canonical": "/en/privacy-policy/"
+    },
+    {
+      "stage": "en-page",
+      "pt_slug": "privacidade",
+      "en_slug": "privacy",
+      "en_path": "/en/privacy/",
+      "status": 200,
+      "final": "/en/privacy/",
+      "title": "Privacy &#8211; Conexão BR",
+      "html_lang_en": true,
+      "canonical": "/en/privacy/"
+    },
+    {
+      "stage": "en-page",
+      "pt_slug": "revista",
+      "en_slug": "digital-magazine",
+      "en_path": "/en/digital-magazine/",
+      "status": 200,
+      "final": "/en/digital-magazine/",
+      "title": "Digital Magazine &#8211; Conexão BR",
+      "html_lang_en": true,
+      "canonical": "/en/digital-magazine/"
+    },
+    {
+      "stage": "en-page",
+      "pt_slug": "saude",
+      "en_slug": "health",
+      "en_path": "/en/health/",
+      "status": 200,
+      "final": "/en/health/",
+      "title": "Health &#8211; Conexão BR",
+      "html_lang_en": true,
+      "canonical": "/en/health/"
+    },
+    {
+      "stage": "en-page",
+      "pt_slug": "search",
+      "en_slug": "search-page",
+      "en_path": "/en/search-page/",
+      "status": 200,
+      "final": "/en/search-page/",
+      "title": "Search &#8211; Conexão BR",
+      "html_lang_en": true,
+      "canonical": "/en/search-page/"
+    },
+    {
+      "stage": "en-page",
+      "pt_slug": "servicos",
+      "en_slug": "services",
+      "en_path": "/en/services/",
+      "status": 200,
+      "final": "/en/services/",
+      "title": "Services &#8211; Conexão BR",
+      "html_lang_en": true,
+      "canonical": "/en/services/"
+    },
+    {
+      "stage": "en-page",
+      "pt_slug": "sobre",
+      "en_slug": "about-redirect",
+      "en_path": "/en/about-redirect/",
+      "status": 200,
+      "final": "/en/about-redirect/",
+      "title": "About Us &#8211; Conexão BR",
+      "html_lang_en": true,
+      "canonical": "/en/about-redirect/"
+    },
+    {
+      "stage": "en-page",
+      "pt_slug": "sobre-nos",
+      "en_slug": "about-us",
+      "en_path": "/en/about-us/",
+      "status": 200,
+      "final": "/en/about-us/",
+      "title": "About Us &#8211; Conexão BR",
+      "html_lang_en": true,
+      "canonical": "/en/about-us/"
+    },
+    {
+      "stage": "en-page",
+      "pt_slug": "termos",
+      "en_slug": "terms",
+      "en_path": "/en/terms/",
+      "status": 200,
+      "final": "/en/terms/",
+      "title": "Terms &#8211; Conexão BR",
+      "html_lang_en": true,
+      "canonical": "/en/terms/"
+    },
+    {
+      "stage": "en-page",
+      "pt_slug": "termos-de-uso",
+      "en_slug": "terms-of-use",
+      "en_path": "/en/terms-of-use/",
+      "status": 200,
+      "final": "/en/terms-of-use/",
+      "title": "Terms of Use &#8211; Conexão BR",
+      "html_lang_en": true,
+      "canonical": "/en/terms-of-use/"
+    },
+    {
+      "stage": "en-page",
+      "pt_slug": "transporte",
+      "en_slug": "transport",
+      "en_path": "/en/transport/",
+      "status": 200,
+      "final": "/en/transport/",
+      "title": "Transport &#8211; Conexão BR",
+      "html_lang_en": true,
+      "canonical": "/en/transport/"
+    },
+    {
+      "stage": "en-page",
+      "pt_slug": "turismo",
+      "en_slug": "tourism",
+      "en_path": "/en/tourism/",
+      "status": 200,
+      "final": "/en/tourism/",
+      "title": "Tourism &#8211; Conexão BR",
+      "html_lang_en": true,
+      "canonical": "/en/tourism/"
+    },
+    {
+      "stage": "en-page",
+      "pt_slug": "voluntariado",
+      "en_slug": "volunteering",
+      "en_path": "/en/volunteering/",
+      "status": 200,
+      "final": "/en/volunteering/",
+      "title": "Volunteering &#8211; Conexão BR",
+      "html_lang_en": true,
+      "canonical": "/en/volunteering/"
+    }
+  ],
+  "fail": [
+    {
+      "stage": "en-page",
+      "pt_slug": "inicio",
+      "en_slug": "home",
+      "en_path": "/en/home/",
+      "status": 200,
+      "final": "/en/",
+      "title": "Conexão BR | ",
+      "html_lang_en": true,
+      "canonical": "/en/",
+      "reason": "status/lang/canonical mismatch"
+    }
+  ]
+}

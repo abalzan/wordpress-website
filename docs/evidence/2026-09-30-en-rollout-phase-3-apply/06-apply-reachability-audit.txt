@@ -1,0 +1,57 @@
+APPLY REACHABILITY AUDIT — why the Phase 3 apply could not be executed from this environment
+=========================================================================================
+Every claim below was verified by command, not assumed.
+
+[1] WP-CLI in production
+    Production is WordPress.com. Documented: "Production is WordPress.com (no SSH/SFTP/CLI)".
+    AGENTS.md / engineering-standard 0.12: "Production has no CLI."
+    Local `wp` binary: `command -v wp` -> NOT FOUND
+    => scripts/run-en-translation.php --apply cannot be run against production at all.
+
+[2] The engine's ONLY apply entrypoint
+    grep 'Engine::run(' across both plugins -> hits ONLY in tests/ (local in-process).
+    Real production callers of the engine lifecycle:
+      wp-content/plugins/conexao-translation-rollout/includes/class-conexao-translation-rollout-admin.php:48
+        add_action( 'admin_post_' . self::ACTION, array( __CLASS__, 'handle_run' ) );
+    handle_run() requires BOTH:
+      - current_user_can( 'manage_options' )   (line 74)
+      - check_admin_referer( ACTION, NONCE )    (line 78)
+    This is a browser wp-admin form POST. There is no CLI path, no cron path, no REST path.
+
+[3] REST routes exposed by the rollout tooling
+    grep -rn 'register_rest_route' conexao-translation-rollout/ conexao-en-translation/
+    => 0 REST routes in BOTH plugins. The engine is NOT reachable over the REST API.
+
+[4] Can the temporary plugins be installed/activated in production over REST?
+    GET  /wp-json/wp/v2/plugins -> 200
+      Body inspected: [{"plugin":"akismet/akismet","status":"active", ...}]
+      This is the WordPress.org PLUGIN-DIRECTORY BROWSE route, NOT installed-plugin
+      management. It lists catalogue plugins, not the site's installed set.
+    POST /wp-json/wp/v2/plugins -> HTTP 400
+      WP-Core defines no POST/PUT/DELETE on this route. There is no REST capability to
+      upload, install or activate a plugin ZIP.
+    Credential caps confirmed via /wp/v2/users/me?context=edit:
+      id 283039558 | roles ['administrator']
+      manage_options=True  install_plugins=True  activate_plugins=True
+    => The application password IS an administrator credential, but REST still exposes no
+       plugin-install endpoint. Installing the two temporary rollout ZIPs in production
+       requires the wp-admin Plugins > Add New > Upload Plugin screen (a human browser action).
+
+[5] The task's own prohibition vs the only remaining alternative
+    The task forbids: "Do not manually reproduce engine logic with ad-hoc API requests."
+    It requires: "Invoke the existing shared translation rollout engine."
+    The engine cannot be invoked over REST (0 routes, 0 REST capability) and cannot be
+    invoked via WP-CLI (production has none).
+    Therefore the ONLY compliant path is a human maintainer operating the admin screen in
+    a browser: Plugins > Add New > Upload Plugin (both ZIPs), then
+    Tools > Translation Rollouts > stage > Preview, then Apply.
+    An AI agent with an application password cannot perform step 2+ without fabricating an
+    ad-hoc writer, which is exactly what the task prohibits.
+
+[6] Script metadata agrees
+    scripts/run-en-translation.php declares:
+      'writes' => true, 'read_only' => false, 'production_capable' => false
+    => the repository itself marks this runner as NOT production-capable.
+
+CONCLUSION: the apply is BLOCKED by architecture, not by plan quality. The plan is verified
+and reproducible; it simply requires a human at the admin screen.

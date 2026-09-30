@@ -1,0 +1,42 @@
+FINAL VERIFICATION — 2026-09-30T12:22:28Z
+
+HEAD: 6bc4a6be8654cc083a162445491227a278ce0a47  (unchanged)
+
+== 1. EXACTLY ONE ROW REMOVED ==
+  removed: [('guide', 'learner-permit-theory-test-irlanda-cnh-brasileira')]
+  changed: []
+  added  : []
+  UNRELATED EN PAYLOAD DRIFT = 0
+
+== 2. EXCLUSION METADATA ==
+  key            : learner-permit-theory-test-irlanda-cnh-brasileira
+  classification : NO_REAL_PT_SOURCE
+  reason         : PT source permanently deleted; operator-authorized exclusion
+
+== 3. TESTS ==
+  before: 63/63 PHP suites, 4216 assertions, 1 pre-existing FAIL
+  after : 63/63 PHP suites, 4216 assertions, 1 pre-existing FAIL
+  NEW FAILURES = 0  (PASS/FAIL lines byte-identical)
+
+== 4. PRODUCTION ==
+  http_verbs_used: GET   production_writes: 0   apply_invoked: False
+  EN records: 0   links: 0   taxonomy creates: 0   B2 writes: 0
+
+== 5. SIX TRASHED ROWS UNTOUCHED ==
+  unresolved rows in regenerated manifest: 6
+    post auxilios-e-apoio-relacionados-a-saude-e-bem-estar-na-irl
+    post auxilios-para-familias-atipicas-na-irlanda
+    post cursos-e-apoio-para-empreendedores
+    post dica-de-saude-para-quem-viaja
+    post guia-para-quem-esta-com-dificuldades-financeiras
+    post guia-pratico-para-brasileiros-em-laois
+
+== 6. FILES CHANGED ==
+ M docs/plugins/conexao-en-translation.md
+ M docs/reports/README.md
+ M wp-content/plugins/conexao-en-translation/conexao-en-translation.php
+ M wp-content/plugins/conexao-en-translation/includes/guide-translation-data.php
+?? docs/reports/2026-09-30-en-deleted-source-exclusion.md
+?? docs/reports/2026-09-30-en-pt-source-reconciliation.md
+?? docs/reports/2026-09-30-temporary-en-translation-plugins.md
+?? wp-content/plugins/conexao-en-translation/includes/exclusions-data.php

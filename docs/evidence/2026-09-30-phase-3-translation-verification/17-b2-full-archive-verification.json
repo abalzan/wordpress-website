@@ -1,0 +1,102 @@
+{
+  "en-leisure-description": {
+    "meta_key": "_leisure_excerpt_en",
+    "authored_rows": 289,
+    "archive": "/en/lazer/",
+    "archive_pages_read": 2,
+    "en_description_rendered": 2,
+    "not_found": 287,
+    "missing_sample": [
+      {
+        "slug": "abbeyleix-heritage-house",
+        "pt_text_present": false,
+        "en_len": 99
+      },
+      {
+        "slug": "achill-island",
+        "pt_text_present": false,
+        "en_len": 110
+      },
+      {
+        "slug": "acres-lake-floating-boardwalk",
+        "pt_text_present": false,
+        "en_len": 99
+      },
+      {
+        "slug": "adare-village",
+        "pt_text_present": false,
+        "en_len": 101
+      },
+      {
+        "slug": "aillwee-caves",
+        "pt_text_present": false,
+        "en_len": 79
+      },
+      {
+        "slug": "altamont-gardens",
+        "pt_text_present": false,
+        "en_len": 88
+      },
+      {
+        "slug": "annes-grove-gardens",
+        "pt_text_present": false,
+        "en_len": 131
+      },
+      {
+        "slug": "aran-islands",
+        "pt_text_present": false,
+        "en_len": 96
+      },
+      {
+        "slug": "aras-an-uachtarain",
+        "pt_text_present": false,
+        "en_len": 132
+      },
+      {
+        "slug": "arbour-hill-cemetery",
+        "pt_text_present": false,
+        "en_len": 90
+      },
+      {
+        "slug": "ardagh-heritage-village",
+        "pt_text_present": false,
+        "en_len": 95
+      },
+      {
+        "slug": "ardfert-cathedral",
+        "pt_text_present": false,
+        "en_len": 135
+      },
+      {
+        "slug": "ardmore-round-tower",
+        "pt_text_present": false,
+        "en_len": 91
+      },
+      {
+        "slug": "ards-forest-park",
+        "pt_text_present": false,
+        "en_len": 93
+      },
+      {
+        "slug": "arigna-mining-experience",
+        "pt_text_present": false,
+        "en_len": 76
+      }
+    ]
+  },
+  "en-course-provider-description": {
+    "meta_key": "_provider_excerpt_en",
+    "authored_rows": 10,
+    "archive": "/en/cursos/",
+    "archive_pages_read": 2,
+    "en_description_rendered": 9,
+    "not_found": 1,
+    "missing_sample": [
+      {
+        "slug": "microcreds",
+        "pt_text_present": false,
+        "en_len": 173
+      }
+    ]
+  }
+}
