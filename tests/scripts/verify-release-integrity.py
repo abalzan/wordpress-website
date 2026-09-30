@@ -309,13 +309,21 @@ def main() -> int:
         )
 
         # A manifest naming a non-allowlisted artifact must also be rejected.
+        #
+        # Stage 2: the fixture slug changed. It used to be
+        # `conexao-translation-rollout`, which WAS a valid example while that
+        # engine was `build: false`. Stage 2 promoted the engine to a
+        # production platform plugin (`build: true`), so it is now legitimately
+        # allowlisted and can no longer stand for a non-allowlisted component.
+        # `conexao-en-translation` is the same kind of negative fixture: an
+        # active, local-only TOOLING plugin that must never enter a release.
         rogue = json.loads(json.dumps(manifest))
         rogue["artifacts"].append(
             {
-                "slug": "conexao-translation-rollout",
+                "slug": "conexao-en-translation",
                 "kind": "plugin",
                 "version": "1.0.0",
-                "file": "conexao-translation-rollout.zip",
+                "file": "conexao-en-translation.zip",
                 "built": True,
                 "file_count": 1,
                 "bytes": 1,

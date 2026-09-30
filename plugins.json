@@ -104,11 +104,11 @@
     },
     {
       "slug": "conexao-translation-rollout",
-      "name": "Conexão BR Irlanda — Translation Rollout Engine (Stage H)",
-      "class": "tooling",
+      "name": "Conexão BR Irlanda — Translation Rollout Engine (Stage H, promoted to platform in Stage 2)",
+      "class": "platform",
       "status": "active",
-      "production": false,
-      "build": false,
+      "production": true,
+      "build": true,
       "mount": true,
       "dependencies": [],
       "version_source": "wp-content/plugins/conexao-translation-rollout/conexao-translation-rollout.php",
@@ -130,11 +130,11 @@
     },
     {
       "slug": "conexao-translation-automation",
-      "name": "Conexão BR Irlanda — Translation Automation (Stage 1 boundary)",
-      "class": "tooling",
+      "name": "Conexão BR Irlanda — Translation Automation (permanent platform plugin)",
+      "class": "platform",
       "status": "active",
-      "production": false,
-      "build": false,
+      "production": true,
+      "build": true,
       "mount": true,
       "dependencies": [
         "conexao-translation-rollout"

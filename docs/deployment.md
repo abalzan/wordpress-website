@@ -42,8 +42,10 @@ The filtered subset of the registry load order where `production: true`. It cont
 2. `conexao-content`
 3. `conexao-admin-ux`
 4. `conexao-event-runtime`
+5. `conexao-translation-rollout`
+6. `conexao-translation-automation`
 
-Production needs exactly these 4 platform plugins. They are the only
+Production needs exactly these 6 platform plugins. They are the only
 plugins that must be installed **and active** on production.
 
 ### Release build output
@@ -52,7 +54,7 @@ plugins that must be installed **and active** on production.
 ./scripts/build-plugins-zip.sh
 ```
 
-Produces one ZIP per `build: true` entry (7 files), in registry order:
+Produces one ZIP per `build: true` entry (9 files), in registry order:
 
 - `dist/conexao-data-model.zip`
 - `dist/conexao-content.zip`
@@ -61,6 +63,8 @@ Produces one ZIP per `build: true` entry (7 files), in registry order:
 - `dist/conexao-event-importer.zip`
 - `dist/conexao-leisure-migration.zip`
 - `dist/conexao-sponsor-migration.zip`
+- `dist/conexao-translation-rollout.zip`
+- `dist/conexao-translation-automation.zip`
 
 Import via WordPress Admin -> Plugins -> Add New -> Upload Plugin, then activate in
 the production order above.
@@ -73,9 +77,7 @@ dependencies and never left active on production:
 - `conexao-event-importer`
 - `conexao-leisure-migration`
 - `conexao-sponsor-migration`
-- `conexao-translation-rollout`
 - `conexao-en-translation`
-- `conexao-translation-automation`
 
 ### Retired rollout plugins (historical tooling)
 

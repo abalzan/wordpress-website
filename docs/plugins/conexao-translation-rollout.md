@@ -4,15 +4,15 @@
 | | |
 |---|---|
 | **Status** | active |
-| **Class** | tooling |
-| **Production** | no |
-| **Build** | no |
+| **Class** | platform |
+| **Production** | yes |
+| **Build** | yes |
 | **Compose mount** | yes |
 | **Dependencies** | none |
 | **Version** | 1.1.0 (authoritative source: `wp-content/plugins/conexao-translation-rollout/conexao-translation-rollout.php` header) |
 | **Registry** | [`plugins.json`](../../plugins.json) |
 
-> **Local-only tooling.** Not a production steady-state dependency.
+> **Production platform plugin.** Part of the production steady state.
 <!-- END GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
 
 ## Purpose

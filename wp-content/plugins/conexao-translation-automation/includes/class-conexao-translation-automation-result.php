@@ -42,11 +42,19 @@ final class Conexao_Translation_Automation_Result {
 	const FAILURE_UNAUTHORIZED          = 'unauthorized';
 	const FAILURE_UNKNOWN_STAGE         = 'unknown_stage';
 	const FAILURE_STAGE_NOT_ALLOWLISTED = 'stage_not_allowlisted';
+	const FAILURE_REGISTRY_MISMATCH     = 'registry_mismatch';
 	const FAILURE_MISSING_ENGINE        = 'missing_engine';
 	const FAILURE_MISSING_CALLBACK      = 'missing_callback';
 	const FAILURE_BAD_CONFIG            = 'bad_config';
 	const FAILURE_ENGINE_ERROR          = 'engine_error';
 	const FAILURE_BAD_ENGINE_RESPONSE   = 'bad_engine_response';
+
+	// --- Stage 2: the lock and the F7 apply-safety chain. -----------------
+	const FAILURE_LOCKED                  = 'locked';
+	const FAILURE_ENVIRONMENT             = 'environment_refused';
+	const FAILURE_DRY_RUN_NOT_PASS        = 'dry_run_not_pass';
+	const FAILURE_APPROVAL_MISMATCH       = 'approval_mismatch';
+	const FAILURE_SNAPSHOT_PERSIST_FAILED = 'snapshot_persist_failed';
 
 	/**
 	 * Run identifier (unique per invocation, carries no secret).
@@ -110,6 +118,44 @@ final class Conexao_Translation_Automation_Result {
 	private $mutation_occurred;
 
 	/**
+	 * Environment label the run was evaluated in, or '' when not evaluated.
+	 *
+	 * @var string
+	 */
+	private $environment;
+
+	/**
+	 * Lock outcome for this run: acquired, reclaimed_stale, locked, ...
+	 *
+	 * @var string
+	 */
+	private $lock_status;
+
+	/**
+	 * Whether an apply was permitted for this run.
+	 *
+	 * @var bool
+	 */
+	private $apply_permitted;
+
+	/**
+	 * Plan/manifest/snapshot digests bound to the approval, when there are any.
+	 *
+	 * @var array
+	 */
+	private $digests;
+
+	/**
+	 * The approval digest a subsequent apply of THIS run would require.
+	 *
+	 * Empty when the dry-run did not earn one. Published by a proof run so the
+	 * approved plan can be handed to the apply step of the same run.
+	 *
+	 * @var string
+	 */
+	private $approval = '';
+
+	/**
 	 * Build one result.
 	 *
 	 * @param string     $run_id             Run identifier.
@@ -120,6 +166,10 @@ final class Conexao_Translation_Automation_Result {
 	 * @param array|null $detail             Non-secret failure detail.
 	 * @param bool       $mutation_permitted Whether mutation was permitted.
 	 * @param bool       $mutation_occurred  Whether a mutation occurred.
+	 * @param string     $environment        Environment label.
+	 * @param string     $lock_status        Lock outcome.
+	 * @param bool       $apply_permitted    Whether apply was permitted.
+	 * @param array      $digests            Bound digests.
 	 */
 	private function __construct(
 		string $run_id,
@@ -129,7 +179,11 @@ final class Conexao_Translation_Automation_Result {
 		?array $engine_result,
 		?array $detail,
 		bool $mutation_permitted,
-		bool $mutation_occurred
+		bool $mutation_occurred,
+		string $environment = '',
+		string $lock_status = '',
+		bool $apply_permitted = false,
+		array $digests = array()
 	) {
 		$this->run_id             = $run_id;
 		$this->mode               = $mode;
@@ -139,6 +193,10 @@ final class Conexao_Translation_Automation_Result {
 		$this->detail             = $detail;
 		$this->mutation_permitted = $mutation_permitted;
 		$this->mutation_occurred  = $mutation_occurred;
+		$this->environment        = $environment;
+		$this->lock_status        = $lock_status;
+		$this->apply_permitted    = $apply_permitted;
+		$this->digests            = $digests;
 	}
 
 	/**
@@ -147,10 +205,46 @@ final class Conexao_Translation_Automation_Result {
 	 * @param string $run_id        Run identifier.
 	 * @param string $stage         Stage attempted.
 	 * @param array  $engine_result Engine report, verbatim.
+	 * @param string $environment   Environment the run was evaluated in.
+	 * @param string $lock_status   Outcome of the site-wide lock acquisition.
+	 * @param string $approval      Approval digest this run's plan requires to be applied.
 	 * @return self
 	 */
-	public static function success( string $run_id, string $stage, array $engine_result ): self {
-		return new self( $run_id, 'proof', $stage, self::FAILURE_NONE, $engine_result, null, false, false );
+	public static function success( string $run_id, string $stage, array $engine_result, string $environment = '', string $lock_status = '', string $approval = '' ): self {
+		$result           = new self( $run_id, 'proof', $stage, self::FAILURE_NONE, $engine_result, null, false, false, $environment, $lock_status );
+		$result->approval = $approval;
+
+		return $result;
+	}
+
+	/**
+	 * A completed apply: every prerequisite was satisfied and the engine wrote.
+	 *
+	 * This is the ONLY factory that reports a mutation, and it can only be
+	 * reached after the lock, the environment guard, the F7 PASS gate, the
+	 * approval binding and the snapshot persistence have all succeeded.
+	 *
+	 * @param string $run_id        Run identifier.
+	 * @param string $stage         Stage applied.
+	 * @param array  $engine_result The engine's post-apply report, verbatim.
+	 * @param array  $verdict       The F7 verdict that authorised the apply.
+	 * @return self
+	 */
+	public static function applied( string $run_id, string $stage, array $engine_result, array $verdict ): self {
+		return new self(
+			$run_id,
+			'applied',
+			$stage,
+			self::FAILURE_NONE,
+			$engine_result,
+			null,
+			true,
+			true,
+			isset( $verdict['environment'] ) ? (string) $verdict['environment'] : '',
+			'acquired',
+			true,
+			isset( $verdict['digests'] ) && is_array( $verdict['digests'] ) ? $verdict['digests'] : array()
+		);
 	}
 
 	/**
@@ -261,10 +355,88 @@ final class Conexao_Translation_Automation_Result {
 			'end_state'          => $this->ok() ? 'completed' : 'failed-closed',
 			'mutation_permitted' => $this->mutation_permitted,
 			'mutation_occurred'  => $this->mutation_occurred,
+			// --- The audit boundary (Stage 2). -----------------------------
+			// Enough to establish, from the record alone: which run, which
+			// stage, in which environment, the lock status, the dry-run
+			// verdict, the plan/manifest digests, whether apply was
+			// permitted, whether anything mutated, and the failure category.
+			'environment'        => $this->environment,
+			'lock_status'        => $this->lock_status,
+			'apply_permitted'    => $this->apply_permitted,
+			'approval'           => $this->approval,
+			'dry_run_status'     => $this->dry_run_status(),
+			'digests'            => $this->digests,
 			'gate'               => $this->gate(),
 			'engine_result'      => $this->engine_result,
 			'detail'             => $this->detail,
 		);
+	}
+
+	/**
+	 * The dry-run status for the audit record.
+	 *
+	 * Derived from the engine's own gate, never re-interpreted: it is the
+	 * literal verdict, so an auditor never has to trust this plugin's reading
+	 * of a PASS.
+	 *
+	 * @return string One of: not_run, PASS, FAIL, unknown.
+	 */
+	public function dry_run_status(): string {
+		$gate = $this->gate();
+
+		if ( array() === $gate ) {
+			return 'not_run';
+		}
+
+		$verdict = isset( $gate['gate'] ) ? strtoupper( trim( (string) $gate['gate'] ) ) : '';
+
+		return '' === $verdict ? 'unknown' : $verdict;
+	}
+
+	/**
+	 * The lock outcome for this run.
+	 *
+	 * @return string
+	 */
+	public function lock_status(): string {
+		return $this->lock_status;
+	}
+
+	/**
+	 * The environment this run was evaluated in.
+	 *
+	 * @return string
+	 */
+	public function environment(): string {
+		return $this->environment;
+	}
+
+	/**
+	 * The run identifier, so a caller can correlate the record it holds with
+	 * the run it just started (and confirm a pinned run id was honoured).
+	 *
+	 * @return string
+	 */
+	public function run_id(): string {
+		return $this->run_id;
+	}
+
+	/**
+	 * The approval digest this run's plan would require to be applied.
+	 *
+	 * @return string Empty when the dry-run did not earn an approval.
+	 */
+	public function approval(): string {
+		return $this->approval;
+	}
+
+	/**
+	 * Was an apply permitted for this run?
+	 *
+	 * @return bool
+	 */
+	public function apply_permitted(): bool {
+		return $this->apply_permitted;
 	}
 
 	/**

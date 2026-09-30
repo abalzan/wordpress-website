@@ -48,3 +48,19 @@ _Last verified: 2026-09-26 by Stage O — Enable the Real English Blog Archive_
 _Last verified: 2026-09-28 by CI integration setup recovery_
 
 _Last verified: 2026-09-30 by the EN Translation Rollout — Phase 1 production inventory (read-only)_
+
+## 2026-09-30 — Stage 2: engine promotion, lock and apply safety
+
+| File | What it is |
+|---|---|
+| `baseline-stage1-tests.log` | The Stage 1 baseline test run, captured **before** any Stage 2 edit. The source of the `i18n_freshness` baseline comparison in §11 of the report. |
+| `stage2-tests.log` | The full `./scripts/run-tests.sh` run after Stage 2: 67 in-process suites / 4521 assertions passing, with the same single pre-existing `i18n_freshness` failure. |
+| `engine-digest-before.txt` | SHA-256 of all three `conexao-translation-rollout` source files **before** the promotion. |
+| `engine-digest-after.txt` | The same digests **after** all Stage 2 work. Byte-identical to the before values and to the Stage 1 baseline. |
+| `plugins-json-diff.txt` / `registry-diff-stat.txt` | The exact registry change: two plugin entries promoted, nothing else. |
+| `promotion-gate.txt` | `tests/scripts/verify-stage2-promotion.py` — 28 checks: classification, lifecycle invariants (not weakened), dependency graph, header agreement, deterministic artifacts, engine byte-identity. |
+| `registry-check.txt` | `php scripts/generate-registry-docs.php --check` — 15 plugins validated, 24 generated regions current. |
+| `cache-scoping-gate.txt` | `verify-cache-key-scoping.py` after the conditional admin-user-scope exemption added in Stage 2 (report limitation 5). |
+| `lint.txt` | `./scripts/lint.sh` — syntax clean, no new PHPCS violations, PHPStan level 5 clean. |
+
+Cited by `docs/reports/2026-09-30-stage-2-engine-promotion-lock-safety.md`.

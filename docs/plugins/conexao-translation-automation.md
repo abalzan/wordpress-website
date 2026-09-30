@@ -4,15 +4,15 @@
 | | |
 |---|---|
 | **Status** | active |
-| **Class** | tooling |
-| **Production** | no |
-| **Build** | no |
+| **Class** | platform |
+| **Production** | yes |
+| **Build** | yes |
 | **Compose mount** | yes |
 | **Dependencies** | `conexao-translation-rollout` |
 | **Version** | 0.1.0 (authoritative source: `wp-content/plugins/conexao-translation-automation/conexao-translation-automation.php` header) |
 | **Registry** | [`plugins.json`](../../plugins.json) |
 
-> **Local-only tooling.** Not a production steady-state dependency.
+> **Production platform plugin.** Part of the production steady state.
 <!-- END GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
 
 ## Purpose
@@ -110,24 +110,92 @@ contains **no** call to `wp_insert_post`, `wp_update_post`, `wp_delete_post`,
 `wp_update_nav_menu` or any `pll_*` write. Activation is inert. This is
 asserted by the test suite rather than merely documented.
 
-## Why `production` and `build` are false (B1)
+## Promotion (Stage 2)
 
-The engine this plugin depends on is itself `class: tooling`,
-`production: false`, `build: false`. Setting this plugin to `build: true` would
-put it in a release ZIP whose declared dependency is **not** in that release,
-and setting `production: true` would require activating a plugin whose
-dependency is absent from production — WordPress would refuse, and the
-registry forbids `tooling` + `production: true`.
+Stage 1 left B1 unresolved: this plugin was truthfully registered as
+`tooling` / `production: false` / `build: false` because its dependency
+(`conexao-translation-rollout`) was itself tooling. **Stage 2 resolved it** by
+promoting the engine first:
 
-Promotion is therefore a **Stage 2+ decision** that must promote the engine
-first. The registry entry is deliberately truthful today; see the Stage 1 report
-§8.
+| Plugin | Class | Production | Build |
+|---|---|---|---|
+| `conexao-translation-rollout` | `platform` | yes | yes |
+| `conexao-translation-automation` | `platform` | yes | yes |
+
+The promotion was accepted by the existing `validate_lifecycle_rules()` with
+**no rule weakened** — `platform` + `production: true` + `build: true` is
+already a legal combination. The shared engine's source is byte-identical
+before and after: SHA-256
+`baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4`, asserted by
+the test suite and by `tests/scripts/verify-stage2-promotion.py`.
+
+## Stage 2: the safety foundation
+
+### The lock (B3, C1-C6)
+
+`Conexao_Translation_Automation_Lock` — site-wide (not per-stage), atomic,
+fail-closed. The primitive is a conditional `INSERT` relying on the UNIQUE key
+on `wp_options.option_name`, so **the database** decides the winner. Every
+mutation is a compare-and-swap on the exact stored bytes.
+
+`add_option()` was rejected: it is check-then-insert (a TOCTOU race) **and** its
+INSERT is `ON DUPLICATE KEY UPDATE`, so a losing racer would silently overwrite
+the winner's lock. `wp_cache_add()` was rejected: it is only durable with a
+persistent object cache, which this repository does not assume.
+
+| Concern | Rule |
+|---|---|
+| Ownership | Every acquisition carries a unique `run_id`, propagated into the audit record |
+| Stale policy | Reclaimable only when `now - acquired_at > ttl`; TTL default 900s, max 86400s |
+| Malformed state | Never reclaimed, never overwritten, never deleted — fails closed |
+| Release | Only the owner; enforced by a value-scoped `DELETE`, not a stale read |
+| Held lock | Second run gets `locked`, performs no mutation, is never queued |
+| Audit | Every outcome returns a structured, secret-free event |
+
+### The apply gate (F7)
+
+`Conexao_Translation_Automation_Apply_Gate` enforces **no apply without a
+preceding PASS dry-run**. `FAIL`, `ERROR`, invalid, missing, stale, mismatched
+and unavailable are all "not PASS".
+
+The approval is a **digest bound to the exact work**, never a boolean:
+manifest digest, plan digest, snapshot digest, stage, run id, environment and
+configuration identity. A dry run publishes the approval for its own plan, so
+"review plan A, apply plan B" fails closed.
+
+### Snapshot sequencing
+
+`validated PASS → persist plan/snapshot identity → apply`. If persistence
+fails there is **NO APPLY** — never "apply and record afterwards". There is
+deliberately no rollback automation: rollback remains the wp-admin/operator
+procedure.
+
+### The environment guard
+
+`Conexao_Translation_Automation_Environment` refuses apply unless the declared
+environment **and** `wp_get_environment_type()` agree, plus explicit production
+authorisation. Missing or contradictory metadata fails closed.
+
+### The prerequisite chain
+
+```
+lock → dry-run → environment guard → F7 PASS → approval binding
+     → snapshot persisted → APPLY → verify → release lock
+```
+
+Every link fails closed, and the lock is released in a `finally` block on every
+path.
 
 ## Tests
 
-`tests/test-automation-boundary.php` proves plugin loading, activation safety,
-absence of cron/REST/`__return_true`, every fail-closed path (including that the
-engine was never reached), engine delegation, result propagation, secret
-containment and the shared engine's SHA-256.
+| Suite | Proves |
+|---|---|
+| `test-automation-boundary.php` | Loading, activation safety, no cron/REST/provider, fail-closed paths, secret containment |
+| `test-automation-lock.php` | Acquisition, contention, ownership, stale reclaim, malformed handling, deterministic race simulation |
+| `test-automation-apply-safety.php` | F7 gate, approval binding, snapshot sequencing, environment guard, the full chain |
+| `test-automation-promotion.php` | Engine digest, promotion classification, separation, no credentials |
+| `tests/scripts/verify-stage2-promotion.py` | Registry promotion, lifecycle invariants, dependency graph, deterministic artifacts, engine byte-identity |
 
 Run with `./scripts/run-tests.sh --only conexao-translation-automation`.
+
+_Last verified: 2026-09-30 by Stage 2 — engine promotion, lock and apply safety_

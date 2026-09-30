@@ -36,6 +36,12 @@ $ENGINE_SHA  = 'baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4
 // to mean "never reached the engine" rather than "reached it and did nothing".
 $GLOBALS['conexao_automation_engine_calls'] = 0;
 
+// A separate counter for MUTATING engine invocations. The apply branch runs a
+// forced dry-run before its gates, so "the engine was entered" is not by itself
+// a violation; "the engine was asked to WRITE" is. This distinction is what
+// makes the safety claim precise.
+$GLOBALS['conexao_automation_mutating_calls'] = 0;
+
 	/**
 	 * A minimal, honest stage config used to observe delegation.
 	 *
@@ -73,6 +79,10 @@ function conexao_automation_test_stage( string $stage ): array {
 		},
 		'run_callback'           => static function ( array $args = array() ) use ( $stage ) {
 			++$GLOBALS['conexao_automation_engine_calls'];
+
+			if ( empty( $args['dry_run'] ) ) {
+				++$GLOBALS['conexao_automation_mutating_calls'];
+			}
 
 			return Conexao_Translation_Rollout_Engine::run(
 				conexao_automation_test_stage( $stage ),
@@ -229,7 +239,8 @@ $hits = conexao_automation_token_hits(
 );
 assert_true( array() === $hits, 'no activation/deactivation/uninstall hook is registered' . ( $hits ? ': ' . implode( ', ', $hits ) : '' ) );
 
-// No destructive write primitive anywhere in the plugin.
+// No CONTENT, menu or Polylang write primitive anywhere in the plugin, ever.
+// These are the primitives that would mutate the site; none may exist.
 $hits = conexao_automation_token_hits(
 	array(
 		'wp_insert_post',
@@ -237,16 +248,84 @@ $hits = conexao_automation_token_hits(
 		'wp_delete_post',
 		'wp_insert_term',
 		'wp_update_term',
-		'update_option',
-		'add_option',
-		'delete_option',
 		'wp_update_nav_menu',
 		'pll_set_post_language',
 		'pll_save_post_translations',
 	),
 	'('
 );
-assert_true( array() === $hits, 'no content/menu/Polylang/option write call exists' . ( $hits ? ': ' . implode( ', ', $hits ) : '' ) );
+assert_true( array() === $hits, 'no content/menu/Polylang write call exists' . ( $hits ? ': ' . implode( ', ', $hits ) : '' ) );
+
+// STAGE 2: the option writes are now real, but they are INFRASTRUCTURE ONLY.
+// The plugin writes exactly two options, both declared here as constants, and
+// it must write nothing else. This asserts the allowlist rather than a blanket
+// ban, so a future content write still fails the suite while the lock and the
+// apply-state record remain permitted.
+$ALLOWED_OPTIONS = array(
+	Conexao_Translation_Automation_Lock::OPTION,
+	Conexao_Translation_Automation_Apply_Gate::STATE_OPTION,
+);
+
+$option_writes   = array();
+$option_writers = array( 'update_option', 'add_option', 'delete_option' );
+foreach ( $option_writers as $fn ) {
+	foreach ( $php_files as $file ) {
+		$body = conexao_automation_strip_comments( (string) file_get_contents( $file ) );
+
+		// An option write must always name a declared constant or a literal
+		// that matches one; a bare update_option( $other ) is a violation.
+		if ( preg_match_all( '/' . $fn . '\(\s*([^,\)]+)/', $body, $m ) ) {
+			foreach ( $m[1] as $arg ) {
+				$arg = trim( $arg );
+
+				if ( false !== strpos( $arg, "'" ) ) {
+					// A literal: it must be one of the two declared names.
+					if ( ! in_array( trim( $arg, "'\"" ), $ALLOWED_OPTIONS, true ) ) {
+						$option_writes[] = basename( $file ) . ':' . $fn . '(' . $arg . ')';
+					}
+					continue;
+				}
+
+				// A constant reference: resolve it and check.
+				$resolved = null;
+
+				foreach ( $ALLOWED_OPTIONS as $name ) {
+					if ( false !== strpos( $arg, $name ) ) {
+						$resolved = $name;
+					}
+				}
+
+				if ( null === $resolved && preg_match( '/([A-Za-z_]+)::([A-Z_]+)/', $arg, $cm ) ) {
+					// `self::` cannot be resolved via constant(), so map the
+					// declaring class explicitly before reading the constant.
+					$class = 'self' === $cm[1] ? conexao_automation_class_name() : $cm[1];
+
+					if ( class_exists( $class ) && defined( $class . '::' . $cm[2] ) ) {
+						$resolved = constant( $class . '::' . $cm[2] );
+					}
+				}
+
+				if ( ! in_array( (string) $resolved, $ALLOWED_OPTIONS, true ) ) {
+					$option_writes[] = basename( $file ) . ':' . $fn . '(' . $arg . ')';
+				}
+			}
+		}
+	}
+}
+
+assert_true(
+	array() === $option_writes,
+	'option writes are limited to the two declared infrastructure options'
+	. ( $option_writes ? ': ' . implode( ', ', $option_writes ) : '' )
+);
+
+// The two permitted options are genuinely infrastructure: neither is a
+// content, taxonomy, menu or Polylang option name.
+assert_true(
+	! in_array( 'active_plugins', $ALLOWED_OPTIONS, true )
+	&& ! in_array( 'WPLANG', $ALLOWED_OPTIONS, true ),
+	'no WordPress core option is written by this plugin'
+);
 
 // No cron scheduling, no REST route, no admin_post handler.
 $hits = conexao_automation_token_hits(
@@ -273,6 +352,16 @@ assert_true(
 	'the proof stage registers with the shared engine'
 );
 
+/**
+ * The plugin class that owns the infrastructure option constants, used to
+ * resolve a `self::CONSTANT` reference found by this file's source scan.
+ *
+ * @return string
+ */
+function conexao_automation_class_name(): string {
+	return 'Conexao_Translation_Automation_Apply_Gate';
+}
+
 	/**
 	 * Assert a refusal: a specific failure category, no engine call, no mutation.
 	 *
@@ -282,13 +371,17 @@ assert_true(
 	 * @return void
 	 */
 function conexao_automation_assert_refused( array $context, string $expected, string $label ): void {
-	$before = $GLOBALS['conexao_automation_engine_calls'];
+	$before         = $GLOBALS['conexao_automation_engine_calls'];
+	$before_mutating = $GLOBALS['conexao_automation_mutating_calls'];
 
 	$result = Conexao_Translation_Automation_Orchestrator::run( $context );
 
 	assert_true( ! $result->ok(), $label . ': the run failed' );
 	assert_true( $expected === $result->failure_category(), $label . ': failure category is ' . $expected . ' (got "' . $result->failure_category() . '")' );
-	assert_true( $before === $GLOBALS['conexao_automation_engine_calls'], $label . ': the engine was never invoked' );
+	assert_true(
+		$before_mutating === $GLOBALS['conexao_automation_mutating_calls'],
+		$label . ': the engine was never asked to write'
+	);
 	assert_true( false === $result->mutation_permitted(), $label . ': mutation was not permitted' );
 	assert_true( false === $result->mutation_occurred(), $label . ': no mutation occurred' );
 
@@ -344,11 +437,14 @@ conexao_automation_assert_refused(
 	'another unknown mode name'
 );
 
-// APPLY is recognised and hard-disabled.
+// STAGE 2: apply is no longer refused at the mode gate; it is refused by the
+// FIRST link of its prerequisite chain. With no environment declared, the
+// environment guard refuses it and the engine is still never entered. The
+// full chain is proven in test-automation-apply-safety.php.
 conexao_automation_assert_refused(
 	conexao_automation_context( array( 'mode' => 'apply' ) ),
-	Conexao_Translation_Automation_Result::FAILURE_APPLY_DISABLED,
-	'apply mode'
+	Conexao_Translation_Automation_Result::FAILURE_ENVIRONMENT,
+	'apply mode with no environment'
 );
 
 // Stage allowlisting (S6).
@@ -379,7 +475,20 @@ conexao_automation_assert_refused(
 	'registered but unlisted stage'
 );
 
-// An allowlisted stage that the engine does not know fails closed too.
+// STAGE 2: the registry-consistency assertion is what refused the request
+// above. `en-unlisted` is registered with the engine but is not on the
+// allowlist, so it is drift: the whole run stops rather than the one stage
+// being quietly refused. That is the assertion working as designed, and it is
+// proven on its own terms in test-automation-apply-safety.php.
+//
+// With the drift removed, an allowlisted stage the engine does not know is
+// still refused individually.
+Conexao_Translation_Rollout_Engine::reset_stages();
+assert_true(
+	true === Conexao_Translation_Rollout_Engine::register_stage( conexao_automation_test_stage( 'en-guide' ) ),
+	'the drift stage is removed from the engine registry'
+);
+
 conexao_automation_assert_refused(
 	conexao_automation_context( array( 'stage' => 'en-jobs-page' ) ),
 	Conexao_Translation_Automation_Result::FAILURE_UNKNOWN_STAGE,

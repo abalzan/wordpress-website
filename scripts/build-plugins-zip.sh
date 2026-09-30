@@ -44,6 +44,8 @@ PLUGIN_SLUGS=(
     "conexao-event-importer"
     "conexao-leisure-migration"
     "conexao-sponsor-migration"
+    "conexao-translation-rollout"
+    "conexao-translation-automation"
 )
 # END GENERATED PLUGIN REGISTRY: release build list
 
@@ -156,9 +158,9 @@ echo "     - conexao-event-runtime  (production platform)"
 echo "     - conexao-event-importer  (local-only tooling)"
 echo "     - conexao-leisure-migration  (local-only tooling)"
 echo "     - conexao-sponsor-migration  (local-only tooling)"
-echo "     - conexao-translation-rollout  (local-only tooling (not in this release build))"
+echo "     - conexao-translation-rollout  (production platform)"
 echo "     - conexao-en-translation  (local-only tooling (not in this release build))"
-echo "     - conexao-translation-automation  (local-only tooling (not in this release build))"
+echo "     - conexao-translation-automation  (production platform)"
 echo "     - conexao-page-translation  (retired rollout — activate → apply → remove (not in this release build))"
 echo "     - conexao-blog-translation  (retired rollout — activate → apply → remove (not in this release build))"
 echo "     - conexao-job-translation  (retired rollout — activate → apply → remove (not in this release build))"
@@ -170,5 +172,7 @@ echo "     - conexao-data-model"
 echo "     - conexao-content"
 echo "     - conexao-admin-ux"
 echo "     - conexao-event-runtime"
+echo "     - conexao-translation-rollout"
+echo "     - conexao-translation-automation"
 echo "  Local-only tooling and retired rollouts are NOT part of the production steady state."
 # END GENERATED PLUGIN REGISTRY: activation order

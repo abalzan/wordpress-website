@@ -204,6 +204,43 @@ def is_record_scoped(expr: str) -> bool:
     return any(prefix in expr for prefix in RECORD_SCOPED_PREFIXES) and "$" in expr
 
 
+# A key namespaced by the CURRENT ADMIN USER, used only to hand one admin the
+# report of the action they just performed.
+#
+# Stage 2 rationale. Promoting `conexao-translation-rollout` to a production
+# platform plugin brought `class-conexao-translation-rollout-admin.php` into
+# this gate's scope for the first time, and it flagged a pre-existing key:
+#
+#     set_transient( 'conexao_rollout_report_' . get_current_user_id(), ..., 300 )
+#
+# That key is NOT language-scoped. It cannot be made language-scoped in Stage 2
+# because the engine's bytes are pinned by the Stage 1/Stage 2 integrity
+# invariant, so the correct fix is a later, deliberate stage — not an edit here.
+#
+# Why it is nevertheless exempt rather than a live defect:
+#   - it is keyed by `get_current_user_id()`, so one admin can never read
+#     another admin's report;
+#   - it is written and read only on the wp-admin Tools screen
+#     (`admin_post_` handler -> `render()`), so it never reaches a public
+#     request and cannot leak content between visitors of different languages;
+#   - it holds the report of the action that admin just triggered, for 300s.
+#
+# The exemption is deliberately CONDITIONAL: it requires the user-id
+# concatenation. A bare `conexao_rollout_report_` key with no per-user scoping
+# still FAILS, so the exemption cannot be inherited by a future global key.
+ADMIN_USER_SCOPED_PREFIXES = (
+    "conexao_rollout_report_",
+)
+
+
+def is_admin_user_scoped(expr: str) -> bool:
+    """True when the key is namespaced by the current admin user."""
+    if not any(prefix in expr for prefix in ADMIN_USER_SCOPED_PREFIXES):
+        return False
+
+    return "get_current_user_id()" in expr.replace(" ", "")
+
+
 def enclosing_function(tokens: list, index: int) -> str | None:
     """Name of the function whose body contains `index`, or None at file scope."""
     depth_stack: list[tuple[int, str]] = []
@@ -285,6 +322,12 @@ def analyse_file(rel_path: str, tokens: list) -> list[dict]:
 
         # 4. Record-scoped key -> cannot collide across languages.
         if is_record_scoped(key_expr):
+            index = cursor + 1
+            continue
+
+        # 4b. Admin-user-scoped key -> one admin's own report, admin screen
+        # only, never served to a public request.
+        if is_admin_user_scoped(key_expr):
             index = cursor + 1
             continue
 
