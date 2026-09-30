@@ -13,13 +13,37 @@ matches your task:
 
 | Document | What it is |
 |---|---|
-| [../AGENTS.md](../AGENTS.md) | **Start here** — scope, safety rules, what is authoritative, the workflow |
+| [../AGENTS.md](../AGENTS.md) | **Start here** — scope, safety rules, what is authoritative, skill selection |
 | [engineering-standard.md](engineering-standard.md) | The authoritative engineering standard (WP-ES) — read this before changing code |
-| [../.agents/skills/](../.agents/skills/) | **The WordPress agent skills** — one directory per skill, each an executable workflow (`When to use → Required reading → Steps → Guardrails → Verification → Definition of done`) |
 | [templates/plan.md](templates/plan.md) | **Plan template** — copy it before multi-file work, and before any content, route or English/Polylang change |
 | [templates/report.md](templates/report.md) | **Report template** — copy it to `docs/reports/` to close a stage or feature with real verification numbers and stated limitations |
 | [../.github/PULL_REQUEST_TEMPLATE.md](../.github/PULL_REQUEST_TEMPLATE.md) | The pull-request template aligned with the same standard |
 | [testing.md](testing.md) | How to run and write tests, and the stage classification of each suite |
+
+### Agent workflows live in `.agents/skills/`
+
+One directory per reusable agent workflow, each an executable `SKILL.md`
+(purpose → when to use/not use → required reading → authoritative sources →
+preconditions → steps → guardrails → verification → failure handling →
+evidence → definition of done). The full index, with each skill's primary
+canonical docs, is [`.agents/skills/README.md`](../.agents/skills/README.md).
+
+| Skill | What it is for |
+|---|---|
+| `wp-add-content-type` | Registering or changing a post type, taxonomy, meta field, archive or route |
+| `wp-add-admin-screen` | A maintainer capability operated through wp-admin (capability, nonce, dry-run preview) |
+| `wp-write-in-process-test` | Writing an in-process PHP test suite |
+| `wp-http-acceptance-matrix` | Writing an HTTP acceptance row or matrix |
+| `wp-run-tests` | Running the full test contract, diagnosing failures, comparing regressions |
+| `wp-content-change` | Any content-writing change that is not EN coverage or schema |
+| `wp-translation-rollout` | English coverage for a content type and extending the `/en/` layer |
+| `wp-add-strings` | Adding/changing user-facing strings and regenerating i18n catalogues |
+| `wp-release-deploy` | Building release artifacts, the release record, deployment verification, rollback |
+| `wp-production-operations` | Read-only production audits and explicitly authorised production actions |
+| `wp-update-docs` | Keeping documentation, indexes, reports and evidence current without drift |
+| `wp-security-review` | Reviewing capabilities, nonces, escaping, SQL, secrets and REST boundaries |
+| `wp-frontend-perf` | Templates, queries, caching, assets and images with measurable performance discipline |
+| `wp-plugin-registry` | Adding/re-classifying a plugin and keeping `plugins.json` the single registry |
 
 The skills are WordPress-domain only. The retired Dart/Flutter skill set that
 predated them is kept for provenance under
@@ -140,6 +164,11 @@ To add, remove or re-classify a plugin: edit `plugins.json`, add its doc under
 
 ## History and reference
 
+**Archive, not instructions.** The documents below are the dated historical
+record — what happened, how it was verified, what was decided. Operational
+procedures live in `.agents/skills/`; never treat a report as the current
+procedure.
+
 | Document | What it is |
 |---|---|
 | [reports/](reports/) | English rollout (Stages 0–9) + navigation-fix reports |
@@ -167,3 +196,5 @@ manual/historical/production-only classification. The authoritative policy is
 _Last verified: 2026-09-26 by Stage I — Scripts Standardisation_
 
 _Last verified: 2026-09-26 by Stage L — Permanent Invariant Gates_
+
+_Last verified: 2026-09-30 by the agent-skills documentation migration_
