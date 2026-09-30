@@ -1,0 +1,40 @@
+Production safety verification — post-inventory re-read (GET only)
+Runs compared: baseline inventory -> determinism run 2 -> safety verification run 3
+
+metric                                        run1        run2        run3        stable
+total source objects                          2277        2277        2277        YES
+CREATE_CANDIDATE                              430         430         430         YES
+ALREADY_COMPLETE                              0           0           0           YES
+B2_ONLY                                       1820        1820        1820        YES
+CONFLICT                                      0           0           0           YES
+ORPHAN                                        0           0           0           YES
+OUT_OF_SCOPE                                  27          27          27          YES
+INVALID                                       0           0           0           YES
+PT records (translated CPT scope, 2175 ref)   2175        2175        2175        YES
+PT records (total scope)                      2255        2255        2255        YES
+EN records (all types)                        0           0           0           YES
+EN translation links (all types)              0           0           0           YES
+orphan EN records                             0           0           0           YES
+EN conexao_category terms                     0           0           0           YES
+EN conexao_tag terms                          0           0           0           YES
+PT identity digest (16)                       cfe4b7a670266da3 cfe4b7a670266da3 cfe4b7a670266da3 YES
+manifest digest (16)                          7d7b066f0eb5aaa8 7d7b066f0eb5aaa8 7d7b066f0eb5aaa8 YES
+Polylang default_lang                         pt          pt          pt          YES
+Polylang pt assigned count                    2681        2681        2681        YES
+Polylang en assigned count                    0           0           0           YES
+
+== SAFETY LEDGER ==
+  production writes (this task)            = 0   (only GET requests; script has no write verb)
+  HTTP verbs issued                        = ['GET']
+  EN records created                       = 0
+  EN translation links created             = 0
+  taxonomy translations created            = 0
+  PT drift (ids+slugs+statuses)            = 0   (PT identity digest identical across all 3 runs)
+  PT drift (content digests)               = 0   (per-type content digests identical across all 3 runs)
+  PT translated-scope records              = 2175 (matches the verified 2,175 baseline)
+  .env changed                             = NO  (md5 e0e2ff20b47ebfee98838c976a8e331f before and after)
+  secrets exposed                          = NO  (credentials read from env, never logged or written)
+  writers run                              = 0   (run-en-translation.php NOT invoked; no --apply, no --remove)
+  dry-run writes / snapshots created       = 0   (Phase 2 begins here)
+  plugins deployed                         = 0
+  production content mutated               = 0

@@ -30,6 +30,7 @@ The ignore rules enforcing this live in the root `.gitignore`
 | `2026-09-26-stage-j/` | Build, release & deploy verification (Stage J) — the 7-step local release workflow, the release-integrity gate, the Stage I script-contract gate, the release smoke-matrix acceptance run and a real `dist/release.json` | `./scripts/verify-release.sh`, `tests/scripts/verify-release-integrity.py`, `tests/acceptance/verify-release-http.py`, cited by `docs/reports/site/2026-09-26-stage-j-build-release-deploy-verification.md` |
 | `2026-09-28-ci-integration-fixture/` | CI fresh-install diagnosis and isolated setup verification — original run totals, fresh Polylang setup, Jobs rollout and 16-assertion gate | GitHub Actions run 36429929963 + isolated Docker reproduction, cited by `docs/reports/site/2026-09-28-ci-integration-fixture.md` |
 
+| `2026-09-30-en-translation-inventory/` | EN Translation Rollout **Phase 1** (production inventory, read-only, `Production writes: 0`, GET only) — the repository's own EN stage manifests, the classified EN manifest (2,277 objects → 430 expected EN objects, 0 conflicts), the live Polylang baseline, the PT/EN route matrix, the B2-resolution and EN-description-absence proofs, the 3-run determinism proof and the safety ledger with the PT protection digests | `docs/evidence/2026-09-30-en-translation-inventory/en-translation-inventory.py`, cited by `docs/reports/2026-09-30-en-translation-inventory.md` |
 Historical note: the raw `stage*-work/` trees behind the Stage 1–9 reports
 were removed from Git in Stage B. Their curated narrative is the report set
 in `docs/reports/`; everything else was regenerable probe output.
@@ -41,3 +42,5 @@ _Last verified: 2026-09-26 by Stage I — Scripts Standardisation_
 _Last verified: 2026-09-26 by Stage O — Enable the Real English Blog Archive_
 
 _Last verified: 2026-09-28 by CI integration setup recovery_
+
+_Last verified: 2026-09-30 by the EN Translation Rollout — Phase 1 production inventory (read-only)_

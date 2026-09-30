@@ -1,0 +1,99 @@
+Production EN translation inventory — summary tables
+target: https://conexaobr.ie (production)  verbs used: GET only  production writes: 0
+generated (UTC): 2026-09-30T06:58:14Z
+
+== post types: live record + language state ==
+post_type           total       PT       EN unassigned coll_pt/en
+course_provider        11       11        0          0      11/11
+event                1808     1808        0          0  1808/1808
+guide                  56       56        0          0       56/0
+job                     1        1        0          0        1/1
+leisure               289      289        0          0    289/289
+page                   43       43        0          0      43/43
+post                   37       37        0          0       37/0
+sponsor                10       10        0          0      10/10
+
+== taxonomies ==
+taxonomy              terms     PT     EN unassigned      shared?
+conexao_category         58     58      0          0   translated
+conexao_county           26      0      0         26       SHARED
+conexao_tag               0      0      0          0   translated
+conexao_town            251      0      0        251       SHARED
+
+== EN state per post type ==
+post_type        EN ids  pairs orphans unassigned
+course_provider       0      0      0          0
+event                 0      0      0          0
+guide                 0      0      0          0
+job                   0      0      0          0
+leisure               0      0      0          0
+page                  0      0      0          0
+post                  0      0      0          0
+sponsor               0      0      0          0
+
+== stage model (read from HEAD) ==
+  en-blog-page                       kind=record  type=page             B1
+  en-course-provider-description     kind=field   type=course_provider  B2
+  en-guide                           kind=record  type=guide            B1
+  en-jobs-page                       kind=record  type=page             B1
+  en-leisure-description             kind=field   type=leisure          B2
+  en-page                            kind=record  type=page             B1
+  en-post                            kind=record  type=post             B1
+
+== stage classification matrix ==
+stage                              post_type        B1/B2 CREATE_CANDIDATE  ALREADY_COMPLETE  B2_ONLY          CONFLICT         ORPHAN           OUT_OF_SCOPE     INVALID        
+(none)                             —                —    0                0                1820             0                0                18               0                TOTAL=1838
+en-blog-page                       page             B1   1                0                0                0                0                0                0                TOTAL=1
+en-course-provider-description     course_provider  B2   10               0                0                0                0                0                0                TOTAL=10
+en-guide                           guide            B1   62               0                0                0                0                3                0                TOTAL=65
+en-jobs-page                       page             B1   1                0                0                0                0                0                0                TOTAL=1
+en-leisure-description             leisure          B2   289              0                0                0                0                0                0                TOTAL=289
+en-page                            page             B1   31               0                0                0                0                0                0                TOTAL=31
+en-post                            post             B1   36               0                0                0                0                6                0                TOTAL=42
+(none) B2 scope                    —                B2   0                0                1820             0                0                18               0                TOTAL=1838
+
+== manifest totals ==
+  total source objects : 2277
+    CREATE_CANDIDATE   430
+    ALREADY_COMPLETE   0
+    B2_ONLY            1820
+    CONFLICT           0
+    ORPHAN             0
+    OUT_OF_SCOPE       27
+    INVALID            0
+  reconciliation       : 2277 == 2277 -> True
+
+== PT protection baseline ==
+  translated CPT scope : 2175  ['guide', 'event', 'leisure', 'sponsor', 'job', 'course_provider']
+  B1 editorial scope   : 80  ['page', 'post']
+  total PT (scope)     : 2255
+  identity digest      : cfe4b7a670266da32ba635f3f46994328143d3de77a914aa52491d42e3a6f853
+  post_type        PT recs published identity_digest    content_digest    
+  course_provider      11       11 0aed5ce1ec8efcc6   8305ad313a4c39ba  
+  event              1808     1808 e62772a6c316777b   3c444ce3cedcd578  
+  guide                56       56 035b850c63cb5bc7   b6b6700ee964e5ca  
+  job                   1        1 893e91ff15b2924e   6e504698fefe5098  
+  leisure             289      289 28c0e43bab72581e   b19f53a7c3912abd  
+  page                 43       43 b3eea7d8b7c31c9f   7413f5a30e6c35c3  
+  post                 37       37 9fac9eac4ab0d22d   9bbbb0afb6fade72  
+  sponsor              10       10 282853d2913924fa   cfbc5989cc0ea16b  
+
+== manifest consistency checks ==
+  no_accidental_en_update          PASS
+      existing_en_records: 0
+      unclaimed: []
+  no_conflicting_stage_ownership   PASS
+      owners: {}
+  no_duplicate_source_ids          PASS
+      duplicates: []
+  no_duplicate_target_identity     PASS
+      collisions: []
+  no_pt_overwrite                  PASS
+      pt_write_targets: []
+      shared_slug_note: a shared slug is a routing shape, not a fork: the EN record is a NEW record in the 'en' language and the PT record is only read
+      shared_slug_rows_creating_a_new_en_record: ['en-blog-page::blog', 'en-jobs-page::empregos', 'en-page::newsletter']
+  taxonomy_consistency             PASS
+      shared_taxonomies: ['conexao_county', 'conexao_town']
+      shared_terms_in_manifest: 0
+
+  manifest digest      : 7d7b066f0eb5aaa89b61642bed65482f784ad1a492e769fdd01549b8624c528a
