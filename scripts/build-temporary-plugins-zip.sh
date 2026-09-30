@@ -73,6 +73,9 @@ fi
 
 registry_fact() {
     # registry_fact <slug> <key> -> "true" / "false" / "absent" from plugins.json
+    #
+    # shellcheck disable=SC2016  # $argv is PHP's argv, not a shell variable: the
+    #                              single quotes are deliberate, no expansion is wanted.
     php -r '
         $slug = $argv[1];
         $key  = $argv[2];

@@ -1,0 +1,83 @@
+[PASS] plugin/conexao-admin-ux/test-recurrence-admin.php — 60 passed, 0 failed
+[PASS] plugin/conexao-admin-ux/test-translation-state.php — 23 passed, 0 failed
+[FAIL] plugin/conexao-en-translation/test-shared-slug-newsletter.php — 35 passed, 2 failed (exit 1)
+           FAIL: the drifted slug is reported as the engine's repairable `update` case, not as a create
+           FAIL: the shared-slug guard fixtures were removed and the real newsletter page is untouched — expected [8], got [8,509]
+[PASS] plugin/conexao-event-importer/test-county-registry.php — 473 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-error-handling.php — 55 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-event-address.php — 76 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-event-image-sync.php — 30 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-eventbrite-importer.php — 68 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-export-language.php — 58 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-import-log.php — 53 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-ivvcc-importer.php — 46 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-language-identity.php — 29 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-mondello-park-importer.php — 142 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-motorsport-ireland-importer.php — 90 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-past-event-filter.php — 29 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-reappearing-event-lifecycle.php — 5 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-source-county-hint.php — 18 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-town-sanitization.php — 83 passed, 0 failed
+[PASS] plugin/conexao-event-runtime/test-event-language-gate.php — 18 passed, 0 failed
+[PASS] plugin/conexao-event-runtime/test-event-query.php — 41 passed, 0 failed
+[PASS] plugin/conexao-event-runtime/test-event-recurrence.php — 90 passed, 0 failed
+[PASS] plugin/conexao-job-translation/test-job-engine-migration.php — 16 passed, 0 failed
+[PASS] plugin/conexao-leisure-migration/test-excerpt-en-roundtrip.php — 9 passed, 0 failed
+[PASS] plugin/conexao-leisure-migration/test-language-uuid.php — 16 passed, 0 failed
+[PASS] plugin/conexao-translation-rollout/test-future-stage-smoke.php — 13 passed, 0 failed
+[PASS] plugin/conexao-translation-rollout/test-rollout-failure-proofs.php — 12 passed, 0 failed
+[PASS] plugin/conexao-translation-rollout/test-translation-rollout-engine.php — 36 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-blog-en-translation.php — 28 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-cache-language-scoping.php — 9 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-course-provider-card-excerpt-language.php — 45 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-en-archive-rewrite-guard.php — 17 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-en-course-provider-category-filter.php — 60 passed, 0 failed
+[FAIL] theme/conexao-br-irlanda/test-en-jobs-shared-slug.php — 33 passed, 6 failed (exit 1)
+           FAIL: no unexpected additional shared-slug page pair exists — 1 violation(s): {"pairs":["blog","empregos","newsletter"],"count":3}
+           FAIL: an EN request for newsletter is NOT rewritten while only the PT page holds the slug — 1 violation(s): {"pt_id":8,"vars":{"lang":"en","page_id":509}}
+           FAIL: an EN request for newsletter resolves to the EN newsletter record — 1 violation(s): {"resolved":{"lang":"en","page_id":509},"expected_page_id":1081}
+           FAIL: an EN newsletter page with no valid PT counterpart is NOT bound to the requested language — 1 violation(s): {"vars":{"lang":"en","page_id":509},"en_id":1081}
+           FAIL: two PT pages on the shared slug do NOT hand the EN request to the EN record — 1 violation(s): {"second_pt":1082,"vars":{"lang":"en","page_id":509}}
+           FAIL: the newsletter shared-slug fixtures were removed and only the real PT page holds the slug — 1 violation(s): {"survivors":[8,509],"pt_id":8}
+[PASS] theme/conexao-br-irlanda/test-event-location-filters.php — 63 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-filter-link-aria-semantics.php — 103 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-guide-breadcrumb-filter.php — 36 passed, 0 failed
+[FAIL] theme/conexao-br-irlanda/test-guide-en-translation.php — 624 passed, 2 failed (exit 1)
+           FAIL: eligible public PT guides missing EN = 0 — missing: ["carteira-de-motorista-2","learner-permit-theory-test-irlanda-cnh-brasileira"]
+           FAIL: one EN translation per public PT guide — 50 pairs vs 52 PT guides
+[PASS] theme/conexao-br-irlanda/test-header-menu-selection.php (pt) — 12 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-header-menu-selection.php (en) — 16 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-homepage-content-type-label.php — 29 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-i18n-foundation.php — 29 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-job-en-translation.php — 32 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-jobs-en-language.php — 103 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-language-switcher-flag.php — 60 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-leisure-attribute-normalization.php — 22 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-leisure-card-excerpt-language.php — 45 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-leisure-card-map-action.php — 44 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-leisure-multiselect-filters.php — 64 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-leisure-related-events.php — 19 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-nav-language-context-logic.php — 49 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-nav-language-context.php — 16 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-nav-menu-regression.php — 41 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-polylang-foundation.php — 62 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-recurrence-i18n.php — 12 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-redirect-precedence.php — 15 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-sponsor-archive-ordering.php — 15 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-stage32-bilingual.php — 49 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-stage33-bilingual.php — 190 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-stage41-rest-language.php — 222 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-stage45-pages.php — 339 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-stage7-hero-sponsors.php — 10 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-taxonomy-policy.php — 18 passed, 0 failed
+[FAIL] theme/conexao-br-irlanda/test-translation-completeness.php — 22 passed, 1 failed (exit 1)
+           FAIL: guide: eligible public PT records missing a linked EN translation = 0 — 2 violation(s): {"eligible":52,"translated":50,"allowlisted":0,"sample":["learner-permit-theory-test-irlanda-cnh-brasileira","carteira-de-motorista-2"]}
+[PASS] tests/scripts/verify-agent-governance.py
+[PASS] tests/scripts/verify-cache-key-scoping.py
+[PASS] tests/scripts/verify-documentation-drift.py
+[PASS] tests/scripts/verify-i18n-freshness.py
+[PASS] tests/scripts/verify-release-integrity.py
+[PASS] tests/scripts/verify-script-conventions.py
+[PASS] tests/acceptance/verify-guides-en-http.py — 20 passed, 0 failed
+[PASS] tests/acceptance/verify-release-http.py — 44 passed, 0 failed
+[PASS] tests/acceptance/verify-routing-http.py — 92 passed, 0 failed

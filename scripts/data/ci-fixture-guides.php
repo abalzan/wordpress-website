@@ -21,12 +21,32 @@
  * nothing to do with the code under test. This dataset therefore creates
  * the PT half of a pair whose EN half the repository ALREADY ships.
  *
- * CATEGORY COVERAGE IS LOAD-BEARING, not decorative. The en-guide stage
+ * * CATEGORY COVERAGE IS LOAD-BEARING, not decorative. The en-guide stage
  * also runs a taxonomy gate over every authored `conexao_category` term
- * (13 of them, in guide-terms-data.php). Between them these 51 records
+ * (13 of them, in guide-terms-data.php). Between them these 50 records
  * use all 13, so the gate has every PT term it expects to translate and
  * the EN terms it creates are all actually referenced. Dropping a
  * category here would silently un-reference an authored EN term.
+ *
+ * * TWO SLUGS ARE DELIBERATELY ABSENT, by repository decision (2026-09-30):
+ *
+ *   - `learner-permit-theory-test-irlanda-cnh-brasileira` — its PT source was
+ *     PERMANENTLY DELETED upstream and the authored EN row was retired with
+ *     it. The retirement is recorded in
+ *     `wp-content/plugins/conexao-en-translation/includes/exclusions-data.php`
+ *     (classification NO_REAL_PT_SOURCE). A synthetic fixture that recreated
+ *     the PT record would resurrect a deleted source and would make the
+ *     translation-completeness gate count a retired row as "missing EN". The
+ *     deleted source is therefore NOT eligible here: it does not exist.
+ *
+ *   - `carteira-de-motorista-2` — the historical key this dataset used to
+ *     carry. The authored EN row was re-keyed to the REAL replacement PT
+ *     guide `carteira-motorista-brasileiros` (production id 25031), so the
+ *     fixture must create the replacement guide, not the retired key.
+ *     Evidence: docs/reports/2026-09-30-en-rollout-blocker-resolution.md
+ *
+ * Both changes keep the dataset a subset of the authored English manifest,
+ * which is the invariant this file exists to hold.
  *
  * CONTENT: synthetic. Every body is a deterministic placeholder that
  * states its own synthetic nature. No production copy, no scraped
@@ -57,7 +77,10 @@ function conexao_ci_fixture_guides(): array {
 		'abrir-conta-bancaria-2'                           => 'financas',
 		'alugar-casa-2'                                    => 'moradia',
 		'comprar-carro-2'                                  => 'transporte',
-		'carteira-de-motorista-2'                          => 'transporte',
+		// RE-KEYED 2026-09-30 from the retired `carteira-de-motorista-2` to the
+		// REAL replacement PT guide `carteira-motorista-brasileiros` — see the
+		// dataset header. Same subject, same category, real authored EN row.
+		'carteira-motorista-brasileiros'                   => 'transporte',
 		'impostos-2'                                       => 'impostos-e-revenue',
 		'cidadania-irlandesa-2'                            => 'documentos',
 		'passaporte-irlandes-2'                            => 'documentos',
@@ -90,7 +113,9 @@ function conexao_ci_fixture_guides(): array {
 		'ehic-irlanda-brasileiros-residentes'              => 'saude',
 		'reconhecer-diploma-brasileiro-na-irlanda-naric-qqi' => 'educacao',
 		'leap-card-irlanda-como-usar'                      => 'transporte',
-		'learner-permit-theory-test-irlanda-cnh-brasileira' => 'transporte',
+		// `learner-permit-theory-test-irlanda-cnh-brasileira` is DELIBERATELY
+		// absent: its PT source was permanently deleted and its EN row retired
+		// (exclusions-data.php, NO_REAL_PT_SOURCE). See the dataset header.
 		'assistencia-juridica-legal-aid-irlanda-brasileiros' => 'justica-e-seguranca',
 		'casamento-registro-nascimento-irlanda-brasileiros' => 'documentos',
 		'reclamar-banco-seguro-servico-financeiro-irlanda' => 'financas',

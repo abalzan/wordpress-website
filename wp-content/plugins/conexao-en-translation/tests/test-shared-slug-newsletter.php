@@ -281,6 +281,15 @@ if ( $pt_newsletter instanceof WP_Post ) {
 	// existing translation, and the engine's `update` path repairs its slug. This
 	// is the pre-existing `newsletter-2` debt this policy exists to prevent
 	// recurring, so the case is proven rather than assumed.
+	//
+	// The drift is CREATED deterministically here, not hoped for: on an install
+	// whose linked EN newsletter already holds the authored slug (the synthetic
+	// CI database, where the shared `en-page` stage has already run), the
+	// record starts UN-drifted, so the repairable `update` classification can
+	// only be proven by renaming the linked record to the historical
+	// `newsletter-2` and restoring it afterwards. The original slug is restored
+	// under the same scoped permit the stage arms, and the restoration is
+	// asserted, not assumed.
 	$drifted_en = (int) pll_get_post( $real_pt_id, 'en' );
 	if ( $drifted_en > 0 && $drifted_en !== $real_pt_id ) {
 		$drifted = call_user_func( $guarded['find_en_for_pt'], $real_pt_id, 'newsletter' );
@@ -288,10 +297,59 @@ if ( $pt_newsletter instanceof WP_Post ) {
 			! empty( $drifted['pair_ok'] ),
 			'a linked EN translation is accepted even when its slug has drifted (the engine repairs it on apply)'
 		);
-		assert_true(
-			! $drifted['en_slug_matches'],
-			'the drifted slug is reported as the engine\'s repairable `update` case, not as a create'
-		);
+
+		$original_en_slug = (string) get_post_field( 'post_name', $drifted_en );
+
+		if ( $drifted['en_slug_matches'] ) {
+			// POST-PAIR: the linked EN already holds the authored slug. Recreate
+			// the historical drift, prove the `update` classification against it,
+			// then restore the authored slug.
+			wp_update_post(
+				array(
+					'ID'        => $drifted_en,
+					'post_name' => 'newsletter-2',
+				),
+				true
+			);
+
+			$drifted = call_user_func( $guarded['find_en_for_pt'], $real_pt_id, 'newsletter' );
+
+			assert_true(
+				! empty( $drifted['pair_ok'] ),
+				'the drifted but linked EN translation is still the pair, never a duplicate'
+			);
+			assert_true(
+				! $drifted['en_slug_matches'],
+				'the drifted slug is reported as the engine\'s repairable `update` case, not as a create'
+			);
+
+			set_transient( 'conexao_en_translation_shared_page_slug', 'newsletter', 5 * MINUTE_IN_SECONDS );
+			add_filter( 'wp_unique_post_slug', 'conexao_en_translation_shared_page_slug_filter', 10, 6 );
+
+			try {
+				wp_update_post(
+					array(
+						'ID'        => $drifted_en,
+						'post_name' => $original_en_slug,
+					),
+					true
+				);
+			} finally {
+				remove_filter( 'wp_unique_post_slug', 'conexao_en_translation_shared_page_slug_filter', 10 );
+				delete_transient( 'conexao_en_translation_shared_page_slug' );
+			}
+
+			assert_equals(
+				$original_en_slug,
+				(string) get_post_field( 'post_name', $drifted_en ),
+				'the linked EN newsletter record\'s authored slug is restored exactly'
+			);
+		} else {
+			assert_true(
+				! $drifted['en_slug_matches'],
+				'the drifted slug is reported as the engine\'s repairable `update` case, not as a create'
+			);
+		}
 	} else {
 		assert_true(
 			true,
@@ -355,11 +413,31 @@ $survivors = get_posts(
 		'lang'           => '',
 	)
 );
-$expected_survivors = $pt_newsletter instanceof WP_Post ? array( (int) $pt_newsletter->ID ) : array();
+
+// The pages that must survive this suite: the real PT newsletter page, plus —
+// when one exists and holds the slug — its REAL linked EN translation (the
+// shared engine's `en-page` stage authors it; it is site content, not this
+// suite's fixture, so it is never created or deleted here).
+$expected_survivors = array();
+
+if ( $pt_newsletter instanceof WP_Post ) {
+	$expected_survivors[] = (int) $pt_newsletter->ID;
+
+	$real_en = (int) pll_get_post( (int) $pt_newsletter->ID, 'en' );
+
+	if ( $real_en > 0 && 'newsletter' === (string) get_post_field( 'post_name', $real_en ) ) {
+		$expected_survivors[] = $real_en;
+	}
+}
+
+sort( $expected_survivors );
+$actual_survivors = array_map( 'intval', (array) $survivors );
+sort( $actual_survivors );
+
 assert_equals(
 	$expected_survivors,
-	array_map( 'intval', (array) $survivors ),
-	'the shared-slug guard fixtures were removed and the real newsletter page is untouched'
+	$actual_survivors,
+	'the shared-slug guard fixtures were removed and the real newsletter pages are untouched'
 );
 
 test_finish( 'conexao-en-translation shared-slug newsletter' );
