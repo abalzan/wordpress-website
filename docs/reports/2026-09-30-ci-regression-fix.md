@@ -218,6 +218,19 @@ Both fresh-database runs are identical on every summary metric the determinism
 contract covers. The raw logs are
 `docs/evidence/2026-09-30-ci-regression-fix/01-*` and `02-*`.
 
+Two further confirmation runs of the same content (docs-only differences)
+were also executed, both **all three jobs green** with the identical metrics:
+[36761025237](https://github.com/abalzan/wordpress-website/actions/runs/36761025237)
+(log: `docs/evidence/2026-09-30-ci-regression-fix/03-*.txt`, includes the
+updated `docs/reports/README.md` index row, so the documentation-drift gate is
+proven green against the new report too) and
+[36761644872](https://github.com/abalzan/wordpress-website/actions/runs/36761644872)
+(the branch tip itself). Extracted from both: `created this run: 150`,
+in-process `Assertions: 4204 passed, 0 failed`, `ALL TESTS PASSED`,
+`Gates: 7 total, 7 passed, 0 failed`, `Assertions: 89 passed, 0 failed`,
+`AGGREGATE: PASS`. Four consecutive green runs, zero failing assertions in
+any of them.
+
 ## Final status
 
 **PASS — CI regression fixed and full verification green**
