@@ -1,0 +1,35 @@
+# Stage 12 - Baseline classification (Section 35): the pre-existing failure set
+
+Stage 12 full-suite result vs Stage 11 full-suite result, line by line:
+
+  SUITE                                                      | STAGE 11                     | STAGE 12
+  -----------------------------------------------------------|------------------------------|------------------------------
+  theme/test-en-jobs-shared-slug.php (newsletter en_id 509)  | FAIL 38p/1f                  | FAIL 38p/1f                  
+  theme/test-leisure-card-excerpt-language.php            | FAIL 40p/5f                  | FAIL 40p/5f                  
+  tests/scripts/verify-i18n-freshness.py (3 stale .pot)    | FAIL exit 1                  | FAIL exit 1                  
+  tests/acceptance/verify-routing-http.py (lazer row)      | FAIL 1 row                   | FAIL 1 row                   
+
+  In-process PHP suites : 79 total, 77 passed, 2 failed   | 79/77/2  -> IDENTICAL
+  Assertions            : 5993 passed, 6 failed            | 5993/6    -> IDENTICAL
+  Script-contract       : 14 total, 13 passed, 1 failed    | 14/13/1   -> IDENTICAL
+  HTTP acceptance       : 3 total, 2 passed, 1 failed     | 3/2/1     -> IDENTICAL
+
+=> Stage 12 introduced NO new failure and fixed NO pre-existing failure.
+=> These are the KNOWN conditions of Section 35, carried forward and NOT reclassified:
+
+  1. i18n_freshness - 3 stale catalogues:
+       conexao-br-irlanda     .pot older than inc/navigation.php        by 92483s
+       conexao-content       .pot older than conexao-content.php      by 76025s
+       conexao-event-runtime .pot older than conexao-event-runtime.php by 76025s
+     NOT regenerated. Section 35 forbids regenerating catalogues solely to
+     clear this condition. conexao-translation-automation is FRESH.
+  2. newsletter EN resolution: pt_id=8 -> en_id=509 does not resolve to the
+     real linked EN newsletter record (test-en-jobs-shared-slug.php).
+  3. leisure-card excerpt failures: 5 assertions in
+     test-leisure-card-excerpt-language.php (missing_en=1, 1 conflict).
+  4. HTTP acceptance: pt-lazer-card-excerpt-stays-portuguese /lazer/ is missing
+     the fragment 'Casa rural restaurada aos pes da montanha Keadeen'
+     (the dwyer-mcallister-cottage item).
+
+Stage 2 cache-scoping exemption: cache_scoping 9/0 and cache_scoping_static
+2/0 remain green; the exemption is unchanged and was not re-litigated.

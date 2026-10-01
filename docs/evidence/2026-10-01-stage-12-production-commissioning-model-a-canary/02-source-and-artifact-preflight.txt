@@ -1,0 +1,26 @@
+# Stage 12 - Source/artifact preflight (Section 4)
+
+## git status (before any Stage 12 work)
+## i18n...origin/i18n [ahead 9]
+ M docs/evidence/2026-09-26-stage-l/gate.json
+?? docs/evidence/2026-10-01-stage-12-production-commissioning-model-a-canary/
+
+HEAD  = 972ca4eb1c038e6859191a5895767674fb4dcc97
+branch= i18n
+
+## exact current digests, captured directly from the checked-out repository
+(Stage 11 abbreviated digest NOT relied upon - full SHA-256 recomputed here)
+264cc6c4e7b4214f2bc30436afb077d308b1897de444431c5c3a331f08116912  wp-content/plugins/conexao-translation-rollout/includes/class-conexao-translation-rollout-engine.php
+945611ce27760716ddeb028105c62819ef76d5a24fc78ad2f8e3c4ce46a5b5dc  wp-content/plugins/conexao-translation-rollout/conexao-translation-rollout.php
+0d1575075346c7454ca89a4d8d8355e870274bea7030e56a5857c41b509af46f  wp-content/plugins/conexao-translation-automation/conexao-translation-automation.php
+
+## plugin headers (version / Requires Plugins)
+== conexao-translation-rollout
+ * Plugin Name: Conexao Translation Rollout Engine
+ * Version: 1.2.0
+ * Text Domain: conexao-translation-rollout
+== conexao-translation-automation
+ * Plugin Name: Conexão BR Irlanda — Translation Automation
+ * Version: 0.4.0
+ * Requires Plugins: conexao-translation-rollout
+ * Text Domain: conexao-translation-automation

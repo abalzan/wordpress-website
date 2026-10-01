@@ -1,0 +1,33 @@
+# Stage 12 - Model A in the REAL production lifecycle (Sections 2, 21, 28)
+
+>>> RESULT: NOT PROVEN IN PRODUCTION. NOT PERFORMED.
+
+Section 2 requires the production canary to demonstrate the chain:
+  authored stage manifest -> approved subset -> engine scope -> executed plan
+with the executed plan containing exactly the approved operation set.
+
+That chain requires a production installation, a production provider result,
+a production approval and a production apply. NONE of these occurred:
+  - production installation ........... NOT PERFORMED (no authorization)
+  - provider result (no credential) ..... NOT PERFORMED
+  - production approval ................ NOT PERFORMED (no canary authorization)
+  - production apply ................... NOT PERFORMED (apply not authorized)
+
+Section 28 additionally requires, AFTER a write, an explicit record of
+  authored scope / approved scope / executed scope and proof of
+  approved scope == executed scope (equality, not subset).
+No production write occurred, so no post-write scope record exists.
+=> Model A is NOT claimed as proven in production by this stage.
+
+WHAT IS PROVEN (local, pre-production, unchanged by Stage 12):
+Stage 11s MODEL_A - TRUE SUBSET EXECUTION implementation is present and green:
+  - test-automation-model-a.php ..... 145 passed, 0 failed
+  - the invariant approved scope == executed scope is exercised against the
+    REAL shared engine through the REAL orchestrator, with the executed side
+    recomputed from the engine plan (not a caller boolean).
+  - For a one-record canary the suite proves planned=1 and executed=1.
+Stage 12 did not modify the engine and did not re-run or alter these tests.
+They remain the LOCAL proof only. They are NOT production evidence.
+
+CONCLUSION: Model A production exact-subset execution remains OUTSTANDING and is
+the single most important prerequisite left for a future stage.

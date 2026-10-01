@@ -216,3 +216,29 @@ nonce, a cookie, an authorization header or a `.env` file.
 Cited by `docs/reports/2026-10-01-stage-11-model-a-scope-contract-and-batch-control.md`.
 
 _Last verified: 2026-10-01 by Stage 11 — Model A scope contract and batch control (`PASS WITH CONDITIONS`)_
+
+---
+
+## `2026-10-01-stage-12-production-commissioning-model-a-canary/`
+
+| File | Content |
+|---|---|
+| `01-environmental-prerequisite-gate.txt` | §3 the environmental gate: presence flags only, the three permissions judged independently, the read-only reachability probe, and why the local Docker and unrelated `OPENAI_API_KEY` credentials were not used |
+| `02-source-and-artifact-preflight.txt` | §4 git status, the full engine/automation/rollout SHA-256 recomputed from the tree, and the plugin headers |
+| `03-artifact-hashes-build-twice.txt` | §5 both builds, artifact hashes, header/registry/release agreement, dependency ordering, and the secret, test-file and Docker-file scans |
+| `04-control-plane-legacy-endpoint-emergency-stop.txt` | §§7–10 the control-plane registry, the batch-control action and owning file, the security contract, the forbidden-surface counts, the `410` source, and the emergency-stop fail-closed semantics |
+| `05-required-tests.txt` | §38 the preflight gate results, suite by suite |
+| `06-baseline-classification.txt` | §35 the Stage 12 failure set beside Stage 11's, and each known condition named |
+| `07-model-a-production-proof.txt` | §§2/21/28 why the production Model A proof is `NOT PERFORMED`, and what remains locally proven |
+| `08-engine-integrity.txt` | §36 the before/after SHA-256 and the corroborating assertion |
+| `09-steps-not-performed.txt` | §§11–34 every unperformed step with its reason, each reported as `NOT PERFORMED` |
+| `10-full-test-run.txt` | the full suite summary |
+| `11-permanent-gates.txt` | the Stage L permanent-invariant aggregate |
+
+No file in this directory contains a credential, an application password, a nonce, a
+cookie, an authorization header or a `.env` file.
+
+Cited by `docs/reports/2026-10-01-stage-12-production-commissioning-model-a-canary.md`.
+
+_Last verified: 2026-10-01 by Stage 12 — production commissioning and the Model A canary (`BLOCKED`)_
+

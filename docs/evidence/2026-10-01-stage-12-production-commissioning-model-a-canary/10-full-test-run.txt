@@ -1,0 +1,25 @@
+[PASS] tests/scripts/verify-stage8-release-consistency.py
+         52 passed, 0 failed
+
+HTTP acceptance suites (base: http://localhost:8080)
+[PASS] tests/acceptance/verify-guides-en-http.py — 20 passed, 0 failed
+[PASS] tests/acceptance/verify-release-http.py — 44 passed, 0 failed
+[FAIL] tests/acceptance/verify-routing-http.py (exit 1)
+           FAIL  pt-lazer-card-excerpt-stays-portuguese /lazer/  -- missing fragment: 'Casa rural restaurada aos pés da montanha Keadeen'
+           PASS  rest-invalid-lang-guide /wp-json/wp/v2/guide?lang=pt-br (status 400)
+           PASS  rest-invalid-lang-event /wp-json/wp/v2/event?lang=pt-br (status 400)
+           PASS  rest-invalid-lang-leisure /wp-json/wp/v2/leisure?lang=pt-br (status 400)
+           PASS  rest-invalid-lang-posts /wp-json/wp/v2/posts?lang=pt-br (status 400)
+         1 matrix row(s) failed
+
+----------------------------------------
+In-process PHP suites: 79 total, 77 passed, 2 failed
+Assertions: 5993 passed, 6 failed
+Script-contract suites: 14 total, 13 passed, 1 failed
+HTTP acceptance suites: 3 total, 2 passed, 1 failed
+----------------------------------------
+TESTS FAILED
+failing suites:
+  - theme/conexao-br-irlanda/test-en-jobs-shared-slug.php
+  - theme/conexao-br-irlanda/test-leisure-card-excerpt-language.php
+full suite output kept in /tmp/tmp.EH3ZT4FwEL

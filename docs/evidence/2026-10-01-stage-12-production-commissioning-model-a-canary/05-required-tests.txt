@@ -1,0 +1,68 @@
+# Stage 12 - Required tests run BEFORE production (Section 38, first list)
+NONE of these were run "before production" in the deployment sense: there is no
+production deployment. They were run as the preflight gate that DECIDES whether
+a deployment may be attempted. Results below.
+
+== 1. Model A scope tests (local Docker, in-process, real engine) ==
+    PASS: and the scope is OPTIONAL — an omitted scope leaves every pre-Stage-11 caller unchanged
+  
+  Stage 11 Model A true subset execution: 145 passed, 0 failed
+
+== 2. Batch-control + bounded batch security tests ==
+    PASS: the shared engine core still hashes to its pinned pre-Stage-10 value
+  
+  Stage 10 bounded batch execution: 243 passed, 0 failed
+  
+  automation apply safety: 107 passed, 0 failed
+  
+  automation boundary: 148 passed, 0 failed
+
+== 3. Control-plane gates ==
+  verify-stage8-control-plane.py     : 149 passed, 0 failed
+  verify-stage10-batch-boundary.py    : negative proofs: 20 proven, 0 missed
+  verify-stage7-commissioning.py      : 73 passed, 0 failed
+
+== 4. Provider tests ==
+  
+  stage 3 provider boundary: 222 passed, 0 failed
+  
+  stage 4 provider implementation: 144 passed, 0 failed
+  152 passed, 0 failed
+
+== 5. Full test suite (./scripts/run-tests.sh) ==
+  In-process PHP suites (serial, one process per suite)
+  Script-contract suites (static, no WordPress, no network)
+  HTTP acceptance suites (base: http://localhost:8080)
+  In-process PHP suites: 79 total, 77 passed, 2 failed
+  Assertions: 5993 passed, 6 failed
+  Script-contract suites: 14 total, 13 passed, 1 failed
+  HTTP acceptance suites: 3 total, 2 passed, 1 failed
+  failing suites:
+    failing suites:
+      - theme/conexao-br-irlanda/test-en-jobs-shared-slug.php
+      - theme/conexao-br-irlanda/test-leisure-card-excerpt-language.php
+    full suite output kept in /tmp/tmp.EH3ZT4FwEL
+
+== 6. Lint ==
+  
+  lint: OK (syntax clean, no new PHPCS violations, PHPStan clean)
+  EXIT=0
+
+== 7. Registry ==
+  registry OK: 15 plugins validated, 24 generated regions current (zero writes).
+  EXIT=0
+
+== 8. Release integrity ==
+  229 passed, 0 failed
+
+== 9. Documentation drift ==
+  14 passed, 0 failed
+
+== 10. Governance ==
+  Stage K governance verification: 357 passed, 0 failed
+
+== 11. Permanent gates (Stage L aggregate) ==
+  Gates: 7 total, 6 passed, 1 failed, 0 blocked
+  Assertions: 89 passed, 3 failed
+  Violations: 3 (2 pre-existing, 1 new)
+  AGGREGATE: FAIL
