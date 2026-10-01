@@ -1,0 +1,28 @@
+# Metrics — agent skills / documentation migration (2026-09-30)
+
+## Before (Stage 0 baseline, branch i18n @ 078b2d8)
+docs files: 853
+docs *.md lines: 63518
+active skill files: 10
+active skill lines: 1195
+docs/reports files: 84
+docs/evidence files: 695
+
+## After
+docs files: 854
+docs *.md lines: 63599
+active skill files: 15
+active skill lines: 2616
+docs/reports files: 84
+docs/evidence files: 696
+
+## Key canonical documents (lines)
+   232 AGENTS.md
+   200 docs/README.md
+   868 docs/engineering-standard.md
+   540 docs/testing.md
+   269 docs/deployment.md
+   360 docs/releases.md
+   188 docs/templates/plan.md
+   196 docs/templates/report.md
+  2853 total

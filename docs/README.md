@@ -1,34 +1,55 @@
 # Documentation index
 
-Single entry point for navigating this repository's documentation. It links
-to each document; it is navigation only — the standards live in the linked
-documents themselves. New docs belong under `docs/` and must be added here
+The **human** documentation index for this repository: what each document is for
+and which one is authoritative. It is navigation only — the standards live in the
+linked documents themselves. New docs belong under `docs/` and must be added here
 in the same change.
 
-## Working with this repository as an agent
+This is a documentation index, not a workflow manual. If you are an agent, start
+at [`AGENTS.md`](../AGENTS.md) and select a skill.
 
-If you are an AI agent (or a human following the same discipline), start at
-[`AGENTS.md`](../AGENTS.md), then the engineering standard, then the skill that
-matches your task:
+## How this repository splits its knowledge
 
-| Document | What it is |
+| | What it holds | Where |
+|---|---|---|
+| **Reusable agent procedure** | *how to do a kind of work* — steps, guardrails, verification, failure handling | [`.agents/skills/`](../.agents/skills/) — index in [`skills/README.md`](../.agents/skills/README.md) |
+| **Canonical fact** | *what is true about this project* — architecture, content model, routes, policy, contracts | `docs/` (this index) |
+| **History** | *what happened and what was measured* | [`reports/`](reports/), [`evidence/`](evidence/), [`audit/`](audit/) |
+
+**A procedure has one operational home.** A canonical document that needs to
+mention a procedure links to the skill rather than restating the steps, and a
+historical report is never the source of a current instruction.
+
+## Agent workflows live in `.agents/skills/`
+
+There are **14 active WordPress skills**, each an executable workflow with a
+standard format (Purpose → When to use → When not to use → Required reading →
+Authoritative sources → Preconditions → Steps → Guardrails → Verification →
+Failure handling → Evidence and reporting → Definition of done). One sentence
+each; the full workflow is in the skill.
+
+| Skill | One sentence |
 |---|---|
-| [../AGENTS.md](../AGENTS.md) | **Start here** — scope, safety rules, what is authoritative, the workflow |
-| [engineering-standard.md](engineering-standard.md) | The authoritative engineering standard (WP-ES) — read this before changing code |
-| [../.agents/skills/](../.agents/skills/) | **The WordPress agent skills** — one directory per skill, each an executable workflow (`When to use → Required reading → Steps → Guardrails → Verification → Definition of done`) |
-| [templates/plan.md](templates/plan.md) | **Plan template** — copy it before multi-file work, and before any content, route or English/Polylang change |
-| [templates/report.md](templates/report.md) | **Report template** — copy it to `docs/reports/` to close a stage or feature with real verification numbers and stated limitations |
-| [../.github/PULL_REQUEST_TEMPLATE.md](../.github/PULL_REQUEST_TEMPLATE.md) | The pull-request template aligned with the same standard |
-| [testing.md](testing.md) | How to run and write tests, and the stage classification of each suite |
+| `wp-repository` | Orient in the repository, plan the work, hold the scope, prefer a shared engine, and review before merge. |
+| `wp-add-content-type` | Add or change a post type, taxonomy, meta field, archive or single route. |
+| `wp-add-admin-screen` | Make a maintainer capability operable through wp-admin — required because production has no CLI. |
+| `wp-content-change` | Write content, meta or terms safely via the six-step contract (dry-run, snapshot, apply, verify, rollback). |
+| `wp-translation-rollout` | Add English coverage for a content type on the shared rollout engine, with PT provably unchanged. |
+| `wp-testing` | Run, diagnose and compare the test contract; add layers, fixtures and permanent fail-closed gates. |
+| `wp-write-in-process-test` | Author an in-process PHP suite against a real WordPress, discovered by convention. |
+| `wp-http-acceptance-matrix` | Assert what a real request returns — status, redirect, canonical, hreflang, sitemap, filters. |
+| `wp-security-review` | Prove capability, nonce, sanitisation, escaping and prepared statements before shipping. |
+| `wp-frontend-perf` | Keep cache keys language-scoped, invalidation complete, and any improvement measurable. |
+| `wp-plugin-registry` | Keep `plugins.json` the only plugin registry and regenerate every derived region. |
+| `wp-release-deploy` | Build, record, verify and deploy a release deterministically, with a working rollback. |
+| `wp-production-operations` | Audit and safely update the live WordPress.com site; update in place, never deactivate to update. |
+| `wp-update-docs` | Keep documentation truthful: one owner per fact, one home per procedure, no drift. |
 
-The skills are WordPress-domain only. The retired Dart/Flutter skill set that
-predated them is kept for provenance under
-[`.agents/legacy-flutter-skills/`](../.agents/legacy-flutter-skills/) and is
-**not** an active skill set.
-
-The agent-governance contract is machine-checked by
-`tests/scripts/verify-agent-governance.py`, which runs with the script-contract
-layer of `./scripts/run-tests.sh`.
+The index of record is [`.agents/skills/README.md`](../.agents/skills/README.md);
+`tests/scripts/verify-agent-governance.py` fails if it drifts from the directory.
+The retired Dart/Flutter skill set that predates these is kept for provenance
+under [`.agents/legacy-flutter-skills/`](../.agents/legacy-flutter-skills/) and
+is **not** an active skill set.
 
 ## Standards, audits and engineering
 
@@ -143,7 +164,7 @@ To add, remove or re-classify a plugin: edit `plugins.json`, add its doc under
 | Document | What it is |
 |---|---|
 | [reports/](reports/) | English rollout (Stages 0–9) + navigation-fix reports |
-| [english-stage43-production-deployment.md](english-stage43-production-deployment.md) | Stage 4.3 production deployment record |
+| [reports/english-stage43-production-deployment.md](reports/english-stage43-production-deployment.md) | Stage 4.3 production deployment record |
 | [events/](events/) | Events location-filters and copy reports |
 | [importers/](importers/) | Event/Lazer/IVVCC/Mondello import pipeline reports and plans |
 | [research/](research/) | Topic research notes (e.g. recruitment agencies, employment permits) |
@@ -151,19 +172,29 @@ To add, remove or re-classify a plugin: edit `plugins.json`, add its doc under
 
 ## Testing
 
-One command runs every maintained test — in-process PHP, the Stage I
-script-contract gate and HTTP acceptance:
+One command runs every maintained test — in-process PHP, the script-contract
+gate and HTTP acceptance:
 
 ```bash
 ./scripts/run-tests.sh            # all layers
 ./scripts/run-tests.sh --scripts   # script-contract gate only
 ```
 
-See **[testing.md](testing.md)** for the model, the shared bootstrap and
-assertion library, data prerequisites, the acceptance base URL and the
-manual/historical/production-only classification. The authoritative policy is
-[engineering-standard.md §8](engineering-standard.md).
+The **model** — layers, suite classification, permanent fail-closed gates, the
+baseline/pre-existing-failure policy, the shared bootstrap and assertion library,
+fixtures, the acceptance base URL and the CI contract — is
+**[testing.md](testing.md)**; the normative policy is
+[engineering-standard.md §8](engineering-standard.md). The **procedure** — what
+to run, in what order, how to classify a failure and how to compare regressions —
+is [`wp-testing`](../.agents/skills/wp-testing/SKILL.md).
 
-_Last verified: 2026-09-26 by Stage I — Scripts Standardisation_
+## Templates
+
+| Template | Use it for |
+|---|---|
+| [templates/plan.md](templates/plan.md) | Before multi-file work, and before any content, route or English/Polylang change |
+| [templates/report.md](templates/report.md) | After the work, to close a stage with real verification numbers and stated limitations |
+
+_Last verified: 2026-09-30 by the agent skills / documentation migration_
 
 _Last verified: 2026-09-26 by Stage L — Permanent Invariant Gates_

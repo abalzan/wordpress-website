@@ -618,10 +618,24 @@ docker compose exec wordpress php /var/www/html/wp-content/themes/conexao-br-irl
 
 ### 9.1 Layout and ownership
 
+**The ownership rule: a procedure has one operational home.** Skills own
+*how to do a kind of work*; this table owns *what is true about the project*.
+A canonical document that needs to mention a procedure links to the skill — it
+does not restate the steps. History is not instruction: a number in a report is
+a historical measurement, not a current fact.
+
+| Concern | Owns | Does **not** own |
+|---|---|---|
+| `.agents/skills/<name>/SKILL.md` | reusable agent workflows, procedural checklists, operational guardrails, verification sequences | versions, route lists, plugin inventories, taxonomy policies — those are read from their owner below |
+| `AGENTS.md` | scope, safety rules, the authoritative-source map, skill selection | procedures (they live in skills) |
+| `docs/` (canonical) | specifications, policy, architecture, content model, route definitions, release policy, testing semantics | procedures, historical measurements |
+| `docs/reports/`, `docs/evidence/`, `docs/audit/` | completed work, audits, measurements, machine evidence | current instructions — never a procedure's home |
+
 | Path | Content | Owner |
 |---|---|---|
-| `AGENTS.md` | Orientation: project, stack, layout, plugin table, content model, routes, architecture rules, task index | Project maintainer |
+| `AGENTS.md` | Orientation: project, stack, scope, safety rules, authoritative map, task→skill index | Project maintainer |
 | `README.md` | Human entry point: stack, local dev, build, deploy, structure | Project maintainer |
+| `.agents/skills/README.md` | The skill index: which skill, when to use it, which canonical docs it depends on | Project maintainer |
 | `docs/architecture.md`, `docs/content-model.md`, `docs/routing.md`, `docs/frontend.md`, `docs/deployment.md`, `docs/development.md` | Evergreen reference | Project maintainer |
 | `docs/plugins/<slug>.md` | Per-plugin doc (metadata block per §4.1) | Plugin maintainer |
 | `docs/themes/conexao-br-irlanda.md` | Theme reference | Theme maintainer |
@@ -640,7 +654,11 @@ docker compose exec wordpress php /var/www/html/wp-content/themes/conexao-br-irl
 | A change touching content types, routes, filters, REST, EN coverage or deployment updates the matching docs **in the same commit** | MUST |
 | Stage/feature work produces a report from `docs/templates/report.md` containing: scope, files touched, verification (with numbers), PT-integrity result, gate result, rollback, limitations | MUST |
 | No root-level report or evidence file is added; use `docs/reports/` and `docs/evidence/` | MUST |
-| `AGENTS.md` stays short (< ~250 lines); depth lives in `docs/` | SHOULD |
+| `AGENTS.md` stays short (< ~250 lines); depth lives in `docs/` and the skills | SHOULD |
+| A **procedure** is maintained in exactly one skill; a canonical document links to it instead of restating it | MUST |
+| A skill never restates a value that has an authoritative source (versions, load order, routes, taxonomies, script inventory) — it names the source and reads it | MUST |
+| A historical report is never rewritten to match a current procedure, and a procedure is never reconstructed from historical reports | MUST |
+| A new skill is added to `.agents/skills/README.md` in the same change, so the index never drifts from the directory | MUST |
 
 ### 9.3 i18n catalogues (MUST)
 
@@ -741,29 +759,42 @@ python3 scripts/verify-deploy.py --site https://conexaobr.ie    # 5. verify over
 
 ### 13.1 Skills
 
-This repository MUST maintain WordPress-domain skills under `.agents/skills/`, each following: **When to use → Required reading → Steps → Guardrails → Verification → Definition of done**.
+This repository MUST maintain WordPress-domain skills under `.agents/skills/`.
+A skill is an **executable workflow**, not a summary, and MUST use the standard
+format: **Purpose → When to use → When not to use → Required reading →
+Authoritative sources → Preconditions → Steps → Guardrails → Verification →
+Failure handling → Evidence and reporting → Definition of done**.
+
+`When to use`, `Required reading`, `Steps`, `Guardrails`, `Verification` and
+`Definition of done` are the governed core and MUST appear in that order. Each
+skill MUST name its **authoritative sources** (what it reads, and what it must
+never restate) and its **failure handling** (what to do when a step does not
+produce the expected result). `.agents/skills/README.md` is the index and MUST
+list every active skill.
 
 | Skill | Minimum content |
 |---|---|
+| `wp-repository` | orientation, planning, scope control, reuse of shared engines, definition of done |
 | `wp-add-content-type` | data-model registration, taxonomy/sitemap decision, docs, test |
 | `wp-add-admin-screen` | capability, nonce, list table, dry-run preview, notices, escaping |
-| `wp-add-theme-component` | template part, design-system + dark-mode variables, asset versioning, a11y |
-| `wp-add-string-i18n` | text domain per component + catalogue regeneration |
-| `wp-content-rollout` | the §5.2 six-step contract, evidence layout, gate format |
-| `wp-add-translation-rollout` | §6.2 procedure, shared engine, invariant tests, routing doc update |
-| `wp-rest-contract-change` | `inc/rest-language.php` rules + HTTP matrix |
+| `wp-content-change` | the §5.2 six-step contract, snapshots, idempotence, numeric gate, rollback |
+| `wp-translation-rollout` | §6.2 procedure, shared engine, invariant tests, routing doc update |
+| `wp-testing` | what to run, in what order, failure classification, regression comparison, permanent gates |
 | `wp-write-in-process-test` | bootstrap + assertions + naming + prerequisites |
 | `wp-http-acceptance-matrix` | harness, matrix schema, evidence storage |
-| `wp-release-deploy` | §11 sequence, activation order, verification, rollback |
-| `wp-update-docs` | change → document map (appendix) + drift checks |
+| `wp-release-deploy` | §11 sequence, artifact allowlist, manifest, determinism, rollback |
+| `wp-production-operations` | WordPress.com constraints, update-in-place, steady state, admin-only capabilities, rollback/roll-forward |
+| `wp-update-docs` | change → document map (appendix) + drift checks + the one-operational-home rule |
 | `wp-security-review` | nonce/capability/escaping/prepared-statement checklist |
 | `wp-frontend-perf` | transient caching + invalidation matrix, enqueue discipline |
+| `wp-plugin-registry` | registry fields, generated regions, derived build list |
 
 ### 13.2 Rules for agents
 
 | Rule | Level |
 |---|---|
 | Read `AGENTS.md` + this standard before changing code | MUST |
+| Select the skill for the task from `.agents/skills/README.md` and follow it; when a skill and this standard disagree, this standard wins and the skill is corrected in the same change | MUST |
 | Use `docs/templates/plan.md` before multi-file work and `docs/templates/report.md` after | MUST |
 | Prefer shared engines/helpers over new copies; copying a plugin or script requires a written justification | MUST |
 | Never modify PT content, URLs, Polylang configuration, `.htaccess` redirects or REST contracts without explicit instruction | MUST |
@@ -834,3 +865,4 @@ _Last verified: 2026-09-25 by the WordPress engineering standardisation audit (p
 
 
 _Last verified: 2026-09-26 by Stage I — Scripts Standardisation_
+_Last verified: 2026-09-30 by the agent skills / documentation migration_

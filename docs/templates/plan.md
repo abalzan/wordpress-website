@@ -18,6 +18,7 @@
 | **Author / agent** | |
 | **Branch** | |
 | **Repository baseline (starting SHA)** | |
+| **Applicable skill(s)** | `<name from .agents/skills/README.md>` |
 | **Plan status** | draft \| approved \| superseded |
 
 ## 1. Scope
@@ -31,10 +32,25 @@ adjacent work you are refusing so a reviewer does not read it as an oversight.
 
 ## 3. Relevant authoritative documents
 
-The documents that constrain this change, read before starting. At minimum,
-`AGENTS.md` and `docs/engineering-standard.md`; add the specific ones
-(`docs/routing.md`, `docs/content-model.md`, the plugin doc, `docs/releases.md`,
-`scripts/README.md`).
+The documents that constrain this change, read before starting, and **one owner
+per fact**. At minimum `AGENTS.md` and `docs/engineering-standard.md`; add the
+specific ones (`docs/routing.md`, `docs/content-model.md`, the plugin doc,
+`docs/releases.md`, `scripts/README.md`).
+
+A **procedure** does not live in a document — it lives in a skill. Where a
+procedure applies, name the skill rather than planning a variant of it here.
+
+## 3a. Skill workflow
+
+The skill selected in the header, and what it requires before the work starts:
+
+| | |
+|---|---|
+| **Skill** | |
+| **Its preconditions** | |
+| **Its guardrails that bind this task** | |
+| **Its verification commands** | |
+| **Its evidence location** | `docs/evidence/<date>-<stage>/` |
 
 ## 4. Current-state findings
 
@@ -132,10 +148,12 @@ must be captured first (snapshots, counts, previous ZIPs).
 
 ## 17. Documentation plan
 
-Which documents change, per the `wp-update-docs` change → document map:
+Which documents change, per the `wp-update-docs` change → document map. A
+**procedure** removed from a document is listed here with the skill that now owns
+it, so no fact and no workflow is lost.
 
-| Document | Change |
-|---|---|
+| Document | Change | Procedure moved to (skill) |
+|---|---|---|
 
 ## 18. Release implications
 
@@ -166,3 +184,5 @@ The conditions that make this task done — restated from
 until every applicable item holds and the report contains real numbers.
 
 _Last verified: 2026-09-26 by Stage L — Permanent Invariant Gates_
+
+_Last verified: 2026-09-30 by the agent skills / documentation migration_

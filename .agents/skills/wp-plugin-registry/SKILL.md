@@ -1,5 +1,11 @@
 # Update the plugin registry
 
+## Purpose
+
+Keep `plugins.json` the single authoritative plugin registry by editing only that
+file and regenerating every derived region, so no second registry can appear and
+none can silently disagree.
+
 ## When to use
 
 Adding, removing, re-classifying or re-ordering a plugin; changing whether it
@@ -9,6 +15,13 @@ stack; changing a dependency or a documentation path.
 `plugins.json` is the **single source of truth** for all of that. This skill
 exists to keep it that way: the failure mode being prevented is a *second*
 registry — a hand-maintained plugin list somewhere that silently disagrees.
+
+## When not to use
+
+- Building artifacts, recording a release, or verifying a deployment —
+  `wp-release-deploy`.
+- Operating the live site (upload, activate, verify) — `wp-production-operations`.
+- Changing plugin *code*; the registry records facts, it does not implement.
 
 ## Required reading
 
@@ -21,6 +34,30 @@ registry — a hand-maintained plugin list somewhere that silently disagrees.
   derived from the registry.
 - `scripts/README.md` — the script catalogue (a *separate* single source of
   truth; do not merge the two).
+
+## Authoritative sources
+
+| Fact | Read it from |
+|---|---|
+| The registry itself (the only place it may be edited) | `plugins.json` |
+| Plugin class semantics and steady-state activation | `docs/engineering-standard.md` §4.1/§4.3 |
+| The generated activation order | `docs/deployment.md` (generated region) |
+| The derived artifact allowlist | `scripts/lib/release.py` |
+| The script catalogue (a separate single source of truth) | `scripts/README.md` |
+
+**This skill declares no plugin list of its own.** Load order, counts, build
+flags and activation order are read from `plugins.json` and the generated regions
+at use time. Writing them here would create the second registry this skill
+exists to prevent.
+
+## Preconditions
+
+- The plugin's own code, doc and header already exist (or are being added in this
+  same change) — the registry references them, it does not create them.
+- `php scripts/generate-registry-docs.php --check` was green before the edit, so
+  a later failure is attributable to this change.
+- No production action is implied by a registry change; a registry edit changes
+  what *may* ship, not what *is* deployed.
 
 ## The fields and what they drive
 
@@ -112,6 +149,30 @@ python3 tests/scripts/verify-release-integrity.py     # allowlist still derived,
   derived from `plugins.json`, and a `retired` + `build: true` entry is refused.
 - A nonexistent `documentation` or `version_source` path is a failure, not a
   warning.
+
+## Failure handling
+
+- *`--check` reports a generated region is stale.* Run `--write`, then `--check`
+  again. If it stays stale, the generator and the registry disagree — fix the
+  generator or the registry, never the generated text.
+- *The validator refuses an entry.* A `retired` entry with `build: true`, a
+  `tooling` plugin in production, or a dependency that follows its dependent.
+  Correct the registry; do not bypass the validation.
+- *A `documentation` or `version_source` path does not exist.* Create the doc or
+  correct the path. A dangling path is a failure, not a warning.
+- *The derived build list did not change after flipping `build`.* Something else
+  is also reading a hard-coded list. Find it — that is a second registry, which
+  is the defect this skill prevents.
+- *The generated diff contains unrelated churn.* Something outside the registry
+  feeds a generated region. Revert the churn and correct the source.
+
+## Evidence and reporting
+
+Record: the registry diff, the `--check` result with its real counts, the
+regenerated diff and an explanation of every changed row, the release-integrity
+result, and the version bump in the component header. If a plugin was added,
+retired or re-classified, say so explicitly in the report because it changes the
+production steady state. Evidence goes to `docs/evidence/<date>-<stage>/`.
 
 ## Definition of done
 

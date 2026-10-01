@@ -1,0 +1,18 @@
+RECORD        : dwyer-mcallister-cottage (pt_id 154)
+ENGINE GATE   : PASS   errors=0
+
+PT immutability across the full dry run (object accessors, not an array):
+  post_title       UNCHANGED
+  post_content     UNCHANGED
+  post_excerpt     UNCHANGED
+  post_name        UNCHANGED
+  post_status      UNCHANGED
+  post_date        UNCHANGED
+  post_modified    UNCHANGED
+  comment_status   UNCHANGED
+  _leisure_excerpt_en UNCHANGED
+  _all_meta        UNCHANGED
+  _terms           UNCHANGED
+  _translations    UNCHANGED
+
+WHOLE-SNAPSHOT IDENTICAL: YES — the dry run performed ZERO writes

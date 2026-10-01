@@ -1,5 +1,11 @@
 # Add an admin screen
 
+## Purpose
+
+Make a maintainer capability operable through wp-admin, with capability, nonce,
+read-only rendering, a dry-run preview and honest result reporting — because
+production has no CLI, so anything operated in production needs an admin screen.
+
 ## When to use
 
 A capability must be operable by a maintainer through wp-admin — a rollout
@@ -9,6 +15,14 @@ needs an admin screen, not a shell command.
 
 Use `wp-write-in-process-test` for the test layer and `wp-security-review`
 before shipping.
+
+## When not to use
+
+- A capability that is a *script* only and never needs a production operator.
+- A post type, taxonomy or meta schema change — `wp-add-content-type`.
+- A content-write contract — `wp-content-change` (the screen implements it; the
+  six-step rules are defined there).
+- Tests or acceptance rows alone.
 
 ## Required reading
 
@@ -20,6 +34,24 @@ before shipping.
   `wp-content/plugins/conexao-admin-ux/includes/class-list.php` — the existing menu, screen and list-table
   conventions to extend.
 - `docs/releases.md` §Production constraints — why no WP-CLI exists.
+
+## Authoritative sources
+
+| Fact | Read it from |
+|---|---|
+| Plugin/capability/nonce/dry-run file contract | `docs/engineering-standard.md` §4.2 |
+| The six-step content-change contract the screen implements | `docs/engineering-standard.md` §5.2 |
+| Existing admin UX conventions to extend | `docs/plugins/conexao-admin-ux.md` + the plugin itself |
+| Why there is no WP-CLI in production | `docs/releases.md` §Production constraints |
+| The shared plan shape | `scripts/lib/plan.py` |
+
+## Preconditions
+
+- The ownership boundary is known: does this belong to `conexao-admin-ux`, or to
+  the rollout engine's own admin class?
+- A plan exists with the security and production impact sections answered.
+- The capability genuinely must exist in production; if it cannot be an admin
+  screen, that is a limitation to state, not an excuse for an SSH path.
 
 ## Steps
 
@@ -95,6 +127,28 @@ before shipping.
 - The screen's own regression suite prints `N passed, 0 failed` and exits 0.
 - Report real numbers. If an admin E2E check could not be run in the
   environment, record it as **not tested** — never as verified.
+
+## Failure handling
+
+- *A user without the capability sees partial output.* The check is too late in
+  the render path. Move it to the earliest entry point; a partial render is a
+  defect, not a cosmetic issue.
+- *A page load writes.* Locate the write outside an explicit action branch. A
+  refresh must never be a mutation.
+- *The dry run performed writes.* The preview is not a preview. Stop, re-inventor,
+  and re-plan before showing anything to a maintainer.
+- *A partial result is reported as success.* Fix the result reporting: counts, the
+  numeric gate, and a non-zero exit for a blocked or preview-only run.
+- *The admin E2E check cannot run in this environment.* Record it as not tested
+  with the reason; do not infer a pass.
+
+## Evidence and reporting
+
+Record: the capability and nonce surfaces with their negative proofs, the dry-run
+plan output, the in-process suite result with exact numbers, the plugin doc
+update, new user-facing strings and their text domain, and an explicit statement
+that no production write occurred. Machine evidence goes to
+`docs/evidence/<date>-<stage>/`.
 
 ## Definition of done
 

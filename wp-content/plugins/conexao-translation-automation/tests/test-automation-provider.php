@@ -45,9 +45,15 @@ foreach ( get_declared_classes() as $declared ) {
 	}
 }
 
-assert_true(
-	array() === $implementations,
-	'no class implements the provider contract: there is NO provider implementation' . ( $implementations ? ': ' . implode( ', ', $implementations ) : '' )
+// STAGE 4 SUPERSESSION. Stage 3 asserted "NOBODY implements the contract".
+// Stage 4 was authorised to add exactly ONE implementation, so the assertion
+// becomes narrower and stronger: exactly one, and it is the designated provider.
+// The trust boundary below is unchanged and still asserted: the provider is a
+// DIFFERENT class from the validator, so it can never grade its own homework.
+assert_equals(
+	array( 'Conexao_Translation_Automation_Provider_OpenAI' ),
+	$implementations,
+	'exactly one class implements the provider contract, and it is the Stage 4 provider' . ( $implementations ? ': ' . implode( ', ', $implementations ) : '' )
 );
 
 // The validator is separate from the untrusted party, so a provider could
@@ -127,9 +133,15 @@ foreach ( get_declared_classes() as $declared ) {
 	}
 }
 
-assert_true(
-	array() === $implementations,
-	'no class implements the provider contract: there is NO provider implementation' . ( $implementations ? ': ' . implode( ', ', $implementations ) : '' )
+// STAGE 4 SUPERSESSION. Stage 3 asserted "NOBODY implements the contract".
+// Stage 4 was authorised to add exactly ONE implementation, so the assertion
+// becomes narrower and stronger: exactly one, and it is the designated provider.
+// The trust boundary below is unchanged and still asserted: the provider is a
+// DIFFERENT class from the validator, so it can never grade its own homework.
+assert_equals(
+	array( 'Conexao_Translation_Automation_Provider_OpenAI' ),
+	$implementations,
+	'exactly one class implements the provider contract, and it is the Stage 4 provider' . ( $implementations ? ': ' . implode( ', ', $implementations ) : '' )
 );
 
 // The validator is separate from the untrusted party, so a provider could

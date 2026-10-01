@@ -1,5 +1,11 @@
 # Frontend performance
 
+## Purpose
+
+Keep an improvement measurable and prevent an accidental regression: language-scoped
+cache keys, complete invalidation, disciplined asset loading, and a stated
+query/weight budget for every template and query change.
+
 ## When to use
 
 A change touches templates, queries, assets, images or caching — anything that
@@ -9,6 +15,13 @@ still a performance change.
 
 Use this skill to keep an improvement measurable and to avoid an accidental
 regression. It is a review-and-verify discipline, not a licence to refactor.
+
+## When not to use
+
+- Security-relevant front-end work (request input, output escaping, endpoints) —
+  `wp-security-review`.
+- A back-end/plugin query change with no caching or asset impact — judge it in
+  the plugin that owns it.
 
 ## Required reading
 
@@ -22,6 +35,27 @@ regression. It is a review-and-verify discipline, not a licence to refactor.
   and invalidation) and `wp-content/themes/conexao-br-irlanda/inc/queries.php` (shared query helpers).
 - `wp-content/themes/conexao-br-irlanda/inc/assets.php` (enqueue order and
   `conexao_asset_version()`).
+
+## Authoritative sources
+
+| Fact | Read it from |
+|---|---|
+| The performance contract and theme structure rules | `docs/engineering-standard.md` §3.1/§3.2 |
+| The transient invalidation matrix and CSS/JS rules | `docs/frontend.md` |
+| Theme runtime architecture and module ownership | `docs/themes/conexao-br-irlanda.md` |
+| The language-scoped cache key helper | `wp-content/themes/conexao-br-irlanda/inc/cache.php` |
+| The gate that enforces cache scoping | `docs/testing.md` §permanent invariant gates |
+| How the current page actually performs | a real request against the local site |
+
+## Preconditions
+
+- The local site is up, so query counts and cache behaviour can be observed
+  rather than assumed.
+- You have a **before** measurement (queries per request, or page weight) for the
+  template or route you are changing.
+- You know which transient keys the change affects, so the invalidation matrix
+  can be updated in the same change.
+
 
 ## Steps
 
@@ -93,6 +127,32 @@ regression. It is a review-and-verify discipline, not a licence to refactor.
 
 - HTTP rows for every touched route pass, with identical status/canonical/hreflang
   unless intentionally changed.
+
+## Failure handling
+
+- *The cache-scoping gate fails.* An unscoped `conexao_*` cache key was
+  introduced, so PT and EN can collide. Route every derived key through
+  `conexao_lang_cache_key()` and register an invalidation that clears **all**
+  languages. Do not suppress the gate.
+- *PT and EN return the same cached content.* A key is not language-scoped, or
+  invalidation clears only one language. Verify at runtime in both languages, not
+  by reading the code.
+- *Query count went up.* Revert the N+1 or the missing cache; record the
+  before/after numbers. An unmeasured "optimisation" is not an optimisation.
+- *An asset is loaded on every page.* Narrow the enqueue to the templates that
+  need it and keep the documented order and versioning.
+- *The invalidation matrix is out of date.* Update `docs/frontend.md` in the same
+  commit; a stale matrix is how a stale cache survives a rollout.
+- *The improvement cannot be measured in this environment.* Report it as
+  **not measured** with the reason. Do not claim a gain you did not observe.
+
+## Evidence and reporting
+
+Record: the before/after query counts or page weight, the transient keys added or
+changed and the languages invalidated, the acceptance rows for every touched
+route, the cache-scoping gate result, and the updated invalidation matrix.
+Evidence goes to `docs/evidence/<date>-<stage>/`.
+
 - The before/after query or cache numbers are recorded.
 - The transient invalidation matrix in `docs/frontend.md` is current.
 - `docs/frontend.md` and `docs/themes/conexao-br-irlanda.md` are updated when

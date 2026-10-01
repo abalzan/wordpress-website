@@ -87,3 +87,46 @@ Cited by `docs/reports/2026-09-30-stage-2-engine-promotion-lock-safety.md`.
 Cited by `docs/reports/2026-09-30-stage-3-change-detection-provider-trigger.md`.
 
 _Last verified: 2026-09-30 by Stage 3 — change detection, provider boundary, trigger and audit_
+
+## 2026-09-30 — Stage 4: translation provider and translation-plan adapter
+
+| File | What it is |
+|---|---|
+| `00-baseline-tests.log` | The suite **before** any Stage 4 edit: 72 in-process suites with `test-en-jobs-shared-slug.php` failing. The comparison point for every number in the report. |
+| `01-stage4-structural-gate.txt` | `verify-stage4-provider.py` — **110 checks**: exactly one provider implementation, the outbound request confined to the designated file, no WordPress write in any file, no cron, no public route, no second engine, no apply path, no approval state, the credential named in one file only. |
+| `02-stage3-gate-after-supersession.txt` | `verify-stage3-automation.py` — **123 checks** after the single superseded assertion was narrowed. Everything Stage 3 proved still holds. |
+| `03-engine-digest-before-after.txt` | SHA-256 of all three `conexao-translation-rollout` files before and after Stage 4. The engine is `baf85283…a6ce4` — **exact equality** with the baseline — and `git diff` over that plugin is **empty**. |
+| `04-provider-structural-properties.txt` | Per-file scan of the four new files (comments stripped) against nine forbidden categories: no write, no Polylang, no cron, no route, no persistence, no engine vocabulary, no apply path, no self-validation, no credential literal. |
+| `05-live-smoke-skips-cleanly.txt` | The live-provider smoke test skips with exit 0 both without authorisation and without a credential, makes no call, and is **not discovered** by the test runner. |
+| `06-lint.txt` | `./scripts/lint.sh` — `lint: OK`. Records that 2 real PHPCS violations were found and **fixed in the code**, not baselined away. |
+| `07-end-to-end-dry-run.txt` | The whole chain on a real record: provider → validator → plan (`REVIEW_REQUIRED`) → stale-source rejection → composed manifest → engine gate. |
+| `08-pt-immutability-proof.txt` | PT immutability across the dry run using object accessors: 8 post fields, the B2 EN meta, **all** post meta, category terms and Polylang translations. Whole snapshot identical — zero writes. |
+| `09-pre-existing-failure-attribution.txt` | The controlled experiment: `test-en-jobs-shared-slug.php` fails **identically with all Stage 4 changes stashed**, so it is not a Stage 4 regression. |
+| `10-final-full-suite.txt` | The final `./scripts/run-tests.sh` with both failures attributed. |
+| `11-credential-boundary.txt` | The credential boundary at runtime: fails closed with 0 HTTP calls; a credential-shaped fake appears in no observable output; it reaches the header and never the body. |
+
+Cited by `docs/reports/2026-09-30-stage-4-provider-and-translation-plan.md`.
+
+_Last verified: 2026-09-30 by Stage 4 — translation provider and translation-plan adapter_
+
+## 2026-09-30-stage-5-production-commissioning-canary
+
+Stage 5 is the first stage permitted to cross the production boundary, and the
+boundary was **not crossed**: `BLOCKED`, `Production writes: 0`.
+
+| File | Contents |
+|---|---|
+| `01-integrity-and-artifacts.txt` | Engine SHA-256 before and after, plus the built artifact hashes |
+| `02-full-test-suite.log` | Complete `./scripts/run-tests.sh` output, including the reproduced pre-existing failures |
+| `03-release-build.log` | `./scripts/build-plugins-zip.sh` output |
+| `04-preconditions-and-live-probe.md` | The twelve preconditions, the entry-point scan, the live provider probe, and the transport-defect proof |
+
+Key facts: engine `baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4`
+before and after (exact equality); no production credential in the environment;
+live provider call returned **HTTP 429 `insufficient_quota`**; and a newly proven
+defect in `Provider_OpenAI::normalise()` that would make every real provider call
+fail closed.
+
+Cited by `docs/reports/2026-09-30-stage-5-production-commissioning-canary.md`.
+
+_Last verified: 2026-09-30 by Stage 5 — production commissioning and canary_

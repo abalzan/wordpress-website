@@ -1,5 +1,11 @@
 # Write an HTTP acceptance matrix
 
+## Purpose
+
+Assert what a **real request** returns — status, redirect, canonical, hreflang,
+sitemap, filters — using one schema, one loader and one client, against the local
+site only, with every row stating why it exists.
+
 ## When to use
 
 Anything **request-visible** needs an HTTP row: a new or changed route, an
@@ -7,6 +13,13 @@ archive or single, a filter, pagination, a redirect, a canonical or hreflang
 emission, a sitemap entry, a REST language parameter, or a language-pair URL.
 This layer proves what a real request returns; the in-process layer
 (`wp-write-in-process-test`) proves internal behaviour.
+
+## When not to use
+
+- Internal logic, queries or policies — `wp-write-in-process-test`.
+- Running or diagnosing the whole acceptance layer — `wp-testing`.
+- Verifying a **deployed** site — that is the separate read-only
+  `scripts/verify-deploy.py --site <url>` (see `wp-production-operations`).
 
 ## Required reading
 
@@ -21,6 +34,25 @@ This layer proves what a real request returns; the in-process layer
 - `tests/acceptance/matrices/routing.json` and
   `tests/acceptance/matrices/guides-en.json` — existing rows
   to imitate, and `scripts/data/release-smoke-matrix.json` for the release set.
+
+## Authoritative sources
+
+| Fact | Read it from |
+|---|---|
+| The row schema and the one loader | `tests/acceptance/lib/matrix.py` |
+| The shared HTTP client and its production refusal | `tests/acceptance/lib/http_client.py` |
+| What each route must return (canonical, hreflang, sitemap, filters) | `docs/routing.md` |
+| The release smoke matrix | `scripts/data/release-smoke-matrix.json` |
+| The acceptance base URL and safety rules | `docs/testing.md` |
+| Existing rows to imitate | `tests/acceptance/matrices/` |
+
+## Preconditions
+
+- The local site is up and reachable at the local base URL. A production host is
+  refused by both the runner and the client.
+- You know the **contract** the route must satisfy, so the row asserts a stable
+  fragment rather than incidental markup.
+- You have the before/after row results if you are changing existing behaviour.
 
 ## Steps
 
@@ -94,6 +126,29 @@ CONEXAO_TEST_BASE_URL=<local site> \
   If it passes, the row is vacuous and must be rewritten.
 - Regression comparison: the failing-row list must be identical before and
   after the change.
+
+## Failure handling
+
+- *The matrix is rejected before any request.* A row is missing or has a
+  malformed field. Fix the row; never loosen the schema so a bad row passes.
+- *A row fails with an unexpected 3xx.* Either the route regressed, or the
+  redirect was intentional. Directory types may 3xx off-site by design; assert
+  that explicitly. An unexpected 3xx elsewhere is a failure.
+- *Canonical/hreflang/sitemap assertions fail after a language change.* The
+  bilingual contract in `docs/routing.md` was broken: a B2 fallback must be
+  canonical → PT, noticed, and out of the sitemap; hreflang only where a real
+  translation relation exists.
+- *A row passes with a wrong `expect_contains`.* It is vacuous. Rewrite the
+  expectation so it discriminates.
+- *The suite is blocked (site unreachable).* Record it as blocked, not as a pass.
+  Start the stack and re-run; do not remove the row to avoid the failure.
+
+## Evidence and reporting
+
+Record: the rows added or changed and why, the exact `N passed, M failed` output,
+the row count, the vacuity proof for a new row, and the before/after failing-row
+list. Captured matrices and summaries go to
+`docs/evidence/<date>-<stage>/`.
 
 ## Definition of done
 

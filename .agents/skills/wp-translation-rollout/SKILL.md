@@ -1,11 +1,26 @@
 # Add a translation rollout
 
+## Purpose
+
+Add English coverage for a content type on top of the **existing shared
+translation engine**, with PT left provably unchanged, an authored manifest
+keyed by a stable identifier, a numeric completeness gate, and correct B1/B2
+routing, canonical, hreflang and sitemap behaviour.
+
 ## When to use
 
 Adding English coverage for a content type, re-running an existing rollout, or
 extending the `/en/` layer. This is a **content-writing** change: it creates and
 updates real records, so the six-step content-change contract (§5.2) is
 mandatory and dry-run is not optional.
+
+## When not to use
+
+- A non-English content write (import, migration, repair) — `wp-content-change`.
+- A post type, taxonomy or meta schema change — `wp-add-content-type`.
+- Polylang configuration or REST-language work outside a rollout — that is
+  `docs/routing.md` + `wp-http-acceptance-matrix`; changes there are guarded by
+  `wp-security-review`.
 
 ## Required reading
 
@@ -20,6 +35,27 @@ mandatory and dry-run is not optional.
 - `docs/content-model.md` — identity meta and the shared/taxonomy policy.
 - `wp-content/plugins/conexao-translation-rollout/includes/class-conexao-translation-rollout-engine.php`
   and the engine's admin class.
+
+## Authoritative sources
+
+| Fact | Read it from |
+|---|---|
+| B1/B2 policy, EN routes, redirects, hreflang, sitemap | `docs/routing.md` §English rollout state |
+| Approved translated post types, shared vs translated taxonomies, identity meta | `docs/content-model.md` |
+| The bilingual non-negotiables and the completeness gate | `docs/engineering-standard.md` §6.1/§6.3 |
+| The six-step content-change contract | `docs/engineering-standard.md` §5.2 |
+| The engine lifecycle, stage config and data-manifest contracts | `docs/plugins/conexao-translation-rollout.md` |
+| The completeness and taxonomy-policy gates that must hold | `docs/testing.md` §permanent invariant gates |
+
+## Preconditions
+
+- A plan exists with the Polylang/English, route/HTTP and content impact sections
+  answered, including the B1/B2 decision per destination.
+- The stage is **configuration on the shared engine**, not a new implementation.
+- A **pre-write PT snapshot** exists for the records in scope.
+- The exclusion registry (what is deliberately not translated, and why) has been
+  read, and a record not being translated is a documented decision, not an
+  oversight.
 
 ## Steps
 
@@ -114,6 +150,40 @@ php scripts/generate-registry-docs.php --check               # registry consiste
   with exact assertion counts.
 - The dry-run output is saved as evidence; it must show zero writes performed.
 - Report the pre-existing failures separately from this rollout's results.
+
+## Failure handling
+
+- *`pt_drift` is non-zero.* The change mutated PT content. That is a failure, not
+  a side effect. Restore from the pre-write snapshot, then find the write path
+  that touched PT (usually a shared `update_post_meta`/`wp_update_post` call that
+  did not exclude the PT record) and fix it.
+- *The completeness gate does not reach 0.* Investigate the residual records:
+  usually an eligible record missing from the manifest, a manifest row with an
+  empty translation, or a record wrongly excluded. Fix the manifest or the
+  exclusion reason; never lower the gate.
+- *A second apply reports changes.* Apply is not idempotent. That is a defect in
+  the stage or the engine — an unchanged input must produce an unchanged result.
+- *A duplicate or orphan EN record appears.* English is a layer, never a fork: one
+  identity, one linked translation. Remove the duplicate through the stage's
+  documented remove/recovery path, not by hand.
+- *A county/town term was duplicated per language.* The taxonomy is **shared**.
+  Run the taxonomy-policy gate, repair with the documented remediation, and
+  re-verify. Filter slugs are language-specific only for *translated* taxonomies.
+- *A B2 fallback leaks into the sitemap or points canonical at EN.* Fix the
+  routing; a fallback is canonical → PT, noticed, and out of the sitemap.
+- *A PT original had to change.* Stop. That is a different change and needs its
+  own plan, snapshot and authorisation.
+
+## Evidence and reporting
+
+Under `docs/evidence/<date>-<stage>/`: the inventory, the dry-run plan (showing
+zero writes), the pre-write PT snapshot, the apply result with per-strategy match
+counts, the idempotence proof, the `gate.json` numeric gate, the PT-drift result,
+the duplicate/orphan check and the HTTP row results. The report (from
+`docs/templates/report.md`) states the chosen strategy and its rationale, the
+translated post types and the shared/translated taxonomy decision, the B1/B2
+mapping, the gate value, the PT-integrity result, the rollback path, and that no
+production write occurred.
 
 ## Definition of done
 

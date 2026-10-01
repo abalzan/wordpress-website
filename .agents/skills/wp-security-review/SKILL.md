@@ -1,5 +1,11 @@
 # Security review
 
+## Purpose
+
+Prove, before shipping, that every privileged path is capability-checked and
+nonce-verified, every input sanitised and output escaped, every query prepared,
+and that no secret, hotlink, localhost URL or write-on-read was introduced.
+
 ## When to use
 
 Any change that reads a request, writes to the database, registers a REST or
@@ -7,7 +13,13 @@ AJAX endpoint, touches an admin screen, handles media, or moves data between
 environments. Run this review **before** shipping, not after.
 
 Pair it with `wp-add-admin-screen` (nonce/capability surface) and
-`wp-content-rollout`-style work (data movement).
+`wp-content-change` (data movement, the six-step contract).
+
+## When not to use
+
+- A pure front-end presentation change with no request input, no data access and
+  no new endpoint — use `wp-frontend-perf` instead.
+- Writing the tests themselves — `wp-write-in-process-test`.
 
 ## Required reading
 
@@ -18,6 +30,22 @@ Pair it with `wp-add-admin-screen` (nonce/capability surface) and
 - `docs/plugins/` — each plugin doc states its own boundary and admin surface.
 - `scripts/lib/rest.py` and `scripts/lib/bootstrap.php` — the shared clients
   that already implement the credential and target rules.
+
+## Authoritative sources
+
+| Fact | Read it from |
+|---|---|
+| PHP, admin write-path and REST rules | `docs/engineering-standard.md` §2.1, §4.2, §7 |
+| The bilingual REST surface and the language-layer contract | `docs/routing.md` §English |
+| Each plugin's own boundary and admin surface | `docs/plugins/<slug>.md` |
+| The shared credential/target clients | `scripts/lib/rest.py`, `scripts/lib/bootstrap.php` |
+| No secrets / no hotlinks / no localhost URLs | `docs/engineering-standard.md` §0 principle 8 |
+
+## Preconditions
+
+- The change is implemented; this reviews a diff, not a design.
+- The list of privileged entry points the change touches is written down, so each
+  one can be checked and tested.
 
 ## Steps
 
@@ -93,6 +121,36 @@ php -l <changed file>                             # syntax
 - Each capability and nonce guard has a **negative** test showing it blocks.
 - The script-contract gate (`tests/scripts/verify-script-conventions.py`) proves
   no credential literal and no hard-coded production target in `scripts/`.
+
+## Failure handling
+
+- *A capability check is missing on one entry point.* Add it at the earliest
+  point, before any render or work, and add the negative test. A handler that
+  renders before checking is a defect.
+- *A write path has no nonce.* A correct capability check does not compensate for
+  missing CSRF defence. Add the nonce and prove a nonce-less request writes
+  nothing.
+- *Unescaped output is found.* Escape at output, not on storage, and re-check
+  every template, notice, list-table cell and JSON response in the diff.
+- *A direct `$wpdb` query without `prepare()`.* Rewrite it with bound values —
+  including LIMIT/OFFSET — or replace it with a WP API.
+- *A new public REST endpoint is proposed.* This is an allowlist decision: it
+  needs an explicit justification, documentation in `docs/routing.md`, and
+  language behaviour mirroring the front end. It does not ship undocumented.
+- *A guard cannot be tested in this environment.* Report it as **not tested**
+  with the reason. An untested guard is not a proven guard; say so rather than
+  implying coverage.
+- *`./scripts/lint.sh` reports a new violation.* Fix it. Do not widen the PHPCS
+  baseline to make the review pass.
+
+## Evidence and reporting
+
+Record: the privileged entry points reviewed, each guard with its negative
+proof, the lint and script-contract results, any finding that could not be tested
+with its reason, and the explicit statement that no credential, production URL
+default, localhost URL or hotlinked media was introduced. Evidence goes to
+`docs/evidence/<date>-<stage>/`.
+
 - Any finding you could not test is reported as **not tested**, with the reason.
 - No security claim in the report is made without the check that supports it.
 

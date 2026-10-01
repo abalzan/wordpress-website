@@ -145,7 +145,10 @@ test_section( 'Plugin loading' );
 assert_true( class_exists( 'Conexao_Translation_Automation_Orchestrator' ), 'the orchestrator class loads' );
 assert_true( class_exists( 'Conexao_Translation_Automation_Result' ), 'the result class loads' );
 assert_true( defined( 'CONEXAO_TRANSLATION_AUTOMATION_VERSION' ), 'the plugin declares its version' );
-assert_true( '0.1.0' === CONEXAO_TRANSLATION_AUTOMATION_VERSION, 'the plugin version matches its header' );
+// STAGE 4: the plugin version advanced to 0.2.0 with the provider
+// implementation, the plan and the adapter. The header and the constant must
+// still agree, which is the property this assertion exists to protect.
+assert_true( '0.2.0' === CONEXAO_TRANSLATION_AUTOMATION_VERSION, 'the plugin version matches its header' );
 assert_true( 'manage_options' === Conexao_Translation_Automation_Orchestrator::CAPABILITY, 'the required capability is manage_options' );
 
 // The plugin must declare the engine as a real WordPress plugin dependency, so

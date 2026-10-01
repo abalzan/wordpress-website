@@ -1,0 +1,39 @@
+STAGE            : en-leisure-description
+RECORD           : dwyer-mcallister-cottage (pt_id 154)
+SOURCE DIGEST    : bf9ebb245df494606911410142f4e207cb6a1178f63c68624143f87897fae741
+
+PROVIDER STATUS  : success
+REQUEST IDENTITY : 8a14ca656d47bd87122527ce6859c633...
+
+VALIDATOR OK     : yes  ()
+RESULT DIGEST    : e5476e49e9ffd970f8f7407f53d03cc3...
+
+PLAN REVIEW      : REVIEW_REQUIRED
+PLAN QUALITY     : human_review_required
+PLAN OPERATION   : write_owned_en_field
+
+STALE ROW        : REJECTED — source digest mismatch: the PT source changed after the provider result was generated
+STALE REACHES WP : no
+
+COMPOSED APPLIED : dwyer-mcallister-cottage
+ENGINE GATE      : PASS
+ENGINE SUMMARY   : created=0 updated=0 skipped=289 errors=0
+ENGINE PLAN KEYS : create,update,skip,conflicts
+
+PT META UNCHANGED: YES
+
+Warning: Attempt to read property "post_title" on array in Standard input code on line 66
+PT TITLE UNCHANGED: YES
+
+Warning: Attempt to read property "post_content" on array in Standard input code on line 67
+PT CONTENT UNCH. : YES
+
+Warning: Attempt to read property "post_name" on array in Standard input code on line 68
+PT SLUG UNCHANGED : YES
+
+Warning: Attempt to read property "post_status" on array in Standard input code on line 69
+PT STATUS UNCH.  : YES
+[30-Sep-2026 20:50:40 UTC] PHP Warning:  Attempt to read property "post_title" on array in Standard input code on line 66
+[30-Sep-2026 20:50:40 UTC] PHP Warning:  Attempt to read property "post_content" on array in Standard input code on line 67
+[30-Sep-2026 20:50:40 UTC] PHP Warning:  Attempt to read property "post_name" on array in Standard input code on line 68
+[30-Sep-2026 20:50:40 UTC] PHP Warning:  Attempt to read property "post_status" on array in Standard input code on line 69

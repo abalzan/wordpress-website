@@ -1,9 +1,18 @@
 # Testing
 
-The reference for **how to run and write tests** in this repository. The
-normative policy is [engineering-standard.md](engineering-standard.md) §8; this
-document is the practical companion to it. Where they disagree, the standard
-wins.
+The authoritative **testing model** for this repository: the three layers, the
+suite classification, the permanent invariant gates, the shared bootstrap and
+assertion API, fixtures, the acceptance base URL, the baseline/pre-existing
+failure policy and the CI contract. The normative policy is
+[engineering-standard.md](engineering-standard.md) §8. Where they disagree, the
+standard wins.
+
+> **The procedure lives in the skills.** To *run*, diagnose or compare the test
+> contract, and to add a layer, a fixture or a permanent gate, follow
+> [`wp-testing`](../.agents/skills/wp-testing/SKILL.md). To *author* a suite, use
+> [`wp-write-in-process-test`](../.agents/skills/wp-write-in-process-test/SKILL.md)
+> or [`wp-http-acceptance-matrix`](../.agents/skills/wp-http-acceptance-matrix/SKILL.md).
+> This document defines what each layer **means**; the skills define the workflow.
 
 ---
 
@@ -79,8 +88,8 @@ stale and the only visible fix was a hand-edit. The generator is what stops the
 debt recurring.
 
 EN translations are produced through the **shared**
-[`conexao-translation-rollout`](../plugins/conexao-translation-rollout.md) engine
-via the [`conexao-en-translation`](../plugins/conexao-en-translation.md) stage.
+[`conexao-translation-rollout`](plugins/conexao-translation-rollout.md) engine
+via the [`conexao-en-translation`](plugins/conexao-en-translation.md) stage.
 There is one engine and one authored manifest; a stage is configuration, not a
 second implementation.
 
@@ -527,3 +536,5 @@ _Last verified: 2026-09-26 by Stage J — Build, Release & Deploy Verification_
 _Last verified: 2026-09-28 by CI integration setup recovery_
 _Last verified: 2026-09-26 by Stage K — Agent Skills + Templates_
 _Last verified: 2026-09-26 by Stage O — Enable the Real English Blog Archive_
+
+_Last verified: 2026-09-30 by the agent skills / documentation migration_

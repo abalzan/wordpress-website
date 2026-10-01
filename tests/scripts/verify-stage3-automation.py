@@ -137,8 +137,23 @@ def main() -> int:
         hits = [m for m in mutations if re.search(rf"\b{re.escape(m)}\s*\(", body)]
         ok(f"{name} issues no WordPress content write", not hits, ", ".join(hits))
 
-    # ------------------------------------------------------------ no provider
-    print("\n-- provider boundary: interface only --")
+    # ------------------------------------------------ provider boundary
+    #
+    # STAGE 4 SUPERSESSION, recorded rather than hidden.
+    #
+    # Stage 3 asserted "there is NO provider: no outbound call, no vendor".
+    # Stage 4 was AUTHORISED to add exactly one provider implementation, so that
+    # assertion is no longer true and is replaced by a NARROWER one: the outbound
+    # call and the vendor reference are confined to the designated provider
+    # implementation, and no other file may make a call or name a vendor.
+    #
+    # Nothing else in this gate is relaxed. The provider still performs no
+    # WordPress write (asserted above, for every file), schedules nothing,
+    # exposes no route, and embeds no credential.
+    print("\n-- provider boundary: exactly one implementation (Stage 4) --")
+
+    STAGE4_PROVIDER = "class-conexao-translation-automation-provider-openai.php"
+    STAGE4_CONFIG = "class-conexao-translation-automation-provider-config.php"
 
     for name, body in bodies.items():
         hits = [
@@ -146,7 +161,26 @@ def main() -> int:
             for t in ("wp_remote_post", "wp_remote_get", "wp_remote_request", "curl_exec", "fsockopen")
             if re.search(rf"\b{re.escape(t)}\s*\(", body)
         ]
-        ok(f"{name} makes no outbound request", not hits, ", ".join(hits))
+        if not hits:
+            continue
+        ok(
+            f"{name} makes the outbound request (designated: {STAGE4_PROVIDER})",
+            name == STAGE4_PROVIDER,
+            ", ".join(hits),
+        )
+
+    ok(
+        "exactly one file makes an outbound request",
+        sum(
+            1
+            for b in bodies.values()
+            if any(
+                re.search(rf"\b{re.escape(t)}\s*\(", b)
+                for t in ("wp_remote_post", "wp_remote_get", "wp_remote_request", "curl_exec", "fsockopen")
+            )
+        )
+        == 1,
+    )
 
     provider = bodies.get("class-conexao-translation-automation-provider.php", "")
     ok(
@@ -155,20 +189,23 @@ def main() -> int:
         is not None,
     )
 
-    implementing = [
-        name
-        for name, body in bodies.items()
-        if re.search(r"^class\s+\w+[^\n]*\bimplements\b[^\n]*Provider_Interface", body, re.M)
-    ]
+    # The contract itself is UNCHANGED by Stage 4: the validator still does not
+    # implement it, so a provider can never grade its own homework.
+    validator = bodies.get("class-conexao-translation-automation-provider-result.php", "")
     ok(
-        "no class implements the provider interface (there is NO provider)",
-        not implementing,
-        ", ".join(implementing),
+        "the Stage 3 validator still does not implement the provider contract",
+        "implements" not in validator.split("class Conexao_Translation_Automation_Provider_Result")[-1][:200],
     )
 
+    # The vendor is confined to the provider configuration and implementation.
     for vendor in ("OpenAI", "anthropic", "Claude", "Gemini", "deepl", "AWS", "azure"):
         hits = [n for n, b in bodies.items() if vendor.lower() in b.lower()]
-        ok(f"no vendor reference: {vendor}", not hits, ", ".join(hits))
+        allowed = {STAGE4_PROVIDER, STAGE4_CONFIG, "conexao-translation-automation.php"}
+        ok(
+            f"vendor reference confined to the provider boundary: {vendor}",
+            set(hits) <= allowed,
+            ", ".join(sorted(set(hits) - allowed)),
+        )
 
     # ------------------------------------------------- trigger model: no cron
     print("\n-- trigger model: explicit invocation, no cron --")

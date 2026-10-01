@@ -1,0 +1,35 @@
+# Pre-existing failure proof
+
+All four failing suites were re-run with this migration's 19 tracked edits REVERTED
+(git checkout of exactly those 19 paths; the 12 pre-existing Stage 4 paths untouched).
+They fail identically without the migration, so none is a regression.
+
+=== BASELINE (my 19 tracked edits reverted) ===
+theme/conexao-br-irlanda/test-en-jobs-shared-slug.php -> Could not open input file: /var/www/html/wp-content/theme/conexao-br-irlanda/test-en-jobs-shared-slug.php
+theme/conexao-br-irlanda/test-leisure-card-excerpt-language.php -> Could not open input file: /var/www/html/wp-content/theme/conexao-br-irlanda/test-leisure-card-excerpt-language.php
+verify-routing-http.py ->  acceptance/routing-http: 91 passed, 1 failed 
+verify-i18n-freshness.py -> FAIL
+=== BASELINE (my edits reverted) — in-process suites ===
+test-en-jobs-shared-slug.php -> GATE-RESULT {"gate":"shared_slug_page","status":"fail","passed":38,"failed":1,"violations":1,"pre_existing":0,"new":1,"prerequisites":["polylang","conexao_resolve_shared_slug_page_request()","conexao_en_translation_shared_page_slug_filter()"],"allowlisted":[],"allowli
+test-leisure-card-excerpt-language.php -> 40 passed, 5 failed
+
+## The 19 reverted paths
+.agents/skills/wp-add-admin-screen/SKILL.md
+.agents/skills/wp-add-content-type/SKILL.md
+.agents/skills/wp-frontend-perf/SKILL.md
+.agents/skills/wp-http-acceptance-matrix/SKILL.md
+.agents/skills/wp-plugin-registry/SKILL.md
+.agents/skills/wp-release-deploy/SKILL.md
+.agents/skills/wp-security-review/SKILL.md
+.agents/skills/wp-translation-rollout/SKILL.md
+.agents/skills/wp-update-docs/SKILL.md
+.agents/skills/wp-write-in-process-test/SKILL.md
+AGENTS.md
+docs/README.md
+docs/deployment.md
+docs/engineering-standard.md
+docs/releases.md
+docs/templates/plan.md
+docs/templates/report.md
+docs/testing.md
+tests/scripts/verify-agent-governance.py

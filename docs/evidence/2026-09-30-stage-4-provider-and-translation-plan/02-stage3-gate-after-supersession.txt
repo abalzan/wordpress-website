@@ -1,0 +1,140 @@
+Stage 3 structural gate — change detection, provider, trigger, audit
+  PASS: the plugin source tree is readable
+
+-- shared engine integrity --
+  PASS: the shared engine is byte-identical (baf85283df95e80c…)
+  PASS: conexao-translation-rollout is classified platform/production/build
+  PASS: conexao-translation-automation is classified platform/production/build
+  PASS: the shared engine loads before the automation plugin
+
+-- no second translation engine --
+  PASS: conexao-translation-automation.php does not reimplement the engine lifecycle
+  PASS: class-conexao-translation-automation-apply-gate.php does not reimplement the engine lifecycle
+  PASS: class-conexao-translation-automation-audit.php does not reimplement the engine lifecycle
+  PASS: class-conexao-translation-automation-change-detector.php does not reimplement the engine lifecycle
+  PASS: class-conexao-translation-automation-digest.php does not reimplement the engine lifecycle
+  PASS: class-conexao-translation-automation-environment.php does not reimplement the engine lifecycle
+  PASS: class-conexao-translation-automation-hooks.php does not reimplement the engine lifecycle
+  PASS: class-conexao-translation-automation-inventory.php does not reimplement the engine lifecycle
+  PASS: class-conexao-translation-automation-lock.php does not reimplement the engine lifecycle
+  PASS: class-conexao-translation-automation-orchestrator.php does not reimplement the engine lifecycle
+  PASS: class-conexao-translation-automation-plan-adapter.php does not reimplement the engine lifecycle
+  PASS: class-conexao-translation-automation-provider-config.php does not reimplement the engine lifecycle
+  PASS: class-conexao-translation-automation-provider-openai.php does not reimplement the engine lifecycle
+  PASS: class-conexao-translation-automation-provider-result.php does not reimplement the engine lifecycle
+  PASS: class-conexao-translation-automation-provider.php does not reimplement the engine lifecycle
+  PASS: class-conexao-translation-automation-result.php does not reimplement the engine lifecycle
+  PASS: class-conexao-translation-automation-source-state.php does not reimplement the engine lifecycle
+  PASS: class-conexao-translation-automation-translation-plan.php does not reimplement the engine lifecycle
+  PASS: class-conexao-translation-automation-trigger.php does not reimplement the engine lifecycle
+  PASS: the plugin never redeclares the engine class
+
+-- no direct WordPress mutation from the automation plugin --
+  PASS: conexao-translation-automation.php issues no WordPress content write
+  PASS: class-conexao-translation-automation-apply-gate.php issues no WordPress content write
+  PASS: class-conexao-translation-automation-audit.php issues no WordPress content write
+  PASS: class-conexao-translation-automation-change-detector.php issues no WordPress content write
+  PASS: class-conexao-translation-automation-digest.php issues no WordPress content write
+  PASS: class-conexao-translation-automation-environment.php issues no WordPress content write
+  PASS: class-conexao-translation-automation-hooks.php issues no WordPress content write
+  PASS: class-conexao-translation-automation-inventory.php issues no WordPress content write
+  PASS: class-conexao-translation-automation-lock.php issues no WordPress content write
+  PASS: class-conexao-translation-automation-orchestrator.php issues no WordPress content write
+  PASS: class-conexao-translation-automation-plan-adapter.php issues no WordPress content write
+  PASS: class-conexao-translation-automation-provider-config.php issues no WordPress content write
+  PASS: class-conexao-translation-automation-provider-openai.php issues no WordPress content write
+  PASS: class-conexao-translation-automation-provider-result.php issues no WordPress content write
+  PASS: class-conexao-translation-automation-provider.php issues no WordPress content write
+  PASS: class-conexao-translation-automation-result.php issues no WordPress content write
+  PASS: class-conexao-translation-automation-source-state.php issues no WordPress content write
+  PASS: class-conexao-translation-automation-translation-plan.php issues no WordPress content write
+  PASS: class-conexao-translation-automation-trigger.php issues no WordPress content write
+
+-- provider boundary: exactly one implementation (Stage 4) --
+  PASS: class-conexao-translation-automation-provider-openai.php makes the outbound request (designated: class-conexao-translation-automation-provider-openai.php)
+  PASS: exactly one file makes an outbound request
+  PASS: the provider contract is declared as an INTERFACE
+  PASS: the Stage 3 validator still does not implement the provider contract
+  PASS: vendor reference confined to the provider boundary: OpenAI
+  PASS: vendor reference confined to the provider boundary: anthropic
+  PASS: vendor reference confined to the provider boundary: Claude
+  PASS: vendor reference confined to the provider boundary: Gemini
+  PASS: vendor reference confined to the provider boundary: deepl
+  PASS: vendor reference confined to the provider boundary: AWS
+  PASS: vendor reference confined to the provider boundary: azure
+
+-- trigger model: explicit invocation, no cron --
+  PASS: conexao-translation-automation.php schedules nothing
+  PASS: class-conexao-translation-automation-apply-gate.php schedules nothing
+  PASS: class-conexao-translation-automation-audit.php schedules nothing
+  PASS: class-conexao-translation-automation-change-detector.php schedules nothing
+  PASS: class-conexao-translation-automation-digest.php schedules nothing
+  PASS: class-conexao-translation-automation-environment.php schedules nothing
+  PASS: class-conexao-translation-automation-hooks.php schedules nothing
+  PASS: class-conexao-translation-automation-inventory.php schedules nothing
+  PASS: class-conexao-translation-automation-lock.php schedules nothing
+  PASS: class-conexao-translation-automation-orchestrator.php schedules nothing
+  PASS: class-conexao-translation-automation-plan-adapter.php schedules nothing
+  PASS: class-conexao-translation-automation-provider-config.php schedules nothing
+  PASS: class-conexao-translation-automation-provider-openai.php schedules nothing
+  PASS: class-conexao-translation-automation-provider-result.php schedules nothing
+  PASS: class-conexao-translation-automation-provider.php schedules nothing
+  PASS: class-conexao-translation-automation-result.php schedules nothing
+  PASS: class-conexao-translation-automation-source-state.php schedules nothing
+  PASS: class-conexao-translation-automation-translation-plan.php schedules nothing
+  PASS: class-conexao-translation-automation-trigger.php schedules nothing
+  PASS: conexao-translation-automation.php exposes no public route or admin handler
+  PASS: class-conexao-translation-automation-apply-gate.php exposes no public route or admin handler
+  PASS: class-conexao-translation-automation-audit.php exposes no public route or admin handler
+  PASS: class-conexao-translation-automation-change-detector.php exposes no public route or admin handler
+  PASS: class-conexao-translation-automation-digest.php exposes no public route or admin handler
+  PASS: class-conexao-translation-automation-environment.php exposes no public route or admin handler
+  PASS: class-conexao-translation-automation-hooks.php exposes no public route or admin handler
+  PASS: class-conexao-translation-automation-inventory.php exposes no public route or admin handler
+  PASS: class-conexao-translation-automation-lock.php exposes no public route or admin handler
+  PASS: class-conexao-translation-automation-orchestrator.php exposes no public route or admin handler
+  PASS: class-conexao-translation-automation-plan-adapter.php exposes no public route or admin handler
+  PASS: class-conexao-translation-automation-provider-config.php exposes no public route or admin handler
+  PASS: class-conexao-translation-automation-provider-openai.php exposes no public route or admin handler
+  PASS: class-conexao-translation-automation-provider-result.php exposes no public route or admin handler
+  PASS: class-conexao-translation-automation-provider.php exposes no public route or admin handler
+  PASS: class-conexao-translation-automation-result.php exposes no public route or admin handler
+  PASS: class-conexao-translation-automation-source-state.php exposes no public route or admin handler
+  PASS: class-conexao-translation-automation-translation-plan.php exposes no public route or admin handler
+  PASS: class-conexao-translation-automation-trigger.php exposes no public route or admin handler
+  PASS: the trigger never names MODE_APPLY
+  PASS: the trigger invokes the orchestrator in MODE_PROOF
+  PASS: the orchestrator is invoked from exactly one place
+  PASS: the hooks never invoke the orchestrator
+  PASS: the hooks never invoke the engine
+
+-- persisted state is namespaced and content-free --
+  PASS: option conexao_translation_automation_apply_state is namespaced to this plugin
+  PASS: option conexao_translation_automation_audit is namespaced to this plugin
+  PASS: option conexao_translation_automation_lock is namespaced to this plugin
+  PASS: option conexao_translation_automation_source_state is namespaced to this plugin
+  PASS: option conexao_translation_automation_wakeup is namespaced to this plugin
+  PASS: class-conexao-translation-automation-source-state.php stores digests, not content
+
+-- no credentials in source --
+  PASS: conexao-translation-automation.php references no credential constant
+  PASS: class-conexao-translation-automation-apply-gate.php references no credential constant
+  PASS: class-conexao-translation-automation-audit.php references no credential constant
+  PASS: class-conexao-translation-automation-change-detector.php references no credential constant
+  PASS: class-conexao-translation-automation-digest.php references no credential constant
+  PASS: class-conexao-translation-automation-environment.php references no credential constant
+  PASS: class-conexao-translation-automation-hooks.php references no credential constant
+  PASS: class-conexao-translation-automation-inventory.php references no credential constant
+  PASS: class-conexao-translation-automation-lock.php references no credential constant
+  PASS: class-conexao-translation-automation-orchestrator.php references no credential constant
+  PASS: class-conexao-translation-automation-plan-adapter.php references no credential constant
+  PASS: class-conexao-translation-automation-provider-config.php references no credential constant
+  PASS: class-conexao-translation-automation-provider-openai.php references no credential constant
+  PASS: class-conexao-translation-automation-provider-result.php references no credential constant
+  PASS: class-conexao-translation-automation-provider.php references no credential constant
+  PASS: class-conexao-translation-automation-result.php references no credential constant
+  PASS: class-conexao-translation-automation-source-state.php references no credential constant
+  PASS: class-conexao-translation-automation-translation-plan.php references no credential constant
+  PASS: class-conexao-translation-automation-trigger.php references no credential constant
+
+123 passed, 0 failed

@@ -36,6 +36,16 @@ What it asserts:
       an external filesystem path.
   13. The Stage K surface is documentation-only: no runtime file under
       wp-content/ is introduced by the governance layer.
+  14. Every active skill follows the full standard format (Purpose, When to use,
+      When not to use, Required reading, Authoritative sources, Preconditions,
+      Steps, Guardrails, Verification, Failure handling, Evidence and reporting,
+      Definition of done), and repeats no heading.
+  15. A skill that operates a live system or writes data states the
+      no-production-write sentence.
+  16. No skill references a skill that does not exist (dangling reference), and
+      no skill directs work at the permanently out-of-scope mobile repository.
+  17. .agents/skills/README.md lists every active skill, no stale entry, and
+      carries its _Last verified_ line.
 
 Exit code: 0 when every check passes, 1 otherwise. Every failure is printed
 with the offending path so the fix is obvious.
@@ -84,7 +94,52 @@ REQUIRED_SKILLS = (
     "wp-frontend-perf",
     "wp-translation-rollout",
     "wp-plugin-registry",
+    # Orientation, content writes, test execution and live-site operations.
+    # These four own the workflows the ten above assume but none of them
+    # defined: orient/plan, change content, run the contract, operate
+    # production.
+    "wp-repository",
+    "wp-content-change",
+    "wp-testing",
+    "wp-production-operations",
 )
+
+# The skill index. It must list every ACTIVE skill and nothing else, so an
+# agent can answer "which skill applies?" without reading fourteen files.
+SKILL_INDEX = os.path.join(".agents", "skills", "README.md")
+
+# The full standard skill format (engineering standard §13.1). The six
+# REQUIRED_SECTIONS above are the governed core and must appear in that order;
+# the entries below are the additional sections every active skill carries so a
+# skill states its purpose, its boundaries, its authoritative inputs and what
+# to do when something goes wrong. A skill that is only a summary is not an
+# executable workflow, which is the whole point.
+STANDARD_SECTIONS = (
+    "Purpose",
+    "When to use",
+    "When not to use",
+    "Required reading",
+    "Authoritative sources",
+    "Preconditions",
+    "Steps",
+    "Guardrails",
+    "Verification",
+    "Failure handling",
+    "Evidence and reporting",
+    "Definition of done",
+)
+
+# Skills that operate a live system or write data must say so explicitly. The
+# repository's central safety claim is that agents do not mutate production
+# implicitly, and a skill that omits the sentence weakens that claim.
+PRODUCTION_SKILLS = (
+    "wp-release-deploy",
+    "wp-production-operations",
+    "wp-content-change",
+    "wp-translation-rollout",
+)
+
+PRODUCTION_SENTENCE = "no production write"
 
 # Anything whose name says Dart/Flutter/mobile does not belong in the ACTIVE
 # WordPress skill namespace. Retired material is relocated, not deleted, and
@@ -104,6 +159,10 @@ PATH_RE = re.compile(
 PASSED = 0
 FAILURES: list[str] = []
 NOTES: list[str] = []
+
+# The §9.2 marker. The skill index is a living governance document, so it is
+# held to the same last-verified rule as docs/README.md and AGENTS.md.
+LAST_VERIFIED_RE = re.compile(r"^_Last verified: \d{4}-\d{2}-\d{2} by .+_$", re.M)
 
 
 def check(condition: bool, message: str) -> bool:
@@ -646,6 +705,134 @@ def main() -> int:
         "this gate is not named verify-*.py, so scripts/run-tests.sh will not "
         "discover it",
     )
+    # -- 16. Every active skill uses the full standard skill format ----------
+    # The six REQUIRED_SECTIONS are the governed core; STANDARD_SECTIONS is the
+    # format a skill must follow so it states its purpose, its boundaries, its
+    # authoritative inputs, and what to do when a step fails. A skill that is
+    # only a summary is not an executable workflow, which is the whole point.
+    for name in skills:
+        skill_file = os.path.join(SKILLS_DIR, name, "SKILL.md")
+        if not os.path.isfile(skill_file):
+            continue
+        found = sections_of(read(skill_file))
+        missing = [s for s in STANDARD_SECTIONS if s not in found]
+        check(
+            not missing,
+            f".agents/skills/{name}/SKILL.md is missing standard section(s): "
+            f"{', '.join(missing)}; a skill is an executable workflow, not a "
+            f"summary, and must state its purpose, boundaries, authoritative "
+            f"inputs and failure handling",
+        )
+        # A duplicated heading means two sections collided during an edit and
+        # one of them silently lost its body. That is a real editing defect, not
+        # a cosmetic one.
+        duplicates = sorted({s for s in found if found.count(s) > 1})
+        check(
+            not duplicates,
+            f".agents/skills/{name}/SKILL.md repeats section heading(s): "
+            f"{', '.join(duplicates)}; a duplicated heading means one of the two "
+            f"sections has no body",
+        )
+
+    # -- 17. Production-facing skills carry the safety sentence -----------
+    # The repository's central safety claim is that an agent never mutates
+    # production implicitly. A skill that operates a live system or writes data
+    # must state that sentence, or the claim is weaker than the documentation
+    # says it is.
+    for name in PRODUCTION_SKILLS:
+        skill_file = os.path.join(SKILLS_DIR, name, "SKILL.md")
+        if not os.path.isfile(skill_file):
+            continue
+        body = read(skill_file).lower()
+        check(
+            PRODUCTION_SENTENCE in body,
+            f".agents/skills/{name}/SKILL.md does not state '{PRODUCTION_SENTENCE}'; "
+            f"a skill that operates a live system or writes data must say "
+            f"explicitly that no production write occurred",
+        )
+
+    # -- 18. No dangling skill-to-skill reference --------------------------
+    # A skill that tells the next agent to use a skill that does not exist sends
+    # them to a directory with no workflow in it. This is exactly the failure
+    # the migration was commissioned to remove, so it is enforced, not trusted.
+    # Plugin slugs are not skills, and `wp-content` is the top-level WordPress
+    # directory; the check only fires for a name that is neither. The directory
+    # is matched EXACTLY, not by prefix: a prefix test would also swallow
+    # `wp-content-rollout`, which is precisely the dangling reference this check
+    # exists to catch.
+    known_skills = set(skills)
+    not_a_skill = set(registry_slugs) | {"wp-content"}
+    for name in skills:
+        skill_file = os.path.join(SKILLS_DIR, name, "SKILL.md")
+        if not os.path.isfile(skill_file):
+            continue
+        body = read(skill_file)
+        for referenced in sorted(set(re.findall(r"`(wp-[a-z0-9-]+)`", body))):
+            if referenced in known_skills or referenced in not_a_skill:
+                continue
+            check(
+                False,
+                f".agents/skills/{name}/SKILL.md references '{referenced}', which is "
+                f"neither an active skill nor a plugin in {REGISTRY}; a dangling "
+                f"skill reference sends the next agent to a workflow that does "
+                f"not exist",
+            )
+
+    # -- 19. No active skill points at the external mobile repository ------
+    # The Flutter/mobile repository is permanently out of scope. A skill must
+    # not send an agent there to do work, even though a skill may *mention* the
+    # exclusion. This distinguishes "never touch it" from "go and change it".
+    mobile_work_re = re.compile(
+        r"(?:clone|cd|edit|modify|run|deploy)\s+"
+        r"(?:in\s+|inside\s+|the\s+)?(?:the\s+)?"
+        r"(?:flutter|mobile|dart)[\w./-]*(?:repo|repository|app|project)",
+        re.IGNORECASE,
+    )
+    for name in skills:
+        skill_file = os.path.join(SKILLS_DIR, name, "SKILL.md")
+        if not os.path.isfile(skill_file):
+            continue
+        match = mobile_work_re.search(read(skill_file))
+        check(
+            match is None,
+            f".agents/skills/{name}/SKILL.md appears to direct work at the "
+            f"external Flutter/mobile repository"
+            + (f" ({match.group(0)!r})" if match else "")
+            + f"; that repository is permanently out of scope from this one",
+        )
+
+    # -- 20. The skill index matches the active skill set -------------------
+    # An index that drifts from the directory is worse than no index: an agent
+    # trusts it and picks a skill that no longer exists. Both directions are
+    # checked — a missing skill and a stale entry.
+    index_path = os.path.join(REPO_ROOT, SKILL_INDEX)
+    check(
+        os.path.isfile(index_path),
+        f"{SKILL_INDEX} is missing; an agent must be able to answer 'which skill "
+        f"applies to this task?' from a single index",
+    )
+    if os.path.isfile(index_path):
+        index = read(index_path)
+        # Only the index table's own links are parsed, so a prose mention of a
+        # skill name in another context cannot mask a missing row.
+        linked = set(re.findall(r"\]\(([a-z0-9-]+)/SKILL\.md\)", index))
+        for name in sorted(set(skills)):
+            check(
+                name in linked,
+                f"{SKILL_INDEX} does not list the active skill '{name}'; the index "
+                f"has drifted from .agents/skills/ and an agent would not find it",
+            )
+        for name in sorted(linked - set(skills)):
+            check(
+                False,
+                f"{SKILL_INDEX} lists '{name}', which is not an active skill; remove "
+                f"the stale entry so the index matches .agents/skills/",
+            )
+        check(
+            LAST_VERIFIED_RE.search(index) is not None,
+            f"{SKILL_INDEX} does not carry its _Last verified_ line "
+            f"(engineering standard §9.2)",
+        )
 
     report_and_exit()
     return 0  # unreachable; report_and_exit() exits

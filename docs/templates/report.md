@@ -25,6 +25,8 @@
 | **Start SHA** | |
 | **Final SHA** | |
 | **Working tree at finish** | clean / dirty (list anything dirty and why) |
+| **Skills followed** | `<name from .agents/skills/README.md>` |
+| **Authoritative docs consulted** | |
 
 ## 1. Scope completed
 
@@ -46,7 +48,23 @@ Give the counts too: **N added, N modified, N deleted**. Call out any
 ## 4. Runtime impact
 
 Does WordPress behave differently after this change? If yes, exactly how. If the
-change was behaviour-neutral, say so and say how that was verified.
+change was behaviour-neutral, say so and say how that was verified (for example
+`git diff --name-only` touching no file under `wp-content/`, plus a green test
+run before and after). A documentation, skills or governance change **must** land
+here as behaviour-neutral.
+
+## 4a. Scope integrity
+
+For any change that is documentation-, skills- or governance-only, confirm
+explicitly:
+
+| Check | Result |
+|---|---|
+| No production write, deploy, upload or activation | |
+| No production content, Polylang or database change | |
+| No application behaviour change (`wp-content/` diff is empty) | |
+| No Flutter/mobile repository accessed | |
+| No `.env` or secret change | |
 
 ## 5. Content / data impact
 
@@ -147,7 +165,11 @@ section is mandatory; if it is empty, justify why.
 ## 15. Documentation updated
 
 Which documents changed, per the change → document map, each ending with its
-`_Last verified_` line.
+`_Last verified_` line. If a **procedure** was moved out of a document into a
+skill, name both ends so no workflow is lost:
+
+| What moved | From (document) | To (skill) |
+|---|---|---|
 
 ## 16. Rollback / recovery
 
@@ -171,3 +193,4 @@ answer whenever a verifier did not run; do not reach for `PASS` to look
 complete.
 
 _Last verified: 2026-09-26 by Stage K — Agent Skills + Templates_
+_Last verified: 2026-09-30 by the agent skills / documentation migration_

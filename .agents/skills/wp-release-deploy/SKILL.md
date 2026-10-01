@@ -1,5 +1,11 @@
 # Release and deploy
 
+## Purpose
+
+Build release artifacts deterministically, record exactly what was built,
+verify the record, deploy in the documented order and verify the result — with
+the allowlist derived from the registry and rollback always possible.
+
 ## When to use
 
 Building release artifacts, recording a release, verifying a deployment, or
@@ -13,6 +19,14 @@ rolling one back. Two invariants define this repository's release contract:
 The third question — *does the deployed site behave?* — is answered separately
 by `scripts/verify-deploy.py`, which observes without mutating.
 
+## When not to use
+
+- Operating or auditing the live site (upload, activate, steady state, deciding
+  between rollback and roll-forward) — `wp-production-operations`.
+- Changing *what* may ship (adding, retiring, re-classifying a plugin) —
+  `wp-plugin-registry`.
+- Any content or English change — `wp-content-change` / `wp-translation-rollout`.
+
 ## Required reading
 
 - `AGENTS.md`.
@@ -23,6 +37,31 @@ by `scripts/verify-deploy.py`, which observes without mutating.
 - `docs/deployment.md` — the generated production activation order.
 - `plugins.json` — the authoritative registry (see `wp-plugin-registry`).
 - `scripts/README.md` — the build and verification script entries.
+
+## Authoritative sources
+
+| Fact | Read it from |
+|---|---|
+| What may ship (the derived allowlist) | `plugins.json` |
+| The release contract, sequence, manifest, tag, rollback | `docs/releases.md` |
+| The production activation order | `docs/deployment.md` (generated) |
+| The single packager and its exclusion rules | `scripts/lib/zip-build.sh` |
+| The single release-record implementation | `scripts/lib/release.py` |
+| Build/verify script flags and safety levels | `scripts/README.md` |
+| The release gate that must be green first | `docs/testing.md` |
+
+**This skill declares no artifact list, version or activation order.** Those come
+from `plugins.json`, the component headers and the generated regions.
+
+## Preconditions
+
+- `./scripts/lint.sh` and `./scripts/run-tests.sh` were green. A release does not
+  fix tests.
+- The working tree is in a known state; the git SHA recorded in the manifest is
+  the one you intend to ship.
+- The previous release record and artifacts are preserved, so a rollback target
+  exists **before** deploying.
+- Any content or translation change in the release has its own rollback.
 
 ## Steps
 
@@ -77,8 +116,10 @@ by `scripts/verify-deploy.py`, which observes without mutating.
   the plan is wrong: expose an admin screen instead.
 - `scripts/verify-deploy.py` is read-only and must stay so; `--site` is
   mandatory and a production URL is never a default.
-- No production activation, upload or content write happens from a script in
-  this repository.
+- **No production activation, upload or content write happens from a script in
+  this repository.** Preparing a release performs **no production write**; the
+  upload and activation are a maintainer's admin actions, and the report must
+  say so explicitly.
 - The allowlist is derived from `plugins.json`; a hand-maintained artifact list
   is a defect. A `retired` rollout must never be build-enabled.
 - `dist/` stays git-ignored; never commit a ZIP, a manifest or build output.
@@ -105,6 +146,37 @@ python3 scripts/verify-deploy.py --site <url>     # read-only, explicit target
   as verified.
 - `scripts/verify-deploy.py` without `--site` must exit non-zero (a negative
   proof worth repeating).
+
+## Failure handling
+
+- *A build is not reproducible (two hashes differ).* Something non-deterministic
+  entered the archive: an mtime, a permission bit, a uid/gid, or a file that
+  differs between builds. The recorded hash is then a false claim. Fix the
+  packager input before releasing.
+- *`release-manifest.py --verify` fails.* An artifact does not match the record —
+  it was rebuilt, edited or replaced. Re-derive the record with `--write`, or
+  discard the artifact; never edit the manifest to make it match.
+- *The allowlist contains a retired rollout.* The registry and the release
+  integration disagree. Fix `plugins.json` (`build: false` for a retired entry);
+  do not add an exclusion list to the packager.
+- *A test was failing before the build.* Stop. A release does not fix tests; go
+  back to `wp-testing` and classify the failure.
+- *`verify-deploy.py` reports a route failing after deployment.* Determine whether
+  the fault is code or content; code rolls back, content has its own recovery.
+  Never mix the two reversals.
+- *A step could not run (no Docker, no network, no deployed site).* Record it as
+  **blocked** or **not tested** and use `PASS WITH LIMITATION`. Never record an
+  unrun step as verified.
+
+## Evidence and reporting
+
+Record: the per-step output of `./scripts/verify-release.sh`, the manifest table
+(version, SHA, file count, size, SHA-256 per artifact), the determinism proof
+(two identical hashes), the `release-manifest.py --verify` result, the
+`verify-release-integrity.py` result, the activation order actually used, the
+`verify-deploy.py` result, the release-log row and the rollback note including
+what rollback does **not** cover. The build's per-step output belongs in
+`docs/evidence/<date>-<stage>/`. `dist/` stays git-ignored.
 
 ## Definition of done
 

@@ -2,8 +2,16 @@
 
 The release contract for this repository is engineering standard
 [§11](engineering-standard.md#11-deployment-and-release-standard). This document
-is its operational companion: the sequence, the record, the tag convention, the
-verification and the rollback procedure.
+is its companion: the sequence, the record, the tag convention, the
+verification and the rollback **semantics**.
+
+> **The procedure lives in the skills.** To build, record, verify, deploy or roll
+> back, follow
+> [`wp-release-deploy`](../.agents/skills/wp-release-deploy/SKILL.md); to audit
+> or safely update the **live** site, follow
+> [`wp-production-operations`](../.agents/skills/wp-production-operations/SKILL.md).
+> This document owns the *contract* — what a release is, what it may contain, and
+> what a rollback covers — not the click-by-click steps.
 
 Everything here is proven locally by `./scripts/verify-release.sh`, which runs the
 whole workflow — build, manifest, allowlist/hash verification, determinism,
@@ -250,7 +258,7 @@ artifacts you kept**. Prepare it *before* you deploy.
 |---|---|---|
 | 1 | Decide: is the fault in the **code** or in the **content**? | They roll back differently. |
 | 2 | **Code fault:** re-upload the previous plugin/theme ZIPs from step 1 above (Appearance → Themes → Add New → Upload Theme; Plugins → Add New → Upload Plugin). | The previous manifest gives you the exact artifacts. |
-| 3 | **Activate in `plugins.json` order** (`data-model → content → admin-ux → event-runtime`), and re-activate the previous theme. | Order is a dependency invariant, not a preference. |
+| 3 | **Activate in `plugins.json` order** — the `production: true` subset, in registry load order — and re-activate the previous theme. | Order is a dependency invariant, not a preference. The current order is the generated block in [deployment.md](deployment.md); read it there rather than from a list recorded here. |
 | 4 | **Verify the rollback** with the same gate used for the release: `python3 scripts/verify-deploy.py --site https://<host>` | An unverified rollback is an unverified state. |
 | 5 | **Content fault:** restore from the content snapshot / re-run the documented recovery for that rollout. Never improvise SQL. | Content and code are independent. |
 | 6 | Record the rollback in this file: what was rolled back, to which SHA, and the verification result. | The next release must know. |
@@ -348,3 +356,5 @@ result. Add a row **in the same change** that prepares the release.
 
 _Last verified: 2026-09-26 by Stage J — Build, Release & Deploy Verification_
 _Last verified: 2026-09-29 by the production artifact version bump (5 artifacts bumped to the next patch version; release record regenerated; no deployment)_
+
+_Last verified: 2026-09-30 by the agent skills / documentation migration_

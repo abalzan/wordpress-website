@@ -404,11 +404,28 @@ assert_true(
 	'the plugin still exposes NO public route, admin handler or activation side effect' . ( $hits ? ': ' . implode( ', ', $hits ) : '' )
 );
 
-// (g) Still no provider implementation and no network client.
-$hits = conexao_s3_scan( $php_files, array( 'wp_remote_post', 'wp_remote_get', 'wp_remote_request', 'curl_exec', 'fsockopen' ) );
+// (g) STAGE 4 SUPERSESSION. Stage 3 asserted no outbound request at all. Stage 4
+// was authorised to add exactly one provider implementation, so the assertion is
+// narrowed: the outbound call is confined to the DESIGNATED provider file, and no
+// other file in the plugin may make one. The trigger itself still may not.
+$stage4_provider = 'class-conexao-translation-automation-provider-openai.php';
+
+$stray = conexao_s3_scan(
+	array_values( array_diff( $php_files, array( CONEXAO_TESTS_WP_ROOT . '/wp-content/plugins/conexao-translation-automation/includes/' . $stage4_provider ) ) ),
+	array( 'wp_remote_post', 'wp_remote_get', 'wp_remote_request', 'curl_exec', 'fsockopen' )
+);
 assert_true(
-	array() === $hits,
-	'the plugin makes no outbound request of any kind: there is NO provider/network implementation' . ( $hits ? ': ' . implode( ', ', $hits ) : '' )
+	array() === $stray,
+	'no file outside the designated provider makes an outbound request' . ( $stray ? ': ' . implode( ', ', $stray ) : '' )
+);
+
+$trigger_network = conexao_s3_scan(
+	array( CONEXAO_TESTS_WP_ROOT . '/wp-content/plugins/conexao-translation-automation/includes/class-conexao-translation-automation-trigger.php' ),
+	array( 'wp_remote_post', 'wp_remote_get', 'wp_remote_request', 'curl_exec', 'fsockopen' )
+);
+assert_true(
+	array() === $trigger_network,
+	'the TRIGGER still makes no outbound request of any kind' . ( $trigger_network ? ': ' . implode( ', ', $trigger_network ) : '' )
 );
 
 // (h) The engine is still byte-identical.
@@ -446,6 +463,12 @@ $expected = array(
 	'Conexao_Translation_Automation_Orchestrator',
 	'Conexao_Translation_Automation_Provider_Interface',
 	'Conexao_Translation_Automation_Provider_Result',
+	// STAGE 4: the provider implementation, its configuration boundary, the
+	// translation plan and the plan adapter.
+	'Conexao_Translation_Automation_Provider_Config',
+	'Conexao_Translation_Automation_Provider_OpenAI',
+	'Conexao_Translation_Automation_Translation_Plan',
+	'Conexao_Translation_Automation_Plan_Adapter',
 	'Conexao_Translation_Automation_Result',
 	'Conexao_Translation_Automation_Source_State',
 	'Conexao_Translation_Automation_Trigger',

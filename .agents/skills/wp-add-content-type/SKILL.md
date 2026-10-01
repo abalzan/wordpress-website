@@ -1,5 +1,11 @@
 # Add a content type
 
+## Purpose
+
+Decide, register, route, test and document a new or changed post type, taxonomy,
+meta field, archive or single route — with schema registered in exactly one place
+and the English/taxonomy decisions made explicitly.
+
 ## When to use
 
 A task asks for a new or changed post type, taxonomy, meta field, archive or
@@ -8,6 +14,14 @@ requests are a taxonomy term, a meta field, or a filter on an existing type.
 
 Do not use this skill for admin screens, tests, English rollouts or releases:
 those have their own skills.
+
+## When not to use
+
+- English coverage for an existing type — that is `wp-translation-rollout`.
+- A maintainer capability operated through wp-admin — `wp-add-admin-screen`.
+- A content/term/media write that is not a schema change — `wp-content-change`.
+- Tests or acceptance rows alone — `wp-write-in-process-test` /
+  `wp-http-acceptance-matrix`.
 
 ## Required reading
 
@@ -19,6 +33,24 @@ those have their own skills.
 - `docs/routing.md` — the URL the new type will occupy.
 - `docs/plugins/conexao-data-model.md` — the only place schema is registered.
 - `plugins.json` — the authoritative plugin registry (see `wp-plugin-registry`).
+
+## Authoritative sources
+
+| Fact | Read it from |
+|---|---|
+| The types, taxonomies and meta that exist today | `docs/content-model.md` |
+| The URL a new type will occupy | `docs/routing.md` |
+| Where schema is registered | `docs/plugins/conexao-data-model.md` + the plugin itself |
+| Polylang translated/shared policy for taxonomies | `docs/content-model.md` + `docs/routing.md` |
+| Plugin load order / build / production facts | `plugins.json` |
+
+## Preconditions
+
+- A plan exists (`docs/templates/plan.md`) with the content-model, route/HTTP and
+  Polylang impact sections answered.
+- The decision to add a CPT (rather than a term, a meta field or a filter) has
+  been made and recorded.
+- `docker compose up -d` is up if the acceptance layer will be run.
 
 ## Steps
 
@@ -108,6 +140,28 @@ php scripts/generate-registry-docs.php --check        # no registry drift
   not planned, and any theme change must be explained.
 - Record the real numbers in the report (from `docs/templates/report.md`). If a
   verifier could not run, say so — never write "should work".
+
+## Failure handling
+
+- *The archive 404s in the acceptance layer.* The rewrite slug changed or was never
+  flushed. A slug change is a **redirect**, not an edit — add it to the redirects
+  module and re-verify precedence; do not silently accept a new URL.
+- *The completeness gate is non-zero.* EN coverage is incomplete for the new
+  type. Either finish the coverage (`wp-translation-rollout`) or record an
+  explicit allowlist with a reason. Never lower the gate to make it pass.
+- *A test fails only in the acceptance layer.* Usually a route/canonical/hreflang
+  contract issue; check `docs/routing.md` and the matrix row before the schema.
+- *`generate-registry-docs.php --check` reports drift.* The generated region and
+  the source disagree; fix the source and regenerate. Never hand-edit the region.
+- *Lint reports new violations.* Fix them; do not raise the baseline to hide them.
+
+## Evidence and reporting
+
+Record in the report: the CPT decision and rationale, the Polylang
+translated/shared decision per taxonomy, the routes added, the in-process and
+acceptance results with exact numbers, the completeness gate value, the registry
+drift result, and an explicit statement that no production write occurred.
+Machine evidence goes to `docs/evidence/<date>-<stage>/`.
 
 ## Definition of done
 

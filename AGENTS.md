@@ -63,7 +63,27 @@ rather than reaching outside this repository.
 is generated from or checked against one of the above — never hand-maintained
 twice.
 
+## Task → skill → canonical docs
+
+Pick the row, read the skill, then read only the canonical documents it names.
+
+| Task | Skill | Canonical docs |
+|---|---|---|
+| English translation work | `wp-translation-rollout` | content-model + routing + testing |
+| New post type / taxonomy / meta | `wp-add-content-type` | content-model + routing |
+| An importer, migration, seed or repair | `wp-content-change` | engineering-standard §5.2 + content-model |
+| A maintainer capability in wp-admin | `wp-add-admin-screen` | engineering-standard §4.2 + releases |
+| Production deployment | `wp-release-deploy` / `wp-production-operations` | releases + deployment + testing |
+| Auditing or updating the live site | `wp-production-operations` | releases + deployment |
+| Adding/retiring a plugin, or build/mount facts | `wp-plugin-registry` | `plugins.json` + deployment |
+| Running or diagnosing the tests | `wp-testing` | testing |
+| Writing a test or an acceptance row | `wp-write-in-process-test` / `wp-http-acceptance-matrix` | testing + routing |
+| Any change that alters what a maintainer must know | `wp-update-docs` | README index + standard §9 |
+| Anything touching a request, the database or an endpoint | `wp-security-review` | standard §2.1/§4.2/§7 + routing |
+
 ## Workflow: plan, build, verify, report
+
+`wp-repository` owns this loop in full. In short:
 
 1. **Plan.** For multi-file work, or anything touching content, routes or
    English/Polylang, fill in **[`docs/templates/plan.md`](docs/templates/plan.md)**.
@@ -185,6 +205,7 @@ authoritative registry. Edit the registry and run
 
 | Task | Read first |
 |---|---|
+| Which skill applies to this task | [`.agents/skills/README.md`](.agents/skills/README.md) |
 | Full documentation index | [`docs/README.md`](docs/README.md) |
 | Architecture / content model / routes | `docs/architecture.md`, `docs/content-model.md`, `docs/routing.md` |
 | Frontend, CSS, theme | `docs/frontend.md`, `docs/themes/conexao-br-irlanda.md` |
@@ -194,4 +215,18 @@ authoritative registry. Edit the registry and run
 | Per-plugin purpose, data and verification | `docs/plugins/conexao-*.md` |
 | Stage/feature history | `docs/reports/`, `docs/evidence/` |
 
+## CI
+
+`.github/workflows/ci.yml` is the single CI entrypoint and runs three
+**blocking** jobs on every `push` and `pull_request` (and on
+`workflow_dispatch`): **static quality**, **release integrity** and
+**integration**. The integration job is a required blocking check: it builds
+the deterministic synthetic site from the committed fixtures in an ephemeral
+Docker WordPress and runs `./scripts/run-tests.sh`. It is no longer
+`workflow_dispatch`-only and no longer waits on deterministic fixtures — that
+requirement was satisfied, not dropped (see
+[`docs/reports/2026-09-29-stage-p-ci-readiness.md`](docs/reports/2026-09-29-stage-p-ci-readiness.md)).
+
 _Last verified: 2026-09-26 by Stage K — Agent Skills + Templates_
+
+_Last verified: 2026-09-30 by the agent skills / documentation migration_

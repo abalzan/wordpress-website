@@ -145,14 +145,28 @@ $hits = conexao_promotion_token_hits(
 );
 assert_true( array() === $hits, 'the plugin still registers no activation/deactivation/uninstall hook' . ( $hits ? ': ' . implode( ', ', $hits ) : '' ) );
 
-// STAGE 3: there is now a provider INTERFACE and a validator, but still NO
-// implementation and NO network client. The assertion is narrowed to what
-// Stage 3 actually promises: no vendor, no HTTP client, no outbound call.
-$hits = conexao_promotion_token_hits(
-	array( 'wp_remote_post', 'wp_remote_get', 'wp_remote_request', 'curl_exec', 'fsockopen', 'OpenAI', 'anthropic', 'Claude', 'Gemini', 'deepl' ),
-	''
-);
-assert_true( array() === $hits, 'the plugin makes no network call and embeds no vendor' . ( $hits ? ': ' . implode( ', ', $hits ) : '' ) );
+// STAGE 4 SUPERSESSION. Stage 3 promised no vendor and no network client.
+// Stage 4 was authorised to add exactly ONE provider implementation, so the
+// assertion is narrowed to what is still true and is now STRONGER: the outbound
+// call is confined to the designated provider file, and no other file in the
+// plugin may make one.
+$stage4_provider = 'class-conexao-translation-automation-provider-openai.php';
+$stage4_allowed  = array( $stage4_provider, 'class-conexao-translation-automation-provider-config.php' );
+
+$stray = array();
+foreach ( $php_files as $file ) {
+	if ( in_array( basename( $file ), $stage4_allowed, true ) ) {
+		continue;
+	}
+	$hits = conexao_promotion_token_hits( array( 'wp_remote_post', 'wp_remote_get', 'wp_remote_request', 'curl_exec', 'fsockopen' ), (string) file_get_contents( $file ) );
+	if ( $hits ) {
+		$stray[] = basename( $file ) . ':' . implode( ',', $hits );
+	}
+}
+assert_true( array() === $stray, 'no file outside the provider boundary makes a network call' . ( $stray ? ': ' . implode( ', ', $stray ) : '' ) );
+
+$provider_hits = conexao_promotion_token_hits( array( 'wp_remote_post' ), '(' );
+assert_equals( array( $stage4_provider . ':wp_remote_post' ), $provider_hits, 'the provider makes exactly one designated outbound call and nothing else' );
 
 // Still no second translation engine, and no reimplementation of the engine's
 // own vocabulary (plan categories, gate keys) outside the engine.
@@ -185,6 +199,12 @@ $expected_classes = array(
 	'Conexao_Translation_Automation_Change_Detector',
 	'Conexao_Translation_Automation_Provider_Interface',
 	'Conexao_Translation_Automation_Provider_Result',
+	// STAGE 4: the provider implementation, its configuration boundary, the
+	// translation plan and the plan adapter.
+	'Conexao_Translation_Automation_Provider_Config',
+	'Conexao_Translation_Automation_Provider_OpenAI',
+	'Conexao_Translation_Automation_Translation_Plan',
+	'Conexao_Translation_Automation_Plan_Adapter',
 	'Conexao_Translation_Automation_Audit',
 	'Conexao_Translation_Automation_Hooks',
 	'Conexao_Translation_Automation_Trigger',
@@ -202,7 +222,18 @@ foreach ( get_declared_classes() as $declared_class ) {
 	}
 }
 
-assert_true( array() === $implementations, 'the provider interface is implemented by nobody: there is NO provider' );
+assert_equals(
+	array( 'Conexao_Translation_Automation_Provider_OpenAI' ),
+	$implementations,
+	'the provider interface is implemented by exactly one class: the Stage 4 provider'
+);
+
+// And that one class still cannot reach apply: it names no apply mode and no
+// WordPress write, which is what makes it data-only.
+$provider_body = (string) file_get_contents( CONEXAO_TESTS_WP_ROOT . '/wp-content/plugins/conexao-translation-automation/includes/class-conexao-translation-automation-provider-openai.php' );
+$provider_code = (string) preg_replace( array( '#/\*.*?\*/#s', '#//[^\n]*#' ), '', $provider_body );
+$provider_writes = conexao_promotion_token_hits( array( 'wp_insert_post', 'wp_update_post', 'update_post_meta', 'pll_set_post_language', 'MODE_APPLY' ), $provider_code );
+assert_true( array() === $provider_writes, 'the provider is data-only: it names no WordPress write and no apply mode' . ( $provider_writes ? ': ' . implode( ', ', $provider_writes ) : '' ) );
 
 // ---------------------------------------------------------------------------
 // 3. No credentials anywhere in the plugin source

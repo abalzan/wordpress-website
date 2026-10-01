@@ -1,0 +1,199 @@
+# Skill inventory (after)
+== wp-add-admin-screen ==
+## Purpose
+## When to use
+## When not to use
+## Required reading
+## Authoritative sources
+## Preconditions
+## Steps
+## Guardrails
+## Verification
+## Failure handling
+## Evidence and reporting
+## Definition of done
+
+== wp-add-content-type ==
+## Purpose
+## When to use
+## When not to use
+## Required reading
+## Authoritative sources
+## Preconditions
+## Steps
+## Guardrails
+## Verification
+## Failure handling
+## Evidence and reporting
+## Definition of done
+
+== wp-content-change ==
+## Purpose
+## When to use
+## When not to use
+## Required reading
+## Authoritative sources
+## Preconditions
+## Steps
+## Guardrails
+## Verification
+## Failure handling
+## Evidence and reporting
+## Definition of done
+
+== wp-frontend-perf ==
+## Purpose
+## When to use
+## When not to use
+## Required reading
+## Authoritative sources
+## Preconditions
+## Steps
+## Guardrails
+## Verification
+## Failure handling
+## Evidence and reporting
+## Definition of done
+
+== wp-http-acceptance-matrix ==
+## Purpose
+## When to use
+## When not to use
+## Required reading
+## Authoritative sources
+## Preconditions
+## Steps
+## Guardrails
+## Verification
+## Failure handling
+## Evidence and reporting
+## Definition of done
+
+== wp-plugin-registry ==
+## Purpose
+## When to use
+## When not to use
+## Required reading
+## Authoritative sources
+## Preconditions
+## The fields and what they drive
+## Steps
+## Guardrails
+## Verification
+## Failure handling
+## Evidence and reporting
+## Definition of done
+
+== wp-production-operations ==
+## Purpose
+## When to use
+## When not to use
+## Required reading
+## Authoritative sources
+## Preconditions
+## Steps
+## Guardrails
+## Verification
+## Failure handling
+## Evidence and reporting
+## Definition of done
+
+== wp-release-deploy ==
+## Purpose
+## When to use
+## When not to use
+## Required reading
+## Authoritative sources
+## Preconditions
+## Steps
+## Guardrails
+## Verification
+## Failure handling
+## Evidence and reporting
+## Definition of done
+
+== wp-repository ==
+## Purpose
+## When to use
+## When not to use
+## Required reading
+## Authoritative sources
+## Preconditions
+## Steps
+## Guardrails
+## Verification
+## Failure handling
+## Evidence and reporting
+## Definition of done
+
+== wp-security-review ==
+## Purpose
+## When to use
+## When not to use
+## Required reading
+## Authoritative sources
+## Preconditions
+## Steps
+## Guardrails
+## Verification
+## Failure handling
+## Evidence and reporting
+## Definition of done
+
+== wp-testing ==
+## Purpose
+## When to use
+## When not to use
+## Required reading
+## Authoritative sources
+## Preconditions
+## Steps
+## Guardrails
+## Verification
+## Failure handling
+## Evidence and reporting
+## Definition of done
+
+== wp-translation-rollout ==
+## Purpose
+## When to use
+## When not to use
+## Required reading
+## Authoritative sources
+## Preconditions
+## Steps
+## Guardrails
+## Verification
+## Failure handling
+## Evidence and reporting
+## Definition of done
+
+== wp-update-docs ==
+## Purpose
+## When to use
+## When not to use
+## Required reading
+## Authoritative sources
+## Preconditions
+## The change → document map
+## Steps
+## Guardrails
+## Verification
+## Failure handling
+## Evidence and reporting
+## Definition of done
+
+== wp-write-in-process-test ==
+## Purpose
+## When to use
+## When not to use
+## Required reading
+## Authoritative sources
+## Preconditions
+## Steps
+## Guardrails
+## Verification
+## Failure handling
+## Evidence and reporting
+## Definition of done
+

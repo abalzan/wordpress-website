@@ -1,5 +1,11 @@
 # Update documentation
 
+## Purpose
+
+Keep the documentation truthful and non-duplicative: put every fact in the one
+document that owns it, link rather than restate a procedure, keep generated
+regions generated, and stop drift before CI does.
+
 ## When to use
 
 Any change that alters what a maintainer or an agent must know. Documentation is
@@ -7,7 +13,14 @@ updated **in the same commit** as the change it describes — never as a follow-
 task, and never as a separate "docs pass".
 
 Use this skill together with the skill for the change itself; this one decides
-*where* the documentation goes and how drift is prevented.
+*where* the documentation goes and how drift is prevented. Use it also when
+refactoring documentation itself.
+
+## When not to use
+
+It does not perform the technical change. Every domain skill ends by pointing
+here, but this skill never substitutes for `wp-add-content-type`,
+`wp-translation-rollout`, `wp-release-deploy` and the rest.
 
 ## Required reading
 
@@ -19,6 +32,28 @@ Use this skill together with the skill for the change itself; this one decides
 - `docs/engineering-standard.md` §9.2 — the "two places is a bug" rule and the
   `_Last verified_` line requirement.
 - `scripts/README.md` — the authoritative script catalogue.
+
+## Authoritative sources
+
+| Concern | Single owner |
+|---|---|
+| What is authoritative, and the scope/safety rules | `AGENTS.md` |
+| Engineering rules, layout and ownership | `docs/engineering-standard.md` |
+| Content types, taxonomies, meta, language policy | `docs/content-model.md` |
+| URLs, redirects, archives, filters, the `/en/` layer | `docs/routing.md` |
+| Test model, layers, permanent gates | `docs/testing.md` |
+| Release/deploy/rollback contract | `docs/releases.md` |
+| Plugin registry facts | `plugins.json` (generated regions derive from it) |
+| Script inventory | `scripts/README.md` |
+| Agent workflows (procedures) | `.agents/skills/<name>/SKILL.md` |
+| History, audits, measurements | `docs/reports/`, `docs/evidence/`, `docs/audit/` |
+
+## Preconditions
+
+- The technical change is done and its verification results exist. Documentation
+  records a real result; it does not predict one.
+- You know which fact changed and which document owns it. If the answer is
+  "nowhere", that is a finding, not an invitation to create a second list.
 
 ## The change → document map
 
@@ -66,6 +101,12 @@ Use this skill together with the skill for the change itself; this one decides
 8. **Check for drift before finishing.** `docs/README.md` links every document;
    the registry drift gate passes; no document references a path that was
    renamed or removed.
+9. **Apply the ownership rule.** A **procedure** lives in exactly one skill. When
+   a canonical document needs to mention a procedure, it links to the skill in
+   one line instead of restating the steps. A **specification** (a rule, a value,
+   a policy, an architecture fact) stays readable in the canonical document. A
+   **historical outcome** stays in the report. When you find the same procedure
+   explained in two places, one of them is now wrong within a week.
 
 ## Guardrails
 
@@ -98,6 +139,34 @@ git status --short                               # only intended doc changes
 - Each touched document ends with an updated `_Last verified_` line.
 - The report from `docs/templates/report.md` contains **real** verification
   numbers and an explicit limitations section.
+
+## Failure handling
+
+- *Two documents now disagree.* Identify the actual owner from the table in
+  **Authoritative sources**, correct the non-owner, and say in the report which
+  was the error. Do not silently merge two contradictory policies.
+- *A document restates a procedure.* Replace the steps with a one-line link to
+  the owning skill. Keep the rule and the specification; drop the narration.
+- *A generated region is stale or hand-edited.* Run `--write`, then `--check`.
+  Never paste expected output into a generated block.
+- *A `SKILL.md` references a path that does not exist.* The governance gate will
+  fail. Fix the reference or create the target — a skill pointing at a file that
+  was never built teaches the next agent to look for nothing.
+- *The change → document map does not cover a file you touched.* Extend the map
+  in the standard so the next change is caught. That is a real improvement to
+  governance, not scope creep.
+- *A historical report contradicts current policy.* Do **not** rewrite history.
+  Record the correction in a new report and, if a reader is likely to be misled,
+  add a short pointer in the reports index.
+
+## Evidence and reporting
+
+Record: the documents changed and why, the drift-gate results
+(`generate-registry-docs.php --check`, `verify-agent-governance.py`, the
+documentation-drift gate), the `_Last verified_` lines updated, any duplication
+removed and where the procedure now lives, and the report location. A report
+written for this task goes to `docs/reports/` and its machine output to
+`docs/evidence/<date>-<stage>/`; never to the repository root.
 
 ## Definition of done
 
