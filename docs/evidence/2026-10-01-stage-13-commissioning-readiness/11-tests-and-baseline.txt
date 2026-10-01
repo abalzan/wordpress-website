@@ -1,0 +1,66 @@
+# Stage 13 - tests, gates and baseline classification (Sections 35, 34)
+
+## Focused Stage 13 suite
+
+  python3 tests/scripts/verify-stage13-commissioning-readiness.py
+  => 768 passed, 0 failed; 34 negative proofs proven, 0 missed; status pass
+
+  ./scripts/verify-commissioning-readiness.py
+  => COMMISSIONING READINESS: BLOCKED (exit 1, correct: not READY)
+  => commissioning_permitted=false, production_mutation_permitted=false
+
+## Stage 7-12 automation / provider / batch / control-plane suites
+
+  verify-stage7-commissioning.py              73 passed, 0 failed
+  verify-stage8-control-plane.py             149 passed, 0 failed
+  verify-stage8-release-consistency.py        52 passed, 0 failed
+  verify-stage10-batch-boundary.py        20 negative proofs, 0 missed
+  verify-stage13-commissioning-readiness.py  768 passed, 0 failed
+  (Stage 2/3/4/6 suites unchanged: 28 / 178 / 152 / 49, all 0 failed)
+
+## Full suite - ./scripts/run-tests.sh
+
+  In-process PHP suites:  79 total, 77 passed,  2 failed
+  Assertions:           5993 passed,     6 failed
+  Script-contract suites: 15 total, 14 passed,  1 failed
+  HTTP acceptance suites:  3 total,  2 passed,  1 failed
+
+  The script-contract layer grew from 14 to 15 suites (Stage 13 added) and its
+  failures stayed at 1. The failing set is BYTE-IDENTICAL to Stage 11 and
+  Stage 12: 79/77/2, 5993/6, 3/2/1 acceptance, and the same single script
+  failure. Stage 13 introduced NO new failure and fixed NO pre-existing one.
+
+## The four known conditions, unchanged and NOT reclassified
+
+ 1. i18n_freshness - 3 stale catalogues (conexao-br-irlanda lag 92483s,
+    conexao-content 76025s, conexao-event-runtime 76025s). NOT regenerated to
+    clear the condition. conexao-translation-automation is fresh.
+ 2. newsletter en_id 509 - pt_id=8 -> en_id=509 does not resolve to the real
+    linked EN newsletter (test-en-jobs-shared-slug.php, 38 passed / 1 failed).
+ 3. leisure-card excerpt failures - 5 assertions in
+    test-leisure-card-excerpt-language.php (missing EN = 1, 1 conflict, plus the
+    numeric-gate rows).
+ 4. HTTP acceptance - pt-lazer-card-excerpt-stays-portuguese /lazer/ is missing
+    the "Casa rural restaurada aos pés da montanha Keadeen" fragment, the
+    dwyer-mcallister-cottage item.
+
+ Carried forward without masking: the Stage 2 cache-scoping exemption
+ (cache_scoping 9/0 and cache_scoping_static 2/0 remain green), the Stage 12
+ production commissioning blockers, and the six historic PT restorations still
+ pending live production verification.
+
+## Other gates
+
+  ./scripts/lint.sh                                          OK (syntax, PHPCS, PHPStan)
+  php scripts/generate-registry-docs.php --check             OK, 15 plugins, 24 regions
+  tests/scripts/verify-release-integrity.py                  229 passed, 0 failed
+  tests/scripts/verify-documentation-drift.py                14 passed, 0 failed
+  tests/scripts/verify-agent-governance.py                   357 passed, 0 failed
+  tests/scripts/verify-script-conventions.py                 327 passed, 0 failed
+  python3 scripts/verify-permanent-gates.py                  6 of 7 pass;
+                                                            i18n_freshness FAIL (pre-existing)
+
+## No file under wp-content/ was modified by Stage 13
+
+The engine digest is unchanged and the release artifacts hash to exactly the
+Stage 12 values, which is the proof.

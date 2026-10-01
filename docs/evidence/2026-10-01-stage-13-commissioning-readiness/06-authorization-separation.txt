@@ -1,0 +1,47 @@
+# Stage 13 - authorization separation (Section 7)
+
+Three permissions are bound to three DISTINCT evidence TYPES. The binding is
+one-to-one and lives in exactly one place (AUTHORIZATION_SEPARATION in
+scripts/lib/commissioning.py), so no permission can be satisfied by another's
+document.
+
+  PERMISSION                 EVIDENCE TYPE                  NEVER IMPLIES
+  -------------------------  -----------------------------  -------------------------
+  INSTALL_AUTHORIZED         install_authorization          provider-call, apply
+  PROVIDER_CALL_AUTHORIZED   live_smoke_authorization       install, apply
+  CANARY_APPLY_AUTHORIZED    apply_authorization            install, provider-call
+
+Two further authorizations are required by the registry and are equally
+separate: commissioning_authorization (P10) and
+batch_control_commissioning_authorization (P11), plus canary_authorization (P08).
+
+## Why a type and not a flag
+
+Each authorization is a JSON evidence object carrying:
+  type, scope, granted_at, expires_at, operator, operator_confirmed, provenance
+
+`type` must equal the prerequisite's own evidence_type or the object is
+INVALID. An install_authorization document presented as an apply authorization
+is therefore REFUSED, not coerced - which is what makes "installation
+authorization" and "apply authorization" impossible to confuse.
+
+Expiry is evaluated against the SERVER-SIDE runtime clock (Observation.now),
+never a client-supplied timestamp. An expired authorization is EXPIRED and
+yields NO PRODUCTION ACTION.
+
+## Proven, not asserted
+
+The permanent gate tests every ordered pair (A, B) with A != B:
+  - an A object alone  => A true, B false
+  - a B object relabelled as A => A false
+9 ordered pairs across the three permissions, plus the same separation for
+commissioning vs installation and canary vs apply. All hold.
+
+## Current environment
+
+  INSTALL_AUTHORIZED        = false   (no evidence object supplied)
+  PROVIDER_CALL_AUTHORIZED  = false   (no evidence object supplied)
+  CANARY_APPLY_AUTHORIZED   = false   (no evidence object supplied)
+
+No credential is stored in an authorization object. An object carrying one is
+refused by assert_no_secrets() BEFORE any field is read.

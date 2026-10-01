@@ -1,0 +1,33 @@
+conexao release verification
+  repository: /home/andrei/IdeaProjects/wordpress-website
+  artifacts:  /tmp/conexao-release-ys88JS/dist
+  site:       http://localhost:8080
+
+==> [1/7] plugin registry drift gate
+registry OK: 15 plugins validated, 24 generated regions current (zero writes).
+    OK   plugins.json and its generated regions agree
+
+==> [2/7] build plugins and theme
+    OK   plugin artifacts built (9 plugin(s))
+    OK   theme artifact built
+
+==> [3/7] release manifest (dist/release.json)
+    OK   manifest emitted with versions, git SHA, file counts and SHA-256
+
+==> [4/7] verify artifact allowlist and hashes
+    OK   every artifact matches the recorded allowlist, size, file count and hash
+
+==> [5/7] determinism proof (rebuild must reproduce identical hashes)
+    OK   all artifacts reproduced byte-for-byte
+
+==> [6/7] exclusion proof (no tests/fixtures/reports/junk in any artifact)
+    OK   no artifact contains a test, fixture, report or junk file
+
+==> [7/7] HTTP deployment verification (read-only)
+    OK   skipped (--skip-http)
+
+----------------------------------------
+RELEASE VERIFICATION: OK
+  artifacts verified against plugins.json allowlist
+  deployment verified read-only over HTTP
+  no production step was performed

@@ -1,0 +1,22 @@
+STAGE 15 - SECTION 2: INDEPENDENT PERMISSIONS
+
+Each permission was checked on its own. None was inferred from
+another, and none was inferred from reachability.
+
+  Installation authorization (P02)          ABSENT
+  Provider-call authorization (P05)          ABSENT
+  Canary-apply authorization (P09)            ABSENT
+  Commissioning authorization (P10)          ABSENT
+  Batch-control commissioning (P11)          ABSENT
+  Human reviewer (P07)                       ABSENT
+
+P05 is proved NOT implied by P02 and P09 NOT implied by P05 by the
+Stage 13 permanent gate, which injects each authorization separately and
+asserts the aggregate fails closed for every single omission:
+
+  [proven]  6. missing installation authorization  -> readiness failure
+  [proven]  7. missing provider-call authorization -> readiness failure
+  [proven] 10. missing apply authorization         -> readiness failure
+  [proven]  8. missing canary authorization        -> readiness failure
+
+No authorization object was supplied to the gate in this environment.

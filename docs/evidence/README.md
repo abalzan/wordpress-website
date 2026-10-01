@@ -242,3 +242,96 @@ Cited by `docs/reports/2026-10-01-stage-12-production-commissioning-model-a-cana
 
 _Last verified: 2026-10-01 by Stage 12 — production commissioning and the Model A canary (`BLOCKED`)_
 
+
+---
+
+## `2026-10-01-stage-13-commissioning-readiness/`
+
+| File | Content |
+|---|---|
+| `01-commissioning-readiness-report.txt` | The aggregate readiness report: `COMMISSIONING READINESS: BLOCKED`, all eighteen prerequisites with their own status and reason, and the derived `commissioning_permitted` / `production_mutation_permitted` / `canary_selection_allowed` / `emergency_stop_clearance` / `control_plane` / `model_a_production_proof` / provider lines |
+| `02-commissioning-readiness-report.json` | The same report machine-readable, including every prerequisite's declared evidence source, observed provenance, freshness rule and detail |
+| `03-operator-runbook.md` | The 19-step commissioning runbook, GENERATED from the prerequisite registry (not hand-maintained), each step naming the prerequisites it requires and the ones it clears |
+| `04-permanent-gate-stage13.txt` | The permanent Stage 13 gate: 768 assertions and 34 injected-negative proofs, with the `GATE-RESULT` line |
+| `05-environment-and-credentials.txt` | Environment **presence** flags (names only), the explicit refusal of the unrelated `OPENAI_API_KEY`, and the local Docker `.env` classification — the file Stage 13 never opens |
+| `06-authorization-separation.txt` | The three-permission separation table, the authorization evidence schema, the server-side expiry rule, and the nine ordered-pair proofs |
+| `07-artifact-and-engine-integrity.txt` | Both builds with their SHA-256s, header/registry/release agreement, the secret/test/local-file scans, all eight batch ceilings against the actual configured limits, and the control-plane state |
+| `08-negative-proofs.txt` | Every injected failure and its result, with the positive control asserted green first, and the note that four real gate defects were found by running these proofs |
+| `09-prerequisite-registry.txt` | The eighteen-entry registry with evidence source, freshness, Stage 12 mapping and current status, plus the `READY 1 / BLOCKED 17` tally |
+| `10-safety-properties.txt` | The eight structural reasons readiness cannot mutate production or invoke the provider |
+| `11-tests-and-baseline.txt` | Every command and result, and the four known baseline conditions carried forward unchanged |
+
+No file in this directory contains a credential, an application password, a nonce, a cookie, an authorization header, a
+`.env` file or an environment dump. Every file was scanned for secret shapes.
+
+Cited by `docs/reports/2026-10-01-stage-13-commissioning-readiness.md`.
+
+_Last verified: 2026-10-01 by Stage 13 — the commissioning-readiness gate (`PASS`; commissioning readiness `BLOCKED`, production writes 0)_
+
+---
+
+## `2026-10-01-stage-14-secret-hardening-production-canary/`
+
+Stage 14 — Gate A (secret-scan hardening) complete and proven; Gate B (production
+commissioning and the Model A canary) **NOT PERFORMED**. Production writes `0`.
+
+| File | Content |
+|---|---|
+| `01-secret-scan-gate.txt` | The permanent Stage 14 gate: PHP↔Python conformance over the 27-case corpus (0 mismatches), 11 secret shapes refused, 16 legitimate values allowed, redaction, 8 container shapes, 1 552 source files scanned, 17 declared fixtures each confined to `tests/`, 10 ZIPs + release record scanned, engine digest. `323 passed, 0 failed` |
+| `02-secret-scan-gate-double-build.txt` | The same gate with `--build`: **9 artifacts byte-identical across two consecutive builds**, zero credential-shaped values in any rebuilt ZIP. `344 passed, 0 failed` |
+| `03-lint.txt` | `./scripts/lint.sh` — syntax clean, no new PHPCS violations, PHPStan level 5 clean. Legacy warnings 2 672 → 2 668 |
+| `04-full-suite-summary.txt` | `./scripts/run-tests.sh` per-suite PASS/FAIL list and the three aggregate lines |
+| `05-full-run-tests-output.txt` | The complete untruncated suite output |
+| `06-stage13-readiness-gate.txt` | The Stage 13 permanent gate re-run against the hardened scanner: `768 passed, 0 failed`, 34/34 injected-negative proofs |
+| `07-defect-before-after.txt` | The Stage 13 defect reproduced against the PRE-fix scanner (`sk-`/PEM/`Authorization` all `MISSED`) beside the post-fix proof |
+| `08-suite-secret-scan.txt` | The focused PHP suite: negative, positive, redaction, containers and no-regression sections. `113 passed, 0 failed` |
+| `09-suite-provider-secrets.txt` | The provider-containment regression, run against a fake transport (no provider call). `17 passed, 0 failed` |
+| `10-engine-integrity.txt` | Engine SHA-256 before and after Stage 14, with the empty `git diff` over `conexao-translation-rollout/` |
+| `11-commissioning-readiness-recheck.txt` | The readiness gate re-run in this environment: `BLOCKED`, all eighteen prerequisites `BLOCKED`, and the explicit refusal to alias `OPENAI_API_KEY` |
+| `12-artifact-hashes.txt` | Exact SHA-256 of all ten artifacts, the release record, the production dependency order and the two translation-plugin versions |
+| `13-verify-release.txt` | `./scripts/verify-release.sh --skip-http` — all 7 stages, including the determinism proof and the no-tests-in-artifacts proof |
+| `14-provider-credential-handling.txt` | Credential handling: presence-only checks, the approved variable absent, `OPENAI_API_KEY` present and deliberately unused, `.env` never opened |
+| `16-intermediate-failure-investigation.txt` | An intermediate full-suite failure (`test-error-handling.php`) investigated to its root cause: accumulated LOCAL DB state against `MAX_ENTRIES = 100`, not a code regression. Stage 14 changed nothing in the event importer. Verified by clearing the saturated option (`55 passed, 0 failed`) |
+| `17-final-suite-result.txt` | The definitive full-suite result on a clean local state: 79/81 in-process, 6 123 assertions, 15/16 script, 2/3 acceptance — identical to the baseline, **no new failure** |
+| `18-i18n-freshness-new-label-explained.txt` | Why the Stage L aggregate labels one of the three known stale catalogues `new`: the gate reads GIT commit timestamps (Stage 14 is uncommitted and therefore invisible to it), the catalogues date from 2026-09-29, and the `new` label comes from a baseline list that omits `conexao-content`. Not a Stage 14 regression |
+| `15-gate-b-not-performed.txt` | The explicit record that Gate B was not entered, with each absent prerequisite and the resulting `NO` for every production action |
+
+Every file here was scanned by the Stage 14 gate itself (1 568 files across the source tree, including this directory). The declared test
+fixtures in this directory are deliberate, obviously fake, and confined to
+`tests/`; no real credential, application password, nonce, cookie, authorization
+header, `.env` or environment dump appears in any of them.
+
+Cited by `docs/reports/2026-10-01-stage-14-secret-hardening-production-canary.md`.
+
+---
+
+## `2026-10-01-stage-15-final-production-commissioning-canary/`
+
+Stage 15 — an **operational execution** stage, stopped at its first gate.
+The Stage 13 readiness gate returned `BLOCKED` in this environment, so no
+production step was entered. Production changes `0`.
+
+| File | Content |
+|---|---|
+| `01-readiness-gate.txt` | The §1 absolute rule: the readiness gate run **in this environment**, `COMMISSIONING READINESS: BLOCKED`, all eighteen prerequisites, `commissioning_permitted=false`, `production_mutation_permitted=false`, exit 1, and the resulting `STAGE 15 = BLOCKED` |
+| `02-authorizations.txt` | Installation / provider-call / canary / apply / commissioning / batch-control / reviewer authorizations, each **independently** `ABSENT`, with the Stage 13 negative proofs that make non-inference structural rather than promised |
+| `03-credentials.txt` | Presence observed by **NAME only** — `CONEXAO_TRANSLATION_PROVIDER_KEY` absent, `OPENAI_API_KEY` present and deliberately unused, `.env` never opened. No value read, printed, inspected, hashed or stored |
+| `04-source-artifact-integrity.txt` | Exact `git status`, branch/SHA, engine SHA-256 before, both plugin versions, registry check, **artifacts built twice and byte-identical**, release metadata verification, and the source + artifact secret scan |
+| `05-steps-not-performed.txt` | The `NOT PERFORMED` record for §5–§32 — every production step, each named, none of them written as "passed", ending at `Production changes = 0` |
+| `06-tests-preproduction.txt` | The credential-independent half of the §38 matrix: lint, registry, Stage 14 secret-hardening gate (323), Stage 13 readiness gate (768 with 34/34 negative proofs), release integrity (229), documentation drift (14), governance |
+| `07-artifact-facts-control-plane.txt` | Artifact-level properties only — the two declared automation surfaces, `register_rest_route()` 0, anon AJAX 0, webhook 0, cron 0, legacy closure 36, batch control `DECLARED / NOT COMMISSIONED` with its 243-assertion security contract, fail-closed emergency stop, provider config. Every row is explicitly **not** a production claim |
+| `08-full-suite.txt` | `./scripts/run-tests.sh` totals, the four failing suites mapped to the §35 carried-forward conditions, and the Stage L permanent gates (6/7) |
+| `09-engine-integrity-and-stop-state.txt` | Engine SHA-256 after, equal to before; the §33 end state (bulk / next batch / autonomous approval / cron / automatic progression all OFF); the §34 failure-policy record |
+| `10-p15-fix.txt` | **Addendum — the P15 defect and its fix.** The conjunction of `evidence_type=None` and a hardcoded `production_stop_state_observed: False` made P15 unsatisfiable by any evidence; reproduced with a complete evidence set (17/18 READY, P15 alone BLOCKED). The fix re-wires P15 to a `production_stop_state` production read, keeps the artifact fail-closed check mandatory, and is **stricter** (both halves, production-grade provenance only, positive `STOPPED` only, self-contradictory objects refused, freshness applies). Includes the executed 12-row proof matrix, the aggregate behaviour, the 11 new negative proofs (gate 768→771, 34→44), the post-fix full suite (identical failure set), and the engine-integrity statement |
+
+No credential, application password, nonce, cookie, authorization header, `.env`
+or environment dump appears in any file here — presence flags carry **names
+only**. The Stage 14 gate scans this directory along with the rest of the source
+tree and reported `0` undeclared credential-shaped values.
+
+Cited by `docs/reports/2026-10-01-stage-15-final-production-commissioning-canary.md`.
+
+_Last verified: 2026-10-01 by Stage 15 — final production commissioning and canary (`BLOCKED` at the §1 readiness gate; production changes 0; engine integrity before == after)_
+
+
+_Last verified: 2026-10-01 by Stage 14 — secret-scan hardening and production commissioning (Gate A `PASS`; Gate B `NOT PERFORMED`; commissioning readiness `BLOCKED` 18/18, production writes 0)_

@@ -1,0 +1,18 @@
+STAGE 14 GATE A - THE DEFECT, REPRODUCED THEN CLOSED
+
+Reproduced against the PRE-FIX scanner by executing the four Stage 14 required
+classes through assert_no_secrets():
+
+  openai_sk              MISSED (DEFECT)
+  pem_private_key        MISSED (DEFECT)
+  authorization          MISSED (DEFECT)
+  wp_app_password        REFUSED
+
+After the fix (tests/scripts/verify-stage14-secret-scan.py --build):
+
+-- 2. negative and positive detection --
+  [ok] 11 secret shapes refused, 16 legitimate values allowed
+
+-- 3. the detection report is redacted --
+Per-case categories are asserted, not assumed: see 01-secret-scan-gate.txt
+section 1 (PHP/Python conformance, 27 cases, 0 mismatches).

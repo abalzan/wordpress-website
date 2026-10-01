@@ -1,0 +1,32 @@
+STAGE 15 - SECTION 38: REQUIRED TEST EXECUTION (pre-production)
+
+The credential-independent half of the required matrix was executed in
+full. The post-installation and post-canary halves require production
+access, installation and separate apply authorization, none of which
+exists, so they are NOT PERFORMED rather than passed.
+
+-- lint (syntax + PHPCS baseline + PHPStan level 5) --
+lint: OK (syntax clean, no new PHPCS violations, PHPStan clean)
+PHPCS legacy baseline 3231 errors / 2668 warnings vs baseline 3290 / 2672 - no NEW violations.
+
+-- registry --
+registry OK: 15 plugins validated, 24 generated regions current (zero writes).
+
+-- Stage 14 secret-hardening tests --
+
+stage14_secret_scan: 323 passed, 0 failed
+GATE-RESULT {"gate": "stage14_secret_scan", "passed": 323, "failed": 0, "violations": 0}
+
+-- Stage 13 readiness permanent gate --
+negative proofs: 34 proven, 0 missed
+768 passed, 0 failed
+GATE-RESULT {"gate": "stage13_commissioning_readiness", "status": "pass", "passed": 768, "failed": 0, "negative_proofs": 34, "negative_proofs_missed": 0, "violations": 0, "details": []}
+
+-- release integrity --
+verify-release-integrity.py: 229 passed, 0 failed
+
+-- documentation drift --
+verify-documentation-drift.py: 14 passed, 0 failed
+
+-- governance --
+verify-agent-governance.py: PASS

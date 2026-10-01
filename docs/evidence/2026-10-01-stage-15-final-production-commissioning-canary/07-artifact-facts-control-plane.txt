@@ -1,0 +1,48 @@
+STAGE 15 - ARTIFACT-LEVEL FACTS (credential-independent)
+
+These are the properties the PRODUCTION verification of sections 6-8
+would confirm. They are proven HERE IN THE ARTIFACT only. Proving them
+in the artifact is NOT a substitute for the production proof, and no
+production claim is made from any row below.
+
+-- 6. control plane / forbidden surfaces --
+Declared automation surfaces, exactly two:
+  admin_post_conexao_translation_automation_proof
+  admin_post_conexao_translation_automation_batch
+register_rest_route() in shipped automation code      = 0  (0 public REST routes)
+wp_schedule_event in shipped automation code       = 0  (cron 0)
+anonymous AJAX endpoint                             = 0
+webhook receiver                                    = 0
+control-plane registry: verify-stage8-control-plane.py 149 passed, 0 failed
+
+-- 7. legacy endpoint closure (ARTIFACT, not production) --
+test-legacy-apply-endpoint-closure.php: 36 passed, 0 failed
+The handler returns a literal 410, never redirects, never calls the
+engine and never mutates. PRODUCTION 410 IS NOT CLAIMED - it remains
+NOT PERFORMED, open since Stage 8/9/12/14.
+
+-- 8. batch control is DECLARED, NOT COMMISSIONED --
+The bootstrap register() call site stays commented out and
+is_commissioned() returns false, because commissioning is a production
+change requiring its own authorization (P10, P11), which is ABSENT.
+Its security contract is proven in the artifact: POST-only, manage_options,
+own nonce, five explicit actions, no generic mode=apply, and refusal
+(not silent ignore) of caller-supplied operations / size / environment.
+test-automation-batch.php: 243 passed, 0 failed
+
+-- 9. emergency stop fails closed in the artifact --
+absent state   => STOPPED
+malformed state => STOPPED
+set() requires authorized + manage_options; no client field; no activation hook.
+PRODUCTION initial state NOT OBSERVABLE - no production access.
+NOTHING WAS CLEARED. Clearing requires a separate authorized, audited
+operator action, which does not exist.
+
+-- 14. provider --
+provider: openai / model gpt-4o-mini, credential read only from
+CONEXAO_TRANSLATION_PROVIDER_KEY via getenv().
+That variable is ABSENT, so the real code path skips with
+"no provider credential in CONEXAO_TRANSLATION_PROVIDER_KEY".
+LIVE SMOKE NOT PERFORMED. RESULT: OK IS NOT CLAIMED.
+Quota NOT PROVEN and NOT inferred. No retries or limits were raised.
+Provider requests made from this stage: 0.

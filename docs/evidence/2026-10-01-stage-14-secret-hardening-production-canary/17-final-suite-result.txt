@@ -1,0 +1,25 @@
+FINAL FULL-SUITE RESULT (Stage 14, clean local state)
+
+           PASS  rest-invalid-lang-posts /wp-json/wp/v2/posts?lang=pt-br (status 400)
+         1 matrix row(s) failed
+
+----------------------------------------
+In-process PHP suites: 81 total, 79 passed, 2 failed
+Assertions: 6123 passed, 6 failed
+Script-contract suites: 16 total, 15 passed, 1 failed
+HTTP acceptance suites: 3 total, 2 passed, 1 failed
+----------------------------------------
+TESTS FAILED
+failing suites:
+  - theme/conexao-br-irlanda/test-en-jobs-shared-slug.php
+  - theme/conexao-br-irlanda/test-leisure-card-excerpt-language.php
+full suite output kept in /tmp/tmp.wPtZJqBtAJ
+
+The three failing suites are the KNOWN BASELINE, unchanged and
+unreclassified:
+  - i18n_freshness (3 stale catalogues; NOT regenerated)
+  - newsletter en_id 509
+  - leisure-card excerpt (5 assertions + 1 HTTP row)
+
+Identical to the pre-Stage-14 baseline: 79/81 in-process, 6123/6
+assertions, 15/1 script, 2/1 acceptance. NO new failure.

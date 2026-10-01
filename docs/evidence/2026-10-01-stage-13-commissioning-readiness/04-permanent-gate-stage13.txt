@@ -1,0 +1,58 @@
+Stage 13 commissioning-readiness verification
+  repository: /home/andrei/IdeaProjects/wordpress-website
+
+-- 1. the prerequisite registry is complete and singular --
+
+-- 2. readiness is derived from the individual results --
+
+-- 3. the report is secret-safe --
+  [proven] assert_no_secrets() refuses a provider key
+  [proven] assert_no_secrets() refuses an application password
+  [proven] assert_no_secrets() refuses a nonce
+  [proven] assert_no_secrets() refuses a cookie
+  [proven] assert_no_secrets() refuses an auth header
+  [proven] assert_no_secrets() refuses a private key
+  [proven] assert_no_secrets() refuses a secret-named key
+
+-- 4. readiness cannot reach production --
+
+-- 5. installation, provider-call and apply authorization are independent --
+
+-- 6. injected-negative proofs: the gate must FAIL, shown to fail --
+  [proven] 1. missing production credential -> readiness failure, production_mutation_permitted=false
+  [proven] 2. local Docker credential substituted for a production channel -> readiness failure, production_mutation_permitted=false
+  [proven] 3. unrelated OPENAI_API_KEY substituted for the provider credential -> readiness failure, production_mutation_permitted=false
+  [proven] 4. missing provider credential -> readiness failure, production_mutation_permitted=false
+  [proven] 5. missing provider quota proof -> readiness failure, production_mutation_permitted=false
+  [proven] 6. missing installation authorization -> readiness failure, production_mutation_permitted=false
+  [proven] 7. missing provider-call authorization -> readiness failure, production_mutation_permitted=false
+  [proven] 8. missing human reviewer -> readiness failure, production_mutation_permitted=false
+  [proven] 9. missing canary authorization -> readiness failure, production_mutation_permitted=false
+  [proven] 10. missing apply authorization -> readiness failure, production_mutation_permitted=false
+  [proven] 11. stale authorization (beyond its freshness budget) -> readiness failure, production_mutation_permitted=false
+  [proven] 12. expired authorization -> readiness failure, production_mutation_permitted=false
+  [proven] 13. stale production baseline -> readiness failure, production_mutation_permitted=false
+  [proven] 14. missing production 410 proof -> readiness failure, production_mutation_permitted=false
+  [proven] 15. missing production Model A proof -> readiness failure, production_mutation_permitted=false
+  [proven] 16. a configured batch limit over its Stage 10 ceiling -> readiness failure, production_mutation_permitted=false
+  [proven] 17. emergency stop cleared by client input -> clearance stays NOT_GRANTED, zero clears
+
+   -- structural proofs against a throwaway repository copy --
+  [proven] 16b. SERVER_CEILING_BATCH_RECORDS raised to 500
+  [proven] 16c. a batch limit constant removed entirely (must fail closed)
+  [proven] 18. the batch-control surface reports itself commissioned
+  [proven] 18b. the batch-control register() call site is activated
+  [proven] 19. a direct apply path (a real wp_insert_post call) appears in the readiness engine
+  [proven] 20. a provider call (a real wp_remote_post call) appears inside the readiness engine
+  [proven] 21. a hidden production mutation (a real pll_set_post_language call) appears in the preflight
+  [proven] 22b. an emergency-stop clear path (a real Emergency_Stop::set call) appears in the readiness engine
+  [proven] 22c. a batch limit becomes raisable by a request parameter
+  [proven] 22. engine digest drift -> readiness failure
+
+-- 7. artifact, ceiling, emergency-stop and control-plane invariants --
+
+-- 8. the real preflight, run against this repository --
+
+negative proofs: 34 proven, 0 missed
+768 passed, 0 failed
+GATE-RESULT {"gate": "stage13_commissioning_readiness", "status": "pass", "passed": 768, "failed": 0, "negative_proofs": 34, "negative_proofs_missed": 0, "violations": 0, "details": []}

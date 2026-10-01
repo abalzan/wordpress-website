@@ -1,0 +1,30 @@
+AN INTERMEDIATE FAILURE, INVESTIGATED AND RESOLVED
+
+An intermediate full-suite run reported:
+  [FAIL] plugin/conexao-event-importer/test-error-handling.php - 54 passed, 1 failed
+  FAIL: History entry was added
+
+INVESTIGATED, NOT waved through. Stage 14 changed NOTHING under
+wp-content/plugins/conexao-event-importer/ (git status over that path is empty).
+
+Root cause: accumulated LOCAL DATABASE STATE, not a code regression.
+Conexao_Import_History::MAX_ENTRIES = 100 and record() truncates with
+array_slice(, 0, MAX_ENTRIES). Once the history option reaches the
+cap, record() can no longer make the row count grow, so the suite's
+"count after == count before + 1" assertion fails.
+
+Observed state:
+  stored entries: 100 (MAX_ENTRIES = 100)
+  saturated: YES
+
+The same suite PASSED (55 passed, 0 failed) in the two earlier Stage 14
+full-suite runs; it only began failing once repeated local runs had
+saturated the capped option. That is a test-ISOLATION weakness in the
+importer suite, which is pre-existing and outside Stage 14 scope.
+
+Verified by resetting the saturated option (the importer's own
+Conexao_Import_History::clear()), then re-running the suite:
+  55 passed, 0 failed
+
+No importer code was modified to obtain this, and the condition was NOT
+reclassified as a Stage 14 regression.

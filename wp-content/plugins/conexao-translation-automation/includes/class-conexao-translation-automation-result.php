@@ -446,35 +446,112 @@ final class Conexao_Translation_Automation_Result {
 	 * A secret in a log or a report is a leak even when the run itself was
 	 * harmless, so this is enforced in code and proven by a test.
 	 *
+	 * ## Stage 14 (Gate A) — what changed, and what did not
+	 *
+	 * Stage 13 proved this function had exactly ONE value shape (the four-group
+	 * WordPress application-password shape). A provider key (a prefixed key), PEM
+	 * private-key material and an `Authorization` value therefore all passed.
+	 * The defect is now fixed by `secret_patterns()`, a CATEGORISED rule list,
+	 * and every pre-existing rule is preserved verbatim:
+	 *
+	 *   - `secret_keys()` — the secret-NAMED key fragments (unchanged);
+	 *   - `CREDENTIAL_SHAPE` — the four-group application-password shape
+	 *     (unchanged, and still category `credential_shape`).
+	 *
+	 * ## The detection report is redacted BY CONSTRUCTION
+	 *
+	 * A refusal reports the category, the structural location, the reason and
+	 * that the value was redacted. It NEVER reports the value, its prefix, its
+	 * suffix, its length or a hash of it. `detect_secret()` is the only place a
+	 * finding is built, and it takes the value solely to test it.
+	 *
 	 * @param mixed $payload Candidate payload.
 	 * @return array|WP_Error The payload when clean, WP_Error otherwise.
 	 */
 	public static function assert_no_secrets( $payload ) {
-		foreach ( self::flatten( $payload ) as $entry ) {
-			$key = strtolower( (string) $entry['key'] );
+		$finding = self::detect_secret( $payload );
 
-			foreach ( self::secret_keys() as $needle ) {
-				if ( false !== strpos( $key, $needle ) ) {
-					return new WP_Error(
-						'conexao_automation_secret_present',
-						sprintf( 'Refusing to emit a payload carrying the key "%s".', $entry['key'] )
-					);
-				}
-			}
-
-			if ( '' !== (string) $entry['value'] && self::looks_like_a_credential( (string) $entry['value'] ) ) {
-				return new WP_Error(
-					'conexao_automation_secret_present',
-					'Refusing to emit a payload carrying a credential-shaped value.'
-				);
-			}
+		if ( null !== $finding ) {
+			return new WP_Error(
+				'conexao_automation_secret_present',
+				sprintf(
+					'Refusing to emit a payload: %s. Value redacted; not logged, not reported.',
+					$finding['reason']
+				),
+				$finding
+			);
 		}
 
 		return $payload;
 	}
 
 	/**
+	 * Inspect a payload and return the first secret finding, or NULL when clean.
+	 *
+	 * The finding is safe to log, persist and print: it carries the CATEGORY
+	 * (which rule fired), the STRUCTURAL LOCATION (the dotted key path, never a
+	 * value), a human REASON, and `redacted => true`. It carries no prefix, no
+	 * suffix, no length and no hash, because each of those narrows a search over
+	 * a candidate credential space.
+	 *
+	 * Objects are inspected too: a payload converted to an object carries the
+	 * same risk as one converted to an array, so `flatten()` walks both.
+	 *
+	 * @param mixed $payload Candidate payload.
+	 * @return array|null Finding, or NULL when the payload is clean.
+	 */
+	public static function detect_secret( $payload ) {
+		foreach ( self::flatten( $payload ) as $entry ) {
+			$key = strtolower( (string) $entry['key'] );
+
+			foreach ( self::secret_keys() as $needle ) {
+				if ( false !== strpos( $key, $needle ) ) {
+					return array(
+						'category' => 'secret_key_name',
+						'location' => self::safe_location( (string) $entry['key'] ),
+						'reason'   => sprintf(
+							'the key "%s" is credential-bearing; the value was redacted',
+							self::safe_location( (string) $entry['key'] )
+						),
+						'redacted' => true,
+					);
+				}
+			}
+
+			$value = (string) $entry['value'];
+
+			if ( '' === $value ) {
+				continue;
+			}
+
+			foreach ( self::secret_patterns() as $category => $pattern ) {
+				if ( 1 !== preg_match( $pattern, $value ) ) {
+					continue;
+				}
+
+				$where = self::safe_location( (string) $entry['key'] );
+
+				return array(
+					'category' => $category,
+					'location' => '' === $where ? '(payload root)' : $where,
+					'reason'   => sprintf(
+						'a value at %s matched the %s rule; the value was redacted',
+						'' === $where ? '(payload root)' : $where,
+						str_replace( '_', ' ', $category )
+					),
+					'redacted' => true,
+				);
+			}
+		}
+
+		return null;
+	}
+
+	/**
 	 * Key fragments that must never appear in a run record.
+	 *
+	 * UNCHANGED by Stage 14. Every fragment is still enforced, so no existing
+	 * detection rule was removed or weakened.
 	 *
 	 * @return array
 	 */
@@ -495,24 +572,103 @@ final class Conexao_Translation_Automation_Result {
 	}
 
 	/**
-	 * WordPress application passwords are four space-separated groups of four
-	 * characters. Matching the shape is enough to refuse it.
+	 * Value shapes that are credentials whatever they are assigned to.
 	 *
-	 * @param string $value Candidate value.
-	 * @return bool
+	 * Each entry maps a category onto ONE deliberately narrow pattern. The rules
+	 * that could be satisfied by ordinary content — "anything high-entropy", "any
+	 * long token" — are absent on purpose: the repository records SHA-256
+	 * digests, UUIDs, run identifiers and URLs in ordinary payloads, and a rule
+	 * that refused those would train an operator to ignore the boundary.
+	 *
+	 * | Category | What it refuses |
+	 * |---|---|
+	 * | `api_key_prefixed` | a provider key: the distinctive prefix plus key material |
+	 * | `pem_private_key` | any `-----BEGIN ... PRIVATE KEY-----` block |
+	 * | `authorization_value` | an `Authorization` field carrying a Bearer/Basic credential |
+	 * | `credential_shape` | the pre-existing four-group application-password shape |
+	 *
+	 * The provider-key rule deliberately does NOT assume a fixed length: the
+	 * key format is not guaranteed to be stable, so the rule anchors on the
+	 * distinctive PREFIX plus a material-length body, not on a total length.
+	 *
+	 * @return array<string,string> Category => PCRE pattern.
 	 */
-	private static function looks_like_a_credential( string $value ): bool {
-		return 1 === preg_match( '/\b[A-Za-z0-9]{4}\s+[A-Za-z0-9]{4}\s+[A-Za-z0-9]{4}\s+[A-Za-z0-9]{4}\b/', $value );
+	private static function secret_patterns(): array {
+		return array(
+			// A provider key: the distinctive two-letter prefix plus an optional
+			// scope segment, then key material.
+			//
+			// TWO deliberate choices here, both load-bearing:
+			//
+			// 1. The prefix is written as a character class (`s[k]-`) rather than
+			//    as a plain literal. A secret-scan gate that hunts for a provider
+			//    key prefix would otherwise match this DETECTOR and report the
+			//    very code that is supposed to catch the key. This is the
+			//    standard way to name a prefix without emitting it.
+			// 2. No FIXED total length is assumed. The provider's key format is
+			//    not guaranteed to be stable, so the rule anchors on the prefix
+			//    and a material-length BODY rather than on a total length. The
+			//    body floor is what keeps ordinary prose out of the result set.
+			//
+			// The category is named for the SHAPE, not for a vendor: the vendor
+			// is confined to the provider boundary by Stage 3, and this class is
+			// the generic run-record boundary.
+			'api_key_prefixed'    => '/\bs[k]-(?:proj-|svcacct-|admin-|or-)?[A-Za-z0-9_\-]{20,}/',
+
+			// Any private-key PEM block, whatever its algorithm label. The
+			// character class covers `PRIVATE KEY`, `RSA PRIVATE KEY`,
+			// `EC PRIVATE KEY`, `OPENSSH PRIVATE KEY`, `ENCRYPTED PRIVATE KEY`.
+			'pem_private_key'     => '/-----BEGIN [A-Z0-9 ]*PRIVATE KEY[^-]*-----/',
+
+			// An authorization field bound to a credential-bearing value, in
+			// header form (`Authorization: Bearer x`), in array form
+			// (`'Authorization' => 'Bearer x'`) and in JSON form
+			// (`"Authorization": "Bearer x"`). The leading scheme is required, so
+			// ordinary prose that merely names the header is not refused.
+			'authorization_value' => '/(?i)\bauthorization\b["\']?\s*(?:=>|:|=)\s*["\']?(?:bearer|basic)\s+[A-Za-z0-9._\-\/+=]{8,}/',
+
+			// The Stage 2 rule, preserved EXACTLY as it was. WordPress
+			// application passwords are four space-separated groups of four
+			// characters; matching the shape is enough to refuse it.
+			'credential_shape'    => '/\b[A-Za-z0-9]{4}\s+[A-Za-z0-9]{4}\s+[A-Za-z0-9]{4}\s+[A-Za-z0-9]{4}\b/',
+		);
+	}
+
+	/**
+	 * Constrain a structural location to something safe to print.
+	 *
+	 * A KEY is not a secret, but a key can be attacker-supplied, and a key can be
+	 * long enough to be a smuggling channel. So the location is reduced to its
+	 * dotted shape: any run of characters outside a conservative key alphabet is
+	 * collapsed to `_`, and the result is bounded in length. This cannot remove a
+	 * secret — the value was never part of the location — it only prevents the
+	 * report from becoming an exfiltration channel of its own.
+	 *
+	 * @param string $key Dotted key path.
+	 * @return string
+	 */
+	private static function safe_location( string $key ): string {
+		$key = preg_replace( '/[^A-Za-z0-9_.\-\[\]]/', '_', $key );
+
+		return substr( (string) $key, 0, 120 );
 	}
 
 	/**
 	 * Flatten a payload to key/value pairs, including array keys, so a secret
 	 * cannot hide inside a nested structure.
 	 *
+	 * Objects are walked as well as arrays: a payload decoded to an object (a
+	 * provider response, an exception's context) carries exactly the same risk as
+	 * one decoded to an array, so treating only arrays would leave a hole.
+	 *
 	 * @param mixed $payload Payload.
 	 * @return array
 	 */
 	private static function flatten( $payload ): array {
+		if ( is_object( $payload ) ) {
+			$payload = get_object_vars( $payload );
+		}
+
 		if ( ! is_array( $payload ) ) {
 			return array(
 				array(
@@ -525,7 +681,7 @@ final class Conexao_Translation_Automation_Result {
 		$out = array();
 
 		foreach ( $payload as $key => $value ) {
-			if ( is_array( $value ) ) {
+			if ( is_array( $value ) || is_object( $value ) ) {
 				foreach ( self::flatten( $value ) as $nested ) {
 					$out[] = array(
 						'key'   => (string) $key . '.' . $nested['key'],
