@@ -1,0 +1,110 @@
+# Stage 9 — Source and artifact preflight (Section 3 / Section 4)
+
+## git state
+
+Branch : i18n
+HEAD   : d5f5f6cb9650ac7beca2390696b1ff8e08b033c2
+         "Add Stage 8 verification scripts and tests for legacy endpoint closure"
+Parent : 71438ca639642222e718f636395cdf2ac803b4b0 (Stage 7)
+Working tree at preflight start: 13 modified + 5 untracked paths
+  (the Stage 8 work in progress)
+Working tree at preflight end  : CLEAN, HEAD advanced to d5f5f6c (Stage 8
+  committed). release.json "dirty" therefore correctly reports false.
+
+NOTE: HEAD moved during the preflight because Stage 8 was committed. This was
+observed and recorded rather than silently absorbed; every digest below was
+re-measured against the final, clean d5f5f6c tree.
+
+## ENGINE DIGEST (Section 3 / Section 34)
+
+Historical expected:
+  baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4
+
+Measured, BEFORE any build:
+  baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4
+Measured, AFTER both builds and after the Stage 8 commit:
+  baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4
+
+baf85283  MATCHES EXACTLY, before and after.
+
+Per-file digests of the engine plugin (sha256sum):
+  945611ce27760716ddeb028105c62819ef76d5a24fc78ad2f8e3c4ce46a5b5dc  conexao-translation-rollout.php
+  d3109bc9fdfaf975aa9b96c5c429b472f5471e4c3e09c9344af65d1cd5c4911a  includes/class-conexao-translation-rollout-admin.php
+  baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4  includes/class-conexao-translation-rollout-engine.php
+  5527a831a7e8a24c8febd7a74771ae2c4e401e96a30880566df08b8355fcf9d8  tests/test-future-stage-smoke.php
+  052b20d6a5919645ba1f8aaa41f19b92efa84c8669bf766990ec453fbbd5dc7f  tests/test-legacy-apply-endpoint-closure.php
+  f137c56f3d6c897a83e18b3541f1ac0f9e3734bd6be039257ae37703a5af060f  tests/test-rollout-failure-proofs.php
+  0a66d9c48e2333a627e2c261ce4e9e64141a8b7fe094580e198b90dc4b4b1cf8  tests/test-translation-rollout-engine.php
+
+No engine source was modified by Stage 9. No repair was performed.
+
+## Plugin versions in source
+
+conexao-translation-rollout     : 1.2.0   (Requires PHP 8.0)
+conexao-translation-automation  : 0.3.0   (Requires PHP 7.4,
+                                            Requires Plugins: conexao-translation-rollout)
+
+## ARTIFACT REPRODUCIBILITY (Section 4)
+
+Two consecutive builds of scripts/build-plugins-zip.sh.
+
+Result: REPRODUCIBLE — all 10 ZIP hashes byte-identical across both builds.
+  (verified with `diff` of two sha256sum manifests; no differences)
+
+Artifact count: 10 / 10 expected.
+
+conexao-translation-rollout.zip     12268 bytes
+  sha256 c6c7a91a024c7b5af2365154c65e4cacf8d1a9b0ffd6fd91cd0886077bbe65d8
+  file_count 4, version 1.2.0
+conexao-translation-automation.zip  96059 bytes
+  sha256 f8cf8ec2b9a7d2f55f63f3d1f6d4fca0e7d15854897fb8b18faa02cb5badbe4a
+  file_count 20, version 0.3.0
+
+Full ZIP hash manifest: 01-artifact-hashes-build2.txt
+Release tag v2026.10.01, manifest copy: 03-release.json
+
+## STALE release.json DEFECT — Stage 8's defect remains prevented
+
+The dist/release.json present BEFORE this stage was STALE: it recorded
+  sha 71438ca... (the Stage 7 commit) and dirty true,
+while the tree carried uncommitted Stage 8 work.
+
+After rebuilding, dist/release.json records
+  sha d5f5f6cb9650ac7beca2390696b1ff8e08b033c2, dirty false,
+matching the actual clean HEAD.
+
+The defect cannot silently return: tests/scripts/verify-stage8-release-consistency.py
+(52 assertions, 0 failed) asserts, for every recorded artifact, that
+  - the recorded artifact EXISTS,
+  - the version INSIDE the artifact == the source version,
+and adds two explicit Stage 7 regressions:
+  - conexao-translation-automation header is not the stale 0.2.0,
+  - conexao-translation-automation release.json matches its header,
+plus 'Requires Plugins' header == plugins.json dependencies for all four
+dependent plugins.
+
+## ARTIFACT HYGIENE (Section 4)
+
+Per-ZIP scan for tests/, .env, docker, compose entries:
+  all 10 ZIPs -> 0 suspicious entries
+  (so: no tests, no .env, no local Docker-only files shipped)
+
+Credential-material scan across every ZIP (patterns sk-…, WP_APPLICATION_PASSWORD
+assignment, application_password):
+  NO MATCHES in any artifact.
+
+## Version / dependency consistency
+
+tests/scripts/verify-stage8-release-consistency.py
+  52 passed, 0 failed — versions compared header-vs-manifest: 9
+
+tests/scripts/verify-release-integrity.py     229 passed, 0 failed
+php scripts/generate-registry-docs.php --check   registry drift: 0
+
+production_order in release.json (derived from plugins.json production:true):
+  conexao-data-model -> conexao-content -> conexao-admin-ux
+  -> conexao-event-runtime -> conexao-translation-rollout
+  -> conexao-translation-automation
+conexao-translation-rollout precedes conexao-translation-automation:
+dependency order correct. The automation plugin's 'Requires Plugins' header
+asserts that dependency and is gate-checked against the registry.

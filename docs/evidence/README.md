@@ -130,3 +130,34 @@ fail closed.
 Cited by `docs/reports/2026-09-30-stage-5-production-commissioning-canary.md`.
 
 _Last verified: 2026-09-30 by Stage 5 — production commissioning and canary_
+
+## 2026-10-01-stage-9-production-commissioning
+
+Stage 9 was the first stage permitted to commission infrastructure in
+production. The boundary was **not** crossed: `BLOCKED`, `Production writes: 0`,
+installs `0`, provider requests `0`, mutations `0`.
+
+| File | Contents |
+|---|---|
+| `01-artifact-hashes-build2.txt` | SHA-256 of all 10 ZIPs from the second build — the reproducibility record |
+| `02-permanent-gates.txt` | Full `scripts/verify-permanent-gates.py` output (7 gates, 6 pass, 1 carried-forward `i18n_freshness` failure) |
+| `03-release.json` | The release manifest as built (`v2026.10.01`, clean tree at `d5f5f6c`) |
+| `04-run-tests.txt` | Full `./scripts/run-tests.sh` output — 5600 assertions passed / 6 failed |
+| `05-preconditions-and-credentials.txt` | Environment probe (names only, values never read), the `.env` local-only scope note, and the provider metadata read through the **real** `credentials_available()` / `configuration()` code path |
+| `06-legacy-endpoint-closure.txt` | The `410` closure evidence in artifact and gates — **and an explicit record of what was NOT proven in production** |
+| `07-source-and-artifact-preflight.txt` | Git state, engine SHA-256 before/after, two-build reproducibility, ZIP hygiene, release-metadata consistency |
+| `08-gates-and-tests.txt` | The §36 required-gate matrix and the §37 test matrix, with the failing set attributed to the carried-forward conditions |
+
+Key facts: engine SHA-256
+`baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4`
+**before and after, exact equality**; two builds **10/10 byte-identical**;
+`credentials_available()` = **FALSE** through the real code path; **zero
+provider requests**; and **no production credential was used, printed or
+persisted**.
+
+No file in this directory contains a credential, an application password, a
+nonce, a cookie, an authorization header or a `.env` file.
+
+Cited by `docs/reports/2026-10-01-stage-9-production-commissioning.md`.
+
+_Last verified: 2026-10-01 by Stage 9 — production commissioning (`BLOCKED`)_

@@ -1,0 +1,86 @@
+# Stage 9 — Legacy apply endpoint closure: repository-level verification
+# The POSITIVE PRODUCTION 410 proof required by Section 7 was NOT performed,
+# because no production admin credential is available. Reachable is not
+# authorized. This file records what WAS proven, and what was NOT.
+
+## Artifact/source evidence (Stage 8 closure, present in the promoted artifact)
+
+Engine version: conexao-translation-rollout 1.2.0
+Engine header text: "As of 1.2.0 the engine ships NO admin mutation entry
+point: the former admin_post_conexao_translation_rollout_run endpoint is a
+closed deprecation stub, and the single production control plane is
+conexao-translation-automation's admin_post_conexao_translation_automation_proof."
+
+Location: wp-content/plugins/conexao-translation-rollout/includes/
+         class-conexao-translation-rollout-admin.php
+
+The closed handler (line ~140):
+
+    public static function handle_run(): void {
+        if ( ! current_user_can( self::CAP ) ) {
+            wp_die( 'forbidden', '', array( 'response' => 403 ) );
+        }
+        wp_die(
+            esc_html( sprintf( 'The %1$s endpoint was retired: ... Use %2$s
+            (Tools -> Translation Automation) instead.',
+            self::ACTION, self::REPLACEMENT_ACTION ) ),
+            'Endpoint retired',
+            array( 'response' => 410 )          // <-- literal 410
+        );
+    }
+
+Structural properties (read from source, not inferred):
+- `410` literal present on the unconditional wp_die()               [line 154]
+- NO wp_safe_redirect() in the handler -> no redirect to an apply path
+- NO branch reaches the engine, a stage callback, or any write
+- The capability check is retained deliberately, so an anonymous or
+  unprivileged caller learns nothing about the deprecation (the refusal is
+  not a public oracle); the refusal itself is unconditional for anyone who
+  clears it.
+- The comment explicitly records that gettext call names are avoided in the
+  docblock on purpose, because the i18n-freshness gate scans source text for
+  those names.
+
+## Permanent gates that enforce this in every run
+
+tests/scripts/verify-stage8-control-plane.py
+  - 80 assertions, 0 failed
+  - asserts the closed endpoint has an auditable handle_run method
+  - asserts it lives in the engine admin class
+  - asserts "wp_die(" in handler AND "wp_safe_redirect" NOT in handler
+    AND "410" in handler                                        [line 284]
+  - asserts the approved endpoint exposes no apply mode constant
+  - asserts the approved endpoint never reads a superglobal for its mode
+  - asserts no forbidden surface and no webhook entry point in ANY file
+    (exact resolved action names, not substring matching alone)
+
+tests/scripts/verify-stage7-commissioning.py
+  - 49 assertions, 0 failed
+  - asserts the approved endpoint is registered EXACTLY ONCE by its exact
+    resolved action name admin_post_conexao_translation_automation_proof
+  - asserts 0 forbidden surfaces (wp_ajax_nopriv_*, register_rest_route,
+    cron_schedules) and 0 webhooks
+  - fails closed if a declared engine endpoint silently disappears
+
+## Behavioural proof (local, in-process)
+
+wp-content/plugins/conexao-translation-rollout/tests/
+  test-legacy-apply-endpoint-closure.php — 36 passed, 0 failed
+  Evidence string: legacy-endpoint engine-invocations=0 refusal-code=410
+                   anonymous-code=403
+
+## NOT PROVEN IN PRODUCTION
+
+Section 7 requires a POSITIVE production verification that
+admin_post_conexao_translation_rollout_run returns HTTP 410 on the live site.
+
+NOT PERFORMED. Reason: no authorized production admin channel. The closure is
+proven in the ARTIFACT and in the GATES, not yet in PRODUCTION.
+
+Therefore the phrase "legacy apply endpoint closure positively verified in
+production" is NOT claimed anywhere in the Stage 9 report.
+
+No apply request was constructed or sent. No request parameter was manipulated
+to attempt to reach the old implementation.
+
+Production writes = 0.
