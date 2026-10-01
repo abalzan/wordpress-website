@@ -1,6 +1,28 @@
 #!/usr/bin/env python3
 """Stage 13 — the ONE commissioning-readiness engine and prerequisite registry.
 
+## STAGE 17: the automatic commissioning programme is RETIRED
+
+This module still evaluates every prerequisite and still checks every safety
+fact it was built to check, but it can no longer answer `READY`. Permanent
+automatic PT->EN translation is retired: the site needs English translation
+only occasionally, so the broker, the delegated provider credential, the
+production automation and the commissioning controls were all disproportionate
+to the usage and have been removed.
+
+`AUTOMATIC_TRANSLATION_RETIRED` is the single source of truth for that decision.
+`evaluate()` evaluates everything and THEN forces the aggregate to `RETIRED`,
+so the retained safety facts are never skipped as a side effect of retiring the
+programme. `commissioning_permitted` is permanently false.
+
+What is deliberately NOT retired: the manual, human-triggered translation
+workflow, which uses the same shared engine (`Conexao-translation-rollout`) and
+the same digest approval, dry-run-first, lock, audit, PT-immutability and batch
+ceilings. Every prerequisite therefore carries an explicit `disposition` —
+`RETAINED` (still guards the manual workflow) or `RETIRED` (only ever gated
+automatic commissioning) — so the classification is machine-readable and
+cannot be quietly re-stated.
+
 ## What this file is
 
 Stage 12 ended `BLOCKED` for environmental and authorization reasons. Stage 13
@@ -65,6 +87,58 @@ BLOCKED = "BLOCKED"
 COMMISSIONING = "COMMISSIONING"
 COMMISSIONED = "COMMISSIONED"
 
+# ---------------------------------------------------------------------------
+# STAGE 17: permanent AUTOMATIC translation commissioning is RETIRED.
+# ---------------------------------------------------------------------------
+#
+# ## Why this constant exists
+#
+# Every prerequisite below existed to answer one question: *may permanent
+# automatic translation be commissioned in production?* Stage 17 retired the
+# thing being commissioned — the site needs English translation only
+# occasionally, so the operational cost of a broker, a delegated provider
+# credential, production automation and commissioning controls is
+# disproportionate to the usage.
+#
+# The requirement is therefore retired, NOT satisfied. That distinction is the
+# whole point of this constant: a stage must not be able to reach `READY` here
+# and have that read as "automatic translation is now commissioned".
+#
+# ## What is NOT retired
+#
+# The manual, human-triggered translation workflow is RETAINED and still uses
+# `Conexao_Translation_Rollout_Engine`. So every safety property this module
+# checks stays checked, and every prerequisite, validator and negative proof
+# below is still evaluated and still reported: engine digest integrity, batch
+# ceilings within the Stage 10 limits, secret-free artifacts, deterministic and
+# test-free builds, the control plane remaining DECLARED, and the report's own
+# secret boundary. Deleting them would have destroyed real safety coverage to
+# express a decision that one constant expresses exactly.
+#
+# ## Consequence
+#
+# `evaluate()` evaluates everything, then forces the aggregate to `RETIRED`.
+# `commissioning_permitted` is therefore False forever, and no input — not
+# eighteen pieces of evidence, not a future code change that forgets this
+# constant — can turn automatic commissioning back on through this gate.
+
+RETIRED = "RETIRED"
+
+#: The single source of truth for the retirement decision. One constant, read
+#: by `evaluate()`, so there is no second place to forget.
+AUTOMATIC_TRANSLATION_RETIRED = True
+
+#: Why the automatic commissioning programme is retired. Reported verbatim so
+#: an operator reading the output is never left guessing whether `RETIRED`
+#: means "not yet" or "deliberately, permanently".
+RETIREMENT_REASON = (
+    "Stage 17 retired permanent automatic PT->EN translation. This site needs "
+    "English translation only occasionally, so automatic provider invocation, "
+    "the external credential broker and the production commissioning programme "
+    "were retired as disproportionate. The manual, human-triggered translation "
+    "workflow using conexao-translation-rollout is RETAINED and unaffected."
+)
+
 #: Every status the model defines.
 ALL_STATUSES = (
     NOT_READY,
@@ -74,6 +148,7 @@ ALL_STATUSES = (
     BLOCKED,
     COMMISSIONING,
     COMMISSIONED,
+    RETIRED,
 )
 
 #: Statuses Stage 13 itself is forbidden to emit. A later production stage owns
@@ -321,6 +396,7 @@ def _p(**kwargs):
 PREREQUISITES = (
     _p(
         id="P01",
+        disposition="RETAINED",
         key="production_access",
         description="A valid, authorized production deployment or admin channel exists and is named.",
         required=True,
@@ -334,6 +410,7 @@ PREREQUISITES = (
     ),
     _p(
         id="P02",
+        disposition="RETAINED",
         key="install_authorization",
         description="Explicit operator authorization to install and activate the production artifacts.",
         required=True,
@@ -347,8 +424,12 @@ PREREQUISITES = (
     ),
     _p(
         id="P03",
+        disposition="RETIRED",
+        disposition_reason=(
+            "a permanent credential in WordPress is no longer required; a manual run takes the key from the environment of that run only"
+        ),
         key="provider_credential",
-        description="CONEXAO_TRANSLATION_PROVIDER_KEY is available through the approved environment-only mechanism.",
+        description="RETIRED as a permanent requirement (Stage 17): a manual run supplies the provider key in the environment of that run only. It is never stored in wp_options.",
         required=True,
         evidence_source=LOCAL_ENVIRONMENT,
         evidence_type=None,
@@ -360,6 +441,10 @@ PREREQUISITES = (
     ),
     _p(
         id="P04",
+        disposition="RETIRED",
+        disposition_reason=(
+            "existed only to authorise an unattended live provider smoke"
+        ),
         key="provider_quota",
         description="The provider account is capable of serving the required smoke test.",
         required=True,
@@ -373,6 +458,10 @@ PREREQUISITES = (
     ),
     _p(
         id="P05",
+        disposition="RETIRED",
+        disposition_reason=(
+            "existed only to authorise an unattended live provider smoke"
+        ),
         key="live_smoke_authorization",
         description="Explicit permission to make the live provider smoke request.",
         required=True,
@@ -386,6 +475,10 @@ PREREQUISITES = (
     ),
     _p(
         id="P06",
+        disposition="RETIRED",
+        disposition_reason=(
+            "existed only to authorise an unattended live provider smoke"
+        ),
         key="provider_smoke_success",
         description="A genuine live provider smoke returned RESULT: OK.",
         required=True,
@@ -399,6 +492,7 @@ PREREQUISITES = (
     ),
     _p(
         id="P07",
+        disposition="RETAINED",
         key="human_reviewer",
         description="A real human reviewer is identified for canary quality review.",
         required=True,
@@ -412,6 +506,10 @@ PREREQUISITES = (
     ),
     _p(
         id="P08",
+        disposition="RETIRED",
+        disposition_reason=(
+            "existed only to commission an automatic canary"
+        ),
         key="canary_authorization",
         description="Separate explicit authorization for the canary workflow.",
         required=True,
@@ -425,6 +523,7 @@ PREREQUISITES = (
     ),
     _p(
         id="P09",
+        disposition="RETAINED",
         key="apply_authorization",
         description="Separate explicit authorization to mutate exactly the approved canary.",
         required=True,
@@ -438,6 +537,10 @@ PREREQUISITES = (
     ),
     _p(
         id="P10",
+        disposition="RETIRED",
+        disposition_reason=(
+            "existed only to commission automatic translation"
+        ),
         key="commissioning_authorization",
         description="Separate authorization to install and activate the production infrastructure itself.",
         required=True,
@@ -451,6 +554,10 @@ PREREQUISITES = (
     ),
     _p(
         id="P11",
+        disposition="RETIRED",
+        disposition_reason=(
+            "existed only to commission the automatic batch-control surface"
+        ),
         key="batch_control_commissioning_authorization",
         description="Explicit authorization to commission the batch-control capability.",
         required=True,
@@ -464,6 +571,7 @@ PREREQUISITES = (
     ),
     _p(
         id="P12",
+        disposition="RETAINED",
         key="fresh_baseline_readiness",
         description="Current production state can be captured after deployment, including re-verification of the six historical PT restorations.",
         required=True,
@@ -477,6 +585,7 @@ PREREQUISITES = (
     ),
     _p(
         id="P13",
+        disposition="RETAINED",
         key="legacy_endpoint_verification",
         description="The legacy endpoint can be positively verified to return 410 in production.",
         required=True,
@@ -490,6 +599,7 @@ PREREQUISITES = (
     ),
     _p(
         id="P14",
+        disposition="RETAINED",
         key="proof_trigger_verification",
         description="The authenticated proof path can be executed end to end, ending at apply unreachable.",
         required=True,
@@ -507,6 +617,10 @@ PREREQUISITES = (
     ),
     _p(
         id="P15",
+        disposition="RETIRED",
+        disposition_reason=(
+            "existed only as an automatic-commissioning dependency; Stage 17 added NO production stop-state surface rather than fabricating one"
+        ),
         key="emergency_stop_readiness",
         description="Production is positively observed to be in the required fail-closed stopped state, and readiness does not clear it.",
         required=True,
@@ -532,6 +646,7 @@ PREREQUISITES = (
     ),
     _p(
         id="P16",
+        disposition="RETAINED",
         key="audit_readiness",
         description="Production audit storage and retention are available.",
         required=True,
@@ -545,6 +660,7 @@ PREREQUISITES = (
     ),
     _p(
         id="P17",
+        disposition="RETAINED",
         key="release_readiness",
         description="The final artifacts are verified, deterministic and free of secrets, tests and local files, with operator-chosen limits recorded.",
         required=True,
@@ -558,6 +674,10 @@ PREREQUISITES = (
     ),
     _p(
         id="P18",
+        disposition="RETIRED",
+        disposition_reason=(
+            "existed only to prove an automatic canary in production"
+        ),
         key="model_a_production_proof",
         description="A real production canary demonstrates approved scope == executed scope.",
         required=True,
@@ -1130,13 +1250,27 @@ def evaluate(observation):
     }
     failed_invariants = sorted(k for k, ok in invariants.items() if not ok)
 
-    if not_ready or failed_invariants:
+    # STAGE 17. Every prerequisite above was evaluated and every safety
+    # property above was checked, exactly as before — and then the aggregate is
+    # forced to RETIRED, because permanent AUTOMATIC commissioning is retired.
+    #
+    # The order matters and is deliberate: evaluate first, decide last. If the
+    # retirement were checked before the validators ran, the gate would report
+    # RETIRED while silently skipping the engine-digest, batch-ceiling and
+    # artifact checks that the RETAINED manual workflow still depends on.
+    if AUTOMATIC_TRANSLATION_RETIRED:
+        status = RETIRED
+    elif not_ready or failed_invariants:
         status = BLOCKED
     else:
         status = READY
 
     # Derived booleans. Each is a FUNCTION of the results, not an input.
-    commissioning_permitted = (status == READY)
+    #
+    # Under Stage 17 `commissioning_permitted` is unconditionally False: the
+    # retirement means there is nothing left to commission, so this can never
+    # be re-enabled by supplying evidence.
+    commissioning_permitted = (status == READY) and not AUTOMATIC_TRANSLATION_RETIRED
     canary_selection_allowed = commissioning_permitted
     production_mutation_permitted = False  # Stage 13 has no mutation capability at all.
 
@@ -1144,6 +1278,17 @@ def evaluate(observation):
         "stage": 13,
         "status": status,
         "evaluated_at": observation.now.isoformat(),
+        # STAGE 17. Named for the DECISION, not for a credential: `retired` and
+        # `reason` carry no secret-shaped substring, so the report still passes
+        # its own `assert_no_secrets()` boundary on the way out.
+        "automatic_translation": "RETIRED" if AUTOMATIC_TRANSLATION_RETIRED else "NOT_RETIRED",
+        "retirement_reason": RETIREMENT_REASON if AUTOMATIC_TRANSLATION_RETIRED else "",
+        # The Stage 17 classification, machine-readable. RETIRED means the
+        # prerequisite only ever gated automatic commissioning and is no longer
+        # a requirement; RETAINED means it still guards the manual workflow.
+        # Every entry is still EVALUATED regardless, so a RETAINED safety fact
+        # can never go unchecked just because a neighbour was retired.
+        "dispositions": {e["id"]: e["disposition"] for e in PREREQUISITES},
         "prerequisites": [r.as_dict() for r in results],
         "counts": {
             "total": len(results),
@@ -1208,11 +1353,24 @@ def evaluate(observation):
 def render_text(report):
     """Render the human-facing aggregate exactly as the runbook expects."""
     lines = []
-    lines.append(f"COMMISSIONING READINESS: {report['status']}")
+    lines.append(f"AUTOMATIC TRANSLATION COMMISSIONING: {report['status']}")
     lines.append("")
+    # Stage 17: the retirement is the FIRST thing an operator reads. Printing a
+    # bare prerequisite table first would invite the reader to go looking for a
+    # way to satisfy P03 or P15 — the two an earlier stage could never satisfy.
+    if report.get("automatic_translation") == "RETIRED":
+        lines.append("  RETIRED (Stage 17): permanent automatic translation is not")
+        lines.append("  commissioned and is NOT commissioned by this gate. Do not")
+        lines.append("  attempt to satisfy these prerequisites to enable it — there is")
+        lines.append("  nothing left to enable. The manual, human-triggered translation")
+        lines.append("  workflow is retained and is what to use.")
+        lines.append("")
+        lines.append(f"  reason: {report.get('retirement_reason', '')}")
+        lines.append("")
+    lines.append("  Retained safety facts, still checked on every run:")
     width = max(len(p["key"]) for p in report["prerequisites"])
     for entry in report["prerequisites"]:
-        lines.append(f"{entry['id']} {entry['key']:<{width}}  {entry['status']}")
+        lines.append(f"  {entry['id']} {entry['key']:<{width}}  {entry['status']}")
     lines.append("")
     for entry in report["prerequisites"]:
         if entry["status"] != READY:
@@ -1231,38 +1389,36 @@ def render_text(report):
 
 
 # ---------------------------------------------------------------------------
-# The operator runbook (Stage 13 §29), generated from the registry.
+# The operator runbook, generated from the registry.
 # ---------------------------------------------------------------------------
 #
-# Nineteen steps, each naming the prerequisite IDs it clears and the action it
-# authorises. They are NOT combined into one command, and the generator cannot
-# emit one: a runbook step is text, and the gate that reads it is read-only.
+# STAGE 17 replaced the nineteen-step *automatic commissioning* runbook with
+# the ten-step MANUAL translation workflow, because that is the only workflow
+# the repository now supports. The automatic commissioning procedure is not
+# documented as a live option because it is not one.
 #
-# `blocked_by` is the set of prerequisite IDs that must be READY before the step
-# may be attempted. The generator derives them from the registry, so a new
-# prerequisite cannot be added without the runbook changing with it.
+# The steps are NOT combined into one command, and the generator cannot emit
+# one: a runbook step is text, and the gate that reads it is read-only.
+#
+# The tuple shape is kept identical to Stage 13's so the generator and its
+# assertions stay meaningful; `requires` and `clears` are now empty because no
+# manual step is gated on, or clears, an automatic-commissioning prerequisite.
+# The prerequisites themselves are all still rendered above, as the retained
+# safety facts.
 
 RUNBOOK_STEPS = (
-    (1, "Supply the deployment credential", (), ("P01",), "operator supplies; never read or printed by this gate"),
-    (2, "Supply the provider runtime secret", (), ("P03",), "environment-only, named variable, presence verified"),
-    (3, "Establish provider quota", ("P03",), ("P04",), "separate, explicitly authorized live smoke"),
-    (4, "Authorize installation", (), ("P02", "P10"), "one authorization, scoped to installation"),
-    (5, "Install the artifacts", ("P01", "P02", "P10"), (), "a later stage performs this; readiness never does"),
-    (6, "Verify plugin state", ("P05",), (), "read-only production verification"),
-    (7, "Verify the legacy 410", ("P01",), ("P13",), "authenticated, no engine call, no mutation"),
-    (8, "Verify the control plane", ("P01", "P11"), ("P15",), "commissioning is a separate, reviewed change"),
-    (9, "Capture a fresh baseline", ("P01",), ("P12",), "after deployment, never reused from an earlier stage"),
-    (10, "Prove bootstrap safety", ("P12",), ("P14",), "no mutation expected"),
-    (11, "Prove no-change reconciliation", ("P14",), (), "actionable = 0"),
-    (12, "Run the authorized live provider smoke", ("P03", "P04", "P05"), ("P06",), "exactly one call, RESULT: OK"),
-    (13, "Run a protected dry-run", ("P12", "P13", "P14"), (), "no mutation; every candidate REVIEW_REQUIRED"),
-    (14, "Review the canary", ("P07", "P08"), (), "a real human reviews the English"),
-    (15, "Separately authorize the canary apply", ("P14", "P16", "P17"), ("P09",), "a distinct authorization type"),
-    (16, "Execute the Model A canary", ("P09",), ("P18",), "one operation, approved scope == executed scope"),
-    (17, "Verify", ("P18",), (), "exact mutation-set equality, PT immutability, EN/B1/B2, route, audit"),
-    (18, "Run idempotence", ("P17",), (), "a second run changes nothing"),
-    (19, "Leave bulk automation OFF", ("P18",), (), "cron off, autonomous approval off, limits unchanged"),
+    (1, "Identify the PT records that need English", (), (), "a human reads the site; no automatic scope discovery exists"),
+    (2, "Request a manual translation run", (), (), "Tools -> Translation Automation; authenticated, POST-only, manage_options + nonce"),
+    (3, "Generate the inventory and manifest", (), (), "the engine builds the candidate set from the live PT inventory"),
+    (4, "Run the dry run", (), (), "MODE_PROOF only; writes nothing and reaches no apply path"),
+    (5, "Review the exact plan", (), (), "a real human reads every candidate and its scope"),
+    (6, "Approve the exact digest and scope", (), (), "digest-bound approval; a changed digest invalidates the approval"),
+    (7, "Apply explicitly", (), (), "one approved scope; approved == planned == executed"),
+    (8, "Verify", (), (), "exact mutation-set equality, PT immutability, B1/B2 policy, audit record"),
+    (9, "Reconcile for idempotence", (), (), "a second identical run changes nothing"),
+    (10, "Leave automatic execution OFF", (), (), "there is no mechanism that can turn it on"),
 )
+
 
 
 def _join_ids(ids, by_id):
@@ -1279,37 +1435,48 @@ def render_runbook():
     """
     by_id = {entry["id"]: entry for entry in PREREQUISITES}
     lines = [
-        "# Production commissioning runbook (Stage 13)",
+        "# Manual translation runbook (Stage 17)",
         "",
         "Generated from the authoritative prerequisite registry in",
         "`scripts/lib/commissioning.py`. Do not edit this file by hand; edit the",
         "registry and re-render.",
         "",
-        "Each step is a SEPARATE action by a SEPARATE authorization. There is no",
-        "single command that performs the sequence, and the readiness gate cannot",
-        "perform any of it: it is read-only.",
+        "## Permanent AUTOMATIC translation is retired",
+        "",
+        "This runbook no longer describes how to commission automatic",
+        "translation, because automatic translation no longer exists. It",
+        "describes the RETAINED manual workflow, which uses the same shared",
+        "engine (`conexao-translation-rollout`) and the same safety controls.",
+        "",
+        "There is no broker, no permanent provider credential, no cron, no",
+        "webhook and no unattended execution. When English translation is",
+        "needed an operator runs it deliberately; when it is not needed,",
+        "nothing runs.",
+        "",
+        "## Safety facts that gate every step",
+        "",
+        "These are still checked on every run of the readiness gate and are",
+        "NOT retired:",
         "",
     ]
-    for number, title, requires, clears, note in RUNBOOK_STEPS:
+    for entry in PREREQUISITES:
+        lines.append(f"- `{entry['id']}` {entry['key']} [{entry['disposition']}] — {entry['description']}")
+    lines.append("")
+    for number, title, _requires, _clears, note in RUNBOOK_STEPS:
         lines.append(f"## {number}. {title}")
         lines.append("")
-        if requires:
-            lines.append("- **Requires READY first:** " + _join_ids(requires, by_id))
-        if clears:
-            lines.append("- **Clears:** " + _join_ids(clears, by_id))
-        else:
-            lines.append("- **Clears:** no prerequisite (verification only)")
         lines.append(f"- {note}")
         lines.append("")
     lines += [
         "## What this runbook is not",
         "",
         "- It is not a script. Nothing here is executed by the readiness gate.",
-        "- It does not authorize itself. Each authorization is a separate evidence",
-        "  object with its own type, scope, grant time, expiry and operator",
-        "  confirmation.",
-        "- It does not select a canary. Selection is a later explicit action, and",
-        "  the gate only reports whether selection is *allowed*.",
+        "- It does not commission anything. Automatic translation is retired, and",
+        "  `commissioning_permitted` is permanently false.",
+        "- It does not supply a provider credential. For a manually requested",
+        "  run the operator supplies the key in the environment of that run only;",
+        "  it is never written to `wp_options`, never committed and never stored",
+        "  in an artifact.",
         "",
     ]
     return "\n".join(lines) + "\n"

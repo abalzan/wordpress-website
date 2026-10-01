@@ -270,7 +270,6 @@ $expected_classes = array(
 	'Conexao_Translation_Automation_Translation_Plan',
 	'Conexao_Translation_Automation_Plan_Adapter',
 	'Conexao_Translation_Automation_Audit',
-	'Conexao_Translation_Automation_Hooks',
 	'Conexao_Translation_Automation_Trigger',
 	// STAGE 6: the protected production proof entry point. It WRAPS the
 	// trigger above and adds no lifecycle of its own.

@@ -18,7 +18,7 @@ source. Do not hand-edit this table.
 | conexao-sponsor-migration | 1.1.0 | tooling | active | no | yes | yes | `wp-content/plugins/conexao-sponsor-migration/` |
 | conexao-translation-rollout | 1.2.0 | platform | active | yes | yes | yes | `wp-content/plugins/conexao-translation-rollout/` |
 | conexao-en-translation | 1.5.0 | tooling | active | no | no | yes | `wp-content/plugins/conexao-en-translation/` |
-| conexao-translation-automation | 0.4.0 | platform | active | yes | yes | yes | `wp-content/plugins/conexao-translation-automation/` |
+| conexao-translation-automation | 0.6.0 | platform | active | yes | yes | yes | `wp-content/plugins/conexao-translation-automation/` |
 | conexao-page-translation | 1.0.0 | rollout | retired | no | no | yes | `wp-content/plugins/conexao-page-translation/` |
 | conexao-blog-translation | 1.0.0 | rollout | retired | no | no | yes | `wp-content/plugins/conexao-blog-translation/` |
 | conexao-job-translation | 1.0.0 | rollout | retired | no | no | yes | `wp-content/plugins/conexao-job-translation/` |

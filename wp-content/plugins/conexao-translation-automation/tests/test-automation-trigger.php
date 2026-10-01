@@ -26,7 +26,6 @@ require_once dirname( __DIR__, 4 ) . '/tests/bootstrap.php';
 require_once CONEXAO_TESTS_WP_ROOT . '/wp-content/plugins/conexao-translation-automation/conexao-translation-automation.php';
 
 use Conexao_Translation_Automation_Audit as Audit;
-use Conexao_Translation_Automation_Hooks as Hooks;
 use Conexao_Translation_Automation_Source_State as State;
 use Conexao_Translation_Automation_Trigger as Trigger;
 
@@ -42,7 +41,6 @@ Conexao_Translation_Automation_Environment::set_site_detector( static function (
 Conexao_Translation_Automation_Lock::force_clear();
 State::clear();
 Audit::clear();
-Hooks::clear();
 
 assert_true( ! Conexao_Translation_Automation_Lock::is_held(), 'the suite starts with no lock held' );
 
@@ -372,14 +370,20 @@ assert_true(
 	'the plugin issues NO direct WordPress content write: the shared engine is the only mutation route' . ( $hits ? ': ' . implode( ', ', $hits ) : '' )
 );
 
-// (c) Provider and hook code issue no writes either.
-foreach ( array( 'class-conexao-translation-automation-provider.php', 'class-conexao-translation-automation-hooks.php' ) as $name ) {
+// (c) Provider code issues no writes either.
+//
+// STAGE 17: the wake-up hook file (`class-conexao-translation-automation-hooks.php`)
+// is DELETED, so it is no longer scanned here. Its absence is asserted as a
+// positive fact in the Stage 17 retirement gate rather than skipped silently.
+foreach ( array( 'class-conexao-translation-automation-provider.php' ) as $name ) {
 	$hits = conexao_s3_scan( array( $plugin_dir . '/includes/' . $name ), $mutations );
 	assert_true( array() === $hits, sprintf( '%s issues no WordPress write', $name ) . ( $hits ? ': ' . implode( ', ', $hits ) : '' ) );
 }
 
-// (d) The provider and hook layers never call the orchestrator or the engine.
-foreach ( array( 'class-conexao-translation-automation-provider.php', 'class-conexao-translation-automation-hooks.php' ) as $name ) {
+// (d) The provider layer never calls the orchestrator or the engine.
+//
+// STAGE 17: as above, the hook layer no longer exists to scan.
+foreach ( array( 'class-conexao-translation-automation-provider.php' ) as $name ) {
 	$body = conexao_s3_strip_comments( (string) file_get_contents( $plugin_dir . '/includes/' . $name ) );
 
 	assert_true( false === strpos( $body, 'Orchestrator::run' ), sprintf( '%s never invokes the orchestrator', $name ) );
@@ -547,7 +551,6 @@ $expected = array(
 	'Conexao_Translation_Automation_Change_Detector',
 	'Conexao_Translation_Automation_Digest',
 	'Conexao_Translation_Automation_Environment',
-	'Conexao_Translation_Automation_Hooks',
 	'Conexao_Translation_Automation_Inventory',
 	'Conexao_Translation_Automation_Lock',
 	'Conexao_Translation_Automation_Orchestrator',
@@ -586,6 +589,5 @@ assert_equals( $expected, $declared, 'the plugin declares exactly its own bounda
 
 State::clear();
 Audit::clear();
-Hooks::clear();
 
 test_finish( 'stage 3 trigger and integration' );

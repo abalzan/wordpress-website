@@ -1,5 +1,28 @@
 # conexao-translation-automation
 
+> ## ⚠️ STAGE 17: permanent automatic translation is RETIRED
+>
+> **This site does not run permanent automatic OpenAI translation.**
+>
+> English translation is performed **on demand**, through a manually initiated
+> workflow that uses the existing shared translation rollout engine. When
+> translation is needed an operator runs it deliberately; when it is not needed,
+> nothing runs.
+>
+> Retired by Stage 17, and gone from the codebase:
+>
+> - the Stage 16 external **credential broker** (`Provider_Broker`);
+> - the **automatic wake-up hook** that marked PT changes (`Hooks`);
+> - the `hook` and `scheduled` **audit trigger kinds**;
+> - the automatic **commissioning programme** (`verify-commissioning-readiness.py`
+>   now reports `RETIRED` and can never report `READY`).
+>
+> Retained, unchanged: the manual admin entry point, the shared engine, and every
+> safety control (lock, digest-bound approval, dry-run-first, audit, batch
+> ceilings, PT-immutability, collision refusal).
+>
+> See [`docs/reports/2026-10-02-stage-17-retire-automatic-translation.md`](../reports/2026-10-02-stage-17-retire-automatic-translation.md).
+
 <!-- BEGIN GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
 | | |
 |---|---|
@@ -9,7 +32,7 @@
 | **Build** | yes |
 | **Compose mount** | yes |
 | **Dependencies** | `conexao-translation-rollout` |
-| **Version** | 0.4.0 (authoritative source: `wp-content/plugins/conexao-translation-automation/conexao-translation-automation.php` header) |
+| **Version** | 0.6.0 (authoritative source: `wp-content/plugins/conexao-translation-automation/conexao-translation-automation.php` header) |
 | **Registry** | [`plugins.json`](../../plugins.json) |
 
 > **Production platform plugin.** Part of the production steady state.
@@ -17,18 +40,91 @@
 
 ## Purpose
 
-The **permanent** plugin for the automatic PT→EN translation program. Stage 1
-establishes only the *invocation boundary*: a thin orchestrator that validates
-its invocation context, resolves the **existing** shared translation engine and
-delegates to that engine in a non-mutating **proof** mode, returning a
+The **manual, operator-triggered** control plane for PT→EN translation. It
+validates its invocation context, resolves the **existing** shared translation
+engine (`conexao-translation-rollout`) and delegates to that engine, returning a
 structured result.
 
-It is deliberately **not** the automation program. Stage 1 contains no
-translation logic, no provider, no cron, no change detection, no locking and no
-apply path.
+It is deliberately **not** the translation program itself. It contains no
+translation logic, no second engine, no provider automation, no cron, no
+webhook, no anonymous endpoint and no apply path of its own.
 
 Owner: project maintainer. Introduced by Stage 1
-(`docs/reports/2026-09-30-stage-1-auto-translation-plugin-boundary.md`).
+(`docs/reports/2026-09-30-stage-1-auto-translation-plugin-boundary.md`);
+repurposed by Stage 17.
+
+## The operating model (Stage 17)
+
+```text
+Human requests translation
+        ↓
+Operator identifies the exact PT scope
+        ↓
+Existing translation engine
+        ↓
+inventory → manifest → dry-run → snapshot → human review
+        ↓
+explicit apply → verify → idempotence
+        ↓
+done. Automatic execution stays OFF.
+```
+
+There is **no automatic recurring execution**, **no unattended provider
+invocation**, and **no requirement to keep a provider credential permanently
+configured in WordPress.com**.
+
+| Retired | Retained |
+|---|---|
+| the external credential broker (Stage 16) | the shared engine, byte-identical |
+| the `Hooks` wake-up markers on PT lifecycle events | the authenticated admin entry point (`Tools → Translation Automation`) |
+| the `hook` / `scheduled` audit trigger kinds | the lock, digest-bound approval, dry-run-first gate, audit trail |
+| the automatic commissioning programme (`READY` is unreachable) | batch ceilings, PT-immutability, collision refusal, exact-scope Model A |
+| the requirement for a permanent provider credential in WordPress | the optional OpenAI provider, supplied per manual run |
+
+### Where the provider credential comes from
+
+For a **manually requested** run the operator supplies the provider key **in the
+environment of that run only**, as `CONEXAO_TRANSLATION_PROVIDER_KEY`
+(`Provider_Config::CREDENTIAL_ENV`). It is read with `getenv()`, held for the
+lifetime of the request and never written anywhere: not to `wp_options`, not to a
+transient, not to meta, not to an audit record, not to a log, not to a manifest,
+not to translation data and not to a release ZIP.
+
+**No permanent credential has to be configured in WordPress.com.** That is the
+point of the retirement: WordPress.com Personal supplies no server environment
+variable and no server file, so requiring one was a requirement that could never
+be met. Stage 16 tried to solve it with a broker; Stage 17 removes the need.
+
+Do not add a credential-storage option to make this convenient. Occasional
+translations do not justify persisting a provider secret in the database, in
+every backup, replica and export.
+
+### The operator workflow
+
+```text
+1.  Identify the PT records that need English.
+2.  Request a manual translation run (Tools → Translation Automation).
+3.  The engine generates the inventory and manifest.
+4.  Dry-run: MODE_PROOF only; it writes nothing.
+5.  Review the exact plan — every candidate and its scope.
+6.  Approve the exact digest and scope.
+7.  Apply explicitly. approved == planned == executed.
+8.  Verify: mutation set, PT immutability, B1/B2 policy, audit record.
+9.  Reconcile for idempotence: a second identical run changes nothing.
+10. Leave automatic execution OFF — nothing can turn it on.
+```
+
+The generated version of this runbook is
+`./scripts/verify-commissioning-readiness.py --runbook`.
+
+**Apply is currently NOT commissioned.** The batch-control surface
+(`Batch_Control::register()`) is declared and deliberately uncommissioned, exactly
+as Stage 11 left it, so the human-facing screen performs dry-run planning only.
+Commissioning apply is a separate, separately authorized production action and
+was **not** done in Stage 17. Until it is commissioned, a manual run in
+production produces a reviewed plan and stops there — which is the safe default,
+and is why retiring automation cost no production capability.
+
 
 ## The ownership boundary (the whole point of this plugin)
 
@@ -53,10 +149,12 @@ a gate, so a second mutation authority cannot exist here.
 | Orchestrator | `includes/class-conexao-translation-automation-orchestrator.php` |
 | Result contract | `includes/class-conexao-translation-automation-result.php` |
 | Frontend effect | **none** |
-| Admin screen | **none** in Stage 1 |
-| REST routes | **none** in Stage 1 |
-| Cron hooks | **none** in Stage 1 |
-| Tests | `tests/test-automation-boundary.php` |
+| Admin screen | `Tools → Translation Automation` — the MANUAL entry point |
+| REST routes | **none** |
+| Cron hooks | **none** — retired in Stage 17, and never existed |
+| Lifecycle hooks | **none** — the `Hooks` wake-up class was deleted in Stage 17 |
+| Inbound listeners | **none** — the only registered surface is the authenticated admin endpoint |
+| Tests | `tests/test-automation-boundary.php`, `tests/test-manual-translation-workflow.php` |
 
 ## Invocation modes
 

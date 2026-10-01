@@ -1,9 +1,18 @@
 #!/usr/bin/env python3
-"""verify-commissioning-readiness.py — the atomic commissioning preflight.
+"""verify-commissioning-readiness.py — the retired commissioning preflight.
 
-Purpose: evaluate EVERY production commissioning prerequisite independently and
-print ONE aggregate result. Read-only. It is the only command an operator runs
-before asking for production action, and it can never itself be that action.
+STAGE 17: permanent AUTOMATIC translation commissioning is RETIRED. This script
+no longer answers "may automatic translation be commissioned?" — there is
+nothing left to commission. It now reports the retirement and then does the
+job it was always good at: evaluating EVERY retained safety fact independently
+(engine digest integrity, batch ceilings within the Stage 10 limits, secret-free
+deterministic artifacts, the control plane remaining DECLARED) so the RETAINED
+manual translation workflow keeps its guard rails.
+
+It will never report READY, and `commissioning_permitted` is permanently false,
+because that decision is `commissioning.AUTOMATIC_TRANSLATION_RETIRED`.
+
+Read-only. It can never itself be a production action.
 
 Scope: read-only over the local repository and the local process environment
 PRESENCE flags. It contacts no host, loads no WordPress, opens no socket, and
@@ -37,9 +46,13 @@ Usage:
   ./scripts/verify-commissioning-readiness.py --evidence <dir>
 
 Exit codes:
-  0  the preflight ran and the aggregate is READY
+  0  the preflight ran and the aggregate is RETIRED (the Stage 17 steady state)
   1  the preflight ran and the aggregate is NOT_READY or BLOCKED
   2  the preflight could not run (a prerequisite fact could not be read)
+
+The `RETIRED` exit code is 0 because the answer is definitive, not because
+something succeeded to be enabled. `READY` is unreachable: the retirement is a
+constant, not an input.
 """
 
 from __future__ import annotations
@@ -73,7 +86,12 @@ PROVIDER_CONFIG = AUTOMATION / "includes" / "class-conexao-translation-automatio
 #: release record rather than being taken from either of them.
 EXPECTED_VERSIONS = {
     "conexao-translation-rollout": "1.2.0",
-    "conexao-translation-automation": "0.4.0",
+    # STAGE 17 bumped this 0.4.0 -> 0.6.0: 0.6.0 is the manual-operating-model
+    # release that retires the wake-up hook and the Stage 16 broker. 0.5.0 was
+    # reserved for the Stage 16 Path C broker, which was never committed and
+    # never released, so the number is deliberately NOT reused — a retired
+    # version number must never come back to life attached to different code.
+    "conexao-translation-automation": "0.6.0",
 }
 
 #: Credential-shaped patterns scanned for inside a built artifact.
@@ -450,7 +468,11 @@ def main() -> int:
     if args.out:
         Path(args.out).write_text(payload + "\n", encoding="utf-8")
 
-    return 0 if report["status"] == commissioning.READY else 1
+    # RETIRED is a definitive answer, so it exits 0 — the preflight ran and
+    # reported the truth about the repository. READY is unreachable while the
+    # automatic commissioning programme is retired, and a non-zero exit for
+    # RETIRED would train an operator to read a red gate as a real fault.
+    return 0 if report["status"] in (commissioning.RETIRED, commissioning.READY) else 1
 
 
 if __name__ == "__main__":

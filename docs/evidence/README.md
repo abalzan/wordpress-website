@@ -305,6 +305,23 @@ Cited by `docs/reports/2026-10-01-stage-14-secret-hardening-production-canary.md
 
 ---
 
+## `2026-10-02-stage-17-retirement/`
+
+| File | What it proves |
+|---|---|
+| `01-baseline-full-test-run.txt` | the full suite **before** the change, on `d4af7d2` plus uncommitted Stage 16 — the regression baseline |
+| `02-final-full-test-run.txt` | the full suite **after**: 81 in-process suites / 6,118 assertions passed / 6 failed, 17 script-contract, 3 HTTP acceptance |
+| `03-engine-integrity.txt` | the shared engine SHA-256 `264cc6c4…6912` and an **empty** `git diff` over `conexao-translation-rollout` — Stage 11 Model A preserved |
+| `04-retirement-gate.txt` | `verify-stage17-retirement.py`: **110 passed, 0 failed** — the broker, the wake-up hook, the scheduler, the anonymous surfaces and the `hook`/`scheduled` vocabulary are all proven absent, and the manual path plus every safeguard proven present |
+| `05-stage13-readiness-gate.txt` | the commissioning-readiness gate after the retirement: **808 passed, 44 negative proofs, 0 missed** |
+| `06-retirement-gate-mutations.txt` | the **9 injected mutations**, every one failing closed, source restored and re-verified green after each |
+| `07-manual-workflow-e2e.txt` | the retained manual workflow end to end: **49 passed, 0 failed** — manual request → inventory → manifest → dry-run → snapshot → approval → apply → verify → idempotence, with measured numbers |
+| `08-readiness-preflight-retired.txt` | the preflight reporting `RETIRED` and exiting 0 — a definitive answer, not an enabled capability |
+| `09-manual-operator-runbook.md` | the generated ten-step **manual** operator runbook, replacing the automatic-commissioning runbook |
+| `10-lint.txt` | `lint: OK` — syntax clean, no new PHPCS violations, PHPStan level 5 clean |
+
+Cited by `docs/reports/2026-10-02-stage-17-retire-automatic-translation.md`.
+
 ## `2026-10-01-stage-15-final-production-commissioning-canary/`
 
 Stage 15 — an **operational execution** stage, stopped at its first gate.

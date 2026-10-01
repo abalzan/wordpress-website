@@ -78,11 +78,14 @@ final class Conexao_Translation_Automation_Audit {
 	/**
 	 * Trigger kinds.
 	 *
+	 * Every kind here is produced by a HUMAN-REQUESTED run. Stage 17 removed
+	 * `hook` and `scheduled` along with the wake-up hook that produced them:
+	 * there is no longer any code path that can record a run nobody asked
+	 * for, so the vocabulary itself no longer admits one.
+	 *
 	 * @var string
 	 */
 	const TRIGGER_MANUAL    = 'manual';
-	const TRIGGER_HOOK      = 'hook';
-	const TRIGGER_SCHEDULED = 'scheduled';
 	const TRIGGER_BOOTSTRAP = 'bootstrap';
 
 	/**

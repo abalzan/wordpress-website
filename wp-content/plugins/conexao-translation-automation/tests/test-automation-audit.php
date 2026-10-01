@@ -142,7 +142,7 @@ test_section( 'A failed run is persisted' );
 $failed_run = Audit::build_record(
 	array(
 		'run_id'      => 'run_s3_failed',
-		'trigger'     => Audit::TRIGGER_HOOK,
+		'trigger'     => Audit::TRIGGER_ADMIN_PROOF,
 		'stage'       => 'en-page',
 		'environment' => 'local',
 		'result'      => conexao_s3_result(
@@ -169,7 +169,7 @@ assert_equals( 'failed', (string) $stored['status'], 'the failed run records its
 assert_equals( 'source_state_unusable', (string) $stored['failure'], 'the failure category is recorded' );
 assert_equals( 'failed-closed', (string) $stored['end_state'], 'the failed run records that it failed closed' );
 assert_equals( 'not_run', (string) $stored['dry_run_status'], 'a run that never reached the engine records not_run' );
-assert_equals( Audit::TRIGGER_HOOK, (string) $stored['trigger'], 'the trigger kind of the failed run is recorded' );
+assert_equals( Audit::TRIGGER_ADMIN_PROOF, (string) $stored['trigger'], 'the trigger kind of the failed run is recorded' );
 
 // Successful and failed runs are retained IDENTICALLY. Pruning a failure to
 // make room for a success would hide the interesting case.

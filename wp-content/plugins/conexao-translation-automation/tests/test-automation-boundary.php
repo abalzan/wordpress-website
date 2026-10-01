@@ -306,7 +306,6 @@ $ALLOWED_OPTIONS = array(
 	Conexao_Translation_Automation_Apply_Gate::STATE_OPTION,
 	Conexao_Translation_Automation_Source_State::OPTION,
 	Conexao_Translation_Automation_Audit::OPTION,
-	Conexao_Translation_Automation_Hooks::MARKER_OPTION,
 	// Stage 10: the bounded batch layer's own infrastructure rows. Declared,
 	// not relaxed: the list below is still an exhaustive allow-list, and the
 	// count assertion below was updated with it rather than removed.

@@ -10,7 +10,7 @@
  *
  * | Layer | What it is | What it decides |
  * |---|---|---|
- * | **Wake-up trigger** | a manual/explicit invocation, plus the hook marker | only *whether to attempt a reconciliation* |
+ * | **Wake-up trigger** | a MANUAL, human-explicit invocation only | only *whether to attempt a reconciliation* |
  * | **Reconciliation truth** | the full current-vs-persisted inventory diff | *whether anything actually changed* |
  *
  * Consequences that follow from that split:
@@ -25,6 +25,18 @@
  *
  * No `wp_schedule_event`, no `wp_schedule_single_event`, no `cron_schedules`
  * and no cron callback exist in this plugin. That is asserted structurally.
+ *
+ * ## STAGE 17: there is no automatic wake-up at all
+ *
+ * Stage 17 retired permanent automatic translation, so this layer is now
+ * MANUAL ONLY. The `Hooks` class that used to set a wake-up marker on
+ * `save_post` / `before_delete_post` / `wp_trash_post` / `untrashed_post` /
+ * `set_object_terms` has been DELETED, and no lifecycle listener is registered
+ * anywhere in this plugin. Editing PT content therefore cannot cause a
+ * translation run; an operator must request one.
+ *
+ * The reconciliation logic below is unchanged and remains the single source of
+ * truth for what has changed — it simply runs only when a human asks it to.
  *
  * ## What the trigger may and may not do
  *

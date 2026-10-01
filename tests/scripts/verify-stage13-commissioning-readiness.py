@@ -238,9 +238,27 @@ def section_registry():
     }
     check(required_keys == set(keys), f"the required prerequisite categories are not exactly covered; missing: {sorted(required_keys - set(keys))}, extra: {sorted(set(keys) - required_keys)}")
 
-    # The status model is exactly the seven Stage 13 defines.
-    check(set(commissioning.ALL_STATUSES) == {"NOT_READY", "READY", "EXPIRED", "INVALID", "BLOCKED", "COMMISSIONING", "COMMISSIONED"}, "the status model does not match the Stage 13 vocabulary")
+    # The status model is exactly the seven Stage 13 defines, plus the one
+    # STAGE 17 adds for the retired automatic commissioning programme.
+    check(set(commissioning.ALL_STATUSES) == {"NOT_READY", "READY", "EXPIRED", "INVALID", "BLOCKED", "COMMISSIONING", "COMMISSIONED", "RETIRED"}, "the status model does not match the Stage 13 + Stage 17 vocabulary")
     check(set(commissioning.STAGE13_FORBIDDEN_STATUSES) == {"COMMISSIONING", "COMMISSIONED"}, "Stage 13 must forbid itself from emitting COMMISSIONING/COMMISSIONED")
+
+    # STAGE 17: the retirement. Asserted here, at the top, because it is the
+    # decision every other aggregate assertion below now rests on.
+    check(commissioning.AUTOMATIC_TRANSLATION_RETIRED is True, "the automatic translation commissioning programme is not marked retired")
+    check(commissioning.RETIREMENT_REASON.strip() != "", "the retirement carries no stated reason; an operator could read RETIRED as 'not yet'")
+
+    # Every prerequisite carries an explicit Stage 17 disposition, and the
+    # split is total: nothing is unclassified, so the classification cannot be
+    # quietly re-stated by adding a prerequisite without deciding its fate.
+    dispositions = {e["id"]: e.get("disposition") for e in commissioning.PREREQUISITES}
+    check(all(v in ("RETAINED", "RETIRED") for v in dispositions.values()), f"every prerequisite needs a Stage 17 disposition; got {sorted(set(dispositions.values()))}")
+    for pid, why in (("P15", "P15 is retired"), ("P03", "the permanent provider credential is retired"), ("P10", "automatic commissioning authorization is retired")):
+        check(dispositions[pid] == "RETIRED", f"{why}, so it must be classified RETIRED")
+        entry = next(e for e in commissioning.PREREQUISITES if e["id"] == pid)
+        check(str(entry.get("disposition_reason", "")).strip() != "", f"{pid} is retired without recording why")
+    for pid in ("P09", "P14", "P16", "P17"):
+        check(dispositions[pid] == "RETAINED", f"{pid} still guards the retained manual workflow and must stay RETAINED")
 
 
 # ---------------------------------------------------------------------------
@@ -541,10 +559,21 @@ def section_negative_proofs():
     print("\n-- 6. injected-negative proofs: the gate must FAIL, shown to fail --")
 
     # The CLEAN baseline first. A proof that passes because the baseline is
-    # already red proves nothing, so the fully-evidenced control must be READY.
+    # already red proves nothing, so the fully-evidenced control must reach the
+    # BEST status the gate can now produce.
+    #
+    # STAGE 17: that best status is RETIRED, not READY. Eighteen pieces of
+    # evidence can no longer produce READY, because permanent automatic
+    # commissioning was retired rather than satisfied. What this assertion
+    # really guards — and what every negative below depends on — is that the
+    # baseline reaches the CEILING and still permits no commissioning.
     report = commissioning.evaluate(ready_environment())
-    check(report["status"] == "READY", f"the positive control is not READY ({report['status']}); the negatives below would prove nothing")
-    check(report["commissioning_permitted"] is True, "the positive control did not permit commissioning; the negatives would prove nothing")
+    check(report["status"] == "RETIRED", f"the positive control is not RETIRED ({report['status']}); the negatives below would prove nothing")
+    check(report["commissioning_permitted"] is False, "the positive control permitted commissioning; the negatives below would prove nothing")
+    check(report["automatic_translation"] == "RETIRED", "the positive control does not report the automatic programme as retired")
+    # Every prerequisite still reached READY on its own merits: retiring the
+    # AGGREGATE must not have silently skipped the evaluation itself.
+    check(all(p["status"] == "READY" for p in report["prerequisites"]), "retiring the aggregate skipped or altered individual prerequisite evaluation")
 
     def fails(label, obs, expect_key=None, expect_status=None):
         """A readiness failure, with production mutation still forbidden."""
@@ -651,7 +680,11 @@ def section_negative_proofs():
     obs = ready_environment()
     obs.evidence["emergency_stop_override"] = {"stopped": False, "clear_emergency_stop": True}
     result = commissioning.evaluate(obs)
-    ok = result["emergency_stop_clearance"] == "NOT_GRANTED" and result["production_actions"]["emergency_stop_clears"] == 0 and result["status"] == "READY"
+    # STAGE 17: the baseline assertion moves READY -> RETIRED. What this proof
+    # guards is that client input cannot clear the emergency stop on an
+    # otherwise-ceiling control; the retirement changed which status the
+    # ceiling IS, not whether the clearance stays refused.
+    ok = result["emergency_stop_clearance"] == "NOT_GRANTED" and result["production_actions"]["emergency_stop_clears"] == 0 and result["status"] == "RETIRED"
     proof("17. emergency stop cleared by client input -> clearance stays NOT_GRANTED, zero clears", ok)
 
     # 17b-17i. P15 (Stage 15 fix): the production stop state must be a POSITIVE
@@ -732,7 +765,20 @@ def section_negative_proofs():
     repo = good_repo()
     repo["engine_digest_matches"] = False
     result = commissioning.evaluate(observation(env_present={commissioning.EXPECTED_CREDENTIAL_ENV}, evidence=full_evidence(), repo=repo))
-    proof("22. engine digest drift -> readiness failure", result["status"] == "BLOCKED" and "engine_digest_matches" in result["failed_invariants"])
+    # STAGE 17: this proof guards that engine-digest drift is DETECTED and
+    # REPORTED. Asserting a particular aggregate status would have tested the
+    # retirement rather than the digest, so it asserts the property that
+    # matters: the invariant still fails, it is still named in
+    # `failed_invariants`, and the aggregate still grants no permission.
+    # That is exactly the "evaluate first, decide last" guarantee — a retired
+    # aggregate must never HIDE an integrity failure.
+    proof(
+        "22. engine digest drift -> detected, reported and never permitted",
+        "engine_digest_matches" in result["failed_invariants"]
+        and result["status"] == "RETIRED"
+        and result["commissioning_permitted"] is False
+        and result["production_mutation_permitted"] is False,
+    )
 
 
 def fresh_repo_copy():
@@ -930,7 +976,16 @@ def section_invariants():
 
     # The runbook is generated from the registry, not hand-written.
     runbook = commissioning.render_runbook()
-    check(len(commissioning.RUNBOOK_STEPS) == 19, f"the runbook must have 19 steps; it has {len(commissioning.RUNBOOK_STEPS)}")
+    # STAGE 17: the nineteen-step AUTOMATIC commissioning runbook is replaced by
+    # the ten-step MANUAL translation workflow. The count is asserted exactly,
+    # as before, so neither list can grow or shrink unnoticed.
+    check(len(commissioning.RUNBOOK_STEPS) == 10, f"the manual runbook must have 10 steps; it has {len(commissioning.RUNBOOK_STEPS)}")
+    check("Manual translation runbook (Stage 17)" in runbook, "the runbook is not the Stage 17 manual runbook")
+    check("commission automatic" not in runbook.lower() or "retired" in runbook.lower(), "the runbook still presents automatic commissioning as a live procedure")
+    # The manual workflow must still name every lifecycle stage an operator
+    # relies on, so the retirement cannot quietly shorten the procedure.
+    for phrase in ("dry run", "Approve the exact digest", "Apply explicitly", "Verify", "idempotence", "automatic execution OFF"):
+        check(phrase in runbook, f"the manual runbook no longer names the \"{phrase}\" step")
     for number, title, *_ in commissioning.RUNBOOK_STEPS:
         check(f"## {number}. {title}" in runbook, f"runbook step {number} is missing from the generated runbook")
     for pid, entry in ((e["id"], e) for e in commissioning.PREREQUISITES):
@@ -946,8 +1001,9 @@ def section_preflight_run():
 
     proc = subprocess.run([sys.executable, str(PREFLIGHT)], cwd=str(REPO_ROOT), capture_output=True, text=True, check=False)
     output = proc.stdout
-    check(proc.returncode in (0, 1), f"the preflight exited {proc.returncode}; it must exit 0 (READY) or 1 (NOT READY/BLOCKED)")
-    check("COMMISSIONING READINESS:" in output, "the preflight did not print the aggregate readiness line")
+    check(proc.returncode == 0, f"the preflight exited {proc.returncode}; RETIRED is a definitive answer and must exit 0")
+    check("AUTOMATIC TRANSLATION COMMISSIONING:" in output, "the preflight did not print the aggregate status line")
+    check("RETIRED (Stage 17)" in output, "the preflight does not lead with the retirement")
     check("commissioning_permitted=" in output, "the preflight did not print commissioning_permitted")
     check("production_mutation_permitted=" in output, "the preflight did not print production_mutation_permitted")
 
@@ -972,7 +1028,11 @@ def section_preflight_run():
     # The current environment honestly reports BLOCKED: the external
     # prerequisites are genuinely absent, and the gate must say so rather than
     # infer them.
-    check(report["status"] in ("BLOCKED", "NOT_READY"), f"the real preflight reported {report['status']} with no credentials or authorizations supplied; it must not report READY")
+    check(report["status"] == "RETIRED", f"the real preflight reported {report['status']}; permanent automatic translation is retired, so the aggregate must be RETIRED")
+    check(report["automatic_translation"] == "RETIRED", "the real preflight does not report the automatic programme as retired")
+    # The dispositions are reported, so the classification is visible to an
+    # operator and not only to this gate.
+    check(report["dispositions"]["P15"] == "RETIRED", "the real preflight does not report P15 as retired")
     check(report["commissioning_permitted"] is False, "the real preflight permitted commissioning with no prerequisites supplied")
     check(report["production_mutation_permitted"] is False, "the real preflight permitted a production mutation")
     check(report["emergency_stop_clearance"] == "NOT_GRANTED", "the real preflight granted emergency-stop clearance")
