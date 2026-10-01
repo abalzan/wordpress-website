@@ -333,3 +333,75 @@ Full detail:
 `docs/reports/2026-09-30-stage-3-change-detection-provider-trigger.md`.
 
 _Last verified: 2026-09-30 by Stage 3 — change detection, provider boundary, trigger and audit_
+
+---
+
+## Stage 10 — bounded multi-record expansion controls
+
+The batch layer is a **safety layer wrapped around** the existing per-operation
+safety. It performs no mutation of its own and holds no bypass: for the batch's
+safe unit it calls the **existing** orchestrator, so the site-wide lock, the
+environment guard, the F7 dry-run, the digest-bound approval, the snapshot
+persistence, the apply and the engine's own verification all still run,
+unchanged. The shared engine remains the sole mutation authority and its core
+file is **byte-identical**
+(`baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4`).
+
+### Classes
+
+| Class | Purpose |
+|---|---|
+| `Batch_Limits` | every explicit, server-side ceiling and the three rollout levels |
+| `Batch` | batch identity, deterministic partitioning, operation-set and batch digests |
+| `Batch_State` | the state machine, the persisted store, the per-operation ledger, the abort flag |
+| `Batch_Approval` | review and approval as two separate, digest-bound human actions |
+| `Batch_Executor` | the bounded executor, the batch dry run, the budgets and the plan-scope assertion |
+| `Batch_Composer` | composing exactly ONE stored, unapproved batch |
+| `Batch_Expansion` | the evidence gate, which authorises nothing |
+| `Emergency_Stop` | the server-side kill switch, fail-closed on absence and on malformed |
+
+### The limits
+
+`MAX_PRODUCTION_BATCHES_PER_INVOCATION = 1` — not configurable by any filter,
+option or request field. Server ceilings: 5 records, 5 operations, 20 provider
+calls, 1 retry per record, 2 attempts per record, 300 s. The ceiling **refuses**
+an oversized request rather than clamping it, so the audit still records what
+the caller asked for.
+
+Levels (`LEVEL_0_CANARY` 1, `LEVEL_1_SMALL_BATCH` 3, `LEVEL_2_LARGER_BATCH` 5)
+are **operational states, not judgements**, and each is reachable only by a
+human decision.
+
+### What makes it safe
+
+* An approval is the digest of **one** batch. There is no `approve_batch_type`
+  and no `approve_current_queue`.
+* The state machine has **no `VERIFIED -> EXECUTING` edge**.
+* The executor re-verifies the approval, checks the emergency stop and the
+  abort, and checks the budgets **before** the unit starts — never during it.
+* The bound is **enforced, not trusted**: after the dry run the executor reads
+  the engine's own plan and refuses the whole batch if any record outside the
+  approved set is planned.
+* A failed batch **stops** and is never shrunk.
+* The batch layer registers **no endpoint** of any kind. `BATCH_CONTROL_SURFACES`
+  in the control-plane gate is explicitly empty, so a future batch endpoint must
+  be declared there first.
+
+### Known contract gap
+
+A caller cannot make one shared-engine run cover fewer rows than the stage's own
+authored manifest: every stage's `run_callback` rebuilds its own configuration
+and the engine has no filter. Stage 10 reports this rather than working around
+it. The safety bound is fully enforced and proven; per-operation execution
+granularity is not available until the gap is resolved. See
+`docs/reports/2026-10-01-stage-10-bounded-expansion.md`.
+
+### Tests
+
+| Suite | Assertions |
+|---|---|
+| `test-automation-batch.php` | **243** (17 required fixtures) |
+| `tests/scripts/verify-stage10-batch-boundary.py` | **20 injected-negative proofs, 0 missed** |
+| `tests/scripts/verify-stage8-control-plane.py` | 90 -> **141** after the Stage 10 extension |
+
+_Last verified: 2026-10-01 by Stage 10 — bounded multi-record expansion controls_

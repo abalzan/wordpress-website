@@ -67,6 +67,15 @@ ENTRY_FILE = "class-conexao-translation-automation-admin-trigger.php"
 APPROVED_ACTION = "conexao_translation_automation_proof"
 APPROVED_FILE = ENTRY_FILE
 
+# --- Stage 11: the DECLARED batch-control surface -------------------------
+#
+# Specified in Stage 11 §17/§18 and declared in the control-plane registry
+# (verify-stage8-control-plane.py). It ships DORMANT: its register() is never
+# called, so it is not a commissioned control plane. This constant exists so
+# both gates agree on the exact action name and neither can drift.
+DECLARED_BATCH_ACTION = "conexao_translation_automation_batch"
+BATCH_CONTROL_FILE = "class-conexao-translation-automation-batch-control.php"
+
 # A pre-existing, apply-capable endpoint in a DIFFERENT component. Declared,
 # not asserted clean and not asserted forbidden -- see the module docstring.
 # STAGE 8: this surface is now CLOSED (hard-fail deprecation stub). The
@@ -171,27 +180,76 @@ def main() -> int:
     actions = sorted({a for a, _ in registrations})
     owners = sorted({f for _, f in registrations})
 
+    # --- Stage 11: separate DECLARED from COMMISSIONED ------------------
+    #
+    # A static scan cannot tell a declaration from a registration, so the two
+    # are separated explicitly and by name: the batch-control surface is
+    # DECLARED (specified, asserted, registered in the control-plane registry)
+    # but NOT commissioned (its register() is never called — asserted below).
+    #
+    # The counting assertions below therefore apply to the COMMISSIONED set,
+    # which must remain exactly the proof endpoint. That is the Stage 7
+    # supersession contract, unchanged: nothing new became reachable.
+    commissioned = [a for a in actions if a != DECLARED_BATCH_ACTION]
+    commissioned_regs = [r for r in registrations if r[0] != DECLARED_BATCH_ACTION]
+
     ok(
-        f"exactly one admin-post endpoint is registered ({APPROVED_ACTION})",
-        actions == [APPROVED_ACTION],
-        f"found {actions}",
+        f"exactly one COMMISSIONED admin-post endpoint is registered ({APPROVED_ACTION})",
+        commissioned == [APPROVED_ACTION],
+        f"found {commissioned}",
     )
     ok(
         "the approved endpoint is registered exactly once",
-        len(registrations) == 1,
-        f"{len(registrations)} registration(s): {registrations}",
+        len(commissioned_regs) == 1,
+        f"{len(commissioned_regs)} registration(s): {commissioned_regs}",
     )
     ok(
         f"the approved endpoint lives in the approved file ({APPROVED_FILE})",
-        owners == [f"includes/{APPROVED_FILE}"],
-        f"owners={owners}",
+        sorted({f for _, f in commissioned_regs}) == [f"includes/{APPROVED_FILE}"],
+        f"owners={sorted({f for _, f in commissioned_regs})}",
+    )
+
+    # -- 1b. The declared batch-control surface, and its dormancy. ----------
+    declared_batch = [a for a in actions if a == DECLARED_BATCH_ACTION]
+    ok(
+        "the batch-control surface is DECLARED and named exactly",
+        declared_batch == [DECLARED_BATCH_ACTION],
+        f"found {sorted(set(actions) - {APPROVED_ACTION})}",
+    )
+    ok(
+        "the batch-control surface lives in its own declared file",
+        [f for a, f in registrations if a == DECLARED_BATCH_ACTION]
+        == [f"includes/{BATCH_CONTROL_FILE}"],
+    )
+
+    control = bodies.get(f"includes/{BATCH_CONTROL_FILE}", "")
+    bootstrap = bodies.get("conexao-translation-automation.php", "")
+    ok(
+        "the batch-control endpoint requires manage_options",
+        "const CAPABILITY = 'manage_options'" in control,
+    )
+    ok(
+        "the batch-control endpoint verifies a nonce",
+        "wp_verify_nonce" in control,
+    )
+    ok(
+        "the batch-control endpoint refuses any method but POST",
+        "FAILURE_METHOD" in control and "REQUEST_METHOD" in control,
+    )
+    # The decisive commissioning assertion: the class exists and declares its
+    # exact action, but NOTHING in the bootstrap calls its register(), so the
+    # endpoint is unreachable in production (Stage 11 §30).
+    ok(
+        "the batch-control capability is NOT commissioned in Stage 11 (§30)",
+        f"const ACTION = '{DECLARED_BATCH_ACTION}'" in control
+        and re.search(r"Batch_Control\s*::\s*register\s*\(\s*\)", bootstrap) is None,
     )
 
     # A differently-named endpoint is the failure this contract exists to catch.
     ok(
         "no second, differently-named automation admin endpoint exists",
-        all(a == APPROVED_ACTION for a in actions),
-        f"unexpected: {[a for a in actions if a != APPROVED_ACTION]}",
+        set(actions) <= {APPROVED_ACTION, DECLARED_BATCH_ACTION},
+        f"unexpected: {sorted(set(actions) - {APPROVED_ACTION, DECLARED_BATCH_ACTION})}",
     )
 
     # -- 2. Zero forbidden entry surfaces, in EVERY file. -------------------

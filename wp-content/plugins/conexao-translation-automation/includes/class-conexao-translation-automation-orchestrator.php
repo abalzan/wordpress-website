@@ -108,16 +108,37 @@ final class Conexao_Translation_Automation_Orchestrator {
 	 * Result` with `mutation_permitted = false`. There is no partial success
 	 * and no silent degradation into a mutating mode.
 	 *
+	 * ## How a MANIFEST SCOPE is honoured (Stage 10)
+	 *
+	 * A batch needs the existing chain to run once per bounded operation, not
+	 * once per whole stage. So `run()` accepts an OPTIONAL `manifest_scope`: the
+	 * portable identities this run may touch.
+	 *
+	 * It can only ever NARROW. The scope is intersected with the stage's own
+	 * manifest, an identity the stage does not declare is a hard refusal, and
+	 * an empty intersection is a refusal. There is no path by which a scope
+	 * ADDS a record, changes a record's content, or reaches a different stage.
+	 *
+	 * It is also bound into `config_identity()`, so an approval for scope
+	 * `A+B+C` does not authorise scope `A+B+D` and vice versa. That is what
+	 * makes the per-operation approval non-substitutable.
+	 *
+	 * Every other step of the chain is unchanged: lock, environment guard, F7
+	 * dry-run, approval verification, snapshot persistence, apply, verify. The
+	 * scope decides only HOW MUCH the engine is asked to do.
+	 *
 	 * @param array $context {
 	 *     Invocation context. Nothing is read from a superglobal.
 	 *
-	 *     @type string $mode       Required. Must be 'proof' (Stage 1).
+	 *     @type string $mode       Required. Must be 'proof' or 'apply'.
 	 *     @type string $stage      Required. Must be allowlisted.
 	 *     @type bool   $authorized Required. The caller's own authorisation
 	 *                               decision. When false the run is refused
 	 *                               BEFORE the engine is touched.
 	 *     @type string $capability Required. Must equal self::CAPABILITY, so a
 	 *                               caller cannot assert a wider one.
+	 *     @type array  $manifest_scope Optional. Portable identities this run
+	 *                               may touch. Narrowing only.
 	 * }
 	 * @return Conexao_Translation_Automation_Result
 	 */
@@ -240,6 +261,32 @@ final class Conexao_Translation_Automation_Orchestrator {
 			);
 		}
 
+		// --- 5b. Optional NARROWING manifest scope (Stage 10). ---------------
+		//
+		// Applied HERE, after the stage's own configuration is resolved and
+		// validated and BEFORE the lock is taken, so an impossible scope costs
+		// nothing and starts no work. It can only remove identities; it can
+		// never add one, and an identity the stage does not declare is a
+		// refusal rather than a filter, so a scope cannot smuggle in a record.
+		$scope = self::resolve_scope( $config, $context );
+
+		if ( is_wp_error( $scope ) ) {
+			return Conexao_Translation_Automation_Result::failure(
+				$run_id,
+				$mode,
+				$stage,
+				Conexao_Translation_Automation_Result::FAILURE_BAD_CONFIG,
+				array(
+					'reason'       => (string) $scope->get_error_message(),
+					'scope_failure' => (string) $scope->get_error_code(),
+				)
+			);
+		}
+
+		if ( null !== $scope ) {
+			$config = $scope;
+		}
+
 		// --- 6. Acquire the site-wide lock BEFORE the engine is touched ----
 		//
 		// The lock is taken before any engine work so two runs can never even
@@ -297,9 +344,16 @@ final class Conexao_Translation_Automation_Orchestrator {
 		// Nothing here re-implements any of it.
 		$dry_run = call_user_func(
 			$config['run_callback'],
-			array(
-				'dry_run' => true,
-				'mode'    => 'run',
+			array_merge(
+				array(
+					'dry_run' => true,
+					'mode'    => 'run',
+				),
+				// Stage 11: the approved scope travels to the engine through
+				// the argument array, which every real run_callback forwards
+				// verbatim. Absent when no scope was requested, so an ordinary
+				// run is byte-identical to before.
+				self::scope_args( $config )
 			)
 		);
 
@@ -336,7 +390,7 @@ final class Conexao_Translation_Automation_Orchestrator {
 					'stage'           => $stage,
 					'run_id'          => $run_id,
 					'environment'     => isset( $context['environment'] ) ? (string) $context['environment'] : '',
-					'config_identity' => self::config_identity( $config ),
+					'config_identity' => self::config_identity( $config, self::scope_identities( $context ) ),
 				)
 			);
 
@@ -392,7 +446,7 @@ final class Conexao_Translation_Automation_Orchestrator {
 			'stage'           => $stage,
 			'run_id'          => $run_id,
 			'environment'     => (string) $env['environment'],
-			'config_identity' => self::config_identity( $config ),
+			'config_identity' => self::config_identity( $config, self::scope_identities( $context ) ),
 		);
 
 		$verdict = Conexao_Translation_Automation_Apply_Gate::evaluate( $dry_run, $binding );
@@ -454,11 +508,19 @@ final class Conexao_Translation_Automation_Orchestrator {
 		}
 
 		// --- E. Only now may the engine be asked to write. -----------------
+		//
+		// Stage 11: the SAME scope that was dry-run is applied here. It is
+		// read from the resolved configuration, not from the request, so the
+		// apply can never cover a different record set than the proof whose
+		// approval this run carries.
 		$applied = call_user_func(
 			$config['run_callback'],
-			array(
-				'dry_run' => false,
-				'mode'    => 'run',
+			array_merge(
+				array(
+					'dry_run' => false,
+					'mode'    => 'run',
+				),
+				self::scope_args( $config )
 			)
 		);
 
@@ -482,6 +544,182 @@ final class Conexao_Translation_Automation_Orchestrator {
 	}
 
 	/**
+	 * The scope identities in force for a run, normalised.
+	 *
+	 * Returns an empty list when no scope was requested, which is what keeps
+	 * the ordinary single-stage approval identity unchanged.
+	 *
+	 * @param array $context Invocation context.
+	 * @return array<int,string>
+	 */
+	private static function scope_identities( array $context ): array {
+		if ( ! isset( $context['manifest_scope'] ) || ! is_array( $context['manifest_scope'] ) ) {
+			return array();
+		}
+
+		$identities = array();
+
+		foreach ( $context['manifest_scope'] as $identity ) {
+			if ( is_string( $identity ) ) {
+				$identities[] = trim( $identity );
+			}
+		}
+
+		return array_values( array_unique( $identities ) );
+	}
+
+	/**
+	 * Resolve an optional NARROWING manifest scope against the stage's own
+	 * manifest.
+	 *
+	 * Returns `null` when no scope was requested, so the ordinary single-stage
+	 * path is byte-for-byte unchanged. Returns a narrowed configuration when a
+	 * scope was requested, or a `WP_Error` when the scope is impossible.
+	 *
+	 * ## Why narrowing, and why the engine is untouched
+	 *
+	 * The engine's manifest is what it plans from, so bounding a run to a
+	 * subset necessarily means handing the engine a smaller manifest. That is
+	 * NOT a new lifecycle: the engine still receives an ordinary, valid
+	 * manifest callback, still builds its own plan, still takes its own
+	 * snapshot, still applies and still verifies. This method only decides
+	 * WHICH of the stage's own authored rows are visible.
+	 *
+	 * ## The four refusals
+	 *
+	 * | Situation | Why it fails closed |
+	 * |---|---|
+	 * | an identity the stage does not declare | a scope must not be able to introduce a record |
+	 * | the scope is empty | an empty run is a mistake, not a success |
+	 * | the scope is larger than the stage's manifest | it could only shrink, so the size is a caller error |
+	 * | the scope carries a non-string identity | identity comparison must be exact |
+	 *
+	 * @param array $config  The stage's validated configuration.
+	 * @param array $context Invocation context.
+	 * @return array|null|WP_Error The narrowed configuration, null, or a failure.
+	 */
+	private static function resolve_scope( array $config, array $context ) {
+		if ( ! array_key_exists( 'manifest_scope', $context ) ) {
+			return null;
+		}
+
+		$requested = $context['manifest_scope'];
+
+		if ( ! is_array( $requested ) || array() === $requested ) {
+			return new WP_Error(
+				'conexao_automation_manifest_scope_empty',
+				'A manifest scope must be a non-empty list of portable record identities.'
+			);
+		}
+
+		$identities = array();
+
+		foreach ( $requested as $identity ) {
+			if ( ! is_string( $identity ) || '' === trim( $identity ) ) {
+				return new WP_Error(
+					'conexao_automation_manifest_scope_identity_invalid',
+					'Every manifest-scope entry must be a non-empty string identity.'
+				);
+			}
+
+			$identities[] = trim( $identity );
+		}
+
+		$identities = array_values( array_unique( $identities ) );
+
+		$manifest = call_user_func( $config['manifest_callback'] );
+		$records  = is_array( $manifest ) && isset( $manifest['records'] ) && is_array( $manifest['records'] )
+			? $manifest['records']
+			: array();
+
+		foreach ( $identities as $identity ) {
+			if ( ! array_key_exists( $identity, $records ) ) {
+				return new WP_Error(
+					'conexao_automation_manifest_scope_identity_unknown',
+					sprintf(
+						'Record identity "%s" is not declared by this stage, so it cannot be scoped to.',
+						$identity
+					)
+				);
+			}
+		}
+
+		$narrowed = array();
+
+		foreach ( $identities as $identity ) {
+			$narrowed[ $identity ] = $records[ $identity ];
+		}
+
+		// `manifest_callback` is validated by the engine and always returns an
+		// array here, because `$records` was read from it one statement above.
+		$scoped_manifest           = $manifest;
+		$scoped_manifest['records'] = $narrowed;
+
+		$narrowed_config = $config;
+
+		$narrowed_config['manifest_callback'] = static function () use ( $scoped_manifest ): array {
+			return $scoped_manifest;
+		};
+
+		// --- Stage 11: carry the scope through the run_callback seam ---------
+		//
+		// THE FIX. Narrowing `$config['manifest_callback']` above is necessary
+		// but NOT sufficient, because every real stage's `run_callback`
+		// reconstructs its own configuration from a factory and calls
+		// Engine::run() with THAT, discarding whatever this plugin put into the
+		// config array. Stage 10's narrowing was therefore dropped at exactly
+		// this seam, and the engine always planned the FULL authored manifest.
+		//
+		// So the scope is now ALSO placed in the argument array that travels
+		// through `run_callback` into `Engine::run()`. All four run_callbacks
+		// forward `$args` verbatim, so this reaches the engine with no change to
+		// any stage, adapter or lifecycle function.
+		//
+		// This is a deliberate pair. The wrapped manifest keeps the engine's own
+		// `validate_config()` contract honest for any caller that reads the
+		// config directly, and the `run_scope` key makes the narrowing survive
+		// the stage's reconstruction. The engine validates and applies the
+		// scope itself; this plugin never narrows the engine's plan.
+		$narrowed_config['run_scope'] = $identities;
+
+		return $narrowed_config;
+	}
+
+	/**
+	 * The run-argument keys that carry an approved scope to the engine.
+	 *
+	 * Returns an EMPTY array when no scope is in force, which is what keeps the
+	 * ordinary single-stage path byte-for-byte unchanged.
+	 *
+	 * ## Why an engine without scope support is a hard refusal, not a fallback
+	 *
+	 * If a scope was resolved but the loaded engine exposes no scope capability,
+	 * returning an empty array here would mean running the FULL authored manifest
+	 * for a batch that was approved for a subset. That is precisely the widening
+	 * Model A exists to prevent, so it is refused instead. A caller can never get
+	 * a wide run by asking for a narrow one.
+	 *
+	 * @param array $config The resolved (possibly narrowed) stage configuration.
+	 * @return array Argument keys to merge into the run arguments.
+	 */
+	private static function scope_args( array $config ): array {
+		if ( empty( $config['run_scope'] ) || ! is_array( $config['run_scope'] ) ) {
+			return array();
+		}
+
+		if ( ! method_exists( 'Conexao_Translation_Rollout_Engine', 'narrow_manifest' ) ) {
+			// Cannot happen against this repository's engine; proven rather
+			// than assumed, because silently widening is the failure mode this
+			// whole stage exists to remove.
+			throw new RuntimeException(
+				'An approved scope was requested but the loaded shared engine supports no scope; refusing rather than running the full stage manifest.'
+			);
+		}
+
+		return array( 'scope' => array_values( $config['run_scope'] ) );
+	}
+
+	/**
 	 * The identity of the configuration an approval is bound to.
 	 *
 	 * Includes the stage's own declared identity, so reconfiguring a stage
@@ -489,10 +727,14 @@ final class Conexao_Translation_Automation_Orchestrator {
 	 * configuration. An approval is therefore never transferable across a
 	 * configuration change.
 	 *
+	 * When a manifest scope is in force its digest is included too, so an
+	 * approval for one record set never authorises a different one.
+	 *
 	 * @param array $config Stage configuration.
+	 * @param array $scope  Optional portable identities in force.
 	 * @return string
 	 */
-	private static function config_identity( array $config ): string {
+	private static function config_identity( array $config, array $scope = array() ): string {
 		return (string) Conexao_Translation_Automation_Apply_Gate::digest(
 			array(
 				'plugin' => defined( 'CONEXAO_TRANSLATION_AUTOMATION_VERSION' ) ? CONEXAO_TRANSLATION_AUTOMATION_VERSION : '0',
@@ -502,6 +744,7 @@ final class Conexao_Translation_Automation_Orchestrator {
 				'from'   => (string) ( $config['source_lang'] ?? '' ),
 				'to'     => (string) ( $config['target_lang'] ?? '' ),
 				'remove' => ! empty( $config['allow_remove'] ),
+				'scope'  => array_values( $scope ),
 			)
 		);
 	}

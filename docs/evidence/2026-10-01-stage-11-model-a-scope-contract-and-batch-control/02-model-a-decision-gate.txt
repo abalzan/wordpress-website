@@ -1,0 +1,79 @@
+=== STAGE 11 §2 REQUIRED DECISION GATE =======================================
+
+DECISION: IMPLEMENT MODEL A — TRUE SUBSET EXECUTION.
+
+--- 1. Where exactly does the authored stage manifest get constructed? -----
+
+Engine::run(), line 826:
+    $manifest = call_user_func( $config['manifest_callback'] );
+The manifest ALWAYS comes from the config the CALLER PASSES. The stages'
+run_callbacks rebuild that config from a factory on every call
+(stage-config.php:199, :670, :721; leisure:403; course:392; job:193).
+
+--- 2. Where exactly can an approved subset be introduced? -----------------
+
+In Engine::run(), in the ONE window between:
+    (a) $mcheck = self::validate_manifest( $manifest, $config );   line 827
+        -- the FULL authored manifest is validated here; and
+    (b) $states = self::collect_states( $config, $adapter, $manifest, $match );  line 860
+        -- the first function that READS $manifest['records'].
+Narrowing $manifest['records'] inside (a)..(b) propagates through every
+downstream lifecycle step, because all of them iterate $manifest['records'].
+
+--- 3. Smallest safe engine/API boundary for the subset? -------------------
+
+ONE new OPTIONAL key in the run-argument array the engine ALREADY receives:
+
+    Engine::run( $config, $adapter, [ 'scope' => [ 'a','b','c' ] ] )
+
+This is the minimal possible boundary because:
+  - every one of the four real run_callbacks forwards $args VERBATIM into
+    Engine::run(), so the scope reaches the engine with ZERO stage changes;
+  - no lifecycle function is modified, replaced or duplicated;
+  - omitting 'scope' leaves byte-identical behaviour for every existing caller.
+
+--- 4. Can the engine validate the subset against the COMPLETE manifest? ----
+
+YES. The engine holds both at that point: the full manifest it just built
+and validated, and the requested scope. It can therefore reject any identity
+the stage does not declare — which is what makes widening impossible.
+
+--- 5. Can the existing planner consume the filtered scope? ---------------
+
+YES, unchanged. build_plan() iterates $manifest['records']; it consumes the
+filtered scope with no modification whatsoever.
+
+--- 6. Can snapshot/apply/verify/idempotence remain unchanged in MEANING? --
+
+YES. capture_snapshots(), apply_plan(), assert_no_pt_drift() and
+collect_verify() all iterate manifest/plan structures. They are not edited.
+Their meaning is preserved: they act on exactly the records in scope, which
+is precisely what an approval authorises.
+
+--- 7. Can PT-drift protection remain authoritative? -----------------------
+
+YES. assert_no_pt_drift() diffs every snapshotted PT record before/after and
+increments pt_changed, which fails calculate_gate(). It is untouched, and it
+still runs AFTER the apply exactly as before.
+
+--- 8. Can B1/B2 semantics remain unchanged? -------------------------------
+
+YES. B1 (create/update/skip/conflict) and B2 (field-level stage_conflict) are
+decided inside build_plan() from the row and the adapter's own state. Neither
+changes. Only the SET of rows presented to it changes.
+
+--- 9. Can all existing engine gates remain authoritative? -----------------
+
+YES. validate_manifest, build_plan classification, the snapshot, PT-drift,
+calculate_gate, and the duplicate-slug check all still run. Filtering happens
+after manifest validation, so a malformed FULL manifest still fails closed.
+
+--- 10. Can the subset be bound to the Stage 10 digest-based approval? ------
+
+YES. Stage 10 already binds the approval to the identity set via
+operation_set_digest, and the orchestrator already folds the scope into
+config_identity(). Adding distinct authored-manifest, approved-scope and
+executed-plan digests binds it more tightly, not less.
+
+CONCLUSION: NO ARCHITECTURAL INCOMPATIBILITY. Model A is implementable inside
+the existing lifecycle. Stage 11 is NOT BLOCKED.

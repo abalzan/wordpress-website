@@ -216,6 +216,150 @@ final class Conexao_Translation_Rollout_Engine {
 	}
 
 	/**
+	 * Narrow a validated manifest to an explicit approved scope (Stage 11).
+	 *
+	 * ## What this is for
+	 *
+	 * A caller must be able to make ONE engine run cover an approved SUBSET of
+	 * a stage's authored manifest, without a second engine and without a second
+	 * lifecycle. Before this, the only way to bound a run was to assert after the
+	 * fact that the plan stayed inside a set; there was no way to MAKE the engine
+	 * plan a subset. This method is that capability, and it is deliberately one
+	 * pure function placed at the single point in the lifecycle where the
+	 * complete manifest and the requested scope are both in hand.
+	 *
+	 * ## Why narrowing is the only safe direction
+	 *
+	 * The returned manifest can only ever have records REMOVED from it. A scope
+	 * can never introduce a record the stage did not author, because an identity
+	 * that is not already a key of the validated manifest is a refusal, not a
+	 * filter. So scope widening is structurally impossible here, not merely
+	 * checked-for.
+	 *
+	 * ## Why the complete manifest is validated FIRST
+	 *
+	 * The caller narrows an already-validated manifest, so a malformed, duplicate
+	 * or otherwise defective FULL authored manifest still fails closed exactly as
+	 * before. Narrowing never becomes a way to hide a bad row.
+	 *
+	 * ## The four refusals (all fail closed, zero writes)
+	 *
+	 * | Situation | Why it fails closed |
+	 * |---|---|
+	 * | the scope is not an array | a scope must be an explicit list |
+	 * | the scope is empty | an empty run is a mistake, not a success |
+	 * | an entry is not a non-empty string | identity comparison must be exact |
+	 * | an identity is repeated | a duplicated operation is an approval defect |
+	 * | an identity is not in the manifest | a scope must not add a record |
+	 *
+	 * @param array $manifest The COMPLETE, already-validated manifest.
+	 * @param array $scope    Ordered portable identities this run may cover.
+	 * @return array|WP_Error { manifest: array, report: array } or a failure.
+	 */
+	public static function narrow_manifest( array $manifest, array $scope ) {
+		if ( ! isset( $manifest['records'] ) || ! is_array( $manifest['records'] ) ) {
+			return new WP_Error(
+				'conexao_rollout_bad_scope',
+				'Cannot apply a scope to a manifest that declares no records (zero writes).'
+			);
+		}
+
+		if ( array() === $scope ) {
+			return new WP_Error(
+				'conexao_rollout_empty_scope',
+				'A manifest scope must name at least one authored record (zero writes).'
+			);
+		}
+
+		$records   = $manifest['records'];
+		$identities = array();
+		$seen      = array();
+
+		foreach ( $scope as $identity ) {
+			if ( ! is_string( $identity ) || '' === trim( $identity ) ) {
+				return new WP_Error(
+					'conexao_rollout_bad_scope_identity',
+					'Every manifest-scope entry must be a non-empty string identity (zero writes).'
+				);
+			}
+
+			$identity = trim( $identity );
+
+			if ( isset( $seen[ $identity ] ) ) {
+				return new WP_Error(
+					'conexao_rollout_duplicate_scope_identity',
+					sprintf(
+						'Manifest scope names the identity "%s" more than once (zero writes).',
+						$identity
+					)
+				);
+			}
+
+			if ( ! array_key_exists( $identity, $records ) ) {
+				return new WP_Error(
+					'conexao_rollout_scope_identity_unknown',
+					sprintf(
+						'Record identity "%s" is not declared by this stage, so it cannot be scoped to (zero writes).',
+						$identity
+					)
+				);
+			}
+
+			$seen[ $identity ] = true;
+			$identities[]      = $identity;
+		}
+
+		// The narrowed record set is built FRESH rather than filtered in place,
+		// so it is exactly the approved identities, in the approved order, with
+		// nothing carried over from the authored manifest.
+		$narrowed           = $manifest;
+		$narrowed['records'] = array();
+
+		foreach ( $identities as $identity ) {
+			$narrowed['records'][ $identity ] = $records[ $identity ];
+		}
+
+		return array(
+			'manifest' => $narrowed,
+			'report'   => array(
+				'applied'       => true,
+				'authored'      => array_keys( $records ),
+				'authored_count' => count( $records ),
+				'approved'      => $identities,
+				'approved_count' => count( $identities ),
+			),
+		);
+	}
+
+	/**
+	 * The identities an engine plan actually covers, RECOMPUTED from the plan.
+	 *
+	 * This is the engine's own answer to "what did you really do", derived from
+	 * the plan it built and nothing else. A caller cannot state it: it is a pure
+	 * function of the plan's four categories. It is what lets a caller prove that
+	 * an approved scope and an executed scope are equal without trusting a
+	 * caller-supplied boolean.
+	 *
+	 * @param array $plan A plan from build_plan().
+	 * @return array<int,string> Ordered unique identities.
+	 */
+	public static function planned_identities( array $plan ): array {
+		$identities = array();
+
+		foreach ( array( 'create', 'update', 'conflicts', 'skip' ) as $category ) {
+			foreach ( (array) ( $plan[ $category ] ?? array() ) as $item ) {
+				$identity = is_array( $item ) ? trim( (string) ( $item['stable_key'] ?? '' ) ) : '';
+
+				if ( '' !== $identity ) {
+					$identities[] = $identity;
+				}
+			}
+		}
+
+		return array_values( array_unique( $identities ) );
+	}
+
+	/**
 	 * Build the deterministic dry-run plan. Pure; performs zero writes.
 	 *
 	 * State row: pt_id, pt_status, en_id, en_status, pair_ok, en_slug_matches,
@@ -830,6 +974,39 @@ final class Conexao_Translation_Rollout_Engine {
 			return $mcheck;
 		}
 
+		// --- Stage 11: apply an explicit APPROVED SCOPE ----------------------
+		//
+		// This is the entire Model A integration point, and it is deliberately
+		// placed here: the COMPLETE authored manifest has already been built and
+		// fully validated above, and no lifecycle function has read it yet.
+		//
+		// Everything below this line — inventory, plan, snapshot, apply,
+		// PT-drift, verify, the numeric gate — is the EXISTING lifecycle,
+		// unmodified, operating on the narrowed manifest. That is why a subset
+		// run is not a second engine: it is the same engine, given a smaller
+		// manifest it validates itself.
+		//
+		// With no `scope` key in $args the behaviour is byte-identical to every
+		// pre-Stage-11 caller, so existing stages are entirely unaffected.
+		$scope_report = array(
+			'applied'        => false,
+			'authored'       => array_keys( $manifest['records'] ),
+			'authored_count' => count( $manifest['records'] ),
+			'approved'       => array(),
+			'approved_count' => 0,
+		);
+
+		if ( array_key_exists( 'scope', $args ) ) {
+			$narrow = self::narrow_manifest( $manifest, (array) $args['scope'] );
+
+			if ( is_wp_error( $narrow ) ) {
+				return $narrow;
+			}
+
+			$manifest    = $narrow['manifest'];
+			$scope_report = $narrow['report'];
+		}
+
 		$mode    = isset( $args['mode'] ) ? (string) $args['mode'] : 'run';
 		$dry_run = ! empty( $args['dry_run'] );
 
@@ -934,11 +1111,18 @@ final class Conexao_Translation_Rollout_Engine {
 
 			$verify = self::collect_verify( $config, $adapter, $manifest, $summary );
 
+			// Stage 11: the executed scope is RECOMPUTED from the plan the
+			// engine actually built, so a caller can prove
+			// approved-scope == executed-scope without supplying the answer.
+			$scope_report['executed']       = self::planned_identities( $plan );
+			$scope_report['executed_count'] = count( $scope_report['executed'] );
+
 			return array(
 				'summary'  => $summary,
 				'rows'     => $rows,
 				'plan'     => $plan,
 				'snapshot' => $snapshots,
+				'scope'    => $scope_report,
 				'verify'   => $verify,
 				'gate'     => $verify['gate'],
 			);
@@ -954,11 +1138,17 @@ final class Conexao_Translation_Rollout_Engine {
 
 		$verify = self::collect_verify( $config, $adapter, $manifest, $summary );
 
+		// Stage 11: as above, and it is the engine's own plan — after the
+		// apply — that states the executed scope.
+		$scope_report['executed']       = self::planned_identities( $plan );
+		$scope_report['executed_count'] = count( $scope_report['executed'] );
+
 		return array(
 			'summary'  => $summary,
 			'rows'     => $rows,
 			'plan'     => $plan,
 			'snapshot' => $snapshots,
+			'scope'    => $scope_report,
 			'verify'   => $verify,
 			'gate'     => $verify['gate'],
 		);

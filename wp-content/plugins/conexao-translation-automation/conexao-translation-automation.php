@@ -58,6 +58,38 @@ require_once CONEXAO_TRANSLATION_AUTOMATION_DIR . 'includes/class-conexao-transl
 // `admin_post_nopriv_*`, no AJAX handler and no cron.
 require_once CONEXAO_TRANSLATION_AUTOMATION_DIR . 'includes/class-conexao-translation-automation-admin-trigger.php';
 
+// --- Stage 10: bounded multi-record execution controls. --------------------
+//
+// Load order matters: the limits are a dependency of the batch, the batch of
+// the state store, the store of the approval boundary, and the approval
+// boundary of the executor. Each file only declares behaviour; nothing here
+// registers a hook, an endpoint or a write at load time.
+//
+// The batch layer is a SAFETY LAYER AROUND the existing per-operation safety,
+// not a replacement for it: the executor calls the EXISTING orchestrator once
+// per operation, so the lock, the environment guard, the F7 dry-run, the
+// digest-bound approval, the snapshot, the apply and the engine's verification
+// all still run, unchanged, for every single record. The engine remains the
+// sole mutation authority and its core file is untouched.
+require_once CONEXAO_TRANSLATION_AUTOMATION_DIR . 'includes/class-conexao-translation-automation-batch-limits.php';
+require_once CONEXAO_TRANSLATION_AUTOMATION_DIR . 'includes/class-conexao-translation-automation-batch.php';
+require_once CONEXAO_TRANSLATION_AUTOMATION_DIR . 'includes/class-conexao-translation-automation-batch-state.php';
+require_once CONEXAO_TRANSLATION_AUTOMATION_DIR . 'includes/class-conexao-translation-automation-emergency-stop.php';
+require_once CONEXAO_TRANSLATION_AUTOMATION_DIR . 'includes/class-conexao-translation-automation-batch-approval.php';
+require_once CONEXAO_TRANSLATION_AUTOMATION_DIR . 'includes/class-conexao-translation-automation-batch-executor.php';
+require_once CONEXAO_TRANSLATION_AUTOMATION_DIR . 'includes/class-conexao-translation-automation-batch-composer.php';
+require_once CONEXAO_TRANSLATION_AUTOMATION_DIR . 'includes/class-conexao-translation-automation-batch-expansion.php';
+
+require_once CONEXAO_TRANSLATION_AUTOMATION_DIR . 'includes/class-conexao-translation-automation-batch-control.php';
+
+// Stage 11 §30: the batch-control capability is DECLARED, NOT COMMISSIONED.
+// `Batch_Control::register()` is deliberately NOT called here, so this plugin
+// registers no batch endpoint and no batch admin screen. Commissioning it is a
+// deliberate, separately reviewed production action (Stage 12 prerequisites),
+// not something this plugin grants itself.
+//
+// Conexao_Translation_Automation_Batch_Control::register();
+
 /**
  * The plugin's public surface.
  *

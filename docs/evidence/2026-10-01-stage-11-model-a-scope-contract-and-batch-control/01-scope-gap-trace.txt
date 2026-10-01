@@ -1,0 +1,113 @@
+=== STAGE 11 §3 SCOPE-GAP TRACE =================================================
+
+Chain: batch -> approved set -> Trigger::fire() -> Orchestrator::run()
+       -> stage config -> run_callback -> Engine::run() -> plan
+
+--- 1. Which function reconstructs stage configuration -----------------------
+
+$ grep -rn "Engine::run" wp-content/plugins/ --include=*.php
+
+conexao-en-translation/includes/stage-config.php:199
+    'run_callback' => static function ( array $args = array() ) use ( $post_type ) {
+        $run = static function ( array $run_args ) use ( $post_type, $stage ) {
+            return Conexao_Translation_Rollout_Engine::run(
+                conexao_en_translation_engine_config( $post_type ),   <-- REBUILDS
+                conexao_en_translation_stage_adapter( $post_type, $stage ),
+                $run_args
+            );
+        };
+
+conexao-en-translation/includes/leisure-description-stage.php:403
+conexao-en-translation/includes/course-provider-description-stage.php:392
+conexao-job-translation/includes/stage-config.php:193
+
+FOUR run_callbacks, each calling a config FACTORY that reconstructs the
+whole stage configuration from scratch on every invocation.
+
+--- 2. How the authored manifest is generated -------------------------------
+
+Engine::run() line 826:
+    $manifest = call_user_func( $config['manifest_callback'] );
+    $mcheck   = self::validate_manifest( $manifest, $config );
+
+The manifest ALWAYS comes from the config the CALLER PASSES. That is the only
+source. There is no engine-side filter, no scope, no allowlist argument.
+
+--- 3. Whether the engine currently receives a scope/filter -----------------
+
+NO. Engine::run( array $config, array $adapter, array $args = array() )
+$args is consumed for exactly two keys:
+    $mode    = isset( $args['mode'] )    ? (string) $args['mode'] : 'run';
+    $dry_run = ! empty( $args['dry_run'] );
+A grep for 'scope' in the engine file returns no scope parameter.
+
+--- 4. Whether the adapter receives a scope/filter -------------------------
+
+NO. required_adapter_keys() returns find_pt, find_en_for_pt,
+slug_collision, pair_ok, create_en, repair_en, link_pair (or remove_en).
+No scope.
+
+--- 5. WHERE THE APPROVED SUBSET IS CURRENTLY LOST (the exact point) -------
+
+Orchestrator::resolve_scope() (line 586) DOES narrow the manifest:
+
+    $narrowed_config['manifest_callback'] = static function () use ( $scoped_manifest ) {
+        return $scoped_manifest;
+    };
+    return $narrowed_config;
+
+...but Orchestrator::execute() (line 345) then calls:
+
+    $dry_run = call_user_func( $config['run_callback'], array( ... ) );
+
+$config['run_callback'] is STILL THE STAGE'S OWN ORIGINAL CALLABLE, which
+closes over $post_type and calls conexao_en_translation_engine_config($post_type)
+AFRESH. The narrowed manifest_callback it discarded is unreachable.
+
+    THE NARROWED MANIFEST IS BUILT, VALIDATED, DIGESTED — AND THEN DROPPED
+    ON THE FLOOR AT THE run_callback SEAM.
+
+This is precisely Stage 10's reported gap, now confirmed at line-level.
+
+--- 6. Can an explicit subset be introduced without duplicating lifecycle? --
+
+YES. Every downstream lifecycle function iterates $manifest['records']:
+    collect_states()      line 508  foreach ( $manifest['records'] ... )
+    build_plan()          line 236  foreach ( $manifest['records'] ... )
+    capture_snapshots()   line 551  foreach ( $manifest['records'] ... )
+    apply_plan()          line 579  foreach ( $plan['create']/$plan['update'] )
+    assert_no_pt_drift()  line 771  foreach ( $snapshots ... )
+    collect_verify()      line 403  foreach ( $manifest['records'] ... )
+
+So ONE narrowing of $manifest['records'], applied AFTER validate_manifest()
+and BEFORE collect_states(), propagates through the ENTIRE lifecycle:
+inventory, plan, snapshot, apply, PT-drift, verify and the numeric gate.
+
+--- 7. Can every stage's run_callback carry the scope unchanged? -------------
+
+YES — this is the decisive fact. All four run_callbacks forward $args
+verbatim into Engine::run( ..., $args ):
+    stage-config.php:199-203     $run_args
+    leisure-description-stage:403-407   $args
+    course-provider-description:392-396 $args
+    job-translation:193                  $args
+
+So a 'scope' key inside $args reaches Engine::run() with ZERO stage changes.
+
+--- 8. Whether filtering before planning preserves all safety gates ---------
+
+YES, because filtering happens before, and every gate then evaluates over
+exactly the scoped records:
+  - validate_manifest() still runs over the FULL authored manifest, so a
+    malformed or duplicated authored row still fails closed;
+  - build_plan() classifies skip/conflict for every SCOPED row, so an
+    approved-but-impossible row becomes a conflict and FAILS the gate
+    rather than being silently dropped;
+  - assert_no_pt_drift() still diffs before/after for every scoped PT record;
+  - collect_verify()/calculate_gate() still count eligible/with_en/conflicts/
+    pt_drift over the scoped records;
+  - apply_plan() only ever sees plan categories derived from the scoped rows.
+No gate is bypassed; every one is evaluated over the approved subset.
+
+CONCLUSION: Model A is feasible with ONE new validated argument on the
+EXISTING engine, and no change to any stage, adapter or lifecycle function.

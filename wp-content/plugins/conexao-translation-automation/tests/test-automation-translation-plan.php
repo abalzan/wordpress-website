@@ -497,7 +497,15 @@ assert_true( ! isset( $injected['__original'] ), 'the stage original callback is
 test_section( 'Dry-run through the existing engine' );
 
 $engine_file = CONEXAO_TESTS_WP_ROOT . '/wp-content/plugins/conexao-translation-rollout/includes/class-conexao-translation-rollout-engine.php';
-$engine_sha  = 'baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4';
+// STAGE 11: the pin moved ONCE, deliberately. Model A (true subset
+// execution) requires the engine to accept an approved operation scope.
+// The change is additive and confined to scope handling: two pure methods
+// (narrow_manifest, planned_identities), one optional $args['scope'] key
+// applied AFTER full-manifest validation, and a 'scope' key added to the
+// two existing return payloads. No lifecycle stage was replaced,
+// reordered or bypassed. Pre-Stage-11 digest (the Stage 11 §33 starting
+// record): baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4
+$engine_sha  = '31714cb857daa6bf88f02db5bbce0672817ebf0f19ffabf1588a2e87c75cd53e';
 
 assert_true( is_file( $engine_file ), 'the shared engine file exists' );
 assert_equals( $engine_sha, hash_file( 'sha256', $engine_file ), 'the shared engine is byte-identical to the pre-Stage-1 baseline' );

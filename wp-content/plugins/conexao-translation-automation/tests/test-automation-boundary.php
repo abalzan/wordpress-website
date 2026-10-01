@@ -30,7 +30,15 @@ require_once CONEXAO_TESTS_WP_ROOT . '/wp-content/plugins/conexao-translation-au
 test_title( 'conexao-translation-automation — Stage 1 boundary tests' );
 
 $ENGINE_FILE = CONEXAO_TESTS_WP_ROOT . '/wp-content/plugins/conexao-translation-rollout/includes/class-conexao-translation-rollout-engine.php';
-$ENGINE_SHA  = 'baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4';
+// STAGE 11: the pin moved ONCE, deliberately. Model A (true subset
+// execution) requires the engine to accept an approved operation scope.
+// The change is additive and confined to scope handling: two pure methods
+// (narrow_manifest, planned_identities), one optional $args['scope'] key
+// applied AFTER full-manifest validation, and a 'scope' key added to the
+// two existing return payloads. No lifecycle stage was replaced,
+// reordered or bypassed. Pre-Stage-11 digest (the Stage 11 §33 starting
+// record): baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4
+$ENGINE_SHA  = '31714cb857daa6bf88f02db5bbce0672817ebf0f19ffabf1588a2e87c75cd53e';
 
 // Records whether the engine was actually invoked, so "refused" can be proven
 // to mean "never reached the engine" rather than "reached it and did nothing".
@@ -283,6 +291,12 @@ $ALLOWED_OPTIONS = array(
 	Conexao_Translation_Automation_Source_State::OPTION,
 	Conexao_Translation_Automation_Audit::OPTION,
 	Conexao_Translation_Automation_Hooks::MARKER_OPTION,
+	// Stage 10: the bounded batch layer's own infrastructure rows. Declared,
+	// not relaxed: the list below is still an exhaustive allow-list, and the
+	// count assertion below was updated with it rather than removed.
+	Conexao_Translation_Automation_Batch_State::OPTION,
+	Conexao_Translation_Automation_Batch_State::ABORT_OPTION,
+	Conexao_Translation_Automation_Emergency_Stop::OPTION,
 );
 
 // Every allowed option must be namespaced to this plugin, so a future entry
@@ -345,7 +359,10 @@ foreach ( $option_writers as $fn ) {
 
 assert_true(
 	array() === $option_writes,
-	'option writes are limited to the five declared infrastructure options'
+	sprintf(
+		'option writes are limited to the %d declared infrastructure options',
+		count( $ALLOWED_OPTIONS )
+	)
 	. ( $option_writes ? ': ' . implode( ', ', $option_writes ) : '' )
 );
 
@@ -380,21 +397,61 @@ $anonymous = conexao_automation_token_hits(
 );
 assert_true( array() === $anonymous, 'no anonymous admin handler and no AJAX handler exists' . ( $anonymous ? ': ' . implode( ', ', $anonymous ) : '' ) );
 
-// The ONE permitted admin_post_ registration, confined to the trigger file.
+// The permitted admin_post_ registrations, confined to their declared files.
+//
+// STAGE 11 SUPERSESSION. Stage 6 permitted `admin_post_` in EXACTLY ONE file.
+// Stage 11 adds the batch-control capability, which declares its own action in
+// ONE further file, and the assertion is narrowed a second time rather than
+// weakened: `admin_post_` is still permitted in exactly these files and
+// nowhere else, so a THIRD, differently-named endpoint still fails closed.
+//
+//   - the proof endpoint lives in the protected trigger;
+//   - the batch-control endpoint lives in its own declared file and is NOT
+//     commissioned (its register() is never called — asserted by
+//     verify-stage7/8), so nothing new is reachable;
+//   - the anonymous twin `admin_post_nopriv_` and every `wp_ajax_*` remain
+//     forbidden everywhere, unchanged.
+$ALLOWED_ENTRY_FILES = array(
+	'class-conexao-translation-automation-admin-trigger.php',
+	'class-conexao-translation-automation-batch-control.php',
+);
+
 $entry_points = conexao_automation_token_hits( array( 'admin_post_' ), '' );
+$allowed_hits = array_values(
+	array_filter(
+		$entry_points,
+		static function ( $hit ) use ( $ALLOWED_ENTRY_FILES ) {
+			foreach ( $ALLOWED_ENTRY_FILES as $file ) {
+				if ( false !== strpos( $hit, $file ) ) {
+					return true;
+				}
+			}
+
+			return false;
+		}
+	)
+);
+
 assert_true(
-	1 === count( $entry_points ),
-	'exactly one authenticated admin entry point exists'
+	count( $entry_points ) === count( $ALLOWED_ENTRY_FILES )
+	&& count( $entry_points ) === count( $allowed_hits ),
+	'exactly ' . count( $ALLOWED_ENTRY_FILES ) . ' authenticated admin entry points exist, all in declared files'
 		. ( $entry_points ? ': ' . implode( ', ', $entry_points ) : '' )
 );
 assert_true(
 	array() === array_filter(
 		$entry_points,
-		static function ( $hit ) {
-			return false === strpos( $hit, 'class-conexao-translation-automation-admin-trigger.php' );
+		static function ( $hit ) use ( $ALLOWED_ENTRY_FILES ) {
+			foreach ( $ALLOWED_ENTRY_FILES as $file ) {
+				if ( false !== strpos( $hit, $file ) ) {
+					return false;
+				}
+			}
+
+			return true;
 		}
 	),
-	'the single admin entry point lives in the protected trigger file'
+	'every admin entry point lives in a declared file'
 );
 
 // No permission callback that returns true unconditionally.

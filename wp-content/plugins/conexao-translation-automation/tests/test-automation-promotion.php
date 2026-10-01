@@ -22,7 +22,15 @@ require_once CONEXAO_TESTS_WP_ROOT . '/wp-content/plugins/conexao-translation-au
 test_title( 'conexao-translation-automation — Stage 2 promotion and separation' );
 
 $ENGINE_FILE  = CONEXAO_TESTS_WP_ROOT . '/wp-content/plugins/conexao-translation-rollout/includes/class-conexao-translation-rollout-engine.php';
-$ENGINE_SHA   = 'baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4';
+// STAGE 11: the pin moved ONCE, deliberately. Model A (true subset
+// execution) requires the engine to accept an approved operation scope.
+// The change is additive and confined to scope handling: two pure methods
+// (narrow_manifest, planned_identities), one optional $args['scope'] key
+// applied AFTER full-manifest validation, and a 'scope' key added to the
+// two existing return payloads. No lifecycle stage was replaced,
+// reordered or bypassed. Pre-Stage-11 digest (the Stage 11 §33 starting
+// record): baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4
+$ENGINE_SHA   = '31714cb857daa6bf88f02db5bbce0672817ebf0f19ffabf1588a2e87c75cd53e';
 $PLUGIN_DIR   = CONEXAO_TESTS_WP_ROOT . '/wp-content/plugins/conexao-translation-automation';
 $REGISTRY     = CONEXAO_TESTS_WP_ROOT . '/plugins.json';
 
@@ -249,6 +257,19 @@ $expected_classes = array(
 	// STAGE 6: the protected production proof entry point. It WRAPS the
 	// trigger above and adds no lifecycle of its own.
 	'Conexao_Translation_Automation_Admin_Trigger',
+	// STAGE 10: the bounded multi-record layer. It composes, bounds, reviews,
+	// approves and executes batches; it declares no lifecycle of its own and
+	// reaches the engine only through the orchestrator above.
+	'Conexao_Translation_Automation_Batch_Limits',
+	'Conexao_Translation_Automation_Batch',
+	'Conexao_Translation_Automation_Batch_State',
+	'Conexao_Translation_Automation_Emergency_Stop',
+	'Conexao_Translation_Automation_Batch_Approval',
+	// STAGE 11: the DECLARED (not commissioned) batch-control capability.
+	'Conexao_Translation_Automation_Batch_Control',
+	'Conexao_Translation_Automation_Batch_Executor',
+	'Conexao_Translation_Automation_Batch_Composer',
+	'Conexao_Translation_Automation_Batch_Expansion',
 );
 sort( $declared );
 sort( $expected_classes );

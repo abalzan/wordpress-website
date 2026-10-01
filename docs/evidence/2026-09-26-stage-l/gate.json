@@ -1,7 +1,7 @@
 {
   "stage": "L — permanent invariant gates",
-  "generated_at": "2026-10-01T10:30:13Z",
-  "repository_sha": "d5f5f6cb9650ac7beca2390696b1ff8e08b033c2",
+  "generated_at": "2026-10-01T12:02:13Z",
+  "repository_sha": "b1fc13352fbddd295576ff3f2e1aa2e5b30742ba",
   "status": "fail",
   "gates": {
     "taxonomy_policy": {
@@ -447,7 +447,7 @@
         "   scope: wp-content/plugins/conexao-translation-rollout",
         "   scope: wp-content/plugins/conexao-translation-automation",
         "",
-        "   scanned 129 production PHP files (PHP token_get_all)",
+        "   scanned 137 production PHP files (PHP token_get_all)",
         "   unscoped conexao_* cache keys: 0",
         "2 passed, 0 failed",
         "GATE-RESULT {\"gate\": \"cache_scoping_static\", \"status\": \"pass\", \"passed\": 2, \"failed\": 0, \"violations\": 0, \"details\": []}"
@@ -597,7 +597,7 @@
       "prerequisites": [],
       "details": [],
       "output_tail": [
-        "   historical/audit documents without the marker (reported, not gated): 126",
+        "   historical/audit documents without the marker (reported, not gated): 127",
         "",
         "   -- §9.2 no root-level report/evidence file --",
         "   root files scanned: 17, offenders: 0",

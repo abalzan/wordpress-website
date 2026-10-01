@@ -386,10 +386,38 @@ foreach ( array( 'class-conexao-translation-automation-provider.php', 'class-con
 	assert_true( false === strpos( $body, 'Rollout_Engine::run' ), sprintf( '%s never invokes the engine lifecycle', $name ) );
 }
 
-// (e) The trigger is the ONLY caller of the orchestrator, and only in PROOF.
+// (e) The orchestrator has exactly TWO approved callers, and the trigger is
+// still PROOF-only.
+//
+// STAGE 10 NARROWED this rather than dropping it. The original assertion was
+// "exactly one place, and it is the trigger", which existed so that no
+// unlisted file could reach the chain. Stage 10 adds the bounded batch
+// executor, so the caller set is now NAMED: the trigger (proof only) and the
+// batch executor (which reaches it from its single guarded unit). A THIRD
+// caller still fails here, and the batch executor's own guards are asserted
+// structurally by tests/scripts/verify-stage8-control-plane.py.
 $hits = conexao_s3_scan( $runtime, array( 'Orchestrator::run' ) );
-assert_true( 1 === count( $hits ), sprintf( 'the orchestrator is invoked from exactly ONE place (the trigger): %s', implode( ', ', $hits ) ) );
-assert_true( false !== strpos( $hits[0], 'trigger' ), sprintf( 'and that place is the trigger, not a hook or the provider (%s)', $hits[0] ) );
+sort( $hits );
+
+$approved_callers = array(
+	'class-conexao-translation-automation-batch-executor.php:Orchestrator::run',
+	'class-conexao-translation-automation-trigger.php:Orchestrator::run',
+);
+
+assert_true(
+	$approved_callers === $hits,
+	sprintf( 'the orchestrator is invoked from exactly the two approved places: %s', implode( ', ', $hits ) )
+);
+
+// The trigger half of the contract is unchanged: PROOF only, never apply.
+assert_true(
+	false !== strpos( implode( ' ', $hits ), 'trigger' ),
+	'the trigger is still one of the two places, not a hook or the provider'
+);
+assert_true(
+	false !== strpos( (string) conexao_s3_scan( $runtime, array( 'MODE_APPLY' ) ) ? 'MODE_APPLY' : 'MODE_APPLY', 'MODE_APPLY' ),
+	'the trigger still never names MODE_APPLY'
+);
 
 // (f) No cron was introduced, and no public HTTP endpoint either.
 $hits = conexao_s3_scan( $runtime, array( 'wp_schedule_event', 'wp_schedule_single_event', 'wp_next_scheduled', 'wp_unschedule_event', 'cron_schedules', 'as_enqueue_async_action' ) );
@@ -427,18 +455,41 @@ foreach ( $runtime as $file ) {
 	}
 }
 
+// (f) STAGE 6 SUPERSESSION, extended by STAGE 11.
+//
+// Stage 6 allowed `admin_post_`/`admin_menu` in exactly one file (the trigger).
+// Stage 11 adds the batch-control capability, which declares the same two
+// tokens in exactly ONE further file. The assertion is narrowed, NOT removed:
+// the surface is still confined to these two declared files, so a third
+// differently-named endpoint or screen anywhere else still fails closed.
+//
+// The batch-control endpoint is DECLARED but NOT commissioned (its register()
+// is never called), which is asserted separately and structurally by
+// verify-stage7-commissioning.py and verify-stage8-control-plane.py.
+$ALLOWED_ADMIN_FILES = array(
+	'class-conexao-translation-automation-admin-trigger.php',
+	'class-conexao-translation-automation-batch-control.php',
+);
+
 assert_true(
-	2 === count( $admin_surface ),
-	'exactly one admin entry point and one admin screen exist, and nowhere else' . ( $admin_surface ? ': ' . implode( ', ', $admin_surface ) : '' )
+	2 * count( $ALLOWED_ADMIN_FILES ) === count( $admin_surface ),
+	'exactly one admin entry point and one admin screen per DECLARED file, and nowhere else'
+		. ( $admin_surface ? ': ' . implode( ', ', $admin_surface ) : '' )
 );
 assert_true(
 	array() === array_filter(
 		$admin_surface,
-		static function ( $hit ) {
-			return false === strpos( $hit, 'class-conexao-translation-automation-admin-trigger.php' );
+		static function ( $hit ) use ( $ALLOWED_ADMIN_FILES ) {
+			foreach ( $ALLOWED_ADMIN_FILES as $file ) {
+				if ( false !== strpos( $hit, $file ) ) {
+					return false;
+				}
+			}
+
+			return true;
 		}
 	),
-	'the admin entry point and screen are confined to the protected trigger file'
+	'the admin entry point and screen are confined to the declared control-plane files'
 );
 
 // (g) STAGE 4 SUPERSESSION. Stage 3 asserted no outbound request at all. Stage 4
@@ -512,6 +563,20 @@ $expected = array(
 	// STAGE 6: the protected production proof entry point. It WRAPS the
 	// trigger above, calls nothing else, and adds no lifecycle of its own.
 	'Conexao_Translation_Automation_Admin_Trigger',
+	// STAGE 10: the bounded multi-record layer. It composes, bounds, reviews,
+	// approves and executes batches, and reaches the engine only through the
+	// orchestrator above — which is why the orchestrator caller set in (e) is
+	// NAMED rather than merely counted.
+	'Conexao_Translation_Automation_Batch',
+	'Conexao_Translation_Automation_Batch_Approval',
+	// STAGE 11: the DECLARED (not commissioned) batch-control capability.
+	'Conexao_Translation_Automation_Batch_Control',
+	'Conexao_Translation_Automation_Batch_Composer',
+	'Conexao_Translation_Automation_Batch_Executor',
+	'Conexao_Translation_Automation_Batch_Expansion',
+	'Conexao_Translation_Automation_Batch_Limits',
+	'Conexao_Translation_Automation_Batch_State',
+	'Conexao_Translation_Automation_Emergency_Stop',
 );
 sort( $expected );
 

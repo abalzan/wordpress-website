@@ -1,0 +1,1 @@
+baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4  wp-content/plugins/conexao-translation-rollout/includes/class-conexao-translation-rollout-engine.php

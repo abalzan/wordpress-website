@@ -1,0 +1,48 @@
+=== tests/scripts/verify-stage2-promotion.py ===
+
+28 passed, 0 failed
+STAGE 2 PROMOTION GATE: OK
+
+=== tests/scripts/verify-stage3-automation.py ===
+  PASS: class-conexao-translation-automation-trigger.php references no credential constant
+
+172 passed, 0 failed
+
+=== tests/scripts/verify-stage4-provider.py ===
+  PASS: the adapter invents no taxonomy term
+
+147 passed, 0 failed
+
+=== tests/scripts/verify-stage6-transport-trigger.py ===
+  PASS: the credential env var is named, never its value
+
+48 passed, 0 failed
+
+=== tests/scripts/verify-stage7-commissioning.py ===
+  NOTE: pre-existing engine endpoint 'conexao_translation_rollout_run' — conexao-translation-rollout (Stage H, pre-existing). CLOSED in Stage 8: the handler now refuses unconditionally (HTTP 410) and cannot reach Engine::run(), a stage run_callback, or any apply mode. Replacement: conexao-translation-automation's admin_post_conexao_translation_automation_proof.
+
+65 passed, 0 failed
+
+=== tests/scripts/verify-stage8-control-plane.py ===
+  PASS: the expansion gate still requires no_unresolved_verification_failure
+
+141 passed, 0 failed
+
+=== tests/scripts/verify-stage8-release-consistency.py ===
+
+52 passed, 0 failed
+versions compared header-vs-manifest: 9
+
+=== tests/scripts/verify-stage10-batch-boundary.py ===
+
+negative proofs: 20 proven, 0 missed
+ALL NEGATIVE PROOFS HELD
+
+=== ./scripts/lint.sh ===
+OK: no PHP parse errors.
+PHPCS legacy baseline: 3222 errors / 2670 warnings in 234 files (baseline: 3290 / 2672).
+OK: no new PHPCS violations against the baseline.
+ [OK] No errors                                                                 
+
+=== php scripts/generate-registry-docs.php --check ===
+registry OK: 15 plugins validated, 24 generated regions current (zero writes).

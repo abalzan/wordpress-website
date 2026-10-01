@@ -30,7 +30,15 @@ ENGINE = (
 )
 
 # Pinned by the Stage 1/Stage 2 integrity invariant and re-asserted by Stage 3.
-ENGINE_SHA256 = "baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4"
+// STAGE 11: the pin moved ONCE, deliberately. Model A (true subset
+// execution) requires the engine to accept an approved operation scope.
+// The change is additive and confined to scope handling: two pure methods
+// (narrow_manifest, planned_identities), one optional $args['scope'] key
+// applied AFTER full-manifest validation, and a 'scope' key added to the
+// two existing return payloads. No lifecycle stage was replaced,
+// reordered or bypassed. Pre-Stage-11 digest (the Stage 11 §33 starting
+// record): baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4
+ENGINE_SHA256 = "31714cb857daa6bf88f02db5bbce0672817ebf0f19ffabf1588a2e87c75cd53e"
 
 PASSED = 0
 FAILURES: list[str] = []
@@ -257,9 +265,44 @@ def main() -> int:
     trigger = bodies.get("class-conexao-translation-automation-trigger.php", "")
     ok("the trigger never names MODE_APPLY", "MODE_APPLY" not in trigger)
     ok("the trigger invokes the orchestrator in MODE_PROOF", "MODE_PROOF" in trigger)
+    # STAGE 10: the bounded batch executor is the SECOND approved caller of the
+    # orchestrator. It is DECLARED here rather than widening the assertion to
+    # "any number", because the whole point of the original check was that an
+    # unlisted caller would be a new, unaudited route into the chain. A THIRD
+    # caller still fails this gate.
+    #
+    # The batch executor reaches the orchestrator only from its single safe
+    # unit, behind the batch approval, the emergency stop, the abort flag, the
+    # budgets and the plan-scope assertion; see verify-stage8-control-plane.py,
+    # which asserts those guards are present.
+    APPROVED_ORCHESTRATOR_CALLERS = (
+        "class-conexao-translation-automation-trigger.php",
+        "class-conexao-translation-automation-batch-executor.php",
+    )
+
+    callers = sorted(
+        name
+        for name, body in bodies.items()
+        if "Orchestrator::run(" in body
+    )
+
     ok(
-        "the orchestrator is invoked from exactly one place",
-        sum(b.count("Orchestrator::run(") for b in bodies.values()) == 1,
+        "the orchestrator is invoked from exactly the two approved places",
+        callers == sorted(APPROVED_ORCHESTRATOR_CALLERS),
+        f"found {callers}",
+    )
+    ok(
+        "each approved orchestrator caller invokes it exactly once",
+        all(
+            bodies[name].count("Orchestrator::run(") == 1
+            for name in APPROVED_ORCHESTRATOR_CALLERS
+            if name in bodies
+        ),
+        ", ".join(
+            f"{name}={bodies[name].count('Orchestrator::run(')}"
+            for name in APPROVED_ORCHESTRATOR_CALLERS
+            if name in bodies
+        ),
     )
 
     hooks = bodies.get("class-conexao-translation-automation-hooks.php", "")

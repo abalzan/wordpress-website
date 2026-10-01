@@ -161,3 +161,33 @@ nonce, a cookie, an authorization header or a `.env` file.
 Cited by `docs/reports/2026-10-01-stage-9-production-commissioning.md`.
 
 _Last verified: 2026-10-01 by Stage 9 — production commissioning (`BLOCKED`)_
+
+## 2026-10-01-stage-10-bounded-expansion
+
+Stage 10 implemented and locally proved the bounded multi-record expansion
+controls. It is **credential-independent**: `PASS WITH CONDITIONS`,
+`Production writes: 0`, installs `0`, provider requests `0`, mutations `0`.
+
+| File | Contents |
+|---|---|
+| `01-baseline-full-test-run.txt` | The full suite **before** any Stage 10 change — the comparison baseline |
+| `02-stage10-batch-suite.txt` | The Stage 10 in-process suite: 17 required fixtures, 243 assertions |
+| `03-negative-proofs.txt` | 20 injected-negative structural proofs, each run against a throwaway repository copy |
+| `04-control-plane-and-stage-gates.txt` | Stage 2/3/4/6/7/8 gates after the extension |
+| `05-engine-integrity.txt` | Engine core SHA-256 before and after |
+| `06-full-test-run.txt` | The full suite **after** the change |
+| `07-permanent-gates.txt` | The Stage L permanent-invariant aggregate |
+
+Key facts: engine SHA-256
+`baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4`
+**before and after, exact equality**; **20 of 20** injected-negative proofs
+held; the extended control-plane gate asserts **141** checks with **0** failed;
+`MAX_PRODUCTION_BATCHES_PER_INVOCATION` is **1**; **zero** endpoints were
+registered; and **no production credential was used, printed or persisted**.
+
+No file in this directory contains a credential, an application password, a
+nonce, a cookie, an authorization header or a `.env` file.
+
+Cited by `docs/reports/2026-10-01-stage-10-bounded-expansion.md`.
+
+_Last verified: 2026-10-01 by Stage 10 — bounded multi-record expansion controls (`PASS WITH CONDITIONS`)_
