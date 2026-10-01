@@ -1,7 +1,7 @@
 {
   "stage": "L — permanent invariant gates",
-  "generated_at": "2026-10-01T13:38:03Z",
-  "repository_sha": "402878d984917ec48382c30b879da770228001bd",
+  "generated_at": "2026-10-01T13:39:57Z",
+  "repository_sha": "240e2368403e0e17f8cdcfc4f0db743e0d44da96",
   "status": "fail",
   "gates": {
     "taxonomy_policy": {
@@ -655,7 +655,7 @@
         "   conexao-event-importer   catalogue=1790623531 newest-source=1790446037 (wp-content/plugins/conexao-event-importer/includes/class-event-importer.php) fresh",
         "   conexao-leisure-migration catalogue=1790623531 newest-source=1790325155 (wp-content/plugins/conexao-leisure-migration/includes/class-leisure-exporter.php) fresh",
         "   conexao-sponsor-migration catalogue=1790623531 newest-source=1789994211 (wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-importer.php) fresh",
-        "   conexao-translation-automation catalogue=1790858043 newest-source=1790858043 (wp-content/plugins/conexao-translation-automation/includes/class-conexao-translation-automation-batch-control.php) fresh",
+        "   conexao-translation-automation catalogue=1790861986 newest-source=1790861950 (wp-content/plugins/conexao-translation-automation/includes/class-conexao-translation-automation-batch-control.php) fresh",
         "",
         "   stale catalogues: 3",
         "FAIL: conexao-br-irlanda: wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot is older than wp-content/themes/conexao-br-irlanda/inc/navigation.php by 92483s — regenerate the catalogue with `wp i18n make-pot` (never hand-edit)",

@@ -208,6 +208,7 @@ _Last verified: 2026-10-01 by Stage 10 — bounded multi-record expansion contro
 | `07-release-consistency.txt` | §34 two independent builds, artifact hashes, release manifest |
 | `08-full-test-run.txt` | §36 the full suite after the change |
 | `09-baseline-classification.txt` | §35 the baseline failing suites, separately classified |
+| `10-permanent-gates.txt` | the Stage L permanent-invariant aggregate |
 
 No file in this directory contains a credential, an application password, a
 nonce, a cookie, an authorization header or a `.env` file.

@@ -1,0 +1,22 @@
+=== STAGE 11 PERMANENT INVARIANT GATES (Stage L aggregate) ===
+
+gate.json written: docs/evidence/2026-09-26-stage-l/gate.json
+
+One or more permanent invariant gates FAILED. This is a real repository/data violation, not a harness problem: the gates are blocking by design and must not be weakened to obtain a green run.
+
+--- per-gate ---
+  taxonomy_policy            pass   passed=18   failed=0   new=0  pre_existing=0
+  translation_completeness   pass   passed=23   failed=0   new=0  pre_existing=0
+  cache_scoping              pass   passed=9    failed=0   new=0  pre_existing=0
+  cache_scoping_static       pass   passed=2    failed=0   new=0  pre_existing=0
+  redirect_precedence        pass   passed=15   failed=0   new=0  pre_existing=0
+  documentation_drift        pass   passed=14   failed=0   new=0  pre_existing=0
+  i18n_freshness             fail   passed=8    failed=3   new=1  pre_existing=2
+  aggregate: fail totals: {'total_passed': 89, 'total_failed': 3, 'total_violations': 3, 'total_pre_existing': 2, 'total_new': 1, 'total_blocked': 0}
+
+NOTE: i18n_freshness is the only failing gate, and all three violations are
+the PRE-EXISTING stale catalogues named in Stage 11 §35 (theme,
+conexao-content, conexao-event-runtime). They were NOT regenerated merely to
+obtain a green status. conexao-translation-automation, whose catalogue Stage 11
+had to create because the batch-control screen introduces this program's first
+user-facing strings, is FRESH.

@@ -518,6 +518,7 @@ No new failure was introduced and none was hidden inside an aggregate count.
 | `07-release-consistency.txt` | §34 two builds, artifact hashes, manifest |
 | `08-full-test-run.txt` | §36 the full suite after the change |
 | `09-baseline-classification.txt` | §35 baseline failing suites |
+| `10-permanent-gates.txt` | the Stage L permanent-invariant aggregate |
 
 ---
 
