@@ -1,0 +1,85 @@
+# Stage 8 - legacy endpoint security audit (traced from source, not inferred)
+
+UTC: 2026-10-01T09:55:43Z
+
+## THE SURFACE AS IT EXISTED (git HEAD 71438ca)
+
+registration hook : add_action( 'admin_post_' . self::ACTION, array( __CLASS__, 'handle_run' ) )
+                    wp-content/plugins/conexao-translation-rollout/includes/class-conexao-translation-rollout-admin.php:48
+action name       : conexao_translation_rollout_run  (const ACTION)
+HTTP method       : POST **and GET** -- wp-admin/admin-post.php:29 reads $_REQUEST['action']
+                    verified in-container against WP 7.1.2 admin-post.php
+
+## EXACT CALL GRAPH: mode=apply -> Engine::run()
+
+  1  admin-post.php                         $_REQUEST['action']
+  2  admin_post_conexao_translation_rollout_run
+  3  Conexao_Translation_Rollout_Admin::handle_run()          [admin.php:73]
+  4    current_user_can('manage_options')  -> 403             [admin.php:74]  AUTH PRESENT
+  5    check_admin_referer( ACTION, NONCE )                   [admin.php:78]  NONCE PRESENT
+  6    $mode = 'apply' === $_POST['mode'] ? ... : ...       [admin.php:82]  CALLER-CONTROLLED
+  7    Conexao_Translation_Rollout_Engine::get_stage( $stage )[admin.php:83]
+  8    call_user_func( $config['run_callback'], [ 'dry_run' => false, 'mode' => 'run' ] )   [admin.php:89]
+  9    <stage run_callback> e.g. conexao-en-translation stage-config.php:195
+ 10    Conexao_Translation_Rollout_Engine::run( $config, $adapter, [ 'dry_run' => false ] )
+ 11    engine.php:904  if ( $dry_run ) -> RETURNS (not taken)
+ 12    engine.php:950  self::apply_plan(...)   -> REAL WRITES
+
+## WHAT IT BYPASSED (each traced, none inferred)
+
+| Control | Present on this endpoint? |
+|---|---|
+| authentication | YES - `admin_post_` fires only for logged-in users (the `admin_post_nopriv_` twin was never registered) |
+| capability | YES - `current_user_can('manage_options')` |
+| nonce | YES - `check_admin_referer()` |
+| stage allowlist (Stage 0 S6) | **NO** - any stage returned by `Engine::get_stage()` was runnable |
+| inventory / change detection (Stage 3) | **NO** |
+| provider + provider validation | **NO** |
+| plan / review state | **NO** |
+| dry-run-before-apply (Stage 2 F7) | **NO** - `mode=apply` went straight to apply |
+| digest-bound approval (Stage 2) | **NO** - no approval token existed or was required |
+| concurrency lock (Stage 2) | **NO** |
+| audit record (Stage 3) | **NO** - no audit row was written |
+| environment guard | **NO** - the environment was never read |
+| human review | **NO** |
+| PT-drift guard / verify / numeric gate | inherited from the ENGINE only (these live below the entry point) |
+
+**Verdict: it could directly cause production mutation.** A capability and a
+nonce were the entire authorisation story.
+
+## DECISIVE REPOSITORY EVIDENCE FOR THE DISPOSITION
+
+Which plugins register a stage with the engine (shipped code, excluding tests):
+
+  conexao-en-translation  -> production: false, build: false, status: active
+  conexao-job-translation -> production: false, build: false, status: retired
+
+The production steady state is exactly:
+  conexao-data-model -> conexao-content -> conexao-admin-ux ->
+  conexao-event-runtime -> conexao-translation-rollout -> conexao-translation-automation
+
+NO production plugin registers a stage. So in production
+`Engine::get_stage()` returned null for every input and `handle_run()` could
+only ever have reached its `unknown stage` 400. **The bypass was latent, not
+load-bearing** - which is exactly why it had to be closed rather than left
+merely declared.
+
+## THE CLOSURE
+
+handle_run() is now: capability check, then wp_die(410) naming the
+replacement. The file contains NO call_user_func, NO run_callback, NO Engine::
+reference and reads NO superglobal, so no request value can become a mode.
+
+## ATTACK SHAPES EXERCISED (behavioural, in-process, local)
+
+  anonymous / unprivileged caller      -> 403, engine invocations 0
+  mode=apply (the bypass)              -> 410, engine invocations 0
+  mode=remove                          -> 410, engine invocations 0
+  mode=preview                         -> 410, engine invocations 0
+  mode=APPLY / applY / delete / ''     -> 410, engine invocations 0
+  missing mode                         -> 410, engine invocations 0
+  stage=en-guide / job / path traversal/ array   -> 410, engine invocations 0
+  alternate params mod/modes/mode[]/dry_run/run/stage_slug/action -> 410, 0
+  GET instead of POST                  -> 410, engine invocations 0
+  rendering the admin screen           -> no form, no admin-post, engine 0
+  TOTAL over every shape               -> engine run_callback invoked 0 times

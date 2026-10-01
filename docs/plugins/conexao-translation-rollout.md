@@ -9,7 +9,7 @@
 | **Build** | yes |
 | **Compose mount** | yes |
 | **Dependencies** | none |
-| **Version** | 1.1.0 (authoritative source: `wp-content/plugins/conexao-translation-rollout/conexao-translation-rollout.php` header) |
+| **Version** | 1.2.0 (authoritative source: `wp-content/plugins/conexao-translation-rollout/conexao-translation-rollout.php` header) |
 | **Registry** | [`plugins.json`](../../plugins.json) |
 
 > **Production platform plugin.** Part of the production steady state.
@@ -25,14 +25,55 @@ rollout no longer needs its own `apply.php` + `audit.php` + admin class.
 |---|---|
 | Folder | `wp-content/plugins/conexao-translation-rollout/` |
 | Engine | `includes/class-conexao-translation-rollout-engine.php` |
-| Admin screen | Tools → **Translation Rollouts** (Preview → Apply → Remove) |
+| Admin screen | Tools → **Translation Rollouts (deprecated)** — **closed in v1.2.0**; it starts no run |
+| Production entry point | **none.** The engine owns the lifecycle but is reachable only through `conexao-translation-automation` |
 | Frontend effect | **none** — orchestration only; never writes on bootstrap or activation |
 | Safe to deactivate | yes, when no rollout is running |
 | Runtime dependency | none (a stage adapter needs Polylang at run time) |
-| Tests | `wp-content/plugins/conexao-translation-rollout/tests/` (3 suites, 46 assertions) |
+| Tests | `wp-content/plugins/conexao-translation-rollout/tests/` (4 suites) |
 
 Owner: project maintainer. Introduced by Stage H
 (`docs/reports/2026-09-26-stage-h-shared-rollout-engine.md`).
+
+## The admin endpoint is CLOSED (Stage 8, v1.2.0)
+
+`admin_post_conexao_translation_rollout_run` used to be a second,
+apply-capable production mutation entry point:
+
+```
+admin-post.php -> handle_run()
+  -> manage_options + nonce
+  -> $_POST['mode'] === 'apply'          (caller-controlled)
+  -> call_user_func( $config['run_callback'], [ 'dry_run' => false ] )
+  -> Conexao_Translation_Rollout_Engine::run( ... )
+  -> apply_plan()                        (real writes)
+```
+
+It bypassed the stage allowlist, the F7 PASS gate, the digest-bound approval,
+the lock, the audit trail, the environment guard, change detection, provider
+validation and human review. A capability and a nonce were the whole story.
+
+It is now a **hard-fail deprecation stub**: `handle_run()` refuses every request
+with **HTTP 410** and names its replacement. The hook stays registered on
+purpose — an old bookmarked URL then gets a named refusal instead of
+WordPress's indistinguishable "0 handlers" response. The handler contains no
+`call_user_func`, no `run_callback`, no `Engine::` reference and reads no
+superglobal, so no request value can become a mode.
+
+| | |
+|---|---|
+| Original action | `conexao_translation_rollout_run` |
+| Original purpose | Preview / Apply / Remove one authored EN stage (Stage H) |
+| Disposition | **Removed.** The apply capability is gone, not deprecated-with-a-flag |
+| Replacement | `conexao-translation-automation` → `admin_post_conexao_translation_automation_proof` (Tools → Translation Automation) |
+| Compatibility | none lost: the only two stage-registering plugins (`conexao-en-translation`, `conexao-job-translation`) are `production: false`, so in the production steady state no stage is registered and the old endpoint could only ever have reached `unknown stage` |
+| Enforced by | `tests/scripts/verify-stage8-control-plane.py` (control-plane contract) and `tests/scripts/verify-stage7-commissioning.py` (keeps the action name watched) |
+
+**The engine itself did not change.**
+`class-conexao-translation-rollout-engine.php` is byte-identical to its
+historical digest `baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4`,
+which the Stage 8 gate re-asserts. Stage 8 closed an *entry point*; the mutation
+authority is untouched.
 
 ## Ownership boundary (the whole point of this plugin)
 

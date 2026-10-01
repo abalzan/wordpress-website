@@ -1,12 +1,56 @@
 <?php
 /**
- * Shared rollout admin screen (Tools -> Translation Rollouts).
+ * DEPRECATED rollout admin screen (Tools -> Translation Rollouts).
  *
- * Controlled rollout tool, not a content-management UI:
- *   - every write path requires `manage_options` AND a valid nonce;
- *   - the stage can only be one of the stages registered with the engine;
- *   - Preview (dry run) is always available before Apply;
- *   - no writes happen on GET, on page load, or without an explicit action.
+ * ## Stage 8: this endpoint is CLOSED
+ *
+ * This class used to be a second, apply-capable production mutation entry
+ * point. Its call graph was:
+ *
+ *     admin-post.php  ->  handle_run()
+ *       -> manage_options + check_admin_referer()
+ *       -> $_POST['mode'] === 'apply'   (CALLER-CONTROLLED)
+ *       -> call_user_func( $config['run_callback'], [ 'dry_run' => false ] )
+ *       -> Conexao_Translation_Rollout_Engine::run( ..., [ 'dry_run' => false ] )
+ *       -> apply_plan()   ->   REAL WRITES
+ *
+ * It bypassed every control the automation program established: the Stage 0
+ * stage allowlist, the Stage 2 F7 "PASS dry run before apply" gate, the
+ * digest-bound approval, the concurrency lock, the audit trail, the
+ * environment guard, the Stage 3 change detector, provider validation and
+ * human review. A capability and a nonce were the whole authorisation story.
+ *
+ * The disposition is HARD FAILURE, not redirection (Stage 8 §16). There is no
+ * compatibility concern to preserve: the only two plugins that register stages
+ * with the engine (`conexao-en-translation`, `conexao-job-translation`) are
+ * both `production: false` in `plugins.json`, so in the production steady
+ * state NO stage is registered and `handle_run()` could only ever have reached
+ * `unknown stage`. The bypass was latent, not load-bearing -- which is exactly
+ * why it had to be closed rather than left merely declared.
+ *
+ * ## Why the hook is still registered at all
+ *
+ * Removing the `add_action()` would make an old bookmarked URL fall through to
+ * WordPress's generic "0 handlers" response, indistinguishable from a broken
+ * install. Registering a handler that refuses loudly, by name, with a named
+ * replacement, is the honest deprecation: an operator holding this URL is told
+ * what happened and where to go instead.
+ *
+ * ## What is deliberately NOT here any more
+ *
+ * | Absent | Why |
+ * |---|---|
+ * | `call_user_func` on a stage `run_callback` | no code path from this file reaches `Engine::run()` at all |
+ * | any `apply` / `remove` mode | there is no mode vocabulary left to map |
+ * | a preview/dry-run path | a dry run writes nothing but still runs stage code; the replacement control plane owns that too |
+ * | silent redirect to the new endpoint | a redirect would preserve the old POST contract as a live alias; a refusal cannot |
+ *
+ * ## Replacement
+ *
+ * `conexao-translation-automation` -> `admin_post_conexao_translation_automation_proof`
+ * (Tools -> Translation Automation). It is the single production control plane:
+ * authorised -> locked -> inventoried -> validated -> planned -> dry-run ->
+ * PASS gate -> digest-bound approval -> snapshot -> apply -> verify.
  *
  * @package Conexao_Translation_Rollout
  */
@@ -14,7 +58,7 @@
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Shared rollout admin screen.
+ * The closed rollout admin screen.
  */
 final class Conexao_Translation_Rollout_Admin {
 
@@ -29,14 +73,22 @@ final class Conexao_Translation_Rollout_Admin {
 	const PAGE_SLUG = 'conexao-translation-rollout';
 
 	/**
-	 * The admin-post.php action name for a rollout run.
+	 * The admin-post.php action name this class USED to serve.
+	 *
+	 * Kept only so the refusal can name the deprecated endpoint, and so the
+	 * Stage 8 structural gate can resolve this exact action name and assert it
+	 * can no longer reach apply.
+	 *
+	 * @var string
 	 */
 	const ACTION = 'conexao_translation_rollout_run';
 
 	/**
-	 * Nonce field name used on the rollout form.
+	 * The action that replaced it: the one approved production control plane.
+	 *
+	 * @var string
 	 */
-	const NONCE = '_conexao_rollout_nonce';
+	const REPLACEMENT_ACTION = 'conexao_translation_automation_proof';
 
 	/**
 	 * Register the admin hooks. Registration performs no writes.
@@ -64,9 +116,24 @@ final class Conexao_Translation_Rollout_Admin {
 	}
 
 	/**
-	 * Execute one rollout action (preview, apply or remove).
+	 * Refuse every request to the deprecated endpoint.
 	 *
-	 * Capability and nonce are both verified before any write.
+	 * There is no branch here that reaches the engine, a stage callback or a
+	 * write. The authorisation check is kept so an anonymous or unprivileged
+	 * caller learns nothing about the deprecation, so the refusal is not a
+	 * public oracle; the refusal itself is unconditional for anyone who clears
+	 * it.
+	 *
+	 * The strings are plain escaped text rather than gettext calls. This plugin
+	 * intentionally ships no translatable runtime strings (see
+	 * `languages/README.md`): it is English-only operational tooling, exactly
+	 * like `conexao-translation-automation`, which uses escaped output rather
+	 * than a text domain throughout.
+	 *
+	 * (Naming the gettext functions is deliberately avoided in this comment: the
+	 * i18n-freshness gate scans source text for those call names, so merely
+	 * NAMING one in a docblock makes it think this component has translatable
+	 * strings and demands a catalogue the policy says must not exist.)
 	 *
 	 * @return void
 	 */
@@ -75,49 +142,21 @@ final class Conexao_Translation_Rollout_Admin {
 			wp_die( 'forbidden', '', array( 'response' => 403 ) );
 		}
 
-		check_admin_referer( self::ACTION, self::NONCE );
-
-		$stage    = isset( $_POST['stage'] ) ? sanitize_key( (string) $_POST['stage'] ) : '';
-		$mode_raw = isset( $_POST['mode'] ) ? sanitize_key( (string) $_POST['mode'] ) : 'preview';
-		$mode     = 'apply' === $mode_raw ? 'apply' : ( 'remove' === $mode_raw ? 'remove' : 'preview' );
-		$config   = Conexao_Translation_Rollout_Engine::get_stage( $stage );
-
-		if ( ! is_array( $config ) || empty( $config['run_callback'] ) || ! is_callable( $config['run_callback'] ) ) {
-			wp_die( 'unknown stage', '', array( 'response' => 400 ) );
-		}
-
-		$report = call_user_func(
-			$config['run_callback'],
-			array(
-				'dry_run' => 'preview' === $mode,
-				'mode'    => 'remove' === $mode ? 'remove' : 'run',
-			)
-		);
-
-		set_transient(
-			'conexao_rollout_report_' . get_current_user_id(),
-			array(
-				'mode'   => $mode,
-				'stage'  => $stage,
-				'report' => $report,
+		wp_die(
+			esc_html(
+				sprintf(
+					'The %1$s endpoint was retired: it could apply EN translations without the review, approval and audit controls the automation program requires. Use %2$s (Tools -> Translation Automation) instead.',
+					self::ACTION,
+					self::REPLACEMENT_ACTION
+				)
 			),
-			300
+			'Endpoint retired',
+			array( 'response' => 410 )
 		);
-
-		$redirect = add_query_arg(
-			array(
-				'page' => self::PAGE_SLUG,
-				'ran'  => 1,
-			),
-			admin_url( 'tools.php' )
-		);
-
-		wp_safe_redirect( $redirect );
-		exit;
 	}
 
 	/**
-	 * Render the screen. Read-only: no content is written here.
+	 * Render the screen. Read-only, and it starts no run.
 	 *
 	 * @return void
 	 */
@@ -126,86 +165,29 @@ final class Conexao_Translation_Rollout_Admin {
 			wp_die( 'forbidden', '', array( 'response' => 403 ) );
 		}
 
-		echo '<div class="wrap"><h1>Translation Rollouts</h1>';
-
-		$stages = Conexao_Translation_Rollout_Engine::registered_stages();
-
-		if ( array() === $stages ) {
-			echo '<p>No rollout stages are registered.</p></div>';
-			return;
-		}
-
-		$report = null;
-
-		if ( isset( $_GET['ran'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only display flag; the write path is nonce-protected.
-			$report = get_transient( 'conexao_rollout_report_' . get_current_user_id() );
-			delete_transient( 'conexao_rollout_report_' . get_current_user_id() );
-		}
-
-		if ( is_array( $report ) && isset( $report['report']['summary'] ) ) {
-			self::render_report( (string) $report['mode'], (string) $report['stage'], $report['report'] );
-		}
-
-		echo '<h2>Run a stage</h2>';
-		echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '">';
-		wp_nonce_field( self::ACTION, self::NONCE );
-		echo '<input type="hidden" name="action" value="' . esc_attr( self::ACTION ) . '" />';
-		echo '<p><label>Stage <select name="stage">';
-
-		foreach ( $stages as $slug ) {
-			printf( '<option value="%s">%s</option>', esc_attr( $slug ), esc_html( $slug ) );
-		}
-
-		echo '</select></label></p>';
-		echo '<p><button class="button" name="mode" value="preview">Preview (dry run)</button> ';
-		echo '<button class="button button-primary" name="mode" value="apply">Apply</button> ';
-		echo '<button class="button" name="mode" value="remove" onclick="return confirm(\'Remove the EN records this stage owns? The PT originals are never touched.\')">Remove (rollback)</button></p>';
-		echo '</form></div>';
-	}
-
-	/**
-	 * Render the report of the last run, including the numeric gate.
-	 *
-	 * @param string $mode   preview|apply|remove.
-	 * @param string $stage  Stage identifier.
-	 * @param array  $report Engine report.
-	 * @return void
-	 */
-	private static function render_report( string $mode, string $stage, array $report ): void {
-		$summary = $report['summary'];
-		$gate    = isset( $report['gate'] ) ? $report['gate'] : array();
-		$label   = 'apply' === $mode ? 'applied' : ( 'remove' === $mode ? 'removed' : 'preview' );
-
+		echo '<div class="wrap"><h1>Translation Rollouts (deprecated)</h1>';
+		echo '<div class="notice notice-error"><p><strong>';
+		echo esc_html( 'This screen no longer runs rollouts.' );
+		echo '</strong> ';
 		printf(
-			'<div class="notice notice-%s"><p><strong>%s %s</strong> — created %d, updated %d, skipped %d, removed %d, errors %d, conflicts %d, PT changed %d; gate %s (missing %d of %d eligible).</p></div>',
-			$summary['errors'] ? 'error' : 'success',
-			esc_html( $stage ),
-			esc_html( $label ),
-			(int) $summary['created'],
-			(int) $summary['updated'],
-			(int) $summary['skipped'],
-			(int) $summary['removed'],
-			(int) $summary['errors'],
-			(int) $summary['conflicts'],
-			(int) $summary['pt_changed'],
-			esc_html( isset( $gate['gate'] ) ? (string) $gate['gate'] : 'n/a' ),
-			(int) ( isset( $gate['missing_en'] ) ? $gate['missing_en'] : 0 ),
-			(int) ( isset( $gate['eligible_public_pt'] ) ? $gate['eligible_public_pt'] : 0 )
+			/* translators: %s: deprecated action name. */
+			esc_html(
+				sprintf(
+					'The %s endpoint was retired because it could apply EN translations without a preceding PASS dry run, a digest-bound approval, a lock or an audit record.',
+					self::ACTION
+				)
+			)
 		);
-
-		echo '<table class="widefat striped"><thead><tr><th>Stable key</th><th>PT</th><th>EN</th><th>Action</th><th>Message</th></tr></thead><tbody>';
-
-		foreach ( (array) $report['rows'] as $row ) {
-			printf(
-				'<tr><td><code>%s</code></td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>',
-				esc_html( (string) $row['stable_key'] ),
-				$row['pt_id'] ? '#' . (int) $row['pt_id'] : '—',
-				$row['en_id'] ? '#' . (int) $row['en_id'] : '—',
-				esc_html( (string) $row['action'] ),
-				esc_html( (string) $row['message'] )
-			);
-		}
-
-		echo '</tbody></table>';
+		echo '</p><p>';
+		printf(
+			/* translators: %s: replacement action name. */
+			esc_html(
+				sprintf(
+					'Use Tools -> Translation Automation (%s) instead. It is the only supported production entry point, and it performs no writes at all.',
+					self::REPLACEMENT_ACTION
+				)
+			)
+		);
+		echo '</p></div></div>';
 	}
 }

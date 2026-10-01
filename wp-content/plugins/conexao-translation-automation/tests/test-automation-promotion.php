@@ -46,8 +46,25 @@ assert_true(
 );
 
 // The promoted plugin still declares its own version and requires PHP 8.
+//
+// STAGE 8: this assertion used to pin the literal string 'Version: 1.1.0'.
+// Stage 8 bumped the engine to 1.2.0 to record the endpoint closure, and a
+// hardcoded literal would have made an ordinary, correct version bump look
+// like a regression. It now asserts the thing that actually matters -- that
+// the header and the VERSION constant AGREE, and that a version is declared
+// at all. That is strictly stronger than comparing one literal to one string:
+// it catches a header bumped without the constant (and vice versa), which the
+// old check could not.
 $engine_header = (string) file_get_contents( CONEXAO_TESTS_WP_ROOT . '/wp-content/plugins/conexao-translation-rollout/conexao-translation-rollout.php' );
-assert_true( false !== strpos( $engine_header, 'Version: 1.1.0' ), 'the promoted engine declares its version' );
+preg_match( '/^\s*\*\s*Version:\s*(?P<v>[0-9][0-9A-Za-z.\-+]*)\s*$/m', $engine_header, $engine_version_match );
+$engine_declared = isset( $engine_version_match['v'] ) ? $engine_version_match['v'] : '';
+
+assert_true( '' !== $engine_declared, 'the promoted engine declares a version' );
+assert_true(
+	defined( 'CONEXAO_TRANSLATION_ROLLOUT_VERSION' ) && $engine_declared === CONEXAO_TRANSLATION_ROLLOUT_VERSION,
+	'the engine header version and the VERSION constant agree (header=' . $engine_declared
+		. ', constant=' . ( defined( 'CONEXAO_TRANSLATION_ROLLOUT_VERSION' ) ? CONEXAO_TRANSLATION_ROLLOUT_VERSION : 'undefined' ) . ')'
+);
 
 // ---------------------------------------------------------------------------
 // 2. Separation: no cron, no endpoint, no provider, no second engine

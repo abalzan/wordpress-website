@@ -41,6 +41,13 @@ it would hide a real apply-capable production surface from a reader who greps
 for `admin_post_`. It is therefore reported as an operator decision for
 Stage 8, not asserted as either safe or unsafe by this gate.
 
+**Stage 8 resolved that decision.** The endpoint was CLOSED (hard-fail
+deprecation stub, no engine reachable from it) and the full control-plane
+contract now lives in `tests/scripts/verify-stage8-control-plane.py`, which
+asserts the closure structurally. This gate keeps the declaration so the
+action name stays watched: if it is renamed or removed, this gate fails closed
+and prompts a re-decision.
+
 Static only. No WordPress, no network, no production.
 """
 
@@ -62,11 +69,17 @@ APPROVED_FILE = ENTRY_FILE
 
 # A pre-existing, apply-capable endpoint in a DIFFERENT component. Declared,
 # not asserted clean and not asserted forbidden -- see the module docstring.
+# STAGE 8: this surface is now CLOSED (hard-fail deprecation stub). The
+# declaration is RETAINED deliberately: the action name must stay watched, so
+# renaming or removing it fails this gate closed rather than passing unnoticed.
+# The structural proof of the closure is verify-stage8-control-plane.py.
 DEFERRED_ENGINE_SURFACES = {
     "conexao_translation_rollout_run": (
-        "conexao-translation-rollout (Stage H, pre-existing). Apply-capable "
-        "operator endpoint with its own capability + nonce checks. OUT of the "
-        "automation contract; an operator decision for Stage 8."
+        "conexao-translation-rollout (Stage H, pre-existing). CLOSED in Stage 8: "
+        "the handler now refuses unconditionally (HTTP 410) and cannot reach "
+        "Engine::run(), a stage run_callback, or any apply mode. Replacement: "
+        "conexao-translation-automation's "
+        "admin_post_conexao_translation_automation_proof."
     ),
 }
 

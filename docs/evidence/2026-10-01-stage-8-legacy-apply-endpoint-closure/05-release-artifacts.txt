@@ -1,0 +1,62 @@
+tag v2026.10.01
+conexao-data-model                 1.6.1    a883b6d179a94155 files=   6 bytes=15846
+conexao-content                    1.0.1    d0ce005a3818674c files=   5 bytes=22485
+conexao-admin-ux                   1.0.7    aded30ec34b29543 files=  14 bytes=75457
+conexao-event-runtime              1.2.2    515a416144e4f258 files=   7 bytes=18482
+conexao-event-importer             1.7.1    551ef74cdf161b63 files=  42 bytes=177550
+conexao-leisure-migration          2.1.0    e91eb8b09bd69710 files=   7 bytes=28967
+conexao-sponsor-migration          1.1.0    b4d4e52562bee987 files=   6 bytes=21738
+conexao-translation-rollout        1.2.0    ce7b2a0a1942d104 files=   4 bytes=12118
+conexao-translation-automation     0.3.0    f8cf8ec2b9a7d2f5 files=  20 bytes=96059
+conexao-br-irlanda                 1.0.1    34e65e0576382b58 files= 115 bytes=5895843
+totals {'artifacts': 10, 'built': 10, 'files': 226, 'bytes': 6364545}
+
+
+DETERMINISM: two independent builds -> 10/10 byte-identical
+release-manifest.py --verify -> exit 0
+verify-stage8-release-consistency.py -> 52 passed, 0 failed
+
+## NOTE ON THE ZIP TIMESTAMP (recorded, not hidden)
+
+The build stamps each archive with the NEWEST source mtime
+(scripts/lib/zip-build.sh), so a ZIP's sha256 legitimately changes when a file
+is edited, even when its CONTENT does not. Two builds of an UNCHANGED tree are
+byte-identical (c1 vs c2: 10/10); a build after an edit differs by design.
+
+Content equality was verified directly rather than inferred from the hash:
+  zip content compare, build-a vs final  -> same 22-entry file list,
+                                            0 files with differing content
+So the automation artifact hash moving from b828b642... to f8cf8ec2... is a
+timestamp artefact of its test file being touched, NOT a shipped-code change:
+the automation plugin's shipped-file tree digest is UNCHANGED at
+  38ff2c3f29fed3d5b85a3d9f17be4942882f2d9c0827dd280931f469908383a8
+(only tests/test-automation-promotion.php changed, and tests/ is excluded from
+the release build by scripts/lib/zip-build.sh).
+
+## STAGE 7 FINDING, ELIMINATED
+  Before: dist/release.json recorded conexao-translation-automation at 0.2.0
+          while the plugin header said 0.3.0.
+  Now:    header 0.3.0 == release.json 0.3.0 == version inside the ZIP 0.3.0.
+          Asserted permanently by tests/scripts/verify-stage8-release-consistency.py
+          and reproduced as negative proof 15.
+
+## PERMANENT-GATE AGGREGATE: the "1 new" i18n violation is NOT a Stage 8 regression
+
+`python3 scripts/verify-permanent-gates.py` reports i18n_freshness as
+3 violations = "2 pre-existing, 1 new". The "new" one is `conexao-content`.
+
+Cause, verified rather than assumed:
+  - tests/baseline/permanent-gates.json lists 6 components for i18n_freshness and
+    does NOT include conexao-content, so the aggregate classifies that stale
+    catalogue as new relative to the Stage L baseline.
+  - Stage 8 modified NO file in conexao-content or in the theme:
+      git diff --stat -- wp-content/plugins/conexao-content wp-content/themes
+      -> (empty)
+  - The identical `conexao-content ... by 76025s` staleness was already present
+    before any Stage 8 edit.
+
+The baseline is REPORTING-ONLY (its own comment: "It NEVER SUPPRESSES A
+FAILURE... It exists for reporting only"). It was deliberately NOT edited to
+reclassify the violation, because that would be exactly the "weaken a gate to
+obtain green" move this stage forbids. The 3 stale catalogues remain red and are
+carried forward as a pre-existing condition.

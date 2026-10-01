@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Conexao Translation Rollout Engine
- * Description: Shared, reusable translation-rollout engine implementing the content-change contract (inventory, manifest, dry-run plan, snapshot, apply, verify + numeric gate, rollback/remove) for one-shot EN translation stages. Stages register a small declarative config plus a versioned authored data manifest; the engine owns all orchestration. A stage whose records are filed under a TRANSLATED taxonomy may additionally declare the optional taxonomy_callback / taxonomy_gate_callback keys, so the engine still owns the term-creation step instead of each stage re-implementing a lifecycle. No frontend behaviour.
- * Version: 1.1.0
+ * Description: Shared, reusable translation-rollout engine implementing the content-change contract (inventory, manifest, dry-run plan, snapshot, apply, verify + numeric gate, rollback/remove) for one-shot EN translation stages. Stages register a small declarative config plus a versioned authored data manifest; the engine owns all orchestration. A stage whose records are filed under a TRANSLATED taxonomy may additionally declare the optional taxonomy_callback / taxonomy_gate_callback keys, so the engine still owns the term-creation step instead of each stage re-implementing a lifecycle. As of 1.2.0 the engine ships NO admin mutation entry point: the former admin_post_conexao_translation_rollout_run endpoint is a closed deprecation stub, and the single production control plane is conexao-translation-automation's admin_post_conexao_translation_automation_proof. No frontend behaviour.
+ * Version: 1.2.0
  * Requires PHP: 8.0
  * Text Domain: conexao-translation-rollout
  *
@@ -13,7 +13,7 @@ defined( 'ABSPATH' ) || exit;
 
 define( 'CONEXAO_TRANSLATION_ROLLOUT_FILE', __FILE__ );
 define( 'CONEXAO_TRANSLATION_ROLLOUT_DIR', plugin_dir_path( __FILE__ ) );
-define( 'CONEXAO_TRANSLATION_ROLLOUT_VERSION', '1.1.0' );
+define( 'CONEXAO_TRANSLATION_ROLLOUT_VERSION', '1.2.0' );
 
 require_once CONEXAO_TRANSLATION_ROLLOUT_DIR . 'includes/class-conexao-translation-rollout-engine.php';
 require_once CONEXAO_TRANSLATION_ROLLOUT_DIR . 'includes/class-conexao-translation-rollout-admin.php';

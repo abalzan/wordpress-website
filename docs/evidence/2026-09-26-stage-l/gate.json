@@ -1,7 +1,7 @@
 {
   "stage": "L — permanent invariant gates",
-  "generated_at": "2026-09-30T17:44:36Z",
-  "repository_sha": "9dc92325ed50d58b8de5f3ac97a005615e99b068",
+  "generated_at": "2026-10-01T10:08:03Z",
+  "repository_sha": "71438ca639642222e718f636395cdf2ac803b4b0",
   "status": "fail",
   "gates": {
     "taxonomy_policy": {
@@ -439,15 +439,15 @@
       "prerequisites": [],
       "details": [],
       "output_tail": [
-        "== Stage L static cache-scoping gate (token scan) ==",
-        "   repo: /home/andrei/IdeaProjects/wordpress-website",
         "   scope: wp-content/themes/conexao-br-irlanda",
         "   scope: wp-content/plugins/conexao-data-model",
         "   scope: wp-content/plugins/conexao-content",
         "   scope: wp-content/plugins/conexao-admin-ux",
         "   scope: wp-content/plugins/conexao-event-runtime",
+        "   scope: wp-content/plugins/conexao-translation-rollout",
+        "   scope: wp-content/plugins/conexao-translation-automation",
         "",
-        "   scanned 106 production PHP files (PHP token_get_all)",
+        "   scanned 129 production PHP files (PHP token_get_all)",
         "   unscoped conexao_* cache keys: 0",
         "2 passed, 0 failed",
         "GATE-RESULT {\"gate\": \"cache_scoping_static\", \"status\": \"pass\", \"passed\": 2, \"failed\": 0, \"violations\": 0, \"details\": []}"
@@ -597,13 +597,13 @@
       "prerequisites": [],
       "details": [],
       "output_tail": [
-        "   historical/audit documents without the marker (reported, not gated): 120",
+        "   historical/audit documents without the marker (reported, not gated): 126",
         "",
         "   -- §9.2 no root-level report/evidence file --",
         "   root files scanned: 17, offenders: 0",
         "",
         "   -- §9.2 AGENTS.md remains orientation --",
-        "   AGENTS.md lines: 198",
+        "   AGENTS.md lines: 233",
         "",
         "   -- authoritative sources referenced by the governance layer --",
         "   authoritative sources checked: 7",
