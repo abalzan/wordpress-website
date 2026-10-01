@@ -1,0 +1,9 @@
+=== STAGE 11 §33/§36 BASELINE CLASSIFICATION ===
+
+Stage 10 baseline failing suites (docs/evidence/2026-10-01-stage-10-bounded-expansion/01-baseline-full-test-run.txt):
+  [FAIL] theme/conexao-br-irlanda/test-en-jobs-shared-slug.php — 38 passed, 1 failed (exit 1)
+  [FAIL] theme/conexao-br-irlanda/test-leisure-card-excerpt-language.php — 40 passed, 5 failed (exit 1)
+  [FAIL] tests/scripts/verify-i18n-freshness.py (exit 1)
+  [FAIL] tests/acceptance/verify-routing-http.py (exit 1)
+
+Stage 10 baseline count: 4

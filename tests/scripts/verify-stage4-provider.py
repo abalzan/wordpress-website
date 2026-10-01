@@ -30,15 +30,15 @@ ENGINE = (
     REPO_ROOT
     / "wp-content/plugins/conexao-translation-rollout/includes/class-conexao-translation-rollout-engine.php"
 )
-// STAGE 11: the pin moved ONCE, deliberately. Model A (true subset
-// execution) requires the engine to accept an approved operation scope.
-// The change is additive and confined to scope handling: two pure methods
-// (narrow_manifest, planned_identities), one optional $args['scope'] key
-// applied AFTER full-manifest validation, and a 'scope' key added to the
-// two existing return payloads. No lifecycle stage was replaced,
-// reordered or bypassed. Pre-Stage-11 digest (the Stage 11 §33 starting
-// record): baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4
-ENGINE_SHA256 = "31714cb857daa6bf88f02db5bbce0672817ebf0f19ffabf1588a2e87c75cd53e"
+# STAGE 11: the pin moved ONCE, deliberately. Model A (true subset
+# execution) requires the engine to accept an approved operation scope.
+# The change is additive and confined to scope handling: two pure methods
+# (narrow_manifest, planned_identities), one optional $args['scope'] key
+# applied AFTER full-manifest validation, and a 'scope' key added to the
+# two existing return payloads. No lifecycle stage was replaced,
+# reordered or bypassed. Pre-Stage-11 digest (the Stage 11 §33 starting
+# record): baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4
+ENGINE_SHA256 = "264cc6c4e7b4214f2bc30436afb077d308b1897de444431c5c3a331f08116912"
 
 # The ONE file permitted to hold the provider implementation and the ONE
 # outbound call it is allowed to make. Designated, not inferred.
@@ -215,7 +215,16 @@ def main() -> int:
     # The invariant is unchanged in substance and narrowed in scope: no REST
     # route, no AJAX handler and no anonymous admin handler in ANY file, and an
     # admin entry point permitted only in the protected trigger file.
-    admin_allowlist = {"class-conexao-translation-automation-admin-trigger.php"}
+    # STAGE 11: the batch-control capability declares its own action and its own
+    # screen, in its own file. It is DECLARED and NOT COMMISSIONED — its
+    # register() is never called from the bootstrap — so nothing became
+    # reachable. The allow-list is narrowed to the DECLARED file set rather
+    # than loosened: a THIRD admin surface still fails closed here. The
+    # anonymous twin and every AJAX/REST surface stay forbidden, unchanged.
+    admin_allowlist = {
+        "class-conexao-translation-automation-admin-trigger.php",
+        "class-conexao-translation-automation-batch-control.php",
+    }
 
     for name, body in bodies.items():
         hits = [

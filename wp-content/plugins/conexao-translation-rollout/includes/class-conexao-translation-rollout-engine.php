@@ -271,9 +271,9 @@ final class Conexao_Translation_Rollout_Engine {
 			);
 		}
 
-		$records   = $manifest['records'];
+		$records    = $manifest['records'];
 		$identities = array();
-		$seen      = array();
+		$seen       = array();
 
 		foreach ( $scope as $identity ) {
 			if ( ! is_string( $identity ) || '' === trim( $identity ) ) {
@@ -312,7 +312,7 @@ final class Conexao_Translation_Rollout_Engine {
 		// The narrowed record set is built FRESH rather than filtered in place,
 		// so it is exactly the approved identities, in the approved order, with
 		// nothing carried over from the authored manifest.
-		$narrowed           = $manifest;
+		$narrowed            = $manifest;
 		$narrowed['records'] = array();
 
 		foreach ( $identities as $identity ) {
@@ -322,10 +322,10 @@ final class Conexao_Translation_Rollout_Engine {
 		return array(
 			'manifest' => $narrowed,
 			'report'   => array(
-				'applied'       => true,
-				'authored'      => array_keys( $records ),
+				'applied'        => true,
+				'authored'       => array_keys( $records ),
 				'authored_count' => count( $records ),
-				'approved'      => $identities,
+				'approved'       => $identities,
 				'approved_count' => count( $identities ),
 			),
 		);
@@ -1003,7 +1003,7 @@ final class Conexao_Translation_Rollout_Engine {
 				return $narrow;
 			}
 
-			$manifest    = $narrow['manifest'];
+			$manifest     = $narrow['manifest'];
 			$scope_report = $narrow['report'];
 		}
 

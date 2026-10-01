@@ -70,7 +70,7 @@ ENGINE_DIR = REPO_ROOT / "wp-content" / "plugins" / "conexao-translation-rollout
 # was the Stage 8 statement; Stage 11 supersedes it:
 #
 #   from: baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4
-#   to:   31714cb857daa6bf88f02db5bbce0672817ebf0f19ffabf1588a2e87c75cd53e
+#   to:   264cc6c4e7b4214f2bc30436afb077d308b1897de444431c5c3a331f08116912
 #
 # The change is ADDITIVE and confined to scope handling: two new pure methods
 # (`narrow_manifest`, `planned_identities`), one optional `$args['scope']` key
@@ -80,7 +80,7 @@ ENGINE_DIR = REPO_ROOT / "wp-content" / "plugins" / "conexao-translation-rollout
 # required by §33. Verified by tests/scripts/verify-stage11-model-a.py.
 ENGINE_CORE = ENGINE_DIR / "includes" / "class-conexao-translation-rollout-engine.php"
 ENGINE_SHA256_BEFORE_STAGE_11 = "baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4"
-ENGINE_SHA256 = "31714cb857daa6bf88f02db5bbce0672817ebf0f19ffabf1588a2e87c75cd53e"
+ENGINE_SHA256 = "264cc6c4e7b4214f2bc30436afb077d308b1897de444431c5c3a331f08116912"
 ENGINE_DIGEST_OK = (
     ENGINE_CORE.is_file()
     and hashlib.sha256(ENGINE_CORE.read_bytes()).hexdigest() == ENGINE_SHA256
@@ -584,8 +584,20 @@ def main() -> int:
     )
 
     # The decisive one: the declaration must be inert.
+    #
+    # The bootstrap is read only when it EXISTS. A missing file is reported as
+    # a FAILURE rather than crashing the gate, because a static gate that dies
+    # with a traceback proves nothing — and `verify-stage10-batch-boundary.py`
+    # deliberately runs this gate against a PARTIAL throwaway copy.
+    bootstrap_file = PLUGIN_DIR / "conexao-translation-automation.php"
     bootstrap = strip_php_comments(
-        (PLUGIN_DIR / "conexao-translation-automation.php").read_text(encoding="utf-8")
+        bootstrap_file.read_text(encoding="utf-8")
+    ) if bootstrap_file.is_file() else ""
+
+    ok(
+        "the plugin bootstrap is present, so its registrations can be asserted",
+        bootstrap_file.is_file(),
+        f"missing: {bootstrap_file.name}",
     )
     commissioned = [
         spec["file"]

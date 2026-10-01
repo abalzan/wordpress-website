@@ -65,6 +65,16 @@ def fresh_copy() -> pathlib.Path:
             root / "wp-content/plugins/conexao-translation-rollout/includes" / engine_file,
         )
     shutil.copy2(REPO_ROOT / GATE_REL, root / GATE_REL)
+
+    # STAGE 11: the control-plane gate asserts that the batch-control
+    # `register()` is never invoked from the bootstrap. Without the bootstrap in
+    # the copy the gate cannot make that assertion, so the clean state would
+    # fail for an artificial reason — the exact failure mode these proofs exist
+    # to avoid.
+    shutil.copy2(
+        REPO_ROOT / "wp-content/plugins/conexao-translation-automation/conexao-translation-automation.php",
+        root / "wp-content/plugins/conexao-translation-automation/conexao-translation-automation.php",
+    )
     return root
 
 
@@ -235,6 +245,10 @@ def main() -> int:
 
     print("\n-- a new batch file cannot escape the scan --")
 
+    # STAGE 11: the shipped batch layer now legitimately includes the
+    # DECLARED batch-control file, so the injected violation must be a THIRD
+    # file rather than a re-use of an existing name. The name below is still
+    # unnamed in the gate, which is exactly the property under test.
     fresh_copy()
     (WORK / "repo" / PLUGIN_REL / "class-conexao-translation-automation-batch-secret.php").write_text(
         "<?php\nfunction secret_batch_helper() { return wp_insert_post( array() ); }\n",

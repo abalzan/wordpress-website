@@ -80,6 +80,30 @@ final class Conexao_Translation_Automation_Batch_Executor {
 	const STOP_BATCH_INVALIDATED       = 'batch_invalidated';
 
 	/**
+	 * Test-only seam: substitutes the engine's DECLARED scope evidence.
+	 *
+	 * A caller cannot supply this — it is a static, explicitly-injected reader
+	 * with no request path into it, and the executor still recomputes the
+	 * executed scope from the engine's REAL plan immediately afterwards. It
+	 * exists so the negative proofs can present a declared scope that disagrees
+	 * with the approval, which is otherwise impossible to construct now that
+	 * the engine genuinely honours the approved scope.
+	 *
+	 * @var callable|null
+	 */
+	private static $scope_evidence_reader = null;
+
+	/**
+	 * Install the scope-evidence seam. Test support only; null restores it.
+	 *
+	 * @param callable|null $reader Callable receiving ( declared, proof ).
+	 * @return void
+	 */
+	public static function set_scope_evidence_reader( $reader ): void {
+		self::$scope_evidence_reader = is_callable( $reader ) ? $reader : null;
+	}
+
+	/**
 	 * Execution outcomes, as seen by the caller.
 	 *
 	 * @var string
@@ -330,7 +354,7 @@ final class Conexao_Translation_Automation_Batch_Executor {
 		// requires the executed scope to be RECOMPUTED from the engine's own
 		// resulting plan rather than asserted by the caller:
 		//
-		//   executed = Engine::planned_identities( proof['plan'] )
+		// executed = Engine::planned_identities( proof['plan'] )
 		//
 		// - extra   -> a planned identity the approval does not name  (widen)
 		// - missing -> an approved identity the engine never planned   (shrink)
@@ -368,6 +392,19 @@ final class Conexao_Translation_Automation_Batch_Executor {
 		// declare, and is refused on the same grounds.
 		$engine_scope = isset( $proof['scope'] ) && is_array( $proof['scope'] ) ? $proof['scope'] : array();
 
+		// TEST SEAM ONLY. A caller cannot supply this: the executor reads the
+		// engine's own report, and only this explicitly-injected reader may
+		// substitute it. It exists so the negative proofs can present a plan that
+		// claims a scope the approval does not cover, which is otherwise
+		// impossible to construct against an engine that now honours the scope.
+		if ( is_callable( self::$scope_evidence_reader ) ) {
+			$engine_scope = (array) call_user_func( self::$scope_evidence_reader, $engine_scope, $proof );
+		}
+
+		// The injected identities must be consistent with the plan the engine
+		// actually returned, otherwise the test would be asserting against a
+		// fiction. The seam may therefore only change the DECLARED scope, and
+		// the recomputed check below still runs on the real plan.
 		if ( empty( $engine_scope['applied'] ) ) {
 			return self::stopped(
 				$batch_id,
@@ -400,7 +437,10 @@ final class Conexao_Translation_Automation_Batch_Executor {
 				$batch_id,
 				self::STOP_BATCH_INVALIDATED,
 				'engine_scope_evidence_mismatch',
-				array( 'declared' => $engine_executed, 'recomputed' => $recomputed )
+				array(
+					'declared'   => $engine_executed,
+					'recomputed' => $recomputed,
+				)
 			);
 		}
 
@@ -409,7 +449,10 @@ final class Conexao_Translation_Automation_Batch_Executor {
 				$batch_id,
 				self::STOP_BATCH_INVALIDATED,
 				'executed_scope_equals_approved_scope',
-				array( 'executed' => $engine_executed, 'approved' => $approved_ids )
+				array(
+					'executed' => $engine_executed,
+					'approved' => $approved_ids,
+				)
 			);
 		}
 
@@ -634,18 +677,15 @@ final class Conexao_Translation_Automation_Batch_Executor {
 	}
 
 	/**
-	 * The approved identities the engine's own plan never covered (Stage 11).
+	 * Every identity the engine's plan covers, across all four categories.
 	 *
-	 * The counterweight to `plan_outside()`. Stage 10 only proved the widening
-	 * direction, so a plan that silently covered a SUBSET of the approval would
-	 * have passed. §8 forbids that: an approved operation that cannot be executed
-	 * safely invalidates the batch instead of quietly disappearing from it.
+	 * The pure, engine-derived half of the exact-scope proof (§5). It is used
+	 * twice: as the recomputation the executor compares the engine's DECLARED
+	 * scope against, and as the basis of `plan_missing()`. Both are engine
+	 * evidence — the plan is what the engine built — rather than anything a
+	 * caller supplied.
 	 *
-	 * Read from the engine's plan categories, so it is engine evidence rather
-	 * than a caller assertion.
-	 *
-	 * @param array $plan       The engine's dry-run plan.
-	 * @param array $identities The approved identities.
+	 * @param array $plan The engine's dry-run plan.
 	 * @return array<int,string>
 	 */
 	private static function plan_identities( array $plan ): array {
@@ -872,10 +912,10 @@ final class Conexao_Translation_Automation_Batch_Executor {
 			'plan_exceeds_approved_operation_set'        => self::STOP_BATCH_INVALIDATED,
 			// Stage 11: the no-shrinking and exact-equality refusals. Each
 			// invalidates the whole batch rather than applying a remainder.
-			'plan_short_of_approved_operation_set'    => self::STOP_BATCH_INVALIDATED,
-			'engine_scope_not_applied'                 => self::STOP_BATCH_INVALIDATED,
-			'engine_scope_evidence_mismatch'           => self::STOP_BATCH_INVALIDATED,
-			'executed_scope_equals_approved_scope'     => self::STOP_BATCH_INVALIDATED,
+			'plan_short_of_approved_operation_set'       => self::STOP_BATCH_INVALIDATED,
+			'engine_scope_not_applied'                   => self::STOP_BATCH_INVALIDATED,
+			'engine_scope_evidence_mismatch'             => self::STOP_BATCH_INVALIDATED,
+			'executed_scope_equals_approved_scope'       => self::STOP_BATCH_INVALIDATED,
 			'conexao_automation_batch_operation_unexpected_mutation' => self::STOP_UNEXPECTED_MUTATION,
 			'conexao_automation_batch_operation_apply_failed' => self::STOP_APPLY_FAILURE,
 			'dry_run_not_pass'                           => self::STOP_BUDGET_REFUSED,

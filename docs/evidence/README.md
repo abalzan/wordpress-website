@@ -191,3 +191,27 @@ nonce, a cookie, an authorization header or a `.env` file.
 Cited by `docs/reports/2026-10-01-stage-10-bounded-expansion.md`.
 
 _Last verified: 2026-10-01 by Stage 10 — bounded multi-record expansion controls (`PASS WITH CONDITIONS`)_
+
+---
+
+## `2026-10-01-stage-11-model-a-scope-contract-and-batch-control/`
+
+| File | Content |
+|---|---|
+| `00-engine-baseline.txt` | the shared engine's SHA-256 recorded **before** any Stage 11 edit |
+| `01-scope-gap-trace.txt` | the §3 trace: the exact line where the approved subset was lost |
+| `02-model-a-decision-gate.txt` | the §2 feasibility path and its ten answers, written before implementation |
+| `03-model-a-suite.txt` | the 145-assertion Model A suite |
+| `04-stage10-regression.txt` | the Stage 10 suite re-run after Stage 11 (243 assertions) |
+| `05-control-plane-and-gates.txt` | every gate re-run after the change |
+| `06-engine-integrity.txt` | §33 starting digest, ending digest, and the intentional diff |
+| `07-release-consistency.txt` | §34 two independent builds, artifact hashes, release manifest |
+| `08-full-test-run.txt` | §36 the full suite after the change |
+| `09-baseline-classification.txt` | §35 the baseline failing suites, separately classified |
+
+No file in this directory contains a credential, an application password, a
+nonce, a cookie, an authorization header or a `.env` file.
+
+Cited by `docs/reports/2026-10-01-stage-11-model-a-scope-contract-and-batch-control.md`.
+
+_Last verified: 2026-10-01 by Stage 11 — Model A scope contract and batch control (`PASS WITH CONDITIONS`)_

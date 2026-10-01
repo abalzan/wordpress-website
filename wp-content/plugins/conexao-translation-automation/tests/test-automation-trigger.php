@@ -516,14 +516,16 @@ assert_true(
 	'the TRIGGER still makes no outbound request of any kind' . ( $trigger_network ? ': ' . implode( ', ', $trigger_network ) : '' )
 );
 
-// (h) The engine is still byte-identical.
+// (h) The engine moved ONCE, in Stage 11, and only to accept an approved scope.
+// See the Stage 11 justification recorded at the top of this file. The pre-
+// Stage-11 value is baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4.
 assert_equals(
-	'baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4',
+	'264cc6c4e7b4214f2bc30436afb077d308b1897de444431c5c3a331f08116912',
 	hash_file(
 		'sha256',
 		CONEXAO_TESTS_WP_ROOT . '/wp-content/plugins/conexao-translation-rollout/includes/class-conexao-translation-rollout-engine.php'
 	),
-	'the shared engine remains byte-identical to the pre-Stage-1 digest'
+	'the shared engine matches the post-Stage-11 scope-aware digest'
 );
 
 // (i) Every declared class is one of this plugin's own boundary classes.

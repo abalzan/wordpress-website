@@ -31,15 +31,15 @@ ENGINE = (
 
 # Pinned by the Stage 1/Stage 2 integrity invariant and re-asserted by Stages
 # 3, 4 and 6. The engine is NOT modified by Stage 6.
-// STAGE 11: the pin moved ONCE, deliberately. Model A (true subset
-// execution) requires the engine to accept an approved operation scope.
-// The change is additive and confined to scope handling: two pure methods
-// (narrow_manifest, planned_identities), one optional $args['scope'] key
-// applied AFTER full-manifest validation, and a 'scope' key added to the
-// two existing return payloads. No lifecycle stage was replaced,
-// reordered or bypassed. Pre-Stage-11 digest (the Stage 11 §33 starting
-// record): baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4
-ENGINE_SHA256 = "31714cb857daa6bf88f02db5bbce0672817ebf0f19ffabf1588a2e87c75cd53e"
+# STAGE 11: the pin moved ONCE, deliberately. Model A (true subset
+# execution) requires the engine to accept an approved operation scope.
+# The change is additive and confined to scope handling: two pure methods
+# (narrow_manifest, planned_identities), one optional $args['scope'] key
+# applied AFTER full-manifest validation, and a 'scope' key added to the
+# two existing return payloads. No lifecycle stage was replaced,
+# reordered or bypassed. Pre-Stage-11 digest (the Stage 11 §33 starting
+# record): baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4
+ENGINE_SHA256 = "264cc6c4e7b4214f2bc30436afb077d308b1897de444431c5c3a331f08116912"
 
 ENTRY = PLUGIN_DIR / "includes" / "class-conexao-translation-automation-admin-trigger.php"
 PROVIDER = PLUGIN_DIR / "includes" / "class-conexao-translation-automation-provider-openai.php"
@@ -120,10 +120,32 @@ def main() -> int:
         for f in sorted((PLUGIN_DIR / "includes").glob("*.php"))
         if re.search(r"\badmin_post_|\badmin_menu", read(f))
     ]
+    # -- 3. Exactly one admin surface, in exactly one file. -----------------
+    #
+    # STAGE 11 SUPERSESSION. Stage 6's contract named one file. Stage 11 adds
+    # the batch-control capability, which declares its own action and screen in
+    # exactly ONE further file — and is NOT commissioned, so it is not
+    # reachable. The assertion is narrowed to the DECLARED file set rather than
+    # removed, so a THIRD admin surface still fails closed. The anonymous twin
+    # and every AJAX/REST surface remain forbidden, unchanged.
+    DECLARED_ADMIN_FILES = [
+        "class-conexao-translation-automation-admin-trigger.php",
+        "class-conexao-translation-automation-batch-control.php",
+    ]
     ok(
-        "exactly one file owns the admin surface",
-        surfaces == ["class-conexao-translation-automation-admin-trigger.php"],
+        f"exactly {len(DECLARED_ADMIN_FILES)} declared files own the admin surface",
+        surfaces == DECLARED_ADMIN_FILES,
         ", ".join(surfaces),
+    )
+
+    # The declared batch-control surface must remain DORMANT: its register() is
+    # present in its own file but never invoked by the bootstrap. `read()`
+    # strips comments, so the commented-out example in the bootstrap does not
+    # count as an invocation — a comment is not a call.
+    bootstrap_code = read(PLUGIN_DIR / "conexao-translation-automation.php")
+    ok(
+        "the batch-control register() is never invoked from the bootstrap (§30)",
+        "Batch_Control::register" not in bootstrap_code,
     )
 
     # -- 4. The entry point is POST-only. ----------------------------------

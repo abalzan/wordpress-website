@@ -9,7 +9,7 @@
 | **Build** | yes |
 | **Compose mount** | yes |
 | **Dependencies** | `conexao-translation-rollout` |
-| **Version** | 0.3.0 (authoritative source: `wp-content/plugins/conexao-translation-automation/conexao-translation-automation.php` header) |
+| **Version** | 0.4.0 (authoritative source: `wp-content/plugins/conexao-translation-automation/conexao-translation-automation.php` header) |
 | **Registry** | [`plugins.json`](../../plugins.json) |
 
 > **Production platform plugin.** Part of the production steady state.
@@ -387,21 +387,64 @@ human decision.
   in the control-plane gate is explicitly empty, so a future batch endpoint must
   be declared there first.
 
-### Known contract gap
+### Known contract gap — **CLOSED in Stage 11**
 
-A caller cannot make one shared-engine run cover fewer rows than the stage's own
-authored manifest: every stage's `run_callback` rebuilds its own configuration
-and the engine has no filter. Stage 10 reports this rather than working around
-it. The safety bound is fully enforced and proven; per-operation execution
-granularity is not available until the gap is resolved. See
-`docs/reports/2026-10-01-stage-10-bounded-expansion.md`.
+Stage 10 recorded this gap: *a caller could not make one shared-engine run cover
+fewer rows than the stage's own authored manifest*, because every stage's
+`run_callback` rebuilds its own configuration and the engine had no filter. Stage
+10 reported it rather than working around it.
+
+**Stage 11 closes it** with `MODEL_A — TRUE SUBSET EXECUTION`. See
+`docs/reports/2026-10-01-stage-11-model-a-scope-contract-and-batch-control.md`.
+
+---
+
+## Stage 11 — Model A scope contract and batch control
+
+### True subset execution
+
+The approved subset now reaches the engine, which plans **exactly** it. The
+integration point is one window inside the existing lifecycle: after
+`validate_manifest()` (over the **complete** authored manifest) and before
+`collect_states()` (the first function that reads it). Every downstream stage —
+inventory, plan, snapshot, apply, PT-drift, verification, the numeric gate — is
+the existing code, **unmodified**, operating on a smaller manifest.
+
+* The engine change is **purely additive: 190 insertions, 0 deletions**. Two new
+  pure methods (`narrow_manifest`, `planned_identities`) and one optional
+  `$args['scope']` key. Omitting `scope` leaves every pre-Stage-11 caller
+  byte-identical.
+* **No stage, adapter, provider, change detector, audit or trigger changed.** All
+  four real `run_callback`s forward `$args` verbatim, so the scope reaches the
+  engine with no stage change at all.
+* Anti-widening is **structural**: narrowing can only remove rows, and an
+  identity the stage does not author is a refusal rather than a filter.
+* Anti-shrinking is enforced too — Stage 10 proved only widening.
+* `approved scope == executed scope` is proven in **both** directions, with the
+  executed side recomputed **twice from the engine's own plan**. No
+  caller-supplied boolean establishes it.
+
+### Batch control — declared, NOT commissioned
+
+* Action: `conexao_translation_automation_batch`; POST-only; authenticated;
+  `manage_options`; its own nonce action.
+* Five explicit actions — `prepare`, `approve`, `execute`, `abort`,
+  `clear_emergency_stop` — and **no generic `mode=apply`**.
+* Accepts exactly two fields. `operations`, `batch_size`, `environment`,
+  `plan_digest` and `approval_digest` are **refused outright**, not ignored; the
+  batch is resolved from storage.
+* `is_commissioned()` is **`false`** and `register()` is never called from the
+  bootstrap. `BATCH_CONTROL_SURFACES` in the control-plane gate declares the
+  surface and `commissioned: false`, so commissioning it later is a deliberate,
+  gate-visible change.
 
 ### Tests
 
 | Suite | Assertions |
 |---|---|
-| `test-automation-batch.php` | **243** (17 required fixtures) |
+| `test-automation-model-a.php` | **145**, 0 failed |
+| `test-automation-batch.php` | **243**, 0 failed (after Stage 11) |
 | `tests/scripts/verify-stage10-batch-boundary.py` | **20 injected-negative proofs, 0 missed** |
-| `tests/scripts/verify-stage8-control-plane.py` | 90 -> **141** after the Stage 10 extension |
+| `tests/scripts/verify-stage8-control-plane.py` | 141 -> **149** |
 
-_Last verified: 2026-10-01 by Stage 10 — bounded multi-record expansion controls_
+_Last verified: 2026-10-01 by Stage 11 — Model A scope contract and batch control_

@@ -1,0 +1,55 @@
+=== STAGE 11 §36 FULL TEST RUN (AFTER) ===
+
+Suites passing: 92
+Suites failing: 4
+
+--- failing suites ---
+[FAIL] theme/conexao-br-irlanda/test-en-jobs-shared-slug.php — 38 passed, 1 failed (exit 1)
+[FAIL] theme/conexao-br-irlanda/test-leisure-card-excerpt-language.php — 40 passed, 5 failed (exit 1)
+[FAIL] tests/scripts/verify-i18n-freshness.py (exit 1)
+[FAIL] tests/acceptance/verify-routing-http.py (exit 1)
+
+--- the Stage 10 baseline had exactly these four, unchanged ---
+[FAIL] theme/conexao-br-irlanda/test-en-jobs-shared-slug.php — 38 passed, 1 failed (exit 1)
+[FAIL] theme/conexao-br-irlanda/test-leisure-card-excerpt-language.php — 40 passed, 5 failed (exit 1)
+[FAIL] tests/scripts/verify-i18n-freshness.py (exit 1)
+[FAIL] tests/acceptance/verify-routing-http.py (exit 1)
+
+--- automation suites ---
+[PASS] plugin/conexao-translation-automation/test-automation-admin-trigger.php — 109 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-apply-safety.php — 107 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-audit.php — 80 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-batch.php — 243 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-boundary.php — 148 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-change-detection.php — 108 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-hooks.php — 50 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-lock.php — 51 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-model-a.php — 145 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-promotion.php — 17 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-provider-implementation.php — 144 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-provider.php — 222 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-translation-plan.php — 157 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-transport-shape.php — 64 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-trigger.php — 102 passed, 0 failed
+
+--- rollout engine suites ---
+[PASS] plugin/conexao-translation-rollout/test-future-stage-smoke.php — 13 passed, 0 failed
+[PASS] plugin/conexao-translation-rollout/test-legacy-apply-endpoint-closure.php — 36 passed, 0 failed
+[PASS] plugin/conexao-translation-rollout/test-rollout-failure-proofs.php — 12 passed, 0 failed
+[PASS] plugin/conexao-translation-rollout/test-translation-rollout-engine.php — 36 passed, 0 failed
+
+--- script contract gates ---
+[PASS] tests/scripts/verify-agent-governance.py
+[PASS] tests/scripts/verify-cache-key-scoping.py
+[PASS] tests/scripts/verify-documentation-drift.py
+[FAIL] tests/scripts/verify-i18n-freshness.py (exit 1)
+[PASS] tests/scripts/verify-release-integrity.py
+[PASS] tests/scripts/verify-script-conventions.py
+[PASS] tests/scripts/verify-stage10-batch-boundary.py
+[PASS] tests/scripts/verify-stage2-promotion.py
+[PASS] tests/scripts/verify-stage3-automation.py
+[PASS] tests/scripts/verify-stage4-provider.py
+[PASS] tests/scripts/verify-stage6-transport-trigger.py
+[PASS] tests/scripts/verify-stage7-commissioning.py
+[PASS] tests/scripts/verify-stage8-control-plane.py
+[PASS] tests/scripts/verify-stage8-release-consistency.py

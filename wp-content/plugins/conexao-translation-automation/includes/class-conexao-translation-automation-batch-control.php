@@ -122,7 +122,7 @@ final class Conexao_Translation_Automation_Batch_Control {
 	/**
 	 * Overridable seams, so the security contract is testable without HTTP.
 	 *
-	 * @var array<string,callable|null>
+	 * @var array<string,mixed>
 	 */
 	private static $seams = array();
 
@@ -164,14 +164,23 @@ final class Conexao_Translation_Automation_Batch_Control {
 	/**
 	 * Read one seam, falling back to the named default.
 	 *
-	 * @param string   $name    Seam name.
-	 * @param callable $default The real implementation.
+	 * Arguments are FORWARDED to whichever implementation is used, so a seam
+	 * has the same signature as the default it replaces. Without this a seam
+	 * declared with parameters would fatal on a no-argument call.
+	 *
+	 * @param string   $name     Seam name.
+	 * @param callable $fallback The real implementation.
+	 * @param array    $args     Arguments to forward.
 	 * @return mixed
+	 * @throws \RuntimeException Never from this method; declared for the
+	 *                           handlers it forwards to.
 	 */
-	private static function seam( string $name, callable $default ) {
-		return isset( self::$seams[ $name ] ) && is_callable( self::$seams[ $name ] )
-			? call_user_func( self::$seams[ $name ] )
-			: call_user_func( $default );
+	private static function seam( string $name, callable $fallback, array $args = array() ) {
+		if ( isset( self::$seams[ $name ] ) && is_callable( self::$seams[ $name ] ) ) {
+			return call_user_func_array( self::$seams[ $name ], $args );
+		}
+
+		return call_user_func_array( $fallback, $args );
 	}
 
 	/**
@@ -217,10 +226,20 @@ final class Conexao_Translation_Automation_Batch_Control {
 	/**
 	 * Read one request field. Never returns anything else.
 	 *
+	 * ## Nonce verification is a CALLER obligation, enforced structurally
+	 *
+	 * This reads `$_POST` and is deliberately not itself the nonce check. The
+	 * read is confined to `handle_http()`, which passes the values to
+	 * `validate_request()` — and that method verifies the nonce, the
+	 * capability and the method BEFORE any of these values is acted upon. A
+	 * value read here is therefore never used to authorise anything; it is
+	 * only ever the subject of the checks.
+	 *
 	 * @param string $field Field name.
 	 * @return string
 	 */
 	private static function request_field( string $field ): string {
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- verified in validate_request() before use.
 		return isset( $_POST[ $field ] ) ? sanitize_text_field( wp_unslash( $_POST[ $field ] ) ) : '';
 	}
 
@@ -236,7 +255,7 @@ final class Conexao_Translation_Automation_Batch_Control {
 	 */
 	public static function validate_request( array $request ) {
 		// 1. POST only. `admin-post.php` is GET-reachable, so this is enforced
-		//    explicitly rather than assumed.
+		// explicitly rather than assumed.
 		$is_post = self::seam(
 			'is_post',
 			static function (): bool {
@@ -250,7 +269,7 @@ final class Conexao_Translation_Automation_Batch_Control {
 		}
 
 		// 2. Authentication. `admin_post_` is not reachable by an anonymous
-		//    caller, and this is asserted rather than assumed.
+		// caller, and this is asserted rather than assumed.
 		$authed = self::seam(
 			'is_authenticated',
 			static function (): bool {
@@ -263,7 +282,7 @@ final class Conexao_Translation_Automation_Batch_Control {
 		}
 
 		// 3. Capability. A WIDER claim is refused, not downgraded, so the
-		//    mismatch stays visible instead of silently succeeding.
+		// mismatch stays visible instead of silently succeeding.
 		$capability = self::seam(
 			'capability',
 			static function (): string {
@@ -288,7 +307,7 @@ final class Conexao_Translation_Automation_Batch_Control {
 		}
 
 		// 5. Field allow-list. This is what stops a caller supplying an
-		//    operation list, a batch size, an environment or any digest.
+		// operation list, a batch size, an environment or any digest.
 		foreach ( array_keys( $request ) as $field ) {
 			if ( ! in_array( (string) $field, self::ACCEPTED_FIELDS, true ) ) {
 				return new WP_Error(
@@ -315,7 +334,7 @@ final class Conexao_Translation_Automation_Batch_Control {
 		}
 
 		// 7. A batch id, shape-validated only. Its identities, size, digests
-		//    and environment are resolved FROM STORAGE by the handler.
+		// and environment are resolved FROM STORAGE by the handler.
 		$batch_id = isset( $request['conexao_batch_id'] )
 			? strtolower( trim( (string) $request['conexao_batch_id'] ) )
 			: '';
@@ -354,7 +373,7 @@ final class Conexao_Translation_Automation_Batch_Control {
 		// authorises NEW WORK to start, which is a global decision and must not
 		// be reachable by naming a batch.
 		if ( self::ACTION_CLEAR_STOP === $action ) {
-			$stop_handler = self::seam(
+			$handler = self::seam(
 				'clear_stop',
 				static function () {
 					return new WP_Error(
@@ -364,9 +383,9 @@ final class Conexao_Translation_Automation_Batch_Control {
 				}
 			);
 
-			return is_callable( $stop_handler )
-				? $stop_handler()
-				: new WP_Error( self::FAILURE_NOT_APPROVED, 'No handler.' );
+			// The seam returns the RESULT, not a callable: the real handler is
+			// what clears the stop.
+			return $handler;
 		}
 
 		// Every other action resolves the batch FROM STORAGE. The caller names
@@ -375,10 +394,11 @@ final class Conexao_Translation_Automation_Batch_Control {
 			'resolve_batch',
 			static function ( string $id ) {
 				return '' === $id ? null : Conexao_Translation_Automation_Batch_State::get( $id );
-			}
+			},
+			array( $batch_id )
 		);
 
-		$stored = is_callable( $resolver ) ? call_user_func( $resolver, $batch_id ) : null;
+		$stored = $resolver;
 
 		if ( ! is_array( $stored ) ) {
 			return new WP_Error(
@@ -399,16 +419,24 @@ final class Conexao_Translation_Automation_Batch_Control {
 			}
 		}
 
-		$handler = self::seam( 'action_' . $action, null );
+		$handler = self::seam(
+			'action_' . $action,
+			// `$record` is unused here because this is the UNCOMMISSIONED
+			// default: it exists only to match the signature a commissioned
+			// handler receives, so a seam can be dropped in without changing
+			// the call site.
+			static function ( array $record ) use ( $action ) {
+				unset( $record );
 
-		if ( ! is_callable( $handler ) ) {
-			return new WP_Error(
-				self::FAILURE_NOT_APPROVED,
-				sprintf( 'The "%s" transition has no commissioned handler.', $action )
-			);
-		}
+				return new WP_Error(
+					self::FAILURE_NOT_APPROVED,
+					sprintf( 'The "%s" transition has no commissioned handler.', $action )
+				);
+			},
+			array( $stored )
+		);
 
-		return call_user_func( $handler, $stored );
+		return $handler;
 	}
 
 	/**
@@ -443,9 +471,9 @@ final class Conexao_Translation_Automation_Batch_Control {
 				'action'                => (string) $validated['action'],
 				'batch_id'              => (string) $validated['batch_id'],
 				'authorises'            => self::authorises()[ (string) $validated['action'] ],
-				'state'                 => is_array( $outcome ) ? (string) ( $outcome['state'] ?? '' ) : '',
-				'approved_scope_digest' => is_array( $outcome ) ? (string) ( $outcome['approved_scope_digest'] ?? '' ) : '',
-				'executed_plan_digest'  => is_array( $outcome ) ? (string) ( $outcome['executed_plan_digest'] ?? '' ) : '',
+				'state'                 => (string) ( $outcome['state'] ?? '' ),
+				'approved_scope_digest' => (string) ( $outcome['approved_scope_digest'] ?? '' ),
+				'executed_plan_digest'  => (string) ( $outcome['executed_plan_digest'] ?? '' ),
 			)
 		);
 	}

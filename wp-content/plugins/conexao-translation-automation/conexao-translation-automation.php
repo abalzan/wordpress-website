@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Conexão BR Irlanda — Translation Automation
- * Description: PERMANENT production plugin for the automatic PT→EN translation program. A thin orchestrator validates its invocation context, resolves the EXISTING shared translation engine (`conexao-translation-rollout`) and delegates to it, returning a structured result. Stage 6 adds the PROTECTED production entry point: one authenticated (`admin_post_`), POST-only, `manage_options` + nonce gated Tools screen (Tools → Translation Automation) that can ONLY request MODE_PROOF (dry run). It contains NO translation logic, NO apply mode, NO public REST route, NO anonymous AJAX, NO cron and NO second engine: `Conexao_Translation_Rollout_Engine` remains the sole mutation authority, and the provider credential is read from the environment only, never from `wp_options`.
- * Version: 0.3.0
+ * Description: PERMANENT production plugin for the automatic PT→EN translation program. A thin orchestrator validates its invocation context, resolves the EXISTING shared translation engine (`conexao-translation-rollout`) and delegates to it, returning a structured result. Stage 6 adds the PROTECTED production entry point: one authenticated (`admin_post_`), POST-only, `manage_options` + nonce gated Tools screen (Tools → Translation Automation) that can ONLY request MODE_PROOF (dry run). Stage 11 adds MODEL A — TRUE SUBSET EXECUTION: an approved batch carries an explicit operation scope that reaches the shared engine, so one engine run covers exactly the approved subset and `approved scope == executed scope` is proved in both directions against the engine's own plan. Its batch-control capability is DECLARED in the control-plane registry and deliberately NOT COMMISSIONED (Stage 11 §30). It contains NO translation logic, NO second engine, NO public REST route, NO anonymous AJAX and NO cron: `Conexao_Translation_Rollout_Engine` remains the sole mutation authority, and the provider credential is read from the environment only, never from `wp_options`.
+ * Version: 0.4.0
  * Requires PHP: 7.4
  * Requires Plugins: conexao-translation-rollout
  * Text Domain: conexao-translation-automation
@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) || exit;
 
 define( 'CONEXAO_TRANSLATION_AUTOMATION_FILE', __FILE__ );
 define( 'CONEXAO_TRANSLATION_AUTOMATION_DIR', plugin_dir_path( __FILE__ ) );
-define( 'CONEXAO_TRANSLATION_AUTOMATION_VERSION', '0.3.0' );
+define( 'CONEXAO_TRANSLATION_AUTOMATION_VERSION', '0.4.0' );
 
 require_once CONEXAO_TRANSLATION_AUTOMATION_DIR . 'includes/class-conexao-translation-automation-result.php';
 require_once CONEXAO_TRANSLATION_AUTOMATION_DIR . 'includes/class-conexao-translation-automation-lock.php';

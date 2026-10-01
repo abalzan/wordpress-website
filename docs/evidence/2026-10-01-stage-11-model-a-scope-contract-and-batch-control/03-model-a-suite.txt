@@ -1,0 +1,175 @@
+
+== conexao-translation-automation — Stage 11 Model A true subset execution ==
+
+=== 1. the engine itself accepts an explicit approved scope ===
+  PASS: the authored stage manifest declares 4 records
+  PASS: the engine narrows a 4-record manifest to an approved 3
+  PASS: the narrowed manifest carries exactly the 3 approved records
+  PASS: and does NOT carry the unauthored row-04
+  PASS: the scope report keeps the authored universe and the approved subset SEPARATE
+  PASS: a proof run over an approved 3-of-4 scope succeeds
+  PASS: the ENGINE planned exactly the approved three — not the authored four
+  PASS: and the unauthored row-04 never entered the plan
+  PASS: the engine reports that a scope was applied
+  PASS: and still observes the complete authored universe of 4
+  PASS: with no scope, the engine still plans all 4 authored records
+  PASS: and reports that no scope was applied (backward compatible)
+
+=== 2. no scope widening: an authored row cannot become executable ===
+  PASS: §7: an authored row outside the approval CANNOT enter the plan
+  PASS: the engine plans exactly row-01 (got row-01)
+  PASS: the engine plans exactly row-04 (got row-04)
+  PASS: the engine plans exactly row-04+row-03 (got row-03,row-04)
+  PASS: the engine plans exactly row-03+row-02 (got row-02,row-03)
+  PASS: the engine plans exactly row-04+row-01+row-03 (got row-01,row-03,row-04)
+
+=== 3. no scope shrinking: an approved row may not vanish ===
+  PASS: a skipped approved row is still NAMED in the executed scope (it is skipped, not dropped)
+  PASS: and the engine classified it as a skip
+  PASS: a conflicting approved row is still NAMED, so the batch cannot shrink past it
+  PASS: and it is classified as a hard conflict
+  PASS: so the engine numeric gate FAILS rather than passing a smaller batch
+
+=== 4. scope validation: unknown, duplicate, empty and malformed fail closed ===
+  PASS: an unauthored identity is refused
+  PASS: with the unknown-identity code
+  PASS: a duplicated identity is refused
+  PASS: with the duplicate-identity code
+  PASS: an empty scope is refused
+  PASS: with the empty-scope code
+  PASS: a malformed identity (integer) is refused
+  PASS: a malformed identity (array) is refused
+  PASS: a malformed identity (NULL) is refused
+  PASS: a malformed identity (boolean) is refused
+  PASS: a malformed identity (string) is refused
+  PASS: another stage's identity is refused by this stage
+  PASS: an unauthored scope fails through the orchestrator too
+  PASS: and NOT ONE record was written
+  PASS: a duplicate en_slug in the FULL manifest is still refused
+
+=== 5. B1: single and multi-record subsets create and repair exactly ===
+  PASS: B1: a one-record approved scope plans exactly that record
+  PASS: B1: it is classified as a CREATE
+  PASS: B1: a three-record approved scope plans exactly those three
+  PASS: B1: all three are creates, and the unauthored fourth is not
+  PASS: B1: a one-record repair scope plans exactly that record
+  PASS: B1: it is classified as an UPDATE/repair
+
+=== 6. B2: field-level stage ownership over an exact subset ===
+  PASS: B2: a stage-owned conflict is still inside the approved scope
+  PASS: B2: it is classified as a hard conflict
+  PASS: B2: the engine gate FAILS, so a B2 conflict cannot pass silently
+  PASS: B2: a conflict in an unauthored record does not enter the approved plan
+  PASS: B2: and it does not poison the approved subset
+  PASS: a batch composes for the approved scope
+  PASS: the batch is reviewed
+  PASS: the batch is approved
+  PASS: B2: PT drift on an approved record does NOT produce a verified batch
+  PASS: B2: and it stops rather than succeeding
+  PASS: B2: the drifted record is NOT recorded as completed
+
+=== 7. the executor proves approved scope == executed scope ===
+  PASS: a batch composes for the approved scope
+  PASS: the batch is reviewed
+  PASS: the batch is approved
+  PASS: a three-record approval executes and verifies (got "verified")
+  PASS: and wrote EXACTLY the three approved records
+  PASS: the unauthored row-04 was NEVER written
+
+=== 8. injected scope tampering is refused in BOTH directions ===
+  PASS: a batch composes for the approved scope
+  PASS: the batch is reviewed
+  PASS: the batch is approved
+  PASS: a widened execution scope is refused, not executed (got "stopped")
+  PASS: with the batch-invalidated reason
+  PASS: and NOT ONE record was written — the whole batch is refused, never the approved part
+  PASS: a batch composes for the approved scope
+  PASS: the batch is reviewed
+  PASS: the batch is approved
+  PASS: a shrunken execution scope is refused, not executed (got "stopped")
+  PASS: with the batch-invalidated reason
+
+=== 9. the emergency stop defaults to STOPPED and blocks execution ===
+  PASS: the emergency stop is STOPPED when no record exists
+  PASS: a batch composes for the approved scope
+  PASS: the batch is reviewed
+  PASS: the batch is approved
+  PASS: an approved batch is refused while the emergency stop is engaged
+  PASS: with the emergency-stop reason
+  PASS: and nothing was written
+  PASS: a malformed stop record reads as STOPPED, not as permission
+  PASS: a wrong schema version also reads as STOPPED
+  PASS: an unauthorised caller cannot clear the emergency stop
+  PASS: nor can a caller with the wrong capability
+  PASS: and the stop is still engaged after both attempts
+  PASS: an authorised operator clears it
+  PASS: the stop is now clear
+  PASS: a batch composes for the approved scope
+  PASS: the batch is reviewed
+  PASS: the batch is approved
+  PASS: after clearing, the approved subset executes (got "verified")
+  PASS: and still writes only the approved records
+
+=== 10. a resume executes only the remaining approved operations ===
+  PASS: a batch composes for the approved scope
+  PASS: the batch is reviewed
+  PASS: the batch is approved
+  PASS: a batch with a failing operation stops (got "stopped")
+  PASS: the operation before the failure is completed
+  PASS: the failing operation is recorded as failed
+  PASS: the failing operation is never mistaken for completed work
+  PASS: a resume plan is derivable from the stored batch
+  PASS: §25: a resume does NOT replay the already-verified row-01
+  PASS: a STOPPED batch no longer verifies as executable — a resume needs a new review
+  PASS: a resume whose operation set changed fails approval verification
+
+=== 11. lock contention stops the batch ===
+  PASS: a batch composes for the approved scope
+  PASS: the batch is reviewed
+  PASS: the batch is approved
+  PASS: the foreign lock is acquired (contention fixture is valid)
+  PASS: a batch that cannot take the lock is refused (got "stopped")
+  PASS: and nothing was written
+
+=== 12. batch control: explicit actions and a server-resolved batch ===
+  PASS: §30: the capability is DECLARED but NOT commissioned
+  PASS: its action name is exact and stable
+  PASS: its nonce action is DISTINCT from the proof endpoint's
+  PASS: it performs exactly five EXPLICIT actions — no generic mode selector
+  PASS: a fully authorised request is accepted
+  PASS: and resolves its explicit action
+  PASS: a GET mutation is refused
+  PASS: an anonymous batch action is refused
+  PASS: a missing manage_options capability is refused
+  PASS: a missing nonce is refused
+  PASS: a generic mode selector is refused
+  PASS: a caller-supplied "operations" field is REFUSED, not ignored
+  PASS: a caller-supplied "batch_size" field is REFUSED, not ignored
+  PASS: a caller-supplied "environment" field is REFUSED, not ignored
+  PASS: a caller-supplied "plan_digest" field is REFUSED, not ignored
+  PASS: a caller-supplied "approval_digest" field is REFUSED, not ignored
+  PASS: a well-formed batch id is accepted for server resolution
+  PASS: a malformed batch id is refused
+  PASS: an unresolvable batch is refused — the server, not the caller, defines it
+  PASS: clearing the stop is reachable without a batch (it is a global decision)
+  PASS: and it still refuses while no handler is commissioned
+
+=== 13. no second engine, and the batch layer mutates nothing ===
+  PASS: the batch and batch-control layers contain no "wp_insert_post"
+  PASS: the batch and batch-control layers contain no "wp_update_post"
+  PASS: the batch and batch-control layers contain no "wp_delete_post"
+  PASS: the batch and batch-control layers contain no "delete_post_meta"
+  PASS: the batch and batch-control layers contain no "pll_save_post_translations"
+  PASS: the batch layer reaches the engine through exactly one call site
+  PASS: the engine still owns the "collect_states" lifecycle stage
+  PASS: the engine still owns the "build_plan" lifecycle stage
+  PASS: the engine still owns the "capture_snapshots" lifecycle stage
+  PASS: the engine still owns the "apply_plan" lifecycle stage
+  PASS: the engine still owns the "assert_no_pt_drift" lifecycle stage
+  PASS: the engine still owns the "collect_verify" lifecycle stage
+  PASS: the engine still owns the "calculate_gate" lifecycle stage
+  PASS: the scope is applied AFTER the complete manifest is validated
+  PASS: and BEFORE the lifecycle first reads the manifest
+  PASS: and the scope is OPTIONAL — an omitted scope leaves every pre-Stage-11 caller unchanged
+
+Stage 11 Model A true subset execution: 145 passed, 0 failed

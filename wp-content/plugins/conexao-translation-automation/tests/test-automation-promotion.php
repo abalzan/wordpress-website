@@ -30,7 +30,7 @@ $ENGINE_FILE  = CONEXAO_TESTS_WP_ROOT . '/wp-content/plugins/conexao-translation
 // two existing return payloads. No lifecycle stage was replaced,
 // reordered or bypassed. Pre-Stage-11 digest (the Stage 11 §33 starting
 // record): baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4
-$ENGINE_SHA   = '31714cb857daa6bf88f02db5bbce0672817ebf0f19ffabf1588a2e87c75cd53e';
+$ENGINE_SHA   = '264cc6c4e7b4214f2bc30436afb077d308b1897de444431c5c3a331f08116912';
 $PLUGIN_DIR   = CONEXAO_TESTS_WP_ROOT . '/wp-content/plugins/conexao-translation-automation';
 $REGISTRY     = CONEXAO_TESTS_WP_ROOT . '/plugins.json';
 
@@ -168,20 +168,38 @@ $hits = conexao_promotion_token_hits(
 );
 assert_true( array() === $hits, 'the plugin still exposes no REST route, shortcode, AJAX handler or anonymous admin handler' . ( $hits ? ': ' . implode( ', ', $hits ) : '' ) );
 
+// STAGE 11 SUPERSESSION. Stage 6 permitted `admin_post_` (the authenticated
+// half) in exactly one file. Stage 11 declares the batch-control action in one
+// further file; it is NOT commissioned, so nothing became reachable. The
+// assertion is narrowed to the declared file set rather than removed, so a
+// THIRD endpoint still fails closed — and the anonymous twin stays forbidden
+// everywhere, unchanged.
+$ALLOWED_ENTRY_FILES = array(
+	'class-conexao-translation-automation-admin-trigger.php',
+	'class-conexao-translation-automation-batch-control.php',
+);
+
 $entry_points = conexao_promotion_token_hits( array( 'admin_post_' ), '' );
+
 assert_true(
-	1 === count( $entry_points ),
-	'exactly one authenticated admin entry point exists'
+	count( $ALLOWED_ENTRY_FILES ) === count( $entry_points ),
+	'exactly ' . count( $ALLOWED_ENTRY_FILES ) . ' authenticated admin entry points are DECLARED'
 		. ( $entry_points ? ': ' . implode( ', ', $entry_points ) : '' )
 );
 assert_true(
 	array() === array_filter(
 		$entry_points,
-		static function ( $hit ) {
-			return false === strpos( $hit, 'class-conexao-translation-automation-admin-trigger.php' );
+		static function ( $hit ) use ( $ALLOWED_ENTRY_FILES ) {
+			foreach ( $ALLOWED_ENTRY_FILES as $file ) {
+				if ( false !== strpos( $hit, $file ) ) {
+					return false;
+				}
+			}
+
+			return true;
 		}
 	),
-	'the single admin entry point lives in the protected trigger file'
+	'every admin entry point lives in a declared control-plane file'
 );
 
 // Still no activation side effects.

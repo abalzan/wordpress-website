@@ -38,7 +38,7 @@ $ENGINE_FILE = CONEXAO_TESTS_WP_ROOT . '/wp-content/plugins/conexao-translation-
 // two existing return payloads. No lifecycle stage was replaced,
 // reordered or bypassed. Pre-Stage-11 digest (the Stage 11 §33 starting
 // record): baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4
-$ENGINE_SHA  = '31714cb857daa6bf88f02db5bbce0672817ebf0f19ffabf1588a2e87c75cd53e';
+$ENGINE_SHA  = '264cc6c4e7b4214f2bc30436afb077d308b1897de444431c5c3a331f08116912';
 
 // Records whether the engine was actually invoked, so "refused" can be proven
 // to mean "never reached the engine" rather than "reached it and did nothing".
@@ -153,12 +153,28 @@ test_section( 'Plugin loading' );
 assert_true( class_exists( 'Conexao_Translation_Automation_Orchestrator' ), 'the orchestrator class loads' );
 assert_true( class_exists( 'Conexao_Translation_Automation_Result' ), 'the result class loads' );
 assert_true( defined( 'CONEXAO_TRANSLATION_AUTOMATION_VERSION' ), 'the plugin declares its version' );
-// STAGE 4: the plugin version advanced to 0.2.0 with the provider
-// implementation, the plan and the adapter.
-// STAGE 6: it advanced again to 0.3.0 with the protected production trigger.
-// The header and the constant must still agree, which is the property this
-// assertion exists to protect.
-assert_true( '0.3.0' === CONEXAO_TRANSLATION_AUTOMATION_VERSION, 'the plugin version matches its header' );
+// STAGE 4: 0.2.0 (provider implementation, plan, adapter).
+// STAGE 6: 0.3.0 (protected production trigger).
+// STAGE 11: 0.4.0 (Model A scope contract + the declared batch-control class).
+//
+// The property under test is that the header and the constant AGREE — not that
+// they equal a number written down here. So the expected value is READ FROM the
+// plugin header, which is also the registry's authoritative version source.
+// A third copy of this literal was exactly how the previous two went stale.
+$conexao_automation_header = (string) file_get_contents(
+	CONEXAO_TESTS_WP_ROOT . '/wp-content/plugins/conexao-translation-automation/conexao-translation-automation.php'
+);
+
+assert_true(
+	1 === preg_match( '/^\s*\*\s*Version:\s*([0-9]+\.[0-9]+\.[0-9]+)\s*$/m', $conexao_automation_header, $conexao_automation_version_match ),
+	'the plugin header declares a semantic version'
+);
+assert_true(
+	isset( $conexao_automation_version_match[1] )
+		&& $conexao_automation_version_match[1] === CONEXAO_TRANSLATION_AUTOMATION_VERSION,
+	'the plugin version matches its header',
+	'header=' . ( $conexao_automation_version_match[1] ?? '?' ) . ' constant=' . CONEXAO_TRANSLATION_AUTOMATION_VERSION
+);
 assert_true( 'manage_options' === Conexao_Translation_Automation_Orchestrator::CAPABILITY, 'the required capability is manage_options' );
 
 // The plugin must declare the engine as a real WordPress plugin dependency, so

@@ -41,7 +41,7 @@ $ENGINE_FILE = CONEXAO_TESTS_WP_ROOT . '/wp-content/plugins/conexao-translation-
 // two existing return payloads. No lifecycle stage was replaced,
 // reordered or bypassed. Pre-Stage-11 digest (the Stage 11 §33 starting
 // record): baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4
-$ENGINE_SHA  = '31714cb857daa6bf88f02db5bbce0672817ebf0f19ffabf1588a2e87c75cd53e';
+$ENGINE_SHA  = '264cc6c4e7b4214f2bc30436afb077d308b1897de444431c5c3a331f08116912';
 
 /**
  * Reset the lock to a known-empty state.

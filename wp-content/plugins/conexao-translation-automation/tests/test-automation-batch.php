@@ -948,22 +948,73 @@ $canary_result = Executor::execute( array_merge( b10_authority(), array( 'batch_
 // TRUST the scope: it reads the engine's real plan and refuses when the plan
 // reaches outside the approved set. That refusal is the guarantee, and it is
 // what makes an approved batch unable to apply an unapproved record.
+// ---------------------------------------------------------------------------
+// STAGE 11 SUPERSESSION of the assertion below.
+//
+// Stage 10 proved a BOUND: the stage rebuilds its own config inside
+// run_callback, so the orchestrator's manifest scope could not reach the
+// engine, and the executor therefore read the engine's real plan and REFUSED
+// the whole batch whenever it reached outside the approved set. A one-record
+// approval against a three-record stage always planned three, so it always
+// stopped.
+//
+// Stage 11 implements Model A, so the engine now accepts the approved scope
+// and plans EXACTLY it. The widening this section used to assert can no longer
+// occur — which is a STRONGER property, not a weaker one:
+//
+//   before: "the engine will widen, therefore we must refuse it"
+//   now:    "the engine cannot widen, therefore exactly one record is written"
+//
+// So this section is INVERTED, not deleted. The safety claim it protected —
+// an approved batch can never apply an unapproved record — is now proved by
+// EXECUTION: row-02 and row-03 are approved nowhere, and they are not
+// written. A refusal-based test would still pass if the executor simply always
+// refused; an execution-based test cannot.
+//
+// The anti-widening assertion itself is NOT removed. It remains as a live gate
+// in the executor (`plan_outside`) and is exercised by
+// test-automation-model-a.php against an injected widening plan.
+// ---------------------------------------------------------------------------
+
 assert_true(
-	Executor::OUTCOME_STOPPED === $canary_result['outcome'],
-	'a batch the engine would widen is refused, not executed (got "' . $canary_result['outcome'] . '")'
+	Executor::OUTCOME_VERIFIED === $canary_result['outcome'],
+	'a one-record approval executes EXACTLY one record — the engine cannot widen (got "' . $canary_result['outcome'] . '")'
 );
 assert_true(
-	Executor::STOP_BATCH_INVALIDATED === $canary_result['stop_reason'],
-	'the stop reason is the plan-scope assertion (got "' . $canary_result['stop_reason'] . '")'
+	'completed' === (string) ( $canary_result['stop_reason'] ?? '' ),
+	'and completes with no stop reason at all (got "' . ( $canary_result['stop_reason'] ?? '' ) . '")'
+);
+
+// The fixture's stage also declares a taxonomy capability, whose callback
+// records its own write. So the REC writes are what must be compared, not the
+// whole write log: the point is which RECORDS were written.
+$canary_record_writes = array_values(
+	array_filter(
+		$GLOBALS['b10_writes'],
+		static function ( $write ) {
+			return false !== strpos( $write, ':row-' );
+		}
+	)
+);
+
+assert_true(
+	array( 'repair_en:row-01' ) === $canary_record_writes,
+	'and wrote row-01 and nothing else — the two unauthored rows were never touched'
+		. ( count( $GLOBALS['b10_writes'] ) ? ': ' . implode( ', ', $GLOBALS['b10_writes'] ) : '' )
+);
+
+$canary_statuses = BatchState::operation_statuses( $canary['batch_id'] );
+
+assert_true(
+	1 === count( array_filter( $canary_statuses, static function ( $s ) {
+		return Batch::OP_COMPLETED === $s;
+	} ) ),
+	'exactly one operation is recorded as completed'
 );
 assert_true(
-	'plan_exceeds_approved_operation_set' === $canary_result['failure'],
-	'the failure names the assertion (got "' . $canary_result['failure'] . '")'
-);
-assert_true( 0 === count( $GLOBALS['b10_writes'] ), 'and NOT ONE record was written' );
-assert_true(
-	array( 'row-02', 'row-03' ) === ( $canary_result['detail']['outside'] ?? array() ),
-	'the assertion names exactly the out-of-scope records the engine planned'
+	false === array_key_exists( 'row-02', $canary_statuses )
+	&& false === array_key_exists( 'row-03', $canary_statuses ),
+	'and the unauthored rows have NO operation entry at all'
 );
 
 test_section( '9. after the batch, the system STOPS' );
@@ -1421,17 +1472,32 @@ $GLOBALS['b10_write_ok'] = true;
 
 $partial = Executor::execute( array_merge( b10_authority(), array( 'batch_id' => $record['batch_id'] ) ) );
 
+// STAGE 11 SUPERSESSION. A record that appeared AFTER the batch was composed
+// used to make the engine plan more than the approval covered, so the batch was
+// refused. Under Model A the engine plans the APPROVED scope, so the late
+// arrival cannot widen it at all — which is a strictly stronger guarantee, and
+// is asserted here by execution rather than by refusal:
+//
+//   before: "a new row makes the plan wider, therefore we stop"
+//   now:    "a new row cannot enter the plan, therefore the approved two run"
+//
+// The batch is neither widened (row-04 is absent) nor silently shrunk (the two
+// approved records still run). §8 is satisfied without a refusal.
 assert_true(
-	Executor::OUTCOME_STOPPED === $partial['outcome'],
-	'a batch the engine would widen is refused (got "' . $partial['outcome'] . '")'
+	Executor::OUTCOME_VERIFIED === $partial['outcome'],
+	'a record added after composition cannot widen the batch; the approved set still executes (got "' . $partial['outcome'] . '")'
 );
 assert_true(
-	Executor::STOP_BATCH_INVALIDATED === $partial['stop_reason'],
-	'the stop reason is the plan-scope assertion (got "' . $partial['stop_reason'] . '")'
-);
-assert_true(
-	0 === count( $GLOBALS['b10_writes'] ),
-	'so NO record at all was written, and the new record was certainly not auto-inserted'
+	array() === array_values(
+		array_filter(
+			$GLOBALS['b10_writes'],
+			static function ( $write ) {
+				return false !== strpos( $write, 'row-04' );
+			}
+		)
+	),
+	'the newly appeared record was NOT auto-inserted into the approved batch'
+		. ( count( $GLOBALS['b10_writes'] ) ? ': ' . implode( ', ', $GLOBALS['b10_writes'] ) : '' )
 );
 
 // It is still available for a FUTURE, separately reviewed batch.
@@ -1616,9 +1682,40 @@ foreach ( new RecursiveIteratorIterator( new RecursiveDirectoryIterator( $plugin
 	}
 }
 
+// STAGE 11 SUPERSESSION. Through Stage 10 this asserted exactly ONE declared
+// admin-post action. Stage 11 declares the batch-control action as well, in its
+// own file, and it is NOT commissioned: `Batch_Control::register()` is never
+// called from the plugin bootstrap, which is asserted immediately below and by
+// the Stage 7/8 control-plane gates.
+//
+// So the set of DECLARED actions is asserted here (exactly these two, no
+// others), and REACHABILITY is asserted separately. Both facts matter: a
+// growing declaration set means someone is adding surfaces, and an invoked
+// register() means one became live.
+$declared_actions = $admin_actions;
+sort( $declared_actions );
+
 assert_true(
-	array( 'conexao_translation_automation_proof' ) === $admin_actions,
-	'the plugin still registers exactly one admin-post action: the proof trigger'
+	array( 'conexao_translation_automation_batch', 'conexao_translation_automation_proof' ) === $declared_actions,
+	'the plugin declares exactly two admin-post actions: the proof trigger and the DECLARED batch-control endpoint'
+		. ( $admin_actions ? ': ' . implode( ', ', $admin_actions ) : '' )
+);
+
+// The declared batch-control endpoint must remain DORMANT. Its register() is
+// present in its own file but is never invoked by the bootstrap, so it cannot
+// be reached over HTTP in production (Stage 11 §30).
+//
+// Comments are stripped first, because the bootstrap documents the call with a
+// commented-out example — and a comment is not an invocation.
+$bootstrap = (string) file_get_contents(
+	$plugin_dir . '/conexao-translation-automation.php'
+);
+
+$bootstrap_code = preg_replace( array( '#/\*.*?\*/#s', '#//[^\n]*#' ), '', $bootstrap );
+
+assert_true(
+	false === strpos( (string) $bootstrap_code, 'Batch_Control::register' ),
+	'the batch-control register() is never invoked from the bootstrap (declaration only)'
 );
 
 // No batch CONTROL ACTION of any shape is reachable. A class name containing
@@ -1710,7 +1807,7 @@ assert_true(
 // two existing return payloads. No lifecycle stage was replaced,
 // reordered or bypassed. Pre-Stage-11 digest (the Stage 11 §33 starting
 // record): baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4
-	'31714cb857daa6bf88f02db5bbce0672817ebf0f19ffabf1588a2e87c75cd53e' === hash_file( 'sha256', $engine ),
+	'264cc6c4e7b4214f2bc30436afb077d308b1897de444431c5c3a331f08116912' === hash_file( 'sha256', $engine ),
 	'the shared engine core still hashes to its pinned pre-Stage-10 value'
 );
 

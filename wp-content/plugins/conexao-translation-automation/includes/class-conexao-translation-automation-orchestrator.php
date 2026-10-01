@@ -52,6 +52,17 @@ final class Conexao_Translation_Automation_Orchestrator {
 	const CAPABILITY = 'manage_options';
 
 	/**
+	 * The engine method that grants an approved scope (Stage 11).
+	 *
+	 * Named as a constant so the capability probe and the documentation cannot
+	 * drift apart, and so the probe stays a genuine runtime check for a site
+	 * running an older engine digest.
+	 *
+	 * @var string
+	 */
+	const ENGINE_SCOPE_METHOD = 'narrow_manifest';
+
+	/**
 	 * The ONLY mode this implementation honours: a non-mutating proof run.
 	 *
 	 * @var string
@@ -277,7 +288,7 @@ final class Conexao_Translation_Automation_Orchestrator {
 				$stage,
 				Conexao_Translation_Automation_Result::FAILURE_BAD_CONFIG,
 				array(
-					'reason'       => (string) $scope->get_error_message(),
+					'reason'        => (string) $scope->get_error_message(),
 					'scope_failure' => (string) $scope->get_error_code(),
 				)
 			);
@@ -652,7 +663,7 @@ final class Conexao_Translation_Automation_Orchestrator {
 
 		// `manifest_callback` is validated by the engine and always returns an
 		// array here, because `$records` was read from it one statement above.
-		$scoped_manifest           = $manifest;
+		$scoped_manifest            = $manifest;
 		$scoped_manifest['records'] = $narrowed;
 
 		$narrowed_config = $config;
@@ -701,22 +712,41 @@ final class Conexao_Translation_Automation_Orchestrator {
 	 *
 	 * @param array $config The resolved (possibly narrowed) stage configuration.
 	 * @return array Argument keys to merge into the run arguments.
+	 * @throws \RuntimeException When a scope is in force but the loaded engine
+	 *                           has no scope capability. Refused rather than
+	 *                           falling back to a whole-stage run.
 	 */
 	private static function scope_args( array $config ): array {
-		if ( empty( $config['run_scope'] ) || ! is_array( $config['run_scope'] ) ) {
+		if ( empty( $config['run_scope'] ) ) {
 			return array();
 		}
 
-		if ( ! method_exists( 'Conexao_Translation_Rollout_Engine', 'narrow_manifest' ) ) {
-			// Cannot happen against this repository's engine; proven rather
-			// than assumed, because silently widening is the failure mode this
-			// whole stage exists to remove.
+		// The engine CLASS is always loaded — this plugin declares
+		// `Requires Plugins: conexao-translation-rollout`, so that is not in
+		// question. What IS in question at runtime is the engine's VERSION:
+		// a site pinned to the pre-Stage-11 engine digest has the class but no
+		// scope capability, and would silently ignore the `scope` argument and
+		// run the FULL authored manifest for a batch approved for a subset.
+		//
+		// That is exactly the widening Model A exists to prevent, so the
+		// capability is probed and a missing one is a hard refusal.
+		//
+		// Static analysis reports this condition as unreachable, and against
+		// THIS repository it is: the engine ships alongside and its digest is
+		// pinned by the control-plane gates. The probe is retained anyway
+		// because the failure it prevents is silent and total — an engine that
+		// ignores `scope` applies the whole authored manifest under a subset
+		// approval, and nothing downstream would report it. A cheap runtime
+		// refusal is worth more than a green analyser on a rule this specific.
+		//
+		// @phpstan-ignore-next-line booleanNot.alwaysFalse
+		if ( ! is_callable( array( 'Conexao_Translation_Rollout_Engine', self::ENGINE_SCOPE_METHOD ) ) ) {
 			throw new RuntimeException(
 				'An approved scope was requested but the loaded shared engine supports no scope; refusing rather than running the full stage manifest.'
 			);
 		}
 
-		return array( 'scope' => array_values( $config['run_scope'] ) );
+		return array( 'scope' => array_values( (array) $config['run_scope'] ) );
 	}
 
 	/**

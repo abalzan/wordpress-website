@@ -43,6 +43,17 @@
 				<element value="conexao-event-importer"/>
 				<element value="conexao-leisure-migration"/>
 				<element value="conexao-sponsor-migration"/>
+				<!--
+					STAGE 11: the two translation-program plugins declare their own
+					Text Domain in their plugin headers. Neither was listed here
+					because, until Stage 11, they contained no translatable strings —
+					the batch-control admin screen (DECLARED, not commissioned) is the
+					first. Listing the declared domains keeps the check meaningful:
+					it still catches a WRONG domain, it just stops treating each
+					plugin's own domain as an error.
+				-->
+				<element value="conexao-translation-rollout"/>
+				<element value="conexao-translation-automation"/>
 			</property>
 		</properties>
 	</rule>
