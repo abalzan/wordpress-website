@@ -1,0 +1,62 @@
+STAGE 15 - SECTION 5: FINAL ARTIFACT PREFLIGHT
+Every value below was recomputed in the Stage 15 run on 2026-10-01.
+Nothing was copied from an earlier stage's evidence file.
+
+-- git state (exact, before any production operation) --
+  branch  i18n
+  HEAD    7c993463c64fd18be9e1e20fbc9358bce75ec7de
+  HEAD    "Implement Stage 14 security enhancements: Add hardened secret
+           scan and provider secret containment tests"
+  working tree at preflight: CLEAN
+
+-- engine SHA-256 (Stage 15 BEFORE, recomputed) --
+  264cc6c4e7b4214f2bc30436afb077d308b1897de444431c5c3a331f08116912
+    wp-content/plugins/conexao-translation-rollout/includes/
+    class-conexao-translation-rollout-engine.php
+  expected: 264cc6c4e7b4214f2bc30436afb077d308b1897de444431c5c3a331f08116912
+  MATCH. git diff over the whole engine directory: EMPTY.
+
+-- versions: header == registry == release record --
+  conexao-translation-rollout     header 1.2.0  registry 1.2.0  release 1.2.0
+  conexao-translation-automation  header 0.4.0  registry 0.4.0  release 0.4.0
+  Three sources agree for both plugins.
+
+-- dependency and load order --
+  plugins.json load_order:
+    #8  conexao-translation-rollout     (platform, production=true, build=true)
+    #10 conexao-translation-automation  (platform, production=true, build=true)
+  plugin header of the automation plugin:
+    "Requires Plugins: conexao-translation-rollout"
+  CORRECT: the dependency precedes its dependant.
+
+-- registry --
+  registry OK: 15 plugins validated, 24 generated regions current (zero writes).
+
+-- artifacts built TWICE, byte-identical --
+  build A:  73b3aee368712397e4ddbb496d8915bb6021443ab7e75bedf345e9fa4ad35215  conexao-translation-rollout.zip
+            1e5a1cf228ee9950ed584400dd029846fb170389331762ec42e1e7abcd644b21  conexao-translation-automation.zip
+  build B:  73b3aee368712397e4ddbb496d8915bb6021443ab7e75bedf345e9fa4ad35215  conexao-translation-rollout.zip
+            1e5a1cf228ee9950ed584400dd029846fb170389331762ec42e1e7abcd644b21  conexao-translation-automation.zip
+  all 10 allowlisted artifacts: identical = 10, differing = 0.
+
+-- exclusion proof (contents of the two translation ZIPs) --
+  conexao-translation-rollout.zip      tests/ entries: 0
+                                       docker/.env/compose entries: 0
+  conexao-translation-automation.zip   tests/ entries: 0
+                                       docker/.env/compose entries: 0
+
+-- release metadata verified (release-manifest.py --verify, exit 0) --
+  conexao-event-importer           plugin   1.7.1          42  551ef74cdf161b63
+  conexao-leisure-migration        plugin   2.1.0           7  e91eb8b09bd69710
+  conexao-sponsor-migration        plugin   1.1.0           6  b4d4e52562bee987
+  conexao-translation-rollout      plugin   1.2.0           4  73b3aee368712397
+  conexao-translation-automation   plugin   0.4.0          30  1e5a1cf228ee9950
+  conexao-br-irlanda               theme    1.0.1         115  34e65e0576382b58
+  summary: release=v2026.10.01 artifacts=10 built=10
+
+-- secret scan of source and artifacts --
+  [ok] 1582 files scanned, 0 undeclared credential-shaped values
+  [ok] 17 declared fixtures, each confined to tests/
+  [ok] 10 ZIPs and the release record scanned
+  [ok] engine SHA-256 unchanged: 264cc6c4e7b4214f2bc30436afb077d308b1897de444431c5c3a331f08116912
+  stage14_secret_scan: 323 passed, 0 failed

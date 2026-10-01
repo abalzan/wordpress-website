@@ -122,3 +122,38 @@ emergency_stop_clearance stays NOT_GRANTED, emergency_stop_clears stays 0.
   verify-stage13-commissioning-readiness.py: 771 passed, 0 failed  [PASS]
   verify-stage14-secret-scan.py:               323 passed, 0 failed  [PASS]
   lint: OK (syntax clean, no new PHPCS violations, PHPStan level 5 clean)
+
+================================================================
+STAGE 15 INDEPENDENT RE-VERIFICATION OF THE P15 FIX (2026-10-01)
+================================================================
+
+The Stage 15 agent re-read the fix in the working tree rather than relying
+on the Stage 14 narrative.
+
+1. The P15 validator is genuinely production-evidence based:
+   scripts/lib/commissioning.py:956-1004
+     - reads evidence key "production_stop_state" (entry["evidence_type"])
+     - requires observation.repo["emergency_stop_fail_closed"] FIRST
+       (line 985) -> both halves required
+     - rejects anything that is not a positive STOPPED
+     - never clears the stop; returns clearance NOT_GRANTED, clears 0
+
+2. It is NOT hardcoded anywhere:
+   - the preflight no longer hardcodes "production_stop_state_observed"
+   - the engine no longer READS a repository fact of that name
+   Both confirmed by the Stage 13 permanent gate's negative proofs 17b..17j,
+   which are shown FAILING when the property is violated.
+
+3. Re-run of the Stage 13 permanent gate in Stage 15:
+     negative proofs: 44 proven, 0 missed
+     771 passed, 0 failed      [PASS]
+
+4. The real preflight, against this repository, still fails closed:
+     P15 emergency_stop_readiness BLOCKED
+     "no production_stop_state evidence object was supplied"
+     emergency_stop_clearance NOT_GRANTED, emergency_stop_clears 0
+
+CONCLUSION: the P15 defect fix is intact, is proven, and does NOT by itself
+unblock Stage 15. P15 still requires a genuine LIVE_PRODUCTION_READ, which
+cannot be obtained without production credentials. Stage 15 did not
+fabricate, infer or substitute one.

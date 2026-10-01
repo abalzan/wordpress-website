@@ -46,13 +46,4 @@ model_a_production_proof=NOT_PROVEN
 provider.key_present=false
 provider.quota=NOT_PROVEN
 provider.requests_from_this_gate=0
-
--- machine-readable form --
-status: BLOCKED
-production_actions: {"activations": 0, "canary_selections": 0, "content_mutations": 0, "emergency_stop_clears": 0, "installs": 0, "provider_calls": 0}
-control_plane: {"action": "conexao_translation_automation_batch", "state": "DECLARED"}
-emergency_stop_clearance: NOT_GRANTED
-provider: {"key_present": false, "key_variable": "CONEXAO_TRANSLATION_PROVIDER_KEY", "provider_requests_from_this_gate": 0, "quota": "NOT_PROVEN", "smoke_result": "NOT_PERFORMED"}
-canary_selection_allowed: False
-production_mutation_permitted: False
-commissioning_permitted: False
+EXIT=1

@@ -1,7 +1,7 @@
 {
   "stage": "L — permanent invariant gates",
-  "generated_at": "2026-10-01T17:59:58Z",
-  "repository_sha": "777d576e4ea9c9fd99f853211eabeffefcde7609",
+  "generated_at": "2026-10-01T18:37:06Z",
+  "repository_sha": "7c993463c64fd18be9e1e20fbc9358bce75ec7de",
   "status": "fail",
   "gates": {
     "taxonomy_policy": {

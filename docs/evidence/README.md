@@ -313,16 +313,15 @@ production step was entered. Production changes `0`.
 
 | File | Content |
 |---|---|
-| `01-readiness-gate.txt` | The §1 absolute rule: the readiness gate run **in this environment**, `COMMISSIONING READINESS: BLOCKED`, all eighteen prerequisites, `commissioning_permitted=false`, `production_mutation_permitted=false`, exit 1, and the resulting `STAGE 15 = BLOCKED` |
-| `02-authorizations.txt` | Installation / provider-call / canary / apply / commissioning / batch-control / reviewer authorizations, each **independently** `ABSENT`, with the Stage 13 negative proofs that make non-inference structural rather than promised |
-| `03-credentials.txt` | Presence observed by **NAME only** — `CONEXAO_TRANSLATION_PROVIDER_KEY` absent, `OPENAI_API_KEY` present and deliberately unused, `.env` never opened. No value read, printed, inspected, hashed or stored |
-| `04-source-artifact-integrity.txt` | Exact `git status`, branch/SHA, engine SHA-256 before, both plugin versions, registry check, **artifacts built twice and byte-identical**, release metadata verification, and the source + artifact secret scan |
-| `05-steps-not-performed.txt` | The `NOT PERFORMED` record for §5–§32 — every production step, each named, none of them written as "passed", ending at `Production changes = 0` |
-| `06-tests-preproduction.txt` | The credential-independent half of the §38 matrix: lint, registry, Stage 14 secret-hardening gate (323), Stage 13 readiness gate (768 with 34/34 negative proofs), release integrity (229), documentation drift (14), governance |
-| `07-artifact-facts-control-plane.txt` | Artifact-level properties only — the two declared automation surfaces, `register_rest_route()` 0, anon AJAX 0, webhook 0, cron 0, legacy closure 36, batch control `DECLARED / NOT COMMISSIONED` with its 243-assertion security contract, fail-closed emergency stop, provider config. Every row is explicitly **not** a production claim |
-| `08-full-suite.txt` | `./scripts/run-tests.sh` totals, the four failing suites mapped to the §35 carried-forward conditions, and the Stage L permanent gates (6/7) |
-| `09-engine-integrity-and-stop-state.txt` | Engine SHA-256 after, equal to before; the §33 end state (bulk / next batch / autonomous approval / cron / automatic progression all OFF); the §34 failure-policy record |
-| `10-p15-fix.txt` | **Addendum — the P15 defect and its fix.** The conjunction of `evidence_type=None` and a hardcoded `production_stop_state_observed: False` made P15 unsatisfiable by any evidence; reproduced with a complete evidence set (17/18 READY, P15 alone BLOCKED). The fix re-wires P15 to a `production_stop_state` production read, keeps the artifact fail-closed check mandatory, and is **stricter** (both halves, production-grade provenance only, positive `STOPPED` only, self-contradictory objects refused, freshness applies). Includes the executed 12-row proof matrix, the aggregate behaviour, the 11 new negative proofs (gate 768→771, 34→44), the post-fix full suite (identical failure set), and the engine-integrity statement |
+| `01-readiness-gate.txt` | The §2 absolute rule: the readiness gate run **in this environment**, `COMMISSIONING READINESS: BLOCKED`, all eighteen prerequisites, `commissioning_permitted=false`, `production_mutation_permitted=false`, `emergency_stop_clearance=NOT_GRANTED`, exit 1, plus the machine-readable `production_actions` counters |
+| `02-authorizations.txt` | Credentials observed by **NAME only** (`CONEXAO_TRANSLATION_PROVIDER_KEY` absent; `OPENAI_API_KEY` present and deliberately unused and unaliased; `.env` never opened) and every authorization **independently** `ABSENT` — installation, provider-call, canary, apply, commissioning, batch-control, reviewer — with the Stage 13 negative proofs making non-inference structural rather than promised |
+| `04-artifact-preflight.txt` | Exact git state (branch `i18n`, HEAD `7c99346`, **clean tree**), engine SHA-256, both plugin versions agreeing across header/registry/release, load order and dependency, registry check, **artifacts built twice and byte-identical** (10/10), exclusion proof (no tests, no Docker files), release metadata verification, and the source + artifact secret scan |
+| `05-steps-not-performed.txt` | The `NOT PERFORMED` record for §6–§33 — every production step named, none written as "passed", with an explicit "not claimed anywhere" list and `Production changes = 0` |
+| `06-tests-preproduction.txt` | The credential-independent half of the §37 matrix: lint, registry, Stage 14 secret-hardening gate (323), Stage 13 readiness gate (**771 with 44/44 negative proofs**), Model A (145), batch control (243), control plane (149), legacy closure (36) and the remaining stage gates |
+| `07-artifact-facts-control-plane.txt` | Artifact-level properties only — the two declared automation surfaces, `register_rest_route()` 0, anon AJAX 0, webhook 0, cron 0, legacy closure 36, batch control `DECLARED / NOT COMMISSIONED` with its security contract, fail-closed emergency stop, provider config. Every row is explicitly **not** a production claim |
+| `08-full-suite.txt` | `./scripts/run-tests.sh` totals (**79/81** suites, **6123 passed / 6 failed**), the failing suites mapped to the §34 carried-forward conditions, the Stage L permanent gates (**6/7**, `i18n_freshness` red), and the disclosed investigation of a spurious `model-a` failure caused by my own concurrent test activity |
+| `09-p15-emergency-stop.txt` | §8 P15 verification: **NOT PERFORMED**, no stop-state evidence fabricated, why it cannot be produced without production access, the **artifact** fail-closed table read from source, `emergency_stop_clearance=NOT_GRANTED` / `emergency_stop_clears=0`, and the §32/§33 final state (bulk, next batch, autonomous approval, cron, automatic progression all OFF) |
+| `10-p15-fix.txt` | **Addendum — the P15 defect and its fix**, plus the Stage 15 independent re-verification: the validator at `commissioning.py:956-1004` reads production evidence and requires the repository fail-closed fact **first**, the permanent gate's 44 negative proofs, and the confirmation that the fix is intact without unblocking anything |
 
 No credential, application password, nonce, cookie, authorization header, `.env`
 or environment dump appears in any file here — presence flags carry **names
@@ -332,6 +331,38 @@ tree and reported `0` undeclared credential-shaped values.
 Cited by `docs/reports/2026-10-01-stage-15-final-production-commissioning-canary.md`.
 
 _Last verified: 2026-10-01 by Stage 15 — final production commissioning and canary (`BLOCKED` at the §1 readiness gate; production changes 0; engine integrity before == after)_
+
+---
+
+## `2026-10-01-stage-15-personal-production-commissioning-model-a-canary/`
+
+Stage 15 — the **Personal-plan** operational commissioning attempt. Status
+**`BLOCKED`**, and blocked for a *new and better-understood* reason than the
+preceding attempts: the §4 provider-path investigation was actually performed
+and **Path A was rejected on evidence**, and a genuine repository gap was
+found in the P15 stop-state read surface. Production changes `0`.
+
+| File | Content |
+|---|---|
+| `01-readiness-gate.txt` | The Stage 13 readiness gate re-run **in this environment**: `COMMISSIONING READINESS: BLOCKED`, all eighteen P01–P18 statuses, `commissioning_permitted=false`, `production_mutation_permitted=false`, `canary_selection_allowed=false`, `emergency_stop_clearance=NOT_GRANTED`, `model_a_production_proof=NOT_PROVEN`, `provider.key_present=false`, `provider.quota=NOT_PROVEN`, `provider.requests_from_this_gate=0`, exit 1 |
+| `02-personal-plan-and-provider-path.txt` | **The stage's central investigation.** (A) The WordPress.com Personal capability boundary, quoted from vendor sources fetched during the run: plugin **ZIP upload via wp-admin IS available**; SFTP/SSH, WP-CLI, Git/GitHub Deployments and real-time backups are **Business/Commerce**. (B) The §4 provider path: **Path A REJECTED** on the quoted source of `_wp_connectors_get_api_key_source()` (env → constant → **database**) plus the documented Connectors "paste key → Save" UI and the `connectors_ai_{provider}_api_key` option name from plugin-check#1342 — i.e. the connector key **is a `wp_options` row**, which violates Stage 0 control S7; two further independent blockers (our fixed-model/ceiling/identity contract is not expressible through the AI Client, and the enabling WordPress 7.0 version is **not observable** anonymously). **Path B** not available. **⇒ Path C, `BLOCKED`**, with the key placed in nothing. (C) Anonymous read-only production observations |
+| `03-credentials-and-authorizations.txt` | Credentials by **NAME only** (`CONEXAO_TRANSLATION_PROVIDER_KEY` absent; `WP_USERNAME`/`WP_APPLICATION_PASSWORD` absent and — per §3 — correctly **not** treated as a deployment prerequisite; `OPENAI_API_KEY` present, **not used, not aliased**; `.env` never opened) and every authorization **independently ABSENT**. Records explicitly that reachability and the `/wp-admin/` 302 are **observation only**, not access and not authorization |
+| `04-artifact-preflight.txt` | Git state, engine SHA-256, both plugin versions agreeing across header/registry/release, dependency order, registry check, **double build byte-identical**, exclusion proof, release verification, secret scan and lint — with the explicit note that the artifacts are **proven ready for upload but were not uploaded** (P02 absent) |
+| `05-p15-emergency-stop.txt` | §15: **NOT PERFORMED**, no stop-state object fabricated, why it cannot be produced — plus the stage's **second substantive finding**: the emergency stop's only runtime consumer is `assert_may_start()`, so there is **no admin display, REST route, AJAX action, cron trigger or diagnostics endpoint** that reads it. Even a successful manual login cannot read it, so P15 is **`NOT OBSERVABLE THROUGH PERSONAL PLAN`** — a repository gap, not a hosting gap. The artifact half is proven fail-closed |
+| `06-lint.txt` | `./scripts/lint.sh` — PHP syntax (527 files), PHPCS baseline gate, PHPStan level 5, all `OK`, exit 0 |
+| `07-legacy-410-and-control-plane.txt` | §12/§13: the required authenticated **`410` was NOT obtained**; the anonymous `400` is explicitly **not** offered as a substitute, and no POST / `mode=apply` was ever issued. The anonymous control-plane half **is** verified clean (no translation REST namespace among 23, no anonymous admin-post, no webhook, no cron trigger). The authenticated half is recorded as not observable without a session. Batch control re-confirmed `DECLARED / NOT COMMISSIONED` from source |
+| `08-preproduction-tests.txt` | The §42 before-production matrix: full-suite totals, every failure mapped 1:1 to a §40 carried-forward condition with nothing reclassified, all Stage-15-required suites passing (Model A 145, batch 243, Stage 13 gate 771, Stage 14 gate 323, control plane 149, legacy closure 36, release integrity 229, documentation drift 14, governance), Stage L permanent gates **6/7** with `i18n_freshness` red, lint and registry |
+| `08-full-suite.txt` | Raw `./scripts/run-tests.sh` output for this run |
+| `09-steps-not-performed.txt` | The `NOT PERFORMED` record for every operational step of §9–§38, each with its absent prerequisite; readiness re-run, bulk/batch/cron/autonomous flags all OFF, counters all `0` |
+| `10-engine-integrity.txt` | §41: engine SHA-256 **BEFORE == AFTER == EXPECTED** `264cc6c4…16912`, `git diff HEAD` over the whole engine directory **empty** — the engine was not modified |
+
+No credential, application password, nonce, cookie, authorization header, `.env`
+or environment dump appears in any file here — presence flags carry **names
+only**, and no `connectors_ai_*` option was ever read or written.
+
+Cited by `docs/reports/2026-10-01-stage-15-personal-production-commissioning-model-a-canary.md`.
+
+_Last verified: 2026-10-01 by Stage 15 — Personal production commissioning and Model A canary (`BLOCKED`; Path C after an evidence-based rejection of Path A; P15 `NOT OBSERVABLE THROUGH PERSONAL PLAN`; production changes 0; engine integrity before == after)_
 
 
 _Last verified: 2026-10-01 by Stage 14 — secret-scan hardening and production commissioning (Gate A `PASS`; Gate B `NOT PERFORMED`; commissioning readiness `BLOCKED` 18/18, production writes 0)_

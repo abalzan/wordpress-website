@@ -6,8 +6,8 @@
 | **Date** | 2026-10-01 |
 | **Author / agent** | Cline |
 | **Branch** | `i18n` |
-| **Start SHA** | `777d576e4ea9c9fd99f853211eabeffefcde7609` |
-| **Working tree at finish** | dirty — only the Stage 15 report/evidence plus the Stage 13/14 files already present at Stage 15 start |
+| **Start SHA** | `7c993463c64fd18be9e1e20fbc9358bce75ec7de` (Stage 14 secret-hardening) |
+| **Working tree at finish** | only the Stage 15 report/evidence and the Stage-L `gate.json` record changed; **no production, test, engine, registry or release-metadata file was modified** |
 | **Architecture** | `MODEL_A — TRUE SUBSET EXECUTION` (unchanged) |
 
 ## Stage 15 status
@@ -71,8 +71,44 @@ work to invent, and invented none.
 which is a property of this repository, not of production. No evidence object
 was supplied for any other prerequisite, and I did not manufacture one.
 
-## 2. Authorization — checked independently
+## 2. Authorization — checked independently, none inferred
 
+Every authorization was checked on its own. **All are ABSENT.**
+
+| Authorization | Prerequisite | Result |
+|---|---|---|
+| Installation | P02 `install_authorization` | **ABSENT** |
+| Provider call | P05 `live_smoke_authorization` | **ABSENT** |
+| Canary | P08 `canary_authorization` | **ABSENT** |
+| Canary **apply** | P09 `apply_authorization` | **ABSENT** |
+| Commissioning | P10 `commissioning_authorization` | **ABSENT** |
+| Batch-control commissioning | P11 `batch_control_commissioning_authorization` | **ABSENT** |
+| Human reviewer | P07 `human_reviewer` | **ABSENT** |
+
+These remain **distinct evidence types**. None was inferred from another, none
+from site reachability, and none from the presence of a credential.
+
+That independence is **structural, not promised**: the Stage 13 permanent gate
+injects each authorization separately and asserts the aggregate fails closed
+for every single omission (negative proofs 6, 7, 8 and 10). Supplying one can
+never satisfy another.
+
+Credentials were observed by **NAME only** — no value, length, prefix, suffix,
+hash or masked form was read, printed or stored, and the local Docker `.env`
+was never opened as a production channel:
+
+```
+CONEXAO_TRANSLATION_PROVIDER_KEY: ABSENT   <- the only approved variable
+WP_USERNAME / WP_APPLICATION_PASSWORD: ABSENT
+OPENAI_API_KEY: PRESENT, NOT used, NOT aliased
+```
+
+The unrelated `OPENAI_API_KEY` present in the shell is **not** the approved
+mechanism and was never substituted for it; the gate reports this explicitly.
+
+The gate's own action counters record the outcome numerically:
+`installs 0, activations 0, content_mutations 0, provider_calls 0,
+canary_selections 0, emergency_stop_clears 0`.
 
 ## 3. Artifact — exact versions and hashes
 
@@ -81,17 +117,24 @@ depends on production access, so none of it is `NOT PERFORMED`.
 
 | Item | Value |
 |---|---|
-| `conexao-translation-rollout` version | `1.2.0` (plugin header == `plugins.json` == release record) |
-| `conexao-translation-automation` version | `0.4.0` (same three sources agree) |
-| Dependency | `conexao-translation-automation` declares `Requires Plugins: conexao-translation-rollout` |
+| Git state at preflight | branch `i18n`, HEAD `7c993463c64fd18be9e1e20fbc9358bce75ec7de`, **working tree CLEAN** |
+| `conexao-translation-rollout` version | `1.2.0` — plugin header == `plugins.json` == release record |
+| `conexao-translation-automation` version | `0.4.0` — same three sources agree |
+| Dependency | automation declares `Requires Plugins: conexao-translation-rollout` |
+| Load order | `plugins.json` #8 rollout → #10 automation (dependency precedes dependant) |
+| Engine SHA-256 | `264cc6c4e7b4214f2bc30436afb077d308b1897de444431c5c3a331f08116912` |
 | `conexao-translation-rollout.zip` SHA-256 | `73b3aee368712397e4ddbb496d8915bb6021443ab7e75bedf345e9fa4ad35215` |
 | `conexao-translation-automation.zip` SHA-256 | `1e5a1cf228ee9950ed584400dd029846fb170389331762ec42e1e7abcd644b21` |
-| Release tag | `v2026.10.01`, commit `777d576e4ea9` (dirty working tree), branch `i18n` |
-| Release manifest | 10 allowlisted artifacts, 9 built, 121 files, 525 248 bytes; `release-manifest.py --verify` exit `0` |
+| Release record | `release=v2026.10.01 artifacts=10 built=10`, `release-manifest.py --verify` exit `0` |
 | Registry | `registry OK: 15 plugins validated, 24 generated regions current (zero writes)` |
-| Determinism | artifacts built **twice**, all 9 **byte-identical** across both builds |
-| Secret scan (source) | 1571 files scanned, **0** undeclared credential-shaped values; 17 declared fixtures each confined to `tests/` |
+| Determinism | artifacts built **twice**; all **10** byte-identical, `differing = 0` |
+| Exclusions | both translation ZIPs: `tests/` entries **0**, Docker/`.env`/compose entries **0** |
+| Secret scan (source) | 1582 files scanned, **0** undeclared credential-shaped values; 17 declared fixtures each confined to `tests/` |
 | Secret scan (artifacts) | 10 ZIPs and the release record scanned, **0** secrets |
+| Lint | `lint: OK` — syntax clean, no new PHPCS violations, PHPStan level 5 clean |
+
+Every value above was recomputed in this Stage 15 run; none was carried over
+from an earlier stage's evidence file.
 
 ## 4. Deployment — exact production installation state
 
@@ -147,20 +190,38 @@ because commissioning is a production change requiring its own authorization
 and *refusal* (not silent ignore) of a caller-supplied operation list, batch
 size, environment or digest. No additional endpoint was commissioned.
 
-## 7. Emergency stop
+## 7. Emergency stop — P15
 
 | | |
 |---|---|
 | Production initial state | **NOT OBSERVABLE** — no production access |
-| Cleared by Stage 15 | **NO** |
+| P15 evidence object created | **NO** |
+| Stop cleared by Stage 15 | **NO** |
 | Final production state | **UNCHANGED** |
 
-The artifact fails closed and this is proven: absent state ⇒ `STOPPED`, malformed
-state ⇒ `STOPPED`, `set()` requires an authorized actor with `manage_options`,
-there is no client-controllable field, and there is no activation hook that
-could clear it. Nothing was cleared automatically, and clearing it requires a
-separately authorized, audited operator action that does not exist (§2). The
-gate independently reports `emergency_stop_clearance = NOT_GRANTED`.
+**P15 was `NOT PERFORMED`, and no stop-state evidence was fabricated.** Stage 14
+fixed P15 so that it *is* satisfiable — but only by a genuine
+`LIVE_PRODUCTION_READ`. Substituting a repository-derived or inferred stop state
+would be exactly the unsatisfiable-gate defect Stage 14 closed, so none was
+constructed. The gate correctly reports
+`P15: no production_stop_state evidence object was supplied`.
+
+I independently re-verified the Stage 14 fix in the working tree rather than
+trusting its narrative (`scripts/lib/commissioning.py:956-1004`): the validator
+requires the repository fail-closed fact **first** (line 985) *and* a positive
+production `STOPPED`, refuses local/artifact provenance, rejects a
+self-contradictory object, and applies the 1 h production-read freshness budget.
+The Stage 13 permanent gate proves this with **44 negative proofs, 0 missed**.
+
+The artifact-side fail-closed behaviour is proven by reading the source
+(`class-conexao-translation-automation-emergency-stop.php`): absent ⇒ `STOPPED`,
+malformed or wrong schema ⇒ `STOPPED`, `set()` requires an authorised caller
+with `manage_options`, no request parameter is ever read as the flag, and no
+activation hook can clear it.
+
+The counters held throughout: `emergency_stop_clearance = NOT_GRANTED`,
+`emergency_stop_clears = 0`. **Observing that production is stopped would never
+be permission to clear it**, and nothing was cleared.
 
 ## 8. Provider — live smoke
 
@@ -252,6 +313,18 @@ The Model A contract itself remains green in the artifact:
 `test-automation-model-a.php` — **145 passed, 0 failed** — plus apply-safety
 (**107**), exact mutation boundary (**148**) and the Stage 10 batch-boundary
 
+## 17. Apply — separate canary-apply authorization
+
+**`NOT PERFORMED`.** No separate canary-apply authorization exists (P09), so the
+stage stopped before apply. The apply lifecycle was not entered even partially:
+no lock was taken, no snapshot written, no approval consumed, no mutation.
+
+Applying exactly one reviewed canary would have required a **distinct** explicit
+authorization — "apply exactly this one reviewed production canary" —
+independent of installation, provider-call authorization, human review, batch
+approval and readiness. None was supplied, so the stop was unconditional and no
+apply was attempted.
+
 ## 18. Verification
 
 | Check | Result |
@@ -326,6 +399,25 @@ Production changes = **0**.
 | Stage 15 before | `264cc6c4e7b4214f2bc30436afb077d308b1897de444431c5c3a331f08116912` |
 | Stage 15 after | `264cc6c4e7b4214f2bc30436afb077d308b1897de444431c5c3a331f08116912` |
 
+## 23. Emergency-stop final state and stop-after-canary (§32/§33)
+
+There is no canary to stop after, but the required end state holds and was never
+left in any other state:
+
+| | |
+|---|---|
+| Production emergency stop | **UNCHANGED** — never read, never written, never cleared |
+| Bulk translation | **OFF** (never enabled) |
+| Next batch | **OFF** (never enabled) |
+| Autonomous approval | **OFF** (never enabled) |
+| Cron | **OFF** — no scheduled event exists in the shipped code |
+| Automatic progression | **OFF** |
+
+No second canary was run, no batch was started, no limit was raised, and the
+allowlist is unchanged. Because no canary succeeded, there was no temptation to
+leave production "ready for more"; the stop was never cleared in the first
+place.
+
 ## 24. Existing conditions (§35) — carried forward unchanged
 
 | Condition | State in this run |
@@ -341,6 +433,35 @@ Full suite: **79/81** in-process PHP suites (**6123 passed, 6 failed**),
 the §35 set — no new failure was introduced and none was fixed. Permanent
 gates: **6/7** pass, `i18n_freshness` fails with 3 violations (2 pre-existing,
 1 new). `assert_no_secrets()` found nothing.
+
+### 24.1 A spurious failure I caused, and disclosed
+
+An **earlier** full-suite run *in this same session* reported
+`78/81` suites and `6116 passed / 13 failed`, with
+`test-automation-model-a.php` failing 7 assertions:
+`a three-record approval executes and verifies (got "stopped")`.
+
+I investigated rather than accepting or ignoring it:
+
+- model-a **standalone**: `145 passed, 0 failed`;
+- model-a **immediately after** the batch suite: `145 passed, 0 failed`;
+- model-a after **every** automation suite in runner order: `145/0`, and the
+  `conexao_translation_automation_emergency_stop` row stayed **absent** after
+  each one — no suite leaks state into the shared database;
+- the clean, uncontended re-run reported `[PASS] 145 passed, 0 failed` and the
+  aggregate returned to the **exact Stage 14 baseline** above.
+
+**Cause: my own concurrent test activity.** While that first suite run was in
+flight I was executing other `docker compose exec` PHP suites against the *same
+shared local database*. Those suites call `Kill::set()`, which writes the real
+stop option; model-a restores the real reader partway through, so a concurrent
+writer left the stop engaged and model-a correctly reported `stopped` — the
+fail-closed safety control working exactly as designed.
+
+This was therefore **not** a code defect, **not** a regression and **not** a
+pre-existing condition. Nothing was changed to make it pass: no assertion
+weakened, no allowlist extended, no suite edited. The clean run is the
+authoritative result.
 
 ## 25. Remaining conditions (genuine blockers only)
 
@@ -477,77 +598,28 @@ no automatic expansion — may begin only when **all** of these hold:
     approval OFF, automatic progression OFF, with limits and the allowlist
     unchanged.
 
-## 27. Files added
+## 27. Files changed
 
 | Path | Change |
 |---|---|
 | `docs/reports/2026-10-01-stage-15-final-production-commissioning-canary.md` | this report |
 | `docs/evidence/2026-10-01-stage-15-final-production-commissioning-canary/` | 9 evidence files |
 | `docs/reports/README.md`, `docs/evidence/README.md` | index entries |
+| `docs/evidence/2026-09-26-stage-l/gate.json` | regenerated permanent-gate record against HEAD |
 
-No production code, test code, engine code, registry or release metadata was
-changed in Stage 15.
+**No production code, test code, engine code, plugin, registry or release
+metadata was changed in Stage 15.** The only modified paths are documentation
+and the generated gate record — verified with `git status`.
 
-
-**before == after.** The shared engine was not modified, and Stage 15 changed no
-production code at all. The digest is identical to the Stage 11 ending digest
-and to Stage 12, 13 and 14. This is the one headline requirement that *is*
-cleanly satisfied, and it is satisfied by having changed nothing.
-
-## 23. Stop-after-canary state (§33)
-
-There is no canary to stop after, but the required end state holds and was never
-left in any other state:
+Engine integrity, restated as the closing fact:
 
 ```
-bulk translation       = OFF (never enabled)
-next batch             = OFF (never enabled)
-autonomous approval    = OFF (never enabled)
-cron                   = OFF (no scheduled event exists in shipped code)
-automatic progression  = OFF
+expected:       264cc6c4e7b4214f2bc30436afb077d308b1897de444431c5c3a331f08116912
+before:         264cc6c4e7b4214f2bc30436afb077d308b1897de444431c5c3a331f08116912
+after:          264cc6c4e7b4214f2bc30436afb077d308b1897de444431c5c3a331f08116912
+git diff over wp-content/plugins/conexao-translation-rollout/: EMPTY
 ```
 
-No second canary was run, no first Level 1 batch was created, and the allowlist
-and all limits are unchanged.
-
-negative proofs. That is a proven *capability*; it is not, and is not presented
-as, a production proof. Per §21, if the exact proof cannot be produced, the
-stage is `BLOCKED` and no apply occurs — and no apply occurred.
-
-## 17. Apply
-
-**`NOT PERFORMED`.** No separate canary-apply authorization exists (P09), so the
-stage stopped before apply. The apply lifecycle was not entered even partially;
-no lock was taken, no snapshot was written, no approval was consumed.
-
-| Provider / model | `openai` / `gpt-4o-mini` (from artifact source) |
-| Credential source | `CONEXAO_TRANSLATION_PROVIDER_KEY` only, read via `getenv()` |
-| Credential present | **No** — the real code path skips with "no provider credential in CONEXAO_TRANSLATION_PROVIDER_KEY" |
-| Requests made from this stage | **0** |
-
-`OPENAI_API_KEY` *is* present in the environment. It was **not** used, not
-aliased, not substituted and not read. Aliasing it would be inferring a
-credential that was never supplied, which §3 forbids and the Stage 13 gate
-proves it would refuse.
-
-Each permission was evaluated on its own evidence type. None was inferred from
-another, and none was inferred from reachability.
-
-| Permission | Prerequisite | Result |
-|---|---|---|
-| Installation / activation of the two production plugins | P02 | **ABSENT** |
-| Live provider smoke and dry-run provider requests | P05 | **ABSENT** |
-| Mutating exactly one reviewed production canary (canary authorization) | P08 | **ABSENT** |
-| Applying that canary (separate apply authorization) | P09 | **ABSENT** |
-| Commissioning the control plane | P10 | **ABSENT** |
-| Commissioning batch control | P11 | **ABSENT** |
-| Human quality reviewer | P07 | **ABSENT** |
-
-Non-inference is not merely asserted here, it is **proven by the Stage 13
-permanent gate**, which injects each omission separately and requires the
-aggregate to fail closed every time: 34 negative proofs, 0 missed, including
-"missing installation authorization", "missing provider-call authorization",
-"missing canary authorization" and "missing apply authorization" as four
-distinct cases. So a valid installation authorization could not have satisfied
-provider-call authorization, and a valid provider-call authorization could not
-have satisfied canary-apply authorization — structurally, not by promise.
+**before == after.** The digest is identical to the Stage 11 ending digest and
+to Stages 12, 13 and 14. This headline requirement is cleanly satisfied, and it
+is satisfied by having changed nothing.

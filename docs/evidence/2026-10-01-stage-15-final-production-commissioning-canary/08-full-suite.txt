@@ -24,8 +24,52 @@ rebuilt, no allowlist was extended, and no pre-existing local-data
 failure was reclassified. The Stage 2 cache-scoping exemption is untouched.
 No NEW failure was introduced by Stage 15 and none was fixed.
 
--- permanent invariant gates (Stage L) --
-Gates: 7 total, 6 passed, 1 failed, 0 blocked
-Assertions: 89 passed, 3 failed
-Violations: 3 (2 pre-existing, 1 new)
-AGGREGATE: FAIL
+-- permanent invariant gates (Stage L, re-run via verify-permanent-gates.py) --
+gates: 7 total, 6 passed, 1 failed
+  taxonomy_policy          pass  18/0
+  translation_completeness pass  23/0
+  cache_scoping            pass   9/0
+  cache_scoping_static     pass   2/0
+  redirect_precedence      pass  15/0
+  documentation_drift      pass  14/0
+  i18n_freshness           FAIL   8/3
+gate.json regenerated against repository_sha
+  7c993463c64fd18be9e1e20fbc9358bce75ec7de
+
+## Investigation: a spurious model-a failure, and its real cause
+
+An earlier run of the full suite in this same session reported:
+
+  In-process PHP suites: 81 total, 78 passed, 3 failed
+  Assertions: 6116 passed, 13 failed
+  failing: test-automation-model-a.php (138 passed, 7 failed)
+    "a three-record approval executes and verifies (got \"stopped\")"
+
+That was investigated rather than accepted or ignored.
+
+  - model-a run STANDALONE: 145 passed, 0 failed.
+  - model-a run immediately after batch: 145 passed, 0 failed.
+  - model-a run after every automation suite in order: 145/0, and the
+    emergency-stop option row remained ABSENT after each one.
+  - No suite leaves a stop row behind in the shared database.
+  - The clean, uncontended re-run of ./scripts/run-tests.sh reported
+    test-automation-model-a.php [PASS] 145 passed, 0 failed, and the
+    aggregate returned to the exact Stage 14 baseline.
+
+CAUSE: while that first suite run was in flight, I was concurrently running
+other `docker compose exec` PHP suites against the SAME shared local
+database. Those suites call Kill::set(), which writes the real
+conexao_translation_automation_emergency_stop option. model-a restores the
+real reader partway through, so a concurrent writer left the stop engaged and
+model-a legitimately reported "stopped" - the fail-closed safety control
+working exactly as designed.
+
+It was therefore MY OWN concurrent test activity, not a code defect, not a
+regression, and not a pre-existing condition. The suite runner itself states
+the database is shared and suites must clean up after themselves. The clean
+run, with nothing else touching the database, is the authoritative result and
+it matches the Stage 14 baseline exactly.
+
+NOTHING WAS CHANGED to make it pass. No assertion was weakened, no allowlist
+extended, no suite edited, and the failing carried-forward set was neither
+regenerated nor reclassified.
