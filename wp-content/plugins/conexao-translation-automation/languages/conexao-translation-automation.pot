@@ -18,19 +18,19 @@ msgstr ""
 #. DECLARED and NOT COMMISSIONED (Stage 11 §30), so these strings are not yet
 #. reachable in production; the catalogue exists so the i18n freshness gate can
 #. tell a genuinely new string set from a stale one.
-#: wp-content/plugins/conexao-translation-automation/includes/class-conexao-translation-automation-batch-control.php:487
+#: wp-content/plugins/conexao-translation-automation/includes/class-conexao-translation-automation-batch-control.php:505
 msgid "You do not have permission to control batches."
 msgstr ""
 
-#: wp-content/plugins/conexao-translation-automation/includes/class-conexao-translation-automation-batch-control.php:494
+#: wp-content/plugins/conexao-translation-automation/includes/class-conexao-translation-automation-batch-control.php:511
 msgid "Translation Batch Control"
 msgstr ""
 
-#: wp-content/plugins/conexao-translation-automation/includes/class-conexao-translation-automation-batch-control.php:497
+#: wp-content/plugins/conexao-translation-automation/includes/class-conexao-translation-automation-batch-control.php:514
 msgid "Every action below is a separate, digest-bound decision. The batch, its records and its environment are resolved by the server."
 msgstr ""
 
-#: wp-content/plugins/conexao-translation-automation/includes/class-conexao-translation-automation-batch-control.php:519
+#: wp-content/plugins/conexao-translation-automation/includes/class-conexao-translation-automation-batch-control.php:536
 msgid "Apply this action"
 msgstr ""
 
