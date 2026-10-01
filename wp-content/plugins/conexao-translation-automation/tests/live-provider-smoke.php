@@ -101,7 +101,22 @@ $raw = Provider::translate( $fixture, $context );
 if ( is_wp_error( $raw ) ) {
 	// The message never contains the credential: the provider is written so
 	// that no returned error echoes the request or its headers.
-	echo 'RESULT: transport or provider failure (' . $raw->get_error_code() . ").\n";
+	$code = (string) $raw->get_error_code();
+
+	// STAGE 6: a quota exhaustion is an ACCOUNT problem requiring an external
+	// provider action. It is reported under its own factual classification and
+	// is explicitly NOT reported as an application transport defect, so an
+	// operator is never sent to debug working code.
+	if ( 'conexao_automation_provider_insufficient_quota' === $code ) {
+		echo "RESULT: provider_unavailable_insufficient_quota\n";
+		echo 'DETAIL: ' . $raw->get_error_message() . "\n";
+		echo 'CLASSIFICATION: external provider account action required; NOT an application defect.\n';
+		echo "RETRY: none was attempted; an exhausted quota is not retryable.\n";
+		exit( 2 );
+	}
+
+	// Every other failure is reported factually by its own category.
+	echo 'RESULT: FAILED (' . $code . ")\n";
 	echo 'DETAIL: ' . $raw->get_error_message() . "\n";
 	exit( 1 );
 }

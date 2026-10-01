@@ -80,19 +80,43 @@ function conexao_s4_body( array $translations, string $id = 'resp_1' ): string {
 }
 
 /**
+ * Build a transport result in the EXACT shape `wp_remote_post()` returns.
+ *
+ * Stage 4 originally returned a flat `{ code, body }`, which is NOT the
+ * WordPress contract — the status lives at `response.code`. That mismatch is
+ * precisely what let the Stage 5 transport defect pass the whole suite, so
+ * since Stage 6 every double in this file returns the real shape.
+ *
+ * @param int    $code    HTTP status.
+ * @param string $body    Response body.
+ * @param array  $headers Response headers.
+ * @return array
+ */
+function conexao_s4_wp_response( int $code, string $body = '', array $headers = array() ): array {
+	return array(
+		'headers'       => $headers,
+		'body'          => $body,
+		'response'      => array( 'code' => $code, 'message' => '' ),
+		'cookies'       => array(),
+		'filename'      => null,
+		'http_response' => null,
+	);
+}
+
+/**
  * Install a transport that always answers with the same thing.
  *
- * @param mixed $answer A body string, or a WP_Error.
- * @param int   $code   HTTP status.
- * @param int   &$calls Call counter, by reference.
+ * @param string $answer A body string.
+ * @param int    $code   HTTP status.
+ * @param int    &$calls Call counter, by reference.
  * @return void
  */
-function conexao_s4_transport( $answer, int $code, int &$calls ): void {
+function conexao_s4_transport( string $answer, int $code, int &$calls ): void {
 	Provider::set_transport(
 		static function () use ( $answer, $code, &$calls ) {
 			++$calls;
 
-			return array( 'code' => $code, 'body' => $answer );
+			return conexao_s4_wp_response( $code, $answer );
 		}
 	);
 }
@@ -375,12 +399,12 @@ Provider::set_transport(
 		++$flaky_calls;
 
 		if ( 1 === $flaky_calls ) {
-			return array( 'code' => 503, 'body' => '{"error":"unavailable"}' );
+			return conexao_s4_wp_response( 503, '{"error":"unavailable"}' );
 		}
 
-		return array(
-			'code' => 200,
-			'body' => conexao_s4_body( array( 'post_title' => 'A title', 'post_content' => 'A body' ) ),
+		return conexao_s4_wp_response(
+			200,
+			conexao_s4_body( array( 'post_title' => 'A title', 'post_content' => 'A body' ) )
 		);
 	}
 );
@@ -417,7 +441,7 @@ Provider::set_transport(
 	static function () use ( &$auth_calls ) {
 		++$auth_calls;
 
-		return array( 'code' => 200, 'body' => conexao_s4_body( array( 'post_title' => 'T', 'post_content' => 'C' ) ) );
+		return conexao_s4_wp_response( 200, conexao_s4_body( array( 'post_title' => 'T', 'post_content' => 'C' ) ) );
 	}
 );
 putenv( Config::CREDENTIAL_ENV );
@@ -760,7 +784,7 @@ Provider::set_transport(
 		$seen_header = (string) $args['headers']['Authorization'];
 		$seen_body   = (string) $args['body'];
 
-		return array( 'code' => 200, 'body' => conexao_s4_body( array( 'post_title' => 'A', 'post_content' => 'B' ) ) );
+		return conexao_s4_wp_response( 200, conexao_s4_body( array( 'post_title' => 'A', 'post_content' => 'B' ) ) );
 	}
 );
 Provider::translate( $payload, conexao_s4_context() );

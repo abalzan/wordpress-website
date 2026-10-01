@@ -86,6 +86,17 @@ final class Conexao_Translation_Automation_Audit {
 	const TRIGGER_BOOTSTRAP = 'bootstrap';
 
 	/**
+	 * The Stage 6 protected production proof trigger.
+	 *
+	 * Recorded so an operator reading the trail can tell an interactive
+	 * admin-screen invocation from any other kind, without the trail having
+	 * to retain who pressed the button.
+	 *
+	 * @var string
+	 */
+	const TRIGGER_ADMIN_PROOF = 'admin_proof';
+
+	/**
 	 * Write the record. Replaced by tests to inject a storage failure.
 	 *
 	 * @var callable|null

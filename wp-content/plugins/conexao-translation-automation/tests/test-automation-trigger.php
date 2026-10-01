@@ -398,10 +398,47 @@ assert_true(
 	'the plugin still schedules NOTHING: the trigger model does not depend on WordPress.com pv-cron' . ( $hits ? ': ' . implode( ', ', $hits ) : '' )
 );
 
-$hits = conexao_s3_scan( $runtime, array( 'register_rest_route', 'rest_api_init', 'admin_post_', 'wp_ajax_', 'add_shortcode', 'admin_menu', 'register_activation_hook' ) );
+// STAGE 6 SUPERSESSION. Through Stage 5 the plugin had no HTTP surface at all.
+// Stage 6 adds exactly one authenticated admin entry point and the Tools screen
+// that carries its nonce, so this assertion is NARROWED, not dropped. What it
+// still forbids — everywhere, unchanged — is everything that could expose the
+// trigger to an unauthenticated or unintended caller: no REST route, no AJAX
+// handler, no shortcode, no activation side effect and no anonymous admin
+// handler. Only `admin_post_` and `admin_menu` are now permitted, and the
+// boundary suite proves both exist in exactly one file.
+$hits = conexao_s3_scan( $runtime, array( 'register_rest_route', 'rest_api_init', 'wp_ajax_', 'admin_post_nopriv_', 'add_shortcode', 'register_activation_hook' ) );
 assert_true(
 	array() === $hits,
-	'the plugin still exposes NO public route, admin handler or activation side effect' . ( $hits ? ': ' . implode( ', ', $hits ) : '' )
+	'the plugin still exposes NO public route, no AJAX handler and no activation side effect' . ( $hits ? ': ' . implode( ', ', $hits ) : '' )
+);
+
+// `conexao_s3_scan()` matches a token followed by `(`, which suits a direct
+// call. These two registrations are STRING arguments to add_action(), so they
+// are matched by substring here instead.
+$admin_surface = array();
+
+foreach ( $runtime as $file ) {
+	$body = conexao_s3_strip_comments( (string) file_get_contents( $file ) );
+
+	foreach ( array( 'admin_post_', 'admin_menu' ) as $token ) {
+		if ( false !== strpos( $body, $token ) ) {
+			$admin_surface[] = basename( $file ) . ':' . $token;
+		}
+	}
+}
+
+assert_true(
+	2 === count( $admin_surface ),
+	'exactly one admin entry point and one admin screen exist, and nowhere else' . ( $admin_surface ? ': ' . implode( ', ', $admin_surface ) : '' )
+);
+assert_true(
+	array() === array_filter(
+		$admin_surface,
+		static function ( $hit ) {
+			return false === strpos( $hit, 'class-conexao-translation-automation-admin-trigger.php' );
+		}
+	),
+	'the admin entry point and screen are confined to the protected trigger file'
 );
 
 // (g) STAGE 4 SUPERSESSION. Stage 3 asserted no outbound request at all. Stage 4
@@ -472,6 +509,9 @@ $expected = array(
 	'Conexao_Translation_Automation_Result',
 	'Conexao_Translation_Automation_Source_State',
 	'Conexao_Translation_Automation_Trigger',
+	// STAGE 6: the protected production proof entry point. It WRAPS the
+	// trigger above, calls nothing else, and adds no lifecycle of its own.
+	'Conexao_Translation_Automation_Admin_Trigger',
 );
 sort( $expected );
 

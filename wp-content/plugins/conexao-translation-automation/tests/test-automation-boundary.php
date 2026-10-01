@@ -146,9 +146,11 @@ assert_true( class_exists( 'Conexao_Translation_Automation_Orchestrator' ), 'the
 assert_true( class_exists( 'Conexao_Translation_Automation_Result' ), 'the result class loads' );
 assert_true( defined( 'CONEXAO_TRANSLATION_AUTOMATION_VERSION' ), 'the plugin declares its version' );
 // STAGE 4: the plugin version advanced to 0.2.0 with the provider
-// implementation, the plan and the adapter. The header and the constant must
-// still agree, which is the property this assertion exists to protect.
-assert_true( '0.2.0' === CONEXAO_TRANSLATION_AUTOMATION_VERSION, 'the plugin version matches its header' );
+// implementation, the plan and the adapter.
+// STAGE 6: it advanced again to 0.3.0 with the protected production trigger.
+// The header and the constant must still agree, which is the property this
+// assertion exists to protect.
+assert_true( '0.3.0' === CONEXAO_TRANSLATION_AUTOMATION_VERSION, 'the plugin version matches its header' );
 assert_true( 'manage_options' === Conexao_Translation_Automation_Orchestrator::CAPABILITY, 'the required capability is manage_options' );
 
 // The plugin must declare the engine as a real WordPress plugin dependency, so
@@ -355,12 +357,45 @@ assert_true(
 	'no WordPress core option is written by this plugin'
 );
 
-// No cron scheduling, no REST route, no admin_post handler.
-$hits = conexao_automation_token_hits(
-	array( 'wp_schedule_event', 'wp_schedule_single_event', 'wp_next_scheduled', 'rest_api_init', 'register_rest_route', 'admin_post_' ),
+// STAGE 6 SUPERSESSION. Through Stage 5 this plugin had NO HTTP surface at
+// all, and the assertion forbade `admin_post_` outright. Stage 6 adds exactly
+// one authenticated admin entry point, so the assertion is NARROWED rather
+// than removed, and the property it protects is preserved:
+//
+//   - cron is still forbidden everywhere, unchanged;
+//   - a REST route is still forbidden everywhere, unchanged;
+//   - `admin_post_` is permitted in EXACTLY ONE file — the protected
+//     trigger — and nowhere else, so a second endpoint cannot appear;
+//   - the anonymous twin `admin_post_nopriv_` and every `wp_ajax_*` remain
+//     forbidden everywhere, so no unauthenticated surface can be added.
+$cron_and_rest = conexao_automation_token_hits(
+	array( 'wp_schedule_event', 'wp_schedule_single_event', 'wp_next_scheduled', 'rest_api_init', 'register_rest_route' ),
 	''
 );
-assert_true( array() === $hits, 'no cron hook, REST route or admin_post handler exists' . ( $hits ? ': ' . implode( ', ', $hits ) : '' ) );
+assert_true( array() === $cron_and_rest, 'no cron hook and no REST route exists' . ( $cron_and_rest ? ': ' . implode( ', ', $cron_and_rest ) : '' ) );
+
+$anonymous = conexao_automation_token_hits(
+	array( 'admin_post_nopriv_', 'wp_ajax_nopriv_', 'wp_ajax_' ),
+	''
+);
+assert_true( array() === $anonymous, 'no anonymous admin handler and no AJAX handler exists' . ( $anonymous ? ': ' . implode( ', ', $anonymous ) : '' ) );
+
+// The ONE permitted admin_post_ registration, confined to the trigger file.
+$entry_points = conexao_automation_token_hits( array( 'admin_post_' ), '' );
+assert_true(
+	1 === count( $entry_points ),
+	'exactly one authenticated admin entry point exists'
+		. ( $entry_points ? ': ' . implode( ', ', $entry_points ) : '' )
+);
+assert_true(
+	array() === array_filter(
+		$entry_points,
+		static function ( $hit ) {
+			return false === strpos( $hit, 'class-conexao-translation-automation-admin-trigger.php' );
+		}
+	),
+	'the single admin entry point lives in the protected trigger file'
+);
 
 // No permission callback that returns true unconditionally.
 $hits = conexao_automation_token_hits( array( '__return_true' ), '' );

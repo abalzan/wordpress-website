@@ -203,13 +203,31 @@ def main() -> int:
         ]
         ok(f"{name} schedules nothing", not hits, ", ".join(hits))
 
+    # STAGE 6 SUPERSESSION. See verify-stage3-automation.py for the rationale.
+    # The invariant is unchanged in substance and narrowed in scope: no REST
+    # route, no AJAX handler and no anonymous admin handler in ANY file, and an
+    # admin entry point permitted only in the protected trigger file.
+    admin_allowlist = {"class-conexao-translation-automation-admin-trigger.php"}
+
     for name, body in bodies.items():
         hits = [
             t
-            for t in ("register_rest_route", "rest_api_init", "admin_post_", "wp_ajax_", "admin_menu")
+            for t in ("register_rest_route", "rest_api_init", "wp_ajax_", "admin_post_nopriv_")
             if re.search(rf"\b{re.escape(t)}", body)
         ]
-        ok(f"{name} exposes no public route or admin handler", not hits, ", ".join(hits))
+        ok(f"{name} exposes no public route, no AJAX handler and no anonymous admin handler", not hits, ", ".join(hits))
+
+        entry = [
+            t
+            for t in ("admin_post_", "admin_menu")
+            if re.search(rf"\b{re.escape(t)}", body)
+        ]
+        if entry:
+            ok(
+                f"{name} is an allowed admin-surface file",
+                name in admin_allowlist,
+                f"unexpected admin surface in {name}: {', '.join(entry)}",
+            )
 
     # ------------------------------------------ the plan is not an engine
     print("\n-- the translation plan is not a second engine --")

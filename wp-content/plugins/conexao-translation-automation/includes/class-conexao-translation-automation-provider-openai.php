@@ -11,7 +11,7 @@
  * | HTML preservation | the model is instructed to preserve tags and Gutenberg block comments verbatim; see `HTML_POLICY` |
  * | deterministic request identity | computed from the Stage 3 digest, never from a vendor field — a provider that echoes nothing back is still bindable |
  * | API authentication | `Authorization: Bearer`, from the environment only |
- * | error classification | the HTTP status is a contract: 429/5xx retryable, other 4xx permanent, anything unrecognised unknown |
+ * | error classification | the HTTP status is a contract: 429/5xx retryable, other 4xx permanent, anything unrecognised unknown — with `insufficient_quota` carved out as non-retryable (Stage 6) |
  *
  * ## The three things this class must never do
  *
@@ -101,9 +101,15 @@ final class Conexao_Translation_Automation_Provider_OpenAI implements Conexao_Tr
 	/**
 	 * Replace the HTTP transport. Test support.
 	 *
+	 * The callable MUST return what `wp_remote_post()` returns — an array
+	 * carrying `response.code` and `body` (or a WP_Error). It must NOT return
+	 * a flat `{ code, body }`: that shape does not occur on the real
+	 * transport path, and accepting it as a substitute is precisely how the
+	 * Stage 5 defect stayed invisible to the suite.
+	 *
 	 * @param callable|null $transport Callable receiving ( url, args, api_key )
-	 *                                  and returning a WP_Error or an array
-	 *                                  with `code` and `body`.
+	 *                                  and returning a WP_Error or a real
+	 *                                  `wp_remote_post()` result array.
 	 * @return void
 	 */
 	public static function set_transport( $transport ): void {
@@ -301,6 +307,18 @@ final class Conexao_Translation_Automation_Provider_OpenAI implements Conexao_Tr
 					return $response;
 				}
 			} else {
+				// --- Quota exhaustion is checked BEFORE the status category,
+				// because it is the one retryable-looking status that must
+				// NOT be retried. It is an account problem the operator
+				// resolves out of band, and retrying it would burn the
+				// remaining attempts to re-learn the same fact.
+				if ( self::is_quota_exhausted( (int) $response['code'], (string) $response['body'] ) ) {
+					// Returned IMMEDIATELY, before any backoff and before the
+					// attempt budget is consulted, so a quota refusal costs
+					// exactly ONE provider call.
+					return self::quota_exhausted();
+				}
+
 				$category = self::classify_status( (int) $response['code'] );
 
 				if ( self::CATEGORY_RETRYABLE !== $category ) {
@@ -358,24 +376,155 @@ final class Conexao_Translation_Automation_Provider_OpenAI implements Conexao_Tr
 	/**
 	 * Normalise whatever the transport returned into code + body, or WP_Error.
 	 *
-	 * @param mixed $response Transport return value.
-	 * @return array|WP_Error
+	 * ## The WordPress HTTP contract this implements
+	 *
+	 * `wp_remote_post()` does NOT return a flat `{ code, body }`. Its real
+	 * return value is:
+	 *
+	 *     array(
+	 *         'headers'       => Requests_Utility_CaseInsensitiveDictionary,
+	 *         'body'          => string,
+	 *         'response'      => array( 'code' => int, 'message' => string ),
+	 *         'cookies'       => array,
+	 *         'filename'      => string|null,
+	 *         'http_response' => object|null,
+	 *     )
+	 *
+	 * The status therefore lives at `response.code`, NOT at a top-level
+	 * `code`. Stage 5 read a top-level `code`, so the real transport path
+	 * always looked malformed and a successful call returned
+	 * `bad_transport`. That was a real defect in this file, not in the engine.
+	 *
+	 * ## What is read, and what is deliberately not
+	 *
+	 * | Field | Used | Why |
+	 * |---|---|---|
+	 * | `response.code` | yes | the only trustworthy HTTP status |
+	 * | `body` | yes | the JSON envelope the validator judges |
+	 * | `response.message` | no | a human status line; carrying it risks echoing an upstream error page |
+	 * | `headers` | no | nothing in this contract needs a response header, and `set-cookie`/`authorization` echoes must never be retained |
+	 * | `cookies`, `filename`, `http_response` | no | transport bookkeeping this provider has no use for |
+	 *
+	 * ## Fail-closed, one distinct category per defect
+	 *
+	 * Every malformed shape is refused, and each refusal carries its OWN error
+	 * code so an operator can tell a DNS failure from a truncated response
+	 * from a missing status. Nothing is coerced, defaulted or half-parsed.
+	 *
+	 * @param mixed $response Transport return value, exactly as `wp_remote_post()` gave it.
+	 * @return array|WP_Error Normalised `array( 'code' => int, 'body' => string )`, or WP_Error.
 	 */
 	private static function normalise( $response ) {
 		if ( is_wp_error( $response ) ) {
+			// A transport-level failure (DNS, TLS, timeout). Passed through
+			// untouched so `is_retryable_transport_error()` keeps its say.
 			return $response;
 		}
 
-		if ( ! is_array( $response ) || ! isset( $response['code'] ) ) {
+		if ( ! is_array( $response ) ) {
 			return new WP_Error(
 				'conexao_automation_provider_bad_transport',
 				'The provider transport returned neither a response nor an error.'
 			);
 		}
 
+		// --- The response envelope. Absent or not an array is malformed: this
+		// is the shape `wp_remote_post()` always provides, so its absence
+		// means the value is not a WordPress transport result at all.
+		if ( ! isset( $response['response'] ) || ! is_array( $response['response'] ) ) {
+			return new WP_Error(
+				'conexao_automation_provider_missing_response',
+				'The provider transport result carried no WordPress response envelope.'
+			);
+		}
+
+		$envelope = $response['response'];
+
+		// --- The HTTP status. `is_numeric` accepts the int WordPress supplies
+		// and rejects a string, an array or a null, rather than casting one of
+		// those into a status nobody sent.
+		if ( ! isset( $envelope['code'] ) || ! is_numeric( $envelope['code'] ) ) {
+			return new WP_Error(
+				'conexao_automation_provider_missing_status',
+				'The provider transport result carried no numeric HTTP status.'
+			);
+		}
+
+		// --- The body. An absent body is malformed; an EMPTY body is a
+		// different defect and is left to `decode()`, which already reports
+		// it as an empty-body refusal.
+		if ( ! isset( $response['body'] ) || ! is_string( $response['body'] ) ) {
+			return new WP_Error(
+				'conexao_automation_provider_missing_body',
+				'The provider transport result carried no response body.'
+			);
+		}
+
 		return array(
-			'code' => (int) $response['code'],
-			'body' => isset( $response['body'] ) ? (string) $response['body'] : '',
+			'code' => (int) $envelope['code'],
+			'body' => (string) $response['body'],
+		);
+	}
+
+	/**
+	 * Is this a 429 that reports an exhausted QUOTA rather than a rate limit?
+	 *
+	 * ## Why this distinction is a correctness requirement
+	 *
+	 * A rate-limited request succeeds later, so retrying it is right. A quota-
+	 * exhausted request CANNOT succeed later, so retrying it only spends
+	 * attempts to learn the same thing, and — worse — reports a permanent
+	 * account problem as though it were transient infrastructure noise.
+	 *
+	 * The vendor's own contract distinguishes them: a quota exhaustion carries
+	 * `insufficient_quota` in the error body, while a plain rate limit does
+	 * not. This repository reads that signal rather than guessing, and treats
+	 * the result as NON-retryable.
+	 *
+	 * @param int    $code HTTP status.
+	 * @param string $body Raw response body.
+	 * @return bool
+	 */
+	private static function is_quota_exhausted( int $code, string $body ): bool {
+		if ( 429 !== $code ) {
+			return false;
+		}
+
+		$decoded = json_decode( trim( $body ), true );
+
+		if ( ! is_array( $decoded ) ) {
+			// An unparseable 429 is treated as an ordinary rate limit: the
+			// retry policy for a 429 is already safe, and guessing
+			// "quota" from an unreadable body would invent a fact.
+			return false;
+		}
+
+		$error = isset( $decoded['error'] ) && is_array( $decoded['error'] ) ? $decoded['error'] : array();
+
+		foreach ( array( 'code', 'type' ) as $key ) {
+			if ( isset( $error[ $key ] ) && 'insufficient_quota' === (string) $error[ $key ] ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * The terminal, non-retryable quota refusal.
+	 *
+	 * Returned instead of an envelope so the Stage 3 status vocabulary is
+	 * untouched: this is an ACCOUNT problem the operator must resolve out of
+	 * band, not a translation result. It is never retried and never reported
+	 * as a transport defect.
+	 *
+	 * @return WP_Error
+	 */
+	private static function quota_exhausted(): WP_Error {
+		return new WP_Error(
+			'conexao_automation_provider_insufficient_quota',
+			'The provider account has exhausted its quota (HTTP 429 insufficient_quota). '
+			. 'This is not retryable and is not an application transport defect: it requires an external provider account action.'
 		);
 	}
 

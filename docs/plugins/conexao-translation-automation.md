@@ -9,7 +9,7 @@
 | **Build** | yes |
 | **Compose mount** | yes |
 | **Dependencies** | `conexao-translation-rollout` |
-| **Version** | 0.2.0 (authoritative source: `wp-content/plugins/conexao-translation-automation/conexao-translation-automation.php` header) |
+| **Version** | 0.3.0 (authoritative source: `wp-content/plugins/conexao-translation-automation/conexao-translation-automation.php` header) |
 | **Registry** | [`plugins.json`](../../plugins.json) |
 
 > **Production platform plugin.** Part of the production steady state.
@@ -82,17 +82,44 @@ registers it with the engine.
 
 ## Security boundary
 
-| Control | Stage 1 implementation |
+| Control | Stage 6 implementation |
 |---|---|
 | Authorisation | Required and checked **first**, before the engine is resolved |
 | Capability | `manage_options`; a mismatched assertion is refused, not downgraded |
-| Nonce | No browser/admin entry point exists, so no nonce is accepted or required yet. A future admin path MUST add `manage_options` **and** a nonce, following `Conexao_Translation_Rollout_Admin`. |
-| Public endpoints | None. No `register_rest_route`, no `admin_post_*`, no `__return_true` |
-| Secrets | `Conexao_Translation_Automation_Result::assert_no_secrets()` refuses credential-shaped keys and values; the source references no credential constant |
-| Fail-closed | Every failure path returns `mutation_permitted = false` |
+| Nonce | **Stage 6 added the admin entry point, so a nonce is now required.** `Conexao_Translation_Automation_Admin_Trigger` verifies a dedicated nonce action and refuses a request without it, following `Conexao_Translation_Rollout_Admin` |
+| Public endpoints | **One authenticated admin endpoint only:** `admin_post_conexao_translation_automation_proof`, plus the **Tools → Translation Automation** screen that carries its nonce. No `register_rest_route`, no `admin_post_nopriv_*`, no `wp_ajax_*`, no `__return_true` |
+| Method | POST only. `admin-post.php` is GET-reachable, so the method is enforced explicitly rather than assumed |
+| Entry-point count | Exactly **one** production automation entry point, asserted structurally by count *and* filename |
+| Secrets | `Conexao_Translation_Automation_Result::assert_no_secrets()` refuses credential-shaped keys and values, and runs on the trigger's **result boundary**; the provider credential is read from `CONEXAO_TRANSLATION_PROVIDER_KEY` in the environment and never written to an option |
+| Fail-closed | Every failure path returns `mutation_permitted = false` and `mutation_occurred = false` |
+| Cron | None. `wp_schedule_*` is asserted absent; the model remains explicit, operator-driven invocation |
 
 Controls deferred to later stages and **not** claimed here: transport-level
 authentication, rate limiting, and audit retention.
+
+## The production proof trigger (Stage 6)
+
+`Conexao_Translation_Automation_Admin_Trigger` is the single production entry
+point. Its chain, in order:
+
+```
+admin request -> POST -> authenticated -> manage_options -> nonce
+             -> input validation -> Trigger::fire() (PROOF only) -> safe result
+```
+
+Steps 1–5 all complete **before** the orchestrator is reached, so an
+unauthorised or malformed caller can never cause a provider call. Every
+authorisation failure is paired with an orchestrator-invocation counter that
+must remain at zero.
+
+**Apply is structurally unreachable.** The accepted mode vocabulary has exactly
+one member, `proof`; `apply` is *not a mode* rather than a disabled flag, so it
+is refused by the same unknown-value branch as any unrecognised string.
+`dry_run` is not an accepted request field, `environment` is derived
+server-side, and `bootstrap` is hard-coded `false` — this entry point cannot
+adopt a baseline either.
+
+Installation and activation in production remain a manual operator action.
 
 ## Dependency
 

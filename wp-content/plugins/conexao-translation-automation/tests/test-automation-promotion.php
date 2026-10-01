@@ -131,12 +131,33 @@ $hits = conexao_promotion_token_hits(
 );
 assert_true( array() === $hits, 'the plugin still schedules nothing: the trigger model does not depend on pv-cron' . ( $hits ? ': ' . implode( ', ', $hits ) : '' ) );
 
-// Still no public surface.
+// STAGE 6 SUPERSESSION. Through Stage 5 the plugin had no HTTP surface at
+// all. Stage 6 adds exactly one AUTHENTICATED admin entry point, so this
+// assertion is narrowed rather than dropped, and everything it protected is
+// still protected: no REST route, no shortcode, no AJAX handler, and no
+// ANONYMOUS admin handler of any kind. Only `admin_post_` (the authenticated
+// half) is now permitted, and only in the protected trigger file.
 $hits = conexao_promotion_token_hits(
-	array( 'rest_api_init', 'register_rest_route', 'admin_post_', 'add_shortcode', 'wp_ajax_' ),
+	array( 'rest_api_init', 'register_rest_route', 'add_shortcode', 'wp_ajax_', 'admin_post_nopriv_' ),
 	''
 );
-assert_true( array() === $hits, 'the plugin still exposes no REST route, admin_post, shortcode or AJAX handler' . ( $hits ? ': ' . implode( ', ', $hits ) : '' ) );
+assert_true( array() === $hits, 'the plugin still exposes no REST route, shortcode, AJAX handler or anonymous admin handler' . ( $hits ? ': ' . implode( ', ', $hits ) : '' ) );
+
+$entry_points = conexao_promotion_token_hits( array( 'admin_post_' ), '' );
+assert_true(
+	1 === count( $entry_points ),
+	'exactly one authenticated admin entry point exists'
+		. ( $entry_points ? ': ' . implode( ', ', $entry_points ) : '' )
+);
+assert_true(
+	array() === array_filter(
+		$entry_points,
+		static function ( $hit ) {
+			return false === strpos( $hit, 'class-conexao-translation-automation-admin-trigger.php' );
+		}
+	),
+	'the single admin entry point lives in the protected trigger file'
+);
 
 // Still no activation side effects.
 $hits = conexao_promotion_token_hits(
@@ -208,6 +229,9 @@ $expected_classes = array(
 	'Conexao_Translation_Automation_Audit',
 	'Conexao_Translation_Automation_Hooks',
 	'Conexao_Translation_Automation_Trigger',
+	// STAGE 6: the protected production proof entry point. It WRAPS the
+	// trigger above and adds no lifecycle of its own.
+	'Conexao_Translation_Automation_Admin_Trigger',
 );
 sort( $declared );
 sort( $expected_classes );

@@ -224,13 +224,35 @@ def main() -> int:
         ]
         ok(f"{name} schedules nothing", not hits, ", ".join(hits))
 
+    # STAGE 6 SUPERSESSION. Through Stage 5 the plugin had NO HTTP surface and
+    # this forbade admin_post_/admin_menu outright. Stage 6 adds exactly one
+    # authenticated admin entry point plus the Tools screen carrying its nonce,
+    # so the assertion is narrowed rather than removed. What it still forbids,
+    # in EVERY file, is everything that could expose the trigger to an
+    # unauthenticated or unintended caller: no REST route, no AJAX handler and
+    # no anonymous admin handler. The entry point itself is checked separately,
+    # to exactly one file, below.
+    admin_allowlist = {"class-conexao-translation-automation-admin-trigger.php"}
+
     for name, body in bodies.items():
         hits = [
             t
-            for t in ("register_rest_route", "rest_api_init", "admin_post_", "wp_ajax_", "admin_menu")
+            for t in ("register_rest_route", "rest_api_init", "wp_ajax_", "admin_post_nopriv_")
             if re.search(rf"\b{re.escape(t)}", body)
         ]
-        ok(f"{name} exposes no public route or admin handler", not hits, ", ".join(hits))
+        ok(f"{name} exposes no public route, no AJAX handler and no anonymous admin handler", not hits, ", ".join(hits))
+
+        entry = [
+            t
+            for t in ("admin_post_", "admin_menu")
+            if re.search(rf"\b{re.escape(t)}", body)
+        ]
+        if entry:
+            ok(
+                f"{name} is an allowed admin-surface file",
+                name in admin_allowlist,
+                f"unexpected admin surface in {name}: {', '.join(entry)}",
+            )
 
     trigger = bodies.get("class-conexao-translation-automation-trigger.php", "")
     ok("the trigger never names MODE_APPLY", "MODE_APPLY" not in trigger)

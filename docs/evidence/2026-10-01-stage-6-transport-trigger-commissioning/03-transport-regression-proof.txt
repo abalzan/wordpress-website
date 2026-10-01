@@ -1,0 +1,19 @@
+=== Stage 6 REGRESSION PROOF ===
+
+Command: run the Stage 6 transport suite twice — once against the
+Stage 5 provider (git HEAD) and once against the Stage 6 provider.
+
+--- RUN 1: provider reverted to Stage 5 (git show HEAD:...) ---
+  FAIL: a real wp_remote_post() shape is NOT refused as a transport defect (got conexao_automation_provider_bad_transport)
+  FAIL: the regression case returned a usable provider response — The provider transport returned neither a response nor an error.
+  FAIL: 200 in the real shape normalises to a success
+  FAIL: a 429 insufficient_quota is classified as quota exhaustion, not a transport defect — expected 'conexao_automation_provider_insufficient_quota', got 'conexao_automation_provider_bad_transport'
+  FAIL: a transient 429 rate limit IS retried (attempts exhausted), unlike quota exhaustion — expected 'conexao_automation_provider_attempts_exhausted', got 'conexao_automation_provider_bad_transport'
+  FAIL: a transient rate limit consumes more than one attempt
+  FAIL: a 401 completes the HTTP exchange and returns an envelope
+
+--- RUN 2: provider restored to Stage 6 ---
+stage 6 transport regression: 64 passed, 0 failed
+
+Conclusion: the same suite fails against Stage 5 with the documented
+conexao_automation_provider_bad_transport and passes against Stage 6.
