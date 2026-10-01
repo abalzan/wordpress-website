@@ -525,6 +525,7 @@ convention-based, and CI calls the same command you do.
 | `tests/scripts/verify-cache-key-scoping.py` | `SCRIPT_CONTRACT` (Stage L) | yes — blocking; static half of the cache-scoping invariant |
 | `tests/scripts/verify-documentation-drift.py` | `SCRIPT_CONTRACT` (Stage L) | yes — blocking; documentation drift |
 | `tests/scripts/verify-i18n-freshness.py` | `SCRIPT_CONTRACT` (Stage L) | yes — blocking; i18n catalogue freshness |
+| `tests/scripts/verify-stage7-commissioning.py` | `SCRIPT_CONTRACT` (Stage 7) | yes — blocking; the Stage 6 **supersession contract**: exactly **1** approved admin-post endpoint **by exact action name**, registered once, in one approved file, and **0** forbidden entry surfaces / **0** webhooks. The pre-existing apply-capable engine endpoint is declared, not ignored. |
 | `wp-content/themes/conexao-br-irlanda/tests/test-taxonomy-policy.php` | `PERMANENT_INVARIANT` (Stage L) | yes — blocking; §6.3 taxonomy policy |
 | `wp-content/themes/conexao-br-irlanda/tests/test-translation-completeness.php` | `PERMANENT_INVARIANT` (Stage L) | yes — blocking; §6.1 completeness |
 | `wp-content/themes/conexao-br-irlanda/tests/test-cache-language-scoping.php` | `PERMANENT_INVARIANT` (Stage L) | yes — blocking; §6.1 cache scoping |
@@ -534,6 +535,7 @@ _Last verified: 2026-09-26 by Stage I — Scripts Standardisation_
 _Last verified: 2026-09-26 by Stage J — Build, Release & Deploy Verification_
 
 _Last verified: 2026-09-28 by CI integration setup recovery_
+_Last verified: 2026-10-01 by Stage 7 — supersession contract gate registration_
 _Last verified: 2026-09-26 by Stage K — Agent Skills + Templates_
 _Last verified: 2026-09-26 by Stage O — Enable the Real English Blog Archive_
 

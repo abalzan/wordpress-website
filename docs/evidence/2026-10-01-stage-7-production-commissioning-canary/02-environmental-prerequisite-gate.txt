@@ -1,0 +1,60 @@
+# Stage 7 - environmental prerequisite gate (Section 4)
+
+UTC: 2026-10-01T07:27:16Z
+NO SECRET VALUE IS PRINTED. Only presence/absence and target classification.
+
+## A. Production deployment/admin channel
+WP_USERNAME                  : UNSET in process environment
+WP_APPLICATION_PASSWORD      : UNSET in process environment
+CONEXAO_SITE_URL             : UNSET -> scripts/lib/rest.py defaults to http://localhost:8080 (local Docker)
+.env WP_USERNAME             : present but LOCAL (matches localhost/127.0.0.1)
+.env target class           : development (per scripts/lib/rest.py classify_target)
+=> No authorized production deployment or admin channel exists.
+
+## B. Public reachability of https://conexaobr.ie (read-only HEAD, no credentials)
+   http_code=200 total_time=0.055686s
+   => Site is REACHABLE. Reachability is not authorization.
+
+## C. Provider credential
+CONEXAO_TRANSLATION_PROVIDER_KEY : UNSET in process environment
+Config::CREDENTIAL_ENV           : CONEXAO_TRANSLATION_PROVIDER_KEY (process env only, never wp_options)
+=> credentials_available() would be FALSE.
+
+## D. Provider quota
+NOT TESTABLE. No credential -> no authenticated call -> quota state unknown.
+Requirement: live smoke must not return insufficient_quota.
+Actual    : NOT TESTABLE (credential absent)
+=> MUST NOT be reinterpreted as application success.
+
+## E. Deployment authority
+No operator authorization for production install/activate was provided in this task.
+=> prerequisite MISSING.
+
+## F. Code-path proof (not just environment inspection)
+Executed inside the WordPress container (where wp-load.php exists):
+
+$ php .../tests/live-provider-smoke.php
+   
+   == LIVE provider smoke test (real external call) ==
+   SKIPPED: not explicitly authorised (set CONEXAO_LIVE_PROVIDER_SMOKE=1 to allow a live external call)
+   No provider call was made. No WordPress content was read or written.
+   exit=0
+
+$ CONEXAO_LIVE_PROVIDER_SMOKE=1 CONEXAO_TEST_LIVE_PROVIDER=1 php .../live-provider-smoke.php
+   
+   == LIVE provider smoke test (real external call) ==
+   SKIPPED: no provider credential in CONEXAO_TRANSLATION_PROVIDER_KEY
+   No provider call was made. No WordPress content was read or written.
+   exit=0
+
+VERDICT: Config::credentials_available() is FALSE at runtime.
+With both human acknowledgements set, the ONLY remaining blocker is the
+absent credential. The smoke test therefore CANNOT return RESULT: OK.
+No provider request was made. No WordPress content was read or written.
+
+## G. GATE OUTCOME
+   A production deployment/admin channel : MISSING
+   Provider credential                  : MISSING
+   Provider quota                       : NOT TESTABLE
+   Deployment authority                  : MISSING
+   => BLOCKED. Section 4 forbids partial commissioning.

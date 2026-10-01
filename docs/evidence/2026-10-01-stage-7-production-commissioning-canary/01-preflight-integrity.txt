@@ -1,0 +1,21 @@
+# Stage 7 - preflight integrity capture
+
+UTC timestamp: 2026-10-01T07:27:01Z
+
+## git status --short -b
+## i18n...origin/i18n [ahead 2]
+?? docs/evidence/2026-10-01-stage-7-production-commissioning-canary/
+
+## HEAD
+889200338200170bee1d6039ef60b647dc855753
+i18n
+
+## engine SHA-256 (single file, gate method)
+baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4  wp-content/plugins/conexao-translation-rollout/includes/class-conexao-translation-rollout-engine.php
+expected: baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4
+
+## automation plugin tree SHA-256 (all files, sorted)
+9902a84721c2e671b0fbf3896903f6736b47b7b8a294952160e92d23a5c8955c  -
+
+## provider implementation SHA-256
+9f4dcaf6af168f7e239df71921ff78296f557a63652a7c5afef7fee667a9c7df  wp-content/plugins/conexao-translation-automation/includes/class-conexao-translation-automation-provider-openai.php

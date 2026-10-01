@@ -1,0 +1,59 @@
+# Stage 7 - artifact verification (Section 5)
+
+UTC: 2026-10-01T07:28:31Z
+Built twice with ./scripts/build-plugins-zip.sh (the repository supported release process).
+
+## Determinism: build 1 vs build 2 (identical SHA-256 required)
+  IDENTICAL conexao-admin-ux.zip  aded30ec34b2954370d76deb0f77211a1924fd003fefd2a8ca6967933c1d201a
+  IDENTICAL conexao-br-irlanda.zip  10e1ed1563fd7bbcc115e66fdbaace5de0abc1948d3b3c43fd1ed8fe59980605
+  IDENTICAL conexao-content.zip  d0ce005a3818674c595cf48de23c63a8c14eba931896a1308a5ce938ce815a4f
+  IDENTICAL conexao-data-model.zip  a883b6d179a9415513d38d24bbb48fbd4a9a05811aba344841f30809bcc0a330
+  IDENTICAL conexao-event-importer.zip  551ef74cdf161b63f167a24e46685dc927f68e37e9067052be40a7e0e22b8167
+  IDENTICAL conexao-event-runtime.zip  515a416144e4f2580bbfea1818ba5d457720d9aa543f0c8cde1c6b1a854723e0
+  IDENTICAL conexao-leisure-migration.zip  e91eb8b09bd697105057d6d5b22a793d5849ebf3bdd8640d457e06380efb4462
+  IDENTICAL conexao-sponsor-migration.zip  b4d4e52562bee987ca4bca64331542038331da2189a7ec47a1030d06b9523d86
+  IDENTICAL conexao-translation-automation.zip  b828b642323740b225e74c66a62f6b2d4ddbb642b86c57cfa3bd6f86d4b0cb9f
+  IDENTICAL conexao-translation-rollout.zip  5b87fbc533c352197e6bf6be14b49d27537323a8370862ec7bb8031bb3d15d5b
+
+  => 10/10 artifacts byte-identical across two independent builds. DETERMINISTIC.
+
+## Release record
+  tag        : v2026.10.01
+  git sha    : 889200338200170bee1d6039ef60b647dc855753 (branch i18n)
+  schema_ver : 1
+  artifacts  : 10 built / 10   files 226   bytes 6364169
+  NOTE: the previous dist/ recorded the automation plugin at 0.2.0; the Stage 6
+        header is 0.3.0, so the committed artifact was STALE and has been rebuilt.
+        automation zip 0.2.0 = 2b4857ae372b385c00f76e19a8f1a2294da6f04efca7480e47a75906f3dd26ef
+        automation zip 0.3.0 = b828b642323740b225e74c66a62f6b2d4ddbb642b86c57cfa3bd6f86d4b0cb9f
+
+## Production dependency order (from plugins.json via generated docs)
+  1 conexao-data-model  2 conexao-content  3 conexao-admin-ux
+  4 conexao-event-runtime  5 conexao-translation-rollout  6 conexao-translation-automation
+
+## Plugin headers of the two promoted artifacts
+  rollout:  * Plugin Name: Conexao Translation Rollout Engine
+  rollout:  * Version: 1.1.0
+  rollout:  * Requires PHP: 8.0
+  automation:  * Plugin Name: Conexão BR Irlanda — Translation Automation
+  automation:  * Version: 0.3.0
+  automation:  * Requires PHP: 7.4
+  automation:  * Requires Plugins: conexao-translation-rollout
+
+## No tests / no local-only files in the promoted ZIPs
+  rollout   : 4 files (main, admin, engine, languages/README.md)
+  automation: 20 files (main + 19 includes) - the tests/ dir is NOT shipped
+
+## Secret scan (all 10 artifacts)
+  Patterns: sk- key, WP_APPLICATION_PASSWORD=, WP_USERNAME=, Bearer <literal>,
+            credentials-in-URL, PROVIDER_KEY=<literal>
+  Result  : 10/10 CLEAN, 0 real credential patterns.
+  Note    : a first attempt used a 4x4-alphanumeric regex that matched CSS
+            colours and hashes; those were false positives, and the scan was
+            corrected rather than the finding being reported.
+  The only "Bearer" occurrence is the header NAME plus a runtime variable:
+            'Authorization' => 'Bearer ' . $credential
+
+## Gates
+  python3 scripts/release-manifest.py --verify      -> exit 0, artifacts match the record
+  python3 tests/scripts/verify-release-integrity.py -> 229 passed, 0 failed
