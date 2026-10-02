@@ -444,49 +444,85 @@ def section_source_tree(cases: list) -> None:
     print(f"  [ok] {len(ALLOWLISTED_FIXTURES)} declared fixtures, each confined to tests/")
 
 
+def build_artifacts_into(out: Path) -> list[Path]:
+    """Build the releaseable artifacts into `out` and return them.
+
+    Runs the repository's OWN packaging scripts — plugins first, then the theme
+    — because that is the full release set: `verify-release-integrity.py` and
+    the `release-integrity` CI job both build exactly these two. Each script
+    also emits the shared release record into the same directory, so the
+    artifacts and the record scanned here describe the same build.
+    """
+    out.mkdir(parents=True, exist_ok=True)
+    for script in ("build-plugins-zip.sh", "build-theme-zip.sh"):
+        proc = subprocess.run(
+            [str(REPO_ROOT / "scripts" / script)],
+            cwd=str(REPO_ROOT), capture_output=True, text=True, check=False,
+            env=dict(os.environ, BUILD_OUTPUT_DIR=str(out)),
+        )
+        if proc.returncode != 0:
+            print(f"FAIL: {script} failed: {proc.stderr[-400:]}")
+            return []
+    return sorted(out.glob("*.zip"))
+
+
 def section_artifacts(build: bool) -> None:
-    """Run the rules over the production ZIPs, the release record and the evidence."""
+    """Run the rules over the production ZIPs, the release record and the evidence.
+
+    The artifacts are BUILT HERE, into a temporary directory this function
+    removes, rather than read from the git-ignored `dist/`.
+
+    That is a strengthening, not a relaxation. `dist/` is untracked build output:
+    it is absent on a fresh CI checkout, so depending on it made this permanent
+    gate report "the dist/ directory carries built artifacts to scan" as a
+    FAILURE on a perfectly clean tree while passing on any developer machine
+    that happened to have run a build. Building here means the gate always
+    measures what the repository produces RIGHT NOW, can never be satisfied by a
+    stale or hand-modified directory, and behaves identically everywhere. A build
+    failure is still a hard failure, and the scans below are unchanged.
+    """
     print("\n-- 6. production artifacts carry no secret --")
 
-    dist = REPO_ROOT / "dist"
-    zips = sorted(dist.glob("*.zip")) if dist.is_dir() else []
-    check(bool(zips), "the dist/ directory carries built artifacts to scan")
+    with tempfile.TemporaryDirectory(prefix="conexao-stage14-artifacts-") as scratch:
+        dist = Path(scratch) / "dist"
+        zips = build_artifacts_into(dist)
+        check(bool(zips), "the repository's packaging script produced artifacts to scan")
 
-    hits: list = []
-    for archive in zips:
-        with zipfile.ZipFile(archive) as zf:
-            for name in zf.namelist():
-                if name.endswith("/"):
-                    continue
-                # Stage 14 section 9: no test-only material may ship.
-                check(
-                    "/tests/" not in name and not name.endswith(".pot.check"),
-                    f"{archive.name}:{name} ships test-only material",
-                )
-                try:
-                    archive_text = zf.read(name).decode("utf-8", errors="replace")
-                except (KeyError, OSError):
-                    continue
-                # NO exemption inside a shipped artifact: a credential-shaped value
-                # in a production ZIP is a failure whatever its literal, because the
-                # fixture it would match is test-only and must never ship.
-                for category, pattern in TEXT_PATTERNS.items():
-                    for match in pattern.finditer(archive_text):
-                        hits.append((f"{archive.name}:{name}", category, "redacted"))
+        hits: list = []
+        for archive in zips:
+            with zipfile.ZipFile(archive) as zf:
+                for name in zf.namelist():
+                    if name.endswith("/"):
+                        continue
+                    # Stage 14 section 9: no test-only material may ship.
+                    check(
+                        "/tests/" not in name and not name.endswith(".pot.check"),
+                        f"{archive.name}:{name} ships test-only material",
+                    )
+                    try:
+                        archive_text = zf.read(name).decode("utf-8", errors="replace")
+                    except (KeyError, OSError):
+                        continue
+                    # NO exemption inside a shipped artifact: a credential-shaped value
+                    # in a production ZIP is a failure whatever its literal, because the
+                    # fixture it would match is test-only and must never ship.
+                    for category, pattern in TEXT_PATTERNS.items():
+                        for match in pattern.finditer(archive_text):
+                            hits.append((f"{archive.name}:{name}", category, "redacted"))
 
-    check(not hits, f"a production ZIP carries credential-shaped values: {sorted({(h[0], h[1]) for h in hits})[:8]}")
+        check(not hits, f"a production ZIP carries credential-shaped values: {sorted({(h[0], h[1]) for h in hits})[:8]}")
 
-    record = dist / "release.json"
-    check(record.is_file(), "the release record exists to be scanned")
-    if record.is_file():
-        record_hits: list = []
-        scan_text(record.read_text(encoding="utf-8", errors="replace"), "release.json", record_hits)
-        check(not record_hits, f"the release record carries credential-shaped values: {record_hits[:5]}")
+        record = dist / "release.json"
+        check(record.is_file(), "the release record emitted by the build exists to be scanned")
+        if record.is_file():
+            record_hits: list = []
+            scan_text(record.read_text(encoding="utf-8", errors="replace"), "release.json", record_hits)
+            check(not record_hits, f"the release record carries credential-shaped values: {record_hits[:5]}")
 
-    if build:
-        section_double_build()
+        if build:
+            section_double_build()
 
-    print(f"  [ok] {len(zips)} ZIPs and the release record scanned")
+        print(f"  [ok] {len(zips)} freshly built ZIPs and the release record scanned")
 
 
 def section_double_build() -> None:

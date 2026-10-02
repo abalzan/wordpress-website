@@ -249,6 +249,42 @@ Create a free token at [developers.eventbrite.com](https://www.eventbrite.com/de
 - Events are deduplicated by the feed's native `UID`.
 - `CATEGORIES` maps to the event category (first entry); per-source `county`/`category` hints apply when the feed omits them.
 
+### The deterministic CI fixture (Stage 21)
+
+`scripts/data/ci-fixture-laois-ics.php` emits a **real** iCalendar document, and
+`scripts/bootstrap-ci-fixtures.php` **step 4c** imports it with the production
+`Conexao_Event_Importer_Engine` under the production `laois_tourism` source id,
+through the source's `ics_content` — the same slot an operator's ICS upload
+fills. There is **no fixture-only import or recurrence path**: the parser, the
+source-scoped `Conexao_Laois_Tourism_Series` adapter, the generic `RRULE` reader
+and the recurrence meta writer are all the production ones, so the CI site is
+exercised along the same code path production uses.
+
+The document carries three deliberately different shapes so the whole occurrence
+contract is covered:
+
+| Shape | Encoding | Expected outcome |
+|---|---|---|
+| collapsed weekly series | timed VEVENT, whole-week span, same weekday on both ends, **no `RRULE`** | four weekly occurrences, stored as `_event_recurrence = weekly` |
+| genuine multi-day | timed VEVENT, day span **not** a multiple of 7, weekdays differ | stays one-time, keeps `_event_end_date` |
+| all-day range | `DTSTART;VALUE=DATE` … `DTEND;VALUE=DATE` | stays one-time, no clock time |
+
+Two deliberate constraints:
+
+- **Dates are relative** to one captured site-local "today", for the same reason
+  `scripts/data/ci-fixture-events.php` uses relative dates: the event runtime
+  lists only a `today .. today+7` window, so a fixed calendar date would
+  silently empty `/eventos/` once it expired.
+- **No `ATTACH` line**, or the importer would try to sideload a remote banner and
+  an offline CI job would depend on the network. The `UID`s are date-independent,
+  so a later run upserts the same three records instead of creating new ones.
+
+`bootstrap-ci-fixtures.php --apply --verify` then asserts the contract
+numerically, evaluating **every** calendar day of the series with
+`Conexao_Event_Recurrence` and failing closed on a single false match — the
+per-date half of the contract that the HTTP acceptance layer cannot observe,
+because the public archive accepts no caller-supplied date.
+
 ### The per-source `county` hint (Stage 7.x)
 
 A source's `county` field is **not decoration**. It is the only thing that gives

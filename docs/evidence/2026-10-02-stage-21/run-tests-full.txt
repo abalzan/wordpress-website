@@ -1,0 +1,137 @@
+conexao test harness
+  repository:    /home/andrei/IdeaProjects/wordpress-website
+  php:           8.5.4
+  environment:   host (docker compose exec)
+  base url:      http://localhost:8080
+
+In-process PHP suites (serial, one process per suite)
+[PASS] plugin/conexao-admin-ux/test-recurrence-admin.php — 60 passed, 0 failed
+[PASS] plugin/conexao-admin-ux/test-translation-state.php — 23 passed, 0 failed
+[PASS] plugin/conexao-en-translation/test-shared-slug-newsletter.php — 39 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-county-registry.php — 473 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-error-handling.php — 55 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-event-address.php — 76 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-event-image-sync.php — 30 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-eventbrite-importer.php — 68 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-export-language.php — 58 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-ics-occurrence-dates.php — 172 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-import-log.php — 53 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-ivvcc-importer.php — 46 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-language-identity.php — 29 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-mondello-park-importer.php — 142 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-motorsport-ireland-importer.php — 90 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-past-event-filter.php — 29 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-reappearing-event-lifecycle.php — 5 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-source-county-hint.php — 18 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-town-sanitization.php — 83 passed, 0 failed
+[PASS] plugin/conexao-event-runtime/test-event-language-gate.php — 18 passed, 0 failed
+[PASS] plugin/conexao-event-runtime/test-event-query.php — 41 passed, 0 failed
+[PASS] plugin/conexao-event-runtime/test-event-recurrence.php — 90 passed, 0 failed
+[PASS] plugin/conexao-leisure-migration/test-excerpt-en-roundtrip.php — 9 passed, 0 failed
+[PASS] plugin/conexao-leisure-migration/test-language-uuid.php — 16 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-admin-trigger.php — 109 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-apply-safety.php — 107 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-audit.php — 80 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-batch.php — 243 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-boundary.php — 147 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-change-detection.php — 108 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-lock.php — 51 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-model-a.php — 145 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-promotion.php — 17 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-provider-implementation.php — 144 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-provider-secrets.php — 17 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-provider.php — 222 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-secret-scan.php — 113 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-translation-plan.php — 157 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-transport-shape.php — 64 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-trigger.php — 99 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-manual-translation-workflow.php — 66 passed, 0 failed
+[PASS] plugin/conexao-translation-rollout/test-future-stage-smoke.php — 13 passed, 0 failed
+[PASS] plugin/conexao-translation-rollout/test-legacy-apply-endpoint-closure.php — 36 passed, 0 failed
+[PASS] plugin/conexao-translation-rollout/test-rollout-failure-proofs.php — 12 passed, 0 failed
+[PASS] plugin/conexao-translation-rollout/test-translation-rollout-engine.php — 36 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-blog-en-translation.php — 28 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-cache-language-scoping.php — 9 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-course-provider-card-excerpt-language.php — 45 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-en-archive-rewrite-guard.php — 17 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-en-course-provider-category-filter.php — 60 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-en-jobs-shared-slug.php — 39 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-event-location-filters.php — 63 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-filter-link-aria-semantics.php — 103 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-guide-breadcrumb-filter.php — 36 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-guide-en-translation.php — 638 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-header-menu-selection.php (pt) — 12 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-header-menu-selection.php (en) — 16 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-homepage-content-type-label.php — 29 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-i18n-foundation.php — 29 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-job-en-translation.php — 34 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-jobs-en-language.php — 104 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-language-switcher-flag.php — 60 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-leisure-attribute-normalization.php — 22 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-leisure-card-excerpt-language.php — 45 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-leisure-card-map-action.php — 44 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-leisure-multiselect-filters.php — 64 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-leisure-related-events.php — 19 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-nav-language-context-logic.php — 49 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-nav-language-context.php — 16 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-nav-menu-regression.php — 41 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-polylang-foundation.php — 62 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-recurrence-i18n.php — 12 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-redirect-precedence.php — 15 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-sponsor-archive-ordering.php — 15 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-stage32-bilingual.php — 49 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-stage33-bilingual.php — 190 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-stage41-rest-language.php — 222 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-stage45-pages.php — 358 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-stage7-hero-sponsors.php — 10 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-taxonomy-policy.php — 18 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-translation-completeness.php — 23 passed, 0 failed
+
+Script-contract suites (static, no WordPress, no network)
+[PASS] tests/scripts/verify-agent-governance.py
+[PASS] tests/scripts/verify-cache-key-scoping.py
+         2 passed, 0 failed
+[PASS] tests/scripts/verify-documentation-drift.py
+         14 passed, 0 failed
+[PASS] tests/scripts/verify-i18n-freshness.py
+         3 passed, 0 failed
+[PASS] tests/scripts/verify-release-integrity.py
+         224 passed, 0 failed
+[PASS] tests/scripts/verify-script-conventions.py
+         727 passed, 0 failed
+[PASS] tests/scripts/verify-stage10-batch-boundary.py
+[PASS] tests/scripts/verify-stage13-commissioning-readiness.py
+         808 passed, 0 failed
+[PASS] tests/scripts/verify-stage14-secret-scan.py
+[PASS] tests/scripts/verify-stage17-retirement.py
+         110 passed, 0 failed
+[PASS] tests/scripts/verify-stage18-operator-runbook.py
+[PASS] tests/scripts/verify-stage2-promotion.py
+         28 passed, 0 failed
+[PASS] tests/scripts/verify-stage3-automation.py
+         172 passed, 0 failed
+[PASS] tests/scripts/verify-stage4-provider.py
+         148 passed, 0 failed
+[PASS] tests/scripts/verify-stage6-transport-trigger.py
+         49 passed, 0 failed
+[PASS] tests/scripts/verify-stage7-commissioning.py
+         71 passed, 0 failed
+[PASS] tests/scripts/verify-stage8-control-plane.py
+         147 passed, 0 failed
+[PASS] tests/scripts/verify-stage8-release-consistency.py
+         47 passed, 0 failed
+
+HTTP acceptance suites (base: http://localhost:8080)
+[PASS] tests/acceptance/verify-event-occurrence-http.py — 49 passed, 0 failed
+[PASS] tests/acceptance/verify-guides-en-http.py — 20 passed, 0 failed
+[PASS] tests/acceptance/verify-release-http.py — 44 passed, 0 failed
+[PASS] tests/acceptance/verify-routing-http.py — 92 passed, 0 failed
+
+----------------------------------------
+In-process PHP suites: 81 total, 81 passed, 0 failed
+Assertions: 6305 passed, 0 failed
+Script-contract suites: 18 total, 18 passed, 0 failed
+HTTP acceptance suites: 4 total, 4 passed, 0 failed
+----------------------------------------
+ALL TESTS PASSED
+EXIT=0

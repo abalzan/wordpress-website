@@ -78,6 +78,7 @@ conexao_script_load_wordpress();
 require_once __DIR__ . '/data/ci-fixture-guides.php';
 require_once __DIR__ . '/data/ci-fixture-posts.php';
 require_once __DIR__ . '/data/ci-fixture-events.php';
+require_once __DIR__ . '/data/ci-fixture-laois-ics.php';
 
 $apply  = ( 'apply' === $ctx['mode'] );
 $verify = in_array( '--verify', (array) ( $ctx['extra'] ?? array() ), true );
@@ -1509,6 +1510,91 @@ if ( $apply ) {
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
+// STEP 4c — the Laois Tourism ICS import, through the REAL importer engine.
+//
+// WHY THIS STEP EXISTS
+// --------------------
+// Stage 20 shipped the ICS occurrence-date engine (the source-scoped
+// collapsed-series adapter, the generic RRULE reader and the recurrence meta
+// persistence) together with an HTTP acceptance suite that asserts the /eventos/
+// archive and the event detail pages for ICS-imported events. Nothing, however,
+// ever imported an ICS document into the deterministic CI site: step 4 builds
+// events only from `ci-fixture-events.php`. The acceptance suite therefore
+// only ever passed against the database of whoever had run the Stage 20
+// evidence importer by hand, and on a fresh CI site all three ICS events were
+// missing — absent from the Laois archive and 404 on their detail pages.
+//
+// WHAT THIS STEP IS NOT
+// ---------------------
+// It is not a second event system. There is no fixture-only recurrence logic
+// and no fixture-only query path. It builds an iCalendar document
+// (`ci-fixture-laois-ics.php`) and hands it to the production
+// Conexao_Event_Importer_Engine under the production `laois_tourism` source
+// id, through `ics_content` — the exact slot wp-admin populates when an
+// operator uploads an ICS file. The parser, the collapsed-series adapter, the
+// recurrence meta writer, the runtime evaluator and the theme templates are
+// all the production ones, so the site is exercised along the same code path
+// production uses.
+//
+// The document contains three deliberately different shapes so the whole
+// occurrence contract is covered: a collapsed weekly series, a genuine
+// multi-day timed event and a VALUE=DATE all-day range.
+// ═════════════════════════════════════════════════════════════════════════════
+echo "\n=== step 4c: Laois Tourism ICS import (real importer engine) ===\n";
+
+$ics_fixture = conexao_ci_fixture_laois_ics();
+
+if ( ! $apply ) {
+	echo "  (dry run) would import " . count( $ics_fixture['events'] ) . " ICS event(s) from laois_tourism\n";
+} elseif ( ! class_exists( 'Conexao_Event_Importer_Engine' ) ) {
+	$stats['errors']++;
+	echo "ERROR: the event importer plugin is not active; the ICS fixture cannot be imported.\n";
+} else {
+	/*
+	 * Persist the document on the source exactly as an uploaded ICS would be,
+	 * so `run_source()` — which re-reads the source from the option — sees it.
+	 * Everything else about the source (type, county hint, name) is preserved;
+	 * the county hint is what puts the events in `conexao_county` and therefore
+	 * makes them visible to `?county=laois`.
+	 */
+	$sources         = new Conexao_Event_Sources();
+	$laois_source    = $sources->get( 'laois_tourism' );
+	if ( ! $laois_source ) {
+		$stats['errors']++;
+		echo "ERROR: the laois_tourism source is not configured.\n";
+	} else {
+		$laois_source['ics_content'] = $ics_fixture['ics'];
+		$laois_source['status']      = 'active';
+		$sources->save( $laois_source );
+
+		$ics_engine = new Conexao_Event_Importer_Engine( $sources, new Conexao_Event_Location() );
+		$ics_stats  = $ics_engine->run_source( 'laois_tourism', false );
+		$ics_stats  = is_object( $ics_stats ) && method_exists( $ics_stats, 'to_array' )
+			? $ics_stats->to_array()
+			: (array) $ics_stats;
+
+		printf(
+			"  laois_tourism: found=%s created=%s updated=%s unchanged=%s skipped=%s errors=%s\n",
+			$ics_stats['found'] ?? '?',
+			$ics_stats['created'] ?? '?',
+			$ics_stats['updated'] ?? '?',
+			$ics_stats['unchanged'] ?? '?',
+			$ics_stats['skipped'] ?? '?',
+			$ics_stats['errors'] ?? '?'
+		);
+		$stats['event_created']    += (int) ( $ics_stats['created'] ?? 0 );
+		$stats['event_repaired']   += (int) ( $ics_stats['updated'] ?? 0 );
+		$stats['errors']           += (int) ( $ics_stats['errors'] ?? 0 );
+
+		// The recurrence-aware query caches its resolved ID list per local day;
+		// the import above must be visible to /eventos/ in THIS run.
+		if ( class_exists( 'Conexao_Event_Query' ) ) {
+			Conexao_Event_Query::flush_cache();
+		}
+	}
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
 // STEP 5 — the EXISTING directory seeders, in dependency order.
 //
 // Each of these is a pre-existing repository script, invoked as-is. None of
@@ -1888,6 +1974,147 @@ if ( ! empty( $duplicates ) ) {
 		'floor'  => 0,
 		'sample' => array_slice( $duplicates, 0, 10 ),
 	);
+}
+
+/*
+ * ICS OCCURRENCE CONTRACT — asserted here, numerically, against the real
+ * runtime evaluator.
+ *
+ * The HTTP acceptance layer can only observe the "today .. today+7" window the
+ * public archive renders, so the per-date matching itself is proven here,
+ * where the site can be asked about ANY calendar date. Without this check a
+ * regression that made the series match every day in its DTSTART..DTEND range
+ * would still leave the archive looking plausible.
+ *
+ * Each fixture event is looked up by the slug its own ICS SUMMARY produced, and
+ * evaluated with Conexao_Event_Recurrence — the single evaluator the theme and
+ * the archive both use. A missing record, a missing recurrence, a wrong
+ * occurrence set or a false match on a neighbouring date is a named shortfall.
+ */
+$ics_contract_ok = true;
+$ics_report      = array();
+
+foreach ( $ics_fixture['events'] as $ics_key => $ics_expected ) {
+	$ics_post = conexao_ci_find( 'event', $ics_expected['slug'] );
+	if ( ! $ics_post ) {
+		$ics_contract_ok                  = false;
+		$ics_report[ $ics_key ]           = 'missing';
+		continue;
+	}
+
+	$ics_id            = (int) $ics_post->ID;
+	$ics_stored_source = (string) get_post_meta( $ics_id, '_event_source', true );
+	$ics_stored_date   = (string) get_post_meta( $ics_id, '_event_date', true );
+	$ics_stored_end    = (string) get_post_meta( $ics_id, '_event_end_date', true );
+	$ics_stored_rec    = (string) get_post_meta( $ics_id, '_event_recurrence', true );
+	$ics_stored_status = (string) get_post_meta( $ics_id, '_event_status', true );
+
+	$ics_problems = array();
+
+	if ( 'laois_tourism' !== $ics_stored_source ) {
+		$ics_problems[] = 'source is ' . ( '' === $ics_stored_source ? '(none)' : $ics_stored_source );
+	}
+	if ( 'publish' !== $ics_post->post_status ) {
+		$ics_problems[] = 'post_status is ' . $ics_post->post_status;
+	}
+	if ( $ics_expected['date'] !== $ics_stored_date ) {
+		$ics_problems[] = sprintf( '_event_date is %s, expected %s', $ics_stored_date, $ics_expected['date'] );
+	}
+	if ( $ics_expected['recurrence'] !== $ics_stored_rec ) {
+		$ics_problems[] = sprintf( '_event_recurrence is %s, expected %s', $ics_stored_rec, $ics_expected['recurrence'] );
+	}
+
+	if ( 'series' === $ics_expected['kind'] ) {
+		$ics_rec_end = (string) get_post_meta( $ics_id, '_event_recurrence_end', true );
+		if ( $ics_expected['recurrence_end'] !== $ics_rec_end ) {
+			$ics_problems[] = sprintf( '_event_recurrence_end is %s, expected %s', $ics_rec_end, $ics_expected['recurrence_end'] );
+		}
+
+		// The occurrence set, measured by the real evaluator over EVERY day
+		// from the series start through its end.
+		$ics_matched = array();
+		$ics_cursor  = strtotime( $ics_expected['date'] . ' 00:00:00 UTC' );
+		$ics_stop    = strtotime( $ics_expected['recurrence_end'] . ' 00:00:00 UTC' );
+		while ( $ics_cursor <= $ics_stop ) {
+			$ics_day = gmdate( 'Y-m-d', $ics_cursor );
+			if ( class_exists( 'Conexao_Event_Recurrence' )
+				&& Conexao_Event_Recurrence::occurs_on_date( $ics_id, new DateTimeImmutable( $ics_day, wp_timezone() ) ) ) {
+				$ics_matched[] = $ics_day;
+			}
+			$ics_cursor += DAY_IN_SECONDS;
+		}
+
+		if ( $ics_matched !== $ics_expected['occurrences'] ) {
+			$ics_problems[] = sprintf(
+				'occurrence dates are [%s], expected [%s]',
+				implode( ', ', $ics_matched ),
+				implode( ', ', $ics_expected['occurrences'] )
+			);
+		}
+
+		// The neighbouring days a continuous DTSTART..DTEND range would have
+		// wrongly claimed must NOT match.
+		$ics_false_positives = array();
+		foreach ( array( 1, 2, 3, 8, 9, 10, 15, 16 ) as $ics_gap ) {
+			$ics_day = conexao_ci_fixture_offset_date( $ics_expected['date'], $ics_gap );
+			if ( in_array( $ics_day, $ics_expected['occurrences'], true ) ) {
+				continue;
+			}
+			if ( class_exists( 'Conexao_Event_Recurrence' )
+				&& Conexao_Event_Recurrence::occurs_on_date( $ics_id, new DateTimeImmutable( $ics_day, wp_timezone() ) ) ) {
+				$ics_false_positives[] = $ics_day;
+			}
+		}
+		if ( ! empty( $ics_false_positives ) ) {
+			$ics_problems[] = 'matches non-occurrence dates ' . implode( ', ', $ics_false_positives );
+		}
+
+		// The next occurrence from today is what the archive badge must show,
+		// and it is deliberately NOT the series start.
+		$ics_next = class_exists( 'Conexao_Event_Query' )
+			? (string) Conexao_Event_Query::next_occurrence_date( $ics_id )
+			: '';
+		if ( $ics_next !== $ics_expected['next_occurrence'] ) {
+			$ics_problems[] = sprintf( 'next occurrence is %s, expected %s', $ics_next, $ics_expected['next_occurrence'] );
+		}
+
+		$ics_report[ $ics_key ] = sprintf(
+			'occurrences=%d [%s] next=%s',
+			count( $ics_matched ),
+			implode( ', ', $ics_matched ),
+			$ics_next
+		);
+	} else {
+		// A genuine multi-day event and an all-day range must keep plain
+		// one-time range semantics and never become a weekly series.
+		if ( $ics_expected['end_date'] !== $ics_stored_end ) {
+			$ics_problems[] = sprintf( '_event_end_date is %s, expected %s', $ics_stored_end, $ics_expected['end_date'] );
+		}
+		$ics_report[ $ics_key ] = sprintf( '%s..%s one-time', $ics_stored_date, $ics_stored_end );
+	}
+
+	if ( 'published' !== $ics_stored_status ) {
+		$ics_problems[] = sprintf( '_event_status is %s', $ics_stored_status );
+	}
+
+	printf(
+		"  %-16s %-9s %s%s\n",
+		'ics_' . $ics_key,
+		empty( $ics_problems ) ? 'OK' : 'VIOLATION',
+		$ics_report[ $ics_key ] ?? '',
+		empty( $ics_problems ) ? '' : ' -- ' . implode( '; ', $ics_problems )
+	);
+
+	if ( ! empty( $ics_problems ) ) {
+		$ics_contract_ok = false;
+		$shortfalls[ 'ics_' . $ics_key ] = $ics_problems;
+	}
+}
+
+if ( ! $ics_contract_ok ) {
+	printf( "  %-16s %s\n", 'ics_contract', 'VIOLATION' );
+} else {
+	printf( "  %-16s %s\n", 'ics_contract', 'OK' );
 }
 
 // Menu state: the EN menu must exist and be assigned for BOTH languages, with

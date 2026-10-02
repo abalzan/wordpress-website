@@ -70,6 +70,9 @@ $month_num  = $event_date ? (int) date( 'n', $date_ts ) : 0;
 $day     = $month = $weekday = '--';
 $date_iso = '';
 $sr_label = '';
+// Declared up front: the date block below only runs when the event HAS a date,
+// but the badge markup further down reads this flag unconditionally.
+$show_range = false;
 
 /*
  * Recurrence presentation (Step 4): a concise label such as
@@ -103,7 +106,21 @@ if ( $event_date ) {
 	// keeps the compact "12 SET SÁB" form; this <time> carries the rest).
 	$month_full = isset( $month_full_pt[ $month_num ] ) ? $month_full_pt[ $month_num ] : '';
 	$year_num   = date( 'Y', $date_ts );
-	if ( $event_end_date && $end_ts > $date_ts ) {
+
+	/*
+	 * A WEEKLY SERIES IS NOT A MULTI-DAY RANGE.
+	 *
+	 * For a series, `_event_end_date` holds the end of the LAST OCCURRENCE,
+	 * not the end of a continuous run: the collapsed ICS encoding puts the
+	 * whole series in one DTSTART..DTEND pair. Rendering that pair as a date
+	 * range is precisely the pre-fix interpretation this card must not
+	 * reproduce — it would advertise the event on every day in between. The
+	 * series already carries its own, correct end-of-series chip
+	 * ("até 18 OUT") rendered above, so the single next-occurrence date is
+	 * both sufficient and accurate here.
+	 */
+	$show_range = ( $event_end_date && $end_ts > $date_ts && ! conexao_event_is_recurring( $event_id ) );
+	if ( $show_range ) {
 		// Multi-day event: surface the stored _event_end_date as a range.
 		if ( date( 'Y-m', $end_ts ) === date( 'Y-m', $date_ts ) ) {
 			$day      = $start_day . '-' . date( 'j', $end_ts ); // "12-15" on the same line.
@@ -207,7 +224,7 @@ if ( $event_date && class_exists( 'Conexao_Event_Recurrence' ) ) {
 			<?php if ( $recurrence_label ) : ?>
 				<span class="event-card-recurrence"><?php echo esc_html( $recurrence_label ); ?></span>
 			<?php endif; ?>
-			<?php if ( $event_end_date && $end_ts > $date_ts && date( 'Y-m', $end_ts ) !== date( 'Y-m', $date_ts ) ) : ?>
+			<?php if ( $show_range && date( 'Y-m', $end_ts ) !== date( 'Y-m', $date_ts ) ) : ?>
 				<span class="event-card-date-range"><?php echo esc_html( 'até ' . date( 'j', $end_ts ) . ' ' . ( isset( $month_short_pt[ (int) date( 'n', $end_ts ) ] ) ? $month_short_pt[ (int) date( 'n', $end_ts ) ] : '' ) ); ?></span>
 			<?php endif; ?>
 			<?php if ( $recurrence_end_html ) : ?>

@@ -146,6 +146,25 @@ verdict.
 | `./scripts/run-tests.sh --list` | discovered suites, manual suites, components |
 | `./scripts/run-tests.sh --help` | usage |
 
+### Script-contract suites build their own artifacts
+
+The script-contract layer is static and needs no WordPress, but two of its
+suites must inspect **built** release artifacts:
+
+| Suite | Where it gets them |
+|---|---|
+| `tests/scripts/verify-stage14-secret-scan.py` | runs `scripts/build-plugins-zip.sh` **and** `scripts/build-theme-zip.sh` into a temporary directory it removes, and scans the 9 plugin ZIPs, the theme ZIP and the emitted release record |
+| `scripts/verify-commissioning-readiness.py` (driven by `verify-stage13-commissioning-readiness.py`) | its own double build; the plugin header versions are compared against the release record **that build emits** |
+
+Both deliberately do **not** read the git-ignored `dist/`. `dist/` is untracked
+build output: it is absent on a fresh CI checkout, so depending on it made both
+gates report a failure on a perfectly clean tree while passing on any developer
+machine that happened to have run a build. Building the artifacts in-gate is a
+strengthening — the gate always measures what the repository produces right now,
+can never be satisfied by a stale or hand-modified directory, and behaves
+identically on a laptop and on a fresh CI runner. A build failure is still a hard
+failure, and no scan is skipped.
+
 An **unknown** `--only` value is an error, never "run everything":
 
 ```
@@ -539,6 +558,8 @@ convention-based, and CI calls the same command you do.
 | `wp-content/themes/conexao-br-irlanda/tests/test-translation-completeness.php` | `PERMANENT_INVARIANT` (Stage L) | yes — blocking; §6.1 completeness |
 | `wp-content/themes/conexao-br-irlanda/tests/test-cache-language-scoping.php` | `PERMANENT_INVARIANT` (Stage L) | yes — blocking; §6.1 cache scoping |
 | `wp-content/themes/conexao-br-irlanda/tests/test-redirect-precedence.php` | `PERMANENT_INVARIANT` (Stage L) | yes — blocking; §6.3 redirect precedence |
+
+_Last verified: 2026-10-02 by Stage 21 — the ICS occurrence fixture and the two hermetic script-contract gates_
 
 _Last verified: 2026-09-26 by Stage I — Scripts Standardisation_
 _Last verified: 2026-09-26 by Stage J — Build, Release & Deploy Verification_

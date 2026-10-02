@@ -322,6 +322,24 @@ def build_artifacts() -> dict:
         facts["artifacts"] = hashes[0]
         facts["deterministic"] = hashes[0] == hashes[1]
 
+        # The release record the build just emitted, read back from the build
+        # directory. `build-plugins-zip.sh` writes it there via
+        # `release-manifest.py --write`, so this is the record that describes
+        # THESE artifacts rather than whatever may be lying in the git-ignored
+        # `dist/`. Comparing the plugin headers against the record that actually
+        # describes what was built is what makes the version-agreement check
+        # meaningful, and it is why the check no longer needs untracked local
+        # build output to exist.
+        record = Path(scratch) / "build1" / "release.json"
+        if record.is_file():
+            try:
+                facts["release_versions"] = {
+                    artifact.get("slug"): artifact.get("version")
+                    for artifact in json.loads(record.read_text(encoding="utf-8")).get("artifacts", [])
+                }
+            except (OSError, ValueError):
+                facts["release_versions"] = {}
+
         # Content scans against the SHIPPED file list, read out of the archive.
         listing = subprocess.run(
             ["unzip", "-Z1", str(Path(scratch) / "build1" / f"{'conexao-translation-automation'}.zip")],
@@ -379,17 +397,16 @@ def gather_repo_facts(args) -> dict:
     )
     facts["registry_consistent"] = proc.returncode == 0
 
-    # The release record, when present, must agree with the headers.
-    release = REPO_ROOT / "dist" / "release.json"
-    if release.is_file():
-        record = json.loads(release.read_text(encoding="utf-8"))
-        for artifact in record.get("artifacts", []):
-            slug = artifact.get("slug")
-            if slug in facts["versions"] and artifact.get("version") != facts["versions"][slug]:
-                facts["versions_match_release"] = False
-    else:
-        facts["versions_match_release"] = False
-
+    # The release record must agree with the plugin headers.
+    #
+    # It is read from the record the build in this same run just emitted, not
+    # from the git-ignored `dist/`. `dist/` is untracked build output: it is
+    # absent on a fresh CI checkout, so requiring it made this fact false on a
+    # clean tree and blocked release_readiness with
+    # "a plugin header version does not match the release record" — a claim
+    # about version drift that was never actually true. With no build there is
+    # no record to compare against, so the check fails closed, exactly as
+    # before; `release_built` independently reports the missing build.
     facts["release_built"] = False
     facts["release_deterministic"] = False
     facts["release_secret_free"] = True
@@ -403,6 +420,16 @@ def gather_repo_facts(args) -> dict:
         facts["release_test_free"] = built["test_free"]
         facts["release_local_free"] = built["local_free"]
         facts["artifacts"] = built["artifacts"]
+
+        # Every shipped plugin version must equal the version its header
+        # declares, in the record that describes the artifacts just built.
+        recorded = built.get("release_versions")
+        if not recorded:
+            facts["versions_match_release"] = False
+        else:
+            for slug, version in facts["versions"].items():
+                if recorded.get(slug) != version:
+                    facts["versions_match_release"] = False
     return facts
 
 
