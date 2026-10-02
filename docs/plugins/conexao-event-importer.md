@@ -162,12 +162,15 @@ On activation, the plugin seeds these default sources:
 | `motorsport_ireland` | Motorsport Ireland | `website` | inactive |
 | `mondello_park` | Mondello Park | `website` | inactive |
 
+**Full registry size: 58 sources** — these 6 legacy defaults plus the 52 county
+sources below. Both halves are declared in code (no operator `wp eval` needed).
+
 ### County Source Registry (v1.7.0)
 
 The multi-county expansion introduces 52 additional source registrations
 (26 Eventbrite + 26 Heritage Week) for the 26 Republic of Ireland counties.
-These are seeded via `Conexao_Event_Sources::seed_county_sources()` and are
-**all inactive by default**.
+Together with the six legacy defaults above this is a **58-source registry**.
+All 52 ship **inactive**: registering a source never starts an import.
 
 **Source key scheme:**
 - Eventbrite: `eventbrite_<county-slug>` (e.g. `eventbrite_cork`)
@@ -186,8 +189,26 @@ LOGGED (never silently accepted).
 a single source registration (relevant for Galway, Dublin). The 2026 form values
 are audited in `docs/importers/events-expansion-stage-a-audit.md`.
 
-**Seeding:** `seed_county_sources()` is idempotent — running it twice does not
-create duplicates. It only inserts sources whose IDs do not already exist.
+**Seeding:** the county registry is **self-healing**. `Conexao_Event_Sources::get_all()`
+merges any missing county source on every read, so the complete 58-source registry
+is correct on every environment — a fresh activation, the local Docker stack, a CI
+fixture build and a restored database alike. `seed_county_sources()` remains
+available as an explicit, idempotent operator step, but it is **no longer
+required** to obtain the county coverage.
+
+This self-heal is deliberate and narrow:
+- it **only inserts** source ids that do not exist, so an operator's activated,
+  edited or re-pointed source is never reset;
+- every county source ships `inactive`, so repairing the registry can never
+  start an import, fetch a provider or write an Event post;
+- it never resurrects a retired source (see Retired sources below);
+- it is idempotent — repeated reads converge to the same registry.
+
+**Retired sources:** `laois_council`, `leo_laois` and `local_enterprise_office_laois`
+were deliberately retired (commit `042259d`, which deleted
+`class-laois-council-source.php` and `class-leo-laois-source.php`). `get_all()`
+actively strips these ids. They must never be restored; the events they
+previously imported are preserved.
 
 **Eventbrite pagination cap:** `page_count` is capped at 49 (~980 events).
 Large counties (Dublin, Cork) may report much higher `object_count` values.

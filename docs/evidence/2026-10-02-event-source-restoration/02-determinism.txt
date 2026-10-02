@@ -1,0 +1,3 @@
+run A count=58 digest=96d2a0b0761578e12012c2f2e205d9d165cda7e0318ff92d3f2a22b96aedcecc
+run B count=58 digest=96d2a0b0761578e12012c2f2e205d9d165cda7e0318ff92d3f2a22b96aedcecc
+RESULT: identical digests -> deterministic

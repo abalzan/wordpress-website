@@ -340,28 +340,160 @@ $handler = $method->invoke( $plugin->importer, array( 'id' => 'heritage_week', '
 assert_true( $handler instanceof Conexao_Source_Heritage_Week, 'Legacy heritage_week ID routes to Conexao_Source_Heritage_Week' );
 
 // ---------------------------------------------------------------------------
-// Test 13: Source Seeding Idempotency
+// Test 13: Registry Completeness and Seeding Idempotency
 // ---------------------------------------------------------------------------
-test_section( 'Source Seeding Idempotency' );
+test_section( 'Registry Completeness and Seeding Idempotency' );
 
 $sources_mgr = new Conexao_Event_Sources();
+$option_key  = Conexao_Event_Sources::OPTION_KEY;
 
-// First seeding.
-$result1 = $sources_mgr->seed_county_sources();
-assert_true( 52 === $result1['inserted'], 'First seed: 52 sources inserted' );
-assert_true( 0 === $result1['skipped'], 'First seed: 0 skipped' );
+// Snapshot whatever the environment had, so this test restores it exactly.
+$snapshot = get_option( $option_key, array() );
 
-// Second seeding (should skip all).
-$result2 = $sources_mgr->seed_county_sources();
-assert_true( 0 === $result2['inserted'], 'Second seed: 0 inserted (idempotent)' );
-assert_true( 52 === $result2['skipped'], 'Second seed: 52 skipped (idempotent)' );
+// --- 13a: SELF-HEAL FROM A SIX-SOURCE (or empty) ENVIRONMENT ---------------
+//
+// This is the regression this suite guards. The county registry used to be
+// reachable ONLY through the manual `seed_county_sources()` operator step, so
+// any environment that was not interactively activated reported just the six
+// legacy defaults and silently lost the whole 26-county coverage. get_all()
+// now self-heals, so a plain read MUST restore the complete registry.
 
-// Clean up test sources.
-$sources = $sources_mgr->get_all();
-foreach ( $result1['ids'] as $id ) {
-	unset( $sources[ $id ] );
+$only_legacy = array();
+foreach ( $sources_mgr->get_defaults() as $id => $source ) {
+	$only_legacy[ $id ] = $source;
 }
-update_option( Conexao_Event_Sources::OPTION_KEY, $sources, false );
+update_option( $option_key, $only_legacy, false );
+
+// A plain read must repair it -- no operator step, no explicit seeding.
+$repaired = $sources_mgr->get_all();
+
+assert_true(
+	52 === count( $sources_mgr->get_county_source_ids() ),
+	'Self-heal: a 6-source environment is completed to 52 county sources by get_all() alone'
+);
+assert_true(
+	58 === count( $repaired ),
+	'Self-heal: registry holds 58 sources (6 legacy defaults + 52 county)'
+);
+
+// Every one of the 26 counties is represented by BOTH providers.
+$missing_eb = array();
+$missing_hw = array();
+foreach ( Conexao_County_Registry::get_slugs() as $slug ) {
+	if ( ! isset( $repaired[ 'eventbrite_' . $slug ] ) ) {
+		$missing_eb[] = $slug;
+	}
+	if ( ! isset( $repaired[ 'heritage_week_' . $slug ] ) ) {
+		$missing_hw[] = $slug;
+	}
+}
+assert_true( array() === $missing_eb, 'All 26 counties have an eventbrite_<county> source' );
+assert_true( array() === $missing_hw, 'All 26 counties have a heritage_week_<county> source' );
+
+// The six legacy defaults must SURVIVE the repair untouched.
+$legacy_ids      = array(
+	'laois_tourism',
+	'heritage_week',
+	'eventbrite',
+	'ivvcc',
+	'motorsport_ireland',
+	'mondello_park',
+);
+$legacy_defaults = $sources_mgr->get_defaults();
+$legacy_intact   = true;
+foreach ( $legacy_ids as $id ) {
+	if ( ! isset( $repaired[ $id ] ) || $repaired[ $id ] !== $legacy_defaults[ $id ] ) {
+		$legacy_intact = false;
+	}
+}
+assert_true( $legacy_intact, 'The six legacy default sources survive the repair unmodified' );
+
+// Restored county sources ship INACTIVE: repairing the registry must never
+// start an import, fetch a provider or write an Event post.
+$county_active = 0;
+foreach ( Conexao_County_Registry::get_all_county_sources() as $id => $source ) {
+	if ( isset( $repaired[ $id ] ) && 'active' === $repaired[ $id ]['status'] ) {
+		$county_active++;
+	}
+}
+assert_true( 0 === $county_active, 'No restored county source is active (repair cannot trigger an import)' );
+
+// A restored county source must match the registry EXACTLY -- the repair
+// copies the authoritative config, it does not rebuild it from scratch.
+$exact_match = true;
+foreach ( Conexao_County_Registry::get_all_county_sources() as $id => $registry_source ) {
+	if ( ! isset( $repaired[ $id ] ) ) {
+		$exact_match = false;
+		break;
+	}
+	foreach ( array( 'id', 'name', 'url', 'type', 'status', 'county', 'region_labels', 'hw_where', 'category' ) as $field ) {
+		if ( ( $registry_source[ $field ] ?? null ) !== ( $repaired[ $id ][ $field ] ?? null ) ) {
+			$exact_match = false;
+			break 2;
+		}
+	}
+}
+assert_true( $exact_match, 'Every restored county source matches Conexao_County_Registry exactly' );
+
+// --- 13b: EXPLICIT SEEDING IS STILL IDEMPOTENT ---------------------------
+//
+// With the registry already complete, the manual operator step is a no-op.
+$result2 = $sources_mgr->seed_county_sources();
+assert_true( 0 === $result2['inserted'], 'Explicit seed after self-heal: 0 inserted (idempotent)' );
+assert_true( 52 === $result2['skipped'], 'Explicit seed after self-heal: 52 skipped (idempotent)' );
+
+// --- 13c: NO DUPLICATE REGISTRATIONS --------------------------------------
+//
+// A source id is the array key, so a duplicate registration is structurally
+// impossible; assert the observable invariant anyway, because it is what a
+// duplicate import would actually break.
+$all_ids    = array_keys( $sources_mgr->get_all() );
+$unique_ids = array_unique( $all_ids );
+assert_true(
+	count( $all_ids ) === count( $unique_ids ),
+	'Every source id is registered exactly once (no duplicate registrations)'
+);
+
+// --- 13d: RETIRED SOURCES ARE NOT RESTORED -------------------------------
+//
+// laois_council / leo_laois / local_enterprise_office_laois were deliberately
+// retired (commit 042259d). The self-heal must never resurrect them.
+$retired_present = array();
+foreach ( array( 'laois_council', 'leo_laois', 'local_enterprise_office_laois' ) as $retired ) {
+	if ( isset( $repaired[ $retired ] ) ) {
+		$retired_present[] = $retired;
+	}
+}
+assert_true( array() === $retired_present, 'Intentionally retired sources are NOT restored by the self-heal' );
+
+// --- 13e: AN OPERATOR EDIT IS NEVER OVERWRITTEN ---------------------------
+//
+// The repair only INSERTS missing ids. A source the operator activated, or
+// re-pointed, must survive untouched.
+update_option( $option_key, $only_legacy, false );
+$sources_mgr->get_all(); // re-heal
+$custom = $sources_mgr->get_all();
+$custom['eventbrite_cork']['status'] = 'active';
+$custom['eventbrite_cork']['url']    = 'https://example.invalid/operator-override';
+update_option( $option_key, $custom, false );
+$after_override = $sources_mgr->get_all();
+assert_true(
+	'active' === $after_override['eventbrite_cork']['status']
+		&& 'https://example.invalid/operator-override' === $after_override['eventbrite_cork']['url'],
+	'An operator override of a county source is never overwritten by the self-heal'
+);
+
+// --- 13f: AN EMPTY OPTION SELF-HEALS TO THE FULL REGISTRY ----------------
+delete_option( $option_key );
+$from_empty = $sources_mgr->get_all();
+assert_true( 58 === count( $from_empty ), 'An empty/absent option self-heals to the full 58-source registry' );
+
+// Restore the exact environment state this test found.
+if ( is_array( $snapshot ) && array() !== $snapshot ) {
+	update_option( $option_key, $snapshot, false );
+} else {
+	delete_option( $option_key );
+}
 
 // ---------------------------------------------------------------------------
 // Test 14: Independent Source Logging

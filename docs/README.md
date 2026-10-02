@@ -166,6 +166,7 @@ To add, remove or re-classify a plugin: edit `plugins.json`, add its doc under
 |---|---|
 | [reports/](reports/) | English rollout (Stages 0–9) + navigation-fix reports |
 | [reports/english-stage43-production-deployment.md](reports/english-stage43-production-deployment.md) | Stage 4.3 production deployment record |
+| [reports/2026-10-02-event-source-restoration.md](reports/2026-10-02-event-source-restoration.md) | Why the event-source registry reported 6 sources, and how the full 58 (6 legacy + 52 county) were recovered |
 | [events/](events/) | Events location-filters and copy reports |
 | [importers/](importers/) | Event/Lazer/IVVCC/Mondello import pipeline reports and plans |
 | [research/](research/) | Topic research notes (e.g. recruitment agencies, employment permits) |
