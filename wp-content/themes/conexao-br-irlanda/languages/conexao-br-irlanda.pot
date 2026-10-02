@@ -2,14 +2,14 @@
 # This file is distributed under the GNU General Public License v2 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: conexao-br-irlanda 1.0.0\n"
+"Project-Id-Version: conexao-br-irlanda 1.0.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/theme/conexao-br-irlanda\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-28 18:49+0100\n"
+"POT-Creation-Date: 2026-10-02 10:21+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 
 
@@ -34,7 +34,8 @@ msgid "Guias Práticos"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/404.php:17
 #: wp-content/themes/conexao-br-irlanda/front-page.php:166
-#: wp-content/themes/conexao-br-irlanda/inc/navigation.php:694
+#: wp-content/themes/conexao-br-irlanda/inc/navigation.php:111
+#: wp-content/themes/conexao-br-irlanda/inc/navigation.php:849
 #: wp-content/themes/conexao-br-irlanda/inc/seo/schema.php:431
 #: wp-content/themes/conexao-br-irlanda/inc/seo/titles.php:122
 msgid "Eventos"
@@ -193,7 +194,8 @@ msgstr ""
 msgid "Casas e apartamentos"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/front-page.php:160
-#: wp-content/themes/conexao-br-irlanda/inc/navigation.php:699
+#: wp-content/themes/conexao-br-irlanda/inc/navigation.php:114
+#: wp-content/themes/conexao-br-irlanda/inc/navigation.php:854
 #: wp-content/themes/conexao-br-irlanda/inc/seo/schema.php:432
 #: wp-content/themes/conexao-br-irlanda/inc/seo/titles.php:48
 #: wp-content/themes/conexao-br-irlanda/inc/seo/titles.php:125
@@ -214,8 +216,9 @@ msgstr ""
 msgid "Lazer"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/front-page.php:162
-#: wp-content/themes/conexao-br-irlanda/inc/navigation.php:253
-#: wp-content/themes/conexao-br-irlanda/inc/navigation.php:695
+#: wp-content/themes/conexao-br-irlanda/inc/navigation.php:113
+#: wp-content/themes/conexao-br-irlanda/inc/navigation.php:408
+#: wp-content/themes/conexao-br-irlanda/inc/navigation.php:850
 msgid "Lazer e turismo"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/front-page.php:163
@@ -252,7 +255,8 @@ msgstr ""
 msgid "Vistos e PPS Number"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/front-page.php:174
-#: wp-content/themes/conexao-br-irlanda/inc/navigation.php:700
+#: wp-content/themes/conexao-br-irlanda/inc/navigation.php:109
+#: wp-content/themes/conexao-br-irlanda/inc/navigation.php:855
 #: wp-content/themes/conexao-br-irlanda/inc/seo/schema.php:433
 #: wp-content/themes/conexao-br-irlanda/inc/seo/titles.php:53
 #: wp-content/themes/conexao-br-irlanda/inc/seo/titles.php:128
@@ -273,7 +277,8 @@ msgstr ""
 msgid "Novidades e artigos"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/front-page.php:183
-#: wp-content/themes/conexao-br-irlanda/inc/navigation.php:693
+#: wp-content/themes/conexao-br-irlanda/inc/navigation.php:110
+#: wp-content/themes/conexao-br-irlanda/inc/navigation.php:848
 #: wp-content/themes/conexao-br-irlanda/template-parts/guide-filters.php:36
 msgid "Guias"
 msgstr ""
@@ -753,9 +758,18 @@ msgstr ""
 #: wp-content/themes/conexao-br-irlanda/single-leisure.php:299
 msgid "Mais informações"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/navigation.php:237
+#: wp-content/themes/conexao-br-irlanda/inc/navigation.php:108
+#: wp-content/themes/conexao-br-irlanda/inc/navigation.php:392
 #: wp-content/themes/conexao-br-irlanda/inc/seo/schema.php:318
 msgid "Início"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/inc/navigation.php:112
+#: wp-content/themes/conexao-br-irlanda/inc/seo/titles.php:134
+#: wp-content/themes/conexao-br-irlanda/template-parts/course-filters.php:50
+msgid "Cursos"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/inc/navigation.php:116
+msgid "Contato"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/inc/permit-employers.php:241
 msgid "Saúde e Cuidados"
@@ -957,10 +971,6 @@ msgid "Busca: %s"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/inc/seo/titles.php:101
 msgid "Página não encontrada"
-msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/seo/titles.php:134
-#: wp-content/themes/conexao-br-irlanda/template-parts/course-filters.php:50
-msgid "Cursos"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/inc/seo/titles.php:149
 msgid "Guias passo a passo para facilitar sua vida na Irlanda."
@@ -1681,5 +1691,5 @@ msgstr ""
 
 #. Version of the theme
 #: wp-content/themes/conexao-br-irlanda/style.css:1
-msgid "1.0.0"
+msgid "1.0.1"
 msgstr ""
