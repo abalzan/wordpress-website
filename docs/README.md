@@ -132,6 +132,7 @@ To add, remove or re-classify a plugin: edit `plugins.json`, add its doc under
 | [architecture.md](architecture.md) | System architecture overview |
 | [content-model.md](content-model.md) | Content types, taxonomies, meta and language policy |
 | [routing.md](routing.md) | URLs, archives, filters, redirects, sitemap and the `/en/` layer |
+| [translation-manual-operator-runbook.md](translation-manual-operator-runbook.md) | **The operator runbook** — how a human or coding agent performs an occasional manual PT→EN translation run: the lifecycle, the required inputs, the retained safety controls, the provider-credential procedure, a worked example, the expected result numbers, local vs production, recovery, and the final checklist |
 
 ## Development and deployment
 

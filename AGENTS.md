@@ -70,6 +70,7 @@ Pick the row, read the skill, then read only the canonical documents it names.
 | Task | Skill | Canonical docs |
 |---|---|---|
 | English translation work | `wp-translation-rollout` | content-model + routing + testing |
+| An occasional **manual** PT→EN translation run | `wp-translation-rollout` | **[`docs/translation-manual-operator-runbook.md`](docs/translation-manual-operator-runbook.md)** — the operator runbook: lifecycle, required inputs, safety controls, credential procedure, expected numbers, recovery, checklist |
 | New post type / taxonomy / meta | `wp-add-content-type` | content-model + routing |
 | An importer, migration, seed or repair | `wp-content-change` | engineering-standard §5.2 + content-model |
 | A maintainer capability in wp-admin | `wp-add-admin-screen` | engineering-standard §4.2 + releases |

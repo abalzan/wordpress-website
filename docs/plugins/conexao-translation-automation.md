@@ -21,6 +21,11 @@
 > safety control (lock, digest-bound approval, dry-run-first, audit, batch
 > ceilings, PT-immutability, collision refusal).
 >
+> **The operator procedure lives in
+> [`docs/translation-manual-operator-runbook.md`](../translation-manual-operator-runbook.md).**
+> This document is the plugin's architecture; the runbook is the executable
+> workflow, and it is the one an operator follows.
+>
 > See [`docs/reports/2026-10-02-stage-17-retire-automatic-translation.md`](../reports/2026-10-02-stage-17-retire-automatic-translation.md).
 
 <!-- BEGIN GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->

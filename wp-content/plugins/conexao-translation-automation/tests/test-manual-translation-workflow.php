@@ -402,4 +402,132 @@ assert_true(
 	. ( $credential_options ? ': ' . implode( ', ', $credential_options ) : '' )
 );
 
+// ---------------------------------------------------------------------------
+// 5. STAGE 18 — THE RUNBOOK'S REPORTED NUMBERS ARE REAL FIELDS.
+//
+// The operator runbook promises ten specific metrics. A runbook that promises a
+// number the code cannot produce is worse than no runbook: an operator would
+// report a figure that means nothing.
+//
+// So this section asserts that every metric the runbook names is a REAL key of
+// the REAL report the engine returns, read from a real run — not asserted from
+// the source text, but read out of the result this suite already produced.
+// ---------------------------------------------------------------------------
+
+test_section( 'every metric the operator runbook promises is a real field' );
+
+// `records considered` — the manifest the run was given.
+assert_true(
+	isset( $scoped_dry['scope']['authored_count'] ) && is_int( $scoped_dry['scope']['authored_count'] ),
+	'`records considered` is a real field (scope.authored_count)'
+);
+
+// `records eligible` — the engine's own numeric gate.
+assert_true(
+	isset( $applied['gate']['eligible_public_pt'] ) && is_int( $applied['gate']['eligible_public_pt'] ),
+	'`records eligible` is a real field (gate.eligible_public_pt)'
+);
+assert_true(
+	1 === (int) $applied['gate']['eligible_public_pt'],
+	'`records eligible` reports the approved record, not an estimate'
+);
+
+// `records planned` — the plan buckets the dry run produced.
+assert_true(
+	isset( $scoped_dry['plan']['create'] ) && is_array( $scoped_dry['plan']['create'] ),
+	'`records planned` is a real field (plan.create)'
+);
+$planned = count( (array) $scoped_dry['plan']['create'] )
+	+ count( (array) $scoped_dry['plan']['update'] )
+	+ count( (array) $scoped_dry['plan']['conflicts'] );
+assert_true(
+	1 === $planned,
+	'`records planned` equals the approved scope, so a reviewer sees the same number the plan holds'
+);
+
+// `records approved` and `records executed` — the Model A scope report. These
+// are the two the brief requires to be equal, and they are recomputed by the
+// engine from its own plan rather than asserted by the caller.
+assert_true(
+	isset( $applied['scope']['approved_count'], $applied['scope']['executed_count'] ),
+	'`records approved` and `records executed` are real fields (scope.*_count)'
+);
+assert_true(
+	(int) $applied['scope']['approved_count'] === (int) $applied['scope']['executed_count'],
+	'`records approved` == `records executed` on a real run, not merely in principle'
+);
+
+// `mutations` — the created/updated counts an operator reports as the write set.
+assert_true(
+	1 === ( (int) $applied['summary']['created'] + (int) $applied['summary']['updated'] ),
+	'`mutations` is a real number (summary.created + summary.updated)'
+);
+
+// `verification result` — a literal verdict, never a "looks good".
+assert_true(
+	in_array( strtoupper( (string) $applied['gate']['gate'] ), array( 'PASS', 'FAIL' ), true ),
+	'`verification result` is a real PASS/FAIL verdict (gate.gate)'
+);
+
+// `idempotence result` — the second run's own numbers.
+assert_true(
+	0 === ( (int) $verify['summary']['created'] + (int) $verify['summary']['updated'] ),
+	'`idempotence result` is a real number and it is 0 on a second identical run'
+);
+
+// `PT drift` — must be zero and must be REPORTED even when it is zero.
+assert_true(
+	array_key_exists( 'pt_drift', $applied['gate'] ),
+	'`PT drift` is a real field and is always present, even when it is 0'
+);
+assert_true( 0 === (int) $applied['gate']['pt_drift'], 'PT drift is 0 on a clean run' );
+
+// The gate is not a summary line: it fails closed on a non-zero counter, which
+// is what makes the reported number meaningful rather than decorative.
+$failed_gate = Conexao_Translation_Rollout_Engine::calculate_gate(
+	array(
+		'stage'              => 's18-manual',
+		'eligible_public_pt' => 3,
+		'with_en'            => 1,
+		'missing_en'         => 2,
+		'conflicts'          => 0,
+		'pt_drift'           => 0,
+	)
+);
+assert_true( 'FAIL' === (string) $failed_gate['gate'], 'a missing EN record turns the gate to FAIL' );
+
+$drift_gate = Conexao_Translation_Rollout_Engine::calculate_gate(
+	array(
+		'stage'              => 's18-manual',
+		'eligible_public_pt' => 3,
+		'with_en'            => 3,
+		'missing_en'         => 0,
+		'conflicts'          => 0,
+		'pt_drift'           => 1,
+	)
+);
+assert_true( 'FAIL' === (string) $drift_gate['gate'], 'PT drift alone turns the gate to FAIL' );
+
+// And the result contract surfaces the same gate to the operator rather than
+// reinterpreting it.
+$result = Conexao_Translation_Automation_Result::success(
+	's18_run',
+	's18-manual',
+	$applied,
+	'local',
+	'acquired'
+);
+assert_true(
+	'PASS' === (string) $result->dry_run_status(),
+	'the operator result surfaces the engine verdict verbatim'
+);
+assert_true(
+	(int) $result->gate()['pt_drift'] === 0,
+	'the operator result carries the PT-drift count the runbook tells you to report'
+);
+assert_true(
+	false === $result->mutation_occurred(),
+	'a proof-mode result never claims a mutation, so "mutations" cannot be inflated by a dry run'
+);
+
 test_finish( 'stage 17 retained manual workflow' );

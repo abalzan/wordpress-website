@@ -1,0 +1,25 @@
+# Stage 18 gate — injected mutations (every one must fail closed)
+
+Each mutation is applied to docs/translation-manual-operator-runbook.md (or
+docs/README.md for the last), the gate is re-run, and the file is restored.
+A mutation is only counted when it ACTUALLY changed the file; a vacuous
+edit would otherwise be reported as a false pass.
+
+permit key in wp_options/Connectors      Stage 18 operator-runbook verification: 110 passed, 1 failed
+claim apply is commissioned              Stage 18 operator-runbook verification: 110 passed, 1 failed
+remove the Personal limitation           Stage 18 operator-runbook verification: 109 passed, 2 failed
+invent an SSH/WP-CLI path                Stage 18 operator-runbook verification: 110 passed, 1 failed
+reintroduce a credential broker          Stage 18 operator-runbook verification: 110 passed, 1 failed
+weaken PT immutability                   Stage 18 operator-runbook verification: 110 passed, 1 failed
+weaken Model A exact scope               Stage 18 operator-runbook verification: 110 passed, 1 failed
+weaken digest-bound approval             Stage 18 operator-runbook verification: 110 passed, 1 failed
+weaken dry-run-before-apply              Stage 18 operator-runbook verification: 110 passed, 1 failed
+drop the PT drift control                Stage 18 operator-runbook verification: 110 passed, 1 failed
+invent a non-allowlisted stage           Stage 18 operator-runbook verification: 110 passed, 1 failed
+drop a promised metric                   Stage 18 operator-runbook verification: 110 passed, 1 failed
+drop the checklist section               Stage 18 operator-runbook verification: 110 passed, 1 failed
+insert a credential shape                Stage 18 operator-runbook verification: 110 passed, 1 failed
+unlink the runbook from the index        Stage 18 operator-runbook verification: 110 passed, 1 failed
+
+--- restored baseline (must be 0 failed) ---
+Stage 18 operator-runbook verification: 111 passed, 0 failed

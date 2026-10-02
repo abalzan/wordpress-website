@@ -32,6 +32,10 @@ mandatory and dry-run is not optional.
   taxonomy translated/shared decision.
 - `docs/plugins/conexao-translation-rollout.md` — **the shared engine**. Stage
   config + data manifest, no per-stage apply/audit script copies.
+- `docs/translation-manual-operator-runbook.md` — **the operator procedure**
+  for an occasional manual PT→EN run: the lifecycle, the five required inputs,
+  the retained safety controls, the credential procedure, the expected result
+  numbers, recovery, and the operator checklist. Read it before running one.
 - `docs/content-model.md` — identity meta and the shared/taxonomy policy.
 - `wp-content/plugins/conexao-translation-rollout/includes/class-conexao-translation-rollout-engine.php`
   and the engine's admin class.

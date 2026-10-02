@@ -322,6 +322,25 @@ Cited by `docs/reports/2026-10-01-stage-14-secret-hardening-production-canary.md
 
 Cited by `docs/reports/2026-10-02-stage-17-retire-automatic-translation.md`.
 
+---
+
+## `2026-10-02-stage-18-operator-runbook/`
+
+Stage 18 documents the retained manual translation workflow for an operator and
+then **executes the documented procedure locally**. Production writes `0`.
+
+| File | What it proves |
+|---|---|
+| `01-dry-run-en-post.txt` | the runbook's §7 command, executed: `--dry-run --only=post` → `GATE PASS: eligible PT=34 with EN=34 missing EN=0 conflicts=0 PT drift=0`, exit 0 |
+| `02-dry-run-all-stages.txt` | every stage, executed: 6 of 7 gates PASS; `en-leisure-description` **FAILS** (`missing EN=1 conflicts=1`) and the runner exits non-zero — the PT-drift guard refusing the stale `dwyer-mcallister-cottage` translation. Reported, not hidden. |
+| `03-runbook-gate.txt` | `verify-stage18-operator-runbook.py`: **111 passed, 0 failed** — the runbook checked against the code it describes |
+| `04-gate-mutations.txt` | the **15 injected mutations**, every one failing closed, with a vacuity check so a no-op edit cannot be reported as a pass |
+| `05-manual-workflow-suite.txt` | the manual-workflow suite, **66 passed, 0 failed** (49 + the 17 new "every promised metric is a real field" assertions) |
+| `06-lint.txt` | `lint: OK` |
+| `07-full-test-run.txt` | the full suite after the change |
+
+Cited by `docs/reports/2026-10-02-stage-18-manual-translation-operator-workflow.md`.
+
 ## `2026-10-01-stage-15-final-production-commissioning-canary/`
 
 Stage 15 — an **operational execution** stage, stopped at its first gate.
