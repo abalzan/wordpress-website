@@ -190,12 +190,20 @@ running, so no run can be rescued by leftover build output.
 | 1 | before this stage's fixes | 80/81 | 6304 + **1 failed** | 17/18 | **4/4** | 6/7 | absent |
 | 2 | before this stage's fixes | **81/81** | **6305 + 0** | 17/18 | **4/4** | 6/7 | absent |
 | 3 | fixes applied, catalogue uncommitted | **81/81** | **6305 + 0** | 17/18 | **4/4** | 6/7 | absent |
-| 4 | fixes applied, catalogue committed | see §10.3 | | | | | |
+| 4 | fixes applied, catalogue committed | **81/81** | **6305 + 0** | **18/18** | **4/4** | **7/7** | absent |
+| 5 | **final green run** | **81/81** | **6305 + 0** | **18/18** | **4/4** | **7/7** | absent |
+| 6 | **final green run, independent repeat** | **81/81** | **6305 + 0** | **18/18** | **4/4** | **7/7** | absent |
 
 Runs 1 and 2 are the determinism proof: **identical code, different results.**
 Run 1 failed `test-guide-en-translation.php`; run 2 passed it. That single
 disagreement identified the fixture race, and it is why a single green run was
 not accepted as evidence.
+
+**Runs 5 and 6 are the two independent green clean runs** required by the task:
+each began with `docker compose down -v --remove-orphans` and `rm -rf dist/`,
+and both ended with **identical totals and `harness=0 gates=0`**. Run 4 was an
+earlier green run whose output files were superseded by the later two; runs 5
+and 6 are the authoritative evidence.
 
 ### 10.2 The failure runs 1–3 share, and its fix
 `verify-i18n-freshness.py` failed in every run with the identical message, because
@@ -213,7 +221,8 @@ reported here instead. `docs/routing.md` documents `/eventos/` as the archive
 
 ### 10.3 Numeric test results (final)
 
-Authoritative copies: `docs/evidence/2026-10-02-stage-22/run4-clean-*.txt`.
+Authoritative copies: `docs/evidence/2026-10-02-stage-22/run5-clean-*.txt` and
+`run6-clean-*.txt` — two independent clean runs with **identical** results.
 
 | Layer | Result |
 |---|---|
@@ -221,11 +230,14 @@ Authoritative copies: `docs/evidence/2026-10-02-stage-22/run4-clean-*.txt`.
 | PHP assertions | **6305 passed, 0 failed** |
 | Script-contract | **18 suites, 18 passed, 0 failed** |
 | HTTP acceptance | **4 suites, 4 passed, 0 failed** (occurrence 49, guides-EN 20, release 44, routing 92) |
-| Permanent gates | **7 total, 7 passed, 0 failed**; 84 assertions; `AGGREGATE: PASS` |
+| Permanent gates | **7 total, 7 passed, 0 failed**; **84 assertions**; 0 violations; `AGGREGATE: PASS` |
 | Stage 13 | `808 passed, 0 failed`; 44 negative proofs, 0 missed |
 | Stage 14 | `324 passed, 0 failed` |
 | Release integrity | `224 passed, 0 failed` |
+| Lint / static | `lint: OK` — syntax clean, **no new PHPCS violations**, **PHPStan 0 errors** |
+| Registry drift | `registry OK: 10 plugins validated, 19 generated regions current (zero writes)` |
 | `dist/` after a run | **absent** — no test leaves build output in the tree |
+| Harness exit | `harness=0 gates=0` in both run 5 and run 6 |
 
 Suite counts are **unchanged** from the reported run (81 / 18 / 4). Nothing was
 added or removed to reach those numbers; two defects were fixed instead.
@@ -279,10 +291,10 @@ The baseline was left untouched — rewriting it would have hidden the regressio
 | File | Proves |
 |---|---|
 | `clean-ci-run.sh` | the CI replica; deletes `dist/`, destroys the volume, runs the same sequence |
-| `run1..run4-clean-run-tests.txt` | full `./scripts/run-tests.sh` output per run |
-| `run1..run4-clean-permanent-gates.txt` | the Stage L aggregate per run |
-| `run1..run4-clean-ics-events.tsv` | the three ICS fixture events exist after bootstrap |
-| `run1..run4-clean-exit-code.txt` | harness and gate exit codes |
+| `run1..run6-clean-run-tests.txt` | full `./scripts/run-tests.sh` output per run |
+| `run1..run6-clean-permanent-gates.txt` | the Stage L aggregate per run |
+| `run1..run6-clean-ics-events.tsv` | the three ICS fixture events exist after bootstrap |
+| `run1..run6-clean-exit-code.txt` | harness and gate exit codes |
 
 ## 16. Documentation updated
 
