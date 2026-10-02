@@ -66,7 +66,7 @@ superglobal, so no request value can become a mode.
 | Original purpose | Preview / Apply / Remove one authored EN stage (Stage H) |
 | Disposition | **Removed.** The apply capability is gone, not deprecated-with-a-flag |
 | Replacement | `conexao-translation-automation` → `admin_post_conexao_translation_automation_proof` (Tools → Translation Automation) |
-| Compatibility | none lost: the only two stage-registering plugins (`conexao-en-translation`, `conexao-job-translation`) are `production: false`, so in the production steady state no stage is registered and the old endpoint could only ever have reached `unknown stage` |
+| Compatibility | none lost: `conexao-en-translation` is the only stage-registering plugin and is `production: false`, so in the production steady state no stage is registered and the old endpoint could only ever have reached `unknown stage` |
 | Enforced by | `tests/scripts/verify-stage8-control-plane.py` (control-plane contract) and `tests/scripts/verify-stage7-commissioning.py` (keeps the action name watched) |
 
 **The engine itself did not change.**
@@ -272,7 +272,6 @@ their plans, counters and gates are byte-identical to before.
 ```bash
 # engine contract, idempotence/PT-drift/failure proofs, future-stage smoke proof
 ./scripts/run-tests.sh --only conexao-translation-rollout
-./scripts/run-tests.sh --only conexao-job-translation
 
 php scripts/generate-registry-docs.php --check
 ```

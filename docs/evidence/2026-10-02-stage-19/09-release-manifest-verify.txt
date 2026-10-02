@@ -1,0 +1,29 @@
+script: release-manifest.py
+target: /home/andrei/IdeaProjects/wordpress-website/dist (local build output)
+mode:   verify
+scope:  Reads plugins.json and the artifacts in the build directory; writes only dist/release.json.
+record: /home/andrei/IdeaProjects/wordpress-website/dist/release.json
+
+release manifest verification: OK
+
+release:  v2026.10.02  (built 2026-10-02T06:36:02Z)
+commit:   1e09ee276aff on i18n
+tag:      v2026.10.02
+record:   /home/andrei/IdeaProjects/wordpress-website/dist/release.json
+
+allowlist (plugins.json): 10 artifact(s)
+built:          10/10 artifact(s), 235 file(s), 6417850 byte(s)
+
+  artifact                         kind     version     files  sha256
+  conexao-data-model               plugin   1.6.1           6  a883b6d179a94155
+  conexao-content                  plugin   1.0.1           5  d0ce005a3818674c
+  conexao-admin-ux                 plugin   1.0.7          14  aded30ec34b29543
+  conexao-event-runtime            plugin   1.2.2           7  515a416144e4f258
+  conexao-event-importer           plugin   1.7.1          42  551ef74cdf161b63
+  conexao-leisure-migration        plugin   2.1.0           7  e91eb8b09bd69710
+  conexao-sponsor-migration        plugin   1.1.0           6  b4d4e52562bee987
+  conexao-translation-rollout      plugin   1.2.0           4  73b3aee368712397
+  conexao-translation-automation   plugin   0.6.0          29  b926970aee5ae3e0
+  conexao-br-irlanda               theme    1.0.1         115  34e65e0576382b58
+
+summary: release=v2026.10.02 artifacts=10 built=10

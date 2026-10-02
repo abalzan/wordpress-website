@@ -1,112 +1,62 @@
-# conexao-job-translation
+# conexao-job-translation (REMOVED — Stage 19)
 
-<!-- BEGIN GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
-| | |
-|---|---|
-| **Status** | retired |
-| **Class** | rollout |
-| **Production** | no |
-| **Build** | no |
-| **Compose mount** | yes |
-| **Dependencies** | none |
-| **Version** | 1.0.0 (authoritative source: `wp-content/plugins/conexao-job-translation/conexao-job-translation.php` header) |
-| **Registry** | [`plugins.json`](../../plugins.json) |
+> **This plugin no longer exists.** Stage 19 removed it from the active
+> repository on 2026-10-02. It was a historical one-shot **rollout container**,
+> and its authored translation data had already been consolidated into the
+> shared translation stages. It was never part of the production steady state,
+> was never included in a release ZIP, and no supported runtime path loaded it.
 
-> **Lifecycle: activate → apply → remove.** This is a retired one-shot rollout plugin.
-> It is **not** a production steady-state dependency and is **not** included in a
-> release plugin ZIP. It is kept in the repository (and locally mounted) only so the
-> historical importer stays reproducible.
-<!-- END GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
+## Why it was removed
 
-> **Stage H migration (2026-09-26).** This stage now runs on the shared
-> translation-rollout engine, `conexao-translation-rollout`. Its duplicated
-> orchestration (`includes/apply.php`, `includes/audit.php` and the
-> `Conexao_Job_Translation_Admin` class) has been **removed**. What remains is
-> authored data plus stage configuration:
->
-> | File | Role |
-> |---|---|
-> | `includes/translation-map.php` | authored English data manifest (unchanged) |
-> | `includes/stage-fields.php` | job-specific field mapping + eligibility |
-> | `includes/stage-config.php` | declarative stage configuration + WP adapter |
-> | `conexao-job-translation.php` | loader: requires the three files, registers the stage |
->
-> The admin screen is now the shared one: Tools → **Translation Rollouts**
-> (see [`conexao-translation-rollout.md`](./conexao-translation-rollout.md)).
-> See `docs/reports/2026-09-26-stage-h-shared-rollout-engine.md`.
+Five one-shot rollout plugins each carried their own copy of the rollout
+lifecycle. Stage H introduced the shared engine (`conexao-translation-rollout`)
+precisely so that a new rollout would not need its own `apply.php` + `audit.php`
++ admin class. This plugin was the last container for Stage 6. With its data
+already consolidated, keeping the directory only preserved a duplicate dormant
+translation engine — which is the second source of truth the engineering
+standard forbids.
 
-## What it does
+## Where the authored data lives now
 
-1. **Jobs landing page check** — verifies the PT `empregos` page and its linked,
-   published EN `jobs` page exist (the stage refuses to run without them and
-   never creates or modifies a page: Stage 4.5 owns the Page layer). This is
-   now the engine's `verify_landing_callback` and counts as an **extra gate
-   failure** when it is not `verified`.
-2. **Job records** — for every manifest entry (keyed by the **Portuguese slug**,
-   never by local ID), creates or refreshes exactly ONE linked English `job`
-   with the authored English title, body, excerpt and meta description
-   (`includes/translation-map.php` is the source of truth, unchanged by
-   Stage H).
-3. **Verbatim field layer** — copies the shared featured image and every
-   `_job_*` meta key actually stored on the PT record. Publication date, author
-   and menu order are preserved.
-4. **Relationships** — `pll_set_post_language` + `pll_save_post_translations`,
-   verified in BOTH directions by the engine before a row is reported
-   successful.
-5. **Duplicate gates** — the EN-slug collision check is stage-specific (it must
-   not fire on a legitimate EN record of the same identity, which is why the
-   adapter checks the Polylang link before declaring a collision); re-runs are
-   idempotent.
-6. **PT regression gate** — the job-specific field list in
-   `includes/stage-fields.php` (`conexao_job_translation_snapshot_job()`:
-   name, title, content, excerpt, status, date, author, menu order, thumbnail,
-   `conexao_category`/`conexao_county`/`conexao_tag` assignments, every
-   `_job_*` meta key, Polylang language, meta description) is snapshotted by
-   the engine before the run and byte-compared after it.
-7. **Gate** — the engine's numeric gate: `eligible public PT jobs missing
-   EN = 0`, plus zero conflicts, zero PT drift and a verified Jobs page pair.
+****nowhere** — this is the one authored dataset with no active stage**
 
-## Source identity / deduplication
 
-The `job` CPT has **no importer and no source-identity meta** (no source ID, no
-UUID). The portable identity is therefore the **authored stable key** — the
-Portuguese slug in the versioned manifest — plus the Polylang pair itself and
-the EN-slug uniqueness probe inside the `job` namespace. Local post IDs are
-reported in result rows but are never described as portable identity.
+**If job English is ever needed again**, do not resurrect this plugin. Add an
+`en-job` stage to `conexao-en-translation` (`includes/job-translation-data.php`
++ a stage config) and recover the authored row from Git history at the Stage 19
+parent commit:
 
-## Removal / rollback
+```bash
+git show <stage-19-parent>:wp-content/plugins/conexao-job-translation/includes/translation-map.php
+```
 
-This stage declares `allow_remove => false`. The Stage 6 EN jobs carry a
-verbatim `_job_*` meta layer and shared featured media whose pre-removal state
-is not reconstructible from the manifest alone, so **a destructive remove is
-not implemented and is not claimed**. The shared engine refuses `remove` for
-this stage with a `WP_Error` and zero writes. Recovery is therefore
-snapshot-based: the engine's PT snapshot (and the versioned manifest, which
-reproduces every EN field) is the documented recovery source, and re-applying
-the stage is idempotent.
+Do **not** delete production job records as part of that work: the retired
+plugin's own documentation recorded that its EN jobs carry a verbatim `_job_*`
+meta layer and shared media that the manifest alone does not reconstruct.
+## Data-preservation proof (measured, Stage 19)
 
-## Audit rows
+This is the accepted, recorded gap of Stage 19. `job` is a B2 post type, none of the seven active stages covers job *records* (`en-jobs-page` is the Jobs **landing page**), and the stage declared `allow_remove => false`. The operator authorised retiring it with the plugin rather than standing up an `en-job` stage, so its single authored row survives only in Git history.
 
-- total public PT jobs / total public EN jobs
-- translated job pairs verified
-- eligible public PT jobs missing EN (gate condition)
-- EN jobs missing PT translation
-- jobs excluded (documented)
-- taxonomy terms used by PT jobs / missing EN
-- Jobs page PT/EN IDs + pair status
-- match strategy counts (stable-id / slug / title fallbacks)
+The executable proof is
+[`docs/evidence/2026-10-02-stage-19/data-preservation-proof.php`](../evidence/2026-10-02-stage-19/data-preservation-proof.php),
+run inside the real WordPress container; its output is
+`docs/evidence/2026-10-02-stage-19/02-data-preservation-proof-BEFORE.txt`.
 
-## Related theme pieces (Stage 6)
+## Historical provenance
 
-- `inc/empregos-landing.php` — `conexao_empregos_current_jobs()` (the
-  language-aware Jobs listing query on the landing template) and the
-  language-aware `conexao_empregos_page_url()` (EN job breadcrumbs point at
-  `/en/jobs/`).
-- `page-empregos.php` — the landing template. Its Stage 6 «Vagas»/"Openings"
-  section (the real job records in the current language) was **removed by
-  product decision — rendering only**: the job records, the language-aware
-  query and the CSS are retained, so the section can be restored unchanged.
+The implementation is recoverable in full from Git history:
 
-See `docs/routing.md` § English for the URL contract.
+```bash
+git log --oneline -- wp-content/plugins/conexao-job-translation
+git show <stage-19-parent>:wp-content/plugins/conexao-job-translation
+```
 
-_Last verified: 2026-09-26 by Stage H — Shared Translation Rollout Engine_
+The stage reports under [`docs/reports/`](../reports/) describe the architecture
+as it was when the stage ran, and are deliberately **not** rewritten: a Stage 9
+report should keep describing Stage 9.
+
+See also: [`conexao-en-translation.md`](./conexao-en-translation.md) (the active
+data/stage layer) and [`conexao-translation-rollout.md`](./conexao-translation-rollout.md)
+(the shared engine).
+
+_Last verified: 2026-10-02 by Stage 19 — removal of the retired translation plugins_

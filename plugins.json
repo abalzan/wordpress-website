@@ -141,66 +141,6 @@
       ],
       "version_source": "wp-content/plugins/conexao-translation-automation/conexao-translation-automation.php",
       "documentation": "docs/plugins/conexao-translation-automation.md"
-    },
-    {
-      "slug": "conexao-page-translation",
-      "name": "Conexão BR Irlanda — EN Page Translation (Stage 4.5)",
-      "class": "rollout",
-      "status": "retired",
-      "production": false,
-      "build": false,
-      "mount": true,
-      "dependencies": [],
-      "version_source": "wp-content/plugins/conexao-page-translation/conexao-page-translation.php",
-      "documentation": "docs/plugins/conexao-page-translation.md"
-    },
-    {
-      "slug": "conexao-blog-translation",
-      "name": "Conexão BR Irlanda — EN Blog Translation (Stage 5)",
-      "class": "rollout",
-      "status": "retired",
-      "production": false,
-      "build": false,
-      "mount": true,
-      "dependencies": [],
-      "version_source": "wp-content/plugins/conexao-blog-translation/conexao-blog-translation.php",
-      "documentation": "docs/plugins/conexao-blog-translation.md"
-    },
-    {
-      "slug": "conexao-job-translation",
-      "name": "Conexão BR Irlanda — EN Job Translation (Stage 6)",
-      "class": "rollout",
-      "status": "retired",
-      "production": false,
-      "build": false,
-      "mount": true,
-      "dependencies": [],
-      "version_source": "wp-content/plugins/conexao-job-translation/conexao-job-translation.php",
-      "documentation": "docs/plugins/conexao-job-translation.md"
-    },
-    {
-      "slug": "conexao-leisure-translation",
-      "name": "Conexão BR Irlanda — EN Leisure Descriptions (Stage 7)",
-      "class": "rollout",
-      "status": "retired",
-      "production": false,
-      "build": false,
-      "mount": true,
-      "dependencies": [],
-      "version_source": "wp-content/plugins/conexao-leisure-translation/conexao-leisure-translation.php",
-      "documentation": "docs/plugins/conexao-leisure-translation.md"
-    },
-    {
-      "slug": "conexao-guide-translation",
-      "name": "Conexao Guide Translation",
-      "class": "rollout",
-      "status": "retired",
-      "production": false,
-      "build": false,
-      "mount": true,
-      "dependencies": [],
-      "version_source": "wp-content/plugins/conexao-guide-translation/conexao-guide-translation.php",
-      "documentation": "docs/plugins/conexao-guide-translation.md"
     }
   ]
 }

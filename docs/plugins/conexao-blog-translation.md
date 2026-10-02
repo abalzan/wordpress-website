@@ -1,129 +1,53 @@
-# conexao-blog-translation
+# conexao-blog-translation (REMOVED — Stage 19)
 
-<!-- BEGIN GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
-| | |
-|---|---|
-| **Status** | retired |
-| **Class** | rollout |
-| **Production** | no |
-| **Build** | no |
-| **Compose mount** | yes |
-| **Dependencies** | none |
-| **Version** | 1.0.0 (authoritative source: `wp-content/plugins/conexao-blog-translation/conexao-blog-translation.php` header) |
-| **Registry** | [`plugins.json`](../../plugins.json) |
+> **This plugin no longer exists.** Stage 19 removed it from the active
+> repository on 2026-10-02. It was a historical one-shot **rollout container**,
+> and its authored translation data had already been consolidated into the
+> shared translation stages. It was never part of the production steady state,
+> was never included in a release ZIP, and no supported runtime path loaded it.
 
-> **Lifecycle: activate → apply → remove.** This is a retired one-shot rollout plugin.
-> It is **not** a production steady-state dependency and is **not** included in a
-> release plugin ZIP. It is kept in the repository (and locally mounted) only so the
-> historical importer stays reproducible.
-<!-- END GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
+## Why it was removed
 
-**Purpose:** turn the Blog from the approved **B2 fallback** (`/en/blog/` rendering
-the Portuguese posts under the English URL) into a **real English translation**:
-a linked EN posts page plus one linked EN translation per public Portuguese post.
+Five one-shot rollout plugins each carried their own copy of the rollout
+lifecycle. Stage H introduced the shared engine (`conexao-translation-rollout`)
+precisely so that a new rollout would not need its own `apply.php` + `audit.php`
++ admin class. This plugin was the last container for Stage 5. With its data
+already consolidated, keeping the directory only preserved a duplicate dormant
+translation engine — which is the second source of truth the engineering
+standard forbids.
 
-Owner: project maintainer. Introduced by Stage 5
-(`CONEXAO_BR_ENGLISH_BLOG_TRANSLATION_REPORT.md`).
+## Where the authored data lives now
 
-| | |
-|---|---|
-| Folder | `wp-content/plugins/conexao-blog-translation/` |
-| Admin screen | Tools → **EN Blog Translations** |
-| WP-CLI | `scripts/run-blog-translation.php` (`wp eval-file - dry-run json`) |
-| Frontend effect | **none** (importer only — the frontend behaviour lives in the theme) |
-| Safe to deactivate | yes, after the rollout |
-| Depends on | Polylang (the English language layer must exist first) |
+**the `en-post` stage of `conexao-en-translation` (`includes/blog-translation-data.php`) plus `en-blog-page` (`includes/blog-page-data.php`)**
 
-## What it does
 
-1. **Posts page** — creates the linked English translation of the WordPress posts
-   page (`page_for_posts`), slug `blog` (shared canonical path → `/en/blog/`),
-   with the English title/copy/meta description from the manifest, and links it to
-   the Portuguese posts page. This is the object that retires the B2 fallback.
-2. **Posts** — for every manifest entry, resolves the Portuguese post **by slug**
-   (never by local ID), creates or refreshes exactly ONE linked English `post`
-   with the authored English title, body, excerpt and meta description; copies the
-   featured image, publication date, author, comment/ping status; assigns the
-   linked English category terms.
-3. **Category terms** — creates the linked English `category` terms used by those
-   posts (one shared concept identity per PT/EN pair, Portuguese slugs untouched).
-   Tags are only translated when a published post actually uses them.
-4. **Internal links** — links that must point at an English destination are
-   resolved through the Polylang relationship at import time (`link_map` in the
-   manifest), never by string replacement. A rule whose destination has no
-   published English translation leaves the source href untouched.
-5. **Cache/route refresh** — after touching the posts page the Polylang language
-   cache and the rewrite rules are refreshed, so `/en/blog/` is routable in the
-   same request cycle.
-6. **Audit** — the completeness inventory (below) is printed at the end of every
-   run and on the admin screen.
+The 26 EN titles that differ from the retired map are **re-authorings**, not
+truncations: Stage N re-wrote and re-proofread the Blog English after Stage 5
+(the retired strings are in Git history). The active copy is the reviewed one.
+## Data-preservation proof (measured, Stage 19)
 
-## Guarantees
+33 of its 36 authored posts have a real PT record and every one of them exists in `en-post`. The other 3 (`carne-refogada-ao-estilo-korean-bbq`, `informacoes-para-as-mulheres-na-irlanda`, `turismo-e-lazer-em-co-laois-na-irlanda`) have **no PT record at all** — there is nothing to translate, so no active row can exist for them.
 
-- **The Portuguese originals are never modified.** Every PT post is snapshotted
-  before the run (`post_name`, title, content, excerpt, status, date, author,
-  thumbnail, taxonomies, language) and compared afterwards; the report carries
-  `pt_changed` and the run trips an error row if it is not `0`. The only permitted
-  Portuguese write is a Polylang language **backfill** for a record that had no
-  language at all (needed to create the relationship).
-- **Idempotent** — re-running refreshes the records it owns and never creates a
-  second translation for the same Portuguese post.
-- **Relationship verified both ways** (`pll_get_post( pt, 'en' )` **and**
-  `pll_get_post( en, 'pt' )`) before a row is reported as successful.
-- **No invented URLs** — English destinations come from
-  `get_permalink()`/Polylang, the English slugs from the authored manifest.
-- **Dry run** — `dry_run` performs no write at all and reports what would happen.
+The executable proof is
+[`docs/evidence/2026-10-02-stage-19/data-preservation-proof.php`](../evidence/2026-10-02-stage-19/data-preservation-proof.php),
+run inside the real WordPress container; its output is
+`docs/evidence/2026-10-02-stage-19/02-data-preservation-proof-BEFORE.txt`.
 
-## Content sources
+## Historical provenance
 
-| File | Contents |
-|---|---|
-| `includes/translation-map.php` | Generated manifest: the EN posts page copy, the category term map and one entry per Portuguese post (EN slug, title, excerpt, meta description, body HTML, `link_map`). |
-| `includes/apply.php` | The engine (terms, posts page, posts, link localization, PT regression gate). |
-| `includes/audit.php` | The completeness inventory / gate. |
-
-The manifest is generated by `stage5-work/build-manifest.py` from the per-post
-JSON files in `stage5-work/en/` (the human translations) and the Portuguese REST
-payloads in `stage5-work/source/`. Do not hand-edit the generated block.
-
-## Completeness gate (Phase 20)
-
-```
-eligible public PT posts missing EN = 0
-EN posts missing PT translation      = 0
-categories used by Blog posts missing EN term = 0
-```
-
-plus the posts-page pair verified. A manifest entry whose Portuguese post is
-absent from the target site is reported as a **documented exclusion** (the Blog
-translation is portable: it is keyed by slug, so a site that does not have that
-post simply skips it) — never as a silent pass.
-
-## Running it
+The implementation is recoverable in full from Git history:
 
 ```bash
-# Local WP-CLI (recommended first step: dry run)
-cat scripts/run-blog-translation.php | docker compose exec -T wordpress wp eval-file - --allow-root dry-run
-cat scripts/run-blog-translation.php | docker compose exec -T wordpress wp eval-file - --allow-root
-
-# Production (WordPress.com, no WP-CLI): activate the plugin, then
-# Tools → EN Blog Translations → Preview → Apply.
+git log --oneline -- wp-content/plugins/conexao-blog-translation
+git show <stage-19-parent>:wp-content/plugins/conexao-blog-translation
 ```
 
-The production runbook (activation order, verification URLs, rollback) is in
-`CONEXAO_BR_ENGLISH_BLOG_TRANSLATION_REPORT.md` §Production rollout.
+The stage reports under [`docs/reports/`](../reports/) describe the architecture
+as it was when the stage ran, and are deliberately **not** rewritten: a Stage 9
+report should keep describing Stage 9.
 
-## Frontend contract (theme)
+See also: [`conexao-en-translation.md`](./conexao-en-translation.md) (the active
+data/stage layer) and [`conexao-translation-rollout.md`](./conexao-translation-rollout.md)
+(the shared engine).
 
-The importer is inert on the frontend. The visible behaviour it unlocks lives in
-the theme (`inc/polylang.php`, `inc/seo.php`, `functions.php`):
-
-- `conexao_resolve_posts_page_request()` + `conexao_mark_posts_page_query()`
-  resolve the posts-page request in the requested language (the posts page path is
-  shared by both languages, so WordPress' language-blind page lookup would
-  otherwise return the Portuguese page).
-- `conexao_b2_posts_page_is_en_request()` serves the Portuguese post set **only**
-  while no published EN posts page exists; `conexao_should_render_b2_fallback()`
-  stops reporting a fallback as soon as the pair is published.
-- `inc/seo.php` emits a self-canonical posts page per language
-  (`/blog/` and `/en/blog/`) and lists blog posts (PT + EN) in the theme sitemap.
+_Last verified: 2026-10-02 by Stage 19 — removal of the retired translation plugins_

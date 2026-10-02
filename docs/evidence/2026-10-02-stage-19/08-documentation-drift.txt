@@ -1,0 +1,22 @@
+== Stage L documentation-drift gate ==
+   repo: /home/andrei/IdeaProjects/wordpress-website
+
+   -- orchestrated gates --
+   Stage G registry drift             exit=0 registry OK: 10 plugins validated, 19 generated regions current (zero writes).
+   Stage I script conventions         exit=0 311 passed, 0 failed
+   Stage K agent governance           exit=0 Stage K governance verification: 357 passed, 0 failed
+
+   -- §9.2 last-verified markers (living reference set) --
+   living documents checked: 15, missing marker: 0
+   historical/audit documents without the marker (reported, not gated): 135
+
+   -- §9.2 no root-level report/evidence file --
+   root files scanned: 17, offenders: 0
+
+   -- §9.2 AGENTS.md remains orientation --
+   AGENTS.md lines: 229
+
+   -- authoritative sources referenced by the governance layer --
+   authoritative sources checked: 7
+14 passed, 0 failed
+GATE-RESULT {"gate": "documentation_drift", "status": "pass", "passed": 14, "failed": 0, "violations": 0, "details": []}

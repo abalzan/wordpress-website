@@ -88,11 +88,6 @@ mounted only so the historical importer stays reproducible.
 
 **Lifecycle: activate → apply → remove.**
 
-- `conexao-page-translation` - activate → apply → remove
-- `conexao-blog-translation` - activate → apply → remove
-- `conexao-job-translation` - activate → apply → remove
-- `conexao-leisure-translation` - activate → apply → remove
-- `conexao-guide-translation` - activate → apply → remove
 <!-- END GENERATED PLUGIN REGISTRY: docs/deployment.md activation order -->
 
 ## The release process

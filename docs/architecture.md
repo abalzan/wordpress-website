@@ -46,11 +46,6 @@ Plugins load in registry order, and dependencies always precede their dependents
 8. **conexao-translation-rollout** (`platform`, active) v1.2.0. **Required on production.**
 9. **conexao-en-translation** (`tooling`, active) v1.5.0. **Never required on production.** Declared dependencies (`Requires Plugins` header): `conexao-translation-rollout`.
 10. **conexao-translation-automation** (`platform`, active) v0.6.0. **Required on production.** Declared dependencies (`Requires Plugins` header): `conexao-translation-rollout`.
-11. **conexao-page-translation** (`rollout`, retired) v1.0.0. Retired rollout tooling - *activate → apply → remove*. Not a production dependency.
-12. **conexao-blog-translation** (`rollout`, retired) v1.0.0. Retired rollout tooling - *activate → apply → remove*. Not a production dependency.
-13. **conexao-job-translation** (`rollout`, retired) v1.0.0. Retired rollout tooling - *activate → apply → remove*. Not a production dependency.
-14. **conexao-leisure-translation** (`rollout`, retired) v1.0.0. Retired rollout tooling - *activate → apply → remove*. Not a production dependency.
-15. **conexao-guide-translation** (`rollout`, retired) v1.0.0. Retired rollout tooling - *activate → apply → remove*. Not a production dependency.
 
 The authoritative registry is [`plugins.json`](../plugins.json): the load order, the
 production activation order, the release build list and the local Compose mount list are
@@ -74,13 +69,37 @@ inventory → manifest validation → dry-run plan → snapshot → apply → ve
 | inventory, dry-run plan, snapshot orchestration, apply traversal, PT-drift guard, verify counters, numeric gate, result formatting, admin capability/nonce flow, remove traversal | `conexao-translation-rollout` (shared engine) |
 | authored translated copy, portable stable keys, stage identity and languages, field mapping, eligibility, landing-page verification, remove-safety declaration | the stage plugin |
 
-A retired rollout that has been migrated becomes **data + configuration only**.
-`conexao-job-translation` is the first: its `includes/apply.php`,
-`includes/audit.php` and per-stage admin class were removed in Stage H, leaving
-`includes/translation-map.php` (data), `includes/stage-fields.php` (job field
-mapping) and `includes/stage-config.php` (configuration). The other four
-retired rollouts (`page`, `blog`, `leisure`, `guide`) still own their historical
-orchestration and are unchanged.
+There is now exactly **one** translation architecture, and every authored
+English translation lives in a stage data file of `conexao-en-translation`:
+
+```text
+conexao-translation-rollout      (the shared engine: the whole lifecycle)
+    ↓
+conexao-en-translation           (the seven stages + all authored EN data)
+    ↓
+manual translation workflow      (the operator runbook)
+    ↓
+Polylang
+```
+
+**Stage 19 consolidation.** The five one-shot rollout plugins
+(`conexao-page-translation`, `conexao-blog-translation`,
+`conexao-job-translation`, `conexao-leisure-translation`,
+`conexao-guide-translation`) were **removed from the active repository**. They
+were historical rollout containers; their authored translation data had already
+been consolidated into the shared stages, which was proved before deletion. They
+were never part of the production steady state and were never in a release ZIP,
+so removing them changes no runtime and no deployed artifact. Their historical
+implementation and provenance remain recoverable from Git history and from the
+stage reports under [`docs/reports/`](reports/).
+
+One consequence is recorded honestly rather than hidden: the retired **job**
+rollout's authored manifest is **not** represented by an active stage. `job` is
+a B2 type, the seven supported stages carry no job-records stage, and the
+`job` stage declared `allow_remove => false`. Its single authored row was
+therefore retired with the plugin and survives only in Git history. This is a
+known, accepted gap — re-creating an `en-job` stage is future work, not part of
+Stage 19.
 
 Adding a rollout therefore requires **one data manifest + one small stage
 config + one gate/test**, and no copied orchestration. See

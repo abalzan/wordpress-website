@@ -10,9 +10,6 @@ parameters:
     excludePaths:
         - wp-content/themes/conexao-br-irlanda/tests/*
         - wp-content/plugins/*/tests/*
-        # Generated Stage 9 EN guide translation bodies: machine-generated
-        # content data inside the retired rollout plugin.
-        - wp-content/plugins/conexao-guide-translation/includes/body-*.php
     bootstrapFiles:
         - %currentWorkingDirectory%/docs/dev/phpstan-bootstrap.php
     ignoreErrors:

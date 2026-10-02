@@ -1,168 +1,57 @@
-# conexao-guide-translation
+# conexao-guide-translation (REMOVED — Stage 19)
 
-<!-- BEGIN GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
-| | |
-|---|---|
-| **Status** | retired |
-| **Class** | rollout |
-| **Production** | no |
-| **Build** | no |
-| **Compose mount** | yes |
-| **Dependencies** | none |
-| **Version** | 1.0.0 (authoritative source: `wp-content/plugins/conexao-guide-translation/conexao-guide-translation.php` header) |
-| **Registry** | [`plugins.json`](../../plugins.json) |
+> **This plugin no longer exists.** Stage 19 removed it from the active
+> repository on 2026-10-02. It was a historical one-shot **rollout container**,
+> and its authored translation data had already been consolidated into the
+> shared translation stages. It was never part of the production steady state,
+> was never included in a release ZIP, and no supported runtime path loaded it.
 
-> **Lifecycle: activate → apply → remove.** This is a retired one-shot rollout plugin.
-> It is **not** a production steady-state dependency and is **not** included in a
-> release plugin ZIP. It is kept in the repository (and locally mounted) only so the
-> historical importer stays reproducible.
-<!-- END GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
+## Why it was removed
 
-> **Superseded (2026-09-28).** This plugin is **inactive and its lifecycle will not
-> run again.** The Guide EN translation it authored is now applied through the
-> shared engine: the authored data was imported into the `en-guide` stage of
-> [`conexao-en-translation`](conexao-en-translation.md)
-> (`includes/guide-translation-data.php`, 51 rows, plus `includes/guide-terms-data.php`,
-> 13 EN `conexao_category` terms), and the rollout was executed with
-> `php scripts/run-en-translation.php --apply --only=guide`. This plugin is **not**
-> re-activated: re-running its private `apply.php` would be a second, independent
-> translation lifecycle. The files below are retained for provenance only, and the
-> counts it reports ("15 in the measured dataset") predate the shared engine's
-> 13-term scope.
+Five one-shot rollout plugins each carried their own copy of the rollout
+lifecycle. Stage H introduced the shared engine (`conexao-translation-rollout`)
+precisely so that a new rollout would not need its own `apply.php` + `audit.php`
++ admin class. This plugin was the last container for Stage 9. With its data
+already consolidated, keeping the directory only preserved a duplicate dormant
+translation engine — which is the second source of truth the engineering
+standard forbids.
 
-**Purpose:** turn the Guide CPT from the approved **B1 302 policy** (`/en/guias/`
-did not have an English archive; every guide detail URL 302'd to Portuguese)
-into a **real English translation**: one linked EN translation per eligible
-public Portuguese `guide`, plus the linked English `conexao_category` terms
-used by those guides.
+## Where the authored data lives now
 
-Owner: project maintainer. Introduced by Stage 9.
+**the `en-guide` stage of `conexao-en-translation` (`includes/guide-translation-data.php` + `includes/guide-terms-data.php`)**
 
-| | |
-|---|---|
-| Folder | `wp-content/plugins/conexao-guide-translation/` |
-| Admin screen | Tools → **EN Guide Translations** |
-| WP-CLI | `wp-content/themes/conexao-br-irlanda/tests/run-guide-translation.php` (`php <file> [dry-run] [json]`) |
-| In-process test | `wp-content/themes/conexao-br-irlanda/tests/test-guide-en-translation.php` |
-| HTTP verification | `scripts/verify-guides-http.sh [base-url]` |
-| Frontend effect | **none** (importer only — the rendering contract lives in the theme) |
-| Safe to deactivate | yes, after the rollout |
-| Depends on | Polylang (the English language layer must exist first) |
 
-## What it does
+The plugin also owned the authored `conexao_category` **terms** those guides use;
+those live in `includes/guide-terms-data.php` and are applied through the shared
+engine's translated-taxonomy capability.
 
-1. **Category terms** — creates/links the English `conexao_category` term for
-   every PT term actually used by a public guide (15 in the measured dataset).
-   A re-run repairs manifest-owned drift (slug/name/description) instead of
-   creating a second term.
-2. **Guides** — for every manifest entry (keyed by the **Portuguese slug**,
-   never by a local ID), creates or refreshes exactly ONE linked English
-   `guide` with the authored English title, body, excerpt and meta description,
-   preserving the PT publication date, author and menu order.
-3. **Relationships** — `pll_set_post_language` + `pll_save_post_translations`,
-   verified in BOTH directions before a row is reported successful.
-4. **Taxonomy** — the EN guide is filed under the **EN counterpart** of the PT
-   category term (resolved through `pll_get_term()`), never under the PT term.
-5. **Shared field layer** — the featured image (when present) and the editorial
-   `_guide_status` meta are copied; the PT record is never touched.
-6. **Duplicate gate** — refuses to create a second EN guide when the EN slug is
-   already used by an unlinked record; a drifted slug is repaired.
-7. **PT regression gate** — every PT guide is snapshotted before the run
-   (slug, title, body, excerpt, status, date, author, menu order, thumbnail,
-   terms, `_guide_status`, language, meta description) and byte-compared after
-   it (`pt_changed` must be 0; the only permitted write is a Polylang language
-   backfill for a language-less record).
-8. **Idempotent + deterministic** — `g_content()` normalises the authored HTML
-   to the exact form WordPress stores (KSES rewrites `attr="v"/>` to
-   `attr="v" />`), so a no-op re-run reports `created 0, updated 0` and never
-   churns `post_modified`.
-9. **Audit** — the completeness inventory is printed at the end of every run and
-   on the admin screen.
-10. **Cache/route refresh** — after the run the Polylang language cache and the
+The retired `includes/body-*.php` files were generated authored-body fragments,
+excluded from PHPCS/PHPStan as machine-generated content. They are gone; the
+authored English survives inside the stage data records.
+## Data-preservation proof (measured, Stage 19)
 
-## Content sources
+49 of its 51 authored rows are present unchanged (title, EN slug and body identical). Row 50 is `carteira-de-motorista-2`, re-keyed to `carteira-motorista-brasileiros` with an identical body and title. Row 51 (`learner-permit-theory-test-irlanda-cnh-brasileira`) was retired by operator decision and is recorded in `includes/exclusions-data.php` with classification `NO_REAL_PT_SOURCE`.
 
-| File | Contents |
-|---|---|
-| `includes/terms.php` | The EN `conexao_category` term map (PT slug → EN name/slug/description). EN slugs follow the Stage 3.2/3.3 contract (`financas → finances`, `negocios → businesses`, `empregos → jobs`, …). |
-| `includes/builder-1.php` | The block helpers. They emit exactly the PT block structure (`wp:heading`, `wp:paragraph`, `wp:list`, `wp:table`, `wp:quote`, `wp:separator`, …) — only the text is English. |
-| `includes/body-*.php` | The authored English bodies, one function per guide (split across files only for editor size). |
-| `includes/guides-a…d.php` | The manifest: one row per PT slug with `en_slug`, `en_title`, `en_excerpt`, `en_meta_description` and the body function. |
-| `includes/apply*.php` | The apply engine (snapshot gate, term linking, create/refresh, PT regression gate). |
-| `includes/audit.php` | The completeness inventory / gate. |
+The executable proof is
+[`docs/evidence/2026-10-02-stage-19/data-preservation-proof.php`](../evidence/2026-10-02-stage-19/data-preservation-proof.php),
+run inside the real WordPress container; its output is
+`docs/evidence/2026-10-02-stage-19/02-data-preservation-proof-BEFORE.txt`.
 
-## Guarantees
+## Historical provenance
 
-- **The Portuguese originals are never modified.** Only a Polylang language
-  backfill (a record with no language at all) is ever written on the PT side.
-- **Genuinely English, structurally equivalent.** Every EN body is a real
-  English translation that keeps the PT heading hierarchy, lists, tables,
-  callouts, block attributes and the "Official links" / "Official sources" layer.
-  Official organisation names, URLs, phone numbers, form numbers and identifiers
-  are preserved verbatim; nothing is machine-substituted and no placeholder or
-  "coming soon" text is produced. The test suite asserts the EN body is not a
-  copy of the PT body and leaks no Portuguese stop-words.
-- **No invented URLs** — the EN permalinks and the official-source URLs come
-  from the authored manifest, never from string replacement. External links
-  (gov.ie, HSE, Revenue, Courts Service, WRC, RTB, …) keep their original
-  destination in both languages.
-- **Idempotent** and safe to re-run at any time.
-
-## Completeness gate
-
-```
-eligible public PT guides missing EN  = 0
-taxonomy terms used by PT guides missing EN = 0
-EN guides missing PT translation = 0
-    (was 1: the pre-existing stage32-editorial-translation fixture from the
-    Stage 3.2 stage. Stage M removed it as an orphan fixture — it had no PT
-    master, no meta, no terms and no image, and its own "en" link pointed at
-    itself. See docs/evidence/2026-09-26-stage-m/ and
-    scripts/remove-en-orphan-fixtures.php. The linked
-    stage42-contract-fixture-en / stage32-editorial-source pair is a valid
-    bidirectional fixture and is deliberately still present.)
-PT sources changed (must be 0)
-```
-
-A manifest entry whose Portuguese guide is absent from the target site is
-reported as a **documented exclusion** (the translation is portable: it is keyed
-by slug), never as a silent pass.
-
-## Running it
+The implementation is recoverable in full from Git history:
 
 ```bash
-# Local, in-process runner (LOCAL ONLY)
-docker compose exec -T wordpress php \
-  /var/www/html/wp-content/themes/conexao-br-irlanda/tests/run-guide-translation.php dry-run
-docker compose exec -T wordpress php \
-  /var/www/html/wp-content/themes/conexao-br-irlanda/tests/run-guide-translation.php
-
-# Production (WordPress.com, no WP-CLI): activate the plugin, then
-# Tools → EN Guide Translations → Preview → Apply.
+git log --oneline -- wp-content/plugins/conexao-guide-translation
+git show <stage-19-parent>:wp-content/plugins/conexao-guide-translation
 ```
 
-## Frontend contract (theme)
+The stage reports under [`docs/reports/`](../reports/) describe the architecture
+as it was when the stage ran, and are deliberately **not** rewritten: a Stage 9
+report should keep describing Stage 9.
 
-The importer is inert on the front end. The visible behaviour it unlocks lives
-in the theme:
+See also: [`conexao-en-translation.md`](./conexao-en-translation.md) (the active
+data/stage layer) and [`conexao-translation-rollout.md`](./conexao-translation-rollout.md)
+(the shared engine).
 
-- `/guias/` and `/en/guias/` are two language-scoped views of the same CPT
-  archive. Polylang scopes the query per language, so the EN archive lists the
-  EN guides and never the PT siblings.
-- EN singles are self-canonical, carry the PT↔EN↔x-default hreflang set, the
-  authored EN SEO title/description, the EN social metadata and a language
-  switcher pointing at the real PT translation.
-- The PT slug under `/en/` is a replaced master: it answers **302 → the PT
-  guide** (never Portuguese content under an English URL, and never a 301).
-- `conexao_guide_category_filter_term_id()` (functions.php) makes the
-  `?categoria=` filter language-neutral: the filter bar links with the current
-  language's slugs, and a slug from the other language is resolved through the
-  real Polylang term relationship. An unknown slug yields an empty result set
-  instead of a cross-language redirect.
-
-    rewrite rules are refreshed, so the new `/en/guias/…` routes work in the
-    same request cycle.
-
-_Last verified: 2026-09-26 by Stage I — Scripts Standardisation_
-
-_Last verified: 2026-09-28 by the B1 English Guides content rollout — authored data imported into the shared `en-guide` stage; this plugin stays inactive_
+_Last verified: 2026-10-02 by Stage 19 — removal of the retired translation plugins_

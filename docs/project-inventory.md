@@ -19,17 +19,12 @@ source. Do not hand-edit this table.
 | conexao-translation-rollout | 1.2.0 | platform | active | yes | yes | yes | `wp-content/plugins/conexao-translation-rollout/` |
 | conexao-en-translation | 1.5.0 | tooling | active | no | no | yes | `wp-content/plugins/conexao-en-translation/` |
 | conexao-translation-automation | 0.6.0 | platform | active | yes | yes | yes | `wp-content/plugins/conexao-translation-automation/` |
-| conexao-page-translation | 1.0.0 | rollout | retired | no | no | yes | `wp-content/plugins/conexao-page-translation/` |
-| conexao-blog-translation | 1.0.0 | rollout | retired | no | no | yes | `wp-content/plugins/conexao-blog-translation/` |
-| conexao-job-translation | 1.0.0 | rollout | retired | no | no | yes | `wp-content/plugins/conexao-job-translation/` |
-| conexao-leisure-translation | 1.0.0 | rollout | retired | no | no | yes | `wp-content/plugins/conexao-leisure-translation/` |
-| conexao-guide-translation | 1.0.0 | rollout | retired | no | no | yes | `wp-content/plugins/conexao-guide-translation/` |
 
 **Production steady state** (platform, `production: true`) - activate in this order: conexao-data-model -> conexao-content -> conexao-admin-ux -> conexao-event-runtime -> conexao-translation-rollout -> conexao-translation-automation.
 
 **Local-only tooling** (never production): conexao-event-importer, conexao-leisure-migration, conexao-sponsor-migration, conexao-en-translation.
 
-**Retired rollout plugins** (historical tooling, *activate → apply → remove*; not a production dependency and not in any release ZIP): conexao-page-translation, conexao-blog-translation, conexao-job-translation, conexao-leisure-translation, conexao-guide-translation.
+**Retired rollout plugins** (historical tooling, *activate → apply → remove*; not a production dependency and not in any release ZIP): .
 <!-- END GENERATED PLUGIN REGISTRY: docs/project-inventory.md plugins -->
 
 ## Themes

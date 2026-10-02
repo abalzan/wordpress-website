@@ -34,8 +34,7 @@
 // Shared Stage E test bootstrap: the only place allowed to locate wp-load.php.
 require_once dirname( __DIR__, 4 ) . '/tests/bootstrap.php';
 
-require_once WP_CONTENT_DIR . '/plugins/conexao-page-translation/includes/translation-map.php';
-require_once WP_CONTENT_DIR . '/plugins/conexao-page-translation/includes/apply.php';
+
 
 $passed = 0;
 $failed = 0;
@@ -94,6 +93,15 @@ function s8_in_language( string $slug, callable $callback ) {
 
 test_prerequisite_hint( 'polylang' );
 test_require( function_exists( 'pll_get_post' ), 'polylang', 'test prerequisite is available: function_exists( pll_get_post )', 'activate the Polylang plugin' );
+// Stage 19: the authored Jobs page row now comes from the active `en-jobs-page`
+// stage of conexao-en-translation, not from the retired conexao-page-translation
+// plugin this suite used to load.
+test_require(
+	function_exists( 'conexao_en_translation_jobs_page_manifest' ),
+	'conexao-en-translation',
+	'the active EN jobs-page stage is loaded',
+	'activate the conexao-en-translation plugin'
+);
 // ---------------------------------------------------------------------------
 
 $pt_page = get_page_by_path( 'empregos', OBJECT, 'page' );
@@ -104,20 +112,20 @@ assert_true( $en_id > 0 && $en_id !== (int) $pt_page->ID, 'the Jobs page has an 
 assert_true( $en_id > 0 && (int) pll_get_post( $en_id, 'pt' ) === (int) $pt_page->ID, 'the Jobs page pair is linked from both sides' );
 assert_true( $en_id > 0 && 'publish' === get_post_status( $en_id ), 'the EN Jobs page is published' );
 
-$manifest    = conexao_page_translation_map();
-$jobs_spec   = $manifest['empregos'] ?? array();
+$manifest    = conexao_en_translation_jobs_page_manifest();
+$jobs_spec   = $manifest['records']['empregos'] ?? array();
 $en_post     = $en_id ? get_post( $en_id ) : null;
 $en_content  = $en_post ? $en_post->post_content : '';
 $en_rendered = $en_id ? trim( wp_strip_all_tags( $en_content ) ) : '';
 
-assert_true( 'jobs' === ( $jobs_spec['en_slug'] ?? '' ), "the manifest owns the EN Jobs slug 'jobs'" );
+assert_true( 'empregos' === ( $jobs_spec['en_slug'] ?? '' ), "the stage owns the EN Jobs slug 'empregos' (shared-slug shape)" );
 assert_true(
-	$en_id > 0 && $en_post->post_title === $jobs_spec['title'],
+	$en_id > 0 && $en_post->post_title === $jobs_spec['en_title'],
 	'the EN Jobs page title is the authored English title',
 	$en_id ? $en_post->post_title : ''
 );
 assert_true(
-	$en_id > 0 && false !== strpos( $en_content, $jobs_spec['content'] ),
+	$en_id > 0 && false !== strpos( $en_content, $jobs_spec['en_content'] ),
 	'the EN Jobs body is the authored English body from the manifest (not a template hardcode)'
 );
 assert_true( $en_id > 0 && '' !== $en_rendered, 'the EN Jobs body is not empty' );
@@ -137,12 +145,12 @@ assert_true(
 );
 
 // The Portuguese source must be untouched by the English layer.
-$pt_now = conexao_page_translation_snapshot_page( (int) $pt_page->ID );
+$pt_now = conexao_en_translation_snapshot( (int) $pt_page->ID );
 assert_true(
-	'Empregos' === $pt_now['title'] && false !== strpos( $pt_now['content'], 'As vagas mais recentes' ),
+	'Empregos' === $pt_now['post_title'] && false !== strpos( $pt_now['post_content'], 'As vagas mais recentes' ),
 	'the PT Jobs page content is unchanged (Portuguese source preserved)'
 );
-assert_true( 'page-empregos.php' === $pt_now['template'], 'the PT Jobs page keeps its template' );
+assert_true( 'page-empregos.php' === get_post_meta( (int) $pt_page->ID, '_wp_page_template', true ), 'the PT Jobs page keeps its template' );
 assert_true(
 	(int) get_post_thumbnail_id( (int) $pt_page->ID ) === (int) get_post_thumbnail_id( $en_id ),
 	'the EN Jobs page shares the PT featured media (no duplicated attachment)'
@@ -495,7 +503,7 @@ assert_true( false !== strpos( (string) $pt_url, '/empregos/' ), 'the PT jobs UR
 assert_true( $en_url !== $pt_url, 'the EN request resolves a different jobs URL', (string) $en_url );
 assert_true( '' !== $en_url, 'conexao_empregos_page_url() resolves on the EN language' );
 
-$pt_source = conexao_page_translation_snapshot_page( (int) $pt_page->ID );
-assert_true( 'empregos' === $pt_source['name'], 'the canonical PT path is still "empregos" (no translated slug)' );
+$pt_source = conexao_en_translation_snapshot( (int) $pt_page->ID );
+assert_true( 'empregos' === $pt_source['post_name'], 'the canonical PT path is still "empregos" (no translated slug)' );
 
 test_finish();

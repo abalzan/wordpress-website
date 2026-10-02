@@ -1,109 +1,49 @@
-# Conexão Leisure Translation
+# conexao-leisure-translation (REMOVED — Stage 19)
 
-<!-- BEGIN GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
-| | |
-|---|---|
-| **Status** | retired |
-| **Class** | rollout |
-| **Production** | no |
-| **Build** | no |
-| **Compose mount** | yes |
-| **Dependencies** | none |
-| **Version** | 1.0.0 (authoritative source: `wp-content/plugins/conexao-leisure-translation/conexao-leisure-translation.php` header) |
-| **Registry** | [`plugins.json`](../../plugins.json) |
+> **This plugin no longer exists.** Stage 19 removed it from the active
+> repository on 2026-10-02. It was a historical one-shot **rollout container**,
+> and its authored translation data had already been consolidated into the
+> shared translation stages. It was never part of the production steady state,
+> was never included in a release ZIP, and no supported runtime path loaded it.
 
-> **Lifecycle: activate → apply → remove.** This is a retired one-shot rollout plugin.
-> It is **not** a production steady-state dependency and is **not** included in a
-> release plugin ZIP. It is kept in the repository (and locally mounted) only so the
-> historical importer stays reproducible.
-<!-- END GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
+## Why it was removed
 
-## Lifecycle status: superseded by the shared engine
+Five one-shot rollout plugins each carried their own copy of the rollout
+lifecycle. Stage H introduced the shared engine (`conexao-translation-rollout`)
+precisely so that a new rollout would not need its own `apply.php` + `audit.php`
++ admin class. This plugin was the last container for Stage 7. With its data
+already consolidated, keeping the directory only preserved a duplicate dormant
+translation engine — which is the second source of truth the engineering
+standard forbids.
 
-**The lifecycle in this plugin is no longer the executed path.** It is a
-hand-copied `apply.php` + `audit.php` pair written before the shared
-`conexao-translation-rollout` engine existed, and re-activating it to run the
-rollout would introduce a **second translation lifecycle** — the exact thing
-engineering standard §4.1 and the task's constraints forbid.
+## Where the authored data lives now
 
-| Concern | Owner now |
-|---|---|
-| Authored English descriptions (289 rows) | **`conexao-en-translation` → `includes/leisure-description-data.php`** (moved here verbatim) |
-| Inventory, dry-run, snapshot, apply, PT-drift guard, numeric gate, remove | **`Conexao_Translation_Rollout_Engine`** via stage `en-leisure-description` |
-| The field it writes | `_leisure_excerpt_en` — unchanged; the theme still reads it through `conexao_leisure_card_excerpt()` |
+**the `en-leisure-description` stage of `conexao-en-translation` (`includes/leisure-description-data.php`)**
 
-```bash
-# the executed path (shared engine, shared runner)
-php scripts/run-en-translation.php --dry-run --only=leisure-description
-php scripts/run-en-translation.php --apply  --only=leisure-description
-php scripts/run-en-translation.php --remove --apply --only=leisure-description
-```
+## Data-preservation proof (measured, Stage 19)
 
-The plugin **stays in the repository, retired and inactive**, for the reason the
-registry records for every retired rollout plugin: historical reproducibility.
-Nothing in it is loaded, required or called at runtime any more, and
-`plugins.json` still classifies it `retired` / `production: no` / `build: no`.
+**All 289 authored descriptions are present byte-identical.** This is the cleanest preservation in the stage: the active dataset is keyed by PT slug and every retired entry matches exactly.
 
-See [`conexao-en-translation.md`](conexao-en-translation.md) §"Stage 7 — the
-`en-leisure-description` stage" for the stage, its gate and its rollback.
+The executable proof is
+[`docs/evidence/2026-10-02-stage-19/data-preservation-proof.php`](../evidence/2026-10-02-stage-19/data-preservation-proof.php),
+run inside the real WordPress container; its output is
+`docs/evidence/2026-10-02-stage-19/02-data-preservation-proof-BEFORE.txt`.
 
-- **Path**: `wp-content/plugins/conexao-leisure-translation/`
-- **Version**: 1.0.0
-- **Purpose**: Stage 7 rollout — author the English card description of every published Portuguese `leisure` record (`_leisure_excerpt_en` post meta) so `/en/lazer/` renders English `.leisure-card-excerpt` text. The English layer is a **description-level translation on the same records**: no linked EN leisure posts, no duplicate records, no UUID changes.
+## Historical provenance
 
-## Responsibilities
-
-- Write the human-authored English description from `data/stage7-leisure-descriptions.json` onto the existing PT leisure records (matched by slug, title verified).
-- Refuse to apply a translation whose Portuguese source (`post_excerpt`) no longer matches the authored source (PT-drift guard) — stale translations never silently land.
-- Never create posts, never write `_leisure_uuid` / `_leisure_export_uuid`, `post_excerpt`, `post_title`, `post_content`, taxonomies or the language assignment.
-- Report per-record actions (applied / skip / refused / error) and the PT + UUID invariant counts.
-- Provide a `remove` mode that deletes only the `_leisure_excerpt_en` values (rollback: the approved B2 fallback re-engages automatically).
-
-## Key Components
-
-| File | Purpose |
-|------|---------|
-| `conexao-leisure-translation.php` | Plugin bootstrap, admin screen (Tools → *EN Leisure Descriptions*), nonce-gated admin-post handler |
-| `includes/apply.php` | Rollout engine: manifest loading, slug+title matching, PT-drift guard, apply/preview/remove |
-| `includes/audit.php` | Completeness audit; gate = *published PT leisure records missing EN description* = 0 |
-| `data/stage7-leisure-descriptions.json` | The authored manifest (289 entries: slug, title, pt_excerpt, en_excerpt). Built from the Stage 7 inventory + authored translations; the `pt_excerpt` is the drift guard's reference. |
-
-## Rendering (theme side)
-
-The theme owns the presentation: `conexao_leisure_card_excerpt()` (theme `inc/polylang.php`) returns the EN meta on EN requests when present and the exact existing `get_the_excerpt()` pipeline otherwise; `template-parts/leisure-card.php` applies the same 18-word `wp_trim_words()` + `esc_html()` to both languages. Records without an EN description keep the approved B2 fallback (PT description under the EN shell).
-
-## Hooks
-
-- `admin_menu` — registers the Tools page.
-- `admin_post_conexao_leisure_translation_run` — executes preview / apply / remove.
-
-No frontend hooks: the plugin is rollout tooling and can be deactivated (or removed) after the migration.
-
-## Usage
-
-### WP-CLI (local / staging)
+The implementation is recoverable in full from Git history:
 
 ```bash
-cat scripts/run-leisure-translation.php | docker compose exec -T wordpress wp eval-file - --allow-root
-# preview (default) / apply / remove / audit, append `json` for machine-readable output
+git log --oneline -- wp-content/plugins/conexao-leisure-translation
+git show <stage-19-parent>:wp-content/plugins/conexao-leisure-translation
 ```
 
-### Admin (production, WordPress.com)
+The stage reports under [`docs/reports/`](../reports/) describe the architecture
+as it was when the stage ran, and are deliberately **not** rewritten: a Stage 9
+report should keep describing Stage 9.
 
-Tools → **EN Leisure Descriptions** → *Preview (dry run)* → *Apply* → verify the audit gate → *Remove (rollback)* only if a full rollback is intended.
+See also: [`conexao-en-translation.md`](./conexao-en-translation.md) (the active
+data/stage layer) and [`conexao-translation-rollout.md`](./conexao-translation-rollout.md)
+(the shared engine).
 
-## Rollback
-
-`remove` deletes every `_leisure_excerpt_en` value written by the manifest. The Portuguese records are never touched, and `/en/lazer/` immediately returns to the approved B2 fallback. A full DB restore is the coarse fallback.
-
-## Portability
-
-The new meta key is part of the leisure migration contract: `conexao-leisure-migration`'s exporter and importer both carry `_leisure_excerpt_en` (sanitized as plain text), so a leisure export/import ZIP round-trips the English descriptions together with the Portuguese dataset.
-
-## Important Rules
-
-- The manifest's `pt_excerpt` is the authoritative translation source captured from production; if a PT description changes, the entry is refused until the translation is re-authored.
-- Slug matching is language-unfiltered (`lang => ''`): the records are Portuguese and Polylang would otherwise scope the lookup.
-- This stage does not translate Leisure titles, detail pages or taxonomies, and does not create EN Leisure records.
-
-_Last verified: 2026-09-27 by the EN Leisure description rollout — lifecycle superseded by the shared engine_
+_Last verified: 2026-10-02 by Stage 19 — removal of the retired translation plugins_

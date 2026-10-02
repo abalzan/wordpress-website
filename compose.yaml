@@ -78,11 +78,6 @@ services:
       - ./wp-content/plugins/conexao-translation-rollout:/var/www/html/wp-content/plugins/conexao-translation-rollout
       - ./wp-content/plugins/conexao-en-translation:/var/www/html/wp-content/plugins/conexao-en-translation
       - ./wp-content/plugins/conexao-translation-automation:/var/www/html/wp-content/plugins/conexao-translation-automation
-      - ./wp-content/plugins/conexao-page-translation:/var/www/html/wp-content/plugins/conexao-page-translation
-      - ./wp-content/plugins/conexao-blog-translation:/var/www/html/wp-content/plugins/conexao-blog-translation
-      - ./wp-content/plugins/conexao-job-translation:/var/www/html/wp-content/plugins/conexao-job-translation
-      - ./wp-content/plugins/conexao-leisure-translation:/var/www/html/wp-content/plugins/conexao-leisure-translation
-      - ./wp-content/plugins/conexao-guide-translation:/var/www/html/wp-content/plugins/conexao-guide-translation
 # END GENERATED PLUGIN REGISTRY: plugin mounts
       - ./docker/apache-allowoverride.conf:/etc/apache2/conf-enabled/apache-allowoverride.conf:ro
       - ./docker/entrypoint-fix-permissions.sh:/usr/local/bin/entrypoint-fix-permissions.sh:ro

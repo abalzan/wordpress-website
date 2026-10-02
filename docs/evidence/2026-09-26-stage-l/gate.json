@@ -1,7 +1,7 @@
 {
   "stage": "L — permanent invariant gates",
-  "generated_at": "2026-10-01T18:37:06Z",
-  "repository_sha": "7c993463c64fd18be9e1e20fbc9358bce75ec7de",
+  "generated_at": "2026-10-02T07:15:47Z",
+  "repository_sha": "1e09ee276aff0638fd2bad47d290d08efa1f83a5",
   "status": "fail",
   "gates": {
     "taxonomy_policy": {
@@ -447,7 +447,7 @@
         "   scope: wp-content/plugins/conexao-translation-rollout",
         "   scope: wp-content/plugins/conexao-translation-automation",
         "",
-        "   scanned 138 production PHP files (PHP token_get_all)",
+        "   scanned 137 production PHP files (PHP token_get_all)",
         "   unscoped conexao_* cache keys: 0",
         "2 passed, 0 failed",
         "GATE-RESULT {\"gate\": \"cache_scoping_static\", \"status\": \"pass\", \"passed\": 2, \"failed\": 0, \"violations\": 0, \"details\": []}"
@@ -597,13 +597,13 @@
       "prerequisites": [],
       "details": [],
       "output_tail": [
-        "   historical/audit documents without the marker (reported, not gated): 132",
+        "   historical/audit documents without the marker (reported, not gated): 135",
         "",
         "   -- §9.2 no root-level report/evidence file --",
         "   root files scanned: 17, offenders: 0",
         "",
         "   -- §9.2 AGENTS.md remains orientation --",
-        "   AGENTS.md lines: 233",
+        "   AGENTS.md lines: 229",
         "",
         "   -- authoritative sources referenced by the governance layer --",
         "   authoritative sources checked: 7",
@@ -618,7 +618,7 @@
       "command": "python3 tests/scripts/verify-i18n-freshness.py",
       "exit_code": 1,
       "status": "fail",
-      "passed": 8,
+      "passed": 3,
       "failed": 3,
       "violations": 3,
       "pre_existing": 2,
@@ -661,13 +661,13 @@
         "FAIL: conexao-br-irlanda: wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot is older than wp-content/themes/conexao-br-irlanda/inc/navigation.php by 92483s — regenerate the catalogue with `wp i18n make-pot` (never hand-edit)",
         "FAIL: conexao-content: wp-content/plugins/conexao-content/languages/conexao-content.pot is older than wp-content/plugins/conexao-content/conexao-content.php by 76025s — regenerate the catalogue with `wp i18n make-pot` (never hand-edit)",
         "FAIL: conexao-event-runtime: wp-content/plugins/conexao-event-runtime/languages/conexao-event-runtime.pot is older than wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php by 76025s — regenerate the catalogue with `wp i18n make-pot` (never hand-edit)",
-        "8 passed, 3 failed",
+        "3 passed, 3 failed",
         "  stale catalogues: 2 pre-existing, 1 new",
-        "GATE-RESULT {\"gate\": \"i18n_freshness\", \"status\": \"fail\", \"passed\": 8, \"failed\": 3, \"violations\": 3, \"pre_existing\": 2, \"new\": 1, \"details\": [{\"component\": \"conexao-br-irlanda\", \"catalogue\": \"wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot\", \"newest_source\": \"wp-content/themes/conexao-br-irlanda/inc/navigation.php\", \"catalogue_ts\": 1790623531, \"newest_source_ts\": 1790716014, \"lag_seconds\": 92483}, {\"component\": \"conexao-content\", \"catalogue\": \"wp-content/plugins/conexao-content/languages/conexao-content.pot\", \"newest_source\": \"wp-content/plugins/conexao-content/conexao-content.php\", \"catalogue_ts\": 1790623531, \"newest_source_ts\": 1790699556, \"lag_seconds\": 76025}, {\"component\": \"conexao-event-runtime\", \"catalogue\": \"wp-content/plugins/conexao-event-runtime/languages/conexao-event-runtime.pot\", \"newest_source\": \"wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php\", \"catalogue_ts\": 1790623531, \"newest_source_ts\": 1790699556, \"lag_seconds\": 76025}]}"
+        "GATE-RESULT {\"gate\": \"i18n_freshness\", \"status\": \"fail\", \"passed\": 3, \"failed\": 3, \"violations\": 3, \"pre_existing\": 2, \"new\": 1, \"details\": [{\"component\": \"conexao-br-irlanda\", \"catalogue\": \"wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot\", \"newest_source\": \"wp-content/themes/conexao-br-irlanda/inc/navigation.php\", \"catalogue_ts\": 1790623531, \"newest_source_ts\": 1790716014, \"lag_seconds\": 92483}, {\"component\": \"conexao-content\", \"catalogue\": \"wp-content/plugins/conexao-content/languages/conexao-content.pot\", \"newest_source\": \"wp-content/plugins/conexao-content/conexao-content.php\", \"catalogue_ts\": 1790623531, \"newest_source_ts\": 1790699556, \"lag_seconds\": 76025}, {\"component\": \"conexao-event-runtime\", \"catalogue\": \"wp-content/plugins/conexao-event-runtime/languages/conexao-event-runtime.pot\", \"newest_source\": \"wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php\", \"catalogue_ts\": 1790623531, \"newest_source_ts\": 1790699556, \"lag_seconds\": 76025}]}"
       ]
     }
   },
-  "total_passed": 89,
+  "total_passed": 84,
   "total_failed": 3,
   "total_violations": 3,
   "total_pre_existing": 2,

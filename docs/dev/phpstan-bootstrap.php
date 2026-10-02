@@ -50,9 +50,6 @@ if ( ! defined( 'CONEXAO_ADMIN_UX_DIR' ) ) {
 if ( ! defined( 'CONEXAO_ADMIN_UX_URL' ) ) {
 	define( 'CONEXAO_ADMIN_UX_URL', './wp-content/plugins/conexao-admin-ux' );
 }
-if ( ! defined( 'CONEXAO_LEISURE_TRANSLATION_DIR' ) ) {
-	define( 'CONEXAO_LEISURE_TRANSLATION_DIR', './wp-content/plugins/conexao-leisure-translation' );
-}
 
 /*
  * Polylang API stubs (third-party plugin, not committed to this repository).

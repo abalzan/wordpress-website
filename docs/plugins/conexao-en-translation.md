@@ -48,7 +48,8 @@ records did not exist yet.
 ### Why the data was imported, not re-authored
 
 The complete authored English for these guides already existed in the **retired**
-[`conexao-guide-translation`](conexao-guide-translation.md) plugin (Stage 9). That
+[`conexao-guide-translation`](conexao-guide-translation.md) plugin (Stage 9), which
+Stage 19 removed from the repository. That
 plugin's *lifecycle* is retired and stays dormant — it is not activated, and it is
 not a second translation engine. Its *data* is authoritative, so it was imported
 into this stage once, mechanically, rather than re-translated. Concretely: the
@@ -123,7 +124,7 @@ by writing an authored English field onto the **same** PT record.
 | Fields written | **1** — `_leisure_excerpt_en` on the existing PT record |
 | Numeric gate | `eligible_public_pt = 289`, `with_en = 289`, **`missing_en = 0`**, `conflicts = 0`, `pt_drift = 0` |
 | `allow_remove` | `true` — the EN layer is a single reproducible field, so remove is a safe first-class rollback |
-| Supersedes | the retired `conexao-leisure-translation` plugin's private `apply.php` / `audit.php` lifecycle |
+| Supersedes | the removed `conexao-leisure-translation` plugin's private `apply.php` / `audit.php` lifecycle |
 
 ### How a field-on-the-same-record stage maps onto the engine
 
@@ -404,7 +405,7 @@ collision rules of its other 30 rows. `en-page` declares exactly one of 31.
 `/en/newsletter-2/`. It stays **B1**: it is deliberately absent from
 `conexao_b2_page_allowlist()`, and the theme's own comment already classified
 the narrative/utility pages (category hubs, `newsletter`, `revista`, `anuncie`,
-`search`) as B1. The retired `conexao-page-translation` plugin had declared
+`search`) as B1. The removed `conexao-page-translation` plugin had declared
 `'newsletter' => array( 'en_slug' => 'newsletter', 'shared_slug' => true )`, so
 this restores a documented intent rather than inventing one.
 

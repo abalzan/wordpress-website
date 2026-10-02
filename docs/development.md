@@ -318,8 +318,6 @@ cat scripts/run-job-translation.php | docker compose exec -T wordpress \
   wp eval-file - --allow-root
 
 # Engine + migrated-stage suites
-./scripts/run-tests.sh --only conexao-translation-rollout
-./scripts/run-tests.sh --only conexao-job-translation
 ```
 
 Production (WordPress.com, no WP-CLI) uses the shared admin screen: **Tools →
@@ -354,10 +352,11 @@ docker compose exec -T wordpress php \
 ./scripts/verify-guides-http.sh
 ```
 
-Production (WordPress.com, no WP-CLI) uses the plugin admin screen: **Tools → EN
-Guide Translations** (Preview, then Apply). See
-`docs/plugins/conexao-guide-translation.md` and
-`CONEXAO_BR_ENGLISH_GUIDES_TRANSLATION_REPORT.md`.
+The Stage 9 guide rollout now runs as the `en-guide` stage of
+`conexao-en-translation` on the shared engine, so there is no longer a
+guide-specific admin screen or runner. The historical Stage 9 record is
+`CONEXAO_BR_ENGLISH_GUIDES_TRANSLATION_REPORT.md`; the supported procedure is
+the [manual translation operator runbook](translation-manual-operator-runbook.md).
 
 Notes:
 

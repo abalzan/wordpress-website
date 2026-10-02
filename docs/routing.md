@@ -46,7 +46,9 @@ English URLs wrap the same paths in `/en/`:
 | Context | Portuguese | English |
 |---|---|---|
 | Home | `/` | `/en/` |
-| Guides | `/guias/` | `/en/guias/` — **real English archive, applied 2026-09-28**: one linked EN `guide` per public PT guide (48/48), plus the 13 linked EN `conexao_category` terms those guides use. `guide` stays **B1** — no B2 fallback and no query widening were introduced; the archive was previously empty only because the EN records did not exist. EN singles live at `/en/guias/{en-slug}/` and are self-canonical with the `pt-BR`/`en`/`x-default` set; the PT slug under `/en/` is a replaced master and answers **302 → the PT guide**. `/en/guias/?categoria=documents` filters the EN archive; a slug from the other language resolves to the same concept through the Polylang term relationship. Authored data + the translated-taxonomy step live in the `en-guide` stage of `conexao-en-translation` and are applied by the shared `conexao-translation-rollout` engine (`scripts/run-en-translation.php --only=guide`); the retired `conexao-guide-translation` plugin stays dormant. |
+| Guides | `/guias/` | `/en/guias/` — **real English archive, applied 2026-09-28**: one linked EN `guide` per public PT guide (48/48), plus the 13 linked EN `conexao_category` terms those guides use. `guide` stays **B1** — no B2 fallback and no query widening were introduced; the archive was previously empty only because the EN records did not exist. EN singles live at `/en/guias/{en-slug}/` and are self-canonical with the `pt-BR`/`en`/`x-default` set; the PT slug under `/en/` is a replaced master and answers **302 → the PT guide**. `/en/guias/?categoria=documents` filters the EN archive; a slug from the other language resolves to the same concept through the Polylang term relationship. Authored data + the translated-taxonomy step live in the `en-guide` stage of `conexao-en-translation` and are applied by the shared `conexao-translation-rollout` engine (`scripts/run-en-translation.php --only=guide`). The retired
+  `conexao-guide-translation` plugin was removed from the repository in Stage 19;
+  its authored data is the `en-guide` stage data. |
 | Events | `/eventos/` | `/en/eventos/` |
 | Lazer | `/lazer/` | `/en/lazer/` |
 | Courses | `/cursos/` | `/en/cursos/` |
@@ -223,8 +225,9 @@ Portuguese destinations. Stage 3.3 closes that:
 
 Stage 4.5 translates **every eligible public Page** (the website's editorial
 pages) into real linked Polylang translations. See
-`CONEXAO_BR_ENGLISH_STAGE_4_5_REPORT.md` and
-`docs/plugins/conexao-page-translation.md`.
+`CONEXAO_BR_ENGLISH_STAGE_4_5_REPORT.md`. (The authored English now lives in
+the `en-page` stage data of `conexao-en-translation`; the Stage 4.5 rollout
+plugin was removed in Stage 19.)
 
 - **All 37 eligible pages get real EN translations** (the 7 Stage 3.2 pages
   keep their approved slugs: `home`, `about-us`, `contact`, `jobs`,
@@ -259,7 +262,7 @@ pages) into real linked Polylang translations. See
   `search` utility page).
 - **The Blog posts page is translated with a shared slug** (`/en/blog/`,
   same `post_name`): Polylang Free needs the scoped `wp_unique_post_slug`
-  permit that `conexao-page-translation` installs while it runs, and
+  permit that the `en-blog-page` stage installs while it runs, and
   `conexao_lang_url_object()` normalises page lookups to the default-language
   source when two pages share a slug. The EN nav Blog item now resolves to
   `/en/blog/` (the EN posts archive — EN-language posts only).
@@ -328,8 +331,9 @@ which the standard forbids.
 
 Stage 5 gives the Blog a **real English translation**: the linked EN posts page
 (`/en/blog/`) plus one linked EN translation per public Portuguese post. See
-`CONEXAO_BR_ENGLISH_BLOG_TRANSLATION_REPORT.md` and
-`docs/plugins/conexao-blog-translation.md`.
+`CONEXAO_BR_ENGLISH_BLOG_TRANSLATION_REPORT.md`. The authored English is the
+`en-post` stage data of `conexao-en-translation`; the Stage 5 rollout plugin was
+removed from the repository in Stage 19.
 
 - **`/en/blog/` is a genuine English archive**: HTTP 200, `<html lang="en-US">`,
   English archive chrome (theme `.mo` strings), English posts, English pagination,
@@ -368,7 +372,8 @@ Stage 5 gives the Blog a **real English translation**: the linked EN posts page
 
 Stage 7 translates the description rendered by `.leisure-card-excerpt` on the
 Leisure archive. See `CONEXAO_BR_ENGLISH_LEISURE_CARD_DESCRIPTION_REPORT.md` and
-`docs/plugins/conexao-leisure-translation.md`.
+the `en-leisure-description` stage below (the Stage 7 rollout plugin was removed
+in Stage 19).
 
 - **The English layer is a description-level translation on the SAME records**:
   one authored English description per published Portuguese `leisure` record,
@@ -397,9 +402,9 @@ Leisure archive. See `CONEXAO_BR_ENGLISH_LEISURE_CARD_DESCRIPTION_REPORT.md` and
   `includes/leisure-description-stage.php`). Driven by the shared runner
   `scripts/run-en-translation.php` (`--dry-run` / `--apply` / `--remove
   --only=leisure-description`) or by the engine's **Tools → Translation Rollouts**
-  screen. **The retired `conexao-leisure-translation` plugin is no longer the
-  executed path** — its hand-copied lifecycle was superseded; see
-  [`plugins/conexao-leisure-translation.md`](plugins/conexao-leisure-translation.md).
+  screen. **The `conexao-leisure-translation` plugin was removed in Stage 19**
+  — its hand-copied lifecycle was superseded and its authored data is the stage
+  dataset above.
   The numeric gate is `eligible public PT leisure = 289`, `with EN = 289`,
   **`missing EN = 0`**, `conflicts = 0`, `PT drift = 0`.
 - **Ineligible by rule**: a published record with an **empty** `post_excerpt` has

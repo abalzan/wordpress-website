@@ -189,17 +189,12 @@ authoritative registry. Edit the registry and run
 | 8 | `conexao-translation-rollout` | platform | active | yes | yes | yes | `docs/plugins/conexao-translation-rollout.md` |
 | 9 | `conexao-en-translation` | tooling | active | no | no | yes | `docs/plugins/conexao-en-translation.md` |
 | 10 | `conexao-translation-automation` | platform | active | yes | yes | yes | `docs/plugins/conexao-translation-automation.md` |
-| 11 | `conexao-page-translation` | rollout | retired | no | no | yes | `docs/plugins/conexao-page-translation.md` |
-| 12 | `conexao-blog-translation` | rollout | retired | no | no | yes | `docs/plugins/conexao-blog-translation.md` |
-| 13 | `conexao-job-translation` | rollout | retired | no | no | yes | `docs/plugins/conexao-job-translation.md` |
-| 14 | `conexao-leisure-translation` | rollout | retired | no | no | yes | `docs/plugins/conexao-leisure-translation.md` |
-| 15 | `conexao-guide-translation` | rollout | retired | no | no | yes | `docs/plugins/conexao-guide-translation.md` |
 
 **Production steady state** (platform, `production: true`) - activate in this order: conexao-data-model -> conexao-content -> conexao-admin-ux -> conexao-event-runtime -> conexao-translation-rollout -> conexao-translation-automation.
 
 **Local-only tooling** (never production): conexao-event-importer, conexao-leisure-migration, conexao-sponsor-migration, conexao-en-translation.
 
-**Retired rollout plugins** (historical tooling, *activate → apply → remove*; not a production dependency and not in any release ZIP): conexao-page-translation, conexao-blog-translation, conexao-job-translation, conexao-leisure-translation, conexao-guide-translation.
+**Retired rollout plugins** (historical tooling, *activate → apply → remove*; not a production dependency and not in any release ZIP): .
 <!-- END GENERATED PLUGIN REGISTRY: AGENTS.md plugin inventory -->
 
 ## Where to go next

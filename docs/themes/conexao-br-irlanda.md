@@ -282,7 +282,7 @@ in both languages.
 
 | Layer | Where it is resolved | Rule |
 |---|---|---|
-| Page body | The linked EN page record (`conexao-page-translation` manifest) | Real English content in a real translation record — never a template hardcode. Applied by re-running the importer with `refresh`. The PT page is never written (PT gate `pt_changed = 0`). |
+| Page body | The linked EN page record (the `en-page` / `en-blog-page` / `en-jobs-page` stage data of `conexao-en-translation`) | Real English content in a real translation record — never a template hardcode. The PT page is never written (PT gate `pt_changed = 0`). |
 | Job records | `conexao_empregos_current_jobs()` (Polylang) | Language-aware job listing: EN record when published and linked, otherwise the approved B2 set; one identity is never shown twice and translated/untranslated content is never mixed. **Not rendered on the landing since the Stage 6 «Vagas»/“Openings” preview section was removed** (rendering only — the query, the records and the CSS are retained). |
 | Work areas | `Conexao_Data_Model_Agency::job_types()` | The canonical **keys** are the language-neutral filter identity (`?area=warehouse`); only the **labels** are gettext-wrapped. Desktop and mobile read the same array, so their wording cannot diverge. |
 | Locations | `conexao_recruitment_agency_location_display()` | Real Irish place names are byte-identical in both languages; only the generic coverage words (`Nacional` → "Nationwide") and the country exonym (`Irlanda` → "Ireland") are UI labels. An unrecognised value is returned exactly as stored. |

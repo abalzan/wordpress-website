@@ -172,7 +172,6 @@ Composer is **never** deployed (production is WordPress.com). It exists only for
   <exclude-pattern>*/tests/*</exclude-pattern>
   <exclude-pattern>*/vendor/*</exclude-pattern>
   <exclude-pattern>*/node_modules/*</exclude-pattern>
-  <exclude-pattern>wp-content/plugins/conexao-guide-translation/includes/body-*.php</exclude-pattern>
 
   <arg name="extensions" value="php"/>
   <arg name="basepath" value="."/>
@@ -218,7 +217,6 @@ parameters:
     excludePaths:
         - wp-content/themes/conexao-br-irlanda/tests/*
         - wp-content/plugins/*/tests/*
-        - wp-content/plugins/conexao-guide-translation/includes/body-*.php
     bootstrapFiles:
         - %currentWorkingDirectory%/docs/dev/phpstan-bootstrap.php
 ```
@@ -288,16 +286,22 @@ One machine-readable source for load order, build, mounts and documentation.
     { "slug": "conexao-event-importer",    "class": "tooling",  "status": "active",   "production": false, "build": true,  "mount": true },
     { "slug": "conexao-leisure-migration", "class": "tooling",  "status": "active",   "production": false, "build": true,  "mount": true },
     { "slug": "conexao-sponsor-migration", "class": "tooling",  "status": "active",   "production": false, "build": true,  "mount": true },
-    { "slug": "conexao-page-translation",  "class": "rollout",  "status": "retired",  "production": false, "build": false, "mount": true },
-    { "slug": "conexao-blog-translation",  "class": "rollout",  "status": "retired",  "production": false, "build": false, "mount": true },
-    { "slug": "conexao-job-translation",   "class": "rollout",  "status": "retired",  "production": false, "build": false, "mount": true },
-    { "slug": "conexao-leisure-translation","class": "rollout", "status": "retired",  "production": false, "build": false, "mount": true },
-    { "slug": "conexao-guide-translation", "class": "rollout",  "status": "retired",  "production": false, "build": false, "mount": true }
+    { "slug": "conexao-translation-rollout", "class": "platform", "status": "active",  "production": true,  "build": true,  "mount": true },
+    { "slug": "conexao-en-translation",      "class": "tooling", "status": "active",   "production": false, "build": false, "mount": true },
+    { "slug": "conexao-translation-automation", "class": "platform", "status": "active", "production": true, "build": true, "mount": true }
   ]
 }
 ```
 
 Rules: `status` ∈ `active | retired`; `retired` rollouts MUST NOT be built into release ZIPs and MUST be documented as "activate → apply → remove"; `production: false` components MUST NOT appear in the production activation order.
+
+The `rollout` class and the `retired` status both still exist for a future
+one-shot rollout, but **no entry uses them today**: Stage 19 removed the five
+retired rollout plugins (`conexao-page-translation`, `conexao-blog-translation`,
+`conexao-job-translation`, `conexao-leisure-translation`,
+`conexao-guide-translation`) from the repository after proving their authored
+data had been consolidated into the shared stages of `conexao-en-translation`.
+There is exactly one translation architecture.
 
 `scripts/generate-registry-docs.php` reads this file and updates: the AGENTS.md plugin table, `README.md`, `docs/plugins/README.md` load order, `build-plugins-zip.sh`'s slug list, and the `compose.yaml` mount list. CI fails when generated output is stale.
 

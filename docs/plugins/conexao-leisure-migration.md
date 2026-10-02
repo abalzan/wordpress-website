@@ -73,7 +73,7 @@ only on `/en/lazer/` by the theme's `conexao_leisure_card_excerpt()`) is part
 of the exported/imported meta too: the exporter emits it when non-empty and
 the importer stores it sanitized as plain text (empty values delete the meta),
 so a leisure ZIP round-trips the English descriptions with the dataset. See
-`docs/plugins/conexao-leisure-translation.md`.
+the `en-leisure-description` stage of `conexao-en-translation`.
 
 The Phase 3B `_leisure_internal_page` flag (keep the internal `/lazer/` page
 even when an Official Website / Discover Ireland URL is set) is also part of

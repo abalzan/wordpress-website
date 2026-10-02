@@ -431,11 +431,6 @@ jobs:
           wp eval-file /var/www/html/scripts/run-polylang-setup.php
           wp plugin activate conexao-translation-rollout
           wp plugin activate conexao-en-translation
-          # The EN Job record stage. Its plugin is retired in the registry (it is
-          # historical `activate -> apply -> remove` tooling), but the stage is
-          # still the ONLY authored English source for the `job` post type, so
-          # the fixture bootstrap activates it for the run. Nothing ships it.
-          wp plugin activate conexao-job-translation
           wp plugin list
 
       # -------------------------------------------------------------------

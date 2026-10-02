@@ -1,0 +1,46 @@
+
+STAGE 19 — data-preservation proof
+----------------------------------------------------------------------
+  active tree : /var/www/html
+  retired src : /tmp/retired-tree
+
+1. page: retired dataset vs active stage data
+  [PASS] retired page dataset loads (37 rows)
+  [PASS] active page stages load (33 rows)
+  info  retired rows: 37; active rows: 33; B2-served by policy: 10; re-authored titles: 3
+  [PASS] no retired page row is silently lost (unexplained gaps: 0)
+         RETITLED saude: "Healthcare" -> "Health" (re-authored)
+         RETITLED financas: "Finances" -> "Finance" (re-authored)
+         RETITLED anuncie: "Advertise With Us" -> "Advertise Here" (re-authored)
+
+2. blog: retired dataset vs active stage data
+  [PASS] retired blog dataset loads (36 posts)
+  [PASS] active en-post dataset loads (34 posts)
+  info  retired posts: 36; with a real PT record: 33; no PT record at all: 3; active en-post rows: 34
+  [PASS] every retired blog post that HAS a PT record exists in en-post (missing: 0)
+         STALE (no PT record, nothing to translate) carne-refogada-ao-estilo-korean-bbq
+         STALE (no PT record, nothing to translate) informacoes-para-as-mulheres-na-irlanda
+         STALE (no PT record, nothing to translate) turismo-e-lazer-em-co-laois-na-irlanda
+
+3. job: retired dataset vs active stage data
+  [PASS] retired job dataset loads (1 jobs)
+  [GAP ] an active en-job stage data source exists: NO — accepted gap, recoverable from Git history only
+         retired authored rows: 1 (recover: git show <stage-19-parent>:wp-content/plugins/conexao-job-translation/includes/translation-map.php)
+
+4. leisure: retired dataset vs active stage data
+  [PASS] retired leisure dataset loads (289 entries)
+  info  retired entries: 289; active rows: 289; byte-identical EN descriptions: 289
+  [PASS] every retired leisure slug exists in en-leisure-description (missing: 0)
+  [PASS] every preserved leisure row keeps the byte-identical authored EN description (diff: 0)
+
+5. guide: retired dataset vs active stage data
+  [PASS] retired guide manifests load (51 rows)
+  [PASS] active en-guide dataset loads (50 records)
+  info  retired rows: 51; byte-identical under the same slug: 49; re-keyed: 1; documented exclusions: 1; field drift: 0
+  [PASS] every retired guide row is preserved, re-keyed or a documented exclusion (gaps: 0)
+  [PASS] every same-slug guide row is unchanged in title, EN slug and body (drift: 0)
+         RE-KEYED carteira-de-motorista-2 -> carteira-motorista-brasileiros (identical authored English)
+         EXCLUDED learner-permit-theory-test-irlanda-cnh-brasileira (NO_REAL_PT_SOURCE, operator-authorized)
+
+----------------------------------------------------------------------
+data-preservation proof: 14 passed, 0 failed
