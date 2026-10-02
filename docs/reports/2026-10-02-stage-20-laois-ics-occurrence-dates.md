@@ -214,10 +214,12 @@ comparison is genuinely independent. Full detail:
 
 ## 11. Tests and gates — actual counts
 
+**Final run: `./scripts/run-tests.sh` → ALL TESTS PASSED (exit 0).**
+
 | Layer | Result |
 |---|---|
 | In-process PHP | **81 suites / 81 passed, 0 failed** — **6,305 assertions**, 0 failed (baseline 80 suites / 6,133) |
-| Script-contract | **18 total / 17 passed / 1 failed** |
+| Script-contract | **18 total / 18 passed, 0 failed** |
 | HTTP acceptance | **4 suites / 4 passed, 0 failed** (3 pre-existing + 1 new, 36 assertions) |
 | `./scripts/lint.sh` | **OK** — syntax clean, **no new PHPCS violations** (baseline debt 3290/2672 → 2841/2183), **PHPStan 0 errors** |
 
@@ -225,13 +227,14 @@ comparison is genuinely independent. Full detail:
 
 | Failure | Status |
 |---|---|
-| `tests/scripts/verify-i18n-freshness.py` — 3 stale catalogues | **Pre-existing.** Present in the baseline run before any edit. The gate itself classifies **2 as pre-existing**; the third was the importer catalogue, cleared by regenerating with the supported `./scripts/i18n-make-pot.sh` (never hand-edited). Because the gate reads **git commit time**, it reports stale until the regenerated catalogues are committed. |
+| `tests/scripts/verify-i18n-freshness.py` — 3 stale catalogues | **Pre-existing, and now FIXED.** Red in the pristine baseline (the gate classified 2 of the 3 as pre-existing; the third was the importer catalogue). Cleared in full with the supported `./scripts/i18n-make-pot.sh` (never hand-edited) plus a commit — the gate reads **git commit time**, so committing the regenerated catalogues was required. Final state: `3 passed, 0 failed`, `stale catalogues: 0`. |
 | `tests/scripts/verify-release-integrity.py` — non-deterministic zip build | **Pre-existing and flaky.** Failed on the baseline run, passed on every subsequent run (`224 passed, 0 failed`). Not related to this change. |
 | MySQL `Duplicate entry … wp_term_relationships` during import | **Pre-existing bug**, not caused by this change: `save_event_taxonomies()` was already invoked on the "unchanged" fast path at the baseline SHA (`git show HEAD:…` confirms) and that function is untouched here. It does not affect event data or any assertion. **Not fixed** — out of scope, flagged in §14. |
 
 ### Newly introduced failures
 
-**None.**
+**None.** The pre-existing i18n-freshness debt described above was
+remediated as part of this work, so the suite is fully green.
 
 ## 12. Runtime impact
 
@@ -298,7 +301,7 @@ run is `DELETE` the Laois rows and re-run the importer (demonstrated twice in
 | 8 | No unrelated events modified | ✅ only the 5 qualifying series got recurrence meta |
 | 9 | Archive/date filtering uses occurrence dates | ✅ verified against the real DB and over HTTP |
 | 10 | HTTP acceptance passes with numeric evidence | ✅ 36 passed, 0 failed |
-| 11 | Full tests/gates pass, pre-existing separated | ✅ 81/81 in-process, 4/4 HTTP, lint OK; 1 pre-existing gate failure stated |
+| 11 | Full tests/gates pass, pre-existing separated | ✅ **ALL TESTS PASSED** (81/81 in-process, 18/18 script, 4/4 HTTP), lint OK; the one pre-existing gate failure was fixed, not hidden |
 | 12 | No production writes | ✅ 0 |
 | `…/conexao-event-importer/tests/fixtures/ics/laois-tourism.ics` | **added** | captured real feed (md5 `121dc815…`) |
 | `tests/acceptance/verify-event-occurrence-http.py` | **added** | HTTP acceptance (36 assertions) |
