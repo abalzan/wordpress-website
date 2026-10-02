@@ -308,14 +308,18 @@ only a versioned data manifest and a small configuration; it never copies
 
 ```bash
 # Preview (dry run) — zero writes
-cat scripts/run-job-translation.php | docker compose exec -T wordpress \
-  wp eval-file - --allow-root -- dry-run
-cat scripts/run-job-translation.php | docker compose exec -T wordpress \
-  wp eval-file - --allow-root -- dry-run json
+docker compose exec -T wordpress php /var/www/html/scripts/run-en-translation.php \
+  --dry-run
+docker compose exec -T wordpress php /var/www/html/scripts/run-en-translation.php \
+  --dry-run --json
 
 # Apply (LOCAL/STAGING ONLY)
-cat scripts/run-job-translation.php | docker compose exec -T wordpress \
-  wp eval-file - --allow-root
+docker compose exec -T wordpress php /var/www/html/scripts/run-en-translation.php \
+  --apply
+
+# One stage only
+docker compose exec -T wordpress php /var/www/html/scripts/run-en-translation.php \
+  --apply --only=jobs-page
 
 # Engine + migrated-stage suites
 ```
@@ -400,8 +404,8 @@ Every run prints what/where/mode/result — `script:`, `target:`, `mode:`,
 `scope:` at the start and a `summary:` line at the end:
 
 ```bash
-docker compose exec -T wordpress wp eval-file scripts/run-job-translation.php \
-  --allow-root -- --dry-run
+docker compose exec -T wordpress php /var/www/html/scripts/run-en-translation.php \
+  --dry-run
 ```
 
 **No script defaults to a production write.** The target comes from

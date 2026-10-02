@@ -52,10 +52,10 @@ Rules the gate enforces:
 ## Standard run header
 
 ```
-script: run-job-translation.php
+script: run-en-translation.php
 target: http://localhost:8080 (local, local)
 mode:   dry-run
-scope:  Creates/updates English translation records for the job stage only. ...
+scope:  One linked EN translation per eligible public PT record...
 ```
 
 ...closed by a single `summary:` line, or by a JSON document with `--json`.
@@ -181,12 +181,17 @@ target/source, writes? and last-verified date.
 
 ### Rollout / import runners
 
+The ONE translation rollout runner is **`scripts/run-en-translation.php`**
+(catalued under *Translation rollout runners*), which drives every stage of the
+shared `conexao-translation-rollout` engine through `conexao-en-translation`.
+The per-content-type runners that used to sit here (`run-job-translation.php`,
+`run-blog-translation.php`, `run-leisure-translation.php`,
+`job-translation-inventory.php`) were retired with their plugins in Stage 19 and
+now live in `scripts/historical/` as unsupported tooling; they cannot execute and
+must not be reintroduced. `verify-script-conventions.py` enforces that.
+
 | Path | Purpose | Safety | Arguments | Default mode | Target/source | Writes? | Last verified |
 |---|---|---|---|---|---|---|---|
-| `scripts/run-job-translation.php` | Run the shared rollout engine for the `job` stage (Stage H engine driver) | local-write | `--dry-run`, `--apply`, `--json`, `--help` | dry-run | local/staging WordPress | Yes (apply) | 2026-09-26 |
-| `scripts/job-translation-inventory.php` | Machine-readable EN Job translation inventory (read-only) | read-only | `--out=<file>`, `--help` | read-only | local/staging WordPress | No | 2026-09-26 |
-| `scripts/run-blog-translation.php` | Run the Blog EN translation rollout | local-write | `--dry-run`, `--json` | dry-run | local/staging WordPress | Yes (apply) | 2026-09-26 |
-| `scripts/run-leisure-translation.php` | Run the Leisure EN description rollout | local-write | `preview` (default), `apply`, `remove`, `audit`, `json` | preview (dry-run) | local/staging WordPress | Yes (`apply`/`remove`) | 2026-09-26 |
 | `scripts/run-leisure-migration.php` | Run the Lazer content migration | local-write | `dry-run` (default), `apply` | dry-run | local/staging WordPress | Yes (apply) | 2026-09-26 |
 | `scripts/run-polylang-setup.php` | Bootstrap Polylang's API on a fresh install, create the pt/en languages, assert the URL config, assign default language (idempotent) | local-write | `--dry-run` | dry-run | local/staging WordPress | Yes (apply) | 2026-09-28 |
 | `scripts/run-event-import.php` | Run the event importer and report results | local-write | none | apply | local WordPress | Yes | 2026-09-26 |

@@ -343,12 +343,15 @@ function conexao_ci_fixture_term_pairs(): array {
  * matrix's per-CPT single discovery needs, and which lets the B2-with-a-real-
  * translation path be exercised rather than skipped.
  *
- * The EN counterpart is created by the EXISTING `en-job` stage of the shared
- * engine (`scripts/run-job-translation.php`, which delegates to
- * `conexao-translation-rollout`). No EN job is invented here, and no second
- * job-translation mechanism is introduced: the authored English already exists
- * in the shared manifest, and this dataset only creates the PT half of the pair
- * the engine resolves by slug.
+ * The EN counterpart is created by the SAME step, as a named cross-language
+ * fixture pair (`ajudante-de-cozinha-dublin` ↔ `kitchen-assistant-dublin` in
+ * conexao_ci_fixture_named_pairs()). There is no job TRANSLATION STAGE: the
+ * seven stages of conexao-en-translation carry no job-records stage, and the
+ * retired `conexao-job-translation` plugin that used to translate this record
+ * was removed in Stage 19 (its runner now lives in scripts/historical/ as
+ * unsupported tooling and cannot execute). No EN job is invented here and no
+ * second job-translation mechanism is introduced — this dataset and step 4b
+ * own committed synthetic records, which is not published English copy.
  *
  * @return array<string,array{title:string,excerpt:string,content:string,date:string,location:string,type:string}>
  */

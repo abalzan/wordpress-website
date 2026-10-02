@@ -1589,16 +1589,38 @@ if ( $apply ) {
 		conexao_ci_run_script( 'run-en-translation.php', array( '--apply', '--only=' . $stage ), $stats );
 	}
 
-	// The EN Job record stage. It is run by its EXISTING dedicated driver
-	// (`scripts/run-job-translation.php`), which is itself a thin CLI over the
-	// same shared `conexao-translation-rollout` engine — not a second engine and
-	// not a second lifecycle.
+	// NO job stage is run here, and none is needed.
 	//
-	// It is needed because the job suites assert a job with a REAL English
-	// translation, which is a different claim from "a job exists". Job remains
-	// a B2 type: this stage does not change that policy, it only exercises the
-	// real-translation branch for the single record the fixtures create.
-	conexao_ci_run_script( 'run-job-translation.php', array( '--apply' ), $stats );
+	// This call used to invoke `scripts/run-job-translation.php`, the thin CLI
+	// over the RETIRED `conexao-job-translation` plugin. Stage 19 deleted that
+	// plugin and moved the script to `scripts/historical/` with an explicit
+	// NOT SUPPORTED marker, because its function
+	// `conexao_job_translation_engine_config()` no longer exists and the
+	// shared engine had already replaced it. The call outlived the plugin,
+	// so the bootstrap aborted with
+	// "expected script is missing: scripts/run-job-translation.php" (CI run
+	// 36978530253). Recreating the script would have restored a second,
+	// permanently dead translation lifecycle.
+	//
+	// The `job` records the suites assert on are provisioned here instead, as
+	// committed synthetic fixture data:
+	//
+	//   - step 4b named cross-language pairs own the PT/EN job PAIR
+	//     (`ajudante-de-cozinha-dublin` ↔ `kitchen-assistant-dublin`), which
+	//     is what exercises the real-translation branch in
+	//     `test-job-en-translation.php` and supplies the EN single the REST
+	//     and HTTP acceptance suites discover.
+	//   - `conexao_ci_fixture_jobs()` owns the B2-only PT job
+	//     (`oportunidades`), which exercises the approved fallback branch.
+	//
+	// Both are the CURRENT architecture: fixture data on an ephemeral CI
+	// database, never a translation stage and never a second lifecycle. The
+	// seven `run-en-translation.php` stages above remain the only stages CI
+	// invokes, and `job` remains a B2 fallback type — this changes no policy.
+	//
+	// `tests/scripts/verify-script-conventions.py` now asserts that no current
+	// script or document references a retired translation runner, so this
+	// dependency cannot be silently reintroduced.
 }
 
 // ── Archive order normalisation ───────────────────────────────────────────────

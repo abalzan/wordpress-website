@@ -330,6 +330,63 @@ def main() -> int:
                         f"scripts/{stage_name} without the historical/ prefix",
                     )
 
+    # -- 10. The ONE translation lifecycle ---------------------------------
+    #
+    # Stage 19 retired five one-shot translation rollout plugins and moved their
+    # per-content-type runner scripts to scripts/historical/ as unsupported
+    # tooling. The surviving lifecycle is `conexao-translation-rollout` driven by
+    # scripts/run-en-translation.php over the `conexao-en-translation` stages.
+    #
+    # CI run 36978530253 failed because scripts/bootstrap-ci-fixtures.php still
+    # invoked scripts/run-job-translation.php AFTER that script had been moved out
+    # of scripts/: the fixture bootstrap aborted with "expected script is missing".
+    # A stale call to retired translation tooling is therefore an architecture
+    # violation, not a missing file to be recreated.
+    #
+    # The retired runner names are DERIVED from what is actually sitting in
+    # scripts/historical/, so this check cannot drift from the tree and does not
+    # hardcode a filename list that would rot. A historical script counts as
+    # retired translation tooling when it is a translation runner or inventory
+    # (i.e. its basename matches run-*translation* / *-translation-inventory.*).
+    retired_translation = [
+        name
+        for name in sorted(os.listdir(HISTORICAL))
+        if re.match(r"^(run-.*translation|.*translation-inventory)\.[a-z]+$", name)
+    ] if os.path.isdir(HISTORICAL) else []
+
+    # (a) A retired translation runner must not exist as a CURRENT script: if it
+    #     comes back to scripts/ it is a second translation lifecycle again.
+    for name in retired_translation:
+        check(
+            not os.path.isfile(os.path.join(SCRIPTS, name)),
+            f"scripts/{name} is retired translation tooling and must stay in "
+            f"scripts/historical/, not scripts/",
+        )
+
+    # (b) No current script may INVOKE a retired translation runner. This is the
+    #     check that failed in CI: the bootstrap called a runner that no longer
+    #     existed in scripts/. Only real call sites are matched, so an honest
+    #     historical reference inside a comment cannot trip it.
+    current_names = {os.path.basename(p) for p in scripts}
+    for path in scripts:
+        code = strip_php_comments(read(path))
+        for name in retired_translation:
+            if name not in current_names:
+                check(
+                    f"'{name}'" not in code,
+                    f"{rel(path)} invokes retired translation runner '{name}'; "
+                    f"use scripts/run-en-translation.php (the one lifecycle) or "
+                    f"provision fixture data instead",
+                )
+
+    # (c) The single translation runner must still exist. Without this the check
+    #     above would pass vacuously on an empty scripts/historical/.
+    check(
+        os.path.isfile(os.path.join(SCRIPTS, "run-en-translation.php")),
+        "scripts/run-en-translation.php is missing; it is the ONE translation "
+        "rollout runner for the shared engine",
+    )
+
     return 0
 
 
