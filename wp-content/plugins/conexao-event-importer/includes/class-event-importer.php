@@ -1099,6 +1099,20 @@ class Conexao_Event_Importer_Engine {
 			$existing_org    = get_post_meta( $post_id, '_event_organizer', true );
 			$existing_banner = get_post_meta( $post_id, '_event_banner', true );
 
+			/*
+			 * Recurrence participates in change detection.
+			 *
+			 * Without this, an event imported BEFORE the series adapter existed
+			 * compares as "unchanged" forever and would never receive its
+			 * recurrence meta — the fix would only ever apply to newly created
+			 * events. Comparing the stored rule against the incoming rule makes
+			 * the first post-fix run write the rule (an "updated" action) and
+			 * every later run compare equal (an "unchanged" action), which is
+			 * what keeps re-import idempotent.
+			 */
+			$existing_recurrence = $this->stored_recurrence_signature( $post_id );
+			$incoming_recurrence = $this->recurrence_signature( $normalized );
+
 			// Address change detection with preservation: compare the stored
 			// address against the value that would be stored (incoming
 			// source address, or the existing address when the source
@@ -1126,7 +1140,8 @@ class Conexao_Event_Importer_Engine {
 				$existing_venue === $normalized['venue'] &&
 				$existing_org === $normalized['organizer'] &&
 				$existing_banner === $normalized['banner'] &&
-				$existing_address === $resolved_address
+				$existing_address === $resolved_address &&
+				$existing_recurrence === $incoming_recurrence
 			);
 
 			if ( $is_unchanged ) {
@@ -1161,6 +1176,16 @@ class Conexao_Event_Importer_Engine {
 				 * every future run.
 				 */
 				$this->save_event_taxonomies( $post_id, $normalized );
+
+				/*
+				 * Reconcile recurrence on the fast path too, for the same reason
+				 * taxonomies are reconciled here: the "unchanged" early return
+				 * below would otherwise skip save_event_meta() and leave an event
+				 * whose rule was removed or corrected at the source still carrying
+				 * its old rule. Writing an identical rule is a no-op, so re-imports
+				 * stay idempotent.
+				 */
+				$this->save_event_recurrence_meta( $post_id, $normalized );
 
 				// Update last checked timestamp only.
 				update_post_meta( $post_id, '_event_last_checked', current_time( 'mysql' ) );
@@ -1244,6 +1269,181 @@ class Conexao_Event_Importer_Engine {
 		Conexao_Event_Status::set_status( $post_id, Conexao_Event_Status::PUBLISHED );
 
 		return array( 'action' => $action, 'post_id' => $post_id );
+	}
+
+	/**
+	 * Comparable signature of the recurrence rule a source supplied.
+	 *
+	 * Only the fields the event data model actually stores take part, so a
+	 * purely diagnostic difference (e.g. a recomputed `occurrences` list) can
+	 * never cause spurious "updated" results on every import run.
+	 *
+	 * @param array $normalized Normalized event data.
+	 * @return string Canonical signature; '' when the event is not recurring.
+	 */
+	protected function recurrence_signature( array $normalized ) {
+		$rule = isset( $normalized['recurrence'] ) && is_array( $normalized['recurrence'] )
+			? $normalized['recurrence']
+			: array();
+
+		if ( ! isset( $rule['type'] ) || 'weekly' !== $rule['type'] ) {
+			return '';
+		}
+
+		$days = isset( $rule['days'] ) && is_array( $rule['days'] ) ? array_map( 'intval', $rule['days'] ) : array();
+		sort( $days );
+
+		$start = isset( $rule['start'] ) ? trim( (string) $rule['start'] ) : '';
+		$end   = isset( $rule['end'] ) ? trim( (string) $rule['end'] ) : '';
+
+		// Mirrors the validation in save_event_recurrence_meta(): a rule that
+		// would be rejected on write must also read as "no rule" here, or an
+		// invalid rule would make every run report a change.
+		if ( empty( $days ) || ! self::is_calendar_date( $start ) ) {
+			return '';
+		}
+		if ( '' !== $end && ( ! self::is_calendar_date( $end ) || $end < $start ) ) {
+			return '';
+		}
+
+		return 'weekly|' . implode( ',', $days ) . '|' . $start . '|' . $end;
+	}
+
+	/**
+	 * Comparable signature of the recurrence rule currently stored on a post.
+	 *
+	 * Built from the persisted meta (not from the runtime evaluator's parsed
+	 * form) so it compares like-for-like with recurrence_signature().
+	 *
+	 * @param int $post_id Post ID.
+	 * @return string Canonical signature; '' when no valid rule is stored.
+	 */
+	protected function stored_recurrence_signature( $post_id ) {
+		$type = trim( (string) get_post_meta( $post_id, '_event_recurrence', true ) );
+
+		if ( 'weekly' !== $type ) {
+			return '';
+		}
+
+		$days_raw = trim( (string) get_post_meta( $post_id, '_event_recurrence_days', true ) );
+		if ( '' === $days_raw ) {
+			return '';
+		}
+
+		$days = array();
+		foreach ( preg_split( '/\s*,\s*/', $days_raw ) as $token ) {
+			if ( preg_match( '/^[1-7]$/', $token ) ) {
+				$days[] = (int) $token;
+			}
+		}
+
+		$start = trim( (string) get_post_meta( $post_id, '_event_recurrence_start', true ) );
+		$end   = trim( (string) get_post_meta( $post_id, '_event_recurrence_end', true ) );
+
+		if ( empty( $days ) || ! self::is_calendar_date( $start ) ) {
+			return '';
+		}
+		if ( '' !== $end && ( ! self::is_calendar_date( $end ) || $end < $start ) ) {
+			return '';
+		}
+
+		sort( $days );
+
+		return 'weekly|' . implode( ',', $days ) . '|' . $start . '|' . $end;
+	}
+
+	/**
+	 * Persist (or clear) the event's recurrence rule.
+	 *
+	 * Writes exactly the four meta keys the existing recurrence model
+	 * understands — `_event_recurrence`, `_event_recurrence_days`,
+	 * `_event_recurrence_start`, `_event_recurrence_end` — using the SAME
+	 * shape Conexao_Admin_UX::save_event_recurrence() writes by hand, so a
+	 * maintainer-edited rule and an imported rule are indistinguishable to the
+	 * runtime evaluator.
+	 *
+	 * Design decisions:
+	 *  - Only `weekly` is written, because it is the only frequency the data
+	 *    model can express. Anything else is treated as no rule (group deleted)
+	 *    rather than stored in a shape nothing would evaluate.
+	 *  - An invalid rule (no weekdays, or an end before the start) deletes the
+	 *    group instead of persisting metadata nothing can evaluate. The
+	 *    importer therefore degrades to the plain DTSTART/DTEND reading rather
+	 *    than corrupting the date layer.
+	 *  - The window start defaults to the event's own start date, which keeps
+	 *    the rule valid even when the source omitted an explicit start.
+	 *  - Deleting first and writing second makes a repeated import of identical
+	 *    data produce identical stored values (no stale rows survive).
+	 *
+	 * @param int   $post_id    Post ID.
+	 * @param array $normalized Normalized event data (`recurrence` key).
+	 * @return void
+	 */
+	protected function save_event_recurrence_meta( $post_id, $normalized ) {
+		$keys = array(
+			'_event_recurrence',
+			'_event_recurrence_days',
+			'_event_recurrence_start',
+			'_event_recurrence_end',
+		);
+
+		$rule = isset( $normalized['recurrence'] ) && is_array( $normalized['recurrence'] )
+			? $normalized['recurrence']
+			: array();
+
+		$type = isset( $rule['type'] ) ? (string) $rule['type'] : '';
+		if ( 'weekly' !== $type ) {
+			foreach ( $keys as $key ) {
+				delete_post_meta( $post_id, $key );
+			}
+			return;
+		}
+
+		$days = isset( $rule['days'] ) && is_array( $rule['days'] ) ? array_map( 'intval', $rule['days'] ) : array();
+		$days = array_values( array_unique( array_filter( $days ) ) );
+		sort( $days );
+
+		$start = isset( $rule['start'] ) ? trim( (string) $rule['start'] ) : '';
+		$end   = isset( $rule['end'] ) ? trim( (string) $rule['end'] ) : '';
+
+		if ( empty( $days ) || ! self::is_calendar_date( $start ) || ( '' !== $end && ! self::is_calendar_date( $end ) ) ) {
+			foreach ( $keys as $key ) {
+				delete_post_meta( $post_id, $key );
+			}
+			return;
+		}
+
+		if ( '' !== $end && $end < $start ) {
+			foreach ( $keys as $key ) {
+				delete_post_meta( $post_id, $key );
+			}
+			return;
+		}
+
+		foreach ( $keys as $key ) {
+			delete_post_meta( $post_id, $key );
+		}
+
+		update_post_meta( $post_id, '_event_recurrence', 'weekly' );
+		update_post_meta( $post_id, '_event_recurrence_days', implode( ',', $days ) );
+		update_post_meta( $post_id, '_event_recurrence_start', $start );
+
+		if ( '' !== $end ) {
+			update_post_meta( $post_id, '_event_recurrence_end', $end );
+		}
+	}
+
+	/**
+	 * Whether a value is a real Y-m-d calendar date.
+	 *
+	 * @param string $value Value to check.
+	 * @return bool
+	 */
+	protected static function is_calendar_date( $value ) {
+		if ( ! preg_match( '/^(\d{4})-(\d{2})-(\d{2})$/', (string) $value, $m ) ) {
+			return false;
+		}
+		return checkdate( (int) $m[2], (int) $m[3], (int) $m[1] );
 	}
 
 	/**
@@ -1374,6 +1574,22 @@ class Conexao_Event_Importer_Engine {
 		foreach ( $meta as $key => $value ) {
 			update_post_meta( $post_id, $key, $value );
 		}
+
+		/*
+		 * Recurrence.
+		 *
+		 * The canonical event stays ONE post; the series is described by the
+		 * four `_event_recurrence*` meta keys that Conexao_Event_Recurrence
+		 * (event runtime) already evaluates and that Conexao_Event_Query
+		 * already uses to build the archive's ordered ID list. No occurrence
+		 * posts are created and no second evaluator exists.
+		 *
+		 * Writing the rule is idempotent: the same source data always yields
+		 * the same four values. An event whose source no longer declares a
+		 * series has the whole group DELETED, so a withdrawn or corrected
+		 * series can never leave an orphan rule behind.
+		 */
+		$this->save_event_recurrence_meta( $post_id, $normalized );
 
 		// Stage 3.2 — source-language metadata. Written only when the source
 		// supplied a valid explicit classification (pt|en|other); an absent or

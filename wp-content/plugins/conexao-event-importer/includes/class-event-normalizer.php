@@ -204,6 +204,14 @@ class Conexao_Event_Normalizer {
 			'source_language'   => class_exists( 'Conexao_Event_Source_Language' )
 				? Conexao_Event_Source_Language::sanitize( isset( $raw['source_language'] ) ? $raw['source_language'] : '' )
 				: '',
+			// Recurrence description supplied by the source (weekday set +
+			// bounded window). Empty for every non-recurring event, in which
+			// case the importer clears any previously stored recurrence rule so
+			// a source that stops publishing a series never leaves a stale one
+			// behind on the canonical record.
+			'recurrence'         => ( isset( $raw['recurrence'] ) && is_array( $raw['recurrence'] ) )
+				? $raw['recurrence']
+				: array(),
 			'validation_errors' => $validation_errors,
 		);
 

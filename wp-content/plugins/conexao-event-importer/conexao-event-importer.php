@@ -30,6 +30,8 @@ require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-address.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-jsonld-location.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-normalizer.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-date-filter.php';
+require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-conexao-ics-recurrence.php';
+require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-conexao-laois-tourism-series.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-deduplicator.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-sources.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/sources/abstract-class-source.php';

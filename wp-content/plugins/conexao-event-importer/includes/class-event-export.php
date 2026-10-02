@@ -89,6 +89,14 @@ class Conexao_Event_Export {
 		'_event_last_checked',
 		'_event_status',
 		'_event_imported',
+		// Recurrence group: the series window + weekdays that make the
+		// date/archive layer match ACTUAL occurrence dates. Exported as a unit
+		// so a production record behaves identically to the local canonical
+		// event. All four keys are optional — a one-time event simply has none.
+		'_event_recurrence',
+		'_event_recurrence_days',
+		'_event_recurrence_start',
+		'_event_recurrence_end',
 		// Stage 3.2 — source-language classification, when classified.
 		// Additive: absent on legacy records, exported as meta AND surfaced
 		// as the top-level "lang" field (see export_event()).

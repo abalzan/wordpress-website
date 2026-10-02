@@ -9,50 +9,50 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-28 18:49+0100\n"
+"POT-Creation-Date: 2026-10-02 10:21+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 
 
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:93
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:95
 msgid ""
 "Conexão BR Irlanda — Event Importer (Local Tools) requires the \"Conexão BR "
 "Irlanda — Event Runtime\" plugin to be installed and active."
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:201
-msgid "Importing… please wait. Do not close this page."
-msgstr ""
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:202
-#, php-format
-msgid "Importing file %1$d of %2$d…"
-msgstr ""
 #: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:203
-#, php-format
-msgid "File %d: completed successfully."
+msgid "Importing… please wait. Do not close this page."
 msgstr ""
 #: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:204
 #, php-format
-msgid "File %d: failed."
+msgid "Importing file %1$d of %2$d…"
 msgstr ""
 #: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:205
-msgid "Import completed successfully."
+#, php-format
+msgid "File %d: completed successfully."
 msgstr ""
 #: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:206
-msgid "Import stopped after a failure."
+#, php-format
+msgid "File %d: failed."
 msgstr ""
 #: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:207
-msgid "All files processed."
+msgid "Import completed successfully."
 msgstr ""
 #: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:208
+msgid "Import stopped after a failure."
+msgstr ""
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:209
+msgid "All files processed."
+msgstr ""
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:210
 #, php-format
 msgid "Retrying file %d…"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:209
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:211
 msgid "Could not clean up temporary files."
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:210
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:212
 msgid "Network error. Please check your connection and retry."
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:211
+#: wp-content/plugins/conexao-event-importer/conexao-event-importer.php:213
 msgid "Server error. Please check the logs."
 msgstr ""
 #: wp-content/plugins/conexao-event-importer/includes/class-event-cleanup-admin.php:41
@@ -191,94 +191,94 @@ msgstr ""
 msgid "Could not delete the event post."
 msgstr ""
 #. translators: %s: file path
-#: wp-content/plugins/conexao-event-importer/includes/class-event-export.php:309
+#: wp-content/plugins/conexao-event-importer/includes/class-event-export.php:317
 #, php-format
 msgid "Could not open the temporary export file for writing: %s"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-export.php:320
+#: wp-content/plugins/conexao-event-importer/includes/class-event-export.php:328
 msgid "Could not write the export manifest to the temporary file."
 msgstr ""
 #. translators: %d: event post ID
-#: wp-content/plugins/conexao-event-importer/includes/class-event-export.php:359
-#: wp-content/plugins/conexao-event-importer/includes/class-event-export.php:749
+#: wp-content/plugins/conexao-event-importer/includes/class-event-export.php:367
+#: wp-content/plugins/conexao-event-importer/includes/class-event-export.php:757
 #, php-format
 msgid "Could not JSON-encode event #%d; export aborted."
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-export.php:368
+#: wp-content/plugins/conexao-event-importer/includes/class-event-export.php:376
 msgid "Could not write an event to the temporary export file."
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-export.php:401
+#: wp-content/plugins/conexao-event-importer/includes/class-event-export.php:409
 msgid "Could not finish writing the temporary export file."
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-export.php:405
+#: wp-content/plugins/conexao-event-importer/includes/class-event-export.php:413
 msgid "Could not flush the temporary export file to disk."
 msgstr ""
 #. translators: 1: expected event count, 2: written event count
-#: wp-content/plugins/conexao-event-importer/includes/class-event-export.php:413
+#: wp-content/plugins/conexao-event-importer/includes/class-event-export.php:421
 #, php-format
 msgid ""
 "Export aborted: expected %1$d events but wrote %2$d. The dataset changed "
 "during the export; please retry."
 msgstr ""
 #. translators: 1: minimum part size, 2: maximum part size
-#: wp-content/plugins/conexao-event-importer/includes/class-event-export.php:454
+#: wp-content/plugins/conexao-event-importer/includes/class-event-export.php:462
 #, php-format
 msgid "Invalid part size: choose between %1$d and %2$d events per part."
 msgstr ""
 #. translators: %s: directory path
-#: wp-content/plugins/conexao-event-importer/includes/class-event-export.php:466
+#: wp-content/plugins/conexao-event-importer/includes/class-event-export.php:474
 #, php-format
 msgid "Could not create the export directory: %s"
 msgstr ""
 #. translators: 1: part number, 2: failure reason
-#: wp-content/plugins/conexao-event-importer/includes/class-event-export.php:521
+#: wp-content/plugins/conexao-event-importer/includes/class-event-export.php:529
 #, php-format
 msgid ""
 "Part %1$d failed: %2$s. The run was aborted; parts generated before the "
 "failure remain on disk."
 msgstr ""
 #. translators: %s: manifest path
-#: wp-content/plugins/conexao-event-importer/includes/class-event-export.php:639
+#: wp-content/plugins/conexao-event-importer/includes/class-event-export.php:647
 #, php-format
 msgid "All parts were generated but the manifest could not be written: %s"
 msgstr ""
 #. translators: 1: expected event count, 2: found event count
-#: wp-content/plugins/conexao-event-importer/includes/class-event-export.php:696
+#: wp-content/plugins/conexao-event-importer/includes/class-event-export.php:704
 #, php-format
 msgid ""
 "Export aborted: expected %1$d events in this part but found %2$d. The "
 "dataset changed during the export; please retry."
 msgstr ""
 #. translators: %s: file path
-#: wp-content/plugins/conexao-event-importer/includes/class-event-export.php:709
+#: wp-content/plugins/conexao-event-importer/includes/class-event-export.php:717
 #, php-format
 msgid "Could not open the part file for writing: %s"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-export.php:719
+#: wp-content/plugins/conexao-event-importer/includes/class-event-export.php:727
 msgid "Could not write the part manifest."
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-export.php:758
+#: wp-content/plugins/conexao-event-importer/includes/class-event-export.php:766
 msgid "Could not write an event to the part file."
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-export.php:805
+#: wp-content/plugins/conexao-event-importer/includes/class-event-export.php:813
 msgid "Could not finish writing the part file."
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-export.php:809
+#: wp-content/plugins/conexao-event-importer/includes/class-event-export.php:817
 msgid "Could not flush the part file to disk."
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-export.php:984
+#: wp-content/plugins/conexao-event-importer/includes/class-event-export.php:992
 msgid "Event export failed: could not create a temporary file."
 msgstr ""
 #. translators: %s: failure reason
-#: wp-content/plugins/conexao-event-importer/includes/class-event-export.php:993
+#: wp-content/plugins/conexao-event-importer/includes/class-event-export.php:1001
 #: wp-content/plugins/conexao-event-importer/includes/class-event-transfer-admin.php:277
 #, php-format
 msgid "Event export failed: %s"
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-export.php:1001
+#: wp-content/plugins/conexao-event-importer/includes/class-event-export.php:1009
 msgid "Event export failed: the temporary export file is empty."
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-export.php:1015
+#: wp-content/plugins/conexao-event-importer/includes/class-event-export.php:1023
 msgid "Event export failed: the temporary export file is incomplete."
 msgstr ""
 #: wp-content/plugins/conexao-event-importer/includes/class-event-image-handler.php:177
@@ -630,12 +630,12 @@ msgid ""
 "Matched a translated record: the importer never writes to another language."
 msgstr ""
 #. translators: 1: event title, 2: error message
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1230
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1255
 #, php-format
 msgid "The event \"%1$s\" was imported but taxonomy assignment failed: %2$s"
 msgstr ""
 #. translators: 1: event title
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1294
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1494
 #, php-format
 msgid ""
 "The image for \"%1$s\" could not be downloaded. The external Eventbrite "

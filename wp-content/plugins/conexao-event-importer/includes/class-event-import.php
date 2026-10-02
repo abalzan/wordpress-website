@@ -532,6 +532,13 @@ class Conexao_Event_Import {
 			'_event_last_checked',
 			'_event_status',
 			'_event_imported',
+			// Recurrence group — must mirror the export allowlist exactly, so
+			// the transferred record matches occurrence dates identically on
+			// the destination.
+			'_event_recurrence',
+			'_event_recurrence_days',
+			'_event_recurrence_start',
+			'_event_recurrence_end',
 			// Stage 3.2 — source-language classification round-trips with
 			// the rest of the pipeline meta (additive; absent on legacy
 			// packages).

@@ -594,8 +594,77 @@ Submenus:
 
 - `conexao-data-model` (event CPT must exist)
 
+## Recurrence / occurrence dates (Stage 20)
+
+An imported event may be a **series**. The importer stores the series as
+**one canonical event post** plus the four recurrence meta keys the data model
+already had (`_event_recurrence`, `_event_recurrence_days`,
+`_event_recurrence_start`, `_event_recurrence_end`). It never creates one post
+per occurrence, and it never re-implements the evaluator — `Conexao_Event_Recurrence`
+in the **Event Runtime** plugin remains the single place that answers "does
+this event occur on date X". A manual rule written in wp-admin and an imported
+rule are stored in exactly the same shape.
+
+Resolution happens per VEVENT, standard mechanism first:
+
+1. **`RRULE` (RFC 5545)** — read generically for every ICS source by
+   `includes/class-conexao-ics-recurrence.php`. Supported subset:
+   `FREQ=WEEKLY`, `INTERVAL=1`, `BYDAY`, `COUNT`, `UNTIL`. Anything outside
+   that subset (e.g. `FREQ=DAILY`, `INTERVAL=2`, ordinal `2MO`) returns null
+   and the event simply stays one-time: `DTSTART`/`DTEND` still describe a
+   valid single event, so degrading is always safe.
+2. **A source-specific adapter**, consulted only for source ids registered in
+   `Conexao_Source_ICalendar::resolve_series_adapter()`. This is the isolation
+   boundary that keeps one feed's convention from leaking into standard ICS
+   semantics for any other feed.
+
+### Laois Tourism: the collapsed-series convention
+
+`laoistourism.ie` (`PRODID:-//Laois Tourism - ECPv6.18.0//`) publishes **no
+`RRULE` at all** — measured across the whole feed: 30 VEVENTs, 0 RRULE,
+0 EXDATE, 0 RDATE, 0 `X-` recurrence properties. A weekly course is encoded as
+a single VEVENT whose `DTSTART` is the **first occurrence** and whose `DTEND`
+is the end of the **last occurrence**.
+
+Read literally that pair is indistinguishable from one event running
+continuously for the whole window — which is why a four-week class used to be
+listed on every day in between. `includes/class-conexao-laois-tourism-series.php`
+recognises the pattern with a **structural** test, never a title or keyword
+match: the event is timed, `weekday(DTSTART) === weekday(DTEND)`, the day span
+is an exact multiple of 7, and the leftover time-of-day delta is a positive,
+less-than-one-day single-session duration. All-day (`VALUE=DATE`) events and
+genuine multi-day events fail the test and stay one-time.
+
+The rule reproduces the occurrence counts the source states in its own
+`DESCRIPTION` ("four-week Chair Yoga" → 4, "6-week Bootcamp" → 6,
+"seven-week workshop" → 7), which is the independent corroboration that the
+interpretation matches the publisher's intent.
+
+All date arithmetic is calendar-based (never a site-timezone instant
+conversion), so a `TZID=Europe/Dublin` series keeps its local dates across the
+DST transition.
+
+### Idempotence
+
+The rule participates in change detection, so the first run after the series
+becomes known reports the change and writes the rule, and every later run
+compares equal. Measured: run 1 `created=30`, run 2 `created=0 updated=0
+unchanged=30`. An event whose source stops declaring a series has the whole
+meta group deleted, so a withdrawn series can never leave an orphan rule.
+
+### Tests
+
+- `tests/test-ics-occurrence-dates.php` — in-process suite (172 assertions)
+  against the committed real-world fixture `tests/fixtures/ics/laois-tourism.ics`.
+- `tests/stage20-laois-import-run.php` — baseline / dry-run / apply / verify
+  runner used for the deterministic two-run evidence.
+- `tests/acceptance/verify-event-occurrence-http.py` — HTTP acceptance.
+
 ## Files to Inspect First
 
 - `includes/class-event-importer.php` — import engine, upsert, dry-run
+- `includes/sources/class-icalendar-source.php` — ICS parsing + recurrence resolution
+- `includes/class-conexao-ics-recurrence.php` — RFC 5545 RRULE reader (generic)
+- `includes/class-conexao-laois-tourism-series.php` — Laois collapsed-series rule
 - `includes/class-event-export.php` / `includes/class-event-import.php` — the local→production transfer (UUIDs + embedded images)
 - `includes/class-event-sources.php` — source CRUD + dashboard
