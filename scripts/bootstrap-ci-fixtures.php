@@ -1212,10 +1212,24 @@ if ( $apply ) {
 
 			// The EN record is a TRANSLATION, not a twin: it inherits the PT
 			// publication date and status. `test-blog-en-translation.php` asserts
-			// "EN posts keep the PT publication date", and the shared engine's own
-			// `copy_fields` does the same for every stage-authored record. Without
-			// the date here the EN post is dated "now", which is both a different
-			// value and a different value on every run.
+			// "EN posts keep the PT publication date", `test-guide-en-translation.php`
+			// asserts the same for guides, and the shared engine's own `copy_fields`
+			// does it for every stage-authored record.
+			//
+			// The date is read from the PT record THAT WAS JUST STORED, not from the
+			// dataset. That matters: the inheritance used to be conditional on the
+			// dataset pinning a `date`, so a pair that declared none (the PPS-number
+			// guide) left WordPress to stamp `now` on each of the two inserts
+			// separately. The seconds between them were enough for "EN keeps the PT
+			// publication date" to fail on a freshly bootstrapped database. Reading
+			// the stored value makes the invariant unconditional and the fixture
+			// deterministic, whether or not the dataset pins a date.
+			$pt_stored_date = '';
+			if ( $pt_id > 0 ) {
+				$pt_post        = get_post( (int) $pt_id );
+				$pt_stored_date = ( $pt_post instanceof WP_Post ) ? (string) $pt_post->post_date : '';
+			}
+
 			$en_fields = array(
 				'title'   => (string) $pair['en_title'],
 				'excerpt' => sprintf( 'Synthetic CI fixture record "%s".', (string) $pair['en_slug'] ),
@@ -1236,7 +1250,12 @@ if ( $apply ) {
 				'terms'   => $en_terms,
 			);
 
-			if ( ! empty( $pt_fields['date'] ) ) {
+			if ( '' !== $pt_stored_date ) {
+				$en_fields['date'] = $pt_stored_date;
+			} elseif ( ! empty( $pt_fields['date'] ) ) {
+				// The PT record could not be read back; fall back to the value the
+				// dataset declared, which is still a real inherited value rather
+				// than two independent "now" stamps.
 				$en_fields['date'] = $pt_fields['date'];
 			}
 			if ( ! empty( $pt_fields['status'] ) ) {

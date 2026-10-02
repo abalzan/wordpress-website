@@ -1,8 +1,8 @@
 {
   "stage": "L — permanent invariant gates",
-  "generated_at": "2026-10-02T14:03:28Z",
-  "repository_sha": "1746a1c285b6108f8ab822b8cca5d77b5ac24aca",
-  "status": "pass",
+  "generated_at": "2026-10-02T15:21:05Z",
+  "repository_sha": "133f934621375e4f8966b016dcef62fb4bec0919",
+  "status": "fail",
   "gates": {
     "taxonomy_policy": {
       "gate": "taxonomy_policy",
@@ -597,7 +597,7 @@
       "prerequisites": [],
       "details": [],
       "output_tail": [
-        "   historical/audit documents without the marker (reported, not gated): 140",
+        "   historical/audit documents without the marker (reported, not gated): 142",
         "",
         "   -- §9.2 no root-level report/evidence file --",
         "   root files scanned: 17, offenders: 0",
@@ -616,19 +616,26 @@
       "domain": "i18n_freshness",
       "kind": "static",
       "command": "python3 tests/scripts/verify-i18n-freshness.py",
-      "exit_code": 0,
-      "status": "pass",
+      "exit_code": 1,
+      "status": "fail",
       "passed": 3,
-      "failed": 0,
-      "violations": 0,
-      "pre_existing": 0,
+      "failed": 1,
+      "violations": 1,
+      "pre_existing": 1,
       "new": 0,
       "allowlisted": 0,
       "prerequisites": [],
-      "details": [],
+      "details": [
+        {
+          "component": "conexao-br-irlanda",
+          "catalogue": "wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot",
+          "newest_source": "wp-content/themes/conexao-br-irlanda/template-parts/event-card.php",
+          "catalogue_ts": 1790933386,
+          "newest_source_ts": 1790951288,
+          "lag_seconds": 17902
+        }
+      ],
       "output_tail": [
-        "   conexao-data-model       catalogue=1790933386 newest-source=1790335165 (wp-content/plugins/conexao-data-model/includes/class-agency.php) fresh",
-        "   conexao-content          catalogue=1790933386 newest-source=1790699556 (wp-content/plugins/conexao-content/conexao-content.php) fresh",
         "   conexao-admin-ux         catalogue=1790933386 newest-source=1790016943 (wp-content/plugins/conexao-admin-ux/includes/class-translation-state.php) fresh",
         "   conexao-event-runtime    catalogue=1790933386 newest-source=1790699556 (wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php) fresh",
         "   conexao-event-importer   catalogue=1790933312 newest-source=1790933312 (wp-content/plugins/conexao-event-importer/conexao-event-importer.php) fresh",
@@ -636,16 +643,18 @@
         "   conexao-sponsor-migration catalogue=1790933386 newest-source=1789994211 (wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-importer.php) fresh",
         "   conexao-translation-automation catalogue=1790933386 newest-source=1790861950 (wp-content/plugins/conexao-translation-automation/includes/class-conexao-translation-automation-batch-control.php) fresh",
         "",
-        "   stale catalogues: 0",
-        "3 passed, 0 failed",
-        "GATE-RESULT {\"gate\": \"i18n_freshness\", \"status\": \"pass\", \"passed\": 3, \"failed\": 0, \"violations\": 0, \"pre_existing\": 0, \"new\": 0, \"details\": []}"
+        "   stale catalogues: 1",
+        "FAIL: conexao-br-irlanda: wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot is older than wp-content/themes/conexao-br-irlanda/template-parts/event-card.php by 17902s — regenerate the catalogue with `wp i18n make-pot` (never hand-edit)",
+        "3 passed, 1 failed",
+        "  stale catalogues: 1 pre-existing, 0 new",
+        "GATE-RESULT {\"gate\": \"i18n_freshness\", \"status\": \"fail\", \"passed\": 3, \"failed\": 1, \"violations\": 1, \"pre_existing\": 1, \"new\": 0, \"details\": [{\"component\": \"conexao-br-irlanda\", \"catalogue\": \"wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot\", \"newest_source\": \"wp-content/themes/conexao-br-irlanda/template-parts/event-card.php\", \"catalogue_ts\": 1790933386, \"newest_source_ts\": 1790951288, \"lag_seconds\": 17902}]}"
       ]
     }
   },
   "total_passed": 84,
-  "total_failed": 0,
-  "total_violations": 0,
-  "total_pre_existing": 0,
+  "total_failed": 1,
+  "total_violations": 1,
+  "total_pre_existing": 1,
   "total_new": 0,
   "total_blocked": 0
 }
