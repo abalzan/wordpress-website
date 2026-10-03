@@ -57,6 +57,7 @@ is **not** an active skill set.
 |---|---|
 | [engineering-standard.md](engineering-standard.md) | The authoritative engineering standard (WP-ES) — read this before changing code |
 | [audit/](audit/) | Engineering standardisation audits |
+| [audit/2026-10-03-ui-ux-audit.md](audit/2026-10-03-ui-ux-audit.md) | **UI / UX audit and design direction** — the current visual system measured across 24 pages × 2 viewports, the inconsistency inventory, three design directions, the recommended direction, the Tier 1–3 backlog and the implementation map. Evaluation only; no implementation. |
 | [reports/README.md](reports/README.md) | Index of dated stage/feature reports + the no-root-reports rule |
 | [reports/site/](reports/site/) | Repository-engineering stage reports (Stage B repository hygiene, Stage C static quality tooling, …) |
 | [evidence/README.md](evidence/README.md) | Standing rule for machine-readable evidence + contents map |
@@ -198,5 +199,7 @@ is [`wp-testing`](../.agents/skills/wp-testing/SKILL.md).
 | [templates/report.md](templates/report.md) | After the work, to close a stage with real verification numbers and stated limitations |
 
 _Last verified: 2026-09-30 by the agent skills / documentation migration_
+
+_Last verified: 2026-10-03 — added the UI / UX audit to the index_
 
 _Last verified: 2026-09-26 by Stage L — Permanent Invariant Gates_

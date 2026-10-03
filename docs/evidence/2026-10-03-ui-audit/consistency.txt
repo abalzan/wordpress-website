@@ -1,0 +1,184 @@
+
+==============================================================================
+VIEWPORT: desktop
+==============================================================================
+
+--- body : 1 distinct treatment(s)
+   [24 pages] font=Inter | size=16px | weight=400 | lh=25.6px | color=rgb(73, 80, 87) | bg=rgb(255, 255, 255) | radius=0px | border=0px none rgb(73, 80, 87) | shadow=none | pad=0px
+              blog-archive, blog-archive-en, blog-single, contact, courses, courses-en, event-single, events-archive, events-archive-en, events-filtered, guide-single, guides-archive, guides-archive-en, home, home-en, jobs, jobs-en, leisure-archive, leisure-archive-en, leisure-single, search, sponsor-single, sponsors, sponsors-en
+
+--- h1 : 4 distinct treatment(s)
+   [16 pages] font=Poppins | size=36px | weight=700 | lh=41.4px | color=rgb(26, 26, 46) | bg=rgba(0, 0, 0, 0) | radius=0px | border=0px none rgb(26, 26, 46) | shadow=none | pad=0px
+              blog-archive, blog-archive-en, contact, courses, courses-en, events-archive, events-archive-en, events-filtered, guides-archive, guides-archive-en, jobs, jobs-en, leisure-archive, leisure-archive-en, sponsors, sponsors-en
+   [ 3 pages] font=Poppins | size=44px | weight=700 | lh=52.8px | color=rgb(26, 26, 46) | bg=rgba(0, 0, 0, 0) | radius=0px | border=0px none rgb(26, 26, 46) | shadow=none | pad=0px
+              blog-single, event-single, guide-single
+   [ 3 pages] font=Poppins | size=44px | weight=700 | lh=50.6px | color=rgb(26, 26, 46) | bg=rgba(0, 0, 0, 0) | radius=0px | border=0px none rgb(26, 26, 46) | shadow=none | pad=0px
+              leisure-single, search, sponsor-single
+   [ 2 pages] font=Poppins | size=44px | weight=700 | lh=50.6px | color=rgb(255, 255, 255) | bg=rgba(0, 0, 0, 0) | radius=0px | border=0px none rgb(255, 255, 255) | shadow=none | pad=0px
+              home, home-en
+
+--- h2 : 6 distinct treatment(s)
+   [ 7 pages] font=Poppins | size=17px | weight=600 | lh=22.1px | color=rgb(26, 26, 46) | bg=rgba(0, 0, 0, 0) | radius=0px | border=0px none rgb(26, 26, 46) | shadow=none | pad=0px
+              blog-archive, blog-archive-en, guides-archive, guides-archive-en, search, sponsors, sponsors-en
+   [ 5 pages] font=Poppins | size=40px | weight=700 | lh=48px | color=rgb(255, 255, 255) | bg=rgba(0, 0, 0, 0) | radius=0px | border=0px none rgb(255, 255, 255) | shadow=none | pad=0px
+              courses, courses-en, events-archive, events-archive-en, events-filtered
+   [ 3 pages] font=Poppins | size=40px | weight=700 | lh=48px | color=rgb(26, 26, 46) | bg=rgba(0, 0, 0, 0) | radius=0px | border=0px none rgb(26, 26, 46) | shadow=none | pad=0px
+              contact, home, home-en
+   [ 2 pages] font=Poppins | size=28px | weight=700 | lh=33.6px | color=rgb(26, 26, 46) | bg=rgba(0, 0, 0, 0) | radius=0px | border=0px none rgb(26, 26, 46) | shadow=none | pad=0px
+              jobs, jobs-en
+   [ 2 pages] font=Poppins | size=18px | weight=700 | lh=21.6px | color=rgb(26, 26, 46) | bg=rgba(0, 0, 0, 0) | radius=0px | border=0px none rgb(26, 26, 46) | shadow=none | pad=0px
+              leisure-archive, leisure-archive-en
+   [ 1 pages] font=Poppins | size=16.8px | weight=700 | lh=20.16px | color=rgb(26, 26, 46) | bg=rgba(0, 0, 0, 0) | radius=0px | border=0px none rgb(26, 26, 46) | shadow=none | pad=0px
+              leisure-single
+
+--- cardTitle : 4 distinct treatment(s)
+   [ 6 pages] font=Poppins | size=18px | weight=600 | lh=23.4px | color=rgb(26, 26, 46) | bg=rgba(0, 0, 0, 0) | radius=0px | border=0px none rgb(26, 26, 46) | shadow=none | pad=0px
+              events-archive, events-archive-en, events-filtered, jobs, jobs-en, leisure-single
+   [ 2 pages] font=Poppins | size=18px | weight=700 | lh=23.4px | color=rgb(26, 26, 46) | bg=rgba(0, 0, 0, 0) | radius=0px | border=0px none rgb(26, 26, 46) | shadow=none | pad=0px
+              courses, courses-en
+   [ 2 pages] font=Poppins | size=17px | weight=600 | lh=22.1px | color=rgb(26, 26, 46) | bg=rgba(0, 0, 0, 0) | radius=0px | border=0px none rgb(26, 26, 46) | shadow=none | pad=0px
+              home, home-en
+   [ 2 pages] font=Poppins | size=18.4px | weight=700 | lh=23.92px | color=rgb(26, 26, 46) | bg=rgba(0, 0, 0, 0) | radius=0px | border=0px none rgb(26, 26, 46) | shadow=none | pad=0px
+              leisure-archive, leisure-archive-en
+
+--- meta : 2 distinct treatment(s)
+   [ 3 pages] font=Inter | size=15px | weight=400 | lh=24px | color=rgb(108, 117, 125) | bg=rgba(0, 0, 0, 0) | radius=0px | border=0px none rgb(108, 117, 125) | shadow=none | pad=0px
+              blog-single, event-single, guide-single
+   [ 2 pages] font=Inter | size=12px | weight=400 | lh=19.2px | color=rgb(108, 117, 125) | bg=rgba(0, 0, 0, 0) | radius=0px | border=1px solid rgb(229, 231, 235) | shadow=none | pad=16px 0px 0px
+              home, home-en
+
+--- card : 2 distinct treatment(s)
+   [17 pages] font=Inter | size=16px | weight=400 | lh=25.6px | color=rgb(73, 80, 87) | bg=rgb(255, 255, 255) | radius=16px | border=1px solid rgb(229, 231, 235) | shadow=none | pad=0px
+              blog-archive, blog-archive-en, courses, courses-en, events-archive, events-archive-en, events-filtered, guides-archive, guides-archive-en, jobs, jobs-en, leisure-archive, leisure-archive-en, leisure-single, search, sponsors, sponsors-en
+   [ 2 pages] font=Inter | size=16px | weight=400 | lh=25.6px | color=rgb(73, 80, 87) | bg=rgb(255, 255, 255) | radius=16px | border=1px solid rgb(229, 231, 235) | shadow=set | pad=0px
+              home, home-en
+
+--- btn : 3 distinct treatment(s)
+   [10 pages] font=Inter | size=14px | weight=600 | lh=14px | color=rgb(14, 107, 58) | bg=rgb(240, 250, 244) | radius=8px | border=0px none rgb(14, 107, 58) | shadow=none | pad=10px
+              events-archive, events-archive-en, events-filtered, jobs, jobs-en, leisure-single
+   [ 2 pages] font=Inter | size=15px | weight=600 | lh=15px | color=rgb(255, 255, 255) | bg=rgb(246, 139, 31) | radius=9999px | border=0px none rgb(255, 255, 255) | shadow=none | pad=14px 28px
+              home, home-en
+   [ 2 pages] font=Inter | size=15px | weight=600 | lh=15px | color=rgb(255, 255, 255) | bg=rgba(0, 0, 0, 0) | radius=9999px | border=2px solid rgba(255, 255, 255, 0.5) | shadow=none | pad=14px 28px
+              home, home-en
+
+--- image : 1 distinct treatment(s)
+   [ 2 pages] font=Inter | size=16px | weight=400 | lh=25.6px | color=rgb(14, 107, 58) | bg=rgb(238, 241, 244) | radius=0px | border=0px none rgb(14, 107, 58) | shadow=none | pad=0px
+              leisure-archive, leisure-archive-en
+
+--- overflow + a11y ---
+   blog-archive         smallTargets=16
+   blog-archive-en      smallTargets=17
+   blog-single          headingJumps=1, smallTargets=21
+   contact              smallTargets=13
+   courses              headingJumps=1, smallTargets=18
+   courses-en           headingJumps=1, smallTargets=18
+   event-single         headingJumps=1, smallTargets=14
+   events-archive       headingJumps=1, smallTargets=32
+   events-archive-en    headingJumps=1, smallTargets=32
+   events-filtered      headingJumps=1, smallTargets=15
+   guide-single         headingJumps=1, smallTargets=20
+   guides-archive       smallTargets=29
+   guides-archive-en    smallTargets=28
+   home                 smallTargets=28
+   home-en              smallTargets=27
+   jobs                 smallTargets=82
+   jobs-en              smallTargets=82
+   leisure-archive      smallTargets=34
+   leisure-archive-en   smallTargets=34
+   leisure-single       smallTargets=28
+   search               smallTargets=17
+   sponsor-single       headingJumps=1, smallTargets=14
+   sponsors             smallTargets=20
+   sponsors-en          smallTargets=20
+
+==============================================================================
+VIEWPORT: mobile
+==============================================================================
+
+--- body : 1 distinct treatment(s)
+   [24 pages] font=Inter | size=16px | weight=400 | lh=25.6px | color=rgb(73, 80, 87) | bg=rgb(255, 255, 255) | radius=0px | border=0px none rgb(73, 80, 87) | shadow=none | pad=0px
+              blog-archive, blog-archive-en, blog-single, contact, courses, courses-en, event-single, events-archive, events-archive-en, events-filtered, guide-single, guides-archive, guides-archive-en, home, home-en, jobs, jobs-en, leisure-archive, leisure-archive-en, leisure-single, search, sponsor-single, sponsors, sponsors-en
+
+--- h1 : 3 distinct treatment(s)
+   [19 pages] font=Poppins | size=28px | weight=700 | lh=32.2px | color=rgb(26, 26, 46) | bg=rgba(0, 0, 0, 0) | radius=0px | border=0px none rgb(26, 26, 46) | shadow=none | pad=0px
+              blog-archive, blog-archive-en, contact, courses, courses-en, events-archive, events-archive-en, events-filtered, guides-archive, guides-archive-en, jobs, jobs-en, leisure-archive, leisure-archive-en, leisure-single, search, sponsor-single, sponsors, sponsors-en
+   [ 3 pages] font=Poppins | size=28px | weight=700 | lh=33.6px | color=rgb(26, 26, 46) | bg=rgba(0, 0, 0, 0) | radius=0px | border=0px none rgb(26, 26, 46) | shadow=none | pad=0px
+              blog-single, event-single, guide-single
+   [ 2 pages] font=Poppins | size=17.94px | weight=700 | lh=21.8868px | color=rgb(255, 255, 255) | bg=rgba(0, 0, 0, 0) | radius=0px | border=0px none rgb(255, 255, 255) | shadow=none | pad=0px
+              home, home-en
+
+--- h2 : 7 distinct treatment(s)
+   [ 7 pages] font=Poppins | size=17px | weight=600 | lh=22.1px | color=rgb(26, 26, 46) | bg=rgba(0, 0, 0, 0) | radius=0px | border=0px none rgb(26, 26, 46) | shadow=none | pad=0px
+              blog-archive, blog-archive-en, guides-archive, guides-archive-en, search, sponsors, sponsors-en
+   [ 5 pages] font=Poppins | size=28px | weight=700 | lh=33.6px | color=rgb(255, 255, 255) | bg=rgba(0, 0, 0, 0) | radius=0px | border=0px none rgb(255, 255, 255) | shadow=none | pad=0px
+              courses, courses-en, events-archive, events-archive-en, events-filtered
+   [ 2 pages] font=Poppins | size=16px | weight=700 | lh=19.2px | color=rgb(26, 26, 46) | bg=rgba(0, 0, 0, 0) | radius=0px | border=0px none rgb(26, 26, 46) | shadow=none | pad=0px
+              home, home-en
+   [ 2 pages] font=Poppins | size=22px | weight=700 | lh=26.4px | color=rgb(26, 26, 46) | bg=rgba(0, 0, 0, 0) | radius=0px | border=0px none rgb(26, 26, 46) | shadow=none | pad=0px
+              jobs, jobs-en
+   [ 2 pages] font=Poppins | size=18px | weight=700 | lh=21.6px | color=rgb(26, 26, 46) | bg=rgba(0, 0, 0, 0) | radius=0px | border=0px none rgb(26, 26, 46) | shadow=none | pad=0px
+              leisure-archive, leisure-archive-en
+   [ 1 pages] font=Poppins | size=28px | weight=700 | lh=33.6px | color=rgb(26, 26, 46) | bg=rgba(0, 0, 0, 0) | radius=0px | border=0px none rgb(26, 26, 46) | shadow=none | pad=0px
+              contact
+   [ 1 pages] font=Poppins | size=16.8px | weight=700 | lh=20.16px | color=rgb(26, 26, 46) | bg=rgba(0, 0, 0, 0) | radius=0px | border=0px none rgb(26, 26, 46) | shadow=none | pad=0px
+              leisure-single
+
+--- cardTitle : 4 distinct treatment(s)
+   [ 6 pages] font=Poppins | size=18px | weight=600 | lh=23.4px | color=rgb(26, 26, 46) | bg=rgba(0, 0, 0, 0) | radius=0px | border=0px none rgb(26, 26, 46) | shadow=none | pad=0px
+              events-archive, events-archive-en, events-filtered, jobs, jobs-en, leisure-single
+   [ 2 pages] font=Poppins | size=18px | weight=700 | lh=23.4px | color=rgb(26, 26, 46) | bg=rgba(0, 0, 0, 0) | radius=0px | border=0px none rgb(26, 26, 46) | shadow=none | pad=0px
+              courses, courses-en
+   [ 2 pages] font=Poppins | size=17px | weight=600 | lh=22.1px | color=rgb(26, 26, 46) | bg=rgba(0, 0, 0, 0) | radius=0px | border=0px none rgb(26, 26, 46) | shadow=none | pad=0px
+              home, home-en
+   [ 2 pages] font=Poppins | size=18.4px | weight=700 | lh=23.92px | color=rgb(26, 26, 46) | bg=rgba(0, 0, 0, 0) | radius=0px | border=0px none rgb(26, 26, 46) | shadow=none | pad=0px
+              leisure-archive, leisure-archive-en
+
+--- meta : 2 distinct treatment(s)
+   [ 3 pages] font=Inter | size=15px | weight=400 | lh=24px | color=rgb(108, 117, 125) | bg=rgba(0, 0, 0, 0) | radius=0px | border=0px none rgb(108, 117, 125) | shadow=none | pad=0px
+              blog-single, event-single, guide-single
+   [ 2 pages] font=Inter | size=12px | weight=400 | lh=19.2px | color=rgb(108, 117, 125) | bg=rgba(0, 0, 0, 0) | radius=0px | border=1px solid rgb(229, 231, 235) | shadow=none | pad=16px 0px 0px
+              home, home-en
+
+--- card : 2 distinct treatment(s)
+   [17 pages] font=Inter | size=16px | weight=400 | lh=25.6px | color=rgb(73, 80, 87) | bg=rgb(255, 255, 255) | radius=16px | border=1px solid rgb(229, 231, 235) | shadow=none | pad=0px
+              blog-archive, blog-archive-en, courses, courses-en, events-archive, events-archive-en, events-filtered, guides-archive, guides-archive-en, jobs, jobs-en, leisure-archive, leisure-archive-en, leisure-single, search, sponsors, sponsors-en
+   [ 2 pages] font=Inter | size=16px | weight=400 | lh=25.6px | color=rgb(73, 80, 87) | bg=rgb(255, 255, 255) | radius=16px | border=1px solid rgb(229, 231, 235) | shadow=set | pad=0px
+              home, home-en
+
+--- btn : 3 distinct treatment(s)
+   [10 pages] font=Inter | size=14px | weight=600 | lh=14px | color=rgb(14, 107, 58) | bg=rgb(240, 250, 244) | radius=8px | border=0px none rgb(14, 107, 58) | shadow=none | pad=10px
+              events-archive, events-archive-en, events-filtered, jobs, jobs-en, leisure-single
+   [ 2 pages] font=Inter | size=12px | weight=600 | lh=12px | color=rgb(255, 255, 255) | bg=rgb(246, 139, 31) | radius=9999px | border=0px none rgb(255, 255, 255) | shadow=none | pad=9px 12px
+              home, home-en
+   [ 2 pages] font=Inter | size=12px | weight=600 | lh=12px | color=rgb(255, 255, 255) | bg=rgba(0, 0, 0, 0) | radius=9999px | border=2px solid rgba(255, 255, 255, 0.5) | shadow=none | pad=9px 12px
+              home, home-en
+
+--- image : 1 distinct treatment(s)
+   [ 2 pages] font=Inter | size=16px | weight=400 | lh=25.6px | color=rgb(14, 107, 58) | bg=rgb(238, 241, 244) | radius=0px | border=0px none rgb(14, 107, 58) | shadow=none | pad=0px
+              leisure-archive, leisure-archive-en
+
+--- overflow + a11y ---
+   blog-archive         smallTargets=13
+   blog-archive-en      smallTargets=14
+   blog-single          headingJumps=1, smallTargets=18
+   contact              smallTargets=10
+   courses              headingJumps=1, smallTargets=15
+   courses-en           headingJumps=1, smallTargets=15
+   event-single         headingJumps=1, smallTargets=11
+   events-archive       headingJumps=1, smallTargets=19
+   events-archive-en    headingJumps=1, smallTargets=19
+   events-filtered      headingJumps=1, smallTargets=11
+   guide-single         headingJumps=1, smallTargets=17
+   guides-archive       smallTargets=24
+   guides-archive-en    smallTargets=24
+   home                 smallTargets=21
+   home-en              smallTargets=21
+   jobs                 smallTargets=55
+   jobs-en              smallTargets=55
+   leisure-archive      smallTargets=31
+   leisure-archive-en   smallTargets=31
+   leisure-single       smallTargets=24
+   search               smallTargets=14
+   sponsor-single       headingJumps=1, smallTargets=11
+   sponsors             smallTargets=17
+   sponsors-en          smallTargets=17
