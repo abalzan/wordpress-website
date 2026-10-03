@@ -1,36 +1,44 @@
-# Stage 21 — validation gates (captured 2026-09-30, migration branch)
+# Stage 21 — validation gates (final, 2026-09-30, migration branch)
 
 This sandbox has python3 but NO php and NO docker, so the PHP-dependent
-gates could not run locally. CI is the authoritative runner for them.
+gates could not run locally. CI is the authoritative runner (see 03-ci-regression.txt).
 
 ## git status --short
 ```
-?? docs/evidence/2026-09-30-agent-skills-documentation-migration/02-validation-gates.txt
+ M docs/evidence/2026-09-30-agent-skills-documentation-migration/02-validation-gates.txt
+ M docs/evidence/2026-09-30-agent-skills-documentation-migration/04-measurements.txt
+ M docs/reports/2026-09-30-agent-skills-documentation-migration.md
+ M docs/reports/README.md
+?? docs/evidence/2026-09-30-agent-skills-documentation-migration/05-second-pass-review.txt
 ```
 
-## git diff --check (whitespace/conflict markers)
+## git diff --check
 ```
 (clean)
 ```
 
-## python3 tests/scripts/verify-agent-governance.py  (EXTENDED this migration)
+## agent-governance gate (EXTENDED this migration)
 ```
-    wp-update-docs: Purpose -> When to use -> When not to use -> Required reading -> The change → document map -> Authoritative sources -> Preconditions -> Steps -> Guardrails -> Verification -> Failure handling -> Evidence and reporting -> Definition of done
-    wp-write-in-process-test: Purpose -> When to use -> When not to use -> Required reading -> Authoritative sources -> Preconditions -> Steps -> Guardrails -> Verification -> Failure handling -> Evidence and reporting -> Definition of done
 note: retired Flutter/Dart material is present under .agents/legacy-flutter-skills/ (provenance only, not active)
 note: every repository path referenced by an active skill exists
 note: skill index matches the active skill set (14 skills)
 Stage K governance verification: 371 passed, 0 failed
 ```
 
-## python3 tests/scripts/verify-script-conventions.py
+## script-conventions gate
 ```
 324 passed, 0 failed
 ```
 
-## python3 tests/scripts/verify-i18n-freshness.py
+## i18n-freshness gate
 ```
-   stale catalogues: 0
 9 passed, 0 failed
 GATE-RESULT {"gate": "i18n_freshness", "status": "pass", "passed": 9, "failed": 0, "violations": 0, "pre_existing": 0, "new": 0, "details": []}
+```
+
+## documentation-drift gate (needs php; local limitation)
+```
+  File "/usr/lib/python3.11/subprocess.py", line 1901, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+FileNotFoundError: [Errno 2] No such file or directory: 'php'
 ```

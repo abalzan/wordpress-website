@@ -1,0 +1,45 @@
+# Stage 22 — independent second-pass review
+
+**Method.** The delegated independent reviewer sub-agent failed before
+producing output (the environment's daily model quota returned HTTP 429:
+`INFERENCE_CAP_ERROR … model zai/glm-5.3`). To avoid a silent gap, the review
+was performed directly with fresh-eyes probes: a new agent's ten questions were
+answered by reading only `AGENTS.md`, `.agents/skills/`, `docs/README.md` and
+the canonical documents, and checking every claim against the tree. The
+sub-agent limitation is recorded in the report.
+
+## The ten questions (a new agent, entry-point-only knowledge)
+
+| # | Question | Verdict | Evidence |
+|---|---|---|---|
+| 1 | Can I find the right skill for common tasks? | PASS | `AGENTS.md` "Where to go next" maps task → skill → docs; `.agents/skills/README.md` has the full table. Traced new-CPT → `wp-add-content-type`; EN work → `wp-translation-rollout`; menu fix → `wp-content-change`; deploy → `wp-release-deploy`. |
+| 2 | Does each skill say exactly what to read? | PASS | All 14 skills have `Required reading` + `Authoritative sources` with real paths; gate 8f enforces ≥1 canonical source, gate 5 enforces every path exists. |
+| 3 | Can I do a translation change without historical reports? | PASS | `wp-translation-rollout` steps 1–7 + `docs/content-model.md`, `docs/routing.md` §English, `docs/plugins/conexao-translation-rollout.md` cover inventory→manifest→dry-run→snapshot→apply→verify; the only `docs/reports/` reference in any skill is as the place to *write* reports, never to read procedure (grep-verified). |
+| 4 | Can I deploy safely without rediscovering production constraints? | PASS | `wp-release-deploy` (build→upload order→steady state→verify→rollback) and `wp-production-operations`; the **update-in-place ≠ deactivate/reactivate** rule is explicit in `wp-release-deploy` step 6, `wp-production-operations` step 4 and `docs/releases.md` rollback rules. |
+| 5 | Can I run the whole test contract without guessing? | PASS | `wp-run-tests` gives order, failure classification (regression/pre-existing/environment), the baseline file `tests/baseline/permanent-gates.json`, and when to stop; `docs/testing.md` owns the model. |
+| 6 | Can I tell which data is canonical? | PASS | `AGENTS.md` "What is authoritative" table; `plugins.json` unchanged and CI-checked; no hand list competes. |
+| 7 | Can I distinguish policy from history? | PASS | `docs/README.md` history section framed "Archive, not instructions."; `wp-content-change` and `wp-update-docs` state reports are history; no active skill instructs reading a report as procedure. |
+| 8 | Can I tell what must never be touched? | PASS | `AGENTS.md` scope table + every skill carries "Never touch the Flutter/mobile repository"; production/PT/generated-region/`.env` rules in the safety section and skills. |
+| 9 | Can I find rollback rules (code and content)? | PASS | `wp-release-deploy` step 9 (code fault vs content fault) and `docs/releases.md` §Rollback semantics. |
+| 10 | Can I understand the plugin registry without conflicting lists? | PASS | `plugins.json` + generated regions agree; the stale 2026-09-30 engine-lifecycle claim in `docs/deployment.md` was **found and corrected** against the registry. |
+
+## Risk-area probes
+
+- **Skill paths that do not exist:** none — gate 5 ("every repository path
+  referenced by an active skill exists") passes.
+- **Skill index vs directories:** match exactly — gate 8b passes (14 skills).
+- **AGENTS.md conciseness:** 209 lines (< 250) with the safety rules intact —
+  gate 5 of `verify-documentation-drift.py` passes.
+- **deployment.md vs releases.md division:** now contract (`releases.md`) vs
+  procedure (`wp-release-deploy`) vs environment facts (`deployment.md`); the
+  ~93-line duplicate removed.
+- **Historical facts presented as current:** one found and fixed — the
+  "conexao-translation-rollout is tooling / production:false" statement in
+  `docs/deployment.md`, stale after the 2026-09-30 Stage 2 engine promotion;
+  now read from `plugins.json`.
+
+## GAPS TO REPAIR
+
+None outstanding. The one substantive gap found during the review (the stale
+engine lifecycle fact in `docs/deployment.md`) was repaired in this migration
+and is covered by the regression run.

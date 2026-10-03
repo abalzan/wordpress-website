@@ -1,23 +1,26 @@
 # Stage 17 — duplication / size measurements (before -> after)
 
-Baseline = 5a75417 (branch i18n), before any edit. After = this branch.
+Baseline = 5a75417 (branch i18n), before any edit. After = this branch (report committed).
+These are git-TRACKED counts, so they are exact and unaffected by untracked scratch.
 
 ## File counts
 ```
-docs/ tracked files:  before 749  after 751
-docs/ markdown:        before 191  after 191
-docs/reports/:        before 82  after 82
-docs/evidence/:       before 593  after 595
-active SKILL.md:      before 10  after 14
+measure                   before   after
+docs/ tracked files          749     755
+docs/ markdown               191     192
+docs/reports/                 82      83
+docs/evidence/               593     598
+active SKILL.md               10      14
 ```
 
 ## Line counts
 ```
-docs/ markdown total: before 62031  after 62014
-skill lines total:    before 1195  after 2449
+measure                   before   after
+docs/ markdown lines       62031   62331
+skill lines                 1195    2449
 ```
 
-## Key document line counts (before -> after)
+## Key document line counts
 ```
 AGENTS.md                          197 ->   209
 docs/README.md                     169 ->   200

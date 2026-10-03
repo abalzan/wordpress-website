@@ -224,12 +224,13 @@ Measured (baseline `5a75417` → final). Evidence:
 
 | Measure | Before | After | Note |
 |---|---|---|---|
-| `docs/` tracked files | 749 | 763 | +14: 1 report + 13 curated evidence files from this migration; no canonical doc deleted |
+| `docs/` tracked files | 749 | 755 | +6: 1 report + 5 curated evidence files from this migration; no canonical doc deleted |
 | `docs/` markdown | 191 | 192 | +1 (the migration report) |
 | `docs/reports/` | 82 | 83 | +1 (the migration report) |
+| `docs/evidence/` | 593 | 598 | +5 (baseline, validation, CI, measurements, review) |
 | Active skills (`SKILL.md`) | 10 | 14 | +4 new workflows |
 | Active skill lines | 1,195 | 2,449 | operational layer deliberately expanded (+1,254) |
-| `docs/` markdown total lines | 62,031 | 62,240 | net **+209**, which includes the new ~230-line report; the **canonical** documents shrank while historical material was untouched |
+| `docs/` markdown total lines | 62,031 | 62,331 | net **+300**, essentially the new report; the **canonical** documents shrank (e.g. `deployment.md` −93) while historical material was untouched |
 | `docs/deployment.md` | 299 | 206 | **−93** duplicated procedure lines |
 | `docs/engineering-standard.md` §13.1 table | 18 rows | 0 | drifted hand table removed; index is CI-checked |
 
