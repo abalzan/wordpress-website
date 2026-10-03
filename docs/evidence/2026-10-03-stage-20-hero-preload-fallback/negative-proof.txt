@@ -1,0 +1,26 @@
+MUTATION=desktop-preload-removed EXIT=1 FAILING_ASSERTIONS=10
+  FAIL: the desktop hero preload is STILL emitted by header.php
+  FAIL: the desktop hint is a preload — expected 'preload', got ''
+  FAIL: the desktop hint preloads an image — expected 'image', got ''
+  FAIL: the desktop hint keeps the image/webp type — expected 'image/webp', got ''
+
+MUTATION=desktop-media-removed EXIT=1 FAILING_ASSERTIONS=10
+  FAIL: the desktop hero preload is STILL emitted by header.php
+  FAIL: the desktop hint is a preload — expected 'preload', got ''
+  FAIL: the desktop hint preloads an image — expected 'image', got ''
+  FAIL: the desktop hint keeps the image/webp type — expected 'image/webp', got ''
+
+MUTATION=desktop-imagesrcset-removed EXIT=1 FAILING_ASSERTIONS=2
+  FAIL: the desktop hint still carries imagesrcset
+  FAIL: imagesrcset is unchanged: the 1600w derivative and the 2057w master, in order (responsive selection is untouched) — expected ["conexaobr_Hero_image-1600.webp 1600w","conexaobr_Hero_image.webp 2057w"], got []
+
+MUTATION=desktop-imagesizes-removed EXIT=1 FAILING_ASSERTIONS=1
+  FAIL: the desktop hint keeps imagesizes="100vw" — expected '100vw', got ''
+
+0
+MUTATION=fallback-reverted-to-master EXIT=1 FAILING_ASSERTIONS=2
+  FAIL: the desktop fallback href points at the existing 1600w derivative — expected 'conexaobr_Hero_image-1600.webp', got 'conexaobr_Hero_image.webp'
+  FAIL: the 2057w master is no longer the desktop preload fallback
+
+--- pristine restored? ---
+RESTORED_OK

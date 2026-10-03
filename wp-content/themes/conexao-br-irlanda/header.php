@@ -17,10 +17,10 @@
      imagesrcset ladder (1600w + 2057w) with imagesizes="100vw", so the preload
      resolves to the SAME candidate the <picture> srcset picks per device —
      DPR-1 desktops fetch the 1600w derivative, DPR-2/wide screens the 2057w
-     master. The plain href fallback (the 2057w master) keeps legacy browsers
-     that predate imagesrcset behaving exactly as before. -->
+     master. The plain href fallback also points at the 1600w derivative, not the
+     master: Firefox's speculative loader may take it when media does NOT match. -->
 <link rel="preload" as="image" type="image/webp" fetchpriority="high" media="(max-width: 768px)" href="<?php echo esc_url( get_template_directory_uri() . '/assets/images/conexaobr_Hero_image_mobile.webp' ); ?>">
-<link rel="preload" as="image" type="image/webp" fetchpriority="high" media="(min-width: 769px)" imagesrcset="<?php echo esc_attr( get_template_directory_uri() . '/assets/images/conexaobr_Hero_image-1600.webp' ); ?> 1600w, <?php echo esc_attr( get_template_directory_uri() . '/assets/images/conexaobr_Hero_image.webp' ); ?> 2057w" imagesizes="100vw" href="<?php echo esc_url( get_template_directory_uri() . '/assets/images/conexaobr_Hero_image.webp' ); ?>">
+<link rel="preload" as="image" type="image/webp" fetchpriority="high" media="(min-width: 769px)" imagesrcset="<?php echo esc_attr( get_template_directory_uri() . '/assets/images/conexaobr_Hero_image-1600.webp' ); ?> 1600w, <?php echo esc_attr( get_template_directory_uri() . '/assets/images/conexaobr_Hero_image.webp' ); ?> 2057w" imagesizes="100vw" href="<?php echo esc_url( get_template_directory_uri() . '/assets/images/conexaobr_Hero_image-1600.webp' ); ?>">
 <?php endif; ?>
 <link rel="profile" href="https://gmpg.org/xfn/11">
 <script>

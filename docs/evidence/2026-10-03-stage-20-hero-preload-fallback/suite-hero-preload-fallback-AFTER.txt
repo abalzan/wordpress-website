@@ -1,0 +1,45 @@
+
+== Stage 20 — hero preload fallback (Firefox speculative-loader cost bound) ==
+
+=== A. Mobile preload is unchanged ===
+  PASS: the mobile hero preload is still emitted by header.php
+  PASS: the mobile hint is a preload
+  PASS: the mobile hint preloads an image
+  PASS: the mobile hint keeps the image/webp type
+  PASS: the mobile hint keeps fetchpriority="high"
+  PASS: the mobile hint keeps its max-width: 768px media condition
+  PASS: the mobile hint still points at the mobile hero WebP
+
+=== B. Desktop preload stays, and its fallback is the 1600w derivative ===
+  PASS: the desktop hero preload is STILL emitted by header.php
+  PASS: the desktop hint is a preload
+  PASS: the desktop hint preloads an image
+  PASS: the desktop hint keeps the image/webp type
+  PASS: the desktop hint keeps fetchpriority="high"
+  PASS: the desktop hint keeps its min-width: 769px media condition
+  PASS: the desktop hint keeps imagesizes="100vw"
+  PASS: the desktop hint still carries imagesrcset
+  PASS: imagesrcset is unchanged: the 1600w derivative and the 2057w master, in order (responsive selection is untouched)
+  PASS: the desktop fallback href points at the existing 1600w derivative
+  PASS: the 2057w master is no longer the desktop preload fallback
+
+=== C. Hero <picture> markup is preserved ===
+  PASS: front-page.php still emits the hero <picture> element
+  PASS: the hero picture still carries exactly three <source> elements
+  PASS: the mobile WebP source keeps its max-width: 768px condition
+  PASS: the mobile PNG source keeps its max-width: 768px condition
+  PASS: the mobile WebP source keeps type="image/webp"
+  PASS: the desktop WebP source keeps its min-width: 769px condition
+  PASS: the desktop WebP source keeps sizes="100vw"
+  PASS: the desktop <picture> srcset still offers the 1600w candidate and the 2057w master candidate
+  PASS: the hero <img> keeps its hero-background-img class
+  PASS: the hero <img> still falls back to the desktop PNG
+  PASS: the hero <img> keeps fetchpriority="high" (LCP)
+  PASS: the hero <img> keeps loading="eager"
+
+=== D. The fallback asset is the smaller existing derivative ===
+  PASS: both hero WebP assets are present on disk
+  PASS: the fallback asset really is the smaller one (139882 bytes vs 225488 bytes)
+  PASS: no hero image asset was added, replaced or removed
+
+hero-preload-fallback: 33 passed, 0 failed
