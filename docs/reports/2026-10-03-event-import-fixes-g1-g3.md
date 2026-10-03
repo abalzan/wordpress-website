@@ -758,7 +758,7 @@ and Heritage Week's pagination defect.
 ## O. Sign-off
 
 - **Start SHA:** `30d08c5bee3d502fcf643731523aeb9bcc7c6e22`
-- **Final SHA:** `__FINAL_SHA__`
+- **Final SHA:** `538c7952c1102b5bb26617d36c764b91f3ff7d14`
 - **Working tree at finish:** task-owned changes only, plus the two pre-existing
   diagnosis paths listed in §A (untouched by this task).
 - **Production writes:** 0
