@@ -6,6 +6,8 @@
 | **Date** | 2026-10-03 |
 | **Branch** | `master` |
 | **Start SHA** | `30d08c5bee3d502fcf643731523aeb9bcc7c6e22` |
+| **Code SHA** | `538c7952c1102b5bb26617d36c764b91f3ff7d14` |
+| **Report-finalisation SHA** | `4b137e9` (this file only) |
 | **Predecessor** | [2026-10-03 Event Import Reliability Investigation](2026-10-03-event-import-diagnosis.md) |
 | **Evidence** | [`docs/evidence/2026-10-03-event-import-fixes-g1-g3/`](../evidence/2026-10-03-event-import-fixes-g1-g3/) |
 | **Plugin version** | `conexao-event-importer` 1.7.1 → **1.7.2** |
@@ -758,7 +760,8 @@ and Heritage Week's pagination defect.
 ## O. Sign-off
 
 - **Start SHA:** `30d08c5bee3d502fcf643731523aeb9bcc7c6e22`
-- **Final SHA:** `538c7952c1102b5bb26617d36c764b91f3ff7d14`
+- **Final SHA (code):** `538c7952c1102b5bb26617d36c764b91f3ff7d14`
+- **Report-finalisation commit:** `4b137e9` (this document only; no code)
 - **Working tree at finish:** task-owned changes only, plus the two pre-existing
   diagnosis paths listed in §A (untouched by this task).
 - **Production writes:** 0
