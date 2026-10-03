@@ -135,7 +135,7 @@ docker compose exec -T db mysql -uroot -p"${DB_ROOT_PASSWORD}" -e \
   "DROP DATABASE IF EXISTS \`${DB_NAME}\`; CREATE DATABASE \`${DB_NAME}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
 
 echo "==> Importing (this can take a minute)..."
-${MYSQL_CLIENT[*]} -u"${DB_USER}" -p"${DB_PASSWORD}" "${DB_NAME}" < "$WORKDIR/dump-fixed.sql"
+"${MYSQL_CLIENT[@]}" -u"${DB_USER}" -p"${DB_PASSWORD}" "${DB_NAME}" < "$WORKDIR/dump-fixed.sql"
 
 echo "==> Import complete."
 
@@ -144,7 +144,7 @@ echo "==> Import complete."
 # ---------------------------------------------------------------------------
 if [ "$KEEP_URLS" -eq 0 ]; then
   echo "==> Setting siteurl/home to ${LOCAL_URL} (use --keep-urls to skip)..."
-  ${MYSQL_CLIENT[*]} -u"${DB_USER}" -p"${DB_PASSWORD}" "${DB_NAME}" -e \
+  "${MYSQL_CLIENT[@]}" -u"${DB_USER}" -p"${DB_PASSWORD}" "${DB_NAME}" -e \
     "UPDATE \`${DB_NAME}\`.wp_options SET option_value='${LOCAL_URL}' WHERE option_name IN ('siteurl','home');"
 fi
 
@@ -152,7 +152,7 @@ fi
 # 7. Verification: raw byte checks straight from the database.
 # ---------------------------------------------------------------------------
 echo "==> Verifying stored bytes (UTF-8 hex for 'Capacitação' must be: 4361706163697461C3A7C3A36F)"
-${MYSQL_CLIENT[*]} -u"${DB_USER}" -p"${DB_PASSWORD}" "${DB_NAME}" <<'SQL'
+"${MYSQL_CLIENT[@]}" -u"${DB_USER}" -p"${DB_PASSWORD}" "${DB_NAME}" <<'SQL'
 SELECT '--- table charsets ---' AS info;
 SELECT table_name, table_collation FROM information_schema.tables
  WHERE table_schema = DATABASE() ORDER BY table_name;

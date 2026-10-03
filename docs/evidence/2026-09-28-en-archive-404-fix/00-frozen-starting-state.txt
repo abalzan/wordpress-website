@@ -1,0 +1,17 @@
+# 00 - Frozen starting state (branch i18n)
+
+start_sha            e7303ba47d0080e3778ba7e70dd5b9c29f44e170
+rollback_tag         recovery-snapshot-before-restore -> bd81ba5 (not moved)
+recovered_baseline   b47d098  (git diff b47d098 HEAD -- wp-content/themes/ = EMPTY)
+destructive_commit   597b04e  (remains in history, auditable, not reverted)
+
+## Reproduction at the start (persisted rewrite_rules = 336 rules, 0 (en)/ post_type rules)
+  /en/apoiadores/  404
+  /en/eventos/     404
+  /en/guias/       404
+  /apoiadores/     200   PT unaffected
+  /eventos/        200   PT unaffected
+  /guias/          200   PT unaffected
+
+## Working tree at start
+  M scripts/lint.sh   <- PRE-EXISTING, unrelated to routing (present before this task; left untouched)

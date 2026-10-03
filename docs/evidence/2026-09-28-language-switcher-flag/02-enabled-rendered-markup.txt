@@ -1,0 +1,45 @@
+# ENABLED state — only the constant was flipped false -> true
+
+## Desktop switcher markup on the PT home page
+					<div class="language-switcher language-switcher--desktop" role="group" aria-label="Idioma do site">
+						<span class="language-switcher-item is-current" aria-current="true" lang="pt-BR">PT</span>
+								<a
+				class="language-switcher-item"
+				href="http://localhost:8080/en/"
+				hreflang="en"
+				lang="en"
+								aria-label="Ver em English"
+			>EN</a>
+			</div>
+
+## Desktop switcher markup on /en/guias/
+					<div class="language-switcher language-switcher--desktop" role="group" aria-label="Site language">
+						<a
+				class="language-switcher-item"
+				href="http://localhost:8080/guias/"
+				hreflang="pt-BR"
+				lang="pt-BR"
+								aria-label="View in Português"
+			>PT</a>
+								<span class="language-switcher-item is-current" aria-current="true" lang="en">EN</span>
+			</div>
+
+## Mobile switcher markup on the PT home page
+				<div class="language-switcher language-switcher--mobile" role="group" aria-label="Idioma do site">
+						<span class="language-switcher-item is-current" aria-current="true" lang="pt-BR">PT</span>
+								<a
+				class="language-switcher-item"
+				href="http://localhost:8080/en/"
+				hreflang="en"
+				lang="en"
+								aria-label="Ver em English"
+			>EN</a>
+			</div>
+
+## Container counts per page while ENABLED
+  / -> containers: 6
+  /guias/ -> containers: 6
+  /empregos/ -> containers: 6
+  /en/ -> containers: 6
+  /en/guias/ -> containers: 6
+  /en/empregos/ -> containers: 6

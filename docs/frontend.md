@@ -46,6 +46,32 @@ Defined in `assets/css/design-system.css`. Uses CSS custom properties mapped fro
 
 Asset versioning uses `filemtime()` for cache busting. `.htaccess` sets `Cache-Control: public, max-age=31536000, immutable` on CSS/JS.
 
+## Server-side cache keys are language-scoped
+
+Engineering standard §6.1 requires it and the Stage L permanent gate enforces
+it, so this is the mechanism to use when adding any cache:
+
+| Rule | Mechanism |
+|---|---|
+| Every `conexao_*` transient/object-cache key is scoped to the current language | Build it with `conexao_lang_cache_key( 'conexao_base' )` (`inc/i18n/urls.php`). It returns `conexao_base_pt` / `conexao_base_en`. |
+| Invalidation clears **every** language, not just the current one | `conexao_flush_language_cache( 'conexao_base' )` (transients) and `conexao_flush_language_object_cache( 'conexao_base', 'group' )` (object cache). Both clear the un-suffixed key too, covering pre-Polylang write paths. |
+| The key is per-record, not per-language | A key embedding a record identity is already safe without the suffix: `conexao_reading_time_{$post_id}` (one post's own content) and `conexao_b2_replaced_{md5(types)}` (the post-type set) never vary by language, so PT and EN cannot collide. |
+| The key is an admin report | Suffix with `get_current_user_id()` rather than the language; admin output is per-user, not per-language. |
+
+The two halves are enforced separately and both are blocking:
+
+- **Static** — `tests/scripts/verify-cache-key-scoping.py` scans production
+  source with PHP's own tokenizer and fails on any unscoped `conexao_*` key in a
+  read/write position. It recognises the helper, the variables assigned from it,
+  the helpers' own bodies, and record-scoped keys, so it does not fire on
+  documentation or already-scoped code. It fails closed on an unrecognised
+  shape.
+- **Runtime** — `test-cache-language-scoping.php` proves PT and EN keys differ,
+  that an EN-scoped read never returns the PT value, and that one flush clears
+  every language variant.
+
+Adding a cache without following the first rule fails CI.
+
 ## JavaScript
 
 Single file: `assets/js/main.js` (deferred, no dependencies).
@@ -72,8 +98,8 @@ All in `template-parts/`:
 | `course-filters.php` | Cursos archive filter bar (course-only: `?categoria=` provider categories from `_provider_category` meta; renders nothing when no categories exist) |
 | `guide-filters.php` | Guias archive filter bar (`?categoria=` conexao_category terms used by published guides) |
 | `event-preview.php` | Homepage events section |
-| `leisure-card.php` | Lazer archive grid — cards show a capped, prioritized set of Características attributes (max 4): Entrada (Gratuito / Pago / Gratuito em determinadas condições) → Ambiente (Interior + exterior / Exterior / Interior) → Acessibilidade → Estacionamento, then Famílias / Necessita reserva / Pet friendly. Environment attributes are normalized by the shared helper (`conexao_leisure_normalize_environment_attributes()` in functions.php): when `Interior + exterior` is assigned, the individual `Interior` / `Exterior` attributes never render alongside it (redundant legacy `_leisure_indoor`/`_leisure_outdoor` meta included); this is display normalization only — taxonomy data and `?atributo=` filter semantics are unchanged. Transporte público and Bicicleta are deliberately card-excluded (individual page only). Practical notes, verification dates and source URLs never appear on cards |
-| `leisure-filters.php` | Lazer archive filter bar (desktop: discovery heading + wide dropdowns with location search + chips + count; mobile: bottom sheet with location search for long lists). Tipo and Características are standardized multi-select dropdowns (shared filter-state snapshot + `conexao_leisure_filter_url()` in functions.php; `?categoria=a,b` / `?atributo=a,b` = OR within the dimension, AND between dimensions; "Todos"/"Todas" reset only their own dimension). The Características dropdown reads `conexao_leisure_attribute` dynamically, so newly seeded attribute terms (e.g. Pago, Bicicleta) become filterable automatically via `?atributo=` |
+| `leisure-card.php` | Lazer archive grid — cards show a capped, prioritized set of Características attributes (max 4): Entrada (Gratuito / Pago / Gratuito em determinadas condições) → Ambiente (Interior + exterior / Exterior / Interior) → Acessibilidade → Estacionamento, then Famílias / Necessita reserva / Pet friendly. Environment attributes are normalized by the shared helper (`conexao_leisure_normalize_environment_attributes()` in `inc/leisure.php`): when `Interior + exterior` is assigned, the individual `Interior` / `Exterior` attributes never render alongside it (redundant legacy `_leisure_indoor`/`_leisure_outdoor` meta included); this is display normalization only — taxonomy data and `?atributo=` filter semantics are unchanged. Transporte público and Bicicleta are deliberately card-excluded (individual page only). Practical notes, verification dates and source URLs never appear on cards |
+| `leisure-filters.php` | Lazer archive filter bar (desktop: discovery heading + wide dropdowns with location search + chips + count; mobile: bottom sheet with location search for long lists). Tipo and Características are standardized multi-select dropdowns (shared filter-state snapshot + `conexao_leisure_filter_url()` in `inc/archive-filters.php`; `?categoria=a,b` / `?atributo=a,b` = OR within the dimension, AND between dimensions; "Todos"/"Todas" reset only their own dimension). The Características dropdown reads `conexao_leisure_attribute` dynamically, so newly seeded attribute terms (e.g. Pago, Bicicleta) become filterable automatically via `?atributo=` |
 | `provider-card.php` | Course providers archive/grid |
 | `quick-access-card.php` | Homepage quick access grid |
 | `help-shortcut-card.php` | Homepage "Precisa de ajuda?" compact utility shortcut chip (reuses Quick Access card data) |
@@ -99,7 +125,7 @@ All in `template-parts/`:
   (`--conexao-primary-text`, defined in the `dark-mode.css` token block)
   rather than `var(--color-primary)`. When page-optimize concatenates CSS, a
   later `:root` — `main.css`'s palette AND the `conexao_customizer_css()`
-  inline block in `functions.php` — wins the cascade over the
+  inline block emitted by `inc/assets.php` — wins the cascade over the
   `[data-theme="dark"]` token block (equal specificity), so
   `--color-primary` stays at the light value `#0e6b3a` (contrast ~2.3:1 on
   dark tints, ~2.7:1 on the dark background). Green **backgrounds** keep
@@ -126,5 +152,7 @@ The front-page hero is a full‑bleed cinematic image with overlaid text (the ol
   - The `width`/`height` attributes on each `<source>`/`<img>` carry truthful intrinsic metadata only; CSS fully determines the rendered box, so they never stretch or size the image.
 - **Text safety**: a subtle left‑side green gradient (`.hero-content::before`, transparent after ~60–70%) darkens only the text‑safe zone; the castle/family/flags on the right stay unobscured. The right-hand sponsor carousel sits on its own light-touch glass surface (`.hero-sponsors`) so label/tiles stay legible over the photo without hiding it.
 - **Accessibility**: decorative `<img>` (`alt=""`, `aria-hidden`); `<section aria-label>`.
-- **Performance**: `loading="eager"` + `fetchpriority="high"` (LCP). The homepage `<head>` emits two media-matched `rel="preload" as="image" fetchpriority="high"` hints, hardcoded at the very top of `header.php` (BEFORE the inline theme-detection `<script>` — the LCP fetch is intentionally the FIRST resource hint in the head, on the front page only; `conexao_hero_preload()` in `functions.php` is kept unhooked for reference and mirrors the same markup): the mobile WebP ≤768px, and the desktop WebP ≥769px as an `imagesrcset`/`imagesizes` ladder (1600w + 2057w, `imagesizes="100vw"`) that resolves to the SAME candidate the `<picture>` srcset selects per device — DPR-1 desktops preload the 1600w derivative, DPR-2/wide screens the 2057w master (the plain `href` fallback keeps legacy browsers behaving exactly as before, i.e. fetching the master). The browser therefore starts the LCP fetch in parallel with render-blocking CSS with nothing competing for the first network slot. The Google Fonts stylesheet (`conexao-fonts` handle) is loaded **non-render-blocking** via the async-CSS pattern (`media="print" onload` → `media="all"`, plus `<noscript>` fallback in `conexao_fonts_non_blocking()`): previously this third-party stylesheet blocked every first paint (DNS+TLS to fonts.googleapis.com), which was the dominant cause of the mobile hero's ~1.06 s LCP element render delay. The fonts `preconnect` hints in `conexao_fonts_preconnect()` are kept (they warm DNS/TLS), but the previously-emitted **cross-origin `rel="preload" as="style"` hint for Google Fonts was removed**: it is redundant (the non-blocking `media="print"` stylesheet is still downloaded by the browser, and `font-display:swap` is already in the URL) and it was the only subresource sitting ahead of the LCP hero image preload in the head, competing for the first network slot and adding a third-party DNS+TLS round-trip on the critical path. `font-display:swap` keeps text rendering identical.
+- **Performance**: `loading="eager"` + `fetchpriority="high"` (LCP). The homepage `<head>` emits two media-matched `rel="preload" as="image" fetchpriority="high"` hints, hardcoded at the very top of `header.php` (BEFORE the inline theme-detection `<script>` — the LCP fetch is intentionally the FIRST resource hint in the head, on the front page only; `conexao_hero_preload()` in `inc/assets.php` is kept unhooked for reference and mirrors the same markup): the mobile WebP ≤768px, and the desktop WebP ≥769px as an `imagesrcset`/`imagesizes` ladder (1600w + 2057w, `imagesizes="100vw"`) that resolves to the SAME candidate the `<picture>` srcset selects per device — DPR-1 desktops preload the 1600w derivative, DPR-2/wide screens the 2057w master (the plain `href` fallback keeps legacy browsers behaving exactly as before, i.e. fetching the master). The browser therefore starts the LCP fetch in parallel with render-blocking CSS with nothing competing for the first network slot. The Google Fonts stylesheet (`conexao-fonts` handle) is loaded **non-render-blocking** via the async-CSS pattern (`media="print" onload` → `media="all"`, plus `<noscript>` fallback in `conexao_fonts_non_blocking()` (`inc/assets.php`)): previously this third-party stylesheet blocked every first paint (DNS+TLS to fonts.googleapis.com), which was the dominant cause of the mobile hero's ~1.06 s LCP element render delay. The fonts `preconnect` hints in `conexao_fonts_preconnect()` (`inc/assets.php`) are kept (they warm DNS/TLS), but the previously-emitted **cross-origin `rel="preload" as="style"` hint for Google Fonts was removed**: it is redundant (the non-blocking `media="print"` stylesheet is still downloaded by the browser, and `font-display:swap` is already in the URL) and it was the only subresource sitting ahead of the LCP hero image preload in the head, competing for the first network slot and adding a third-party DNS+TLS round-trip on the critical path. `font-display:swap` keeps text rendering identical.
 - **Not in Customizer**: the `conexao_hero_image` Media control was removed; only `conexao_hero_title`/`conexao_hero_subtitle` are customisable.
+
+_Last verified: 2026-09-26 by Stage L — Permanent Invariant Gates_

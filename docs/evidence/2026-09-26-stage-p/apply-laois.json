@@ -1,0 +1,14 @@
+{
+  "target": "http://localhost:8080",
+  "target_class": "local",
+  "mode": "apply",
+  "county_filter": "laois",
+  "events_considered": 2275,
+  "events_without_erroneous_town": 158,
+  "would_remove": 0,
+  "removed": 4,
+  "terms_deleted": [
+    "Laois"
+  ],
+  "terms_kept": []
+}

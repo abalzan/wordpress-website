@@ -1,0 +1,28 @@
+{
+  "name": "abalzan/conexao-br-irlanda-dev",
+  "description": "Development-only tooling for the Conexão BR Irlanda WordPress site. Not deployed to production.",
+  "type": "project",
+  "license": "GPL-2.0-or-later",
+  "require-dev": {
+    "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
+    "phpcompatibility/phpcompatibility-wp": "^2.1",
+    "phpstan/phpstan": "^2.2",
+    "szepeviktor/phpstan-wordpress": "^2.0",
+    "wp-coding-standards/wpcs": "^3.1"
+  },
+  "config": {
+    "allow-plugins": {
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    },
+    "sort-packages": true
+  },
+  "scripts": {
+    "lint": "phpcs",
+    "lint:fix": "phpcbf",
+    "analyse": "phpstan analyse --memory-limit=2G",
+    "check": [
+      "@lint",
+      "@analyse"
+    ]
+  }
+}

@@ -1,0 +1,185 @@
+EN ROLLOUT BLOCKER RESOLUTION — Phase 3: `newsletter` as a shared-slug B1 page (Option A)
+=======================================================================================
+Production writes: 0. No EN record, translation link, taxonomy change, menu change,
+option change or theme-mod change was made in production at any point. The policy below
+is proved LOCALLY (in-process suites) and in the read-only dry-run, never by applying it.
+
+
+1. WHY THE COLLISION EXISTED
+----------------------------
+The `en-page` manifest authors the EN slug `newsletter` — byte-identical to the PT
+stable key, and therefore the very `post_name` the PT record (production page id 13)
+already holds. WordPress makes page slugs unique per tree, so a plain
+`wp_insert_post()` silently renames the new EN record to `newsletter-2`.
+
+The dry-run of 2026-09-30 (evidence/2026-09-30-en-translation-dry-run) proved the
+consequence and classified it as the single `unresolved_slug_conflicts = 1`:
+
+    en-page::newsletter   authored=newsletter  resolved=newsletter-2  permit=False
+
+`en-blog-page` and `en-jobs-page` never hit this, because they arm the scoped
+`wp_unique_post_slug()` exception through `conexao_en_translation_with_shared_page_slug()`.
+`en-page` did not. The cost of the drift is already visible in production: Phase 2
+measured `/en/newsletter/` answering HTTP 200 with the PORTUGUESE body and a canonical
+pointing at the PT page — a B2-shaped response for a page the repository classifies B1.
+
+
+2. WHY `newsletter-2` IS REJECTED
+---------------------------------
+* It is not the authored identity. The authored slug is `newsletter`; `-2` is
+  WordPress' collision artefact, not a decision anybody made.
+* It is unreachable by the intended route. The target is `/en/newsletter/`, the
+  PT-derived path every other EN route mirrors. `/en/newsletter-2/` is not that path.
+* It is documented pre-existing slug debt, not a design. The retired
+  `conexao-page-translation` plugin declared
+  `'newsletter' => array( 'en_slug' => 'newsletter', 'shared_slug' => true )`, and
+  `test-stage45-pages.php` still asserts that allowlist is exactly `blog + newsletter`.
+  The shared-slug intent for `newsletter` is therefore already recorded in this
+  repository; only the permit on the maintained engine was missing.
+* Accepting it would keep a B2-shaped `/en/newsletter/` forever, which is the
+  B2/B1 mismatch the architecture decision forbids.
+
+
+3. WHY OPTION A (shared-slug B1) WAS SELECTED
+---------------------------------------------
+Option A makes `newsletter` an explicitly supported shared-slug B1 page, i.e. it
+completes the existing pattern instead of introducing anything:
+
+  PT  /newsletter/     the PT page (id 13)
+  EN  /en/newsletter/  the linked EN record, reusing the PT `post_name`
+  URL /newsletter-2    never produced
+
+Rejected alternatives:
+  * B2 conversion (adding `newsletter` to `conexao_b2_page_allowlist()`): the theme's
+    own comment states the remaining narrative/utility pages — "category hubs,
+    newsletter, revista, anuncie, search" — KEEP B1, and B2 "is never a catch-all and
+    never a substitute for editorial translation". It would also contradict the B1
+    model the whole rollout is built on. `newsletter` was NOT added to the B2
+    allowlist, and a test now asserts it is absent.
+  * A newsletter-specific special case: forbidden by the task and by the standard
+    (no second mechanism). Nothing in this change mentions `newsletter` in a
+    routing branch; the mechanism is generic and the slug comes from the manifest.
+
+
+4. THE EXACT MECHANISM EXTENDED (existing, not duplicated)
+------------------------------------------------------------
+Two existing pieces were extended. No new shared-slug system, no new filter, no
+new transient, no second list.
+
+  (a) THE PERMIT — `conexao_en_translation_with_shared_page_slug()` and
+      `conexao_en_translation_shared_page_slug_filter()` in
+      `wp-content/plugins/conexao-en-translation/includes/stage-config.php`.
+      Unchanged in behaviour; its scope is now documented as covering three stages.
+      Still armed only for the duration of ONE stage's own writes, still limited to
+      post type `page` AND the exact declared slug.
+
+  (b) THE AUTHORITATIVE PERMIT — new, and derived from the EXISTING manifests:
+      `conexao_en_translation_shared_page_slug_for( $stage )` returns the ONE
+      declared shared slug of a stage, where "declared" means: a row in that stage's
+      OWN authored manifest whose `en_slug` equals its PT stable key.
+      `conexao_en_translation_stage_manifest( $stage )` is the single stage -> manifest
+      resolver both this and the runner read. The manifest remains the single source
+      of truth; there is no allowlist, slug constant or per-page special case.
+
+  (c) THE DUPLICATE GUARD that makes the exception safe —
+      `conexao_en_translation_shared_slug_page_adapter( $post_type, $shared_slug )`,
+      generalised from the former `conexao_en_translation_blog_page_adapter()`.
+      `conexao_en_translation_blog_page_adapter()` remains as a thin wrapper, so the
+      documented `en-blog-page` behaviour and its callers are unchanged. The guard
+      fires ONLY for the one declared slug, which is what allows a 31-row stage
+      (`en-page`) to hold the permit without altering its other 30 rows.
+      `conexao_en_translation_stage_adapter()` pairs the permit with the guard in one
+      place, so the exception can never be armed without the guard.
+
+  Wiring: `conexao_en_translation_engine_config()`'s `run_callback` now arms the
+  permit when the stage declares one, for ANY post type. `en-blog-page` and
+  `en-jobs-page` keep their existing configs; `en-jobs-page` now calls the
+  generalised adapter. `en-guide`, `en-post` and both B2 stages declare nothing, get
+  `''`, and therefore hold NO exception at all.
+
+
+5. THE RELATIONSHIP, MADE EXPLICIT
+----------------------------------
+  PT page slug        : newsletter
+  EN page slug        : newsletter                     (authored, unchanged)
+  linked PT<->EN pages: REQUIRED  (bidirectional Polylang pair, both directions)
+  language context    : REQUIRED  (one `pt`, one `en`)
+  published           : REQUIRED  (both `publish`)
+  uniqueness exception: ONLY during the EN record creation, ONLY for `page`, ONLY for
+                        the exact declared slug, ONLY inside that stage's own write
+  ordinary unpaired
+  duplicate pages     : REJECTED (the shared-slug duplicate guard, proven below)
+
+
+6. TESTS ADDED / UPDATED
+------------------------
+(a) NEW — `wp-content/plugins/conexao-en-translation/tests/test-shared-slug-newsletter.php`
+    (37 assertions, all passing). Discovered automatically by the convention-based
+    runner (`wp-content/plugins/*/tests/test-*.php`); no runner change, no list.
+    Proves: the per-stage policy; that `en-page` declares exactly one shared slug;
+    that `en-guide`/`en-post`/B2 stages declare none; that `newsletter` is absent from
+    `conexao_b2_page_allowlist()`; the permit filter's narrowness on post type, on
+    slug and on lifetime; that the transient and the filter are both released; that a
+    stage with no declaration arms nothing; and that the duplicate guard is scoped to
+    the declared slug and DOES report an unpaired duplicate.
+
+(b) UPDATED — `wp-content/themes/conexao-br-irlanda/tests/test-en-jobs-shared-slug.php`
+    (the existing `shared_slug_page` permanent gate): 16 -> 39 assertions, 0 failed.
+    The shared-slug permit is now a DECLARED DATA PREREQUISITE of the gate, so a
+    missing plugin reports `insufficient data:` and exits non-zero instead of fataling
+    inside `wp_insert_post()`. No existing assertion was weakened or removed.
+    Added for `newsletter`: linked PT+EN pair shares the slug; EN request resolves to
+    the EN record; PT request untouched; language-correct DISTINCT self-canonicals
+    (/newsletter/ and /en/newsletter/); correct hreflang relationship; the authored
+    slug is retained (not `newsletter-2`); an unpaired slug is not rewritten; an EN
+    page with no valid PT counterpart gains nothing; two PT pages on the slug gain
+    nothing; a linked pair with different slugs is left to WordPress; and the real PT
+    page's slug, status and translation link are provably unchanged afterwards.
+
+
+7. NEGATIVE SAFEGUARDS — ALL PROVEN, NOT ASSERTED
+-------------------------------------------------
+  unlinked duplicate pages do not receive the permit   PROVEN (plugin test)
+  duplicate PT pages remain rejected                  PROVEN (gate)
+  duplicate EN pages remain rejected                  PROVEN (gate)
+  arbitrary pages do not receive the permit           PROVEN (plugin test: a different
+                                                       slug and a different post type
+                                                       both stay uniquified)
+  a linked pair with different slugs works normally   PROVEN (gate)
+  unrelated existing shared-slug pairs unchanged      PROVEN (`blog` and `empregos`
+                                                       still resolve; the gate's
+                                                       "no unexpected additional
+                                                       shared-slug page pair" bound of
+                                                       <= 2 is intact and still passes)
+  the two languages are different, published, paired  PROVEN (gate)
+  the exception is never broader than one slug        PROVEN (plugin test: 1 of 31
+                                                       `en-page` rows is shared)
+  an unknown stage declares nothing (fail closed)     PROVEN (plugin test)
+
+
+8. RESULTING DRY-RUN TARGET SLUG
+-------------------------------
+`en-page::newsletter` plans target slug = `newsletter`. NOT `newsletter-2`.
+See `04-summary-tables.txt`, section "slug collision resolution", and
+`02-dry-run-plan.json` -> `slug_collisions`.
+
+An important measurement is recorded here because it looks like a defect and is not:
+Polylang memoises a record's translated URL per request. In the same request that
+CREATES the PT<->EN pair, `get_permalink()` on the new EN record returns the PT URL.
+This was measured to be invisible to `wp_cache_flush()`, `clean_post_cache()` and the
+plugin's own `conexao_en_translation_blog_page_refresh_routing_cache()`. The production
+path never meets it (one request creates, the next serves), and the gate therefore reads
+the two URLs across a real request boundary, where they are `/newsletter/` and
+`/en/newsletter/` respectively. This is a property of the measurement, not of the route.
+
+
+9. URL BEHAVIOUR PRESERVED
+--------------------------
+  /newsletter/     -> the PT newsletter page. UNCHANGED: its record, slug, status and
+                      content are never written by the rollout.
+  /en/newsletter/  -> the EN newsletter page once the later rollout applies it, as a
+                      LINKED translation with a self-canonical of /en/newsletter/,
+                      correct hreflang in both directions and x-default -> PT.
+  /en/newsletter-2/-> never produced.
+The B2 fallback in `conexao_b2_page_allowlist()` was NOT changed, so no other page's
+behaviour moved.

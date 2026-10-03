@@ -1,0 +1,12 @@
+# Per-type ?lang= probe (GET only) 2026-09-29T20:14:08Z
+post_type          unfiltered lang=pt lang=en
+guide                      56      0      0
+event                    1808      0      0
+leisure                   289      0      0
+sponsor                    10      0      0
+job                         1      0      0
+course_provider            11      0      0
+
+--- controls ---
+posts                      37      0      0
+pages                      43     43     43

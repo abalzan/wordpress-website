@@ -1,0 +1,73 @@
+# Copyright (C) 2026 Conexao BR Irlanda
+# This file is distributed under the GNU General Public License v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Conexão BR Irlanda — Event Runtime 1.2.2\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/conexao-br-irlanda\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-10-02 10:21+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+
+
+#: wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php:147
+msgid "Cidades"
+msgstr ""
+#: wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php:148
+msgid "Cidade"
+msgstr ""
+#: wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php:267
+msgid "Status"
+msgstr ""
+#: wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php:268
+#: wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php:409
+msgid "Source"
+msgstr ""
+#: wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php:302
+msgid "Manual"
+msgstr ""
+#: wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php:321
+msgid "Todos os status"
+msgstr ""
+#: wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php:375
+msgid "Status do Evento"
+msgstr ""
+#: wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php:397
+msgid "Event status"
+msgstr ""
+#: wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php:415
+msgid "Set to \"Published\" to show this event on the public site."
+msgstr ""
+#: wp-content/plugins/conexao-event-runtime/includes/class-event-status.php:29
+msgid "Draft"
+msgstr ""
+#: wp-content/plugins/conexao-event-runtime/includes/class-event-status.php:30
+msgid "Published"
+msgstr ""
+#: wp-content/plugins/conexao-event-runtime/includes/class-event-status.php:31
+msgid "Source Not Found"
+msgstr ""
+#: wp-content/plugins/conexao-event-runtime/includes/class-event-status.php:32
+msgid "Expired"
+msgstr ""
+#: wp-content/plugins/conexao-event-runtime/includes/class-event-status.php:33
+msgid "Rejected"
+msgstr ""
+
+#. Name of the plugin
+#: wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php:1
+msgid "Conexão BR Irlanda — Event Runtime"
+msgstr ""
+
+#. Description of the plugin
+#: wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php:1
+msgid "Production event runtime. Registers event metadata and the Town/City taxonomy, owns the _event_status visibility gate for public event queries, and provides the event status admin UI. Contains no import/export tooling — see Conexão BR Irlanda Event Importer (local-only)."
+msgstr ""
+
+#. Version of the plugin
+#: wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php:1
+msgid "1.2.2"
+msgstr ""

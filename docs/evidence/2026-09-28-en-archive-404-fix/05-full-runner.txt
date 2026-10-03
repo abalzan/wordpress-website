@@ -1,0 +1,7 @@
+In-process PHP suites (serial, one process per suite)
+Script-contract suites (static, no WordPress, no network)
+HTTP acceptance suites (base: http://localhost:8080)
+In-process PHP suites: 60 total, 40 passed, 20 failed
+Assertions: 2917 passed, 102 failed
+Script-contract suites: 6 total, 6 passed, 0 failed
+HTTP acceptance suites: 3 total, 1 passed, 2 failed

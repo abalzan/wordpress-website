@@ -1,0 +1,20 @@
+=== The live-provider smoke test skips cleanly ===
+
+1. Default (no authorisation set):
+
+== LIVE provider smoke test (real external call) ==
+SKIPPED: not explicitly authorised (set CONEXAO_LIVE_PROVIDER_SMOKE=1 to allow a live external call)
+No provider call was made. No WordPress content was read or written.
+   exit=0
+
+2. Authorised, but no credential in the environment:
+
+== LIVE provider smoke test (real external call) ==
+SKIPPED: no provider credential in CONEXAO_TRANSLATION_PROVIDER_KEY
+No provider call was made. No WordPress content was read or written.
+
+Both SKIP with exit 0 and make NO provider call.
+
+The file is named live-provider-smoke.php, NOT test-*.php, so
+./scripts/run-tests.sh never discovers it:
+   matches in --list: 0

@@ -1,0 +1,365 @@
+## FUNCTIONS (265 unique)
+F|conexao_accent_insensitive_posts_orderby|($orderby,$query)|inc/search.php
+F|conexao_accent_insensitive_posts_search|($search,$query)|inc/search.php
+F|conexao_add_image_dimensions|($html)|inc/performance.php
+F|conexao_apply_accent_insensitive_search_collation|($sql)|inc/search.php
+F|conexao_archive_description|()|inc/seo/titles.php
+F|conexao_archive_title|()|inc/seo/titles.php
+F|conexao_asset_version|($relative_path)|inc/assets.php
+F|conexao_b2_archive_widen_query|($query)|inc/archive-query.php
+F|conexao_b2_fallback_notice|()|inc/i18n/fallback.php
+F|conexao_b2_page_allowlist|()|inc/i18n/fallback.php
+F|conexao_b2_post_types|()|inc/i18n/fallback.php
+F|conexao_b2_posts_page_is_en_request|()|inc/b2-fallback.php
+F|conexao_b2_posts_page_pre_query|($posts,$query)|inc/b2-fallback.php
+F|conexao_b2_search_query_clauses|($clauses,$query)|inc/b2-fallback.php
+F|conexao_b2_search_widen_query|($query)|inc/b2-fallback.php
+F|conexao_b2_translation_replaced_pt_ids|(array$post_types)|inc/i18n/fallback.php
+F|conexao_bind_section_object|($item,$section)|inc/navigation.php
+F|conexao_blog_category_filter_url|($category_slug)|inc/archive-filters.php
+F|conexao_body_classes|($classes)|inc/content.php
+F|conexao_change_admin_menu_label|()|inc/admin.php
+F|conexao_contact_dedupe_key|($url)|inc/sponsors.php
+F|conexao_contact_icon|($type)|inc/sponsors.php
+F|conexao_contact_label|($type,$url)|inc/sponsors.php
+F|conexao_content_archive_query|($query)|inc/archive-query.php
+F|conexao_correct_default_locale|($locale)|inc/i18n.php
+F|conexao_course_providers_shortcode|($atts)|inc/shortcodes.php
+F|conexao_cpt_label|($post_type)|inc/seo/schema.php
+F|conexao_current_language_slug|()|inc/i18n/locale.php
+F|conexao_current_locale|()|inc/i18n.php
+F|conexao_current_request_url|()|inc/i18n/urls.php
+F|conexao_custom_image_sizes|($sizes)|inc/setup.php
+F|conexao_customize_register|($wp_customize)|inc/customizer.php
+F|conexao_customizer_css|()|inc/customizer.php
+F|conexao_darken_color|($hex,$percent)|inc/customizer.php
+F|conexao_default_language_slug|()|inc/i18n/locale.php
+F|conexao_dequeue_block_library|()|inc/performance.php
+F|conexao_dequeue_gravatar_patterns|()|inc/performance.php
+F|conexao_disable_embeds|()|inc/performance.php
+F|conexao_disable_emoji|()|inc/performance.php
+F|conexao_disable_jetpack_sharing|()|inc/content.php
+F|conexao_editor_styles|()|inc/setup.php
+F|conexao_employment_opportunities|($resource_types=array()|inc/employment-opportunities.php
+F|conexao_employment_opportunities_filter_state|()|inc/employment-opportunities.php
+F|conexao_employment_opportunities_filtered|($area='',$location='',$contrato='',$tipo='')|inc/employment-opportunities.php
+F|conexao_employment_opportunity_from_agency|($agency)|inc/employment-opportunities.php
+F|conexao_employment_opportunity_from_permit_employer|($employer)|inc/employment-opportunities.php
+F|conexao_employment_opportunity_from_public_sector_job|($job)|inc/employment-opportunities.php
+F|conexao_employment_opportunity_matches_filters|($opportunity,$area,$location,$contrato,$tipo='')|inc/employment-opportunities.php
+F|conexao_employment_opportunity_types|()|inc/employment-opportunities.php
+F|conexao_empregos_add_meta_box|()|inc/empregos-landing.php
+F|conexao_empregos_current_jobs|(int$limit=12)|inc/empregos-landing.php
+F|conexao_empregos_featured_image_hint|($content,$post_id)|inc/empregos-landing.php
+F|conexao_empregos_flush_jobs_cache|($post_id)|inc/empregos-landing.php
+F|conexao_empregos_landing_template|($template)|inc/empregos-landing.php
+F|conexao_empregos_link|($post_id=0)|inc/empregos-landing.php
+F|conexao_empregos_meta_box_cb|($post)|inc/empregos-landing.php
+F|conexao_empregos_page_url|()|inc/empregos-landing.php
+F|conexao_empregos_save_meta|($post_id)|inc/empregos-landing.php
+F|conexao_english_date_format|()|inc/i18n.php
+F|conexao_enqueue_scripts|()|inc/assets.php
+F|conexao_event_display_date|($event_id)|inc/events.php
+F|conexao_event_filter_url|(array$filters,$base='')|inc/queries.php
+F|conexao_event_is_recurring|($event_id)|inc/events.php
+F|conexao_event_link_target_attrs|($event_id)|inc/navigation.php
+F|conexao_event_recurrence_end|($event_id)|inc/events.php
+F|conexao_event_recurrence_label|($event_id)|inc/events.php
+F|conexao_event_upcoming_ids|()|inc/events.php
+F|conexao_excerpt_length|($length)|inc/content.php
+F|conexao_excerpt_more|($more)|inc/content.php
+F|conexao_find_term_across_languages|(string$slug,string$taxonomy)|inc/i18n/terms.php
+F|conexao_fix_nav_active_states|($items)|inc/navigation.php
+F|conexao_flush_language_cache|($key)|inc/i18n/urls.php
+F|conexao_flush_language_object_cache|($key,$group)|inc/i18n/urls.php
+F|conexao_fonts_non_blocking|($tag,$handle)|inc/assets.php
+F|conexao_fonts_preconnect|()|inc/assets.php
+F|conexao_get_current_path|()|inc/navigation.php
+F|conexao_get_event_towns|($county_slug='')|inc/queries.php
+F|conexao_get_featured_sponsors|()|inc/sponsors.php
+F|conexao_get_guide_category_url|($identifier,$fallback_slug='')|inc/queries.php
+F|conexao_get_guides_archive_url|()|inc/queries.php
+F|conexao_get_item_section_key|($item)|inc/navigation.php
+F|conexao_get_provider_categories|()|inc/queries.php
+F|conexao_get_terms_for_post_type|($taxonomy,$post_type,$extra_args=array()|inc/queries.php
+F|conexao_guide_category_filter_term_id|($slug)|inc/queries.php
+F|conexao_hero_fetchpriority|($html,$post_id)|inc/performance.php
+F|conexao_hero_preload|()|inc/assets.php
+F|conexao_homepage_cache_invalidate|($post_id)|inc/cache.php
+F|conexao_homepage_query|($args,$cache_key,$expiration=300)|inc/cache.php
+F|conexao_hreflang_code|(string$slug)|inc/i18n/hreflang.php
+F|conexao_hreflang_links|()|inc/i18n/hreflang.php
+F|conexao_hreflang_with_default|(array$links,string$default)|inc/i18n/hreflang.php
+F|conexao_image_sizes|()|inc/setup.php
+F|conexao_is_b2_page|($post_id)|inc/i18n/fallback.php
+F|conexao_is_b2_post_type|($post_type)|inc/i18n/fallback.php
+F|conexao_is_countable_view|()|inc/post-views.php
+F|conexao_is_empregos_landing|($post=null)|inc/empregos-landing.php
+F|conexao_is_external_event_url|($event_id)|inc/navigation.php
+F|conexao_is_language_fallback|()|inc/i18n/fallback.php
+F|conexao_is_main_search|($query)|inc/search.php
+F|conexao_job_featured_image_hint|($content,$post_id)|inc/admin.php
+F|conexao_job_resource_admin_row|($resource)|inc/job-resources.php
+F|conexao_job_resource_defaults|()|inc/job-resources.php
+F|conexao_job_resource_image|($resource)|inc/job-resources.php
+F|conexao_job_resources|()|inc/job-resources.php
+F|conexao_job_resources_admin_assets|($hook)|inc/job-resources.php
+F|conexao_job_resources_admin_menu|()|inc/job-resources.php
+F|conexao_job_resources_admin_page|()|inc/job-resources.php
+F|conexao_job_resources_admin_save|()|inc/job-resources.php
+F|conexao_job_resources_admin_template_row|()|inc/job-resources.php
+F|conexao_job_resources_sanitize|($raw)|inc/job-resources.php
+F|conexao_js_i18n_strings|()|inc/i18n.php
+F|conexao_lang_cache_key|($key)|inc/i18n/urls.php
+F|conexao_lang_term|($term,string$post_type='')|inc/i18n/terms.php
+F|conexao_lang_url|(string$path)|inc/i18n/urls.php
+F|conexao_lang_url_archive_post_type|(string$path)|inc/i18n/urls.php
+F|conexao_lang_url_object|(string$path)|inc/i18n/urls.php
+F|conexao_language_archive_url|(string$post_type,string$target_slug)|inc/i18n/urls.php
+F|conexao_language_has_post_type_content|(string$post_type,string$slug)|inc/i18n/terms.php
+F|conexao_language_locale|(string$slug='')|inc/i18n/locale.php
+F|conexao_language_suffix|()|inc/i18n/locale.php
+F|conexao_language_switch_url|(string$target_slug)|inc/i18n/urls.php
+F|conexao_language_switcher|($args=array()|inc/i18n/switcher.php
+F|conexao_language_switcher_data|()|inc/i18n/switcher.php
+F|conexao_latest_blog_posts|($limit=3)|inc/queries.php
+F|conexao_lazy_content_images|($content)|inc/performance.php
+F|conexao_leisure_attributes|($post_id=0)|inc/leisure.php
+F|conexao_leisure_authoritative_links|($post_id=0)|inc/leisure.php
+F|conexao_leisure_card_excerpt|($leisure_id=0)|inc/i18n/fallback.php
+F|conexao_leisure_category_filter_url|($category_slug)|inc/archive-filters.php
+F|conexao_leisure_county_filter_url|($county_slug)|inc/archive-filters.php
+F|conexao_leisure_external_url|($post_id=0)|inc/seo/redirects.php
+F|conexao_leisure_filter_url|(array$filters,$base='')|inc/archive-filters.php
+F|conexao_leisure_hero_image|($leisure_id,$alt='')|inc/leisure.php
+F|conexao_leisure_map_url|($post_id=0)|inc/leisure.php
+F|conexao_leisure_multi_slugs|($raw)|inc/archive-filters.php
+F|conexao_leisure_normalize_environment_attributes|($attr_names)|inc/leisure.php
+F|conexao_leisure_query_slugs|($param)|inc/archive-filters.php
+F|conexao_leisure_redirect|()|inc/seo/redirects.php
+F|conexao_leisure_related_events|($leisure_id)|inc/leisure.php
+F|conexao_leisure_related_internal_destinations|($leisure_id)|inc/leisure.php
+F|conexao_localize_post_date|($the_date,$format,$post=null)|inc/i18n.php
+F|conexao_localized_date_format|($format)|inc/i18n.php
+F|conexao_localized_date_format_english|($format,$language)|inc/i18n.php
+F|conexao_mark_posts_page_query|($query)|inc/i18n/urls.php
+F|conexao_maybe_count_view|()|inc/post-views.php
+F|conexao_modify_primary_nav_items|($items,$args)|inc/navigation.php
+F|conexao_nav_menu_args|($args)|inc/navigation.php
+F|conexao_nav_menu_css_class|($classes,$item,$args)|inc/navigation.php
+F|conexao_nav_menu_link_attributes|($atts,$item,$args)|inc/navigation.php
+F|conexao_normalize_primary_nav_sections|($items,$args)|inc/navigation.php
+F|conexao_object_translation_links|(int$object_id,string$type='post')|inc/i18n/fallback.php
+F|conexao_og_locale|()|inc/i18n.php
+F|conexao_override_guides_menu_links|($items,$args)|inc/navigation.php
+F|conexao_permit_employer_label_display|(array$registry,array$labels,$stored)|inc/permit-employers.php
+F|conexao_permit_employer_label_key|($value)|inc/permit-employers.php
+F|conexao_permit_employer_meta|($employer,$key)|inc/permit-employers.php
+F|conexao_permit_employer_role_keys|()|inc/permit-employers.php
+F|conexao_permit_employer_roles|($employer)|inc/permit-employers.php
+F|conexao_permit_employer_roles_display|($employer)|inc/permit-employers.php
+F|conexao_permit_employer_sector_display|($employer)|inc/permit-employers.php
+F|conexao_permit_employer_sector_keys|()|inc/permit-employers.php
+F|conexao_permit_employer_status|($employer)|inc/permit-employers.php
+F|conexao_permit_employers|()|inc/permit-employers.php
+F|conexao_pingback_header|()|inc/ui.php
+F|conexao_polylang_active|()|inc/i18n/guard.php
+F|conexao_polylang_b2_shell_locale|($locale)|inc/i18n/locale.php
+F|conexao_polylang_canonical_url|($canonical)|inc/i18n/hreflang.php
+F|conexao_polylang_current_locale|($locale)|inc/i18n/locale.php
+F|conexao_polylang_language_home_data|($additional_data,$language)|inc/i18n/fallback.php
+F|conexao_polylang_language_home_ensure|()|inc/i18n/fallback.php
+F|conexao_polylang_language_home_serves_front_page|($redirect_url,$requested_url)|inc/i18n/fallback.php
+F|conexao_polylang_language_home_url|($url,$language)|inc/i18n/fallback.php
+F|conexao_polylang_language_redirect_is_temporary|($redirect_url,$language=null)|inc/i18n/fallback.php
+F|conexao_polylang_translated_post_types|($post_types,$is_settings=false)|inc/i18n/guard.php
+F|conexao_polylang_translated_taxonomies|($taxonomies,$is_settings=false)|inc/i18n/guard.php
+F|conexao_popular_posts|($limit=5)|inc/queries.php
+F|conexao_post_meta|()|inc/content.php
+F|conexao_posts_page_url|(string$target_slug)|inc/i18n/urls.php
+F|conexao_primary_nav_archive_url|($post_type,$fallback_slug)|inc/navigation.php
+F|conexao_primary_nav_sections|()|inc/navigation.php
+F|conexao_public_sector_jobs|()|inc/employment-opportunities.php
+F|conexao_reading_time|()|inc/content.php
+F|conexao_reading_time_text|()|inc/content.php
+F|conexao_record_view|($post_id)|inc/post-views.php
+F|conexao_recruitment_agencies|()|inc/recruitment-agencies.php
+F|conexao_recruitment_agency_area_keys|($agency)|inc/recruitment-agencies.php
+F|conexao_recruitment_agency_areas|()|inc/recruitment-agencies.php
+F|conexao_recruitment_agency_filter_state|($agencies)|inc/recruitment-agencies.php
+F|conexao_recruitment_agency_job_type_labels|($raw)|inc/recruitment-agencies.php
+F|conexao_recruitment_agency_location_display|($raw)|inc/recruitment-agencies.php
+F|conexao_recruitment_agency_location_slugs|($raw)|inc/recruitment-agencies.php
+F|conexao_recruitment_agency_locations|()|inc/recruitment-agencies.php
+F|conexao_recruitment_agency_matches_filters|($agency,$area,$location,$contrato)|inc/recruitment-agencies.php
+F|conexao_recruitment_agency_meta|($agency,$key)|inc/recruitment-agencies.php
+F|conexao_recruitment_agency_normalize_location|($segment)|inc/recruitment-agencies.php
+F|conexao_recruitment_agency_tel_uri|($phone)|inc/recruitment-agencies.php
+F|conexao_recurrence_list_join|(array$items)|inc/events.php
+F|conexao_recurrence_present_days|(array$iso_days)|inc/events.php
+F|conexao_recurrence_weekday_name|($iso_day)|inc/events.php
+F|conexao_register_empregos_meta|()|inc/empregos-landing.php
+F|conexao_relabel_posts_to_blog|()|inc/admin.php
+F|conexao_related_posts|()|inc/queries.php
+F|conexao_requested_language_slug|()|inc/i18n/locale.php
+F|conexao_requested_object_language|()|inc/i18n/fallback.php
+F|conexao_resolve_posts_page_request|($query_vars)|inc/i18n/urls.php
+F|conexao_rest_api_optimize|()|inc/performance.php
+F|conexao_rest_language_collection_params|($params)|inc/rest-language.php
+F|conexao_rest_language_detail_gate|($response,$handler,$request)|inc/rest-language.php
+F|conexao_rest_language_filter_posts_query|($args,$request)|inc/rest-language.php
+F|conexao_rest_language_filter_search_query|($query_args,$request)|inc/rest-language.php
+F|conexao_rest_language_merge_tax_query|($existing,array$clause)|inc/rest-language.php
+F|conexao_rest_language_post_payload|(int$post_id,string$requested_lang)|inc/rest-language.php
+F|conexao_rest_language_post_type_rest_base|(string$post_type)|inc/rest-language.php
+F|conexao_rest_language_post_types|()|inc/rest-language.php
+F|conexao_rest_language_register_fields|()|inc/rest-language.php
+F|conexao_rest_language_register_query_filters|()|inc/rest-language.php
+F|conexao_rest_language_route_supported|(string$route)|inc/rest-language.php
+F|conexao_rest_language_shared_taxonomies|()|inc/rest-language.php
+F|conexao_rest_language_tax_clause|(array$langs)|inc/rest-language.php
+F|conexao_rest_language_taxonomy_rest_base|(string$taxonomy)|inc/rest-language.php
+F|conexao_rest_language_term_payload|(int$term_id)|inc/rest-language.php
+F|conexao_rest_language_translated_taxonomies|()|inc/rest-language.php
+F|conexao_rest_language_unavailable_error|(int$post_id,string$record_lang,string$requested_lang)|inc/rest-language.php
+F|conexao_rest_language_validate_request|($response,$handler,$request)|inc/rest-language.php
+F|conexao_rest_requested_lang|(WP_REST_Request$request)|inc/rest-language.php
+F|conexao_rest_supported_languages|()|inc/rest-language.php
+F|conexao_restore_b2_shell_language|()|inc/i18n/fallback.php
+F|conexao_safe_nav_menu_fallback|($args=array()|inc/navigation.php
+F|conexao_search_collation|()|inc/search.php
+F|conexao_seo_breadcrumb_data|()|inc/seo/schema.php
+F|conexao_seo_breadcrumbs|()|inc/seo/schema.php
+F|conexao_seo_canonical|()|inc/seo/canonical.php
+F|conexao_seo_disable_core_sitemap|()|inc/seo/sitemap.php
+F|conexao_seo_disable_jetpack_og_on_b2|($enabled)|inc/seo/open-graph.php
+F|conexao_seo_hreflang|()|inc/seo/open-graph.php
+F|conexao_seo_image_alt|($html,$post_id)|inc/seo/meta.php
+F|conexao_seo_in_language|()|inc/seo/meta.php
+F|conexao_seo_meta_description|()|inc/seo/meta.php
+F|conexao_seo_missing_translation_redirect|()|inc/seo/redirects.php
+F|conexao_seo_noindex|()|inc/seo/meta.php
+F|conexao_seo_og_meta|()|inc/seo/open-graph.php
+F|conexao_seo_redirects|()|inc/seo/redirects.php
+F|conexao_seo_related_events|($post_id=0,$limit=3)|inc/seo/related.php
+F|conexao_seo_related_guides|($post_id=0,$limit=3)|inc/seo/related.php
+F|conexao_seo_related_sponsors|($post_id=0,$limit=3)|inc/seo/related.php
+F|conexao_seo_robots_txt|($output,$public)|inc/seo/robots.php
+F|conexao_seo_schema|()|inc/seo/schema.php
+F|conexao_seo_schema_singular|()|inc/seo/schema.php
+F|conexao_seo_sitemap|()|inc/seo/sitemap.php
+F|conexao_seo_sitemap_url|($url,$priority,$freq,array$alternates=array()|inc/seo/sitemap.php
+F|conexao_seo_title|($title)|inc/seo/titles.php
+F|conexao_share_buttons|()|inc/content.php
+F|conexao_should_render_b2_fallback|($post_id=null)|inc/i18n/fallback.php
+F|conexao_skip_link|()|inc/ui.php
+F|conexao_sponsor_archive_ordered_ids|()|inc/sponsors.php
+F|conexao_sponsor_carousel_image|($sponsor_id,$sponsor_title='',$eager=false)|inc/sponsors.php
+F|conexao_sponsor_contact_rows|($post_id)|inc/sponsors.php
+F|conexao_sponsor_image_id|($sponsor_id)|inc/sponsors.php
+F|conexao_submenu_class|($classes)|inc/navigation.php
+F|conexao_switch_language_in_current_url|(string$target_slug)|inc/i18n/urls.php
+F|conexao_term_has_language_content|(int$term_id,string$taxonomy,string$post_type,string$language)|inc/i18n/terms.php
+F|conexao_theme_setup|()|inc/setup.php
+F|conexao_view_count_post_types|()|inc/post-views.php
+F|conexao_whatsapp_button|()|inc/ui.php
+F|conexao_widgets_init|()|inc/setup.php
+
+## HOOKS (95)
+H|add_action|add_meta_boxes|'conexao_empregos_add_meta_box'
+H|add_action|admin_enqueue_scripts|'conexao_job_resources_admin_assets'
+H|add_action|admin_menu|'conexao_change_admin_menu_label', 5
+H|add_action|admin_menu|'conexao_job_resources_admin_menu'
+H|add_action|admin_post_conexao_job_resources_save|'conexao_job_resources_admin_save'
+H|add_action|after_setup_theme|'conexao_editor_styles'
+H|add_action|after_setup_theme|'conexao_image_sizes'
+H|add_action|after_setup_theme|'conexao_theme_setup'
+H|add_action|customize_register|'conexao_customize_register'
+H|add_action|delete_post|'conexao_empregos_flush_jobs_cache'
+H|add_action|delete_post|'conexao_homepage_cache_invalidate'
+H|add_action|init|'conexao_disable_emoji'
+H|add_action|init|'conexao_disable_jetpack_sharing', 20
+H|add_action|init|'conexao_register_empregos_meta'
+H|add_action|init|'conexao_relabel_posts_to_blog', 10
+H|add_action|init|'conexao_rest_api_optimize'
+H|add_action|pre_get_posts|'conexao_b2_archive_widen_query', 30
+H|add_action|pre_get_posts|'conexao_b2_search_widen_query', 31
+H|add_action|pre_get_posts|'conexao_content_archive_query', 20
+H|add_action|pre_get_posts|'conexao_mark_posts_page_query', 1
+H|add_action|rest_api_init|'conexao_rest_language_register_fields'
+H|add_action|rest_api_init|'conexao_rest_language_register_query_filters', 5
+H|add_action|save_post|'conexao_homepage_cache_invalidate'
+H|add_action|save_post_job|'conexao_empregos_flush_jobs_cache'
+H|add_action|save_post_page|'conexao_empregos_save_meta'
+H|add_action|template_redirect|'conexao_leisure_redirect', 6
+H|add_action|template_redirect|'conexao_requested_language_slug', 0
+H|add_action|template_redirect|'conexao_restore_b2_shell_language', 5
+H|add_action|template_redirect|'conexao_seo_missing_translation_redirect', 6
+H|add_action|template_redirect|'conexao_seo_redirects', 2
+H|add_action|template_redirect|'conexao_seo_sitemap', 0
+H|add_action|widgets_init|'conexao_widgets_init'
+H|add_action|wp|'conexao_maybe_count_view', 20
+H|add_action|wp|'conexao_requested_language_slug', 0
+H|add_action|wp_body_open|'conexao_skip_link'
+H|add_action|wp_enqueue_scripts|'conexao_dequeue_block_library', 100
+H|add_action|wp_enqueue_scripts|'conexao_dequeue_gravatar_patterns', 100
+H|add_action|wp_enqueue_scripts|'conexao_enqueue_scripts'
+H|add_action|wp_footer|'conexao_disable_embeds'
+H|add_action|wp_footer|'conexao_whatsapp_button'
+H|add_action|wp_head|'conexao_customizer_css'
+H|add_action|wp_head|'conexao_fonts_preconnect', 2
+H|add_action|wp_head|'conexao_pingback_header'
+H|add_action|wp_head|'conexao_seo_canonical', 5
+H|add_action|wp_head|'conexao_seo_hreflang', 5
+H|add_action|wp_head|'conexao_seo_meta_description', 5
+H|add_action|wp_head|'conexao_seo_noindex', 3
+H|add_action|wp_head|'conexao_seo_og_meta', 5
+H|add_action|wp_head|'conexao_seo_schema', 10
+H|add_action|wp_insert_post|'conexao_homepage_cache_invalidate'
+H|add_filter|admin_post_thumbnail_html|'conexao_empregos_featured_image_hint', 11, 2
+H|add_filter|admin_post_thumbnail_html|'conexao_job_featured_image_hint', 10, 2
+H|add_filter|body_class|'conexao_body_classes'
+H|add_filter|conexao_current_locale|'conexao_polylang_current_locale', 10
+H|add_filter|conexao_localized_date_format|'conexao_localized_date_format_english', 10, 2
+H|add_filter|conexao_seo_canonical_url|'conexao_polylang_canonical_url', 10
+H|add_filter|excerpt_length|'conexao_excerpt_length'
+H|add_filter|excerpt_more|'conexao_excerpt_more'
+H|add_filter|get_the_date|'conexao_localize_post_date', 10, 3
+H|add_filter|image_size_names_choose|'conexao_custom_image_sizes'
+H|add_filter|jetpack_enable_open_graph|'conexao_seo_disable_jetpack_og_on_b2', 10, 1
+H|add_filter|locale|'conexao_correct_default_locale', 5
+H|add_filter|locale|'conexao_polylang_b2_shell_locale', 99
+H|add_filter|nav_menu_css_class|'conexao_nav_menu_css_class', 10, 3
+H|add_filter|nav_menu_link_attributes|'conexao_nav_menu_link_attributes', 10, 3
+H|add_filter|nav_menu_submenu_css_class|'conexao_submenu_class'
+H|add_filter|option_date_format|'conexao_localized_date_format'
+H|add_filter|pll_additional_language_data|'conexao_polylang_language_home_data', 20, 2
+H|add_filter|pll_check_canonical_url|'conexao_polylang_language_redirect_is_temporary', 20, 2
+H|add_filter|pll_get_post_types|'conexao_polylang_translated_post_types', 10, 2
+H|add_filter|pll_get_taxonomies|'conexao_polylang_translated_taxonomies', 10, 2
+H|add_filter|pll_language_home_url|'conexao_polylang_language_home_url', 20, 2
+H|add_filter|post_thumbnail_html|'conexao_hero_fetchpriority', 10, 2
+H|add_filter|post_thumbnail_html|'conexao_seo_image_alt', 10, 2
+H|add_filter|posts_clauses|'conexao_b2_search_query_clauses', 35, 2
+H|add_filter|posts_pre_query|'conexao_b2_posts_page_pre_query', 10, 2
+H|add_filter|posts_search|'conexao_accent_insensitive_posts_search', 10, 2
+H|add_filter|posts_search_orderby|'conexao_accent_insensitive_posts_orderby', 10, 2
+H|add_filter|pre_get_document_title|'conexao_seo_title', 20
+H|add_filter|redirect_canonical|'conexao_polylang_language_home_serves_front_page', 20, 2
+H|add_filter|request|'conexao_resolve_posts_page_request', 20
+H|add_filter|rest_post_search_query|'conexao_rest_language_filter_search_query', 10, 2
+H|add_filter|rest_request_before_callbacks|'conexao_rest_language_detail_gate', 10, 3
+H|add_filter|rest_request_before_callbacks|'conexao_rest_language_validate_request', 5, 3
+H|add_filter|robots_txt|'conexao_seo_robots_txt', 10, 2
+H|add_filter|style_loader_tag|'conexao_fonts_non_blocking', 10, 2
+H|add_filter|template_include|'conexao_empregos_landing_template', 20
+H|add_filter|the_content|'conexao_add_image_dimensions', 20
+H|add_filter|the_content|'conexao_lazy_content_images', 20
+H|add_filter|wp_nav_menu_args|'conexao_nav_menu_args'
+H|add_filter|wp_nav_menu_objects|'conexao_modify_primary_nav_items', 20, 2
+H|add_filter|wp_nav_menu_objects|'conexao_normalize_primary_nav_sections', 25, 2
+H|add_filter|wp_nav_menu_objects|'conexao_override_guides_menu_links', 10, 2
+H|add_filter|wp_sitemaps_enabled|'conexao_seo_disable_core_sitemap'
+H|remove_action|wp_head|'rel_canonical'
+
+## DUPLICATE DEFINITIONS (0)

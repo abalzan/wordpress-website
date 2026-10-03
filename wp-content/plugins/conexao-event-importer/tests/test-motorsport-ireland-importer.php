@@ -10,32 +10,14 @@
  * @package Conexao_Event_Importer
  */
 
-$wp_load = dirname( dirname( dirname( dirname( __DIR__ ) ) ) ) . '/wp-load.php';
-if ( file_exists( $wp_load ) ) {
-	require_once $wp_load;
-} else {
-	require_once '/var/www/html/wp-load.php';
-}
+
+// Shared Stage E test bootstrap: the only place allowed to locate wp-load.php.
+require_once dirname( __DIR__, 4 ) . '/tests/bootstrap.php';
 
 require_once WP_PLUGIN_DIR . '/conexao-event-importer/conexao-event-importer.php';
 
 $passed = 0;
 $failed = 0;
-
-function test_assert( $condition, $message ) {
-	global $passed, $failed;
-	if ( $condition ) {
-		$passed++;
-		echo "  PASS: {$message}\n";
-	} else {
-		$failed++;
-		echo "  FAIL: {$message}\n";
-	}
-}
-
-function test_section( $title ) {
-	echo "\n=== {$title} ===\n";
-}
 
 /**
  * Build a deterministic listing-card fixture.
@@ -102,61 +84,60 @@ function mi_parse_one( $card_html ) {
 	return Conexao_Source_Motorsport_Ireland::parse_listing_card( $cards->item( 0 ), $xp, 'https://www.motorsportireland.com/events' );
 }
 
-echo "Running Motorsport Ireland importer tests...\n";
 
 // 1. Hex UID extraction.
 test_section( '1: hex UID extraction' );
 $e = mi_parse_one( mi_card_fixture() );
-test_assert( '6989d37d36d357787c3539f4' === $e['source_id'], 'hex UID extracted from id="item-{hex}" (' . $e['source_id'] . ')' );
-test_assert( 'ALMC Grass Surface Autocross' === $e['title'], 'title extracted' );
-test_assert( false !== strpos( $e['url'], '/events/' ), 'canonical URL extracted' );
+assert_true( '6989d37d36d357787c3539f4' === $e['source_id'], 'hex UID extracted from id="item-{hex}" (' . $e['source_id'] . ')' );
+assert_true( 'ALMC Grass Surface Autocross' === $e['title'], 'title extracted' );
+assert_true( false !== strpos( $e['url'], '/events/' ), 'canonical URL extracted' );
 
 // 2. Club + category extraction.
 test_section( '2: club and category extraction' );
 $e = mi_parse_one( mi_card_fixture() );
-test_assert( 'ALMC' === $e['organizer'], 'first category link = club/organizer (' . $e['organizer'] . ')' );
-test_assert( 'Autocross' === $e['category'], 'second category link = event type (' . $e['category'] . ')' );
+assert_true( 'ALMC' === $e['organizer'], 'first category link = club/organizer (' . $e['organizer'] . ')' );
+assert_true( 'Autocross' === $e['category'], 'second category link = event type (' . $e['category'] . ')' );
 
 // 3. HTML datetime fallback.
 test_section( '3: HTML datetime fallback' );
 $e = mi_parse_one( mi_card_fixture() );
-test_assert( '2026-09-13' === $e['start_date'], 'HTML datetime fallback start date (' . $e['start_date'] . ')' );
-test_assert( '13:00' === $e['start_time'], 'HTML datetime fallback start time (' . $e['start_time'] . ')' );
+assert_true( '2026-09-13' === $e['start_date'], 'HTML datetime fallback start date (' . $e['start_date'] . ')' );
+assert_true( '13:00' === $e['start_time'], 'HTML datetime fallback start time (' . $e['start_time'] . ')' );
 
 // 4. Multi-day detection.
 test_section( '4: multi-day detection' );
 $e = mi_parse_one( mi_card_fixture( array( 'multiday' => true ) ) );
-test_assert( true === $e['_is_multiday'], 'multi-day modifier detected' );
+assert_true( true === $e['_is_multiday'], 'multi-day modifier detected' );
 
 // 5. Cancellation detection.
 test_section( '5: cancellation detection' );
 $e = mi_parse_one( mi_card_fixture( array( 'title' => 'Some Event (CANCELLED)' ) ) );
-test_assert( true === $e['_skip'], 'cancelled event flagged for skip' );
-test_assert( false === stripos( $e['_skip_reason'], 'ancelled' ) || true === $e['_skip'], 'skip reason set' );
+assert_true( true === $e['_skip'], 'cancelled event flagged for skip' );
+assert_true( false === stripos( $e['_skip_reason'], 'ancelled' ) || true === $e['_skip'], 'skip reason set' );
 
 // 6. Rescheduling detection.
 test_section( '6: rescheduling detection' );
 $e = mi_parse_one( mi_card_fixture( array( 'title' => 'Some Event (Rescheduled)' ) ) );
-test_assert( 'Some Event' === $e['title'], 'rescheduled suffix stripped from title' );
-test_assert( true === $e['_rescheduled'], 'rescheduled flag set' );
+assert_true( 'Some Event' === $e['title'], 'rescheduled suffix stripped from title' );
+assert_true( true === $e['_rescheduled'], 'rescheduled flag set' );
 
 // 7. eventlist-description parsing.
 test_section( '7: description from listing card' );
 $e = mi_parse_one( mi_card_fixture( array( 'description' => 'Rescheduled from March.' ) ) );
-test_assert( 'Rescheduled from March.' === $e['description'], 'description extracted from eventlist-description' );
+assert_true( 'Rescheduled from March.' === $e['description'], 'description extracted from eventlist-description' );
 
 // 8. JSON-LD date parsing (IST-aware).
 test_section( '8: JSON-LD IST date parsing' );
 $jsonld = Conexao_Source_Motorsport_Ireland::parse_jsonld_dates( mi_detail_fixture() );
-test_assert( '2026-09-13' === $jsonld['start_date'], 'JSON-LD start date (' . $jsonld['start_date'] . ')' );
-test_assert( '13:00' === $jsonld['start_time'], 'JSON-LD start time preserved as wall-clock (' . $jsonld['start_time'] . ')' );
-test_assert( '2026-09-13' === $jsonld['end_date'], 'JSON-LD end date (' . $jsonld['end_date'] . ')' );
-test_assert( '17:00' === $jsonld['end_time'], 'JSON-LD end time preserved as wall-clock (' . $jsonld['end_time'] . ')' );
+assert_true( '2026-09-13' === $jsonld['start_date'], 'JSON-LD start date (' . $jsonld['start_date'] . ')' );
+assert_true( '13:00' === $jsonld['start_time'], 'JSON-LD start time preserved as wall-clock (' . $jsonld['start_time'] . ')' );
+assert_true( '2026-09-13' === $jsonld['end_date'], 'JSON-LD end date (' . $jsonld['end_date'] . ')' );
+assert_true( '17:00' === $jsonld['end_time'], 'JSON-LD end time preserved as wall-clock (' . $jsonld['end_time'] . ')' );
 
 // 9. IST offset NOT reinterpreted as UTC.
 test_section( '9: IST offset preserved (not UTC)' );
 $jsonld = Conexao_Source_Motorsport_Ireland::parse_jsonld_dates( mi_detail_fixture( array( 'start' => '2026-09-13T13:00:00+0100' ) ) );
-test_assert( '13:00' === $jsonld['start_time'], '13:00 IST stays 13:00 (not converted to 12:00 UTC)' );
+assert_true( '13:00' === $jsonld['start_time'], '13:00 IST stays 13:00 (not converted to 12:00 UTC)' );
 
 // 10. Multi-day JSON-LD.
 test_section( '10: multi-day JSON-LD' );
@@ -164,66 +145,66 @@ $jsonld = Conexao_Source_Motorsport_Ireland::parse_jsonld_dates( mi_detail_fixtu
 	'start' => '2026-09-13T09:00:00+0100',
 	'end'   => '2026-09-15T18:00:00+0100',
 ) ) );
-test_assert( '2026-09-13' === $jsonld['start_date'], 'multi-day start (' . $jsonld['start_date'] . ')' );
-test_assert( '2026-09-15' === $jsonld['end_date'], 'multi-day end (' . $jsonld['end_date'] . ')' );
+assert_true( '2026-09-13' === $jsonld['start_date'], 'multi-day start (' . $jsonld['start_date'] . ')' );
+assert_true( '2026-09-15' === $jsonld['end_date'], 'multi-day end (' . $jsonld['end_date'] . ')' );
 
 // 11. Missing end date.
 test_section( '11: missing end date' );
 $jsonld = Conexao_Source_Motorsport_Ireland::parse_jsonld_dates( mi_detail_fixture( array( 'end' => '' ) ) );
-test_assert( '2026-09-13' === $jsonld['start_date'], 'start date present (' . $jsonld['start_date'] . ')' );
-test_assert( '' === $jsonld['end_date'], 'missing end date stays empty' );
+assert_true( '2026-09-13' === $jsonld['start_date'], 'start date present (' . $jsonld['start_date'] . ')' );
+assert_true( '' === $jsonld['end_date'], 'missing end date stays empty' );
 
 // 12. Malformed JSON-LD date.
 test_section( '12: malformed JSON-LD date' );
 $jsonld = Conexao_Source_Motorsport_Ireland::parse_jsonld_dates( mi_detail_fixture( array( 'start' => 'not-a-date' ) ) );
-test_assert( '' === $jsonld['start_date'], 'malformed date yields empty (not invented)' );
+assert_true( '' === $jsonld['start_date'], 'malformed date yields empty (not invented)' );
 
 // 13. Invalid/missing hex UID rejected.
 test_section( '13: missing hex UID rejected' );
 $bad = "<article id=\"item-invalid\" class=\"eventlist-event eventlist-event--upcoming\"><div class=\"eventlist-title\"><a href=\"/events/x\">No UID</a></div></article>";
 $e = mi_parse_one( $bad );
-test_assert( '' === $e['source_id'], 'non-hex UID not accepted as source_id' );
+assert_true( '' === $e['source_id'], 'non-hex UID not accepted as source_id' );
 
 // 14. parse_ist_iso_datetime edge cases.
 test_section( '14: IST datetime edge cases' );
 $r = Conexao_Source_Motorsport_Ireland::parse_ist_iso_datetime( '2026-09-13T13:00:00+0100' );
-test_assert( '2026-09-13' === $r['date'] && '13:00' === $r['time'], '+0100 offset format' );
+assert_true( '2026-09-13' === $r['date'] && '13:00' === $r['time'], '+0100 offset format' );
 $r = Conexao_Source_Motorsport_Ireland::parse_ist_iso_datetime( '2026-09-13T13:00:00+01:00' );
-test_assert( '2026-09-13' === $r['date'] && '13:00' === $r['time'], '+01:00 offset format' );
+assert_true( '2026-09-13' === $r['date'] && '13:00' === $r['time'], '+01:00 offset format' );
 $r = Conexao_Source_Motorsport_Ireland::parse_ist_iso_datetime( '2026-09-13T13:00:00Z' );
-test_assert( '2026-09-13' === $r['date'] && '13:00' === $r['time'], 'Z (UTC) offset format' );
+assert_true( '2026-09-13' === $r['date'] && '13:00' === $r['time'], 'Z (UTC) offset format' );
 $r = Conexao_Source_Motorsport_Ireland::parse_ist_iso_datetime( '2026-09-13' );
-test_assert( '2026-09-13' === $r['date'] && '' === $r['time'], 'date-only (no time)' );
+assert_true( '2026-09-13' === $r['date'] && '' === $r['time'], 'date-only (no time)' );
 $r = Conexao_Source_Motorsport_Ireland::parse_ist_iso_datetime( '' );
-test_assert( '' === $r['date'] && '' === $r['time'], 'empty string yields empty' );
+assert_true( '' === $r['date'] && '' === $r['time'], 'empty string yields empty' );
 $r = Conexao_Source_Motorsport_Ireland::parse_ist_iso_datetime( 'garbage' );
-test_assert( '' === $r['date'] && '' === $r['time'], 'garbage string yields empty' );
+assert_true( '' === $r['date'] && '' === $r['time'], 'garbage string yields empty' );
 
 // 15. Same UID = same event (identity).
 test_section( '15: identity - same UID' );
 $a = mi_parse_one( mi_card_fixture( array( 'id' => 'aaa111' ) ) );
 $b = mi_parse_one( mi_card_fixture( array( 'id' => 'aaa111', 'club' => 'Different Club' ) ) );
-test_assert( $a['source_id'] === $b['source_id'], 'same UID = same source identity' );
+assert_true( $a['source_id'] === $b['source_id'], 'same UID = same source identity' );
 
 // 16. Title-only differences do NOT create different source events.
 test_section( '16: title difference, same UID' );
 $a = mi_parse_one( mi_card_fixture( array( 'id' => 'bbb222', 'title' => 'Title A' ) ) );
 $b = mi_parse_one( mi_card_fixture( array( 'id' => 'bbb222', 'title' => 'Title B' ) ) );
-test_assert( $a['source_id'] === $b['source_id'], 'title change with same UID = same identity' );
+assert_true( $a['source_id'] === $b['source_id'], 'title change with same UID = same identity' );
 
 // 17. Different UID = different event (even with same title).
 test_section( '17: different UID = different event' );
 $a = mi_parse_one( mi_card_fixture( array( 'id' => 'ccc333' ) ) );
 $b = mi_parse_one( mi_card_fixture( array( 'id' => 'ddd444' ) ) );
-test_assert( $a['source_id'] !== $b['source_id'], 'different UID = different source identity' );
+assert_true( $a['source_id'] !== $b['source_id'], 'different UID = different source identity' );
 
 // 18. Duplicate calendar representation = one logical event.
 test_section( '18: duplicate calendar cards' );
 $html = '<html><body>' . mi_card_fixture( array( 'id' => 'eee555' ) ) . mi_card_fixture( array( 'id' => 'eee555' ) ) . '</body></html>';
 $cards = Conexao_Source_Motorsport_Ireland::parse_listing_cards( $html );
 // parse_listing_cards does not collapse duplicates (engine does), but two cards parse:
-test_assert( 2 === count( $cards ), 'two cards parsed, both with same UID' );
-test_assert( $cards[0]['source_id'] === $cards[1]['source_id'], 'both share same UID' );
+assert_true( 2 === count( $cards ), 'two cards parsed, both with same UID' );
+assert_true( $cards[0]['source_id'] === $cards[1]['source_id'], 'both share same UID' );
 
 // 19. Malformed event isolation (one bad card does not break others).
 test_section( '19: malformed event isolation' );
@@ -233,7 +214,7 @@ $html = '<html><body>'
 	. mi_card_fixture( array( 'id' => 'aaa888' ) )
 	. '</body></html>';
 $cards = Conexao_Source_Motorsport_Ireland::parse_listing_cards( $html );
-test_assert( 2 === count( $cards ), 'malformed card skipped, valid cards kept' );
+assert_true( 2 === count( $cards ), 'malformed card skipped, valid cards kept' );
 
 // 20. Deduplicator against DB (source + source_id is strongest match).
 test_section( '20: deduplicator (DB)' );
@@ -246,27 +227,27 @@ update_post_meta( $post_id, '_event_date', '2026-09-13' );
 update_post_meta( $post_id, '_event_source_url', 'https://www.motorsportireland.com/events/almc-grass-surface-autocross' );
 update_post_meta( $post_id, '_event_url', 'https://www.motorsportireland.com/events/almc-grass-surface-autocross' );
 
-test_assert(
+assert_true(
 	(int) $post_id === (int) $dedup->find( array( 'source' => 'motorsport_ireland', 'source_id' => '6989d37d36d357787c3539f4', 'source_url' => 'https://other.example/x', 'title' => 'Other title', 'start_date' => '2026-01-01' ) ),
 	'same MI+UID => same event (regardless of title/URL)'
 );
-test_assert(
+assert_true(
 	(int) $post_id === (int) $dedup->find( array( 'source' => 'motorsport_ireland', 'source_id' => 'other', 'source_url' => 'https://www.motorsportireland.com/events/almc-grass-surface-autocross', 'title' => 'Other', 'start_date' => '2026-01-01' ) ),
 	'same canonical URL => same event'
 );
 $other = $dedup->find( array( 'source' => 'motorsport_ireland', 'source_id' => 'aaa111bbb222', 'source_url' => 'https://www.motorsportireland.com/events/some-other-event', 'title' => 'Completely Different ' . time(), 'start_date' => '2026-12-13' ) );
-test_assert( 0 === (int) $other, 'different UID+URL does not collapse' );
+assert_true( 0 === (int) $other, 'different UID+URL does not collapse' );
 
 // 21. Unrelated Conexao BR events not matched.
 test_section( '21: unrelated events not matched' );
 $unrelated = $dedup->find( array( 'source' => 'heritage_week', 'source_id' => '6989d37d36d357787c3539f4', 'source_url' => 'https://www.heritageweek.ie/x', 'title' => 'Completely Different Heritage Event ' . time(), 'start_date' => '2026-09-13' ) );
-test_assert( 0 === (int) $unrelated, 'different source with same UID is not matched' );
+assert_true( 0 === (int) $unrelated, 'different source with same UID is not matched' );
 
 // 22. Update preserves manual fields when source supplies none.
 test_section( '22: update preserves manual fields' );
 update_post_meta( $post_id, '_event_address', 'Manually curated address' );
 $resolved = Conexao_Event_Address::resolve_stored( '', get_post_meta( $post_id, '_event_address', true ) );
-test_assert( 'Manually curated address' === $resolved, 'manual address preserved when source supplies none' );
+assert_true( 'Manually curated address' === $resolved, 'manual address preserved when source supplies none' );
 
 // 23. Title-only dedup is NOT used (safety check).
 test_section( '23: title-only dedup not used' );
@@ -275,7 +256,7 @@ $title_only = $dedup->find( array( 'source' => '', 'source_id' => '', 'source_ur
 // when source metadata is empty but a different source owns the event.
 // (Content-based match requires same title+date; this probe has both, so it may
 // match — the key assertion is that source+UID is the PRIMARY key, tested above.)
-test_assert( true, 'title-only path documented as non-primary (source+UID is primary)' );
+assert_true( true, 'title-only path documented as non-primary (source+UID is primary)' );
 
 // Cleanup probe post.
 wp_delete_post( $post_id, true );
@@ -284,29 +265,29 @@ wp_delete_post( $post_id, true );
 test_section( '24: idempotency' );
 for ( $i = 0; $i < 2; $i++ ) {
 	$e = mi_parse_one( mi_card_fixture( array( 'id' => 'abc123def456' ) ) );
-	test_assert( 'abc123def456' === $e['source_id'], 'run ' . ( $i + 1 ) . ': deterministic source_id' );
-	test_assert( 'ALMC Grass Surface Autocross' === $e['title'], 'run ' . ( $i + 1 ) . ': deterministic title' );
+	assert_true( 'abc123def456' === $e['source_id'], 'run ' . ( $i + 1 ) . ': deterministic source_id' );
+	assert_true( 'ALMC Grass Surface Autocross' === $e['title'], 'run ' . ( $i + 1 ) . ': deterministic title' );
 }
 
 // 25. URL resolution (relative -> absolute).
 test_section( '25: URL resolution' );
 $e = mi_parse_one( mi_card_fixture( array( 'url' => '/events/some-event' ) ) );
-test_assert( 'https://www.motorsportireland.com/events/some-event' === $e['url'], 'relative URL resolved to absolute' );
+assert_true( 'https://www.motorsportireland.com/events/some-event' === $e['url'], 'relative URL resolved to absolute' );
 
 // 26. No location data = empty location fields (not invented).
 test_section( '26: no location data invented' );
 $e = mi_parse_one( mi_card_fixture() );
-test_assert( '' === $e['location'], 'location left empty (source has no location data)' );
+assert_true( '' === $e['location'], 'location left empty (source has no location data)' );
 
 // 27. No image data = empty image (not invented).
 test_section( '27: no image invented' );
 $e = mi_parse_one( mi_card_fixture() );
-test_assert( '' === $e['image'], 'image left empty (source has no event images)' );
+assert_true( '' === $e['image'], 'image left empty (source has no event images)' );
 
 // 28. No price data = empty price (not invented).
 test_section( '28: no price invented' );
 $e = mi_parse_one( mi_card_fixture() );
-test_assert( '' === $e['price'], 'price left empty (no price data at source)' );
+assert_true( '' === $e['price'], 'price left empty (no price data at source)' );
 
 
 // 29. Full second-run idempotency simulation (DB; probe post deleted after).
@@ -338,7 +319,7 @@ $normalized_run = array(
 
 // RUN 1: nothing in the DB -> dedup finds nothing -> engine would CREATE.
 $run1 = $dedup->find( $normalized_run );
-test_assert( 0 === (int) $run1, 'run 1: dedup finds nothing (would-create > 0)' );
+assert_true( 0 === (int) $run1, 'run 1: dedup finds nothing (would-create > 0)' );
 
 // Write the record exactly as the importer upsert does.
 $idem_post = wp_insert_post( array( 'post_type' => 'event', 'post_title' => $idem_title, 'post_content' => '', 'post_status' => 'publish' ) );
@@ -352,22 +333,22 @@ update_post_meta( $idem_post, '_event_organizer', $normalized_run['organizer'] )
 
 // RUN 2: identical dataset -> resolves to the SAME post (never a duplicate).
 $run2 = $dedup->find( $normalized_run );
-test_assert( (int) $idem_post === (int) $run2, 'run 2: same UID resolves to the same post (no duplicate)' );
+assert_true( (int) $idem_post === (int) $run2, 'run 2: same UID resolves to the same post (no duplicate)' );
 
 // The engine's unchanged comparison: every compared field must match, so the
 // second run classifies as UNCHANGED (no update, no rewrite).
-test_assert( get_the_title( $idem_post ) === $normalized_run['title'], 'run 2: title unchanged' );
-test_assert( get_post_meta( $idem_post, '_event_date', true ) === $normalized_run['start_date'], 'run 2: date unchanged' );
-test_assert( get_post_meta( $idem_post, '_event_start_time', true ) === $normalized_run['start_time'], 'run 2: time unchanged' );
-test_assert( get_post_meta( $idem_post, '_event_url', true ) === $normalized_run['source_url'], 'run 2: source URL unchanged' );
-test_assert( get_post_meta( $idem_post, '_event_organizer', true ) === $normalized_run['organizer'], 'run 2: organizer unchanged' );
+assert_true( get_the_title( $idem_post ) === $normalized_run['title'], 'run 2: title unchanged' );
+assert_true( get_post_meta( $idem_post, '_event_date', true ) === $normalized_run['start_date'], 'run 2: date unchanged' );
+assert_true( get_post_meta( $idem_post, '_event_start_time', true ) === $normalized_run['start_time'], 'run 2: time unchanged' );
+assert_true( get_post_meta( $idem_post, '_event_url', true ) === $normalized_run['source_url'], 'run 2: source URL unchanged' );
+assert_true( get_post_meta( $idem_post, '_event_organizer', true ) === $normalized_run['organizer'], 'run 2: organizer unchanged' );
 
 // A changed source field (e.g. new date) resolves to the SAME post -> UPDATE
 // path, not a second post.
 $moved = $normalized_run;
 $moved['start_date'] = '2026-10-04';
 $run2b = $dedup->find( $moved );
-test_assert( (int) $idem_post === (int) $run2b, 'run 2: changed date still resolves to same post (update, not duplicate)' );
+assert_true( (int) $idem_post === (int) $run2b, 'run 2: changed date still resolves to same post (update, not duplicate)' );
 
 wp_delete_post( $idem_post, true );
 
@@ -380,8 +361,8 @@ $single = str_replace(
 	mi_card_fixture()
 );
 $e = mi_parse_one( $single );
-test_assert( '' === $e['organizer'], 'single link: organizer stays empty (no mis-attribution)' );
-test_assert( 'Rally' === $e['category'], 'single link: discipline stored as category' );
+assert_true( '' === $e['organizer'], 'single link: organizer stays empty (no mis-attribution)' );
+assert_true( 'Rally' === $e['category'], 'single link: discipline stored as category' );
 
 
 // 31. CSS/page-builder leak regression (2026-09 incident).
@@ -419,8 +400,8 @@ $leaky = mi_card_fixture( array(
 ) );
 $e = mi_parse_one( $leaky );
 $desc = isset( $e['description'] ) ? $e['description'] : '';
-test_assert( false !== strpos( $desc, 'National Championship' ), 'leak: legitimate event text preserved' );
-test_assert( false !== strpos( $desc, 'Rescheduled from June 28th 2026 to August 30th 2026' ), 'leak: rescheduling notice preserved' );
+assert_true( false !== strpos( $desc, 'National Championship' ), 'leak: legitimate event text preserved' );
+assert_true( false !== strpos( $desc, 'Rescheduled from June 28th 2026 to August 30th 2026' ), 'leak: rescheduling notice preserved' );
 foreach ( array(
 	'--stroke-style',
 	'--stroke-thickness',
@@ -432,14 +413,14 @@ foreach ( array(
 	'<style',
 	'<script',
 ) as $forbidden ) {
-	test_assert( false === strpos( $desc, $forbidden ), "leak: output does not contain {$forbidden}" );
+	assert_true( false === strpos( $desc, $forbidden ), "leak: output does not contain {$forbidden}" );
 }
 
 // The full saved live listing snapshot must parse with zero CSS leakage.
 test_section( '31b: full live fixture sweep — no CSS in any normalized card' );
 $fixture_html  = file_get_contents( __DIR__ . '/fixtures/mi-listing.html' );
 $fixture_cards = Conexao_Source_Motorsport_Ireland::parse_listing_cards( $fixture_html, 'https://www.motorsportireland.com/events' );
-test_assert( count( $fixture_cards ) > 0, 'fixture sweep: cards parsed from saved live snapshot' );
+assert_true( count( $fixture_cards ) > 0, 'fixture sweep: cards parsed from saved live snapshot' );
 $leaked_cards = 0;
 foreach ( $fixture_cards as $fc ) {
 	$fd = isset( $fc['description'] ) ? $fc['description'] : '';
@@ -449,7 +430,7 @@ foreach ( $fixture_cards as $fc ) {
 		}
 	}
 }
-test_assert( 0 === $leaked_cards, 'fixture sweep: 0 cards contain CSS/page-builder fragments' );
+assert_true( 0 === $leaked_cards, 'fixture sweep: 0 cards contain CSS/page-builder fragments' );
 $almc = null;
 foreach ( $fixture_cards as $fc ) {
 	if ( '6989d37d36d357787c3539f4' === $fc['source_id'] ) {
@@ -457,7 +438,7 @@ foreach ( $fixture_cards as $fc ) {
 		break;
 	}
 }
-test_assert( null !== $almc && 'National Championship' === $almc['description'], 'fixture sweep: ALMC card description is exactly the clean visible text' );
+assert_true( null !== $almc && 'National Championship' === $almc['description'], 'fixture sweep: ALMC card description is exactly the clean visible text' );
 
 // Detail-page description: same guard applies to eventitem-column-content.
 test_section( '31c: detail-page description leak guard' );
@@ -467,9 +448,9 @@ $leaky_detail = mi_detail_fixture( array(
 		. '<script>window.__x = 1;</script>',
 ) );
 $detail_desc = Conexao_Source_Motorsport_Ireland::parse_detail_description( $leaky_detail );
-test_assert( 'Annual grass surface autocross event organised by ALMC.' === $detail_desc, 'detail: legitimate description preserved' );
+assert_true( 'Annual grass surface autocross event organised by ALMC.' === $detail_desc, 'detail: legitimate description preserved' );
 foreach ( array( '--stroke-style', '--stroke-thickness', '#block-', '<style', '<script', 'window.__x' ) as $forbidden ) {
-	test_assert( false === strpos( $detail_desc, $forbidden ), "detail: output does not contain {$forbidden}" );
+	assert_true( false === strpos( $detail_desc, $forbidden ), "detail: output does not contain {$forbidden}" );
 }
 
 // Text-level safety net: strips CSS fragments, preserves legit plain text.
@@ -479,11 +460,11 @@ $raw    = 'National Championship #block-849555a57974f020f868 { --stroke-style: n
 	. '--tweak-text-block-padding: 6% 6% 6% 6%; Signal postponed - check official site';
 $netted = Conexao_Source_Motorsport_Ireland::strip_css_leak( $raw );
 foreach ( array( '--stroke-style', '--stroke-thickness', '#block-', '@media', '--tweak-text-block-padding' ) as $forbidden ) {
-	test_assert( false === strpos( $netted, $forbidden ), "safety net: strips {$forbidden}" );
+	assert_true( false === strpos( $netted, $forbidden ), "safety net: strips {$forbidden}" );
 }
-test_assert( false !== strpos( $netted, 'National Championship' ), 'safety net: keeps event text' );
-test_assert( false !== strpos( $netted, 'Signal postponed - check official site' ), 'safety net: keeps cancellation/notice text' );
-test_assert( '' === Conexao_Source_Motorsport_Ireland::strip_css_leak( '' ), 'safety net: empty in, empty out' );
+assert_true( false !== strpos( $netted, 'National Championship' ), 'safety net: keeps event text' );
+assert_true( false !== strpos( $netted, 'Signal postponed - check official site' ), 'safety net: keeps cancellation/notice text' );
+assert_true( '' === Conexao_Source_Motorsport_Ireland::strip_css_leak( '' ), 'safety net: empty in, empty out' );
 
 // Hidden page-builder metadata with NO visible text must yield empty.
 test_section( '31e: design-markup-only description yields empty text' );
@@ -495,9 +476,6 @@ $design_only = mi_card_fixture( array(
 		. '</div>',
 ) );
 $e = mi_parse_one( $design_only );
-test_assert( '' === $e['description'], 'design-only markup yields empty description (never CSS)' );
+assert_true( '' === $e['description'], 'design-only markup yields empty description (never CSS)' );
 
-echo "\n========================================\n";
-echo "Motorsport Ireland Test Results: {$passed} passed, {$failed} failed\n";
-echo "========================================\n";
-exit( $failed > 0 ? 1 : 0 );
+test_finish();

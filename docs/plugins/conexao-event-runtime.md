@@ -1,7 +1,22 @@
 # Conexão BR Irlanda — Event Runtime
 
+<!-- BEGIN GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
+| | |
+|---|---|
+| **Status** | active |
+| **Class** | platform |
+| **Production** | yes |
+| **Build** | yes |
+| **Compose mount** | yes |
+| **Dependencies** | `conexao-data-model` |
+| **Version** | 1.2.2 (authoritative source: `wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php` header) |
+| **Registry** | [`plugins.json`](../../plugins.json) |
+
+> **Production platform plugin.** Part of the production steady state.
+<!-- END GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
+
 - **Path**: `wp-content/plugins/conexao-event-runtime/`
-- **Version**: 1.2.1
+- **Version**: 1.2.2
 - **Requires Plugins**: `conexao-data-model`
 - **Purpose**: **Production dependency.** Owns all event runtime behavior the live site needs: event meta registration, the `conexao_town` taxonomy, the `_event_status` visibility gate on public event queries, and the event status admin UI. Contains **no** import/export tooling.
 
@@ -225,6 +240,45 @@ results are stable all day and the day rollover naturally rebuilds the set.
 `Conexao_Event_Query::flush_cache()` is called by the theme's
 `conexao_homepage_cache_invalidate()` whenever an event is saved/deleted.
 No cron, no persistent scheduler.
+
+## Multilingual (Stage 2)
+
+`Conexao_Event_Query` is language-aware:
+
+- `cache_key()` appends the active language slug
+  (`conexao_event_upcoming_YYYYMMDD_pt` / `_en`), so PT and EN public event
+  lists can never share a cache entry; `flush_cache()` clears every language
+  variant (previous day, today, next day).
+- `upcoming_events()` skips candidate records whose Polylang language is not the
+  current one, because a linked translation is a separate post carrying a copy of
+  the identity/scheduling meta. Records without a language (Polylang inactive,
+  legacy rows) stay visible.
+- Both behaviours are no-ops when Polylang is inactive — the plugin keeps its
+  single-language behaviour.
+
+The `_event_status` gate keeps priority over the language filter: both compose
+via SQL AND, so an expired/rejected event stays hidden in every language.
+Gate coverage: `tests/test-event-language-gate.php` (plain PHP, so the real
+`pre_get_posts` gate applies).
+
+## Source-language metadata (Stage 3.2)
+
+`includes/class-source-language.php` (`Conexao_Event_Source_Language`) owns the
+`_event_source_language` meta contract: the language the SOURCE CONTENT is
+written in — an explicit signal (a source-declared locale such as Eventbrite
+`locale`, or an editor classification), never inferred from title/body text.
+
+- Stored values: exactly `pt`, `en`, `other`. Absent meta = unclassified.
+- `from_locale()` maps explicit source locale tags (`pt_BR` → pt, `en_IE` → en,
+  anything else → other, empty → unclassified) — the only automated path.
+- `export_value()` maps the stored value to the export JSON `lang` field,
+  normalizing absence to `unknown` (never stored as a meta value).
+- The meta is registered like every other `_event_*` field (REST-visible,
+  auth-gated) and is **editorial pipeline data, never identity**: dedup
+  matching, UUIDs, scheduling and the `_event_status` gate do not read it.
+- A Portuguese-source event stays a Portuguese record; an English-source
+  event IS the English record (source-inherited, architecture §8) — the meta
+  exists so the pipeline can tell them apart before any editorial decision.
 
 ## Tests
 

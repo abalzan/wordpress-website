@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Conexão BR Irlanda Data Model
  * Description: Content types, shared taxonomies, and editorial fields for the Conexão BR Irlanda portal.
- * Version: 1.6.0
+ * Version: 1.6.1
  * Text Domain: conexao-data-model
  *
  * @package Conexao_BR_Irlanda_Data_Model
@@ -20,7 +20,7 @@ require_once CONEXAO_DATA_MODEL_DIR . 'includes/class-agency.php';
 
 final class Conexao_Data_Model {
 
-	const VERSION = '1.6.0';
+	const VERSION = '1.6.1';
 
 	/** @var Conexao_Data_Model|null */
 	private static $instance = null;
@@ -477,3 +477,18 @@ Conexao_Data_Model::instance();
 
 register_activation_hook( __FILE__, array( 'Conexao_Data_Model', 'activate' ) );
 register_deactivation_hook( __FILE__, array( 'Conexao_Data_Model', 'deactivate' ) );
+/**
+ * Load the plugin textdomain (Stage 1 i18n foundation).
+ *
+ * Translation files live in this plugin's languages/ directory. Admin-only
+ * strings may be catalogued here even though English admin support is
+ * deferred to a later stage. No functionality changes.
+ */
+function conexao_data_model_load_textdomain() {
+	load_plugin_textdomain(
+		'conexao-data-model',
+		false,
+		dirname( plugin_basename( __FILE__ ) ) . '/languages'
+	);
+}
+add_action( 'init', 'conexao_data_model_load_textdomain' );

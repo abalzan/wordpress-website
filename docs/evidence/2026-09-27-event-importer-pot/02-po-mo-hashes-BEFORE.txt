@@ -1,0 +1,30 @@
+== PHASE 8 BASELINE: TRANSLATION FILE HASHES (BEFORE) ==
+date: 2026-09-27T18:56:55Z
+
+--- md5 ---
+f6cbb244bd3689ac98c0c7d5453abf85  wp-content/themes/conexao-br-irlanda/languages/en_US.po
+d754135e3771e42bdc820ff5890718ad  wp-content/themes/conexao-br-irlanda/languages/en_US.mo
+16f92300e705a38354acdcf667fa9037  wp-content/themes/conexao-br-irlanda/languages/pt_BR.po
+50ea800799d2f7f07be4a198747281e1  wp-content/themes/conexao-br-irlanda/languages/pt_BR.mo
+
+--- sha256 ---
+22b1798b9366cafb838ae9b398d1836b0e331d50c0d218b58b35516f6a41e912  wp-content/themes/conexao-br-irlanda/languages/en_US.po
+b1fa80c1f508a9601955873a6a000744cd365467a016f2ea3de6e770f5c09efb  wp-content/themes/conexao-br-irlanda/languages/en_US.mo
+a85c434f39f8e1ecac5551e1a1ccc807a1085449a875ecce324b6a6a80a9dc02  wp-content/themes/conexao-br-irlanda/languages/pt_BR.po
+bee15adfdccd141e07ca4cc8d973bb7f4defaf4d4c7b8442e3c82b21139937b0  wp-content/themes/conexao-br-irlanda/languages/pt_BR.mo
+
+--- sizes ---
+ 55847 wp-content/themes/conexao-br-irlanda/languages/en_US.po
+ 33123 wp-content/themes/conexao-br-irlanda/languages/en_US.mo
+ 55808 wp-content/themes/conexao-br-irlanda/languages/pt_BR.po
+ 34091 wp-content/themes/conexao-br-irlanda/languages/pt_BR.mo
+178869 total
+
+--- git state (must be clean/unmodified) ---
+(empty above = unmodified)
+
+--- any .po/.mo under conexao-event-importer? ---
+total 60
+drwxrwxr-x 2 andrei andrei  4096 Sep 26 15:11 .
+drwxrwxr-x 6 andrei andrei  4096 Sep 21 10:45 ..
+-rw-rw-r-- 1 andrei andrei 51308 Sep 27 17:54 conexao-event-importer.pot

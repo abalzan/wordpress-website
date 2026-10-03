@@ -30,6 +30,8 @@ require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-address.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-jsonld-location.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-normalizer.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-date-filter.php';
+require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-conexao-ics-recurrence.php';
+require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-conexao-laois-tourism-series.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-deduplicator.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-sources.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/sources/abstract-class-source.php';
@@ -54,6 +56,11 @@ require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-multi-import.php
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-image-sync-admin.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-cleanup.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-cleanup-admin.php';
+
+// Stage 2: language guard for imported events (Polylang-aware, no-op without
+// Polylang). Must load before the importers run.
+require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-language-guard.php';
+Conexao_Event_Importer_Language_Guard::init();
 
 // WP-CLI commands (self-guarding: only registers when WP_CLI is defined).
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-import-cli.php';
@@ -238,3 +245,18 @@ Conexao_Event_Importer::instance();
 
 register_activation_hook( __FILE__, array( 'Conexao_Event_Importer', 'activate' ) );
 register_deactivation_hook( __FILE__, array( 'Conexao_Event_Importer', 'deactivate' ) );
+/**
+ * Load the plugin textdomain (Stage 1 i18n foundation).
+ *
+ * Translation files live in this plugin's languages/ directory. This does
+ * not touch importer matching, export JSON or identity fields — gettext
+ * wrapping only, no behavior change.
+ */
+function conexao_event_importer_load_textdomain() {
+	load_plugin_textdomain(
+		'conexao-event-importer',
+		false,
+		dirname( plugin_basename( __FILE__ ) ) . '/languages'
+	);
+}
+add_action( 'init', 'conexao_event_importer_load_textdomain' );

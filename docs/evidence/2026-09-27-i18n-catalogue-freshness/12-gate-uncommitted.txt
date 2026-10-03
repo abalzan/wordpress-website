@@ -1,0 +1,10 @@
+== NOTE: the gate signal is git COMMIT time, not mtime ==
+The regenerated POT is correct in the working tree, but until it is committed
+git log -1 --format=%ct still returns the OLD timestamp, so the gate still fails.
+
+== uncommitted-state gate result ==
+   stale catalogues: 1
+FAIL: conexao-br-irlanda: wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot is older than wp-content/themes/conexao-br-irlanda/front-page.php by 93649s — regenerate the catalogue with `wp i18n make-pot` (never hand-edit)
+8 passed, 1 failed
+  stale catalogues: 1 pre-existing, 0 new
+GATE-RESULT {"gate": "i18n_freshness", "status": "fail", "passed": 8, "failed": 1, "violations": 1, "pre_existing": 1, "new": 0, "details": [{"component": "conexao-br-irlanda", "catalogue": "wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot", "newest_source": "wp-content/themes/conexao-br-irlanda/front-page.php", "catalogue_ts": 1790431901, "newest_source_ts": 1790525550, "lag_seconds": 93649}]}

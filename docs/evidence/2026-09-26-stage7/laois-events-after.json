@@ -1,0 +1,891 @@
+{
+    "captured_at": "2026-09-26 18:32:54",
+    "site_timezone": "Europe/Dublin",
+    "wp_today": "2026-09-26",
+    "posts_per_page": 10,
+    "upcoming_set_size": 1380,
+    "archive_total_pages": 138,
+    "county_filter_total": 50,
+    "targets_in_county_filter": 30,
+    "laois_tourism_source_county_config": "Laois",
+    "events": [
+        {
+            "id": 100001,
+            "title": "Art Exhibition At Mountmellick Library",
+            "slug": "art-exhibition-at-mountmellick-library",
+            "post_type": "event",
+            "post_status": "publish",
+            "post_date": "2026-08-31 09:25:52",
+            "permalink": "http://localhost:8080/eventos/art-exhibition-at-mountmellick-library/",
+            "_event_source": "laois_tourism",
+            "_event_source_id": "10016324-1788220800-1790812799@laoistourism.ie",
+            "_event_export_uuid": "0a9d135e-e921-4028-9077-57c0bf24c98b",
+            "_event_status": "published",
+            "_event_date": "2026-09-01",
+            "_event_end_date": "2026-09-30",
+            "_event_start_time": "",
+            "_event_timezone": "Europe/Dublin",
+            "county": [
+                "laois"
+            ],
+            "town": [],
+            "category": [
+                "member"
+            ],
+            "language": "pt",
+            "in_upcoming_set": true,
+            "next_occurrence": "2026-09-26",
+            "archive_rank": 124,
+            "archive_page": 13
+        },
+        {
+            "id": 100002,
+            "title": "Lasta 2026 at Dunamaise Arts Centre",
+            "slug": "lasta-2026-at-dunamaise-arts-centre",
+            "post_type": "event",
+            "post_status": "publish",
+            "post_date": "2026-08-31 10:49:20",
+            "permalink": "http://localhost:8080/eventos/lasta-2026-at-dunamaise-arts-centre/",
+            "_event_source": "laois_tourism",
+            "_event_source_id": "10016326-1788220800-1790812799@laoistourism.ie",
+            "_event_export_uuid": "da8b9075-b708-45aa-92d5-1e5d598ee443",
+            "_event_status": "published",
+            "_event_date": "2026-09-01",
+            "_event_end_date": "2026-09-30",
+            "_event_start_time": "",
+            "_event_timezone": "Europe/Dublin",
+            "county": [
+                "laois"
+            ],
+            "town": [],
+            "category": [
+                "festivals",
+                "member"
+            ],
+            "language": "pt",
+            "in_upcoming_set": true,
+            "next_occurrence": "2026-09-26",
+            "archive_rank": 125,
+            "archive_page": 13
+        },
+        {
+            "id": 100003,
+            "title": "In Stitches By Aislinn Children’s Crochet Workshop",
+            "slug": "in-stitches-by-aislinn-childrens-crochet-workshop-2",
+            "post_type": "event",
+            "post_status": "publish",
+            "post_date": "2026-07-01 11:33:02",
+            "permalink": "http://localhost:8080/eventos/in-stitches-by-aislinn-childrens-crochet-workshop-2/",
+            "_event_source": "laois_tourism",
+            "_event_source_id": "10015941-1788606000-1790425800@laoistourism.ie",
+            "_event_export_uuid": "37b0a8fe-4d82-416b-ae0a-b6ad27ca2c9c",
+            "_event_status": "published",
+            "_event_date": "2026-09-05",
+            "_event_end_date": "2026-09-26",
+            "_event_start_time": "11:00",
+            "_event_timezone": "Europe/Dublin",
+            "county": [
+                "laois"
+            ],
+            "town": [],
+            "category": [
+                "member"
+            ],
+            "language": "pt",
+            "in_upcoming_set": true,
+            "next_occurrence": "2026-09-26",
+            "archive_rank": 126,
+            "archive_page": 13
+        },
+        {
+            "id": 100004,
+            "title": "Yoga & Sauna Session",
+            "slug": "yoga-sauna-session-2",
+            "post_type": "event",
+            "post_status": "publish",
+            "post_date": "2026-08-25 10:06:14",
+            "permalink": "http://localhost:8080/eventos/yoga-sauna-session-2/",
+            "_event_source": "laois_tourism",
+            "_event_source_id": "10016292-1788688800-1790510400@laoistourism.ie",
+            "_event_export_uuid": "2e9f0b59-bca4-4e82-8544-b78b42b99ab0",
+            "_event_status": "published",
+            "_event_date": "2026-09-06",
+            "_event_end_date": "2026-09-27",
+            "_event_start_time": "10:00",
+            "_event_timezone": "Europe/Dublin",
+            "county": [
+                "laois"
+            ],
+            "town": [],
+            "category": [
+                "member"
+            ],
+            "language": "pt",
+            "in_upcoming_set": true,
+            "next_occurrence": "2026-09-26",
+            "archive_rank": 127,
+            "archive_page": 13
+        },
+        {
+            "id": 100005,
+            "title": "What Were You Thinking Of Darling?",
+            "slug": "what-were-you-thinking-of-darling",
+            "post_type": "event",
+            "post_status": "publish",
+            "post_date": "2026-08-31 14:32:31",
+            "permalink": "http://localhost:8080/eventos/what-were-you-thinking-of-darling/",
+            "_event_source": "laois_tourism",
+            "_event_source_id": "10016332-1788777000-1792413000@laoistourism.ie",
+            "_event_export_uuid": "df6277ac-4169-4544-b132-341f5d8dfd53",
+            "_event_status": "published",
+            "_event_date": "2026-09-07",
+            "_event_end_date": "2026-10-19",
+            "_event_start_time": "10:30",
+            "_event_timezone": "Europe/Dublin",
+            "county": [
+                "laois"
+            ],
+            "town": [],
+            "category": [
+                "member"
+            ],
+            "language": "pt",
+            "in_upcoming_set": true,
+            "next_occurrence": "2026-09-26",
+            "archive_rank": 128,
+            "archive_page": 13
+        },
+        {
+            "id": 100006,
+            "title": "Beginners Crochet Classes At Portlaoise Library",
+            "slug": "beginners-crochet-classes-at-portlaoise-library",
+            "post_type": "event",
+            "post_status": "publish",
+            "post_date": "2026-09-02 11:22:02",
+            "permalink": "http://localhost:8080/eventos/beginners-crochet-classes-at-portlaoise-library/",
+            "_event_source": "laois_tourism",
+            "_event_source_id": "10016352-1789381800-1792413000@laoistourism.ie",
+            "_event_export_uuid": "e5d4bbac-8e51-4554-b9ca-a9e765230ae3",
+            "_event_status": "published",
+            "_event_date": "2026-09-14",
+            "_event_end_date": "2026-10-19",
+            "_event_start_time": "10:30",
+            "_event_timezone": "Europe/Dublin",
+            "county": [
+                "laois"
+            ],
+            "town": [],
+            "category": [
+                "member"
+            ],
+            "language": "pt",
+            "in_upcoming_set": true,
+            "next_occurrence": "2026-09-26",
+            "archive_rank": 129,
+            "archive_page": 13
+        },
+        {
+            "id": 100007,
+            "title": "Bootcamp with Malone Fitness",
+            "slug": "bootcamp-with-malone-fitness",
+            "post_type": "event",
+            "post_status": "publish",
+            "post_date": "2026-08-26 08:48:16",
+            "permalink": "http://localhost:8080/eventos/bootcamp-with-malone-fitness/",
+            "_event_source": "laois_tourism",
+            "_event_source_id": "10016308-1790017200-1793044800@laoistourism.ie",
+            "_event_export_uuid": "6555d1e9-f826-4448-a3cb-ebb0bc9efb82",
+            "_event_status": "published",
+            "_event_date": "2026-09-21",
+            "_event_end_date": "2026-10-26",
+            "_event_start_time": "19:00",
+            "_event_timezone": "Europe/Dublin",
+            "county": [
+                "laois"
+            ],
+            "town": [],
+            "category": [
+                "member"
+            ],
+            "language": "pt",
+            "in_upcoming_set": true,
+            "next_occurrence": "2026-09-26",
+            "archive_rank": 130,
+            "archive_page": 14
+        },
+        {
+            "id": 100008,
+            "title": "Pilates Programme with Sabrina",
+            "slug": "pilates-programme-with-sabrina",
+            "post_type": "event",
+            "post_status": "publish",
+            "post_date": "2026-08-31 13:59:38",
+            "permalink": "http://localhost:8080/eventos/pilates-programme-with-sabrina/",
+            "_event_source": "laois_tourism",
+            "_event_source_id": "10016330-1790107200-1793134800@laoistourism.ie",
+            "_event_export_uuid": "5e922e0c-97bc-4b80-8532-a2768a77a908",
+            "_event_status": "published",
+            "_event_date": "2026-09-22",
+            "_event_end_date": "2026-10-27",
+            "_event_start_time": "20:00",
+            "_event_timezone": "Europe/Dublin",
+            "county": [
+                "laois"
+            ],
+            "town": [],
+            "category": [
+                "member"
+            ],
+            "language": "pt",
+            "in_upcoming_set": true,
+            "next_occurrence": "2026-09-26",
+            "archive_rank": 131,
+            "archive_page": 14
+        },
+        {
+            "id": 100009,
+            "title": "Mountmellick Library Open Day",
+            "slug": "mountmellick-library-open-day",
+            "post_type": "event",
+            "post_status": "publish",
+            "post_date": "2026-09-21 13:10:54",
+            "permalink": "http://localhost:8080/eventos/mountmellick-library-open-day/",
+            "_event_source": "laois_tourism",
+            "_event_source_id": "10016459-1790416800-1790431200@laoistourism.ie",
+            "_event_export_uuid": "0a92a31a-cf27-4b5e-adeb-6a6e23d90069",
+            "_event_status": "published",
+            "_event_date": "2026-09-26",
+            "_event_end_date": "2026-09-26",
+            "_event_start_time": "10:00",
+            "_event_timezone": "Europe/Dublin",
+            "county": [
+                "laois"
+            ],
+            "town": [],
+            "category": [
+                "member"
+            ],
+            "language": "pt",
+            "in_upcoming_set": true,
+            "next_occurrence": "2026-09-26",
+            "archive_rank": 132,
+            "archive_page": 14
+        },
+        {
+            "id": 100010,
+            "title": "Happy Hiking Day At Clonaslee Trailhead",
+            "slug": "happy-hiking-day-at-clonaslee-trailhead",
+            "post_type": "event",
+            "post_status": "publish",
+            "post_date": "2026-09-23 08:50:05",
+            "permalink": "http://localhost:8080/eventos/happy-hiking-day-at-clonaslee-trailhead/",
+            "_event_source": "laois_tourism",
+            "_event_source_id": "10016477-1790420400-1790429400@laoistourism.ie",
+            "_event_export_uuid": "5ddb0d2c-70f7-4da1-a74c-e68087294259",
+            "_event_status": "published",
+            "_event_date": "2026-09-26",
+            "_event_end_date": "2026-09-26",
+            "_event_start_time": "11:00",
+            "_event_timezone": "Europe/Dublin",
+            "county": [
+                "laois"
+            ],
+            "town": [],
+            "category": [
+                "community"
+            ],
+            "language": "pt",
+            "in_upcoming_set": true,
+            "next_occurrence": "2026-09-26",
+            "archive_rank": 133,
+            "archive_page": 14
+        },
+        {
+            "id": 100011,
+            "title": "Mabon & Full Moon Day Retreat",
+            "slug": "mabon-full-moon-day-retreat-2",
+            "post_type": "event",
+            "post_status": "publish",
+            "post_date": "2026-09-02 09:46:27",
+            "permalink": "http://localhost:8080/eventos/mabon-full-moon-day-retreat-2/",
+            "_event_source": "laois_tourism",
+            "_event_source_id": "10016351-1790420400-1790445600@laoistourism.ie",
+            "_event_export_uuid": "1970bbae-45b3-40a7-9d9b-0ee400bc7110",
+            "_event_status": "published",
+            "_event_date": "2026-09-26",
+            "_event_end_date": "2026-09-26",
+            "_event_start_time": "11:00",
+            "_event_timezone": "Europe/Dublin",
+            "county": [
+                "laois"
+            ],
+            "town": [],
+            "category": [
+                "community"
+            ],
+            "language": "pt",
+            "in_upcoming_set": true,
+            "next_occurrence": "2026-09-26",
+            "archive_rank": 134,
+            "archive_page": 14
+        },
+        {
+            "id": 100012,
+            "title": "Kundalini Activation At The Goat House Sauna.",
+            "slug": "kundalini-activation-at-the-goat-house-sauna",
+            "post_type": "event",
+            "post_status": "publish",
+            "post_date": "2026-08-31 08:26:02",
+            "permalink": "http://localhost:8080/eventos/kundalini-activation-at-the-goat-house-sauna/",
+            "_event_source": "laois_tourism",
+            "_event_source_id": "10016320-1790424000-1790434800@laoistourism.ie",
+            "_event_export_uuid": "26f77687-4dcf-456f-86f0-d4740ad929c7",
+            "_event_status": "published",
+            "_event_date": "2026-09-26",
+            "_event_end_date": "2026-09-26",
+            "_event_start_time": "12:00",
+            "_event_timezone": "Europe/Dublin",
+            "county": [
+                "laois"
+            ],
+            "town": [],
+            "category": [
+                "community"
+            ],
+            "language": "pt",
+            "in_upcoming_set": true,
+            "next_occurrence": "2026-09-26",
+            "archive_rank": 135,
+            "archive_page": 14
+        },
+        {
+            "id": 100013,
+            "title": "Dungeons & Dragons Workshop",
+            "slug": "dungeons-dragons-workshop",
+            "post_type": "event",
+            "post_status": "publish",
+            "post_date": "2026-09-15 15:20:32",
+            "permalink": "http://localhost:8080/eventos/dungeons-dragons-workshop/",
+            "_event_source": "laois_tourism",
+            "_event_source_id": "10016429-1790427600-1790438400@laoistourism.ie",
+            "_event_export_uuid": "89913519-0e31-4235-8af0-761ecb9cea30",
+            "_event_status": "published",
+            "_event_date": "2026-09-26",
+            "_event_end_date": "2026-09-26",
+            "_event_start_time": "13:00",
+            "_event_timezone": "Europe/Dublin",
+            "county": [
+                "laois"
+            ],
+            "town": [],
+            "category": [
+                "member"
+            ],
+            "language": "pt",
+            "in_upcoming_set": true,
+            "next_occurrence": "2026-09-26",
+            "archive_rank": 136,
+            "archive_page": 14
+        },
+        {
+            "id": 100014,
+            "title": "The Muddy River Band Acoustic Performance",
+            "slug": "the-muddy-river-band-acoustic-performance",
+            "post_type": "event",
+            "post_status": "publish",
+            "post_date": "2026-04-01 11:35:10",
+            "permalink": "http://localhost:8080/eventos/the-muddy-river-band-acoustic-performance/",
+            "_event_source": "laois_tourism",
+            "_event_source_id": "10015382-1790452800-1790461800@laoistourism.ie",
+            "_event_export_uuid": "90b5d213-3a7d-4e6e-9aee-02446db690e8",
+            "_event_status": "published",
+            "_event_date": "2026-09-26",
+            "_event_end_date": "2026-09-26",
+            "_event_start_time": "20:00",
+            "_event_timezone": "Europe/Dublin",
+            "county": [
+                "laois"
+            ],
+            "town": [],
+            "category": [
+                "member",
+                "music"
+            ],
+            "language": "pt",
+            "in_upcoming_set": true,
+            "next_occurrence": "2026-09-26",
+            "archive_rank": 137,
+            "archive_page": 14
+        },
+        {
+            "id": 100015,
+            "title": "Emma Doran – “Emmaculate” In The Midlands Park Hotel",
+            "slug": "emma-doran-emmaculate-in-the-midlands-park-hotel",
+            "post_type": "event",
+            "post_status": "publish",
+            "post_date": "2026-03-16 12:36:37",
+            "permalink": "http://localhost:8080/eventos/emma-doran-emmaculate-in-the-midlands-park-hotel/",
+            "_event_source": "laois_tourism",
+            "_event_source_id": "10015303-1790452800-1790463600@laoistourism.ie",
+            "_event_export_uuid": "55621f59-2720-4848-b212-5ca0efdd9714",
+            "_event_status": "published",
+            "_event_date": "2026-09-26",
+            "_event_end_date": "2026-09-26",
+            "_event_start_time": "20:00",
+            "_event_timezone": "Europe/Dublin",
+            "county": [
+                "laois"
+            ],
+            "town": [],
+            "category": [
+                "comedy",
+                "member"
+            ],
+            "language": "pt",
+            "in_upcoming_set": true,
+            "next_occurrence": "2026-09-26",
+            "archive_rank": 138,
+            "archive_page": 14
+        },
+        {
+            "id": 100016,
+            "title": "Rod Stewart Tribute Show",
+            "slug": "rod-stewart-tribute-show",
+            "post_type": "event",
+            "post_status": "publish",
+            "post_date": "2026-07-13 11:51:28",
+            "permalink": "http://localhost:8080/eventos/rod-stewart-tribute-show/",
+            "_event_source": "laois_tourism",
+            "_event_source_id": "10015999-1790454600-1790465400@laoistourism.ie",
+            "_event_export_uuid": "f8ac528e-3e6a-46fa-86c2-088a0a436ebb",
+            "_event_status": "published",
+            "_event_date": "2026-09-26",
+            "_event_end_date": "2026-09-26",
+            "_event_start_time": "20:30",
+            "_event_timezone": "Europe/Dublin",
+            "county": [
+                "laois"
+            ],
+            "town": [],
+            "category": [
+                "member"
+            ],
+            "language": "pt",
+            "in_upcoming_set": true,
+            "next_occurrence": "2026-09-26",
+            "archive_rank": 139,
+            "archive_page": 14
+        },
+        {
+            "id": 100017,
+            "title": "September Sanctuary Day Retreat",
+            "slug": "september-sanctuary-day-retreat",
+            "post_type": "event",
+            "post_status": "publish",
+            "post_date": "2026-09-08 09:55:04",
+            "permalink": "http://localhost:8080/eventos/september-sanctuary-day-retreat/",
+            "_event_source": "laois_tourism",
+            "_event_source_id": "10016378-1790503200-1790521200@laoistourism.ie",
+            "_event_export_uuid": "0b09edf6-1121-4f75-a0e3-60c99bea55df",
+            "_event_status": "published",
+            "_event_date": "2026-09-27",
+            "_event_end_date": "2026-09-27",
+            "_event_start_time": "10:00",
+            "_event_timezone": "Europe/Dublin",
+            "county": [
+                "laois"
+            ],
+            "town": [],
+            "category": [
+                "community"
+            ],
+            "language": "pt",
+            "in_upcoming_set": true,
+            "next_occurrence": "2026-09-27",
+            "archive_rank": 192,
+            "archive_page": 20
+        },
+        {
+            "id": 100018,
+            "title": "Abbeyleix Manor Hotel Wedding Showcase",
+            "slug": "abbeyleix-manor-hotel-wedding-showcase",
+            "post_type": "event",
+            "post_status": "publish",
+            "post_date": "2026-08-31 13:21:46",
+            "permalink": "http://localhost:8080/eventos/abbeyleix-manor-hotel-wedding-showcase/",
+            "_event_source": "laois_tourism",
+            "_event_source_id": "10016329-1790517600-1790524800@laoistourism.ie",
+            "_event_export_uuid": "0a052ea0-62b9-48b9-a258-ca8ed881a33f",
+            "_event_status": "published",
+            "_event_date": "2026-09-27",
+            "_event_end_date": "2026-09-27",
+            "_event_start_time": "14:00",
+            "_event_timezone": "Europe/Dublin",
+            "county": [
+                "laois"
+            ],
+            "town": [],
+            "category": [
+                "member"
+            ],
+            "language": "pt",
+            "in_upcoming_set": true,
+            "next_occurrence": "2026-09-27",
+            "archive_rank": 193,
+            "archive_page": 20
+        },
+        {
+            "id": 100019,
+            "title": "Paint & Sip At Bobs Bar",
+            "slug": "paint-sip-at-bobs-bar",
+            "post_type": "event",
+            "post_status": "publish",
+            "post_date": "2026-09-22 10:30:15",
+            "permalink": "http://localhost:8080/eventos/paint-sip-at-bobs-bar/",
+            "_event_source": "laois_tourism",
+            "_event_source_id": "10016467-1790521200-1790528400@laoistourism.ie",
+            "_event_export_uuid": "1f864a56-d815-4ef5-aa9f-c51fb4ac399b",
+            "_event_status": "published",
+            "_event_date": "2026-09-27",
+            "_event_end_date": "2026-09-27",
+            "_event_start_time": "15:00",
+            "_event_timezone": "Europe/Dublin",
+            "county": [
+                "laois"
+            ],
+            "town": [],
+            "category": [
+                "community"
+            ],
+            "language": "pt",
+            "in_upcoming_set": true,
+            "next_occurrence": "2026-09-27",
+            "archive_rank": 194,
+            "archive_page": 20
+        },
+        {
+            "id": 100020,
+            "title": "Over The Top Wrestling At Midlands Park Hotel",
+            "slug": "over-the-top-wrestling-at-midlands-park-hotel",
+            "post_type": "event",
+            "post_status": "publish",
+            "post_date": "2026-08-26 08:35:29",
+            "permalink": "http://localhost:8080/eventos/over-the-top-wrestling-at-midlands-park-hotel/",
+            "_event_source": "laois_tourism",
+            "_event_source_id": "10016306-1790524800-1790533800@laoistourism.ie",
+            "_event_export_uuid": "f5a6cf4a-834b-4649-b350-980ed4dd97c8",
+            "_event_status": "published",
+            "_event_date": "2026-09-27",
+            "_event_end_date": "2026-09-27",
+            "_event_start_time": "16:00",
+            "_event_timezone": "Europe/Dublin",
+            "county": [
+                "laois"
+            ],
+            "town": [],
+            "category": [
+                "member"
+            ],
+            "language": "pt",
+            "in_upcoming_set": true,
+            "next_occurrence": "2026-09-27",
+            "archive_rank": 195,
+            "archive_page": 20
+        },
+        {
+            "id": 100021,
+            "title": "Double L Reunion Music Night",
+            "slug": "double-l-reunion-music-night",
+            "post_type": "event",
+            "post_status": "publish",
+            "post_date": "2026-09-02 08:36:29",
+            "permalink": "http://localhost:8080/eventos/double-l-reunion-music-night/",
+            "_event_source": "laois_tourism",
+            "_event_source_id": "10016349-1790528400-1790542800@laoistourism.ie",
+            "_event_export_uuid": "3adbd070-9172-4cf1-8789-1a13a248bdd3",
+            "_event_status": "published",
+            "_event_date": "2026-09-27",
+            "_event_end_date": "2026-09-27",
+            "_event_start_time": "17:00",
+            "_event_timezone": "Europe/Dublin",
+            "county": [
+                "laois"
+            ],
+            "town": [],
+            "category": [
+                "community",
+                "music"
+            ],
+            "language": "pt",
+            "in_upcoming_set": true,
+            "next_occurrence": "2026-09-27",
+            "archive_rank": 196,
+            "archive_page": 20
+        },
+        {
+            "id": 100022,
+            "title": "SEO In The Age Of AI",
+            "slug": "seo-in-the-age-of-ai",
+            "post_type": "event",
+            "post_status": "publish",
+            "post_date": "2026-09-15 11:34:35",
+            "permalink": "http://localhost:8080/eventos/seo-in-the-age-of-ai/",
+            "_event_source": "laois_tourism",
+            "_event_source_id": "10016421-1790676000-1790679600@laoistourism.ie",
+            "_event_export_uuid": "061c82c4-657a-47bb-913e-4b7f530aa2a7",
+            "_event_status": "published",
+            "_event_date": "2026-09-29",
+            "_event_end_date": "2026-09-29",
+            "_event_start_time": "10:00",
+            "_event_timezone": "Europe/Dublin",
+            "county": [
+                "laois"
+            ],
+            "town": [],
+            "category": [
+                "member"
+            ],
+            "language": "pt",
+            "in_upcoming_set": true,
+            "next_occurrence": "2026-09-29",
+            "archive_rank": 223,
+            "archive_page": 23
+        },
+        {
+            "id": 100023,
+            "title": "Chair Yoga At Portlaoise Library",
+            "slug": "chair-yoga-at-portlaoise-library",
+            "post_type": "event",
+            "post_status": "publish",
+            "post_date": "2026-09-21 13:02:06",
+            "permalink": "http://localhost:8080/eventos/chair-yoga-at-portlaoise-library/",
+            "_event_source": "laois_tourism",
+            "_event_source_id": "10016457-1790690400-1792508400@laoistourism.ie",
+            "_event_export_uuid": "d68c1742-2771-403c-929a-1390495968ba",
+            "_event_status": "published",
+            "_event_date": "2026-09-29",
+            "_event_end_date": "2026-10-20",
+            "_event_start_time": "14:00",
+            "_event_timezone": "Europe/Dublin",
+            "county": [
+                "laois"
+            ],
+            "town": [],
+            "category": [
+                "member"
+            ],
+            "language": "pt",
+            "in_upcoming_set": true,
+            "next_occurrence": "2026-09-29",
+            "archive_rank": 224,
+            "archive_page": 23
+        },
+        {
+            "id": 100024,
+            "title": "Community Biodiversity Action Plan",
+            "slug": "community-biodiversity-action-plan",
+            "post_type": "event",
+            "post_status": "publish",
+            "post_date": "2026-09-23 08:14:34",
+            "permalink": "http://localhost:8080/eventos/community-biodiversity-action-plan/",
+            "_event_source": "laois_tourism",
+            "_event_source_id": "10016475-1790704800-1790708400@laoistourism.ie",
+            "_event_export_uuid": "8dd547f5-c9c6-4efb-ad5b-1074f66b715e",
+            "_event_status": "published",
+            "_event_date": "2026-09-29",
+            "_event_end_date": "2026-09-29",
+            "_event_start_time": "18:00",
+            "_event_timezone": "Europe/Dublin",
+            "county": [
+                "laois"
+            ],
+            "town": [],
+            "category": [
+                "member"
+            ],
+            "language": "pt",
+            "in_upcoming_set": true,
+            "next_occurrence": "2026-09-29",
+            "archive_rank": 225,
+            "archive_page": 23
+        },
+        {
+            "id": 100025,
+            "title": "InmoTelephone Triage Nurses Section Seminar",
+            "slug": "inmotelephone-triage-nurses-section-seminar",
+            "post_type": "event",
+            "post_status": "publish",
+            "post_date": "2026-09-01 08:25:42",
+            "permalink": "http://localhost:8080/eventos/inmotelephone-triage-nurses-section-seminar/",
+            "_event_source": "laois_tourism",
+            "_event_source_id": "10016337-1790760600-1790776800@laoistourism.ie",
+            "_event_export_uuid": "eedcd111-9bea-45c7-9965-a5b0688b4818",
+            "_event_status": "published",
+            "_event_date": "2026-09-30",
+            "_event_end_date": "2026-09-30",
+            "_event_start_time": "09:30",
+            "_event_timezone": "Europe/Dublin",
+            "county": [
+                "laois"
+            ],
+            "town": [],
+            "category": [
+                "member"
+            ],
+            "language": "pt",
+            "in_upcoming_set": true,
+            "next_occurrence": "2026-09-30",
+            "archive_rank": 247,
+            "archive_page": 25
+        },
+        {
+            "id": 100026,
+            "title": "Lunch and Learn At BloomHQ",
+            "slug": "lunch-and-learn-at-bloomhq",
+            "post_type": "event",
+            "post_status": "publish",
+            "post_date": "2026-08-31 10:04:19",
+            "permalink": "http://localhost:8080/eventos/lunch-and-learn-at-bloomhq/",
+            "_event_source": "laois_tourism",
+            "_event_source_id": "10016325-1790773200-1790778600@laoistourism.ie",
+            "_event_export_uuid": "93994cee-b53b-478e-a12b-394450c14b01",
+            "_event_status": "published",
+            "_event_date": "2026-09-30",
+            "_event_end_date": "2026-09-30",
+            "_event_start_time": "13:00",
+            "_event_timezone": "Europe/Dublin",
+            "county": [
+                "laois"
+            ],
+            "town": [],
+            "category": [
+                "member"
+            ],
+            "language": "pt",
+            "in_upcoming_set": true,
+            "next_occurrence": "2026-09-30",
+            "archive_rank": 248,
+            "archive_page": 25
+        },
+        {
+            "id": 100027,
+            "title": "Avenue Q Hit Musical",
+            "slug": "avenue-q-hit-musical",
+            "post_type": "event",
+            "post_status": "publish",
+            "post_date": "2026-03-23 10:35:43",
+            "permalink": "http://localhost:8080/eventos/avenue-q-hit-musical/",
+            "_event_source": "laois_tourism",
+            "_event_source_id": "10015333-1790796600-1791064800@laoistourism.ie",
+            "_event_export_uuid": "71f638e1-6ef5-4f1b-91d7-f2003e552a5f",
+            "_event_status": "published",
+            "_event_date": "2026-09-30",
+            "_event_end_date": "2026-10-03",
+            "_event_start_time": "19:30",
+            "_event_timezone": "Europe/Dublin",
+            "county": [
+                "laois"
+            ],
+            "town": [],
+            "category": [
+                "comedy",
+                "member",
+                "music"
+            ],
+            "language": "pt",
+            "in_upcoming_set": true,
+            "next_occurrence": "2026-09-30",
+            "archive_rank": 249,
+            "archive_page": 25
+        },
+        {
+            "id": 100028,
+            "title": "Art Class For Beginners",
+            "slug": "art-class-for-beginners",
+            "post_type": "event",
+            "post_status": "publish",
+            "post_date": "2026-09-23 11:23:15",
+            "permalink": "http://localhost:8080/eventos/art-class-for-beginners/",
+            "_event_source": "laois_tourism",
+            "_event_source_id": "10016481-1790850600-1790854200@laoistourism.ie",
+            "_event_export_uuid": "54305a67-96c3-4bc4-9f20-07bc125d6d77",
+            "_event_status": "published",
+            "_event_date": "2026-10-01",
+            "_event_end_date": "2026-10-01",
+            "_event_start_time": "10:30",
+            "_event_timezone": "Europe/Dublin",
+            "county": [
+                "laois"
+            ],
+            "town": [],
+            "category": [
+                "member"
+            ],
+            "language": "pt",
+            "in_upcoming_set": true,
+            "next_occurrence": "2026-10-01",
+            "archive_rank": 275,
+            "archive_page": 28
+        },
+        {
+            "id": 100029,
+            "title": "Vittorio Angelone Extra Show Added",
+            "slug": "vittorio-angelone-extra-show-added",
+            "post_type": "event",
+            "post_status": "publish",
+            "post_date": "2026-04-07 14:00:12",
+            "permalink": "http://localhost:8080/eventos/vittorio-angelone-extra-show-added/",
+            "_event_source": "laois_tourism",
+            "_event_source_id": "10015414-1790967600-1790976600@laoistourism.ie",
+            "_event_export_uuid": "ebe6cde2-72be-442d-a864-b3fa4d8f5197",
+            "_event_status": "published",
+            "_event_date": "2026-10-02",
+            "_event_end_date": "2026-10-02",
+            "_event_start_time": "19:00",
+            "_event_timezone": "Europe/Dublin",
+            "county": [
+                "laois"
+            ],
+            "town": [],
+            "category": [
+                "comedy",
+                "member"
+            ],
+            "language": "pt",
+            "in_upcoming_set": true,
+            "next_occurrence": "2026-10-02",
+            "archive_rank": 314,
+            "archive_page": 32
+        },
+        {
+            "id": 100030,
+            "title": "80s & 90s Music Bingo Night",
+            "slug": "80s-90s-music-bingo-night",
+            "post_type": "event",
+            "post_status": "publish",
+            "post_date": "2026-09-23 09:04:08",
+            "permalink": "http://localhost:8080/eventos/80s-90s-music-bingo-night/",
+            "_event_source": "laois_tourism",
+            "_event_source_id": "10016478-1790967600-1790978400@laoistourism.ie",
+            "_event_export_uuid": "34519bdc-aaf4-4186-8851-a7a76ad4e12e",
+            "_event_status": "published",
+            "_event_date": "2026-10-02",
+            "_event_end_date": "2026-10-02",
+            "_event_start_time": "19:00",
+            "_event_timezone": "Europe/Dublin",
+            "county": [
+                "laois"
+            ],
+            "town": [],
+            "category": [
+                "community",
+                "music"
+            ],
+            "language": "pt",
+            "in_upcoming_set": true,
+            "next_occurrence": "2026-10-02",
+            "archive_rank": 315,
+            "archive_page": 32
+        }
+    ]
+}

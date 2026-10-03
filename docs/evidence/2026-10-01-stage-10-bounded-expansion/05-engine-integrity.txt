@@ -1,0 +1,9 @@
+Stage 10 engine integrity — SHA-256 of the shared mutation authority
+
+Pinned baseline (Stage 0 through Stage 10):
+  baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4
+
+After Stage 10:
+baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4  wp-content/plugins/conexao-translation-rollout/includes/class-conexao-translation-rollout-engine.php
+
+The digest is re-pinned and asserted by tests/scripts/verify-stage8-control-plane.py on every run.

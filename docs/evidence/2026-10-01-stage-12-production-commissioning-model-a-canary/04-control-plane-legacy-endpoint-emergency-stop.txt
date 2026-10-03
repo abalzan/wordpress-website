@@ -1,0 +1,119 @@
+# Stage 12 - Control plane, legacy endpoint and forbidden surfaces (Sections 7, 8, 9, 10)
+STATUS OF EVERY PRODUCTION CHECK BELOW: NOT PERFORMED (no production access, no credential).
+What IS proven here is the ARTIFACT and GATE state only. Nothing is claimed about production.
+
+== 1. CONTROL-PLANE REGISTRY (the single permanent registry) ==
+registry file: tests/scripts/verify-stage8-control-plane.py
+
+APPROVED_ACTION  = conexao_translation_automation_proof   (the ONLY approved proof endpoint)
+CLOSED_ACTION    = conexao_translation_rollout_run         (the retired apply endpoint)
+
+BATCH_CONTROL_SURFACES (declared, ONE entry - not a second inventory):
+  BATCH_CONTROL_SURFACES: dict[str, dict[str, object]] = {
+      "conexao_translation_automation_batch": {
+          "file": "class-conexao-translation-automation-batch-control.php",
+          "method": "POST",
+          "authenticated": True,
+          "capability": "manage_options",
+          "nonce_action": "conexao_translation_automation_batch",
+          "commissioned": False,
+          "why": (
+              "Stage 11 Model A: explicit prepare/review, approve, execute, abort "
+              "and clear-emergency-stop transitions. Declared here so the control "
+              "plane stays one registry; NOT commissioned in Stage 11."
+          ),
+      },
+  }
+
+== 2. BATCH-CONTROL ACTION / OWNING FILE (Section 9) ==
+action      = conexao_translation_automation_batch   (const ACTION, line 66)
+owning file = wp-content/plugins/conexao-translation-automation/includes/
+              class-conexao-translation-automation-batch-control.php
+registry declares the same action + the same owning filename: CONFIRMED by the gate (149 passed).
+
+== 3. BATCH-CONTROL SECURITY CONTRACT (Section 9 checklist, from the artifact) ==
+  POST-only ................ validate_request() step 1 -> batch_control_method_not_allowed
+  authenticated ............ step 2 -> batch_control_not_authenticated
+  manage_options ........... step 3 -> batch_control_missing_capability (wider claim REFUSED)
+  nonce .................... step 4 -> batch_control_invalid_nonce (own nonce action)
+  server-derived environment . no request field exists for it at all
+  exact action transitions .. prepare/approve/execute/abort/clear_emergency_stop
+  no generic mode=apply .... there is no mode field; the field allow-list REFUSES it
+  ACCEPTED_FIELDS = [conexao_batch_action, conexao_batch_id]   (line 104)
+  supplying operations | batch_size | environment | plan_digest | approval_digest
+  is a REFUSAL (batch_control_unknown_field), not a silent ignore, so a caller
+  cannot believe it constrained anything.
+  server resolves the approved batch from PERSISTED STATE (batch_id shape only is client-supplied).
+
+== 4. IS IT COMMISSIONED? (Section 9 - the honest answer) ==
+NO. grep of the plugin bootstrap:
+  86:// `Batch_Control::register()` is deliberately NOT called here, so this plugin
+  91:// Conexao_Translation_Automation_Batch_Control::register();
+  => the call site is COMMENTED OUT (Stage 11 §30). register() is never invoked.
+  => is_commissioned() returns false (line 204-206).
+  => in production today there is NO batch-control endpoint and NO batch screen.
+  Section 9 requires commissioning it. That is a PRODUCTION action, and it is
+  NOT PERFORMED because installation authorization is ABSENT. Commissioning it
+  from this repository without authorization is forbidden by Section 1.
+
+== 5. FORBIDDEN SURFACES (Section 7) - proven in the ARTIFACT ==
+  register_rest_route() calls in SHIPPED includes of BOTH translation plugins: 0
+  => 0. No REST translation endpoint exists.
+  wp_schedule_event / wp_schedule_single_event / cron_schedules in shipped includes: 1
+  => 0. The one textual match is a DOCBLOCK in class-...-trigger.php lines 26-27 that
+     asserts the absence structurally. No cron is registered. Cron = 0.
+  anonymous endpoint ....... none; the only surfaces are admin_post_* (authenticated by WP)
+  webhook ................. none in either plugin
+
+== 6. LEGACY ENDPOINT - THE STAGE 8/9 OUTSTANDING PRODUCTION PROOF (Section 8) ==
+Target: admin_post_conexao_translation_rollout_run must return HTTP 410.
+
+ARTIFACT PROOF (real source, class-conexao-translation-rollout-admin.php):
+  		if ( ! current_user_can( self::CAP ) ) {
+  			wp_die( 'forbidden', '', array( 'response' => 403 ) );
+  		}
+  
+  		wp_die(
+  			esc_html(
+  				sprintf(
+  					'The %1$s endpoint was retired: it could apply EN translations without the review, approval and audit controls the automation program requires. Use %2$s (Tools -> Translation Automation) instead.',
+  					self::ACTION,
+  					self::REPLACEMENT_ACTION
+  				)
+  			),
+  			'Endpoint retired',
+  			array( 'response' => 410 )
+  		);
+  => literal 410, no wp_safe_redirect, no engine call, wp_die before any run.
+
+GATE PROOF (permanent, runs on every test invocation):
+  149 passed, 0 failed
+  
+  36 passed, 0 failed
+
+>>> PRODUCTION 410 RESULT: NOT PERFORMED.
+>>> No authenticated production context exists (no production credential, no
+>>> installation authorization). Section 8 explicitly forbids probing the old
+>>> endpoint in any way that could reach engine execution, and forbids claiming
+>>> production verification that did not happen.
+>>> A production 410 is therefore NOT claimed. Stage 8/9s outstanding
+>>> production proof REMAINS OUTSTANDING.
+
+== 7. EMERGENCY STOP (Section 10) ==
+initial production state : NOT OBSERVABLE (no production access). NOT VERIFIED.
+ARTIFACT PROOF of the required semantics (fail closed):
+  117:		if ( null === $raw ) {
+  119:				'stopped' => true,
+  132:				'stopped' => true,
+  141:				'stopped' => true,
+  154:		if ( ! is_bool( $raw['stopped'] ) ) {
+  156:				'stopped' => true,
+  => absent record => STOPPED (line 117-123). Malformed / non-boolean / wrong schema =>
+     STOPPED (lines 130-161). A malformed safety control is never a permission.
+  => set() requires authorized=true AND capability==manage_options (lines 222-237).
+  => NO request field is ever read as the flag; the browser cannot forge it.
+  => nothing clears the stop during plugin activation (no activation hook writes it).
+  LOCAL OBSERVATION (local Docker only, NOT production):
+  option conexao_translation_automation_emergency_stop present = false => local = STOPPED.
+  => clearing it requires a separate authenticated operator POST action, which is
+     NOT PERFORMED. No production batch was run.

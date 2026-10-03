@@ -29,9 +29,55 @@ Copy `.env.example` to `.env` only when overriding defaults. All defaults work o
 ### Build
 
 ```bash
-./scripts/build-plugins-zip.sh   # packages all plugins into dist/
+./scripts/build-plugins-zip.sh   # packages the registry's build:true plugins into dist/
 ./scripts/build-theme-zip.sh     # packages the theme into dist/
 ```
+
+Both builds are deterministic and emit `dist/release.json`, which records the
+version, git SHA, file count and SHA-256 of every artifact that was actually
+built, alongside the allowlist `plugins.json` permits.
+
+```bash
+python3 scripts/release-manifest.py --verify       # allowlist + hash verification
+./scripts/verify-release.sh                         # prove the whole release workflow locally
+python3 scripts/verify-deploy.py --site <url>       # read-only HTTP check of a deployment
+```
+
+Release procedure, tag convention and rollback: **[docs/releases.md](docs/releases.md)**.
+
+## Plugins
+
+<!-- BEGIN GENERATED PLUGIN REGISTRY: README.md plugin registry -->
+### Plugin registry
+
+**The authoritative plugin list is [`plugins.json`](plugins.json)** - it owns load order,
+dependencies, lifecycle status, the production activation order, release build inclusion
+and local Compose mounts. The table below is generated from it by
+`scripts/generate-registry-docs.php`; every derived list in this repository comes from
+that one file.
+
+| # | Plugin | Class | Status | Production | Build | Compose mount | Docs |
+|---|--------|-------|--------|------------|-------|---------------|------|
+| 1 | `conexao-data-model` | platform | active | yes | yes | yes | [conexao-data-model](docs/plugins/conexao-data-model.md) |
+| 2 | `conexao-content` | platform | active | yes | yes | yes | [conexao-content](docs/plugins/conexao-content.md) |
+| 3 | `conexao-admin-ux` | platform | active | yes | yes | yes | [conexao-admin-ux](docs/plugins/conexao-admin-ux.md) |
+| 4 | `conexao-event-runtime` | platform | active | yes | yes | yes | [conexao-event-runtime](docs/plugins/conexao-event-runtime.md) |
+| 5 | `conexao-event-importer` | tooling | active | no | yes | yes | [conexao-event-importer](docs/plugins/conexao-event-importer.md) |
+| 6 | `conexao-leisure-migration` | tooling | active | no | yes | yes | [conexao-leisure-migration](docs/plugins/conexao-leisure-migration.md) |
+| 7 | `conexao-sponsor-migration` | tooling | active | no | yes | yes | [conexao-sponsor-migration](docs/plugins/conexao-sponsor-migration.md) |
+| 8 | `conexao-translation-rollout` | platform | active | yes | yes | yes | [conexao-translation-rollout](docs/plugins/conexao-translation-rollout.md) |
+| 9 | `conexao-en-translation` | tooling | active | no | no | yes | [conexao-en-translation](docs/plugins/conexao-en-translation.md) |
+| 10 | `conexao-translation-automation` | platform | active | yes | yes | yes | [conexao-translation-automation](docs/plugins/conexao-translation-automation.md) |
+
+**Production steady state** (platform, `production: true`) - activate in this order: conexao-data-model -> conexao-content -> conexao-admin-ux -> conexao-event-runtime -> conexao-translation-rollout -> conexao-translation-automation.
+
+**Local-only tooling** (never production): conexao-event-importer, conexao-leisure-migration, conexao-sponsor-migration, conexao-en-translation.
+
+**Retired rollout plugins** (historical tooling, *activate → apply → remove*; not a production dependency and not in any release ZIP): .
+
+Versions are **not** duplicated in the registry: the WordPress plugin header is the
+authoritative source, and each entry records only where to read it (`version_source`).
+<!-- END GENERATED PLUGIN REGISTRY: README.md plugin registry -->
 
 ## Production
 
@@ -44,6 +90,7 @@ Copy `.env.example` to `.env` only when overriding defaults. All defaults work o
 ## Project Structure
 
 ```
+├── plugins.json                       # Authoritative plugin registry (load order, build, mounts, lifecycle)
 ├── compose.yaml                    # Docker Compose
 ├── .htaccess                       # Rewrite rules, caching, security
 ├── docker/                         # Apache config, entrypoint
@@ -51,13 +98,7 @@ Copy `.env.example` to `.env` only when overriding defaults. All defaults work o
 ├── content-inventory/              # Migration inventory CSVs
 ├── docs/                           # Project documentation
 └── wp-content/
-    ├── plugins/
-    │   ├── conexao-data-model      # CPTs, taxonomies, meta
-    │   ├── conexao-content         # Pages, shortcodes
-    │   ├── conexao-admin-ux        # Custom admin UI
-    │   ├── conexao-event-runtime   # Event runtime (production dependency)
-    │   ├── conexao-event-importer  # Event import/export tooling (local-only)
-    │   └── conexao-leisure-migration # Lazer export/import
+    ├── plugins/                    # Custom plugins (inventory: plugins.json)
     └── themes/
         └── conexao-br-irlanda      # Active theme
 ```
@@ -100,8 +141,23 @@ Copy `.env.example` to `.env` only when overriding defaults. All defaults work o
 - Reuse existing dark-mode CSS variables.
 - Preserve attribution/license metadata for imported images.
 - Avoid page-specific CSS hacks when a shared component can be fixed.
-- All custom plugins must be loaded in order: data-model → content → admin-ux → event-importer → leisure-migration.
+- Custom plugin load order, production activation order, release build list and local
+  Compose mounts all come from `plugins.json`; see the plugin registry section below.
+
+## Plugin registry workflow
+
+`plugins.json` is the **only** authoritative plugin list. Every derived list
+(load order, production activation order, release build list, Compose mounts,
+lifecycle documentation) is generated from it:
+
+```bash
+php scripts/generate-registry-docs.php --check   # validate + drift gate (zero writes)
+php scripts/generate-registry-docs.php --write   # regenerate the marked regions
+```
+
+Never hand-edit a generated block; edit `plugins.json` and re-run `--write`.
 
 ## Documentation
 
 See `AGENTS.md` for AI-agent orientation and `docs/` for detailed documentation.
+_Last verified: 2026-09-26 by Stage L — Permanent Invariant Gates_

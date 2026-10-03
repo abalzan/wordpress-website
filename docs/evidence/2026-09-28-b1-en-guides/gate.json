@@ -1,0 +1,624 @@
+{
+  "stage": "L — permanent invariant gates",
+  "generated_at": "2026-09-28T12:40:23Z",
+  "repository_sha": "cd8b6c6ba33a588f28b8a8c20a4b27add44a5937",
+  "status": "pass",
+  "gates": {
+    "taxonomy_policy": {
+      "gate": "taxonomy_policy",
+      "domain": "taxonomy",
+      "kind": "php",
+      "command": "docker compose exec -T wordpress php /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-taxonomy-policy.php",
+      "exit_code": 0,
+      "status": "pass",
+      "passed": 18,
+      "failed": 0,
+      "violations": 0,
+      "pre_existing": 0,
+      "new": 0,
+      "allowlisted": 0,
+      "prerequisites": [
+        "polylang",
+        "conexao_county + conexao_town + conexao_category terms"
+      ],
+      "details": [
+        {
+          "key": "taxonomy:conexao_county:suffixed_duplicate_terms",
+          "count": 0,
+          "label": "conexao_county: no per-language suffixed duplicate terms",
+          "detail": {
+            "slugs": []
+          }
+        },
+        {
+          "key": "taxonomy:conexao_county:duplicate_slugs",
+          "count": 0,
+          "label": "conexao_county: no duplicate term slugs",
+          "detail": {
+            "slugs": []
+          }
+        },
+        {
+          "key": "taxonomy:conexao_county:language_tagged_terms",
+          "count": 0,
+          "label": "conexao_county: every shared term is language-neutral (no language tag)",
+          "detail": {
+            "sample": []
+          }
+        },
+        {
+          "key": "taxonomy:conexao_town:suffixed_duplicate_terms",
+          "count": 0,
+          "label": "conexao_town: no per-language suffixed duplicate terms",
+          "detail": {
+            "slugs": []
+          }
+        },
+        {
+          "key": "taxonomy:conexao_town:duplicate_slugs",
+          "count": 0,
+          "label": "conexao_town: no duplicate term slugs",
+          "detail": {
+            "slugs": []
+          }
+        },
+        {
+          "key": "taxonomy:conexao_town:language_tagged_terms",
+          "count": 0,
+          "label": "conexao_town: every shared term is language-neutral (no language tag)",
+          "detail": {
+            "sample": []
+          }
+        },
+        {
+          "key": "taxonomy:conexao_category:en_terms_without_pt_link",
+          "count": 0,
+          "label": "conexao_category: every EN term has a PT master",
+          "detail": {
+            "slugs": []
+          }
+        },
+        {
+          "key": "taxonomy:conexao_category:missing_reverse_link",
+          "count": 0,
+          "label": "conexao_category: every translated term pair is linked in BOTH directions",
+          "detail": {
+            "pairs": []
+          }
+        },
+        {
+          "key": "taxonomy:conexao_tag:en_terms_without_pt_link",
+          "count": 0,
+          "label": "conexao_tag: every EN term has a PT master",
+          "detail": {
+            "slugs": []
+          }
+        },
+        {
+          "key": "taxonomy:conexao_tag:missing_reverse_link",
+          "count": 0,
+          "label": "conexao_tag: every translated term pair is linked in BOTH directions",
+          "detail": {
+            "pairs": []
+          }
+        }
+      ],
+      "output_tail": [
+        "  PASS: conexao_town: no duplicate term slugs",
+        "  PASS: conexao_town: every shared term is language-neutral (no language tag)",
+        "  PASS: conexao_category: every EN term has a PT master",
+        "  PASS: conexao_category: every translated term pair is linked in BOTH directions",
+        "  PASS: conexao_tag: every EN term has a PT master",
+        "  PASS: conexao_tag: every translated term pair is linked in BOTH directions",
+        "  PASS: the gate inspected a real shared-term population",
+        "",
+        "  inspected: 276 shared terms, 13 translated term pairs",
+        "",
+        "18 passed, 0 failed",
+        "GATE-RESULT {\"gate\":\"taxonomy_policy\",\"status\":\"pass\",\"passed\":18,\"failed\":0,\"violations\":0,\"pre_existing\":0,\"new\":0,\"prerequisites\":[\"polylang\",\"conexao_county + conexao_town + conexao_category terms\"],\"allowlisted\":[],\"allowlisted_count\":0,\"details\":[{\"key\":\"taxonomy:conexao_county:suffixed_duplicate_terms\",\"count\":0,\"label\":\"conexao_county: no per-language suffixed duplicate terms\",\"detail\":{\"slugs\":[]}},{\"key\":\"taxonomy:conexao_county:duplicate_slugs\",\"count\":0,\"label\":\"conexao_county: no duplicate term slugs\",\"detail\":{\"slugs\":[]}},{\"key\":\"taxonomy:conexao_county:language_tagged_terms\",\"count\":0,\"label\":\"conexao_county: every shared term is language-neutral (no language tag)\",\"detail\":{\"sample\":[]}},{\"key\":\"taxonomy:conexao_town:suffixed_duplicate_terms\",\"count\":0,\"label\":\"conexao_town: no per-language suffixed duplicate terms\",\"detail\":{\"slugs\":[]}},{\"key\":\"taxonomy:conexao_town:duplicate_slugs\",\"count\":0,\"label\":\"conexao_town: no duplicate term slugs\",\"detail\":{\"slugs\":[]}},{\"key\":\"taxonomy:conexao_town:language_tagged_terms\",\"count\":0,\"label\":\"conexao_town: every shared term is language-neutral (no language tag)\",\"detail\":{\"sample\":[]}},{\"key\":\"taxonomy:conexao_category:en_terms_without_pt_link\",\"count\":0,\"label\":\"conexao_category: every EN term has a PT master\",\"detail\":{\"slugs\":[]}},{\"key\":\"taxonomy:conexao_category:missing_reverse_link\",\"count\":0,\"label\":\"conexao_category: every translated term pair is linked in BOTH directions\",\"detail\":{\"pairs\":[]}},{\"key\":\"taxonomy:conexao_tag:en_terms_without_pt_link\",\"count\":0,\"label\":\"conexao_tag: every EN term has a PT master\",\"detail\":{\"slugs\":[]}},{\"key\":\"taxonomy:conexao_tag:missing_reverse_link\",\"count\":0,\"label\":\"conexao_tag: every translated term pair is linked in BOTH directions\",\"detail\":{\"pairs\":[]}}]}"
+      ]
+    },
+    "translation_completeness": {
+      "gate": "translation_completeness",
+      "domain": "translation_completeness",
+      "kind": "php",
+      "command": "docker compose exec -T wordpress php /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-translation-completeness.php",
+      "exit_code": 0,
+      "status": "pass",
+      "passed": 20,
+      "failed": 0,
+      "violations": 0,
+      "pre_existing": 0,
+      "new": 0,
+      "allowlisted": 1833,
+      "prerequisites": [
+        "polylang",
+        "published PT content"
+      ],
+      "details": [
+        {
+          "key": "post_type:course_provider:missing_en",
+          "count": 0,
+          "label": "course_provider: eligible public PT records missing a linked EN translation = 0",
+          "detail": {
+            "eligible": 10,
+            "translated": 0,
+            "allowlisted": 10,
+            "sample": []
+          }
+        },
+        {
+          "key": "post_type:course_provider:malformed_relationships",
+          "count": 0,
+          "label": "course_provider: every translation relationship is a bidirectional link to a PT master",
+          "detail": {
+            "sample": []
+          }
+        },
+        {
+          "key": "post_type:event:missing_en",
+          "count": 0,
+          "label": "event: eligible public PT records missing a linked EN translation = 0",
+          "detail": {
+            "eligible": 1576,
+            "translated": 0,
+            "allowlisted": 1576,
+            "sample": []
+          }
+        },
+        {
+          "key": "post_type:event:malformed_relationships",
+          "count": 0,
+          "label": "event: every translation relationship is a bidirectional link to a PT master",
+          "detail": {
+            "sample": []
+          }
+        },
+        {
+          "key": "post_type:guide:missing_en",
+          "count": 0,
+          "label": "guide: eligible public PT records missing a linked EN translation = 0",
+          "detail": {
+            "eligible": 48,
+            "translated": 48,
+            "allowlisted": 0,
+            "sample": []
+          }
+        },
+        {
+          "key": "post_type:guide:malformed_relationships",
+          "count": 0,
+          "label": "guide: every translation relationship is a bidirectional link to a PT master",
+          "detail": {
+            "sample": []
+          }
+        },
+        {
+          "key": "post_type:job:missing_en",
+          "count": 0,
+          "label": "job: eligible public PT records missing a linked EN translation = 0",
+          "detail": {
+            "eligible": 1,
+            "translated": 0,
+            "allowlisted": 1,
+            "sample": []
+          }
+        },
+        {
+          "key": "post_type:job:malformed_relationships",
+          "count": 0,
+          "label": "job: every translation relationship is a bidirectional link to a PT master",
+          "detail": {
+            "sample": []
+          }
+        },
+        {
+          "key": "post_type:leisure:missing_en",
+          "count": 0,
+          "label": "leisure: eligible public PT records missing a linked EN translation = 0",
+          "detail": {
+            "eligible": 233,
+            "translated": 0,
+            "allowlisted": 233,
+            "sample": []
+          }
+        },
+        {
+          "key": "post_type:leisure:malformed_relationships",
+          "count": 0,
+          "label": "leisure: every translation relationship is a bidirectional link to a PT master",
+          "detail": {
+            "sample": []
+          }
+        },
+        {
+          "key": "post_type:page:missing_en",
+          "count": 0,
+          "label": "page: eligible public PT records missing a linked EN translation = 0",
+          "detail": {
+            "eligible": 43,
+            "translated": 33,
+            "allowlisted": 10,
+            "sample": []
+          }
+        },
+        {
+          "key": "post_type:page:malformed_relationships",
+          "count": 0,
+          "label": "page: every translation relationship is a bidirectional link to a PT master",
+          "detail": {
+            "sample": []
+          }
+        },
+        {
+          "key": "post_type:post:missing_en",
+          "count": 0,
+          "label": "post: eligible public PT records missing a linked EN translation = 0",
+          "detail": {
+            "eligible": 42,
+            "translated": 42,
+            "allowlisted": 0,
+            "sample": []
+          }
+        },
+        {
+          "key": "post_type:post:malformed_relationships",
+          "count": 0,
+          "label": "post: every translation relationship is a bidirectional link to a PT master",
+          "detail": {
+            "sample": []
+          }
+        },
+        {
+          "key": "post_type:sponsor:missing_en",
+          "count": 0,
+          "label": "sponsor: eligible public PT records missing a linked EN translation = 0",
+          "detail": {
+            "eligible": 3,
+            "translated": 0,
+            "allowlisted": 3,
+            "sample": []
+          }
+        },
+        {
+          "key": "post_type:sponsor:malformed_relationships",
+          "count": 0,
+          "label": "sponsor: every translation relationship is a bidirectional link to a PT master",
+          "detail": {
+            "sample": []
+          }
+        }
+      ],
+      "output_tail": [
+        "  post             eligible PT=42 translated=42 allowlisted=0 missing EN=0 malformed=0",
+        "  PASS: post: eligible public PT records missing a linked EN translation = 0",
+        "  PASS: post: every translation relationship is a bidirectional link to a PT master",
+        "  sponsor          eligible PT=3 translated=0 allowlisted=3 missing EN=0 malformed=0",
+        "  PASS: sponsor: eligible public PT records missing a linked EN translation = 0",
+        "  PASS: sponsor: every translation relationship is a bidirectional link to a PT master",
+        "  PASS: every discovered content type was evaluated (no type silently skipped)",
+        "",
+        "20 passed, 0 failed",
+        "  allowlisted: 1833 (by documented policy)",
+        "    first 20: course_provider:microcreds, course_provider:apprenticeship-ie, course_provider:etbi, course_provider:courses-ie, course_provider:local-enterprise-office, course_provider:solas-ecollege, course_provider:skillnet-ireland, course_provider:springboard-plus, course_provider:qualifax, course_provider:fetch-courses, event:the-fright-crawl-corks-1-halloween-bar-crawl-2026-sat-oct-31, event:clouds, event:navigating-new-risks-cyber-oil-and-pi-realities-for-the-modern-seafarer, event:friends-of-the-south-infirmary-smart-table-quiz, event:abba-bottomless-drag-brunch-with-mockie-ah-2, event:cushion-concerts-at-the-library-2-5-years-2, event:fish56octagon, event:mtrpls-x-distort-x-catacombs-sunil-sharpe-rebecca-delle-piane, event:from-idea-to-icon-live-with-joseph-joseph, event:2hats1usb-are-taking-over-cork-with-jagermeisters-save-the-night",
+        "GATE-RESULT {\"gate\":\"translation_completeness\",\"status\":\"pass\",\"passed\":20,\"failed\":0,\"violations\":0,\"pre_existing\":0,\"new\":0,\"prerequisites\":[\"polylang\",\"published PT content\"],\"allowlisted\":[\"course_provider:microcreds\",\"course_provider:apprenticeship-ie\",\"course_provider:etbi\",\"course_provider:courses-ie\",\"course_provider:local-enterprise-office\",\"course_provider:solas-ecollege\",\"course_provider:skillnet-ireland\",\"course_provider:springboard-plus\",\"course_provider:qualifax\",\"course_provider:fetch-courses\",\"event:the-fright-crawl-corks-1-halloween-bar-crawl-2026-sat-oct-31\",\"event:clouds\",\"event:navigating-new-risks-cyber-oil-and-pi-realities-for-the-modern-seafarer\",\"event:friends-of-the-south-infirmary-smart-table-quiz\",\"event:abba-bottomless-drag-brunch-with-mockie-ah-2\",\"event:cushion-concerts-at-the-library-2-5-years-2\",\"event:fish56octagon\",\"event:mtrpls-x-distort-x-catacombs-sunil-sharpe-rebecca-delle-piane\",\"event:from-idea-to-icon-live-with-joseph-joseph\",\"event:2hats1usb-are-taking-over-cork-with-jagermeisters-save-the-night\"],\"allowlisted_count\":1833,\"details\":[{\"key\":\"post_type:course_provider:missing_en\",\"count\":0,\"label\":\"course_provider: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":10,\"translated\":0,\"allowlisted\":10,\"sample\":[]}},{\"key\":\"post_type:course_provider:malformed_relationships\",\"count\":0,\"label\":\"course_provider: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:event:missing_en\",\"count\":0,\"label\":\"event: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":1576,\"translated\":0,\"allowlisted\":1576,\"sample\":[]}},{\"key\":\"post_type:event:malformed_relationships\",\"count\":0,\"label\":\"event: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:guide:missing_en\",\"count\":0,\"label\":\"guide: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":48,\"translated\":48,\"allowlisted\":0,\"sample\":[]}},{\"key\":\"post_type:guide:malformed_relationships\",\"count\":0,\"label\":\"guide: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:job:missing_en\",\"count\":0,\"label\":\"job: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":1,\"translated\":0,\"allowlisted\":1,\"sample\":[]}},{\"key\":\"post_type:job:malformed_relationships\",\"count\":0,\"label\":\"job: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:leisure:missing_en\",\"count\":0,\"label\":\"leisure: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":233,\"translated\":0,\"allowlisted\":233,\"sample\":[]}},{\"key\":\"post_type:leisure:malformed_relationships\",\"count\":0,\"label\":\"leisure: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:page:missing_en\",\"count\":0,\"label\":\"page: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":43,\"translated\":33,\"allowlisted\":10,\"sample\":[]}},{\"key\":\"post_type:page:malformed_relationships\",\"count\":0,\"label\":\"page: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:post:missing_en\",\"count\":0,\"label\":\"post: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":42,\"translated\":42,\"allowlisted\":0,\"sample\":[]}},{\"key\":\"post_type:post:malformed_relationships\",\"count\":0,\"label\":\"post: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:sponsor:missing_en\",\"count\":0,\"label\":\"sponsor: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":3,\"translated\":0,\"allowlisted\":3,\"sample\":[]}},{\"key\":\"post_type:sponsor:malformed_relationships\",\"count\":0,\"label\":\"sponsor: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}}]}"
+      ]
+    },
+    "cache_scoping": {
+      "gate": "cache_scoping",
+      "domain": "cache_scoping",
+      "kind": "php",
+      "command": "docker compose exec -T wordpress php /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-cache-language-scoping.php",
+      "exit_code": 0,
+      "status": "pass",
+      "passed": 9,
+      "failed": 0,
+      "violations": 0,
+      "pre_existing": 0,
+      "new": 0,
+      "allowlisted": 0,
+      "prerequisites": [
+        "polylang",
+        "conexao_lang_cache_key() + conexao_flush_language_cache()"
+      ],
+      "details": [
+        {
+          "key": "cache:lang_cache_key_not_language_scoped",
+          "count": 0,
+          "label": "conexao_lang_cache_key() returns a distinct key for every language",
+          "detail": {
+            "keys": {
+              "pt": "conexao_gate_probe_pt",
+              "en": "conexao_gate_probe_en"
+            }
+          }
+        },
+        {
+          "key": "cache:lang_cache_key_base_changed",
+          "count": 0,
+          "label": "conexao_lang_cache_key() keeps the base key as a prefix",
+          "detail": {
+            "keys": []
+          }
+        },
+        {
+          "key": "cache:pt_en_transient_collision",
+          "count": 0,
+          "label": "an EN-scoped read never returns the PT-scoped cached value",
+          "detail": {
+            "pt_key": "conexao_gate_runtime_probe_pt",
+            "en_key": "conexao_gate_runtime_probe_en",
+            "en_saw": false
+          }
+        },
+        {
+          "key": "cache:probe_write_lost",
+          "count": 0,
+          "label": "the PT-scoped entry is readable under its own key",
+          "detail": {
+            "pt_key": "conexao_gate_runtime_probe_pt",
+            "value": "pt-value"
+          }
+        },
+        {
+          "key": "cache:flush_left_language_variants",
+          "count": 0,
+          "label": "conexao_flush_language_cache() clears every language variant and the base key",
+          "detail": {
+            "survivors": [],
+            "seeded": {
+              "pt": "conexao_gate_flush_probe_pt",
+              "en": "conexao_gate_flush_probe_en"
+            }
+          }
+        },
+        {
+          "key": "cache:probe_entries_left_behind",
+          "count": 0,
+          "label": "the gate removed every transient it created",
+          "detail": {
+            "leftovers": []
+          }
+        }
+      ],
+      "output_tail": [
+        "",
+        "  languages: pt, en",
+        "  generated keys: {\"pt\":\"conexao_gate_probe_pt\",\"en\":\"conexao_gate_probe_en\"}",
+        "  PASS: conexao_lang_cache_key() returns a distinct key for every language",
+        "  PASS: conexao_lang_cache_key() keeps the base key as a prefix",
+        "  PASS: an EN-scoped read never returns the PT-scoped cached value",
+        "  PASS: the PT-scoped entry is readable under its own key",
+        "  PASS: conexao_flush_language_cache() clears every language variant and the base key",
+        "  PASS: the gate removed every transient it created",
+        "",
+        "9 passed, 0 failed",
+        "GATE-RESULT {\"gate\":\"cache_scoping\",\"status\":\"pass\",\"passed\":9,\"failed\":0,\"violations\":0,\"pre_existing\":0,\"new\":0,\"prerequisites\":[\"polylang\",\"conexao_lang_cache_key() + conexao_flush_language_cache()\"],\"allowlisted\":[],\"allowlisted_count\":0,\"details\":[{\"key\":\"cache:lang_cache_key_not_language_scoped\",\"count\":0,\"label\":\"conexao_lang_cache_key() returns a distinct key for every language\",\"detail\":{\"keys\":{\"pt\":\"conexao_gate_probe_pt\",\"en\":\"conexao_gate_probe_en\"}}},{\"key\":\"cache:lang_cache_key_base_changed\",\"count\":0,\"label\":\"conexao_lang_cache_key() keeps the base key as a prefix\",\"detail\":{\"keys\":[]}},{\"key\":\"cache:pt_en_transient_collision\",\"count\":0,\"label\":\"an EN-scoped read never returns the PT-scoped cached value\",\"detail\":{\"pt_key\":\"conexao_gate_runtime_probe_pt\",\"en_key\":\"conexao_gate_runtime_probe_en\",\"en_saw\":false}},{\"key\":\"cache:probe_write_lost\",\"count\":0,\"label\":\"the PT-scoped entry is readable under its own key\",\"detail\":{\"pt_key\":\"conexao_gate_runtime_probe_pt\",\"value\":\"pt-value\"}},{\"key\":\"cache:flush_left_language_variants\",\"count\":0,\"label\":\"conexao_flush_language_cache() clears every language variant and the base key\",\"detail\":{\"survivors\":[],\"seeded\":{\"pt\":\"conexao_gate_flush_probe_pt\",\"en\":\"conexao_gate_flush_probe_en\"}}},{\"key\":\"cache:probe_entries_left_behind\",\"count\":0,\"label\":\"the gate removed every transient it created\",\"detail\":{\"leftovers\":[]}}]}"
+      ]
+    },
+    "cache_scoping_static": {
+      "gate": "cache_scoping_static",
+      "domain": "cache_scoping",
+      "kind": "static",
+      "command": "python3 tests/scripts/verify-cache-key-scoping.py",
+      "exit_code": 0,
+      "status": "pass",
+      "passed": 2,
+      "failed": 0,
+      "violations": 0,
+      "pre_existing": 0,
+      "new": 0,
+      "allowlisted": 0,
+      "prerequisites": [],
+      "details": [],
+      "output_tail": [
+        "== Stage L static cache-scoping gate (token scan) ==",
+        "   repo: /home/andrei/IdeaProjects/wordpress-website",
+        "   scope: wp-content/themes/conexao-br-irlanda",
+        "   scope: wp-content/plugins/conexao-data-model",
+        "   scope: wp-content/plugins/conexao-content",
+        "   scope: wp-content/plugins/conexao-admin-ux",
+        "   scope: wp-content/plugins/conexao-event-runtime",
+        "",
+        "   scanned 106 production PHP files (PHP token_get_all)",
+        "   unscoped conexao_* cache keys: 0",
+        "2 passed, 0 failed",
+        "GATE-RESULT {\"gate\": \"cache_scoping_static\", \"status\": \"pass\", \"passed\": 2, \"failed\": 0, \"violations\": 0, \"details\": []}"
+      ]
+    },
+    "redirect_precedence": {
+      "gate": "redirect_precedence",
+      "domain": "redirect_precedence",
+      "kind": "php",
+      "command": "docker compose exec -T wordpress php /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-redirect-precedence.php",
+      "exit_code": 0,
+      "status": "pass",
+      "passed": 15,
+      "failed": 0,
+      "violations": 0,
+      "pre_existing": 0,
+      "new": 0,
+      "allowlisted": 0,
+      "prerequisites": [
+        "polylang",
+        "conexao_seo_redirects()"
+      ],
+      "details": [
+        {
+          "key": "redirect:legacy_path_not_detected",
+          "count": 0,
+          "label": "the legacy EN path is detected by the redirect table",
+          "detail": {
+            "path": "/contact",
+            "decision": {
+              "redirected": true,
+              "status": 301,
+              "location": "http://localhost:8080/contato/"
+            }
+          }
+        },
+        {
+          "key": "redirect:legacy_status_not_301",
+          "count": 0,
+          "label": "the legacy EN path keeps its permanent 301 status",
+          "detail": {
+            "path": "/contact",
+            "status": 301
+          }
+        },
+        {
+          "key": "redirect:legacy_destination_not_pt",
+          "count": 0,
+          "label": "the legacy EN path redirects to the PT destination",
+          "detail": {
+            "expected": "/contato/",
+            "location": "http://localhost:8080/contato/"
+          }
+        },
+        {
+          "key": "redirect:en_page_took_precedence",
+          "count": 0,
+          "label": "a newly created EN page with the same slug does NOT take precedence over the legacy redirect",
+          "detail": {
+            "path": "/contact",
+            "decision": {
+              "redirected": true,
+              "status": 301,
+              "location": "http://localhost:8080/contato/"
+            }
+          }
+        },
+        {
+          "key": "redirect:status_changed_by_conflict",
+          "count": 0,
+          "label": "the redirect status stays 301 when an EN page shares the slug",
+          "detail": {
+            "status": 301
+          }
+        },
+        {
+          "key": "redirect:en_page_became_destination",
+          "count": 0,
+          "label": "the redirect destination is never the conflicting EN page (/en/...)",
+          "detail": {
+            "location": "http://localhost:8080/contato/"
+          }
+        },
+        {
+          "key": "redirect:destination_not_pt_after_conflict",
+          "count": 0,
+          "label": "the redirect destination remains the PT path after the conflict",
+          "detail": {
+            "expected": "/contato/",
+            "location": "http://localhost:8080/contato/"
+          }
+        },
+        {
+          "key": "redirect:hook_missing",
+          "count": 0,
+          "label": "the legacy redirect is registered on template_redirect",
+          "detail": {
+            "priority": 2
+          }
+        },
+        {
+          "key": "redirect:hook_priority_regression",
+          "count": 0,
+          "label": "the legacy redirect runs BEFORE Polylang language canonical (priority 4)",
+          "detail": {
+            "legacy_priority": 2,
+            "polylang_priority": null
+          }
+        },
+        {
+          "key": "redirect:fixture_left_behind",
+          "count": 0,
+          "label": "the conflicting EN page fixture was removed",
+          "detail": {
+            "survivor": 0
+          }
+        }
+      ],
+      "output_tail": [
+        "  PASS: the conflicting EN page resolves by its slug (the collision is real)",
+        "  PASS: a newly created EN page with the same slug does NOT take precedence over the legacy redirect",
+        "  PASS: the redirect status stays 301 when an EN page shares the slug",
+        "  PASS: the redirect destination is never the conflicting EN page (/en/...)",
+        "  PASS: the redirect destination remains the PT path after the conflict",
+        "  PASS: the legacy redirect is registered on template_redirect",
+        "  PASS: the legacy redirect is registered on template_redirect",
+        "  PASS: the legacy redirect runs BEFORE Polylang language canonical (priority 4)",
+        "  PASS: the conflicting EN page fixture was removed",
+        "",
+        "15 passed, 0 failed",
+        "GATE-RESULT {\"gate\":\"redirect_precedence\",\"status\":\"pass\",\"passed\":15,\"failed\":0,\"violations\":0,\"pre_existing\":0,\"new\":0,\"prerequisites\":[\"polylang\",\"conexao_seo_redirects()\"],\"allowlisted\":[],\"allowlisted_count\":0,\"details\":[{\"key\":\"redirect:legacy_path_not_detected\",\"count\":0,\"label\":\"the legacy EN path is detected by the redirect table\",\"detail\":{\"path\":\"\\/contact\",\"decision\":{\"redirected\":true,\"status\":301,\"location\":\"http:\\/\\/localhost:8080\\/contato\\/\"}}},{\"key\":\"redirect:legacy_status_not_301\",\"count\":0,\"label\":\"the legacy EN path keeps its permanent 301 status\",\"detail\":{\"path\":\"\\/contact\",\"status\":301}},{\"key\":\"redirect:legacy_destination_not_pt\",\"count\":0,\"label\":\"the legacy EN path redirects to the PT destination\",\"detail\":{\"expected\":\"\\/contato\\/\",\"location\":\"http:\\/\\/localhost:8080\\/contato\\/\"}},{\"key\":\"redirect:en_page_took_precedence\",\"count\":0,\"label\":\"a newly created EN page with the same slug does NOT take precedence over the legacy redirect\",\"detail\":{\"path\":\"\\/contact\",\"decision\":{\"redirected\":true,\"status\":301,\"location\":\"http:\\/\\/localhost:8080\\/contato\\/\"}}},{\"key\":\"redirect:status_changed_by_conflict\",\"count\":0,\"label\":\"the redirect status stays 301 when an EN page shares the slug\",\"detail\":{\"status\":301}},{\"key\":\"redirect:en_page_became_destination\",\"count\":0,\"label\":\"the redirect destination is never the conflicting EN page (\\/en\\/...)\",\"detail\":{\"location\":\"http:\\/\\/localhost:8080\\/contato\\/\"}},{\"key\":\"redirect:destination_not_pt_after_conflict\",\"count\":0,\"label\":\"the redirect destination remains the PT path after the conflict\",\"detail\":{\"expected\":\"\\/contato\\/\",\"location\":\"http:\\/\\/localhost:8080\\/contato\\/\"}},{\"key\":\"redirect:hook_missing\",\"count\":0,\"label\":\"the legacy redirect is registered on template_redirect\",\"detail\":{\"priority\":2}},{\"key\":\"redirect:hook_priority_regression\",\"count\":0,\"label\":\"the legacy redirect runs BEFORE Polylang language canonical (priority 4)\",\"detail\":{\"legacy_priority\":2,\"polylang_priority\":null}},{\"key\":\"redirect:fixture_left_behind\",\"count\":0,\"label\":\"the conflicting EN page fixture was removed\",\"detail\":{\"survivor\":0}}]}"
+      ]
+    },
+    "documentation_drift": {
+      "gate": "documentation_drift",
+      "domain": "documentation_drift",
+      "kind": "static",
+      "command": "python3 tests/scripts/verify-documentation-drift.py",
+      "exit_code": 0,
+      "status": "pass",
+      "passed": 14,
+      "failed": 0,
+      "violations": 0,
+      "pre_existing": 0,
+      "new": 0,
+      "allowlisted": 0,
+      "prerequisites": [],
+      "details": [],
+      "output_tail": [
+        "   historical/audit documents without the marker (reported, not gated): 91",
+        "",
+        "   -- §9.2 no root-level report/evidence file --",
+        "   root files scanned: 17, offenders: 0",
+        "",
+        "   -- §9.2 AGENTS.md remains orientation --",
+        "   AGENTS.md lines: 187",
+        "",
+        "   -- authoritative sources referenced by the governance layer --",
+        "   authoritative sources checked: 7",
+        "14 passed, 0 failed",
+        "GATE-RESULT {\"gate\": \"documentation_drift\", \"status\": \"pass\", \"passed\": 14, \"failed\": 0, \"violations\": 0, \"details\": []}"
+      ]
+    },
+    "i18n_freshness": {
+      "gate": "i18n_freshness",
+      "domain": "i18n_freshness",
+      "kind": "static",
+      "command": "python3 tests/scripts/verify-i18n-freshness.py",
+      "exit_code": 0,
+      "status": "pass",
+      "passed": 8,
+      "failed": 0,
+      "violations": 0,
+      "pre_existing": 0,
+      "new": 0,
+      "allowlisted": 0,
+      "prerequisites": [],
+      "details": [],
+      "output_tail": [
+        "   conexao-br-irlanda       catalogue=1790591912 newest-source=1790591912 (wp-content/themes/conexao-br-irlanda/inc/content.php) fresh",
+        "   conexao-data-model       catalogue=1790431901 newest-source=1790335165 (wp-content/plugins/conexao-data-model/includes/class-agency.php) fresh",
+        "   conexao-content          catalogue=1790591912 newest-source=1790591912 (wp-content/plugins/conexao-content/conexao-content.php) fresh",
+        "   conexao-admin-ux         catalogue=1790431901 newest-source=1790016943 (wp-content/plugins/conexao-admin-ux/includes/class-translation-state.php) fresh",
+        "   conexao-event-runtime    catalogue=1790431901 newest-source=1790016943 (wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php) fresh",
+        "   conexao-event-importer   catalogue=1790536693 newest-source=1790446037 (wp-content/plugins/conexao-event-importer/includes/class-event-importer.php) fresh",
+        "   conexao-leisure-migration catalogue=1790431901 newest-source=1790325155 (wp-content/plugins/conexao-leisure-migration/includes/class-leisure-exporter.php) fresh",
+        "   conexao-sponsor-migration catalogue=1790431901 newest-source=1789994211 (wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-importer.php) fresh",
+        "",
+        "   stale catalogues: 0",
+        "8 passed, 0 failed",
+        "GATE-RESULT {\"gate\": \"i18n_freshness\", \"status\": \"pass\", \"passed\": 8, \"failed\": 0, \"violations\": 0, \"pre_existing\": 0, \"new\": 0, \"details\": []}"
+      ]
+    }
+  },
+  "total_passed": 86,
+  "total_failed": 0,
+  "total_violations": 0,
+  "total_pre_existing": 0,
+  "total_new": 0,
+  "total_blocked": 0
+}

@@ -1,0 +1,21 @@
+== Stage L permanent invariant gates ==
+   repository: /home/andrei/IdeaProjects/wordpress-website
+   sha:        cd8b6c6ba33a588f28b8a8c20a4b27add44a5937
+
+[PASS   ] taxonomy                   taxonomy_policy          exit=0 18 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[PASS   ] translation_completeness   translation_completeness exit=0 20 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 1834 allowlisted
+          allowlisted: 1834 (by documented policy)
+[PASS   ] cache_scoping              cache_scoping            exit=0 9 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[PASS   ] cache_scoping              cache_scoping_static     exit=0 2 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[PASS   ] redirect_precedence        redirect_precedence      exit=0 15 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[PASS   ] documentation_drift        documentation_drift      exit=0 14 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[PASS   ] i18n_freshness             i18n_freshness           exit=0 8 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+
+----------------------------------------
+Gates: 7 total, 7 passed, 0 failed, 0 blocked
+Assertions: 86 passed, 0 failed
+Violations: 0 (0 pre-existing, 0 new)
+AGGREGATE: PASS
+----------------------------------------
+gate.json written: docs/evidence/2026-09-28-b1-en-guides/gate.json
+EXIT=0

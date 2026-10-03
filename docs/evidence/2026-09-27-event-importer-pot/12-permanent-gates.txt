@@ -1,0 +1,68 @@
+== PHASE 10: PERMANENT GATES ==
+command: python3 scripts/verify-permanent-gates.py
+
+### A. ISOLATED WORKTREE (authoritative, immune to the concurrent refactor) ###
+A detached worktree at HEAD b47d098, run with and without this task's POT.
+
+--- BASELINE (POT reverted, i.e. the defective catalogue) ---
+[FAIL   ] taxonomy                   taxonomy_policy          exit=1 0 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[FAIL   ] translation_completeness   translation_completeness exit=1 0 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[FAIL   ] cache_scoping              cache_scoping            exit=1 0 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[PASS   ] cache_scoping              cache_scoping_static     exit=0 2 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[FAIL   ] redirect_precedence        redirect_precedence      exit=1 0 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[PASS   ] documentation_drift        documentation_drift      exit=0 14 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[PASS   ] i18n_freshness             i18n_freshness           exit=0 8 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+Gates: 7 total, 3 passed, 4 failed, 0 blocked
+Assertions: 24 passed, 0 failed
+Violations: 0 (0 pre-existing, 0 new)
+AGGREGATE: FAIL
+
+--- WITH THIS TASK'S REGENERATED POT ---
+[FAIL   ] taxonomy                   taxonomy_policy          exit=1 0 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[FAIL   ] translation_completeness   translation_completeness exit=1 0 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[FAIL   ] cache_scoping              cache_scoping            exit=1 0 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[PASS   ] cache_scoping              cache_scoping_static     exit=0 2 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[FAIL   ] redirect_precedence        redirect_precedence      exit=1 0 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[PASS   ] documentation_drift        documentation_drift      exit=0 14 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[PASS   ] i18n_freshness             i18n_freshness           exit=0 8 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+Gates: 7 total, 3 passed, 4 failed, 0 blocked
+Assertions: 24 passed, 0 failed
+Violations: 0 (0 pre-existing, 0 new)
+AGGREGATE: FAIL
+
+--- DIFF OF THE TWO RUNS ---
+IDENTICAL. This task changes NO gate outcome: 0 new violations, 0 new failures.
+
+The 4 FAILing gates in the isolated worktree are an ENVIRONMENT limitation, not a
+violation: they are the in-process PHP gates, which need wp-load.php and must run
+inside the WordPress container via ./scripts/run-tests.sh. Run directly they report
+"could not locate wp-load.php", 0 assertions, exit 1. Identical with and
+without this change. This matches the prior task's environment limitation.
+
+### B. MAIN WORKTREE (degraded by the concurrent theme refactor) ###
+[FAIL   ] taxonomy                   taxonomy_policy          exit=1 0 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[FAIL   ] translation_completeness   translation_completeness exit=1 0 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[FAIL   ] cache_scoping              cache_scoping            exit=1 0 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[FAIL   ] cache_scoping              cache_scoping_static     exit=1 2 passed, 4 failed, 4 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[FAIL   ] redirect_precedence        redirect_precedence      exit=1 0 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[FAIL   ] documentation_drift        documentation_drift      exit=1 13 passed, 1 failed, 1 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[FAIL   ] i18n_freshness             i18n_freshness           exit=1 8 passed, 1 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+Gates: 7 total, 0 passed, 7 failed, 0 blocked
+Assertions: 23 passed, 6 failed
+Violations: 0 (0 pre-existing, 0 new)
+AGGREGATE: FAIL
+
+Cause of the extra failures there, all naming THEME files this task never touched:
+  cache_scoping_static  4 violations in 404.php (theme mid-refactor)
+  documentation_drift   1 failure
+  i18n_freshness       theme languages/conexao-br-irlanda.pot deleted by the refactor
+The event-importer row reports "fresh" in both worktrees.
+
+### C. BASELINE FILE NOT ALTERED ###
+verify-permanent-gates.py writes to a FIXED tracked path,
+docs/evidence/2026-09-26-stage-l/gate.json. This run's output was copied to
+11-permanent-gates-MAIN-WORKTREE.json and the historical file was then restored
+with git checkout, so it is byte-identical to its committed state:
+  md5 a3ebe9820a73f885f91169d75123ef29
+tests/baseline/permanent-gates.json was NOT read-modified-written; no baseline
+was altered and no gate was weakened or allowlisted.

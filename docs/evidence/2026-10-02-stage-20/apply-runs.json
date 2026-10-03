@@ -1,0 +1,462 @@
+[
+    {
+        "run": 1,
+        "stats": {
+            "found": 30,
+            "created": 30,
+            "updated": 0,
+            "unchanged": 0,
+            "duplicates": 0,
+            "skipped": 0,
+            "skipped_past": 0,
+            "skipped_invalid_date": 0,
+            "failed": 0,
+            "new": 30,
+            "errors": 0,
+            "status": "success",
+            "fatal_errors": [],
+            "event_results": [
+                {
+                    "title": "What Were You Thinking Of Darling?",
+                    "post_id": 1372,
+                    "outcome": "created",
+                    "message": "Event created.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Beginners Crochet Classes At Portlaoise Library",
+                    "post_id": 1373,
+                    "outcome": "created",
+                    "message": "Event created.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Bootcamp with Malone Fitness",
+                    "post_id": 1374,
+                    "outcome": "created",
+                    "message": "Event created.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Pilates Programme with Sabrina",
+                    "post_id": 1375,
+                    "outcome": "created",
+                    "message": "Event created.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Chair Yoga At Portlaoise Library",
+                    "post_id": 1376,
+                    "outcome": "created",
+                    "message": "Event created.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Avenue Q Hit Musical",
+                    "post_id": 1377,
+                    "outcome": "created",
+                    "message": "Event created.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Imposter Art Exhibition",
+                    "post_id": 1378,
+                    "outcome": "created",
+                    "message": "Event created.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Shared Reading At Mountmellick Library",
+                    "post_id": 1379,
+                    "outcome": "created",
+                    "message": "Event created.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Vittorio Angelone Extra Show Added",
+                    "post_id": 1380,
+                    "outcome": "created",
+                    "message": "Event created.",
+                    "severity": "success"
+                },
+                {
+                    "title": "80s & 90s Music Bingo Night",
+                    "post_id": 1381,
+                    "outcome": "created",
+                    "message": "Event created.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Vittorio Angelone You Can\u2019t Say Nothing Any More",
+                    "post_id": 1382,
+                    "outcome": "created",
+                    "message": "Event created.",
+                    "severity": "success"
+                },
+                {
+                    "title": "The Roadhouse Doors At Kavanaghs Bar & Venue",
+                    "post_id": 1383,
+                    "outcome": "created",
+                    "message": "Event created.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Happy Hiking Hill Skills Day",
+                    "post_id": 1384,
+                    "outcome": "created",
+                    "message": "Event created.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Kirtan Practice At Arunachala",
+                    "post_id": 1385,
+                    "outcome": "created",
+                    "message": "Event created.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Bingo Loco At Midlands Park Hotel",
+                    "post_id": 1386,
+                    "outcome": "created",
+                    "message": "Event created.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Mick Creagh One Man Show",
+                    "post_id": 1387,
+                    "outcome": "created",
+                    "message": "Event created.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Transmitter At Kavanaghs Bar & Venue",
+                    "post_id": 1388,
+                    "outcome": "created",
+                    "message": "Event created.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Laois Forestry Rally 2026",
+                    "post_id": 1389,
+                    "outcome": "created",
+                    "message": "Event created.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Abbeyleix Applefest 2026",
+                    "post_id": 1390,
+                    "outcome": "created",
+                    "message": "Event created.",
+                    "severity": "success"
+                },
+                {
+                    "title": "The Magnificent Interiors Of Emo Court",
+                    "post_id": 1391,
+                    "outcome": "created",
+                    "message": "Event created.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Assembly on Alcohol Harms",
+                    "post_id": 1392,
+                    "outcome": "created",
+                    "message": "Event created.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Sensory Play At Portarlington Library",
+                    "post_id": 1393,
+                    "outcome": "created",
+                    "message": "Event created.",
+                    "severity": "success"
+                },
+                {
+                    "title": "The Shaking Bog Presents Riverine",
+                    "post_id": 1394,
+                    "outcome": "created",
+                    "message": "Event created.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Introduction to Ayurveda",
+                    "post_id": 1395,
+                    "outcome": "created",
+                    "message": "Event created.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Akira Film At Dunamaise Arts Centre",
+                    "post_id": 1396,
+                    "outcome": "created",
+                    "message": "Event created.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Weaving And Nature Print Workshop",
+                    "post_id": 1397,
+                    "outcome": "created",
+                    "message": "Event created.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Sketchbook Club At Portlaoise Library",
+                    "post_id": 1398,
+                    "outcome": "created",
+                    "message": "Event created.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Irish Circle At Portlaoise Library",
+                    "post_id": 1399,
+                    "outcome": "created",
+                    "message": "Event created.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Autumn Yoga & Ayurveda Evening",
+                    "post_id": 1400,
+                    "outcome": "created",
+                    "message": "Event created.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Regional Gathering How To Get The Most From Your Membership",
+                    "post_id": 1401,
+                    "outcome": "created",
+                    "message": "Event created.",
+                    "severity": "success"
+                }
+            ]
+        }
+    },
+    {
+        "run": 2,
+        "stats": {
+            "found": 30,
+            "created": 0,
+            "updated": 0,
+            "unchanged": 30,
+            "duplicates": 0,
+            "skipped": 0,
+            "skipped_past": 0,
+            "skipped_invalid_date": 0,
+            "failed": 0,
+            "new": 0,
+            "errors": 0,
+            "status": "success",
+            "fatal_errors": [],
+            "event_results": [
+                {
+                    "title": "What Were You Thinking Of Darling?",
+                    "post_id": 1372,
+                    "outcome": "unchanged",
+                    "message": "Event data has not changed.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Beginners Crochet Classes At Portlaoise Library",
+                    "post_id": 1373,
+                    "outcome": "unchanged",
+                    "message": "Event data has not changed.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Bootcamp with Malone Fitness",
+                    "post_id": 1374,
+                    "outcome": "unchanged",
+                    "message": "Event data has not changed.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Pilates Programme with Sabrina",
+                    "post_id": 1375,
+                    "outcome": "unchanged",
+                    "message": "Event data has not changed.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Chair Yoga At Portlaoise Library",
+                    "post_id": 1376,
+                    "outcome": "unchanged",
+                    "message": "Event data has not changed.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Avenue Q Hit Musical",
+                    "post_id": 1377,
+                    "outcome": "unchanged",
+                    "message": "Event data has not changed.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Imposter Art Exhibition",
+                    "post_id": 1378,
+                    "outcome": "unchanged",
+                    "message": "Event data has not changed.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Shared Reading At Mountmellick Library",
+                    "post_id": 1379,
+                    "outcome": "unchanged",
+                    "message": "Event data has not changed.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Vittorio Angelone Extra Show Added",
+                    "post_id": 1380,
+                    "outcome": "unchanged",
+                    "message": "Event data has not changed.",
+                    "severity": "success"
+                },
+                {
+                    "title": "80s & 90s Music Bingo Night",
+                    "post_id": 1381,
+                    "outcome": "unchanged",
+                    "message": "Event data has not changed.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Vittorio Angelone You Can\u2019t Say Nothing Any More",
+                    "post_id": 1382,
+                    "outcome": "unchanged",
+                    "message": "Event data has not changed.",
+                    "severity": "success"
+                },
+                {
+                    "title": "The Roadhouse Doors At Kavanaghs Bar & Venue",
+                    "post_id": 1383,
+                    "outcome": "unchanged",
+                    "message": "Event data has not changed.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Happy Hiking Hill Skills Day",
+                    "post_id": 1384,
+                    "outcome": "unchanged",
+                    "message": "Event data has not changed.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Kirtan Practice At Arunachala",
+                    "post_id": 1385,
+                    "outcome": "unchanged",
+                    "message": "Event data has not changed.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Bingo Loco At Midlands Park Hotel",
+                    "post_id": 1386,
+                    "outcome": "unchanged",
+                    "message": "Event data has not changed.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Mick Creagh One Man Show",
+                    "post_id": 1387,
+                    "outcome": "unchanged",
+                    "message": "Event data has not changed.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Transmitter At Kavanaghs Bar & Venue",
+                    "post_id": 1388,
+                    "outcome": "unchanged",
+                    "message": "Event data has not changed.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Laois Forestry Rally 2026",
+                    "post_id": 1389,
+                    "outcome": "unchanged",
+                    "message": "Event data has not changed.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Abbeyleix Applefest 2026",
+                    "post_id": 1390,
+                    "outcome": "unchanged",
+                    "message": "Event data has not changed.",
+                    "severity": "success"
+                },
+                {
+                    "title": "The Magnificent Interiors Of Emo Court",
+                    "post_id": 1391,
+                    "outcome": "unchanged",
+                    "message": "Event data has not changed.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Assembly on Alcohol Harms",
+                    "post_id": 1392,
+                    "outcome": "unchanged",
+                    "message": "Event data has not changed.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Sensory Play At Portarlington Library",
+                    "post_id": 1393,
+                    "outcome": "unchanged",
+                    "message": "Event data has not changed.",
+                    "severity": "success"
+                },
+                {
+                    "title": "The Shaking Bog Presents Riverine",
+                    "post_id": 1394,
+                    "outcome": "unchanged",
+                    "message": "Event data has not changed.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Introduction to Ayurveda",
+                    "post_id": 1395,
+                    "outcome": "unchanged",
+                    "message": "Event data has not changed.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Akira Film At Dunamaise Arts Centre",
+                    "post_id": 1396,
+                    "outcome": "unchanged",
+                    "message": "Event data has not changed.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Weaving And Nature Print Workshop",
+                    "post_id": 1397,
+                    "outcome": "unchanged",
+                    "message": "Event data has not changed.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Sketchbook Club At Portlaoise Library",
+                    "post_id": 1398,
+                    "outcome": "unchanged",
+                    "message": "Event data has not changed.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Irish Circle At Portlaoise Library",
+                    "post_id": 1399,
+                    "outcome": "unchanged",
+                    "message": "Event data has not changed.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Autumn Yoga & Ayurveda Evening",
+                    "post_id": 1400,
+                    "outcome": "unchanged",
+                    "message": "Event data has not changed.",
+                    "severity": "success"
+                },
+                {
+                    "title": "Regional Gathering How To Get The Most From Your Membership",
+                    "post_id": 1401,
+                    "outcome": "unchanged",
+                    "message": "Event data has not changed.",
+                    "severity": "success"
+                }
+            ]
+        }
+    }
+]

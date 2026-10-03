@@ -1,0 +1,37 @@
+# 02 — Phase 2: b47d098..597b04e structural comparison
+
+## ancestry
+$ git log --oneline --decorate --ancestry-path b47d098..597b04e
+597b04e (HEAD -> i18n) Refactor code structure for improved readability and maintainability
+
+$ git log -1 --format=%P 597b04e   (single parent => linear)
+b47d098857d2348feafb1071b8713c6a43359e05
+$ git merge-base b47d098 597b04e
+b47d098857d2348feafb1071b8713c6a43359e05
+
+## diff --shortstat
+$ git diff --shortstat b47d098 597b04e
+ 123 files changed, 8044 insertions(+), 25428 deletions(-)
+
+## per-area numstat aggregation
+theme/tests            files=33   plus=472    minus=7991
+theme/root-templates   files=11   plus=3934   minus=216
+docs                   files=18   plus=1476   minus=0
+theme/assets           files=4    plus=24     minus=203
+plugins                files=1    plus=649    minus=550
+theme/template-parts   files=10   plus=64     minus=141
+theme/languages        files=5    plus=0      minus=5644
+theme/inc              files=41   plus=1425   minus=10683
+
+## name-status counts
+     19 A
+     68 D
+     36 M
+
+## inc/ file count
+b47d098: 43
+597b04e: 8
+
+## functions.php line count
+b47d098: 112
+597b04e: 3937

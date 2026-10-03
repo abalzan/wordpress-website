@@ -1,0 +1,18 @@
+=== RESTORE: sabotage removed, clean state re-verified ===
+[1] state before any request (still the regression state):
+    rules=336 en_post_type=0
+[2] one ordinary request (guard active again):
+    rules=478 en_post_type=20
+[3] EN routes:
+    /en/guias/ -> 200
+    /en/eventos/ -> 200
+    /en/apoiadores/ -> 200
+[4] PT routes:
+    / -> 200
+    /guias/ -> 200
+    /eventos/ -> 200
+    /apoiadores/ -> 200
+[5] new suite:
+    
+    test-en-archive-rewrite-guard: 17 passed, 0 failed
+=== END ===

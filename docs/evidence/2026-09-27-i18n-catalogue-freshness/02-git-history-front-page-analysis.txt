@@ -1,0 +1,56 @@
+== git log front-page.php (last 5) ==
+8f07f30 2026-09-27 17:12:30 +0100 Add regression tests for ARIA semantics in filter links and homepage content-type labels
+7b96ac2 2026-09-25 16:33:48 +0100 Add Stage 9: English translations for guides and terms
+0be970c 2026-09-21 19:19:48 +0000 Stage 3.3: language-aware internal link resolution (EN nav/cards/footer) + focus tests
+c531125 2026-09-03 13:57:19 +0100 Implement recurring events functionality in event queries
+b3ff17d 2026-08-31 16:16:59 +0100 feat: remove "Guias Populares" section and related styles from homepage for cleaner layout
+
+== the HEAD change to front-page.php (8f07f30) ==
+commit 8f07f3027734b99546931295173369dbdb2953dc
+Author: Andrei <andreibalzan@gmail.com>
+Date:   Sun Sep 27 17:12:30 2026 +0100
+
+    Add regression tests for ARIA semantics in filter links and homepage content-type labels
+    
+    - Introduced a test suite for verifying that filter links maintain correct ARIA semantics, ensuring no invalid roles are present and that active options are correctly marked.
+    - Created a test for the homepage content-type label to ensure proper translation handling between English and Portuguese, preventing direct output of raw post type labels.
+
+diff --git a/wp-content/themes/conexao-br-irlanda/front-page.php b/wp-content/themes/conexao-br-irlanda/front-page.php
+index 69a7d00..14a0ec6 100644
+--- a/wp-content/themes/conexao-br-irlanda/front-page.php
++++ b/wp-content/themes/conexao-br-irlanda/front-page.php
+@@ -266,7 +266,7 @@ $hero_has_sponsors = ! empty( conexao_get_featured_sponsors() );
+ 									$content_type = get_post_type_object( get_post_type() );
+ 									if ( $content_type || ( $categories && ! is_wp_error( $categories ) ) ) : ?>
+ 										<div class="featured-article-categories">
+-											<?php if ( $content_type ) : ?><span class="featured-article-category"><?php echo esc_html( $content_type->labels->singular_name ); ?></span><?php endif; ?>
++											<?php if ( $content_type ) : ?><span class="featured-article-category"><?php echo esc_html( conexao_content_type_label( get_post_type() ) ); ?></span><?php endif; ?>
+ 											<?php if ( $categories && ! is_wp_error( $categories ) ) : ?>
+ 												<span class="featured-article-category"><?php echo esc_html( $categories[0]->name ); ?></span>
+ 											<?php endif; ?>
+@@ -306,7 +306,7 @@ $hero_has_sponsors = ! empty( conexao_get_featured_sponsors() );
+ 								$content_type = get_post_type_object( get_post_type() );
+ 								if ( $content_type || ( $cats && ! is_wp_error( $cats ) ) ) : ?>
+ 									<div class="post-card-categories">
+-										<?php if ( $content_type ) : ?><span class="post-card-category"><?php echo esc_html( $content_type->labels->singular_name ); ?></span><?php endif; ?>
++										<?php if ( $content_type ) : ?><span class="post-card-category"><?php echo esc_html( conexao_content_type_label( get_post_type() ) ); ?></span><?php endif; ?>
+ 										<?php if ( $cats && ! is_wp_error( $cats ) ) : ?>
+ 											<span class="post-card-category"><?php echo esc_html( $cats[0]->name ); ?></span>
+ 										<?php endif; ?>
+
+== gettext-bearing theme sources by last-commit ts (top 12) ==
+1790525550 wp-content/themes/conexao-br-irlanda/template-parts/leisure-filters.php
+1790525550 wp-content/themes/conexao-br-irlanda/template-parts/event-filters.php
+1790525550 wp-content/themes/conexao-br-irlanda/template-parts/employment-opportunities.php
+1790525550 wp-content/themes/conexao-br-irlanda/inc/content.php
+1790525550 wp-content/themes/conexao-br-irlanda/front-page.php
+1790519116 wp-content/themes/conexao-br-irlanda/template-parts/provider-card.php
+1790519116 wp-content/themes/conexao-br-irlanda/template-parts/course-filters.php
+1790519116 wp-content/themes/conexao-br-irlanda/inc/queries.php
+1790519116 wp-content/themes/conexao-br-irlanda/inc/i18n/fallback.php
+1790413738 wp-content/themes/conexao-br-irlanda/page.php
+1790413738 wp-content/themes/conexao-br-irlanda/inc/ui.php
+1790413738 wp-content/themes/conexao-br-irlanda/inc/sponsors.php
+
+== POT last commit ==
+88e8ec0 2026-09-26 15:11:41 +0100 stage-m: add the i18n catalogue generator and regenerate stale catalogues

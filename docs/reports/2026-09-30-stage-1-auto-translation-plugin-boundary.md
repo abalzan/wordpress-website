@@ -1,0 +1,335 @@
+# Report — Stage 1: Automatic PT→EN translation — permanent plugin boundary
+
+> **This stage changed no production state.**
+> `Production writes: 0`. Production was not contacted at all (no HTTP verb was
+> issued against any production host). No plugin was uploaded, installed,
+> activated, deactivated or scheduled. No production route, cron job or option
+> was created. No PT or EN content, taxonomy term, menu or Polylang
+> relationship was changed. `conexao-content` was not deactivated or
+> reactivated. The Flutter/mobile repository was not accessed.
+
+|||
+|---|---|
+| **Stage / task name** | Stage 1 — Automatic PT→EN translation: B1, the permanent automation plugin boundary |
+| **Date** | 2026-09-30 |
+| **Author / agent** | Cline (AI agent) |
+| **Branch** | `i18n` |
+| **Start SHA** | `5820edec54624affdabf56a3dd011b67b60e0c71` |
+| **Predecessor** | Stage 0 — PASS WITH CONDITIONS (Option A: thin orchestrator over the shared engine) |
+| **Status** | **PASS WITH CONDITIONS** — see §15 |
+
+---
+
+## 1. Stage 1 status
+
+**PASS WITH CONDITIONS.**
+
+The permanent plugin boundary exists, is registered in the authoritative
+`plugins.json`, is tested by 132 assertions, and reaches the existing
+`Conexao_Translation_Rollout_Engine` **without modifying it** — the engine's
+SHA-256 is byte-identical before and after. Every fail-closed path is proven to
+refuse *before* the engine is entered.
+
+The single condition is **B1 is only partially resolved**: the plugin is
+truthfully registered as `production: false` / `build: false`, because its
+declared dependency (`conexao-translation-rollout`) is itself
+`tooling`/`production: false`/`build: false`. Promotion requires promoting the
+engine first (§8). That is a deliberate registry decision, not a defect, and
+it cannot be validated without a production installation test.
+
+## 2. Scope
+
+Implemented, as authorised:
+
+- the plugin entry point and its two classes (orchestrator + result contract);
+- a tightly controlled internal invocation path with authorisation, mode
+  gating, an explicit stage allowlist and dependency resolution;
+- a non-mutating **proof mode** delegating to the existing engine;
+- a structured run result and a defined (not yet persisted) run-log boundary;
+- 132 assertions covering the boundary;
+- release/build metadata (`plugins.json` + generated regions) and documentation.
+
+Deliberately **not** implemented, per the brief: translations, any provider or
+provider interface, WP-Cron, change detection, concurrency locks, apply,
+content/taxonomy/menu/Polylang mutation, production installation, REST routes,
+production options, and any change to the shared engine.
+
+## 3. Architecture implemented
+
+```
+Conexao_Translation_Automation_Orchestrator::run( array $context )
+  │
+  ├─ 1. authorise()      capability + explicit authorization → refuse
+  ├─ 2. validate_mode()  missing/unknown/apply → fail closed
+  ├─ 3. stage allowlist  explicit code-level list (S6)
+  ├─ 4. class_exists()   shared engine loadable → else missing_engine
+  ├─ 5. get_stage()      the ENGINE's registry, not ours
+  │        └─ validate_config() + require callable run_callback
+  ├─ 6. call_user_func( $config['run_callback'], [ 'dry_run' => true, 'mode' => 'run' ] )
+  │        └─► Conexao_Translation_Rollout_Engine::run( config, adapter, args )
+  │             (inventory → plan → snapshot → verify → numeric gate; ZERO writes)
+  └─ 7. return Conexao_Translation_Automation_Result
+```
+
+The boundary owns **no** translation or lifecycle logic. It owns only
+authorisation, the mode gate, the stage allowlist, dependency resolution and the
+result contract. Everything else belongs to the engine.
+## 4. Permanent plugin identity
+
+The repository's convention is `<slug>` matching the plugin folder, with the
+entry file `<slug>.php` and a `CONEXAO_<SLUG>_FILE|DIR|VERSION` constant triple.
+The name follows the existing translation family
+(`conexao-translation-rollout`, `conexao-en-translation`):
+
+| Field | Value | Why |
+|---|---|---|
+| slug | `conexao-translation-automation` | kebab-case, unique, `conexao-` prefix |
+| class | `tooling` | `platform` is wrong while it is local-only; `tooling` is the only class that may be `production: false` |
+| status | `active` | a current capability |
+| production | `false` | see §8 — dependency is not production |
+| build | `false` | see §8 — shipping it alone would break activation |
+| mount | `true` | needed for local development and the in-process suite |
+| dependencies | `["conexao-translation-rollout"]` | mirrored by `Requires Plugins:` header |
+| version_source | `wp-content/plugins/conexao-translation-automation/conexao-translation-automation.php` | header `Version: 0.1.0` is authoritative |
+| documentation | `docs/plugins/conexao-translation-automation.md` | carries the generated lifecycle block |
+
+`plugins.json` remains the single source of truth. Derived regions were
+regenerated by the generator only (`compose.yaml`,
+`scripts/build-plugins-zip.sh` ×2, `AGENTS.md`, `README.md`,
+`docs/plugins/README.md`, `docs/deployment.md`, `docs/project-inventory.md`,
+`docs/architecture.md`, the plugin doc).
+
+## 5. Engine dependency and invocation path
+
+The plugin declares `Requires Plugins: conexao-translation-rollout`, so
+**WordPress itself** refuses to activate it when the engine is absent — a real
+enforcement, not a comment. At run time the boundary additionally checks
+`class_exists( 'Conexao_Translation_Rollout_Engine' )` and fails closed with
+`missing_engine` and `mutation_permitted = false`.
+
+**Why this is not a second engine.** The orchestrator contains no manifest
+source, no adapter, no plan builder, no snapshot, no apply and no gate
+arithmetic. Its single lifecycle call is the stage's *own* `run_callback`,
+which the engine already validates and which internally constructs the adapter
+and calls `Conexao_Translation_Rollout_Engine::run()`. `dry_run` is hard-coded
+`true` at the call site and cannot be overridden by a caller. The test suite
+asserts the plugin source contains no
+`class Conexao_Translation_Rollout_Engine` declaration.
+
+## 6. Security boundary
+
+| Control | Implementation | Proven by |
+|---|---|---|
+| Private namespace | `Conexao_Translation_Automation_*` | — |
+| Authorisation | checked **first**, before the engine is resolved | `unauthorized` cases |
+| Capability | `manage_options`; a mismatched assertion is refused, not downgraded | `manage_network` case |
+| Nonce | **No browser/admin entry point exists**, so no nonce is accepted or required. A future admin path must add `manage_options` **and** a nonce. | absence of `admin_post_*` |
+| No `__return_true` | none | source scan |
+| No unauthenticated path | no REST route, no admin handler, no cron | source scan |
+| Stage allowlist | explicit 7-stage list (S6) | 4 stage cases |
+| Secrets | `assert_no_secrets()` refuses credential-shaped keys **and** values (nested included); failure detail carrying one is dropped whole | 6 secret cases |
+| Fail-closed | every failure returns `mutation_permitted = false` | 14 refusal cases |
+
+The source scan strips comments before matching, so the guarantee is about code
+rather than about this repository's own prose naming the hooks it omits.
+
+**Deferred, and not claimed:** transport authentication, rate limiting, audit
+retention (Stage 0 controls S2–S8 beyond the invocation boundary).
+
+## 7. Activation safety
+
+The plugin registers **no** activation, deactivation or uninstall hook and
+contains **no** call to `wp_insert_post`, `wp_update_post`, `wp_delete_post`,
+`wp_insert_term`, `wp_update_term`, `update_option`, `add_option`,
+`delete_option`, `wp_update_nav_menu` or any `pll_*` write function. Activation
+is inert; no option or schema is initialised. This is asserted by the suite, not
+merely documented.
+
+The repository's no-cron separation contract
+(`conexao-event-runtime/tests/test-plugin-separation.php:219-235`) was **not
+modified** — `git diff` on that file is empty — and Stage 1 introduces no cron,
+so the contract stands as written.
+## 8. Production deployment model
+
+Answering Stage 0's twelve questions:
+
+1. **How it is built** — `scripts/build-plugins-zip.sh`, whose plugin list is
+   generated from `plugins.json` (`build: true`).
+2. **What artifact** — `<slug>.zip` containing `<slug>/**`, produced by the
+   shared `scripts/lib/zip-build.sh`. Verified for this plugin: 3 files,
+   8,725 bytes, SHA-256 `e629fda9…4e14`, deterministic, `tests/` excluded.
+3. **`dist/release.json`** — required. Every build emits it; the build refuses
+   to package a `build: true` plugin whose directory is missing. Verified:
+   schema 1, 8 artifacts, 7 built.
+4. **How `plugins.json` drives metadata** — `scripts/lib/release.py` derives
+   the allowlist from `build: true` and versions from component headers.
+5. **Packaging for wp-admin** — the ZIP above, uploaded via
+   Plugins → Add New → Upload Plugin.
+6. **What an operator uploads** — *nothing yet*, by design (see B1 below).
+7. **Coexistence with the production set** — no name, prefix, CPT, taxonomy,
+   option or hook collides with the four production plugins; the plugin
+   declares no admin menu and no REST route.
+8. **Install without touching translation state** — yes by construction: no
+   activation hook and no write primitive.
+9. **Destructive activation hooks** — none exist.
+10. **Deployable before any scheduling/provider exists** — yes; the plugin needs
+    neither.
+11. **Post-install read-only verification** — the plugin reports `missing_engine`
+    until the engine is installed; with both present, an authorised proof run
+    returns the engine's own gate. No state is written either way.
+12. **What cannot be proven without a real install** — that WordPress.com
+    accepts the upload, that `Requires Plugins` is satisfied by the operator's
+    activation order, and that activation emits no error.
+
+### B1: why `production` and `build` are `false`
+
+Read from the registry validator and the release model, three constraints bind:
+
+1. `validate_lifecycle_rules()` **forbids** `class: tooling` together with
+   `production: true`. A plugin that will eventually be production must be
+   `platform` — which requires its dependency to be production as well.
+2. `build: true` admits the plugin to the release allowlist
+   (`scripts/lib/release.py:build_slugs`). Because it declares
+   `Requires Plugins: conexao-translation-rollout`, shipping it alone would
+   produce a ZIP whose dependency is **not in that release**; WordPress would
+   then refuse to activate it.
+3. The engine is `tooling` / `production: false` / `build: false` today.
+
+So promoting the automation plugin **requires promoting the shared engine
+first**. Setting the flags now would have asserted a deployable state that
+cannot exist, purely to make a check pass. The registry entry is truthful, and
+promotion is a known, packaging-validated one-line change per plugin.
+
+## 9. What is proven locally
+
+- the plugin loads in the repository's real WordPress bootstrap and exposes one
+  public entry point;
+- 14 distinct fail-closed invocations each refuse **without entering the
+  engine** (proven with an invocation counter, not inferred from the result);
+- a valid proof invocation delegates to the engine exactly once and returns the
+  engine's own `summary`, `plan` and `gate`;
+- the numeric gate is surfaced verbatim as the engine's `PASS`/`FAIL` verdict;
+- proof mode performs zero writes — the test adapter's `create_en`, `repair_en`
+  and `link_pair` **throw** if called, so a write attempt would fail the suite;
+- the engine's SHA-256 is `baf85283…a6ce4`, byte-identical to the pre-stage
+  baseline, and the engine tree has an empty `git diff`;
+- activation is inert: no lifecycle hook and no write primitive in the source;
+- no cron, no REST route, no `admin_post_`, no `__return_true`;
+- credentials are refused in keys and values, nested and top-level;
+- the plugin packages deterministically with `tests/` excluded;
+- the registry, documentation and generated regions are in sync (0 writes).
+
+## 10. What is proven by repository evidence
+
+- the release contract: allowlist derived from `plugins.json`, `release.json`
+  schema, determinism, and exclusion of `tests/`/JSON/junk
+  (`tests/scripts/verify-release-integrity.py`, 211 assertions);
+- the registry invariants, including the `tooling`/`production` prohibition and
+  the header ↔ registry dependency agreement
+  (`scripts/generate-registry-docs.php --check`);
+- that a `build: true` plugin missing on disk is a hard build failure, not a
+  silent skip (`scripts/build-plugins-zip.sh`);
+- coexistence: the plugin introduces no menu, route, CPT, taxonomy or option;
+- that the existing no-cron separation contract is unchanged.
+## 12. Test results
+
+| Command | Result |
+|---|---|
+| `./scripts/run-tests.sh --only conexao-translation-automation` | **132 passed, 0 failed** |
+| `./scripts/run-tests.sh` | **64/64 in-process suites, 4,348 assertions passed, 0 failed** |
+| `./scripts/run-tests.sh` (acceptance) | 3/3 suites, 156 assertions passed |
+| `./scripts/lint.sh` | **OK** — syntax clean, no new PHPCS violations, PHPStan clean |
+| `php scripts/generate-registry-docs.php --check` | `registry OK: 15 plugins validated, 24 generated regions current (zero writes)` |
+| `tests/scripts/verify-release-integrity.py` | 211 passed, 0 failed |
+| `tests/scripts/verify-agent-governance.py` | 247 passed, 0 failed |
+| `tests/scripts/verify-documentation-drift.py` | 14 passed, 0 failed |
+| `scripts/verify-permanent-gates.py` | 7 gates: **6 pass, 1 fail** |
+| `sha256sum` on the shared engine | `baf85283…a6ce4` before **and** after |
+
+**The one failing gate is pre-existing and unrelated.** `verify-i18n-freshness`
+reports 3 stale catalogues (`conexao-br-irlanda`, `conexao-content`,
+`conexao-event-runtime`). Verified by stashing all Stage 1 work and re-running:
+identical exit code and the identical 3 failures on a clean tree. The new
+plugin defines **no** gettext calls, so it adds no catalogue and no staleness.
+
+## 13. Engine integrity result
+
+```
+before: baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4
+after:  baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4
+```
+
+`class-conexao-translation-rollout-engine.php`, 966 lines. Stage 1 modified no
+file under `wp-content/plugins/conexao-translation-rollout/`. The digest is
+asserted by the test suite, so any future change fails the boundary suite.
+
+## 14. Production changes
+
+**None.**
+
+No production write of any kind. Production was not contacted. No plugin state,
+option, route, cron job, content, term, menu or Polylang relationship changed.
+
+## 15. Known limitations
+
+1. **B1 is partially resolved** (§8): promotion requires promoting the shared
+   engine first. Cannot be validated without a production install.
+2. **The proof run is local only.** The in-process suite uses an in-memory
+   adapter; a real proof against production content is Stage 2+ work.
+3. **The result contract is not persisted.** `to_array()` defines the audit
+   shape; storage and retention are deliberately undecided.
+4. **`i18n_freshness` fails** on 3 pre-existing stale catalogues (§12).
+5. **No trigger exists.** Nothing schedules or initiates a run; the boundary is
+   only reachable from PHP in-process.
+6. **Apply is unreachable**, so the apply path's *sequencing* rules (F7) are
+   specified but not yet exercised.
+7. **The stage allowlist is a hand-maintained list** of the seven stages
+   `conexao-en-translation` registers. A future stage should assert that
+   agreement rather than rely on this list staying in step.
+
+## 16. Stage 2 prerequisites
+
+1. **Resolve B1 properly.** Decide and execute the promotion of
+   `conexao-translation-rollout` (`tooling` → `platform`, `production: true`,
+   `build: true`), then promote `conexao-translation-automation` with it. Prove
+   the engine still passes byte-identical.
+2. **Concurrency lock (B3, C1–C6)** — required *before* any apply. Must fail
+   closed and be proven with a concurrency test.
+3. **"No apply without a preceding PASS dry-run" (F7)** — implement the
+   apply-mode gate behind the existing `MODE_APPLY` constant, which currently
+   fails closed unconditionally.
+4. **Change-detection contract (B5)** — including the persisted diff state and
+   the digest definition; hooks are a wake-up hint, an inventory diff is the
+   source of truth.
+5. **Provider interface (B4)** — interface only, no provider implementation.
+6. **Trigger decision (B2)** — resolve WordPress.com pv-cron reliability or
+   choose an external/manual kick so the pipeline does not depend on pv-cron.
+7. **Admin entry point** — if an operator-triggered path is added, it must carry
+   `manage_options` **and** a nonce, following
+   `Conexao_Translation_Rollout_Admin::handle_run()`.
+8. **Audit storage** — decide where the run log lives and its retention, using
+   the contract already defined by `to_array()` and keeping
+   `assert_no_secrets()` on the write path.
+9. **Re-baseline production** — Stage 0 found the rollout plugins absent from
+   production; the inventory must be re-measured before any apply.
+10. **Extend the permanent gates** — assert that the automation plugin
+    registers no public route and no cron without an explicit allowlist.
+
+---
+
+_Evidence: `docs/evidence/2026-09-30-stage-1-auto-translation-plugin-boundary/`_
+
+_Last verified: 2026-09-30 by Stage 1 — permanent automation plugin boundary_
+
+## 11. What still requires production verification
+
+Not claimed, and not attempted:
+
+- that WordPress.com accepts the plugin ZIP;
+- that `Requires Plugins: conexao-translation-rollout` can be satisfied in
+  production, which requires **the engine to be promoted and installed first**;
+- that activation in production raises no error;
+- that an authorised proof run inside production returns the expected gate.
+
+All of these need a controlled production installation test, which this stage
+is prohibited from performing.

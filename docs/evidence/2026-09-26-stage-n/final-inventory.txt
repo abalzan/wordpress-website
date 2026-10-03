@@ -1,0 +1,15 @@
+=== Stage N final content inventory (Phase 21) ===
+
+eligible public PT Blog posts      : 42
+translated PT Blog posts          : 42
+missing EN                        : 0
+malformed relationships           : 0
+EN body byte-identical to PT      : 0
+publication-date mismatches       : 0
+EN records with a linked EN post  : 42
+
+-- Blog allowlist entries (conexao_b2_page_allowlist / b2 post types) --
+
+post in b2 post types: no
+          allowlisted: 1821 (by documented policy)
+Violations: 0 (0 pre-existing, 0 new)

@@ -1,0 +1,43 @@
+STAGE 15 - SECTION 3/4: CREDENTIALS AND AUTHORIZATIONS
+Re-run independently by the Stage 15 agent, 2026-10-01.
+
+## Credentials (presence observed by NAME only)
+
+No value was read, printed, inspected, hashed, masked or stored. The local
+Docker .env was never opened as a substitute for a production channel.
+
+  CONEXAO_TRANSLATION_PROVIDER_KEY: ABSENT   <- the ONLY approved provider variable
+  WP_USERNAME:                            ABSENT
+  WP_APPLICATION_PASSWORD:                ABSENT
+  CONEXAO_PRODUCTION_ACCESS:              ABSENT
+
+  OPENAI_API_KEY: PRESENT in the environment, NOT used and NOT aliased.
+    It is not the approved mechanism. The plugin reads exactly
+    CONEXAO_TRANSLATION_PROVIDER_KEY via getenv(); no substitution,
+    no aliasing, no fallback was created or attempted.
+
+CONEXAO_TRANSLATION_PROVIDER_KEY is ABSENT, so P03 provider_credential is
+BLOCKED and no live provider call could be authorised. No credential value
+reaches any artifact, evidence file, report, log or audit record.
+
+## Authorizations - each checked on its own, none inferred
+
+  Installation authorization          (P02) ABSENT
+  Provider-call authorization        (P05) ABSENT
+  Canary authorization               (P08) ABSENT
+  Canary-APPLY authorization         (P09) ABSENT
+  Commissioning authorization        (P10) ABSENT
+  Batch-control commissioning        (P11) ABSENT
+  Human reviewer                     (P07) ABSENT
+
+No authorization object was supplied to the readiness gate in this
+environment. The gate's own production_actions block records the
+consequence numerically:
+
+  installs 0, activations 0, content_mutations 0,
+  provider_calls 0, canary_selections 0, emergency_stop_clears 0
+
+Independence is structural, not promised: the Stage 13 permanent gate
+injects each authorization separately and asserts the aggregate fails
+closed for every single omission (proofs 6, 7, 8, 10). Missing one can
+never be satisfied by supplying another.

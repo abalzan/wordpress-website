@@ -1,0 +1,39 @@
+=== PT IMMUTABILITY + EN routing contract (post-fix) ===
+  /en/apoiadores/
+     status=200  <html lang="en-US"  hreflang_links=5  php_errors=0
+     rel="canonical" href="http://localhost:8080/en/apoiadores/"
+     sha256(body)=56c441ad7dacbb5c
+  /en/eventos/
+     status=200  <html lang="en-US"  hreflang_links=7  php_errors=0
+     rel="canonical" href="http://localhost:8080/en/eventos/"
+     sha256(body)=0395bbd2869f8a00
+  /en/guias/
+     status=200  <html lang="en-US"  hreflang_links=5  php_errors=0
+     rel="canonical" href="http://localhost:8080/en/guias/"
+     sha256(body)=d691b80a2ded6bc6
+
+=== PT counterparts (must be unchanged) ===
+  /guias/ -> 200  <html lang="pt-BR"
+     rel="canonical" href="http://localhost:8080/guias/"
+     sha256(body)=251e6430efe94a03
+  /eventos/ -> 200  <html lang="pt-BR"
+     rel="canonical" href="http://localhost:8080/eventos/"
+     sha256(body)=4eb38479368b577e
+  /apoiadores/ -> 200  <html lang="pt-BR"
+     rel="canonical" href="http://localhost:8080/apoiadores/"
+     sha256(body)=98336efea0be9c7d
+
+=== nearby routes (regression scope) ===
+  / -> 200 
+  /en/ -> 200 
+  /en/cursos/ -> 200 
+  /en/lazer/ -> 200 
+  /en/blog/ -> 200 
+  /en/empregos/ -> 302 http://localhost:8080/empregos/
+  /en/jobs/ -> 301 http://localhost:8080/eventos/jobs-training-fair/
+  /en/dublin/ -> 200 
+  /en/housing/ -> 200 
+  /en/eventos/?county=laois -> 200 
+  /en/eventos/?cidade=adare -> 200 
+  /en/guias/?categoria=documents -> 200 
+=== END ===

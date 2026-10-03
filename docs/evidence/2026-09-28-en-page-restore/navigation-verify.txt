@@ -1,0 +1,28 @@
+=== DESKTOP: nav links on /en/ ===
+Blog -> http://localhost:8080/en/blog/
+Contact -> http://localhost:8080/en/contact/
+Cookies -> http://localhost:8080/en/cookie-policy/
+Courses -> http://localhost:8080/en/cursos/
+Events -> http://localhost:8080/en/eventos/
+Guides -> http://localhost:8080/en/guias/
+Home -> http://localhost:8080/en/
+Jobs -> http://localhost:8080/en/jobs/
+Leisure &amp; Tourism -> http://localhost:8080/en/lazer/
+Privacy -> http://localhost:8080/en/privacy-policy/
+See more -> http://localhost:8080/en/jobs/
+Sponsors -> http://localhost:8080/en/apoiadores/
+Terms -> http://localhost:8080/en/terms-of-use/
+=== MOBILE: nav links on /en/ ===
+Blog -> http://localhost:8080/en/blog/
+Contact -> http://localhost:8080/en/contact/
+Cookies -> http://localhost:8080/en/cookie-policy/
+Courses -> http://localhost:8080/en/cursos/
+Events -> http://localhost:8080/en/eventos/
+Guides -> http://localhost:8080/en/guias/
+Home -> http://localhost:8080/en/
+Jobs -> http://localhost:8080/en/jobs/
+Leisure &amp; Tourism -> http://localhost:8080/en/lazer/
+Privacy -> http://localhost:8080/en/privacy-policy/
+See more -> http://localhost:8080/en/jobs/
+Sponsors -> http://localhost:8080/en/apoiadores/
+Terms -> http://localhost:8080/en/terms-of-use/

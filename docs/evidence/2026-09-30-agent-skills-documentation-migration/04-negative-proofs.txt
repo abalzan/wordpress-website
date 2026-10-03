@@ -1,0 +1,25 @@
+# Negative proofs — each new governance check fails when violated
+
+## Proof 1: skill index drift (break the wp-testing index link)
+  FAIL: .agents/skills/README.md does not list the active skill 'wp-testing'; the index has drifted from .agents/skills/ and an agent would not find it
+  Stage K governance verification: 356 passed, 1 failed
+
+## Proof 2: dangling skill reference (wp-content-change -> wp-content-rollout)
+  FAIL: .agents/skills/wp-security-review/SKILL.md references 'wp-content-rollout', which is neither an active skill nor a plugin in plugins.json; a dangling skill reference sends the next agent to a workflow that does not exist
+  Stage K governance verification: 357 passed, 1 failed
+
+## Proof 3: missing standard section (rename Failure handling)
+  FAIL: .agents/skills/wp-testing/SKILL.md is missing standard section(s): Failure handling; a skill is an executable workflow, not a summary, and must state its purpose, boundaries, authoritative inputs and failure handling
+  Stage K governance verification: 356 passed, 1 failed
+
+## Proof 4: production safety sentence genuinely removed
+  FAIL: .agents/skills/wp-release-deploy/SKILL.md does not state 'no production write'; a skill that operates a live system or writes data must say explicitly that no production write occurred
+  Stage K governance verification: 356 passed, 1 failed
+
+## Proof 5: duplicated section heading (Failure handling -> Definition of done)
+  FAIL: .agents/skills/wp-testing/SKILL.md is missing standard section(s): Failure handling; a skill is an executable workflow, not a summary, and must state its purpose, boundaries, authoritative inputs and failure handling
+  FAIL: .agents/skills/wp-testing/SKILL.md repeats section heading(s): Definition of done; a duplicated heading means one of the two sections has no body
+  Stage K governance verification: 355 passed, 2 failed
+
+## Restored state
+  Stage K governance verification: 357 passed, 0 failed

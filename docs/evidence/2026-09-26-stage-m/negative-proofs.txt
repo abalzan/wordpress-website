@@ -1,0 +1,66 @@
+Stage M — NEGATIVE PROOFS (Phase 17): the gates still fail closed
+Generated: 2026-09-26
+Each proof injects a REAL violation, proves the gate exits 1, then reverts it.
+No proof leaves a fixture behind; the working tree is verified clean at the end.
+
+A. TAXONOMY VIOLATION STILL CAUSES EXIT 1
+   Injected a language tag on a throwaway conexao_county term
+   ("ZZ StageM Proof County", term 4730, tagged en).
+     - taxonomy:conexao_county:language_tagged_terms: 1
+     17 passed, 1 failed
+     GATE_EXIT=1
+   Reported as NEW (not pre-existing), proving the baseline classification
+   still distinguishes a fresh violation from recorded debt.
+   Reverted: term deleted. Re-run reported 18 passed, 0 failed. CLEAN.
+
+B. MISSING EN RECORD STILL CAUSES EXIT 1
+   The live dataset still holds 34 eligible PT posts with no EN translation.
+     - post_type:post:missing_en: 34
+     19 passed, 1 failed, violations: 34
+   This is the live, unremediated debt. The gate still fails on it and still
+   exits non-zero. It was NOT suppressed, allowlisted or downgraded.
+
+C. UNSCOPED CACHE KEY STILL CAUSES EXIT 1
+   In a THROWAWAY repository copy, injected
+     get_transient( 'conexao_proof_unscoped' )
+     set_transient( 'conexao_proof_unscoped', array(), 300 )
+     - wp-content/themes/conexao-br-irlanda/inc/cache.php:3 get_transient
+     - wp-content/themes/conexao-br-irlanda/inc/cache.php:4 set_transient
+     2 passed, 2 failed, violations: 2
+   The real repository was never modified.
+
+D. REDIRECT PRECEDENCE REGRESSION STILL CAUSES EXIT 1
+   Regressed the hook priority in the real (git-tracked) file
+   inc/seo/redirects.php line 233 from 2 to 9 — i.e. AFTER Polylang's canonical
+   at priority 4 — then restored it with `git checkout --`.
+     - redirect:hook_priority_regression: 1
+     14 passed, 1 failed
+     GATE_EXIT=1
+   Reported as NEW. Reverted: `git status --short` for the file is empty. CLEAN.
+
+E. DOCUMENTATION DRIFT STILL CAUSES EXIT 1
+   In a THROWAWAY repository copy, hand-edited a GENERATED registry region in
+   docs/deployment.md.
+     GATE_EXIT=1
+   Proves the documentation gate still orchestrates the real Stage G registry
+   gate rather than a weaker reimplementation.
+
+F. STALE CATALOGUE STILL CAUSES EXIT 1
+   In a THROWAWAY copy with a synthetic git history, committed a change to a
+   gettext-bearing source (class-agency.php) dated AFTER its .pot.
+     conexao-data-model  catalogue=1790432882
+                         newest-source=1893456000  STALE
+     8 passed, 1 failed
+     GATE_EXIT=1
+   The freshness signal is still git commit time, so the regenerated catalogues
+   did not weaken the check.
+
+G. AGGREGATE STILL EXITS 1 WHEN A CONSTITUENT GATE FAILS
+     Gates: 7 total, 6 passed, 1 failed, 0 blocked
+     AGGREGATE_EXIT=1
+   Six passing gates do not hide the one failing gate. The aggregate was not
+   modified in Stage M.
+
+POST-PROOF STATE
+   git status --short -> (empty)
+   No failed fixture, scratch file or temporary copy remains in the repository.

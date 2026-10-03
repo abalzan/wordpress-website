@@ -1,0 +1,33 @@
+ docs/evidence/README.md                            |  23 +++++
+ docs/plugins/conexao-translation-automation.md     | 109 ++++++++++++++++++++-
+ docs/reports/README.md                             |   3 +
+ .../conexao-translation-automation.php             |  36 +++++--
+ .../tests/test-automation-boundary.php             |  66 ++++++++++---
+ .../tests/test-automation-promotion.php            |  43 ++++++--
+ 6 files changed, 249 insertions(+), 31 deletions(-)
+ M docs/evidence/README.md
+ M docs/plugins/conexao-translation-automation.md
+ M docs/reports/README.md
+ M wp-content/plugins/conexao-translation-automation/conexao-translation-automation.php
+ M wp-content/plugins/conexao-translation-automation/tests/test-automation-boundary.php
+ M wp-content/plugins/conexao-translation-automation/tests/test-automation-promotion.php
+?? docs/evidence/2026-09-30-stage-3-change-detection-provider-trigger/
+?? docs/reports/2026-09-30-stage-3-change-detection-provider-trigger.md
+?? tests/scripts/verify-stage3-automation.py
+?? wp-content/plugins/conexao-translation-automation/includes/class-conexao-translation-automation-audit.php
+?? wp-content/plugins/conexao-translation-automation/includes/class-conexao-translation-automation-change-detector.php
+?? wp-content/plugins/conexao-translation-automation/includes/class-conexao-translation-automation-digest.php
+?? wp-content/plugins/conexao-translation-automation/includes/class-conexao-translation-automation-hooks.php
+?? wp-content/plugins/conexao-translation-automation/includes/class-conexao-translation-automation-inventory.php
+?? wp-content/plugins/conexao-translation-automation/includes/class-conexao-translation-automation-provider-result.php
+?? wp-content/plugins/conexao-translation-automation/includes/class-conexao-translation-automation-provider.php
+?? wp-content/plugins/conexao-translation-automation/includes/class-conexao-translation-automation-source-state.php
+?? wp-content/plugins/conexao-translation-automation/includes/class-conexao-translation-automation-trigger.php
+?? wp-content/plugins/conexao-translation-automation/tests/test-automation-audit.php
+?? wp-content/plugins/conexao-translation-automation/tests/test-automation-change-detection.php
+?? wp-content/plugins/conexao-translation-automation/tests/test-automation-hooks.php
+?? wp-content/plugins/conexao-translation-automation/tests/test-automation-provider.php
+?? wp-content/plugins/conexao-translation-automation/tests/test-automation-trigger.php
+
+plugins.json diff (expected: EMPTY):
+(end)

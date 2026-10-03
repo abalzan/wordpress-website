@@ -1,5 +1,20 @@
 # Conexão BR Irlanda — Event Importer (Local Tools)
 
+<!-- BEGIN GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
+| | |
+|---|---|
+| **Status** | active |
+| **Class** | tooling |
+| **Production** | no |
+| **Build** | yes |
+| **Compose mount** | yes |
+| **Dependencies** | `conexao-data-model`, `conexao-event-runtime` |
+| **Version** | 1.7.1 (authoritative source: `wp-content/plugins/conexao-event-importer/conexao-event-importer.php` header) |
+| **Registry** | [`plugins.json`](../../plugins.json) |
+
+> **Local-only tooling.** Not a production steady-state dependency.
+<!-- END GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
+
 - **Path**: `wp-content/plugins/conexao-event-importer/`
 - **Version**: 1.7.1
 - **Requires Plugins**: `conexao-data-model`, `conexao-event-runtime`
@@ -147,12 +162,15 @@ On activation, the plugin seeds these default sources:
 | `motorsport_ireland` | Motorsport Ireland | `website` | inactive |
 | `mondello_park` | Mondello Park | `website` | inactive |
 
+**Full registry size: 58 sources** — these 6 legacy defaults plus the 52 county
+sources below. Both halves are declared in code (no operator `wp eval` needed).
+
 ### County Source Registry (v1.7.0)
 
 The multi-county expansion introduces 52 additional source registrations
 (26 Eventbrite + 26 Heritage Week) for the 26 Republic of Ireland counties.
-These are seeded via `Conexao_Event_Sources::seed_county_sources()` and are
-**all inactive by default**.
+Together with the six legacy defaults above this is a **58-source registry**.
+All 52 ship **inactive**: registering a source never starts an import.
 
 **Source key scheme:**
 - Eventbrite: `eventbrite_<county-slug>` (e.g. `eventbrite_cork`)
@@ -171,8 +189,26 @@ LOGGED (never silently accepted).
 a single source registration (relevant for Galway, Dublin). The 2026 form values
 are audited in `docs/importers/events-expansion-stage-a-audit.md`.
 
-**Seeding:** `seed_county_sources()` is idempotent — running it twice does not
-create duplicates. It only inserts sources whose IDs do not already exist.
+**Seeding:** the county registry is **self-healing**. `Conexao_Event_Sources::get_all()`
+merges any missing county source on every read, so the complete 58-source registry
+is correct on every environment — a fresh activation, the local Docker stack, a CI
+fixture build and a restored database alike. `seed_county_sources()` remains
+available as an explicit, idempotent operator step, but it is **no longer
+required** to obtain the county coverage.
+
+This self-heal is deliberate and narrow:
+- it **only inserts** source ids that do not exist, so an operator's activated,
+  edited or re-pointed source is never reset;
+- every county source ships `inactive`, so repairing the registry can never
+  start an import, fetch a provider or write an Event post;
+- it never resurrects a retired source (see Retired sources below);
+- it is idempotent — repeated reads converge to the same registry.
+
+**Retired sources:** `laois_council`, `leo_laois` and `local_enterprise_office_laois`
+were deliberately retired (commit `042259d`, which deleted
+`class-laois-council-source.php` and `class-leo-laois-source.php`). `get_all()`
+actively strips these ids. They must never be restored; the events they
+previously imported are preserved.
 
 **Eventbrite pagination cap:** `page_count` is capped at 49 (~980 events).
 Large counties (Dublin, Cork) may report much higher `object_count` values.
@@ -233,6 +269,69 @@ Create a free token at [developers.eventbrite.com](https://www.eventbrite.com/de
 - Accept `webcal://` or `https://` feed URLs; an uploaded `.ics` file overrides the URL.
 - Events are deduplicated by the feed's native `UID`.
 - `CATEGORIES` maps to the event category (first entry); per-source `county`/`category` hints apply when the feed omits them.
+
+### The deterministic CI fixture (Stage 21)
+
+`scripts/data/ci-fixture-laois-ics.php` emits a **real** iCalendar document, and
+`scripts/bootstrap-ci-fixtures.php` **step 4c** imports it with the production
+`Conexao_Event_Importer_Engine` under the production `laois_tourism` source id,
+through the source's `ics_content` — the same slot an operator's ICS upload
+fills. There is **no fixture-only import or recurrence path**: the parser, the
+source-scoped `Conexao_Laois_Tourism_Series` adapter, the generic `RRULE` reader
+and the recurrence meta writer are all the production ones, so the CI site is
+exercised along the same code path production uses.
+
+The document carries three deliberately different shapes so the whole occurrence
+contract is covered:
+
+| Shape | Encoding | Expected outcome |
+|---|---|---|
+| collapsed weekly series | timed VEVENT, whole-week span, same weekday on both ends, **no `RRULE`** | four weekly occurrences, stored as `_event_recurrence = weekly` |
+| genuine multi-day | timed VEVENT, day span **not** a multiple of 7, weekdays differ | stays one-time, keeps `_event_end_date` |
+| all-day range | `DTSTART;VALUE=DATE` … `DTEND;VALUE=DATE` | stays one-time, no clock time |
+
+Two deliberate constraints:
+
+- **Dates are relative** to one captured site-local "today", for the same reason
+  `scripts/data/ci-fixture-events.php` uses relative dates: the event runtime
+  lists only a `today .. today+7` window, so a fixed calendar date would
+  silently empty `/eventos/` once it expired.
+- **No `ATTACH` line**, or the importer would try to sideload a remote banner and
+  an offline CI job would depend on the network. The `UID`s are date-independent,
+  so a later run upserts the same three records instead of creating new ones.
+
+`bootstrap-ci-fixtures.php --apply --verify` then asserts the contract
+numerically, evaluating **every** calendar day of the series with
+`Conexao_Event_Recurrence` and failing closed on a single false match — the
+per-date half of the contract that the HTTP acceptance layer cannot observe,
+because the public archive accepts no caller-supplied date.
+
+### The per-source `county` hint (Stage 7.x)
+
+A source's `county` field is **not decoration**. It is the only thing that gives
+an imported event a `conexao_county` term, and the `/eventos` archive filters on
+exactly that term (`?county=<slug>`). An empty hint therefore makes every event
+from that source permanently invisible to the county filter.
+
+Two rules protect it:
+
+1. **`get_all()` self-heals a drifted hint.** When a stored source's `county`
+   is empty but the source **ships** a default county, the default is restored
+   and persisted. A *non-empty* stored value is never overwritten, so a
+   deliberate operator override always wins. The drift was reachable through
+   wp-admin: the "Add Source" form renders the County input empty (placeholder
+   only), and `handle_save_source()` persists whatever is submitted — so
+   re-adding a shipped source without retyping the county silently wiped it.
+2. **The `"unchanged"` fast path reconciles taxonomies.** An event whose
+   payload is unchanged returns early from `upsert_event()`. That path now calls
+   `save_event_taxonomies()` too, so an event imported while the hint was empty
+   acquires its county term on the next run instead of being stuck forever.
+
+Events imported before the hint existed are repaired once by
+`scripts/repair-event-county-terms.php` (dry-run by default). It assigns the
+**existing** shared `conexao_county` term and never creates one — counties are
+shared geography, so there is one physical term per county and no per-language
+term (see the taxonomy policy in `AGENTS.md`).
 
 ## Workflow (manual, on-demand)
 
@@ -480,6 +579,53 @@ wp conexao-events status                                # per-source health tabl
 The public `_event_status` query gate is **not** registered here anymore —
 it moved to the Event Runtime plugin (see the split section above).
 
+## Multilingual (Stage 2) — language guard
+
+`includes/class-language-guard.php` (`Conexao_Event_Importer_Language_Guard`)
+protects event identity when Polylang is active:
+
+- **Import language**: imported events are assigned the site's default language
+  (`pt_BR`) on `save_post_event`, whichever path created them (single import,
+  multi-import, JSON/ZIP transfer). An existing language is never reassigned, so
+  a hand-made English translation keeps `en`. Source-language detection for
+  English-native sources is Stage 3 work and deliberately not implemented.
+- **Import target**: `upsert_event()` refuses to write to a record in another
+  language — a translation is not the import target. The run reports a skip
+  (`language conflict`) instead of overwriting translated content or creating a
+  second record for the same source identity.
+- **Deduplication**: `Conexao_Event_Deduplicator::find()` prefers the record in
+  the import language (identity meta is shared verbatim with the translation, so
+  a naive newest-first lookup could otherwise return the translation).
+- Identity meta (`_event_source`, `_event_source_id`, `_event_export_uuid`,
+  `_event_url`, scheduling/status fields) stays language-neutral — Polylang only
+  adds the language relationship.
+
+Gate coverage: `tests/test-language-identity.php`.
+All helpers are no-ops when Polylang is inactive.
+
+## Export language field (Stage 3.2)
+
+The local export JSON gained ONE additive per-event field, `"lang"`:
+
+- Values: `pt` | `en` | `other` | `unknown`. Source of truth: the event's
+  `_event_source_language` meta (see the runtime plugin's
+  `Conexao_Event_Source_Language`). `unknown` covers every record with no
+  explicit classification (legacy imports, manual events, sources without a
+  language signal) — the value is never guessed from content text.
+- The field is ADDITIVE: every existing field (uuid, post, meta, taxonomies,
+  featured_image) is unchanged, so existing consumers ignore it safely.
+  `_event_source_language` also round-trips inside the `meta` bag (added to the
+  transfer importer's allowlist), so production records receive the
+  classification on import.
+- The export set is constrained to the IMPORT language when Polylang is
+  active: English translations are linked editorial records that share the
+  identity meta, and exporting them would duplicate the identity in the
+  package — the export contains exactly one row per production identity.
+- Importer-side: `source_language` is honored from the normalized payload only
+  when it is a valid explicit classification; the Eventbrite normalizer maps
+  the event's declared `locale`; absent/invalid values store nothing.
+- Flutter does NOT depend on this field in Stage 3.2.
+
 ## Admin UI
 
 Menu: Event Import (top-level menu, icon dashicons-calendar-alt)
@@ -505,8 +651,77 @@ Submenus:
 
 - `conexao-data-model` (event CPT must exist)
 
+## Recurrence / occurrence dates (Stage 20)
+
+An imported event may be a **series**. The importer stores the series as
+**one canonical event post** plus the four recurrence meta keys the data model
+already had (`_event_recurrence`, `_event_recurrence_days`,
+`_event_recurrence_start`, `_event_recurrence_end`). It never creates one post
+per occurrence, and it never re-implements the evaluator — `Conexao_Event_Recurrence`
+in the **Event Runtime** plugin remains the single place that answers "does
+this event occur on date X". A manual rule written in wp-admin and an imported
+rule are stored in exactly the same shape.
+
+Resolution happens per VEVENT, standard mechanism first:
+
+1. **`RRULE` (RFC 5545)** — read generically for every ICS source by
+   `includes/class-conexao-ics-recurrence.php`. Supported subset:
+   `FREQ=WEEKLY`, `INTERVAL=1`, `BYDAY`, `COUNT`, `UNTIL`. Anything outside
+   that subset (e.g. `FREQ=DAILY`, `INTERVAL=2`, ordinal `2MO`) returns null
+   and the event simply stays one-time: `DTSTART`/`DTEND` still describe a
+   valid single event, so degrading is always safe.
+2. **A source-specific adapter**, consulted only for source ids registered in
+   `Conexao_Source_ICalendar::resolve_series_adapter()`. This is the isolation
+   boundary that keeps one feed's convention from leaking into standard ICS
+   semantics for any other feed.
+
+### Laois Tourism: the collapsed-series convention
+
+`laoistourism.ie` (`PRODID:-//Laois Tourism - ECPv6.18.0//`) publishes **no
+`RRULE` at all** — measured across the whole feed: 30 VEVENTs, 0 RRULE,
+0 EXDATE, 0 RDATE, 0 `X-` recurrence properties. A weekly course is encoded as
+a single VEVENT whose `DTSTART` is the **first occurrence** and whose `DTEND`
+is the end of the **last occurrence**.
+
+Read literally that pair is indistinguishable from one event running
+continuously for the whole window — which is why a four-week class used to be
+listed on every day in between. `includes/class-conexao-laois-tourism-series.php`
+recognises the pattern with a **structural** test, never a title or keyword
+match: the event is timed, `weekday(DTSTART) === weekday(DTEND)`, the day span
+is an exact multiple of 7, and the leftover time-of-day delta is a positive,
+less-than-one-day single-session duration. All-day (`VALUE=DATE`) events and
+genuine multi-day events fail the test and stay one-time.
+
+The rule reproduces the occurrence counts the source states in its own
+`DESCRIPTION` ("four-week Chair Yoga" → 4, "6-week Bootcamp" → 6,
+"seven-week workshop" → 7), which is the independent corroboration that the
+interpretation matches the publisher's intent.
+
+All date arithmetic is calendar-based (never a site-timezone instant
+conversion), so a `TZID=Europe/Dublin` series keeps its local dates across the
+DST transition.
+
+### Idempotence
+
+The rule participates in change detection, so the first run after the series
+becomes known reports the change and writes the rule, and every later run
+compares equal. Measured: run 1 `created=30`, run 2 `created=0 updated=0
+unchanged=30`. An event whose source stops declaring a series has the whole
+meta group deleted, so a withdrawn series can never leave an orphan rule.
+
+### Tests
+
+- `tests/test-ics-occurrence-dates.php` — in-process suite (172 assertions)
+  against the committed real-world fixture `tests/fixtures/ics/laois-tourism.ics`.
+- `tests/stage20-laois-import-run.php` — baseline / dry-run / apply / verify
+  runner used for the deterministic two-run evidence.
+- `tests/acceptance/verify-event-occurrence-http.py` — HTTP acceptance.
+
 ## Files to Inspect First
 
 - `includes/class-event-importer.php` — import engine, upsert, dry-run
+- `includes/sources/class-icalendar-source.php` — ICS parsing + recurrence resolution
+- `includes/class-conexao-ics-recurrence.php` — RFC 5545 RRULE reader (generic)
+- `includes/class-conexao-laois-tourism-series.php` — Laois collapsed-series rule
 - `includes/class-event-export.php` / `includes/class-event-import.php` — the local→production transfer (UUIDs + embedded images)
 - `includes/class-event-sources.php` — source CRUD + dashboard

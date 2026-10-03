@@ -1,0 +1,74 @@
+{
+ "desktop/PT": {
+  "status": 200,
+  "url": "http://localhost:8080/guias/",
+  "cards": 10,
+  "overflow": false,
+  "console_errors": [],
+  "lang": "pt-BR",
+  "canonical": "http://localhost:8080/guias/"
+ },
+ "desktop/EN": {
+  "status": 200,
+  "url": "http://localhost:8080/en/guias/",
+  "cards": 0,
+  "overflow": false,
+  "console_errors": [],
+  "lang": "en-US",
+  "canonical": "http://localhost:8080/en/guias/"
+ },
+ "desktop/EN filter": {
+  "status": 200,
+  "url": "http://localhost:8080/en/guias/?categoria=documents",
+  "cards": 0,
+  "overflow": false,
+  "console_errors": [],
+  "lang": "en-US",
+  "canonical": "http://localhost:8080/en/guias/"
+ },
+ "desktop/PT filter": {
+  "status": 200,
+  "url": "http://localhost:8080/guias/?categoria=financas",
+  "cards": 3,
+  "overflow": false,
+  "console_errors": [],
+  "lang": "pt-BR",
+  "canonical": "http://localhost:8080/guias/"
+ },
+ "mobile/PT": {
+  "status": 200,
+  "url": "http://localhost:8080/guias/",
+  "cards": 10,
+  "overflow": false,
+  "console_errors": [],
+  "lang": "pt-BR",
+  "canonical": "http://localhost:8080/guias/"
+ },
+ "mobile/EN": {
+  "status": 200,
+  "url": "http://localhost:8080/en/guias/",
+  "cards": 0,
+  "overflow": false,
+  "console_errors": [],
+  "lang": "en-US",
+  "canonical": "http://localhost:8080/en/guias/"
+ },
+ "mobile/EN filter": {
+  "status": 200,
+  "url": "http://localhost:8080/en/guias/?categoria=documents",
+  "cards": 0,
+  "overflow": false,
+  "console_errors": [],
+  "lang": "en-US",
+  "canonical": "http://localhost:8080/en/guias/"
+ },
+ "mobile/PT filter": {
+  "status": 200,
+  "url": "http://localhost:8080/guias/?categoria=financas",
+  "cards": 3,
+  "overflow": false,
+  "console_errors": [],
+  "lang": "pt-BR",
+  "canonical": "http://localhost:8080/guias/"
+ }
+}

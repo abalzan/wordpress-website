@@ -1,0 +1,25 @@
+# Stage I — re-measured script inventory (pre-change)
+
+measured_at: 2026-09-26
+baseline_sha: 1068a7b145f1f0b4d13b3b0212415c169a3331da
+
+## Totals by extension (all files under scripts/)
+     80 php
+     36 py
+      9 sh
+      2 pyc
+      1 json
+
+## Totals by language
+php=80
+python=36
+bash=9
+json=1
+
+## Bootstrap duplication (current top-level PHP scripts)
+php_scripts_total=73
+with_inline_wp_load_block=40
+with_inline_walk_up_loop=30
+with_hardcoded_var_www_html=28
+with_abspath_guard=40
+with_WP_USE_THEMES_false=23

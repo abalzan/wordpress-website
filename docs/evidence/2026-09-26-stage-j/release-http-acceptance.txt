@@ -1,0 +1,58 @@
+== HTTP acceptance: release smoke matrix (local) ==
+   base:   http://localhost:8080
+   matrix: scripts/data/release-smoke-matrix.json
+   rows:   18
+
+-- release smoke matrix --
+  PASS  smoke-home-pt / (status 200)
+  PASS  smoke-home-en /en/ (status 200)
+  PASS  smoke-archive-guias /guias/ (status 200)
+  PASS  smoke-archive-eventos /eventos/ (status 200)
+  PASS  smoke-archive-cursos /cursos/ (status 200)
+  PASS  smoke-archive-empregos /empregos/ (status 200)
+  PASS  smoke-archive-apoiadores /apoiadores/ (status 200)
+  PASS  smoke-archive-lazer /lazer/ (status 200)
+  PASS  smoke-archive-blog /blog/ (status 200)
+  PASS  smoke-en-pair-guias /en/guias/ (status 200)
+  PASS  smoke-en-pair-eventos /en/eventos/ (status 200)
+  PASS  smoke-en-pair-lazer /en/lazer/ (status 200)
+  PASS  smoke-en-pair-blog /en/blog/ (status 200)
+  PASS  smoke-sitemap /sitemap.xml (status 200)
+  PASS  smoke-robots /robots.txt (status 200)
+  PASS  smoke-404-pt /nao-existe-xyz-stage-j/ (status 404)
+  PASS  smoke-404-en /en/nao-existe-xyz-stage-j/ (status 404)
+  PASS  smoke-legacy-redirect /guides/ (status 301)
+
+-- one single per post type --
+
+-- one single per post type (discovered over the public REST API) --
+  PASS  guide: single /guias/outono-irlanda-alimentacao-bem-estar/
+  PASS  guide: single is canonical
+  PASS  guide: single declares hreflang alternates
+  PASS  event: single /eventos/stage32-exp-en/
+  PASS  event: single is canonical
+  PASS  event: single declares hreflang alternates
+  PASS  course_provider: single /cursos/microcreds/
+  PASS  course_provider: single is canonical
+  PASS  course_provider: single declares hreflang alternates
+  PASS  job: single /en/empregos/opportunities/
+  PASS  job: single is canonical
+  PASS  job: single declares hreflang alternates
+  PASS  sponsor: single /apoiadores/janine-meira-escritora/
+  PASS  sponsor: single is canonical
+  PASS  sponsor: single declares hreflang alternates
+  PASS  leisure: single redirects off-site as designed
+  PASS  post: single /2026/06/20/quem-voce-se-tornou-longe-de-casa/
+  PASS  post: single is canonical
+
+-- language layer --
+
+-- language layer (Portuguese canonical, /en/ reciprocal) --
+  PASS  front page serves 200
+  PASS  front page is the Portuguese document
+  PASS  front page declares hreflang alternates
+  PASS  /en/ serves 200
+  PASS  /en/ is the English document
+  PASS  legacy /guides/ redirects to the canonical /guias/
+
+acceptance/release-http: 42 passed, 0 failed

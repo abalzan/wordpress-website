@@ -1,0 +1,41 @@
+# Stage 8 - engine integrity and intentional diff
+
+UTC: 2026-10-01T09:56:16Z
+
+## HISTORICAL BASELINE (engine CORE = the mutation authority)
+  baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4
+
+## AFTER STAGE 8 (same file)
+  baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4  wp-content/plugins/conexao-translation-rollout/includes/class-conexao-translation-rollout-engine.php
+
+  => IDENTICAL. The engine's lifecycle code did not change.
+     Stage 8 closed an ENTRY POINT, not the mutation authority.
+     Re-asserted permanently by tests/scripts/verify-stage8-control-plane.py
+
+## PLUGIN-TREE digests (main + includes, tests excluded)
+  before: f6085433b7ab4c3af9f264796a0c3a6b07ae86334f75a41b961e236f29b756c5
+  after : f7f0abc1755efd49331256fe61845b7552405194e35f2d69749ff4852fcc3c15
+
+  (the tree digest moved because the ADMIN class and the version header
+   changed; the ENGINE class did not)
+
+## AUTOMATION plugin tree digest
+  after : 38ff2c3f29fed3d5b85a3d9f17be4942882f2d9c0827dd280931f469908383a8
+  before: 38ff2c3f29fed3d5b85a3d9f17be4942882f2d9c0827dd280931f469908383a8
+  (only its TEST changed - the version-consistency assertion - no shipped
+   automation include was modified)
+
+## PROVIDER implementation (must not move - Stage 8 is not a provider stage)
+  before: 9f4dcaf6af168f7e239df71921ff78296f557a63652a7c5afef7fee667a9c7df
+  after : 9f4dcaf6af168f7e239df71921ff78296f557a63652a7c5afef7fee667a9c7df
+
+## EXACT FILES CHANGED
+ docs/architecture.md                               |   2 +-
+ docs/plugins/README.md                             |   2 +-
+ docs/plugins/conexao-translation-rollout.md        |  47 ++++-
+ docs/project-inventory.md                          |   2 +-
+ tests/scripts/verify-stage7-commissioning.py       |  19 +-
+ .../tests/test-automation-promotion.php            |  19 +-
+ .../conexao-translation-rollout.php                |   6 +-
+ .../class-conexao-translation-rollout-admin.php    | 222 +++++++++------------
+ 8 files changed, 177 insertions(+), 142 deletions(-)

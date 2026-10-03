@@ -1,0 +1,58 @@
+Stage L — test summary (before vs after)
+Generated: 2026-09-26T13:35:51Z
+Start SHA: 7bc2c3528b9e1346b220ee8e42a804296ce0553e
+Branch: i18n
+
+=== BEFORE (pre-Stage-L baseline run) ===
+In-process PHP suites: 50 total, 35 passed, 15 failed
+Assertions: 3306 passed, 59 failed
+Script-contract suites: 3 total, 3 passed, 0 failed
+HTTP acceptance suites: 3 total, 3 passed, 0 failed
+----------------------------------------
+TESTS FAILED
+failing suites:
+  - plugin/conexao-event-importer/test-county-registry.php
+  - plugin/conexao-event-importer/test-error-handling.php
+  - plugin/conexao-event-importer/test-ivvcc-importer.php
+  - plugin/conexao-event-importer/test-town-sanitization.php
+  - theme/conexao-br-irlanda/test-blog-en-translation.php
+  - theme/conexao-br-irlanda/test-event-location-filters.php
+  - theme/conexao-br-irlanda/test-guide-en-translation.php
+  - theme/conexao-br-irlanda/test-header-menu-selection.php (pt)
+  - theme/conexao-br-irlanda/test-leisure-card-excerpt-language.php
+  - theme/conexao-br-irlanda/test-leisure-related-events.php
+  - theme/conexao-br-irlanda/test-polylang-foundation.php
+  - theme/conexao-br-irlanda/test-stage32-bilingual.php
+  - theme/conexao-br-irlanda/test-stage33-bilingual.php
+  - theme/conexao-br-irlanda/test-stage41-rest-language.php
+  - theme/conexao-br-irlanda/test-stage45-pages.php
+full suite output kept in /tmp/tmp.DrxnhR0mtu
+EXIT=1
+
+=== AFTER (post-Stage-L default runner) ===
+In-process PHP suites: 54 total, 37 passed, 17 failed
+Assertions: 3362 passed, 65 failed
+Script-contract suites: 6 total, 5 passed, 1 failed
+HTTP acceptance suites: 3 total, 3 passed, 0 failed
+----------------------------------------
+TESTS FAILED
+failing suites:
+  - plugin/conexao-event-importer/test-county-registry.php
+  - plugin/conexao-event-importer/test-error-handling.php
+  - plugin/conexao-event-importer/test-ivvcc-importer.php
+  - plugin/conexao-event-importer/test-town-sanitization.php
+  - theme/conexao-br-irlanda/test-blog-en-translation.php
+  - theme/conexao-br-irlanda/test-event-location-filters.php
+  - theme/conexao-br-irlanda/test-guide-en-translation.php
+  - theme/conexao-br-irlanda/test-header-menu-selection.php (pt)
+  - theme/conexao-br-irlanda/test-leisure-card-excerpt-language.php
+  - theme/conexao-br-irlanda/test-leisure-related-events.php
+  - theme/conexao-br-irlanda/test-polylang-foundation.php
+  - theme/conexao-br-irlanda/test-stage32-bilingual.php
+  - theme/conexao-br-irlanda/test-stage33-bilingual.php
+  - theme/conexao-br-irlanda/test-stage41-rest-language.php
+  - theme/conexao-br-irlanda/test-stage45-pages.php
+  - theme/conexao-br-irlanda/test-taxonomy-policy.php
+  - theme/conexao-br-irlanda/test-translation-completeness.php
+full suite output kept in /tmp/tmp.SwwyZHQO19
+EXIT=1

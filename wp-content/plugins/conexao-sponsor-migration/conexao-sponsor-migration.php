@@ -17,6 +17,11 @@ require_once CONEXAO_SPONSOR_MIGRATION_DIR . 'includes/class-sponsor-exporter.ph
 require_once CONEXAO_SPONSOR_MIGRATION_DIR . 'includes/class-sponsor-importer.php';
 require_once CONEXAO_SPONSOR_MIGRATION_DIR . 'includes/class-sponsor-transfer-admin.php';
 
+// Stage 2: language guard (Polylang-aware; no-op without Polylang). Keeps
+// imported sponsors in the default language without touching identity meta.
+require_once CONEXAO_SPONSOR_MIGRATION_DIR . 'includes/class-language-guard.php';
+Conexao_Sponsor_Migration_Language_Guard::init();
+
 final class Conexao_Sponsor_Migration {
 
 	const VERSION = '1.1.0';
@@ -136,3 +141,18 @@ final class Conexao_Sponsor_Migration {
 }
 
 Conexao_Sponsor_Migration::instance();
+/**
+ * Load the plugin textdomain (Stage 1 i18n foundation).
+ *
+ * Translation files live in this plugin's languages/ directory. This does
+ * not touch sponsor identity/matching — gettext wrapping only, no behavior
+ * change.
+ */
+function conexao_sponsor_migration_load_textdomain() {
+	load_plugin_textdomain(
+		'conexao-sponsor-migration',
+		false,
+		dirname( plugin_basename( __FILE__ ) ) . '/languages'
+	);
+}
+add_action( 'init', 'conexao_sponsor_migration_load_textdomain' );

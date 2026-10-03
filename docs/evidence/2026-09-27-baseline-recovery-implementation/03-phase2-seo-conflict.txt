@@ -1,0 +1,67 @@
+# 03 - Phase 2: inc/seo.php vs inc/seo/ conflict resolution (High-risk)
+
+## 1. b47d098 loader architecture (inc/seo/*, 10 modules)
+  29://   2. inc/i18n/ must load before inc/rest-language.php and inc/seo/, which
+  60://    sitemap, redirects (was inc/seo.php) ----------------------------------
+  61:// The order below is the original source order of inc/seo.php, so the wp_head
+  63:require_once CONEXAO_THEME_DIR . '/inc/seo/titles.php';
+  64:require_once CONEXAO_THEME_DIR . '/inc/seo/meta.php';
+  65:require_once CONEXAO_THEME_DIR . '/inc/seo/canonical.php';
+  66:require_once CONEXAO_THEME_DIR . '/inc/seo/hreflang.php';
+  67:require_once CONEXAO_THEME_DIR . '/inc/seo/open-graph.php';
+  68:require_once CONEXAO_THEME_DIR . '/inc/seo/robots.php';
+  69:require_once CONEXAO_THEME_DIR . '/inc/seo/schema.php';
+  70:require_once CONEXAO_THEME_DIR . '/inc/seo/sitemap.php';
+  71:require_once CONEXAO_THEME_DIR . '/inc/seo/redirects.php';
+  72:require_once CONEXAO_THEME_DIR . '/inc/seo/related.php';
+
+## 2. Function inventory
+  b47d098 inc/seo/*  : 27 functions
+  597b04e inc/seo.php : 23 functions
+
+## 3. DUPLICATE DECLARATIONS if both were loaded (PHP fatal)
+  overlap count: 23
+    dup: conexao_archive_description
+    dup: conexao_archive_title
+    dup: conexao_cpt_label
+    dup: conexao_leisure_external_url
+    dup: conexao_leisure_redirect
+    dup: conexao_seo_breadcrumb_data
+    dup: conexao_seo_breadcrumbs
+    dup: conexao_seo_canonical
+    dup: conexao_seo_disable_core_sitemap
+    dup: conexao_seo_image_alt
+    dup: conexao_seo_meta_description
+    dup: conexao_seo_noindex
+    dup: conexao_seo_og_meta
+    dup: conexao_seo_redirects
+    dup: conexao_seo_related_events
+    dup: conexao_seo_related_guides
+    dup: conexao_seo_related_sponsors
+    dup: conexao_seo_robots_txt
+    dup: conexao_seo_schema
+    dup: conexao_seo_schema_singular
+    dup: conexao_seo_sitemap
+    dup: conexao_seo_sitemap_url
+    dup: conexao_seo_title
+
+## 4. Functions ONLY in the consolidated 597b04e inc/seo.php
+  count: 0
+    (zero => inc/seo.php is a STRICT SUBSET of the b47d098 modules)
+
+## 5. Functions the consolidation DROPPED (lost by 597b04e)
+    lost: conexao_seo_disable_jetpack_og_on_b2
+    lost: conexao_seo_hreflang
+    lost: conexao_seo_in_language
+    lost: conexao_seo_missing_translation_redirect
+
+## DECISION
+  Default recovery target = the verified b47d098 modular inc/seo/ architecture.
+  inc/seo.php is REMOVED from the recovered runtime. Rationale:
+    (a) 23 duplicate function names => fatal redeclaration if both load;
+    (b) it adds 0 new functions (strict subset), so nothing is lost by removing it;
+    (c) the assessment labels it the one refactor-shaped element but INCOMPLETE (drops 4 fns
+        incl. conexao_seo_hreflang, conexao_seo_in_language, conexao_seo_missing_translation_redirect,
+        conexao_seo_disable_jetpack_og_on_b2) which carry the B2/Polylang/hreflang contract;
+    (d) no merge attempted: merging would re-introduce a second SEO implementation and
+        would violate the "reuse, do not reinvent" rule in AGENTS.md.

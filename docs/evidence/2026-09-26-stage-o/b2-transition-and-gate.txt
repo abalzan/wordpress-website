@@ -1,0 +1,31 @@
+### PHASE 8 — B2 transition
+conexao_b2_page_allowlist() = dublin,cork,galway,limerick,kildare,meath,wicklow,waterford,laois,irlanda,blog
+  (the ALLOWLIST FUNCTION is unchanged by design: it is the policy definition)
+conexao_should_render_b2_fallback(blog) = false
+conexao_is_b2_page(blog) = true (slug still listed -> policy entry retained, inert at runtime)
+conexao_b2_posts_page_is_en_request() = false (false => B2 pre_query self-retires)
+Blog post allowlist entries (post:<slug>) in the gate: 0 (post is NOT in conexao_b2_post_types())
+conexao_b2_post_types() = event,leisure,sponsor,course_provider,job  <- unchanged, post absent
+
+--- permanent gate aggregate (allowlist count) ---
+   sha:        a188fb3ff60488c872635dc65dc5dc72888cfb5b
+
+[PASS   ] taxonomy                   taxonomy_policy          exit=0 18 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[PASS   ] translation_completeness   translation_completeness exit=0 20 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 1850 allowlisted
+          allowlisted: 1850 (by documented policy)
+[PASS   ] cache_scoping              cache_scoping            exit=0 9 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[PASS   ] cache_scoping              cache_scoping_static     exit=0 2 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[PASS   ] redirect_precedence        redirect_precedence      exit=0 15 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[FAIL   ] documentation_drift        documentation_drift      exit=1 12 passed, 2 failed, 2 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[PASS   ] i18n_freshness             i18n_freshness           exit=0 8 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+
+----------------------------------------
+Gates: 7 total, 6 passed, 1 failed, 0 blocked
+Assertions: 84 passed, 2 failed
+Violations: 0 (0 pre-existing, 0 new)
+AGGREGATE: FAIL
+----------------------------------------
+gate.json written: docs/evidence/2026-09-26-stage-l/gate.json
+
+One or more permanent invariant gates FAILED. This is a real repository/data violation, not a harness problem: the gates are blocking by design and must not be weakened to obtain a green run.
+gate exit=1

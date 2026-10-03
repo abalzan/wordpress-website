@@ -11,7 +11,8 @@
  */
 
 // Load WordPress.
-require_once __DIR__ . '/../wp-load.php';
+require_once __DIR__ . '/lib/bootstrap.php';
+conexao_script_load_wordpress();
 
 echo "Flushing rewrite rules for Blog integration...\n";
 

@@ -1,0 +1,105 @@
+STAGE 15 - SECTION 42 (before production): TEST AND GATE RESULTS
+All of these are REPOSITORY-SIDE and were run in this Stage 15 run.
+They are real results. None of them substitutes for a production proof.
+
+===============================================================
+A. FULL REPOSITORY SUITE: ./scripts/run-tests.sh
+===============================================================
+Aggregate: TESTS FAILED (exit non-zero) - and that is the EXPECTED and
+CORRECT result, because three known baseline conditions are carried forward
+deliberately and must NOT be reclassified to obtain green.
+
+  In-process PHP suites:  81 total, 79 passed, 2 failed
+  Assertions:            6123 passed, 6 failed
+  Script-contract suites: 16 total, 15 passed, 1 failed
+  HTTP acceptance suites:  3 total,  2 passed, 1 failed
+
+  failing suites:
+    - theme/conexao-br-irlanda/test-en-jobs-shared-slug.php
+    - theme/conexao-br-irlanda/test-leisure-card-excerpt-language.php
+
+  Every failure maps 1:1 to a KNOWN condition carried forward by section 40:
+    test-en-jobs-shared-slug.php
+      FAIL: an EN request for newsletter resolves to the real linked EN
+      newsletter record - {"pt_id":8,"en_id":509,...}
+      => the newsletter en_id 509 condition. CARRIED FORWARD, unchanged.
+    test-leisure-card-excerpt-language.php
+      40 passed, 5 failed
+      => the leisure-card excerpt failures. CARRIED FORWARD, unchanged.
+    verify-routing-http.py
+      FAIL pt-lazer-card-excerpt-stays-portuguese /lazer/ -- missing
+      fragment: 'Casa rural restaurada aos pes da montanha Keadeen'
+      => the same leisure-card excerpt condition at the HTTP layer.
+         CARRIED FORWARD, unchanged.
+
+  NOTHING was changed to make these pass. No failure was reclassified.
+
+  Stage 15 required suites, all present and PASSING in this run:
+    [PASS] plugin/.../test-automation-model-a.php        145 passed  (Model A scope)
+    [PASS] plugin/.../test-automation-batch.php          243 passed  (batch control)
+    [PASS] plugin/.../test-automation-apply-safety.php   107 passed
+    [PASS] plugin/.../test-automation-admin-trigger.php  109 passed
+    [PASS] plugin/.../test-automation-transport-shape.php 64 passed
+    [PASS] plugin/.../test-automation-provider.php       222 passed
+    [PASS] plugin/.../test-automation-provider-implementation.php 144 passed
+    [PASS] plugin/.../test-automation-provider-secrets.php 17 passed
+    [PASS] plugin/.../test-automation-secret-scan.php    113 passed (Stage 14)
+    [PASS] plugin/conexao-translation-rollout/test-legacy-apply-endpoint-closure.php
+                                                          36 passed
+    [PASS] plugin/conexao-translation-rollout/test-translation-rollout-engine.php
+                                                          36 passed
+    [PASS] tests/scripts/verify-stage7-commissioning.py    73 passed
+    [PASS] tests/scripts/verify-stage8-control-plane.py   149 passed
+    [PASS] tests/scripts/verify-stage8-release-consistency.py 52 passed
+    [PASS] tests/scripts/verify-stage10-batch-boundary.py
+    [PASS] tests/scripts/verify-stage13-commissioning-readiness.py 771 passed
+    [PASS] tests/scripts/verify-stage14-secret-scan.py     323 passed
+    [PASS] tests/scripts/verify-release-integrity.py      229 passed
+    [PASS] tests/scripts/verify-documentation-drift.py     14 passed
+    [PASS] tests/scripts/verify-agent-governance.py
+    [PASS] tests/scripts/verify-cache-key-scoping.py        2 passed
+
+===============================================================
+B. STAGE L PERMANENT INVARIANT GATES
+===============================================================
+  python3 scripts/verify-permanent-gates.py
+  Gates: 7 total, 6 passed, 1 failed, 0 blocked
+  Assertions: 89 passed, 3 failed
+  AGGREGATE: FAIL
+
+  [PASS] taxonomy                  18 passed
+  [PASS] translation_completeness  23 passed, 319 allowlisted by policy
+  [PASS] cache_scoping              9 passed
+  [PASS] cache_scoping_static       2 passed
+  [PASS] redirect_precedence       15 passed
+  [PASS] documentation_drift       14 passed
+  [FAIL] i18n_freshness             8 passed, 3 failed
+         (2 pre-existing, 1 new; 3 stale catalogues - section 40 condition)
+
+  The 3 stale catalogues, unchanged and NOT regenerated:
+    conexao-br-irlanda     .pot older than inc/navigation.php         by 92483s
+    conexao-content        .pot older than conexao-content.php         by 76025s
+    conexao-event-runtime  .pot older than conexao-event-runtime.php   by 76025s
+  No catalogue was regenerated to obtain a green run, and no failure was
+  reclassified, exactly as section 40 requires.
+
+===============================================================
+C. LINT AND REGISTRY
+===============================================================
+  ./scripts/lint.sh                              exit 0
+    PHP syntax  (527 files)  OK: no parse errors
+    PHPCS baseline gate       OK: no new violations (3231 err / 2668 warn)
+    PHPStan level 5           [OK] No errors
+
+  php scripts/generate-registry-docs.php --check  exit 0
+    registry OK: 15 plugins validated, 24 generated regions current
+    (zero writes - this is the drift gate, not a regeneration)
+
+===============================================================
+D. GOVERNANCE / DOCS
+===============================================================
+  verify-agent-governance.py    PASS
+  verify-documentation-drift.py PASS (14 assertions)
+  No documentation source of truth was duplicated. docs/reports/README.md and
+  docs/evidence/README.md were updated with the index entries for this stage
+  only.

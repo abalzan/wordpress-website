@@ -1,0 +1,9 @@
+Gates: 7 total, 6 passed, 1 failed, 0 blocked
+Assertions: 89 passed, 3 failed
+Violations: 3 (2 pre-existing, 1 new)
+AGGREGATE: FAIL
+----------------------------------------
+gate.json written: docs/evidence/2026-09-26-stage-l/gate.json
+
+One or more permanent invariant gates FAILED. This is a real repository/data violation, not a harness problem: the gates are blocking by design and must not be weakened to obtain a green run.
+EXIT=1

@@ -1,0 +1,225 @@
+# Copyright (C) 2026 Conexao BR Irlanda
+# This file is distributed under the GNU General Public License v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Conexão BR Irlanda — Apoiadores Migration 1.1.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/conexao-br-irlanda\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-10-02 10:21+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+
+
+#. translators: %1$s: sponsor title, %2$s: error message
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-importer.php:79
+#, php-format
+msgid "Falha ao importar \"%1$s\": %2$s"
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-importer.php:97
+msgid "O arquivo de exportação não pôde ser lido."
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-importer.php:103
+msgid "O arquivo de exportação está vazio."
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-importer.php:108
+msgid "O arquivo não é um JSON válido."
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-importer.php:112
+msgid "Formato inválido: este arquivo não é uma exportação de Apoiadores."
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-importer.php:116
+msgid "A exportação não contém apoiadores."
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-importer.php:133
+msgid "Registro sem título."
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-importer.php:180
+msgid "Não foi possível criar o post do apoiador."
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:38
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:39
+msgid "Apoiadores Migration"
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:49
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:50
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:173
+msgid "Exportar Apoiadores"
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:58
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:59
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:225
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:282
+msgid "Importar Apoiadores"
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:71
+msgid "Você não tem permissão para exportar apoiadores."
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:84
+msgid "Você não tem permissão para importar apoiadores."
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:174
+msgid ""
+"Exporte todos os apoiadores desta instalação para um arquivo JSON portátil "
+"com as imagens embutidas. Você pode então importar este arquivo em outra "
+"instalação WordPress com a mesma estrutura de apoiadores."
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:177
+msgid "Apoiadores disponíveis"
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:180
+msgid "apoiador pronto para exportação"
+msgid_plural "apoiadores prontos para exportação"
+msgstr[0] ""
+msgstr[1] ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:185
+msgid "Baixar arquivo de exportação (.json)"
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:190
+msgid "O que é exportado"
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:192
+msgid "Nome, descrição, status e slug de cada apoiador"
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:193
+msgid "Categoria, tipo, link, destaque e ordem de exibição"
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:194
+msgid ""
+"Imagem do Apoiador (imagem vertical/portrait usada em desktop e mobile) — "
+"bytes da imagem embutidos no arquivo"
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:195
+msgid "Texto alternativo (alt) da imagem"
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:196
+msgid ""
+"Um ID estável por apoiador e um hash estável por imagem (reimportações nunca "
+"duplicam)"
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:226
+msgid ""
+"Envie um arquivo de exportação de apoiadores (.json) para importá-los nesta "
+"instalação. As imagens Desktop e Mobile são recriadas como anexos locais na "
+"Biblioteca de Mídia e atribuídas ao apoiador correto."
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:229
+msgid "Escolha um arquivo de exportação (.json) para enviar."
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:232
+#, php-format
+msgid ""
+"O arquivo selecionado excede o tamanho máximo de envio (%s). Aumente os "
+"limites PHP upload_max_filesize / post_max_size ou divida o arquivo de "
+"exportação."
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:236
+msgid ""
+"O envio foi rejeitado pelo servidor porque excedeu o limite de tamanho do "
+"POST. Aumente o limite PHP post_max_size ou divida o arquivo de exportação."
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:242
+msgid "Importação concluída"
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:244
+#, php-format
+msgid "Criados: %d"
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:245
+#, php-format
+msgid "Atualizados: %d"
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:246
+#, php-format
+msgid "Ignorados: %d"
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:247
+#, php-format
+msgid "Falhas: %d"
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:248
+#, php-format
+msgid "Imagens importadas: %d"
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:249
+#, php-format
+msgid "Imagens reaproveitadas: %d"
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:252
+msgid "Erros:"
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:263
+msgid "Enviar arquivo de exportação"
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:269
+msgid "Arquivo de exportação (.json)"
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:271
+#, php-format
+msgid "Tamanho máximo de envio: %s."
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:274
+msgid "Se um apoiador já existir"
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:276
+msgid "Atualizar o apoiador existente"
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:277
+msgid "Ignorar o apoiador existente"
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:279
+msgid ""
+"Os apoiadores são identificados pelo UUID estável de exportação, depois pelo "
+"slug e pelo título."
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:293
+#, php-format
+msgid ""
+"O arquivo selecionado é maior que o tamanho máximo de envio (%s). Escolha um "
+"arquivo menor ou aumente os limites PHP."
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:301
+msgid "O que acontece na importação"
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:303
+msgid "O arquivo é validado antes que qualquer dado seja gravado."
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:304
+msgid ""
+"As imagens Desktop e Mobile são criadas como anexos locais na Biblioteca de "
+"Mídia."
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:305
+msgid ""
+"Imagens idênticas são reaproveitadas (sem duplicatas) via hash estável de "
+"conteúdo."
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:306
+msgid ""
+"A imagem destacada de cada apoiador segue a mesma cadeia de fallback do site "
+"público: Desktop → Mobile → logo legado."
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:307
+msgid ""
+"Apoiadores existentes são atualizados ou ignorados conforme sua escolha."
+msgstr ""
+#: wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-transfer-admin.php:308
+msgid "Importar o mesmo arquivo duas vezes não cria duplicatas."
+msgstr ""
+
+#. Name of the plugin
+#: wp-content/plugins/conexao-sponsor-migration/conexao-sponsor-migration.php:1
+msgid "Conexão BR Irlanda — Apoiadores Migration"
+msgstr ""
+
+#. Description of the plugin
+#: wp-content/plugins/conexao-sponsor-migration/conexao-sponsor-migration.php:1
+msgid "Export and import the Apoiadores (sponsors) dataset as a portable JSON file with the canonical Apoiador image embedded as bytes, so production imports recreate the Media Library attachment locally and assign it to the correct Apoiador. Legacy Desktop/Mobile exports are resolved into the single canonical image. Dedupe by stable UUID + image content hash; dry-run preview; no external requests required."
+msgstr ""
+
+#. Version of the plugin
+#: wp-content/plugins/conexao-sponsor-migration/conexao-sponsor-migration.php:1
+msgid "1.1.0"
+msgstr ""

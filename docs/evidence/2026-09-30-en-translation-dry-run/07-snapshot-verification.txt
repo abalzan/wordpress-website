@@ -1,0 +1,58 @@
+EN Translation Rollout — Phase 2: snapshot verification (read-only)
+The snapshot is a CAPTURE of the state a later apply would change. It is NOT an
+application and it modifies nothing.
+
+== 1. readable and well-formed ==
+  file parses as JSON                      : True
+  record entries                           : 417
+  taxonomy terms                           : 13
+  declared object_count                    : 430
+  object_count reconciles                  : True
+
+== 2. object count reconciles with the dry-run plan ==
+  dry-run operations (create+update)       : 417
+  snapshot record entries                  : 417
+  taxonomy creates in the plan             : 13
+  snapshot taxonomy terms                  : 13
+  RECONCILES                               : True
+  total snapshot objects                   : 430  (417 records + 13 terms)
+
+== 3. every snapshot entry maps 1:1 to a real planned operation ==
+  operations without a snapshot entry      : 0
+  snapshot entries without an operation    : 0
+  1:1 MATCH                                : True
+
+== 4. required fields present on every entry ==
+  record entries missing a required field  : 0
+  B1 entries missing target/type/taxonomy   : 0
+  B2 entries missing field/current/expected : 0
+  taxonomy terms missing a required field   : 0
+  B2 entries declaring they create an EN record: 0
+
+== 5. PT immutability is provable from the snapshot ==
+  operations writing the PT post row                 : 0
+  B2 field writes on the PT record (by design)       : 299
+  every B2 write target is an EN-namespaced _meta key: True
+  target language asserted on every B1 entry         : True
+
+== 6. snapshot digest ==
+  snapshot_digest                                    : f1f3c3bbef985986f53c08da7588f0c8f43d5dde149016505ff0cfdd6807bc18
+  the plan records the same digest                   : True
+
+== 7. the snapshot references the same inventory baseline ==
+  Phase 1 manifest digest                            : 7d7b066f0eb5aaa89b61642bed65482f784ad1a492e769fdd01549b8624c528a
+  Phase 1 PT identity digest                         : cfe4b7a670266da32ba635f3f46994328143d3de77a914aa52491d42e3a6f853
+  Phase 2 PT identity digest                         : cfe4b7a670266da32ba635f3f46994328143d3de77a914aa52491d42e3a6f853
+  PT IDENTITY UNCHANGED                              : True
+  EN still 0 everywhere                              : True
+  PT translated-CPT scope                            : 2175 (baseline 2,175)
+
+== 8. no production state changed ==
+  HTTP verbs used                                    : ['GET']
+  production writes                                  : 0
+  apply invoked                                      : False
+  engine run() invoked                               : False
+
+VERDICT: the snapshot is readable, reconciles EXACTLY to the dry-run plan
+(417 record operations + 13 taxonomy creates = 430 objects), every entry maps 1:1 to a
+planned operation, carries every required field, and reflects zero production writes.

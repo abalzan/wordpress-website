@@ -1,0 +1,76 @@
+ONE-TO-ONE OWNERSHIP / UNIQUENESS CHECK
+=======================================
+
+METHOD
+------
+Every candidate considered for the seven rows was checked against the set of PT
+sources ALREADY claimed by an authored EN row in the committed inventory
+(docs/evidence/2026-09-30-en-rollout-blocker-resolution/01-en-inventory-manifest.json,
+2 275 manifest rows, 2 268 of them carrying a resolved source_pt_id). The check
+is: could assigning this candidate to a seventh-row EN row create a second EN
+identity for a PT record that already has one, or a duplicate target identity?
+
+RESULT
+------
+No candidate is proposed for any of the seven rows, so no duplicate can be
+created. The candidates that WERE considered and rejected, and why:
+
+CANDIDATE CONSIDERED                                  REJECTED BECAUSE
+----------------------------------------------------------------------------------------------------------------
+guide 25031 carteira-motorista-brasileiros           ALREADY the accepted PT source of row 2 (the previously
+(for row 1)                                          resolved re-key). Claiming it a second time would give
+                                                      one PT record two EN identities — a duplicate source and a
+                                                      forbidden fork. Additionally the content does not match: the
+                                                      authored EN body of row 1 scores SequenceMatcher 0.0064 /
+                                                      Jaccard 0.0444 against 25031's real 9 201-character body.
+                                                      25031 is a DIFFERENT article (it is about whether a CNH
+                                                      can be used, exchanged, or needs an IDP), not a translation
+                                                      of row 1's English.
+
+post 10386 o-que-todo-pequeno-empreendedor...        A different article. It only mentions the Instagram handle
+(for row 5)                                          coachpatriciavidal as one of several links. SequenceMatcher
+                                                      against row 5's authored EN is 0.0134 — noise. A shared
+                                                      social link is not content identity. It is also already
+                                                      claimed by its own authored EN row in en-post.
+
+page 11293 saude                                      A page, not a post; a generic one-word title; carries none of
+(for row 2)                                          row 2's content (there is none) and is already claimed.
+
+page 22 familia                                       A page, not a post; generic one-word title; already claimed.
+
+page 37 laois                                         A page, not a post; already claimed; it is the county landing
+(for row 7)                                          page, not a Brazilians-in-Laois guide.
+
+post 10368 capacitacao-em-laois                       Already claimed by its own authored EN row. It is a
+(for row 4)                                          DIFFERENT article (a list of English-course and training
+                                                      providers in Co. Laois) that merely shares two tokens with
+                                                      the real source: 'laoispartnership.ie' and 'sicap'.
+                                                      SequenceMatcher against row 4's authored EN is 0.0079.
+                                                      Six of the nine distinctive markers of the historical PT
+                                                      10369 (LEADER 2023, Laois Chamber Alliance, the R32 VY22
+                                                      address, Laois Business Awards, laois.ie/business-and-economy,
+                                                      the laoispartnershipcompany Instagram) appear in NO live
+                                                      record at all.
+
+EN TARGET CONFLICT
+------------------
+The seven authored EN slugs were checked against the live EN state. Production
+holds 0 EN records and 0 EN translation links across all eight post types, so
+no EN target identity is occupied. Any future re-key would create its target
+freshly. No duplicate_target_identity risk exists today.
+
+CONCLUSION
+----------
+The six trashed records (10367, 10369, 10373, 10374, 10375, 10376) each resolve one-to-one: the historical record with the SAME id, the SAME post_name (plus the __trashed suffix WordPress appends on trash) and the SAME title. A re-key of rows 2-7 therefore resolves each row to the one PT record that is already its own historical source — no duplicate source, no duplicate target identity, and no conflict with the 2 268 already-claimed PT sources. Production holds 0 EN records and 0 EN translation links, so every EN target slug is free.
+
+Row 1 is different: it has NO candidate at all, so it is not a case of "two plausible candidates" — it is a case of "the historical record no longer exists in any state". It is reported as BLOCKED, not as an ambiguity.
+
+PREREQUISITE THE OPERATOR MUST AUTHORISE
+-----------------------------------------
+The six sources are in TRASH. A re-key alone will still not resolve them in
+production, because the engine matches a live, published PT record. Un-trashing
+those six PT posts is a PRODUCTION CONTENT WRITE, which this phase is forbidden
+to perform. The operator must decide, in a separate authorised task, whether to
+(a) un-trash the six PT posts, or (b) republish them under new identities. Until
+that decision, rows 2-7 are correctly identified but not yet actionable.
+

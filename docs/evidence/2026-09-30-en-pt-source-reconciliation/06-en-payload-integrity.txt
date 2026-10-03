@@ -1,0 +1,79 @@
+ENGLISH PAYLOAD INTEGRITY — the seven authored EN rows at HEAD
+generated: 2026-09-30T11:35:26Z
+
+Method: the plugin's OWN data files were loaded in PHP and the rows were
+serialised by the same json_encode the repository uses. Nothing was edited.
+A re-key changes ONLY the array key. If a re-key were applied, every value
+below must remain byte-identical.
+
+AUTHORED PT KEY                                            STAGE  PAYLOAD SHA-256                                                  EN BODY BYTES
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+learner-permit-theory-test-irlanda-cnh-brasileira          guide  077375252537f6e2c75f6d7e521516e7145f79842e5af542c7f658e8b830421f 6384
+auxilios-e-apoio-relacionados-a-saude-e-bem-estar-na-irlan post   7516cb3622bc577898fa4cbf69f4954833f3b5a07fdaba46a4b4c37a3421284e 8
+auxilios-para-familias-atipicas-na-irlanda                 post   74ef13b0f58a5e0783cd47e861eb8010ae5c5afb7780393a877fed62a4c6898e 8
+cursos-e-apoio-para-empreendedores                         post   753b830affd6b0f3d1c6a76559f60ed40a5eaeef6be91707a7954d8f4640018d 6106
+dica-de-saude-para-quem-viaja                              post   8849f99f6b207ea4f66202d3cb6a3e83c8a0028d74df743330c1d2b8b6a50606 119
+guia-para-quem-esta-com-dificuldades-financeiras           post   117ac22c9eb18f74f9687ccf56b0bec6df1924ab82bd93c6f080b69d11089dc6 8
+guia-pratico-para-brasileiros-em-laois                     post   1dde714b9865e299548451e9bfd894c5b00b01d4f118180454796d3644d6ce6e 8
+
+--- EN payload detail ---
+
+KEY        : learner-permit-theory-test-irlanda-cnh-brasileira
+  stage    : guide
+  en_slug  : brazilian-driving-licence-in-ireland-theory-test-and-learner-permit
+  en_title : Brazilian Driving Licence in Ireland: When You Need the Theory Test and Learner Permit
+  excerpt  : 'The route for Brazilians who cannot exchange their licence: theory test, learner permit, EDT and driving test.'
+  body len : 6384
+  body     : '<!-- wp:paragraph --><p><strong>Meta description:</strong> Understand the route for Brazilians who cannot exchange their foreign licence: theory test, learner permit, EDT and driving test.</p><!-- /wp:paragraph -->\n<!-
+
+KEY        : auxilios-e-apoio-relacionados-a-saude-e-bem-estar-na-irlanda
+  stage    : post
+  en_slug  : health-and-wellbeing-support-in-ireland
+  en_title : Health and Wellbeing Support in Ireland
+  excerpt  : ''
+  body len : 8
+  body     : '<p></p>\n'
+
+KEY        : auxilios-para-familias-atipicas-na-irlanda
+  stage    : post
+  en_slug  : support-for-extraordinary-families-in-ireland
+  en_title : Support for Non-Standard Families in Ireland
+  excerpt  : ''
+  body len : 8
+  body     : '<p></p>\n'
+
+KEY        : cursos-e-apoio-para-empreendedores
+  stage    : post
+  en_slug  : courses-and-support-for-entrepreneurs
+  en_title : Courses and Support for Entrepreneurs
+  excerpt  : 'Laois Partnership, the Local Enterprise Office and the Laois Chamber Alliance: programmes, grants, training and mentori
+  body len : 6106
+  body     : '<p></p><p>📊 Laois Partnership</p><p>https://laoispartnership.ie/</p><p>https://www.instagram.com/laoispartnershipcompany/</p><p></p><p>Laois Partnership Company supports businesses and entrepreneurs through:</p><p></p><
+
+KEY        : dica-de-saude-para-quem-viaja
+  stage    : post
+  en_slug  : a-health-tip-for-travellers
+  en_title : A Health Tip for Travellers
+  excerpt  : 'Text: Patricia Vidal. Instagram: https://www.instagram.com/coachpatriciavidal/'
+  body len : 119
+  body     : '<p>Text: Patricia Vidal</p><p>Instagram: <u>https://www.instagram.com/coachpatriciavidal/</u></p><p></p><p></p><p></p>\n'
+
+KEY        : guia-para-quem-esta-com-dificuldades-financeiras
+  stage    : post
+  en_slug  : guide-for-those-facing-financial-difficulties
+  en_title : A Guide for Anyone Facing Financial Difficulties
+  excerpt  : ''
+  body len : 8
+  body     : '<p></p>\n'
+
+KEY        : guia-pratico-para-brasileiros-em-laois
+  stage    : post
+  en_slug  : practical-guide-for-brazilians-in-laois
+  en_title : A Practical Guide for Brazilians in Laois
+  excerpt  : ''
+  body len : 8
+  body     : '<p></p>\n'
+
+--- B1/B2 classification (unchanged by any re-key) ---
+all seven are B1: object_type=record, a real linked EN record is expected.
+verified from the committed inventory: 01-en-inventory-manifest.json -> b1_b2 = B1 for all seven.

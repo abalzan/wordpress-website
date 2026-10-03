@@ -1,0 +1,20 @@
+# Gate results (final)
+
+== git diff --check ==
+clean
+
+== generate-registry-docs --check ==
+registry OK: 15 plugins validated, 24 generated regions current (zero writes).
+
+== verify-agent-governance ==
+Stage K governance verification: 357 passed, 0 failed
+
+== verify-documentation-drift ==
+14 passed, 0 failed
+GATE-RESULT {"gate": "documentation_drift", "status": "pass", "passed": 14, "failed": 0, "violations": 0, "details": []}
+
+== lint ==
+lint: OK (syntax clean, no new PHPCS violations, PHPStan clean)
+
+== release manifest ==
+summary: release=v2026.09.30 artifacts=10 built=10

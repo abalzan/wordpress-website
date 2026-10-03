@@ -33,7 +33,7 @@ Usage:
         # current Instagram hero text (only if it differs)
 
 Options:
-    --base-url URL   Site base URL (default: https://conexaobr.ie)
+    --base-url URL   Site base URL (default: $CONEXAO_SITE_URL, else the local site)
     --page-id ID     Empregos page ID for --update-page (default: 11086)
     --dry-run        List what would be created/updated without writing.
 
@@ -231,7 +231,7 @@ def diff_fields(agency, post):
 
 def main():
     parser = argparse.ArgumentParser(description="Seed recruitment agencies via the WP REST API.")
-    parser.add_argument("--base-url", default=os.environ.get("WP_BASE_URL", "https://conexaobr.ie"))
+    parser.add_argument("--base-url", default=os.environ.get("CONEXAO_SITE_URL", rest_mod.LOCAL_BASE_URL))
     parser.add_argument("--page-id", type=int, default=11086)
     parser.add_argument("--update-page", action="store_true",
                         help="Also set the /empregos/ page body to the current Instagram hero text.")
@@ -338,9 +338,9 @@ def main():
     if args.dry_run:
         print("\n(--dry-run: nenhuma alteração foi gravada.)")
     elif created or updated:
-        print("\nVerifique https://conexaobr.ie/empregos/ — se a seção 'Agências de "
-              "recrutamento' não aparecer, regrave a página /empregos/ no wp-admin "
-              "para purgar o cache de borda da WordPress.com.")
+        print(f"\nVerifique {args.base_url or os.environ.get('CONEXAO_SITE_URL', 'http://localhost:8080')}/empregos/ "
+              "— se a seção 'Agências de recrutamento' não aparecer, regrave a "
+              "página /empregos/ no wp-admin para purgar o cache de borda.")
 
 
 if __name__ == "__main__":

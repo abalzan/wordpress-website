@@ -1,0 +1,69 @@
+STAGE 15 - SECTION 8 + 32/33: P15 PRODUCTION EMERGENCY-STOP VERIFICATION
+Status: NOT PERFORMED. No production stop-state evidence was obtained.
+
+## Why this could not be performed
+
+P15 requires a LIVE_PRODUCTION_READ. Reading the production emergency-stop
+state requires an authenticated production context, which requires
+production credentials. WP_USERNAME and WP_APPLICATION_PASSWORD are ABSENT
+from the environment, and no local Docker credential was substituted.
+
+Therefore NO production_stop_state evidence object was constructed. This
+matters: Stage 14 fixed P15 so that it is satisfiable, but ONLY by a genuine
+production observation. A fabricated, inferred or repository-derived
+substitute would be exactly the defect Stage 14 closed, so none was made.
+
+## The gate's own current reading of P15
+
+  P15 emergency_stop_readiness  BLOCKED
+  reason: "no production_stop_state evidence object was supplied"
+
+## The artifact half IS proven (repository-side, fail closed)
+
+Read directly from
+wp-content/plugins/conexao-translation-automation/includes/
+class-conexao-translation-automation-emergency-stop.php:
+
+  stored value              reading
+  ------------------------  --------------------------------------
+  absent                    STOPPED   (default: new work does not start)
+  stopped = false, valid    enabled
+  stopped = true, valid     STOPPED
+  malformed / wrong schema  STOPPED   (malformed is never permission)
+
+  - the flag lives in wp_options and is written only through this class,
+    which requires an explicit authorisation context in code;
+  - no request parameter is ever read as the flag;
+  - no admin screen is registered by Stage 10;
+  - there is no activation hook that could clear it;
+  - reading it needs no provider call and no network round trip.
+
+  The Stage 14 P15 fix keeps this repository fact as a REQUIRED half of
+  the P15 validator (scripts/lib/commissioning.py:985), alongside the
+  production read. Both halves are required; neither alone suffices.
+
+  Verified in this run by reading the source, and by the Stage 13
+  permanent gate's 44 negative proofs.
+
+## Clearance and mutation counters
+
+  emergency_stop_clearance        NOT_GRANTED
+  emergency_stop_clears           0
+  installs 0  activations 0  content_mutations 0
+  provider_calls 0  canary_selections 0
+
+Nothing was cleared. Observing that production is stopped would never be
+permission to clear it; readiness never clears the stop, and this stage did
+not attempt to.
+
+## Stage 15 final state (Section 32/33)
+
+  production emergency stop  UNCHANGED - never read, never written, never cleared
+  bulk translation          OFF (never enabled)
+  next batch                OFF (never enabled)
+  autonomous approval       OFF (never enabled)
+  cron                      OFF (no scheduled event exists in shipped code)
+  automatic progression     OFF
+
+No production limit was raised. No second canary was run. The allowlist is
+unchanged.

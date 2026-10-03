@@ -176,8 +176,12 @@ function conexao_employment_opportunity_from_agency( $agency ) {
 		'licensing_status'  => '' !== trim( $wrc ) ? 'licensed' : '',
 		'meta'              => array(
 			// Display strings/flags used by the existing agency card UI.
+			// 'location_display' is the LANGUAGE-AWARE form of the stored
+			// coverage string (generic words resolve through gettext, real
+			// place names stay byte-identical) — see
+			// conexao_recruitment_agency_location_display().
 			'job_type_labels'  => conexao_recruitment_agency_job_type_labels( conexao_recruitment_agency_meta( $agency, '_agency_job_types' ) ),
-			'location_display' => conexao_recruitment_agency_meta( $agency, '_agency_location' ),
+			'location_display' => conexao_recruitment_agency_location_display( conexao_recruitment_agency_meta( $agency, '_agency_location' ) ),
 			'temporary'        => $temporary,
 			'permanent'        => $permanent,
 			'licensed'         => '' !== trim( $wrc ),
@@ -253,13 +257,19 @@ function conexao_employment_opportunity_from_permit_employer( $employer ) {
 		'licensing_status'  => '',
 		'meta'              => array(
 			// Display strings/flags used by the existing employer card UI.
+			// The *_display values are the LANGUAGE-AWARE forms: they resolve
+			// the stored Portuguese editorial text through the canonical
+			// vocabulary (gettext), so /en/jobs/ never renders Portuguese
+			// sector/role/location prose while the stored data and the
+			// Portuguese page stay byte-identical. Unrecognised values pass
+			// through exactly as stored.
 			'permit_status'    => $permit_status,
 			'is_verified'      => ( 'verified' === $permit_status ),
 			'is_exception'     => ( 'exception' === $permit_status ),
 			'evidence_years'   => conexao_permit_employer_meta( $employer, '_employer_evidence_years' ),
-			'sector'           => conexao_permit_employer_meta( $employer, '_employer_sector' ),
-			'roles'            => conexao_permit_employer_roles( $employer ),
-			'location_display' => conexao_permit_employer_meta( $employer, '_employer_location' ),
+			'sector'           => conexao_permit_employer_sector_display( $employer ),
+			'roles'            => conexao_permit_employer_roles_display( $employer ),
+			'location_display' => conexao_recruitment_agency_location_display( conexao_permit_employer_meta( $employer, '_employer_location' ) ),
 			'careers_url'      => conexao_permit_employer_meta( $employer, '_employer_careers_url' ),
 		),
 		'_source'           => $employer,

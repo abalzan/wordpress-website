@@ -1,0 +1,13 @@
+conexao test harness
+  repository:    /home/runner/work/wordpress-website/wordpress-website
+  php:           8.3.6
+  environment:   host (docker compose exec)
+  base url:      http://localhost:8080
+         [28-Sep-2026 09:51:00 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function pll_set_post_language() in /var/www/html/wp-content/plugins/conexao-admin-ux/tests/test-translation-state.php:52
+         Fatal error: Uncaught Error: Call to undefined function pll_set_post_language() in /var/www/html/wp-content/plugins/conexao-admin-ux/tests/test-translation-state.php:52
+In-process PHP suites: 60 total, 30 passed, 30 failed
+  prerequisite failures:         15
+Assertions: 2399 passed, 66 failed
+Script-contract suites: 6 total, 6 passed, 0 failed
+HTTP acceptance suites: 3 total, 0 passed, 3 failed
+TESTS FAILED

@@ -1,0 +1,64 @@
+== Stage 8 negative proofs: every injected violation must fail its gate ==
+
+-- verify-stage8-control-plane.py --
+  PROVEN  clean implementation PASSES                              gate exit=0 (correct)
+  PROVEN  1. legacy apply endpoint reintroduced                    gate exit=1
+              FAIL: the closed endpoint cannot reach the engine, a stage callback, or apply — found ['call_user_func', 'run_callback', 'Engine::']
+              FAIL: the closed endpoint reads no request superglobal (no mode can be caller-supplied) — found ['$_POST']
+  PROVEN  2. second admin endpoint (different name)                gate exit=1
+              FAIL: no second, differently-named mutation or proof endpoint exists in either plugin — unexpected: ['conexao_rollout_apply']
+              FAIL: exactly 2 admin-post endpoint(s) exist across both plugins (conexao_translation_automation_proof + the closed one) — 3: ['conexao_rollout_apply', 'conexao_translation_rollout_run', 'conexao_translation_automation_proof']
+  PROVEN  3. closed endpoint moved to another file                 gate exit=1
+              FAIL: the closed endpoint lives in the engine admin class — owner=['engine/includes/extra/moved-admin.php']
+              FAIL: the closed endpoint has an auditable handle_run method
+  PROVEN  4. anonymous admin_post_nopriv_ endpoint                 gate exit=1
+              FAIL: no second, differently-named mutation or proof endpoint exists in either plugin — unexpected: ['nopriv_conexao_translation_rollout_run']
+              FAIL: exactly 2 admin-post endpoint(s) exist across both plugins (conexao_translation_automation_proof + the closed one) — 3: ['nopriv_conexao_translation_rollout_run', 'conexao_translation_rollout_run', 'conexao_translation_automation_proof']
+  PROVEN  5. anonymous AJAX endpoint                               gate exit=1
+              FAIL: engine/includes/class-conexao-translation-rollout-admin.php exposes no forbidden entry surface — wp_ajax_
+              FAIL: engine/includes/class-conexao-translation-rollout-admin.php exposes no forbidden entry surface — wp_ajax_
+  PROVEN  6. REST endpoint                                         gate exit=1
+              FAIL: engine/includes/class-conexao-translation-rollout-admin.php exposes no forbidden entry surface — rest_api_init
+              FAIL: engine/includes/class-conexao-translation-rollout-admin.php exposes no forbidden entry surface — rest_api_init
+  PROVEN  7. cron callback                                         gate exit=1
+              FAIL: engine/includes/class-conexao-translation-rollout-admin.php exposes no forbidden entry surface — wp_schedule_event
+              FAIL: engine/includes/class-conexao-translation-rollout-admin.php exposes no forbidden entry surface — wp_schedule_event
+  PROVEN  8. webhook endpoint (underscored token)                  gate exit=1
+              FAIL: engine/includes/class-conexao-translation-rollout-admin.php exposes no webhook entry point — webhook
+              FAIL: engine/includes/class-conexao-translation-rollout-admin.php exposes no webhook entry point — webhook
+  PROVEN  9. direct engine apply invocation                        gate exit=1
+              FAIL: class-conexao-translation-rollout-admin.php contains NO engine reachability token at all — found ['Engine::']
+              FAIL: class-conexao-translation-rollout-admin.php contains NO engine reachability token at all — found ['Engine::']
+  PROVEN  10. caller-controlled mode=apply                         gate exit=1
+              FAIL: the closed endpoint reads no request superglobal (no mode can be caller-supplied) — found ['$_REQUEST']
+              FAIL: the closed endpoint carries no apply/remove mode vocabulary — found ["'apply'"]
+  PROVEN  11. orchestrator bypass from the entry file              gate exit=1
+              FAIL: class-conexao-translation-automation-admin-trigger.php cannot reach a stage run_callback or the engine directly — found ['run_callback', 'Engine::']
+              FAIL: class-conexao-translation-automation-admin-trigger.php contains no dry_run=false literal
+  PROVEN  12. digest-bound approval bypassed                       gate exit=1
+              FAIL: the orchestrator's apply branch is guarded by the digest-bound approval
+              FAIL: the approval is verified BEFORE the engine is asked to write
+  PROVEN  13. concurrency lock bypassed                            gate exit=1
+              FAIL: the orchestrator acquires the lock BEFORE every run_callback invocation — lock=-1 invocations=[4162, 7938]
+              FAIL: the orchestrator acquires the lock BEFORE every run_callback invocation — lock=-1 invocations=[4162, 7938]
+  PROVEN  14. engine core digest moved                             gate exit=1
+              FAIL: the engine core is byte-identical to the pinned historical baseline — engine core SHA-256 moved; the mutation authority must not change
+              FAIL: the engine core is byte-identical to the pinned historical baseline — engine core SHA-256 moved; the mutation authority must not change
+
+-- verify-stage8-release-consistency.py --
+  PROVEN  clean release metadata PASSES                            gate exit=0 (correct)
+  PROVEN  15. REGRESSION: stale release.json (Stage 7 finding)     gate exit=1
+              FAIL: conexao-translation-automation: plugin header version == dist/release.json version — header=0.3.0 release.json=0.2.0
+              FAIL: REGRESSION (Stage 7): conexao-translation-automation release.json matches its header — release.json=0.2.0 header=0.3.0
+  PROVEN  16. header bumped without a rebuild                      gate exit=1
+              FAIL: conexao-translation-automation: plugin header version == dist/release.json version — header=0.4.0 release.json=0.3.0
+              FAIL: conexao-translation-automation: the version INSIDE the artifact == the source version — zip=0.3.0 source=0.4.0
+  PROVEN  17. dependency metadata mismatch                         gate exit=1
+              FAIL: conexao-translation-automation: 'Requires Plugins' header == plugins.json dependencies — header=['conexao-data-model'] registry=['conexao-translation-rollout']
+              FAIL: conexao-translation-automation: 'Requires Plugins' header == plugins.json dependencies — header=['conexao-data-model'] registry=['conexao-translation-rollout']
+  PROVEN  18. recorded artifact missing from dist/                 gate exit=1
+              FAIL: conexao-translation-rollout: the recorded artifact exists — missing conexao-translation-rollout.zip
+              FAIL: conexao-translation-rollout: the recorded artifact exists — missing conexao-translation-rollout.zip
+
+negative proofs: 20 proven, 0 missed
+ALL NEGATIVE PROOODS HELD

@@ -1,0 +1,60 @@
+B1 English Guides rollout — HTTP verification (base http://localhost:8080)
+Legend: {id, url, expect_status, expect_contains, expect_absent, note}
+
+--- repository matrix: tests/acceptance/matrices/guides-en.json (UNCHANGED file) ---
+python3 tests/acceptance/verify-guides-en-http.py
+  18 passed, 0 failed      (baseline was: 2 failed)
+
+rows (all in the existing matrix, plus the matrix's own derived checks):
+  pt-guides-200             /guias/                                200  10 cards
+  en-guides-200             /en/guias/                             200  10 cards
+  pt-guides-page-2          /guias/page/2/                         200
+  en-guides-page-2          /en/guias/page/2/                      200  10 cards   [WAS 404]
+  en-filter-en-slug         /en/guias/?categoria=documents         200  ~7 cards
+  en-filter-pt-slug         /en/guias/?categoria=saude              200  ~5 cards
+  en-filter-unknown-slug    /en/guias/?categoria=naoexiste          200  0 cards
+  pt-filter-200             /guias/?categoria=documentos           200  ~7 cards
+  an EN guide link is discoverable in /en/guias/                    PASS
+      discovered EN slug: autism-and-air-travel-in-ireland-dublin-and-cork-airport
+  EN guide single /en/guias/<en-slug>/ is 200                       PASS
+  EN guide single shows no B2 notice                                PASS
+  EN guide single is self-canonical                                 PASS
+  EN guide single declares the pt-BR alternate                      PASS
+  EN guide single carries a meta description                         PASS
+  EN guide single renders a language switcher                        PASS
+  the EN guide exposes its PT sibling                                PASS
+  PT guide /guias/<pt-slug>/ is still 200                            PASS
+  PT slug under /en/ redirects back to the PT guide (302)            PASS
+
+--- additional ad-hoc probes ---
+  /guias/pps-number-2/                     200  PT single unchanged
+  /en/guias/pps-number-ireland/            200  real EN single
+  /en/guias/pps-number-2/                  302 -> /guias/pps-number-2/   (B1 replaced master)
+  /en/guias/nao-existe-este-slug/          404  invalid EN guide URL
+
+--- head assertions (proves canonical/hreflang and that NO PT fallback renders) ---
+/en/guias/
+  <html lang="en-US">
+  <link rel="canonical" href="http://localhost:8080/en/guias/">
+  hreflang="pt-BR"  href="http://localhost:8080/guias/"
+  hreflang="en"     href="http://localhost:8080/en/guias/"
+  hreflang="x-default" href="http://localhost:8080/guias/"
+  language-fallback-notice occurrences : 0
+  distinct /en/guias/<slug>/ card links : 12
+  distinct /guias/<slug>/ card links    : 0   (no PT content in the EN archive)
+
+/en/guias/pps-number-ireland/
+  <html lang="en-US">
+  <link rel="canonical" href="http://localhost:8080/en/guias/pps-number-ireland/">
+  hreflang="en"        href="http://localhost:8080/en/guias/pps-number-ireland/"
+  hreflang="pt-BR"     href="http://localhost:8080/guias/pps-number-2/"
+  hreflang="x-default" href="http://localhost:8080/guias/pps-number-2/"
+
+/guias/pps-number-2/
+  <link rel="canonical" href="http://localhost:8080/guias/pps-number-2/">   (unchanged)
+
+--- routing counts ---
+/guias/            FOUND=48  post_count=10  5 pages   (unchanged)
+/en/guias/         FOUND=48  post_count=10  5 pages   (was FOUND=0)
+conexao_is_b2_post_type('guide') = false   (guide is still B1; no B2 widening)
+conexao_b2_post_types() = event, leisure, sponsor, course_provider, job   (guide ABSENT)

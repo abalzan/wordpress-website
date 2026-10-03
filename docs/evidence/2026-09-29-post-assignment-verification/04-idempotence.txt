@@ -1,0 +1,35 @@
+=== IDEMPOTENCE: can the canonical engine run read-only against production? ===
+
+Engine: wp-content/plugins/conexao-translation-rollout (shared, registry id 8).
+Registry policy (plugins.json): status=active, production=no, build=no, mount=yes
+  => LOCAL-ONLY TOOLING BY REGISTRY POLICY. Not a production dependency.
+
+Production installed plugins (18):
+    akismet/akismet
+    classic-editor/classic-editor
+    conexao-admin-ux/conexao-admin-ux
+    conexao-content/conexao-content
+    conexao-data-model/conexao-data-model
+    conexao-event-importer/conexao-event-importer
+    conexao-event-runtime/conexao-event-runtime
+    conexao-leisure-migration/conexao-leisure-migration
+    crowdsignal-forms/crowdsignal-forms
+    gravatar-enhanced/gravatar-enhanced
+    gutenberg/gutenberg
+    jetpack/jetpack
+    layout-grid/index
+    page-optimize/page-optimize
+    polldaddy/polldaddy
+    polylang/polylang
+    updraftplus/updraftplus
+    wordpress-importer/wordpress-importer
+
+conexao-translation-rollout installed in production? -> False
+
+Engine entry point requires in-process PHP:
+  - class-conexao-translation-rollout-engine.php: run_stage() -> inventory/plan require
+    WP_Query + pll_* in-process functions and a registered stage config.
+  - No REST route exposes the engine (production plugin list proves it is absent).
+  - Therefore: no reachable read-only execution path against production.
+
+=> IDEMPOTENCE NOT EXECUTABLE READ-ONLY

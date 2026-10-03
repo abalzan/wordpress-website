@@ -5,15 +5,10 @@
  * Usage: docker compose exec wordpress php /var/www/html/scripts/verify-admin-ux.php
  */
 
-$wp_load = '/var/www/html/wp-load.php';
-if ( ! file_exists( $wp_load ) ) {
-	fwrite( STDERR, "wp-load.php not found. Run inside the WordPress container.\n" );
-	exit( 1 );
-}
-
-require_once $wp_load;
-
-echo "=== Admin UX Plugin Verification ===\n\n";
+require_once __DIR__ . '/lib/bootstrap.php';
+conexao_script_load_wordpress();
+require_once __DIR__ . '/lib/bootstrap.php';
+conexao_script_load_wordpress();echo "=== Admin UX Plugin Verification ===\n\n";
 
 // 1. Plugin active?
 $active = get_option( 'active_plugins', array() );

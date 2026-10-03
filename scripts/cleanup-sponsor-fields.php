@@ -16,13 +16,11 @@
  * @package Conexao_Admin_Ux
  */
 
-// Allow running via WP-CLI or browser.
-if ( defined( 'WP_CLI' ) && WP_CLI ) {
-	// Running via WP-CLI - WordPress is already loaded.
-} elseif ( file_exists( dirname( __FILE__, 4 ) . '/wp-load.php' ) ) {
-	require_once dirname( __FILE__, 4 ) . '/wp-load.php';
-} else {
-	die( 'Could not find wp-load.php' );
+// Allow running via WP-CLI or browser. The shared bootstrap loads WordPress
+// only when it is not already present (WP-CLI), preserving that fast path.
+if ( ! ( defined( 'WP_CLI' ) && WP_CLI ) ) {
+	require_once __DIR__ . '/lib/bootstrap.php';
+	conexao_script_load_wordpress();
 }
 
 // Only allow admins to run this.

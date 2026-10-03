@@ -1,0 +1,67 @@
+{
+  "results": [
+    {
+      "viewport": "desktop",
+      "page": "EN homepage",
+      "url": "http://localhost:8080/en/",
+      "status": 200,
+      "html_lang": "en-US",
+      "chips": [
+        "Artigo",
+        "Practical Guide"
+      ],
+      "has_pt_label": false,
+      "has_en_label": true,
+      "body_leaks_pt_label": false,
+      "screenshot": "/tmp/fix/desktop-en.png"
+    },
+    {
+      "viewport": "desktop",
+      "page": "PT homepage",
+      "url": "http://localhost:8080/",
+      "status": 200,
+      "html_lang": "pt-BR",
+      "chips": [
+        "Guia Prático",
+        "Artigo"
+      ],
+      "has_pt_label": true,
+      "has_en_label": false,
+      "body_leaks_pt_label": true,
+      "screenshot": "/tmp/fix/desktop-pt.png"
+    },
+    {
+      "viewport": "mobile",
+      "page": "EN homepage",
+      "url": "http://localhost:8080/en/",
+      "status": 200,
+      "html_lang": "en-US",
+      "chips": [
+        "Artigo",
+        "Practical Guide"
+      ],
+      "has_pt_label": false,
+      "has_en_label": true,
+      "body_leaks_pt_label": false,
+      "screenshot": "/tmp/fix/mobile-en.png"
+    },
+    {
+      "viewport": "mobile",
+      "page": "PT homepage",
+      "url": "http://localhost:8080/",
+      "status": 200,
+      "html_lang": "pt-BR",
+      "chips": [
+        "Guia Prático",
+        "Artigo"
+      ],
+      "has_pt_label": true,
+      "has_en_label": false,
+      "body_leaks_pt_label": true,
+      "screenshot": "/tmp/fix/mobile-pt.png"
+    }
+  ],
+  "console_errors": []
+}
+
+BROWSER RESULT: PASS

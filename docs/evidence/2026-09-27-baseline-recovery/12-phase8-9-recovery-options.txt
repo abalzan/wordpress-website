@@ -1,0 +1,45 @@
+# 12 — Phase 8/9: recovery options, blast radius, high-conflict files
+
+## What 597b04e adds that is genuinely NEW work and MUST be preserved
+  - wp-content/plugins/conexao-event-importer/languages/conexao-event-importer.pot (regenerated, duplicates 3 -> 0)
+  - docs/reports/2026-09-27-event-importer-pot-duplicate-msgids.md
+  - docs/evidence/2026-09-27-event-importer-pot/ (19 files)
+  - wp-content/themes/conexao-br-irlanda/inc/seo.php (consolidated, 1413 lines, 18 of 22 old seo fns)
+  (Its own report, §3.1, DISCLOSES a concurrent external refactor it refused to touch.)
+
+## Option A blast radius: what a restore of b47d098 would discard
+These 20 additions would be lost (19 docs + 1 plugin artefact):
+  docs/evidence/2026-09-27-event-importer-pot/03-duplicate-blocks-in-context.txt
+  docs/evidence/2026-09-27-event-importer-pot/04-source-trace-of-duplicates.txt
+  docs/evidence/2026-09-27-event-importer-pot/05-generator-verification.txt
+  docs/evidence/2026-09-27-event-importer-pot/06-deterministic-regeneration.txt
+  docs/evidence/2026-09-27-event-importer-pot/07-outcome-and-comparison.txt
+  docs/evidence/2026-09-27-event-importer-pot/08-po-mo-hashes-AFTER.txt
+  docs/evidence/2026-09-27-event-importer-pot/09-catalogue-validation.txt
+  docs/evidence/2026-09-27-event-importer-pot/10-isolated-before-after.txt
+  docs/evidence/2026-09-27-event-importer-pot/11-permanent-gates-MAIN-WORKTREE.json
+  docs/evidence/2026-09-27-event-importer-pot/11-permanent-gates-MAIN-WORKTREE.txt
+  docs/evidence/2026-09-27-event-importer-pot/12-permanent-gates.txt
+  docs/evidence/2026-09-27-event-importer-pot/13-run-tests-WITH-change.txt
+  docs/evidence/2026-09-27-event-importer-pot/14-run-tests-WITHOUT-change-BASELINE.txt
+  docs/evidence/2026-09-27-event-importer-pot/15-http-regression.txt
+  docs/evidence/2026-09-27-event-importer-pot/16-static-analysis-and-scope.txt
+  docs/evidence/2026-09-27-event-importer-pot/17-failure-proofs.txt
+  docs/evidence/2026-09-27-event-importer-pot/18-final-acceptance-sweep.txt
+  docs/reports/2026-09-27-event-importer-pot-duplicate-msgids.md
+  wp-content/themes/conexao-br-irlanda/inc/seo.php
+
+  ...plus wp-content/plugins/conexao-event-importer/languages/conexao-event-importer.pot (modified, 649+/550-)
+
+## High-conflict files (touched by BOTH the restore and the new work)
+  - wp-content/plugins/conexao-event-importer/languages/conexao-event-importer.pot
+  - wp-content/themes/conexao-br-irlanda/inc/seo.php  <-- would become a DUPLICATE of restored inc/seo/
+  - wp-content/themes/conexao-br-irlanda/functions.php
+  - wp-content/themes/conexao-br-irlanda/404.php
+  - wp-content/themes/conexao-br-irlanda/template-parts/{event,leisure}-filters.php
+  - wp-content/themes/conexao-br-irlanda/front-page.php
+
+## Note on scripts/i18n-make-pot.sh
+Unchanged by 597b04e (identical sha256) => the repaired deterministic generator SURVIVES.
+Therefore a catalogue-only restore is coherent: the generator that produced the b47d098
+catalogues is still present, but it can no longer find the deleted theme strings.

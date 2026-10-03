@@ -88,6 +88,15 @@ final class Conexao_Event_Query {
 
 		$events = array();
 		foreach ( $candidate_ids as $candidate_id ) {
+			// Stage 2: a translated event is its own post record that carries a
+			// copy of the identity/scheduling meta, so the language of the
+			// record must be respected — otherwise an English translation would
+			// surface in Portuguese listings (and vice versa). Records without
+			// a language (Polylang inactive, or legacy rows) stay visible.
+			if ( ! self::is_in_current_language( (int) $candidate_id ) ) {
+				continue;
+			}
+
 			$next = Conexao_Event_Recurrence::next_occurrence( (int) $candidate_id, $today );
 			if ( null !== $next ) {
 				$events[ (int) $candidate_id ] = $next->format( 'Y-m-d' );
@@ -139,9 +148,13 @@ final class Conexao_Event_Query {
 	}
 
 	/**
-	 * Flush the date-keyed cache around today (previous day, today and next
-	 * day, to cover local-midnight boundary saves). Old keys expire by
-	 * themselves at the end of their own calendar day; there is no cron.
+	 * Flush the date- and language-keyed cache around today (previous day,
+	 * today and next day, to cover local-midnight boundary saves). Old keys
+	 * expire by themselves at the end of their own calendar day; there is no
+	 * cron.
+	 *
+	 * Stage 2: every language variant is flushed, so saving a Portuguese event
+	 * also invalidates the English list (and vice versa).
 	 *
 	 * @return void
 	 */
@@ -149,18 +162,104 @@ final class Conexao_Event_Query {
 		$today = self::today();
 		foreach ( array( -1, 0, 1 ) as $offset ) {
 			$day = $today->modify( ( $offset >= 0 ? '+' : '' ) . $offset . ' day' );
-			delete_transient( self::cache_key( $day ) );
+
+			delete_transient( self::cache_key( $day, '' ) );
+
+			foreach ( self::language_slugs() as $slug ) {
+				delete_transient( self::cache_key( $day, $slug ) );
+			}
 		}
 	}
 
 	/**
-	 * Transient cache key for a local calendar date.
+	 * Current Polylang language slug, or '' when Polylang is inactive.
 	 *
-	 * @param DateTimeImmutable $day Site-local day.
+	 * Kept local to the runtime so the query helper has no hard dependency on
+	 * Polylang — the plugin stays functional (single-language) without it.
+	 *
 	 * @return string
 	 */
-	private static function cache_key( $day ) {
-		return self::CACHE_KEY_PREFIX . $day->format( 'Ymd' );
+	private static function language_slug(): string {
+		if ( ! function_exists( 'pll_current_language' ) ) {
+			return '';
+		}
+
+		$slug = pll_current_language( 'slug' );
+
+		return is_string( $slug ) ? $slug : '';
+	}
+
+	/**
+	 * All language slugs known to Polylang (used to flush every cache variant).
+	 *
+	 * @return string[]
+	 */
+	private static function language_slugs(): array {
+		if ( ! function_exists( 'pll_languages_list' ) ) {
+			return array();
+		}
+
+		$slugs = pll_languages_list( array( 'fields' => 'slug' ) );
+
+		return is_array( $slugs ) ? array_map( 'strval', $slugs ) : array();
+	}
+
+	/**
+	 * Is this event record part of the current language context?
+	 *
+	 * STAGE 3.1 — B2 fallback: on EN requests, Portuguese event records with
+	 * no EN translation are part of the EN archive (rendered with EN chrome
+	 * + notice). Records that DO have an EN translation stay out of the PT
+	 * archive's way: only the record matching the current language is kept,
+	 * so no event ever appears twice.
+	 *
+	 * @param int $post_id Event post ID.
+	 * @return bool
+	 */
+	private static function is_in_current_language( int $post_id ): bool {
+		$current = self::language_slug();
+
+		if ( '' === $current || ! function_exists( 'pll_get_post_language' ) ) {
+			return true;
+		}
+
+		$language = pll_get_post_language( $post_id, 'slug' );
+
+		if ( ! is_string( $language ) || '' === $language ) {
+			return true;
+		}
+
+		if ( $language === $current ) {
+			return true;
+		}
+
+		// B2 fallback: a PT record with no EN translation belongs to the EN
+		// archive. Hidden statuses never surface (the status gate already
+		// filtered them from the candidate set, but re-check defensively).
+		if ( 'en' === $current && 'pt' === $language && function_exists( 'pll_get_post' ) ) {
+			$translated = (int) pll_get_post( $post_id, 'en' );
+			if ( 0 === $translated || $translated === $post_id ) {
+				$status = get_post_meta( $post_id, '_event_status', true );
+				if ( '' === $status || 'published' === $status ) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Transient cache key for a local calendar date and language.
+	 *
+	 * @param DateTimeImmutable $day      Site-local day.
+	 * @param string|null       $language Language slug; null = current context.
+	 * @return string
+	 */
+	private static function cache_key( $day, $language = null ) {
+		$slug = ( null === $language ) ? self::language_slug() : (string) $language;
+
+		return self::CACHE_KEY_PREFIX . $day->format( 'Ymd' ) . ( '' !== $slug ? '_' . $slug : '' );
 	}
 
 	/**

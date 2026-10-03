@@ -1,0 +1,32 @@
+# 01 - The persisted rewrite_rules: stale (336) vs healthy (478)
+
+Read directly from the local wp_options row (local Docker only).
+
+STALE (the reported 404 state)        336 rules   0 (en)/ post_type rules
+HEALTHY (after a correct flush)       478 rules  20 (en)/ post_type rules
+
+## The 20 EN archive rules that were missing (and now exist)
+  (en)/guias/?$        => index.php?lang=$matches[1]&post_type=guide
+  (en)/guias/feed/...  => ...&post_type=guide&feed=...
+  (en)/guias/page/N/   => ...&post_type=guide&paged=...
+  (en)/eventos/?$      => ...&post_type=event          (+3 more)
+  (en)/apoiadores/?$   => ...&post_type=sponsor         (+3 more)
+  (en)/cursos/?$       => ...&post_type=course_provider (+3 more)
+  (en)/lazer/?$        => ...&post_type=leisure        (+3 more)
+
+## Also newly present: 122 further (en)/ rules (CPT singles, attachments,
+## conexao_category / conexao_tag archives) - the same single root cause.
+
+## 20 PT rules that also CHANGED (hide_default marker)
+  stale: guias/?$    => index.php?post_type=guide
+  fixed: guias/?$    => index.php?lang=pt&post_type=guide
+  (identical change for eventos, apoiadores, cursos, lazer)
+
+  => The stale set is not merely "missing EN rules": it is a rule set flushed
+     WITHOUT Polylang's rewrite filters attached at all. That single fact
+     identifies the root cause (see 02).
+
+## Full diff summary
+  MISSING in stale : 142
+  EXTRA in stale   : 0
+  CHANGED (common) : 20

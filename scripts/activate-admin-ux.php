@@ -5,14 +5,8 @@
  * Usage: docker compose exec wordpress php /var/www/html/scripts/activate-admin-ux.php
  */
 
-$wp_load = '/var/www/html/wp-load.php';
-if ( ! file_exists( $wp_load ) ) {
-	fwrite( STDERR, "wp-load.php not found. Run inside the WordPress container.\n" );
-	exit( 1 );
-}
-
-require_once $wp_load;
-
+require_once __DIR__ . '/lib/bootstrap.php';
+conexao_script_load_wordpress();
 $plugins = array(
 	'conexao-data-model/conexao-data-model.php',
 	'conexao-content/conexao-content.php',

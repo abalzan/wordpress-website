@@ -1,0 +1,215 @@
+{
+  "stage": "L — permanent invariant gates",
+  "generated_at": "2026-09-27T19:04:42Z",
+  "repository_sha": "b47d098857d2348feafb1071b8713c6a43359e05",
+  "status": "fail",
+  "gates": {
+    "taxonomy_policy": {
+      "gate": "taxonomy_policy",
+      "domain": "taxonomy",
+      "kind": "php",
+      "command": "docker compose exec -T wordpress php /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-taxonomy-policy.php",
+      "exit_code": 1,
+      "status": "fail",
+      "passed": 0,
+      "failed": 0,
+      "violations": 0,
+      "pre_existing": 0,
+      "new": 0,
+      "allowlisted": 0,
+      "prerequisites": [],
+      "details": [],
+      "output_tail": [
+        "Could not open input file: /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-taxonomy-policy.php"
+      ]
+    },
+    "translation_completeness": {
+      "gate": "translation_completeness",
+      "domain": "translation_completeness",
+      "kind": "php",
+      "command": "docker compose exec -T wordpress php /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-translation-completeness.php",
+      "exit_code": 1,
+      "status": "fail",
+      "passed": 0,
+      "failed": 0,
+      "violations": 0,
+      "pre_existing": 0,
+      "new": 0,
+      "allowlisted": 0,
+      "prerequisites": [],
+      "details": [],
+      "output_tail": [
+        "Could not open input file: /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-translation-completeness.php"
+      ]
+    },
+    "cache_scoping": {
+      "gate": "cache_scoping",
+      "domain": "cache_scoping",
+      "kind": "php",
+      "command": "docker compose exec -T wordpress php /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-cache-language-scoping.php",
+      "exit_code": 1,
+      "status": "fail",
+      "passed": 0,
+      "failed": 0,
+      "violations": 0,
+      "pre_existing": 0,
+      "new": 0,
+      "allowlisted": 0,
+      "prerequisites": [],
+      "details": [],
+      "output_tail": [
+        "Could not open input file: /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-cache-language-scoping.php"
+      ]
+    },
+    "cache_scoping_static": {
+      "gate": "cache_scoping_static",
+      "domain": "cache_scoping",
+      "kind": "static",
+      "command": "python3 tests/scripts/verify-cache-key-scoping.py",
+      "exit_code": 1,
+      "status": "fail",
+      "passed": 2,
+      "failed": 4,
+      "violations": 4,
+      "pre_existing": 0,
+      "new": 0,
+      "allowlisted": 0,
+      "prerequisites": [],
+      "details": [
+        {
+          "file": "wp-content/themes/conexao-br-irlanda/404.php",
+          "line": 25,
+          "function": "get_transient",
+          "key": "'conexao_404_guides'",
+          "enclosing": null,
+          "reason": "conexao_* cache key is not language-scoped"
+        },
+        {
+          "file": "wp-content/themes/conexao-br-irlanda/404.php",
+          "line": 41,
+          "function": "set_transient",
+          "key": "'conexao_404_guides'",
+          "enclosing": null,
+          "reason": "conexao_* cache key is not language-scoped"
+        },
+        {
+          "file": "wp-content/themes/conexao-br-irlanda/404.php",
+          "line": 62,
+          "function": "get_transient",
+          "key": "'conexao_404_events'",
+          "enclosing": null,
+          "reason": "conexao_* cache key is not language-scoped"
+        },
+        {
+          "file": "wp-content/themes/conexao-br-irlanda/404.php",
+          "line": 99,
+          "function": "set_transient",
+          "key": "'conexao_404_events'",
+          "enclosing": null,
+          "reason": "conexao_* cache key is not language-scoped"
+        }
+      ],
+      "output_tail": [
+        "   scanned 70 production PHP files (PHP token_get_all)",
+        "   unscoped conexao_* cache keys: 4",
+        "     - wp-content/themes/conexao-br-irlanda/404.php:25 get_transient( 'conexao_404_guides' )",
+        "     - wp-content/themes/conexao-br-irlanda/404.php:41 set_transient( 'conexao_404_guides' )",
+        "     - wp-content/themes/conexao-br-irlanda/404.php:62 get_transient( 'conexao_404_events' )",
+        "     - wp-content/themes/conexao-br-irlanda/404.php:99 set_transient( 'conexao_404_events' )",
+        "FAIL: wp-content/themes/conexao-br-irlanda/404.php:25 unscoped cache key \"'conexao_404_guides'\" passed to get_transient() — conexao_* cache key is not language-scoped",
+        "FAIL: wp-content/themes/conexao-br-irlanda/404.php:41 unscoped cache key \"'conexao_404_guides'\" passed to set_transient() — conexao_* cache key is not language-scoped",
+        "FAIL: wp-content/themes/conexao-br-irlanda/404.php:62 unscoped cache key \"'conexao_404_events'\" passed to get_transient() — conexao_* cache key is not language-scoped",
+        "FAIL: wp-content/themes/conexao-br-irlanda/404.php:99 unscoped cache key \"'conexao_404_events'\" passed to set_transient() — conexao_* cache key is not language-scoped",
+        "2 passed, 4 failed",
+        "GATE-RESULT {\"gate\": \"cache_scoping_static\", \"status\": \"fail\", \"passed\": 2, \"failed\": 4, \"violations\": 4, \"details\": [{\"file\": \"wp-content/themes/conexao-br-irlanda/404.php\", \"line\": 25, \"function\": \"get_transient\", \"key\": \"'conexao_404_guides'\", \"enclosing\": null, \"reason\": \"conexao_* cache key is not language-scoped\"}, {\"file\": \"wp-content/themes/conexao-br-irlanda/404.php\", \"line\": 41, \"function\": \"set_transient\", \"key\": \"'conexao_404_guides'\", \"enclosing\": null, \"reason\": \"conexao_* cache key is not language-scoped\"}, {\"file\": \"wp-content/themes/conexao-br-irlanda/404.php\", \"line\": 62, \"function\": \"get_transient\", \"key\": \"'conexao_404_events'\", \"enclosing\": null, \"reason\": \"conexao_* cache key is not language-scoped\"}, {\"file\": \"wp-content/themes/conexao-br-irlanda/404.php\", \"line\": 99, \"function\": \"set_transient\", \"key\": \"'conexao_404_events'\", \"enclosing\": null, \"reason\": \"conexao_* cache key is not language-scoped\"}]}"
+      ]
+    },
+    "redirect_precedence": {
+      "gate": "redirect_precedence",
+      "domain": "redirect_precedence",
+      "kind": "php",
+      "command": "docker compose exec -T wordpress php /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-redirect-precedence.php",
+      "exit_code": 1,
+      "status": "fail",
+      "passed": 0,
+      "failed": 0,
+      "violations": 0,
+      "pre_existing": 0,
+      "new": 0,
+      "allowlisted": 0,
+      "prerequisites": [],
+      "details": [],
+      "output_tail": [
+        "Could not open input file: /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-redirect-precedence.php"
+      ]
+    },
+    "documentation_drift": {
+      "gate": "documentation_drift",
+      "domain": "documentation_drift",
+      "kind": "static",
+      "command": "python3 tests/scripts/verify-documentation-drift.py",
+      "exit_code": 1,
+      "status": "fail",
+      "passed": 13,
+      "failed": 1,
+      "violations": 1,
+      "pre_existing": 0,
+      "new": 0,
+      "allowlisted": 0,
+      "prerequisites": [],
+      "details": [
+        "Stage K agent governance gate failed (exit 1): python3 tests/scripts/verify-agent-governance.py — Stage K governance verification: 247 passed, 7 failed"
+      ],
+      "output_tail": [
+        "",
+        "   -- §9.2 no root-level report/evidence file --",
+        "   root files scanned: 16, offenders: 0",
+        "",
+        "   -- §9.2 AGENTS.md remains orientation --",
+        "   AGENTS.md lines: 187",
+        "",
+        "   -- authoritative sources referenced by the governance layer --",
+        "   authoritative sources checked: 7",
+        "FAIL: Stage K agent governance gate failed (exit 1): python3 tests/scripts/verify-agent-governance.py — Stage K governance verification: 247 passed, 7 failed",
+        "13 passed, 1 failed",
+        "GATE-RESULT {\"gate\": \"documentation_drift\", \"status\": \"fail\", \"passed\": 13, \"failed\": 1, \"violations\": 1, \"details\": [\"Stage K agent governance gate failed (exit 1): python3 tests/scripts/verify-agent-governance.py \\u2014 Stage K governance verification: 247 passed, 7 failed\"]}"
+      ]
+    },
+    "i18n_freshness": {
+      "gate": "i18n_freshness",
+      "domain": "i18n_freshness",
+      "kind": "static",
+      "command": "python3 tests/scripts/verify-i18n-freshness.py",
+      "exit_code": 1,
+      "status": "fail",
+      "passed": 8,
+      "failed": 1,
+      "violations": 0,
+      "pre_existing": 0,
+      "new": 0,
+      "allowlisted": 0,
+      "prerequisites": [],
+      "details": [],
+      "output_tail": [
+        "   conexao-data-model       catalogue=1790431901 newest-source=1790335165 (wp-content/plugins/conexao-data-model/includes/class-agency.php) fresh",
+        "   conexao-content          catalogue=1790431901 newest-source=1789985903 (wp-content/plugins/conexao-content/conexao-content.php) fresh",
+        "   conexao-admin-ux         catalogue=1790431901 newest-source=1790016943 (wp-content/plugins/conexao-admin-ux/includes/class-translation-state.php) fresh",
+        "   conexao-event-runtime    catalogue=1790431901 newest-source=1790016943 (wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php) fresh",
+        "   conexao-event-importer   catalogue=1790495204 newest-source=1790446037 (wp-content/plugins/conexao-event-importer/includes/class-event-importer.php) fresh",
+        "   conexao-leisure-migration catalogue=1790431901 newest-source=1790325155 (wp-content/plugins/conexao-leisure-migration/includes/class-leisure-exporter.php) fresh",
+        "   conexao-sponsor-migration catalogue=1790431901 newest-source=1789994211 (wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-importer.php) fresh",
+        "",
+        "   stale catalogues: 0",
+        "FAIL: conexao-br-irlanda: 39 file(s) define user-facing strings but wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot does not exist",
+        "8 passed, 1 failed",
+        "GATE-RESULT {\"gate\": \"i18n_freshness\", \"status\": \"fail\", \"passed\": 8, \"failed\": 1, \"violations\": 0, \"pre_existing\": 0, \"new\": 0, \"details\": []}"
+      ]
+    }
+  },
+  "total_passed": 23,
+  "total_failed": 6,
+  "total_violations": 0,
+  "total_pre_existing": 0,
+  "total_new": 0,
+  "total_blocked": 0
+}

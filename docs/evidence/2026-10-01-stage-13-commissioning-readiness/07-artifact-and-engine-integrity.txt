@@ -1,0 +1,62 @@
+# Stage 13 - artifact readiness and engine integrity (Sections 16, 17)
+
+## Engine integrity
+
+  File: wp-content/plugins/conexao-translation-rollout/includes/
+        class-conexao-translation-rollout-engine.php
+  Stage 13 starting digest = 264cc6c4e7b4214f2bc30436afb077d308b1897de444431c5c3a331f08116912
+  Stage 13 ending  digest = 264cc6c4e7b4214f2bc30436afb077d308b1897de444431c5c3a331f08116912
+  Identical = YES
+
+Recomputed directly from the checked-out tree by the readiness preflight, not
+copied from the Stage 12 report. Stage 13 modified NO file under wp-content/,
+so the engine is byte-stable. If the digest ever stops matching, the aggregate
+is forced to BLOCKED (proof 22 proves the gate reacts to drift).
+
+## Artifacts - built TWICE from the same tree
+
+  PLUGIN                             VERSION  BUILD 1 = BUILD 2 (SHA-256)
+  ----------------------------------  -------  ----------------------------------
+  conexao-translation-rollout        1.2.0    73b3aee368712397e4ddbb496d8915bb6021443ab7e75bedf345e9fa4ad35215
+  conexao-translation-automation     0.4.0    f4e62bc59aa509fc0bd51037709f788f024579afc80c7851d0c1e8c5cb7045f1
+
+  Deterministic (byte-identical across two builds) = YES
+  Versions read from the plugin HEADERS, the authoritative version_source
+  Versions agree with dist/release.json                        = YES
+  plugins.json registry check (generate-registry-docs --check)  = OK, zero writes
+
+## Artifact content scans
+
+  Secret-shaped values in either artifact                     = 0
+  tests/ files shipped                                        = 0
+  local / Docker-only files shipped                           = 0
+
+The secret scan is ASSIGNMENT-based, not shape-based: a secret-named variable
+bound to a non-empty literal. A shape-only rule matches English prose ("code
+path from this" is four four-letter words) and would report a false positive on
+the repository's own docblocks, training an operator to ignore the gate.
+Documentation placeholders (your-app-password, <...>, xxxx) and constants that
+hold the NAME of a secret (CREDENTIAL_ENV, NONCE_ACTION) are excluded by
+documented, narrow rules; the credential VALUE shapes are still checked over
+the whole text, so the exclusion cannot hide a real key.
+
+## Batch ceilings - actual configured limits vs Stage 10 ceilings
+
+  CONSTANT                             CONFIGURED  CEILING  WITHIN
+  -----------------------------------  ----------  -------  ------
+  SERVER_CEILING_BATCH_RECORDS         5           5        YES
+  MAX_RECORDS_PER_STAGE                5           5        YES
+  MAX_OPERATIONS_PER_BATCH             5           5        YES
+  MAX_TOTAL_PROVIDER_CALLS              20          20       YES
+  MAX_RETRIES_PER_RECORD                1           1        YES
+  MAX_ATTEMPTS_PER_RECORD               2           2        YES
+  MAX_EXECUTION_SECONDS                 300         300      YES
+  MAX_PRODUCTION_BATCHES_PER_INVOCATION 1           1        YES
+
+  A missing or unparseable constant FAILS CLOSED (proof 16c), and no request
+  parameter can raise a limit (proof 22c).
+
+## Control plane
+
+  conexao_translation_automation_batch = DECLARED (is_commissioned() -> false)
+  Bootstrap register() call site       = commented out, not live code

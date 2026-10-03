@@ -1,0 +1,15 @@
+== Stage 4.5 — EN page translations ==
+Mode: APPLY
+
+  inicio                       → home               EXISTS EN translation already exists (idempotent skip). http://localhost:8080/en/
+  sobre-nos                    → about-us           EXISTS EN translation already exists (idempotent skip). http://localhost:8080/en/about-us/
+  contato                      → contact            EXISTS EN translation already exists (idempotent skip). http://localhost:8080/en/contact/
+  empregos                     → jobs               EXISTS EN translation already exists (idempotent skip). http://localhost:8080/en/jobs/
+
+Summary: created=0 updated=0 exists=4 errors=0 pt_changed=0 links_localized=0
+
+Relationship table (both directions verified at creation):
+  pt #9 inicio                       ⇄ en #33306 home               (en→pt: #9) OK
+  pt #11 sobre-nos                    ⇄ en #33307 about-us           (en→pt: #11) OK
+  pt #12 contato                      ⇄ en #33308 contact            (en→pt: #12) OK
+  pt #11293 empregos                     ⇄ en #33309 jobs               (en→pt: #11293) OK

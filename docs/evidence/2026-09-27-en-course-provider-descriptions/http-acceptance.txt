@@ -1,0 +1,16 @@
+conexao test harness
+  repository:    /home/andrei/IdeaProjects/wordpress-website
+  php:           8.5.4
+  environment:   host (docker compose exec)
+  base url:      http://localhost:8080
+
+HTTP acceptance suites (base: http://localhost:8080)
+[PASS] tests/acceptance/verify-guides-en-http.py — 18 passed, 0 failed
+[PASS] tests/acceptance/verify-release-http.py — 42 passed, 0 failed
+[PASS] tests/acceptance/verify-routing-http.py — 75 passed, 0 failed
+
+----------------------------------------
+In-process PHP suites: 0 total, 0 passed, 0 failed
+HTTP acceptance suites: 3 total, 3 passed, 0 failed
+----------------------------------------
+ALL TESTS PASSED

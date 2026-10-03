@@ -1,0 +1,85 @@
+# 11 — Phase 7 (rigorous): per-commit file survival at 597b04e
+
+Method: for each completed-task commit, list its changed files and test each with
+  git cat-file -e 597b04e:<path>
+A file DELETED at 597b04e means that completed task's implementation is GONE from the current baseline.
+
+61131a4  feat: Implement B2 filter helper language widening for eve   files=3   DELETED_AT_597b04e=1
+
+
+
+
+
+
+
+
+
+gone:
+wp-content/themes/conexao-br-irlanda/inc/queries.php
+d3ae9fb  fix: prevent erroneous county names from being assigned as   files=14  DELETED_AT_597b04e=0
+89c5889  feat: Implement Laois Events Visibility Repair and County    files=19  DELETED_AT_597b04e=0
+7778d76  stage-o: enable real English blog archive                    files=34  DELETED_AT_597b04e=0
+8496245  Add tests for provider category filter and English label p   files=25  DELETED_AT_597b04e=5
+
+
+
+
+
+
+
+
+
+gone:
+wp-content/themes/conexao-br-irlanda/inc/i18n/fallback.php
+wp-content/themes/conexao-br-irlanda/inc/queries.php
+8f07f30  Add regression tests for ARIA semantics in filter links an   files=58  DELETED_AT_597b04e=3
+
+
+
+
+
+
+
+
+
+gone:
+wp-content/themes/conexao-br-irlanda/inc/content.php
+wp-content/themes/conexao-br-irlanda/tests/test-filter-link-aria-semantics.php
+88bdf22  Regenerate the stale theme i18n catalogue and repair the g   files=3   DELETED_AT_597b04e=1
+
+
+
+
+
+
+
+
+
+gone:
+wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot
+b32fba3  Add the i18n catalogue freshness investigation report and    files=28  DELETED_AT_597b04e=0
+3cc6564  Add English course-provider descriptions and rollout stage   files=31  DELETED_AT_597b04e=2
+
+
+
+
+
+
+
+
+
+gone:
+wp-content/themes/conexao-br-irlanda/inc/i18n/fallback.php
+wp-content/themes/conexao-br-irlanda/tests/test-course-provider-card-excerpt-language.php
+53f1781  Add English description stage for leisure records            files=25  DELETED_AT_597b04e=1
+
+
+
+
+
+
+
+
+
+gone:
+wp-content/themes/conexao-br-irlanda/tests/test-leisure-card-excerpt-language.php

@@ -1,0 +1,12 @@
+== Stage 4.5 — EN page translations ==
+Mode: DRY RUN (pass 'apply' to create)
+
+  inicio                       → home               WOULD-CREATE dry run
+  sobre-nos                    → about-us           WOULD-CREATE dry run
+  contato                      → contact            WOULD-CREATE dry run
+  empregos                     → jobs               WOULD-CREATE dry run
+
+Summary: created=0 updated=0 exists=0 errors=0 pt_changed=0 links_localized=0
+
+Expected shape: 4 create / 0 conflict / 0 error / 0 writes — ACTUAL: 4 would-create,
+0 exists, 0 errors, 0 writes. Recorded BEFORE the apply (pre-apply dry run).

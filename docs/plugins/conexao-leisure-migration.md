@@ -1,5 +1,20 @@
 # Conexão Leisure Migration
 
+<!-- BEGIN GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
+| | |
+|---|---|
+| **Status** | active |
+| **Class** | tooling |
+| **Production** | no |
+| **Build** | yes |
+| **Compose mount** | yes |
+| **Dependencies** | none |
+| **Version** | 2.1.0 (authoritative source: `wp-content/plugins/conexao-leisure-migration/conexao-leisure-migration.php` header) |
+| **Registry** | [`plugins.json`](../../plugins.json) |
+
+> **Local-only tooling.** Not a production steady-state dependency.
+<!-- END GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
+
 - **Path**: `wp-content/plugins/conexao-leisure-migration/`
 - **Version**: 2.1.0
 - **Purpose**: Export and import the /lazer/ (leisure) dataset as a self-contained ZIP package containing data.json and actual image files from the Media Library. Production images are always local — no dependency on Wikimedia Commons for delivery.
@@ -52,6 +67,14 @@ Exported/imported meta includes the Phase 2 practical-information keys
 `_leisure_practical_last_checked`). The importer sanitizes them explicitly:
 `sanitize_textarea_field` for the notes, `esc_url_raw` for the source URL.
 
+STAGE 7 — the English card-description translation layer
+(`_leisure_excerpt_en`, one authored English description per record, rendered
+only on `/en/lazer/` by the theme's `conexao_leisure_card_excerpt()`) is part
+of the exported/imported meta too: the exporter emits it when non-empty and
+the importer stores it sanitized as plain text (empty values delete the meta),
+so a leisure ZIP round-trips the English descriptions with the dataset. See
+the `en-leisure-description` stage of `conexao-en-translation`.
+
 The Phase 3B `_leisure_internal_page` flag (keep the internal `/lazer/` page
 even when an Official Website / Discover Ireland URL is set) is also part of
 the supported meta: the exporter emits `'1'` when the flag is set (empty or
@@ -103,6 +126,14 @@ When `conexao-data-model` is not active, this plugin registers the `leisure` CPT
 - Images are always imported as local Media Library attachments.
 - Wikimedia Commons metadata is preserved as reference only, never hotlinked.
 - Legacy external-image data can be cleaned up via the Manutenção page.
+- **Multilingual (Stage 2):** `_leisure_export_uuid` is language-neutral. A linked
+  English translation shares the UUID verbatim; `find_by_uuid()` prefers the
+  record in the import language and `update_item()` refuses to write to a
+  translation (`WP_Error`), so an EN variant can never become a competing UUID
+  target or duplicate the identity. `includes/class-language-guard.php` assigns
+  the default language (`pt_BR`) to imported Lazer records without ever
+  reassigning an existing language. Gate coverage:
+  `tests/test-language-uuid.php`.
 
 ### Legacy attribute backfill (`scripts/backfill-leisure-attributes.php`)
 

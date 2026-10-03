@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<ruleset name="Conexao BR Irlanda">
+	<description>Coding standard for the Conexão BR Irlanda theme and custom plugins.</description>
+
+	<file>wp-content/themes/conexao-br-irlanda</file>
+	<file>wp-content/plugins</file>
+
+	<exclude-pattern>*/tests/*</exclude-pattern>
+	<exclude-pattern>*/vendor/*</exclude-pattern>
+	<exclude-pattern>*/node_modules/*</exclude-pattern>
+
+	<!-- Generated EN guide translation dataset: machine-generated authored
+	     translation CONTENT keyed by Portuguese slug, emitted once and then
+	     hand-reviewed, not maintained source. Excluded from the style gate for
+	     that reason; the maintained
+	     stage code around it (guide-stage.php, stage-config.php, translation-map.php)
+	     stays fully in scope. -->
+	<exclude-pattern>wp-content/plugins/conexao-en-translation/includes/guide-translation-data.php</exclude-pattern>
+
+	<arg name="extensions" value="php"/>
+	<arg name="basepath" value="."/>
+	<arg name="parallel" value="8"/>
+	<arg value="ps"/>
+
+	<config name="minimum_wp_version" value="6.4"/>
+	<config name="testVersion" value="8.0-"/>
+
+	<rule ref="WordPress-Extra"/>
+	<rule ref="WordPress-Docs"/>
+	<rule ref="PHPCompatibilityWP"/>
+
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="conexao-br-irlanda"/>
+				<element value="conexao-data-model"/>
+				<element value="conexao-content"/>
+				<element value="conexao-admin-ux"/>
+				<element value="conexao-event-runtime"/>
+				<element value="conexao-event-importer"/>
+				<element value="conexao-leisure-migration"/>
+				<element value="conexao-sponsor-migration"/>
+				<!--
+					STAGE 11: the two translation-program plugins declare their own
+					Text Domain in their plugin headers. Neither was listed here
+					because, until Stage 11, they contained no translatable strings —
+					the batch-control admin screen (DECLARED, not commissioned) is the
+					first. Listing the declared domains keeps the check meaningful:
+					it still catches a WRONG domain, it just stops treating each
+					plugin's own domain as an error.
+				-->
+				<element value="conexao-translation-rollout"/>
+				<element value="conexao-translation-automation"/>
+			</property>
+		</properties>
+	</rule>
+</ruleset>

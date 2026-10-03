@@ -1,0 +1,41 @@
+TARGET: https://conexaobr.ie production
+posts: 37 published PT records
+pages: 43 published PT records
+guide: 56 published PT records
+TOTAL: 136
+SAVED /tmp/pt_live2.json
+=== TRASH COLLECTION SWEEP (status=trash) ===
+  posts: 6 trashed records
+  pages: 10 trashed records
+  guide: 2 trashed records
+
+=== TARGET IDS FOUND IN TRASH ===
+  row1 pt_id=10009: not in the trashed set
+  row2 pt_id=10373: FOUND status=trash slug=auxilios-e-apoio-relacionados-a-saude-e-bem-estar-na-irlanda__trashed title='Auxílios e Apoio Relacionados a Saúde e Bem-Estar na Irlanda' body_len=5
+  row3 pt_id=10374: FOUND status=trash slug=auxilios-para-familias-atipicas-na-irlanda__trashed title='Auxílios para Famílias Atípicas na Irlanda' body_len=5
+  row4 pt_id=10369: FOUND status=trash slug=cursos-e-apoio-para-empreendedores__trashed title='Cursos e Apoio\xa0para Empreendedores' body_len=6715
+  row5 pt_id=10367: FOUND status=trash slug=dica-de-saude-para-quem-viaja__trashed title='Dica de Saúde Para Quem Viaja' body_len=184
+  row6 pt_id=10375: FOUND status=trash slug=guia-para-quem-esta-com-dificuldades-financeiras__trashed title='Guia Para quem está com Dificuldades Financeiras' body_len=5
+  row7 pt_id=10376: FOUND status=trash slug=guia-pratico-para-brasileiros-em-laois__trashed title='Guia Prático para Brasileiros em Laois' body_len=5
+
+=== ALL TRASHED RECORDS (full list) ===
+       21 [page  ] trash  saude__trashed
+       23 [page  ] trash  transporte__trashed
+       25 [page  ] trash  beneficios__trashed
+       27 [page  ] trash  documentos__trashed
+       28 [page  ] trash  onde-comer__trashed
+       29 [page  ] trash  lazer__trashed
+       30 [page  ] trash  turismo__trashed
+       31 [page  ] trash  compras__trashed
+       34 [page  ] trash  voluntariado__trashed
+       64 [page  ] trash  categorias__trashed
+      463 [guide ] trash  carteira-de-motorista-2__trashed
+    10367 [post  ] trash  dica-de-saude-para-quem-viaja__trashed
+    10369 [post  ] trash  cursos-e-apoio-para-empreendedores__trashed
+    10373 [post  ] trash  auxilios-e-apoio-relacionados-a-saude-e-bem-estar-na-irlanda__tras
+    10374 [post  ] trash  auxilios-para-familias-atipicas-na-irlanda__trashed
+    10375 [post  ] trash  guia-para-quem-esta-com-dificuldades-financeiras__trashed
+    10376 [post  ] trash  guia-pratico-para-brasileiros-em-laois__trashed
+    24974 [guide ] trash  outono-irlanda-alimentacao-bem-estar__trashed
+
+SAVED /tmp/pt_trash.json  (18 records)

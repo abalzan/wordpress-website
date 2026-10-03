@@ -1,0 +1,12 @@
+# The exact condition a fresh CI checkout runs in: the git-ignored dist/ ABSENT.
+# Reproduced by: mv dist /tmp/dist-backup && python3 tests/scripts/verify-stage13-commissioning-readiness.py
+
+===== verify-stage13-commissioning-readiness.py (dist/ absent) =====
+
+negative proofs: 44 proven, 0 missed
+808 passed, 0 failed
+GATE-RESULT {"gate": "stage13_commissioning_readiness", "status": "pass", "passed": 808, "failed": 0, "negative_proofs": 44, "negative_proofs_missed": 0, "violations": 0, "details": []}
+
+===== verify-stage14-secret-scan.py (dist/ absent) =====
+stage14_secret_scan: 324 passed, 0 failed
+GATE-RESULT {"gate": "stage14_secret_scan", "passed": 324, "failed": 0, "violations": 0}

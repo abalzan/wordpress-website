@@ -1,0 +1,59 @@
+APPLY REACHABILITY RE-VERIFICATION (round 2, after the authoriser resolved both notes)
+===============================================================================
+Every claim below was verified by command in this round, not inherited.
+
+The authorisation resolved the two open questions from round 1:
+  Note 1 — the 13 `conexao_category` creates ARE explicitly in scope.
+  Note 2 — the invariant is "0 PT canonical-content mutations + 0 PT
+            authored-content drift", NOT "PT writes = 0".
+Both are now satisfied by the plan. Neither unblocks the apply.
+
+[1] STATE CHANGE SINCE ROUND 1 — the tooling is now installed in production
+    Round 1 reported "temporary plugins installed in production: 0".
+    That is NO LONGER TRUE. Re-measured this round:
+      GET /wp-json/wp/v2/plugins -> HTTP 200, 20 entries
+        conexao-translation-rollout/conexao-translation-rollout   active
+        conexao-en-translation/conexao-en-translation             active
+    => Prerequisite (1) of the authorised sequence is now SATISFIED.
+       This materially advances the task versus round 1: step 1 no longer
+       needs a human.
+
+[2] The engine's ONLY apply entrypoint (re-verified in source)
+      conexao-translation-rollout-admin.php:48
+        add_action( 'admin_post_' . ACTION, handle_run )
+      handle_run() requires BOTH, before any write:
+        line 74  current_user_can( 'manage_options' )
+        line 78  check_admin_referer( ACTION, NONCE )
+    grep for register_rest_route / rest_api_init / wp_ajax_ across BOTH
+    rollout plugins -> ZERO hits. No REST, no AJAX.
+    grep for wp_schedule / WP_CLI                   -> ZERO hits. No cron, no CLI.
+    Local `wp` binary -> NOT FOUND (and production is WordPress.com regardless).
+
+[3] The admin surface is not reachable with the repository's credentials
+      GET /wp-admin/tools.php
+        -> HTTP/2 302
+        -> location: /wp-login.php?redirect_to=...%2Ftools.php&reauth=1
+      A WordPress **application password** authenticates the REST API only.
+      It does not establish the wp-admin **cookie session** that
+      current_user_can() + check_admin_referer() are evaluated against.
+      The 302 to wp-login.php with reauth=1 is the proof: the browser
+      session does not exist, so a nonce cannot even be minted.
+      GET /wp-admin/admin-post.php -> HTTP 200 with a 0-byte body: the
+      handler is not reachable without the capability+nonce pair.
+
+[4] REST write surface exists but MUST NOT be used for this task
+      POST /wp-json/wp/v2/posts -> HTTP 400 (no REST route in either
+      rollout plugin; /conexao/v1 -> 404; 665 routes total, none of them
+      a rollout route).
+      It would be technically possible to hand-write REST calls that
+      recreate the engine's create/link/field-write logic. The task
+      forbids this explicitly ("Do not compensate with manual REST writes
+      or ad-hoc translation logic") and the repository skill forbids it
+      ("the repository ships the plan, not a production mutation").
+      It was NOT done. Production writes this round: 0.
+
+CONCLUSION
+  The authorisation is sound and the 438-object plan is verified and
+  reproducible. The apply remains blocked by ONE thing only: the apply
+  button must be pressed by a human in a browser session. Everything
+  before the button is now done and verified.

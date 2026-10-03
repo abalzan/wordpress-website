@@ -1,0 +1,19 @@
+== EN homepage label check (/en/) ==
+HTTP 200, bytes: 69112
+  Practical Guide                               occurrences: 1
+  Guia Prático                                 occurrences: 0
+  Quick Access                                  occurrences: 2
+  Acesso Rápido                                occurrences: 0
+  Business                                      occurrences: 0
+  Vocational Training                           occurrences: 0
+  This content is displayed in Portuguese       occurrences: 0
+
+== PT homepage label check (/) ==
+HTTP 200, bytes: 70511
+  Guia Prático                                 occurrences: 1
+  Practical Guide                               occurrences: 0
+  Acesso Rápido                                occurrences: 1
+  Quick Access                                  occurrences: 1
+  Explorar Guias                                occurrences: 1
+  Vocational Training                           occurrences: 0
+  Business                                      occurrences: 0

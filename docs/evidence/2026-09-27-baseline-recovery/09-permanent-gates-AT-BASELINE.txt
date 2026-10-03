@@ -1,0 +1,64 @@
+# 09 — Read-only permanent gate state AT the broken baseline 597b04e
+
+These numbers describe the CURRENT BROKEN baseline. They were NOT made to pass.
+Read-only static gates only; no DB-mutating suite was run.
+
+===== tests/scripts/verify-i18n-freshness.py =====
+   conexao-data-model       catalogue=1790431901 newest-source=1790335165 (wp-content/plugins/conexao-data-model/includes/class-agency.php) fresh
+   conexao-content          catalogue=1790431901 newest-source=1789985903 (wp-content/plugins/conexao-content/conexao-content.php) fresh
+   conexao-admin-ux         catalogue=1790431901 newest-source=1790016943 (wp-content/plugins/conexao-admin-ux/includes/class-translation-state.php) fresh
+   conexao-event-runtime    catalogue=1790431901 newest-source=1790016943 (wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php) fresh
+   conexao-event-importer   catalogue=1790536693 newest-source=1790446037 (wp-content/plugins/conexao-event-importer/includes/class-event-importer.php) fresh
+   conexao-leisure-migration catalogue=1790431901 newest-source=1790325155 (wp-content/plugins/conexao-leisure-migration/includes/class-leisure-exporter.php) fresh
+   conexao-sponsor-migration catalogue=1790431901 newest-source=1789994211 (wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-importer.php) fresh
+
+   stale catalogues: 0
+FAIL: conexao-br-irlanda: 39 file(s) define user-facing strings but wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot does not exist
+8 passed, 1 failed
+GATE-RESULT {"gate": "i18n_freshness", "status": "fail", "passed": 8, "failed": 1, "violations": 0, "pre_existing": 0, "new": 0, "details": []}
+
+===== tests/scripts/verify-cache-key-scoping.py =====
+   scanned 70 production PHP files (PHP token_get_all)
+   unscoped conexao_* cache keys: 4
+     - wp-content/themes/conexao-br-irlanda/404.php:25 get_transient( 'conexao_404_guides' )
+     - wp-content/themes/conexao-br-irlanda/404.php:41 set_transient( 'conexao_404_guides' )
+     - wp-content/themes/conexao-br-irlanda/404.php:62 get_transient( 'conexao_404_events' )
+     - wp-content/themes/conexao-br-irlanda/404.php:99 set_transient( 'conexao_404_events' )
+FAIL: wp-content/themes/conexao-br-irlanda/404.php:25 unscoped cache key "'conexao_404_guides'" passed to get_transient() — conexao_* cache key is not language-scoped
+FAIL: wp-content/themes/conexao-br-irlanda/404.php:41 unscoped cache key "'conexao_404_guides'" passed to set_transient() — conexao_* cache key is not language-scoped
+FAIL: wp-content/themes/conexao-br-irlanda/404.php:62 unscoped cache key "'conexao_404_events'" passed to get_transient() — conexao_* cache key is not language-scoped
+FAIL: wp-content/themes/conexao-br-irlanda/404.php:99 unscoped cache key "'conexao_404_events'" passed to set_transient() — conexao_* cache key is not language-scoped
+2 passed, 4 failed
+GATE-RESULT {"gate": "cache_scoping_static", "status": "fail", "passed": 2, "failed": 4, "violations": 4, "details": [{"file": "wp-content/themes/conexao-br-irlanda/404.php", "line": 25, "function": "get_transient", "key": "'conexao_404_guides'", "enclosing": null, "reason": "conexao_* cache key is not language-scoped"}, {"file": "wp-content/themes/conexao-br-irlanda/404.php", "line": 41, "function": "set_transient", "key": "'conexao_404_guides'", "enclosing": null, "reason": "conexao_* cache key is not language-scoped"}, {"file": "wp-content/themes/conexao-br-irlanda/404.php", "line": 62, "function": "get_transient", "key": "'conexao_404_events'", "enclosing": null, "reason": "conexao_* cache key is not language-scoped"}, {"file": "wp-content/themes/conexao-br-irlanda/404.php", "line": 99, "function": "set_transient", "key": "'conexao_404_events'", "enclosing": null, "reason": "conexao_* cache key is not language-scoped"}]}
+
+===== tests/scripts/verify-documentation-drift.py =====
+
+   -- §9.2 no root-level report/evidence file --
+   root files scanned: 16, offenders: 0
+
+   -- §9.2 AGENTS.md remains orientation --
+   AGENTS.md lines: 187
+
+   -- authoritative sources referenced by the governance layer --
+   authoritative sources checked: 7
+FAIL: Stage K agent governance gate failed (exit 1): python3 tests/scripts/verify-agent-governance.py — Stage K governance verification: 247 passed, 7 failed
+13 passed, 1 failed
+GATE-RESULT {"gate": "documentation_drift", "status": "fail", "passed": 13, "failed": 1, "violations": 1, "details": ["Stage K agent governance gate failed (exit 1): python3 tests/scripts/verify-agent-governance.py \u2014 Stage K governance verification: 247 passed, 7 failed"]}
+
+===== tests/scripts/verify-release-integrity.py =====
+210 passed, 0 failed
+
+===== tests/scripts/verify-agent-governance.py =====
+    wp-add-admin-screen: When to use -> Required reading -> Steps -> Guardrails -> Verification -> Definition of done
+    wp-add-content-type: When to use -> Required reading -> Steps -> Guardrails -> Verification -> Definition of done
+    wp-frontend-perf: When to use -> Required reading -> Steps -> Guardrails -> Verification -> Definition of done
+    wp-http-acceptance-matrix: When to use -> Required reading -> Steps -> Guardrails -> Verification -> Definition of done
+    wp-plugin-registry: When to use -> Required reading -> The fields and what they drive -> Steps -> Guardrails -> Verification -> Definition of done
+    wp-release-deploy: When to use -> Required reading -> Steps -> Guardrails -> Verification -> Definition of done
+    wp-security-review: When to use -> Required reading -> Steps -> Guardrails -> Verification -> Definition of done
+    wp-translation-rollout: When to use -> Required reading -> Steps -> Guardrails -> Verification -> Definition of done
+    wp-update-docs: When to use -> Required reading -> The change → document map -> Steps -> Guardrails -> Verification -> Definition of done
+    wp-write-in-process-test: When to use -> Required reading -> Steps -> Guardrails -> Verification -> Definition of done
+note: retired Flutter/Dart material is present under .agents/legacy-flutter-skills/ (provenance only, not active)
+Stage K governance verification: 247 passed, 7 failed
+

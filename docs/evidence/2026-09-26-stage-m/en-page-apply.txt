@@ -1,0 +1,40 @@
+
+script: run-en-translation.php
+target: http://localhost:8080 (local, local)
+mode:   apply
+scope:  The guide / page / post stages registered by the conexao-en-translation plugin. Dry-run by default; --apply creates the EN records; --remove deletes them. A PT record is only ever read.
+
+=== stage: en-page (mode: apply, operation: run) ===
+  created=29 updated=0 skipped=0 removed=0 conflicts=0 errors=0 PT-drift=0
+    created      politica-de-privacidade                       EN record created and linked; 6 field(s) copied
+    created      termos-de-uso                                 EN record created and linked; 6 field(s) copied
+    created      cookies                                       EN record created and linked; 6 field(s) copied
+    created      privacidade                                   EN record created and linked; 5 field(s) copied
+    created      termos                                        EN record created and linked; 5 field(s) copied
+    created      sobre                                         EN record created and linked; 5 field(s) copied
+    created      about                                         EN record created and linked; 5 field(s) copied
+    created      jobs-2                                        EN record created and linked; 5 field(s) copied
+    created      newsletter                                    EN record created and linked; 6 field(s) copied
+    created      revista                                       EN record created and linked; 6 field(s) copied
+    created      anuncie                                       EN record created and linked; 6 field(s) copied
+    created      europa                                        EN record created and linked; 6 field(s) copied
+    created      search                                        EN record created and linked; 6 field(s) copied
+    created      moradia                                       EN record created and linked; 6 field(s) copied
+    created      saude                                         EN record created and linked; 6 field(s) copied
+    created      familia                                       EN record created and linked; 6 field(s) copied
+    created      transporte                                    EN record created and linked; 6 field(s) copied
+    created      financas                                      EN record created and linked; 6 field(s) copied
+    created      beneficios                                    EN record created and linked; 6 field(s) copied
+    created      educacao                                      EN record created and linked; 6 field(s) copied
+    created      documentos                                    EN record created and linked; 6 field(s) copied
+    created      onde-comer                                    EN record created and linked; 6 field(s) copied
+    created      lazer                                         EN record created and linked; 6 field(s) copied
+    created      turismo                                       EN record created and linked; 6 field(s) copied
+    created      compras                                       EN record created and linked; 6 field(s) copied
+    created      negocios                                      EN record created and linked; 6 field(s) copied
+    created      servicos                                      EN record created and linked; 6 field(s) copied
+    created      voluntariado                                  EN record created and linked; 6 field(s) copied
+    created      categorias                                    EN record created and linked; 5 field(s) copied
+  GATE PASS: eligible PT=29 with EN=29 missing EN=0 conflicts=0 PT drift=0
+
+summary: created=29, updated=0, skipped=0, removed=0, errors=0, conflicts=0, pt_changed=0, gate_failures=0

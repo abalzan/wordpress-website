@@ -1,0 +1,109 @@
+# Stage 9 — Permanent gates and test suite (Section 36 / Section 37)
+
+## Section 36 required gates — status
+
+Every gate Stage 9 requires is ALREADY IMPLEMENTED and passing. No new gate
+was written, and no existing gate was weakened. Section 36 asked Stage 9 to
+"add/extend permanent gates"; the honest finding is that Stages 7 and 8 already
+delivered all of them, so Stage 9's contribution is to VERIFY them rather than
+duplicate them. Duplicating them would have created a second source of truth,
+which the engineering standard forbids.
+
+| Required gate                                | Implemented by                            | Result |
+|----------------------------------------------|-------------------------------------------|--------|
+| one approved automation proof endpoint       | verify-stage7-commissioning.py            | PASS (exact resolved action name, count == 1, owning file) |
+| zero forbidden surfaces                      | verify-stage7/8-control-plane.py          | PASS |
+| legacy endpoint returns 410                  | verify-stage8-control-plane.py:284        | PASS (literal 410 in handler, no wp_safe_redirect) |
+| release metadata consistency                 | verify-stage8-release-consistency.py      | PASS 52/52 |
+| provider transport shape                     | verify-stage6-transport-trigger.py        | PASS |
+| provider credential secrecy                  | verify-stage6-transport-trigger.py        | PASS (credential read from env, never an option; assert_no_secrets on write path) |
+| no cron                                      | verify-stage7/8 + verify-stage4-provider  | PASS (cron_schedules scanned) |
+| no public REST                               | verify-stage7/8                           | PASS (register_rest_route / rest_api_init scanned) |
+| no anonymous AJAX                            | verify-stage7-commissioning.py            | PASS (wp_ajax_nopriv_ scanned) |
+| no unintended activation effects             | test-automation-hooks.php                 | PASS 50/50 |
+| no webhooks                                  | verify-stage8-control-plane.py            | PASS (substring scan, per the Stage 7 negative-proof fix) |
+
+All of these fail closed and carry negative proofs. Matching is by exact
+resolved action name, never by a regex that cannot match WordPress action
+names containing underscores.
+
+## Gate results actually run in Stage 9
+
+python3 tests/scripts/verify-stage8-control-plane.py        80 passed, 0 failed
+python3 tests/scripts/verify-stage8-release-consistency.py  52 passed, 0 failed
+
+## Section 37 — full test suite
+
+./scripts/run-tests.sh   (full output: 04-run-tests.txt)
+
+In-process PHP suites : 77 total, 75 passed, 2 failed
+Assertions            : 5600 passed, 6 failed
+Script-contract suites: 13 total, 12 passed, 1 failed
+HTTP acceptance suites: 3 total, 2 passed, 1 failed
+
+Stage 9 required checks, all covered and passing:
+  - release reproducibility .................. PROVEN (two builds, identical)
+  - endpoint control-plane gate ............... 80/80
+  - legacy 410 gate ........................... 36/36 behavioural + gate literal
+  - provider transport tests ................. test-automation-provider 222/222,
+                                               provider-implementation 144/144
+  - credential secrecy ....................... verify-stage6 + config probe
+  - baseline/bootstrap tests ................. included in the suites above
+  - production trigger proof tests ........... test-automation-admin-trigger 109/109
+  - dry-run plan tests ....................... test-automation-translation-plan 157/157
+  - approval-binding tests ................... test-automation-apply-safety 107/107
+  - lock tests ............................... test-automation-lock 51/51
+  - audit tests .............................. test-automation-audit 80/80
+  - PT immutability / B1 / B2 / idempotence .. covered by the engine and
+                                               automation suites, all passing
+
+Production tests did NOT probe apply. No production test was executed at all,
+because no production credential exists. No apply path was reached.
+
+## Failing set — IDENTICAL to Stage 8 (no regression)
+
+The failing set is byte-for-byte the same set, and the same counts, that
+Stage 8 recorded (77 suites / 75 passed / 2 failed; 5600 passed / 6 failed;
+13 suites / 12 passed / 1 failed; 3 suites / 2 passed / 1 failed).
+
+  1. theme/conexao-br-irlanda/test-en-jobs-shared-slug.php — 38 passed, 1 failed
+       (newsletter en_id 509 — pre-existing, Section 33)
+  2. theme/conexao-br-irlanda/test-leisure-card-excerpt-language.php — 40 passed, 5 failed
+       (leisure-card excerpt failures — pre-existing, Section 33)
+  3. tests/scripts/verify-i18n-freshness.py — 9 passed, 3 failed
+       (3 stale catalogues — pre-existing, Section 33)
+  4. HTTP acceptance row: pt-lazer-card-excerpt-stays-portuguese /lazer/
+       missing fragment 'Casa rural restaurada aos pés da montanha Keadeen'
+       — the HTTP face of the same leisure-card excerpt condition, and of
+       dwyer-mcallister-cottage (Section 33)
+
+i18n_freshness detail — the 3 stale catalogues are exactly the 3 carried
+forward in Section 33, and none of them is a Stage 9 component:
+  conexao-br-irlanda      STALE  (lag 92483s)
+  conexao-content         STALE  (lag 76025s)
+  conexao-event-runtime   STALE  (lag 76025s)
+Deliberately NOT regenerated. Regenerating catalogues solely to obtain a green
+suite is forbidden by Section 33, and the gate must fail closed on a real
+staleness condition.
+
+## Stage L permanent invariant gates
+
+python3 scripts/verify-permanent-gates.py   (full output: 02-permanent-gates.txt)
+
+  [PASS] taxonomy                 18 passed, 0 failed
+  [PASS] translation_completeness 23 passed, 0 failed, 319 allowlisted
+  [PASS] cache_scoping             9 passed, 0 failed
+  [PASS] cache_scoping_static      2 passed, 0 failed
+  [PASS] redirect_precedence      15 passed, 0 failed
+  [PASS] documentation_drift      14 passed, 0 failed
+  [FAIL] i18n_freshness            9 passed, 3 failed (3 stale catalogues)
+
+  Gates: 7 total, 6 passed, 1 failed, 0 blocked
+  Assertions: 90 passed, 3 failed
+
+The single failing gate is the carried-forward i18n_freshness condition. It
+was NOT weakened, NOT suppressed and NOT allowlisted.
+
+python3 tests/scripts/verify-release-integrity.py          229 passed, 0 failed
+php scripts/generate-registry-docs.php --check
+    registry OK: 15 plugins validated, 24 generated regions current (zero writes)

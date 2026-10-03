@@ -1,0 +1,74 @@
+# Build, packaging and release evidence (Stage 1)
+
+Registry entry (plugins.json, the single source of truth):
+{
+  "slug": "conexao-translation-automation",
+  "name": "Conexão BR Irlanda — Translation Automation (Stage 1 boundary)",
+  "class": "tooling",
+  "status": "active",
+  "production": false,
+  "build": false,
+  "mount": true,
+  "dependencies": [
+    "conexao-translation-rollout"
+  ],
+  "version_source": "wp-content/plugins/conexao-translation-automation/conexao-translation-automation.php",
+  "documentation": "docs/plugins/conexao-translation-automation.md"
+}
+
+Registry drift gate:
+registry OK: 15 plugins validated, 24 generated regions current (zero writes).
+
+Release build (BUILD_OUTPUT_DIR=/tmp/stage1-dist bash scripts/build-plugins-zip.sh):
+Packaging plugin: conexao-data-model
+  Output:  /tmp/stage1-dist/conexao-data-model.zip
+  Files:   6
+  SHA-256: a883b6d179a9415513d38d24bbb48fbd4a9a05811aba344841f30809bcc0a330
+Packaging plugin: conexao-content
+  Output:  /tmp/stage1-dist/conexao-content.zip
+  Files:   5
+  SHA-256: d0ce005a3818674c595cf48de23c63a8c14eba931896a1308a5ce938ce815a4f
+Packaging plugin: conexao-admin-ux
+  Output:  /tmp/stage1-dist/conexao-admin-ux.zip
+  Files:   14
+  SHA-256: aded30ec34b2954370d76deb0f77211a1924fd003fefd2a8ca6967933c1d201a
+Packaging plugin: conexao-event-runtime
+  Output:  /tmp/stage1-dist/conexao-event-runtime.zip
+  Files:   7
+  SHA-256: 515a416144e4f2580bbfea1818ba5d457720d9aa543f0c8cde1c6b1a854723e0
+Packaging plugin: conexao-event-importer
+  Output:  /tmp/stage1-dist/conexao-event-importer.zip
+  Files:   42
+  SHA-256: 551ef74cdf161b63f167a24e46685dc927f68e37e9067052be40a7e0e22b8167
+Packaging plugin: conexao-leisure-migration
+  Output:  /tmp/stage1-dist/conexao-leisure-migration.zip
+  Files:   7
+  SHA-256: e91eb8b09bd697105057d6d5b22a793d5849ebf3bdd8640d457e06380efb4462
+Packaging plugin: conexao-sponsor-migration
+  Output:  /tmp/stage1-dist/conexao-sponsor-migration.zip
+  Files:   6
+  SHA-256: b4d4e52562bee987ca4bca64331542038331da2189a7ec47a1030d06b9523d86
+✓ Packaged 7 plugin artifact(s):
+
+dist/release.json (schema_version 1):
+  allowlist artifacts: ['conexao-data-model', 'conexao-content', 'conexao-admin-ux', 'conexao-event-runtime', 'conexao-event-importer', 'conexao-leisure-migration', 'conexao-sponsor-migration', 'conexao-br-irlanda']
+  artifacts recorded: 8
+   - conexao-data-model 1.6.1 files=6
+   - conexao-content 1.0.1 files=5
+   - conexao-admin-ux 1.0.7 files=14
+   - conexao-event-runtime 1.2.2 files=7
+   - conexao-event-importer 1.7.1 files=42
+   - conexao-leisure-migration 2.1.0 files=7
+   - conexao-sponsor-migration 1.1.0 files=6
+   - conexao-br-irlanda 1.0.1 files=None
+  totals: {'artifacts': 8, 'built': 7, 'files': 87, 'bytes': 360525}
+
+Packaging proof for conexao-translation-automation (shared library scripts/lib/zip-build.sh, temp dir only, registry untouched):
+conexao-translation-automation 3 8725 e629fda97eb12fdebe037bea489c2cbad7c5b4309a6fee57f1146c925c804e14
+  entries:
+    conexao-translation-automation/
+    conexao-translation-automation/conexao-translation-automation.php
+    conexao-translation-automation/includes/
+    conexao-translation-automation/includes/class-conexao-translation-automation-orchestrator.php
+    conexao-translation-automation/includes/class-conexao-translation-automation-result.php
+  banned paths shipped: []

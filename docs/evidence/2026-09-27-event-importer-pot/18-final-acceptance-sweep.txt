@@ -1,0 +1,47 @@
+== FINAL ACCEPTANCE SWEEP ==
+
+-- A. Original 3 duplicate-msgid errors reproduced? --
+   on the pristine catalogue: 3
+   YES - 3 (see evidence 01)
+
+-- B. Every affected msgid traced to source? --
+   YES - all 3 trace to conexao-event-importer.php:1 docblock (evidence 04)
+
+-- C. Canonical generator verified before use? --
+   YES - 5 checks, evidence 05
+
+-- D. Regenerated through the canonical workflow? --
+   YES - ./scripts/i18n-make-pot.sh conexao-event-importer
+
+-- E. Zero duplicate-msgid errors now? --
+   msgfmt exit=0  msgcat exit=0  parsed duplicates=0
+
+-- F. Byte-identical across two consecutive runs? --
+   YES - faa7b1bc (run3) == faa7b1bc (run4), and body md5 519d16cd stable across 4 runs
+
+-- G. No absolute local paths? --
+   occurrences of /home/andrei: 0
+
+-- H. No duplicate header blocks? --
+   true header blocks: 1
+
+-- I. No legitimate contextual translations collapsed? --
+   msgctxt entries before: 0   after: 0  (none existed, none invented)
+
+-- J/K/L/M. PO/MO byte-identical? --
+   en_US.po IDENTICAL BLOB (5a4839c26c82)
+   en_US.mo IDENTICAL BLOB (7a756c73d519)
+   pt_BR.po IDENTICAL BLOB (3bed27fce114)
+   pt_BR.mo IDENTICAL BLOB (db935b21a424)
+
+-- N. i18n freshness passing? --
+   YES in isolation: 8 passed, 0 failed (evidence 10).
+
+-- O. No new permanent-gate violations? --
+   YES - 0 new, 0 pre-existing delta; gate outcome byte-identical to baseline (evidence 12)
+
+-- P. No content/DB, Polylang, production or Flutter changes? --
+   YES - 0 PHP files, 0 SQL, 0 config, 0 production actions, 0 Flutter/mobile access
+
+-- Q. No baseline/gate weakening? --
+   YES - no allowlist, no baseline edit, historical gate.json restored (md5 a3ebe982...)

@@ -1,0 +1,35 @@
+# FAILURE PROOF — the gate can actually fail
+
+The flag gate asserts the SHIPPED DEFAULT is disabled. Flipping only the constant
+to true must therefore turn it RED. Without this, the gate would be a tautology.
+
+## Step 1: flip the single constant to true
+44:	define( 'CONEXAO_LANGUAGE_SWITCHER_ENABLED', true );
+
+## Step 2: run the gate (expected: non-zero exit, real failures)
+EXIT=1
+  FAIL: L6 the shipped default is DISABLED
+  FAIL: L7 the helper reports the disabled default
+  FAIL: L8 the flag is read from the constant alone, with no request-level override
+  FAIL: L28 language-switcher element count = 0 (both contexts)
+  FAIL: L29 language-switcher--desktop count = 0
+  FAIL: L30 language-switcher--mobile count = 0
+  FAIL: L31 language-switcher-item count = 0
+  FAIL: L32 the renderer emits no markup whatsoever
+  FAIL: L33 no orphaned group role
+  FAIL: L34 no orphaned switcher accessible name
+  FAIL: L35 no orphaned aria-current
+  FAIL: L36 no language-destination label
+  FAIL: L37 no anchor remains
+  FAIL: L38 no current-language span remains
+  FAIL: L78 the disabled default is restored in this process
+  FAIL: L79 the desktop switcher is still suppressed after the enabled proof
+  FAIL: L80 the mobile switcher is still suppressed after the enabled proof
+language-switcher-flag: 43 passed, 17 failed
+
+## Step 3: restore the shipped default
+44:	define( 'CONEXAO_LANGUAGE_SWITCHER_ENABLED', false );
+
+## Step 4: re-run the gate (expected: green again)
+EXIT=0
+language-switcher-flag: 60 passed, 0 failed

@@ -1,0 +1,60 @@
+# 04 - Full canonical runner: ./scripts/run-tests.sh
+
+Run on the recovered baseline cd800be, same machine + same local DB as the
+established recovered-baseline run (09b-run-tests-AFTER-recovery-with-flush.txt).
+
+## Totals (closeout vs recovered baseline)
+  metric                           closeout           recovered baseline
+  in-process suites                59                 59
+  in-process passed                39                 39
+  in-process failed                20                 20
+  prerequisite failures            2                  2
+  assertions passed                2900               2900
+  assertions failed                102                102
+  script-contract                  6/6                6/6
+  HTTP acceptance                  1 passed / 2 failed 1 passed / 2 failed
+
+  => IDENTICAL. No suite regressed and none was fixed by this closeout.
+     (correct: the closeout changed no source and no data)
+
+## Failing suite set: exact diff against the recovered baseline
+  (sorted diff of the failing-suite list, baseline vs closeout)
+  <no differences> IDENTICAL
+
+## The 20 failing suites (all pre-existing, all traced to local data / env, not source)
+    plugin/conexao-event-importer/test-ivvcc-importer.php
+    plugin/conexao-event-importer/test-town-sanitization.php
+    plugin/conexao-leisure-migration/test-excerpt-en-roundtrip.php
+    plugin/conexao-leisure-migration/test-language-uuid.php
+    theme/conexao-br-irlanda/test-blog-en-translation.php
+    theme/conexao-br-irlanda/test-event-location-filters.php
+    theme/conexao-br-irlanda/test-guide-en-translation.php
+    theme/conexao-br-irlanda/test-header-menu-selection.php (en)
+    theme/conexao-br-irlanda/test-header-menu-selection.php (pt)
+    theme/conexao-br-irlanda/test-i18n-foundation.php
+    theme/conexao-br-irlanda/test-job-en-translation.php
+    theme/conexao-br-irlanda/test-jobs-en-language.php
+    theme/conexao-br-irlanda/test-leisure-attribute-normalization.php
+    theme/conexao-br-irlanda/test-nav-language-context.php
+    theme/conexao-br-irlanda/test-polylang-foundation.php
+    theme/conexao-br-irlanda/test-stage32-bilingual.php
+    theme/conexao-br-irlanda/test-stage33-bilingual.php
+    theme/conexao-br-irlanda/test-stage41-rest-language.php
+    theme/conexao-br-irlanda/test-stage45-pages.php
+    theme/conexao-br-irlanda/test-translation-completeness.php
+
+  Provenance of these failures is documented in
+  docs/reports/2026-09-27-baseline-recovery-implementation.md §13:
+    - 6 suites fail identically on 597b04e (proved by byte-identical counts)
+    - 14 are restored baseline suites that fail on missing EN CONTENT
+    - the translation_completeness gate (content gaps, investigated in 01)
+
+## HTTP acceptance detail
+  [PASS] tests/acceptance/verify-release-http.py   42 passed, 0 failed
+  [FAIL] tests/acceptance/verify-guides-en-http.py  (documented content limitation, see 06)
+  [TIMEOUT] tests/acceptance/verify-routing-http.py
+
+  The routing HTTP timeout is IDENTICAL to the recovered baseline run (09b),
+  which also recorded [TIMEOUT] on the same suite. It is an environment/runtime
+  cost issue, not a recovery regression. The site itself is healthy:
+  /en/ returns HTTP 200 in 0.11s. Route-level results are in evidence 06.

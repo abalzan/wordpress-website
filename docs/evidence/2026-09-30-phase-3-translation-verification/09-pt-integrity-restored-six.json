@@ -1,0 +1,230 @@
+{
+  "records_checked": 6,
+  "all_publish": true,
+  "all_authored_fields_identical": true,
+  "field_level_differences": {},
+  "records": [
+    {
+      "id": 10373,
+      "status_live": "publish",
+      "slug_live": "auxilios-e-apoio-relacionados-a-saude-e-bem-estar-na-irlanda",
+      "fields": {
+        "title": {
+          "identical": true,
+          "live_sha": "b4296391008c",
+          "baseline_sha": "b4296391008c"
+        },
+        "content": {
+          "identical": true,
+          "live_sha": "a6e4f3a6e304",
+          "baseline_sha": "a6e4f3a6e304"
+        },
+        "excerpt": {
+          "identical": true,
+          "live_sha": "12ae32cb1ec0",
+          "baseline_sha": "12ae32cb1ec0"
+        },
+        "date": {
+          "identical": true
+        },
+        "author": {
+          "identical": true
+        },
+        "featured_media": {
+          "identical": true
+        }
+      },
+      "all_authored_fields_identical": true,
+      "is_publish": true,
+      "jetpack_social_post_already_shared": {
+        "baseline": false,
+        "live": true
+      }
+    },
+    {
+      "id": 10374,
+      "status_live": "publish",
+      "slug_live": "auxilios-para-familias-atipicas-na-irlanda",
+      "fields": {
+        "title": {
+          "identical": true,
+          "live_sha": "6090175919c4",
+          "baseline_sha": "6090175919c4"
+        },
+        "content": {
+          "identical": true,
+          "live_sha": "a6e4f3a6e304",
+          "baseline_sha": "a6e4f3a6e304"
+        },
+        "excerpt": {
+          "identical": true,
+          "live_sha": "12ae32cb1ec0",
+          "baseline_sha": "12ae32cb1ec0"
+        },
+        "date": {
+          "identical": true
+        },
+        "author": {
+          "identical": true
+        },
+        "featured_media": {
+          "identical": true
+        }
+      },
+      "all_authored_fields_identical": true,
+      "is_publish": true,
+      "jetpack_social_post_already_shared": {
+        "baseline": false,
+        "live": true
+      }
+    },
+    {
+      "id": 10369,
+      "status_live": "publish",
+      "slug_live": "cursos-e-apoio-para-empreendedores",
+      "fields": {
+        "title": {
+          "identical": true,
+          "live_sha": "567946129aa4",
+          "baseline_sha": "567946129aa4"
+        },
+        "content": {
+          "identical": true,
+          "live_sha": "2a4c2c94ef8d",
+          "baseline_sha": "2a4c2c94ef8d"
+        },
+        "excerpt": {
+          "identical": true,
+          "live_sha": "3111337f7e2d",
+          "baseline_sha": "3111337f7e2d"
+        },
+        "date": {
+          "identical": true
+        },
+        "author": {
+          "identical": true
+        },
+        "featured_media": {
+          "identical": true
+        }
+      },
+      "all_authored_fields_identical": true,
+      "is_publish": true,
+      "jetpack_social_post_already_shared": {
+        "baseline": false,
+        "live": true
+      }
+    },
+    {
+      "id": 10367,
+      "status_live": "publish",
+      "slug_live": "dica-de-saude-para-quem-viaja",
+      "fields": {
+        "title": {
+          "identical": true,
+          "live_sha": "0a2a082f4b30",
+          "baseline_sha": "0a2a082f4b30"
+        },
+        "content": {
+          "identical": true,
+          "live_sha": "57af6236afaa",
+          "baseline_sha": "57af6236afaa"
+        },
+        "excerpt": {
+          "identical": true,
+          "live_sha": "24e1922d3c37",
+          "baseline_sha": "24e1922d3c37"
+        },
+        "date": {
+          "identical": true
+        },
+        "author": {
+          "identical": true
+        },
+        "featured_media": {
+          "identical": true
+        }
+      },
+      "all_authored_fields_identical": true,
+      "is_publish": true,
+      "jetpack_social_post_already_shared": {
+        "baseline": false,
+        "live": true
+      }
+    },
+    {
+      "id": 10375,
+      "status_live": "publish",
+      "slug_live": "guia-para-quem-esta-com-dificuldades-financeiras",
+      "fields": {
+        "title": {
+          "identical": true,
+          "live_sha": "d0d0c1cee72e",
+          "baseline_sha": "d0d0c1cee72e"
+        },
+        "content": {
+          "identical": true,
+          "live_sha": "a6e4f3a6e304",
+          "baseline_sha": "a6e4f3a6e304"
+        },
+        "excerpt": {
+          "identical": true,
+          "live_sha": "12ae32cb1ec0",
+          "baseline_sha": "12ae32cb1ec0"
+        },
+        "date": {
+          "identical": true
+        },
+        "author": {
+          "identical": true
+        },
+        "featured_media": {
+          "identical": true
+        }
+      },
+      "all_authored_fields_identical": true,
+      "is_publish": true,
+      "jetpack_social_post_already_shared": {
+        "baseline": false,
+        "live": true
+      }
+    },
+    {
+      "id": 10376,
+      "status_live": "publish",
+      "slug_live": "guia-pratico-para-brasileiros-em-laois",
+      "fields": {
+        "title": {
+          "identical": true,
+          "live_sha": "e5288a5bd2db",
+          "baseline_sha": "e5288a5bd2db"
+        },
+        "content": {
+          "identical": true,
+          "live_sha": "a6e4f3a6e304",
+          "baseline_sha": "a6e4f3a6e304"
+        },
+        "excerpt": {
+          "identical": true,
+          "live_sha": "12ae32cb1ec0",
+          "baseline_sha": "12ae32cb1ec0"
+        },
+        "date": {
+          "identical": true
+        },
+        "author": {
+          "identical": true
+        },
+        "featured_media": {
+          "identical": true
+        }
+      },
+      "all_authored_fields_identical": true,
+      "is_publish": true,
+      "jetpack_social_post_already_shared": {
+        "baseline": false,
+        "live": true
+      }
+    }
+  ]
+}

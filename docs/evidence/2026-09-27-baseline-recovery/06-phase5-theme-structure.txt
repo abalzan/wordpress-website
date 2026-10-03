@@ -1,0 +1,90 @@
+# 06 — Phase 5: theme structure / intent assessment
+
+## Commit metadata for 597b04e
+commit 597b04e085afb9d2651cb7906b43e2c2b551c2f1
+parent b47d098857d2348feafb1071b8713c6a43359e05
+author Andrei <andreibalzan@gmail.com>
+author-date Sun Sep 27 20:18:13 2026 +0100
+committer-date Sun Sep 27 20:18:13 2026 +0100
+subject Refactor code structure for improved readability and maintainability
+
+body:
+
+
+## Documented intent vs observed effects
+message says: "Refactor code structure for improved readability and maintainability"
+no body, no Co-authored-by, no trailers, no linked report/evidence for the refactor.
+
+## inc/ inventory: b47d098 (43) vs 597b04e (8)
+### present at 597b04e
+wp-content/themes/conexao-br-irlanda/inc/employment-opportunities.php
+wp-content/themes/conexao-br-irlanda/inc/empregos-landing.php
+wp-content/themes/conexao-br-irlanda/inc/job-resources.php
+wp-content/themes/conexao-br-irlanda/inc/permit-employers.php
+wp-content/themes/conexao-br-irlanda/inc/post-views.php
+wp-content/themes/conexao-br-irlanda/inc/recruitment-agencies.php
+wp-content/themes/conexao-br-irlanda/inc/search.php
+wp-content/themes/conexao-br-irlanda/inc/seo.php
+
+### deleted at 597b04e (from inc/)
+D	wp-content/themes/conexao-br-irlanda/inc/admin.php
+D	wp-content/themes/conexao-br-irlanda/inc/archive-filters.php
+D	wp-content/themes/conexao-br-irlanda/inc/archive-query.php
+D	wp-content/themes/conexao-br-irlanda/inc/assets.php
+D	wp-content/themes/conexao-br-irlanda/inc/b2-fallback.php
+D	wp-content/themes/conexao-br-irlanda/inc/cache.php
+D	wp-content/themes/conexao-br-irlanda/inc/content.php
+D	wp-content/themes/conexao-br-irlanda/inc/customizer.php
+D	wp-content/themes/conexao-br-irlanda/inc/events.php
+D	wp-content/themes/conexao-br-irlanda/inc/i18n.php
+D	wp-content/themes/conexao-br-irlanda/inc/i18n/fallback.php
+D	wp-content/themes/conexao-br-irlanda/inc/i18n/guard.php
+D	wp-content/themes/conexao-br-irlanda/inc/i18n/hreflang.php
+D	wp-content/themes/conexao-br-irlanda/inc/i18n/locale.php
+D	wp-content/themes/conexao-br-irlanda/inc/i18n/switcher.php
+D	wp-content/themes/conexao-br-irlanda/inc/i18n/terms.php
+D	wp-content/themes/conexao-br-irlanda/inc/i18n/urls.php
+D	wp-content/themes/conexao-br-irlanda/inc/leisure.php
+D	wp-content/themes/conexao-br-irlanda/inc/navigation.php
+D	wp-content/themes/conexao-br-irlanda/inc/performance.php
+D	wp-content/themes/conexao-br-irlanda/inc/queries.php
+D	wp-content/themes/conexao-br-irlanda/inc/rest-language.php
+D	wp-content/themes/conexao-br-irlanda/inc/seo/canonical.php
+D	wp-content/themes/conexao-br-irlanda/inc/seo/hreflang.php
+D	wp-content/themes/conexao-br-irlanda/inc/seo/meta.php
+D	wp-content/themes/conexao-br-irlanda/inc/seo/open-graph.php
+D	wp-content/themes/conexao-br-irlanda/inc/seo/redirects.php
+D	wp-content/themes/conexao-br-irlanda/inc/seo/related.php
+D	wp-content/themes/conexao-br-irlanda/inc/seo/robots.php
+D	wp-content/themes/conexao-br-irlanda/inc/seo/schema.php
+D	wp-content/themes/conexao-br-irlanda/inc/seo/sitemap.php
+D	wp-content/themes/conexao-br-irlanda/inc/seo/titles.php
+D	wp-content/themes/conexao-br-irlanda/inc/setup.php
+D	wp-content/themes/conexao-br-irlanda/inc/shortcodes.php
+D	wp-content/themes/conexao-br-irlanda/inc/sponsors.php
+D	wp-content/themes/conexao-br-irlanda/inc/ui.php
+
+## functions.php: leader-only -> monolithic
+lines @b47d098: 112
+lines @597b04e: 3937
+b47d098 header:  * Conexão BR Irlanda - Community Portal theme functions
+ *
+ * LOADER ONLY. This file declares the theme constants and requires the
+ * focused modules under inc/ in the documented load order. It contains no
+ * application or business logic: every concern lives in its own module.
+ *
+
+## New inc/seo.php vs old inc/seo/ (10 files)
+old inc/seo/ total lines: 1884
+new inc/seo.php lines: 1413
+
+## SEO functions lost even from the new consolidated inc/seo.php
+conexao_seo_disable_jetpack_og_on_b2
+conexao_seo_hreflang
+conexao_seo_in_language
+conexao_seo_missing_translation_redirect
+
+## theme tests deleted
+26
+lines:
+7991

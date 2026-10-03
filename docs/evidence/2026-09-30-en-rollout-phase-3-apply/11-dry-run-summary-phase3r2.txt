@@ -1,0 +1,52 @@
+EN translation dry-run + snapshot — READ ONLY
+  target: https://conexaobr.ie (production)
+  verb:   GET only
+
+  shared-slug permit (read from the repository): en-blog-page -> blog, en-jobs-page -> empregos, en-page -> newsletter
+  live state: re-read from production
+
+  == the repository engine's own plan ==
+    en-guide                         B1  records=  50 create=  50 update=  0 skip=   0 conflicts=  0
+    en-page                          B1  records=  31 create=  31 update=  0 skip=   0 conflicts=  0
+    en-post                          B1  records=  43 create=  43 update=  0 skip=   0 conflicts=  0
+    en-blog-page                     B1  records=   1 create=   1 update=  0 skip=   0 conflicts=  0
+    en-jobs-page                     B1  records=   1 create=   1 update=  0 skip=   0 conflicts=  0
+    en-leisure-description           B2  records= 289 create= 289 update=  0 skip=   0 conflicts=  0
+    en-course-provider-description   B2  records=  10 create=  10 update=  0 skip=   0 conflicts=  0
+  == acceptance gates ==
+    total_manifest_objects                 425
+    b1_objects                             126
+    b2_objects                             299
+    b1_creates                             126
+    b1_updates                             0
+    b1_translation_links_planned           126
+    b1_already_complete                    0
+    b1_skipped_absent_pt_source            0
+    b1_conflicts                           0
+    b1_missing_pt_source                   0
+    b2_field_updates                       299
+    b2_already_correct                     0
+    b2_missing_source_field                0
+    b2_conflicts                           0
+    b2_creates_en_records                  0
+    taxonomy_creates                       13
+    taxonomy_already_linked                0
+    taxonomy_conflicts                     0
+    taxonomy_missing_source                0
+    conflicts                              0
+    invalid                                0
+    missing_source                         0
+    orphan                                 0
+    duplicate_target_identities            0
+    pt_overwrite_attempts                  0
+    unexpected_pt_mutation_operations      0
+    b2_field_writes_on_pt_record           299
+    unexpected_en_existing_objects         0
+    unclassified_objects                   0
+    unresolved_slug_conflicts              0
+  PT identity digest              76620b661bc72aebde6eb495622a263d432a39bb26d05333b8238023e83908df
+  matches PT baseline                False
+  plan digest                     7dc4f56ed45121fa70bd712d67946219ac05081ef8748fceb9be601a62b6a821
+  snapshot objects                438
+  snapshot digest                 d679f1c1eddb1f59aa8fd1ae3a0b96c1a475e4bec1ba4ad8ddda768f1915724d
+  wrote                           /tmp/phase3/plan.json + /tmp/phase3/snapshot.json

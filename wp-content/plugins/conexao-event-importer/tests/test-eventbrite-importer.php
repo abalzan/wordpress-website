@@ -7,35 +7,17 @@
  * These tests use saved HTML fixtures and do NOT make live requests to Eventbrite.
  */
 
-$wp_load = dirname( dirname( dirname( dirname( __DIR__ ) ) ) ) . '/wp-load.php';
-if ( file_exists( $wp_load ) ) {
-	require_once $wp_load;
-} else {
-	require_once '/var/www/html/wp-load.php';
-}
 
 // Ensure plugin classes are loaded.
+// Shared Stage E test bootstrap: the only place allowed to locate wp-load.php.
+require_once dirname( __DIR__, 4 ) . '/tests/bootstrap.php';
+
 require_once WP_PLUGIN_DIR . '/conexao-event-importer/conexao-event-importer.php';
 
 $fixtures_dir = __DIR__ . '/fixtures';
 
 $passed = 0;
 $failed = 0;
-
-function test_assert( $condition, $message ) {
-	global $passed, $failed;
-	if ( $condition ) {
-		$passed++;
-		echo "  PASS: {$message}\n";
-	} else {
-		$failed++;
-		echo "  FAIL: {$message}\n";
-	}
-}
-
-function test_section( $title ) {
-	echo "\n=== {$title} ===\n";
-}
 
 /**
  * Helper to extract JSON from HTML for test fixture generation.
@@ -60,16 +42,16 @@ $parser = new Conexao_Eventbrite_Parser();
 
 try {
 	$parsed = $parser->parse( $html );
-	test_assert( is_array( $parsed ), 'Parser returns an array' );
-	test_assert( isset( $parsed['events'] ) && is_array( $parsed['events'] ), 'Parsed events is an array' );
-	test_assert( count( $parsed['events'] ) === 5, 'Parser extracts 5 events from fixture' );
-	test_assert( isset( $parsed['pagination'] ) && is_array( $parsed['pagination'] ), 'Pagination data is present' );
-	test_assert( isset( $parsed['pagination']['page_count'] ) && 3 === (int) $parsed['pagination']['page_count'], 'Page count is 3' );
-	test_assert( isset( $parsed['pagination']['object_count'] ) && 44 === (int) $parsed['pagination']['object_count'], 'Object count is 44' );
-	test_assert( isset( $parsed['events'][0]['id'] ) && '1989764061872' === $parsed['events'][0]['id'], 'First event ID is correct' );
-	test_assert( isset( $parsed['events'][0]['name'] ) && 'Laois Food Festival 2026' === $parsed['events'][0]['name'], 'First event name is correct' );
+	assert_true( is_array( $parsed ), 'Parser returns an array' );
+	assert_true( isset( $parsed['events'] ) && is_array( $parsed['events'] ), 'Parsed events is an array' );
+	assert_true( count( $parsed['events'] ) === 5, 'Parser extracts 5 events from fixture' );
+	assert_true( isset( $parsed['pagination'] ) && is_array( $parsed['pagination'] ), 'Pagination data is present' );
+	assert_true( isset( $parsed['pagination']['page_count'] ) && 3 === (int) $parsed['pagination']['page_count'], 'Page count is 3' );
+	assert_true( isset( $parsed['pagination']['object_count'] ) && 44 === (int) $parsed['pagination']['object_count'], 'Object count is 44' );
+	assert_true( isset( $parsed['events'][0]['id'] ) && '1989764061872' === $parsed['events'][0]['id'], 'First event ID is correct' );
+	assert_true( isset( $parsed['events'][0]['name'] ) && 'Laois Food Festival 2026' === $parsed['events'][0]['name'], 'First event name is correct' );
 } catch ( Exception $e ) {
-	test_assert( false, 'Parser threw exception: ' . $e->getMessage() );
+	assert_true( false, 'Parser threw exception: ' . $e->getMessage() );
 }
 
 // ---------------------------------------------------------------------------
@@ -256,8 +238,8 @@ $mock_client->fixtures_dir = $fixtures_dir;
 $source->client = $mock_client;
 
 $events = $source->fetch_events();
-test_assert( count( $events ) === 27, 'Pagination test: 27 events returned (5 + 20 + 4 - 2 for page 1 online/non-Laois)' );
-test_assert( $mock_client->pages_requested === 3, 'Pagination test: 3 pages requested' );
+assert_true( count( $events ) === 27, 'Pagination test: 27 events returned (5 + 20 + 4 - 2 for page 1 online/non-Laois)' );
+assert_true( $mock_client->pages_requested === 3, 'Pagination test: 3 pages requested' );
 
 // ---------------------------------------------------------------------------
 // Test 3: Deduplication test
@@ -321,7 +303,7 @@ $dup_html = '<html><body><script>window.__SERVER_DATA__ = ' . wp_json_encode( $d
 
 $dup_parser = new Conexao_Eventbrite_Parser();
 $dup_parsed = $dup_parser->parse( $dup_html );
-test_assert( count( $dup_parsed['events'] ) === 2, 'Dedup test: parser returns 2 events (raw)' );
+assert_true( count( $dup_parsed['events'] ) === 2, 'Dedup test: parser returns 2 events (raw)' );
 
 // Test dedup logic manually.
 $seen = array();
@@ -334,7 +316,7 @@ foreach ( $dup_parsed['events'] as $event ) {
 	$seen[ $id ] = true;
 	$unique[] = $event;
 }
-test_assert( count( $unique ) === 1, 'Dedup test: only 1 unique event after dedup by ID' );
+assert_true( count( $unique ) === 1, 'Dedup test: only 1 unique event after dedup by ID' );
 
 // ---------------------------------------------------------------------------
 // Test 4: Location test
@@ -355,7 +337,7 @@ $laois_event = array(
 		array( 'type' => 'locality', 'name' => 'Portlaoise' ),
 	),
 );
-test_assert( $method->invoke( $source_instance, $laois_event )['accepted'] === true, 'Location test: region=Laois is accepted' );
+assert_true( $method->invoke( $source_instance, $laois_event )['accepted'] === true, 'Location test: region=Laois is accepted' );
 
 // Dublin event.
 $dublin_event = array(
@@ -366,7 +348,7 @@ $dublin_event = array(
 		array( 'type' => 'locality', 'name' => 'Dublin' ),
 	),
 );
-test_assert( $method->invoke( $source_instance, $dublin_event )['accepted'] === false, 'Location test: region=Dublin is rejected' );
+assert_true( $method->invoke( $source_instance, $dublin_event )['accepted'] === false, 'Location test: region=Dublin is rejected' );
 
 // Missing region.
 $missing_region = array(
@@ -375,10 +357,10 @@ $missing_region = array(
 		array( 'type' => 'country', 'name' => 'Ireland' ),
 	),
 );
-test_assert( $method->invoke( $source_instance, $missing_region )['accepted'] === false, 'Location test: missing region is rejected' );
+assert_true( $method->invoke( $source_instance, $missing_region )['accepted'] === false, 'Location test: missing region is rejected' );
 
 // No locations at all.
-test_assert( $method->invoke( $source_instance, array() )['accepted'] === false, 'Location test: no locations is rejected' );
+assert_true( $method->invoke( $source_instance, array() )['accepted'] === false, 'Location test: no locations is rejected' );
 
 // ---------------------------------------------------------------------------
 // Test 5: Online event test
@@ -407,13 +389,13 @@ $online_event = array(
 );
 
 $normalized_online = $normalizer->normalize( $online_event );
-test_assert( $normalized_online['is_online'] === true, 'Online event test: is_online is true' );
+assert_true( $normalized_online['is_online'] === true, 'Online event test: is_online is true' );
 
 // The source should skip online events.
 $source_ref2 = new ReflectionClass( 'Conexao_Source_Eventbrite' );
 $method2 = $source_ref2->getMethod( 'is_county_event' );
 $method2->setAccessible( true );
-test_assert( $method2->invoke( $source_instance, $online_event )['accepted'] === true, 'Online event test: still Laois region' );
+assert_true( $method2->invoke( $source_instance, $online_event )['accepted'] === true, 'Online event test: still Laois region' );
 
 // ---------------------------------------------------------------------------
 // Test 6: Missing fields test
@@ -441,15 +423,15 @@ $minimal_event = array(
 
 try {
 	$normalized_minimal = $normalizer->normalize( $minimal_event );
-	test_assert( is_array( $normalized_minimal ), 'Missing fields test: normalization succeeds' );
-	test_assert( $normalized_minimal['title'] === 'Minimal Event', 'Missing fields test: title preserved' );
-	test_assert( $normalized_minimal['venue'] === '', 'Missing fields test: venue is empty' );
-	test_assert( $normalized_minimal['organizer'] === '', 'Missing fields test: organizer is empty' );
-	test_assert( $normalized_minimal['price'] === 'Free', 'Missing fields test: price is Free (is_free=true)' );
-	test_assert( $normalized_minimal['category'] === '', 'Missing fields test: category is empty' );
-	test_assert( $normalized_minimal['image'] === '', 'Missing fields test: image is empty' );
+	assert_true( is_array( $normalized_minimal ), 'Missing fields test: normalization succeeds' );
+	assert_true( $normalized_minimal['title'] === 'Minimal Event', 'Missing fields test: title preserved' );
+	assert_true( $normalized_minimal['venue'] === '', 'Missing fields test: venue is empty' );
+	assert_true( $normalized_minimal['organizer'] === '', 'Missing fields test: organizer is empty' );
+	assert_true( $normalized_minimal['price'] === 'Free', 'Missing fields test: price is Free (is_free=true)' );
+	assert_true( $normalized_minimal['category'] === '', 'Missing fields test: category is empty' );
+	assert_true( $normalized_minimal['image'] === '', 'Missing fields test: image is empty' );
 } catch ( Exception $e ) {
-	test_assert( false, 'Missing fields test: threw exception: ' . $e->getMessage() );
+	assert_true( false, 'Missing fields test: threw exception: ' . $e->getMessage() );
 }
 
 // ---------------------------------------------------------------------------
@@ -461,27 +443,27 @@ test_section( 'Error Handling Test' );
 $bad_html = '<html><body><p>No server data here</p></body></html>';
 try {
 	$parser->parse( $bad_html );
-	test_assert( false, 'Error test: malformed HTML should throw' );
+	assert_true( false, 'Error test: malformed HTML should throw' );
 } catch ( Exception $e ) {
-	test_assert( true, 'Error test: malformed HTML throws: ' . $e->getMessage() );
+	assert_true( true, 'Error test: malformed HTML throws: ' . $e->getMessage() );
 }
 
 // Missing __SERVER_DATA__.
 $no_server_data = '<html><body><script>window.other = {}</script></body></html>';
 try {
 	$parser->parse( $no_server_data );
-	test_assert( false, 'Error test: missing __SERVER_DATA__ should throw' );
+	assert_true( false, 'Error test: missing __SERVER_DATA__ should throw' );
 } catch ( Exception $e ) {
-	test_assert( true, 'Error test: missing __SERVER_DATA__ throws: ' . $e->getMessage() );
+	assert_true( true, 'Error test: missing __SERVER_DATA__ throws: ' . $e->getMessage() );
 }
 
 // Invalid JSON.
 $invalid_json = '<html><body><script>window.__SERVER_DATA__ = {invalid json here};</script></body></html>';
 try {
 	$parser->parse( $invalid_json );
-	test_assert( false, 'Error test: invalid JSON should throw' );
+	assert_true( false, 'Error test: invalid JSON should throw' );
 } catch ( Exception $e ) {
-	test_assert( true, 'Error test: invalid JSON throws: ' . $e->getMessage() );
+	assert_true( true, 'Error test: invalid JSON throws: ' . $e->getMessage() );
 }
 
 // Missing pagination.
@@ -495,9 +477,9 @@ $no_pagination = array(
 $no_pagination_html = '<html><body><script>window.__SERVER_DATA__ = ' . wp_json_encode( $no_pagination ) . ';</script></body></html>';
 try {
 	$parser->parse( $no_pagination_html );
-	test_assert( false, 'Error test: missing pagination should throw' );
+	assert_true( false, 'Error test: missing pagination should throw' );
 } catch ( Exception $e ) {
-	test_assert( true, 'Error test: missing pagination throws: ' . $e->getMessage() );
+	assert_true( true, 'Error test: missing pagination throws: ' . $e->getMessage() );
 }
 
 // Missing results.
@@ -511,17 +493,17 @@ $no_results = array(
 $no_results_html = '<html><body><script>window.__SERVER_DATA__ = ' . wp_json_encode( $no_results ) . ';</script></body></html>';
 try {
 	$parser->parse( $no_results_html );
-	test_assert( false, 'Error test: missing results should throw' );
+	assert_true( false, 'Error test: missing results should throw' );
 } catch ( Exception $e ) {
-	test_assert( true, 'Error test: missing results throws: ' . $e->getMessage() );
+	assert_true( true, 'Error test: missing results throws: ' . $e->getMessage() );
 }
 
 // Empty HTML.
 try {
 	$parser->parse( '' );
-	test_assert( false, 'Error test: empty HTML should throw' );
+	assert_true( false, 'Error test: empty HTML should throw' );
 } catch ( Exception $e ) {
-	test_assert( true, 'Error test: empty HTML throws: ' . $e->getMessage() );
+	assert_true( true, 'Error test: empty HTML throws: ' . $e->getMessage() );
 }
 
 // ---------------------------------------------------------------------------
@@ -575,7 +557,7 @@ $http_client->responses = array(
 	),
 );
 $result = $http_client->fetch_page( 'https://www.eventbrite.ie/d/ireland--laois/all-events/', 1 );
-test_assert( ! empty( $result ), 'HTTP test: 429 retries and succeeds' );
+assert_true( ! empty( $result ), 'HTTP test: 429 retries and succeeds' );
 
 // Test 500 retry.
 $http_client->request_count = 0;
@@ -586,7 +568,7 @@ $http_client->responses = array(
 	),
 );
 $result = $http_client->fetch_page( 'https://www.eventbrite.ie/d/ireland--laois/all-events/', 1 );
-test_assert( ! empty( $result ), 'HTTP test: 500 retries and succeeds' );
+assert_true( ! empty( $result ), 'HTTP test: 500 retries and succeeds' );
 
 // Test 503 retry.
 $http_client->request_count = 0;
@@ -597,7 +579,7 @@ $http_client->responses = array(
 	),
 );
 $result = $http_client->fetch_page( 'https://www.eventbrite.ie/d/ireland--laois/all-events/', 1 );
-test_assert( ! empty( $result ), 'HTTP test: 503 retries and succeeds' );
+assert_true( ! empty( $result ), 'HTTP test: 503 retries and succeeds' );
 
 // Test 401 fails clearly.
 $http_client->request_count = 0;
@@ -607,7 +589,7 @@ $http_client->responses = array(
 	),
 );
 $result = $http_client->fetch_page( 'https://www.eventbrite.ie/d/ireland--laois/all-events/', 1 );
-test_assert( empty( $result ), 'HTTP test: 401 fails clearly' );
+assert_true( empty( $result ), 'HTTP test: 401 fails clearly' );
 
 // Test 404 fails clearly.
 $http_client->request_count = 0;
@@ -617,7 +599,7 @@ $http_client->responses = array(
 	),
 );
 $result = $http_client->fetch_page( 'https://www.eventbrite.ie/d/ireland--laois/all-events/', 1 );
-test_assert( empty( $result ), 'HTTP test: 404 fails clearly' );
+assert_true( empty( $result ), 'HTTP test: 404 fails clearly' );
 
 // ---------------------------------------------------------------------------
 // Test 9: Normalizer test
@@ -675,28 +657,28 @@ $full_event = array(
 );
 
 $normalized_full = $normalizer->normalize( $full_event );
-test_assert( $normalized_full['source'] === 'eventbrite', 'Normalizer test: source is eventbrite' );
-test_assert( $normalized_full['source_id'] === '3333333333', 'Normalizer test: source_id is correct' );
-test_assert( $normalized_full['title'] === 'Full Event', 'Normalizer test: title is correct' );
+assert_true( $normalized_full['source'] === 'eventbrite', 'Normalizer test: source is eventbrite' );
+assert_true( $normalized_full['source_id'] === '3333333333', 'Normalizer test: source_id is correct' );
+assert_true( $normalized_full['title'] === 'Full Event', 'Normalizer test: title is correct' );
 // Stage A/B: the normalizer prefers the short `summary` over `full_description`.
-test_assert( $normalized_full['description'] === 'Summary here.', 'Normalizer test: description prefers summary' );
-test_assert( $normalized_full['start_date'] === '2026-12-20', 'Normalizer test: start_date is correct' );
-test_assert( $normalized_full['start_time'] === '10:00', 'Normalizer test: start_time is correct' );
-test_assert( $normalized_full['end_date'] === '2026-12-20', 'Normalizer test: end_date is correct' );
-test_assert( $normalized_full['end_time'] === '12:00', 'Normalizer test: end_time is correct' );
-test_assert( $normalized_full['timezone'] === 'Europe/Dublin', 'Normalizer test: timezone is correct' );
-test_assert( $normalized_full['county'] === 'Laois', 'Normalizer test: county is Laois' );
-test_assert( $normalized_full['town'] === 'Portlaoise', 'Normalizer test: town is Portlaoise' );
-test_assert( $normalized_full['venue'] === 'Test Venue', 'Normalizer test: venue is correct' );
-test_assert( $normalized_full['organizer'] === 'Test Organizer', 'Normalizer test: organizer is correct' );
-test_assert( $normalized_full['category'] === 'Music', 'Normalizer test: category is correct' );
-test_assert( $normalized_full['subcategory'] === 'Concert', 'Normalizer test: subcategory is correct' );
-test_assert( $normalized_full['image'] === 'https://img.evbuc.com/full-event-medium.jpg', 'Normalizer test: image uses medium size' );
-test_assert( $normalized_full['price'] === '€15.00 – €30.00', 'Normalizer test: price range is correct' );
-test_assert( $normalized_full['is_online'] === false, 'Normalizer test: is_online is false' );
-test_assert( $normalized_full['is_cancelled'] === false, 'Normalizer test: is_cancelled is false' );
-test_assert( $normalized_full['ticket_url'] === 'https://www.eventbrite.ie/e/full-event-tickets-3333333333', 'Normalizer test: ticket_url is correct' );
-test_assert( $normalized_full['organizer_id'] === '888888888', 'Normalizer test: organizer_id is correct' );
+assert_true( $normalized_full['description'] === 'Summary here.', 'Normalizer test: description prefers summary' );
+assert_true( $normalized_full['start_date'] === '2026-12-20', 'Normalizer test: start_date is correct' );
+assert_true( $normalized_full['start_time'] === '10:00', 'Normalizer test: start_time is correct' );
+assert_true( $normalized_full['end_date'] === '2026-12-20', 'Normalizer test: end_date is correct' );
+assert_true( $normalized_full['end_time'] === '12:00', 'Normalizer test: end_time is correct' );
+assert_true( $normalized_full['timezone'] === 'Europe/Dublin', 'Normalizer test: timezone is correct' );
+assert_true( $normalized_full['county'] === 'Laois', 'Normalizer test: county is Laois' );
+assert_true( $normalized_full['town'] === 'Portlaoise', 'Normalizer test: town is Portlaoise' );
+assert_true( $normalized_full['venue'] === 'Test Venue', 'Normalizer test: venue is correct' );
+assert_true( $normalized_full['organizer'] === 'Test Organizer', 'Normalizer test: organizer is correct' );
+assert_true( $normalized_full['category'] === 'Music', 'Normalizer test: category is correct' );
+assert_true( $normalized_full['subcategory'] === 'Concert', 'Normalizer test: subcategory is correct' );
+assert_true( $normalized_full['image'] === 'https://img.evbuc.com/full-event-medium.jpg', 'Normalizer test: image uses medium size' );
+assert_true( $normalized_full['price'] === '€15.00 – €30.00', 'Normalizer test: price range is correct' );
+assert_true( $normalized_full['is_online'] === false, 'Normalizer test: is_online is false' );
+assert_true( $normalized_full['is_cancelled'] === false, 'Normalizer test: is_cancelled is false' );
+assert_true( $normalized_full['ticket_url'] === 'https://www.eventbrite.ie/e/full-event-tickets-3333333333', 'Normalizer test: ticket_url is correct' );
+assert_true( $normalized_full['organizer_id'] === '888888888', 'Normalizer test: organizer_id is correct' );
 
 // ---------------------------------------------------------------------------
 // Test 10: Upsert test (idempotency)
@@ -761,16 +743,16 @@ $normalized = $normalizer_engine->normalize( $test_raw );
 
 // Force create by passing existing_id = 0 (bypass deduplicator).
 $result1 = $upsert_method->invoke( $plugin->importer, $normalized, 0 );
-test_assert( 'created' === $result1['action'], 'Upsert test: first run creates event' );
+assert_true( 'created' === $result1['action'], 'Upsert test: first run creates event' );
 $post_id = $result1['post_id'];
-test_assert( $post_id > 0, 'Upsert test: post ID is valid' );
+assert_true( $post_id > 0, 'Upsert test: post ID is valid' );
 
 // Run again - should find existing and update/unchanged.
 $existing_id2 = $deduplicator->find( $normalized );
-test_assert( $existing_id2 === $post_id, 'Upsert test: deduplicator finds existing event' );
+assert_true( $existing_id2 === $post_id, 'Upsert test: deduplicator finds existing event' );
 
 $result2 = $upsert_method->invoke( $plugin->importer, $normalized, $existing_id2 );
-test_assert( 'unchanged' === $result2['action'], 'Upsert test: second run is unchanged' );
+assert_true( 'unchanged' === $result2['action'], 'Upsert test: second run is unchanged' );
 
 // Verify only one record exists.
 $query = new WP_Query( array(
@@ -790,7 +772,7 @@ $query = new WP_Query( array(
 		),
 	),
 ) );
-test_assert( $query->post_count === 1, 'Upsert test: only one record exists' );
+assert_true( $query->post_count === 1, 'Upsert test: only one record exists' );
 
 // ---------------------------------------------------------------------------
 // Test 11: Event update test
@@ -803,16 +785,16 @@ $test_raw['start_time'] = '11:00';
 $normalized_updated = $normalizer_engine->normalize( $test_raw );
 
 $existing_id3 = $deduplicator->find( $normalized_updated );
-test_assert( $existing_id3 === $post_id, 'Update test: deduplicator still finds same event' );
+assert_true( $existing_id3 === $post_id, 'Update test: deduplicator still finds same event' );
 
 $result3 = $upsert_method->invoke( $plugin->importer, $normalized_updated, $existing_id3 );
-test_assert( 'updated' === $result3['action'], 'Update test: event is updated' );
+assert_true( 'updated' === $result3['action'], 'Update test: event is updated' );
 
 $updated_title = get_the_title( $post_id );
-test_assert( $updated_title === $unique_title . ' (Updated)', 'Update test: title is updated' );
+assert_true( $updated_title === $unique_title . ' (Updated)', 'Update test: title is updated' );
 
 $updated_time = get_post_meta( $post_id, '_event_start_time', true );
-test_assert( $updated_time === '11:00', 'Update test: start time is updated' );
+assert_true( $updated_time === '11:00', 'Update test: start time is updated' );
 
 // Clean up test event.
 wp_delete_post( $post_id, true );
@@ -883,10 +865,10 @@ $post_id2 = $result4['post_id'];
 $mark_method->invoke( $plugin->importer, 'eventbrite', $zero_events );
 
 $still_exists = get_post( $post_id2 );
-test_assert( $still_exists !== null, 'Zero-event test: event still exists after zero-event import' );
+assert_true( $still_exists !== null, 'Zero-event test: event still exists after zero-event import' );
 
 $status = get_post_meta( $post_id2, '_event_status', true );
-test_assert( $status !== 'source_not_found', 'Zero-event test: event NOT marked as source_not_found (safety behavior)' );
+assert_true( $status !== 'source_not_found', 'Zero-event test: event NOT marked as source_not_found (safety behavior)' );
 
 // Clean up.
 wp_delete_post( $post_id2, true );
@@ -894,12 +876,9 @@ wp_delete_post( $post_id2, true );
 // ---------------------------------------------------------------------------
 // Summary
 // ---------------------------------------------------------------------------
-echo "\n========================================\n";
-echo "Test Results: {$passed} passed, {$failed} failed\n";
-echo "========================================\n";
 
 // Clean up generated fixture files.
 @unlink( $fixtures_dir . '/eventbrite-page-2.html' );
 @unlink( $fixtures_dir . '/eventbrite-page-3.html' );
 
-exit( $failed > 0 ? 1 : 0 );
+test_finish();

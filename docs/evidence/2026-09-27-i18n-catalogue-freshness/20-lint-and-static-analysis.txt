@@ -1,0 +1,18 @@
+== LINT / STATIC ANALYSIS ==
+
+php -l (461 files): OK, no parse errors.
+
+PHPCS: NOT RUNNABLE in this environment.
+  PHP_CodeSniffer requires the tokenizer, xmlwriter and SimpleXML extensions.
+  Loaded: tokenizer only. Missing: dom, xml, SimpleXML, xmlwriter.
+  This is a pre-existing environment limitation, unrelated to this task
+  (no PHP source was modified by this task).
+
+PHPStan level 5: 2 errors, both in
+  wp-content/themes/conexao-br-irlanda/inc/i18n/fallback.php
+  (Else branch is unreachable because ternary condition is always true).
+  VERIFIED PRE-EXISTING: the identical 2 errors are reported at pristine HEAD
+  (changes stashed). fallback.php is not a file this task modified.
+
+composer: not installed on this host, so scripts/lint.sh step [3/3]
+  ("composer analyse") cannot run; vendor/bin/phpstan was invoked directly instead.

@@ -1,0 +1,451 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Laois Tourism - ECPv6.18.0//NONSGML v1.0//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:Laois Tourism
+X-ORIGINAL-URL:https://laoistourism.ie
+X-WR-CALDESC:Events for Laois Tourism
+REFRESH-INTERVAL;VALUE=DURATION:PT1H
+X-Robots-Tag:noindex
+X-PUBLISHED-TTL:PT1H
+BEGIN:VTIMEZONE
+TZID:Europe/Dublin
+BEGIN:STANDARD
+TZOFFSETFROM:+0000
+TZOFFSETTO:+0100
+TZNAME:IST
+DTSTART:20250330T010000
+END:STANDARD
+BEGIN:DAYLIGHT
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0000
+TZNAME:GMT
+DTSTART:20251026T010000
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:+0000
+TZOFFSETTO:+0100
+TZNAME:IST
+DTSTART:20260329T010000
+END:STANDARD
+BEGIN:DAYLIGHT
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0000
+TZNAME:GMT
+DTSTART:20261025T010000
+END:DAYLIGHT
+BEGIN:STANDARD
+TZOFFSETFROM:+0000
+TZOFFSETTO:+0100
+TZNAME:IST
+DTSTART:20270328T010000
+END:STANDARD
+BEGIN:DAYLIGHT
+TZOFFSETFROM:+0100
+TZOFFSETTO:+0000
+TZNAME:GMT
+DTSTART:20271031T010000
+END:DAYLIGHT
+END:VTIMEZONE
+BEGIN:VEVENT
+DTSTART;TZID=Europe/Dublin:20260907T103000
+DTEND;TZID=Europe/Dublin:20261019T123000
+DTSTAMP:20260831T143231Z
+CREATED:20260831T143231Z
+LAST-MODIFIED:20260831T143231Z
+UID:10016332-1788777000-1792413000@laoistourism.ie
+SUMMARY:What Were You Thinking Of Darling?
+DESCRIPTION:Laois Arthouse is delighted to announce a seven-week visual art workshop series for adults led by resident artist Lia Laimböck. Lia will be sharing her unique fabric collage process with participants\, inviting each participant to create two related works over the 7-week period. Using the theme “What were you thinking of darling?”\, Lia will guide participants to make a portrait in collage and to create a second connected work that reflects what the person or animal\, portrayed\, is thinking.
+URL:https://laoistourism.ie/event/what-were-you-thinking-of-darling/
+CATEGORIES:Member
+ATTACH;FMTTYPE=image/jpeg:https://laoistourism.ie/wp-content/uploads/2026/08/Lia-Collage-Portrait-scaled.jpeg
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/Dublin:20260914T103000
+DTEND;TZID=Europe/Dublin:20261019T123000
+DTSTAMP:20260902T112202Z
+CREATED:20260902T112202Z
+LAST-MODIFIED:20260902T112202Z
+UID:10016352-1789381800-1792413000@laoistourism.ie
+SUMMARY:Beginners Crochet Classes At Portlaoise Library
+DESCRIPTION:Discover the joy of crochet with our 6-week Beginners Crochet Course at Portlaoise Library\, led by Courtney from LOETB. Perfect for complete beginners\, this friendly course will guide you through the basics of crochet in a relaxed and supportive environment. All you need to bring is a size 4 crochet hook and a ball of yarn.
+URL:https://laoistourism.ie/event/beginners-crochet-classes-at-portlaoise-library/
+CATEGORIES:Member
+ATTACH;FMTTYPE=image/jpeg:https://laoistourism.ie/wp-content/uploads/2026/09/791045547_1102520195679121_6128761429586636441_n.jpg
+ORGANIZER;CN="Laois Libraries":MAILTO:library@laoiscoco.ie
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/Dublin:20260921T190000
+DTEND;TZID=Europe/Dublin:20261026T200000
+DTSTAMP:20260826T084816Z
+CREATED:20260826T084816Z
+LAST-MODIFIED:20260826T084816Z
+UID:10016308-1790017200-1793044800@laoistourism.ie
+SUMMARY:Bootcamp with Malone Fitness
+DESCRIPTION:Looking for a fun way to improve your fitness\, build strength\, and boost your confidence? Join Bootcamp with Malone Fitness\, a supportive 6-week programme designed for beginners and those returning to exercise. No matter your fitness level\, you’ll be welcomed into a friendly and encouraging environment where you can move at your own pace and achieve your goals.
+URL:https://laoistourism.ie/event/bootcamp-with-malone-fitness/
+CATEGORIES:Member
+ATTACH;FMTTYPE=image/jpeg:https://laoistourism.ie/wp-content/uploads/2026/08/780840930_2122777138450518_2975674353925366241_n.jpg
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/Dublin:20260922T200000
+DTEND;TZID=Europe/Dublin:20261027T210000
+DTSTAMP:20260831T135938Z
+CREATED:20260831T135938Z
+LAST-MODIFIED:20260831T135938Z
+UID:10016330-1790107200-1793134800@laoistourism.ie
+SUMMARY:Pilates Programme with Sabrina
+DESCRIPTION:Celebrate European Week of Sport by investing in your health and wellbeing with a welcoming 6-week Pilates programme in Portarlington\, led by Sabrina. Whether you are new to Pilates or have previous experience\, these classes are suitable for adults of all fitness levels. Pilates is a popular low-impact exercise that strengthens the body\, improves mobility\, and helps reduce everyday aches and pains.
+URL:https://laoistourism.ie/event/pilates-programme-with-sabrina/
+CATEGORIES:Member
+ATTACH;FMTTYPE=image/jpeg:https://laoistourism.ie/wp-content/uploads/2026/08/789594445_1371365127977123_8121455386403869317_n.jpg
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/Dublin:20260929T140000
+DTEND;TZID=Europe/Dublin:20261020T150000
+DTSTAMP:20260921T130206Z
+CREATED:20260921T130206Z
+LAST-MODIFIED:20260921T130206Z
+UID:10016457-1790690400-1792508400@laoistourism.ie
+SUMMARY:Chair Yoga At Portlaoise Library
+DESCRIPTION:Join us at Portlaoise Library for a four-week Chair Yoga programme as part of Positive Ageing Week. Chair Yoga is a gentle and accessible form of exercise that can help improve mobility\, flexibility\, strength and overall wellbeing. Using a chair for support\, participants will be guided through a series of movements and stretches suitable for a range of abilities.
+URL:https://laoistourism.ie/event/chair-yoga-at-portlaoise-library/
+CATEGORIES:Member
+ATTACH;FMTTYPE=image/jpeg:https://laoistourism.ie/wp-content/uploads/2026/09/796526577_1773778140521276_9135036878076324050_n.jpg
+ORGANIZER;CN="Laois Libraries":MAILTO:library@laoiscoco.ie
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/Dublin:20260930T193000
+DTEND;TZID=Europe/Dublin:20261003T220000
+DTSTAMP:20260824T135701Z
+CREATED:20260323T103543Z
+LAST-MODIFIED:20260824T135701Z
+UID:10015333-1790796600-1791064800@laoistourism.ie
+SUMMARY:Avenue Q Hit Musical
+DESCRIPTION:Four unforgettable nights of comedy\, music\, and mayhem as the Tony Award–winning musical Avenue Q brings its outrageous charm to the Dunamaise Arts Centre. Winner of the Tony Awards for Best Musical\, Best Book\, and Best Score\, Avenue Q is a smart\, cheeky\, and irresistibly funny musical that blends puppets\, people\, and pop-culture satire to tell a story about finding your purpose in a hilarious and very relatable way.
+URL:https://laoistourism.ie/event/avenue-q-hit-musical/
+CATEGORIES:Comedy,Member,Music
+ATTACH;FMTTYPE=image/jpeg:https://laoistourism.ie/wp-content/uploads/2026/03/762600620_2301083320723285_8553099529135357565_n.jpg
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;VALUE=DATE:20261002
+DTEND;VALUE=DATE:20261031
+DTSTAMP:20260929T102041Z
+CREATED:20260929T102041Z
+LAST-MODIFIED:20260929T102041Z
+UID:10016514-1790899200-1793404799@laoistourism.ie
+SUMMARY:Imposter Art Exhibition
+DESCRIPTION:We are thrilled to welcome multidisciplinary artist Taoiseach to Dunamaise Arts Centre for her debut solo exhibition. Imposter presents the imagined art collection of the Madame\, a character obsessively commissioning portraits of herself to construct an embellished legacy through historical portraiture and theatrical staging.
+URL:https://laoistourism.ie/event/imposter-art-exhibition/
+CATEGORIES:Member
+ATTACH;FMTTYPE=image/jpeg:https://laoistourism.ie/wp-content/uploads/2026/09/825279903_1718516603030633_2031779319569058861_n.jpg
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/Dublin:20261002T110000
+DTEND;TZID=Europe/Dublin:20261002T130000
+DTSTAMP:20260928T143939Z
+CREATED:20260923T093518Z
+LAST-MODIFIED:20260928T143939Z
+UID:10016480-1790938800-1790946000@laoistourism.ie
+SUMMARY:Shared Reading At Mountmellick Library
+DESCRIPTION:Shared Reading at the library is where people connect\, and share experiences using stories and poems. There is no pressure to talk or read aloud. Shared reading exposes us to great and varied literature and allows us to discover more about ourselves and others.
+URL:https://laoistourism.ie/event/shared-reading-at-mountmellick-library/
+CATEGORIES:Member
+ATTACH;FMTTYPE=image/jpeg:https://laoistourism.ie/wp-content/uploads/2026/09/813661079_1500776018531233_2505628994835193241_n.jpg
+ORGANIZER;CN="Laois Libraries":MAILTO:library@laoiscoco.ie
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/Dublin:20261002T190000
+DTEND;TZID=Europe/Dublin:20261002T213000
+DTSTAMP:20260713T085024Z
+CREATED:20260407T140012Z
+LAST-MODIFIED:20260713T085024Z
+UID:10015414-1790967600-1790976600@laoistourism.ie
+SUMMARY:Vittorio Angelone Extra Show Added
+DESCRIPTION:Vittorio Angelone is an Italian-Irish comedian from Belfast. He has accelerated through the comedy ranks at an anxiety inducing rate and was nominated for Best Newcomer at the Edinburgh Fringe in 2022.There’s a special joy in seeing a comedian who is totally in control of his material\, who keeps pushing the boundaries\, who is smarter and quicker than anyone else in the room\, who unapologetically believes that comedy is an art form and is doing his best to prove it.
+URL:https://laoistourism.ie/event/vittorio-angelone-extra-show-added/
+CATEGORIES:Comedy,Member
+ATTACH;FMTTYPE=image/jpeg:https://laoistourism.ie/wp-content/uploads/2026/04/742787064_1609748534052642_2344639694807240416_n.jpg
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/Dublin:20261002T190000
+DTEND;TZID=Europe/Dublin:20261002T220000
+DTSTAMP:20260923T090408Z
+CREATED:20260923T090408Z
+LAST-MODIFIED:20260923T090408Z
+UID:10016478-1790967600-1790978400@laoistourism.ie
+SUMMARY:80s & 90s Music Bingo Night
+DESCRIPTION:Get ready for a night of 80s & 90s hits\, big tunes & plenty of craic at The Railway Bar Portarlington. Players are given a bingo card where traditional bingo numbers have been replaced with song names. Your host DJ plays clips of music and you mark off spots on your bingo card.
+URL:https://laoistourism.ie/event/80s-90s-music-bingo-night/
+CATEGORIES:Community,Music
+ATTACH;FMTTYPE=image/jpeg:https://laoistourism.ie/wp-content/uploads/2026/09/813976050_2478996955929608_8607736769758187982_n.jpg
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/Dublin:20261002T213000
+DTEND;TZID=Europe/Dublin:20261003T000000
+DTSTAMP:20260330T145257Z
+CREATED:20250714T105039Z
+LAST-MODIFIED:20260330T145257Z
+UID:10013904-1790976600-1790985600@laoistourism.ie
+SUMMARY:Vittorio Angelone You Can’t Say Nothing Any More
+DESCRIPTION:Vittorio Angelone is an Italian-Irish comedian from Belfast. He has accelerated through the comedy ranks at an anxiety inducing rate. Vittorio is also known for his chart topping podcast\, Mike & Vittorio’s Guide To Parenting with fellow comedian Mike Rice as well as co-creator of the online series\, Fin Vs The Internet.
+URL:https://laoistourism.ie/event/vittorio-angelone-you-cant-say-nothing-any-more/
+CATEGORIES:Comedy,Member
+ATTACH;FMTTYPE=image/webp:https://laoistourism.ie/wp-content/uploads/2025/07/Vittorio-Angelone-Waterford-Cover-2026.webp
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/Dublin:20261002T213000
+DTEND;TZID=Europe/Dublin:20261003T000000
+DTSTAMP:20260922T081913Z
+CREATED:20260630T084301Z
+LAST-MODIFIED:20260922T081913Z
+UID:10015925-1790976600-1790985600@laoistourism.ie
+SUMMARY:The Roadhouse Doors At Kavanaghs Bar & Venue
+DESCRIPTION:Ireland’s No. 1 Tribute to The Doors and Jim Morrison… The Lizard King. Take a trip back to the 1960’s L.A. music scene with us. All the Doors greatest hits and deep cuts authentically played in an electrifying live set. Is Everybody In?
+URL:https://laoistourism.ie/event/the-roadhouse-doors-at-kavanaghs-bar-venue/
+CATEGORIES:Member,Music
+ATTACH;FMTTYPE=image/jpeg:https://laoistourism.ie/wp-content/uploads/2026/06/818980068_1597803982131609_4084958021689517573_n.jpg
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/Dublin:20261003T100000
+DTEND;TZID=Europe/Dublin:20261003T160000
+DTSTAMP:20260608T130416Z
+CREATED:20260608T130416Z
+LAST-MODIFIED:20260608T130416Z
+UID:10015791-1791021600-1791043200@laoistourism.ie
+SUMMARY:Happy Hiking Hill Skills Day
+DESCRIPTION:Mountaineering Ireland’s Happy Hiking Hills Skills Programme returns for its fifth year. These Hill Skills Days are a great opportunity for anyone new to the hills or those who want to learn the basics of navigation to join a qualified instructor for a full day’s training and to gain useful information and skills that will help keep you safe on the hills.
+URL:https://laoistourism.ie/event/happy-hiking-hill-skills-day/
+CATEGORIES:Community
+ATTACH;FMTTYPE=image/webp:https://laoistourism.ie/wp-content/uploads/2026/06/image-1.webp
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/Dublin:20261003T110000
+DTEND;TZID=Europe/Dublin:20261003T140000
+DTSTAMP:20260921T142905Z
+CREATED:20260921T142905Z
+LAST-MODIFIED:20260921T142905Z
+UID:10016460-1791025200-1791036000@laoistourism.ie
+SUMMARY:Kirtan Practice At Arunachala
+DESCRIPTION:Come and explore the joyful\, heart-opening practice of Kirtan — the devotional singing of sacred chants and mantras. No singing experience is needed. You can sing\, play harmonium\, move with your body\, or simply listen and receive the benefits of the practice. We’ll gather in a beautiful\, peaceful setting\, with a delicious lunch included — a lovely opportunity to slow down\, connect and share in the joy of singing together.
+URL:https://laoistourism.ie/event/kirtan-practice-at-arunachala/
+CATEGORIES:Member,Music
+ATTACH;FMTTYPE=image/jpeg:https://laoistourism.ie/wp-content/uploads/2026/09/796768107_17947829841299209_7348944580490374457_n-1.jpg
+ORGANIZER;CN="Arunachala Ayurvedic Rejuvenation Centre":MAILTO:info@arunachala.ie
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/Dublin:20261003T183000
+DTEND;TZID=Europe/Dublin:20261003T230000
+DTSTAMP:20260929T132336Z
+CREATED:20260818T120214Z
+LAST-MODIFIED:20260929T132336Z
+UID:10016257-1791052200-1791068400@laoistourism.ie
+SUMMARY:Bingo Loco At Midlands Park Hotel
+DESCRIPTION:Looking for the ultimate party experience in the UK and Europe? Welcome to Bingo Loco — the interactive live event where a huge night out meets the madness of bingo. We’ve taken a classic game and flipped it on its head\, creating a full-blown party experience packed with DJs\, dance-offs\, lip-sync battles\, confetti showers\, outrageous prizes and unforgettable moments. This isn’t bingo as you know it… this is a party with a bingo twist.
+URL:https://laoistourism.ie/event/bingo-loco-at-midlands-park-hotel/
+CATEGORIES:Member,Music
+ATTACH;FMTTYPE=image/jpeg:https://laoistourism.ie/wp-content/uploads/2026/08/772467629_3197073080481155_7473648881752501905_n.jpg
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/Dublin:20261003T200000
+DTEND;TZID=Europe/Dublin:20261003T213000
+DTSTAMP:20260928T150534Z
+CREATED:20260928T150534Z
+LAST-MODIFIED:20260928T150534Z
+UID:10016508-1791057600-1791063000@laoistourism.ie
+SUMMARY:Mick Creagh One Man Show
+DESCRIPTION:Storyteller Mick Creagh from Laois will perform his one-man show at The Anvil Inn Portarlington. He’s an old-style storyteller with one eye on the past and one on the present. He enjoys getting his audience involved\, so clear your throats and be ready.
+URL:https://laoistourism.ie/event/mick-creagh-one-man-show/
+CATEGORIES:Comedy,Community,Music
+ATTACH;FMTTYPE=image/jpeg:https://laoistourism.ie/wp-content/uploads/2026/09/825269471_18067480700768240_7345123805752180702_n.jpg
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/Dublin:20261003T220000
+DTEND;TZID=Europe/Dublin:20261004T000000
+DTSTAMP:20260929T081626Z
+CREATED:20260929T081626Z
+LAST-MODIFIED:20260929T081626Z
+UID:10016511-1791064800-1791072000@laoistourism.ie
+SUMMARY:Transmitter At Kavanaghs Bar & Venue
+DESCRIPTION:With almost three decades of experience on the live music circuit\, Transmitter are Ireland’s most in-demand professional act for the big occasion. With a powerful and energetic setlist\, they mix the biggest anthems of today with classic hits from the past 5 decades\, to create an incendiary live show. 
+URL:https://laoistourism.ie/event/transmitter-at-kavanaghs-bar-venue/
+CATEGORIES:Member,Music
+ATTACH;FMTTYPE=image/jpeg:https://laoistourism.ie/wp-content/uploads/2026/09/828572959_2132583407467605_1813833416468382568_n.jpg
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;VALUE=DATE:20261004
+DTEND;VALUE=DATE:20261005
+DTSTAMP:20260915T112714Z
+CREATED:20260915T112714Z
+LAST-MODIFIED:20260915T112714Z
+UID:10016420-1791072000-1791158399@laoistourism.ie
+SUMMARY:Laois Forestry Rally 2026
+DESCRIPTION:The excitement is building and preparations are well underway for the IDS Laser Laois Forestry Rally 2026\, in association with B Dowling Transport. Set against the forestry roads of County Laois\, the event will bring competitors onto stages that promise a real challenge and an exciting day of rallying. Take a look at what awaits… and get ready for the first-ever Laois Forestry Rally.
+URL:https://laoistourism.ie/event/laois-forestry-rally-2026/
+CATEGORIES:Community
+ATTACH;FMTTYPE=image/jpeg:https://laoistourism.ie/wp-content/uploads/2026/09/778957769_1339846588314971_1115005117748368279_n.jpg
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/Dublin:20261004T140000
+DTEND;TZID=Europe/Dublin:20261004T170000
+DTSTAMP:20260922T142730Z
+CREATED:20260922T142730Z
+LAST-MODIFIED:20260922T142730Z
+UID:10016471-1791122400-1791133200@laoistourism.ie
+SUMMARY:Abbeyleix Applefest 2026
+DESCRIPTION:The  Applefest Apple Festival  is now an annual event (going for more than 10 years now) that takes place in the Community Garden on the first Sunday in October each year. All the fruit provided and used has been sourced from local orchards and gardens. Along with apple pressing from many varieties will be stalls and craft displays.
+URL:https://laoistourism.ie/event/abbeyleix-applefest-2026/
+CATEGORIES:Community
+ATTACH;FMTTYPE=image/jpeg:https://laoistourism.ie/wp-content/uploads/2026/09/799283679_1131688909423776_8374593483517766254_n.jpg
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/Dublin:20261004T153000
+DTEND;TZID=Europe/Dublin:20261004T170000
+DTSTAMP:20260929T131008Z
+CREATED:20260929T131008Z
+LAST-MODIFIED:20260929T131008Z
+UID:10016518-1791127800-1791133200@laoistourism.ie
+SUMMARY:The Magnificent Interiors Of Emo Court
+DESCRIPTION:Discover the Emo Court estate during an exciting tour in Ukrainian. A special tour with an OPW guide awaits you\, who will take you through the historic rooms and tell you about the past of one of Ireland’s most famous estates.
+URL:https://laoistourism.ie/event/the-magnificent-interiors-of-emo-court/
+CATEGORIES:Member
+ATTACH;FMTTYPE=image/jpeg:https://laoistourism.ie/wp-content/uploads/2026/09/800239302_1093551226731284_5306744899414059337_n.jpg
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/Dublin:20261006T093000
+DTEND;TZID=Europe/Dublin:20261006T160000
+DTSTAMP:20260805T114249Z
+CREATED:20260804T101038Z
+LAST-MODIFIED:20260805T114249Z
+UID:10016159-1791279000-1791302400@laoistourism.ie
+SUMMARY:Assembly on Alcohol Harms
+DESCRIPTION:Join community advocates\, researchers and local voices to explore solutions to alcohol-related harms and help shape future action. The Assembly is designed to be highly participatory\, using facilitated mixed-sector groups to develop practical\, evidence-informed recommendations . The overall goal is to co-produce actionable solutions that contribute to safer communities.
+URL:https://laoistourism.ie/event/assembly-on-alcohol-harms/
+CATEGORIES:Member
+ATTACH;FMTTYPE=image/jpeg:https://laoistourism.ie/wp-content/uploads/2026/08/image-4.jpg
+ORGANIZER;CN="Killsehin Hotel":MAILTO:info&#039;thekilleshinhotel.com
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/Dublin:20261006T120000
+DTEND;TZID=Europe/Dublin:20261006T130000
+DTSTAMP:20260930T112501Z
+CREATED:20260930T112501Z
+LAST-MODIFIED:20260930T112501Z
+UID:10016527-1791288000-1791291600@laoistourism.ie
+SUMMARY:Sensory Play At Portarlington Library
+DESCRIPTION:The Sensory Play Session has been created to support children and young adults with disabilities\, additional needs\, and learning challenges\, along with their families. This jam -packed programme invites all to nurture their unique potential through a diverse range of art\, music and play therapy workshops.
+URL:https://laoistourism.ie/event/sensory-play-at-portarlington-library/
+ATTACH;FMTTYPE=image/jpeg:https://laoistourism.ie/wp-content/uploads/2026/09/818353526_1820013506098576_6598883248641843200_n-1.jpg
+ORGANIZER;CN="Laois Libraries":MAILTO:library@laoiscoco.ie
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/Dublin:20261006T170000
+DTEND;TZID=Europe/Dublin:20261006T190000
+DTSTAMP:20260812T114627Z
+CREATED:20260812T114627Z
+LAST-MODIFIED:20260812T114627Z
+UID:10016229-1791306000-1791313200@laoistourism.ie
+SUMMARY:The Shaking Bog Presents Riverine
+DESCRIPTION:Riverine is a film that was produced by the Shaking Bog Festival\, a festival based in the Glencree Valley that celebrates the intersection where arts and nature meet. Directed by multi award winning director Alan Gilsenan\, Riverine celebrates and connects the diverse communities of both people and nature that populate the Dargle River Basin.
+URL:https://laoistourism.ie/event/the-shaking-bog-presents-riverine/
+CATEGORIES:Member
+ATTACH;FMTTYPE=image/jpeg:https://laoistourism.ie/wp-content/uploads/2026/08/557891022_1411648574296175_6865920747121962523_n.jpg
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/Dublin:20261006T190000
+DTEND;TZID=Europe/Dublin:20261006T210000
+DTSTAMP:20260929T112557Z
+CREATED:20260929T112557Z
+LAST-MODIFIED:20260929T112557Z
+UID:10016517-1791313200-1791320400@laoistourism.ie
+SUMMARY:Introduction to Ayurveda
+DESCRIPTION:Discover the timeless wisdom of Ayurveda in this interactive three-evening course at Arunachala Ayurveda Rejuvenation Centre. Whether you’re completely new to Ayurveda or looking to deepen your understanding\, this course offers practical knowledge you can begin using in everyday life. Spaces are limited. Book early to reserve your place
+URL:https://laoistourism.ie/event/introduction-to-ayurveda-2/
+CATEGORIES:Member
+ATTACH;FMTTYPE=image/jpeg:https://laoistourism.ie/wp-content/uploads/2026/09/800437266_17948855115299209_6911332240872341086_n-1.jpg
+ORGANIZER;CN="Arunachala Ayurvedic Rejuvenation Centre":MAILTO:info@arunachala.ie
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/Dublin:20261006T200000
+DTEND;TZID=Europe/Dublin:20261006T220000
+DTSTAMP:20260817T084048Z
+CREATED:20260817T084048Z
+LAST-MODIFIED:20260817T084048Z
+UID:10016243-1791316800-1791324000@laoistourism.ie
+SUMMARY:Akira Film At Dunamaise Arts Centre
+DESCRIPTION:Katsuhiro Otomo’s cyberpunk classic Akira makes its welcome return to the big screen. In a dystopian neo-Tokyo\, Kaneda and Tetsuo are members of a vigilante biker gang. After being captured by the authorities\, Tetsuo’s powerful telekinetic abilities awaken. As he struggles with his newfound abilities\, he uncovers the dark secrets of Akira – the subject of previous catastrophic experiments by the government. As Tetsuo’s powers spiral out of control\, Kaneda must save his best friend to prevent a new cataclysm.
+URL:https://laoistourism.ie/event/akira-film-at-dunamaise-arts-centre/
+CATEGORIES:Member
+ATTACH;FMTTYPE=image/jpeg:https://laoistourism.ie/wp-content/uploads/2026/08/images-6.jpg
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/Dublin:20261007T150000
+DTEND;TZID=Europe/Dublin:20261007T170000
+DTSTAMP:20260921T130706Z
+CREATED:20260921T130706Z
+LAST-MODIFIED:20260921T130706Z
+UID:10016458-1791385200-1791392400@laoistourism.ie
+SUMMARY:Weaving And Nature Print Workshop
+DESCRIPTION:Join Ailbhe Joyce from Laois Forest School for a weaving and nature print workshop. In this hands-on workshop\, use leaves\, flowers and other botanical materials to create unique prints on paper and fabric. Discover how different plants\, natural tannins\, preparation and printing processes can produce surprising results.
+URL:https://laoistourism.ie/event/weaving-and-nature-print-workshop/
+CATEGORIES:Member
+ATTACH;FMTTYPE=image/jpeg:https://laoistourism.ie/wp-content/uploads/2026/09/796280474_2270893740412628_955452391299223309_n.jpg
+ORGANIZER;CN="Laois Libraries":MAILTO:library@laoiscoco.ie
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/Dublin:20261007T170000
+DTEND;TZID=Europe/Dublin:20261007T180000
+DTSTAMP:20260915T102851Z
+CREATED:20260915T102851Z
+LAST-MODIFIED:20260915T102851Z
+UID:10016418-1791392400-1791396000@laoistourism.ie
+SUMMARY:Sketchbook Club At Portlaoise Library
+DESCRIPTION:Planning on applying to a third level art program next year and need to work on your sketchbook for the portfolio submission. All levels of skill welcome materials provided but you’re welcome to bring your own. Visits from working artists and themed drawing challenges. Come along and meet fellow scribblers and doodlers swap tips and tricks.
+URL:https://laoistourism.ie/event/sketchbook-club-at-portlaoise-library/
+CATEGORIES:Member
+ATTACH;FMTTYPE=image/png:https://laoistourism.ie/wp-content/uploads/2026/09/Sketchbook-Club-Poster.png
+ORGANIZER;CN="Laois Libraries":MAILTO:library@laoiscoco.ie
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/Dublin:20261007T173000
+DTEND;TZID=Europe/Dublin:20261007T190000
+DTSTAMP:20260930T105632Z
+CREATED:20260930T105632Z
+LAST-MODIFIED:20260930T105632Z
+UID:10016526-1791394200-1791399600@laoistourism.ie
+SUMMARY:Irish Circle At Portlaoise Library
+DESCRIPTION:Brush up on your Irish this autumn with Portlaoise Library’s Irish Conversation Circle. The group welcomes learners and speakers with all levels of language competency. Tea and coffee are served too.
+URL:https://laoistourism.ie/event/irish-circle-at-portlaoise-library/
+CATEGORIES:Member
+ATTACH;FMTTYPE=image/jpeg:https://laoistourism.ie/wp-content/uploads/2026/09/827678704_1074531075392660_800768286885359753_n.jpg
+ORGANIZER;CN="Laois Libraries":MAILTO:library@laoiscoco.ie
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/Dublin:20261007T173000
+DTEND;TZID=Europe/Dublin:20261007T210000
+DTSTAMP:20260929T111933Z
+CREATED:20260929T111933Z
+LAST-MODIFIED:20260929T111933Z
+UID:10016516-1791394200-1791406800@laoistourism.ie
+SUMMARY:Autumn Yoga & Ayurveda Evening
+DESCRIPTION:Join us for a cosy midweek evening of gentle yoga\, a nourishing Ayurvedic meal & snacks\, your own Ayurvedic Autumn Toolkit\, relaxing head massage and enchanting Celtic storytelling — a beautiful opportunity to slow down\, nourish yourself and reconnect this autumn.
+URL:https://laoistourism.ie/event/autumn-yoga-ayurveda-evening/
+CATEGORIES:Member
+ATTACH;FMTTYPE=image/jpeg:https://laoistourism.ie/wp-content/uploads/2026/09/822276174_17948861940299209_1790656788396067308_n.jpg
+ORGANIZER;CN="Arunachala Ayurvedic Rejuvenation Centre":MAILTO:info@arunachala.ie
+END:VEVENT
+BEGIN:VEVENT
+DTSTART;TZID=Europe/Dublin:20261007T180000
+DTEND;TZID=Europe/Dublin:20261007T190000
+DTSTAMP:20260812T093847Z
+CREATED:20260707T082637Z
+LAST-MODIFIED:20260812T093847Z
+UID:10015969-1791396000-1791399600@laoistourism.ie
+SUMMARY:Regional Gathering How To Get The Most From Your Membership
+DESCRIPTION:Join us for our next Regional Gathering: How to Get the Most Out of Your Membership. This practical session is designed for both new and existing members\, offering a clear walkthrough of the supports\, events\, promotional opportunities and connections available through Laois Chamber Alliance.
+URL:https://laoistourism.ie/event/regional-gathering-how-to-get-the-most-from-your-membership/
+CATEGORIES:Member
+ATTACH;FMTTYPE=image/jpeg:https://laoistourism.ie/wp-content/uploads/2026/07/772116181_1590852419416085_6415345589444751117_n.jpg
+END:VEVENT
+END:VCALENDAR

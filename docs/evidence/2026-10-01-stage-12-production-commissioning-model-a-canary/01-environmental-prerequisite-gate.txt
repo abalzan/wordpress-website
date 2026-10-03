@@ -1,0 +1,108 @@
+# Stage 12 — Environmental prerequisite gate (Section 3)
+# Policy: no credential value is ever printed, dumped or persisted.
+# Only presence flags and safe metadata are recorded.
+#
+# UTC: 2026-10-01
+# Repository HEAD: 972ca4eb1c038e6859191a5895767674fb4dcc97 (branch i18n)
+
+[A. PROCESS ENVIRONMENT — names probed, values never read or printed]
+WP_USERNAME                      = ABSENT
+WP_APPLICATION_PASSWORD          = ABSENT
+CONEXAO_TRANSLATION_PROVIDER_KEY = ABSENT
+CONEXAO_SITE_URL                 = UNSET
+WP_BASE_URL                      = ABSENT
+WP_ENVIRONMENT                   = ABSENT
+CONEXAO_ENV                      = ABSENT
+CONEXAO_LIVE_PROVIDER_SMOKE      = ABSENT
+CONEXAO_TEST_LIVE_PROVIDER       = ABSENT
+
+NOTE: an unrelated OPENAI_API_KEY exists in this shell's environment. It is
+NOT the approved mechanism. Provider_Config::CREDENTIAL_ENV is exactly
+'CONEXAO_TRANSLATION_PROVIDER_KEY' (class-conexao-translation-automation-
+provider-config.php:54, read only via getenv() at line 204). Substituting a
+different variable, or aliasing one to the other, would be inferring a
+credential that was never supplied. It was NOT used, aliased or exported.
+Provider requests made: 0.
+
+[B. REPOSITORY .env — key NAMES only, values redacted]
+WORDPRESS_PORT, WORDPRESS_DB_NAME, WORDPRESS_DB_USER, WORDPRESS_DB_PASSWORD,
+MYSQL_ROOT_PASSWORD, WORDPRESS_DEBUG, WP_USERNAME, WP_APPLICATION_PASSWORD
+
+The .env file documents its own WP_USERNAME / WP_APPLICATION_PASSWORD as:
+  "Local development test account (created in the local Docker stack only).
+   These authenticate against http://localhost:8080 ... They are NOT
+   production credentials."
+=> classified as the LOCAL Docker target.
+=> deliberately NOT reused as production credentials. Same judgement Stage 7
+   and Stage 9 recorded. Section 1 forbids repurposing local credentials.
+
+[C. AUTHORIZATION — the three SEPARATE permissions, judged independently]
+1. production installation authorization ....... ABSENT (not granted in task)
+2. provider / live-call authorization ............ ABSENT (not granted in task)
+3. canary apply authorization .................... ABSENT (not granted in task)
+None implies another. None was inferred.
+
+[D. HUMAN REVIEWER]
+No human reviewer was identified through the repository's approved mechanism.
+=> Section 3 "Canary" prerequisite ABSENT.
+
+[E. PRODUCTION REACHABILITY — read-only, unauthenticated, no write]
+GET https://conexaobr.ie/  ->  http_code=200  time=0.128912s
+=> REACHABLE. Reachability is NOT authorization and NOT a baseline. Stage 9
+   recorded the same distinction. No authenticated call, upload, activation
+   or apply was made.
+
+[F. REAL CODE-PATH PROBE — executed inside the local Docker WordPress container]
+Class Conexao_Translation_Automation_Provider_Config is NOT loaded locally:
+conexao-translation-automation is NOT in the local active_plugins list
+(conexao-translation-rollout IS active; automation is not activated locally
+because Stage 11 leaves it uninstalled/uncommissioned). The live smoke test
+therefore reports the real runtime state:
+
+  $ php .../tests/live-provider-smoke.php
+     SKIPPED: not explicitly authorised (set CONEXAO_LIVE_PROVIDER_SMOKE=1)
+     No provider call was made. No WordPress content was read or written.
+
+  $ CONEXAO_LIVE_PROVIDER_SMOKE=1 CONEXAO_TEST_LIVE_PROVIDER=1 php .../live-provider-smoke.php
+     SKIPPED: no provider credential in CONEXAO_TRANSLATION_PROVIDER_KEY
+     No provider call was made. No WordPress content was read or written.
+
+=> credentials_available() is FALSE at runtime. The smoke test CANNOT return
+   RESULT: OK. Section 15's "RESULT: OK" is NOT claimed.
+
+[G. PROVIDER CONFIGURATION — safe metadata only (Section 14), from the artifact]
+provider            = openai
+model               = gpt-4o-mini
+endpoint            = https://api.openai.com/v1/chat/completions
+timeout             = 60
+max_attempts        = 4
+backoff_base_ms     = 500
+backoff_max_ms      = 4000
+max_request_bytes   = 240000
+max_run_seconds     = 600
+source_lang         = pt
+target_lang         = en
+=> "provider = OpenAI" and "model = gpt-4o-mini" are CONFIRMED IN THE ARTIFACT.
+   timeout / attempts / request limit / retry limit confirmed.
+   credential-present flag : FALSE. Quota: NOT TESTABLE.
+
+[H. SECRECY]
+The credential is read from the environment only (getenv at line 204), never
+from wp_options, the database, audit records, plans, snapshots, logs or
+reports. assert_no_secrets() runs on the write path of the result boundary.
+
+[I. GATE OUTCOME]
+production deployment/admin channel : MISSING
+installation authorization          : MISSING
+provider credential                 : MISSING
+provider quota                      : NOT TESTABLE (not reinterpreted as success)
+live smoke authorization            : MISSING
+canary authorization                : MISSING
+human reviewer identified           : MISSING
+=> BLOCKED. Section 3 forbids partial commissioning.
+
+Production writes          = 0
+Production installs        = 0
+Production activations     = 0
+Provider requests          = 0
+Production mutations       = 0

@@ -1,0 +1,472 @@
+{
+    "total": 58,
+    "active": 58,
+    "imports_run": 0,
+    "events_in_db": 55,
+    "sources": [
+        {
+            "id": "eventbrite",
+            "name": "Eventbrite — Laois",
+            "type": "eventbrite",
+            "status": "active",
+            "county": "Laois",
+            "events_imported": 0
+        },
+        {
+            "id": "eventbrite_carlow",
+            "name": "Eventbrite — Carlow",
+            "type": "eventbrite",
+            "status": "active",
+            "county": "Carlow",
+            "events_imported": 0
+        },
+        {
+            "id": "eventbrite_cavan",
+            "name": "Eventbrite — Cavan",
+            "type": "eventbrite",
+            "status": "active",
+            "county": "Cavan",
+            "events_imported": 0
+        },
+        {
+            "id": "eventbrite_clare",
+            "name": "Eventbrite — Clare",
+            "type": "eventbrite",
+            "status": "active",
+            "county": "Clare",
+            "events_imported": 0
+        },
+        {
+            "id": "eventbrite_cork",
+            "name": "Eventbrite — Cork",
+            "type": "eventbrite",
+            "status": "active",
+            "county": "Cork",
+            "events_imported": 0
+        },
+        {
+            "id": "eventbrite_donegal",
+            "name": "Eventbrite — Donegal",
+            "type": "eventbrite",
+            "status": "active",
+            "county": "Donegal",
+            "events_imported": 0
+        },
+        {
+            "id": "eventbrite_dublin",
+            "name": "Eventbrite — Dublin",
+            "type": "eventbrite",
+            "status": "active",
+            "county": "Dublin",
+            "events_imported": 0
+        },
+        {
+            "id": "eventbrite_galway",
+            "name": "Eventbrite — Galway",
+            "type": "eventbrite",
+            "status": "active",
+            "county": "Galway",
+            "events_imported": 0
+        },
+        {
+            "id": "eventbrite_kerry",
+            "name": "Eventbrite — Kerry",
+            "type": "eventbrite",
+            "status": "active",
+            "county": "Kerry",
+            "events_imported": 0
+        },
+        {
+            "id": "eventbrite_kildare",
+            "name": "Eventbrite — Kildare",
+            "type": "eventbrite",
+            "status": "active",
+            "county": "Kildare",
+            "events_imported": 0
+        },
+        {
+            "id": "eventbrite_kilkenny",
+            "name": "Eventbrite — Kilkenny",
+            "type": "eventbrite",
+            "status": "active",
+            "county": "Kilkenny",
+            "events_imported": 0
+        },
+        {
+            "id": "eventbrite_laois",
+            "name": "Eventbrite — Laois",
+            "type": "eventbrite",
+            "status": "active",
+            "county": "Laois",
+            "events_imported": 0
+        },
+        {
+            "id": "eventbrite_leitrim",
+            "name": "Eventbrite — Leitrim",
+            "type": "eventbrite",
+            "status": "active",
+            "county": "Leitrim",
+            "events_imported": 0
+        },
+        {
+            "id": "eventbrite_limerick",
+            "name": "Eventbrite — Limerick",
+            "type": "eventbrite",
+            "status": "active",
+            "county": "Limerick",
+            "events_imported": 0
+        },
+        {
+            "id": "eventbrite_longford",
+            "name": "Eventbrite — Longford",
+            "type": "eventbrite",
+            "status": "active",
+            "county": "Longford",
+            "events_imported": 0
+        },
+        {
+            "id": "eventbrite_louth",
+            "name": "Eventbrite — Louth",
+            "type": "eventbrite",
+            "status": "active",
+            "county": "Louth",
+            "events_imported": 0
+        },
+        {
+            "id": "eventbrite_mayo",
+            "name": "Eventbrite — Mayo",
+            "type": "eventbrite",
+            "status": "active",
+            "county": "Mayo",
+            "events_imported": 0
+        },
+        {
+            "id": "eventbrite_meath",
+            "name": "Eventbrite — Meath",
+            "type": "eventbrite",
+            "status": "active",
+            "county": "Meath",
+            "events_imported": 0
+        },
+        {
+            "id": "eventbrite_monaghan",
+            "name": "Eventbrite — Monaghan",
+            "type": "eventbrite",
+            "status": "active",
+            "county": "Monaghan",
+            "events_imported": 0
+        },
+        {
+            "id": "eventbrite_offaly",
+            "name": "Eventbrite — Offaly",
+            "type": "eventbrite",
+            "status": "active",
+            "county": "Offaly",
+            "events_imported": 0
+        },
+        {
+            "id": "eventbrite_roscommon",
+            "name": "Eventbrite — Roscommon",
+            "type": "eventbrite",
+            "status": "active",
+            "county": "Roscommon",
+            "events_imported": 0
+        },
+        {
+            "id": "eventbrite_sligo",
+            "name": "Eventbrite — Sligo",
+            "type": "eventbrite",
+            "status": "active",
+            "county": "Sligo",
+            "events_imported": 0
+        },
+        {
+            "id": "eventbrite_tipperary",
+            "name": "Eventbrite — Tipperary",
+            "type": "eventbrite",
+            "status": "active",
+            "county": "Tipperary",
+            "events_imported": 0
+        },
+        {
+            "id": "eventbrite_waterford",
+            "name": "Eventbrite — Waterford",
+            "type": "eventbrite",
+            "status": "active",
+            "county": "Waterford",
+            "events_imported": 0
+        },
+        {
+            "id": "eventbrite_westmeath",
+            "name": "Eventbrite — Westmeath",
+            "type": "eventbrite",
+            "status": "active",
+            "county": "Westmeath",
+            "events_imported": 0
+        },
+        {
+            "id": "eventbrite_wexford",
+            "name": "Eventbrite — Wexford",
+            "type": "eventbrite",
+            "status": "active",
+            "county": "Wexford",
+            "events_imported": 0
+        },
+        {
+            "id": "eventbrite_wicklow",
+            "name": "Eventbrite — Wicklow",
+            "type": "eventbrite",
+            "status": "active",
+            "county": "Wicklow",
+            "events_imported": 0
+        },
+        {
+            "id": "heritage_week",
+            "name": "National Heritage Week",
+            "type": "website",
+            "status": "active",
+            "county": "Laois",
+            "events_imported": 0
+        },
+        {
+            "id": "heritage_week_carlow",
+            "name": "National Heritage Week — Carlow",
+            "type": "heritage_week",
+            "status": "active",
+            "county": "Carlow",
+            "events_imported": 0
+        },
+        {
+            "id": "heritage_week_cavan",
+            "name": "National Heritage Week — Cavan",
+            "type": "heritage_week",
+            "status": "active",
+            "county": "Cavan",
+            "events_imported": 0
+        },
+        {
+            "id": "heritage_week_clare",
+            "name": "National Heritage Week — Clare",
+            "type": "heritage_week",
+            "status": "active",
+            "county": "Clare",
+            "events_imported": 0
+        },
+        {
+            "id": "heritage_week_cork",
+            "name": "National Heritage Week — Cork",
+            "type": "heritage_week",
+            "status": "active",
+            "county": "Cork",
+            "events_imported": 0
+        },
+        {
+            "id": "heritage_week_donegal",
+            "name": "National Heritage Week — Donegal",
+            "type": "heritage_week",
+            "status": "active",
+            "county": "Donegal",
+            "events_imported": 0
+        },
+        {
+            "id": "heritage_week_dublin",
+            "name": "National Heritage Week — Dublin",
+            "type": "heritage_week",
+            "status": "active",
+            "county": "Dublin",
+            "events_imported": 0
+        },
+        {
+            "id": "heritage_week_galway",
+            "name": "National Heritage Week — Galway",
+            "type": "heritage_week",
+            "status": "active",
+            "county": "Galway",
+            "events_imported": 0
+        },
+        {
+            "id": "heritage_week_kerry",
+            "name": "National Heritage Week — Kerry",
+            "type": "heritage_week",
+            "status": "active",
+            "county": "Kerry",
+            "events_imported": 0
+        },
+        {
+            "id": "heritage_week_kildare",
+            "name": "National Heritage Week — Kildare",
+            "type": "heritage_week",
+            "status": "active",
+            "county": "Kildare",
+            "events_imported": 0
+        },
+        {
+            "id": "heritage_week_kilkenny",
+            "name": "National Heritage Week — Kilkenny",
+            "type": "heritage_week",
+            "status": "active",
+            "county": "Kilkenny",
+            "events_imported": 0
+        },
+        {
+            "id": "heritage_week_laois",
+            "name": "National Heritage Week — Laois",
+            "type": "heritage_week",
+            "status": "active",
+            "county": "Laois",
+            "events_imported": 0
+        },
+        {
+            "id": "heritage_week_leitrim",
+            "name": "National Heritage Week — Leitrim",
+            "type": "heritage_week",
+            "status": "active",
+            "county": "Leitrim",
+            "events_imported": 0
+        },
+        {
+            "id": "heritage_week_limerick",
+            "name": "National Heritage Week — Limerick",
+            "type": "heritage_week",
+            "status": "active",
+            "county": "Limerick",
+            "events_imported": 0
+        },
+        {
+            "id": "heritage_week_longford",
+            "name": "National Heritage Week — Longford",
+            "type": "heritage_week",
+            "status": "active",
+            "county": "Longford",
+            "events_imported": 0
+        },
+        {
+            "id": "heritage_week_louth",
+            "name": "National Heritage Week — Louth",
+            "type": "heritage_week",
+            "status": "active",
+            "county": "Louth",
+            "events_imported": 0
+        },
+        {
+            "id": "heritage_week_mayo",
+            "name": "National Heritage Week — Mayo",
+            "type": "heritage_week",
+            "status": "active",
+            "county": "Mayo",
+            "events_imported": 0
+        },
+        {
+            "id": "heritage_week_meath",
+            "name": "National Heritage Week — Meath",
+            "type": "heritage_week",
+            "status": "active",
+            "county": "Meath",
+            "events_imported": 0
+        },
+        {
+            "id": "heritage_week_monaghan",
+            "name": "National Heritage Week — Monaghan",
+            "type": "heritage_week",
+            "status": "active",
+            "county": "Monaghan",
+            "events_imported": 0
+        },
+        {
+            "id": "heritage_week_offaly",
+            "name": "National Heritage Week — Offaly",
+            "type": "heritage_week",
+            "status": "active",
+            "county": "Offaly",
+            "events_imported": 0
+        },
+        {
+            "id": "heritage_week_roscommon",
+            "name": "National Heritage Week — Roscommon",
+            "type": "heritage_week",
+            "status": "active",
+            "county": "Roscommon",
+            "events_imported": 0
+        },
+        {
+            "id": "heritage_week_sligo",
+            "name": "National Heritage Week — Sligo",
+            "type": "heritage_week",
+            "status": "active",
+            "county": "Sligo",
+            "events_imported": 0
+        },
+        {
+            "id": "heritage_week_tipperary",
+            "name": "National Heritage Week — Tipperary",
+            "type": "heritage_week",
+            "status": "active",
+            "county": "Tipperary",
+            "events_imported": 0
+        },
+        {
+            "id": "heritage_week_waterford",
+            "name": "National Heritage Week — Waterford",
+            "type": "heritage_week",
+            "status": "active",
+            "county": "Waterford",
+            "events_imported": 0
+        },
+        {
+            "id": "heritage_week_westmeath",
+            "name": "National Heritage Week — Westmeath",
+            "type": "heritage_week",
+            "status": "active",
+            "county": "Westmeath",
+            "events_imported": 0
+        },
+        {
+            "id": "heritage_week_wexford",
+            "name": "National Heritage Week — Wexford",
+            "type": "heritage_week",
+            "status": "active",
+            "county": "Wexford",
+            "events_imported": 0
+        },
+        {
+            "id": "heritage_week_wicklow",
+            "name": "National Heritage Week — Wicklow",
+            "type": "heritage_week",
+            "status": "active",
+            "county": "Wicklow",
+            "events_imported": 0
+        },
+        {
+            "id": "ivvcc",
+            "name": "IVVCC — Irish Veteran & Vintage Car Club",
+            "type": "website",
+            "status": "active",
+            "county": "",
+            "events_imported": 0
+        },
+        {
+            "id": "laois_tourism",
+            "name": "Laois Tourism",
+            "type": "icalendar",
+            "status": "active",
+            "county": "Laois",
+            "events_imported": 0
+        },
+        {
+            "id": "mondello_park",
+            "name": "Mondello Park — Ireland's National Motorsports Campus",
+            "type": "website",
+            "status": "active",
+            "county": "Kildare",
+            "events_imported": 0
+        },
+        {
+            "id": "motorsport_ireland",
+            "name": "Motorsport Ireland",
+            "type": "website",
+            "status": "active",
+            "county": "",
+            "events_imported": 0
+        }
+    ]
+}

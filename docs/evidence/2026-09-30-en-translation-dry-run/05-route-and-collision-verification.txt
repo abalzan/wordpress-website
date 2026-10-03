@@ -1,0 +1,32 @@
+EN Translation Rollout — Phase 2: route + slug-collision verification (read-only)
+target: https://conexaobr.ie (production)   verbs: GET only   production writes: 0
+generated (UTC): 2026-09-30T07:29:43Z
+
+== A. the en-page::newsletter collision, verified against live production ==
+The authored EN slug for the PT page 'newsletter' (id 13) is 'newsletter' - the same
+post_name the PT record already holds. Only en-blog-page and en-jobs-page arm
+conexao_en_translation_with_shared_page_slug(); en-page does NOT. So wp_unique_post_slug()
+would uniquify the new EN record to 'newsletter-2'.
+
+  pages holding the slug (any status, any language):
+    id=13 slug=newsletter status=publish link=https://conexaobr.ie/newsletter/
+  pages holding 'newsletter-2' : NONE (so the stage would CREATE it, not repair it)
+
+== B. what /en/newsletter/ serves today (before any apply) ==
+  /newsletter/         HTTP 200  lang=pt-BR  canonical=https://conexaobr.ie/newsletter/  PT-body-served=True
+  /en/newsletter/      HTTP 200  lang=en-US  canonical=https://conexaobr.ie/newsletter/  PT-body-served=True
+  /en/newsletter-2/    HTTP 404  lang=en-US  canonical=n/a  PT-body-served=False
+
+  READ: /en/newsletter/ answers 200 with the PORTUGUESE body and a canonical pointing
+  at the PT page. That is the B2 shape (PT content under the EN shell, canonical -> PT).
+  But 'newsletter' is NOT in conexao_b2_page_allowlist() - the theme's own comment
+  states the remaining narrative/utility pages (category hubs, newsletter, revista,
+  anuncie, search) KEEP B1. So today /en/newsletter/ is serving a B2-shaped response
+  for a page the repository classifies as B1, precisely because the EN record that
+  en-page would create does not exist. This is the practical cost of the collision.
+
+== C. the two permitted shared-slug rows, for contrast ==
+  /en/blog/          HTTP 200  canonical=https://conexaobr.ie/blog/  PT-body-served=False
+  /en/empregos/      HTTP 200  canonical=https://conexaobr.ie/empregos/  PT-body-served=False
+  These two stages hold the permit, so their EN record is created ON the shared slug
+  and /en/<slug>/ is served by the real EN record. No -2 suffix.

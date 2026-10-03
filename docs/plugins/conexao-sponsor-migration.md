@@ -1,5 +1,20 @@
 # conexao-sponsor-migration
 
+<!-- BEGIN GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
+| | |
+|---|---|
+| **Status** | active |
+| **Class** | tooling |
+| **Production** | no |
+| **Build** | yes |
+| **Compose mount** | yes |
+| **Dependencies** | none |
+| **Version** | 1.1.0 (authoritative source: `wp-content/plugins/conexao-sponsor-migration/conexao-sponsor-migration.php` header) |
+| **Registry** | [`plugins.json`](../../plugins.json) |
+
+> **Local-only tooling.** Not a production steady-state dependency.
+<!-- END GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
+
 Apoiadores (sponsors) export/import for moving the supporter dataset between
 installations (e.g. local → production). JSON payload with **embedded image
 bytes** — the destination site recreates every Media Library attachment
@@ -50,6 +65,16 @@ legacy two-image export file also works — the importer resolves
 - Image dedupe: MD5 content hash stored as attachment meta
   (`_conexao_import_hash`). Re-imports reuse existing attachments instead of
   creating duplicates.
+
+## Multilingual (Stage 2)
+
+`includes/class-language-guard.php` assigns the site's default language (`pt_BR`)
+to imported sponsor records and never reassigns an existing language.
+`find_existing_sponsor()` prefers the record in the import language and
+`import_sponsor()` skips a record that belongs to another language, so a linked
+English translation can never be overwritten by a Portuguese-source import or
+become a competing identity target for the same export UUID. All helpers are
+no-ops when Polylang is inactive.
 
 ## Import behavior
 

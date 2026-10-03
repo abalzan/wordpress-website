@@ -12,12 +12,8 @@
  *   docker compose exec wordpress php /var/www/html/scripts/seed-recurrence-test-events.php cleanup   # remove
  */
 
-$wp_load = dirname( __DIR__ ) . '/wp-load.php';
-if ( file_exists( $wp_load ) ) {
-	require_once $wp_load;
-} else {
-	require_once '/var/www/html/wp-load.php';
-}
+require_once __DIR__ . '/lib/bootstrap.php';
+conexao_script_load_wordpress();
 
 const REC_TEST_PREFIX = '[REC-TEST] ';
 

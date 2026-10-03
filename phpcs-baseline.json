@@ -1,0 +1,530 @@
+{
+  "_meta": {
+    "generated": "2026-09-25",
+    "policy": "Per-sniff legacy ERROR/WARNING counts for phpcs.xml.dist. MUST NOT grow: any increased or new sniff count fails scripts/lint.sh. Regenerate via \"php scripts/phpcs-baseline.php update <report>\" only after deliberately paying down debt (see docs/reports/site/)."
+  },
+  "totals": {
+    "errors": 3290,
+    "warnings": 2672,
+    "fixable": 4901,
+    "files": 156
+  },
+  "sniffs": {
+    "Generic.CodeAnalysis.AssignmentInCondition.Found": {
+      "errors": 0,
+      "warnings": 1
+    },
+    "Generic.CodeAnalysis.UnusedFunctionParameter.Found": {
+      "errors": 0,
+      "warnings": 1
+    },
+    "Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed": {
+      "errors": 0,
+      "warnings": 7
+    },
+    "Generic.Commenting.DocComment.LongNotCapital": {
+      "errors": 5,
+      "warnings": 0
+    },
+    "Generic.Commenting.DocComment.MissingShort": {
+      "errors": 55,
+      "warnings": 0
+    },
+    "Generic.Commenting.DocComment.ShortNotCapital": {
+      "errors": 2,
+      "warnings": 0
+    },
+    "Generic.ControlStructures.InlineControlStructure.NotAllowed": {
+      "errors": 6,
+      "warnings": 0
+    },
+    "Generic.Files.OneObjectStructurePerFile.MultipleFound": {
+      "errors": 1,
+      "warnings": 0
+    },
+    "Generic.Formatting.DisallowMultipleStatements.SameLine": {
+      "errors": 59,
+      "warnings": 0
+    },
+    "Generic.Formatting.MultipleStatementAlignment.IncorrectWarning": {
+      "errors": 0,
+      "warnings": 9
+    },
+    "Generic.Formatting.MultipleStatementAlignment.NotSameWarning": {
+      "errors": 0,
+      "warnings": 473
+    },
+    "Generic.Functions.FunctionCallArgumentSpacing.TooMuchSpaceAfterComma": {
+      "errors": 12,
+      "warnings": 0
+    },
+    "Generic.PHP.DeprecatedFunctions.Deprecated": {
+      "errors": 1,
+      "warnings": 0
+    },
+    "Generic.WhiteSpace.ArbitraryParenthesesSpacing.SpaceAfterOpen": {
+      "errors": 1,
+      "warnings": 0
+    },
+    "Generic.WhiteSpace.ArbitraryParenthesesSpacing.SpaceBeforeClose": {
+      "errors": 1,
+      "warnings": 0
+    },
+    "Generic.WhiteSpace.DisallowSpaceIndent.SpacesUsed": {
+      "errors": 432,
+      "warnings": 0
+    },
+    "Generic.WhiteSpace.ScopeIndent.Incorrect": {
+      "errors": 65,
+      "warnings": 0
+    },
+    "Generic.WhiteSpace.ScopeIndent.IncorrectExact": {
+      "errors": 19,
+      "warnings": 0
+    },
+    "Modernize.FunctionCalls.Dirname.FileConstant": {
+      "errors": 2,
+      "warnings": 0
+    },
+    "NormalizedArrays.Arrays.ArrayBraceSpacing.SpaceAfterArrayOpenerSingleLine": {
+      "errors": 20,
+      "warnings": 0
+    },
+    "NormalizedArrays.Arrays.ArrayBraceSpacing.SpaceBeforeArrayCloserSingleLine": {
+      "errors": 20,
+      "warnings": 0
+    },
+    "PEAR.Files.IncludingFile.BracketsNotRequired": {
+      "errors": 2,
+      "warnings": 0
+    },
+    "PEAR.Functions.FunctionCallSignature.CloseBracketLine": {
+      "errors": 109,
+      "warnings": 0
+    },
+    "PEAR.Functions.FunctionCallSignature.ContentAfterOpenBracket": {
+      "errors": 109,
+      "warnings": 0
+    },
+    "PEAR.Functions.FunctionCallSignature.Indent": {
+      "errors": 6,
+      "warnings": 0
+    },
+    "PEAR.Functions.FunctionCallSignature.MultipleArguments": {
+      "errors": 84,
+      "warnings": 0
+    },
+    "PEAR.Functions.FunctionCallSignature.SpaceAfterOpenBracket": {
+      "errors": 54,
+      "warnings": 0
+    },
+    "PEAR.Functions.FunctionCallSignature.SpaceBeforeCloseBracket": {
+      "errors": 54,
+      "warnings": 0
+    },
+    "PSR2.ControlStructures.SwitchDeclaration.BreakIndent": {
+      "errors": 1,
+      "warnings": 0
+    },
+    "PSR2.Files.EndFileNewline.NoneFound": {
+      "errors": 36,
+      "warnings": 0
+    },
+    "PSR2.Files.EndFileNewline.TooMany": {
+      "errors": 9,
+      "warnings": 0
+    },
+    "Squiz.Commenting.BlockComment.NoEmptyLineBefore": {
+      "errors": 1,
+      "warnings": 0
+    },
+    "Squiz.Commenting.BlockComment.NoNewLine": {
+      "errors": 1,
+      "warnings": 0
+    },
+    "Squiz.Commenting.ClassComment.Missing": {
+      "errors": 66,
+      "warnings": 0
+    },
+    "Squiz.Commenting.DocCommentAlignment.SpaceBeforeStar": {
+      "errors": 36,
+      "warnings": 0
+    },
+    "Squiz.Commenting.FileComment.Missing": {
+      "errors": 9,
+      "warnings": 0
+    },
+    "Squiz.Commenting.FileComment.MissingPackageTag": {
+      "errors": 6,
+      "warnings": 0
+    },
+    "Squiz.Commenting.FileComment.SpacingAfterComment": {
+      "errors": 6,
+      "warnings": 0
+    },
+    "Squiz.Commenting.FileComment.WrongStyle": {
+      "errors": 17,
+      "warnings": 0
+    },
+    "Squiz.Commenting.FunctionComment.IncorrectTypeHint": {
+      "errors": 1,
+      "warnings": 0
+    },
+    "Squiz.Commenting.FunctionComment.Missing": {
+      "errors": 140,
+      "warnings": 0
+    },
+    "Squiz.Commenting.FunctionComment.MissingParamComment": {
+      "errors": 18,
+      "warnings": 0
+    },
+    "Squiz.Commenting.FunctionComment.MissingParamTag": {
+      "errors": 41,
+      "warnings": 0
+    },
+    "Squiz.Commenting.FunctionComment.ParamCommentFullStop": {
+      "errors": 5,
+      "warnings": 0
+    },
+    "Squiz.Commenting.FunctionComment.ParamNameNoMatch": {
+      "errors": 2,
+      "warnings": 0
+    },
+    "Squiz.Commenting.FunctionComment.SpacingAfter": {
+      "errors": 1,
+      "warnings": 0
+    },
+    "Squiz.Commenting.FunctionComment.SpacingAfterParamType": {
+      "errors": 21,
+      "warnings": 0
+    },
+    "Squiz.Commenting.FunctionComment.WrongStyle": {
+      "errors": 1,
+      "warnings": 0
+    },
+    "Squiz.Commenting.FunctionCommentThrowTag.Missing": {
+      "errors": 2,
+      "warnings": 0
+    },
+    "Squiz.Commenting.InlineComment.InvalidEndChar": {
+      "errors": 30,
+      "warnings": 0
+    },
+    "Squiz.Commenting.InlineComment.SpacingBefore": {
+      "errors": 103,
+      "warnings": 0
+    },
+    "Squiz.Commenting.VariableComment.Missing": {
+      "errors": 5,
+      "warnings": 0
+    },
+    "Squiz.ControlStructures.ControlSignature.NewlineAfterOpenBrace": {
+      "errors": 98,
+      "warnings": 0
+    },
+    "Squiz.Functions.FunctionDeclarationArgumentSpacing.SpacingAfterOpen": {
+      "errors": 3,
+      "warnings": 0
+    },
+    "Squiz.Functions.FunctionDeclarationArgumentSpacing.SpacingBeforeClose": {
+      "errors": 3,
+      "warnings": 0
+    },
+    "Squiz.Functions.MultiLineFunctionDeclaration.ContentAfterBrace": {
+      "errors": 14,
+      "warnings": 0
+    },
+    "Squiz.Functions.MultiLineFunctionDeclaration.SpaceAfterFunction": {
+      "errors": 25,
+      "warnings": 0
+    },
+    "Squiz.PHP.CommentedOutCode.Found": {
+      "errors": 0,
+      "warnings": 4
+    },
+    "Squiz.PHP.DisallowMultipleAssignments.Found": {
+      "errors": 2,
+      "warnings": 0
+    },
+    "Squiz.PHP.DisallowMultipleAssignments.FoundInControlStructure": {
+      "errors": 1,
+      "warnings": 0
+    },
+    "Squiz.PHP.DisallowSizeFunctionsInLoops.Found": {
+      "errors": 3,
+      "warnings": 0
+    },
+    "Squiz.PHP.EmbeddedPhp.ContentAfterOpen": {
+      "errors": 43,
+      "warnings": 0
+    },
+    "Squiz.PHP.EmbeddedPhp.ContentBeforeEnd": {
+      "errors": 41,
+      "warnings": 0
+    },
+    "Squiz.PHP.EmbeddedPhp.ContentBeforeOpen": {
+      "errors": 1,
+      "warnings": 0
+    },
+    "Squiz.PHP.EmbeddedPhp.MultipleStatements": {
+      "errors": 11,
+      "warnings": 0
+    },
+    "Squiz.Strings.DoubleQuoteUsage.NotRequired": {
+      "errors": 12,
+      "warnings": 0
+    },
+    "Squiz.WhiteSpace.SuperfluousWhitespace.EmptyLines": {
+      "errors": 6,
+      "warnings": 0
+    },
+    "Squiz.WhiteSpace.SuperfluousWhitespace.EndLine": {
+      "errors": 12,
+      "warnings": 0
+    },
+    "Universal.Arrays.DisallowShortArraySyntax.Found": {
+      "errors": 44,
+      "warnings": 0
+    },
+    "Universal.Arrays.DuplicateArrayKey.Found": {
+      "errors": 1,
+      "warnings": 0
+    },
+    "Universal.ControlStructures.DisallowLonelyIf.Found": {
+      "errors": 1,
+      "warnings": 0
+    },
+    "Universal.Files.SeparateFunctionsFromOO.Mixed": {
+      "errors": 5,
+      "warnings": 0
+    },
+    "Universal.NamingConventions.NoReservedKeywordParameterNames.classFound": {
+      "errors": 0,
+      "warnings": 1
+    },
+    "Universal.NamingConventions.NoReservedKeywordParameterNames.defaultFound": {
+      "errors": 0,
+      "warnings": 2
+    },
+    "Universal.NamingConventions.NoReservedKeywordParameterNames.emptyFound": {
+      "errors": 0,
+      "warnings": 2
+    },
+    "Universal.NamingConventions.NoReservedKeywordParameterNames.objectFound": {
+      "errors": 0,
+      "warnings": 1
+    },
+    "Universal.NamingConventions.NoReservedKeywordParameterNames.publicFound": {
+      "errors": 0,
+      "warnings": 1
+    },
+    "Universal.NamingConventions.NoReservedKeywordParameterNames.resourceFound": {
+      "errors": 0,
+      "warnings": 2
+    },
+    "Universal.Operators.DisallowShortTernary.Found": {
+      "errors": 2,
+      "warnings": 0
+    },
+    "Universal.Operators.DisallowStandalonePostIncrementDecrement.PostDecrementFound": {
+      "errors": 0,
+      "warnings": 2
+    },
+    "Universal.Operators.DisallowStandalonePostIncrementDecrement.PostIncrementFound": {
+      "errors": 0,
+      "warnings": 113
+    },
+    "Universal.WhiteSpace.CommaSpacing.TooMuchSpaceAfter": {
+      "errors": 34,
+      "warnings": 0
+    },
+    "Universal.WhiteSpace.PrecisionAlignment.Found": {
+      "errors": 0,
+      "warnings": 93
+    },
+    "WordPress.Arrays.ArrayDeclarationSpacing.ArrayItemNoNewLine": {
+      "errors": 175,
+      "warnings": 0
+    },
+    "WordPress.Arrays.ArrayDeclarationSpacing.AssociativeArrayFound": {
+      "errors": 578,
+      "warnings": 0
+    },
+    "WordPress.Arrays.ArrayIndentation.CloseBraceNotAligned": {
+      "errors": 2,
+      "warnings": 0
+    },
+    "WordPress.Arrays.ArrayIndentation.ItemNotAligned": {
+      "errors": 51,
+      "warnings": 0
+    },
+    "WordPress.Arrays.ArrayIndentation.MultiLineArrayItemNotAligned": {
+      "errors": 41,
+      "warnings": 0
+    },
+    "WordPress.Arrays.ArrayKeySpacingRestrictions.NoSpacesAroundArrayKeys": {
+      "errors": 1,
+      "warnings": 0
+    },
+    "WordPress.Arrays.MultipleStatementAlignment.DoubleArrowNotAligned": {
+      "errors": 0,
+      "warnings": 1699
+    },
+    "WordPress.DB.PreparedSQL.NotPrepared": {
+      "errors": 1,
+      "warnings": 0
+    },
+    "WordPress.DateTime.RestrictedFunctions.date_date": {
+      "errors": 32,
+      "warnings": 0
+    },
+    "WordPress.Files.FileName.InvalidClassFileName": {
+      "errors": 74,
+      "warnings": 0
+    },
+    "WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase": {
+      "errors": 15,
+      "warnings": 0
+    },
+    "WordPress.PHP.DiscouragedPHPFunctions.urlencode_urlencode": {
+      "errors": 0,
+      "warnings": 1
+    },
+    "WordPress.PHP.NoSilencedErrors.Discouraged": {
+      "errors": 0,
+      "warnings": 23
+    },
+    "WordPress.PHP.YodaConditions.NotYoda": {
+      "errors": 23,
+      "warnings": 0
+    },
+    "WordPress.Security.EscapeOutput.ExceptionNotEscaped": {
+      "errors": 5,
+      "warnings": 0
+    },
+    "WordPress.Security.EscapeOutput.OutputNotEscaped": {
+      "errors": 31,
+      "warnings": 0
+    },
+    "WordPress.Security.NonceVerification.Missing": {
+      "errors": 23,
+      "warnings": 0
+    },
+    "WordPress.Security.NonceVerification.Recommended": {
+      "errors": 0,
+      "warnings": 151
+    },
+    "WordPress.Security.SafeRedirect.wp_redirect_wp_redirect": {
+      "errors": 0,
+      "warnings": 1
+    },
+    "WordPress.WP.AlternativeFunctions.curl_curl_close": {
+      "errors": 0,
+      "warnings": 1
+    },
+    "WordPress.WP.AlternativeFunctions.curl_curl_errno": {
+      "errors": 0,
+      "warnings": 1
+    },
+    "WordPress.WP.AlternativeFunctions.curl_curl_error": {
+      "errors": 0,
+      "warnings": 1
+    },
+    "WordPress.WP.AlternativeFunctions.curl_curl_exec": {
+      "errors": 0,
+      "warnings": 1
+    },
+    "WordPress.WP.AlternativeFunctions.curl_curl_init": {
+      "errors": 0,
+      "warnings": 1
+    },
+    "WordPress.WP.AlternativeFunctions.curl_curl_setopt": {
+      "errors": 0,
+      "warnings": 4
+    },
+    "WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents": {
+      "errors": 0,
+      "warnings": 11
+    },
+    "WordPress.WP.AlternativeFunctions.file_system_operations_fclose": {
+      "errors": 0,
+      "warnings": 13
+    },
+    "WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents": {
+      "errors": 0,
+      "warnings": 2
+    },
+    "WordPress.WP.AlternativeFunctions.file_system_operations_fopen": {
+      "errors": 0,
+      "warnings": 5
+    },
+    "WordPress.WP.AlternativeFunctions.file_system_operations_fread": {
+      "errors": 0,
+      "warnings": 3
+    },
+    "WordPress.WP.AlternativeFunctions.file_system_operations_fwrite": {
+      "errors": 0,
+      "warnings": 11
+    },
+    "WordPress.WP.AlternativeFunctions.file_system_operations_readfile": {
+      "errors": 0,
+      "warnings": 3
+    },
+    "WordPress.WP.AlternativeFunctions.file_system_operations_rmdir": {
+      "errors": 0,
+      "warnings": 3
+    },
+    "WordPress.WP.AlternativeFunctions.parse_url_parse_url": {
+      "errors": 0,
+      "warnings": 3
+    },
+    "WordPress.WP.AlternativeFunctions.strip_tags_strip_tags": {
+      "errors": 0,
+      "warnings": 2
+    },
+    "WordPress.WP.AlternativeFunctions.unlink_unlink": {
+      "errors": 0,
+      "warnings": 16
+    },
+    "WordPress.WP.EnqueuedResourceParameters.MissingVersion": {
+      "errors": 0,
+      "warnings": 1
+    },
+    "WordPress.WP.GlobalVariablesOverride.Prohibited": {
+      "errors": 33,
+      "warnings": 0
+    },
+    "WordPress.WP.I18n.MissingTranslatorsComment": {
+      "errors": 101,
+      "warnings": 0
+    },
+    "WordPress.WP.I18n.UnorderedPlaceholdersText": {
+      "errors": 3,
+      "warnings": 0
+    },
+    "WordPress.WP.PostsPerPage.posts_per_page_posts_per_page": {
+      "errors": 0,
+      "warnings": 3
+    },
+    "WordPress.WhiteSpace.ControlStructureSpacing.NoSpaceAfterOpenParenthesis": {
+      "errors": 24,
+      "warnings": 0
+    },
+    "WordPress.WhiteSpace.ControlStructureSpacing.NoSpaceBeforeCloseParenthesis": {
+      "errors": 24,
+      "warnings": 0
+    },
+    "WordPress.WhiteSpace.OperatorSpacing.NoSpaceAfter": {
+      "errors": 6,
+      "warnings": 0
+    },
+    "WordPress.WhiteSpace.OperatorSpacing.NoSpaceBefore": {
+      "errors": 5,
+      "warnings": 0
+    },
+    "WordPress.WhiteSpace.OperatorSpacing.SpacingBefore": {
+      "errors": 3,
+      "warnings": 0
+    }
+  }
+}

@@ -1,0 +1,37 @@
+# Stage I — static verification (measured 2026-09-26)
+
+## PHP syntax — php -l over every PHP file known to Git
+   files checked: 432
+   parse failures: 0
+
+## Python syntax — python3 -m compileall scripts tests
+   result: OK (no syntax errors)
+
+## ShellCheck — koalaman/shellcheck:stable 0.11.0 in Docker (host shellcheck absent)
+   files: scripts/*.sh (8 current operational shell scripts)
+   result: 0 findings at --severity=warning and at full severity
+   historical/debug shell scripts are deliberately excluded from the
+   operational gate (scripts/historical/stage7-validation-clone-setup.sh).
+
+## PHPStan level 5 (phpstan-wordpress)
+   configured scope (wp-content theme + plugins): PASS — No errors
+   scripts/lib/bootstrap.php analysed explicitly: PASS — No errors
+   (found and fixed 1 real defect: conexao_script_site_url() could fall
+    through without returning)
+
+## PHPCS (WordPress-Extra + WordPress-Docs + PHPCompatibilityWP)
+   host: NOT RUNNABLE — the host PHP lacks the xmlwriter and SimpleXML
+   extensions that PHP_CodeSniffer requires (tokenizer present).
+   compensating check in the WordPress container (extensions present):
+   files scanned: 2661 (tracked theme + tracked plugins)
+   errors: 0   warnings: 0
+   result: PASS — no new violations, and no baseline suppression added.
+
+## ./scripts/lint.sh
+   NOT GREEN on this host. Two independent environment causes:
+     1. PHPCS step: the PHPCS report is empty because PHPCS refuses to run
+        without xmlwriter/SimpleXML (same limitation as above).
+     2. PHPStan step: 'composer: command not found' (composer absent; the
+        vendor/ binaries themselves do run — see the PHPStan results above).
+   Every component was therefore run individually with a compensating
+   check; none is reported as green through lint.sh itself.

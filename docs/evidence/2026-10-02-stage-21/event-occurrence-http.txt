@@ -1,0 +1,55 @@
+== HTTP acceptance: event occurrence-date presentation ==
+   base: http://localhost:8080
+  PASS  /eventos/ is 200
+  PASS  /eventos/ is served as pt-BR
+  PASS  /eventos/ is not the EN document
+   site-local today: 2026-10-02
+   3 Laois card(s): series=1 multiday=1 allday=1
+  PASS  exactly one weekly series is listed in the Laois archive
+  PASS  exactly one multi-day event is listed in the Laois archive
+  PASS  exactly one all-day event is listed in the Laois archive
+  PASS  the series card advertises a machine-readable date
+  PASS  the series card advertises ONE occurrence date, not a date range
+  PASS  the series badge is a FUTURE occurrence, not the past series start
+  PASS  the series badge is the NEXT occurrence, not a later one
+  PASS  the series card carries its series-end chip
+  PASS  the series-end chip is the LAST occurrence of the series
+  PASS  exactly 2 further weekly occurrences follow the badge
+  PASS  the series occurrences are exactly 7 days apart
+  PASS  the series card carries the weekly recurrence label
+  PASS  the recurrence label names the weekday of the advertised occurrence
+  PASS  the series card is not labelled today/tomorrow on a non-occurrence day
+  PASS  series card exposes a title to derive its permalink from
+  PASS  series detail page is 200
+  PASS  series detail page is self-canonical
+  PASS  series detail page renders its own content
+  PASS  series detail page is not a 410 body
+  PASS  series detail page has no redirect loop
+  PASS  the multi-day card advertises its full date range
+  PASS  the multi-day event stays visible throughout its span
+  PASS  the multi-day event keeps its clock time
+  PASS  the multi-day event never became a weekly series
+  PASS  multi-day card exposes a title to derive its permalink from
+  PASS  multi-day detail page is 200
+  PASS  multi-day detail page is self-canonical
+  PASS  multi-day detail page renders its own content
+  PASS  multi-day detail page is not a 410 body
+  PASS  multi-day detail page has no redirect loop
+  PASS  the all-day card advertises its date range
+  PASS  the all-day event is presented as all-day (no clock time)
+  PASS  the all-day event never became a weekly series
+  PASS  all-day card exposes a title to derive its permalink from
+  PASS  all-day detail page is 200
+  PASS  all-day detail page is self-canonical
+  PASS  all-day detail page renders its own content
+  PASS  all-day detail page is not a 410 body
+  PASS  all-day detail page has no redirect loop
+  PASS  /eventos/?county=laois is 200
+  PASS  unknown county filter still returns 200
+  PASS  unknown county filter yields no event cards (no filter regression)
+  PASS  /eventos/?county=dublin is 200
+  PASS  unknown URL is still 404
+  PASS  no redirect loop for /eventos/
+  PASS  no redirect loop for /en/eventos/
+
+acceptance/event-occurrence-http: 49 passed, 0 failed

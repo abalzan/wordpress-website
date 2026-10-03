@@ -1,0 +1,35 @@
+# 01 — Code identity: HEAD runtime PHP == the verified baseline (b47d098)
+
+Claim under test: no routing code changed between the state where the routes
+verified 200 (recovered baseline cd800be / closeout e7303ba) and the current HEAD.
+
+## Theme + plugins vs the known-good baseline b47d098
+
+\$ git diff --stat b47d098 HEAD -- wp-content/themes/ wp-content/plugins/
+ .../languages/conexao-event-importer.pot           | 1199 +++++++++++---------
+ 1 file changed, 649 insertions(+), 550 deletions(-)
+
+[=> the ONLY wp-content difference vs b47d098 is the event-importer POT catalogue:
+   the legitimate repair the recovery deliberately preserved (commit message cd800be;
+   evidence 2026-09-27-recovery-closeout/09-event-importer-pot-integrity.txt).
+   No theme or plugin PHP file differs.]
+
+## The three closeout proofs of theme identity (recorded 2026-09-27, cited)
+51:git diff b47d098 -- wp-content/themes/   -> 0 lines
+52:git diff cd800be -- wp-content/          -> 0 lines
+53:git diff                                 -> 0 lines
+119:  plugin files (`git diff 597b04e cd800be -- wp-content/plugins/` is empty).
+286:exit 0. `git diff b47d098` on the plugin shows the repaired `.pot` as the **only**
+290:`pt_BR.mo` all **IDENTICAL** to the recovered baseline. `git diff b47d098 -- theme` = **0**
+
+## HEAD vs the recovered baseline commit cd800be (whole wp-content)
+
+\$ git diff --stat cd800be HEAD -- wp-content/
+[empty — zero runtime changes since the recovery commit]
+
+## Working tree vs HEAD at freeze
+
+\$ git status --short
+?? docs/evidence/2026-09-28-en-archive-route-404/
+?? docs/reports/2026-09-28-en-archive-route-404-plan.md
+[only the new plan file, untracked]

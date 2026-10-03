@@ -1,0 +1,15 @@
+note: skill sections:
+    wp-add-admin-screen: When to use -> Required reading -> Steps -> Guardrails -> Verification -> Definition of done
+    wp-add-content-type: When to use -> Required reading -> Steps -> Guardrails -> Verification -> Definition of done
+    wp-frontend-perf: When to use -> Required reading -> Steps -> Guardrails -> Verification -> Definition of done
+    wp-http-acceptance-matrix: When to use -> Required reading -> Steps -> Guardrails -> Verification -> Definition of done
+    wp-plugin-registry: When to use -> Required reading -> The fields and what they drive -> Steps -> Guardrails -> Verification -> Definition of done
+    wp-release-deploy: When to use -> Required reading -> Steps -> Guardrails -> Verification -> Definition of done
+    wp-security-review: When to use -> Required reading -> Steps -> Guardrails -> Verification -> Definition of done
+    wp-translation-rollout: When to use -> Required reading -> Steps -> Guardrails -> Verification -> Definition of done
+    wp-update-docs: When to use -> Required reading -> The change → document map -> Steps -> Guardrails -> Verification -> Definition of done
+    wp-write-in-process-test: When to use -> Required reading -> Steps -> Guardrails -> Verification -> Definition of done
+note: retired Flutter/Dart material is present under .agents/legacy-flutter-skills/ (provenance only, not active)
+note: every repository path referenced by an active skill exists
+Stage K governance verification: 247 passed, 0 failed
+exit=0

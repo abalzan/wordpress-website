@@ -1,0 +1,175 @@
+[
+ {
+  "path": "/",
+  "status": 200,
+  "html_lang": "en-US",
+  "og_locale": "en_US",
+  "headings": [
+   "Everything Brazilians need to live better in Ireland",
+   "Indeed Ireland",
+   "IrishJobs",
+   "Jobs.ie",
+   "Latest Posts",
+   "Need help?"
+  ],
+  "pt_headings": 0,
+  "en_headings": 8,
+  "total_headings": 11
+ },
+ {
+  "path": "/guias/",
+  "status": 200,
+  "html_lang": "en-US",
+  "og_locale": "en_US",
+  "headings": [
+   "Nothing found",
+   "Practical Guides",
+   "Stay on top of everything!",
+   "Subscribe to our newsletter"
+  ],
+  "pt_headings": 0,
+  "en_headings": 2,
+  "total_headings": 4
+ },
+ {
+  "path": "/eventos/",
+  "status": 200,
+  "html_lang": "en-US",
+  "og_locale": "en_US",
+  "headings": [
+   "Events",
+   "Nothing found",
+   "Stay on top of everything!",
+   "Subscribe to our newsletter"
+  ],
+  "pt_headings": 0,
+  "en_headings": 2,
+  "total_headings": 4
+ },
+ {
+  "path": "/lazer/",
+  "status": 200,
+  "html_lang": "en-US",
+  "og_locale": "en_US",
+  "headings": [
+   "Leisure",
+   "Nothing found",
+   "Stay on top of everything!",
+   "Subscribe to our newsletter"
+  ],
+  "pt_headings": 0,
+  "en_headings": 2,
+  "total_headings": 4
+ },
+ {
+  "path": "/empregos/",
+  "status": 200,
+  "html_lang": "en-US",
+  "og_locale": "en_US",
+  "headings": [
+   "Access Healthcare",
+   "Adecco Ireland",
+   "CREGG",
+   "Cpl",
+   "Empregos",
+   "Excel Recruitment"
+  ],
+  "pt_headings": 0,
+  "en_headings": 2,
+  "total_headings": 29
+ },
+ {
+  "path": "/blog/",
+  "status": 200,
+  "html_lang": "en-US",
+  "og_locale": "en_US",
+  "headings": [
+   "Blog",
+   "No articles published yet.",
+   "Stay on top of everything!",
+   "Subscribe to our newsletter"
+  ],
+  "pt_headings": 0,
+  "en_headings": 2,
+  "total_headings": 4
+ },
+ {
+  "path": "/cursos/",
+  "status": 200,
+  "html_lang": "en-US",
+  "og_locale": "en_US",
+  "headings": [
+   "Courses",
+   "Nothing found",
+   "Stay on top of everything!",
+   "Subscribe to our newsletter"
+  ],
+  "pt_headings": 0,
+  "en_headings": 2,
+  "total_headings": 4
+ },
+ {
+  "path": "/apoiadores/",
+  "status": 200,
+  "html_lang": "en-US",
+  "og_locale": "en_US",
+  "headings": [
+   "Nothing found",
+   "Stay on top of everything!",
+   "Subscribe to our newsletter",
+   "Supporters"
+  ],
+  "pt_headings": 0,
+  "en_headings": 2,
+  "total_headings": 4
+ },
+ {
+  "path": "/guias/profissoes-na-irlanda/",
+  "status": 200,
+  "html_lang": "en-US",
+  "og_locale": "en_US",
+  "headings": [
+   "Administrador de sistemas",
+   "Ajudante de armaz\u00e9m",
+   "Ajudante de constru\u00e7\u00e3o",
+   "Ajudante de motorista",
+   "Analista de dados",
+   "Armador de ferro"
+  ],
+  "pt_headings": 105,
+  "en_headings": 0,
+  "total_headings": 199
+ },
+ {
+  "path": "/guias/saude-da-mulher-irlanda-hse-servicos/",
+  "status": 200,
+  "html_lang": "en-US",
+  "og_locale": "en_US",
+  "headings": [
+   "BreastCheck",
+   "CervicalCheck",
+   "Contracep\u00e7\u00e3o e menopausa",
+   "Gravidez e parto",
+   "HSE Live",
+   "O que o HSE oferece?"
+  ],
+  "pt_headings": 4,
+  "en_headings": 0,
+  "total_headings": 15
+ },
+ {
+  "path": "/blog/",
+  "status": 200,
+  "html_lang": "en-US",
+  "og_locale": "en_US",
+  "headings": [
+   "Blog",
+   "No articles published yet.",
+   "Stay on top of everything!",
+   "Subscribe to our newsletter"
+  ],
+  "pt_headings": 0,
+  "en_headings": 2,
+  "total_headings": 4
+ }
+]

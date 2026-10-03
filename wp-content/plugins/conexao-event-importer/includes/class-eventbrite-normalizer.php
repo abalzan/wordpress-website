@@ -52,6 +52,13 @@ class Conexao_Eventbrite_Normalizer {
 			'ticket_url'  => $this->get( $raw, 'tickets_url' ),
 			'organizer_id' => $this->get( $raw, 'primary_organizer_id' ),
 			'subcategory' => $this->get_subcategory( $raw ),
+			// Stage 3.2 — explicit source-language signal: Eventbrite declares
+			// a per-event `locale` (e.g. pt_BR, en_IE). Mapped to the approved
+			// classification; absent locale stays unclassified (never a guess
+			// from the title text).
+			'source_language' => class_exists( 'Conexao_Event_Source_Language' )
+				? Conexao_Event_Source_Language::from_locale( $this->get( $raw, 'locale' ) )
+				: '',
 		);
 
 		// Parse dates and times.

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Conexão BR Irlanda - Content
  * Description: Secao de conteudo, shortcodes, e helpers para o portal Conexão BR Irlanda
- * Version: 1.0.0
+ * Version: 1.0.1
  * Requires at least: 6.0
  * Requires PHP: 7.4
  * Author: Conexão BR Irlanda
@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'CONEXAO_CONTENT_VERSION', '1.0.0' );
+define( 'CONEXAO_CONTENT_VERSION', '1.0.1' );
 define( 'CONEXAO_CONTENT_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CONEXAO_CONTENT_URI', plugin_dir_url( __FILE__ ) );
 
@@ -57,10 +57,19 @@ add_action( 'wp_enqueue_scripts', 'conexao_content_enqueue_styles' );
  *
  * When the plugin is activated, create all required pages and navigation menus.
  * This ensures the site works correctly after a fresh install or rebuild.
+ *
+ * create-pages.php is a standalone CLI script that prints progress while it
+ * runs, and WordPress treats ANY output from an activation hook as a failure
+ * ("The plugin generated unexpected output."). WP-CLI then refuses the
+ * activation outright, so a fresh install could not activate this plugin at
+ * all. The script's progress output is therefore buffered and discarded: the
+ * pages and menus are still created, and activation stays silent.
  */
 function conexao_content_activate() {
-    require_once CONEXAO_CONTENT_DIR . 'create-pages.php';
-    flush_rewrite_rules();
+	ob_start();
+	require_once CONEXAO_CONTENT_DIR . 'create-pages.php';
+	ob_end_clean();
+	flush_rewrite_rules();
 }
 register_activation_hook( __FILE__, 'conexao_content_activate' );
 
@@ -214,3 +223,18 @@ function conexao_blog_categories_shortcode() {
     return $html;
 }
 add_shortcode( 'conexao_blog_categories', 'conexao_blog_categories_shortcode' );
+/**
+ * Load the plugin textdomain (Stage 1 i18n foundation).
+ *
+ * Translation files live in this plugin's languages/ directory. Admin-only
+ * strings may be catalogued here even though English admin support is
+ * deferred to a later stage. No functionality changes.
+ */
+function conexao_content_load_textdomain() {
+	load_plugin_textdomain(
+		'conexao-content',
+		false,
+		dirname( plugin_basename( __FILE__ ) ) . '/languages'
+	);
+}
+add_action( 'init', 'conexao_content_load_textdomain' );

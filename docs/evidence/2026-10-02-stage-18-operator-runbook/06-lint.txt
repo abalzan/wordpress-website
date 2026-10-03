@@ -1,0 +1,14 @@
+==> [1/3] PHP syntax check (php -l, 526 files)
+OK: no PHP parse errors.
+==> [2/3] PHPCS (WordPress-Extra + WordPress-Docs + PHPCompatibilityWP) + legacy baseline gate
+PHPCS legacy baseline: 3231 errors / 2668 warnings in 234 files (baseline: 3290 / 2672).
+Debt paid down in 18 sniff(s) - regenerate the baseline deliberately when convenient (scripts/phpcs-baseline.php update).
+OK: no new PHPCS violations against the baseline.
+==> [3/3] PHPStan level 5 via composer analyse (phpstan.neon.dist + baseline)
+Note: Using configuration file /home/andrei/IdeaProjects/wordpress-website/phpstan.neon.dist.
+   0/235 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%[1G[2K 235/235 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+
+
+ [OK] No errors                                                                 
+
+lint: OK (syntax clean, no new PHPCS violations, PHPStan clean)

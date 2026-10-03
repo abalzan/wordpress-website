@@ -1,0 +1,9 @@
+=== /en/blog/
+   Articles &amp; News Blog Information, tips and news for the Brazilian community in Ireland. Saúde e Bem-estar O outono chegou à Irlanda… e o nosso corpo também sente essa mudança A chegada do outono muda os dias, a rotina e também a nossa alimentação. Veja formas simples de adaptar as refeições e os hábitos aos meses mais frios na Irlanda, sem abandonar o cuidado com a saúde e o bem-estar. <svg viewBox="0 0 24 24" widt
+  B2 notice markers: ['aviso']
+=== /en/guias/profissoes-na-irlanda/
+   Profissões na Irlanda: Português × Inglês Descubra como sua profissão é chamada em inglês e quais palavras usar para procurar emprego na Irlanda. 🔎 Como usar este guia O nome da profissão pode mudar bastante de um país para outro. Por isso, ao procurar uma vaga, não pesquise apenas a tradução literal da sua profissão. Exemplo: Pedreiro → Bricklayer Ao procurar emprego, experimente: Bricklayer Jobs Bricklayer Jobs Ireland Bricklayer Jobs Dublin Bricklayer Jobs Laois Bricklayer Jobs Kildare 💡 Dica: copie o termo em inglês e cole diretamente no site de empregos. <h2 cl
+  B2 notice markers: ['Português', 'português']
+=== /en/empregos/
+   Opportunities Empregos <img width="1024" height="1536" src="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/conexao_br_emprego.jpeg?fit=1024%2C1536&amp;ssl=1" class="empregos-portrait-img wp-post-image" alt="Empregos" loading="eager" decoding="async" fetchpriority="high" srcset="https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/conexao_br_emprego.jpeg?w=1024&amp;ssl=1 1024w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/conexao_br_emprego.jpeg?resize=200%2C300&amp;ssl=1 200w, https://i0.wp.com/conexaobr.ie/wp-content/uploads/2026/08/conexao_br_emprego.jpeg?resize
+  B2 notice markers: ['notice']

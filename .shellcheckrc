@@ -1,0 +1,13 @@
+# ShellCheck configuration for this repository's shell scripts.
+#
+# `external-sources=true` lets ShellCheck FOLLOW a `source` directive instead of
+# reporting SC1091 ("not following") for it. CI checks the scripts and the shared
+# library in two separate runs (`shellcheck scripts/*.sh`, then
+# `shellcheck scripts/lib/*.sh`), so in the first run the library is not an input
+# and `scripts/build-plugins-zip.sh` / `scripts/build-theme-zip.sh` could not be
+# checked past their `source` line.
+#
+# This makes the check STRICTER, not weaker: the library is analysed in the
+# context of the scripts that use it. No rule is disabled, no severity is
+# lowered and no file is excluded.
+external-sources=true

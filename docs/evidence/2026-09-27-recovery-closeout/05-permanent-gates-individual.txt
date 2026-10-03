@@ -1,0 +1,44 @@
+# 05 - Permanent gates, run individually (fail-closed)
+
+Every gate executed in isolation with the same command the aggregate uses.
+NO gate configuration, threshold, baseline, allowlist or test was modified by this closeout.
+git status on tests/ and the gate files:
+  (empty = the gates are exactly as committed)
+
+## 1. taxonomy_policy  (in-process PHP)
+  inspected: 276 shared terms, 0 translated term pairs
+18 passed, 0 failed
+
+## 2. translation_completeness  (in-process PHP)
+17 passed, 3 failed
+  violations: 53 (52 pre-existing, 1 new)
+  offending record: en_without_pt:mabon-full-moon-day-retreat
+
+## 3. cache_scoping  (runtime, in-process PHP)
+9 passed, 0 failed
+
+## 4. cache_scoping_static  (static)
+   unscoped conexao_* cache keys: 0
+2 passed, 0 failed
+
+## 5. redirect_precedence  (in-process PHP)
+15 passed, 0 failed
+
+## 6. documentation_drift  (static)
+   Stage I script conventions         exit=0 317 passed, 0 failed
+   Stage K agent governance           exit=0 Stage K governance verification: 247 passed, 0 failed
+14 passed, 0 failed
+
+## 7. i18n_freshness  (static)
+   stale catalogues: 0
+8 passed, 0 failed
+
+## AGGREGATE  (python3 scripts/verify-permanent-gates.py)
+  Gates: 7 total, 6 passed, 1 failed, 0 blocked
+  Assertions: 83 passed, 3 failed
+  Violations: 53 (52 pre-existing, 1 new)
+  AGGREGATE: FAIL  (exit 1)
+
+  The aggregate correctly reports FAIL and exits non-zero. The single failing gate is
+  translation_completeness, whose only "new" finding was PROVEN pre-existing
+  (evidence 01). It is left visible. The gate was NOT weakened to manufacture a pass.

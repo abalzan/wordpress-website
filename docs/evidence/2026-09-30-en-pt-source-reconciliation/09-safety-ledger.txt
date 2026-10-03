@@ -1,0 +1,53 @@
+SAFETY LEDGER — EN PT SOURCE RECONCILIATION (read-only investigation)
+====================================================================
+
+PRODUCTION
+  HTTP verbs used                     GET only (0 POST, 0 PUT, 0 PATCH, 0 DELETE)
+  production writes                   0
+  EN records created                  0
+  translation links created           0
+  PT records created/modified/deleted 0
+  PT records restored from trash      0   <-- explicitly NOT done; see note
+  Polylang / taxonomy / menu / option changes  0
+  translation apply run              no
+  writer run                          no
+  SQL executed                        none (production has no CLI; none attempted)
+  .env modified                       NO (sha256 e99381586ae3a724848b0685a66fae8478759bff4b20501325c34df5054eae24,
+                                       identical to the pre-existing file; never printed)
+  secrets exposed                     NO (credentials read from the environment only,
+                                       never logged, never written to evidence)
+
+REPOSITORY
+  authored EN data changed            0
+  manifests regenerated / rewritten   0
+  stage definitions changed           0
+  translation engine changed          0
+  slug policy changed                 0
+  tests changed                       0
+  dry-run re-run                      no
+  snapshot taken                      no
+  apply performed                     no
+  git commits                         0
+  new files written by this phase     docs/reports/2026-09-30-en-pt-source-reconciliation.md
+                                      docs/evidence/2026-09-30-en-pt-source-reconciliation/*
+                                      (documentation only, as the task requires)
+  previous dry-run report             NOT modified
+                                      (docs/reports/2026-09-30-en-translation-dry-run.md
+                                       and 2026-09-30-en-rollout-blocker-resolution.md untouched)
+
+FLUTTER / MOBILE REPOSITORY          not accessed
+
+NOTE ON THE TRASH FINDING — WHY NOTHING WAS RESTORED
+---------------------------------------------------
+Six of the seven PT sources were found in production TRASH. Restoring them would
+be a production CONTENT WRITE, which this phase is explicitly forbidden from
+doing ("Production must remain completely read-only", "No production content
+mutation"). The task's outcome vocabulary only offers RE-KEY (a repository
+change), REQUIRES HUMAN REVIEW and BLOCKED — it offers no "restore the PT record"
+action, and a restore is an editorial/content decision that belongs to the
+operator, not to a source-reconciliation investigation.
+
+So the trashed records are reported as EVIDENCE of identity, not acted upon. The
+mapping below therefore records the true PT source for each row and states, per
+row, that un-trashing is a prerequisite the operator must authorise before a
+re-key can resolve in production.

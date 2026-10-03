@@ -1,0 +1,106 @@
+# 05 — Recorded runtime history for the three routes (cited evidence)
+
+Every status below is a RECORDED result from a previous verified run, cited with
+its source path. Nothing here was re-executed live (this environment has no runtime).
+
+## Stage N (2026-09-26) — all three routes 200
+
+docs/evidence/2026-09-26-stage-n/http-routing-matrix.txt:
+25:  PASS  en-200-en-guias /en/guias/ (status 200)
+26:  PASS  en-200-en-eventos /en/eventos/ (status 200)
+29:  PASS  en-200-en-apoiadores /en/apoiadores/ (status 200)
+
+## At the destructive baseline 597b04e (2026-09-27) — the stale-rules signature
+
+docs/evidence/2026-09-27-baseline-recovery/07-phase6-route-inventory.txt:
+## Status + redirect
+ROUTE            STATUS REDIRECT_LOCATION
+/                200 
+/cursos/         200 
+/en/             200 
+/en/cursos/      301 http://localhost:8080/2026/03/19/cursos-e-apoio-para-empreendedores/
+/en/guias/       404 
+/en/lazer/       301 http://localhost:8080/lazer/
+/en/blog/        301 http://localhost:8080/blog/
+/eventos/        200 
+/en/eventos/     404 
+/empregos/       200 
+/en/empregos/    301 http://localhost:8080/empregos/
+
+## The recovery proof: source restore alone did NOT fix the routes; the local flush did
+
+docs/reports/2026-09-27-baseline-recovery-implementation.md §7 (lines 130-139):
+This is the most important operational result of the task: **restoring the source was necessary but not sufficient.**
+
+After a byte-perfect source restore, `/en/guias/` and `/en/eventos/` still returned 404 and `/en/lazer/` still redirected to PT. The cause was **stale rewrite rules in the local database**: the stored `rewrite_rules` option had been generated while the destructive `functions.php` was active, so the EN CPT-archive rules the restored theme registers were simply absent.
+
+| | rules with an `en/` prefix | of which CPT archives |
+|---|---:|---:|
+| before flush | 84 | **0** |
+| after flush | — | **92** |
+
+The rules existed only for the PT roots (`guias/?$ => index.php?post_type=guide`, `eventos/?$`, `lazer/?$`) with no `en/` counterpart — exactly the observed symptom. A local flush regenerated them. This is the same operation `scripts/flush-navigation-rules.php` performs; it is a **local database** action, not a code change, and nothing was committed for it.
+
+docs/evidence/2026-09-27-baseline-recovery-implementation/06-phase11-http-routes.txt (lines 5-21):
+## THE CRITICAL FINDING: stale rewrite_rules in the local DB
+
+Restoring the source was necessary but NOT sufficient. The stored rewrite_rules
+option had been generated while the destructive functions.php was active, so the EN
+CPT-archive rules that the restored theme registers were ABSENT from the database:
+
+  before flush: 84 rules carrying an en/ prefix, of which 0 for a CPT archive
+  after  flush: 92 rules carrying an en/ prefix for a CPT archive   (0 -> 92)
+
+The rules existed ONLY for the PT roots (guias/?$ => index.php?post_type=guide,
+eventos/?$ => index.php?post_type=event, lazer/?$ => index.php?post_type=leisure)
+with no en/ counterpart. That is exactly why /en/guias/ and /en/eventos/ returned
+404 and /en/lazer/ redirected to PT even after a byte-perfect source restore.
+
+A local flush_rewrite_rules(true) - the documented operation also performed by
+scripts/flush-navigation-rules.php - regenerated them. This is a LOCAL DATABASE
+operation only: no production write, no code change, no file committed.
+
+## The recovery closeout (2026-09-27, HEAD code == this task baseline) — routes 200
+
+docs/evidence/2026-09-27-recovery-closeout/06-http-acceptance-matrix.txt:
+11:http://localhost:8080/en/guias/    exp=200  got=200  redirects=0  lang=en-US  hreflang=5   php_err=0  0.124481s
+12:    canonical: http://localhost:8080/en/guias/
+13:http://localhost:8080/en/guias/page/2/ exp=200  got=404  redirects=0  lang=en-US  hreflang=2   php_err=0  0.095159s
+20:http://localhost:8080/en/eventos/  exp=200  got=200  redirects=0  lang=en-US  hreflang=7   php_err=0  16.585147s
+21:    canonical: http://localhost:8080/en/eventos/
+63:  EN routes : 7 of 8 return 200. /en/guias/page/2/ returns 404 (documented below).
+71:  /en/guias/page/2/ -> 404
+77:        - en-guides-page-2 /en/guias/page/2/ -- status 404, expected 200
+78:        - an EN guide link is discoverable in /en/guias/
+85:  /en/eventos/ 16.6s and /eventos/ 10.4s on a cold cache; every other route <0.13s.
+
+[NOTE: /en/apoiadores/ is NOT in the closeout probe list, and the routing HTTP suite
+ timed out at the closeout on the known cold-cache event-archive latency — so the
+ /en/apoiadores/ row has no closeout re-verification; its last recorded 200 is Stage N.]
+
+docs/evidence/2026-09-27-recovery-closeout/04-full-runner.txt (lines 52-60) — HTTP acceptance detail:
+## HTTP acceptance detail
+  [PASS] tests/acceptance/verify-release-http.py   42 passed, 0 failed
+  [FAIL] tests/acceptance/verify-guides-en-http.py  (documented content limitation, see 06)
+  [TIMEOUT] tests/acceptance/verify-routing-http.py
+
+  The routing HTTP timeout is IDENTICAL to the recovered baseline run (09b),
+  which also recorded [TIMEOUT] on the same suite. It is an environment/runtime
+  cost issue, not a recovery regression. The site itself is healthy:
+  /en/ returns HTTP 200 in 0.11s. Route-level results are in evidence 06.
+
+## Timeline
+
+2026-09-26 Stage N .......... /en/apoiadores/, /en/eventos/, /en/guias/ all 200 (recorded)
+2026-09-26 b47d098 ......... last known-good theme baseline (routes 200 with flushed rules)
+2026-09-27 597b04e ......... destructive regression; i18n tree deleted; routes 404/301 (recorded)
+                           DB rewrite_rules regenerated during this window WITHOUT en/ CPT-archive
+                           rules (0 of 84 en/ rules were CPT-archive rules)
+2026-09-27 cd800be ........ theme restored byte-identically; routes STILL 404 (stale DB rules);
+                           local flush_rewrite_rules -> en/ CPT-archive rules 0 -> 92;
+                           /en/guias/, /en/eventos/ 404 -> 200 (recorded, no code/data change)
+2026-09-27 e7303ba ........ closeout (docs only); /en/guias/, /en/eventos/ 200 recorded;
+                           script-contract 6/6 with PHP present
+2026-09-28 this task ...... the three routes reported 404 with UNCHANGED code
+                           (theme byte-identical to b47d098) -> the DB rewrite_rules in the
+                           task runtime is stale again (scenario 2)

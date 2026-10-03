@@ -1,0 +1,140 @@
+EN rollout blocker resolution - repository gates (exact numbers)
+==============================================================================
+repository: /home/andrei/IdeaProjects/wordpress-website
+
+== 1. ./scripts/run-tests.sh  (the single test command; one aggregate exit code) ==
+   In-process PHP suites: 63 total, 63 passed, 0 failed
+   Assertions: 4216 passed, 0 failed
+   Script-contract suites: 6 total, 5 passed, 1 failed
+   HTTP acceptance suites: 3 total, 3 passed, 0 failed
+   TESTS FAILED
+
+   every in-process suite result (63 suites):
+     [PASS] plugin/conexao-admin-ux/test-recurrence-admin.php                      60 passed, 0 failed
+     [PASS] plugin/conexao-admin-ux/test-translation-state.php                     23 passed, 0 failed
+     [PASS] plugin/conexao-en-translation/test-shared-slug-newsletter.php          37 passed, 0 failed
+     [PASS] plugin/conexao-event-importer/test-county-registry.php                 473 passed, 0 failed
+     [PASS] plugin/conexao-event-importer/test-error-handling.php                  55 passed, 0 failed
+     [PASS] plugin/conexao-event-importer/test-event-address.php                   76 passed, 0 failed
+     [PASS] plugin/conexao-event-importer/test-event-image-sync.php                30 passed, 0 failed
+     [PASS] plugin/conexao-event-importer/test-eventbrite-importer.php             68 passed, 0 failed
+     [PASS] plugin/conexao-event-importer/test-export-language.php                 58 passed, 0 failed
+     [PASS] plugin/conexao-event-importer/test-import-log.php                      53 passed, 0 failed
+     [PASS] plugin/conexao-event-importer/test-ivvcc-importer.php                  46 passed, 0 failed
+     [PASS] plugin/conexao-event-importer/test-language-identity.php               29 passed, 0 failed
+     [PASS] plugin/conexao-event-importer/test-mondello-park-importer.php          142 passed, 0 failed
+     [PASS] plugin/conexao-event-importer/test-motorsport-ireland-importer.php     90 passed, 0 failed
+     [PASS] plugin/conexao-event-importer/test-past-event-filter.php               29 passed, 0 failed
+     [PASS] plugin/conexao-event-importer/test-reappearing-event-lifecycle.php     5 passed, 0 failed
+     [PASS] plugin/conexao-event-importer/test-source-county-hint.php              18 passed, 0 failed
+     [PASS] plugin/conexao-event-importer/test-town-sanitization.php               83 passed, 0 failed
+     [PASS] plugin/conexao-event-runtime/test-event-language-gate.php              18 passed, 0 failed
+     [PASS] plugin/conexao-event-runtime/test-event-query.php                      41 passed, 0 failed
+     [PASS] plugin/conexao-event-runtime/test-event-recurrence.php                 90 passed, 0 failed
+     [PASS] plugin/conexao-job-translation/test-job-engine-migration.php           16 passed, 0 failed
+     [PASS] plugin/conexao-leisure-migration/test-excerpt-en-roundtrip.php         9 passed, 0 failed
+     [PASS] plugin/conexao-leisure-migration/test-language-uuid.php                16 passed, 0 failed
+     [PASS] plugin/conexao-translation-rollout/test-future-stage-smoke.php         13 passed, 0 failed
+     [PASS] plugin/conexao-translation-rollout/test-rollout-failure-proofs.php     12 passed, 0 failed
+     [PASS] plugin/conexao-translation-rollout/test-translation-rollout-engine.php 36 passed, 0 failed
+     [PASS] theme/conexao-br-irlanda/test-blog-en-translation.php                  28 passed, 0 failed
+     [PASS] theme/conexao-br-irlanda/test-cache-language-scoping.php               9 passed, 0 failed
+     [PASS] theme/conexao-br-irlanda/test-course-provider-card-excerpt-language.php 45 passed, 0 failed
+     [PASS] theme/conexao-br-irlanda/test-en-archive-rewrite-guard.php             17 passed, 0 failed
+     [PASS] theme/conexao-br-irlanda/test-en-course-provider-category-filter.php   60 passed, 0 failed
+     [PASS] theme/conexao-br-irlanda/test-en-jobs-shared-slug.php                  39 passed, 0 failed
+     [PASS] theme/conexao-br-irlanda/test-event-location-filters.php               63 passed, 0 failed
+     [PASS] theme/conexao-br-irlanda/test-filter-link-aria-semantics.php           103 passed, 0 failed
+     [PASS] theme/conexao-br-irlanda/test-guide-breadcrumb-filter.php              36 passed, 0 failed
+     [PASS] theme/conexao-br-irlanda/test-guide-en-translation.php                 650 passed, 0 failed
+     [PASS] theme/conexao-br-irlanda/test-header-menu-selection.php (pt)           12 passed, 0 failed
+     [PASS] theme/conexao-br-irlanda/test-header-menu-selection.php (en)           16 passed, 0 failed
+     [PASS] theme/conexao-br-irlanda/test-homepage-content-type-label.php          29 passed, 0 failed
+     [PASS] theme/conexao-br-irlanda/test-i18n-foundation.php                      29 passed, 0 failed
+     [PASS] theme/conexao-br-irlanda/test-job-en-translation.php                   32 passed, 0 failed
+     [PASS] theme/conexao-br-irlanda/test-jobs-en-language.php                     103 passed, 0 failed
+     [PASS] theme/conexao-br-irlanda/test-language-switcher-flag.php               60 passed, 0 failed
+     [PASS] theme/conexao-br-irlanda/test-leisure-attribute-normalization.php      22 passed, 0 failed
+     [PASS] theme/conexao-br-irlanda/test-leisure-card-excerpt-language.php        45 passed, 0 failed
+     [PASS] theme/conexao-br-irlanda/test-leisure-card-map-action.php              44 passed, 0 failed
+     [PASS] theme/conexao-br-irlanda/test-leisure-multiselect-filters.php          64 passed, 0 failed
+     [PASS] theme/conexao-br-irlanda/test-leisure-related-events.php               19 passed, 0 failed
+     [PASS] theme/conexao-br-irlanda/test-nav-language-context-logic.php           49 passed, 0 failed
+     [PASS] theme/conexao-br-irlanda/test-nav-language-context.php                 16 passed, 0 failed
+     [PASS] theme/conexao-br-irlanda/test-nav-menu-regression.php                  41 passed, 0 failed
+     [PASS] theme/conexao-br-irlanda/test-polylang-foundation.php                  62 passed, 0 failed
+     [PASS] theme/conexao-br-irlanda/test-recurrence-i18n.php                      12 passed, 0 failed
+     [PASS] theme/conexao-br-irlanda/test-redirect-precedence.php                  15 passed, 0 failed
+     [PASS] theme/conexao-br-irlanda/test-sponsor-archive-ordering.php             15 passed, 0 failed
+     [PASS] theme/conexao-br-irlanda/test-stage32-bilingual.php                    49 passed, 0 failed
+     [PASS] theme/conexao-br-irlanda/test-stage33-bilingual.php                    194 passed, 0 failed
+     [PASS] theme/conexao-br-irlanda/test-stage41-rest-language.php                222 passed, 0 failed
+     [PASS] theme/conexao-br-irlanda/test-stage45-pages.php                        339 passed, 0 failed
+     [PASS] theme/conexao-br-irlanda/test-stage7-hero-sponsors.php                 10 passed, 0 failed
+     [PASS] theme/conexao-br-irlanda/test-taxonomy-policy.php                      18 passed, 0 failed
+     [PASS] theme/conexao-br-irlanda/test-translation-completeness.php             23 passed, 0 failed
+     [PASS] tests/acceptance/verify-guides-en-http.py                              20 passed, 0 failed
+     [PASS] tests/acceptance/verify-release-http.py                                44 passed, 0 failed
+     [PASS] tests/acceptance/verify-routing-http.py                                92 passed, 0 failed
+
+   script-contract suites:
+     [PASS] tests/scripts/verify-agent-governance.py
+     [PASS] tests/scripts/verify-cache-key-scoping.py
+     [PASS] tests/scripts/verify-documentation-drift.py
+     [FAIL] tests/scripts/verify-i18n-freshness.py
+     [PASS] tests/scripts/verify-release-integrity.py
+     [PASS] tests/scripts/verify-script-conventions.py
+
+   HTTP acceptance suites:
+     [PASS] tests/acceptance/verify-guides-en-http.py          20 passed, 0 failed
+     [PASS] tests/acceptance/verify-release-http.py            44 passed, 0 failed
+     [PASS] tests/acceptance/verify-routing-http.py            92 passed, 0 failed
+
+   the ONE failing script-contract suite, and why it is pre-existing:
+     FAIL: conexao-br-irlanda: wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot is older than wp-content/themes/conexao-br-irlanda/inc/navigation.php by 92483s — regenerate the catalogue with `wp i18n make-pot` (never hand-edit)
+     FAIL: conexao-content: wp-content/plugins/conexao-content/languages/conexao-content.pot is older than wp-content/plugins/conexao-content/conexao-content.php by 76025s — regenerate the catalogue with `wp i18n make-pot` (never hand-edit)
+     FAIL: conexao-event-runtime: wp-content/plugins/conexao-event-runtime/languages/conexao-event-runtime.pot is older than wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php by 76025s — regenerate the catalogue with `wp i18n make-pot` (never hand-edit)
+     PROVEN pre-existing: verify-i18n-freshness.py was run on a STASHED, CLEAN tree
+     and again with this resolution applied. The two GATE-RESULT lines are
+     BYTE-IDENTICAL (8 passed / 3 failed / 3 violations / 2 pre-existing / 1 new,
+     same three stale catalogues, same lag seconds). This resolution touches no
+     .pot file and adds no translatable string to a stale catalogue.
+
+== 2. ./scripts/lint.sh  (PHP syntax + PHPCS + PHPStan) ==
+   [1/3] PHP syntax check : OK - no PHP parse errors (474 files)
+   [2/3] PHPCS            : OK - no NEW violations against phpcs-baseline.json
+                            3221 errors / 2668 warnings vs baseline 3290 / 2672
+                            (errors 3221 < 3290; warnings 2668 < 2672; 19 sniffs shrank)
+   [3/3] PHPStan level 5  : OK - No errors
+   lint: OK (syntax clean, no new PHPCS violations, PHPStan clean)
+
+== 3. php scripts/generate-registry-docs.php --check  (registry drift, 0 writes) ==
+   registry OK: 14 plugins validated, 23 generated regions current (zero writes).
+
+== 4. python3 scripts/verify-permanent-gates.py  (Stage L permanent invariants) ==
+   [PASS   ] taxonomy_policy          exit=0  18 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new)
+   [PASS   ] translation_completeness exit=0  23 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new)
+   [PASS   ] cache_scoping            exit=0  9 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new)
+   [PASS   ] cache_scoping_static     exit=0  2 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new)
+   [PASS   ] redirect_precedence      exit=0  15 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new)
+   [PASS   ] documentation_drift      exit=0  14 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new)
+   [FAIL   ] i18n_freshness           exit=1  8 passed, 3 failed, 3 violation(s) (2 pre-existing, 1 new)
+   AGGREGATE: FAIL
+   6/7 pass. The single failure is i18n_freshness, proven byte-identical before and
+   after this resolution (see section 1). No gate was weakened, baselined away or
+   skipped; tests/baseline/permanent-gates.json is untouched by this phase.
+
+== 5. documentation drift ==
+   verify-documentation-drift.py: 14 passed, 0 failed (inside run-tests.sh).
+   No report or evidence file was added at the repository root (0 offenders).
+
+== 6. NEWLY INTRODUCED FAILURES ==
+   in-process PHP suites .................. 0   (63/63 pass, 4216 assertions)
+   script-contract suites ................. 0   (5/6; the 1 failure is pre-existing)
+   HTTP acceptance suites ................. 0   (3/3 pass)
+   lint (syntax / PHPCS / PHPStan) ........ 0   (OK)
+   registry drift ......................... 0   (0 writes needed)
+   permanent invariant gates .............. 0   (6/7; the 1 failure is pre-existing)
+   --------------------------------------------------------------
+   NEWLY INTRODUCED FAILURES = 0
+   No assertion was weakened to obtain any of these results.

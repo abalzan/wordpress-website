@@ -1,0 +1,76 @@
+# 02 — Registration chain (static proof at HEAD)
+
+The three routes resolve ONLY through WordPress rewrite rules stored in the DB,
+generated at flush time from: (a) the CPT registration, (b) the theme Polylang
+declaration (pll_get_post_types), (c) Polylang emitting en/-prefixed variants for
+translated post types. No add_rewrite_rule exists anywhere in the theme.
+
+## (a) CPT registration — wp-content/plugins/conexao-data-model/conexao-data-model.php
+
+\$ grep -n "slug.*=>\|has_archive" wp-content/plugins/conexao-data-model/conexao-data-model.php
+50:			'guide'           => array( 'plural' => 'Guias Práticos', 'singular' => 'Guia Prático', 'slug' => 'guias', 'icon' => 'dashicons-book-alt' ),
+51:			'event'           => array( 'plural' => 'Eventos', 'singular' => 'Evento', 'slug' => 'eventos', 'icon' => 'dashicons-calendar-alt' ),
+52:			'job'             => array( 'plural' => 'Empregos', 'singular' => 'Vaga de Emprego', 'slug' => 'empregos', 'icon' => 'dashicons-portfolio' ),
+53:			'sponsor'         => array( 'plural' => 'Apoiadores', 'singular' => 'Apoiador', 'slug' => 'apoiadores', 'icon' => 'dashicons-heart' ),
+54:			'course_provider' => array( 'plural' => 'Cursos', 'singular' => 'Provedor de Cursos', 'slug' => 'cursos', 'icon' => 'dashicons-welcome-learn-more' ),
+55:			'leisure'         => array( 'plural' => 'Lazer e Turismo', 'singular' => 'Local de Lazer', 'slug' => 'lazer', 'icon' => 'dashicons-palmtree' ),
+58:			'recruitment_agency' => array( 'plural' => 'Agências de Recrutamento', 'singular' => 'Agência de Recrutamento', 'slug' => 'agencias-de-recrutamento', 'icon' => 'dashicons-networking' ),
+64:			'permit_employer' => array( 'plural' => 'Empregadores — Employment Permits', 'singular' => 'Empregador (Employment Permits)', 'slug' => 'empregadores-employment-permits', 'icon' => 'dashicons-building' ),
+75:			$has_archive = ( 'job' === $post_type ) ? false : $type['slug'];
+118:					'has_archive'        => $has_archive,
+119:					'rewrite'            => $is_admin_only ? false : array( 'slug' => $type['slug'], 'with_front' => false ),
+413:				'rewrite'           => array( 'slug' => 'categories', 'with_front' => false ),
+
+[line 75] \$has_archive = ( 'job' === \$post_type ) ? false : \$type['slug']; — every CPT except job
+  has its PT slug as the archive slug: guide=>guias, event=>eventos, sponsor=>apoiadores,
+  course_provider=>cursos, leisure=>lazer
+
+## (b) Theme Polylang declaration — inc/i18n/guard.php (loaded by functions.php)
+
+\$ grep -n "pll_get_post_types\|conexao_polylang_translated_post_types" wp-content/themes/conexao-br-irlanda/inc/i18n/guard.php
+61:add_filter( 'pll_get_post_types', 'conexao_polylang_translated_post_types', 10, 2 );
+
+\$ sed -n "50,61p" wp-content/themes/conexao-br-irlanda/inc/i18n/guard.php
+function conexao_polylang_translated_post_types( $post_types, $is_settings = false ) {
+	if ( $is_settings ) {
+		return $post_types;
+	}
+
+	foreach ( array( 'guide', 'event', 'leisure', 'sponsor', 'job', 'course_provider' ) as $post_type ) {
+		$post_types[ $post_type ] = $post_type;
+	}
+
+	return $post_types;
+}
+add_filter( 'pll_get_post_types', 'conexao_polylang_translated_post_types', 10, 2 );
+
+## Loader chain — functions.php (LOADER ONLY)
+
+\$ grep -n "inc/i18n" wp-content/themes/conexao-br-irlanda/functions.php
+27://   1. inc/i18n.php must load first so the Stage 1 locale correction
+29://   2. inc/i18n/ must load before inc/rest-language.php and inc/seo/, which
+39:require_once CONEXAO_THEME_DIR . '/inc/i18n.php';
+43:require_once CONEXAO_THEME_DIR . '/inc/i18n/guard.php';
+44:require_once CONEXAO_THEME_DIR . '/inc/i18n/locale.php';
+45:require_once CONEXAO_THEME_DIR . '/inc/i18n/urls.php';
+46:require_once CONEXAO_THEME_DIR . '/inc/i18n/terms.php';
+47:require_once CONEXAO_THEME_DIR . '/inc/i18n/fallback.php';
+48:require_once CONEXAO_THEME_DIR . '/inc/i18n/hreflang.php';
+49:require_once CONEXAO_THEME_DIR . '/inc/i18n/switcher.php';
+
+## (c) No theme-side rewrite-rule registration exists
+
+\$ grep -rn "add_rewrite_rule\|rewrite_rules_array" wp-content/themes/conexao-br-irlanda/inc/
+[no output — the theme registers no rewrite rules itself]
+
+## The theme documents the dependency itself (inc/archive-query.php)
+
+430:	// resolves to post_type=leisure only via the rewrite rule): fall back to
+	// Bare post-type archives carry no post_type var at all (e.g. /en/lazer/
+	// resolves to post_type=leisure only via the rewrite rule): fall back to
+	// the queried object.
+
+## Flush points in the platform plugin (production activation path)
+
+468:		flush_rewrite_rules();
+472:		flush_rewrite_rules();

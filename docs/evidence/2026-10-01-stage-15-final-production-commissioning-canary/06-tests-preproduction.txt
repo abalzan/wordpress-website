@@ -1,0 +1,52 @@
+STAGE 15 - SECTION 38: REQUIRED TEST EXECUTION (pre-production)
+
+The credential-independent half of the required matrix was executed in
+full. The post-installation and post-canary halves require production
+access, installation and separate apply authorization, none of which
+exists, so they are NOT PERFORMED rather than passed.
+
+-- lint (syntax + PHPCS baseline + PHPStan level 5) --
+lint: OK (syntax clean, no new PHPCS violations, PHPStan clean)
+PHPCS legacy baseline 3231 errors / 2668 warnings vs baseline 3290 / 2672 - no NEW violations.
+
+-- registry --
+registry OK: 15 plugins validated, 24 generated regions current (zero writes).
+
+-- Stage 14 secret-hardening tests --
+
+stage14_secret_scan: 323 passed, 0 failed
+GATE-RESULT {"gate": "stage14_secret_scan", "passed": 323, "failed": 0, "violations": 0}
+
+-- Stage 13 readiness permanent gate (re-run in Stage 15, post-P15-fix) --
+negative proofs: 44 proven, 0 missed
+771 passed, 0 failed
+GATE-RESULT {"gate": "stage13_commissioning_readiness", "status": "pass", "passed": 771, "failed": 0, "negative_proofs": 44, "negative_proofs_missed": 0, "violations": 0, "details": []}
+
+-- Model A scope contract / true subset execution --
+test-automation-model-a.php: 145 passed, 0 failed
+verify-stage10-batch-boundary.py: PASS (20 negative proofs, 0 missed)
+  The "FAIL" lines printed inside the negative-proof section are
+  INTENTIONALLY INJECTED mutations shown failing. The gate exits 0.
+
+-- batch control --
+test-automation-batch.php: 243 passed, 0 failed
+
+-- control plane --
+verify-stage8-control-plane.py: 149 passed, 0 failed
+
+-- other stage gates re-run clean --
+verify-stage2-promotion.py              PASS
+verify-stage3-automation.py             PASS
+verify-stage4-provider.py               PASS
+verify-stage6-transport-trigger.py      PASS
+verify-stage7-commissioning.py          PASS
+verify-stage8-release-consistency.py    PASS
+
+-- release integrity --
+verify-release-integrity.py: 229 passed, 0 failed
+
+-- documentation drift --
+verify-documentation-drift.py: 14 passed, 0 failed
+
+-- governance --
+verify-agent-governance.py: PASS

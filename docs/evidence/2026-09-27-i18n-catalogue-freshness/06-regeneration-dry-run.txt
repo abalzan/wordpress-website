@@ -1,0 +1,8 @@
+conexao i18n-make-pot
+  repository: /home/andrei/IdeaProjects/wordpress-website
+  mode:       dry-run
+  xgettext:   xgettext (GNU gettext-tools) 0.23.2
+
+  would regenerate: /home/andrei/IdeaProjects/wordpress-website/wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot
+
+summary: regenerated=1, skipped=0, failed=0

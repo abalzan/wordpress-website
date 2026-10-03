@@ -1,0 +1,24 @@
+# Stage 8 - preflight integrity capture
+
+UTC timestamp: 2026-10-01T09:38:28Z
+
+## git status --short -b
+## i18n...origin/i18n [ahead 3]
+?? docs/evidence/2026-10-01-stage-8-legacy-apply-endpoint-closure/
+
+## HEAD
+71438ca639642222e718f636395cdf2ac803b4b0
+i18n
+
+## engine core SHA-256 (the historical baseline target)
+baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4  wp-content/plugins/conexao-translation-rollout/includes/class-conexao-translation-rollout-engine.php
+expected: baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4
+
+## engine PLUGIN tree SHA-256 (all shipped files, sorted)
+f6085433b7ab4c3af9f264796a0c3a6b07ae86334f75a41b961e236f29b756c5  -
+
+## automation plugin tree SHA-256
+38ff2c3f29fed3d5b85a3d9f17be4942882f2d9c0827dd280931f469908383a8  -
+
+## provider implementation SHA-256
+9f4dcaf6af168f7e239df71921ff78296f557a63652a7c5afef7fee667a9c7df  wp-content/plugins/conexao-translation-automation/includes/class-conexao-translation-automation-provider-openai.php

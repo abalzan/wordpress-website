@@ -1,0 +1,25 @@
+### PHASE 14 — IDEMPOTENCE (second apply of the same scope)
+script: run-en-translation.php
+target: http://localhost:8080 (local, local)
+mode:   dry-run
+scope:  The en-guide / en-page / en-post / en-blog-page stages registered by the conexao-en-translation plugin. Dry-run by default; --apply creates the EN records; --remove deletes them. A PT record is only ever read.
+=== stage: en-blog-page (mode: dry-run, operation: run) ===
+  created=0 updated=0 skipped=1 removed=0 conflicts=0 errors=0 PT-drift=0
+    skipped      blog                                          EN translation already linked and verified
+  GATE PASS: eligible PT=1 with EN=1 missing EN=0 conflicts=0 PT drift=0
+summary: created=0, updated=0, skipped=1, removed=0, errors=0, conflicts=0, pt_changed=0, gate_failures=0
+
+--- and a second real --apply ---
+script: run-en-translation.php
+target: http://localhost:8080 (local, local)
+mode:   apply
+scope:  The en-guide / en-page / en-post / en-blog-page stages registered by the conexao-en-translation plugin. Dry-run by default; --apply creates the EN records; --remove deletes them. A PT record is only ever read.
+=== stage: en-blog-page (mode: apply, operation: run) ===
+  created=0 updated=0 skipped=1 removed=0 conflicts=0 errors=0 PT-drift=0
+    skipped      blog                                          EN translation already linked and verified
+  GATE PASS: eligible PT=1 with EN=1 missing EN=0 conflicts=0 PT drift=0
+summary: created=0, updated=0, skipped=1, removed=0, errors=0, conflicts=0, pt_changed=0, gate_failures=0
+
+--- record count unchanged? ---
+EN blog pages = 1
+all pages named blog = 2

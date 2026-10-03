@@ -1,0 +1,22 @@
+Stage M — i18n catalogue PRE-change state (Phase 8, before regeneration)
+Start SHA: ed9470517aabd9cf27939729d9cb19a855d4af45
+Generated: 2026-09-26
+
+Catalogues are generated files tracked in Git, so the exact pre-change content
+is recoverable with 'git checkout -- <path>'. Hashes recorded for proof.
+
+COMPONENT  SHA256                                                           
+conexao-br-irlanda 230eecd08e921bd1cb95f891ad7d584588fe874430736d1e0971cb560872a994 414 msgids
+conexao-data-model cf567095f44ebcc71e0f33b8c1377a7844b4d377e7228f6826e6372161a55989 5 msgids
+conexao-content 97d87dc7116b090bc58ccf19cd86b10fe2530a014d50c53cb8c2346dd4824087 6 msgids
+conexao-admin-ux ac966fcddff054a77b8ca0c639bc72a8c285c749e393dd06fcf2af40a22888b3 103 msgids
+conexao-event-runtime 7dafe353f9b47f9872c2ea6e35b340ad85b9ca502ec1b80b213ac10e655d7bfb 17 msgids
+conexao-event-importer 60d755e5e55d19384b6b23673b3124bd7c562016cb16d4959e03ca434ed46d84 385 msgids
+conexao-leisure-migration a55161830a324273a1770c2b8e03dde67d0ad9a7b1327a3fe438ad5460a31670 124 msgids
+conexao-sponsor-migration 370ef49978da2412e5cad136f07825206ba4301c0581a4d88465e1c941b2347d 53 msgids
+
+Translated catalogues that must NOT change (.po/.mo, hand-maintained):
+-rw-rw-rw-+    1 andrei andrei 32873 Sep 25 10:59 wp-content/themes/conexao-br-irlanda/languages/en_US.mo
+-rw-rw-rw-+    1 andrei andrei 54925 Sep 25 10:59 wp-content/themes/conexao-br-irlanda/languages/en_US.po
+-rw-rw-rw-+    1 andrei andrei 34091 Sep 25 10:59 wp-content/themes/conexao-br-irlanda/languages/pt_BR.mo
+-rw-rw-rw-+    1 andrei andrei 55808 Sep 25 10:59 wp-content/themes/conexao-br-irlanda/languages/pt_BR.po

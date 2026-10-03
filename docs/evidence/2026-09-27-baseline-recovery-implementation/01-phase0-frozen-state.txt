@@ -1,0 +1,41 @@
+# 01 — Phase 0: frozen state (controlled baseline recovery)
+
+## HEAD / branch / upstream
+HEAD:        bd81ba59d800970d6e1e6e542d76ccb664fdbd24
+branch:      i18n
+upstream:    origin/i18n -> 3cc6564666be9d64d883b653bd550555ee52ef3c
+date:        2026-09-27T20:42:43+01:00
+
+## Task named 597b04e as the destructive commit. Actual HEAD is bd81ba5:
+  bd81ba5 is a DOCS-ONLY child of 597b04e (adds the baseline-recovery assessment report + evidence + the Artigo report/evidence).
+  Verification: 0 non-docs file(s) in bd81ba5.
+
+## Ancestry
+597b04e parents: 597b04e085afb9d2651cb7906b43e2c2b551c2f1 b47d098857d2348feafb1071b8713c6a43359e05
+merge-base(b47d098,597b04e): b47d098857d2348feafb1071b8713c6a43359e05
+ancestry-path b47d098..HEAD:
+  bd81ba5 docs: add report on English `Artigo` label investigation on `/en/`
+  597b04e Refactor code structure for improved readability and maintainability
+
+## Working tree
+git status --short =>
+  ?? docs/evidence/2026-09-27-baseline-recovery-implementation/
+  (empty = clean; the previously-untracked Artigo + assessment artifacts are now COMMITTED in bd81ba5 and are intact.)
+
+## Unpushed commits (597b04e is NOT on origin/i18n => no production impact from the regression)
+  bd81ba5 docs: add report on English `Artigo` label investigation on `/en/`
+  597b04e Refactor code structure for improved readability and maintainability
+  b47d098 Add investigation report and SQL logs for `/en/lazer/` archive performance
+  b32fba3 Add the i18n catalogue freshness investigation report and evidence
+  88bdf22 Regenerate the stale theme i18n catalogue and repair the generator
+  8f07f30 Add regression tests for ARIA semantics in filter links and homepage content-type labels
+  8496245 Add tests for provider category filter and English label presentation
+
+## Docker
+context: default
+wordpress-website-db-1	Up 5 hours (healthy)
+wordpress-website-wordpress-1	Up About an hour
+
+## Scope confirmations
+  Flutter/mobile repository: NEVER accessed, inspected, built, tested or modified (out of scope per AGENTS.md).
+  Production writes/deploys: NONE. Only local Docker at http://localhost:8080 and local git objects.

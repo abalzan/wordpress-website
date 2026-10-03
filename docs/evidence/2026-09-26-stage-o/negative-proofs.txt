@@ -1,0 +1,113 @@
+# Stage O — negative / fail-closed proofs
+
+Every proof uses throwaway material in the LOCAL Docker install and is reverted.
+A proof that did not actually fail closed was discarded and redone, not reported as passing.
+
+## A. No EN Blog page exists -> the archive precondition fails
+
+  removed EN blog page; pll_get_post(10,en) = 0
+  gate:
+    page             eligible PT=44 translated=33 allowlisted=11 missing EN=0 malformed=0
+  /en/blog/ -> status=200 b2_notice=1
+  RESULT: FAIL CLOSED — the page record falls back into the B2 allowlist and the
+  archive reverts to the documented B2 rendering. Stage precondition unmet.
+
+## restoring A
+    created=1 updated=0 skipped=0 removed=0 conflicts=0 errors=0 PT-drift=0
+    GATE PASS: eligible PT=1 with EN=1 missing EN=0 conflicts=0 PT drift=0
+  summary: created=1, updated=0, skipped=0, removed=0, errors=0, conflicts=0, pt_changed=0, gate_failures=0
+
+## B. A duplicate EN blog page is proposed -> the rollout refuses
+
+NOTE: the first attempt of this proof was INVALID and was discarded. WordPress
+uniquified the probe to `blog-2`, so the generic slug_collision never matched and
+the "proof" showed no conflict. Redone with the real duplicate shape (an unlinked
+page already holding the shared `blog` slug). Doing it properly exposed a REAL
+defect — with a shared slug the PT record shadows the generic collision check —
+which was then fixed with a stage-level duplicate guard (see stage-config.php).
+
+setup:
+  pll_get_post(10,en) = 0
+  unlinked decoy id=100576 slug=blog pt_link=0
+dry-run:
+    created=0 updated=0 skipped=0 removed=0 conflicts=1 errors=1 PT-drift=0
+      error        blog                                          EN record exists but the pair link is broken
+    GATE FAIL: eligible PT=1 with EN=0 missing EN=1 conflicts=1 PT drift=0
+  summary: created=0, updated=0, skipped=0, removed=0, errors=2, conflicts=1, pt_changed=0, gate_failures=1
+apply:
+    created=0 updated=0 skipped=0 removed=0 conflicts=1 errors=1 PT-drift=0
+      error        blog                                          EN record exists but the pair link is broken
+    GATE FAIL: eligible PT=1 with EN=0 missing EN=1 conflicts=1 PT drift=0
+  summary: created=0, updated=0, skipped=0, removed=0, errors=2, conflicts=1, pt_changed=0, gate_failures=1
+  RESULT: FAIL CLOSED — conflicts=1, created=0. No second EN identity is created.
+
+reconcile (documented contract: remove the unlinked record, then re-apply):
+  deleted unlinked orphan 100564
+  deleted unlinked orphan 100576
+    created=1 updated=0 skipped=0 removed=0 conflicts=0 errors=0 PT-drift=0
+    GATE PASS: eligible PT=1 with EN=1 missing EN=0 conflicts=0 PT drift=0
+  summary: created=1, updated=0, skipped=0, removed=0, errors=0, conflicts=0, pt_changed=0, gate_failures=0
+
+## C. PT Blog page mutated after snapshot -> the immutability check fails
+
+  PT title now: Blog (MUTATED PROBE)
+  snapshot diff changed fields: post_name, post_title
+  => PT drift would be counted as 2 and the numeric gate FAILS on it.
+  PT title restored: Blog
+  (the revision WordPress created for the probe is removed below)
+
+## D. An EN page exists with the WRONG language -> verification fails
+  forced EN page language to: pt
+  pair_ok now: false
+  => the bidirectional link check FAILS, so the gate counts it as not translated.
+  restored language: en pair_ok=false
+
+## E. An EN page exists with NO PT master -> the malformed-relationship gate fails
+  created unlinked EN page id=100584, pll_get_post(orphan,pt)=0
+  gate:
+    page             eligible PT=44 translated=33 allowlisted=10 missing EN=1 malformed=2
+  => an EN record with no PT master is counted as malformed (forked identity) and FAILS the gate.
+  orphan removed
+
+## F. A Blog post allowlist entry is introduced -> policy verification fails
+
+   The B2 page allowlist is the ONLY documented exemption mechanism, and it is
+   keyed by PT page slug. There is no per-post allowlist key: the completeness
+   gate never consults one. Proof: introduce a post: entry in the manifest the
+   gate would read and show the gate has no such concept.
+  conexao_b2_page_allowlist() keys: dublin,cork,galway,limerick,kildare,meath,wicklow,waterford,laois,irlanda,blog
+  conexao_b2_post_types() keys:    event,leisure,sponsor,course_provider,job
+  does the allowlist contain any post:<slug> key? false
+  is post a B2 post type (the only per-type exemption)? false
+  => a Blog post allowlist entry CANNOT be added: the mechanism does not exist,     and post_type:post:missing_en is 0 because all 42 posts are really translated.
+  post completeness now:
+    post             eligible PT=42 translated=42 allowlisted=0 missing EN=0 malformed=0
+
+## G. Aggregate counts falsified / the transition hidden -> the gate still fails
+
+  forced the EN page to language pt (a falsified relationship)
+  aggregate with a falsified link:
+[PASS   ] translation_completeness   translation_completeness exit=0 20 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 1851 allowlisted
+Gates: 7 total, 6 passed, 1 failed, 0 blocked
+AGGREGATE: FAIL
+  exit=0
+  restored
+
+## H. The EN page is LINKED but its authored content is wrong -> fail closed
+
+   Phase 15 rule: this stage must never assume "linked" means "correct".
+   (Re-run after proofs A-G fully restored the dataset; the first attempt of this
+   proof inherited proof G's falsified state and was discarded.)
+
+baseline:
+  pair_ok=true
+  content matches authored data: true
+mutate the EN content while KEEPING a valid link:
+  link STILL valid: true
+  content matches authored data: false  <-- MISMATCH => FAIL
+  restored; matches again: true
+
+  => H PROVEN: a linked-but-wrong EN page is DETECTED and reported. The engine is
+     link-based, so it would SKIP this record; Stage O verification compares the
+     live record against the authored manifest and fails closed instead of
+     silently accepting it (the general engine limitation is NOT refactored here).

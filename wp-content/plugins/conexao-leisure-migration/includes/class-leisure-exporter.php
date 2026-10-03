@@ -67,6 +67,11 @@ class Conexao_Lazer_Exporter {
 		'_leisure_image_license',
 		'_leisure_image_attribution',
 		'_leisure_image_alt_text',
+		// STAGE 7 — English card-description translation layer (one authored
+		// English description per record, rendered only on /en/lazer/; see
+		// the theme's conexao_leisure_card_excerpt()). Language-suffixed meta
+		// on the SAME record — never a second identity.
+		'_leisure_excerpt_en',
 	);
 
 protected $export_taxonomies = array(

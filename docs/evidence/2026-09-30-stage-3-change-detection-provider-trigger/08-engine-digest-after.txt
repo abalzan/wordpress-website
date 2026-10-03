@@ -1,0 +1,3 @@
+da977b131b3e91588848cb8e7595d5378e5ba07fe49e804094732b46da604404  wp-content/plugins/conexao-translation-rollout/includes/class-conexao-translation-rollout-admin.php
+baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4  wp-content/plugins/conexao-translation-rollout/includes/class-conexao-translation-rollout-engine.php
+33fe1a2e705f32b0c3c9e8ad8fd5e930197f4c9d1a18ac79a6ee152f3affb20d  wp-content/plugins/conexao-translation-rollout/conexao-translation-rollout.php

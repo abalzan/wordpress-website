@@ -1,0 +1,238 @@
+{
+    "found": 30,
+    "created": 30,
+    "updated": 0,
+    "unchanged": 0,
+    "duplicates": 0,
+    "skipped": 0,
+    "skipped_past": 0,
+    "skipped_invalid_date": 0,
+    "failed": 0,
+    "new": 30,
+    "errors": 0,
+    "status": "success",
+    "fatal_errors": [],
+    "event_results": [
+        {
+            "title": "What Were You Thinking Of Darling? (would create)",
+            "post_id": 0,
+            "outcome": "created",
+            "message": "Event created.",
+            "severity": "success"
+        },
+        {
+            "title": "Beginners Crochet Classes At Portlaoise Library (would create)",
+            "post_id": 0,
+            "outcome": "created",
+            "message": "Event created.",
+            "severity": "success"
+        },
+        {
+            "title": "Bootcamp with Malone Fitness (would create)",
+            "post_id": 0,
+            "outcome": "created",
+            "message": "Event created.",
+            "severity": "success"
+        },
+        {
+            "title": "Pilates Programme with Sabrina (would create)",
+            "post_id": 0,
+            "outcome": "created",
+            "message": "Event created.",
+            "severity": "success"
+        },
+        {
+            "title": "Chair Yoga At Portlaoise Library (would create)",
+            "post_id": 0,
+            "outcome": "created",
+            "message": "Event created.",
+            "severity": "success"
+        },
+        {
+            "title": "Avenue Q Hit Musical (would create)",
+            "post_id": 0,
+            "outcome": "created",
+            "message": "Event created.",
+            "severity": "success"
+        },
+        {
+            "title": "Imposter Art Exhibition (would create)",
+            "post_id": 0,
+            "outcome": "created",
+            "message": "Event created.",
+            "severity": "success"
+        },
+        {
+            "title": "Shared Reading At Mountmellick Library (would create)",
+            "post_id": 0,
+            "outcome": "created",
+            "message": "Event created.",
+            "severity": "success"
+        },
+        {
+            "title": "Vittorio Angelone Extra Show Added (would create)",
+            "post_id": 0,
+            "outcome": "created",
+            "message": "Event created.",
+            "severity": "success"
+        },
+        {
+            "title": "80s & 90s Music Bingo Night (would create)",
+            "post_id": 0,
+            "outcome": "created",
+            "message": "Event created.",
+            "severity": "success"
+        },
+        {
+            "title": "Vittorio Angelone You Can\u2019t Say Nothing Any More (would create)",
+            "post_id": 0,
+            "outcome": "created",
+            "message": "Event created.",
+            "severity": "success"
+        },
+        {
+            "title": "The Roadhouse Doors At Kavanaghs Bar & Venue (would create)",
+            "post_id": 0,
+            "outcome": "created",
+            "message": "Event created.",
+            "severity": "success"
+        },
+        {
+            "title": "Happy Hiking Hill Skills Day (would create)",
+            "post_id": 0,
+            "outcome": "created",
+            "message": "Event created.",
+            "severity": "success"
+        },
+        {
+            "title": "Kirtan Practice At Arunachala (would create)",
+            "post_id": 0,
+            "outcome": "created",
+            "message": "Event created.",
+            "severity": "success"
+        },
+        {
+            "title": "Bingo Loco At Midlands Park Hotel (would create)",
+            "post_id": 0,
+            "outcome": "created",
+            "message": "Event created.",
+            "severity": "success"
+        },
+        {
+            "title": "Mick Creagh One Man Show (would create)",
+            "post_id": 0,
+            "outcome": "created",
+            "message": "Event created.",
+            "severity": "success"
+        },
+        {
+            "title": "Transmitter At Kavanaghs Bar & Venue (would create)",
+            "post_id": 0,
+            "outcome": "created",
+            "message": "Event created.",
+            "severity": "success"
+        },
+        {
+            "title": "Laois Forestry Rally 2026 (would create)",
+            "post_id": 0,
+            "outcome": "created",
+            "message": "Event created.",
+            "severity": "success"
+        },
+        {
+            "title": "Abbeyleix Applefest 2026 (would create)",
+            "post_id": 0,
+            "outcome": "created",
+            "message": "Event created.",
+            "severity": "success"
+        },
+        {
+            "title": "The Magnificent Interiors Of Emo Court (would create)",
+            "post_id": 0,
+            "outcome": "created",
+            "message": "Event created.",
+            "severity": "success"
+        },
+        {
+            "title": "Assembly on Alcohol Harms (would create)",
+            "post_id": 0,
+            "outcome": "created",
+            "message": "Event created.",
+            "severity": "success"
+        },
+        {
+            "title": "Sensory Play At Portarlington Library (would create)",
+            "post_id": 0,
+            "outcome": "created",
+            "message": "Event created.",
+            "severity": "success"
+        },
+        {
+            "title": "The Shaking Bog Presents Riverine (would create)",
+            "post_id": 0,
+            "outcome": "created",
+            "message": "Event created.",
+            "severity": "success"
+        },
+        {
+            "title": "Introduction to Ayurveda (would create)",
+            "post_id": 0,
+            "outcome": "created",
+            "message": "Event created.",
+            "severity": "success"
+        },
+        {
+            "title": "Akira Film At Dunamaise Arts Centre (would create)",
+            "post_id": 0,
+            "outcome": "created",
+            "message": "Event created.",
+            "severity": "success"
+        },
+        {
+            "title": "Weaving And Nature Print Workshop (would create)",
+            "post_id": 0,
+            "outcome": "created",
+            "message": "Event created.",
+            "severity": "success"
+        },
+        {
+            "title": "Sketchbook Club At Portlaoise Library (would create)",
+            "post_id": 0,
+            "outcome": "created",
+            "message": "Event created.",
+            "severity": "success"
+        },
+        {
+            "title": "Irish Circle At Portlaoise Library (would create)",
+            "post_id": 0,
+            "outcome": "created",
+            "message": "Event created.",
+            "severity": "success"
+        },
+        {
+            "title": "Autumn Yoga & Ayurveda Evening (would create)",
+            "post_id": 0,
+            "outcome": "created",
+            "message": "Event created.",
+            "severity": "success"
+        },
+        {
+            "title": "Regional Gathering How To Get The Most From Your Membership (would create)",
+            "post_id": 0,
+            "outcome": "created",
+            "message": "Event created.",
+            "severity": "success"
+        }
+    ],
+    "dry_run": true,
+    "source_name": "Laois Tourism",
+    "address_audit": {
+        "found": 0,
+        "unchanged": 0,
+        "changed": 0,
+        "no_source_address": 0,
+        "no_address": 30,
+        "ambiguous": 0,
+        "skipped": 0
+    }
+}

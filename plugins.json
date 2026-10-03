@@ -1,0 +1,146 @@
+{
+  "$schema_version": 1,
+  "description": "The single authoritative plugin registry for the Conexao BR Irlanda WordPress repository (engineering standard 1.8). Load order, dependency validation, production activation order, release build inclusion, local Compose mounts, lifecycle status and documentation metadata are ALL derived from this file by scripts/generate-registry-docs.php. Do not hand-edit any generated list: edit this file and re-run the generator.",
+  "conventions": {
+    "load_order": "Activation/load order. Dependencies always precede their dependents.",
+    "class": "platform = production runtime | tooling = local-only operational tooling | rollout = one-shot translation rollout plugin",
+    "status": "active = in the current lifecycle | retired = rollout already applied, kept for history only",
+    "production": "Part of the production steady state. The production activation order is the filtered subset of load_order where production is true.",
+    "build": "Included in release plugin ZIPs by scripts/build-plugins-zip.sh. A retired rollout MUST never be build-enabled.",
+    "mount": "Bind-mounted into the local Compose stack by compose.yaml. Local development only; it never implies production activation.",
+    "version_source": "The plugin main file whose WordPress header 'Version' field is authoritative. Versions are deliberately NOT duplicated here.",
+    "documentation": "Path to the plugin's documentation file, which carries a generated lifecycle metadata block."
+  },
+  "generator": "scripts/generate-registry-docs.php",
+  "load_order": [
+    {
+      "slug": "conexao-data-model",
+      "name": "Conexão BR Irlanda Data Model",
+      "class": "platform",
+      "status": "active",
+      "production": true,
+      "build": true,
+      "mount": true,
+      "dependencies": [],
+      "version_source": "wp-content/plugins/conexao-data-model/conexao-data-model.php",
+      "documentation": "docs/plugins/conexao-data-model.md"
+    },
+    {
+      "slug": "conexao-content",
+      "name": "Conexão BR Irlanda - Content",
+      "class": "platform",
+      "status": "active",
+      "production": true,
+      "build": true,
+      "mount": true,
+      "dependencies": [],
+      "version_source": "wp-content/plugins/conexao-content/conexao-content.php",
+      "documentation": "docs/plugins/conexao-content.md"
+    },
+    {
+      "slug": "conexao-admin-ux",
+      "name": "Conexão BR Irlanda — Admin UX",
+      "class": "platform",
+      "status": "active",
+      "production": true,
+      "build": true,
+      "mount": true,
+      "dependencies": [],
+      "version_source": "wp-content/plugins/conexao-admin-ux/conexao-admin-ux.php",
+      "documentation": "docs/plugins/conexao-admin-ux.md"
+    },
+    {
+      "slug": "conexao-event-runtime",
+      "name": "Conexão BR Irlanda — Event Runtime",
+      "class": "platform",
+      "status": "active",
+      "production": true,
+      "build": true,
+      "mount": true,
+      "dependencies": [
+        "conexao-data-model"
+      ],
+      "version_source": "wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php",
+      "documentation": "docs/plugins/conexao-event-runtime.md"
+    },
+    {
+      "slug": "conexao-event-importer",
+      "name": "Conexão BR Irlanda — Event Importer (Local Tools)",
+      "class": "tooling",
+      "status": "active",
+      "production": false,
+      "build": true,
+      "mount": true,
+      "dependencies": [
+        "conexao-data-model",
+        "conexao-event-runtime"
+      ],
+      "version_source": "wp-content/plugins/conexao-event-importer/conexao-event-importer.php",
+      "documentation": "docs/plugins/conexao-event-importer.md"
+    },
+    {
+      "slug": "conexao-leisure-migration",
+      "name": "Conexão BR Irlanda — Lazer Migration",
+      "class": "tooling",
+      "status": "active",
+      "production": false,
+      "build": true,
+      "mount": true,
+      "dependencies": [],
+      "version_source": "wp-content/plugins/conexao-leisure-migration/conexao-leisure-migration.php",
+      "documentation": "docs/plugins/conexao-leisure-migration.md"
+    },
+    {
+      "slug": "conexao-sponsor-migration",
+      "name": "Conexão BR Irlanda — Apoiadores Migration",
+      "class": "tooling",
+      "status": "active",
+      "production": false,
+      "build": true,
+      "mount": true,
+      "dependencies": [],
+      "version_source": "wp-content/plugins/conexao-sponsor-migration/conexao-sponsor-migration.php",
+      "documentation": "docs/plugins/conexao-sponsor-migration.md"
+    },
+    {
+      "slug": "conexao-translation-rollout",
+      "name": "Conexão BR Irlanda — Translation Rollout Engine (Stage H, promoted to platform in Stage 2)",
+      "class": "platform",
+      "status": "active",
+      "production": true,
+      "build": true,
+      "mount": true,
+      "dependencies": [],
+      "version_source": "wp-content/plugins/conexao-translation-rollout/conexao-translation-rollout.php",
+      "documentation": "docs/plugins/conexao-translation-rollout.md"
+    },
+    {
+      "slug": "conexao-en-translation",
+      "name": "Conexão BR Irlanda — EN Translation (Stage M)",
+      "class": "tooling",
+      "status": "active",
+      "production": false,
+      "build": false,
+      "mount": true,
+      "dependencies": [
+        "conexao-translation-rollout"
+      ],
+      "version_source": "wp-content/plugins/conexao-en-translation/conexao-en-translation.php",
+      "documentation": "docs/plugins/conexao-en-translation.md"
+    },
+    {
+      "slug": "conexao-translation-automation",
+      "name": "Conexão BR Irlanda — Translation Automation (permanent platform plugin)",
+      "class": "platform",
+      "status": "active",
+      "production": true,
+      "build": true,
+      "mount": true,
+      "dependencies": [
+        "conexao-translation-rollout"
+      ],
+      "version_source": "wp-content/plugins/conexao-translation-automation/conexao-translation-automation.php",
+      "documentation": "docs/plugins/conexao-translation-automation.md"
+    }
+  ]
+}

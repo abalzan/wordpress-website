@@ -1,7 +1,22 @@
 # Conexão Admin UX
 
+<!-- BEGIN GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
+| | |
+|---|---|
+| **Status** | active |
+| **Class** | platform |
+| **Production** | yes |
+| **Build** | yes |
+| **Compose mount** | yes |
+| **Dependencies** | none |
+| **Version** | 1.0.7 (authoritative source: `wp-content/plugins/conexao-admin-ux/conexao-admin-ux.php` header) |
+| **Registry** | [`plugins.json`](../../plugins.json) |
+
+> **Production platform plugin.** Part of the production steady state.
+<!-- END GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
+
 - **Path**: `wp-content/plugins/conexao-admin-ux/`
-- **Version**: 1.0.6
+- **Version**: 1.0.7
 - **Purpose**: Professional, reusable CMS admin experience for all custom content types. Replaces generic meta boxes with structured sections, clear statuses, bulk actions, duplicate/archive workflows, dashboard summaries, and leisure image management.
 
 ## Responsibilities
@@ -223,6 +238,26 @@ Repeater behavior:
 - Storage is a single array meta `_sponsor_contacts` owned by
   `Conexao_Data_Model_Contacts` (see the data-model plugin docs). Empty
   repeaters delete the meta entirely.
+
+## Editorial translation-state indicator (Stage 3.2)
+
+`includes/class-translation-state.php` (`Conexao_Admin_Ux_Translation_State`) is
+the minimal bilingual editorial signal — NOT a workflow engine (no statuses,
+assignments or notifications):
+
+- State model per Polylang-translatable record: **missing** (no EN translation)
+  / **current** / **outdated** (the EN record carries `_translation_outdated`).
+- Documented rule behind the flag (derived from real edit events, never
+  timestamps or content length): saving the PT source flags every linked EN
+  translation outdated (importer updates included — a source change invalidates
+  the translation); saving an EN translation clears its own flag; creating a
+  translation starts clean. The PT master never carries the flag.
+- Surfaces: an `EN` column on the admin list of every translated post type and
+  a "Tradução (EN)" editor meta box — PT records show the EN state, EN records
+  show their relationship to the PT source. Full no-op without Polylang.
+- Admin-only by construction: the meta is never registered for REST, no
+  front-end file reads it, and no SEO/routing decision consumes it.
+
 
 ## Admin Pages
 

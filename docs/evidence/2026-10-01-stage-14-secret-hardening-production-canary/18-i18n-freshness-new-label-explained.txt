@@ -1,0 +1,40 @@
+STAGE L AGGREGATE - i18n_freshness: the '1 new' LABEL, EXPLAINED
+
+scripts/verify-permanent-gates.py reports:
+  [FAIL] i18n_freshness  exit=1  8 passed, 3 failed, 3 violation(s) (2 pre-existing, 1 new)
+  AGGREGATE: FAIL
+
+The '1 new' label is NOT a Stage 14 regression. Established by:
+
+  1. The three failing catalogues are the KNOWN set, unchanged:
+       conexao-br-irlanda, conexao-content, conexao-event-runtime.
+
+  2. The gate reads GIT COMMIT TIMESTAMPS, not filesystem mtimes:
+       verify-i18n-freshness.py:127  git log -1 --format=%ct -- <path>
+     Stage 14's changes are UNCOMMITTED, so they carry no commit
+     timestamp and are structurally invisible to this gate.
+
+  3. Their file timestamps predate Stage 14 by days:
+       conexao-content.pot           2026-09-29 15:31
+       conexao-content.php          2026-09-29 17:07
+       conexao-event-runtime.pot    2026-09-29 15:31
+       conexao-event-runtime.php   2026-09-29 17:07
+
+  4. The plugin Stage 14 DID change is NOT among the failures, and the
+     change adds no translatable string (0 i18n calls in the modified
+     file), so it cannot make a catalogue stale.
+
+  5. The 'new' classification comes from the recorded baseline
+     (tests/baseline/permanent-gates.json, UNTOUCHED by Stage 14), which
+     lists 6 stale-catalogue keys and does NOT include conexao-content:
+       baseline: theme, data-model, admin-ux, event-runtime,
+                 event-importer, leisure-migration
+       actual  : theme, conexao-content, event-runtime
+     conexao-content therefore falls outside the baseline list and is
+     labelled 'new' purely by that pre-existing mismatch.
+
+Conclusion: the i18n_freshness condition is carried forward exactly as
+Stage 13 recorded it. No catalogue was regenerated to obtain a green
+result, and no failure was reclassified. The six other permanent gates
+pass (taxonomy, translation_completeness, cache_scoping x2,
+redirect_precedence, documentation_drift).

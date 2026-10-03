@@ -1,0 +1,21 @@
+=== Attribution: are the remaining failures Stage 4 regressions? ===
+
+NO. Controlled experiment — every Stage 4 file was MOVED ASIDE
+(not stashed), returning the tree to the exact Stage 3 state, and the
+three failing suites were re-run:
+
+                                        WITH Stage 4      AT STAGE 3
+  test-en-jobs-shared-slug.php        38 pass, 1 fail   38 pass, 1 fail
+  test-leisure-card-excerpt-language  40 pass, 5 fail   40 pass, 5 fail
+  acceptance/verify-routing-http      91 pass, 1 fail   91 pass, 1 fail
+
+IDENTICAL. All three are pre-existing LOCAL-DATA conditions.
+
+  - The two in-process suites both read the leisure dataset, in which
+    'dwyer-mcallister-cottage' was deliberately PT-drifted after its
+    English was authored, so the stage's own PT-drift guard correctly
+    reports missing_en=1 / conflicts=1. That is the engine working.
+  - verify-routing-http reports the same shared-slug newsletter
+    condition (en_id 509) as test-en-jobs-shared-slug.
+
+NOT MASKED, NOT REGENERATED, NOT 'FIXED' BY TOUCHING THE ENGINE.

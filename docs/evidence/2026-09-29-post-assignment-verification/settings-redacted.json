@@ -1,0 +1,50 @@
+{
+ "Blogroll Recommendations": null,
+ "cookie_consent_template": null,
+ "date_format": "F j, Y",
+ "default_category": 1749,
+ "default_comment_status": "open",
+ "default_ping_status": "open",
+ "default_post_format": "0",
+ "description": "",
+ "email": "andreibalzan@gmail.com",
+ "gutenberg-experiments": {
+  "gutenberg-guidelines": true,
+  "gutenberg-react-19": true
+ },
+ "jetpack-social-note": false,
+ "jetpack-social_show_pricing_page": true,
+ "jetpack_ai_agents_enabled": false,
+ "jetpack_ai_feature_clip_enabled": true,
+ "jetpack_ai_image_editor_enabled": true,
+ "jetpack_ai_seo_enabled": true,
+ "jetpack_ai_writing_assistant_enabled": true,
+ "jetpack_premium_analytics_enabled": false,
+ "jetpack_search_ai_behavior_instructions": "",
+ "jetpack_social_image_generator_settings": {
+  "enabled": false,
+  "template": "highway"
+ },
+ "jetpack_social_message_template": "{title}\n\n{excerpt}\n\n{url}",
+ "jetpack_social_notes_config": {
+  "append_link": true
+ },
+ "jetpack_social_utm_settings": {
+  "enabled": false
+ },
+ "language": "",
+ "page_for_posts": 10,
+ "page_for_privacy_policy": 0,
+ "page_on_front": 9,
+ "posts_per_page": 10,
+ "show_on_front": "page",
+ "site_icon": 11158,
+ "site_logo": 11108,
+ "start_of_week": 1,
+ "time_format": "g:i a",
+ "timezone": "Europe/Dublin",
+ "title": "Conex\u00e3o BR",
+ "url": "https://conexaobr.ie",
+ "use_smilies": true,
+ "wordpress_api_key": "<redacted>"
+}

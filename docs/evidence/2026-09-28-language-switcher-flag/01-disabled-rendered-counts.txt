@@ -1,0 +1,12 @@
+# Verification: language switcher exposure flag
+
+Date: 2026-09-28
+Committed default: CONEXAO_LANGUAGE_SWITCHER_ENABLED = false
+
+## Rendered HTML counts while DISABLED (grep -c over live HTTP)
+  / -> language-switcher occurrences: 0
+  /guias/ -> language-switcher occurrences: 0
+  /empregos/ -> language-switcher occurrences: 0
+  /en/ -> language-switcher occurrences: 0
+  /en/guias/ -> language-switcher occurrences: 0
+  /en/empregos/ -> language-switcher occurrences: 0

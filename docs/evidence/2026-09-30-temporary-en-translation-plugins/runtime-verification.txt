@@ -1,0 +1,109 @@
+TEMPORARY EN TRANSLATION PLUGINS — runtime verification (read-only)
+site:   http://localhost:8080
+engine: v1.1.0
+
+  [PASS] the shared engine class is loaded (conexao-translation-rollout active, includes resolved)
+  [PASS] engine exposes Conexao_Translation_Rollout_Engine::register_stage()
+  [PASS] engine exposes Conexao_Translation_Rollout_Engine::registered_stages()
+  [PASS] engine exposes Conexao_Translation_Rollout_Engine::get_stage()
+  [PASS] engine exposes Conexao_Translation_Rollout_Engine::validate_manifest()
+  [PASS] engine exposes Conexao_Translation_Rollout_Engine::build_plan()
+  [PASS] engine exposes Conexao_Translation_Rollout_Engine::calculate_gate()
+  [PASS] engine exposes Conexao_Translation_Rollout_Engine::run()
+  [PASS] EN stage layer exposes conexao_en_translation_stage_ids()
+  [PASS] EN stage layer exposes conexao_en_translation_post_types()
+  [PASS] EN stage layer exposes conexao_en_translation_engine_config()
+  [PASS] EN stage layer exposes conexao_en_translation_stage_manifest()
+  [PASS] EN stage layer exposes conexao_en_translation_shared_page_slug_for()
+  [PASS] EN stage layer exposes conexao_en_translation_shared_page_slug_filter()
+  [PASS] EN stage layer exposes conexao_en_translation_with_shared_page_slug()
+  [PASS] EN stage layer exposes conexao_en_translation_blog_page_config()
+  [PASS] EN stage layer exposes conexao_en_translation_jobs_page_config()
+  [PASS] EN stage layer exposes conexao_en_translation_leisure_description_config()
+  [PASS] EN stage layer exposes conexao_en_translation_course_provider_description_config()
+  [PASS] both plugins resolved their own directory constants from the installed copies
+
+STAGE SET
+  [PASS] the plugin declares exactly seven current stages (got 7)
+  [PASS] the declared stage set is exactly the seven current stages
+  [PASS] stage en-guide is REGISTERED with the shared engine
+  [PASS] stage en-page is REGISTERED with the shared engine
+  [PASS] stage en-post is REGISTERED with the shared engine
+  [PASS] stage en-blog-page is REGISTERED with the shared engine
+  [PASS] stage en-jobs-page is REGISTERED with the shared engine
+  [PASS] stage en-leisure-description is REGISTERED with the shared engine
+  [PASS] stage en-course-provider-description is REGISTERED with the shared engine
+  [PASS] no obsolete or retired stage is registered by the EN plugin
+  [PASS] en-event does not exist: event/sponsor/job stay B2 and stage-less
+  [PASS] en-sponsor does not exist: event/sponsor/job stay B2 and stage-less
+  [PASS] en-job does not exist: event/sponsor/job stay B2 and stage-less
+
+MANIFEST VALIDATION (engine validate_manifest + build_plan)
+  [PASS] stage en-guide ships a non-empty authored manifest (51 record(s))
+  [PASS] validate_manifest() accepts the en-guide manifest
+  [PASS] build_plan() returns a plan for en-guide
+  [PASS] stage en-page ships a non-empty authored manifest (31 record(s))
+  [PASS] validate_manifest() accepts the en-page manifest
+  [PASS] build_plan() returns a plan for en-page
+  [PASS] stage en-post ships a non-empty authored manifest (43 record(s))
+  [PASS] validate_manifest() accepts the en-post manifest
+  [PASS] build_plan() returns a plan for en-post
+  [PASS] stage en-blog-page ships a non-empty authored manifest (1 record(s))
+  [PASS] validate_manifest() accepts the en-blog-page manifest
+  [PASS] build_plan() returns a plan for en-blog-page
+  [PASS] stage en-jobs-page ships a non-empty authored manifest (1 record(s))
+  [PASS] validate_manifest() accepts the en-jobs-page manifest
+  [PASS] build_plan() returns a plan for en-jobs-page
+  [PASS] stage en-leisure-description ships a non-empty authored manifest (289 record(s))
+  [PASS] validate_manifest() accepts the en-leisure-description manifest
+  [PASS] build_plan() returns a plan for en-leisure-description
+  [PASS] stage en-course-provider-description ships a non-empty authored manifest (10 record(s))
+  [PASS] validate_manifest() accepts the en-course-provider-description manifest
+  [PASS] build_plan() returns a plan for en-course-provider-description
+
+B1 / B2 CLASSIFICATION
+  [PASS] en-guide is a B1 record stage: creates linked EN records, declares no B2 field constant
+  [PASS] en-page is a B1 record stage: creates linked EN records, declares no B2 field constant
+  [PASS] en-post is a B1 record stage: creates linked EN records, declares no B2 field constant
+  [PASS] en-blog-page is a B1 record stage: creates linked EN records, declares no B2 field constant
+  [PASS] en-jobs-page is a B1 record stage: creates linked EN records, declares no B2 field constant
+  [PASS] en-leisure-description declares its B2 field constant CONEXAO_EN_LEISURE_DESCRIPTION_META = _leisure_excerpt_en
+  [PASS] en-leisure-description writes to _leisure_excerpt_en, the documented B2 field
+  [PASS] en-leisure-description writes only to an EN-namespaced _meta key, never a PT field
+  [PASS] en-course-provider-description declares its B2 field constant CONEXAO_EN_COURSE_PROVIDER_DESCRIPTION_META = _provider_excerpt_en
+  [PASS] en-course-provider-description writes to _provider_excerpt_en, the documented B2 field
+  [PASS] en-course-provider-description writes only to an EN-namespaced _meta key, never a PT field
+
+TAXONOMY CAPABILITY
+  [PASS] en-guide declares the engine taxonomy callback and it resolves (conexao_en_translation_guide_taxonomy_run)
+  [PASS] en-guide declares the taxonomy gate callback and it resolves
+  [PASS] en-page declares no taxonomy callback: only en-guide creates EN terms
+  [PASS] en-post declares no taxonomy callback: only en-guide creates EN terms
+  [PASS] en-blog-page declares no taxonomy callback: only en-guide creates EN terms
+  [PASS] en-jobs-page declares no taxonomy callback: only en-guide creates EN terms
+  [PASS] the authored EN taxonomy data is bundled with the plugin and resolves (13 term(s))
+
+SHARED-SLUG POLICY
+  [PASS] en-page declares the shared slug "newsletter"
+  [PASS] en-blog-page declares the shared slug "blog"
+  [PASS] en-jobs-page declares the shared slug "empregos"
+  [PASS] en-guide declares NO shared slug, so no uniqueness exception is armed for it
+  [PASS] en-post declares NO shared slug, so no uniqueness exception is armed for it
+  [PASS] en-leisure-description declares NO shared slug, so no uniqueness exception is armed for it
+  [PASS] en-course-provider-description declares NO shared slug, so no uniqueness exception is armed for it
+  [PASS] the en-page manifest authors the newsletter row
+
+NO SECOND LIFECYCLE
+  [PASS] exactly ONE class owns the translation lifecycle: Conexao_Translation_Rollout_Engine
+  [PASS] the Admin class is the engine plugin's wp-admin screen and owns no lifecycle step
+  [PASS] no second engine entry point exists (conexao_translation_rollout() is undefined)
+  [PASS] no second engine entry point exists (conexao_rollout_run() is undefined)
+  [PASS] no second engine entry point exists (en_translation_rollout() is undefined)
+  [PASS] calculate_gate() works standalone, without Engine::run()
+  [PASS] the standalone gate correctly reports FAIL for 1 eligible PT / 0 EN
+
+-----------------------------------------------------------------
+assertions: 87 total, 87 passed, 0 failed
+Engine::run() calls by this verification: 0
+posts created: 0   terms created: 0   options written: 0   links created: 0
+-----------------------------------------------------------------

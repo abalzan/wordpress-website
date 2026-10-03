@@ -1,0 +1,6 @@
+== BYTE-FOR-BYTE page comparison: catalogue change BEFORE vs AFTER ==
+  /  IDENTICAL (70511 bytes)
+  /en/  IDENTICAL (69112 bytes)
+  /en/cursos/  IDENTICAL (43007 bytes)
+  /en/lazer/  IDENTICAL (43574 bytes)
+  /en/eventos/  IDENTICAL (43191 bytes)

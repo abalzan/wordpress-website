@@ -1,0 +1,19 @@
+Stage M — EN orphan fixture removal (Phase 3)
+Generated: 2026-09-26
+
+FINDING: the single malformed EN->PT relationship is EN guide id 22184
+  slug=stage32-editorial-translation  title=[STAGE32-EDITORIAL] translation
+  body="Stage 3.2 editorial state fixture."  pt_master=0
+  meta: none   taxonomy terms: none   featured image: none
+  its own 'en' link points at ITSELF (22184 -> 22184)
+  reachable: HTTP 200 at /en/guias/stage32-editorial-translation/ and in the sitemap
+
+It is a one-shot test fixture from migration stage 3.2, already documented as
+pre-existing debt in docs/plugins/conexao-guide-translation.md. It is repaired by
+REMOVAL, not by fabricating a PT master (which would create fake editorial content).
+
+SNAPSHOT: en-orphan-fixture-snapshot.json (full pre-change record: title, body,
+excerpt, status, dates, author, meta, taxonomy assignments).
+RESTORE : php scripts/remove-en-orphan-fixtures.php --apply --restore <snapshot>
+
+RESULT  : guide malformed relationships 1 -> 0

@@ -32,15 +32,12 @@
  */
 
 // --- Bootstrap WordPress (plugins + theme option). ---
-$wp_load = dirname( dirname( dirname( dirname( __DIR__ ) ) ) ) . '/wp-load.php';
-if ( file_exists( $wp_load ) ) {
-	require_once $wp_load;
-} else {
-	require_once '/var/www/html/wp-load.php';
-}
 
 // Load the active theme so the helpers under test are defined (the active
 // theme is not auto-loaded by wp-load.php in a CLI context).
+// Shared Stage E test bootstrap: the only place allowed to locate wp-load.php.
+require_once dirname( __DIR__, 4 ) . '/tests/bootstrap.php';
+
 $theme_functions = get_template_directory() . '/functions.php';
 if ( file_exists( $theme_functions ) ) {
 	require_once $theme_functions;
@@ -51,21 +48,6 @@ $failed        = 0;
 $created_posts = array();
 $created_terms = array();
 
-function t_assert( $condition, $message ) {
-	global $passed, $failed;
-	if ( $condition ) {
-		$passed++;
-		echo "  PASS: {$message}\n";
-	} else {
-		$failed++;
-		echo "  FAIL: {$message}\n";
-	}
-}
-
-function t_section( $title ) {
-	echo "\n=== {$title} ===\n";
-}
-
 /** Get or create a temporary term; returns the slug. */
 function gbf_test_term( $name, $slug ) {
 	global $created_terms;
@@ -75,7 +57,6 @@ function gbf_test_term( $name, $slug ) {
 	}
 	$inserted = wp_insert_term( $name, 'conexao_category', array( 'slug' => $slug ) );
 	if ( is_wp_error( $inserted ) ) {
-		echo "  FATAL: could not create conexao_category term: {$inserted->get_error_message()}\n";
 		exit( 1 );
 	}
 	$created_terms[] = (int) $inserted['term_id'];
@@ -94,7 +75,6 @@ function gbf_test_guide( $title, $category_slugs = array() ) {
 		)
 	);
 	if ( is_wp_error( $post_id ) || ! $post_id ) {
-		echo "  FATAL: could not create guide post\n";
 		exit( 1 );
 	}
 	$created_posts[] = (int) $post_id;
@@ -174,20 +154,20 @@ $guides_url = conexao_get_guides_archive_url();
 // ---------------------------------------------------------------------------
 // 1. Breadcrumb data — single term (acceptance example: Moradia)
 // ---------------------------------------------------------------------------
-t_section( 'Breadcrumb data for a single-category guide' );
+test_section( 'Breadcrumb data for a single-category guide' );
 
 gbf_enter_singular_guide( $guide_alpha );
 $crumbs = conexao_seo_breadcrumb_data();
 
-t_assert( is_array( $crumbs ) && count( $crumbs ) >= 4, 'breadcrumb trail contains Início → Guias Práticos → category → title' );
+assert_true( is_array( $crumbs ) && count( $crumbs ) >= 4, 'breadcrumb trail contains Início → Guias Práticos → category → title' );
 
 if ( is_array( $crumbs ) ) {
 	$first = $crumbs[0];
-	t_assert( 'Início' === $first['name'] && home_url( '/' ) === $first['url'], 'A. first crumb is Início linking to the homepage' );
+	assert_true( 'Início' === $first['name'] && home_url( '/' ) === $first['url'], 'A. first crumb is Início linking to the homepage' );
 
 	$second = $crumbs[1];
-	t_assert( 'Guias Práticos' === $second['name'], 'B. second crumb label is Guias Práticos' );
-	t_assert( $second['url'] === $guides_url, 'B. Guias Práticos crumb links to the Guias archive' );
+	assert_true( 'Guias Práticos' === $second['name'], 'B. second crumb label is Guias Práticos' );
+	assert_true( $second['url'] === $guides_url, 'B. Guias Práticos crumb links to the Guias archive' );
 
 	// Category crumb: find it by name.
 	$cat_crumb = null;
@@ -196,18 +176,18 @@ if ( is_array( $crumbs ) ) {
 			$cat_crumb = $crumb;
 		}
 	}
-	t_assert( null !== $cat_crumb, 'C. category crumb exists for a categorized guide' );
+	assert_true( null !== $cat_crumb, 'C. category crumb exists for a categorized guide' );
 
 	if ( $cat_crumb ) {
 		$expected_url = conexao_get_guide_category_url( $slug_alpha, $slug_alpha );
-		t_assert( $cat_crumb['url'] === $expected_url, 'D. category crumb href equals the shared filter URL helper output' );
-		t_assert( false !== strpos( $cat_crumb['url'], 'guias/' ) && false !== strpos( $cat_crumb['url'], 'categoria=' . $slug_alpha ), 'D. href points to the Guias archive with the category filter encoded' );
-		t_assert( false === strpos( $cat_crumb['url'], '/categories/' ), 'D. href does NOT use the WordPress taxonomy archive URL (/categories/slug/)' );
-		t_assert( get_permalink( $guide_alpha ) !== $cat_crumb['url'], 'D. category crumb is not the current guide page' );
+		assert_true( $cat_crumb['url'] === $expected_url, 'D. category crumb href equals the shared filter URL helper output' );
+		assert_true( false !== strpos( $cat_crumb['url'], 'guias/' ) && false !== strpos( $cat_crumb['url'], 'categoria=' . $slug_alpha ), 'D. href points to the Guias archive with the category filter encoded' );
+		assert_true( false === strpos( $cat_crumb['url'], '/categories/' ), 'D. href does NOT use the WordPress taxonomy archive URL (/categories/slug/)' );
+		assert_true( get_permalink( $guide_alpha ) !== $cat_crumb['url'], 'D. category crumb is not the current guide page' );
 	}
 
 	$last = $crumbs[ count( $crumbs ) - 1 ];
-	t_assert( $last['name'] === get_the_title( $guide_alpha ) && $last['url'] === get_permalink( $guide_alpha ), 'E. final crumb is the current guide title (current page)' );
+	assert_true( $last['name'] === get_the_title( $guide_alpha ) && $last['url'] === get_permalink( $guide_alpha ), 'E. final crumb is the current guide title (current page)' );
 }
 
 gbf_restore_globals();
@@ -215,7 +195,7 @@ gbf_restore_globals();
 // ---------------------------------------------------------------------------
 // 2. Other categories resolve to their own filtered archive
 // ---------------------------------------------------------------------------
-t_section( 'Category crumb resolution for multiple categories' );
+test_section( 'Category crumb resolution for multiple categories' );
 
 foreach ( array( $slug_beta => 'GBF Beta', $slug_gamma => 'GBF Gamma' ) as $slug => $name ) {
 	$which_guide = ( 'GBF Beta' === $name ) ? $guide_beta : $guide_gamma;
@@ -228,15 +208,15 @@ foreach ( array( $slug_beta => 'GBF Beta', $slug_gamma => 'GBF Gamma' ) as $slug
 		}
 	}
 	$term = get_term_by( 'slug', $slug, 'conexao_category' );
-	t_assert( null !== $cat_crumb && $cat_crumb['url'] === add_query_arg( 'categoria', $slug, $guides_url ), "{$name} breadcrumb links to /guias/?categoria={$slug}" );
-	t_assert( null !== $cat_crumb && $cat_crumb['name'] === $term->name, "{$name} breadcrumb uses the real taxonomy term name (no hard-coded label)" );
+	assert_true( null !== $cat_crumb && $cat_crumb['url'] === add_query_arg( 'categoria', $slug, $guides_url ), "{$name} breadcrumb links to /guias/?categoria={$slug}" );
+	assert_true( null !== $cat_crumb && $cat_crumb['name'] === $term->name, "{$name} breadcrumb uses the real taxonomy term name (no hard-coded label)" );
 	gbf_restore_globals();
 }
 
 // ---------------------------------------------------------------------------
 // 3. Multiple categories — deterministic primary term (first by name)
 // ---------------------------------------------------------------------------
-t_section( 'Multiple categories: first term returned by get_the_terms()' );
+test_section( 'Multiple categories: first term returned by get_the_terms()' );
 
 gbf_enter_singular_guide( $guide_multi );
 $crumbs    = conexao_seo_breadcrumb_data();
@@ -249,18 +229,18 @@ foreach ( $crumbs as $crumb ) {
 }
 // get_the_terms() orders by name ascending → "AAA GBF Multi" first.
 $expected_first = get_term_by( 'slug', $slug_multi2, 'conexao_category' );
-t_assert( null !== $cat_crumb && $cat_crumb['name'] === $expected_first->name, 'single category crumb uses the primary term (first of get_the_terms(), ordered by name)' );
-t_assert( null !== $cat_crumb && false !== strpos( $cat_crumb['url'], 'categoria=' . $slug_multi2 ), 'primary-term crumb encodes that term\'s filter slug' );
+assert_true( null !== $cat_crumb && $cat_crumb['name'] === $expected_first->name, 'single category crumb uses the primary term (first of get_the_terms(), ordered by name)' );
+assert_true( null !== $cat_crumb && false !== strpos( $cat_crumb['url'], 'categoria=' . $slug_multi2 ), 'primary-term crumb encodes that term\'s filter slug' );
 gbf_restore_globals();
 
 // ---------------------------------------------------------------------------
 // 4. Guide without category — no category crumb, no invented link
 // ---------------------------------------------------------------------------
-t_section( 'Guide without category' );
+test_section( 'Guide without category' );
 
 gbf_enter_singular_guide( $guide_nocat );
 $crumbs = conexao_seo_breadcrumb_data();
-t_assert( is_array( $crumbs ) && 3 === count( $crumbs ), 'F. uncategorized guide keeps Início → Guias Práticos → title (no category crumb)' );
+assert_true( is_array( $crumbs ) && 3 === count( $crumbs ), 'F. uncategorized guide keeps Início → Guias Práticos → title (no category crumb)' );
 if ( is_array( $crumbs ) ) {
 	$has_category_crumb = false;
 	foreach ( $crumbs as $crumb ) {
@@ -268,48 +248,48 @@ if ( is_array( $crumbs ) ) {
 			$has_category_crumb = true;
 		}
 	}
-	t_assert( ! $has_category_crumb, 'F. no category/filter/term URL appears when the guide has no category' );
-	t_assert( 'Guias Práticos' === $crumbs[1]['name'] && get_the_title( $guide_nocat ) === $crumbs[2]['name'], 'F. surrounding crumb levels remain correct' );
+	assert_true( ! $has_category_crumb, 'F. no category/filter/term URL appears when the guide has no category' );
+	assert_true( 'Guias Práticos' === $crumbs[1]['name'] && get_the_title( $guide_nocat ) === $crumbs[2]['name'], 'F. surrounding crumb levels remain correct' );
 }
 gbf_restore_globals();
 // ---------------------------------------------------------------------------
 // 5. Archive receives the filter and returns the correct result set
 // ---------------------------------------------------------------------------
-t_section( 'Archive filtering (?categoria=) — result sets' );
+test_section( 'Archive filtering (?categoria=) — result sets' );
 
 $q = gbf_archive_query( array( 'categoria' => $slug_alpha ) );
-t_assert( array( $guide_alpha ) === wp_list_pluck( $q->posts, 'ID' ), 'G/H. ?categoria=alpha returns exactly the alpha guide' );
+assert_true( array( $guide_alpha ) === wp_list_pluck( $q->posts, 'ID' ), 'G/H. ?categoria=alpha returns exactly the alpha guide' );
 
 $q = gbf_archive_query( array( 'categoria' => $slug_beta ) );
-t_assert( array( $guide_beta ) === wp_list_pluck( $q->posts, 'ID' ), 'G/H. ?categoria=beta returns exactly the beta guide' );
+assert_true( array( $guide_beta ) === wp_list_pluck( $q->posts, 'ID' ), 'G/H. ?categoria=beta returns exactly the beta guide' );
 
 $q = gbf_archive_query( array( 'categoria' => $slug_gamma ) );
-t_assert( array( $guide_gamma ) === wp_list_pluck( $q->posts, 'ID' ), 'G/H. ?categoria=gamma returns exactly the gamma guide' );
+assert_true( array( $guide_gamma ) === wp_list_pluck( $q->posts, 'ID' ), 'G/H. ?categoria=gamma returns exactly the gamma guide' );
 
 $q = gbf_archive_query( array( 'categoria' => $slug_alpha . ',nao-existe-gbf' ) );
-t_assert( 0 === $q->found_posts, 'G. the Guias filter stays single-select: a comma value is one unknown slug → zero results (existing behavior, no invented OR)' );
+assert_true( 0 === $q->found_posts, 'G. the Guias filter stays single-select: a comma value is one unknown slug → zero results (existing behavior, no invented OR)' );
 
 $q = gbf_archive_query( array( 'categoria' => 'nao-existe-gbf' ) );
-t_assert( 0 === $q->found_posts, 'H. an all-invalid filter yields zero results gracefully' );
+assert_true( 0 === $q->found_posts, 'H. an all-invalid filter yields zero results gracefully' );
 
 $q = gbf_archive_query( array( 'categoria' => $slug_multi2 ) );
 $expected_multi = array( $guide_multi );
 sort( $expected_multi );
 $actual_multi = wp_list_pluck( $q->posts, 'ID' );
 sort( $actual_multi );
-t_assert( $expected_multi === $actual_multi, 'G/H. multi-category guide is returned when filtering by its primary term' );
+assert_true( $expected_multi === $actual_multi, 'G/H. multi-category guide is returned when filtering by its primary term' );
 
 $q = gbf_archive_query( array() );
 $all_ids = wp_list_pluck( $q->posts, 'ID' );
-t_assert( in_array( $guide_alpha, $all_ids, true ) && in_array( $guide_nocat, $all_ids, true ), 'I. unfiltered Guias archive still returns every published guide (incl. uncategorized)' );
+assert_true( in_array( $guide_alpha, $all_ids, true ) && in_array( $guide_nocat, $all_ids, true ), 'I. unfiltered Guias archive still returns every published guide (incl. uncategorized)' );
 
-t_assert( add_query_arg( 'categoria', $slug_alpha, $guides_url ) === $guides_url . '?categoria=' . $slug_alpha, 'J. filtered URL is the canonical deterministic /guias/?categoria= form' );
+assert_true( add_query_arg( 'categoria', $slug_alpha, $guides_url ) === $guides_url . '?categoria=' . $slug_alpha, 'J. filtered URL is the canonical deterministic /guias/?categoria= form' );
 
 // ---------------------------------------------------------------------------
 // 6. Rendered breadcrumb markup (classes used by light + dark-mode CSS,
 //    current item non-linked with aria-current, separators preserved)
 // ---------------------------------------------------------------------------
-t_section( 'Rendered breadcrumb markup' );
+test_section( 'Rendered breadcrumb markup' );
 
 gbf_enter_singular_guide( $guide_alpha );
 ob_start();
@@ -320,13 +300,13 @@ $plain        = html_entity_decode( $html, ENT_QUOTES | ENT_HTML5 );
 $expected_url = add_query_arg( 'categoria', $slug_alpha, $guides_url );
 $expected_href = esc_url( $expected_url );
 
-t_assert( false !== strpos( $html, '<nav class="conexao-breadcrumbs" aria-label="Breadcrumb">' ), 'J. semantic <nav aria-label="Breadcrumb"> wrapper preserved' );
-t_assert( false !== strpos( $html, 'class="conexao-breadcrumb-link"' ), 'J. category crumb remains a real link with the conexao-breadcrumb-link class (light + dark mode CSS)' );
-t_assert( false !== strpos( $plain, 'href="' . $expected_href . '" class="conexao-breadcrumb-link">GBF Alpha</a>' ), 'K. category link href is the filtered Guias archive and accessible text is the category name' );
-t_assert( false !== strpos( $html, 'class="conexao-breadcrumb-sep" aria-hidden="true">&rsaquo;' ), 'J. separator markup preserved (›, aria-hidden)' );
-t_assert( false !== strpos( $html, 'class="conexao-breadcrumb-current" aria-current="page">' ), 'J. current guide stays a non-linked span with aria-current="page"' );
-t_assert( false === strpos( $html, '/categories/' ), 'K. rendered breadcrumb never emits the /categories/ term archive href' );
-t_assert( false !== strpos( $html, 'conexao-breadcrumb-list' ) && false !== strpos( $html, 'conexao-breadcrumb-item' ), 'J. breadcrumb list/item classes unchanged (desktop + mobile layout + dark mode CSS)' );
+assert_true( false !== strpos( $html, '<nav class="conexao-breadcrumbs" aria-label="Breadcrumb">' ), 'J. semantic <nav aria-label="Breadcrumb"> wrapper preserved' );
+assert_true( false !== strpos( $html, 'class="conexao-breadcrumb-link"' ), 'J. category crumb remains a real link with the conexao-breadcrumb-link class (light + dark mode CSS)' );
+assert_true( false !== strpos( $plain, 'href="' . $expected_href . '" class="conexao-breadcrumb-link">GBF Alpha</a>' ), 'K. category link href is the filtered Guias archive and accessible text is the category name' );
+assert_true( false !== strpos( $html, 'class="conexao-breadcrumb-sep" aria-hidden="true">&rsaquo;' ), 'J. separator markup preserved (›, aria-hidden)' );
+assert_true( false !== strpos( $html, 'class="conexao-breadcrumb-current" aria-current="page">' ), 'J. current guide stays a non-linked span with aria-current="page"' );
+assert_true( false === strpos( $html, '/categories/' ), 'K. rendered breadcrumb never emits the /categories/ term archive href' );
+assert_true( false !== strpos( $html, 'conexao-breadcrumb-list' ) && false !== strpos( $html, 'conexao-breadcrumb-item' ), 'J. breadcrumb list/item classes unchanged (desktop + mobile layout + dark mode CSS)' );
 
 gbf_restore_globals();
 
@@ -349,7 +329,7 @@ $leftover = get_posts(
 		'fields'      => 'ids',
 	)
 );
-t_assert( empty( $leftover ), 'no temporary test posts remain' );
+assert_true( empty( $leftover ), 'no temporary test posts remain' );
 $leftover_terms = get_terms(
 	array(
 		'taxonomy'   => 'conexao_category',
@@ -358,8 +338,6 @@ $leftover_terms = get_terms(
 		'fields'     => 'ids',
 	)
 );
-t_assert( ! is_wp_error( $leftover_terms ) && empty( $leftover_terms ), 'no temporary test terms remain' );
+assert_true( ! is_wp_error( $leftover_terms ) && empty( $leftover_terms ), 'no temporary test terms remain' );
 
-echo "\n----------------------------------------\n";
-echo "RESULT: {$passed} passed, {$failed} failed\n";
-exit( $failed > 0 ? 1 : 0 );
+test_finish();

@@ -1,0 +1,25 @@
+== Stage L permanent invariant gates ==
+   repository: /home/andrei/IdeaProjects/wordpress-website
+   sha:        846fd018b2f88dc0e10c6d47a2c9b8e693772e3d
+
+[PASS   ] taxonomy                   taxonomy_policy          exit=0 18 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[FAIL   ] translation_completeness   translation_completeness exit=1 19 passed, 1 failed, 48 violation(s) (48 pre-existing, 0 new), 1833 allowlisted
+          violations: 48 (48 pre-existing, 0 new)
+          - post_type:guide:missing_en: 48 (guide: eligible public PT records missing a linked EN translation = 0)
+          allowlisted: 1833 (by documented policy)
+[PASS   ] cache_scoping              cache_scoping            exit=0 9 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[PASS   ] cache_scoping              cache_scoping_static     exit=0 2 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[PASS   ] redirect_precedence        redirect_precedence      exit=0 15 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[PASS   ] documentation_drift        documentation_drift      exit=0 14 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[PASS   ] i18n_freshness             i18n_freshness           exit=0 8 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+
+----------------------------------------
+Gates: 7 total, 6 passed, 1 failed, 0 blocked
+Assertions: 85 passed, 1 failed
+Violations: 48 (48 pre-existing, 0 new)
+AGGREGATE: FAIL
+----------------------------------------
+gate.json written: /tmp/baseline-gates.json
+
+One or more permanent invariant gates FAILED. This is a real repository/data violation, not a harness problem: the gates are blocking by design and must not be weakened to obtain a green run.
+EXIT=1

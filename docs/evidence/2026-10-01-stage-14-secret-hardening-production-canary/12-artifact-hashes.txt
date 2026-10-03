@@ -1,0 +1,24 @@
+PRODUCTION ARTIFACTS (after Gate A)
+
+Two consecutive builds via scripts/build-plugins-zip.sh were byte-identical
+(verified by tests/scripts/verify-stage14-secret-scan.py --build: "9 artifacts
+byte-identical across two builds"). Exact hashes of the committed dist/ build:
+
+aded30ec34b2954370d76deb0f77211a1924fd003fefd2a8ca6967933c1d201a    conexao-admin-ux.zip
+34e65e0576382b589f4b13ee0e0137412718ac1cf3e56a72d8e1c06d3a2249f4    conexao-br-irlanda.zip
+d0ce005a3818674c595cf48de23c63a8c14eba931896a1308a5ce938ce815a4f    conexao-content.zip
+a883b6d179a9415513d38d24bbb48fbd4a9a05811aba344841f30809bcc0a330    conexao-data-model.zip
+551ef74cdf161b63f167a24e46685dc927f68e37e9067052be40a7e0e22b8167    conexao-event-importer.zip
+515a416144e4f2580bbfea1818ba5d457720d9aa543f0c8cde1c6b1a854723e0    conexao-event-runtime.zip
+e91eb8b09bd697105057d6d5b22a793d5849ebf3bdd8640d457e06380efb4462    conexao-leisure-migration.zip
+b4d4e52562bee987ca4bca64331542038331da2189a7ec47a1030d06b9523d86    conexao-sponsor-migration.zip
+f4e62bc59aa509fc0bd51037709f788f024579afc80c7851d0c1e8c5cb7045f1    conexao-translation-automation.zip
+73b3aee368712397e4ddbb496d8915bb6021443ab7e75bedf345e9fa4ad35215    conexao-translation-rollout.zip
+
+Release metadata (dist/release.json):
+  tag             v2026.10.01
+  built_at        2026-10-01T14:23:49Z
+  git sha         777d576e4ea9c9fd99f853211eabeffefcde7609
+  production order: conexao-data-model, conexao-content, conexao-admin-ux, conexao-event-runtime, conexao-translation-rollout, conexao-translation-automation
+  conexao-translation-rollout      1.2.0  73b3aee368712397e4ddbb496d8915bb6021443ab7e75bedf345e9fa4ad35215
+  conexao-translation-automation   0.4.0  f4e62bc59aa509fc0bd51037709f788f024579afc80c7851d0c1e8c5cb7045f1

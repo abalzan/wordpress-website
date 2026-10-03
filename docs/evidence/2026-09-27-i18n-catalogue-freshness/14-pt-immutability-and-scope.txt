@@ -1,0 +1,15 @@
+== PT IMMUTABILITY: the theme POT is a TEMPLATE, never loaded at runtime ==
+Only the POT changed. No .po, no .mo, no PHP source, no content, no Polylang config.
+
+Files changed by this task:
+scripts/i18n-make-pot.sh
+wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot
+
+Untracked (evidence + earlier task artefacts, NOT staged):
+?? docs/evidence/2026-09-27-i18n-catalogue-freshness/
+?? docs/evidence/2026-09-27-lazer-en-archive-perf/
+?? docs/reports/2026-09-27-lazer-en-archive-investigation.md
+
+== Runtime language files actually loaded by WordPress ==
+  load_theme_textdomain() -> languages/<locale>.mo  (en_US.mo / pt_BR.mo)
+  The .pot is a translator template: it is not loaded, not parsed and cannot affect output.

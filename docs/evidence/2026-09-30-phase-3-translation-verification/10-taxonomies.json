@@ -1,0 +1,38 @@
+{
+  "conexao_category": {
+    "policy": "translated",
+    "total_terms": 71,
+    "by_language": {},
+    "unclassified_count": 71,
+    "duplicate_slugs": {},
+    "digit_suffixed_slugs": [],
+    "en_slugs": []
+  },
+  "conexao_tag": {
+    "policy": "translated",
+    "total_terms": 0,
+    "by_language": {},
+    "unclassified_count": 0,
+    "duplicate_slugs": {},
+    "digit_suffixed_slugs": [],
+    "en_slugs": []
+  },
+  "conexao_county": {
+    "policy": "shared",
+    "total_terms": 26,
+    "by_language": {},
+    "unclassified_count": 26,
+    "duplicate_slugs": {},
+    "digit_suffixed_slugs": [],
+    "en_slugs": []
+  },
+  "conexao_town": {
+    "policy": "shared",
+    "total_terms": 251,
+    "by_language": {},
+    "unclassified_count": 251,
+    "duplicate_slugs": {},
+    "digit_suffixed_slugs": [],
+    "en_slugs": []
+  }
+}

@@ -1,0 +1,39 @@
+conexao-job-translation AFTER Stage H
+
+Files
+  conexao-job-translation.php             71 LOC  (loader + stage registration)
+  includes/translation-map.php            96 LOC  (authored EN data - UNCHANGED)
+  includes/stage-fields.php              159 LOC  (job field mapping, verbatim from apply.php)
+  includes/stage-config.php              186 LOC  (declarative config + WP adapter)
+  ORCHESTRATION TOTAL                    316 LOC  (was 766; -450 LOC / -58.8%)
+
+REMOVED (generic orchestration, now engine-owned)
+  includes/apply.php   400 LOC  (deleted)
+  includes/audit.php   163 LOC  (deleted)
+  Conexao_Job_Translation_Admin  ~150 LOC (per-stage admin screen, deleted)
+
+RETAINED (stage-owned, byte-identical to the originals)
+  includes/translation-map.php  the authored English data manifest, not edited
+  conexao_job_translation_snapshot_job()
+  conexao_job_translation_pair_ok()
+  conexao_job_translation_verify_jobs_page()
+  conexao_job_translation_copy_fields()
+    -> all four verified byte-identical to their pre-Stage-H bodies
+
+ADDED
+  includes/stage-config.php  declarative stage config + WordPress-bound adapter
+  includes/stage-fields.php  the four stage-specific helpers
+  tests/test-job-engine-migration.php  16 assertions proving the migration
+
+Engine now provides, for this stage
+  inventory, manifest validation, deterministic dry-run plan
+  (create/update/skip/conflicts), snapshot orchestration, apply traversal,
+  idempotence, PT-drift guard, verify counters, numeric gate, result
+  formatting, admin capability/nonce flow, remove traversal.
+
+Behaviour parity (asserted, not assumed)
+  - manifest is byte-equivalent to the historical map (test assertion)
+  - dry-run plan is deterministic for the same input state (test assertion)
+  - gate payload is numeric with missing_en (test assertion)
+  - match strategy is reported (stable-id 1, slug 0, title 0 on the local site)
+  - the four non-migrated retired rollouts are untouched (no diff)

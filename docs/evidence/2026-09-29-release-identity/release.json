@@ -1,0 +1,122 @@
+{
+  "schema_version": 1,
+  "release": {
+    "tag": "v2026.09.29",
+    "built_at": "2026-09-29T16:09:29Z",
+    "git": {
+      "available": true,
+      "sha": "a4cd5f65e35c3f6f564e733bc746a07f350cceeb",
+      "short_sha": "a4cd5f65e35c",
+      "branch": "i18n",
+      "dirty": true,
+      "tag": null
+    }
+  },
+  "allowlist": {
+    "source": "plugins.json",
+    "artifacts": [
+      "conexao-data-model",
+      "conexao-content",
+      "conexao-admin-ux",
+      "conexao-event-runtime",
+      "conexao-event-importer",
+      "conexao-leisure-migration",
+      "conexao-sponsor-migration",
+      "conexao-br-irlanda"
+    ],
+    "production_order": [
+      "conexao-data-model",
+      "conexao-content",
+      "conexao-admin-ux",
+      "conexao-event-runtime"
+    ]
+  },
+  "artifacts": [
+    {
+      "slug": "conexao-data-model",
+      "kind": "plugin",
+      "version": "1.6.1",
+      "file": "conexao-data-model.zip",
+      "built": true,
+      "file_count": 6,
+      "bytes": 15846,
+      "sha256": "a883b6d179a9415513d38d24bbb48fbd4a9a05811aba344841f30809bcc0a330"
+    },
+    {
+      "slug": "conexao-content",
+      "kind": "plugin",
+      "version": "1.0.1",
+      "file": "conexao-content.zip",
+      "built": true,
+      "file_count": 5,
+      "bytes": 22485,
+      "sha256": "d0ce005a3818674c595cf48de23c63a8c14eba931896a1308a5ce938ce815a4f"
+    },
+    {
+      "slug": "conexao-admin-ux",
+      "kind": "plugin",
+      "version": "1.0.7",
+      "file": "conexao-admin-ux.zip",
+      "built": true,
+      "file_count": 14,
+      "bytes": 75457,
+      "sha256": "aded30ec34b2954370d76deb0f77211a1924fd003fefd2a8ca6967933c1d201a"
+    },
+    {
+      "slug": "conexao-event-runtime",
+      "kind": "plugin",
+      "version": "1.2.2",
+      "file": "conexao-event-runtime.zip",
+      "built": true,
+      "file_count": 7,
+      "bytes": 18482,
+      "sha256": "515a416144e4f2580bbfea1818ba5d457720d9aa543f0c8cde1c6b1a854723e0"
+    },
+    {
+      "slug": "conexao-event-importer",
+      "kind": "plugin",
+      "version": "1.7.1",
+      "file": "conexao-event-importer.zip",
+      "built": true,
+      "file_count": 42,
+      "bytes": 177550,
+      "sha256": "551ef74cdf161b63f167a24e46685dc927f68e37e9067052be40a7e0e22b8167"
+    },
+    {
+      "slug": "conexao-leisure-migration",
+      "kind": "plugin",
+      "version": "2.1.0",
+      "file": "conexao-leisure-migration.zip",
+      "built": true,
+      "file_count": 7,
+      "bytes": 28967,
+      "sha256": "e91eb8b09bd697105057d6d5b22a793d5849ebf3bdd8640d457e06380efb4462"
+    },
+    {
+      "slug": "conexao-sponsor-migration",
+      "kind": "plugin",
+      "version": "1.1.0",
+      "file": "conexao-sponsor-migration.zip",
+      "built": true,
+      "file_count": 6,
+      "bytes": 21738,
+      "sha256": "b4d4e52562bee987ca4bca64331542038331da2189a7ec47a1030d06b9523d86"
+    },
+    {
+      "slug": "conexao-br-irlanda",
+      "kind": "theme",
+      "version": "1.0.1",
+      "file": "conexao-br-irlanda.zip",
+      "built": true,
+      "file_count": 115,
+      "bytes": 5894438,
+      "sha256": "b70d6376c9c50083c4eca1872fedca66c9c65f84d97b2e30942a4b299a3093cd"
+    }
+  ],
+  "totals": {
+    "artifacts": 8,
+    "built": 8,
+    "files": 202,
+    "bytes": 6254963
+  }
+}

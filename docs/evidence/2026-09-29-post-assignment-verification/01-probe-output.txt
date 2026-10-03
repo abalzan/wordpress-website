@@ -1,0 +1,96 @@
+
+==========================================================================
+1. POLYLANG STATE  (GET /pll/v1/settings, GET /pll/v1/languages)
+==========================================================================
+  browser          = False
+  default_lang     = 'pt'
+  domains          = []
+  first_activation = 1790697615
+  force_lang       = 1
+  hide_default     = True
+  media_support    = False
+  nav_menus        = []
+  post_types       = []
+  previous_version = ''
+  redirect_lang    = False
+  rewrite          = True
+  sync             = []
+  taxonomies       = []
+  version          = '3.8.10'
+  en   locale=en_US  term_id=1744   default=False assigned_count=0
+  pt   locale=pt_BR  term_id=1747   default=True  assigned_count=0
+  language count = 2
+
+==========================================================================
+2. TRANSLATED SCOPE TOTALS  (unfiltered / ?lang=pt / ?lang=en)
+==========================================================================
+  post type           unfiltered   ?lang=pt   ?lang=en
+  guide                       56          0          0
+  event                     1808          0          0
+  leisure                    289          0          0
+  sponsor                     10          0          0
+  job                          1          0          0
+  course_provider             11          0          0
+  SUM (6 types)             2175          0          0
+
+  Outside the translated scope (not translated by contract):
+  post                        37          0          0
+  page                        43         43         43
+
+==========================================================================
+3. REPRESENTATIVE ASSIGNMENT PROOF (sampled records)
+==========================================================================
+  guide            id=25034   lang_field=pt    in_pt=False in_en=False translations=[]
+  guide            id=25031   lang_field=pt    in_pt=False in_en=False translations=[]
+  guide            id=11426   lang_field=pt    in_pt=False in_en=False translations=[]
+  event            id=25019   lang_field=pt    in_pt=False in_en=False translations=[]
+  event            id=25021   lang_field=pt    in_pt=False in_en=False translations=[]
+  event            id=24992   lang_field=pt    in_pt=False in_en=False translations=[]
+  leisure          id=21197   lang_field=pt    in_pt=False in_en=False translations=[]
+  leisure          id=21196   lang_field=pt    in_pt=False in_en=False translations=[]
+  leisure          id=21195   lang_field=pt    in_pt=False in_en=False translations=[]
+  sponsor          id=11461   lang_field=pt    in_pt=False in_en=False translations=[]
+  sponsor          id=11458   lang_field=pt    in_pt=False in_en=False translations=[]
+  sponsor          id=11449   lang_field=pt    in_pt=False in_en=False translations=[]
+  job              id=10954   lang_field=pt    in_pt=False in_en=False translations=[]
+  course_provider  id=11148   lang_field=pt    in_pt=False in_en=False translations=[]
+  course_provider  id=10064   lang_field=pt    in_pt=False in_en=False translations=[]
+  course_provider  id=10063   lang_field=pt    in_pt=False in_en=False translations=[]
+
+  sampled=16  in ?lang=pt collection=0  in ?lang=en collection=0
+
+==========================================================================
+4. CENSUS + PT IMMUTABILITY vs PRE-ACTION BASELINE
+==========================================================================
+  post                     count     37 -> 37     slug digest *** DIFFERENT ***
+  page                     count     43 -> 43     slug digest *** DIFFERENT ***
+  guide                    count     56 -> 56     slug digest *** DIFFERENT ***
+  event                    count   1808 -> 1808   slug digest *** DIFFERENT ***
+  leisure                  count    289 -> 289    slug digest *** DIFFERENT ***
+  job                      count      1 -> 1      slug digest *** DIFFERENT ***
+  sponsor                  count     10 -> 10     slug digest *** DIFFERENT ***
+  course_provider          count     11 -> 11     slug digest *** DIFFERENT ***
+  recruitment_agency       count     27 -> 27     slug digest *** DIFFERENT ***
+  permit_employer          count     13 -> 13     slug digest *** DIFFERENT ***
+  conexao_category         count     58 -> 58     slug digest *** DIFFERENT ***
+  conexao_tag              count      0 -> 0      slug digest MATCH
+  conexao_county           count     26 -> 26     slug digest *** DIFFERENT ***
+  conexao_town             count    251 -> 251    slug digest *** DIFFERENT ***
+  conexao_leisure_attribute count     13 -> 13     slug digest *** DIFFERENT ***
+  media X-WP-Total         baseline 9301 -> 9301 (informational)
+
+  PT CONTENT + TAXONOMY IDENTITY/SLUG DRIFT = 14
+
+==========================================================================
+5. TAXONOMY STATE (names/slugs/counts)
+==========================================================================
+  conexao_category: 58 terms, digest 63c396cdcd5f05232171a96bef7086f0
+    first 4: [{"id": 1490, "slug": "autocross", "name": null, "count": null}, {"id": 1499, "slug": "autotest", "name": null, "count": null}, {"id": 1424, "slug": "aventura", "name": null, "count": null}, {"id": 1365, "slug": "beneficios", "name": null, "count": null}]
+  conexao_tag: 0 terms, digest d41d8cd98f00b204e9800998ecf8427e
+    first 4: []
+  conexao_county: 26 terms, digest 1f48a1d5b3dd647838898a736d69fcf9
+    first 4: [{"id": 1448, "slug": "carlow", "name": null, "count": null}, {"id": 1435, "slug": "cavan", "name": null, "count": null}, {"id": 1445, "slug": "clare", "name": null, "count": null}, {"id": 1374, "slug": "cork", "name": null, "count": null}]
+  conexao_town: 251 terms, digest e1f4387d01dc8834c575ec35571d0ee7
+    first 4: [{"id": 1387, "slug": "abbeyleix", "name": null, "count": null}, {"id": 1614, "slug": "adare", "name": null, "count": null}, {"id": 1581, "slug": "allagheemore", "name": null, "count": null}, {"id": 1623, "slug": "anglesborough", "name": null, "count": null}]
+
+wrote 01-probe.json

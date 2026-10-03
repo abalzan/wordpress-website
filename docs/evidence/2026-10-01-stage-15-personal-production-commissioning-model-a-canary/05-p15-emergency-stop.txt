@@ -1,0 +1,109 @@
+STAGE 15 - SECTION 15: P15 PRODUCTION EMERGENCY-STOP VERIFICATION
+Status: NOT PERFORMED. No production stop-state evidence was obtained.
+No stop-state evidence object was fabricated.
+
+## Required evidence, and why it could not be produced
+
+Stage 15 section 15 requires:
+  - production_stop_state
+  - provenance: LIVE_PRODUCTION_READ
+  - a current server-side timestamp
+  - observed state == STOPPED (only STOPPED acceptable)
+  and it explicitly rejects: absent, false, malformed, contradictory, stale.
+
+Producing that requires an authenticated read of the production stop state.
+No such read was possible:
+  - WP_USERNAME / WP_APPLICATION_PASSWORD: ABSENT (observed by NAME only)
+  - No manual wp-admin login was performed in this run
+  - The local Docker .env was never opened as a production channel
+  - Anonymous HTTP cannot read a wp_options value
+
+Therefore no production_stop_state object was constructed. Stage 14 made P15
+satisfiable ONLY by a genuine production observation; a repository-derived or
+inferred substitute would recreate exactly the defect Stage 14 closed, so
+none was made.
+
+## A NEW FINDING: the stop state has NO Personal-accessible READ SURFACE
+
+This was investigated directly in the shipped artifact, and it is a material
+result for Stage 15 section 11. The emergency stop's only consumer in the
+shipped code is an internal assertion:
+
+  class-conexao-translation-automation-batch-executor.php:315
+    $kill = Conexao_Translation_Automation_Emergency_Stop::assert_may_start();
+
+That single call site is the ONLY reference to Emergency_Stop:: in the two
+translation plugins' runtime code. Consequently there is currently:
+  - no admin screen that DISPLAYS the stop state
+        (the Tools > Translation Automation screen renders a proof/dry-run
+         button and the last result; it never renders the stop flag)
+  - no REST route exposing it
+  - no AJAX action exposing it
+  - no scheduled/cron trigger (0 scheduled events; wp_schedule_event and
+    wp_schedule_single_event appear only in tests and in the source scan
+    list that asserts their ABSENCE)
+  - no read-only diagnostics endpoint
+
+So even WITH a valid manual wp-admin login on a Personal plan, an operator
+currently has NO Personal-plan-accessible way to READ the production stop
+state. It is recorded as:
+
+    NOT OBSERVABLE THROUGH PERSONAL PLAN (no read surface in the artifact)
+
+This is a repository capability gap, not a hosting-plan gap, and it must be
+closed (a stop-state display on the existing Tools screen, or an explicitly
+authorized read-only admin surface) before P15 can ever be positively
+evidenced on this plan. It was NOT closed by this stage: adding a production
+read surface is a code change and a behaviour change, and Stage 15 is an
+operational execution stage. Nothing was invented to work around it.
+
+## The artifact half IS proven (repository-side, fail closed)
+
+Read directly from
+wp-content/plugins/conexao-translation-automation/includes/
+class-conexao-translation-automation-emergency-stop.php:
+
+  const OPTION = 'conexao_translation_automation_emergency_stop';
+
+  stored value              reading
+  ------------------------  ------------------------------------------
+  absent (null)             STOPPED   (default: new work does not start)
+  stopped = false, valid    enabled
+  stopped = true, valid     STOPPED
+  malformed / wrong schema  STOPPED   (FAILURE_MALFORMED; malformed is
+                                       never permission)
+  non-boolean 'stopped'     STOPPED   (FAILURE_MALFORMED)
+
+  - the flag lives in wp_options and is written only through this class;
+  - clearing requires an explicit authorization AND the capability
+    (FAILURE_UNAUTHORIZED);
+  - no request parameter is ever read as the flag;
+  - there is no activation hook that could clear it;
+  - the readiness gate's check_emergency_stop_semantics() requires at least
+    two fail-closed 'stopped' => true branches, FAILURE_MALFORMED and
+    FAILURE_UNAUTHORIZED to be present;
+  - the Stage 13 permanent gate contributes 44 negative proofs.
+
+Verified in this run by reading the source, and by the permanent gate.
+
+## Clearance and mutation counters
+
+  emergency_stop_clearance        NOT_GRANTED
+  emergency_stop_clears           0
+  installs 0  activations 0  content_mutations 0
+  provider_calls 0  canary_selections 0
+
+Nothing was cleared. Observation is not clearance, and readiness never
+clears the stop. This stage did not attempt to clear it.
+
+## Final production execution state
+
+  production emergency stop  UNCHANGED - never read, never written, never cleared
+  bulk translation          OFF (never enabled)
+  next batch                OFF (never enabled)
+  autonomous approval       OFF (never enabled)
+  cron                      OFF (no scheduled event exists in shipped code)
+  automatic progression     OFF
+
+No production limit was raised. No second canary was run. The allowlist is
+unchanged.

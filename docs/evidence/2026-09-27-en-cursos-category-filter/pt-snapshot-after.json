@@ -1,0 +1,268 @@
+[
+    {
+        "content": "",
+        "excerpt": "Encontre cursos de formação e educação continuada em toda a Irlanda, incluindo aprendizagens, traineeships, cursos PLC, educação de adultos e outras oportunidades de FET.",
+        "id": 200,
+        "lang": "pt",
+        "meta": {
+            "_provider_category": "Educação",
+            "_provider_excerpt_en": "Find training and continuing education courses throughout Ireland, including apprenticeships, traineeships, PLC courses, adult education and other FET opportunities.",
+            "_provider_location": "Irlanda",
+            "_provider_order": "1",
+            "_provider_status": "published",
+            "_provider_url": "https://www.fetchcourses.ie/"
+        },
+        "slug": "fetch-courses",
+        "status": "publish",
+        "terms": {
+            "conexao_category": [],
+            "conexao_county": [],
+            "conexao_tag": [],
+            "conexao_town": []
+        },
+        "title": "FETCH Courses",
+        "translations": {
+            "pt": 200
+        }
+    },
+    {
+        "content": "",
+        "excerpt": "A base de dados nacional da Irlanda para cursos e orientação ao estudante, ajudando estudantes, candidatos a emprego e adultos a explorar opções de educação e formação.",
+        "id": 201,
+        "lang": "pt",
+        "meta": {
+            "_provider_category": "Educação",
+            "_provider_excerpt_en": "Ireland's national database for courses and student guidance, helping students, jobseekers and adults explore education and training options.",
+            "_provider_location": "Irlanda",
+            "_provider_order": "2",
+            "_provider_status": "published",
+            "_provider_url": "https://www.qualifax.ie/"
+        },
+        "slug": "qualifax",
+        "status": "publish",
+        "terms": {
+            "conexao_category": [],
+            "conexao_county": [],
+            "conexao_tag": [],
+            "conexao_town": []
+        },
+        "title": "Qualifax",
+        "translations": {
+            "pt": 201
+        }
+    },
+    {
+        "content": "",
+        "excerpt": "Descubra cursos superiores subsidiados criados para ajudar as pessoas a requalificar, aprimorar competências e desenvolver novas oportunidades de carreira.",
+        "id": 202,
+        "lang": "pt",
+        "meta": {
+            "_provider_category": "Formação Profissional",
+            "_provider_excerpt_en": "Discover subsidised further education courses designed to help people requalify, build skills and develop new career opportunities.",
+            "_provider_location": "Irlanda",
+            "_provider_order": "3",
+            "_provider_status": "published",
+            "_provider_url": "https://springboardcourses.ie/"
+        },
+        "slug": "springboard-plus",
+        "status": "publish",
+        "terms": {
+            "conexao_category": [],
+            "conexao_county": [],
+            "conexao_tag": [],
+            "conexao_town": []
+        },
+        "title": "Springboard+",
+        "translations": {
+            "pt": 202
+        }
+    },
+    {
+        "content": "",
+        "excerpt": "Descubra oportunidades de formação e requalificação desenhadas em torno das necessidades de empresas, colaboradores e setores da indústria em toda a Irlanda.",
+        "id": 489,
+        "lang": "pt",
+        "meta": {
+            "_provider_category": "Formação Profissional",
+            "_provider_excerpt_en": "Discover training and reskilling opportunities designed around the needs of companies, employees and industry sectors throughout Ireland.",
+            "_provider_location": "Irlanda",
+            "_provider_logo": "204",
+            "_provider_order": "4",
+            "_provider_status": "published",
+            "_provider_url": "https://www.skillnetireland.ie/",
+            "_thumbnail_id": "204"
+        },
+        "slug": "skillnet-ireland",
+        "status": "publish",
+        "terms": {
+            "conexao_category": [],
+            "conexao_county": [],
+            "conexao_tag": [],
+            "conexao_town": []
+        },
+        "title": "Skillnet Ireland",
+        "translations": {
+            "pt": 489
+        }
+    },
+    {
+        "content": "",
+        "excerpt": "Aprendizagem online e desenvolvimento de competências da SOLAS, incluindo competências digitais, TI, gestão de projetos, negócios e outras áreas.",
+        "id": 490,
+        "lang": "pt",
+        "meta": {
+            "_provider_category": "Cursos Online",
+            "_provider_excerpt_en": "SOLAS online learning and skills development, including digital skills, IT, project management, business and other areas.",
+            "_provider_location": "Online / Irlanda",
+            "_provider_logo": "206",
+            "_provider_order": "5",
+            "_provider_status": "published",
+            "_provider_url": "https://www.ecollege.ie/",
+            "_thumbnail_id": "206"
+        },
+        "slug": "solas-ecollege",
+        "status": "publish",
+        "terms": {
+            "conexao_category": [],
+            "conexao_county": [],
+            "conexao_tag": [],
+            "conexao_town": []
+        },
+        "title": "SOLAS eCollege",
+        "translations": {
+            "pt": 490
+        }
+    },
+    {
+        "content": "",
+        "excerpt": "Programas de formação e cursos de negócios para quem está a iniciar, desenvolver ou fazer crescer um negócio na Irlanda.",
+        "id": 491,
+        "lang": "pt",
+        "meta": {
+            "_provider_category": "Negócios",
+            "_provider_excerpt_en": "Training programmes and business courses for those starting, developing or growing a business in Ireland.",
+            "_provider_location": "Irlanda",
+            "_provider_order": "6",
+            "_provider_status": "published",
+            "_provider_url": "https://www.localenterprise.ie/"
+        },
+        "slug": "local-enterprise-office",
+        "status": "publish",
+        "terms": {
+            "conexao_category": [],
+            "conexao_county": [],
+            "conexao_tag": [],
+            "conexao_town": []
+        },
+        "title": "Local Enterprise Office",
+        "translations": {
+            "pt": 491
+        }
+    },
+    {
+        "content": "",
+        "excerpt": "Explore milhares de cursos de faculdades, universidades, fornecedores de formação e educadores independentes em toda a Irlanda.",
+        "id": 492,
+        "lang": "pt",
+        "meta": {
+            "_provider_category": "Diretórios de Cursos",
+            "_provider_excerpt_en": "Explore thousands of courses from colleges, universities, training providers and independent educators throughout Ireland.",
+            "_provider_location": "Irlanda",
+            "_provider_order": "7",
+            "_provider_status": "published",
+            "_provider_url": "https://www.courses.ie/"
+        },
+        "slug": "courses-ie",
+        "status": "publish",
+        "terms": {
+            "conexao_category": [],
+            "conexao_county": [],
+            "conexao_tag": [],
+            "conexao_town": []
+        },
+        "title": "Courses.ie",
+        "translations": {
+            "pt": 492
+        }
+    },
+    {
+        "content": "",
+        "excerpt": "Encontre oportunidades de educação e formação oferecidas através da rede de Education and Training Boards na Irlanda.",
+        "id": 493,
+        "lang": "pt",
+        "meta": {
+            "_provider_category": "Educação",
+            "_provider_excerpt_en": "Find education and training opportunities offered through the network of Education and Training Boards in Ireland.",
+            "_provider_location": "Irlanda",
+            "_provider_logo": "210",
+            "_provider_order": "8",
+            "_provider_status": "published",
+            "_provider_url": "https://www.etbi.ie/",
+            "_thumbnail_id": "210"
+        },
+        "slug": "etbi",
+        "status": "publish",
+        "terms": {
+            "conexao_category": [],
+            "conexao_county": [],
+            "conexao_tag": [],
+            "conexao_town": []
+        },
+        "title": "Education and Training Boards Ireland",
+        "translations": {
+            "pt": 493
+        }
+    },
+    {
+        "content": "",
+        "excerpt": "Portal nacional para encontrar apprenticeships na Irlanda, combinando formação prática no trabalho com formação fora do trabalho e oportunidades em diversas áreas profissionais.",
+        "id": 10063,
+        "lang": "pt",
+        "meta": {
+            "_provider_category": "Formação Profissional",
+            "_provider_excerpt_en": "National portal to find apprenticeships in Ireland, combining on-the-job training with off-the-job training and opportunities across many occupational areas.",
+            "_provider_location": "Irlanda",
+            "_provider_order": "9",
+            "_provider_status": "published",
+            "_provider_url": "https://apprenticeship.ie/"
+        },
+        "slug": "apprenticeship-ie",
+        "status": "publish",
+        "terms": {
+            "conexao_category": [],
+            "conexao_county": [],
+            "conexao_tag": [],
+            "conexao_town": []
+        },
+        "title": "Apprenticeship.ie",
+        "translations": {
+            "pt": 10063
+        }
+    },
+    {
+        "content": "",
+        "excerpt": "Explore micro-credenciais curtas, flexíveis e acreditadas por universidades irlandesas, com opções em áreas como negócios, tecnologia, educação, saúde e outras áreas profissionais.",
+        "id": 10064,
+        "lang": "pt",
+        "meta": {
+            "_provider_category": "Formação Profissional",
+            "_provider_excerpt_en": "Explore short, flexible micro-credentials awarded by Irish universities, with options in areas such as business, technology, education, health and other professional fields.",
+            "_provider_location": "Online / Irlanda",
+            "_provider_order": "10",
+            "_provider_status": "published",
+            "_provider_url": "https://microcreds.ie/"
+        },
+        "slug": "microcreds",
+        "status": "publish",
+        "terms": {
+            "conexao_category": [],
+            "conexao_county": [],
+            "conexao_tag": [],
+            "conexao_town": []
+        },
+        "title": "MicroCreds",
+        "translations": {
+            "pt": 10064
+        }
+    }
+]

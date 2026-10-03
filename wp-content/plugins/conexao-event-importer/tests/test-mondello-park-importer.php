@@ -13,12 +13,9 @@
  * @package Conexao_Event_Importer
  */
 
-$wp_load = dirname( dirname( dirname( dirname( __DIR__ ) ) ) ) . '/wp-load.php';
-if ( file_exists( $wp_load ) ) {
-	require_once $wp_load;
-} else {
-	require_once '/var/www/html/wp-load.php';
-}
+
+// Shared Stage E test bootstrap: the only place allowed to locate wp-load.php.
+require_once dirname( __DIR__, 4 ) . '/tests/bootstrap.php';
 
 require_once WP_PLUGIN_DIR . '/conexao-event-importer/conexao-event-importer.php';
 
@@ -32,33 +29,25 @@ function mp_test_assert($condition, $message ) {
 		$failed++;
 		$harness_errors++;
 		$type = is_object( $condition ) ? get_class( $condition ) : gettype( $condition );
-		echo "  HARNESS ERROR: mp_test_assert() condition must be bool, got {$type} — message was: {$message}\n";
 		return;
 	}
 	if ( ! is_string( $message ) || '' === $message ) {
 		$failed++;
 		$harness_errors++;
-		echo "  HARNESS ERROR: mp_test_assert() message must be a non-empty string\n";
 		return;
 	}
 	if ( $condition ) {
 		$passed++;
-		echo "  PASS: {$message}\n";
 	} else {
 		$failed++;
-		echo "  FAIL: {$message}\n";
 	}
-}
-
-function mp_test_section( $title ) {
-	echo "\n=== {$title} ===\n";
 }
 
 // =========================================================================
 // Date parser — deterministic fixtures
 // =========================================================================
 
-mp_test_section( 'Date parser (parse_us_month_day_year)' );
+test_section( 'Date parser (parse_us_month_day_year)' );
 
 mp_test_assert(
 	method_exists( 'Conexao_Source_Mondello_Park', 'parse_us_month_day_year' ) ,
@@ -160,7 +149,7 @@ mp_test_assert(
 // Date range parser
 // =========================================================================
 
-mp_test_section( 'Date range parser (parse_date_range)' );
+test_section( 'Date range parser (parse_date_range)' );
 
 // One-day event
 $one = 'Conexao_Source_Mondello_Park::parse_date_range'('September 12, 2026');
@@ -213,7 +202,7 @@ mp_test_assert( $empty['tba'] === false, 'empty: tba=false' );
 // Category mapping
 // =========================================================================
 
-mp_test_section( 'Category mapping (map_categories)' );
+test_section( 'Category mapping (map_categories)' );
 
 mp_test_assert(
 	in_array( 'Car Racing', Conexao_Source_Mondello_Park::map_categories( array( 23 ) ), true ) ,
@@ -282,7 +271,7 @@ mp_test_assert(
 // Ticket URL extraction
 // =========================================================================
 
-mp_test_section( 'Ticket URL extraction (strip_utm)' );
+test_section( 'Ticket URL extraction (strip_utm)' );
 
 mp_test_assert(
 	method_exists( 'Conexao_Source_Mondello_Park', 'strip_utm' ) ,
@@ -340,7 +329,7 @@ mp_test_assert(
 // URL. The extractor must prefer an anchor labelled "Book Now".
 // =========================================================================
 
-mp_test_section( 'Primary ticket URL extraction (Book Now preference)' );
+test_section( 'Primary ticket URL extraction (Book Now preference)' );
 
 // Expose the protected extractor through a minimal test subclass.
 if ( ! class_exists( 'Mp_Test_Ticket_Source' ) ) {
@@ -449,7 +438,7 @@ mp_test_assert(
 // Identity / source metadata
 // =========================================================================
 
-mp_test_section( 'Source identity & metadata' );
+test_section( 'Source identity & metadata' );
 
 $meta = 'Conexao_Source_Mondello_Park::get_metadata'();
 mp_test_assert(
@@ -500,7 +489,7 @@ mp_test_assert(
 // Text helpers
 // =========================================================================
 
-mp_test_section( 'Text / HTML helpers' );
+test_section( 'Text / HTML helpers' );
 
 mp_test_assert(
 	'Conexao_Source_Mondello_Park::clean_text'('  September   12,   2026  ') === 'September 12, 2026' ,
@@ -524,7 +513,7 @@ mp_test_assert(
 // Edge-case / redirect decoration
 // =========================================================================
 
-mp_test_section( 'Edge cases: redirect, missing detail, missing date' );
+test_section( 'Edge cases: redirect, missing detail, missing date' );
 
 // A raw event with a redirect marker should not get a date.
 $redirect_event = array(
@@ -573,7 +562,7 @@ mp_test_assert(
 //   2. normalizer behavior — precedence + no-guess address rules.
 // =========================================================================
 
-mp_test_section( 'County hint wiring: fetch_events forwards config county' );
+test_section( 'County hint wiring: fetch_events forwards config county' );
 
 // Mock all HTTP for the source: the REST discovery URL returns a small
 // deterministic JSON listing; any other mondellopark.ie URL (detail pages)
@@ -667,7 +656,7 @@ try {
 
 remove_filter( 'pre_http_request', $mp_http_mock, 10 );
 
-mp_test_section( 'County hint wiring: normalizer precedence + no-guess rules' );
+test_section( 'County hint wiring: normalizer precedence + no-guess rules' );
 
 $mp_normalizer = new Conexao_Event_Normalizer( new Conexao_Event_Location() );
 
@@ -802,7 +791,7 @@ mp_test_assert(
 // for the determinism check below.)
 // =========================================================================
 
-mp_test_section( 'Regression: REST snapshot slug uniqueness' );
+test_section( 'Regression: REST snapshot slug uniqueness' );
 
 $fixture = WP_PLUGIN_DIR . '/conexao-event-importer/tests/fixtures/mp-rest.json';
 $rest_exists = file_exists( $fixture );
@@ -853,7 +842,7 @@ if ( $rest_exists ) {
 // Regression: existing event sources are unchanged
 // =========================================================================
 
-mp_test_section( 'Regression: existing sources unchanged' );
+test_section( 'Regression: existing sources unchanged' );
 
 $existing = array( 'laois_tourism', 'heritage_week', 'eventbrite', 'ivvcc', 'motorsport_ireland' );
 // Determinism: reset local source state BEFORE asserting. A previous local
@@ -933,7 +922,7 @@ if ( is_array( $mp_option_before ) && null !== $mp_prev_status ) {
 // Dedup / idempotency sketch (local DB)
 // =========================================================================
 
-mp_test_section( 'Dedup / idempotency (local DB, cleaned up after)' );
+test_section( 'Dedup / idempotency (local DB, cleaned up after)' );
 
 // Create a minimal Mondello Park event in the DB to confirm identity lookup
 // uses source+source_id.
@@ -993,7 +982,7 @@ if ( $created_id ) {
 // reject reversed (string-first) arguments loudly.
 // =========================================================================
 
-mp_test_section( 'Harness self-test (assertion accounting)' );
+test_section( 'Harness self-test (assertion accounting)' );
 
 $mp_self_p = $passed;
 $mp_self_f = $failed;
@@ -1027,9 +1016,4 @@ mp_test_assert(
 // Summary
 // =========================================================================
 
-echo "\n\n===============================\n";
-echo "Results: {$passed} passed, {$failed} failed\n";
-echo "Harness errors: {$harness_errors}\n";
-echo "===============================\n";
-
-exit( $failed > 0 ? 1 : 0 );
+test_finish();

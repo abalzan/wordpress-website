@@ -1,0 +1,24 @@
+=== /en/jobs/ ===
+<html lang="en-US"
+<title>Jobs &#8211; Conexão BR</title>
+<link rel="canonical" href="http://localhost:8080/en/jobs/"
+<link rel="alternate" hreflang="en" href="http://localhost:8080/en/jobs/"
+<link rel="alternate" hreflang="x-default" href="http://localhost:8080/empregos/"
+=== /en/contact/ ===
+<html lang="en-US"
+<title>Contact &#8211; Conexão BR</title>
+<link rel="canonical" href="http://localhost:8080/en/contact/"
+<link rel="alternate" hreflang="en" href="http://localhost:8080/en/contact/"
+<link rel="alternate" hreflang="x-default" href="http://localhost:8080/contato/"
+=== /en/about-us/ ===
+<html lang="en-US"
+<title>About Us &#8211; Conexão BR</title>
+<link rel="canonical" href="http://localhost:8080/en/about-us/"
+<link rel="alternate" hreflang="en" href="http://localhost:8080/en/about-us/"
+<link rel="alternate" hreflang="x-default" href="http://localhost:8080/sobre-nos/"
+=== /en/ ===
+<html lang="en-US"
+<title>Conexão BR | </title>
+<link rel="canonical" href="http://localhost:8080/en/"
+<link rel="alternate" hreflang="en" href="http://localhost:8080/en/"
+<link rel="alternate" hreflang="x-default" href="http://localhost:8080/"

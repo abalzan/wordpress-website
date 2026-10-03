@@ -1,0 +1,19 @@
+FINAL PRODUCTION STATE CHECK — Phase 3 round 2 (GET only, after all work)
+=======================================================================
+
+Purpose: prove that NOTHING was applied. Read via REST, authenticated, GET only.
+
+  EN records created (guide, lang=en) ........... 0
+  EN conexao_category terms created ............. 0
+  EN translation links created ................. 0
+  B2 EN-field writes applied .................... 0
+  PT records modified ........................... 0
+
+Raw measurement:
+  GET /wp-json/wp/v2/guide?lang=en  -> X-WP-Total: 0
+  GET /wp-json/wp/v2/conexao_category?lang=en  -> X-WP-Total: 0
+
+NOTE on the shared-taxonomy policy: conexao_county and conexao_town remain SHARED
+(single term, both languages) per docs/routing.md — their absence from the EN
+create list is correct and intended, not a skip. Only conexao_category is translated
+and therefore the only taxonomy with EN creates (13).

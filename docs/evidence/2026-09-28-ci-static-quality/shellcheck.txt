@@ -1,0 +1,7 @@
+# ShellCheck — the exact CI invocations (ShellCheck 0.9.0, as CI pins)
+
+$ shellcheck scripts/*.sh
+rc=0
+
+$ shellcheck scripts/lib/*.sh
+rc=0

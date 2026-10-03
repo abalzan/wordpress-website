@@ -1,0 +1,106 @@
+{
+  "en-leisure-description": {
+    "authored_rows": 289,
+    "meta_key": "_leisure_excerpt_en",
+    "en_archive": "/en/lazer/",
+    "en_text_found_on_archive_page1": 1,
+    "not_found_on_page1": 288,
+    "missing_detail": [
+      {
+        "slug": "abbeyleix-heritage-house",
+        "reason": "neither EN nor PT description found on EN archive page 1"
+      },
+      {
+        "slug": "achill-island",
+        "reason": "neither EN nor PT description found on EN archive page 1"
+      },
+      {
+        "slug": "acres-lake-floating-boardwalk",
+        "reason": "neither EN nor PT description found on EN archive page 1"
+      },
+      {
+        "slug": "adare-village",
+        "reason": "neither EN nor PT description found on EN archive page 1"
+      },
+      {
+        "slug": "aillwee-caves",
+        "reason": "neither EN nor PT description found on EN archive page 1"
+      },
+      {
+        "slug": "altamont-gardens",
+        "reason": "neither EN nor PT description found on EN archive page 1"
+      },
+      {
+        "slug": "annes-grove-gardens",
+        "reason": "neither EN nor PT description found on EN archive page 1"
+      },
+      {
+        "slug": "aran-islands",
+        "reason": "neither EN nor PT description found on EN archive page 1"
+      },
+      {
+        "slug": "aras-an-uachtarain",
+        "reason": "neither EN nor PT description found on EN archive page 1"
+      },
+      {
+        "slug": "arbour-hill-cemetery",
+        "reason": "neither EN nor PT description found on EN archive page 1"
+      },
+      {
+        "slug": "ardagh-heritage-village",
+        "reason": "neither EN nor PT description found on EN archive page 1"
+      },
+      {
+        "slug": "ardfert-cathedral",
+        "reason": "neither EN nor PT description found on EN archive page 1"
+      },
+      {
+        "slug": "ardmore-round-tower",
+        "reason": "neither EN nor PT description found on EN archive page 1"
+      },
+      {
+        "slug": "ards-forest-park",
+        "reason": "neither EN nor PT description found on EN archive page 1"
+      },
+      {
+        "slug": "arigna-mining-experience",
+        "reason": "neither EN nor PT description found on EN archive page 1"
+      },
+      {
+        "slug": "askeaton-castle",
+        "reason": "neither EN nor PT description found on EN archive page 1"
+      },
+      {
+        "slug": "athenry-castle",
+        "reason": "neither EN nor PT description found on EN archive page 1"
+      },
+      {
+        "slug": "athlone-castle",
+        "reason": "neither EN nor PT description found on EN archive page 1"
+      },
+      {
+        "slug": "aughnanure-castle",
+        "reason": "neither EN nor PT description found on EN archive page 1"
+      },
+      {
+        "slug": "avondale-forest-park",
+        "reason": "neither EN nor PT description found on EN archive page 1"
+      }
+    ],
+    "note": "the EN archive paginates; records not on page 1 are checked individually by the per-record REST/frontend probe"
+  },
+  "en-course-provider-description": {
+    "authored_rows": 10,
+    "meta_key": "_provider_excerpt_en",
+    "en_archive": "/en/cursos/",
+    "en_text_found_on_archive_page1": 9,
+    "not_found_on_page1": 1,
+    "missing_detail": [
+      {
+        "slug": "microcreds",
+        "reason": "neither EN nor PT description found on EN archive page 1"
+      }
+    ],
+    "note": "the EN archive paginates; records not on page 1 are checked individually by the per-record REST/frontend probe"
+  }
+}

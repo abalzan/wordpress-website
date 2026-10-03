@@ -32,23 +32,92 @@ compose.yaml
 
 ## Plugin Architecture
 
-Plugins must load in this dependency order:
+<!-- BEGIN GENERATED PLUGIN REGISTRY: docs/architecture.md plugin load order -->
+Generated from [`plugins.json`](../plugins.json) by `scripts/generate-registry-docs.php`.
+Plugins load in registry order, and dependencies always precede their dependents.
 
-1. **conexao-data-model** — Registers CPTs, taxonomies, meta fields. Other plugins depend on these types existing.
-2. **conexao-content** — Creates static pages and shortcodes. Depends on data-model types for grid shortcodes.
-3. **conexao-admin-ux** — Enhances admin UI for all supported types. Depends on data-model types.
-4. **conexao-event-runtime** — Production event runtime: event meta registration, the `conexao_town` taxonomy, the `_event_status` gate on public event queries, and the event status admin UI. Depends on the event CPT from data-model. **Required on production.**
-5. **conexao-event-importer** — Local-only event aggregation/import/export tooling. Depends on data-model and the event runtime (`Requires Plugins` header). **Never required on production.**
-6. **conexao-leisure-migration** — Leisure export/import. Can self-register leisure CPT if data-model is absent (fallback).
+1. **conexao-data-model** (`platform`, active) v1.6.1. **Required on production.**
+2. **conexao-content** (`platform`, active) v1.0.1. **Required on production.**
+3. **conexao-admin-ux** (`platform`, active) v1.0.7. **Required on production.**
+4. **conexao-event-runtime** (`platform`, active) v1.2.2. **Required on production.** Declared dependencies (`Requires Plugins` header): `conexao-data-model`.
+5. **conexao-event-importer** (`tooling`, active) v1.7.1. **Never required on production.** Declared dependencies (`Requires Plugins` header): `conexao-data-model`, `conexao-event-runtime`.
+6. **conexao-leisure-migration** (`tooling`, active) v2.1.0. **Never required on production.**
+7. **conexao-sponsor-migration** (`tooling`, active) v1.1.0. **Never required on production.**
+8. **conexao-translation-rollout** (`platform`, active) v1.2.0. **Required on production.**
+9. **conexao-en-translation** (`tooling`, active) v1.5.0. **Never required on production.** Declared dependencies (`Requires Plugins` header): `conexao-translation-rollout`.
+10. **conexao-translation-automation** (`platform`, active) v0.6.0. **Required on production.** Declared dependencies (`Requires Plugins` header): `conexao-translation-rollout`.
+
+The authoritative registry is [`plugins.json`](../plugins.json): the load order, the
+production activation order, the release build list and the local Compose mount list are
+all derived from it by `scripts/generate-registry-docs.php`.
+<!-- END GENERATED PLUGIN REGISTRY: docs/architecture.md plugin load order -->
+
+## Translation Rollout Architecture (Stage H)
+
+```text
+shared engine (conexao-translation-rollout)
+    ↓  register_stage( config )
+stage config (includes/stage-config.php)   ← identity, fields, gate, remove policy
+    ↓  manifest_callback
+versioned stage data (translation-map.php / data/*.json)   ← authored EN copy
+    ↓
+inventory → manifest validation → dry-run plan → snapshot → apply → verify + numeric gate
+```
+
+| Concern | Owner |
+|---|---|
+| inventory, dry-run plan, snapshot orchestration, apply traversal, PT-drift guard, verify counters, numeric gate, result formatting, admin capability/nonce flow, remove traversal | `conexao-translation-rollout` (shared engine) |
+| authored translated copy, portable stable keys, stage identity and languages, field mapping, eligibility, landing-page verification, remove-safety declaration | the stage plugin |
+
+There is now exactly **one** translation architecture, and every authored
+English translation lives in a stage data file of `conexao-en-translation`:
+
+```text
+conexao-translation-rollout      (the shared engine: the whole lifecycle)
+    ↓
+conexao-en-translation           (the seven stages + all authored EN data)
+    ↓
+manual translation workflow      (the operator runbook)
+    ↓
+Polylang
+```
+
+**Stage 19 consolidation.** The five one-shot rollout plugins
+(`conexao-page-translation`, `conexao-blog-translation`,
+`conexao-job-translation`, `conexao-leisure-translation`,
+`conexao-guide-translation`) were **removed from the active repository**. They
+were historical rollout containers; their authored translation data had already
+been consolidated into the shared stages, which was proved before deletion. They
+were never part of the production steady state and were never in a release ZIP,
+so removing them changes no runtime and no deployed artifact. Their historical
+implementation and provenance remain recoverable from Git history and from the
+stage reports under [`docs/reports/`](reports/).
+
+One consequence is recorded honestly rather than hidden: the retired **job**
+rollout's authored manifest is **not** represented by an active stage. `job` is
+a B2 type, the seven supported stages carry no job-records stage, and the
+`job` stage declared `allow_remove => false`. Its single authored row was
+therefore retired with the plugin and survives only in Git history. This is a
+known, accepted gap — re-creating an `en-job` stage is future work, not part of
+Stage 19.
+
+Adding a rollout therefore requires **one data manifest + one small stage
+config + one gate/test**, and no copied orchestration. See
+[`docs/plugins/conexao-translation-rollout.md`](plugins/conexao-translation-rollout.md).
 
 ## Theme Architecture
 
 The active theme `conexao-br-irlanda` is a custom block-theme-compatible theme:
 
 - **Template hierarchy**: Standard WordPress with `single-leisure.php` for the leisure CPT
-- **SEO**: Built into `inc/seo.php` (titles, meta, canonical, OG, schema, sitemap, redirects, robots.txt)
+- **Runtime layout**: `functions.php` is a **loader only** (theme constants + `require_once` of the `inc/` modules in a documented order). All theme logic lives in focused `inc/*.php` modules, one concern per file.
+- **Language policy**: `inc/i18n.php` (locale foundation, `conexao_current_locale()`) plus `inc/i18n/` (Polylang guard, locale, URLs, terms, B2 fallback, hreflang, switcher)
+- **SEO**: Built into `inc/seo/` (titles, meta, canonical, hreflang, OG, schema, sitemap, robots, redirects)
+- **REST**: `inc/rest-language.php` is the single owner of the bilingual REST contract
 - **CSS**: Design system CSS variables → header-nav → main → leisure → dark-mode (cascading enqueue)
 - **JS**: Single `assets/js/main.js` (deferred) — mobile menu, theme toggle, search, leisure filters, copy buttons
+
+See `docs/themes/conexao-br-irlanda.md` §Runtime Architecture for the full module map and load order.
 
 ## Data Flow
 
@@ -59,7 +128,9 @@ The active theme `conexao-br-irlanda` is a custom block-theme-compatible theme:
 
 ## SEO Architecture
 
-- Built into theme (`inc/seo.php`), no plugin dependency.
-- Handles: titles, meta descriptions, canonical URLs, Open Graph, Twitter Cards, schema.org, breadcrumbs, XML sitemap, robots.txt, redirects.
+- Built into theme (`inc/seo/`), no plugin dependency.
+- Handles: titles, meta descriptions, canonical URLs, hreflang, Open Graph, Twitter Cards, schema.org, breadcrumbs, XML sitemap, robots.txt, redirects.
 - WordPress core sitemap disabled in favor of custom lightweight sitemap.
-- English-to-Portuguese redirects at two levels: `.htaccess` (Apache) and `inc/seo.php` (PHP).
+- English-to-Portuguese redirects at two levels: `.htaccess` (Apache) and `inc/seo/redirects.php` (PHP).
+_Last verified: 2026-09-26 by Stage L — Permanent Invariant Gates_
+_Last verified: 2026-09-29 by the production artifact version bump (generated plugin registry regions regenerated)_

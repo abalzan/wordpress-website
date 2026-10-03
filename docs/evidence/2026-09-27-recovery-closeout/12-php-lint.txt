@@ -1,0 +1,30 @@
+# 12 - PHP syntax and runtime duplicate-declaration checks
+
+## 1. PHP syntax (php -l) over all repository PHP
+  (lint.sh step 1, 462 files)
+  OK: no PHP parse errors.
+
+## 2. PHPCS / PHPStan are ENVIRONMENT toolchain gaps, not source findings
+  ./scripts/lint.sh reported:
+    - "PHPCS report is not valid PHPCS JSON"  (harness/temp-file issue)
+    - "composer: command not found"            (PHPStan runner absent on this host)
+  Neither can be a recovery regression: the theme is byte-identical to the verified
+  restored source (git diff b47d098 -- wp-content/themes/ = 0 lines).
+  Reported as observed, not repaired - repairing them is out of scope here.
+
+## 3. Runtime duplicate-declaration check
+  duplicate conexao_* definitions          0
+  unique conexao_* functions               282
+
+  This is the check that matters here. 597b04e introduced a consolidated inc/seo.php
+  that re-declared 23 function names already present in the modular inc/seo/ (a PHP
+  fatal). The recovered tree declares each function exactly once:
+    inc/seo.php      : absent
+    inc/seo/ modules : 10 (canonical, hreflang, meta, open-graph, redirects,
+                         related, robots, schema, sitemap, titles)
+  The 59-suite in-process run loads the theme with no fatal - the live proof.
+
+## 4. functions.php loader integrity
+  functions.php lines                      112
+  require_once statements                  43
+  112 lines / 43 requires = a loader, not the 3937-line 597b04e monolith.

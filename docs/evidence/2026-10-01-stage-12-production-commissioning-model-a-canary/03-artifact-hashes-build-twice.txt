@@ -1,0 +1,56 @@
+# Stage 12 - Production artifacts, built TWICE (Section 5)
+
+## BUILD 1 (scripts/build-plugins-zip.sh, exit 0)
+     - conexao-translation-rollout
+     - conexao-translation-automation
+  Local-only tooling and retired rollouts are NOT part of the production steady state.
+73b3aee368712397e4ddbb496d8915bb6021443ab7e75bedf345e9fa4ad35215  dist/conexao-translation-rollout.zip
+f4e62bc59aa509fc0bd51037709f788f024579afc80c7851d0c1e8c5cb7045f1  dist/conexao-translation-automation.zip
+
+## BUILD 2 (same tree, exit 0)
+     - conexao-translation-rollout
+     - conexao-translation-automation
+  Local-only tooling and retired rollouts are NOT part of the production steady state.
+73b3aee368712397e4ddbb496d8915bb6021443ab7e75bedf345e9fa4ad35215  dist/conexao-translation-rollout.zip
+f4e62bc59aa509fc0bd51037709f788f024579afc80c7851d0c1e8c5cb7045f1  dist/conexao-translation-automation.zip
+
+## DETERMINISM (required by Section 5)
+IDENTICAL - both builds produced byte-identical artifacts for BOTH translation plugins.
+
+## header == registry == release metadata
+plugin header (authoritative version_source):
+  conexao-translation-rollout    Version: 1.2.0
+  conexao-translation-automation Version: 0.4.0
+registry (plugins.json) - versions are deliberately NOT duplicated; version_source points at those headers:
+  conexao-translation-rollout | production= True | status= active | build= True | version_source= wp-content/plugins/conexao-translation-rollout/conexao-translation-rollout.php
+  conexao-translation-automation | production= True | status= active | build= True | version_source= wp-content/plugins/conexao-translation-automation/conexao-translation-automation.php
+release metadata (dist/release.json):
+   conexao-translation-rollout version= 1.2.0 file_count= 4 bytes= 14351
+      sha256= 73b3aee368712397e4ddbb496d8915bb6021443ab7e75bedf345e9fa4ad35215
+   conexao-translation-automation version= 0.4.0 file_count= 30 bytes= 147818
+      sha256= f4e62bc59aa509fc0bd51037709f788f024579afc80c7851d0c1e8c5cb7045f1
+  release tag = v2026.10.01  built_at = 2026-10-01T13:53:55Z
+  git sha     = 972ca4eb1c038e6859191a5895767674fb4dcc97
+  git branch  = i18n  dirty = True
+  => header version == release.json version for both. Consistent.
+
+## dependency ordering (Section 5)
+  production_order = ['conexao-data-model', 'conexao-content', 'conexao-admin-ux', 'conexao-event-runtime', 'conexao-translation-rollout', 'conexao-translation-automation']
+  => conexao-translation-rollout precedes conexao-translation-automation: CORRECT.
+  => automation header declares "Requires Plugins: conexao-translation-rollout": CORRECT.
+  => no retirable/local-only plugin is in production_order.
+
+## zero secrets (Section 5)
+  dist/conexao-translation-rollout.zip : secret-shaped hits = 0
+  dist/conexao-translation-automation.zip : secret-shaped hits = 0
+
+## zero test files / zero Docker or local-only files (Section 5)
+  == dist/conexao-translation-rollout.zip
+  == dist/conexao-translation-automation.zip
+  NOTE: the single "test"-substring match in the automation artifact is
+  class-conexao-translation-automation-batch-composer.php, which is PRODUCTION
+  source (the batch composer), not a test file. No tests/ directory ships in
+  either artifact. The 30 files are all production includes + the main file.
+
+## release integrity gate
+229 passed, 0 failed

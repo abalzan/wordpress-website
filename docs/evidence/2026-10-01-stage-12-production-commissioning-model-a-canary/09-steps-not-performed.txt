@@ -1,0 +1,39 @@
+# Stage 12 - Steps that could NOT be performed, and why (Sections 11-13, 17-34)
+
+Each row is reported as NOT PERFORMED, never as passing (Section 37).
+
+STEP | REQUIREMENT | STATE | REASON
+-----|-------------|-------|-------
+  6  | install/promote + activate the two plugins | NOT PERFORMED | no production installation authorization; no production channel
+  7  | immediate production state verification | NOT PERFORMED | nothing was installed, so there is no new state to verify
+  8  | legacy endpoint production 410           | NOT PERFORMED | no authenticated production context (see 04-control-plane.txt)
+  9  | commission batch-control surface          | NOT PERFORMED | installation authorization absent; would be a production code/registration change
+ 10  | emergency-stop commissioning              | NOT PERFORMED | initial production stop state not observable; no operator to clear it
+ 11  | fresh production baseline                | NOT PERFORMED | no production read channel
+ 12  | bootstrap safety proof                   | NOT PERFORMED | depends on 11
+ 13  | no-change reconciliation                 | NOT PERFORMED | depends on 11 and 12
+ 14  | provider configuration proof              | PARTIAL    | provider/model/limits CONFIRMED IN ARTIFACT; credential availability FALSE
+ 15  | live provider smoke (RESULT: OK)         | NOT PERFORMED | no CONEXAO_TRANSLATION_PROVIDER_KEY; quota not testable
+ 16  | production proof trigger (Tools menu)     | NOT PERFORMED | plugin not installed in production
+ 17  | production dry-run                       | NOT PERFORMED | depends on 11, 13, 15, 16
+ 18  | canary selection (exactly one operation)  | NOT PERFORMED | no production plan exists; nothing to select from
+ 19  | human translation review                 | NOT PERFORMED | no candidate and no identified reviewer
+ 20  | canary approval (digest-bound)           | NOT PERFORMED | no reviewed batch to approve
+ 21  | Model A exact-scope verification pre-apply| NOT PERFORMED | no approved scope, no engine plan in production
+ 22  | separate canary apply authorization      | NOT PERFORMED | not granted in this task
+ 23  | canary apply                             | NOT PERFORMED | not authorized; would require 22
+ 24  | exact mutation-set equality              | NOT PERFORMED | no mutation; expected and actual are both empty, trivially equal
+ 25  | PT immutability                          | NOT PERFORMED | no mutation; PT before == PT after holds VACUOUSLY, which is not a pass
+ 26  | EN/B1/B2 verification                    | NOT PERFORMED | no EN record created or updated
+ 27  | route verification                       | NOT PERFORMED | no B1 canary; no route fetched or altered
+ 28  | Model A post-write proof                 | NOT PERFORMED | no production write occurred
+ 29  | idempotence                              | NOT PERFORMED | no mutation to be idempotent about
+ 30  | lock verification                        | NOT PERFORMED | no production lock acquired; no destructive race manufactured
+ 31  | batch-control behaviour after canary      | NOT PERFORMED | surface not commissioned
+ 32  | audit verification                       | NOT PERFORMED | no production run produced an audit record
+ 33  | provider usage metadata                  | NOT PERFORMED | zero provider requests were made
+
+SAFETY CHAIN STATUS: unmodified and unweakened. The lock, F7 dry-run gate,
+digest-bound approval, snapshot, apply, verification, idempotence and audit
+remain exactly as Stage 11 left them, proven by the passing local suites.
+NOTHING WAS WEAKENED TO OBTAIN THIS STATUS.

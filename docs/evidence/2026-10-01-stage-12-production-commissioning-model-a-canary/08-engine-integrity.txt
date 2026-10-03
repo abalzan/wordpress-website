@@ -1,0 +1,21 @@
+# Stage 12 - Engine integrity (Section 36)
+
+STAGE 12 STARTING DIGEST (captured directly from the checked-out repository, before any Stage 12 work):
+  264cc6c4e7b4214f2bc30436afb077d308b1897de444431c5c3a331f08116912  wp-content/plugins/conexao-translation-rollout/includes/class-conexao-translation-rollout-engine.php
+
+STAGE 12 ENDING DIGEST (after artifacts, all tests, and all Stage 12 work):
+  264cc6c4e7b4214f2bc30436afb077d308b1897de444431c5c3a331f08116912  wp-content/plugins/conexao-translation-rollout/includes/class-conexao-translation-rollout-engine.php
+
+BEFORE == AFTER:
+  YES - IDENTICAL. The engine was NOT modified during Stage 12.
+
+This digest is also exactly the Stage 11 ENDING digest, so the engine has been
+byte-stable since Stage 11s Model A implementation. The Stage 11 abbreviated
+digest was NOT relied upon; the full SHA-256 was recomputed from the tree.
+
+Independent corroboration (the suite asserts the engine core still hashes to its
+pinned pre-Stage-10 value):
+    PASS: the shared engine core still hashes to its pinned pre-Stage-10 value
+
+No engine code change occurred, so no separately authorized emergency code change
+was needed or made. No plugin source file was edited at all in Stage 12.

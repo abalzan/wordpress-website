@@ -1,4 +1,18 @@
 <?php
+/**
+ * import-wix-export.php — import a Wix content export into WordPress.
+ *
+ * Purpose: create/update posts from a `wix-posts.json` export directory.
+ * Safety: local-write. Reads WIX_EXPORT_DIR; requires an already-loaded
+ * WordPress (it is invoked through wp eval-file).
+ * Scope: only the records present in the export file. It does not delete
+ * anything and does not touch records absent from the export.
+ *
+ * Bootstrap exception: requires an already-loaded WordPress (wp eval-file),
+ * so it only asserts ABSPATH instead of loading WordPress itself. Current.
+ *
+ * @package Conexao_BR_Scripts
+ */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit( 1 );

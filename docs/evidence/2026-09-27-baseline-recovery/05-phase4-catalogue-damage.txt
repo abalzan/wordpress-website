@@ -1,0 +1,57 @@
+# 05 — Phase 4: catalogue / i18n damage assessment
+
+## Catalogue files at b47d098 (git ls-tree)
+wp-content/plugins/conexao-admin-ux/languages/conexao-admin-ux.pot
+wp-content/plugins/conexao-content/languages/conexao-content.pot
+wp-content/plugins/conexao-data-model/languages/conexao-data-model.pot
+wp-content/plugins/conexao-event-importer/languages/conexao-event-importer.pot
+wp-content/plugins/conexao-event-runtime/languages/conexao-event-runtime.pot
+wp-content/plugins/conexao-leisure-migration/languages/conexao-leisure-migration.pot
+wp-content/plugins/conexao-sponsor-migration/languages/conexao-sponsor-migration.pot
+wp-content/plugins/conexao-translation-rollout/languages/README.md
+wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot
+wp-content/themes/conexao-br-irlanda/languages/en_US.mo
+wp-content/themes/conexao-br-irlanda/languages/en_US.po
+wp-content/themes/conexao-br-irlanda/languages/pt_BR.mo
+wp-content/themes/conexao-br-irlanda/languages/pt_BR.po
+
+## Catalogue files at 597b04e
+wp-content/plugins/conexao-admin-ux/languages/conexao-admin-ux.pot
+wp-content/plugins/conexao-content/languages/conexao-content.pot
+wp-content/plugins/conexao-data-model/languages/conexao-data-model.pot
+wp-content/plugins/conexao-event-importer/languages/conexao-event-importer.pot
+wp-content/plugins/conexao-event-runtime/languages/conexao-event-runtime.pot
+wp-content/plugins/conexao-leisure-migration/languages/conexao-leisure-migration.pot
+wp-content/plugins/conexao-sponsor-migration/languages/conexao-sponsor-migration.pot
+wp-content/plugins/conexao-translation-rollout/languages/README.md
+
+## Theme languages/ dir in the WORKING TREE (HEAD=597b04e)
+ls: cannot access 'wp-content/themes/conexao-br-irlanda/languages/': No such file or directory
+
+## msgid counts
+theme en_US.po @b47d098: 424
+theme en_US.po @597b04e: 0
+theme pt_BR.po @b47d098: 419
+
+## Deleted line volume
+languages/ lines deleted: 5644
+
+## Generator survival + identity check (unchanged by 597b04e?)
+sha256 @b47d098: de137d4aadf6d2d63cffba640de0ead41288aa24096a36c9b63e36f39877918d  -
+sha256 @597b04e: de137d4aadf6d2d63cffba640de0ead41288aa24096a36c9b63e36f39877918d  -
+$ git diff --name-status b47d098 597b04e -- scripts/   (empty => no script change)
+
+## i18n source-side infra deleted
+D	wp-content/themes/conexao-br-irlanda/inc/content.php
+D	wp-content/themes/conexao-br-irlanda/inc/i18n.php
+D	wp-content/themes/conexao-br-irlanda/inc/i18n/fallback.php
+D	wp-content/themes/conexao-br-irlanda/inc/i18n/guard.php
+D	wp-content/themes/conexao-br-irlanda/inc/i18n/hreflang.php
+D	wp-content/themes/conexao-br-irlanda/inc/i18n/locale.php
+D	wp-content/themes/conexao-br-irlanda/inc/i18n/switcher.php
+D	wp-content/themes/conexao-br-irlanda/inc/i18n/terms.php
+D	wp-content/themes/conexao-br-irlanda/inc/i18n/urls.php
+D	wp-content/themes/conexao-br-irlanda/inc/rest-language.php
+
+## load_theme_textdomain still called?
+597b04e:wp-content/themes/conexao-br-irlanda/functions.php:499:	load_theme_textdomain( 'conexao-br-irlanda', CONEXAO_THEME_DIR . '/languages' );

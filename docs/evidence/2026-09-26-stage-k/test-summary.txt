@@ -1,0 +1,53 @@
+# Stage K — test / acceptance summary (before vs after)
+
+Command: ./scripts/run-tests.sh   (canonical runner; in-process PHP + script contract + HTTP acceptance)
+Environment: local Docker stack, same session, same database, before and after.
+
+## Aggregate
+
+| Metric | BEFORE (baseline 0f5c586) | AFTER (Stage K) |
+|---|---|---|
+| In-process PHP suites | 50 total, 35 passed, **15 failed** | 50 total, 35 passed, **15 failed** |
+| Assertions | 3306 passed, 59 failed | 3306 passed, 59 failed |
+| Script-contract suites | 2 total, 2 passed, 0 failed | **3 total, 3 passed, 0 failed** |
+| HTTP acceptance suites | 3 total, 3 passed, 0 failed | 3 total, 3 passed, 0 failed |
+| Runner exit code | 1 | 1 |
+
+The ONLY delta is the script-contract suite count: 2 -> 3. That third suite is
+tests/scripts/verify-agent-governance.py (the Stage K gate), discovered by the
+runner convention and passing. No in-process suite, no assertion and no acceptance
+row changed.
+
+## Failing in-process suites (identical before and after)
+
+```
+  - plugin/conexao-event-importer/test-county-registry.php
+  - plugin/conexao-event-importer/test-error-handling.php
+  - plugin/conexao-event-importer/test-ivvcc-importer.php
+  - plugin/conexao-event-importer/test-town-sanitization.php
+  - theme/conexao-br-irlanda/test-blog-en-translation.php
+  - theme/conexao-br-irlanda/test-event-location-filters.php
+  - theme/conexao-br-irlanda/test-guide-en-translation.php
+  - theme/conexao-br-irlanda/test-header-menu-selection.php
+  - theme/conexao-br-irlanda/test-leisure-card-excerpt-language.php
+  - theme/conexao-br-irlanda/test-leisure-related-events.php
+  - theme/conexao-br-irlanda/test-polylang-foundation.php
+  - theme/conexao-br-irlanda/test-stage32-bilingual.php
+  - theme/conexao-br-irlanda/test-stage33-bilingual.php
+  - theme/conexao-br-irlanda/test-stage41-rest-language.php
+  - theme/conexao-br-irlanda/test-stage45-pages.php
+```
+
+diff of the two lists is EMPTY -> Stage K introduced ZERO regressions.
+
+## Individual gates
+
+| Gate | Result |
+|---|---|
+| `python3 tests/scripts/verify-agent-governance.py` (Stage K, new) | 247 passed, 0 failed (exit 0) |
+| `python3 tests/scripts/verify-script-conventions.py` (Stage I) | 284 passed, 0 failed (exit 0) |
+| `python3 tests/scripts/verify-release-integrity.py` (Stage J) | 209 passed, 0 failed (exit 0) |
+| `php scripts/generate-registry-docs.php --check` (Stage G) | 13 plugins validated, 22 generated regions current, zero writes |
+| `python3 tests/acceptance/verify-guides-en-http.py` | 18 passed, 0 failed |
+| `python3 tests/acceptance/verify-release-http.py` | 42 passed, 0 failed |
+| `python3 tests/acceptance/verify-routing-http.py` | 59 passed, 0 failed |

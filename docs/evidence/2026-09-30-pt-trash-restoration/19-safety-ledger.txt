@@ -1,0 +1,63 @@
+SAFETY LEDGER — PT-BR TRASH RESTORATION (six authorised IDs)
+===========================================================
+Target                 : https://conexaobr.ie (production, WordPress.com)
+Authorization          : operator-authorized, scoped to exactly 6 post IDs
+Window                 : 2026-09-30, single session
+
+PRODUCTION WRITES
+  HTTP POST requests issued ................... 6
+  Records written ............................. 6  (10367, 10369, 10373, 10374, 10375, 10376)
+  Fields per write ............................ 1  ({"status": "publish"})
+  Payload total ............................... 6 status assignments, nothing else
+
+CHANGES MADE
+  post_status trash -> publish ................ 6 records
+  post_name  __trashed suffix removed ......... 6 records (by WordPress, not sent by us)
+  meta.jetpack_social_post_already_shared ..... 6 records (false -> true, WordPress.com housekeeping)
+
+CHANGES NOT MADE (explicitly zero)
+  title ....................... 0
+  content ..................... 0
+  excerpt ..................... 0
+  date / date_gmt ............. 0
+  author ...................... 0
+  featured_media .............. 0
+  categories / tags ........... 0
+  custom fields (other than the WP housekeeping flag) ... 0
+  Polylang language / config .. 0
+  translations / links ........ 0
+  EN records created .......... 0
+  EN manifest rows re-keyed .... 0
+  other posts/pages/guides .... 0
+  menus / options / users ..... 0
+
+PRECONDITIONS VERIFIED BEFORE THE WRITE
+  all six currently status=trash ................ PASS (6/6)
+  all six carry the __trashed suffix ........... PASS (6/6)
+  all six are post type ......................... PASS (6/6)
+  clean slug free on posts ..................... PASS (6/6, zero occupiers)
+  cross-type slug probe (7 post types) ......... PASS (no occupier anywhere)
+  dry-run exactly 6 restorations, 0 other ops ... PASS
+
+POST-WRITE VERIFICATION
+  six present, status=publish ................... PASS (6/6)
+  six clean slugs, no __trashed ................. PASS (6/6)
+  identity/content integrity per record ......... PASS (6/6, 8 fields each)
+  138-record production corpus compared ......... 0 pre-existing records changed
+  posts 37 -> 43, pages 45 -> 45, guide 56 -> 56
+  added set == exactly the six authorised IDs .... PASS
+
+REPOSITORY
+  plugins / theme / tests / scripts ............ unchanged by this task
+  wp-content changed ............................ 0 (only pre-existing prior-phase edits present)
+  .env .......................................... read only, never modified, never printed
+  files created ................................. docs/evidence/2026-09-30-pt-trash-restoration/*, one report
+  docs/evidence/2026-09-26-stage-l/gate.json .... rewritten by the gate runner, restored via git checkout
+  secrets exposed ................................ NO
+  Flutter/mobile repository ..................... not accessed
+
+NOT DONE (deliberately, next phase)
+  EN translation engine invoked ................. NO
+  EN apply ...................................... NO
+  any translation applied ........................ NO
+  Polylang configuration changed ................ NO

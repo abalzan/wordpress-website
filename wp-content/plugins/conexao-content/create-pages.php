@@ -478,14 +478,34 @@ if (!$primary_menu_id) {
 // Add items to Primary Menu
 // NOTE: Guias, Eventos, Cursos, Empregos, Apoiadores are now CPT archives (not static pages)
 // They use custom URLs pointing to the CPT archive paths
+//
+// ORDER IS THE SOURCE OF TRUTH. The array below is written in the canonical
+// primary-navigation order documented in docs/routing.md §Navigation
+// Architecture and docs/themes/conexao-br-irlanda.md §Navigation Logic:
+//
+//   Início, Apoiadores, Guias, Eventos, Cursos, Lazer e turismo, Empregos,
+//   Blog, Contato
+//
+// `add_menu_items()` inserts in array order, so this array's order becomes the
+// nav_menu_item `menu_order` — the single authoritative stored order (desktop
+// and mobile share the same 'primary' location). The render-time layer in
+// inc/navigation.php only INSERTS items the stored menu is missing (e.g.
+// "Lazer e turismo", which has no stored item and is injected at render time
+// between Cursos and Empregos) and binds each item to its canonical object; it
+// deliberately never re-sorts the items it was given. Seeding out of order
+// therefore renders out of order, so keep this list in canonical order.
+// Existing databases are repaired order-only by
+// scripts/reorder-primary-menu-blog-apoiadores.php (idempotent).
 $primary_items = [
     ['title' => 'Home', 'type' => 'custom', 'url' => home_url('/')],
-    ['title' => 'Blog', 'type' => 'custom', 'url' => home_url('/blog/')],
+    ['title' => 'Apoiadores', 'type' => 'custom', 'url' => home_url('/apoiadores/')],
     ['title' => 'Guias', 'type' => 'custom', 'url' => home_url('/guias/')],
     ['title' => 'Eventos', 'type' => 'custom', 'url' => home_url('/eventos/')],
     ['title' => 'Cursos', 'type' => 'custom', 'url' => home_url('/cursos/')],
     ['title' => 'Empregos', 'type' => 'custom', 'url' => home_url('/empregos/')],
-    ['title' => 'Apoiadores', 'type' => 'custom', 'url' => home_url('/apoiadores/')],
+    // NOTE: "Lazer e turismo" has NO stored item by design — the render-time
+    // layer injects it between Cursos and Empregos.
+    ['title' => 'Blog', 'type' => 'custom', 'url' => home_url('/blog/')],
     // NOTE: "Irlanda" is intentionally NOT a primary-nav item. The /irlanda/
     // page remains published and directly accessible; it is just not linked
     // from the main navigation (desktop or mobile share this same menu).

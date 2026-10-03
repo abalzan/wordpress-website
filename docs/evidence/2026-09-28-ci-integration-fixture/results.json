@@ -1,0 +1,73 @@
+{
+  "actions_run": {
+    "id": 36429929963,
+    "head_sha": "3da93fafc42939b16d22b80c739d066ffe94b0a8",
+    "job": "Integration tests (Docker WordPress + run-tests.sh)",
+    "conclusion": "failure",
+    "php_suites": {
+      "total": 61,
+      "passed": 30,
+      "failed": 31,
+      "assertions_passed": 2414,
+      "assertions_failed": 66
+    },
+    "script_contract_suites": {
+      "total": 6,
+      "passed": 6,
+      "failed": 0
+    },
+    "http_suites": {
+      "total": 3,
+      "passed": 0,
+      "failed": 3
+    },
+    "finding": "Polylang was installed and active but had no configured languages on the fresh site, so its public API functions were not loaded; the test database also lacked the migrated content expected by existing suites."
+  },
+  "fresh_site_reproduction": {
+    "polylang_version": "3.8.9",
+    "languages_after_setup": ["pt", "en"],
+    "default_language": "pt",
+    "unassigned_objects_after_setup": 0,
+    "jobs_rollout": {
+      "dry_run_created": 1,
+      "apply_created": 1,
+      "idempotent_rerun_skipped": 1,
+      "pt_drift": 0,
+      "missing_en_after_apply": 0
+    },
+    "shared_slug_gate": {
+      "passed": 16,
+      "failed": 0,
+      "violations": 0
+    },
+    "disposable_compose_project_removed": true
+  },
+  "verification": {
+    "lint": {
+      "exit": 0,
+      "php_files_syntax_checked": 469,
+      "phpcs_new_violations": 0,
+      "phpstan_files": 206,
+      "phpstan_errors": 0
+    },
+    "script_contract": {
+      "exit": 0,
+      "suites": 6,
+      "assertions_passed": 551,
+      "failed": 0
+    },
+    "agent_governance": {
+      "exit": 0,
+      "passed": 247,
+      "failed": 0
+    },
+    "script_conventions": {
+      "exit": 0,
+      "passed": 317,
+      "failed": 0
+    },
+    "workflow_yaml": "valid",
+    "git_diff_check": "clean"
+  },
+  "limitation": "The complete content-dependent integration suite is not deterministic on a blank WordPress database. Its Actions job is workflow_dispatch-only until synthetic site fixtures make the entire suite deterministic; no full CI rerun was performed after these changes."
+}

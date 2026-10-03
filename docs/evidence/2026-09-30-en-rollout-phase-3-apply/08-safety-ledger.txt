@@ -1,0 +1,210 @@
+PHASE 3 SAFETY LEDGER — EN translation rollout apply
+==================================================
+Phase 3 was ABORTED before any production write. Every number is measured.
+
+  Production writes ................................ 0   (GET only; verified)
+  HTTP verbs used ................................. GET only
+  EN records created .............................. 0
+  Translation links created ....................... 0
+  B2 field updates applied ........................ 0
+  EN taxonomy terms created ....................... 0
+  PT records modified ............................. 0
+  Polylang configuration changes ................. 0
+  Temporary plugins installed in production ....... 0
+  Temporary plugins activated in production ........ 0
+  Rollback invoked ................................. 0 (nothing to roll back)
+
+  plans applied ........................... 0 of 126 B1
+  field updates applied .................... 0 of 299 B2
+  operations applied ....................... 0 of 425 objects
+
+  Repository source-of-truth files mutated ... 0
+    (gate.json, which the gate runner rewrites as a side effect, was restored with
+     `git checkout`; `git status --porcelain` is byte-identical to the pre-Phase-3 state,
+     15 entries, all of them pre-existing prior-phase work)
+
+  .env .................................... read only, never written, never printed
+  Secrets exposed .......................... NO
+  plugins.json modified .................... NO
+  Theme modified ........................... NO
+  Permanent production plugin set altered .. NO
+  Flutter/mobile repository ................ not accessed
+
+PHASE 3 SAFETY LEDGER — ROUND 2 (after authoriser resolved both notes)
+=====================================================================
+This round was ABORTED at the apply boundary again. Every number is measured.
+
+  Production writes ................................ 0   (GET only; verified)
+  HTTP verbs used ................................. GET only
+  EN records created .............................. 0
+  Translation links created ....................... 0
+  B2 field updates applied ........................ 0
+  EN taxonomy terms created ....................... 0
+  PT records modified ............................. 0
+  Polylang configuration changes ................. 0
+  Rollback invoked ................................. 0 (nothing to roll back)
+
+  plans applied ........................... 0 of 126 B1
+  field updates applied .................... 0 of 299 B2
+  taxonomy terms created ................... 0 of 13
+  operations applied ....................... 0 of 438 objects
+
+  Repository source-of-truth files mutated ... 0
+    (gate.json, rewritten as a side effect of running the gate runner,
+     was restored with `git checkout`; `git status --porcelain` is back to
+     the pre-round state. No plugin source, data file, theme or
+     plugins.json entry was touched.)
+  Temporary plugins installed this round ..... 0 (already present & active)
+  Temporary plugins REMOVED this round ....... 0 (correct — they are still
+     required; removal is authorised only AFTER a successful apply)
+  .env .................................... read only, never written, never printed
+  Secrets exposed .......................... NO
+  Flutter/mobile repository ................ not accessed
+
+AUTHORISER DECISIONS NOW APPLIED
+  Note 1 — 13 `conexao_category` creates IN SCOPE. Confirmed in the live
+    plan: taxonomy_terms = 13, taxonomy = conexao_category x13, all
+    planned_operation = CREATE, taxonomy_conflicts = 0. They are part of
+    the 438 = 425 manifest objects + 13 taxonomy creates.
+    conexao_tag / conexao_county / conexao_town creates: 0, as intended
+    (county and town stay shared per docs/routing.md).
+  Note 2 — invariant is "0 PT canonical-content mutations + 0 PT
+    authored-content drift". Measured on the live plan:
+      pt_overwrite_attempts ................. 0
+      unexpected_pt_mutation_operations ..... 0
+      B1 pt_mutation: "none - the PT record is only read"  (126/126)
+      B2 pt_mutation: "one post-meta field on the existing PT record;
+                       no post row change"                 (299/299)
+      B2 write targets: _leisure_excerpt_en x289, _provider_excerpt_en x10
+    => 299 B2 EN-field writes land ON PT records by design, and are
+       reported as such, NOT as PT content overwrites. No B2 object
+       touches title, content, excerpt, slug, status, date, author,
+       featured media, canonical taxonomy assignments or Polylang state.
+
+PLAN REVALIDATION (step 2 of the authorised sequence) — live production
+                        required        re-measured       result
+  total mutation objects            438              438            MATCH
+  B1 creates / links                126              126            MATCH
+  B2 field updates                  299              299            MATCH
+  taxonomy creates (conexao_category) 13              13            MATCH
+  conflicts                            0                0            MATCH
+  duplicate target identities         0                0            MATCH
+  PT overwrite attempts               0                0            MATCH
+  unexpected PT mutation operations   0                0            MATCH
+  unclassified objects                0                0            MATCH
+  missing source                      0                0            MATCH
+  invalid objects                     0                0            MATCH
+  orphan objects                      0                0            MATCH
+  unresolved slug conflicts           0                0            MATCH
+  unexpected EN existing              0                0            MATCH
+
+  Arithmetic: 425 manifest objects + 13 taxonomy creates = 438. Confirmed.
+
+REPRODUCIBILITY (vs the committed round-1 baseline)
+  plan digest     7dc4f56ed45121fa70bd712d67946219ac05081ef8748fceb9be601a62b6a821
+  plan digest     7dc4f56e... (committed baseline)  -> IDENTICAL
+  snapshot digest d679f1c1eddb1f59aa8fd1ae3a0b96c1a475e4bec1ba4ad8ddda768f1915724d
+  snapshot digest d679f1c1... (committed baseline)  -> IDENTICAL
+  snapshot.json   byte-for-byte IDENTICAL (sha256 82d66b41...)
+  plan.json       differs in EXACTLY ONE FIELD, verified by a recursive
+                  structural diff: report/generated_at_utc
+                  2026-09-30T13:27:28Z vs 13:16:26Z. No plan content
+                  changed. This is a timestamp, not drift.
+
+PT INTEGRITY
+  Live PT identity digest : 76620b661bc72aebde6eb495622a263d432a39bb26d05333b8238023e83908df
+  Committed baseline      : 76620b661bc72aebde6eb495622a263d432a39bb26d05333b8238023e83908df
+  => IDENTICAL. Zero PT drift, before and after this round.
+  (The tool prints "matches PT baseline: False" — it compares against a
+   hardcoded PRE-restoration constant cfe4b7a6... in the read-only tool,
+   not against the committed baseline. Documented in round 1; unchanged.)
+
+TESTS / GATES — identical to the committed baseline
+  run-tests.sh: in-process 63/63 suites, 4,216 assertions passed,
+                script-contract 5/6, HTTP acceptance 3/3 (20+44+92).
+  verify-permanent-gates.py: 7 gates, 6 passed, 1 failed; 89 passed,
+                3 failed — the same 3 stale .pot catalogues.
+  generate-registry-docs.php --check: registry OK, 14 plugins, 23 regions,
+                zero writes.
+  NEW FAILURES INTRODUCED BY THIS ROUND: 0.
+  The single failing gate is the documented PRE-EXISTING i18n freshness
+  debt on `conexao-br-irlanda`, `conexao-content` and
+  `conexao-event-runtime` .pot files. Not suppressed, not repaired.
+=======================================================================
+SUPERSEDED — ROUND 1 BASELINE REVALIDATION (retained as history)
+The section below is the round-1 record. It is kept unchanged for audit.
+Its Note 1 and Note 2 were RESOLVED by the authoriser this round (see
+"AUTHORISER DECISIONS NOW APPLIED" above). The counts below remain valid.
+=======================================================================
+
+  Re-ran the repository's OWN unmodified engine via the committed read-only tool
+  (docs/evidence/2026-09-30-en-rollout-blocker-resolution/en-dry-run.py) against live
+  production. HTTP verb: GET only. The tool has no --apply, no writer and no
+  assert_write_allowed call.
+
+                        claimed baseline      re-measured            result
+  manifest objects              425                425              MATCH
+  B1 creates / links            126                126              MATCH
+  B2 field updates              299                299              MATCH
+  missing_source                  0                  0              MATCH
+  conflicts                       0                  0              MATCH
+  duplicate targets               0                  0              MATCH
+  PT overwrites                   0                  0              MATCH
+  unclassified                    0                  0              MATCH
+  invalid / orphan                0                  0              MATCH
+  unresolved_slug_conflicts       0                  0              MATCH
+  unexpected EN existing          0                  0              MATCH
+  unexpected PT mutations         0                  0              MATCH
+  taxonomy_creates               13                 13              (see note 1)
+  en-guide authored rows         50                 50              MATCH
+  newsletter slug          newsletter         newsletter             MATCH
+  newsletter-2 in plan               0                  0             MATCH (absent)
+
+  NOTE 1 — SCOPE DISCREPANCY REQUIRING A DECISION (not a plan defect):
+  The manifest contains 13 EN `conexao_category` term creates
+  (`taxonomy_creates = 13`, taxonomy_conflicts = 0). The task authorises "126 B1 record
+  creates/links + 299 B2 field updates" and separately requires that no operation outside
+  the verified manifest be applied and that no planned operation be silently skipped.
+  126 + 299 = 425 = total_manifest_objects, so the 13 taxonomy creates are NOT part of the
+  425 and are a ninth operation class. Applying them changes the authorised operation set;
+  omitting them is a silent skip. This must be confirmed by the authoriser before apply.
+
+
+  NOTE 2 — "PT writes must remain 0" NEEDS PRECISION:
+  The plan reports `b2_field_writes_on_pt_record = 299`. The B2 strategy writes an EN
+  field ONTO the PT record (verified in the plan detail: meta_key `_leisure_excerpt_en`,
+  pt_id per record, creates_en_record=false). So after apply there WILL be 299 meta writes
+  that land on PT records. PT *authored content* (title, slug, content, excerpt, date,
+  author, media, PT taxonomies) drift remains 0 and `pt_overwrite_attempts = 0`, which is
+  the invariant the engine actually enforces. A literal reading of "PT writes = 0" would be
+  violated by the manifest's own design. The enforced invariant is 0 PT authored-content
+  drift; the authorisation text should say so explicitly.
+
+PT INTEGRITY — PROVEN, NOT ASSUMED
+
+  Live PT identity digest re-read this phase : 76620b661bc72aebde6eb495622a263d432a39bb26d05333b8238023e83908df
+  Committed baseline (trash-restoration)    : 76620b661bc72aebde6eb495622a263d432a39bb26d05333b8238023e83908df
+  => IDENTICAL
+
+  Per-type PT identity digests, committed baseline vs this fresh read:
+    course_provider SAME 0aed5ce1ec8e    event      SAME 9894533432de
+    guide          SAME 035b850c63cb    job        SAME 893e91ff15b2
+    leisure        SAME 28c0e43bab72    page       SAME b3eea7d8b7c3
+    post           SAME 8789d2642c1d    sponsor    SAME 282853d29139
+  => 8 of 8 types identical. Zero PT drift.
+
+  The tool printed "matches PT baseline: False". This is NOT drift. The tool compares
+  against a hardcoded constant PT_BASELINE_IDENTITY_DIGEST = cfe4b7a6... which is the
+  PRE-RESTORATION (Phase 1/2) digest. The authorised six trash restorations legitimately
+  moved production PT from cfe4b7a6... to 76620b66..., and the committed Phase-3 baseline
+  already records 76620b66... as the expected value. The comparison is against a stale
+  constant in the read-only tool, not a change in production.
+
+REPRODUCIBILITY
+
+  plan digest     (mine)     7dc4f56ed45121fa70bd712d67946219ac05081ef8748fceb9be601a62b6a821
+  plan digest     (baseline) 7dc4f56ed45121fa70bd712d67946219ac05081ef8748fceb9be601a62b6a821
+  snapshot digest (mine)     d679f1c1eddb1f59aa8fd1ae3a0b96c1a475e4bec1ba4ad8ddda768f1915724d
+  snapshot digest (baseline) d679f1c1eddb1f59aa8fd1ae3a0b96c1a475e4bec1ba4ad8ddda768f1915724d
+  snapshot objects (mine / baseline) 438 / 438
+  => BYTE-IDENTICAL. The operation set to be applied is unchanged from the verified plan.

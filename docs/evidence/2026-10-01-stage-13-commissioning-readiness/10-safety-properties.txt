@@ -1,0 +1,68 @@
+# Stage 13 - why readiness cannot mutate production or call the provider
+
+## 1. The boundary is an OBJECT, not a promise
+
+The engine (scripts/lib/commissioning.py) has NO network client, NO provider
+transport, NO WordPress loader, NO subprocess and NO writer. Validators receive
+an `Observation` and nothing else:
+
+  env_present   set of environment VARIABLE NAMES that are set (names only)
+  evidence      operator-supplied evidence objects, by type
+  repo          verified repository facts, gathered by the CLI
+  site_reachable informational only, and no validator reads it
+  now           the server-side runtime clock
+
+The permanent gate asserts the absence of `import socket|requests|urllib|http`,
+`urlopen(`, `wp-load.php` and `import subprocess` in the engine. There is no
+client to point at production even if someone wanted to.
+
+## 2. No environment VALUE is ever read
+
+The CLI does `{name for name in os.environ if name.strip()}` - NAMES only. A
+value cannot reach the report because it is never read. Proof 3: a canary value
+of provider-key shape is placed in the environment and asserted absent from the
+report.
+
+## 3. No provider call, ever
+
+"credential present" (P03) and "live smoke passed" (P06) are SEPARATE
+prerequisites with separate evidence. The gate cannot turn one into the other,
+so a readiness probe can never spend provider budget. Reported as
+provider.requests_from_this_gate = 0.
+
+## 4. No production-write capability
+
+The gate scans for 25 production-write tokens (wp_insert_post, wp_update_post,
+wp_delete_post, pll_set_post_language, update_option, wp_update_nav_menu,
+register_rest_route, wp_schedule_event, ...) and 17 provider/mutation tokens
+(wp_remote_post, api.openai.com, chat/completions, Rollout_Engine::run,
+Orchestrator::run, Batch_Executor, Emergency_Stop::set, Batch_Control::register,
+and the dotted transliterations) in BOTH files. The scan runs on code with
+comments and string literals stripped, so it tests CAPABILITY rather than
+spelling. No --apply flag, no mode=apply selector, no production write
+confirmation.
+
+## 5. The only write is a temp dir the operator named
+
+The preflight's only side effect is the double build, confined to a
+tempfile.TemporaryDirectory it removes, plus the --out report if requested.
+Every subprocess is allow-listed (build-plugins-zip.sh,
+generate-registry-docs.php --check, unzip) and none uses shell=True, so a path
+cannot become a command.
+
+## 6. The emergency stop cannot be moved from here
+
+emergency_stop_clearance is a CONSTANT "NOT_GRANTED" in the report. No request
+field is read as the flag anywhere in the plugin (asserted from source), and
+proof 17 injects a forged clearance and shows the report unchanged.
+
+## 7. The control plane stays DECLARED
+
+The gate asserts is_commissioned() returns false and that the bootstrap
+register() call site is still commented out. Stage 13 did not commission it and
+cannot: doing so is a production change requiring P11.
+
+## 8. Stage 13 emits neither COMMISSIONING nor COMMISSIONED
+
+Both are in STAGE13_FORBIDDEN_STATUSES, and the aggregate is a pure function of
+the eighteen results plus four integrity invariants.

@@ -1,0 +1,113 @@
+
+=== Leisure filters: options are links, not listbox options ===
+  PASS: leisure: option links are still rendered as <a> with the existing CSS class
+  PASS: leisure: no invalid role="option" on any filter link
+  PASS: leisure: the option container is no longer a listbox (links are not options)
+  PASS: leisure: no orphan aria-selected (invalid on role="link")
+  PASS: leisure: no orphan aria-multiselectable (only valid on a listbox)
+  PASS: leisure: the trigger no longer advertises a listbox popup
+  PASS: leisure: the dropdown trigger keeps aria-expanded (disclosure contract)
+  PASS: leisure: the dropdown trigger keeps aria-controls pointing at its panel
+  PASS: leisure: at least one option link rendered (the gate is not vacuous)
+  PASS: leisure: every option <a> opening tag is properly closed with a literal ">"
+  PASS: leisure: every option link keeps a real href (navigation is never replaced by JS)
+  PASS: leisure: aria-current="true" only ever appears together with the is-active state
+  PASS: leisure: county options still rendered from real terms
+  PASS: leisure: category options still rendered
+  PASS: leisure: attribute options still rendered
+  PASS: leisure: the clear-filters action stays hidden while no filter is active
+  PASS: leisure: with no filter active exactly the 3 reset options are aria-current (got 3)
+  PASS: leisure active: option links are still rendered as <a> with the existing CSS class
+  PASS: leisure active: no invalid role="option" on any filter link
+  PASS: leisure active: the option container is no longer a listbox (links are not options)
+  PASS: leisure active: no orphan aria-selected (invalid on role="link")
+  PASS: leisure active: no orphan aria-multiselectable (only valid on a listbox)
+  PASS: leisure active: the trigger no longer advertises a listbox popup
+  PASS: leisure active: the dropdown trigger keeps aria-expanded (disclosure contract)
+  PASS: leisure active: the dropdown trigger keeps aria-controls pointing at its panel
+  PASS: leisure active: at least one option link rendered (the gate is not vacuous)
+  PASS: leisure active: every option <a> opening tag is properly closed with a literal ">"
+  PASS: leisure active: every option link keeps a real href (navigation is never replaced by JS)
+  PASS: leisure active: aria-current="true" only ever appears together with the is-active state
+  PASS: leisure: each of the 3 active dimensions is exactly one aria-current link (got 3)
+  PASS: leisure: active-filter chips still rendered when filters are applied
+  PASS: leisure: the clear-filters action reappears once a filter is active
+  PASS: leisure: a selected multi-select value still renders a removable chip
+  PASS: leisure: filter URL still carries both dimensions (query contract unchanged)
+  PASS: leisure: filter URL still resets the page cursor
+
+=== Event filters: options are links, not listbox options ===
+  PASS: events: option links are still rendered as <a> with the existing CSS class
+  PASS: events: no invalid role="option" on any filter link
+  PASS: events: the option container is no longer a listbox (links are not options)
+  PASS: events: no orphan aria-selected (invalid on role="link")
+  PASS: events: no orphan aria-multiselectable (only valid on a listbox)
+  PASS: events: the trigger no longer advertises a listbox popup
+  PASS: events: the dropdown trigger keeps aria-expanded (disclosure contract)
+  PASS: events: the dropdown trigger keeps aria-controls pointing at its panel
+  PASS: events: at least one option link rendered (the gate is not vacuous)
+  PASS: events: every option <a> opening tag is properly closed with a literal ">"
+  PASS: events: every option link keeps a real href (navigation is never replaced by JS)
+  PASS: events: aria-current="true" only ever appears together with the is-active state
+  PASS: events: county options still rendered
+  PASS: events: category options still rendered
+  PASS: events: filter widget root still rendered
+  PASS: events: the result-count live region (role="status") is untouched
+  PASS: events: option items keep their data-option-item JS hook
+  PASS: events: dropdown triggers keep their data-dropdown-trigger JS hook
+  PASS: events active: option links are still rendered as <a> with the existing CSS class
+  PASS: events active: no invalid role="option" on any filter link
+  PASS: events active: the option container is no longer a listbox (links are not options)
+  PASS: events active: no orphan aria-selected (invalid on role="link")
+  PASS: events active: no orphan aria-multiselectable (only valid on a listbox)
+  PASS: events active: the trigger no longer advertises a listbox popup
+  PASS: events active: the dropdown trigger keeps aria-expanded (disclosure contract)
+  PASS: events active: the dropdown trigger keeps aria-controls pointing at its panel
+  PASS: events active: at least one option link rendered (the gate is not vacuous)
+  PASS: events active: every option <a> opening tag is properly closed with a literal ">"
+  PASS: events active: every option link keeps a real href (navigation is never replaced by JS)
+  PASS: events active: aria-current="true" only ever appears together with the is-active state
+  PASS: events: the selected county renders as aria-current
+  PASS: events: active-filter chips still rendered when a filter is applied
+  PASS: events: filter URL still AND-combines county + cidade (query contract unchanged)
+
+=== Employment filters: options are links, not listbox options ===
+  PASS: employment: option links are still rendered as <a> with the existing CSS class
+  PASS: employment: no invalid role="option" on any filter link
+  PASS: employment: the option container is no longer a listbox (links are not options)
+  PASS: employment: no orphan aria-selected (invalid on role="link")
+  PASS: employment: no orphan aria-multiselectable (only valid on a listbox)
+  PASS: employment: the trigger no longer advertises a listbox popup
+  PASS: employment: the dropdown trigger keeps aria-expanded (disclosure contract)
+  PASS: employment: the dropdown trigger keeps aria-controls pointing at its panel
+  PASS: employment: at least one option link rendered (the gate is not vacuous)
+  PASS: employment: every option <a> opening tag is properly closed with a literal ">"
+  PASS: employment: every option link keeps a real href (navigation is never replaced by JS)
+  PASS: employment: aria-current="true" only ever appears together with the is-active state
+  PASS: employment: tipo option URLs unchanged
+  PASS: employment: the #empregos-opportunities-title anchor is preserved on filter URLs
+  PASS: employment: the directory heading is unchanged
+  PASS: employment active: option links are still rendered as <a> with the existing CSS class
+  PASS: employment active: no invalid role="option" on any filter link
+  PASS: employment active: the option container is no longer a listbox (links are not options)
+  PASS: employment active: no orphan aria-selected (invalid on role="link")
+  PASS: employment active: no orphan aria-multiselectable (only valid on a listbox)
+  PASS: employment active: the trigger no longer advertises a listbox popup
+  PASS: employment active: the dropdown trigger keeps aria-expanded (disclosure contract)
+  PASS: employment active: the dropdown trigger keeps aria-controls pointing at its panel
+  PASS: employment active: at least one option link rendered (the gate is not vacuous)
+  PASS: employment active: every option <a> opening tag is properly closed with a literal ">"
+  PASS: employment active: every option link keeps a real href (navigation is never replaced by JS)
+  PASS: employment active: aria-current="true" only ever appears together with the is-active state
+  PASS: employment: exactly the selected tipo is aria-current (got 1)
+  PASS: employment: active-filter chip row still rendered
+
+=== Cross-widget invariants ===
+  PASS: leisure: the named option group is still rendered
+  PASS: leisure: every option group keeps its aria-label (not lost with the listbox role)
+  PASS: event-filters: the named option group is still rendered
+  PASS: event-filters: every option group keeps its aria-label (not lost with the listbox role)
+  PASS: no temporary test posts remain after cleanup
+  PASS: no temporary test terms remain after cleanup
+
+103 passed, 0 failed

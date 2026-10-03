@@ -1,0 +1,149 @@
+STAGE 15 - SECTION 12/13: LEGACY ENDPOINT CLOSURE AND PRODUCTION CONTROL PLANE
+Status: NOT POSITIVELY VERIFIED in production. The section 12 HTTP 410 proof
+was NOT obtained. Everything below is either an anonymous read-only
+observation or a repository-side structural fact, and the two are kept
+strictly apart.
+
+====================================================================
+1. THE REQUIRED PROOF (section 12)
+====================================================================
+Required, in an AUTHENTICATED wp-admin context:
+  admin_post_conexao_translation_rollout_run  ->  HTTP 410
+with: no redirect, no engine invocation, no mutation, and without ever
+submitting mode=apply.
+
+OBSERVED (anonymous, GET only, no cookie, no nonce, no credentials):
+  GET /wp-admin/admin-post.php?action=conexao_translation_rollout_run
+      -> HTTP 400
+
+This is NOT the required proof and is NOT offered as a substitute:
+  - HTTP 400 is WordPress's generic rejection of an unauthenticated /
+    malformed admin-post request, returned before any plugin code runs.
+  - It says nothing about what the deprecation stub would answer to an
+    authenticated caller.
+  - Section 12 is explicit: "If the exact production behavior cannot be
+    observed through available Personal-plan/admin capabilities: BLOCKED. Do
+    not infer it from source alone."
+
+No POST was issued. No mode=apply was submitted. The legacy engine path was
+not attempted. The status of the production 410 proof is therefore:
+
+    NOT POSITIVELY VERIFIED  (open since Stage 8; still open at Stage 15)
+
+The blocker is NOT the Personal plan. A manual wp-admin POST by an
+administrator would be a Personal-plan capability and would settle it. It
+was not performed because there is no authenticated admin session and no
+installation authorization in this stage.
+
+====================================================================
+2. REPOSITORY-SIDE STRUCTURAL FACT (not a production proof)
+====================================================================
+From the shipped source
+wp-content/plugins/conexao-translation-rollout/includes/
+class-conexao-translation-rollout-admin.php:
+
+  const ACTION            = 'conexao_translation_rollout_run';
+  const REPLACEMENT_ACTION = 'conexao_translation_automation_proof';
+  const PAGE_SLUG         = 'conexao-translation-rollout';
+
+  init() registers ONLY:
+    add_action( 'admin_menu', register_menu )
+    add_action( 'admin_post_' . self::ACTION, handle_run )
+
+  handle_run() docblock, quoted:
+    "There is no branch here that reaches the engine, a stage callback or a
+     write. The authorisation check is kept so an anonymous or
+     unprivileged caller learns nothing about the deprecation, so the
+     refusal is not a public oracle; the refusal itself is unconditional
+     for anyone who clears it."
+
+  The plugin header (1.2.0) states: "As of 1.2.0 the engine ships NO admin
+  mutation entry point: the former admin_post_conexao_translation_rollout_run
+  endpoint is a closed deprecation stub, and the single production control
+  plane is conexao-translation-automation's
+  admin_post_conexao_translation_automation_proof."
+
+Covered locally by test-legacy-apply-endpoint-closure.php (36 assertions,
+PASS in this run) and tests/scripts/verify-stage8-control-plane.py
+(149 assertions, PASS) and verify-stage8-release-consistency.py (52, PASS).
+
+These are REAL results about the ARTIFACT. They are deliberately NOT
+presented as the production 410 proof, exactly as the preceding Stage 15
+attempts also declined to do.
+
+====================================================================
+3. PRODUCTION CONTROL-PLANE STATE (section 13)
+====================================================================
+Expected target state:
+  Approved:  admin_post_conexao_translation_automation_proof
+             admin_post_conexao_translation_automation_batch
+  Closed:    admin_post_conexao_translation_rollout_run
+  Forbidden: anonymous admin-post, anonymous AJAX, REST translation
+             endpoint, webhook, cron translation trigger
+
+OBSERVED ANONYMOUSLY IN PRODUCTION (read-only, no credentials):
+
+  /wp-json/conexao/v1                                 -> HTTP 404
+  /wp-json/  advertises 23 namespaces, of which NONE contains
+      'conexao' or 'translat'. Confirmed absent:
+      no conexao/* namespace, no translation/* namespace, no AI/connector
+      namespace (only wp-abilities/v1 is AI-adjacent).
+      => NO unexpected translation REST route is exposed. CONFIRMED.
+
+  admin-post actions, anonymous GET:
+    conexao_translation_rollout_run        -> HTTP 400
+    conexao_translation_automation_batch   -> HTTP 400
+    conexao_translation_automation_proof   -> HTTP 400
+      => none is reachable anonymously. Consistent with there being no
+         admin_post_nopriv_ handler, but a 400 is a generic rejection and
+         is NOT proof of the authenticated-state control plane.
+
+  /wp-cron.php -> HTTP 200
+      => WordPress cron endpoint responds. It does NOT indicate any
+         translation cron event exists. The shipped plugins schedule NO
+         event at all (no wp_schedule_event / wp_schedule_single_event in
+         runtime code), so a translation cron trigger does not exist by
+         construction. The specific count "0" could not be read through a
+         Personal-accessible mechanism without authentication.
+
+  Webhooks: 0
+      => No webhook receiver is registered by either plugin (no HTTP
+         inbound route is declared; the only declared REST routes belong to
+         core/Polylang/Jetpack). No webhook could be observed anonymously,
+         and none is declared in source.
+
+CONTROL-PLANE VERDICT: the ANONYMOUSLY OBSERVABLE part of the control plane
+is clean and matches expectations (no translation REST namespace, no
+anonymous admin-post, no anonymous AJAX, no webhook, no cron trigger). The
+AUTHENTICATED part of the control plane - exact approve/closed status of the
+three admin-post actions as a logged-in administrator with manage_options -
+was NOT verified, and is recorded as:
+
+    NOT OBSERVABLE WITHOUT AN AUTHENTICATED WP-ADMIN SESSION
+
+====================================================================
+4. BATCH-CONTROL COMMISSIONING STATE (section 14)
+====================================================================
+NOT COMMISSIONED. The commissioning authorization (P11) is ABSENT.
+
+The shipped default is DECLARED, not commissioned, and this was re-verified
+from source in this run:
+
+  class-conexao-translation-automation-batch-control.php:204
+    public static function is_commissioned(): bool {
+        return false;
+    }
+
+  conexao-translation-automation.php:86-91
+    // `Batch_Control::register()` is deliberately NOT called here, so this
+    // plugin ...
+    // Conexao_Translation_Automation_Batch_Control::register();
+
+The readiness gate independently re-asserts both facts and reports:
+  control_plane=conexao_translation_automation_batch DECLARED
+
+The readiness gate's check_control_plane_declared() also fails closed if the
+registration call site ever becomes live code, so a second control plane
+cannot appear silently.
+
+Nothing was commissioned, and no code was modified to commission it.

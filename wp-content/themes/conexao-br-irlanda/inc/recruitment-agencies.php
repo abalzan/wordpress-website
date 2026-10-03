@@ -109,6 +109,57 @@ function conexao_recruitment_agency_job_type_labels( $raw ) {
 }
 
 /**
+ * Language-aware display of a stored coverage string (`_agency_location`).
+ *
+ * The stored value stays the single source of truth (it is what the location
+ * filter normalizes) and real Irish place names are never touched. Only the
+ * generic coverage words inside it are UI labels, so they resolve through
+ * gettext:
+ *
+ *   Nacional                       → "Nacional" / "Nationwide"
+ *   Nacional (Dublin)              → "Nationwide (Dublin)"
+ *   Nacional (Ennis, Co. Clare; Galway)
+ *
+ * Segments that are not generic labels (Dublin, Cork, "Co. Clare",
+ * "Deansgrange") are returned byte-identical — they are proper place names.
+ * An unrecognised or empty value is returned exactly as stored, so a future
+ * coverage string can never be corrupted or dropped by this helper.
+ *
+ * @param string $raw Stored `_agency_location` value.
+ * @return string Display string for the requested language.
+ */
+function conexao_recruitment_agency_location_display( $raw ) {
+	$raw = is_string( $raw ) ? trim( $raw ) : '';
+
+	if ( '' === $raw ) {
+		return '';
+	}
+
+	// Only the standalone generic word is a UI label; a parenthetical place
+	// list ("Nacional (Dublin)") stays byte-identical around it.
+	$display = preg_replace_callback(
+		'/(?<![\p{L}\p{N}])Nacional(?![\p{L}\p{N}])/u',
+		static function () {
+			return __( 'Nacional', 'conexao-br-irlanda' );
+		},
+		$raw
+	);
+
+	// "Irlanda" is the PORTUGUESE name of the country (the exonym); the English
+	// form is "Ireland". This is a language label, not a place-name rewrite:
+	// every real location in the coverage string (Dublin, Cork, Co. Clare,
+	// Monaghan, Galway…) is deliberately absent from this map and is returned
+	// byte-identical, exactly as the task requires.
+	$display = str_replace(
+		array( 'Irlanda', 'irlanda' ),
+		array( __( 'Irlanda', 'conexao-br-irlanda' ), __( 'irlanda', 'conexao-br-irlanda' ) ),
+		(string) $display
+	);
+
+	return is_string( $display ) ? trim( $display ) : $raw;
+}
+
+/**
  * A single agency meta value, normalized to string.
  *
  * @param WP_Post $agency Agency post.
@@ -175,12 +226,19 @@ function conexao_recruitment_agency_areas() {
  * (see scripts/seed-recruitment-agencies.php). Add a location here before
  * tagging an agency with it — agencies are never matched on unknown values.
  *
+ * The SLUGS and the alias list are the stable, language-neutral filtering
+ * identity (?localizacao=dublin) and are never translated. The `label` is the
+ * display name only: real Irish place names are proper nouns and stay
+ * identical in both languages, while the single generic label ("Nacional",
+ * i.e. nationwide coverage) is a UI label and runs through gettext so the
+ * English page shows its own language.
+ *
  * @return array<string,array{label:string,aliases:string[]}>
  */
 function conexao_recruitment_agency_locations() {
 	return array(
 		'nacional'   => array(
-			'label'   => 'Nacional',
+			'label'   => __( 'Nacional', 'conexao-br-irlanda' ),
 			// Nationwide coverage; matches every specific location filter.
 			'aliases' => array( 'nacional', 'national', 'nationwide' ),
 		),

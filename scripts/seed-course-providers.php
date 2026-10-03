@@ -10,12 +10,8 @@
  * Output: a short report of created/updated records and logo status.
  */
 
-$wp_load = dirname( __DIR__ ) . '/wp-load.php';
-if ( file_exists( $wp_load ) ) {
-	require_once $wp_load;
-} else {
-	require_once '/var/www/html/wp-load.php';
-}
+require_once __DIR__ . '/lib/bootstrap.php';
+conexao_script_load_wordpress();
 
 if ( ! post_type_exists( 'course_provider' ) ) {
 	fwrite( STDERR, "Erro: o post type 'course_provider' não está registrado. Ative o plugin conexao-data-model.\n" );

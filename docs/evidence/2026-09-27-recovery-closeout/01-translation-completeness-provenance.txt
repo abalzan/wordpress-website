@@ -1,0 +1,53 @@
+# 01 — Translation-completeness "1 new" violation: provenance investigation
+
+Starting SHA: cd800be1b76c84ffa07c61554b521cfefd1b8f17 (recovered baseline)
+
+## The violating object
+
+Gate key  : post_type:event:malformed_relationships (1)
+Note      : en_without_pt:mabon-full-moon-day-retreat
+Post ID   : 11553
+Type      : event   status: publish
+Title     : Mabon & Full Moon Day Retreat
+Language  : en  (pll_get_post_language = "en")
+PT master : 0  (pll_get_post(11553,"pt") = 0)
+Translations: {"en":11553}  (self-referential, no PT)
+post_date : 2026-09-06 17:36:52   post_modified: 2026-09-06 17:36:52
+Meta      : _event_source=laois_tourism  _event_source_id=10016351-...@laoistourism.ie
+            _event_import_date=2026-09-02 09:46:27  _event_url=https://laoistourism.ie/event/mabon-full-moon-day-retreat/
+
+## Import batch context (2026-09-06 17:36)
+All 11 records created seconds apart by the importer; every sibling is PT except 11553:
+  11545 pt  11547 pt  11549 pt  11551 pt  11553 EN  11555 pt  11557 pt  11559 pt  11561 pt  11563 pt  11565 pt
+
+## Theme independence
+- The check reads only Polylang DB state: pll_get_post_language(), pll_get_post().
+- No theme code participates. A runtime probe recorded the conexao_* function table before/after
+  evaluation of the predicate: UNCHANGED (the predicate invokes no theme function).
+
+## Reproduction against 597b04e (disposable container, same DB, git archive export, no history change)
+
+RUN A - recovered theme cd800be (43 inc modules, B2 helper present):
+  events scanned: 1798 | EN events: 1 | EN-without-PT-master: ["11553:mabon-full-moon-day-retreat"]
+
+RUN B - destructive theme 597b04e (8 inc modules, B2 helper ABSENT):
+  events scanned: 2225 | EN events: 3 | EN-without-PT-master: ["19489:womens-social-futsal","19238:practical-nutrition-with-roisin-maher-bsc-nutritional-science","11553:mabon-full-moon-day-retreat"]
+
+=> The violation REPRODUCES on 597b04e, together with 2 more. The recovery REDUCED visible orphans from 3 to 1.
+
+## Why "1 new": the recorded baseline, not a regression
+tests/baseline/permanent-gates.json records post_type:guide:malformed_relationships but never
+post_type:event:malformed_relationships. The key was simply never recorded when Stage L captured the
+baseline; the file is unchanged since b47d098. Classification is REPORTING ONLY and never
+suppresses a failure - the gate still fails and still exits non-zero.
+
+## Provenance
+- 11553 was created 2026-09-06 17:36:52 by the EVENT IMPORTER (_event_source=laois_tourism).
+- The importer language guard (class-language-guard.php) was added in 8ac39b1 on 2026-09-21,
+  FIFTEEN DAYS AFTER the record was created. At creation time no guard forced the import language.
+- The guard that exists today now REFUSES to touch this record:
+    Conexao_Event_Importer_Language_Guard::is_import_target(11553) === false
+  so the defect cannot be recreated by the current importer. The record is legacy data from
+  before the guard existed, not a live code path.
+- The recovery commit cd800be changed 104 theme files and ZERO plugin files.
+  (git diff 597b04e cd800be -- wp-content/plugins/ is empty; no importer code was touched.)

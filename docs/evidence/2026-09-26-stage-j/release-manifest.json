@@ -1,0 +1,108 @@
+{
+  "note": "Sample dist/release.json emitted by the Stage J build in this checkout. Reproduced by: ./scripts/build-plugins-zip.sh && ./scripts/build-theme-zip.sh. The tag/built_at/git block is checkout- and time-specific; the allowlist and the artifacts[] shape are the contract (engineering standard §11).",
+  "schema_version": 1,
+  "release": {
+    "tag": "v2026.09.26",
+    "built_at": "2026-09-26T12:28:34Z",
+    "git": {
+      "available": true,
+      "sha": "b421e0a664bde28d526f15edaddc1536786e6d2c",
+      "short_sha": "b421e0a664bd",
+      "branch": "i18n",
+      "dirty": true,
+      "tag": null
+    }
+  },
+  "allowlist": {
+    "source": "plugins.json",
+    "artifacts": [
+      "conexao-data-model",
+      "conexao-content",
+      "conexao-admin-ux",
+      "conexao-event-runtime",
+      "conexao-event-importer",
+      "conexao-leisure-migration",
+      "conexao-sponsor-migration",
+      "conexao-br-irlanda"
+    ],
+    "production_order": [
+      "conexao-data-model",
+      "conexao-content",
+      "conexao-admin-ux",
+      "conexao-event-runtime"
+    ]
+  },
+  "artifact_count": 8,
+  "artifacts": [
+    {
+      "slug": "conexao-data-model",
+      "kind": "plugin",
+      "version": "1.6.0",
+      "file": "conexao-data-model.zip",
+      "built": true,
+      "file_count": 6
+    },
+    {
+      "slug": "conexao-content",
+      "kind": "plugin",
+      "version": "1.0.0",
+      "file": "conexao-content.zip",
+      "built": true,
+      "file_count": 5
+    },
+    {
+      "slug": "conexao-admin-ux",
+      "kind": "plugin",
+      "version": "1.0.6",
+      "file": "conexao-admin-ux.zip",
+      "built": true,
+      "file_count": 14
+    },
+    {
+      "slug": "conexao-event-runtime",
+      "kind": "plugin",
+      "version": "1.2.1",
+      "file": "conexao-event-runtime.zip",
+      "built": true,
+      "file_count": 7
+    },
+    {
+      "slug": "conexao-event-importer",
+      "kind": "plugin",
+      "version": "1.7.1",
+      "file": "conexao-event-importer.zip",
+      "built": true,
+      "file_count": 42
+    },
+    {
+      "slug": "conexao-leisure-migration",
+      "kind": "plugin",
+      "version": "2.1.0",
+      "file": "conexao-leisure-migration.zip",
+      "built": true,
+      "file_count": 7
+    },
+    {
+      "slug": "conexao-sponsor-migration",
+      "kind": "plugin",
+      "version": "1.1.0",
+      "file": "conexao-sponsor-migration.zip",
+      "built": true,
+      "file_count": 6
+    },
+    {
+      "slug": "conexao-br-irlanda",
+      "kind": "theme",
+      "version": "1.0.0",
+      "file": "conexao-br-irlanda.zip",
+      "built": true,
+      "file_count": 115
+    }
+  ],
+  "totals": {
+    "artifacts": 8,
+    "built": 8,
+    "files": 202,
+    "bytes": 6238852
+  }
+}

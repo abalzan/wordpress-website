@@ -1,0 +1,107 @@
+STAGE 15 - EVERY OPERATIONAL STEP NOT PERFORMED
+Recorded as NOT PERFORMED, never as "passed", never as inferred.
+Stage 15 section 37 requires this discipline.
+
+Each row states the reason it could not be performed, and the exact
+prerequisite that is absent. No row was satisfied by a local artifact test,
+by reachability, by an HTTP 400, or by a source reading.
+
+## Deployment and installation
+  wp-admin > Plugins > Upload Plugin (rollout ZIP)          NOT PERFORMED
+  install / activate conexao-translation-rollout            NOT PERFORMED
+  wp-admin > Plugins > Upload Plugin (automation ZIP)       NOT PERFORMED
+  install / activate conexao-translation-automation         NOT PERFORMED
+  Reason: installation authorization (P02) ABSENT. The artifacts are built,
+  verified and ready (see 04-artifact-preflight.txt), but uploading a plugin
+  into production is a production write and was not authorized. No Plugin File
+  Editor was used as a deployment mechanism. No SFTP/SSH/WP-CLI/phpMyAdmin was
+  used or required. conexao-content was NOT deactivated or reactivated.
+
+## Post-installation verification (section 10)
+  plugin state / version / dependency resolved               NOT PERFORMED
+  PT unchanged / EN unchanged                                 NOT PERFORMED
+  taxonomy / menus / Polylang unchanged                       NOT PERFORMED
+  cron == 0                                                   NOT PERFORMED
+  no unexpected translation REST routes                       PARTIAL (anonymous
+                                                              only; see 07)
+  no anonymous automation endpoint / webhooks == 0           PARTIAL (anonymous
+                                                              only; see 07)
+  Reason: no installation occurred, so there is nothing installed to verify.
+  Anonymous pre-installation observations are recorded in 07 and are clearly
+  labelled as pre-installation.
+
+## Provider (sections 4, 17, 18)
+  provider path commissioned (Connectors / AI Client)         NOT PERFORMED
+    -> Path A investigated and REJECTED on evidence: the Connectors key is a
+       wp_options row (get_option), which violates Stage 0 control S7, and the
+       production core version that would enable it is not observable. Details
+       and quoted sources in 02.
+  provider credential configured in production                 NOT PERFORMED
+  provider request through the approved interface             NOT PERFORMED
+  live provider smoke  RESULT: OK                              NOT PERFORMED
+    -> NOT claimed. No provider call was made. No quota was spent. Quota is
+       NOT PROVEN. Provider-call authorization (P05) ABSENT. The unrelated
+       OPENAI_API_KEY present in the shell was NOT used and NOT aliased.
+  provider limits changed                                      NOT CHANGED
+
+## P15 emergency stop (section 15)
+  production_stop_state observation                            NOT PERFORMED
+  emergency stop clearance                                     NOT GRANTED
+    -> Also: the shipped artifact exposes NO read surface for the stop state
+       (see 05-p15-emergency-stop.txt), so this is currently
+       NOT OBSERVABLE THROUGH PERSONAL PLAN even with a manual login.
+
+## Baseline, bootstrap, reconciliation (sections 19, 20, 21)
+  fresh production baseline                                    NOT PERFORMED
+  six historic PT restorations re-checked                      NOT PERFORMED
+  bootstrap (missing state -> bootstrap_required ->
+    actionable=0, mutation_permitted=false, mutation_occurred=false)
+                                                              NOT PERFORMED
+  no-change reconciliation (no_changes)                        NOT PERFORMED
+  Reason: no production write, no installed plugin, no authenticated read.
+  No baseline was reused from any earlier stage, and none was invented.
+
+## Trigger, dry-run, canary (sections 22-29)
+  Tools > Translation Automation proof trigger (authenticated) NOT PERFORMED
+  production dry-run                                            NOT PERFORMED
+  actionable set / plan digest / batch candidates              NOT PERFORMED
+  canary selection (exactly one operation)                     NOT PERFORMED
+  human review of actual English output                         NOT PERFORMED
+    -> no named human reviewer exists (P07 ABSENT). The structural validator
+       was NOT substituted for a human reviewer.
+  digest-bound canary approval                                  NOT PERFORMED
+  Model A production scope proof
+    (authored / approved / planned / executed)                 NOT PERFORMED
+  separate canary-APPLY authorization                           ABSENT
+  canary apply                                                  NOT PERFORMED
+
+## Post-apply verification (sections 30-36)
+  expected/actual mutation set equality                         NOT PERFORMED
+  PT immutability                                               NOT PERFORMED
+  EN / B1 / B2 verification                                     NOT PERFORMED
+  route verification                                            NOT PERFORMED
+  lock acquire / release                                        NOT PERFORMED
+  audit verification + assert_no_secrets() on production audit NOT PERFORMED
+  idempotence                                                   NOT PERFORMED
+
+## Readiness re-run after installation (section 16)
+  NOT PERFORMED. Section 16 requires the re-run to happen AFTER production
+  installation and P15 observation. No installation occurred, so the
+  post-install re-run had no legitimate trigger. The pre-install readiness
+  result in 01 was NOT reused and NOT presented as a post-install result.
+
+## Bulk / autonomous progression (sections 37, 38)
+  bulk translation            OFF
+  next batch                  OFF
+  autonomous approval         OFF
+  cron                        OFF
+  automatic progression       OFF
+  second canary               NONE EXECUTED
+  batch limits                UNCHANGED (not raised)
+  allowlist                   UNCHANGED
+
+## Counters, from the gate itself
+  installs 0  activations 0  content_mutations 0
+  provider_calls 0  canary_selections 0  emergency_stop_clears 0
+
+No production mutation of any kind occurred in this stage.

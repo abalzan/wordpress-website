@@ -1,0 +1,303 @@
+
+== conexao-translation-automation — Stage 10 bounded batch execution ==
+
+=== 1. the server-side batch ceiling ===
+  PASS: the server ceiling is an explicit 5 records
+  PASS: one invocation may execute exactly one batch
+  PASS: one run covers exactly one stage
+  PASS: a batch size of 100000 is refused, not clamped
+  PASS: the refusal names the server ceiling (got "conexao_automation_batch_size_above_server_ceiling")
+  PASS: a size above the NAMED level is refused
+  PASS: the canary level accepts exactly 1
+  PASS: the small-batch level accepts 3
+  PASS: a numeric string size is accepted
+  PASS: a fractional size is refused
+  PASS: a boolean size is refused
+  PASS: a zero size is refused
+  PASS: an unknown level is refused
+  PASS: a request for two batches in one invocation is refused
+  PASS: a request for a thousand batches is refused
+  PASS: exactly one batch is accepted
+
+=== 2. the operation and provider budgets fail closed ===
+  PASS: a plan inside both budgets passes
+  PASS: an operation-count overrun fails closed
+  PASS: the operation overrun names the operation budget (got "conexao_automation_planned_operations_exceed_budget")
+  PASS: a provider-request overrun fails closed
+  PASS: the provider overrun names the provider budget (got "conexao_automation_planned_provider_requests_exceed_budget")
+  PASS: a caller-raised operation budget is refused
+  PASS: the raised budget names the ceiling, not the plan (got "conexao_automation_budget_above_server_ceiling")
+  PASS: one record is costed at 4 provider calls (2 attempts, doubled for a stale re-request)
+  PASS: a three-record batch is costed at 12 provider calls, not 3
+
+=== 3. deterministic partitioning ===
+  PASS: a three-row plan at width 2 yields two partitions
+  PASS: partition 0 is the first two identities in stable order
+  PASS: partition 1 is the remainder
+  PASS: the same plan and size partition identically every time
+  PASS: inserting the same rows in a different order yields the identical partition
+  PASS: a changed operation kind produces a different operation-set digest
+
+=== 4. batch identity binds run, plan, limits and provider ===
+  PASS: a batch id is prefixed batch_
+  PASS: the batch holds exactly the two records of its partition
+  PASS: the operation count equals the record count
+  PASS: a changed "run_id" produces a different batch digest
+  PASS: a changed "environment" produces a different batch digest
+  PASS: a changed "stage" produces a different batch digest
+  PASS: a changed "change_set_digest" produces a different batch digest
+  PASS: a changed "plan_digest" produces a different batch digest
+  PASS: a changed "provider_identity" produces a different batch digest
+  PASS: a changed "operation_budget" produces a different batch digest
+  PASS: a changed "provider_budget" produces a different batch digest
+  PASS: a changed "level" produces a different batch digest
+  PASS: the same plan at a different partition position is a different batch
+  PASS: a different provider result produces a different batch digest
+  PASS: a stored record with an extra identity is refused
+  PASS: a stored record whose operation detail was edited is refused
+  PASS: an untampered record round-trips
+  PASS: a forged batch digest is refused
+
+=== 5. the batch state machine ===
+  PASS: the machine knows REVIEW_REQUIRED
+  PASS: the machine knows REVIEWED
+  PASS: the machine knows APPROVED_FOR_BATCH
+  PASS: the machine knows EXECUTING
+  PASS: the machine knows VERIFIED
+  PASS: the machine knows FAILED
+  PASS: the machine knows STOPPED
+  PASS: the machine knows ABORTED
+  PASS: the machine knows EXPIRED
+  PASS: there is NO VERIFIED -> EXECUTING edge: a verified batch cannot start another run
+  PASS: a batch cannot skip EXECUTING and jump to VERIFIED
+  PASS: a batch cannot execute without review and approval
+  PASS: REVIEW_REQUIRED -> REVIEWED is legal
+  PASS: EXECUTING -> STOPPED is legal
+  PASS: an unknown FROM state cannot transition
+  PASS: an unknown TO state cannot transition
+  PASS: an illegal transition returns a failure category
+
+=== 6. approval is for ONE batch and is digest-bound ===
+  PASS: the composed, reviewed and approved batch is in APPROVED_FOR_BATCH
+  PASS: the approval verifies for the batch it was granted for
+  PASS: an approval for A+B+C does not authorise A+B+C+D
+  PASS: an approval does not survive a PT source digest change
+  PASS: an approval does not survive a provider result change
+  PASS: an approval does not survive a raised operation budget
+  PASS: a local approval is not a production approval
+  PASS: a batch that is only reviewed may not execute
+  PASS: an unreviewed batch cannot be approved
+  PASS: an unauthorised caller cannot even compose a batch
+  PASS: a caller asserting a different capability cannot review a batch
+
+=== 7. the executor runs a bounded batch through the EXISTING chain ===
+  PASS: a fully authorised batch verifies — got "verified", stop "completed", failure "", identity "-", reason: -
+  PASS: exactly the three approved records were written
+  PASS: the records were written in the approved, stable order — got: repair_en:row-01 | repair_en:row-02 | repair_en:row-03
+  PASS: the engine was asked to write exactly once for the batch (got 1)
+  PASS: the engine ran three times — the batch dry run, the orchestrator's own F7 dry run, and the apply (got 3)
+  PASS: the site-wide lock is released when the batch ends
+  PASS: every operation is recorded as completed after verification
+  PASS: the batch ends in VERIFIED
+  PASS: the apply state is cleared once every apply completed
+
+=== 8. the manifest-scope ASSERTION: a batch can never over-apply ===
+  PASS: a one-record batch is LEVEL_0_CANARY
+  PASS: the canary plans exactly one operation
+  PASS: the plan still reports its full partition count, even for a canary
+  PASS: a one-record approval executes EXACTLY one record — the engine cannot widen (got "verified")
+  PASS: and completes with no stop reason at all (got "completed")
+  PASS: and wrote row-01 and nothing else — the two unauthored rows were never touched: taxonomy, repair_en:row-01
+  PASS: exactly one operation is recorded as completed
+  PASS: and the unauthored rows have NO operation entry at all
+
+=== 9. after the batch, the system STOPS ===
+  PASS: the executor contains no "while (": there is no loop that could start a second batch
+  PASS: the executor contains no "do {": there is no loop that could start a second batch
+  PASS: the executor contains no "goto": there is no loop that could start a second batch
+  PASS: the executor contains no "recursion": there is no loop that could start a second batch
+  PASS: the executor contains no "Batch_Composer::compose": there is no loop that could start a second batch
+  PASS: the executor reaches the engine through exactly one call site, inside the single safe unit
+  PASS: the executor never reaches the engine directly
+  PASS: the executor contains no content write
+  PASS: the executor contains no deletion path
+  PASS: the executor cannot approve anything
+  PASS: the executor cannot review anything
+
+=== 10. a caller raising the batch size above the ceiling cannot execute ===
+  PASS: a batch of 100000 is never composed
+  PASS: and nothing is written
+
+=== 11. a second batch in one invocation is refused ===
+  PASS: the first batch wrote its three records
+  PASS: a verified batch cannot be executed again
+  PASS: the replay attempt wrote nothing
+
+=== 12. a mutated budget invalidates the APPROVAL, before any apply ===
+  PASS: a batch whose budget was edited is refused
+  PASS: the batch is invalidated before the budget gate is even reached (got "batch_invalidated")
+  PASS: NOT ONE record was written
+  PASS: the stored approval no longer verifies for the edited record
+
+=== 13. an operation-budget overrun is refused before apply ===
+  PASS: a batch whose provider budget was reduced is refused (got "refused")
+  PASS: NOT ONE record was written
+  PASS: the budget gate refuses a three-record batch that costs 12 provider calls under a budget of 10
+  PASS: and accepts it at the budget the level declares
+
+=== 14. a batch over the per-stage record ceiling cannot be built ===
+  PASS: a six-record partition can be BUILT for inspection
+  PASS: it exceeds the five-operation budget
+  PASS: and the budget gate refuses it before any apply
+  PASS: nothing was written
+
+=== 15. one failed operation STOPS the batch and never shrinks it ===
+  PASS: the batch stops rather than continuing (got "stopped")
+  PASS: the engine wrote what it could before the failure — got: repair_en:row-01 | repair_en:row-03
+  PASS: but NOT the refused record: repair_en:row-01 | repair_en:row-03
+  PASS: the batch stopped on the apply failure (got "apply_failure")
+  PASS: and it did NOT silently accept a short batch: exactly the two repairs the engine reported, no more — repair_en:row-01 | repair_en:row-03
+  PASS: the operation the engine repaired is recorded as completed (got "completed")
+  PASS: the refused operation is recorded as FAILED (got "failed")
+  PASS: the operation the engine still reached is recorded from the engine's own report (got "completed")
+  PASS: the batch still has all three of its approved records
+
+=== 16. resume never reapplies a completed operation ===
+  PASS: a STOPPED batch cannot simply be re-executed (got "refused")
+  PASS: the refused resume wrote nothing
+  PASS: a resume plan can be read
+  PASS: the resume plan lists exactly the operations the engine repaired as completed (got row-01,row-03)
+  PASS: the resume plan retries only what genuinely did not finish (got row-02)
+  PASS: and nothing is parked as manual intervention
+
+=== 17. lock contention stops the batch safely ===
+  PASS: a held lock stops the batch
+  PASS: the stop reason names the refusal (got "budget_refused_before_apply")
+  PASS: and the lock is named in the reason: The batch proof did not complete: locked.
+  PASS: a locked-out batch writes nothing
+  PASS: the OTHER run still holds the lock: it was not released for it
+
+=== 18. the emergency stop halts the batch before the next operation ===
+  PASS: with no record the emergency stop reads as STOPPED
+  PASS: so no new work may start
+  PASS: the emergency stop stops the batch
+  PASS: the stop reason names the emergency stop
+  PASS: nothing was written under the emergency stop
+  PASS: an authorised caller can clear the stop
+  PASS: and the switch now reads as enabled
+
+=== 19. the emergency stop fails CLOSED when malformed ===
+  PASS: a non-boolean "stopped" reads as STOPPED
+  PASS: an incompatible schema version reads as STOPPED
+  PASS: a non-array record reads as STOPPED
+  PASS: the switch is currently cleared (the harness cleared it)
+  PASS: a caller without manage_options cannot clear the stop
+  PASS: an authorised caller CAN engage it
+  PASS: and the stop is engaged
+  PASS: an unauthorised caller still cannot clear it
+  PASS: and the stop is STILL engaged after the forged clear
+
+=== 20. the operator abort stops at a safe boundary ===
+  PASS: the abort flag is recorded
+  PASS: an aborted batch stops
+  PASS: the stop reason names the abort
+  PASS: an aborted batch writes nothing
+  PASS: the abort released no lock it did not own
+  PASS: the batch record survives the abort
+
+=== 21. a stale source is rejected for the affected operation ===
+  PASS: a source-digest drift stops the batch (got "stopped")
+  PASS: the drift stops the batch (got "apply_failure")
+  PASS: the drifted operation is NOT recorded as completed (got "pending")
+  PASS: the fixture ran to completion
+  PASS: the refusal names the apply or the verification, never a success (stop "apply_failure", failure "conexao_automation_batch_unit_apply_failed")
+
+=== 22. a NEW PT change is never inserted into an approved batch ===
+  PASS: the approved batch holds exactly its two partitioned records
+  PASS: a record added after composition cannot widen the batch; the approved set still executes (got "verified")
+  PASS: the newly appeared record was NOT auto-inserted into the approved batch: taxonomy, repair_en:row-01, repair_en:row-02
+  PASS: the new record belongs to a future batch
+  PASS: and that future batch starts in REVIEW_REQUIRED
+  PASS: the new record is in the NEXT partition
+
+=== 23. a DELETED PT record is manual intervention, never automatic ===
+  PASS: a deleted record stops the batch
+  PASS: a deleted record is never written or deleted by the executor
+  PASS: the executor has no deletion path at all
+
+=== 24. an unexpected mutation fails the whole path ===
+  PASS: the run reached a definite terminal outcome
+  PASS: the batch always ends in a defined terminal state (got "VERIFIED")
+
+=== 25. the expansion gate is evidence, never authorisation ===
+  PASS: complete evidence from a verified batch is eligible
+  PASS: no requirement is unmet
+  PASS: missing "zero_unexpected_pt_mutations" makes the request ineligible
+  PASS: the refusal names exactly "zero_unexpected_pt_mutations" and nothing else (unmet: zero_unexpected_pt_mutations)
+  PASS: the refusal names "zero_unexpected_pt_mutations"
+  PASS: missing "zero_unexpected_en_mutations" makes the request ineligible
+  PASS: the refusal names exactly "zero_unexpected_en_mutations" and nothing else (unmet: zero_unexpected_en_mutations)
+  PASS: the refusal names "zero_unexpected_en_mutations"
+  PASS: missing "route_verification_ok" makes the request ineligible
+  PASS: the refusal names exactly "route_verification_ok" and nothing else (unmet: route_verification_ok)
+  PASS: the refusal names "route_verification_ok"
+  PASS: missing "idempotence_ok" makes the request ineligible
+  PASS: the refusal names exactly "idempotence_ok" and nothing else (unmet: idempotence_ok)
+  PASS: the refusal names "idempotence_ok"
+  PASS: missing "audit_complete" makes the request ineligible
+  PASS: the refusal names exactly "audit_complete" and nothing else (unmet: audit_complete)
+  PASS: the refusal names "audit_complete"
+  PASS: missing "no_unresolved_verification_failure" makes the request ineligible
+  PASS: the refusal names exactly "no_unresolved_verification_failure" and nothing else (unmet: no_unresolved_verification_failure)
+  PASS: the refusal names "no_unresolved_verification_failure"
+  PASS: missing "provider_error_rate_ok" makes the request ineligible
+  PASS: the refusal names exactly "provider_error_rate_ok" and nothing else (unmet: provider_error_rate_ok)
+  PASS: the refusal names "provider_error_rate_ok"
+  PASS: a 50% provider error rate is not evidence of anything
+  PASS: absent evidence is treated as failing
+  PASS: every absent requirement is named (got 5: zero_unexpected_pt_mutations, zero_unexpected_en_mutations, route_verification_ok, idempotence_ok, audit_complete)
+  PASS: a zero-attempt provider run has no error rate, which is not evidence of reliability
+  PASS: a STOPPED predecessor is not evidence
+  PASS: and the refusal says so
+  PASS: the expansion gate cannot reach the orchestrator at all
+  PASS: the expansion gate cannot compose a batch
+  PASS: the gate can NAME the next level
+  PASS: and reports the ceiling as the end
+
+=== 26. no unauthenticated or state-changing HTTP surface exists ===
+  PASS: the plugin declares exactly two admin-post actions: the proof trigger and the DECLARED batch-control endpoint: conexao_translation_automation_proof, conexao_translation_automation_batch
+  PASS: the batch-control register() is never invoked from the bootstrap (declaration only)
+  PASS: no shipped file registers a batch admin action (found: )
+  PASS: no shipped file exposes a forbidden entry surface ()
+
+=== 27. the batch layer cannot bypass the existing protections ===
+  PASS: class-conexao-translation-automation-batch-executor.php contains no "Conexao_Translation_Rollout_Engine::": the batch layer cannot reach the mutation path
+  PASS: class-conexao-translation-automation-batch-executor.php contains no "wp_insert_post": the batch layer cannot reach the mutation path
+  PASS: class-conexao-translation-automation-batch-executor.php contains no "wp_update_post": the batch layer cannot reach the mutation path
+  PASS: class-conexao-translation-automation-batch-executor.php contains no "update_post_meta": the batch layer cannot reach the mutation path
+  PASS: class-conexao-translation-automation-batch-executor.php contains no "wp_delete_post": the batch layer cannot reach the mutation path
+  PASS: class-conexao-translation-automation-batch-executor.php contains no "pll_save_post_translations": the batch layer cannot reach the mutation path
+  PASS: class-conexao-translation-automation-batch.php contains no "wp_insert_post": the batch layer cannot reach the mutation path
+  PASS: class-conexao-translation-automation-batch.php contains no "Conexao_Translation_Rollout_Engine::": the batch layer cannot reach the mutation path
+  PASS: class-conexao-translation-automation-batch.php contains no "wp_remote_": the batch layer cannot reach the mutation path
+  PASS: class-conexao-translation-automation-batch-composer.php contains no "Conexao_Translation_Rollout_Engine::": the batch layer cannot reach the mutation path
+  PASS: class-conexao-translation-automation-batch-composer.php contains no "wp_insert_post": the batch layer cannot reach the mutation path
+  PASS: class-conexao-translation-automation-batch-composer.php contains no "Orchestrator::run": the batch layer cannot reach the mutation path
+  PASS: class-conexao-translation-automation-batch-approval.php contains no "Conexao_Translation_Rollout_Engine::": the batch layer cannot reach the mutation path
+  PASS: class-conexao-translation-automation-batch-approval.php contains no "wp_insert_post": the batch layer cannot reach the mutation path
+  PASS: class-conexao-translation-automation-batch-expansion.php contains no "Conexao_Translation_Rollout_Engine::": the batch layer cannot reach the mutation path
+  PASS: class-conexao-translation-automation-batch-expansion.php contains no "Orchestrator": the batch layer cannot reach the mutation path
+  PASS: class-conexao-translation-automation-batch-expansion.php contains no "wp_insert_post": the batch layer cannot reach the mutation path
+  PASS: class-conexao-translation-automation-emergency-stop.php contains no "Conexao_Translation_Rollout_Engine::": the batch layer cannot reach the mutation path
+  PASS: class-conexao-translation-automation-emergency-stop.php contains no "wp_insert_post": the batch layer cannot reach the mutation path
+  PASS: class-conexao-translation-automation-emergency-stop.php contains no "wp_remote_": the batch layer cannot reach the mutation path
+  PASS: class-conexao-translation-automation-batch-limits.php contains no "Conexao_Translation_Rollout_Engine::": the batch layer cannot reach the mutation path
+  PASS: class-conexao-translation-automation-batch-limits.php contains no "wp_insert_post": the batch layer cannot reach the mutation path
+  PASS: class-conexao-translation-automation-batch-state.php contains no "Conexao_Translation_Rollout_Engine::": the batch layer cannot reach the mutation path
+  PASS: class-conexao-translation-automation-batch-state.php contains no "wp_insert_post": the batch layer cannot reach the mutation path
+  PASS: the executor DOES reach the engine, but only through the existing orchestrator
+
+=== 28. the engine is unchanged ===
+  PASS: the shared engine core still hashes to its pinned pre-Stage-10 value
+
+Stage 10 bounded batch execution: 243 passed, 0 failed

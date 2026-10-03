@@ -1,0 +1,714 @@
+{
+  "base": "http://127.0.0.1:8090",
+  "rows": [
+    {
+      "url": "/wp-json/wp/v2/event?lang=pt&per_page=100",
+      "lang": "pt",
+      "status": 200,
+      "records": 6,
+      "record_langs": [
+        "pt"
+      ],
+      "fallback_records": 0,
+      "duplicate_identity": false,
+      "hidden_event_visible": false,
+      "translation_metadata": true
+    },
+    {
+      "url": "/wp-json/wp/v2/leisure?lang=pt&per_page=100",
+      "lang": "pt",
+      "status": 200,
+      "records": 8,
+      "record_langs": [
+        "pt"
+      ],
+      "fallback_records": 0,
+      "duplicate_identity": false,
+      "hidden_event_visible": false,
+      "translation_metadata": true
+    },
+    {
+      "url": "/wp-json/wp/v2/guide?lang=pt&per_page=100",
+      "lang": "pt",
+      "status": 200,
+      "records": 6,
+      "record_langs": [
+        "pt"
+      ],
+      "fallback_records": 0,
+      "duplicate_identity": false,
+      "hidden_event_visible": false,
+      "translation_metadata": true
+    },
+    {
+      "url": "/wp-json/wp/v2/posts?lang=pt&per_page=100",
+      "lang": "pt",
+      "status": 200,
+      "records": 5,
+      "record_langs": [
+        "pt"
+      ],
+      "fallback_records": 0,
+      "duplicate_identity": false,
+      "hidden_event_visible": false,
+      "translation_metadata": true
+    },
+    {
+      "url": "/wp-json/wp/v2/job?lang=pt&per_page=100",
+      "lang": "pt",
+      "status": 200,
+      "records": 3,
+      "record_langs": [
+        "pt"
+      ],
+      "fallback_records": 0,
+      "duplicate_identity": false,
+      "hidden_event_visible": false,
+      "translation_metadata": true
+    },
+    {
+      "url": "/wp-json/wp/v2/course_provider?lang=pt&per_page=100",
+      "lang": "pt",
+      "status": 200,
+      "records": 8,
+      "record_langs": [
+        "pt"
+      ],
+      "fallback_records": 0,
+      "duplicate_identity": false,
+      "hidden_event_visible": false,
+      "translation_metadata": true
+    },
+    {
+      "url": "/wp-json/wp/v2/sponsor?lang=pt&per_page=100",
+      "lang": "pt",
+      "status": 200,
+      "records": 4,
+      "record_langs": [
+        "pt"
+      ],
+      "fallback_records": 0,
+      "duplicate_identity": false,
+      "hidden_event_visible": false,
+      "translation_metadata": true
+    },
+    {
+      "url": "/wp-json/wp/v2/event/73?lang=pt",
+      "lang": "pt",
+      "status": 200,
+      "record_lang": "pt",
+      "fallback": false,
+      "canonical_url": "http://localhost:8080/eventos/festa-junina-dublin-2026/",
+      "translations": {
+        "en": {
+          "id": 136,
+          "url": "http://localhost:8080/en/eventos/festa-junina-dublin-2026-en/"
+        }
+      },
+      "error_code": null
+    },
+    {
+      "url": "/wp-json/wp/v2/leisure/83?lang=pt",
+      "lang": "pt",
+      "status": 200,
+      "record_lang": "pt",
+      "fallback": false,
+      "canonical_url": "http://localhost:8080/lazer/phoenix-park/",
+      "translations": {
+        "en": {
+          "id": 137,
+          "url": "http://localhost:8080/en/lazer/phoenix-park-en/"
+        }
+      },
+      "error_code": null
+    },
+    {
+      "url": "/wp-json/wp/v2/guide/63?lang=pt",
+      "lang": "pt",
+      "status": 200,
+      "record_lang": "pt",
+      "fallback": false,
+      "canonical_url": "http://localhost:8080/guias/como-tirar-o-pps-number/",
+      "translations": {
+        "en": {
+          "id": 133,
+          "url": "http://localhost:8080/en/guias/how-to-get-a-pps-number/"
+        }
+      },
+      "error_code": null
+    },
+    {
+      "url": "/wp-json/wp/v2/posts/69?lang=pt",
+      "lang": "pt",
+      "status": 200,
+      "record_lang": "pt",
+      "fallback": false,
+      "canonical_url": "http://localhost:8080/comunidade-celebra-festa-junina-em-dublin/",
+      "translations": {
+        "en": {
+          "id": 135,
+          "url": "http://localhost:8080/en/community-celebrates-festa-junina-in-dublin/"
+        }
+      },
+      "error_code": null
+    },
+    {
+      "url": "/wp-json/wp/v2/event?lang=en&per_page=100",
+      "lang": "en",
+      "status": 200,
+      "records": 7,
+      "record_langs": [
+        "en",
+        "pt"
+      ],
+      "fallback_records": 5,
+      "duplicate_identity": false,
+      "hidden_event_visible": false,
+      "translation_metadata": true
+    },
+    {
+      "url": "/wp-json/wp/v2/leisure?lang=en&per_page=100",
+      "lang": "en",
+      "status": 200,
+      "records": 8,
+      "record_langs": [
+        "en",
+        "pt"
+      ],
+      "fallback_records": 7,
+      "duplicate_identity": false,
+      "hidden_event_visible": false,
+      "translation_metadata": true
+    },
+    {
+      "url": "/wp-json/wp/v2/guide?lang=en&per_page=100",
+      "lang": "en",
+      "status": 200,
+      "records": 2,
+      "record_langs": [
+        "en"
+      ],
+      "fallback_records": 0,
+      "duplicate_identity": false,
+      "hidden_event_visible": false,
+      "translation_metadata": true
+    },
+    {
+      "url": "/wp-json/wp/v2/posts?lang=en&per_page=100",
+      "lang": "en",
+      "status": 200,
+      "records": 1,
+      "record_langs": [
+        "en"
+      ],
+      "fallback_records": 0,
+      "duplicate_identity": false,
+      "hidden_event_visible": false,
+      "translation_metadata": true
+    },
+    {
+      "url": "/wp-json/wp/v2/job?lang=en&per_page=100",
+      "lang": "en",
+      "status": 200,
+      "records": 3,
+      "record_langs": [
+        "en",
+        "pt"
+      ],
+      "fallback_records": 2,
+      "duplicate_identity": false,
+      "hidden_event_visible": false,
+      "translation_metadata": true
+    },
+    {
+      "url": "/wp-json/wp/v2/course_provider?lang=en&per_page=100",
+      "lang": "en",
+      "status": 200,
+      "records": 8,
+      "record_langs": [
+        "en",
+        "pt"
+      ],
+      "fallback_records": 7,
+      "duplicate_identity": false,
+      "hidden_event_visible": false,
+      "translation_metadata": true
+    },
+    {
+      "url": "/wp-json/wp/v2/sponsor?lang=en&per_page=100",
+      "lang": "en",
+      "status": 200,
+      "records": 4,
+      "record_langs": [
+        "en",
+        "pt"
+      ],
+      "fallback_records": 3,
+      "duplicate_identity": false,
+      "hidden_event_visible": false,
+      "translation_metadata": true
+    },
+    {
+      "url": "/wp-json/wp/v2/event/136?lang=en",
+      "lang": "en",
+      "status": 200,
+      "record_lang": "en",
+      "fallback": false,
+      "canonical_url": "http://localhost:8080/en/eventos/festa-junina-dublin-2026-en/",
+      "translations": {
+        "pt": {
+          "id": 73,
+          "url": "http://localhost:8080/eventos/festa-junina-dublin-2026/"
+        }
+      },
+      "error_code": null
+    },
+    {
+      "url": "/wp-json/wp/v2/event/74?lang=en",
+      "lang": "en",
+      "status": 200,
+      "record_lang": "pt",
+      "fallback": true,
+      "canonical_url": "http://localhost:8080/eventos/feijoada-beneficente-cork/",
+      "translations": [],
+      "error_code": null
+    },
+    {
+      "url": "/wp-json/wp/v2/event/80?lang=en",
+      "lang": "en",
+      "status": 200,
+      "record_lang": "en",
+      "fallback": false,
+      "canonical_url": "http://localhost:8080/en/eventos/irish-dance-workshop-dublin/",
+      "translations": [],
+      "error_code": null
+    },
+    {
+      "url": "/wp-json/wp/v2/leisure/137?lang=en",
+      "lang": "en",
+      "status": 200,
+      "record_lang": "en",
+      "fallback": false,
+      "canonical_url": "http://localhost:8080/en/lazer/phoenix-park-en/",
+      "translations": {
+        "pt": {
+          "id": 83,
+          "url": "http://localhost:8080/lazer/phoenix-park/"
+        }
+      },
+      "error_code": null
+    },
+    {
+      "url": "/wp-json/wp/v2/leisure/84?lang=en",
+      "lang": "en",
+      "status": 200,
+      "record_lang": "pt",
+      "fallback": true,
+      "canonical_url": "http://localhost:8080/lazer/cliffs-of-moher/",
+      "translations": [],
+      "error_code": null
+    },
+    {
+      "url": "/wp-json/wp/v2/guide/133?lang=en",
+      "lang": "en",
+      "status": 200,
+      "record_lang": "en",
+      "fallback": false,
+      "canonical_url": "http://localhost:8080/en/guias/how-to-get-a-pps-number/",
+      "translations": {
+        "pt": {
+          "id": 63,
+          "url": "http://localhost:8080/guias/como-tirar-o-pps-number/"
+        }
+      },
+      "error_code": null
+    },
+    {
+      "url": "/wp-json/wp/v2/posts/135?lang=en",
+      "lang": "en",
+      "status": 200,
+      "record_lang": "en",
+      "fallback": false,
+      "canonical_url": "http://localhost:8080/en/community-celebrates-festa-junina-in-dublin/",
+      "translations": {
+        "pt": {
+          "id": 69,
+          "url": "http://localhost:8080/comunidade-celebra-festa-junina-em-dublin/"
+        }
+      },
+      "error_code": null
+    },
+    {
+      "url": "/wp-json/wp/v2/job/140?lang=en",
+      "lang": "en",
+      "status": 200,
+      "record_lang": "en",
+      "fallback": false,
+      "canonical_url": "http://localhost:8080/en/empregos/kitchen-assistant-dublin/",
+      "translations": {
+        "pt": {
+          "id": 96,
+          "url": "http://localhost:8080/empregos/ajudante-de-cozinha-dublin/"
+        }
+      },
+      "error_code": null
+    },
+    {
+      "url": "/wp-json/wp/v2/course_provider/139?lang=en",
+      "lang": "en",
+      "status": 200,
+      "record_lang": "en",
+      "fallback": false,
+      "canonical_url": "http://localhost:8080/en/cursos/fetch-courses-en/",
+      "translations": {
+        "pt": {
+          "id": 115,
+          "url": "http://localhost:8080/cursos/fetch-courses/"
+        }
+      },
+      "error_code": null
+    },
+    {
+      "url": "/wp-json/wp/v2/sponsor/138?lang=en",
+      "lang": "en",
+      "status": 200,
+      "record_lang": "en",
+      "fallback": false,
+      "canonical_url": "http://localhost:8080/en/apoiadores/brasil-market-dublin-en/",
+      "translations": {
+        "pt": {
+          "id": 91,
+          "url": "http://localhost:8080/apoiadores/brasil-market-dublin/"
+        }
+      },
+      "error_code": null
+    },
+    {
+      "url": "/wp-json/wp/v2/event/73?lang=en",
+      "lang": "en",
+      "status": 404,
+      "record_lang": null,
+      "fallback": null,
+      "canonical_url": null,
+      "translations": null,
+      "error_code": "conexao_rest_language_unavailable"
+    },
+    {
+      "url": "/wp-json/wp/v2/event/136?lang=pt",
+      "lang": "pt",
+      "status": 404,
+      "record_lang": null,
+      "fallback": null,
+      "canonical_url": null,
+      "translations": null,
+      "error_code": "conexao_rest_language_unavailable"
+    },
+    {
+      "url": "/wp-json/wp/v2/guide/63?lang=en",
+      "lang": "en",
+      "status": 404,
+      "record_lang": null,
+      "fallback": null,
+      "canonical_url": null,
+      "translations": null,
+      "error_code": "conexao_rest_language_unavailable"
+    },
+    {
+      "url": "/wp-json/wp/v2/event/77?lang=en",
+      "lang": "en",
+      "status": 404,
+      "record_lang": null,
+      "fallback": null,
+      "canonical_url": null,
+      "translations": null,
+      "error_code": "rest_post_invalid_id"
+    },
+    {
+      "url": "/wp-json/wp/v2/event/77",
+      "lang": "(none)",
+      "status": 404,
+      "record_lang": null,
+      "fallback": null,
+      "canonical_url": null,
+      "translations": null,
+      "error_code": "rest_post_invalid_id"
+    },
+    {
+      "url": "/wp-json/wp/v2/event/999999?lang=en",
+      "lang": "en",
+      "status": 404,
+      "record_lang": null,
+      "fallback": null,
+      "canonical_url": null,
+      "translations": null,
+      "error_code": "rest_post_invalid_id"
+    },
+    {
+      "url": "/wp-json/wp/v2/event?lang=xx",
+      "lang": "xx",
+      "status": 400,
+      "error_code": "conexao_rest_invalid_lang"
+    },
+    {
+      "url": "/wp-json/wp/v2/leisure?lang=xx",
+      "lang": "xx",
+      "status": 400,
+      "error_code": "conexao_rest_invalid_lang"
+    },
+    {
+      "url": "/wp-json/wp/v2/guide?lang=xx",
+      "lang": "xx",
+      "status": 400,
+      "error_code": "conexao_rest_invalid_lang"
+    },
+    {
+      "url": "/wp-json/wp/v2/posts?lang=xx",
+      "lang": "xx",
+      "status": 400,
+      "error_code": "conexao_rest_invalid_lang"
+    },
+    {
+      "url": "/wp-json/wp/v2/job?lang=xx",
+      "lang": "xx",
+      "status": 400,
+      "error_code": "conexao_rest_invalid_lang"
+    },
+    {
+      "url": "/wp-json/wp/v2/course_provider?lang=xx",
+      "lang": "xx",
+      "status": 400,
+      "error_code": "conexao_rest_invalid_lang"
+    },
+    {
+      "url": "/wp-json/wp/v2/sponsor?lang=xx",
+      "lang": "xx",
+      "status": 400,
+      "error_code": "conexao_rest_invalid_lang"
+    },
+    {
+      "url": "/wp-json/wp/v2/search?lang=xx",
+      "lang": "xx",
+      "status": 400,
+      "error_code": "conexao_rest_invalid_lang"
+    },
+    {
+      "url": "/wp-json/wp/v2/conexao_county?lang=xx",
+      "lang": "xx",
+      "status": 400,
+      "error_code": "conexao_rest_invalid_lang"
+    },
+    {
+      "url": "/wp-json/wp/v2/guide?conexao_category=138&lang=en&per_page=100",
+      "lang": "en",
+      "status": 200,
+      "records": 2,
+      "record_langs": [
+        "en"
+      ],
+      "fallback_records": 0,
+      "duplicate_identity": false,
+      "hidden_event_visible": false,
+      "translation_metadata": true
+    },
+    {
+      "url": "/wp-json/wp/v2/guide?conexao_category=11&lang=pt&per_page=100",
+      "lang": "pt",
+      "status": 200,
+      "records": 3,
+      "record_langs": [
+        "pt"
+      ],
+      "fallback_records": 0,
+      "duplicate_identity": false,
+      "hidden_event_visible": false,
+      "translation_metadata": true
+    },
+    {
+      "url": "/wp-json/wp/v2/event?conexao_county=30&lang=en&per_page=100",
+      "lang": "en",
+      "status": 200,
+      "records": 4,
+      "record_langs": [
+        "en",
+        "pt"
+      ],
+      "fallback_records": 2,
+      "duplicate_identity": false,
+      "hidden_event_visible": false,
+      "translation_metadata": true
+    },
+    {
+      "url": "/wp-json/wp/v2/event?conexao_county=30&lang=pt&per_page=100",
+      "lang": "pt",
+      "status": 200,
+      "records": 3,
+      "record_langs": [
+        "pt"
+      ],
+      "fallback_records": 0,
+      "duplicate_identity": false,
+      "hidden_event_visible": false,
+      "translation_metadata": true
+    },
+    {
+      "url": "/wp-json/wp/v2/search?search=festa&per_page=100",
+      "lang": "(none)",
+      "status": 200,
+      "records": 4,
+      "record_ids": [
+        135,
+        136,
+        69,
+        73
+      ]
+    },
+    {
+      "url": "/wp-json/wp/v2/search?search=festa&per_page=100&lang=pt",
+      "lang": "pt",
+      "status": 200,
+      "records": 2,
+      "record_ids": [
+        69,
+        73
+      ]
+    },
+    {
+      "url": "/wp-json/wp/v2/search?search=festa&per_page=100&lang=en",
+      "lang": "en",
+      "status": 200,
+      "records": 2,
+      "record_ids": [
+        135,
+        136
+      ]
+    },
+    {
+      "url": "/wp-json/wp/v2/event?per_page=100",
+      "lang": "(none)",
+      "status": 200,
+      "records": 8,
+      "record_langs": [
+        "en",
+        "pt"
+      ],
+      "fallback_records": 0,
+      "duplicate_identity": false,
+      "hidden_event_visible": false,
+      "translation_metadata": true
+    },
+    {
+      "url": "/wp-json/wp/v2/leisure?per_page=100",
+      "lang": "(none)",
+      "status": 200,
+      "records": 9,
+      "record_langs": [
+        "en",
+        "pt"
+      ],
+      "fallback_records": 0,
+      "duplicate_identity": false,
+      "hidden_event_visible": false,
+      "translation_metadata": true
+    },
+    {
+      "url": "/wp-json/wp/v2/guide?per_page=100",
+      "lang": "(none)",
+      "status": 200,
+      "records": 8,
+      "record_langs": [
+        "en",
+        "pt"
+      ],
+      "fallback_records": 0,
+      "duplicate_identity": false,
+      "hidden_event_visible": false,
+      "translation_metadata": true
+    },
+    {
+      "url": "/wp-json/wp/v2/posts?per_page=100",
+      "lang": "(none)",
+      "status": 200,
+      "records": 6,
+      "record_langs": [
+        "en",
+        "pt"
+      ],
+      "fallback_records": 0,
+      "duplicate_identity": false,
+      "hidden_event_visible": false,
+      "translation_metadata": true
+    },
+    {
+      "url": "/wp-json/wp/v2/job?per_page=100",
+      "lang": "(none)",
+      "status": 200,
+      "records": 4,
+      "record_langs": [
+        "en",
+        "pt"
+      ],
+      "fallback_records": 0,
+      "duplicate_identity": false,
+      "hidden_event_visible": false,
+      "translation_metadata": true
+    },
+    {
+      "url": "/wp-json/wp/v2/course_provider?per_page=100",
+      "lang": "(none)",
+      "status": 200,
+      "records": 9,
+      "record_langs": [
+        "en",
+        "pt"
+      ],
+      "fallback_records": 0,
+      "duplicate_identity": false,
+      "hidden_event_visible": false,
+      "translation_metadata": true
+    },
+    {
+      "url": "/wp-json/wp/v2/sponsor?per_page=100",
+      "lang": "(none)",
+      "status": 200,
+      "records": 5,
+      "record_langs": [
+        "en",
+        "pt"
+      ],
+      "fallback_records": 0,
+      "duplicate_identity": false,
+      "hidden_event_visible": false,
+      "translation_metadata": true
+    },
+    {
+      "url": "/wp-json/wp/v2/event/136",
+      "lang": "(none)",
+      "status": 200,
+      "record_lang": "en",
+      "fallback": false,
+      "canonical_url": "http://localhost:8080/en/eventos/festa-junina-dublin-2026-en/",
+      "translations": {
+        "pt": {
+          "id": 73,
+          "url": "http://localhost:8080/eventos/festa-junina-dublin-2026/"
+        }
+      },
+      "error_code": null
+    },
+    {
+      "url": "/wp-json/wp/v2/event/73",
+      "lang": "(none)",
+      "status": 200,
+      "record_lang": "pt",
+      "fallback": false,
+      "canonical_url": "http://localhost:8080/eventos/festa-junina-dublin-2026/",
+      "translations": {
+        "en": {
+          "id": 136,
+          "url": "http://localhost:8080/en/eventos/festa-junina-dublin-2026-en/"
+        }
+      },
+      "error_code": null
+    }
+  ]
+}

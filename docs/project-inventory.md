@@ -2,15 +2,30 @@
 
 ## Plugins
 
-| Slug | Version | Path |
-|------|---------|------|
-| conexao-data-model | 1.3.0 | `wp-content/plugins/conexao-data-model/` |
-| conexao-content | 1.0.0 | `wp-content/plugins/conexao-content/` |
-| conexao-admin-ux | 1.0.0 | `wp-content/plugins/conexao-admin-ux/` |
-| conexao-event-runtime | 1.0.0 | `wp-content/plugins/conexao-event-runtime/` |
-| conexao-event-importer | 1.5.0 | `wp-content/plugins/conexao-event-importer/` |
-| conexao-leisure-migration | 2.0.0 | `wp-content/plugins/conexao-leisure-migration/` |
-| conexao-sponsor-migration | 1.0.0 | `wp-content/plugins/conexao-sponsor-migration/` |
+<!-- BEGIN GENERATED PLUGIN REGISTRY: docs/project-inventory.md plugins -->
+Generated from [`plugins.json`](../plugins.json) by `scripts/generate-registry-docs.php`.
+Versions are read from the plugin headers at generation time, which is the authoritative
+source. Do not hand-edit this table.
+
+| Slug | Version | Class | Status | Production | Build | Mount | Path |
+|------|---------|-------|--------|------------|-------|-------|------|
+| conexao-data-model | 1.6.1 | platform | active | yes | yes | yes | `wp-content/plugins/conexao-data-model/` |
+| conexao-content | 1.0.1 | platform | active | yes | yes | yes | `wp-content/plugins/conexao-content/` |
+| conexao-admin-ux | 1.0.7 | platform | active | yes | yes | yes | `wp-content/plugins/conexao-admin-ux/` |
+| conexao-event-runtime | 1.2.2 | platform | active | yes | yes | yes | `wp-content/plugins/conexao-event-runtime/` |
+| conexao-event-importer | 1.7.1 | tooling | active | no | yes | yes | `wp-content/plugins/conexao-event-importer/` |
+| conexao-leisure-migration | 2.1.0 | tooling | active | no | yes | yes | `wp-content/plugins/conexao-leisure-migration/` |
+| conexao-sponsor-migration | 1.1.0 | tooling | active | no | yes | yes | `wp-content/plugins/conexao-sponsor-migration/` |
+| conexao-translation-rollout | 1.2.0 | platform | active | yes | yes | yes | `wp-content/plugins/conexao-translation-rollout/` |
+| conexao-en-translation | 1.5.0 | tooling | active | no | no | yes | `wp-content/plugins/conexao-en-translation/` |
+| conexao-translation-automation | 0.6.0 | platform | active | yes | yes | yes | `wp-content/plugins/conexao-translation-automation/` |
+
+**Production steady state** (platform, `production: true`) - activate in this order: conexao-data-model -> conexao-content -> conexao-admin-ux -> conexao-event-runtime -> conexao-translation-rollout -> conexao-translation-automation.
+
+**Local-only tooling** (never production): conexao-event-importer, conexao-leisure-migration, conexao-sponsor-migration, conexao-en-translation.
+
+**Retired rollout plugins** (historical tooling, *activate → apply → remove*; not a production dependency and not in any release ZIP): .
+<!-- END GENERATED PLUGIN REGISTRY: docs/project-inventory.md plugins -->
 
 ## Themes
 

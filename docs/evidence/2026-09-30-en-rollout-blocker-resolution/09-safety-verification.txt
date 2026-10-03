@@ -1,0 +1,133 @@
+EN rollout blocker resolution — safety ledger and production revalidation (read-only)
+=====================================================================================
+target: https://conexaobr.ie (production)      verbs used: GET only      production writes: 0
+
+
+1. WHAT THIS PHASE WAS ALLOWED TO DO, AND WHAT IT DID
+------------------------------------------------------
+The only production interaction in this phase was READING. The two read-only tools
+define no write verb at all:
+
+  en-translation-inventory.py   "READ ONLY ... verb: GET only"; no --apply flag,
+                                no post/put/delete call, no assert_write_allowed().
+  en-dry-run.py                 "READ ONLY ... verb: GET only"; report["http_verbs_used"]
+                                is emitted BY the tool and is ['GET'].
+
+Both load the repository's shared engine
+(wp-content/plugins/conexao-translation-rollout/includes/class-conexao-translation-rollout-engine.php,
+sha256 baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4 — UNCHANGED from the
+2026-09-30 Phase 2 baseline) and call only its pure methods:
+
+  validate_manifest()  build_plan()  calculate_gate()
+
+  Engine::run() is NEVER called, so no apply, no remove and no writer is reachable
+  from either tool. report["apply_invoked"] = False in the committed plan.
+
+NOT done, in any form:  no --apply · no Engine::run() · no scripts/run-en-translation.php
+execution · no plugin install or deploy · no Polylang settings change · no SQL · no
+database synchronisation · no EN record creation · no translation link creation · no
+B2 field write · no taxonomy creation · no PT edit · no menu, option or theme-mod change.
+
+
+2. THE SAFETY LEDGER
+--------------------
+  production writes ............................. 0
+  EN records created ............................ 0
+  EN translation links created .................. 0
+  B2 field writes ............................... 0
+  taxonomy changes (terms created/linked) ....... 0
+  PT drift ....................................... 0
+  PT content modified ............................ 0
+  Polylang configuration modified ............... 0
+  menus / options / theme mods modified ......... 0
+  SQL executed against production ............... 0
+  databases synchronised ........................ 0
+  `.env` modified ............................... NO (byte-identical; it was only read,
+                                                  to supply WP_USERNAME / WP_APPLICATION_PASSWORD
+                                                  from the environment — never written, never
+                                                  echoed, never committed)
+  secrets exposed ............................... NO (no credential appears in any file in
+                                                  this evidence directory, in this report, or
+                                                  in any tool argument; every tool reads them
+                                                  from the environment via
+                                                  scripts/lib/rest.py::require_credentials())
+
+  Every write in this phase was to the REPOSITORY working tree, and every write to the
+  LOCAL Docker install is a test fixture that the suite creates and deletes inside
+  itself (the shared-slug gate proves its own teardown: "the newsletter shared-slug
+  fixtures were removed and only the real PT page holds the slug" and "the real PT
+  newsletter page was never modified by this gate").
+
+  Two local-only plugin activations were performed so the shared-slug permanent gate
+  could run its fixtures at all (conexao-translation-rollout and
+  conexao-en-translation — both `production: false` in plugins.json, both compose-mounted).
+  That is a LOCAL options-table change in the dev container. Production is untouched.
+
+
+3. PRODUCTION REVALIDATED (Phase 7) — with read-only requests
+--------------------------------------------------------------
+  PT translated-CPT scope ......... 2175   (unchanged)
+  PT total scope ................... 2255   (unchanged)
+  EN records, all 8 post types ...... 0     (unchanged)
+  EN translation links ............. 0
+  EN orphans ........................ 0
+  EN unassigned ..................... 0
+  PT identity digest ............... cfe4b7a670266da32ba635f3f46994328143d3de77a914aa52491d42e3a6f853
+                                    -> IDENTICAL to the 2026-09-30 Phase 1 and Phase 2 baseline
+  per-type PT identity digests ...... all identical (see 04-summary-tables.txt)
+  Polylang configuration ............ unchanged (2 languages, pt default, the same
+                                       post_types/taxonomies declaration; the re-read
+                                       inventory reproduces the same language state)
+  unexpected production objects ..... 0
+  taxonomy state .................... conexao_category 58 terms, all PT, EN 0;
+                                       conexao_county 26 and conexao_town 251 remain
+                                       SHARED (0 with a language, 0 suffixed duplicates);
+                                       the dry-run touches ONLY conexao_category
+                                       (13 planned creates)
+
+  ROUTE REVALIDATION (live, GET):
+    /newsletter/        HTTP 200  lang=pt-BR  canonical=https://conexaobr.ie/newsletter/   (PT page, unchanged)
+    /en/newsletter/     HTTP 200  lang=en-US  canonical=https://conexaobr.ie/newsletter/   (the B2-shaped
+                                                                                             fallback, EXACTLY as
+                                                                                             before this phase)
+    /en/newsletter-2/   HTTP 404                                                              (never created)
+    /empregos/          HTTP 200  lang=pt-BR  canonical=.../empregos/                       (unchanged)
+    /en/empregos/       HTTP 200  lang=en-US  canonical=.../empregos/                       (unchanged)
+    /blog/              HTTP 200  lang=pt-BR  canonical=.../blog/                          (unchanged)
+    /en/blog/           HTTP 200  lang=en-US  canonical=.../blog/                          (unchanged)
+
+  `/en/newsletter/` has NOT been converted into a real EN record. It still serves the
+  B2-shaped response it served before, because production still has no EN newsletter
+  record — and creating one is the NEXT task, not this one. `unclassified_objects`,
+  `unexpected_en_existing_objects` and `b2_creates_en_records` are all 0, so the plan
+  itself does not claim otherwise.
+
+
+4. REPOSITORY INTEGRITY
+-----------------------
+  .env ......................................... unchanged (not in git, never written)
+  wp-content/plugins/conexao-translation-rollout/  UNCHANGED (the shared engine is untouched)
+  the Flutter / mobile repository .............. not accessed, not inspected, not built,
+                                                 not tested, not modified
+  files intentionally changed ................ wp-content/plugins/conexao-en-translation/
+                                                   includes/manifest-data.php      (re-key row 1)
+                                                   includes/guide-translation-data.php (re-key row 2)
+                                                   includes/stage-config.php       (shared-slug policy)
+                                                   tests/test-shared-slug-newsletter.php  (NEW)
+                                                 wp-content/themes/conexao-br-irlanda/
+                                                   tests/test-en-jobs-shared-slug.php     (gate extended)
+                                                 docs/evidence/2026-09-30-en-rollout-blocker-resolution/*  (NEW)
+  no second translation engine was created
+  no second shared-slug implementation was created
+  the B1/B2 architecture, the engine lifecycle, the stage definitions, the B2 page
+  allowlist, the PT canonical model and every existing translation are UNCHANGED
+
+
+5. WHAT THE NEXT TASK MUST STILL DO (nothing here pre-empted it)
+---------------------------------------------------------------
+  * decide the 7 documented NO_REAL_PT_SOURCE rows (see 05-source-resolution-table.txt);
+  * run Phase 3: apply the 120 B1 creates + 120 translation links + the 299 B2 field
+    updates + the 13 EN conexao_category terms, then verify immediately;
+  * only then does `/en/newsletter/` become the real English page at its own URL.
+
+  This phase performed NONE of the above.

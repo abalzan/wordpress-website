@@ -1,0 +1,115 @@
+conexao test harness
+  repository:    /home/andrei/IdeaProjects/wordpress-website
+  php:           8.5.4
+  environment:   host (docker compose exec)
+  base url:      http://localhost:8080
+
+In-process PHP suites (serial, one process per suite)
+[FAIL] theme/conexao-br-irlanda/test-blog-en-translation.php — 19 passed, 9 failed (exit 1)
+           FAIL: the posts page has an EN translation — en_id=0
+           FAIL: the posts page pair is linked from both sides
+           FAIL: the EN posts page is published
+           FAIL: the EN posts page is assigned to en
+           FAIL: the EN posts page lives at /en/blog/
+           FAIL: PT and EN public post counts match — pt=42 en=0
+           FAIL: GATE: every public PT post has a published EN translation — sol-e-lua-equilibrando-consciencia-e-emocoesdurante-o-inverno-norte-europeu, o-inverno-do-ego-um-renascimento-poetico, o-sol-que-habita-em-nos, turismo-e-lazer-em-co-laois-na-irlanda, o-calor-que-nasce-do-inverno
+           FAIL: blog posts use at least one category term — used=0
+           FAIL: the EN posts page has a permalink
+[FAIL] theme/conexao-br-irlanda/test-event-location-filters.php — 45 passed, 1 failed (exit 1)
+           FAIL: unfiltered archive returns all four test events (incl. missing county/town)
+[PASS] theme/conexao-br-irlanda/test-guide-breadcrumb-filter.php — 36 passed, 0 failed
+[FAIL] theme/conexao-br-irlanda/test-guide-en-translation.php — 632 passed, 2 failed (exit 1)
+           FAIL: eligible public PT guides missing EN = 0 — missing: ["outono-irlanda-alimentacao-bem-estar"]
+           FAIL: one EN translation per public PT guide — 51 pairs vs 52 PT guides
+[FAIL] theme/conexao-br-irlanda/test-header-menu-selection.php (pt) — 11 passed, 1 failed (exit 1)
+           FAIL: P5 PT homepage marks Início current
+[PASS] theme/conexao-br-irlanda/test-header-menu-selection.php (en) — 16 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-i18n-foundation.php — 29 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-job-en-translation.php — 30 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-jobs-en-language.php — 103 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-leisure-attribute-normalization.php — 22 passed, 0 failed
+[FAIL] theme/conexao-br-irlanda/test-leisure-card-excerpt-language.php — 15 passed, 1 failed (exit 1)
+           FAIL: rollout engine loaded (activate conexao-leisure-translation to exercise it)
+[PASS] theme/conexao-br-irlanda/test-leisure-card-map-action.php — 44 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-leisure-multiselect-filters.php — 63 passed, 0 failed
+[FAIL] theme/conexao-br-irlanda/test-leisure-related-events.php — 16 passed, 3 failed (exit 1)
+           FAIL: includes the same-county event on +2
+           FAIL: includes the same-county event on +5
+           FAIL: includes the recurring event (next-occurrence logic)
+[PASS] theme/conexao-br-irlanda/test-nav-language-context-logic.php — 49 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-nav-language-context.php — 16 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-nav-menu-regression.php — 31 passed, 0 failed
+[FAIL] theme/conexao-br-irlanda/test-polylang-foundation.php — 61 passed, 1 failed (exit 1)
+           FAIL: no shared county/town term carries a language assignment — expected 0, got 282
+[PASS] theme/conexao-br-irlanda/test-recurrence-i18n.php — 12 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-sponsor-archive-ordering.php — 15 passed, 0 failed
+[FAIL] theme/conexao-br-irlanda/test-stage32-bilingual.php — 32 passed, 11 failed (exit 1)
+           FAIL: the PT phoenix-park master is in the replacement set (its EN translation exists)
+         [26-Sep-2026 11:36:32 UTC] PHP Warning:  Undefined array key 0 in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-stage32-bilingual.php on line 94
+         Warning: Undefined array key 0 in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-stage32-bilingual.php on line 94
+         [26-Sep-2026 11:36:32 UTC] PHP Warning:  Undefined array key 0 in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-stage32-bilingual.php on line 98
+         Warning: Undefined array key 0 in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-stage32-bilingual.php on line 98
+           FAIL: the PT event master is replaced by its EN translation
+         [26-Sep-2026 11:36:32 UTC] PHP Warning:  Undefined array key 0 in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-stage32-bilingual.php on line 118
+         Warning: Undefined array key 0 in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-stage32-bilingual.php on line 118
+           FAIL: the EN guide carries its linked EN category terms (documents, work)
+         [26-Sep-2026 11:36:32 UTC] PHP Warning:  Undefined array key 0 in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-stage32-bilingual.php on line 124
+[FAIL] theme/conexao-br-irlanda/test-stage33-bilingual.php — 170 passed, 14 failed (exit 1)
+           FAIL: EN page: conexao_lang_url( /politica-de-privacidade/ ) === /en/privacy-policy/ (got /politica-de-privacidade/)
+           FAIL: EN page: conexao_lang_url( /termos-de-uso/ ) === /en/terms-of-use/ (got /termos-de-uso/)
+           FAIL: EN page: conexao_lang_url( /cookies/ ) === /en/cookie-policy/ (got /cookies/)
+           FAIL: EN: card "Moradia" (no linked EN term with EN guides) falls back to the plain EN archive (got http://localhost:8080/en/guias/?categoria=housing)
+           FAIL: term pair conexao_category:trabalho <=> work exists
+           FAIL: term pair conexao_category:festivais <=> festivals exists
+           FAIL: term pair conexao_category:musica <=> music exists
+           FAIL: term pair conexao_category:cultura <=> culture exists
+           FAIL: term pair conexao_category:cidades <=> cities exists
+           FAIL: term pair conexao_category:gastronomia <=> gastronomy exists
+[FAIL] theme/conexao-br-irlanda/test-stage41-rest-language.php (exit 1)
+           FAIL: fixture present: event PT master (#0)
+           FAIL: fixture present: event EN translation (#0)
+           FAIL: fixture present: event EN source (#0)
+           FAIL: fixture present: event PT b2 (#0)
+           FAIL: fixture present: event expired (#0)
+           FAIL: fixture present: event rejected (#0)
+           FAIL: fixture present: event removed (#0)
+           FAIL: fixture present: leisure EN (#0)
+           FAIL: fixture present: guide PT master (#0)
+           FAIL: fixture present: guide EN (#0)
+[FAIL] theme/conexao-br-irlanda/test-stage45-pages.php — 328 passed, 11 failed (exit 1)
+           FAIL: inicio: meta description contains no untranslated Portuguese
+           FAIL: sobre-nos: meta description contains no untranslated Portuguese
+           FAIL: contato: meta description contains no untranslated Portuguese
+           FAIL: blog: meta description contains no untranslated Portuguese
+           FAIL: categorias: meta description contains no untranslated Portuguese
+           FAIL: newsletter: meta description contains no untranslated Portuguese
+           FAIL: revista: meta description contains no untranslated Portuguese
+           FAIL: anuncie: meta description contains no untranslated Portuguese
+           FAIL: politica-de-privacidade: meta description contains no untranslated Portuguese
+           FAIL: termos-de-uso: meta description contains no untranslated Portuguese
+[PASS] theme/conexao-br-irlanda/test-stage7-hero-sponsors.php — 10 passed, 0 failed
+no script-contract suites discovered under tests/scripts/
+
+HTTP acceptance suites (base: http://localhost:8080)
+[PASS] tests/acceptance/verify-guides-en-http.py — 18 passed, 0 failed
+[PASS] tests/acceptance/verify-routing-http.py — 59 passed, 0 failed
+
+----------------------------------------
+In-process PHP suites: 25 total, 14 passed, 11 failed
+Assertions: 1805 passed, 54 failed
+HTTP acceptance suites: 2 total, 2 passed, 0 failed
+----------------------------------------
+TESTS FAILED
+failing suites:
+  - theme/conexao-br-irlanda/test-blog-en-translation.php
+  - theme/conexao-br-irlanda/test-event-location-filters.php
+  - theme/conexao-br-irlanda/test-guide-en-translation.php
+  - theme/conexao-br-irlanda/test-header-menu-selection.php (pt)
+  - theme/conexao-br-irlanda/test-leisure-card-excerpt-language.php
+  - theme/conexao-br-irlanda/test-leisure-related-events.php
+  - theme/conexao-br-irlanda/test-polylang-foundation.php
+  - theme/conexao-br-irlanda/test-stage32-bilingual.php
+  - theme/conexao-br-irlanda/test-stage33-bilingual.php
+  - theme/conexao-br-irlanda/test-stage41-rest-language.php
+  - theme/conexao-br-irlanda/test-stage45-pages.php
+full suite output kept in /tmp/tmp.R0iLgGbvGN

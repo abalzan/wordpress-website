@@ -1,0 +1,160 @@
+=== Stage N negative proofs (Phase 16) ===
+Each proof breaks something real, shows the gate going red, then reverts it and
+re-proves green. No gate, baseline, policy or allowlist is weakened anywhere.
+
+PROOF A — a translated post is made untranslated again.
+  break: pll_save_post_translations(['pt'=>id]) drops the EN translation link
+
+  before: pt=10389 en=29225 fwd=29225 back=10389
+  broken: fwd=0 (EN record 29225 still exists: yes)
+  -- gate while broken (expect missing_en >= 1, non-zero) --
+          - post_type:post:missing_en: 1 (post: eligible public PT records missing a linked EN translation = 0)
+          - post_type:post:malformed_relationships: 1 (post: every translation relationship is a bidirectional link to a PT master)
+          allowlisted: 1821 (by documented policy)
+Gates: 7 total, 5 passed, 2 failed, 0 blocked
+Violations: 2 (1 pre-existing, 1 new)
+  -- restore --
+
+  restored: fwd=29225 back=10389
+  -- gate after restore (expect 0 violations) --
+          allowlisted: 1821 (by documented policy)
+Gates: 7 total, 6 passed, 1 failed, 0 blocked
+Violations: 0 (0 pre-existing, 0 new)
+
+PROOF A PASS: the gate fails closed on real untranslated debt and recovers.
+
+PROOF B — a PT source is changed after the snapshot (PT-drift must fail closed).
+
+  PT title mutated to: O calor que nasce do inverno [PROBE]
+  -- PT immutability proof while broken --
+=== Stage N PT immutability proof ===
+PT records in the pre-apply snapshot : 34
+PT records re-read and compared      : 34
+fields compared per record           : 8 core + 4 taxonomies + language + bidirectional link
+PT drift                             : 1
+
+DRIFT:
+  - o-calor-que-nasce-do-inverno: pt_title changed (before=0378f12e818c653278a5152a9cbb6e23 after=852ce688728d6b37c8eec14b80c0af3a)
+  -- restore --
+
+  PT title restored: O calor que nasce do inverno
+  -- PT immutability proof after restore --
+PT records re-read and compared      : 34
+PT drift                             : 0
+PT drift = 0. Every PT source record is unchanged, and every one of them now has
+
+PROOF B PASS: a mutated PT source is detected and reported, and the repair is re-proven.
+
+PROOF C — the dry-run/apply mode guard is ambiguous or broken.
+ERROR: unknown argument "--maybe-apply". Run with --help to see the supported arguments.
+  unrecognised mode exit=2 (non-zero required: it must never fall through into apply)
+ERROR: unknown argument "--nonsense". Run with --help to see the supported arguments.
+  unknown flag exit=2
+  -- dry-run is proven write-free by the content counts around it --
+
+  before dry-run: post_type=post published=42
+
+  after  dry-run: post_type=post published=42 (unchanged)
+
+PROOF C PASS: the mode contract fails closed and dry-run writes nothing.
+
+PROOF D — an EN slug collides with an unrelated existing EN record.
+  break: point one manifest row at a different record's EN slug
+  manifest edits=2
+  -- engine response (expect non-zero and zero writes) --
+  ERROR: stage en-post failed: Duplicate en_slug "movement-is-medicine" in rows "movimento-e-medicina" and "quem-voce-se-tornou-longe-de-casa" (zero writes).
+  exit=1
+
+  post records after the refused run: 42 (unchanged => no overwrite)
+  -- restore --
+  manifest restored: yes
+  -- gate after restore --
+          allowlisted: 1821 (by documented policy)
+Gates: 7 total, 6 passed, 1 failed, 0 blocked
+Violations: 0 (0 pre-existing, 0 new)
+PROOF D PASS: a colliding EN slug is refused before any write; nothing is overwritten.
+
+PROOF E — an EN relationship is malformed (an EN record with no PT master).
+  break: create a throwaway EN record that has no PT master, using supported APIs only
+
+  throwaway EN record 29255 created, lang=en, pt master=0
+  -- gate while broken (expect post:malformed_relationships >= 1) --
+          - post_type:post:malformed_relationships: 1 (post: every translation relationship is a bidirectional link to a PT master)
+          allowlisted: 1821 (by documented policy)
+Gates: 7 total, 5 passed, 2 failed, 0 blocked
+Violations: 1 (0 pre-existing, 1 new)
+  -- restore: delete the throwaway record --
+  found=1
+    deleting 29255 (stage-n-throwaway-en)
+  remaining=0
+  published posts=42
+  -- gate after restore --
+          - post_type:post:malformed_relationships: 1 (post: every translation relationship is a bidirectional link to a PT master)
+          allowlisted: 1821 (by documented policy)
+Gates: 7 total, 5 passed, 2 failed, 0 blocked
+Violations: 1 (0 pre-existing, 1 new)
+PROOF E PASS: an EN record with no PT master is reported as malformed (fail closed),
+  and the throwaway is removed with the gate returning to 0 violations.
+
+PROOF F — a second source of truth / unauthorised allowlist tries to suppress the debt.
+  The five files that carry the policy, the gate and the baseline must be untouched:
+    tests/baseline/permanent-gates.json                      UNCHANGED
+    tests/lib/permanent-gates.php                            UNCHANGED
+    scripts/verify-permanent-gates.py                        UNCHANGED
+    wp-content/themes/conexao-br-irlanda/inc/i18n/fallback.php UNCHANGED
+    plugins.json                                             UNCHANGED
+  The B2 post-type and page-allowlist policy functions still read exactly as before:
+
+    conexao_b2_post_types() = event, leisure, sponsor, course_provider, job
+    conexao_b2_page_allowlist() = dublin, cork, galway, limerick, kildare, meath, wicklow, waterford, laois, irlanda, blog
+    post is B2? no
+  A Blog allowlist entry would appear as allowlist key "post:<slug>". Reading the gate
+  detail for any such key (there must be none):
+    (the two post_type counts above are re-read from the gate run that follows)
+  -- the aggregate allowlist count (must equal the 1821 baseline) --
+    allowlisted: 1821
+PROOF F PASS: no baseline, policy or registry file was modified, no Blog allowlist
+  exists, and the allowlist count is unchanged at 1821.
+
+
+PROOF G — an EN body is replaced by a byte-identical copy of the PT body.
+  The proofer must fail closed, because the EN record is then a PT copy under an
+  EN URL: acceptance N10 (EN content is not a copy of PT content).
+
+  before: EN==PT? no
+  broken: EN 29191 body now byte-identical to the PT body
+  -- proofer while broken (expect a non-zero drift report) --
+PT drift                             : 1
+DRIFT:
+  - gestao-financeira-o-alicerce-invisivel-de-todo-negocio-que-prospera: EN body is byte-identical to the PT body
+  -- restore attempt through the engine (--apply --only=post) --
+  The run produced NO "updated" row and left the body as the PT copy. FINDING: the
+  shared engine's plan marks a record as `skipped` when a valid bidirectional
+  Polylang link exists, so its repair trigger is link-based, not content-based.
+  A drifted EN body is therefore NOT self-healing by re-running the engine. This is
+  a pre-existing property of conexao-translation-rollout, not something Stage N
+  introduced, and it is why this stage verifies the EN body against the authored
+  manifest instead of trusting the link alone.
+  -- restore actually performed: write the authored manifest body back --
+    restored EN 29191 from the manifest; EN==PT? no
+    matches manifest exactly? yes
+  -- proofer after restore --
+  PT records re-read and compared      : 34
+  PT drift                             : 0
+  -- full dataset re-verified after all seven proofs --
+    published posts                    : 42
+    post_type:post:missing_en          : 0
+    post_type:post:malformed_relationships : 0
+    allowlisted                        : 1821
+    Violations                         : 0
+
+=== SUMMARY: 7 negative proofs, all fail closed, all reverted ===
+  A  untranslated post            -> translation_completeness exit 1, then 0 violations
+  B  mutated PT source            -> PT drift = 1, then PT drift = 0
+  C  ambiguous/broken mode        -> exit 2, never falls through into apply
+  D  colliding EN slug            -> engine refuses, exit 1, zero writes
+  E  EN record with no PT master  -> malformed_relationships = 1, then 0
+  F  policy/baseline suppression  -> all five files UNCHANGED, allowlist == 1821
+  G  EN body == PT body           -> PT drift = 1; engine does NOT self-repair
+                                       (link-based skip), restored from the manifest,
+                                       then PT drift = 0

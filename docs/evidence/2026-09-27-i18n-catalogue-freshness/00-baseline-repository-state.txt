@@ -1,0 +1,16 @@
+HEAD: 8f07f3027734b99546931295173369dbdb2953dc
+branch: i18n
+upstream: origin/i18n
+ahead/behind: 0	2
+
+=== git status --short ===
+?? docs/evidence/2026-09-27-i18n-catalogue-freshness/
+?? docs/evidence/2026-09-27-lazer-en-archive-perf/
+?? docs/reports/2026-09-27-lazer-en-archive-investigation.md
+
+=== PHP / gettext / python ===
+PHP 8.5.4 (cli) (built: Sep  2 2026 14:42:18) (NTS)
+Python 3.14.4
+xgettext (GNU gettext-tools) 0.23.2
+msgfmt (GNU gettext-tools) 0.23.2
+composer: NOT AVAILABLE (not installed on host)

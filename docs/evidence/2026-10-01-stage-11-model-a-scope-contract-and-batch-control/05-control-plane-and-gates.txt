@@ -1,0 +1,38 @@
+=== tests/scripts/verify-stage2-promotion.py ===
+
+28 passed, 0 failed
+STAGE 2 PROMOTION GATE: OK
+=== tests/scripts/verify-stage3-automation.py ===
+  PASS: class-conexao-translation-automation-trigger.php references no credential constant
+
+178 passed, 0 failed
+=== tests/scripts/verify-stage4-provider.py ===
+  PASS: the adapter invents no taxonomy term
+
+152 passed, 0 failed
+=== tests/scripts/verify-stage6-transport-trigger.py ===
+  PASS: the credential env var is named, never its value
+
+49 passed, 0 failed
+=== tests/scripts/verify-stage7-commissioning.py ===
+  NOTE: pre-existing engine endpoint 'conexao_translation_rollout_run' — conexao-translation-rollout (Stage H, pre-existing). CLOSED in Stage 8: the handler now refuses unconditionally (HTTP 410) and cannot reach Engine::run(), a stage run_callback, or any apply mode. Replacement: conexao-translation-automation's admin_post_conexao_translation_automation_proof.
+
+73 passed, 0 failed
+=== tests/scripts/verify-stage8-control-plane.py ===
+  PASS: the expansion gate still requires no_unresolved_verification_failure
+
+149 passed, 0 failed
+=== tests/scripts/verify-stage10-batch-boundary.py ===
+
+negative proofs: 20 proven, 0 missed
+ALL NEGATIVE PROOFS HELD
+=== tests/scripts/verify-stage8-release-consistency.py ===
+
+52 passed, 0 failed
+versions compared header-vs-manifest: 9
+=== tests/scripts/verify-release-integrity.py ===
+229 passed, 0 failed
+=== tests/scripts/verify-documentation-drift.py ===
+   authoritative sources checked: 7
+14 passed, 0 failed
+GATE-RESULT {"gate": "documentation_drift", "status": "pass", "passed": 14, "failed": 0, "violations": 0, "details": []}

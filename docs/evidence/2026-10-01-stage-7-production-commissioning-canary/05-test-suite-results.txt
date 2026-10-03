@@ -1,0 +1,62 @@
+# Stage 7 - full test suite results and regression comparison
+
+UTC: 2026-10-01T07:35:44Z
+Command: ./scripts/run-tests.sh
+
+## Aggregate (final run)
+  Assertions: 5563 passed, 6 failed
+  Script-contract suites: 11 total, 10 passed, 1 failed
+  HTTP acceptance suites: 3 total, 2 passed, 1 failed
+  ----------------------------------------
+  TESTS FAILED
+  failing suites:
+    - theme/conexao-br-irlanda/test-en-jobs-shared-slug.php
+    - theme/conexao-br-irlanda/test-leisure-card-excerpt-language.php
+
+## Failing suites (all pre-existing, per Stage 7 section 29)
+  failing suites:
+    - theme/conexao-br-irlanda/test-en-jobs-shared-slug.php
+    - theme/conexao-br-irlanda/test-leisure-card-excerpt-language.php
+  full suite output kept in /tmp/tmp.5l7N9SxJA6
+
+## Script-contract detail
+  [PASS] tests/scripts/verify-agent-governance.py
+  [PASS] tests/scripts/verify-cache-key-scoping.py
+  [PASS] tests/scripts/verify-documentation-drift.py
+  [FAIL] tests/scripts/verify-i18n-freshness.py (exit 1)
+  [PASS] tests/scripts/verify-release-integrity.py
+  [PASS] tests/scripts/verify-script-conventions.py
+  [PASS] tests/scripts/verify-stage2-promotion.py
+  [PASS] tests/scripts/verify-stage3-automation.py
+  [PASS] tests/scripts/verify-stage4-provider.py
+  [PASS] tests/scripts/verify-stage6-transport-trigger.py
+  [PASS] tests/scripts/verify-stage7-commissioning.py
+
+## Acceptance detail
+  [PASS] tests/acceptance/verify-guides-en-http.py — 20 passed, 0 failed
+  [PASS] tests/acceptance/verify-release-http.py — 44 passed, 0 failed
+  [FAIL] tests/acceptance/verify-routing-http.py (exit 1)
+
+## i18n_freshness detail (the 3 stale catalogues, deliberately NOT regenerated)
+  [FAIL] tests/scripts/verify-i18n-freshness.py (exit 1)
+           FAIL: conexao-br-irlanda: wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot is older than wp-content/themes/conexao-br-irlanda/inc/navigation.php by 92483s — regenerate the catalogue with `wp i18n make-pot` (never hand-edit)
+           FAIL: conexao-content: wp-content/plugins/conexao-content/languages/conexao-content.pot is older than wp-content/plugins/conexao-content/conexao-content.php by 76025s — regenerate the catalogue with `wp i18n make-pot` (never hand-edit)
+           FAIL: conexao-event-runtime: wp-content/plugins/conexao-event-runtime/languages/conexao-event-runtime.pot is older than wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php by 76025s — regenerate the catalogue with `wp i18n make-pot` (never hand-edit)
+  [PASS] tests/scripts/verify-release-integrity.py
+
+## REGRESSION COMPARISON (before vs after Stage 7)
+  Stage 7 added ONE new script-contract suite and changed NO tracked file.
+  git diff --stat over the working tree: EMPTY (no wp-content change).
+
+  | Metric                                   | Stage 6 | Stage 7 |
+  |------------------------------------------|---------|---------|
+  | Script-contract suites                   |   10    |   11    |
+  | Script-contract failing                  |    1    |    1    |
+  | In-process failing suites                |    2    |    2    |
+  | Failing assertion count                  |    6    |    6    |
+  | Acceptance failing suites                |    1    |    1    |
+
+  The failing set is IDENTICAL. i18n_freshness, newsletter en_id 509,
+  the leisure-card excerpt failures and the dwyer-mcallister-cottage
+  PT-drift routing row all pre-date this stage and were NOT touched.
+  No catalogue was regenerated to buy a green run.

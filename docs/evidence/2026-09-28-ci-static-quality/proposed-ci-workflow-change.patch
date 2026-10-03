@@ -1,0 +1,69 @@
+# NOT APPLIED — the CI change this task could not push.
+#
+# The injected GitHub App token has no "workflows" permission, so neither
+# `git push` nor the contents API can update .github/workflows/ci.yml:
+#   remote: refusing to allow a GitHub App to create or update workflow
+#           `.github/workflows/ci.yml` without `workflows` permission
+#   gh api PUT contents/.github/workflows/ci.yml
+#           -> 403 "Resource not accessible by integration"
+#
+# This is the exact, minimal change needed to let the integration job meet the
+# prerequisites its own harness documents (docs/testing.md, "Data prerequisites").
+# It was verified as valid YAML and is otherwise ready to apply.
+
+--- .github/workflows/ci.yml	2026-09-28 09:49:55.387584597 +0000
++++ /tmp/ci/ci.yml.proposed	2026-09-28 09:48:22.145585546 +0000
+@@ -139,10 +139,14 @@
+           sudo apt-get update
+           sudo apt-get install --yes shellcheck
+           shellcheck --version
+-          shellcheck scripts/*.sh
+-          # The shared shell library is sourced, not executed, so scripts/*.sh
++          # The shared shell library is SOURCED, not executed, so scripts/*.sh
+           # alone would leave it unchecked (Stage J added scripts/lib/zip-build.sh).
+-          shellcheck scripts/lib/*.sh
++          # It is therefore passed as an INPUT in the same run rather than in a
++          # second one: ShellCheck only follows a `source` directive for a file
++          # it was given, so two separate runs report SC1091 ("not following")
++          # for every sourcing script AND still never analyse the library in
++          # the context of its callers. One run checks both, and more strictly.
++          shellcheck scripts/*.sh scripts/lib/*.sh
+ 
+       - name: Telemetry (non-blocking) — raw legacy PHPCS debt
+         if: always()
+@@ -372,6 +376,19 @@
+           # Polylang Free, pinned version. Third-party, installed (not vendored).
+           wp plugin is-installed polylang || wp plugin install polylang --version="$POLYLANG_VERSION" --force
+           wp plugin activate polylang
++          # Polylang must be CONFIGURED, not merely installed — this is step 2 of
++          # the documented local multilingual setup (docs/development.md
++          # "Multilingual (EN) development"): the two approved languages
++          # (pt_BR default + en_US) and the approved URL configuration.
++          #
++          # Without it the environment is only half-built, and not in a way the
++          # harness can pass: Polylang loads its public API (pll_*) only when it
++          # has a context, and its own logic instantiates NO context while no
++          # language exists — so pll_* is undefined and every language-aware
++          # suite fails its documented prerequisite instead of testing anything.
++          # The script is idempotent and local/staging-only (it never touches
++          # production), which is exactly what this ephemeral job needs.
++          wp eval-file scripts/run-polylang-setup.php
+           wp plugin list
+ 
+       - name: Report the test environment
+@@ -409,7 +426,15 @@
+       # is a real repository/data violation. The aggregate still exits non-zero
+       # when only the pre-existing data debt is present — that visibility is the
+       # point of the stage. Turning it into a warning would defeat §6.3.
++      # `if: always()` so the summary is still produced (and still uploaded by
++      # the step below) when the harness above has already failed: the point of
++      # the artifact is to diagnose a red run without re-running the suite
++      # locally, which is impossible while this step is skipped on failure.
++      # It changes nothing about the gate itself: the step stays blocking (a
++      # non-zero exit here fails the job exactly as before), and the harness
++      # step is still the first thing that can fail the job.
+       - name: Stage L — permanent invariant gate summary
++        if: always()
+         run: python3 scripts/verify-permanent-gates.py
+ 
+       - name: Upload the permanent-gate result as evidence

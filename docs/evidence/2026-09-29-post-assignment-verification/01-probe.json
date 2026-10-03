@@ -1,0 +1,484 @@
+{
+ "pll_settings": {
+  "force_lang": 1,
+  "domains": [],
+  "hide_default": true,
+  "rewrite": true,
+  "redirect_lang": false,
+  "browser": false,
+  "media_support": false,
+  "post_types": [],
+  "taxonomies": [],
+  "sync": [],
+  "default_lang": "pt",
+  "nav_menus": [],
+  "first_activation": 1790697615,
+  "previous_version": "",
+  "version": "3.8.10"
+ },
+ "pll_languages": [
+  {
+   "slug": "en",
+   "name": "English",
+   "locale": "en_US",
+   "term_id": 1744,
+   "is_default": false,
+   "term_count": 0
+  },
+  {
+   "slug": "pt",
+   "name": "Português",
+   "locale": "pt_BR",
+   "term_id": 1747,
+   "is_default": true,
+   "term_count": 0
+  }
+ ],
+ "scope": {
+  "guide": {
+   "unfiltered": 56,
+   "lang_pt": 0,
+   "lang_en": 0
+  },
+  "event": {
+   "unfiltered": 1808,
+   "lang_pt": 0,
+   "lang_en": 0
+  },
+  "leisure": {
+   "unfiltered": 289,
+   "lang_pt": 0,
+   "lang_en": 0
+  },
+  "sponsor": {
+   "unfiltered": 10,
+   "lang_pt": 0,
+   "lang_en": 0
+  },
+  "job": {
+   "unfiltered": 1,
+   "lang_pt": 0,
+   "lang_en": 0
+  },
+  "course_provider": {
+   "unfiltered": 11,
+   "lang_pt": 0,
+   "lang_en": 0
+  },
+  "post": {
+   "unfiltered": 37,
+   "lang_pt": 0,
+   "lang_en": 0
+  },
+  "page": {
+   "unfiltered": 43,
+   "lang_pt": 43,
+   "lang_en": 43
+  }
+ },
+ "scope_sum": {
+  "unfiltered": 2175,
+  "lang_pt": 0,
+  "lang_en": 0
+ },
+ "assignment_proof": [
+  {
+   "post_type": "guide",
+   "id": 25034,
+   "slug": "profissoes-na-irlanda",
+   "status": "publish",
+   "conexao_language": "pt",
+   "translations": [],
+   "in_lang_pt_collection": false,
+   "in_lang_en_collection": false
+  },
+  {
+   "post_type": "guide",
+   "id": 25031,
+   "slug": "carteira-motorista-brasileiros",
+   "status": "publish",
+   "conexao_language": "pt",
+   "translations": [],
+   "in_lang_pt_collection": false,
+   "in_lang_en_collection": false
+  },
+  {
+   "post_type": "guide",
+   "id": 11426,
+   "slug": "registrar-company-irlanda",
+   "status": "publish",
+   "conexao_language": "pt",
+   "translations": [],
+   "in_lang_pt_collection": false,
+   "in_lang_en_collection": false
+  },
+  {
+   "post_type": "event",
+   "id": 25019,
+   "slug": "art-class-for-beginners",
+   "status": "publish",
+   "conexao_language": "pt",
+   "translations": [],
+   "in_lang_pt_collection": false,
+   "in_lang_en_collection": false
+  },
+  {
+   "post_type": "event",
+   "id": 25021,
+   "slug": "80s-90s-music-bingo-night",
+   "status": "publish",
+   "conexao_language": "pt",
+   "translations": [],
+   "in_lang_pt_collection": false,
+   "in_lang_en_collection": false
+  },
+  {
+   "post_type": "event",
+   "id": 24992,
+   "slug": "happy-hiking-day-at-clonaslee-trailhead",
+   "status": "publish",
+   "conexao_language": "pt",
+   "translations": [],
+   "in_lang_pt_collection": false,
+   "in_lang_en_collection": false
+  },
+  {
+   "post_type": "leisure",
+   "id": 21197,
+   "slug": "dwyer-mcallister-cottage",
+   "status": "publish",
+   "conexao_language": "pt",
+   "translations": [],
+   "in_lang_pt_collection": false,
+   "in_lang_en_collection": false
+  },
+  {
+   "post_type": "leisure",
+   "id": 21196,
+   "slug": "national-botanic-gardens-kilmacurragh",
+   "status": "publish",
+   "conexao_language": "pt",
+   "translations": [],
+   "in_lang_pt_collection": false,
+   "in_lang_en_collection": false
+  },
+  {
+   "post_type": "leisure",
+   "id": 21195,
+   "slug": "fore-abbey",
+   "status": "publish",
+   "conexao_language": "pt",
+   "translations": [],
+   "in_lang_pt_collection": false,
+   "in_lang_en_collection": false
+  },
+  {
+   "post_type": "sponsor",
+   "id": 11461,
+   "slug": "ane-braga-brazilian-beauty",
+   "status": "publish",
+   "conexao_language": "pt",
+   "translations": [],
+   "in_lang_pt_collection": false,
+   "in_lang_en_collection": false
+  },
+  {
+   "post_type": "sponsor",
+   "id": 11458,
+   "slug": "beleza-do-brasil-cosmeticos",
+   "status": "publish",
+   "conexao_language": "pt",
+   "translations": [],
+   "in_lang_pt_collection": false,
+   "in_lang_en_collection": false
+  },
+  {
+   "post_type": "sponsor",
+   "id": 11449,
+   "slug": "euconnekt-services-seu-suporte-imigratorio-na-irlanda",
+   "status": "publish",
+   "conexao_language": "pt",
+   "translations": [],
+   "in_lang_pt_collection": false,
+   "in_lang_en_collection": false
+  },
+  {
+   "post_type": "job",
+   "id": 10954,
+   "slug": "oportunidades",
+   "status": "publish",
+   "conexao_language": "pt",
+   "translations": [],
+   "in_lang_pt_collection": false,
+   "in_lang_en_collection": false
+  },
+  {
+   "post_type": "course_provider",
+   "id": 11148,
+   "slug": "hseland",
+   "status": "publish",
+   "conexao_language": "pt",
+   "translations": [],
+   "in_lang_pt_collection": false,
+   "in_lang_en_collection": false
+  },
+  {
+   "post_type": "course_provider",
+   "id": 10064,
+   "slug": "microcreds",
+   "status": "publish",
+   "conexao_language": "pt",
+   "translations": [],
+   "in_lang_pt_collection": false,
+   "in_lang_en_collection": false
+  },
+  {
+   "post_type": "course_provider",
+   "id": 10063,
+   "slug": "apprenticeship-ie",
+   "status": "publish",
+   "conexao_language": "pt",
+   "translations": [],
+   "in_lang_pt_collection": false,
+   "in_lang_en_collection": false
+  }
+ ],
+ "census": {
+  "post": {
+   "count": 37,
+   "slug_digest": "af343255738fe00c16a7a98fb0eadc53"
+  },
+  "page": {
+   "count": 43,
+   "slug_digest": "4161ae453f528d43dc03a689415cee85"
+  },
+  "guide": {
+   "count": 56,
+   "slug_digest": "f271e8eb0056d62c877dbf1678935294"
+  },
+  "event": {
+   "count": 1808,
+   "slug_digest": "1d74f9ad091b5d57a4d5987c8c2be2cd"
+  },
+  "leisure": {
+   "count": 289,
+   "slug_digest": "cd722b72c35ed7c6c91a8e68c831f7a4"
+  },
+  "job": {
+   "count": 1,
+   "slug_digest": "cc4aae774e6ee3d52ab3dedee5e35902"
+  },
+  "sponsor": {
+   "count": 10,
+   "slug_digest": "20aaa361c1af7bacaa895795a4660a33"
+  },
+  "course_provider": {
+   "count": 11,
+   "slug_digest": "dd7f8ba035706ab2a997ddb29bc1f51c"
+  },
+  "recruitment_agency": {
+   "count": 27,
+   "slug_digest": "cf365a763d02561fec89530670326e8a"
+  },
+  "permit_employer": {
+   "count": 13,
+   "slug_digest": "ec4a88e213b82a9bc9ee82acb7cf651e"
+  },
+  "conexao_category": {
+   "count": 58,
+   "slug_digest": "63c396cdcd5f05232171a96bef7086f0"
+  },
+  "conexao_tag": {
+   "count": 0,
+   "slug_digest": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "conexao_county": {
+   "count": 26,
+   "slug_digest": "1f48a1d5b3dd647838898a736d69fcf9"
+  },
+  "conexao_town": {
+   "count": 251,
+   "slug_digest": "e1f4387d01dc8834c575ec35571d0ee7"
+  },
+  "conexao_leisure_attribute": {
+   "count": 13,
+   "slug_digest": "37ba3cea9a2eeac5423064776fd2a7ba"
+  }
+ },
+ "drift": [
+  {
+   "name": "post",
+   "before": {
+    "count": 37,
+    "slug_digest": "1920e5a544a51c047717b043456f96fd"
+   },
+   "after": {
+    "count": 37,
+    "slug_digest": "af343255738fe00c16a7a98fb0eadc53"
+   }
+  },
+  {
+   "name": "page",
+   "before": {
+    "count": 43,
+    "slug_digest": "de9de98c8d2106c96b64e41f64bf3934"
+   },
+   "after": {
+    "count": 43,
+    "slug_digest": "4161ae453f528d43dc03a689415cee85"
+   }
+  },
+  {
+   "name": "guide",
+   "before": {
+    "count": 56,
+    "slug_digest": "bed1e6c48bb6ba78106d624625b12387"
+   },
+   "after": {
+    "count": 56,
+    "slug_digest": "f271e8eb0056d62c877dbf1678935294"
+   }
+  },
+  {
+   "name": "event",
+   "before": {
+    "count": 1808,
+    "slug_digest": "957be9b9f1b901c301a6a8f62e91a7b1"
+   },
+   "after": {
+    "count": 1808,
+    "slug_digest": "1d74f9ad091b5d57a4d5987c8c2be2cd"
+   }
+  },
+  {
+   "name": "leisure",
+   "before": {
+    "count": 289,
+    "slug_digest": "f3fca6ca462cf34c8aa5f733e81bfdb1"
+   },
+   "after": {
+    "count": 289,
+    "slug_digest": "cd722b72c35ed7c6c91a8e68c831f7a4"
+   }
+  },
+  {
+   "name": "job",
+   "before": {
+    "count": 1,
+    "slug_digest": "2a9645862cc9577e32f53c33676c250a"
+   },
+   "after": {
+    "count": 1,
+    "slug_digest": "cc4aae774e6ee3d52ab3dedee5e35902"
+   }
+  },
+  {
+   "name": "sponsor",
+   "before": {
+    "count": 10,
+    "slug_digest": "750e5bbcb0284cd6c53f13f8733903b8"
+   },
+   "after": {
+    "count": 10,
+    "slug_digest": "20aaa361c1af7bacaa895795a4660a33"
+   }
+  },
+  {
+   "name": "course_provider",
+   "before": {
+    "count": 11,
+    "slug_digest": "d2540106d9d15a44eed893b96b9efd0e"
+   },
+   "after": {
+    "count": 11,
+    "slug_digest": "dd7f8ba035706ab2a997ddb29bc1f51c"
+   }
+  },
+  {
+   "name": "recruitment_agency",
+   "before": {
+    "count": 27,
+    "slug_digest": "4058e5d3a3d0bac85e85a7ed04eae076"
+   },
+   "after": {
+    "count": 27,
+    "slug_digest": "cf365a763d02561fec89530670326e8a"
+   }
+  },
+  {
+   "name": "permit_employer",
+   "before": {
+    "count": 13,
+    "slug_digest": "2f968c3eaef50d3fef66059ea3c2a5d0"
+   },
+   "after": {
+    "count": 13,
+    "slug_digest": "ec4a88e213b82a9bc9ee82acb7cf651e"
+   }
+  },
+  {
+   "name": "conexao_category",
+   "before": {
+    "count": 58,
+    "slug_digest": "b3d328af5a09e739c736fc64b0eb87b8"
+   },
+   "after": {
+    "count": 58,
+    "slug_digest": "63c396cdcd5f05232171a96bef7086f0"
+   }
+  },
+  {
+   "name": "conexao_county",
+   "before": {
+    "count": 26,
+    "slug_digest": "1b4c0cfff9ec6d28a79f732aa4744d68"
+   },
+   "after": {
+    "count": 26,
+    "slug_digest": "1f48a1d5b3dd647838898a736d69fcf9"
+   }
+  },
+  {
+   "name": "conexao_town",
+   "before": {
+    "count": 251,
+    "slug_digest": "c78eb51826c801207e5bcc0b608bc919"
+   },
+   "after": {
+    "count": 251,
+    "slug_digest": "e1f4387d01dc8834c575ec35571d0ee7"
+   }
+  },
+  {
+   "name": "conexao_leisure_attribute",
+   "before": {
+    "count": 13,
+    "slug_digest": "e00360a0476dbf2d6169388f59511749"
+   },
+   "after": {
+    "count": 13,
+    "slug_digest": "37ba3cea9a2eeac5423064776fd2a7ba"
+   }
+  }
+ ],
+ "pt_drift_entities": 14,
+ "media_total": 9301,
+ "taxonomy_state": {
+  "conexao_category": {
+   "count": 58,
+   "slug_digest": "63c396cdcd5f05232171a96bef7086f0"
+  },
+  "conexao_tag": {
+   "count": 0,
+   "slug_digest": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "conexao_county": {
+   "count": 26,
+   "slug_digest": "1f48a1d5b3dd647838898a736d69fcf9"
+  },
+  "conexao_town": {
+   "count": 251,
+   "slug_digest": "e1f4387d01dc8834c575ec35571d0ee7"
+  }
+ }
+}

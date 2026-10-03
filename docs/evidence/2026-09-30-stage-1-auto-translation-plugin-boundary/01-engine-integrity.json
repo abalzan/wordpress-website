@@ -1,0 +1,25 @@
+{
+  "stage": "stage-1-auto-translation-plugin-boundary",
+  "date": "2026-09-30",
+  "branch": "i18n",
+  "subject": "Conexao_Translation_Rollout_Engine shared engine source integrity",
+  "file": "wp-content/plugins/conexao-translation-rollout/includes/class-conexao-translation-rollout-engine.php",
+  "algorithm": "sha256",
+  "before_implementation": "baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4",
+  "after_implementation": "baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4",
+  "changed": false,
+  "result": "PASS",
+  "line_count": 966,
+  "notes": [
+    "The digest was recorded from the repository BEFORE any Stage 1 edit and re-verified after all implementation, packaging and test work.",
+    "Stage 1 modified NO file under wp-content/plugins/conexao-translation-rollout/: `git diff --stat -- wp-content/plugins/conexao-translation-rollout/` is empty.",
+    "The baseline test asserts this exact digest, so any future change to the engine fails the Stage 1 boundary suite rather than passing silently.",
+    "The shared engine remains the sole mutation authority; the automation plugin only calls the stage's registered run_callback."
+  ],
+  "verification_commands": [
+    "sha256sum wp-content/plugins/conexao-translation-rollout/includes/class-conexao-translation-rollout-engine.php",
+    "git diff --stat -- wp-content/plugins/conexao-translation-rollout/",
+    "./scripts/run-tests.sh --only conexao-translation-automation"
+  ],
+  "production_writes": 0
+}

@@ -1,0 +1,65 @@
+# 08 - Phase 14: negative / failure proofs - the gates really detect the restored invariants
+
+Method: temporarily break ONE restored invariant, show the owning gate/test goes red, then restore. echo No gate, threshold or allowlist was modified to make any proof pass (constraint 9).
+
+=== PROOF 1: cache-key scoping (restore conexao_lang_cache_key usage in 404.php) ===
+  after sabotage, 404.php transient keys:
+    27:					$popular_guides = get_transient( 'conexao_404_guides' );
+    43:						set_transient( 'conexao_404_guides', $popular_guides, 300 );
+    64:					$upcoming_events = get_transient( 'conexao_404_events' );
+    101:						set_transient( 'conexao_404_events', $upcoming_events, 300 );
+  static gate verify-cache-key-scoping.py:
+    FAIL: wp-content/themes/conexao-br-irlanda/404.php:43 unscoped cache key "'conexao_404_guides'" passed to set_transient() — conexao_* cache key is not language-scoped
+    FAIL: wp-content/themes/conexao-br-irlanda/404.php:64 unscoped cache key "'conexao_404_events'" passed to get_transient() — conexao_* cache key is not language-scoped
+    FAIL: wp-content/themes/conexao-br-irlanda/404.php:101 unscoped cache key "'conexao_404_events'" passed to set_transient() — conexao_* cache key is not language-scoped
+    2 passed, 4 failed
+    GATE-RESULT {"gate": "cache_scoping_static", "status": "fail", "passed": 2, "failed": 4, "violations": 4, "details": [{"file": "wp-content/themes/conexao-br-irlanda/404.php", "line": 27, "function": "get_transient", "key": "'conexao_404_guides'", "enclosing": null, "reason": "conexao_* cache key is not language-scoped"}, {"file": "wp-content/themes/conexao-br-irlanda/404.php", "line": 43, "function": "set_transient", "key": "'conexao_404_guides'", "enclosing": null, "reason": "conexao_* cache key is not language-scoped"}, {"file": "wp-content/themes/conexao-br-irlanda/404.php", "line": 64, "function": "get_transient", "key": "'conexao_404_events'", "enclosing": null, "reason": "conexao_* cache key is not language-scoped"}, {"file": "wp-content/themes/conexao-br-irlanda/404.php", "line": 101, "function": "set_transient", "key": "'conexao_404_events'", "enclosing": null, "reason": "conexao_* cache key is not language-scoped"}]}
+  RESTORED. gate again:
+       unscoped conexao_* cache keys: 0
+    2 passed, 0 failed
+    GATE-RESULT {"gate": "cache_scoping_static", "status": "pass", "passed": 2, "failed": 0, "violations": 0, "details": []}
+
+=== PROOF 2: i18n catalogue freshness (remove the restored theme .pot) ===
+  removed the restored theme POT; running the gate:
+       stale catalogues: 0
+    FAIL: conexao-br-irlanda: 56 file(s) define user-facing strings but wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot does not exist
+    8 passed, 1 failed
+    GATE-RESULT {"gate": "i18n_freshness", "status": "fail", "passed": 8, "failed": 1, "violations": 0, "pre_existing": 0, "new": 0, "details": []}
+  RESTORED. gate again:
+       stale catalogues: 0
+    8 passed, 0 failed
+    GATE-RESULT {"gate": "i18n_freshness", "status": "pass", "passed": 8, "failed": 0, "violations": 0, "pre_existing": 0, "new": 0, "details": []}
+
+=== PROOF 3: ARIA filter semantics (revert aria-current / re-add role=listbox) ===
+  sabotaged: removed aria-current from the active filter links in event/leisure filters
+  running the owning regression suite:
+      FAIL: leisure: with no filter active exactly the 3 reset options are aria-current (got 0)
+      FAIL: leisure: each of the 3 active dimensions is exactly one aria-current link (got 0)
+      FAIL: events: the selected county renders as aria-current
+    100 passed, 3 failed
+  RESTORED. suite again:
+    103 passed, 0 failed
+
+=== PROOF 4: homepage content-type translation boundary ===
+  sabotage A: replace conexao_content_type_label() with the hardcoded PT object label
+  calls left: 0
+      FAIL: front-page.php no longer echoes the raw singular_name at the chip call sites
+      FAIL: both homepage chips render the label through the helper — occurrences: 0
+    27 passed, 2 failed
+  RESTORED. suite again:
+    29 passed, 0 failed
+
+  sabotage B: break the translation boundary in inc/content.php (return the raw object label)
+  (sabotage B not executed: the suite already proves the boundary from the call
+   site, and breaking inc/content.php would have required re-restoring a restored
+   module for no additional signal. The working tree is left byte-identical to
+   b47d098 - verified: git diff b47d098 -- <theme> returns 0 lines.)
+
+=== PROOF 5: permanent gates remain FAIL-CLOSED ===
+  No gate, baseline file, threshold or allowlist was edited by this task:
+    git diff --stat HEAD -- tests/  ->  only the GENERATED gate.json artefact
+    tests/baseline/permanent-gates.json : unchanged since b47d098
+  The aggregate still reports FAIL with 1 failing gate. It was NOT forced green.
+
+=== Working tree integrity after all proofs ===
+  git diff b47d098 -- wp-content/themes/conexao-br-irlanda | wc -l  ->  0

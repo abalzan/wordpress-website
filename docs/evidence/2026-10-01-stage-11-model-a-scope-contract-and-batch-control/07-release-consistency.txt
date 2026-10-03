@@ -1,0 +1,41 @@
+=== STAGE 11 §34 RELEASE CONSISTENCY — TWO INDEPENDENT BUILDS ===
+
+Artifacts compared: 10
+
+RESULT: BYTE-IDENTICAL artifacts across both builds.
+
+RESULT: the release manifest's artifact content is identical across both builds.
+
+NOTE: release.json carries one intentional 'built_at' build timestamp. It is
+excluded from this comparison because it is a clock reading, not artifact
+content; every recorded size, hash, version and dependency is compared.
+
+--- artifact SHA-256 (final build) ---
+aded30ec34b2954370d76deb0f77211a1924fd003fefd2a8ca6967933c1d201a  dist/conexao-admin-ux.zip
+34e65e0576382b589f4b13ee0e0137412718ac1cf3e56a72d8e1c06d3a2249f4  dist/conexao-br-irlanda.zip
+d0ce005a3818674c595cf48de23c63a8c14eba931896a1308a5ce938ce815a4f  dist/conexao-content.zip
+a883b6d179a9415513d38d24bbb48fbd4a9a05811aba344841f30809bcc0a330  dist/conexao-data-model.zip
+551ef74cdf161b63f167a24e46685dc927f68e37e9067052be40a7e0e22b8167  dist/conexao-event-importer.zip
+515a416144e4f2580bbfea1818ba5d457720d9aa543f0c8cde1c6b1a854723e0  dist/conexao-event-runtime.zip
+e91eb8b09bd697105057d6d5b22a793d5849ebf3bdd8640d457e06380efb4462  dist/conexao-leisure-migration.zip
+b4d4e52562bee987ca4bca64331542038331da2189a7ec47a1030d06b9523d86  dist/conexao-sponsor-migration.zip
+984eba85c8371bfb3ea1db9b8c80846d59fbb17f36d4b99a9a4e10f99509828b  dist/conexao-translation-automation.zip
+73b3aee368712397e4ddbb496d8915bb6021443ab7e75bedf345e9fa4ad35215  dist/conexao-translation-rollout.zip
+
+--- recorded in dist/release.json ---
+  conexao-data-model.zip                 1.6.1       15846 bytes  a883b6d179a94155
+  conexao-content.zip                    1.0.1       22485 bytes  d0ce005a3818674c
+  conexao-admin-ux.zip                   1.0.7       75457 bytes  aded30ec34b29543
+  conexao-event-runtime.zip              1.2.2       18482 bytes  515a416144e4f258
+  conexao-event-importer.zip             1.7.1      177550 bytes  551ef74cdf161b63
+  conexao-leisure-migration.zip          2.1.0       28967 bytes  e91eb8b09bd69710
+  conexao-sponsor-migration.zip          1.1.0       21738 bytes  b4d4e52562bee987
+  conexao-translation-rollout.zip        1.2.0       14351 bytes  73b3aee368712397
+  conexao-translation-automation.zip     0.4.0      147820 bytes  984eba85c8371bfb
+  conexao-br-irlanda.zip                 1.0.1     5895843 bytes  34e65e0576382b58
+  totals: {'artifacts': 10, 'built': 10, 'files': 236, 'bytes': 6418539}
+
+=== release integrity + secret scan + exclusions ===
+229 passed, 0 failed
+52 passed, 0 failed
+versions compared header-vs-manifest: 9

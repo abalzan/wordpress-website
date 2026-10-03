@@ -1,0 +1,21 @@
+[PASS] tests/acceptance/verify-guides-en-http.py — 20 passed, 0 failed
+[PASS] tests/acceptance/verify-release-http.py — 44 passed, 0 failed
+[PASS] tests/acceptance/verify-routing-http.py — 92 passed, 0 failed
+
+----------------------------------------
+In-process PHP suites: 62 total, 52 passed, 10 failed
+  prerequisite failures:         1
+Assertions: 2910 passed, 2 failed
+Script-contract suites: 6 total, 5 passed, 1 failed
+HTTP acceptance suites: 3 total, 3 passed, 0 failed
+----------------------------------------
+TESTS FAILED
+failing suites:
+  - plugin/conexao-job-translation/test-job-engine-migration.php
+  - plugin/conexao-translation-rollout/test-future-stage-smoke.php
+  - plugin/conexao-translation-rollout/test-rollout-failure-proofs.php
+  - plugin/conexao-translation-rollout/test-translation-rollout-engine.php
+  - theme/conexao-br-irlanda/test-course-provider-card-excerpt-language.php
+  - theme/conexao-br-irlanda/test-en-jobs-shared-slug.php
+  - theme/conexao-br-irlanda/test-guide-en-translation.php
+  - theme/conexao-br-irlanda/test-jobs-en-language.php

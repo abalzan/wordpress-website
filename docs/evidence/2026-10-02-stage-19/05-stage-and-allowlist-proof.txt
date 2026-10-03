@@ -1,0 +1,13 @@
+registered stages: en-guide, en-page, en-post, en-blog-page, en-jobs-page, en-leisure-description, en-course-provider-description
+  en-guide                           valid=YES  records=50
+  en-page                            valid=YES  records=31
+  en-post                            valid=YES  records=43
+  en-blog-page                       valid=YES  records=1
+  en-jobs-page                       valid=YES  records=1
+  en-leisure-description             valid=YES  records=289
+  en-course-provider-description     valid=YES  records=10
+orchestrator allowlist (7): en-guide, en-page, en-post, en-blog-page, en-jobs-page, en-leisure-description, en-course-provider-description
+B1 allow_remove all true: en-guide=true en-page=true en-post=true en-blog-page=true en-jobs-page=true en-leisure-description=true en-course-provider-description=true 
+retired stage `job` registered? false
+get_stage(job): NULL
+is_stage_allowed(job): false

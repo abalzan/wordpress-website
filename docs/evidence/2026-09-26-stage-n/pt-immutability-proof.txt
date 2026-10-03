@@ -1,0 +1,13 @@
+
+script: zz-stage-n-pt-immutability.php
+target: http://LOCAL-INSTANCE (local, local)
+mode:   read-only
+scope:  Read-only. Writes nothing.
+=== Stage N PT immutability proof ===
+PT records in the pre-apply snapshot : 34
+PT records re-read and compared      : 34
+fields compared per record           : 8 core + 4 taxonomies + language + bidirectional link
+PT drift                             : 0
+
+PT drift = 0. Every PT source record is unchanged, and every one of them now has
+a distinct, bidirectionally linked EN record whose body is not the PT body.

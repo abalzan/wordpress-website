@@ -1,7 +1,22 @@
 # Conexão Content
 
+<!-- BEGIN GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
+| | |
+|---|---|
+| **Status** | active |
+| **Class** | platform |
+| **Production** | yes |
+| **Build** | yes |
+| **Compose mount** | yes |
+| **Dependencies** | none |
+| **Version** | 1.0.1 (authoritative source: `wp-content/plugins/conexao-content/conexao-content.php` header) |
+| **Registry** | [`plugins.json`](../../plugins.json) |
+
+> **Production platform plugin.** Part of the production steady state.
+<!-- END GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
+
 - **Path**: `wp-content/plugins/conexao-content/`
-- **Version**: 1.0.0
+- **Version**: 1.0.1
 - **Purpose**: Creates static pages, navigation menus, and provides display shortcodes.
 
 ## Responsibilities

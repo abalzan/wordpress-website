@@ -1,0 +1,52 @@
+
+=== WP SETTINGS (options) — full read, sensitive values redacted ===
+  Blogroll Recommendations           = None
+  cookie_consent_template            = None
+  date_format                        = F j, Y
+  default_category                   = 1749
+  default_comment_status             = open
+  default_ping_status                = open
+  default_post_format                = 0
+  description                        = 
+  email                              = andreibalzan@gmail.com
+  gutenberg-experiments              = {'gutenberg-guidelines': True, 'gutenberg-react-19': True}
+  jetpack-social-note                = False
+  jetpack-social_show_pricing_page   = True
+  jetpack_ai_agents_enabled          = False
+  jetpack_ai_feature_clip_enabled    = True
+  jetpack_ai_image_editor_enabled    = True
+  jetpack_ai_seo_enabled             = True
+  jetpack_ai_writing_assistant_enabled = True
+  jetpack_premium_analytics_enabled  = False
+  jetpack_search_ai_behavior_instructions = 
+  jetpack_social_image_generator_settings = {'enabled': False, 'template': 'highway'}
+  jetpack_social_message_template    = {title}
+
+{excerpt}
+
+{url}
+  jetpack_social_notes_config        = {'append_link': True}
+  jetpack_social_utm_settings        = {'enabled': False}
+  language                           = 
+  page_for_posts                     = 10
+  page_for_privacy_policy            = 0
+  page_on_front                      = 9
+  posts_per_page                     = 10
+  show_on_front                      = page
+  site_icon                          = 11158
+  site_logo                          = 11108
+  start_of_week                      = 1
+  time_format                        = g:i a
+  timezone                           = Europe/Dublin
+  title                              = Conexão BR
+  url                                = https://conexaobr.ie
+  use_smilies                        = True
+  wordpress_api_key                  = <redacted>
+  settings digest (incl. secrets, not printed) = 9a2185ec94fa3fe2c56e419479dc4735
+
+=== MENUS ===
+   1381 Menu Principal count= None slug= menu-principal
+   1382 Menu Rodapé count= None slug= menu-rodape
+
+=== THEME (edit context) ===
+  active: conexao-br-irlanda 1.0.1 name= Conexão BR Irlanda - Community Portal

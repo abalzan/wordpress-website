@@ -1,0 +1,12 @@
+=== M6: credential option constant in wp_options ===
+exit=1
+  FAIL: no plugin option name looks like a provider credential store: wp-content/plugins/conexao-translation-automation/includes/class-conexao-translation-automation-provider-config.php
+  FAIL: no plugin option name looks like a provider credential store: wp-content/plugins/conexao-translation-automation/includes/class-conexao-translation-automation-provider-config.php
+=== M9: reclassify P09 apply_authorization as RETIRED ===
+s17 exit=1
+  FAIL: P09 (a manual-workflow safety fact) is RETAINED
+  FAIL: P09 (a manual-workflow safety fact) is RETAINED
+s13 exit=1
+FAIL: P09 still guards the retained manual workflow and must stay RETAINED
+=== RESTORED ===
+110 passed, 0 failed

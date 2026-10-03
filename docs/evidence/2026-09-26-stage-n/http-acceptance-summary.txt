@@ -1,0 +1,50 @@
+=== Stage N EN blog HTTP verification (local install) ===
+records: 42
+
+  OK   who-you-became-far-from-home                             canonical=ok  hreflang=4
+  OK   two-factors-that-give-your-business-sales-consistency    canonical=ok  hreflang=4
+  OK   couple-relationships-in-the-new-era                      canonical=ok  hreflang=4
+  OK   what-every-small-entrepreneur-needs-to-learn-to-grow-the canonical=ok  hreflang=4
+  OK   medication-can-open-the-door-but-training-and-habit-chan canonical=ok  hreflang=4
+  OK   entrepreneur-chat-a-creative-light-and-motivating-talk   canonical=ok  hreflang=4
+  OK   grannys-cupcake                                          canonical=ok  hreflang=4
+  OK   weight-loss-injections-losing-weight-got-easier-but-what canonical=ok  hreflang=4
+  OK   the-weight-loss-pen-and-the-spirit-running-along-behind  canonical=ok  hreflang=4
+  OK   physical-activity-should-not-be-a-summer-project-but-a-l canonical=ok  hreflang=4
+  OK   scaling-is-necessary-growing-with-consistency-is-the-nex canonical=ok  hreflang=4
+  OK   spring-has-arrived-an-invitation-to-refresh-your-eating- canonical=ok  hreflang=4
+  OK   spring-the-quiet-call-to-bloom-with-consciousness        canonical=ok  hreflang=4
+  OK   practical-guide-for-brazilians-in-laois                  canonical=ok  hreflang=4
+  OK   guide-for-those-facing-financial-difficulties            canonical=ok  hreflang=4
+  OK   support-for-extraordinary-families-in-ireland            canonical=ok  hreflang=4
+  OK   health-and-wellbeing-support-in-ireland                  canonical=ok  hreflang=4
+  OK   moist-coconut-cake                                       canonical=ok  hreflang=4
+  OK   working-in-laois                                         canonical=ok  hreflang=4
+  OK   financial-management-the-invisible-foundation-of-every-p canonical=ok  hreflang=4
+  OK   courses-and-support-for-entrepreneurs                    canonical=ok  hreflang=4
+  OK   training-in-laois-ireland                                canonical=ok  hreflang=4
+  OK   a-health-tip-for-travellers                              canonical=ok  hreflang=4
+  OK   when-the-earth-awakens-spring-and-the-astrological-new-y canonical=ok  hreflang=4
+  OK   between-the-silence-of-winter-and-the-first-breath-of-sp canonical=ok  hreflang=4
+  OK   purpose-the-meaning-that-moves-us-from-within            canonical=ok  hreflang=4
+  OK   aligning-the-invisible-to-harmonise-everyday-life        canonical=ok  hreflang=4
+  OK   korean-bbq-style-stir-fried-beef                         canonical=ok  hreflang=4
+  OK   building-a-support-network-far-from-home                 canonical=ok  hreflang=4
+  OK   how-are-you-feeling-at-this-time-of-year                 canonical=ok  hreflang=4
+  OK   2-mental-health-and-immigration-what-nobody-tells-you    canonical=ok  hreflang=4
+  OK   1-caring-for-yourself-in-a-foreign-land                  canonical=ok  hreflang=4
+  OK   courage-the-star-that-lights-the-entrepreneurs-path-chri canonical=ok  hreflang=4
+  OK   two-new-years-one-measured-by-man-the-other-felt-by-the- canonical=ok  hreflang=4
+  OK   movement-is-medicine                                     canonical=ok  hreflang=4
+  OK   preparing-the-body-for-winter                            canonical=ok  hreflang=4
+  OK   information-for-women-in-ireland                         canonical=ok  hreflang=4
+  OK   the-warmth-born-of-winter                                canonical=ok  hreflang=4
+  OK   tourism-and-leisure-in-county-laois-ireland              canonical=ok  hreflang=4
+  OK   the-sun-that-lives-in-us                                 canonical=ok  hreflang=4
+  OK   the-winter-of-the-ego-a-poetic-rebirth                   canonical=ok  hreflang=4
+  OK   sun-and-moon-balancing-consciousness-and-emotions-in-the canonical=ok  hreflang=4
+
+records checked : 42
+assertions      : 504
+failures        : 0
+EXIT=0

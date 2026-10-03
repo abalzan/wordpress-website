@@ -1,0 +1,11 @@
+inicio     pt#9      en#33306  en_slug=home       OK  [all checks pass]
+sobre-nos  pt#11     en#33307  en_slug=about-us   OK  [all checks pass]
+contato    pt#12     en#33308  en_slug=contact    OK  [all checks pass]
+empregos   pt#11293  en#33309  en_slug=jobs       OK  [all checks pass]
+EN pages with mismatches: 0
+Total pages in DB: 76 published
+-- duplicate detection (EN slugs) --
+  home       count=1 langs=en
+  about-us   count=1 langs=en
+  contact    count=1 langs=en
+  jobs       count=1 langs=en

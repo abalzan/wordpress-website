@@ -1,0 +1,36 @@
+== verify-release.sh ==
+==> [2/7] build plugins and theme
+    OK   plugin artifacts built (9 plugin(s))
+    OK   theme artifact built
+
+==> [3/7] release manifest (dist/release.json)
+    OK   manifest emitted with versions, git SHA, file counts and SHA-256
+
+==> [4/7] verify artifact allowlist and hashes
+    OK   every artifact matches the recorded allowlist, size, file count and hash
+
+==> [5/7] determinism proof (rebuild must reproduce identical hashes)
+    OK   all artifacts reproduced byte-for-byte
+
+==> [6/7] exclusion proof (no tests/fixtures/reports/junk in any artifact)
+    OK   no artifact contains a test, fixture, report or junk file
+
+==> [7/7] HTTP deployment verification (read-only)
+    OK   deployment smoke matrix, per-CPT singles and language layer all pass
+         summary: site=http://localhost:8080 rows=18 passed=44 failed=0
+
+----------------------------------------
+RELEASE VERIFICATION: OK
+  artifacts verified against plugins.json allowlist
+  deployment verified read-only over HTTP
+  no production step was performed
+
+== release-manifest.py --verify ==
+  conexao-event-importer           plugin   1.7.1          42  551ef74cdf161b63
+  conexao-leisure-migration        plugin   2.1.0           7  e91eb8b09bd69710
+  conexao-sponsor-migration        plugin   1.1.0           6  b4d4e52562bee987
+  conexao-translation-rollout      plugin   1.1.0           4  5b87fbc533c35219
+  conexao-translation-automation   plugin   0.2.0          19  2b4857ae372b385c
+  conexao-br-irlanda               theme    1.0.1         115  10e1ed1563fd7bbc
+
+summary: release=v2026.09.30 artifacts=10 built=10

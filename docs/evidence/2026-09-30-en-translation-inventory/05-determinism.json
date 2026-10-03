@@ -1,0 +1,22 @@
+{
+ "manifest_digest_equal": true,
+ "manifest_digest_run_1": "7d7b066f0eb5aaa89b61642bed65482f784ad1a492e769fdd01549b8624c528a",
+ "manifest_digest_run_2": "7d7b066f0eb5aaa89b61642bed65482f784ad1a492e769fdd01549b8624c528a",
+ "manifest_rows_identical": true,
+ "method": "two independent full reads of live production, no response cache (--cache-dir not used on run 2)",
+ "per_type_content_digest_equal": {
+  "course_provider": true,
+  "event": true,
+  "guide": true,
+  "job": true,
+  "leisure": true,
+  "page": true,
+  "post": true,
+  "sponsor": true
+ },
+ "pt_identity_digest_equal": true,
+ "pt_identity_digest_run_1": "cfe4b7a670266da32ba635f3f46994328143d3de77a914aa52491d42e3a6f853",
+ "pt_identity_digest_run_2": "cfe4b7a670266da32ba635f3f46994328143d3de77a914aa52491d42e3a6f853",
+ "run_1_utc": "2026-09-30T06:58:14Z",
+ "run_2_utc": "2026-09-30T07:01:29Z"
+}

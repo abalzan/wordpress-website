@@ -1,0 +1,71 @@
+# Stage 13 - the authoritative prerequisite registry (Sections 5, 6, 22)
+
+Source of truth: PREREQUISITES in scripts/lib/commissioning.py
+Canonical mapping source: the eighteen "Stage 13 prerequisites" of the Stage 12
+report. Every Stage 12 item 1..18 is covered by exactly the entries below; the
+permanent gate proves that coverage is TOTAL, so no entry is invented and none
+is orphaned.
+
+ ID   KEY                                    REQ  EVIDENCE SOURCE         FRESHNESS  S12
+ ---  -------------------------------------  ---  ----------------------  ---------  ---
+ P01  production_access                      yes  operator_authorization  24 h        1
+ P02  install_authorization                 yes  operator_authorization  24 h        1
+ P03  provider_credential                   yes  local_environment       live       7
+ P04  provider_quota                        yes  live_provider_smoke     6 h         7
+ P05  live_smoke_authorization              yes  operator_authorization  24 h        7
+ P06  provider_smoke_success                yes  live_provider_smoke     6 h         7
+ P07  human_reviewer                        yes  human_review            7 d        12
+ P08  canary_authorization                  yes  operator_authorization  24 h       12
+ P09  apply_authorization                   yes  operator_authorization  24 h       12
+ P10  commissioning_authorization           yes  operator_authorization  24 h      2, 3
+ P11  batch_control_commissioning_authorization
+                                             yes  operator_authorization  24 h      5, 15
+ P12  fresh_baseline_readiness              yes  live_production_read    1 h        8, 18
+ P13  legacy_endpoint_verification          yes  live_production_read    1 h          4
+ P14  proof_trigger_verification            yes  live_production_read    1 h      9,10,11
+ P15  emergency_stop_readiness              yes  repository_artifact     pinned      6
+ P16  audit_readiness                       yes  live_production_read    1 h      14, 17
+ P17  release_readiness                     yes  repository_artifact     pinned    3, 16
+ P18  model_a_production_proof              yes  live_production_read    1 h         13
+
+Freshness is per volatility class, not one invented universal TTL: an operator
+decision goes stale in a day, production state in an hour, a provider result in
+six hours, a reviewer identity in a week, and repository facts are pinned to the
+commit rather than to a clock.
+
+## Current status in this environment
+
+ P01 BLOCKED  no production_access evidence object was supplied
+ P02 BLOCKED  no install_authorization evidence object was supplied
+ P03 BLOCKED  CONEXAO_TRANSLATION_PROVIDER_KEY is not present; the unrelated
+              OPENAI_API_KEY is present and was NOT used or aliased
+ P04 BLOCKED  no provider_quota evidence object; quota is NOT PROVEN
+ P05 BLOCKED  no live_smoke_authorization evidence object
+ P06 BLOCKED  no live provider smoke; RESULT: OK is NOT claimed
+ P07 BLOCKED  no human_reviewer evidence object
+ P08 BLOCKED  no canary_authorization evidence object
+ P09 BLOCKED  no apply_authorization evidence object
+ P10 BLOCKED  no commissioning_authorization evidence object
+ P11 BLOCKED  no batch-control commissioning authorization; surface stays DECLARED
+ P12 BLOCKED  no fresh production baseline captured
+ P13 BLOCKED  production 410 unverified
+ P14 BLOCKED  proof trigger unverified in production
+ P15 BLOCKED  artifact fails closed, but the production initial stop state is
+              not observable from a credential-independent check
+ P16 BLOCKED  production audit storage/retention unverified
+ P17 READY    final artifacts verified, deterministic, consistent, within
+              every ceiling
+ P18 BLOCKED  Model A production proof is NOT PROVEN
+
+  READY 1 / BLOCKED 17 / EXPIRED 0 / INVALID 0   of 18 required
+  Aggregate: BLOCKED
+  commissioning_permitted        = false
+  production_mutation_permitted  = false
+  canary_selection_allowed       = false
+  emergency_stop_clearance       = NOT_GRANTED
+  model_a_production_proof       = NOT_PROVEN
+
+P17 is READY because it is decidable entirely from this repository, and it is
+honest about that: it proves the artifacts, not the deployment. P15 is BLOCKED
+even though its artifact half is proven, because its production half is not
+observable from here - "the code is right" is never "production is ready".

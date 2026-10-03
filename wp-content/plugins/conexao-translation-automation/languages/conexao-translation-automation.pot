@@ -1,0 +1,44 @@
+# Copyright (C) 2026 Conexao BR Irlanda
+# This file is distributed under the GNU General Public License v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Conexão BR Irlanda — Translation Automation 0.6.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/conexao-br-irlanda\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-10-02 10:21+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+
+
+#: wp-content/plugins/conexao-translation-automation/includes/class-conexao-translation-automation-batch-control.php:505
+msgid "You do not have permission to control batches."
+msgstr ""
+#: wp-content/plugins/conexao-translation-automation/includes/class-conexao-translation-automation-batch-control.php:511
+msgid "Translation Batch Control"
+msgstr ""
+#: wp-content/plugins/conexao-translation-automation/includes/class-conexao-translation-automation-batch-control.php:514
+msgid ""
+"Every action below is a separate, digest-bound decision. The batch, its "
+"records and its environment are resolved by the server."
+msgstr ""
+#: wp-content/plugins/conexao-translation-automation/includes/class-conexao-translation-automation-batch-control.php:536
+msgid "Apply this action"
+msgstr ""
+
+#. Name of the plugin
+#: wp-content/plugins/conexao-translation-automation/conexao-translation-automation.php:1
+msgid "Conexão BR Irlanda — Translation Automation"
+msgstr ""
+
+#. Description of the plugin
+#: wp-content/plugins/conexao-translation-automation/conexao-translation-automation.php:1
+msgid "MANUAL, OPERATOR-TRIGGERED control plane for PT→EN translation. Stage 17 retires permanent automatic translation: this plugin no longer registers any wake-up hook, schedules anything, or listens for any inbound request, so nothing runs unless a human asks for it. What remains is the protected manual entry point — one authenticated (`admin_post_`), POST-only, `manage_options` + nonce gated Tools screen (Tools → Translation Automation) that can ONLY request MODE_PROOF (dry run) — plus the Stage 11 MODEL A TRUE SUBSET EXECUTION controls, where an approved batch carries an explicit operation scope that reaches the shared engine, so one engine run covers exactly the approved subset and `approved scope == executed scope` is proved in both directions against the engine's own plan. Stage 11's batch-control capability remains DECLARED in the control-plane registry and deliberately NOT COMMISSIONED (Stage 11 §30). It contains NO translation logic, NO second engine, NO public REST route, NO anonymous AJAX, NO webhook and NO cron: `Conexao_Translation_Rollout_Engine` remains the sole mutation authority, and the provider credential is read from the process environment only, never from `wp_options`, so no permanent provider credential has to be configured in WordPress.com."
+msgstr ""
+
+#. Version of the plugin
+#: wp-content/plugins/conexao-translation-automation/conexao-translation-automation.php:1
+msgid "0.6.0"
+msgstr ""

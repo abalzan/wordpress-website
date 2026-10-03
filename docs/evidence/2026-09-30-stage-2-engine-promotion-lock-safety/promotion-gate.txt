@@ -1,0 +1,33 @@
+stage 2 promotion gate
+  repository: /home/andrei/IdeaProjects/wordpress-website
+  ok   every registry entry declares the required fields
+  ok   conexao-translation-rollout is registered
+  ok   conexao-translation-rollout class is 'platform' (got 'platform')
+  ok   conexao-translation-rollout production is true (got True)
+  ok   conexao-translation-rollout build is true (got True)
+  ok   conexao-translation-rollout status is 'active' (got 'active')
+  ok   conexao-translation-automation is registered
+  ok   conexao-translation-automation class is 'platform' (got 'platform')
+  ok   conexao-translation-automation production is true (got True)
+  ok   conexao-translation-automation build is true (got True)
+  ok   conexao-translation-automation status is 'active' (got 'active')
+  ok   the automation plugin declares the engine as a dependency
+  ok   the engine precedes the automation plugin in load order
+  ok   the dependency graph is valid
+  ok   every lifecycle invariant still holds
+  ok   every plugin header agrees with its registry dependencies
+  ok   no unrelated plugin was promoted
+  ok   generate-registry-docs.php --check reports no drift (registry OK: 15 plugins validated, 24 generated regions current (zero writes).)
+  ok   the plugin build succeeds
+  ok   conexao-translation-rollout.zip was built
+  ok   conexao-translation-rollout.zip contains no test or development file
+  ok   conexao-translation-rollout.zip contains PHP sources
+  ok   conexao-translation-automation.zip was built
+  ok   conexao-translation-automation.zip contains no test or development file
+  ok   conexao-translation-automation.zip contains PHP sources
+  ok   conexao-translation-rollout.zip is byte-identical across two builds
+  ok   conexao-translation-automation.zip is byte-identical across two builds
+  ok   the shared engine source is byte-identical to its pre-stage digest (got baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4)
+
+28 passed, 0 failed
+STAGE 2 PROMOTION GATE: OK

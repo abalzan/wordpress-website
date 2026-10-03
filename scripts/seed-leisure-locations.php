@@ -14,21 +14,8 @@
  * Uses the shared `conexao_county` and `conexao_category` taxonomies.
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	define( 'WP_USE_THEMES', false );
-	$dir = dirname( __FILE__ );
-	while ( $dir !== dirname( $dir ) ) {
-		if ( file_exists( $dir . '/wp-load.php' ) ) {
-			require_once( $dir . '/wp-load.php' );
-			break;
-		}
-		$dir = dirname( $dir );
-	}
-	if ( ! defined( 'ABSPATH' ) ) {
-		fwrite( STDERR, "Unable to locate wp-load.php\n" );
-		exit( 1 );
-	}
-}
+require_once __DIR__ . '/lib/bootstrap.php';
+conexao_script_load_wordpress();
 
 /**
  * Resolve a term (by name) in a taxonomy, creating it if missing.

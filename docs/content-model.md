@@ -38,6 +38,39 @@ Permit explanation). See
 `docs/research/2026-09-empregos-agencies-and-employment-permits.md` for the
 validated data and editorial rules.
 
+## The Blog posts page (Stage O)
+
+`/blog/` is not a CPT archive: it is the **static posts page** — the `page`
+record whose ID is stored in the `page_for_posts` option. The Blog *archive* is
+therefore a `page` record, and its English counterpart is a `page` record too.
+
+| Field | PT | EN |
+|---|---|---|
+| post type | `page` | `page` |
+| post_name | `blog` | `blog` (**shared slug on purpose**: `/blog/` ↔ `/en/blog/`) |
+| Polylang language | `pt` | `en` |
+| status | `publish` | `publish` |
+| parent | 0 | 0 |
+| `conexao_meta_description` | Portuguese | authored English |
+
+- Identity: the **PT page slug `blog`** — never a local post ID.
+- The EN record is a *linked translation*, never a fork: the pair is verified
+  bidirectionally (`pll_get_post(pt,'en') === en` **and**
+  `pll_get_post(en,'pt') === pt`).
+- The body is a short authored-English archive introduction. The visible
+  archive (heading, description, category filter) is template-driven by
+  `home.php`, so no page body is fabricated for the layout.
+- No taxonomy: the PT posts page carries zero terms in `conexao_category`,
+  `conexao_county`, `conexao_tag` and `conexao_town`.
+- **Blog `post` records are a different identity and stay B1.** The 42 EN
+  `post` records are not allowlisted anywhere: `post` is not in
+  `conexao_b2_post_types()` and there is no per-post allowlist key.
+  `post_type:post:missing_en = 0` because every eligible public PT post is
+  genuinely translated, not because anything is exempted.
+- Authored by the `en-blog-page` stage of `conexao-en-translation`
+  (`includes/blog-page-data.php`, version `blog-page-v1`), applied through the
+  shared `conexao-translation-rollout` engine.
+
 ## Taxonomies
 
 Registered by `conexao-data-model` (method `register_taxonomies()`).
@@ -54,6 +87,37 @@ Registered by `conexao-data-model` (method `register_taxonomies()`).
 **Categories**: Moradia, Empregos, Saúde, Família, Transporte, Finanças, Benefícios, Onde Comer, Educação, Documentos, Turismo, Negócios, Treinamento, Natureza, História, Cultura, Família, Praias, Caminhadas, Aventura, Jardins, Museus, Castelos, Vida Selvagem, Patrimônio, Cidades, Ilhas, Greenways, Outros
 
 **Counties**: All 26 Republic of Ireland counties.
+
+### Language neutrality of the proper-name taxonomies
+
+`conexao_county` and `conexao_town` are **shared proper-name taxonomies**. A term is
+language-neutral, which means:
+
+- it carries **no** Polylang language assignment (`pll_get_term_language()` is `false`);
+- it has **no** term translation and **no** per-language suffixed duplicate
+  (`dublin`, never `dublin-en` / `dublin-pt`);
+- the same physical term is used by records of either language, so `?county=` /
+  `?cidade=` resolve identically in the PT and EN contexts.
+
+This is a **data** invariant as well as a policy one. A freshly seeded term is
+already language-neutral because the seed uses a bare `wp_insert_term()` on a
+taxonomy Polylang does not translate. Terms created *before* the Stage 3.2
+policy correction still carry a stale language assignment, which is residue of
+the period when these taxonomies were translated; it is removed once, with
+
+```bash
+php scripts/remediate-shared-taxonomy-language.php --dry-run
+php scripts/remediate-shared-taxonomy-language.php --apply
+```
+
+The script reads the shared/translated split from `PLL()->model->get_translated_taxonomies()`
+at runtime rather than from a list of its own, refuses any term with a real
+cross-language counterpart, and never creates, renames, re-slugs, merges or
+deletes a term. The permanent `test-taxonomy-policy.php` gate enforces the
+invariant from then on.
+
+`conexao_category` and `conexao_tag` are Polylang-**translated**: one shared
+concept identity per term-translation pair, linked in both directions.
 
 **Leisure attributes** (`conexao_leisure_attribute`, leisure only — Phase 2
 vocabulary): Famílias, Exterior, Interior, Interior + exterior, Gratuito,
@@ -147,6 +211,28 @@ image, body) plus one minimal field:
 
 - `_provider_logo` (integer — attachment ID)
 - `_provider_category` (string), `_provider_location`, `_provider_url`, `_provider_status`, `_provider_order` (integer)
+- `_provider_excerpt_en` (string) — the **authored English card description**
+  (Stage 8). Written by the `en-course-provider-description` stage of the shared
+  `conexao-translation-rollout` engine, operated through
+  `conexao-en-translation` (a versioned, slug-keyed dataset). It is an
+  English-only field on the **same** PT record, because `course_provider` is a
+  documented B2 post type: `/en/cursos/` renders the PT records under the English
+  shell, so there is no linked EN provider post and no second identity. The
+  theme reads it through `conexao_provider_card_excerpt()` on EN requests only;
+  the PT render path (`get_the_excerpt()`) never reads it, so Portuguese output
+  is unaffected. A record with no value keeps the approved B2 fallback.
+- `_provider_category` is **free-text meta, not a taxonomy**, so it has no linked
+  EN term to resolve like `conexao_category` does. Stage 9 therefore adds a
+  presentation layer, `conexao_provider_category_label()`
+  (`inc/i18n/fallback.php`): on a PT request it returns the stored value
+  **verbatim**; on an EN request it maps the five shipped values to English
+  (`Cursos Online` → Online Courses, `Diretórios de Cursos` → Course
+  Directories, `Educação` → Education, `Formação Profissional` → Vocational
+  Training, `Negócios` → Business) through the ordinary `en_US` gettext
+  catalogue. The stored meta is **never** rewritten, no taxonomy term and no EN
+  provider record is created, and an unknown value is returned unchanged (never
+  invented, never dropped). The `?categoria=` slug is `sanitize_title()` of the
+  Portuguese value in both languages, so the filter URL is one identity.
 
 ### Recruitment Agency
 
@@ -241,7 +327,7 @@ upcoming-event list (`Conexao_Event_Query::upcoming_events()` via
 `conexao_leisure_related_events()`, theme functions.php). Never category /
 keywords / title similarity / free text / geographic distance; no second event
 query system; no per-page transient. Internal singles also emit
-`TouristAttraction` JSON-LD (inc/seo.php) with only actually-stored
+`TouristAttraction` JSON-LD (inc/seo/schema.php) with only actually-stored
 name/description/image/place. `_leisure_duration` and `_leisure_best_time`
 remain editorial fields: they render on the single page ONLY when actual data
 exists (never empty labels).
@@ -278,3 +364,4 @@ Image fields:
 - `_event_source` (e.g. `laois_tourism`) + `_event_source_id` (external ID) form the primary deduplication key.
 - Export adds a UUID meta for cross-instance matching.
 - Matching order: UUID → source+source_id → URL → content title+date.
+_Last verified: 2026-09-26 by Stage O — Enable the Real English Blog Archive_

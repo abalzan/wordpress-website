@@ -1,0 +1,24 @@
+
+== PERMANENT GATE: shared_slug_page ==
+A page whose EN translation reuses the PT post_name resolves to the record of the REQUESTED language, and only when the two records are a linked translation pair.
+  prerequisites: polylang, conexao_resolve_shared_slug_page_request()
+  PASS: test prerequisite is available: conexao_resolve_shared_slug_page_request()
+  PASS: the PT Jobs landing page exists
+  PASS: the PT Jobs page has a linked EN translation
+  PASS: the EN Jobs page is linked back to the PT Jobs page
+  PASS: the EN Jobs page reuses the PT post_name (the shared-slug route shape)
+  PASS: an EN request for the shared slug resolves to the EN record
+  PASS: the resolved EN request no longer carries the ambiguous pagename
+  PASS: a default-language request is never rewritten by the shared-slug resolver
+  PASS: an EN request for a uniquely-slugged page is left untouched
+  PASS: an EN request for a CPT archive slug is left untouched
+  PASS: two UNPAIRED pages sharing a slug are not bound to the requested language
+  PASS: a linked shared-slug pair IS resolved to the requested language
+  real shared-slug pt+en pages: blog, empregos
+  PASS: the EN Jobs landing is a declared shared-slug pair
+  PASS: no unexpected additional shared-slug page pair exists
+  PASS: the shared-slug gate fixture was removed
+  PASS: the shared-slug gate fixture was removed
+
+16 passed, 0 failed
+GATE-RESULT {"gate":"shared_slug_page","status":"pass","passed":16,"failed":0,"violations":0,"pre_existing":0,"new":0,"prerequisites":["polylang","conexao_resolve_shared_slug_page_request()"],"allowlisted":[],"allowlisted_count":0,"details":[{"key":"jobs:en_translation_missing","count":0,"label":"the PT Jobs page has a linked EN translation","detail":{"pt_id":11293,"en_id":33309}},{"key":"jobs:pair_not_bidirectional","count":0,"label":"the EN Jobs page is linked back to the PT Jobs page","detail":{"en_id":33309,"pt_of_en":11293}},{"key":"jobs:slug_not_shared","count":0,"label":"the EN Jobs page reuses the PT post_name (the shared-slug route shape)","detail":{"pt_slug":"empregos","en_slug":"empregos"}},{"key":"jobs:en_request_not_resolved","count":0,"label":"an EN request for the shared slug resolves to the EN record","detail":{"resolved":{"lang":"en","page_id":33309},"expected_page_id":33309}},{"key":"jobs:en_request_keeps_pagename","count":0,"label":"the resolved EN request no longer carries the ambiguous pagename","detail":{"vars":{"lang":"en","page_id":33309}}},{"key":"jobs:pt_request_rewritten","count":0,"label":"a default-language request is never rewritten by the shared-slug resolver","detail":{"vars":{"pagename":"empregos","lang":"pt"}}},{"key":"shared_slug:unique_page_rewritten","count":0,"label":"an EN request for a uniquely-slugged page is left untouched","detail":{"slug":"contato","vars":{"pagename":"contato","lang":"en"}}},{"key":"shared_slug:cpt_rewritten","count":0,"label":"an EN request for a CPT archive slug is left untouched","detail":{"slug":"guias","vars":{"pagename":"guias","lang":"en"}}},{"key":"shared_slug:unpaired_bound_to_language","count":0,"label":"two UNPAIRED pages sharing a slug are not bound to the requested language","detail":{"a":34435,"b":34436,"vars":{"pagename":"en-jobs-shared-slug-gate-unpaired","lang":"en"}}},{"key":"shared_slug:linked_pair_not_resolved","count":0,"label":"a linked shared-slug pair IS resolved to the requested language","detail":{"pair_pt":34437,"pair_en":34438,"vars":{"lang":"en","page_id":34438}}},{"key":"shared_slug:jobs_pair_missing","count":0,"label":"the EN Jobs landing is a declared shared-slug pair","detail":{"pairs":["blog","empregos"]}},{"key":"shared_slug:unexpected_new_pair","count":0,"label":"no unexpected additional shared-slug page pair exists","detail":{"pairs":["blog","empregos"],"count":2}},{"key":"shared_slug:fixture_left_behind:en-jobs-shared-slug-gate-unpaired","count":0,"label":"the shared-slug gate fixture was removed","detail":{"slug":"en-jobs-shared-slug-gate-unpaired","survivor":0}},{"key":"shared_slug:fixture_left_behind:en-jobs-shared-slug-gate-pair","count":0,"label":"the shared-slug gate fixture was removed","detail":{"slug":"en-jobs-shared-slug-gate-pair","survivor":0}}]}

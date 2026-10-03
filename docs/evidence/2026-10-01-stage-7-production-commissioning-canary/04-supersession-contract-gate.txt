@@ -1,0 +1,95 @@
+# Stage 7 - supersession contract: gate PASS and FAILURE PROOFS
+
+UTC: 2026-10-01T07:31:16Z
+A gate that has never been shown to fail is not a gate.
+Each proof below mutates a TEMPORARY COPY only; the repository is untouched.
+
+## Baseline (unmodified repository)
+  PASS: no declared engine endpoint has silently disappeared
+  NOTE: pre-existing engine endpoint 'conexao_translation_rollout_run' — conexao-translation-rollout (Stage H, pre-existing). Apply-capable operator endpoint with its own capability + nonce checks. OUT of the automation contract; an operator decision for Stage 8.
+
+49 passed, 0 failed
+
+## NEGATIVE PROOF 1 - a SECOND, differently-named admin endpoint
+injected an extra admin_post_conexao_translation_automation_apply registration
+     FAIL: exactly one admin-post endpoint is registered (conexao_translation_automation_proof) — found ['conexao_translation_automation_apply', 'conexao_translation_automation_proof']
+     FAIL: the approved endpoint is registered exactly once — 2 registration(s): [('conexao_translation_automation_apply', 'includes/class-conexao-translation-automation-admin-trigger.php'), ('conexao_translation_automation_proof', 'includes/class-conexao-translation-automation-admin-trigger.php')]
+     FAIL: no second, differently-named automation admin endpoint exists — unexpected: ['conexao_translation_automation_apply']
+   46 passed, 3 failed
+     FAIL: exactly one admin-post endpoint is registered (conexao_translation_automation_proof) — found ['conexao_translation_automation_apply', 'conexao_translation_automation_proof']
+     FAIL: the approved endpoint is registered exactly once — 2 registration(s): [('conexao_translation_automation_apply', 'includes/class-conexao-translation-automation-admin-trigger.php'), ('conexao_translation_automation_proof', 'includes/class-conexao-translation-automation-admin-trigger.php')]
+     FAIL: no second, differently-named automation admin endpoint exists — unexpected: ['conexao_translation_automation_apply']
+   exit=1
+
+## NEGATIVE PROOF 2 - the endpoint MOVED to a different file
+
+## NEGATIVE PROOF 3 - a forbidden surface (admin_post_nopriv_ / AJAX / REST)
+moved the admin_post registration into a new unapproved file
+injected nopriv + AJAX + REST into an unapproved file
+     FAIL: the approved endpoint lives in the approved file (class-conexao-translation-automation-admin-trigger.php) — owners=['includes/class-conexao-translation-automation-sneaky.php']
+   50 passed, 1 failed
+     FAIL: the approved endpoint lives in the approved file (class-conexao-translation-automation-admin-trigger.php) — owners=['includes/class-conexao-translation-automation-sneaky.php']
+     FAIL: exactly one admin-post endpoint is registered (conexao_translation_automation_proof) — found ['conexao_translation_automation_proof', 'nopriv_conexao_translation_automation_proof']
+     FAIL: the approved endpoint is registered exactly once — 2 registration(s): [('conexao_translation_automation_proof', 'includes/class-conexao-translation-automation-admin-trigger.php'), ('nopriv_conexao_translation_automation_proof', 'includes/class-conexao-translation-automation-result.php')]
+     FAIL: the approved endpoint lives in the approved file (class-conexao-translation-automation-admin-trigger.php) — owners=['includes/class-conexao-translation-automation-admin-trigger.php', 'includes/class-conexao-translation-automation-result.php']
+     FAIL: no second, differently-named automation admin endpoint exists — unexpected: ['nopriv_conexao_translation_automation_proof']
+     FAIL: includes/class-conexao-translation-automation-result.php exposes no forbidden entry surface — admin_post_nopriv_, rest_api_init, wp_ajax_
+   44 passed, 5 failed
+     FAIL: exactly one admin-post endpoint is registered (conexao_translation_automation_proof) — found ['conexao_translation_automation_proof', 'nopriv_conexao_translation_automation_proof']
+     FAIL: the approved endpoint is registered exactly once — 2 registration(s): [('conexao_translation_automation_proof', 'includes/class-conexao-translation-automation-admin-trigger.php'), ('nopriv_conexao_translation_automation_proof', 'includes/class-conexao-translation-automation-result.php')]
+     FAIL: the approved endpoint lives in the approved file (class-conexao-translation-automation-admin-trigger.php) — owners=['includes/class-conexao-translation-automation-admin-trigger.php', 'includes/class-conexao-translation-automation-result.php']
+     FAIL: no second, differently-named automation admin endpoint exists — unexpected: ['nopriv_conexao_translation_automation_proof']
+     FAIL: includes/class-conexao-translation-automation-result.php exposes no forbidden entry surface — admin_post_nopriv_, rest_api_init, wp_ajax_
+
+## NEGATIVE PROOF 4 - cron + webhook entry surfaces  [FIRST ATTEMPT INCOMPLETE]
+injected a webhook action + cron scheduling
+     FAIL: ...hooks.php exposes no forbidden entry surface - wp_schedule_event
+   48 passed, 1 failed
+   DEFECT FOUND IN THE GATE ITSELF: the webhook assertion did NOT fire. The
+   original pattern was `\bwebhook`, and `_` is a word character, so the
+   identifier `conexao_translation_webhook` never matched a word boundary.
+   The cron assertion caught the cron half only; the webhook half was a
+   SILENT FALSE PASS. Fixed rather than reported as a pass.
+
+## NEGATIVE PROOF 4 (re-run after the fix) - cron + webhook both detected
+injected a webhook action + cron scheduling
+     FAIL: ...hooks.php exposes no forbidden entry surface - wp_schedule_event
+     FAIL: ...hooks.php exposes no webhook entry point - webhook
+   47 passed, 2 failed
+   => The scan is now a case-insensitive SUBSTRING match, with the reasoning
+      recorded at the call site so the boundary mistake is not reintroduced.
+
+## NEGATIVE PROOF 5 - the DECLARED engine endpoint is renamed (drift must fail closed)
+renamed the pre-existing engine endpoint
+     FAIL: every engine admin-post endpoint is explicitly DECLARED in this gate — undeclared engine endpoint(s): ['conexao_translation_rollout_apply']
+     FAIL: no declared engine endpoint has silently disappeared — declared but absent: ['conexao_translation_rollout_run']
+   47 passed, 2 failed
+     FAIL: every engine admin-post endpoint is explicitly DECLARED in this gate — undeclared engine endpoint(s): ['conexao_translation_rollout_apply']
+     FAIL: no declared engine endpoint has silently disappeared — declared but absent: ['conexao_translation_rollout_run']
+
+## PROOF SUMMARY
+   proof 1 second endpoint by name        -> FAIL (3 assertions)
+   proof 2 endpoint moved to wrong file   -> FAIL (1 assertion)
+   proof 3 nopriv + AJAX + REST          -> FAIL (5 assertions)
+   proof 4 cron + webhook                 -> FAIL (after fixing a
+                                             silent false pass in the
+                                             gate's own webhook regex)
+   proof 5 engine endpoint drift          -> FAIL (declaration goes stale)
+
+The gate detects every violation class the Stage 7 contract names.
+Baseline unmodified: 49 passed, 0 failed.
+
+## GATE SELF-DEFECT FOUND AND FIXED DURING THIS STAGE
+
+Negative proof 4 exposed a real weakness in the gate authored here: the webhook
+scan used a `\b`-anchored regex, which cannot match a PHP identifier that
+embeds "webhook" after an underscore (`_` is a word character). The injected
+`conexao_translation_webhook` endpoint was therefore NOT detected.
+
+This is recorded rather than quietly fixed because it is the exact failure mode
+a gate must never have: reporting green while the thing it checks for is
+present. The check is now a substring scan; the re-run above proves both the
+cron and webhook surfaces fail closed.
+
+No production impact: this is a static repository gate, and no plugin runtime
+behaviour changed.

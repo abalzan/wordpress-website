@@ -28,6 +28,116 @@
 ## Build Process
 
 ### Plugins
+
+<!-- BEGIN GENERATED PLUGIN REGISTRY: docs/deployment.md activation order -->
+Generated from [`plugins.json`](../../plugins.json) by
+`scripts/generate-registry-docs.php`. Do not hand-edit this section.
+
+### Production activation order
+
+The filtered subset of the registry load order where `production: true`. It contains no
+`production: false` entry:
+
+1. `conexao-data-model`
+2. `conexao-content`
+3. `conexao-admin-ux`
+4. `conexao-event-runtime`
+5. `conexao-translation-rollout`
+6. `conexao-translation-automation`
+
+Production needs exactly these 6 platform plugins. They are the only
+plugins that must be installed **and active** on production.
+
+### Release build output
+
+```bash
+./scripts/build-plugins-zip.sh
+```
+
+Produces one ZIP per `build: true` entry (9 files), in registry order:
+
+- `dist/conexao-data-model.zip`
+- `dist/conexao-content.zip`
+- `dist/conexao-admin-ux.zip`
+- `dist/conexao-event-runtime.zip`
+- `dist/conexao-event-importer.zip`
+- `dist/conexao-leisure-migration.zip`
+- `dist/conexao-sponsor-migration.zip`
+- `dist/conexao-translation-rollout.zip`
+- `dist/conexao-translation-automation.zip`
+
+Import via WordPress Admin -> Plugins -> Add New -> Upload Plugin, then activate in
+the production order above.
+
+### Local-only tooling (not production)
+
+Built and mounted so a developer can run them locally, but **not** production
+dependencies and never left active on production:
+
+- `conexao-event-importer`
+- `conexao-leisure-migration`
+- `conexao-sponsor-migration`
+- `conexao-en-translation`
+
+### Retired rollout plugins (historical tooling)
+
+These one-shot English-rollout plugins have already been applied. They are **not** part
+of a normal production release: each is `build: false` (no ZIP is produced) and none is
+activated in the production steady state. They remain in the repository, and are locally
+mounted only so the historical importer stays reproducible.
+
+**Lifecycle: activate → apply → remove.**
+
+<!-- END GENERATED PLUGIN REGISTRY: docs/deployment.md activation order -->
+
+## The release process
+
+> **The steps live in the skills.** Use
+> [`wp-release-deploy`](../.agents/skills/wp-release-deploy/SKILL.md) to build,
+> record, verify and deploy an artifact, and
+> [`wp-production-operations`](../.agents/skills/wp-production-operations/SKILL.md)
+> to audit or update the live site. This section states only the *environment
+> facts* a procedure must respect — it is not a second procedure.
+
+The full contract — the release record, the tag convention, deployment
+verification and the rollback procedure — is documented in
+[`docs/releases.md`](releases.md) and normative in
+[`docs/engineering-standard.md` §11](engineering-standard.md#11-deployment-and-release-standard).
+
+### The artifacts (specification)
+
+| Artifact | Source of truth | Notes |
+|---|---|---|
+| `dist/<plugin>.zip` — one per `build: true` registry entry, in load order | `plugins.json` `build` | never `tests/`, `fixtures/` or `*.json` reports |
+| `dist/conexao-br-irlanda.zip` | the single active theme | built by `scripts/build-theme-zip.sh` |
+| `dist/release.json` | emitted by the build | version, git SHA, file count, byte size, SHA-256 per artifact |
+
+Artifacts are built **deterministically**: two builds of the same source produce
+byte-identical ZIPs, so the recorded hash is a real claim. The whole workflow is
+proven locally — never against production — with `./scripts/verify-release.sh`.
+
+### Deployment verification (specification)
+
+`scripts/verify-deploy.py` is read-only and GET-only, uses no credentials, and
+`--site` is required with no default so a mistyped run cannot probe the wrong
+site. It runs the fixed smoke matrix (homepage, every archive, one single per post
+type, `/en/` pairs, canonical, hreflang, sitemap, 404) plus the PT/EN
+language-layer checks, and writes `deploy-<tag>.json` into
+`docs/evidence/<date>-<release>/`.
+
+### Production constraints
+
+| Constraint | Consequence |
+|---|---|
+| No SSH / SFTP | Deployment is a manual ZIP upload through wp-admin |
+| No WP-CLI | Activation is an admin action; no scripted migrations |
+| No filesystem or database access | `dist/` on a maintainer machine is the only place artifacts exist |
+
+Because production has no CLI, every production capability must also have an
+admin screen (engineering standard §0.12). The release tooling in this repository
+is deliberately build-and-verify only: it never uploads, never activates and
+never writes content.
+
 ## Environment Differences
 
 - **Local**: Full admin access, WP_DEBUG enabled, `WORDPRESS_DEBUG=1`
@@ -55,18 +165,23 @@ it only if the logo masters are ever replaced).
 
 ## Deployment Checklist
 
-```bash
-./scripts/build-plugins-zip.sh
-```
+> **The procedure lives in the skills.** To build, deploy, activate, verify or
+> roll back, use [`wp-release-deploy`](../.agents/skills/wp-release-deploy/SKILL.md)
+> (artifacts, manifest, deployment, verification, rollback) and
+> [`wp-production-operations`](../.agents/skills/wp-production-operations/SKILL.md)
+> (auditing and updating the live site, the steady state, rollback vs
+> roll-forward). The normative contract is
+> [engineering-standard.md §11](engineering-standard.md#11-deployment-and-release-standard)
+> and [`releases.md`](releases.md). This section states the *checklist mapping*,
+> not a second copy of the steps.
 
-Output: `dist/conexao-data-model.zip`, `dist/conexao-content.zip`, `dist/conexao-admin-ux.zip`, `dist/conexao-event-runtime.zip`, `dist/conexao-event-importer.zip`, `dist/conexao-leisure-migration.zip`
-
-Import via WordPress Admin → Plugins → Add New → Upload Plugin. Activate in load order.
-
-**Production** needs: data-model, content, admin-ux, **event-runtime**. The
-event importer (local tooling) should **not** be installed or active on
-production — see docs/plugins/conexao-event-runtime.md for the activation and
-migration plan.
+| Step | Where it is specified |
+|---|---|
+| Build the plugin and theme ZIPs | `wp-release-deploy` step 2; build output is the generated block above |
+| Verify the record (`release-manifest.py --verify`) | `wp-release-deploy` step 4 |
+| Upload and activate in `plugins.json` order | `wp-production-operations` step 6; the order is the generated block above |
+| Verify over HTTP (`verify-deploy.py --site …`) | `wp-production-operations` step 7 |
+| Record the release and the rollback note | `docs/releases.md` §Release log |
 
 ### Theme
 
@@ -123,21 +238,27 @@ Notes:
 2. Import: WordPress Admin → Event Import → Import Events → upload JSON
 3. Matching: source + source_id → UUID → URL → content
 
-## Environment Differences
+## Translation Rollouts (Stage H)
 
-- **Local**: Full admin access, WP_DEBUG enabled, `WORDPRESS_DEBUG=1`
-- **Production**: WordPress.com managed, WP_DEBUG disabled, caching enabled
-- **Domain-specific configuration**: None required — all paths are relative
+Translation rollouts are **not** part of the normal production release path: a
+rollout is a content change operated through an admin screen, not a deploy. The
+shared engine `conexao-translation-rollout` is a **`platform` plugin with
+`production: true` and `build: true`** — it is part of the production steady
+state so the admin workflow is available there. Its *stage* configuration and the
+five retired one-shot rollout plugins are the historical tooling, and those are
+`production: false` / `build: false` (see the generated registry block above). The
+authoritative values are `plugins.json`; this paragraph states the distinction,
+not the list.
 
-## Deployment Checklist
+To run a rollout on production, install the engine and the stage plugin, then use
+the **admin workflow** — production is WordPress.com and has **no WP-CLI**. The
+Preview → Apply → Remove sequence, the `pt_drift = 0` assertion and the
+`eligible public PT <type> missing EN = 0` gate are specified in
+[`wp-translation-rollout`](../.agents/skills/wp-translation-rollout/SKILL.md).
 
-1. Build plugin ZIPs (`./scripts/build-plugins-zip.sh`)
-2. Build theme ZIP (`./scripts/build-theme-zip.sh`)
-3. Upload and activate plugins in load order on production
-4. Upload and activate theme on production
-5. Verify all CPT archives load
-6. Verify redirects work (English → Portuguese)
-7. Run any required seed scripts
-8. Test event import
-9. Test leisure import (if applicable)
-10. Verify sitemap at `/sitemap.xml`
+The engine registers its admin action with `manage_options` and a nonce, never
+writes on page load or on GET, and performs no content write on activation.
+See [`docs/plugins/conexao-translation-rollout.md`](plugins/conexao-translation-rollout.md).
+
+_Last verified: 2026-09-26 by Stage L — Permanent Invariant Gates_
+_Last verified: 2026-09-30 by the agent skills / documentation migration_

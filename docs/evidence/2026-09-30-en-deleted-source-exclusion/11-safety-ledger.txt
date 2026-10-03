@@ -1,0 +1,51 @@
+SAFETY LEDGER — DELETED-SOURCE EN ROW RETIREMENT
+=================================================
+
+PRODUCTION (re-checked read-only, from the regenerated inventory)
+  HTTP verbs used                       GET only  (0 POST / PUT / PATCH / DELETE)
+  production_writes                     0
+  EN records created                    0
+  translation links created             0
+  taxonomy terms created                0
+  B2 fields written                     0
+  PT drift attributable to this task    0
+  Polylang                              unchanged (2 languages, pt default,
+                                         pt_BR/en_US, default_lang pt, term ids
+                                         1747/1744)
+  menus                                 untouched
+  .env                                  unchanged
+  apply invoked                         False
+  the six trashed PT posts              NOT un-trashed, NOT restored, NOT modified
+  SQL                                   none
+  Flutter/mobile repository             not accessed
+
+REPOSITORY
+  authored EN rows removed              1  (en-guide::learner-permit-theory-test-irlanda-cnh-brasileira)
+  authored EN rows changed              0
+  authored EN rows added                0
+  UNRELATED EN PAYLOAD DRIFT            0   (sha256 verified on every row)
+  PT record created / modified / removed 0
+  engine                                untouched (sha256 baf85283df95e80c...)
+  stage definitions / B1-B2 policy      untouched
+  slug policy                           untouched
+  taxonomy configuration                untouched
+  tests                                 untouched — no assertion weakened
+  manifest regenerated                  yes, from HEAD + live production
+  dry-run re-run                        yes, read-only, no apply
+  git commits                           0
+
+FILES TOUCHED
+  M wp-content/plugins/conexao-en-translation/includes/guide-translation-data.php
+      (one authored row deleted; a 13-line comment left in its place)
+  A wp-content/plugins/conexao-en-translation/includes/exclusions-data.php
+      (NEW — the exclusion registry; read-only, never fed to the engine)
+  M wp-content/plugins/conexao-en-translation/conexao-en-translation.php
+      (one require_once line so the registry loads)
+  M docs/plugins/conexao-en-translation.md
+      (dataset count 51 -> 50, plus a "Retired rows" section)
+  M docs/reports/README.md (index entry for this report)
+
+HISTORICAL REPORTS
+  docs/reports/2026-09-30-en-translation-dry-run.md          NOT modified
+  docs/reports/2026-09-30-en-rollout-blocker-resolution.md   NOT modified
+  docs/reports/2026-09-30-en-pt-source-reconciliation.md      NOT modified

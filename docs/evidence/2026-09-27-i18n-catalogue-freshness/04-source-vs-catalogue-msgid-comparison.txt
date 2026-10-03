@@ -1,0 +1,33 @@
+== METHOD ==
+Replicated scripts/i18n-make-pot.sh extraction exactly: xgettext 0.23.2, --language=PHP, WP keyword set, --files-from over the UNION of all plugins.json component dirs + the theme, prefiltered to files that mention the theme domain, then domain-filtered.
+
+== RESULT: msgid set comparison (generator output vs committed POT) ==
+extracted msgids : 412
+committed POT    : 403
+
+IN SOURCE, MISSING FROM POT  = 16
+  + "Business"
+  + "Content language: pt (default) or en. Omitting it preserves the legacy unfiltered behaviour."
+  + "Course Directories"
+  + "Education"
+  + "Invalid lang parameter. Supported values: %s."
+  + "Invalid post ID."
+  + "Language contract metadata for the search result (post or term language and translations)."
+  + "Language contract metadata: record language, B2 fallback state and linked translations."
+  + "Language contract metadata: term language (null for shared location terms) and linked translations."
+  + "Linked translations keyed by language slug: { id, url }."
+  + "Online Courses"
+  + "The record language slug (pt, en)."
+  + "This content is displayed in Portuguese."
+  + "This record is not available in the requested language (%1$s); record language: %2$s."
+  + "True when the record is served as a B2 fallback under a requested language different from its own."
+  + "Vocational Training"
+
+IN POT, NOT EXTRACTABLE FROM SOURCE (style.css/theme header + page template names) = 7
+  - "1.0.0"
+  - "Conexão BR Irlanda - Community Portal"
+  - "Conexão BR Irlanda"
+  - "Empregos — Página de Difusão"
+  - "Landing Page (SEO)"
+  - "Modern Community Portal theme for Conexão BR Irlanda - a digital magazine and community hub for Brazilians in Ireland. 
+  - "https://conexaobr.ie"

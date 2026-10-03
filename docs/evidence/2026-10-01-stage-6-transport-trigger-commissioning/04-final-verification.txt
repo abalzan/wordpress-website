@@ -1,0 +1,116 @@
+=== BASELINE vs AFTER ===
+--- BEFORE (Stage 5 state) ---
+In-process PHP suites (serial, one process per suite)
+Script-contract suites (static, no WordPress, no network)
+HTTP acceptance suites (base: http://localhost:8080)
+In-process PHP suites: 74 total, 72 passed, 2 failed
+Assertions: 5383 passed, 6 failed
+Script-contract suites: 9 total, 8 passed, 1 failed
+HTTP acceptance suites: 3 total, 2 passed, 1 failed
+
+--- AFTER (Stage 6) ---
+In-process PHP suites (serial, one process per suite)
+Script-contract suites (static, no WordPress, no network)
+HTTP acceptance suites (base: http://localhost:8080)
+In-process PHP suites: 76 total, 74 passed, 2 failed
+Assertions: 5563 passed, 6 failed
+Script-contract suites: 10 total, 9 passed, 1 failed
+HTTP acceptance suites: 3 total, 2 passed, 1 failed
+
+--- Failing suites BEFORE ---
+failing suites:
+  - theme/conexao-br-irlanda/test-en-jobs-shared-slug.php
+  - theme/conexao-br-irlanda/test-leisure-card-excerpt-language.php
+full suite output kept in /tmp/tmp.2YWNTsKqTA
+--- Failing suites AFTER (identical set) ---
+failing suites:
+  - theme/conexao-br-irlanda/test-en-jobs-shared-slug.php
+  - theme/conexao-br-irlanda/test-leisure-card-excerpt-language.php
+full suite output kept in /tmp/tmp.YvLUZLEbF0
+
+CONCLUSION: no new failures. +180 assertions, same 6 known failures.
+=== Stage 6 FINAL VERIFICATION (machine evidence) ===
+date_utc: 2026-10-01T06:55:12Z
+head: 27c06c956a38543d63180574caddc80221ab2c9c
+
+### 1. SHARED ENGINE INTEGRITY (before vs after)
+expected (Stage 5 baseline):
+  baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4
+actual AFTER:
+  baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4  wp-content/plugins/conexao-translation-rollout/includes/class-conexao-translation-rollout-engine.php
+all engine files:
+  33fe1a2e705f32b0c3c9e8ad8fd5e930197f4c9d1a18ac79a6ee152f3affb20d  wp-content/plugins/conexao-translation-rollout/conexao-translation-rollout.php
+  da977b131b3e91588848cb8e7595d5378e5ba07fe49e804094732b46da604404  wp-content/plugins/conexao-translation-rollout/includes/class-conexao-translation-rollout-admin.php
+  baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4  wp-content/plugins/conexao-translation-rollout/includes/class-conexao-translation-rollout-engine.php
+git diff over the engine plugin (must be EMPTY):
+  (no output above = byte-identical)
+
+### 2. ENGINE DIGEST ASSERTION
+  PASS: engine SHA-256 matches the required baseline EXACTLY
+
+### 3. LINT
+   0/227 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%[1G[2K 227/227 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+
+
+ [OK] No errors                                                                 
+
+lint: OK (syntax clean, no new PHPCS violations, PHPStan clean)
+
+### 4. REGISTRY
+registry OK: 15 plugins validated, 24 generated regions current (zero writes).
+
+### 5. STRUCTURAL GATES
+  verify-stage6-transport-trigger: 48 passed, 0 failed
+  verify-stage3-automation: 129 passed, 0 failed
+  verify-stage4-provider: 115 passed, 0 failed
+  verify-stage2-promotion: 28 passed, 0 failed
+  verify-release-integrity: 229 passed, 0 failed
+  verify-agent-governance: Stage K governance verification: 357 passed, 0 failed
+
+### 6. PERMANENT INVARIANT GATES
+[PASS   ] documentation_drift        documentation_drift      exit=0 14 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[FAIL   ] i18n_freshness             i18n_freshness           exit=1 9 passed, 3 failed, 3 violation(s) (2 pre-existing, 1 new), 0 allowlisted
+
+----------------------------------------
+Gates: 7 total, 6 passed, 1 failed, 0 blocked
+Assertions: 90 passed, 3 failed
+Violations: 3 (2 pre-existing, 1 new)
+AGGREGATE: FAIL
+----------------------------------------
+gate.json written: docs/evidence/2026-09-26-stage-l/gate.json
+
+One or more permanent invariant gates FAILED. This is a real repository/data violation, not a harness problem: the gates are blocking by design and must not be weakened to obtain a green run.
+
+
+### 7. i18n_freshness IS PRE-EXISTING, NOT A STAGE 6 REGRESSION
+Method: `git stash push --include-untracked -m stage6-verify`, then re-run the
+gate at the Stage 5 state, then `git stash pop` to restore.
+
+  --- at STAGE 5 (ALL Stage 6 changes stashed away) ---
+  FAIL: conexao-br-irlanda: ...conexao-br-irlanda.pot is older than .../inc/navigation.php by 92483s
+  FAIL: conexao-content: ...conexao-content.pot is older than ...conexao-content.php by 76025s
+  FAIL: conexao-event-runtime: ...conexao-event-runtime.pot is older than ...conexao-event-runtime.php by 76025s
+  9 passed, 3 failed
+
+  --- with Stage 6 changes present ---
+  FAIL: conexao-br-irlanda: wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot is older than wp-content/themes/conexao-br-irlanda/inc/navigation.php by 92483s — regenerate the catalogue with `wp i18n make-pot` (never hand-edit)
+  FAIL: conexao-content: wp-content/plugins/conexao-content/languages/conexao-content.pot is older than wp-content/plugins/conexao-content/conexao-content.php by 76025s — regenerate the catalogue with `wp i18n make-pot` (never hand-edit)
+  FAIL: conexao-event-runtime: wp-content/plugins/conexao-event-runtime/languages/conexao-event-runtime.pot is older than wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php by 76025s — regenerate the catalogue with `wp i18n make-pot` (never hand-edit)
+  9 passed, 3 failed
+
+  VERDICT: byte-identical failure set, and none of the three components is a
+  file this stage touched. Pre-existing repository/data debt.
+
+  The 3 stale catalogues were deliberately NOT regenerated: doing so would
+  convert a known, documented condition into a green run by editing data
+  rather than by fixing anything.
+
+### 8. FINAL STATE
+  engine SHA-256      : baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4 (UNCHANGED)
+  provider credential : absent from environment and .env (no live call possible)
+  production touched  : NO (0 installs, 0 activations, 0 routes, 0 cron, 0 content writes)
+  apply trigger       : ABSENT from the production entry point
+  cron                : NONE
+  public REST         : NONE
+  PT canonical content: UNCHANGED
+  Flutter/mobile repo : UNTOUCHED

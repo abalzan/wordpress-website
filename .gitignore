@@ -1,5 +1,34 @@
+# Local environment / secrets
 .env
+.env.local
+
+# Build output
 dist/
-scripts/__pycache__/
-.agents/skills/
+
+# Tooling caches
+vendor/
+node_modules/
+__pycache__/
+*.pyc
+phpcs.cache
+.phpunit.result.cache
+
+# Evidence / work trees (curated copies belong in docs/evidence/)
+*-work/
+*.body
+*.log
+.local/
+
+# Editors / OS
 .idea/
+.DS_Store
+Thumbs.db
+
+# Agent skill material
+#
+# The ACTIVE agent skills are WordPress-domain and tracked: .agents/skills/.
+# The retired Flutter/Dart skill set (wrong domain for this repository) is kept
+# for provenance under .agents/legacy-flutter-skills/ and is not tracked as
+# active skills. See docs/evidence/2026-09-26-stage-k/.
+.agents/legacy-flutter-skills/dart-*/
+.agents/legacy-flutter-skills/flutter-*/

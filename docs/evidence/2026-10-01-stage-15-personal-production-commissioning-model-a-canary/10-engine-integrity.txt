@@ -1,0 +1,40 @@
+STAGE 15 - SECTION 41: ENGINE INTEGRITY (BEFORE AND AFTER)
+The engine was NOT modified in Stage 15. The digest was recomputed at the
+start of the stage and again at the end, and both match the expected pin.
+
+  Engine file:
+    wp-content/plugins/conexao-translation-rollout/includes/
+    class-conexao-translation-rollout-engine.php
+
+  BEFORE (recomputed at Stage 15 preflight):
+    264cc6c4e7b4214f2bc30436afb077d308b1897de444431c5c3a331f08116912
+  AFTER  (recomputed at Stage 15 close):
+    264cc6c4e7b4214f2bc30436afb077d308b1897de444431c5c3a331f08116912
+
+  EXPECTED (Stage 15 section 41 / scripts/lib/commissioning.py
+  PINNED_ENGINE_SHA256):
+    264cc6c4e7b4214f2bc30436afb077d308b1897de444431c5c3a331f08116912
+
+  BEFORE == AFTER == EXPECTED.  EXACT MATCH.  No difference => not BLOCKED
+  on this ground.
+
+Corroborating checks:
+  - git diff HEAD over the whole conexao-translation-rollout/ directory:
+    EMPTY (0 lines of diff output). The engine and the whole plugin are
+    untouched.
+  - Stage 14 secret gate independently re-asserts the same digest:
+    "[ok] engine SHA-256 unchanged: 264cc6c4e7b4214f2bc30436afb077d308b1897de444431c5c3a331f08116912"
+  - The released ZIP carries the same content: the release record lists
+    conexao-translation-rollout 1.2.0 with sha256 73b3aee368712397..., and
+    the artifact was built twice byte-identically.
+
+Architecture status: MODEL_A - TRUE SUBSET EXECUTION, unchanged.
+This stage introduced no code change of any kind. The only files it created
+or modified are this stage's report, its evidence directory, and the two
+documentation index files.
+
+Note: the pre-existing working-tree changes under
+docs/evidence/2026-10-01-stage-15-final-production-commissioning-canary/
+and its report were already present (staged) before this stage began and
+were NOT authored or altered by this run; this stage's own artifacts live in
+docs/evidence/2026-10-01-stage-15-personal-production-commissioning-model-a-canary/.

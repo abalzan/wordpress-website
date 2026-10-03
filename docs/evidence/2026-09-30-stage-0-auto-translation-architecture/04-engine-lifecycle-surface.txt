@@ -1,0 +1,66 @@
+SHARED ENGINE LIFECYCLE SURFACE (Stage 0, read-only)
+===============================================
+
+File: wp-content/plugins/conexao-translation-rollout/includes/class-conexao-translation-rollout-engine.php
+SHA-256: baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4
+Lines : 966
+
+Public API (class Conexao_Translation_Rollout_Engine, final, all static):
+  53:	public static function register_stage( array $config ) {
+  70:	public static function registered_stages(): array {
+  80:	public static function get_stage( string $stage ) {
+  89:	public static function reset_stages(): void {
+  99:	public static function validate_config( $config ) {
+  154:	public static function validate_manifest( $manifest, array $config, array $required = array( 'en_slug' ) ) {
+  228:	public static function build_plan( array $manifest, array $states ): array {
+  310:	private static function state_row( array $states, string $stable_key ): array {
+  336:	public static function diff_snapshots( array $before, array $after ): array {
+  369:	public static function calculate_gate( array $args ): array {
+  399:	public static function collect_verify( array $config, array $adapter, array $manifest, array $summary ): array {
+  482:	private static function required_adapter_keys( string $mode ): array {
+  505:	private static function collect_states( array $config, array $adapter, array $manifest, array &$counters ): array {
+  548:	private static function capture_snapshots( array $manifest, array $states, callable $callback ): array {
+  576:	private static function apply_plan( array $config, array $adapter, array $manifest, array $plan, array &$summary, array &$rows ): void {
+  675:	private static function apply_removals( array $manifest, array $adapter, array $states, array &$summary, array &$rows ): void {
+  736:	private static function has_taxonomy( array $config ): bool {
+  748:	private static function run_taxonomy( array $config, bool $dry_run, string $mode ): array {
+  770:	private static function assert_no_pt_drift( array $states, array $snapshots, callable $callback, array &$summary, array &$rows ): void {
+  819:	public static function run( array $config, array $adapter, array $args = array() ) {
+
+Lifecycle step -> engine entry point:
+  inventory      -> run() -> collect_states()      (line 505)
+  manifest       -> validate_manifest()           (line 154)
+  dry-run plan   -> build_plan()                  (line 228)
+  snapshot       -> capture_snapshots()           (line 548)
+  apply          -> apply_plan()/apply_removals() (lines 576/675)
+  PT-drift gate  -> assert_no_pt_drift()          (line 770)
+  verify + gate  -> collect_verify()+calculate_gate() (lines 399/369)
+  entry          -> run()                        (line 819)
+
+KEY PROPERTY FOR AUTOMATION:
+  run( array $config, array $adapter, array $args ): array|WP_Error
+  - $config  : declarative stage config (array of callables/strings)
+  - $adapter : WordPress-bound primitives (array of callables)
+  - $args    : array( 'dry_run' => bool, 'mode' => 'run'|'remove' )
+  => NO globals, NO $_POST/$_GET, NO is_admin(), NO current_user_can(), NO nonce.
+     It is a pure static function over injected callables, so ANY entry point
+     (admin-post, REST, cron, WP-CLI) can call the SAME engine with no change.
+
+Fail-closed returns BEFORE any write:
+  101:			return new WP_Error( 'conexao_rollout_bad_config', 'Stage config must be an array.' );
+  106:				return new WP_Error(
+  114:			return new WP_Error( 'conexao_rollout_bad_config', 'Stage identifier must match [a-z0-9-].' );
+  121:				return new WP_Error(
+  130:				return new WP_Error(
+  138:			return new WP_Error( 'conexao_rollout_bad_config', 'Stage config key "allowlist" must be an array.' );
+  156:			return new WP_Error( 'conexao_rollout_bad_manifest', 'Manifest must be an array.' );
+  161:				return new WP_Error(
+  169:			return new WP_Error( 'conexao_rollout_bad_manifest', 'Manifest source_lang does not match the stage config.' );
+  173:			return new WP_Error( 'conexao_rollout_bad_manifest', 'Manifest target_lang does not match the stage config.' );
+  177:			return new WP_Error( 'conexao_rollout_bad_manifest', 'Manifest records must be a non-empty array keyed by stable key.' );
+  184:				return new WP_Error( 'conexao_rollout_bad_manifest', 'Manifest records must be keyed by non-empty stable key.' );
+  188:				return new WP_Error(
+  196:					return new WP_Error(
+  206:				return new WP_Error(
+  838:				return new WP_Error(
+  846:			return new WP_Error( 'conexao_rollout_no_remove', 'This stage does not support remove (zero writes).' );

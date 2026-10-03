@@ -10,15 +10,10 @@
  * Usage: docker compose exec wordpress php /var/www/html/scripts/test-event-imported-workflow.php
  */
 
-$wp_load = '/var/www/html/wp-load.php';
-if ( ! file_exists( $wp_load ) ) {
-	fwrite( STDERR, "wp-load.php not found. Run inside the WordPress container.\n" );
-	exit( 1 );
-}
-
-require_once $wp_load;
-
-echo "=== Imported Event Workflow Test ===\n\n";
+require_once __DIR__ . '/lib/bootstrap.php';
+conexao_script_load_wordpress();
+require_once __DIR__ . '/lib/bootstrap.php';
+conexao_script_load_wordpress();echo "=== Imported Event Workflow Test ===\n\n";
 
 // Set a current user so current_user_can() works from CLI.
 $admin = get_users( array( 'role' => 'administrator', 'number' => 1 ) );

@@ -197,6 +197,21 @@ class Conexao_Event_Normalizer {
 			'source'            => $source,
 			'source_id'         => $source_id,
 			'source_url'        => $source_url,
+			// Stage 3.2 — source-language classification. Consumes ONLY an
+			// explicit source signal ($raw['source_language'], e.g. a locale
+			// mapped by the source normalizer); never title/body inference.
+			// '' = unclassified (the export reports "unknown").
+			'source_language'   => class_exists( 'Conexao_Event_Source_Language' )
+				? Conexao_Event_Source_Language::sanitize( isset( $raw['source_language'] ) ? $raw['source_language'] : '' )
+				: '',
+			// Recurrence description supplied by the source (weekday set +
+			// bounded window). Empty for every non-recurring event, in which
+			// case the importer clears any previously stored recurrence rule so
+			// a source that stops publishing a series never leaves a stale one
+			// behind on the canonical record.
+			'recurrence'         => ( isset( $raw['recurrence'] ) && is_array( $raw['recurrence'] ) )
+				? $raw['recurrence']
+				: array(),
 			'validation_errors' => $validation_errors,
 		);
 

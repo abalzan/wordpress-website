@@ -15,12 +15,9 @@
  *   docker compose exec wordpress php /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-leisure-card-map-action.php
  */
 
-$wp_load = dirname( dirname( dirname( dirname( __DIR__ ) ) ) ) . '/wp-load.php';
-if ( file_exists( $wp_load ) ) {
-	require_once $wp_load;
-} else {
-	require_once '/var/www/html/wp-load.php';
-}
+
+// Shared Stage E test bootstrap: the only place allowed to locate wp-load.php.
+require_once dirname( __DIR__, 4 ) . '/tests/bootstrap.php';
 
 $theme_functions = get_template_directory() . '/functions.php';
 if ( file_exists( $theme_functions ) ) {
@@ -31,21 +28,6 @@ $passed        = 0;
 $failed        = 0;
 $created_posts = array();
 $created_terms = array();
-
-function t_assert( $condition, $message ) {
-	global $passed, $failed;
-	if ( $condition ) {
-		$passed++;
-		echo "  PASS: {$message}\n";
-	} else {
-		$failed++;
-		echo "  FAIL: {$message}\n";
-	}
-}
-
-function t_section( $title ) {
-	echo "\n=== {$title} ===\n";
-}
 
 function card_render( $post_id ) {
 	global $post;
@@ -70,7 +52,6 @@ function map_test_county( $name, $slug ) {
 	}
 	$inserted = wp_insert_term( $name, 'conexao_county', array( 'slug' => $slug ) );
 	if ( is_wp_error( $inserted ) ) {
-		echo "  FATAL: could not create county term: {$inserted->get_error_message()}\n";
 		exit( 1 );
 	}
 	$created_terms[] = (int) $inserted['term_id'];
@@ -88,7 +69,6 @@ function map_test_create_leisure( $title, $county_term_id = 0, $external = true,
 		true
 	);
 	if ( is_wp_error( $post_id ) ) {
-		echo "  FATAL: could not create test leisure: {$post_id->get_error_message()}\n";
 		exit( 1 );
 	}
 	if ( $county_term_id ) {
@@ -107,162 +87,162 @@ function map_test_create_leisure( $title, $county_term_id = 0, $external = true,
 // ---------------------------------------------------------------------------
 // Setup: a county term shared by the test records.
 // ---------------------------------------------------------------------------
-t_section( 'Setup' );
+test_section( 'Setup' );
 $county_id = map_test_county( 'Map Test County', 'map-test-county' );
-t_assert( $county_id > 0, 'county term available for test records' );
+assert_true( $county_id > 0, 'county term available for test records' );
 
 // ---------------------------------------------------------------------------
 // A. Card with a valid map URL renders "Ver no mapa"
 // ---------------------------------------------------------------------------
-t_section( 'A. Card with valid map URL renders "Ver no mapa"' );
+test_section( 'A. Card with valid map URL renders "Ver no mapa"' );
 
 $card_a = map_test_create_leisure( 'Forest Park', $county_id, true, array(
 	'_leisure_town' => 'Tullamore',
 ) );
 $html_a = card_render( $card_a );
 
-t_assert( false !== strpos( $html_a, 'leisure-card-actions' ), 'actions container present' );
-t_assert( false !== strpos( $html_a, 'leisure-card-cta--map' ), 'map CTA has the --map modifier class' );
-t_assert( false !== strpos( $html_a, 'Ver no mapa' ), 'map CTA shows "Ver no mapa" label' );
+assert_true( false !== strpos( $html_a, 'leisure-card-actions' ), 'actions container present' );
+assert_true( false !== strpos( $html_a, 'leisure-card-cta--map' ), 'map CTA has the --map modifier class' );
+assert_true( false !== strpos( $html_a, 'Ver no mapa' ), 'map CTA shows "Ver no mapa" label' );
 
 // ---------------------------------------------------------------------------
 // B. Card without a map URL omits the map action
 // ---------------------------------------------------------------------------
-t_section( 'B. Card without map URL omits the map action' );
+test_section( 'B. Card without map URL omits the map action' );
 
 $card_b = map_test_create_leisure( 'No Location Place', 0, true );
 $html_b = card_render( $card_b );
 
-t_assert( false === strpos( $html_b, 'leisure-card-cta--map' ), 'no map CTA rendered when no map URL' );
-t_assert( false === strpos( $html_b, 'Ver no mapa' ), 'no "Ver no mapa" label when no map URL' );
-t_assert( false !== strpos( $html_b, 'leisure-card-actions' ), 'actions container still present (primary CTA only)' );
-t_assert( false === strpos( $html_b, 'href=""' ), 'no empty href link in the card' );
+assert_true( false === strpos( $html_b, 'leisure-card-cta--map' ), 'no map CTA rendered when no map URL' );
+assert_true( false === strpos( $html_b, 'Ver no mapa' ), 'no "Ver no mapa" label when no map URL' );
+assert_true( false !== strpos( $html_b, 'leisure-card-actions' ), 'actions container still present (primary CTA only)' );
+assert_true( false === strpos( $html_b, 'href=""' ), 'no empty href link in the card' );
 
 // ---------------------------------------------------------------------------
 // C. External leisure card keeps primary CTA and adds map CTA
 // ---------------------------------------------------------------------------
-t_section( 'C. External leisure card (official website)' );
+test_section( 'C. External leisure card (official website)' );
 
 $card_c = map_test_create_leisure( 'External Castle', $county_id, true );
 $html_c = card_render( $card_c );
 
-t_assert( false !== strpos( $html_c, 'Ver site oficial' ), 'external card keeps "Ver site oficial" primary CTA' );
-t_assert( false !== strpos( $html_c, 'rel="noopener"' ), 'external primary CTA keeps rel="noopener"' );
-t_assert( false !== strpos( $html_c, 'leisure-card-cta--map' ), 'external card also renders the map CTA' );
+assert_true( false !== strpos( $html_c, 'Ver site oficial' ), 'external card keeps "Ver site oficial" primary CTA' );
+assert_true( false !== strpos( $html_c, 'rel="noopener"' ), 'external primary CTA keeps rel="noopener"' );
+assert_true( false !== strpos( $html_c, 'leisure-card-cta--map' ), 'external card also renders the map CTA' );
 
 
 // ---------------------------------------------------------------------------
 // D. Internal leisure card WITH _leisure_internal_page flag → "Ver mais"
 // ---------------------------------------------------------------------------
-t_section( 'D. Internal leisure card (_leisure_internal_page flag → "Ver mais")' );
+test_section( 'D. Internal leisure card (_leisure_internal_page flag → "Ver mais")' );
 
 $card_d = map_test_create_leisure( 'Internal Museum', $county_id, true, array(
 	'_leisure_internal_page' => '1',
 ) );
 $html_d = card_render( $card_d );
 
-t_assert( false !== strpos( $html_d, 'Ver mais' ), 'internal flagged card shows "Ver mais" primary CTA (not "Ver local")' );
-t_assert( 0 === preg_match( '/>Ver local/', $html_d ), 'internal flagged card no longer shows "Ver local"' );
-t_assert( false !== strpos( $html_d, 'leisure-card-cta--map' ), 'internal flagged card also renders the map CTA' );
-t_assert( false !== strpos( $html_d, esc_url( get_permalink( $card_d ) ) ), 'internal flagged card links to internal page' );
+assert_true( false !== strpos( $html_d, 'Ver mais' ), 'internal flagged card shows "Ver mais" primary CTA (not "Ver local")' );
+assert_true( 0 === preg_match( '/>Ver local/', $html_d ), 'internal flagged card no longer shows "Ver local"' );
+assert_true( false !== strpos( $html_d, 'leisure-card-cta--map' ), 'internal flagged card also renders the map CTA' );
+assert_true( false !== strpos( $html_d, esc_url( get_permalink( $card_d ) ) ), 'internal flagged card links to internal page' );
 
 // ---------------------------------------------------------------------------
 // D2. Internal leisure card WITHOUT flag → no primary CTA
 // ---------------------------------------------------------------------------
-t_section( 'D2. Internal leisure card (no flag → no primary CTA)' );
+test_section( 'D2. Internal leisure card (no flag → no primary CTA)' );
 
 $card_d2 = map_test_create_leisure( 'Internal No Flag', $county_id, false );
 $html_d2 = card_render( $card_d2 );
 
-t_assert( 0 === preg_match( '/>Ver local/', $html_d2 ), 'internal unflagged card no longer shows "Ver local"' );
-t_assert( false === strpos( $html_d2, 'Ver mais' ), 'internal unflagged card does not show "Ver mais" (no useful page)' );
-t_assert( false === strpos( $html_d2, 'Ver site oficial' ), 'internal unflagged card does not show "Ver site oficial"' );
-t_assert( 0 === preg_match( '/class="leisure-card-cta"/', $html_d2 ), 'internal unflagged card renders no primary CTA (exact class check)' );
-t_assert( false !== strpos( $html_d2, 'leisure-card-cta--map' ), 'internal unflagged card still renders the map CTA' );
-t_assert( false === strpos( $html_d2, 'href="' . esc_url( get_permalink( $card_d2 ) ) . '"' ), 'internal unflagged card image/title are not linked' );
-t_assert( false === strpos( $html_d2, 'href=""' ), 'internal unflagged card has no empty href links' );
+assert_true( 0 === preg_match( '/>Ver local/', $html_d2 ), 'internal unflagged card no longer shows "Ver local"' );
+assert_true( false === strpos( $html_d2, 'Ver mais' ), 'internal unflagged card does not show "Ver mais" (no useful page)' );
+assert_true( false === strpos( $html_d2, 'Ver site oficial' ), 'internal unflagged card does not show "Ver site oficial"' );
+assert_true( 0 === preg_match( '/class="leisure-card-cta"/', $html_d2 ), 'internal unflagged card renders no primary CTA (exact class check)' );
+assert_true( false !== strpos( $html_d2, 'leisure-card-cta--map' ), 'internal unflagged card still renders the map CTA' );
+assert_true( false === strpos( $html_d2, 'href="' . esc_url( get_permalink( $card_d2 ) ) . '"' ), 'internal unflagged card image/title are not linked' );
+assert_true( false === strpos( $html_d2, 'href=""' ), 'internal unflagged card has no empty href links' );
 
 // ---------------------------------------------------------------------------
 // E. Existing primary CTA label/logic unchanged
 // ---------------------------------------------------------------------------
-t_section( 'E. Primary CTA label/logic unchanged' );
+test_section( 'E. Primary CTA label/logic unchanged' );
 
 // External via Discover Ireland (no official website) => "Ver mais".
 $card_e2 = map_test_create_leisure( 'External No Official', $county_id, false, array(
 	'_leisure_discover_ireland' => 'https://www.discoverireland.ie/place',
 ) );
 $html_e2 = card_render( $card_e2 );
-t_assert( false !== strpos( $html_e2, 'Ver mais' ), 'external without official site still shows "Ver mais"' );
-t_assert( (bool) conexao_leisure_external_url( $card_e2 ), 'e2 classifies as external (setup sanity)' );
-t_assert( false !== strpos( $html_c, 'Ver site oficial' ), 'external with official site still shows "Ver site oficial"' );
-t_assert( false !== strpos( $html_d, 'Ver mais' ), 'internal flagged card shows "Ver mais"' );
+assert_true( false !== strpos( $html_e2, 'Ver mais' ), 'external without official site still shows "Ver mais"' );
+assert_true( (bool) conexao_leisure_external_url( $card_e2 ), 'e2 classifies as external (setup sanity)' );
+assert_true( false !== strpos( $html_c, 'Ver site oficial' ), 'external with official site still shows "Ver site oficial"' );
+assert_true( false !== strpos( $html_d, 'Ver mais' ), 'internal flagged card shows "Ver mais"' );
 
 // ---------------------------------------------------------------------------
 // F. Map CTA uses the expected Google Maps URL
 // ---------------------------------------------------------------------------
-t_section( 'F. Map CTA uses expected Google Maps URL' );
+test_section( 'F. Map CTA uses expected Google Maps URL' );
 
 $expected_url = conexao_leisure_map_url( $card_a );
-t_assert( (bool) preg_match( '#^https://www\.google\.com/maps/search/\?api=1&query=#', $expected_url ), 'helper returns a Google Maps search URL' );
-t_assert( false !== strpos( $html_a, esc_url( $expected_url ) ), 'map CTA href matches the helper output' );
+assert_true( (bool) preg_match( '#^https://www\.google\.com/maps/search/\?api=1&query=#', $expected_url ), 'helper returns a Google Maps search URL' );
+assert_true( false !== strpos( $html_a, esc_url( $expected_url ) ), 'map CTA href matches the helper output' );
 
 $card_f2 = map_test_create_leisure( 'Stored Map Url', $county_id, true, array(
 	'_leisure_map_url' => 'https://www.google.com/maps/search/?api=1&query=Custom+Place',
 ) );
 $html_f2 = card_render( $card_f2 );
-t_assert( false !== strpos( $html_f2, 'query=Custom+Place' ), 'stored _leisure_map_url is used verbatim' );
+assert_true( false !== strpos( $html_f2, 'query=Custom+Place' ), 'stored _leisure_map_url is used verbatim' );
 
 // ---------------------------------------------------------------------------
 // G. Map CTA does NOT replace the image/card link
 // ---------------------------------------------------------------------------
-t_section( 'G. Map CTA does not replace image/card link' );
+test_section( 'G. Map CTA does not replace image/card link' );
 
 $primary_url_c = conexao_leisure_external_url( $card_c );
-t_assert( false !== strpos( $html_c, 'leisure-card-image' ), 'image wrapper link still present' );
-t_assert( false !== strpos( $html_c, esc_url( $primary_url_c ) ), 'image/title link points to primary destination' );
-t_assert( 1 === substr_count( $html_c, '<a class="leisure-card-image"' ), 'exactly one image link (not replaced by map)' );
+assert_true( false !== strpos( $html_c, 'leisure-card-image' ), 'image wrapper link still present' );
+assert_true( false !== strpos( $html_c, esc_url( $primary_url_c ) ), 'image/title link points to primary destination' );
+assert_true( 1 === substr_count( $html_c, '<a class="leisure-card-image"' ), 'exactly one image link (not replaced by map)' );
 
 // ---------------------------------------------------------------------------
 // H. External-link attributes on the map CTA
 // ---------------------------------------------------------------------------
-t_section( 'H. Map CTA external-link attributes' );
+test_section( 'H. Map CTA external-link attributes' );
 
-t_assert( false !== strpos( $html_a, 'target="_blank"' ), 'map CTA opens in a new tab (target="_blank")' );
+assert_true( false !== strpos( $html_a, 'target="_blank"' ), 'map CTA opens in a new tab (target="_blank")' );
 
 // ---------------------------------------------------------------------------
 // I. Accessibility markup
 // ---------------------------------------------------------------------------
-t_section( 'I. Accessibility markup' );
+test_section( 'I. Accessibility markup' );
 
-t_assert( false !== strpos( $html_a, 'aria-label=' ), 'map CTA has a descriptive aria-label' );
-t_assert( false !== strpos( $html_a, 'no mapa (abre em nova aba)' ), 'aria-label names the action and new-tab behavior' );
+assert_true( false !== strpos( $html_a, 'aria-label=' ), 'map CTA has a descriptive aria-label' );
+assert_true( false !== strpos( $html_a, 'no mapa (abre em nova aba)' ), 'aria-label names the action and new-tab behavior' );
 
 $map_cta_html = '';
 if ( preg_match( '/leisure-card-cta--map.*?<\/a>/s', $html_a, $m ) ) {
 	$map_cta_html = $m[0];
 }
-t_assert( '' !== $map_cta_html, 'map CTA section extracted for inspection' );
-t_assert( false !== strpos( $map_cta_html, 'aria-hidden="true"' ), 'map icon SVG is decorative (aria-hidden)' );
+assert_true( '' !== $map_cta_html, 'map CTA section extracted for inspection' );
+assert_true( false !== strpos( $map_cta_html, 'aria-hidden="true"' ), 'map icon SVG is decorative (aria-hidden)' );
 
 $actions_block = '';
 if ( preg_match( '/<div class="leisure-card-actions">(.*?)<\/div>/s', $html_a, $m ) ) {
 	$actions_block = $m[1];
 }
-t_assert( 2 === substr_count( $actions_block, '<a ' ), 'two real links inside the actions container' );
-t_assert( 2 === substr_count( $actions_block, '</a>' ), 'two properly closed links inside the actions container' );
+assert_true( 2 === substr_count( $actions_block, '<a ' ), 'two real links inside the actions container' );
+assert_true( 2 === substr_count( $actions_block, '</a>' ), 'two properly closed links inside the actions container' );
 
 // ---------------------------------------------------------------------------
 // J. Dark-mode styling hooks exist
 // ---------------------------------------------------------------------------
-t_section( 'J. Dark-mode styling hooks' );
+test_section( 'J. Dark-mode styling hooks' );
 
 $dark_css = file_get_contents( get_template_directory() . '/assets/css/dark-mode.css' );
-t_assert( false !== strpos( $dark_css, '.leisure-card-cta--map' ), 'dark-mode.css defines styles for the map CTA' );
-t_assert( false !== strpos( $dark_css, '[data-theme="dark"] .leisure-card-cta--map' ), 'dark-mode map CTA rule uses the data-theme selector' );
+assert_true( false !== strpos( $dark_css, '.leisure-card-cta--map' ), 'dark-mode.css defines styles for the map CTA' );
+assert_true( false !== strpos( $dark_css, '[data-theme="dark"] .leisure-card-cta--map' ), 'dark-mode map CTA rule uses the data-theme selector' );
 
 $leisure_css = file_get_contents( get_template_directory() . '/assets/css/leisure.css' );
-t_assert( false !== strpos( $leisure_css, '.leisure-card-actions' ), 'leisure.css defines the actions container' );
-t_assert( false !== strpos( $leisure_css, '.leisure-card-cta--map' ), 'leisure.css defines the map CTA modifier' );
+assert_true( false !== strpos( $leisure_css, '.leisure-card-actions' ), 'leisure.css defines the actions container' );
+assert_true( false !== strpos( $leisure_css, '.leisure-card-cta--map' ), 'leisure.css defines the map CTA modifier' );
 
 // ---------------------------------------------------------------------------
 // Cleanup
@@ -283,10 +263,6 @@ $leftover = get_posts(
 		'fields'      => 'ids',
 	)
 );
-t_assert( empty( $leftover ), 'no temporary test posts remain' );
+assert_true( empty( $leftover ), 'no temporary test posts remain' );
 
-echo "\n----------------------------------------\n";
-echo "RESULT: {$passed} passed, {$failed} failed\n";
-exit( $failed > 0 ? 1 : 0 );
-
-t_assert( false !== strpos( $html_a, 'rel="noopener noreferrer"' ), 'map CTA has rel="noopener noreferrer"' );
+test_finish();

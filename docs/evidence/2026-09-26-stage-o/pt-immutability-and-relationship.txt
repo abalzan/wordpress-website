@@ -1,0 +1,12 @@
+1  PT blog page has an EN translation : YES (en_id=100588)
+2  EN points back to PT              : YES
+3  EN page language is en            : YES
+4  PT page language is pt            : YES
+5  EN page is published              : YES
+6  EN identity (slug+type+parent)    : YES
+7  second EN translation exists     : NO -- exactly 1 EN blog page
+8  orphan EN pages (no PT master)   : 0
+9  EN permalink                     : http://localhost:8080/en/blog/
+10 PT snapshot fields compared      : 12
+11 PT changed fields                : NONE
+12 PT DRIFT                         : 0

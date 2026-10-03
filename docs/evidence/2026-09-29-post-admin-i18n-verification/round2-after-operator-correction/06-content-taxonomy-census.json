@@ -1,0 +1,194 @@
+{
+ "mode": "read-only GET census",
+ "date": "2026-09-29",
+ "baseline_source": "docs/evidence/2026-09-29-polylang-production-audit/00-polylang-production-audit.json",
+ "content": {
+  "post": {
+   "count": 37,
+   "slug_digest": "1920e5a544a51c047717b043456f96fd"
+  },
+  "page": {
+   "count": 43,
+   "slug_digest": "de9de98c8d2106c96b64e41f64bf3934"
+  },
+  "guide": {
+   "count": 56,
+   "slug_digest": "bed1e6c48bb6ba78106d624625b12387"
+  },
+  "event": {
+   "count": 1808,
+   "slug_digest": "957be9b9f1b901c301a6a8f62e91a7b1"
+  },
+  "leisure": {
+   "count": 289,
+   "slug_digest": "f3fca6ca462cf34c8aa5f733e81bfdb1"
+  },
+  "job": {
+   "count": 1,
+   "slug_digest": "2a9645862cc9577e32f53c33676c250a"
+  },
+  "sponsor": {
+   "count": 10,
+   "slug_digest": "750e5bbcb0284cd6c53f13f8733903b8"
+  },
+  "course_provider": {
+   "count": 11,
+   "slug_digest": "d2540106d9d15a44eed893b96b9efd0e"
+  },
+  "recruitment_agency": {
+   "count": 27,
+   "slug_digest": "4058e5d3a3d0bac85e85a7ed04eae076"
+  },
+  "permit_employer": {
+   "count": 13,
+   "slug_digest": "2f968c3eaef50d3fef66059ea3c2a5d0"
+  }
+ },
+ "taxonomies": {
+  "conexao_category": {
+   "count": 58,
+   "slug_digest": "b3d328af5a09e739c736fc64b0eb87b8"
+  },
+  "conexao_tag": {
+   "count": 0,
+   "slug_digest": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "conexao_county": {
+   "count": 26,
+   "slug_digest": "1b4c0cfff9ec6d28a79f732aa4744d68"
+  },
+  "conexao_town": {
+   "count": 251,
+   "slug_digest": "c78eb51826c801207e5bcc0b608bc919"
+  },
+  "conexao_leisure_attribute": {
+   "count": 13,
+   "slug_digest": "e00360a0476dbf2d6169388f59511749"
+  }
+ },
+ "other": {
+  "menu_items": {
+   "count": 0,
+   "digest": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "media": {
+   "count": 9301,
+   "digest": "9984e78769b6b6d526a550d06958d81b"
+  },
+  "settings": {
+   "_status": 401
+  },
+  "taxonomies_index": [
+   "category",
+   "conexao_category",
+   "conexao_county",
+   "conexao_leisure_attribute",
+   "conexao_tag",
+   "conexao_town",
+   "nav_menu",
+   "post_tag",
+   "wp_knowledge_type",
+   "wp_pattern_category"
+  ],
+  "types_index": [
+   "attachment",
+   "course_provider",
+   "event",
+   "feedback",
+   "guide",
+   "jetpack_form",
+   "job",
+   "jp_act_log_event",
+   "jp_pay_order",
+   "jp_pay_product",
+   "leisure",
+   "nav_menu_item",
+   "page",
+   "permit_employer",
+   "post",
+   "recruitment_agency",
+   "sponsor",
+   "wp_block",
+   "wp_font_face",
+   "wp_font_family",
+   "wp_global_styles",
+   "wp_knowledge",
+   "wp_navigation",
+   "wp_template",
+   "wp_template_part"
+  ],
+  "pll_settings": {
+   "_status": 401
+  },
+  "pll_languages": [
+   {
+    "name": "English",
+    "slug": "en",
+    "term_group": 0,
+    "term_id": 1744,
+    "locale": "en_US",
+    "is_rtl": false,
+    "w3c": "en-US",
+    "facebook": "en_US",
+    "home_url": "https://conexaobr.ie/en/",
+    "search_url": "https://conexaobr.ie/en/",
+    "host": "",
+    "page_on_front": 0,
+    "page_for_posts": 0,
+    "flag_code": "us",
+    "flag_url": "https://conexaobr.ie/wp-content/plugins/polylang/flags/us.png",
+    "custom_flag_url": "",
+    "custom_flag": "",
+    "active": true,
+    "fallbacks": [],
+    "is_default": false,
+    "term_props": {
+     "language": {
+      "term_id": 1744,
+      "term_taxonomy_id": 390,
+      "count": 0
+     },
+     "term_language": {
+      "term_id": 1745,
+      "term_taxonomy_id": 391,
+      "count": 1
+     }
+    }
+   },
+   {
+    "name": "Portugu\u00eas",
+    "slug": "pt",
+    "term_group": 0,
+    "term_id": 1747,
+    "locale": "pt_BR",
+    "is_rtl": false,
+    "w3c": "pt-BR",
+    "facebook": "pt_BR",
+    "home_url": "https://conexaobr.ie/",
+    "search_url": "https://conexaobr.ie/",
+    "host": "",
+    "page_on_front": 0,
+    "page_for_posts": 0,
+    "flag_code": "br",
+    "flag_url": "https://conexaobr.ie/wp-content/plugins/polylang/flags/br.png",
+    "custom_flag_url": "",
+    "custom_flag": "",
+    "active": true,
+    "fallbacks": [],
+    "is_default": true,
+    "term_props": {
+     "language": {
+      "term_id": 1747,
+      "term_taxonomy_id": 393,
+      "count": 0
+     },
+     "term_language": {
+      "term_id": 1748,
+      "term_taxonomy_id": 394,
+      "count": 1
+     }
+    }
+   }
+  ]
+ }
+}

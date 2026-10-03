@@ -1,0 +1,81 @@
+# Stage 13 - injected-negative proofs (Section 33)
+
+Command: python3 tests/scripts/verify-stage13-commissioning-readiness.py
+Result:  768 passed, 0 failed
+         negative proofs: 34 proven, 0 missed
+         GATE-RESULT status = pass
+
+## The positive control comes FIRST
+
+The fully-evidenced control environment is asserted to reach READY with
+commissioning_permitted = true BEFORE any negative is injected. A proof that
+passes because the baseline is already red proves nothing, so the baseline is
+proven green first.
+
+## Evidence-level negatives (synthetic Observation, real evaluate())
+
+  #   Injected failure                                     Result    Mutation
+  --  ---------------------------------------------------  --------  --------
+  1   missing production credential                       BLOCKED   false
+  2   local Docker credential substituted (.env proof)    INVALID   false
+  3   unrelated OPENAI_API_KEY substituted                BLOCKED   false
+  4   missing provider credential                         BLOCKED   false
+  5   missing provider quota proof                        BLOCKED   false
+  6   missing installation authorization                  BLOCKED   false
+  7   missing provider-call authorization                 BLOCKED   false
+  8   missing human reviewer                              BLOCKED   false
+  9   missing canary authorization                        BLOCKED   false
+  10  missing apply authorization                         BLOCKED   false
+  11  stale authorization (past its freshness budget)     EXPIRED   false
+  12  expired authorization (its own expiry has passed)   EXPIRED   false
+  13  stale production baseline                          EXPIRED   false
+  14  missing production legacy-410 proof                 BLOCKED   false
+  15  missing production Model A proof                    BLOCKED   false
+  16  a configured batch limit over its Stage 10 ceiling  BLOCKED   false
+  17  emergency stop "cleared" by client input            NOT_GRANTED, 0 clears
+  22  engine digest drift                                 BLOCKED   false
+
+  Every one produced a readiness FAILURE and production_mutation_permitted =
+  false. #2 is asserted as INVALID rather than BLOCKED on purpose: a repository
+  artifact presented as a production channel is evidence that CONFLICTS with
+  what is required, and asserting the precise status is what stops a gate that
+  merely went red for the wrong reason from passing.
+
+  #17 injects a forged clearance into the observation. The report still says
+  emergency_stop_clearance = NOT_GRANTED and production_actions
+  .emergency_stop_clears = 0: no client input can move the stop.
+
+## Structural negatives (throwaway repository copy, real checks)
+
+ 16b  SERVER_CEILING_BATCH_RECORDS raised 5 -> 500          REJECTED
+ 16c  a batch limit constant deleted entirely              REJECTED (fails closed)
+ 18   is_commissioned() flipped to return true             REJECTED
+ 18b  the bootstrap register() call site uncommented        REJECTED
+ 19   a real wp_insert_post call in the readiness engine    REJECTED
+ 20   a real wp_remote_post call in the readiness engine    REJECTED
+ 21   a real pll_set_post_language call in the preflight    REJECTED
+ 22b  a real Emergency_Stop.set call in the engine          REJECTED
+ 22c  a batch limit made raisable by $_REQUEST['batch_size'] REJECTED
+
+  These inject REAL CALLS, not quoted strings, because the capability scan runs
+  on code with comments and string literals stripped. Injecting
+  `return 'wp_insert_post'` would have tested the stripper, not the gate.
+
+  The clean copy is asserted to PASS FIRST, so a rejection cannot be an artifact
+  of an already-red baseline.
+
+## Secret-boundary negatives
+
+  assert_no_secrets() REFUSES each of: a provider key (sk-...), a WordPress
+  application password (4x4 word shape), a nonce, a cookie, an Authorization
+  header, a PEM private key, and any secret-NAMED key.
+
+  The Python boundary is deliberately STRICTER than the PHP mirror, which
+  recognises only the 4x4 word shape and would pass an sk- key, a PEM block or
+  an Authorization value. That PHP gap is recorded as Stage 14 work rather than
+  fixed here: tightening shipped plugin code mid-stage would change the very
+  release artifacts this stage is verifying.
+
+  The boundary also caught THREE genuine mistakes in the readiness report's own
+  key names during development ("authorizations", "provider.credential_present",
+  "site.is_authorization"), which is the evidence that it runs on the way OUT.

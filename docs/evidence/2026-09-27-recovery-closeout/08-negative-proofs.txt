@@ -1,0 +1,58 @@
+# 08 - Negative proofs (fail-closed gates actually bite)
+
+Each proof: establish the recovered PASS, break exactly one thing, show the gate FAILS,
+restore, show the gate PASSES again. Every restoration was verified with
+git status --short (empty) BEFORE the next proof started.
+
+## 1. Cache scoping (static gate)
+  recovered 404.php (keys wrapped in conexao_lang_cache_key())
+    -> unscoped conexao_* cache keys: 0    2 passed, 0 failed      PASS
+  SABOTAGE  404.php replaced with the 597b04e unscoped form
+    -> unscoped conexao_* cache keys: 4    2 passed, 4 failed     FAIL (gate bites)
+       404.php:25  get_transient  "conexao_404_guides"  not language-scoped
+       404.php:41  set_transient  "conexao_404_guides"  not language-scoped
+       404.php:62  get_transient  "conexao_404_events"  not language-scoped
+       404.php:99  set_transient  "conexao_404_events"  not language-scoped
+  RESTORED  git status --short -> empty;  0 unscoped  2 passed, 0 failed   PASS
+
+## 2. Catalogue freshness (static gate)
+  recovered theme POT present
+    -> stale catalogues: 0                8 passed, 0 failed      PASS
+  SABOTAGE  rm languages/conexao-br-irlanda.pot
+    -> 8 passed, 1 failed                                  FAIL (gate bites)
+       "conexao-br-irlanda: 56 file(s) define user-facing strings but ...pot does not exist"
+  RESTORED  git status --short -> empty;  stale 0  8 passed, 0 failed   PASS
+
+## 3. Accessibility (obsolete listbox/option semantics)
+  suite: tests/test-filter-link-aria-semantics.php
+  recovered template-parts/leisure-filters.php
+    -> 103 passed, 0 failed                               PASS
+  SABOTAGE  injected role="option" aria-multiselectable="true" on a filter link
+    -> FAIL, including:
+         leisure: no invalid role="option" on any filter link
+         leisure: no orphan aria-multiselectable (only valid on a listbox)
+         leisure active: no invalid role="option" on any filter link
+  RESTORED  git status --short -> empty;  103 passed, 0 failed       PASS
+
+## 4. Homepage content-type label
+  suite: tests/test-homepage-content-type-label.php
+  recovered inc/content.php conexao_content_type_label() uses __()
+    -> 29 passed, 0 failed                                PASS
+  SABOTAGE  helper returns the raw untranslated label (drops __())
+    -> FAIL, including:
+         EN: expected 'Practical Guide', got 'Guia Prático'
+         EN: the Portuguese literal does not leak through the helper
+         the helper is genuinely locale-sensitive: en=Guia Prático pt=Guia Prático
+  RESTORED  git status --short -> empty;  29 passed, 0 failed         PASS
+
+## Conclusion
+  All four gates demonstrably FAIL when their invariant is broken and PASS when restored.
+  They are genuinely fail-closed, not vacuously green.
+
+## Post-sabotage tree state
+  git status --short:
+    ?? docs/evidence/2026-09-27-recovery-closeout/
+  git diff cd800be -- wp-content/themes/ : 0 lines
+  git diff b47d098  -- wp-content/themes/ : 0 lines
+  => NO sabotage change remains in the working tree. Only the intentional
+     evidence/report files for this closeout are present.

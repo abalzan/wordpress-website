@@ -1,0 +1,43 @@
+=== STAGE 11 §33 ENGINE INTEGRITY ===
+
+Starting digest (recorded BEFORE any Stage 11 edit):
+  baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4
+
+Ending digest (current):
+  264cc6c4e7b4214f2bc30436afb077d308b1897de444431c5c3a331f08116912
+
+=== INTENTIONAL DIFF vs the pre-Stage-11 tree (b1fc133) ===
+ .../class-conexao-translation-rollout-engine.php   | 190 +++++++++++++++++++++
+ 1 file changed, 190 insertions(+)
+
+PURELY ADDITIVE: 190 insertions, 0 deletions. No existing line was
+removed or rewritten, so no lifecycle behaviour could have changed.
+
+--- the three additions, by function ---
+
+1. narrow_manifest( array $manifest, array $scope )  [NEW, pure]
+   Validates the requested scope against the COMPLETE authored manifest and
+   returns a narrowed manifest. Fails closed on: non-array, empty, non-string
+   entry, duplicated identity, identity the stage does not author.
+
+2. planned_identities( array $plan )  [NEW, pure]
+   Recomputes the identities a plan covers, from the plan's four categories.
+   This is the engine's own answer to 'what did you execute'.
+
+3. run(): one optional $args['scope'] branch + a 'scope' key on both returns
+   Applied AFTER validate_manifest() and BEFORE collect_states(). Omitting
+   'scope' leaves every pre-Stage-11 caller byte-identical.
+
+=== NO LIFECYCLE FUNCTION WAS TOUCHED — PROVEN BY THE SUITE ===
+  PASS: the engine still owns the "collect_states" lifecycle stage
+  PASS: the engine still owns the "build_plan" lifecycle stage
+  PASS: the engine still owns the "capture_snapshots" lifecycle stage
+  PASS: the engine still owns the "apply_plan" lifecycle stage
+  PASS: the engine still owns the "assert_no_pt_drift" lifecycle stage
+  PASS: the engine still owns the "collect_verify" lifecycle stage
+  PASS: the engine still owns the "calculate_gate" lifecycle stage
+
+=== SCOPE PLACEMENT PROVEN AT CALL SITES ===
+  PASS: the scope is applied AFTER the complete manifest is validated
+  PASS: and BEFORE the lifecycle first reads the manifest
+  PASS: and the scope is OPTIONAL — an omitted scope leaves every pre-Stage-11 caller unchanged

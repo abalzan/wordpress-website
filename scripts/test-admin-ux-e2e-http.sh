@@ -136,4 +136,7 @@ $WP user delete qa-e2e --network --yes >/dev/null 2>&1
 rm -f "$JAR"
 
 echo "$PASS passed, $FAIL failed (phase 2)"
-exit $([ "$FAIL" = "0" ] && echo 0 || echo 1)
+if [ "$FAIL" = "0" ]; then
+  exit 0
+fi
+exit 1

@@ -1,0 +1,14 @@
+Stage H baseline (Phase 0, read-only)
+start SHA: 7144d79bbbc8c4615c961966d86527b8eb0f9361
+registry: 12 plugins validated, 21 generated regions current (php generate-registry-docs.php --check OK)
+rollout plugins: 5 retired (page, blog, job, leisure, guide)
+orchestration LOC (bootstrap+apply+audit+admin, excl authored data):
+  page: 591 (bootstrap 194 + apply 397)
+  blog: 1022 (bootstrap 190 + apply 645 + audit 187)
+  job: 766 (bootstrap 203 + apply 400 + audit 163)
+  leisure: 555 (bootstrap 201 + apply 247 + audit 107)
+  guide: 438 (bootstrap 83 + apply 74 + apply-2a 22 + apply-2b1 16 + apply-2b2 110 + audit 71 + admin 62)
+total rollout LOC incl authored data: 10905
+rollout tests: none under wp-content/plugins/conexao-*-translation/tests (0 files); behavior covered by theme in-process suites (test-job-en-translation.php etc.)
+local WP: running (http://localhost:8080 -> 200, wp-load.php present in container)
+selected candidate: conexao-job-translation (see report for evidence)

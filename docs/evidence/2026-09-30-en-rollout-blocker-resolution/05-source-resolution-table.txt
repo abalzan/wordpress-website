@@ -1,0 +1,114 @@
+EN ROLLOUT BLOCKER RESOLUTION — Phase 2: the nine authored rows with no current PT source
+========================================================================================
+Production read: GET only, read-only. Production writes: 0. No production record was
+created, modified, linked or deleted at any point in this phase.
+
+SOURCES OF EVIDENCE USED, in the order the task requires
+---------------------------------------------------------
+1. The repository's own authored data at HEAD
+   (`wp-content/plugins/conexao-en-translation/includes/{manifest-data,
+   guide-translation-data,blog-translation-data}.php`).
+2. A fresh, uncached read-only production inventory
+   (`01-en-inventory-manifest.json`, the `live` block).
+3. Stable record IDs, read from that inventory.
+4. Exact slug matches against the live production `post_name` set.
+5. Documented historical identity already committed in this repository:
+   `docs/evidence/2026-09-28-b1-en-guides/dry-run.json` (the local-instance
+   EN-Guides rollout, which records the PT id behind each authored key),
+   `docs/evidence/2026-09-26-stage-n/pt-snapshot-pre-apply.json`
+   (`site_url: http://LOCAL-INSTANCE` — the LOCAL instance, not production), and
+   `docs/reports/2026-09-30-en-translation-inventory.md` §9.1(c).
+
+Nothing below is inferred from title similarity alone. Where a title is quoted it
+is quoted as CORROBORATION next to an ID fact, never as the proof itself.
+
+
+RESULT TABLE
+------------
+| # | Authored source key (old) | Actual PT source | PT id | Type | Evidence | Action |
+|---|---|---|---|---|---|---|
+| 1 | `guide::outono-irlanda-alimentacao-bem-estar` | `outono-irlanda-alimentacao-bem-estar` | 25028 | `post` | EXACT slug match on the live production `post_name` set; the record is published, `pt`, dated 2026-09-27. Its PT title "O outono chegou a Ireland... e o nosso corpo tambem sente essa mudanca" is the exact Portuguese of this row's authored EN title "Autumn has arrived in Ireland... and so has the change in our bodies". The Phase 1 inventory had already recorded the same fact (id 25028, wrong TYPE). | **RE-KEY (post type)**: row moved from the `guide` block to the `post` block of `manifest-data.php`. |
+| 2 | `guide::carteira-de-motorista-2` | `carteira-motorista-brasileiros` | 25031 | `guide` | Committed local-instance evidence (`docs/evidence/2026-09-28-b1-en-guides/dry-run.json`) records `stable_key=carteira-de-motorista-2 -> pt_id=463`, PT title "Carteira de Motorista na Irlanda: Como Trocar a CNH". Live production's guide id set is 457-486 **with exactly one gap, at 463** — the record was removed. The replacement guide 25031 `carteira-motorista-brasileiros` was created 2026-09-29T07:16, is the only Brazilian driving-licence guide on the site, and its PT title is the same subject widened ("...CNH, IDP e Reduced EDT"). It is also one of only two guides (25031, 25034) newer than the rest of the set. | **RE-KEY (PT slug rename)**: key changed to `carteira-motorista-brasileiros`. |
+| 3 | `guide::learner-permit-theory-test-irlanda-cnh-brasileira` | — | — | — | No production guide holds this slug. The only same-subject candidate (25031) is ALREADY the accepted source of row 2, and mapping a second authored row onto it would create a duplicate PT source — two EN identities for one PT record, the fork the engineering standard forbids. The live guide id set also has a gap at **10009**, the local id this row was authored against, so that record is gone too. | **NO_REAL_PT_SOURCE** — editorial decision required. |
+| 4 | `post::auxilios-e-apoio-relacionados-a-saude-e-bem-estar-na-irlanda` | — | — | — | Absent from the live production `post_name` set and from every other post type. Committed evidence shows the row was authored against the LOCAL instance: `docs/evidence/2026-09-26-stage-n/pt-snapshot-pre-apply.json` records `site_url: http://LOCAL-INSTANCE`, and that run reported the row as `skipped ... EN translation already linked and verified` on the local site only. | **NO_REAL_PT_SOURCE** — editorial decision required. |
+| 5 | `post::auxilios-para-familias-atipicas-na-irlanda` | — | — | — | As row 4: absent from live production; authored against the local instance (same snapshot, `site_url: http://LOCAL-INSTANCE`). | **NO_REAL_PT_SOURCE** — editorial decision required. |
+| 6 | `post::cursos-e-apoio-para-empreendedores` | — | — | — | Absent from the live production `post_name` set. It DID exist in the local instance: it is one of the 34 rows in `docs/evidence/2026-09-26-stage-n/pt-snapshot-pre-apply.json` (`site_url: http://LOCAL-INSTANCE`), which is a strictly stronger fact than "the slug is gone" — the source existed and was never on production. | **NO_REAL_PT_SOURCE** — editorial decision required. |
+| 7 | `post::dica-de-saude-para-quem-viaja` | — | — | — | As row 4. No production post carries the slug; no other post type carries it either. The row's authored EN body cites `coachpatriciavidal` — a string that appears in no live production record of any type, so there is no content-identity fallback either. | **NO_REAL_PT_SOURCE** — editorial decision required. |
+| 8 | `post::guia-para-quem-esta-com-dificuldades-financeiras` | — | — | — | As row 4. | **NO_REAL_PT_SOURCE** — editorial decision required. |
+| 9 | `post::guia-pratico-para-brasileiros-em-laois` | — | — | — | As row 4. The live production post most similar in subject (`turismo-e-lazer-em-co-laois-na-irlanda`, id 10351) already has its OWN authored EN row in this same stage, so it cannot also be the source of this one. | **NO_REAL_PT_SOURCE** — editorial decision required. |
+
+RE-KEYS PERFORMED: 2   (rows 1 and 2)
+NO_REAL_PT_SOURCE:    7   (rows 3-9)
+MISSING_SOURCE:       9 -> 7
+
+
+WHAT THE RE-KEYS CHANGED — AND WHAT THEY DID NOT
+------------------------------------------------
+Both re-keys are SOURCE-IDENTITY corrections. The authored English was carried
+across byte-for-byte, and the change was verified numerically rather than by eye:
+
+* Row 1 — the payload moved from `$map['guide'][...]` to `$map['post'][...]`.
+  SHA-256 of the JSON-encoded row payload:
+      before  d784c1a703acf1f6d424193ed2febc13af376cc480685613f70749618b2a1100
+      after   d784c1a703acf1f6d424193ed2febc13af376cc480685613f70749618b2a1100
+  IDENTICAL. The `en_slug` is still `autumn-in-ireland-eating-and-wellbeing`;
+  the body is still 4780 bytes, sha256 796bc2aa426b5fde2cdb2169906e24ece5869a25ecd492e55224ff7a9bb16229.
+
+* Row 2 — only the array KEY changed. SHA-256 of the row payload:
+      before (key carteira-de-motorista-2)        fdc72265d332718fcb77ae06b0c09a79f6a6181f4bdbe684082b172dce5598a6
+      after  (key carteira-motorista-brasileiros)  fdc72265d332718fcb77ae06b0c09a79f6a6181f4bdbe684082b172dce5598a6
+  IDENTICAL. The `en_slug` is still `driving-licence-in-ireland-how-to-exchange-your-cnh`.
+
+Not touched by either re-key: the PT record, the English copy, the authored EN
+slug, the stage classification (both rows stay B1), the taxonomy datasets, and
+every other authored row.
+
+Resulting manifest shape after the re-keys (measured, not assumed):
+  en-guide  52 -> 51 rows   (row 1 left, row 2's key changed)
+  en-page   31 rows          (unchanged)
+  en-post   42 -> 43 rows   (row 1 arrived)
+  en-blog-page 1, en-jobs-page 1 (unchanged)
+
+
+THE SEVEN NO_REAL_PT_SOURCE ROWS — AN EDITORIAL DECISION, NOT A SILENT EXCLUSION
+-------------------------------------------------------------------------------
+The default behaviour required by the task is "do not delete the authored
+translation merely to make the gate green". That default was followed exactly:
+
+* No authored EN row was deleted. All 7 remain, with their full authored
+  `en_slug`, `en_title`, `en_excerpt`, `en_meta_description` and `en_content`
+  intact and byte-unchanged in the repository datasets.
+* No row was silently converted into an exclusion. No allowlist, skip-list or
+  "ignore" entry was added anywhere.
+* No placeholder PT content was created, in the repository or in production.
+* No PT record was created, renamed, merged or deleted to make a row resolve.
+* No PT content was modified. The PT identity digest is unchanged (see
+  `01-en-inventory-manifest.json` -> `report.pt_baseline`).
+
+They are classified EXPLICITLY, and the engine's own vocabulary is used, so the
+classification is visible in the plan rather than hidden in a comment. The
+repository's shared engine already has exactly the right disposition for a row
+with no PT record — `build_plan()` emits
+`'PT record absent in this site (documented exclusion)'` into the `skip` bucket
+— so these 7 rows are planned as documented skips and are reported by name in
+`04-summary-tables.txt` under "missing PT sources (MISSING_SOURCE)".
+
+THE EDITORIAL DECISION EACH ROW STILL OWES
+------------------------------------------
+Exactly one of the following, decided by an editor and not by this phase:
+
+  (a) RETIRE the authored EN row, if the PT article it translates no longer
+      exists in the editorial plan;
+  (b) EXCLUDE it explicitly, with a documented reason, if the article is being
+      re-published under a new PT identity that has not been created yet; or
+  (c) RE-KEY it later, once the real PT source exists — which is a separate
+      content-creation task and explicitly out of scope here.
+
+Row 3 additionally carries a documented LEADING HYPOTHESIS for whoever decides:
+the authored EN body covers the theory test, the learner permit, the EDT and the
+driving test, and the replacement guide 25031's PT title names exactly
+"CNH, IDP e Reduced EDT" — which is consistent with 25031 being a MERGE of the
+old guides 463 and 10009. That hypothesis is NOT acted on, because it cannot be
+established from the available evidence, and acting on it would map two authored
+EN rows onto one PT record (a duplicate source, and a forbidden fork). It is
+recorded here so the next task starts from evidence instead of from a guess.

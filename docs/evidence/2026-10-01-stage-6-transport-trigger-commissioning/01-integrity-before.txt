@@ -1,0 +1,29 @@
+=== Stage 6 FIRST GATE — integrity BEFORE any change ===
+date_utc: 2026-10-01T06:36:51Z
+branch: i18n
+head: 27c06c956a38543d63180574caddc80221ab2c9c
+
+--- git status --porcelain (empty = clean) ---
+?? docs/evidence/2026-10-01-stage-6-transport-trigger-commissioning/
+(end of git status)
+
+--- SHARED ENGINE (conexao-translation-rollout) per-file SHA-256 ---
+33fe1a2e705f32b0c3c9e8ad8fd5e930197f4c9d1a18ac79a6ee152f3affb20d  wp-content/plugins/conexao-translation-rollout/conexao-translation-rollout.php
+da977b131b3e91588848cb8e7595d5378e5ba07fe49e804094732b46da604404  wp-content/plugins/conexao-translation-rollout/includes/class-conexao-translation-rollout-admin.php
+baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4  wp-content/plugins/conexao-translation-rollout/includes/class-conexao-translation-rollout-engine.php
+
+--- git diff over the engine plugin (must be EMPTY) ---
+(end of engine diff — empty means byte-identical)
+
+--- AUTOMATION PLUGIN tree SHA-256 (before) ---
+c9637fb7903f6df6ec9bed06299b97998badffcf2ec4b150add3a55cab6ae9bf  -
+
+--- PROVIDER IMPLEMENTATION SHA-256 (before) ---
+c5a26a3ab2a49d5945376de6e576d0267739844ea0a65c4d8c4ff035f475c829  wp-content/plugins/conexao-translation-automation/includes/class-conexao-translation-automation-provider-openai.php
+
+--- REGISTRY STATE ---
+plugins.json unchanged: $(git diff --quiet -- plugins.json && echo yes || echo no)
+plugins.json parses OK, load_order entries: 15
+
+--- EXPECTED engine baseline (Stage 5) ---
+baf85283df95e80c6e1e2fccb0e1290c73f6269e290e33eb138ed2cfa36a6ce4

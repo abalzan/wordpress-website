@@ -1722,15 +1722,20 @@ ul, ol {
 .event-card-banner {
   position: relative;
   display: block;
-  aspect-ratio: 16/9;
+  aspect-ratio: 16 / 9;
   overflow: hidden;
   text-decoration: none;
 }
 
+/* The banner box owns the 16:9 ratio; the image is cropped to fill it
+   (object-fit) so portrait/square sources never stretch the card and never
+   distort. The aspect-ratio + height pair here is what makes the rendered area
+   independent of the source image's intrinsic size. */
 .event-card-banner-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
   display: block;
   transition: transform var(--conexao-transition-slow);
 }
@@ -1939,15 +1944,18 @@ ul, ol {
 .events-page .event-card-banner {
   position: relative;
   display: block;
-  aspect-ratio: 16/9;
+  aspect-ratio: 16 / 9;
   overflow: hidden;
   text-decoration: none;
 }
 
+/* /eventos/ archive card: same 16:9 + cover contract as the homepage preview,
+   so an event looks identical in both listings regardless of source ratio. */
 .events-page .event-card-banner-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
   display: block;
   transition: transform var(--conexao-transition-slow);
 }
@@ -2228,16 +2236,20 @@ ul, ol {
 
 .event-preview-media {
   position: relative;
-  aspect-ratio: 16/9;
+  aspect-ratio: 16 / 9;
   overflow: hidden;
   width: 100%;
   flex-shrink: 0;
 }
 
+/* The container owns the 16:9 box; the image fills it and is cropped by
+   object-fit, never scaled to fit. object-position keeps the crop centered so
+   portrait and square sources are framed the same way on every card. */
 .event-preview-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
   display: block;
   transition: transform var(--conexao-transition-slow);
 }
@@ -2348,22 +2360,34 @@ ul, ol {
     align-items: stretch;
   }
 
-  /* Controlled media box: aspect-ratio 16/9 (matching the conexao-event-banner
-     registered size 640×360 and the desktop layout) ensures the thumbnail
-     height is identical for every event regardless of the source image's
-     intrinsic dimensions. object-fit:cover fills the box without distortion. */
+  /* Controlled 16:9 media box: aspect-ratio 16/9 (matching the
+     conexao-event-preview 240×135 / conexao-event-banner 640×360 derivatives
+     and the desktop layout) gives every thumbnail the SAME height regardless
+     of the source image's intrinsic dimensions, and object-fit:cover fills the
+     box without distortion.
+
+     align-self MUST NOT be `stretch` on this row flex item: stretching fixes
+     the cross-axis size to the card's text height, which overrides the
+     aspect-ratio-derived height and collapses the 16:9 box into a
+     variable-height portrait strip whose size depends on how much the title and
+     meta lines happen to wrap (measured 76×117.8 vs 76×81.4 side by side on a
+     375px screen). `center` keeps the box 16:9 and centres it against the
+     text column, so the cards stay aligned. `flex: 0 0 <width>` matches the
+     fixed width so the box can never be squeezed off-ratio. */
   .event-preview-media {
     aspect-ratio: 16 / 9;
     width: 92px;
     min-width: 92px;
+    flex: 0 0 92px;
     height: auto;
-    align-self: stretch;
+    align-self: center;
   }
 
   .event-preview-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: center;
     display: block;
   }
 
@@ -6764,12 +6788,19 @@ input[type="button"] {
     gap: 10px;
   }
 
-  /* Keep thumbnails small so the panel never dominates the screen. */
+  /* Keep thumbnails small so the panel never dominates the screen.
+     This block re-declares the box after the responsive block above, so the
+     16:9 guarantee is restated here (where it actually wins the cascade) and
+     `align-self: center` prevents the row stretch from re-introducing a
+     text-height-driven portrait box at 76px wide. */
   .event-preview-media {
     width: 76px;
     min-width: 76px;
     max-width: 76px;
     flex: 0 0 76px;
+    aspect-ratio: 16 / 9;
+    height: auto;
+    align-self: center;
   }
 
   .event-preview-body {
@@ -7043,6 +7074,30 @@ input[type="button"] {
   border-top: 1px solid var(--color-border);
 }
 
+/* "Vagas" — the real Job CPT records on the Jobs landing page (Stage 6).
+   Currently NOT rendered: the section was intentionally removed from
+   page-empregos.php (rendering only — the job records and the language-aware
+   query are intact). The styles are retained so the section can be restored
+   unchanged; the cards reuse the shared .archive-grid/.archive-card component
+   and the same section rhythm as the opportunities directory below. */
+.empregos-jobs {
+  margin-top: var(--space-7);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--color-border);
+}
+
+.empregos-jobs-title {
+  font-size: clamp(1.375rem, 3vw, 1.75rem);
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: var(--space-4);
+  line-height: 1.2;
+}
+
+.empregos-jobs .archive-grid {
+  padding: 0;
+}
+
 .empregos-opportunities-title {
   font-size: clamp(1.375rem, 3vw, 1.75rem);
   font-weight: 700;
@@ -7199,6 +7254,28 @@ input[type="button"] {
 .empregos-opportunities-notice-secondary {
   font-size: 0.8125rem;
   color: var(--color-text-secondary, #555);
+}
+
+/* =============================================================
+   STAGE 3.1 — B2 language fallback notice
+   =============================================================
+   EN chrome banner above the preserved PT body on B2 fallback pages
+   ("Portuguese content under an EN URL"). Reuses the amber token
+   system and the design-system spacing/radius tokens (no page-specific
+   hacks); dark-mode.css overrides the tokens, not this rule. */
+.language-fallback-notice {
+  margin: var(--space-4) auto;
+  max-width: var(--container-width, 1200px);
+  padding: var(--space-3) var(--space-4);
+  background: var(--conexao-warning-bg, #fff8e1);
+  border: 1px solid var(--conexao-warning-border, #ffe082);
+  border-radius: var(--conexao-radius-sm, 8px);
+  font-size: 0.875rem;
+  line-height: 1.55;
+}
+
+.language-fallback-notice p {
+  margin: 0;
 }
 
 /* =============================================================

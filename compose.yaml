@@ -16,7 +16,25 @@ services:
       retries: 20
 
   wordpress:
-    image: wordpress:latest
+    # A thin, committed Dockerfile over the official image — see docker/wordpress/Dockerfile.
+    #
+    # The official `wordpress:latest` image ships WITHOUT gettext locales
+    # (/usr/share/i18n/locales is empty), so PHP's setlocale(LC_TIME) falls back
+    # to "C" and date_i18n() renders ENGLISH month names in every language.
+    #
+    # That is not cosmetic: test-i18n-foundation.php asserts that dates render
+    # PORTUGUESE month names ("setembro") in the PT context, a real product
+    # contract of the bilingual site. Without a locale that assertion cannot pass
+    # on ANY machine — including a fresh CI runner — so the locale is part of the
+    # test environment's definition, exactly like the PHP version is.
+    #
+    # The Dockerfile is committed, pinned and built once and cached by Docker, so
+    # it costs nothing after the first build. It affects this LOCAL/CI stack
+    # only; the WordPress.com production deployment carries its own locale
+    # configuration and never reads this file.
+    build:
+      context: ./docker/wordpress
+    image: conexao-local/wordpress:latest
     restart: unless-stopped
     depends_on:
       db:
@@ -29,6 +47,15 @@ services:
       WORDPRESS_DB_USER: ${WORDPRESS_DB_USER:-wordpress}
       WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD:-wordpress}
       WORDPRESS_DEBUG: ${WORDPRESS_DEBUG:-1}
+      # Local development only: mark the environment as `local` so WordPress
+      # enables Application Passwords over plain HTTP on http://localhost:8080.
+      # Without this, wp_get_environment_type() falls back to `production` and
+      # every Basic-auth REST call (the Python scripts/*-rest.py tooling, the
+      # HTTP acceptance suites) fails with 401 rest_not_logged_in.
+      # This is a local-Docker concern only; production is WordPress.com and
+      # never reads this variable.
+      WORDPRESS_CONFIG_EXTRA: |
+        define( 'WP_ENVIRONMENT_TYPE', 'local' );
       # Local DB must match the utf8mb4 charset/collation used by the restore
       # script (scripts/restore-updraft-db.sh). Never set these to latin1.
       WORDPRESS_DB_CHARSET: utf8mb4
@@ -38,17 +65,30 @@ services:
       - wordpress_data:/var/www/html
       - ./.htaccess:/var/www/html/.htaccess:ro
       - ./wp-content/themes/conexao-br-irlanda:/var/www/html/wp-content/themes/conexao-br-irlanda
-      - ./wp-content/plugins/conexao-content:/var/www/html/wp-content/plugins/conexao-content
+      # BEGIN GENERATED PLUGIN REGISTRY: plugin mounts
+      # Source of truth: plugins.json (mount: true), in load order. Do not edit by hand.
+      # Regenerate: php scripts/generate-registry-docs.php --write
       - ./wp-content/plugins/conexao-data-model:/var/www/html/wp-content/plugins/conexao-data-model
-      - ./wp-content/plugins/conexao-event-importer:/var/www/html/wp-content/plugins/conexao-event-importer
-      - ./wp-content/plugins/conexao-event-runtime:/var/www/html/wp-content/plugins/conexao-event-runtime
+      - ./wp-content/plugins/conexao-content:/var/www/html/wp-content/plugins/conexao-content
       - ./wp-content/plugins/conexao-admin-ux:/var/www/html/wp-content/plugins/conexao-admin-ux
+      - ./wp-content/plugins/conexao-event-runtime:/var/www/html/wp-content/plugins/conexao-event-runtime
+      - ./wp-content/plugins/conexao-event-importer:/var/www/html/wp-content/plugins/conexao-event-importer
       - ./wp-content/plugins/conexao-leisure-migration:/var/www/html/wp-content/plugins/conexao-leisure-migration
       - ./wp-content/plugins/conexao-sponsor-migration:/var/www/html/wp-content/plugins/conexao-sponsor-migration
+      - ./wp-content/plugins/conexao-translation-rollout:/var/www/html/wp-content/plugins/conexao-translation-rollout
+      - ./wp-content/plugins/conexao-en-translation:/var/www/html/wp-content/plugins/conexao-en-translation
+      - ./wp-content/plugins/conexao-translation-automation:/var/www/html/wp-content/plugins/conexao-translation-automation
+# END GENERATED PLUGIN REGISTRY: plugin mounts
       - ./docker/apache-allowoverride.conf:/etc/apache2/conf-enabled/apache-allowoverride.conf:ro
       - ./docker/entrypoint-fix-permissions.sh:/usr/local/bin/entrypoint-fix-permissions.sh:ro
       - ./docker/php/uploads.ini:/usr/local/etc/php/conf.d/zz-conexao-uploads.ini:ro
       - ./docker/mu-plugins:/var/www/html/wp-content/mu-plugins
+      # Stage E test harness (dev-only mounts). The shared bootstrap is the
+      # only place allowed to locate wp-load.php, so the WordPress container
+      # needs the repository's tests/ and scripts/ trees to execute suites.
+      # These are development/test assets and are never part of a release ZIP.
+      - ./tests:/var/www/html/tests
+      - ./scripts:/var/www/html/scripts
 
 volumes:
   db_data:

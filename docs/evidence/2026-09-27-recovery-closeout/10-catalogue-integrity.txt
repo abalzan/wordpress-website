@@ -1,0 +1,22 @@
+# 10 - Theme catalogue integrity
+
+## Theme catalogues (must be identical to the recovered baseline cd800be)
+  languages/conexao-br-irlanda.pot           92bd15340ca9cc9c  IDENTICAL
+  languages/en_US.po                         22b1798b9366cafb  IDENTICAL
+  languages/en_US.mo                         b1fa80c1f508a960  IDENTICAL
+  languages/pt_BR.po                         a85c434f39f8e1ec  IDENTICAL
+  languages/pt_BR.mo                         bee15adfdccd141e  IDENTICAL
+
+## git diff b47d098 -- theme  (expect ZERO)
+  changed lines: 0
+
+## git diff cd800be -- theme  (expect ZERO: no closeout source change)
+  changed lines: 0
+
+## Freshness gate
+   conexao-leisure-migration catalogue=1790431901 newest-source=1790325155 (wp-content/plugins/conexao-leisure-migration/includes/class-leisure-exporter.php) fresh
+   conexao-sponsor-migration catalogue=1790431901 newest-source=1789994211 (wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-importer.php) fresh
+
+   stale catalogues: 0
+8 passed, 0 failed
+GATE-RESULT {"gate": "i18n_freshness", "status": "pass", "passed": 8, "failed": 0, "violations": 0, "pre_existing": 0, "new": 0, "details": []}

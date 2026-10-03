@@ -1,0 +1,55 @@
+Stage 10 negative proofs — the clean state first
+  PROVEN  clean repository PASSES the control-plane gate
+
+-- the one-batch default --
+  PROVEN  1. a second batch per invocation becomes allowed
+            FAIL: MAX_PRODUCTION_BATCHES_PER_INVOCATION is exactly 1
+  PROVEN  2. the one-batch default is raised to a thousand
+            FAIL: MAX_PRODUCTION_BATCHES_PER_INVOCATION is exactly 1
+
+-- the batch layer must not become a second mutation path --
+  PROVEN  3. class-conexao-translation-automation-batch.php gains `wp_insert_post`
+            FAIL: class-conexao-translation-automation-batch.php cannot reach a mutation path — wp_insert_post
+  PROVEN  4. class-conexao-translation-automation-batch.php gains `Conexao_Translation_Rollout_Engine::`
+            FAIL: class-conexao-translation-automation-batch.php cannot reach a mutation path — Conexao_Translation_Rollout_Engine::
+  PROVEN  5. class-conexao-translation-automation-batch-approval.php gains `wp_update_post`
+            FAIL: class-conexao-translation-automation-batch-approval.php cannot reach a mutation path — wp_update_post
+  PROVEN  6. class-conexao-translation-automation-batch-state.php gains `Conexao_Translation_Rollout_Engine::`
+            FAIL: class-conexao-translation-automation-batch-state.php cannot reach a mutation path — Conexao_Translation_Rollout_Engine::
+  PROVEN  7. class-conexao-translation-automation-emergency-stop.php gains `wp_delete_post`
+            FAIL: class-conexao-translation-automation-emergency-stop.php cannot reach a mutation path — wp_delete_post
+  PROVEN  8. class-conexao-translation-automation-batch-composer.php gains `Conexao_Translation_Rollout_Engine::`
+            FAIL: class-conexao-translation-automation-batch-composer.php cannot reach a mutation path — Conexao_Translation_Rollout_Engine::
+
+-- no autonomous progression --
+  PROVEN  7. the executor gains a loop that pulls a second batch
+            FAIL: the executor contains no 'while (' construct
+  PROVEN  8. the executor starts composing batches of its own
+            FAIL: the executor contains no 'Batch_Composer::compose' construct
+  PROVEN  9. the one-batch guard in the executor is removed
+            FAIL: the executor re-asserts the one-batch guard itself
+  PROVEN  10. a second, unscoped orchestrator call site appears
+            FAIL: the executor reaches the engine through exactly one orchestrator call site — found 2
+  PROVEN  11. the per-execution approval check is removed
+            FAIL: the executor re-verifies the batch approval before executing
+  PROVEN  12. the emergency stop is bypassed
+            FAIL: the executor checks the emergency stop before the unit starts
+  PROVEN  13. the plan-scope assertion is removed
+            FAIL: the executor asserts the engine's plan stays inside the approved set
+
+-- the expansion gate stays evidence-only --
+  PROVEN  14. the expansion gate stops requiring a verified predecessor
+            FAIL: the expansion gate still requires a verified predecessor
+  PROVEN  15. the expansion gate returns eligible despite unmet requirements
+            FAIL: the expansion gate still derives eligibility from the unmet list
+
+-- a new batch file cannot escape the scan --
+  PROVEN  16. an unnamed batch file that writes content is not scanned
+            FAIL: every shipped batch-layer file is named in this gate — unnamed: ['class-conexao-translation-automation-batch-secret.php']
+
+-- the batch layer must register no endpoint --
+  PROVEN  17. the batch layer registers an admin-post endpoint
+            FAIL: no second, differently-named mutation or proof endpoint exists in either plugin — unexpected: ['conexao_translation_automation_batch_run']
+
+negative proofs: 20 proven, 0 missed
+ALL NEGATIVE PROOFS HELD

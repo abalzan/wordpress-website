@@ -1,0 +1,18 @@
+path           status  html lang canonical                                     hreflang
+/                 200  pt-BR     https://conexaobr.ie/                         ['en', 'pt', 'x-default']
+/en/              200  en-US     https://conexaobr.ie/en/                      ['en', 'pt', 'x-default']
+/guias/           200  pt-BR     https://conexaobr.ie/guias/                   ['pt', 'x-default']
+/en/guias/        200  en-US     https://conexaobr.ie/en/guias/                ['en']
+/eventos/         200  pt-BR     https://conexaobr.ie/eventos/                 ['pt', 'x-default']
+/en/eventos/      200  en-US     https://conexaobr.ie/en/eventos/              ['en']
+/lazer/           200  pt-BR     https://conexaobr.ie/lazer/                   ['pt', 'x-default']
+/en/lazer/        200  en-US     https://conexaobr.ie/en/lazer/                ['en']
+/empregos/        200  pt-BR     https://conexaobr.ie/empregos/                ['x-default']
+/en/empregos/     200  en-US     https://conexaobr.ie/empregos/                ['x-default']
+/blog/            200  pt-BR     https://conexaobr.ie/blog/                    ['x-default']
+/en/blog/         200  en-US     https://conexaobr.ie/blog/                    ['x-default']
+
+non-200: []
+PT pages not pt-BR: []
+EN routes not en-US: []
+hreflang asymmetry (PT archive missing en alternate): [('/en/guias/', ['en']), ('/en/eventos/', ['en']), ('/en/lazer/', ['en'])]

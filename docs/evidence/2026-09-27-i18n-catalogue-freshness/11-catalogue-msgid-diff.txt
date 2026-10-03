@@ -1,0 +1,22 @@
+POT change classified by msgid SET (translations are never touched: every msgstr "").
+OLD msgids: 403  NEW msgids: 417
+ADDED  : 16
+  + "Business"
+  + "Content language: pt (default) or en. Omitting it preserves the legacy unfiltered behaviour."
+  + "Course Directories"
+  + "Education"
+  + "Invalid lang parameter. Supported values: %s."
+  + "Invalid post ID."
+  + "Language contract metadata for the search result (post or term language and translations)."
+  + "Language contract metadata: record language, B2 fallback state and linked translations."
+  + "Language contract metadata: term language (null for shared location terms) and linked translations."
+  + "Linked translations keyed by language slug: { id, url }."
+  + "Online Courses"
+  + "The record language slug (pt, en)."
+  + "This content is displayed in Portuguese."
+  + "This record is not available in the requested language (%1$s); record language: %2$s."
+  + "True when the record is served as a B2 fallback under a requested language different from its own."
+  + "Vocational Training"
+REMOVED: 2
+  - "Empregos — Página de Difusão"
+  - "Landing Page (SEO)"

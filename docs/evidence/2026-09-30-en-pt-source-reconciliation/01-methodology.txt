@@ -1,0 +1,54 @@
+SEARCH METHODOLOGY — EN PT SOURCE RECONCILIATION
+================================================
+
+ORDER OF SEARCH (repository first, then production, as the task requires)
+------------------------------------------------------------------------
+1. REPOSITORY — the authored EN rows themselves, at HEAD, read out of the
+   plugin's own data files by executing them in PHP (no reimplementation).
+2. REPOSITORY — historical PT identity: the committed Stage-M capture and the
+   committed EN-Guides PT snapshot. These record the REAL PT ids these rows were
+   translated from (Level 1 evidence).
+3. PRODUCTION (read-only, GET) — a fresh full read of every published PT record
+   in the three B1 post types: posts, pages, guide (136 records).
+4. PRODUCTION — exact slug match, then exact historical id match, then a
+   distinctive-entity search, then a token/similarity ranking of every live
+   candidate against the authored EN body.
+5. PRODUCTION — a direct per-id probe across all EIGHT post types with
+   status=any, so a record that survived as a draft, a private post or under a
+   different post type would still be found.
+
+MATCHING HIERARCHY ACTUALLY APPLIED
+-----------------------------------
+Level 1 exact historical identity  : applied first. It identified all seven
+                                     historical PT sources by real id.
+Level 2 known slug migration       : applied. No successor slug is recorded in
+                                     the repository for any of the seven, and
+                                     none exists in production.
+Level 3 strong-content match       : applied exhaustively to the two rows whose
+                                     authored EN body carries real content
+                                     (rows 1 and 4) and to row 5 (a byline
+                                     stub). Provably IMPOSSIBLE for rows 2, 3, 6
+                                     and 7, because both the historical PT body
+                                     and the authored EN body are the empty
+                                     placeholder '<p></p>'. An empty body
+                                     cannot be content-matched: there is no
+                                     content on either side. This is stated as a
+                                     fact, not treated as a weak match.
+
+WHY CONTENT MATCHING IS EXHAUSTIVE HERE
+----------------------------------------
+Every live PT record was scored against the authored EN body with BOTH a token
+Jaccard index over >=4-character tokens and a difflib SequenceMatcher ratio over
+the normalised text, and the full ranking was inspected. A genuine translation
+pair scores far above noise; the best false-positive scores measured 0.08
+(Jaccard) and 0.017 (sequence) for row 4, and 0.043 / 0.006 for row 1. Those are
+the numbers that make the negative result a measurement rather than an
+assumption.
+
+IDENTIFIERS
+-----------
+Production ids are used ONLY as verification evidence, exactly as the task
+requires. They are never proposed as cross-environment authored identity. The
+authored identity the repository supports remains the PT stable key (slug).
+Where a row's stable key is no longer resolvable, that is reported as a finding
+for the operator, not papered over with a production id.

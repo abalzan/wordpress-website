@@ -1,0 +1,41 @@
+# 09 - Event-importer POT integrity (repair preserved from 597b04e)
+
+File: wp-content/plugins/conexao-event-importer/languages/conexao-event-importer.pot
+
+## 1. Untouched by this closeout
+  worktree sha256: 6221c0ab009f860156f095c2e3ba619db9c0fa13125533c39180110b98d3b75e
+  HEAD     sha256: 6221c0ab009f860156f095c2e3ba619db9c0fa13125533c39180110b98d3b75e
+  (both 6221c0ab... = identical to the previously verified repaired state)
+  git diff HEAD -- <pot>:
+  (empty = untouched)
+
+## 2. Repaired state reproduced: required vs measured
+  metric                             required                           measured
+  duplicate msgids                   0                                  0
+  entries (parsed, excl. header)     385                                385
+  #: source refs                     481                                481
+  bytes                              70646                              70646
+  lines                              1573                               1573
+  body md5 (excl POT-Creation-Date)  519d16cd1e4d62be926e8dc518d9f587   519d16cd1e4d62be926e8dc518d9f587
+
+  NOTE: 386 raw "^msgid " lines - 1 header msgid "" = 385 real entries.
+  NOTE: body md5 = md5 of file with the POT-Creation-Date line removed (xgettext stamp).
+
+## 3. msgfmt / msgcat
+  msgfmt --check : SUCCESS (exit 0)
+  msgcat         : SUCCESS (exit 0)
+  (cosmetic header warnings only; not a regression)
+
+## 4. No .po/.mo changed
+  git diff b47d098 -- wp-content/plugins/conexao-event-importer/:
+ .../languages/conexao-event-importer.pot           | 1199 +++++++++++---------
+ 1 file changed, 649 insertions(+), 550 deletions(-)
+  => repaired .pot is the ONLY difference from b47d098. No .po/.mo altered.
+
+## 5. Report + evidence intact
+  report present : yes
+  evidence files : 20
+
+## 6. NOT regenerated during this closeout
+  git status --short on the plugin:
+  (empty = clean)

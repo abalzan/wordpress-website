@@ -1,0 +1,76 @@
+# 03 — The destructive regression (597b04e) removed the Polylang declaration
+
+Where the EN archive routing capability entered and left history.
+
+## 597b04e removed the entire i18n module tree from the theme
+
+\$ git diff --stat b47d098 597b04e -- wp-content/themes/conexao-br-irlanda/inc/ | tail -8
+ .../themes/conexao-br-irlanda/inc/seo/schema.php   |  471 -------
+ .../themes/conexao-br-irlanda/inc/seo/sitemap.php  |  272 ----
+ .../themes/conexao-br-irlanda/inc/seo/titles.php   |  166 ---
+ wp-content/themes/conexao-br-irlanda/inc/setup.php |  153 ---
+ .../themes/conexao-br-irlanda/inc/shortcodes.php   |  117 --
+ .../themes/conexao-br-irlanda/inc/sponsors.php     |  521 --------
+ wp-content/themes/conexao-br-irlanda/inc/ui.php    |   52 -
+ 41 files changed, 1425 insertions(+), 10683 deletions(-)
+
+\$ git log -1 --format="%h %s" 597b04e
+597b04e Refactor code structure for improved readability and maintainability
+
+## At 597b04e the theme has NO pll_get_post_types declaration and NO guard.php
+
+$ git show 597b04e:wp-content/themes/conexao-br-irlanda/functions.php | grep -c 'pll_get_post_types'
+0
+[0 occurrences]
+
+\$ git show 597b04e:wp-content/themes/conexao-br-irlanda/inc/i18n/guard.php
+fatal: path 'wp-content/themes/conexao-br-irlanda/inc/i18n/guard.php' exists on disk, but not in '597b04e'
+
+## inc/ at 597b04e — the whole i18n/ and seo/ trees are gone
+
+\$ git ls-tree 597b04e --name-only wp-content/themes/conexao-br-irlanda/inc/
+wp-content/themes/conexao-br-irlanda/inc/employment-opportunities.php
+wp-content/themes/conexao-br-irlanda/inc/empregos-landing.php
+wp-content/themes/conexao-br-irlanda/inc/job-resources.php
+wp-content/themes/conexao-br-irlanda/inc/permit-employers.php
+wp-content/themes/conexao-br-irlanda/inc/post-views.php
+wp-content/themes/conexao-br-irlanda/inc/recruitment-agencies.php
+wp-content/themes/conexao-br-irlanda/inc/search.php
+wp-content/themes/conexao-br-irlanda/inc/seo.php
+
+## inc/ at b47d098 (the verified baseline) — the full modular tree
+
+\$ git ls-tree b47d098 --name-only wp-content/themes/conexao-br-irlanda/inc/ | head -30
+wp-content/themes/conexao-br-irlanda/inc/admin.php
+wp-content/themes/conexao-br-irlanda/inc/archive-filters.php
+wp-content/themes/conexao-br-irlanda/inc/archive-query.php
+wp-content/themes/conexao-br-irlanda/inc/assets.php
+wp-content/themes/conexao-br-irlanda/inc/b2-fallback.php
+wp-content/themes/conexao-br-irlanda/inc/cache.php
+wp-content/themes/conexao-br-irlanda/inc/content.php
+wp-content/themes/conexao-br-irlanda/inc/customizer.php
+wp-content/themes/conexao-br-irlanda/inc/employment-opportunities.php
+wp-content/themes/conexao-br-irlanda/inc/empregos-landing.php
+wp-content/themes/conexao-br-irlanda/inc/events.php
+wp-content/themes/conexao-br-irlanda/inc/i18n.php
+wp-content/themes/conexao-br-irlanda/inc/i18n
+wp-content/themes/conexao-br-irlanda/inc/job-resources.php
+wp-content/themes/conexao-br-irlanda/inc/leisure.php
+wp-content/themes/conexao-br-irlanda/inc/navigation.php
+wp-content/themes/conexao-br-irlanda/inc/performance.php
+wp-content/themes/conexao-br-irlanda/inc/permit-employers.php
+wp-content/themes/conexao-br-irlanda/inc/post-views.php
+wp-content/themes/conexao-br-irlanda/inc/queries.php
+wp-content/themes/conexao-br-irlanda/inc/recruitment-agencies.php
+wp-content/themes/conexao-br-irlanda/inc/rest-language.php
+wp-content/themes/conexao-br-irlanda/inc/search.php
+wp-content/themes/conexao-br-irlanda/inc/seo
+wp-content/themes/conexao-br-irlanda/inc/setup.php
+wp-content/themes/conexao-br-irlanda/inc/shortcodes.php
+wp-content/themes/conexao-br-irlanda/inc/sponsors.php
+wp-content/themes/conexao-br-irlanda/inc/ui.php
+
+## guard.php at b47d098 == guard.php at HEAD (byte-identical theme)
+
+$ git show b47d098:wp-content/themes/conexao-br-irlanda/inc/i18n/guard.php | grep -n 'pll_get_post_types'
+61:add_filter( 'pll_get_post_types', 'conexao_polylang_translated_post_types', 10, 2 );

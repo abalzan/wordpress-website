@@ -1,0 +1,30 @@
+== Stage L permanent invariant gates ==
+   repository: /home/andrei/IdeaProjects/wordpress-website
+   sha:        7bc2c3528b9e1346b220ee8e42a804296ce0553e
+
+[FAIL   ] taxonomy                   taxonomy_policy          exit=1 16 passed, 2 failed, 282 violation(s) (282 pre-existing, 0 new), 0 allowlisted
+          violations: 282 (282 pre-existing, 0 new)
+          - taxonomy:conexao_county:language_tagged_terms: 32 (conexao_county: every shared term is language-neutral (no language tag))
+          - taxonomy:conexao_town:language_tagged_terms: 250 (conexao_town: every shared term is language-neutral (no language tag))
+[FAIL   ] translation_completeness   translation_completeness exit=1 16 passed, 4 failed, 73 violation(s) (73 pre-existing, 0 new), 1821 allowlisted
+          violations: 73 (73 pre-existing, 0 new)
+          - post_type:guide:missing_en: 1 (guide: eligible public PT records missing a linked EN translation = 0)
+          - post_type:guide:malformed_relationships: 1 (guide: every translation relationship is a bidirectional link to a PT master)
+          - post_type:page:missing_en: 29 (page: eligible public PT records missing a linked EN translation = 0)
+          - post_type:post:missing_en: 42 (post: eligible public PT records missing a linked EN translation = 0)
+          allowlisted: 1821 (by documented policy)
+[PASS   ] cache_scoping              cache_scoping            exit=0 9 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[PASS   ] cache_scoping              cache_scoping_static     exit=0 2 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[PASS   ] redirect_precedence        redirect_precedence      exit=0 15 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[PASS   ] documentation_drift        documentation_drift      exit=0 14 passed, 0 failed, 0 violation(s) (0 pre-existing, 0 new), 0 allowlisted
+[FAIL   ] i18n_freshness             i18n_freshness           exit=1 7 passed, 6 failed, 6 violation(s) (6 pre-existing, 0 new), 0 allowlisted
+
+----------------------------------------
+Gates: 7 total, 4 passed, 3 failed, 0 blocked
+Assertions: 79 passed, 12 failed
+Violations: 361 (361 pre-existing, 0 new)
+AGGREGATE: FAIL
+----------------------------------------
+gate.json written: docs/evidence/2026-09-26-stage-l/gate.json
+
+One or more permanent invariant gates FAILED. This is a real repository/data violation, not a harness problem: the gates are blocking by design and must not be weakened to obtain a green run.

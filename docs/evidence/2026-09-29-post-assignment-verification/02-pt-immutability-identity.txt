@@ -1,0 +1,12 @@
+=== MENU ITEMS (comparable baseline: 07-menu-items.json, 17 items) ===
+baseline count: 17  now: 17
+only in baseline: []
+only in current : []
+MENU DRIFT = 0
+
+=== MEDIA newest-5 (comparable baseline: 08-media.json) ===
+baseline media_total_header: 9301
+current  media X-WP-Total : 9301
+baseline newest5 ids: [25010, 25008, 25005, 25003, 25001]
+current  newest5 ids: [25010, 25008, 25005, 25003, 25001]
+MEDIA NEWEST-5 DRIFT = 0

@@ -1,0 +1,19 @@
+=== FINAL: ./scripts/run-tests.sh ===
+
+In-process PHP suites: 74 total, 72 passed, 2 failed
+Assertions: 5383 passed, 6 failed
+Script-contract suites: 9 total, 8 passed, 1 failed
+HTTP acceptance suites: 3 total, 2 passed, 1 failed
+----------------------------------------
+TESTS FAILED
+failing suites:
+  - theme/conexao-br-irlanda/test-en-jobs-shared-slug.php
+  - theme/conexao-br-irlanda/test-leisure-card-excerpt-language.php
+full suite output kept in /tmp/tmp.77qx2BeS14
+
+All three failures are PRE-EXISTING and proven so in 09 by moving every
+Stage 4 file aside and re-running at the exact Stage 3 state — identical results.
+
+The one script-contract failure is verify-i18n-freshness.py: the three
+stale .pot catalogues carried forward from Stage 1/2/3. Stage 4 adds no
+translatable string, so they were NOT regenerated to reach green.

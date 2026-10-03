@@ -1,0 +1,58 @@
+COMMISSIONING READINESS: BLOCKED
+
+P01 production_access                          BLOCKED
+P02 install_authorization                      BLOCKED
+P03 provider_credential                        BLOCKED
+P04 provider_quota                             BLOCKED
+P05 live_smoke_authorization                   BLOCKED
+P06 provider_smoke_success                     BLOCKED
+P07 human_reviewer                             BLOCKED
+P08 canary_authorization                       BLOCKED
+P09 apply_authorization                        BLOCKED
+P10 commissioning_authorization                BLOCKED
+P11 batch_control_commissioning_authorization  BLOCKED
+P12 fresh_baseline_readiness                   BLOCKED
+P13 legacy_endpoint_verification               BLOCKED
+P14 proof_trigger_verification                 BLOCKED
+P15 emergency_stop_readiness                   BLOCKED
+P16 audit_readiness                            BLOCKED
+P17 release_readiness                          READY
+P18 model_a_production_proof                   BLOCKED
+
+  P01 production_access: no production_access evidence object was supplied
+  P02 install_authorization: no install_authorization evidence object was supplied
+  P03 provider_credential: only CONEXAO_TRANSLATION_PROVIDER_KEY is the approved mechanism; the unrelated variable OPENAI_API_KEY is present in the environment and was NOT used or aliased
+  P04 provider_quota: no provider_quota evidence object was supplied
+  P05 live_smoke_authorization: no live_smoke_authorization evidence object was supplied
+  P06 provider_smoke_success: no provider_smoke_success evidence object was supplied
+  P07 human_reviewer: no human_reviewer evidence object was supplied
+  P08 canary_authorization: no canary_authorization evidence object was supplied
+  P09 apply_authorization: no apply_authorization evidence object was supplied
+  P10 commissioning_authorization: no commissioning_authorization evidence object was supplied
+  P11 batch_control_commissioning_authorization: no batch_control_commissioning_authorization evidence object was supplied
+  P12 fresh_baseline_readiness: no fresh_baseline evidence object was supplied
+  P13 legacy_endpoint_verification: no legacy_endpoint_410 evidence object was supplied
+  P14 proof_trigger_verification: no proof_trigger evidence object was supplied
+  P15 emergency_stop_readiness: no production_stop_state evidence object was supplied
+  P16 audit_readiness: no audit_readiness evidence object was supplied
+  P18 model_a_production_proof: no model_a_production_proof evidence object was supplied
+
+commissioning_permitted=false
+production_mutation_permitted=false
+canary_selection_allowed=false
+emergency_stop_clearance=NOT_GRANTED
+control_plane=conexao_translation_automation_batch DECLARED
+model_a_production_proof=NOT_PROVEN
+provider.key_present=false
+provider.quota=NOT_PROVEN
+provider.requests_from_this_gate=0
+
+-- machine-readable form --
+status: BLOCKED
+production_actions: {"activations": 0, "canary_selections": 0, "content_mutations": 0, "emergency_stop_clears": 0, "installs": 0, "provider_calls": 0}
+control_plane: {"action": "conexao_translation_automation_batch", "state": "DECLARED"}
+emergency_stop_clearance: NOT_GRANTED
+provider: {"key_present": false, "key_variable": "CONEXAO_TRANSLATION_PROVIDER_KEY", "provider_requests_from_this_gate": 0, "quota": "NOT_PROVEN", "smoke_result": "NOT_PERFORMED"}
+canary_selection_allowed: False
+production_mutation_permitted: False
+commissioning_permitted: False

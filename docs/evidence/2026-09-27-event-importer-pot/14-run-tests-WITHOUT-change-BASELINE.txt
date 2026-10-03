@@ -1,0 +1,135 @@
+conexao test harness
+  repository:    /home/andrei/IdeaProjects/wordpress-website
+  php:           8.5.4
+  environment:   host (docker compose exec)
+  base url:      http://localhost:8080
+
+In-process PHP suites (serial, one process per suite)
+[PASS] plugin/conexao-admin-ux/test-recurrence-admin.php — 60 passed, 0 failed
+[FAIL] plugin/conexao-admin-ux/test-translation-state.php — 9 passed, 14 failed (exit 1)
+           FAIL: untranslated PT record reads missing
+           FAIL: missing state carries the PT source id and no translation id
+           FAIL: linked EN translation reads current on the PT side
+           FAIL: EN record resolves its PT source relationship
+           FAIL: saving the PT source flags the EN translation outdated
+           FAIL: PT side reads outdated
+           FAIL: EN side reads outdated
+           FAIL: state returns to current after the EN save
+           FAIL: standalone EN record reads current without a PT source
+           FAIL: column shows current state for a current pair
+[PASS] plugin/conexao-event-importer/test-county-registry.php — 473 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-error-handling.php — 55 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-event-address.php — 76 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-event-image-sync.php — 30 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-eventbrite-importer.php — 68 passed, 0 failed
+[FAIL] plugin/conexao-event-importer/test-export-language.php — 56 passed, 2 failed (exit 1)
+           FAIL: identity stage32-exp-0002 appears exactly once in the export (got 2)
+           FAIL: the English translation is never an export row
+[PASS] plugin/conexao-event-importer/test-import-log.php — 53 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-ivvcc-importer.php — 46 passed, 0 failed
+[FAIL] plugin/conexao-event-importer/test-language-identity.php — 27 passed, 2 failed (exit 1)
+           FAIL: the identity resolves to exactly ONE record in the import language
+           FAIL: the identity has exactly one English translation (none orphaned)
+[PASS] plugin/conexao-event-importer/test-mondello-park-importer.php — 142 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-motorsport-ireland-importer.php — 90 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-past-event-filter.php — 29 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-reappearing-event-lifecycle.php — 5 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-source-county-hint.php — 18 passed, 0 failed
+[FAIL] plugin/conexao-event-importer/test-town-sanitization.php — 78 passed, 5 failed (exit 1)
+           FAIL: clean term 'Oranmore' exists (was contaminated)
+           FAIL: clean term 'Galway' exists (was 'Galway, Ireland')
+           FAIL: legitimate town 'Cork' still exists
+           FAIL: legitimate town 'Cobh' still exists
+           FAIL: legitimate town 'Corofin' still exists
+[FAIL] plugin/conexao-event-runtime/test-event-language-gate.php — 17 passed, 1 failed (exit 1)
+           FAIL: public event query filters out the EN record in the PT context
+[PASS] plugin/conexao-event-runtime/test-event-query.php — 41 passed, 0 failed
+[PASS] plugin/conexao-event-runtime/test-event-recurrence.php — 90 passed, 0 failed
+[PASS] plugin/conexao-job-translation/test-job-engine-migration.php — 16 passed, 0 failed
+[FAIL] plugin/conexao-leisure-migration/test-excerpt-en-roundtrip.php (exit 1)
+[FAIL] plugin/conexao-leisure-migration/test-language-uuid.php (exit 1)
+           insufficient data: activate-plugin:conexao-leisure-migration
+           FAIL: test prerequisite is available: class_exists( Conexao_Lazer_Importer )
+[PASS] plugin/conexao-translation-rollout/test-future-stage-smoke.php — 13 passed, 0 failed
+[PASS] plugin/conexao-translation-rollout/test-rollout-failure-proofs.php — 12 passed, 0 failed
+[PASS] plugin/conexao-translation-rollout/test-translation-rollout-engine.php — 21 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-event-location-filters.php — 45 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-guide-breadcrumb-filter.php — 36 passed, 0 failed
+[FAIL] theme/conexao-br-irlanda/test-leisure-attribute-normalization.php — 20 passed, 2 failed (exit 1)
+           FAIL: card still renders unrelated attributes (Famílias)
+           FAIL: card still renders Interior when it is the only environment attribute
+[PASS] theme/conexao-br-irlanda/test-leisure-card-map-action.php — 44 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-leisure-multiselect-filters.php — 62 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-leisure-related-events.php — 19 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-sponsor-archive-ordering.php — 15 passed, 0 failed
+
+Script-contract suites (static, no WordPress, no network)
+[FAIL] tests/scripts/verify-agent-governance.py (exit 1)
+         FAIL: .agents/skills/wp-add-content-type/SKILL.md references 'wp-content/themes/conexao-br-irlanda/inc/seo/redirects.php', which does not exist in this repository
+         FAIL: .agents/skills/wp-frontend-perf/SKILL.md references 'wp-content/themes/conexao-br-irlanda/inc/assets.php', which does not exist in this repository
+         FAIL: .agents/skills/wp-frontend-perf/SKILL.md references 'wp-content/themes/conexao-br-irlanda/inc/cache.php', which does not exist in this repository
+         FAIL: .agents/skills/wp-frontend-perf/SKILL.md references 'wp-content/themes/conexao-br-irlanda/inc/queries.php', which does not exist in this repository
+         FAIL: .agents/skills/wp-frontend-perf/SKILL.md references 'wp-content/themes/conexao-br-irlanda/inc/rest-language.php', which does not exist in this repository
+         FAIL: .agents/skills/wp-http-acceptance-matrix/SKILL.md references 'wp-content/themes/conexao-br-irlanda/inc/seo/redirects.php', which does not exist in this repository
+         FAIL: .agents/skills/wp-security-review/SKILL.md references 'wp-content/themes/conexao-br-irlanda/inc/rest-language.php', which does not exist in this repository
+[FAIL] tests/scripts/verify-cache-key-scoping.py (exit 1)
+         FAIL: wp-content/themes/conexao-br-irlanda/404.php:25 unscoped cache key "'conexao_404_guides'" passed to get_transient() — conexao_* cache key is not language-scoped
+         FAIL: wp-content/themes/conexao-br-irlanda/404.php:41 unscoped cache key "'conexao_404_guides'" passed to set_transient() — conexao_* cache key is not language-scoped
+         FAIL: wp-content/themes/conexao-br-irlanda/404.php:62 unscoped cache key "'conexao_404_events'" passed to get_transient() — conexao_* cache key is not language-scoped
+         FAIL: wp-content/themes/conexao-br-irlanda/404.php:99 unscoped cache key "'conexao_404_events'" passed to set_transient() — conexao_* cache key is not language-scoped
+[FAIL] tests/scripts/verify-documentation-drift.py (exit 1)
+         FAIL: Stage K agent governance gate failed (exit 1): python3 tests/scripts/verify-agent-governance.py — Stage K governance verification: 247 passed, 7 failed
+[FAIL] tests/scripts/verify-i18n-freshness.py (exit 1)
+         FAIL: conexao-br-irlanda: 39 file(s) define user-facing strings but wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot does not exist
+[PASS] tests/scripts/verify-release-integrity.py
+         210 passed, 0 failed
+[PASS] tests/scripts/verify-script-conventions.py
+         317 passed, 0 failed
+
+HTTP acceptance suites (base: http://localhost:8080)
+[FAIL] tests/acceptance/verify-guides-en-http.py (exit 1)
+           FAIL  en-guides-200 /en/guias/  -- missing fragment: 'hreflang="pt-BR"'; missing fragment: 'hreflang="en"'; missing fragment: 'hreflang="x-default"'
+           FAIL  an EN guide link is discoverable in /en/guias/
+[FAIL] tests/acceptance/verify-release-http.py (exit 1)
+         == HTTP acceptance: release smoke matrix (local) ==
+            matrix: scripts/data/release-smoke-matrix.json
+         -- release smoke matrix --
+           FAIL  smoke-en-pair-guias /en/guias/  -- missing fragment: 'hreflang='
+           FAIL  smoke-en-pair-eventos /en/eventos/  -- missing fragment: 'hreflang='
+           FAIL  smoke-en-pair-lazer /en/lazer/  -- missing fragment: 'hreflang='
+           FAIL  smoke-en-pair-blog /en/blog/  -- status 301, expected 200; missing fragment: '<html lang="en-US">'; missing fragment: 'hreflang='
+           FAIL  guide: single declares hreflang alternates  -- /guias/autismo-viagem-aviao-irlanda-dublin-cork-airport/
+           FAIL  event: single declares hreflang alternates  -- /eventos/assembly-on-alcohol-harms/
+           FAIL  course_provider: single declares hreflang alternates  -- /cursos/microcreds/
+[FAIL] tests/acceptance/verify-routing-http.py (exit 1)
+           FAIL  en-lazer-card-excerpt-is-english /en/lazer/  -- missing fragment: 'Restored farmhouse at the foot of Keadeen mountain'
+           FAIL  en-lazer-canonical-and-hreflang /en/lazer/  -- missing fragment: 'rel="canonical" href="http://localhost:8080/en/lazer/"'; missing fragment: 'hreflang="pt-BR" href="http://localhost:8080/lazer/"'; missing fragment: 'hreflang="en" href="http://localhost:8080/en/lazer/"'; unexpected fragment: 'rel="canonical" href="http://localhost:8080/lazer/"'
+           FAIL  pt-lazer-card-excerpt-stays-portuguese /lazer/  -- missing fragment: 'Casa rural restaurada aos pés da montanha Keadeen'
+           FAIL  en-cursos-fetch-card-excerpt-is-english /en/cursos/  -- missing fragment: 'Find training and continuing education courses throughout Ireland'; unexpected fragment: 'Encontre cursos de formação e educação continuada em toda a Irlanda'
+           FAIL  en-cursos-no-portuguese-card-excerpt-leak /en/cursos/  -- unexpected fragment: '<p class="provider-card-excerpt">Encontre cursos de formação e educação continuada em toda a Irlanda'; unexpected fragment: '<p class="provider-card-excerpt">A base de dados nacional da Irlanda para cursos e orientação'; unexpected fragment: '<p class="provider-card-excerpt">Descubra cursos superiores subsidiados criados para ajudar as pessoas'; unexpected fragment: '<p class="provider-card-excerpt">Descubra oportunidades de formação e requalificação desenhadas em torno'; unexpected fragment: '<p class="provider-card-excerpt">Aprendizagem online e desenvolvimento de competências da SOLAS'; unexpected fragment: '<p class="provider-card-excerpt">Programas de formação e cursos de negócios para quem está a iniciar'; unexpected fragment: '<p class="provider-card-excerpt">Explore milhares de cursos de faculdades, universidades'; unexpected fragment: '<p class="provider-card-excerpt">Encontre oportunidades de educação e formação oferecidas através da rede'; unexpected fragment: '<p class="provider-card-excerpt">Portal nacional para encontrar apprenticeships na Irlanda'; unexpected fragment: '<p class="provider-card-excerpt">Explore micro-credenciais curtas, flexíveis e acreditadas'
+           FAIL  en-cursos-canonical-and-hreflang /en/cursos/  -- missing fragment: 'rel="canonical" href="http://localhost:8080/en/cursos/"'; missing fragment: 'hreflang="pt-BR" href="http://localhost:8080/cursos/"'; missing fragment: 'hreflang="en" href="http://localhost:8080/en/cursos/"'; unexpected fragment: 'rel="canonical" href="http://localhost:8080/cursos/"'
+           FAIL  en-archive-en-blog /en/blog/  -- status 301, expected 200; missing fragment: '<html lang="en-US">'; missing fragment: 'rel="canonical" href="'; missing fragment: '/en/blog/'; missing fragment: 'hreflang="en"'; missing fragment: 'hreflang="pt-BR"'; missing fragment: 'hreflang="x-default"'
+           FAIL  en-archive-en-blog-page-2 /en/blog/page/2/  -- status 404, expected 200
+           FAIL  en-b2-302-en-empregos /en/empregos/  -- status 301, expected 302
+           FAIL  en-b2-fallback-en-irlanda /en/irlanda/  -- status 301, expected 200; missing fragment: '<html lang="en-US">'; missing fragment: 'language-fallback-notice'
+
+----------------------------------------
+In-process PHP suites: 33 total, 25 passed, 8 failed
+  prerequisite failures:         1
+Assertions: 1766 passed, 26 failed
+Script-contract suites: 6 total, 2 passed, 4 failed
+HTTP acceptance suites: 3 total, 0 passed, 3 failed
+----------------------------------------
+TESTS FAILED
+failing suites:
+  - plugin/conexao-admin-ux/test-translation-state.php
+  - plugin/conexao-event-importer/test-export-language.php
+  - plugin/conexao-event-importer/test-language-identity.php
+  - plugin/conexao-event-importer/test-town-sanitization.php
+  - plugin/conexao-event-runtime/test-event-language-gate.php
+  - plugin/conexao-leisure-migration/test-excerpt-en-roundtrip.php
+  - plugin/conexao-leisure-migration/test-language-uuid.php
+  - theme/conexao-br-irlanda/test-leisure-attribute-normalization.php
+full suite output kept in /tmp/tmp.PPxv4k9ZEh
+exit=1
+RESTORED

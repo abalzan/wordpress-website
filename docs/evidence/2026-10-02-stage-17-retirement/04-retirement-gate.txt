@@ -1,0 +1,127 @@
+
+-- 1. RETIRED - the Stage 16 broker architecture is gone --
+  PASS: the broker class file does not exist
+  PASS: no plugin source declares a Provider_Broker class
+  PASS: no plugin source references Provider_Broker at all
+  PASS: no plugin source carries the broker token BROKER_ENDPOINT
+  PASS: no plugin source carries the broker token MODE_BROKER
+  PASS: no plugin source carries the broker token BROKER_FIELD
+  PASS: no plugin source carries the broker token broker_token
+  PASS: the provider resolves its credential directly from Provider_Config
+  PASS: the provider resolves no second credential through a broker
+
+-- 2. RETIRED - no automatic execution mechanism remains --
+  PASS: the wake-up hook class file does not exist
+  PASS: no plugin source references the deleted Hooks class
+  PASS: no plugin registers the save_post wake-up hook
+  PASS: no plugin registers the before_delete_post wake-up hook
+  PASS: no plugin registers the wp_trash_post wake-up hook
+  PASS: no plugin registers the untrashed_post wake-up hook
+  PASS: no plugin registers the set_object_terms wake-up hook
+  PASS: no plugin uses wp_schedule_event
+  PASS: no plugin uses wp_schedule_single_event
+  PASS: no plugin uses wp_next_scheduled
+  PASS: no plugin uses cron_schedules
+  PASS: no plugin uses wp_clear_scheduled_hook
+  PASS: the provider is invoked only from the manual control plane
+  PASS: no plugin exposes admin_post_nopriv_
+  PASS: no plugin exposes wp_ajax_nopriv_
+  PASS: no plugin exposes wp_ajax_
+  PASS: no plugin exposes register_rest_route
+  PASS: no plugin exposes rest_api_init
+  PASS: no plugin exposes a webhook entry point
+  PASS: no plugin exposes a wphook entry point
+  PASS: no plugin exposes a inbound_hook entry point
+  PASS: the audit vocabulary has no 'hook' trigger kind
+  PASS: the audit vocabulary has no 'scheduled' trigger kind
+  PASS: the audit vocabulary still records manual runs
+  PASS: the audit vocabulary still records the admin proof run
+  PASS: the plugin bootstraps exactly one registered surface, the manual admin trigger
+  PASS: the uncommissioned batch-control surface is still NOT registered
+
+-- 3. RETAINED - the manual workflow is still available --
+  PASS: the manual admin endpoint class still exists
+  PASS: the manual endpoint requires manage_options
+  PASS: the manual endpoint verifies a nonce
+  PASS: the manual endpoint is POST-only
+  PASS: the manual endpoint can only request MODE_PROOF
+  PASS: MODE_APPLY is not reachable from the manual endpoint
+  PASS: the manual endpoint cannot pass dry_run => false to the engine
+  PASS: the shared engine file still exists
+  PASS: the orchestrator reaches the shared engine's stage callback contract
+  PASS: the manual control plane reaches the engine's exact-scope method
+  PASS: the orchestrator addresses the shared engine by name
+  PASS: no shipped plugin file calls Engine::run() directly
+  PASS: the shared engine still exposes its run() lifecycle
+
+-- 4. SAFEGUARDS - the manual path's controls are not weakened --
+  PASS: the concurrency lock is still shipped
+  PASS: the concurrency lock is still loaded by the plugin bootstrap
+  PASS: the audit trail is still shipped
+  PASS: the audit trail is still loaded by the plugin bootstrap
+  PASS: the dry-run-before-apply gate is still shipped
+  PASS: the dry-run-before-apply gate is still loaded by the plugin bootstrap
+  PASS: digest-bound approval is still shipped
+  PASS: digest-bound approval is still loaded by the plugin bootstrap
+  PASS: batch ceilings is still shipped
+  PASS: batch ceilings is still loaded by the plugin bootstrap
+  PASS: the emergency stop is still shipped
+  PASS: the emergency stop is still loaded by the plugin bootstrap
+  PASS: digest-bound batch approval is still shipped
+  PASS: digest-bound batch approval is still loaded by the plugin bootstrap
+  PASS: the persisted source state is still shipped
+  PASS: the persisted source state is still loaded by the plugin bootstrap
+  PASS: the batch-control surface is still declared and uncommissioned
+  PASS: the behavioural suite test-automation-model-a.php still exists
+  PASS: the behavioural suite test-automation-apply-safety.php still exists
+  PASS: the behavioural suite test-automation-lock.php still exists
+  PASS: the behavioural suite test-automation-batch.php still exists
+  PASS: the behavioural suite test-automation-change-detection.php still exists
+  PASS: the behavioural suite test-automation-audit.php still exists
+  PASS: the behavioural suite test-automation-admin-trigger.php still exists
+  PASS: the behavioural suite test-automation-provider-secrets.php still exists
+  PASS: the shared engine's own suite still exists
+
+-- 5. ENGINE - Stage 11 Model A and the engine are intact --
+  PASS: the shared engine is byte-identical to the pinned digest
+  PASS: the Model A suite still asserts on 'approved scope'
+  PASS: the Model A suite still asserts on 'executed scope'
+  PASS: the Model A suite still asserts on 'planned'
+
+-- 6. CREDENTIALS - no key anywhere, and no broker credential --
+  PASS: no provider-key shape exists in shipped code, docs or evidence
+  PASS: the credential scan actually inspected the tree
+  PASS: no plugin option name looks like a provider credential store
+  PASS: the credential boundary is still environment-only
+  PASS: the credential boundary names a variable rather than holding a value
+
+-- 7. READINESS - the automatic commissioning programme is retired --
+  PASS: the readiness engine records the retirement
+  PASS: RETIRED is a defined status
+  PASS: every prerequisite is classified RETAINED or RETIRED
+  PASS: P03 (an automatic-commissioning prerequisite) is RETIRED
+  PASS: P10 (an automatic-commissioning prerequisite) is RETIRED
+  PASS: P11 (an automatic-commissioning prerequisite) is RETIRED
+  PASS: P15 (an automatic-commissioning prerequisite) is RETIRED
+  PASS: P18 (an automatic-commissioning prerequisite) is RETIRED
+  PASS: P07 (a manual-workflow safety fact) is RETAINED
+  PASS: P09 (a manual-workflow safety fact) is RETAINED
+  PASS: P14 (a manual-workflow safety fact) is RETAINED
+  PASS: P16 (a manual-workflow safety fact) is RETAINED
+  PASS: P17 (a manual-workflow safety fact) is RETAINED
+  PASS: the aggregate is RETIRED
+  PASS: commissioning is never permitted
+  PASS: production mutation is never permitted
+  PASS: the report names the retirement
+  PASS: every prerequisite is still evaluated individually
+  PASS: integrity invariants are still checked under retirement
+  PASS: an integrity failure is still surfaced under retirement
+  PASS: the retired report still passes its own secret boundary
+  PASS: the runbook is the manual workflow
+  PASS: the manual runbook still names the 'dry run' step
+  PASS: the manual runbook still names the 'Approve the exact digest' step
+  PASS: the manual runbook still names the 'Apply explicitly' step
+  PASS: the manual runbook still names the 'idempotence' step
+
+110 passed, 0 failed
+GATE-RESULT {"details": [], "failed": 0, "gate": "stage17_translation_automation_retirement", "negative_proofs": 0, "negative_proofs_missed": 0, "passed": 110, "status": "pass", "violations": 0}

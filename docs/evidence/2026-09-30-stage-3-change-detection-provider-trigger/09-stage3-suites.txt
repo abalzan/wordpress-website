@@ -1,0 +1,18 @@
+=== test-automation-change-detection.php
+stage 3 change detection: 108 passed, 0 failed
+=== test-automation-provider.php
+stage 3 provider boundary: 222 passed, 0 failed
+=== test-automation-trigger.php
+stage 3 trigger and integration: 98 passed, 0 failed
+=== test-automation-audit.php
+stage 3 audit persistence: 80 passed, 0 failed
+=== test-automation-hooks.php
+stage 3 wake-up hooks: 50 passed, 0 failed
+=== test-automation-promotion.php
+automation promotion: 12 passed, 0 failed
+=== test-automation-boundary.php
+automation boundary: 141 passed, 0 failed
+=== test-automation-lock.php
+automation lock: 51 passed, 0 failed
+=== test-automation-apply-safety.php
+automation apply safety: 107 passed, 0 failed

@@ -1,0 +1,124 @@
+==============================================================================
+ROW 2  pt_id=10373  status=trash
+  trashed slug  : auxilios-e-apoio-relacionados-a-saude-e-bem-estar-na-irlanda__trashed
+  trashed title : Auxílios e Apoio Relacionados a Saúde e Bem-Estar na Irlanda
+  trashed date  : 2026-03-20T11:08:34  modified=2026-08-30T20:58:16
+  language      : None
+  link          : https://conexaobr.ie/?p=10373
+
+  IDENT-1 slug vs historical slug : MATCH
+  IDENT-2 id   vs historical id   : MATCH
+  IDENT-3 title vs historical title: MATCH
+     trashed : 'Auxílios e Apoio Relacionados a Saúde e Bem-Estar na Irlanda'
+     historic : 'Auxílios e Apoio Relacionados a Saúde e Bem-Estar na Irlanda'
+  CONTENT trashed vs historical PT : jaccard=0.0000 seq=1.0000
+  CONTENT trashed PT vs authored EN: jaccard=0.0000 seq=1.0000
+  PT body (trashed) : ''
+  EN body (authored): ''
+  URL overlap PT/EN: []
+
+==============================================================================
+ROW 3  pt_id=10374  status=trash
+  trashed slug  : auxilios-para-familias-atipicas-na-irlanda__trashed
+  trashed title : Auxílios para Famílias Atípicas na Irlanda
+  trashed date  : 2026-03-20T11:10:52  modified=2026-08-30T20:58:53
+  language      : None
+  link          : https://conexaobr.ie/?p=10374
+
+  IDENT-1 slug vs historical slug : MATCH
+  IDENT-2 id   vs historical id   : MATCH
+  IDENT-3 title vs historical title: MATCH
+     trashed : 'Auxílios para Famílias Atípicas na Irlanda'
+     historic : 'Auxílios para Famílias Atípicas na Irlanda'
+  CONTENT trashed vs historical PT : jaccard=0.0000 seq=1.0000
+  CONTENT trashed PT vs authored EN: jaccard=0.0000 seq=1.0000
+  PT body (trashed) : ''
+  EN body (authored): ''
+  URL overlap PT/EN: []
+
+==============================================================================
+ROW 4  pt_id=10369  status=trash
+  trashed slug  : cursos-e-apoio-para-empreendedores__trashed
+  trashed title : Cursos e Apoio para Empreendedores
+  trashed date  : 2026-03-19T16:46:20  modified=2026-08-30T20:59:30
+  language      : None
+  link          : https://conexaobr.ie/?p=10369
+
+  IDENT-1 slug vs historical slug : MATCH
+  IDENT-2 id   vs historical id   : MATCH
+  IDENT-3 title vs historical title: MATCH
+     trashed : 'Cursos e Apoio para Empreendedores'
+     historic : 'Cursos e Apoio\xa0para Empreendedores'
+  CONTENT trashed vs historical PT : jaccard=1.0000 seq=1.0000
+  CONTENT trashed PT vs authored EN: jaccard=0.1122 seq=0.1805
+  PT body (trashed) : '📊 laois partnership https://laoispartnership.ie/ https://www.instagram.com/laoispartnershipcompany/ a laois partnership company apoia empresas e empreendedores através de: ✔ programas de desenvolvimen'
+  EN body (authored): '📊 laois partnership https://laoispartnership.ie/ https://www.instagram.com/laoispartnershipcompany/ laois partnership company supports businesses and entrepreneurs through: ✔ rural development program'
+  URL overlap PT/EN: ['https://laois.ie/business-and-economy/business-and-enterprise-training/business-and-enterprise-training', 'https://laoispartnership.ie/', 'https://laoispartnership.ie/contact-us/', 'https://www.instagram.com/laoispartnershipcompany/']
+
+==============================================================================
+ROW 5  pt_id=10367  status=trash
+  trashed slug  : dica-de-saude-para-quem-viaja__trashed
+  trashed title : Dica de Saúde Para Quem Viaja
+  trashed date  : 2026-03-17T20:43:02  modified=2026-08-30T20:59:45
+  language      : None
+  link          : https://conexaobr.ie/?p=10367
+
+  IDENT-1 slug vs historical slug : MATCH
+  IDENT-2 id   vs historical id   : MATCH
+  IDENT-3 title vs historical title: MATCH
+     trashed : 'Dica de Saúde Para Quem Viaja'
+     historic : 'Dica de Saúde Para Quem Viaja'
+  CONTENT trashed vs historical PT : jaccard=1.0000 seq=1.0000
+  CONTENT trashed PT vs authored EN: jaccard=0.7143 seq=0.9935
+  PT body (trashed) : 'texto: patricia vidal instagram: https://www.instagram.com/coachpatriciavidal/'
+  EN body (authored): 'text: patricia vidal instagram: https://www.instagram.com/coachpatriciavidal/'
+  URL overlap PT/EN: ['https://www.instagram.com/coachpatriciavidal/']
+
+==============================================================================
+ROW 6  pt_id=10375  status=trash
+  trashed slug  : guia-para-quem-esta-com-dificuldades-financeiras__trashed
+  trashed title : Guia Para quem está com Dificuldades Financeiras
+  trashed date  : 2026-03-20T11:13:33  modified=2026-08-30T20:59:09
+  language      : None
+  link          : https://conexaobr.ie/?p=10375
+
+  IDENT-1 slug vs historical slug : MATCH
+  IDENT-2 id   vs historical id   : MATCH
+  IDENT-3 title vs historical title: MATCH
+     trashed : 'Guia Para quem está com Dificuldades Financeiras'
+     historic : 'Guia Para quem está com Dificuldades Financeiras'
+  CONTENT trashed vs historical PT : jaccard=0.0000 seq=1.0000
+  CONTENT trashed PT vs authored EN: jaccard=0.0000 seq=1.0000
+  PT body (trashed) : ''
+  EN body (authored): ''
+  URL overlap PT/EN: []
+
+==============================================================================
+ROW 7  pt_id=10376  status=trash
+  trashed slug  : guia-pratico-para-brasileiros-em-laois__trashed
+  trashed title : Guia Prático para Brasileiros em Laois
+  trashed date  : 2026-03-20T11:15:20  modified=2026-08-30T20:58:35
+  language      : None
+  link          : https://conexaobr.ie/?p=10376
+
+  IDENT-1 slug vs historical slug : MATCH
+  IDENT-2 id   vs historical id   : MATCH
+  IDENT-3 title vs historical title: MATCH
+     trashed : 'Guia Prático para Brasileiros em Laois'
+     historic : 'Guia Prático para Brasileiros em Laois'
+  CONTENT trashed vs historical PT : jaccard=0.0000 seq=1.0000
+  CONTENT trashed PT vs authored EN: jaccard=0.0000 seq=1.0000
+  PT body (trashed) : ''
+  EN body (authored): ''
+  URL overlap PT/EN: []
+
+==============================================================================
+GUIDE ROWS IN TRASH (context)
+==============================================================================
+  463 [guide] trash slug=carteira-de-motorista-2__trashed
+      title: Carteira de Motorista na Irlanda: Como Trocar a CNH
+      date : 2026-08-15T09:03:47  body_len=2392
+  24974 [guide] trash slug=outono-irlanda-alimentacao-bem-estar__trashed
+      title: O outono chegou à Irlanda… e o nosso corpo também sente essa mudança
+      date : 2026-09-25T00:00:00  body_len=3119
+  10009 (row 1's historical guide): NOT PRESENT in published, trash, or any post type.

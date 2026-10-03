@@ -1,0 +1,214 @@
+STAGE 15 - PERSONAL-PLAN CONSTRAINT SURVEY AND PROVIDER PATH INVESTIGATION
+Recomputed in this Stage 15 run on 2026-10-01. No prior evidence reused.
+
+====================================================================
+A. WORDPRESS.COM PERSONAL-PLAN CAPABILITY BOUNDARY
+====================================================================
+Sources consulted (fetched during this run):
+  - https://wordpress.com/pricing/
+  - https://wordpress.com/support/connectors/
+  - https://make.wordpress.org/core/2026/03/18/introducing-the-connectors-api-in-wordpress-7-0/
+  - https://make.wordpress.org/core/2026/03/24/introducing-the-ai-client-in-wordpress-7-0/
+  - https://developer.wordpress.org/reference/functions/_wp_connectors_get_api_key_source/
+  - https://github.com/WordPress/plugin-check/issues/1342
+  - https://github.com/WordPress/wp-ai-client (README, trunk)
+
+CONFIRMED AVAILABLE on Personal (quoted from wordpress.com/pricing):
+  "Extend your site with WordPress plugins / Install any of over 60,000
+   plugins from the WordPress.com marketplace, or upload a plugin directly
+   to your site."
+  => wp-admin > Plugins > Upload Plugin is a Personal capability. The
+     Stage 15 section 2 deployment model is therefore SUPPORTED.
+
+CONFIRMED NOT on Personal (quoted from wordpress.com/pricing FAQ):
+  "Both [Business and Commerce] include developer tools like SFTP/SSH,
+   WP-CLI, Git commands, and GitHub Deployments"
+  => SFTP, SSH, WP-CLI, Git/GitHub Deployments are Business/Commerce only.
+  => Real-time backups / one-click restore: "available on Business,
+     Commerce, and Enterprise plans."
+  The stage correctly excludes all of these. None was required, attempted,
+  or simulated by this stage.
+
+No staging-site synchronization was required. No phpMyAdmin, no direct DB
+access, no server filesystem access, and no server-level environment
+variable facility was used at any point.
+
+====================================================================
+B. PROVIDER CREDENTIAL PATH - THE INVESTIGATION STAGE 15 REQUIRED
+====================================================================
+Stage 15 section 4 requires investigating Path A (native Connectors / AI
+Client) BEFORE declaring the provider impossible. That investigation was
+performed. It produced a decisive, evidence-based NEGATIVE result.
+
+--------------------------------------------------------------------
+PATH A - Native WordPress.com Connectors / WordPress AI Client
+--------------------------------------------------------------------
+VERDICT: NOT COMPATIBLE with this repository's secret boundary.
+         Also UNVERIFIABLE in production, because the enabling version
+         cannot be observed anonymously.
+
+What Path A would be (WordPress 7.0, from the core dev-notes):
+  - Connectors API: a framework for registering connections to external
+    services, initially AI providers, with a Settings > Connectors admin
+    screen for "API key management".
+  - AI Client: `wp_ai_client_prompt()` returns a fluent builder;
+    `->generate_text()` returns text or WP_Error. The site owner
+    configures a provider; the plugin references a provider/model and
+    never handles the key itself:
+        $text = wp_ai_client_prompt( '...' )
+                   ->using_temperature( 0.7 )
+                   ->generate_text();
+    Feature detection: `is_supported_for_text_generation()`.
+
+The decisive fact - WHERE the key lives (source, quoted):
+  _wp_connectors_get_api_key_source( $setting_name, $env_var_name, $constant_name )
+    "Checks in order: environment variable, PHP constant, database."
+      if ( '' !== $env_var_name ) { $env = getenv( $env_var_name ); ... return 'env'; }
+      if ( '' !== $constant_name && defined( $constant_name ) ) { ... return 'constant'; }
+      $db_value = get_option( $setting_name, '' );
+      if ( '' !== $db_value ) { return 'database'; }
+      return 'none';
+  Return value is one of: 'env' | 'constant' | 'database' | 'none'.
+
+  The documented Connectors UI flow (wordpress.com/support/connectors) is:
+  "Paste your API key into the field that appears. Click the Save button."
+  That UI writes to the DATABASE branch, i.e. `get_option()`.
+
+  Cross-confirmed by WordPress/plugin-check#1342, which states the option
+  name pattern explicitly:
+      /^connectors_ai_[a-z0-9_]+_api_key$/i
+      examples: connectors_ai_openai_api_key, connectors_ai_anthropic_api_key
+  and that plugins reading these options directly is flagged as an ERROR
+  and "is not permitted", with the instruction to "route AI requests
+  through the WordPress AI Client instead".
+
+  => THE CONNECTOR KEY IS A wp_options ROW IN THE SITE DATABASE.
+
+WHY THIS FAILS THE REPOSITORY'S RULE (Stage 15 section 5 and Path C):
+  Stage 0 control S7, restated verbatim in the shipped source at
+  class-conexao-translation-automation-provider-config.php lines 9-10:
+    "NON-SECRET configuration | this file, as code constants"
+    "the CREDENTIAL | the process environment ONLY | Stage 0 control S7:
+     a credential in wp_options is in the database, in every backup, in
+     every replica and in every export"
+
+  The 'database' branch of _wp_connectors_get_api_key_source IS a
+  credential in wp_options. Adopting the Connectors UI would therefore
+  place the provider key in the site database, in every backup and every
+  export - precisely what S7 forbids and precisely what Stage 15 section 5
+  warned about: "do not assume that 'Connector' automatically satisfies our
+  existing 'never store our provider key in our own database' rule. Verify
+  the actual integration boundary before adopting it."
+
+  The `env` branch is NOT reachable through the Connectors UI. It is only
+  consulted when a caller passes an explicit $env_var_name, and
+  WordPress.com Personal provides no server-level environment-variable
+  facility (that is a Business/Commerce developer feature). So the
+  env-only S7 boundary cannot be satisfied by configuring a connector.
+
+  Stage 15 section 5 also directs: "If the native API requires direct
+  secret extraction into our plugin, treat that as an architecture mismatch
+  and stop." The AI Client is a legitimate abstraction, but the ONLY way
+  to make it carry our key is the database option. There is no supported
+  Personal path that keeps the key out of the database while still letting
+  the plugin use it.
+
+  A SECOND, INDEPENDENT BLOCKER - our exact contract is not expressible:
+  The shipped provider contract is a direct
+  `https://api.openai.com/v1/chat/completions` transport with a fixed
+  model id ('gpt-4o-mini'), a 240,000-byte request ceiling, 4 attempts
+  with 500ms..4000ms backoff, a stable request-identity digest over
+  {provider, model, source_lang, target_lang}, and a hard
+  MAX_TOTAL_PROVIDER_CALLS cost guard. The AI Client returns whichever
+  model the site owner happens to have connected, offers no fixed-model
+  guarantee unless using_model() pins it (which the docs explicitly call
+  "unnecessarily opinionated" and which would still route through the
+  connector's credential), and exposes none of our ceilings, retry policy
+  or request-identity digest. Adopting it would mean REWRITING the
+  provider transport and its identity contract - a new architecture, not a
+  credential path. Stage 15 section 4 Path B forbids implementing this as
+  a second translation engine, and Stage 15 section 41 forbids modifying
+  the engine. Rewriting the transport is out of scope for this stage.
+
+  A THIRD BLOCKER - the enabling version is NOT OBSERVABLE:
+  Path A requires WordPress 7.0+ core. Production's WordPress version
+  could not be established through any Personal-plan-accessible,
+  anonymous, read-only channel in this run:
+    - no <meta name="generator"> in the homepage HTML
+    - no `ver=` query parameter in the /feed/ output
+    - the only AI-adjacent REST namespace present anonymously is
+      `wp-abilities/v1`; there is NO ai/client/connector namespace
+  Adopting Path A would require assuming the production version supports
+  it. Stage 15 section 1 forbids assuming an unavailable capability
+  exists, and section 12 forbids inferring production behaviour from
+  source alone. So Path A is BOTH incompatible AND unverified.
+
+--------------------------------------------------------------------
+PATH B - External provider runner
+--------------------------------------------------------------------
+VERDICT: NOT AVAILABLE within the current architecture.
+
+  No external runner exists in this repository, none is authorized, and
+  building one is a new component (a service holding the secret and
+  posting a validated result into the protected workflow). Stage 15
+  section 4 Path B permits evaluating this only if A fails AND it is
+  "already safely available within the current architecture". It is not
+  available. It is also explicitly not a second translation engine, so it
+  would have to reuse this repository's existing validator, digests and
+  approval chain - which cannot be commissioned without the installation
+  and provider-call authorizations that are both absent.
+
+--------------------------------------------------------------------
+PATH C - No safe Personal-compatible path
+--------------------------------------------------------------------
+VERDICT: THIS IS THE STATE OF THE WORLD. => BLOCKED.
+
+  Neither A nor B is safely available. Therefore, per Stage 15 section 4
+  Path C, the stage is BLOCKED, and the provider key was NOT placed into:
+    - plugin source                (no)
+    - ZIP artifacts                (no; secret scan: 0 findings)
+    - wp_options / connectors_ai_* (no; never configured, never read)
+    - custom plugin settings       (no)
+    - post meta                    (no)
+    - audit records                (no)
+    - database tables              (no)
+  and no unapproved credential workaround was used.
+
+====================================================================
+C. PRODUCTION READ-ONLY OBSERVATION (anonymous, GET only, no credentials)
+====================================================================
+  Site is reachable. This is reachability, NOT access and NOT authorization.
+
+  GET https://conexaobr.ie/                       -> HTTP 200
+  GET https://conexaobr.ie/wp-json/               -> HTTP 200
+  GET https://conexaobr.ie/wp-admin/              -> HTTP 302 (redirect to login)
+  GET https://conexaobr.ie/wp-cron.php            -> HTTP 200
+
+  Anonymous admin-post (GET, no nonce, no cookie, no credentials):
+    /wp-admin/admin-post.php?action=conexao_translation_rollout_run
+                                                          -> HTTP 400
+    /wp-admin/admin-post.php?action=conexao_translation_automation_batch
+                                                          -> HTTP 400
+    /wp-admin/admin-post.php?action=conexao_translation_automation_proof
+                                                          -> HTTP 400
+  NO POST was issued. NO mode=apply was submitted. No engine path was
+  attempted. HTTP 400 here is WordPress's generic rejection of a
+  malformed/unauthenticated admin-post; it is NOT the HTTP 410 that
+  section 12 requires, and it is NOT offered as a substitute for it.
+
+  Translation REST surface (anonymous):
+    /wp-json/conexao/v1 -> HTTP 404
+    23 namespaces advertised; NONE contains 'conexao' or 'translat'.
+    => no unexpected translation REST route is exposed anonymously.
+
+  Shipped-file presence probe (read-only GET of a known plugin file):
+    conexao-translation-rollout/conexao-translation-rollout.php  -> 200, 0-byte body
+    conexao-translation-automation/conexao-translation-automation.php -> 404
+    conexao-content/conexao-content.php                          -> 200
+    polylang/polylang.php                                        -> 200
+  The rollout 200 returned content-type text/html with a ZERO-BYTE body:
+  the file executed and produced no output, i.e. no PHP source was leaked
+  (the plugin's own `defined('ABSPATH') || exit;` guard fired). The
+  automation plugin's 404 indicates that plugin is NOT present in
+  production. Whether the rollout plugin is ACTIVE is not observable
+  anonymously and is not asserted here.

@@ -1,0 +1,21 @@
+=== Polylang settings (post-inventory re-read) ===
+{
+    "force_lang": 1,
+    "domains": [],
+    "hide_default": true,
+    "rewrite": true,
+    "redirect_lang": false,
+    "browser": false,
+    "media_support": false,
+    "post_types": [],
+    "taxonomies": [],
+    "sync": [],
+    "default_lang": "pt",
+    "nav_menus": [],
+    "first_activation": 1790697615,
+    "previous_version": "",
+    "version": "3.8.10"
+}
+=== Languages ===
+  en   English      locale=en_US  term_id=1744 default=False assigned=0
+  pt   Português    locale=pt_BR  term_id=1747 default=True assigned=2681

@@ -1,0 +1,11 @@
+Shared engine idempotence (live local fixtures, disposable synthetic job records, removed afterwards):
+
+  first  apply: created=2  updated=0
+  second apply: created=0  updated=0     <- no duplicate EN posts, no duplicate translation links
+
+Real migrated stage (stage=job, local site, no writes - dry-run only):
+  dry-run    : created=0  updated=0  skipped=1  conflicts=0  match stable-id=1 slug=0 title=0
+  gate       : eligible_public_pt=1 with_en=1 missing_en=0 conflicts=0 pt_drift=0 -> PASS
+
+Fixture cleanup: the job namespace returned to its pre-test ID set (assertion
+"fixtures fully removed; job namespace restored" in test-rollout-failure-proofs.php).

@@ -1,0 +1,9 @@
+# PHPStan (targeted: the two changed PHP files)
+# command: vendor/bin/phpstan analyse --memory-limit=1G --no-progress --no-ansi \
+#   wp-content/plugins/conexao-en-translation/includes/leisure-description-stage.php \
+#   wp-content/plugins/conexao-translation-rollout/includes/class-conexao-translation-rollout-engine.php
+
+and bugfixes was released on July 17th 2025,
+with hundreds of new features, bugfixes, and other
+Note: Using configuration file /home/andrei/IdeaProjects/wordpress-website/phpstan.neon.dist.
+ [OK] No errors                                                                 

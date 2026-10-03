@@ -1,0 +1,152 @@
+{
+  "checked_at": "2026-09-30T12:32:57.947669+00:00",
+  "clean_slug_occupancy_posts": {
+    "10367": {
+      "clean_slug": "dica-de-saude-para-quem-viaja",
+      "http": 200,
+      "match_ids": [],
+      "occupied_by_other": []
+    },
+    "10369": {
+      "clean_slug": "cursos-e-apoio-para-empreendedores",
+      "http": 200,
+      "match_ids": [],
+      "occupied_by_other": []
+    },
+    "10373": {
+      "clean_slug": "auxilios-e-apoio-relacionados-a-saude-e-bem-estar-na-irlanda",
+      "http": 200,
+      "match_ids": [],
+      "occupied_by_other": []
+    },
+    "10374": {
+      "clean_slug": "auxilios-para-familias-atipicas-na-irlanda",
+      "http": 200,
+      "match_ids": [],
+      "occupied_by_other": []
+    },
+    "10375": {
+      "clean_slug": "guia-para-quem-esta-com-dificuldades-financeiras",
+      "http": 200,
+      "match_ids": [],
+      "occupied_by_other": []
+    },
+    "10376": {
+      "clean_slug": "guia-pratico-para-brasileiros-em-laois",
+      "http": 200,
+      "match_ids": [],
+      "occupied_by_other": []
+    }
+  },
+  "results": {
+    "10367": {
+      "clean_slug": "dica-de-saude-para-quem-viaja",
+      "current_slug": "dica-de-saude-para-quem-viaja__trashed",
+      "current_status": "trash",
+      "fetch_status": 200,
+      "slug_has_trashed_suffix": true
+    },
+    "10369": {
+      "clean_slug": "cursos-e-apoio-para-empreendedores",
+      "current_slug": "cursos-e-apoio-para-empreendedores__trashed",
+      "current_status": "trash",
+      "fetch_status": 200,
+      "slug_has_trashed_suffix": true
+    },
+    "10373": {
+      "clean_slug": "auxilios-e-apoio-relacionados-a-saude-e-bem-estar-na-irlanda",
+      "current_slug": "auxilios-e-apoio-relacionados-a-saude-e-bem-estar-na-irlanda__trashed",
+      "current_status": "trash",
+      "fetch_status": 200,
+      "slug_has_trashed_suffix": true
+    },
+    "10374": {
+      "clean_slug": "auxilios-para-familias-atipicas-na-irlanda",
+      "current_slug": "auxilios-para-familias-atipicas-na-irlanda__trashed",
+      "current_status": "trash",
+      "fetch_status": 200,
+      "slug_has_trashed_suffix": true
+    },
+    "10375": {
+      "clean_slug": "guia-para-quem-esta-com-dificuldades-financeiras",
+      "current_slug": "guia-para-quem-esta-com-dificuldades-financeiras__trashed",
+      "current_status": "trash",
+      "fetch_status": 200,
+      "slug_has_trashed_suffix": true
+    },
+    "10376": {
+      "clean_slug": "guia-pratico-para-brasileiros-em-laois",
+      "current_slug": "guia-pratico-para-brasileiros-em-laois__trashed",
+      "current_status": "trash",
+      "fetch_status": 200,
+      "slug_has_trashed_suffix": true
+    }
+  },
+  "slug_occupancy_type_probe": {
+    "course_provider": {
+      "http": 200,
+      "matches": []
+    },
+    "events": {
+      "http": 404,
+      "matches": {
+        "code": "rest_no_route",
+        "data": {
+          "status": 404
+        },
+        "message": "No route was found matching the URL and request method."
+      }
+    },
+    "guide": {
+      "http": 200,
+      "matches": []
+    },
+    "jobs": {
+      "http": 404,
+      "matches": {
+        "code": "rest_no_route",
+        "data": {
+          "status": 404
+        },
+        "message": "No route was found matching the URL and request method."
+      }
+    },
+    "leisure": {
+      "http": 200,
+      "matches": []
+    },
+    "media": {
+      "http": 400,
+      "matches": {
+        "code": "rest_invalid_param",
+        "data": {
+          "details": {
+            "status": {
+              "code": "rest_not_in_enum",
+              "data": null,
+              "message": "status[0] is not one of inherit, private, and trash."
+            }
+          },
+          "params": {
+            "status": "status[0] is not one of inherit, private, and trash."
+          },
+          "status": 400
+        },
+        "message": "Invalid parameter(s): status"
+      }
+    },
+    "pages": {
+      "http": 200,
+      "matches": []
+    },
+    "posts": {
+      "http": 200,
+      "matches": []
+    },
+    "sponsor": {
+      "http": 200,
+      "matches": []
+    }
+  },
+  "target": "https://conexaobr.ie"
+}

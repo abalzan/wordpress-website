@@ -1,0 +1,15 @@
+ENGINE INTEGRITY (Stage 14)
+
+Stage 14 STARTING digest (captured from the checked-out tree BEFORE any Stage 14 work):
+  264cc6c4e7b4214f2bc30436afb077d308b1897de444431c5c3a331f08116912  wp-content/plugins/conexao-translation-rollout/includes/class-conexao-translation-rollout-engine.php
+
+Stage 14 ENDING digest (after Gate A, all tests and all artifacts):
+  264cc6c4e7b4214f2bc30436afb077d308b1897de444431c5c3a331f08116912  wp-content/plugins/conexao-translation-rollout/includes/class-conexao-translation-rollout-engine.php
+
+BEFORE == AFTER: identical
+
+git diff over the rollout plugin (empty = no file in it changed):
+  (no output above means zero changed files)
+
+The shared engine was NOT modified in Stage 14. The secret-scan change is
+confined to conexao-translation-automation (the result boundary).

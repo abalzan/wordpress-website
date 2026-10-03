@@ -1,0 +1,22 @@
+# PHPCS legacy-baseline gate — before and after
+
+## Before (HEAD 726004a, the state this task started from)
+PHPCS legacy baseline: 3316 errors / 2982 warnings in 202 files (baseline: 3290 / 2672).
+NEW VIOLATIONS - sniffs not in the baseline:
+  + WordPress.WP.I18n.NonSingularStringLiteralText (1 errors, 0 warnings)
+NEW VIOLATIONS - per-sniff counts grew: (11 sniffs, +311 DoubleArrowNotAligned)
+
+## After (HEAD f537afb)
+$ vendor/bin/phpcs -q --report=json --no-colors > report.json
+$ php scripts/phpcs-baseline.php check report.json phpcs-baseline.json
+PHPCS legacy baseline: 3210 errors / 2668 warnings in 202 files (baseline: 3290 / 2672).
+Debt paid down in 19 sniff(s) - regenerate the baseline deliberately when convenient (scripts/phpcs-baseline.php update).
+OK: no new PHPCS violations against the baseline.
+rc=0
+
+## Baseline provenance check (methodology, not assumption)
+Running the SAME PHPCS (3.13.6 + WPCS 3.1) on the tree at bb7d8a7 — the
+commit phpcs-baseline.json was generated from — reproduces it exactly:
+  PHPCS legacy baseline: 3290 errors / 2672 warnings in 156 files (baseline: 3290 / 2672).
+  grown/new sniffs: (none)
+  => the baseline is accurate and current; the growth was real source debt.

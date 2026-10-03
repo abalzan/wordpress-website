@@ -33,6 +33,13 @@ if ! command -v zip &>/dev/null; then
 fi
 
 # --- Build -------------------------------------------------------------------
+#
+# Packaging lives in scripts/lib/zip-build.sh — the same implementation the
+# plugin build uses, so the exclusion rules and the determinism guarantee are
+# defined once (engineering standard §11).
+
+# shellcheck source=scripts/lib/zip-build.sh
+source "${PROJECT_ROOT}/scripts/lib/zip-build.sh"
 
 mkdir -p "${OUTPUT_DIR}"
 
@@ -40,41 +47,39 @@ echo "Packaging theme: ${THEME_SLUG}"
 echo "  Source:    ${THEME_DIR}"
 echo "  Output:    ${OUTPUT_ZIP}"
 
-# Remove any previous build
-rm -f "${OUTPUT_ZIP}"
-
-# Create the zip from the themes directory so the theme folder appears at the
-# zip root (WordPress requires this structure for theme import).
-pushd "$(dirname "${THEME_DIR}")" >/dev/null
-
-# Exclude common junk/version-control files and OS metadata.
-zip -r "${OUTPUT_ZIP}" "${THEME_SLUG}" \
-    -x "*/.git/*" \
-    -x "*/node_modules/*" \
-    -x "*/.DS_Store" \
-    -x "*/Thumbs.db" \
-    -x "*.swp" \
-    -x "*~" \
-    >/dev/null
-
-popd >/dev/null
-
-# --- Verify ------------------------------------------------------------------
-
-if [[ ! -f "${OUTPUT_ZIP}" ]]; then
-    echo "ERROR: Build failed - output file not created." >&2
+# The packager prints "<slug> <file-count> <bytes> <sha256>" and fails loudly on
+# an empty or unwritable artifact.
+if ! RECORD="$(conexao_zip_package "$(dirname "${THEME_DIR}")" "${THEME_SLUG}" "${OUTPUT_ZIP}" theme)"; then
     exit 1
 fi
 
-SIZE="$(du -h "${OUTPUT_ZIP}" | cut -f1)"
-FILE_COUNT="$(unzip -l "${OUTPUT_ZIP}" 2>/dev/null | tail -1 | awk '{print $2}')"
+read -r _rec_slug FILE_COUNT BYTES SHA256 <<<"${RECORD}"
 
 echo ""
 echo "✓ Theme packaged successfully:"
-echo "  File:    ${OUTPUT_ZIP}"
-echo "  Size:    ${SIZE}"
-echo "  Files:   ${FILE_COUNT}"
+echo "  File:     ${OUTPUT_ZIP}"
+echo "  Files:    ${FILE_COUNT}"
+echo "  Bytes:    ${BYTES}"
+echo "  SHA-256:  ${SHA256}"
 echo ""
+
+# --- Release manifest --------------------------------------------------------
+#
+# §11 MUST: every build emits dist/release.json. Re-emitting it here is safe and
+# intentional: the manifest is derived from the artifacts on disk, so running the
+# theme build last leaves a record that describes the COMPLETE release.
+echo "Emitting release manifest:"
+
+if ! command -v python3 &>/dev/null; then
+    echo "ERROR: python3 is required to emit the release manifest." >&2
+    exit 1
+fi
+
+python3 "${PROJECT_ROOT}/scripts/release-manifest.py" \
+    --write --dist "${OUTPUT_DIR}" --root "${PROJECT_ROOT}" || exit 1
+
+echo ""
+
 echo "To import:"
 echo "  1. Go to WordPress Admin → Appearance → Themes → Add New"
 echo "  2. Click 'Upload Theme'"

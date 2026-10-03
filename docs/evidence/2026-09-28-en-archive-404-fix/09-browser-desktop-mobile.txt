@@ -1,0 +1,99 @@
+[
+  {
+    "viewport": "desktop",
+    "route": "/en/apoiadores/",
+    "status": 200,
+    "final_url": "http://localhost:8080/en/apoiadores/",
+    "html_lang": "en-US",
+    "title": "Supporters in Ireland | Conexão BR",
+    "canonical": "http://localhost:8080/en/apoiadores/",
+    "hreflang": 3,
+    "no_pt_redirect": true,
+    "page_errors": [],
+    "console_errors": [],
+    "h_overflow": false,
+    "body_text_len": 1379
+  },
+  {
+    "viewport": "desktop",
+    "route": "/en/eventos/",
+    "status": 200,
+    "final_url": "http://localhost:8080/en/eventos/",
+    "html_lang": "en-US",
+    "title": "Events in Ireland | Conexão BR",
+    "canonical": "http://localhost:8080/en/eventos/",
+    "hreflang": 5,
+    "no_pt_redirect": true,
+    "page_errors": [],
+    "console_errors": [
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    ],
+    "h_overflow": false,
+    "body_text_len": 3806
+  },
+  {
+    "viewport": "desktop",
+    "route": "/en/guias/",
+    "status": 200,
+    "final_url": "http://localhost:8080/en/guias/",
+    "html_lang": "en-US",
+    "title": "Practical Guides | Conexão BR",
+    "canonical": "http://localhost:8080/en/guias/",
+    "hreflang": 3,
+    "no_pt_redirect": true,
+    "page_errors": [],
+    "console_errors": [],
+    "h_overflow": false,
+    "body_text_len": 1017
+  },
+  {
+    "viewport": "mobile",
+    "route": "/en/apoiadores/",
+    "status": 200,
+    "final_url": "http://localhost:8080/en/apoiadores/",
+    "html_lang": "en-US",
+    "title": "Supporters in Ireland | Conexão BR",
+    "canonical": "http://localhost:8080/en/apoiadores/",
+    "hreflang": 3,
+    "no_pt_redirect": true,
+    "page_errors": [],
+    "console_errors": [
+      "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "Failed to load resource: the server responded with a status of 404 (Not Found)"
+    ],
+    "h_overflow": false,
+    "body_text_len": 1277
+  },
+  {
+    "viewport": "mobile",
+    "route": "/en/eventos/",
+    "status": 200,
+    "final_url": "http://localhost:8080/en/eventos/",
+    "html_lang": "en-US",
+    "title": "Events in Ireland | Conexão BR",
+    "canonical": "http://localhost:8080/en/eventos/",
+    "hreflang": 5,
+    "no_pt_redirect": true,
+    "page_errors": [],
+    "console_errors": [],
+    "h_overflow": false,
+    "body_text_len": 3683
+  },
+  {
+    "viewport": "mobile",
+    "route": "/en/guias/",
+    "status": 200,
+    "final_url": "http://localhost:8080/en/guias/",
+    "html_lang": "en-US",
+    "title": "Practical Guides | Conexão BR",
+    "canonical": "http://localhost:8080/en/guias/",
+    "hreflang": 3,
+    "no_pt_redirect": true,
+    "page_errors": [],
+    "console_errors": [],
+    "h_overflow": false,
+    "body_text_len": 915
+  }
+]

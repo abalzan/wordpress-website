@@ -9,32 +9,14 @@
  * No live HTTP requests. No Event records created.
  */
 
-$wp_load = dirname( dirname( dirname( dirname( __DIR__ ) ) ) ) . '/wp-load.php';
-if ( file_exists( $wp_load ) ) {
-	require_once $wp_load;
-} else {
-	require_once '/var/www/html/wp-load.php';
-}
+
+// Shared Stage E test bootstrap: the only place allowed to locate wp-load.php.
+require_once dirname( __DIR__, 4 ) . '/tests/bootstrap.php';
 
 require_once WP_PLUGIN_DIR . '/conexao-event-importer/conexao-event-importer.php';
 
 $passed = 0;
 $failed = 0;
-
-function test_assert( $condition, $message ) {
-	global $passed, $failed;
-	if ( $condition ) {
-		$passed++;
-		echo "  PASS: {$message}\n";
-	} else {
-		$failed++;
-		echo "  FAIL: {$message}\n";
-	}
-}
-
-function test_section( $title ) {
-	echo "\n=== {$title} ===\n";
-}
 
 // ---------------------------------------------------------------------------
 // Test 1: County Registry
@@ -42,46 +24,46 @@ function test_section( $title ) {
 test_section( 'County Registry' );
 
 $counties = Conexao_County_Registry::get_counties();
-test_assert( 26 === count( $counties ), 'Registry contains 26 counties' );
+assert_true( 26 === count( $counties ), 'Registry contains 26 counties' );
 
 $slugs = Conexao_County_Registry::get_slugs();
-test_assert( 26 === count( $slugs ), '26 county slugs returned' );
+assert_true( 26 === count( $slugs ), '26 county slugs returned' );
 
 // Verify all 26 expected counties exist.
 $expected = array( 'carlow','cavan','clare','cork','donegal','dublin','galway','kerry','kildare','kilkenny','laois','leitrim','limerick','longford','louth','mayo','meath','monaghan','offaly','roscommon','sligo','tipperary','waterford','westmeath','wexford','wicklow' );
 foreach ( $expected as $slug ) {
-	test_assert( isset( $counties[ $slug ] ), "County '{$slug}' exists in registry" );
+	assert_true( isset( $counties[ $slug ] ), "County '{$slug}' exists in registry" );
 }
 
 // Verify ROI jurisdiction.
 foreach ( $counties as $slug => $data ) {
-	test_assert( 'ROI' === $data['jurisdiction'], "{$slug}: jurisdiction is ROI" );
+	assert_true( 'ROI' === $data['jurisdiction'], "{$slug}: jurisdiction is ROI" );
 }
 
 // Verify each county has required fields.
 foreach ( $counties as $slug => $data ) {
-	test_assert( ! empty( $data['name'] ), "{$slug}: has display name" );
-	test_assert( ! empty( $data['eb_slug'] ), "{$slug}: has EB slug" );
-	test_assert( ! empty( $data['eb_region_labels'] ) && is_array( $data['eb_region_labels'] ), "{$slug}: has EB region labels" );
-	test_assert( ! empty( $data['hw_where'] ) && is_array( $data['hw_where'] ), "{$slug}: has HW where[] values" );
+	assert_true( ! empty( $data['name'] ), "{$slug}: has display name" );
+	assert_true( ! empty( $data['eb_slug'] ), "{$slug}: has EB slug" );
+	assert_true( ! empty( $data['eb_region_labels'] ) && is_array( $data['eb_region_labels'] ), "{$slug}: has EB region labels" );
+	assert_true( ! empty( $data['hw_where'] ) && is_array( $data['hw_where'] ), "{$slug}: has HW where[] values" );
 }
 
 // Verify Cork has multiple region labels.
-test_assert( count( $counties['cork']['eb_region_labels'] ) === 2, 'Cork has 2 region labels' );
-test_assert( in_array( 'Cork', $counties['cork']['eb_region_labels'], true ), 'Cork includes "Cork"' );
-test_assert( in_array( 'Cork City', $counties['cork']['eb_region_labels'], true ), 'Cork includes "Cork City"' );
+assert_true( count( $counties['cork']['eb_region_labels'] ) === 2, 'Cork has 2 region labels' );
+assert_true( in_array( 'Cork', $counties['cork']['eb_region_labels'], true ), 'Cork includes "Cork"' );
+assert_true( in_array( 'Cork City', $counties['cork']['eb_region_labels'], true ), 'Cork includes "Cork City"' );
 
 // Verify Galway has multiple region labels.
-test_assert( count( $counties['galway']['eb_region_labels'] ) === 2, 'Galway has 2 region labels' );
+assert_true( count( $counties['galway']['eb_region_labels'] ) === 2, 'Galway has 2 region labels' );
 
 // Verify Dublin has 4 HW where[] values.
-test_assert( count( $counties['dublin']['hw_where'] ) === 4, 'Dublin has 4 HW where[] values' );
+assert_true( count( $counties['dublin']['hw_where'] ) === 4, 'Dublin has 4 HW where[] values' );
 
 // Verify Cork has correct HW where[].
-test_assert( $counties['cork']['hw_where'] === array( 'cork-county' ), 'Cork HW where[] is [cork-county]' );
+assert_true( $counties['cork']['hw_where'] === array( 'cork-county' ), 'Cork HW where[] is [cork-county]' );
 
 // Verify Galway has correct HW where[].
-test_assert( count( $counties['galway']['hw_where'] ) === 2, 'Galway has 2 HW where[] values' );
+assert_true( count( $counties['galway']['hw_where'] ) === 2, 'Galway has 2 HW where[] values' );
 
 // ---------------------------------------------------------------------------
 // Test 2: Eventbrite Source Config Generation
@@ -89,27 +71,27 @@ test_assert( count( $counties['galway']['hw_where'] ) === 2, 'Galway has 2 HW wh
 test_section( 'Eventbrite Source Config Generation' );
 
 $eb_sources = Conexao_County_Registry::get_all_eventbrite_sources();
-test_assert( 26 === count( $eb_sources ), '26 Eventbrite source configs generated' );
+assert_true( 26 === count( $eb_sources ), '26 Eventbrite source configs generated' );
 
 // Verify key format.
-test_assert( isset( $eb_sources['eventbrite_laois'] ), 'eventbrite_laois key exists' );
-test_assert( isset( $eb_sources['eventbrite_cork'] ), 'eventbrite_cork key exists' );
-test_assert( isset( $eb_sources['eventbrite_dublin'] ), 'eventbrite_dublin key exists' );
+assert_true( isset( $eb_sources['eventbrite_laois'] ), 'eventbrite_laois key exists' );
+assert_true( isset( $eb_sources['eventbrite_cork'] ), 'eventbrite_cork key exists' );
+assert_true( isset( $eb_sources['eventbrite_dublin'] ), 'eventbrite_dublin key exists' );
 
 // Verify all are inactive.
 foreach ( $eb_sources as $id => $source ) {
-	test_assert( 'inactive' === $source['status'], "{$id}: status is inactive" );
-	test_assert( 'eventbrite' === $source['type'], "{$id}: type is eventbrite" );
-	test_assert( ! empty( $source['url'] ), "{$id}: has URL" );
-	test_assert( ! empty( $source['county'] ), "{$id}: has county" );
-	test_assert( ! empty( $source['region_labels'] ), "{$id}: has region_labels" );
+	assert_true( 'inactive' === $source['status'], "{$id}: status is inactive" );
+	assert_true( 'eventbrite' === $source['type'], "{$id}: type is eventbrite" );
+	assert_true( ! empty( $source['url'] ), "{$id}: has URL" );
+	assert_true( ! empty( $source['county'] ), "{$id}: has county" );
+	assert_true( ! empty( $source['region_labels'] ), "{$id}: has region_labels" );
 }
 
 // Verify Laois URL.
-test_assert( strpos( $eb_sources['eventbrite_laois']['url'], 'ireland--laois' ) !== false, 'Laois EB URL contains ireland--laois' );
+assert_true( strpos( $eb_sources['eventbrite_laois']['url'], 'ireland--laois' ) !== false, 'Laois EB URL contains ireland--laois' );
 
 // Verify Cork URL.
-test_assert( strpos( $eb_sources['eventbrite_cork']['url'], 'ireland--cork' ) !== false, 'Cork EB URL contains ireland--cork' );
+assert_true( strpos( $eb_sources['eventbrite_cork']['url'], 'ireland--cork' ) !== false, 'Cork EB URL contains ireland--cork' );
 
 // ---------------------------------------------------------------------------
 // Test 3: Heritage Week Source Config Generation
@@ -117,24 +99,24 @@ test_assert( strpos( $eb_sources['eventbrite_cork']['url'], 'ireland--cork' ) !=
 test_section( 'Heritage Week Source Config Generation' );
 
 $hw_sources = Conexao_County_Registry::get_all_heritage_week_sources();
-test_assert( 26 === count( $hw_sources ), '26 Heritage Week source configs generated' );
+assert_true( 26 === count( $hw_sources ), '26 Heritage Week source configs generated' );
 
 // Verify key format.
-test_assert( isset( $hw_sources['heritage_week_laois'] ), 'heritage_week_laois key exists' );
-test_assert( isset( $hw_sources['heritage_week_cork'] ), 'heritage_week_cork key exists' );
-test_assert( isset( $hw_sources['heritage_week_dublin'] ), 'heritage_week_dublin key exists' );
+assert_true( isset( $hw_sources['heritage_week_laois'] ), 'heritage_week_laois key exists' );
+assert_true( isset( $hw_sources['heritage_week_cork'] ), 'heritage_week_cork key exists' );
+assert_true( isset( $hw_sources['heritage_week_dublin'] ), 'heritage_week_dublin key exists' );
 
 // Verify all are inactive.
 foreach ( $hw_sources as $id => $source ) {
-	test_assert( 'inactive' === $source['status'], "{$id}: status is inactive" );
-	test_assert( 'heritage_week' === $source['type'], "{$id}: type is heritage_week" );
-	test_assert( ! empty( $source['url'] ), "{$id}: has URL" );
-	test_assert( ! empty( $source['county'] ), "{$id}: has county" );
-	test_assert( ! empty( $source['hw_where'] ) && is_array( $source['hw_where'] ), "{$id}: has hw_where array" );
+	assert_true( 'inactive' === $source['status'], "{$id}: status is inactive" );
+	assert_true( 'heritage_week' === $source['type'], "{$id}: type is heritage_week" );
+	assert_true( ! empty( $source['url'] ), "{$id}: has URL" );
+	assert_true( ! empty( $source['county'] ), "{$id}: has county" );
+	assert_true( ! empty( $source['hw_where'] ) && is_array( $source['hw_where'] ), "{$id}: has hw_where array" );
 }
 
 // Verify Dublin has 4 hw_where values.
-test_assert( count( $hw_sources['heritage_week_dublin']['hw_where'] ) === 4, 'heritage_week_dublin has 4 hw_where values' );
+assert_true( count( $hw_sources['heritage_week_dublin']['hw_where'] ) === 4, 'heritage_week_dublin has 4 hw_where values' );
 
 // ---------------------------------------------------------------------------
 // Test 4: Eventbrite Source ID (config-driven)
@@ -144,19 +126,19 @@ test_section( 'Eventbrite Source ID' );
 // Config-driven ID.
 $laois_eb = Conexao_County_Registry::get_eventbrite_source( 'laois' );
 $source = new Conexao_Source_Eventbrite( $laois_eb );
-test_assert( 'eventbrite_laois' === $source->get_id(), 'eventbrite_laois: get_id() returns config ID' );
+assert_true( 'eventbrite_laois' === $source->get_id(), 'eventbrite_laois: get_id() returns config ID' );
 
 $cork_eb = Conexao_County_Registry::get_eventbrite_source( 'cork' );
 $source = new Conexao_Source_Eventbrite( $cork_eb );
-test_assert( 'eventbrite_cork' === $source->get_id(), 'eventbrite_cork: get_id() returns config ID' );
+assert_true( 'eventbrite_cork' === $source->get_id(), 'eventbrite_cork: get_id() returns config ID' );
 
 $dublin_eb = Conexao_County_Registry::get_eventbrite_source( 'dublin' );
 $source = new Conexao_Source_Eventbrite( $dublin_eb );
-test_assert( 'eventbrite_dublin' === $source->get_id(), 'eventbrite_dublin: get_id() returns config ID' );
+assert_true( 'eventbrite_dublin' === $source->get_id(), 'eventbrite_dublin: get_id() returns config ID' );
 
 // Legacy fallback (empty config).
 $source = new Conexao_Source_Eventbrite( array() );
-test_assert( 'eventbrite' === $source->get_id(), 'Legacy fallback: get_id() returns eventbrite' );
+assert_true( 'eventbrite' === $source->get_id(), 'Legacy fallback: get_id() returns eventbrite' );
 
 // ---------------------------------------------------------------------------
 // Test 5: Eventbrite Accepted Region Labels
@@ -170,13 +152,13 @@ $method->setAccessible( true );
 // Laois accepts 'Laois'.
 $source = new Conexao_Source_Eventbrite( $laois_eb );
 $labels = $method->invoke( $source );
-test_assert( $labels === array( 'Laois' ), 'Laois region labels = [Laois]' );
+assert_true( $labels === array( 'Laois' ), 'Laois region labels = [Laois]' );
 
 // Cork accepts 'Cork' and 'Cork City'.
 $source = new Conexao_Source_Eventbrite( $cork_eb );
 $labels = $method->invoke( $source );
-test_assert( in_array( 'Cork', $labels, true ), 'Cork region labels include "Cork"' );
-test_assert( in_array( 'Cork City', $labels, true ), 'Cork region labels include "Cork City"' );
+assert_true( in_array( 'Cork', $labels, true ), 'Cork region labels include "Cork"' );
+assert_true( in_array( 'Cork City', $labels, true ), 'Cork region labels include "Cork City"' );
 
 // ---------------------------------------------------------------------------
 // Test 6: Eventbrite County Assignment
@@ -187,21 +169,21 @@ $method = $reflect->getMethod( 'get_county' );
 $method->setAccessible( true );
 
 $source = new Conexao_Source_Eventbrite( $laois_eb );
-test_assert( 'Laois' === $method->invoke( $source ), 'Laois county = "Laois"' );
+assert_true( 'Laois' === $method->invoke( $source ), 'Laois county = "Laois"' );
 
 $source = new Conexao_Source_Eventbrite( $cork_eb );
-test_assert( 'Cork' === $method->invoke( $source ), 'Cork county = "Cork"' );
+assert_true( 'Cork' === $method->invoke( $source ), 'Cork county = "Cork"' );
 
 $source = new Conexao_Source_Eventbrite( $dublin_eb );
-test_assert( 'Dublin' === $method->invoke( $source ), 'Dublin county = "Dublin"' );
+assert_true( 'Dublin' === $method->invoke( $source ), 'Dublin county = "Dublin"' );
 
 // ---------------------------------------------------------------------------
 // Test 7: Eventbrite Dead API Path Removal
 // ---------------------------------------------------------------------------
 test_section( 'Eventbrite Dead API Path Removal' );
-	test_assert( ! method_exists( 'Conexao_Source_Eventbrite', 'fetch_via_api' ), 'fetch_via_api() removed' );
-test_assert( ! method_exists( 'Conexao_Source_Eventbrite', 'use_api' ), 'use_api() removed' );
-test_assert( ! defined( 'Conexao_Source_Eventbrite::API_SEARCH_URL' ), 'API_SEARCH_URL constant removed' );
+	assert_true( ! method_exists( 'Conexao_Source_Eventbrite', 'fetch_via_api' ), 'fetch_via_api() removed' );
+assert_true( ! method_exists( 'Conexao_Source_Eventbrite', 'use_api' ), 'use_api() removed' );
+assert_true( ! defined( 'Conexao_Source_Eventbrite::API_SEARCH_URL' ), 'API_SEARCH_URL constant removed' );
 
 // ---------------------------------------------------------------------------
 // Test 8: Eventbrite Normalizer — primary_venue
@@ -240,11 +222,11 @@ $raw = array(
 );
 
 $normalized = $normalizer->normalize( $raw );
-test_assert( 'Test Venue' === $normalized['venue'], 'primary_venue name: venue populated' );
-test_assert( '123 Main St, Cork, Cork, T12 AB12' === $normalized['address'], 'primary_venue address: full address populated' );
-test_assert( 'Cork' === $normalized['town'], 'primary_venue city: town populated' );
-test_assert( 'eventbrite_cork' === $normalized['source'], 'source from raw event' );
-test_assert( 'Cork' === $normalized['county'], 'county from raw event' );
+assert_true( 'Test Venue' === $normalized['venue'], 'primary_venue name: venue populated' );
+assert_true( '123 Main St, Cork, Cork, T12 AB12' === $normalized['address'], 'primary_venue address: full address populated' );
+assert_true( 'Cork' === $normalized['town'], 'primary_venue city: town populated' );
+assert_true( 'eventbrite_cork' === $normalized['source'], 'source from raw event' );
+assert_true( 'Cork' === $normalized['county'], 'county from raw event' );
 
 // Test legacy venue fallback.
 $raw_legacy = array(
@@ -269,11 +251,11 @@ $raw_legacy = array(
 );
 
 $normalized_legacy = $normalizer->normalize( $raw_legacy );
-test_assert( 'Old Venue' === $normalized_legacy['venue'], 'Legacy venue name: venue populated' );
-test_assert( '456 Old St, Laois' === $normalized_legacy['address'], 'Legacy venue address: populated' );
+assert_true( 'Old Venue' === $normalized_legacy['venue'], 'Legacy venue name: venue populated' );
+assert_true( '456 Old St, Laois' === $normalized_legacy['address'], 'Legacy venue address: populated' );
 
 // Test description prefers summary.
-test_assert( 'Short desc' === $normalized['description'], 'Description prefers summary' );
+assert_true( 'Short desc' === $normalized['description'], 'Description prefers summary' );
 
 // ---------------------------------------------------------------------------
 // Test 9: Eventbrite Unknown Region Rejection
@@ -288,13 +270,13 @@ $source = new Conexao_Source_Eventbrite( $laois_eb );
 $result = $method->invoke( $source, array(
 	'locations' => array( array( 'type' => 'region', 'name' => 'Cork' ) ),
 ) );
-test_assert( ! $result['accepted'], 'Laois rejects Cork region' );
+assert_true( ! $result['accepted'], 'Laois rejects Cork region' );
 
 // Laois source accepts an event with region 'Laois'.
 $result = $method->invoke( $source, array(
 	'locations' => array( array( 'type' => 'region', 'name' => 'Laois' ) ),
 ) );
-test_assert( $result['accepted'], 'Laois accepts Laois region' );
+assert_true( $result['accepted'], 'Laois accepts Laois region' );
 
 // ---------------------------------------------------------------------------
 // Test 10: Heritage Week Source ID (config-driven)
@@ -303,15 +285,15 @@ test_section( 'Heritage Week Source ID' );
 
 $laois_hw = Conexao_County_Registry::get_heritage_week_source( 'laois' );
 $source = new Conexao_Source_Heritage_Week( $laois_hw );
-test_assert( 'heritage_week_laois' === $source->get_id(), 'heritage_week_laois: get_id() returns config ID' );
+assert_true( 'heritage_week_laois' === $source->get_id(), 'heritage_week_laois: get_id() returns config ID' );
 
 $cork_hw = Conexao_County_Registry::get_heritage_week_source( 'cork' );
 $source = new Conexao_Source_Heritage_Week( $cork_hw );
-test_assert( 'heritage_week_cork' === $source->get_id(), 'heritage_week_cork: get_id() returns config ID' );
+assert_true( 'heritage_week_cork' === $source->get_id(), 'heritage_week_cork: get_id() returns config ID' );
 
 // Legacy fallback.
 $source = new Conexao_Source_Heritage_Week( array() );
-test_assert( 'heritage_week' === $source->get_id(), 'Legacy fallback: get_id() returns heritage_week' );
+assert_true( 'heritage_week' === $source->get_id(), 'Legacy fallback: get_id() returns heritage_week' );
 
 // ---------------------------------------------------------------------------
 // Test 11: Heritage Week Multiple where[]
@@ -324,12 +306,12 @@ $method->setAccessible( true );
 
 $source = new Conexao_Source_Heritage_Week( $laois_hw );
 $hw_where = $method->invoke( $source );
-test_assert( $hw_where === array( 'laois' ), 'Laois HW where[] = [laois]' );
+assert_true( $hw_where === array( 'laois' ), 'Laois HW where[] = [laois]' );
 
 $dublin_hw = Conexao_County_Registry::get_heritage_week_source( 'dublin' );
 $source = new Conexao_Source_Heritage_Week( $dublin_hw );
 $hw_where = $method->invoke( $source );
-test_assert( count( $hw_where ) === 4, 'Dublin HW where[] has 4 values' );
+assert_true( count( $hw_where ) === 4, 'Dublin HW where[] has 4 values' );
 
 // ---------------------------------------------------------------------------
 // Test 12: Handler Routing
@@ -343,43 +325,175 @@ $method->setAccessible( true );
 
 // eventbrite type routes to Conexao_Source_Eventbrite.
 $handler = $method->invoke( $plugin->importer, array( 'id' => 'eventbrite_cork', 'type' => 'eventbrite', 'url' => 'test' ) );
-test_assert( $handler instanceof Conexao_Source_Eventbrite, 'eventbrite type routes to Conexao_Source_Eventbrite' );
+assert_true( $handler instanceof Conexao_Source_Eventbrite, 'eventbrite type routes to Conexao_Source_Eventbrite' );
 
 // heritage_week type routes to Conexao_Source_Heritage_Week.
 $handler = $method->invoke( $plugin->importer, array( 'id' => 'heritage_week_cork', 'type' => 'heritage_week', 'url' => 'test' ) );
-test_assert( $handler instanceof Conexao_Source_Heritage_Week, 'heritage_week type routes to Conexao_Source_Heritage_Week' );
+assert_true( $handler instanceof Conexao_Source_Heritage_Week, 'heritage_week type routes to Conexao_Source_Heritage_Week' );
 
 // heritage_week_laois (type-based routing).
 $handler = $method->invoke( $plugin->importer, array( 'id' => 'heritage_week_laois', 'type' => 'heritage_week', 'url' => 'test' ) );
-test_assert( $handler instanceof Conexao_Source_Heritage_Week, 'heritage_week_laois routes to Conexao_Source_Heritage_Week' );
+assert_true( $handler instanceof Conexao_Source_Heritage_Week, 'heritage_week_laois routes to Conexao_Source_Heritage_Week' );
 
 // Legacy: heritage_week ID still routes to Conexao_Source_Heritage_Week.
 $handler = $method->invoke( $plugin->importer, array( 'id' => 'heritage_week', 'type' => 'website', 'url' => 'test' ) );
-test_assert( $handler instanceof Conexao_Source_Heritage_Week, 'Legacy heritage_week ID routes to Conexao_Source_Heritage_Week' );
+assert_true( $handler instanceof Conexao_Source_Heritage_Week, 'Legacy heritage_week ID routes to Conexao_Source_Heritage_Week' );
 
 // ---------------------------------------------------------------------------
-// Test 13: Source Seeding Idempotency
+// Test 13: Registry Completeness and Seeding Idempotency
 // ---------------------------------------------------------------------------
-test_section( 'Source Seeding Idempotency' );
+test_section( 'Registry Completeness and Seeding Idempotency' );
 
 $sources_mgr = new Conexao_Event_Sources();
+$option_key  = Conexao_Event_Sources::OPTION_KEY;
 
-// First seeding.
-$result1 = $sources_mgr->seed_county_sources();
-test_assert( 52 === $result1['inserted'], 'First seed: 52 sources inserted' );
-test_assert( 0 === $result1['skipped'], 'First seed: 0 skipped' );
+// Snapshot whatever the environment had, so this test restores it exactly.
+$snapshot = get_option( $option_key, array() );
 
-// Second seeding (should skip all).
-$result2 = $sources_mgr->seed_county_sources();
-test_assert( 0 === $result2['inserted'], 'Second seed: 0 inserted (idempotent)' );
-test_assert( 52 === $result2['skipped'], 'Second seed: 52 skipped (idempotent)' );
+// --- 13a: SELF-HEAL FROM A SIX-SOURCE (or empty) ENVIRONMENT ---------------
+//
+// This is the regression this suite guards. The county registry used to be
+// reachable ONLY through the manual `seed_county_sources()` operator step, so
+// any environment that was not interactively activated reported just the six
+// legacy defaults and silently lost the whole 26-county coverage. get_all()
+// now self-heals, so a plain read MUST restore the complete registry.
 
-// Clean up test sources.
-$sources = $sources_mgr->get_all();
-foreach ( $result1['ids'] as $id ) {
-	unset( $sources[ $id ] );
+$only_legacy = array();
+foreach ( $sources_mgr->get_defaults() as $id => $source ) {
+	$only_legacy[ $id ] = $source;
 }
-update_option( Conexao_Event_Sources::OPTION_KEY, $sources, false );
+update_option( $option_key, $only_legacy, false );
+
+// A plain read must repair it -- no operator step, no explicit seeding.
+$repaired = $sources_mgr->get_all();
+
+assert_true(
+	52 === count( $sources_mgr->get_county_source_ids() ),
+	'Self-heal: a 6-source environment is completed to 52 county sources by get_all() alone'
+);
+assert_true(
+	58 === count( $repaired ),
+	'Self-heal: registry holds 58 sources (6 legacy defaults + 52 county)'
+);
+
+// Every one of the 26 counties is represented by BOTH providers.
+$missing_eb = array();
+$missing_hw = array();
+foreach ( Conexao_County_Registry::get_slugs() as $slug ) {
+	if ( ! isset( $repaired[ 'eventbrite_' . $slug ] ) ) {
+		$missing_eb[] = $slug;
+	}
+	if ( ! isset( $repaired[ 'heritage_week_' . $slug ] ) ) {
+		$missing_hw[] = $slug;
+	}
+}
+assert_true( array() === $missing_eb, 'All 26 counties have an eventbrite_<county> source' );
+assert_true( array() === $missing_hw, 'All 26 counties have a heritage_week_<county> source' );
+
+// The six legacy defaults must SURVIVE the repair untouched.
+$legacy_ids      = array(
+	'laois_tourism',
+	'heritage_week',
+	'eventbrite',
+	'ivvcc',
+	'motorsport_ireland',
+	'mondello_park',
+);
+$legacy_defaults = $sources_mgr->get_defaults();
+$legacy_intact   = true;
+foreach ( $legacy_ids as $id ) {
+	if ( ! isset( $repaired[ $id ] ) || $repaired[ $id ] !== $legacy_defaults[ $id ] ) {
+		$legacy_intact = false;
+	}
+}
+assert_true( $legacy_intact, 'The six legacy default sources survive the repair unmodified' );
+
+// Restored county sources ship INACTIVE: repairing the registry must never
+// start an import, fetch a provider or write an Event post.
+$county_active = 0;
+foreach ( Conexao_County_Registry::get_all_county_sources() as $id => $source ) {
+	if ( isset( $repaired[ $id ] ) && 'active' === $repaired[ $id ]['status'] ) {
+		$county_active++;
+	}
+}
+assert_true( 0 === $county_active, 'No restored county source is active (repair cannot trigger an import)' );
+
+// A restored county source must match the registry EXACTLY -- the repair
+// copies the authoritative config, it does not rebuild it from scratch.
+$exact_match = true;
+foreach ( Conexao_County_Registry::get_all_county_sources() as $id => $registry_source ) {
+	if ( ! isset( $repaired[ $id ] ) ) {
+		$exact_match = false;
+		break;
+	}
+	foreach ( array( 'id', 'name', 'url', 'type', 'status', 'county', 'region_labels', 'hw_where', 'category' ) as $field ) {
+		if ( ( $registry_source[ $field ] ?? null ) !== ( $repaired[ $id ][ $field ] ?? null ) ) {
+			$exact_match = false;
+			break 2;
+		}
+	}
+}
+assert_true( $exact_match, 'Every restored county source matches Conexao_County_Registry exactly' );
+
+// --- 13b: EXPLICIT SEEDING IS STILL IDEMPOTENT ---------------------------
+//
+// With the registry already complete, the manual operator step is a no-op.
+$result2 = $sources_mgr->seed_county_sources();
+assert_true( 0 === $result2['inserted'], 'Explicit seed after self-heal: 0 inserted (idempotent)' );
+assert_true( 52 === $result2['skipped'], 'Explicit seed after self-heal: 52 skipped (idempotent)' );
+
+// --- 13c: NO DUPLICATE REGISTRATIONS --------------------------------------
+//
+// A source id is the array key, so a duplicate registration is structurally
+// impossible; assert the observable invariant anyway, because it is what a
+// duplicate import would actually break.
+$all_ids    = array_keys( $sources_mgr->get_all() );
+$unique_ids = array_unique( $all_ids );
+assert_true(
+	count( $all_ids ) === count( $unique_ids ),
+	'Every source id is registered exactly once (no duplicate registrations)'
+);
+
+// --- 13d: RETIRED SOURCES ARE NOT RESTORED -------------------------------
+//
+// laois_council / leo_laois / local_enterprise_office_laois were deliberately
+// retired (commit 042259d). The self-heal must never resurrect them.
+$retired_present = array();
+foreach ( array( 'laois_council', 'leo_laois', 'local_enterprise_office_laois' ) as $retired ) {
+	if ( isset( $repaired[ $retired ] ) ) {
+		$retired_present[] = $retired;
+	}
+}
+assert_true( array() === $retired_present, 'Intentionally retired sources are NOT restored by the self-heal' );
+
+// --- 13e: AN OPERATOR EDIT IS NEVER OVERWRITTEN ---------------------------
+//
+// The repair only INSERTS missing ids. A source the operator activated, or
+// re-pointed, must survive untouched.
+update_option( $option_key, $only_legacy, false );
+$sources_mgr->get_all(); // re-heal
+$custom = $sources_mgr->get_all();
+$custom['eventbrite_cork']['status'] = 'active';
+$custom['eventbrite_cork']['url']    = 'https://example.invalid/operator-override';
+update_option( $option_key, $custom, false );
+$after_override = $sources_mgr->get_all();
+assert_true(
+	'active' === $after_override['eventbrite_cork']['status']
+		&& 'https://example.invalid/operator-override' === $after_override['eventbrite_cork']['url'],
+	'An operator override of a county source is never overwritten by the self-heal'
+);
+
+// --- 13f: AN EMPTY OPTION SELF-HEALS TO THE FULL REGISTRY ----------------
+delete_option( $option_key );
+$from_empty = $sources_mgr->get_all();
+assert_true( 58 === count( $from_empty ), 'An empty/absent option self-heals to the full 58-source registry' );
+
+// Restore the exact environment state this test found.
+if ( is_array( $snapshot ) && array() !== $snapshot ) {
+	update_option( $option_key, $snapshot, false );
+} else {
+	delete_option( $option_key );
+}
 
 // ---------------------------------------------------------------------------
 // Test 14: Independent Source Logging
@@ -391,13 +505,10 @@ $client = new Conexao_Eventbrite_Client( 'eventbrite_cork' );
 $client_reflect = new ReflectionClass( $client );
 $prop = $client_reflect->getProperty( 'source_id' );
 $prop->setAccessible( true );
-test_assert( 'eventbrite_cork' === $prop->getValue( $client ), 'Client source_id = eventbrite_cork' );
+assert_true( 'eventbrite_cork' === $prop->getValue( $client ), 'Client source_id = eventbrite_cork' );
 
 // ---------------------------------------------------------------------------
 // Summary
 // ---------------------------------------------------------------------------
-echo "\n========================================\n";
-echo "Test Results: {$passed} passed, {$failed} failed\n";
-echo "========================================\n";
 
-exit( $failed > 0 ? 1 : 0 );
+test_finish();

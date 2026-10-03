@@ -1,0 +1,35 @@
+conexao-job-translation BEFORE Stage H (SHA 7144d79bbbc8c4615c961966d86527b8eb0f9361)
+
+Files
+  conexao-job-translation.php            203 LOC  (loader + per-stage admin class)
+  includes/apply.php                     400 LOC  (generic run() orchestration)
+  includes/audit.php                     163 LOC  (generic gate framework)
+  includes/translation-map.php            96 LOC  (authored EN data)
+  ORCHESTRATION TOTAL                    766 LOC
+
+Duplicated generic operations owned by the stage
+  inventory / live-state discovery       apply.php:171-400
+  dry-run branch (dry_run flag)          apply.php:171, 292, 383
+  snapshot capture + comparison          apply.php:37-58, 237, 359-381
+  apply traversal (create/skip loop)     apply.php:204-353
+  slug-collision duplicate gate          apply.php:282-290
+  Polylang link + both-directions check apply.php:67-74, 326-341
+  verbatim field copy                    apply.php:138-163
+  PT regression gate                     apply.php:559-581
+  completeness inventory + numeric gate  audit.php:29-143
+  per-stage admin screen + nonce/cap     conexao-job-translation.php:54-203
+  result formatting                      conexao-job-translation.php:157-187
+  WP-CLI runner coupling                 scripts/stage6-job-translate.php
+
+Behaviour that is genuinely stage-specific (must stay in the stage)
+  conexao_job_translation_snapshot_job()      PT field list to protect
+  conexao_job_translation_pair_ok()           both-directions job pair check
+  conexao_job_translation_verify_jobs_page()  landing page pair is verified only
+  conexao_job_translation_copy_fields()       verbatim _job_* layer + thumbnail
+
+Baseline behaviour to preserve
+  gate = "eligible public PT jobs missing EN = 0"
+  PT records are never written (language backfill '' -> 'pt' is the only delta)
+  one linked EN job per eligible public PT job
+  EN slug collision refuses to duplicate
+  manifest keyed by the PT slug (portable identity, never a post ID)

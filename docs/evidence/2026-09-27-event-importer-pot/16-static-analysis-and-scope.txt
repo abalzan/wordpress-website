@@ -1,0 +1,44 @@
+== PHASE 12/14: STATIC ANALYSIS, SCOPE AND IMPACT AUDIT ==
+
+--- COMPLETE LIST of files changed by THIS task ---
+   M wp-content/plugins/conexao-event-importer/languages/conexao-event-importer.pot
+  + docs/evidence/2026-09-27-event-importer-pot/ (this task, untracked)
+
+  Exactly ONE tracked file is modified by this task:
+    wp-content/plugins/conexao-event-importer/languages/conexao-event-importer.pot
+  Zero PHP files, zero scripts, zero tests, zero registry, zero config.
+
+--- PHP syntax (php -l) over PHP files that EXIST on disk ---
+  php -l: 399 existing files checked, 0 parse errors
+  (63 further tracked paths are ABSENT from the worktree because the concurrent
+   external refactor deleted them; they are not syntax errors.)
+
+--- PHPCS: COULD NOT RUN (must not be claimed as passed) ---
+  vendor/bin/phpcs -> ERROR: requires tokenizer, xmlwriter and SimpleXML
+  loaded PHP extensions: 0 of 4 (only 'tokenizer' is present)
+  composer: NOT INSTALLED
+  => CI is authoritative. Pre-existing environment limitation, identical to the
+     previous task; this task changed no PHP source, so it cannot introduce one.
+
+--- PHPStan: 48 errors, ALL in the concurrently refactored theme ---
+  Baseline (prior task, 88bdf22) reported 2 errors, both in inc/i18n/fallback.php.
+  inc/i18n/fallback.php has since been DELETED by the external refactor, and the
+  refactored theme introduced the rest. None is in a file this task touched
+  (this task touched no PHP file at all).
+
+== PHASE 14: SECURITY / PERFORMANCE ==
+  PHP or runtime code changed ....... NO (0 .php files touched)
+  SQL changed ..................... NO
+  capabilities / nonces / escaping  NO (unchanged)
+  content or event data changed .... NO (no DB write performed)
+  cache behaviour changed .......... NO
+  Polylang configuration changed ... NO
+  production behaviour changed .... NO
+  queries / assets / images ........ NONE
+  measurable runtime impact ........ ZERO.
+
+  Proof the .pot is never read at runtime:
+   - the event-importer ships NO .po and NO .mo (only the .pot exists);
+   - its only textdomain call is load_plugin_textdomain() (conexao-event-importer.php:254),
+     and WordPress loads <locale>.mo, never a .pot;
+   - grep for ".pot" in the plugin's PHP returns no hits outside languages/.

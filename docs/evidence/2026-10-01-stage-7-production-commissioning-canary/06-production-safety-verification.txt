@@ -1,0 +1,59 @@
+# Stage 7 - production safety verification (Sections 6, 7, 8)
+
+UTC: 2026-10-01T07:36:06Z
+
+## WHAT WAS AND WAS NOT DONE
+
+  NOTHING WAS INSTALLED. NOTHING WAS ACTIVATED. NOTHING WAS APPLIED.
+  No production content, option, route, cron job or Polylang relationship
+  was created or modified. No production credential was used, requested or
+  printed. Production was never contacted with any credential.
+
+## Section 6 - Production installation: NOT PERFORMED
+  Required: an authorized WordPress.com deployment/admin channel.
+  Actual  : WP_USERNAME / WP_APPLICATION_PASSWORD UNSET; CONEXAO_SITE_URL UNSET.
+           The .env credentials classify as the LOCAL Docker target, so they
+           are NOT a production deployment credential.
+  Status  : BLOCKED - prerequisite missing.
+  conexao-content was NOT deactivated or reactivated (it was never touched).
+
+## Section 7 - Immediate production safety verification: NOT TESTABLE
+  Plugins / routes / cron / AJAX / activation effects could NOT be read from
+  production without an admin channel. Each expectation is therefore
+  recorded as NOT TESTED, never as verified:
+    - engine active ................................ NOT TESTED
+    - automation plugin active ..................... NOT TESTED
+    - correct versions / dependency satisfied ....... NOT TESTED
+    - no public translation REST route ............. NOT TESTED
+    - 0 translation cron jobs ..................... NOT TESTED
+    - 0 anonymous automation AJAX endpoints ....... NOT TESTED
+    - no new EN records / PT changes .............. NOT TESTED
+
+## Section 8 - Fresh production baseline: NOT CAPTURED
+  A baseline requires production state. None was captured.
+  The six historically authorized PT restorations are NOT asserted as live:
+  this stage verified nothing about their current live state.
+  No earlier baseline was reused as current truth.
+
+## Sections 9-14 - bootstrap / live smoke / trigger / dry-run: NOT RUN
+  Blocked upstream by the absent credential and absent production channel.
+  No provider request was made. No WordPress write occurred.
+
+## Sections 15-26 - canary, review, approval, apply, verification
+  NOT PERFORMED. No canary was selected, no plan approved, no apply run.
+  Section 18 requires a SEPARATE explicit authorization to apply; it was
+  never given, and no apply parameter was ever supplied or attempted.
+
+## Section 31 - credential handling
+  No WordPress application password, provider API key, nonce, cookie or
+  Authorization header was printed or stored. Only presence/absence and
+  the local-vs-production TARGET CLASS were recorded. No .env contents
+  appear anywhere in this evidence set or the report.
+
+## Section 35 - end-of-stage switches
+  bulk translation    = OFF   (never turned on)
+  cron                = OFF   (never created)
+  autonomous approval = OFF   (never enabled)
+  unattended apply    = OFF   (never enabled)
+  PT canonical        = protected (untouched)
+  Flutter/mobile      = untouched (never accessed)

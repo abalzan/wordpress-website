@@ -1,0 +1,11 @@
+xgettext reads the file list from STDIN (--files-from=-). The generator pipes the list in,
+but the same command line ends with </dev/null, which replaces STDIN with /dev/null.
+
+$ printf "<file list>" | xgettext --files-from=- --output=t2.pot            # correct
+   -> exit 0, msgids extracted: 7, output file created: yes
+
+$ printf "<file list>" | xgettext --files-from=- --output=t1.pot </dev/null   # as the generator runs it
+   -> exit 0, msgids extracted: 0, output file created: NO
+
+Both exit 0 (silent success). With </dev/null xgettext reads an EMPTY file list,
+extracts nothing, and never creates the --output file.

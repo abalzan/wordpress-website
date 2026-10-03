@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Conexão BR Irlanda — Event Runtime
  * Description: Production event runtime. Registers event metadata and the Town/City taxonomy, owns the _event_status visibility gate for public event queries, and provides the event status admin UI. Contains no import/export tooling — see Conexão BR Irlanda Event Importer (local-only).
- * Version: 1.2.1
+ * Version: 1.2.2
  * Requires Plugins: conexao-data-model
  * Text Domain: conexao-event-runtime
  *
@@ -12,13 +12,14 @@
 defined( 'ABSPATH' ) || exit;
 
 define( 'CONEXAO_EVENT_RUNTIME_FILE', __FILE__ );
-define( 'CONEXAO_EVENT_RUNTIME_VERSION', '1.2.1' );
+define( 'CONEXAO_EVENT_RUNTIME_VERSION', '1.2.2' );
 define( 'CONEXAO_EVENT_RUNTIME_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CONEXAO_EVENT_RUNTIME_URL', plugin_dir_url( __FILE__ ) );
 
 require_once CONEXAO_EVENT_RUNTIME_DIR . 'includes/class-event-status.php';
 require_once CONEXAO_EVENT_RUNTIME_DIR . 'includes/class-event-recurrence.php';
 require_once CONEXAO_EVENT_RUNTIME_DIR . 'includes/class-event-query.php';
+require_once CONEXAO_EVENT_RUNTIME_DIR . 'includes/class-source-language.php';
 
 final class Conexao_Event_Runtime {
 
@@ -84,6 +85,10 @@ final class Conexao_Event_Runtime {
 			'_event_recurrence_end',
 			'_event_imported',
 			'_event_export_uuid',
+			// Stage 3.2 — source-language classification (see
+			// Conexao_Event_Source_Language): explicit source signal only,
+			// never inferred from content text. Allowed: pt|en|other.
+			'_event_source_language',
 		);
 
 		$int_meta = array(
@@ -465,3 +470,19 @@ Conexao_Event_Runtime::instance();
 
 register_activation_hook( __FILE__, array( 'Conexao_Event_Runtime', 'activate' ) );
 register_deactivation_hook( __FILE__, array( 'Conexao_Event_Runtime', 'deactivate' ) );
+
+/**
+ * Load the plugin textdomain (Stage 1 i18n foundation).
+ *
+ * Translation files live in this plugin's languages/ directory. This does
+ * not touch the event status gate, the recurrence evaluator or any event
+ * identity logic — gettext wrapping only, no behavior change.
+ */
+function conexao_event_runtime_load_textdomain() {
+	load_plugin_textdomain(
+		'conexao-event-runtime',
+		false,
+		dirname( plugin_basename( __FILE__ ) ) . '/languages'
+	);
+}
+add_action( 'init', 'conexao_event_runtime_load_textdomain' );

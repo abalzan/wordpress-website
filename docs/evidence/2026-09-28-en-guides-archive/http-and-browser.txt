@@ -1,0 +1,18 @@
+HTTP + BROWSER — 2026-09-28 (no code change applied; this is the AS-IS state)
+
+curl:
+  /guias/                  200  10 cards/page  pagination page/2..5 present
+  /en/guias/               200   0 cards      self-canonical /en/guias/
+  /en/guias/page/2/        404   (correct: 0 EN records exist)
+  /guias/?categoria=financas        200   3 cards
+  /en/guias/?categoria=documents    200   0 cards
+  /en/guias/<pt-slug>/     302 -> /guias/<pt-slug>/   (B1 replaced-master policy)
+  /guias/<pt-slug>/        200
+
+Playwright (chromium), 0 console errors on every page, 0 horizontal overflow:
+  desktop 1440x900  PT 200 cards=10  EN 200 cards=0  EN filter 200 cards=0  PT filter 200 cards=3
+  mobile   390x844  PT 200 cards=10  EN 200 cards=0  EN filter 200 cards=0  PT filter 200 cards=3
+
+Query args at pre_get_posts (priority 999, temporary probe, removed):
+  /guias/    pll_current_language=pt  is_b2_post_type(guide)=false  lang='pt'  post_type='guide'  tax_query=''  FOUND=48 post_count=10
+  /en/guias/ pll_current_language=en  is_b2_post_type(guide)=false  lang='en'  post_type='guide'  tax_query=''  FOUND=0  post_count=0

@@ -1,0 +1,44 @@
+# 13 — Phase 11: read-only verification ledger
+
+READ-ONLY ONLY. No restore, reset, revert, cherry-pick, merge or forward-port was performed.
+No catalogue was regenerated. No content/DB/Polylang change. No production action.
+No Flutter/mobile access.
+
+## git objects / history (read-only)
+$ git diff --stat b47d098 597b04e   -> 123 files changed, 8044 insertions(+), 25428 deletions(-)
+$ git log --oneline --ancestry-path b47d098..597b04e   -> exactly 1 commit (597b04e)
+$ git merge-base b47d098 597b04e   -> b47d098 (merge base == parent)
+$ git log -1 --format=%P 597b04e   -> b47d098 (single parent, linear, no merge)
+
+## source inspection (read-only, git show/grep)
+theme conexao_* functions: 282 -> 162 (120 lost, 0 added)
+theme inc/ files: 43 -> 8
+functions.php lines: 112 -> 3937
+theme catalogue files: 5 -> 0
+theme test files: 30 -> 8 (7991 lines deleted)
+
+## HTTP (read-only curl against the running local container)
+/                200 
+/cursos/         200 
+/en/             200 
+/en/cursos/      301 http://localhost:8080/2026/03/19/cursos-e-apoio-para-empreendedores/
+/en/guias/       404 
+/en/lazer/       301 http://localhost:8080/lazer/
+/en/blog/        301 http://localhost:8080/blog/
+/eventos/        200 
+/en/eventos/     404 
+/empregos/       200 
+/en/empregos/    301 http://localhost:8080/empregos/
+/     : <html lang="pt-BR"
+
+## read-only static permanent gates at the BROKEN baseline (not made to pass)
+  i18n freshness      : FAIL (theme .pot missing; 8 passed / 1 failed)
+  cache-key scoping   : FAIL (4 unscoped keys in 404.php; 2 passed / 4 failed)
+  documentation drift : FAIL (agent-governance 247 passed / 7 failed)
+  release integrity   : PASS (210 passed / 0 failed)
+
+## NOT run (deliberately)
+  ./scripts/run-tests.sh  (full suite) - not run: mutating suites / not required for an assessment
+  any acceptance suite that writes fixtures
+  any catalogue regeneration;
+  git restore/reset/cherry-pick/merge.

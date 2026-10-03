@@ -1,0 +1,609 @@
+{
+  "authorization": "explicit operator authorization for exactly these six IDs",
+  "finished_at": "2026-09-30T12:38:12.795882+00:00",
+  "started_at": "2026-09-30T12:35:44.054382+00:00",
+  "target": "https://conexaobr.ie",
+  "write_count": 6,
+  "writes": [
+    {
+      "content_sha_after": "a6e4f3a6e30438e9154c919407d55c9242a56852535aaf12185bd65ad300fde4",
+      "content_sha_before": "a6e4f3a6e30438e9154c919407d55c9242a56852535aaf12185bd65ad300fde4",
+      "endpoint": "/wp-json/wp/v2/posts/10373",
+      "excerpt_sha_after": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126",
+      "excerpt_sha_before": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126",
+      "http": 200,
+      "id": 10373,
+      "identity_after": {
+        "author": 283039559,
+        "date": "2026-03-20T11:08:34",
+        "date_gmt": "2026-03-20T11:08:34",
+        "featured_media": 0,
+        "id": 10373,
+        "modified": "2026-09-30T13:35:47",
+        "modified_gmt": "2026-09-30T12:35:47",
+        "slug": "auxilios-e-apoio-relacionados-a-saude-e-bem-estar-na-irlanda",
+        "status": "publish",
+        "type": "post"
+      },
+      "identity_before": {
+        "author": 283039559,
+        "date": "2026-03-20T11:08:34",
+        "date_gmt": "2026-03-20T11:08:34",
+        "featured_media": 0,
+        "id": 10373,
+        "slug": "auxilios-e-apoio-relacionados-a-saude-e-bem-estar-na-irlanda__trashed",
+        "status": "trash",
+        "type": "post"
+      },
+      "integrity_ok": false,
+      "meta_after": {
+        "_jetpack_dont_email_post_to_subs": false,
+        "_jetpack_feature_clip_id": 0,
+        "_jetpack_memberships_contains_paid_content": false,
+        "_jetpack_memberships_contains_paywalled_content": false,
+        "_jetpack_newsletter_access": "",
+        "_jetpack_newsletter_tier_id": 0,
+        "_wpcom_ai_launchpad_first_post": false,
+        "advanced_seo_description": "",
+        "footnotes": "",
+        "jetpack_post_was_ever_published": false,
+        "jetpack_publicize_feature_enabled": true,
+        "jetpack_publicize_message": "",
+        "jetpack_seo_html_title": "",
+        "jetpack_seo_noindex": false,
+        "jetpack_seo_schema_type": "",
+        "jetpack_social_options": {
+          "image_generator_settings": {
+            "default_image_id": 0,
+            "enabled": false,
+            "font": "",
+            "template": "highway"
+          },
+          "version": 2
+        },
+        "jetpack_social_post_already_shared": true
+      },
+      "meta_before": {
+        "_jetpack_dont_email_post_to_subs": false,
+        "_jetpack_feature_clip_id": 0,
+        "_jetpack_memberships_contains_paid_content": false,
+        "_jetpack_memberships_contains_paywalled_content": false,
+        "_jetpack_newsletter_access": "",
+        "_jetpack_newsletter_tier_id": 0,
+        "_wpcom_ai_launchpad_first_post": false,
+        "advanced_seo_description": "",
+        "footnotes": "",
+        "jetpack_post_was_ever_published": false,
+        "jetpack_publicize_feature_enabled": true,
+        "jetpack_publicize_message": "",
+        "jetpack_seo_html_title": "",
+        "jetpack_seo_noindex": false,
+        "jetpack_seo_schema_type": "",
+        "jetpack_social_options": {
+          "image_generator_settings": {
+            "default_image_id": 0,
+            "enabled": false,
+            "font": "",
+            "template": "highway"
+          },
+          "version": 2
+        },
+        "jetpack_social_post_already_shared": false
+      },
+      "payload_sent": {
+        "status": "publish"
+      },
+      "result": "WRITTEN",
+      "slug_after": "auxilios-e-apoio-relacionados-a-saude-e-bem-estar-na-irlanda",
+      "slug_before": "auxilios-e-apoio-relacionados-a-saude-e-bem-estar-na-irlanda__trashed",
+      "slug_normalized_as_expected": true,
+      "status_after": "publish",
+      "status_before": "trash",
+      "title_sha_after": "b4296391008ccfc3e52701917581d7567e91689c8ae639109d36ee347925dcdd",
+      "title_sha_before": "b4296391008ccfc3e52701917581d7567e91689c8ae639109d36ee347925dcdd",
+      "unexpected_field_diffs": [
+        "meta"
+      ]
+    },
+    {
+      "content_sha_after": "a6e4f3a6e30438e9154c919407d55c9242a56852535aaf12185bd65ad300fde4",
+      "content_sha_before": "a6e4f3a6e30438e9154c919407d55c9242a56852535aaf12185bd65ad300fde4",
+      "endpoint": "/wp-json/wp/v2/posts/10374",
+      "excerpt_sha_after": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126",
+      "excerpt_sha_before": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126",
+      "http": 200,
+      "id": 10374,
+      "identity_after": {
+        "author": 283039559,
+        "date": "2026-03-20T11:10:52",
+        "date_gmt": "2026-03-20T11:10:52",
+        "featured_media": 0,
+        "id": 10374,
+        "modified": "2026-09-30T13:35:56",
+        "modified_gmt": "2026-09-30T12:35:56",
+        "slug": "auxilios-para-familias-atipicas-na-irlanda",
+        "status": "publish",
+        "type": "post"
+      },
+      "identity_before": {
+        "author": 283039559,
+        "date": "2026-03-20T11:10:52",
+        "date_gmt": "2026-03-20T11:10:52",
+        "featured_media": 0,
+        "id": 10374,
+        "slug": "auxilios-para-familias-atipicas-na-irlanda__trashed",
+        "status": "trash",
+        "type": "post"
+      },
+      "integrity_ok": false,
+      "meta_after": {
+        "_jetpack_dont_email_post_to_subs": false,
+        "_jetpack_feature_clip_id": 0,
+        "_jetpack_memberships_contains_paid_content": false,
+        "_jetpack_memberships_contains_paywalled_content": false,
+        "_jetpack_newsletter_access": "",
+        "_jetpack_newsletter_tier_id": 0,
+        "_wpcom_ai_launchpad_first_post": false,
+        "advanced_seo_description": "",
+        "footnotes": "",
+        "jetpack_post_was_ever_published": false,
+        "jetpack_publicize_feature_enabled": true,
+        "jetpack_publicize_message": "",
+        "jetpack_seo_html_title": "",
+        "jetpack_seo_noindex": false,
+        "jetpack_seo_schema_type": "",
+        "jetpack_social_options": {
+          "image_generator_settings": {
+            "default_image_id": 0,
+            "enabled": false,
+            "font": "",
+            "template": "highway"
+          },
+          "version": 2
+        },
+        "jetpack_social_post_already_shared": true
+      },
+      "meta_before": {
+        "_jetpack_dont_email_post_to_subs": false,
+        "_jetpack_feature_clip_id": 0,
+        "_jetpack_memberships_contains_paid_content": false,
+        "_jetpack_memberships_contains_paywalled_content": false,
+        "_jetpack_newsletter_access": "",
+        "_jetpack_newsletter_tier_id": 0,
+        "_wpcom_ai_launchpad_first_post": false,
+        "advanced_seo_description": "",
+        "footnotes": "",
+        "jetpack_post_was_ever_published": false,
+        "jetpack_publicize_feature_enabled": true,
+        "jetpack_publicize_message": "",
+        "jetpack_seo_html_title": "",
+        "jetpack_seo_noindex": false,
+        "jetpack_seo_schema_type": "",
+        "jetpack_social_options": {
+          "image_generator_settings": {
+            "default_image_id": 0,
+            "enabled": false,
+            "font": "",
+            "template": "highway"
+          },
+          "version": 2
+        },
+        "jetpack_social_post_already_shared": false
+      },
+      "payload_sent": {
+        "status": "publish"
+      },
+      "result": "WRITTEN",
+      "slug_after": "auxilios-para-familias-atipicas-na-irlanda",
+      "slug_before": "auxilios-para-familias-atipicas-na-irlanda__trashed",
+      "slug_normalized_as_expected": true,
+      "status_after": "publish",
+      "status_before": "trash",
+      "title_sha_after": "6090175919c4036ce1c2f735304870d63bbe56b39581141003ccff05c5b9e533",
+      "title_sha_before": "6090175919c4036ce1c2f735304870d63bbe56b39581141003ccff05c5b9e533",
+      "unexpected_field_diffs": [
+        "meta"
+      ]
+    },
+    {
+      "content_sha_after": "2a4c2c94ef8dc56b402997367dc5da8ccb9f63d43a5869b108d783cfc377cec9",
+      "content_sha_before": "2a4c2c94ef8dc56b402997367dc5da8ccb9f63d43a5869b108d783cfc377cec9",
+      "endpoint": "/wp-json/wp/v2/posts/10369",
+      "excerpt_sha_after": "3111337f7e2db43aea25826570ae3975fc95c3b08b054615b1c389ba7008e78a",
+      "excerpt_sha_before": "3111337f7e2db43aea25826570ae3975fc95c3b08b054615b1c389ba7008e78a",
+      "http": 200,
+      "id": 10369,
+      "identity_after": {
+        "author": 283039559,
+        "date": "2026-03-19T16:46:20",
+        "date_gmt": "2026-03-19T16:46:20",
+        "featured_media": 0,
+        "id": 10369,
+        "modified": "2026-09-30T13:36:05",
+        "modified_gmt": "2026-09-30T12:36:05",
+        "slug": "cursos-e-apoio-para-empreendedores",
+        "status": "publish",
+        "type": "post"
+      },
+      "identity_before": {
+        "author": 283039559,
+        "date": "2026-03-19T16:46:20",
+        "date_gmt": "2026-03-19T16:46:20",
+        "featured_media": 0,
+        "id": 10369,
+        "slug": "cursos-e-apoio-para-empreendedores__trashed",
+        "status": "trash",
+        "type": "post"
+      },
+      "integrity_ok": false,
+      "meta_after": {
+        "_jetpack_dont_email_post_to_subs": false,
+        "_jetpack_feature_clip_id": 0,
+        "_jetpack_memberships_contains_paid_content": false,
+        "_jetpack_memberships_contains_paywalled_content": false,
+        "_jetpack_newsletter_access": "",
+        "_jetpack_newsletter_tier_id": 0,
+        "_wpcom_ai_launchpad_first_post": false,
+        "advanced_seo_description": "",
+        "footnotes": "",
+        "jetpack_post_was_ever_published": false,
+        "jetpack_publicize_feature_enabled": true,
+        "jetpack_publicize_message": "",
+        "jetpack_seo_html_title": "",
+        "jetpack_seo_noindex": false,
+        "jetpack_seo_schema_type": "",
+        "jetpack_social_options": {
+          "image_generator_settings": {
+            "default_image_id": 0,
+            "enabled": false,
+            "font": "",
+            "template": "highway"
+          },
+          "version": 2
+        },
+        "jetpack_social_post_already_shared": true
+      },
+      "meta_before": {
+        "_jetpack_dont_email_post_to_subs": false,
+        "_jetpack_feature_clip_id": 0,
+        "_jetpack_memberships_contains_paid_content": false,
+        "_jetpack_memberships_contains_paywalled_content": false,
+        "_jetpack_newsletter_access": "",
+        "_jetpack_newsletter_tier_id": 0,
+        "_wpcom_ai_launchpad_first_post": false,
+        "advanced_seo_description": "",
+        "footnotes": "",
+        "jetpack_post_was_ever_published": false,
+        "jetpack_publicize_feature_enabled": true,
+        "jetpack_publicize_message": "",
+        "jetpack_seo_html_title": "",
+        "jetpack_seo_noindex": false,
+        "jetpack_seo_schema_type": "",
+        "jetpack_social_options": {
+          "image_generator_settings": {
+            "default_image_id": 0,
+            "enabled": false,
+            "font": "",
+            "template": "highway"
+          },
+          "version": 2
+        },
+        "jetpack_social_post_already_shared": false
+      },
+      "payload_sent": {
+        "status": "publish"
+      },
+      "result": "WRITTEN",
+      "slug_after": "cursos-e-apoio-para-empreendedores",
+      "slug_before": "cursos-e-apoio-para-empreendedores__trashed",
+      "slug_normalized_as_expected": true,
+      "status_after": "publish",
+      "status_before": "trash",
+      "title_sha_after": "567946129aa4f23ff59cb1c757d76d2ee0dc1dcacfd1459426f00cb4de53b6c5",
+      "title_sha_before": "567946129aa4f23ff59cb1c757d76d2ee0dc1dcacfd1459426f00cb4de53b6c5",
+      "unexpected_field_diffs": [
+        "meta"
+      ]
+    },
+    {
+      "content_sha_after": "57af6236afaaeeaab4affd7115315114a3d2ba110d1d99f63241e61e8af4d446",
+      "content_sha_before": "57af6236afaaeeaab4affd7115315114a3d2ba110d1d99f63241e61e8af4d446",
+      "endpoint": "/wp-json/wp/v2/posts/10367",
+      "excerpt_sha_after": "24e1922d3c37488cf17f612a31a09aff94125f22484671f91fe8f94a00e3ccef",
+      "excerpt_sha_before": "24e1922d3c37488cf17f612a31a09aff94125f22484671f91fe8f94a00e3ccef",
+      "http": 200,
+      "id": 10367,
+      "identity_after": {
+        "author": 283039559,
+        "date": "2026-03-17T20:43:02",
+        "date_gmt": "2026-03-17T20:43:02",
+        "featured_media": 0,
+        "id": 10367,
+        "modified": "2026-09-30T13:37:45",
+        "modified_gmt": "2026-09-30T12:37:45",
+        "slug": "dica-de-saude-para-quem-viaja",
+        "status": "publish",
+        "type": "post"
+      },
+      "identity_before": {
+        "author": 283039559,
+        "date": "2026-03-17T20:43:02",
+        "date_gmt": "2026-03-17T20:43:02",
+        "featured_media": 0,
+        "id": 10367,
+        "slug": "dica-de-saude-para-quem-viaja__trashed",
+        "status": "trash",
+        "type": "post"
+      },
+      "integrity_ok": false,
+      "meta_after": {
+        "_jetpack_dont_email_post_to_subs": false,
+        "_jetpack_feature_clip_id": 0,
+        "_jetpack_memberships_contains_paid_content": false,
+        "_jetpack_memberships_contains_paywalled_content": false,
+        "_jetpack_newsletter_access": "",
+        "_jetpack_newsletter_tier_id": 0,
+        "_wpcom_ai_launchpad_first_post": false,
+        "advanced_seo_description": "",
+        "footnotes": "",
+        "jetpack_post_was_ever_published": false,
+        "jetpack_publicize_feature_enabled": true,
+        "jetpack_publicize_message": "",
+        "jetpack_seo_html_title": "",
+        "jetpack_seo_noindex": false,
+        "jetpack_seo_schema_type": "",
+        "jetpack_social_options": {
+          "image_generator_settings": {
+            "default_image_id": 0,
+            "enabled": false,
+            "font": "",
+            "template": "highway"
+          },
+          "version": 2
+        },
+        "jetpack_social_post_already_shared": true
+      },
+      "meta_before": {
+        "_jetpack_dont_email_post_to_subs": false,
+        "_jetpack_feature_clip_id": 0,
+        "_jetpack_memberships_contains_paid_content": false,
+        "_jetpack_memberships_contains_paywalled_content": false,
+        "_jetpack_newsletter_access": "",
+        "_jetpack_newsletter_tier_id": 0,
+        "_wpcom_ai_launchpad_first_post": false,
+        "advanced_seo_description": "",
+        "footnotes": "",
+        "jetpack_post_was_ever_published": false,
+        "jetpack_publicize_feature_enabled": true,
+        "jetpack_publicize_message": "",
+        "jetpack_seo_html_title": "",
+        "jetpack_seo_noindex": false,
+        "jetpack_seo_schema_type": "",
+        "jetpack_social_options": {
+          "image_generator_settings": {
+            "default_image_id": 0,
+            "enabled": false,
+            "font": "",
+            "template": "highway"
+          },
+          "version": 2
+        },
+        "jetpack_social_post_already_shared": false
+      },
+      "payload_sent": {
+        "status": "publish"
+      },
+      "result": "WRITTEN",
+      "slug_after": "dica-de-saude-para-quem-viaja",
+      "slug_before": "dica-de-saude-para-quem-viaja__trashed",
+      "slug_normalized_as_expected": true,
+      "status_after": "publish",
+      "status_before": "trash",
+      "title_sha_after": "0a2a082f4b300c4b56916f0012dd34af3f353a763f6d1dfc6cf588f516dccb81",
+      "title_sha_before": "0a2a082f4b300c4b56916f0012dd34af3f353a763f6d1dfc6cf588f516dccb81",
+      "unexpected_field_diffs": [
+        "meta"
+      ]
+    },
+    {
+      "content_sha_after": "a6e4f3a6e30438e9154c919407d55c9242a56852535aaf12185bd65ad300fde4",
+      "content_sha_before": "a6e4f3a6e30438e9154c919407d55c9242a56852535aaf12185bd65ad300fde4",
+      "endpoint": "/wp-json/wp/v2/posts/10375",
+      "excerpt_sha_after": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126",
+      "excerpt_sha_before": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126",
+      "http": 200,
+      "id": 10375,
+      "identity_after": {
+        "author": 283039559,
+        "date": "2026-03-20T11:13:33",
+        "date_gmt": "2026-03-20T11:13:33",
+        "featured_media": 0,
+        "id": 10375,
+        "modified": "2026-09-30T13:38:00",
+        "modified_gmt": "2026-09-30T12:38:00",
+        "slug": "guia-para-quem-esta-com-dificuldades-financeiras",
+        "status": "publish",
+        "type": "post"
+      },
+      "identity_before": {
+        "author": 283039559,
+        "date": "2026-03-20T11:13:33",
+        "date_gmt": "2026-03-20T11:13:33",
+        "featured_media": 0,
+        "id": 10375,
+        "slug": "guia-para-quem-esta-com-dificuldades-financeiras__trashed",
+        "status": "trash",
+        "type": "post"
+      },
+      "integrity_ok": false,
+      "meta_after": {
+        "_jetpack_dont_email_post_to_subs": false,
+        "_jetpack_feature_clip_id": 0,
+        "_jetpack_memberships_contains_paid_content": false,
+        "_jetpack_memberships_contains_paywalled_content": false,
+        "_jetpack_newsletter_access": "",
+        "_jetpack_newsletter_tier_id": 0,
+        "_wpcom_ai_launchpad_first_post": false,
+        "advanced_seo_description": "",
+        "footnotes": "",
+        "jetpack_post_was_ever_published": false,
+        "jetpack_publicize_feature_enabled": true,
+        "jetpack_publicize_message": "",
+        "jetpack_seo_html_title": "",
+        "jetpack_seo_noindex": false,
+        "jetpack_seo_schema_type": "",
+        "jetpack_social_options": {
+          "image_generator_settings": {
+            "default_image_id": 0,
+            "enabled": false,
+            "font": "",
+            "template": "highway"
+          },
+          "version": 2
+        },
+        "jetpack_social_post_already_shared": true
+      },
+      "meta_before": {
+        "_jetpack_dont_email_post_to_subs": false,
+        "_jetpack_feature_clip_id": 0,
+        "_jetpack_memberships_contains_paid_content": false,
+        "_jetpack_memberships_contains_paywalled_content": false,
+        "_jetpack_newsletter_access": "",
+        "_jetpack_newsletter_tier_id": 0,
+        "_wpcom_ai_launchpad_first_post": false,
+        "advanced_seo_description": "",
+        "footnotes": "",
+        "jetpack_post_was_ever_published": false,
+        "jetpack_publicize_feature_enabled": true,
+        "jetpack_publicize_message": "",
+        "jetpack_seo_html_title": "",
+        "jetpack_seo_noindex": false,
+        "jetpack_seo_schema_type": "",
+        "jetpack_social_options": {
+          "image_generator_settings": {
+            "default_image_id": 0,
+            "enabled": false,
+            "font": "",
+            "template": "highway"
+          },
+          "version": 2
+        },
+        "jetpack_social_post_already_shared": false
+      },
+      "payload_sent": {
+        "status": "publish"
+      },
+      "result": "WRITTEN",
+      "slug_after": "guia-para-quem-esta-com-dificuldades-financeiras",
+      "slug_before": "guia-para-quem-esta-com-dificuldades-financeiras__trashed",
+      "slug_normalized_as_expected": true,
+      "status_after": "publish",
+      "status_before": "trash",
+      "title_sha_after": "d0d0c1cee72e1fd60d78f546ef4be019728ffd40903eacc54fb8ba86375ae816",
+      "title_sha_before": "d0d0c1cee72e1fd60d78f546ef4be019728ffd40903eacc54fb8ba86375ae816",
+      "unexpected_field_diffs": [
+        "meta"
+      ]
+    },
+    {
+      "content_sha_after": "a6e4f3a6e30438e9154c919407d55c9242a56852535aaf12185bd65ad300fde4",
+      "content_sha_before": "a6e4f3a6e30438e9154c919407d55c9242a56852535aaf12185bd65ad300fde4",
+      "endpoint": "/wp-json/wp/v2/posts/10376",
+      "excerpt_sha_after": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126",
+      "excerpt_sha_before": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126",
+      "http": 200,
+      "id": 10376,
+      "identity_after": {
+        "author": 283039559,
+        "date": "2026-03-20T11:15:20",
+        "date_gmt": "2026-03-20T11:15:20",
+        "featured_media": 0,
+        "id": 10376,
+        "modified": "2026-09-30T13:38:09",
+        "modified_gmt": "2026-09-30T12:38:09",
+        "slug": "guia-pratico-para-brasileiros-em-laois",
+        "status": "publish",
+        "type": "post"
+      },
+      "identity_before": {
+        "author": 283039559,
+        "date": "2026-03-20T11:15:20",
+        "date_gmt": "2026-03-20T11:15:20",
+        "featured_media": 0,
+        "id": 10376,
+        "slug": "guia-pratico-para-brasileiros-em-laois__trashed",
+        "status": "trash",
+        "type": "post"
+      },
+      "integrity_ok": false,
+      "meta_after": {
+        "_jetpack_dont_email_post_to_subs": false,
+        "_jetpack_feature_clip_id": 0,
+        "_jetpack_memberships_contains_paid_content": false,
+        "_jetpack_memberships_contains_paywalled_content": false,
+        "_jetpack_newsletter_access": "",
+        "_jetpack_newsletter_tier_id": 0,
+        "_wpcom_ai_launchpad_first_post": false,
+        "advanced_seo_description": "",
+        "footnotes": "",
+        "jetpack_post_was_ever_published": false,
+        "jetpack_publicize_feature_enabled": true,
+        "jetpack_publicize_message": "",
+        "jetpack_seo_html_title": "",
+        "jetpack_seo_noindex": false,
+        "jetpack_seo_schema_type": "",
+        "jetpack_social_options": {
+          "image_generator_settings": {
+            "default_image_id": 0,
+            "enabled": false,
+            "font": "",
+            "template": "highway"
+          },
+          "version": 2
+        },
+        "jetpack_social_post_already_shared": true
+      },
+      "meta_before": {
+        "_jetpack_dont_email_post_to_subs": false,
+        "_jetpack_feature_clip_id": 0,
+        "_jetpack_memberships_contains_paid_content": false,
+        "_jetpack_memberships_contains_paywalled_content": false,
+        "_jetpack_newsletter_access": "",
+        "_jetpack_newsletter_tier_id": 0,
+        "_wpcom_ai_launchpad_first_post": false,
+        "advanced_seo_description": "",
+        "footnotes": "",
+        "jetpack_post_was_ever_published": false,
+        "jetpack_publicize_feature_enabled": true,
+        "jetpack_publicize_message": "",
+        "jetpack_seo_html_title": "",
+        "jetpack_seo_noindex": false,
+        "jetpack_seo_schema_type": "",
+        "jetpack_social_options": {
+          "image_generator_settings": {
+            "default_image_id": 0,
+            "enabled": false,
+            "font": "",
+            "template": "highway"
+          },
+          "version": 2
+        },
+        "jetpack_social_post_already_shared": false
+      },
+      "payload_sent": {
+        "status": "publish"
+      },
+      "result": "WRITTEN",
+      "slug_after": "guia-pratico-para-brasileiros-em-laois",
+      "slug_before": "guia-pratico-para-brasileiros-em-laois__trashed",
+      "slug_normalized_as_expected": true,
+      "status_after": "publish",
+      "status_before": "trash",
+      "title_sha_after": "e5288a5bd2db76e6dd1e50fdd4178286b31a1899c46bbee2a73f97a1363f5a63",
+      "title_sha_before": "e5288a5bd2db76e6dd1e50fdd4178286b31a1899c46bbee2a73f97a1363f5a63",
+      "unexpected_field_diffs": [
+        "meta"
+      ]
+    }
+  ]
+}

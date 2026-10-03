@@ -109,7 +109,11 @@ class Conexao_Event_Sources {
 	public function get_all() {
 		$sources = get_option( self::OPTION_KEY, array() );
 		if ( ! is_array( $sources ) || empty( $sources ) ) {
-			$sources = $this->get_defaults();
+			// A missing or empty option is a first-run state, not a reason to
+			// ship a partial registry. Seed the six legacy defaults AND the
+			// complete 52-source county registry in one pass, so a brand-new
+			// install can never come up with the county coverage missing.
+			$sources = array_merge( $this->get_defaults(), $this->get_county_registry_sources() );
 			update_option( self::OPTION_KEY, $sources, false );
 			return $sources;
 		}
@@ -145,8 +149,79 @@ class Conexao_Event_Sources {
 				// stay inactive until explicitly activated in wp-admin).
 				$sources[ $default_id ]       = $default_source;
 				$sources[ $default_id ]['id'] = $default_id;
-				$changed = true;
+				$changed                      = true;
+				continue;
 			}
+
+			/*
+			 * STAGE 7.x — self-heal a DRIFTED county hint.
+			 *
+			 * A source's `county` is not decoration: it is the per-source
+			 * taxonomy hint that Conexao_Source_ICalendar /
+			 * Conexao_Source_Eventbrite copy onto every event they emit, and
+			 * Conexao_Event_Importer::save_event_taxonomies() turns into a
+			 * `conexao_county` term. The Events archive filters on exactly
+			 * that term (?county=<slug>), so an empty hint means every event
+			 * from that source is permanently invisible to the county
+			 * filter.
+			 *
+			 * The drift is reachable through wp-admin: "Add Source" renders
+			 * the County input EMPTY (only a placeholder, no value), so
+			 * re-creating or re-saving a shipped source without retyping the
+			 * county silently persists ''. handle_save_source() then stores
+			 * that empty string, and because get_all() only ever ADDED
+			 * missing sources it never restored the declared default — the
+			 * shipped county was lost for good.
+			 *
+			 * Repair rule (deliberately narrow, and idempotent):
+			 *   - only for a source id that SHIPS a default county;
+			 *   - only when the STORED county is empty/absent;
+			 *   - a non-empty stored county is NEVER overwritten, so a
+			 *     deliberate operator override always wins.
+			 *
+			 * `conexao_county` is a shared geography taxonomy (AGENTS.md), so
+			 * this writes no new term and no language-scoped term: it only
+			 * restores the hint that decides which EXISTING shared term the
+			 * importer assigns.
+			 */
+			$default_county = isset( $default_source['county'] ) ? trim( (string) $default_source['county'] ) : '';
+			$stored_county  = isset( $sources[ $default_id ]['county'] ) ? trim( (string) $sources[ $default_id ]['county'] ) : '';
+
+			if ( '' !== $default_county && '' === $stored_county ) {
+				$sources[ $default_id ]['county'] = $default_county;
+				$changed                          = true;
+			}
+		}
+
+		/*
+		 * Merge in any MISSING county registry source.
+		 *
+		 * This is the single self-healing point that keeps the shipped
+		 * registry complete on EVERY environment, not only on a fresh
+		 * activation. It applies the same rule already used for the six
+		 * legacy defaults above: only insert an id that does not exist yet,
+		 * so an operator's edited or activated source is never reset.
+		 *
+		 * Why this must live in get_all() and not only in activate():
+		 * seed_county_sources() is a MANUAL operator step, documented in
+		 * docs/plugins/conexao-event-importer.md as a `wp eval` one-liner.
+		 * Until somebody runs it, any environment that was built or rebuilt
+		 * by something other than an interactive activation -- the local
+		 * Docker stack, a CI fixture build, a restored database -- reports
+		 * only the six legacy defaults and silently loses the whole
+		 * 26-county Eventbrite + National Heritage Week coverage. That is
+		 * exactly the regression this merge repairs.
+		 *
+		 * Every county source SHIPS `inactive` (Conexao_County_Registry), so
+		 * this can never start an import, never fetch a provider and never
+		 * write an Event post. It restores the registration only.
+		 */
+		foreach ( $this->get_county_registry_sources() as $county_id => $county_source ) {
+			if ( isset( $sources[ $county_id ] ) ) {
+				continue;
+			}
+			$sources[ $county_id ] = $county_source;
+			$changed               = true;
 		}
 
 		if ( $changed ) {
@@ -154,6 +229,23 @@ class Conexao_Event_Sources {
 		}
 
 		return $sources;
+	}
+
+	/**
+	 * The county registry source configs as a map keyed by source id.
+	 *
+	 * A thin, defensive wrapper so the source registry has exactly ONE place
+	 * that knows the county registry exists. Returns an empty array when the
+	 * registry class is unavailable, so this can never fatal the importer.
+	 *
+	 * @return array Map of source id => source config.
+	 */
+	protected function get_county_registry_sources() {
+		if ( ! class_exists( 'Conexao_County_Registry' ) ) {
+			return array();
+		}
+		$county_sources = Conexao_County_Registry::get_all_county_sources();
+		return is_array( $county_sources ) ? $county_sources : array();
 	}
 
 	/**
@@ -596,7 +688,11 @@ class Conexao_Event_Sources {
 	 * Shows created/updated/skipped/failed counts and a collapsible "View details"
 	 * section listing the events that failed and why.
 	 *
-	 * @param array  $result    Import result array.
+	 * The result is `mixed`, not `array`: it is whatever an import filter
+	 * returns (see handle_run_import()), which is unvalidated, so the
+	 * is_array() guard below is load-bearing and must stay.
+	 *
+	 * @param mixed  $result    Import result array.
 	 * @param string $source_id Source slug or 'all'.
 	 */
 	protected function render_import_result_notice( $result, $source_id ) {

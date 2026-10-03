@@ -1,0 +1,20 @@
+conexao test harness
+  repository:    /home/andrei/IdeaProjects/wordpress-website
+  php:           8.5.4
+  environment:   host (docker compose exec)
+  base url:      http://localhost:8080
+
+In-process PHP suites (serial, one process per suite)
+[PASS] plugin/conexao-job-translation/test-job-engine-migration.php — 16 passed, 0 failed
+no script-contract suites discovered under tests/scripts/
+
+HTTP acceptance suites (base: http://localhost:8080)
+[PASS] tests/acceptance/verify-guides-en-http.py — 18 passed, 0 failed
+[PASS] tests/acceptance/verify-routing-http.py — 59 passed, 0 failed
+
+----------------------------------------
+In-process PHP suites: 1 total, 1 passed, 0 failed
+Assertions: 16 passed, 0 failed
+HTTP acceptance suites: 2 total, 2 passed, 0 failed
+----------------------------------------
+ALL TESTS PASSED

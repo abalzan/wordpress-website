@@ -1,0 +1,48 @@
+# 10 — Phase 7: completed-task / evidence cross-reference
+
+## Reports and their recorded final SHAs (historical evidence, unmodified)
+
+2026-09-25-stage-b-repository-hygiene.md                               
+2026-09-26-stage7-laois-events-visibility-plan.md                      
+2026-09-26-stage-p-county-not-town-report.md                           
+2026-09-27-a11y-filter-option-role.md                                  **Final SHA** | `849624574451c1aa771f2fac0bd66b66fd2aadd8` (uncommitted working tree — see §3)
+2026-09-27-a11y-filter-option-role-plan.md                             
+2026-09-27-en-artigo-label-leak.md                                     **Final SHA** | `597b04e` — **unchanged; no code was modified**
+2026-09-27-en-course-provider-descriptions.md                          **Final SHA** | *(working tree; not committed)*
+2026-09-27-en-course-provider-descriptions-plan.md                     
+2026-09-27-en-cursos-category-filter.md                                **Final SHA** | *(working tree; not committed)*
+2026-09-27-en-homepage-label-leak.md                                   **Final SHA** | *(uncommitted — task changes in the working tree)*
+2026-09-27-en-homepage-label-leak-plan.md                              
+2026-09-27-en-leisure-descriptions.md                                  **Final SHA** | see §Report header
+2026-09-27-event-importer-pot-duplicate-msgids.md                      **Final SHA** | `b47d098857d2348feafb1071b8713c6a43359e05` *(moved by a concurrent process during this task — see §3.1)*
+2026-09-27-i18n-catalogue-freshness.md                                 **Final SHA** | `88bdf22cde7e171afaf9f2b898569238de12b649`
+2026-09-27-lazer-en-archive-investigation.md                           **Final SHA** | `8f07f3027734b99546931295173369dbdb2953dc` (unchanged — no commit)
+CONEXAO_BR_ENGLISH_STAGE_1_REPORT.md                                   
+CONEXAO_BR_ENGLISH_STAGE_2_REPORT.md                                   
+CONEXAO_BR_ENGLISH_STAGE_3_1_REPORT.md                                 
+CONEXAO_BR_ENGLISH_STAGE_3_2_REPORT.md                                 
+CONEXAO_BR_ENGLISH_STAGE_3_3_REPORT.md                                 
+CONEXAO_BR_ENGLISH_STAGE_4_1_REPORT.md                                 
+CONEXAO_BR_ENGLISH_STAGE_4_2_REPORT.md                                 
+CONEXAO_BR_ENGLISH_STAGE_4_3_REPORT.md                                 
+CONEXAO_BR_ENGLISH_STAGE_4_5_REPORT.md                                 
+
+## Acceptance matrix UNCHANGED by 597b04e (so it still asserts the OLD GOOD behaviour)
+$ git diff --name-status b47d098 597b04e -- tests/
+(empty output above = tests/ untouched)
+EN rows in tests/acceptance/matrices/routing.json: 40
+
+## plugins.json / AGENTS.md registry UNCHANGED by 597b04e?
+(empty = registry and plugin docs untouched; the theme is not in plugins.json)
+
+## Completed work PRESENT at b47d098 and LOST at 597b04e — commit-level proof
+61131a4   feat: Implement B2 filter helper language widening for event   CHANGED_BY_597b04e
+d3ae9fb   fix: prevent erroneous county names from being assigned as t   INTACT
+89c5889   feat: Implement Laois Events Visibility Repair and County Te   INTACT
+8496245   Add tests for provider category filter and English label pre   INTACT
+8f07f30   Add regression tests for ARIA semantics in filter links and    INTACT
+88bdf22   Regenerate the stale theme i18n catalogue and repair the gen   CHANGED_BY_597b04e
+3cc6564   Add English course-provider descriptions and rollout stage     INTACT
+53f1781   Add English description stage for leisure records              INTACT
+7778d76   stage-o: enable real English blog archive                      INTACT
+ed94705   stage-l: add permanent invariant gates                         INTACT

@@ -1,0 +1,130 @@
+{
+  "stage": "E",
+  "commit": "e37b634f97d9cdaacf41b9458a79c8b272fe4366",
+  "branch": "i18n",
+  "recorded": "2026-09-25",
+  "status": "PASS WITH LIMITATION",
+  "status_note": "The harness is complete and every maintained suite runs through one command. 15 in-process suites fail identically to the pre-migration baseline (real, pre-existing content/data defects, not harness defects) and 1 suite is MANUAL. A real GitHub-hosted CI run could not be observed from this environment.",
+  "php_version": "8.5.4 (host) / 8.5 (wordpress:latest container)",
+  "wordpress_version": "7.1",
+  "polylang_version": "3.8.9",
+  "python_version": "3.14.4",
+  "docker": "29.0.0",
+  "docker_compose": "v5.1.3",
+  "php_suites": {
+    "count": 46,
+    "passed": 31,
+    "failed": 15,
+    "manual_excluded": 1,
+    "manual_note": "test-plugin-separation.php (requires a plugin-activation change)"
+  },
+  "assertions": {
+    "passed": 3244,
+    "failed": 59
+  },
+  "acceptance_suites": {
+    "count": 2,
+    "passed": 2,
+    "failed": 0,
+    "rows": {
+      "routing": 56,
+      "guides_en": 8,
+      "dynamic": 13
+    }
+  },
+  "prerequisite_failures": 0,
+  "wp_bootstrap_failures": 0,
+  "production_requests": 0,
+  "inline_wp_load_discovery": 0,
+  "suite_local_assertion_helpers": 1,
+  "suite_local_assertion_helper_exception": "mp_test_assert() in test-mondello-park-importer.php \u2014 validates its own arguments and acts as that suite's contract guard; documented exception",
+  "static_quality": {
+    "lint_sh": "OK (syntax clean, no new PHPCS violations, PHPStan clean)",
+    "shellcheck_run_tests_sh": "clean (0 findings)",
+    "shellcheck_all_scripts": "clean for every script touched by Stage E; 2 pre-existing SC2337 warnings in restore-updraft-db.sh and 2 SC2336 in stage7-validation-clone-setup.sh are untouched legacy files",
+    "bash_n_run_tests_sh": "OK",
+    "python_py_compile": "OK (4 files)",
+    "actionlint": "clean (0 findings)",
+    "git_diff_check": "clean"
+  },
+  "repeatability": {
+    "runs": 2,
+    "result": "IDENTICAL \u2014 suite-by-suite PASS/FAIL lines byte-identical between run 1 and run 2"
+  },
+  "database_side_effects": {
+    "posts": "6062 before, 6062 after \u2014 no test content left behind",
+    "terms": "847 before, 847 after",
+    "users": "3 before, 3 after",
+    "attachments": "2415 before, 2415 after",
+    "options": "413 -> 429, all additions are _transient_* cache entries (self-expiring, language-scoped)",
+    "note": "conexao_marker_test (a non-transient option) pre-dates this stage: its embedded timestamp is 2026-08-30, and no repository source creates it."
+  },
+  "fixtures": {
+    "files": 9,
+    "bytes": 903980,
+    "largest": 576595,
+    "largest_name": "mi-listing.html",
+    "stage_e_new_bytes": 0,
+    "zip_exclusion_verified": true,
+    "zip_test_entries": {
+      "dist/conexao-br-irlanda.zip": 0,
+      "plugins": 0
+    },
+    "note": "Stage E fixed a pre-existing release defect: the theme ZIP previously shipped all 24 theme test files."
+  },
+  "environment": "local Docker Compose (db + wordpress) on http://localhost:8080",
+  "ci": {
+    "workflow": ".github/workflows/ci.yml",
+    "static_quality_job": "Stage D job, unchanged",
+    "integration_job": "added \u2014 Compose up, readiness wait, WP install, pinned Polylang 3.8.9, ./scripts/run-tests.sh, teardown",
+    "ephemeral_database": true,
+    "secrets": 0,
+    "continue_on_error_on_tests": false,
+    "github_run_observed": false,
+    "github_run_note": "GitHub run not observed: the git remote requires credentials unavailable in this environment.",
+    "setup_sequence_executed_locally": true,
+    "defects_found_and_fixed_by_executing_the_setup": [
+      "hard-coded Compose container name (project name is derived from the checkout dir) -> WP_CONTAINER=$(docker compose ps -q wordpress)",
+      "--network container:X shares only the network namespace, leaving /var/www/html EMPTY in the CLI container -> added --volumes-from \"$WP_CONTAINER\" (inherits the named volume AND the theme/plugin bind mounts)",
+      "UID mismatch: volume owned by 33:33 (Debian wordpress:latest) vs wordpress:cli running as 82:82 (Alpine) -> wp plugin install failed with Permission denied -> added --user 33:33 -e HOME=/tmp",
+      "fresh docker run does not inherit WORDPRESS_DB_* env vars that wp-config.php reads -> credentials read back from the running container, none hard-coded"
+    ],
+    "validation": "YAML valid; actionlint 0 findings; every integration run: block ShellCheck-clean; full setup sequence re-run to completion (theme + 6 plugins + Polylang 3.8.9 active)"
+  },
+  "migration_completeness": {
+    "original_maintained_php_suites": 46,
+    "migrated": 46,
+    "remaining_legacy_suites": 0,
+    "documented_exceptions": {
+      "no_wordpress_bootstrap": [
+        "theme/conexao-br-irlanda/tests/test-nav-language-context-logic.php (standalone static-analysis suite with its own WP stubs)"
+      ],
+      "preserved_suite_local_assertion": [
+        "plugin/conexao-event-importer/tests/test-mondello-park-importer.php::mp_test_assert()"
+      ]
+    },
+    "maintained_http_verifiers_found": 2,
+    "migrated_acceptance_suites": 2,
+    "historical_left_intact": 6,
+    "manual": 3,
+    "diagnostic": 1,
+    "production_only": 2
+  },
+  "assertion_count_deltas": {
+    "note": "Failure counts are identical in every comparable suite. 28 of 41 comparable suites have identical pass counts; 12 execute MORE assertions after migration.",
+    "identical_pass_counts": 28,
+    "comparable_suites": 41,
+    "more_assertions_now_run": 12,
+    "fewer_assertions_now_run": 0,
+    "prerequisite_assertions_added": 11,
+    "early_exit_defect_fixed": {
+      "suite": "theme/conexao-br-irlanda/tests/test-stage45-pages.php",
+      "baseline": "112 passed, 11 failed",
+      "after": "328 passed, 11 failed",
+      "cause": "the summary echo and exit() sat INSIDE the closing foreach loop, so the process terminated early and ~216 assertions never executed; the shared test_finish() placed after the loop's closing brace runs the loop to completion",
+      "verified_against": "the unmodified file from HEAD, run against the same database, still reports 112 passed, 11 failed",
+      "effect": "coverage increase; the failure set is unchanged"
+    }
+  },
+  "commit_note": "Final Stage E commit (CI setup fixes). The harness implementation commit is d6e1ba0. This gate.json is completed by the immediately following documentation commit, which cannot contain its own hash."
+}

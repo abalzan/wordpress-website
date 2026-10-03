@@ -1,0 +1,329 @@
+{
+  "aborts": [],
+  "authorization": "operator-authorized: restore exactly these six IDs from trash to publish",
+  "counters": {
+    "aborts": 0,
+    "expected_status_restorations": 6,
+    "fields_per_write": 1,
+    "other_operations": 0,
+    "skips": 0,
+    "status_restorations": 6,
+    "total_http_writes_planned": 6
+  },
+  "exactness": {
+    "is_exactly_six_status_restorations": true,
+    "no_creates": true,
+    "no_deletes": true,
+    "no_en_records": true,
+    "no_meta_writes": true,
+    "no_polylang_config": true,
+    "no_taxonomy_writes": true,
+    "no_translation_links": true
+  },
+  "generated_at": "2026-09-30T12:34:52.106525+00:00",
+  "mode": "DRY-RUN — zero writes performed",
+  "operations": [
+    {
+      "content_sha_before": "a6e4f3a6e30438e9154c919407d55c9242a56852535aaf12185bd65ad300fde4",
+      "endpoint": "/wp-json/wp/v2/posts/10373",
+      "excerpt_sha_before": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126",
+      "expected_slug_after": "auxilios-e-apoio-relacionados-a-saude-e-bem-estar-na-irlanda",
+      "fields_deliberately_not_sent": [
+        "title",
+        "content",
+        "excerpt",
+        "date",
+        "author",
+        "featured_media",
+        "categories",
+        "tags",
+        "meta",
+        "slug",
+        "template",
+        "format"
+      ],
+      "from_status": "trash",
+      "id": 10373,
+      "identity_before": {
+        "author": 283039559,
+        "date": "2026-03-20T11:08:34",
+        "date_gmt": "2026-03-20T11:08:34",
+        "featured_media": 0,
+        "id": 10373,
+        "modified": "2026-08-30T20:58:16",
+        "modified_gmt": "2026-08-30T19:58:16",
+        "slug": "auxilios-e-apoio-relacionados-a-saude-e-bem-estar-na-irlanda__trashed",
+        "status": "trash",
+        "type": "post"
+      },
+      "integrity_digest_before": "b8d23570b20e8c945cbd17df4ec28b3daa39cb6f341d7243a8dbf1c77626876e",
+      "method": "POST",
+      "op": "untrash_restore",
+      "payload": {
+        "status": "publish"
+      },
+      "payload_field_count": 1,
+      "preconditions": {
+        "currently_trash": true,
+        "post_type_is_post": true,
+        "slug_is_trashed_variant": true,
+        "target_exists": true
+      },
+      "slug_change_kind": "automatic __trashed suffix removal by WordPress (not sent in payload)",
+      "title_sha_before": "b4296391008ccfc3e52701917581d7567e91689c8ae639109d36ee347925dcdd",
+      "to_status": "publish"
+    },
+    {
+      "content_sha_before": "a6e4f3a6e30438e9154c919407d55c9242a56852535aaf12185bd65ad300fde4",
+      "endpoint": "/wp-json/wp/v2/posts/10374",
+      "excerpt_sha_before": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126",
+      "expected_slug_after": "auxilios-para-familias-atipicas-na-irlanda",
+      "fields_deliberately_not_sent": [
+        "title",
+        "content",
+        "excerpt",
+        "date",
+        "author",
+        "featured_media",
+        "categories",
+        "tags",
+        "meta",
+        "slug",
+        "template",
+        "format"
+      ],
+      "from_status": "trash",
+      "id": 10374,
+      "identity_before": {
+        "author": 283039559,
+        "date": "2026-03-20T11:10:52",
+        "date_gmt": "2026-03-20T11:10:52",
+        "featured_media": 0,
+        "id": 10374,
+        "modified": "2026-08-30T20:58:53",
+        "modified_gmt": "2026-08-30T19:58:53",
+        "slug": "auxilios-para-familias-atipicas-na-irlanda__trashed",
+        "status": "trash",
+        "type": "post"
+      },
+      "integrity_digest_before": "f7416a11c584b820bcb913dcaa46081fe2e3589d67ea719b8396263b0cd42ffb",
+      "method": "POST",
+      "op": "untrash_restore",
+      "payload": {
+        "status": "publish"
+      },
+      "payload_field_count": 1,
+      "preconditions": {
+        "currently_trash": true,
+        "post_type_is_post": true,
+        "slug_is_trashed_variant": true,
+        "target_exists": true
+      },
+      "slug_change_kind": "automatic __trashed suffix removal by WordPress (not sent in payload)",
+      "title_sha_before": "6090175919c4036ce1c2f735304870d63bbe56b39581141003ccff05c5b9e533",
+      "to_status": "publish"
+    },
+    {
+      "content_sha_before": "2a4c2c94ef8dc56b402997367dc5da8ccb9f63d43a5869b108d783cfc377cec9",
+      "endpoint": "/wp-json/wp/v2/posts/10369",
+      "excerpt_sha_before": "3111337f7e2db43aea25826570ae3975fc95c3b08b054615b1c389ba7008e78a",
+      "expected_slug_after": "cursos-e-apoio-para-empreendedores",
+      "fields_deliberately_not_sent": [
+        "title",
+        "content",
+        "excerpt",
+        "date",
+        "author",
+        "featured_media",
+        "categories",
+        "tags",
+        "meta",
+        "slug",
+        "template",
+        "format"
+      ],
+      "from_status": "trash",
+      "id": 10369,
+      "identity_before": {
+        "author": 283039559,
+        "date": "2026-03-19T16:46:20",
+        "date_gmt": "2026-03-19T16:46:20",
+        "featured_media": 0,
+        "id": 10369,
+        "modified": "2026-08-30T20:59:30",
+        "modified_gmt": "2026-08-30T19:59:30",
+        "slug": "cursos-e-apoio-para-empreendedores__trashed",
+        "status": "trash",
+        "type": "post"
+      },
+      "integrity_digest_before": "6abcdbb2b8e5899eb61e5e8a4754d124a4766a8ac07ee6f7b1cda742d09040ea",
+      "method": "POST",
+      "op": "untrash_restore",
+      "payload": {
+        "status": "publish"
+      },
+      "payload_field_count": 1,
+      "preconditions": {
+        "currently_trash": true,
+        "post_type_is_post": true,
+        "slug_is_trashed_variant": true,
+        "target_exists": true
+      },
+      "slug_change_kind": "automatic __trashed suffix removal by WordPress (not sent in payload)",
+      "title_sha_before": "567946129aa4f23ff59cb1c757d76d2ee0dc1dcacfd1459426f00cb4de53b6c5",
+      "to_status": "publish"
+    },
+    {
+      "content_sha_before": "57af6236afaaeeaab4affd7115315114a3d2ba110d1d99f63241e61e8af4d446",
+      "endpoint": "/wp-json/wp/v2/posts/10367",
+      "excerpt_sha_before": "24e1922d3c37488cf17f612a31a09aff94125f22484671f91fe8f94a00e3ccef",
+      "expected_slug_after": "dica-de-saude-para-quem-viaja",
+      "fields_deliberately_not_sent": [
+        "title",
+        "content",
+        "excerpt",
+        "date",
+        "author",
+        "featured_media",
+        "categories",
+        "tags",
+        "meta",
+        "slug",
+        "template",
+        "format"
+      ],
+      "from_status": "trash",
+      "id": 10367,
+      "identity_before": {
+        "author": 283039559,
+        "date": "2026-03-17T20:43:02",
+        "date_gmt": "2026-03-17T20:43:02",
+        "featured_media": 0,
+        "id": 10367,
+        "modified": "2026-08-30T20:59:45",
+        "modified_gmt": "2026-08-30T19:59:45",
+        "slug": "dica-de-saude-para-quem-viaja__trashed",
+        "status": "trash",
+        "type": "post"
+      },
+      "integrity_digest_before": "51588e05f40c7ccff31da32ed28cdf44bf05e119e41fd3348f28cf1689926fe8",
+      "method": "POST",
+      "op": "untrash_restore",
+      "payload": {
+        "status": "publish"
+      },
+      "payload_field_count": 1,
+      "preconditions": {
+        "currently_trash": true,
+        "post_type_is_post": true,
+        "slug_is_trashed_variant": true,
+        "target_exists": true
+      },
+      "slug_change_kind": "automatic __trashed suffix removal by WordPress (not sent in payload)",
+      "title_sha_before": "0a2a082f4b300c4b56916f0012dd34af3f353a763f6d1dfc6cf588f516dccb81",
+      "to_status": "publish"
+    },
+    {
+      "content_sha_before": "a6e4f3a6e30438e9154c919407d55c9242a56852535aaf12185bd65ad300fde4",
+      "endpoint": "/wp-json/wp/v2/posts/10375",
+      "excerpt_sha_before": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126",
+      "expected_slug_after": "guia-para-quem-esta-com-dificuldades-financeiras",
+      "fields_deliberately_not_sent": [
+        "title",
+        "content",
+        "excerpt",
+        "date",
+        "author",
+        "featured_media",
+        "categories",
+        "tags",
+        "meta",
+        "slug",
+        "template",
+        "format"
+      ],
+      "from_status": "trash",
+      "id": 10375,
+      "identity_before": {
+        "author": 283039559,
+        "date": "2026-03-20T11:13:33",
+        "date_gmt": "2026-03-20T11:13:33",
+        "featured_media": 0,
+        "id": 10375,
+        "modified": "2026-08-30T20:59:09",
+        "modified_gmt": "2026-08-30T19:59:09",
+        "slug": "guia-para-quem-esta-com-dificuldades-financeiras__trashed",
+        "status": "trash",
+        "type": "post"
+      },
+      "integrity_digest_before": "7d5ee6d8e9a23c24408c74eceb3318c1e70084acb7ede8c16d9cde38a59826a1",
+      "method": "POST",
+      "op": "untrash_restore",
+      "payload": {
+        "status": "publish"
+      },
+      "payload_field_count": 1,
+      "preconditions": {
+        "currently_trash": true,
+        "post_type_is_post": true,
+        "slug_is_trashed_variant": true,
+        "target_exists": true
+      },
+      "slug_change_kind": "automatic __trashed suffix removal by WordPress (not sent in payload)",
+      "title_sha_before": "d0d0c1cee72e1fd60d78f546ef4be019728ffd40903eacc54fb8ba86375ae816",
+      "to_status": "publish"
+    },
+    {
+      "content_sha_before": "a6e4f3a6e30438e9154c919407d55c9242a56852535aaf12185bd65ad300fde4",
+      "endpoint": "/wp-json/wp/v2/posts/10376",
+      "excerpt_sha_before": "12ae32cb1ec02d01eda3581b127c1fee3b0dc53572ed6baf239721a03d82e126",
+      "expected_slug_after": "guia-pratico-para-brasileiros-em-laois",
+      "fields_deliberately_not_sent": [
+        "title",
+        "content",
+        "excerpt",
+        "date",
+        "author",
+        "featured_media",
+        "categories",
+        "tags",
+        "meta",
+        "slug",
+        "template",
+        "format"
+      ],
+      "from_status": "trash",
+      "id": 10376,
+      "identity_before": {
+        "author": 283039559,
+        "date": "2026-03-20T11:15:20",
+        "date_gmt": "2026-03-20T11:15:20",
+        "featured_media": 0,
+        "id": 10376,
+        "modified": "2026-08-30T20:58:35",
+        "modified_gmt": "2026-08-30T19:58:35",
+        "slug": "guia-pratico-para-brasileiros-em-laois__trashed",
+        "status": "trash",
+        "type": "post"
+      },
+      "integrity_digest_before": "1ee463578f1973edd9bcf3ebc49bcf4eb1c65d780a1ed08e809740e4f066514a",
+      "method": "POST",
+      "op": "untrash_restore",
+      "payload": {
+        "status": "publish"
+      },
+      "payload_field_count": 1,
+      "preconditions": {
+        "currently_trash": true,
+        "post_type_is_post": true,
+        "slug_is_trashed_variant": true,
+        "target_exists": true
+      },
+      "slug_change_kind": "automatic __trashed suffix removal by WordPress (not sent in payload)",
+      "title_sha_before": "e5288a5bd2db76e6dd1e50fdd4178286b31a1899c46bbee2a73f97a1363f5a63",
+      "to_status": "publish"
+    }
+  ],
+  "skips": [],
+  "target": "https://conexaobr.ie"
+}

@@ -230,6 +230,10 @@ class Conexao_Source_ICalendar extends Conexao_Source_Base {
 			'image'       => '',
 			'source_id'   => '',
 			'organizer'   => '',
+			// Whether DTSTART/DTEND are VALUE=DATE all-day values. Needed so
+			// the Laois series adapter can exclude all-day events, which never
+			// participate in the collapsed-weekly-series convention.
+			'all_day'     => false,
 		);
 
 		// Title (SUMMARY).
@@ -255,6 +259,7 @@ class Conexao_Source_ICalendar extends Conexao_Source_Base {
 			$dt = $this->parse_ical_datetime( $dtstart['value'], $dtstart['params'] );
 			$event['start_date'] = $dt['date'];
 			$event['start_time'] = $dt['time'];
+			$event['all_day']     = $dt['all_day'];
 		}
 
 		// End date/time.
@@ -263,11 +268,45 @@ class Conexao_Source_ICalendar extends Conexao_Source_Base {
 			$dt = $this->parse_ical_datetime( $dtend['value'], $dtend['params'] );
 			$event['end_date'] = $dt['date'];
 			$event['end_time'] = $dt['time'];
+			$event['all_day'] = $event['all_day'] || $dt['all_day'];
 		}
 
 		// If no end date, use start date.
 		if ( empty( $event['end_date'] ) && ! empty( $event['start_date'] ) ) {
 			$event['end_date'] = $event['start_date'];
+		}
+
+		/*
+		 * Recurrence resolution.
+		 *
+		 * Two independent, ordered mechanisms — the STANDARD one always wins:
+		 *
+		 *  1. An explicit RRULE (RFC 5545). Read generically for every ICS
+		 *     source. A rule outside the representable subset yields null and
+		 *     the event simply stays one-time (its DTSTART/DTEND still
+		 *     describe a valid single event).
+		 *
+		 *  2. A SOURCE-SPECIFIC collapsed-series adapter, consulted only for
+		 *     the source ids that declare one. Laois Tourism is the only
+		 *     current example: it publishes no RRULE at all and encodes a
+		 *     weekly course as DTSTART=first occurrence + DTEND=last
+		 *     occurrence. See Conexao_Laois_Tourism_Series for the measured
+		 *     basis of that rule.
+		 *
+		 * The resulting `recurrence` key is a DESCRIPTION (weekdays + window),
+		 * never a list of occurrence posts. Conexao_Event_Recurrence in the
+		 * event runtime stays the single evaluator of "occurs on date X", so
+		 * one canonical event post is stored and no second recurrence engine
+		 * exists.
+		 */
+		$recurrence = $this->resolve_rrule_recurrence( $vevent, $event );
+
+		if ( null === $recurrence ) {
+			$recurrence = $this->resolve_series_adapter_recurrence( $event );
+		}
+
+		if ( null !== $recurrence ) {
+			$event['recurrence'] = $recurrence;
 		}
 
 		// Original event URL.
@@ -353,6 +392,110 @@ class Conexao_Source_ICalendar extends Conexao_Source_Base {
 	}
 
 	/**
+	 * Get the source-specific collapsed-series adapter for this source.
+	 *
+	 * A registry rather than a hard-coded branch, so adding another feed with
+	 * its own encoding convention is a one-line change and no other source can
+	 * ever be affected by someone else's rule.
+	 *
+	 * @return string|null Adapter class name, or null when this source has no
+	 *                     source-specific convention.
+	 */
+	protected function resolve_series_adapter() {
+		$adapters = array(
+			// Laois Tourism encodes weekly courses as one VEVENT spanning
+			// first..last occurrence, with no RRULE.
+			Conexao_Laois_Tourism_Series::SOURCE_ID => 'Conexao_Laois_Tourism_Series',
+		);
+
+		$id = (string) $this->get_id();
+
+		if ( ! isset( $adapters[ $id ] ) ) {
+			return null;
+		}
+
+		$class = $adapters[ $id ];
+
+		return class_exists( $class ) ? $class : null;
+	}
+
+	/**
+	 * Resolve a recurrence description from an explicit RRULE, if present.
+	 *
+	 * Generic RFC 5545 handling applied to EVERY ICS source. Returns null when
+	 * the VEVENT carries no RRULE, or when the rule is outside the subset the
+	 * event data model can represent (non-weekly FREQ, INTERVAL > 1, ordinal
+	 * BYDAY tokens) — in which case the event stays one-time.
+	 *
+	 * @param array $vevent VEVENT properties.
+	 * @param array $event  Parsed event so far (for DTSTART/DTEND dates).
+	 * @return array|null Recurrence description, or null.
+	 */
+	protected function resolve_rrule_recurrence( $vevent, array $event ) {
+		$prop = $this->get_property( $vevent, 'RRULE' );
+
+		if ( ! $prop ) {
+			return null;
+		}
+
+		$parsed = Conexao_ICS_Recurrence::parse(
+			$prop['value'],
+			isset( $event['start_date'] ) ? $event['start_date'] : '',
+			isset( $event['end_date'] ) ? $event['end_date'] : ''
+		);
+
+		if ( null === $parsed ) {
+			return null;
+		}
+
+		/*
+		 * COUNT-bounded rules carry an occurrence count rather than an end
+		 * date. Deriving the last occurrence date from the count keeps the
+		 * stored window exact, and is only ever done for a weekly rule, where
+		 * "count occurrences from DTSTART" is unambiguous.
+		 */
+		if ( 'COUNT' === $parsed['end_source'] && $parsed['count'] > 0 && ! empty( $parsed['days'] ) ) {
+			$parsed['end'] = Conexao_ICS_Recurrence::last_occurrence_date(
+				$event['start_date'],
+				$parsed['days'],
+				$parsed['count']
+			);
+		}
+
+		$parsed['source_rule'] = 'rrule';
+		$parsed['type']       = 'weekly';
+		$parsed['start']      = $event['start_date'];
+		$parsed['occurrences'] = Conexao_ICS_Recurrence::occurrence_dates(
+			$event['start_date'],
+			$parsed['days'],
+			$parsed['end']
+		);
+
+		return $parsed;
+	}
+
+	/**
+	 * Resolve a recurrence description from a source-specific adapter.
+	 *
+	 * Consulted only after (and never instead of) the standard RRULE path, and
+	 * only for sources that declare an adapter. This is the isolation boundary
+	 * that keeps a source-specific encoding convention from leaking into
+	 * standard ICS semantics for any other feed.
+	 *
+	 * @param array $event Parsed event.
+	 * @return array|null Recurrence description, or null.
+	 */
+	protected function resolve_series_adapter_recurrence( array $event ) {
+		$adapter = $this->resolve_series_adapter();
+
+		if ( null === $adapter ) {
+			return null;
+		}
+
+		return call_user_func( array( $adapter, 'detect' ), $event );
+	}
+
+	/**
 	 * Get a property value from a VEVENT.
 	 *
 	 * @param array  $vevent    VEVENT properties.
@@ -389,12 +532,14 @@ class Conexao_Source_ICalendar extends Conexao_Source_Base {
 	 *
 	 * @param string $value  Datetime value.
 	 * @param string $params Property parameters (may contain TZID).
-	 * @return array{date:string, time:string}
+	 * @return array{date:string, time:string, all_day:bool} `all_day` is true
+	 *                for VALUE=DATE values (RFC 5545 3.3.4).
 	 */
 	protected function parse_ical_datetime( $value, $params = '' ) {
 		$result = array(
-			'date' => '',
-			'time' => '',
+			'date'    => '',
+			'time'    => '',
+			'all_day' => false,
 		);
 
 		$value = trim( $value );
@@ -425,6 +570,15 @@ class Conexao_Source_ICalendar extends Conexao_Source_Base {
 				}
 			}
 		}
+
+		/*
+		 * VALUE=DATE marks an all-day event (RFC 5545 3.3.4): a DATE with no
+		 * time component. `all_day` is derived from the value itself rather
+		 * than only from the parameter, so a feed that omits VALUE=DATE but
+		 * sends a bare YYYYMMDD is still recognised as all-day.
+		 */
+		$result['all_day'] = ( false === strpos( $value, 'T' ) )
+			|| ( false !== stripos( $params, 'VALUE=DATE' ) );
 
 		return $result;
 	}

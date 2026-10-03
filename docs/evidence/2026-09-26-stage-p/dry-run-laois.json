@@ -1,0 +1,70 @@
+{
+  "target": "http://localhost:8080",
+  "target_class": "local",
+  "mode": "dry-run",
+  "county_filter": "laois",
+  "events_considered": 2275,
+  "events_without_erroneous_town": 158,
+  "would_remove": 4,
+  "removed": 0,
+  "terms_deleted": [],
+  "terms_kept": [],
+  "plan": [
+    {
+      "event_id": 255,
+      "title": "Happy Hiking &#8211; Hill Skills Day &#8211; 3rd Oct-Laois/Offaly",
+      "source": "eventbrite_laois",
+      "erroneous_town": "Laois",
+      "town_slug": "laois",
+      "town_term_id": 2002,
+      "post_status": "publish",
+      "kept_county": "Laois",
+      "_event_source": "eventbrite_laois",
+      "_event_source_id": "1991359908091",
+      "_event_export_uuid": "0ce277fe-d929-4a9c-a0e8-6fa3f9314ee7",
+      "action": "would_remove"
+    },
+    {
+      "event_id": 11146,
+      "title": "Kundalini Activation • Sauna • Hot/Cold Plunge Pool • Beverages and Treats",
+      "source": "eventbrite_laois",
+      "erroneous_town": "Laois",
+      "town_slug": "laois",
+      "town_term_id": 2002,
+      "post_status": "publish",
+      "kept_county": "Laois",
+      "_event_source": "eventbrite_laois",
+      "_event_source_id": "1999054578056",
+      "_event_export_uuid": "04c1d48d-b5e2-450d-b5e6-a09743c10ae8",
+      "action": "would_remove"
+    },
+    {
+      "event_id": 13300,
+      "title": "Big Vegan Hike + Picnic | Glenbarrow Eco Walk, Co. Laois",
+      "source": "eventbrite_laois",
+      "erroneous_town": "Laois",
+      "town_slug": "laois",
+      "town_term_id": 2002,
+      "post_status": "publish",
+      "kept_county": "Laois",
+      "_event_source": "eventbrite_laois",
+      "_event_source_id": "1999282710406",
+      "_event_export_uuid": "794bbab7-dc01-4317-b2d3-78e53b2d65f5",
+      "action": "would_remove"
+    },
+    {
+      "event_id": 13310,
+      "title": "Mabon &amp; Full Moon Day Retreat",
+      "source": "eventbrite_laois",
+      "erroneous_town": "Laois",
+      "town_slug": "laois",
+      "town_term_id": 2002,
+      "post_status": "publish",
+      "kept_county": "Laois",
+      "_event_source": "eventbrite_laois",
+      "_event_source_id": "1999303280933",
+      "_event_export_uuid": "36688ff5-71b9-40d3-a30d-1d0d64f5716f",
+      "action": "would_remove"
+    }
+  ]
+}

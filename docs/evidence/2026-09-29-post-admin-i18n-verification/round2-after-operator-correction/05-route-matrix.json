@@ -1,0 +1,189 @@
+[
+ {
+  "path": "/",
+  "status": 200,
+  "location": null,
+  "x_redirect_by": null,
+  "x_ac": null,
+  "bytes": 74839,
+  "html_lang": "pt-BR",
+  "canonical": "https://conexaobr.ie/",
+  "og_locale": "pt_BR",
+  "hreflang": [
+   "en",
+   "pt",
+   "x-default"
+  ],
+  "title": "Conex\u00e3o BR |"
+ },
+ {
+  "path": "/en/",
+  "status": 200,
+  "location": null,
+  "x_redirect_by": null,
+  "x_ac": null,
+  "bytes": 61553,
+  "html_lang": "en-US",
+  "canonical": "https://conexaobr.ie/en/",
+  "og_locale": "en_US",
+  "hreflang": [
+   "en",
+   "pt-BR",
+   "x-default"
+  ],
+  "title": "Conex\u00e3o BR |"
+ },
+ {
+  "path": "/guias/",
+  "status": 200,
+  "location": null,
+  "x_redirect_by": null,
+  "x_ac": null,
+  "bytes": 62436,
+  "html_lang": "pt-BR",
+  "canonical": "https://conexaobr.ie/guias/",
+  "og_locale": "pt_BR",
+  "hreflang": [
+   "pt-BR",
+   "x-default"
+  ],
+  "title": "Guias Pr\u00e1ticos | Conex\u00e3o BR"
+ },
+ {
+  "path": "/en/guias/",
+  "status": 200,
+  "location": null,
+  "x_redirect_by": null,
+  "x_ac": null,
+  "bytes": 61970,
+  "html_lang": "en-US",
+  "canonical": "https://conexaobr.ie/en/guias/",
+  "og_locale": "en_US",
+  "hreflang": [
+   "en"
+  ],
+  "title": "Practical Guides | Conex\u00e3o BR"
+ },
+ {
+  "path": "/eventos/",
+  "status": 200,
+  "location": null,
+  "x_redirect_by": null,
+  "x_ac": null,
+  "bytes": 62367,
+  "html_lang": "pt-BR",
+  "canonical": "https://conexaobr.ie/eventos/",
+  "og_locale": "pt_BR",
+  "hreflang": [
+   "pt-BR",
+   "x-default"
+  ],
+  "title": "Eventos na Irlanda | Conex\u00e3o BR"
+ },
+ {
+  "path": "/en/eventos/",
+  "status": 200,
+  "location": null,
+  "x_redirect_by": null,
+  "x_ac": null,
+  "bytes": 61861,
+  "html_lang": "en-US",
+  "canonical": "https://conexaobr.ie/en/eventos/",
+  "og_locale": "en_US",
+  "hreflang": [
+   "en"
+  ],
+  "title": "Events in Ireland | Conex\u00e3o BR"
+ },
+ {
+  "path": "/lazer/",
+  "status": 200,
+  "location": null,
+  "x_redirect_by": null,
+  "x_ac": null,
+  "bytes": 62592,
+  "html_lang": "pt-BR",
+  "canonical": "https://conexaobr.ie/lazer/",
+  "og_locale": "pt_BR",
+  "hreflang": [
+   "pt-BR",
+   "x-default"
+  ],
+  "title": "Lazer & Turismo na Irlanda | Conex\u00e3o BR"
+ },
+ {
+  "path": "/en/lazer/",
+  "status": 200,
+  "location": null,
+  "x_redirect_by": null,
+  "x_ac": null,
+  "bytes": 62102,
+  "html_lang": "en-US",
+  "canonical": "https://conexaobr.ie/en/lazer/",
+  "og_locale": "en_US",
+  "hreflang": [
+   "en"
+  ],
+  "title": "Leisure & Tourism in Ireland | Conex\u00e3o BR"
+ },
+ {
+  "path": "/empregos/",
+  "status": 200,
+  "location": null,
+  "x_redirect_by": null,
+  "x_ac": null,
+  "bytes": 143142,
+  "html_lang": "pt-BR",
+  "canonical": "https://conexaobr.ie/empregos/",
+  "og_locale": "pt_BR",
+  "hreflang": [
+   "x-default"
+  ],
+  "title": "Empregos &#8211; Conex\u00e3o BR"
+ },
+ {
+  "path": "/en/empregos/",
+  "status": 200,
+  "location": null,
+  "x_redirect_by": null,
+  "x_ac": null,
+  "bytes": 142807,
+  "html_lang": "en-US",
+  "canonical": "https://conexaobr.ie/empregos/",
+  "og_locale": "en_US",
+  "hreflang": [
+   "x-default"
+  ],
+  "title": "Empregos &#8211; Conex\u00e3o BR"
+ },
+ {
+  "path": "/blog/",
+  "status": 200,
+  "location": null,
+  "x_redirect_by": null,
+  "x_ac": null,
+  "bytes": 61812,
+  "html_lang": "pt-BR",
+  "canonical": "https://conexaobr.ie/blog/",
+  "og_locale": "pt_BR",
+  "hreflang": [
+   "x-default"
+  ],
+  "title": "Conex\u00e3o BR |"
+ },
+ {
+  "path": "/en/blog/",
+  "status": 200,
+  "location": null,
+  "x_redirect_by": null,
+  "x_ac": null,
+  "bytes": 61404,
+  "html_lang": "en-US",
+  "canonical": "https://conexaobr.ie/blog/",
+  "og_locale": "en_US",
+  "hreflang": [
+   "x-default"
+  ],
+  "title": "Conex\u00e3o BR |"
+ }
+]

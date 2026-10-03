@@ -10,32 +10,14 @@
  * Usage: docker compose exec wordpress php /var/www/html/wp-content/plugins/conexao-event-importer/tests/test-import-log.php
  */
 
-$wp_load = dirname( dirname( dirname( dirname( __DIR__ ) ) ) ) . '/wp-load.php';
-if ( file_exists( $wp_load ) ) {
-	require_once $wp_load;
-} else {
-	require_once '/var/www/html/wp-load.php';
-}
+
+// Shared Stage E test bootstrap: the only place allowed to locate wp-load.php.
+require_once dirname( __DIR__, 4 ) . '/tests/bootstrap.php';
 
 require_once WP_PLUGIN_DIR . '/conexao-event-importer/conexao-event-importer.php';
 
 $passed = 0;
 $failed = 0;
-
-function test_assert( $condition, $message ) {
-	global $passed, $failed;
-	if ( $condition ) {
-		$passed++;
-		echo "  PASS: {$message}\n";
-	} else {
-		$failed++;
-		echo "  FAIL: {$message}\n";
-	}
-}
-
-function test_section( $title ) {
-	echo "\n=== {$title} ===\n";
-}
 
 // Count successful update_option writes for the log option.
 $GLOBALS['log_writes'] = 0;
@@ -58,7 +40,6 @@ function reset_log_writes() {
 	$GLOBALS['log_writes'] = 0;
 }
 
-echo "Running import log tests...\n";
 
 // ---------------------------------------------------------------------------
 // Test 1: Single log entry (outside a managed run — legacy immediate write).
@@ -71,16 +52,16 @@ reset_log_writes();
 Conexao_Import_Log::add( 'eventbrite', 'info', 'Single entry test', array( 'run_id' => 'run-single' ) );
 
 $all = Conexao_Import_Log::get_all();
-test_assert( 1 === count( $all ), 'Single entry is persisted immediately' );
-test_assert( 'Single entry test' === $all[0]['message'], 'Entry message stored' );
-test_assert( 'eventbrite' === $all[0]['source'], 'Entry source stored' );
-test_assert( 'run-single' === $all[0]['run_id'], 'Entry run_id stored' );
-test_assert( 'info' === $all[0]['level'], 'Entry level stored' );
-test_assert( 1 === log_writes(), 'Single entry causes exactly one option write' );
+assert_true( 1 === count( $all ), 'Single entry is persisted immediately' );
+assert_true( 'Single entry test' === $all[0]['message'], 'Entry message stored' );
+assert_true( 'eventbrite' === $all[0]['source'], 'Entry source stored' );
+assert_true( 'run-single' === $all[0]['run_id'], 'Entry run_id stored' );
+assert_true( 'info' === $all[0]['level'], 'Entry level stored' );
+assert_true( 1 === log_writes(), 'Single entry causes exactly one option write' );
 
 // Empty messages are never logged (unchanged semantics).
 Conexao_Import_Log::add( 'eventbrite', 'info', '   ' );
-test_assert( 1 === count( Conexao_Import_Log::get_all() ), 'Empty message is ignored' );
+assert_true( 1 === count( Conexao_Import_Log::get_all() ), 'Empty message is ignored' );
 
 // ---------------------------------------------------------------------------
 // Test 2: Buffered run — 150 entries, multiple sources, one bounded write.
@@ -97,21 +78,21 @@ for ( $i = 1; $i <= 150; $i++ ) {
 	$level  = ( 0 === $i % 25 ) ? 'error' : 'info';
 	Conexao_Import_Log::add( $source, $level, sprintf( 'entry %03d', $i ), array( 'run_id' => $run_id ) );
 }
-test_assert( 0 === count( Conexao_Import_Log::get_all() ), 'Buffered entries are not yet persisted mid-run' );
+assert_true( 0 === count( Conexao_Import_Log::get_all() ), 'Buffered entries are not yet persisted mid-run' );
 
 Conexao_Import_Log::end_run();
 
 $all = Conexao_Import_Log::get_all();
-test_assert( 150 === count( $all ), 'All 150 entries persisted after end_run()' );
-test_assert( 'entry 150' === $all[0]['message'], 'Ordering preserved: newest entry first' );
-test_assert( 'entry 001' === $all[149]['message'], 'Ordering preserved: oldest entry last' );
-test_assert( 'heritage-week' === $all[0]['source'] && 'laois-tourism' === $all[2]['source'] && 'eventbrite' === $all[1]['source'], 'Multiple sources stored correctly' );
-test_assert( 1 === log_writes(), '150-entry run causes exactly ONE option write (was 150)' );
+assert_true( 150 === count( $all ), 'All 150 entries persisted after end_run()' );
+assert_true( 'entry 150' === $all[0]['message'], 'Ordering preserved: newest entry first' );
+assert_true( 'entry 001' === $all[149]['message'], 'Ordering preserved: oldest entry last' );
+assert_true( 'heritage-week' === $all[0]['source'] && 'laois-tourism' === $all[2]['source'] && 'eventbrite' === $all[1]['source'], 'Multiple sources stored correctly' );
+assert_true( 1 === log_writes(), '150-entry run causes exactly ONE option write (was 150)' );
 
 $run_entries = Conexao_Import_Log::get_for_run( $run_id, 1000 );
-test_assert( 150 === count( $run_entries ), 'get_for_run() returns all buffered entries' );
+assert_true( 150 === count( $run_entries ), 'get_for_run() returns all buffered entries' );
 $run_ids = Conexao_Import_Log::get_run_ids( 5 );
-test_assert( in_array( $run_id, $run_ids, true ), 'get_run_ids() sees the buffered run' );
+assert_true( in_array( $run_id, $run_ids, true ), 'get_run_ids() sees the buffered run' );
 
 // ---------------------------------------------------------------------------
 // Test 3: Nested runs (run_all wrapping run_source) flush only once.
@@ -126,14 +107,14 @@ Conexao_Import_Log::add( 'eventbrite', 'info', 'outer start', array( 'run_id' =>
 Conexao_Import_Log::begin_run(); // inner (run_source)
 Conexao_Import_Log::add( 'eventbrite', 'info', 'inner entry', array( 'run_id' => 'nested' ) );
 Conexao_Import_Log::end_run(); // inner end — no flush yet
-test_assert( 0 === count( Conexao_Import_Log::get_all() ), 'Inner end_run() does not flush' );
+assert_true( 0 === count( Conexao_Import_Log::get_all() ), 'Inner end_run() does not flush' );
 Conexao_Import_Log::add( 'laois-tourism', 'warning', 'after inner end', array( 'run_id' => 'nested' ) );
 Conexao_Import_Log::end_run(); // outermost end — flushes
 
 $all = Conexao_Import_Log::get_all();
-test_assert( 3 === count( $all ), 'All nested entries persisted' );
-test_assert( 'after inner end' === $all[0]['message'], 'Nested ordering preserved' );
-test_assert( 1 === log_writes(), 'Nested run causes exactly ONE option write' );
+assert_true( 3 === count( $all ), 'All nested entries persisted' );
+assert_true( 'after inner end' === $all[0]['message'], 'Nested ordering preserved' );
+assert_true( 1 === log_writes(), 'Nested run causes exactly ONE option write' );
 
 // ---------------------------------------------------------------------------
 // Test 4: Threshold flush keeps memory bounded and ordering intact (300 entries).
@@ -150,9 +131,9 @@ for ( $i = 1; $i <= 300; $i++ ) {
 Conexao_Import_Log::end_run();
 
 $all = Conexao_Import_Log::get_all();
-test_assert( 300 === count( $all ), 'All 300 entries persisted' );
-test_assert( 'bulk 300' === $all[0]['message'] && 'bulk 001' === $all[299]['message'], 'Ordering preserved across threshold flushes' );
-test_assert( log_writes() <= 2, '300-entry run causes at most 2 writes (threshold + final): got ' . log_writes() );
+assert_true( 300 === count( $all ), 'All 300 entries persisted' );
+assert_true( 'bulk 300' === $all[0]['message'] && 'bulk 001' === $all[299]['message'], 'Ordering preserved across threshold flushes' );
+assert_true( log_writes() <= 2, '300-entry run causes at most 2 writes (threshold + final): got ' . log_writes() );
 
 // ---------------------------------------------------------------------------
 // Test 5: Entries logged outside a managed run are never lost.
@@ -164,8 +145,8 @@ Conexao_Import_Log::add( 'cleanup', 'info', 'ad-hoc entry A', array() );
 Conexao_Import_Log::add( 'cleanup', 'warning', 'ad-hoc entry B', array() );
 
 $all = Conexao_Import_Log::get_all();
-test_assert( 'ad-hoc entry B' === $all[0]['message'], 'Ad-hoc entry visible immediately' );
-test_assert( 2 === log_writes(), 'Ad-hoc entries write immediately (legacy behavior)' );
+assert_true( 'ad-hoc entry B' === $all[0]['message'], 'Ad-hoc entry visible immediately' );
+assert_true( 2 === log_writes(), 'Ad-hoc entries write immediately (legacy behavior)' );
 
 // ---------------------------------------------------------------------------
 // Test 6: Failed source entries + severity/normalization preserved.
@@ -184,17 +165,17 @@ Conexao_Import_Log::add( 'laois-tourism', 'info', 'Import finished: created=3 up
 Conexao_Import_Log::end_run();
 
 $all = Conexao_Import_Log::get_all();
-test_assert( 'error' === $all[2]['level'], 'Error severity preserved' );
-test_assert( 403 === $all[2]['http_status'], 'HTTP status preserved' );
-test_assert( 'warning' === $all[1]['level'], 'Warning severity preserved' );
-test_assert(
+assert_true( 'error' === $all[2]['level'], 'Error severity preserved' );
+assert_true( 403 === $all[2]['http_status'], 'HTTP status preserved' );
+assert_true( 'warning' === $all[1]['level'], 'Warning severity preserved' );
+assert_true(
 	'Failed to fetch events from Eventbrite. HTTP status: 403.' === Conexao_Import_Log::get_last_error( 'eventbrite' ),
 	'get_last_error() finds the failed-source error'
 );
 
 // Unknown level normalizes to info (unchanged semantics).
 Conexao_Import_Log::add( 'eventbrite', 'bogus-level', 'normalization check', array() );
-test_assert( 'info' === Conexao_Import_Log::get_all()[0]['level'], 'Unknown level normalizes to info' );
+assert_true( 'info' === Conexao_Import_Log::get_all()[0]['level'], 'Unknown level normalizes to info' );
 
 // ---------------------------------------------------------------------------
 // Test 7: Sensitive-key filtering still applied before persistence.
@@ -215,20 +196,20 @@ Conexao_Import_Log::add( 'eventbrite', 'error', 'Request failed', array(
 
 $entry      = Conexao_Import_Log::get_all()[0];
 $serialized = wp_json_encode( $entry );
-test_assert( false === strpos( $serialized, 'SECRET-TOKEN' ), 'token stripped' );
-test_assert( false === strpos( $serialized, 'hunter2' ), 'password stripped' );
-test_assert( false === strpos( $serialized, 'KEY123' ), 'api_key stripped' );
-test_assert( false === strpos( $serialized, 'Bearer abc' ), 'authorization stripped' );
-test_assert( false === strpos( $serialized, 'shhh' ), 'client_secret stripped' );
-test_assert( 'https://example.com/feed' === $entry['context']['url'], 'Safe context key (url) preserved' );
-test_assert( '2' === $entry['context']['attempt'], 'Safe context key (attempt) preserved' );
+assert_true( false === strpos( $serialized, 'SECRET-TOKEN' ), 'token stripped' );
+assert_true( false === strpos( $serialized, 'hunter2' ), 'password stripped' );
+assert_true( false === strpos( $serialized, 'KEY123' ), 'api_key stripped' );
+assert_true( false === strpos( $serialized, 'Bearer abc' ), 'authorization stripped' );
+assert_true( false === strpos( $serialized, 'shhh' ), 'client_secret stripped' );
+assert_true( 'https://example.com/feed' === $entry['context']['url'], 'Safe context key (url) preserved' );
+assert_true( '2' === $entry['context']['attempt'], 'Safe context key (attempt) preserved' );
 
 // Buffered entries are filtered too (filtering happens in add(), pre-buffer).
 Conexao_Import_Log::begin_run();
 Conexao_Import_Log::add( 'eventbrite', 'info', 'buffered secret test', array( 'api_key' => 'BUFFERED-KEY' ) );
 Conexao_Import_Log::end_run();
 $entry = Conexao_Import_Log::get_all()[0];
-test_assert( false === strpos( wp_json_encode( $entry ), 'BUFFERED-KEY' ), 'Sensitive key stripped from buffered entries' );
+assert_true( false === strpos( wp_json_encode( $entry ), 'BUFFERED-KEY' ), 'Sensitive key stripped from buffered entries' );
 
 // ---------------------------------------------------------------------------
 // Test 8: 2000-entry cap is respected; newest entries kept.
@@ -243,9 +224,9 @@ for ( $i = 1; $i <= 2050; $i++ ) {
 Conexao_Import_Log::end_run();
 
 $all = Conexao_Import_Log::get_all();
-test_assert( 2000 === count( $all ), 'Cap respected: exactly 2000 entries kept (got ' . count( $all ) . ')' );
-test_assert( 'cap 2050' === $all[0]['message'], 'Newest entry kept' );
-test_assert( 'cap 0051' === $all[1999]['message'], 'Oldest surviving entry is #51 (2050 - 2000 + 1)' );
+assert_true( 2000 === count( $all ), 'Cap respected: exactly 2000 entries kept (got ' . count( $all ) . ')' );
+assert_true( 'cap 2050' === $all[0]['message'], 'Newest entry kept' );
+assert_true( 'cap 0051' === $all[1999]['message'], 'Oldest surviving entry is #51 (2050 - 2000 + 1)' );
 
 // ---------------------------------------------------------------------------
 // Test 9: 90-day retention (also covers buffered entries).
@@ -274,11 +255,11 @@ $removed = Conexao_Import_Log::prune_older_than_90_days();
 Conexao_Import_Log::end_run();
 
 $messages = wp_list_pluck( Conexao_Import_Log::get_all(), 'message' );
-test_assert( 1 === $removed, 'Exactly one ancient entry removed' );
-test_assert( 2 === count( $messages ), 'Fresh + buffered entries survive retention' );
-test_assert( ! in_array( 'ancient entry', $messages, true ), 'Ancient entry pruned' );
-test_assert( in_array( 'fresh entry', $messages, true ), 'Fresh entry retained' );
-test_assert( in_array( 'buffered before prune', $messages, true ), 'Buffered entry flushed and retained by prune' );
+assert_true( 1 === $removed, 'Exactly one ancient entry removed' );
+assert_true( 2 === count( $messages ), 'Fresh + buffered entries survive retention' );
+assert_true( ! in_array( 'ancient entry', $messages, true ), 'Ancient entry pruned' );
+assert_true( in_array( 'fresh entry', $messages, true ), 'Fresh entry retained' );
+assert_true( in_array( 'buffered before prune', $messages, true ), 'Buffered entry flushed and retained by prune' );
 
 // ---------------------------------------------------------------------------
 // Test 10: Concurrent-run merge — a flush never overwrites persisted entries
@@ -309,10 +290,10 @@ update_option( Conexao_Import_Log::OPTION_KEY, array_merge( $run_b, Conexao_Impo
 Conexao_Import_Log::end_run(); // Run A flushes (re-reads and prepends).
 
 $messages = wp_list_pluck( Conexao_Import_Log::get_all(), 'message' );
-test_assert( in_array( 'run A entry 1', $messages, true ), 'Run A entry persisted' );
-test_assert( in_array( 'run B entry 1', $messages, true ), 'Concurrent run B entry 1 NOT overwritten' );
-test_assert( in_array( 'run B entry 2', $messages, true ), 'Concurrent run B entry 2 NOT overwritten' );
-test_assert( 'run A entry 1' === $messages[0], 'Newest-first ordering across concurrent runs' );
+assert_true( in_array( 'run A entry 1', $messages, true ), 'Run A entry persisted' );
+assert_true( in_array( 'run B entry 1', $messages, true ), 'Concurrent run B entry 1 NOT overwritten' );
+assert_true( in_array( 'run B entry 2', $messages, true ), 'Concurrent run B entry 2 NOT overwritten' );
+assert_true( 'run A entry 1' === $messages[0], 'Newest-first ordering across concurrent runs' );
 
 // ---------------------------------------------------------------------------
 // Test 11: clear() wipes persisted and buffered entries.
@@ -324,7 +305,7 @@ Conexao_Import_Log::begin_run();
 Conexao_Import_Log::add( 'eventbrite', 'info', 'will be cleared', array() );
 Conexao_Import_Log::clear(); // Clear mid-run: buffered entry dropped too.
 Conexao_Import_Log::end_run();
-test_assert( 0 === count( Conexao_Import_Log::get_all() ), 'clear() wipes persisted and buffered entries' );
+assert_true( 0 === count( Conexao_Import_Log::get_all() ), 'clear() wipes persisted and buffered entries' );
 
 // ---------------------------------------------------------------------------
 // Test 12: Write-amplification measurement (before vs after).
@@ -354,16 +335,14 @@ echo sprintf(
 	$after,
 	$persisted
 );
-test_assert( 200 === $before, 'Before: 200 unbuffered entries caused 200 option writes' );
-test_assert( 1 === $after, 'After: 200 buffered entries caused 1 option write' );
-test_assert( 200 === $persisted, 'After: all 200 entries persisted correctly' );
+assert_true( 200 === $before, 'Before: 200 unbuffered entries caused 200 option writes' );
+assert_true( 1 === $after, 'After: 200 buffered entries caused 1 option write' );
+assert_true( 200 === $persisted, 'After: all 200 entries persisted correctly' );
 
 // ---------------------------------------------------------------------------
 // Summary
 // ---------------------------------------------------------------------------
-echo "\n=== Results ===\n";
-echo "Passed: {$passed}\n";
-echo "Failed: {$failed}\n";
 
 Conexao_Import_Log::clear();
-exit( $failed > 0 ? 1 : 0 );
+
+test_finish();

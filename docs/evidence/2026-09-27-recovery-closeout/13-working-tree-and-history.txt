@@ -1,0 +1,49 @@
+# 13 - Working tree and history at closeout
+
+## git status --short
+   M docs/reports/README.md
+  ?? docs/evidence/2026-09-27-recovery-closeout/
+  ?? docs/reports/2026-09-27-recovery-closeout.md
+
+  => ONLY intentional documentation changes: the closeout report, the closeout
+     evidence directory, and the reports-index entry that registers the
+     recovery report chain. No source, no data, no DB dump, no temporary
+     file, no Flutter file, no production artefact.
+
+## Tracked-file changes
+  git diff --stat:
+     docs/reports/README.md | 16 ++++++++++++++--
+     1 file changed, 14 insertions(+), 2 deletions(-)
+  total diff lines: 26
+
+## Source diffs against both baselines (MUST be zero)
+  git diff b47d098 -- wp-content/themes/ : 0
+  git diff cd800be -- wp-content/        : 0
+  git diff --stat -- tests/ scripts/    : 0
+  => the closeout changed no source, no plugin, no test and no gate.
+
+## git log --oneline --decorate -10 (before the closeout commit)
+  cd800be (HEAD -> i18n) Restore the verified b47d098 theme baseline after the 597b04e regression
+  bd81ba5 (tag: recovery-snapshot-before-restore) docs: add report on English `Artigo` label investigation on `/en/`
+  597b04e Refactor code structure for improved readability and maintainability
+  b47d098 Add investigation report and SQL logs for `/en/lazer/` archive performance
+  b32fba3 Add the i18n catalogue freshness investigation report and evidence
+  88bdf22 Regenerate the stale theme i18n catalogue and repair the generator
+  8f07f30 Add regression tests for ARIA semantics in filter links and homepage content-type labels
+  8496245 Add tests for provider category filter and English label presentation
+  3cc6564 (origin/i18n) Add English course-provider descriptions and rollout stage
+  53f1781 Add English description stage for leisure records
+
+## History integrity
+  - no reset, no revert, no cherry-pick, no merge, no rebase
+  - no history rewrite, no force-push
+  - 597b04e is still present and fully auditable in the log
+  - the rollback tag was not moved:
+    recovery-snapshot-before-restore -> bd81ba59d800970d6e1e6e542d76ccb664fdbd24
+      (bd81ba5, the pre-restore snapshot - PRESERVED)
+
+## Junk scan
+  Anything outside docs/ (reports, evidence):
+    (nothing)
+
+  Flutter files: none. The Flutter/mobile repository was never accessed.

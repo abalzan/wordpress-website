@@ -1,0 +1,18 @@
+=== EN-ZERO EVIDENCE ===
+  en term_id           : 1744
+  en assigned count    : 0
+  en translation links : 1 (term_language = 1 = the en->none declaration only)
+
+  EN taxonomy translations: en term_taxonomy_id = 391 -> count 1 (no translated category/tag terms)
+
+=== ASSIGNMENT STATE (why ?lang=pt is 0) ===
+  Polylang pt term count  : 0
+  Polylang en term count  : 0
+  => ZERO objects in the whole site carry a Polylang language term.
+     The operator action did not assign any content to pt.
+
+=== pages/posts behaviour (control) ===
+  pages    unfiltered=43 lang=pt=43 lang=en=43
+  posts    unfiltered=37 lang=pt=0 lang=en=0
+  pages return the same total for every lang => pages are UNTRANSLATED (filter not applied).
+  posts return 0 for both => posts ARE being filtered but carry no language term.

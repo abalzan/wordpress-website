@@ -1,0 +1,39 @@
+{
+  "stage": "stage-1-auto-translation-plugin-boundary",
+  "date": "2026-09-30",
+  "entry_point": "Conexao_Translation_Automation_Orchestrator::run( array $context )",
+  "engine": "Conexao_Translation_Rollout_Engine::run( array $config, array $adapter, array $args )",
+  "delegation": "call_user_func( $config['run_callback'], array( 'dry_run' => true, 'mode' => 'run' ) )",
+  "http_surface": "none (no admin_menu, no admin_post_*, no register_rest_route, no wp_schedule_*)",
+  "columns": ["case", "outcome", "failure_category", "engine_reached", "mutation_permitted", "mutation_occurred"],
+  "cases": [
+    { "case": "valid proof invocation (en-guide)", "outcome": "ok", "failure_category": "", "engine_reached": true, "mutation_permitted": false, "mutation_occurred": false },
+    { "case": "unauthorised caller (authorized=false)", "outcome": "failed", "failure_category": "unauthorized", "engine_reached": false, "mutation_permitted": false, "mutation_occurred": false },
+    { "case": "non-boolean authorization claim", "outcome": "failed", "failure_category": "unauthorized", "engine_reached": false, "mutation_permitted": false, "mutation_occurred": false },
+    { "case": "caller asserting a different capability", "outcome": "failed", "failure_category": "unauthorized", "engine_reached": false, "mutation_permitted": false, "mutation_occurred": false },
+    { "case": "mode key absent", "outcome": "failed", "failure_category": "missing_mode", "engine_reached": false, "mutation_permitted": false, "mutation_occurred": false },
+    { "case": "mode empty string", "outcome": "failed", "failure_category": "missing_mode", "engine_reached": false, "mutation_permitted": false, "mutation_occurred": false },
+    { "case": "mode 'APPLY' (uppercase)", "outcome": "failed", "failure_category": "unknown_mode", "engine_reached": false, "mutation_permitted": false, "mutation_occurred": false },
+    { "case": "mode 'dry_run'", "outcome": "failed", "failure_category": "unknown_mode", "engine_reached": false, "mutation_permitted": false, "mutation_occurred": false },
+    { "case": "mode 'preview'", "outcome": "failed", "failure_category": "unknown_mode", "engine_reached": false, "mutation_permitted": false, "mutation_occurred": false },
+    { "case": "mode 'apply' (recognised)", "outcome": "failed", "failure_category": "apply_disabled", "engine_reached": false, "mutation_permitted": false, "mutation_occurred": false },
+    { "case": "stage key absent", "outcome": "failed", "failure_category": "unknown_stage", "engine_reached": false, "mutation_permitted": false, "mutation_occurred": false },
+    { "case": "stage 'en-event' (not allowlisted)", "outcome": "failed", "failure_category": "stage_not_allowlisted", "engine_reached": false, "mutation_permitted": false, "mutation_occurred": false },
+    { "case": "stage '../etc/passwd'", "outcome": "failed", "failure_category": "stage_not_allowlisted", "engine_reached": false, "mutation_permitted": false, "mutation_occurred": false },
+    { "case": "stage registered with engine but NOT allowlisted", "outcome": "failed", "failure_category": "stage_not_allowlisted", "engine_reached": false, "mutation_permitted": false, "mutation_occurred": false },
+    { "case": "stage allowlisted but not registered with engine", "outcome": "failed", "failure_category": "unknown_stage", "engine_reached": false, "mutation_permitted": false, "mutation_occurred": false }
+  ],
+  "totals": {
+    "cases": 15,
+    "reached_engine": 1,
+    "refused_before_engine": 14,
+    "permitted_mutation": 0,
+    "occurred_mutation": 0
+  },
+  "notes": [
+    "There is no 'missing mode => apply' and no 'unknown mode => apply' behaviour; both fail closed.",
+    "The engine is reached only by an authorised, allowlisted, proof-mode invocation with a stage the engine actually has registered.",
+    "dry_run is hard-coded to true at the delegation site and cannot be overridden by a caller.",
+    "Every refusal is proven to happen BEFORE the engine is entered, using an invocation counter in the test stage's run_callback."
+  ]
+}

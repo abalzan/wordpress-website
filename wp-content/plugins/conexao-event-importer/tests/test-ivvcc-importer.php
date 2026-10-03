@@ -10,32 +10,14 @@
  * @package Conexao_Event_Importer
  */
 
-$wp_load = dirname( dirname( dirname( dirname( __DIR__ ) ) ) ) . '/wp-load.php';
-if ( file_exists( $wp_load ) ) {
-	require_once $wp_load;
-} else {
-	require_once '/var/www/html/wp-load.php';
-}
+
+// Shared Stage E test bootstrap: the only place allowed to locate wp-load.php.
+require_once dirname( __DIR__, 4 ) . '/tests/bootstrap.php';
 
 require_once WP_PLUGIN_DIR . '/conexao-event-importer/conexao-event-importer.php';
 
 $passed = 0;
 $failed = 0;
-
-function test_assert( $condition, $message ) {
-	global $passed, $failed;
-	if ( $condition ) {
-		$passed++;
-		echo "  PASS: {$message}\n";
-	} else {
-		$failed++;
-		echo "  FAIL: {$message}\n";
-	}
-}
-
-function test_section( $title ) {
-	echo "\n=== {$title} ===\n";
-}
 
 function ivvcc_card_fixture( $overrides = array() ) {
 	$a = array_merge( array(
@@ -63,142 +45,146 @@ function ivvcc_parse_one( $card_html ) {
 	return Conexao_Source_Ivvcc::parse_card( $cards->item( 0 ), $xp, 'https://www.ivvcc.ie/upcoming-events-calendar/' );
 }
 
-echo "Running IVVCC importer tests...\n";
 // 1. One-day event with start+end time.
 test_section( '1: one-day event' );
 $e = ivvcc_parse_one( ivvcc_card_fixture( array( 'id' => '559933', 'time' => '1790503200-1790512200', 'title' => 'RIAC/IVVCC Cars and Breakfast' ) ) );
-test_assert( '559933' === $e['source_id'], 'EventON ID preserved as source_id' );
-test_assert( false !== strpos( $e['url'], '/events/' ), 'canonical individual URL kept, not calendar page' );
-test_assert( '' !== $e['start_date'] && '' === $e['end_date'], 'one-day event has start date only (' . $e['start_date'] . ')' );
-test_assert( '' !== $e['start_time'] && '' !== $e['end_time'], 'one-day keeps real start+end times' );
+assert_true( '559933' === $e['source_id'], 'EventON ID preserved as source_id' );
+assert_true( false !== strpos( $e['url'], '/events/' ), 'canonical individual URL kept, not calendar page' );
+assert_true( '' !== $e['start_date'] && '' === $e['end_date'], 'one-day event has start date only (' . $e['start_date'] . ')' );
+assert_true( '' !== $e['start_time'] && '' !== $e['end_time'], 'one-day keeps real start+end times' );
 
 // 2. Multi-day events.
 test_section( '2: multi-day events' );
 $e = ivvcc_parse_one( ivvcc_card_fixture( array( 'time' => '1789844400-1789923600' ) ) );
-test_assert( '2026-09-19' === $e['start_date'], 'Brass Brigade start 2026-09-19 (got ' . $e['start_date'] . ')' );
-test_assert( '2026-09-20' === $e['end_date'], 'Brass Brigade end 2026-09-20 (got ' . $e['end_date'] . ')' );
+assert_true( '2026-09-19' === $e['start_date'], 'Brass Brigade start 2026-09-19 (got ' . $e['start_date'] . ')' );
+assert_true( '2026-09-20' === $e['end_date'], 'Brass Brigade end 2026-09-20 (got ' . $e['end_date'] . ')' );
 $e2 = ivvcc_parse_one( ivvcc_card_fixture( array( 'id' => '559452', 'time' => '1788516000-1788717600' ) ) );
-test_assert( '2026-09-04' === $e2['start_date'] && '2026-09-06' === $e2['end_date'], 'Garden of Ireland 4 Sep -> 6 Sep' );
+assert_true( '2026-09-04' === $e2['start_date'] && '2026-09-06' === $e2['end_date'], 'Garden of Ireland 4 Sep -> 6 Sep' );
 
 // 3. Start-only (equal unix).
 test_section( '3: start-only time' );
 $e = ivvcc_parse_one( ivvcc_card_fixture( array( 'id' => '1', 'time' => '1789844400-1789844400' ) ) );
-test_assert( '' !== $e['start_time'] && '' === $e['end_time'], 'equal unix = start-only, end empty' );
+assert_true( '' !== $e['start_time'] && '' === $e['end_time'], 'equal unix = start-only, end empty' );
 
 // 4. Placeholder 07:39 dropped.
 test_section( '4: placeholder time' );
 $e = ivvcc_parse_one( ivvcc_card_fixture( array( 'id' => '656421', 'time' => '1788507540-1788507540', 'title' => 'Baggatonia Festival' ) ) );
-test_assert( '' !== $e['start_date'], 'placeholder event keeps valid date' );
-test_assert( '' === $e['start_time'] && '' === $e['end_time'], 'placeholder 07:39 not imported as time' );
-test_assert( ! empty( $e['_warnings'] ), 'placeholder logs a warning' );
+assert_true( '' !== $e['start_date'], 'placeholder event keeps valid date' );
+assert_true( '' === $e['start_time'] && '' === $e['end_time'], 'placeholder 07:39 not imported as time' );
+assert_true( ! empty( $e['_warnings'] ), 'placeholder logs a warning' );
 
 // 5. Fallback 23:50 (UTC wall) end dropped; multi-day 23:50 keeps end date.
 test_section( '5: 23:50 fallback end' );
 $m = Conexao_Source_Ivvcc::map_unix_range( 1788516000, gmmktime( 23, 50, 0, 9, 4, 2026 ) );
-test_assert( '' !== $m['start_time'] && '' === $m['end_time'], 'same-day 23:50 UTC end dropped, start kept' );
+assert_true( '' !== $m['start_time'] && '' === $m['end_time'], 'same-day 23:50 UTC end dropped, start kept' );
 $m = Conexao_Source_Ivvcc::map_unix_range( gmmktime( 11, 0, 0, 9, 19, 2026 ), gmmktime( 23, 50, 0, 9, 20, 2026 ) );
-test_assert( '2026-09-20' === $m['end_date'] && '' === $m['end_time'], 'multi-day 23:50 end: end date kept, end time dropped' );
+assert_true( '2026-09-20' === $m['end_date'] && '' === $m['end_time'], 'multi-day 23:50 end: end date kept, end time dropped' );
 $m = Conexao_Source_Ivvcc::map_unix_range( gmmktime( 1, 0, 0, 10, 9, 2026 ), gmmktime( 1, 0, 0, 10, 10, 2026 ) );
-test_assert( '2026-10-09' === $m['start_date'] && '2026-10-10' === $m['end_date'] && '' === $m['start_time'] && '' === $m['end_time'], 'identical 24h-apart wall times: all-day span, times dropped' );
+assert_true( '2026-10-09' === $m['start_date'] && '2026-10-10' === $m['end_date'] && '' === $m['start_time'] && '' === $m['end_time'], 'identical 24h-apart wall times: all-day span, times dropped' );
 $m = Conexao_Source_Ivvcc::map_unix_range( 1788256800, 1790442000 );
-test_assert( '10:00' === $m['start_time'] && '17:00' === $m['end_time'] && '2026-09-01' === $m['start_date'] && '2026-09-26' === $m['end_date'], 'Cobh unix range maps to the card-rendered 10:00 am - 5:00 pm wall times' );
+assert_true( '10:00' === $m['start_time'] && '17:00' === $m['end_time'] && '2026-09-01' === $m['start_date'] && '2026-09-26' === $m['end_date'], 'Cobh unix range maps to the card-rendered 10:00 am - 5:00 pm wall times' );
 
 // 6. TBA skipped.
 test_section( '6: TBA skip' );
 $e = ivvcc_parse_one( ivvcc_card_fixture( array( 'id' => '558743', 'time' => '1788256800-1790442000', 'title' => 'Cobh Classic Car Club', 'subtitle' => 'Dick OB memorial - Date to be advised', 'location' => 'Run to Kilmakilloge Harbour' ) ) );
-test_assert( ! empty( $e['_skip'] ), 'TBA record flagged SKIP (date not firm)' );
+assert_true( ! empty( $e['_skip'] ), 'TBA record flagged SKIP (date not firm)' );
 // 7. Locations nationwide.
 test_section( '7: locations' );
 $loc = new Conexao_Event_Location();
 $r = $loc->normalize( 'Park Hotel, Dungarvan, Co Waterford' );
-test_assert( 'Waterford' === $r['county'] && 'Dungarvan' === $r['town'], 'venue + town + county Waterford/Dungarvan' );
-test_assert( false !== strpos( $r['venue'], 'Park Hotel' ), 'venue preserved verbatim' );
-test_assert( '' === $r['address'], 'venue-only has no invented street address' );
+assert_true( 'Waterford' === $r['county'] && 'Dungarvan' === $r['town'], 'venue + town + county Waterford/Dungarvan' );
+assert_true( false !== strpos( $r['venue'], 'Park Hotel' ), 'venue preserved verbatim' );
+assert_true( '' === $r['address'], 'venue-only has no invented street address' );
 $r = $loc->normalize( 'The Goat Bar and Grill, Clonskeagh, Dublin D14 PY56' );
-test_assert( 'Dublin' === $r['county'], 'Dublin county detected' );
-test_assert( '' !== $r['address'] && false !== strpos( $r['address'], 'D14 PY56' ), 'Eircode address stored' );
+assert_true( 'Dublin' === $r['county'], 'Dublin county detected' );
+assert_true( '' !== $r['address'] && false !== strpos( $r['address'], 'D14 PY56' ), 'Eircode address stored' );
 $r = $loc->normalize( 'Starting from Russborough House' );
-test_assert( '' === $r['address'] && '' !== $r['venue'], 'venue-only Russborough: venue kept, address empty' );
+assert_true( '' === $r['address'] && '' !== $r['venue'], 'venue-only Russborough: venue kept, address empty' );
 $r = $loc->normalize( 'Sligo Town' );
-test_assert( 'Sligo' === $r['town'], 'Sligo town detected' );
+assert_true( 'Sligo' === $r['town'], 'Sligo town detected' );
 $r = $loc->normalize( 'Kenmare' );
-test_assert( 'Kenmare' === $r['town'], 'Kenmare detected' );
+assert_true( 'Kenmare' === $r['town'], 'Kenmare detected' );
 $r = $loc->normalize( 'Wexford' );
-test_assert( 'Wexford' === $r['county'], 'Wexford detected' );
+assert_true( 'Wexford' === $r['county'], 'Wexford detected' );
 $r = $loc->normalize( 'Carlow' );
-test_assert( 'Carlow' === $r['county'], 'Carlow detected' );
+assert_true( 'Carlow' === $r['county'], 'Carlow detected' );
 $r = $loc->normalize( 'Dungarvan, Co. Waterford' );
-test_assert( 'Waterford' === $r['county'], 'Co. marker detected' );
+assert_true( 'Waterford' === $r['county'], 'Co. marker detected' );
 $r = $loc->normalize( 'Church Street, Portlaoise, Co. Laois' );
-test_assert( 'Laois' === $r['county'] && 'Portlaoise' === $r['town'], 'Laois legacy behavior preserved' );
+assert_true( 'Laois' === $r['county'] && 'Portlaoise' === $r['town'], 'Laois legacy behavior preserved' );
 
 // 8. Organizers verbatim.
 test_section( '8: organizers' );
 $e = ivvcc_parse_one( ivvcc_card_fixture( array( 'organizer' => 'Lar Cummins - Club Secretary, 087 2268752' ) ) );
-test_assert( 'Lar Cummins - Club Secretary, 087 2268752' === $e['organizer'], 'affiliate organizer verbatim' );
+assert_true( 'Lar Cummins - Club Secretary, 087 2268752' === $e['organizer'], 'affiliate organizer verbatim' );
 $e = ivvcc_parse_one( ivvcc_card_fixture( array( 'organizer' => 'Riac Eventbrite or Ivvcc' ) ) );
-test_assert( false !== strpos( $e['organizer'], 'Riac' ), 'joint organizer preserved, not forced to IVVCC' );
-test_assert( false !== strpos( $e['description'], 'Registration:' ), 'Eventbrite registration text preserved' );
+assert_true( false !== strpos( $e['organizer'], 'Riac' ), 'joint organizer preserved, not forced to IVVCC' );
+assert_true( false !== strpos( $e['description'], 'Registration:' ), 'Eventbrite registration text preserved' );
 
 // 9. Price + details later.
 test_section( '9: price + details later' );
 $e = ivvcc_parse_one( ivvcc_card_fixture( array( 'subtitle' => 'Cars and Breakfast meet up €15. Breakfast at 11 am' ) ) );
-test_assert( false !== strpos( $e['price'], '15' ), 'explicit price mapped (got ' . $e['price'] . ')' );
+assert_true( false !== strpos( $e['price'], '15' ), 'explicit price mapped (got ' . $e['price'] . ')' );
 $e = ivvcc_parse_one( ivvcc_card_fixture( array( 'id' => '559757', 'subtitle' => 'Autumn Run - details later' ) ) );
-test_assert( empty( $e['_skip'] ) && false !== strpos( $e['description'], 'details later' ), 'details-later imported with subtitle' );
+assert_true( empty( $e['_skip'] ) && false !== strpos( $e['description'], 'details later' ), 'details-later imported with subtitle' );
 
 // 10. Identity.
 test_section( '10: identity' );
 $e = ivvcc_parse_one( ivvcc_card_fixture( array( 'url' => 'https://www.ivvcc.ie/events/muskerry-vintage-club-27/' ) ) );
-test_assert( 'https://www.ivvcc.ie/events/muskerry-vintage-club-27/' === $e['url'], 'versioned slug kept as source URL' );
-test_assert( '555047' === $e['source_id'], 'stable numeric EventON ID kept' );
+assert_true( 'https://www.ivvcc.ie/events/muskerry-vintage-club-27/' === $e['url'], 'versioned slug kept as source URL' );
+assert_true( '555047' === $e['source_id'], 'stable numeric EventON ID kept' );
 // 11. Dedupe semantics (pure).
 test_section( '11: dedupe semantics' );
 $cal = ivvcc_card_fixture( array( 'id' => '555047' ) ) . ivvcc_card_fixture( array( 'id' => '555047' ) );
 $parsed = Conexao_Source_Ivvcc::parse_calendar_events( $cal );
-test_assert( 2 === count( $parsed ) && $parsed[0]['source_id'] === $parsed[1]['source_id'], 'duplicate EventON ID parsed twice before collapse' );
+assert_true( 2 === count( $parsed ) && $parsed[0]['source_id'] === $parsed[1]['source_id'], 'duplicate EventON ID parsed twice before collapse' );
 $a = ivvcc_parse_one( ivvcc_card_fixture( array( 'id' => '559757', 'url' => 'https://www.ivvcc.ie/events/blessington-vintage-car-and-motorcycle-club-5/' ) ) );
 $b = ivvcc_parse_one( ivvcc_card_fixture( array( 'id' => '559758', 'url' => 'https://www.ivvcc.ie/events/blessington-vintage-car-and-motorcycle-club-6/' ) ) );
-test_assert( $a['source_id'] !== $b['source_id'] && $a['url'] !== $b['url'], 'yearly repeats with different IDs are different events' );
+assert_true( $a['source_id'] !== $b['source_id'] && $a['url'] !== $b['url'], 'yearly repeats with different IDs are different events' );
 
 // 12. JSON-LD dates ignored.
 test_section( '12: JSON-LD exclusion' );
 $e = ivvcc_parse_one( ivvcc_card_fixture() );
-test_assert( '2026-09-19' === $e['start_date'], 'data-time wins over malformed JSON-LD' );
+assert_true( '2026-09-19' === $e['start_date'], 'data-time wins over malformed JSON-LD' );
 
 // 13. Images.
 test_section( '13: images' );
-test_assert( '' === $e['image'], 'missing image = no image (page URL never used)' );
-test_assert( Conexao_Source_Ivvcc::is_chrome_image( 'https://www.ivvcc.ie/wp-content/uploads/fiva-logo.png' ), 'FIVA logo is chrome' );
+assert_true( '' === $e['image'], 'missing image = no image (page URL never used)' );
+assert_true( Conexao_Source_Ivvcc::is_chrome_image( 'https://www.ivvcc.ie/wp-content/uploads/fiva-logo.png' ), 'FIVA logo is chrome' );
 $d = Conexao_Source_Ivvcc::parse_detail_page( '<html><body><div class="eventon_list_event" data-event_id="1"><img src="https://www.ivvcc.ie/events/some-event/" /></div></body></html>', 'https://www.ivvcc.ie/events/some-event/' );
-test_assert( '' === $d['image'], 'page URL never treated as event image' );
+assert_true( '' === $d['image'], 'page URL never treated as event image' );
 
 // 14. Deduplicator against DB.
 test_section( '14: deduplicator (DB)' );
 $dedup = new Conexao_Event_Deduplicator();
-$probe_title = 'IVVCC Dedupe Probe ' . time();
-$post_id = wp_insert_post( array( 'post_type' => 'event', 'post_title' => $probe_title, 'post_status' => 'publish' ) );
+// The probe identity is derived from the run so it can never collide with a
+// really imported event. Hard-coded source IDs made this assertion depend on
+// whatever the local database happened to contain: a real event carrying
+// source_id 559758 made "different ID+URL does not collapse" fail even though
+// the deduplicator was correct.
+$probe_nonce     = (string) time() . wp_generate_password( 6, false, false );
+$probe_source_id = 'test-probe-' . $probe_nonce;
+$probe_url       = 'https://www.ivvcc.ie/events/test-probe-' . $probe_nonce . '/';
+$probe_title     = 'IVVCC Dedupe Probe ' . $probe_nonce;
+$post_id         = wp_insert_post( array( 'post_type' => 'event', 'post_title' => $probe_title, 'post_status' => 'publish' ) );
 update_post_meta( $post_id, '_event_source', 'ivvcc' );
-update_post_meta( $post_id, '_event_source_id', '555047' );
+update_post_meta( $post_id, '_event_source_id', $probe_source_id );
 update_post_meta( $post_id, '_event_date', '2026-09-19' );
-update_post_meta( $post_id, '_event_source_url', 'https://www.ivvcc.ie/events/ivvcc-11th-brass-brigade-run/' );
-update_post_meta( $post_id, '_event_url', 'https://www.ivvcc.ie/events/ivvcc-11th-brass-brigade-run/' );
-test_assert( (int) $post_id === (int) $dedup->find( array( 'source' => 'ivvcc', 'source_id' => '555047', 'source_url' => 'https://other.example/x', 'title' => 'Other title', 'start_date' => '2026-01-01' ) ), 'same ivvcc+ID => same event' );
-test_assert( (int) $post_id === (int) $dedup->find( array( 'source' => 'ivvcc', 'source_id' => 'other', 'source_url' => 'https://www.ivvcc.ie/events/ivvcc-11th-brass-brigade-run/', 'title' => 'Other', 'start_date' => '2026-01-01' ) ), 'same canonical URL => same event' );
-$other = $dedup->find( array( 'source' => 'ivvcc', 'source_id' => '559758', 'source_url' => 'https://www.ivvcc.ie/events/blessington-vintage-car-and-motorcycle-club-6/', 'title' => 'Blessington XYZ ' . time(), 'start_date' => '2026-12-13' ) );
-test_assert( 0 === (int) $other, 'different ID+URL does not collapse' );
+update_post_meta( $post_id, '_event_source_url', $probe_url );
+update_post_meta( $post_id, '_event_url', $probe_url );
+assert_true( (int) $post_id === (int) $dedup->find( array( 'source' => 'ivvcc', 'source_id' => $probe_source_id, 'source_url' => 'https://other.example/x', 'title' => 'Other title', 'start_date' => '2026-01-01' ) ), 'same ivvcc+ID => same event' );
+assert_true( (int) $post_id === (int) $dedup->find( array( 'source' => 'ivvcc', 'source_id' => 'other', 'source_url' => $probe_url, 'title' => 'Other', 'start_date' => '2026-01-01' ) ), 'same canonical URL => same event' );
+$other = $dedup->find( array( 'source' => 'ivvcc', 'source_id' => $probe_source_id . '-other', 'source_url' => $probe_url . '-other/', 'title' => 'Blessington XYZ ' . $probe_nonce, 'start_date' => '2026-12-13' ) );
+assert_true( 0 === (int) $other, 'different ID+URL does not collapse' );
 
 // 15. Update preserves manual fields.
 test_section( '15: update preserves manual fields' );
 update_post_meta( $post_id, '_event_address', 'Manually curated address, Dungarvan' );
 update_post_meta( $post_id, '_event_map_url', 'https://www.google.com/maps/search/?api=1&query=manual' );
 $resolved = Conexao_Event_Address::resolve_stored( '', get_post_meta( $post_id, '_event_address', true ) );
-test_assert( 'Manually curated address, Dungarvan' === $resolved, 'manual address preserved when source supplies none' );
+assert_true( 'Manually curated address, Dungarvan' === $resolved, 'manual address preserved when source supplies none' );
 $map = Conexao_Event_Address::resolve_stored( '', get_post_meta( $post_id, '_event_map_url', true ) );
-test_assert( 'https://www.google.com/maps/search/?api=1&query=manual' === $map, 'manual map URL preserved' );
+assert_true( 'https://www.google.com/maps/search/?api=1&query=manual' === $map, 'manual map URL preserved' );
 wp_delete_post( $post_id, true );
 
-echo "\n========================================\n";
-echo "IVVCC Test Results: {$passed} passed, {$failed} failed\n";
-echo "========================================\n";
-exit( $failed > 0 ? 1 : 0 );
+test_finish();

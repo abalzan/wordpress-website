@@ -1,0 +1,35 @@
+           PASS  rest-invalid-lang-leisure /wp-json/wp/v2/leisure?lang=pt-br (status 400)
+           PASS  rest-invalid-lang-posts /wp-json/wp/v2/posts?lang=pt-br (status 400)
+           FAIL  en-home-no-pt-content-type-label /en/  -- missing fragment: 'Practical Guide'
+         3 matrix row(s) failed
+
+----------------------------------------
+In-process PHP suites: 60 total, 40 passed, 20 failed
+  prerequisite failures:         2
+Assertions: 2918 passed, 101 failed
+Script-contract suites: 6 total, 6 passed, 0 failed
+HTTP acceptance suites: 3 total, 1 passed, 2 failed
+----------------------------------------
+TESTS FAILED
+failing suites:
+  - plugin/conexao-event-importer/test-ivvcc-importer.php
+  - plugin/conexao-event-importer/test-town-sanitization.php
+  - plugin/conexao-leisure-migration/test-excerpt-en-roundtrip.php
+  - plugin/conexao-leisure-migration/test-language-uuid.php
+  - theme/conexao-br-irlanda/test-blog-en-translation.php
+  - theme/conexao-br-irlanda/test-event-location-filters.php
+  - theme/conexao-br-irlanda/test-guide-en-translation.php
+  - theme/conexao-br-irlanda/test-header-menu-selection.php (pt)
+  - theme/conexao-br-irlanda/test-header-menu-selection.php (en)
+  - theme/conexao-br-irlanda/test-i18n-foundation.php
+  - theme/conexao-br-irlanda/test-job-en-translation.php
+  - theme/conexao-br-irlanda/test-jobs-en-language.php
+  - theme/conexao-br-irlanda/test-leisure-attribute-normalization.php
+  - theme/conexao-br-irlanda/test-nav-language-context.php
+  - theme/conexao-br-irlanda/test-polylang-foundation.php
+  - theme/conexao-br-irlanda/test-stage32-bilingual.php
+  - theme/conexao-br-irlanda/test-stage33-bilingual.php
+  - theme/conexao-br-irlanda/test-stage41-rest-language.php
+  - theme/conexao-br-irlanda/test-stage45-pages.php
+  - theme/conexao-br-irlanda/test-translation-completeness.php
+full suite output kept in /tmp/tmp.ByDClKwCYD

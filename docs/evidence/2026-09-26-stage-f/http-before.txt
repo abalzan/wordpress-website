@@ -1,0 +1,209 @@
+### /  status=200
+  header Content-Type: text/html; charset=UTF-8
+  header Cache-Control: max-age=0
+  title        Conexão BR |
+  canonical    http://localhost:8080/
+  hreflang     pt-BR http://localhost:8080/ | en http://localhost:8080/en/ | x-default http://localhost:8080/
+  meta_desc    Conexão BR Irlanda - Portal da comunidade brasileira na Irlanda. Guias, eventos, cursos, empregos e mais. | Bem-vindo ao Conexão BR Irlanda, o portal da comunidade brasileira na Irlanda.
+  og_url       http://localhost:8080/ | http://localhost:8080/
+  og_locale    pt_BR | pt_BR
+  html_lang    pt-BR
+  jsonld_types Organization | SearchAction | WebSite
+  h1           Tudo que o brasileiro precisa para viver melhor na <span>Irlanda</span>
+
+### /en/  status=200
+  header Content-Type: text/html; charset=UTF-8
+  header Cache-Control: max-age=0
+  title        Conexão BR |
+  canonical    http://localhost:8080/en/
+  hreflang     en http://localhost:8080/en/ | pt-BR http://localhost:8080/ | x-default http://localhost:8080/
+  meta_desc    Welcome to Conexão BR Irlanda, the portal of the Brazilian community in Ireland. Here you will find practical guides for living in Ireland, an events calendar, job opportunities, courses, community businesses and much more.Our goal is to help every Brazilian live better in Ireland: clear information, in one place, in Portuguese and in English.
+  og_url       http://localhost:8080/en/ | http://localhost:8080/
+  og_locale    en_US | en_US
+  html_lang    en-US
+  jsonld_types Organization | SearchAction | WebSite
+  h1           Everything Brazilians need to live better in <span>Ireland</span>
+
+### /guias/  status=200
+  header Content-Type: text/html; charset=UTF-8
+  header Cache-Control: max-age=0
+  title        Guias Práticos | Conexão BR
+  canonical    http://localhost:8080/guias/
+  hreflang     pt-BR http://localhost:8080/guias/ | en http://localhost:8080/en/guias/ | x-default http://localhost:8080/guias/
+  meta_desc    Guias práticos completos para brasileiros na Irlanda. PPS Number, Medical Card, moradia, emprego e mais.
+  og_url       http://localhost:8080/guias/ | http://localhost:8080/guias/
+  og_locale    pt_BR | pt_BR
+  html_lang    pt-BR
+  jsonld_types BreadcrumbList | ListItem | Organization | SearchAction | WebSite
+  h1           Guias Práticos
+
+### /en/guias/  status=200
+  header Content-Type: text/html; charset=UTF-8
+  header Cache-Control: max-age=0
+  title        Practical Guides | Conexão BR
+  canonical    http://localhost:8080/en/guias/
+  hreflang     pt-BR http://localhost:8080/guias/ | en http://localhost:8080/en/guias/ | x-default http://localhost:8080/guias/
+  meta_desc    Complete practical guides for Brazilians in Ireland. PPS Number, Medical Card, housing, jobs and more.
+  og_url       http://localhost:8080/en/guias/ | http://localhost:8080/en/guias/
+  og_locale    en_US | en_US
+  html_lang    en-US
+  jsonld_types BreadcrumbList | ListItem | Organization | SearchAction | WebSite
+  h1           Practical Guides
+
+### /empregos/  status=200
+  header Content-Type: text/html; charset=UTF-8
+  header Cache-Control: max-age=0
+  title        Empregos &#8211; Conexão BR
+  canonical    http://localhost:8080/empregos/
+  hreflang     pt-BR http://localhost:8080/empregos/ | en http://localhost:8080/en/jobs/ | x-default http://localhost:8080/empregos/
+  meta_desc    As vagas mais recentes estão no nosso Instagram.Acompanhe nossas publicações para encontrar novas oportunidades de trabalho na Irlanda.
+  og_url       http://localhost:8080/empregos/ | http://localhost:8080/empregos/
+  og_locale    pt_BR | pt_BR
+  html_lang    pt-BR
+  jsonld_types BreadcrumbList | ListItem | Organization | SearchAction | WebSite
+  h1           Empregos
+
+### /en/jobs/  status=200
+  header Content-Type: text/html; charset=UTF-8
+  header Cache-Control: max-age=0
+  title        Jobs &#8211; Conexão BR
+  canonical    http://localhost:8080/en/jobs/
+  hreflang     en http://localhost:8080/en/jobs/ | pt-BR http://localhost:8080/empregos/ | x-default http://localhost:8080/empregos/
+  meta_desc    The latest job openings are on our Instagram. Follow our posts to find new work opportunities in Ireland. | Our latest job openings are on our Instagram.Follow our posts to find new work opportunities in Ireland.
+  og_url       http://localhost:8080/en/jobs/ | http://localhost:8080/en/jobs/
+  og_locale    en_US | en_US
+  html_lang    en-US
+  jsonld_types BreadcrumbList | ListItem | Organization | SearchAction | WebSite
+  h1           Jobs
+
+### /eventos/  status=200
+  header Content-Type: text/html; charset=UTF-8
+  header Cache-Control: max-age=0
+  title        Eventos na Irlanda | Conexão BR
+  canonical    http://localhost:8080/eventos/
+  hreflang     pt-BR http://localhost:8080/eventos/ | x-default http://localhost:8080/eventos/
+  meta_desc    Eventos, encontros e atividades na Irlanda. Agenda cultural e networking.
+  og_url       http://localhost:8080/eventos/ | http://localhost:8080/eventos/
+  og_locale    pt_BR | pt_BR
+  html_lang    pt-BR
+  jsonld_types BreadcrumbList | ListItem | Organization | SearchAction | WebSite
+  h1           Eventos
+
+### /en/eventos/  status=200
+  header Content-Type: text/html; charset=UTF-8
+  header Cache-Control: max-age=0
+  title        Events in Ireland | Conexão BR
+  canonical    http://localhost:8080/en/eventos/
+  hreflang     pt-BR http://localhost:8080/eventos/ | en http://localhost:8080/en/eventos/ | x-default http://localhost:8080/eventos/
+  meta_desc    Events, meetups and activities in Ireland. Cultural agenda and networking.
+  og_url       http://localhost:8080/en/eventos/ | http://localhost:8080/en/eventos/
+  og_locale    en_US | en_US
+  html_lang    en-US
+  jsonld_types BreadcrumbList | ListItem | Organization | SearchAction | WebSite
+  h1           Events
+
+### /lazer/  status=200
+  header Content-Type: text/html; charset=UTF-8
+  header Cache-Control: max-age=0
+  title        Lazer & Turismo na Irlanda | Conexão BR
+  canonical    http://localhost:8080/lazer/
+  hreflang     pt-BR http://localhost:8080/lazer/ | x-default http://localhost:8080/lazer/
+  meta_desc    Descubra lugares para visitar, natureza, cultura, turismo e coisas para fazer na Irlanda. Guia de lazer por condado.
+  og_url       http://localhost:8080/lazer/ | http://localhost:8080/lazer/
+  og_locale    pt_BR | pt_BR
+  html_lang    pt-BR
+  jsonld_types BreadcrumbList | ListItem | Organization | SearchAction | WebSite
+  h1           Lazer
+
+### /en/lazer/  status=200
+  header Content-Type: text/html; charset=UTF-8
+  header Cache-Control: max-age=0
+  title        Leisure & Tourism in Ireland | Conexão BR
+  canonical    http://localhost:8080/en/lazer/
+  hreflang     pt-BR http://localhost:8080/lazer/ | en http://localhost:8080/en/lazer/ | x-default http://localhost:8080/lazer/
+  meta_desc    Discover places to visit, nature, culture, tourism and things to do in Ireland. County-by-county leisure guide.
+  og_url       http://localhost:8080/en/lazer/ | http://localhost:8080/en/lazer/
+  og_locale    en_US | en_US
+  html_lang    en-US
+  jsonld_types BreadcrumbList | ListItem | Organization | SearchAction | WebSite
+  h1           Leisure
+
+### /apoiadores/  status=200
+  header Content-Type: text/html; charset=UTF-8
+  header Cache-Control: max-age=0
+  title        Apoiadores na Irlanda | Conexão BR
+  canonical    http://localhost:8080/apoiadores/
+  hreflang     pt-BR http://localhost:8080/apoiadores/ | x-default http://localhost:8080/apoiadores/
+  meta_desc    Conheça as organizações e empresas que apoiam a comunidade brasileira na Irlanda.
+  og_url       http://localhost:8080/apoiadores/ | http://localhost:8080/apoiadores/
+  og_locale    pt_BR | pt_BR
+  html_lang    pt-BR
+  jsonld_types BreadcrumbList | ListItem | Organization | SearchAction | WebSite
+  h1           Apoiadores
+
+### /en/sponsors/  status=404
+  header Content-Type: text/html; charset=UTF-8
+  header Cache-Control: no-cache, must-revalidate, max-age=0, no-store, private
+  title        Page not found | Conexão BR
+  meta_desc    Page not found. Explore guides and events for Brazilians in Ireland.
+  og_url       http://localhost:8080/en/
+  og_locale    en_US
+  html_lang    en-US
+  jsonld_types BreadcrumbList | ListItem | Organization | SearchAction | WebSite
+  h1           404
+
+### /blog/  status=200
+  header Content-Type: text/html; charset=UTF-8
+  header Cache-Control: max-age=0
+  title        Conexão BR |
+  canonical    http://localhost:8080/blog/
+  hreflang     pt-BR http://localhost:8080/blog/ | x-default http://localhost:8080/blog/
+  og_url       http://localhost:8080/ | http://localhost:8080/blog/
+  og_locale    pt_BR | pt_BR
+  html_lang    pt-BR
+  jsonld_types BreadcrumbList | ListItem | Organization | SearchAction | WebSite
+  h1           Blog
+
+### /en/blog/  status=200
+  header Content-Type: text/html; charset=UTF-8
+  header Cache-Control: max-age=0
+  title        Conexão BR |
+  canonical    http://localhost:8080/blog/
+  hreflang     pt-BR http://localhost:8080/blog/ | x-default http://localhost:8080/blog/
+  og_url       http://localhost:8080/en/
+  og_locale    en_US
+  html_lang    en-US
+  jsonld_types BreadcrumbList | ListItem | Organization | SearchAction | WebSite
+  h1           Blog
+
+### /cursos/  status=200
+  header Content-Type: text/html; charset=UTF-8
+  header Cache-Control: max-age=0
+  title        Cursos &#8211; Conexão BR
+  canonical    http://localhost:8080/cursos/
+  hreflang     pt-BR http://localhost:8080/cursos/ | x-default http://localhost:8080/cursos/
+  og_url       http://localhost:8080/cursos/ | http://localhost:8080/cursos/
+  og_locale    pt_BR | pt_BR
+  html_lang    pt-BR
+  jsonld_types BreadcrumbList | ListItem | Organization | SearchAction | WebSite
+  h1           Cursos
+
+### /en/courses/  status=200
+  header Content-Type: text/html; charset=UTF-8
+  header Cache-Control: max-age=0
+  title        Courses.ie &#8211; Conexão BR
+  canonical    http://localhost:8080/cursos/courses-ie/
+  hreflang     pt-BR http://localhost:8080/cursos/courses-ie/ | x-default http://localhost:8080/cursos/courses-ie/
+  meta_desc    Explore milhares de cursos de faculdades, universidades, fornecedores de formação e educadores independentes em toda a Irlanda. | Explore milhares de cursos de faculdades, universidades, fornecedores de formação e educadores independentes em toda a Irlanda.
+  og_url       http://localhost:8080/cursos/courses-ie/ | http://localhost:8080/cursos/courses-ie/
+  og_locale    pt_BR | pt_BR
+  html_lang    pt-BR
+  jsonld_types BreadcrumbList | ListItem | Organization | SearchAction | WebSite
+  h1           Courses.ie
+
+### /sitemap.xml  status=200
+  header Content-Type: text/xml; charset=UTF-8
+  header Cache-Control: max-age=0
+
+### /robots.txt  status=200
+  header Content-Type: text/plain; charset=utf-8

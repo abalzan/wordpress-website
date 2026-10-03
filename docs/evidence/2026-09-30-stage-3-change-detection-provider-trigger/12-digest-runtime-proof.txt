@@ -1,0 +1,7 @@
+live PT leisure record: ID=154 slug=dwyer-mcallister-cottage
+
+same source state -> same digest      : YES  (bf9ebb245df49460)
+EN translation changed -> SAME digest : YES (EN output is not a PT source)
+post_excerpt edited  -> DIFFERENT     : YES
+key order changed    -> SAME digest  : YES (maps are key-order independent)
+payload excludes the B2 EN meta key   : YES

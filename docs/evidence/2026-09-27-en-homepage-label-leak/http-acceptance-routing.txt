@@ -1,0 +1,30 @@
+conexao test harness
+  repository:    /home/andrei/IdeaProjects/wordpress-website
+  php:           8.5.4
+  environment:   host (docker compose exec)
+  base url:      http://localhost:8080
+
+HTTP acceptance suites (base: http://localhost:8080)
+[FAIL] tests/acceptance/verify-guides-en-http.py (exit 1)
+           FAIL  pt-guides-page-2 /guias/page/2/  -- status 404, expected 200
+           FAIL  en-guides-page-2 /en/guias/page/2/  -- status 404, expected 200
+           FAIL  the EN guide exposes its PT sibling
+[PASS] tests/acceptance/verify-release-http.py — 29 passed, 0 failed
+[FAIL] tests/acceptance/verify-routing-http.py (exit 1)
+           FAIL  en-lazer-card-excerpt-is-english /en/lazer/  -- missing fragment: 'Restored farmhouse at the foot of Keadeen mountain'
+           FAIL  en-lazer-no-portuguese-card-excerpt-leak /en/lazer/  -- missing fragment: 'class="leisure-card-excerpt"'
+           FAIL  en-lazer-canonical-and-hreflang /en/lazer/  -- missing fragment: 'hreflang="pt-BR" href="http://localhost:8080/lazer/"'
+           FAIL  pt-lazer-card-excerpt-stays-portuguese /lazer/  -- missing fragment: 'Casa rural restaurada aos pés da montanha Keadeen'
+           FAIL  en-cursos-fetch-card-excerpt-is-english /en/cursos/  -- missing fragment: 'Find training and continuing education courses throughout Ireland'
+           FAIL  en-cursos-no-portuguese-card-excerpt-leak /en/cursos/  -- missing fragment: 'class="provider-card-excerpt"'
+           FAIL  pt-cursos-card-excerpt-stays-portuguese /cursos/  -- missing fragment: 'Encontre cursos de formação e educação continuada em toda a Irlanda'
+           FAIL  en-cursos-canonical-and-hreflang /en/cursos/  -- missing fragment: 'hreflang="pt-BR" href="http://localhost:8080/cursos/"'
+           FAIL  en-archive-en-blog /en/blog/  -- missing fragment: '/en/blog/'; missing fragment: 'hreflang="en"'; unexpected fragment: 'language-fallback-notice'
+           FAIL  en-archive-en-blog-page-2 /en/blog/page/2/  -- status 404, expected 200
+
+----------------------------------------
+In-process PHP suites: 0 total, 0 passed, 0 failed
+HTTP acceptance suites: 3 total, 1 passed, 2 failed
+----------------------------------------
+TESTS FAILED
+full suite output kept in /tmp/tmp.V85JbFi9gL

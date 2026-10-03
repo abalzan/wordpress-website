@@ -1,0 +1,80 @@
+
+== conexao-translation-automation — Stage 17 retained MANUAL workflow ==
+
+=== A manual request reaches the control plane, and only with auth ===
+  PASS: an unauthenticated manual request is refused
+  PASS: an unauthenticated request never reaches the control plane
+  PASS: a request without manage_options is refused
+  PASS: a request without manage_options never reaches the control plane
+  PASS: a request with an invalid nonce is refused
+  PASS: a request with an invalid nonce never reaches the control plane
+  PASS: an authenticated, capable, nonced manual request is accepted
+  PASS: the accepted manual request reaches the control plane exactly once
+  PASS: the manual path arrives at the control plane already authorised
+  PASS: the manual run is recorded as an admin_proof run, never as a hook or scheduled run
+  PASS: the manual endpoint can never adopt a baseline (that stays a separate, deliberate act)
+  PASS: the manual endpoint refuses mode=apply
+  PASS: the refused apply attempt never reaches the control plane
+  PASS: the only mode the manual endpoint may request is proof
+
+=== inventory -> manifest -> dry-run -> snapshot -> apply -> verify -> idempotence ===
+  PASS: the manual stage config is valid
+  PASS: the manifest is valid
+  PASS: the dry run completes
+  PASS: the dry run plans exactly 1 creation
+  PASS: the dry run skips the already-translated record
+  PASS: the dry run plans no update
+  PASS: the dry run wrote NOTHING (dry-run-first holds)
+  PASS: an unchanged PT record snapshots to an empty diff
+  PASS: the SCOPED dry run completes
+  PASS: the approved scope contains exactly the approved record
+  PASS: the scoped dry run still wrote nothing
+  PASS: the explicit apply completes
+  PASS: the apply created exactly the approved record
+  PASS: the pre-apply state recorded no EN record, so the change is observable
+  PASS: the approved record now HAS an EN record
+  PASS: approved == planned == executed
+  PASS: the apply touched exactly one record
+  PASS: the ACTUAL mutation set equals the approved set, with no extras
+  PASS: the verification run completes
+  PASS: idempotence: the second run creates nothing
+  PASS: idempotence: the second run updates nothing
+  PASS: PT content is unchanged by the apply
+  PASS: the PT record is still PT after the apply
+  PASS: the translated PT record keeps its identity
+  PASS: the unrelated PT record is untouched
+
+=== the manual run still fails closed on collisions, drift and bad modes ===
+  PASS: a colliding en_slug fails closed with zero writes
+  PASS: PT drift is detected by the snapshot diff
+  PASS: the drift check run completes without error
+  PASS: an unknown mode is refused rather than guessed
+  PASS: an unknown stage is refused
+
+=== the optional provider is credential-supplied and never persisted ===
+  PASS: with no credential supplied for the run, the provider boundary refuses
+  PASS: the credential boundary names an environment variable
+  PASS: the named variable is the documented one
+  PASS: the optional provider is OpenAI
+  PASS: no shipped class declares an option that could persist a provider credential
+
+=== every metric the operator runbook promises is a real field ===
+  PASS: `records considered` is a real field (scope.authored_count)
+  PASS: `records eligible` is a real field (gate.eligible_public_pt)
+  PASS: `records eligible` reports the approved record, not an estimate
+  PASS: `records planned` is a real field (plan.create)
+  PASS: `records planned` equals the approved scope, so a reviewer sees the same number the plan holds
+  PASS: `records approved` and `records executed` are real fields (scope.*_count)
+  PASS: `records approved` == `records executed` on a real run, not merely in principle
+  PASS: `mutations` is a real number (summary.created + summary.updated)
+  PASS: `verification result` is a real PASS/FAIL verdict (gate.gate)
+  PASS: `idempotence result` is a real number and it is 0 on a second identical run
+  PASS: `PT drift` is a real field and is always present, even when it is 0
+  PASS: PT drift is 0 on a clean run
+  PASS: a missing EN record turns the gate to FAIL
+  PASS: PT drift alone turns the gate to FAIL
+  PASS: the operator result surfaces the engine verdict verbatim
+  PASS: the operator result carries the PT-drift count the runbook tells you to report
+  PASS: a proof-mode result never claims a mutation, so "mutations" cannot be inflated by a dry run
+
+stage 17 retained manual workflow: 66 passed, 0 failed

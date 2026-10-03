@@ -1,0 +1,581 @@
+# WordPress CI — Stage D of the engineering-standardisation roadmap.
+#
+# Automates the Stage C static quality system (docs/engineering-standard.md
+# §1.7; docs/development.md "Continuous integration (Stage D)"). This
+# workflow does NOT reimplement that system: it installs the committed
+# lockfile and calls the repository's existing commands.
+#
+# Blocking gates (a non-zero exit fails the job):
+#   1. composer validate --strict  — composer.json/lock consistency
+#   2. composer install            — from composer.lock, never `update`
+#   3. registry drift gate         — plugins.json + generated regions
+#                                    (Stage G; `generate-registry-docs.php --check`)
+#   4. ./scripts/lint.sh           — PHP syntax + PHPCS no-new-violations
+#                                    + PHPStan level 5 (the Stage C gate)
+#   5. shellcheck scripts/*.sh + scripts/lib/*.sh
+#                                    — repository shell scripts and the
+#                                      sourced shell library
+#   6-7. Integration checks       — blocking on push and pull_request, on the
+#                                    deterministic synthetic site:
+#                                    ./scripts/run-tests.sh and the Stage L
+#                                    permanent-gate evidence summary.
+#
+# A third job, `release-integrity` (Stage J), blocks on the two release
+# invariants: that `plugins.json` determines the artifact allowlist, and that
+# `dist/release.json` records exactly what was built — including proving the
+# verifier REJECTS a tampered artifact. It needs no WordPress and no network.
+#
+# Non-blocking by design (telemetry only, never gates the run):
+#   composer lint — the RAW legacy PHPCS debt view. It is red by design while
+#   the recorded debt in phpcs-baseline.json exists (Stage C measured 3290
+#   errors + 2672 warnings across 151 files). The objective is "legacy debt
+#   must not grow", not "legacy debt is already zero", so this step is
+#   explicitly continue-on-error and clearly labelled. It never writes the
+#   baseline, never commits, never mutates source.
+#
+# This workflow is read-only and offline with respect to production: it
+# contacts only the package registry to install dev dependencies. It never
+# connects to conexaobr.ie, WordPress.com, a database, the REST API, or
+# Polylang, and it requires no repository secrets.
+#
+# Action runtime: every `uses:` below resolves to a release whose
+# `runs.using` is `node24` — actions/checkout@v5, actions/cache@v5,
+# actions/upload-artifact@v6 (shivammathur/setup-php@v2 is already node24).
+# Node 20 was removed from GitHub-hosted runners on 2026-09-23, so a node20
+# action cannot run natively any more. The approved set and the rule for
+# changing it are normative in engineering-standard.md §1.7; do not bump an
+# action major as routine upkeep, because a newer major may change inputs.
+
+name: WordPress CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+# Read-only: Stage D needs no write scopes.
+permissions:
+  contents: read
+
+# Superseded runs for the same ref are cancelled; refs are independent.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  static-quality:
+    name: Static quality (lint.sh + ShellCheck)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          # PHP 8.5 — the same toolchain PHP Stage C was verified on (8.5.8).
+          # The declared compatibility FLOOR is unchanged (8.0, phpcs
+          # testVersion: 8.0-); this stage does not alter that policy.
+          php-version: '8.5'
+          # Composer is pinned to v2 to match the committed lockfile's
+          # plugin API (composer-plugin-api ^2.2) and Stage C's Composer 2.10.
+          tools: composer:v2
+
+      - name: Report environment
+        run: |
+          php --version
+          composer --version
+
+      # Composer *download* cache only, keyed on the committed lockfile, so a
+      # changed lockfile invalidates it. This never caches vendor/, WordPress
+      # runtime state, credentials or database contents, and it can never
+      # replace the install: the install below runs on every run.
+      - name: Cache Composer downloads
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache/composer
+          key: composer-downloads-${{ runner.os }}-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-downloads-${{ runner.os }}-
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate --strict --no-interaction
+
+      - name: Install dependencies from composer.lock
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Assert the lockfile was not modified
+        run: |
+          if ! git diff --quiet -- composer.json composer.lock; then
+            echo "::error::composer.json/composer.lock changed during CI — the lockfile must stay committed and untouched."
+            git diff -- composer.json composer.lock
+            exit 1
+          fi
+
+      - name: Plugin registry drift gate (Stage G)
+        # plugins.json is the single authoritative plugin registry: load order,
+        # production activation order, release build list, Compose mounts and
+        # the plugin lifecycle documentation are all generated from it.
+        #
+        # --check validates the registry against the real repository (slug
+        # uniqueness, lifecycle enums, dependencies vs the plugins' own
+        # "Requires Plugins" headers, dependency order, cycles, orphan plugin
+        # directories) and then fails when any generated region is stale.
+        # It performs ZERO writes, so the gate can never repair the tree.
+        #
+        # Blocking (no continue-on-error): stale generated output is a failure.
+        run: php scripts/generate-registry-docs.php --check
+
+      - name: Quality gate — ./scripts/lint.sh
+        run: ./scripts/lint.sh
+
+      - name: ShellCheck
+        # setup-php does not provide ShellCheck; the runner image does, but
+        # its presence is not a documented guarantee, so install it
+        # explicitly via the maintained apt package.
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes shellcheck
+          shellcheck --version
+          shellcheck scripts/*.sh
+          # The shared shell library is sourced, not executed, so scripts/*.sh
+          # alone would leave it unchecked (Stage J added scripts/lib/zip-build.sh).
+          shellcheck scripts/lib/*.sh
+
+      - name: Telemetry (non-blocking) — raw legacy PHPCS debt
+        if: always()
+        continue-on-error: true
+        run: |
+          echo "### Raw legacy PHPCS debt (informational, non-blocking)" >&2
+          echo "This is the raw view of the pre-Stage-C debt recorded in" >&2
+          echo "phpcs-baseline.json. The blocking gate above is" >&2
+          echo "./scripts/lint.sh, which fails on NEW violations only." >&2
+          composer lint || echo "::warning::Raw PHPCS debt is non-zero by design (legacy baseline, Stage C). Not a CI failure." >&2
+
+  # ---------------------------------------------------------------------
+  # Stage J — release integrity.
+  #
+  # The two release invariants are enforced here, without a WordPress, without
+  # a database and without a network:
+  #
+  #   1. plugins.json determines what can be released (the artifact allowlist).
+  #   2. release.json records exactly what was actually built (version, git
+  #      SHA, file count, SHA-256), and verification REJECTS a tampered,
+  #      stale or non-allowlisted artifact.
+  #
+  # The job builds the real artifacts into a temporary directory twice, proves
+  # they are byte-identical, proves no test/fixture/report file ships, and
+  # proves the verifier actually fails on a tampered artifact. It never uploads
+  # anything, never contacts a deployed site and never touches production.
+  #
+  # The HTTP half of the release gate (the smoke matrix) runs in the
+  # `integration` job above, against the local Compose stack.
+  # ---------------------------------------------------------------------
+  release-integrity:
+    name: Release integrity (manifest + allowlist)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          # The manifest records the commit SHA, so a shallow clone would record
+          # a grafted/incorrect SHA. Fetch the full history.
+          fetch-depth: 0
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          tools: composer:v2
+
+      - name: Report environment
+        run: |
+          php --version
+          python3 --version
+          zip -v | head -2
+
+      - name: Plugin registry drift gate
+        # The allowlist is derived from plugins.json, so a stale generated
+        # region means the registry and the build disagree.
+        run: php scripts/generate-registry-docs.php --check
+
+      - name: Release-integrity gate
+        # Builds twice, checks determinism, exclusions, the manifest contract,
+        # allowlist enforcement and negative (tamper) proofs.
+        run: python3 tests/scripts/verify-release-integrity.py
+
+      - name: Build and verify the release record
+        # The same commands a release performs locally, so a break in the
+        # build or the manifest is caught here rather than at release time.
+        run: |
+          set -euo pipefail
+          BUILD_OUTPUT_DIR="${RUNNER_TEMP}/dist" ./scripts/build-plugins-zip.sh
+          BUILD_OUTPUT_DIR="${RUNNER_TEMP}/dist" ./scripts/build-theme-zip.sh
+          python3 scripts/release-manifest.py --verify --dist "${RUNNER_TEMP}/dist"
+
+      - name: Upload the release manifest as evidence
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: release-manifest
+          path: ${{ runner.temp }}/dist/release.json
+          if-no-files-found: warn
+          retention-days: 30
+
+  # ---------------------------------------------------------------------
+  # Stage E — Docker/WordPress integration job.
+  #
+  # Runs the shared test harness (scripts/run-tests.sh): the in-process PHP
+  # suites and the HTTP acceptance suites against a LOCAL, EPHEMERAL
+  # WordPress. The Stage D static-quality job above is unchanged; this job
+  # owns the two-layer test contract and nothing else.
+  #
+  # Safety:
+  #   - no production host, no production credentials, no repository secrets;
+  #   - the database is an ephemeral CI-local container, destroyed on cleanup;
+  #   - CONEXAO_TEST_BASE_URL is an explicit local URL and the harness itself
+  #     refuses any production host (tests/acceptance/lib/http_client.py);
+  #   - no continue-on-error on the test step: a real failure fails the job.
+  # Graduated to a blocking check (engineering-standard.md §1.7). The job used
+  # to be `workflow_dispatch`-only, because the content-dependent suites had no
+  # deterministic site: on a fresh database they either 404'd on page 2 or —
+  # worse — passed VACUOUSLY over an empty population. That gap is closed by the
+  # committed synthetic fixtures built below, and hosted determinism was proven
+  # on two consecutive fresh `workflow_dispatch` runs (GitHub Actions runs
+  # 36575383129 and 36579787054, branch `i18n`), so the job now runs on every
+  # push and pull_request and blocks the workflow like the other two jobs.
+  #
+  # This is still a blocking INTEGRATION job with normal CI failure semantics:
+  # it is not advisory, not `continue-on-error`, and a red runner or a slow
+  # third-party image fails the run exactly as any CI infrastructure failure
+  # would.
+  # ---------------------------------------------------------------------
+  integration:
+    name: Integration tests (Docker WordPress + run-tests.sh)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    env:
+      # The CI-local WordPress. Never a production host.
+      CONEXAO_TEST_BASE_URL: http://localhost:8080
+      # Pinned third-party dependency, per docs/development.md and the Stage 2
+      # report. Not "latest".
+      POLYLANG_VERSION: 3.8.9
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up PHP
+        # The script-contract layer (tests/scripts/verify-script-conventions.py)
+        # and several of its siblings inspect PHP source with a real PHP
+        # tokenizer rather than with regexes, so a PHP executable and its
+        # tokenizer extension must exist on the runner. Previously this was an
+        # implicit dependency on the runner image. It is now declared
+        # explicitly, using the same repository-approved mechanism the
+        # static-quality job already uses (shivammathur/setup-php@v2, which is
+        # already node24). No test semantics change: this only makes an
+        # existing requirement visible instead of accidental.
+        uses: shivammathur/setup-php@v2
+        with:
+          # PHP 8.5 — the same version lint.sh runs under, so the tokenizer the
+          # script-contract layer sees matches the one the quality gate sees.
+          php-version: '8.5'
+          # setup-php installs the tokenizer with PHP itself; coverage/xdebug is
+          # deliberately NOT enabled, because an active Xdebug changes CLI
+          # behaviour and would make CI differ from a developer machine.
+          coverage: none
+          tools: composer:v2
+
+      - name: Start the local WordPress stack (ephemeral)
+        run: docker compose up -d
+
+      - name: Wait for WordPress to be ready
+        # An actual readiness check, not `sleep 10`: poll the front page until
+        # it serves a 200 (or a redirect to the installer, which still proves
+        # PHP + MySQL are answering). Also require the DB healthcheck.
+        run: |
+          set -euo pipefail
+          # 1. Database healthy.
+          for i in $(seq 1 60); do
+            if [ "$(docker inspect -f '{{.State.Health.Status}}' "$(docker compose ps -q db)" 2>/dev/null)" = "healthy" ]; then
+              echo "db healthy"
+              break
+            fi
+            if [ "$i" -eq 60 ]; then echo "::error::database never became healthy"; docker compose logs db; exit 1; fi
+            sleep 2
+          done
+          # 2. HTTP serving.
+          for i in $(seq 1 90); do
+            code="$(curl -s -o /dev/null -w '%{http_code}' --max-time 5 http://localhost:8080/ || true)"
+            case "$code" in
+              200|301|302)
+                echo "WordPress is serving (status $code)"
+                exit 0
+                ;;
+            esac
+            sleep 2
+          done
+          echo "::error::WordPress did not become ready"
+          docker compose logs wordpress
+          exit 1
+
+      # The CI-local WordPress is addressed through the running container, not
+      # through a hard-coded container name (the Compose project name is derived
+      # from the checkout directory) and not through a guessed volume path.
+      #
+      # `--volumes-from` is what makes this work: the CLI container inherits the
+      # WordPress container's named volume AND its bind mounts, so the
+      # repository theme and plugins are present at /var/www/html. Sharing only
+      # the network (`--network container:…`) would leave /var/www/html EMPTY.
+      #
+      # `--user 33:33` is required to WRITE: the volume is owned by 33:33
+      # (Debian `wordpress:latest`), while the `wordpress:cli` image is Alpine
+      # and runs as 82:82, so `wp plugin install` fails with "Permission denied"
+      # without this.
+      # The database credentials are read back from the running container
+      # because wp-config.php reads them from the environment, which a fresh
+      # `docker run` does not inherit. No credential is hard-coded.
+      - name: Install WordPress (WP-CLI, single site, no prompts)
+        run: |
+          set -euo pipefail
+          WP_CONTAINER="$(docker compose ps -q wordpress)"
+          [ -n "$WP_CONTAINER" ] || { echo "::error::no wordpress container"; exit 1; }
+          for v in WORDPRESS_DB_HOST WORDPRESS_DB_NAME WORDPRESS_DB_USER WORDPRESS_DB_PASSWORD; do
+            val="$(docker inspect -f '{{range .Config.Env}}{{println .}}{{end}}' "$WP_CONTAINER" \
+                   | grep "^$v=" | head -1 | cut -d= -f2-)"
+            export "$v=$val"
+          done
+          wp() {
+            docker run --rm --network "container:$WP_CONTAINER" --volumes-from "$WP_CONTAINER" \
+              --user 33:33 -e HOME=/tmp \
+              -e WORDPRESS_DB_HOST -e WORDPRESS_DB_NAME \
+              -e WORDPRESS_DB_USER -e WORDPRESS_DB_PASSWORD \
+              --entrypoint wp wordpress:cli --path=/var/www/html --allow-root "$@"
+          }
+          # The CI workflow has no wp-config.php yet; the image generates it
+          # from the environment on first boot, so the core install is only
+          # needed when it is absent.
+          if ! docker exec "$WP_CONTAINER" test -f /var/www/html/wp-config.php; then
+            echo "wp-config.php is missing; the stack did not initialise"
+            docker compose logs wordpress
+            exit 1
+          fi
+          if ! wp core is-installed --network=localhost 2>/dev/null; then
+            wp core install --url=http://localhost:8080 \
+              --title="Conexao BR Ireland (CI)" --admin_user=ci --admin_password=ci \
+              --admin_email=ci@example.invalid --skip-email
+          else
+            echo "WordPress already installed; skipping core install"
+          fi
+
+      - name: Activate the repository theme and plugins
+        run: |
+          set -euo pipefail
+          WP_CONTAINER="$(docker compose ps -q wordpress)"
+          for v in WORDPRESS_DB_HOST WORDPRESS_DB_NAME WORDPRESS_DB_USER WORDPRESS_DB_PASSWORD; do
+            val="$(docker inspect -f '{{range .Config.Env}}{{println .}}{{end}}' "$WP_CONTAINER" \
+                   | grep "^$v=" | head -1 | cut -d= -f2-)"
+            export "$v=$val"
+          done
+          wp() {
+            docker run --rm --network "container:$WP_CONTAINER" --volumes-from "$WP_CONTAINER" \
+              --user 33:33 -e HOME=/tmp \
+              -e WORDPRESS_DB_HOST -e WORDPRESS_DB_NAME \
+              -e WORDPRESS_DB_USER -e WORDPRESS_DB_PASSWORD \
+              --entrypoint wp wordpress:cli --path=/var/www/html --allow-root "$@"
+          }
+          wp theme activate conexao-br-irlanda
+          # The repository's own plugins, mounted by compose.yaml.
+          #
+          # Activate the platform and test tooling required by the in-process
+          # suites. These local-only plugins are never included in production.
+          for slug in conexao-data-model conexao-content conexao-event-runtime \
+                      conexao-admin-ux conexao-event-importer conexao-leisure-migration \
+                      conexao-sponsor-migration; do
+            wp plugin activate "$slug"
+          done
+          # Polylang Free, pinned version. Third-party, installed (not vendored).
+          wp plugin is-installed polylang || wp plugin install polylang --version="$POLYLANG_VERSION" --force
+          wp plugin activate polylang
+          # The pt_BR CORE language pack. Without it WordPress falls back to the
+          # English month/day names in EVERY language context, because
+          # `date_i18n()` reads the core catalogue, not the system locale:
+          # `test-i18n-foundation.php` asserts dates render "setembro" in the PT
+          # context. A fresh install has an empty wp-content/languages/, so the
+          # pack must be installed or the PT date contract cannot hold. It is a
+          # pinned official download, needs no credential, and is installed
+          # before anything asserts on it.
+          wp language core install pt_BR --activate
+          # Europe/Dublin. The site publishes Irish events in Irish local time
+          # and the recurrence engine evaluates dates in the SITE timezone;
+          # test-event-recurrence.php asserts Dublin-specific behaviour (a
+          # late-UTC Wednesday is Thursday in Dublin). A fresh install defaults
+          # to UTC, so the timezone must be set or the contract cannot hold.
+          # `bootstrap-ci-fixtures.php` ASSERTS this value rather than setting it
+          # silently, so a site left in UTC fails loudly instead of quietly.
+          wp option update timezone_string Europe/Dublin
+          # The Portuguese LONG date format. This site is pt_BR-first, so the
+          # site format is the Portuguese one ("25 de agosto de 2026") and the
+          # theme translates it to "August 25, 2026" on /en/ via
+          # conexao_localized_date_format(). A fresh install ships the ENGLISH
+          # default ("F j, Y"), which makes the PT presentation wrong and
+          # test-jobs-en-language.php fail on "the Portuguese date presentation
+          # is preserved".
+          wp option update date_format 'j \d\e F \d\e Y'
+          wp rewrite structure '/%postname%/' --hard
+          wp eval-file /var/www/html/scripts/run-polylang-setup.php dry-run
+          wp eval-file /var/www/html/scripts/run-polylang-setup.php
+          wp plugin activate conexao-translation-rollout
+          wp plugin activate conexao-en-translation
+          wp plugin list
+
+      # -------------------------------------------------------------------
+      # The deterministic synthetic site.
+      #
+      # This ONE step replaces the hand-maintained sequence of seeders that used
+      # to be implied by "whatever the developer had in their volume".
+      # `scripts/bootstrap-ci-fixtures.php` is the single orchestrator: it owns
+      # ORDER only, and drives (a) committed fixture data and (b) the EXISTING
+      # `seed-*.php` seeders and `en-*` translation stages. There is no second
+      # fixture lifecycle and no second translation engine.
+      #
+      # `--apply --verify` is deliberate: the orchestrator builds the site AND
+      # then audits every documented population floor, failing with one precise,
+      # named message if a fixture is missing. That turns a confusing downstream
+      # failure — a 404 on /guias/page/2/, or a translation-completeness gate
+      # that "passed" over an empty population — into an immediate diagnosis.
+      #
+      # It is BLOCKING (no continue-on-error): a site that is not the documented
+      # deterministic site is exactly the failure this job exists to catch.
+      - name: Build the deterministic synthetic site
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/ci-evidence"
+          docker compose exec -T wordpress env HTTP_HOST=localhost REQUEST_URI=/ \
+            php /var/www/html/scripts/bootstrap-ci-fixtures.php --apply --verify \
+            2>&1 | tee "$RUNNER_TEMP/ci-evidence/bootstrap-fixtures.log"
+          status="${PIPESTATUS[0]}"
+          echo "bootstrap-ci-fixtures.php exit status: $status"
+          exit "$status"
+
+      - name: Report the test environment
+        run: |
+          set -euo pipefail
+          docker compose ps
+          curl -s -o /dev/null -w 'front page: %{http_code}\n' http://localhost:8080/
+
+      # PHASE 50: the runner owns discovery. The job never hardcodes suite names.
+      #
+      # Stage I: ./scripts/run-tests.sh runs three layers — the in-process PHP
+      # suites, the script-contract gate (tests/scripts/verify-*.py, which needs
+      # neither WordPress nor the network) and the HTTP acceptance suites. The
+      # script-contract gate is therefore BLOCKING here, with no second
+      # workflow and no duplicated job. It can also be run on its own with
+      # `./scripts/run-tests.sh --scripts`.
+      # `tee` captures the COMPLETE stdout+stderr to a file so a red run can be
+      # diagnosed from the uploaded artifact rather than by re-running locally.
+      # The harness exit status is preserved explicitly (`PIPESTATUS`), so
+      # capturing output never converts a failure into a pass. Not
+      # continue-on-error: a real failure fails the job.
+      - name: Run the shared test harness
+        run: |
+          set -uo pipefail
+          mkdir -p "$RUNNER_TEMP/ci-evidence"
+          ./scripts/run-tests.sh 2>&1 | tee "$RUNNER_TEMP/ci-evidence/run-tests.log"
+          status="${PIPESTATUS[0]}"
+          echo "run-tests.sh exit status: $status"
+          exit "$status"
+
+      # -------------------------------------------------------------------
+      # Stage L — permanent invariant gates.
+      #
+      # The permanent invariants (taxonomy policy, translation completeness,
+      # language-scoped caching, legacy EN→PT redirect precedence,
+      # documentation drift, i18n catalogue freshness) ALREADY run inside
+      # ./scripts/run-tests.sh above, because they are discovered by the
+      # runner's conventions (wp-content/**/tests/test-*.php and
+      # tests/scripts/verify-*.py). No gate is duplicated or re-listed here.
+      #
+      # This step is ADDITIVE: it produces the single machine-readable summary
+      # an agent or reviewer needs, and uploads it as an artifact so a red run
+      # can be diagnosed without re-running the suite locally.
+      #
+      # BLOCKING, and deliberately NOT continue-on-error: an invariant failure
+      # is a real repository/data violation.
+      #
+      # `if: always()` is REQUIRED, not cosmetic. Without it a failing harness
+      # skips this step, gate.json is never written, and the single most
+      # valuable diagnostic artifact is precisely the one a red run does not
+      # produce. `always()` does NOT weaken the gate: the step is still
+      # blocking, the gate's own non-zero exit stays visible in the step
+      # summary, and the job verdict is still the harness exit status above.
+      - name: Stage L — permanent invariant gate summary
+        if: always()
+        run: python3 scripts/verify-permanent-gates.py
+
+      # -------------------------------------------------------------------
+      # Failure diagnostics.
+      #
+      # Everything needed to diagnose a red run WITHOUT re-running it locally,
+      # and WITHOUT ever exposing a credential.
+      #
+      # Safety: `docker compose config`, the container environment and the .env
+      # file are deliberately NOT captured, because the DB password lives in
+      # the container environment. What IS captured (WP-CLI output, service
+      # logs, the PHP error log, aggregate row counts) contains no credentials
+      # and no personal data: the inventory is counts only, never record bodies.
+      - name: Collect failure diagnostics
+        if: failure()
+        run: |
+          set -uo pipefail
+          EVIDENCE="$RUNNER_TEMP/ci-evidence"
+          mkdir -p "$EVIDENCE"
+          # `|| true` throughout: diagnostics must never turn a reported
+          # failure into a different (masking) failure.
+          docker compose logs --no-color wordpress > "$EVIDENCE/docker-wordpress.log" 2>&1 || true
+          docker compose logs --no-color db        > "$EVIDENCE/docker-db.log"        2>&1 || true
+          if docker compose exec -T wordpress test -f /var/www/html/wp-content/debug.log; then
+            docker compose exec -T wordpress cat /var/www/html/wp-content/debug.log \
+              > "$EVIDENCE/wp-debug.log" 2>&1 || true
+          else
+            echo "(no wp-content/debug.log was produced)" > "$EVIDENCE/wp-debug.log"
+          fi
+          # Which site state did this run actually exercise? Counts only.
+          {
+            echo "# post_type / status counts"
+            docker compose exec -T db sh -c 'mysql -u"$WORDPRESS_DB_USER" -p"$WORDPRESS_DB_PASSWORD" "$WORDPRESS_DB_NAME" -N -B -e "SELECT post_type, post_status, COUNT(*) FROM wp_posts GROUP BY post_type, post_status ORDER BY post_type, post_status;"' 2>/dev/null || true
+            echo
+            echo "# taxonomy counts"
+            docker compose exec -T db sh -c 'mysql -u"$WORDPRESS_DB_USER" -p"$WORDPRESS_DB_PASSWORD" "$WORDPRESS_DB_NAME" -N -B -e "SELECT taxonomy, COUNT(*) FROM wp_term_taxonomy GROUP BY taxonomy ORDER BY taxonomy;"' 2>/dev/null || true
+          } > "$EVIDENCE/content-inventory.txt" 2>&1 || true
+          ls -la "$EVIDENCE"
+
+      # One upload, one retention policy. `if: always()`: on success these files
+      # are still the machine-readable PROOF that the gates ran and passed and
+      # which fixture population was exercised; on failure they are the
+      # diagnosis.
+      - name: Upload CI evidence (gate.json, harness log, service logs)
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: integration-evidence
+          path: |
+            ${{ runner.temp }}/ci-evidence
+            docs/evidence/2026-09-26-stage-l/gate.json
+          if-no-files-found: warn
+          retention-days: 30
+
+
+      # The ephemeral database is DESTROYED here, volumes included. This is the
+      # documented teardown mechanism (docs/development.md) and it is the reason
+      # no CI run can ever reuse a previous run's content state, and the reason
+      # determinism has to be earned by the committed fixtures rather than by a
+      # surviving volume. `|| true` so teardown never masks the test verdict.
+      - name: Teardown (never masks the test exit status)
+        if: always()
+        run: |
+          docker compose down -v --remove-orphans || true

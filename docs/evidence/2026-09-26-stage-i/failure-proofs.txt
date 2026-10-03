@@ -1,0 +1,71 @@
+# Stage I — failure proofs and safety proofs (2026-09-26)
+
+Every defect below was injected, observed, and then REVERTED.
+No proof defect remains committed; the working tree is clean.
+
+## A — unlisted current script breaks the catalogue gate
+   injected: scripts/_proof_a.php (a new current script)
+   observed: exit 1 — 277 passed, 2 failed
+            FAIL: scripts/_proof_a.php is not catalogued in scripts/README.md
+   reverted: 275 passed, 0 failed
+
+## B — a current document referencing a renamed path is rejected
+   injected: docs/development.md += 'scripts/stage6-job-translate.php'
+   observed: exit 1 — FAIL: docs/development.md still references the
+            removed path scripts/stage6-job-translate.php
+   reverted: 275 passed, 0 failed
+
+## C — removing a catalogue entry breaks the gate
+   injected: deleted the verify-lazer-urls.php row from scripts/README.md
+   observed: exit 1 — FAIL: scripts/verify-lazer-urls.php is not catalogued
+   reverted: 275 passed, 0 failed
+
+## D — a PHP script that stops using the shared bootstrap is rejected
+   injected: restored an inline wp-load walk-up loop in
+            scripts/mp-live-ticket-check.php
+   observed: exit 1 — FAIL: scripts/mp-live-ticket-check.php resolves
+            wp-load.php itself; it must require scripts/lib/bootstrap.php
+   reverted: 275 passed, 0 failed
+
+## E — an accidental production default is rejected
+   injected: self.base_url = "https://conexaobr.ie" in
+            scripts/seed-permit-employers-rest.py
+   observed: exit 1 — FAIL: scripts/seed-permit-employers-rest.py:115
+            hard-codes the production host in executable code
+   reverted: 275 passed, 0 failed
+
+## F — a historical script referenced without its prefix is rejected
+   injected: docs/testing.md += 'scripts/stage7-leisure-inventory.php'
+   observed: exit 1 — FAIL: docs/testing.md references historical script
+            scripts/stage7-leisure-inventory.php without the historical/ prefix
+   reverted: 275 passed, 0 failed
+
+## G — invalid CLI mode is refused at runtime (not only statically)
+   injected: removed the argparse mutually-exclusive group from the REST
+            seeder so --dry-run --apply became acceptable
+   observed: argparse accepts both flags, so the contract gate is the only
+            line of defence for THIS script — the injected build is
+            therefore detected by review, not by a runtime exit code;
+   reverted: '--apply: not allowed with argument --dry-run' (exit 2)
+
+## H — production write is blocked (shared PHP bootstrap)
+   probe: a production-capable spec run with --apply against
+         CONEXAO_SITE_URL=https://conexaobr.ie
+   observed WITHOUT --confirm-production: exit 3, no write attempted;
+   observed WITH    --confirm-production: passes the target guard and
+            prints 'confirmed: production apply against https://conexaobr.ie'
+   unknown target: exit 3 (fails closed).
+
+## I — production write is blocked (shared Python REST client)
+   observed: scripts/seed-permit-employers-rest.py --base-url
+            https://conexaobr.ie --apply -> exit 1 before any HTTP request,
+            after printing the production warning banner.
+
+## J — dry-run performs zero writes (representative write script)
+   target: scripts/run-job-translation.php against the local Docker DB; echo    pre-state: md5 of every job/post/page (ID|title|status|modified) =
+              7a931e6d66c1e6dc6505187ca5fab46e, 6065 rows; echo    ran --dry-run twice: md5 and row count UNCHANGED.
+
+## K — apply is idempotent (same script)
+   ran --apply twice: pt_changed=0, gate=PASS both times, md5 UNCHANGED
+   (the local dataset is already converged, so apply is a verified no-op
+    rather than a mutation — that is the safe outcome to assert here).
