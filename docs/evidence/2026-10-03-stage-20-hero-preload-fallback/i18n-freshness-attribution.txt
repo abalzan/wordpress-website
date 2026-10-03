@@ -1,0 +1,46 @@
+# i18n catalogue freshness — attribution of the Stage 20 follow-up
+
+## A. At the Stage 20 commit (45b4b55) — CLEAN, exit 0
+
+Checked in an isolated worktree at 45b4b55, i.e. exactly the tree Stage 20
+produced (header.php + regenerated .pot in the same commit).
+```
+== Stage L i18n catalogue freshness gate ==
+   repo:  /tmp/stage20/wt-45b4b55
+   signal: git commit time per file (mtime is not reproducible in CI)
+   conexao-br-irlanda       catalogue=1791048232 newest-source=1791048232 (wp-content/themes/conexao-br-irlanda/header.php) fresh
+   conexao-data-model       catalogue=1790933386 newest-source=1790335165 (wp-content/plugins/conexao-data-model/includes/class-agency.php) fresh
+   conexao-content          catalogue=1790933386 newest-source=1790699556 (wp-content/plugins/conexao-content/conexao-content.php) fresh
+   conexao-admin-ux         catalogue=1790933386 newest-source=1790016943 (wp-content/plugins/conexao-admin-ux/includes/class-translation-state.php) fresh
+   conexao-event-runtime    catalogue=1790933386 newest-source=1790699556 (wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php) fresh
+   conexao-event-importer   catalogue=1791032766 newest-source=1791032766 (wp-content/plugins/conexao-event-importer/includes/class-event-sources.php) fresh
+   conexao-leisure-migration catalogue=1790933386 newest-source=1790325155 (wp-content/plugins/conexao-leisure-migration/includes/class-leisure-exporter.php) fresh
+   conexao-sponsor-migration catalogue=1790933386 newest-source=1789994211 (wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-importer.php) fresh
+   conexao-translation-automation catalogue=1790933386 newest-source=1790861950 (wp-content/plugins/conexao-translation-automation/includes/class-conexao-translation-automation-batch-control.php) fresh
+
+   stale catalogues: 0
+3 passed, 0 failed
+GATE-RESULT {"gate": "i18n_freshness", "status": "pass", "passed": 3, "failed": 0, "violations": 0, "pre_existing": 0, "new": 0, "details": []}
+```
+
+## B. At HEAD after the parallel commit b19baa1 — RED, exit 1
+
+b19baa1 ("Add UI convergence Phase 1 report and regression tests") added
+wp-content/themes/conexao-br-irlanda/inc/customizer.php — a THEME SOURCE — without
+regenerating the catalogue. That commit is what re-broke the gate; Stage 20 did not.
+```
+   conexao-data-model       catalogue=1790933386 newest-source=1790335165 (wp-content/plugins/conexao-data-model/includes/class-agency.php) fresh
+   conexao-content          catalogue=1790933386 newest-source=1790699556 (wp-content/plugins/conexao-content/conexao-content.php) fresh
+   conexao-admin-ux         catalogue=1790933386 newest-source=1790016943 (wp-content/plugins/conexao-admin-ux/includes/class-translation-state.php) fresh
+   conexao-event-runtime    catalogue=1790933386 newest-source=1790699556 (wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php) fresh
+   conexao-event-importer   catalogue=1791032766 newest-source=1791032766 (wp-content/plugins/conexao-event-importer/includes/class-event-sources.php) fresh
+   conexao-leisure-migration catalogue=1790933386 newest-source=1790325155 (wp-content/plugins/conexao-leisure-migration/includes/class-leisure-exporter.php) fresh
+   conexao-sponsor-migration catalogue=1790933386 newest-source=1789994211 (wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-importer.php) fresh
+   conexao-translation-automation catalogue=1790933386 newest-source=1790861950 (wp-content/plugins/conexao-translation-automation/includes/class-conexao-translation-automation-batch-control.php) fresh
+
+   stale catalogues: 1
+FAIL: conexao-br-irlanda: wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot is older than wp-content/themes/conexao-br-irlanda/inc/customizer.php by 265s — regenerate the catalogue with `wp i18n make-pot` (never hand-edit)
+3 passed, 1 failed
+  stale catalogues: 1 pre-existing, 0 new
+GATE-RESULT {"gate": "i18n_freshness", "status": "fail", "passed": 3, "failed": 1, "violations": 1, "pre_existing": 1, "new": 0, "details": [{"component": "conexao-br-irlanda", "catalogue": "wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot", "newest_source": "wp-content/themes/conexao-br-irlanda/inc/customizer.php", "catalogue_ts": 1791048232, "newest_source_ts": 1791048497, "lag_seconds": 265}]}
+```
