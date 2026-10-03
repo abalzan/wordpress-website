@@ -171,7 +171,7 @@ Dark mode             Deliberately untouched and verified: dark
 | HTTP acceptance | | 4 total, 3 passed, 1 failed |
 | New suite | `test-ui-convergence-t2.php` | **38 passed, 0 failed** |
 | Registry drift | `php scripts/generate-registry-docs.php --check` | **OK** — 10 plugins, 19 generated regions current, **zero writes** |
-| Permanent gates | `python3 scripts/verify-permanent-gates.py` | **6/7 pass**; `i18n_freshness` fails **1 pre-existing, 0 new** |
+| Permanent gates | `python3 scripts/verify-permanent-gates.py` | **7/7 PASS** after the commit (84 assertions, **0 violations**); was 6/7 before, with `i18n_freshness` red **1 pre-existing / 0 new** |
 | i18n catalogue | `./scripts/i18n-make-pot.sh conexao-br-irlanda --apply` | regenerated via the **canonical generator** (§9.3); `Sem categoria` present |
 | Browser matrix | Playwright/Chromium | **152 renders, 0 errors**; 19 pages × 4 widths × 2 themes |
 
@@ -340,9 +340,10 @@ suite gained coverage.
 
 1. **No production verification.** Production writes = **0**. Production has no
    CLI; nothing was deployed and nothing was authorised. All numbers are local.
-2. **`i18n_freshness` permanent gate still red** — pre-existing, **0 new**. The
-   gate compares **git commit times**, so it cannot be cleared until the
-   regenerated `.pot` is committed alongside `inc/customizer.php`.
+2. **`i18n_freshness` CLEARED after the commit.** The gate compares **git
+   commit times**, so it was red until the regenerated `.pot` was committed
+   alongside the theme sources. **After the Phase 2 commit all 7 permanent
+   gates PASS** (84 assertions, 0 violations, 0 new) — up from 6/7.
 3. **Chromium only.** No Firefox, WebKit, real-device or automated axe/Lighthouse
    pass. Accessibility evidence is computed-style/DOM inspection plus WCAG ratio
    maths.
@@ -389,7 +390,10 @@ not silently skipped.
 **Overall: `PASS WITH LIMITATION`**
 
 All implemented items are complete and measured; two are honestly recorded as
-not implemented with evidence. The limitation is environmental, not
+not implemented with evidence. **All 7 permanent gates pass** and lint is clean.
+The remaining limitation is environmental, not implementation: **no production
+verification was possible or authorised**, and browser verification is
+Chromium-only.
 ---
 
 ## 16. Conclusion
@@ -412,9 +416,10 @@ not implemented with evidence. The limitation is environmental, not
 7. **Was production touched?** **NO. Production writes = 0.** No deployment, no
    content change, no Polylang change, no upload, no activation.
 8. **Was Flutter/mobile untouched?** **YES** — never accessed.
-9. **Ready for the next deployment step?** **Yes, with one prerequisite:** the
-   regenerated `.pot` must be committed together with the theme sources so the
-   `i18n_freshness` gate can clear. Nothing else blocks it.
+9. **Ready for the next deployment step?** **Yes.** The one outstanding
+   prerequisite — committing the regenerated `.pot` with the theme sources so
+   `i18n_freshness` can clear — **was met by this commit**: all 7 permanent
+   gates now pass. Nothing else blocks deployment.
 
 **Production writes: 0.**
 
