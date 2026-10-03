@@ -58,6 +58,7 @@ requires for it:
 | Path | Change | Note |
 |---|---|---|
 | `wp-content/themes/conexao-br-irlanda/header.php` | modified | **The only runtime change**: desktop preload `href` → 1600w (+ the 2 comment lines describing it) |
+| `wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot` | modified | **Forced by committing any theme source**: the `i18n_freshness` gate is git-commit-time based, so a new commit touching `header.php` makes the catalogue "older" than its newest source. Regenerated with the sanctioned `scripts/i18n-make-pot.sh` (never hand-edited). The committed diff is **one line — `POT-Creation-Date`**; 435 msgids and every source reference are unchanged, because this change adds no translatable string. See §9a |
 | `wp-content/themes/conexao-br-irlanda/tests/test-hero-preload-fallback.php` | added | 33-assertion gate + negative proof; auto-discovered by `run-tests.sh` |
 | `docs/frontend.md` | modified | New §"Firefox speculative-loader fallback" + corrected fallback clause |
 | `docs/themes/conexao-br-irlanda.md` | modified | Corrected the preload Performance bullet (it still described `conexao_hero_preload()` as the emitter) |

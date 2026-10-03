@@ -649,6 +649,91 @@ runs slightly over is preferred over an artificial split.
 - `tests/test-leisure-card-excerpt-language.php` — Stage 7 leisure card-description language selection (`conexao_leisure_card_excerpt()`: PT unchanged, EN translation via `_leisure_excerpt_en`, B2 fallback when absent; renders the real card template part in each language; rollout-engine invariants: preview/drift-refusal/idempotency/remove rollback; run: `docker compose exec wordpress php /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-leisure-card-excerpt-language.php`)
 - `tests/test-language-switcher-flag.php` — language-switcher exposure gate. Proves the DISABLED state renders no switcher markup at all in either context (count 0 for the container, `--desktop`, `--mobile` and items, with no orphaned ARIA and nothing merely CSS-hidden), that desktop and mobile share the single `CONEXAO_LANGUAGE_SWITCHER_ENABLED` flag through one shared renderer, that the switcher is only hidden and never removed (data layer still resolves both languages), and that English/Polylang/routing/SEO output is identical on both sides of the flag. The ENABLED state is proven in a child process that pre-defines the same constant as `true`, so flipping that one value is verified to restore the pre-existing markup (run: `docker compose exec wordpress php /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-language-switcher-flag.php`)
 - `assets/js/main.js` — frontend JavaScript
-_Last verified: 2026-09-28 by the language-switcher exposure flag change (UI exposure only; `CONEXAO_LANGUAGE_SWITCHER_ENABLED = false`)_
+## UI convergence Phase 1 (T1.1–T1.5, 2026-10-03)
+
+The first controlled convergence phase of
+[`docs/audit/2026-10-03-ui-ux-audit.md`](../audit/2026-10-03-ui-ux-audit.md)
+(Direction A, "Converged Minimal"). It fixes two real defects and enforces the
+existing design system; it does not redesign anything. Full evidence:
+[`docs/reports/2026-10-03-ui-convergence-t1-report.md`](../reports/2026-10-03-ui-convergence-t1-report.md).
+
+### `/empregos/` — the grid follows the media, not an assumption (T1.1 / D1)
+
+`.empregos-landing` is a **single column** by default. `page-empregos.php` adds
+the `.empregos-landing--with-media` modifier **only when
+`has_post_thumbnail()` is true**, and the two-column
+`minmax(220px, 340px) minmax(0, 1fr)` track list lives on that modifier alone.
+
+The portrait is optional page content, so the default layout must never reserve
+a track for it. Previously it always did, which put the body copy in a 340px
+column beside ~800px of empty space on both `/empregos/` and `/en/empregos/`.
+Measured dead space **860px → 0px** at 1440 and **636px → 0px** at 1024; the
+reading column went **340px → 748px** (the shared 68ch measure). Both languages
+share one template, so the behaviour is identical. **No placeholder image is
+introduced** to satisfy the grid. Mobile keeps its existing single-column rule,
+now applied to both variants.
+
+### Events archive — one LOGICAL event per slot (T1.2 / D2)
+
+**The audit's stated cause was wrong and the correction matters.** The audit
+attributed the duplicate cards to "recurring occurrences each emit their own
+card". Verified against the data, the duplicates are **separate event posts
+sharing one source identity** — an identical `_event_source` +
+`_event_source_id` pair, with identical URL and date and **no recurrence meta at
+all** (13 such groups in the local data). Recurrence was never the problem: a
+recurring event is **one** post and `Conexao_Event_Query::upcoming_event_ids()`
+already returns it once.
+
+The fix is therefore in **presentation**, not in the recurrence engine and not
+in the data:
+
+- `conexao_event_collapse_logical_ids()` (`inc/events.php`) reduces an ordered ID
+  list to one representative per source identity. It is applied in
+  `conexao_content_archive_query()` (`inc/archive-query.php`) to the event
+  archive's `post__in` list.
+- Grouping key is the **full** (`_event_source`, `_event_source_id`) pair, so
+  distinct events are never merged, and is **language-scoped**, so a Portuguese
+  record and its own English translation (which legitimately share a source
+  identity) are never collapsed into one another.
+- The survivor is the record the importer would pick: current language first,
+  then the most recently checked against source.
+- Input order is preserved, so occurrence ordering and pagination semantics are
+  untouched, and **no new query, cache or transient is introduced**.
+
+`/eventos/` went from **10 cards / 6 distinct titles** to **10 cards / 10
+distinct titles** at every measured width, in both languages, on every page and
+under the county filters. **No database record is deleted or modified.**
+
+### Design-system enforcement (T1.3 / T1.4)
+
+See [`docs/frontend.md`](../frontend.md) for the authoritative scales. The
+structural fix is that the bare-element heading defaults in `main.css` are now
+scoped to `:not([class])`. `main.css` loads after `design-system.css`, so an
+unscoped `h3 { … }` tied on specificity and then won on source order — which is
+how `.leisure-card-title` rendered at 28px instead of the shared card-title
+treatment. Card titles now converge on **one** treatment
+(`--text-lg` 18px / 600 / 1.3) across all 13 measured pages, down from four
+(17/600, 18/600, 18/700, 18.4/700).
+
+### Dark theme token cascade (T1.5)
+
+The dark token block is now `:root[data-theme="dark"]` rather than
+`[data-theme="dark"]`. Both have specificity 0-1-0, and the Customizer's
+`conexao_customizer_css()` emits a plain `:root` block in `wp_head` — i.e.
+**after** `dark-mode.css` — so the dark tokens lost the tie and never applied.
+Verified before the change: with `data-theme="dark"` set,
+`--conexao-primary` still resolved to the **light** `#0E6B3A`. The more specific
+selector wins the tie. **Do not revert this to `[data-theme="dark"]` for the
+token blocks.**
+
+## Tests
+
+- `tests/test-ui-convergence-t1.php` — pins the T1.1 layout contract and the
+  exact T1.2 duplication mechanism (the groups are **discovered from live data**,
+  never hard-coded), proves distinct events are never merged, and proves
+  recurrence semantics are unchanged. 82 assertions.
+
+_Last verified: 2026-10-03 by UI convergence Phase 1 (T1.1–T1.5)_
+
 _Last verified: 2026-09-29 by the production theme version bump (1.0.0 → 1.0.1; `style.css` + `CONEXAO_THEME_VERSION`)_
 _Last verified: 2026-10-03 by Stage 20 — hero preload fallback (Firefox speculative-loader cost bound)_

@@ -36,9 +36,22 @@ get_header();
 					<h1 class="entry-title"><?php the_title(); ?></h1>
 				</header>
 
-				<div class="empregos-landing">
+				<?php
+				/*
+				 * The two-column layout (portrait beside the text) is reserved
+				 * for pages that ACTUALLY have the optional portrait. When the
+				 * featured image is absent the base `.empregos-landing` rule is
+				 * a single readable column, so the body never lands in a
+				 * 340px track beside ~800px of dead space (UI audit D1). The
+				 * modifier is derived from has_post_thumbnail() rather than
+				 * assumed, so PT and EN behave identically and no placeholder
+				 * image is ever introduced to satisfy the grid.
+				 */
+				$empregos_has_media = has_post_thumbnail();
+				?>
+				<div class="empregos-landing<?php echo $empregos_has_media ? ' empregos-landing--with-media' : ''; ?>">
 
-					<?php if ( has_post_thumbnail() ) : ?>
+					<?php if ( $empregos_has_media ) : ?>
 						<div class="empregos-landing-media">
 							<div class="empregos-portrait">
 								<?php

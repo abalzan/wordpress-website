@@ -7,8 +7,17 @@
 /* ===== 1. DARK THEME TOKENS =====
    Override the brand tokens and semantic aliases.
    The green and orange remain the brand anchors,
-   adjusted for sufficient contrast on dark surfaces. */
-[data-theme="dark"] {
+   adjusted for sufficient contrast on dark surfaces.
+
+   NOTE ON SELECTOR SPECIFICITY: these token blocks are scoped to
+   `[data-theme="dark"]`, which has the SAME specificity as the plain `:root`
+   selector used by conexao_customizer_css() (inc/customizer.php). That inline
+   :root block is emitted in wp_head and therefore lands AFTER this stylesheet,
+   so on a tie it wins and the dark tokens never take effect. `:root[data-theme="dark"]`
+   is one class-level attribute MORE specific than `:root`, so it wins that tie
+   and the dark theme actually applies. This is why the brand tokens below are
+   scoped this way and why the accent TEXT token needs the same treatment. */
+:root[data-theme="dark"] {
   /* Brand tokens — dark-adjusted */
   --conexao-primary: #3ab875;
   --conexao-primary-dark: #28a060;
@@ -25,6 +34,16 @@
   --conexao-accent: #f59e42;
   --conexao-accent-dark: #d97a1a;
   --conexao-accent-light: #3a2a1a;
+  /*
+   * Dark-mode accent TEXT token, mirroring --conexao-primary-text above.
+   * On dark surfaces the vivid accent is already legible (#f59e42 measures
+   * 8.47:1 on the #0f1720 body and 7.72:1 on the #16202b card), so the dark
+   * theme's accent-text token is the LIGHTER orange rather than a darkened
+   * one. This is why --conexao-accent-text must be re-pointed here instead of
+   * inherited from the light theme, where it has to be darkened to clear AA
+   * on white (UI audit T1.5).
+   */
+  --conexao-accent-text: #f59e42;
   --conexao-dark: #0f1720;
   --conexao-gray-900: #e8edf2;
   --conexao-gray-700: #d1d9e2;

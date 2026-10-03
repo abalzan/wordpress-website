@@ -1,0 +1,316 @@
+=== T1 ACCEPTANCE (after) ===
+
+-- reference contrast ratios (computed) --
+  accent #F68B1F       on white = 2.43:1
+  accent-dark #d97a1a  on white = 3.11:1
+  ink #1a1a2e          on white = 17.06:1
+
+-- T1.1 /empregos/ orphan column --
+  jobs      w1440  cols=1 media=False dead=0px bodyW=1200 contentW=748 ok
+  jobs      w1024  cols=1 media=False dead=0px bodyW=976 contentW=748 ok
+  jobs      w768   cols=1 media=False dead=0px bodyW=736 contentW=736 ok
+  jobs      w390   cols=1 media=False dead=0px bodyW=358 contentW=358 ok
+  jobs-en   w1440  cols=1 media=False dead=0px bodyW=1200 contentW=748 ok
+  jobs-en   w1024  cols=1 media=False dead=0px bodyW=976 contentW=748 ok
+  jobs-en   w768   cols=1 media=False dead=0px bodyW=736 contentW=736 ok
+  jobs-en   w390   cols=1 media=False dead=0px bodyW=358 contentW=358 ok
+
+-- T1.2 duplicate event cards --
+  events      w1440  cards=10 distinctTitles=10 duplicates=0 ok
+  events      w1024  cards=10 distinctTitles=10 duplicates=0 ok
+  events      w768   cards=10 distinctTitles=10 duplicates=0 ok
+  events      w390   cards=10 distinctTitles=10 duplicates=0 ok
+  events-en   w1440  cards=10 distinctTitles=10 duplicates=0 ok
+  events-en   w1024  cards=10 distinctTitles=10 duplicates=0 ok
+  events-en   w768   cards=10 distinctTitles=10 duplicates=0 ok
+  events-en   w390   cards=10 distinctTitles=10 duplicates=0 ok
+
+-- T1.3 h2 treatments at 1440 --
+  home          24px/700, 32px/700, 20px/700, 32px/700
+  jobs          28px/700, 40px/700
+  jobs-en       28px/700, 40px/700
+  events        40px/700
+  events-en     40px/700
+  guides        18px/600, 18px/600, 18px/600, 18px/600
+  guides-en     18px/600, 18px/600, 18px/600, 18px/600
+  leisure       18px/700, 18px/700, 40px/700
+  leisure-en    18px/700, 18px/700, 40px/700
+  courses       40px/700
+  courses-en    40px/700
+  blog          18px/600, 18px/600, 18px/600, 18px/600
+  sponsors      18px/600, 18px/600, 18px/600, 18px/600
+  contact       24px/700, 40px/700
+
+-- T1.4 card-title treatments across all pages --
+  18px/600/23.4px        13 pages: blog, courses, courses-en, events, events-en, guides, guides-en, home,
+
+-- T1.5 orange as TEXT --
+  home          w1440  light span        rgb(246, 139, 31) wNone large | Irlanda
+  home          w1440  dark  span        rgb(245, 158, 66) wNone large | Irlanda
+  home          w1024  light span        rgb(246, 139, 31) wNone large | Irlanda
+  home          w1024  dark  span        rgb(245, 158, 66) wNone large | Irlanda
+  home          w768   light span        rgb(246, 139, 31) wNone large | Irlanda
+  home          w768   dark  span        rgb(245, 158, 66) wNone large | Irlanda
+  home          w390   light span        rgb(246, 139, 31) wNone NORMAL | Irlanda
+  home          w390   dark  span        rgb(245, 158, 66) wNone NORMAL | Irlanda
+  jobs          w1440  light strong      rgb(230, 81, 0) wNone NORMAL | Atenção:
+  jobs          w1440  dark  strong      rgb(245, 158, 66) wNone NORMAL | Atenção:
+  jobs          w1024  light strong      rgb(230, 81, 0) wNone NORMAL | Atenção:
+  jobs          w1024  dark  strong      rgb(245, 158, 66) wNone NORMAL | Atenção:
+  jobs          w768   light strong      rgb(230, 81, 0) wNone NORMAL | Atenção:
+  jobs          w768   dark  strong      rgb(245, 158, 66) wNone NORMAL | Atenção:
+  jobs          w390   light strong      rgb(230, 81, 0) wNone NORMAL | Atenção:
+  jobs          w390   dark  strong      rgb(245, 158, 66) wNone NORMAL | Atenção:
+  jobs-en       w1440  light strong      rgb(230, 81, 0) wNone NORMAL | Warning:
+  jobs-en       w1440  dark  strong      rgb(245, 158, 66) wNone NORMAL | Warning:
+  jobs-en       w1024  light strong      rgb(230, 81, 0) wNone NORMAL | Warning:
+  jobs-en       w1024  dark  strong      rgb(245, 158, 66) wNone NORMAL | Warning:
+  jobs-en       w768   light strong      rgb(230, 81, 0) wNone NORMAL | Warning:
+  jobs-en       w768   dark  strong      rgb(245, 158, 66) wNone NORMAL | Warning:
+  jobs-en       w390   light strong      rgb(230, 81, 0) wNone NORMAL | Warning:
+  jobs-en       w390   dark  strong      rgb(245, 158, 66) wNone NORMAL | Warning:
+  events        w1440  dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events        w1440  dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Hoje
+  events        w1440  dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Comedy
+  events        w1440  dark  event-card-date-day rgb(245, 158, 66) wNone large | 3-31
+  events        w1440  dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Hoje
+  events        w1440  dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Member
+  events        w1440  dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events        w1440  dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Hoje
+  events        w1440  dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Community
+  events        w1440  dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events        w1440  dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Hoje
+  events        w1440  dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Member
+  events        w1440  dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events        w1440  dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Hoje
+  events        w1440  dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Member
+  events        w1440  dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events        w1440  dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Hoje
+  events        w1440  dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Comedy
+  events        w1440  dark  event-card-date-day rgb(245, 158, 66) wNone large | 3-4
+  events        w1440  dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Hoje
+  events        w1440  dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Member
+  events        w1440  dark  event-card-date-day rgb(245, 158, 66) wNone large | 3-4
+  events        w1440  dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Hoje
+  events        w1440  dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Rallycross
+  events        w1440  dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events        w1440  dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Hoje
+  events        w1440  dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Sporting Trial
+  events        w1440  dark  event-card-date-day rgb(245, 158, 66) wNone large | 3-4
+  events        w1440  dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Hoje
+  events        w1440  dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Navigation Trial
+  events        w1024  dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events        w1024  dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Hoje
+  events        w1024  dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Comedy
+  events        w1024  dark  event-card-date-day rgb(245, 158, 66) wNone large | 3-31
+  events        w1024  dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Hoje
+  events        w1024  dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Member
+  events        w1024  dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events        w1024  dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Hoje
+  events        w1024  dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Community
+  events        w1024  dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events        w1024  dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Hoje
+  events        w1024  dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Member
+  events        w1024  dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events        w1024  dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Hoje
+  events        w1024  dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Member
+  events        w1024  dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events        w1024  dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Hoje
+  events        w1024  dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Comedy
+  events        w1024  dark  event-card-date-day rgb(245, 158, 66) wNone large | 3-4
+  events        w1024  dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Hoje
+  events        w1024  dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Member
+  events        w1024  dark  event-card-date-day rgb(245, 158, 66) wNone large | 3-4
+  events        w1024  dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Hoje
+  events        w1024  dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Rallycross
+  events        w1024  dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events        w1024  dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Hoje
+  events        w1024  dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Sporting Trial
+  events        w1024  dark  event-card-date-day rgb(245, 158, 66) wNone large | 3-4
+  events        w1024  dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Hoje
+  events        w1024  dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Navigation Trial
+  events        w768   dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events        w768   dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Hoje
+  events        w768   dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Comedy
+  events        w768   dark  event-card-date-day rgb(245, 158, 66) wNone large | 3-31
+  events        w768   dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Hoje
+  events        w768   dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Member
+  events        w768   dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events        w768   dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Hoje
+  events        w768   dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Community
+  events        w768   dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events        w768   dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Hoje
+  events        w768   dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Member
+  events        w768   dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events        w768   dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Hoje
+  events        w768   dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Member
+  events        w768   dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events        w768   dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Hoje
+  events        w768   dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Comedy
+  events        w768   dark  event-card-date-day rgb(245, 158, 66) wNone large | 3-4
+  events        w768   dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Hoje
+  events        w768   dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Member
+  events        w768   dark  event-card-date-day rgb(245, 158, 66) wNone large | 3-4
+  events        w768   dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Hoje
+  events        w768   dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Rallycross
+  events        w768   dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events        w768   dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Hoje
+  events        w768   dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Sporting Trial
+  events        w768   dark  event-card-date-day rgb(245, 158, 66) wNone large | 3-4
+  events        w768   dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Hoje
+  events        w768   dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Navigation Trial
+  events        w390   dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events        w390   dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Hoje
+  events        w390   dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Comedy
+  events        w390   dark  event-card-date-day rgb(245, 158, 66) wNone large | 3-31
+  events        w390   dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Hoje
+  events        w390   dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Member
+  events        w390   dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events        w390   dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Hoje
+  events        w390   dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Community
+  events        w390   dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events        w390   dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Hoje
+  events        w390   dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Member
+  events        w390   dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events        w390   dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Hoje
+  events        w390   dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Member
+  events        w390   dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events        w390   dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Hoje
+  events        w390   dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Comedy
+  events        w390   dark  event-card-date-day rgb(245, 158, 66) wNone large | 3-4
+  events        w390   dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Hoje
+  events        w390   dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Member
+  events        w390   dark  event-card-date-day rgb(245, 158, 66) wNone large | 3-4
+  events        w390   dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Hoje
+  events        w390   dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Rallycross
+  events        w390   dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events        w390   dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Hoje
+  events        w390   dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Sporting Trial
+  events        w390   dark  event-card-date-day rgb(245, 158, 66) wNone large | 3-4
+  events        w390   dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Hoje
+  events        w390   dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Navigation Trial
+  events-en     w1440  dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events-en     w1440  dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Today
+  events-en     w1440  dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Comedy
+  events-en     w1440  dark  event-card-date-day rgb(245, 158, 66) wNone large | 3-31
+  events-en     w1440  dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Today
+  events-en     w1440  dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Member
+  events-en     w1440  dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events-en     w1440  dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Today
+  events-en     w1440  dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Community
+  events-en     w1440  dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events-en     w1440  dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Today
+  events-en     w1440  dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Member
+  events-en     w1440  dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events-en     w1440  dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Today
+  events-en     w1440  dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Member
+  events-en     w1440  dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events-en     w1440  dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Today
+  events-en     w1440  dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Comedy
+  events-en     w1440  dark  event-card-date-day rgb(245, 158, 66) wNone large | 3-4
+  events-en     w1440  dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Today
+  events-en     w1440  dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Member
+  events-en     w1440  dark  event-card-date-day rgb(245, 158, 66) wNone large | 3-4
+  events-en     w1440  dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Today
+  events-en     w1440  dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Rallycross
+  events-en     w1440  dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events-en     w1440  dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Today
+  events-en     w1440  dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Sporting Trial
+  events-en     w1440  dark  event-card-date-day rgb(245, 158, 66) wNone large | 3-4
+  events-en     w1440  dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Today
+  events-en     w1440  dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Navigation Trial
+  events-en     w1024  dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events-en     w1024  dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Today
+  events-en     w1024  dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Comedy
+  events-en     w1024  dark  event-card-date-day rgb(245, 158, 66) wNone large | 3-31
+  events-en     w1024  dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Today
+  events-en     w1024  dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Member
+  events-en     w1024  dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events-en     w1024  dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Today
+  events-en     w1024  dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Community
+  events-en     w1024  dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events-en     w1024  dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Today
+  events-en     w1024  dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Member
+  events-en     w1024  dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events-en     w1024  dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Today
+  events-en     w1024  dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Member
+  events-en     w1024  dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events-en     w1024  dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Today
+  events-en     w1024  dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Comedy
+  events-en     w1024  dark  event-card-date-day rgb(245, 158, 66) wNone large | 3-4
+  events-en     w1024  dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Today
+  events-en     w1024  dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Member
+  events-en     w1024  dark  event-card-date-day rgb(245, 158, 66) wNone large | 3-4
+  events-en     w1024  dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Today
+  events-en     w1024  dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Rallycross
+  events-en     w1024  dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events-en     w1024  dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Today
+  events-en     w1024  dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Sporting Trial
+  events-en     w1024  dark  event-card-date-day rgb(245, 158, 66) wNone large | 3-4
+  events-en     w1024  dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Today
+  events-en     w1024  dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Navigation Trial
+  events-en     w768   dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events-en     w768   dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Today
+  events-en     w768   dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Comedy
+  events-en     w768   dark  event-card-date-day rgb(245, 158, 66) wNone large | 3-31
+  events-en     w768   dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Today
+  events-en     w768   dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Member
+  events-en     w768   dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events-en     w768   dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Today
+  events-en     w768   dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Community
+  events-en     w768   dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events-en     w768   dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Today
+  events-en     w768   dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Member
+  events-en     w768   dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events-en     w768   dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Today
+  events-en     w768   dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Member
+  events-en     w768   dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events-en     w768   dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Today
+  events-en     w768   dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Comedy
+  events-en     w768   dark  event-card-date-day rgb(245, 158, 66) wNone large | 3-4
+  events-en     w768   dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Today
+  events-en     w768   dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Member
+  events-en     w768   dark  event-card-date-day rgb(245, 158, 66) wNone large | 3-4
+  events-en     w768   dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Today
+  events-en     w768   dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Rallycross
+  events-en     w768   dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events-en     w768   dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Today
+  events-en     w768   dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Sporting Trial
+  events-en     w768   dark  event-card-date-day rgb(245, 158, 66) wNone large | 3-4
+  events-en     w768   dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Today
+  events-en     w768   dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Navigation Trial
+  events-en     w390   dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events-en     w390   dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Today
+  events-en     w390   dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Comedy
+  events-en     w390   dark  event-card-date-day rgb(245, 158, 66) wNone large | 3-31
+  events-en     w390   dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Today
+  events-en     w390   dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Member
+  events-en     w390   dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events-en     w390   dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Today
+  events-en     w390   dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Community
+  events-en     w390   dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events-en     w390   dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Today
+  events-en     w390   dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Member
+  events-en     w390   dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events-en     w390   dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Today
+  events-en     w390   dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Member
+  events-en     w390   dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events-en     w390   dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Today
+  events-en     w390   dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Comedy
+  events-en     w390   dark  event-card-date-day rgb(245, 158, 66) wNone large | 3-4
+  events-en     w390   dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Today
+  events-en     w390   dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Member
+  events-en     w390   dark  event-card-date-day rgb(245, 158, 66) wNone large | 3-4
+  events-en     w390   dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Today
+  events-en     w390   dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Rallycross
+  events-en     w390   dark  event-card-date-day rgb(245, 158, 66) wNone large | 3
+  events-en     w390   dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Today
+  events-en     w390   dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Sporting Trial
+  events-en     w390   dark  event-card-date-day rgb(245, 158, 66) wNone large | 3-4
+  events-en     w390   dark  event-card-date-hint rgb(245, 158, 66) wNone NORMAL | Today
+  events-en     w390   dark  event-card-category rgb(245, 158, 66) wNone NORMAL | Navigation Trial
+  total orange-text occurrences: 264
+
+-- overflow / a11y invariants --
+  invariant issues: 0
+EXIT=0

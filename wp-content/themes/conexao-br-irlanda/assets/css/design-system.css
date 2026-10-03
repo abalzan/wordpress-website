@@ -16,6 +16,10 @@
   --color-accent: var(--conexao-accent);
   --color-accent-dark: var(--conexao-accent-dark);
   --color-accent-light: var(--conexao-accent-light);
+  /* Accessible accent for TEXT. #F68B1F is 2.43:1 on white (fails WCAG AA),
+     so any accent-coloured copy must use this alias instead. Brand accents,
+     borders and decorative fills keep --color-accent (UI audit T1.5). */
+  --color-accent-text: var(--conexao-accent-text);
   --color-background: var(--conexao-white);
   --color-surface: var(--conexao-white);
   --color-surface-muted: var(--conexao-light-gray);
@@ -107,7 +111,20 @@
   color: var(--color-text);
 }
 
-/* H3 — card titles and smaller sections */
+/* H3 — card titles and smaller sections
+
+   ONE card-title treatment for every card type (UI audit T1.4 / I2).
+   Previously four treatments existed across the site — 17px/600
+   (1.0625rem, off-scale) on news/post/archive cards, 18px/600 on event
+   cards and 18px/700 on provider cards, plus 18.4px/700 on leisure. They
+   are now one token-based size and weight: --text-lg (18px), weight 600,
+   line-height 1.3, Poppins. Card types must NOT re-declare a size or a
+   weight here; a deliberate exception belongs in its own scoped rule with a
+   comment explaining why.
+
+   600 (not 700) is the card-title weight because it stays clearly distinct
+   from section headings (700) while holding up against 18px Poppins, and it
+   matches the weight the design system already declared for this family. */
 .card-title,
 .event-card-title,
 .course-card-title,
@@ -115,11 +132,14 @@
 .archive-card-title,
 .post-card-title,
 .news-card-title,
+.leisure-card-title,
 .business-name,
 .landing-card-title,
 .related-post-title,
-.featured-article-title {
+.featured-article-title,
+.directory-card-title {
   font-family: var(--font-display);
+  font-size: var(--text-lg);
   font-weight: 600;
   line-height: 1.3;
   color: var(--color-text);

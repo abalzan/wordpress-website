@@ -41,6 +41,136 @@ function conexao_event_upcoming_ids() {
 }
 
 /**
+ * Collapse a list of event IDs to one representative per LOGICAL event.
+ *
+ * Why this exists (UI audit D2, corrected finding)
+ * ------------------------------------------------
+ * The events archive was rendering 10 cards for 6 distinct events. The audit
+ * attributed this to recurring occurrences each emitting a card. The real
+ * mechanism is different and was verified against the data: the duplicates are
+ * SEPARATE event POSTS that share one source identity — an identical
+ * `_event_source` + `_event_source_id` pair (and identical URL/date), with no
+ * recurrence meta at all. Recurrence itself is fine: a recurring event is ONE
+ * post and `conexao_event_upcoming_ids()` already returns it once.
+ *
+ * So the fix belongs in PRESENTATION, not in the recurrence engine and not in
+ * the data. This helper keeps one representative ID per source identity so a
+ * logical event occupies one archive slot, and the card keeps surfacing the
+ * next occurrence through the existing `conexao_event_display_date()` helper.
+ *
+ * Rules that make this safe:
+ *  - Identity is the full (`_event_source`, `_event_source_id`) PAIR. Two
+ *    events are only merged when both agree; distinct source identities are
+ *    never collapsed, so genuinely different events always survive.
+ *  - Grouping is LANGUAGE-SCOPED. A Portuguese record and its own English
+ *    translation legitimately share a source identity, so they must never be
+ *    merged with each other; grouping by language keeps them apart and keeps
+ *    the B2 "never show a PT record beside its EN translation" rule intact.
+ *  - Events WITHOUT source identity (legacy/hand-made rows) are never merged —
+ *    each is its own logical event.
+ *  - The surviving representative is the one the importer would pick: the
+ *    record in the current language, preferring the most recently checked.
+ *  - Input order is preserved, so the runtime's occurrence ordering and the
+ *    archive pagination semantics are untouched.
+ *
+ * This adds no query of its own beyond a batched meta read of the identity
+ * keys, no cache and no transient.
+ *
+ * @param int[] $ids Ordered event post IDs.
+ * @return int[] Ordered IDs, one per logical event.
+ */
+function conexao_event_collapse_logical_ids( array $ids ): array {
+	$ids = array_values( array_unique( array_map( 'intval', $ids ) ) );
+
+	if ( count( $ids ) < 2 ) {
+		return $ids;
+	}
+
+	$language = '';
+	if ( function_exists( 'pll_get_post_language' ) && function_exists( 'conexao_polylang_active' )
+		&& conexao_polylang_active() ) {
+		$slug = function_exists( 'conexao_current_language_slug' )
+			? conexao_current_language_slug()
+			: '';
+		if ( '' !== $slug ) {
+			$language = $slug;
+		}
+	}
+
+	$source_ids   = array();
+	$checked_ranks = array();
+
+	foreach ( $ids as $id ) {
+		$source = (string) get_post_meta( $id, '_event_source', true );
+		$sid    = (string) get_post_meta( $id, '_event_source_id', true );
+
+		// No portable source identity: this record is its own logical event.
+		if ( '' === $source || '' === $sid ) {
+			$source_ids[ $id ] = '';
+			continue;
+		}
+
+		$source_ids[ $id ] = $source . '|' . $sid;
+
+		// Prefer the record the importer would treat as canonical: the one in
+		// the current language, then the most recently checked against source.
+		$post_language = '';
+		if ( function_exists( 'pll_get_post_language' ) && '' !== $language ) {
+			$post_language = (string) pll_get_post_language( $id, 'slug' );
+		}
+		$in_language   = ( '' === $language || '' === $post_language || $post_language === $language ) ? 1 : 0;
+		$last_checked  = (string) get_post_meta( $id, '_event_last_checked', true );
+		$checked_ranks[ $id ] = array( $in_language, $last_checked );
+	}
+
+	$best = array();
+
+	foreach ( $ids as $id ) {
+		$key = $source_ids[ $id ];
+
+		if ( '' === $key ) {
+			$best[ 'noid:' . $id ] = $id;
+			continue;
+		}
+
+		// Never merge across languages: a PT record and its EN translation are
+		// two presentations of one identity, not one card.
+		$post_language = '';
+		if ( function_exists( 'pll_get_post_language' ) && '' !== $language ) {
+			$post_language = (string) pll_get_post_language( $id, 'slug' );
+		}
+		$group = $key . '|' . $post_language;
+
+		if ( ! isset( $best[ $group ] ) ) {
+			$best[ $group ] = $id;
+			continue;
+		}
+
+		$incumbent = $best[ $group ];
+		if ( $checked_ranks[ $id ] > $checked_ranks[ $incumbent ] ) {
+			$best[ $group ] = $id;
+		}
+	}
+
+	// Restore the input (occurrence) order, minus the collapsed duplicates.
+	$survivors = array_flip( $best );
+	$out       = array();
+
+	foreach ( $ids as $id ) {
+		if ( isset( $survivors[ $id ] ) ) {
+			$out[] = $id;
+		}
+	}
+
+	return $out;
+}
+
+/**
+ * The date an event card should display.
+
+}
+
+/**
  * The date an event card should display.
  *
  * Recurring events show their NEXT occurrence (from the shared, cached

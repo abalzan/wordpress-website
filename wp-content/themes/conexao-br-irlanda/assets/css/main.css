@@ -12,6 +12,21 @@
   --conexao-accent: #F68B1F;
   --conexao-accent-dark: #d97a1a;
   --conexao-accent-light: #fff8f0;
+  /*
+   * Accent used for TEXT on light surfaces.
+   *
+   * The brand accent #F68B1F measures 2.43:1 on white and 2.31:1 on the
+   * accent-light tint, so it FAILS WCAG AA (4.5:1 for normal text) and must
+   * never carry body copy, labels or links. --conexao-accent-dark (#d97a1a)
+   * is only 3.11:1 and also fails.
+   *
+   * This token is the brand orange darkened along its own hue until it clears
+   * AA. The static value below is the documented fallback used before the
+   * Customizer CSS is emitted (4.74:1 on white for the default #F68B1F); when
+   * the Customizer block runs, `conexao_accent_text_color()` derives the value
+   * from the CONFIGURED accent so it always clears 4.5:1 (UI audit T1.5).
+   */
+  --conexao-accent-text: #aa6115;
   --conexao-dark: #1a1a2e;
   --conexao-gray-900: #212529;
   --conexao-gray-700: #495057;
@@ -86,7 +101,26 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-h1, h2, h3, h4, h5, h6 {
+/* Bare-element heading defaults.
+
+   These are a FALLBACK for headings with no component class. They are loaded
+   AFTER design-system.css, so on equal specificity these declarations would
+   win over any class-based component rule (source order beats specificity only
+   when specificity is equal) — which is exactly how the leisure card title
+   ended up rendering at this 28px h3 size instead of the shared card-title
+   treatment, and how the same class of divergence spread across the site
+   (UI audit T1.3 / T1.4).
+
+   Each heading level below is therefore scoped to headings that do NOT carry
+   a component class (`:not([class])`), so a component class always wins and
+   the bare-element values can no longer override it. Unclassified headings
+   keep exactly the same rendering as before. */
+h1:not([class]),
+h2:not([class]),
+h3:not([class]),
+h4:not([class]),
+h5:not([class]),
+h6:not([class]) {
   font-family: var(--conexao-font-heading);
   font-weight: 700;
   line-height: 1.2;
@@ -94,12 +128,12 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--conexao-dark);
 }
 
-h1 { font-size: clamp(2rem, 5vw, 3rem); }
-h2 { font-size: clamp(1.75rem, 4vw, 2.5rem); }
-h3 { font-size: clamp(1.25rem, 3vw, 1.75rem); }
-h4 { font-size: 1.25rem; }
-h5 { font-size: 1.125rem; }
-h6 { font-size: 1rem; }
+h1:not([class]) { font-size: clamp(2rem, 5vw, 3rem); }
+h2:not([class]) { font-size: clamp(1.75rem, 4vw, 2.5rem); }
+h3:not([class]) { font-size: clamp(1.25rem, 3vw, 1.75rem); }
+h4:not([class]) { font-size: 1.25rem; }
+h5:not([class]) { font-size: 1.125rem; }
+h6:not([class]) { font-size: 1rem; }
 
 p {
   margin-bottom: 1em;
@@ -1782,7 +1816,8 @@ ul, ol {
 .event-card-category {
   display: inline-block;
   background: var(--conexao-accent-light);
-  color: var(--conexao-accent);
+  /* Text token: --conexao-accent was 2.31:1 on this tint (fails AA). */
+  color: var(--conexao-accent-text);
   padding: 4px 10px;
   border-radius: var(--conexao-radius-full);
   font-size: 0.6875rem;
@@ -1791,11 +1826,9 @@ ul, ol {
   margin-bottom: 12px;
 }
 
+/* Type comes from the shared card-title rule in design-system.css. */
 .event-card-title {
-  font-size: 1.125rem;
-  font-weight: 600;
   margin-bottom: 12px;
-  line-height: 1.3;
 }
 
 .event-card-title a {
@@ -1998,7 +2031,10 @@ ul, ol {
 }
 
 .events-page .event-card-date-badge.is-today .event-card-date-day {
-  color: var(--conexao-accent);
+  /* Was --conexao-accent (2.43:1 on white — fails AA even at this 28px size
+     under the strict reading, and the badge sits on white). The accent stays
+     as the badge BORDER above; only the numeral takes the AA text token. */
+  color: var(--conexao-accent-text);
 }
 
 .events-page .event-card-date-month {
@@ -2037,7 +2073,7 @@ ul, ol {
   margin-top: 4px;
   padding: 2px 7px;
   background: var(--conexao-accent-light);
-  color: var(--conexao-accent);
+  color: var(--conexao-accent-text);
   border-radius: var(--conexao-radius-full);
   font-size: 0.5625rem;
   font-weight: 700;
@@ -2084,7 +2120,7 @@ ul, ol {
   align-items: center;
   gap: 6px;
   background: var(--conexao-accent-light);
-  color: var(--conexao-accent);
+  color: var(--conexao-accent-text);
   padding: 4px 10px;
   border-radius: var(--conexao-radius-full);
   font-size: 0.6875rem;
@@ -2098,11 +2134,10 @@ ul, ol {
   flex-shrink: 0;
 }
 
+/* Type comes from the shared card-title rule in design-system.css; only this
+   card's colour and spacing are declared here. */
 .events-page .event-card-title {
-  font-size: 1.125rem;
-  font-weight: 600;
   margin-bottom: 12px;
-  line-height: 1.3;
   color: var(--conexao-dark);
 }
 
@@ -2480,11 +2515,12 @@ ul, ol {
   margin-bottom: 12px;
 }
 
+/* Size, weight, family and line-height come from the shared card-title rule
+   in design-system.css (--text-lg / 600 / 1.3). Only this card's spacing is
+   declared here — re-declaring the type is what produced the 17px/600
+   divergence (UI audit T1.4). */
 .news-card-title {
-  font-size: 1.0625rem;
-  font-weight: 600;
   margin-bottom: 10px;
-  line-height: 1.3;
 }
 
 .news-card-title a {
@@ -2993,11 +3029,9 @@ ul, ol {
   flex-direction: column;
 }
 
+/* Type comes from the shared card-title rule in design-system.css. */
 .post-card-title {
-  font-size: 1.0625rem;
-  font-weight: 600;
   margin-bottom: 10px;
-  line-height: 1.3;
 }
 
 .post-card-title a {
@@ -4398,13 +4432,26 @@ input[type="button"] {
   }
 
   /* Subtle readability overlay: a bottom-up green gradient (plus a slight
-     left bias) fades out by ~85% of the content height, so the top of the
-     photograph stays completely untouched and the image remains clearly
-     visible while the white copy keeps strong contrast. */
+     left bias) fades out toward the top of the photograph, so the image stays
+     clearly visible while the white copy keeps strong contrast.
+
+     The accent-coloured word inside `.hero-title` is the one piece of hero copy
+     that is NOT white, and pixel-sampling the rendered page measured it at only
+     ~3.4:1 against the photograph at 390px, where it renders at 17.94px —
+     below the 18.66px large-text threshold, so WCAG AA demands the full 4.5:1.
+     The gradient is a broad photographic treatment and raising it further would
+     darken the whole hero image, so the accent word instead carries a tight
+     text-shadow of the same brand green: it darkens the pixels immediately
+     behind those glyphs only, leaves the rest of the artwork untouched, and
+     brings the word over 4.5:1 (UI audit T1.5). */
   .hero-content::before {
     background:
       linear-gradient(to right, rgba(6, 44, 35, 0.35) 0%, rgba(6, 44, 35, 0) 62%),
       linear-gradient(to top, rgba(6, 44, 35, 0.82) 0%, rgba(6, 44, 35, 0.5) 42%, rgba(6, 44, 35, 0.12) 72%, rgba(6, 44, 35, 0) 88%);
+  }
+
+  .hero-title span {
+    text-shadow: 0 1px 3px rgba(6, 44, 35, 0.95), 0 0 8px rgba(6, 44, 35, 0.85), 0 0 16px rgba(6, 44, 35, 0.6);
   }
 
   .hero-badge {
@@ -4887,11 +4934,9 @@ input[type="button"] {
   align-self: flex-start;
 }
 
+/* Type comes from the shared card-title rule in design-system.css. */
 .archive-card-title {
-  font-size: 1.0625rem;
-  font-weight: 600;
   margin-bottom: 10px;
-  line-height: 1.3;
 }
 
 .archive-card-title a {
@@ -6331,11 +6376,9 @@ input[type="button"] {
   margin-bottom: var(--space-2);
 }
 
+/* Type comes from the shared card-title rule in design-system.css: the 700
+   weight declared here was the third card-title treatment (UI audit T1.4). */
 .provider-card-title {
-  font-size: var(--text-lg);
-  font-weight: 700;
-  color: var(--color-text);
-  line-height: 1.3;
   margin-bottom: var(--space-2);
 }
 
@@ -6887,13 +6930,22 @@ input[type="button"] {
    (--color-*, --space-*, --radius-*, --shadow-*) so light and dark mode are
    handled automatically by the existing system. */
 
-/* Two-column desktop layout. */
+/* Base: ONE column. The optional portrait is not guaranteed to exist, so the
+   default layout must never reserve a track for it — that was the orphan
+   340px column with ~812px of dead space (UI audit D1). The body runs to the
+   shared reading measure instead, which is correct in PT and EN alike. */
 .empregos-landing {
   display: grid;
-  grid-template-columns: minmax(220px, 340px) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-6) var(--space-7);
   align-items: start;
   padding: var(--space-6) 0 var(--space-8);
+}
+
+/* Two-column desktop layout ONLY when the portrait is actually rendered
+   (page-empregos.php adds this modifier from has_post_thumbnail()). */
+.empregos-landing--with-media {
+  grid-template-columns: minmax(220px, 340px) minmax(0, 1fr);
 }
 
 .empregos-landing-media {
@@ -6925,7 +6977,10 @@ input[type="button"] {
 }
 
 .empregos-landing-body .entry-content {
-  font-size: 1.0625rem;
+  /* Was an off-scale 1.0625rem (17px). Card/section body copy is now on the
+     documented scale step --text-lg (18px), matching the rest of the site
+     instead of introducing a fourth body size (UI audit T1.4). */
+  font-size: var(--text-lg);
   line-height: 1.8;
   color: var(--color-text-secondary);
   max-width: 68ch;
@@ -6948,9 +7003,12 @@ input[type="button"] {
   margin-top: var(--space-7);
 }
 
-/* Mobile: single natural column — title, portrait, info, CTA. */
+/* Mobile: single natural column — title, portrait, info, CTA. Applies to both
+   the base and the with-media variant, so a page that does have the portrait
+   stacks it above the text on narrow screens exactly as before. */
 @media (max-width: 768px) {
-  .empregos-landing {
+  .empregos-landing,
+  .empregos-landing--with-media {
     grid-template-columns: 1fr;
     gap: var(--space-5);
     padding: var(--space-5) 0 var(--space-7);

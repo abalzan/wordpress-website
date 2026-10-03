@@ -10,7 +10,9 @@ Defined in `assets/css/design-system.css`. Uses CSS custom properties mapped fro
 |----------|---------|---------|
 | `--color-primary` | `#0E6B3A` (green) | Main brand, buttons, links |
 | `--color-primary-dark` | darkened 20% | Hover states |
-| `--color-accent` | `#F68B1F` (orange) | CTAs, highlights |
+| `--color-accent` | `#F68B1F` (orange) | Accents only — borders, rules, focus rings, decorative fills, CTA **backgrounds** |
+| `--color-accent-text` | `--conexao-accent-text` (`#aa6115`) | Accent-coloured **text** (labels, pills, links). The only orange token permitted to carry copy |
+| `--color-accent-dark` | darkened 20% | Hover states |
 | `--color-whatsapp` | `#25d366` | WhatsApp button |
 | `--color-background` | `#ffffff` | Page background |
 | `--color-surface` | `#ffffff` | Card/component backgrounds |
@@ -19,11 +21,52 @@ Defined in `assets/css/design-system.css`. Uses CSS custom properties mapped fro
 | `--color-text-secondary` | gray-600 | Secondary text/meta |
 | `--color-border` | `--conexao-border` | Borders |
 
+> **Accent restraint (UI convergence T1.5).** `--conexao-accent` `#F68B1F`
+> measures **2.43:1 on white** (2.31:1 on the `--conexao-accent-light` tint) and
+> **fails WCAG AA** for normal text, which needs 4.5:1. Orange therefore stays a
+> surface/decorative colour and must never carry text.
+>
+> `--conexao-accent-text` is the token for accent-coloured text. Its value is
+> **derived** from the *configured* accent by `conexao_accent_text_color()`
+> (`inc/customizer.php`), which darkens the accent along its own hue until it
+> clears 4.5:1 on white — so a maintainer changing the Customizer colour cannot
+> silently reintroduce a contrast failure. Measured: **4.74:1** on white and
+> **4.50:1** on the accent-light tint for the default accent.
+>
+> Dark mode re-points `--conexao-accent-text` to `#f59e42`, which measures
+> **8.47:1** on the dark body and **7.72:1** on the dark card: on dark surfaces
+> the accent is *lightened*, not darkened.
+
 ### Typography
 
 - **Display (headings)**: Poppins (weights 500, 600, 700) via Google Fonts
 - **Body**: Inter (weights 400, 500, 600, 700) via Google Fonts
 - Scale: xs (0.75rem) through 5xl (3rem)
+
+### Heading and card-title scales (UI convergence T1.3 / T1.4)
+
+Two scales are authoritative, both token-based, both defined **once** in
+`design-system.css`. Component CSS must not re-declare a heading size.
+
+| Role | Treatment | Owner |
+|---|---|---|
+| Page title (`h1`) | its own `clamp()` per surface | surface CSS (hero vs page header are intentionally distinct) |
+| **Section title** | `clamp(1.5rem, 3vw, 2rem)` / 700 | `.section-title` + `.landing-section-title`, `.newsletter-title`, `.related-posts-title`, `.comments-title` |
+| **Card title** | `var(--text-lg)` (18px) / 600 / 1.3 | `.card-title`, `.event-card-title`, `.course-card-title`, `.provider-card-title`, `.archive-card-title`, `.post-card-title`, `.news-card-title`, `.leisure-card-title`, `.business-name`, `.landing-card-title`, `.related-post-title`, `.featured-article-title`, `.directory-card-title` |
+| Component heading | scoped component rule | the component, with a comment explaining the exception |
+
+Card-title weight is **600**, not 700, so a card title stays clearly distinct
+from a section title (700) at the same optical size.
+
+**The bare-element heading defaults in `main.css` are scoped to
+`:not([class])`.** They are a fallback for headings with no component class.
+`main.css` loads *after* `design-system.css`, so an unscoped `h3 { … }` rule
+ties on specificity and then wins on source order, silently overriding the
+component scale — which is how the leisure card title rendered at 28px instead
+of the shared card-title treatment. Scoping them to `:not([class])` makes a
+component class always win, while unclassified headings keep exactly the same
+rendering as before. **Do not un-scope them.**
+
 
 ### Container
 
@@ -155,7 +198,6 @@ The front-page hero is a full‑bleed cinematic image with overlaid text (the ol
 - **Performance**: `loading="eager"` + `fetchpriority="high"` (LCP). The homepage `<head>` emits two media-matched `rel="preload" as="image" fetchpriority="high"` hints, hardcoded at the very top of `header.php` (BEFORE the inline theme-detection `<script>` — the LCP fetch is intentionally the FIRST resource hint in the head, on the front page only; `conexao_hero_preload()` in `inc/assets.php` is kept unhooked for reference and mirrors the same markup): the mobile WebP ≤768px, and the desktop WebP ≥769px as an `imagesrcset`/`imagesizes` ladder (1600w + 2057w, `imagesizes="100vw"`) that resolves to the SAME candidate the `<picture>` srcset selects per device — DPR-1 desktops preload the 1600w derivative, DPR-2/wide screens the 2057w master (the plain `href` fallback deliberately points at the **1600w derivative**, not the master (see "Firefox speculative-loader fallback" below)). The browser therefore starts the LCP fetch in parallel with render-blocking CSS with nothing competing for the first network slot. The Google Fonts stylesheet (`conexao-fonts` handle) is loaded **non-render-blocking** via the async-CSS pattern (`media="print" onload` → `media="all"`, plus `<noscript>` fallback in `conexao_fonts_non_blocking()` (`inc/assets.php`)): previously this third-party stylesheet blocked every first paint (DNS+TLS to fonts.googleapis.com), which was the dominant cause of the mobile hero's ~1.06 s LCP element render delay. The fonts `preconnect` hints in `conexao_fonts_preconnect()` (`inc/assets.php`) are kept (they warm DNS/TLS), but the previously-emitted **cross-origin `rel="preload" as="style"` hint for Google Fonts was removed**: it is redundant (the non-blocking `media="print"` stylesheet is still downloaded by the browser, and `font-display:swap` is already in the URL) and it was the only subresource sitting ahead of the LCP hero image preload in the head, competing for the first network slot and adding a third-party DNS+TLS round-trip on the critical path. `font-display:swap` keeps text rendering identical.
 - **Not in Customizer**: the `conexao_hero_image` Media control was removed; only `conexao_hero_title`/`conexao_hero_subtitle` are customisable.
 
-_Last verified: 2026-09-26 by Stage L — Permanent Invariant Gates_
 #### Firefox speculative-loader fallback (deliberate trade-off)
 
 The desktop hero preload stays, and its `media="(min-width: 769px)"` condition
@@ -180,4 +222,5 @@ the speculative request. `tests/test-hero-preload-fallback.php`
 (`wp-content/themes/conexao-br-irlanda/tests/`) is the gate that keeps the
 desktop preload present and keeps its fallback pointing at the 1600w asset.
 
+_Last verified: 2026-09-26 by Stage L — Permanent Invariant Gates_
 _Last verified: 2026-10-03 by Stage 20 — hero preload fallback (Firefox speculative-loader cost bound)_

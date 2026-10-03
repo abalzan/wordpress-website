@@ -37,6 +37,20 @@ function conexao_content_archive_query( $query ) {
 		$upcoming_ids = conexao_event_upcoming_ids();
 
 		if ( is_array( $upcoming_ids ) ) {
+			/*
+			 * One LOGICAL event per archive slot (UI audit D2).
+			 *
+			 * The runtime list can contain several POSTS for one logical event
+			 * when duplicate records share a source identity, which made the
+			 * archive render 10 cards for 6 events. Collapse to one
+			 * representative per identity, language-scoped, so a PT record and
+			 * its EN translation are never merged with each other and genuinely
+			 * distinct events always survive. Recurrence semantics are
+			 * untouched: a recurring event is still ONE post, and its next
+			 * occurrence is still rendered by conexao_event_display_date().
+			 */
+			$upcoming_ids = conexao_event_collapse_logical_ids( $upcoming_ids );
+
 			// STAGE 3.1 — B2 fallback: widen the language scope to EN+PT so
 			// Polylang's is_already_filtered() skips its own narrowing. The
 			// ID list itself is already language-curated (EN records + B2 PT

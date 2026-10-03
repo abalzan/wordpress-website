@@ -852,11 +852,10 @@
 	padding: 4px 10px;
 }
 
+/* Type comes from the shared card-title rule in design-system.css. This rule
+   previously declared its own 1.15rem / 700, the fourth card-title treatment
+   on the site (18.4px, UI audit T1.4 / I2). */
 .leisure-card-title {
-	font-family: var(--conexao-font-heading, Poppins, sans-serif);
-	font-size: 1.15rem;
-	font-weight: 700;
-	line-height: 1.3;
 	margin: 0;
 }
 
