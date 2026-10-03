@@ -1,0 +1,36 @@
+
+=== SOURCE eventbrite_carlow ===
+duration_seconds=48.3
+status=success
+found=36 created=1 updated=35 unchanged=0 skipped=0 errors=0 failed=0
+complete=false
+fatal_errors=0
+http_requests=18 unique_urls=18 duplicates=0
+by_host={"www.eventbrite.ie":18}
+summary=
+history_row: time=2026-10-03 21:13:43 status=failed found=0 complete=n/a run_id=17910584089537
+history_message=Failed to fetch events from Eventbrite — Carlow. HTTP status: 429.
+  log[info] run_id=17910585897211 :: Dry-run of Eventbrite — Carlow completed: 36 found, 1 would be created, 35 would be updated, 0 would be skip
+  log[info] run_id=17910585897211 :: Eventbrite: 36 Carlow events after filtering, 0 skipped (non-324 or online).
+  log[info] run_id=17910585897211 :: Eventbrite: rejected regions (top 5): Kildare (87), Kilkenny (83), Wicklow (42), Wexford (28), Laois (26)
+  log[info] run_id=17910585897211 :: Eventbrite: 360 total fetched, 0 duplicates removed, 360 unique.
+  log[warning] run_id=17910585897211 :: Eventbrite enumeration is INCOMPLETE (time budget of 45s expired after page 18/49). Events absent from this wa
+  log[warning] run_id=17910585897211 :: Eventbrite import reached its time budget after page 18/49 — remaining pages will be picked up by the next r
+
+=== SOURCE eventbrite_cavan ===
+duration_seconds=61.4
+status=success
+found=37 created=1 updated=36 unchanged=0 skipped=0 errors=0 failed=0
+complete=false
+fatal_errors=0
+http_requests=17 unique_urls=13 duplicates=4
+by_host={"www.eventbrite.ie":17}
+summary=
+history_row: time=2026-10-03 21:13:57 status=failed found=0 complete=n/a run_id=17910584234697
+history_message=Failed to fetch events from Eventbrite — Cavan. HTTP status: 429.
+  log[info] run_id=17910586380207 :: Dry-run of Eventbrite — Cavan completed: 37 found, 1 would be created, 36 would be updated, 0 would be skipp
+  log[info] run_id=17910586380207 :: Eventbrite: 37 Cavan events after filtering, 0 skipped (non-182 or online).
+  log[info] run_id=17910586380207 :: Eventbrite: rejected regions (top 5): Meath (57), Monaghan (33), Westmeath (26), Leitrim (22), Fermanagh (14)
+  log[info] run_id=17910586380207 :: Eventbrite: 220 total fetched, 1 duplicates removed, 219 unique.
+  log[warning] run_id=17910586380207 :: Eventbrite enumeration is INCOMPLETE (time budget of 45s expired after page 13/49). Events absent from this wa
+  log[warning] run_id=17910586380207 :: Eventbrite import reached its time budget after page 13/49 — remaining pages will be picked up by the next r

@@ -1,0 +1,86 @@
+  INFO: isolated conexao_event_import_log — 40 live entries snapshotted and restored at the end
+
+=== Single log entry ===
+  PASS: Single entry is persisted immediately
+  PASS: Entry message stored
+  PASS: Entry source stored
+  PASS: Entry run_id stored
+  PASS: Entry level stored
+  PASS: Single entry causes exactly one option write
+  PASS: Empty message is ignored
+
+=== Buffered run: 150 entries, multiple sources ===
+  PASS: Buffered entries are not yet persisted mid-run
+  PASS: All 150 entries persisted after end_run()
+  PASS: Ordering preserved: newest entry first
+  PASS: Ordering preserved: oldest entry last
+  PASS: Multiple sources stored correctly
+  PASS: 150-entry run causes exactly ONE option write (was 150)
+  PASS: get_for_run() returns all buffered entries
+  PASS: get_run_ids() sees the buffered run
+
+=== Nested runs flush once ===
+  PASS: Inner end_run() does not flush
+  PASS: All nested entries persisted
+  PASS: Nested ordering preserved
+  PASS: Nested run causes exactly ONE option write
+
+=== Threshold flush: 300 entries ===
+  PASS: All 300 entries persisted
+  PASS: Ordering preserved across threshold flushes
+  PASS: 300-entry run causes at most 2 writes (threshold + final): got 2
+
+=== Ad-hoc entries outside a run ===
+  PASS: Ad-hoc entry visible immediately
+  PASS: Ad-hoc entries write immediately (legacy behavior)
+
+=== Failed source and severity ===
+  PASS: Error severity preserved
+  PASS: HTTP status preserved
+  PASS: Warning severity preserved
+  PASS: get_last_error() finds the failed-source error
+  PASS: Unknown level normalizes to info
+
+=== Sensitive data filtering ===
+  PASS: token stripped
+  PASS: password stripped
+  PASS: api_key stripped
+  PASS: authorization stripped
+  PASS: client_secret stripped
+  PASS: Safe context key (url) preserved
+  PASS: Safe context key (attempt) preserved
+  PASS: Sensitive key stripped from buffered entries
+
+=== 2000-entry cap ===
+  PASS: Cap respected: exactly 2000 entries kept (got 2000)
+  PASS: Newest entry kept
+  PASS: Oldest surviving entry is #51 (2050 - 2000 + 1)
+
+=== 90-day retention ===
+  PASS: Exactly one ancient entry removed
+  PASS: Fresh + buffered entries survive retention
+  PASS: Ancient entry pruned
+  PASS: Fresh entry retained
+  PASS: Buffered entry flushed and retained by prune
+
+=== Concurrent run merge ===
+  PASS: Run A entry persisted
+  PASS: Concurrent run B entry 1 NOT overwritten
+  PASS: Concurrent run B entry 2 NOT overwritten
+  PASS: Newest-first ordering across concurrent runs
+
+=== Clear log ===
+  PASS: clear() wipes persisted and buffered entries
+
+=== Write amplification: before vs after ===
+  INFO: 200 log entries -> BEFORE (per-entry writes): 200 option writes | AFTER (buffered run): 1 option writes (200 entries persisted)
+  PASS: Before: 200 unbuffered entries caused 200 option writes
+  PASS: After: 200 buffered entries caused 1 option write
+  PASS: After: all 200 entries persisted correctly
+
+=== Operator-state safety: the live import log survives this suite ===
+  INFO: option conexao_event_import_log removed (absent before the test)
+  FAIL: Live import log preserved: 40 entries before, 0 after (must be equal)
+  FAIL: Live import log was not wiped to zero by a non-empty starting state
+
+53 passed, 2 failed

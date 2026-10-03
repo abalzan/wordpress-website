@@ -1,0 +1,33 @@
+
+=== G3A: option isolation preserves live operator diagnostics ===
+  PASS: G3A: the live log was seeded with 25 operator entries
+  PASS: G3A: the isolated store starts empty
+  INFO: option conexao_event_import_log restored
+  PASS: G3A: live log restored — 25 before, 25 after
+  PASS: G3A: the live log was not wiped to zero
+  PASS: G3A: the oldest operator entry survived
+  PASS: G3A: no test noise leaked into the operator log
+  PASS: G3A: the crash-path isolation is genuinely destructive while the test runs
+  INFO: option conexao_event_import_log restored
+  PASS: G3A: the shutdown-net snapshot restored the log as well
+
+=== G3B: Eventbrite log entries are correlated to their import run ===
+  PASS: G3B: the engine published a non-empty run ID
+  PASS: G3B: Eventbrite entries are retrievable by that run ID (found 3)
+  FAIL: G3B: the Eventbrite handler emitted its own diagnostic entries
+  FAIL: G3B: NO entry written during the run lacks a run_id (3 missing, first: "Eventbrite: 1 Laois events after filtering, 0 skipped (non-0 or online).")
+  PASS: G3B: the recorded import-history row carries the same run ID
+  PASS: G3B: the history run_id equals the log run_id for the same import
+  PASS: G3B: the history run_id RESOLVES to real log entries (correlation is testable)
+
+=== G3B: Heritage Week log entries are correlated to their import run ===
+  PASS: G3B: the Heritage Week handler emitted diagnostic entries (2)
+  PASS: G3B: the truncated Heritage Week walk reported complete=false
+  PASS: G3B: NO Heritage Week run entry lacks a run_id (0 missing)
+
+=== G3B: legacy entries with no run ID remain readable ===
+  PASS: G3B: a legacy entry is still stored and readable
+  PASS: G3B: an entry written outside a run has an empty run_id (backward compatible)
+  PASS: G3B: the legacy message is intact
+
+19 passed, 2 failed

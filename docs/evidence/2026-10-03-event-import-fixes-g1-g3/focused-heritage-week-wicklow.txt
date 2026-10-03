@@ -1,0 +1,19 @@
+
+=== SOURCE heritage_week_wicklow ===
+duration_seconds=16.7
+status=warning
+found=121 created=0 updated=0 unchanged=0 skipped=121 errors=0 failed=0
+complete=true
+fatal_errors=0
+http_requests=132 unique_urls=132 duplicates=0
+by_host={"www.heritageweek.ie":132}
+summary=
+detail_pages=121
+listing_pages_fetched=11 unique_listing_pages=11
+page_order=p1 -> p2 -> p3 -> p4 -> p5 -> p6 -> p7 -> p8 -> p9 -> p10 -> p11
+page_revisits=0
+termination=no forward link left (complete enumeration)
+  log[info] run_id=17910581823886 :: Dry-run of National Heritage Week — Wicklow completed: 121 found, 0 would be created, 0 would be updated, 12
+  log[info] run_id=17910581823886 :: Import started for National Heritage Week — Wicklow.
+  log[info] run_id=17910580631071 :: Dry-run of National Heritage Week — Wicklow completed: 121 found, 0 would be created, 0 would be updated, 12
+  log[info] run_id=17910580631071 :: Import started for National Heritage Week — Wicklow.

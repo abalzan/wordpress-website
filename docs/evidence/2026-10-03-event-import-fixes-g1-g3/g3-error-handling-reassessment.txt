@@ -1,0 +1,6 @@
+  INFO: option conexao_event_import_history restored
+  INFO: option conexao_event_import_log restored
+  INFO: option conexao_event_sources restored
+  INFO: option conexao_event_source_health restored
+
+55 passed, 0 failed

@@ -1,0 +1,39 @@
+
+=== G2A: the walk progresses p1 -> p2 -> p3, never p2 -> p1 ===
+  PASS: G2A: all three pages contributed an event (got 3)
+  PASS: G2A: a walk that reaches the last page is COMPLETE
+  PASS: G2A: no listing URL was fetched twice (ping-pong impossible)
+  PASS: G2A: pages were visited in forward order p1 -> p2 -> p3
+  PASS: G2A: never page 2 -> page 1 -> page 2
+
+=== G2A: a backwards Next link is rejected and the traversal stops ===
+  PASS: G2A cycle: page 1 was never re-fetched after leaving it
+  PASS: G2A cycle: the traversal terminated promptly instead of looping to MAX_PAGES (requests=2)
+  PASS: G2A cycle: a walk stopped by a repeated URL is reported INCOMPLETE
+  PASS: G2A cycle: events fetched before the cycle are preserved (got 2)
+
+=== G2A: a listing with no forward link is a complete single-page walk ===
+  PASS: G2A: the single page contributed its event
+  PASS: G2A: no Next link means the walk legitimately COMPLETED
+
+=== G2B: Eventbrite reports complete=true only for a full traversal ===
+  PASS: G2B: a full traversal reports complete=true
+  PASS: G2B: the complete walk returned its events
+  PASS: G2B: a time-budget-truncated walk reports complete=false
+  PASS: G2B: a truncated walk STILL returns the events it did fetch (got 2)
+  PASS: G2B: a later-page fetch failure reports complete=false
+  PASS: G2B: partial-page tolerance still keeps the fetched events
+
+=== G2B Cavan scenario: a live event absent from an incomplete walk survives ===
+  FAIL: G2B Cavan: the run reports complete=false
+  FAIL: G2B Cavan: an incomplete run is not a bare success (got "success")
+  PASS: G2B Cavan: the event that WAS fetched is still imported (found=1)
+  FAIL: G2B Cavan: the live event was NOT marked source_not_found (got "source_not_found")
+  PASS: G2B Cavan: the live event still exists after an incomplete walk
+  PASS: G2B Cavan control: a complete walk reports complete=true
+  PASS: G2B Cavan control: on a COMPLETE walk, an absent event IS marked source_not_found (guard is not blanket-disabled)
+  INFO: option conexao_event_import_history restored
+  INFO: option conexao_event_import_log restored
+  INFO: option conexao_event_sources restored
+
+21 passed, 3 failed

@@ -1,0 +1,155 @@
+
+=== Control: a healthy first page still succeeds ===
+
+Warning: Undefined variable $handler in /var/www/html/wp-content/plugins/conexao-event-importer/includes/class-event-importer.php on line 766
+[03-Oct-2026 19:37:01 UTC] PHP Warning:  Undefined variable $handler in /var/www/html/wp-content/plugins/conexao-event-importer/includes/class-event-importer.php on line 766
+  PASS: Control: HTTP 200 first page records status=success
+  PASS: Control: both events are counted as found
+  PASS: Control: no fatal errors on a healthy first page
+
+=== G1 matrix: every first-page failure mode becomes a failed history ===
+  FAIL: Eventbrite first page 401: status is not success (got "success")
+  FAIL: Eventbrite first page 401: status is failed (got "success")
+  FAIL: Eventbrite first page 401: fatal_errors > 0 (failure evidence recorded)
+  FAIL: Eventbrite first page 401: NOT recorded as a false found=0/success row
+  FAIL: Eventbrite first page 401: the persisted history row is status=failed
+  FAIL: Eventbrite first page 401: the persisted history row carries fatal_errors
+  FAIL: Eventbrite first page 401: HTTP 401 is surfaced as failure evidence
+  FAIL: Eventbrite first page 403: status is not success (got "success")
+  FAIL: Eventbrite first page 403: status is failed (got "success")
+  FAIL: Eventbrite first page 403: fatal_errors > 0 (failure evidence recorded)
+  FAIL: Eventbrite first page 403: NOT recorded as a false found=0/success row
+  FAIL: Eventbrite first page 403: the persisted history row is status=failed
+  FAIL: Eventbrite first page 403: the persisted history row carries fatal_errors
+  FAIL: Eventbrite first page 403: HTTP 403 is surfaced as failure evidence
+  FAIL: Eventbrite first page 408: status is not success (got "success")
+  FAIL: Eventbrite first page 408: status is failed (got "success")
+  FAIL: Eventbrite first page 408: fatal_errors > 0 (failure evidence recorded)
+  FAIL: Eventbrite first page 408: NOT recorded as a false found=0/success row
+  FAIL: Eventbrite first page 408: the persisted history row is status=failed
+  FAIL: Eventbrite first page 408: the persisted history row carries fatal_errors
+  FAIL: Eventbrite first page 408: HTTP 408 is surfaced as failure evidence
+  FAIL: Eventbrite first page 429: status is not success (got "success")
+  FAIL: Eventbrite first page 429: status is failed (got "success")
+  FAIL: Eventbrite first page 429: fatal_errors > 0 (failure evidence recorded)
+  FAIL: Eventbrite first page 429: NOT recorded as a false found=0/success row
+  FAIL: Eventbrite first page 429: the persisted history row is status=failed
+  FAIL: Eventbrite first page 429: the persisted history row carries fatal_errors
+  FAIL: Eventbrite first page 429: HTTP 429 is surfaced as failure evidence
+  FAIL: Eventbrite first page 500: status is not success (got "success")
+  FAIL: Eventbrite first page 500: status is failed (got "success")
+  FAIL: Eventbrite first page 500: fatal_errors > 0 (failure evidence recorded)
+  FAIL: Eventbrite first page 500: NOT recorded as a false found=0/success row
+  FAIL: Eventbrite first page 500: the persisted history row is status=failed
+  FAIL: Eventbrite first page 500: the persisted history row carries fatal_errors
+  FAIL: Eventbrite first page 500: HTTP 500 is surfaced as failure evidence
+  FAIL: Eventbrite first page 502: status is not success (got "success")
+  FAIL: Eventbrite first page 502: status is failed (got "success")
+  FAIL: Eventbrite first page 502: fatal_errors > 0 (failure evidence recorded)
+  FAIL: Eventbrite first page 502: NOT recorded as a false found=0/success row
+  FAIL: Eventbrite first page 502: the persisted history row is status=failed
+  FAIL: Eventbrite first page 502: the persisted history row carries fatal_errors
+  FAIL: Eventbrite first page 502: HTTP 502 is surfaced as failure evidence
+  FAIL: Eventbrite first page 503: status is not success (got "success")
+  FAIL: Eventbrite first page 503: status is failed (got "success")
+  FAIL: Eventbrite first page 503: fatal_errors > 0 (failure evidence recorded)
+  FAIL: Eventbrite first page 503: NOT recorded as a false found=0/success row
+  FAIL: Eventbrite first page 503: the persisted history row is status=failed
+  FAIL: Eventbrite first page 503: the persisted history row carries fatal_errors
+  FAIL: Eventbrite first page 503: HTTP 503 is surfaced as failure evidence
+  FAIL: Eventbrite timeout: status is not success (got "success")
+  FAIL: Eventbrite timeout: status is failed (got "success")
+  FAIL: Eventbrite timeout: fatal_errors > 0 (failure evidence recorded)
+  FAIL: Eventbrite timeout: NOT recorded as a false found=0/success row
+  FAIL: Eventbrite timeout: the persisted history row is status=failed
+  FAIL: Eventbrite timeout: the persisted history row carries fatal_errors
+  FAIL: Eventbrite connection failure: status is not success (got "success")
+  FAIL: Eventbrite connection failure: status is failed (got "success")
+  FAIL: Eventbrite connection failure: fatal_errors > 0 (failure evidence recorded)
+  FAIL: Eventbrite connection failure: NOT recorded as a false found=0/success row
+  FAIL: Eventbrite connection failure: the persisted history row is status=failed
+  FAIL: Eventbrite connection failure: the persisted history row carries fatal_errors
+  PASS: Heritage Week first page 401: status is not success (got "failed")
+  PASS: Heritage Week first page 401: status is failed (got "failed")
+  PASS: Heritage Week first page 401: fatal_errors > 0 (failure evidence recorded)
+  PASS: Heritage Week first page 401: NOT recorded as a false found=0/success row
+  PASS: Heritage Week first page 401: the persisted history row is status=failed
+  PASS: Heritage Week first page 401: the persisted history row carries fatal_errors
+  PASS: Heritage Week first page 401: HTTP 401 is surfaced as failure evidence
+  PASS: Heritage Week first page 403: status is not success (got "failed")
+  PASS: Heritage Week first page 403: status is failed (got "failed")
+  PASS: Heritage Week first page 403: fatal_errors > 0 (failure evidence recorded)
+  PASS: Heritage Week first page 403: NOT recorded as a false found=0/success row
+  PASS: Heritage Week first page 403: the persisted history row is status=failed
+  PASS: Heritage Week first page 403: the persisted history row carries fatal_errors
+  PASS: Heritage Week first page 403: HTTP 403 is surfaced as failure evidence
+  PASS: Heritage Week first page 408: status is not success (got "failed")
+  PASS: Heritage Week first page 408: status is failed (got "failed")
+  PASS: Heritage Week first page 408: fatal_errors > 0 (failure evidence recorded)
+  PASS: Heritage Week first page 408: NOT recorded as a false found=0/success row
+  PASS: Heritage Week first page 408: the persisted history row is status=failed
+  PASS: Heritage Week first page 408: the persisted history row carries fatal_errors
+  PASS: Heritage Week first page 408: HTTP 408 is surfaced as failure evidence
+  PASS: Heritage Week first page 429: status is not success (got "failed")
+  PASS: Heritage Week first page 429: status is failed (got "failed")
+  PASS: Heritage Week first page 429: fatal_errors > 0 (failure evidence recorded)
+  PASS: Heritage Week first page 429: NOT recorded as a false found=0/success row
+  PASS: Heritage Week first page 429: the persisted history row is status=failed
+  PASS: Heritage Week first page 429: the persisted history row carries fatal_errors
+  PASS: Heritage Week first page 429: HTTP 429 is surfaced as failure evidence
+  PASS: Heritage Week first page 500: status is not success (got "failed")
+  PASS: Heritage Week first page 500: status is failed (got "failed")
+  PASS: Heritage Week first page 500: fatal_errors > 0 (failure evidence recorded)
+  PASS: Heritage Week first page 500: NOT recorded as a false found=0/success row
+  PASS: Heritage Week first page 500: the persisted history row is status=failed
+  PASS: Heritage Week first page 500: the persisted history row carries fatal_errors
+  PASS: Heritage Week first page 500: HTTP 500 is surfaced as failure evidence
+  PASS: Heritage Week first page 502: status is not success (got "failed")
+  PASS: Heritage Week first page 502: status is failed (got "failed")
+  PASS: Heritage Week first page 502: fatal_errors > 0 (failure evidence recorded)
+  PASS: Heritage Week first page 502: NOT recorded as a false found=0/success row
+  PASS: Heritage Week first page 502: the persisted history row is status=failed
+  PASS: Heritage Week first page 502: the persisted history row carries fatal_errors
+  PASS: Heritage Week first page 502: HTTP 502 is surfaced as failure evidence
+  PASS: Heritage Week first page 503: status is not success (got "failed")
+  PASS: Heritage Week first page 503: status is failed (got "failed")
+  PASS: Heritage Week first page 503: fatal_errors > 0 (failure evidence recorded)
+  PASS: Heritage Week first page 503: NOT recorded as a false found=0/success row
+  PASS: Heritage Week first page 503: the persisted history row is status=failed
+  PASS: Heritage Week first page 503: the persisted history row carries fatal_errors
+  PASS: Heritage Week first page 503: HTTP 503 is surfaced as failure evidence
+  PASS: Heritage Week timeout: status is not success (got "failed")
+  PASS: Heritage Week timeout: status is failed (got "failed")
+  PASS: Heritage Week timeout: fatal_errors > 0 (failure evidence recorded)
+  PASS: Heritage Week timeout: NOT recorded as a false found=0/success row
+  PASS: Heritage Week timeout: the persisted history row is status=failed
+  PASS: Heritage Week timeout: the persisted history row carries fatal_errors
+  PASS: Heritage Week connection failure: status is not success (got "failed")
+  PASS: Heritage Week connection failure: status is failed (got "failed")
+  PASS: Heritage Week connection failure: fatal_errors > 0 (failure evidence recorded)
+  PASS: Heritage Week connection failure: NOT recorded as a false found=0/success row
+  PASS: Heritage Week connection failure: the persisted history row is status=failed
+  PASS: Heritage Week connection failure: the persisted history row carries fatal_errors
+
+=== G1: the raised exception carries the real upstream status ===
+  FAIL: G1: fetch_events() raises Conexao_Source_Fetch_Exception on a 403 first page
+  FAIL: G1: the exception reports HTTP 403 (not 0 and not a guess)
+  PASS: G1: a malformed 200 first page fails closed rather than reporting an empty source
+
+=== G1: later-page failure stays tolerant and keeps the events it fetched ===
+  PASS: G1: a later-page 403 does NOT abort the whole source
+  PASS: G1: the event from the healthy first page is preserved (found=1)
+
+=== G1: retry policy for the first page is unchanged ===
+  PASS: Retry policy: HTTP 401 is NOT blindly retried (1 request issued, got 1)
+  PASS: Retry policy: HTTP 403 is NOT blindly retried (1 request issued, got 1)
+  PASS: Retry policy: HTTP 408 is NOT blindly retried (1 request issued, got 1)
+  PASS: Retry policy: HTTP 502 is NOT blindly retried (1 request issued, got 1)
+  PASS: Retry policy: HTTP 429 keeps the existing 3-attempt retry (got 3)
+  PASS: Retry policy: HTTP 500 keeps the existing 3-attempt retry (got 3)
+  PASS: Retry policy: HTTP 503 keeps the existing 3-attempt retry (got 3)
+  INFO: option conexao_event_import_history restored
+  INFO: option conexao_event_import_log restored
+  INFO: option conexao_event_sources restored
+
+74 passed, 63 failed

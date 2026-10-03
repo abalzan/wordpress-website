@@ -1,0 +1,14 @@
+
+=== FULL RUN_ALL (dry) ===
+ELAPSED_SECONDS=819.4
+SOURCES=56
+COMBINED={"found":1553,"created":6,"updated":236,"unchanged":0,"skipped":1311,"skipped_past":1308,"skipped_invalid_date":2,"failed":0,"errors":0,"status":"failed"}
+PER_SOURCE_STATUS={"success":4,"warning":12,"failed":40}
+FATAL_ERROR_COUNT=40
+TOTAL_OUTBOUND_REQUESTS=1610
+UNIQUE_TARGETS=1563
+DUPLICATE_REQUESTS=47
+BY_HOST={"laoistourism.ie":1,"www.ivvcc.ie":5,"www.motorsportireland.com":51,"mondellopark.ie":30,"www.eventbrite.ie":107,"www.heritageweek.ie":1416}
+HISTORY_ROWS_ADDED=0
+LOG_ENTRIES_ADDED=346
+HISTORY_AFTER={"rows":100,"status":{"failed":43,"success":57},"found0_and_success":0,"with_fatal_errors":43,"marked_incomplete":40}

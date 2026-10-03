@@ -16,6 +16,29 @@
 **G4 (request-budget / caching / `Retry-After` / 502-504 retry expansion) is NOT
 implemented.** This task is correctness and observability only. See §L.
 
+**Evidence index** (`docs/evidence/2026-10-03-event-import-fixes-g1-g3/`):
+
+| File | What it proves |
+|---|---|
+| `baseline-run-tests.txt` | pre-change full-suite baseline |
+| `final-run-tests.txt` | post-change full suite (19/19 importer suites) |
+| `lint.txt` | `lint.sh` OK: syntax, PHPCS, PHPStan |
+| `g1-negative-proof-eventbrite-reverted.txt` | G1 mutation → 63 failures (`got "success"`) |
+| `g2-negative-proof-no-incomplete-guard.txt` | G2 guard mutation → event becomes `source_not_found` |
+| `g2-negative-proof-pagination-reverted.txt` | G2A pagination mutation → p1→p3 not reached |
+| `g3-negative-proof-run-id-removed.txt` | G3B mutation → entries lose their `run_id` |
+| `g3-negative-proof-log-destroyed.txt` | G3A mutation → live log wiped to 0 |
+| `g3-log-retention-proof.txt` | live log preserved 40 → 40, plus the mutation failing |
+| `g3-error-handling-root-cause.txt` | `MAX_ENTRIES` saturation caused the baseline failure |
+| `g3-error-handling-reassessment.txt` | that suite after isolation: 55 / 0 |
+| `focused-heritage-week-wicklow.txt` | live pagination trace p1 → p11, 0 revisits |
+| `focused-eventbrite.txt` | live `complete=false` and live 429 → `status=failed` |
+| `full-run-dry.txt` | 56-source dry run: 819.4 s, 1,610 requests, 47 duplicates |
+| `full-run-request-trace.json`, `full-run-trace-stats.txt` | the raw outbound request trace and its stats |
+| `import-history-page-after.html` | Import History after the fix (HTTP 200) |
+| `import-history-after-facts.txt`, `import-history-after.txt` | history/log facts after the full run |
+| `verification-scripts/` | every script used to produce the above |
+
 ---
 
 ## A. Scope and starting state
@@ -133,7 +156,7 @@ FAIL: Eventbrite first page 401: NOT recorded as a false found=0/success row
 ```
 
 The mutation reproduces the exact defect (`got "success"`). Evidence:
-`g1-negative-proof-eventbrite-reverted.log`. The mutation was reverted and the
+`g1-negative-proof-eventbrite-reverted.txt`. The mutation was reverted and the
 suite re-run green (137/0) before proceeding.
 
 ### B.4 Live proof
@@ -196,7 +219,7 @@ the normal end of a listing** and is never treated as a fault.
 | Page revisits | 26 | **0** |
 | Termination | time budget after the requests were spent | `no forward link left (complete enumeration)` |
 
-Evidence: `focused-heritage-week-wicklow.log`.
+Evidence: `focused-heritage-week-wicklow.txt`.
 
 ### C.2 G2B — explicit completeness state
 
@@ -285,7 +308,7 @@ FAIL: G2B Cavan: the live event was NOT marked source_not_found (got "source_not
 ```
 
 This reproduces the exact data-loss mechanism: the live event becomes
-`source_not_found`. Evidence: `g2-negative-proof-no-incomplete-guard.log`.
+`source_not_found`. Evidence: `g2-negative-proof-no-incomplete-guard.txt`.
 
 **Mutation B** — `get_next_page_url()` reverted to `nav->item(0)`:
 
@@ -296,7 +319,7 @@ FAIL: G2A: a walk that reaches the last page is COMPLETE
 FAIL: G2A: pages were visited in forward order p1 -> p2 -> p3
 ```
 
-Evidence: `g2-negative-proof-pagination-reverted.log`.
+Evidence: `g2-negative-proof-pagination-reverted.txt`.
 
 **G2 = PASS.**
 
@@ -353,7 +376,7 @@ LIVE_FIRST=OPERATOR DIAGNOSTIC 39
 
 Measured independently: the mutation really did drive the live option to **0**
 entries; the isolated suite leaves it at **40**. Evidence:
-`g3-log-retention-proof.txt`, `g3-negative-proof-log-destroyed.log`.
+`g3-log-retention-proof.txt`, `g3-negative-proof-log-destroyed.txt`.
 
 **A vacuity was found and fixed during this task.** The first version derived the
 "before" count from the isolation snapshot, so removing the isolation made the
@@ -400,7 +423,7 @@ FAIL: G3B: NO entry written during the run lacks a run_id
        (3 missing, first: "Eventbrite: 1 Laois events after filtering, ...")
 ```
 
-Evidence: `g3-negative-proof-run-id-removed.log`. (Mutation B — the log
+Evidence: `g3-negative-proof-run-id-removed.txt`. (Mutation B — the log
 isolation — is in §D.3.)
 
 ### D.7 `test-error-handling.php` — the baseline failure, re-assessed (§14)
@@ -427,7 +450,7 @@ restores the operator's history verbatim:
 55 passed, 0 failed
 ```
 
-Evidence: `g3-error-handling-root-cause.log`, `g3-error-handling-reassessment.log`.
+Evidence: `g3-error-handling-root-cause.txt`, `g3-error-handling-reassessment.txt`.
 **This is a real fix, not a reclassification.**
 
 **G3 = PASS.**
@@ -496,7 +519,7 @@ An earlier run of the same source in the full run returned HTTP 429 on the first
 page and was recorded as `status=failed, complete=false` — previously that exact
 condition produced `found=0, status=success`.
 
-Evidence: `focused-eventbrite.log`, `focused-heritage-week-wicklow.log`.
+Evidence: `focused-eventbrite.txt`, `focused-heritage-week-wicklow.txt`.
 
 ---
 
@@ -528,7 +551,7 @@ mondellopark.ie 30, ivvcc.ie 5, laoistourism.ie 1`.
 G2A**, not a G4 optimisation: the Heritage Week ping-pong *was* the duplicate
 traffic. G4 itself remains unimplemented (§L).
 
-Evidence: `full-run-dry.log`, `full-run-request-trace.json`,
+Evidence: `full-run-dry.txt`, `full-run-request-trace.json`,
 `full-run-trace-stats.txt`, `import-history-after-facts.txt`.
 
 ---
@@ -612,8 +635,8 @@ an environment artifact, not a code defect. Per the release contract
 224 passed, 0 failed
 ```
 
-No baseline was weakened to obtain green. Evidence: `baseline-run-tests.log`,
-`final-run-tests.log`.
+No baseline was weakened to obtain green. Evidence: `baseline-run-tests.txt`,
+`final-run-tests.txt`.
 
 ---
 
