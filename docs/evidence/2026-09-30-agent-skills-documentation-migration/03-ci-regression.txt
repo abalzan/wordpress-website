@@ -44,3 +44,16 @@ integration-evidence
 For more information about a job, try: gh run view --job=<job-id>
 View this run on GitHub: https://github.com/abalzan/wordpress-website/actions/runs/36774170147
 ```
+
+## Final-commit CI note (handoff)
+
+Run 36774170147 covers commit ebf3227 — the substantive architecture commit
+(14 skills, extended governance gate, canonical-doc consolidation). All three
+blocking jobs are green there, and those results are the regression basis in
+the report.
+
+The two later commits (b4e3960, 8d90e33) add only the migration report, the
+evidence files and one row in docs/reports/README.md — documentation and
+evidence, no code, no gate logic and no canonical-specification change. Their
+CI run (37104572019, head 8d90e33) was still in_progress at sandbox handoff;
+the evidence above is from ebf3227. This is recorded as a limitation.
