@@ -121,14 +121,17 @@ class Conexao_Source_Mondello_Park extends Conexao_Source_Base {
 			? $this->config['url']
 			: self::DEFAULT_DISCOVERY_URL;
 
-		$response = wp_remote_get( $base_url, array(
-			'timeout'    => 30,
-			'user-agent' => $this->get_http_user_agent(),
-			'headers'    => array(
-				'Accept-Language' => 'en-GB',
-				'Accept'          => 'application/json',
-			),
-		) );
+		$response = $this->request_get(
+			$base_url,
+			array(
+				'timeout'    => 30,
+				'user-agent' => $this->get_http_user_agent(),
+				'headers'    => array(
+					'Accept-Language' => 'en-GB',
+					'Accept'          => 'application/json',
+				),
+			)
+		);
 
 		if ( is_wp_error( $response ) ) {
 			Conexao_Import_Log::add(

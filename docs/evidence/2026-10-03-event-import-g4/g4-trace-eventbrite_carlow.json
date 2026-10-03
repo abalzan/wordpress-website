@@ -1,0 +1,176 @@
+{
+    "trace": [
+        {
+            "method": "GET",
+            "url": "https:\/\/www.eventbrite.ie\/d\/ireland--carlow\/all-events\/",
+            "host": "www.eventbrite.ie"
+        },
+        {
+            "method": "GET",
+            "url": "https:\/\/www.eventbrite.ie\/d\/ireland--carlow\/all-events\/?page=2",
+            "host": "www.eventbrite.ie"
+        },
+        {
+            "method": "GET",
+            "url": "https:\/\/www.eventbrite.ie\/d\/ireland--carlow\/all-events\/?page=3",
+            "host": "www.eventbrite.ie"
+        },
+        {
+            "method": "GET",
+            "url": "https:\/\/www.eventbrite.ie\/d\/ireland--carlow\/all-events\/?page=4",
+            "host": "www.eventbrite.ie"
+        },
+        {
+            "method": "GET",
+            "url": "https:\/\/www.eventbrite.ie\/d\/ireland--carlow\/all-events\/?page=5",
+            "host": "www.eventbrite.ie"
+        },
+        {
+            "method": "GET",
+            "url": "https:\/\/www.eventbrite.ie\/d\/ireland--carlow\/all-events\/?page=6",
+            "host": "www.eventbrite.ie"
+        },
+        {
+            "method": "GET",
+            "url": "https:\/\/www.eventbrite.ie\/d\/ireland--carlow\/all-events\/?page=7",
+            "host": "www.eventbrite.ie"
+        },
+        {
+            "method": "GET",
+            "url": "https:\/\/www.eventbrite.ie\/d\/ireland--carlow\/all-events\/?page=8",
+            "host": "www.eventbrite.ie"
+        },
+        {
+            "method": "GET",
+            "url": "https:\/\/www.eventbrite.ie\/d\/ireland--carlow\/all-events\/?page=9",
+            "host": "www.eventbrite.ie"
+        },
+        {
+            "method": "GET",
+            "url": "https:\/\/www.eventbrite.ie\/d\/ireland--carlow\/all-events\/?page=10",
+            "host": "www.eventbrite.ie"
+        },
+        {
+            "method": "GET",
+            "url": "https:\/\/www.eventbrite.ie\/d\/ireland--carlow\/all-events\/?page=11",
+            "host": "www.eventbrite.ie"
+        },
+        {
+            "method": "GET",
+            "url": "https:\/\/www.eventbrite.ie\/d\/ireland--carlow\/all-events\/?page=12",
+            "host": "www.eventbrite.ie"
+        },
+        {
+            "method": "GET",
+            "url": "https:\/\/www.eventbrite.ie\/d\/ireland--carlow\/all-events\/?page=13",
+            "host": "www.eventbrite.ie"
+        },
+        {
+            "method": "GET",
+            "url": "https:\/\/www.eventbrite.ie\/d\/ireland--carlow\/all-events\/?page=14",
+            "host": "www.eventbrite.ie"
+        },
+        {
+            "method": "GET",
+            "url": "https:\/\/www.eventbrite.ie\/d\/ireland--carlow\/all-events\/?page=15",
+            "host": "www.eventbrite.ie"
+        },
+        {
+            "method": "GET",
+            "url": "https:\/\/www.eventbrite.ie\/d\/ireland--carlow\/all-events\/?page=16",
+            "host": "www.eventbrite.ie"
+        },
+        {
+            "method": "GET",
+            "url": "https:\/\/www.eventbrite.ie\/d\/ireland--carlow\/all-events\/?page=17",
+            "host": "www.eventbrite.ie"
+        }
+    ],
+    "status": [
+        {
+            "url": "https:\/\/www.eventbrite.ie\/d\/ireland--carlow\/all-events\/",
+            "code": 200,
+            "retry_after": ""
+        },
+        {
+            "url": "https:\/\/www.eventbrite.ie\/d\/ireland--carlow\/all-events\/?page=2",
+            "code": 200,
+            "retry_after": ""
+        },
+        {
+            "url": "https:\/\/www.eventbrite.ie\/d\/ireland--carlow\/all-events\/?page=3",
+            "code": 200,
+            "retry_after": ""
+        },
+        {
+            "url": "https:\/\/www.eventbrite.ie\/d\/ireland--carlow\/all-events\/?page=4",
+            "code": 200,
+            "retry_after": ""
+        },
+        {
+            "url": "https:\/\/www.eventbrite.ie\/d\/ireland--carlow\/all-events\/?page=5",
+            "code": 200,
+            "retry_after": ""
+        },
+        {
+            "url": "https:\/\/www.eventbrite.ie\/d\/ireland--carlow\/all-events\/?page=6",
+            "code": 200,
+            "retry_after": ""
+        },
+        {
+            "url": "https:\/\/www.eventbrite.ie\/d\/ireland--carlow\/all-events\/?page=7",
+            "code": 200,
+            "retry_after": ""
+        },
+        {
+            "url": "https:\/\/www.eventbrite.ie\/d\/ireland--carlow\/all-events\/?page=8",
+            "code": 200,
+            "retry_after": ""
+        },
+        {
+            "url": "https:\/\/www.eventbrite.ie\/d\/ireland--carlow\/all-events\/?page=9",
+            "code": 200,
+            "retry_after": ""
+        },
+        {
+            "url": "https:\/\/www.eventbrite.ie\/d\/ireland--carlow\/all-events\/?page=10",
+            "code": 200,
+            "retry_after": ""
+        },
+        {
+            "url": "https:\/\/www.eventbrite.ie\/d\/ireland--carlow\/all-events\/?page=11",
+            "code": 200,
+            "retry_after": ""
+        },
+        {
+            "url": "https:\/\/www.eventbrite.ie\/d\/ireland--carlow\/all-events\/?page=12",
+            "code": 200,
+            "retry_after": ""
+        },
+        {
+            "url": "https:\/\/www.eventbrite.ie\/d\/ireland--carlow\/all-events\/?page=13",
+            "code": 200,
+            "retry_after": ""
+        },
+        {
+            "url": "https:\/\/www.eventbrite.ie\/d\/ireland--carlow\/all-events\/?page=14",
+            "code": 200,
+            "retry_after": ""
+        },
+        {
+            "url": "https:\/\/www.eventbrite.ie\/d\/ireland--carlow\/all-events\/?page=15",
+            "code": 200,
+            "retry_after": ""
+        },
+        {
+            "url": "https:\/\/www.eventbrite.ie\/d\/ireland--carlow\/all-events\/?page=16",
+            "code": 200,
+            "retry_after": ""
+        },
+        {
+            "url": "https:\/\/www.eventbrite.ie\/d\/ireland--carlow\/all-events\/?page=17",
+            "code": 200,
+            "retry_after": ""
+        }
+    ]
+}

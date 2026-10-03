@@ -544,8 +544,9 @@ $http_client = new class() extends Conexao_Eventbrite_Client {
 		return '';
 	}
 
-	protected function backoff( $attempt ) {
-		// No-op for tests.
+	protected function backoff( $attempt, $retry_after = null ) {
+		// No-op for tests. The signature gained an optional $retry_after in G4B
+		// (bounded Retry-After support); this double still refuses to sleep.
 	}
 };
 

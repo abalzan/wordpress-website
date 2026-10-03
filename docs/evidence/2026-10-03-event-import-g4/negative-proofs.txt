@@ -1,0 +1,30 @@
+  FAIL: G4A: a different Accept header produces a different cache key
+  FAIL: G4A: a different Accept-Language produces a different cache key
+  FAIL: G4A: a different User-Agent produces a different cache key
+  FAIL: G4A: a different body produces a different cache key
+  FAIL: G4A: the differing Accept-Language was NOT served from cache — expected 2, got 1
+48 passed, 5 failed
+  FAIL: G4B: the client waited exactly the Retry-After value (7s), not the 2s default backoff — expected 7, got 2
+  FAIL: G4B: the applied delay is recorded for diagnostics — expected 7, got 2
+  FAIL: G4B: Retry-After=999999 was clamped to the hard cap before sleeping — expected 60, got 2
+55 passed, 3 failed
+  FAIL: G4B: HTTP 401 is NOT retried (no blind retry)
+  FAIL: G4B: HTTP 401 issues exactly 1 request(s) — expected 1, got 3
+56 passed, 2 failed
+  FAIL: G4C: exactly 5 requests were sent — expected 5, got 8
+  FAIL: G4C: the request beyond the ceiling was blocked
+  FAIL: G4C: the budget counted exactly 5 requests — expected 5, got 8
+  FAIL: G4C: the blocked request was counted — expected 1, got 0
+  FAIL: G4C: one more request is blocked
+  FAIL: G4C: a multi-request batch is refused rather than partially granted
+  FAIL: G4C: the ceiling was never exceeded (got 16) — expected 10, got 16
+  FAIL: G4C: the run stopped at the ceiling of 3 outbound requests (got 20) — expected 3, got 20
+  FAIL: G4C: a budget-truncated walk reports complete=false
+  FAIL: G4C: the source logged an explicit INCOMPLETE enumeration warning
+  FAIL: G4C cross-stage: the real run reports complete=false
+  FAIL: G4C cross-stage: a ceiling-truncated run is not recorded as a bare success (got "success")
+  FAIL: G4C cross-stage: the Import History row records complete=false
+  FAIL: G4C cross-stage: the Import History row is not a bare success (got "success")
+  FAIL: G4C cross-stage: the live event was NOT marked source_not_found (got "source_not_found")
+  FAIL: G4C cross-stage: the live event is still published for the public site — expected 'published', got 'source_not_found'
+17 passed, 16 failed

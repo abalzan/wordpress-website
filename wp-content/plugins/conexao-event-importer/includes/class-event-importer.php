@@ -69,6 +69,61 @@ class Conexao_Event_Importer_Engine {
 	}
 
 	/**
+	 * Open a fresh per-run HTTP scope.
+	 *
+	 * Both G4 mechanisms are scoped to a single run and neither is persistent:
+	 *
+	 * - `Conexao_Request_Reuse::begin_run()` empties the in-memory response
+	 *   store, so a response fetched during a previous run can never satisfy
+	 *   this one (no option, transient, table or file is ever written);
+	 * - `Conexao_Request_Budget::begin_run()` zeroes the outbound request
+	 *   counter and re-arms the ceiling.
+	 *
+	 * Called at the start of every `run_source()` and `run_all()`.
+	 *
+	 * @return void
+	 */
+	protected function begin_run_scope() {
+		Conexao_Request_Reuse::begin_run();
+		Conexao_Request_Budget::begin_run();
+	}
+
+	/**
+	 * Emit the per-run request accounting summary.
+	 *
+	 * One summary entry per run, never one entry per cache hit, so the operator
+	 * log stays readable while still making a hit (no outbound request)
+	 * distinguishable from a miss (an outbound request).
+	 *
+	 * @param string $source_id Source slug.
+	 * @return void
+	 */
+	protected function log_request_scope_summary( $source_id ) {
+		$reuse  = Conexao_Request_Reuse::get_stats();
+		$budget = Conexao_Request_Budget::get_stats();
+
+		if ( 0 === (int) $reuse['hits'] && 0 === (int) $reuse['misses']
+			&& 0 === (int) $budget['used'] && 0 === (int) $budget['blocked'] ) {
+			return;
+		}
+
+		Conexao_Import_Log::add(
+			$source_id,
+			'info',
+			sprintf(
+				/* translators: 1: reused response count, 2: outbound request count, 3: requests used of the ceiling, 4: the ceiling, 5: requests blocked by the ceiling */
+				__( 'Request accounting: %1$d reused responses served with no outbound request; %2$d outbound requests sent, %3$d of the %4$d request budget used, %5$d requests blocked by the ceiling.', 'conexao-event-importer' ),
+				(int) $reuse['hits'],
+				(int) $budget['used'],
+				(int) $budget['used'],
+				(int) $budget['limit'],
+				(int) $budget['blocked']
+			),
+			array( 'run_id' => $this->current_run_id )
+		);
+	}
+
+	/**
 	 * Run a full import across all active sources.
 	 *
 	 * Log entries generated during the run are buffered and persisted with a
@@ -253,9 +308,18 @@ class Conexao_Event_Importer_Engine {
 	 */
 	public function run_source( $source_id, $dry_run = false ) {
 		Conexao_Import_Log::begin_run();
+
+		// Each source enumeration is one run scope: a fresh response-reuse
+		// store and a fresh outbound request budget. run_all() delegates to
+		// this method per source, so a combined run gives every source its own
+		// bounded budget rather than letting one source consume the whole run's
+		// capacity.
+		$this->begin_run_scope();
+
 		try {
 			return $this->run_source_unbuffered( $source_id, $dry_run );
 		} finally {
+			$this->log_request_scope_summary( $source_id );
 			Conexao_Import_Log::end_run();
 		}
 	}

@@ -25,7 +25,8 @@
  * Every case runs against a `pre_http_request` double, so no test in this file
  * touches Eventbrite or Heritage Week. Backoff and inter-page delay are
  * filtered to zero so the suite stays fast and deterministic; the retry POLICY
- * itself is unchanged and is asserted separately.
+ * itself is asserted in full below, and its per-status classification is
+ * updated by G4B (502/504 became retried; 401/403/404/408 remain not).
  *
  * @package Conexao_Event_Importer
  */
@@ -409,11 +410,18 @@ assert_true( 'failed' !== $result['status'], 'G1: a later-page 403 does NOT abor
 assert_true( 1 === (int) $result['found'], 'G1: the event from the healthy first page is preserved (found=1)' );
 
 // ===========================================================================
-// Test 5: no retries were added or removed for the first page.
+// Test 5: the retry classification for the first page.
 // ===========================================================================
-test_section( 'G1: retry policy for the first page is unchanged' );
+// G4B CHANGED THIS ASSERTION, deliberately and with evidence. Before G4 the
+// retried set was {429, 500, 503}; 502 was not retried at all, which the
+// previous version of this test asserted. G4B classifies 502 and 504 as
+// transient (a bad gateway / gateway timeout is a server-side failure that is
+// worth one bounded retry), so 502 now belongs to the retried group below.
+// 401/403/404/408 remain non-retryable: retrying an authentication or
+// not-found condition cannot change the outcome, it only multiplies traffic.
+test_section( 'G1/G4B: retry classification for the first page' );
 
-foreach ( array( 401, 403, 408, 502 ) as $code ) {
+foreach ( array( 401, 403, 408 ) as $code ) {
 	$no_retry_source = g1_register_source( 'eventbrite', $eb_url, $eb_cfg );
 
 	g1_install_http_double( array( $eb_url => array( 'code' => $code ) ) );
@@ -428,7 +436,7 @@ foreach ( array( 401, 403, 408, 502 ) as $code ) {
 	);
 }
 
-foreach ( array( 429, 500, 503 ) as $code ) {
+foreach ( array( 429, 500, 502, 503, 504 ) as $code ) {
 	$retry_source = g1_register_source( 'eventbrite', $eb_url, $eb_cfg );
 
 	g1_install_http_double( array( $eb_url => array( 'code' => $code ) ) );

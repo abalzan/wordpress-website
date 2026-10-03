@@ -1,0 +1,93 @@
+
+--- SOURCE eventbrite_carlow ---
+duration_seconds=47.1
+status=success
+found=36 created=1 updated=35 unchanged=0 skipped=0 errors=0 failed=0
+complete=false
+fatal_errors=0
+retry_attempts_logged=3
+history_row: time=2026-10-03 21:13:43 status=failed found=0 complete=n/a run_id=17910584089537
+history_message=Failed to fetch events from Eventbrite — Carlow. HTTP status: 429.
+
+=== SOURCE eventbrite_carlow ===
+outbound_requests=16 unique_requests=16 duplicate_requests=0
+status_distribution={"200":16}
+count_429=0 count_502=0 count_504=0 transport_errors=0
+responses_with_retry_after=0
+by_host={"www.eventbrite.ie":16}
+by_method={"GET":16}
+request_budget={"limit":400,"active":true,"used":16,"blocked":0,"cache_hits":0,"remaining":384,"exhausted":false}
+response_reuse={"hits":0,"misses":16,"stores":16,"bypassed":0,"entries":16}
+pages_attempted=16 unique_pages=16
+  log[info] run_id=1791062307606 :: Request accounting: 0 reused responses served with no outbound request; 16 outbound requests sent, 16 of the 400 request
+  log[info] run_id=1791062307606 :: Dry-run of Eventbrite — Carlow completed: 36 found, 1 would be created, 35 would be updated, 0 would be skipped (past,
+  log[info] run_id=1791062307606 :: Eventbrite: 36 Carlow events after filtering, 0 skipped (non-284 or online).
+  log[info] run_id=1791062307606 :: Eventbrite: rejected regions (top 5): Kilkenny (79), Kildare (77), Wicklow (40), Wexford (27), Laois (26)
+  log[info] run_id=1791062307606 :: Eventbrite: 320 total fetched, 0 duplicates removed, 320 unique.
+  log[warning] run_id=1791062307606 :: Eventbrite enumeration is INCOMPLETE (time budget of 45s expired after page 16/49). Events absent from this walk will no
+  log[warning] run_id=1791062307606 :: Eventbrite import reached its time budget after page 16/49 — remaining pages will be picked up by the next run.
+  log[info] run_id=1791062307606 :: Fetched page 16/49, 20 events.
+
+--- SOURCE eventbrite_cavan ---
+duration_seconds=56.7
+status=success
+found=38 created=2 updated=36 unchanged=0 skipped=0 errors=0 failed=0
+complete=false
+fatal_errors=0
+retry_attempts_logged=15
+history_row: time=2026-10-03 22:00:28 status=failed found=0 complete=false run_id=17910612144246
+history_message=Failed to fetch events from Eventbrite — Cavan. HTTP status: 429.
+
+=== SOURCE eventbrite_cavan ===
+outbound_requests=16 unique_requests=16 duplicate_requests=0
+status_distribution={"200":16}
+count_429=0 count_502=0 count_504=0 transport_errors=0
+responses_with_retry_after=0
+by_host={"www.eventbrite.ie":16}
+by_method={"GET":16}
+request_budget={"limit":400,"active":true,"used":16,"blocked":0,"cache_hits":0,"remaining":384,"exhausted":false}
+response_reuse={"hits":0,"misses":16,"stores":16,"bypassed":0,"entries":16}
+pages_attempted=16 unique_pages=16
+  log[info] run_id=17910623546929 :: Request accounting: 0 reused responses served with no outbound request; 16 outbound requests sent, 16 of the 400 request
+  log[info] run_id=17910623546929 :: Dry-run of Eventbrite — Cavan completed: 38 found, 2 would be created, 36 would be updated, 0 would be skipped (past, 
+  log[info] run_id=17910623546929 :: Eventbrite: 38 Cavan events after filtering, 0 skipped (non-282 or online).
+  log[info] run_id=17910623546929 :: Eventbrite: rejected regions (top 5): Meath (77), Monaghan (39), Westmeath (32), Leitrim (31), Louth (26)
+  log[info] run_id=17910623546929 :: Eventbrite: 320 total fetched, 0 duplicates removed, 320 unique.
+  log[warning] run_id=17910623546929 :: Eventbrite enumeration is INCOMPLETE (time budget of 45s expired after page 16/49). Events absent from this walk will no
+  log[warning] run_id=17910623546929 :: Eventbrite import reached its time budget after page 16/49 — remaining pages will be picked up by the next run.
+  log[info] run_id=17910623546929 :: Fetched page 16/49, 20 events.
+
+--- SOURCE heritage_week_wicklow ---
+duration_seconds=28.4
+status=warning
+found=121 created=0 updated=0 unchanged=0 skipped=121 errors=0 failed=0
+complete=true
+fatal_errors=0
+retry_attempts_logged=0
+history_row: time=2026-10-03 22:16:35 status=failed found=0 complete=false run_id=17910621957055
+history_message=Failed to fetch events from National Heritage Week — Wicklow. HTTP status: 429.
+
+=== SOURCE heritage_week_wicklow ===
+outbound_requests=132 unique_requests=132 duplicate_requests=0
+status_distribution={"200":132}
+count_429=0 count_502=0 count_504=0 transport_errors=0
+responses_with_retry_after=0
+by_host={"www.heritageweek.ie":132}
+by_method={"GET":132}
+request_budget={"limit":400,"active":true,"used":132,"blocked":0,"cache_hits":0,"remaining":268,"exhausted":false}
+response_reuse={"hits":0,"misses":132,"stores":132,"bypassed":0,"entries":132}
+pages_visited=11 unique_listing_urls=11 detail_pages=121
+page_order=p1 -> p2 -> p3 -> p4 -> p5 -> p6 -> p7 -> p8 -> p9 -> p10 -> p11
+page_revisits=0
+termination=complete enumeration
+  log[info] run_id=1791062411368 :: Request accounting: 0 reused responses served with no outbound request; 132 outbound requests sent, 132 of the 400 reque
+  log[info] run_id=1791062411368 :: Dry-run of National Heritage Week — Wicklow completed: 121 found, 0 would be created, 0 would be updated, 121 would be
+  log[info] run_id=1791062411368 :: Import started for National Heritage Week — Wicklow.
+  log[error] run_id=17910621957055 :: Import failure recorded: Failed to fetch events from National Heritage Week — Wicklow. HTTP status: 429.
+  log[error] run_id=17910621957055 :: Failed to fetch events from National Heritage Week — Wicklow. HTTP status: 429.
+  log[error] run_id=17910621957055 :: Resposta HTTP 429 ao buscar URL.
+  log[info] run_id=17910621957055 :: Import started for National Heritage Week — Wicklow.
+  log[info] run_id=17910612302085 :: Dry-run of National Heritage Week — Wicklow completed: 121 found, 0 would be created, 0 would be updated, 121 would be
+
+TOTAL_MEASUREMENT_SECONDS=132.2
+SUMMARY_WRITTEN=/var/www/html/tests/tmp/g4-measure-focused.json

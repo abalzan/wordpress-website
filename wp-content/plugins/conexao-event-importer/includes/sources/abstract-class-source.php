@@ -120,6 +120,81 @@ abstract class Conexao_Source_Base {
 	}
 
 	/**
+	 * Perform a reuse-aware GET.
+	 *
+	 * This is the single seam through which every source handler performs an
+	 * outbound GET. It applies, in order:
+	 *
+	 * 1. the per-run outbound **request budget** (G4C) — when the ceiling is
+	 *    reached no request leaves the process;
+	 * 2. the per-run **response reuse** store (G4A) — an identical request
+	 *    already answered in this run returns its stored response instead of
+	 *    going out to the network again;
+	 * 3. the real transport, `wp_remote_get()`, unchanged.
+	 *
+	 * The returned value is always in the native `wp_remote_get()` shape: an
+	 * `array` response or a `WP_Error`. A cache hit returns the stored response
+	 * array byte-for-byte, so every downstream behaviour — status handling,
+	 * exception classification, logging, parsing — is identical to a fresh
+	 * fetch. Nothing here swallows a failure.
+	 *
+	 * Only 2xx responses are stored. A failure response is never memoised, so a
+	 * transient 429/5xx inside one run cannot be replayed as if it were the
+	 * page's real content, and a malformed 200 body is reused exactly as it
+	 * would have been fetched — failing closed at the parser.
+	 *
+	 * @param string $url  URL to fetch.
+	 * @param array  $args wp_remote_get() arguments.
+	 * @return array|WP_Error
+	 */
+	protected function request_get( $url, array $args ) {
+		$method = isset( $args['method'] ) ? (string) $args['method'] : 'GET';
+
+		$cacheable = Conexao_Request_Reuse::is_active()
+			&& Conexao_Request_Reuse::is_cacheable( $method, $args );
+
+		$key = $cacheable ? Conexao_Request_Reuse::make_key( $method, $url, $args ) : '';
+
+		if ( $cacheable ) {
+			$cached = Conexao_Request_Reuse::get( $key );
+			if ( null !== $cached ) {
+				// Observability only: a reused response is NOT charged to the
+				// budget, because no request left the process. This is what
+				// makes "cache hits do not consume outbound budget" testable.
+				Conexao_Request_Budget::record_cache_hit();
+				return $cached;
+			}
+		} else {
+			Conexao_Request_Reuse::record_bypass();
+		}
+
+		// The budget accounts for OUTBOUND requests only, so it is charged here
+		// — after the cache lookup — never for a hit.
+		if ( ! Conexao_Request_Budget::consume( 1 ) ) {
+			return new WP_Error(
+				'conexao_request_budget_exhausted',
+				sprintf(
+					/* translators: 1: request ceiling, 2: requests already made */
+					__( 'The importer outbound request budget of %1$d requests was exhausted after %2$d requests; no further request was sent.', 'conexao-event-importer' ),
+					Conexao_Request_Budget::get_limit(),
+					Conexao_Request_Budget::get_used()
+				)
+			);
+		}
+
+		$response = wp_remote_get( $url, $args );
+
+		if ( $cacheable && is_array( $response ) ) {
+			$code = (int) wp_remote_retrieve_response_code( $response );
+			if ( $code >= 200 && $code < 300 ) {
+				Conexao_Request_Reuse::set( $key, $response );
+			}
+		}
+
+		return $response;
+	}
+
+	/**
 	 * Fetch the HTML of a URL, throwing on transport/HTTP failure.
 	 *
 	 * Network errors and non-200 status codes raise a
@@ -137,7 +212,7 @@ abstract class Conexao_Source_Base {
 			'user-agent' => $this->get_http_user_agent(),
 		);
 
-		$response = wp_remote_get( $url, array_merge( $default_args, $args ) );
+		$response = $this->request_get( $url, array_merge( $default_args, $args ) );
 
 		if ( is_wp_error( $response ) ) {
 			$message = 'Falha ao buscar URL: ' . $response->get_error_message();

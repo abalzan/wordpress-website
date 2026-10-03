@@ -1,0 +1,32 @@
+
+--- SOURCE eventbrite_cavan ---
+duration_seconds=50.0
+status=success
+found=38 created=3 updated=35 unchanged=0 skipped=0 errors=0 failed=0
+complete=false
+fatal_errors=0
+retry_attempts_logged=15
+history_row: time=2026-10-03 22:00:28 status=failed found=0 complete=false run_id=17910612144246
+history_message=Failed to fetch events from Eventbrite — Cavan. HTTP status: 429.
+
+=== SOURCE eventbrite_cavan ===
+outbound_requests=17 unique_requests=17 duplicate_requests=0
+status_distribution={"200":17}
+count_429=0 count_502=0 count_504=0 transport_errors=0
+responses_with_retry_after=0
+by_host={"www.eventbrite.ie":17}
+by_method={"GET":17}
+request_budget={"limit":400,"active":true,"used":17,"blocked":0,"cache_hits":0,"remaining":383,"exhausted":false}
+response_reuse={"hits":0,"misses":17,"stores":17,"bypassed":0,"entries":17}
+pages_attempted=17 unique_pages=17
+  log[info] run_id=17910635456993 :: Request accounting: 0 reused responses served with no outbound request; 17 outbound requests sent, 17 of the 400 request
+  log[info] run_id=17910635456993 :: Dry-run of Eventbrite — Cavan completed: 38 found, 3 would be created, 35 would be updated, 0 would be skipped (past, 
+  log[info] run_id=17910635456993 :: Eventbrite: 38 Cavan events after filtering, 0 skipped (non-302 or online).
+  log[info] run_id=17910635456993 :: Eventbrite: rejected regions (top 5): Meath (79), Monaghan (39), Westmeath (36), Leitrim (31), Louth (27)
+  log[info] run_id=17910635456993 :: Eventbrite: 340 total fetched, 0 duplicates removed, 340 unique.
+  log[warning] run_id=17910635456993 :: Eventbrite enumeration is INCOMPLETE (time budget of 45s expired after page 17/49). Events absent from this walk will no
+  log[warning] run_id=17910635456993 :: Eventbrite import reached its time budget after page 17/49 — remaining pages will be picked up by the next run.
+  log[info] run_id=17910635456993 :: Fetched page 17/49, 20 events.
+
+TOTAL_MEASUREMENT_SECONDS=50.0
+SUMMARY_WRITTEN=/var/www/html/tests/tmp/g4-measure-focused.json

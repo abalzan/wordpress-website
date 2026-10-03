@@ -9,7 +9,7 @@
 | **Build** | yes |
 | **Compose mount** | yes |
 | **Dependencies** | `conexao-data-model`, `conexao-event-runtime` |
-| **Version** | 1.7.2 (authoritative source: `wp-content/plugins/conexao-event-importer/conexao-event-importer.php` header) |
+| **Version** | 1.8.0 (authoritative source: `wp-content/plugins/conexao-event-importer/conexao-event-importer.php` header) |
 | **Registry** | [`plugins.json`](../../plugins.json) |
 
 > **Local-only tooling.** Not a production steady-state dependency.
@@ -510,6 +510,130 @@ pagination fault.
 Measured after the fix on the same source: `p1 → p2 → … → p11`, 0 revisits, 132
 requests, 0 duplicates, 121 events.
 
+## Request efficiency, retry policy and bounded execution (G4)
+
+Three independent mechanisms, added 2026-10-03. All three are **per run** and
+none of them is persistent: nothing is written to an option, a transient, the
+database or disk, so a response or a counter from a previous run can never
+satisfy a later run. No second HTTP client was introduced — `wp_remote_get()`
+remains the only transport, and `Conexao_Eventbrite_Client` remains the only
+Eventbrite client.
+
+### Request reuse (per run)
+
+`Conexao_Request_Reuse` memoises **responses** for the duration of one run.
+
+**Eligible:** `GET` and `HEAD` only, with no request body, no streaming/ranged
+fetch, and no per-request `Authorization`, `Cookie`, `Range`, `If-None-Match` or
+`If-Modified-Since`. In practice this covers the deterministic listing and detail
+fetches (Heritage Week listing + detail pages, Mondello Park's JSON feed, the
+Eventbrite discovery page).
+
+**Never cached:** `POST` and every other state-changing method; requests with a
+body; requests carrying per-request auth context; conditional/ranged requests;
+and **every non-2xx response**. That last rule matters: a transient 429/5xx is
+never memoised, so a failure cannot be replayed later as if it were page
+content, and a retry always goes back to the network.
+
+**Cache key.** Built from every response-relevant input: method, normalized URL,
+the response-varying request headers (`Accept`, `Accept-Language`,
+`Accept-Encoding`, `Authorization`, `Cookie`, `Referer`, `User-Agent`,
+`X-Requested-With`) and the body. Normalization is limited to host case and the
+fragment — neither is transmitted — so header case/order and `#fragment` cannot
+create a false miss, while path, query and scheme case are preserved so
+genuinely different targets cannot collide.
+
+**Correctness.** A hit returns the stored response array exactly as the
+transport produced it, so it flows through the identical downstream path: HTML
+normalization, JSON decoding, status handling, exception classification and
+logging are all unchanged. Reuse is **not** a shortcut around the parser — a
+malformed cached body fails closed exactly as a malformed fresh body does.
+
+**Observability.** `Conexao_Request_Reuse::get_stats()` exposes `hits`, `misses`,
+`stores` and `bypassed`, so a hit (no outbound request) is distinguishable from a
+miss (an outbound request). The engine writes **one** summary entry per run
+(`Request accounting: …`), never one entry per hit.
+### Retry behaviour
+
+Implemented in `Conexao_Eventbrite_Client`. The attempt ceiling
+(`MAX_RETRIES = 3`) is unchanged and remains authoritative: retry is never
+unbounded, and a success on the final permitted attempt is honoured.
+
+| Response | Retried? | Delay before the next attempt |
+|---|---|---|
+| `401` | **no** | — (an authentication failure is not made true by asking again) |
+| `403` | **no** | — |
+| `404` | **no** | — |
+| `408` | **no** | existing policy |
+| `429` | yes (max 3) | `Retry-After` when valid, else 2/4/8 s backoff |
+| `500` | yes (max 3) | `Retry-After` when valid, else 2/4/8 s backoff |
+| `502` | yes (max 3) | `Retry-After` when valid, else 2/4/8 s backoff |
+| `503` | yes (max 3) | `Retry-After` when valid, else 2/4/8 s backoff |
+| `504` | yes (max 3) | `Retry-After` when valid, else 2/4/8 s backoff |
+| transport error (`WP_Error`) | yes (max 3) | 2/4/8 s backoff |
+
+`502` and `504` became retryable in G4; before G4 the retried set was
+`{429, 500, 503}`. Both are server-side gateway failures that a bounded retry
+can genuinely recover from.
+
+**`Retry-After`** is honoured in both standard forms — delta-seconds
+(`Retry-After: 7`) and an HTTP-date. The parsed value is always clamped:
+
+```
+delay = min( parsed_value, MAX_RETRY_AFTER_SECONDS )   // cap = 60 s
+```
+
+so an upstream server can never impose an unbounded sleep. An empty,
+non-numeric or unparseable value falls back to the existing exponential backoff
+(2/4/8 s), and a past HTTP-date clamps to `0`. Delays are recorded on the client
+(`get_applied_delays()`) and a sleeper can be injected (`set_sleeper()`), so the
+timing policy is asserted in tests without any real sleep.
+
+### Request budget
+
+`Conexao_Request_Budget` bounds **outbound requests** per run.
+
+- **Scope:** per importer run — `run_source()` opens a fresh scope, so a combined
+  `run_all()` gives every source its own budget rather than letting one source
+  consume the whole run's capacity.
+- **Accounting:** counts requests that actually leave the process. A response
+  served from the reuse store is **not** charged, because nothing was sent. A
+  retry attempt *is* charged, because it is a real request.
+- **Default ceiling:** `400` requests per run
+  (`Conexao_Request_Budget::DEFAULT_LIMIT`), filterable with
+  `conexao_event_importer_request_budget`. The value is derived from the measured
+  post-G1–G3 runtime baseline: the largest legitimate single source (Heritage
+  Week Wicklow) used 132 requests for a complete enumeration, and the whole
+  56-source dry run used 1,525. The ceiling sits well above any legitimate
+  single source and far below a runaway, so it prevents runaway behaviour
+  without making normal imports fail.
+- **On exhaustion:** `consume()` returns `false`, no request is issued, and the
+  call surfaces as the ordinary fetch-failure path — which the completeness
+  machinery above already maps to `complete = false`. The source becomes
+  **incomplete**, never complete and never an empty success.
+- **No data loss:** events fetched before the ceiling are retained, and because
+  the walk is incomplete, `mark_missing_events()` is **not** called. This is
+  covered by a cross-stage test *with its control*: with an ample budget the
+  same absence *is* marked `source_not_found`, proving the guard is not simply
+  disabled.
+
+**Filters:** `conexao_request_reuse_enabled` (disable reuse),
+`conexao_event_importer_request_budget` (change the ceiling).
+
+### The invariants that survive G4
+
+| Invariant | Enforced by |
+|---|---|
+| `failed fetch != empty success` | G1 (unchanged); a non-2xx is never cached |
+| `incomplete walk != complete walk` | G2 (unchanged) + G4C exhaustion |
+| `partial data != permission to mark missing` | G2 guard + the G4C cross-stage control |
+| `retry != unbounded retry` | G4B: `MAX_RETRIES = 3`, hard `Retry-After` cap |
+| `cache hit != stale cross-run data` | G4A: store reset per run, nothing persisted |
+| `request budget != silent data loss` | G4C: exhaustion → incomplete, data retained |
+| `diagnostics survive tests` | G3 (unchanged) |
+
+## Diagnostics: Import History, Import Logs and run correlation
+
 ## Diagnostics: Import History, Import Logs and run correlation
 
 - **Import History** (`conexao_event_import_history`, 100 rows) records
@@ -704,6 +828,12 @@ wp conexao-events status                                # per-source health tabl
 
 ### Filters
 - `conexao_event_importer_http_user_agent` — override the browser-like UA used for source fetches
+- `conexao_request_reuse_enabled` — disable per-run response reuse (default: enabled inside a run)
+- `conexao_event_importer_request_budget` — the per-run outbound request ceiling (default: 400)
+- `conexao_eventbrite_time_budget_seconds` — Eventbrite per-walk time budget
+- `conexao_heritage_week_time_budget_seconds` — Heritage Week per-walk time budget
+- `conexao_eventbrite_backoff_seconds` — the exponential backoff before retry attempt N
+- `conexao_eventbrite_request_delay_seconds` — the polite delay between Eventbrite pages
 - `conexao_event_importer_run_source` — trigger single source import (sync)
 - `conexao_event_importer_run_all` — trigger all sources import (sync; accepts args array with `dry_run`, `source_ids`)
 - `conexao_event_importer_current_run_id` — expose current run ID

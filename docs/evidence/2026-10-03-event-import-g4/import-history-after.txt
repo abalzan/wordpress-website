@@ -1,0 +1,7 @@
+http_status=200
+page_bytes=182750
+authenticated_page=yes
+rendered_rows=100
+rendered_status={'failed': 100}
+rendered_found0_and_success=0
+CAPTURE_OK

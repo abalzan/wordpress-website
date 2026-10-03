@@ -1,0 +1,88 @@
+
+--- SOURCE eventbrite_carlow ---
+duration_seconds=51.5
+status=success
+found=36 created=1 updated=35 unchanged=0 skipped=0 errors=0 failed=0
+complete=false
+fatal_errors=0
+retry_attempts_logged=6
+history_row: time=2026-10-03 21:13:43 status=failed found=0 complete=n/a run_id=17910584089537
+history_message=Failed to fetch events from Eventbrite — Carlow. HTTP status: 429.
+
+=== SOURCE eventbrite_carlow ===
+outbound_requests=27 unique_requests=25 duplicate_requests=2
+status_distribution={"200":24,"429":3}
+count_429=3 count_502=0 count_504=0 transport_errors=0
+responses_with_retry_after=0
+by_host={"www.eventbrite.ie":27}
+by_method={"GET":27}
+pages_attempted=27 unique_pages=25
+  log[info] run_id=17910611628847 :: Dry-run of Eventbrite — Carlow completed: 36 found, 1 would be created, 35 would be updated, 0 would be skipped (past,
+  log[info] run_id=17910611628847 :: Eventbrite: 36 Carlow events after filtering, 0 skipped (non-444 or online).
+  log[info] run_id=17910611628847 :: Eventbrite: rejected regions (top 5): Kildare (103), Kilkenny (91), Wicklow (53), Dublin City (50), Wexford (41)
+  log[info] run_id=17910611628847 :: Eventbrite: 480 total fetched, 0 duplicates removed, 480 unique.
+  log[warning] run_id=17910611628847 :: Eventbrite enumeration is INCOMPLETE (time budget of 45s expired after page 25/49). Events absent from this walk will no
+  log[warning] run_id=17910611628847 :: Eventbrite import reached its time budget after page 25/49 — remaining pages will be picked up by the next run.
+  log[error] run_id=17910611628847 :: Failed to fetch Eventbrite page 25/49.
+  log[error] run_id=17910611628847 :: Eventbrite could not be reached after 3 attempts. The discovery page may be temporarily unavailable, or Eventbrite may b
+
+--- SOURCE eventbrite_cavan ---
+duration_seconds=14.3
+status=failed
+found=0 created=0 updated=0 unchanged=0 skipped=0 errors=0 failed=0
+complete=false
+fatal_errors=1
+  fatal: Failed to fetch events from Eventbrite — Cavan. HTTP status: 429. | Failed to fetch Eventbrite discovery page: https://www.eventbrite.ie/d/ireland--cavan/all-events/
+retry_attempts_logged=12
+history_row: time=2026-10-03 22:00:28 status=failed found=0 complete=false run_id=17910612144246
+history_message=Failed to fetch events from Eventbrite — Cavan. HTTP status: 429.
+
+=== SOURCE eventbrite_cavan ===
+outbound_requests=3 unique_requests=1 duplicate_requests=2
+status_distribution={"429":3}
+count_429=3 count_502=0 count_504=0 transport_errors=0
+responses_with_retry_after=0
+by_host={"www.eventbrite.ie":3}
+by_method={"GET":3}
+pages_attempted=3 unique_pages=1
+  log[error] run_id=17910612144246 :: Import failure recorded: Failed to fetch events from Eventbrite — Cavan. HTTP status: 429.
+  log[error] run_id=17910612144246 :: Failed to fetch events from Eventbrite — Cavan. HTTP status: 429.
+  log[error] run_id=17910612144246 :: Failed to fetch Eventbrite discovery page: https://www.eventbrite.ie/d/ireland--cavan/all-events/
+  log[error] run_id=17910612144246 :: Eventbrite could not be reached after 3 attempts. The discovery page may be temporarily unavailable, or Eventbrite may b
+  log[warning] run_id=17910612144246 :: Eventbrite returned HTTP 429. Retrying with a short delay.
+  log[warning] run_id=17910612144246 :: Eventbrite returned HTTP 429. Retrying with a short delay.
+  log[warning] run_id=17910612144246 :: Eventbrite returned HTTP 429. Retrying with a short delay.
+  log[info] run_id=17910612144246 :: Import started for Eventbrite — Cavan.
+
+--- SOURCE heritage_week_wicklow ---
+duration_seconds=11.5
+status=warning
+found=121 created=0 updated=0 unchanged=0 skipped=121 errors=0 failed=0
+complete=true
+fatal_errors=0
+retry_attempts_logged=0
+history_row: time=2026-10-03 21:34:04 status=failed found=0 complete=false run_id=17910596447351
+history_message=Failed to fetch events from National Heritage Week — Wicklow. HTTP status: 429.
+
+=== SOURCE heritage_week_wicklow ===
+outbound_requests=132 unique_requests=132 duplicate_requests=0
+status_distribution={"200":132}
+count_429=0 count_502=0 count_504=0 transport_errors=0
+responses_with_retry_after=0
+by_host={"www.heritageweek.ie":132}
+by_method={"GET":132}
+pages_visited=11 unique_listing_urls=11 detail_pages=121
+page_order=p1 -> p2 -> p3 -> p4 -> p5 -> p6 -> p7 -> p8 -> p9 -> p10 -> p11
+page_revisits=0
+termination=complete enumeration
+  log[info] run_id=17910612287739 :: Dry-run of National Heritage Week — Wicklow completed: 121 found, 0 would be created, 0 would be updated, 121 would be
+  log[info] run_id=17910612287739 :: Import started for National Heritage Week — Wicklow.
+  log[error] run_id=17910596447351 :: Import failure recorded: Failed to fetch events from National Heritage Week — Wicklow. HTTP status: 429.
+  log[error] run_id=17910596447351 :: Failed to fetch events from National Heritage Week — Wicklow. HTTP status: 429.
+  log[error] run_id=17910596447351 :: Resposta HTTP 429 ao buscar URL.
+  log[info] run_id=17910596447351 :: Import started for National Heritage Week — Wicklow.
+  log[info] run_id=17910581823886 :: Dry-run of National Heritage Week — Wicklow completed: 121 found, 0 would be created, 0 would be updated, 121 would be
+  log[info] run_id=17910581823886 :: Import started for National Heritage Week — Wicklow.
+
+TOTAL_MEASUREMENT_SECONDS=77.4
+SUMMARY_WRITTEN=/var/www/html/tests/tmp/g4-measure-focused.json

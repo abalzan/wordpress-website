@@ -886,7 +886,7 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 	 * @return string HTML body or empty string on failure.
 	 */
 	protected function fetch_detail_html( $url ) {
-		$response = wp_remote_get(
+		$response = $this->request_get(
 			$url,
 			array(
 				'timeout'    => 20,

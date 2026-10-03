@@ -1,0 +1,41 @@
+[
+    {
+        "label": "FULL RUN",
+        "outbound_requests": 1525,
+        "unique_requests": 1472,
+        "duplicate_requests": 53,
+        "by_host": {
+            "laoistourism.ie": 1,
+            "www.ivvcc.ie": 5,
+            "www.motorsportireland.com": 51,
+            "mondellopark.ie": 30,
+            "www.eventbrite.ie": 113,
+            "www.heritageweek.ie": 1325
+        },
+        "by_method": {
+            "GET": 1525
+        },
+        "status_distribution": {
+            "200": 1417,
+            "429": 108
+        },
+        "count_429": 108,
+        "count_502": 0,
+        "count_504": 0,
+        "transport_errors": 0,
+        "responses_with_retry_after": 0,
+        "elapsed": 849,
+        "found": 1407,
+        "created": 4,
+        "updated": 174,
+        "per_source": {
+            "warning": 13,
+            "success": 3,
+            "failed": 40
+        },
+        "failed_sources": 40,
+        "incomplete_sources": 44,
+        "history_found0_and_success": 0,
+        "history_rows": 100
+    }
+]
