@@ -1,0 +1,46 @@
+# Stage 21 — CI regression (authoritative), GitHub Actions
+
+The sandbox has no PHP/docker, so the PHP-dependent gates could not run
+locally. CI runs the same contract on every push (`.github/workflows/ci.yml`, three blocking jobs) and IS the authoritative regression.
+
+## gh run list --branch cline/64pw31bv
+```
+completed	success	governance: extend the agent-governance gate (12-section format, skil…	WordPress CI	cline/64pw31bv	push	36774170147	3m45s	2026-09-30T20:39:36Z
+completed	success	engineering-standard: skills own procedures, docs own facts (§13 rewr…	WordPress CI	cline/64pw31bv	push	36773472079	3m42s	2026-09-30T20:33:32Z
+completed	cancelled	docs: index the agent skills from docs/README.md and AGENTS.md (task …	WordPress CI	cline/64pw31bv	push	36773182314	3m7s	2026-09-30T20:31:04Z
+completed	cancelled	skills: add wp-run-tests, wp-production-operations, wp-content-change…	WordPress CI	cline/64pw31bv	push	36773047885	1m57s	2026-09-30T20:29:58Z
+completed	success	evidence: capture the Stage 0 baseline for the agent-skills documenta…	WordPress CI	cline/64pw31bv	push	36771648582	3m9s	2026-09-30T20:18:07Z
+```
+
+## Latest run job breakdown — run 36774170147 (commit ebf3227)
+```
+
+✓ cline/64pw31bv WordPress CI · 36774170147
+Triggered via push about 2 days ago
+
+JOBS
+✓ Static quality (lint.sh + ShellCheck) in 1m52s (ID 110087779134)
+✓ Integration tests (Docker WordPress + run-tests.sh) in 3m41s (ID 110087779361)
+✓ Release integrity (manifest + allowlist) in 18s (ID 110087779452)
+
+ANNOTATIONS
+! Raw PHPCS debt is non-zero by design (legacy baseline, Stage C). Not a CI failure.
+Static quality (lint.sh + ShellCheck): .github#4137
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+Static quality (lint.sh + ShellCheck): .github#1
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+Integration tests (Docker WordPress + run-tests.sh): .github#1
+
+- "The ubuntu-latest label will migrate to Ubuntu 26 beginning October 19, 2026. For more information, see https://github.com/actions/runner-images/issues/14748"
+Release integrity (manifest + allowlist): .github#1
+
+
+ARTIFACTS
+release-manifest
+integration-evidence
+
+For more information about a job, try: gh run view --job=<job-id>
+View this run on GitHub: https://github.com/abalzan/wordpress-website/actions/runs/36774170147
+```

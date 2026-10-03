@@ -1,0 +1,32 @@
+# Stage 17 — duplication / size measurements (before -> after)
+
+Baseline = 5a75417 (branch i18n), before any edit. After = this branch.
+
+## File counts
+```
+docs/ tracked files:  before 749  after 751
+docs/ markdown:        before 191  after 191
+docs/reports/:        before 82  after 82
+docs/evidence/:       before 593  after 595
+active SKILL.md:      before 10  after 14
+```
+
+## Line counts
+```
+docs/ markdown total: before 62031  after 62014
+skill lines total:    before 1195  after 2449
+```
+
+## Key document line counts (before -> after)
+```
+AGENTS.md                          197 ->   209
+docs/README.md                     169 ->   200
+docs/engineering-standard.md       836 ->   864
+docs/testing.md                    529 ->   538
+docs/routing.md                    719 ->   719
+docs/content-model.md              367 ->   367
+docs/development.md                482 ->   482
+docs/deployment.md                 299 ->   206
+docs/releases.md                   350 ->   355
+scripts/README.md                  353 ->   353
+```
