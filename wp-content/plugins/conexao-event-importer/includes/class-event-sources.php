@@ -688,7 +688,11 @@ class Conexao_Event_Sources {
 	 * Shows created/updated/skipped/failed counts and a collapsible "View details"
 	 * section listing the events that failed and why.
 	 *
-	 * @param array  $result    Import result array.
+	 * The result is `mixed`, not `array`: it is whatever an import filter
+	 * returns (see handle_run_import()), which is unvalidated, so the
+	 * is_array() guard below is load-bearing and must stay.
+	 *
+	 * @param mixed  $result    Import result array.
 	 * @param string $source_id Source slug or 'all'.
 	 */
 	protected function render_import_result_notice( $result, $source_id ) {
