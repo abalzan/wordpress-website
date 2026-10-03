@@ -193,14 +193,37 @@ $html_f2 = card_render( $card_f2 );
 assert_true( false !== strpos( $html_f2, 'query=Custom+Place' ), 'stored _leisure_map_url is used verbatim' );
 
 // ---------------------------------------------------------------------------
-// G. Map CTA does NOT replace the image/card link
+// G. Map CTA does NOT replace the card's primary link
+//
+// UI convergence T1.12 (audit D6) changed WHAT carries that link, not whether
+// it exists: a leisure card with no licensed image no longer renders the grey
+// placeholder block, so the decorative `<a class="leisure-card-image">` is gone
+// for image-less cards and the TITLE link is the card's primary link.
+//
+// The invariant this section protects is unchanged and is still proven below:
+//   1. the primary destination is present exactly once, and
+//   2. the map CTA never replaces it.
+// It is no longer coupled to the presence of the image wrapper, which is a
+// presentation choice and is separately pinned by
+// tests/test-ui-convergence-t2.php.
 // ---------------------------------------------------------------------------
-test_section( 'G. Map CTA does not replace image/card link' );
+test_section( 'G. Map CTA does not replace the card primary link' );
 
 $primary_url_c = conexao_leisure_external_url( $card_c );
-assert_true( false !== strpos( $html_c, 'leisure-card-image' ), 'image wrapper link still present' );
-assert_true( false !== strpos( $html_c, esc_url( $primary_url_c ) ), 'image/title link points to primary destination' );
-assert_true( 1 === substr_count( $html_c, '<a class="leisure-card-image"' ), 'exactly one image link (not replaced by map)' );
+assert_true( false !== strpos( $html_c, 'leisure-card-title' ), 'card title (the primary link) is still rendered' );
+assert_true( false !== strpos( $html_c, esc_url( $primary_url_c ) ), 'title/CTA link points to primary destination' );
+
+// The primary destination is carried by exactly ONE link element per card
+// surface: the title. (The "Ver site oficial" CTA legitimately repeats the
+// same href, so counting raw hrefs would be wrong; count the title link.)
+assert_true( 1 === substr_count( $html_c, 'class="leisure-card-title"' ), 'exactly one title link (not replaced by map)' );
+
+// The map CTA is additive and must carry its own distinct destination.
+assert_true( false !== strpos( $html_c, 'leisure-card-cta--map' ), 'map CTA is still rendered alongside the primary link' );
+
+// With no licensed image there must be no image wrapper and no placeholder.
+assert_true( 0 === substr_count( $html_c, '<a class="leisure-card-image"' ), 'no image link for an image-less card (T1.12)' );
+assert_true( false === strpos( $html_c, 'leisure-card-image-pending' ), 'no placeholder block for an image-less card (T1.12)' );
 
 // ---------------------------------------------------------------------------
 // H. External-link attributes on the map CTA

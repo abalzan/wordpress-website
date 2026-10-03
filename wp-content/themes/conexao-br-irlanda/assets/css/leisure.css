@@ -806,30 +806,16 @@
 	display: block;
 }
 
-/* --- Image pending state (no properly licensed image yet) --- */
-.leisure-card-image-pending {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	gap: 10px;
-	width: 100%;
-	height: 100%;
-	aspect-ratio: 16 / 10;
-	color: var(--conexao-text-muted, #6b7280);
-	background: var(--conexao-surface-muted, #eef1f4);
-}
-
-.leisure-card-image-pending svg {
-	opacity: 0.55;
-}
-
-.leisure-card-image-pending-text {
-	font-size: 0.8rem;
-	font-weight: 600;
-	letter-spacing: 0.04em;
-	text-transform: uppercase;
-}
+/*
+ * T1.12 (audit D6) — the "IMAGEM PENDENTE" placeholder rules are RETIRED.
+ *
+ * The grey 16:10 pending block is no longer rendered by
+ * template-parts/leisure-card.php: a leisure card without a licensed image
+ * is now a clean text card (category, title, location, excerpt, CTA) instead
+ * of a 379x237 empty box. The rules below are removed rather than left dead
+ * so the retired treatment cannot be reintroduced by accident; a card that
+ * HAS an image keeps using `.leisure-card-image` above.
+ */
 
 .leisure-card-body {
 	padding: 20px;

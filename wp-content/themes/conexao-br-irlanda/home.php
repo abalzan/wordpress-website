@@ -50,7 +50,7 @@ get_header();
 			</a>
 			<?php foreach ( $categories as $category ) : ?>
 				<a class="events-filter-link<?php echo $current_blog_category === $category->slug ? ' is-active' : ''; ?>" href="<?php echo esc_url( conexao_blog_category_filter_url( $category->slug ) ); ?>">
-					<?php echo esc_html( $category->name ); ?>
+					<?php echo esc_html( conexao_blog_category_label( $category ) ); ?>
 				</a>
 			<?php endforeach; ?>
 		</nav>
@@ -69,7 +69,7 @@ get_header();
 							<?php
 							$categories = get_the_category();
 							if ( ! empty( $categories ) ) : ?>
-								<span class="archive-card-category"><?php echo esc_html( $categories[0]->name ); ?></span>
+								<span class="archive-card-category"><?php echo esc_html( conexao_blog_category_label( $categories[0] ) ); ?></span>
 							<?php endif; ?>
 							<h2 class="archive-card-title">
 								<a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>

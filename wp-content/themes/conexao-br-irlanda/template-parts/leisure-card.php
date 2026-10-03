@@ -80,45 +80,56 @@ $leisure_show_attribution = $leisure_has_image && ( $leisure_attribution || $lei
 
 <article id="post-<?php the_ID(); ?>" <?php post_class( 'leisure-card' . ( $leisure_is_external ? ' leisure-card--external' : '' ) ); ?>>
 
-<div class="leisure-card-image-wrapper">
-<?php if ( $leisure_link_url ) : ?>
-<a class="leisure-card-image" href="<?php echo esc_url( $leisure_link_url ); ?>"<?php echo $leisure_is_external ? ' rel="noopener"' : ''; ?> tabindex="-1" aria-hidden="true">
-<?php endif; ?>
-<?php if ( $leisure_has_image ) : ?>
-<?php echo $leisure_img_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-<?php else : ?>
-<span class="leisure-card-image-pending">
-<svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-<rect x="3" y="3" width="18" height="18" rx="2"></rect>
-<circle cx="8.5" cy="8.5" r="1.5"></circle>
-<polyline points="21 15 16 10 5 21"></polyline>
-</svg>
-<span class="leisure-card-image-pending-text"><?php esc_html_e( 'Imagem pendente', 'conexao-br-irlanda' ); ?></span>
-</span>
-<?php endif; ?>
-<?php if ( $leisure_link_url ) : ?>
-</a>
-<?php endif; ?>
-
-<?php if ( $leisure_show_attribution ) : ?>
-<div class="leisure-card-attribution">
 <?php
-$display_attr = $leisure_attribution;
-if ( ! $display_attr && $leisure_author && $leisure_license ) {
-$display_attr = sprintf( 'Foto: %s, %s, %s', $leisure_author, $leisure_license, $leisure_source_label ? $leisure_source_label : 'Wikimedia Commons' );
-} elseif ( ! $display_attr && $leisure_author ) {
-$display_attr = 'Foto: ' . $leisure_author;
-}
-echo esc_html( $display_attr );
-?>
-<?php if ( $leisure_src_url ) : ?>
-<a href="<?php echo esc_url( $leisure_src_url ); ?>" class="leisure-card-attribution-link" target="_blank" rel="noopener noreferrer" aria-label="<?php esc_attr_e( 'Ver fonte da imagem', 'conexao-br-irlanda' ); ?>">
-↗
-</a>
-<?php endif; ?>
-</div>
-<?php endif; ?>
-</div>
+/*
+ * T1.12 (audit D6) — text-led card when there is no image.
+ *
+ * Every leisure card used to reserve a 379x237 grey "IMAGEM PENDENTE" block
+ * above the content, so an archive with no licensed photography rendered a
+ * wall of empty boxes — a third of the archive's visual weight carrying zero
+ * information. The audit called this the least honest element on the site.
+ *
+ * The image block is now rendered ONLY when there is a real image to show.
+ * The attribution overlay is already gated on `$leisure_has_image`, so it
+ * needs no separate handling here.
+ *
+ * This is a PRESENTATION change only. No post, meta, attachment or term is
+ * touched, and if an image is later licensed for a leisure post the card
+ * returns to the existing image layout automatically. The card's link is not
+ * lost: the title remains the primary link, and the decorative image link is
+ * only emitted alongside the image it pointed at.
+ */
+if ( $leisure_has_image ) :
+	?>
+	<div class="leisure-card-image-wrapper">
+	<?php if ( $leisure_link_url ) : ?>
+	<a class="leisure-card-image" href="<?php echo esc_url( $leisure_link_url ); ?>"<?php echo $leisure_is_external ? ' rel="noopener"' : ''; ?> tabindex="-1" aria-hidden="true">
+	<?php endif; ?>
+	<?php echo $leisure_img_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+	<?php if ( $leisure_link_url ) : ?>
+	</a>
+	<?php endif; ?>
+
+	<?php if ( $leisure_show_attribution ) : ?>
+	<div class="leisure-card-attribution">
+	<?php
+	$display_attr = $leisure_attribution;
+	if ( ! $display_attr && $leisure_author && $leisure_license ) {
+	$display_attr = sprintf( 'Foto: %s, %s, %s', $leisure_author, $leisure_license, $leisure_source_label ? $leisure_source_label : 'Wikimedia Commons' );
+	} elseif ( ! $display_attr && $leisure_author ) {
+	$display_attr = 'Foto: ' . $leisure_author;
+	}
+	echo esc_html( $display_attr );
+	?>
+	<?php if ( $leisure_src_url ) : ?>
+	<a href="<?php echo esc_url( $leisure_src_url ); ?>" class="leisure-card-attribution-link" target="_blank" rel="noopener noreferrer" aria-label="<?php esc_attr_e( 'Ver fonte da imagem', 'conexao-br-irlanda' ); ?>">
+	↗
+	</a>
+	<?php endif; ?>
+	</div>
+	<?php endif; ?>
+	</div>
+	<?php endif; ?>
 
 <div class="leisure-card-body">
 <?php if ( $leisure_categories && ! is_wp_error( $leisure_categories ) ) : ?>

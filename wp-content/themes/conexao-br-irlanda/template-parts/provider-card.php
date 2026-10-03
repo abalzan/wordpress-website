@@ -31,6 +31,20 @@ if ( ! $logo_id && has_post_thumbnail( $provider_id ) ) {
 
 $provider_url = $provider_url ? $provider_url : get_permalink();
 $target_attrs = ' target="_blank" rel="noopener noreferrer"';
+
+/*
+ * T1.6 (audit D4) — heading-level contract, identical to event-card.php.
+ * /cursos/ renders an <h1> page title with no <h2> above the provider grid, so
+ * a bare <h3> card title produced an `h1 -> h3` jump. The grid sits directly
+ * beneath the page <h1>, so <h2> is correct there; a caller that nests the
+ * card deeper passes 'heading_level' explicitly. Styling is class-based, so
+ * the element level does not change any visual output.
+ */
+$conexao_provider_heading_level = isset( $args['heading_level'] ) ? (int) $args['heading_level'] : 0;
+if ( $conexao_provider_heading_level < 2 || $conexao_provider_heading_level > 6 ) {
+	$conexao_provider_heading_level = ( is_archive() || is_home() || is_search() ) ? 2 : 3;
+}
+$conexao_provider_heading_tag = 'h' . $conexao_provider_heading_level;
 ?>
 <article id="post-<?php the_ID(); ?>" <?php post_class( 'provider-card' ); ?>>
 	<a class="provider-card-link" href="<?php echo esc_url( $provider_url ); ?>"<?php echo $target_attrs; ?>>
@@ -45,7 +59,7 @@ $target_attrs = ' target="_blank" rel="noopener noreferrer"';
 			<?php if ( $provider_category_label ) : ?>
 				<span class="provider-card-category"><?php echo esc_html( $provider_category_label ); ?></span>
 			<?php endif; ?>
-			<h3 class="provider-card-title"><?php the_title(); ?></h3>
+			<<?php echo esc_html( $conexao_provider_heading_tag ); ?> class="provider-card-title"><?php the_title(); ?></<?php echo esc_html( $conexao_provider_heading_tag ); ?>
 			<?php
 			// STAGE 8 — language-aware description source. PT keeps the exact
 			// pre-existing pipeline (get_the_excerpt()); an EN request renders the

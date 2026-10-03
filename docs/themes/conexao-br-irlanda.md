@@ -726,12 +726,162 @@ Verified before the change: with `data-theme="dark"` set,
 selector wins the tie. **Do not revert this to `[data-theme="dark"]` for the
 token blocks.**
 
+## UI convergence Phase 2 (T1.6–T1.14, 2026-10-03)
+
+The second controlled convergence phase of
+[`docs/audit/2026-10-03-ui-ux-audit.md`](../audit/2026-10-03-ui-ux-audit.md).
+Six of the remaining nine Tier-1 items were implemented; **T1.9 and T1.14 are
+recorded as NOT IMPLEMENTED** with their measured evidence, and the T1.6 and
+T1.13 diagnoses were corrected against measurement. Full evidence:
+[`docs/reports/2026-10-03-ui-convergence-t1-report.md`](../reports/2026-10-03-ui-convergence-t1-report.md).
+
+### Heading level is a contract, not a literal (T1.6 / D4) — diagnosis corrected
+
+The audit reported "`h1 → h4` on 9 pages". **Measured reality: `h1 → h3` on 5
+URLs** (the event and course archives, PT and EN) plus one `h1 → h4` on the
+event single. The cause is structural, not incidental:
+
+- `template-parts/event-card.php` and `template-parts/provider-card.php` now
+  **resolve their title level** into `$conexao_card_heading_tag` /
+  `$conexao_provider_heading_tag`. An archive/home/search context — where the
+  grid sits directly under the page `<h1>` with no `<h2>` above it — yields
+  `<h2>`; every other context keeps `<h3>`. A caller nesting the card deeper
+  passes `heading_level` explicitly, and the value is clamped to `h2..h6`, so
+  a bad argument can never emit an invalid or out-of-range element.
+- `footer.php`'s column title moved from a bare `<h4>` to `<h2>`. The footer is
+  a top-level landmark sibling of `<main>`, so `<h2>` is the correct level.
+
+Card titles are styled by the **class-based** shared card-title rule, never by
+the element level, so this has **no visual effect**. Measured heading jumps:
+**5 affected URLs → 0**, across 15 pages × 4 widths × light/dark.
+
+### One location row, both values kept (T1.8 / D7)
+
+`event-card.php` used to print `_event_location` and then the `conexao_county`
+term as two rows with two nearly identical map-pin icons, so a card whose town
+sits in that county read "Laois / Laois". It now emits **one**
+`.event-card-detail--location` row: town first, then the county, joined with a
+`·` separator — **and the county is suppressed only when it is literally the
+same string as the location**. Nothing is dropped. Measured on `/eventos/`:
+**7 duplicated county rows → 0**, with every card keeping its destination.
+
+### Muted text is AA in both themes (T1.13 / D3 + I13) — diagnosis corrected
+
+The audit framed T1.13 as "reduce `gray-500` usage in the 14 remaining rules".
+Measuring the **rendered** colour showed two distinct causes, and only one of
+them was the 14 rules:
+
+1. **Direct usages** — 11 rules in `main.css` painted text with
+   `--conexao-gray-500` (`#adb5bd`, **2.07:1 on white**). Converted to
+   `--conexao-gray-600` (`#6c757d`, **4.69:1**), the value already chosen for
+   `.featured-article-meta` in this same file. The `--conexao-gray-500` **palette
+   token is retained** — only its text usages were retired. Decorative
+   `stroke="#adb5bd"` icon markup was left alone (it is not text).
+2. **The token definition itself** — the larger cause. `--color-text-muted` in
+   `design-system.css` was aliased to `--conexao-gray-500`, so *every* element
+   resolving through it failed: `.provider-card-detail`, `.newsletter-privacy`,
+   the filter result counts, the pagination ellipsis and the breadcrumb
+   separators. The alias now points at `--conexao-gray-600`, aligning it with
+   its own sibling `--color-text-secondary` rather than inventing a colour.
+
+**Dark mode is deliberately unchanged**: `dark-mode.css` maps
+`--color-text-muted` to the dark `#94a8ba`, which measures **7.36:1** on the
+dark body and **6.72:1** on the dark card surface. Only the light theme was
+failing. Measured rendered gray-500 text occurrences: **34 → 0**.
+
+### Card surface is reconciled (T1.7 / I3 + I4)
+
+Measured across all rendered cards, only `.post-card` diverged: `event-card`,
+`leisure-card` and `provider-card` all render "border + no shadow" (the shared
+`.card` contract), while `.post-card` alone added `box-shadow-sm`. That one
+property is removed so the four card types share one surface. Measured distinct
+card surfaces: **4 → 2** (the two remaining are the light and dark themes, not
+divergent components). The hover lift is unchanged.
+
+### The comment form is no longer raw browser chrome (T1.10 / D9)
+
+`#submit.submit` rendered as an unstyled native control — the only one on the
+site outside the `.btn` family. It is now styled from the **existing** tokens
+(`--radius-full`, `--focus-ring`, `--conexao-primary`, `--conexao-primary-dark`)
+with a **44px** minimum target and a visible focus ring. No new colour and no
+new component: it opts core's existing markup into the shared `.btn` contract.
+
+### The default category no longer leaks an English name (T1.11 / D10)
+
+WordPress creates the default `category` term with the literal name
+`"Uncategorized"`, and `home.php` rendered that raw name in both the `/blog/`
+filter bar and the card badges — **10 untranslated occurrences** on `/blog/`.
+
+This is a **presentation** defect, not a data defect: the term is real and
+assigned to real posts, so renaming or deleting it would be a content change
+requiring the §5.2 six-step contract. Instead,
+`conexao_blog_category_label()` (`inc/i18n/terms.php`) resolves only the
+**display** label — "Sem categoria" in PT, "Uncategorized" in EN — while every
+other category keeps its real, editor-chosen name. The term, its slug, the
+`?categoria=` filter URL, the archive query, Polylang and the PT canonical
+record are all **untouched**. Measured untranslated native terms on `/blog/`:
+**10 → 0**.
+
+### Image-less leisure cards are text cards (T1.12 / D6)
+
+Every leisure card reserved a 379×237 grey `IMAGEM PENDENTE` block, so an
+archive with no licensed photography rendered a wall of empty boxes. The image
+block (and its attribution overlay) is now emitted **only when a real image
+exists**; otherwise the card is a clean text card. This is presentation only —
+no post, meta, attachment or term is touched, and a card that gains an image
+later returns to the image layout automatically. The **title link is always
+rendered**, so the card keeps exactly one primary link. The retired placeholder
+CSS was **removed rather than left dead**, and the accompanying
+`test-leisure-card-map-action.php` section G was updated to pin the *invariant*
+("the map CTA never replaces the card's primary link") instead of the old
+markup, with the new contract asserted directly.
+
+### T1.9 (event date badge) — NOT IMPLEMENTED
+
+Measured: the badge renders **4** distinct `(size/weight)` treatments
+(`16px/400`, `18px/600`, `14px/400`, `14px/600`), consistent with the audit. The
+reduction is **not** safe to do blindly: the badge sits inside
+`aria-hidden="true"` decorative markup that sits alongside a separate
+`.event-card-date-iso.screen-reader-text` node carrying the machine-readable
+`<time datetime>`. Collapsing treatments requires deciding which of the four
+elements are redundant, and any mistake degrades an accessible date that is
+currently correct. It needs its own dedicated evidence pass, so it is recorded
+as **BLOCKED-pending-evidence** rather than half-applied.
+
+### T1.14 (homepage shortcut blocks) — NOT IMPLEMENTED
+
+Measured: the homepage renders **13** `.quick-access-card` tiles and a
+"Precisa de ajuda?" section with **6** `help-shortcut-card` chips drawn from the
+same definitions (`$help_shortcut_keys = moradia, empregos, documentos, saude,
+beneficios, financas`). So 6 of the 10 visible tiles *are* duplicated by design.
+The code comments show this was a **deliberate, documented decision**: the help
+section reuses the quick-access definitions as a single source of truth and only
+differs in *selection*. Consolidating it means removing a navigation affordance
+the maintainers chose on purpose, which is a **product decision, not a
+convergence defect** — and the audit's own §16 explicitly declined the homepage
+rewrite (T3.1: "the current homepage works; the duplication (T1.14) is the real
+defect"). Recorded as **NOT IMPLEMENTED — product decision**, with the
+measurement.
+
 ## Tests
 
 - `tests/test-ui-convergence-t1.php` — pins the T1.1 layout contract and the
   exact T1.2 duplication mechanism (the groups are **discovered from live data**,
   never hard-coded), proves distinct events are never merged, and proves
   recurrence semantics are unchanged. 82 assertions.
+- `tests/test-ui-convergence-t2.php` — pins the Phase-2 contracts: the T1.6
+  heading-level resolution and its `h2..h6` clamp (and that no hard-coded `<h3>`
+  card title remains), the T1.8 merged location row **including that the county
+  is still rendered rather than deleted**, the T1.10 `.btn` contract (44px
+  target, focus ring, pill radius), the T1.11 label helper (default term
+  translated, every real category name preserved, non-term input safe, and the
+  raw `$category->name` gone from `home.php`), the T1.12 placeholder removal
+  **plus the preserved image path and title link**, and the T1.13 absence of any
+  `color: var(--conexao-gray-500)` in `main.css`. 27 assertions.
+
+_Last verified: 2026-10-03 by UI convergence Phase 2 (T1.6–T1.14)_
+
+_Last verified: 2026-10-03 by UI convergence Phase 1 (T1.1–T1.5)_
 
 _Last verified: 2026-10-03 by UI convergence Phase 1 (T1.1–T1.5)_
 

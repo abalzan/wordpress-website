@@ -1,0 +1,84 @@
+renders: 152   errors: 0
+
+[A11Y INVARIANTS] h1 != 1 or main != 1:
+   violations: 0 []
+
+[OVERFLOW] horizontal overflow on 0 renders
+
+[T1.6 HEADING JUMPS]
+   affected urls (0): []
+
+[T1.7 CARD SURFACES] distinct (radius, border, shadow, bg)
+   distinct surfaces: 2
+   ('16px', '1px solid rgb(229, 231, 235)', 'none', 'rgb(255, 255, 255)') <- 4 ['event-card', 'leisure-card', 'post-card', 'provider-card']
+   ('16px', '1px solid rgb(58, 74, 90)', 'none', 'rgb(22, 32, 43)') <- 4 ['event-card', 'leisure-card', 'post-card', 'provider-card']
+
+[T1.9 DATE BADGE] distinct (size/weight) treatments per event card
+   distribution: [(10, 8)]
+   sample (4): ['16px/400', '18px/600', '14px/400', '14px/600']
+
+[T1.10 SUBMIT BUTTONS]
+   ('BUTTON', 'screen-reader-text header-search-submit', '', 'rgb(14, 107, 58)', '12px') x76
+   ('BUTTON', 'mobile-menu-search-submit', '', 'rgb(14, 107, 58)', '9999px') x76
+   ('BUTTON', 'mobile-search-submit', '', 'rgb(14, 107, 58)', '8px') x76
+   ('BUTTON', 'screen-reader-text header-search-submit', '', 'rgb(58, 184, 117)', '12px') x76
+   ('BUTTON', 'mobile-menu-search-submit', '', 'rgb(58, 184, 117)', '9999px') x76
+   ('BUTTON', 'mobile-search-submit', '', 'rgb(58, 184, 117)', '8px') x76
+   ('BUTTON', 'newsletter-btn', '', 'rgb(14, 107, 58)', '9999px') x60
+   ('BUTTON', 'newsletter-btn', '', 'rgb(58, 184, 117)', '9999px') x60
+   ('BUTTON', 'search-submit', '', 'rgb(14, 107, 58)', '12px') x12
+   ('BUTTON', 'search-submit', '', 'rgb(58, 184, 117)', '12px') x12
+   ('BUTTON', 'agency-filters-apply-button', '', 'rgb(14, 107, 58)', '12px') x8
+   ('BUTTON', 'agency-filters-apply-button', '', 'rgb(58, 184, 117)', '12px') x8
+   ('BUTTON', 'event-filters-apply-button', '', 'rgb(14, 107, 58)', '12px') x8
+   ('BUTTON', 'event-filters-apply-button', '', 'rgb(58, 184, 117)', '12px') x8
+   ('BUTTON', 'leisure-apply-button', '', 'rgb(14, 107, 58)', '12px') x8
+   ('BUTTON', 'leisure-apply-button', '', 'rgb(58, 184, 117)', '12px') x8
+
+[T1.11 UNTRANSLATED NATIVE TERMS]
+   none
+
+[T1.12 LEISURE PLACEHOLDERS]
+   /en/lazer/ -> [(10, 10)]
+   /lazer/ -> [(10, 10)]
+
+[T1.13 RENDERED gray-500 TEXT]
+   distinct (class, text): 12
+   ('agency-filters-count', '43 oportunidades encontradas') -> ['/empregos/']
+   ('agency-filters-count', '43 opportunities found') -> ['/en/empregos/']
+   ('conexao-breadcrumb-sep', '›') -> ['/', '/apoiadores/', '/apoiadores/felix/', '/blog/', '/blog/como-obter-o-nif-em-portugal/']
+   ('event-card-date-weekday', 'SÁB') -> ['/en/eventos/', '/eventos/']
+   ('event-filters-count', '262 eventos encontrados') -> ['/eventos/']
+   ('event-filters-count', '262 events found') -> ['/en/eventos/']
+   ('event-preview-meta-sep', '·') -> ['/']
+   ('leisure-results-count', '246 options found') -> ['/en/lazer/']
+   ('leisure-results-count', '246 opções encontradas') -> ['/lazer/']
+   ('newsletter-privacy', 'Ao assinar, você concorda com nossa polí') -> ['/', '/apoiadores/', '/blog/', '/contato/', '/cursos/']
+   ('newsletter-privacy', 'By subscribing, you agree to our privacy') -> ['/en/cursos/', '/en/empregos/', '/en/eventos/', '/en/guias/', '/en/lazer/']
+   ('page-numbers dots', '…') -> ['/en/eventos/', '/en/guias/', '/en/lazer/', '/eventos/', '/guias/']
+
+[T1.14 HOMEPAGE SHORTCUT BLOCKS]
+   quickAccess=13 helpShortcut=6
+
+[GUARD T1.4 card-title treatments]
+   distinct: 1
+      ('18px', '600', '23.4px') <- ['event-card-title', 'leisure-card-title', 'post-card-title', 'provider-card-title']
+
+[GUARD T1.3 section-heading treatments]
+   distinct: 13
+      ('24px', '700') <- 3 ['quick-access-heading', 'section-title', 'wp-block-heading']
+      ('18px', '700') <- 3 ['help-section-heading', 'leisure-filters-title', 'leisure-mobile-sheet-title']
+      ('18px', '600') <- 3 ['archive-card-title', 'event-card-title', 'provider-card-title']
+      ('20px', '700') <- 2 ['help-section-heading', 'section-title']
+      ('30.72px', '700') <- 2 ['newsletter-title', 'section-title']
+      ('28px', '700') <- 2 ['empregos-opportunities-title', 'newsletter-title']
+      ('32px', '700') <- 1 ['section-title']
+      ('40px', '700') <- 1 ['newsletter-title']
+      ('13px', '700') <- 1 ['footer-column-title']
+      ('16px', '700') <- 1 ['quick-access-heading']
+      ('23.04px', '700') <- 1 ['empregos-opportunities-title']
+      ('22px', '700') <- 1 ['empregos-opportunities-title']
+      ('36px', '700') <- 1 ['(bare h2)']
+
+wrote /home/andrei/IdeaProjects/wordpress-website/ui-convergence-work/diag-v3.json
+EXIT=0

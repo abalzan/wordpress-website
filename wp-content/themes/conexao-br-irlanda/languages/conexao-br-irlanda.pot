@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-03 18:23+0100\n"
+"POT-Creation-Date: 2026-10-03 19:54+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 
 
@@ -145,21 +145,21 @@ msgid ""
 "Conectando a comunidade brasileira na Irlanda com informações, eventos, "
 "cursos e muito mais. Sua revista digital para brasileiros na Irlanda."
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/footer.php:38
+#: wp-content/themes/conexao-br-irlanda/footer.php:50
 #: wp-content/themes/conexao-br-irlanda/inc/customizer.php:29
 msgid "Redes Sociais"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/footer.php:70
+#: wp-content/themes/conexao-br-irlanda/footer.php:82
 #: wp-content/themes/conexao-br-irlanda/inc/customizer.php:65
 msgid "© 2025 Conexão BR Irlanda. Todos os direitos reservados."
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/footer.php:75
+#: wp-content/themes/conexao-br-irlanda/footer.php:87
 msgid "Privacidade"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/footer.php:77
+#: wp-content/themes/conexao-br-irlanda/footer.php:89
 msgid "Termos"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/footer.php:79
+#: wp-content/themes/conexao-br-irlanda/footer.php:91
 msgid "Cookies"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/front-page.php:11
@@ -335,7 +335,7 @@ msgstr ""
 msgid "Onde procurar emprego"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/front-page.php:594
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-card.php:220
+#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-card.php:231
 msgid "Ver mais"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/header.php:46
@@ -550,36 +550,36 @@ msgid ""
 "Imagem da página de Empregos: use uma imagem vertical, preferencialmente "
 "1080 × 1920 px (formato Instagram Stories)."
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/events.php:128
+#: wp-content/themes/conexao-br-irlanda/inc/events.php:258
 msgid "segunda-feira"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/events.php:129
+#: wp-content/themes/conexao-br-irlanda/inc/events.php:259
 msgid "terça-feira"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/events.php:130
+#: wp-content/themes/conexao-br-irlanda/inc/events.php:260
 msgid "quarta-feira"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/events.php:131
+#: wp-content/themes/conexao-br-irlanda/inc/events.php:261
 msgid "quinta-feira"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/events.php:132
+#: wp-content/themes/conexao-br-irlanda/inc/events.php:262
 msgid "sexta-feira"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/events.php:133
+#: wp-content/themes/conexao-br-irlanda/inc/events.php:263
 msgid "sábado"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/events.php:134
+#: wp-content/themes/conexao-br-irlanda/inc/events.php:264
 msgid "domingo"
 msgstr ""
 #. translators: %1$s and %2$s are weekday names, e.g. "segunda" and "quarta".
 #. translators: %1$s is a comma-separated list of weekday names; %2$s is the final weekday name.
-#: wp-content/themes/conexao-br-irlanda/inc/events.php:158
-#: wp-content/themes/conexao-br-irlanda/inc/events.php:163
+#: wp-content/themes/conexao-br-irlanda/inc/events.php:288
+#: wp-content/themes/conexao-br-irlanda/inc/events.php:293
 #, php-format
 msgid "%1$s e %2$s"
 msgstr ""
 #. translators: %s is a weekday name or a list of weekday names, e.g. "quarta-feira" or "segunda, quarta e sexta".
-#: wp-content/themes/conexao-br-irlanda/inc/events.php:215
+#: wp-content/themes/conexao-br-irlanda/inc/events.php:345
 #, php-format
 msgid "Toda %s"
 msgstr ""
@@ -673,6 +673,12 @@ msgid "Vocational Training"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/inc/i18n/fallback.php:645
 msgid "Business"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/inc/i18n/terms.php:114
+msgid "Uncategorized"
+msgstr ""
+#: wp-content/themes/conexao-br-irlanda/inc/i18n/terms.php:117
+msgid "Sem categoria"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/inc/job-resources.php:63
 msgid "Encontre vagas de emprego em diversas áreas e regiões da Irlanda."
@@ -1043,12 +1049,12 @@ msgstr ""
 #: wp-content/themes/conexao-br-irlanda/index.php:25
 msgid "Ler mais →"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/page-empregos.php:65
+#: wp-content/themes/conexao-br-irlanda/page-empregos.php:78
 #: wp-content/themes/conexao-br-irlanda/page.php:59
 #: wp-content/themes/conexao-br-irlanda/single.php:63
 msgid "Páginas:"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/page-empregos.php:85
+#: wp-content/themes/conexao-br-irlanda/page-empregos.php:98
 msgid "Ver vagas no Instagram"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/page-landing.php:211
@@ -1102,7 +1108,7 @@ msgstr ""
 msgid " (abre em nova aba)"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/single-leisure.php:229
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-card.php:229
+#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-card.php:240
 #, php-format
 msgid "Ver localização de %s no mapa (abre em nova aba)"
 msgstr ""
@@ -1413,7 +1419,7 @@ msgstr ""
 #: wp-content/themes/conexao-br-irlanda/template-parts/event-card.php:175
 msgid "Amanhã"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-card.php:305
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-card.php:345
 #: wp-content/themes/conexao-br-irlanda/template-parts/job-resources.php:81
 msgid "Saiba mais"
 msgstr ""
@@ -1528,16 +1534,13 @@ msgstr ""
 #, php-format
 msgid "Ver em %s"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-card.php:96
-msgid "Imagem pendente"
-msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-card.php:115
+#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-card.php:125
 msgid "Ver fonte da imagem"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-card.php:213
+#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-card.php:224
 msgid "Ver site oficial"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-card.php:230
+#: wp-content/themes/conexao-br-irlanda/template-parts/leisure-card.php:241
 msgid "Ver no mapa"
 msgstr ""
 #. translators: %s: number of selected filter options.
@@ -1606,7 +1609,7 @@ msgstr ""
 #: wp-content/themes/conexao-br-irlanda/template-parts/newsletter-section.php:32
 msgid "Ao assinar, você concorda com nossa política de privacidade."
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/provider-card.php:67
+#: wp-content/themes/conexao-br-irlanda/template-parts/provider-card.php:81
 msgid "Ver cursos"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/template-parts/quote-section.php:19

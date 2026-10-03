@@ -1,0 +1,26 @@
+renders: 152   errors: 0
+
+[A11Y INVARIANTS] h1 != 1 or main != 1:
+   violations: 0 []
+
+[OVERFLOW] horizontal overflow on 0 renders
+
+[T1.6 HEADING JUMPS]
+   h1->h3 on 4 urls: ['/cursos/', '/en/cursos/', '/en/eventos/', '/eventos/']
+   h1->h4 on 1 urls: ['/eventos/avenue-q-hit-musical/']
+   affected urls (5): ['/cursos/', '/en/cursos/', '/en/eventos/', '/eventos/', '/eventos/avenue-q-hit-musical/']
+   example: {'from': 1, 'to': 3, 'cls': 'event-card-title', 'text': 'Avenue Q Hit Musical'}
+
+[T1.7 CARD SURFACES] distinct (radius, border, shadow, bg)
+Traceback (most recent call last):
+  File "/home/andrei/IdeaProjects/wordpress-website/ui-convergence-work/diagnose.py", line 216, in <module>
+    run()
+    ~~~^^
+  File "/home/andrei/IdeaProjects/wordpress-website/ui-convergence-work/diagnose.py", line 94, in run
+    summarise(results)
+    ~~~~~~~~~^^^^^^^^^
+  File "/home/andrei/IdeaProjects/wordpress-website/ui-convergence-work/diagnose.py", line 133, in summarise
+    set()).add(fc(c["cls"]))
+               ^^
+NameError: name 'fc' is not defined. Did you mean: 'c'?
+EXIT=1

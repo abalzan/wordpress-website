@@ -73,6 +73,52 @@ function conexao_lang_term( $term, string $post_type = '' ) {
 }
 
 /**
+ * UI convergence T1.11 (audit D10) — display label for a blog category.
+ *
+ * WordPress creates the default `category` term with the literal name
+ * "Uncategorized" (term_id 1 on every install) and the theme rendered that raw
+ * name in both the /blog/ filter bar and the archive card badges, so an
+ * untranslated native string leaked into the Portuguese UI (10 occurrences
+ * measured on /blog/).
+ *
+ * This is a PRESENTATION defect, not a data defect: the term is real, it is
+ * assigned to real posts, and renaming or deleting it would be a content
+ * change requiring the engineering-standard §5.2 six-step contract. The term
+ * is therefore left completely untouched and only its DISPLAY label is
+ * resolved through the site's own translation catalogue.
+ *
+ * Behaviour:
+ *  - the WordPress default category resolves to a translated label in the
+ *    current language — "Sem categoria" in PT, "Uncategorized" in EN;
+ *  - every other category keeps its real, editor-chosen name untouched;
+ *  - Polylang, the term slug, the ?categoria= filter URL, the archive query
+ *    and the PT canonical record are all unchanged.
+ *
+ * @param mixed $term WP_Term expected.
+ * @return string Display label (never empty).
+ */
+function conexao_blog_category_label( $term ): string {
+	if ( ! $term instanceof WP_Term ) {
+		return '';
+	}
+
+	$is_default = ( 'uncategorized' === $term->slug )
+		|| ( (int) $term->term_id === (int) get_option( 'default_category' ) )
+		|| in_array( $term->slug, array( 'uncategorised', 'uncategorized' ), true );
+
+	if ( ! $is_default ) {
+		return $term->name;
+	}
+
+	if ( 'en' === conexao_current_language_slug() ) {
+		return __( 'Uncategorized', 'conexao-br-irlanda' );
+	}
+
+	return __( 'Sem categoria', 'conexao-br-irlanda' );
+}
+
+
+/**
  * Does a term carry published content of a post type in a language?
  *
  * One cheap query (no_found_rows, ids only), memoised per request.

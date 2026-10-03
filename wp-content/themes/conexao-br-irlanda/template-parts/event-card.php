@@ -177,6 +177,32 @@ if ( $event_date && class_exists( 'Conexao_Event_Recurrence' ) ) {
 }
 ?>
 
+<?php
+/*
+ * T1.6 (audit D4) — heading-level contract for the event card.
+ *
+ * Measured, not assumed: the card title rendered as a bare <h3> on every
+ * archive, but /eventos/ has an <h1> page title and NO <h2> above the grid,
+ * so every card produced an `h1 -> h3` jump (WCAG 2.4.10 heading order). The
+ * audit described this as "h1 -> h4 on 9 pages"; the measured reality is
+ * `h1 -> h3` on the event and course archives (5 URLs including EN) plus one
+ * `h1 -> h4` on the event single from the footer column title, which is fixed
+ * in footer.php at its own landmark scope.
+ *
+ * The card title is a direct child of the archive grid that sits under the
+ * page <h1>, so <h2> is the correct level there. A caller that renders the
+ * card one level deeper passes 'heading_level' explicitly, and the default
+ * stays <h3> so no existing nested context changes. Visual output is
+ * unaffected: card titles are styled by the class-based shared card-title
+ * rule, never by the element level.
+ */
+$conexao_card_heading_level = isset( $args['heading_level'] ) ? (int) $args['heading_level'] : 0;
+if ( $conexao_card_heading_level < 2 || $conexao_card_heading_level > 6 ) {
+	$conexao_card_heading_level = ( is_archive() || is_home() || is_search() ) ? 2 : 3;
+}
+$conexao_card_heading_tag = 'h' . $conexao_card_heading_level;
+?>
+
 <article id="post-<?php the_ID(); ?>" <?php post_class( 'event-card' ); ?>>
 
 	<a class="event-card-banner" href="<?php echo esc_url( $event_url ); ?>" aria-label="<?php echo esc_attr( sprintf( 'Banner para %s', get_the_title() ) ); ?>"<?php echo $event_target; /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */ ?>>
@@ -251,7 +277,7 @@ if ( $event_date && class_exists( 'Conexao_Event_Recurrence' ) ) {
 			</span>
 		<?php endif; ?>
 
-		<h3 class="event-card-title"><a href="<?php echo esc_url( $event_url ); ?>"<?php echo $event_target; /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */ ?>><?php the_title(); ?></a></h3>
+		<<?php echo esc_html( $conexao_card_heading_tag ); ?> class="event-card-title"><a href="<?php echo esc_url( $event_url ); ?>"<?php echo $event_target; /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */ ?>><?php the_title(); ?></a></<?php echo esc_html( $conexao_card_heading_tag ); ?>>
 
 		<div class="event-card-details">
 			<?php if ( $event_time ) : ?>
@@ -264,23 +290,37 @@ if ( $event_date && class_exists( 'Conexao_Event_Recurrence' ) ) {
 				</span>
 			<?php endif; ?>
 
-			<?php if ( $event_location ) : ?>
-				<span class="event-card-detail">
+			<?php
+			/*
+			 * T1.8 (audit D7) — ONE location row.
+			 *
+			 * The card used to print `_event_location` and then the
+			 * `conexao_county` term as two separate rows with two nearly
+			 * identical map-pin icons, so a card whose town sits in that county
+			 * read "Laois / Laois". This merges them into a single row: the town
+			 * (when it is not the county itself) followed by the county. Both
+			 * values are still shown — only the duplicated row and the second icon
+			 * are gone. No data is dropped and nothing is deleted.
+			 */
+			$event_location_parts = array();
+			if ( $event_location ) {
+				$event_location_parts[] = $event_location;
+			}
+			if ( $event_counties && ! is_wp_error( $event_counties ) ) {
+				$event_county_name = $event_counties[0]->name;
+				// Only add the county when the location text is not already it.
+				if ( ! $event_location || mb_strtolower( $event_location ) !== mb_strtolower( $event_county_name ) ) {
+					$event_location_parts[] = $event_county_name;
+				}
+			}
+			if ( ! empty( $event_location_parts ) ) :
+				?>
+				<span class="event-card-detail event-card-detail--location">
 					<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
 						<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
 						<circle cx="12" cy="10" r="3"></circle>
 					</svg>
-					<?php echo esc_html( $event_location ); ?>
-				</span>
-			<?php endif; ?>
-
-			<?php if ( $event_counties && ! is_wp_error( $event_counties ) ) : ?>
-				<span class="event-card-detail event-card-detail--county">
-					<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
-						<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"></path>
-						<circle cx="12" cy="10" r="3"></circle>
-					</svg>
-					<?php echo esc_html( $event_counties[0]->name ); ?>
+					<?php echo esc_html( implode( ' · ', $event_location_parts ) ); ?>
 				</span>
 			<?php endif; ?>
 		</div>

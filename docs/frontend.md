@@ -19,7 +19,26 @@ Defined in `assets/css/design-system.css`. Uses CSS custom properties mapped fro
 | `--color-surface-muted` | `--conexao-light-gray` | Muted sections |
 | `--color-text` | `--conexao-dark` | Body text |
 | `--color-text-secondary` | gray-600 | Secondary text/meta |
+| `--color-text-muted` | gray-600 | **Muted** text/meta — see below |
 | `--color-border` | `--conexao-border` | Borders |
+
+> **Muted text is gray-600, not gray-500 (UI convergence T1.13).**
+> `--color-text-muted` was aliased to `--conexao-gray-500` (`#adb5bd`), which
+> measures **2.07:1 on white** and **1.93:1** on `--color-surface-muted` — a
+> WCAG AA failure for normal text across *every* element resolving through the
+> token (card meta, newsletter privacy, filter result counts, pagination
+> ellipsis, breadcrumb separators). It now aliases `--conexao-gray-600`
+> (`#6c757d`, **4.69:1**), matching its sibling `--color-text-secondary`.
+>
+> **Do not reintroduce gray-500 as a text colour.** Direct
+> `color: var(--conexao-gray-500)` declarations were removed from `main.css`;
+> the palette token `--conexao-gray-500` itself is retained, and decorative
+> `stroke="#adb5bd"` icon markup is out of scope (it is not text).
+>
+> **Dark mode is unaffected and deliberately unchanged**: `dark-mode.css` maps
+> `--color-text-muted` to the dark `#94a8ba`, which measures **7.36:1** on the
+> dark body and **6.72:1** on the dark card surface. Only the light theme was
+> failing; a token change here MUST be mirrored in `dark-mode.css`.
 
 > **Accent restraint (UI convergence T1.5).** `--conexao-accent` `#F68B1F`
 > measures **2.43:1 on white** (2.31:1 on the `--conexao-accent-light` tint) and

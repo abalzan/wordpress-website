@@ -35,7 +35,19 @@
 
 					<!-- Social Column -->
 					<div class="footer-column">
-						<h4 class="footer-column-title"><?php esc_html_e( 'Redes Sociais', 'conexao-br-irlanda' ); ?></h4>
+						<?php
+						/*
+						 * T1.6 (audit D4) — the footer column title was a bare <h4> in a
+						 * document whose previous heading level was the page <h1>,
+						 * producing an `h1 -> h4` jump on every page whose content has
+						 * no <h2>/<h3> (measured on the event single). The footer is a
+						 * top-level landmark sibling of <main>, so <h2> is the correct
+						 * level for its column headings. Styling is class-based
+						 * (.footer-column-title), so the element level does not change
+						 * the visual output.
+						 */
+						?>
+						<h2 class="footer-column-title"><?php esc_html_e( 'Redes Sociais', 'conexao-br-irlanda' ); ?></h2>
 						<div class="footer-social">
 							<?php
 							$instagram = get_theme_mod( 'conexao_instagram', 'https://www.instagram.com/conexaobr.ie/' );

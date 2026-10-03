@@ -2051,7 +2051,11 @@ ul, ol {
   display: block;
   font-size: 0.625rem;
   font-weight: 600;
-  color: var(--conexao-gray-500);
+  /* T1.13 (audit D3/I13) — gray-500 (#adb5bd) is only 2.07:1 on white and
+     fails WCAG AA for text. gray-600 (#6c757d) is 4.83:1 (AA). This is
+     the same decision already recorded for .featured-article-meta above;
+     dark mode is overridden separately in dark-mode.css. */
+  color: var(--conexao-gray-600);
   text-transform: uppercase;
   letter-spacing: 0.12em;
   line-height: 1.3;
@@ -2171,7 +2175,11 @@ ul, ol {
 }
 
 .events-page .event-card-detail--county {
-  color: var(--conexao-gray-500);
+  /* T1.13 (audit D3/I13) — gray-500 (#adb5bd) is only 2.07:1 on white and
+     fails WCAG AA for text. gray-600 (#6c757d) is 4.83:1 (AA). This is
+     the same decision already recorded for .featured-article-meta above;
+     dark mode is overridden separately in dark-mode.css. */
+  color: var(--conexao-gray-600);
 }
 
 .events-page .event-card-time-sep {
@@ -2547,7 +2555,11 @@ ul, ol {
   align-items: center;
   gap: 12px;
   font-size: 0.75rem;
-  color: var(--conexao-gray-500);
+  /* T1.13 (audit D3/I13) — gray-500 (#adb5bd) is only 2.07:1 on white and
+     fails WCAG AA for text. gray-600 (#6c757d) is 4.83:1 (AA). This is
+     the same decision already recorded for .featured-article-meta above;
+     dark mode is overridden separately in dark-mode.css. */
+  color: var(--conexao-gray-600);
   padding-top: 12px;
   border-top: 1px solid var(--conexao-border);
 }
@@ -2960,16 +2972,35 @@ ul, ol {
 
 .newsletter-privacy {
   font-size: 0.75rem;
-  color: var(--conexao-gray-500);
+  /* T1.13 (audit D3/I13) — gray-500 (#adb5bd) is only 2.07:1 on white and
+     fails WCAG AA for text. gray-600 (#6c757d) is 4.83:1 (AA). This is
+     the same decision already recorded for .featured-article-meta above;
+     dark mode is overridden separately in dark-mode.css. */
+  color: var(--conexao-gray-600);
   margin-top: 12px;
 }
 
 /* ===== Post Cards ===== */
+/*
+ * T1.7 (audit I4) — `.post-card` reconciled with the shared `.card` surface.
+ *
+ * Measured: `.event-card`, `.leisure-card` and `.provider-card` all render
+ * "border + no shadow" (the shared `.card` contract in design-system.css),
+ * while `.post-card` alone added `box-shadow-sm`, making the same conceptual
+ * card look like two different components on one site. The shadow also made
+ * `.post-card` the only card whose resting state differed from its hover
+ * state contract.
+ *
+ * The fix is convergence by ENFORCEMENT, not replacement: `.post-card` keeps
+ * its own selector and all of its behaviour, and only the divergent surface
+ * property is removed so it inherits the same border-only treatment. The
+ * hover lift (translateY + shadow-lg) is unchanged, so the card still
+ * responds to pointer and focus.
+ */
 .post-card {
   background: var(--conexao-white);
   border-radius: var(--conexao-radius-lg);
   overflow: hidden;
-  box-shadow: var(--conexao-shadow-sm);
   transition: all var(--conexao-transition);
   border: 1px solid var(--conexao-border);
   display: flex;
@@ -3287,7 +3318,11 @@ ul, ol {
   display: flex;
   gap: 16px;
   font-size: 0.875rem;
-  color: var(--conexao-gray-500);
+  /* T1.13 (audit D3/I13) — gray-500 (#adb5bd) is only 2.07:1 on white and
+     fails WCAG AA for text. gray-600 (#6c757d) is 4.83:1 (AA). This is
+     the same decision already recorded for .featured-article-meta above;
+     dark mode is overridden separately in dark-mode.css. */
+  color: var(--conexao-gray-600);
   margin-bottom: 16px;
 }
 
@@ -3543,7 +3578,11 @@ ul, ol {
 
 .related-post-date {
   font-size: 0.8125rem;
-  color: var(--conexao-gray-500);
+  /* T1.13 (audit D3/I13) — gray-500 (#adb5bd) is only 2.07:1 on white and
+     fails WCAG AA for text. gray-600 (#6c757d) is 4.83:1 (AA). This is
+     the same decision already recorded for .featured-article-meta above;
+     dark mode is overridden separately in dark-mode.css. */
+  color: var(--conexao-gray-600);
 }
 
 /* Phase 3A — related-card metadata row: clickable category + county
@@ -3555,15 +3594,26 @@ ul, ol {
   gap: 6px;
   margin: 0;
   font-size: 0.8125rem;
-  color: var(--conexao-gray-500);
+  /* T1.13 (audit D3/I13) — gray-500 (#adb5bd) is only 2.07:1 on white and
+     fails WCAG AA for text. gray-600 (#6c757d) is 4.83:1 (AA). Dark mode is
+     overridden separately in dark-mode.css. */
+  color: var(--conexao-gray-600);
 }
 
 .related-post-meta-sep {
-  color: var(--conexao-gray-500);
+  /* T1.13 (audit D3/I13) — gray-500 (#adb5bd) is only 2.07:1 on white and
+     fails WCAG AA for text. gray-600 (#6c757d) is 4.83:1 (AA). This is
+     the same decision already recorded for .featured-article-meta above;
+     dark mode is overridden separately in dark-mode.css. */
+  color: var(--conexao-gray-600);
 }
 
 .related-post-meta-link {
-  color: var(--conexao-gray-500);
+  /* T1.13 (audit D3/I13) — gray-500 (#adb5bd) is only 2.07:1 on white and
+     fails WCAG AA for text. gray-600 (#6c757d) is 4.83:1 (AA). This is
+     the same decision already recorded for .featured-article-meta above;
+     dark mode is overridden separately in dark-mode.css. */
+  color: var(--conexao-gray-600);
   text-decoration: underline;
   text-underline-offset: 2px;
   transition: color var(--conexao-transition);
@@ -3649,7 +3699,11 @@ ul, ol {
 .conexao-pagination .page-numbers.dots {
   background: transparent;
   border-color: transparent;
-  color: var(--conexao-gray-500);
+  /* T1.13 (audit D3/I13) — gray-500 (#adb5bd) is only 2.07:1 on white and
+     fails WCAG AA for text. gray-600 (#6c757d) is 4.83:1 (AA). This is
+     the same decision already recorded for .featured-article-meta above;
+     dark mode is overridden separately in dark-mode.css. */
+  color: var(--conexao-gray-600);
   cursor: default;
   min-width: 28px;
   padding: 0 8px;
@@ -4107,7 +4161,11 @@ input[type="button"] {
 
 .comment-metadata {
   font-size: 0.8125rem;
-  color: var(--conexao-gray-500);
+  /* T1.13 (audit D3/I13) — gray-500 (#adb5bd) is only 2.07:1 on white and
+     fails WCAG AA for text. gray-600 (#6c757d) is 4.83:1 (AA). This is
+     the same decision already recorded for .featured-article-meta above;
+     dark mode is overridden separately in dark-mode.css. */
+  color: var(--conexao-gray-600);
 }
 
 .comment-content {
@@ -4117,6 +4175,53 @@ input[type="button"] {
 .comment-reply-link {
   font-size: 0.875rem;
   font-weight: 600;
+}
+
+/* T1.10 (audit D9) — the comment form's submit control.
+ *
+ * WordPress core emits `<input type="submit" id="submit" class="submit">` and
+ * the theme styled nothing for it, so "Publicar comentário" rendered as a raw
+ * native grey button — the only control on the site outside the `.btn` family.
+ * Rather than hand-roll a new look, this opts the existing core markup INTO
+ * the existing shared `.btn btn-primary` contract, so the comment form inherits
+ * the same padding, radius, font, focus ring and min 44px target as every other
+ * primary action. `.btn-primary` already carries the green surface and white
+ * text, so no new colour is introduced and no token changes.
+ *
+ * The focus ring matters most: `.btn:focus-visible` in design-system.css is
+ * what makes this control keyboard-visible, which the native control did not
+ * provide consistently across browsers. */
+.comment-form .form-submit,
+#submit.submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: var(--space-3) var(--space-5);
+  border: 2px solid transparent;
+  border-radius: var(--radius-full);
+  background: var(--conexao-primary);
+  color: var(--conexao-white);
+  font-family: var(--conexao-font-body);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all var(--conexao-transition);
+}
+
+.comment-form .form-submit #submit.submit,
+#submit.submit:hover {
+  background: var(--conexao-primary-dark);
+}
+
+#submit.submit:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
 }
 
 /* ===== Search ===== */
@@ -4964,7 +5069,11 @@ input[type="button"] {
   align-items: center;
   gap: 12px;
   font-size: 0.75rem;
-  color: var(--conexao-gray-500);
+  /* T1.13 (audit D3/I13) — gray-500 (#adb5bd) is only 2.07:1 on white and
+     fails WCAG AA for text. gray-600 (#6c757d) is 4.83:1 (AA). This is
+     the same decision already recorded for .featured-article-meta above;
+     dark mode is overridden separately in dark-mode.css. */
+  color: var(--conexao-gray-600);
   padding-top: 12px;
   border-top: 1px solid var(--conexao-border);
 }
