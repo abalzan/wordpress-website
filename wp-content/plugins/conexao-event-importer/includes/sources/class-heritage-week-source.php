@@ -34,6 +34,18 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 	const TIME_BUDGET_SECONDS = 120;
 
 	/**
+	 * Whether the last pagination step rejected a forward link.
+	 *
+	 * True when the listing still advertised a forward destination that
+	 * resolved to the current page or to an already-visited one. The walk then
+	 * stopped WITHOUT reaching the end of the source, which is an incomplete
+	 * enumeration rather than a legitimately finished one.
+	 *
+	 * @var bool
+	 */
+	protected $forward_link_blocked = false;
+
+	/**
 	 * Get the source ID.
 	 *
 	 * Returns the configured source ID so each county source has an independent
@@ -56,6 +68,21 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 	 */
 	protected function get_county() {
 		return isset( $this->config['county'] ) ? $this->config['county'] : '';
+	}
+
+	/**
+	 * Get the soft time budget (seconds) for one source walk.
+	 *
+	 * Filterable so a test can drive the truncation branch deterministically.
+	 * The default is the class constant, so production behaviour is unchanged.
+	 *
+	 * @return float Seconds.
+	 */
+	protected function get_time_budget_seconds() {
+		return (float) apply_filters(
+			'conexao_heritage_week_time_budget_seconds',
+			self::TIME_BUDGET_SECONDS
+		);
 	}
 
 	/**
@@ -89,6 +116,9 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 	 * never stops the rest of the import.
 	 *
 	 * @return array[]
+	 * @throws Conexao_Source_Fetch_Exception When the first listing page cannot be
+	 *                                        fetched: an unenumerable source is a
+	 *                                        failed source, never an empty one.
 	 */
 	public function fetch_events() {
 		$hw_where = $this->get_hw_where();
@@ -97,29 +127,52 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 		$seen_ids   = array();
 		$events     = array();
 		$started_at = microtime( true );
+		$budget     = $this->get_time_budget_seconds();
+
+		// URLs already fetched during THIS run. Pagination must never revisit
+		// one: the Heritage Week nav exposes "Previous" before "Next" on
+		// page 2+, so a naive "first anchor" walk ping-pongs p1 <-> p2 for
+		// MAX_PAGES iterations (Stage G2A).
+		$visited          = array();
+		$termination_note = '';
+
+		$this->fetch_complete = true;
 
 		foreach ( $hw_where as $where ) {
 			$base_url = $this->build_hw_url( $where );
 
-			// Fetch the first page first so we can detect the event year.
-			$first_html = $this->fetch_html_or_empty( $base_url );
-			if ( empty( $first_html ) ) {
-				Conexao_Import_Log::add(
-					$this->get_id(),
-					'error',
-					sprintf( 'Failed to fetch Heritage Week listing for where[]=%s: %s', $where, $base_url )
+			// Fetch the first page with the STRICT fetcher so an unreachable
+			// listing becomes a failed source, never an empty one. Swallowing
+			// this failure is what produced `found=0, status=success` rows for
+			// 22 of 26 Heritage Week sources (Stage G1).
+			try {
+				$first_html = $this->fetch_html( $base_url );
+			} catch ( Conexao_Source_Fetch_Exception $e ) {
+				throw new Conexao_Source_Fetch_Exception(
+					esc_html(
+						sprintf(
+							'Failed to fetch Heritage Week listing for where[]=%s: %s',
+							esc_html( $where ),
+							esc_html( $e->getMessage() )
+						)
+					),
+					(int) esc_html( (string) $e->get_http_status() )
 				);
-				continue;
 			}
+
 			$year = $this->detect_year( $first_html );
 
 			$page_url = $base_url;
 			$page     = 1;
 			$html     = $first_html;
 
+			$visited[ $this->normalize_pagination_url( $page_url ) ] = true;
+
 			while ( $html && $page <= self::MAX_PAGES ) {
 				// Time budget check.
-				if ( ( microtime( true ) - $started_at ) > self::TIME_BUDGET_SECONDS ) {
+				if ( ( microtime( true ) - $started_at ) > $budget ) {
+					$this->mark_fetch_incomplete();
+					$termination_note = sprintf( 'time budget of %ds expired (where[]=%s page %d)', (int) $budget, $where, $page - 1 );
 					Conexao_Import_Log::add(
 						$this->get_id(),
 						'warning',
@@ -128,18 +181,24 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 							__( 'Heritage Week import reached its time budget after where[]=%1$s page %2$d — remaining will be picked up by the next run.', 'conexao-event-importer' ),
 							$where,
 							$page - 1
-						)
+						),
+						array( 'run_id' => $this->get_current_run_id() )
 					);
 					break 2; // Exit both the while and foreach loops.
 				}
 
 				$dom = $this->parse_html( $html );
 				if ( ! $dom ) {
+					$this->mark_fetch_incomplete();
+					$termination_note = sprintf( 'page %d could not be parsed (where[]=%s)', $page, $where );
 					Conexao_Import_Log::add(
 						$this->get_id(),
 						'error',
 						sprintf( 'Não foi possível analisar o HTML da página de eventos do Heritage Week (where[]=%s, page %d).', $where, $page ),
-						array( 'url' => $page_url )
+						array(
+							'url'    => $page_url,
+							'run_id' => $this->get_current_run_id(),
+						)
 					);
 					break;
 				}
@@ -150,7 +209,9 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 				if ( $cards && $cards->length > 0 ) {
 					foreach ( $cards as $card ) {
 						// Time budget check (per event for detail enrichment).
-						if ( ( microtime( true ) - $started_at ) > self::TIME_BUDGET_SECONDS ) {
+						if ( ( microtime( true ) - $started_at ) > $budget ) {
+							$this->mark_fetch_incomplete();
+							$termination_note = sprintf( 'time budget of %ds expired during detail enrichment (where[]=%s)', (int) $budget, $where );
 							break 3; // Exit all loops.
 						}
 
@@ -162,20 +223,87 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 							$event    = $this->enrich_event( $event );
 							$events[] = $event;
 						} catch ( Exception $e ) {
-							Conexao_Import_Log::add( $this->get_id(), 'error', 'Erro ao processar evento do Heritage Week: ' . $e->getMessage() );
+							Conexao_Import_Log::add(
+								$this->get_id(),
+								'error',
+								'Erro ao processar evento do Heritage Week: ' . $e->getMessage(),
+								array( 'run_id' => $this->get_current_run_id() )
+							);
 						}
 					}
 				}
 
-				$next = $this->get_next_page_url( $xpath, $page_url );
+				$next = $this->get_next_page_url( $xpath, $page_url, $visited );
 				if ( ! $next ) {
+					// No forward destination left. If the listing still
+					// advertised one that resolved to the current or an already
+					// visited page, the enumeration did NOT reach the end of the
+					// source, so it must not be reported as complete.
+					if ( $this->forward_link_blocked ) {
+						$this->mark_fetch_incomplete();
+						$termination_note = sprintf( 'the forward pagination link resolved to an already-visited page (where[]=%s page %d)', $where, $page );
+						Conexao_Import_Log::add(
+							$this->get_id(),
+							'warning',
+							sprintf( 'Heritage Week pagination stopped: the next link pointed at an already-visited page (%s).', $page_url ),
+							array(
+								'url'    => $page_url,
+								'run_id' => $this->get_current_run_id(),
+							)
+						);
+					}
 					break;
 				}
 
-				$page++;
+				if ( isset( $visited[ $this->normalize_pagination_url( $next ) ] ) ) {
+					// A "next" destination already fetched in this run. The walk
+					// cannot progress, so stop rather than loop.
+					$this->mark_fetch_incomplete();
+					$termination_note = sprintf( 'pagination pointed at an already-visited URL (%s)', $next );
+					Conexao_Import_Log::add(
+						$this->get_id(),
+						'warning',
+						sprintf( 'Heritage Week pagination stopped: the next link resolved to an already-visited URL (%s).', $next ),
+						array(
+							'url'    => $next,
+							'run_id' => $this->get_current_run_id(),
+						)
+					);
+					break;
+				}
+
+				++$page;
 				$page_url = $next;
-				$html     = $this->fetch_html_or_empty( $page_url );
+				$visited[ $this->normalize_pagination_url( $next ) ] = true;
+				$html = $this->fetch_html_or_empty( $page_url );
+
+				if ( ! $html ) {
+					// Later-page tolerance is preserved (keep what we already
+					// collected), but the enumeration is now incomplete.
+					$this->mark_fetch_incomplete();
+					$termination_note = sprintf( 'page %d could not be fetched (%s)', $page, $page_url );
+					break;
+				}
 			}
+
+			// The while loop can also exit on the page limit while the listing
+			// still advertises more pages.
+			if ( $this->fetch_complete && $page > self::MAX_PAGES ) {
+				$this->mark_fetch_incomplete();
+				$termination_note = sprintf( 'page limit of %d reached (where[]=%s)', self::MAX_PAGES, $where );
+			}
+		}
+
+		if ( ! $this->fetch_complete ) {
+			Conexao_Import_Log::add(
+				$this->get_id(),
+				'warning',
+				sprintf(
+					'Heritage Week enumeration is INCOMPLETE (%s). Events absent from this walk will not be marked source_not_found.',
+					$termination_note
+				),
+				array( 'run_id' => $this->get_current_run_id() )
+			);
 		}
 
 		// Deduplicate across where[] values by source_id.
@@ -189,7 +317,7 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 				continue;
 			}
 			$seen_ids[ $id ] = true;
-			$all_events[] = $event;
+			$all_events[]    = $event;
 		}
 
 		return $all_events;
@@ -403,21 +531,226 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 	}
 
 	/**
-	 * Find the "Next" pagination URL, if any.
+	 * Find the forward "Next" pagination URL, if any.
 	 *
-	 * @param DOMXPath $xpath XPath object.
-	 * @param string   $base  Current page URL.
-	 * @return string Next page URL or empty string.
+	 * The Heritage Week navigation renders "Previous" BEFORE "Next" from
+	 * page 2 onwards. Selecting `nav->item(0)` therefore walks BACKWARDS on
+	 * every page after the first, oscillating p1 <-> p2 until the page limit
+	 * (Stage G2A, measured live: 651 requests / 25 unique URLs for Wicklow).
+	 *
+	 * Selection is deterministic and forward-only:
+	 *
+	 *   1. Prefer the anchor whose visible label says "Next".
+	 *   2. Otherwise take the first anchor whose resolved URL differs from
+	 *      the current page and has not already been visited this run.
+	 *   3. Reject the current URL, an empty/invalid href, and any already
+	 *      visited URL.
+	 *
+	 * @param DOMXPath $xpath   XPath object for the current page.
+	 * @param string   $base    Current page URL.
+	 * @param array    $visited Map of URLs already fetched this run (by reference).
+	 * @return string Next page URL, or an empty string when there is none.
 	 */
-	protected function get_next_page_url( $xpath, $base ) {
-		$nav = $xpath->query( '//nav[contains(concat(" ", normalize-space(@class), " "), " paging ")]//a[contains(concat(" ", normalize-space(@class), " "), " btn-paging ")]' );
-		if ( $nav && $nav->length > 0 ) {
-			$href = $nav->item( 0 )->getAttribute( 'href' );
-			if ( $href ) {
-				return $this->resolve_url( $href, $base );
+	protected function get_next_page_url( $xpath, $base, &$visited = array() ) {
+		$nav_xpath = '//nav[contains(concat(" ", normalize-space(@class), " "), " paging ")]'
+			. '//a[contains(concat(" ", normalize-space(@class), " "), " btn-paging ")]';
+
+		$base_normalized = $this->normalize_pagination_url( $base );
+
+		// Anchors the page labels as backwards. A "Previous" link that points
+		// at an already-visited page is the NORMAL end of a listing, not a
+		// pagination fault, so it must never mark the walk incomplete.
+		$backwards = $this->collect_pagination_targets(
+			$xpath,
+			$nav_xpath . '[contains(translate(normalize-space(.), "PREVIOUS", "previous"), "prev")]',
+			$base
+		);
+
+		// 1. Prefer the anchor the page itself labels as the forward link. The
+		//    label is matched IN XPath, so no DOM property access is needed.
+		$labelled_next = $xpath->query(
+			$nav_xpath . '[contains(translate(normalize-space(.), "NEXT", "next"), "next")]'
+		);
+		if ( $labelled_next && $labelled_next->length > 0 ) {
+			$candidate = $this->first_usable_forward_url( $labelled_next, $base, $visited );
+			if ( '' !== $candidate ) {
+				$this->forward_link_blocked = false;
+				return $candidate;
+			}
+
+			// A forward link exists but every one of them is unusable: the
+			// listing advertised more pages than we could reach.
+			$this->forward_link_blocked = true;
+			return '';
+		}
+		// 2. Otherwise fall back to structural forward pagination: the Heritage
+		//    Week listing numbers pages as /event-listings/pN, so a destination
+		//    whose page number is GREATER than the current page is forward.
+		$current_page = $this->extract_page_number( $base );
+		$nav          = $xpath->query( $nav_xpath );
+		if ( ! $nav || 0 === $nav->length ) {
+			$this->forward_link_blocked = false;
+			return '';
+		}
+
+		$blocked_forward = false;
+
+		foreach ( $nav as $anchor ) {
+			$href = trim( (string) $anchor->getAttribute( 'href' ) );
+			if ( '' === $href ) {
+				continue;
+			}
+
+			// $absolute is what we fetch; $resolved is what we compare.
+			$absolute = $this->resolve_url( $href, $base );
+			$resolved = $this->normalize_pagination_url( $absolute );
+			if ( '' === $resolved ) {
+				continue;
+			}
+
+			// Only a strictly forward page number is a valid fallback.
+			if ( $this->extract_page_number( $absolute ) > $current_page
+				&& $resolved !== $base_normalized
+				&& ! isset( $visited[ $resolved ] ) ) {
+				$this->forward_link_blocked = false;
+				return $absolute;
+			}
+
+			// An unusable destination only signals a broken walk when the page
+			// did not label it as "Previous".
+			if ( ! isset( $backwards[ $resolved ] ) ) {
+				$blocked_forward = true;
 			}
 		}
+
+		$this->forward_link_blocked = $blocked_forward;
+
 		return '';
+	}
+
+	/**
+	 * Collect the normalized URLs a set of pagination anchors points at.
+	 *
+	 * @param DOMXPath $xpath      XPath object for the current page.
+	 * @param string   $xpath_expr Absolute XPath expression.
+	 * @param string   $base       Current page URL (for resolving relative hrefs).
+	 * @return array Map of normalized URL => true.
+	 */
+	protected function collect_pagination_targets( $xpath, $xpath_expr, $base ) {
+		$targets = array();
+
+		$nodes = $xpath->query( $xpath_expr );
+		if ( ! $nodes || 0 === $nodes->length ) {
+			return $targets;
+		}
+
+		foreach ( $nodes as $anchor ) {
+			$href = trim( (string) $anchor->getAttribute( 'href' ) );
+			if ( '' === $href ) {
+				continue;
+			}
+
+			$resolved = $this->normalize_pagination_url( $this->resolve_url( $href, $base ) );
+			if ( '' !== $resolved ) {
+				$targets[ $resolved ] = true;
+			}
+		}
+
+		return $targets;
+	}
+
+	/**
+	 * Return the first usable forward URL from a node list.
+	 *
+	 * @param DOMNodeList $nodes   Candidate anchors.
+	 * @param string      $base    Current page URL.
+	 * @param array       $visited Map of URLs already fetched this run (by reference).
+	 * @return string Absolute forward URL, or an empty string when none is usable.
+	 */
+	protected function first_usable_forward_url( $nodes, $base, &$visited ) {
+		$base_normalized = $this->normalize_pagination_url( $base );
+
+		foreach ( $nodes as $anchor ) {
+			$href = trim( (string) $anchor->getAttribute( 'href' ) );
+			if ( '' === $href ) {
+				continue;
+			}
+
+			$absolute = $this->resolve_url( $href, $base );
+			$resolved = $this->normalize_pagination_url( $absolute );
+			if ( '' === $resolved ) {
+				continue;
+			}
+
+			// A labelled "Next" that points at the current page or an already
+			// visited one is not usable: following it would loop the walk.
+			if ( $resolved === $base_normalized || isset( $visited[ $resolved ] ) ) {
+				continue;
+			}
+
+			return $absolute;
+		}
+
+		return '';
+	}
+
+
+	/**
+	 * Extract the listing page number from a Heritage Week pagination URL.
+	 *
+	 * The listing numbers pages as /event-listings/pN; the unnumbered listing
+	 * URL is page 1.
+	 *
+	 * @param string $url Absolute or relative pagination URL.
+	 * @return int Page number (1 when the URL carries none).
+	 */
+	protected function extract_page_number( $url ) {
+		$path = (string) wp_parse_url( (string) $url, PHP_URL_PATH );
+		if ( preg_match( '#/p(\d+)(?:/|$)#', $path, $m ) ) {
+			return (int) $m[1];
+		}
+		return 1;
+	}
+
+	/**
+	 * Normalize a pagination URL for equality comparison.
+	 *
+	 * Two URLs that differ only by a trailing slash, a fragment, or the order
+	 * of the query string must compare as equal, otherwise a "new" next link
+	 * can silently re-point at the page just fetched.
+	 *
+	 * @param string $url Raw URL.
+	 * @return string Comparable URL, or an empty string when unusable.
+	 */
+	protected function normalize_pagination_url( $url ) {
+		$url = trim( (string) $url );
+		if ( '' === $url ) {
+			return '';
+		}
+
+		// Drop the fragment: it never changes which page is served.
+		$hash = strpos( $url, '#' );
+		if ( false !== $hash ) {
+			$url = substr( $url, 0, $hash );
+		}
+
+		$parts = wp_parse_url( $url );
+		if ( empty( $parts['host'] ) ) {
+			return '';
+		}
+
+		$path  = isset( $parts['path'] ) ? rtrim( $parts['path'], '/' ) : '';
+		$query = '';
+		if ( ! empty( $parts['query'] ) ) {
+			$params = array();
+			parse_str( $parts['query'], $params );
+			if ( ! empty( $params ) ) {
+				ksort( $params );
+				$query = '?' . http_build_query( $params );
+			}
+		}
+
+		return strtolower( $parts['host'] ) . $path . $query;
 	}
 
 	/**
@@ -629,7 +962,7 @@ class Conexao_Source_Heritage_Week extends Conexao_Source_Base {
 	 * @return string[] Array of image URLs.
 	 */
 	protected function extract_srcset_urls( $srcset ) {
-		$urls = array();
+		$urls  = array();
 		$parts = explode( ',', $srcset );
 		foreach ( $parts as $part ) {
 			$part = trim( $part );

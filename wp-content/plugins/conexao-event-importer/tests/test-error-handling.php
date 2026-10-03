@@ -17,6 +17,40 @@ require_once WP_PLUGIN_DIR . '/conexao-event-importer/conexao-event-importer.php
 $passed = 0;
 $failed = 0;
 
+// ## Operator-state safety (G3)
+//
+// This suite writes to `conexao_event_import_history` (record()),
+// `conexao_event_import_log` (add()) and `conexao_event_sources`
+// (save()/delete()). Those options are OPERATOR STATE: Import History is what
+// the maintainer reads to find out what an import actually did.
+//
+// Two concrete consequences, both measured:
+//
+//   1. Leaving a `test_source` row behind pollutes the Import History page.
+//   2. `Conexao_Import_History` is capped at MAX_ENTRIES (100). Once the real
+//      history is full, `record()` slices it back to 100 and the count never
+//      grows — so "History entry was added" (count === before + 1) fails for a
+//      reason that has nothing to do with the code under test. That was this
+//      suite's long-standing baseline failure.
+//
+// Isolating the option fixes both: the assertions run against a clean, empty
+// store (so they test the code, not the environment) and the operator's real
+// history is restored verbatim afterwards.
+$restore_options = test_options_isolate(
+	array(
+		Conexao_Import_History::OPTION_KEY,
+		Conexao_Import_Log::OPTION_KEY,
+		Conexao_Event_Sources::OPTION_KEY,
+		Conexao_Source_Health::OPTION_KEY,
+	)
+);
+
+register_shutdown_function(
+	static function () use ( $restore_options ) {
+		test_options_restore( $restore_options, true );
+	}
+);
+
 
 // ---------------------------------------------------------------------------
 // Test 1: Import_Result class
@@ -235,5 +269,8 @@ try {
 // ---------------------------------------------------------------------------
 // Summary
 // ---------------------------------------------------------------------------
+
+test_options_restore( $restore_options );
+$GLOBALS['conexao_test_option_snapshots'] = array();
 
 test_finish();

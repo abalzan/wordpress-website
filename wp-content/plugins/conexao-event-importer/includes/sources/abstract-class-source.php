@@ -22,6 +22,54 @@ abstract class Conexao_Source_Base {
 	protected $config;
 
 	/**
+	 * Whether the last fetch_events() call enumerated the WHOLE source.
+	 *
+	 * True means "this list is the complete upstream enumeration". False means
+	 * the walk stopped early (time budget, a failed page, a pagination cycle)
+	 * and the returned events are a SUBSET.
+	 *
+	 * The engine reads this through is_fetch_complete() and refuses to run
+	 * mark_missing_events() when it is false, because absence from an
+	 * incomplete walk is not evidence that an event disappeared upstream
+	 * (Stage G2: incomplete enumeration must never hide a live event).
+	 *
+	 * @var bool
+	 */
+	protected $fetch_complete = true;
+
+	/**
+	 * Get the current import run ID, if a run is in progress.
+	 *
+	 * The engine publishes it through the existing
+	 * `conexao_event_importer_current_run_id` filter, so every source handler
+	 * can correlate its diagnostic entries with the run that produced them
+	 * without inventing a second correlation identifier (Stage G3B).
+	 *
+	 * @return string Run ID, or an empty string outside a run.
+	 */
+	protected function get_current_run_id() {
+		return (string) apply_filters( 'conexao_event_importer_current_run_id', '' );
+	}
+
+	/**
+	 * Whether the last fetch_events() enumerated the whole source.
+	 *
+	 * @return bool True when the enumeration is complete.
+	 */
+	public function is_fetch_complete() {
+		return (bool) $this->fetch_complete;
+	}
+
+	/**
+	 * Mark the current enumeration as incomplete.
+	 *
+	 * @return void
+	 */
+	protected function mark_fetch_incomplete() {
+		$this->fetch_complete = false;
+	}
+
+	/**
 	 * Constructor.
 	 *
 	 * @param array $config Source configuration from Event Sources.
@@ -100,7 +148,7 @@ abstract class Conexao_Source_Base {
 				array(
 					'url'         => $url,
 					'http_status' => 0,
-					'run_id'      => apply_filters( 'conexao_event_importer_current_run_id', '' ),
+					'run_id'      => $this->get_current_run_id(),
 				)
 			);
 			throw new Conexao_Source_Fetch_Exception( $message, 0 );
@@ -117,7 +165,7 @@ abstract class Conexao_Source_Base {
 				array(
 					'url'         => $url,
 					'http_status' => (int) $code,
-					'run_id'      => apply_filters( 'conexao_event_importer_current_run_id', '' ),
+					'run_id'      => $this->get_current_run_id(),
 				)
 			);
 			throw new Conexao_Source_Fetch_Exception( $message, (int) $code );

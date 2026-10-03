@@ -90,6 +90,10 @@ $GLOBALS['conexao_test_prerequisite'] = isset( $GLOBALS['conexao_test_prerequisi
  *
  * @var bool
  */
+$GLOBALS['conexao_test_option_snapshots'] = isset( $GLOBALS['conexao_test_option_snapshots'] )
+	? $GLOBALS['conexao_test_option_snapshots']
+	: array();
+
 $GLOBALS['conexao_test_prereq_failed'] = isset( $GLOBALS['conexao_test_prereq_failed'] )
 	? (bool) $GLOBALS['conexao_test_prereq_failed']
 	: false;

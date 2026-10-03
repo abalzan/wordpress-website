@@ -31,19 +31,19 @@ class Conexao_Import_History {
 		$history = self::get_all();
 
 		$entry = array(
-			'time'          => current_time( 'mysql' ),
-			'source'        => sanitize_key( (string) $source_id ),
-			'found'         => isset( $stats['found'] ) ? (int) $stats['found'] : 0,
-			'new'           => isset( $stats['new'] ) ? (int) $stats['new'] : 0,
-			'updated'       => isset( $stats['updated'] ) ? (int) $stats['updated'] : 0,
-			'unchanged'     => isset( $stats['unchanged'] ) ? (int) $stats['unchanged'] : 0,
+			'time'                 => current_time( 'mysql' ),
+			'source'               => sanitize_key( (string) $source_id ),
+			'found'                => isset( $stats['found'] ) ? (int) $stats['found'] : 0,
+			'new'                  => isset( $stats['new'] ) ? (int) $stats['new'] : 0,
+			'updated'              => isset( $stats['updated'] ) ? (int) $stats['updated'] : 0,
+			'unchanged'            => isset( $stats['unchanged'] ) ? (int) $stats['unchanged'] : 0,
 			'duplicates'           => isset( $stats['duplicates'] ) ? (int) $stats['duplicates'] : 0,
 			'skipped'              => isset( $stats['skipped'] ) ? (int) $stats['skipped'] : 0,
 			'skipped_past'         => isset( $stats['skipped_past'] ) ? (int) $stats['skipped_past'] : 0,
 			'skipped_invalid_date' => isset( $stats['skipped_invalid_date'] ) ? (int) $stats['skipped_invalid_date'] : 0,
-			'errors'        => isset( $stats['errors'] ) ? (int) $stats['errors'] : 0,
-			'status'        => self::normalize_status( $status ),
-			'message'       => sanitize_text_field( (string) $message ),
+			'errors'               => isset( $stats['errors'] ) ? (int) $stats['errors'] : 0,
+			'status'               => self::normalize_status( $status ),
+			'message'              => sanitize_text_field( (string) $message ),
 		);
 
 		// Include optional extra data (bounded to avoid huge options rows).
@@ -55,6 +55,12 @@ class Conexao_Import_History {
 		}
 		if ( ! empty( $extra['failed_events'] ) && is_array( $extra['failed_events'] ) ) {
 			$entry['failed_events'] = array_slice( $extra['failed_events'], 0, 100 );
+		}
+		// Whether the source listing was fully enumerated. False means the
+		// run saw only part of the source and therefore did NOT mark absent
+		// events as source_not_found.
+		if ( isset( $extra['complete'] ) ) {
+			$entry['complete'] = (bool) $extra['complete'];
 		}
 
 		array_unshift( $history, $entry );

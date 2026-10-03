@@ -93,6 +93,9 @@ class Conexao_Source_Eventbrite extends Conexao_Source_Base {
 	 * Fetch events by scraping the public discovery page.
 	 *
 	 * @return array[]
+	 * @throws Conexao_Source_Fetch_Exception When the first page cannot be fetched
+	 *                                        or parsed: an unenumerable source is a
+	 *                                        failed source, never an empty one.
 	 */
 	protected function fetch_via_scrape() {
 		$base_url = isset( $this->config['url'] ) && $this->config['url'] ? $this->config['url'] : Conexao_Eventbrite_Client::DEFAULT_DISCOVERY_URL;
@@ -101,45 +104,73 @@ class Conexao_Source_Eventbrite extends Conexao_Source_Base {
 		$parser     = new Conexao_Eventbrite_Parser();
 		$normalizer = new Conexao_Eventbrite_Normalizer();
 
-		// Fetch page 1 first to get pagination info. A hard
-		// failure here throws so the engine can report a clean fatal error.
+		// Fetch page 1 first to get pagination info. A failure here is FATAL:
+		// an unreachable first page means the source could not be enumerated
+		// at all, which is NOT the same as an empty calendar. Returning an
+		// empty array here would be recorded downstream as `found=0,
+		// status=success` (the Stage G1 masking defect). Raise the structured
+		// exception instead and let the engine record a failed source.
 		$html = $client->fetch_page( $base_url, 1 );
 		if ( empty( $html ) ) {
+			$status = $client->get_last_http_status();
+			$reason = sprintf(
+				/* translators: %s: discovery URL */
+				__( 'Failed to fetch Eventbrite discovery page: %s', 'conexao-event-importer' ),
+				$base_url
+			);
 			Conexao_Import_Log::add(
 				$this->get_id(),
 				'error',
-				sprintf( 'Failed to fetch Eventbrite discovery page: %s', $base_url )
+				$reason,
+				array(
+					'url'         => $base_url,
+					'http_status' => $status,
+					'run_id'      => $this->get_current_run_id(),
+				)
 			);
-			return array();
+			throw new Conexao_Source_Fetch_Exception( esc_html( $reason ), (int) esc_html( (string) $status ) );
 		}
+
+		$this->fetch_complete = true;
+		$incomplete_reason    = '';
 
 		try {
 			$page_data = $parser->parse( $html );
 		} catch ( Exception $e ) {
+			$reason = sprintf( 'Eventbrite page 1 parse failed: %s', $e->getMessage() );
 			Conexao_Import_Log::add(
 				$this->get_id(),
 				'error',
-				sprintf( 'Eventbrite page 1 parse failed: %s', $e->getMessage() )
+				$reason,
+				array(
+					'url'    => $base_url,
+					'run_id' => $this->get_current_run_id(),
+				)
 			);
-			return array();
+			// A malformed first page is also "cannot enumerate", never "empty".
+			throw new Conexao_Source_Fetch_Exception( esc_html( $reason ), 0 );
 		}
 
-		$page_count = isset( $page_data['pagination']['page_count'] ) ? (int) $page_data['pagination']['page_count'] : 1;
+		$page_count   = isset( $page_data['pagination']['page_count'] ) ? (int) $page_data['pagination']['page_count'] : 1;
 		$object_count = isset( $page_data['pagination']['object_count'] ) ? (int) $page_data['pagination']['object_count'] : 0;
 
 		Conexao_Import_Log::add(
 			$this->get_id(),
 			'info',
-			sprintf( 'Eventbrite: page_count=%d, object_count=%d for %s.', $page_count, $object_count, $base_url )
+			sprintf( 'Eventbrite: page_count=%d, object_count=%d for %s.', $page_count, $object_count, $base_url ),
+			array( 'run_id' => $this->get_current_run_id() )
 		);
 
 		$all_events = isset( $page_data['events'] ) ? $page_data['events'] : array();
 
 		// Walk remaining pages.
 		$started_at = microtime( true );
+		$budget     = $client->get_time_budget_seconds();
 
 		for ( $page = 2; $page <= $page_count; $page++ ) {
-			if ( ( microtime( true ) - $started_at ) > self::TIME_BUDGET_SECONDS ) {
+			if ( ( microtime( true ) - $started_at ) > $budget ) {
+				$this->mark_fetch_incomplete();
+				$incomplete_reason = sprintf( 'time budget of %ds expired after page %d/%d', (int) $budget, $page - 1, $page_count );
 				Conexao_Import_Log::add(
 					$this->get_id(),
 					'warning',
@@ -148,7 +179,8 @@ class Conexao_Source_Eventbrite extends Conexao_Source_Base {
 						__( 'Eventbrite import reached its time budget after page %1$d/%2$d — remaining pages will be picked up by the next run.', 'conexao-event-importer' ),
 						$page - 1,
 						$page_count
-					)
+					),
+					array( 'run_id' => $this->get_current_run_id() )
 				);
 				break;
 			}
@@ -157,10 +189,20 @@ class Conexao_Source_Eventbrite extends Conexao_Source_Base {
 
 			$html = $client->fetch_page( $base_url, $page );
 			if ( empty( $html ) ) {
+				// Partial-page tolerance is preserved: keep the events already
+				// collected. But the enumeration is now INCOMPLETE, so the
+				// engine must not treat the surviving subset as the full
+				// source listing.
+				$this->mark_fetch_incomplete();
+				$incomplete_reason = sprintf( 'page %d/%d could not be fetched (HTTP %d)', $page, $page_count, $client->get_last_http_status() );
 				Conexao_Import_Log::add(
 					$this->get_id(),
 					'error',
-					sprintf( 'Failed to fetch Eventbrite page %d/%d.', $page, $page_count )
+					sprintf( 'Failed to fetch Eventbrite page %d/%d.', $page, $page_count ),
+					array(
+						'http_status' => $client->get_last_http_status(),
+						'run_id'      => $this->get_current_run_id(),
+					)
 				);
 				continue;
 			}
@@ -168,10 +210,13 @@ class Conexao_Source_Eventbrite extends Conexao_Source_Base {
 			try {
 				$page_data = $parser->parse( $html );
 			} catch ( Exception $e ) {
+				$this->mark_fetch_incomplete();
+				$incomplete_reason = sprintf( 'page %d/%d could not be parsed', $page, $page_count );
 				Conexao_Import_Log::add(
 					$this->get_id(),
 					'error',
-					sprintf( 'Eventbrite page %d/%d parse failed: %s', $page, $page_count, $e->getMessage() )
+					sprintf( 'Eventbrite page %d/%d parse failed: %s', $page, $page_count, $e->getMessage() ),
+					array( 'run_id' => $this->get_current_run_id() )
 				);
 				continue;
 			}
@@ -179,16 +224,36 @@ class Conexao_Source_Eventbrite extends Conexao_Source_Base {
 			Conexao_Import_Log::add(
 				$this->get_id(),
 				'info',
-				sprintf( 'Fetched page %d/%d, %d events.', $page, $page_count, count( $page_data['events'] ) )
+				sprintf( 'Fetched page %d/%d, %d events.', $page, $page_count, count( $page_data['events'] ) ),
+				array( 'run_id' => $this->get_current_run_id() )
 			);
 
 			$all_events = array_merge( $all_events, $page_data['events'] );
 		}
 
+		// Reaching MAX_PAGES with pages still outstanding is also incomplete.
+		if ( $this->fetch_complete && $page_count > self::MAX_PAGES ) {
+			$this->mark_fetch_incomplete();
+			$incomplete_reason = sprintf( 'page limit of %d reached with %d pages declared', self::MAX_PAGES, $page_count );
+		}
+
+		if ( ! $this->fetch_complete ) {
+			Conexao_Import_Log::add(
+				$this->get_id(),
+				'warning',
+				sprintf(
+					/* translators: %s: reason the walk is incomplete */
+					__( 'Eventbrite enumeration is INCOMPLETE (%s). Events absent from this walk will not be marked source_not_found.', 'conexao-event-importer' ),
+					$incomplete_reason
+				),
+				array( 'run_id' => $this->get_current_run_id() )
+			);
+		}
+
 		// Deduplicate by event ID.
-		$seen_ids = array();
+		$seen_ids      = array();
 		$unique_events = array();
-		$duplicates = 0;
+		$duplicates    = 0;
 
 		foreach ( $all_events as $event ) {
 			$id = isset( $event['id'] ) ? (string) $event['id'] : '';
@@ -196,7 +261,7 @@ class Conexao_Source_Eventbrite extends Conexao_Source_Base {
 				continue;
 			}
 			if ( isset( $seen_ids[ $id ] ) ) {
-				$duplicates++;
+				++$duplicates;
 				continue;
 			}
 			$seen_ids[ $id ] = true;
@@ -206,19 +271,20 @@ class Conexao_Source_Eventbrite extends Conexao_Source_Base {
 		Conexao_Import_Log::add(
 			$this->get_id(),
 			'info',
-			sprintf( 'Eventbrite: %d total fetched, %d duplicates removed, %d unique.', count( $all_events ), $duplicates, count( $unique_events ) )
+			sprintf( 'Eventbrite: %d total fetched, %d duplicates removed, %d unique.', count( $all_events ), $duplicates, count( $unique_events ) ),
+			array( 'run_id' => $this->get_current_run_id() )
 		);
 
 		// Filter for configured county region and normalize.
-		$raw_events = array();
-		$skipped    = 0;
+		$raw_events       = array();
+		$skipped          = 0;
 		$rejected_regions = array();
 
 		foreach ( $unique_events as $event ) {
 			// Validate county region.
 			$region_check = $this->is_county_event( $event );
 			if ( ! $region_check['accepted'] ) {
-				$skipped++;
+				++$skipped;
 				if ( ! empty( $region_check['observed'] ) ) {
 					$rejected_regions[] = $region_check['observed'];
 				}
@@ -227,7 +293,7 @@ class Conexao_Source_Eventbrite extends Conexao_Source_Base {
 
 			// Skip online events (this is a physical county events calendar).
 			if ( ! empty( $event['is_online_event'] ) ) {
-				$skipped++;
+				++$skipped;
 				continue;
 			}
 
@@ -247,17 +313,26 @@ class Conexao_Source_Eventbrite extends Conexao_Source_Base {
 				'info',
 				sprintf(
 					'Eventbrite: rejected regions (top 5): %s',
-					implode( ', ', array_map( function( $region, $count ) {
-						return $region . ' (' . $count . ')';
-					}, array_keys( $top ), $top ) )
-				)
+					implode(
+						', ',
+						array_map(
+							function ( $region, $count ) {
+								return $region . ' (' . $count . ')';
+							},
+							array_keys( $top ),
+							$top
+						)
+					)
+				),
+				array( 'run_id' => $this->get_current_run_id() )
 			);
 		}
 
 		Conexao_Import_Log::add(
 			$this->get_id(),
 			'info',
-			sprintf( 'Eventbrite: %d %s events after filtering, %d skipped (non-%s or online).', count( $raw_events ), $this->get_county(), $this->get_county(), $skipped )
+			sprintf( 'Eventbrite: %d %s events after filtering, %d skipped (non-%s or online).', count( $raw_events ), $this->get_county(), $this->get_county(), $skipped ),
+			array( 'run_id' => $this->get_current_run_id() )
 		);
 
 		return $raw_events;
@@ -283,9 +358,15 @@ class Conexao_Source_Eventbrite extends Conexao_Source_Base {
 			if ( empty( $labels ) ) {
 				// No region labels configured and no location data — accept
 				// (defensive: the county source is configured for this provider).
-				return array( 'accepted' => true, 'observed' => '' );
+				return array(
+					'accepted' => true,
+					'observed' => '',
+				);
 			}
-			return array( 'accepted' => false, 'observed' => '(no location data)' );
+			return array(
+				'accepted' => false,
+				'observed' => '(no location data)',
+			);
 		}
 
 		$observed_region = '';
@@ -297,11 +378,17 @@ class Conexao_Source_Eventbrite extends Conexao_Source_Base {
 			if ( isset( $location['type'] ) && 'region' === $location['type'] ) {
 				$observed_region = isset( $location['name'] ) ? $location['name'] : '';
 				if ( in_array( $observed_region, $labels, true ) ) {
-					return array( 'accepted' => true, 'observed' => $observed_region );
+					return array(
+						'accepted' => true,
+						'observed' => $observed_region,
+					);
 				}
 			}
 		}
 
-		return array( 'accepted' => false, 'observed' => $observed_region );
+		return array(
+			'accepted' => false,
+			'observed' => $observed_region,
+		);
 	}
 }

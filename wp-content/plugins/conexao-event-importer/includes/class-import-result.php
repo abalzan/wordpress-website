@@ -38,6 +38,20 @@ class Conexao_Import_Result {
 	/** @var array Global/fatal error messages that stopped the source import. */
 	protected $fatal_errors = array();
 
+	/**
+	 * Explanation recorded for an incomplete source enumeration.
+	 *
+	 * @var string
+	 */
+	protected $incomplete_enumeration_note = '';
+
+	/**
+	 * Whether the source listing was only partially enumerated.
+	 *
+	 * @var bool
+	 */
+	protected $incomplete_enumeration = false;
+
 	/** @var string Overall run status: success|warning|partial|failed */
 	protected $status = 'success';
 
@@ -99,7 +113,7 @@ class Conexao_Import_Result {
 	 * @param int    $post_id     WordPress post ID.
 	 */
 	public function add_created( $event_title, $post_id = 0 ) {
-		$this->counts['created']++;
+		++$this->counts['created'];
 		$this->events[] = array(
 			'title'    => $event_title,
 			'post_id'  => (int) $post_id,
@@ -116,7 +130,7 @@ class Conexao_Import_Result {
 	 * @param int    $post_id     WordPress post ID.
 	 */
 	public function add_updated( $event_title, $post_id = 0 ) {
-		$this->counts['updated']++;
+		++$this->counts['updated'];
 		$this->events[] = array(
 			'title'    => $event_title,
 			'post_id'  => (int) $post_id,
@@ -133,7 +147,7 @@ class Conexao_Import_Result {
 	 * @param int    $post_id     WordPress post ID.
 	 */
 	public function add_unchanged( $event_title, $post_id = 0 ) {
-		$this->counts['unchanged']++;
+		++$this->counts['unchanged'];
 		$this->events[] = array(
 			'title'    => $event_title,
 			'post_id'  => (int) $post_id,
@@ -150,7 +164,7 @@ class Conexao_Import_Result {
 	 * @param int    $post_id     WordPress post ID.
 	 */
 	public function add_duplicate( $event_title, $post_id = 0 ) {
-		$this->counts['duplicates']++;
+		++$this->counts['duplicates'];
 		$this->events[] = array(
 			'title'    => $event_title,
 			'post_id'  => (int) $post_id,
@@ -168,7 +182,7 @@ class Conexao_Import_Result {
 	 * @param string $reason      Human-readable skip reason.
 	 */
 	public function add_skipped( $event_title, $reason = '' ) {
-		$this->counts['skipped']++;
+		++$this->counts['skipped'];
 		$this->events[] = array(
 			'title'    => $event_title,
 			'post_id'  => 0,
@@ -190,7 +204,7 @@ class Conexao_Import_Result {
 	 * @param string $reason      Human-readable skip reason.
 	 */
 	public function add_skipped_past( $event_title, $reason = '' ) {
-		$this->counts['skipped_past']++;
+		++$this->counts['skipped_past'];
 		$this->add_skipped( $event_title, $reason );
 	}
 
@@ -205,7 +219,7 @@ class Conexao_Import_Result {
 	 * @param string $reason      Human-readable skip reason.
 	 */
 	public function add_skipped_invalid_date( $event_title, $reason = '' ) {
-		$this->counts['skipped_invalid_date']++;
+		++$this->counts['skipped_invalid_date'];
 		$this->add_skipped( $event_title, $reason );
 	}
 
@@ -219,16 +233,54 @@ class Conexao_Import_Result {
 	 * @param string $technical   Optional technical detail for debugging (in details).
 	 */
 	public function add_failed( $event_title, $reason = '', $technical = '' ) {
-		$this->counts['failed']++;
+		++$this->counts['failed'];
 		$this->events[] = array(
-			'title'    => $event_title,
-			'post_id'  => 0,
-			'outcome'  => 'failed',
-			'message'  => $reason ? $reason : __( 'Event import failed.', 'conexao-event-importer' ),
+			'title'     => $event_title,
+			'post_id'   => 0,
+			'outcome'   => 'failed',
+			'message'   => $reason ? $reason : __( 'Event import failed.', 'conexao-event-importer' ),
 			'technical' => $technical,
-			'severity' => 'error',
+			'severity'  => 'error',
 		);
-		$this->status = 'partial';
+		$this->status   = 'partial';
+	}
+
+	/**
+	 * Record that the source listing was only partially enumerated.
+	 *
+	 * This is NOT a failure: every event the walk did fetch is still imported.
+	 * It is a truthfulness signal — the run must not present a truncated
+	 * result as a complete one, and it must not mark absent events as
+	 * source_not_found (see mark_missing_events()).
+	 *
+	 * Upgrades a success to a warning; never downgrades a partial/failed run.
+	 *
+	 * @param string $message Human-readable explanation.
+	 */
+	public function add_incomplete_enumeration( $message = '' ) {
+		$this->incomplete_enumeration = true;
+		if ( '' !== trim( (string) $message ) ) {
+			$this->incomplete_enumeration_note = (string) $message;
+		}
+		$this->maybe_warn();
+	}
+
+	/**
+	 * The recorded explanation for an incomplete source enumeration.
+	 *
+	 * @return string
+	 */
+	public function get_incomplete_enumeration_note() {
+		return $this->incomplete_enumeration_note;
+	}
+
+	/**
+	 * Whether the source listing was only partially enumerated.
+	 *
+	 * @return bool
+	 */
+	public function is_enumeration_incomplete() {
+		return (bool) $this->incomplete_enumeration;
 	}
 
 	/**
@@ -242,7 +294,7 @@ class Conexao_Import_Result {
 			'message'   => $message,
 			'technical' => $technical,
 		);
-		$this->status = 'failed';
+		$this->status         = 'failed';
 	}
 
 	/**
@@ -330,6 +382,9 @@ class Conexao_Import_Result {
 				'errors'        => $this->counts['failed'],
 				'status'        => $this->get_status(),
 				'fatal_errors'  => $this->fatal_errors,
+				// Truthfulness flag: false means the returned event list is a
+				// SUBSET of the real source listing, not the whole thing.
+				'complete'      => $this->incomplete_enumeration ? false : true,
 				'event_results' => $this->events,
 			)
 		);

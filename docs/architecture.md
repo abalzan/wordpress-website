@@ -40,7 +40,7 @@ Plugins load in registry order, and dependencies always precede their dependents
 2. **conexao-content** (`platform`, active) v1.0.1. **Required on production.**
 3. **conexao-admin-ux** (`platform`, active) v1.0.7. **Required on production.**
 4. **conexao-event-runtime** (`platform`, active) v1.2.2. **Required on production.** Declared dependencies (`Requires Plugins` header): `conexao-data-model`.
-5. **conexao-event-importer** (`tooling`, active) v1.7.1. **Never required on production.** Declared dependencies (`Requires Plugins` header): `conexao-data-model`, `conexao-event-runtime`.
+5. **conexao-event-importer** (`tooling`, active) v1.7.2. **Never required on production.** Declared dependencies (`Requires Plugins` header): `conexao-data-model`, `conexao-event-runtime`.
 6. **conexao-leisure-migration** (`tooling`, active) v2.1.0. **Never required on production.**
 7. **conexao-sponsor-migration** (`tooling`, active) v1.1.0. **Never required on production.**
 8. **conexao-translation-rollout** (`platform`, active) v1.2.0. **Required on production.**

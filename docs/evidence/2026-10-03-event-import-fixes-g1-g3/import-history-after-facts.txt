@@ -1,0 +1,8 @@
+LOG_ENTRIES=527
+HTTP_STATUS_IN_LOG={"429":208,"500":4}
+WITH_RUN_ID=493
+WITHOUT_RUN_ID=34
+HISTORY_FAILED=43
+HISTORY_INCOMPLETE=40
+HISTORY_FOUND0_SUCCESS=0
+FAILED_SOURCES=all, heritage_week_wicklow, heritage_week_wexford, heritage_week_westmeath, heritage_week_waterford, heritage_week_tipperary, heritage_week_sligo, heritage_week_roscommon, heritage_week_offaly, heritage_week_monaghan, heritage_week_meath, heritage_week_mayo, heritage_week_louth, heritage_week_longford, heritage_week_limerick, heritage_week_leitrim, heritage_week_laois, heritage_week_kilkenny, eventbrite_wicklow, eventbrite_wexford, eventbrite_westmeath, eventbrite_waterford, eventbrite_tipperary, eventbrite_sligo, eventbrite_roscommon, eventbrite_offaly, eventbrite_monaghan, eventbrite_meath, eventbrite_mayo, eventbrite_louth, eventbrite_longford, eventbrite_limerick, eventbrite_leitrim, eventbrite_laois, eventbrite_kilkenny, eventbrite_kildare, eventbrite_kerry, eventbrite_galway, eventbrite_dublin, eventbrite_donegal, eventbrite_cork, eventbrite_cavan, eventbrite_carlow

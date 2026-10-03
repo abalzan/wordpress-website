@@ -101,7 +101,12 @@ class Conexao_Source_Health {
 					/* translators: %s: failure reason */
 					__( 'Import failure recorded: %s', 'conexao-event-importer' ),
 					$reason
-				)
+				),
+				// Correlate the health-tracker entry to the run that caused it,
+				// using the run ID the engine already publishes. Without it this
+				// entry is one of the diagnostics that cannot be tied back to an
+				// import run.
+				array( 'run_id' => apply_filters( 'conexao_event_importer_current_run_id', '' ) )
 			);
 		}
 	}

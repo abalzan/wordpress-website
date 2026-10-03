@@ -109,5 +109,6 @@ if ( ! function_exists( 'add_action' ) || ! isset( $GLOBALS['wp_version'] ) ) {
 // The shared assertion API. Defined after the WordPress load because the
 // failure-message formatter uses wp_json_encode().
 require_once CONEXAO_TESTS_ROOT . '/lib/assertions.php';
+require_once CONEXAO_TESTS_ROOT . '/lib/option-isolation.php';
 
 unset( $conexao_tests_wp_root );

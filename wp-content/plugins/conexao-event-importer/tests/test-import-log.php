@@ -7,6 +7,15 @@
  * no-fail semantics are unchanged — while the number of option writes per
  * import run drops from one-per-entry to one (plus rare threshold flushes).
  *
+ * ## Operator-state safety (G3)
+ *
+ * `conexao_event_import_log` is the maintainer's diagnostic record of what an
+ * import actually did — it is NOT a test fixture. This suite exercises
+ * `clear()` heavily by design, so it runs against an ISOLATED, EMPTY copy and
+ * restores the real log verbatim when it finishes (and from a shutdown safety
+ * net if it dies early). Before this isolation the canonical suite drove the
+ * live option 599 -> 91 -> 0, destroying real operator history.
+ *
  * Usage: docker compose exec wordpress php /var/www/html/wp-content/plugins/conexao-event-importer/tests/test-import-log.php
  */
 
@@ -18,6 +27,21 @@ require_once WP_PLUGIN_DIR . '/conexao-event-importer/conexao-event-importer.php
 
 $passed = 0;
 $failed = 0;
+
+// Measure the REAL live entry count directly from the database, BEFORE any
+// isolation happens. This value must not be derived from the isolation
+// snapshot: if the isolation call were removed, a snapshot-derived count would
+// silently become 0 and the retention assertion would pass vacuously while the
+// operator's history was being destroyed. Reading the option here is what makes
+// the check at the end of this file meaningful.
+$live_log_entries_before = count( (array) get_option( Conexao_Import_Log::OPTION_KEY, array() ) );
+
+// Isolate the operator's import log BEFORE any test touches it. The live value
+// is snapshotted and restored at the end of this file (and by the registered
+// shutdown net if the suite exits early).
+$live_log_snapshot = test_options_isolate( array( Conexao_Import_Log::OPTION_KEY ) );
+
+printf( "  INFO: isolated %s — %d live entries snapshotted and restored at the end\n", Conexao_Import_Log::OPTION_KEY, $live_log_entries_before );
 
 // Count successful update_option writes for the log option.
 $GLOBALS['log_writes'] = 0;
@@ -340,9 +364,32 @@ assert_true( 1 === $after, 'After: 200 buffered entries caused 1 option write' )
 assert_true( 200 === $persisted, 'After: all 200 entries persisted correctly' );
 
 // ---------------------------------------------------------------------------
+// Test 13: Operator-state safety (G3) — this suite must not destroy the log.
+// ---------------------------------------------------------------------------
+test_section( 'Operator-state safety: the live import log survives this suite' );
+
+// The suite above deliberately called clear() many times against the isolated
+// store. Restoring the snapshot puts the operator's real diagnostics back.
+test_options_restore( $live_log_snapshot );
+$GLOBALS['conexao_test_option_snapshots'] = array();
+
+$live_log_entries_after = count( Conexao_Import_Log::get_all() );
+
+assert_true(
+	$live_log_entries_after === $live_log_entries_before,
+	sprintf(
+		'Live import log preserved: %d entries before, %d after (must be equal)',
+		$live_log_entries_before,
+		$live_log_entries_after
+	)
+);
+assert_true(
+	0 !== $live_log_entries_after || 0 === $live_log_entries_before,
+	'Live import log was not wiped to zero by a non-empty starting state'
+);
+
+// ---------------------------------------------------------------------------
 // Summary
 // ---------------------------------------------------------------------------
-
-Conexao_Import_Log::clear();
 
 test_finish();

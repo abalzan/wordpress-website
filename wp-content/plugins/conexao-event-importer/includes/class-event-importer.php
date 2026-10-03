@@ -43,11 +43,11 @@ class Conexao_Event_Importer_Engine {
 	 * @param Conexao_Event_Location $location Location normalizer.
 	 */
 	public function __construct( Conexao_Event_Sources $sources, Conexao_Event_Location $location ) {
-		$this->sources        = $sources;
-		$this->location       = $location;
-		$this->normalizer     = new Conexao_Event_Normalizer( $location );
-		$this->deduplicator   = new Conexao_Event_Deduplicator();
-		$this->image_handler  = new Conexao_Event_Image_Handler();
+		$this->sources       = $sources;
+		$this->location      = $location;
+		$this->normalizer    = new Conexao_Event_Normalizer( $location );
+		$this->deduplicator  = new Conexao_Event_Deduplicator();
+		$this->image_handler = new Conexao_Event_Image_Handler();
 
 		// Hook the "run source" filter used by the admin UI.
 		add_filter( 'conexao_event_importer_run_source', array( $this, 'run_source' ), 10, 1 );
@@ -100,7 +100,13 @@ class Conexao_Event_Importer_Engine {
 	 * @return array Combined result array.
 	 */
 	protected function run_all_unbuffered( $args = array() ) {
-		$args    = wp_parse_args( is_array( $args ) ? $args : array(), array( 'dry_run' => false, 'source_ids' => array() ) );
+		$args    = wp_parse_args(
+			is_array( $args ) ? $args : array(),
+			array(
+				'dry_run'    => false,
+				'source_ids' => array(),
+			)
+		);
 		$dry_run = ! empty( $args['dry_run'] );
 
 		// Start a fresh run ID for the combined run.
@@ -140,7 +146,7 @@ class Conexao_Event_Importer_Engine {
 
 		// Guard against no active sources.
 		if ( empty( $active_sources ) ) {
-			$combined['status'] = 'warning';
+			$combined['status']         = 'warning';
 			$combined['fatal_errors'][] = array(
 				'message'   => __( 'No active event sources are configured. Enable at least one source to import events.', 'conexao-event-importer' ),
 				'technical' => '',
@@ -152,17 +158,17 @@ class Conexao_Event_Importer_Engine {
 			$result = $this->run_source( $source['id'], $dry_run );
 
 			// Aggregate counters.
-			$combined['found']        += isset( $result['found'] ) ? (int) $result['found'] : 0;
-			$combined['created']      += isset( $result['created'] ) ? (int) $result['created'] : 0;
-			$combined['new']          += isset( $result['new'] ) ? (int) $result['new'] : 0;
-			$combined['updated']      += isset( $result['updated'] ) ? (int) $result['updated'] : 0;
-			$combined['unchanged']    += isset( $result['unchanged'] ) ? (int) $result['unchanged'] : 0;
+			$combined['found']                += isset( $result['found'] ) ? (int) $result['found'] : 0;
+			$combined['created']              += isset( $result['created'] ) ? (int) $result['created'] : 0;
+			$combined['new']                  += isset( $result['new'] ) ? (int) $result['new'] : 0;
+			$combined['updated']              += isset( $result['updated'] ) ? (int) $result['updated'] : 0;
+			$combined['unchanged']            += isset( $result['unchanged'] ) ? (int) $result['unchanged'] : 0;
 			$combined['duplicates']           += isset( $result['duplicates'] ) ? (int) $result['duplicates'] : 0;
 			$combined['skipped']              += isset( $result['skipped'] ) ? (int) $result['skipped'] : 0;
 			$combined['skipped_past']         += isset( $result['skipped_past'] ) ? (int) $result['skipped_past'] : 0;
 			$combined['skipped_invalid_date'] += isset( $result['skipped_invalid_date'] ) ? (int) $result['skipped_invalid_date'] : 0;
-			$combined['failed']       += isset( $result['failed'] ) ? (int) $result['failed'] : 0;
-			$combined['errors']       += isset( $result['errors'] ) ? (int) $result['errors'] : 0;
+			$combined['failed']               += isset( $result['failed'] ) ? (int) $result['failed'] : 0;
+			$combined['errors']               += isset( $result['errors'] ) ? (int) $result['errors'] : 0;
 
 			// Merge fatal errors.
 			if ( ! empty( $result['fatal_errors'] ) && is_array( $result['fatal_errors'] ) ) {
@@ -278,7 +284,12 @@ class Conexao_Event_Importer_Engine {
 				'errors'        => 0,
 				'failed'        => 0,
 				'status'        => 'failed',
-				'fatal_errors'  => array( array( 'message' => __( 'Event source not found.', 'conexao-event-importer' ), 'technical' => '' ) ),
+				'fatal_errors'  => array(
+					array(
+						'message'   => __( 'Event source not found.', 'conexao-event-importer' ),
+						'technical' => '',
+					),
+				),
 				'event_results' => array(),
 			);
 		}
@@ -319,12 +330,22 @@ class Conexao_Event_Importer_Engine {
 			$message = __( 'No import handler is registered for this event source.', 'conexao-event-importer' );
 			Conexao_Import_Log::add( $source_id, 'error', $message, array( 'run_id' => $this->current_run_id ) );
 			$result->add_fatal_error( $message );
+			$result->add_incomplete_enumeration( $message );
 			$this->update_source_stats_after_run( $source_id, $result );
-			Conexao_Import_History::record( $source_id, $result->get_stats(), $result->get_status(), $message, array(
-				'run_id'        => $this->current_run_id,
-				'fatal_errors'  => $result->get_fatal_errors(),
-				'failed_events' => $result->get_failed_events(),
-			) );
+			Conexao_Import_History::record(
+				$source_id,
+				$result->get_stats(),
+				$result->get_status(),
+				$message,
+				array(
+					'run_id'        => $this->current_run_id,
+					'fatal_errors'  => $result->get_fatal_errors(),
+					'failed_events' => $result->get_failed_events(),
+					// A source that failed before enumeration is by definition
+					// NOT a complete listing; never record it as one.
+					'complete'      => $result->is_enumeration_incomplete() ? false : true,
+				)
+			);
 			return $result->get_stats();
 		}
 
@@ -339,17 +360,32 @@ class Conexao_Event_Importer_Engine {
 				$source['name'],
 				$e->get_http_status()
 			);
-			Conexao_Import_Log::add( $source_id, 'error', $message, array(
-				'run_id'      => $this->current_run_id,
-				'http_status' => $e->get_http_status(),
-			) );
+			Conexao_Import_Log::add(
+				$source_id,
+				'error',
+				$message,
+				array(
+					'run_id'      => $this->current_run_id,
+					'http_status' => $e->get_http_status(),
+				)
+			);
 			$result->add_fatal_error( $message, $e->getMessage() );
+			$result->add_incomplete_enumeration( $message );
 			$this->update_source_stats_after_run( $source_id, $result );
-			Conexao_Import_History::record( $source_id, $result->get_stats(), $result->get_status(), $message, array(
-				'run_id'        => $this->current_run_id,
-				'fatal_errors'  => $result->get_fatal_errors(),
-				'failed_events' => $result->get_failed_events(),
-			) );
+			Conexao_Import_History::record(
+				$source_id,
+				$result->get_stats(),
+				$result->get_status(),
+				$message,
+				array(
+					'run_id'        => $this->current_run_id,
+					'fatal_errors'  => $result->get_fatal_errors(),
+					'failed_events' => $result->get_failed_events(),
+					// A source that failed before enumeration is by definition
+					// NOT a complete listing; never record it as one.
+					'complete'      => $result->is_enumeration_incomplete() ? false : true,
+				)
+			);
 			return $result->get_stats();
 		} catch ( Exception $e ) {
 			$message = sprintf(
@@ -357,16 +393,31 @@ class Conexao_Event_Importer_Engine {
 				__( 'Failed to fetch events from %s. The source may be temporarily unavailable.', 'conexao-event-importer' ),
 				$source['name']
 			);
-			Conexao_Import_Log::add( $source_id, 'error', $message, array(
-				'run_id' => $this->current_run_id,
-			) );
+			Conexao_Import_Log::add(
+				$source_id,
+				'error',
+				$message,
+				array(
+					'run_id' => $this->current_run_id,
+				)
+			);
 			$result->add_fatal_error( $message, $e->getMessage() );
+			$result->add_incomplete_enumeration( $message );
 			$this->update_source_stats_after_run( $source_id, $result );
-			Conexao_Import_History::record( $source_id, $result->get_stats(), $result->get_status(), $message, array(
-				'run_id'        => $this->current_run_id,
-				'fatal_errors'  => $result->get_fatal_errors(),
-				'failed_events' => $result->get_failed_events(),
-			) );
+			Conexao_Import_History::record(
+				$source_id,
+				$result->get_stats(),
+				$result->get_status(),
+				$message,
+				array(
+					'run_id'        => $this->current_run_id,
+					'fatal_errors'  => $result->get_fatal_errors(),
+					'failed_events' => $result->get_failed_events(),
+					// A source that failed before enumeration is by definition
+					// NOT a complete listing; never record it as one.
+					'complete'      => $result->is_enumeration_incomplete() ? false : true,
+				)
+			);
 			return $result->get_stats();
 		}
 
@@ -378,19 +429,29 @@ class Conexao_Event_Importer_Engine {
 			);
 			Conexao_Import_Log::add( $source_id, 'error', $message, array( 'run_id' => $this->current_run_id ) );
 			$result->add_fatal_error( $message );
+			$result->add_incomplete_enumeration( $message );
 			$this->update_source_stats_after_run( $source_id, $result );
-			Conexao_Import_History::record( $source_id, $result->get_stats(), $result->get_status(), $message, array(
-				'run_id'        => $this->current_run_id,
-				'fatal_errors'  => $result->get_fatal_errors(),
-				'failed_events' => $result->get_failed_events(),
-			) );
+			Conexao_Import_History::record(
+				$source_id,
+				$result->get_stats(),
+				$result->get_status(),
+				$message,
+				array(
+					'run_id'        => $this->current_run_id,
+					'fatal_errors'  => $result->get_fatal_errors(),
+					'failed_events' => $result->get_failed_events(),
+					// A source that failed before enumeration is by definition
+					// NOT a complete listing; never record it as one.
+					'complete'      => $result->is_enumeration_incomplete() ? false : true,
+				)
+			);
 			return $result->get_stats();
 		}
 
 		$result->set_found( count( $raw_events ) );
 
 		if ( $dry_run ) {
-			return $this->dry_run_source( $source_id, $source, $raw_events );
+			return $this->dry_run_source( $source_id, $source, $raw_events, $handler );
 		}
 
 		foreach ( $raw_events as $raw ) {
@@ -466,7 +527,7 @@ class Conexao_Event_Importer_Engine {
 				// skipped — they are never created as posts and existing
 				// posts are left untouched.
 				if ( ! empty( $normalized['validation_errors'] ) ) {
-					$title = $normalized['title'] ? $normalized['title'] : __( '(untitled event)', 'conexao-event-importer' );
+					$title  = $normalized['title'] ? $normalized['title'] : __( '(untitled event)', 'conexao-event-importer' );
 					$reason = sprintf(
 						/* translators: %s: list of missing/invalid required fields */
 						__( 'Skipped: missing required data (%s).', 'conexao-event-importer' ),
@@ -572,9 +633,9 @@ class Conexao_Event_Importer_Engine {
 								$reason
 							),
 							array(
-								'run_id'       => $this->current_run_id,
-								'event_id'     => $event_id,
-								'event_title'  => $normalized['title'],
+								'run_id'      => $this->current_run_id,
+								'event_id'    => $event_id,
+								'event_title' => $normalized['title'],
 							)
 						);
 						break;
@@ -606,7 +667,19 @@ class Conexao_Event_Importer_Engine {
 		}
 
 		// Mark events from this source that disappeared as "Source Not Found".
-		$this->mark_missing_events( $source_id, $raw_events );
+		//
+		// ONLY when the source enumeration was COMPLETE. Absence from a
+		// truncated or partial walk is not evidence that an event disappeared
+		// upstream: flipping it to source_not_found hides a live event from
+		// every public query. This guard is what protects the 5 real Cavan
+		// events the diagnosis proved were hidden this way (Stage G2).
+		$fetch_complete = $this->is_handler_fetch_complete( $handler );
+
+		if ( $fetch_complete ) {
+			$this->mark_missing_events( $source_id, $raw_events );
+		} else {
+			$this->mark_fetch_incomplete_in_result( $result, $source_id );
+		}
 
 		// Update the source's last-import metadata.
 		$this->update_source_stats_after_run( $source_id, $result );
@@ -615,11 +688,18 @@ class Conexao_Event_Importer_Engine {
 		$message = $this->build_summary_message( $result );
 
 		// Record the history entry with failure details.
-		Conexao_Import_History::record( $source_id, $result->get_stats(), $result->get_status(), $message, array(
-			'run_id'        => $this->current_run_id,
-			'fatal_errors'  => $result->get_fatal_errors(),
-			'failed_events' => $result->get_failed_events(),
-		) );
+		Conexao_Import_History::record(
+			$source_id,
+			$result->get_stats(),
+			$result->get_status(),
+			$message,
+			array(
+				'run_id'        => $this->current_run_id,
+				'fatal_errors'  => $result->get_fatal_errors(),
+				'failed_events' => $result->get_failed_events(),
+				'complete'      => $result->is_enumeration_incomplete() ? false : true,
+			)
+		);
 
 		// Log the run summary (info level, one line, not huge).
 		$counts = $result->get_counts();
@@ -654,9 +734,10 @@ class Conexao_Event_Importer_Engine {
 	 * @param string $source_id  Source slug.
 	 * @param array  $source     Source config.
 	 * @param array  $raw_events Raw events from the handler.
+	 * @param object $handler    Source handler that produced the events.
 	 * @return array Stats for this source.
 	 */
-	protected function dry_run_source( $source_id, $source, $raw_events ) {
+	protected function dry_run_source( $source_id, $source, $raw_events, $handler = null ) {
 		$result = new Conexao_Import_Result( $source_id, $source['name'] );
 		$result->set_found( count( $raw_events ) );
 
@@ -686,7 +767,7 @@ class Conexao_Event_Importer_Engine {
 				$date_check = Conexao_Event_Date_Filter::evaluate( $normalized );
 
 				if ( Conexao_Event_Date_Filter::INVALID === $date_check['status'] ) {
-					$address_audit['skipped']++;
+					++$address_audit['skipped'];
 					$result->add_skipped_invalid_date(
 						$normalized['title'],
 						__( 'Would skip: the event date could not be evaluated (missing, malformed, or unparseable date).', 'conexao-event-importer' )
@@ -695,7 +776,7 @@ class Conexao_Event_Importer_Engine {
 				}
 
 				if ( Conexao_Event_Date_Filter::PAST === $date_check['status'] ) {
-					$address_audit['skipped']++;
+					++$address_audit['skipped'];
 					$result->add_skipped_past(
 						$normalized['title'],
 						sprintf(
@@ -708,7 +789,7 @@ class Conexao_Event_Importer_Engine {
 				}
 
 				if ( ! empty( $normalized['validation_errors'] ) ) {
-					$address_audit['skipped']++;
+					++$address_audit['skipped'];
 					$title = $normalized['title'] ? $normalized['title'] : __( '(untitled event)', 'conexao-event-importer' );
 					$result->add_skipped(
 						$title,
@@ -743,10 +824,14 @@ class Conexao_Event_Importer_Engine {
 			}
 		}
 
-		$stats                 = $result->get_stats();
-		$stats['dry_run']      = true;
-		$stats['source_name']  = isset( $source['name'] ) ? $source['name'] : $source_id;
+		$stats                  = $result->get_stats();
+		$stats['dry_run']       = true;
+		$stats['source_name']   = isset( $source['name'] ) ? $source['name'] : $source_id;
 		$stats['address_audit'] = $address_audit;
+		// A dry run must report the same completeness truth as a real run, so
+		// an operator can see from a dry run alone that the listing was only
+		// partially enumerated.
+		$stats['complete'] = $this->is_handler_fetch_complete( $handler );
 
 		Conexao_Import_Log::add(
 			$source_id,
@@ -786,20 +871,20 @@ class Conexao_Event_Importer_Engine {
 	 * @param int   $existing_id   Existing post ID (0 when it would be created).
 	 */
 	protected function audit_address( &$address_audit, $normalized, $existing_id ) {
-		$status = isset( $normalized['address_status'] ) ? $normalized['address_status'] : 'missing';
-		$stored = $existing_id ? (string) get_post_meta( $existing_id, '_event_address', true ) : '';
+		$status   = isset( $normalized['address_status'] ) ? $normalized['address_status'] : 'missing';
+		$stored   = $existing_id ? (string) get_post_meta( $existing_id, '_event_address', true ) : '';
 		$incoming = isset( $normalized['address'] ) ? (string) $normalized['address'] : '';
 
 		if ( 'rejected' === $status ) {
-			$address_audit['ambiguous']++;
+			++$address_audit['ambiguous'];
 			return;
 		}
 
 		if ( 'missing' === $status || '' === $incoming ) {
 			if ( '' !== $stored ) {
-				$address_audit['no_source_address']++;
+				++$address_audit['no_source_address'];
 			} else {
-				$address_audit['no_address']++;
+				++$address_audit['no_address'];
 			}
 			return;
 		}
@@ -807,14 +892,14 @@ class Conexao_Event_Importer_Engine {
 		// 'found' status with a usable incoming address.
 		if ( $existing_id ) {
 			if ( '' === $stored ) {
-				$address_audit['found']++;
+				++$address_audit['found'];
 			} elseif ( $stored === $incoming ) {
-				$address_audit['unchanged']++;
+				++$address_audit['unchanged'];
 			} else {
-				$address_audit['changed']++;
+				++$address_audit['changed'];
 			}
 		} else {
-			$address_audit['found']++;
+			++$address_audit['found'];
 		}
 	}
 
@@ -855,7 +940,7 @@ class Conexao_Event_Importer_Engine {
 			}
 		} elseif ( 'partial' === $status ) {
 			$stats['last_import_status'] = 'success'; // Partial is still a completed run.
-			$stats['last_error'] = sprintf(
+			$stats['last_error']         = sprintf(
 				/* translators: %d: number of failed events */
 				__( '%d event(s) failed but the rest were imported.', 'conexao-event-importer' ),
 				$result->get_counts()['failed']
@@ -1123,7 +1208,7 @@ class Conexao_Event_Importer_Engine {
 			// Check if the banner attachment exists (may be missing for events
 			// imported before the image download feature was added).
 			$existing_banner_attach = get_post_meta( $post_id, Conexao_Event_Image_Handler::ATTACHMENT_META_KEY, true );
-			$has_attachment = $existing_banner_attach && wp_attachment_is_image( $existing_banner_attach );
+			$has_attachment         = $existing_banner_attach && wp_attachment_is_image( $existing_banner_attach );
 
 			// Title comparison normalizes HTML entities on both sides:
 			// Eventbrite's discovery payload alternates between serving
@@ -1202,35 +1287,66 @@ class Conexao_Event_Importer_Engine {
 					Conexao_Event_Status::set_status( $post_id, Conexao_Event_Status::PUBLISHED );
 				}
 
-				return array( 'action' => 'unchanged', 'post_id' => $post_id );
+				return array(
+					'action'  => 'unchanged',
+					'post_id' => $post_id,
+				);
 			}
 
 			$action = 'updated';
 
-			$updated = wp_update_post( array(
-				'ID'           => $post_id,
-				'post_title'   => $normalized['title'],
-				'post_content' => $normalized['description'],
-				'post_excerpt' => wp_trim_words( $normalized['description'], 30, '...' ),
-				'post_status'  => 'publish',
-			) );
+			$updated = wp_update_post(
+				array(
+					'ID'           => $post_id,
+					'post_title'   => $normalized['title'],
+					'post_content' => $normalized['description'],
+					'post_excerpt' => wp_trim_words( $normalized['description'], 30, '...' ),
+					'post_status'  => 'publish',
+				)
+			);
 
 			if ( is_wp_error( $updated ) ) {
-				Conexao_Import_Log::add( $normalized['source'], 'error', 'Falha ao atualizar evento: ' . $updated->get_error_message(), array( 'title' => $normalized['title'], 'run_id' => $this->current_run_id ) );
-				return array( 'action' => 'error', 'post_id' => 0, 'error' => $updated->get_error_message() );
+				Conexao_Import_Log::add(
+					$normalized['source'],
+					'error',
+					'Falha ao atualizar evento: ' . $updated->get_error_message(),
+					array(
+						'title'  => $normalized['title'],
+						'run_id' => $this->current_run_id,
+					)
+				);
+				return array(
+					'action'  => 'error',
+					'post_id' => 0,
+					'error'   => $updated->get_error_message(),
+				);
 			}
 		} else {
-			$post_id = wp_insert_post( array(
-				'post_type'    => 'event',
-				'post_title'   => $normalized['title'],
-				'post_content' => $normalized['description'],
-				'post_excerpt' => wp_trim_words( $normalized['description'], 30, '...' ),
-				'post_status'  => 'publish',
-			) );
+			$post_id = wp_insert_post(
+				array(
+					'post_type'    => 'event',
+					'post_title'   => $normalized['title'],
+					'post_content' => $normalized['description'],
+					'post_excerpt' => wp_trim_words( $normalized['description'], 30, '...' ),
+					'post_status'  => 'publish',
+				)
+			);
 
 			if ( is_wp_error( $post_id ) ) {
-				Conexao_Import_Log::add( $normalized['source'], 'error', 'Falha ao criar evento: ' . $post_id->get_error_message(), array( 'title' => $normalized['title'], 'run_id' => $this->current_run_id ) );
-				return array( 'action' => 'error', 'post_id' => 0, 'error' => $post_id->get_error_message() );
+				Conexao_Import_Log::add(
+					$normalized['source'],
+					'error',
+					'Falha ao criar evento: ' . $post_id->get_error_message(),
+					array(
+						'title'  => $normalized['title'],
+						'run_id' => $this->current_run_id,
+					)
+				);
+				return array(
+					'action'  => 'error',
+					'post_id' => 0,
+					'error'   => $post_id->get_error_message(),
+				);
 			}
 
 			$action = 'created';
@@ -1268,7 +1384,10 @@ class Conexao_Event_Importer_Engine {
 		// published when they reappear in the source feed.
 		Conexao_Event_Status::set_status( $post_id, Conexao_Event_Status::PUBLISHED );
 
-		return array( 'action' => $action, 'post_id' => $post_id );
+		return array(
+			'action'  => $action,
+			'post_id' => $post_id,
+		);
 	}
 
 	/**
@@ -1478,7 +1597,7 @@ class Conexao_Event_Importer_Engine {
 		}
 
 		// Download the image into the Media Library.
-		$title = isset( $normalized['title'] ) ? $normalized['title'] : '';
+		$title         = isset( $normalized['title'] ) ? $normalized['title'] : '';
 		$attachment_id = $this->image_handler->sideload_image( $banner_url, $post_id, $title );
 
 		if ( $attachment_id ) {
@@ -1550,24 +1669,24 @@ class Conexao_Event_Importer_Engine {
 		}
 
 		$meta = array(
-			'_event_date'        => $normalized['start_date'],
-			'_event_time'        => $normalized['event_time'],
-			'_event_start_time'  => $normalized['start_time'],
-			'_event_end_date'    => $normalized['end_date'],
-			'_event_end_time'    => $normalized['end_time'],
-			'_event_location'    => $normalized['event_location'],
-			'_event_venue'       => $normalized['venue'],
-			'_event_address'     => $stored_address,
-			'_event_map_url'     => $map_url,
-			'_event_url'         => $normalized['source_url'],
-			'_event_source_url'  => $normalized['source_url'],
-			'_event_banner'      => $normalized['banner'],
-			'_event_source'      => $normalized['source'],
-			'_event_source_id'   => $normalized['source_id'],
-			'_event_organizer'   => $normalized['organizer'],
-			'_event_price'       => $normalized['price'],
-			'_event_imported'    => '1',
-			'_event_import_date' => current_time( 'mysql' ),
+			'_event_date'         => $normalized['start_date'],
+			'_event_time'         => $normalized['event_time'],
+			'_event_start_time'   => $normalized['start_time'],
+			'_event_end_date'     => $normalized['end_date'],
+			'_event_end_time'     => $normalized['end_time'],
+			'_event_location'     => $normalized['event_location'],
+			'_event_venue'        => $normalized['venue'],
+			'_event_address'      => $stored_address,
+			'_event_map_url'      => $map_url,
+			'_event_url'          => $normalized['source_url'],
+			'_event_source_url'   => $normalized['source_url'],
+			'_event_banner'       => $normalized['banner'],
+			'_event_source'       => $normalized['source'],
+			'_event_source_id'    => $normalized['source_id'],
+			'_event_organizer'    => $normalized['organizer'],
+			'_event_price'        => $normalized['price'],
+			'_event_imported'     => '1',
+			'_event_import_date'  => current_time( 'mysql' ),
 			'_event_last_checked' => current_time( 'mysql' ),
 		);
 
@@ -1686,6 +1805,51 @@ class Conexao_Event_Importer_Engine {
 	}
 
 	/**
+	 * Whether a source handler completed a full enumeration.
+	 *
+	 * Handlers that predate the completeness contract (or that enumerate a
+	 * single feed with no pagination) do not implement is_fetch_complete() and
+	 * are treated as complete, so their behaviour is unchanged.
+	 *
+	 * @param object|null $handler Source handler instance.
+	 * @return bool
+	 */
+	protected function is_handler_fetch_complete( $handler ) {
+		if ( ! is_object( $handler ) || ! method_exists( $handler, 'is_fetch_complete' ) ) {
+			return true;
+		}
+		return (bool) $handler->is_fetch_complete();
+	}
+
+	/**
+	 * Record an incomplete source enumeration on the run result.
+	 *
+	 * A partial walk still contributes every event it DID fetch — those are
+	 * imported normally. What it must never do is claim the source was fully
+	 * enumerated. This records the distinction so Import History shows a
+	 * warning (not a false "success") and names the reason.
+	 *
+	 * @param Conexao_Import_Result $result    Run result (modified in place).
+	 * @param string                $source_id Source slug.
+	 * @return void
+	 */
+	protected function mark_fetch_incomplete_in_result( $result, $source_id ) {
+		$message = __(
+			'The source listing was only partially enumerated. Events absent from this walk were left untouched (not marked source_not_found); the next run will pick up the remainder.',
+			'conexao-event-importer'
+		);
+
+		$result->add_incomplete_enumeration( $message );
+
+		Conexao_Import_Log::add(
+			$source_id,
+			'warning',
+			$message,
+			array( 'run_id' => $this->current_run_id )
+		);
+	}
+
+	/**
 	 * Mark events from a source that are no longer present as "Source Not Found".
 	 *
 	 * @param string $source_id   Source slug.
@@ -1718,13 +1882,13 @@ class Conexao_Event_Importer_Engine {
 
 		$query = new WP_Query(
 			array(
-				'post_type'      => 'event',
-				'posts_per_page' => 300,
-				'fields'         => 'ids',
-				'no_found_rows'  => true,
+				'post_type'              => 'event',
+				'posts_per_page'         => 300,
+				'fields'                 => 'ids',
+				'no_found_rows'          => true,
 				'update_post_meta_cache' => false,
 				'update_post_term_cache' => false,
-				'meta_query'     => array(
+				'meta_query'             => array(
 					'relation' => 'AND',
 					array(
 						'key'   => '_event_source',

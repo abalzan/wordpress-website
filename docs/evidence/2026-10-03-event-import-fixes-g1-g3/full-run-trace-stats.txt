@@ -1,0 +1,4 @@
+TOTAL=1610
+UNIQUE=1563
+DUPES=47
+BY_HOST={"laoistourism.ie":1,"www.ivvcc.ie":5,"www.motorsportireland.com":51,"mondellopark.ie":30,"www.eventbrite.ie":107,"www.heritageweek.ie":1416}

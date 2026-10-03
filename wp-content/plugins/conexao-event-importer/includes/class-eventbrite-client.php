@@ -71,6 +71,75 @@ class Conexao_Eventbrite_Client {
 	}
 
 	/**
+	 * Last HTTP status observed by the most recent fetch_page() call.
+	 *
+	 * The client returns an empty string for every failure mode, so the
+	 * caller cannot otherwise tell a 429 from a 403 from a dead socket.
+	 * Exposing the status lets the source handler raise a
+	 * Conexao_Source_Fetch_Exception carrying the real code instead of
+	 * guessing (Stage G1: a failed first page is a failed source, never an
+	 * empty source).
+	 *
+	 * @var int
+	 */
+	protected $last_http_status = 0;
+
+	/**
+	 * Get the HTTP status observed by the most recent fetch_page() call.
+	 *
+	 * @return int HTTP status code, 0 for a network-level failure.
+	 */
+	public function get_last_http_status() {
+		return (int) $this->last_http_status;
+	}
+
+	/**
+	 * Get the time budget (seconds) for one pagination walk.
+	 *
+	 * Filterable so a test can drive the truncation branch deterministically.
+	 * The default is unchanged, so production behaviour is identical.
+	 *
+	 * @return float Seconds.
+	 */
+	public function get_time_budget_seconds() {
+		return (float) apply_filters(
+			'conexao_eventbrite_time_budget_seconds',
+			Conexao_Source_Eventbrite::TIME_BUDGET_SECONDS
+		);
+	}
+
+	/**
+	 * Get the backoff (seconds) before retry attempt $attempt.
+	 *
+	 * Filterable for deterministic tests; the default reproduces the existing
+	 * fixed 2/4/8 second exponential backoff exactly.
+	 *
+	 * @param int $attempt Current attempt number (1-based).
+	 * @return float Seconds.
+	 */
+	protected function get_backoff_seconds( $attempt ) {
+		return (float) apply_filters(
+			'conexao_eventbrite_backoff_seconds',
+			self::BASE_BACKOFF_SECONDS * pow( 2, $attempt - 1 ),
+			$attempt
+		);
+	}
+
+	/**
+	 * Get the polite delay (seconds) between page requests.
+	 *
+	 * Filterable for deterministic tests; the default is unchanged.
+	 *
+	 * @return float Seconds.
+	 */
+	protected function get_request_delay_seconds() {
+		return (float) apply_filters(
+			'conexao_eventbrite_request_delay_seconds',
+			self::REQUEST_DELAY_SECONDS
+		);
+	}
+
+	/**
 	 * Fetch a discovery page.
 	 *
 	 * @param string $url  Page URL.
@@ -79,6 +148,8 @@ class Conexao_Eventbrite_Client {
 	 */
 	public function fetch_page( $url, $page = 1 ) {
 		$page_url = $this->build_page_url( $url, $page );
+
+		$this->last_http_status = 0;
 
 		for ( $attempt = 1; $attempt <= self::MAX_RETRIES; $attempt++ ) {
 			$response = wp_remote_get(
@@ -103,10 +174,10 @@ class Conexao_Eventbrite_Client {
 						$response->get_error_message()
 					),
 					array(
-						'url'          => $page_url,
-						'attempt'      => $attempt,
-						'http_status'  => 0,
-						'run_id'       => apply_filters( 'conexao_event_importer_current_run_id', '' ),
+						'url'         => $page_url,
+						'attempt'     => $attempt,
+						'http_status' => 0,
+						'run_id'      => apply_filters( 'conexao_event_importer_current_run_id', '' ),
 					)
 				);
 				$this->backoff( $attempt );
@@ -114,6 +185,8 @@ class Conexao_Eventbrite_Client {
 			}
 
 			$code = wp_remote_retrieve_response_code( $response );
+
+			$this->last_http_status = (int) $code;
 
 			switch ( $code ) {
 				case 200:
@@ -227,7 +300,10 @@ class Conexao_Eventbrite_Client {
 	 * Sleep between requests to be respectful of Eventbrite's servers.
 	 */
 	public function delay() {
-		sleep( self::REQUEST_DELAY_SECONDS );
+		$seconds = $this->get_request_delay_seconds();
+		if ( $seconds > 0 ) {
+			sleep( (int) $seconds );
+		}
 	}
 
 	/**
@@ -236,7 +312,9 @@ class Conexao_Eventbrite_Client {
 	 * @param int $attempt Current attempt number (1-based).
 	 */
 	protected function backoff( $attempt ) {
-		$seconds = self::BASE_BACKOFF_SECONDS * pow( 2, $attempt - 1 );
-		sleep( $seconds );
+		$seconds = $this->get_backoff_seconds( $attempt );
+		if ( $seconds > 0 ) {
+			sleep( (int) $seconds );
+		}
 	}
 }

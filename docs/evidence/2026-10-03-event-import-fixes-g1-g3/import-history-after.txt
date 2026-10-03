@@ -1,0 +1,14 @@
+{
+    "label": "before-focused-runs",
+    "captured": "2026-10-03 21:19:58",
+    "rows": 100,
+    "status_distribution": {
+        "failed": 2,
+        "success": 98
+    },
+    "rows_found0_and_success": 0,
+    "rows_with_fatal_errors": 2,
+    "rows_marked_incomplete": 0,
+    "log_entries": 181,
+    "log_entries_without_run_id": 24
+}

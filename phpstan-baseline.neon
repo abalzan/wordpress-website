@@ -513,7 +513,7 @@ parameters:
 		-
 			message: '#^Call to an undefined method DOMNameSpaceNode\|DOMNode\:\:getAttribute\(\)\.$#'
 			identifier: method.notFound
-			count: 8
+			count: 10
 			path: wp-content/plugins/conexao-event-importer/includes/sources/class-heritage-week-source.php
 
 		-

@@ -1,0 +1,17 @@
+# G3 diagnostic-retention proof (local, no production)
+
+## Control: the isolated suite PRESERVES the live operator log
+LIVE_COUNT=40
+LIVE_FIRST=OPERATOR DIAGNOSTIC 39
+  INFO: isolated conexao_event_import_log — 40 live entries snapshotted and restored at the end
+  PASS: Live import log preserved: 40 entries before, 40 after (must be equal)
+  PASS: Live import log was not wiped to zero by a non-empty starting state
+55 passed, 0 failed
+LIVE_COUNT=40
+LIVE_FIRST=OPERATOR DIAGNOSTIC 39
+
+## Mutation: isolation removed from test-import-log.php
+(mutation reverted after the run; see g3-negative-proof-log-destroyed.log)
+  FAIL: Live import log preserved: 40 entries before, 0 after (must be equal)
+  FAIL: Live import log was not wiped to zero by a non-empty starting state
+53 passed, 2 failed

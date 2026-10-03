@@ -9,7 +9,7 @@
 | **Build** | yes |
 | **Compose mount** | yes |
 | **Dependencies** | `conexao-data-model`, `conexao-event-runtime` |
-| **Version** | 1.7.1 (authoritative source: `wp-content/plugins/conexao-event-importer/conexao-event-importer.php` header) |
+| **Version** | 1.7.2 (authoritative source: `wp-content/plugins/conexao-event-importer/conexao-event-importer.php` header) |
 | **Registry** | [`plugins.json`](../../plugins.json) |
 
 > **Local-only tooling.** Not a production steady-state dependency.
@@ -412,12 +412,148 @@ Re-running the importer updates existing events instead of creating duplicates. 
 
 The export/import path additionally matches on the stable export UUID (`_event_export_uuid`) first.
 
+### Failure semantics — a failed first page is a FAILED source, not an empty one (v1.7.2)
+
+**"The source could not be reached" and "the source has no events" are different
+facts and must never be recorded as the same thing.**
+
+If the FIRST page of a source listing cannot be fetched or parsed, the importer
+raises `Conexao_Source_Fetch_Exception` and the engine records the run as:
+
+| Field | Value |
+|---|---|
+| `status` | `failed` |
+| `fatal_errors` | ≥ 1, carrying the upstream HTTP status |
+| `found` | not reported as a successful `0` |
+
+Before v1.7.2 the Eventbrite and Heritage Week handlers logged the failure and
+returned an empty array. The engine then ran `set_found( count( $raw_events ) )`
+— i.e. `0` — and Import History showed `found=0, status=success, errors=0` for
+21 of 26 Eventbrite and 22 of 26 Heritage Week sources while upstream was in
+fact returning HTTP failures. That is the defect this section closes.
+
+`run_source()` is the recording authority: it already converts
+`Conexao_Source_Fetch_Exception` into a fatal error plus a `failed` history row.
+Source handlers only raise the exception; they never re-implement recording.
+
+**Partial-page tolerance is preserved.** A failure on a page *after* the first
+does not abort the source: the events already fetched are still imported. Such a
+run is recorded as an *incomplete enumeration* (below), never as a failed one,
+and never as a complete one.
+
+Provider classification is unchanged by this rule and remains as measured:
+
+| Response | Behaviour |
+|---|---|
+| `401`, `403` | fail, no blind retry |
+| `404` | fail, no retry |
+| `408`, `502` | fail, no retry (existing policy) |
+| `429`, `500`, `503` | existing 3-attempt retry with backoff (existing policy) |
+| timeout / connection failure | retried per the existing policy, then failed |
+| malformed (unparseable) payload | fail closed |
+
 ### Error handling
 
 - One failed event does not abort the source; one failed source does not abort the run.
 - Fatal errors (source unreachable, HTTP errors) are reported per source with technical details.
 - Image download failures keep the external URL as fallback meta (`_event_banner`) without failing the event.
 - Per-source consecutive-failure counts are tracked informationally (Event Sources table / `wp conexao-events status`); sources are never auto-disabled.
+
+### Pagination semantics — a walk can be INCOMPLETE, and that changes what may be marked
+
+A source enumeration is either **complete** (the returned list is the whole
+upstream listing) or **incomplete** (the walk stopped early). The distinction is
+first-class: it is exposed as `complete` on the per-source stats array (dry runs
+included) and recorded on the Import History row.
+
+`complete = false` when:
+
+- the walk hit its time budget (Eventbrite 45 s, Heritage Week 120 s);
+- a later page could not be fetched or parsed;
+- pagination terminated unexpectedly, including a forward link that resolved to
+  an already-visited page;
+- the page limit was reached with pages still declared;
+- the source failed before it could be enumerated at all.
+
+**The critical rule: an incomplete enumeration must never trigger
+`mark_missing_events()`.** Absence from a truncated listing is not evidence that
+an event disappeared upstream. Marking it `source_not_found` hides the event
+from every public query, because `Conexao_Event_Runtime` excludes that status
+from public queries. The 2026-10-03 investigation proved this mechanism had
+hidden currently-live events from the public site.
+
+Events that *were* fetched in an incomplete run are still imported normally. The
+run is recorded as a `warning` (or `failed`, when the source could not be
+enumerated at all) — never as a bare `success` over a truncated list.
+
+### Heritage Week pagination is forward-only
+
+The Heritage Week navigation renders **"Previous" before "Next"** from page 2
+onwards, so following the first anchor walked *backwards* and oscillated
+p1 ↔ p2 until the page limit (measured: 651 requests, 25 unique URLs, 24 events
+for Wicklow). `get_next_page_url()` now selects deterministically:
+
+1. the anchor the page labels `Next`, matched in XPath;
+2. otherwise a resolved URL that differs from the current page, has not already
+   been visited this run, and carries a strictly greater page number;
+3. never the current URL, an already-visited URL, an empty/invalid `href`, or a
+   backwards destination.
+
+A per-run visited-URL set is maintained, and the walk terminates when the next
+URL equals the current URL, has already been visited, no valid forward link
+exists, or the page limit is reached. URL comparison is normalized (fragment,
+trailing slash and query-parameter order) so a "new" link cannot silently
+re-point at the page just fetched. A "Previous" link pointing at an
+already-visited page is the *normal* end of a listing and is never treated as a
+pagination fault.
+
+Measured after the fix on the same source: `p1 → p2 → … → p11`, 0 revisits, 132
+requests, 0 duplicates, 121 events.
+
+## Diagnostics: Import History, Import Logs and run correlation
+
+- **Import History** (`conexao_event_import_history`, 100 rows) records
+  **run-level** status per source: counts, `status`, a human-readable message,
+  `fatal_errors`, `failed_events`, `run_id`, and the `complete` flag.
+- **Import Logs** (`conexao_event_import_log`, 2,000 entries) preserve
+  **diagnostic** entries: per-page and per-source detail with HTTP status and
+  URL context. These are the records an operator reads to explain a failed run.
+- **Run correlation**: the engine publishes a run ID through the
+  `conexao_event_importer_current_run_id` filter. Every Eventbrite, Heritage
+  Week and source-health diagnostic entry passes it as `run_id`, so
+  `Conexao_Import_Log::get_for_run()` resolves a run's entries and an Import
+  History row links to the diagnostics that explain it. There is exactly one
+  correlation identifier; no second one is invented. Entries written outside a
+  run keep an empty `run_id` and remain readable.
+
+### Test safety — diagnostics tests must not destroy operator history
+
+`conexao_event_import_log`, `conexao_event_import_history`,
+`conexao_event_source_health` and `conexao_event_sources` are **operator state**,
+not test fixtures. A test that clears them destroys the record a maintainer
+needs, which is a defect in its own right.
+
+Diagnostic suites therefore use the shared harness helper
+`tests/lib/option-isolation.php`:
+
+```php
+$restore = test_options_isolate( array( Conexao_Import_Log::OPTION_KEY ) );
+... exercise the code under test ...
+test_options_restore( $restore );
+```
+
+`test_options_isolate()` snapshots the current value (including "this option does
+not exist"), seeds an empty store, and registers a shutdown safety net so a
+suite that dies early still restores. `test_options_restore()` puts the snapshot
+back verbatim.
+
+This is not theoretical. Before v1.7.2 `test-import-log.php` called
+`Conexao_Import_Log::clear()` against the live option and the canonical suite
+drove it 599 → 91 → 0. The same discipline also fixed
+`test-error-handling.php`, whose long-standing "History entry was added" failure
+was caused by `MAX_ENTRIES` saturating the real history so the count could not
+grow — an environment dependency, not a code defect.
+
 
 ## Event Meta (registered)
 
