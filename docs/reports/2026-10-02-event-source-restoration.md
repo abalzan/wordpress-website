@@ -60,6 +60,33 @@ Evidence:
 ## 3. Root cause
 
 `get_all()` is the read path for the admin UI, the CLI and the importer. It merged missing
+## 4. Eventbrite-per-county investigation
+
+- Counties in the authoritative registry: **26** (Northern Ireland explicitly out of scope).
+- `get_eventbrite_source()` generates **all 26** — full coverage, no gaps.
+- Mechanism: **public discovery-page scraping**
+  (`eventbrite.ie/d/ireland--<county>/all-events/`, `__SERVER_DATA__` extraction), **not**
+  the v3 Events Search API, which Stage B verified as removed (404).
+- **Credentials: none required.** No API token, no organisation ID, no event-collection ID.
+  Nothing is missing and no operator-supplied credential is needed.
+- Historical exclusions: none. No county was intentionally omitted.
+
+Production confirms this independently — all 26 `eventbrite_<county>` ids appear in live
+production event data.
+
+## 5. Classification of every historical source
+
+| Source | Classification | Evidence / action |
+|---|---|---|
+| 6 legacy defaults | **ACTIVE** | In `get_defaults()`; preserved byte-for-byte; asserted by test |
+| 26 x `eventbrite_<county>` | **MISSING_BUT_RECOVERABLE** → restored | `Conexao_County_Registry`; 26/26 in production |
+| 26 x `heritage_week_<county>` | **MISSING_BUT_RECOVERABLE** → restored | `Conexao_County_Registry`; 0 importable events in 2026 (edition ended) — by design |
+| `laois_council` | **INTENTIONALLY_RETIRED** | Commit `042259d` deleted `class-laois-council-source.php` (184 lines). Not restored. |
+| `leo_laois` | **INTENTIONALLY_RETIRED** | Commit `042259d` deleted `class-leo-laois-source.php` (351 lines). Not restored. |
+| `local_enterprise_office_laois` | **INTENTIONALLY_RETIRED** | Same commit; alias kept in the strip-list. Not restored. |
+| Eventbrite v3 Search API path | **OBSOLETE_REPLACED** | Stage B verified 404; replaced by discovery-page scraping. Not restored. |
+
+**Counts:** current 6 → historical 58 · missing **52** · recoverable **52** · retired **3** · unknown **0**.
 ## 6. Restoration
 
 One change, inside the existing architecture: `get_all()` now merges missing county sources
@@ -175,30 +202,43 @@ The registry existed only as the manual `seed_county_sources()` step, documented
 `Conexao_Event_Importer::activate()`, not in `scripts/bootstrap-ci-fixtures.php`, not in any
 script. Every environment built without that manual step reported 6.
 
-## 4. Eventbrite-per-county investigation
+## 14. Follow-up — all sources enabled (operator request)
 
-- Counties in the authoritative registry: **26** (Northern Ireland explicitly out of scope).
-- `get_eventbrite_source()` generates **all 26** — full coverage, no gaps.
-- Mechanism: **public discovery-page scraping**
-  (`eventbrite.ie/d/ireland--<county>/all-events/`, `__SERVER_DATA__` extraction), **not**
-  the v3 Events Search API, which Stage B verified as removed (404).
-- **Credentials: none required.** No API token, no organisation ID, no event-collection ID.
-  Nothing is missing and no operator-supplied credential is needed.
-- Historical exclusions: none. No county was intentionally omitted.
+On request, all **58** sources were switched to `status = active` in the **local** Docker
+stack. **No import was run** and nothing was fetched, per the explicit instruction.
 
-Production confirms this independently — all 26 `eventbrite_<county>` ids appear in live
-production event data.
+| Metric | Value |
+|---|---|
+| Sources total / active | **58 / 58** (0 inactive) |
+| `get_active()` returns | **58** |
+| Imports executed | **0** |
+| Sources with a `last_import` timestamp | **0** |
+| Events in DB | **55** (unchanged) |
+| Config drift vs the authoritative registry (url/type/county) | **0** |
 
-## 5. Classification of every historical source
+Importer regression suites re-run after enabling, all green:
+`test-county-registry` 482/0 · `test-eventbrite-importer` 68/0 · `test-past-event-filter` 29/0 ·
+`test-source-county-hint` 18/0 · `test-reappearing-event-lifecycle` 5/0.
 
-| Source | Classification | Evidence / action |
+### ⚠️ Known consequence the operator must decide on
+
+Two source pairs now cover the **same** ground and are **both active**:
+
+| Active source | Overlaps with | Shared scope |
 |---|---|---|
-| 6 legacy defaults | **ACTIVE** | In `get_defaults()`; preserved byte-for-byte; asserted by test |
-| 26 x `eventbrite_<county>` | **MISSING_BUT_RECOVERABLE** → restored | `Conexao_County_Registry`; 26/26 in production |
-| 26 x `heritage_week_<county>` | **MISSING_BUT_RECOVERABLE** → restored | `Conexao_County_Registry`; 0 importable events in 2026 (edition ended) — by design |
-| `laois_council` | **INTENTIONALLY_RETIRED** | Commit `042259d` deleted `class-laois-council-source.php` (184 lines). Not restored. |
-| `leo_laois` | **INTENTIONALLY_RETIRED** | Commit `042259d` deleted `class-leo-laois-source.php` (351 lines). Not restored. |
-| `local_enterprise_office_laois` | **INTENTIONALLY_RETIRED** | Same commit; alias kept in the strip-list. Not restored. |
-| Eventbrite v3 Search API path | **OBSOLETE_REPLACED** | Stage B verified 404; replaced by discovery-page scraping. Not restored. |
+| `eventbrite` (legacy) | `eventbrite_laois` | Eventbrite, Laois |
+| `heritage_week` (legacy) | `heritage_week_laois` | National Heritage Week, Laois |
 
-**Counts:** current 6 → historical 58 · missing **52** · recoverable **52** · retired **3** · unknown **0**.
+Stage C1 §2.3 deliberately deactivated the legacy pair for exactly this reason. Dedup keys on
+(`_event_source`, `_event_source_id`) and the Eventbrite `source_id` is the provider event id,
+which is **identical** for both — but `_event_source` differs (`eventbrite` vs `eventbrite_laois`).
+So the composite key differs and **the same Laois event will be stored twice**, once per source.
+
+Currently harmless: nothing has been imported, and the only local `eventbrite` event (1) predates
+this change. The moment an import runs, expect duplicate Laois events.
+
+Suggested resolution when you are ready — either:
+- deactivate the two **legacy** ids (`eventbrite`, `heritage_week`), keeping the county pair; or
+- deactivate the two **county** ids (`eventbrite_laois`, `heritage_week_laois`), keeping the legacy pair.
+
+Evidence: `docs/evidence/2026-10-02-event-source-restoration/06-all-sources-enabled.json`.
