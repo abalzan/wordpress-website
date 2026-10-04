@@ -1,0 +1,19 @@
+{
+  "captured": "2026-10-03 ~19:51 UTC, local Docker WordPress (http://localhost:8080)",
+  "how": "read directly from wp_options via wp-load.php inside the container",
+  "IMPORTANT": "The import LOG was already destroyed before this snapshot. wp-content/plugins/conexao-event-importer/tests/test-import-log.php calls Conexao_Import_Log::clear(), which empties the conexao_event_import_log option. Observed decay 599 -> 91 -> 0 entries. The log figures below are therefore the surviving tail only. Full pre-destruction counts are recorded in the report section A5.",
+  "history_entry_count": 100,
+  "history_max_entries_cap": 100,
+  "history_entries_with_fatal_errors": 0,
+  "history_entries_with_failed_events": 0,
+  "history_sum_of_errors_column": 0,
+  "history_status_counts": { "success": 90, "warning": 10, "failed": 0, "partial": 0, "error": 0 },
+  "history_zero_found_but_success": 66,
+  "log_entries_surviving": 0,
+  "sources_total": 58,
+  "sources_active": 56,
+  "sources_by_type": { "eventbrite": 27, "heritage_week": 26, "website": 4, "icalendar": 1 },
+  "event_posts_total": 315,
+  "event_status_counts": { "published": 285, "source_not_found": 18, "expired": 8, "rejected": 1 },
+  "source_not_found_by_source": { "laois_tourism": 12, "eventbrite_cavan": 5 }
+}
