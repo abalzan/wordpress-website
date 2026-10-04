@@ -2,9 +2,32 @@
 /**
  * Importer settings storage + admin page.
  *
- * Storing only the Eventbrite API token. Import execution is manual and
- * local-only — there are no scheduling, notification, REST, or auto-disable
- * settings to configure.
+ * ## There is no Eventbrite API credential (G7)
+ *
+ * This class used to store an `eventbrite_api_token` personal OAuth token and
+ * documented it as selecting an "official API" fetch mode. NO CODE PATH EVER
+ * READ IT: `Conexao_Source_Eventbrite::fetch_events()` has always called
+ * `fetch_via_scrape()` unconditionally, and the v3 Events Search endpoint the
+ * token was for returns 404 (retired by Eventbrite).
+ *
+ * G6 measured that the official API cannot enumerate a county listing anyway —
+ * `/v3/events/search/` is 404 and organization discovery is per-user, so a
+ * county's events (Cork: 36 distinct organizers, Dublin: 74, Carlow: 51 in 60)
+ * span organizers you do not own. See
+ * `docs/reports/2026-10-04-eventbrite-api-feasibility.md` (verdict: NOT VIABLE)
+ * and `docs/reports/2026-10-04-eventbrite-api-retirement.md`.
+ *
+ * The token was therefore a dead secret-storage path: it looked like a
+ * prerequisite, was never read, and invited a credential nobody needed. G7
+ * removed it. Do not reintroduce a token setting without first re-running the
+ * G6 discovery measurement.
+ *
+ * The class itself is RETAINED: `Conexao_Event_Cleanup` reads the
+ * `cleanup_scope` setting from this same option, so the storage surface is
+ * still live. `cleanup_scope` remains the one configurable setting.
+ *
+ * Import execution is manual and local-only — there are no scheduling,
+ * notification, REST, or auto-disable settings to configure.
  *
  * @package Conexao_Event_Importer
  */
@@ -21,15 +44,14 @@ class Conexao_Import_Settings {
 	/**
 	 * Get the default settings.
 	 *
+	 * G7: the `eventbrite_api_token` default was removed with the dead token
+	 * path. `cleanup_scope` is read with an explicit fallback by its consumer,
+	 * so it needs no default entry either.
+	 *
 	 * @return array
 	 */
 	public static function get_defaults() {
-		return array(
-			// Official Eventbrite API token (personal OAuth token). When set,
-			// eventbrite-type sources use the official API instead of HTML
-			// scraping — required on hosts whose IPs Eventbrite blocks (405).
-			'eventbrite_api_token' => '',
-		);
+		return array();
 	}
 
 	/**
@@ -60,6 +82,14 @@ class Conexao_Import_Settings {
 	/**
 	 * Update settings (partial merge).
 	 *
+	 * G7: the `eventbrite_api_token` sanitizing branch was removed with the dead
+	 * token path. Stale keys already persisted by an older build (including
+	 * `eventbrite_api_token`) are intentionally PRESERVED verbatim rather than
+	 * stripped: they are inert — no code path reads them — and this plugin
+	 * never runs a destructive option-rewrite migration. Keeping them makes the
+	 * stored option auditable; a maintainer who wants them gone can delete the
+	 * key by hand. Removing the CONSUMER is what makes stale state harmless.
+	 *
 	 * @param array $new_settings Settings to merge.
 	 * @return bool
 	 */
@@ -68,16 +98,9 @@ class Conexao_Import_Settings {
 			return false;
 		}
 
-		$current = self::all();
+		self::$cache = array_merge( self::all(), $new_settings );
 
-		if ( array_key_exists( 'eventbrite_api_token', $new_settings ) && is_string( $new_settings['eventbrite_api_token'] ) ) {
-			// OAuth tokens are alphanumeric with underscores/hyphens.
-			$token = preg_replace( '/[^A-Za-z0-9_\-]/', '', $new_settings['eventbrite_api_token'] );
-			$current['eventbrite_api_token'] = substr( $token, 0, 128 );
-		}
-
-		self::$cache = $current;
-		return update_option( self::OPTION_KEY, $current, false );
+		return update_option( self::OPTION_KEY, self::$cache, false );
 	}
 
 	/**
@@ -99,26 +122,22 @@ class Conexao_Import_Settings {
 
 	/**
 	 * Render the settings page.
+	 *
+	 * G7: the "Eventbrite API token" field, its POST handler and the nonce-gated
+	 * save form were removed with the dead token path. There is now nothing to
+	 * configure here: the importer is manual and local-only, and Eventbrite
+	 * sources need no credential.
+	 *
+	 * The screen is RETAINED rather than deleted because it is the documented
+	 * landing page for importer configuration and because `cleanup_scope` still
+	 * reads from this option. It now states the truth instead of offering a
+	 * field that never did anything.
 	 */
 	public function render_page() {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return;
 		}
 
-		if ( isset( $_POST['conexao_settings_action'] ) && 'save' === sanitize_text_field( wp_unslash( $_POST['conexao_settings_action'] ) )
-			&& check_admin_referer( 'conexao_import_settings', 'conexao_import_settings_nonce' ) ) {
-
-			self::update(
-				array(
-					'eventbrite_api_token' => isset( $_POST['eventbrite_api_token'] )
-						? (string) wp_unslash( $_POST['eventbrite_api_token'] )
-						: '',
-				)
-			);
-			echo '<div class="notice notice-success is-dismissible"><p>' . esc_html__( 'Settings saved.', 'conexao-event-importer' ) . '</p></div>';
-		}
-
-		$settings = self::all();
 		?>
 		<div class="wrap conexao-import-settings">
 			<h1><?php esc_html_e( 'Import Settings', 'conexao-event-importer' ); ?></h1>
@@ -126,20 +145,13 @@ class Conexao_Import_Settings {
 				<?php esc_html_e( 'Event Importer is a manual, local-only tool. Click “Import Events Now” on the Dashboard to fetch events from the configured sources.', 'conexao-event-importer' ); ?>
 			</p>
 
-			<form method="post">
-				<?php wp_nonce_field( 'conexao_import_settings', 'conexao_import_settings_nonce' ); ?>
-				<input type="hidden" name="conexao_settings_action" value="save">
-				<table class="form-table" role="presentation">
-					<tr>
-						<th scope="row"><label for="eventbrite_api_token"><?php esc_html_e( 'Eventbrite API token', 'conexao-event-importer' ); ?></label></th>
-						<td>
-							<input type="password" id="eventbrite_api_token" name="eventbrite_api_token" class="regular-text" value="<?php echo esc_attr( $settings['eventbrite_api_token'] ); ?>" autocomplete="off">
-							<p class="description"><?php esc_html_e( 'Leave empty to keep HTML-scraping mode (works on residential connections only). On hosts whose IPs Eventbrite blocks (e.g. WordPress.com), set a personal OAuth token from developers.eventbrite.com.', 'conexao-event-importer' ); ?></p>
-						</td>
-					</tr>
-				</table>
-				<?php submit_button( __( 'Save Settings', 'conexao-event-importer' ) ); ?>
-			</form>
+			<h2><?php esc_html_e( 'Nothing to configure', 'conexao-event-importer' ); ?></h2>
+			<p>
+				<?php esc_html_e( 'The importer has no settings to save. In particular there is NO Eventbrite API token: Eventbrite sources are read from the public county discovery pages over plain HTML, with no account, no OAuth token and no Authorization header.', 'conexao-event-importer' ); ?>
+			</p>
+			<p>
+				<?php esc_html_e( 'An Eventbrite API credential is not a prerequisite for importing, and configuring one changes nothing. The official Eventbrite API cannot list a county\'s events (its public search endpoint is retired and its organization discovery is per-user), so it was measured as unsuitable and the unused token setting was retired. If Eventbrite later changes those external capabilities, revisit that decision before adding a credential.', 'conexao-event-importer' ); ?>
+			</p>
 		</div>
 		<?php
 	}

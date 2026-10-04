@@ -1,0 +1,4 @@
+county,sampled_event_ids,unique_ids,duplicate_ids_in_sample,distinct_organizers,organizer_ids_with_name,organizer_ids_nameless
+cork,100,100,0,36,0,36
+dublin,100,100,0,74,0,74
+carlow,60,60,0,51,0,51

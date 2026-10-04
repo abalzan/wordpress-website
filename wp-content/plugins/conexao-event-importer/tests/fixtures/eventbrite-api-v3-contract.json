@@ -1,0 +1,407 @@
+{
+  "_fixture_provenance": {
+    "stage": "G6 - Eventbrite API feasibility investigation",
+    "date": "2026-10-04",
+    "sanitised": true,
+    "contains_no_credentials": true,
+    "shape_source": [
+      "Live unauthenticated read-only probes against https://www.eventbriteapi.com on 2026-10-04 established the envelope: every /v3/* path returns 401 NO_AUTH without a token; /v3/events/search/ returns 404 NOT_FOUND (endpoint retired). Those envelopes are captured verbatim below.",
+      "The official Eventbrite JavaScript SDK (github.com/eventbrite/eventbrite-sdk-javascript, master) establishes the documented resource model: GET /users/me/, GET /users/{user_id}/organizations/, page/page_size plus a `continuation` cursor, and an Organization object of {id, name, image_id, locale, vertical}.",
+      "The collection envelope {pagination:{object_count,page_number,page_size,page_count,continuation,has_more_items}, events:[...]} and the event-object field set follow the documented Eventbrite v3 shapes."
+    ],
+    "fabrication_notice": "No live authenticated response was obtainable in this environment: no Eventbrite token exists in .env, Docker or the local WordPress option (see the G6 report). The event payloads below are therefore SHAPE-FIXTURES constructed to the documented v3 field names and semantics. They are NOT a capture of a real authenticated response and must not be cited as one."
+  },
+
+  "users_me": {
+    "_doc": "Documented response of GET /v3/users/me/ - the first call of the discovery flow.",
+    "id": "999000001",
+    "first_name": "Fixture",
+    "last_name": "Account",
+    "image_id": null,
+    "email": [
+      { "email": "redacted@example.invalid", "primary": true }
+    ]
+  },
+
+  "users_me_unauthenticated": {
+    "_doc": "VERBATIM live capture, 2026-10-04, GET /v3/users/me/ with no Authorization header. Real bytes, not fabricated.",
+    "status_code": 401,
+    "body": {
+      "error_description": "An OAuth token is required for all requests",
+      "error": "NO_AUTH",
+      "status_code": 401
+    }
+  },
+
+  "users_me_invalid_token": {
+    "_doc": "VERBATIM live capture, 2026-10-04, GET /v3/users/me/ with a deliberately invalid bearer token. Proves the API distinguishes NO_AUTH from INVALID_AUTH, so an expired or invalid token is a distinguishable, truthful failure.",
+    "status_code": 401,
+    "body": {
+      "error_description": "The OAuth token you provided was invalid.",
+      "status_code": 401,
+      "error": "INVALID_AUTH"
+    }
+  },
+
+  "events_search_retired": {
+    "_doc": "VERBATIM live capture, 2026-10-04, GET /v3/events/search/?country=IE. Re-verifies the Stage A finding that the public Events Search API is gone.",
+    "status_code": 404,
+    "body": {
+      "error": "NOT_FOUND",
+      "error_description": "The path you requested does not exist.",
+      "status_code": 404
+    }
+  },
+
+  "organizations_page": {
+    "_doc": "Documented response shape of GET /v3/users/{user_id}/organizations/ - the ONLY documented way to discover the organizations a token can read.",
+    "pagination": {
+      "object_count": 2,
+      "page_number": 1,
+      "page_size": 50,
+      "page_count": 1,
+      "continuation": null,
+      "has_more_items": false
+    },
+    "organizations": [
+      {
+        "id": "999100000001",
+        "name": "Fixture Cork Community Org",
+        "image_id": null,
+        "locale": "en_IE",
+        "vertical": "Default"
+      },
+      {
+        "id": "999100000002",
+        "name": "Fixture Dublin Community Org",
+        "image_id": null,
+        "locale": "en_IE",
+        "vertical": "Music"
+      }
+    ]
+  },
+
+  "events_page_1": {
+    "_doc": "Documented response shape of GET /v3/organizations/{organization_id}/events/. Pagination carries BOTH a page index and a continuation cursor.",
+    "pagination": {
+      "object_count": 3,
+      "page_number": 1,
+      "page_size": 2,
+      "page_count": 2,
+      "continuation": "eyJwYWdlIjoyfQ",
+      "has_more_items": true
+    },
+    "events": [
+      {
+        "_case": "ordinary event, full optional data, physical venue, ticket price range",
+        "id": "999200000001",
+        "name": "Fixture Cork Community Night",
+        "description": "Long fixture description. <p>A community evening in Cork city with talks, live music and a Q&amp;A.</p>",
+        "summary": "An evening of talks and live music in Cork city.",
+        "start": {
+          "utc": "2026-11-14T18:30:00Z",
+          "local": "2026-11-14T18:30:00",
+          "timezone": "Europe/Dublin"
+        },
+        "end": {
+          "utc": "2026-11-14T21:00:00Z",
+          "local": "2026-11-14T21:00:00",
+          "timezone": "Europe/Dublin"
+        },
+        "url": "https://www.eventbrite.ie/e/fixture-cork-community-night-tickets-999200000001",
+        "share_url": "https://www.eventbrite.ie/e/fixture-cork-community-night-tickets-999200000001",
+        "status": "live",
+        "currency": "EUR",
+        "listed": true,
+        "free": false,
+        "capacity": 120,
+        "is_online_event": false,
+        "online_event_url": null,
+        "is_protected_event": false,
+        "series_id": null,
+        "organizer_id": "999100000001",
+        "venue_id": "999300000001",
+        "category_id": "999400000001",
+        "image_id": "999500000001",
+        "created": "2026-08-01T09:00:00Z",
+        "changed": "2026-10-02T11:30:00Z",
+        "organizer": {
+          "id": "999100000001",
+          "name": "Fixture Cork Community Org",
+          "description": "Fixture organizer.",
+          "long_description": "",
+          "logo_id": null,
+          "resource": {
+            "image_id": null,
+            "url": "https://www.eventbrite.com/organizers/999100000001"
+          }
+        },
+        "venue": {
+          "id": "999300000001",
+          "name": "Fixture Cork Community Hall",
+          "address": {
+            "address_1": "12 Fixture Street",
+            "address_2": "",
+            "city": "Cork",
+            "region": "Cork",
+            "postal_code": "T12 AB12",
+            "country": "IE",
+            "country_name": "Ireland"
+          },
+          "latitude": "51.9",
+          "longitude": "-8.4"
+        },
+        "image": {
+          "image_id": "999500000001",
+          "url": "https://img.evbuc.net/images/999500000001/1/fixture-cork.jpg",
+          "image_sizes": {
+            "small": "https://img.evbuc.net/images/999500000001/1/fixture-cork-32x32.jpg",
+            "medium": "https://img.evbuc.net/images/999500000001/1/fixture-cork-64x64.jpg",
+            "large": "https://img.evbuc.net/images/999500000001/1/fixture-cork-128x128.jpg"
+          }
+        },
+        "ticket_availability": {
+          "minimum_ticket_price": "8.00",
+          "maximum_ticket_price": "15.00",
+          "ticket_availability": "In stock",
+          "quantity_available": 40
+        },
+        "ticket_classes": [],
+        "tags": [
+          { "id": "999600000001", "name": "Community", "type": "EventbriteCategory" },
+          { "id": "999600000002", "name": "Music", "type": "EventbriteSubCategory" }
+        ],
+        "locations": [
+          { "type": "region", "name": "Cork" },
+          { "type": "locality", "name": "Cork" }
+        ]
+      },
+      {
+        "_case": "MISSING OPTIONAL IMAGE - the most common API-absent field. Must not be fatal and must not fabricate a URL.",
+        "id": "999200000002",
+        "name": "Fixture Cork Walk (no image)",
+        "description": "A fixture walk with no image attached.",
+        "summary": "",
+        "start": {
+          "utc": "2026-11-21T10:00:00Z",
+          "local": "2026-11-21T10:00:00",
+          "timezone": "Europe/Dublin"
+        },
+        "end": {
+          "utc": "2026-11-21T12:30:00Z",
+          "local": "2026-11-21T12:30:00",
+          "timezone": "Europe/Dublin"
+        },
+        "url": "https://www.eventbrite.ie/e/fixture-cork-walk-no-image-tickets-999200000002",
+        "share_url": "https://www.eventbrite.ie/e/fixture-cork-walk-no-image-tickets-999200000002",
+        "status": "live",
+        "currency": "EUR",
+        "listed": true,
+        "free": true,
+        "capacity": null,
+        "is_online_event": false,
+        "online_event_url": null,
+        "is_protected_event": false,
+        "series_id": "999700000001",
+        "organizer_id": "999100000001",
+        "venue_id": null,
+        "category_id": null,
+        "image_id": null,
+        "created": "2026-09-10T08:00:00Z",
+        "changed": "2026-09-10T08:00:00Z",
+        "organizer": {
+          "id": "999100000001",
+          "name": "Fixture Cork Community Org",
+          "description": "Fixture organizer.",
+          "long_description": "",
+          "logo_id": null
+        },
+        "venue": null,
+        "image": null,
+        "ticket_availability": null,
+        "ticket_classes": [],
+        "tags": [],
+        "locations": [
+          { "type": "region", "name": "Cork" }
+        ]
+      }
+    ]
+  },
+
+  "events_page_2": {
+    "_doc": "Continuation page: a CHANGED event (stable id already seen on page 1, newer `changed`) plus a draft. Proves the continuation cursor reaches a deterministic end.",
+    "pagination": {
+      "object_count": 3,
+      "page_number": 2,
+      "page_size": 2,
+      "page_count": 2,
+      "continuation": null,
+      "has_more_items": false
+    },
+    "events": [
+      {
+        "_case": "DUPLICATE / STABLE ID with a newer `changed` timestamp. Must collapse to one event and must not create a second WordPress post.",
+        "id": "999200000001",
+        "name": "Fixture Cork Community Night (moved to the annexe)",
+        "description": "Long fixture description. <p>Room changed: now in the annexe. Updated 2026-10-02.</p>",
+        "summary": "An evening of talks and live music in Cork city - UPDATED.",
+        "start": {
+          "utc": "2026-11-14T18:30:00Z",
+          "local": "2026-11-14T18:30:00",
+          "timezone": "Europe/Dublin"
+        },
+        "end": {
+          "utc": "2026-11-14T22:00:00Z",
+          "local": "2026-11-14T22:00:00",
+          "timezone": "Europe/Dublin"
+        },
+        "url": "https://www.eventbrite.ie/e/fixture-cork-community-night-tickets-999200000001",
+        "share_url": "https://www.eventbrite.ie/e/fixture-cork-community-night-tickets-999200000001",
+        "status": "live",
+        "currency": "EUR",
+        "listed": true,
+        "free": false,
+        "capacity": 120,
+        "is_online_event": false,
+        "online_event_url": null,
+        "is_protected_event": false,
+        "series_id": null,
+        "organizer_id": "999100000001",
+        "venue_id": "999300000002",
+        "category_id": "999400000001",
+        "image_id": "999500000001",
+        "created": "2026-08-01T09:00:00Z",
+        "changed": "2026-10-03T16:45:00Z",
+        "organizer": {
+          "id": "999100000001",
+          "name": "Fixture Cork Community Org",
+          "description": "Fixture organizer.",
+          "long_description": "",
+          "logo_id": null
+        },
+        "venue": {
+          "id": "999300000002",
+          "name": "Fixture Cork Community Annexe",
+          "address": {
+            "address_1": "14 Fixture Street",
+            "address_2": "Rear",
+            "city": "Cork",
+            "region": "Cork",
+            "postal_code": "T12 AB13",
+            "country": "IE",
+            "country_name": "Ireland"
+          },
+          "latitude": "51.9",
+          "longitude": "-8.4"
+        },
+        "image": {
+          "image_id": "999500000001",
+          "url": "https://img.evbuc.net/images/999500000001/1/fixture-cork.jpg",
+          "image_sizes": {
+            "medium": "https://img.evbuc.net/images/999500000001/1/fixture-cork-64x64.jpg"
+          }
+        },
+        "ticket_availability": {
+          "minimum_ticket_price": "8.00",
+          "maximum_ticket_price": "15.00",
+          "ticket_availability": "In stock",
+          "quantity_available": 40
+        },
+        "ticket_classes": [],
+        "tags": [
+          { "id": "999600000001", "name": "Community", "type": "EventbriteCategory" }
+        ],
+        "locations": [
+          { "type": "region", "name": "Cork" },
+          { "type": "locality", "name": "Cork" }
+        ]
+      },
+      {
+        "_case": "PUBLICATION STATUS - a `draft` event. Must not be treated as public or published.",
+        "id": "999200000003",
+        "name": "Fixture Cork Draft Listing",
+        "description": "Fixture draft. Not publicly visible.",
+        "summary": "",
+        "start": {
+          "utc": "2026-12-05T19:00:00Z",
+          "local": "2026-12-05T19:00:00",
+          "timezone": "Europe/Dublin"
+        },
+        "end": {
+          "utc": "2026-12-05T22:00:00Z",
+          "local": "2026-12-05T22:00:00",
+          "timezone": "Europe/Dublin"
+        },
+        "url": "https://www.eventbrite.ie/e/fixture-cork-draft-listing-tickets-999200000003",
+        "share_url": "https://www.eventbrite.ie/e/fixture-cork-draft-listing-tickets-999200000003",
+        "status": "draft",
+        "currency": "EUR",
+        "listed": false,
+        "free": false,
+        "capacity": null,
+        "is_online_event": false,
+        "online_event_url": null,
+        "is_protected_event": false,
+        "series_id": null,
+        "organizer_id": "999100000001",
+        "venue_id": null,
+        "category_id": null,
+        "image_id": null,
+        "created": "2026-10-03T07:00:00Z",
+        "changed": "2026-10-03T07:00:00Z",
+        "organizer": {
+          "id": "999100000001",
+          "name": "Fixture Cork Community Org",
+          "description": "Fixture organizer.",
+          "long_description": "",
+          "logo_id": null
+        },
+        "venue": null,
+        "image": null,
+        "ticket_availability": null,
+        "ticket_classes": [],
+        "tags": [],
+        "locations": [
+          { "type": "region", "name": "Cork" }
+        ]
+      }
+    ]
+  },
+
+  "events_page_failed": {
+    "_doc": "The page a FAILED pagination request returns: HTTP 403 error envelope with NO events key. A caller must treat this as a FAILED walk, never as 'zero events on this page'.",
+    "status_code": 403,
+    "body": {
+      "error": "NOT_AUTHORIZED",
+      "error_description": "You do not have permission to access this resource.",
+      "status_code": 403
+    }
+  },
+
+  "events_page_rate_limited": {
+    "_doc": "The page a rate-limited request returns. There is NO events key and NO page metadata: a naive caller reads this as an empty page and calls the source complete.",
+    "status_code": 429,
+    "headers": {
+      "Retry-After": "60"
+    },
+    "body": {
+      "error": "RATE_LIMITED",
+      "error_description": "You have exceeded your rate limit.",
+      "status_code": 429
+    }
+  },
+
+  "events_empty_but_valid": {
+    "_doc": "A GENUINELY empty organization: HTTP 200, events [], object_count 0. This is the ONLY response shape that may legitimately mean 'no events', and it is distinguishable from the failure envelopes above.",
+    "pagination": {
+      "object_count": 0,
+      "page_number": 1,
+      "page_size": 50,
+      "page_count": 0,
+      "continuation": null,
+      "has_more_items": false
+    },
+    "events": []
+  }
+}
+

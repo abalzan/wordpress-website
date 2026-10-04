@@ -493,12 +493,6 @@ parameters:
 			path: wp-content/plugins/conexao-event-importer/includes/class-import-settings.php
 
 		-
-			message: '#^Right side of && is always true\.$#'
-			identifier: booleanAnd.rightAlwaysTrue
-			count: 1
-			path: wp-content/plugins/conexao-event-importer/includes/class-import-settings.php
-
-		-
 			message: '#^Call to an undefined method DOMElement\:\:querySelector\(\)\.$#'
 			identifier: method.notFound
 			count: 1

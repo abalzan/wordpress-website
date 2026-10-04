@@ -1,0 +1,86 @@
+G6 Field-level compatibility matrix
+==================================
+Method: the UNMODIFIED production Conexao_Eventbrite_Normalizer was run
+against an UNMODIFIED documented-shape Eventbrite v3 event object (the offline
+contract fixture). The "Direct?" column states whether the existing normalizer
+consumes it with no translation at all. These are MEASURED results, not
+expectations — three results surprised the initial hypothesis and are recorded
+as measured.
+HTML-side facts below were VERIFIED against the live Cork page-1 payload on
+2026-10-04, not assumed. Two findings contradict the naive reading and are
+recorded as measured: the live HTML event has NO `primary_organizer` key, and
+its `published` field is a publish TIMESTAMP string rather than a boolean.
+
+Requirement              HTML discovery      API v3 field              Direct?  Note
+------------------------- ------------------- ------------------------- -------- ----------------------------------
+Event identity            id                  id                        YES      Stable dedup key preserved.
+Source URL                url                 url                       YES      Both supply the canonical event URL.
+Title                     name                name                      YES      Identical key.
+Summary                   summary             summary                   YES      Identical key.
+Start date                start_date          start.local (nested)      NO       TRANSLATION. Fatal if skipped.
+Start time                start_time          start.local (nested)      NO       TRANSLATION. Fatal if skipped.
+End date                  end_date            end.local (nested)        NO       TRANSLATION.
+End time                  end_time            end.local (nested)        NO       TRANSLATION.
+Timezone                  timezone (flat)     start.timezone            NO       TRANSLATION (flat -> nested).
+Venue name                primary_venue.name  venue.name                 YES*     Consumed via the LEGACY `venue` fallback.
+Address                   primary_venue.addr  venue.address              YES*     Same legacy fallback. The live HTML address
+                                                                                 has NO postal_code; the API supplies one,
+                                                                                 so the API is BETTER here.
+Town                      locations[].locality venue.address.city        YES      Both resolve a town.
+County/region             locations[].region  (ABSENT)                   NO       LOSS OF FIDELITY - the hardest gap. HTML
+                                                                                 carries a full hierarchy (continent/
+                                                                                 country/region/locality/neighbourhood)
+                                                                                 which the handler uses for its ACCEPT/
+                                                                                 REJECT decision. The API event object has NO
+                                                                                 region at all; the adapter must DERIVE it.
+Image                     image.image_sizes   image.image_sizes.medium   YES      Identical key path.
+Image when absent         (absent)            (absent)                   YES      Degrades to empty; no URL fabricated.
+Public/published status   published (a DATE,   status + listed            NO       TRANSLATION + RULE. The HTML field named
+                            not a bool)                                     `published` is a publish TIMESTAMP; the API
+                                                                                 is strictly MORE decidable.
+Organizer name            primary_organizer    organizer.name             NO       THE API IS BETTER. VERIFIED: the live HTML
+                            (ABSENT on the live                            payload has NO primary_organizer key, so
+                            Cork payload)                                  organizer normalizes to '' today. The API has it.
+Organizer identity        primary_organizer_id organizer_id               NO       TRANSLATION of the KEY NAME only; the VALUE
+                                                                                 is the same integer id in both.
+Ticket URL                tickets_url         (ABSENT; API uses url)     NO       LOSS OF FIDELITY. VERIFIED: the live HTML event
+                                                                                 carries a distinct checkout URL
+                                                                                 (.../checkout-external?eid=...) the API does
+                                                                                 not expose. Minor but real.
+Ticket availability       ticket_availability.*  free, ticket_availability PARTIAL Mixed: `free` identical; the price-range
+                            (ABSENT on the live HTML)                       sub-object is absent on the live HTML event.
+Cancelled                 is_cancelled        status == 'canceled'       NO       RULE.
+Online event              is_online_event     is_online_event            YES      Identical key.
+Protected event           is_protected_event  is_protected_event         YES      Identical key.
+Category                  tags[EventbriteCat] category_id (bare id)       PARTIAL  LOSS OF FIDELITY. HTML has a readable
+                                                                                 display_name; the API has only an id.
+Last-modified / change    published (a date)  changed + created           NO       IMPROVEMENT: two explicit timestamps the
+                                                                                 HTML path only approximates.
+Recurrence / series       series_id,          series_id (id only)        PARTIAL  LOSS OF FIDELITY. NEITHER path exposes a
+                            num_children                                     recurrence RULE in the event object.
+Currency / capacity       (ABSENT)            currency, capacity         NO       IMPROVEMENT, not required by the importer.
+Neighbourhood             locations[].        (ABSENT)                   NO       LOSS OF FIDELITY. Unused by the importer, but
+                            neighbourhood                                  it is data the current path has.
+
+MEASURED SUMMARY
+----------------
+No translation needed (9):      identity, title, summary, venue, address,
+                               town, image, price, online/protected flags
+Translation needed (10):        start_date, start_time, end_date, end_time,
+                               timezone, organizer, organizer_id, published,
+                               cancelled, ticket_url
+Loss of fidelity / extra call(3): county-region, category label, recurrence
+
+Of 13 importer fields measured in the offline suite, 7 are empty when a raw API
+object is passed to the unchanged normalizer. All 7 are recoverable by a
+key-mapping step over data the API demonstrably supplies.
+
+ARCHITECTURAL CONSEQUENCE
+------------------------
+An API adapter MUST exist and MUST own exactly two things:
+  1. a flat-to-nested key/rule mapping (dates, timezone, organizer, status);
+  2. the region/county classification the API does not provide.
+Everything downstream — Conexao_Eventbrite_Normalizer, the county registry, the
+importer engine, deduplication, and the G1–G5 completeness and rate-limit
+semantics — is reused UNCHANGED. Verified end-to-end in the offline suite: a
+shaped adapter restores all 13 fields through the shared normalizer.

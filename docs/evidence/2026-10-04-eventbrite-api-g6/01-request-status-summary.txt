@@ -1,0 +1,94 @@
+G6 Eventbrite API and discovery-channel request/status summary
+Date: 2026-10-04
+All operations were READ-ONLY GET requests. No Eventbrite object was created,
+modified, published, deleted, registered or purchased. No WAF, CAPTCHA or
+access-control evasion was attempted at any point.
+
+====================================================================
+A. OFFICIAL API HOST (www.eventbriteapi.com) — unauthenticated probes
+====================================================================
+Total requests: 6. All reached the API edge successfully. NONE was blocked
+by a WAF challenge. This is the central operational difference from the
+discovery HTML path.
+
+ #  Request                                              Status  Error       Latency
+ 1  GET /v3/users/me/                                    401     NO_AUTH      0.685 s
+ 2  GET /v3/users/me/  (invalid bearer token)            401     INVALID_AUTH 0.248 s
+ 3  GET /v3/organizations/                               401     NO_AUTH      0.209 s
+ 4  GET /v3/organizations/{id}/events/                   401     NO_AUTH      0.396 s
+ 5  GET /v3/events/{id}/                                 401     NO_AUTH      1.019 s
+ 6  GET /v3/events/search/?country=IE                    404     NOT_FOUND    (see below)
+
+Status distribution: {401: 5, 404: 1}
+429 responses observed: 0
+Rate-limit headers returned on 401: none (no quota was consumed without auth)
+WAF challenge header (x-amzn-waf-action): absent on every response
+
+Verbatim bodies (real bytes, also stored in the offline contract fixture):
+  401 no token   -> {"error_description":"An OAuth token is required for all
+                    requests","error":"NO_AUTH","status_code":401}
+  401 bad token  -> {"error_description":"The OAuth token you provided was
+                    invalid.","status_code":401,"error":"INVALID_AUTH"}
+  404 search     -> {"error":"NOT_FOUND","error_description":"The path you
+                    requested does not exist.","status_code":404}
+
+Interpretation:
+  - The API is REACHABLE from this environment and is NOT WAF-blocked.
+    Accessibility is therefore PROVEN; coverage is a separate question (§C).
+  - NO_AUTH and INVALID_AUTH are DISTINGUISHABLE error codes, so an expired or
+    mis-pasted token is reportable to an operator rather than looking like
+    "not configured".
+  - Probe 6 re-verifies the Stage A finding: the public Events Search endpoint
+    (/v3/events/search/) is retired. There is no documented public, location-
+    scoped event search in the official API.
+
+====================================================================
+B. DISCOVERY HTML HOST (www.eventbrite.ie) — bounded, paced walks
+====================================================================
+The G5 report recorded 51/51 HTTP 405 + x-amzn-waf-action: captcha and ZERO 429s
+over ~40 minutes, and reported the discovery path as WAF-blocked.
+
+G6 RE-PROBED IT AND THE BLOCK HAD LIFTED at 2026-10-04 ~10:53 UTC:
+
+  GET https://www.eventbrite.ie/d/ireland--cork/all-events/
+    -> HTTP 200, 656,187 bytes, 2.25 s, x-cache: Hit from cloudfront
+    -> x-amzn-waf-action: ABSENT
+    -> window.__SERVER_DATA__ present (the existing parser consumed it)
+
+  Counters: status distribution {200: 13} across the three bounded walks.
+  429 responses: 0.  405/WAF responses: 0.  Total HTML requests: 13.
+  Pacing: a 3-second inter-page delay was applied by the investigator script.
+  The existing production pacing policy (Conexao_Eventbrite_Pacing) was NOT
+  modified and was NOT used for this measurement.
+
+This materially changes the G1–G5 premise and is stated as a LIMITATION of the
+G1–G5 evidence, not as a contradiction of it: the historical 49-page / 1553-
+object / page-8-429 measurements remain valid as history, but they were NOT
+reproducible on 2026-10-04. No claim in this report depends on the historical
+429 being currently reproducible.
+
+====================================================================
+C. COVERAGE — THE DECIDING MEASUREMENT
+====================================================================
+Walk summaries (bounded samples; see cork-sample.json etc. for raw ids):
+
+  County    Pages walked  Events  distinct organizers  declared object_count
+  Cork      5 of 49        100     36                  1553
+  Dublin    5 of 49        100     74                  5173
+  Carlow    3 of 49         60     51                  4780
+
+Reading:
+  - The public county listing is a MULTI-ORGANIZER aggregate. Cork's first 100
+    events already span 36 distinct Eventbrite organizations.
+  - The official API's only documented event collection is organization-scoped
+    (GET /organizations/{organization_id}/events/), and organization discovery
+    is per-user (GET /users/{user_id}/organizations/). There is no documented
+    way to ask the API "which organizations have events in Cork?".
+  - Therefore a token would have to be a member of tens to hundreds of
+    independent third-party organizations to reproduce a county listing. That is
+    not an integration problem; it is a different ownership model.
+
+The 49-page cap applies to every county: page_count is 49 and object_count
+exceeds 1000, so the current scraper itself does NOT enumerate the full county
+listing either. Both paths are truncated; the API path is truncated
+differently (by ownership) rather than by page cap.

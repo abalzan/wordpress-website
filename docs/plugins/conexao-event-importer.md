@@ -119,7 +119,7 @@ production-side fetching. Everything is manual/on-demand.
 | `includes/class-event-deduplicator.php` | `Conexao_Event_Deduplicator` | Find existing events by source_id, URL, or content |
 | `includes/class-event-importer.php` | `Conexao_Event_Importer_Engine` | Main import engine, upsert logic, dry-run support |
 | `includes/class-event-image-handler.php` | `Conexao_Event_Image_Handler` | Download/sideload external images + create attachments from embedded base64 data |
-| `includes/class-import-settings.php` | `Conexao_Import_Settings` | Settings storage (Eventbrite API token) + admin page |
+| `includes/class-import-settings.php` | `Conexao_Import_Settings` | Settings storage (`cleanup_scope`) + admin page. **No Eventbrite API token** — the dead token setting was retired in G7 |
 | `includes/class-source-health.php` | `Conexao_Source_Health` | Informational per-source failure tracking (never auto-disables) |
 | `includes/class-source-fetch-exception.php` | `Conexao_Source_Fetch_Exception` | Structured transport/HTTP fetch failure |
 | `includes/class-import-cli.php` | `Conexao_Import_CLI` | WP-CLI commands (`wp conexao-events …`) |
@@ -215,9 +215,12 @@ Large counties (Dublin, Cork) may report much higher `object_count` values.
 The deep tail is unreachable via the public page. This is a documented
 provider limitation, not a bug.
 
-**Eventbrite API removal:** The v3 Events Search API path (`/v3/events/search/`)
-was removed in Stage B (verified 404). The HTML discovery path is the only
-supported mechanism.
+**Eventbrite API:** the v3 Events Search API path (`/v3/events/search/`) was
+removed in Stage B (verified 404) and re-verified in G6. The HTML discovery path
+is the only supported mechanism, and **it requires no Eventbrite credential**.
+The `eventbrite_api_token` setting that this file previously documented as an
+API mode selector was dead — no code ever read it — and was retired in G7. See
+[Eventbrite sources](#eventbrite-sources) above.
 
 **Venue normalization fix:** The normalizer reads `primary_venue` (current
 payload shape) with `venue` as a legacy fallback. This fixes the Stage A
@@ -257,12 +260,37 @@ Some sources (e.g. `laoistourism.ie`) sit behind Cloudflare and return **403 to 
 
 ### Eventbrite sources
 
-Two fetch modes, chosen automatically:
+**One supported ingestion path: HTML scraping of the public county discovery
+page.** There is no API mode and **no Eventbrite credential of any kind** — no
+API token, no OAuth token, no `Authorization` header. Nothing needs to be
+configured in wp-admin to import an Eventbrite source.
 
-1. **Official API**: set a personal OAuth token in Event Import → Settings → Eventbrite API token. Sources then call `https://www.eventbriteapi.com/v3/events/search/`.
-2. **HTML scraping** (fallback, no token): parses the public discovery page's `window.__SERVER_DATA__`. Works only from residential connections; datacenter hosts get blocked.
+The handler parses the public discovery page's `window.__SERVER_DATA__`, walks
+pagination, and filters by the configured county region labels. It works from
+residential/local connections; datacenter hosts can be blocked by Eventbrite
+(405), which is why Eventbrite sources are **local-only**.
 
-Create a free token at [developers.eventbrite.com](https://www.eventbrite.com/developers/v3/).
+**Why there is no API mode** — the official Eventbrite API cannot replace or
+augment this path:
+
+| Fact | Consequence |
+|---|---|
+| `/v3/events/search/` returns **404** (retired by Eventbrite) | no location-scoped event search exists |
+| The only event collection is `/organizations/{id}/events/` | a county listing cannot be addressed |
+| Organization discovery is **per-user** (`/users/me/` → own orgs) | you can only list events you **own** |
+| A county aggregates independent organizers — measured: Cork **36**, Dublin **74**, Carlow **51 in 60** | no token can enumerate these sources |
+
+G6 measured this and returned **`NOT VIABLE`**; G7 then retired the dead
+`eventbrite_api_token` plumbing (a stored, never-read token) rather than leaving
+it as a false prerequisite. Full evidence:
+[`docs/reports/2026-10-04-eventbrite-api-feasibility.md`](../reports/2026-10-04-eventbrite-api-feasibility.md)
+and [`docs/reports/2026-10-04-eventbrite-api-retirement.md`](../reports/2026-10-04-eventbrite-api-retirement.md).
+
+**Reopening the question** is legitimate if an external fact materially changes
+— e.g. Eventbrite restores a location-scoped/public discovery endpoint, or a
+partnership or access model covers third-party events. If that happens, repeat
+the cheap ownership/discovery measurement first. Do not add a credential before
+then.
 
 ### iCalendar sources
 
@@ -1027,7 +1055,7 @@ Submenus:
 - Image Sync — bulk sideload of remaining external banner images
 - Cleanup — manual trigger + status/history
 - Import Logs — view, download, clear logs
-- Settings — Eventbrite API token
+- Settings — importer settings storage (there is nothing to save; no Eventbrite API token)
 
 ## Known fixed pitfalls
 

@@ -99,8 +99,25 @@ class Conexao_Source_Eventbrite extends Conexao_Source_Base {
 	/**
 	 * Fetch raw event listings from Eventbrite county discovery.
 	 *
-	 * Always uses the HTML discovery scraper. The Eventbrite v3 Events Search
-	 * API path has been removed (endpoint shut down, verified 404 in Stage A).
+	 * This is the ONE supported Eventbrite path, and it needs no credential.
+	 * It always uses the HTML discovery scraper.
+	 *
+	 * There is deliberately no client selection here and no token check (G7):
+	 *
+	 *   - the v3 Events Search API (`/v3/events/search/`) is RETIRED by
+	 *     Eventbrite and answers 404 — verified live again in Stage A and in G6;
+	 *   - the official API's remaining event collection is
+	 *     `/organizations/{id}/events/` with PER-USER discovery, so it can only
+	 *     list events you own. A county listing aggregates independent
+	 *     third-party organizers (measured: Cork 36, Dublin 74, Carlow 51 in
+	 *     60), so no authenticated request can enumerate these sources;
+	 *   - G6 therefore returned `NOT VIABLE` and G7 retired the dead
+	 *     `eventbrite_api_token` plumbing rather than leaving a flag for a mode
+	 *     that never existed.
+	 *
+	 * See `docs/reports/2026-10-04-eventbrite-api-feasibility.md` and
+	 * `docs/reports/2026-10-04-eventbrite-api-retirement.md`. Do not add a
+	 * credential-conditional branch here without re-running that measurement.
 	 *
 	 * @return array[]
 	 */

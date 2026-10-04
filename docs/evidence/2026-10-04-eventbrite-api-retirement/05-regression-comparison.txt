@@ -1,0 +1,32 @@
+===============================================================
+G7 REGRESSION COMPARISON — baseline vs post-G7
+===============================================================
+Date: 2026-10-04
+Start SHA: 01096321b611981e1c0a3e6aba05faae535b41c2
+
+--- SUMMARY LINES ---
+BASELINE:  In-process 92 total, 63 passed, 29 failed | 3750 assertions passed, 4 failed
+           Script-contract 18 total, 16 passed, 2 failed | HTTP acceptance 4 total, 3 passed, 1 failed
+POST-G7:   In-process 93 total, 64 passed, 29 failed | 3792 assertions passed, 4 failed
+           Script-contract 19 total, 17 passed, 2 failed | HTTP acceptance 4 total, 3 passed, 1 failed
+
+Delta: +1 in-process suite (test-eventbrite-token-retirement.php, 42 assertions)
+        +1 script-contract gate (verify-eventbrite-token-retirement.py, 59 assertions)
+        +42 assertions. 0 removed. 0 weakened. 0 new failures.
+
+--- FAILURE SET DIFF (normalized) ---
+$ diff baseline-fails post-g7-fails
+(no differences)
+
+RESULT: IDENTICAL — 32 failing entries, 0 new, 0 suppressed, 0 fixed-by-hiding.
+
+--- PERMANENT GATES ---
+baseline: 7 total, 6 passed, 1 failed (i18n_freshness, 1 pre-existing violation, 0 new)
+post-G7:  7 total, 6 passed, 1 failed (i18n_freshness, 1 pre-existing violation, 0 new)
+i18n_freshness was NOT suppressed, NOT allowlisted, NOT baselined away.
+
+--- LINT ---
+lint: OK (syntax clean, no new PHPCS violations, PHPStan clean)
+
+Full runs: /tmp/g7-baseline-full.txt (baseline), /tmp/g7-post-full.txt (post-G7).
+===============================================================

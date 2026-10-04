@@ -1,0 +1,35 @@
+
+===============================================================
+FAILURE-SET COMPARISON (baseline vs post-G6)
+===============================================================
+IDENTICAL: 31 pre-existing failures, 0 new, 0 fixed-by-hiding.
+
+New suite in the post-G6 run:
+[PASS] plugin/conexao-event-importer/test-eventbrite-api-contract.php — 110 passed, 0 failed
+
+Importer suites (post-G6):
+[PASS] plugin/conexao-event-importer/test-county-registry.php — 482 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-error-handling.php — 55 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-event-address.php — 76 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-event-image-sync.php — 30 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-eventbrite-api-contract.php — 110 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-eventbrite-importer.php — 68 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-eventbrite-rate-limit.php — 73 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-export-language.php — 58 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-ics-occurrence-dates.php — 172 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-import-log-run-correlation.php — 21 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-import-log.php — 55 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-ivvcc-importer.php — 46 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-language-identity.php — 29 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-mondello-park-importer.php — 142 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-motorsport-ireland-importer.php — 90 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-past-event-filter.php — 29 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-reappearing-event-lifecycle.php — 5 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-request-budget.php — 33 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-request-retry-policy.php — 59 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-request-reuse.php — 53 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-source-county-hint.php — 18 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-source-fetch-failure.php — 138 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-source-pagination-completeness.php — 24 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-town-sanitization.php — 83 passed, 0 failed
+         FAIL: conexao-event-importer: wp-content/plugins/conexao-event-importer/languages/conexao-event-importer.pot is older than wp-content/plugins/conexao-event-importer/conexao-event-importer.php by 40677s — regenerate the catalogue with `wp i18n make-pot` (never hand-edit)

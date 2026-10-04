@@ -1,0 +1,122 @@
+G6 Negative proofs — Eventbrite offline API contract suite
+=========================================================
+Suite: wp-content/plugins/conexao-event-importer/tests/test-eventbrite-api-contract.php
+Baseline (unmutated):  110 passed, 0 failed   (exit 0)
+
+Every proof below was executed by MUTATING the suite, running it, and
+restoring the pristine file. A proof that cannot fail when its protection is
+removed would be vacuous, so each mutation must produce a NON-ZERO failure
+count. All five do.
+
+--------------------------------------------------------------------
+NP1  Invalid/expired token must surface an auth failure, never
+     "complete source with zero events"
+--------------------------------------------------------------------
+Protected: g6_api_walk_is_complete() returns false unless EVERY page carried
+           both a `pagination` block and an `events` array.
+Mutation:  `if ( ! isset(...) || ! isset(...) )` -> `if ( false )`
+Result:    107 passed, 3 failed   (exit 1)
+
+Failing assertions:
+  G6.9 a walk whose second page errored is INCOMPLETE, never complete
+  G6.9 a walk whose FIRST page errored is INCOMPLETE, never complete
+  G6.10 a 429 page makes the walk INCOMPLETE
+Restore:   110 passed, 0 failed
+
+Why non-vacuous: the mutation makes an incomplete walk report itself as
+complete, which is precisely the G1 masking defect. The suite fails, so the
+guard is genuinely load-bearing.
+
+--------------------------------------------------------------------
+NP2  An empty API page caused by failure must never become "no events"
+     success (the G1/G2 semantics applied to API shapes)
+--------------------------------------------------------------------
+Protected: the failure state is derived from the PRESENCE of the `events`
+           key and must be classified 'failed', not 'empty'.
+Mutation:  $state_fail = <key-presence test>  ->  $state_fail = 'empty'
+Result:    108 passed, 2 failed   (exit 1)
+
+Failing assertions:
+  G6.11 the 403 response is classified as failed, never as empty
+  G6.11 a failure is never reported as an empty source - the G1 masking
+        defect cannot recur
+Restore:   110 passed, 0 failed
+
+Why non-vacuous: this is the exact defect G1 was created to eliminate. The
+mutation reintroduces it and the suite catches it.
+
+--------------------------------------------------------------------
+NP3  Duplicate API event ids must not create duplicate WordPress events
+--------------------------------------------------------------------
+Protected: the stable-id dedup loop in G6.7.
+Mutation:  `if ( isset( $seen[ $id ] ) )` -> `if ( false )`
+Result:    108 passed, 2 failed   (exit 1)
+
+Failing assertions:
+  G6.7 exactly one object is a duplicate of an earlier id
+  G6.7 the four objects collapse to three distinct events
+Restore:   110 passed, 0 failed
+
+Why non-vacuous: the mutation makes the re-listed stable id create a second
+event. The suite counts objects, so the branch is genuinely reached.
+
+--------------------------------------------------------------------
+NP4  A draft event must never be treated as public/published
+--------------------------------------------------------------------
+Protected: the adapter rule  published = ('live'===status) && !empty(listed)
+Mutation:  'published' => <rule>  ->  'published' => true
+Result:    109 passed, 1 failed   (exit 1)
+
+Failing assertion:
+  G6.6 the adapter maps a draft to published=false, so a draft is never
+       treated as public
+Restore:   110 passed, 0 failed
+
+Why non-vacuous: the rule is actually evaluated for a `draft` fixture event,
+so the mutation changes an observed value rather than skipping a branch.
+
+--------------------------------------------------------------------
+NP5  No secret may be emitted into diagnostics or fixtures
+--------------------------------------------------------------------
+Protected: the fixture is scanned for token-shaped keys and for a `Bearer`
+           header.
+Mutation:  the token-field regex guard -> `false`
+Result:    109 passed, 1 failed   (exit 1)
+
+Failing assertion:
+  G6.1 the fixture declares no token field carrying a value
+Restore:   110 passed, 0 failed
+
+
+--------------------------------------------------------------------
+Supporting invariants asserted WITHOUT mutation, because they are
+structural properties of the fixture and the untouched production code
+--------------------------------------------------------------------
+  - G6.1 the fixture declares no token field carrying a value  (live check)
+  - G6.1 the fixture contains no Authorization bearer header   (live check)
+  - G6.10 the EXISTING UNCHANGED Retry-After parser reads the API header
+        correctly, and still caps an absurd value at 60 s.
+        This proves G6 required NO change to any G1-G5 mechanism: the G4
+        parser and the G5 pacing/cap logic already handle the API's error
+        envelope shape.
+  - G6.5 a missing image yields an empty string and NO fabricated URL.
+  - G6.5 a null venue yields empty venue/address, never a guess.
+  - API-only data is never written to WordPress: the suite installs the shared
+    option isolation, makes no HTTP call, and calls no importer engine entry
+    point. It normalizes arrays in memory only.
+
+--------------------------------------------------------------------
+G1-G5 PRESERVATION CHECK
+--------------------------------------------------------------------
+No production file was modified by G6. `git status` shows only:
+  ?? wp-content/plugins/conexao-event-importer/tests/test-eventbrite-api-contract.php
+  ?? wp-content/plugins/conexao-event-importer/tests/fixtures/eventbrite-api-v3-contract.json
+  ?? docs/evidence/2026-10-04-eventbrite-api-g6/
+  M  docs/evidence/2026-09-26-stage-l/gate.json   (generated by the gate run)
+
+The G1-G5 mechanisms are not merely untouched — they are actively EXERCISED
+by this suite:
+  G1 (failure != empty)      NP1, NP2
+  G2 (pagination/complete)   NP1, G6.8
+  G4 (Retry-After, bounded)  G6.10 (uses the unchanged production parser)
+  G5 (rate-limit semantics)  G6.10

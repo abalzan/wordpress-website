@@ -1,0 +1,76 @@
+===============================================================
+G7 MUTATION PROOFS — every negative proof is non-vacuous
+===============================================================
+Date: 2026-10-04
+Method: each retired guard was deliberately REINTRODUCED in the working
+tree, the G7 suite was re-run, and the resulting failures recorded. The tree was
+restored after every mutation (0 residue: 'G7 MUTATION' matches = 0).
+Baseline pristine run: 42 passed, 0 failed.
+
+A mutation counts ONLY if the assertions it kills are the ones that guard the
+retired behaviour. All four below do.
+
+---------------------------------------------------------------
+M1
+---------------------------------------------------------------
+  FAIL: NP1 a stored token does not divert the walk: the HTML page is still parsed — got 0 events
+  FAIL: NP1 the event still comes from the HTML county source — (no source key)
+  FAIL: NP1 no API token accessor exists
+  FAIL: NP1 no executable implementation file in includes/ mentions eventbrite_api_token — class-eventbrite-source.php
+G7 Eventbrite API-token retirement: 37 passed, 4 failed
+
+---------------------------------------------------------------
+M2
+---------------------------------------------------------------
+  FAIL: NP3 no request carries an Authorization header — https://www.eventbrite.ie/d/ireland--cork/all-events/ sent Authorization
+  FAIL: NP3 no request header carries a Bearer value — https://www.eventbrite.ie/d/ireland--cork/all-events/
+  FAIL: NP3 the Eventbrite client source never names an Authorization header
+G7 Eventbrite API-token retirement: 40 passed, 3 failed
+
+---------------------------------------------------------------
+M3
+---------------------------------------------------------------
+  FAIL: NP1 no executable implementation file in includes/ mentions eventbrite_api_token — class-import-settings.php
+  FAIL: NP4 the settings screen exposes no token field
+  FAIL: NP4 the settings screen does not send a maintainer to create a token
+  FAIL: NP4 the settings screen has no save action (nothing to save)
+G7 Eventbrite API-token retirement: 38 passed, 4 failed
+
+---------------------------------------------------------------
+M4
+---------------------------------------------------------------
+  FAIL: NP5 a first page that cannot be parsed still raises the structured failure
+  FAIL: NP5 a failed first page never yields an empty successful enumeration — fetch_complete is only meaningful when no exception was thrown
+  FAIL: NP5 a blocked first page aborts instead of returning an empty event list — fetch_events() returned 0 events
+G7 Eventbrite API-token retirement: 39 passed, 3 failed
+
+===============================================================
+SUMMARY: 4/4 mutations produced non-zero failure counts on the intended
+assertions. 0 mutations were satisfied by an unrelated assertion failing.
+===============================================================
+
+===============================================================
+GATE MUTATIONS — tests/scripts/verify-eventbrite-token-retirement.py
+===============================================================
+The repository gate must also be non-vacuous. Three mutations:
+
+MG1 — re-add a token instruction to the CURRENT importer doc
+  FAIL: docs/plugins/conexao-event-importer.md carries no Eventbrite-token instruction (matched 'set a personal OAuth token')
+  FAIL: docs/plugins/conexao-event-importer.md carries no Eventbrite-token instruction (matched 'Create a free token at')
+  FAIL: docs/plugins/conexao-event-importer.md carries no Eventbrite-token instruction (matched 'two fetch modes')
+  56 passed, 3 failed
+
+MG2 — a bare prerequisite sentence naming the key (no retirement framing)
+  FAIL: no live (non-historical) file references the retired token key: docs/plugins/conexao-event-importer.md
+  58 passed, 1 failed
+
+MG3 — DELETE the G6 report (a clean grep achieved by destroying history)
+  FAIL: the G6 feasibility report still exists (history must not be deleted to pass)
+  FAIL: the G6 report still records the retired key (its finding stays truthful)
+  FAIL: the G6 report still carries its NOT VIABLE verdict
+  56 passed, 3 failed
+
+===============================================================
+SUMMARY: 3/3 gate mutations fail as required. MG3 proves the gate cannot be
+satisfied by deleting G6's historical evidence.
+===============================================================

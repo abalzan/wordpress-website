@@ -1,0 +1,136 @@
+  PASS: the G6 offline API contract fixture is present and readable
+  PASS: the G6 offline API contract fixture is valid JSON
+
+=== G6.1 The fixture declares its provenance and carries no credential ===
+  PASS: G6.1 the fixture asserts it contains no credentials
+  PASS: G6.1 the fixture declares that the event payloads are NOT a live capture
+  PASS: G6.1 the fixture contains no Authorization bearer header
+  PASS: G6.1 the fixture declares no token field carrying a value
+  PASS: G6.1 no section outside the named auth probes declares a token-shaped key
+  PASS: G6.1 the only token-shaped section is the named invalid-token probe case
+  PASS: G6.1 users_me_unauthenticated is labelled as a verbatim live capture
+  PASS: G6.1 users_me_invalid_token is labelled as a verbatim live capture
+  PASS: G6.1 events_search_retired is labelled as a verbatim live capture
+  PASS: G6.1 an unauthenticated API request is 401 NO_AUTH (live-verified)
+  PASS: G6.1 an invalid token is 401 INVALID_AUTH, distinct from NO_AUTH (live-verified)
+  PASS: G6.1 the public Events Search endpoint is 404 NOT_FOUND (live re-verified in G6)
+
+=== G6.2 NEGATIVE PROOF: an invalid token is an auth failure, never "0 events, success" ===
+  PASS: G6.2 the invalid-token response is HTTP 401
+  PASS: G6.2 NO_AUTH and INVALID_AUTH are distinguishable, so an expired token is reportable
+  PASS: G6.2 the 401 body carries no `events` key, so it cannot be misread as an empty result
+  PASS: G6.2 the 401 body carries no `pagination` key, so completeness is undecidable (correctly)
+  PASS: G6.2 a naive `events` extraction on the 401 body yields exactly zero events
+  PASS: G6.2 the naive extraction finds no object_count, so a guard keyed on object_count MUST fire
+
+=== G6.3 Field compatibility: the existing normalizer against an API payload ===
+  PASS: G6.3 the API `id` is the stable event identity the importer already uses
+  PASS: G6.3 the injected source identity survives normalization
+  PASS: G6.3 the API `name` maps to the importer title unchanged
+  PASS: G6.3 MEASURED: API `start.local` does NOT populate start_date (nested shape unread)
+  PASS: G6.3 MEASURED: API `start.local` does NOT populate start_time
+  PASS: G6.3 MEASURED: API `end.local` does NOT populate end_date
+  PASS: G6.3 MEASURED: API `end.local` does NOT populate end_time
+  PASS: G6.3 MEASURED: API `start.timezone` does NOT populate timezone (nesting mismatch)
+  PASS: G6.3 MEASURED: API `organizer.name` does NOT populate organizer (the normalizer requires `primary_organizer`)
+  PASS: G6.3 MEASURED: the API organizer id is not read from the nested organizer object
+  PASS: G6.3 MEASURED: the API exposes no `tickets_url` key (the API uses `url` for the same value)
+  PASS: G6.3 MEASURED SURPRISE: the API `venue` key IS consumed via the normalizer legacy venue fallback
+  PASS: G6.3 MEASURED SURPRISE: the API `venue.address` IS consumed via the same fallback
+  PASS: G6.3 MEASURED: the API venue address city IS consumed via the same fallback
+  PASS: G6.3 MEASURED SURPRISE: the API `image.image_sizes.medium` IS consumed without any translation
+  PASS: G6.3 MEASURED: the API `summary` key IS read directly (shared field name)
+  PASS: G6.3 MEASURED: exactly 8 importer fields are incompatible with a raw API object: start_date, start_time, end_date, end_time, timezone, organizer, organizer_id, ticket_url
+  PASS: G6.3 the date gap alone is fatal: without start_date the event cannot be placed on a calendar
+  PASS: G6.3 MEASURED: 7 of 13 importer fields are empty from an unmodified API object (title, url, venue, address, image, description survive via shared names or legacy fallbacks)
+  PASS: G6.3 the API payload DOES carry the start instant, timezone and organizer name the importer needs — nested under different keys
+  PASS: G6.3 the API start instant is present and readable from start.local
+  PASS: G6.3 the API organizer name is present and readable from organizer.name
+
+=== G6.4 A shaped adapter translation restores full fidelity through the shared normalizer ===
+  PASS: G6.4 the adapted API event yields the correct start date through the SHARED normalizer
+  PASS: G6.4 the adapted API event yields the correct start time
+  PASS: G6.4 the adapted API event yields the correct end date and time
+  PASS: G6.4 the adapted API event yields the venue name
+  PASS: G6.4 the adapted API event yields the full postal address
+  PASS: G6.4 the adapted API event yields the organizer name
+  PASS: G6.4 the adapted API event yields the organizer identity
+  PASS: G6.4 the adapted API event yields an image URL
+  PASS: G6.4 the adapted API event yields the town from the venue address
+  PASS: G6.4 the county identity injected by the source handler is preserved
+  PASS: G6.4 the adapted API event yields the summary as description
+  PASS: G6.4 the adapted API event yields the composed location string
+
+=== G6.5 A missing optional image degrades without inventing data ===
+  PASS: G6.5 an API event with no image yields an empty image, not a fabricated URL
+  PASS: G6.5 no placeholder image URL is invented for an imageless event
+  PASS: G6.5 the imageless event still normalizes its title
+  PASS: G6.5 the imageless event still normalizes its date and time
+  PASS: G6.5 a null API venue yields empty venue and address, never a guess
+  PASS: G6.5 the API exposes a series_id for a recurring event
+  PASS: G6.5 MEASURED LIMITATION: the API event object carries NO recurrence rule - only a series id
+  PASS: G6.5 the API exposes a per-event `changed` timestamp (an improvement over the HTML path)
+
+=== G6.6 Publication status: the API is decidable ===
+  PASS: G6.6 the ordinary event is live AND listed, i.e. public
+  PASS: G6.6 the draft event is draft AND unlisted, i.e. NOT public
+  PASS: G6.6 the adapter maps a draft to published=false, so a draft is never treated as public
+  PASS: G6.6 the adapter maps a live+listed event to published=true
+  PASS: G6.6 a re-listed but still live event stays published
+
+=== G6.7 Duplicate API event ids collapse to one event ===
+  PASS: G6.7 the two pages together carry 4 event objects
+  PASS: G6.7 exactly one object is a duplicate of an earlier id (the stable-id re-listing)
+  PASS: G6.7 the four objects collapse to three distinct events
+  PASS: G6.7 three distinct ids were observed across both pages
+  PASS: G6.7 the duplicate carries the SAME stable event id as the original
+  PASS: G6.7 the duplicate carries a strictly newer `changed` timestamp
+  PASS: G6.7 the newer `changed` value is the one asserted in the fixture
+
+=== G6.8 API pagination terminates deterministically and fails truthfully ===
+  PASS: G6.8 the API declares its total object_count up front (no hidden tail)
+  PASS: G6.8 the API declares a page_count, so the walk has a known end
+  PASS: G6.8 page 1 advertises a continuation cursor and has_more_items=true
+  PASS: G6.8 page 2 has a null continuation, so the walk terminates deterministically
+  PASS: G6.8 the API walk reaches a deterministic end in exactly 2 pages
+  PASS: G6.8 the walk collects all 4 event objects across both pages
+  PASS: G6.8 object_count equals the DISTINCT event ids: the API counts a re-listed stable id ONCE, so no duplicate is promised twice
+  PASS: G6.8 the walk log records two pages of two events each
+  PASS: G6.8 the continuation cursor is consumed exactly once and then terminates
+
+=== G6.9 NEGATIVE PROOF: a failed page can never become "no events, complete" ===
+  PASS: G6.9 the failed page is HTTP 403
+  PASS: G6.9 the failed page body carries no `events` key
+  PASS: G6.9 the failed page body carries no `pagination` key, so completeness is undecidable
+  PASS: G6.9 a walk whose second page errored is INCOMPLETE, never complete
+  PASS: G6.9 a walk whose FIRST page errored is INCOMPLETE, never complete
+  PASS: G6.9 a walk where every page carried pagination AND events is complete
+  PASS: G6.9 a genuinely empty organization IS complete (it returned pagination and events)
+
+=== G6.10 NEGATIVE PROOF: a 429 page is incomplete and carries Retry-After ===
+  PASS: G6.10 the rate-limited page is HTTP 429
+  PASS: G6.10 the 429 body carries no `events` key
+  PASS: G6.10 a 429 page makes the walk INCOMPLETE
+  PASS: G6.10 the 429 page carries a Retry-After header the existing client can already parse
+  PASS: G6.10 the EXISTING unchanged Retry-After parser reads the API header correctly
+  PASS: G6.10 the EXISTING unchanged Retry-After cap (60s) still bounds an absurd API value
+
+=== G6.11 NEGATIVE PROOF: "genuinely empty" is distinguishable from "failed" ===
+  PASS: G6.11 the empty-but-valid response carries a real empty events array
+  PASS: G6.11 it declares object_count 0, so "empty" is an ASSERTION, not an absence
+  PASS: G6.11 the empty organization is classified as empty
+  PASS: G6.11 the 403 response is classified as failed, never as empty
+  PASS: G6.11 a failure is never reported as an empty source - the G1 masking defect cannot recur
+
+=== G6.12 Organization discovery is owner-scoped (the G6 coverage blocker) ===
+  PASS: G6.12 the discovery response lists the token owner organizations
+  PASS: G6.12 every discovered organization carries a stable id and a name
+  PASS: G6.12 every discovered organization carries a locale
+  PASS: G6.12 every discovered organization carries a stable id and a name
+  PASS: G6.12 every discovered organization carries a locale
+  PASS: G6.12 the organizations payload contains NO location/county selector - discovery cannot be location-scoped
+  PASS: G6.12 the organizations endpoint returns organizations only, never a public event list
+  PASS: G6.12 the organizations endpoint exposes no search parameter
+  PASS: G6.12 a county discovery slug cannot be expressed against the organizations endpoint
+
+G6 Eventbrite API contract (offline): 110 passed, 0 failed
