@@ -558,7 +558,12 @@ included) and recorded on the Import History row.
   by construction: it can only downgrade complete → incomplete, which
   suppresses a destructive reconciliation, and never authorises one;
 - **the source was skipped because it is in cooldown** (G9). See
-  [Source cooldown and recovery](#source-cooldown-and-recovery).
+  [Source cooldown and recovery](#source-cooldown-and-recovery);
+- **the walk resumed from a stored checkpoint and its event set is therefore a
+  subset** (G10). A resumed walk can reach the last page and still be refused
+  absence-based reconciliation, because the already-confirmed prefix was not
+  re-requested this run. See
+  [Enumeration checkpoint and safe resume](#enumeration-checkpoint-and-safe-resume-g10).
 
 **The critical rule: an incomplete enumeration must never trigger
 `mark_missing_events()`.** Absence from a truncated listing is not evidence that
@@ -888,6 +893,127 @@ Pressing *Run import* during the window reports:
 **Cadence.** No automatic schedule is implemented, deliberately: choosing one
 requires source-volatility measurements that have not been taken yet. Scheduling
 by intuition was refused rather than shipped.
+
+## Enumeration checkpoint and safe resume (G10)
+
+G9 stops a throttled source from being hammered. G10 stops the *next useful run*
+from re-spending its whole budget rediscovering pages an earlier run already
+confirmed.
+
+### The pagination contract this relies on
+
+Eventbrite's public listing is server-rendered and exposes no cursor and no
+stable page identifier. Measured 2026-10-04 from the live walk evidence:
+
+| Question | Measured answer |
+|---|---|
+| How is the page count discovered? | `search_data.events.pagination.page_count` on **page 1** |
+| Is there a next-page URL? | **No.** There is no next/cursor link in the payload |
+| Are page numbers explicit? | **Yes.** `?page=N` on the base URL |
+| Does the page carry a stable identifier? | **Yes, positional only.** The payload asserts `page_number`, and it always equals the requested page — but it identifies a *position*, never a stable record |
+| Is the page size known? | **Yes.** `page_size` (20, measured) |
+| Is ordering stable across runs? | **No.** There is no sort key in the payload; the listing is a live ranking over a changing population |
+| `object_count` / `page_count` source | The same `pagination` block, read from page 1 |
+| How is the end detected? | The walk runs to the declared `page_count`; a page that fails makes the run **incomplete** |
+
+The consequence that shapes the whole design: **a page number is a position,
+not an identity.** New events published at the top of the listing shift every
+boundary after them.
+
+### What a checkpoint is
+
+> The last position whose page was **fetched, parsed and merged** — durably
+> confirmed progress.
+
+`Conexao_Source_Enumeration_Checkpoint` stores one small record per source in
+the `conexao_event_enumeration_checkpoints` option: `source_id`, `fingerprint`,
+`last_page`, `page_count`, `complete` (progress only), `last_failure`,
+`updated_at`, `runs`. Bounded by `MAX_SOURCES`, exactly like the cooldown
+registry. No response bodies, no HTML, no per-request data.
+
+### Checkpoint ≠ completeness ≠ deletion authority
+
+**A checkpoint never implies the source is complete, and never authorises
+`mark_missing_events()`.** Three independent facts are kept apart:
+
+| Fact | Derived from | Can it authorise deletion? |
+|---|---|---|
+| How far we got | the checkpoint | **never** |
+| Whether the listing was fully enumerated | `is_fetch_complete()` — truncation guard, budgets, page failures | only if *also* reconciliation-safe |
+| Whether the event set may be reasoned about by absence | `is_reconciliation_safe()` | this is the gate `mark_missing_events()` actually reads |
+
+A **resumed** walk reaches its final page and is therefore *complete*, yet its
+event set is a **subset** — the confirmed prefix was deliberately not
+re-requested. Reasoning from absence on that set would flip every event in the
+skipped prefix to `source_not_found` and hide live events. That is why
+`is_reconciliation_safe()` exists and why the engine reads it *in addition to*
+completeness.
+
+### Ordering: advance only after safe processing
+
+```
+fetch (200) → parse OK → merge into the result set → PERSIST checkpoint
+```
+
+The write happens at exactly one point, after the merge. A crash anywhere
+earlier leaves the checkpoint at the previous page, so the next run re-walks
+that page — at-least-once reprocessing, absorbed by identity deduplication. A
+crash immediately after the write is equally safe. Advancing *before* the fetch
+is the dangerous inversion: it would skip a page forever. This is mutation
+proof **M1**.
+### Resume algorithm and bounded overlap
+
+Page 1 is **always** requested — it carries `page_count` / `object_count` /
+`page_size`, and the G8 truncation guard depends on them. That one request is
+the price of keeping that guard authoritative.
+
+```
+page 1                  → pagination metadata + G8 truncation guard
+last_page − 1           → one page of bounded overlap
+last_page … page_count  → continue forward
+```
+
+The overlap exists *because* page boundaries are positions, not identities: new
+top-of-listing events displace the boundary, and resuming at `last_page + 1`
+would skip exactly those displaced events. One page (20 events) absorbs up to
+20 new top-of-listing insertions, while costing **1** request instead of
+re-walking 31. Overlap events are de-duplicated by native Eventbrite event ID,
+so the cost is one duplicate request, never a duplicate event.
+
+### Invalidation
+
+A checkpoint is valid only for the source definition that produced it. It is
+**discarded and the walk restarts at page 1** when the fingerprint does not
+match, the schema is incompatible, or the stored page is beyond the listing's
+current declared page count. The fingerprint covers only the fields that change
+*which events* the listing yields (`type`, `url`, `county`), so renaming a
+source does not throw away progress while changing its URL does.
+
+### Interaction with everything else
+
+| Condition | Checkpoint | Enumeration |
+|---|---|---|
+| HTTP 429 | preserved at the last confirmed page, `last_failure = rate_limited` | incomplete; cooldown still applies |
+| WAF / HTTP 405 | preserved at the last confirmed page, `last_failure = waf` | incomplete |
+| Request budget exhausted | pages that were confirmed are persisted | incomplete |
+| Time budget exhausted | pages that were confirmed are persisted | incomplete |
+| Cooldown | **never touched** — cooldown cannot reset progress | incomplete, zero requests |
+| Upstream truncation | may reach the final page and record `complete` (progress only) | **still incomplete** — the G8 guard is authoritative |
+| Any of the above | **never** authorises `mark_missing_events()` | — |
+
+### Operator visibility
+
+Import History gains a bounded `checkpoint` shape alongside the existing
+`cooldown` one, and the Import History table gains a **Progress** column
+(`page 31 of 49 (rate_limited) — resumable`). It reports progress only; the
+existing **Listing** column remains the completeness signal. There is no second
+dashboard, and Import History never treats a checkpoint's existence as
+completion.
+
+To clear progress for one source (for example after a deliberate source
+redefinition), reset its record via the checkpoint class or delete the
+`conexao_event_enumeration_checkpoints` option; the next run then walks the
+listing from page 1, which is always safe.
 
 ## Diagnostics: Import History, Import Logs and run correlation
 

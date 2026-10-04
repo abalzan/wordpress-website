@@ -1,0 +1,14 @@
+G10 mutation proofs — each mutation MUST make the suite fail
+--------------------------------------------------------------------------
+M1    M1 checkpoint advanced BEFORE a successful fetch         PROVEN  (G10 checkpoint: 68 passed, 9 failed)
+M2    M2 resume always restarts at page 1                      PROVEN  (G10 checkpoint: 72 passed, 5 failed)
+M3    M3 an incomplete run is reported as complete             PROVEN  (G10 checkpoint: 75 passed, 2 failed)
+M4    M4 upstream-truncation guard removed                     PROVEN  (G10 checkpoint: 76 passed, 1 failed)
+M5    M5 one checkpoint shared across all sources              PROVEN  (G10 checkpoint: 48 passed, 29 failed)
+M6    M6 a failed page advances the checkpoint                 PROVEN  (G10 checkpoint: 76 passed, 1 failed)
+M7    M7 checkpoint authorises missing-event reconciliation    PROVEN  (G10 checkpoint: 74 passed, 3 failed)
+M8    M8 overlap identity deduplication removed                PROVEN  (G10 checkpoint: 76 passed, 1 failed)
+--------------------------------------------------------------------------
+Proven: 8 | vacuous/failed: 0
+
+Originals restored.

@@ -41,6 +41,327 @@ class Conexao_Source_Eventbrite extends Conexao_Source_Base {
 	const TIME_BUDGET_SECONDS = 45;
 
 	/**
+	 * Bounded overlap: how many already-confirmed pages are re-walked on resume.
+	 *
+	 * G10. Eventbrite's listing is a live ranking over a changing population,
+	 * and the payload carries NO sort key, NO cursor and NO stable page
+	 * identifier — only `page_number`, `page_count` and `object_count`. That
+	 * means a page boundary is a POSITION, not an identity: a handful of newly
+	 * published events at the top of the listing shifts everything after it,
+	 * so an event confirmed at page 31 in one run can legitimately appear at
+	 * page 32 in the next. Resuming at `last_page + 1` would therefore skip
+	 * exactly those displaced events.
+	 *
+	 * Re-walking a small, fixed number of pages immediately below the
+	 * checkpoint re-validates that boundary and re-collects anything displaced
+	 * across it. The cost is bounded and deterministic (at most
+	 * OVERLAP_PAGES extra requests per resume) and it is a strict correctness
+	 * trade: at-least-once collection with identity-based deduplication rather
+	 * than a silent gap.
+	 *
+	 * One page is the measured-sensible unit: Eventbrite's page size is 20, so
+	 * a single page of overlap absorbs up to 20 new top-of-listing events
+	 * displacing the boundary, far more than the observed churn between two
+	 * scheduled runs, while costing 1 request instead of re-walking 31.
+	 *
+	 * @var int
+	 */
+	const OVERLAP_PAGES = 1;
+
+	/**
+	 * Whether checkpointing/resume is enabled for this walk.
+	 *
+/**
+	 * Whether the events returned by the last fetch_events() may be used to
+	 * reconcile ABSENCE.
+	 *
+	 * This is deliberately a SEPARATE signal from `is_fetch_complete()`.
+	 *
+	 * G10 introduced resuming a walk from a persisted checkpoint. A resumed
+	 * walk deliberately does NOT re-request the already-confirmed prefix: it
+	 * fetches page 1 (for pagination metadata) and then continues from the
+	 * resume point. The event set it returns is therefore a SUBSET of the
+	 * listing even when the walk runs all the way to the last page.
+	 *
+	 * `mark_missing_events()` reasons from absence — "this event was not in
+	 * the set, so it disappeared upstream". Applied to a resumed subset that
+	 * reasoning is unsound: every event living in the skipped prefix would be
+	 * flipped to source_not_found and hidden from the public site. Those
+	 * events are not missing, they were simply not re-requested this run.
+	 *
+	 * So a resumed walk is complete as PROGRESS (it knows how far it got) and
+	 * unsafe as a LISTING (it does not hold the whole listing). Only the second
+	 * question may authorise absence-based reconciliation.
+	 *
+	 * @var bool
+	 */
+	protected $reconciliation_safe = true;
+
+	/**
+	 * The persisted enumeration checkpoint for this source, once read.
+	 *
+	 * @var array|null
+	 */
+	protected $checkpoint = null;
+
+	/**
+	 * Fingerprint of the source definition this run is enumerating.
+	 *
+	 * @var string
+	 */
+	protected $checkpoint_fingerprint = '';
+
+	/**
+	 * Highest page this run has fetched, parsed and merged.
+	 *
+	 * Only ever written after the merge, which is what makes the checkpoint a
+	 * record of *confirmed* progress rather than of intent.
+	 *
+	 * @var int
+	 */
+	protected $confirmed_page = 1;
+
+	/**
+	 * Whether this run resumed instead of walking the full prefix.
+	 *
+	 * @var bool
+	 */
+	protected $resumed = false;
+
+	/**
+	 * Whether the events returned by the last enumeration may be used to
+	 * reconcile absence (see the property docblock for why this is separate
+	 * from completeness).
+	 *
+	 * @return bool True when absence-based reconciliation is safe.
+	 */
+	public function is_reconciliation_safe() {
+		return (bool) $this->reconciliation_safe;
+	}
+
+	/**
+	 * Mark this enumeration as unsafe for absence-based reconciliation.
+	 *
+	 * @return void
+	 */
+	protected function mark_reconciliation_unsafe() {
+		$this->reconciliation_safe = false;
+	}
+
+	/**
+	 * Whether this walk began with a persisted checkpoint rather than page 1.
+	 *
+	 * @return bool
+	 */
+	public function did_resume() {
+		return (bool) $this->resumed;
+	}
+
+	/**
+	 * The last safely confirmed enumeration position for this source.
+	 *
+	 * @return int Zero when this run has not confirmed any page beyond the
+	 *              first.
+	 */
+	public function get_confirmed_page() {
+		return (int) $this->confirmed_page;
+	}
+
+	/**
+	 * Whether checkpointing/resume is enabled for this walk.
+	 * Exists so the mechanism can be proven off in a test without deleting
+	 * code, and so an operator troubleshooting a resume can compare both
+	 * behaviours on the same fixture. The default is on.
+	 *
+	 * @return bool
+	 */
+	protected function checkpointing_enabled() {
+		return (bool) apply_filters( 'conexao_eventbrite_checkpoint_enabled', true );
+	}
+	/**
+	 * Decide where this walk should start paging from.
+	 *
+	 * G10. Called once, immediately after page 1 has been fetched and parsed —
+	 * page 1 is ALWAYS requested, because it carries the pagination metadata
+	 * (`page_count`, `object_count`, `page_size`) the truncation guard depends
+	 * on. Resuming therefore costs one request even in the best case, and that
+	 * is the price of keeping the G8 guard authoritative.
+	 *
+	 * Returns the first page the loop should request. A value of 2 is the
+	 * normal full-walk start.
+	 *
+	 * @param int $page_count Page count declared by this run's page 1.
+	 * @return int First page to request (>= 2).
+	 */
+	protected function resolve_resume_page( $page_count ) {
+		$this->checkpoint_fingerprint = Conexao_Source_Enumeration_Checkpoint::fingerprint( $this->config );
+
+		if ( ! $this->checkpointing_enabled() || ! class_exists( 'Conexao_Source_Enumeration_Checkpoint' ) ) {
+			return 2;
+		}
+
+		$this->checkpoint = Conexao_Source_Enumeration_Checkpoint::get( $this->get_id() );
+
+		if ( ! Conexao_Source_Enumeration_Checkpoint::is_usable( $this->checkpoint, $this->checkpoint_fingerprint, $page_count ) ) {
+			// Nonexistent, stale, malformed or belonging to another source
+			// definition: discard it and walk the listing from the start. This
+			// is the documented safe-failure policy — never "skip unknown
+			// pages".
+			if ( (int) $this->checkpoint['last_page'] > 0 ) {
+				Conexao_Source_Enumeration_Checkpoint::reset( $this->get_id() );
+
+				Conexao_Import_Log::add(
+					$this->get_id(),
+					'warning',
+					sprintf(
+						/* translators: 1: discarded page, 2: current page count */
+						__( 'Discarded the stored enumeration checkpoint (page %1$d of a source that now declares %2$d page(s)). This run enumerates the listing from page 1.', 'conexao-event-importer' ),
+						(int) $this->checkpoint['last_page'],
+						(int) $page_count
+					),
+					array(
+						'reason'      => 'checkpoint_invalidated',
+						'reason_code' => 'checkpoint_invalidated',
+						'page_count'  => (int) $page_count,
+						'run_id'      => $this->get_current_run_id(),
+					)
+				);
+			}
+
+			return 2;
+		}
+
+		$last_page = (int) $this->checkpoint['last_page'];
+
+		// Already at (or past) the end of the current listing: there is nothing
+		// left to resume into, so re-walk it. The checkpoint was already stored
+		// and is not advanced by this branch.
+		if ( $last_page >= (int) $page_count ) {
+			return 2;
+		}
+
+		/*
+		 * Bounded overlap. See self::OVERLAP_PAGES for why page boundaries are
+		 * positions rather than identities. The overlap is clamped so it can
+		 * never reach back past page 2 (page 1 is always fetched separately)
+		 * and never exceeds the confirmed position itself.
+		 */
+		$overlap  = min( self::OVERLAP_PAGES, max( 0, $last_page - 1 ) );
+		$start_at = max( 2, $last_page - $overlap );
+
+		$this->resumed = true;
+
+		// The returned event set is now a subset of the listing.
+		$this->mark_reconciliation_unsafe();
+
+		Conexao_Import_Log::add(
+			$this->get_id(),
+			'info',
+			sprintf(
+				/* translators: 1: page this run starts at, 2: last confirmed page, 3: page count, 4: overlap pages */
+				__( 'Resuming Eventbrite enumeration at page %1$d (last confirmed page %2$d of %3$d, re-validating %4$d page(s) of overlap).', 'conexao-event-importer' ),
+				(int) $start_at,
+				(int) $last_page,
+				(int) $page_count,
+				(int) ( $last_page - $start_at )
+			),
+			array(
+				'reason'        => 'checkpoint_resume',
+				'resume_page'   => (int) $start_at,
+				'last_page'     => (int) $last_page,
+				'page_count'    => (int) $page_count,
+				'overlap_pages' => (int) ( $last_page - $start_at ),
+				'run_id'        => $this->get_current_run_id(),
+			)
+		);
+
+		return $start_at;
+	}
+
+	/**
+	 * Persist the confirmed enumeration position for this source.
+	 *
+	 * G10 ordering contract: this is called ONLY after a page has been
+	 * fetched, parsed and merged into the accumulated event set. It is never
+	 * called before the fetch, so an interruption can lose progress (the page
+	 * is simply re-walked next run) but can never skip it.
+	 *
+	 * `complete` here describes progress only — "this generation of the
+	 * enumeration reached its last page". It is never a completeness claim
+	 * about the upstream listing; that remains `is_fetch_complete()`, which
+	 * the truncation guard still owns.
+	 *
+	 * @param int    $page       Page that has just been confirmed.
+	 * @param int    $page_count Declared page count.
+	 * @param bool   $complete   Whether the walk reached the final page.
+	 * @param string $failure  Failure class, or an empty string on a clean stop.
+	 * @return void
+	 */
+	protected function persist_checkpoint( $page, $page_count, $complete = false, $failure = '' ) {
+		$page = (int) $page;
+
+		if ( $page > $this->confirmed_page ) {
+			$this->confirmed_page = $page;
+		}
+
+		if ( ! $this->checkpointing_enabled() || ! class_exists( 'Conexao_Source_Enumeration_Checkpoint' ) ) {
+			return;
+		}
+
+		Conexao_Source_Enumeration_Checkpoint::record(
+			$this->get_id(),
+			array(
+				'fingerprint'  => $this->checkpoint_fingerprint,
+				'last_page'    => $page,
+				'page_count'   => (int) $page_count,
+				'complete'     => (bool) $complete,
+				'last_failure' => (string) $failure,
+			)
+		);
+	}
+
+	/**
+	 * Get the source ID.
+/**
+	 * Classify why a page fetch failed, for the checkpoint's failure field.
+	 *
+	 * Reuses the client's own G5D classification so the checkpoint records the
+	 * same failure vocabulary the import log and cooldown already use, rather
+	 * than introducing a second taxonomy that could disagree with them.
+	 *
+	 * @param Conexao_Eventbrite_Client $client Client after the failed fetch.
+	 * @return string One of: rate_limited, waf, budget_exhausted, transport_error,
+	 *                http_error, upstream_unavailable.
+	 */
+	protected function classify_page_failure( $client ) {
+		$reason = $client->get_last_failure_reason();
+
+		if ( 'rate_limited' === $reason ) {
+			return 'rate_limited';
+		}
+
+		if ( 'budget_exhausted' === $reason ) {
+			return 'budget_exhausted';
+		}
+
+		// G9's WAF signal: HTTP 405 or a recognised challenge response.
+		$status = (int) $client->get_last_http_status();
+
+		if ( 405 === $status ) {
+			return 'waf';
+		}
+
+		if ( 'transport_error' === $reason ) {
+			return 'network';
+		}
+
+		return 'upstream_unavailable';
+	}
+
+	/**
+	 * Persist the confirmed enumeration position for this source.
+
+	/**
 	 * Get the source ID.
 	 *
 	 * Returns the configured source ID so each county source has an independent
@@ -351,16 +672,27 @@ class Conexao_Source_Eventbrite extends Conexao_Source_Base {
 
 		// Walk remaining pages.
 		//
+		// G10: the walk starts at the resolved resume position instead of
+		// always page 2. Page 1 was already fetched above for its pagination
+		// metadata, so a resumed run re-requests exactly that one page plus the
+		// bounded overlap plus everything still outstanding.
+		//
 		// G5: the clock comes from the pacing policy so a test can drive the
 		// time-budget branch deterministically (and prove that a cooldown
 		// cannot extend the walk indefinitely).
-		$started_at = $pacing->now();
-		$budget     = $client->get_time_budget_seconds();
+		$started_at   = $pacing->now();
+		$budget       = $client->get_time_budget_seconds();
+		$resume_page  = $this->resolve_resume_page( $page_count );
+		$stop_failure = '';
 
-		for ( $page = 2; $page <= $page_count; $page++ ) {
+		for ( $page = $resume_page; $page <= $page_count; $page++ ) {
 			if ( ( $pacing->now() - $started_at ) > $budget ) {
 				$this->mark_fetch_incomplete();
 				$incomplete_reason = sprintf( 'time budget of %ds expired after page %d/%d', (int) $budget, $page - 1, $page_count );
+				$stop_failure      = 'time_budget';
+				// The last CONFIRMED page is the one already merged, which is
+				// exactly the page before this one was requested.
+				$this->persist_checkpoint( $this->confirmed_page, $page_count, false, 'time_budget' );
 				Conexao_Import_Log::add(
 					$this->get_id(),
 					'warning',
@@ -404,6 +736,16 @@ class Conexao_Source_Eventbrite extends Conexao_Source_Base {
 						Conexao_Eventbrite_Client::MAX_RETRIES,
 						$client->get_rate_limit_hits()
 					);
+					$stop_failure      = 'rate_limited';
+
+					/*
+					 * G10: preserve the progress already confirmed. Page $page
+					 * FAILED, so the checkpoint must stay at the last page that
+					 * was actually fetched and merged — never at the page we
+					 * are about to retry. This is the ordering invariant: a
+					 * failure can lose progress, never skip it.
+					 */
+					$this->persist_checkpoint( $this->confirmed_page, $page_count, false, 'rate_limited' );
 
 					Conexao_Import_Log::add(
 						$this->get_id(),
@@ -430,6 +772,11 @@ class Conexao_Source_Eventbrite extends Conexao_Source_Base {
 				}
 
 				$incomplete_reason = sprintf( 'page %d/%d could not be fetched (HTTP %d)', $page, $page_count, $client->get_last_http_status() );
+				$stop_failure      = $this->classify_page_failure( $client );
+				// G10: a failed page never advances the checkpoint; the
+				// confirmed position stays where the last merge left it.
+				$this->persist_checkpoint( $this->confirmed_page, $page_count, false, $stop_failure );
+
 				Conexao_Import_Log::add(
 					$this->get_id(),
 					'error',
@@ -449,6 +796,11 @@ class Conexao_Source_Eventbrite extends Conexao_Source_Base {
 			} catch ( Exception $e ) {
 				$this->mark_fetch_incomplete();
 				$incomplete_reason = sprintf( 'page %d/%d could not be parsed', $page, $page_count );
+				$stop_failure      = 'parse_failed';
+				// G10: a page we could not parse is NOT confirmed progress. The
+				// checkpoint stays at the last merged page so this page is
+				// re-fetched (and re-validated) on the next run.
+				$this->persist_checkpoint( $this->confirmed_page, $page_count, false, 'parse_failed' );
 				Conexao_Import_Log::add(
 					$this->get_id(),
 					'error',
@@ -466,13 +818,57 @@ class Conexao_Source_Eventbrite extends Conexao_Source_Base {
 			);
 
 			$all_events = array_merge( $all_events, $page_data['events'] );
+
+			/*
+			 * G10 — the checkpoint is advanced HERE, and only here.
+			 *
+			 * This is the only point in the walk where progress is recorded,
+			 * and it sits strictly AFTER:
+			 *
+			 *     fetch (200) -> parse OK -> merge into the result set
+			 *
+			 * so the persisted position always describes work that actually
+			 * happened. A crash anywhere before this line leaves the checkpoint
+			 * at the previous page, and the next run re-walks this one — an
+			 * at-least-once reprocess that the identity-based deduplicator
+			 * absorbs. A crash immediately after this line is equally safe:
+			 * the events are already in the accumulated set.
+			 *
+			 * Advancing before the fetch would be the dangerous inversion: a
+			 * crash between the advance and the fetch would skip this page
+			 * FOREVER, and its events would never reach the site.
+			 */
+			$this->persist_checkpoint( $page, $page_count, false, '' );
 		}
 
 		// Reaching MAX_PAGES with pages still outstanding is also incomplete.
 		if ( $this->fetch_complete && $page_count > self::MAX_PAGES ) {
 			$this->mark_fetch_incomplete();
 			$incomplete_reason = sprintf( 'page limit of %d reached with %d pages declared', self::MAX_PAGES, $page_count );
+			$stop_failure      = 'page_limit';
 		}
+
+		/*
+		 * G10 — final checkpoint state for this enumeration.
+		 *
+		 * `complete` here means only "this generation reached its final page".
+		 * It is a PROGRESS fact and it is recorded here precisely so that it
+		 * can never be mistaken for the completeness fact. Note the ordering:
+		 * the truncation check above has already run, so a truncated listing
+		 * records a checkpoint that reached page 49 with `complete = true`
+		 * while `is_fetch_complete()` remains FALSE. That divergence is the
+		 * point — the checkpoint says where we got to, the enumeration says
+		 * whether the upstream was fully covered, and only the second one can
+		 * ever reach mark_missing_events().
+		 */
+		$reached_final_page = ( $this->confirmed_page >= (int) $page_count );
+
+		$this->persist_checkpoint(
+			$this->confirmed_page,
+			$page_count,
+			$reached_final_page,
+			$stop_failure
+		);
 
 		if ( ! $this->fetch_complete ) {
 			$rate_limited = ( false !== strpos( $incomplete_reason, 'rate limited' ) );

@@ -1,0 +1,38 @@
+
+--- BEFORE (restart from page 1) ---
+run    requests  pages        checkpoint  new ids   cumul     complete
+1      4         1,2,3,4      0           80        80        no
+2      4         1,2,3,4      0           0         80        no
+3      4         1,2,3,4      0           0         80        no
+4      4         1,2,3,4      0           0         80        no
+5      4         1,2,3,4      0           0         80        no
+6      4         1,2,3,4      0           0         80        no
+7      4         1,2,3,4      0           0         80        no
+8      4         1,2,3,4      0           0         80        no
+9      4         1,2,3,4      0           0         80        no
+10     4         1,2,3,4      0           0         80        no
+TOTAL requests: 40 | unique events recovered: 80 / 240
+
+--- AFTER (checkpointed) ---
+run    requests  pages        checkpoint  new ids   cumul     complete
+1      4         1,2,3,4      4           80        80        no
+2      4         1,3,4,5      5           20        100       no
+3      4         1,4,5,6      6           20        120       no
+4      4         1,5,6,7      7           20        140       no
+5      4         1,6,7,8      8           20        160       no
+6      4         1,7,8,9      9           20        180       no
+7      4         1,8,9,10     10          20        200       no
+8      4         1,9,10,11    11          20        220       no
+9      4         1,10,11,12   12          20        240       yes
+10     4         1,2,3,4      12          0         240       no
+TOTAL requests: 40 | unique events recovered: 240 / 240
+
+=== G10 convergence summary ===
+Runs performed      : 10 (each capped at 4 outbound requests)
+Listing size         : 12 pages / 240 objects
+BEFORE (restart)     : 40 requests -> 80 unique events (33% coverage), converged: NO
+AFTER  (checkpointed): 40 requests -> 240 unique events (100% coverage), converged: yes
+Coverage gain at the SAME request cost: +160 unique events (3.0x)
+Overlap cost         : 19 repeat requests across 10 runs (47.5% of all requests)
+Page-1 metadata cost : 1 request per run (the G8 truncation guard depends on it)
+LISTING_TOTAL: 240

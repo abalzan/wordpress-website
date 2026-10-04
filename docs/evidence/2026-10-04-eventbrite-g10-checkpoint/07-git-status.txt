@@ -1,0 +1,24 @@
+ M docs/evidence/2026-09-26-stage-l/gate.json
+ M docs/plugins/conexao-event-importer.md
+ M scripts/README.md
+ M wp-content/plugins/conexao-admin-ux/languages/conexao-admin-ux.pot
+ M wp-content/plugins/conexao-content/languages/conexao-content.pot
+ M wp-content/plugins/conexao-data-model/languages/conexao-data-model.pot
+ M wp-content/plugins/conexao-event-importer/conexao-event-importer.php
+ M wp-content/plugins/conexao-event-importer/includes/class-event-importer.php
+ M wp-content/plugins/conexao-event-importer/includes/class-event-sources.php
+ M wp-content/plugins/conexao-event-importer/includes/class-import-history.php
+ M wp-content/plugins/conexao-event-importer/includes/sources/class-eventbrite-source.php
+ M wp-content/plugins/conexao-event-importer/languages/conexao-event-importer.pot
+ M wp-content/plugins/conexao-event-importer/tests/test-request-budget.php
+ M wp-content/plugins/conexao-event-runtime/languages/conexao-event-runtime.pot
+ M wp-content/plugins/conexao-leisure-migration/languages/conexao-leisure-migration.pot
+ M wp-content/plugins/conexao-sponsor-migration/languages/conexao-sponsor-migration.pot
+ M wp-content/plugins/conexao-translation-automation/languages/conexao-translation-automation.pot
+ M wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot
+?? docs/evidence/2026-10-04-eventbrite-g10-checkpoint/
+?? docs/reports/2026-10-04-eventbrite-g10-checkpoint.md
+?? scripts/g10-mutations.sh
+?? wp-content/plugins/conexao-event-importer/includes/class-source-enumeration-checkpoint.php
+?? wp-content/plugins/conexao-event-importer/tests/g10-convergence-experiment.php
+?? wp-content/plugins/conexao-event-importer/tests/test-eventbrite-checkpoint.php

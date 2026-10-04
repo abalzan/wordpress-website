@@ -38,6 +38,9 @@ $restore_options = test_options_isolate(
 		Conexao_Import_Log::OPTION_KEY,
 		Conexao_Event_Sources::OPTION_KEY,
 		'conexao_event_source_health',
+		// G10: the enumeration checkpoint is run-scoped state that must not
+		// leak between suites, and the control below needs a clean slate.
+		Conexao_Source_Enumeration_Checkpoint::OPTION_KEY,
 	)
 );
 
@@ -396,6 +399,15 @@ assert_equals(
 
 // THE CONTROL: with an ample budget the same absence IS marked missing. Without
 // it, the guard could simply be disabling mark_missing_events() everywhere.
+//
+// G10: the control must be a FULL walk, not a resumed one. The truncated run
+// above legitimately left a checkpoint, and a resumed walk deliberately refuses
+// absence-based reconciliation (its event set is a subset), so the control
+// would otherwise measure resume-safety instead of the completeness guard it
+// exists to prove. Clearing the checkpoint restores exactly the pre-G10
+// situation the control was written for: one unconstrained walk from page 1.
+Conexao_Source_Enumeration_Checkpoint::reset( $g4c_source );
+
 g4c_install_double(
 	array(
 		$g4c_url => array(

@@ -1,0 +1,19 @@
+ docs/evidence/2026-09-26-stage-l/gate.json         |  18 +-
+ docs/plugins/conexao-event-importer.md             | 128 ++++++-
+ scripts/README.md                                  |   1 +
+ .../languages/conexao-admin-ux.pot                 |   2 +-
+ .../conexao-content/languages/conexao-content.pot  |   2 +-
+ .../languages/conexao-data-model.pot               |   2 +-
+ .../conexao-event-importer.php                     |   1 +
+ .../includes/class-event-importer.php              |  99 ++++-
+ .../includes/class-event-sources.php               |  41 ++-
+ .../includes/class-import-history.php              |  17 +
+ .../includes/sources/class-eventbrite-source.php   | 402 ++++++++++++++++++++-
+ .../languages/conexao-event-importer.pot           | 182 ++++++----
+ .../tests/test-request-budget.php                  |  12 +
+ .../languages/conexao-event-runtime.pot            |   2 +-
+ .../languages/conexao-leisure-migration.pot        |   2 +-
+ .../languages/conexao-sponsor-migration.pot        |   2 +-
+ .../languages/conexao-translation-automation.pot   |   2 +-
+ .../languages/conexao-br-irlanda.pot               |   2 +-
+ 18 files changed, 825 insertions(+), 92 deletions(-)

@@ -440,6 +440,7 @@ class Conexao_Event_Importer_Engine {
 					'fatal_errors' => $result->get_fatal_errors(),
 					// Never complete: the source was not asked at all.
 					'complete'     => false,
+					'checkpoint'   => self::checkpoint_state_for( $source_id ),
 					'cooldown'     => $state,
 				)
 			);
@@ -483,6 +484,7 @@ class Conexao_Event_Importer_Engine {
 					// A source that failed before enumeration is by definition
 					// NOT a complete listing; never record it as one.
 					'complete'      => $result->is_enumeration_incomplete() ? false : true,
+					'checkpoint'    => self::checkpoint_state_for( $source_id ),
 				)
 			);
 			return $result->get_stats();
@@ -526,6 +528,7 @@ class Conexao_Event_Importer_Engine {
 					// A source that failed before enumeration is by definition
 					// NOT a complete listing; never record it as one.
 					'complete'      => $result->is_enumeration_incomplete() ? false : true,
+					'checkpoint'    => self::checkpoint_state_for( $source_id ),
 				)
 			);
 			return $result->get_stats();
@@ -558,6 +561,7 @@ class Conexao_Event_Importer_Engine {
 					// A source that failed before enumeration is by definition
 					// NOT a complete listing; never record it as one.
 					'complete'      => $result->is_enumeration_incomplete() ? false : true,
+					'checkpoint'    => self::checkpoint_state_for( $source_id ),
 				)
 			);
 			return $result->get_stats();
@@ -585,6 +589,7 @@ class Conexao_Event_Importer_Engine {
 					// A source that failed before enumeration is by definition
 					// NOT a complete listing; never record it as one.
 					'complete'      => $result->is_enumeration_incomplete() ? false : true,
+					'checkpoint'    => self::checkpoint_state_for( $source_id ),
 				)
 			);
 			return $result->get_stats();
@@ -817,10 +822,52 @@ class Conexao_Event_Importer_Engine {
 		// events the diagnosis proved were hidden this way (Stage G2).
 		$fetch_complete = $this->is_handler_fetch_complete( $handler );
 
-		if ( $fetch_complete ) {
+		/*
+		 * G10 — a checkpoint NEVER authorises absence-based reconciliation.
+		 *
+		 * Resuming a bounded walk is complete-but-subset: the enumeration ran to
+		 * its final page, yet the already-confirmed prefix was not re-requested,
+		 * so it is absent from `$raw_events`. `mark_missing_events()` infers
+		 * disappearance from exactly that absence, so it would hide every event
+		 * in the skipped prefix. This second gate closes that path independently
+		 * of completeness, which is what makes "checkpoint != deletion
+		 * authority" a structural guarantee rather than a convention.
+		 */
+		$reconciliation_safe = $this->is_handler_reconciliation_safe( $handler );
+
+		// Resolved before the branch so the operator-facing reason can be
+		// attached without re-testing the same negated condition.
+		$resumed_subset = $fetch_complete && ! $reconciliation_safe;
+
+		if ( $fetch_complete && $reconciliation_safe ) {
 			$this->mark_missing_events( $source_id, $raw_events );
 		} else {
 			$this->mark_fetch_incomplete_in_result( $result, $source_id );
+
+			if ( $resumed_subset ) {
+				$result->add_incomplete_enumeration(
+					sprintf(
+						/* translators: %s: source name */
+						__( '%s was enumerated to its final page but resumed from a stored checkpoint, so the already-confirmed pages were not re-requested. Events from those pages were left untouched (not marked source_not_found).', 'conexao-event-importer' ),
+						$source['name']
+					)
+				);
+
+				Conexao_Import_Log::add(
+					$source_id,
+					'warning',
+					sprintf(
+						/* translators: %s: source name */
+						__( '%s resumed from its enumeration checkpoint. Absence-based reconciliation was skipped because the events already imported from the confirmed pages are not in this run\'s result set.', 'conexao-event-importer' ),
+						$source['name']
+					),
+					array(
+						'reason'      => 'checkpoint_resume',
+						'reason_code' => 'checkpoint_resume',
+						'run_id'      => $this->current_run_id,
+					)
+				);
+			}
 		}
 
 		// Update the source's last-import metadata.
@@ -847,6 +894,7 @@ class Conexao_Event_Importer_Engine {
 				'fatal_errors'  => $result->get_fatal_errors(),
 				'failed_events' => $result->get_failed_events(),
 				'complete'      => $result->is_enumeration_incomplete() ? false : true,
+					'checkpoint'    => self::checkpoint_state_for( $source_id ),
 				// G9 §29: cooldown state travels with every entry so Import
 				// History stays the single operational surface.
 				'cooldown'      => class_exists( 'Conexao_Source_Cooldown' )
@@ -1959,6 +2007,28 @@ class Conexao_Event_Importer_Engine {
 	}
 
 	/**
+	 * The stored enumeration checkpoint state for a source, if available.
+	 *
+	 * G10 §27. Returns progress state for the Import History row. It is
+	 * deliberately read AFTER the run so it reflects what the run actually
+	 * confirmed.
+	 *
+	 * A source with no checkpoint (every non-Eventbrite source) yields an empty
+	 * array, which Import History simply omits — no second dashboard, and no
+	 * behaviour change for any existing source.
+	 *
+	 * @param string $source_id Source slug.
+	 * @return array
+	 */
+	protected static function checkpoint_state_for( $source_id ) {
+		if ( ! class_exists( 'Conexao_Source_Enumeration_Checkpoint' ) ) {
+			return array();
+		}
+
+		return Conexao_Source_Enumeration_Checkpoint::get_state( $source_id );
+	}
+
+	/**
 	 * Whether a source handler completed a full enumeration.
 	 *
 	 * Handlers that predate the completeness contract (or that enumerate a
@@ -1973,6 +2043,33 @@ class Conexao_Event_Importer_Engine {
 			return true;
 		}
 		return (bool) $handler->is_fetch_complete();
+	}
+
+	/**
+	 * Whether a handler's returned event set may be reconciled for absence.
+	 *
+	 * G10. This is a SECOND, independent safety gate in front of
+	 * `mark_missing_events()`, and it exists because a resumed enumeration is
+	 * complete-but-subset.
+	 *
+	 * A handler that resumed from a persisted checkpoint deliberately skipped
+	 * the already-confirmed prefix to save requests. The events in that prefix
+	 * are already in WordPress, but they are NOT in this run's result set — and
+	 * `mark_missing_events()` works precisely by absence. Applied to a resumed
+	 * run it would flip every event in the skipped prefix to source_not_found
+	 * and hide live events from the public site.
+	 *
+	 * Handlers that predate the concept do not implement the method and are
+	 * treated as safe, so their behaviour is unchanged.
+	 *
+	 * @param object|null $handler Source handler instance.
+	 * @return bool
+	 */
+	protected function is_handler_reconciliation_safe( $handler ) {
+		if ( ! is_object( $handler ) || ! method_exists( $handler, 'is_reconciliation_safe' ) ) {
+			return true;
+		}
+		return (bool) $handler->is_reconciliation_safe();
 	}
 
 	/**

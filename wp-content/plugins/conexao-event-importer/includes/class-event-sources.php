@@ -1319,6 +1319,7 @@ class Conexao_Event_Sources {
 							<th><?php esc_html_e( 'Errors', 'conexao-event-importer' ); ?></th>
 							<th><?php esc_html_e( 'Status', 'conexao-event-importer' ); ?></th>
 							<th><?php esc_html_e( 'Listing', 'conexao-event-importer' ); ?></th>
+							<th><?php esc_html_e( 'Progress', 'conexao-event-importer' ); ?></th>
 							<th><?php esc_html_e( 'Cooldown', 'conexao-event-importer' ); ?></th>
 						</tr>
 					</thead>
@@ -1358,8 +1359,46 @@ class Conexao_Event_Sources {
 								</td>
 								<td>
 									<?php
-									$cool = isset( $entry['cooldown'] ) && is_array( $entry['cooldown'] ) ? $entry['cooldown'] : array();
+									/*
+									 * G10 §27. Progress state, NOT completeness. This cell answers
+									 * "how far did the enumeration get, and can it resume". It never
+									 * claims the source is fully covered — that is the "Listing"
+									 * column, derived from the actual walk. A checkpoint alone must
+									 * never be read as a completeness signal.
+									 */
+									$cp = isset( $entry['checkpoint'] ) && is_array( $entry['checkpoint'] ) ? $entry['checkpoint'] : array();
 
+									if ( empty( $cp['has_checkpoint'] ) ) {
+										$cp_text = __( '—', 'conexao-event-importer' );
+									} else {
+										$cp_page  = isset( $cp['last_page'] ) ? (int) $cp['last_page'] : 0;
+										$cp_total = isset( $cp['page_count'] ) ? (int) $cp['page_count'] : 0;
+										$cp_fail  = isset( $cp['last_failure'] ) ? (string) $cp['last_failure'] : '';
+
+										if ( '' !== $cp_fail ) {
+											$cp_text = sprintf(
+												/* translators: 1: last confirmed page, 2: total pages, 3: failure class */
+												__( 'page %1$d of %2$d (%3$s) — resumable', 'conexao-event-importer' ),
+												$cp_page,
+												$cp_total,
+												$cp_fail
+											);
+										} else {
+											$cp_text = sprintf(
+												/* translators: 1: last confirmed page, 2: total pages */
+												__( 'page %1$d of %2$d', 'conexao-event-importer' ),
+												$cp_page,
+												$cp_total
+											);
+										}
+									}
+
+									echo esc_html( $cp_text );
+									?>
+								</td>
+								<td>
+									<?php
+									$cool = isset( $entry['cooldown'] ) && is_array( $entry['cooldown'] ) ? $entry['cooldown'] : array();
 									if ( ! empty( $cool['cooling_down'] ) ) {
 										$reason_label = isset( $cool['last_reason'] ) ? (string) $cool['last_reason'] : 'throttled';
 										$seconds_left = isset( $cool['seconds_remaining'] ) ? (int) $cool['seconds_remaining'] : 0;

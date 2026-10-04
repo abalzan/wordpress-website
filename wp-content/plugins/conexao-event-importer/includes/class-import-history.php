@@ -77,6 +77,23 @@ class Conexao_Import_History {
 			);
 		}
 
+		// G10 §27: enumeration progress travels with the run record so Import
+		// History stays the single place an operator checks "how far did this
+		// get, and can it resume". This is progress state only — the operator
+		// UI must never read `checkpoint.complete` as source completeness.
+		if ( isset( $extra['checkpoint'] ) && is_array( $extra['checkpoint'] ) ) {
+			$checkpoint = $extra['checkpoint'];
+
+			$entry['checkpoint'] = array(
+				'has_checkpoint' => ! empty( $checkpoint['has_checkpoint'] ),
+				'last_page'      => isset( $checkpoint['last_page'] ) ? (int) $checkpoint['last_page'] : 0,
+				'page_count'     => isset( $checkpoint['page_count'] ) ? (int) $checkpoint['page_count'] : 0,
+				'complete'       => ! empty( $checkpoint['complete'] ),
+				'last_failure'   => isset( $checkpoint['last_failure'] ) ? sanitize_key( (string) $checkpoint['last_failure'] ) : '',
+				'updated_at'     => isset( $checkpoint['updated_at'] ) ? sanitize_text_field( (string) $checkpoint['updated_at'] ) : '',
+			);
+		}
+
 		array_unshift( $history, $entry );
 		$history = array_slice( $history, 0, self::MAX_ENTRIES );
 
