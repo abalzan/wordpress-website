@@ -6,6 +6,7 @@
 | **Date** | 2026-10-04 |
 | **Branch** | `master` |
 | **Start SHA** | `1a382c45180a9bf97b624a4a4623b8cdb8511ddd` |
+| **Final SHA** | `e615d6b6eee152e371750d52bfdf6bd4132aff3e` |
 | **Predecessor** | [G4 — Request Efficiency, Backoff and Budgets](2026-10-03-event-import-g4.md) · [G1–G3](2026-10-03-event-import-fixes-g1-g3.md) |
 | **Evidence** | [`docs/evidence/2026-10-04-eventbrite-rate-limit-strategy/`](../evidence/2026-10-04-eventbrite-rate-limit-strategy/) |
 | **Plugin version** | `conexao-event-importer` 1.8.0 → **1.9.0** |
