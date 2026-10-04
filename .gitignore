@@ -19,6 +19,12 @@ phpcs.cache
 *.log
 .local/
 
+# G11 measurement staging: transient. The canonical, curated observations live
+# in docs/reports/evidence/eventbrite-g11/observations/, which is regenerated
+# from here by tests/experiments/g11-collect-evidence.sh. Keeping this staging
+# tree tracked would introduce a SECOND copy of the same evidence.
+tests/experiments/observations/
+
 # Editors / OS
 .idea/
 .DS_Store

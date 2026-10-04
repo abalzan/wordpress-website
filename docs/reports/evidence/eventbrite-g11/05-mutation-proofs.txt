@@ -1,0 +1,14 @@
+G11 mutation proofs — each mutation MUST make the suite fail
+--------------------------------------------------------------------------
+M1       incomplete observation treated as complete              PROVEN  (66 passed, 11 failed)
+M2       removals kept despite invalid comparison                PROVEN  (74 passed, 3 failed)
+M3       page number used as event identity                      PROVEN  (51 passed, 26 failed)
+M4       page movement never recorded                            PROVEN  (64 passed, 13 failed)
+M5       boundary crossing never computed                        PROVEN  (73 passed, 4 failed)
+M6       HTTP 429 not classified as rate limited                 PROVEN  (75 passed, 2 failed)
+M7       HTTP 405/403 not classified as WAF                      PROVEN  (75 passed, 2 failed)
+M8       upstream truncation treated as complete                 PROVEN  (74 passed, 3 failed)
+M9       change rate computed from an invalid denominator        PROVEN  (72 passed, 5 failed)
+M10     duplicate event IDs not detected                         PROVEN  (75 passed, 2 failed)
+--------------------------------------------------------------------------
+Originals restored.

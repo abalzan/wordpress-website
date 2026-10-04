@@ -1,0 +1,66 @@
+G11 boundary movement evidence (live Eventbrite, Cork)
+==============================================================================
+
+Identity: native Eventbrite event ID. Page positions are compared as ID
+sets, never as identities.
+
+--- eventbrite_cork (6 observations) ---
+pair         shared_pages  moved max_shift  new removed
+r02                     8      0         0    0       0
+r03                     8      7         1    1       1
+r04                     8      0         0    0       0
+r05                     8      0         0    0       0
+r06                     8      0         0    0       0
+
+--- eventbrite_cork_events_this_week (6 observations) ---
+pair         shared_pages  moved max_shift  new removed
+r02                     6      4         1    1       1
+r03                     6      0         0    0       0
+r04                     6      5         1    1       1
+r05                     6      0         0    0       0
+r06                     6      5         1    2       2
+
+--- eventbrite_cork_events_today (6 observations) ---
+pair         shared_pages  moved max_shift  new removed
+r02                     1      0         0    0       0
+r03                     1      0         0    0       4
+r04                     1      0         0    0       0
+r05                     1      0         0    0       4
+r06                     6      0         0    0       0
+
+--- eventbrite_cork_events_tomorrow (6 observations) ---
+pair         shared_pages  moved max_shift  new removed
+r02                     2      0         0    0       0
+r03                     2      0         0    0       0
+r04                     2      0         0    0       0
+r05                     2      0         0    0       0
+r06                     2      0         0    0       0
+
+
+Page-level movement detail (event id: old page -> new page)
+==============================================================================
+eventbrite_cork:r03
+    1999182093458: p2 -> p1  (upstream)
+    1999119285598: p3 -> p2  (upstream)
+    2002102187538: p4 -> p3  (upstream)
+    1987834119362: p5 -> p4  (upstream)
+    1996823767642: p6 -> p5  (upstream)
+    1996822198950: p7 -> p6  (upstream)
+    1990545386836: p8 -> p7  (upstream)
+eventbrite_cork_events_this_week:r02
+    1998114356829: p3 -> p2  (upstream)
+    1997983259714: p4 -> p3  (upstream)
+    2001041207117: p5 -> p4  (upstream)
+    1685531783939: p6 -> p5  (upstream)
+eventbrite_cork_events_this_week:r04
+    2002572977684: p2 -> p1  (upstream)
+    2002034978514: p3 -> p2  (upstream)
+    1999088407240: p4 -> p3  (upstream)
+    2000169448664: p5 -> p4  (upstream)
+    2002334252651: p6 -> p5  (upstream)
+eventbrite_cork_events_this_week:r06
+    2001168519913: p2 -> p1  (upstream)
+    1978884316260: p3 -> p2  (upstream)
+    2002756550756: p4 -> p3  (upstream)
+    1999382809806: p5 -> p4  (upstream)
+    1999373409690: p6 -> p5  (upstream)

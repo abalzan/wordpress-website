@@ -1,7 +1,7 @@
 {
   "stage": "L — permanent invariant gates",
-  "generated_at": "2026-10-04T19:23:36Z",
-  "repository_sha": "62e570fcb5bab5297b0af7051efd0c56deb4e66a",
+  "generated_at": "2026-10-04T20:30:13Z",
+  "repository_sha": "645523d1c98aab968b6146a11a690763023cc101",
   "status": "pass",
   "gates": {
     "taxonomy_policy": {
@@ -597,7 +597,7 @@
       "prerequisites": [],
       "details": [],
       "output_tail": [
-        "   historical/audit documents without the marker (reported, not gated): 157",
+        "   historical/audit documents without the marker (reported, not gated): 159",
         "",
         "   -- §9.2 no root-level report/evidence file --",
         "   root files scanned: 17, offenders: 0",
@@ -627,14 +627,14 @@
       "prerequisites": [],
       "details": [],
       "output_tail": [
-        "   conexao-data-model       catalogue=1790933386 newest-source=1790335165 (wp-content/plugins/conexao-data-model/includes/class-agency.php) fresh",
-        "   conexao-content          catalogue=1790933386 newest-source=1790699556 (wp-content/plugins/conexao-content/conexao-content.php) fresh",
-        "   conexao-admin-ux         catalogue=1790933386 newest-source=1790016943 (wp-content/plugins/conexao-admin-ux/includes/class-translation-state.php) fresh",
-        "   conexao-event-runtime    catalogue=1790933386 newest-source=1790699556 (wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php) fresh",
-        "   conexao-event-importer   catalogue=1791129697 newest-source=1791129697 (wp-content/plugins/conexao-event-importer/conexao-event-importer.php) fresh",
-        "   conexao-leisure-migration catalogue=1790933386 newest-source=1790325155 (wp-content/plugins/conexao-leisure-migration/includes/class-leisure-exporter.php) fresh",
-        "   conexao-sponsor-migration catalogue=1790933386 newest-source=1789994211 (wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-importer.php) fresh",
-        "   conexao-translation-automation catalogue=1790933386 newest-source=1790861950 (wp-content/plugins/conexao-translation-automation/includes/class-conexao-translation-automation-batch-control.php) fresh",
+        "   conexao-data-model       catalogue=1791143005 newest-source=1790335165 (wp-content/plugins/conexao-data-model/includes/class-agency.php) fresh",
+        "   conexao-content          catalogue=1791143005 newest-source=1790699556 (wp-content/plugins/conexao-content/conexao-content.php) fresh",
+        "   conexao-admin-ux         catalogue=1791143005 newest-source=1790016943 (wp-content/plugins/conexao-admin-ux/includes/class-translation-state.php) fresh",
+        "   conexao-event-runtime    catalogue=1791143005 newest-source=1790699556 (wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php) fresh",
+        "   conexao-event-importer   catalogue=1791143005 newest-source=1791143005 (wp-content/plugins/conexao-event-importer/conexao-event-importer.php) fresh",
+        "   conexao-leisure-migration catalogue=1791143005 newest-source=1790325155 (wp-content/plugins/conexao-leisure-migration/includes/class-leisure-exporter.php) fresh",
+        "   conexao-sponsor-migration catalogue=1791143005 newest-source=1789994211 (wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-importer.php) fresh",
+        "   conexao-translation-automation catalogue=1791143005 newest-source=1790861950 (wp-content/plugins/conexao-translation-automation/includes/class-conexao-translation-automation-batch-control.php) fresh",
         "",
         "   stale catalogues: 0",
         "3 passed, 0 failed",

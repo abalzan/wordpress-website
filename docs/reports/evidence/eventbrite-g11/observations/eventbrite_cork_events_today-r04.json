@@ -1,0 +1,42 @@
+{
+    "source": "eventbrite_cork_events_today",
+    "observation_id": "eventbrite_cork_events_today:r04",
+    "timestamp": "2026-10-04T20:14:59+00:00",
+    "complete": true,
+    "failure_class": "",
+    "pages_walked": 1,
+    "declared_pages": 1,
+    "declared_objects": 4,
+    "requests": 1,
+    "truncated_upstream": false,
+    "events": [
+        {
+            "event_id": "1988081123157",
+            "page": 1,
+            "position": 1,
+            "field_hash": "a7740c5b7a3ad827cba48a829be2352b"
+        },
+        {
+            "event_id": "1993735827530",
+            "page": 1,
+            "position": 2,
+            "field_hash": "5cc3091cc15f85d0db919349dc97488b"
+        },
+        {
+            "event_id": "1993609705295",
+            "page": 1,
+            "position": 3,
+            "field_hash": "e45b590eba280b219de360d9dade48ee"
+        },
+        {
+            "event_id": "1994909490989",
+            "page": 1,
+            "position": 4,
+            "field_hash": "e4610e5b9b79bf124f2ef81d6a38de21"
+        }
+    ],
+    "elapsed_seconds": 0.2,
+    "http_status": 200,
+    "stopped_at_page": 0,
+    "url": "https://www.eventbrite.ie/d/ireland--cork/events-today/"
+}
