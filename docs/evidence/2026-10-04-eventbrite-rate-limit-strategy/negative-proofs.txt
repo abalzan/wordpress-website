@@ -1,0 +1,53 @@
+G5 NEGATIVE PROOFS — each mutation MUST make the suite fail
+suite: wp-content/plugins/conexao-event-importer/tests/test-eventbrite-rate-limit.php
+
+BASELINE (unmutated)                                           | 73 passed, 0 failed    | failing_assertions=0
+M1 remove pacing (page delay 2s -> 0s)                         | 70 passed, 3 failed    | failing_assertions=3
+        FAIL: G5A: the pacing floor is at least 2s — the measured baseline ran ~20 req/min at a 1s delay
+        FAIL: G5: a walk stopped by the time budget is INCOMPLETE
+        FAIL: G5F: exactly one Eventbrite request was in flight at a time — never concurrent — expected 1, got 0
+M2 remove repeated-429 fail-fast (break -> continue)           | 70 passed, 3 failed    | failing_assertions=3
+        FAIL: G5C: control — the declared 40 pages were NOT walked, so the stop was not exhaustion
+        FAIL: G5C: exactly one successful page + the 3 rate-limited retries — no request storm past the ceiling — expected 4, got 118
+        FAIL: G5C: page 3 was NEVER requested — the walk stopped at the rate-limited page — expected 0, got 33
+M3 remove rate-limit classification (reason -> http_error)     | 72 passed, 1 failed    | failing_assertions=1
+        FAIL: G5D: EVERY diagnostic from an all-429 fetch is classified rate_limited — none is silently relabelled — expected 3, got 0
+M4 allow immediate retry after 429 (cooldown 20s -> 0s)        | 68 passed, 5 failed    | failing_assertions=5
+        FAIL: G5B: the ladder WOULD exceed the cap if extended, proving the cap binds
+        FAIL: G5B: however many retries, the cooldown never exceeds the hard cap — expected 60, got 0
+        FAIL: G5B: a later cooldown is longer than the first — this is a real cooldown, not a retry
+M5 allow incomplete run to keep paginating on 429              | 70 passed, 3 failed    | failing_assertions=3
+        FAIL: G5C: control — the declared 40 pages were NOT walked, so the stop was not exhaustion
+        FAIL: G5C: exactly one successful page + the 3 rate-limited retries — no request storm past the ceiling — expected 4, got 118
+        FAIL: G5C: page 3 was NEVER requested — the walk stopped at the rate-limited page — expected 0, got 33
+M6 remove shared Eventbrite cooldown (no cross-source skip)    | 69 passed, 4 failed    | failing_assertions=4
+        FAIL: G5E: the skipped source reports HTTP 429, the real upstream condition — expected 429, got 0
+        FAIL: G5E: the second source sent ZERO outbound requests — Dublin was not asked at all — expected 0, got 1
+        FAIL: G5E: the skip is recorded so the operator can see which sources were not tried
+M7 remove the Retry-After hard cap                             | 71 passed, 2 failed    | failing_assertions=2
+        FAIL: G5B: the pacing policy caps an oversized Retry-After itself, independent of the client parser — expected 60, got 86400
+        FAIL: G5B: a Retry-After one second over the cap is reduced to exactly the cap — expected 60, got 61
+M8 remove the distinct 429 branch entirely                     | 73 passed, 0 failed    | failing_assertions=0
+RESTORED (must match baseline)                                 | 73 passed, 0 failed    | failing_assertions=0
+
+================================================================
+
+G5 NEGATIVE PROOFS (round 2 — previously vacuous mutations)
+
+BASELINE (unmutated)                                       | 73 passed, 0 failed  | failing=0
+M5 incomplete walk marked complete (source_not_found risk) | 71 passed, 2 failed  | failing=2
+        FAIL: G5C: the walk is INCOMPLETE after a rate-limit stop — never a complete enumeration
+        FAIL: G5C: the stopped walk reports INCOMPLETE, which is what stops mark_missing_events()
+M8 remove the distinct 429 branch entirely                 | SUITE DIED (fatal)   | failing=n/a
+        FAIL: G5B: the client reports it entered the rate-limited state
+        FAIL: G5B: the 429 was recorded — expected 1, got 0
+        FAIL: G5B: exactly ONE cooldown was applied for the 429 — not an immediate retry — expected 1, got 0
+        FAIL: G5B: a Retry-After of 7 was honoured exactly — expected 7, got null
+M9 stop recording the run-wide rate limit                  | 71 passed, 2 failed  | failing=2
+        FAIL: G5B: the run-scoped rate-limit state is set by a 429
+        FAIL: G5B: the run records which source tripped the limit — expected 'g5b_429', got ''
+M10 discard the rate-limit diagnostic fields again         | 70 passed, 3 failed  | failing=3
+        FAIL: G5D: an entry carries reason=rate_limited, so an operator can tell it apart from a generic failure
+        FAIL: G5D: the page number is recorded
+        FAIL: G5D: the applied cooldown is recorded
+RESTORED (must match baseline)                             | 73 passed, 0 failed  | failing=0

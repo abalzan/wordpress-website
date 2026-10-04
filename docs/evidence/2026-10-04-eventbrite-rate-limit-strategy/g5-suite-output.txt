@@ -1,0 +1,95 @@
+
+=== G5A: pacing is centralised and measurable, not scattered sleeps ===
+  PASS: G5A: the policy exposes one explicit inter-request pacing delay
+  PASS: G5A: the pacing floor is at least 2s — the measured baseline ran ~20 req/min at a 1s delay
+  PASS: G5A: pacing is applied per inter-request gap and attributed as page_pacing
+  PASS: G5A: N page requests apply exactly N pacing delays
+  PASS: G5A: the client uses the very pacing policy it was given (no second authority)
+  PASS: G5A: pacing is retunable through one filter, which is what makes it testable
+
+=== G5B: HTTP 429 enters a distinct rate-limited state ===
+  PASS: G5B: a 429 followed by a success still returns the page
+  PASS: G5B: the client reports it entered the rate-limited state
+  PASS: G5B: a page that recovered after the cooldown is reported as ok — the outcome is never misreported
+  PASS: G5B: the 429 was recorded
+  PASS: G5B: exactly ONE cooldown was applied for the 429 — not an immediate retry
+  PASS: G5B: a Retry-After of 7 was honoured exactly
+  PASS: G5B: the policy recorded that Retry-After was present
+  PASS: G5B: a Retry-After of 7 was not capped
+  PASS: G5B: a 500 is NOT classified as rate limiting
+  PASS: G5B: a 500 is classified as a plain HTTP error
+  PASS: G5B: the run-scoped rate-limit state is set by a 429
+  PASS: G5B: the run records which source tripped the limit
+  PASS: G5B: a 500 in a fresh run does not arm the rate-limit state — the classification is not a catch-all
+
+=== G5B: Retry-After is honoured, hard-capped, and safely rejected ===
+  PASS: G5B: the hard cap is far below an absurd Retry-After
+  PASS: G5B: a Retry-After of 999999 is reduced to the hard cap — Eventbrite cannot dictate our runtime
+  PASS: G5B: the client parser cap is itself within the pacing cap, so two layers agree
+  PASS: G5B: no applied cooldown exceeded the hard cap
+  PASS: G5B: an ABSENT Retry-After uses the deterministic fallback ladder
+  PASS: G5B: the fallback ladder is deterministic and bounded, not random
+  PASS: G5B: the ladder WOULD exceed the cap if extended, proving the cap binds
+  PASS: G5B: however many retries, the cooldown never exceeds the hard cap
+  PASS: G5B: an unparseable Retry-After yields null so the fallback ladder is used
+  PASS: G5B: the pacing policy caps an oversized Retry-After itself, independent of the client parser
+  PASS: G5B: the policy records that it capped the oversized Retry-After
+  PASS: G5B: a Retry-After one second over the cap is reduced to exactly the cap
+  PASS: G5B: a legitimate Retry-After below the cap is honoured verbatim
+  PASS: G5B: a legitimate Retry-After below the cap is NOT reported as capped
+  PASS: G5B: a later cooldown is longer than the first — this is a real cooldown, not a retry
+
+=== G5C: repeated 429 is bounded and never tight-loops ===
+  PASS: G5C: a permanently rate-limited page returns a failure, never an empty success
+  PASS: G5C: the retry ceiling is unchanged — a permanently 429 page is attempted exactly 3 times
+  PASS: G5C: all 3 attempts were rate limits
+  PASS: G5C: the exhausted page is classified rate_limited
+  PASS: G5C: every rate-limited attempt was preceded by a cooldown
+  PASS: G5C: no rate-limit retry happened without waiting — the tight retry loop is impossible
+  PASS: G5C: even the shortest cooldown is the 20s base, well above the 2s/4s that failed in G4
+  PASS: G5C: the cooldown escalates deterministically across the retry budget
+  PASS: G5C: each 429 retry DOES consume outbound request budget — cooldown cannot smuggle requests past the ceiling
+  PASS: G5C: the cooldown total (20+40+60) is accounted separately from the request budget
+  PASS: G5C: no request was blocked — the budget was nowhere near its ceiling
+
+=== G5C: a rate-limited page stops the walk instead of paginating on ===
+  PASS: G5C: the walk is INCOMPLETE after a rate-limit stop — never a complete enumeration
+  PASS: G5C: control — the declared 40 pages were NOT walked, so the stop was not exhaustion
+  PASS: G5C: the events fetched BEFORE the rate limit are preserved
+  PASS: G5C: exactly one successful page + the 3 rate-limited retries — no request storm past the ceiling
+  PASS: G5C: page 3 was NEVER requested — the walk stopped at the rate-limited page
+
+=== G5C: an incomplete rate-limited walk never marks events missing ===
+  PASS: G5C: the stopped walk reports INCOMPLETE, which is what stops mark_missing_events()
+  PASS: G5C: partial data survives the stop, so a later retry updates rather than duplicates
+
+=== G5E: a rate-limited run does not walk into the next Eventbrite source ===
+  PASS: G5E: the run is marked rate limited after Cork
+  PASS: G5E: the skipped source reports HTTP 429, the real upstream condition
+  PASS: G5E: the second Eventbrite source refuses to start a walk
+  PASS: G5E: the second source sent ZERO outbound requests — Dublin was not asked at all
+  PASS: G5E: the skip is recorded so the operator can see which sources were not tried
+  PASS: G5E: a skipped source is INCOMPLETE, never an empty success
+  PASS: G5E: a NEW run is not rate limited — the operator can retry the source immediately in a new run
+  PASS: G5E: skip history is run-scoped and does not leak into the next run
+
+=== G5: the source time budget survives a rate-limit cooldown ===
+  PASS: G5: a walk stopped by the time budget is INCOMPLETE
+  PASS: G5: events fetched before the budget expired are preserved
+
+=== G5D: rate limiting is named in the diagnostics and correlated by run_id ===
+  PASS: G5D: the rate-limit path produced run-correlated diagnostic entries
+  PASS: G5D: an entry carries reason=rate_limited, so an operator can tell it apart from a generic failure
+  PASS: G5D: EVERY diagnostic from an all-429 fetch is classified rate_limited — none is silently relabelled
+  PASS: G5D: every diagnostic entry from the rate-limit path carries the run_id
+  PASS: G5D: the URL is recorded
+  PASS: G5D: the page number is recorded
+  PASS: G5D: the attempt number is recorded
+  PASS: G5D: the applied cooldown is recorded
+
+=== G5F: Eventbrite execution is sequential ===
+  PASS: G5F: sources ran one after another, in order
+  PASS: G5F: exactly one Eventbrite request was in flight at a time — never concurrent
+  PASS: G5F: the Eventbrite source handler never uses parallel HTTP fetching
+
+73 passed, 0 failed

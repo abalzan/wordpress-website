@@ -1,0 +1,7 @@
+source=eventbrite_dublin      time=2026-10-04 09:57:13 status=failed   found=0    complete=false
+source=eventbrite_cork        time=2026-10-04 09:57:12 status=failed   found=0    complete=false
+source=eventbrite_dublin      time=2026-10-04 09:57:12 status=failed   found=0    complete=false
+source=eventbrite_dublin      time=2026-10-04 09:57:11 status=failed   found=0    complete=false
+source=eventbrite_cork        time=2026-10-04 09:57:11 status=failed   found=0    complete=false
+source=eventbrite_cork        time=2026-10-04 09:57:03 status=failed   found=0    complete=false
+total_history_rows=27

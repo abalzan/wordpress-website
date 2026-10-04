@@ -78,6 +78,25 @@ class Conexao_Source_Eventbrite extends Conexao_Source_Base {
 	}
 
 	/**
+	 * The pacing / rate-limit policy for this walk.
+	 *
+	 * G5: one policy instance per run, shared across every Eventbrite source,
+	 * so the measured source-wide rate limit is cooled down once. Overridable
+	 * by a filter so a test can inject a deterministic clock and sleeper.
+	 *
+	 * @return Conexao_Eventbrite_Pacing
+	 */
+	protected function get_pacing() {
+		$pacing = apply_filters( 'conexao_eventbrite_pacing', null );
+
+		if ( $pacing instanceof Conexao_Eventbrite_Pacing ) {
+			return $pacing;
+		}
+
+		return Conexao_Eventbrite_Pacing::get_shared();
+	}
+
+	/**
 	 * Fetch raw event listings from Eventbrite county discovery.
 	 *
 	 * Always uses the HTML discovery scraper. The Eventbrite v3 Events Search
@@ -100,9 +119,47 @@ class Conexao_Source_Eventbrite extends Conexao_Source_Base {
 	protected function fetch_via_scrape() {
 		$base_url = isset( $this->config['url'] ) && $this->config['url'] ? $this->config['url'] : Conexao_Eventbrite_Client::DEFAULT_DISCOVERY_URL;
 
-		$client     = new Conexao_Eventbrite_Client( $this->get_id() );
 		$parser     = new Conexao_Eventbrite_Parser();
 		$normalizer = new Conexao_Eventbrite_Normalizer();
+
+		// G5E: one pacing policy per run, shared by every Eventbrite source, so
+		// the measured source-wide rate limit is handled once rather than
+		// re-discovered (and re-requested) by each county in turn.
+		$pacing = $this->get_pacing();
+		$client = new Conexao_Eventbrite_Client( $this->get_id(), $pacing );
+
+		// G5E: when an earlier Eventbrite source in THIS run was already rate
+		// limited, do not start another walk. The measured full-run trace shows
+		// 24 of 24 subsequent Eventbrite paths answering 429 on every attempt,
+		// so walking them would be pure request storm. The source is reported
+		// as rate limited (never as empty, never as complete), and the operator
+		// retries it individually later (G5G).
+		if ( Conexao_Eventbrite_Pacing::is_rate_limited() ) {
+			Conexao_Eventbrite_Pacing::record_skipped_source( $this->get_id() );
+
+			$this->mark_fetch_incomplete();
+
+			$reason = sprintf(
+				/* translators: 1: source that was rate limited first, 2: cooldown in minutes */
+				__( 'Not attempted: Eventbrite already rate-limited source %1$s earlier in this run, so this source was skipped without sending any request. Retry it individually later, after at least %2$d minutes.', 'conexao-event-importer' ),
+				Conexao_Eventbrite_Pacing::get_rate_limited_source(),
+				(int) ceil( Conexao_Eventbrite_Pacing::MAX_COOLDOWN_SECONDS / 60 )
+			);
+
+			Conexao_Import_Log::add(
+				$this->get_id(),
+				'warning',
+				$reason,
+				array(
+					'reason'      => 'rate_limited',
+					'reason_code' => 'rate_limited',
+					'skipped'     => true,
+					'run_id'      => $this->get_current_run_id(),
+				)
+			);
+
+			throw new Conexao_Source_Fetch_Exception( esc_html( $reason ), 429 );
+		}
 
 		// Fetch page 1 first to get pagination info. A failure here is FATAL:
 		// an unreachable first page means the source could not be enumerated
@@ -164,11 +221,15 @@ class Conexao_Source_Eventbrite extends Conexao_Source_Base {
 		$all_events = isset( $page_data['events'] ) ? $page_data['events'] : array();
 
 		// Walk remaining pages.
-		$started_at = microtime( true );
+		//
+		// G5: the clock comes from the pacing policy so a test can drive the
+		// time-budget branch deterministically (and prove that a cooldown
+		// cannot extend the walk indefinitely).
+		$started_at = $pacing->now();
 		$budget     = $client->get_time_budget_seconds();
 
 		for ( $page = 2; $page <= $page_count; $page++ ) {
-			if ( ( microtime( true ) - $started_at ) > $budget ) {
+			if ( ( $pacing->now() - $started_at ) > $budget ) {
 				$this->mark_fetch_incomplete();
 				$incomplete_reason = sprintf( 'time budget of %ds expired after page %d/%d', (int) $budget, $page - 1, $page_count );
 				Conexao_Import_Log::add(
@@ -185,7 +246,8 @@ class Conexao_Source_Eventbrite extends Conexao_Source_Base {
 				break;
 			}
 
-			$client->delay();
+			// G5A: every inter-request wait is decided by the pacing policy.
+			$pacing->pace_page_request();
 
 			$html = $client->fetch_page( $base_url, $page );
 			if ( empty( $html ) ) {
@@ -194,6 +256,50 @@ class Conexao_Source_Eventbrite extends Conexao_Source_Base {
 				// engine must not treat the surviving subset as the full
 				// source listing.
 				$this->mark_fetch_incomplete();
+
+				// ---- G5C: fail fast under repeated 429. ----
+				//
+				// The pre-G5 loop did `continue` on ANY failed page, so a
+				// rate-limited walk kept asking for page N+1, N+2, ... while
+				// the upstream was refusing everything. That is the request
+				// storm the brief forbids. A page that exhausted its attempt
+				// ceiling *because of 429* is evidence the source is being
+				// rate limited, so the walk stops here: events already
+				// fetched are preserved, the enumeration stays INCOMPLETE, and
+				// nothing is marked source_not_found.
+				if ( $client->was_rate_limited() ) {
+					$incomplete_reason = sprintf(
+						'rate limited on page %d/%d (HTTP 429 after %d attempts; %d rate-limit responses)',
+						$page,
+						$page_count,
+						Conexao_Eventbrite_Client::MAX_RETRIES,
+						$client->get_rate_limit_hits()
+					);
+
+					Conexao_Import_Log::add(
+						$this->get_id(),
+						'error',
+						sprintf(
+							/* translators: 1: page number, 2: total pages, 3: first page reached */
+							__( 'Eventbrite stopped this source at page %1$d/%2$d because it is rate limiting the importer. %3$d pages were already fetched and are kept; the rest is retried on a later run.', 'conexao-event-importer' ),
+							(int) $page,
+							(int) $page_count,
+							(int) ( $page - 1 )
+						),
+						array(
+							'http_status'      => 429,
+							'page'             => (int) $page,
+							'reason'           => 'rate_limited',
+							'reason_code'      => 'rate_limited',
+							'rate_limit_hits'  => $client->get_rate_limit_hits(),
+							'cooldown_seconds' => $pacing->get_cooldown_seconds_applied(),
+							'run_id'           => $this->get_current_run_id(),
+						)
+					);
+
+					break;
+				}
+
 				$incomplete_reason = sprintf( 'page %d/%d could not be fetched (HTTP %d)', $page, $page_count, $client->get_last_http_status() );
 				Conexao_Import_Log::add(
 					$this->get_id(),
@@ -201,6 +307,8 @@ class Conexao_Source_Eventbrite extends Conexao_Source_Base {
 					sprintf( 'Failed to fetch Eventbrite page %d/%d.', $page, $page_count ),
 					array(
 						'http_status' => $client->get_last_http_status(),
+						'reason'      => $client->get_last_failure_reason(),
+						'reason_code' => 'upstream_unavailable',
 						'run_id'      => $this->get_current_run_id(),
 					)
 				);
@@ -238,6 +346,8 @@ class Conexao_Source_Eventbrite extends Conexao_Source_Base {
 		}
 
 		if ( ! $this->fetch_complete ) {
+			$rate_limited = ( false !== strpos( $incomplete_reason, 'rate limited' ) );
+
 			Conexao_Import_Log::add(
 				$this->get_id(),
 				'warning',
@@ -246,7 +356,11 @@ class Conexao_Source_Eventbrite extends Conexao_Source_Base {
 					__( 'Eventbrite enumeration is INCOMPLETE (%s). Events absent from this walk will not be marked source_not_found.', 'conexao-event-importer' ),
 					$incomplete_reason
 				),
-				array( 'run_id' => $this->get_current_run_id() )
+				array(
+					'reason'      => $rate_limited ? 'rate_limited' : 'incomplete_enumeration',
+					'reason_code' => $rate_limited ? 'rate_limited' : 'incomplete_enumeration',
+					'run_id'      => $this->get_current_run_id(),
+				)
 			);
 		}
 

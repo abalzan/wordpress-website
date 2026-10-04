@@ -86,6 +86,12 @@ class Conexao_Event_Importer_Engine {
 	protected function begin_run_scope() {
 		Conexao_Request_Reuse::begin_run();
 		Conexao_Request_Budget::begin_run();
+
+		// G5: the Eventbrite rate-limit state is run-scoped, exactly like the
+		// request budget and the reuse store. A new run therefore always starts
+		// able to try Eventbrite again, while sources later in THIS run honour
+		// the cooldown already paid for by an earlier one.
+		Conexao_Eventbrite_Pacing::begin_run();
 	}
 
 	/**

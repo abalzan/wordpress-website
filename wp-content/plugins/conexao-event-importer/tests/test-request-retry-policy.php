@@ -244,9 +244,9 @@ $fallback->fetch_page( 'https://example.invalid/discovery', 1 );
 g4b_remove_script();
 
 assert_equals(
-	(float) Conexao_Eventbrite_Client::BASE_BACKOFF_SECONDS,
+	(float) Conexao_Eventbrite_Pacing::RATE_LIMIT_BASE_SECONDS,
 	$GLOBALS['g4b_slept_fallback'][0],
-	'G4B: the invalid Retry-After used the existing 2s base backoff'
+	'G5: an invalid Retry-After falls back to the rate-limit cooldown, not the generic 2s backoff'
 );
 
 // A 429 with NO Retry-After header behaves identically.
@@ -272,9 +272,13 @@ $no_header->fetch_page( 'https://example.invalid/discovery', 1 );
 g4b_remove_script();
 
 assert_equals(
-	(float) Conexao_Eventbrite_Client::BASE_BACKOFF_SECONDS,
+	(float) Conexao_Eventbrite_Pacing::RATE_LIMIT_BASE_SECONDS,
 	$GLOBALS['g4b_slept_none'][0],
-	'G4B: a 429 WITHOUT Retry-After uses the existing fallback backoff'
+	'G5: a 429 WITHOUT Retry-After uses the rate-limit cooldown (G5 supersedes the G4 2s backoff for 429)'
+);
+assert_true(
+	(float) Conexao_Eventbrite_Pacing::RATE_LIMIT_BASE_SECONDS > (float) Conexao_Eventbrite_Client::BASE_BACKOFF_SECONDS,
+	'G5: the rate-limit cooldown is strictly longer than the generic backoff — the measured 2s/4s were insufficient'
 );
 // ===========================================================================
 // Test 6: the per-status request matrix (attempt counts and outcomes).
@@ -308,12 +312,27 @@ foreach ( $matrix as $code => $expectation ) {
 
 	// Zero the applied delays without changing the POLICY: the wait is
 	// observed, not endured, so this suite stays fast and deterministic.
+	//
+	// G5: the generic backoff filter alone is no longer sufficient. Since G5
+	// a 429 waits on the RATE-LIMIT cooldown, which is longer than the generic
+	// backoff and is owned by the pacing policy. Both waits are injected so
+	// this matrix really remains observation-only — without this the 429 row
+	// would endure the full cooldown for every status in the matrix.
 	add_filter( 'conexao_eventbrite_backoff_seconds', '__return_zero', 99 );
+	add_filter( 'conexao_eventbrite_page_delay_seconds', '__return_zero', 99 );
 
 	$m_client = new Conexao_Eventbrite_Client( 'g4b_matrix' );
-	$m_body   = $m_client->fetch_page( 'https://example.invalid/matrix', 1 );
+	$m_client->set_sleeper(
+		function ( $seconds ) {
+			$GLOBALS['g4b_matrix_slept'][] = $seconds;
+		}
+	);
+	$GLOBALS['g4b_matrix_slept'] = array();
+
+	$m_body = $m_client->fetch_page( 'https://example.invalid/matrix', 1 );
 
 	remove_filter( 'conexao_eventbrite_backoff_seconds', '__return_zero', 99 );
+	remove_filter( 'conexao_eventbrite_page_delay_seconds', '__return_zero', 99 );
 	g4b_remove_script();
 
 	assert_equals(
@@ -335,7 +354,15 @@ g4b_install_script(
 );
 
 $timeout_client = new Conexao_Eventbrite_Client( 'g4b_timeout' );
-$timeout_body   = $timeout_client->fetch_page( 'https://example.invalid/timeout', 1 );
+// G5: inject the sleeper so the wait is observed, not endured.
+$timeout_client->set_sleeper(
+	function ( $seconds ) {
+		$GLOBALS['g4b_slept_timeout'][] = $seconds;
+	}
+);
+$GLOBALS['g4b_slept_timeout'] = array();
+
+$timeout_body = $timeout_client->fetch_page( 'https://example.invalid/timeout', 1 );
 g4b_remove_script();
 
 assert_equals(
@@ -358,8 +385,20 @@ g4b_install_script(
 );
 
 add_filter( 'conexao_eventbrite_backoff_seconds', '__return_zero', 99 );
+
+// G5: a permanently 429 page waits on the rate-limit cooldown three times
+// (20s + 40s + 60s). Inject the sleeper so this stays a fast, deterministic
+// observation rather than a 2-minute wait.
 $ceiling_client = new Conexao_Eventbrite_Client( 'g4b_ceiling' );
-$ceiling_body   = $ceiling_client->fetch_page( 'https://example.invalid/ceiling', 1 );
+$ceiling_client->set_sleeper(
+	function ( $seconds ) {
+		$GLOBALS['g4b_slept_ceiling'][] = $seconds;
+	}
+);
+$GLOBALS['g4b_slept_ceiling'] = array();
+
+$ceiling_body = $ceiling_client->fetch_page( 'https://example.invalid/ceiling', 1 );
+
 remove_filter( 'conexao_eventbrite_backoff_seconds', '__return_zero', 99 );
 g4b_remove_script();
 
@@ -385,6 +424,13 @@ g4b_install_script(
 
 add_filter( 'conexao_eventbrite_backoff_seconds', '__return_zero', 99 );
 $last_ok = new Conexao_Eventbrite_Client( 'g4b_last_ok' );
+$last_ok->set_sleeper(
+	function ( $seconds ) {
+		$GLOBALS['g4b_slept_last_ok'][] = $seconds;
+	}
+);
+$GLOBALS['g4b_slept_last_ok'] = array();
+
 $last_body = $last_ok->fetch_page( 'https://example.invalid/last-ok', 1 );
 remove_filter( 'conexao_eventbrite_backoff_seconds', '__return_zero', 99 );
 g4b_remove_script();

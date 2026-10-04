@@ -1,0 +1,49 @@
+
+--- all cork pagination-ish entries with timestamps ---
+2026-10-04 08:16:59 [info] Eventbrite: 140 total fetched, 0 duplicates removed, 140 unique.
+2026-10-04 08:16:59 [warning] Eventbrite enumeration is INCOMPLETE (time budget of 45s expired after page 9/49). Events absent fro
+2026-10-04 08:16:59 [error] Failed to fetch Eventbrite page 9/49.
+2026-10-04 08:16:59 [error] Eventbrite could not be reached after 3 attempts. The discovery page may be temporarily unavailable,
+2026-10-04 08:16:51 [warning] Eventbrite returned HTTP 429. Retrying with a short delay.
+2026-10-04 08:16:47 [warning] Eventbrite returned HTTP 429. Retrying with a short delay.
+2026-10-04 08:16:45 [warning] Eventbrite returned HTTP 429. Retrying with a short delay.
+2026-10-04 08:16:44 [error] Failed to fetch Eventbrite page 8/49.
+2026-10-04 08:16:44 [error] Eventbrite could not be reached after 3 attempts. The discovery page may be temporarily unavailable,
+2026-10-04 08:16:35 [warning] Eventbrite returned HTTP 429. Retrying with a short delay.
+2026-10-04 08:16:31 [warning] Eventbrite returned HTTP 429. Retrying with a short delay.
+2026-10-04 08:16:29 [warning] Eventbrite returned HTTP 429. Retrying with a short delay.
+2026-10-04 08:16:28 [info] Fetched page 7/49, 20 events.
+2026-10-04 08:16:25 [info] Fetched page 6/49, 20 events.
+2026-10-04 08:16:22 [info] Fetched page 5/49, 20 events.
+2026-10-04 08:16:19 [info] Fetched page 4/49, 20 events.
+2026-10-04 08:16:16 [info] Fetched page 3/49, 20 events.
+2026-10-04 08:16:12 [info] Fetched page 2/49, 20 events.
+2026-10-04 08:16:10 [info] Eventbrite: page_count=49, object_count=1553 for https://www.eventbrite.ie/d/ireland--cork/all-event
+2026-10-03 22:27:24 [info] Eventbrite: 60 total fetched, 0 duplicates removed, 60 unique.
+2026-10-03 22:27:24 [warning] Eventbrite enumeration is INCOMPLETE (time budget of 45s expired after page 6/49). Events absent fro
+2026-10-03 22:27:24 [error] Failed to fetch Eventbrite page 6/49.
+2026-10-03 22:27:24 [error] Eventbrite could not be reached after 3 attempts. The discovery page may be temporarily unavailable,
+2026-10-03 22:27:16 [warning] Eventbrite returned HTTP 429. Retrying with a short delay.
+2026-10-03 22:27:12 [warning] Eventbrite returned HTTP 429. Retrying with a short delay.
+2026-10-03 22:27:10 [warning] Eventbrite returned HTTP 429. Retrying with a short delay.
+2026-10-03 22:27:09 [error] Failed to fetch Eventbrite page 5/49.
+2026-10-03 22:27:09 [error] Eventbrite could not be reached after 3 attempts. The discovery page may be temporarily unavailable,
+2026-10-03 22:27:01 [warning] Eventbrite returned HTTP 429. Retrying with a short delay.
+2026-10-03 22:26:57 [warning] Eventbrite returned HTTP 429. Retrying with a short delay.
+2026-10-03 22:26:55 [warning] Eventbrite returned HTTP 429. Retrying with a short delay.
+2026-10-03 22:26:54 [error] Failed to fetch Eventbrite page 4/49.
+2026-10-03 22:26:54 [error] Eventbrite could not be reached after 3 attempts. The discovery page may be temporarily unavailable,
+2026-10-03 22:26:46 [warning] Eventbrite returned HTTP 429. Retrying with a short delay.
+2026-10-03 22:26:42 [warning] Eventbrite returned HTTP 429. Retrying with a short delay.
+2026-10-03 22:26:40 [warning] Eventbrite returned HTTP 429. Retrying with a short delay.
+2026-10-03 22:26:38 [info] Fetched page 3/49, 20 events.
+2026-10-03 22:26:35 [info] Fetched page 2/49, 20 events.
+2026-10-03 22:26:33 [info] Eventbrite: page_count=49, object_count=1561 for https://www.eventbrite.ie/d/ireland--cork/all-event
+2026-10-03 22:08:18 [error] Eventbrite could not be reached after 3 attempts. The discovery page may be temporarily unavailable,
+2026-10-03 22:08:10 [warning] Eventbrite returned HTTP 429. Retrying with a short delay.
+2026-10-03 22:08:06 [warning] Eventbrite returned HTTP 429. Retrying with a short delay.
+2026-10-03 22:08:04 [warning] Eventbrite returned HTTP 429. Retrying with a short delay.
+2026-10-03 21:25:47 [error] Eventbrite could not be reached after 3 attempts. The discovery page may be temporarily unavailable,
+2026-10-03 21:25:39 [warning] Eventbrite returned HTTP 429. Retrying with a short delay.
+2026-10-03 21:25:35 [warning] Eventbrite returned HTTP 429. Retrying with a short delay.
+2026-10-03 21:25:33 [warning] Eventbrite returned HTTP 429. Retrying with a short delay.

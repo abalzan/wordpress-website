@@ -1,0 +1,14 @@
+== test-request-retry-policy ==
+59 passed, 0 failed
+== test-eventbrite-rate-limit ==
+73 passed, 0 failed
+== test-request-budget ==
+33 passed, 0 failed
+== test-eventbrite-importer ==
+68 passed, 0 failed
+== test-source-pagination-completeness ==
+  FAIL: G2B Cavan: the live event was NOT marked source_not_found (got "source_not_found")
+23 passed, 1 failed
+== test-source-fetch-failure ==
+138 passed, 0 failed
+TOTAL_ELAPSED=505s

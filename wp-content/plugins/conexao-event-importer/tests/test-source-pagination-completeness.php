@@ -113,6 +113,31 @@ function g2_http_double( $preempt, $args, $url ) {
 add_filter( 'conexao_eventbrite_backoff_seconds', '__return_zero', 99 );
 add_filter( 'conexao_eventbrite_request_delay_seconds', '__return_zero', 99 );
 
+// G5: page pacing moved to the pacing policy under a new filter name, and a
+// 429 now waits on the rate-limit cooldown (20s + 40s + 60s). Without this the
+// 429 scenarios in this suite would really sleep for two minutes each, which is
+// why the whole suite took 123s. The waits are OBSERVED, never endured.
+add_filter( 'conexao_eventbrite_page_delay_seconds', '__return_zero', 99 );
+
+add_filter(
+	'conexao_eventbrite_pacing',
+	static function () {
+		static $policy = null;
+
+		if ( null === $policy ) {
+			$policy = new Conexao_Eventbrite_Pacing();
+			$policy->set_sleeper(
+				static function ( $seconds ) {
+					$GLOBALS['g2_pacing_slept'][] = $seconds;
+				}
+			);
+		}
+
+		return $policy;
+	},
+	99
+);
+
 $plugin = Conexao_Event_Importer::instance();
 
 /**

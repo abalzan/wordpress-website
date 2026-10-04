@@ -13,7 +13,7 @@ source. Do not hand-edit this table.
 | conexao-content | 1.0.1 | platform | active | yes | yes | yes | `wp-content/plugins/conexao-content/` |
 | conexao-admin-ux | 1.0.7 | platform | active | yes | yes | yes | `wp-content/plugins/conexao-admin-ux/` |
 | conexao-event-runtime | 1.2.2 | platform | active | yes | yes | yes | `wp-content/plugins/conexao-event-runtime/` |
-| conexao-event-importer | 1.8.0 | tooling | active | no | yes | yes | `wp-content/plugins/conexao-event-importer/` |
+| conexao-event-importer | 1.9.0 | tooling | active | no | yes | yes | `wp-content/plugins/conexao-event-importer/` |
 | conexao-leisure-migration | 2.1.0 | tooling | active | no | yes | yes | `wp-content/plugins/conexao-leisure-migration/` |
 | conexao-sponsor-migration | 1.1.0 | tooling | active | no | yes | yes | `wp-content/plugins/conexao-sponsor-migration/` |
 | conexao-translation-rollout | 1.2.0 | platform | active | yes | yes | yes | `wp-content/plugins/conexao-translation-rollout/` |

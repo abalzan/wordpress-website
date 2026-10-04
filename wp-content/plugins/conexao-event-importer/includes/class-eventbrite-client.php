@@ -62,12 +62,100 @@ class Conexao_Eventbrite_Client {
 	protected $source_id;
 
 	/**
+	 * Pacing / rate-limit policy for this client (Stage G5).
+	 *
+	 * @var Conexao_Eventbrite_Pacing
+	 */
+	protected $pacing;
+
+	/**
+	 * Consecutive HTTP 429s observed while fetching the most recent page.
+	 *
+	 * Reset on every successful page fetch, so it measures "how hard is THIS
+	 * page being rate limited", not "how often has Eventbrite ever 429d us".
+	 *
+	 * @var int
+	 */
+	protected $consecutive_rate_limits = 0;
+
+	/**
+	 * Classification of the most recent fetch outcome (G5D).
+	 *
+	 * @var string
+	 */
+	protected $last_failure_reason = '';
+
+	/**
 	 * Constructor.
 	 *
-	 * @param string $source_id Source ID for log attribution (e.g. 'eventbrite_laois').
+	 * @param string                         $source_id Source ID for log attribution (e.g. 'eventbrite_laois').
+	 * @param Conexao_Eventbrite_Pacing|null $pacing    Pacing policy (injected in tests; the
+	 *                                                  default builds its own, so production
+	 *                                                  never passes one).
 	 */
-	public function __construct( $source_id = 'eventbrite' ) {
+	public function __construct( $source_id = 'eventbrite', $pacing = null ) {
 		$this->source_id = $source_id;
+		$this->pacing   = $pacing instanceof Conexao_Eventbrite_Pacing ? $pacing : new Conexao_Eventbrite_Pacing();
+	}
+
+	/**
+	 * The pacing / rate-limit policy governing this client's outbound requests.
+	 *
+	 * G5 moved every outbound Eventbrite timing decision into one object
+	 * (Conexao_Eventbrite_Pacing). The client asks it; it never sleeps itself,
+	 * so there is exactly one place that governs pacing, retry delay and
+	 * rate-limit cooldown.
+	 *
+	 * @return Conexao_Eventbrite_Pacing
+	 */
+	public function get_pacing() {
+		return $this->pacing;
+	}
+
+	/**
+	 * Whether the most recent failure of this client was a rate limit.
+	 *
+	 * This is the operator-facing distinction G5D requires: a rate-limited
+	 * source must be distinguishable from an unreachable one, a malformed one,
+	 * or a timeout. The source handler reads this to classify the run.
+	 *
+	 * @return bool
+	 */
+	public function was_rate_limited() {
+		return (bool) $this->pacing->was_rate_limited();
+	}
+
+	/**
+	 * How many 429s this client observed.
+	 *
+	 * @return int
+	 */
+	public function get_rate_limit_hits() {
+		return (int) $this->pacing->get_rate_limit_hits();
+	}
+
+	/**
+	 * How many consecutive 429s the most recent page accumulated.
+	 *
+	 * G5C: when this reaches the retry ceiling, the page is not going to
+	 * succeed and the source must stop instead of paginating on.
+	 *
+	 * @return int
+	 */
+	public function get_consecutive_rate_limits() {
+		return (int) $this->consecutive_rate_limits;
+	}
+
+	/**
+	 * The classification of the most recent fetch outcome.
+	 *
+	 * One of: '' (nothing fetched yet), 'ok', 'rate_limited', 'http_error',
+	 * 'transport_error', 'budget_exhausted'.
+	 *
+	 * @return string
+	 */
+	public function get_last_failure_reason() {
+		return (string) $this->last_failure_reason;
 	}
 
 	/**
@@ -133,14 +221,18 @@ class Conexao_Eventbrite_Client {
 	 * @return float Seconds.
 	 */
 	protected function get_request_delay_seconds() {
-		return (float) apply_filters(
-			'conexao_eventbrite_request_delay_seconds',
-			self::REQUEST_DELAY_SECONDS
-		);
+		return $this->pacing->get_page_delay_seconds();
 	}
 
 	/**
 	 * Fetch a discovery page.
+	 *
+	 * G5: HTTP 429 is handled as a DISTINCT condition, not as one more
+	 * transient error. A 429 puts the client into an explicit rate-limited
+	 * state, waits exactly one bounded cooldown, and records whether that
+	 * cooldown came from a `Retry-After` header or from the deterministic
+	 * fallback ladder. The attempt ceiling is unchanged, so retry is still
+	 * never unbounded.
 	 *
 	 * @param string $url  Page URL.
 	 * @param int    $page Page number (1-based).
@@ -149,12 +241,18 @@ class Conexao_Eventbrite_Client {
 	public function fetch_page( $url, $page = 1 ) {
 		$page_url = $this->build_page_url( $url, $page );
 
-		$this->last_http_status = 0;
+		$this->last_http_status        = 0;
+		$this->consecutive_rate_limits = 0;
+		$this->last_failure_reason     = '';
 
 		for ( $attempt = 1; $attempt <= self::MAX_RETRIES; $attempt++ ) {
 			$response = $this->request_page( $page_url );
 
 			if ( is_wp_error( $response ) ) {
+				$this->last_failure_reason = ( 'conexao_request_budget_exhausted' === $response->get_error_code() )
+					? 'budget_exhausted'
+					: 'transport_error';
+
 				Conexao_Import_Log::add(
 					$this->source_id,
 					'error',
@@ -167,6 +265,7 @@ class Conexao_Eventbrite_Client {
 						'url'         => $page_url,
 						'attempt'     => $attempt,
 						'http_status' => 0,
+						'reason'      => $this->last_failure_reason,
 						'run_id'      => apply_filters( 'conexao_event_importer_current_run_id', '' ),
 					)
 				);
@@ -179,6 +278,7 @@ class Conexao_Eventbrite_Client {
 			$this->last_http_status = (int) $code;
 
 			if ( 200 === (int) $code ) {
+				$this->last_failure_reason = 'ok';
 				return wp_remote_retrieve_body( $response );
 			}
 
@@ -186,6 +286,8 @@ class Conexao_Eventbrite_Client {
 				// Not transient: report it and stop. Retrying a 401/403/404
 				// turns an authorisation or not-found condition into repeated
 				// traffic without ever changing the outcome.
+				$this->last_failure_reason = 'http_error';
+
 				Conexao_Import_Log::add(
 					$this->source_id,
 					'error',
@@ -193,19 +295,63 @@ class Conexao_Eventbrite_Client {
 					array(
 						'url'         => $page_url,
 						'http_status' => (int) $code,
+						'reason'      => $this->last_failure_reason,
 						'run_id'      => apply_filters( 'conexao_event_importer_current_run_id', '' ),
 					)
 				);
 				return '';
 			}
 
-			// G4B: transient failure. Honour a bounded Retry-After when the
-			// upstream sent one, otherwise fall back to the existing
-			// exponential backoff. self::MAX_RETRIES remains authoritative, so
-			// this is never an unbounded retry.
 			$retry_after = self::parse_retry_after(
 				wp_remote_retrieve_header( $response, 'retry-after' )
 			);
+
+			// ---- G5B: HTTP 429 is its own condition, not a generic 5xx. ----
+			if ( 429 === (int) $code ) {
+				++$this->consecutive_rate_limits;
+
+				$this->last_failure_reason = 'rate_limited';
+
+				// The run-scoped flag is what stops the NEXT Eventbrite source
+				// from walking into the same wall. Measured, not assumed: after
+				// the first 429 all 24 remaining Eventbrite paths answered 429.
+				Conexao_Eventbrite_Pacing::record_run_rate_limit( $this->source_id );
+
+				$cooldown = $this->pacing->apply_rate_limit_cooldown( $attempt, $retry_after );
+
+				Conexao_Import_Log::add(
+					$this->source_id,
+					'warning',
+					sprintf(
+						/* translators: 1: page number, 2: HTTP status code, 3: attempt number, 4: seconds waited */
+						__( 'Eventbrite rate limit (HTTP %2$d) on page %1$d, attempt %3$d. Cooling down %4$ds before the next attempt.', 'conexao-event-importer' ),
+						(int) $page,
+						(int) $code,
+						(int) $attempt,
+						(int) ceil( $cooldown )
+					),
+					array(
+						'url'               => $page_url,
+						'page'              => (int) $page,
+						'attempt'           => (int) $attempt,
+						'http_status'       => (int) $code,
+						'reason'            => 'rate_limited',
+						'retry_after'       => $retry_after,
+						'retry_after_present' => $this->pacing->last_retry_after_was_present(),
+						'retry_after_capped' => $this->pacing->last_retry_after_was_capped(),
+						'cooldown_seconds'  => $cooldown,
+						'rate_limit_streak' => (int) $this->consecutive_rate_limits,
+						'run_id'            => apply_filters( 'conexao_event_importer_current_run_id', '' ),
+					)
+				);
+
+				continue;
+			}
+
+			// G4B: transient server-side failure (500/502/503/504). Bounded
+			// exponential backoff, or a bounded Retry-After when the upstream
+			// sent one. self::MAX_RETRIES remains authoritative.
+			$this->last_failure_reason = 'http_error';
 
 			Conexao_Import_Log::add(
 				$this->source_id,
@@ -226,6 +372,7 @@ class Conexao_Eventbrite_Client {
 					'url'         => $page_url,
 					'attempt'     => $attempt,
 					'http_status' => (int) $code,
+					'reason'      => 'http_error',
 					'retry_after' => $retry_after,
 					'run_id'      => apply_filters( 'conexao_event_importer_current_run_id', '' ),
 				)
@@ -234,17 +381,45 @@ class Conexao_Eventbrite_Client {
 			$this->backoff( $attempt, $retry_after );
 		}
 
+		// Exhausted. The message now states WHICH condition ended the page, so
+		// an operator can tell "rate limited" from "unreachable" (G5D).
+		if ( 'rate_limited' === $this->last_failure_reason ) {
+			Conexao_Import_Log::add(
+				$this->source_id,
+				'error',
+				sprintf(
+					/* translators: 1: page number, 2: number of attempts */
+					__( 'Eventbrite rate-limited page %1$d: still HTTP 429 after %2$d attempts. This source stops here; retry it later instead of immediately.', 'conexao-event-importer' ),
+					(int) $page,
+					(int) self::MAX_RETRIES
+				),
+				array(
+					'url'               => $page_url,
+					'page'              => (int) $page,
+					'reason'            => 'rate_limited',
+					'reason_code'       => 'rate_limited',
+					'rate_limit_streak' => (int) $this->consecutive_rate_limits,
+					'cooldown_seconds'  => $this->pacing->get_cooldown_seconds_applied(),
+					'run_id'            => apply_filters( 'conexao_event_importer_current_run_id', '' ),
+				)
+			);
+
+			return '';
+		}
+
 		Conexao_Import_Log::add(
 			$this->source_id,
 			'error',
 			sprintf(
 				/* translators: %d: number of retries */
-				__( 'Eventbrite could not be reached after %d attempts. The discovery page may be temporarily unavailable, or Eventbrite may be rate-limiting this site.', 'conexao-event-importer' ),
+				__( 'Eventbrite could not be reached after %d attempts. The discovery page may be temporarily unavailable.', 'conexao-event-importer' ),
 				self::MAX_RETRIES
 			),
 			array(
-				'url'    => $page_url,
-				'run_id' => apply_filters( 'conexao_event_importer_current_run_id', '' ),
+				'url'         => $page_url,
+				'reason'      => $this->last_failure_reason,
+				'reason_code' => 'upstream_unavailable',
+				'run_id'      => apply_filters( 'conexao_event_importer_current_run_id', '' ),
 			)
 		);
 
@@ -400,20 +575,39 @@ class Conexao_Eventbrite_Client {
 	 * The callable receives the number of seconds the client *would* sleep.
 	 * Production never injects one and therefore really sleeps.
 	 *
-	 * @param callable|null $sleeper Callable(int $seconds): void.
+	 * G5: the sleeper is ALSO forwarded to the pacing policy. Since G5 moved
+	 * every outbound timing decision into that policy, injecting only on the
+	 * client would leave the rate-limit cooldown really sleeping — a test that
+	 * injected a sleeper would still block for 20s+ per 429. Forwarding keeps
+	 * the one existing injection point meaningful for the whole seam.
+	 *
+	 * @param callable|null $sleeper Callable(float $seconds): void.
 	 * @return void
 	 */
 	public function set_sleeper( $sleeper ) {
 		$this->sleeper = is_callable( $sleeper ) ? $sleeper : null;
+
+		$this->pacing->set_sleeper( $this->sleeper );
 	}
 
 	/**
-	 * The delays this client applied, in order.
+	 * Every delay this client actually applied, in order.
+	 *
+	 * G5: since all outbound timing moved into the pacing policy, this is the
+	 * UNION of the policy's delays and the client's own remaining backoffs, in
+	 * application order. Returning only the client's own list would silently
+	 * omit the rate-limit cooldown — the delay an operator most needs to see.
 	 *
 	 * @return float[]
 	 */
 	public function get_applied_delays() {
-		return $this->applied_delays;
+		$pacing_delays = array();
+
+		foreach ( $this->pacing->get_applied_delays() as $entry ) {
+			$pacing_delays[] = (float) $entry['seconds'];
+		}
+
+		return array_merge( $pacing_delays, $this->applied_delays );
 	}
 
 	/**

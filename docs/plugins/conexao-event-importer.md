@@ -9,7 +9,7 @@
 | **Build** | yes |
 | **Compose mount** | yes |
 | **Dependencies** | `conexao-data-model`, `conexao-event-runtime` |
-| **Version** | 1.8.0 (authoritative source: `wp-content/plugins/conexao-event-importer/conexao-event-importer.php` header) |
+| **Version** | 1.9.0 (authoritative source: `wp-content/plugins/conexao-event-importer/conexao-event-importer.php` header) |
 | **Registry** | [`plugins.json`](../../plugins.json) |
 
 > **Local-only tooling.** Not a production steady-state dependency.
@@ -631,6 +631,128 @@ timing policy is asserted in tests without any real sleep.
 | `cache hit != stale cross-run data` | G4A: store reset per run, nothing persisted |
 | `request budget != silent data loss` | G4C: exhaustion → incomplete, data retained |
 | `diagnostics survive tests` | G3 (unchanged) |
+
+## Eventbrite pacing and rate-limit handling (G5)
+
+Eventbrite is an **external dependency that can rate-limit the importer**.
+G5 does not make Eventbrite succeed. It makes the importer respond to that
+condition in a bounded, sequential, truthful and operationally recoverable
+manner. Evidence and measurements:
+[`docs/reports/2026-10-04-eventbrite-rate-limit-strategy.md`](../reports/2026-10-04-eventbrite-rate-limit-strategy.md).
+
+### High-volume sources are the stress cases
+
+Cork (`eventbrite_cork`, ~49 pages / ~1550 objects) and Dublin
+(`eventbrite_dublin`) are the primary operational stress cases, because a long
+walk is what exposes rate limiting. Small sources such as `eventbrite_carlow`
+are useful controls but must never stand in for Cork/Dublin.
+
+### One policy, not scattered sleeps
+
+All outbound Eventbrite timing lives in **one** class,
+`Conexao_Eventbrite_Pacing` (`includes/class-eventbrite-pacing.php`).
+`Conexao_Eventbrite_Client` and the source handler ask it; neither sleeps on
+its own. It governs three distinct concerns:
+
+| Concern | Mechanism | Default |
+|---|---|---|
+| Page pacing | `pace_page_request()` | `PAGE_DELAY_SECONDS = 2` |
+| Retry pacing (5xx) | existing G4B backoff | 2 / 4 / 8 s |
+| Rate-limit cooldown (429) | `apply_rate_limit_cooldown()` | 20 s, then 40 s, capped at 60 s |
+
+The 2-second page delay is **measured, not guessed**: the G4 baseline reached
+its first 429 after ~36 Eventbrite requests at a median 2.85 s interval, i.e.
+sustained traffic of roughly 20 requests/minute. Doubling the inter-request
+floor is the smallest conservative step that evidence supports.
+
+Sleep and clock are injectable (`set_sleeper()`, `set_clock()`), so the whole
+timing policy is asserted deterministically without a single real sleep.
+
+### Normal operation
+
+Eventbrite sources run **sequentially** — one source completes (or stops
+incomplete) before the next begins. Parallel Eventbrite fetching is not
+introduced and does not exist. The per-run request budget (400) and the 45-second
+per-source time budget both remain authoritative; pacing never bypasses them.
+
+### Rate limiting (HTTP 429)
+
+A 429 is **not** treated as an ordinary transient page failure. It enters an
+explicit rate-limited state which:
+
+1. records the 429, the URL, the page, the attempt and the retry streak;
+2. preserves every event already fetched;
+3. keeps the enumeration **INCOMPLETE**;
+4. applies exactly one **bounded** cooldown before the next attempt;
+5. never retries immediately, and never exceeds `MAX_RETRIES = 3` attempts;
+6. terminates the source cleanly once the ceiling is reached.
+
+### `Retry-After`
+
+`Retry-After` is honoured when present (delta-seconds and HTTP-date), and is
+**hard-capped at 60 s** so Eventbrite can never dictate the length of the
+process. An unparseable, negative or absent value falls back to the
+deterministic 20 s ladder. **No `Retry-After` header has ever been observed in
+a real Eventbrite response from this environment** (`responses_with_retry_after
+= 0` across every measured run), so this path is **mechanically proven but not
+live-observed**.
+
+### Repeated 429 — fail fast
+
+```text
+429 → bounded retry (20s cooldown)
+    → 429 → bounded retry (40s cooldown)
+    → 429 → stop this Eventbrite source cleanly
+```
+
+The walk **stops at the rate-limited page** instead of continuing to the next
+one. Measured justification: in the archived full-run trace, once the first 429
+appeared, **24 of 24** remaining Eventbrite discovery paths answered 429 on
+every attempt. Paginating onward was not recovering data — it was a request
+storm. With the fail-fast removed, the same deterministic scenario issues
+**118 requests and walks 33 pages** past the point where the walk should have
+stopped (see the negative proofs).
+
+The final state is `incomplete`, never `successfully complete` and never
+`empty`, and absent events are **never** marked `source_not_found`.
+
+### Rate limiting is source-wide (measured)
+
+The G5E experiment is explicit evidence, not an assumption: after the first
+429, all 24 subsequent Eventbrite paths were 100 % 429. A **run-scoped shared
+cooldown** therefore applies: once one Eventbrite source in a run is rate
+limited, later Eventbrite sources in **that same run** are skipped without
+sending a single request, and are recorded as `rate_limited` rather than
+skipped silently. The state is in-memory and reset by `begin_run()` — no
+option, transient, table or scheduler — so a later run can always try again.
+
+### Partial import and idempotence
+
+Events fetched before a rate-limit stop are preserved and imported normally. A
+retry later updates them by source identity rather than duplicating them. A
+rate-limited or otherwise incomplete walk never triggers
+`mark_missing_events()`, so previously imported events are untouched.
+
+### Operator workflow
+
+```text
+run Eventbrite source (Events → Run, or the Import Dashboard)
+    ↓
+inspect the result in Import History / Import Log
+    ↓
+if rate limited:  stop, allow the cooldown, retry THAT source later
+if complete:      continue with the next source
+```
+
+Individual Eventbrite sources are independently recoverable — recovering one
+rate-limited county does **not** require re-running all 56 sources. The Import
+Log states the reason explicitly (`reason=rate_limited`) together with the URL,
+page, attempt count, applied cooldown, and whether a `Retry-After` was present
+or capped.
+
+Do **not** immediately re-run a rate-limited source: the cooldown is bounded,
+but hammering the upstream immediately is exactly the behaviour G5 removes.
+There is no permanent block and no scheduler: a new run always starts clean.
 
 ## Diagnostics: Import History, Import Logs and run correlation
 

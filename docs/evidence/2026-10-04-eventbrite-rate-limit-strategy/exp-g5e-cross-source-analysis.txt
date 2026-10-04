@@ -1,0 +1,16 @@
+eventbrite_requests=108
+status_distribution={200: 36, 429: 72}
+healthy_same_page_interval min=2.45 median=2.85 max=4.54
+all_intervals min=1.08 p50=3.59 p90=8.08 max=10.14
+first_429_request_index=36 (1-based request #37)
+first_429_elapsed_seconds=329.87
+requests_before_first_429=36
+pages_fetched_before_first_429=3
+first_429_path=/d/ireland--clare/all-events/
+first_429_page_attempts=3
+first_429_retry_intervals=[2.13, 4.59]
+distinct_paths_after_first_429=24
+paths_100pct_429_after_first_429=24/24
+example_wholly_blocked=['/d/ireland--clare/all-events/', '/d/ireland--cork/all-events/', '/d/ireland--donegal/all-events/', '/d/ireland--dublin/all-events/', '/d/ireland--galway/all-events/', '/d/ireland--kerry/all-events/']
+total_429=72
+retry_after_headers_observed=0 (not recorded by this tracer)

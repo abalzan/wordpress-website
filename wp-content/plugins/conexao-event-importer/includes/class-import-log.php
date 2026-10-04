@@ -110,7 +110,27 @@ class Conexao_Import_Log {
 		$context = self::sanitize_context( $context );
 
 		// Keep a small amount of additional context (URL, attempt, etc.).
-		$keep_keys = array( 'url', 'attempt', 'source_url', 'post_id' );
+		//
+		// G5D: an operator must be able to tell a rate-limited source from a
+		// generically unavailable one, so the rate-limit classification fields
+		// are part of the allowlist too. Without them the reason for stopping is
+		// written to the entry and then discarded.
+		$keep_keys = array(
+			'url',
+			'attempt',
+			'source_url',
+			'post_id',
+			'reason',
+			'reason_code',
+			'page',
+			'cooldown_seconds',
+			'retry_after',
+			'retry_after_present',
+			'retry_after_capped',
+			'rate_limit_hits',
+			'rate_limit_streak',
+			'skipped',
+		);
 		$safe_context = array();
 		foreach ( $keep_keys as $key ) {
 			if ( isset( $context[ $key ] ) ) {
