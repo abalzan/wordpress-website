@@ -1,0 +1,12 @@
+ docs/evidence/2026-09-26-stage-l/gate.json         |  59 ++++----
+ docs/plugins/conexao-event-importer.md             | 134 ++++++++++++++++-
+ .../conexao-event-importer.php                     |   1 +
+ .../includes/class-county-registry.php             |  89 ++++++++++-
+ .../includes/class-event-importer.php              | 162 ++++++++++++++++++++
+ .../includes/class-event-sources.php               |  45 ++++++
+ .../includes/class-import-history.php              |  14 ++
+ .../includes/sources/abstract-class-source.php     |  25 ++++
+ .../includes/sources/class-eventbrite-source.php   | 116 ++++++++++++++
+ .../languages/conexao-event-importer.pot           | 166 +++++++++++++--------
+ .../tests/test-county-registry.php                 |  18 ++-
+ 11 files changed, 719 insertions(+), 110 deletions(-)

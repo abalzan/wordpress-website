@@ -38,6 +38,17 @@ abstract class Conexao_Source_Base {
 	protected $fetch_complete = true;
 
 	/**
+	 * How many events the last fetch_events() returned.
+	 *
+	 * G9. Distinguishes an empty-but-successful enumeration from one that
+	 * never received anything, so cooldown recovery is never inferred from a
+	 * response that proved nothing.
+	 *
+	 * @var int
+	 */
+	protected $fetched_event_count = 0;
+
+	/**
 	 * Get the current import run ID, if a run is in progress.
 	 *
 	 * The engine publishes it through the existing
@@ -58,6 +69,20 @@ abstract class Conexao_Source_Base {
 	 */
 	public function is_fetch_complete() {
 		return (bool) $this->fetch_complete;
+	}
+
+	/**
+	 * Whether the last fetch_events() actually returned any events.
+	 *
+	 * G9. Cooldown recovery uses this to tell "the upstream answered with a
+	 * real listing" apart from "we got nothing back". Only the former proves
+	 * a throttle has cleared, so a handler that returned zero events must not
+	 * be treated as recovered.
+	 *
+	 * @return bool True when the last enumeration produced at least one event.
+	 */
+	public function has_fetched_events() {
+		return ! empty( $this->fetched_event_count );
 	}
 
 	/**

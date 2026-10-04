@@ -1,0 +1,6068 @@
+{
+ "county": "cork",
+ "pages": [
+  {
+   "page": 1,
+   "status": 200,
+   "results": 20,
+   "page_number": 1,
+   "page_count": 49,
+   "object_count": 1547,
+   "bytes": 679006
+  },
+  {
+   "page": 2,
+   "status": 200,
+   "results": 20,
+   "page_number": 2,
+   "page_count": 49,
+   "object_count": 1547,
+   "bytes": 666802
+  },
+  {
+   "page": 3,
+   "status": 200,
+   "results": 20,
+   "page_number": 3,
+   "page_count": 49,
+   "object_count": 1547,
+   "bytes": 671785
+  },
+  {
+   "page": 4,
+   "status": 200,
+   "results": 20,
+   "page_number": 4,
+   "page_count": 49,
+   "object_count": 1547,
+   "bytes": 675104
+  },
+  {
+   "page": 5,
+   "status": 200,
+   "results": 20,
+   "page_number": 5,
+   "page_count": 49,
+   "object_count": 1547,
+   "bytes": 679068
+  },
+  {
+   "page": 6,
+   "status": 200,
+   "results": 20,
+   "page_number": 6,
+   "page_count": 49,
+   "object_count": 1547,
+   "bytes": 669939
+  },
+  {
+   "page": 7,
+   "status": 200,
+   "results": 20,
+   "page_number": 7,
+   "page_count": 49,
+   "object_count": 1547,
+   "bytes": 680706
+  },
+  {
+   "page": 8,
+   "status": 200,
+   "results": 20,
+   "page_number": 8,
+   "page_count": 49,
+   "object_count": 1547,
+   "bytes": 672381
+  },
+  {
+   "page": 9,
+   "status": 200,
+   "results": 20,
+   "page_number": 9,
+   "page_count": 49,
+   "object_count": 1547,
+   "bytes": 669569
+  },
+  {
+   "page": 10,
+   "status": 200,
+   "results": 20,
+   "page_number": 10,
+   "page_count": 49,
+   "object_count": 1547,
+   "bytes": 666630
+  },
+  {
+   "page": 11,
+   "status": 200,
+   "results": 20,
+   "page_number": 11,
+   "page_count": 49,
+   "object_count": 1547,
+   "bytes": 672745
+  },
+  {
+   "page": 12,
+   "status": 200,
+   "results": 20,
+   "page_number": 12,
+   "page_count": 49,
+   "object_count": 1547,
+   "bytes": 677596
+  },
+  {
+   "page": 13,
+   "status": 200,
+   "results": 20,
+   "page_number": 13,
+   "page_count": 49,
+   "object_count": 1547,
+   "bytes": 668641
+  },
+  {
+   "page": 14,
+   "status": 200,
+   "results": 20,
+   "page_number": 14,
+   "page_count": 49,
+   "object_count": 1547,
+   "bytes": 679113
+  },
+  {
+   "page": 15,
+   "status": 200,
+   "results": 20,
+   "page_number": 15,
+   "page_count": 49,
+   "object_count": 1547,
+   "bytes": 676282
+  },
+  {
+   "page": 16,
+   "status": 200,
+   "results": 20,
+   "page_number": 16,
+   "page_count": 49,
+   "object_count": 1547,
+   "bytes": 675654
+  },
+  {
+   "page": 17,
+   "status": 200,
+   "results": 20,
+   "page_number": 17,
+   "page_count": 49,
+   "object_count": 1547,
+   "bytes": 676007
+  },
+  {
+   "page": 18,
+   "status": 200,
+   "results": 20,
+   "page_number": 18,
+   "page_count": 49,
+   "object_count": 1547,
+   "bytes": 666185
+  },
+  {
+   "page": 19,
+   "status": 200,
+   "results": 20,
+   "page_number": 19,
+   "page_count": 49,
+   "object_count": 1547,
+   "bytes": 674983
+  },
+  {
+   "page": 20,
+   "status": 200,
+   "results": 20,
+   "page_number": 20,
+   "page_count": 49,
+   "object_count": 1547,
+   "bytes": 677026
+  },
+  {
+   "page": 21,
+   "status": 200,
+   "results": 20,
+   "page_number": 21,
+   "page_count": 49,
+   "object_count": 1547,
+   "bytes": 671185
+  },
+  {
+   "page": 22,
+   "status": 200,
+   "results": 20,
+   "page_number": 22,
+   "page_count": 49,
+   "object_count": 1547,
+   "bytes": 681578
+  },
+  {
+   "page": 23,
+   "status": 200,
+   "results": 20,
+   "page_number": 23,
+   "page_count": 49,
+   "object_count": 1547,
+   "bytes": 672219
+  },
+  {
+   "page": 24,
+   "status": 200,
+   "results": 19,
+   "page_number": 24,
+   "page_count": 49,
+   "object_count": 1547,
+   "bytes": 637661
+  },
+  {
+   "page": 25,
+   "status": 200,
+   "results": 20,
+   "page_number": 25,
+   "page_count": 49,
+   "object_count": 1547,
+   "bytes": 686100
+  },
+  {
+   "page": 26,
+   "status": 200,
+   "results": 20,
+   "page_number": 26,
+   "page_count": 49,
+   "object_count": 1547,
+   "bytes": 676497
+  },
+  {
+   "page": 27,
+   "status": 200,
+   "results": 19,
+   "page_number": 27,
+   "page_count": 49,
+   "object_count": 1547,
+   "bytes": 655427
+  },
+  {
+   "page": 28,
+   "status": 200,
+   "results": 20,
+   "page_number": 28,
+   "page_count": 49,
+   "object_count": 1547,
+   "bytes": 679001
+  },
+  {
+   "page": 29,
+   "status": 200,
+   "results": 20,
+   "page_number": 29,
+   "page_count": 49,
+   "object_count": 1547,
+   "bytes": 667782
+  },
+  {
+   "page": 30,
+   "status": 200,
+   "results": 20,
+   "page_number": 30,
+   "page_count": 49,
+   "object_count": 1547,
+   "bytes": 674072
+  },
+  {
+   "page": 31,
+   "status": 200,
+   "results": 20,
+   "page_number": 31,
+   "page_count": 49,
+   "object_count": 1547,
+   "bytes": 665779
+  },
+  {
+   "page": 32,
+   "status": 0,
+   "results": 0
+  },
+  {
+   "page": 33,
+   "status": 0,
+   "results": 0
+  },
+  {
+   "page": 34,
+   "status": 0,
+   "results": 0
+  },
+  {
+   "page": 35,
+   "status": 0,
+   "results": 0
+  },
+  {
+   "page": 36,
+   "status": 0,
+   "results": 0
+  },
+  {
+   "page": 37,
+   "status": 0,
+   "results": 0
+  },
+  {
+   "page": 38,
+   "status": 0,
+   "results": 0
+  },
+  {
+   "page": 39,
+   "status": 0,
+   "results": 0
+  },
+  {
+   "page": 40,
+   "status": 0,
+   "results": 0
+  },
+  {
+   "page": 41,
+   "status": 0,
+   "results": 0
+  },
+  {
+   "page": 42,
+   "status": 0,
+   "results": 0
+  },
+  {
+   "page": 43,
+   "status": 0,
+   "results": 0
+  },
+  {
+   "page": 44,
+   "status": 0,
+   "results": 0
+  },
+  {
+   "page": 45,
+   "status": 0,
+   "results": 0
+  },
+  {
+   "page": 46,
+   "status": 0,
+   "results": 0
+  },
+  {
+   "page": 47,
+   "status": 0,
+   "results": 0
+  },
+  {
+   "page": 48,
+   "status": 0,
+   "results": 0
+  },
+  {
+   "page": 49,
+   "status": 0,
+   "results": 0
+  },
+  {
+   "page": 50,
+   "status": 0,
+   "results": 0
+  },
+  {
+   "page": 51,
+   "status": 0,
+   "results": 0
+  },
+  {
+   "page": 52,
+   "status": 0,
+   "results": 0
+  },
+  {
+   "page": 53,
+   "status": 0,
+   "results": 0
+  },
+  {
+   "page": 54,
+   "status": 0,
+   "results": 0
+  },
+  {
+   "page": 55,
+   "status": 0,
+   "results": 0
+  }
+ ],
+ "events": {
+  "1982386534489": {
+   "id": "1982386534489",
+   "title": "The Stunning & special guest Mundy, Live at Cork City Hall",
+   "url": "https://www.eventbrite.com/e/the-stunning-special-guest-mundy-live-at-cork-city-hall-tickets-1982386534489",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1989305584554": {
+   "id": "1989305584554",
+   "title": "The Boomtown Rats, Live at Cork City Hall",
+   "url": "https://www.eventbrite.com/e/the-boomtown-rats-live-at-cork-city-hall-tickets-1989305584554",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1992494172707": {
+   "id": "1992494172707",
+   "title": "PSAI Annual Conference",
+   "url": "https://www.eventbrite.com/e/psai-annual-conference-tickets-1992494172707",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1987303631659": {
+   "id": "1987303631659",
+   "title": "\u00d8XN",
+   "url": "https://www.eventbrite.ie/e/xn-tickets-1987303631659",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1988930502674": {
+   "id": "1988930502674",
+   "title": "Cork Card Show",
+   "url": "https://www.eventbrite.ie/e/cork-card-show-tickets-1988930502674",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1992477154806": {
+   "id": "1992477154806",
+   "title": "BoolaBoom [Jazz Weekend Show]",
+   "url": "https://www.eventbrite.ie/e/boolaboom-jazz-weekend-show-tickets-1992477154806",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1989932029267": {
+   "id": "1989932029267",
+   "title": "\"Rory Gallagher : The Legend Lives On\" at Cork City Hall",
+   "url": "https://www.eventbrite.com/e/rory-gallagher-the-legend-lives-on-at-cork-city-hall-tickets-1989932029267",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000633987111": {
+   "id": "2000633987111",
+   "title": "CLOUDS",
+   "url": "https://www.eventbrite.ie/e/clouds-tickets-2000633987111",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1985931420338": {
+   "id": "1985931420338",
+   "title": "The Wran",
+   "url": "https://www.eventbrite.ie/e/the-wran-tickets-1985931420338",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002564140251": {
+   "id": "2002564140251",
+   "title": "Mick Flannery",
+   "url": "https://www.eventbrite.ie/e/mick-flannery-tickets-2002564140251",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000468233337": {
+   "id": "2000468233337",
+   "title": "49th & Main (Live)  - Late show added due to demand",
+   "url": "https://www.eventbrite.ie/e/49th-main-live-late-show-added-due-to-demand-tickets-2000468233337",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999515101494": {
+   "id": "1999515101494",
+   "title": "Sunday Times presents SHY ONE plus Jus'Me & Jar Jar Jr.",
+   "url": "https://www.eventbrite.ie/e/sunday-times-presents-shy-one-plus-jusme-jar-jar-jr-tickets-1999515101494",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999535130401": {
+   "id": "1999535130401",
+   "title": "JIMPSTER (Live), SHANE JOHNSON (Fish Go Deep) and DONAL DINEEN",
+   "url": "https://www.eventbrite.ie/e/jimpster-live-shane-johnson-fish-go-deep-and-donal-dineen-tickets-1999535130401",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998482317409": {
+   "id": "1998482317409",
+   "title": "CLUB 99 @ VOODOO ROOMS  MON 5 OCT",
+   "url": "https://www.eventbrite.ie/e/club-99-voodoo-rooms-mon-5-oct-tickets-1998482317409",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1994015745773": {
+   "id": "1994015745773",
+   "title": "Camille O'Sullivan",
+   "url": "https://www.eventbrite.ie/e/camille-osullivan-tickets-1994015745773",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000194727273": {
+   "id": "2000194727273",
+   "title": "Bell X1",
+   "url": "https://www.eventbrite.ie/e/bell-x1-tickets-2000194727273",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1990054995061": {
+   "id": "1990054995061",
+   "title": "'Who's That Girl'- Eurythmics & Annie Lennox Experience - Live in Concert",
+   "url": "https://www.eventbrite.ie/e/whos-that-girl-eurythmics-annie-lennox-experience-live-in-concert-tickets-1990054995061",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1987144161680": {
+   "id": "1987144161680",
+   "title": "\"Mack Fleetwood\"  Europe's Premier Fleetwood Mac Tribute at Cork City Hall",
+   "url": "https://www.eventbrite.com/e/mack-fleetwood-europes-premier-fleetwood-mac-tribute-at-cork-city-hall-tickets-1987144161680",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000417157568": {
+   "id": "2000417157568",
+   "title": "Fish56Octagon",
+   "url": "https://www.eventbrite.ie/e/fish56octagon-tickets-2000417157568",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1995446037815": {
+   "id": "1995446037815",
+   "title": "The History of Mermaids, Sea Spirits & Women",
+   "url": "https://www.eventbrite.co.uk/e/the-history-of-mermaids-sea-spirits-women-tickets-1995446037815",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999182093458": {
+   "id": "1999182093458",
+   "title": "SWARMFEST V",
+   "url": "https://www.eventbrite.ie/e/swarmfest-v-tickets-1999182093458",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999179880840": {
+   "id": "1999179880840",
+   "title": "\u03a3tella - Duo Show",
+   "url": "https://www.eventbrite.ie/e/tella-duo-show-tickets-1999179880840",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1988922915982": {
+   "id": "1988922915982",
+   "title": "Linkin Park Tribute - performed by Linkin Cork",
+   "url": "https://www.eventbrite.ie/e/linkin-park-tribute-performed-by-linkin-cork-tickets-1988922915982",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1996075285913": {
+   "id": "1996075285913",
+   "title": "Innovation Summit",
+   "url": "https://www.eventbrite.ie/e/innovation-summit-tickets-1996075285913",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1985621312798": {
+   "id": "1985621312798",
+   "title": "St. Paul & the Broken Bones",
+   "url": "https://www.eventbrite.ie/e/st-paul-the-broken-bones-tickets-1985621312798",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1994934721454": {
+   "id": "1994934721454",
+   "title": "Rua R\u00ed",
+   "url": "https://www.eventbrite.ie/e/rua-ri-tickets-1994934721454",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1988829430364": {
+   "id": "1988829430364",
+   "title": "2026 Irish Division IADR Annual Scientific Meeting",
+   "url": "https://www.eventbrite.com/e/2026-irish-division-iadr-annual-scientific-meeting-tickets-1988829430364",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1991865915573": {
+   "id": "1991865915573",
+   "title": "KATZEYE \u2013 The Ultimate Tribute",
+   "url": "https://www.eventbrite.com/e/katzeye-the-ultimate-tribute-tickets-1991865915573",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1994959227753": {
+   "id": "1994959227753",
+   "title": "Jazz Festival Club at the Metropole Hotel, Cork",
+   "url": "https://www.eventbrite.ie/e/jazz-festival-club-at-the-metropole-hotel-cork-tickets-1994959227753",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999180031290": {
+   "id": "1999180031290",
+   "title": "Tosh\u00edn & Sei Green",
+   "url": "https://www.eventbrite.ie/e/toshin-sei-green-tickets-1999180031290",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999179769507": {
+   "id": "1999179769507",
+   "title": "Muireann Bradley",
+   "url": "https://www.eventbrite.ie/e/muireann-bradley-tickets-1999179769507",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999536800396": {
+   "id": "1999536800396",
+   "title": "MARK BLAIR",
+   "url": "https://www.eventbrite.ie/e/mark-blair-tickets-1999536800396",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999251592331": {
+   "id": "1999251592331",
+   "title": "2026 Women & Agriculture conference, supported by FBD Insurance",
+   "url": "https://www.eventbrite.ie/e/2026-women-agriculture-conference-supported-by-fbd-insurance-tickets-1999251592331",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002032266402": {
+   "id": "2002032266402",
+   "title": "BALIZA en CORK",
+   "url": "https://www.eventbrite.ie/e/baliza-en-cork-tickets-2002032266402",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999115247520": {
+   "id": "1999115247520",
+   "title": "FAITHLESS (dj set)",
+   "url": "https://www.eventbrite.ie/e/faithless-dj-set-tickets-1999115247520",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999270869991": {
+   "id": "1999270869991",
+   "title": "The CIPD WRC Mock Adjudication Hearing National Series - Southern Region",
+   "url": "https://www.eventbrite.ie/e/the-cipd-wrc-mock-adjudication-hearing-national-series-southern-region-tickets-1999270869991",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1993019589242": {
+   "id": "1993019589242",
+   "title": "David Kitt and The Big Romance Band",
+   "url": "https://www.eventbrite.ie/e/david-kitt-and-the-big-romance-band-tickets-1993019589242",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1983351775551": {
+   "id": "1983351775551",
+   "title": "Andy Irvine & Quilty",
+   "url": "https://www.eventbrite.ie/e/andy-irvine-quilty-tickets-1983351775551",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1992953807487": {
+   "id": "1992953807487",
+   "title": "KhakiKid",
+   "url": "https://www.eventbrite.ie/e/khakikid-tickets-1992953807487",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000393461693": {
+   "id": "2000393461693",
+   "title": "2HATS1USB Are Taking Over Cork With J\u00e4germeister\u2019s Save The Night",
+   "url": "https://www.eventbrite.ie/e/2hats1usb-are-taking-over-cork-with-jagermeisters-save-the-night-tickets-2000393461693",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999119285598": {
+   "id": "1999119285598",
+   "title": "CLUB 30",
+   "url": "https://www.eventbrite.ie/e/club-30-tickets-1999119285598",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1992072605789": {
+   "id": "1992072605789",
+   "title": "Absolute Eagles - A Tribute to The Eagles",
+   "url": "https://www.eventbrite.ie/e/absolute-eagles-a-tribute-to-the-eagles-tickets-1992072605789",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1988081123157": {
+   "id": "1988081123157",
+   "title": "Pop-Up Choir: 80's Night!",
+   "url": "https://www.eventbrite.ie/e/pop-up-choir-80s-night-tickets-1988081123157",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001240918459": {
+   "id": "2001240918459",
+   "title": "Maya Libbey | Ezra Williams | Mirrors | Tyra-Lee Spry",
+   "url": "https://www.eventbrite.ie/e/maya-libbey-ezra-williams-mirrors-tyra-lee-spry-tickets-2001240918459",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1990878845219": {
+   "id": "1990878845219",
+   "title": "Margaret Glaspy",
+   "url": "https://www.eventbrite.ie/e/margaret-glaspy-tickets-1990878845219",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000255079789": {
+   "id": "2000255079789",
+   "title": "49th & Main (Live)",
+   "url": "https://www.eventbrite.ie/e/49th-main-live-tickets-2000255079789",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1989374201790": {
+   "id": "1989374201790",
+   "title": "The Olllam",
+   "url": "https://www.eventbrite.ie/e/the-olllam-tickets-1989374201790",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1992818747519": {
+   "id": "1992818747519",
+   "title": "Stephanie Rainey",
+   "url": "https://www.eventbrite.ie/e/stephanie-rainey-tickets-1992818747519",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1993546521310": {
+   "id": "1993546521310",
+   "title": "ASH",
+   "url": "https://www.eventbrite.ie/e/ash-tickets-1993546521310",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998453687777": {
+   "id": "1998453687777",
+   "title": "Rhys Darby : Unhinged",
+   "url": "https://www.eventbrite.ie/e/rhys-darby-unhinged-tickets-1998453687777",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999180522760": {
+   "id": "1999180522760",
+   "title": "Joe-Armon Jones + The Vernon Spring",
+   "url": "https://www.eventbrite.ie/e/joe-armon-jones-the-vernon-spring-tickets-1999180522760",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1990055881713": {
+   "id": "1990055881713",
+   "title": "'Crest of a Wave' - Rory Gallagher Tribute show - Live at The Pavilion Cork",
+   "url": "https://www.eventbrite.ie/e/crest-of-a-wave-rory-gallagher-tribute-show-live-at-the-pavilion-cork-tickets-1990055881713",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1992000382768": {
+   "id": "1992000382768",
+   "title": "Sorcha Richardson",
+   "url": "https://www.eventbrite.ie/e/sorcha-richardson-tickets-1992000382768",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1778505360409": {
+   "id": "1778505360409",
+   "title": "The Undertones - 50th Anniversary Tour",
+   "url": "https://www.eventbrite.ie/e/the-undertones-50th-anniversary-tour-tickets-1778505360409",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999279020369": {
+   "id": "1999279020369",
+   "title": "The Wild Assembly: Wings, Whiskers & Waves",
+   "url": "https://www.eventbrite.ie/e/the-wild-assembly-wings-whiskers-waves-tickets-1999279020369",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000150873104": {
+   "id": "2000150873104",
+   "title": "TBL8 -  Evening Boat Cruise at Guinness Cork Jazz Festival",
+   "url": "https://www.eventbrite.ie/e/tbl8-evening-boat-cruise-at-guinness-cork-jazz-festival-tickets-2000150873104",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000607908108": {
+   "id": "2000607908108",
+   "title": "Pick-A-Pumpkin Harvest Festival 2026 at the Field of Dreams",
+   "url": "https://www.eventbrite.ie/e/pick-a-pumpkin-harvest-festival-2026-at-the-field-of-dreams-tickets-2000607908108",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1978174222350": {
+   "id": "1978174222350",
+   "title": "Christmas in Kinsale",
+   "url": "https://www.eventbrite.ie/e/christmas-in-kinsale-tickets-1978174222350",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1990140599105": {
+   "id": "1990140599105",
+   "title": "The Amy Winehouse Experience (Ire) - Live at The Pavilion Cork",
+   "url": "https://www.eventbrite.ie/e/the-amy-winehouse-experience-ire-live-at-the-pavilion-cork-tickets-1990140599105",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998211901588": {
+   "id": "1998211901588",
+   "title": "Liam \u00d3 Maonlai & R\u00f3n\u00e1n \u00d3 Snodaigh",
+   "url": "https://www.eventbrite.ie/e/liam-o-maonlai-ronan-o-snodaigh-tickets-1998211901588",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1989330512113": {
+   "id": "1989330512113",
+   "title": "Pa Sheehy",
+   "url": "https://www.eventbrite.ie/e/pa-sheehy-tickets-1989330512113",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002102187538": {
+   "id": "2002102187538",
+   "title": "IYKYK Halloween Party!",
+   "url": "https://www.eventbrite.ie/e/iykyk-halloween-party-tickets-2002102187538",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1977185966450": {
+   "id": "1977185966450",
+   "title": "The Beat",
+   "url": "https://www.eventbrite.ie/e/the-beat-tickets-1977185966450",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1997143529057": {
+   "id": "1997143529057",
+   "title": "THE ROCKY HORROR PICTURE SHOW with MOCKIE AH!",
+   "url": "https://www.eventbrite.ie/e/the-rocky-horror-picture-show-with-mockie-ah-tickets-1997143529057",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999527082329": {
+   "id": "1999527082329",
+   "title": "Dezperado: A Tribute to the Eagles",
+   "url": "https://www.eventbrite.ie/e/dezperado-a-tribute-to-the-eagles-tickets-1999527082329",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000007720932": {
+   "id": "2000007720932",
+   "title": "These Charming Men - A Tribute to The Smiths",
+   "url": "https://www.eventbrite.ie/e/these-charming-men-a-tribute-to-the-smiths-tickets-2000007720932",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1996969727211": {
+   "id": "1996969727211",
+   "title": "An Evening with Spirit & Rose O'Driscoll Psychic Medium",
+   "url": "https://www.eventbrite.ie/e/an-evening-with-spirit-rose-odriscoll-psychic-medium-tickets-1996969727211",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998946868895": {
+   "id": "1998946868895",
+   "title": "Josh Garrels @ Calvary Cork",
+   "url": "https://www.eventbrite.ie/e/josh-garrels-calvary-cork-tickets-1998946868895",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1990336204165": {
+   "id": "1990336204165",
+   "title": "Live Forever - the definitive OASIS tribute",
+   "url": "https://www.eventbrite.ie/e/live-forever-the-definitive-oasis-tribute-tickets-1990336204165",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1983734486249": {
+   "id": "1983734486249",
+   "title": "Nurse Georgie Carroll - Infectious",
+   "url": "https://www.eventbrite.ie/e/nurse-georgie-carroll-infectious-tickets-1983734486249",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1985618725058": {
+   "id": "1985618725058",
+   "title": "An Evening With Kristin Hersh",
+   "url": "https://www.eventbrite.ie/e/an-evening-with-kristin-hersh-tickets-1985618725058",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998889166305": {
+   "id": "1998889166305",
+   "title": "Cohousing Communities for people 50+  - Cork Meeting - 7th October",
+   "url": "https://www.eventbrite.com/e/cohousing-communities-for-people-50-cork-meeting-7th-october-tickets-1998889166305",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1989304357885": {
+   "id": "1989304357885",
+   "title": "INMO Retirement Planning Seminar Cork",
+   "url": "https://www.eventbrite.ie/e/inmo-retirement-planning-seminar-cork-tickets-1989304357885",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1989923567959": {
+   "id": "1989923567959",
+   "title": "The Roadhouse Doors - Live at The Pavilion Cork",
+   "url": "https://www.eventbrite.ie/e/the-roadhouse-doors-live-at-the-pavilion-cork-tickets-1989923567959",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1977174480094": {
+   "id": "1977174480094",
+   "title": "Black Stone Cherry",
+   "url": "https://www.eventbrite.ie/e/black-stone-cherry-tickets-1977174480094",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001165017437": {
+   "id": "2001165017437",
+   "title": "Unlocking Cork\u2019s Property Potential",
+   "url": "https://www.eventbrite.ie/e/unlocking-corks-property-potential-tickets-2001165017437",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1987648606488": {
+   "id": "1987648606488",
+   "title": "Paddy Young : Will Sir Be Laughing Alone?",
+   "url": "https://www.eventbrite.ie/e/paddy-young-will-sir-be-laughing-alone-tickets-1987648606488",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1984445701513": {
+   "id": "1984445701513",
+   "title": "Catherine Bohart - Borrowing Trouble",
+   "url": "https://www.eventbrite.ie/e/catherine-bohart-borrowing-trouble-tickets-1984445701513",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1988834447370": {
+   "id": "1988834447370",
+   "title": "Jake Xerxes Fussell",
+   "url": "https://www.eventbrite.ie/e/jake-xerxes-fussell-tickets-1988834447370",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1994546794153": {
+   "id": "1994546794153",
+   "title": "Jenny Greene",
+   "url": "https://www.eventbrite.ie/e/jenny-greene-tickets-1994546794153",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999492059575": {
+   "id": "1999492059575",
+   "title": "80's Disco In aid of Wildlife Rescue Cork",
+   "url": "https://www.eventbrite.ie/e/80s-disco-in-aid-of-wildlife-rescue-cork-tickets-1999492059575",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1987834119362": {
+   "id": "1987834119362",
+   "title": "Sexy Tadhg",
+   "url": "https://www.eventbrite.ie/e/sexy-tadhg-tickets-1987834119362",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1989222018606": {
+   "id": "1989222018606",
+   "title": "Clare Sands",
+   "url": "https://www.eventbrite.ie/e/clare-sands-tickets-1989222018606",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999580379743": {
+   "id": "1999580379743",
+   "title": "Santa Machete [Jazz Weekend Show]",
+   "url": "https://www.eventbrite.ie/e/santa-machete-jazz-weekend-show-tickets-1999580379743",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000149775822": {
+   "id": "2000149775822",
+   "title": "SANTA MACHETE -  Afternoon Boat Cruise at Guinness Cork Jazz Festival",
+   "url": "https://www.eventbrite.ie/e/santa-machete-afternoon-boat-cruise-at-guinness-cork-jazz-festival-tickets-2000149775822",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1995907108891": {
+   "id": "1995907108891",
+   "title": "The Fynches",
+   "url": "https://www.eventbrite.ie/e/the-fynches-tickets-1995907108891",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1997925902156": {
+   "id": "1997925902156",
+   "title": "Pints & Ponytails with KiwiCutz - October 11th Cork",
+   "url": "https://www.eventbrite.ie/e/pints-ponytails-with-kiwicutz-october-11th-cork-tickets-1997925902156",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1996222964624": {
+   "id": "1996222964624",
+   "title": "EXTRA LADIES TICKETS ADDED \u2014 grab your ticket now! \u2764\ufe0fAge 35-50 Approx",
+   "url": "https://www.eventbrite.ie/e/extra-ladies-tickets-added-grab-your-ticket-now-age-35-50-approx-tickets-1996222964624",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002098927788": {
+   "id": "2002098927788",
+   "title": "Guaya Sessions - October 10th",
+   "url": "https://www.eventbrite.ie/e/guaya-sessions-october-10th-tickets-2002098927788",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999724885965": {
+   "id": "1999724885965",
+   "title": "Hermitage Green",
+   "url": "https://www.eventbrite.ie/e/hermitage-green-tickets-1999724885965",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999668974733": {
+   "id": "1999668974733",
+   "title": "Women, Marriage & The Law in Ireland: How Irish law shaped women\u2019s lives",
+   "url": "https://www.eventbrite.co.uk/e/women-marriage-the-law-in-ireland-how-irish-law-shaped-womens-lives-tickets-1999668974733",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001872814477": {
+   "id": "2001872814477",
+   "title": "Other Mother EP Launch",
+   "url": "https://www.eventbrite.ie/e/other-mother-ep-launch-tickets-2001872814477",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1992644178378": {
+   "id": "1992644178378",
+   "title": "Cornelius Patrick O Sullivan - Pull Hard",
+   "url": "https://www.eventbrite.ie/e/cornelius-patrick-o-sullivan-pull-hard-tickets-1992644178378",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1992418124244": {
+   "id": "1992418124244",
+   "title": "Alabama 3 (Acoustic)",
+   "url": "https://www.eventbrite.ie/e/alabama-3-acoustic-tickets-1992418124244",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1996800572264": {
+   "id": "1996800572264",
+   "title": "Zumba Masterclass with Dovydas Veiverys hosted by Danny",
+   "url": "https://www.eventbrite.ie/e/zumba-masterclass-with-dovydas-veiverys-hosted-by-danny-tickets-1996800572264",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1992369768611": {
+   "id": "1992369768611",
+   "title": "Rory O Hanlon",
+   "url": "https://www.eventbrite.ie/e/rory-o-hanlon-tickets-1992369768611",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1987602923850": {
+   "id": "1987602923850",
+   "title": "COLDPLACE - The World's Leading COLDPLAY Tribute",
+   "url": "https://www.eventbrite.ie/e/coldplace-the-worlds-leading-coldplay-tribute-tickets-1987602923850",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1995324319753": {
+   "id": "1995324319753",
+   "title": "DOMIY & White Night After Party",
+   "url": "https://www.eventbrite.ie/e/domiy-white-night-after-party-tickets-1995324319753",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002282857928": {
+   "id": "2002282857928",
+   "title": "Jazz The OTR Way",
+   "url": "https://www.eventbrite.ie/e/jazz-the-otr-way-tickets-2002282857928",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1987502712114": {
+   "id": "1987502712114",
+   "title": "The Blue Mist 2026 in CORK",
+   "url": "https://www.eventbrite.ie/e/the-blue-mist-2026-in-cork-tickets-1987502712114",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002572977684": {
+   "id": "2002572977684",
+   "title": "Secret Garden - Monday Club - Monday 5th October",
+   "url": "https://www.eventbrite.ie/e/secret-garden-monday-club-monday-5th-october-tickets-2002572977684",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1996823767642": {
+   "id": "1996823767642",
+   "title": "2026 Irish Aeropress Championships",
+   "url": "https://www.eventbrite.com/e/2026-irish-aeropress-championships-tickets-1996823767642",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1988645093006": {
+   "id": "1988645093006",
+   "title": "Pebbledash",
+   "url": "https://www.eventbrite.ie/e/pebbledash-tickets-1988645093006",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998884164344": {
+   "id": "1998884164344",
+   "title": "The Altered Hours",
+   "url": "https://www.eventbrite.ie/e/the-altered-hours-tickets-1998884164344",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1996969066234": {
+   "id": "1996969066234",
+   "title": "Terzij De Horde (HOL) // God Alone // Partholon @ Dali, Cork",
+   "url": "https://www.eventbrite.ie/e/terzij-de-horde-hol-god-alone-partholon-dali-cork-tickets-1996969066234",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001168519913": {
+   "id": "2001168519913",
+   "title": "GROUND Wellbeing - A Call To Tune In: Minding Our Girls at Brown Thomas",
+   "url": "https://www.eventbrite.ie/e/ground-wellbeing-a-call-to-tune-in-minding-our-girls-at-brown-thomas-tickets-2001168519913",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1992433562420": {
+   "id": "1992433562420",
+   "title": "Shane Daniel Byrne - Baby This Time!",
+   "url": "https://www.eventbrite.ie/e/shane-daniel-byrne-baby-this-time-tickets-1992433562420",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998378037505": {
+   "id": "1998378037505",
+   "title": "Popscene Daylight Disco Sat 24 Oct 6-10pm Cork Jazz  Special",
+   "url": "https://www.eventbrite.ie/e/popscene-daylight-disco-sat-24-oct-6-10pm-cork-jazz-special-tickets-1998378037505",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999390127694": {
+   "id": "1999390127694",
+   "title": "From Idea to Icon - Live with Joseph Joseph",
+   "url": "https://www.eventbrite.ie/e/from-idea-to-icon-live-with-joseph-joseph-tickets-1999390127694",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001685622581": {
+   "id": "2001685622581",
+   "title": "The Alkove live at Fred Zeppelins!",
+   "url": "https://www.eventbrite.com/e/the-alkove-live-at-fred-zeppelins-tickets-2001685622581",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1989348949259": {
+   "id": "1989348949259",
+   "title": "Sean Burke",
+   "url": "https://www.eventbrite.ie/e/sean-burke-tickets-1989348949259",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1996626798502": {
+   "id": "1996626798502",
+   "title": "Cushion Concerts at the Library (2 - 5 years)",
+   "url": "https://www.eventbrite.ie/e/cushion-concerts-at-the-library-2-5-years-tickets-1996626798502",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1988712537735": {
+   "id": "1988712537735",
+   "title": "Reggie's Farm 2026 tour",
+   "url": "https://www.eventbrite.ie/e/reggies-farm-2026-tour-tickets-1988712537735",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998415103370": {
+   "id": "1998415103370",
+   "title": "Intro to Intercultural Competence for Artists, Creatives & Arts Workers",
+   "url": "https://www.eventbrite.ie/e/intro-to-intercultural-competence-for-artists-creatives-arts-workers-tickets-1998415103370",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1990958674992": {
+   "id": "1990958674992",
+   "title": "Glasshouse perform SIGUR ROS",
+   "url": "https://www.eventbrite.ie/e/glasshouse-perform-sigur-ros-tickets-1990958674992",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1993909193071": {
+   "id": "1993909193071",
+   "title": "Eddi Reader",
+   "url": "https://www.eventbrite.ie/e/eddi-reader-tickets-1993909193071",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000395047436": {
+   "id": "2000395047436",
+   "title": "MTRPLS x DISTORT x CATACOMBS: Sunil Sharpe :: Rebecca Delle Piane",
+   "url": "https://www.eventbrite.ie/e/mtrpls-x-distort-x-catacombs-sunil-sharpe-rebecca-delle-piane-tickets-2000395047436",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000615658289": {
+   "id": "2000615658289",
+   "title": "Oscars night",
+   "url": "https://www.eventbrite.ie/e/oscars-night-tickets-2000615658289",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001042927262": {
+   "id": "2001042927262",
+   "title": "Babychi Parent First Aid course",
+   "url": "https://www.eventbrite.ie/e/babychi-parent-first-aid-course-tickets-2001042927262",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1980847925468": {
+   "id": "1980847925468",
+   "title": "ELTed Cork 16th Oct 2026",
+   "url": "https://www.eventbrite.ie/e/elted-cork-16th-oct-2026-tickets-1980847925468",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999264480881": {
+   "id": "1999264480881",
+   "title": "Navigating New Risks: Cyber, Oil and P&I Realities for the Modern Seafarer",
+   "url": "https://www.eventbrite.ie/e/navigating-new-risks-cyber-oil-and-pi-realities-for-the-modern-seafarer-registration-1999264480881",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1996822198950": {
+   "id": "1996822198950",
+   "title": "The Old School Party",
+   "url": "https://www.eventbrite.ie/e/the-old-school-party-tickets-1996822198950",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1992070591765": {
+   "id": "1992070591765",
+   "title": "The Ultimate Nu-Metal Showdown with The Chop Sueys & Hard Bizkit",
+   "url": "https://www.eventbrite.ie/e/the-ultimate-nu-metal-showdown-with-the-chop-sueys-hard-bizkit-tickets-1992070591765",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1996638630893": {
+   "id": "1996638630893",
+   "title": "Just Like Heaven: Alt 80s Night (Cork)",
+   "url": "https://www.eventbrite.co.uk/e/just-like-heaven-alt-80s-night-cork-tickets-1996638630893",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1987091218325": {
+   "id": "1987091218325",
+   "title": "DJ JEAN",
+   "url": "https://www.eventbrite.ie/e/dj-jean-tickets-1987091218325",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1988852164362": {
+   "id": "1988852164362",
+   "title": "DUKE SPECIAL - Songs From The Deep Forest 20th Anniversary Show",
+   "url": "https://www.eventbrite.ie/e/duke-special-songs-from-the-deep-forest-20th-anniversary-show-tickets-1988852164362",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1994292975976": {
+   "id": "1994292975976",
+   "title": "Monthly Body & Mind Reset",
+   "url": "https://www.eventbrite.ie/e/monthly-body-mind-reset-tickets-1994292975976",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1988483701279": {
+   "id": "1988483701279",
+   "title": "Friends of the South Infirmary - Smart table quiz",
+   "url": "https://www.eventbrite.com/e/friends-of-the-south-infirmary-smart-table-quiz-tickets-1988483701279",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1992454018605": {
+   "id": "1992454018605",
+   "title": "Theatre \"Prins in ... Plasa\"",
+   "url": "https://www.eventbrite.ie/e/theatre-prins-in-plasa-tickets-1992454018605",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998412852638": {
+   "id": "1998412852638",
+   "title": "The Lady From Shanghai - Screening with live score by Fixity",
+   "url": "https://www.eventbrite.ie/e/the-lady-from-shanghai-screening-with-live-score-by-fixity-tickets-1998412852638",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998798989584": {
+   "id": "1998798989584",
+   "title": "APP FATIGUE? Come to our Coffee Speed Dating Event! Age 24-38 Approx",
+   "url": "https://www.eventbrite.ie/e/app-fatigue-come-to-our-coffee-speed-dating-event-age-24-38-approx-tickets-1998798989584",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002225519427": {
+   "id": "2002225519427",
+   "title": "Break through the Fear: a One Day Course in Public Speaking (Cork)",
+   "url": "https://www.eventbrite.co.uk/e/break-through-the-fear-a-one-day-course-in-public-speaking-cork-tickets-2002225519427",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002512285151": {
+   "id": "2002512285151",
+   "title": "A 'Wilde' Night of Terror",
+   "url": "https://www.eventbrite.ie/e/a-wilde-night-of-terror-tickets-2002512285151",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1984446250154": {
+   "id": "1984446250154",
+   "title": "Anne Gildea - Further Adventures in WOMANING",
+   "url": "https://www.eventbrite.ie/e/anne-gildea-further-adventures-in-womaning-tickets-1984446250154",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001418790479": {
+   "id": "2001418790479",
+   "title": "RCW Getting Sick",
+   "url": "https://www.eventbrite.ie/e/rcw-getting-sick-tickets-2001418790479",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998511244932": {
+   "id": "1998511244932",
+   "title": "The Fright Crawl | Cork's #1 Halloween Bar Crawl 2026 | Sat, Oct 31",
+   "url": "https://www.eventbrite.ca/e/the-fright-crawl-corks-1-halloween-bar-crawl-2026-sat-oct-31-tickets-1998511244932",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999787921506": {
+   "id": "1999787921506",
+   "title": "Just Mustard",
+   "url": "https://www.eventbrite.ie/e/just-mustard-tickets-1999787921506",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1987601769397": {
+   "id": "1987601769397",
+   "title": "One Night In Nashville",
+   "url": "https://www.eventbrite.ie/e/one-night-in-nashville-tickets-1987601769397",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1993329628578": {
+   "id": "1993329628578",
+   "title": "Handel's Messiah",
+   "url": "https://www.eventbrite.ie/e/handels-messiah-tickets-1993329628578",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1990339713662": {
+   "id": "1990339713662",
+   "title": "ABBAesque",
+   "url": "https://www.eventbrite.ie/e/abbaesque-tickets-1990339713662",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000182300103": {
+   "id": "2000182300103",
+   "title": "Cork - Adult In Person Support Group",
+   "url": "https://www.eventbrite.ie/e/cork-adult-in-person-support-group-tickets-2000182300103",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1990545386836": {
+   "id": "1990545386836",
+   "title": "Stephan Dyer en Cork - Comedia en Espa\u00f1ol - CRISIS DE IDENTIDAD",
+   "url": "https://www.eventbrite.ie/e/stephan-dyer-en-cork-comedia-en-espanol-crisis-de-identidad-tickets-1990545386836",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999536972912": {
+   "id": "1999536972912",
+   "title": "A Cosmic Tribute to Sun Ra",
+   "url": "https://www.eventbrite.ie/e/a-cosmic-tribute-to-sun-ra-tickets-1999536972912",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1994301860550": {
+   "id": "1994301860550",
+   "title": "The Irresistible Call | Chamber Choir Ireland and Gabriel Crouch",
+   "url": "https://www.eventbrite.ie/e/the-irresistible-call-chamber-choir-ireland-and-gabriel-crouch-tickets-1994301860550",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000847924002": {
+   "id": "2000847924002",
+   "title": "Ra\u00edzes Fest 2026 | Latin American & Spanish Festival in Cork",
+   "url": "https://www.eventbrite.com/e/raizes-fest-2026-latin-american-spanish-festival-in-cork-tickets-2000847924002",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1988711267937": {
+   "id": "1988711267937",
+   "title": "Cornelius Patrick O Sullivan PULL HARD!!",
+   "url": "https://www.eventbrite.com/e/cornelius-patrick-o-sullivan-pull-hard-tickets-1988711267937",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999726890962": {
+   "id": "1999726890962",
+   "title": "Hermitage Green (Matinee Show)",
+   "url": "https://www.eventbrite.ie/e/hermitage-green-matinee-show-tickets-1999726890962",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000745097445": {
+   "id": "2000745097445",
+   "title": "Karen Underwood Gospel according to Christmas",
+   "url": "https://www.eventbrite.com/e/karen-underwood-gospel-according-to-christmas-tickets-2000745097445",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002295288107": {
+   "id": "2002295288107",
+   "title": "RDJ Cork Santa Cycle, 10th Anniversary",
+   "url": "https://www.eventbrite.ie/e/rdj-cork-santa-cycle-10th-anniversary-tickets-2002295288107",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1986482175662": {
+   "id": "1986482175662",
+   "title": "Nathan Carter Christmas Concert",
+   "url": "https://www.eventbrite.ie/e/nathan-carter-christmas-concert-tickets-1986482175662",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998537981903": {
+   "id": "1998537981903",
+   "title": "Date My Mate Cork  | Powerpoint Night | 21+",
+   "url": "https://www.eventbrite.ie/e/date-my-mate-cork-powerpoint-night-21-tickets-1998537981903",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999696430855": {
+   "id": "1999696430855",
+   "title": "Murder Mystery Dinner at The Village Douglas",
+   "url": "https://www.eventbrite.com/e/murder-mystery-dinner-at-the-village-douglas-tickets-1999696430855",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1995538995855": {
+   "id": "1995538995855",
+   "title": "Clare O\u2019Mahony and Tom Madden Live at St. Catherine\u2019s",
+   "url": "https://www.eventbrite.ie/e/clare-omahony-and-tom-madden-live-at-st-catherines-tickets-1995538995855",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002561277689": {
+   "id": "2002561277689",
+   "title": "Halloween Screen print",
+   "url": "https://www.eventbrite.ie/e/halloween-screen-print-tickets-2002561277689",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999536118356": {
+   "id": "1999536118356",
+   "title": "Cork City Organ Group plays CHARLES MINGUS",
+   "url": "https://www.eventbrite.ie/e/cork-city-organ-group-plays-charles-mingus-tickets-1999536118356",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1983249717292": {
+   "id": "1983249717292",
+   "title": "Shelbourne Bar Whiskey Tasting",
+   "url": "https://www.eventbrite.ie/e/shelbourne-bar-whiskey-tasting-tickets-1983249717292",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1992162224842": {
+   "id": "1992162224842",
+   "title": "Dylan John Thomas",
+   "url": "https://www.eventbrite.ie/e/dylan-john-thomas-tickets-1992162224842",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998347787025": {
+   "id": "1998347787025",
+   "title": "Contention (US) / Crowquill (UK)  + Support TBA  @ Dali, Cork",
+   "url": "https://www.eventbrite.ie/e/contention-us-crowquill-uk-support-tba-dali-cork-tickets-1998347787025",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1989397049127": {
+   "id": "1989397049127",
+   "title": "Paddy McDonnell - Gout's Out",
+   "url": "https://www.eventbrite.ie/e/paddy-mcdonnell-gouts-out-tickets-1989397049127",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1988913250071": {
+   "id": "1988913250071",
+   "title": "Diveboy",
+   "url": "https://www.eventbrite.ie/e/diveboy-tickets-1988913250071",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1990912553040": {
+   "id": "1990912553040",
+   "title": "Paddy Casey",
+   "url": "https://www.eventbrite.ie/e/paddy-casey-tickets-1990912553040",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1987944806430": {
+   "id": "1987944806430",
+   "title": "BRAKE LOOSE@Crane Lane+Shadows Calling+Love N\u2019Dirtt+The Blackwater Hush",
+   "url": "https://www.eventbrite.ie/e/brake-loosecrane-laneshadows-callinglove-ndirttthe-blackwater-hush-tickets-1987944806430",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000394994277": {
+   "id": "2000394994277",
+   "title": "Are you a Traitor? Dining experience for Breakthrough Cancer Research",
+   "url": "https://www.eventbrite.com/e/are-you-a-traitor-dining-experience-for-breakthrough-cancer-research-tickets-2000394994277",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1996994244543": {
+   "id": "1996994244543",
+   "title": "Bottomless Jazz Brunch-Sunday October Bank Holiday weekend",
+   "url": "https://www.eventbrite.com/e/bottomless-jazz-brunch-sunday-october-bank-holiday-weekend-tickets-1996994244543",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001891928648": {
+   "id": "2001891928648",
+   "title": "Electric Eel Shock Live at Fred Zeppelins",
+   "url": "https://www.eventbrite.com/e/electric-eel-shock-live-at-fred-zeppelins-tickets-2001891928648",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998481006488": {
+   "id": "1998481006488",
+   "title": "Cork & Kerry Food Festival",
+   "url": "https://www.eventbrite.com/e/cork-kerry-food-festival-tickets-1998481006488",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1993440047845": {
+   "id": "1993440047845",
+   "title": "Debriefing Skills for Healthcare Facilitators - 2026",
+   "url": "https://www.eventbrite.ie/e/debriefing-skills-for-healthcare-facilitators-2026-tickets-1993440047845",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1983266658965": {
+   "id": "1983266658965",
+   "title": "Kris Drever, Book\u2019d @ Prim\u2019s",
+   "url": "https://www.eventbrite.ie/e/kris-drever-bookd-prims-tickets-1983266658965",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001017991679": {
+   "id": "2001017991679",
+   "title": "Drama and Improvisation Sessions with Miche\u00e1l",
+   "url": "https://www.eventbrite.ie/e/drama-and-improvisation-sessions-with-micheal-tickets-2001017991679",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000999006895": {
+   "id": "2000999006895",
+   "title": "Home Life with ADHD - O.T. Workshop, Cork",
+   "url": "https://www.eventbrite.ie/e/home-life-with-adhd-ot-workshop-cork-tickets-2000999006895",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001848931041": {
+   "id": "2001848931041",
+   "title": "Cork Zombie Walk",
+   "url": "https://www.eventbrite.ie/e/cork-zombie-walk-tickets-2001848931041",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998537661946": {
+   "id": "1998537661946",
+   "title": "Homecoming",
+   "url": "https://www.eventbrite.com/e/homecoming-tickets-1998537661946",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1988937763391": {
+   "id": "1988937763391",
+   "title": "Daoiri Farrell Island of Ireland Tour",
+   "url": "https://www.eventbrite.ie/e/daoiri-farrell-island-of-ireland-tour-tickets-1988937763391",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999027817013": {
+   "id": "1999027817013",
+   "title": "Kate Nash",
+   "url": "https://www.eventbrite.ie/e/kate-nash-tickets-1999027817013",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002121433102": {
+   "id": "2002121433102",
+   "title": "The Once Upon a Time Workshop",
+   "url": "https://www.eventbrite.ie/e/the-once-upon-a-time-workshop-tickets-2002121433102",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1991907559130": {
+   "id": "1991907559130",
+   "title": "Nerina Pallot",
+   "url": "https://www.eventbrite.ie/e/nerina-pallot-tickets-1991907559130",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000382366507": {
+   "id": "2000382366507",
+   "title": "How Successful Leaders Build Change Capability",
+   "url": "https://www.eventbrite.ie/e/how-successful-leaders-build-change-capability-tickets-2000382366507",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000054254114": {
+   "id": "2000054254114",
+   "title": "Bottomless Drag Brunch with Mockie Ah!",
+   "url": "https://www.eventbrite.ie/e/bottomless-drag-brunch-with-mockie-ah-tickets-2000054254114",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1997974153477": {
+   "id": "1997974153477",
+   "title": "The Power Within to Unlock Your Mind",
+   "url": "https://www.eventbrite.ie/e/the-power-within-to-unlock-your-mind-tickets-1997974153477",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1989760519276": {
+   "id": "1989760519276",
+   "title": "FLASH DANCE 80s 90s and More",
+   "url": "https://www.eventbrite.ie/e/flash-dance-80s-90s-and-more-tickets-1989760519276",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001240433007": {
+   "id": "2001240433007",
+   "title": "Filmas \"(Ne)Tobuli melagiai\" - CORK",
+   "url": "https://www.eventbrite.ie/e/filmas-netobuli-melagiai-cork-tickets-2001240433007",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1991773821116": {
+   "id": "1991773821116",
+   "title": "Emergency & Resuscitative Surgery Skills Course (Cork)",
+   "url": "https://www.eventbrite.ie/e/emergency-resuscitative-surgery-skills-course-cork-tickets-1991773821116",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1992310487299": {
+   "id": "1992310487299",
+   "title": "Sunday Art Class",
+   "url": "https://www.eventbrite.ie/e/sunday-art-class-tickets-1992310487299",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998748514612": {
+   "id": "1998748514612",
+   "title": "Junior Halloween Hockey Camp 2026",
+   "url": "https://www.eventbrite.ie/e/junior-halloween-hockey-camp-2026-tickets-1998748514612",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000884021972": {
+   "id": "2000884021972",
+   "title": "\"Club82\"  Bottomless Brunch at Lab82",
+   "url": "https://www.eventbrite.com/e/club82-bottomless-brunch-at-lab82-tickets-2000884021972",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999572495160": {
+   "id": "1999572495160",
+   "title": "The Buckley Healy Quartet",
+   "url": "https://www.eventbrite.ie/e/the-buckley-healy-quartet-tickets-1999572495160",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998432084160": {
+   "id": "1998432084160",
+   "title": "Bec O'Malley",
+   "url": "https://www.eventbrite.ie/e/bec-omalley-tickets-1998432084160",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1993518900696": {
+   "id": "1993518900696",
+   "title": "John Robb, Book\u2019d @ Prim\u2019s",
+   "url": "https://www.eventbrite.ie/e/john-robb-bookd-prims-tickets-1993518900696",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002341622695": {
+   "id": "2002341622695",
+   "title": "Urban Hip-Hop Beginners Dance Workshop (Cork Pop-Up)",
+   "url": "https://www.eventbrite.ie/e/urban-hip-hop-beginners-dance-workshop-cork-pop-up-tickets-2002341622695",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1996781013764": {
+   "id": "1996781013764",
+   "title": "Womens Monthly Circle",
+   "url": "https://www.eventbrite.ie/e/womens-monthly-circle-tickets-1996781013764",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000153809888": {
+   "id": "2000153809888",
+   "title": "Cork Speed Dating Ages 45-55 TICKETS ALMOST SOLD OUT!",
+   "url": "https://www.eventbrite.ie/e/cork-speed-dating-ages-45-55-tickets-almost-sold-out-tickets-2000153809888",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998747834578": {
+   "id": "1998747834578",
+   "title": "Senior Halloween Clinic 2026",
+   "url": "https://www.eventbrite.ie/e/senior-halloween-clinic-2026-tickets-1998747834578",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1992366595119": {
+   "id": "1992366595119",
+   "title": "Shobsy",
+   "url": "https://www.eventbrite.ie/e/shobsy-tickets-1992366595119",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1991565500022": {
+   "id": "1991565500022",
+   "title": "Heineken Kinsale 7s 2027",
+   "url": "https://www.eventbrite.ie/e/heineken-kinsale-7s-2027-tickets-1991565500022",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1984456095602": {
+   "id": "1984456095602",
+   "title": "David O'Doherty: Highway to the David Zone",
+   "url": "https://www.eventbrite.ie/e/david-odoherty-highway-to-the-david-zone-tickets-1984456095602",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998869390154": {
+   "id": "1998869390154",
+   "title": "Cypress, Mine!  Live at The Crane Lane",
+   "url": "https://www.eventbrite.com/e/cypress-mine-live-at-the-crane-lane-tickets-1998869390154",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002419850677": {
+   "id": "2002419850677",
+   "title": "Yoga with Lauren",
+   "url": "https://www.eventbrite.ie/e/yoga-with-lauren-tickets-2002419850677",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998490180929": {
+   "id": "1998490180929",
+   "title": "Voodoo Student Jazz with Smirnoff",
+   "url": "https://www.eventbrite.ie/e/voodoo-student-jazz-with-smirnoff-tickets-1998490180929",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1985472558871": {
+   "id": "1985472558871",
+   "title": "Scott Bennett - Stuff",
+   "url": "https://www.eventbrite.ie/e/scott-bennett-stuff-tickets-1985472558871",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1984869447950": {
+   "id": "1984869447950",
+   "title": "Bernard Casey",
+   "url": "https://www.eventbrite.ie/e/bernard-casey-tickets-1984869447950",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1983856480136": {
+   "id": "1983856480136",
+   "title": "The Field - A theatre production from Hunters Moon",
+   "url": "https://www.eventbrite.ie/e/the-field-a-theatre-production-from-hunters-moon-tickets-1983856480136",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1992562064774": {
+   "id": "1992562064774",
+   "title": "The Gay Agenda Radio Awards 2026",
+   "url": "https://www.eventbrite.com/e/the-gay-agenda-radio-awards-2026-tickets-1992562064774",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1989903216086": {
+   "id": "1989903216086",
+   "title": "Christmas at the Movies by Candlelight - 8th December, Cork",
+   "url": "https://www.eventbrite.co.uk/e/christmas-at-the-movies-by-candlelight-8th-december-cork-tickets-1989903216086",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1992670846142": {
+   "id": "1992670846142",
+   "title": "Morgana",
+   "url": "https://www.eventbrite.ie/e/morgana-tickets-1992670846142",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000154128842": {
+   "id": "2000154128842",
+   "title": "The Women's Singing Circle",
+   "url": "https://www.eventbrite.ie/e/the-womens-singing-circle-tickets-2000154128842",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1985055080181": {
+   "id": "1985055080181",
+   "title": "Christmas Singalong  Brunch",
+   "url": "https://www.eventbrite.ie/e/christmas-singalong-brunch-tickets-1985055080181",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999261178002": {
+   "id": "1999261178002",
+   "title": "Ora Quartet comes to St Catherine\u2019s Kinsale",
+   "url": "https://www.eventbrite.com/e/ora-quartet-comes-to-st-catherines-kinsale-tickets-1999261178002",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1991005391723": {
+   "id": "1991005391723",
+   "title": "The Mind Guy \"SEANCE\"",
+   "url": "https://www.eventbrite.ie/e/the-mind-guy-seance-tickets-1991005391723",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001271458806": {
+   "id": "2001271458806",
+   "title": "Drag me to Dinner with Mockie Ah!",
+   "url": "https://www.eventbrite.ie/e/drag-me-to-dinner-with-mockie-ah-tickets-2001271458806",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1994309135309": {
+   "id": "1994309135309",
+   "title": "Winter's House | Chamber Choir Ireland and Gabriel Crouch",
+   "url": "https://www.eventbrite.ie/e/winters-house-chamber-choir-ireland-and-gabriel-crouch-tickets-1994309135309",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1988710704251": {
+   "id": "1988710704251",
+   "title": "Dominic Kirwan",
+   "url": "https://www.eventbrite.com/e/dominic-kirwan-tickets-1988710704251",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1992645264627": {
+   "id": "1992645264627",
+   "title": "Move 2 Meditate",
+   "url": "https://www.eventbrite.ie/e/move-2-meditate-tickets-1992645264627",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1990186207521": {
+   "id": "1990186207521",
+   "title": "Speed Dating Cork Ages 30-45",
+   "url": "https://www.eventbrite.ie/e/speed-dating-cork-ages-30-45-tickets-1990186207521",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1995386174763": {
+   "id": "1995386174763",
+   "title": "Paahto & The Bull, Book\u2019d @ Prim\u2019s",
+   "url": "https://www.eventbrite.ie/e/paahto-the-bull-bookd-prims-tickets-1995386174763",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002381133874": {
+   "id": "2002381133874",
+   "title": "Mini Melodies Cork Classes at STUDIO",
+   "url": "https://www.eventbrite.ie/e/mini-melodies-cork-classes-at-studio-tickets-2002381133874",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998963814580": {
+   "id": "1998963814580",
+   "title": "Creative Saturdays with Stephen Doyle",
+   "url": "https://www.eventbrite.ie/e/creative-saturdays-with-stephen-doyle-tickets-1998963814580",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998481187028": {
+   "id": "1998481187028",
+   "title": "Therapy Horse + Flywheel & N\u00cd Jackeen",
+   "url": "https://www.eventbrite.ie/e/therapy-horse-flywheel-ni-jackeen-tickets-1998481187028",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999664852403": {
+   "id": "1999664852403",
+   "title": "Mirror Mosaic Workshop",
+   "url": "https://www.eventbrite.ie/e/mirror-mosaic-workshop-tickets-1999664852403",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1991048230856": {
+   "id": "1991048230856",
+   "title": "ABBA Bottomless Drag Brunch with Mockie Ah!",
+   "url": "https://www.eventbrite.ie/e/abba-bottomless-drag-brunch-with-mockie-ah-tickets-1991048230856",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000007783118": {
+   "id": "2000007783118",
+   "title": "EP Release of Control",
+   "url": "https://www.eventbrite.com/e/ep-release-of-control-tickets-2000007783118",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002506977275": {
+   "id": "2002506977275",
+   "title": "Shakalak + The Leon Stax Equation",
+   "url": "https://www.eventbrite.ie/e/shakalak-the-leon-stax-equation-tickets-2002506977275",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998674652689": {
+   "id": "1998674652689",
+   "title": "Dolly  Drag Brunch with Mockie Ah!",
+   "url": "https://www.eventbrite.ie/e/dolly-drag-brunch-with-mockie-ah-tickets-1998674652689",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1997858520616": {
+   "id": "1997858520616",
+   "title": "Ballymaloe Craft Fair 2026",
+   "url": "https://www.eventbrite.ie/e/ballymaloe-craft-fair-2026-tickets-1997858520616",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1993404805434": {
+   "id": "1993404805434",
+   "title": "Ria Rua - S C A P E G.O.A.T. TOUR - Cork",
+   "url": "https://www.eventbrite.ie/e/ria-rua-s-c-a-p-e-goat-tour-cork-tickets-1993404805434",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1993436308661": {
+   "id": "1993436308661",
+   "title": "Advanced Endoscopic Ear Surgery Dissection Course - 2026",
+   "url": "https://www.eventbrite.ie/e/advanced-endoscopic-ear-surgery-dissection-course-2026-tickets-1993436308661",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999082077307": {
+   "id": "1999082077307",
+   "title": "Public Tour: Panorama Europa",
+   "url": "https://www.eventbrite.ie/e/public-tour-panorama-europa-tickets-1999082077307",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000265209086": {
+   "id": "2000265209086",
+   "title": "Sunrise Social Club Pasta Workshop",
+   "url": "https://www.eventbrite.ie/e/sunrise-social-club-pasta-workshop-tickets-2000265209086",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001078482609": {
+   "id": "2001078482609",
+   "title": "Rock the disco - House classics",
+   "url": "https://www.eventbrite.ie/e/rock-the-disco-house-classics-tickets-2001078482609",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998959259957": {
+   "id": "1998959259957",
+   "title": "Laurie Shaw & Band, Book\u2019d @ Prim\u2019s",
+   "url": "https://www.eventbrite.ie/e/laurie-shaw-band-bookd-prims-tickets-1998959259957",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002713294375": {
+   "id": "2002713294375",
+   "title": "Drag School with Mia Gold: Drag-uation Class of 2026",
+   "url": "https://www.eventbrite.ie/e/drag-school-with-mia-gold-drag-uation-class-of-2026-tickets-2002713294375",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001190126539": {
+   "id": "2001190126539",
+   "title": "Pilates, Breathwok & Meditation",
+   "url": "https://www.eventbrite.ie/e/pilates-breathwok-meditation-tickets-2001190126539",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000152125851": {
+   "id": "2000152125851",
+   "title": "DAVID McSAVAGE - Pig Ignorant",
+   "url": "https://www.eventbrite.ie/e/david-mcsavage-pig-ignorant-tickets-2000152125851",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002578092984": {
+   "id": "2002578092984",
+   "title": "BEN WILLIAMS X ODYSSEY NIGHTCLUB CORK X HALLOWEEN WEEKEND WARM UP",
+   "url": "https://www.eventbrite.ie/e/ben-williams-x-odyssey-nightclub-cork-x-halloween-weekend-warm-up-tickets-2002578092984",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001878256755": {
+   "id": "2001878256755",
+   "title": "Sophie's Cork Jazz Brunch",
+   "url": "https://www.eventbrite.ie/e/sophies-cork-jazz-brunch-tickets-2001878256755",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002283694430": {
+   "id": "2002283694430",
+   "title": "Apr\u00e9s Jazz Club @ VOODOO Sun 25th Oct",
+   "url": "https://www.eventbrite.ie/e/apres-jazz-club-voodoo-sun-25th-oct-tickets-2002283694430",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999484737675": {
+   "id": "1999484737675",
+   "title": "Halloween Fun Camp for all the family",
+   "url": "https://www.eventbrite.ie/e/halloween-fun-camp-for-all-the-family-tickets-1999484737675",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001648417299": {
+   "id": "2001648417299",
+   "title": "Zumba with Charlotte",
+   "url": "https://www.eventbrite.com/e/zumba-with-charlotte-tickets-2001648417299",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000181843738": {
+   "id": "2000181843738",
+   "title": "Cork - Parent In Person Support Group",
+   "url": "https://www.eventbrite.ie/e/cork-parent-in-person-support-group-tickets-2000181843738",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1996742284925": {
+   "id": "1996742284925",
+   "title": "Intricate / The Slugs @ The Roundy",
+   "url": "https://www.eventbrite.co.uk/e/intricate-the-slugs-the-roundy-tickets-1996742284925",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998114356829": {
+   "id": "1998114356829",
+   "title": "Yoga at Hot Box Sauna \u2022 Yoga Myth and Movement",
+   "url": "https://www.eventbrite.com/e/yoga-at-hot-box-sauna-yoga-myth-and-movement-tickets-1998114356829",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999050880998": {
+   "id": "1999050880998",
+   "title": "Red Hot Funky Peppers \"Stadium Arcadium 20th Anniversary\" Concert",
+   "url": "https://www.eventbrite.ie/e/red-hot-funky-peppers-stadium-arcadium-20th-anniversary-concert-tickets-1999050880998",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999394816719": {
+   "id": "1999394816719",
+   "title": "Intro to Sourdough",
+   "url": "https://www.eventbrite.com/e/intro-to-sourdough-tickets-1999394816719",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002341808250": {
+   "id": "2002341808250",
+   "title": "Afrobeats X Urban Hip Hop: HALLOWEEN SPECIAL (Cork Pop-Up)",
+   "url": "https://www.eventbrite.ie/e/afrobeats-x-urban-hip-hop-halloween-special-cork-pop-up-tickets-2002341808250",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999372261255": {
+   "id": "1999372261255",
+   "title": "An evening with Rose O' Driscoll Spiritual Medium",
+   "url": "https://www.eventbrite.ie/e/an-evening-with-rose-o-driscoll-spiritual-medium-tickets-1999372261255",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1992792690582": {
+   "id": "1992792690582",
+   "title": "Dani Larkin, Book\u2019d @ Prim\u2019s",
+   "url": "https://www.eventbrite.ie/e/dani-larkin-bookd-prims-tickets-1992792690582",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998884855411": {
+   "id": "1998884855411",
+   "title": "Kids Halloween Discos in aid of Midleton Christmas Lights",
+   "url": "https://www.eventbrite.com/e/kids-halloween-discos-in-aid-of-midleton-christmas-lights-tickets-1998884855411",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998489373514": {
+   "id": "1998489373514",
+   "title": "VOODOO Y2K PARTY, Over 19s",
+   "url": "https://www.eventbrite.ie/e/voodoo-y2k-party-over-19s-tickets-1998489373514",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002034978514": {
+   "id": "2002034978514",
+   "title": "Old Quarter Sessions",
+   "url": "https://www.eventbrite.ie/e/old-quarter-sessions-tickets-2002034978514",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000467962527": {
+   "id": "2000467962527",
+   "title": "Art Adventure Day: Halloween",
+   "url": "https://www.eventbrite.ie/e/art-adventure-day-halloween-tickets-2000467962527",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000153848002": {
+   "id": "2000153848002",
+   "title": "Cork Speed Dating Ages 45-55",
+   "url": "https://www.eventbrite.ie/e/cork-speed-dating-ages-45-55-tickets-2000153848002",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002164034524": {
+   "id": "2002164034524",
+   "title": "Todd Terje",
+   "url": "https://www.eventbrite.ie/e/todd-terje-tickets-2002164034524",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999606994348": {
+   "id": "1999606994348",
+   "title": "Brian Kennedy",
+   "url": "https://www.eventbrite.ie/e/brian-kennedy-tickets-1999606994348",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002283042480": {
+   "id": "2002283042480",
+   "title": "Apr\u00e9s Jazz Club @ VOODOO Sat 24th Oct",
+   "url": "https://www.eventbrite.ie/e/apres-jazz-club-voodoo-sat-24th-oct-tickets-2002283042480",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000271005423": {
+   "id": "2000271005423",
+   "title": "Shooting the Breeze: Storytelling for Climate Action Week",
+   "url": "https://www.eventbrite.ie/e/shooting-the-breeze-storytelling-for-climate-action-week-tickets-2000271005423",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1988064827416": {
+   "id": "1988064827416",
+   "title": "Photopolymer  Course",
+   "url": "https://www.eventbrite.ie/e/photopolymer-course-tickets-1988064827416",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999251287419": {
+   "id": "1999251287419",
+   "title": "Cork Jazz Festival 2026: The Songs Of Chet Baker",
+   "url": "https://www.eventbrite.ie/e/cork-jazz-festival-2026-the-songs-of-chet-baker-tickets-1999251287419",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998293371266": {
+   "id": "1998293371266",
+   "title": "Special with Fred Cooke and  Guests",
+   "url": "https://www.eventbrite.ie/e/special-with-fred-cooke-and-guests-tickets-1998293371266",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1978884316260": {
+   "id": "1978884316260",
+   "title": "Clothes Swap at Rebel Reads Bookshop",
+   "url": "https://www.eventbrite.ie/e/clothes-swap-at-rebel-reads-bookshop-tickets-1978884316260",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1986330928277": {
+   "id": "1986330928277",
+   "title": "Phil Coulter",
+   "url": "https://www.eventbrite.ie/e/phil-coulter-tickets-1986330928277",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1990056624936": {
+   "id": "1990056624936",
+   "title": "The Daft Punk Experience - Live at The Pavillion Cork + Special Guests",
+   "url": "https://www.eventbrite.ie/e/the-daft-punk-experience-live-at-the-pavillion-cork-special-guests-tickets-1990056624936",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999697268360": {
+   "id": "1999697268360",
+   "title": "Christmas Bottomless Brunch",
+   "url": "https://www.eventbrite.com/e/christmas-bottomless-brunch-tickets-1999697268360",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999485948296": {
+   "id": "1999485948296",
+   "title": "Halloween Fun Camp for all the family -Day 2",
+   "url": "https://www.eventbrite.ie/e/halloween-fun-camp-for-all-the-family-day-2-tickets-1999485948296",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1994124360643": {
+   "id": "1994124360643",
+   "title": "Wound closure techniques",
+   "url": "https://www.eventbrite.ie/e/wound-closure-techniques-tickets-1994124360643",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999411671131": {
+   "id": "1999411671131",
+   "title": "Secret Magic Show",
+   "url": "https://www.eventbrite.com/e/secret-magic-show-tickets-1999411671131",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998958676211": {
+   "id": "1998958676211",
+   "title": "Creative Ageing: Drawing for Wellbeing with Inma Pavon",
+   "url": "https://www.eventbrite.ie/e/creative-ageing-drawing-for-wellbeing-with-inma-pavon-tickets-1998958676211",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999577872243": {
+   "id": "1999577872243",
+   "title": "Son Solar",
+   "url": "https://www.eventbrite.ie/e/son-solar-tickets-1999577872243",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002114599663": {
+   "id": "2002114599663",
+   "title": "RCW SpookerSlam",
+   "url": "https://www.eventbrite.ie/e/rcw-spookerslam-tickets-2002114599663",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998376490879": {
+   "id": "1998376490879",
+   "title": "Stand-Up Comedy Club: The Earlier Show",
+   "url": "https://www.eventbrite.com/e/stand-up-comedy-club-the-earlier-show-tickets-1998376490879",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1993597364383": {
+   "id": "1993597364383",
+   "title": "Disrupt Cork Relaunch Summit",
+   "url": "https://www.eventbrite.ie/e/disrupt-cork-relaunch-summit-tickets-1993597364383",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001240578442": {
+   "id": "2001240578442",
+   "title": "This Is The Kit",
+   "url": "https://www.eventbrite.ie/e/this-is-the-kit-tickets-2001240578442",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1976267311729": {
+   "id": "1976267311729",
+   "title": "Foodies + New Friends: Cork",
+   "url": "https://www.eventbrite.com/e/foodies-new-friends-cork-tickets-1976267311729",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999420271856": {
+   "id": "1999420271856",
+   "title": "TOOMS // Adversary // Everdead Wood @ Fred Zeppelins Cork",
+   "url": "https://www.eventbrite.ie/e/tooms-adversary-everdead-wood-fred-zeppelins-cork-tickets-1999420271856",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998479335490": {
+   "id": "1998479335490",
+   "title": "Cork Seminar: From Longevity to Precision Healthy Ageing",
+   "url": "https://www.eventbrite.co.uk/e/cork-seminar-from-longevity-to-precision-healthy-ageing-tickets-1998479335490",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1997957798559": {
+   "id": "1997957798559",
+   "title": "Clothes Swap at St. Peter's Cork",
+   "url": "https://www.eventbrite.ie/e/clothes-swap-at-st-peters-cork-tickets-1997957798559",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001058994319": {
+   "id": "2001058994319",
+   "title": "Saturday Masterclass: Street Photography with Brendan \u00d3 S\u00e9",
+   "url": "https://www.eventbrite.ie/e/saturday-masterclass-street-photography-with-brendan-o-se-tickets-2001058994319",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002640490617": {
+   "id": "2002640490617",
+   "title": "Sound Bath: Ambient Electronic & Traditional Instruments",
+   "url": "https://www.eventbrite.com/e/sound-bath-ambient-electronic-traditional-instruments-tickets-2002640490617",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001062497798": {
+   "id": "2001062497798",
+   "title": "Halloween Party at The Frisky Whiskey!",
+   "url": "https://www.eventbrite.ie/e/halloween-party-at-the-frisky-whiskey-tickets-2001062497798",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000280427605": {
+   "id": "2000280427605",
+   "title": "\u2764\ufe0f REBEL SPEED DATING CORK \u2013 CHRISTMAS EVENT! \u2764\ufe0f Age Range 20-30 Approx",
+   "url": "https://www.eventbrite.ie/e/rebel-speed-dating-cork-christmas-event-age-range-20-30-approx-tickets-2000280427605",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002664020997": {
+   "id": "2002664020997",
+   "title": "Cork Student Halloween Party | Cheap  Drinks | 2000s Y2K Night",
+   "url": "https://www.eventbrite.ie/e/cork-student-halloween-party-cheap-drinks-2000s-y2k-night-tickets-2002664020997",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002286397515": {
+   "id": "2002286397515",
+   "title": "R\u00e9alta Voices, Natural Voice Singing October 2026",
+   "url": "https://www.eventbrite.com/e/realta-voices-natural-voice-singing-october-2026-tickets-2002286397515",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000959661211": {
+   "id": "2000959661211",
+   "title": "Halloween Trail of Terror - in Aid of Cork Penny dinners. THURSDAY",
+   "url": "https://www.eventbrite.ie/e/halloween-trail-of-terror-in-aid-of-cork-penny-dinners-thursday-tickets-2000959661211",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000577235365": {
+   "id": "2000577235365",
+   "title": "The Quiet Club: Danny McCarthy and Mick O'Shea",
+   "url": "https://www.eventbrite.ie/e/the-quiet-club-danny-mccarthy-and-mick-oshea-tickets-2000577235365",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998376574128": {
+   "id": "1998376574128",
+   "title": "Stand-Up Comedy Club: Breda Hegarty and Guests",
+   "url": "https://www.eventbrite.com/e/stand-up-comedy-club-breda-hegarty-and-guests-tickets-1998376574128",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000012120090": {
+   "id": "2000012120090",
+   "title": "DOIREANN N\u00cd GHLAC\u00c1IN",
+   "url": "https://www.eventbrite.ie/e/doireann-ni-ghlacain-tickets-2000012120090",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000721582110": {
+   "id": "2000721582110",
+   "title": "Public Tour: The Annals of Inisfallen and the Making of Irish History",
+   "url": "https://www.eventbrite.ie/e/public-tour-the-annals-of-inisfallen-and-the-making-of-irish-history-tickets-2000721582110",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1997691835055": {
+   "id": "1997691835055",
+   "title": "Talk About What Matters | Workplace Managers' & People Leaders' Workshop",
+   "url": "https://www.eventbrite.ie/e/talk-about-what-matters-workplace-managers-people-leaders-workshop-tickets-1997691835055",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1985054407168": {
+   "id": "1985054407168",
+   "title": "Halloween Bottomless Drag Brunch with Mockie Ah!",
+   "url": "https://www.eventbrite.ie/e/halloween-bottomless-drag-brunch-with-mockie-ah-tickets-1985054407168",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1992088829314": {
+   "id": "1992088829314",
+   "title": "MORETALLICA - UK\u2019s Premier Metallica Tribute - Cork",
+   "url": "https://www.eventbrite.ie/e/moretallica-uks-premier-metallica-tribute-cork-tickets-1992088829314",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1995463530135": {
+   "id": "1995463530135",
+   "title": "Mc Cartney - All The Best - Live at The Pavillion Cork",
+   "url": "https://www.eventbrite.ie/e/mc-cartney-all-the-best-live-at-the-pavillion-cork-tickets-1995463530135",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1993063458456": {
+   "id": "1993063458456",
+   "title": "Standback' - The Stevie Nicks and Fleetwood Mac Experience - (Live)",
+   "url": "https://www.eventbrite.ie/e/standback-the-stevie-nicks-and-fleetwood-mac-experience-live-tickets-1993063458456",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000152820930": {
+   "id": "2000152820930",
+   "title": "Speed Dating Cork  Ages 24-34 SPECIAL DEAL ON LADIES PLACES!",
+   "url": "https://www.eventbrite.ie/e/speed-dating-cork-ages-24-34-special-deal-on-ladies-places-tickets-2000152820930",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1990091990716": {
+   "id": "1990091990716",
+   "title": "Viennese Christmas Spectacular by Candlelight - 3rd Jan, Cork",
+   "url": "https://www.eventbrite.co.uk/e/viennese-christmas-spectacular-by-candlelight-3rd-jan-cork-tickets-1990091990716",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1997593236143": {
+   "id": "1997593236143",
+   "title": "Briana Corrigan   (The Beautiful South)",
+   "url": "https://www.eventbrite.ie/e/briana-corrigan-the-beautiful-south-tickets-1997593236143",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000392686374": {
+   "id": "2000392686374",
+   "title": "Shine Gala Ball",
+   "url": "https://www.eventbrite.ie/e/shine-gala-ball-tickets-2000392686374",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002125287631": {
+   "id": "2002125287631",
+   "title": "Holy Brunch",
+   "url": "https://www.eventbrite.ie/e/holy-brunch-tickets-2002125287631",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002062822797": {
+   "id": "2002062822797",
+   "title": "Shit Creek and Pike - Plugd 18/10/26",
+   "url": "https://www.eventbrite.ie/e/shit-creek-and-pike-plugd-181026-tickets-2002062822797",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002282949201": {
+   "id": "2002282949201",
+   "title": "Apr\u00e9s Jazz Club @ VOODOO Fri 23rd Oct",
+   "url": "https://www.eventbrite.ie/e/apres-jazz-club-voodoo-fri-23rd-oct-tickets-2002282949201",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000215547547": {
+   "id": "2000215547547",
+   "title": "Jazz Fest Madness",
+   "url": "https://www.eventbrite.ie/e/jazz-fest-madness-tickets-2000215547547",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1992592655271": {
+   "id": "1992592655271",
+   "title": "Alexandra Kay",
+   "url": "https://www.eventbrite.ie/e/alexandra-kay-tickets-1992592655271",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002573846282": {
+   "id": "2002573846282",
+   "title": "The Luxx",
+   "url": "https://www.eventbrite.ie/e/the-luxx-tickets-2002573846282",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1990161055290": {
+   "id": "1990161055290",
+   "title": "find-joy @ Fred Zeppelins",
+   "url": "https://www.eventbrite.ie/e/find-joy-fred-zeppelins-tickets-1990161055290",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000153899155": {
+   "id": "2000153899155",
+   "title": "Cork Christmas Speed Dating Ages 45-55",
+   "url": "https://www.eventbrite.ie/e/cork-christmas-speed-dating-ages-45-55-tickets-2000153899155",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999027502071": {
+   "id": "1999027502071",
+   "title": "Stevie G's RNB Brunch",
+   "url": "https://www.eventbrite.ie/e/stevie-gs-rnb-brunch-tickets-1999027502071",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1997437519390": {
+   "id": "1997437519390",
+   "title": "Christmas Bottomless Drag Brunch with Mockie Ah!",
+   "url": "https://www.eventbrite.ie/e/christmas-bottomless-drag-brunch-with-mockie-ah-tickets-1997437519390",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000030576293": {
+   "id": "2000030576293",
+   "title": "Saul Williams - Leap Life Tour",
+   "url": "https://www.eventbrite.ie/e/saul-williams-leap-life-tour-tickets-2000030576293",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1995445169217": {
+   "id": "1995445169217",
+   "title": "AN AUDIENCE WITH LIVERPOOL LEGENDS CORK.",
+   "url": "https://www.eventbrite.ie/e/an-audience-with-liverpool-legends-cork-tickets-1995445169217",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1991761269574": {
+   "id": "1991761269574",
+   "title": "James Keegan",
+   "url": "https://www.eventbrite.ie/e/james-keegan-tickets-1991761269574",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998376493888": {
+   "id": "1998376493888",
+   "title": "Stand-Up Comedy Club: Cork's Best Stand-Up",
+   "url": "https://www.eventbrite.com/e/stand-up-comedy-club-corks-best-stand-up-tickets-1998376493888",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000660919667": {
+   "id": "2000660919667",
+   "title": "Where Bluebirds Fly -  (Oct 20th - 23rd) 7.30pm",
+   "url": "https://www.eventbrite.ie/e/where-bluebirds-fly-oct-20th-23rd-730pm-tickets-2000660919667",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002732874941": {
+   "id": "2002732874941",
+   "title": "A Taste Of The Old Butter Roads",
+   "url": "https://www.eventbrite.com/e/a-taste-of-the-old-butter-roads-tickets-2002732874941",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1996060867788": {
+   "id": "1996060867788",
+   "title": "RATTLE & HUM - THE U2 EXPERIENCE - Live at The Pavilion Cork",
+   "url": "https://www.eventbrite.ie/e/rattle-hum-the-u2-experience-live-at-the-pavilion-cork-tickets-1996060867788",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002627450614": {
+   "id": "2002627450614",
+   "title": "October Song Exchange - Cork",
+   "url": "https://www.eventbrite.ie/e/october-song-exchange-cork-tickets-2002627450614",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1997186475511": {
+   "id": "1997186475511",
+   "title": "DEPECHE MODE TRIBUTE - THE DEVOUT",
+   "url": "https://www.eventbrite.ie/e/depeche-mode-tribute-the-devout-tickets-1997186475511",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001041689560": {
+   "id": "2001041689560",
+   "title": "LaVein // Lure In // Tide7 @ Fred Zeppelins Cork",
+   "url": "https://www.eventbrite.ie/e/lavein-lure-in-tide7-fred-zeppelins-cork-tickets-2001041689560",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1993462279340": {
+   "id": "1993462279340",
+   "title": "Endoscopic Sinus and Skull Base Surgery (FESS) - 2027",
+   "url": "https://www.eventbrite.ie/e/endoscopic-sinus-and-skull-base-surgery-fess-2027-tickets-1993462279340",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1987942050186": {
+   "id": "1987942050186",
+   "title": "BRAKE LOOSE live @Fred Zeppelins + Veins Of Mercury + J4DED + Wheelbite",
+   "url": "https://www.eventbrite.ie/e/brake-loose-live-fred-zeppelins-veins-of-mercury-j4ded-wheelbite-tickets-1987942050186",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999083272883": {
+   "id": "1999083272883",
+   "title": "Ballymaloe Grainstore Food Sessions - Chapter Three:  Scott Leigh",
+   "url": "https://www.eventbrite.ie/e/ballymaloe-grainstore-food-sessions-chapter-three-scott-leigh-tickets-1999083272883",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998376488873": {
+   "id": "1998376488873",
+   "title": "Stand-Up Comedy Club: Thursday Showcase",
+   "url": "https://www.eventbrite.com/e/stand-up-comedy-club-thursday-showcase-tickets-1998376488873",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000155426724": {
+   "id": "2000155426724",
+   "title": "OctoberFesht 2026",
+   "url": "https://www.eventbrite.ie/e/octoberfesht-2026-tickets-2000155426724",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002509555988": {
+   "id": "2002509555988",
+   "title": "Into The Void - Duality - Aye Cork",
+   "url": "https://www.eventbrite.ie/e/into-the-void-duality-aye-cork-tickets-2002509555988",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002385606251": {
+   "id": "2002385606251",
+   "title": "The Sushi Table \u2014 An Authentic Hands-On Workshop",
+   "url": "https://www.eventbrite.ie/e/the-sushi-table-an-authentic-hands-on-workshop-tickets-2002385606251",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000200110374": {
+   "id": "2000200110374",
+   "title": "The Southern Brides Wedding Festival Expo",
+   "url": "https://www.eventbrite.ie/e/the-southern-brides-wedding-festival-expo-tickets-2000200110374",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002712708623": {
+   "id": "2002712708623",
+   "title": "An Evening of Art & Interiors with Cora Murphy at Interiosity",
+   "url": "https://www.eventbrite.ie/e/an-evening-of-art-interiors-with-cora-murphy-at-interiosity-tickets-2002712708623",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999153217088": {
+   "id": "1999153217088",
+   "title": "Dave McCabe (The Zutons)",
+   "url": "https://www.eventbrite.ie/e/dave-mccabe-the-zutons-tickets-1999153217088",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002379494972": {
+   "id": "2002379494972",
+   "title": "Food & 'White Coopering' In Ireland",
+   "url": "https://www.eventbrite.com/e/food-white-coopering-in-ireland-tickets-2002379494972",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002348315714": {
+   "id": "2002348315714",
+   "title": "The CourtYard Wine Club Presents: A Journey Through France Fine Dinning",
+   "url": "https://www.eventbrite.ie/e/the-courtyard-wine-club-presents-a-journey-through-france-fine-dinning-tickets-2002348315714",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999013315639": {
+   "id": "1999013315639",
+   "title": "First Steps! Art and Nature for Early Years",
+   "url": "https://www.eventbrite.ie/e/first-steps-art-and-nature-for-early-years-tickets-1999013315639",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002379991457": {
+   "id": "2002379991457",
+   "title": "Blood & Milk with Kate Ryan",
+   "url": "https://www.eventbrite.com/e/blood-milk-with-kate-ryan-tickets-2002379991457",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002550845486": {
+   "id": "2002550845486",
+   "title": "Voodoo Student Casino Night ThursOct 9th",
+   "url": "https://www.eventbrite.ie/e/voodoo-student-casino-night-thursoct-9th-tickets-2002550845486",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002121218460": {
+   "id": "2002121218460",
+   "title": "Goldie Lookin' Chain",
+   "url": "https://www.eventbrite.ie/e/goldie-lookin-chain-tickets-2002121218460",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1990345582215": {
+   "id": "1990345582215",
+   "title": "Daniel Lukas - This Is Fine",
+   "url": "https://www.eventbrite.ie/e/daniel-lukas-this-is-fine-tickets-1990345582215",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001310558755": {
+   "id": "2001310558755",
+   "title": "Cork Jazz Fest: Jo Blonde",
+   "url": "https://www.eventbrite.com/e/cork-jazz-fest-jo-blonde-tickets-2001310558755",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002157735684": {
+   "id": "2002157735684",
+   "title": "TokioDk In Cork",
+   "url": "https://www.eventbrite.ie/e/tokiodk-in-cork-tickets-2002157735684",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998291127555": {
+   "id": "1998291127555",
+   "title": "Christmas Special with Kevin McGahern & Guests  at Corks Original Club",
+   "url": "https://www.eventbrite.ie/e/christmas-special-with-kevin-mcgahern-guests-at-corks-original-club-tickets-1998291127555",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002659892649": {
+   "id": "2002659892649",
+   "title": "Lesly Martinez \"Immi-Grand!\" - Live Comedy Show",
+   "url": "https://www.eventbrite.com/e/lesly-martinez-immi-grand-live-comedy-show-tickets-2002659892649",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002241813162": {
+   "id": "2002241813162",
+   "title": "Dazgak",
+   "url": "https://www.eventbrite.ie/e/dazgak-tickets-2002241813162",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002284325317": {
+   "id": "2002284325317",
+   "title": "Climate Conscious Journalling Workshop",
+   "url": "https://www.eventbrite.ie/e/climate-conscious-journalling-workshop-tickets-2002284325317",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999940229062": {
+   "id": "1999940229062",
+   "title": "Trainwreck + The Wu",
+   "url": "https://www.eventbrite.com/e/trainwreck-the-wu-tickets-1999940229062",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998294547785": {
+   "id": "1998294547785",
+   "title": "Christmas Special with Bernard Casey ( Local Gossip ) Plus Guests",
+   "url": "https://www.eventbrite.ie/e/christmas-special-with-bernard-casey-local-gossip-plus-guests-tickets-1998294547785",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002614877006": {
+   "id": "2002614877006",
+   "title": "FREAKS TO THE FRONT: a freakshow cabaret.",
+   "url": "https://www.eventbrite.com/e/freaks-to-the-front-a-freakshow-cabaret-tickets-2002614877006",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002198320073": {
+   "id": "2002198320073",
+   "title": "SOAK",
+   "url": "https://www.eventbrite.ie/e/soak-tickets-2002198320073",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002287521878": {
+   "id": "2002287521878",
+   "title": "Baby Market Cork",
+   "url": "https://www.eventbrite.ie/e/baby-market-cork-tickets-2002287521878",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998945869907": {
+   "id": "1998945869907",
+   "title": "Making In 2027",
+   "url": "https://www.eventbrite.ie/e/making-in-2027-tickets-1998945869907",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1997657364954": {
+   "id": "1997657364954",
+   "title": "Therapeutic Breathwork",
+   "url": "https://www.eventbrite.ie/e/therapeutic-breathwork-tickets-1997657364954",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000958616085": {
+   "id": "2000958616085",
+   "title": "Quiz Night - A Fundraiser for St. Fin Barre's Cathedral Choir",
+   "url": "https://www.eventbrite.ie/e/quiz-night-a-fundraiser-for-st-fin-barres-cathedral-choir-tickets-2000958616085",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001391677383": {
+   "id": "2001391677383",
+   "title": "The Montenotte Wine Club: An Evening with Clarence Dillon and Clarendelle",
+   "url": "https://www.eventbrite.ie/e/the-montenotte-wine-club-an-evening-with-clarence-dillon-and-clarendelle-tickets-2001391677383",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002395263135": {
+   "id": "2002395263135",
+   "title": "The Aos S\u00ed Band - Nigel EP Launch",
+   "url": "https://www.eventbrite.com/e/the-aos-si-band-nigel-ep-launch-tickets-2002395263135",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002653622896": {
+   "id": "2002653622896",
+   "title": "Sound Bath & CranioSacral Therapy 6.30pm",
+   "url": "https://www.eventbrite.ie/e/sound-bath-craniosacral-therapy-630pm-tickets-2002653622896",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002469094968": {
+   "id": "2002469094968",
+   "title": "Global Grooves",
+   "url": "https://www.eventbrite.ie/e/global-grooves-tickets-2002469094968",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000178691309": {
+   "id": "2000178691309",
+   "title": "A  Healing Breathwork Journey",
+   "url": "https://www.eventbrite.ie/e/a-healing-breathwork-journey-tickets-2000178691309",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000020147099": {
+   "id": "2000020147099",
+   "title": "PARAMORE TRIBUTE - LET THE FLAMES BEGIN",
+   "url": "https://www.eventbrite.com/e/paramore-tribute-let-the-flames-begin-tickets-2000020147099",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001240048858": {
+   "id": "2001240048858",
+   "title": "Babyrat",
+   "url": "https://www.eventbrite.ie/e/babyrat-tickets-2001240048858",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001421087349": {
+   "id": "2001421087349",
+   "title": "DUG",
+   "url": "https://www.eventbrite.ie/e/dug-tickets-2001421087349",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000987549626": {
+   "id": "2000987549626",
+   "title": "Medical Qigong",
+   "url": "https://www.eventbrite.ie/e/medical-qigong-tickets-2000987549626",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998376539023": {
+   "id": "1998376539023",
+   "title": "Stand-Up Comedy Club: Eric Lalor and Guests",
+   "url": "https://www.eventbrite.com/e/stand-up-comedy-club-eric-lalor-and-guests-tickets-1998376539023",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002599848054": {
+   "id": "2002599848054",
+   "title": "Branwen Kavanagh & Wyn Oran, Book\u2019d @ Prim\u2019s",
+   "url": "https://www.eventbrite.ie/e/branwen-kavanagh-wyn-oran-bookd-prims-tickets-2002599848054",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999041656407": {
+   "id": "1999041656407",
+   "title": "Midleton Concert Band 75th Anniversary Concert",
+   "url": "https://www.eventbrite.com/e/midleton-concert-band-75th-anniversary-concert-tickets-1999041656407",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002462775065": {
+   "id": "2002462775065",
+   "title": "Dubioza Kolektiv",
+   "url": "https://www.eventbrite.ie/e/dubioza-kolektiv-tickets-2002462775065",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999486923212": {
+   "id": "1999486923212",
+   "title": "Halloween Trail of Terror - in Aid of Cork Penny dinners SLOT 2",
+   "url": "https://www.eventbrite.ie/e/halloween-trail-of-terror-in-aid-of-cork-penny-dinners-slot-2-tickets-1999486923212",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1994658289639": {
+   "id": "1994658289639",
+   "title": "Unveiling the Annesgrove Gardens Legacy Tour",
+   "url": "https://www.eventbrite.ie/e/unveiling-the-annesgrove-gardens-legacy-tour-tickets-1994658289639",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1992690188997": {
+   "id": "1992690188997",
+   "title": "Cornelius Patrick O'Sullivan's  Brand New Comedy Show: Pull Hard",
+   "url": "https://www.eventbrite.ie/e/cornelius-patrick-osullivans-brand-new-comedy-show-pull-hard-tickets-1992690188997",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001384582161": {
+   "id": "2001384582161",
+   "title": "Kinsale Mix n Mingle Walk",
+   "url": "https://www.eventbrite.ie/e/kinsale-mix-n-mingle-walk-tickets-2001384582161",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998902510217": {
+   "id": "1998902510217",
+   "title": "Tony Baloney show 5",
+   "url": "https://www.eventbrite.com/e/tony-baloney-show-5-tickets-1998902510217",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1992552699763": {
+   "id": "1992552699763",
+   "title": "Kid's Pop",
+   "url": "https://www.eventbrite.ie/e/kids-pop-tickets-1992552699763",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1997971287906": {
+   "id": "1997971287906",
+   "title": "GREENE & SHINE and VICKERS VIMY Double Bill",
+   "url": "https://www.eventbrite.ie/e/greene-shine-and-vickers-vimy-double-bill-tickets-1997971287906",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998679354753": {
+   "id": "1998679354753",
+   "title": "Cork Halloween Bar Crawl \u2014 Halloween Saturday on Sat, Oct 31st",
+   "url": "https://www.eventbrite.ca/e/cork-halloween-bar-crawl-halloween-saturday-on-sat-oct-31st-tickets-1998679354753",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1997983259714": {
+   "id": "1997983259714",
+   "title": "Mini Melodies Cork Classes at Ballymaloe Grainstore",
+   "url": "https://www.eventbrite.ie/e/mini-melodies-cork-classes-at-ballymaloe-grainstore-tickets-1997983259714",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002727508891": {
+   "id": "2002727508891",
+   "title": "Emerging Artist Spotlight",
+   "url": "https://www.eventbrite.ie/e/emerging-artist-spotlight-tickets-2002727508891",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1993961836529": {
+   "id": "1993961836529",
+   "title": "Sharon Mannion: I Will, Yeah! - Stand-Up Comedy",
+   "url": "https://www.eventbrite.com/e/sharon-mannion-i-will-yeah-stand-up-comedy-tickets-1993961836529",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002721710548": {
+   "id": "2002721710548",
+   "title": "Samhain to Halloween - Ideas On Tap (Lectures In Pubs)",
+   "url": "https://www.eventbrite.ie/e/samhain-to-halloween-ideas-on-tap-lectures-in-pubs-tickets-2002721710548",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000255385704": {
+   "id": "2000255385704",
+   "title": "Rex Arcum & Other Mother",
+   "url": "https://www.eventbrite.ie/e/rex-arcum-other-mother-tickets-2000255385704",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998679315636": {
+   "id": "1998679315636",
+   "title": "Cork Halloween Bar Crawl \u2014 Halloween Friday, Fri, Oct 30",
+   "url": "https://www.eventbrite.ca/e/cork-halloween-bar-crawl-halloween-friday-fri-oct-30-tickets-1998679315636",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998671029853": {
+   "id": "1998671029853",
+   "title": "Cork's Haunted Hop 2026: Halloween Bar Crawl (Friday, Oct 30)",
+   "url": "https://www.eventbrite.ca/e/corks-haunted-hop-2026-halloween-bar-crawl-friday-oct-30-tickets-1998671029853",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001019622557": {
+   "id": "2001019622557",
+   "title": "Look & Learn Education Day: Round Graduation, Taper Fade & Square Layers",
+   "url": "https://www.eventbrite.ie/e/look-learn-education-day-round-graduation-taper-fade-square-layers-tickets-2001019622557",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1986153045224": {
+   "id": "1986153045224",
+   "title": "Comedy Night with Cornelius O'Sullivan in Kilworth",
+   "url": "https://www.eventbrite.ie/e/comedy-night-with-cornelius-osullivan-in-kilworth-tickets-1986153045224",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998909655589": {
+   "id": "1998909655589",
+   "title": "Live at Freds 22/10/26",
+   "url": "https://www.eventbrite.com/e/live-at-freds-221026-tickets-1998909655589",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1996433863428": {
+   "id": "1996433863428",
+   "title": "Cutouts Live @ The Roundy - Friday 23rd October 2026",
+   "url": "https://www.eventbrite.ie/e/cutouts-live-the-roundy-friday-23rd-october-2026-tickets-1996433863428",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001051021472": {
+   "id": "2001051021472",
+   "title": "Food & Nutrition Science Graduation",
+   "url": "https://www.eventbrite.ie/e/food-nutrition-science-graduation-tickets-2001051021472",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1997625427428": {
+   "id": "1997625427428",
+   "title": "DOUBLE MOTHER: Mother Johnson x Other Mother",
+   "url": "https://www.eventbrite.com/e/double-mother-mother-johnson-x-other-mother-tickets-1997625427428",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002714038601": {
+   "id": "2002714038601",
+   "title": "October takeover",
+   "url": "https://www.eventbrite.ie/e/october-takeover-tickets-2002714038601",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002724884040": {
+   "id": "2002724884040",
+   "title": "\u201cThe Hair Edit\u201d by Stephen Hennessy",
+   "url": "https://www.eventbrite.ie/e/the-hair-edit-by-stephen-hennessy-tickets-2002724884040",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999088407240": {
+   "id": "1999088407240",
+   "title": "The Glucksman School Visit",
+   "url": "https://www.eventbrite.ie/e/the-glucksman-school-visit-tickets-1999088407240",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002281681409": {
+   "id": "2002281681409",
+   "title": "Rebels Unplugged Launch",
+   "url": "https://www.eventbrite.com/e/rebels-unplugged-launch-tickets-2002281681409",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002616827841": {
+   "id": "2002616827841",
+   "title": "PRIMAL Breathwork: An Immersive Nervous System Reset with Wireless Headsets",
+   "url": "https://www.eventbrite.ie/e/primal-breathwork-an-immersive-nervous-system-reset-with-wireless-headsets-tickets-2002616827841",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002756550756": {
+   "id": "2002756550756",
+   "title": "Quiz night",
+   "url": "https://www.eventbrite.com/e/quiz-night-tickets-2002756550756",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998510090479": {
+   "id": "1998510090479",
+   "title": "The Fright Crawl | Cork Halloween Bar Crawl 2026 | Thursday, October 29",
+   "url": "https://www.eventbrite.ca/e/the-fright-crawl-cork-halloween-bar-crawl-2026-thursday-october-29-tickets-1998510090479",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998510800603": {
+   "id": "1998510800603",
+   "title": "The Fright Crawl | Cork Hottest Halloween Bar Crawl 2026 | Fri, Oct 30",
+   "url": "https://www.eventbrite.ca/e/the-fright-crawl-cork-hottest-halloween-bar-crawl-2026-fri-oct-30-tickets-1998510800603",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1997987143330": {
+   "id": "1997987143330",
+   "title": "Arborist",
+   "url": "https://www.eventbrite.ie/e/arborist-tickets-1997987143330",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999619103567": {
+   "id": "1999619103567",
+   "title": "An Exclusive Evening with Patrick \u201cHoggie\u201d Horgan",
+   "url": "https://www.eventbrite.ie/e/an-exclusive-evening-with-patrick-hoggie-horgan-tickets-1999619103567",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999178666207": {
+   "id": "1999178666207",
+   "title": "WalkTalkChalk: Abandon Shandon",
+   "url": "https://www.eventbrite.ie/e/walktalkchalk-abandon-shandon-tickets-1999178666207",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002749584921": {
+   "id": "2002749584921",
+   "title": "Little Monster Pasta Party",
+   "url": "https://www.eventbrite.ie/e/little-monster-pasta-party-tickets-2002749584921",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001222965762": {
+   "id": "2001222965762",
+   "title": "Sunset Sessions at Perch - Jazz Weekend",
+   "url": "https://www.eventbrite.com/e/sunset-sessions-at-perch-jazz-weekend-tickets-2001222965762",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998510956068": {
+   "id": "1998510956068",
+   "title": "The Fright Crawl | Cork Halloween Day Bar Crawl 2026 | Sat, Oct 31",
+   "url": "https://www.eventbrite.ca/e/the-fright-crawl-cork-halloween-day-bar-crawl-2026-sat-oct-31-tickets-1998510956068",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001954591073": {
+   "id": "2001954591073",
+   "title": "Owen Colgan and Guests - Live at the CoCo Comedy Club",
+   "url": "https://www.eventbrite.com/e/owen-colgan-and-guests-live-at-the-coco-comedy-club-tickets-2001954591073",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000164284217": {
+   "id": "2000164284217",
+   "title": "Kids & parents Halloween workshop",
+   "url": "https://www.eventbrite.com/e/kids-parents-halloween-workshop-tickets-2000164284217",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002658391158": {
+   "id": "2002658391158",
+   "title": "Sound Bath and CranioSacral Therapy 8.15pm",
+   "url": "https://www.eventbrite.ie/e/sound-bath-and-craniosacral-therapy-815pm-tickets-2002658391158",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1994937698358": {
+   "id": "1994937698358",
+   "title": "HOUSEMATES & LISTOWEL Double Headline - CORK",
+   "url": "https://www.eventbrite.ie/e/housemates-listowel-double-headline-cork-tickets-1994937698358",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002758594870": {
+   "id": "2002758594870",
+   "title": "SINGLES NIGHT",
+   "url": "https://www.eventbrite.com/e/singles-night-tickets-2002758594870",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000153469871": {
+   "id": "2000153469871",
+   "title": "Pre Christmas Speed Dating Cork Ages 30-45",
+   "url": "https://www.eventbrite.ie/e/pre-christmas-speed-dating-cork-ages-30-45-tickets-2000153469871",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002725002394": {
+   "id": "2002725002394",
+   "title": "Speed Dating Cork Pre Xmas Event Ages 30-45",
+   "url": "https://www.eventbrite.ie/e/speed-dating-cork-pre-xmas-event-ages-30-45-tickets-2002725002394",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002629923009": {
+   "id": "2002629923009",
+   "title": "Mike Morgan and Guests - Live at the CoCo Comedy Club",
+   "url": "https://www.eventbrite.com/e/mike-morgan-and-guests-live-at-the-coco-comedy-club-tickets-2002629923009",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998490470796": {
+   "id": "1998490470796",
+   "title": "STUDENT HALLOWEEN PARTY @ VOODOO ROOMS OCT 29TH",
+   "url": "https://www.eventbrite.ie/e/student-halloween-party-voodoo-rooms-oct-29th-tickets-1998490470796",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999529118419": {
+   "id": "1999529118419",
+   "title": "SHE - An Evening of Music by Women",
+   "url": "https://www.eventbrite.com/e/she-an-evening-of-music-by-women-tickets-1999529118419",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998290925952": {
+   "id": "1998290925952",
+   "title": "Award Winning Danny Ryan  at Corks Biggest and Original Comedy Club",
+   "url": "https://www.eventbrite.ie/e/award-winning-danny-ryan-at-corks-biggest-and-original-comedy-club-tickets-1998290925952",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1993535823312": {
+   "id": "1993535823312",
+   "title": "Advanced Endoscopy Series -ERCP",
+   "url": "https://www.eventbrite.ie/e/advanced-endoscopy-series-ercp-tickets-1993535823312",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000153542087": {
+   "id": "2000153542087",
+   "title": "Christmas Speed Dating Cork Ages 30-45",
+   "url": "https://www.eventbrite.ie/e/christmas-speed-dating-cork-ages-30-45-tickets-2000153542087",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999178862795": {
+   "id": "1999178862795",
+   "title": "WalkTalkChalk: Wastelands",
+   "url": "https://www.eventbrite.ie/e/walktalkchalk-wastelands-tickets-1999178862795",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1601023096179": {
+   "id": "1601023096179",
+   "title": "Sew with Confidence Midleton",
+   "url": "https://www.eventbrite.ie/e/sew-with-confidence-midleton-tickets-1601023096179",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000760752269": {
+   "id": "2000760752269",
+   "title": "Collegiate Shag Dance Workshop - Beginners",
+   "url": "https://www.eventbrite.ie/e/collegiate-shag-dance-workshop-beginners-tickets-2000760752269",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998674787091": {
+   "id": "1998674787091",
+   "title": "Valentine's Bottomless Drag Brunch with Mockie Ah!",
+   "url": "https://www.eventbrite.ie/e/valentines-bottomless-drag-brunch-with-mockie-ah-tickets-1998674787091",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1985809960047": {
+   "id": "1985809960047",
+   "title": "Thunder Rolls- Garth Brooks Experience",
+   "url": "https://www.eventbrite.ie/e/thunder-rolls-garth-brooks-experience-tickets-1985809960047",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999619941072": {
+   "id": "1999619941072",
+   "title": "Harry Redknapp: We Go Again",
+   "url": "https://www.eventbrite.ie/e/harry-redknapp-we-go-again-tickets-1999619941072",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1993591184900": {
+   "id": "1993591184900",
+   "title": "Introduction to vascular surgery",
+   "url": "https://www.eventbrite.ie/e/introduction-to-vascular-surgery-tickets-1993591184900",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1993537644760": {
+   "id": "1993537644760",
+   "title": "Endoscopy from First Principles",
+   "url": "https://www.eventbrite.ie/e/endoscopy-from-first-principles-tickets-1993537644760",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001062094592": {
+   "id": "2001062094592",
+   "title": "Neil Delamere",
+   "url": "https://www.eventbrite.ie/e/neil-delamere-tickets-2001062094592",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002387260198": {
+   "id": "2002387260198",
+   "title": "Amazing Sushi Workshop Experience",
+   "url": "https://www.eventbrite.ie/e/amazing-sushi-workshop-experience-tickets-2002387260198",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000729034400": {
+   "id": "2000729034400",
+   "title": "TRIVAX - FIRE OVER EIR\u00c9 TOUR - KINOS, CORK",
+   "url": "https://www.eventbrite.co.uk/e/trivax-fire-over-eire-tour-kinos-cork-tickets-2000729034400",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1983389069097": {
+   "id": "1983389069097",
+   "title": "Doneraile Estate: A Rare Historic Garden Tour",
+   "url": "https://www.eventbrite.ie/e/doneraile-estate-a-rare-historic-garden-tour-tickets-1983389069097",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1989793792798": {
+   "id": "1989793792798",
+   "title": "A Close Encounter with Mary Coughlan & Ultan Conlon",
+   "url": "https://www.eventbrite.ie/e/a-close-encounter-with-mary-coughlan-ultan-conlon-tickets-1989793792798",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1996061245919": {
+   "id": "1996061245919",
+   "title": "The Coldplay Experience - Live at The Pavilion Cork",
+   "url": "https://www.eventbrite.ie/e/the-coldplay-experience-live-at-the-pavilion-cork-tickets-1996061245919",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1997718425588": {
+   "id": "1997718425588",
+   "title": "Buffalo Soul: Bob Marley & The Wailers Experience  - Live at Pavilion Cork",
+   "url": "https://www.eventbrite.ie/e/buffalo-soul-bob-marley-the-wailers-experience-live-at-pavilion-cork-tickets-1997718425588",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000181786567": {
+   "id": "2000181786567",
+   "title": "Healing Breathwork Journey",
+   "url": "https://www.eventbrite.ie/e/healing-breathwork-journey-tickets-2000181786567",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002207367133": {
+   "id": "2002207367133",
+   "title": "Autumn Unfolding Mindfulness and Meditation Retreat in Cork City",
+   "url": "https://www.eventbrite.ie/e/autumn-unfolding-mindfulness-and-meditation-retreat-in-cork-city-tickets-2002207367133",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1993835870762": {
+   "id": "1993835870762",
+   "title": "Primary Healthcare Simulation",
+   "url": "https://www.eventbrite.ie/e/primary-healthcare-simulation-tickets-1993835870762",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002295295128": {
+   "id": "2002295295128",
+   "title": "Autumn Pumpkin Flower Arrangement Workshop",
+   "url": "https://www.eventbrite.ie/e/autumn-pumpkin-flower-arrangement-workshop-registration-2002295295128",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002575411965": {
+   "id": "2002575411965",
+   "title": "Juliet's Not Dead - Joey Wit - 18 Nov at Fred Zeppelins Cork",
+   "url": "https://www.eventbrite.ie/e/juliets-not-dead-joey-wit-18-nov-at-fred-zeppelins-cork-tickets-2002575411965",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000228274614": {
+   "id": "2000228274614",
+   "title": "Absolute Eagles - A Tribute to The Eagles - Live in Concert",
+   "url": "https://www.eventbrite.ie/e/absolute-eagles-a-tribute-to-the-eagles-live-in-concert-tickets-2000228274614",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002575283581": {
+   "id": "2002575283581",
+   "title": "Ancient Celtic Transformation and Healing",
+   "url": "https://www.eventbrite.co.uk/e/ancient-celtic-transformation-and-healing-tickets-2002575283581",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002581557346": {
+   "id": "2002581557346",
+   "title": "CEREAL MILK JAZZ WEEKEND",
+   "url": "https://www.eventbrite.ie/e/cereal-milk-jazz-weekend-tickets-2002581557346",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002385402642": {
+   "id": "2002385402642",
+   "title": "AFRO DISTRICT \u2b50\ufe0f",
+   "url": "https://www.eventbrite.ie/e/afro-district-tickets-2002385402642",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002204973975": {
+   "id": "2002204973975",
+   "title": "Cacao Earth Dance | TribeFlow Studio Cork",
+   "url": "https://www.eventbrite.ie/e/cacao-earth-dance-tribeflow-studio-cork-tickets-2002204973975",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002339772160": {
+   "id": "2002339772160",
+   "title": "Candle Making Workshop | A Creative & Social Experience",
+   "url": "https://www.eventbrite.com/e/candle-making-workshop-a-creative-social-experience-tickets-2002339772160",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002499722576": {
+   "id": "2002499722576",
+   "title": "Kunal Kamra \u2013 Standing Up Live in Cork",
+   "url": "https://www.eventbrite.ie/e/kunal-kamra-standing-up-live-in-cork-tickets-2002499722576",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002552057110": {
+   "id": "2002552057110",
+   "title": "Hoa Hoa Hoa: Vampires and Slayers Hallowen Party",
+   "url": "https://www.eventbrite.com/e/hoa-hoa-hoa-vampires-and-slayers-hallowen-party-tickets-2002552057110",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1995914689565": {
+   "id": "1995914689565",
+   "title": "The Love Buzz Tour Live At Dali",
+   "url": "https://www.eventbrite.ie/e/the-love-buzz-tour-live-at-dali-tickets-1995914689565",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002195563829": {
+   "id": "2002195563829",
+   "title": "Autistic Energy & Regulation Across  the Day",
+   "url": "https://www.eventbrite.ie/e/autistic-energy-regulation-across-the-day-tickets-2002195563829",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002037911286": {
+   "id": "2002037911286",
+   "title": "VQ Aperitivo 'Da Mirco'",
+   "url": "https://www.eventbrite.ie/e/vq-aperitivo-da-mirco-tickets-2002037911286",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002429160523": {
+   "id": "2002429160523",
+   "title": "OUTSIDERS X // DJ Ahmed, Stevie G, Neubr\u00ed, DJ Honey",
+   "url": "https://www.eventbrite.ie/e/outsiders-x-dj-ahmed-stevie-g-neubri-dj-honey-tickets-2002429160523",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002156725663": {
+   "id": "2002156725663",
+   "title": "Fermentation Workshop - November 2026",
+   "url": "https://www.eventbrite.com/e/fermentation-workshop-november-2026-tickets-2002156725663",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002422619960": {
+   "id": "2002422619960",
+   "title": "Castlemartyr Resort Annual Charity Gala 2026",
+   "url": "https://www.eventbrite.ie/e/castlemartyr-resort-annual-charity-gala-2026-tickets-2002422619960",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002454426093": {
+   "id": "2002454426093",
+   "title": "Boos, Booze & Beats at The Yard",
+   "url": "https://www.eventbrite.ie/e/boos-booze-beats-at-the-yard-tickets-2002454426093",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002677929598": {
+   "id": "2002677929598",
+   "title": "Fresh Pasta Making Workshop at Don Gregorio",
+   "url": "https://www.eventbrite.ie/e/fresh-pasta-making-workshop-at-don-gregorio-tickets-2002677929598",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002354857280": {
+   "id": "2002354857280",
+   "title": "Art of Process: Reggio-Inspired Creative Workshop for Kids (Ages 2\u20136)",
+   "url": "https://www.eventbrite.ie/e/art-of-process-reggio-inspired-creative-workshop-for-kids-ages-26-tickets-2002354857280",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1986094473033": {
+   "id": "1986094473033",
+   "title": "Rail link Lookout Awards Cork 2026",
+   "url": "https://www.eventbrite.ie/e/rail-link-lookout-awards-cork-2026-tickets-1986094473033",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002544774327": {
+   "id": "2002544774327",
+   "title": "SYNAESTHESIA",
+   "url": "https://www.eventbrite.com/e/synaesthesia-tickets-2002544774327",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000453859344": {
+   "id": "2000453859344",
+   "title": "The Fork & Wheel Barista School - Barista Essentials",
+   "url": "https://www.eventbrite.com/e/the-fork-wheel-barista-school-barista-essentials-tickets-2000453859344",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998662598635": {
+   "id": "1998662598635",
+   "title": "Rushified Presents: The Music of Rush",
+   "url": "https://www.eventbrite.com/e/rushified-presents-the-music-of-rush-tickets-1998662598635",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002187915954": {
+   "id": "2002187915954",
+   "title": "Kids Christmas Disco",
+   "url": "https://www.eventbrite.com/e/kids-christmas-disco-tickets-2002187915954",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002420797509": {
+   "id": "2002420797509",
+   "title": "Gun Ghaol \u2013 Fred Zeppelins, Cork",
+   "url": "https://www.eventbrite.co.uk/e/gun-ghaol-fred-zeppelins-cork-tickets-2002420797509",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002599397707": {
+   "id": "2002599397707",
+   "title": "Boa Morte, Book\u2019d @ Prim\u2019s",
+   "url": "https://www.eventbrite.ie/e/boa-morte-bookd-prims-tickets-2002599397707",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1984391471309": {
+   "id": "1984391471309",
+   "title": "Cornelius Patrick O'Sullivan: Pull Hard",
+   "url": "https://www.eventbrite.ie/e/cornelius-patrick-osullivan-pull-hard-tickets-1984391471309",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1992020313381": {
+   "id": "1992020313381",
+   "title": "Frances Black in Concert",
+   "url": "https://www.eventbrite.ie/e/frances-black-in-concert-tickets-1992020313381",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1997478468871": {
+   "id": "1997478468871",
+   "title": "Natural Agriculture Conference In Ireland",
+   "url": "https://www.eventbrite.ie/e/natural-agriculture-conference-in-ireland-tickets-1997478468871",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1997724405474": {
+   "id": "1997724405474",
+   "title": "Cliona Hagan Unplugged at the Village Arts Centre with Simon Sheerin",
+   "url": "https://www.eventbrite.ie/e/cliona-hagan-unplugged-at-the-village-arts-centre-with-simon-sheerin-tickets-1997724405474",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001617175855": {
+   "id": "2001617175855",
+   "title": "The Restful Retreat at Ballymaloe | Yoga, Rest & Relaxation Day Retreat",
+   "url": "https://www.eventbrite.ie/e/the-restful-retreat-at-ballymaloe-yoga-rest-relaxation-day-retreat-tickets-2001617175855",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000181519769": {
+   "id": "2000181519769",
+   "title": "A  Healing Breathwork Journey",
+   "url": "https://www.eventbrite.ie/e/a-healing-breathwork-journey-tickets-2000181519769",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1987891592265": {
+   "id": "1987891592265",
+   "title": "Gentle Yoga Day Retreat in East Cork",
+   "url": "https://www.eventbrite.ie/e/gentle-yoga-day-retreat-in-east-cork-tickets-1987891592265",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1997505693300": {
+   "id": "1997505693300",
+   "title": "Claudia Buckley -  Glen Theatre Banteer",
+   "url": "https://www.eventbrite.ie/e/claudia-buckley-glen-theatre-banteer-tickets-1997505693300",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1993896867204": {
+   "id": "1993896867204",
+   "title": "Seamus O Rourke - The Love Hungry Farmer",
+   "url": "https://www.eventbrite.ie/e/seamus-o-rourke-the-love-hungry-farmer-tickets-1993896867204",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002475014674": {
+   "id": "2002475014674",
+   "title": "Samhain Willow Lantern Making Adult Workshop",
+   "url": "https://www.eventbrite.ie/e/samhain-willow-lantern-making-adult-workshop-tickets-2002475014674",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002720082679": {
+   "id": "2002720082679",
+   "title": "Lampshade workshop Xmas gift ide",
+   "url": "https://www.eventbrite.ie/e/lampshade-workshop-xmas-gift-ide-tickets-2002720082679",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1991768459078": {
+   "id": "1991768459078",
+   "title": "Gerry Guthrie and his Band in Concert",
+   "url": "https://www.eventbrite.ie/e/gerry-guthrie-and-his-band-in-concert-tickets-1991768459078",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002218993909": {
+   "id": "2002218993909",
+   "title": "Sound & Sensory Journey with Amy Shine @ YamaYoga,  Mallow, Cork",
+   "url": "https://www.eventbrite.ie/e/sound-sensory-journey-with-amy-shine-yamayoga-mallow-cork-tickets-2002218993909",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002386685479": {
+   "id": "2002386685479",
+   "title": "The Shadows of Halloween (shadow puppet-making workshop)",
+   "url": "https://www.eventbrite.ie/e/the-shadows-of-halloween-shadow-puppet-making-workshop-tickets-2002386685479",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1997832371403": {
+   "id": "1997832371403",
+   "title": "Kanturk RFC an Alternative History (Live)",
+   "url": "https://www.eventbrite.co.uk/e/kanturk-rfc-an-alternative-history-live-tickets-1997832371403",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1992703892986": {
+   "id": "1992703892986",
+   "title": "Tony & Trionagh Allen at The Glen Theatre Banteer",
+   "url": "https://www.eventbrite.ie/e/tony-trionagh-allen-at-the-glen-theatre-banteer-tickets-1992703892986",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1992412395108": {
+   "id": "1992412395108",
+   "title": "Dominic Kirwan in Concert",
+   "url": "https://www.eventbrite.ie/e/dominic-kirwan-in-concert-tickets-1992412395108",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1992704485759": {
+   "id": "1992704485759",
+   "title": "Remember Me; The Songs Of Christie Hennessy",
+   "url": "https://www.eventbrite.ie/e/remember-me-the-songs-of-christie-hennessy-tickets-1992704485759",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1990954916751": {
+   "id": "1990954916751",
+   "title": "Jack O'Rourke",
+   "url": "https://www.eventbrite.ie/e/jack-orourke-tickets-1990954916751",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002057427660": {
+   "id": "2002057427660",
+   "title": "Branwen & Wyn Oran",
+   "url": "https://www.eventbrite.ie/e/branwen-wyn-oran-tickets-2002057427660",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002062469741": {
+   "id": "2002062469741",
+   "title": "Winter Songs Workshop",
+   "url": "https://www.eventbrite.ie/e/winter-songs-workshop-tickets-2002062469741",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002477171124": {
+   "id": "2002477171124",
+   "title": "Samhain Willow Lantern Making Family Workshops",
+   "url": "https://www.eventbrite.ie/e/samhain-willow-lantern-making-family-workshops-tickets-2002477171124",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1997443210412": {
+   "id": "1997443210412",
+   "title": "Pumpkin Pitch at St. James' GAA",
+   "url": "https://www.eventbrite.ie/e/pumpkin-pitch-at-st-james-gaa-tickets-1997443210412",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1988566216083": {
+   "id": "1988566216083",
+   "title": "Paddy Casey",
+   "url": "https://www.eventbrite.ie/e/paddy-casey-tickets-1988566216083",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998209021975": {
+   "id": "1998209021975",
+   "title": "Comedy Night with Anne Gildea",
+   "url": "https://www.eventbrite.ie/e/comedy-night-with-anne-gildea-tickets-1998209021975",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1993882440052": {
+   "id": "1993882440052",
+   "title": "Lucy\u2019s! Winter Glam Wonderland",
+   "url": "https://www.eventbrite.co.uk/e/lucys-winter-glam-wonderland-tickets-1993882440052",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1989015627284": {
+   "id": "1989015627284",
+   "title": "Kids Pop Concert",
+   "url": "https://www.eventbrite.ie/e/kids-pop-concert-tickets-1989015627284",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002552207560": {
+   "id": "2002552207560",
+   "title": "Active Agers wellness day sunday Dec 6th",
+   "url": "https://www.eventbrite.ie/e/active-agers-wellness-day-sunday-dec-6th-tickets-2002552207560",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1997564651646": {
+   "id": "1997564651646",
+   "title": "Murder Mystery",
+   "url": "https://www.eventbrite.com/e/murder-mystery-tickets-1997564651646",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999091710119": {
+   "id": "1999091710119",
+   "title": "Work and Skills Job & Training Fair Mahon Point, Cork",
+   "url": "https://www.eventbrite.ie/e/work-and-skills-job-training-fair-mahon-point-cork-tickets-1999091710119",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002385452792": {
+   "id": "2002385452792",
+   "title": "Winter Warmer \u2013Rebels Clonakilty Speed Dating Event Age Range 30-45  Approx",
+   "url": "https://www.eventbrite.ie/e/winter-warmer-rebels-clonakilty-speed-dating-event-age-range-30-45-approx-tickets-2002385452792",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002277812838": {
+   "id": "2002277812838",
+   "title": "Community Band Experience",
+   "url": "https://www.eventbrite.ie/e/community-band-experience-tickets-2002277812838",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998749136472": {
+   "id": "1998749136472",
+   "title": "AI for Business, Cork Meetup",
+   "url": "https://www.eventbrite.ie/e/ai-for-business-cork-meetup-tickets-1998749136472",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1992751453240": {
+   "id": "1992751453240",
+   "title": "STEM South West Careers and Pathways Expo 2026",
+   "url": "https://www.eventbrite.ie/e/stem-south-west-careers-and-pathways-expo-2026-tickets-1992751453240",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999389471732": {
+   "id": "1999389471732",
+   "title": "An Interview Masterclass for NCHDs",
+   "url": "https://www.eventbrite.ie/e/an-interview-masterclass-for-nchds-tickets-1999389471732",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1997255675490": {
+   "id": "1997255675490",
+   "title": "EirSEDS Irish Student Space Conference",
+   "url": "https://www.eventbrite.ie/e/eirseds-irish-student-space-conference-tickets-1997255675490",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998429876557": {
+   "id": "1998429876557",
+   "title": "CREATING A CHRISTMAS WREATH | Workshop with Vivienne Brophy",
+   "url": "https://www.eventbrite.ie/e/creating-a-christmas-wreath-workshop-with-vivienne-brophy-tickets-1998429876557",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998481535069": {
+   "id": "1998481535069",
+   "title": "Ignite Insight: PPI in PhD Research Symposium 2026.",
+   "url": "https://www.eventbrite.ie/e/ignite-insight-ppi-in-phd-research-symposium-2026-tickets-1998481535069",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999377495912": {
+   "id": "1999377495912",
+   "title": "Moonlight Walk",
+   "url": "https://www.eventbrite.ie/e/moonlight-walk-tickets-1999377495912",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002448111205": {
+   "id": "2002448111205",
+   "title": "Monster Energy Beast Parlour at The Merchant, South Mall",
+   "url": "https://www.eventbrite.ie/e/monster-energy-beast-parlour-at-the-merchant-south-mall-tickets-2002448111205",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002666447254": {
+   "id": "2002666447254",
+   "title": "Free BrewBuddy Event",
+   "url": "https://www.eventbrite.com/e/free-brewbuddy-event-tickets-2002666447254",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001171526907": {
+   "id": "2001171526907",
+   "title": "Connect with MTU Research & Innovation: The Cyber Resilience Challenge",
+   "url": "https://www.eventbrite.ie/e/connect-with-mtu-research-innovation-the-cyber-resilience-challenge-tickets-2001171526907",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998531725189": {
+   "id": "1998531725189",
+   "title": "Connections that Count \u2013 Business Networking Event, Cork City",
+   "url": "https://www.eventbrite.ie/e/connections-that-count-business-networking-event-cork-city-tickets-1998531725189",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001245961543": {
+   "id": "2001245961543",
+   "title": "A Gathering of Cork City Community Education Providers",
+   "url": "https://www.eventbrite.ie/e/a-gathering-of-cork-city-community-education-providers-tickets-2001245961543",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1994421841416": {
+   "id": "1994421841416",
+   "title": "Alley Garden Sessions",
+   "url": "https://www.eventbrite.ie/e/alley-garden-sessions-tickets-1994421841416",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999475840062": {
+   "id": "1999475840062",
+   "title": "Farm Walk & Meet the Alpacas",
+   "url": "https://www.eventbrite.ie/e/farm-walk-meet-the-alpacas-tickets-1999475840062",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002077747437": {
+   "id": "2002077747437",
+   "title": "Writers Sara Baume and Caitr\u00edona Lally in conversation",
+   "url": "https://www.eventbrite.ie/e/writers-sara-baume-and-caitriona-lally-in-conversation-tickets-2002077747437",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000142938371": {
+   "id": "2000142938371",
+   "title": "Bingo & Beats",
+   "url": "https://www.eventbrite.ie/e/bingo-beats-tickets-2000142938371",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999359558260": {
+   "id": "1999359558260",
+   "title": "2026 Cork Halloween Food, Craft & Artisan Market",
+   "url": "https://www.eventbrite.com/e/2026-cork-halloween-food-craft-artisan-market-tickets-1999359558260",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1984052681981": {
+   "id": "1984052681981",
+   "title": "Cork - 5 Books That Could Save Your Life",
+   "url": "https://www.eventbrite.ie/e/cork-5-books-that-could-save-your-life-tickets-1984052681981",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001049422690": {
+   "id": "2001049422690",
+   "title": "Launch of MTU Digital Media Literacy OER",
+   "url": "https://www.eventbrite.ie/e/launch-of-mtu-digital-media-literacy-oer-tickets-2001049422690",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1994172271947": {
+   "id": "1994172271947",
+   "title": "OCTOBER - VISIT THE GARDENS AT LISMORE CASTLE & LISMORE CASTLE ARTS",
+   "url": "https://www.eventbrite.ie/e/october-visit-the-gardens-at-lismore-castle-lismore-castle-arts-tickets-1994172271947",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1994797341547": {
+   "id": "1994797341547",
+   "title": "John Spillane",
+   "url": "https://www.eventbrite.ie/e/john-spillane-tickets-1994797341547",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002195742363": {
+   "id": "2002195742363",
+   "title": "MCCI Technology Forum",
+   "url": "https://www.eventbrite.ie/e/mcci-technology-forum-tickets-2002195742363",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1995858103314": {
+   "id": "1995858103314",
+   "title": "Artist Talk by Jana Koelmel -  \"Anna - where love ends and hate begins\"",
+   "url": "https://www.eventbrite.com/e/artist-talk-by-jana-koelmel-anna-where-love-ends-and-hate-begins-tickets-1995858103314",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002059651311": {
+   "id": "2002059651311",
+   "title": "Wreath Making at Fernhill Hotel & Estate",
+   "url": "https://www.eventbrite.ie/e/wreath-making-at-fernhill-hotel-estate-tickets-2002059651311",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001061357387": {
+   "id": "2001061357387",
+   "title": "BONE CONDUCTION HEARING IMPLANT Course",
+   "url": "https://www.eventbrite.ie/e/bone-conduction-hearing-implant-course-tickets-2001061357387",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000523111479": {
+   "id": "2000523111479",
+   "title": "OM Chanting \u2013 Wilton, Cork",
+   "url": "https://www.eventbrite.ie/e/om-chanting-wilton-cork-tickets-2000523111479",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001023476083": {
+   "id": "2001023476083",
+   "title": "Roots & Stitches Workshop",
+   "url": "https://www.eventbrite.ie/e/roots-stitches-workshop-tickets-2001023476083",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001041207117": {
+   "id": "2001041207117",
+   "title": "CORK LAUNCH (Waterstones): Heat, Shelter, Water, Food by Harrison Gardner",
+   "url": "https://www.eventbrite.ie/e/cork-launch-waterstones-heat-shelter-water-food-by-harrison-gardner-tickets-2001041207117",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000169448664": {
+   "id": "2000169448664",
+   "title": "Cork in person recruitment day!",
+   "url": "https://www.eventbrite.ie/e/cork-in-person-recruitment-day-tickets-2000169448664",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999382809806": {
+   "id": "1999382809806",
+   "title": "Dawn Chorus - Sunrise Walk to Seefin",
+   "url": "https://www.eventbrite.ie/e/dawn-chorus-sunrise-walk-to-seefin-tickets-1999382809806",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002390349438": {
+   "id": "2002390349438",
+   "title": "ZOMBIELAND 2026 THE HILAND SPOOKTACULAND U18 SCAREFEST",
+   "url": "https://www.eventbrite.ie/e/zombieland-2026-the-hiland-spooktaculand-u18-scarefest-tickets-2002390349438",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999042827911": {
+   "id": "1999042827911",
+   "title": "Joyce Brothers Music Festival 8-11 Oct 2026",
+   "url": "https://www.eventbrite.ie/e/joyce-brothers-music-festival-8-11-oct-2026-tickets-1999042827911",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001881463346": {
+   "id": "2001881463346",
+   "title": "Recruitment Event with Chemist Warehouse",
+   "url": "https://www.eventbrite.ie/e/recruitment-event-with-chemist-warehouse-tickets-2001881463346",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999036582230": {
+   "id": "1999036582230",
+   "title": "Rhyme & Sign Storytime - Midleton",
+   "url": "https://www.eventbrite.ie/e/rhyme-sign-storytime-midleton-tickets-1999036582230",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000609203984": {
+   "id": "2000609203984",
+   "title": "The Power of Place: Telling the VQ Story",
+   "url": "https://www.eventbrite.ie/e/the-power-of-place-telling-the-vq-story-tickets-2000609203984",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001593537151": {
+   "id": "2001593537151",
+   "title": "Photography Walk \u2013 Georgian Mitchelstown",
+   "url": "https://www.eventbrite.ie/e/photography-walk-georgian-mitchelstown-tickets-2001593537151",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1982700663056": {
+   "id": "1982700663056",
+   "title": "Board Game Night for Remote and Hybrid Employees in Cork City",
+   "url": "https://www.eventbrite.ie/e/board-game-night-for-remote-and-hybrid-employees-in-cork-city-tickets-1982700663056",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001396648251": {
+   "id": "2001396648251",
+   "title": "Pop Culchie: An Evening at Waterstones with P\u00e1raic Kerrigan & Guests",
+   "url": "https://www.eventbrite.ie/e/pop-culchie-an-evening-at-waterstones-with-paraic-kerrigan-guests-tickets-2001396648251",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001371885184": {
+   "id": "2001371885184",
+   "title": "Cornelius & Guests - Stand Up Comedy",
+   "url": "https://www.eventbrite.ie/e/cornelius-guests-stand-up-comedy-tickets-2001371885184",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1997682618488": {
+   "id": "1997682618488",
+   "title": "Books & Brews: A Reading Social for Remote & Hybrid Workers in Cork",
+   "url": "https://www.eventbrite.ie/e/books-brews-a-reading-social-for-remote-hybrid-workers-in-cork-tickets-1997682618488",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1997207227581": {
+   "id": "1997207227581",
+   "title": "The Elders",
+   "url": "https://www.eventbrite.ie/e/the-elders-tickets-1997207227581",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1980618598545": {
+   "id": "1980618598545",
+   "title": "Fair Play Open Mic",
+   "url": "https://www.eventbrite.ie/e/fair-play-open-mic-tickets-1980618598545",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1993339234309": {
+   "id": "1993339234309",
+   "title": "William Jack - Australian Cellist - Cork 2026",
+   "url": "https://www.eventbrite.co.uk/e/william-jack-australian-cellist-cork-2026-tickets-1993339234309",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999760817437": {
+   "id": "1999760817437",
+   "title": "Bites and tales: a Basque evening",
+   "url": "https://www.eventbrite.com/e/bites-and-tales-a-basque-evening-tickets-1999760817437",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002285103645": {
+   "id": "2002285103645",
+   "title": "Book Launch - Once Upon A Road: The History & Times of an Irish Butter Road",
+   "url": "https://www.eventbrite.ie/e/book-launch-once-upon-a-road-the-history-times-of-an-irish-butter-road-tickets-2002285103645",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999396331249": {
+   "id": "1999396331249",
+   "title": "Ballyhoura Half-Marathon Walk \u2013 21km",
+   "url": "https://www.eventbrite.ie/e/ballyhoura-half-marathon-walk-21km-tickets-1999396331249",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002621660295": {
+   "id": "2002621660295",
+   "title": "Baltimore Fiddle Fair",
+   "url": "https://www.eventbrite.ie/e/baltimore-fiddle-fair-tickets-2002621660295",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1998482114803": {
+   "id": "1998482114803",
+   "title": "Cork Community Health Expo",
+   "url": "https://www.eventbrite.com/e/cork-community-health-expo-tickets-1998482114803",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1981486486421": {
+   "id": "1981486486421",
+   "title": "Gramophone Circle at the Rory Gallagher Music Library",
+   "url": "https://www.eventbrite.com/e/gramophone-circle-at-the-rory-gallagher-music-library-tickets-1981486486421",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1990871077987": {
+   "id": "1990871077987",
+   "title": "Transferring the Family Farm Clinics 2026",
+   "url": "https://www.eventbrite.ie/e/transferring-the-family-farm-clinics-2026-tickets-1990871077987",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001421420345": {
+   "id": "2001421420345",
+   "title": "Offline Book Club Cork City , 2026",
+   "url": "https://www.eventbrite.ie/e/offline-book-club-cork-city-2026-tickets-2001421420345",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1990985598521": {
+   "id": "1990985598521",
+   "title": "Games Night - Board & Cardgames in a Pub",
+   "url": "https://www.eventbrite.ie/e/games-night-board-cardgames-in-a-pub-tickets-1990985598521",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002385391609": {
+   "id": "2002385391609",
+   "title": "FREE Beginner Latin Dance Open Night \u2014 Find Your TRIBE This Autumn",
+   "url": "https://www.eventbrite.ie/e/free-beginner-latin-dance-open-night-find-your-tribe-this-autumn-tickets-2002385391609",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002793328760": {
+   "id": "2002793328760",
+   "title": "Magic Ferments",
+   "url": "https://www.eventbrite.com/e/magic-ferments-tickets-2002793328760",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002896614691": {
+   "id": "2002896614691",
+   "title": "Human Movement Skills",
+   "url": "https://www.eventbrite.ie/e/human-movement-skills-tickets-2002896614691",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002803183235": {
+   "id": "2002803183235",
+   "title": "Somatic Conscious Connected Breathwork - Small Group Session",
+   "url": "https://www.eventbrite.ie/e/somatic-conscious-connected-breathwork-small-group-session-tickets-2002803183235",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002792639699": {
+   "id": "2002792639699",
+   "title": "Learn Medieval Calligraphy",
+   "url": "https://www.eventbrite.com/e/learn-medieval-calligraphy-tickets-2002792639699",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002797808158": {
+   "id": "2002797808158",
+   "title": "Tolu Makay + Zaska",
+   "url": "https://www.eventbrite.ie/e/tolu-makay-zaska-tickets-2002797808158",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002800568414": {
+   "id": "2002800568414",
+   "title": "Yankari Afrobeat Collective perform the music of FELA KUTI",
+   "url": "https://www.eventbrite.ie/e/yankari-afrobeat-collective-perform-the-music-of-fela-kuti-tickets-2002800568414",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002860159653": {
+   "id": "2002860159653",
+   "title": "The People's Haunted House 4",
+   "url": "https://www.eventbrite.ie/e/the-peoples-haunted-house-4-tickets-2002860159653",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002860150626": {
+   "id": "2002860150626",
+   "title": "Aye Social Club",
+   "url": "https://www.eventbrite.ie/e/aye-social-club-tickets-2002860150626",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002166195989": {
+   "id": "2002166195989",
+   "title": "Guaya Halloween - October 30th",
+   "url": "https://www.eventbrite.ie/e/guaya-halloween-october-30th-tickets-2002166195989",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002830079683": {
+   "id": "2002830079683",
+   "title": "The Halloween Masquerade Party",
+   "url": "https://www.eventbrite.ie/e/the-halloween-masquerade-party-tickets-2002830079683",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001070293114": {
+   "id": "2001070293114",
+   "title": "In Conversation \u2013 \u00c9adaoin Glynn and Kim Crowley",
+   "url": "https://www.eventbrite.ie/e/in-conversation-eadaoin-glynn-and-kim-crowley-tickets-2001070293114",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002803546321": {
+   "id": "2002803546321",
+   "title": "Blend & Bubbles",
+   "url": "https://www.eventbrite.ie/e/blend-bubbles-tickets-2002803546321",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002797230430": {
+   "id": "2002797230430",
+   "title": "\u2764\ufe0f SINGLES FRIENDLY CORK \u2014 THE MARINA SKY WALK Ages 30-45",
+   "url": "https://www.eventbrite.ie/e/singles-friendly-cork-the-marina-sky-walk-ages-30-45-tickets-2002797230430",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1986077840284": {
+   "id": "1986077840284",
+   "title": "Country Music Circle",
+   "url": "https://www.eventbrite.com/e/country-music-circle-tickets-1986077840284",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002861148611": {
+   "id": "2002861148611",
+   "title": "Night Time Coop After Dark Yard Sale",
+   "url": "https://www.eventbrite.ie/e/night-time-coop-after-dark-yard-sale-tickets-2002861148611",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999781377934": {
+   "id": "1999781377934",
+   "title": "Cyber Resilience in the Era of AI | Cork",
+   "url": "https://www.eventbrite.ie/e/cyber-resilience-in-the-era-of-ai-cork-tickets-1999781377934",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002299821667": {
+   "id": "2002299821667",
+   "title": "The Art of Fermentation Mode & Multi Layered Cooking Class",
+   "url": "https://www.eventbrite.ie/e/the-art-of-fermentation-mode-multi-layered-cooking-class-tickets-2002299821667",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1997643015033": {
+   "id": "1997643015033",
+   "title": "The Impact Leadership Conference (Cork 2026)",
+   "url": "https://www.eventbrite.ie/e/the-impact-leadership-conference-cork-2026-registration-1997643015033",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002793729960": {
+   "id": "2002793729960",
+   "title": "Sunday Sanctuary",
+   "url": "https://www.eventbrite.ie/e/sunday-sanctuary-tickets-2002793729960",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1986837051104": {
+   "id": "1986837051104",
+   "title": "TRAD MUSIC NIGHT",
+   "url": "https://www.eventbrite.ie/e/trad-music-night-tickets-1986837051104",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002833842939": {
+   "id": "2002833842939",
+   "title": "Lampshade workshop Christmas gift idea all materials included",
+   "url": "https://www.eventbrite.ie/e/lampshade-workshop-christmas-gift-idea-all-materials-included-tickets-2002833842939",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999469260382": {
+   "id": "1999469260382",
+   "title": "Cnoc na Magairle \u2013 Western Galtees Walk",
+   "url": "https://www.eventbrite.ie/e/cnoc-na-magairle-western-galtees-walk-tickets-1999469260382",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001882189518": {
+   "id": "2001882189518",
+   "title": "Adventure in Europe! 3 - 5 years",
+   "url": "https://www.eventbrite.ie/e/adventure-in-europe-3-5-years-tickets-2001882189518",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1996239827060": {
+   "id": "1996239827060",
+   "title": "Creative Ageing: Guided Tour of Panorama Europa",
+   "url": "https://www.eventbrite.ie/e/creative-ageing-guided-tour-of-panorama-europa-tickets-1996239827060",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001396913043": {
+   "id": "2001396913043",
+   "title": "Closing the Loop: Best Practice & Innovation for Circular Nutrient Recovery",
+   "url": "https://www.eventbrite.ie/e/closing-the-loop-best-practice-innovation-for-circular-nutrient-recovery-tickets-2001396913043",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002822870119": {
+   "id": "2002822870119",
+   "title": "Rebel Comedy at The Blue Room - Kinsale",
+   "url": "https://www.eventbrite.ie/e/rebel-comedy-at-the-blue-room-kinsale-tickets-2002822870119",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1990745008911": {
+   "id": "1990745008911",
+   "title": "Ger O'Donnell And Trevor Sexton",
+   "url": "https://www.eventbrite.ie/e/ger-odonnell-and-trevor-sexton-tickets-1990745008911",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002118439147": {
+   "id": "2002118439147",
+   "title": "River Lee Water Quality Monitoring Workshop",
+   "url": "https://www.eventbrite.ie/e/river-lee-water-quality-monitoring-workshop-tickets-2002118439147",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999389228003": {
+   "id": "1999389228003",
+   "title": "Ballyhoura Mountains Marathon Walk - 42km",
+   "url": "https://www.eventbrite.ie/e/ballyhoura-mountains-marathon-walk-42km-tickets-1999389228003",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001713603272": {
+   "id": "2001713603272",
+   "title": "Bernard Casey Comedian",
+   "url": "https://www.eventbrite.com/e/bernard-casey-comedian-tickets-2001713603272",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000254352614": {
+   "id": "2000254352614",
+   "title": "UCC Launch, Cambridge History of Irish Poetry",
+   "url": "https://www.eventbrite.ie/e/ucc-launch-cambridge-history-of-irish-poetry-tickets-2000254352614",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999745565819": {
+   "id": "1999745565819",
+   "title": "The Hill of Ardpatrick \u2013 Guided Walk",
+   "url": "https://www.eventbrite.ie/e/the-hill-of-ardpatrick-guided-walk-tickets-1999745565819",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001179913993": {
+   "id": "2001179913993",
+   "title": "Practitioners Wellness Retreat",
+   "url": "https://www.eventbrite.ie/e/practitioners-wellness-retreat-tickets-2001179913993",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002311513638": {
+   "id": "2002311513638",
+   "title": "Folded Cranes & Fermented Grains",
+   "url": "https://www.eventbrite.ie/e/folded-cranes-fermented-grains-tickets-2002311513638",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001780250616": {
+   "id": "2001780250616",
+   "title": "2026 Cork Halloween Food, Craft & Artisan Market",
+   "url": "https://www.eventbrite.com/e/2026-cork-halloween-food-craft-artisan-market-tickets-2001780250616",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001376720647": {
+   "id": "2001376720647",
+   "title": "Dance & Coffee for Breast Cancer Ireland",
+   "url": "https://www.eventbrite.com/e/dance-coffee-for-breast-cancer-ireland-tickets-2001376720647",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1996827617156": {
+   "id": "1996827617156",
+   "title": "Cork French / English language exchange",
+   "url": "https://www.eventbrite.ie/e/cork-french-english-language-exchange-tickets-1996827617156",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1685531783939": {
+   "id": "1685531783939",
+   "title": "Rebel Comedy Club: Open Mic Night",
+   "url": "https://www.eventbrite.ie/e/rebel-comedy-club-open-mic-night-tickets-1685531783939",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1986315155099": {
+   "id": "1986315155099",
+   "title": "Joe the Magician Halloween Show",
+   "url": "https://www.eventbrite.ie/e/joe-the-magician-halloween-show-tickets-1986315155099",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002048399657": {
+   "id": "2002048399657",
+   "title": "Sl\u00ed Eile Halloween Fun Day Sat 24th October 2026",
+   "url": "https://www.eventbrite.com/e/sli-eile-halloween-fun-day-sat-24th-october-2026-tickets-2002048399657",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002720044565": {
+   "id": "2002720044565",
+   "title": "Neasa: Timeless Jazz Standards",
+   "url": "https://www.eventbrite.com/e/neasa-timeless-jazz-standards-tickets-2002720044565",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1995444632612": {
+   "id": "1995444632612",
+   "title": "Dahua Surveillance Training (DHSA-VSS) - Cork",
+   "url": "https://www.eventbrite.ie/e/dahua-surveillance-training-dhsa-vss-cork-tickets-1995444632612",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999471117938": {
+   "id": "1999471117938",
+   "title": "Keale River Valley Walk",
+   "url": "https://www.eventbrite.ie/e/keale-river-valley-walk-tickets-1999471117938",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002334252651": {
+   "id": "2002334252651",
+   "title": "Cork Folk Festival: William Jack on Cello",
+   "url": "https://www.eventbrite.com/e/cork-folk-festival-william-jack-on-cello-tickets-2002334252651",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001183173743": {
+   "id": "2001183173743",
+   "title": "Paul Tubb Presents: Please Return Barnaby",
+   "url": "https://www.eventbrite.ie/e/paul-tubb-presents-please-return-barnaby-tickets-2001183173743",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000257085789": {
+   "id": "2000257085789",
+   "title": "Cork Artisan & Makers Festival",
+   "url": "https://www.eventbrite.com/e/cork-artisan-makers-festival-tickets-2000257085789",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002690686755": {
+   "id": "2002690686755",
+   "title": "Ballyorgan, Keale River & Castlegale Guided Walk with Declan Clancy",
+   "url": "https://www.eventbrite.ie/e/ballyorgan-keale-river-castlegale-guided-walk-with-declan-clancy-registration-2002690686755",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2001577154149": {
+   "id": "2001577154149",
+   "title": "Slow Flow + Brew",
+   "url": "https://www.eventbrite.ie/e/slow-flow-brew-tickets-2001577154149",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999373409690": {
+   "id": "1999373409690",
+   "title": "Whistling Walk",
+   "url": "https://www.eventbrite.ie/e/whistling-walk-tickets-1999373409690",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1986968218429": {
+   "id": "1986968218429",
+   "title": "Temple Hill Guided Hike with Maureen O\u2019Brien - Galtee Mountains",
+   "url": "https://www.eventbrite.ie/e/temple-hill-guided-hike-with-maureen-obrien-galtee-mountains-registration-1986968218429",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002292556938": {
+   "id": "2002292556938",
+   "title": "The Museum at Your Pace: Sensory-Friendly Evenings at the Glucksman",
+   "url": "https://www.eventbrite.ie/e/the-museum-at-your-pace-sensory-friendly-evenings-at-the-glucksman-tickets-2002292556938",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002573491220": {
+   "id": "2002573491220",
+   "title": "Folk fest at the fort",
+   "url": "https://www.eventbrite.com/e/folk-fest-at-the-fort-tickets-2002573491220",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999467931407": {
+   "id": "1999467931407",
+   "title": "Trail of Teampuillin \u2013 Galtee Mountains",
+   "url": "https://www.eventbrite.ie/e/trail-of-teampuillin-galtee-mountains-tickets-1999467931407",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1989214396809": {
+   "id": "1989214396809",
+   "title": "Reggie's Farm  NEW SHOW!",
+   "url": "https://www.eventbrite.ie/e/reggies-farm-new-show-tickets-1989214396809",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1979515971558": {
+   "id": "1979515971558",
+   "title": "Penneys| Cork City| Visible Mending & Repair Workshop  | Free",
+   "url": "https://www.eventbrite.ie/e/penneys-cork-city-visible-mending-repair-workshop-free-tickets-1979515971558",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002554101224": {
+   "id": "2002554101224",
+   "title": "FRIGHT-ciscan Well",
+   "url": "https://www.eventbrite.ie/e/fright-ciscan-well-tickets-2002554101224",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1985198607475": {
+   "id": "1985198607475",
+   "title": "SPADE : MASTER MAGICIAN",
+   "url": "https://www.eventbrite.ie/e/spade-master-magician-tickets-1985198607475",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002334857460": {
+   "id": "2002334857460",
+   "title": "Cork Folk Festival: Kevin and Geraldine Gill",
+   "url": "https://www.eventbrite.com/e/cork-folk-festival-kevin-and-geraldine-gill-tickets-2002334857460",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002334330885": {
+   "id": "2002334330885",
+   "title": "Cork Folk Festival:  Enda McCabe",
+   "url": "https://www.eventbrite.com/e/cork-folk-festival-enda-mccabe-tickets-2002334330885",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000963448539": {
+   "id": "2000963448539",
+   "title": "UCC WShop for TY students with  vision, hearing or physical disabilities",
+   "url": "https://www.eventbrite.ie/e/ucc-wshop-for-ty-students-with-vision-hearing-or-physical-disabilities-tickets-2000963448539",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999785925536": {
+   "id": "1999785925536",
+   "title": "'Sounds Good to Me' Circle",
+   "url": "https://www.eventbrite.com/e/sounds-good-to-me-circle-tickets-1999785925536",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002614066582": {
+   "id": "2002614066582",
+   "title": "School of English and Digital Humanities Prize Giving 2026",
+   "url": "https://www.eventbrite.ie/e/school-of-english-and-digital-humanities-prize-giving-2026-tickets-2002614066582",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1999423369120": {
+   "id": "1999423369120",
+   "title": "Ballyhoura Valley Walk",
+   "url": "https://www.eventbrite.ie/e/ballyhoura-valley-walk-tickets-1999423369120",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000574932477": {
+   "id": "2000574932477",
+   "title": "Access UCC Workshop for secondary school students with low/no vision",
+   "url": "https://www.eventbrite.ie/e/access-ucc-workshop-for-secondary-school-students-with-lowno-vision-tickets-2000574932477",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1995457956464": {
+   "id": "1995457956464",
+   "title": "KING   Pat Kinevane/Fishamble",
+   "url": "https://www.eventbrite.ie/e/king-pat-kinevanefishamble-tickets-1995457956464",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002627397455": {
+   "id": "2002627397455",
+   "title": "Spirits Aligned- Leslie Dowdall Hugh Buckley and Myles Drennan",
+   "url": "https://www.eventbrite.com/e/spirits-aligned-leslie-dowdall-hugh-buckley-and-myles-drennan-tickets-2002627397455",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002334300795": {
+   "id": "2002334300795",
+   "title": "Cork Folk Festival: Sean O'Mahony",
+   "url": "https://www.eventbrite.com/e/cork-folk-festival-sean-omahony-tickets-2002334300795",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000257119891": {
+   "id": "2000257119891",
+   "title": "Work and Skills Job and Training Fair Macroom",
+   "url": "https://www.eventbrite.ie/e/work-and-skills-job-and-training-fair-macroom-tickets-2000257119891",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002762144487": {
+   "id": "2002762144487",
+   "title": "40th Anniversary Screening of The Mission with producer David Puttnam",
+   "url": "https://www.eventbrite.com/e/40th-anniversary-screening-of-the-mission-with-producer-david-puttnam-tickets-2002762144487",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002754006145": {
+   "id": "2002754006145",
+   "title": "Pause Space Community Circle",
+   "url": "https://www.eventbrite.ie/e/pause-space-community-circle-tickets-2002754006145",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1996366096736": {
+   "id": "1996366096736",
+   "title": "Stars of Irish Country Christmas Concert.",
+   "url": "https://www.eventbrite.ie/e/stars-of-irish-country-christmas-concert-tickets-1996366096736",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1979516022711": {
+   "id": "1979516022711",
+   "title": "Penneys | Cork City |  Knitwear  & Repair Workshop  | Free",
+   "url": "https://www.eventbrite.ie/e/penneys-cork-city-knitwear-repair-workshop-free-tickets-1979516022711",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000575686733": {
+   "id": "2000575686733",
+   "title": "Access UCC Workshop for Secondary  Students who are Deaf/hard of hearing",
+   "url": "https://www.eventbrite.ie/e/access-ucc-workshop-for-secondary-students-who-are-deafhard-of-hearing-tickets-2000575686733",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1996205819342": {
+   "id": "1996205819342",
+   "title": "The Museum at Your Pace: Sensory-Friendly Mornings at the Glucksman",
+   "url": "https://www.eventbrite.ie/e/the-museum-at-your-pace-sensory-friendly-mornings-at-the-glucksman-tickets-1996205819342",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000578785000": {
+   "id": "2000578785000",
+   "title": "Access UCC WShop for secondary  students with  Physical Disabilities",
+   "url": "https://www.eventbrite.ie/e/access-ucc-wshop-for-secondary-students-with-physical-disabilities-tickets-2000578785000",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "1996240252332": {
+   "id": "1996240252332",
+   "title": "Audio Described Tour: Panorama Europa",
+   "url": "https://www.eventbrite.ie/e/audio-described-tour-panorama-europa-tickets-1996240252332",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002891551547": {
+   "id": "2002891551547",
+   "title": "Nightmare on Scary Lane \u2013 Clondulane Halloween 2026",
+   "url": "https://www.eventbrite.ie/e/nightmare-on-scary-lane-clondulane-halloween-2026-tickets-2002891551547",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000581041750": {
+   "id": "2000581041750",
+   "title": "Access UCC Workshop for PRIMARY school  students with low/no vision",
+   "url": "https://www.eventbrite.ie/e/access-ucc-workshop-for-primary-school-students-with-lowno-vision-tickets-2000581041750",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000584355662": {
+   "id": "2000584355662",
+   "title": "Access UCC Workshop for PRIMARY Students who are Deaf/hard of hearing",
+   "url": "https://www.eventbrite.ie/e/access-ucc-workshop-for-primary-students-who-are-deafhard-of-hearing-tickets-2000584355662",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2002281033471": {
+   "id": "2002281033471",
+   "title": "CORK in IRELAND REMEMBERS: STORIES OF HOME, HARDSHIP AND SOLIDARITY",
+   "url": "https://www.eventbrite.ie/e/cork-in-ireland-remembers-stories-of-home-hardship-and-solidarity-tickets-2002281033471",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000586500076": {
+   "id": "2000586500076",
+   "title": "Access UCC WShop for PRIMARY students with  Physical Disabilities",
+   "url": "https://www.eventbrite.ie/e/access-ucc-wshop-for-primary-students-with-physical-disabilities-tickets-2000586500076",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000964846721": {
+   "id": "2000964846721",
+   "title": "Access UCC Summer Workshop for secondary school students with low/no vision",
+   "url": "https://www.eventbrite.ie/e/access-ucc-summer-workshop-for-secondary-school-students-with-lowno-vision-tickets-2000964846721",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  },
+  "2000965856742": {
+   "id": "2000965856742",
+   "title": "AccessUCC Summer WShop for Secondary  Students who are Deaf/hard of hearing",
+   "url": "https://www.eventbrite.ie/e/accessucc-summer-wshop-for-secondary-students-who-are-deafhard-of-hearing-tickets-2000965856742",
+   "online": false,
+   "locations": [],
+   "start": {},
+   "org": null
+  }
+ },
+ "errors": [
+  {
+   "page": 32,
+   "error": "HTTP Error 429: Too Many Requests"
+  },
+  {
+   "page": 33,
+   "error": "HTTP Error 429: Too Many Requests"
+  },
+  {
+   "page": 34,
+   "error": "HTTP Error 429: Too Many Requests"
+  },
+  {
+   "page": 35,
+   "error": "HTTP Error 429: Too Many Requests"
+  },
+  {
+   "page": 36,
+   "error": "HTTP Error 429: Too Many Requests"
+  },
+  {
+   "page": 37,
+   "error": "HTTP Error 429: Too Many Requests"
+  },
+  {
+   "page": 38,
+   "error": "HTTP Error 429: Too Many Requests"
+  },
+  {
+   "page": 39,
+   "error": "HTTP Error 429: Too Many Requests"
+  },
+  {
+   "page": 40,
+   "error": "HTTP Error 429: Too Many Requests"
+  },
+  {
+   "page": 41,
+   "error": "HTTP Error 429: Too Many Requests"
+  },
+  {
+   "page": 42,
+   "error": "HTTP Error 429: Too Many Requests"
+  },
+  {
+   "page": 43,
+   "error": "HTTP Error 429: Too Many Requests"
+  },
+  {
+   "page": 44,
+   "error": "HTTP Error 429: Too Many Requests"
+  },
+  {
+   "page": 45,
+   "error": "HTTP Error 429: Too Many Requests"
+  },
+  {
+   "page": 46,
+   "error": "HTTP Error 429: Too Many Requests"
+  },
+  {
+   "page": 47,
+   "error": "HTTP Error 429: Too Many Requests"
+  },
+  {
+   "page": 48,
+   "error": "HTTP Error 429: Too Many Requests"
+  },
+  {
+   "page": 49,
+   "error": "HTTP Error 429: Too Many Requests"
+  },
+  {
+   "page": 50,
+   "error": "HTTP Error 429: Too Many Requests"
+  },
+  {
+   "page": 51,
+   "error": "HTTP Error 429: Too Many Requests"
+  },
+  {
+   "page": 52,
+   "error": "HTTP Error 429: Too Many Requests"
+  },
+  {
+   "page": 53,
+   "error": "HTTP Error 429: Too Many Requests"
+  },
+  {
+   "page": 54,
+   "error": "HTTP Error 429: Too Many Requests"
+  },
+  {
+   "page": 55,
+   "error": "HTTP Error 429: Too Many Requests"
+  }
+ ],
+ "elapsed": 172.7,
+ "requests": 31
+}

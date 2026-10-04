@@ -1,0 +1,2 @@
+  59 passed, 0 failed
+GATE-RESULT {"gate": "eventbrite_token_retirement", "passed": 59, "failed": 0, "historical_references_retained": 6, "live_references": 0, "failures": []}

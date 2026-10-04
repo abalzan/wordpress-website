@@ -189,12 +189,59 @@ LOGGED (never silently accepted).
 a single source registration (relevant for Galway, Dublin). The 2026 form values
 are audited in `docs/importers/events-expansion-stage-a-audit.md`.
 
+### Eventbrite date-window sources (G8)
+
+The county `all-events` listing **truncates its own pagination**: `page_count`
+is pinned at exactly 49 for every county regardless of volume, while
+`object_count` runs from 1,547 (Cork) to 5,722 (Cavan). A large share of a
+county's events is therefore not reachable through it at all.
+
+Eventbrite's **date-window** listings (`events-today`, `events-tomorrow`,
+`events-this-week`) slice the same county population by time. Each slice is far
+smaller and declares a page count it can actually serve, so it can be walked to
+genuine completion.
+
+Measured on Cork, 2026-10-04:
+
+| Listing | declared pages | walked | unique events | outcome |
+|---|---:|---:|---:|---|
+| `all-events` | 49 (capped) | 31, then HTTP 429 | 618 | incomplete |
+| `events-this-week` | 16 | 16 | 304 | **complete, 0 errors** |
+| `events-today` | 2 | 2 | 23 | complete |
+| `events-tomorrow` | 2 | 2 | 23 | complete |
+| **window union** | — | 32 requests | 483 | **198 events the capped listing never reaches** |
+
+**These are configuration, not new architecture.** A date-window source has
+`type = eventbrite` and is handled by `Conexao_Source_Eventbrite` — the same
+adapter as the county listing, with a different discovery URL. Source IDs are
+`eventbrite_<county>_events_<window>` (e.g. `eventbrite_cork_events_this_week`).
+
+Every date-window source **ships `inactive`**, exactly like every other registry
+source. Enable one explicitly in Event Import → Event Sources.
+
+`events-this-month` is deliberately **not** registered: it measured 48 declared
+pages against the same 49-page cap, so it would cost requests without adding
+reachable coverage.
+
+Identity and deduplication are unchanged and deterministic:
+
+- identity is the **native Eventbrite event id** (`_event_source_id`), never an
+  array index, page number or title;
+- the same event reached through two sources carries the same canonical
+  Eventbrite URL, and `Conexao_Event_Deduplicator::find_by_url()` matches on it,
+  so one WordPress event is created — no fuzzy matching was introduced;
+- the county region gate is **unchanged**: eligibility comes from each event's
+  own `locations[].address.region`. The window URL confers nothing, so an event
+  outside the county is rejected even when a county window URL served it.
+
 **Seeding:** the county registry is **self-healing**. `Conexao_Event_Sources::get_all()`
-merges any missing county source on every read, so the complete 58-source registry
-is correct on every environment — a fresh activation, the local Docker stack, a CI
-fixture build and a restored database alike. `seed_county_sources()` remains
-available as an explicit, idempotent operator step, but it is **no longer
-required** to obtain the county coverage.
+merges any missing county source on every read, so the complete county registry
+(Eventbrite + Heritage Week + Eventbrite date-window sources) is correct on every
+environment — a fresh activation, the local Docker stack, a CI fixture build and a
+restored database alike. `seed_county_sources()` remains available as an explicit,
+idempotent operator step, but it is **no longer required** to obtain the county
+coverage. The registry count is derived from `Conexao_County_Registry`, never
+hard-coded in a test.
 
 This self-heal is deliberate and narrow:
 - it **only inserts** source ids that do not exist, so an operator's activated,
@@ -501,7 +548,17 @@ included) and recorded on the Import History row.
 - pagination terminated unexpectedly, including a forward link that resolved to
   an already-visited page;
 - the page limit was reached with pages still declared;
-- the source failed before it could be enumerated at all.
+- the source failed before it could be enumerated at all;
+- **the listing truncates its own pagination** (G8). Eventbrite pins
+  `page_count` at exactly 49 for every county while declaring a much larger
+  `object_count` — measured 2026-10-04: Cork 1,547, Dublin 5,162, Carlow
+  4,764, Cavan 5,722 objects behind 980 reachable slots. When
+  `object_count > page_count × page_size`, the walk marks itself incomplete
+  however cleanly every declared page was fetched. This guard is conservative
+  by construction: it can only downgrade complete → incomplete, which
+  suppresses a destructive reconciliation, and never authorises one;
+- **the source was skipped because it is in cooldown** (G9). See
+  [Source cooldown and recovery](#source-cooldown-and-recovery).
 
 **The critical rule: an incomplete enumeration must never trigger
 `mark_missing_events()`.** Absence from a truncated listing is not evidence that
@@ -782,13 +839,76 @@ Do **not** immediately re-run a rate-limited source: the cooldown is bounded,
 but hammering the upstream immediately is exactly the behaviour G5 removes.
 There is no permanent block and no scheduler: a new run always starts clean.
 
+### Source cooldown and recovery (G9)
+
+Measured 2026-10-04: a single Cork `all-events` walk was answered **HTTP 200 for
+pages 1–31 and HTTP 429 for pages 32–55**. A source that keeps being refused
+stays refused across runs, so G9 records that per source instead of letting the
+next run re-send doomed requests.
+
+`Conexao_Source_Cooldown` stores one bounded record per source
+(`conexao_event_source_cooldown`): `consecutive`, `last_reason`,
+`last_observed`, `cooldown_seconds`, `next_eligible`.
+
+**Which failures earn a cooldown**
+
+| Failure | Cooldown | Why |
+|---|---|---|
+| HTTP 429 | yes | re-sending immediately cannot help |
+| HTTP 405 | yes | this provider's WAF refusal code |
+| HTTP 5xx | yes | upstream is unhealthy |
+| transport failure | yes | we never reached it |
+| HTTP 404 | **no** | a fixable source must stay immediately retryable |
+| malformed / parse error | **no** | a broken source, not a throttled one |
+
+**Ladder.** Base 20 s (G5's measured rate-limit base), stepping to a ceiling of
+60 s (G5's existing cooldown ceiling): **20 s → 40 s → 60 s → 60 s → 60 s**. A
+different failure category restarts the ladder, so a WAF block does not inherit a
+429's accumulated delay.
+
+**What a cooldown does and does not do**
+
+- It **skips the source and sends zero requests**. Import History records the run
+  as `complete = false` with the reason and `next_eligible`.
+- It **never** marks a source complete or empty. A source in cooldown is
+  *unknown*, not *done*.
+- It **never** runs `mark_missing_events()`: the gate returns before any fetch.
+- It **never** disables a source, and **never** retries on its own. There is no
+  scheduler and no automatic retry loop. Deferring the request is the whole
+  intervention.
+- It clears automatically once **one complete, non-empty enumeration** succeeds.
+  An incomplete or empty walk does **not** prove recovery, so the cooldown stands.
+
+Pressing *Run import* during the window reports:
+
+> Not attempted: … is in cooldown after a rate_limited response. No request was
+> sent. Try again in about 40 seconds, or clear the cooldown if you believe this
+> is wrong.
+
+**Cadence.** No automatic schedule is implemented, deliberately: choosing one
+requires source-volatility measurements that have not been taken yet. Scheduling
+by intuition was refused rather than shipped.
+
 ## Diagnostics: Import History, Import Logs and run correlation
 
 ## Diagnostics: Import History, Import Logs and run correlation
 
 - **Import History** (`conexao_event_import_history`, 100 rows) records
   **run-level** status per source: counts, `status`, a human-readable message,
-  `fatal_errors`, `failed_events`, `run_id`, and the `complete` flag.
+  `fatal_errors`, `failed_events`, `run_id`, the `complete` flag, and (G9) a
+  bounded `cooldown` shape — `cooling_down`, `seconds_remaining`,
+  `next_eligible`, `last_reason`, `consecutive`.
+
+  The screen renders two columns from this (G9):
+
+  | Column | Answers |
+  |---|---|
+  | **Listing** | Was the source fully enumerated, or did we see only part of it? |
+  | **Cooldown** | Is it cooling down, why, and how long until I may retry? |
+
+  `Listing = complete` is the **only** state in which a run may have marked
+  absent events `source_not_found`, so it is the column that decides whether a
+  re-run is worth anything.
 - **Import Logs** (`conexao_event_import_log`, 2,000 entries) preserve
   **diagnostic** entries: per-page and per-source detail with HTTP status and
   URL context. These are the records an operator reads to explain a failed run.

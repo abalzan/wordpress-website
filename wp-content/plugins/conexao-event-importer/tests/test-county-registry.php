@@ -368,12 +368,12 @@ update_option( $option_key, $only_legacy, false );
 $repaired = $sources_mgr->get_all();
 
 assert_true(
-	52 === count( $sources_mgr->get_county_source_ids() ),
-	'Self-heal: a 6-source environment is completed to 52 county sources by get_all() alone'
+	count( Conexao_County_Registry::get_all_county_sources() ) === count( $sources_mgr->get_county_source_ids() ),
+	'Self-heal: a 6-source environment is completed to the full county source registry by get_all() alone'
 );
 assert_true(
-	58 === count( $repaired ),
-	'Self-heal: registry holds 58 sources (6 legacy defaults + 52 county)'
+	count( $repaired ) === count( $only_legacy ) + count( Conexao_County_Registry::get_all_county_sources() ),
+	'Self-heal: registry holds every legacy default plus every county source (G8: count derives from the registry, never a hardcoded literal)'
 );
 
 // Every one of the 26 counties is represented by BOTH providers.
@@ -440,7 +440,10 @@ assert_true( $exact_match, 'Every restored county source matches Conexao_County_
 // With the registry already complete, the manual operator step is a no-op.
 $result2 = $sources_mgr->seed_county_sources();
 assert_true( 0 === $result2['inserted'], 'Explicit seed after self-heal: 0 inserted (idempotent)' );
-assert_true( 52 === $result2['skipped'], 'Explicit seed after self-heal: 52 skipped (idempotent)' );
+assert_true(
+	count( Conexao_County_Registry::get_all_county_sources() ) === $result2['skipped'],
+	'Explicit seed after self-heal: every registry source is skipped (idempotent)'
+);
 
 // --- 13c: NO DUPLICATE REGISTRATIONS --------------------------------------
 //
@@ -486,7 +489,10 @@ assert_true(
 // --- 13f: AN EMPTY OPTION SELF-HEALS TO THE FULL REGISTRY ----------------
 delete_option( $option_key );
 $from_empty = $sources_mgr->get_all();
-assert_true( 58 === count( $from_empty ), 'An empty/absent option self-heals to the full 58-source registry' );
+assert_true(
+	count( $from_empty ) === count( $sources_mgr->get_defaults() ) + count( Conexao_County_Registry::get_all_county_sources() ),
+	'An empty/absent option self-heals to the complete registry (count derived from the registry)'
+);
 
 // Restore the exact environment state this test found.
 if ( is_array( $snapshot ) && array() !== $snapshot ) {

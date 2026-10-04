@@ -1,0 +1,17 @@
+ M docs/evidence/2026-09-26-stage-l/gate.json
+ M docs/plugins/conexao-event-importer.md
+ M wp-content/plugins/conexao-event-importer/conexao-event-importer.php
+ M wp-content/plugins/conexao-event-importer/includes/class-county-registry.php
+ M wp-content/plugins/conexao-event-importer/includes/class-event-importer.php
+ M wp-content/plugins/conexao-event-importer/includes/class-event-sources.php
+ M wp-content/plugins/conexao-event-importer/includes/class-import-history.php
+ M wp-content/plugins/conexao-event-importer/includes/sources/abstract-class-source.php
+ M wp-content/plugins/conexao-event-importer/includes/sources/class-eventbrite-source.php
+ M wp-content/plugins/conexao-event-importer/languages/conexao-event-importer.pot
+ M wp-content/plugins/conexao-event-importer/tests/test-county-registry.php
+?? docs/evidence/2026-10-04-eventbrite-g8-source-expansion/
+?? docs/evidence/2026-10-04-eventbrite-g9-operational-hardening/
+?? docs/reports/2026-10-04-eventbrite-g8-source-expansion.md
+?? docs/reports/2026-10-04-eventbrite-g9-operational-hardening.md
+?? wp-content/plugins/conexao-event-importer/includes/class-source-cooldown.php
+?? wp-content/plugins/conexao-event-importer/tests/test-eventbrite-source-expansion.php

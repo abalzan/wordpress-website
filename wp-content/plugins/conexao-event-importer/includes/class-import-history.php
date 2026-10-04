@@ -63,6 +63,20 @@ class Conexao_Import_History {
 			$entry['complete'] = (bool) $extra['complete'];
 		}
 
+		// G9 §26/§29: cooldown state is part of the run record, so Import
+		// History stays the ONE place an operator looks for "why was this not
+		// retried / when may I retry". Bounded to a small fixed shape — this is
+		// per run, not per request.
+		if ( ! empty( $extra['cooldown'] ) && is_array( $extra['cooldown'] ) ) {
+			$entry['cooldown'] = array(
+				'cooling_down'      => ! empty( $extra['cooldown']['cooling_down'] ),
+				'seconds_remaining' => isset( $extra['cooldown']['seconds_remaining'] ) ? (int) $extra['cooldown']['seconds_remaining'] : 0,
+				'next_eligible'     => isset( $extra['cooldown']['next_eligible'] ) ? sanitize_text_field( (string) $extra['cooldown']['next_eligible'] ) : '',
+				'last_reason'       => isset( $extra['cooldown']['last_reason'] ) ? sanitize_key( (string) $extra['cooldown']['last_reason'] ) : '',
+				'consecutive'       => isset( $extra['cooldown']['consecutive'] ) ? (int) $extra['cooldown']['consecutive'] : 0,
+			);
+		}
+
 		array_unshift( $history, $entry );
 		$history = array_slice( $history, 0, self::MAX_ENTRIES );
 

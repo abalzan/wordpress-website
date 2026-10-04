@@ -78,6 +78,62 @@ class Conexao_Source_Eventbrite extends Conexao_Source_Base {
 	}
 
 	/**
+	 * How many objects this listing can ever expose through its own pagination.
+	 *
+	 * `page_count × page_size` is the hard ceiling the upstream offers. Anything
+	 * beyond it is not reachable through this listing, whatever the walk does.
+	 *
+	 * @param int $page_count Declared page count.
+	 * @param int $page_size  Declared page size (0 when the payload omits it).
+	 * @return int Reachable ceiling; 0 when it cannot be derived.
+	 */
+	protected function reachable_object_ceiling( $page_count, $page_size ) {
+		$page_count = (int) $page_count;
+		$page_size  = (int) $page_size;
+
+		if ( $page_count <= 0 || $page_size <= 0 ) {
+			return 0;
+		}
+
+		return $page_count * $page_size;
+	}
+
+	/**
+	 * Whether the listing declares more objects than its pagination can expose.
+	 *
+	 * G8. A listing that reports `object_count > page_count × page_size` is
+	 * truncating its own results. The measured live evidence is in
+	 * fetch_via_scrape(); the short version is that Eventbrite pins
+	 * `page_count` at 49 for every county while declaring 1,547 (Cork) to
+	 * 5,722 (Cavan) objects.
+	 *
+	 * When the payload does not state a page size the ceiling is unknowable, and
+	 * this returns false — the conservative choice. An unknowable ceiling must
+	 * not silently downgrade a legitimately complete small listing.
+	 *
+	 * @param int $object_count Declared object count.
+	 * @param int $page_count   Declared page count.
+	 * @param int $page_size    Declared page size.
+	 * @return bool True when the listing truncates its own results.
+	 */
+	protected function is_upstream_truncated( $object_count, $page_count, $page_size ) {
+		$object_count = (int) $object_count;
+		$ceiling      = $this->reachable_object_ceiling( $page_count, $page_size );
+
+		if ( 0 === $ceiling ) {
+			return false;
+		}
+
+		// A payload that declares no objects is not evidence of truncation; that
+		// case is handled by the first-page fail-closed rules, not here.
+		if ( $object_count <= 0 ) {
+			return false;
+		}
+
+		return $object_count > $ceiling;
+	}
+
+	/**
 	 * The pacing / rate-limit policy for this walk.
 	 *
 	 * G5: one policy instance per run, shared across every Eventbrite source,
@@ -227,6 +283,7 @@ class Conexao_Source_Eventbrite extends Conexao_Source_Base {
 
 		$page_count   = isset( $page_data['pagination']['page_count'] ) ? (int) $page_data['pagination']['page_count'] : 1;
 		$object_count = isset( $page_data['pagination']['object_count'] ) ? (int) $page_data['pagination']['object_count'] : 0;
+		$page_size    = isset( $page_data['pagination']['page_size'] ) ? (int) $page_data['pagination']['page_size'] : 0;
 
 		Conexao_Import_Log::add(
 			$this->get_id(),
@@ -236,6 +293,61 @@ class Conexao_Source_Eventbrite extends Conexao_Source_Base {
 		);
 
 		$all_events = isset( $page_data['events'] ) ? $page_data['events'] : array();
+
+		/*
+		 * G8 — upstream pagination truncation is NOT completeness.
+		 *
+		 * Measured 2026-10-04 against the live public listing: Eventbrite pins
+		 * `page_count` at exactly 49 for every county regardless of volume,
+		 * while declaring a much larger `object_count`:
+		 *
+		 *     Cork   object_count=1547  page_count=49  ->  980 reachable (567 lost)
+		 *     Dublin object_count=5162  page_count=49  ->  980 reachable (4182 lost)
+		 *     Cavan  object_count=5722  page_count=49  ->  980 reachable (4742 lost)
+		 *
+		 * A walk that reaches the declared last page has therefore still NOT
+		 * enumerated the source: the upstream itself is withholding the rest
+		 * behind a pagination cap. Treating that as complete is exactly the
+		 * condition under which `mark_missing_events()` is allowed to hide live
+		 * events, so it must be refused here.
+		 *
+		 * This guard is conservative by construction. It can only downgrade
+		 * complete -> incomplete, which suppresses a destructive
+		 * reconciliation; it can never authorise one. A source whose declared
+		 * objects genuinely fit inside its declared pages (a small county, or
+		 * a date-window listing) is unaffected and stays complete.
+		 */
+		if ( $this->is_upstream_truncated( $object_count, $page_count, $page_size ) ) {
+			$this->mark_fetch_incomplete();
+
+			$incomplete_reason = sprintf(
+				'upstream pagination truncation: %d objects declared but only %d reachable through %d page(s) of %d',
+				$object_count,
+				$this->reachable_object_ceiling( $page_count, $page_size ),
+				(int) $page_count,
+				(int) $page_size
+			);
+
+			Conexao_Import_Log::add(
+				$this->get_id(),
+				'warning',
+				sprintf(
+					/* translators: 1: declared object count, 2: page count, 3: page size */
+					__( 'Eventbrite enumeration is INCOMPLETE: this listing declares %1$d objects but its own pagination exposes only %2$d pages of %3$d, so the remaining events are not reachable through this listing. They were left untouched (not marked source_not_found).', 'conexao-event-importer' ),
+					(int) $object_count,
+					(int) $page_count,
+					(int) $page_size
+				),
+				array(
+					'reason'       => 'incomplete_enumeration',
+					'reason_code'  => 'upstream_truncated',
+					'object_count' => (int) $object_count,
+					'page_count'   => (int) $page_count,
+					'page_size'    => (int) $page_size,
+					'run_id'       => $this->get_current_run_id(),
+				)
+			);
+		}
 
 		// Walk remaining pages.
 		//
@@ -465,6 +577,10 @@ class Conexao_Source_Eventbrite extends Conexao_Source_Base {
 			sprintf( 'Eventbrite: %d %s events after filtering, %d skipped (non-%s or online).', count( $raw_events ), $this->get_county(), $this->get_county(), $skipped ),
 			array( 'run_id' => $this->get_current_run_id() )
 		);
+
+		// G9: record what this enumeration actually produced, so the engine can
+		// distinguish a real listing from a response that proved nothing.
+		$this->fetched_event_count = count( $raw_events );
 
 		return $raw_events;
 	}

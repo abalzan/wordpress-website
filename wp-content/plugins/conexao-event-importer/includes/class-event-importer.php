@@ -381,6 +381,75 @@ class Conexao_Event_Importer_Engine {
 			);
 		}
 
+		/*
+		 * G9 — source-level cooldown.
+		 *
+		 * A source that recently answered 429 / WAF / 5xx is not retried inside
+		 * its cooldown window. This closes the operator retry loop: pressing
+		 * "Run" again immediately would otherwise re-send requests the upstream
+		 * is already refusing, making the limiting worse and yielding nothing.
+		 *
+		 * Truthfulness is the load-bearing part. A skipped source is UNKNOWN, not
+		 * empty and not complete, so this:
+		 *   - returns a failed status with an explicit, actionable reason;
+		 *   - records the run as INCOMPLETE, so `mark_missing_events()` can
+		 *     never run for a source that was never actually asked;
+		 *   - sends zero requests (the whole point).
+		 *
+		 * It does not disable the source and does not retry on its own: when
+		 * the window elapses the source becomes eligible again and the operator
+		 * decides.
+		 */
+		if ( class_exists( 'Conexao_Source_Cooldown' ) && Conexao_Source_Cooldown::is_cooling_down( $source_id ) ) {
+			$remaining = Conexao_Source_Cooldown::get_seconds_remaining( $source_id );
+			$state     = Conexao_Source_Cooldown::get_state( $source_id );
+
+			$message = sprintf(
+				/* translators: 1: source name, 2: seconds remaining, 3: reason code */
+				__( 'Not attempted: %1$s is in cooldown after a %3$s response. No request was sent. Try again in about %2$d seconds, or clear the cooldown if you believe this is wrong.', 'conexao-event-importer' ),
+				$source['name'],
+				(int) $remaining,
+				'' !== $state['last_reason'] ? $state['last_reason'] : 'transient'
+			);
+
+			Conexao_Import_Log::add(
+				$source_id,
+				'warning',
+				$message,
+				array(
+					'reason'           => 'cooldown',
+					'reason_code'      => 'cooldown',
+					'cooldown_seconds' => (int) $remaining,
+					'next_eligible'    => $state['next_eligible'],
+					'run_id'           => $this->current_run_id,
+				)
+			);
+
+			$result = new Conexao_Import_Result( $source_id, $source['name'] );
+			$result->add_fatal_error( $message );
+			$result->add_incomplete_enumeration( $message );
+			$this->update_source_stats_after_run( $source_id, $result );
+
+			Conexao_Import_History::record(
+				$source_id,
+				$result->get_stats(),
+				$result->get_status(),
+				$message,
+				array(
+					'run_id'       => $this->current_run_id,
+					'fatal_errors' => $result->get_fatal_errors(),
+					// Never complete: the source was not asked at all.
+					'complete'     => false,
+					'cooldown'     => $state,
+				)
+			);
+
+			$stats             = $result->get_stats();
+			$stats['cooldown'] = $state;
+
+			return $stats;
+		}
+
 		$result = new Conexao_Import_Result( $source_id, $source['name'] );
 
 		// Log the start of the run for lifecycle tracking.
@@ -441,6 +510,9 @@ class Conexao_Event_Importer_Engine {
 			);
 			$result->add_fatal_error( $message, $e->getMessage() );
 			$result->add_incomplete_enumeration( $message );
+			// G9: a throttled or unreachable upstream earns a bounded, source-level
+			// cooldown so the next run does not immediately re-send doomed requests.
+			$this->record_throttle_cooldown( $source_id, $e->get_http_status() );
 			$this->update_source_stats_after_run( $source_id, $result );
 			Conexao_Import_History::record(
 				$source_id,
@@ -754,6 +826,13 @@ class Conexao_Event_Importer_Engine {
 		// Update the source's last-import metadata.
 		$this->update_source_stats_after_run( $source_id, $result );
 
+		// G9: this source answered us, so any cooldown on it is over. Clearing
+		// here is what makes recovery observable instead of requiring an
+		// operator to guess whether a manual reset is needed.
+		if ( class_exists( 'Conexao_Source_Cooldown' ) && $this->can_clear_cooldown( $handler ) ) {
+			Conexao_Source_Cooldown::record_recovered( $source_id );
+		}
+
 		// Build a human-readable summary message.
 		$message = $this->build_summary_message( $result );
 
@@ -768,6 +847,11 @@ class Conexao_Event_Importer_Engine {
 				'fatal_errors'  => $result->get_fatal_errors(),
 				'failed_events' => $result->get_failed_events(),
 				'complete'      => $result->is_enumeration_incomplete() ? false : true,
+				// G9 §29: cooldown state travels with every entry so Import
+				// History stays the single operational surface.
+				'cooldown'      => class_exists( 'Conexao_Source_Cooldown' )
+					? Conexao_Source_Cooldown::get_state( $source_id )
+					: array(),
 			)
 		);
 
@@ -1889,6 +1973,84 @@ class Conexao_Event_Importer_Engine {
 			return true;
 		}
 		return (bool) $handler->is_fetch_complete();
+	}
+
+	/**
+	 * Whether a completed fetch is evidence that a throttle has cleared.
+	 *
+	 * G9. Only a real, non-empty HTTP 200 response proves the upstream is
+	 * answering again. A handler that produced nothing — or that walked pages
+	 * only as far as the request budget allowed — has NOT proven recovery, so
+	 * its cooldown must survive. Clearing it there would let a still-throttled
+	 * source re-enter the next run immediately and re-trip the limit, which is
+	 * exactly the retry loop cooldown exists to break.
+	 *
+	 * @param object|null $handler Source handler that produced the events.
+	 * @return bool True when the cooldown may be cleared.
+	 */
+	protected function can_clear_cooldown( $handler ) {
+		if ( ! class_exists( 'Conexao_Source_Cooldown' ) ) {
+			return false;
+		}
+
+		$has_events = method_exists( $handler, 'has_fetched_events' )
+			? (bool) $handler->has_fetched_events()
+			: false;
+
+		if ( ! $has_events ) {
+			return false;
+		}
+
+		// A source that walked only part of its listing has not proven it is
+		// healthy, even if it did return some pages.
+		if ( method_exists( $handler, 'is_fetch_complete' ) && ! $handler->is_fetch_complete() ) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Classify a fetch failure and record a cooldown when it was a throttle.
+	 *
+	 * G9. Only *throttling* earns a cooldown. A 404, a 403 that is not a WAF
+	 * challenge, or a malformed body is a broken source, and putting it to
+	 * sleep would only delay an operator's legitimate fix — so those are
+	 * deliberately left to `Conexao_Source_Health`, which is informational.
+	 *
+	 * Status 0 means the request never completed (DNS/TLS/timeout), which IS
+	 * treated as a network throttle: re-sending instantly cannot help.
+	 *
+	 * @param string $source_id   Source slug.
+	 * @param int    $http_status HTTP status, or 0 for a transport failure.
+	 * @return string The classified reason ('' when no cooldown was recorded).
+	 */
+	protected function record_throttle_cooldown( $source_id, $http_status ) {
+		if ( ! class_exists( 'Conexao_Source_Cooldown' ) ) {
+			return '';
+		}
+
+		$status = (int) $http_status;
+		$reason = '';
+
+		if ( 429 === $status ) {
+			$reason = 'rate_limited';
+		} elseif ( 405 === $status ) {
+			// G1-G5 established 405 as this provider's WAF refusal code.
+			$reason = 'waf';
+		} elseif ( $status >= 500 ) {
+			$reason = 'server_error';
+		} elseif ( 0 === $status ) {
+			$reason = 'network';
+		}
+
+		if ( '' === $reason ) {
+			return '';
+		}
+
+		Conexao_Source_Cooldown::record_throttled( $source_id, $reason );
+
+		return $reason;
 	}
 
 	/**

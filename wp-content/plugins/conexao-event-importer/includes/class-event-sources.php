@@ -1318,6 +1318,8 @@ class Conexao_Event_Sources {
 							<th><?php esc_html_e( 'Skipped', 'conexao-event-importer' ); ?></th>
 							<th><?php esc_html_e( 'Errors', 'conexao-event-importer' ); ?></th>
 							<th><?php esc_html_e( 'Status', 'conexao-event-importer' ); ?></th>
+							<th><?php esc_html_e( 'Listing', 'conexao-event-importer' ); ?></th>
+							<th><?php esc_html_e( 'Cooldown', 'conexao-event-importer' ); ?></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -1336,6 +1338,49 @@ class Conexao_Event_Sources {
 									<span class="conexao-status-badge conexao-status-badge--<?php echo esc_attr( $entry['status'] ); ?>">
 										<?php echo esc_html( $entry['status'] ); ?>
 									</span>
+								</td>
+								<td>
+									<?php
+									/*
+									 * G9 §29. An operator must be able to tell "this
+									 * source had nothing new" apart from "this
+									 * source was never fully enumerated", which is
+									 * the distinction that decides whether a
+									 * re-run is worth anything.
+									 */
+									$is_complete = array_key_exists( 'complete', $entry ) ? (bool) $entry['complete'] : true;
+									echo esc_html(
+										$is_complete
+											? __( 'complete', 'conexao-event-importer' )
+											: __( 'incomplete', 'conexao-event-importer' )
+									);
+									?>
+								</td>
+								<td>
+									<?php
+									$cool = isset( $entry['cooldown'] ) && is_array( $entry['cooldown'] ) ? $entry['cooldown'] : array();
+
+									if ( ! empty( $cool['cooling_down'] ) ) {
+										$reason_label = isset( $cool['last_reason'] ) ? (string) $cool['last_reason'] : 'throttled';
+										$seconds_left = isset( $cool['seconds_remaining'] ) ? (int) $cool['seconds_remaining'] : 0;
+										$text         = sprintf(
+											/* translators: 1: reason code, 2: seconds remaining */
+											__( 'cooling down (%1$s) — retry in ~%2$ds', 'conexao-event-importer' ),
+											$reason_label,
+											(string) $seconds_left
+										);
+									} elseif ( ! empty( $cool['last_reason'] ) ) {
+										$text = sprintf(
+											/* translators: %s: reason code */
+											__( 'cleared (last: %s)', 'conexao-event-importer' ),
+											(string) $cool['last_reason']
+										);
+									} else {
+										$text = __( '—', 'conexao-event-importer' );
+									}
+
+									echo esc_html( $text );
+									?>
 								</td>
 							</tr>
 						<?php endforeach; ?>
