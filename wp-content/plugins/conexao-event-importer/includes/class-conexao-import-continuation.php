@@ -260,6 +260,22 @@ class Conexao_Import_Continuation {
 		$map = get_option( self::OPTION_KEY, array() );
 
 		if ( ! is_array( $map ) ) {
+			/*
+			 * A malformed row is never meaningful state, and it can only have
+			 * come from a WRITER, not from this class: every write here passes
+			 * an array. The one writer known to have produced this shape is the
+			 * test harness's option isolation, which used to restore the RAW
+			 * serialised value from `wp_load_alloptions()` and so stored a
+			 * double-serialised string (fixed in tests/lib/option-isolation.php
+			 * — see the comment there).
+			 *
+			 * The state is already lost by the time we read it, so the only
+			 * useful action is to repair the row instead of leaving a value
+			 * that every future read has to defend against. Repairing is
+			 * therefore explicit, and it is the ONLY write in a read path.
+			 */
+			update_option( self::OPTION_KEY, array(), true );
+
 			return array();
 		}
 

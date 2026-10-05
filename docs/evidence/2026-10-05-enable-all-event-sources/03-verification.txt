@@ -1,0 +1,24 @@
+=== registry state after the apply ===
+total=136 active=3 inactive=133
+  type=icalendar active=1 other=0
+  type=website active=1 other=3
+  type=eventbrite active=1 other=104
+  type=heritage_week active=0 other=26
+--- the active ones ---
+
+=== idempotence: the identical command re-run ===
+  eventbrite_wicklow_events_this_week            inactive  -> active
+unchanged: 3 already active
+summary: status=active, selected=133, changed=133, unchanged=3, excluded=0, errors=0
+
+=== option shapes (the harness-defect measurement) ===
+conexao_event_import_continuations => len=6 autoload=off head=a:0:{}
+conexao_event_enumeration_checkpoints => len=6716 autoload=off head=a:21:{s:8:"g5c_walk";a:9:{s:14:"schema_version";i:1;s:9:"source_id";s:8:"g5c_walk";s:11:"f
+conexao_event_sources => len=65517 autoload=off head=a:136:{s:13:"laois_tourism";a:10:{s:2:"id";s:13:"laois_tourism";s:4:"name";s:13:"Laois Tou
+
+=== no import was triggered: no continuation, no armed event ===
+continuations: 0
+history entries: 0
+newest history: (none)
+cron armed: no
+sources active: 136 / 136

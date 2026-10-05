@@ -1,0 +1,1386 @@
+
+Notice: $_SERVER['HTTP_HOST'] or $_SERVER['REQUEST_URI'] are required but not set. in /var/www/html/wp-content/plugins/polylang/src/functions.php on line 81
+[05-Oct-2026 19:24:22 UTC] PHP Notice:  $_SERVER['HTTP_HOST'] or $_SERVER['REQUEST_URI'] are required but not set. in /var/www/html/wp-content/plugins/polylang/src/functions.php on line 81
+script: set-event-source-status.php
+target: http://localhost:8080 (local, local)
+mode:   apply
+scope:  the conexao_event_sources registry option only, through the same Conexao_Event_Sources::set_status() the admin screen uses. No content write of any kind: no post, meta, taxonomy term, attachment or language relationship. Sources are never created, deleted or renamed.
+{
+    "script": "set-event-source-status.php",
+    "target": "http://localhost:8080",
+    "mode": "apply",
+    "scope": "the conexao_event_sources registry option only, through the same Conexao_Event_Sources::set_status() the admin screen uses. No content write of any kind: no post, meta, taxonomy term, attachment or language relationship. Sources are never created, deleted or renamed.",
+    "plan": [
+        {
+            "id": "ivvcc",
+            "type": "website",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "motorsport_ireland",
+            "type": "website",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "mondello_park",
+            "type": "website",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_carlow",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_cavan",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_clare",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_cork",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_donegal",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_dublin",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_galway",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_kerry",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_kildare",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_kilkenny",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_laois",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_leitrim",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_limerick",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_longford",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_louth",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_mayo",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_meath",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_monaghan",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_offaly",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_roscommon",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_sligo",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_tipperary",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_waterford",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_westmeath",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_wexford",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_wicklow",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "heritage_week_carlow",
+            "type": "heritage_week",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "heritage_week_cavan",
+            "type": "heritage_week",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "heritage_week_clare",
+            "type": "heritage_week",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "heritage_week_cork",
+            "type": "heritage_week",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "heritage_week_donegal",
+            "type": "heritage_week",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "heritage_week_dublin",
+            "type": "heritage_week",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "heritage_week_galway",
+            "type": "heritage_week",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "heritage_week_kerry",
+            "type": "heritage_week",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "heritage_week_kildare",
+            "type": "heritage_week",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "heritage_week_kilkenny",
+            "type": "heritage_week",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "heritage_week_laois",
+            "type": "heritage_week",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "heritage_week_leitrim",
+            "type": "heritage_week",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "heritage_week_limerick",
+            "type": "heritage_week",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "heritage_week_longford",
+            "type": "heritage_week",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "heritage_week_louth",
+            "type": "heritage_week",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "heritage_week_mayo",
+            "type": "heritage_week",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "heritage_week_meath",
+            "type": "heritage_week",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "heritage_week_monaghan",
+            "type": "heritage_week",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "heritage_week_offaly",
+            "type": "heritage_week",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "heritage_week_roscommon",
+            "type": "heritage_week",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "heritage_week_sligo",
+            "type": "heritage_week",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "heritage_week_tipperary",
+            "type": "heritage_week",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "heritage_week_waterford",
+            "type": "heritage_week",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "heritage_week_westmeath",
+            "type": "heritage_week",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "heritage_week_wexford",
+            "type": "heritage_week",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "heritage_week_wicklow",
+            "type": "heritage_week",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_carlow_events_today",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_carlow_events_tomorrow",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_carlow_events_this_week",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_cavan_events_today",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_cavan_events_tomorrow",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_cavan_events_this_week",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_clare_events_today",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_clare_events_tomorrow",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_clare_events_this_week",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_cork_events_today",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_cork_events_tomorrow",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_cork_events_this_week",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_donegal_events_today",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_donegal_events_tomorrow",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_donegal_events_this_week",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_dublin_events_today",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_dublin_events_tomorrow",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_dublin_events_this_week",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_galway_events_today",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_galway_events_tomorrow",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_galway_events_this_week",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_kerry_events_today",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_kerry_events_tomorrow",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_kerry_events_this_week",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_kildare_events_today",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_kildare_events_tomorrow",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_kildare_events_this_week",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_kilkenny_events_today",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_kilkenny_events_tomorrow",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_kilkenny_events_this_week",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_laois_events_today",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_laois_events_tomorrow",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_laois_events_this_week",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_leitrim_events_today",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_leitrim_events_tomorrow",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_leitrim_events_this_week",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_limerick_events_today",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_limerick_events_tomorrow",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_limerick_events_this_week",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_longford_events_today",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_longford_events_tomorrow",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_longford_events_this_week",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_louth_events_today",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_louth_events_tomorrow",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_louth_events_this_week",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_mayo_events_today",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_mayo_events_tomorrow",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_mayo_events_this_week",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_meath_events_today",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_meath_events_tomorrow",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_meath_events_this_week",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_monaghan_events_today",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_monaghan_events_tomorrow",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_monaghan_events_this_week",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_offaly_events_today",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_offaly_events_tomorrow",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_offaly_events_this_week",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_roscommon_events_today",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_roscommon_events_tomorrow",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_roscommon_events_this_week",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_sligo_events_today",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_sligo_events_tomorrow",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_sligo_events_this_week",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_tipperary_events_today",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_tipperary_events_tomorrow",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_tipperary_events_this_week",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_waterford_events_today",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_waterford_events_tomorrow",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_waterford_events_this_week",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_westmeath_events_today",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_westmeath_events_tomorrow",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_westmeath_events_this_week",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_wexford_events_today",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_wexford_events_tomorrow",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_wexford_events_this_week",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_wicklow_events_today",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_wicklow_events_tomorrow",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        },
+        {
+            "id": "eventbrite_wicklow_events_this_week",
+            "type": "eventbrite",
+            "from": "inactive",
+            "to": "active"
+        }
+    ],
+    "previous": [
+        {
+            "id": "ivvcc",
+            "status": "inactive"
+        },
+        {
+            "id": "motorsport_ireland",
+            "status": "inactive"
+        },
+        {
+            "id": "mondello_park",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_carlow",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_cavan",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_clare",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_cork",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_donegal",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_dublin",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_galway",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_kerry",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_kildare",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_kilkenny",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_laois",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_leitrim",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_limerick",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_longford",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_louth",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_mayo",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_meath",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_monaghan",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_offaly",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_roscommon",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_sligo",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_tipperary",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_waterford",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_westmeath",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_wexford",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_wicklow",
+            "status": "inactive"
+        },
+        {
+            "id": "heritage_week_carlow",
+            "status": "inactive"
+        },
+        {
+            "id": "heritage_week_cavan",
+            "status": "inactive"
+        },
+        {
+            "id": "heritage_week_clare",
+            "status": "inactive"
+        },
+        {
+            "id": "heritage_week_cork",
+            "status": "inactive"
+        },
+        {
+            "id": "heritage_week_donegal",
+            "status": "inactive"
+        },
+        {
+            "id": "heritage_week_dublin",
+            "status": "inactive"
+        },
+        {
+            "id": "heritage_week_galway",
+            "status": "inactive"
+        },
+        {
+            "id": "heritage_week_kerry",
+            "status": "inactive"
+        },
+        {
+            "id": "heritage_week_kildare",
+            "status": "inactive"
+        },
+        {
+            "id": "heritage_week_kilkenny",
+            "status": "inactive"
+        },
+        {
+            "id": "heritage_week_laois",
+            "status": "inactive"
+        },
+        {
+            "id": "heritage_week_leitrim",
+            "status": "inactive"
+        },
+        {
+            "id": "heritage_week_limerick",
+            "status": "inactive"
+        },
+        {
+            "id": "heritage_week_longford",
+            "status": "inactive"
+        },
+        {
+            "id": "heritage_week_louth",
+            "status": "inactive"
+        },
+        {
+            "id": "heritage_week_mayo",
+            "status": "inactive"
+        },
+        {
+            "id": "heritage_week_meath",
+            "status": "inactive"
+        },
+        {
+            "id": "heritage_week_monaghan",
+            "status": "inactive"
+        },
+        {
+            "id": "heritage_week_offaly",
+            "status": "inactive"
+        },
+        {
+            "id": "heritage_week_roscommon",
+            "status": "inactive"
+        },
+        {
+            "id": "heritage_week_sligo",
+            "status": "inactive"
+        },
+        {
+            "id": "heritage_week_tipperary",
+            "status": "inactive"
+        },
+        {
+            "id": "heritage_week_waterford",
+            "status": "inactive"
+        },
+        {
+            "id": "heritage_week_westmeath",
+            "status": "inactive"
+        },
+        {
+            "id": "heritage_week_wexford",
+            "status": "inactive"
+        },
+        {
+            "id": "heritage_week_wicklow",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_carlow_events_today",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_carlow_events_tomorrow",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_carlow_events_this_week",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_cavan_events_today",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_cavan_events_tomorrow",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_cavan_events_this_week",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_clare_events_today",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_clare_events_tomorrow",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_clare_events_this_week",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_cork_events_today",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_cork_events_tomorrow",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_cork_events_this_week",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_donegal_events_today",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_donegal_events_tomorrow",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_donegal_events_this_week",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_dublin_events_today",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_dublin_events_tomorrow",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_dublin_events_this_week",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_galway_events_today",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_galway_events_tomorrow",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_galway_events_this_week",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_kerry_events_today",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_kerry_events_tomorrow",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_kerry_events_this_week",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_kildare_events_today",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_kildare_events_tomorrow",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_kildare_events_this_week",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_kilkenny_events_today",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_kilkenny_events_tomorrow",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_kilkenny_events_this_week",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_laois_events_today",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_laois_events_tomorrow",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_laois_events_this_week",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_leitrim_events_today",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_leitrim_events_tomorrow",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_leitrim_events_this_week",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_limerick_events_today",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_limerick_events_tomorrow",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_limerick_events_this_week",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_longford_events_today",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_longford_events_tomorrow",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_longford_events_this_week",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_louth_events_today",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_louth_events_tomorrow",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_louth_events_this_week",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_mayo_events_today",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_mayo_events_tomorrow",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_mayo_events_this_week",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_meath_events_today",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_meath_events_tomorrow",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_meath_events_this_week",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_monaghan_events_today",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_monaghan_events_tomorrow",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_monaghan_events_this_week",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_offaly_events_today",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_offaly_events_tomorrow",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_offaly_events_this_week",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_roscommon_events_today",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_roscommon_events_tomorrow",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_roscommon_events_this_week",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_sligo_events_today",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_sligo_events_tomorrow",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_sligo_events_this_week",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_tipperary_events_today",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_tipperary_events_tomorrow",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_tipperary_events_this_week",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_waterford_events_today",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_waterford_events_tomorrow",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_waterford_events_this_week",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_westmeath_events_today",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_westmeath_events_tomorrow",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_westmeath_events_this_week",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_wexford_events_today",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_wexford_events_tomorrow",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_wexford_events_this_week",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_wicklow_events_today",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_wicklow_events_tomorrow",
+            "status": "inactive"
+        },
+        {
+            "id": "eventbrite_wicklow_events_this_week",
+            "status": "inactive"
+        }
+    ],
+    "unchanged_ids": [
+        "laois_tourism",
+        "heritage_week",
+        "eventbrite",
+        "g1_probe_eventbrite_45438294",
+        "g1_probe_eventbrite_e8985ceb",
+        "g1_probe_eventbrite_ca96030a",
+        "g1_probe_eventbrite_ae55b4a0",
+        "g1_probe_eventbrite_f0ee569f",
+        "g1_probe_eventbrite_4adcde45",
+        "g1_probe_eventbrite_7aed0f80",
+        "g1_probe_eventbrite_0339fd2a",
+        "g1_probe_eventbrite_e114f6fd",
+        "g1_probe_eventbrite_2e3f6c2b",
+        "g1_probe_heritage_week_3a4eaae8",
+        "g1_probe_heritage_week_40f620f4",
+        "g1_probe_heritage_week_a3465b18",
+        "g1_probe_heritage_week_d63be602",
+        "g1_probe_heritage_week_d6d2dd9e",
+        "g1_probe_heritage_week_f32673cc",
+        "g1_probe_heritage_week_89a4d84a",
+        "g1_probe_heritage_week_0dedd823",
+        "g1_probe_heritage_week_686129df",
+        "g1_probe_eventbrite_a1bd3b89",
+        "g1_probe_eventbrite_43d26f1d",
+        "g1_probe_eventbrite_225633c9",
+        "g1_probe_eventbrite_97ba5877",
+        "g1_probe_eventbrite_ab248be1",
+        "g1_probe_eventbrite_05e63eb9"
+    ],
+    "excluded_ids": [],
+    "summary": {
+        "status": "active",
+        "selected": 133,
+        "changed": 133,
+        "unchanged": 28,
+        "excluded": 0,
+        "errors": 0
+    }
+}

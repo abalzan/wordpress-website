@@ -715,6 +715,81 @@ test_title( 'G18 — automatic continuation of a resumable enumeration' );
 // comparison, so only a direct assertion can distinguish the two.
 // ---------------------------------------------------------------------------
 
+test_section( 'G18.0b — the harness isolates this option as an ARRAY' );
+
+/*
+ * Regression guard for a harness defect this suite exposed.
+ *
+ * `test_options_isolate()`/`test_options_restore()` are the documented way a
+ * suite protects operator state. They used to snapshot the RAW value from
+ * `wp_load_alloptions()` and write it back verbatim, which double-serialised
+ * any AUTOLOADED option: the option then read back as the string
+ * `a:0:{}` instead of an array, and every consumer saw a malformed value.
+ *
+ * This option is autoloaded on purpose, so it is the one that proved it. The
+ * assertions below fail if the round trip ever loses the value’s type again.
+ */
+$g18_roundtrip = test_options_isolate( array( Conexao_Import_Continuation::OPTION_KEY ) );
+
+test_options_restore( $g18_roundtrip, true );
+
+assert_true(
+	is_array( get_option( Conexao_Import_Continuation::OPTION_KEY, array() ) ),
+	'G18.0b: isolating and restoring an AUTOLOADED option leaves it an array, not a serialised string'
+);
+assert_true(
+	is_array( Conexao_Import_Continuation::get_all() ),
+	'G18.0b: the continuation map reads back as an array after a harness round trip'
+);
+
+/* And the same round trip must preserve a NON-EMPTY array exactly. */
+update_option( Conexao_Import_Continuation::OPTION_KEY, array( 'g18_roundtrip_src' => array( 'schema_version' => 1 ) ), true );
+
+$g18_roundtrip2 = test_options_isolate( array( Conexao_Import_Continuation::OPTION_KEY ) );
+
+test_options_restore( $g18_roundtrip2, true );
+
+$g18_restored = get_option( Conexao_Import_Continuation::OPTION_KEY, array() );
+
+assert_true( is_array( $g18_restored ), 'G18.0b: a non-empty array survives the round trip as an array' );
+assert_true(
+	isset( $g18_restored['g18_roundtrip_src'] ),
+	'G18.0b: and its contents survive — the snapshot holds the VALUE, not its storage form'
+);
+
+/*
+ * The AUTOLOAD flag is part of the option, not a test detail: this map is
+ * autoloaded on purpose (read on every request to decide whether anything is
+ * due). A harness that restored the value but not the flag would silently
+ * change that documented property. Measured before the fix:
+ * `update_option( $key, array(), true )` left the flag `off`, because
+ * WordPress short-circuits an unchanged value; `wp_set_option_autoload()`
+ * does not.
+ */
+global $wpdb;
+$g18_autoload = $wpdb->get_var(
+	$wpdb->prepare( "SELECT autoload FROM {$wpdb->options} WHERE option_name = %s", Conexao_Import_Continuation::OPTION_KEY )
+);
+
+assert_true(
+	in_array( $g18_autoload, array( 'on', 'auto-on', 'yes' ), true ),
+	'G18.0b: the harness restores the AUTOLOAD flag too, so an autoloaded option stays autoloaded (got ' . (string) $g18_autoload . ')'
+);
+
+/* A deliberately malformed row is repaired rather than propagated. */
+update_option( Conexao_Import_Continuation::OPTION_KEY, 'a:0:{}', true );
+
+assert_true(
+	array() === Conexao_Import_Continuation::get_all(),
+	'G18.0b: a malformed (double-serialised) row reads as no continuations and fails safe'
+);
+assert_true(
+	is_array( get_option( Conexao_Import_Continuation::OPTION_KEY, array() ) ),
+	'G18.0b: and the malformed row is repaired in place, so it cannot be re-read forever'
+);
+
+Conexao_Import_Continuation::reset_all();
+
 test_section( 'G18.0 — the resumable predicate is precise' );
 
 assert_true(
