@@ -153,7 +153,18 @@ if ( $public_mode ) {
 	) );
 	assert_true( ! in_array( (int) $pid, array_map( 'intval', $q->posts ), true ), 'public WP_Query hides source_not_found event', 'ids=' . wp_json_encode( $q->posts ) );
 
-	assert_true( 0 === $dedup->find( $normalized ), 'public deduplicator does not match source_not_found event');
+	/*
+	 * G17: the deduplicator is the IMPORTER's identity lookup, not a frontend
+	 * query. It runs inside the importer-internal reconciliation scope, so it
+	 * MUST find the hidden record — otherwise a reappearing event is inserted
+	 * a second time (the G16 same-source reappearance duplicates).
+	 *
+	 * It previously asserted 0 here, which encoded the G16 defect: the test
+	 * treated the importer's lookup as if it were a public query. The public
+	 * rule is proved above by the plain WP_Query; this assertion now proves
+	 * the importer can see what the frontend cannot.
+	 */
+	assert_true( (int) $dedup->find( $normalized ) === (int) $pid, 'importer reconciliation lookup sees source_not_found (public rule proved separately)', 'found=' . var_export( $dedup->find( $normalized ), true ) );
 
 	$all = new WP_Query( array( 'post_type' => 'event', 'post_status' => 'publish', 'posts_per_page' => -1, 'fields' => 'ids', 'no_found_rows' => true ) );
 	assert_true( ! in_array( (int) $pid, array_map( 'intval', $all->posts ), true ), 'public archive query excludes source_not_found event');

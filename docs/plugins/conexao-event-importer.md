@@ -34,6 +34,22 @@ to the Event Runtime plugin:
 | Event status/source admin columns + `?event_status=` list filter | `Conexao_Event_Runtime` |
 | `conexao_event_status_box` meta box + save handler | `Conexao_Event_Runtime` |
 | `Conexao_Event_Status` class (statuses, get/set, expiry, end-timestamp helper) | `conexao-event-runtime/includes/class-event-status.php` |
+| `Conexao_Event_Internal_Query` class (importer reconciliation exemption scope, G17) | `conexao-event-runtime/includes/class-conexao-event-internal-query.php` |
+
+### Deduplication of reappearing events (G17)
+
+`Conexao_Event_Deduplicator::find()` runs inside
+`Conexao_Event_Internal_Query::run()` and marks its three identity lookups
+(`find_by_source`, `find_by_url`, `find_by_content`) via a single
+`reconciliation_query()` helper. This is what lets the importer **resolve and
+restore** a `source_not_found` event when it reappears in a source feed, on
+every entry point — including the wp-admin "Run all" button, not only WP-CLI.
+
+Before this, the runtime's public `_event_status` gate also applied to the
+importer's own lookup, so a reappearing event resolved to nothing and
+`upsert_event()` inserted a **second** native event (the G16 defect: 47 → 197 →
+239 duplicated native IDs). The public visibility rule is unchanged; only the
+importer's own in-process queries are exempt.
 
 The tooling still *uses* `Conexao_Event_Status` (post-import expiry marking,
 cleanup end-timestamps) — the dependency direction is strictly

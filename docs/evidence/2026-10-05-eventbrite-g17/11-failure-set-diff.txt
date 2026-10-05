@@ -1,0 +1,6 @@
+IDENTICAL FAILURE SET
+baseline_failures=35
+after_failures=35
+new_failures=0
+fixed_failures=0
+diff_result=IDENTICAL

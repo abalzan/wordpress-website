@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Conexão BR Irlanda — Event Runtime
  * Description: Production event runtime. Registers event metadata and the Town/City taxonomy, owns the _event_status visibility gate for public event queries, and provides the event status admin UI. Contains no import/export tooling — see Conexão BR Irlanda Event Importer (local-only).
- * Version: 1.2.2
+ * Version: 1.2.3
  * Requires Plugins: conexao-data-model
  * Text Domain: conexao-event-runtime
  *
@@ -12,11 +12,12 @@
 defined( 'ABSPATH' ) || exit;
 
 define( 'CONEXAO_EVENT_RUNTIME_FILE', __FILE__ );
-define( 'CONEXAO_EVENT_RUNTIME_VERSION', '1.2.2' );
+define( 'CONEXAO_EVENT_RUNTIME_VERSION', '1.2.3' );
 define( 'CONEXAO_EVENT_RUNTIME_DIR', plugin_dir_path( __FILE__ ) );
 define( 'CONEXAO_EVENT_RUNTIME_URL', plugin_dir_url( __FILE__ ) );
 
 require_once CONEXAO_EVENT_RUNTIME_DIR . 'includes/class-event-status.php';
+require_once CONEXAO_EVENT_RUNTIME_DIR . 'includes/class-conexao-event-internal-query.php';
 require_once CONEXAO_EVENT_RUNTIME_DIR . 'includes/class-event-recurrence.php';
 require_once CONEXAO_EVENT_RUNTIME_DIR . 'includes/class-event-query.php';
 require_once CONEXAO_EVENT_RUNTIME_DIR . 'includes/class-source-language.php';
@@ -171,11 +172,20 @@ final class Conexao_Event_Runtime {
 	 *   1. `wp-admin` — admin lists / the editor must show every status.
 	 *   2. WP-CLI (`defined('WP_CLI') && WP_CLI`) — the local importer and its
 	 *      tooling run from the command line (e.g. `wp conexao-events import`).
-	 *      Those internal queries MUST be able to see `source_not_found`
-	 *      events so deduplication can match a reappearing event and restore
-	 *      it instead of re-creating a duplicate. WP-CLI is the smallest safe
-	 *      boundary: real public web requests never run under WP-CLI.
 	 *      See docs/importers/events-expansion-stage-c2-report.md §5.
+	 *   3. An importer-internal reconciliation query — the importer's own
+	 *      identity lookup, opened explicitly through
+	 *      `Conexao_Event_Internal_Query::run()` and carrying that process's
+	 *      private token (see includes/class-conexao-event-internal-query.php). This is
+	 *      the G17 fix for same-source reappearance duplicates: the importer
+	 *      must be able to FIND a `source_not_found` record so it restores it
+	 *      instead of creating a second native event. It does not depend on
+	 *      WP-CLI, and it is unreachable from a public HTTP request because the
+	 *      token is generated in PHP and the scope is opened only by the
+	 *      importer's own code. Checked LAST, after every other gate.
+	 *
+	 * The public visibility rule itself is unchanged: outside these three
+	 * contexts a `source_not_found` event is invisible to the frontend.
 	 */
 	public function filter_public_event_queries( $query ) {
 		if ( is_admin() ) {
@@ -195,6 +205,28 @@ final class Conexao_Event_Runtime {
 				return;
 			}
 		} elseif ( 'event' !== $post_types && ! $query->is_post_type_archive( 'event' ) && ! $query->is_tax( array( 'conexao_county', 'conexao_town', 'conexao_category' ) ) ) {
+			return;
+		}
+
+		/*
+		 * LAST GATE — importer-internal reconciliation (G17).
+		 *
+		 * This is the ONLY way an event query legitimately sees
+		 * `source_not_found` outside wp-admin/WP-CLI, and it is reached only
+		 * when the importer itself opened the internal scope in-process AND
+		 * the query carries that process's private, non-guessable token.
+		 *
+		 * It is deliberately evaluated after the post-type scope check above
+		 * and after is_admin()/WP_CLI, so it can only ever narrow the
+		 * exemption for a query the importer itself constructed. A public
+		 * HTTP request cannot open the scope and cannot know the token, so it
+		 * cannot reach a hidden event through this path.
+		 *
+		 * Removing this block restores the defective G16 behaviour (the
+		 * importer's identity lookup cannot see `source_not_found` and a
+		 * reappearing event is duplicated); the public rule below must stay.
+		 */
+		if ( Conexao_Event_Internal_Query::is_reconciliation_query( $query ) ) {
 			return;
 		}
 

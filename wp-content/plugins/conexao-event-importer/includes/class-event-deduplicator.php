@@ -5,11 +5,18 @@
  * Prevents the same event from being imported multiple times by comparing
  * title, date, time, town, venue, organizer, and source event ID.
  *
+ * Identity resolution runs inside the importer-internal reconciliation scope
+ * (Conexao_Event_Internal_Query) so a reappearing source_not_found event is
+ * matched and restored rather than duplicated — see find().
+ *
  * @package Conexao_Event_Importer
  */
 
 defined( 'ABSPATH' ) || exit;
 
+/**
+ * Resolves whether an incoming event already exists in the database.
+ */
 class Conexao_Event_Deduplicator {
 
 	/**
@@ -19,6 +26,37 @@ class Conexao_Event_Deduplicator {
 	 * @return int Post ID of the matching event, or 0 if none found.
 	 */
 	public function find( $normalized ) {
+		/*
+		 * Importer-internal reconciliation scope (G17).
+		 *
+		 * The identity lookups below MUST be able to see `source_not_found`
+		 * records: when a source event that had disappeared reappears, the
+		 * importer has to find the existing record by its source identity so
+		 * upsert_event() restores it, instead of resolving nothing and taking
+		 * the wp_insert_post() branch — which is what produced the same-source
+		 * reappearance duplicates found during G16 (47 → 197 → 239).
+		 *
+		 * `Conexao_Event_Internal_Query::run()` opens a narrow, token-guarded
+		 * scope that `Conexao_Event_Runtime::filter_public_event_queries()`
+		 * recognises and exempts. It does NOT relax the public visibility
+		 * rule: only the queries this importer builds, in this process, while
+		 * the scope is open, are exempt. Every frontend query remains gated,
+		 * and no public request can open this scope.
+		 */
+		return Conexao_Event_Internal_Query::run(
+			function () use ( $normalized ) {
+				return $this->find_internal( $normalized );
+			}
+		);
+	}
+
+	/**
+	 * Resolve an existing event, inside the internal reconciliation scope.
+	 *
+	 * @param array $normalized Normalized event data.
+	 * @return int Post ID of the matching event, or 0 if none found.
+	 */
+	protected function find_internal( $normalized ) {
 		// 1. Strongest match: source event ID.
 		if ( ! empty( $normalized['source_id'] ) && ! empty( $normalized['source'] ) ) {
 			$by_source = $this->find_by_source( $normalized['source'], $normalized['source_id'] );
@@ -40,6 +78,21 @@ class Conexao_Event_Deduplicator {
 	}
 
 	/**
+	 * Build a WP_Query for an importer-internal reconciliation lookup.
+	 *
+	 * Marks the query with the internal reconciliation sentinel so
+	 * `Conexao_Event_Runtime::filter_public_event_queries()` exempts it from
+	 * the public `_event_status` gate. Without the mark the query is subject to
+	 * the gate and a `source_not_found` record is invisible — the G16 defect.
+	 *
+	 * @param array $args WP_Query arguments.
+	 * @return WP_Query
+	 */
+	protected function reconciliation_query( array $args ) {
+		return new WP_Query( Conexao_Event_Internal_Query::mark_query_args( $args ) );
+	}
+
+	/**
 	 * Find an existing event by its source ID.
 	 *
 	 * @param string $source    Source slug.
@@ -47,7 +100,7 @@ class Conexao_Event_Deduplicator {
 	 * @return int Post ID or 0.
 	 */
 	protected function find_by_source( $source, $source_id ) {
-		$query = new WP_Query(
+		$query = $this->reconciliation_query(
 			array(
 				'post_type'      => 'event',
 				'posts_per_page' => 10,
@@ -79,7 +132,7 @@ class Conexao_Event_Deduplicator {
 	 * @return int Post ID or 0.
 	 */
 	protected function find_by_url( $url ) {
-		$query = new WP_Query(
+		$query = $this->reconciliation_query(
 			array(
 				'post_type'      => 'event',
 				'posts_per_page' => 10,
@@ -180,7 +233,7 @@ class Conexao_Event_Deduplicator {
 
 		$title = sanitize_title( $normalized['title'] );
 
-		$query = new WP_Query(
+		$query = $this->reconciliation_query(
 			array(
 				'post_type'      => 'event',
 				'posts_per_page' => 20,

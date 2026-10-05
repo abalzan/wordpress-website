@@ -313,6 +313,22 @@ Unchanged (local-only / retired, deliberately **not** bumped):
 `conexao-sponsor-migration` 1.1.0, `conexao-translation-rollout` 1.1.0,
 `conexao-en-translation` 1.5.0, and the five retired rollout plugins.
 
+### G17 — `conexao-event-runtime` 1.2.3 (NOT deployed)
+
+| Artifact | Kind | Old | New | Authoritative source |
+|---|---|---|---|---|
+| `conexao-event-runtime` | plugin (production) | 1.2.2 | **1.2.3** | `wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php` header |
+
+Fixes the G16 same-source reappearance duplicate defect: adds
+`Conexao_Event_Internal_Query`, a narrow token-guarded scope that lets the
+importer's own identity lookup see `source_not_found` records so a
+reappearing event is restored instead of duplicated. The public visibility
+rule is unchanged. `conexao-event-importer` (local-only tooling) changed
+behaviourally but is deliberately not version-bumped per the convention
+above. See
+[`docs/reports/2026-10-05-eventbrite-g17-reconciliation-fix.md`](reports/2026-10-05-eventbrite-g17-reconciliation-fix.md).
+**0 production deployments.**
+
 | Field | Value |
 |---|---|
 | Base commit | `a4cd5f65e35c3f6f564e733bc746a07f350cceeb` (`i18n`) |
