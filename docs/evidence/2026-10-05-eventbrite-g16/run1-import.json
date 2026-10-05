@@ -1,0 +1,5014 @@
+{
+ "label": "run1",
+ "environment": {
+  "home_url": "http://localhost:8080",
+  "target": "http://localhost:8080",
+  "env_type": "local",
+  "classes": {
+   "home_url": "local",
+   "target": "local"
+  }
+ },
+ "safety": {
+  "expectations": {
+   "plugin_active": true,
+   "registry_valid": true,
+   "overlap_pages_is_1": true,
+   "request_budget_400": true,
+   "time_budget_45": true,
+   "max_pages_50": true,
+   "cooldown_present": true,
+   "cooldown_base_20": true,
+   "cooldown_max_60": true,
+   "checkpoint_present": true,
+   "checkpoint_enabled": true,
+   "api_token_absent": true,
+   "active_sources_present": true,
+   "no_lock_implementation": true,
+   "no_concurrent_run": true
+  },
+  "active_sources": [
+   "laois_tourism",
+   "heritage_week",
+   "eventbrite",
+   "eventbrite_carlow",
+   "eventbrite_cavan",
+   "eventbrite_clare",
+   "eventbrite_cork",
+   "eventbrite_donegal",
+   "eventbrite_dublin",
+   "eventbrite_galway",
+   "eventbrite_kerry",
+   "eventbrite_kildare",
+   "eventbrite_kilkenny",
+   "eventbrite_laois",
+   "eventbrite_leitrim",
+   "eventbrite_limerick",
+   "eventbrite_longford",
+   "eventbrite_louth",
+   "eventbrite_mayo",
+   "eventbrite_meath",
+   "eventbrite_monaghan",
+   "eventbrite_offaly",
+   "eventbrite_roscommon",
+   "eventbrite_sligo",
+   "eventbrite_tipperary",
+   "eventbrite_waterford",
+   "eventbrite_westmeath",
+   "eventbrite_wexford",
+   "eventbrite_wicklow",
+   "heritage_week_carlow",
+   "heritage_week_cavan",
+   "heritage_week_clare",
+   "heritage_week_cork",
+   "heritage_week_donegal",
+   "heritage_week_dublin",
+   "heritage_week_galway",
+   "heritage_week_kerry",
+   "heritage_week_kildare",
+   "heritage_week_kilkenny",
+   "heritage_week_laois",
+   "heritage_week_leitrim",
+   "heritage_week_limerick",
+   "heritage_week_longford",
+   "heritage_week_louth",
+   "heritage_week_mayo",
+   "heritage_week_meath",
+   "heritage_week_monaghan",
+   "heritage_week_offaly",
+   "heritage_week_roscommon",
+   "heritage_week_sligo",
+   "heritage_week_tipperary",
+   "heritage_week_waterford",
+   "heritage_week_westmeath",
+   "heritage_week_wexford",
+   "heritage_week_wicklow",
+   "eventbrite_carlow_events_this_week",
+   "eventbrite_cavan_events_this_week",
+   "eventbrite_clare_events_this_week",
+   "eventbrite_cork_events_this_week",
+   "eventbrite_donegal_events_this_week",
+   "eventbrite_dublin_events_this_week",
+   "eventbrite_galway_events_this_week",
+   "eventbrite_kerry_events_this_week",
+   "eventbrite_kildare_events_this_week",
+   "eventbrite_kilkenny_events_this_week",
+   "eventbrite_laois_events_this_week",
+   "eventbrite_leitrim_events_this_week",
+   "eventbrite_limerick_events_this_week",
+   "eventbrite_longford_events_this_week",
+   "eventbrite_louth_events_this_week",
+   "eventbrite_mayo_events_this_week",
+   "eventbrite_meath_events_this_week",
+   "eventbrite_monaghan_events_this_week",
+   "eventbrite_offaly_events_this_week",
+   "eventbrite_roscommon_events_this_week",
+   "eventbrite_sligo_events_this_week",
+   "eventbrite_tipperary_events_this_week",
+   "eventbrite_waterford_events_this_week",
+   "eventbrite_westmeath_events_this_week",
+   "eventbrite_wexford_events_this_week",
+   "eventbrite_wicklow_events_this_week"
+  ],
+  "overlap": 1,
+  "time_budget": 45,
+  "max_pages": 50,
+  "request_budget": 400
+ },
+ "elapsed": 5555.4,
+ "per_source": {
+  "laois_tourism": {
+   "found": 30,
+   "created": 7,
+   "updated": 0,
+   "unchanged": 23,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "success",
+   "complete": true,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "heritage_week": {
+   "found": 77,
+   "created": 0,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 77,
+   "skipped_past": 77,
+   "failed": 0,
+   "errors": 0,
+   "status": "warning",
+   "complete": true,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite": {
+   "found": 0,
+   "created": 0,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "success",
+   "complete": true,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 2,
+     "page_count": 2,
+     "complete": true,
+     "last_failure": "",
+     "updated_at": "2026-10-05 09:31:56"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_carlow": {
+   "found": 37,
+   "created": 2,
+   "updated": 1,
+   "unchanged": 34,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "warning",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 13,
+     "page_count": 49,
+     "complete": false,
+     "last_failure": "time_budget",
+     "updated_at": "2026-10-05 09:32:45"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_cavan": {
+   "found": 36,
+   "created": 0,
+   "updated": 0,
+   "unchanged": 36,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "warning",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 10,
+     "page_count": 49,
+     "complete": false,
+     "last_failure": "time_budget",
+     "updated_at": "2026-10-05 09:33:36"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_clare": {
+   "found": 80,
+   "created": 2,
+   "updated": 1,
+   "unchanged": 77,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "success",
+   "complete": true,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 4,
+     "page_count": 4,
+     "complete": true,
+     "last_failure": "",
+     "updated_at": "2026-10-05 09:33:51"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_cork": {
+   "found": 180,
+   "created": 154,
+   "updated": 0,
+   "unchanged": 26,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "warning",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 1,
+     "page_count": 1,
+     "complete": true,
+     "last_failure": "",
+     "updated_at": "2026-10-05 08:44:29"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 9,
+     "page_count": 49,
+     "complete": false,
+     "last_failure": "rate_limited",
+     "updated_at": "2026-10-05 09:36:32"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_donegal": {
+   "found": 80,
+   "created": 3,
+   "updated": 3,
+   "unchanged": 74,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "warning",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 12,
+     "page_count": 49,
+     "complete": false,
+     "last_failure": "time_budget",
+     "updated_at": "2026-10-05 09:39:05"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_dublin": {
+   "found": 234,
+   "created": 234,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "warning",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 5,
+     "page_count": 20,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": "2026-10-04 22:49:17"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 14,
+     "page_count": 49,
+     "complete": false,
+     "last_failure": "time_budget",
+     "updated_at": "2026-10-05 09:40:01"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_galway": {
+   "found": 190,
+   "created": 190,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "warning",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 12,
+     "page_count": 49,
+     "complete": false,
+     "last_failure": "time_budget",
+     "updated_at": "2026-10-05 09:44:44"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_kerry": {
+   "found": 108,
+   "created": 108,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "success",
+   "complete": true,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 6,
+     "page_count": 6,
+     "complete": true,
+     "last_failure": "",
+     "updated_at": "2026-10-05 09:48:57"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_kildare": {
+   "found": 102,
+   "created": 102,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "warning",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 13,
+     "page_count": 49,
+     "complete": false,
+     "last_failure": "time_budget",
+     "updated_at": "2026-10-05 09:51:50"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_kilkenny": {
+   "found": 84,
+   "created": 84,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "warning",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 12,
+     "page_count": 49,
+     "complete": false,
+     "last_failure": "time_budget",
+     "updated_at": "2026-10-05 09:55:19"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_laois": {
+   "found": 30,
+   "created": 30,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "success",
+   "complete": true,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 2,
+     "page_count": 2,
+     "complete": true,
+     "last_failure": "",
+     "updated_at": "2026-10-05 09:57:17"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_leitrim": {
+   "found": 33,
+   "created": 33,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "success",
+   "complete": true,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 2,
+     "page_count": 2,
+     "complete": true,
+     "last_failure": "",
+     "updated_at": "2026-10-05 09:58:03"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_limerick": {
+   "found": 46,
+   "created": 46,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "warning",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 13,
+     "page_count": 49,
+     "complete": false,
+     "last_failure": "time_budget",
+     "updated_at": "2026-10-05 09:59:42"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_longford": {
+   "found": 13,
+   "created": 13,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "warning",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 12,
+     "page_count": 49,
+     "complete": false,
+     "last_failure": "time_budget",
+     "updated_at": "2026-10-05 10:01:33"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_louth": {
+   "found": 40,
+   "created": 40,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "warning",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 5,
+     "page_count": 49,
+     "complete": false,
+     "last_failure": "rate_limited",
+     "updated_at": "2026-10-05 10:04:11"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_mayo": {
+   "found": 68,
+   "created": 68,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "success",
+   "complete": true,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 6,
+     "page_count": 6,
+     "complete": true,
+     "last_failure": "",
+     "updated_at": "2026-10-05 10:05:25"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_meath": {
+   "found": 126,
+   "created": 126,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "success",
+   "complete": true,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 7,
+     "page_count": 7,
+     "complete": true,
+     "last_failure": "",
+     "updated_at": "2026-10-05 10:07:12"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_monaghan": {
+   "found": 39,
+   "created": 39,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "warning",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 12,
+     "page_count": 49,
+     "complete": false,
+     "last_failure": "time_budget",
+     "updated_at": "2026-10-05 10:10:48"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_offaly": {
+   "found": 37,
+   "created": 37,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "success",
+   "complete": true,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 3,
+     "page_count": 3,
+     "complete": true,
+     "last_failure": "",
+     "updated_at": "2026-10-05 10:11:54"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_roscommon": {
+   "found": 13,
+   "created": 13,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "warning",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 12,
+     "page_count": 49,
+     "complete": false,
+     "last_failure": "time_budget",
+     "updated_at": "2026-10-05 10:13:25"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_sligo": {
+   "found": 55,
+   "created": 55,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "warning",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 8,
+     "page_count": 49,
+     "complete": false,
+     "last_failure": "rate_limited",
+     "updated_at": "2026-10-05 10:16:22"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_tipperary": {
+   "found": 40,
+   "created": 40,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "warning",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 11,
+     "page_count": 49,
+     "complete": false,
+     "last_failure": "time_budget",
+     "updated_at": "2026-10-05 10:18:21"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_waterford": {
+   "found": 34,
+   "created": 34,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "warning",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 11,
+     "page_count": 49,
+     "complete": false,
+     "last_failure": "time_budget",
+     "updated_at": "2026-10-05 10:20:11"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_westmeath": {
+   "found": 70,
+   "created": 69,
+   "updated": 1,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "success",
+   "complete": true,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 4,
+     "page_count": 4,
+     "complete": true,
+     "last_failure": "",
+     "updated_at": "2026-10-05 10:21:09"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_wexford": {
+   "found": 50,
+   "created": 50,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "warning",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 13,
+     "page_count": 49,
+     "complete": false,
+     "last_failure": "time_budget",
+     "updated_at": "2026-10-05 10:23:24"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_wicklow": {
+   "found": 66,
+   "created": 66,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "warning",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 12,
+     "page_count": 49,
+     "complete": false,
+     "last_failure": "time_budget",
+     "updated_at": "2026-10-05 10:25:14"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "heritage_week_carlow": {
+   "found": 44,
+   "created": 0,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 44,
+   "skipped_past": 44,
+   "failed": 0,
+   "errors": 0,
+   "status": "warning",
+   "complete": true,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "heritage_week_cavan": {
+   "found": 62,
+   "created": 0,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 62,
+   "skipped_past": 62,
+   "failed": 0,
+   "errors": 0,
+   "status": "warning",
+   "complete": true,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "heritage_week_clare": {
+   "found": 99,
+   "created": 0,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 99,
+   "skipped_past": 99,
+   "failed": 0,
+   "errors": 0,
+   "status": "warning",
+   "complete": true,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "heritage_week_cork": {
+   "found": 231,
+   "created": 0,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 231,
+   "skipped_past": 231,
+   "failed": 0,
+   "errors": 0,
+   "status": "warning",
+   "complete": true,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "heritage_week_donegal": {
+   "found": 161,
+   "created": 0,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 161,
+   "skipped_past": 161,
+   "failed": 0,
+   "errors": 0,
+   "status": "warning",
+   "complete": true,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "heritage_week_dublin": {
+   "found": 328,
+   "created": 0,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 328,
+   "skipped_past": 328,
+   "failed": 0,
+   "errors": 0,
+   "status": "warning",
+   "complete": true,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "heritage_week_galway": {
+   "found": 181,
+   "created": 0,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 181,
+   "skipped_past": 181,
+   "failed": 0,
+   "errors": 0,
+   "status": "warning",
+   "complete": true,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "heritage_week_kerry": {
+   "found": 70,
+   "created": 0,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 70,
+   "skipped_past": 70,
+   "failed": 0,
+   "errors": 0,
+   "status": "warning",
+   "complete": true,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "heritage_week_kildare": {
+   "found": 120,
+   "created": 0,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 120,
+   "skipped_past": 120,
+   "failed": 0,
+   "errors": 0,
+   "status": "warning",
+   "complete": true,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "heritage_week_kilkenny": {
+   "found": 0,
+   "created": 0,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "failed",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [
+    {
+     "message": "Failed to fetch events from National Heritage Week \u2014 Kilkenny. HTTP status: 429.",
+     "technical": "Failed to fetch Heritage Week listing for where[]=kilkenny: Resposta HTTP 429 ao buscar URL."
+    }
+   ],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "2026-10-05 09:29:13",
+     "last_reason": "rate_limited",
+     "consecutive": 1
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "heritage_week_laois": {
+   "found": 0,
+   "created": 0,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "failed",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [
+    {
+     "message": "Failed to fetch events from National Heritage Week \u2014 Laois. HTTP status: 429.",
+     "technical": "Failed to fetch Heritage Week listing for where[]=laois: Resposta HTTP 429 ao buscar URL."
+    }
+   ],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "2026-10-05 09:29:14",
+     "last_reason": "rate_limited",
+     "consecutive": 1
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "heritage_week_leitrim": {
+   "found": 0,
+   "created": 0,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "failed",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [
+    {
+     "message": "Failed to fetch events from National Heritage Week \u2014 Leitrim. HTTP status: 429.",
+     "technical": "Failed to fetch Heritage Week listing for where[]=leitrim: Resposta HTTP 429 ao buscar URL."
+    }
+   ],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "2026-10-05 09:29:14",
+     "last_reason": "rate_limited",
+     "consecutive": 1
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "heritage_week_limerick": {
+   "found": 0,
+   "created": 0,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "failed",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [
+    {
+     "message": "Failed to fetch events from National Heritage Week \u2014 Limerick. HTTP status: 429.",
+     "technical": "Failed to fetch Heritage Week listing for where[]=limerick: Resposta HTTP 429 ao buscar URL."
+    }
+   ],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "2026-10-05 09:29:14",
+     "last_reason": "rate_limited",
+     "consecutive": 1
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "heritage_week_longford": {
+   "found": 0,
+   "created": 0,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "failed",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [
+    {
+     "message": "Failed to fetch events from National Heritage Week \u2014 Longford. HTTP status: 429.",
+     "technical": "Failed to fetch Heritage Week listing for where[]=longford: Resposta HTTP 429 ao buscar URL."
+    }
+   ],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "2026-10-05 09:29:14",
+     "last_reason": "rate_limited",
+     "consecutive": 1
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "heritage_week_louth": {
+   "found": 0,
+   "created": 0,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "failed",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [
+    {
+     "message": "Failed to fetch events from National Heritage Week \u2014 Louth. HTTP status: 429.",
+     "technical": "Failed to fetch Heritage Week listing for where[]=louth: Resposta HTTP 429 ao buscar URL."
+    }
+   ],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "2026-10-05 09:29:14",
+     "last_reason": "rate_limited",
+     "consecutive": 1
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "heritage_week_mayo": {
+   "found": 0,
+   "created": 0,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "failed",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [
+    {
+     "message": "Failed to fetch events from National Heritage Week \u2014 Mayo. HTTP status: 429.",
+     "technical": "Failed to fetch Heritage Week listing for where[]=mayo: Resposta HTTP 429 ao buscar URL."
+    }
+   ],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "2026-10-05 09:29:14",
+     "last_reason": "rate_limited",
+     "consecutive": 1
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "heritage_week_meath": {
+   "found": 0,
+   "created": 0,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "failed",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [
+    {
+     "message": "Failed to fetch events from National Heritage Week \u2014 Meath. HTTP status: 429.",
+     "technical": "Failed to fetch Heritage Week listing for where[]=meath: Resposta HTTP 429 ao buscar URL."
+    }
+   ],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "2026-10-05 09:29:14",
+     "last_reason": "rate_limited",
+     "consecutive": 1
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "heritage_week_monaghan": {
+   "found": 0,
+   "created": 0,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "failed",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [
+    {
+     "message": "Failed to fetch events from National Heritage Week \u2014 Monaghan. HTTP status: 429.",
+     "technical": "Failed to fetch Heritage Week listing for where[]=monaghan: Resposta HTTP 429 ao buscar URL."
+    }
+   ],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "2026-10-05 09:29:14",
+     "last_reason": "rate_limited",
+     "consecutive": 1
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "heritage_week_offaly": {
+   "found": 0,
+   "created": 0,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "failed",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [
+    {
+     "message": "Failed to fetch events from National Heritage Week \u2014 Offaly. HTTP status: 429.",
+     "technical": "Failed to fetch Heritage Week listing for where[]=offaly: Resposta HTTP 429 ao buscar URL."
+    }
+   ],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "2026-10-05 09:29:14",
+     "last_reason": "rate_limited",
+     "consecutive": 1
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "heritage_week_roscommon": {
+   "found": 0,
+   "created": 0,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "failed",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [
+    {
+     "message": "Failed to fetch events from National Heritage Week \u2014 Roscommon. HTTP status: 429.",
+     "technical": "Failed to fetch Heritage Week listing for where[]=roscommon: Resposta HTTP 429 ao buscar URL."
+    }
+   ],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "2026-10-05 09:29:15",
+     "last_reason": "rate_limited",
+     "consecutive": 1
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "heritage_week_sligo": {
+   "found": 0,
+   "created": 0,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "failed",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [
+    {
+     "message": "Failed to fetch events from National Heritage Week \u2014 Sligo. HTTP status: 429.",
+     "technical": "Failed to fetch Heritage Week listing for where[]=sligo: Resposta HTTP 429 ao buscar URL."
+    }
+   ],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "2026-10-05 09:29:15",
+     "last_reason": "rate_limited",
+     "consecutive": 1
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "heritage_week_tipperary": {
+   "found": 0,
+   "created": 0,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "failed",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [
+    {
+     "message": "Failed to fetch events from National Heritage Week \u2014 Tipperary. HTTP status: 429.",
+     "technical": "Failed to fetch Heritage Week listing for where[]=tipperary: Resposta HTTP 429 ao buscar URL."
+    }
+   ],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "2026-10-05 09:29:15",
+     "last_reason": "rate_limited",
+     "consecutive": 1
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "heritage_week_waterford": {
+   "found": 0,
+   "created": 0,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "failed",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [
+    {
+     "message": "Failed to fetch events from National Heritage Week \u2014 Waterford. HTTP status: 429.",
+     "technical": "Failed to fetch Heritage Week listing for where[]=waterford: Resposta HTTP 429 ao buscar URL."
+    }
+   ],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "2026-10-05 09:29:15",
+     "last_reason": "rate_limited",
+     "consecutive": 1
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "heritage_week_westmeath": {
+   "found": 0,
+   "created": 0,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "failed",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [
+    {
+     "message": "Failed to fetch events from National Heritage Week \u2014 Westmeath. HTTP status: 429.",
+     "technical": "Failed to fetch Heritage Week listing for where[]=westmeath: Resposta HTTP 429 ao buscar URL."
+    }
+   ],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "2026-10-05 09:29:15",
+     "last_reason": "rate_limited",
+     "consecutive": 1
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "heritage_week_wexford": {
+   "found": 0,
+   "created": 0,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "failed",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [
+    {
+     "message": "Failed to fetch events from National Heritage Week \u2014 Wexford. HTTP status: 429.",
+     "technical": "Failed to fetch Heritage Week listing for where[]=wexford: Resposta HTTP 429 ao buscar URL."
+    }
+   ],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "2026-10-05 09:29:15",
+     "last_reason": "rate_limited",
+     "consecutive": 1
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "heritage_week_wicklow": {
+   "found": 0,
+   "created": 0,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "failed",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [
+    {
+     "message": "Failed to fetch events from National Heritage Week \u2014 Wicklow. HTTP status: 429.",
+     "technical": "Failed to fetch Heritage Week listing for where[]=wicklow: Resposta HTTP 429 ao buscar URL."
+    }
+   ],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "2026-10-05 09:29:15",
+     "last_reason": "rate_limited",
+     "consecutive": 1
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_carlow_events_this_week": {
+   "found": 7,
+   "created": 0,
+   "updated": 0,
+   "unchanged": 7,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "warning",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 12,
+     "page_count": 46,
+     "complete": false,
+     "last_failure": "time_budget",
+     "updated_at": "2026-10-05 10:29:43"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_cavan_events_this_week": {
+   "found": 6,
+   "created": 0,
+   "updated": 0,
+   "unchanged": 6,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "warning",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 12,
+     "page_count": 49,
+     "complete": false,
+     "last_failure": "time_budget",
+     "updated_at": "2026-10-05 10:30:39"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_clare_events_this_week": {
+   "found": 14,
+   "created": 0,
+   "updated": 0,
+   "unchanged": 14,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "success",
+   "complete": true,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 1,
+     "page_count": 1,
+     "complete": true,
+     "last_failure": "",
+     "updated_at": "2026-10-05 10:30:41"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_cork_events_this_week": {
+   "found": 107,
+   "created": 1,
+   "updated": 0,
+   "unchanged": 106,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "warning",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 1,
+     "page_count": 1,
+     "complete": true,
+     "last_failure": "",
+     "updated_at": "2026-10-05 08:44:25"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 10,
+     "page_count": 16,
+     "complete": false,
+     "last_failure": "rate_limited",
+     "updated_at": "2026-10-05 10:33:22"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_donegal_events_this_week": {
+   "found": 0,
+   "created": 0,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "failed",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [
+    {
+     "message": "Failed to fetch events from Eventbrite \u2014 Donegal (This week). HTTP status: 429.",
+     "technical": "Failed to fetch Eventbrite discovery page: https://www.eventbrite.ie/d/ireland--donegal/events-this-week/"
+    }
+   ],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "2026-10-05 09:35:46",
+     "last_reason": "rate_limited",
+     "consecutive": 1
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_dublin_events_this_week": {
+   "found": 206,
+   "created": 157,
+   "updated": 0,
+   "unchanged": 46,
+   "duplicates": 0,
+   "skipped": 3,
+   "skipped_past": 3,
+   "failed": 0,
+   "errors": 0,
+   "status": "warning",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 11,
+     "page_count": 47,
+     "complete": false,
+     "last_failure": "time_budget",
+     "updated_at": "2026-10-05 10:36:13"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_galway_events_this_week": {
+   "found": 47,
+   "created": 8,
+   "updated": 1,
+   "unchanged": 37,
+   "duplicates": 0,
+   "skipped": 1,
+   "skipped_past": 1,
+   "failed": 0,
+   "errors": 0,
+   "status": "warning",
+   "complete": true,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 12,
+     "page_count": 12,
+     "complete": true,
+     "last_failure": "",
+     "updated_at": "2026-10-05 10:40:13"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_kerry_events_this_week": {
+   "found": 14,
+   "created": 0,
+   "updated": 0,
+   "unchanged": 14,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "success",
+   "complete": true,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 1,
+     "page_count": 1,
+     "complete": true,
+     "last_failure": "",
+     "updated_at": "2026-10-05 10:40:30"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_kildare_events_this_week": {
+   "found": 15,
+   "created": 6,
+   "updated": 0,
+   "unchanged": 9,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "warning",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 13,
+     "page_count": 44,
+     "complete": false,
+     "last_failure": "time_budget",
+     "updated_at": "2026-10-05 10:41:21"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_kilkenny_events_this_week": {
+   "found": 19,
+   "created": 2,
+   "updated": 0,
+   "unchanged": 17,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "warning",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 8,
+     "page_count": 48,
+     "complete": false,
+     "last_failure": "rate_limited",
+     "updated_at": "2026-10-05 10:43:59"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_laois_events_this_week": {
+   "found": 0,
+   "created": 0,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "failed",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [
+    {
+     "message": "Failed to fetch events from Eventbrite \u2014 Laois (This week). HTTP status: 429.",
+     "technical": "Failed to fetch Eventbrite discovery page: https://www.eventbrite.ie/d/ireland--laois/events-this-week/"
+    }
+   ],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "2026-10-05 09:46:24",
+     "last_reason": "rate_limited",
+     "consecutive": 1
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_leitrim_events_this_week": {
+   "found": 1,
+   "created": 0,
+   "updated": 0,
+   "unchanged": 1,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "success",
+   "complete": true,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 1,
+     "page_count": 1,
+     "complete": true,
+     "last_failure": "",
+     "updated_at": "2026-10-05 10:46:06"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_limerick_events_this_week": {
+   "found": 14,
+   "created": 3,
+   "updated": 0,
+   "unchanged": 11,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "warning",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 13,
+     "page_count": 19,
+     "complete": false,
+     "last_failure": "time_budget",
+     "updated_at": "2026-10-05 10:46:57"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_longford_events_this_week": {
+   "found": 1,
+   "created": 0,
+   "updated": 0,
+   "unchanged": 1,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "warning",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 13,
+     "page_count": 46,
+     "complete": false,
+     "last_failure": "time_budget",
+     "updated_at": "2026-10-05 10:47:50"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_louth_events_this_week": {
+   "found": 11,
+   "created": 6,
+   "updated": 0,
+   "unchanged": 5,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "warning",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 5,
+     "page_count": 47,
+     "complete": false,
+     "last_failure": "rate_limited",
+     "updated_at": "2026-10-05 10:50:11"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_mayo_events_this_week": {
+   "found": 0,
+   "created": 0,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "failed",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [
+    {
+     "message": "Failed to fetch events from Eventbrite \u2014 Mayo (This week). HTTP status: 429.",
+     "technical": "Failed to fetch Eventbrite discovery page: https://www.eventbrite.ie/d/ireland--mayo/events-this-week/"
+    }
+   ],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "2026-10-05 09:52:42",
+     "last_reason": "rate_limited",
+     "consecutive": 1
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_meath_events_this_week": {
+   "found": 11,
+   "created": 0,
+   "updated": 2,
+   "unchanged": 9,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "success",
+   "complete": true,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 1,
+     "page_count": 1,
+     "complete": true,
+     "last_failure": "",
+     "updated_at": "2026-10-05 10:52:24"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_monaghan_events_this_week": {
+   "found": 8,
+   "created": 0,
+   "updated": 0,
+   "unchanged": 8,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "warning",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 13,
+     "page_count": 46,
+     "complete": false,
+     "last_failure": "time_budget",
+     "updated_at": "2026-10-05 10:53:15"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_offaly_events_this_week": {
+   "found": 0,
+   "created": 0,
+   "updated": 0,
+   "unchanged": 0,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "success",
+   "complete": true,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 1,
+     "page_count": 0,
+     "complete": true,
+     "last_failure": "",
+     "updated_at": "2026-10-05 10:53:17"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_roscommon_events_this_week": {
+   "found": 2,
+   "created": 0,
+   "updated": 0,
+   "unchanged": 2,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "warning",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 13,
+     "page_count": 44,
+     "complete": false,
+     "last_failure": "time_budget",
+     "updated_at": "2026-10-05 10:54:08"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_sligo_events_this_week": {
+   "found": 8,
+   "created": 0,
+   "updated": 0,
+   "unchanged": 8,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "warning",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 6,
+     "page_count": 10,
+     "complete": false,
+     "last_failure": "rate_limited",
+     "updated_at": "2026-10-05 10:56:31"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_tipperary_events_this_week": {
+   "found": 16,
+   "created": 3,
+   "updated": 0,
+   "unchanged": 13,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "warning",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 8,
+     "page_count": 20,
+     "complete": false,
+     "last_failure": "time_budget",
+     "updated_at": "2026-10-05 10:58:22"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_waterford_events_this_week": {
+   "found": 15,
+   "created": 3,
+   "updated": 0,
+   "unchanged": 12,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "warning",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 12,
+     "page_count": 44,
+     "complete": false,
+     "last_failure": "time_budget",
+     "updated_at": "2026-10-05 10:59:16"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_westmeath_events_this_week": {
+   "found": 6,
+   "created": 0,
+   "updated": 0,
+   "unchanged": 6,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "success",
+   "complete": true,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 1,
+     "page_count": 1,
+     "complete": true,
+     "last_failure": "",
+     "updated_at": "2026-10-05 10:59:22"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_wexford_events_this_week": {
+   "found": 13,
+   "created": 0,
+   "updated": 0,
+   "unchanged": 13,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "warning",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 10,
+     "page_count": 43,
+     "complete": false,
+     "last_failure": "rate_limited",
+     "updated_at": "2026-10-05 11:02:03"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  },
+  "eventbrite_wicklow_events_this_week": {
+   "found": 14,
+   "created": 3,
+   "updated": 0,
+   "unchanged": 11,
+   "duplicates": 0,
+   "skipped": 0,
+   "skipped_past": 0,
+   "failed": 0,
+   "errors": 0,
+   "status": "warning",
+   "complete": false,
+   "reconciliation_safe": null,
+   "rate_limited": 0,
+   "waf": 0,
+   "http_failures": 0,
+   "fatal_errors": [],
+   "checkpoint": null,
+   "cooldown": null,
+   "source_not_found_changes": 0,
+   "before": {
+    "checkpoint": {
+     "has_checkpoint": false,
+     "last_page": 0,
+     "page_count": 0,
+     "complete": false,
+     "last_failure": "",
+     "updated_at": ""
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   },
+   "after": {
+    "checkpoint": {
+     "has_checkpoint": true,
+     "last_page": 12,
+     "page_count": 39,
+     "complete": false,
+     "last_failure": "time_budget",
+     "updated_at": "2026-10-05 11:03:53"
+    },
+    "cooldown": {
+     "cooling_down": false,
+     "seconds_remaining": 0,
+     "next_eligible": "",
+     "last_reason": "",
+     "consecutive": 0
+    },
+    "cooling_down": false,
+    "stored_events": 0
+   }
+  }
+ },
+ "global_before": {
+  "events_total": 729,
+  "source_id_posts": 703,
+  "distinct_source_ids": 656,
+  "duplicate_source_ids": 47,
+  "source_not_found": 261
+ },
+ "global_after": {
+  "events_total": 2566,
+  "source_id_posts": 2540,
+  "distinct_source_ids": 2343,
+  "duplicate_source_ids": 197,
+  "source_not_found": 274
+ }
+}

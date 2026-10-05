@@ -1,0 +1,95 @@
+{
+    "environment": {
+        "home_url": "http:\/\/localhost:8080",
+        "target": "http:\/\/localhost:8080",
+        "env_type": "local",
+        "classes": {
+            "home_url": "local",
+            "target": "local"
+        }
+    },
+    "registry_total": 136,
+    "class_counts": {
+        "legacy_default": 6,
+        "eventbrite_county": 26,
+        "heritage_week_county": 26,
+        "eb_window": 78
+    },
+    "unconfigured_ids": [],
+    "probes": {
+        "eventbrite_county": {
+            "probe": "ok",
+            "http": 200,
+            "bytes": 667936,
+            "parsed": 20,
+            "objects": 4740,
+            "pages": 49,
+            "type": "eventbrite",
+            "url": "https:\/\/www.eventbrite.ie\/d\/ireland--carlow\/all-events\/"
+        },
+        "eb_window": {
+            "probe": "ok",
+            "http": 200,
+            "bytes": 681290,
+            "parsed": 20,
+            "objects": 299,
+            "pages": 15,
+            "type": "eventbrite",
+            "url": "https:\/\/www.eventbrite.ie\/d\/ireland--cork\/events-this-week\/"
+        },
+        "heritage_week_county": {
+            "probe": "ok",
+            "http": 200,
+            "bytes": 79927,
+            "parsed": 12,
+            "objects": 0,
+            "pages": 0,
+            "type": "heritage_week",
+            "url": "https:\/\/www.heritageweek.ie\/event-listings?q=&where%5B%5D=carlow"
+        },
+        "legacy_icalendar": {
+            "probe": "ok",
+            "http": 200,
+            "bytes": 27671,
+            "parsed": 1,
+            "objects": 0,
+            "pages": 0,
+            "type": "icalendar",
+            "url": "https:\/\/laoistourism.ie\/events\/photo\/?hide_subsequent_recurrences=1&ical=1"
+        },
+        "ivvcc": {
+            "probe": "ok",
+            "http": 200,
+            "bytes": 109558,
+            "parsed": 1,
+            "objects": 0,
+            "pages": 0,
+            "type": "website",
+            "url": "https:\/\/www.ivvcc.ie\/upcoming-events-calendar\/"
+        },
+        "motorsport_ireland": {
+            "probe": "ok",
+            "http": 200,
+            "bytes": 526649,
+            "parsed": 1,
+            "objects": 0,
+            "pages": 0,
+            "type": "website",
+            "url": "https:\/\/www.motorsportireland.com\/events"
+        },
+        "mondello_park": {
+            "probe": "ok",
+            "http": 200,
+            "bytes": 316737,
+            "parsed": 1,
+            "objects": 0,
+            "pages": 0,
+            "type": "website",
+            "url": "https:\/\/mondellopark.ie\/wp-json\/wp\/v2\/events?per_page=100"
+        }
+    },
+    "eventbrite_db_options": 0,
+    "token_file_refs": [],
+    "checkpoints": 20,
+    "cooldown_records": 52
+}

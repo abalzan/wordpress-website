@@ -1,0 +1,2157 @@
+{
+  "laois_tourism": {
+    "id": "laois_tourism",
+    "name": "Laois Tourism",
+    "url": "https://laoistourism.ie/events/photo/?hide_subsequent_recurrences=1&ical=1",
+    "type": "icalendar",
+    "status": "active",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "county": "Laois"
+  },
+  "heritage_week": {
+    "id": "heritage_week",
+    "name": "National Heritage Week",
+    "url": "https://www.heritageweek.ie/event-listings?q=&where%5B%5D=laois",
+    "type": "website",
+    "status": "active",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "county": "Laois",
+    "category": "Heritage"
+  },
+  "eventbrite": {
+    "id": "eventbrite",
+    "name": "Eventbrite — Laois",
+    "url": "https://www.eventbrite.ie/d/ireland--laois/all-events/",
+    "type": "eventbrite",
+    "status": "active",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "county": "Laois"
+  },
+  "ivvcc": {
+    "id": "ivvcc",
+    "name": "IVVCC — Irish Veteran & Vintage Car Club",
+    "url": "https://www.ivvcc.ie/upcoming-events-calendar/",
+    "type": "website",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "county": ""
+  },
+  "motorsport_ireland": {
+    "id": "motorsport_ireland",
+    "name": "Motorsport Ireland",
+    "url": "https://www.motorsportireland.com/events",
+    "type": "website",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "county": ""
+  },
+  "mondello_park": {
+    "id": "mondello_park",
+    "name": "Mondello Park — Ireland's National Motorsports Campus",
+    "url": "https://mondellopark.ie/wp-json/wp/v2/events?per_page=100",
+    "type": "website",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "county": "Kildare"
+  },
+  "eventbrite_carlow": {
+    "name": "Eventbrite — Carlow",
+    "url": "https://www.eventbrite.ie/d/ireland--carlow/all-events/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_carlow",
+    "county": "Carlow",
+    "region_labels": [
+      "Carlow"
+    ]
+  },
+  "eventbrite_cavan": {
+    "name": "Eventbrite — Cavan",
+    "url": "https://www.eventbrite.ie/d/ireland--cavan/all-events/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_cavan",
+    "county": "Cavan",
+    "region_labels": [
+      "Cavan"
+    ]
+  },
+  "eventbrite_clare": {
+    "name": "Eventbrite — Clare",
+    "url": "https://www.eventbrite.ie/d/ireland--clare/all-events/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_clare",
+    "county": "Clare",
+    "region_labels": [
+      "Clare"
+    ]
+  },
+  "eventbrite_cork": {
+    "name": "Eventbrite — Cork",
+    "url": "https://www.eventbrite.ie/d/ireland--cork/all-events/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "2026-10-05 08:05:48",
+    "last_import_status": "success",
+    "events_imported": 222,
+    "last_error": "",
+    "id": "eventbrite_cork",
+    "county": "Cork",
+    "region_labels": [
+      "Cork",
+      "Cork City"
+    ]
+  },
+  "eventbrite_donegal": {
+    "name": "Eventbrite — Donegal",
+    "url": "https://www.eventbrite.ie/d/ireland--donegal/all-events/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_donegal",
+    "county": "Donegal",
+    "region_labels": [
+      "Donegal"
+    ]
+  },
+  "eventbrite_dublin": {
+    "name": "Eventbrite — Dublin",
+    "url": "https://www.eventbrite.ie/d/ireland--dublin/all-events/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_dublin",
+    "county": "Dublin",
+    "region_labels": [
+      "Dublin City",
+      "Dunlaoghaire-Rathdown",
+      "Fingal"
+    ]
+  },
+  "eventbrite_galway": {
+    "name": "Eventbrite — Galway",
+    "url": "https://www.eventbrite.ie/d/ireland--galway/all-events/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_galway",
+    "county": "Galway",
+    "region_labels": [
+      "Galway",
+      "Galway City"
+    ]
+  },
+  "eventbrite_kerry": {
+    "name": "Eventbrite — Kerry",
+    "url": "https://www.eventbrite.ie/d/ireland--kerry/all-events/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_kerry",
+    "county": "Kerry",
+    "region_labels": [
+      "Kerry"
+    ]
+  },
+  "eventbrite_kildare": {
+    "name": "Eventbrite — Kildare",
+    "url": "https://www.eventbrite.ie/d/ireland--kildare/all-events/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_kildare",
+    "county": "Kildare",
+    "region_labels": [
+      "Kildare"
+    ]
+  },
+  "eventbrite_kilkenny": {
+    "name": "Eventbrite — Kilkenny",
+    "url": "https://www.eventbrite.ie/d/ireland--kilkenny/all-events/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_kilkenny",
+    "county": "Kilkenny",
+    "region_labels": [
+      "Kilkenny"
+    ]
+  },
+  "eventbrite_laois": {
+    "name": "Eventbrite — Laois",
+    "url": "https://www.eventbrite.ie/d/ireland--laois/all-events/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_laois",
+    "county": "Laois",
+    "region_labels": [
+      "Laois"
+    ]
+  },
+  "eventbrite_leitrim": {
+    "name": "Eventbrite — Leitrim",
+    "url": "https://www.eventbrite.ie/d/ireland--leitrim/all-events/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_leitrim",
+    "county": "Leitrim",
+    "region_labels": [
+      "Leitrim"
+    ]
+  },
+  "eventbrite_limerick": {
+    "name": "Eventbrite — Limerick",
+    "url": "https://www.eventbrite.ie/d/ireland--limerick/all-events/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_limerick",
+    "county": "Limerick",
+    "region_labels": [
+      "Limerick"
+    ]
+  },
+  "eventbrite_longford": {
+    "name": "Eventbrite — Longford",
+    "url": "https://www.eventbrite.ie/d/ireland--longford/all-events/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_longford",
+    "county": "Longford",
+    "region_labels": [
+      "Longford"
+    ]
+  },
+  "eventbrite_louth": {
+    "name": "Eventbrite — Louth",
+    "url": "https://www.eventbrite.ie/d/ireland--louth/all-events/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_louth",
+    "county": "Louth",
+    "region_labels": [
+      "Louth"
+    ]
+  },
+  "eventbrite_mayo": {
+    "name": "Eventbrite — Mayo",
+    "url": "https://www.eventbrite.ie/d/ireland--mayo/all-events/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_mayo",
+    "county": "Mayo",
+    "region_labels": [
+      "Mayo"
+    ]
+  },
+  "eventbrite_meath": {
+    "name": "Eventbrite — Meath",
+    "url": "https://www.eventbrite.ie/d/ireland--meath/all-events/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_meath",
+    "county": "Meath",
+    "region_labels": [
+      "Meath"
+    ]
+  },
+  "eventbrite_monaghan": {
+    "name": "Eventbrite — Monaghan",
+    "url": "https://www.eventbrite.ie/d/ireland--monaghan/all-events/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_monaghan",
+    "county": "Monaghan",
+    "region_labels": [
+      "Monaghan"
+    ]
+  },
+  "eventbrite_offaly": {
+    "name": "Eventbrite — Offaly",
+    "url": "https://www.eventbrite.ie/d/ireland--offaly/all-events/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_offaly",
+    "county": "Offaly",
+    "region_labels": [
+      "Offaly"
+    ]
+  },
+  "eventbrite_roscommon": {
+    "name": "Eventbrite — Roscommon",
+    "url": "https://www.eventbrite.ie/d/ireland--roscommon/all-events/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_roscommon",
+    "county": "Roscommon",
+    "region_labels": [
+      "Roscommon"
+    ]
+  },
+  "eventbrite_sligo": {
+    "name": "Eventbrite — Sligo",
+    "url": "https://www.eventbrite.ie/d/ireland--sligo/all-events/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_sligo",
+    "county": "Sligo",
+    "region_labels": [
+      "Sligo"
+    ]
+  },
+  "eventbrite_tipperary": {
+    "name": "Eventbrite — Tipperary",
+    "url": "https://www.eventbrite.ie/d/ireland--tipperary/all-events/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_tipperary",
+    "county": "Tipperary",
+    "region_labels": [
+      "Tipperary",
+      "South Tipperary",
+      "North Tipperary"
+    ]
+  },
+  "eventbrite_waterford": {
+    "name": "Eventbrite — Waterford",
+    "url": "https://www.eventbrite.ie/d/ireland--waterford/all-events/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_waterford",
+    "county": "Waterford",
+    "region_labels": [
+      "Waterford"
+    ]
+  },
+  "eventbrite_westmeath": {
+    "name": "Eventbrite — Westmeath",
+    "url": "https://www.eventbrite.ie/d/ireland--westmeath/all-events/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_westmeath",
+    "county": "Westmeath",
+    "region_labels": [
+      "Westmeath"
+    ]
+  },
+  "eventbrite_wexford": {
+    "name": "Eventbrite — Wexford",
+    "url": "https://www.eventbrite.ie/d/ireland--wexford/all-events/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_wexford",
+    "county": "Wexford",
+    "region_labels": [
+      "Wexford"
+    ]
+  },
+  "eventbrite_wicklow": {
+    "name": "Eventbrite — Wicklow",
+    "url": "https://www.eventbrite.ie/d/ireland--wicklow/all-events/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_wicklow",
+    "county": "Wicklow",
+    "region_labels": [
+      "Wicklow"
+    ]
+  },
+  "heritage_week_carlow": {
+    "name": "National Heritage Week — Carlow",
+    "url": "https://www.heritageweek.ie/event-listings?q=&where%5B%5D=carlow",
+    "type": "heritage_week",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "heritage_week_carlow",
+    "county": "Carlow",
+    "category": "Heritage",
+    "hw_where": [
+      "carlow"
+    ]
+  },
+  "heritage_week_cavan": {
+    "name": "National Heritage Week — Cavan",
+    "url": "https://www.heritageweek.ie/event-listings?q=&where%5B%5D=cavan",
+    "type": "heritage_week",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "heritage_week_cavan",
+    "county": "Cavan",
+    "category": "Heritage",
+    "hw_where": [
+      "cavan"
+    ]
+  },
+  "heritage_week_clare": {
+    "name": "National Heritage Week — Clare",
+    "url": "https://www.heritageweek.ie/event-listings?q=&where%5B%5D=clare",
+    "type": "heritage_week",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "heritage_week_clare",
+    "county": "Clare",
+    "category": "Heritage",
+    "hw_where": [
+      "clare"
+    ]
+  },
+  "heritage_week_cork": {
+    "name": "National Heritage Week — Cork",
+    "url": "https://www.heritageweek.ie/event-listings?q=&where%5B%5D=cork-county",
+    "type": "heritage_week",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "heritage_week_cork",
+    "county": "Cork",
+    "category": "Heritage",
+    "hw_where": [
+      "cork-county"
+    ]
+  },
+  "heritage_week_donegal": {
+    "name": "National Heritage Week — Donegal",
+    "url": "https://www.heritageweek.ie/event-listings?q=&where%5B%5D=donegal",
+    "type": "heritage_week",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "heritage_week_donegal",
+    "county": "Donegal",
+    "category": "Heritage",
+    "hw_where": [
+      "donegal"
+    ]
+  },
+  "heritage_week_dublin": {
+    "name": "National Heritage Week — Dublin",
+    "url": "https://www.heritageweek.ie/event-listings?q=&where%5B%5D=dublin-city",
+    "type": "heritage_week",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "heritage_week_dublin",
+    "county": "Dublin",
+    "category": "Heritage",
+    "hw_where": [
+      "dublin-city",
+      "dublin-dunlaoghaire-rathdown",
+      "dublin-fingal",
+      "dublin-south"
+    ]
+  },
+  "heritage_week_galway": {
+    "name": "National Heritage Week — Galway",
+    "url": "https://www.heritageweek.ie/event-listings?q=&where%5B%5D=galway-county",
+    "type": "heritage_week",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "heritage_week_galway",
+    "county": "Galway",
+    "category": "Heritage",
+    "hw_where": [
+      "galway-county",
+      "galway-city"
+    ]
+  },
+  "heritage_week_kerry": {
+    "name": "National Heritage Week — Kerry",
+    "url": "https://www.heritageweek.ie/event-listings?q=&where%5B%5D=kerry",
+    "type": "heritage_week",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "heritage_week_kerry",
+    "county": "Kerry",
+    "category": "Heritage",
+    "hw_where": [
+      "kerry"
+    ]
+  },
+  "heritage_week_kildare": {
+    "name": "National Heritage Week — Kildare",
+    "url": "https://www.heritageweek.ie/event-listings?q=&where%5B%5D=kildare",
+    "type": "heritage_week",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "heritage_week_kildare",
+    "county": "Kildare",
+    "category": "Heritage",
+    "hw_where": [
+      "kildare"
+    ]
+  },
+  "heritage_week_kilkenny": {
+    "name": "National Heritage Week — Kilkenny",
+    "url": "https://www.heritageweek.ie/event-listings?q=&where%5B%5D=kilkenny",
+    "type": "heritage_week",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "heritage_week_kilkenny",
+    "county": "Kilkenny",
+    "category": "Heritage",
+    "hw_where": [
+      "kilkenny"
+    ]
+  },
+  "heritage_week_laois": {
+    "name": "National Heritage Week — Laois",
+    "url": "https://www.heritageweek.ie/event-listings?q=&where%5B%5D=laois",
+    "type": "heritage_week",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "heritage_week_laois",
+    "county": "Laois",
+    "category": "Heritage",
+    "hw_where": [
+      "laois"
+    ]
+  },
+  "heritage_week_leitrim": {
+    "name": "National Heritage Week — Leitrim",
+    "url": "https://www.heritageweek.ie/event-listings?q=&where%5B%5D=leitrim",
+    "type": "heritage_week",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "heritage_week_leitrim",
+    "county": "Leitrim",
+    "category": "Heritage",
+    "hw_where": [
+      "leitrim"
+    ]
+  },
+  "heritage_week_limerick": {
+    "name": "National Heritage Week — Limerick",
+    "url": "https://www.heritageweek.ie/event-listings?q=&where%5B%5D=limerick",
+    "type": "heritage_week",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "heritage_week_limerick",
+    "county": "Limerick",
+    "category": "Heritage",
+    "hw_where": [
+      "limerick"
+    ]
+  },
+  "heritage_week_longford": {
+    "name": "National Heritage Week — Longford",
+    "url": "https://www.heritageweek.ie/event-listings?q=&where%5B%5D=longford",
+    "type": "heritage_week",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "heritage_week_longford",
+    "county": "Longford",
+    "category": "Heritage",
+    "hw_where": [
+      "longford"
+    ]
+  },
+  "heritage_week_louth": {
+    "name": "National Heritage Week — Louth",
+    "url": "https://www.heritageweek.ie/event-listings?q=&where%5B%5D=louth",
+    "type": "heritage_week",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "heritage_week_louth",
+    "county": "Louth",
+    "category": "Heritage",
+    "hw_where": [
+      "louth"
+    ]
+  },
+  "heritage_week_mayo": {
+    "name": "National Heritage Week — Mayo",
+    "url": "https://www.heritageweek.ie/event-listings?q=&where%5B%5D=mayo",
+    "type": "heritage_week",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "heritage_week_mayo",
+    "county": "Mayo",
+    "category": "Heritage",
+    "hw_where": [
+      "mayo"
+    ]
+  },
+  "heritage_week_meath": {
+    "name": "National Heritage Week — Meath",
+    "url": "https://www.heritageweek.ie/event-listings?q=&where%5B%5D=meath",
+    "type": "heritage_week",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "heritage_week_meath",
+    "county": "Meath",
+    "category": "Heritage",
+    "hw_where": [
+      "meath"
+    ]
+  },
+  "heritage_week_monaghan": {
+    "name": "National Heritage Week — Monaghan",
+    "url": "https://www.heritageweek.ie/event-listings?q=&where%5B%5D=monaghan",
+    "type": "heritage_week",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "heritage_week_monaghan",
+    "county": "Monaghan",
+    "category": "Heritage",
+    "hw_where": [
+      "monaghan"
+    ]
+  },
+  "heritage_week_offaly": {
+    "name": "National Heritage Week — Offaly",
+    "url": "https://www.heritageweek.ie/event-listings?q=&where%5B%5D=offaly",
+    "type": "heritage_week",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "heritage_week_offaly",
+    "county": "Offaly",
+    "category": "Heritage",
+    "hw_where": [
+      "offaly"
+    ]
+  },
+  "heritage_week_roscommon": {
+    "name": "National Heritage Week — Roscommon",
+    "url": "https://www.heritageweek.ie/event-listings?q=&where%5B%5D=roscommon",
+    "type": "heritage_week",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "heritage_week_roscommon",
+    "county": "Roscommon",
+    "category": "Heritage",
+    "hw_where": [
+      "roscommon"
+    ]
+  },
+  "heritage_week_sligo": {
+    "name": "National Heritage Week — Sligo",
+    "url": "https://www.heritageweek.ie/event-listings?q=&where%5B%5D=sligo",
+    "type": "heritage_week",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "heritage_week_sligo",
+    "county": "Sligo",
+    "category": "Heritage",
+    "hw_where": [
+      "sligo"
+    ]
+  },
+  "heritage_week_tipperary": {
+    "name": "National Heritage Week — Tipperary",
+    "url": "https://www.heritageweek.ie/event-listings?q=&where%5B%5D=tipperary",
+    "type": "heritage_week",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "heritage_week_tipperary",
+    "county": "Tipperary",
+    "category": "Heritage",
+    "hw_where": [
+      "tipperary"
+    ]
+  },
+  "heritage_week_waterford": {
+    "name": "National Heritage Week — Waterford",
+    "url": "https://www.heritageweek.ie/event-listings?q=&where%5B%5D=waterford",
+    "type": "heritage_week",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "heritage_week_waterford",
+    "county": "Waterford",
+    "category": "Heritage",
+    "hw_where": [
+      "waterford"
+    ]
+  },
+  "heritage_week_westmeath": {
+    "name": "National Heritage Week — Westmeath",
+    "url": "https://www.heritageweek.ie/event-listings?q=&where%5B%5D=westmeath",
+    "type": "heritage_week",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "heritage_week_westmeath",
+    "county": "Westmeath",
+    "category": "Heritage",
+    "hw_where": [
+      "westmeath"
+    ]
+  },
+  "heritage_week_wexford": {
+    "name": "National Heritage Week — Wexford",
+    "url": "https://www.heritageweek.ie/event-listings?q=&where%5B%5D=wexford",
+    "type": "heritage_week",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "heritage_week_wexford",
+    "county": "Wexford",
+    "category": "Heritage",
+    "hw_where": [
+      "wexford"
+    ]
+  },
+  "heritage_week_wicklow": {
+    "name": "National Heritage Week — Wicklow",
+    "url": "https://www.heritageweek.ie/event-listings?q=&where%5B%5D=wicklow",
+    "type": "heritage_week",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "heritage_week_wicklow",
+    "county": "Wicklow",
+    "category": "Heritage",
+    "hw_where": [
+      "wicklow"
+    ]
+  },
+  "eventbrite_carlow_events_today": {
+    "id": "eventbrite_carlow_events_today",
+    "name": "Eventbrite — Carlow (Today)",
+    "url": "https://www.eventbrite.ie/d/ireland--carlow/events-today/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Carlow",
+    "region_labels": [
+      "Carlow"
+    ],
+    "date_window": "events-today",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_carlow_events_tomorrow": {
+    "id": "eventbrite_carlow_events_tomorrow",
+    "name": "Eventbrite — Carlow (Tomorrow)",
+    "url": "https://www.eventbrite.ie/d/ireland--carlow/events-tomorrow/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Carlow",
+    "region_labels": [
+      "Carlow"
+    ],
+    "date_window": "events-tomorrow",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_carlow_events_this_week": {
+    "name": "Eventbrite — Carlow (This week)",
+    "url": "https://www.eventbrite.ie/d/ireland--carlow/events-this-week/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_carlow_events_this_week",
+    "county": "Carlow",
+    "region_labels": [
+      "Carlow"
+    ],
+    "date_window": "events-this-week"
+  },
+  "eventbrite_cavan_events_today": {
+    "id": "eventbrite_cavan_events_today",
+    "name": "Eventbrite — Cavan (Today)",
+    "url": "https://www.eventbrite.ie/d/ireland--cavan/events-today/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Cavan",
+    "region_labels": [
+      "Cavan"
+    ],
+    "date_window": "events-today",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_cavan_events_tomorrow": {
+    "id": "eventbrite_cavan_events_tomorrow",
+    "name": "Eventbrite — Cavan (Tomorrow)",
+    "url": "https://www.eventbrite.ie/d/ireland--cavan/events-tomorrow/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Cavan",
+    "region_labels": [
+      "Cavan"
+    ],
+    "date_window": "events-tomorrow",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_cavan_events_this_week": {
+    "name": "Eventbrite — Cavan (This week)",
+    "url": "https://www.eventbrite.ie/d/ireland--cavan/events-this-week/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_cavan_events_this_week",
+    "county": "Cavan",
+    "region_labels": [
+      "Cavan"
+    ],
+    "date_window": "events-this-week"
+  },
+  "eventbrite_clare_events_today": {
+    "id": "eventbrite_clare_events_today",
+    "name": "Eventbrite — Clare (Today)",
+    "url": "https://www.eventbrite.ie/d/ireland--clare/events-today/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Clare",
+    "region_labels": [
+      "Clare"
+    ],
+    "date_window": "events-today",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_clare_events_tomorrow": {
+    "id": "eventbrite_clare_events_tomorrow",
+    "name": "Eventbrite — Clare (Tomorrow)",
+    "url": "https://www.eventbrite.ie/d/ireland--clare/events-tomorrow/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Clare",
+    "region_labels": [
+      "Clare"
+    ],
+    "date_window": "events-tomorrow",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_clare_events_this_week": {
+    "name": "Eventbrite — Clare (This week)",
+    "url": "https://www.eventbrite.ie/d/ireland--clare/events-this-week/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_clare_events_this_week",
+    "county": "Clare",
+    "region_labels": [
+      "Clare"
+    ],
+    "date_window": "events-this-week"
+  },
+  "eventbrite_cork_events_today": {
+    "id": "eventbrite_cork_events_today",
+    "name": "Eventbrite — Cork (Today)",
+    "url": "https://www.eventbrite.ie/d/ireland--cork/events-today/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Cork",
+    "region_labels": [
+      "Cork",
+      "Cork City"
+    ],
+    "date_window": "events-today",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_cork_events_tomorrow": {
+    "id": "eventbrite_cork_events_tomorrow",
+    "name": "Eventbrite — Cork (Tomorrow)",
+    "url": "https://www.eventbrite.ie/d/ireland--cork/events-tomorrow/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Cork",
+    "region_labels": [
+      "Cork",
+      "Cork City"
+    ],
+    "date_window": "events-tomorrow",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_cork_events_this_week": {
+    "name": "Eventbrite — Cork (This week)",
+    "url": "https://www.eventbrite.ie/d/ireland--cork/events-this-week/",
+    "type": "eventbrite",
+    "status": "active",
+    "last_import": "2026-10-05 08:01:01",
+    "last_import_status": "success",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_cork_events_this_week",
+    "county": "Cork",
+    "region_labels": [
+      "Cork",
+      "Cork City"
+    ],
+    "date_window": "events-this-week"
+  },
+  "eventbrite_donegal_events_today": {
+    "id": "eventbrite_donegal_events_today",
+    "name": "Eventbrite — Donegal (Today)",
+    "url": "https://www.eventbrite.ie/d/ireland--donegal/events-today/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Donegal",
+    "region_labels": [
+      "Donegal"
+    ],
+    "date_window": "events-today",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_donegal_events_tomorrow": {
+    "id": "eventbrite_donegal_events_tomorrow",
+    "name": "Eventbrite — Donegal (Tomorrow)",
+    "url": "https://www.eventbrite.ie/d/ireland--donegal/events-tomorrow/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Donegal",
+    "region_labels": [
+      "Donegal"
+    ],
+    "date_window": "events-tomorrow",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_donegal_events_this_week": {
+    "name": "Eventbrite — Donegal (This week)",
+    "url": "https://www.eventbrite.ie/d/ireland--donegal/events-this-week/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_donegal_events_this_week",
+    "county": "Donegal",
+    "region_labels": [
+      "Donegal"
+    ],
+    "date_window": "events-this-week"
+  },
+  "eventbrite_dublin_events_today": {
+    "id": "eventbrite_dublin_events_today",
+    "name": "Eventbrite — Dublin (Today)",
+    "url": "https://www.eventbrite.ie/d/ireland--dublin/events-today/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Dublin",
+    "region_labels": [
+      "Dublin City",
+      "Dunlaoghaire-Rathdown",
+      "Fingal"
+    ],
+    "date_window": "events-today",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_dublin_events_tomorrow": {
+    "id": "eventbrite_dublin_events_tomorrow",
+    "name": "Eventbrite — Dublin (Tomorrow)",
+    "url": "https://www.eventbrite.ie/d/ireland--dublin/events-tomorrow/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Dublin",
+    "region_labels": [
+      "Dublin City",
+      "Dunlaoghaire-Rathdown",
+      "Fingal"
+    ],
+    "date_window": "events-tomorrow",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_dublin_events_this_week": {
+    "name": "Eventbrite — Dublin (This week)",
+    "url": "https://www.eventbrite.ie/d/ireland--dublin/events-this-week/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_dublin_events_this_week",
+    "county": "Dublin",
+    "region_labels": [
+      "Dublin City",
+      "Dunlaoghaire-Rathdown",
+      "Fingal"
+    ],
+    "date_window": "events-this-week"
+  },
+  "eventbrite_galway_events_today": {
+    "id": "eventbrite_galway_events_today",
+    "name": "Eventbrite — Galway (Today)",
+    "url": "https://www.eventbrite.ie/d/ireland--galway/events-today/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Galway",
+    "region_labels": [
+      "Galway",
+      "Galway City"
+    ],
+    "date_window": "events-today",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_galway_events_tomorrow": {
+    "id": "eventbrite_galway_events_tomorrow",
+    "name": "Eventbrite — Galway (Tomorrow)",
+    "url": "https://www.eventbrite.ie/d/ireland--galway/events-tomorrow/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Galway",
+    "region_labels": [
+      "Galway",
+      "Galway City"
+    ],
+    "date_window": "events-tomorrow",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_galway_events_this_week": {
+    "name": "Eventbrite — Galway (This week)",
+    "url": "https://www.eventbrite.ie/d/ireland--galway/events-this-week/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_galway_events_this_week",
+    "county": "Galway",
+    "region_labels": [
+      "Galway",
+      "Galway City"
+    ],
+    "date_window": "events-this-week"
+  },
+  "eventbrite_kerry_events_today": {
+    "id": "eventbrite_kerry_events_today",
+    "name": "Eventbrite — Kerry (Today)",
+    "url": "https://www.eventbrite.ie/d/ireland--kerry/events-today/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Kerry",
+    "region_labels": [
+      "Kerry"
+    ],
+    "date_window": "events-today",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_kerry_events_tomorrow": {
+    "id": "eventbrite_kerry_events_tomorrow",
+    "name": "Eventbrite — Kerry (Tomorrow)",
+    "url": "https://www.eventbrite.ie/d/ireland--kerry/events-tomorrow/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Kerry",
+    "region_labels": [
+      "Kerry"
+    ],
+    "date_window": "events-tomorrow",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_kerry_events_this_week": {
+    "name": "Eventbrite — Kerry (This week)",
+    "url": "https://www.eventbrite.ie/d/ireland--kerry/events-this-week/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_kerry_events_this_week",
+    "county": "Kerry",
+    "region_labels": [
+      "Kerry"
+    ],
+    "date_window": "events-this-week"
+  },
+  "eventbrite_kildare_events_today": {
+    "id": "eventbrite_kildare_events_today",
+    "name": "Eventbrite — Kildare (Today)",
+    "url": "https://www.eventbrite.ie/d/ireland--kildare/events-today/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Kildare",
+    "region_labels": [
+      "Kildare"
+    ],
+    "date_window": "events-today",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_kildare_events_tomorrow": {
+    "id": "eventbrite_kildare_events_tomorrow",
+    "name": "Eventbrite — Kildare (Tomorrow)",
+    "url": "https://www.eventbrite.ie/d/ireland--kildare/events-tomorrow/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Kildare",
+    "region_labels": [
+      "Kildare"
+    ],
+    "date_window": "events-tomorrow",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_kildare_events_this_week": {
+    "name": "Eventbrite — Kildare (This week)",
+    "url": "https://www.eventbrite.ie/d/ireland--kildare/events-this-week/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_kildare_events_this_week",
+    "county": "Kildare",
+    "region_labels": [
+      "Kildare"
+    ],
+    "date_window": "events-this-week"
+  },
+  "eventbrite_kilkenny_events_today": {
+    "id": "eventbrite_kilkenny_events_today",
+    "name": "Eventbrite — Kilkenny (Today)",
+    "url": "https://www.eventbrite.ie/d/ireland--kilkenny/events-today/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Kilkenny",
+    "region_labels": [
+      "Kilkenny"
+    ],
+    "date_window": "events-today",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_kilkenny_events_tomorrow": {
+    "id": "eventbrite_kilkenny_events_tomorrow",
+    "name": "Eventbrite — Kilkenny (Tomorrow)",
+    "url": "https://www.eventbrite.ie/d/ireland--kilkenny/events-tomorrow/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Kilkenny",
+    "region_labels": [
+      "Kilkenny"
+    ],
+    "date_window": "events-tomorrow",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_kilkenny_events_this_week": {
+    "name": "Eventbrite — Kilkenny (This week)",
+    "url": "https://www.eventbrite.ie/d/ireland--kilkenny/events-this-week/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_kilkenny_events_this_week",
+    "county": "Kilkenny",
+    "region_labels": [
+      "Kilkenny"
+    ],
+    "date_window": "events-this-week"
+  },
+  "eventbrite_laois_events_today": {
+    "id": "eventbrite_laois_events_today",
+    "name": "Eventbrite — Laois (Today)",
+    "url": "https://www.eventbrite.ie/d/ireland--laois/events-today/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Laois",
+    "region_labels": [
+      "Laois"
+    ],
+    "date_window": "events-today",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_laois_events_tomorrow": {
+    "id": "eventbrite_laois_events_tomorrow",
+    "name": "Eventbrite — Laois (Tomorrow)",
+    "url": "https://www.eventbrite.ie/d/ireland--laois/events-tomorrow/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Laois",
+    "region_labels": [
+      "Laois"
+    ],
+    "date_window": "events-tomorrow",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_laois_events_this_week": {
+    "name": "Eventbrite — Laois (This week)",
+    "url": "https://www.eventbrite.ie/d/ireland--laois/events-this-week/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_laois_events_this_week",
+    "county": "Laois",
+    "region_labels": [
+      "Laois"
+    ],
+    "date_window": "events-this-week"
+  },
+  "eventbrite_leitrim_events_today": {
+    "id": "eventbrite_leitrim_events_today",
+    "name": "Eventbrite — Leitrim (Today)",
+    "url": "https://www.eventbrite.ie/d/ireland--leitrim/events-today/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Leitrim",
+    "region_labels": [
+      "Leitrim"
+    ],
+    "date_window": "events-today",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_leitrim_events_tomorrow": {
+    "id": "eventbrite_leitrim_events_tomorrow",
+    "name": "Eventbrite — Leitrim (Tomorrow)",
+    "url": "https://www.eventbrite.ie/d/ireland--leitrim/events-tomorrow/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Leitrim",
+    "region_labels": [
+      "Leitrim"
+    ],
+    "date_window": "events-tomorrow",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_leitrim_events_this_week": {
+    "name": "Eventbrite — Leitrim (This week)",
+    "url": "https://www.eventbrite.ie/d/ireland--leitrim/events-this-week/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_leitrim_events_this_week",
+    "county": "Leitrim",
+    "region_labels": [
+      "Leitrim"
+    ],
+    "date_window": "events-this-week"
+  },
+  "eventbrite_limerick_events_today": {
+    "id": "eventbrite_limerick_events_today",
+    "name": "Eventbrite — Limerick (Today)",
+    "url": "https://www.eventbrite.ie/d/ireland--limerick/events-today/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Limerick",
+    "region_labels": [
+      "Limerick"
+    ],
+    "date_window": "events-today",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_limerick_events_tomorrow": {
+    "id": "eventbrite_limerick_events_tomorrow",
+    "name": "Eventbrite — Limerick (Tomorrow)",
+    "url": "https://www.eventbrite.ie/d/ireland--limerick/events-tomorrow/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Limerick",
+    "region_labels": [
+      "Limerick"
+    ],
+    "date_window": "events-tomorrow",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_limerick_events_this_week": {
+    "name": "Eventbrite — Limerick (This week)",
+    "url": "https://www.eventbrite.ie/d/ireland--limerick/events-this-week/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_limerick_events_this_week",
+    "county": "Limerick",
+    "region_labels": [
+      "Limerick"
+    ],
+    "date_window": "events-this-week"
+  },
+  "eventbrite_longford_events_today": {
+    "id": "eventbrite_longford_events_today",
+    "name": "Eventbrite — Longford (Today)",
+    "url": "https://www.eventbrite.ie/d/ireland--longford/events-today/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Longford",
+    "region_labels": [
+      "Longford"
+    ],
+    "date_window": "events-today",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_longford_events_tomorrow": {
+    "id": "eventbrite_longford_events_tomorrow",
+    "name": "Eventbrite — Longford (Tomorrow)",
+    "url": "https://www.eventbrite.ie/d/ireland--longford/events-tomorrow/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Longford",
+    "region_labels": [
+      "Longford"
+    ],
+    "date_window": "events-tomorrow",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_longford_events_this_week": {
+    "name": "Eventbrite — Longford (This week)",
+    "url": "https://www.eventbrite.ie/d/ireland--longford/events-this-week/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_longford_events_this_week",
+    "county": "Longford",
+    "region_labels": [
+      "Longford"
+    ],
+    "date_window": "events-this-week"
+  },
+  "eventbrite_louth_events_today": {
+    "id": "eventbrite_louth_events_today",
+    "name": "Eventbrite — Louth (Today)",
+    "url": "https://www.eventbrite.ie/d/ireland--louth/events-today/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Louth",
+    "region_labels": [
+      "Louth"
+    ],
+    "date_window": "events-today",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_louth_events_tomorrow": {
+    "id": "eventbrite_louth_events_tomorrow",
+    "name": "Eventbrite — Louth (Tomorrow)",
+    "url": "https://www.eventbrite.ie/d/ireland--louth/events-tomorrow/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Louth",
+    "region_labels": [
+      "Louth"
+    ],
+    "date_window": "events-tomorrow",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_louth_events_this_week": {
+    "name": "Eventbrite — Louth (This week)",
+    "url": "https://www.eventbrite.ie/d/ireland--louth/events-this-week/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_louth_events_this_week",
+    "county": "Louth",
+    "region_labels": [
+      "Louth"
+    ],
+    "date_window": "events-this-week"
+  },
+  "eventbrite_mayo_events_today": {
+    "id": "eventbrite_mayo_events_today",
+    "name": "Eventbrite — Mayo (Today)",
+    "url": "https://www.eventbrite.ie/d/ireland--mayo/events-today/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Mayo",
+    "region_labels": [
+      "Mayo"
+    ],
+    "date_window": "events-today",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_mayo_events_tomorrow": {
+    "id": "eventbrite_mayo_events_tomorrow",
+    "name": "Eventbrite — Mayo (Tomorrow)",
+    "url": "https://www.eventbrite.ie/d/ireland--mayo/events-tomorrow/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Mayo",
+    "region_labels": [
+      "Mayo"
+    ],
+    "date_window": "events-tomorrow",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_mayo_events_this_week": {
+    "name": "Eventbrite — Mayo (This week)",
+    "url": "https://www.eventbrite.ie/d/ireland--mayo/events-this-week/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_mayo_events_this_week",
+    "county": "Mayo",
+    "region_labels": [
+      "Mayo"
+    ],
+    "date_window": "events-this-week"
+  },
+  "eventbrite_meath_events_today": {
+    "id": "eventbrite_meath_events_today",
+    "name": "Eventbrite — Meath (Today)",
+    "url": "https://www.eventbrite.ie/d/ireland--meath/events-today/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Meath",
+    "region_labels": [
+      "Meath"
+    ],
+    "date_window": "events-today",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_meath_events_tomorrow": {
+    "id": "eventbrite_meath_events_tomorrow",
+    "name": "Eventbrite — Meath (Tomorrow)",
+    "url": "https://www.eventbrite.ie/d/ireland--meath/events-tomorrow/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Meath",
+    "region_labels": [
+      "Meath"
+    ],
+    "date_window": "events-tomorrow",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_meath_events_this_week": {
+    "name": "Eventbrite — Meath (This week)",
+    "url": "https://www.eventbrite.ie/d/ireland--meath/events-this-week/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_meath_events_this_week",
+    "county": "Meath",
+    "region_labels": [
+      "Meath"
+    ],
+    "date_window": "events-this-week"
+  },
+  "eventbrite_monaghan_events_today": {
+    "id": "eventbrite_monaghan_events_today",
+    "name": "Eventbrite — Monaghan (Today)",
+    "url": "https://www.eventbrite.ie/d/ireland--monaghan/events-today/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Monaghan",
+    "region_labels": [
+      "Monaghan"
+    ],
+    "date_window": "events-today",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_monaghan_events_tomorrow": {
+    "id": "eventbrite_monaghan_events_tomorrow",
+    "name": "Eventbrite — Monaghan (Tomorrow)",
+    "url": "https://www.eventbrite.ie/d/ireland--monaghan/events-tomorrow/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Monaghan",
+    "region_labels": [
+      "Monaghan"
+    ],
+    "date_window": "events-tomorrow",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_monaghan_events_this_week": {
+    "name": "Eventbrite — Monaghan (This week)",
+    "url": "https://www.eventbrite.ie/d/ireland--monaghan/events-this-week/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_monaghan_events_this_week",
+    "county": "Monaghan",
+    "region_labels": [
+      "Monaghan"
+    ],
+    "date_window": "events-this-week"
+  },
+  "eventbrite_offaly_events_today": {
+    "id": "eventbrite_offaly_events_today",
+    "name": "Eventbrite — Offaly (Today)",
+    "url": "https://www.eventbrite.ie/d/ireland--offaly/events-today/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Offaly",
+    "region_labels": [
+      "Offaly"
+    ],
+    "date_window": "events-today",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_offaly_events_tomorrow": {
+    "id": "eventbrite_offaly_events_tomorrow",
+    "name": "Eventbrite — Offaly (Tomorrow)",
+    "url": "https://www.eventbrite.ie/d/ireland--offaly/events-tomorrow/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Offaly",
+    "region_labels": [
+      "Offaly"
+    ],
+    "date_window": "events-tomorrow",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_offaly_events_this_week": {
+    "name": "Eventbrite — Offaly (This week)",
+    "url": "https://www.eventbrite.ie/d/ireland--offaly/events-this-week/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_offaly_events_this_week",
+    "county": "Offaly",
+    "region_labels": [
+      "Offaly"
+    ],
+    "date_window": "events-this-week"
+  },
+  "eventbrite_roscommon_events_today": {
+    "id": "eventbrite_roscommon_events_today",
+    "name": "Eventbrite — Roscommon (Today)",
+    "url": "https://www.eventbrite.ie/d/ireland--roscommon/events-today/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Roscommon",
+    "region_labels": [
+      "Roscommon"
+    ],
+    "date_window": "events-today",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_roscommon_events_tomorrow": {
+    "id": "eventbrite_roscommon_events_tomorrow",
+    "name": "Eventbrite — Roscommon (Tomorrow)",
+    "url": "https://www.eventbrite.ie/d/ireland--roscommon/events-tomorrow/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Roscommon",
+    "region_labels": [
+      "Roscommon"
+    ],
+    "date_window": "events-tomorrow",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_roscommon_events_this_week": {
+    "name": "Eventbrite — Roscommon (This week)",
+    "url": "https://www.eventbrite.ie/d/ireland--roscommon/events-this-week/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_roscommon_events_this_week",
+    "county": "Roscommon",
+    "region_labels": [
+      "Roscommon"
+    ],
+    "date_window": "events-this-week"
+  },
+  "eventbrite_sligo_events_today": {
+    "id": "eventbrite_sligo_events_today",
+    "name": "Eventbrite — Sligo (Today)",
+    "url": "https://www.eventbrite.ie/d/ireland--sligo/events-today/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Sligo",
+    "region_labels": [
+      "Sligo"
+    ],
+    "date_window": "events-today",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_sligo_events_tomorrow": {
+    "id": "eventbrite_sligo_events_tomorrow",
+    "name": "Eventbrite — Sligo (Tomorrow)",
+    "url": "https://www.eventbrite.ie/d/ireland--sligo/events-tomorrow/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Sligo",
+    "region_labels": [
+      "Sligo"
+    ],
+    "date_window": "events-tomorrow",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_sligo_events_this_week": {
+    "name": "Eventbrite — Sligo (This week)",
+    "url": "https://www.eventbrite.ie/d/ireland--sligo/events-this-week/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_sligo_events_this_week",
+    "county": "Sligo",
+    "region_labels": [
+      "Sligo"
+    ],
+    "date_window": "events-this-week"
+  },
+  "eventbrite_tipperary_events_today": {
+    "id": "eventbrite_tipperary_events_today",
+    "name": "Eventbrite — Tipperary (Today)",
+    "url": "https://www.eventbrite.ie/d/ireland--tipperary/events-today/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Tipperary",
+    "region_labels": [
+      "Tipperary",
+      "South Tipperary",
+      "North Tipperary"
+    ],
+    "date_window": "events-today",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_tipperary_events_tomorrow": {
+    "id": "eventbrite_tipperary_events_tomorrow",
+    "name": "Eventbrite — Tipperary (Tomorrow)",
+    "url": "https://www.eventbrite.ie/d/ireland--tipperary/events-tomorrow/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Tipperary",
+    "region_labels": [
+      "Tipperary",
+      "South Tipperary",
+      "North Tipperary"
+    ],
+    "date_window": "events-tomorrow",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_tipperary_events_this_week": {
+    "name": "Eventbrite — Tipperary (This week)",
+    "url": "https://www.eventbrite.ie/d/ireland--tipperary/events-this-week/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_tipperary_events_this_week",
+    "county": "Tipperary",
+    "region_labels": [
+      "Tipperary",
+      "South Tipperary",
+      "North Tipperary"
+    ],
+    "date_window": "events-this-week"
+  },
+  "eventbrite_waterford_events_today": {
+    "id": "eventbrite_waterford_events_today",
+    "name": "Eventbrite — Waterford (Today)",
+    "url": "https://www.eventbrite.ie/d/ireland--waterford/events-today/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Waterford",
+    "region_labels": [
+      "Waterford"
+    ],
+    "date_window": "events-today",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_waterford_events_tomorrow": {
+    "id": "eventbrite_waterford_events_tomorrow",
+    "name": "Eventbrite — Waterford (Tomorrow)",
+    "url": "https://www.eventbrite.ie/d/ireland--waterford/events-tomorrow/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Waterford",
+    "region_labels": [
+      "Waterford"
+    ],
+    "date_window": "events-tomorrow",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_waterford_events_this_week": {
+    "name": "Eventbrite — Waterford (This week)",
+    "url": "https://www.eventbrite.ie/d/ireland--waterford/events-this-week/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_waterford_events_this_week",
+    "county": "Waterford",
+    "region_labels": [
+      "Waterford"
+    ],
+    "date_window": "events-this-week"
+  },
+  "eventbrite_westmeath_events_today": {
+    "id": "eventbrite_westmeath_events_today",
+    "name": "Eventbrite — Westmeath (Today)",
+    "url": "https://www.eventbrite.ie/d/ireland--westmeath/events-today/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Westmeath",
+    "region_labels": [
+      "Westmeath"
+    ],
+    "date_window": "events-today",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_westmeath_events_tomorrow": {
+    "id": "eventbrite_westmeath_events_tomorrow",
+    "name": "Eventbrite — Westmeath (Tomorrow)",
+    "url": "https://www.eventbrite.ie/d/ireland--westmeath/events-tomorrow/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Westmeath",
+    "region_labels": [
+      "Westmeath"
+    ],
+    "date_window": "events-tomorrow",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_westmeath_events_this_week": {
+    "name": "Eventbrite — Westmeath (This week)",
+    "url": "https://www.eventbrite.ie/d/ireland--westmeath/events-this-week/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_westmeath_events_this_week",
+    "county": "Westmeath",
+    "region_labels": [
+      "Westmeath"
+    ],
+    "date_window": "events-this-week"
+  },
+  "eventbrite_wexford_events_today": {
+    "id": "eventbrite_wexford_events_today",
+    "name": "Eventbrite — Wexford (Today)",
+    "url": "https://www.eventbrite.ie/d/ireland--wexford/events-today/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Wexford",
+    "region_labels": [
+      "Wexford"
+    ],
+    "date_window": "events-today",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_wexford_events_tomorrow": {
+    "id": "eventbrite_wexford_events_tomorrow",
+    "name": "Eventbrite — Wexford (Tomorrow)",
+    "url": "https://www.eventbrite.ie/d/ireland--wexford/events-tomorrow/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Wexford",
+    "region_labels": [
+      "Wexford"
+    ],
+    "date_window": "events-tomorrow",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_wexford_events_this_week": {
+    "name": "Eventbrite — Wexford (This week)",
+    "url": "https://www.eventbrite.ie/d/ireland--wexford/events-this-week/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_wexford_events_this_week",
+    "county": "Wexford",
+    "region_labels": [
+      "Wexford"
+    ],
+    "date_window": "events-this-week"
+  },
+  "eventbrite_wicklow_events_today": {
+    "id": "eventbrite_wicklow_events_today",
+    "name": "Eventbrite — Wicklow (Today)",
+    "url": "https://www.eventbrite.ie/d/ireland--wicklow/events-today/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Wicklow",
+    "region_labels": [
+      "Wicklow"
+    ],
+    "date_window": "events-today",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_wicklow_events_tomorrow": {
+    "id": "eventbrite_wicklow_events_tomorrow",
+    "name": "Eventbrite — Wicklow (Tomorrow)",
+    "url": "https://www.eventbrite.ie/d/ireland--wicklow/events-tomorrow/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "county": "Wicklow",
+    "region_labels": [
+      "Wicklow"
+    ],
+    "date_window": "events-tomorrow",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": ""
+  },
+  "eventbrite_wicklow_events_this_week": {
+    "name": "Eventbrite — Wicklow (This week)",
+    "url": "https://www.eventbrite.ie/d/ireland--wicklow/events-this-week/",
+    "type": "eventbrite",
+    "status": "inactive",
+    "last_import": "",
+    "last_import_status": "",
+    "events_imported": 0,
+    "last_error": "",
+    "id": "eventbrite_wicklow_events_this_week",
+    "county": "Wicklow",
+    "region_labels": [
+      "Wicklow"
+    ],
+    "date_window": "events-this-week"
+  }
+}

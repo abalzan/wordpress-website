@@ -1,0 +1,17 @@
+G14 negative proofs — each mutation MUST make the suite fail
+--------------------------------------------------------------------------
+N1    N1 a failing source becomes a successful empty             PROVEN  (16 passed, 122 failed)
+N2    N2 an incomplete enumeration is called complete            PROVEN  (G10 checkpoint: 75 passed, 2 failed)
+N3    N3 the checkpoint is ignored (resume restarts)             PROVEN  (G10 checkpoint: 72 passed, 5 failed)
+N4    N4 a rate-limited walk is reported complete                PROVEN  (G10 checkpoint: 75 passed, 2 failed)
+N5    N5 duplicate overlapping event not deduplicated            PROVEN  (G10 checkpoint: 76 passed, 1 failed)
+N6    N6 a truncated listing is treated as complete              PROVEN  (G10 checkpoint: 76 passed, 1 failed)
+N7    N7 the checkpoint usability guard removed                  PROVEN  (G10 checkpoint: 71 passed, 6 failed)
+N8    N8 the reconciliation-safety gate removed                  PROVEN  (G10 checkpoint: 74 passed, 3 failed)
+N9    N9 source isolation removed (shared checkpoint)            PROVEN  (G10 checkpoint: 65 passed, 12 failed)
+N10   N10 duplicate identity protection removed                  PROVEN  (G10 checkpoint: 76 passed, 1 failed)
+--------------------------------------------------------------------------
+Proven: 10 | vacuous/failed: 0
+RESULT: PASS — every negative proof was genuinely load-bearing.
+
+Originals restored.

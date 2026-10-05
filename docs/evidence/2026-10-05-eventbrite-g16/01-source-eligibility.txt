@@ -1,0 +1,22 @@
+non-production confirmed: home=http://localhost:8080 env=local classes=local
+registry_total=136
+class legacy_default = 6
+class eventbrite_county = 26
+class heritage_week_county = 26
+class eb_window = 78
+--- configured / unconfigured census (G16 §5) ---
+sources_with_url=136 unconfigured=0
+--- live page-1 probes (read-only) ---
+eventbrite_county      http=200 bytes=667936 parsed=20 objects=4740 pages=49 url=https://www.eventbrite.ie/d/ireland--carlow/all-events/
+eb_window              http=200 bytes=681290 parsed=20 objects=299 pages=15 url=https://www.eventbrite.ie/d/ireland--cork/events-this-week/
+heritage_week_county   http=200 bytes=79927 parsed=12 objects=0 pages=0 url=https://www.heritageweek.ie/event-listings?q=&where%5B%5D=carlow
+legacy_icalendar       http=200 bytes=27671 parsed=1 objects=0 pages=0 url=https://laoistourism.ie/events/photo/?hide_subsequent_recurrences=1&ical=1
+ivvcc                  http=200 bytes=109558 parsed=1 objects=0 pages=0 url=https://www.ivvcc.ie/upcoming-events-calendar/
+motorsport_ireland     http=200 bytes=526649 parsed=1 objects=0 pages=0 url=https://www.motorsportireland.com/events
+mondello_park          http=200 bytes=316737 parsed=1 objects=0 pages=0 url=https://mondellopark.ie/wp-json/wp/v2/events?per_page=100
+--- G7 API-token retirement re-check ---
+eventbrite_options_in_db=0
+executable_files_referencing_eventbrite_api_token=0
+--- checkpoint / cooldown census ---
+checkpoints=20 cooldown_records=52
+wrote /var/www/html/docs/evidence/2026-10-05-eventbrite-g16/01-source-eligibility.json

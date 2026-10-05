@@ -1,0 +1,287 @@
+non-production confirmed: home=http://localhost:8080 env=local classes=local
+=== G16 controlled import: run1 ===
+--- §13 pre-import safety check ---
+  plugin_active            OK
+  registry_valid           OK
+  overlap_pages_is_1       OK
+  request_budget_400       OK
+  time_budget_45           OK
+  max_pages_50             OK
+  cooldown_present         OK
+  cooldown_base_20         OK
+  cooldown_max_60          OK
+  checkpoint_present       OK
+  checkpoint_enabled       OK
+  api_token_absent         OK
+  active_sources_present   OK
+  no_lock_implementation   OK
+  no_concurrent_run        OK
+pre-import safety check PASSED (15 checks)
+active_sources=81
+--- checkpoint / cooldown BEFORE ---
+  laois_tourism                              checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week                              checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite                                 checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_carlow                          checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_cavan                           checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_clare                           checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_cork                            checkpoint=1/1 cooldown=0s cooling=no stored=0
+  eventbrite_donegal                         checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_dublin                          checkpoint=5/20 cooldown=0s cooling=no stored=0
+  eventbrite_galway                          checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_kerry                           checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_kildare                         checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_kilkenny                        checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_laois                           checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_leitrim                         checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_limerick                        checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_longford                        checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_louth                           checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_mayo                            checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_meath                           checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_monaghan                        checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_offaly                          checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_roscommon                       checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_sligo                           checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_tipperary                       checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_waterford                       checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_westmeath                       checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_wexford                         checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_wicklow                         checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_carlow                       checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_cavan                        checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_clare                        checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_cork                         checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_donegal                      checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_dublin                       checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_galway                       checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_kerry                        checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_kildare                      checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_kilkenny                     checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_laois                        checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_leitrim                      checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_limerick                     checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_longford                     checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_louth                        checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_mayo                         checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_meath                        checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_monaghan                     checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_offaly                       checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_roscommon                    checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_sligo                        checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_tipperary                    checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_waterford                    checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_westmeath                    checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_wexford                      checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_wicklow                      checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_carlow_events_this_week         checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_cavan_events_this_week          checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_clare_events_this_week          checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_cork_events_this_week           checkpoint=1/1 cooldown=0s cooling=no stored=0
+  eventbrite_donegal_events_this_week        checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_dublin_events_this_week         checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_galway_events_this_week         checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_kerry_events_this_week          checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_kildare_events_this_week        checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_kilkenny_events_this_week       checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_laois_events_this_week          checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_leitrim_events_this_week        checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_limerick_events_this_week       checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_longford_events_this_week       checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_louth_events_this_week          checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_mayo_events_this_week           checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_meath_events_this_week          checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_monaghan_events_this_week       checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_offaly_events_this_week         checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_roscommon_events_this_week      checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_sligo_events_this_week          checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_tipperary_events_this_week      checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_waterford_events_this_week      checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_westmeath_events_this_week      checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_wexford_events_this_week        checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_wicklow_events_this_week        checkpoint=0/0 cooldown=0s cooling=no stored=0
+--- RUN START ---
+--- RUN END (5555.4s) ---
+=== combined ===
+  found          3849
+  created        1837
+  new            1837
+  updated        9
+  unchanged      626
+  duplicates     0
+  skipped        1377
+  skipped_past   1377
+  failed         0
+  errors         0
+  status         failed
+=== per-source ===
+  laois_tourism                              found=30    created=7     upd=0    unch=23   dup=0    err=0   status=success  complete=yes
+  heritage_week                              found=77    created=0     upd=0    unch=0    dup=0    err=0   status=warning  complete=yes
+  eventbrite                                 found=0     created=0     upd=0    unch=0    dup=0    err=0   status=success  complete=yes
+  eventbrite_carlow                          found=37    created=2     upd=1    unch=34   dup=0    err=0   status=warning  complete=no
+  eventbrite_cavan                           found=36    created=0     upd=0    unch=36   dup=0    err=0   status=warning  complete=no
+  eventbrite_clare                           found=80    created=2     upd=1    unch=77   dup=0    err=0   status=success  complete=yes
+  eventbrite_cork                            found=180   created=154   upd=0    unch=26   dup=0    err=0   status=warning  complete=no
+  eventbrite_donegal                         found=80    created=3     upd=3    unch=74   dup=0    err=0   status=warning  complete=no
+  eventbrite_dublin                          found=234   created=234   upd=0    unch=0    dup=0    err=0   status=warning  complete=no
+  eventbrite_galway                          found=190   created=190   upd=0    unch=0    dup=0    err=0   status=warning  complete=no
+  eventbrite_kerry                           found=108   created=108   upd=0    unch=0    dup=0    err=0   status=success  complete=yes
+  eventbrite_kildare                         found=102   created=102   upd=0    unch=0    dup=0    err=0   status=warning  complete=no
+  eventbrite_kilkenny                        found=84    created=84    upd=0    unch=0    dup=0    err=0   status=warning  complete=no
+  eventbrite_laois                           found=30    created=30    upd=0    unch=0    dup=0    err=0   status=success  complete=yes
+  eventbrite_leitrim                         found=33    created=33    upd=0    unch=0    dup=0    err=0   status=success  complete=yes
+  eventbrite_limerick                        found=46    created=46    upd=0    unch=0    dup=0    err=0   status=warning  complete=no
+  eventbrite_longford                        found=13    created=13    upd=0    unch=0    dup=0    err=0   status=warning  complete=no
+  eventbrite_louth                           found=40    created=40    upd=0    unch=0    dup=0    err=0   status=warning  complete=no
+  eventbrite_mayo                            found=68    created=68    upd=0    unch=0    dup=0    err=0   status=success  complete=yes
+  eventbrite_meath                           found=126   created=126   upd=0    unch=0    dup=0    err=0   status=success  complete=yes
+  eventbrite_monaghan                        found=39    created=39    upd=0    unch=0    dup=0    err=0   status=warning  complete=no
+  eventbrite_offaly                          found=37    created=37    upd=0    unch=0    dup=0    err=0   status=success  complete=yes
+  eventbrite_roscommon                       found=13    created=13    upd=0    unch=0    dup=0    err=0   status=warning  complete=no
+  eventbrite_sligo                           found=55    created=55    upd=0    unch=0    dup=0    err=0   status=warning  complete=no
+  eventbrite_tipperary                       found=40    created=40    upd=0    unch=0    dup=0    err=0   status=warning  complete=no
+  eventbrite_waterford                       found=34    created=34    upd=0    unch=0    dup=0    err=0   status=warning  complete=no
+  eventbrite_westmeath                       found=70    created=69    upd=1    unch=0    dup=0    err=0   status=success  complete=yes
+  eventbrite_wexford                         found=50    created=50    upd=0    unch=0    dup=0    err=0   status=warning  complete=no
+  eventbrite_wicklow                         found=66    created=66    upd=0    unch=0    dup=0    err=0   status=warning  complete=no
+  heritage_week_carlow                       found=44    created=0     upd=0    unch=0    dup=0    err=0   status=warning  complete=yes
+  heritage_week_cavan                        found=62    created=0     upd=0    unch=0    dup=0    err=0   status=warning  complete=yes
+  heritage_week_clare                        found=99    created=0     upd=0    unch=0    dup=0    err=0   status=warning  complete=yes
+  heritage_week_cork                         found=231   created=0     upd=0    unch=0    dup=0    err=0   status=warning  complete=yes
+  heritage_week_donegal                      found=161   created=0     upd=0    unch=0    dup=0    err=0   status=warning  complete=yes
+  heritage_week_dublin                       found=328   created=0     upd=0    unch=0    dup=0    err=0   status=warning  complete=yes
+  heritage_week_galway                       found=181   created=0     upd=0    unch=0    dup=0    err=0   status=warning  complete=yes
+  heritage_week_kerry                        found=70    created=0     upd=0    unch=0    dup=0    err=0   status=warning  complete=yes
+  heritage_week_kildare                      found=120   created=0     upd=0    unch=0    dup=0    err=0   status=warning  complete=yes
+  heritage_week_kilkenny                     found=0     created=0     upd=0    unch=0    dup=0    err=0   status=failed   complete=no
+  heritage_week_laois                        found=0     created=0     upd=0    unch=0    dup=0    err=0   status=failed   complete=no
+  heritage_week_leitrim                      found=0     created=0     upd=0    unch=0    dup=0    err=0   status=failed   complete=no
+  heritage_week_limerick                     found=0     created=0     upd=0    unch=0    dup=0    err=0   status=failed   complete=no
+  heritage_week_longford                     found=0     created=0     upd=0    unch=0    dup=0    err=0   status=failed   complete=no
+  heritage_week_louth                        found=0     created=0     upd=0    unch=0    dup=0    err=0   status=failed   complete=no
+  heritage_week_mayo                         found=0     created=0     upd=0    unch=0    dup=0    err=0   status=failed   complete=no
+  heritage_week_meath                        found=0     created=0     upd=0    unch=0    dup=0    err=0   status=failed   complete=no
+  heritage_week_monaghan                     found=0     created=0     upd=0    unch=0    dup=0    err=0   status=failed   complete=no
+  heritage_week_offaly                       found=0     created=0     upd=0    unch=0    dup=0    err=0   status=failed   complete=no
+  heritage_week_roscommon                    found=0     created=0     upd=0    unch=0    dup=0    err=0   status=failed   complete=no
+  heritage_week_sligo                        found=0     created=0     upd=0    unch=0    dup=0    err=0   status=failed   complete=no
+  heritage_week_tipperary                    found=0     created=0     upd=0    unch=0    dup=0    err=0   status=failed   complete=no
+  heritage_week_waterford                    found=0     created=0     upd=0    unch=0    dup=0    err=0   status=failed   complete=no
+  heritage_week_westmeath                    found=0     created=0     upd=0    unch=0    dup=0    err=0   status=failed   complete=no
+  heritage_week_wexford                      found=0     created=0     upd=0    unch=0    dup=0    err=0   status=failed   complete=no
+  heritage_week_wicklow                      found=0     created=0     upd=0    unch=0    dup=0    err=0   status=failed   complete=no
+  eventbrite_carlow_events_this_week         found=7     created=0     upd=0    unch=7    dup=0    err=0   status=warning  complete=no
+  eventbrite_cavan_events_this_week          found=6     created=0     upd=0    unch=6    dup=0    err=0   status=warning  complete=no
+  eventbrite_clare_events_this_week          found=14    created=0     upd=0    unch=14   dup=0    err=0   status=success  complete=yes
+  eventbrite_cork_events_this_week           found=107   created=1     upd=0    unch=106  dup=0    err=0   status=warning  complete=no
+  eventbrite_donegal_events_this_week        found=0     created=0     upd=0    unch=0    dup=0    err=0   status=failed   complete=no
+  eventbrite_dublin_events_this_week         found=206   created=157   upd=0    unch=46   dup=0    err=0   status=warning  complete=no
+  eventbrite_galway_events_this_week         found=47    created=8     upd=1    unch=37   dup=0    err=0   status=warning  complete=yes
+  eventbrite_kerry_events_this_week          found=14    created=0     upd=0    unch=14   dup=0    err=0   status=success  complete=yes
+  eventbrite_kildare_events_this_week        found=15    created=6     upd=0    unch=9    dup=0    err=0   status=warning  complete=no
+  eventbrite_kilkenny_events_this_week       found=19    created=2     upd=0    unch=17   dup=0    err=0   status=warning  complete=no
+  eventbrite_laois_events_this_week          found=0     created=0     upd=0    unch=0    dup=0    err=0   status=failed   complete=no
+  eventbrite_leitrim_events_this_week        found=1     created=0     upd=0    unch=1    dup=0    err=0   status=success  complete=yes
+  eventbrite_limerick_events_this_week       found=14    created=3     upd=0    unch=11   dup=0    err=0   status=warning  complete=no
+  eventbrite_longford_events_this_week       found=1     created=0     upd=0    unch=1    dup=0    err=0   status=warning  complete=no
+  eventbrite_louth_events_this_week          found=11    created=6     upd=0    unch=5    dup=0    err=0   status=warning  complete=no
+  eventbrite_mayo_events_this_week           found=0     created=0     upd=0    unch=0    dup=0    err=0   status=failed   complete=no
+  eventbrite_meath_events_this_week          found=11    created=0     upd=2    unch=9    dup=0    err=0   status=success  complete=yes
+  eventbrite_monaghan_events_this_week       found=8     created=0     upd=0    unch=8    dup=0    err=0   status=warning  complete=no
+  eventbrite_offaly_events_this_week         found=0     created=0     upd=0    unch=0    dup=0    err=0   status=success  complete=yes
+  eventbrite_roscommon_events_this_week      found=2     created=0     upd=0    unch=2    dup=0    err=0   status=warning  complete=no
+  eventbrite_sligo_events_this_week          found=8     created=0     upd=0    unch=8    dup=0    err=0   status=warning  complete=no
+  eventbrite_tipperary_events_this_week      found=16    created=3     upd=0    unch=13   dup=0    err=0   status=warning  complete=no
+  eventbrite_waterford_events_this_week      found=15    created=3     upd=0    unch=12   dup=0    err=0   status=warning  complete=no
+  eventbrite_westmeath_events_this_week      found=6     created=0     upd=0    unch=6    dup=0    err=0   status=success  complete=yes
+  eventbrite_wexford_events_this_week        found=13    created=0     upd=0    unch=13   dup=0    err=0   status=warning  complete=no
+  eventbrite_wicklow_events_this_week        found=14    created=3     upd=0    unch=11   dup=0    err=0   status=warning  complete=no
+=== checkpoint / cooldown AFTER ===
+  laois_tourism                              checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week                              checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite                                 checkpoint=2/2 cooldown=0s cooling=no stored=0
+  eventbrite_carlow                          checkpoint=13/49 cooldown=0s cooling=no stored=0
+  eventbrite_cavan                           checkpoint=10/49 cooldown=0s cooling=no stored=0
+  eventbrite_clare                           checkpoint=4/4 cooldown=0s cooling=no stored=0
+  eventbrite_cork                            checkpoint=9/49 cooldown=0s cooling=no stored=0
+  eventbrite_donegal                         checkpoint=12/49 cooldown=0s cooling=no stored=0
+  eventbrite_dublin                          checkpoint=14/49 cooldown=0s cooling=no stored=0
+  eventbrite_galway                          checkpoint=12/49 cooldown=0s cooling=no stored=0
+  eventbrite_kerry                           checkpoint=6/6 cooldown=0s cooling=no stored=0
+  eventbrite_kildare                         checkpoint=13/49 cooldown=0s cooling=no stored=0
+  eventbrite_kilkenny                        checkpoint=12/49 cooldown=0s cooling=no stored=0
+  eventbrite_laois                           checkpoint=2/2 cooldown=0s cooling=no stored=0
+  eventbrite_leitrim                         checkpoint=2/2 cooldown=0s cooling=no stored=0
+  eventbrite_limerick                        checkpoint=13/49 cooldown=0s cooling=no stored=0
+  eventbrite_longford                        checkpoint=12/49 cooldown=0s cooling=no stored=0
+  eventbrite_louth                           checkpoint=5/49 cooldown=0s cooling=no stored=0
+  eventbrite_mayo                            checkpoint=6/6 cooldown=0s cooling=no stored=0
+  eventbrite_meath                           checkpoint=7/7 cooldown=0s cooling=no stored=0
+  eventbrite_monaghan                        checkpoint=12/49 cooldown=0s cooling=no stored=0
+  eventbrite_offaly                          checkpoint=3/3 cooldown=0s cooling=no stored=0
+  eventbrite_roscommon                       checkpoint=12/49 cooldown=0s cooling=no stored=0
+  eventbrite_sligo                           checkpoint=8/49 cooldown=0s cooling=no stored=0
+  eventbrite_tipperary                       checkpoint=11/49 cooldown=0s cooling=no stored=0
+  eventbrite_waterford                       checkpoint=11/49 cooldown=0s cooling=no stored=0
+  eventbrite_westmeath                       checkpoint=4/4 cooldown=0s cooling=no stored=0
+  eventbrite_wexford                         checkpoint=13/49 cooldown=0s cooling=no stored=0
+  eventbrite_wicklow                         checkpoint=12/49 cooldown=0s cooling=no stored=0
+  heritage_week_carlow                       checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_cavan                        checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_clare                        checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_cork                         checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_donegal                      checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_dublin                       checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_galway                       checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_kerry                        checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_kildare                      checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_kilkenny                     checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_laois                        checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_leitrim                      checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_limerick                     checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_longford                     checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_louth                        checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_mayo                         checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_meath                        checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_monaghan                     checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_offaly                       checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_roscommon                    checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_sligo                        checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_tipperary                    checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_waterford                    checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_westmeath                    checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_wexford                      checkpoint=0/0 cooldown=0s cooling=no stored=0
+  heritage_week_wicklow                      checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_carlow_events_this_week         checkpoint=12/46 cooldown=0s cooling=no stored=0
+  eventbrite_cavan_events_this_week          checkpoint=12/49 cooldown=0s cooling=no stored=0
+  eventbrite_clare_events_this_week          checkpoint=1/1 cooldown=0s cooling=no stored=0
+  eventbrite_cork_events_this_week           checkpoint=10/16 cooldown=0s cooling=no stored=0
+  eventbrite_donegal_events_this_week        checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_dublin_events_this_week         checkpoint=11/47 cooldown=0s cooling=no stored=0
+  eventbrite_galway_events_this_week         checkpoint=12/12 cooldown=0s cooling=no stored=0
+  eventbrite_kerry_events_this_week          checkpoint=1/1 cooldown=0s cooling=no stored=0
+  eventbrite_kildare_events_this_week        checkpoint=13/44 cooldown=0s cooling=no stored=0
+  eventbrite_kilkenny_events_this_week       checkpoint=8/48 cooldown=0s cooling=no stored=0
+  eventbrite_laois_events_this_week          checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_leitrim_events_this_week        checkpoint=1/1 cooldown=0s cooling=no stored=0
+  eventbrite_limerick_events_this_week       checkpoint=13/19 cooldown=0s cooling=no stored=0
+  eventbrite_longford_events_this_week       checkpoint=13/46 cooldown=0s cooling=no stored=0
+  eventbrite_louth_events_this_week          checkpoint=5/47 cooldown=0s cooling=no stored=0
+  eventbrite_mayo_events_this_week           checkpoint=0/0 cooldown=0s cooling=no stored=0
+  eventbrite_meath_events_this_week          checkpoint=1/1 cooldown=0s cooling=no stored=0
+  eventbrite_monaghan_events_this_week       checkpoint=13/46 cooldown=0s cooling=no stored=0
+  eventbrite_offaly_events_this_week         checkpoint=1/0 cooldown=0s cooling=no stored=0
+  eventbrite_roscommon_events_this_week      checkpoint=13/44 cooldown=0s cooling=no stored=0
+  eventbrite_sligo_events_this_week          checkpoint=6/10 cooldown=0s cooling=no stored=0
+  eventbrite_tipperary_events_this_week      checkpoint=8/20 cooldown=0s cooling=no stored=0
+  eventbrite_waterford_events_this_week      checkpoint=12/44 cooldown=0s cooling=no stored=0
+  eventbrite_westmeath_events_this_week      checkpoint=1/1 cooldown=0s cooling=no stored=0
+  eventbrite_wexford_events_this_week        checkpoint=10/43 cooldown=0s cooling=no stored=0
+  eventbrite_wicklow_events_this_week        checkpoint=12/39 cooldown=0s cooling=no stored=0
+=== global counts ===
+  events_total                 729 -> 2566
+  source_id_posts              703 -> 2540
+  distinct_source_ids          656 -> 2343
+  duplicate_source_ids         47 -> 197
+  source_not_found             261 -> 274
+wrote run1-import.json

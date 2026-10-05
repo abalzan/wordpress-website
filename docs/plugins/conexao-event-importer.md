@@ -162,15 +162,23 @@ On activation, the plugin seeds these default sources:
 | `motorsport_ireland` | Motorsport Ireland | `website` | inactive |
 | `mondello_park` | Mondello Park | `website` | inactive |
 
-**Full registry size: 58 sources** — these 6 legacy defaults plus the 52 county
-sources below. Both halves are declared in code (no operator `wp eval` needed).
+**Full registry size: 136 sources** (measured 2026-10-05 from the live local
+registry) — these 6 legacy defaults, plus 52 county sources, plus the 78
+Eventbrite date-window sources added by the G8 expansion
+(`eventbrite_<county>_events_{today,tomorrow,this_week}`, 26 × 3). All three
+halves are declared in code (no operator `wp eval` needed) and merged
+idempotently by `Conexao_Event_Sources::get_all()`.
 
 ### County Source Registry (v1.7.0)
 
-The multi-county expansion introduces 52 additional source registrations
-(26 Eventbrite + 26 Heritage Week) for the 26 Republic of Ireland counties.
-Together with the six legacy defaults above this is a **58-source registry**.
-All 52 ship **inactive**: registering a source never starts an import.
+The multi-county expansion introduced 52 county source registrations
+(26 Eventbrite + 26 Heritage Week) for the 26 Republic of Ireland counties,
+and the G8 expansion added 78 Eventbrite date-window registrations on top.
+Together with the six legacy defaults above this is a **136-source registry**.
+All 130 county/window sources ship **inactive**: registering a source never
+starts an import. See
+[the G16 report](../reports/2026-10-05-eventbrite-full-activation.md) for which
+classes are eligible and enabled.
 
 **Source key scheme:**
 - Eventbrite: `eventbrite_<county-slug>` (e.g. `eventbrite_cork`)
