@@ -1,0 +1,130 @@
+OVERLAP_PAGES in production = 1 (read-only; G11 changes nothing)
+
+=== eventbrite_cork ===
+observations: 10 (0 complete)   volatility: UNKNOWN
+overlap verdict: UNMEASURED (max movement 0 page(s), 0 complete comparison(s))
+
+PAIR                   present   new   chg  unch   rem moved bound requests    sec  cmpl
+eventbrite_cork:r02        160     0     0   160     0     0     0      8   1.45 upstream_truncated
+eventbrite_cork:r03        160     1     0   159     0     7     0      8  15.82 upstream_truncated
+eventbrite_cork:r04        160     0     0   160     0     0     0      8   1.42 upstream_truncated
+eventbrite_cork:r05        160     0     0   160     0     0     0      8  14.34 upstream_truncated
+eventbrite_cork:r06        160     0     0   160     0     0     0      8   1.41 upstream_truncated
+eventbrite_cork:g12r01     160     1     0   159     0     4     0      8  20.42 upstream_truncated
+eventbrite_cork:g12r02     160     0     0   160     0     0     0      8  15.02 upstream_truncated
+eventbrite_cork:g12r03     160     0     0   160     0     0     0      8  14.54 upstream_truncated
+eventbrite_cork:g12r04     160     0     0   160     0     0     0      8  13.83 upstream_truncated
+
+=== eventbrite_cork_events_this_week ===
+observations: 10 (10 complete)   volatility: LOW
+overlap verdict: SUFFICIENT (max movement 1 page(s), 9 complete comparison(s))
+
+PAIR                   present   new   chg  unch   rem moved bound requests    sec  cmpl
+eventbrite_cork_events     119     1     0   118     1     4     0      6  14.18   yes
+eventbrite_cork_events     119     0     0   119     0     0     0      6   1.04   yes
+eventbrite_cork_events     119     1     0   118     1     5     0      6  11.94   yes
+eventbrite_cork_events     119     0     0   119     0     0     0      6   1.06   yes
+eventbrite_cork_events     119     2     0   117     2     5     0      6  12.45   yes
+eventbrite_cork_events     119     1     0   118     1     5     0      6  11.22   yes
+eventbrite_cork_events     119     0     0   119     0     0     0      6  12.23   yes
+eventbrite_cork_events     119     0     0   119     0     0     0      6  11.61   yes
+eventbrite_cork_events     119     0     0   119     0     0     0      6  14.78   yes
+
+=== eventbrite_cork_events_today ===
+observations: 10 (10 complete)   volatility: HIGH
+overlap verdict: EXCESSIVE (max movement 0 page(s), 9 complete comparison(s))
+
+PAIR                   present   new   chg  unch   rem moved bound requests    sec  cmpl
+eventbrite_cork_events       8     0     0     8     0     0     0      1   0.19   yes
+eventbrite_cork_events       4     0     0     4     4     0     0      1   1.64   yes
+eventbrite_cork_events       4     0     0     4     0     0     0      1    0.2   yes
+eventbrite_cork_events       0     0     0     0     4     0     0      6    8.7   yes
+eventbrite_cork_events       0     0     0     0     0     0     0      6    0.8   yes
+eventbrite_cork_events       0     0     0     0     0     0     0      6  14.84   yes
+eventbrite_cork_events       0     0     0     0     0     0     0      6    7.1   yes
+eventbrite_cork_events       0     0     0     0     0     0     0      6  11.07   yes
+eventbrite_cork_events       0     0     0     0     0     0     0      6   7.34   yes
+
+=== eventbrite_cork_events_tomorrow ===
+observations: 10 (10 complete)   volatility: LOW
+overlap verdict: EXCESSIVE (max movement 0 page(s), 9 complete comparison(s))
+
+PAIR                   present   new   chg  unch   rem moved bound requests    sec  cmpl
+eventbrite_cork_events      23     0     0    23     0     0     0      2   0.38   yes
+eventbrite_cork_events      23     0     0    23     0     0     0      2   3.07   yes
+eventbrite_cork_events      23     0     0    23     0     0     0      2   0.99   yes
+eventbrite_cork_events      23     0     0    23     0     0     0      2   23.9   yes
+eventbrite_cork_events      23     0     0    23     0     0     0      2  20.52   yes
+eventbrite_cork_events      23     0     0    23     0     0     0      2   4.28   yes
+eventbrite_cork_events      23     0     0    23     0     0     0      2   3.83   yes
+eventbrite_cork_events      23     0     0    23     0     0     0      2    4.1   yes
+eventbrite_cork_events      23     0     0    23     0     0     0      2   3.03   yes
+
+
+=== INTERIOR BOUNDARY SWEEP (movement across every observed page boundary) ===
+eventbrite_cork                        eventbrite_cork:r02                      moved=0   max_displacement=0 page(s)
+eventbrite_cork                        eventbrite_cork:r03                      moved=7   max_displacement=1 page(s)
+    boundary p1   crossed=1   (up 1 / down 0)
+    boundary p2   crossed=1   (up 1 / down 0)
+    boundary p3   crossed=1   (up 1 / down 0)
+    boundary p4   crossed=1   (up 1 / down 0)
+    boundary p5   crossed=1   (up 1 / down 0)
+    boundary p6   crossed=1   (up 1 / down 0)
+    boundary p7   crossed=1   (up 1 / down 0)
+eventbrite_cork                        eventbrite_cork:r04                      moved=0   max_displacement=0 page(s)
+eventbrite_cork                        eventbrite_cork:r05                      moved=0   max_displacement=0 page(s)
+eventbrite_cork                        eventbrite_cork:r06                      moved=0   max_displacement=0 page(s)
+eventbrite_cork                        eventbrite_cork:g12r01                   moved=4   max_displacement=1 page(s)
+    boundary p4   crossed=1   (up 1 / down 0)
+    boundary p5   crossed=1   (up 1 / down 0)
+    boundary p6   crossed=1   (up 1 / down 0)
+    boundary p7   crossed=1   (up 1 / down 0)
+eventbrite_cork                        eventbrite_cork:g12r02                   moved=0   max_displacement=0 page(s)
+eventbrite_cork                        eventbrite_cork:g12r03                   moved=0   max_displacement=0 page(s)
+eventbrite_cork                        eventbrite_cork:g12r04                   moved=0   max_displacement=0 page(s)
+eventbrite_cork_events_this_week       eventbrite_cork_events_this_week:r02     moved=4   max_displacement=1 page(s)
+    boundary p2   crossed=1   (up 1 / down 0)
+    boundary p3   crossed=1   (up 1 / down 0)
+    boundary p4   crossed=1   (up 1 / down 0)
+    boundary p5   crossed=1   (up 1 / down 0)
+eventbrite_cork_events_this_week       eventbrite_cork_events_this_week:r03     moved=0   max_displacement=0 page(s)
+eventbrite_cork_events_this_week       eventbrite_cork_events_this_week:r04     moved=5   max_displacement=1 page(s)
+    boundary p1   crossed=1   (up 1 / down 0)
+    boundary p2   crossed=1   (up 1 / down 0)
+    boundary p3   crossed=1   (up 1 / down 0)
+    boundary p4   crossed=1   (up 1 / down 0)
+    boundary p5   crossed=1   (up 1 / down 0)
+eventbrite_cork_events_this_week       eventbrite_cork_events_this_week:r05     moved=0   max_displacement=0 page(s)
+eventbrite_cork_events_this_week       eventbrite_cork_events_this_week:r06     moved=5   max_displacement=1 page(s)
+    boundary p1   crossed=1   (up 1 / down 0)
+    boundary p2   crossed=1   (up 1 / down 0)
+    boundary p3   crossed=1   (up 1 / down 0)
+    boundary p4   crossed=1   (up 1 / down 0)
+    boundary p5   crossed=1   (up 1 / down 0)
+eventbrite_cork_events_this_week       eventbrite_cork_events_this_week:g12r01  moved=5   max_displacement=1 page(s)
+    boundary p1   crossed=1   (up 1 / down 0)
+    boundary p2   crossed=1   (up 1 / down 0)
+    boundary p3   crossed=1   (up 1 / down 0)
+    boundary p4   crossed=1   (up 1 / down 0)
+    boundary p5   crossed=1   (up 1 / down 0)
+eventbrite_cork_events_this_week       eventbrite_cork_events_this_week:g12r02  moved=0   max_displacement=0 page(s)
+eventbrite_cork_events_this_week       eventbrite_cork_events_this_week:g12r03  moved=0   max_displacement=0 page(s)
+eventbrite_cork_events_this_week       eventbrite_cork_events_this_week:g12r04  moved=0   max_displacement=0 page(s)
+eventbrite_cork_events_today           eventbrite_cork_events_today:r02         moved=0   max_displacement=0 page(s)
+eventbrite_cork_events_today           eventbrite_cork_events_today:r03         moved=0   max_displacement=0 page(s)
+eventbrite_cork_events_today           eventbrite_cork_events_today:r04         moved=0   max_displacement=0 page(s)
+eventbrite_cork_events_today           eventbrite_cork_events_today:r05         moved=0   max_displacement=0 page(s)
+eventbrite_cork_events_today           eventbrite_cork_events_today:r06         moved=0   max_displacement=0 page(s)
+eventbrite_cork_events_today           eventbrite_cork_events_today:g12r01      moved=0   max_displacement=0 page(s)
+eventbrite_cork_events_today           eventbrite_cork_events_today:g12r02      moved=0   max_displacement=0 page(s)
+eventbrite_cork_events_today           eventbrite_cork_events_today:g12r03      moved=0   max_displacement=0 page(s)
+eventbrite_cork_events_today           eventbrite_cork_events_today:g12r04      moved=0   max_displacement=0 page(s)
+eventbrite_cork_events_tomorrow        eventbrite_cork_events_tomorrow:r02      moved=0   max_displacement=0 page(s)
+eventbrite_cork_events_tomorrow        eventbrite_cork_events_tomorrow:r03      moved=0   max_displacement=0 page(s)
+eventbrite_cork_events_tomorrow        eventbrite_cork_events_tomorrow:r04      moved=0   max_displacement=0 page(s)
+eventbrite_cork_events_tomorrow        eventbrite_cork_events_tomorrow:r05      moved=0   max_displacement=0 page(s)
+eventbrite_cork_events_tomorrow        eventbrite_cork_events_tomorrow:r06      moved=0   max_displacement=0 page(s)
+eventbrite_cork_events_tomorrow        eventbrite_cork_events_tomorrow:g12r01   moved=0   max_displacement=0 page(s)
+eventbrite_cork_events_tomorrow        eventbrite_cork_events_tomorrow:g12r02   moved=0   max_displacement=0 page(s)
+eventbrite_cork_events_tomorrow        eventbrite_cork_events_tomorrow:g12r03   moved=0   max_displacement=0 page(s)
+eventbrite_cork_events_tomorrow        eventbrite_cork_events_tomorrow:g12r04   moved=0   max_displacement=0 page(s)

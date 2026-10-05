@@ -890,9 +890,114 @@ Pressing *Run import* during the window reports:
 > sent. Try again in about 40 seconds, or clear the cooldown if you believe this
 > is wrong.
 
-**Cadence.** No automatic schedule is implemented, deliberately: choosing one
-requires source-volatility measurements that have not been taken yet. Scheduling
-by intuition was refused rather than shipped.
+**Cadence.** No automatic schedule is implemented, deliberately. G12–G14 measured
+the sources and the measurement still did **not** support a daily rate (see
+[Supported operating model (G12–G14)](#supported-operating-model-g12g14)), so
+cadence remains **UNRESOLVED** and imports stay manual and on demand. Scheduling
+by intuition was refused rather than shipped, and it still is.
+
+## Supported operating model (G12–G14)
+
+This is the final, measured operating model. It replaces guesswork with numbers
+and is the answer to "what should an operator actually do?".
+
+### What was measured
+
+Live Eventbrite, Cork, `2026-10-04T20:03Z → 21:57Z` — **40 observations across
+4 sources, 200 requests, 0 × HTTP 429, 0 × WAF**.
+
+| Source | Obs | Complete | Volatility | Incremental events | Events/req | Decision |
+|---|---:|---:|---|---:|---:|---|
+| `eventbrite_cork` (all-events) | 10 | 0 | UNKNOWN | — | 2.03 | not scheduled |
+| `eventbrite_cork_events_this_week` | 10 | 10 | **LOW** (0.42 %/interval) | **97** (78.2 %) | **2.07** | **ACTIVE** |
+| `eventbrite_cork_events_tomorrow` | 10 | 10 | LOW (0 changes seen) | 20 | 1.15 | **DEFER** — inactive |
+| `eventbrite_cork_events_today` | 10 | 10 | HIGH (calendar) | 8 | **0.20** | **REJECT** — inactive |
+
+### The operating model
+
+```text
+Eventbrite public sources
+        │
+   ┌────┴─────┐
+   │          │
+ all-events  date windows (this-week ACTIVE)
+   │          │
+ checkpointed  bounded complete
+ progressive   discovery
+ discovery          │
+   └──────┬───────┘
+          ▼
+  stable Eventbrite IDs → dedupe → normalize
+          ▼
+  completeness gate → reconciliation safety
+          ▼
+       WordPress
+```
+
+**How to run it.** Manually, on demand, for the sources you have enabled:
+
+```bash
+# local, on demand — never a schedule
+wp conexao-events import --source=eventbrite_cork_events_this_week
+```
+
+Two source behaviours, deliberately different:
+
+| Source class | Strategy | Why |
+|---|---|---|
+| **All-events** (large county) | **bounded progressive discovery** — checkpoint, resume, bounded overlap | Measured structurally truncated: 49 pages × 20 = **980 reachable** vs ~1,534 declared. It can **never** be "complete", so it must never be treated as a frequent full crawl. |
+| **Date window** (`this-week`) | **bounded complete discovery** — one small fully-enumerable walk | 9/9 complete enumerations, ~6 requests per run, 2.07 events per request. |
+
+### Cadence is deliberately unresolved
+
+`events-this-week` volatility is **LOW**, but only over a **114.6-minute**
+window. That bounds churn *at that interval*; it does **not** establish a daily
+change rate, and extrapolating one would invent stationarity no measurement
+supports.
+
+**To finalise cadence**, keep collecting with the existing harness — no code
+change needed:
+
+```bash
+./tests/experiments/g11-run-round.sh <label>      # 15-minute protocol interval
+```
+
+Once a multi-day series exists, derive a per-source interval from it.
+
+### Verified live, not just asserted (G14)
+
+A controlled local run of `eventbrite_cork_events_this_week` proved the whole
+chain on live data:
+
+| Claim | Live evidence |
+|---|---|
+| Checkpoint → resume | run 1 stored page **13/15**; run 2 resumed and reached **15/15** |
+| One-page overlap is not wasteful | run 2 saw **20** events and created **0** |
+| No duplication on resume | **107 stored = 107 distinct Eventbrite ids, 0 duplicates** |
+| Incomplete ≠ destructive | `complete=false` run left **0** events `source_not_found` |
+| Cross-source dedup | the all-events listing re-served **38** already-imported events → all **unchanged**, one WordPress event each |
+| Truncation still incomplete | all-events declared 49 pages / ~1,534 objects → `complete=false` even at the declared end |
+| Truthful history | every row `status=warning`, `complete=false`, with checkpoint and cooldown blocks |
+
+### Operator rules that are not optional
+
+1. **One run at a time, per environment.** The importer holds **no lock** against
+   concurrent runs of the same source; two simultaneous runs can race and create
+   duplicate posts (measured during G14). Wait for a run to finish before
+   starting another.
+2. **Never read a checkpoint as completeness.** `Progress` is progress. Only
+   `Listing = complete` (and not a resumed subset) permits absence-based
+   reconciliation.
+3. **A cooldown is "unknown", not "empty".** It sends zero requests and never
+   marks anything missing.
+4. **Partial ≠ empty ≠ complete.** A throttled or truncated run contributes the
+   events it did fetch and destroys nothing.
+
+### What was deliberately NOT changed
+
+Cooldown ladder (20 s → 40 s → 60 s), request budgets, caching, the truncation
+guard, reconciliation safety and the G7 API-token retirement are all unchanged —
+no measurement justified altering any of them.
 
 ## Enumeration checkpoint and safe resume (G10)
 

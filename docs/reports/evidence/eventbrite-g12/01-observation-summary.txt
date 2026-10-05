@@ -1,0 +1,58 @@
+G12 EVENTBRITE OBSERVATION SUMMARY
+============================================================
+observations: 40
+window start: 2026-10-04T20:03:08+00:00
+window end:   2026-10-04T21:57:44+00:00
+window duration: 114.6 minutes
+
+eventbrite_cork: 10 obs, 0 complete, 80 requests
+eventbrite_cork_events_this_week: 10 obs, 10 complete, 60 requests
+eventbrite_cork_events_today: 10 obs, 10 complete, 40 requests
+eventbrite_cork_events_tomorrow: 10 obs, 10 complete, 20 requests
+
+total requests: 200
+total elapsed: 327.0s
+http statuses: {200: 40}
+429s: 0 | WAF/405: 0 | parse failures: 0  (see 429 separation in the report)
+
+PAIRWISE (new events per adjacent observation)
+--- eventbrite_cork ---
+   rk:r02: present=160 new= 0 removed=n/a(incomplete) complete=False failure=upstream_truncated
+   rk:r03: present=160 new= 1 removed=n/a(incomplete) complete=False failure=upstream_truncated
+   rk:r04: present=160 new= 0 removed=n/a(incomplete) complete=False failure=upstream_truncated
+   rk:r05: present=160 new= 0 removed=n/a(incomplete) complete=False failure=upstream_truncated
+   rk:r06: present=160 new= 0 removed=n/a(incomplete) complete=False failure=upstream_truncated
+   g12r01: present=160 new= 1 removed=n/a(incomplete) complete=False failure=upstream_truncated
+   g12r02: present=160 new= 0 removed=n/a(incomplete) complete=False failure=upstream_truncated
+   g12r03: present=160 new= 0 removed=n/a(incomplete) complete=False failure=upstream_truncated
+   g12r04: present=160 new= 0 removed=n/a(incomplete) complete=False failure=upstream_truncated
+--- eventbrite_cork_events_this_week ---
+   ek:r02: present=119 new= 1 removed=1 complete=True failure=-
+   ek:r03: present=119 new= 0 removed=0 complete=True failure=-
+   ek:r04: present=119 new= 1 removed=1 complete=True failure=-
+   ek:r05: present=119 new= 0 removed=0 complete=True failure=-
+   ek:r06: present=119 new= 2 removed=2 complete=True failure=-
+   g12r01: present=119 new= 1 removed=1 complete=True failure=-
+   g12r02: present=119 new= 0 removed=0 complete=True failure=-
+   g12r03: present=119 new= 0 removed=0 complete=True failure=-
+   g12r04: present=119 new= 0 removed=0 complete=True failure=-
+--- eventbrite_cork_events_today ---
+   ay:r02: present=  8 new= 0 removed=0 complete=True failure=-
+   ay:r03: present=  4 new= 0 removed=4 complete=True failure=-
+   ay:r04: present=  4 new= 0 removed=0 complete=True failure=-
+   ay:r05: present=  0 new= 0 removed=4 complete=True failure=-
+   ay:r06: present=  0 new= 0 removed=0 complete=True failure=-
+   g12r01: present=  0 new= 0 removed=0 complete=True failure=-
+   g12r02: present=  0 new= 0 removed=0 complete=True failure=-
+   g12r03: present=  0 new= 0 removed=0 complete=True failure=-
+   g12r04: present=  0 new= 0 removed=0 complete=True failure=-
+--- eventbrite_cork_events_tomorrow ---
+   ow:r02: present= 23 new= 0 removed=0 complete=True failure=-
+   ow:r03: present= 23 new= 0 removed=0 complete=True failure=-
+   ow:r04: present= 23 new= 0 removed=0 complete=True failure=-
+   ow:r05: present= 23 new= 0 removed=0 complete=True failure=-
+   ow:r06: present= 23 new= 0 removed=0 complete=True failure=-
+   g12r01: present= 23 new= 0 removed=0 complete=True failure=-
+   g12r02: present= 23 new= 0 removed=0 complete=True failure=-
+   g12r03: present= 23 new= 0 removed=0 complete=True failure=-
+   g12r04: present= 23 new= 0 removed=0 complete=True failure=-

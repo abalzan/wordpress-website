@@ -1,0 +1,273 @@
+{
+    "label": "run2-resume",
+    "timestamp": "2026-10-05T07:01:01+00:00",
+    "environment": {
+        "home_url": "http://localhost:8080",
+        "target": "http://localhost:8080",
+        "env_type": "local",
+        "classes": {
+            "home_url": "local",
+            "target": "local"
+        },
+        "hosts": {
+            "home_url": "localhost",
+            "target": "localhost"
+        },
+        "override": "",
+        "non_prod": true
+    },
+    "registry": {
+        "id": "eventbrite_cork_events_this_week",
+        "name": "Eventbrite \u2014 Cork (This week)",
+        "url": "https://www.eventbrite.ie/d/ireland--cork/events-this-week/",
+        "type": "eventbrite",
+        "county": "Cork",
+        "status": "active"
+    },
+    "activated": false,
+    "before": {
+        "checkpoint": {
+            "has_checkpoint": true,
+            "last_page": 13,
+            "page_count": 15,
+            "complete": false,
+            "last_failure": "time_budget",
+            "updated_at": "2026-10-05 07:58:46"
+        },
+        "cooldown": {
+            "cooling_down": false,
+            "seconds_remaining": 0,
+            "next_eligible": "",
+            "last_reason": "",
+            "consecutive": 0
+        },
+        "cooling_down": false,
+        "source_status": "active",
+        "stored_events": {
+            "count": 107,
+            "source_not_found": 0,
+            "published": 107
+        }
+    },
+    "result": {
+        "found": 20,
+        "created": 0,
+        "updated": 0,
+        "unchanged": 20,
+        "duplicates": 0,
+        "skipped": 0,
+        "skipped_past": 0,
+        "skipped_invalid_date": 0,
+        "failed": 0,
+        "new": 0,
+        "errors": 0,
+        "status": "warning",
+        "fatal_errors": [],
+        "complete": false,
+        "event_results": [
+            {
+                "title": "Cork Card Show",
+                "post_id": 9471,
+                "outcome": "unchanged",
+                "message": "Event data has not changed.",
+                "severity": "success"
+            },
+            {
+                "title": "CLUB 99 @ VOODOO ROOMS  MON 5 OCT",
+                "post_id": 9472,
+                "outcome": "unchanged",
+                "message": "Event data has not changed.",
+                "severity": "success"
+            },
+            {
+                "title": "'Who's That Girl'- Eurythmics & Annie Lennox Experience - Live in Concert",
+                "post_id": 9473,
+                "outcome": "unchanged",
+                "message": "Event data has not changed.",
+                "severity": "success"
+            },
+            {
+                "title": "Linkin Park Tribute - performed by Linkin Cork",
+                "post_id": 9474,
+                "outcome": "unchanged",
+                "message": "Event data has not changed.",
+                "severity": "success"
+            },
+            {
+                "title": "Innovation Summit",
+                "post_id": 9475,
+                "outcome": "unchanged",
+                "message": "Event data has not changed.",
+                "severity": "success"
+            },
+            {
+                "title": "2026 Irish Division IADR Annual Scientific Meeting",
+                "post_id": 9476,
+                "outcome": "unchanged",
+                "message": "Event data has not changed.",
+                "severity": "success"
+            },
+            {
+                "title": "MARK BLAIR",
+                "post_id": 9477,
+                "outcome": "unchanged",
+                "message": "Event data has not changed.",
+                "severity": "success"
+            },
+            {
+                "title": "The CIPD WRC Mock Adjudication Hearing National Series - Southern Region",
+                "post_id": 9478,
+                "outcome": "unchanged",
+                "message": "Event data has not changed.",
+                "severity": "success"
+            },
+            {
+                "title": "Absolute Eagles - A Tribute to The Eagles",
+                "post_id": 9479,
+                "outcome": "unchanged",
+                "message": "Event data has not changed.",
+                "severity": "success"
+            },
+            {
+                "title": "The Olllam",
+                "post_id": 9480,
+                "outcome": "unchanged",
+                "message": "Event data has not changed.",
+                "severity": "success"
+            },
+            {
+                "title": "Josh Garrels @ Calvary Cork",
+                "post_id": 9481,
+                "outcome": "unchanged",
+                "message": "Event data has not changed.",
+                "severity": "success"
+            },
+            {
+                "title": "Cohousing Communities for people 50+  - Cork Meeting - 7th October",
+                "post_id": 9482,
+                "outcome": "unchanged",
+                "message": "Event data has not changed.",
+                "severity": "success"
+            },
+            {
+                "title": "Jake Xerxes Fussell",
+                "post_id": 9483,
+                "outcome": "unchanged",
+                "message": "Event data has not changed.",
+                "severity": "success"
+            },
+            {
+                "title": "80's Disco In aid of Wildlife Rescue Cork",
+                "post_id": 9484,
+                "outcome": "unchanged",
+                "message": "Event data has not changed.",
+                "severity": "success"
+            },
+            {
+                "title": "EXTRA LADIES TICKETS ADDED \u2014 grab your ticket now! \u2764\ufe0fAge 35-50 Approx",
+                "post_id": 9485,
+                "outcome": "unchanged",
+                "message": "Event data has not changed.",
+                "severity": "success"
+            },
+            {
+                "title": "Guaya Sessions - October 10th",
+                "post_id": 9486,
+                "outcome": "unchanged",
+                "message": "Event data has not changed.",
+                "severity": "success"
+            },
+            {
+                "title": "Other Mother EP Launch",
+                "post_id": 9487,
+                "outcome": "unchanged",
+                "message": "Event data has not changed.",
+                "severity": "success"
+            },
+            {
+                "title": "Secret Garden - Monday Club - Monday 5th October",
+                "post_id": 9488,
+                "outcome": "unchanged",
+                "message": "Event data has not changed.",
+                "severity": "success"
+            },
+            {
+                "title": "GROUND Wellbeing - A Call To Tune In: Minding Our Girls at Brown Thomas",
+                "post_id": 9489,
+                "outcome": "unchanged",
+                "message": "Event data has not changed.",
+                "severity": "success"
+            },
+            {
+                "title": "From Idea to Icon - Live with Joseph Joseph",
+                "post_id": 9490,
+                "outcome": "unchanged",
+                "message": "Event data has not changed.",
+                "severity": "success"
+            }
+        ]
+    },
+    "after": {
+        "checkpoint": {
+            "has_checkpoint": true,
+            "last_page": 15,
+            "page_count": 15,
+            "complete": true,
+            "last_failure": "",
+            "updated_at": "2026-10-05 08:01:00"
+        },
+        "cooldown": {
+            "cooling_down": false,
+            "seconds_remaining": 0,
+            "next_eligible": "",
+            "last_reason": "",
+            "consecutive": 0
+        },
+        "cooling_down": false,
+        "source_status": "active",
+        "stored_events": {
+            "count": 107,
+            "source_not_found": 0,
+            "published": 107
+        }
+    },
+    "reconciliation": {
+        "incomplete": true,
+        "mark_missing_expected": false,
+        "source_not_found_before": 0,
+        "source_not_found_after": 0,
+        "marked_missing_while_incomplete": 0
+    },
+    "history": {
+        "time": "2026-10-05 08:01:01",
+        "source": "eventbrite_cork_events_this_week",
+        "found": 20,
+        "new": 0,
+        "updated": 0,
+        "unchanged": 20,
+        "duplicates": 0,
+        "skipped": 0,
+        "skipped_past": 0,
+        "skipped_invalid_date": 0,
+        "errors": 0,
+        "status": "warning",
+        "message": "20 events found, 20 unchanged",
+        "run_id": "17911836471346",
+        "complete": false,
+        "cooldown": {
+            "cooling_down": false,
+            "seconds_remaining": 0,
+            "next_eligible": "",
+            "last_reason": "",
+            "consecutive": 0
+        },
+        "checkpoint": {
+            "has_checkpoint": true,
+            "last_page": 15,
+            "page_count": 15,
+            "complete": true,
+            "last_failure": "",
+            "updated_at": "2026-10-05 08:01:00"
+        }
+    }
+}

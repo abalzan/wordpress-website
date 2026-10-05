@@ -1,0 +1,732 @@
+{
+    "source": "eventbrite_cork_events_this_week",
+    "observation_id": "eventbrite_cork_events_this_week:r01",
+    "timestamp": "2026-10-04T20:03:30+00:00",
+    "complete": true,
+    "failure_class": "",
+    "pages_walked": 6,
+    "declared_pages": 16,
+    "declared_objects": 304,
+    "requests": 6,
+    "truncated_upstream": false,
+    "events": [
+        {
+            "event_id": "1988930502674",
+            "page": 1,
+            "position": 1,
+            "field_hash": "4a44e8c89916b76e6bac8c9c1ccc6f1c"
+        },
+        {
+            "event_id": "1998482317409",
+            "page": 1,
+            "position": 2,
+            "field_hash": "87279bd740785cb00d7cb1e663093db8"
+        },
+        {
+            "event_id": "1994015745773",
+            "page": 1,
+            "position": 3,
+            "field_hash": "3164411d59133e99c79170d9eceb2581"
+        },
+        {
+            "event_id": "1990054995061",
+            "page": 1,
+            "position": 4,
+            "field_hash": "f2207d599a2da0d6013db75d9bcf4218"
+        },
+        {
+            "event_id": "1988922915982",
+            "page": 1,
+            "position": 5,
+            "field_hash": "5b3d550d465ba568340424aa5bdd4391"
+        },
+        {
+            "event_id": "1996075285913",
+            "page": 1,
+            "position": 6,
+            "field_hash": "f327b7d8b034e23b9f395aa01d5122aa"
+        },
+        {
+            "event_id": "1988829430364",
+            "page": 1,
+            "position": 7,
+            "field_hash": "38b387961455c78d9a1fa6184bb8776d"
+        },
+        {
+            "event_id": "1999536800396",
+            "page": 1,
+            "position": 8,
+            "field_hash": "204affc953881a70b6e13a4152bf6a8e"
+        },
+        {
+            "event_id": "1999270869991",
+            "page": 1,
+            "position": 9,
+            "field_hash": "9f8740d6f576df765be66399573a32df"
+        },
+        {
+            "event_id": "1992072605789",
+            "page": 1,
+            "position": 10,
+            "field_hash": "5f032b4b3a263886ee21edfea535a82c"
+        },
+        {
+            "event_id": "1988081123157",
+            "page": 1,
+            "position": 11,
+            "field_hash": "a7740c5b7a3ad827cba48a829be2352b"
+        },
+        {
+            "event_id": "1989374201790",
+            "page": 1,
+            "position": 12,
+            "field_hash": "37da287d433b3ec7fa0f71a80e93a916"
+        },
+        {
+            "event_id": "1996969727211",
+            "page": 1,
+            "position": 13,
+            "field_hash": "aec4ad324e6be7bcb358a4551be77027"
+        },
+        {
+            "event_id": "1998946868895",
+            "page": 1,
+            "position": 14,
+            "field_hash": "a2056dbf7f53583d47467f57695b1b85"
+        },
+        {
+            "event_id": "1998889166305",
+            "page": 1,
+            "position": 15,
+            "field_hash": "9d3a1556c105cda84f1161b8a5e612a9"
+        },
+        {
+            "event_id": "1988834447370",
+            "page": 1,
+            "position": 16,
+            "field_hash": "d1014d00e881442c07dfc5d0a9c64827"
+        },
+        {
+            "event_id": "1999492059575",
+            "page": 1,
+            "position": 17,
+            "field_hash": "e0897f97b415b592f110f378c0ca3f92"
+        },
+        {
+            "event_id": "1996222964624",
+            "page": 1,
+            "position": 18,
+            "field_hash": "f87fdfe23bb5487b7e10d0a31fbcc7a5"
+        },
+        {
+            "event_id": "2002098927788",
+            "page": 1,
+            "position": 19,
+            "field_hash": "e3196bb60fcd12780ad3ba0a5d45e1ed"
+        },
+        {
+            "event_id": "2001872814477",
+            "page": 1,
+            "position": 20,
+            "field_hash": "ee57cf4816c4951f64caa7acdf62e917"
+        },
+        {
+            "event_id": "2002572977684",
+            "page": 2,
+            "position": 1,
+            "field_hash": "a6f4fc856c77092ae18ebbb5ddfec1eb"
+        },
+        {
+            "event_id": "2001168519913",
+            "page": 2,
+            "position": 2,
+            "field_hash": "5dcb90c48bcc4619919c5cbdcfff2ce0"
+        },
+        {
+            "event_id": "1999390127694",
+            "page": 2,
+            "position": 3,
+            "field_hash": "d50e366b5e40b55654c9b2a268eff956"
+        },
+        {
+            "event_id": "1988712537735",
+            "page": 2,
+            "position": 4,
+            "field_hash": "5c90efd0b9f9954ac14ed4b73d9d2c2a"
+        },
+        {
+            "event_id": "2001042927262",
+            "page": 2,
+            "position": 5,
+            "field_hash": "4e3d764a88582fc5050e3401e3345167"
+        },
+        {
+            "event_id": "1996822198950",
+            "page": 2,
+            "position": 6,
+            "field_hash": "a57e4e13e7f325a1795320576776fe46"
+        },
+        {
+            "event_id": "2001418790479",
+            "page": 2,
+            "position": 7,
+            "field_hash": "4c96fb9daf9d7c12aefd81948efadd1d"
+        },
+        {
+            "event_id": "1983249856709",
+            "page": 2,
+            "position": 8,
+            "field_hash": "37fbb4e61f635a12c93364a9538444a3"
+        },
+        {
+            "event_id": "2002121433102",
+            "page": 2,
+            "position": 9,
+            "field_hash": "af12cf74c97badc31fdfcf81d4df744e"
+        },
+        {
+            "event_id": "1991773821116",
+            "page": 2,
+            "position": 10,
+            "field_hash": "6d64213c5afb3101bd610638cd302922"
+        },
+        {
+            "event_id": "2002341622695",
+            "page": 2,
+            "position": 11,
+            "field_hash": "d3250407e06ca205cc12c395ae48db9b"
+        },
+        {
+            "event_id": "2002419850677",
+            "page": 2,
+            "position": 12,
+            "field_hash": "a91a8241bfcde07cde58b1f61779a9cb"
+        },
+        {
+            "event_id": "1983856480136",
+            "page": 2,
+            "position": 13,
+            "field_hash": "a53262e228122de450bd7e287da5f115"
+        },
+        {
+            "event_id": "2001271458806",
+            "page": 2,
+            "position": 14,
+            "field_hash": "d75b4fd3c32bb8b9c42e9932713c9323"
+        },
+        {
+            "event_id": "2000007783118",
+            "page": 2,
+            "position": 15,
+            "field_hash": "422b44c799db406371f12f19371e8efc"
+        },
+        {
+            "event_id": "1999082086334",
+            "page": 2,
+            "position": 16,
+            "field_hash": "2de44f54e84c356e8713fb03dddfd6e2"
+        },
+        {
+            "event_id": "2000265209086",
+            "page": 2,
+            "position": 17,
+            "field_hash": "36b3c01d0bdf8c5ba59eeb7d38d59829"
+        },
+        {
+            "event_id": "1998959259957",
+            "page": 2,
+            "position": 18,
+            "field_hash": "ce073cabd4e90959b2c3df8c044f8349"
+        },
+        {
+            "event_id": "2001190126539",
+            "page": 2,
+            "position": 19,
+            "field_hash": "799d654499122c9cecbd4651bcb517cd"
+        },
+        {
+            "event_id": "2001648417299",
+            "page": 2,
+            "position": 20,
+            "field_hash": "6505ebff8511b7de10bf2134b27bb37d"
+        },
+        {
+            "event_id": "1998114356829",
+            "page": 3,
+            "position": 1,
+            "field_hash": "72714b894f90cfcc6b5f7729d2307c41"
+        },
+        {
+            "event_id": "2002034978514",
+            "page": 3,
+            "position": 2,
+            "field_hash": "742bfcb55ff8a9073d2bb55cb5282e37"
+        },
+        {
+            "event_id": "1978884316260",
+            "page": 3,
+            "position": 3,
+            "field_hash": "d5daccf16c9a6b2de0e266138cd54c84"
+        },
+        {
+            "event_id": "1998958676211",
+            "page": 3,
+            "position": 4,
+            "field_hash": "8a48664b01f3b154d10eddcee4d891fa"
+        },
+        {
+            "event_id": "2002114599663",
+            "page": 3,
+            "position": 5,
+            "field_hash": "8a06a381b53674b8d1cf4a85223139f0"
+        },
+        {
+            "event_id": "1998376490879",
+            "page": 3,
+            "position": 6,
+            "field_hash": "798f501125297bb30b5d581db7d26545"
+        },
+        {
+            "event_id": "1976267311729",
+            "page": 3,
+            "position": 7,
+            "field_hash": "54f02a2e8ee69e008d8abb9109865143"
+        },
+        {
+            "event_id": "2000577235365",
+            "page": 3,
+            "position": 8,
+            "field_hash": "965156260431543f5c7ddd888d2f42f5"
+        },
+        {
+            "event_id": "2000721582110",
+            "page": 3,
+            "position": 9,
+            "field_hash": "c1772c65c19a67da6d40a8a4131b8e63"
+        },
+        {
+            "event_id": "1998376493888",
+            "page": 3,
+            "position": 10,
+            "field_hash": "e8412e0c07e0824c2ddbbe07b389aa56"
+        },
+        {
+            "event_id": "2002732874941",
+            "page": 3,
+            "position": 11,
+            "field_hash": "8f9fb7e352470fc2e88bc6226226905f"
+        },
+        {
+            "event_id": "1998376488873",
+            "page": 3,
+            "position": 12,
+            "field_hash": "d38ed25f89792c83e3bf0a0186a4cd0b"
+        },
+        {
+            "event_id": "2002379494972",
+            "page": 3,
+            "position": 13,
+            "field_hash": "b2ab0b277cf10bed2d645439770db86a"
+        },
+        {
+            "event_id": "2002379991457",
+            "page": 3,
+            "position": 14,
+            "field_hash": "9a877cf2af52aeb15c53eed29bdc8be6"
+        },
+        {
+            "event_id": "2002550845486",
+            "page": 3,
+            "position": 15,
+            "field_hash": "7abaf4ae3440dfdcd24175296f4ee598"
+        },
+        {
+            "event_id": "1998963730328",
+            "page": 3,
+            "position": 16,
+            "field_hash": "11426a28940de3e050c04341d2db84cc"
+        },
+        {
+            "event_id": "2001391677383",
+            "page": 3,
+            "position": 17,
+            "field_hash": "692d972abeb0dd5f4dcbee64a855bcc3"
+        },
+        {
+            "event_id": "2002653622896",
+            "page": 3,
+            "position": 18,
+            "field_hash": "627234a70e812eb3c385642bf24a3bd0"
+        },
+        {
+            "event_id": "2000178691309",
+            "page": 3,
+            "position": 19,
+            "field_hash": "cf72b34ab8bfc182d7595aeafc2bd4f7"
+        },
+        {
+            "event_id": "1997971287906",
+            "page": 3,
+            "position": 20,
+            "field_hash": "646d7b4f482e7bf0de8f113be331cfd9"
+        },
+        {
+            "event_id": "1997983259714",
+            "page": 4,
+            "position": 1,
+            "field_hash": "e9853d6be8db852536a6f3c7e6962991"
+        },
+        {
+            "event_id": "1999088407240",
+            "page": 4,
+            "position": 2,
+            "field_hash": "241271d1806c6c7009027e8d3ba42877"
+        },
+        {
+            "event_id": "2002756550756",
+            "page": 4,
+            "position": 3,
+            "field_hash": "97838bf7de56a2580c93b2689ad232b5"
+        },
+        {
+            "event_id": "2002658391158",
+            "page": 4,
+            "position": 4,
+            "field_hash": "0d3c4dc6d928194606c5ab9d062c2811"
+        },
+        {
+            "event_id": "2002575283581",
+            "page": 4,
+            "position": 5,
+            "field_hash": "cb14dddeb6037302ee5ee7c6a45021de"
+        },
+        {
+            "event_id": "2002354857280",
+            "page": 4,
+            "position": 6,
+            "field_hash": "e28b6e6f4b8d56016e21139bdf0a1308"
+        },
+        {
+            "event_id": "2000453859344",
+            "page": 4,
+            "position": 7,
+            "field_hash": "db0763be5f3c48714aa6f38a85ed6459"
+        },
+        {
+            "event_id": "2001617175855",
+            "page": 4,
+            "position": 8,
+            "field_hash": "8975d46cb4620d7a5ba9d334a6dbcf0e"
+        },
+        {
+            "event_id": "2002386685479",
+            "page": 4,
+            "position": 9,
+            "field_hash": "b238b4d12e5b4f81844e708509e0773f"
+        },
+        {
+            "event_id": "1997832371403",
+            "page": 4,
+            "position": 10,
+            "field_hash": "cba72c7b3edb488851352d98a307d70c"
+        },
+        {
+            "event_id": "1990954916751",
+            "page": 4,
+            "position": 11,
+            "field_hash": "443b857a99d64f3785215db74c1305d7"
+        },
+        {
+            "event_id": "1997255675490",
+            "page": 4,
+            "position": 12,
+            "field_hash": "b6392a8da8d517caebf65c127ff680a5"
+        },
+        {
+            "event_id": "1999377495912",
+            "page": 4,
+            "position": 13,
+            "field_hash": "67ab1902c665a613db73ff8ccad65381"
+        },
+        {
+            "event_id": "2002077747437",
+            "page": 4,
+            "position": 14,
+            "field_hash": "3f9a004218bc255a1f42bde09da9ee43"
+        },
+        {
+            "event_id": "2000142938371",
+            "page": 4,
+            "position": 15,
+            "field_hash": "e4f0759d10c99fdbc5f5b84f45e62179"
+        },
+        {
+            "event_id": "2001049422690",
+            "page": 4,
+            "position": 16,
+            "field_hash": "276aeb32570fc3583b04467d183ac618"
+        },
+        {
+            "event_id": "1994172272950",
+            "page": 4,
+            "position": 17,
+            "field_hash": "bddd7b2970f5c8376e72fb018748a2c3"
+        },
+        {
+            "event_id": "1995858103314",
+            "page": 4,
+            "position": 18,
+            "field_hash": "14f3ddadfceca2b792ab4f93dbd3da8c"
+        },
+        {
+            "event_id": "1997054095559",
+            "page": 4,
+            "position": 19,
+            "field_hash": "af6c8df09f3c9be340b0d9c5a7da0ff8"
+        },
+        {
+            "event_id": "2001023476083",
+            "page": 4,
+            "position": 20,
+            "field_hash": "4b2e7a2df586a306c88eb48a8cb5dcba"
+        },
+        {
+            "event_id": "2001041207117",
+            "page": 5,
+            "position": 1,
+            "field_hash": "59a1aa522849e1e0e5aa7546df65f89a"
+        },
+        {
+            "event_id": "2000169448664",
+            "page": 5,
+            "position": 2,
+            "field_hash": "6b3100f7d1e9cc192d54c72609062d2b"
+        },
+        {
+            "event_id": "1999382809806",
+            "page": 5,
+            "position": 3,
+            "field_hash": "66a4f604fd692d2f2ffd69bc370eecc5"
+        },
+        {
+            "event_id": "1999042827911",
+            "page": 5,
+            "position": 4,
+            "field_hash": "9436be86357f0a7c9d95a34fa0aa0538"
+        },
+        {
+            "event_id": "1999036582230",
+            "page": 5,
+            "position": 5,
+            "field_hash": "224f028ca53de1c825d2604ff77549dd"
+        },
+        {
+            "event_id": "2001593537151",
+            "page": 5,
+            "position": 6,
+            "field_hash": "984a060e23a9e963ba146348aaa7278e"
+        },
+        {
+            "event_id": "2001371885184",
+            "page": 5,
+            "position": 7,
+            "field_hash": "3e90f8c587a4c943c8e37f35d08ede7f"
+        },
+        {
+            "event_id": "1980618598545",
+            "page": 5,
+            "position": 8,
+            "field_hash": "f34dcddb4ee2f291917afd4a6ea7e8ad"
+        },
+        {
+            "event_id": "1993339234309",
+            "page": 5,
+            "position": 9,
+            "field_hash": "bb84f226d1d39277b1a43aab6925e633"
+        },
+        {
+            "event_id": "2002285103645",
+            "page": 5,
+            "position": 10,
+            "field_hash": "d3bc2edd023b288fb4bf063619f8a242"
+        },
+        {
+            "event_id": "1999396331249",
+            "page": 5,
+            "position": 11,
+            "field_hash": "3051baa697d9976d772bc391f80e5d27"
+        },
+        {
+            "event_id": "2001421420345",
+            "page": 5,
+            "position": 12,
+            "field_hash": "7a73620605cecd5787ed5c3989c095cd"
+        },
+        {
+            "event_id": "2002385391609",
+            "page": 5,
+            "position": 13,
+            "field_hash": "8479145e6b6a7537b55816e0dc4ac89f"
+        },
+        {
+            "event_id": "2002896614691",
+            "page": 5,
+            "position": 14,
+            "field_hash": "f932164942737414b590a57655355c35"
+        },
+        {
+            "event_id": "1986077840284",
+            "page": 5,
+            "position": 15,
+            "field_hash": "b3cc40c3d4234fe51600010e92e30167"
+        },
+        {
+            "event_id": "2002822870119",
+            "page": 5,
+            "position": 16,
+            "field_hash": "bb9095f5f554720fead21151008f416c"
+        },
+        {
+            "event_id": "1999389228003",
+            "page": 5,
+            "position": 17,
+            "field_hash": "b78c7d0318abb6503657298786ab5fc8"
+        },
+        {
+            "event_id": "2001713603272",
+            "page": 5,
+            "position": 18,
+            "field_hash": "8eca87fea358fa7c2db7ee3f8270dae3"
+        },
+        {
+            "event_id": "1996827617156",
+            "page": 5,
+            "position": 19,
+            "field_hash": "5623716dc7813967602d1240a5e1026f"
+        },
+        {
+            "event_id": "1685531783939",
+            "page": 6,
+            "position": 1,
+            "field_hash": "c5a4c0c867adf86a683d164271f7e411"
+        },
+        {
+            "event_id": "2002334252651",
+            "page": 6,
+            "position": 2,
+            "field_hash": "9e9cbdae463227d8cb046b7defee300e"
+        },
+        {
+            "event_id": "1999373409690",
+            "page": 6,
+            "position": 3,
+            "field_hash": "520c72569574ee8c7294bae3124fefed"
+        },
+        {
+            "event_id": "2002292556938",
+            "page": 6,
+            "position": 4,
+            "field_hash": "20130bb9a7f0a2ad59cb6148f5f6b2cb"
+        },
+        {
+            "event_id": "1985198607475",
+            "page": 6,
+            "position": 5,
+            "field_hash": "a1b43c9742c8546915f29ed38a5b480b"
+        },
+        {
+            "event_id": "2002334857460",
+            "page": 6,
+            "position": 6,
+            "field_hash": "4c4b158fa8cdd14fc42ea07ba32dee5d"
+        },
+        {
+            "event_id": "2002334330885",
+            "page": 6,
+            "position": 7,
+            "field_hash": "b44ed3f1d418391d24bd9d092cf04999"
+        },
+        {
+            "event_id": "1999423369120",
+            "page": 6,
+            "position": 8,
+            "field_hash": "da481bdbe5fe913c2d2b11d76e359be9"
+        },
+        {
+            "event_id": "2002334300795",
+            "page": 6,
+            "position": 9,
+            "field_hash": "41778f7cfab7bbe6d91c138242ade124"
+        },
+        {
+            "event_id": "2002754006145",
+            "page": 6,
+            "position": 10,
+            "field_hash": "49819ee81604be6fda96a15a52cec201"
+        },
+        {
+            "event_id": "2001525091428",
+            "page": 6,
+            "position": 11,
+            "field_hash": "b7f45fbd6aeaa73d99211b279bf71757"
+        },
+        {
+            "event_id": "1999423099313",
+            "page": 6,
+            "position": 12,
+            "field_hash": "6cd8ee614ad7f6c8f560bb4c8c55b4b7"
+        },
+        {
+            "event_id": "1998590593265",
+            "page": 6,
+            "position": 13,
+            "field_hash": "3f94fd4a0640695397d74903188da8de"
+        },
+        {
+            "event_id": "1998486337433",
+            "page": 6,
+            "position": 14,
+            "field_hash": "67b11569ae1eaeceea1e0733a7d79959"
+        },
+        {
+            "event_id": "1993735827530",
+            "page": 6,
+            "position": 15,
+            "field_hash": "5cc3091cc15f85d0db919349dc97488b"
+        },
+        {
+            "event_id": "2000174756540",
+            "page": 6,
+            "position": 16,
+            "field_hash": "9496f88bd5937e3483e64ade9a1116e2"
+        },
+        {
+            "event_id": "1985824264833",
+            "page": 6,
+            "position": 17,
+            "field_hash": "f30a7db0b26e751ad792e318a233c7ff"
+        },
+        {
+            "event_id": "1977709369964",
+            "page": 6,
+            "position": 18,
+            "field_hash": "43af570452de3af26816520e4f80d556"
+        },
+        {
+            "event_id": "2002382730650",
+            "page": 6,
+            "position": 19,
+            "field_hash": "9f10acdc53f77af1a69bee0c9ca5f705"
+        },
+        {
+            "event_id": "1996634927817",
+            "page": 6,
+            "position": 20,
+            "field_hash": "21916035b104f4bf662222663fae2169"
+        }
+    ],
+    "elapsed_seconds": 1.28,
+    "http_status": 200,
+    "stopped_at_page": 0,
+    "url": "https://www.eventbrite.ie/d/ireland--cork/events-this-week/"
+}

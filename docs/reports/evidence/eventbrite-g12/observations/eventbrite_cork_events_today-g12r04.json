@@ -1,0 +1,17 @@
+{
+    "source": "eventbrite_cork_events_today",
+    "observation_id": "eventbrite_cork_events_today:g12r04",
+    "timestamp": "2026-10-04T21:57:20+00:00",
+    "complete": true,
+    "failure_class": "",
+    "pages_walked": 6,
+    "declared_pages": 0,
+    "declared_objects": 0,
+    "requests": 6,
+    "truncated_upstream": false,
+    "events": [],
+    "elapsed_seconds": 7.34,
+    "http_status": 200,
+    "stopped_at_page": 0,
+    "url": "https://www.eventbrite.ie/d/ireland--cork/events-today/"
+}

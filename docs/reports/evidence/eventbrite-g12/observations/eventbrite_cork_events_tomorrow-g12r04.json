@@ -1,0 +1,156 @@
+{
+    "source": "eventbrite_cork_events_tomorrow",
+    "observation_id": "eventbrite_cork_events_tomorrow:g12r04",
+    "timestamp": "2026-10-04T21:57:44+00:00",
+    "complete": true,
+    "failure_class": "",
+    "pages_walked": 2,
+    "declared_pages": 2,
+    "declared_objects": 25,
+    "requests": 2,
+    "truncated_upstream": false,
+    "events": [
+        {
+            "event_id": "1998482317409",
+            "page": 1,
+            "position": 1,
+            "field_hash": "87279bd740785cb00d7cb1e663093db8"
+        },
+        {
+            "event_id": "2002572977684",
+            "page": 1,
+            "position": 2,
+            "field_hash": "a6f4fc856c77092ae18ebbb5ddfec1eb"
+        },
+        {
+            "event_id": "1983249856709",
+            "page": 1,
+            "position": 3,
+            "field_hash": "37fbb4e61f635a12c93364a9538444a3"
+        },
+        {
+            "event_id": "2001190126539",
+            "page": 1,
+            "position": 4,
+            "field_hash": "799d654499122c9cecbd4651bcb517cd"
+        },
+        {
+            "event_id": "1998114356829",
+            "page": 1,
+            "position": 5,
+            "field_hash": "72714b894f90cfcc6b5f7729d2307c41"
+        },
+        {
+            "event_id": "1994172272950",
+            "page": 1,
+            "position": 6,
+            "field_hash": "bddd7b2970f5c8376e72fb018748a2c3"
+        },
+        {
+            "event_id": "1980618598545",
+            "page": 1,
+            "position": 7,
+            "field_hash": "f34dcddb4ee2f291917afd4a6ea7e8ad"
+        },
+        {
+            "event_id": "1996827617156",
+            "page": 1,
+            "position": 8,
+            "field_hash": "5623716dc7813967602d1240a5e1026f"
+        },
+        {
+            "event_id": "1685531783939",
+            "page": 1,
+            "position": 9,
+            "field_hash": "c5a4c0c867adf86a683d164271f7e411"
+        },
+        {
+            "event_id": "2000413124505",
+            "page": 1,
+            "position": 10,
+            "field_hash": "b6a29e3177ac54f61f94924d208fbdf5"
+        },
+        {
+            "event_id": "2002049881088",
+            "page": 1,
+            "position": 11,
+            "field_hash": "bb1611dd221cc8c7df2a316ea7442dad"
+        },
+        {
+            "event_id": "2002301226870",
+            "page": 1,
+            "position": 12,
+            "field_hash": "6d84c18f3bc18582b477becb47b96ad4"
+        },
+        {
+            "event_id": "1995903306518",
+            "page": 1,
+            "position": 13,
+            "field_hash": "c14d3ea9074f3e5ba9b855972fad020d"
+        },
+        {
+            "event_id": "2001778109211",
+            "page": 1,
+            "position": 14,
+            "field_hash": "60989a16fddbe32402a407f87c8876f1"
+        },
+        {
+            "event_id": "1992125771810",
+            "page": 1,
+            "position": 15,
+            "field_hash": "b4aef0e863a8182590d817b25b0b5ff8"
+        },
+        {
+            "event_id": "2001022443996",
+            "page": 1,
+            "position": 16,
+            "field_hash": "a1096b5984726d70ee161f187bf83bfa"
+        },
+        {
+            "event_id": "2002185392406",
+            "page": 1,
+            "position": 17,
+            "field_hash": "b420df79db045977665d49638526739d"
+        },
+        {
+            "event_id": "2001023605470",
+            "page": 1,
+            "position": 18,
+            "field_hash": "36471d8fc0680468c4598fbbc1e89a83"
+        },
+        {
+            "event_id": "2001385580146",
+            "page": 1,
+            "position": 19,
+            "field_hash": "98943554a406102c5ace687bf3d44189"
+        },
+        {
+            "event_id": "1995066777437",
+            "page": 1,
+            "position": 20,
+            "field_hash": "9444bd12bd03a8044a0b97beb8d8cea1"
+        },
+        {
+            "event_id": "1995066188676",
+            "page": 2,
+            "position": 1,
+            "field_hash": "ac6af2c9bc5344c1b6afbe55b78cd1d5"
+        },
+        {
+            "event_id": "1989862117158",
+            "page": 2,
+            "position": 2,
+            "field_hash": "35136005c1806c1f06399c9927b39794"
+        },
+        {
+            "event_id": "1993515573745",
+            "page": 2,
+            "position": 3,
+            "field_hash": "fd0d862c92d4a1a2a80e14638ae0c936"
+        }
+    ],
+    "elapsed_seconds": 3.03,
+    "http_status": 200,
+    "stopped_at_page": 0,
+    "url": "https://www.eventbrite.ie/d/ireland--cork/events-tomorrow/"
+}

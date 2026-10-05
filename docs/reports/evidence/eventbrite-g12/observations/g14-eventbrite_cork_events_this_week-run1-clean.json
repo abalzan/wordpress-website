@@ -1,0 +1,882 @@
+{
+    "label": "run1-clean",
+    "timestamp": "2026-10-05T06:59:51+00:00",
+    "environment": {
+        "home_url": "http://localhost:8080",
+        "target": "http://localhost:8080",
+        "env_type": "local",
+        "classes": {
+            "home_url": "local",
+            "target": "local"
+        },
+        "hosts": {
+            "home_url": "localhost",
+            "target": "localhost"
+        },
+        "override": "",
+        "non_prod": true
+    },
+    "registry": {
+        "id": "eventbrite_cork_events_this_week",
+        "name": "Eventbrite \u2014 Cork (This week)",
+        "url": "https://www.eventbrite.ie/d/ireland--cork/events-this-week/",
+        "type": "eventbrite",
+        "county": "Cork",
+        "status": "active"
+    },
+    "activated": false,
+    "before": {
+        "checkpoint": {
+            "has_checkpoint": false,
+            "last_page": 0,
+            "page_count": 0,
+            "complete": false,
+            "last_failure": "",
+            "updated_at": ""
+        },
+        "cooldown": {
+            "cooling_down": false,
+            "seconds_remaining": 0,
+            "next_eligible": "",
+            "last_reason": "",
+            "consecutive": 0
+        },
+        "cooling_down": false,
+        "source_status": "active",
+        "stored_events": {
+            "count": 0,
+            "source_not_found": 0,
+            "published": 0
+        }
+    },
+    "result": {
+        "found": 107,
+        "created": 107,
+        "updated": 0,
+        "unchanged": 0,
+        "duplicates": 0,
+        "skipped": 0,
+        "skipped_past": 0,
+        "skipped_invalid_date": 0,
+        "failed": 0,
+        "new": 107,
+        "errors": 0,
+        "status": "warning",
+        "fatal_errors": [],
+        "complete": false,
+        "event_results": [
+            {
+                "title": "Cork Card Show",
+                "post_id": 9471,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "CLUB 99 @ VOODOO ROOMS  MON 5 OCT",
+                "post_id": 9472,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "'Who's That Girl'- Eurythmics & Annie Lennox Experience - Live in Concert",
+                "post_id": 9473,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Linkin Park Tribute - performed by Linkin Cork",
+                "post_id": 9474,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Innovation Summit",
+                "post_id": 9475,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "2026 Irish Division IADR Annual Scientific Meeting",
+                "post_id": 9476,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "MARK BLAIR",
+                "post_id": 9477,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "The CIPD WRC Mock Adjudication Hearing National Series - Southern Region",
+                "post_id": 9478,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Absolute Eagles - A Tribute to The Eagles",
+                "post_id": 9479,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "The Olllam",
+                "post_id": 9480,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Josh Garrels @ Calvary Cork",
+                "post_id": 9481,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Cohousing Communities for people 50+  - Cork Meeting - 7th October",
+                "post_id": 9482,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Jake Xerxes Fussell",
+                "post_id": 9483,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "80's Disco In aid of Wildlife Rescue Cork",
+                "post_id": 9484,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "EXTRA LADIES TICKETS ADDED \u2014 grab your ticket now! \u2764\ufe0fAge 35-50 Approx",
+                "post_id": 9485,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Guaya Sessions - October 10th",
+                "post_id": 9486,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Other Mother EP Launch",
+                "post_id": 9487,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Secret Garden - Monday Club - Monday 5th October",
+                "post_id": 9488,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "GROUND Wellbeing - A Call To Tune In: Minding Our Girls at Brown Thomas",
+                "post_id": 9489,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "From Idea to Icon - Live with Joseph Joseph",
+                "post_id": 9490,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Reggie's Farm 2026 tour",
+                "post_id": 9491,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Babychi Parent First Aid course",
+                "post_id": 9492,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "The Old School Party",
+                "post_id": 9493,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Clothes Swap at Rebel Reads Bookshop",
+                "post_id": 9494,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "RCW Getting Sick",
+                "post_id": 9495,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "The Once Upon a Time Workshop",
+                "post_id": 9496,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Urban Hip-Hop Beginners Dance Workshop (Cork Pop-Up)",
+                "post_id": 9497,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Yoga with Lauren",
+                "post_id": 9498,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "The Field - A theatre production from Hunters Moon",
+                "post_id": 9499,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Drag me to Dinner with Mockie Ah!",
+                "post_id": 9500,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "EP Release of Control",
+                "post_id": 9501,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Sunrise Social Club Pasta Workshop",
+                "post_id": 9502,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Pilates, Breathwok & Meditation",
+                "post_id": 9503,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Zumba with Charlotte",
+                "post_id": 9504,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Yoga at Hot Box Sauna \u2022 Yoga Myth and Movement",
+                "post_id": 9505,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Old Quarter Sessions",
+                "post_id": 9506,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Shelbourne Bar Whiskey Tasting",
+                "post_id": 9507,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Creative Ageing: Drawing for Wellbeing with Inma Pavon",
+                "post_id": 9508,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "RCW SpookerSlam",
+                "post_id": 9509,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Stand-Up Comedy Club: The Earlier Show",
+                "post_id": 9510,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Foodies + New Friends: Cork",
+                "post_id": 9511,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "The Quiet Club: Danny McCarthy and Mick O'Shea",
+                "post_id": 9512,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Public Tour: The Annals of Inisfallen and the Making of Irish History",
+                "post_id": 9513,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Stand-Up Comedy Club: Cork's Best Stand-Up",
+                "post_id": 9514,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "A Taste Of The Old Butter Roads",
+                "post_id": 9515,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Stand-Up Comedy Club: Thursday Showcase",
+                "post_id": 9516,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Food & 'White Coopering' In Ireland",
+                "post_id": 9517,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Blood & Milk with Kate Ryan",
+                "post_id": 9518,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Voodoo Student Casino Night ThursOct 9th",
+                "post_id": 9519,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Creative Saturdays with Stephen Doyle",
+                "post_id": 9520,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "The Montenotte Wine Club: An Evening with Clarence Dillon and Clarendelle",
+                "post_id": 9521,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Sound Bath & CranioSacral Therapy 6.30pm",
+                "post_id": 9522,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "A  Healing Breathwork Journey",
+                "post_id": 9523,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Public Tour: Panorama Europa",
+                "post_id": 9524,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "GREENE & SHINE and VICKERS VIMY Double Bill",
+                "post_id": 9525,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Mini Melodies Cork Classes at Ballymaloe Grainstore",
+                "post_id": 9526,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "The Glucksman School Visit",
+                "post_id": 9527,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Quiz night",
+                "post_id": 9528,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Sound Bath and CranioSacral Therapy 8.15pm",
+                "post_id": 9529,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Spiritual medium reader",
+                "post_id": 9530,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Ancient Celtic Transformation and Healing",
+                "post_id": 9532,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "The Fork & Wheel Barista School - Barista Essentials",
+                "post_id": 9533,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Rebel Comedy at The Blue Room - Kinsale",
+                "post_id": 9534,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "The Restful Retreat at Ballymaloe | Yoga, Rest & Relaxation Day Retreat",
+                "post_id": 9535,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Art of Process: Reggio-Inspired Creative Workshop for Kids (Ages 2\u20136)",
+                "post_id": 9536,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "The Shadows of Halloween (shadow puppet-making workshop)",
+                "post_id": 9537,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Kanturk RFC an Alternative History (Live)",
+                "post_id": 9538,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Jack O'Rourke",
+                "post_id": 9539,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "EirSEDS Irish Student Space Conference",
+                "post_id": 9540,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Writers Sara Baume and Caitr\u00edona Lally in conversation",
+                "post_id": 9541,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Launch of MTU Digital Media Literacy OER",
+                "post_id": 9542,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Artist Talk by Jana Koelmel -  \"Anna - where love ends and hate begins\"",
+                "post_id": 9543,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Roots & Stitches Workshop",
+                "post_id": 9544,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "CORK LAUNCH (Waterstones): Heat, Shelter, Water, Food by Harrison Gardner",
+                "post_id": 9545,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Cork in person recruitment day!",
+                "post_id": 9546,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Rhyme & Sign Storytime - Midleton",
+                "post_id": 9547,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Photography Walk \u2013 Georgian Mitchelstown",
+                "post_id": 9548,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Cornelius & Guests - Stand Up Comedy",
+                "post_id": 9549,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "William Jack - Australian Cellist - Cork 2026",
+                "post_id": 9550,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Book Launch - Once Upon A Road: The History & Times of an Irish Butter Road",
+                "post_id": 9551,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "OM Chanting \u2013 Wilton, Cork",
+                "post_id": 9552,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "FREE Beginner Latin Dance Open Night \u2014 Find Your TRIBE This Autumn",
+                "post_id": 9553,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Best of Cork Autumn Series @ Corks Biggest  Original Comedy Club  EST 1993",
+                "post_id": 9554,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Human Movement Skills",
+                "post_id": 9556,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Cork French / English language exchange",
+                "post_id": 9558,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Rebel Comedy Club: Open Mic Night",
+                "post_id": 9559,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Fair Play Open Mic",
+                "post_id": 9560,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Cork Folk Festival: William Jack on Cello",
+                "post_id": 9561,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "The Museum at Your Pace: Sensory-Friendly Evenings at the Glucksman",
+                "post_id": 9562,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Offline Book Club Cork City , 2026",
+                "post_id": 9563,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "SPADE : MASTER MAGICIAN",
+                "post_id": 9564,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Cork Folk Festival: Kevin and Geraldine Gill",
+                "post_id": 9565,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Country Music Circle",
+                "post_id": 9566,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Cork Folk Festival:  Enda McCabe",
+                "post_id": 9568,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Cork Folk Festival: Sean O'Mahony",
+                "post_id": 9569,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Pause Space Community Circle",
+                "post_id": 9571,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Cuard\u00edocht: An Evening of Story, Poetry, Song  and Conversation",
+                "post_id": 9572,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Generational Renewal in Irish Agriculture",
+                "post_id": 9573,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Portraits in Red | Wanjiru Kamuyu - Uillinn Dance Season 2026",
+                "post_id": 9574,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Wellness Day with Luam Wellness",
+                "post_id": 9575,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "POET PAUL McMAHON LIVE AT THE LIT LOUNGE SWERVE",
+                "post_id": 9576,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Astrology Readings at Sea Dog Bantry",
+                "post_id": 9577,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "No Wrong Tree | Neurodiversity, Biodiversity, & The Cost of Conformity",
+                "post_id": 9578,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Body to Mind | Plant based cooking workshop with Hungry Soul",
+                "post_id": 9579,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Ceili\u00faradh Continued",
+                "post_id": 9580,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Power Up Your Mind (OPEN TO PUBLIC) Ilen Rovers GAA Club",
+                "post_id": 9581,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            },
+            {
+                "title": "Samhain mask making workshops",
+                "post_id": 9582,
+                "outcome": "created",
+                "message": "Event created.",
+                "severity": "success"
+            }
+        ]
+    },
+    "after": {
+        "checkpoint": {
+            "has_checkpoint": true,
+            "last_page": 13,
+            "page_count": 15,
+            "complete": false,
+            "last_failure": "time_budget",
+            "updated_at": "2026-10-05 07:58:46"
+        },
+        "cooldown": {
+            "cooling_down": false,
+            "seconds_remaining": 0,
+            "next_eligible": "",
+            "last_reason": "",
+            "consecutive": 0
+        },
+        "cooling_down": false,
+        "source_status": "active",
+        "stored_events": {
+            "count": 107,
+            "source_not_found": 0,
+            "published": 107
+        }
+    },
+    "reconciliation": {
+        "complete": true,
+        "mark_missing_expected": false,
+        "source_not_found_before": 0,
+        "source_not_found_after": 0,
+        "marked_missing_while_incomplete": 0
+    },
+    "history": {
+        "time": "2026-10-05 07:59:51",
+        "source": "eventbrite_cork_events_this_week",
+        "found": 107,
+        "new": 107,
+        "updated": 0,
+        "unchanged": 0,
+        "duplicates": 0,
+        "skipped": 0,
+        "skipped_past": 0,
+        "skipped_invalid_date": 0,
+        "errors": 0,
+        "status": "warning",
+        "message": "107 events found, 107 created",
+        "run_id": "17911834769577",
+        "complete": false,
+        "cooldown": {
+            "cooling_down": false,
+            "seconds_remaining": 0,
+            "next_eligible": "",
+            "last_reason": "",
+            "consecutive": 0
+        },
+        "checkpoint": {
+            "has_checkpoint": true,
+            "last_page": 13,
+            "page_count": 15,
+            "complete": false,
+            "last_failure": "time_budget",
+            "updated_at": "2026-10-05 07:58:46"
+        }
+    }
+}
