@@ -1,0 +1,324 @@
+
+== G18 — automatic continuation of a resumable enumeration ==
+
+=== G18.0 — the resumable predicate is precise ===
+  PASS: G18.0: a source that has confirmed nothing is not resumable
+  PASS: G18.0: mid-listing progress with pages outstanding is resumable
+  PASS: G18.0: a position at the declared last page has nothing to resume into
+  PASS: G18.0: a FINISHED generation is not resumable
+  PASS: G18.0: a finished generation is NOT resumable even when a later listing declares more pages — this is the `complete` term, and it is what M6 removes
+  PASS: G18.0: the SAME record with complete=false IS resumable, so the term is a real distinction and not a second spelling of the page count
+  PASS: G18.0: an absent record is not resumable
+  PASS: G18.0: a malformed record is not resumable (fail closed)
+
+=== G18.1 — a time-budget stop schedules its own continuation ===
+  PASS: G18.1: the time budget stopped the walk mid-listing at page 3 (got 3)
+  PASS: G18.1: the stop is genuinely MID-listing, not at the end
+  PASS: G18.1: the checkpoint records the declared page count
+  PASS: G18.1: the checkpoint records the time_budget failure class
+  PASS: G18.1: the checkpoint does NOT claim the enumeration finished
+  PASS: G18.1: the shared resumable predicate agrees there are pages outstanding
+  PASS: G18.1: the run reports itself INCOMPLETE (no false success)
+  PASS: G18.1: a continuation is SCHEDULED (state=scheduled)
+  PASS: G18.1: the first continuation counts as attempt 1
+  PASS: G18.1: a first continuation is not stalled
+  PASS: G18.1: the continuation records the checkpoint page it resumes from
+  PASS: G18.1: the continuation records why the source is resumable
+  PASS: G18.1: the next execution is scheduled exactly one cooldown away (1800 s)
+  PASS: G18.1: the default cooldown is 30 minutes, inside the required 20-30 minute band
+  PASS: G18.1: exactly ONE WordPress event is armed for this source (got 1)
+  PASS: G18.1: the armed event fires at the recorded run_at — the record and the timer agree
+  PASS: G18.1: the operator-facing phase is cooling (got cooling)
+  PASS: G18.1: the remaining cooldown is reported from the SERVER clock
+  PASS: G18.1: the state says a future execution exists
+  PASS: G18.1: Import History records the run as NOT complete
+  PASS: G18.1: Import History carries the checkpoint that the scheduler is acting on
+
+=== G18.2 — no early retry, and execution exactly at the cooldown ===
+  PASS: G18.2: a trigger before the cooldown does NOT run the continuation
+  PASS: G18.2: a trigger before the cooldown sends ZERO upstream requests
+  PASS: G18.2: the outcome is reported as cooling (got cooling)
+  PASS: G18.2: the continuation is still pending after an early trigger — it was not consumed
+  PASS: G18.2: the armed event survives an early trigger
+  PASS: G18.2: at the cooldown boundary the continuation runs exactly once
+  PASS: G18.2: it runs the CORRECT source
+  PASS: G18.2: the outcome is reported as ran (got ran)
+  PASS: G18.2: the worker releases its lock when it finishes
+  PASS: G18.2: a no-progress attempt is rescheduled rather than abandoned
+  PASS: G18.2: the no-progress attempt is counted as a stall
+  PASS: G18.2: the delay ESCALATES after a no-progress attempt (30 -> 60 min), so no tight retry loop is possible
+  PASS: G18.2: the first delay is the 30-minute default
+  PASS: G18.2: the second delay doubles
+  PASS: G18.2: the third delay doubles again
+  PASS: G18.2: the escalation is CAPPED — a permanently failing source cannot be retried faster and faster
+  PASS: G18.2: the base delay IS the floor — no input can make a retry shorter than the 30-minute default
+  PASS: G18.2: and no escalated delay is ever shorter either
+
+=== G18.3 — resume from the checkpoint, repeat, complete, clear ===
+  PASS: G18.3: precondition — the interrupted run left a scheduled continuation
+  PASS: G18.3: attempt 1 executed the continuation
+  PASS: G18.3: attempt 2 executed the continuation
+  PASS: G18.3: attempt 3 executed the continuation
+  PASS: G18.3: attempt 4 executed the continuation
+  PASS: G18.3: attempt 5 executed the continuation
+  PASS: G18.3: attempt 6 executed the continuation
+
+  --- deterministic trace ---
+  source=g18_probe_cork | page 3 of 20 | time_budget | checkpoint persisted | resumable | cooldown=1800s | continuation scheduled | run_at=1800003600
+  attempt 1 | cooldown expired | continuation ran | served pages [1,2,3,4,5,6] (scheduled from page 3) | now page 6 of 20
+  attempt 2 | cooldown expired | continuation ran | served pages [1,5,6,7,8,9] (scheduled from page 6) | now page 9 of 20
+  attempt 3 | cooldown expired | continuation ran | served pages [1,8,9,10,11,12] (scheduled from page 9) | now page 12 of 20
+  attempt 4 | cooldown expired | continuation ran | served pages [1,11,12,13,14,15] (scheduled from page 12) | now page 15 of 20
+  attempt 5 | cooldown expired | continuation ran | served pages [1,14,15,16,17,18] (scheduled from page 15) | now page 18 of 20
+  attempt 6 | cooldown expired | continuation ran | served pages [1,17,18,19,20] (scheduled from page 18) | now page 20 of 20
+  final page 20 of 20 | checkpoint complete=true | continuation state="" | phase=none | history status=warning complete=false
+
+  PASS: G18.3: the enumeration needed MORE than one continue — the chain really repeats (7 attempts)
+  PASS: G18.3: the chain is BOUNDED — it converged well inside the guard (7 attempts)
+  PASS: G18.3: precondition — the checkpoint the continuation resumed from was page 3
+  PASS: G18.3: the continuation really requested listing pages
+  PASS: G18.3: the FIRST continuation starts at the overlap boundary (page 2 = last_page 3 - OVERLAP_PAGES 1)
+  PASS: G18.3: the first continuation re-validates the checkpoint page itself
+  PASS: G18.3: control — the overlap rule this stage relies on is unchanged (OVERLAP_PAGES = 1)
+  PASS: G18.3: attempt 1 advanced the checkpoint to page 6 (from 3)
+  PASS: G18.3: attempt 2 did not lose progress (page 9)
+  PASS: G18.3: attempt 2 (from checkpoint 6) never requested page 2 — the confirmed prefix is NOT re-walked
+  PASS: G18.3: attempt 2 never requested page 3 either
+  PASS: G18.3: attempt 2 starts exactly at the overlap boundary 5 (served [1,5,6,7,8,9])
+  PASS: G18.3: the checkpoint never moves backwards across continues (attempt 2: 9)
+  PASS: G18.3: the checkpoint never moves backwards across continues (attempt 3: 12)
+  PASS: G18.3: the checkpoint never moves backwards across continues (attempt 4: 15)
+  PASS: G18.3: the checkpoint never moves backwards across continues (attempt 5: 18)
+  PASS: G18.3: the checkpoint never moves backwards across continues (attempt 6: 20)
+  PASS: G18.3: the chain made real progress (6 -> 20)
+  PASS: G18.3: the chain reached the final page (20 of 20)
+  PASS: G18.3: the checkpoint records the enumeration as progress-complete
+  PASS: G18.3: nothing is outstanding any more
+  PASS: G18.3: the continuation record was CLEARED on completion (state=)
+  PASS: G18.3: no WordPress event is left armed after completion
+  PASS: G18.3: the operator-facing phase is none — nothing is pending
+  PASS: G18.3: no lock is left behind
+  PASS: G18.3: the final run is not a failure (status=warning)
+  PASS: G18.3: the final run has no fatal errors
+  PASS: G18.3: the final RESUMED run is conservatively not recorded as a complete LISTING (G10: a resumed subset never authorises absence reconciliation)
+  PASS: G18.3: the whole continue chain hid NOTHING — no event was flipped to source_not_found (0 found)
+  progress cell: page 20 of 20 — complete
+  PASS: G18.3: Import History renders the final position as 20 of 20
+  PASS: G18.3: Import History renders that position as complete
+  PASS: G18.3: Import History does NOT say "resumable" once the enumeration is done
+  PASS: G18.3: the final counts reconcile: found = new + updated + unchanged + skipped
+
+=== G18.4 — the log reconstructs the interrupted/resumed lifecycle ===
+  PASS: G18.4: the log records that a continuation was SCHEDULED
+  PASS: G18.4: the log records that a continuation STARTED
+  PASS: G18.4: an interrupted run is recorded as INCOMPLETE (7 incomplete entries)
+  PASS: G18.4: NO entry reports success for an incomplete listing (found 0)
+  PASS: G18.4: after completion the scheduler reports no continuation — so Import History cannot claim "resumable" either
+
+=== G18.5 — duplicate continuation protection ===
+  PASS: G18.5: repeated reconciles leave the continuation scheduled
+  PASS: G18.5: repeated reconciles do NOT postpone the pending continuation
+  PASS: G18.5: repeated reconciles do NOT double-count attempts (got 1)
+  PASS: G18.5: still exactly ONE WordPress event
+  PASS: G18.5: repeated schedule() calls do NOT postpone the continuation
+  PASS: G18.5: repeated schedule() calls do NOT create a second event
+  PASS: G18.5: the map holds exactly one record for the source
+  PASS: G18.5: two simultaneous triggers run the continuation exactly ONCE (got 1)
+  PASS: G18.5: the second trigger sends no upstream requests at all
+  PASS: G18.5: the first trigger ran it
+  PASS: G18.5: the second trigger found it already consumed and re-scheduled (got cooling)
+  PASS: G18.5: never more than one armed event per source
+
+=== G18.6 — a source-level lock, never a global one ===
+  PASS: G18.6: a worker can take the source lock
+  PASS: G18.6: the lock is observable while it is held
+  PASS: G18.6: a SECOND worker cannot take the same source lock while it is held
+  PASS: G18.6: a worker that finds the lock held does NOT start a second run
+  PASS: G18.6: a locked-out worker sends zero upstream requests (no duplicate imports)
+  PASS: G18.6: the outcome is reported as locked (got locked)
+  PASS: G18.6: the continuation survives the locked-out worker — it is not consumed
+  PASS: G18.6: releasing the lock makes the source eligible again
+  PASS: G18.6: an expired lock is not honoured
+  PASS: G18.6: an abandoned lock is taken over, so a crash cannot wedge a source forever
+  PASS: G18.6: Cork holds its own lock
+  PASS: G18.6: Wicklow resumes even while Cork is locked
+  PASS: G18.6: the lock is PER SOURCE — no global lock blocks an unrelated source
+  PASS: G18.6: Cork was not run by the Wicklow continuation
+  PASS: G18.6: Cork still holds its lock
+
+=== G18.7 — a continuation that cannot be armed fails visibly ===
+  PASS: G18.7: the continuation is recorded as FAILED (state=failed)
+  PASS: G18.7: no run time is recorded for a continuation that was never armed
+  PASS: G18.7: nothing is armed, and that is exactly what the record says
+  PASS: G18.7: the operator-facing phase is failed
+  PASS: G18.7: the scheduling failure is written to the log as an ERROR
+  PASS: G18.7: Import History says the job is NOT scheduled (got: page 3 of 20 (time_budget) — NOT scheduled — the continuation could not be scheduled)
+  PASS: G18.7: Import History does NOT promise \"resumable\" when scheduling failed
+  PASS: G18.7: the run that could not schedule its continuation is NOT recorded as complete
+  PASS: G18.7: once scheduling works again the continuation is armed (state=scheduled)
+  PASS: G18.7: and exactly one event is armed
+
+=== G18.8 — a stall is visible, never a silent stop ===
+  PASS: G18.8: the stall takes several attempts to declare (got 4)
+  PASS: G18.8: the FIRST no-progress attempt is retried, not abandoned
+  PASS: G18.8: the stall counter reaches MAX_STALLED (got 4)
+  PASS: G18.8: the continuation is declared EXHAUSTED (state=exhausted)
+  PASS: G18.8: an exhausted continuation has no armed run time
+  PASS: G18.8: no WordPress event is left armed
+  PASS: G18.8: the phase is exhausted
+  PASS: G18.8: the stall is logged as an ERROR, so it cannot be missed
+  PASS: G18.8: Import History says NOT scheduled (got: page 3 of 20 (time_budget) — NOT scheduled — the automatic continuation stopped; press Run to resume)
+  PASS: G18.8: Import History never claims \"resumable\" for a stalled job
+  PASS: G18.8: the recovery run really advanced the checkpoint (3 -> 6)
+  PASS: G18.8: a run that makes progress clears the stall and re-arms the continuation (state=scheduled)
+  PASS: G18.8: real progress resets the stall counter
+
+=== G18.9 — a rate-limited stop retries itself after the cooldown ===
+  PASS: G18.9: the checkpoint stays at the last CONFIRMED page (4), never at the refused page 5
+  PASS: G18.9: the checkpoint records the rate_limited failure class
+  PASS: G18.9: the run is INCOMPLETE — it is not falsely marked complete
+  PASS: G18.9: page 5 really was refused
+  PASS: G18.9: a continuation is SCHEDULED for the rate-limited source
+  PASS: G18.9: the continuation records the rate_limited reason
+  PASS: G18.9: the retry is a full cooldown away
+  PASS: G18.9: exactly one retry is armed
+  PASS: G18.9: an event imported before the rate limit is NOT removed
+  PASS: G18.9: the rate-limited walk hid nothing (no source_not_found)
+  PASS: G18.9: the retry does not start before the cooldown
+  PASS: G18.9: nothing is retried early
+  PASS: G18.9: not one request is made before the cooldown expires
+  PASS: G18.9: the retry starts once the cooldown has expired
+  PASS: G18.9: the retry really fetched listing pages
+  PASS: G18.9: it resumes at the overlap boundary (page 3) of the saved checkpoint
+  PASS: G18.9: it does not restart from the beginning
+  PASS: G18.9: processing continued to the final page (20 of 20)
+  PASS: G18.9: the enumeration is progress-complete after the retry
+  PASS: G18.9: the continuation is cleared once the enumeration completed
+  PASS: G18.9: no retry is left armed
+  PASS: G18.9: the retry did not hide the source
+
+=== G18.10 — five resumable sources, five independent continuations ===
+  PASS: G18.10: cork is scheduled for its own continue
+  PASS: G18.10: wicklow is scheduled for its own continue
+  PASS: G18.10: wexford is scheduled for its own continue
+  PASS: G18.10: waterford is scheduled for its own continue
+  PASS: G18.10: tipperary is scheduled for its own continue
+  PASS: G18.10: every county has its own continuation record
+  PASS: G18.10: every county has its own armed event
+  PASS: G18.10: the armed events are distinct — no county overwrote another (got g18_probe_cork,g18_probe_wicklow,g18_probe_wexford,g18_probe_waterford,g18_probe_tipperary)
+  PASS: G18.10: cork holds its own resumable checkpoint
+  PASS: G18.10: cork stopped at its own page 3
+  PASS: G18.10: wicklow holds its own resumable checkpoint
+  PASS: G18.10: wicklow stopped at its own page 3
+  PASS: G18.10: wexford holds its own resumable checkpoint
+  PASS: G18.10: wexford stopped at its own page 3
+  PASS: G18.10: waterford holds its own resumable checkpoint
+  PASS: G18.10: waterford stopped at its own page 3
+  PASS: G18.10: tipperary holds its own resumable checkpoint
+  PASS: G18.10: tipperary stopped at its own page 3
+  PASS: G18.10: all five counties were continued in one pass (got 5)
+  PASS: G18.10: no county was continued twice
+  PASS: G18.10: cork ran its own continuation
+  PASS: G18.10: wicklow ran its own continuation
+  PASS: G18.10: wexford ran its own continuation
+  PASS: G18.10: waterford ran its own continuation
+  PASS: G18.10: tipperary ran its own continuation
+  PASS: G18.10: cork ran its continuation to completion
+  PASS: G18.10: cork completed at page 6 (got 6) 
+  PASS: G18.10: cork is progress-complete
+  PASS: G18.10: cork cleared its own continuation
+  PASS: G18.10: cork imported its own events
+  PASS: G18.10: wicklow ran its continuation to completion
+  PASS: G18.10: wicklow completed at page 6 (got 6) 
+  PASS: G18.10: wicklow is progress-complete
+  PASS: G18.10: wicklow cleared its own continuation
+  PASS: G18.10: wicklow imported its own events
+  PASS: G18.10: wexford ran its continuation to completion
+  PASS: G18.10: wexford completed at page 6 (got 6) 
+  PASS: G18.10: wexford is progress-complete
+  PASS: G18.10: wexford cleared its own continuation
+  PASS: G18.10: wexford imported its own events
+  PASS: G18.10: waterford ran its continuation to completion
+  PASS: G18.10: waterford completed at page 6 (got 6) 
+  PASS: G18.10: waterford is progress-complete
+  PASS: G18.10: waterford cleared its own continuation
+  PASS: G18.10: waterford imported its own events
+  PASS: G18.10: tipperary ran its continuation to completion
+  PASS: G18.10: tipperary completed at page 6 (got 6) 
+  PASS: G18.10: tipperary is progress-complete
+  PASS: G18.10: tipperary cleared its own continuation
+  PASS: G18.10: tipperary imported its own events
+  per-county: cork region=Cork events=87 found=12 skipped=0 status=warning msg=12 events found, 12 created
+  per-county: wicklow region=Wicklow events=12 found=12 skipped=0 status=warning msg=12 events found, 12 created
+  per-county: wexford region=Wexford events=12 found=12 skipped=0 status=warning msg=12 events found, 12 created
+  per-county: waterford region=Waterford events=12 found=12 skipped=0 status=warning msg=12 events found, 12 created
+  per-county: tipperary region=Tipperary events=18 found=12 skipped=0 status=warning msg=12 events found, 12 created
+  PASS: G18.10: no events remain armed once every county is complete
+  PASS: G18.10: the continuation map is empty
+  PASS: G18.10: a Wicklow event is not stored under the Cork source — no cross-source contamination
+
+=== G18.11 — the continuation survives a restart ===
+  PASS: G18.11: precondition — one event is armed
+  PASS: G18.11: the timer was really lost
+  PASS: G18.11: the continuation record lives in the DATABASE, not in memory
+  PASS: G18.11: the persisted record still says scheduled
+  PASS: G18.11: the next request re-arms the lost timer from persisted state
+  PASS: G18.11: exactly one event is armed again
+  PASS: G18.11: it is re-armed at the SAME time — no cooldown is restarted, and none is skipped
+  PASS: G18.11: re-arming is idempotent — a second call adds nothing
+  PASS: G18.11: the re-armed continuation executes after the restart
+  PASS: G18.11: it resumed from the checkpoint and reached the final page
+  PASS: G18.11: it cleared itself on completion
+
+=== G18.12 — no duplicate events, and G17 restoration still works ===
+  PASS: G18.12: precondition — the earlier sections stored events for this source
+  PASS: G18.12: re-running a completed source creates NO new events (93 -> 93)
+  PASS: G18.12: native id g18probe-1-0 exists at most once (found 1)
+  PASS: G18.12: native id g18probe-3-1 exists at most once (found 1)
+  PASS: G18.12: native id g18probe-12-2 exists at most once (found 1)
+  PASS: G18.12: native id g18probe-20-0 exists at most once (found 1)
+  PASS: G18.12 (G17): precondition — a reappearance probe event exists
+  PASS: G18.12 (G17): precondition — the event is hidden as source_not_found
+  PASS: G18.12 (G17): a reappearing event is RESTORED — still exactly one native record (found 1)
+  PASS: G18.12 (G17): the restored event is visible again
+  PASS: G18.12 (G17): restoration did NOT insert a second event
+
+=== G18.13 — a dry run changes no scheduling state ===
+  PASS: G18.13: a dry run leaves the continuation state unchanged
+  PASS: G18.13: a dry run does not move the scheduled time
+  PASS: G18.13: a dry run does not consume an attempt
+  PASS: G18.13: a dry run does not disturb the armed event
+  PASS: G18.13: the dry run left a resumable checkpoint — it classifies, it does not write
+  PASS: G18.13: a DRY RUN does not schedule a continuation
+  PASS: G18.13: a dry run arms nothing
+
+=== G18.14 — Import History is truthful in every phase ===
+  phase cooling : page 3 of 20 (time_budget) — resumable — next run in 30 minutes
+  PASS: G18.14: the cell states the position and the reason
+  PASS: G18.14: it says resumable — and a continuation IS scheduled
+  PASS: G18.14: it states when the next run happens, from the SERVER clock (got: page 3 of 20 (time_budget) — resumable — next run in 30 minutes)
+  PASS: G18.14: it does not contradict itself
+  phase due     : page 3 of 20 (time_budget) — resumable — resume scheduled
+  PASS: G18.14: an elapsed cooldown reads as resume scheduled (got: page 3 of 20 (time_budget) — resumable — resume scheduled)
+  phase running : page 3 of 20 (time_budget) — resuming — a worker is running it now
+  PASS: G18.14: a held lock reads as resuming (got: page 3 of 20 (time_budget) — resuming — a worker is running it now)
+  PASS: G18.14: a running job is never described as unscheduled
+  phase orphan  : page 3 of 20 (time_budget) — NOT scheduled — no continuation exists
+  PASS: G18.14: with no continuation the cell says NOT scheduled
+  PASS: G18.14: it NEVER says resumable when nothing is scheduled — the defect this stage fixes
+  phase failed  : page 3 of 20 (time_budget) — NOT scheduled — the continuation could not be scheduled
+  PASS: G18.14: a scheduling failure reads as NOT scheduled
+  PASS: G18.14: a scheduling failure never claims resumable
+  phase stalled : page 3 of 20 (time_budget) — NOT scheduled — the automatic continuation stopped; press Run to resume
+  PASS: G18.14: precondition — the source is exhausted
+  PASS: G18.14: a stalled job reads as NOT scheduled
+  PASS: G18.14: a stalled job never claims resumable
+  phase done    : page 20 of 20 — complete
+  PASS: G18.14: a finished enumeration reads 20 of 20
+  PASS: G18.14: a finished enumeration reads complete
+  PASS: G18.14: a finished enumeration never claims resumable
+  phase old row : page 3 of 20 (time_budget)
+  PASS: G18.14: a superseded row keeps the historical fact and makes NO lifecycle claim (got: page 3 of 20 (time_budget))
+  PASS: G18.14: a source with no checkpoint renders a dash, as before
+
+G18 continuation: 265 passed, 0 failed

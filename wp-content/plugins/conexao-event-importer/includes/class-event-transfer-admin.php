@@ -136,9 +136,22 @@ class Conexao_Event_Transfer_Admin {
 
 		check_admin_referer( 'conexao_import_events_multi', 'conexao_import_multi_nonce' );
 
+		// Response mode. The browser intercepts the form's submit event and
+		// asks for JSON so it can orchestrate per-file imports without a page
+		// reload. With JavaScript disabled the marker is absent and the
+		// handler redirects exactly as before, so the native path is
+		// preserved. This is a response-shape switch only: every capability,
+		// nonce, staging and validation check below is identical in both
+		// modes.
+		$as_json = isset( $_POST['conexao_multi_response'] ) // phpcs:ignore WordPress.Security.NonceVerification.Missing -- nonce verified above.
+			&& 'json' === sanitize_key( wp_unslash( $_POST['conexao_multi_response'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+
 		$redirect = admin_url( 'admin.php?page=conexao-event-import-file' );
 
 		if ( empty( $_FILES['conexao_import_files'] ) ) {
+			if ( $as_json ) {
+				$this->emit_multi_json_error( 'no_files', __( 'No files were uploaded.', 'conexao-event-importer' ) );
+			}
 			wp_safe_redirect( add_query_arg( 'conexao_multi_error', 'no_files', $redirect ) );
 			exit;
 		}
@@ -158,9 +171,31 @@ class Conexao_Event_Transfer_Admin {
 				'no_files'       => 'no_files',
 				'manifest_error' => 'manifest',
 				'stage_failed'   => 'stage_failed',
+				'too_many_files' => 'too_many',
 			);
 			$query_arg   = isset( $error_map[ $error_code ] ) ? $error_map[ $error_code ] : 'stage_failed';
+			if ( $as_json ) {
+				$this->emit_multi_json_error( $query_arg, $staged->get_error_message() );
+			}
 			wp_safe_redirect( add_query_arg( 'conexao_multi_error', $query_arg, $redirect ) );
+			exit;
+		}
+
+		if ( $as_json ) {
+			nocache_headers();
+			header( 'Content-Type: application/json; charset=utf-8' );
+			header( 'X-Content-Type-Options: nosniff' );
+
+			echo wp_json_encode(
+				array(
+					'success'     => true,
+					'batch_token' => $staged['batch_token'],
+					'file_count'  => (int) $staged['file_count'],
+					'strategy'    => $strategy,
+					'rejected'    => isset( $staged['rejected'] ) && is_array( $staged['rejected'] ) ? $staged['rejected'] : array(),
+					'manifest'    => ! empty( $staged['manifest'] ),
+				)
+			);
 			exit;
 		}
 
@@ -174,7 +209,39 @@ class Conexao_Event_Transfer_Admin {
 			$args['conexao_multi_manifest'] = '1';
 		}
 
+		// Files PHP rejected before staging (oversized, partial) are reported
+		// against their own name; the staged files still import normally.
+		if ( ! empty( $staged['rejected'] ) && is_array( $staged['rejected'] ) ) {
+			$args['conexao_multi_rejected'] = rawurlencode( wp_json_encode( array_slice( $staged['rejected'], 0, 20 ) ) );
+		}
+
 		wp_safe_redirect( add_query_arg( $args, $redirect ) );
+		exit;
+	}
+
+	/**
+	 * Emit a staging failure as JSON for the AJAX orchestration path.
+	 *
+	 * The message is the already-translated staging reason. It never contains a
+	 * filesystem path, a batch token or a nonce, so it is safe to return to the
+	 * browser.
+	 *
+	 * @param string $code    Stable error code the client maps to a message.
+	 * @param string $message Human-readable, translatable reason.
+	 * @return void Does not return; terminates the request.
+	 */
+	protected function emit_multi_json_error( $code, $message ) {
+		nocache_headers();
+		header( 'Content-Type: application/json; charset=utf-8' );
+		header( 'X-Content-Type-Options: nosniff' );
+
+		echo wp_json_encode(
+			array(
+				'success' => false,
+				'error'   => $code,
+				'message' => $message,
+			)
+		);
 		exit;
 	}
 
@@ -764,13 +831,102 @@ class Conexao_Event_Transfer_Admin {
 	}
 
 	/**
+	 * Render a multi-file staging failure notice.
+	 *
+	 * `handle_import_multi()` redirects with `conexao_multi_error` when a
+	 * batch cannot be staged (no files, invalid manifest, too many files,
+	 * staging failure). Without this the redirect was silent: the operator
+	 * saw the unchanged form and no explanation.
+	 */
+	protected function render_multi_import_error() {
+		if ( ! isset( $_GET['conexao_multi_error'] ) ) {
+			return;
+		}
+
+		// Display only: read back the code the nonce+capability-gated
+		// handler set. Nothing is written or persisted from it.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$code = sanitize_key( wp_unslash( $_GET['conexao_multi_error'] ) );
+
+		$messages = array(
+			'no_files'     => __( 'No files were uploaded. Select at least one export file.', 'conexao-event-importer' ),
+			'manifest'     => __( 'The multipart manifest failed validation, so no file was imported.', 'conexao-event-importer' ),
+			'stage_failed' => __( 'The files could not be staged for import. Check the uploads directory is writable.', 'conexao-event-importer' ),
+			'too_many'     => __( 'Too many files were uploaded for a single multi-file import.', 'conexao-event-importer' ),
+		);
+
+		$message = isset( $messages[ $code ] )
+			? $messages[ $code ]
+			: __( 'The multi-file import could not be started.', 'conexao-event-importer' );
+		?>
+		<div class="notice notice-error is-dismissible">
+			<p><strong><?php esc_html_e( 'Multi-file import error', 'conexao-event-importer' ); ?></strong></p>
+			<p><?php echo esc_html( $message ); ?></p>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Render files PHP rejected before they could be staged.
+	 *
+	 * A file that exceeds an upload limit (or was only partially received)
+	 * never reaches the importer. It is reported against its own name so
+	 * the operator knows exactly which file to re-export smaller, while the
+	 * remaining files in the batch still import normally.
+	 */
+	protected function render_multi_import_rejected() {
+		// Display only: read back the summary the nonce+capability-gated
+		// handler set. Nothing is written or persisted from it.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( empty( $_GET['conexao_multi_rejected'] ) ) {
+			return;
+		}
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		$raw      = rawurldecode( wp_unslash( $_GET['conexao_multi_rejected'] ) );
+		$rejected = json_decode( $raw, true );
+
+		if ( ! is_array( $rejected ) || empty( $rejected ) ) {
+			return;
+		}
+		?>
+		<div class="notice notice-warning is-dismissible">
+			<p><strong><?php esc_html_e( 'Files not imported', 'conexao-event-importer' ); ?></strong></p>
+			<ul class="conexao-import-errors">
+				<?php foreach ( $rejected as $item ) : ?>
+					<li>
+						<?php
+						echo esc_html(
+							sprintf(
+								/* translators: 1: file name, 2: reason */
+								__( '%1$s — %2$s', 'conexao-event-importer' ),
+								isset( $item['filename'] ) ? (string) $item['filename'] : '',
+								isset( $item['reason'] ) ? (string) $item['reason'] : ''
+							)
+						);
+						?>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+		</div>
+		<?php
+	}
+
+	/**
 	 * Render the multi-file import result card, if a batch was just run.
 	 */
 	protected function render_multi_import_result() {
+		$this->render_multi_import_error();
+		$this->render_multi_import_rejected();
+
+		// Display only: read back the summary the nonce+capability-gated
+		// handler set. Nothing is written or persisted from it.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( ! isset( $_GET['conexao_multi_result'] ) ) {
 			return;
 		}
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$raw   = wp_unslash( $_GET['conexao_multi_result'] );
 		$json  = rawurldecode( $raw );
 		$summary = json_decode( $json, true );
@@ -780,7 +936,9 @@ class Conexao_Event_Transfer_Admin {
 		}
 
 		$errors = array();
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( isset( $_GET['conexao_multi_errors'] ) ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			$err_raw  = wp_unslash( $_GET['conexao_multi_errors'] );
 			$err_json = rawurldecode( $err_raw );
 			$errors   = json_decode( $err_json, true );

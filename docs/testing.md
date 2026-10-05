@@ -429,6 +429,79 @@ before starting, and `tests/acceptance/lib/http_client.py` refuses again
 before opening a socket. A production verifier is **not** a local regression
 test; the production tools are classified `PRODUCTION_ONLY` and never run here.
 
+### The optional browser layer (`tests/browser/`)
+
+The default layers above are deliberately standard-library only and never launch
+a browser. Some defects are nevertheless only observable in a real browser — the
+multi-file event importer's "select files, click Import, the page reloads and
+nothing happens" was exactly one of them, and neither a static check nor an HTTP
+request would have caught it.
+
+`tests/browser/verify-multi-file-import-browser.py` is one of the **opt-in**
+layers. It drives real Chromium through Playwright, which is the browser engine
+the repository's environment already provides:
+
+```bash
+python3 tests/browser/verify-multi-file-import-browser.py              # happy path
+python3 tests/browser/verify-multi-file-import-browser.py --negative-control
+```
+
+It logs in through `wp-login.php` using `WP_USERNAME` /
+`WP_TEST_USER_PASSWORD`, opens the real admin importer, selects two export
+files, activates the real Import control (both by mouse and by keyboard), and
+asserts the actual event/request sequence: the URL is unchanged, no
+document-level POST occurs, the staging request carries both files, exactly
+`1 + N + 1` POSTs are issued, the visible summary is truthful, and the imported
+event identities exist with no duplicates. It creates only `[BRBROWSER]`-prefixed
+fixtures and deletes them at the end.
+
+`--negative-control` serves a **mutated** `admin.js` whose handler never calls
+`preventDefault()` and asserts the checks go **red** (the page navigates). That
+is what makes the suite non-vacuous: remove the interception and the suite
+fails.
+
+### The continuation browser proof
+
+`tests/browser/verify-import-continuation-browser.py` is the second opt-in
+layer, and it answers a different question: does a **resumable** import keep
+running when nobody is looking?
+
+```bash
+python3 tests/browser/verify-import-continuation-browser.py                  # happy path
+python3 tests/browser/verify-import-continuation-browser.py --negative-control
+```
+
+It seeds a suite-owned probe source whose URL is a **local static fixture**, so
+the whole path runs over real HTTP with no external traffic, opens the real
+Import History page in Chromium and reads the Progress cell, and then **closes
+the browser**. Everything after that is a plain HTTP request with no browser,
+no tab, no JavaScript and no AJAX: nothing runs before the cooldown expires, the
+continuation executes when it does, the walk advances, and the final state is
+read by opening the browser once more. It creates only `g18_probe_*` sources and
+deletes them, and every event they created, at the end.
+
+`--negative-control` breaks the arming, and the cell must stop promising
+`resumable` — it reads
+`page 1 of 6 (time_budget) — NOT scheduled — the continuation could not be scheduled`.
+That is the same shape as the defect the layer exists to catch.
+
+Exit codes: `0` pass, `1` fail, `2` environment unavailable (Playwright, the
+local site, or credentials missing). A `2` is never reported as a pass.
+
+Because these need Playwright and a running stack, they are **not** part of
+`./scripts/run-tests.sh`'s blocking layers and are not discovered by convention —
+they are run explicitly. The deterministic, browserless halves of the same
+contracts **are** blocking: the multi-file UI contract lives in
+`wp-content/plugins/conexao-event-importer/tests/test-multi-file-import-ui.php`
+and the continuation contract in
+`wp-content/plugins/conexao-event-importer/tests/test-import-continuation.php`,
+both inside the in-process layer.
+
+One operational note: a browser proof and the test suite must not run
+**concurrently**. They share a data foundation, and a suite that drives its own
+probe state while a browser proof reads the admin pages can observe the other
+run's records.
+
 ### What lives where
 
 | Path | Class | In the default runner? |

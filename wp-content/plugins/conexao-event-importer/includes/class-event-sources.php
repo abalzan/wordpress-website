@@ -1358,43 +1358,7 @@ class Conexao_Event_Sources {
 									?>
 								</td>
 								<td>
-									<?php
-									/*
-									 * G10 §27. Progress state, NOT completeness. This cell answers
-									 * "how far did the enumeration get, and can it resume". It never
-									 * claims the source is fully covered — that is the "Listing"
-									 * column, derived from the actual walk. A checkpoint alone must
-									 * never be read as a completeness signal.
-									 */
-									$cp = isset( $entry['checkpoint'] ) && is_array( $entry['checkpoint'] ) ? $entry['checkpoint'] : array();
-
-									if ( empty( $cp['has_checkpoint'] ) ) {
-										$cp_text = __( '—', 'conexao-event-importer' );
-									} else {
-										$cp_page  = isset( $cp['last_page'] ) ? (int) $cp['last_page'] : 0;
-										$cp_total = isset( $cp['page_count'] ) ? (int) $cp['page_count'] : 0;
-										$cp_fail  = isset( $cp['last_failure'] ) ? (string) $cp['last_failure'] : '';
-
-										if ( '' !== $cp_fail ) {
-											$cp_text = sprintf(
-												/* translators: 1: last confirmed page, 2: total pages, 3: failure class */
-												__( 'page %1$d of %2$d (%3$s) — resumable', 'conexao-event-importer' ),
-												$cp_page,
-												$cp_total,
-												$cp_fail
-											);
-										} else {
-											$cp_text = sprintf(
-												/* translators: 1: last confirmed page, 2: total pages */
-												__( 'page %1$d of %2$d', 'conexao-event-importer' ),
-												$cp_page,
-												$cp_total
-											);
-										}
-									}
-
-									echo esc_html( $cp_text );
-									?>
+									<?php echo esc_html( self::history_progress_text( $entry ) ); ?>
 								</td>
 								<td>
 									<?php
@@ -1428,5 +1392,109 @@ class Conexao_Event_Sources {
 			<?php endif; ?>
 		</div>
 		<?php
+	}
+
+	/**
+	 * The operator-facing text of the Import History "Progress" cell.
+	 *
+	 * Extracted from the renderer so the promise the cell makes is directly
+	 * testable: the phrase "resumable" appears ONLY when a continuation is
+	 * actually scheduled. A cell that says "resumable" while nothing will run is
+	 * the defect this stage exists to remove, so it is asserted, not assumed.
+	 *
+	 * G10 §27: this is PROGRESS state, never completeness. The "Listing" column
+	 * remains the completeness signal; a checkpoint is never read as one.
+	 *
+	 * G18: the suffix reports the LIVE scheduler state (a future execution, a
+	 * cooldown, a stall), read from `Conexao_Import_Continuation`, so the words
+	 * and the behaviour cannot disagree. A row that is no longer the current one
+	 * for its source keeps the historical fact and makes no lifecycle claim.
+	 *
+	 * @param array $entry One Import History entry.
+	 * @return string Plain text; the caller escapes it.
+	 */
+	public static function history_progress_text( array $entry ) {
+		$cp = isset( $entry['checkpoint'] ) && is_array( $entry['checkpoint'] ) ? $entry['checkpoint'] : array();
+
+		if ( empty( $cp['has_checkpoint'] ) ) {
+			return __( '—', 'conexao-event-importer' );
+		}
+
+		$cp_page  = isset( $cp['last_page'] ) ? (int) $cp['last_page'] : 0;
+		$cp_total = isset( $cp['page_count'] ) ? (int) $cp['page_count'] : 0;
+		$cp_fail  = isset( $cp['last_failure'] ) ? (string) $cp['last_failure'] : '';
+		$source   = isset( $entry['source'] ) ? (string) $entry['source'] : '';
+
+		if ( '' !== $cp_fail ) {
+			$text = sprintf(
+				/* translators: 1: last confirmed page, 2: total pages, 3: failure class */
+				__( 'page %1$d of %2$d (%3$s)', 'conexao-event-importer' ),
+				$cp_page,
+				$cp_total,
+				$cp_fail
+			);
+		} else {
+			$text = sprintf(
+				/* translators: 1: last confirmed page, 2: total pages */
+				__( 'page %1$d of %2$d', 'conexao-event-importer' ),
+				$cp_page,
+				$cp_total
+			);
+		}
+
+		// Pages still outstanding, judged on the pair of progress facts the
+		// checkpoint already carries (never on its existence).
+		$outstanding = empty( $cp['complete'] ) && ( 0 === $cp_total || $cp_page < $cp_total );
+
+		if ( ! $outstanding ) {
+			return $text . ' — ' . __( 'complete', 'conexao-event-importer' );
+		}
+
+		// Only the CURRENT row can be annotated with the live lifecycle: for an
+		// older row the scheduler state describes a different checkpoint.
+		$live = class_exists( 'Conexao_Source_Enumeration_Checkpoint' )
+			? Conexao_Source_Enumeration_Checkpoint::get_state( $source )
+			: array();
+
+		$current = ! empty( $live['updated_at'] )
+			&& ! empty( $cp['updated_at'] )
+			&& (string) $live['updated_at'] === (string) $cp['updated_at'];
+
+		if ( ! $current || ! class_exists( 'Conexao_Import_Continuation' ) ) {
+			return $text;
+		}
+
+		$cont = Conexao_Import_Continuation::get_state( $source );
+
+		$phase  = (string) $cont['phase'];
+		$remain = (int) $cont['seconds_remaining'];
+
+		if ( 'running' === $phase ) {
+			return $text . ' — ' . __( 'resuming — a worker is running it now', 'conexao-event-importer' );
+		}
+
+		if ( 'cooling' === $phase ) {
+			$minutes = max( 1, (int) ceil( $remain / 60 ) );
+
+			return $text . ' — ' . sprintf(
+				/* translators: %d: whole minutes until the next automatic attempt */
+				_n( 'resumable — next run in %d minute', 'resumable — next run in %d minutes', $minutes, 'conexao-event-importer' ),
+				$minutes
+			);
+		}
+
+		if ( 'due' === $phase ) {
+			return $text . ' — ' . __( 'resumable — resume scheduled', 'conexao-event-importer' );
+		}
+
+		if ( 'exhausted' === $phase ) {
+			return $text . ' — ' . __( 'NOT scheduled — the automatic continuation stopped; press Run to resume', 'conexao-event-importer' );
+		}
+
+		if ( 'failed' === $phase ) {
+			return $text . ' — ' . __( 'NOT scheduled — the continuation could not be scheduled', 'conexao-event-importer' );
+		}
+
+		return $text . ' — ' . __( 'NOT scheduled — no continuation exists', 'conexao-event-importer' );
 	}
 }

@@ -1,0 +1,61 @@
+G18 browser proof - the server continues the job with no browser
+-----------------------------------------------------------------
+
+Phase 0 - seed a probe source over a local fixture (no external traffic)
+{"stats_complete":false,"checkpoint":{"has_checkpoint":true,"last_page":1,"page_count":6,"complete":false,"last_failure":"time_budget","updated_at":"2026-10-05 19:43:27"},"continuation":{"scheduled":true,"phase":"cooling","state":"scheduled","run_at":1791227613,"seconds_remaining":1800,"attempts":1,"stalled":0,"reason":"time_budget","page":1,"page_count":6,"message":"","locked":false},"window":25}
+  PASS: the interrupted walk persisted a checkpoint
+  PASS: the checkpoint is mid-listing (page 1 of 6)
+  PASS: a continuation is scheduled
+  PASS: a WordPress event is armed for it
+  PASS: the phase is cooling (got cooling)
+
+Phase 1 - Import History in a real browser (Chromium)
+  Progress cell: page 1 of 6 (time_budget) — resumable — next run in 1 minute
+  PASS: the cell says resumable - and a continuation IS scheduled
+  PASS: the cell states when the next run happens
+  PASS: the cell does not contradict itself
+
+The browser is now CLOSED. Everything below is a plain HTTP request.
+
+Phase 2 - before the cooldown expires: nothing happens
+  PASS: a plain request to the front page succeeds with no browser
+  PASS: the continuation is still cooling (got cooling)
+  PASS: the page did NOT advance before the cooldown expired
+  PASS: the continuation was not consumed
+  PASS: the remaining cooldown counts down on the server clock
+
+Phase 3 - waiting out the real cooldown window
+
+Phase 4 - after the cooldown: a plain request drives the continuation
+  PASS: a plain request after the cooldown succeeds
+  checkpoint now: page 6 of 6
+  PASS: the server advanced the walk with no browser open
+
+Phase 5 - drive the chain to completion with plain requests only
+  final: page 6 of 6, complete=True, phase=none
+  PASS: the enumeration reached its final page
+  PASS: no continuation is left pending (phase none)
+  PASS: no WordPress event is left armed
+
+Phase 6 - open the browser once more and read the outcome
+  Progress cell: page 6 of 6 — complete
+  PASS: Import History reports the finished enumeration as complete
+  PASS: Import History no longer claims resumable
+
+Phase 7 - cleanup
+cleaned events: 12
+
+-----------------------------------------------------------------
+browser proof: 20 passed, 0 failed
+G18 browser NEGATIVE CONTROL - scheduling is broken
+-----------------------------------------------------------------
+{"stats_complete":false,"checkpoint":{"has_checkpoint":true,"last_page":1,"page_count":6,"complete":false,"last_failure":"time_budget","updated_at":"2026-10-05 19:44:45"},"continuation":{"scheduled":false,"phase":"failed","state":"failed","run_at":0,"seconds_remaining":0,"attempts":1,"stalled":0,"reason":"time_budget","page":1,"page_count":6,"message":"scheduling_failed","locked":false},"window":25}
+  state after a broken arm: failed
+  Progress cell: page 1 of 6 (time_budget) — NOT scheduled — the continuation could not be scheduled
+  PASS: with the arming broken, nothing is scheduled
+  PASS: the phase is failed (got failed)
+  PASS: the cell says NOT scheduled
+  PASS: the cell does NOT claim resumable - the control is red, so the proof is not vacuous
+cleaned events: 12
+-----------------------------------------------------------------
+negative control: 4 passed, 0 failed

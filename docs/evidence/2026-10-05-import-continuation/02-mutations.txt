@@ -1,0 +1,92 @@
+G18 — mutation negative controls
+=====================================================================
+
+Command
+-------
+    bash tests/experiments/g18-mutations.sh [M…]
+
+Every mutation breaks EXACTLY ONE mechanism and REQUIRES
+`test-import-continuation.php` to fail. A mutation that leaves the suite green is
+reported as `VACUOUS` and fails the script, because a green suite under a
+mutation proves the assertion was not protecting anything.
+
+The exit code is the authoritative signal; the "N passed, M failed" line is the
+human note. `assertions.php` exits 1 immediately on a failed prerequisite, so a
+genuine failure can print no summary line at all — that case is reported as
+"the suite exited early on a failed assertion", never as a pass. A mutant that
+merely hangs is reported separately as TIMEOUT, and is never presented as an
+assertion-level proof.
+
+RESULT — 15 / 15 PROVEN, 0 vacuous
+----------------------------------
+
+  M1   the engine never reconciles              PROVEN  (the suite exited early on a failed assertion)
+  M2   the trigger is never armed               PROVEN  (the suite exited early on a failed assertion)
+  M3   the cooldown is not enforced             PROVEN  (247 passed, 9 failed)
+  M4   the delay is aggressive (1s)             PROVEN  (247 passed, 9 failed)
+  M5   the resumable predicate is bypassed      PROVEN  (250 passed, 14 failed)
+  M6   the complete term is ignored             PROVEN  (263 passed, 1 failed)
+  M7   duplicate protection removed             PROVEN  (251 passed, 5 failed)
+  M8   the source lock is bypassed              PROVEN  (254 passed, 2 failed)
+  M9   the lock becomes global                  PROVEN  (254 passed, 2 failed)
+  M10  the checkpoint is ignored on resume      PROVEN  (248 passed, 14 failed)
+  M11  the stall guard is removed               PROVEN  (253 passed, 11 failed)
+  M12  a scheduling failure is hidden           PROVEN  (262 passed, 2 failed)
+  M13  a dry run schedules                      PROVEN  (258 passed, 6 failed)
+  M14  a lost timer is never re-armed           PROVEN  (261 passed, 3 failed)
+  M15  the arming-failure branch is skipped     PROVEN  (the suite exited early on a failed assertion)
+
+The six negative controls the brief requires explicitly:
+  continuation scheduling removed      M1
+  cooldown scheduling removed          M3
+  checkpoint loading bypassed          M5
+  resume from page 1, not the checkpoint M10
+  duplicate scheduling protection removed M7
+  source-level lock bypassed           M8
+All six PROVEN.
+
+HOW THIS WAS RECORDED, HONESTLY
+-------------------------------
+M1–M14 were produced by one full run of the script. M6 came back VACUOUS in that
+run (256 passed, 0 failed), for a real reason: in every REACHABLE state the
+checkpoint's `complete` flag and its page-count comparison agree, so removing
+one of the two terms changed no reachable answer. That made the term
+undetectable AND made its original docblock justification inaccurate.
+
+Two changes followed rather than deleting the term or weakening the mutation:
+  1. the docblock now states what the term means (a finished generation is
+     finished), with the inaccurate claim removed; and
+  2. the suite gained a predicate-precision block that asserts the flag
+     directly, including the one case that distinguishes it — a `complete`
+     record is NOT resumable even when a later listing declares more pages,
+     while the same record with `complete = false` IS.
+
+M2 was also redefined after the first run: it originally skipped the
+arming-FAILURE branch, which is now M15. M2 now removes the arming itself
+(`arm_cron` returns true without scheduling), which is the mutation the label
+describes.
+
+The three affected mutations were then re-run on the corrected script and the
+strengthened suite:
+
+    M2   the trigger is never armed              PROVEN  (the suite exited early on a failed assertion)
+    M6   the complete term is ignored            PROVEN  (263 passed, 1 failed)
+    M15  the arming-failure branch is skipped    PROVEN  (the suite exited early on a failed assertion)
+
+    PROVEN (suite failed as required): 3
+    VACUOUS or broken:                0
+
+The vacuous M6 result is kept in this record rather than overwritten: it is the
+evidence that the controls were doing their job.
+
+SUITE GATES
+-----------
+  baseline (no mutation)          : 265 passed, 0 failed
+  every mutant                    : the suite FAILED, as required
+
+SAFETY
+------
+The script mutates only the local working tree and always restores the
+originals from a backup (trap on EXIT/INT/TERM); every mutant is
+`php -l`-checked so a failure is behavioural and never a parse error. It never
+contacts a production host and never writes production.

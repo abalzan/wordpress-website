@@ -30,10 +30,36 @@ class Conexao_Event_Import {
 	/**
 	 * Validate an uploaded import file.
 	 *
-	 * @param array $file The $_FILES entry for the upload.
+	 * Provenance rule
+	 * ---------------
+	 * A file is acceptable when EITHER:
+	 *
+	 *  1. It is a genuine HTTP upload (`is_uploaded_file()`), which is the
+	 *     single-file admin path and the ONLY accepted provenance by
+	 *     default; or
+	 *  2. The caller explicitly passes `trusted_root` in $options AND the
+	 *     resolved real path is contained inside that root.
+	 *
+	 * Rule 2 exists because the multi-file importer stages uploads on disk
+	 * and then re-reads them in a later HTTP request, where PHP's
+	 * upload-temp registry no longer applies — `is_uploaded_file()` is
+	 * necessarily false there. Without it every staged file was rejected
+	 * with "The uploaded file could not be read."
+	 *
+	 * Rule 2 is deliberately NOT a bypass flag. The caller supplies the
+	 * directory it controls and this method verifies containment itself
+	 * (after realpath() resolution, so `..` and symlink escapes are resolved
+	 * before the comparison). A caller that passes an attacker controlled
+	 * root has granted nothing it did not already own, and the default
+	 * remains strict. Every other check below — error code, size, extension,
+	 * JSON validity, manifest format, events array — is unchanged.
+	 *
+	 * @param array $file    The $_FILES entry for the upload.
+	 * @param array $options Optional. `trusted_root` (string) permits a
+	 *                       non-HTTP-upload path contained in that directory.
 	 * @return true|WP_Error True on success, WP_Error on failure.
 	 */
-	public function validate_upload( $file ) {
+	public function validate_upload( $file, $options = array() ) {
 		if ( ! isset( $file['error'] ) || is_array( $file['error'] ) ) {
 			return new WP_Error( 'invalid_upload', __( 'Invalid file upload.', 'conexao-event-importer' ) );
 		}
@@ -52,7 +78,7 @@ class Conexao_Event_Import {
 			return new WP_Error( 'upload_error', $message );
 		}
 
-		if ( empty( $file['tmp_name'] ) || ! is_uploaded_file( $file['tmp_name'] ) ) {
+		if ( empty( $file['tmp_name'] ) || ! $this->is_readable_import_source( $file['tmp_name'], $options ) ) {
 			return new WP_Error( 'invalid_upload', __( 'The uploaded file could not be read.', 'conexao-event-importer' ) );
 		}
 
@@ -92,6 +118,36 @@ class Conexao_Event_Import {
 	}
 
 	/**
+	 * Determine whether a path may be read as an import source.
+	 *
+	 * See validate_upload() for the full provenance contract. When no
+	 * `trusted_root` is supplied the check is exactly the historical one
+	 * (`is_uploaded_file()`), so single-file behaviour is unchanged.
+	 *
+	 * @param string $path    Candidate path.
+	 * @param array  $options Import options.
+	 * @return bool
+	 */
+	protected function is_readable_import_source( $path, $options ) {
+		if ( is_uploaded_file( $path ) ) {
+			return true;
+		}
+
+		if ( empty( $options['trusted_root'] ) || ! is_string( $options['trusted_root'] ) ) {
+			return false;
+		}
+
+		$real_root = realpath( $options['trusted_root'] );
+		$real_file = realpath( $path );
+
+		if ( false === $real_root || false === $real_file || ! is_file( $real_file ) ) {
+			return false;
+		}
+
+		return 0 === strpos( $real_file, trailingslashit( $real_root ) );
+	}
+
+	/**
 	 * Import events from an uploaded file.
 	 *
 	 * @param array $file     The $_FILES entry for the upload.
@@ -105,7 +161,7 @@ class Conexao_Event_Import {
 	 * }
 	 */
 	public function import_file( $file, $options = array() ) {
-		$validated = $this->validate_upload( $file );
+		$validated = $this->validate_upload( $file, $options );
 		if ( is_wp_error( $validated ) ) {
 			return array(
 				'imported' => 0,
@@ -202,11 +258,43 @@ class Conexao_Event_Import {
 	 *  3. Source URL (_event_url / _event_source_url)
 	 *  4. Content-based (title + date + time + venue)
 	 *
+	 * The lookups below run inside `Conexao_Event_Internal_Query::run()` —
+	 * the SAME narrow, token-guarded scope G17 introduced for the source
+	 * deduplicator. Without it the runtime's public `_event_status` gate
+	 * applies to these importer-internal queries outside wp-admin/WP-CLI, a
+	 * `source_not_found` event resolves to nothing, and `import_event()`
+	 * inserts a SECOND native event for one logical event (the G16 defect).
+	 *
+	 * Reusing the existing scope keeps a single authoritative mechanism; the
+	 * public visibility rule itself is untouched.
+	 *
 	 * @param array  $event Event data from the export file.
 	 * @param string $uuid  Export UUID.
 	 * @return int Post ID or 0.
 	 */
 	protected function find_existing_event( $event, $uuid ) {
+		if ( class_exists( 'Conexao_Event_Internal_Query' ) ) {
+			return Conexao_Event_Internal_Query::run(
+				function () use ( $event, $uuid ) {
+					return $this->resolve_existing_event( $event, $uuid );
+				}
+			);
+		}
+
+		return $this->resolve_existing_event( $event, $uuid );
+	}
+
+	/**
+	 * Resolve an existing event by the documented identity ladder.
+	 *
+	 * Always called from within the importer-internal reconciliation scope
+	 * (see find_existing_event()).
+	 *
+	 * @param array  $event Event data from the export file.
+	 * @param string $uuid  Export UUID.
+	 * @return int Post ID or 0.
+	 */
+	protected function resolve_existing_event( $event, $uuid ) {
 		// 1. UUID match.
 		if ( $uuid ) {
 			$by_uuid = $this->find_by_uuid( $uuid );
@@ -244,6 +332,26 @@ class Conexao_Event_Import {
 	}
 
 	/**
+	 * Mark WP_Query args as importer-internal reconciliation.
+	 *
+	 * Delegates to the runtime's single authoritative scope helper (the same
+	 * one the source deduplicator uses). Outside an open scope the args are
+	 * returned unchanged, so the public `_event_status` gate keeps applying
+	 * exactly as before — this can only ever narrow an exemption the
+	 * importer itself opened in-process.
+	 *
+	 * @param array $args WP_Query arguments.
+	 * @return array
+	 */
+	protected function reconciliation_query_args( array $args ) {
+		if ( class_exists( 'Conexao_Event_Internal_Query' ) && Conexao_Event_Internal_Query::is_open() ) {
+			return Conexao_Event_Internal_Query::mark_query_args( $args );
+		}
+
+		return $args;
+	}
+
+	/**
 	 * Find an event by its export UUID.
 	 *
 	 * @param string $uuid Export UUID.
@@ -251,20 +359,22 @@ class Conexao_Event_Import {
 	 */
 	protected function find_by_uuid( $uuid ) {
 		$query = new WP_Query(
-			array(
-				'post_type'      => 'event',
-				'post_status'    => 'any',
-				'posts_per_page' => 1,
-				'fields'         => 'ids',
-				'no_found_rows'  => true,
-				'update_post_meta_cache' => false,
-				'update_post_term_cache' => false,
-				'meta_query'     => array(
-					array(
-						'key'   => Conexao_Event_Export::UUID_META_KEY,
-						'value' => $uuid,
+			$this->reconciliation_query_args(
+				array(
+					'post_type'      => 'event',
+					'post_status'    => 'any',
+					'posts_per_page' => 1,
+					'fields'         => 'ids',
+					'no_found_rows'  => true,
+					'update_post_meta_cache' => false,
+					'update_post_term_cache' => false,
+					'meta_query'     => array(
+						array(
+							'key'   => Conexao_Event_Export::UUID_META_KEY,
+							'value' => $uuid,
+						),
 					),
-				),
+				)
 			)
 		);
 
@@ -280,25 +390,27 @@ class Conexao_Event_Import {
 	 */
 	protected function find_by_source( $source, $source_id ) {
 		$query = new WP_Query(
-			array(
-				'post_type'      => 'event',
-				'post_status'    => 'any',
-				'posts_per_page' => 1,
-				'fields'         => 'ids',
-				'no_found_rows'  => true,
-				'update_post_meta_cache' => false,
-				'update_post_term_cache' => false,
-				'meta_query'     => array(
-					'relation' => 'AND',
-					array(
-						'key'   => '_event_source',
-						'value' => $source,
+			$this->reconciliation_query_args(
+				array(
+					'post_type'      => 'event',
+					'post_status'    => 'any',
+					'posts_per_page' => 1,
+					'fields'         => 'ids',
+					'no_found_rows'  => true,
+					'update_post_meta_cache' => false,
+					'update_post_term_cache' => false,
+					'meta_query'     => array(
+						'relation' => 'AND',
+						array(
+							'key'   => '_event_source',
+							'value' => $source,
+						),
+						array(
+							'key'   => '_event_source_id',
+							'value' => $source_id,
+						),
 					),
-					array(
-						'key'   => '_event_source_id',
-						'value' => $source_id,
-					),
-				),
+				)
 			)
 		);
 
@@ -313,25 +425,27 @@ class Conexao_Event_Import {
 	 */
 	protected function find_by_url( $url ) {
 		$query = new WP_Query(
-			array(
-				'post_type'      => 'event',
-				'post_status'    => 'any',
-				'posts_per_page' => 1,
-				'fields'         => 'ids',
-				'no_found_rows'  => true,
-				'update_post_meta_cache' => false,
-				'update_post_term_cache' => false,
-				'meta_query'     => array(
-					'relation' => 'OR',
-					array(
-						'key'   => '_event_url',
-						'value' => $url,
+			$this->reconciliation_query_args(
+				array(
+					'post_type'      => 'event',
+					'post_status'    => 'any',
+					'posts_per_page' => 1,
+					'fields'         => 'ids',
+					'no_found_rows'  => true,
+					'update_post_meta_cache' => false,
+					'update_post_term_cache' => false,
+					'meta_query'     => array(
+						'relation' => 'OR',
+						array(
+							'key'   => '_event_url',
+							'value' => $url,
+						),
+						array(
+							'key'   => '_event_source_url',
+							'value' => $url,
+						),
 					),
-					array(
-						'key'   => '_event_source_url',
-						'value' => $url,
-					),
-				),
+				)
 			)
 		);
 
@@ -356,15 +470,17 @@ class Conexao_Event_Import {
 		$title_slug = sanitize_title( $title );
 
 		$query = new WP_Query(
-			array(
-				'post_type'      => 'event',
-				'post_status'    => 'any',
-				'posts_per_page' => 20,
-				'fields'         => 'ids',
-				'no_found_rows'  => true,
-				'update_post_meta_cache' => false,
-				'update_post_term_cache' => false,
-				's'              => $title,
+			$this->reconciliation_query_args(
+				array(
+					'post_type'      => 'event',
+					'post_status'    => 'any',
+					'posts_per_page' => 20,
+					'fields'         => 'ids',
+					'no_found_rows'  => true,
+					'update_post_meta_cache' => false,
+					'update_post_term_cache' => false,
+					's'              => $title,
+				)
 			)
 		);
 

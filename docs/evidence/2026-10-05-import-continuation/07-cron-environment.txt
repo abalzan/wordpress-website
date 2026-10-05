@@ -1,0 +1,71 @@
+G18 — measured WP-Cron behaviour in the local Compose stack
+=================================================================
+Recorded 2026-10-05 against the local stack (docker compose up -d), BEFORE any
+repository edit. This is the measurement that motivates the `shutdown`
+fail-safe in Conexao_Import_Continuation.
+
+WHY IT MATTERS
+--------------
+If the continuation relied on the WP-Cron event alone, it would reproduce the
+exact defect G18 exists to remove: a job that is scheduled and never runs.
+
+MEASURED FACTS
+--------------
+1. The loopback cron target, resolved inside the container:
+
+     php -r '... echo site_url( "wp-cron.php" );'
+
+     http://localhost:8080/wp-cron.php
+
+   8080 is published to the HOST (compose.yaml: "${WORDPRESS_PORT:-8080}:80").
+   Nothing listens on 8080 INSIDE the container, so spawn_cron()'s
+   wp_remote_post() to that URL cannot be served.
+
+2. The cron lock timeout that guards a retry:
+
+     WP_CRON_LOCK_TIMEOUT = 60   (seconds)
+
+3. A probe single event was armed and then observed across real page loads:
+
+     wp_schedule_single_event( time() + 5, 'conexao_probe_cron' )  -> bool(true)
+     scheduled for 1791216545, now 1791216540
+
+     curl http://localhost:8080/   -> 200   (front page)
+     curl http://localhost:8080/   -> 200
+     curl http://localhost:8080/   -> 200
+
+     cat /tmp/conexao-probe-cron.log -> No such file or directory
+     probe hook never fired.
+
+4. The event really was due and really was still in the cron array:
+
+     1791216545 | conexao_probe_cron | DUE
+     total cron entries: 14
+
+5. The spawn WAS attempted — the lock transient proves it:
+
+     get_transient( 'doing_cron' ) -> string(33) "1791216516.2591938972473144531250"
+
+6. Calling wp-cron.php directly over the published port returns 200 but does not
+   run the event unless the cron lock matches exactly:
+
+     curl 'http://localhost:8080/wp-cron.php?doing_wp_cron=9999999999.00000000000000000000'
+       -> 200
+     and the probe still did not fire, because wp-cron.php requires
+
+       if ( $doing_cron_transient !== $doing_wp_cron ) { return; }
+
+     while the live transient was 1791216510.0947329998016357421875.
+
+CONCLUSION
+----------
+WP-Cron in this stack is a pseudo-cron whose spawn has no reachable target, so a
+scheduled single event does not fire on its own. The G18 continuation therefore
+uses the same single event AND a `shutdown` fail-safe that consumes the same
+persisted record; `run_due()` re-checks the cooldown against the server clock, so
+the fail-safe cannot run anything early and the per-source lock means it cannot
+run anything twice. On a host whose cron path works, the event fires with no
+request at all.
+
+No production host, credential or configuration was involved in this
+measurement.

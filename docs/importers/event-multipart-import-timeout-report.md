@@ -1,5 +1,13 @@
 # Event Multipart Import — Timeout Resolution Report
 
+> **SUPERSEDED (2026-10-05).** The acceptance results below were recorded
+> while the multi-file workflow was in fact broken end to end: every file failed
+> with `Invalid batch token.` (a 32-character `wp_hash()` token rejected by a
+> 64-character validator), and the browser never started the per-file loop. The
+> tests cited here asserted response shape, not imported Event identities. See
+> [`docs/reports/2026-10-05-multi-file-event-import-repair.md`](../reports/2026-10-05-multi-file-event-import-repair.md).
+
+
 ## 1. Original 504 Behavior
 
 The previous multi-file import architecture processed ALL uploaded files in a single HTTP request:

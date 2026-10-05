@@ -357,7 +357,7 @@ parameters:
 		-
 			message: '#^Call to function is_string\(\) with string will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
-			count: 3
+			count: 1
 			path: wp-content/plugins/conexao-event-importer/includes/class-event-multi-import.php
 
 		-

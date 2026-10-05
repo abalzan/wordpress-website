@@ -322,9 +322,33 @@ class Conexao_Event_Importer_Engine {
 		// capacity.
 		$this->begin_run_scope();
 
+		$stats = null;
+
 		try {
-			return $this->run_source_unbuffered( $source_id, $dry_run );
+			$stats = $this->run_source_unbuffered( $source_id, $dry_run );
+
+			return $stats;
 		} finally {
+			/*
+			 * G18 — the continuation is reconciled for every REAL run, and
+			 * never for a dry run (a classification pass must not create or
+			 * clear scheduling state).
+			 *
+			 * This runs in the finally block so it also covers every early
+			 * return above — a source that failed before enumeration, a source
+			 * skipped by the cooldown, a handler that threw — because a run
+			 * that produced no complete enumeration is exactly the case that
+			 * has to leave a continuation behind.
+			 *
+			 * It runs BEFORE the log is flushed so its own entries land in the
+			 * same run scope, and it is idempotent, so the extra call made by
+			 * the continuation worker after this method returns changes
+			 * nothing.
+			 */
+			if ( ! $dry_run ) {
+				Conexao_Import_Continuation::reconcile( $source_id, is_array( $stats ) ? $stats : array() );
+			}
+
 			$this->log_request_scope_summary( $source_id );
 			Conexao_Import_Log::end_run();
 		}

@@ -1,0 +1,2 @@
+node --check: OK
+No syntax errors detected in wp-content/plugins/conexao-event-importer/assets/../includes/class-event-transfer-admin.php

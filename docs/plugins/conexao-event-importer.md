@@ -462,6 +462,75 @@ Locally, `docker/php/uploads.ini` raises both limits to 300M (see
 platform-managed; if an export is too large, run **Cleanup** locally first or
 split the export.
 
+### Multi-file import (request-per-file)
+
+**Import Events** also offers **Import Multiple Files**, for importing several
+complete export files (for example the parts of a multipart export) in one
+operation. It was non-functional until 2026-10-05; the root cause and repair are
+in
+[`docs/reports/2026-10-05-multi-file-event-import-repair.md`](../reports/2026-10-05-multi-file-event-import-repair.md).
+Read that report before relying on this path.
+
+The architecture is unchanged by the repair:
+
+```
+browser  -- ONE multipart POST with all selected files -->
+  stage_uploads()        validate, order, copy into a per-batch staging
+                         directory under uploads/conexao-multi-import/<token>/,
+                         write batch.json, return a 64-hex batch token
+  admin.js               ONE further request per file, in order
+  import_staged_file()   schema check + SHA-256, then the EXISTING
+                         Conexao_Event_Import::import_file()
+  cleanup_batch()        delete the batch directory
+```
+
+Every file flows through the **existing single-file importer**. Event identity,
+deduplication, recurrence handling, cross-source dedup and error semantics are
+unchanged and authoritative; the orchestrator adds only staging and sequencing.
+
+| Fact | Value |
+|---|---|
+| Batch token | 64 lowercase hex chars, minted with `sha256`; one shared validator |
+| Max files per batch | 50 (`conexao_multi_import_max_files`) |
+| Authorization | `manage_options` + a per-action nonce on **every** request |
+| Staged-file provenance | `is_uploaded_file()` OR a path containment-checked inside the batch's own staging directory; the single-file default is unchanged |
+| Ordering | manifest part order, else `part-NN`, else filename |
+| Error semantics | per-file independence; earlier successes stay committed; a failed file is reported against its own name |
+| Re-import | idempotent — the same files again create nothing |
+
+#### Browser orchestration (the submit-interception contract)
+
+The multi-file form's submit event is **intercepted** by `assets/admin.js`, so
+activating Import never navigates:
+
+```
+submit -> preventDefault() -> FormData (all selected files, ONE multipart body)
+       -> staging XHR  ── JSON ──> batch token + file_count + rejected[]
+       -> one XHR per file -> one cleanup XHR -> results rendered in place
+```
+
+The URL does not change, no `?conexao_multi_batch=` appears, and exactly
+`1 + N + 1` POSTs are issued for N files. The handler is bound to the form's
+`submit` event (not a click), so keyboard activation behaves identically, and it
+is scoped by the hidden `action` input, so the single-file form and every other
+admin form on the page are unaffected.
+
+**The native POST is deliberately kept as the no-JavaScript fallback.** The
+staging handler returns JSON only when the request carries
+`conexao_multi_response=json`; otherwise it redirects exactly as before, and
+`initMultiFileImport()` resumes the batch from the query string on the reloaded
+page. This is a *response-shape* switch: `manage_options`, the nonce check and
+every staging/validation rule are identical in both modes, and the response mode
+is only consulted **after** the capability and nonce checks pass. Client-side
+interception is a usability fix, never a security boundary.
+
+A failure in the staging step keeps the operator on the importer page, restores
+the control and reports a truthful, non-technical reason. It never silently
+falls through to a native submission.
+
+Staging errors and files PHP rejected before staging (oversized, partial) are
+reported per file on the import screen rather than silently discarded.
+
 ### Past-event filtering (v1.4)
 
 Every import run evaluates each fetched event's scheduling fields
@@ -1133,16 +1202,115 @@ source does not throw away progress while changing its URL does.
 ### Operator visibility
 
 Import History gains a bounded `checkpoint` shape alongside the existing
-`cooldown` one, and the Import History table gains a **Progress** column
-(`page 31 of 49 (rate_limited) — resumable`). It reports progress only; the
-existing **Listing** column remains the completeness signal. There is no second
-dashboard, and Import History never treats a checkpoint's existence as
-completion.
+`cooldown` one, and the Import History table gains a **Progress** column. It
+reports progress only; the existing **Listing** column remains the completeness
+signal. There is no second dashboard, and Import History never treats a
+checkpoint's existence as completion.
+
+Since G18 the Progress cell also reports **whether a future execution exists**,
+so the wording can no longer promise more than the scheduler will do:
+
+| Phase | Cell text |
+|---|---|
+| Scheduled, cooldown running | `page 17 of 49 (time_budget) — resumable — next run in 29 minutes` |
+| Cooldown elapsed | `page 17 of 49 (time_budget) — resumable — resume scheduled` |
+| A worker holds the source | `page 17 of 49 (time_budget) — resuming — a worker is running it now` |
+| **Pages outstanding, nothing scheduled** | `page 17 of 49 (time_budget) — NOT scheduled — no continuation exists` |
+| Scheduling failed | `page 17 of 49 (time_budget) — NOT scheduled — the continuation could not be scheduled` |
+| Stalled out | `page 17 of 49 (time_budget) — NOT scheduled — the automatic continuation stopped; press Run to resume` |
+| Enumeration finished | `page 49 of 49 — complete` |
+| A superseded row | `page 17 of 49 (time_budget)` — the historical fact, and no lifecycle claim |
+
+The word **resumable** appears only where something will actually run. The
+minutes are computed from the server clock, never from the browser.
 
 To clear progress for one source (for example after a deliberate source
 redefinition), reset its record via the checkpoint class or delete the
 `conexao_event_enumeration_checkpoints` option; the next run then walks the
 listing from page 1, which is always safe.
+
+## Automatic continuation of a resumable enumeration (G18)
+
+Before G18 a source could be *resumable* and still **stop forever**: the
+checkpoint was persisted, Import History said `resumable`, and no mechanism
+would ever come back for it. G18 supplies the missing transition —
+`resumable → scheduled` — and nothing else.
+
+`Conexao_Import_Continuation` owns the scheduling state for that transition:
+
+```
+run starts
+  → checkpoint saved                        (G10, unchanged)
+  → run becomes incomplete/resumable        (G2B/G10, unchanged)
+  → reconcile() reads the resumable predicate
+  → one record persisted + ONE wp_schedule_single_event
+  → cooldown expires                         (server clock, no browser)
+  → run_due() takes the per-source lock
+  → run_source() resumes at the checkpoint    (G10, unchanged)
+  → reconcile() again  →  repeat
+  → enumeration complete  →  record cleared
+```
+
+### Resumable, scheduled, running, complete — five separate states
+
+| State | Meaning |
+|---|---|
+| `resumable` | pages remain outstanding (the checkpoint predicate) |
+| `scheduled` | a future execution exists and is armed at `run_at` |
+| `running` | a worker holds the source lock |
+| `exhausted` | the chain stopped without advancing; **no** further attempt is armed |
+| `failed` | the trigger could not be armed; **no** further attempt is armed |
+
+"Resumable" and "scheduled" are deliberately **not** the same claim, and Import
+History reports which one is true.
+
+### The scheduling mechanism
+
+WP-Cron, which is the only scheduler this repository uses: **one** single event
+per source. No recurring schedule, no job per page, no queue table, no polling
+loop. Two server-side triggers consume it:
+
+| Trigger | Fires | Purpose |
+|---|---|---|
+| `conexao_event_import_continuation` | at `run_at` | the mechanism; needs no visitor at all where cron works |
+| `shutdown` (priority 20) → `run_due()` | on any request | fail-safe for a host whose WP-Cron cannot spawn |
+
+`rearm_missing()` (on `wp_loaded`) restores a timer lost to a restart, a cleared
+cron schedule or an early fire, from the persisted record — never from memory.
+Nothing here depends on an open tab, an admin page, JavaScript or an operator
+action.
+
+### Cooldown
+
+30 minutes by default (`COOLDOWN_SECONDS`), enforced **server-side**: `run_due()`
+compares the server clock against the persisted `run_at` even when its trigger
+says "now", so a request arriving early sends zero requests. The delay escalates
+on repeated *no-progress* attempts (30 → 60 → 120 min, capped), mirroring the
+spirit of the G5 in-walk ladder without touching it. The G9 per-source cooldown
+remains authoritative and is composed in: a continuation never starts a run the
+run gate would refuse.
+
+### Duplicate protection and concurrency
+
+| Guarantee | How |
+|---|---|
+| One logical continuation per source | `schedule()` leaves an existing pending record untouched — never duplicated, never postponed |
+| One pending event per source | the hook's args are cleared before arming |
+| One worker per source | an atomic per-source lock (`add_option` on `conexao_event_import_lock_<source>`) |
+| No wedged source | the lock has a TTL, so a worker killed by a restart self-heals |
+| No global lock | the lock is per source; one source never blocks another |
+
+### Failure is visible, never silent
+
+| Situation | Behaviour |
+|---|---|
+| The trigger cannot be armed | state `failed`, an **error** log entry, and the cell reads `NOT scheduled` |
+| The source stops advancing | after `MAX_STALLED` no-progress attempts: state `exhausted`, an **error** log entry, cell reads `NOT scheduled` |
+| A worker throws | the error is logged, the lock is released, and the other sources still continue |
+| A dry run | never creates, clears or moves a continuation |
+
+An exhausted source is recoverable: a run that makes progress clears the stall
+and re-arms the continuation.
 
 ## Diagnostics: Import History, Import Logs and run correlation
 

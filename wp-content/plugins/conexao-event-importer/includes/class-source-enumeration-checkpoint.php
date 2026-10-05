@@ -222,6 +222,58 @@ class Conexao_Source_Enumeration_Checkpoint {
 	}
 
 	/**
+	 * Whether a stored checkpoint still has pages outstanding.
+	 *
+	 * This is the ONE definition of "resumable", and it is deliberately
+	 * derived from the two progress facts the record already carries:
+	 *
+	 *   - `complete` — this generation of the walk reached its declared last
+	 *     page, so there is nothing left to resume INTO. This term is what
+	 *     makes the predicate a statement about the *generation* rather than
+	 *     about a page index: a generation that finished is finished, whatever
+	 *     a later listing declares. (For an upstream-truncated listing both
+	 *     terms agree — the G8 guard records `complete` at the same moment it
+	 *     records the final page — so this is precision, not a second rule.)
+	 *   - the declared page count — a position at or beyond the last page has
+	 *     nothing after it to fetch.
+	 *
+	 * The scheduler and the Import History UI both read this predicate, so the
+	 * operator-facing word "resumable" and the scheduler's behaviour can never
+	 * disagree. It is a PROGRESS predicate only: it never authorises absence
+	 * reconciliation and never claims completeness.
+	 *
+	 * @param mixed $record     Stored record (as returned by self::get()).
+	 * @param int   $page_count Optional override for the current declared page
+	 *                          count; 0 means "use the record's own value".
+	 * @return bool True when a further page remains to be fetched.
+	 */
+	public static function is_resumable( $record, $page_count = 0 ) {
+		if ( ! is_array( $record ) ) {
+			return false;
+		}
+
+		$last_page = isset( $record['last_page'] ) ? (int) $record['last_page'] : 0;
+
+		if ( $last_page < 1 ) {
+			return false;
+		}
+
+		if ( ! empty( $record['complete'] ) ) {
+			return false;
+		}
+
+		$declared = (int) $page_count > 0
+			? (int) $page_count
+			: ( isset( $record['page_count'] ) ? (int) $record['page_count'] : 0 );
+
+		if ( $declared > 0 && $last_page >= $declared ) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
 	 * Persist a confirmed enumeration position for one source.
 	 *
 	 * Callers MUST have fetched, parsed and processed the page first. This is

@@ -41,6 +41,12 @@ $restore_options = test_options_isolate(
 		Conexao_Import_History::OPTION_KEY,
 		Conexao_Import_Log::OPTION_KEY,
 		Conexao_Event_Sources::OPTION_KEY,
+		// G18: run_source() now schedules a continuation when a source is left
+		// resumable, so the scheduler's state is another option the engine
+		// writes. It must be isolated here like every other one: otherwise a
+		// resumable state created for an assertion would outlive the suite and
+		// could later run a REAL import for that source.
+		Conexao_Import_Continuation::OPTION_KEY,
 		Conexao_Source_Health::OPTION_KEY,
 	)
 );

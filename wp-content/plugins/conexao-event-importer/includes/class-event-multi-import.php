@@ -24,11 +24,90 @@ class Conexao_Event_Multi_Import {
 
 	const MULTIPART_MODE = 'multipart';
 
+	/**
+	 * Maximum number of files accepted in one multi-file batch.
+	 *
+	 * A bound is required so a single request cannot stage an unbounded
+	 * number of files under the uploads directory. It is deliberately far
+	 * above any legitimate multipart export (the exporter caps a part at
+	 * Conexao_Event_Export::MAX_PART_SIZE events) and filterable for
+	 * operators who need a different ceiling.
+	 */
+	const DEFAULT_MAX_FILES = 50;
+
 	/** @var Conexao_Event_Import */
 	protected $importer;
 
 	public function __construct() {
 		$this->importer = new Conexao_Event_Import();
+	}
+
+	/**
+	 * Human-readable reason for a PHP upload error code.
+	 *
+	 * @param int $code PHP UPLOAD_ERR_* code.
+	 * @return string
+	 */
+	protected function describe_upload_error( $code ) {
+		$messages = array(
+			UPLOAD_ERR_INI_SIZE   => __( 'The file exceeds the upload_max_filesize directive in php.ini.', 'conexao-event-importer' ),
+			UPLOAD_ERR_FORM_SIZE  => __( 'The file exceeds the MAX_FILE_SIZE directive specified in the form.', 'conexao-event-importer' ),
+			UPLOAD_ERR_PARTIAL    => __( 'The file was only partially uploaded.', 'conexao-event-importer' ),
+			UPLOAD_ERR_NO_FILE    => __( 'No file was uploaded.', 'conexao-event-importer' ),
+			UPLOAD_ERR_NO_TMP_DIR => __( 'Missing a temporary folder.', 'conexao-event-importer' ),
+			UPLOAD_ERR_CANT_WRITE => __( 'Failed to write the file to disk.', 'conexao-event-importer' ),
+			UPLOAD_ERR_EXTENSION  => __( 'A PHP extension stopped the file upload.', 'conexao-event-importer' ),
+		);
+
+		if ( UPLOAD_ERR_OK === (int) $code ) {
+			return __( 'The uploaded file could not be read.', 'conexao-event-importer' );
+		}
+
+		return isset( $messages[ $code ] ) ? $messages[ $code ] : __( 'Unknown upload error.', 'conexao-event-importer' );
+	}
+
+	/**
+	 * Generate an opaque batch token.
+	 *
+	 * The token MUST satisfy the same shape this class validates in
+	 * import_staged_file() and cleanup_batch(). That contract is a 64
+	 * character lowercase hex string, which is what hash( 'sha256', … )
+	 * produces. wp_hash() was previously used here, but it returns only 32
+	 * hex characters (md5 by default), so every token it minted was rejected
+	 * by the 64-character validators and every multi-file import failed at
+	 * the first request with "Invalid batch token."
+	 *
+	 * @return string 64 character lowercase hex token.
+	 */
+	protected function generate_batch_token() {
+		$token = hash( 'sha256', wp_salt( 'auth' ) . uniqid( 'multi_import_', true ) . wp_rand( 1, PHP_INT_MAX ) );
+
+		/**
+		 * Filters the generated multi-file batch token.
+		 *
+		 * Exposed for deterministic testing only. The value MUST remain a
+		 * 64 character lowercase hex string or import_staged_file() and
+		 * cleanup_batch() will reject it.
+		 *
+		 * @param string $token Generated batch token.
+		 */
+		$filtered = apply_filters( 'conexao_multi_import_batch_token', $token );
+
+		return 1 === preg_match( '/^[a-f0-9]{64}$/', (string) $filtered ) ? (string) $filtered : $token;
+	}
+
+	/**
+	 * Validate a batch token shape.
+	 *
+	 * Single source of truth for the token contract, shared by
+	 * import_staged_file() and cleanup_batch() so the two can never drift
+	 * apart again.
+	 *
+	 * @param mixed $batch_token Candidate token.
+	 * @return bool
+	 */
+	protected function is_valid_batch_token( $batch_token ) {
+		return is_string( $batch_token ) && 1 === preg_match( '/^[a-f0-9]{64}$/', $batch_token );
 	}
 
 	/**
@@ -53,6 +132,45 @@ class Conexao_Event_Multi_Import {
 			return new WP_Error( 'no_files', __( 'No files were uploaded.', 'conexao-event-importer' ) );
 		}
 
+		// Bound the batch size. Without this a single request could stage an
+		// unbounded number of files under the uploads directory.
+		$max_files = (int) apply_filters( 'conexao_multi_import_max_files', self::DEFAULT_MAX_FILES );
+		if ( $max_files > 0 && count( $files ) > $max_files ) {
+			return new WP_Error(
+				'too_many_files',
+				sprintf(
+					/* translators: 1: number of files submitted, 2: maximum allowed */
+					__( 'Too many files were uploaded (%1$d). A multi-file import accepts at most %2$d files.', 'conexao-event-importer' ),
+					count( $files ),
+					$max_files
+				)
+			);
+		}
+
+		// A file that PHP itself rejected (too large, partial, no temp dir)
+		// must not be staged: it has no usable temporary path. Record it as
+		// a per-file error and keep the remaining files, so one oversized
+		// file cannot silently discard the whole batch.
+		$rejected = array();
+		$usable   = array();
+		foreach ( $files as $file ) {
+			$error = isset( $file['error'] ) ? (int) $file['error'] : UPLOAD_ERR_NO_FILE;
+			if ( UPLOAD_ERR_OK !== $error || empty( $file['tmp_name'] ) || ! file_exists( $file['tmp_name'] ) ) {
+				$rejected[] = array(
+					'filename' => isset( $file['name'] ) ? $file['name'] : '',
+					'reason'   => $this->describe_upload_error( $error ),
+				);
+				continue;
+			}
+			$usable[] = $file;
+		}
+
+		if ( empty( $usable ) ) {
+			return new WP_Error( 'no_files', __( 'No usable files were uploaded.', 'conexao-event-importer' ) );
+		}
+
+		$files = $usable;
+
 		$manifest_raw = $this->extract_manifest( $files );
 
 		$manifest = null;
@@ -70,7 +188,7 @@ class Conexao_Event_Multi_Import {
 			return new WP_Error( 'stage_failed', __( 'Could not create the staging directory.', 'conexao-event-importer' ) );
 		}
 
-		$batch_token = wp_hash( uniqid( 'multi_import_', true ) . wp_rand(), 'auth' );
+		$batch_token = $this->generate_batch_token();
 		$batch_dir   = $staging_root . '/' . $batch_token;
 
 		if ( ! wp_mkdir_p( $batch_dir ) ) {
@@ -89,6 +207,10 @@ class Conexao_Event_Multi_Import {
 			$dest_path     = $batch_dir . '/' . $index . '_' . $safe_name;
 
 			if ( ! copy( $file['tmp_name'], $dest_path ) ) {
+				// Clean up what this request already staged before bailing out,
+				// otherwise a mid-batch failure leaves an orphaned batch
+				// directory (and its staged files) on disk.
+				$this->delete_directory( $batch_dir );
 				return new WP_Error(
 					'stage_failed',
 					sprintf(
@@ -122,6 +244,7 @@ class Conexao_Event_Multi_Import {
 			'file_count'  => count( $staged_files ),
 			'files'       => $staged_files,
 			'manifest'    => $manifest,
+			'rejected'    => $rejected,
 		);
 	}
 
@@ -148,13 +271,14 @@ class Conexao_Event_Multi_Import {
 			'created'     => 0,
 			'updated'     => 0,
 			'skipped'     => 0,
+			'failed'      => 0,
 			'errors'      => array(),
 			'peak_memory' => 0,
 			'duration'    => 0.0,
 			'status'      => 'failed',
 		);
 
-		if ( ! is_string( $batch_token ) || empty( $batch_token ) || ! preg_match( '/^[a-f0-9]{64}$/', $batch_token ) ) {
+		if ( ! $this->is_valid_batch_token( $batch_token ) ) {
 			$result['errors'][] = __( 'Invalid batch token.', 'conexao-event-importer' );
 			return $result;
 		}
@@ -221,16 +345,45 @@ class Conexao_Event_Multi_Import {
 			$strategy = 'update';
 		}
 
-		try {
-			$import_result = $this->importer->import_file( $file, array( 'duplicate_strategy' => $strategy ) );
+		// Schema pre-check. The single-file importer already validates the
+		// payload, but running the orchestrator's own non-destructive check
+		// first means a malformed part is reported against ITS OWN file
+		// (with its filename and reason) instead of surfacing as a generic
+		// importer error, and it never reaches the importer at all.
+		$schema_check = $this->validate_file_schema( $file );
+		if ( is_wp_error( $schema_check ) ) {
+			$result['errors'][] = $schema_check->get_error_message();
+			$result['duration'] = round( microtime( true ) - $start, 3 );
+			return $result;
+		}
 
-			$result['created']     = isset( $import_result['imported'] ) ? (int) $import_result['imported'] : 0;
-			$result['updated']     = isset( $import_result['updated'] ) ? (int) $import_result['updated'] : 0;
-			$result['skipped']     = isset( $import_result['skipped'] ) ? (int) $import_result['skipped'] : 0;
-			$result['errors']      = isset( $import_result['errors'] ) ? $import_result['errors'] : array();
-			$result['event_count'] = $result['created'] + $result['updated'] + $result['skipped'];
-			$result['success']     = true;
-			$result['status']      = 'success';
+		$result['event_count'] = $schema_check['event_count'];
+		$result['media_count'] = $schema_check['image_count'];
+
+		try {
+			// trusted_root is the orchestrator's own staging directory: the
+			// staged file is read in a later request, so is_uploaded_file()
+			// is necessarily false for it. validate_upload() verifies the
+			// resolved path is genuinely inside this root.
+			$import_result = $this->importer->import_file(
+				$file,
+				array(
+					'duplicate_strategy' => $strategy,
+					'trusted_root'       => $batch_dir,
+				)
+			);
+
+			$result['created'] = isset( $import_result['imported'] ) ? (int) $import_result['imported'] : 0;
+			$result['updated'] = isset( $import_result['updated'] ) ? (int) $import_result['updated'] : 0;
+			$result['skipped'] = isset( $import_result['skipped'] ) ? (int) $import_result['skipped'] : 0;
+			$result['failed']  = (int) $import_result['failed'];
+			$result['errors']  = isset( $import_result['errors'] ) ? $import_result['errors'] : array();
+
+			// A file is a success only when it committed work or was a
+			// genuine no-op. Reporting success while carrying importer
+			// errors would hide a partial failure from the per-file report.
+			$result['success'] = empty( $result['errors'] ) && 0 === $result['failed'];
+			$result['status']  = $result['success'] ? 'success' : 'failed';
 
 			if ( isset( $import_result['media_discovered'] ) ) {
 				$result['media_count'] = (int) $import_result['media_discovered'];
@@ -258,7 +411,7 @@ class Conexao_Event_Multi_Import {
 	 * @return bool True if cleaned up or already absent.
 	 */
 	public function cleanup_batch( $batch_token ) {
-		if ( ! is_string( $batch_token ) || empty( $batch_token ) || ! preg_match( '/^[a-f0-9]{64}$/', $batch_token ) ) {
+		if ( ! $this->is_valid_batch_token( $batch_token ) ) {
 			return false;
 		}
 

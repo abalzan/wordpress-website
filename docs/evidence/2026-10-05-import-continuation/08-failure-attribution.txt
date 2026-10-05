@@ -1,0 +1,124 @@
+G18 — attribution of every suite failure in the full run
+=====================================================================
+
+Recorded 2026-10-05 on the final tree (except where stated), local Compose stack.
+
+COMMAND
+-------
+    ./scripts/run-tests.sh
+
+RESULT
+------
+    In-process PHP suites: 100 total, 96 passed, 4 failed
+    Assertions:            7706 passed, 6 failed
+    Script-contract:       19 total, 17 passed, 2 failed
+    HTTP acceptance:        4 total,  3 passed, 1 failed
+    => TESTS FAILED
+
+The new suite in the same run:
+
+    [PASS] plugin/conexao-event-importer/test-import-continuation.php
+           — 265 passed, 0 failed
+
+EVERY FAILURE, AND WHY IT IS NOT CAUSED BY THIS STAGE
+-----------------------------------------------------
+
+1. plugin/conexao-event-importer/test-export-language.php   (exit 255)
+
+       Fatal error: Allowed memory size of 536870912 bytes exhausted
+       .../includes/class-event-export.php:937
+
+   PRE-EXISTING. This suite failed identically in the baseline run taken
+   BEFORE the first edit of this stage.
+
+2. plugin/conexao-event-importer/test-town-sanitization.php (82 passed, 1 failed)
+
+       FAIL: no Eircode-contaminated or non-town terms in conexao_town
+
+   CONTENT DRIFT, NOT CODE. The local database holds 272 `conexao_town`
+   terms (real imported places); the assertion expects the CI fixture site's
+   set. Measured: 0 of the 272 are Eircode-shaped, so the failing half is
+   "non-town", i.e. the local content is not the fixture content.
+
+3. theme/conexao-br-irlanda/test-event-location-filters.php (62 passed, 1 failed)
+
+       FAIL: unfiltered archive returns all four test events
+
+   CONTENT DRIFT. The local database holds thousands of real events, so the
+   unfiltered archive returns more than the suite's four fixture events.
+
+4. theme/conexao-br-irlanda/test-stage41-rest-language.php  (218 passed, 4 failed)
+
+       FAIL: PT/EN events filtered by shared county dublin contain ...
+       FAIL: PT warm-up keeps the PT master; EN read still replaces it
+       FAIL: after trashing the EN translation, the PT master returns once (B2)
+
+   CONTENT DRIFT. The suite needs a PT master + EN translation event pair in
+   county Dublin. The local database's durable Dublin records are single
+   -language published events, so the pair is absent.
+
+5. tests/scripts/verify-eventbrite-token-retirement.py       (exit 1)
+
+       FAIL: no live (non-historical) file references the retired token key:
+             tests/experiments/g16-source-eligibility.php
+
+   PRE-EXISTING. The named file belongs to G16 and was not modified by this
+   stage (confirmed by `git status`).
+
+6. tests/scripts/verify-i18n-freshness.py                    (exit 1)
+
+       FAIL: conexao-event-runtime: .../conexao-event-runtime.pot is older than
+             conexao-event-runtime.php by 62889s
+
+   PRE-EXISTING and documented in the Stage L permanent-gate baseline
+   (`tests/baseline/permanent-gates.json`). The gate itself reports
+   "stale catalogues: 1 pre-existing, 0 new". The `conexao-event-importer`
+   catalogue this stage DOES own is fresh (regenerated in the same change).
+
+7. tests/acceptance/verify-event-occurrence-http.py          (exit 1)
+
+       FAIL: exactly one weekly series is listed in the Laois archive -- found 5
+       FAIL: exactly one multi-day event is listed ...      -- found 2
+       FAIL: exactly one all-day event is listed ...        -- found 3
+
+   CONTENT DRIFT of a very specific kind. The three CI fixture events exist
+   in the local database --
+
+       id=188  laois_tourism  source_not_found  "Evento CI serie semanal (Laois)"
+       id=189  laois_tourism  source_not_found  "Evento CI multiday (Laois)"
+       id=190  laois_tourism  source_not_found  "Evento CI all-day (Laois)"
+
+   -- but are marked `source_not_found`, so they are absent from the public
+   Laois archive while five OTHER Laois series are visible. They were hidden
+   by a Laois enumeration at some earlier point (a complete walk marks the
+   events it did not see), and nothing in this stage touches Laois: the G18
+   probes are Cork-based and every event they created was deleted (measured:
+   `_event_source LIKE 'g18%'` = 0 rows).
+
+DIRECT A/B FOR THE THREE IN-PROCESS FAILURES
+--------------------------------------------
+Rather than argue from structure, the scheduler was disabled with a single
+return in `Conexao_Import_Continuation::reconcile()` and the same three suites
+were re-run. The numbers are IDENTICAL, so this stage causes none of them:
+
+    test-town-sanitization.php          82 passed, 1 failed   (scheduler OFF)
+    test-event-location-filters.php     62 passed, 1 failed   (scheduler OFF)
+    test-stage41-rest-language.php     218 passed, 4 failed   (scheduler OFF)
+
+    == the same three numbers as the full run with the scheduler ON.
+
+WHY THE LOCAL RUN DIFFERS FROM CI
+---------------------------------
+CI's integration job builds the deterministic synthetic site from the committed
+fixtures in an EPHEMERAL Docker WordPress and runs this same command (see
+AGENTS.md and docs/testing.md). A developer's local stack is a restored
+production-content database plus accumulated local artefacts, so
+content-dependent assertions legitimately differ. This stage changed neither
+those assertions nor the content they read.
+
+END STATE OF THE SCHEDULER ON THIS MACHINE
+------------------------------------------
+    continuations records: 0        armed continuation events: 0
+    `_event_source LIKE 'g18%'` rows: 0
+
+No probe source, probe event, continuation record or timer is left behind.

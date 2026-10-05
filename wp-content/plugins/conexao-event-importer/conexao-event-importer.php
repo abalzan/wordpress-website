@@ -49,7 +49,10 @@ require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-eventbrite-parser.php'
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-eventbrite-normalizer.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-county-registry.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-source-cooldown.php';
-	require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-source-enumeration-checkpoint.php';
+require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-source-enumeration-checkpoint.php';
+// G18: automatic continuation of a resumable enumeration. Loaded right after
+// the checkpoint it reads and before the engine that reconciles through it.
+require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-conexao-import-continuation.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/sources/class-eventbrite-source.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-image-handler.php';
 require_once CONEXAO_EVENT_IMPORTER_DIR . 'includes/class-event-importer.php';
@@ -216,6 +219,49 @@ final class Conexao_Event_Importer {
 					'cleanupError'       => __( 'Could not clean up temporary files.', 'conexao-event-importer' ),
 					'networkError'       => __( 'Network error. Please check your connection and retry.', 'conexao-event-importer' ),
 					'serverError'        => __( 'Server error. Please check the logs.', 'conexao-event-importer' ),
+					// Multi-file progress UI. These strings are rendered by
+					// assets/admin.js and are declared here (not hardcoded in
+					// the script) so they are translatable and covered by the
+					// i18n catalogue freshness gate.
+					'multiInProgress'     => __( 'Import in progress', 'conexao-event-importer' ),
+					'preparing'           => __( 'Preparing…', 'conexao-event-importer' ),
+					'importingShort'      => __( 'Importing…', 'conexao-event-importer' ),
+					/* translators: %d: file number. */
+					'fileNumber'          => __( 'File %d', 'conexao-event-importer' ),
+					/* translators: 1: current file number, 2: total file count. */
+					'fileOfTotal'         => __( 'File %1$d of %2$d', 'conexao-event-importer' ),
+					'summary'             => __( 'Summary', 'conexao-event-importer' ),
+					'totalCreated'        => __( 'Events created:', 'conexao-event-importer' ),
+					'totalUpdated'        => __( 'Events updated:', 'conexao-event-importer' ),
+					'totalSkipped'        => __( 'Events skipped:', 'conexao-event-importer' ),
+					'totalMedia'          => __( 'Media processed:', 'conexao-event-importer' ),
+					'totalErrors'         => __( 'Errors:', 'conexao-event-importer' ),
+					'totalDuration'       => __( 'Total duration:', 'conexao-event-importer' ),
+					'totalPeakMemory'     => __( 'Peak memory:', 'conexao-event-importer' ),
+					'retry'               => __( 'Try again', 'conexao-event-importer' ),
+					'notProcessed'        => __( 'Not processed', 'conexao-event-importer' ),
+					'unknownFailure'      => __( 'Unknown failure', 'conexao-event-importer' ),
+					// Multi-file submit interception: staging/loading/error UI
+					// rendered by assets/admin.js. Declared here so they are
+					// translatable and covered by the i18n freshness gate.
+					'multiFileError'      => __( 'Multi-file import', 'conexao-event-importer' ),
+					'noFilesSelected'     => __( 'Select at least one export file to import.', 'conexao-event-importer' ),
+					/* translators: %d: number of selected files. */
+					'stagingFiles'        => __( 'Staging %d file(s)…', 'conexao-event-importer' ),
+					'stagingFailed'       => __( 'The files could not be staged on the server. Nothing was imported.', 'conexao-event-importer' ),
+					'tooManyFiles'        => __( 'Too many files were selected for one batch.', 'conexao-event-importer' ),
+					'manifestInvalid'     => __( 'The multipart manifest could not be validated.', 'conexao-event-importer' ),
+					'filesRejected'       => __( 'Files rejected before import', 'conexao-event-importer' ),
+					/* translators: 1: file name, 2: rejection reason. */
+					'rejectedDetail'      => __( '%1$s — %2$s', 'conexao-event-importer' ),
+					'filesProcessed'      => __( 'Files processed:', 'conexao-event-importer' ),
+					'filesImported'       => __( 'Files imported:', 'conexao-event-importer' ),
+					'filesUnchanged'      => __( 'Files unchanged:', 'conexao-event-importer' ),
+					'filesFailed'         => __( 'Files failed:', 'conexao-event-importer' ),
+					/* translators: 1: file name, 2: created count, 3: updated count. */
+					'fileSucceeded'       => __( '%1$s — %2$d created, %3$d updated', 'conexao-event-importer' ),
+					/* translators: 1: file name, 2: failure reason. */
+					'fileFailedDetail'    => __( '%1$s — %2$s', 'conexao-event-importer' ),
 				),
 				'nonces'    => array(
 					'importFile' => wp_create_nonce( 'conexao_import_events_multi_file' ),
@@ -245,6 +291,58 @@ final class Conexao_Event_Importer {
 		flush_rewrite_rules();
 	}
 }
+
+// ---------------------------------------------------------------------------
+// G18 — the two server-side triggers for an automatic continuation.
+//
+// 1. The WP-Cron event armed by Conexao_Import_Continuation::schedule(). This is
+//    the primary trigger and it needs no visitor at all on a host whose cron
+//    path works.
+// 2. A `shutdown` fail-safe. WP-Cron is a PSEUDO-cron driven by requests, and
+//    this project's Compose stack cannot spawn it: `wp_cron()` defers to
+//    `_wp_cron()` on `shutdown`, which posts to `site_url( 'wp-cron.php' )` —
+//    `http://localhost:8080/wp-cron.php`, which is published to the HOST but is
+//    not reachable from INSIDE the container. Without the fail-safe a scheduled
+//    continuation would sit armed forever, which is the very defect this stage
+//    exists to remove.
+//
+//    `run_due()` re-checks the persisted `run_at` against the server clock, so
+//    this trigger cannot fire a continuation before its cooldown has elapsed,
+//    and the per-source lock means it can never run one twice. It is not a
+//    polling loop: it makes no outbound request and does nothing at all until a
+//    cooldown has actually expired.
+//
+// The callbacks below deliberately discard the methods' return values: an
+// action callback returns nothing, while the same methods return their outcome
+// for tests and telemetry.
+// ---------------------------------------------------------------------------
+add_action(
+	Conexao_Import_Continuation::HOOK,
+	static function ( $source_id = '' ) {
+		Conexao_Import_Continuation::handle_cron( (string) $source_id );
+	},
+	10,
+	1
+);
+
+add_action(
+	'shutdown',
+	static function () {
+		Conexao_Import_Continuation::run_due();
+	},
+	20
+);
+
+// Restore a continuation whose cron event was lost to a restart, a cleared cron
+// array, or an early fire. Reading an autoloaded option and, when it is not
+// empty, checking one scheduled event per pending source.
+add_action(
+	'wp_loaded',
+	static function () {
+		Conexao_Import_Continuation::rearm_missing();
+	},
+	20
+);
 
 Conexao_Event_Importer::instance();
 
