@@ -502,6 +502,33 @@ One operational note: a browser proof and the test suite must not run
 probe state while a browser proof reads the admin pages can observe the other
 run's records.
 
+### The Apoiadores single-page browser acceptance
+
+`tests/browser/verify-sponsors-archive-browser.py` is the third opt-in layer. It
+covers the invariants of the **single-page Apoiadores directory** that only exist
+in a rendered document:
+
+```bash
+python3 tests/browser/verify-sponsors-archive-browser.py                  # happy path
+python3 tests/browser/verify-sponsors-archive-browser.py --negative-control
+```
+
+At **1440×1000** and **390×844**, for `/apoiadores/` and `/en/apoiadores/`, it
+asserts that the rendered card set equals the set the site itself reports for the
+same language scope (the bilingual REST collection, `?lang=pt` / `?lang=en`),
+that **zero** pagination nodes exist (`.conexao-pagination`, `.page-numbers`,
+next/previous links, `rel="next"`/`rel="prev"`, load-more/infinite-scroll hooks),
+that there is no horizontal overflow, that the grid is one column on mobile and
+multi-column on desktop, that every detail link resolves with 200, that every
+image loaded with non-empty alt text, and that Tab reaches a card link in a
+`:focus-visible` state with a visible outline.
+
+`--negative-control` injects a pagination nav and an overflowing element into the
+real page and requires the same checks to go **red** — the evidence that the
+suite is not vacuous. Its browserless halves are blocking: the in-process suite
+`wp-content/themes/conexao-br-irlanda/tests/test-sponsor-archive-single-page.php`
+and the `/apoiadores/` rows of `tests/acceptance/matrices/routing.json`.
+
 ### What lives where
 
 | Path | Class | In the default runner? |
@@ -650,3 +677,5 @@ _Last verified: 2026-10-01 by Stage 13 — commissioning-readiness gate (768 ass
 _Last verified: 2026-10-02 by Stage 17 — retirement of automatic translation automation (Stage 13 gate 808 assertions / 44 proofs; new `verify-stage17-retirement.py` 110 assertions / 9 mutations; new manual-workflow suite 49 assertions)_
 
 _Last verified: 2026-10-02 by Stage 18 — manual translation operator workflow (new `verify-stage18-operator-runbook.py` 111 assertions / 15 mutations; manual-workflow suite 49 -> 66)_
+
+_Last verified: 2026-10-08 by the Apoiadores single-page directory change (opt-in browser acceptance `tests/browser/verify-sponsors-archive-browser.py` documented)_

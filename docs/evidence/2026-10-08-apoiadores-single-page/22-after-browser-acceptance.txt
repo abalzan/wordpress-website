@@ -1,0 +1,138 @@
+== Browser acceptance: Apoiadores single-page directory ==
+   base: http://localhost:8080
+
+-- /apoiadores/ (pt) --
+  PASS  pt: the REST collection for this language is non-empty
+
+-- /en/apoiadores/ (en) --
+  PASS  en: the REST collection for this language is non-empty
+  PASS  /apoiadores/ answers 200
+  PASS  /apoiadores/ at 1440x1000 answers 200
+  PASS  1440x1000: the Apoiadores grid exists
+  PASS  1440x1000: at least one Apoiador card is rendered
+  PASS  1440x1000: every card has exactly one headline link
+  PASS  1440x1000: every rendered headline is unique
+  PASS  1440x1000: rendered Apoiadores == available Apoiadores (none missing, none extra)
+  PASS  1440x1000: every card CTA links the same Apoiador as its headline
+  PASS  1440x1000: zero pagination nodes (no numbered / next / previous link)
+  PASS  1440x1000: no load-more / infinite-scroll hook on the grid
+  PASS  1440x1000: no horizontal overflow (scrollWidth 1440 <= viewport 1440)
+  PASS  1440x1000: the body does not overflow horizontally either (1440)
+  PASS  1440x1000: desktop lays the directory out as a multi-column grid (got 3)
+  PASS  1440x1000: exactly one h1 heading
+  PASS  1440x1000: the h1 reads 'Apoiadores'
+  PASS  1440x1000: a <main> landmark is present
+  PASS  1440x1000: page landmarks are intact
+  PASS  1440x1000: the document renders images
+  PASS  1440x1000: every image loaded
+  PASS  1440x1000: every image carries non-empty alt text
+  PASS  /apoiadores/ at 390x844 answers 200
+  PASS  390x844: the Apoiadores grid exists
+  PASS  390x844: at least one Apoiador card is rendered
+  PASS  390x844: every card has exactly one headline link
+  PASS  390x844: every rendered headline is unique
+  PASS  390x844: rendered Apoiadores == available Apoiadores (none missing, none extra)
+  PASS  390x844: every card CTA links the same Apoiador as its headline
+  PASS  390x844: zero pagination nodes (no numbered / next / previous link)
+  PASS  390x844: no load-more / infinite-scroll hook on the grid
+  PASS  390x844: no horizontal overflow (scrollWidth 390 <= viewport 390)
+  PASS  390x844: the body does not overflow horizontally either (390)
+  PASS  390x844: mobile lays the directory out in a single column (got 1)
+  PASS  390x844: exactly one h1 heading
+  PASS  390x844: the h1 reads 'Apoiadores'
+  PASS  390x844: a <main> landmark is present
+  PASS  390x844: page landmarks are intact
+  PASS  390x844: the document renders images
+  PASS  390x844: every image loaded
+  PASS  390x844: every image carries non-empty alt text
+  PASS  /apoiadores/page/2/ is not a paginated Apoiadores view (status 404)
+
+-- keyboard navigation (/apoiadores/) --
+  PASS  keyboard: Tab reaches the card link 'Apoiador CI sintético Alfa'
+  PASS  keyboard: the focused card link matches :focus-visible
+  PASS  keyboard: the focused card link shows a visible focus outline (solid 3px)
+  PASS  /en/apoiadores/ answers 200
+  PASS  /en/apoiadores/ at 1440x1000 answers 200
+  PASS  1440x1000: the Apoiadores grid exists
+  PASS  1440x1000: at least one Apoiador card is rendered
+  PASS  1440x1000: every card has exactly one headline link
+  PASS  1440x1000: every rendered headline is unique
+  PASS  1440x1000: rendered Apoiadores == available Apoiadores (none missing, none extra)
+  PASS  1440x1000: every card CTA links the same Apoiador as its headline
+  PASS  1440x1000: zero pagination nodes (no numbered / next / previous link)
+  PASS  1440x1000: no load-more / infinite-scroll hook on the grid
+  PASS  1440x1000: no horizontal overflow (scrollWidth 1440 <= viewport 1440)
+  PASS  1440x1000: the body does not overflow horizontally either (1440)
+  PASS  1440x1000: desktop lays the directory out as a multi-column grid (got 3)
+  PASS  1440x1000: exactly one h1 heading
+  PASS  1440x1000: the h1 reads 'Supporters'
+  PASS  1440x1000: a <main> landmark is present
+  PASS  1440x1000: page landmarks are intact
+  PASS  1440x1000: the document renders images
+  PASS  1440x1000: every image loaded
+  PASS  1440x1000: every image carries non-empty alt text
+  PASS  /en/apoiadores/ at 390x844 answers 200
+  PASS  390x844: the Apoiadores grid exists
+  PASS  390x844: at least one Apoiador card is rendered
+  PASS  390x844: every card has exactly one headline link
+  PASS  390x844: every rendered headline is unique
+  PASS  390x844: rendered Apoiadores == available Apoiadores (none missing, none extra)
+  PASS  390x844: every card CTA links the same Apoiador as its headline
+  PASS  390x844: zero pagination nodes (no numbered / next / previous link)
+  PASS  390x844: no load-more / infinite-scroll hook on the grid
+  PASS  390x844: no horizontal overflow (scrollWidth 390 <= viewport 390)
+  PASS  390x844: the body does not overflow horizontally either (390)
+  PASS  390x844: mobile lays the directory out in a single column (got 1)
+  PASS  390x844: exactly one h1 heading
+  PASS  390x844: the h1 reads 'Supporters'
+  PASS  390x844: a <main> landmark is present
+  PASS  390x844: page landmarks are intact
+  PASS  390x844: the document renders images
+  PASS  390x844: every image loaded
+  PASS  390x844: every image carries non-empty alt text
+  PASS  /en/apoiadores/page/2/ is not a paginated Apoiadores view (status 404)
+
+-- keyboard navigation (/en/apoiadores/) --
+  PASS  keyboard: Tab reaches the card link 'Apoiador CI sintético Alfa'
+  PASS  keyboard: the focused card link matches :focus-visible
+  PASS  keyboard: the focused card link shows a visible focus outline (solid 3px)
+
+-- Apoiador detail links resolve --
+  PASS  pt: detail link resolves (http://localhost:8080/apoiadores/brasil-market-dublin/)
+  PASS  pt: detail link resolves (http://localhost:8080/apoiadores/apoiador-ci-sintetico-alfa/)
+  PASS  pt: detail link resolves (http://localhost:8080/apoiadores/apoiador-ci-sintetico-beta/)
+  PASS  en: detail link resolves (http://localhost:8080/en/apoiadores/brasil-market-dublin-en/)
+  PASS  en: detail link resolves (http://localhost:8080/apoiadores/apoiador-ci-sintetico-alfa/)
+  PASS  en: detail link resolves (http://localhost:8080/apoiadores/apoiador-ci-sintetico-beta/)
+
+94 passed, 0 failed
+BROWSER_RC=0
+== Browser acceptance: Apoiadores single-page directory ==
+   base: http://localhost:8080
+
+-- /apoiadores/ (pt) --
+  PASS  pt: the REST collection for this language is non-empty
+
+-- /en/apoiadores/ (en) --
+  PASS  en: the REST collection for this language is non-empty
+  PASS  /apoiadores/ answers 200
+  PASS  /apoiadores/ at 1440x1000 answers 200
+  PASS  /apoiadores/ at 390x844 answers 200
+  PASS  /apoiadores/page/2/ is not a paginated Apoiadores view (status 404)
+  PASS  /en/apoiadores/ answers 200
+  PASS  /en/apoiadores/ at 1440x1000 answers 200
+  PASS  /en/apoiadores/ at 390x844 answers 200
+  PASS  /en/apoiadores/page/2/ is not a paginated Apoiadores view (status 404)
+
+-- negative control (defects injected into the real page) --
+  PASS  negative control 1440x1000 pt: the injected pagination is caught by the single-page predicate (3 node(s))
+  PASS  negative control 1440x1000 pt: the injected overflow is caught by the layout predicate (3000 > 1440)
+  PASS  negative control 390x844 pt: the injected pagination is caught by the single-page predicate (3 node(s))
+  PASS  negative control 390x844 pt: the injected overflow is caught by the layout predicate (3000 > 390)
+  PASS  negative control 1440x1000 en: the injected pagination is caught by the single-page predicate (3 node(s))
+  PASS  negative control 1440x1000 en: the injected overflow is caught by the layout predicate (3000 > 1440)
+  PASS  negative control 390x844 en: the injected pagination is caught by the single-page predicate (3 node(s))
+  PASS  negative control 390x844 en: the injected overflow is caught by the layout predicate (3000 > 390)
+
+18 passed, 0 failed
+NEGCTRL_RC=0

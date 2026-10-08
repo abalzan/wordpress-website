@@ -1,0 +1,10 @@
+# Unrelated pagination control — the shared component still paginates elsewhere (2026-10-08, after the change)
+
+/apoiadores/ -> 200 conexao-pagination=0 page-numbers=0 bytes=49955
+/en/apoiadores/ -> 200 conexao-pagination=0 page-numbers=0 bytes=49880
+/guias/ -> 200 conexao-pagination=8 page-numbers=6 bytes=64072
+/blog/ -> 200 conexao-pagination=7 page-numbers=5 bytes=62279
+/?s=de -> 200 conexao-pagination=8 page-numbers=6 bytes=63758
+/eventos/ -> 200 conexao-pagination=8 page-numbers=6 bytes=244527
+/cursos/ -> 200 conexao-pagination=0 page-numbers=0 bytes=61161
+/lazer/ -> 200 conexao-pagination=8 page-numbers=6 bytes=97194

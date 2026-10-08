@@ -174,7 +174,10 @@ the WordPress timezone (`wp_timezone()`). No occurrence posts, no cron.
   editor-curated order used by the homepage Hero carousel AND the `/apoiadores/`
   archive: ascending first, then supporters without an order value newest
   published first (see `conexao_sponsor_archive_ordered_ids()` in the theme).
-  Numeric `0` is a valid order value, never treated as empty.
+  Numeric `0` is a valid order value, never treated as empty. The `/apoiadores/`
+  archive renders that whole ordered set on a SINGLE page (the archive query
+  carries WordPress' unlimited-result configuration), so it generates no
+  pagination; see `docs/themes/conexao-br-irlanda.md` § "Apoiadores Directory".
 - `_sponsor_contacts` (array) — ordered contact/social links repeater, one
   meta holding `[ { type, url }, … ]` rows; types: website, instagram,
   facebook, whatsapp, linkedin, tiktok, email (stored as `mailto:`), outro.
@@ -365,3 +368,5 @@ Image fields:
 - Export adds a UUID meta for cross-instance matching.
 - Matching order: UUID → source+source_id → URL → content title+date.
 _Last verified: 2026-09-26 by Stage O — Enable the Real English Blog Archive_
+
+_Last verified: 2026-10-08 by the Apoiadores single-page directory change (the `/apoiadores/` archive renders the whole ordered set on one page)_

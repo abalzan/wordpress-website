@@ -1,0 +1,49 @@
+Site: http://localhost:8080
+
+== Apoiadores archive — single-page directory ==
+  PASS: the sponsor (Apoiadores) post type is registered
+  PASS: conexao_sponsor_archive_ordered_ids() is available
+
+=== Fixtures ===
+  site posts_per_page: 10 | temporary sponsors created: 8 | available Apoiadores: 12
+  PASS: the fitted set is larger than the control page size (the negative control is meaningful)
+  PASS: the fitted set is larger than the site page size (pagination would have paginated before this change)
+  PASS: the fixture bound did not truncate the page-size proof
+
+=== Single page: rendered == available ===
+  PASS: rendered Apoiadores equals the number available (no supporter is left off the page)
+  PASS: no available Apoiador is missing from the archive page
+  PASS: the archive page renders nothing outside the available Apoiador set
+  PASS: no Apoiador is rendered twice
+  PASS: the archive uses the WordPress unlimited-result configuration (-1 + nopaging), never an arbitrary page size
+  PASS: the archive query reports at most one page
+
+=== Ordering preserved ===
+  PASS: the rendered order matches conexao_sponsor_archive_ordered_ids() exactly (post__in + orderby post__in untouched)
+  PASS: the first three Apoiadores are unchanged
+  PASS: the last three Apoiadores are unchanged
+
+=== No pagination generated ===
+  PASS: the shared pagination component renders nothing for /apoiadores/
+  PASS: no .conexao-pagination container is emitted
+  PASS: no numbered / next / previous page link is emitted
+
+=== No second paginated page ===
+  PASS: a paged request surfaces no Apoiador outside the single-page set (nothing is hidden on page 2)
+
+=== Negative control (pagination reintroduced) ===
+  PASS: control: a limited page size renders fewer Apoiadores than are available
+  PASS: control: a limited page size produces more than one page
+  PASS: control: the same fixtures WITH a page size DO produce the pagination container
+  PASS: control: the same fixtures WITH a page size DO produce numbered / next / previous links
+  PASS: control: page size 3 returns exactly 3 Apoiadores (page 1 of a paginated directory)
+
+=== Scope: other archives keep their pagination ===
+  PASS: the guide archive keeps the site page size (the change is scoped to Apoiadores)
+  PASS: the guide archive is still paginated (nopaging is not global)
+  PASS: the leisure archive keeps the site page size (the change is scoped to Apoiadores)
+  PASS: the leisure archive is still paginated (nopaging is not global)
+  PASS: the global WordPress page-size setting is untouched
+
+test-sponsor-archive-single-page: 28 passed, 0 failed
+EXIT=0

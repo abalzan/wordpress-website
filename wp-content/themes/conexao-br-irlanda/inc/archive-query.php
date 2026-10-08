@@ -377,8 +377,24 @@ function conexao_content_archive_query( $query ) {
 	 *
 	 * A pre-computed ordered post-ID list is applied via post__in +
 	 * orderby => post__in — the same mechanism the events archive uses — so
-	 * ordering happens BEFORE pagination slices the set. Every /apoiadores
-	 * page (and the load-more/pagination links) keeps this fixed global order.
+	 * the editor-curated global order IS the rendered order.
+	 *
+	 * The directory is deliberately a SINGLE PAGE (no pagination): the
+	 * archive's own query gets WordPress' unlimited-result configuration, so
+	 * every published Apoiador is rendered at once and no page-local slice —
+	 * and therefore no "Próximo"/"Anterior"/numbered control — can ever
+	 * exist. Both keys are required: parse_query() derives `nopaging` BEFORE
+	 * pre_get_posts runs, so setting only posts_per_page = -1 here would
+	 * leave the paging block active and build an invalid `LIMIT 0, -1`;
+	 * `-1` + `nopaging` is the WordPress-supported "all records" switch,
+	 * never an arbitrary page size. With no LIMIT the shared component in
+	 * template-parts/pagination.php renders nothing (the query reports a
+	 * single page). Feeds are NOT widened: a feed is not the archive listing
+	 * and keeps the WordPress posts_per_rss contract.
+	 *
+	 * Regression proof: tests/test-sponsor-archive-single-page.php (in-process,
+	 * with a negative control) and the /apoiadores/ rows of the HTTP acceptance
+	 * matrix.
 	 */
 	if ( $query->is_post_type_archive( 'sponsor' ) ) {
 		$sponsor_ids = conexao_sponsor_archive_ordered_ids();
@@ -392,9 +408,51 @@ function conexao_content_archive_query( $query ) {
 		$query->set( 'post__in', $sponsor_ids );
 		$query->set( 'orderby', 'post__in' );
 		$query->set( 'order', 'ASC' );
+
+		if ( ! $query->is_feed() ) {
+			$query->set( 'posts_per_page', -1 );
+			$query->set( 'nopaging', true );
+		}
 	}
 }
 add_action( 'pre_get_posts', 'conexao_content_archive_query', 20 );
+
+/**
+ * Keep /apoiadores/page/N/ (N > 1) a 404 — the Apoiadores directory is a single
+ * page.
+ *
+ * With the unlimited-result configuration set above, WordPress finds posts for
+ * ANY page number, so without this guard a paged URL would answer 200 with a
+ * duplicate of the (whole) directory. That URL is not a view: it never held
+ * additional supporters — before this change an out-of-range page number
+ * already 404'd because page 2 contained nothing — so the pre-existing 404 is
+ * preserved explicitly instead of leaving a duplicate 200 URL behind.
+ *
+ * Scope: the sponsor post-type archive only (/apoiadores/ and /en/apoiadores/).
+ * Every other archive keeps WordPress' own paged handling, no redirect rule is
+ * added, and the legacy redirect table (and its precedence) is untouched.
+ *
+ * @return void
+ */
+function conexao_sponsor_archive_no_paged_view() {
+	if ( ! is_post_type_archive( 'sponsor' ) ) {
+		return;
+	}
+
+	if ( (int) get_query_var( 'paged' ) <= 1 ) {
+		return;
+	}
+
+	global $wp_query;
+
+	// Core's own 404 contract (WP::handle_404()): flag the query, then send the
+	// status and cache headers, because handle_404() has already run by the time
+	// template_redirect fires.
+	$wp_query->set_404();
+	status_header( 404 );
+	nocache_headers();
+}
+add_action( 'template_redirect', 'conexao_sponsor_archive_no_paged_view', 20 );
 
 /**
  * STAGE 3.1 — B2 archive widening (generic post types).

@@ -167,7 +167,7 @@ All in `template-parts/`:
 | `help-shortcut-card.php` | Homepage "Precisa de ajuda?" compact utility shortcut chip (reuses Quick Access card data) |
 | `newsletter-section.php` | Newsletter CTA section (homepage + archives) |
 | `quote-section.php` | Testimonial/quote section (homepage + archives) |
-| `pagination.php` | Archive pagination |
+| `pagination.php` | Archive pagination (renders nothing when the query has one page — e.g. the single-page Apoiadores directory) |
 | `content-none.php` | Empty state |
 
 ## Dark Mode
@@ -243,3 +243,5 @@ desktop preload present and keeps its fallback pointing at the 1600w asset.
 
 _Last verified: 2026-09-26 by Stage L — Permanent Invariant Gates_
 _Last verified: 2026-10-03 by Stage 20 — hero preload fallback (Firefox speculative-loader cost bound)_
+
+_Last verified: 2026-10-08 by the Apoiadores single-page directory change (single-page directory; the shared pagination component renders nothing)_

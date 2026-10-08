@@ -1,0 +1,23 @@
+=== /apoiadores/
+=== /en/apoiadores/
+=== /apoiadores/page/2/
+=== /apoiadores/feed/
+{
+    "uri": "/apoiadores/feed/",
+    "status_is_404": false,
+    "db_queries": 20,
+    "render_seconds": 0.0119,
+    "html_bytes": 3559,
+    "cards": 0,
+    "images": 0,
+    "pagination": 0,
+    "page_numbers": 0,
+    "found_posts": 4,
+    "post_count": 4,
+    "max_num_pages": 1,
+    "posts_per_page": 10,
+    "nopaging": false,
+    "is_paged": false,
+    "peak_mb": 46.5
+}
+=== /lazer/

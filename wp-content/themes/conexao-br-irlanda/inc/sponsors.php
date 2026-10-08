@@ -270,8 +270,10 @@ function conexao_get_featured_sponsors() {
  * freshly saved "Ordem de exibição" visible on the very next archive load.
  *
  * The main query consumes this list via post__in + orderby => post__in (the
- * same mechanism the events archive uses), so ordering happens BEFORE
- * pagination slices the set — every /apoiadores page keeps this global order.
+ * same mechanism the events archive uses), so this global order IS the rendered
+ * order. `/apoiadores/` is a single page (the archive query carries WordPress'
+ * unlimited-result configuration — see `conexao_content_archive_query()`), so
+ * there is no page-local slice of this list and no pagination to slice it.
  *
  * @return int[] Ordered published sponsor post IDs.
  */

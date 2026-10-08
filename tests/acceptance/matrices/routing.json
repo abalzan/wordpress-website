@@ -99,6 +99,38 @@
       "note": "Portuguese URL is canonical and must keep serving 200 (stage2 §1)."
     },
     {
+      "id": "pt-apoiadores-single-page-no-pagination",
+      "url": "/apoiadores/",
+      "expect_status": 200,
+      "expect_contains": [
+        "archive-grid",
+        "archive-card-title"
+      ],
+      "expect_absent": [
+        "conexao-pagination",
+        "page-numbers",
+        "Paginação",
+        "rel=\"next\"",
+        "rel=\"prev\"",
+        "data-load-more",
+        "data-infinite-scroll"
+      ],
+      "note": "Apoiadores is a SINGLE-PAGE directory: every published Apoiador renders on /apoiadores/ and no pagination is generated — the shared component (template-parts/pagination.php) would emit .conexao-pagination + a.page-numbers + a rel=next/prev pair, and archive.php would tag the grid data-load-more/data-infinite-scroll. This row is the HTTP half of the regression proof (in-process half: theme tests/test-sponsor-archive-single-page.php, which also proves the check can fail); it goes red the moment a page size is reintroduced in inc/archive-query.php. 'Carregar mais' is deliberately NOT asserted absent: it is a global localized JS string, not a control."
+    },
+    {
+      "id": "pt-apoiadores-page-2-is-not-a-view",
+      "url": "/apoiadores/page/2/",
+      "expect_status": 404,
+      "expect_contains": [
+        "Página não encontrada"
+      ],
+      "expect_absent": [
+        "archive-grid",
+        "archive-card-title"
+      ],
+      "note": "The single-page Apoiadores directory has no second page: /apoiadores/page/2/ renders no Apoiador. The unlimited archive query finds posts for any page number, so the theme keeps the pre-existing 404 explicitly (conexao_sponsor_archive_no_paged_view(), template_redirect) instead of leaving a duplicate 200 URL."
+    },
+    {
       "id": "pt-200-irlanda",
       "url": "/irlanda/",
       "expect_status": 200,
@@ -404,6 +436,36 @@
         "<html lang=\"pt-BR\">"
       ],
       "note": "The /en/ language layer resolves (stage2 §3) and serves English markup."
+    },
+    {
+      "id": "en-apoiadores-single-page-no-pagination",
+      "url": "/en/apoiadores/",
+      "expect_status": 200,
+      "expect_contains": [
+        "archive-grid",
+        "archive-card-title"
+      ],
+      "expect_absent": [
+        "conexao-pagination",
+        "page-numbers",
+        "Paginação",
+        "rel=\"next\"",
+        "rel=\"prev\"",
+        "data-load-more",
+        "data-infinite-scroll"
+      ],
+      "note": "The English Apoiadores view is the SAME single-page directory (one query layer serves both languages): the B2 EN set renders in full and no pagination is generated. Same assertions as the PT row, so a language-specific regression cannot hide."
+    },
+    {
+      "id": "en-apoiadores-page-2-is-not-a-view",
+      "url": "/en/apoiadores/page/2/",
+      "expect_status": 404,
+      "expect_contains": [],
+      "expect_absent": [
+        "archive-grid",
+        "archive-card-title"
+      ],
+      "note": "The English single-page directory has no second page either: /en/apoiadores/page/2/ renders no Apoiador (same theme guard, scope = the sponsor post-type archive in both languages)."
     },
     {
       "id": "en-archive-en-blog",
