@@ -529,6 +529,41 @@ suite is not vacuous. Its browserless halves are blocking: the in-process suite
 `wp-content/themes/conexao-br-irlanda/tests/test-sponsor-archive-single-page.php`
 and the `/apoiadores/` rows of `tests/acceptance/matrices/routing.json`.
 
+### The Featured Apoiadores carousel mobile-compactness browser regression
+
+`tests/browser/verify-sponsor-carousel-mobile-browser.py` is the fourth opt-in
+layer. It covers the homepage Hero carousel invariants that only exist in a
+rendered document: on a phone the carousel column is only ~135px wide while ten
+24px dot targets need 240px plus padding, so the pre-fix single flex row
+overhung the carousel, crossed the hero copy column and pushed the last dots
+past the viewport where `.hero-section { overflow: hidden }` clipped them.
+
+```bash
+python3 tests/browser/verify-sponsor-carousel-mobile-browser.py                  # happy path
+python3 tests/browser/verify-sponsor-carousel-mobile-browser.py --negative-control
+```
+
+At **360×800, 375×812, 390×844, 412×915, 430×932 and 768×1024**, for the
+server-rendered carousel AND a production-like ten-dot carousel, it asserts one
+dot per slide, real `<button>` dots, ≥24×24px targets with same-row centres
+≥24px apart, the dot block inside the carousel stage and ≤56px tall, no layout
+height added, every dot in the viewport and hit-testing to itself, no page-level
+horizontal overflow, and no reach into the hero copy column. At **390×844** and
+**1440×1000** it asserts the full accessibility model (group role + name, unique
+per-Apoiador labels, exactly one synced `aria-current`, painted Tab focus ring,
+Arrow/Home/End navigation, the polite "Apoiador N de M" live region, last-dot
+direct navigation, exactly two named arrows). At **1440×1000** it asserts the
+documented desktop presentation is byte-identical (38px block, `6px 10px`
+padding, 8px dot, 20×8px active pill, 10px inset, 24px centres).
+
+`--negative-control` re-injects the pre-fix mobile rules (single flex row,
+`padding: 4px 8px`, `left: 50%`, `translateX(-50%)`, 6px/16px visual dots)
+scoped to the same `@media (max-width: 768px)` block and requires the same
+mobile checks to go **red** while desktop stays green — the evidence that the
+suite is not vacuous and the change is scoped to mobile. The carousel's
+browserless half is the blocking in-process suite
+`wp-content/themes/conexao-br-irlanda/tests/test-stage7-hero-sponsors.php`.
+
 ### What lives where
 
 | Path | Class | In the default runner? |
@@ -679,3 +714,5 @@ _Last verified: 2026-10-02 by Stage 17 — retirement of automatic translation a
 _Last verified: 2026-10-02 by Stage 18 — manual translation operator workflow (new `verify-stage18-operator-runbook.py` 111 assertions / 15 mutations; manual-workflow suite 49 -> 66)_
 
 _Last verified: 2026-10-08 by the Apoiadores single-page directory change (opt-in browser acceptance `tests/browser/verify-sponsors-archive-browser.py` documented)_
+
+_Last verified: 2026-10-08 by the Featured Apoiadores carousel mobile-compactness fix (opt-in browser regression `tests/browser/verify-sponsor-carousel-mobile-browser.py` documented: 236 assertions / 25-mutation negative control)_

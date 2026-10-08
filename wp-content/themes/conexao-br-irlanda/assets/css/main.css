@@ -928,26 +928,52 @@ ul, ol {
     right: 6px;
   }
 
+  /* Compact pagination for the narrow portrait panel. The panel is only
+     ~150px wide on a phone, so ONE row of 24px targets cannot hold every
+     featured Apoiador: with 10 dots the row is 240px + padding wide, which
+     overhangs the stage on both sides, crosses the hero copy column and
+     pushes the trailing dots past the viewport edge — where
+     .hero-section's overflow:hidden clips them (measured: dot 10 centred
+     off-screen, hit-test resolving to another element, i.e. unreachable).
+     The dots therefore wrap into a centred grid whose column count follows
+     the available width — one row while the dots fit, two/three rows when
+     they cannot. Every target stays a full 24×24px (WCAG 2.5.8, never
+     overlapping) and every slide keeps its own directly tappable control,
+     so neither the number of dots nor their reachability changes; only the
+     wrapping does. gap: 0 keeps the wrapped block exactly
+     rows × 24px tall, and the block is capped to the stage width so it can
+     never overhang the carousel, the copy column or the viewport. */
   .hero-sponsors .sponsors-carousel-dots {
-    bottom: 8px;
+    left: 0;
+    right: 0;
+    width: fit-content;
+    max-width: 100%;
+    margin: 0 auto;
+    transform: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 24px);
+    justify-content: center;
     gap: 0;
-    padding: 4px 8px;
+    padding: 0 4px;
+    bottom: 6px;
   }
 
-  /* Small 24px hit targets, no overlap → dot centers 24px apart. */
+  /* Unchanged 24×24 hit targets (gap: 0 → centres 24px apart, so the
+     targets never overlap or partially obscure one another). */
   .hero-sponsors .sponsors-carousel-dot {
     width: 24px;
     height: 24px;
     margin: 0;
   }
 
+  /* Slightly finer visual dot inside the unchanged touch target. */
   .hero-sponsors .sponsors-carousel-dot::before {
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
   }
 
   .hero-sponsors .sponsors-carousel-dot.is-active::before {
-    width: 16px;
+    width: 14px;
   }
 }
 

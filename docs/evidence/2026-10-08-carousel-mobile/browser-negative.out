@@ -1,0 +1,262 @@
+
+-- mobile 360x800
+  PASS: as rendered 360x800: the Featured Apoiadores carousel renders
+  PASS: as rendered 360x800: one dot per Apoiador (4 buttons for 4 slides)
+  PASS: as rendered 360x800: the carousel has navigation dots at all (4)
+  PASS: as rendered 360x800: every dot is a real <button> (tag=BUTTON)
+  PASS: as rendered 360x800: no duplicate/extra dot controls (4 data-sponsors-dot)
+  PASS: as rendered 360x800: every touch target is at least 24x24px (min 24x24)
+  PASS: as rendered 360x800: targets never overlap — centres are at least 24px apart horizontally in their row (min 24)
+  PASS: as rendered 360x800: the dot block stays inside the carousel stage (block 217.27..331.27 vs stage 207.77..340.78)
+  PASS: as rendered 360x800: the dot block is no wider than the carousel (114 <= 133.02)
+  PASS: as rendered 360x800: the dot block stays compact (34px <= 56.0px)
+  PASS: as rendered 360x800: the controls add no layout height (carousel 283.2px <= tile 275.2px + 12.0)
+  PASS: as rendered 360x800: no horizontal page overflow (scrollWidth-clientWidth=0)
+  PASS: as rendered 360x800: no dot is pushed outside the viewport (0 clipped)
+  PASS: as rendered 360x800: every dot is on screen and hit-tests to itself (unreachable: none)
+  PASS: as rendered 360x800: the controls never reach into the hero copy column (block left 217.27 >= copy right 187.77)
+  PASS: synthetic 10-dot 360x800: the Featured Apoiadores carousel renders
+  PASS: synthetic 10-dot 360x800: one dot per Apoiador (10 buttons for 4 slides)
+  PASS: synthetic 10-dot 360x800: the carousel has navigation dots at all (10)
+  PASS: synthetic 10-dot 360x800: every dot is a real <button> (tag=BUTTON)
+  PASS: synthetic 10-dot 360x800: no duplicate/extra dot controls (10 data-sponsors-dot)
+  PASS: synthetic 10-dot 360x800: every touch target is at least 24x24px (min 24x24)
+  PASS: synthetic 10-dot 360x800: targets never overlap — centres are at least 24px apart horizontally in their row (min 24)
+  FAIL: synthetic 10-dot 360x800: the dot block stays inside the carousel stage (block 145.27..403.27 vs stage 207.77..340.78)
+  FAIL: synthetic 10-dot 360x800: the dot block is no wider than the carousel (258 <= 133.02)
+  PASS: synthetic 10-dot 360x800: the dot block stays compact (34px <= 56.0px)
+  PASS: synthetic 10-dot 360x800: the controls add no layout height (carousel 283.2px <= tile 275.2px + 12.0)
+  PASS: synthetic 10-dot 360x800: no horizontal page overflow (scrollWidth-clientWidth=0)
+  FAIL: synthetic 10-dot 360x800: no dot is pushed outside the viewport (2 clipped)
+  FAIL: synthetic 10-dot 360x800: every dot is on screen and hit-tests to itself (unreachable: [10])
+  FAIL: synthetic 10-dot 360x800: the controls never reach into the hero copy column (block left 145.27 >= copy right 187.77)
+
+-- mobile 375x812
+  PASS: as rendered 375x812: the Featured Apoiadores carousel renders
+  PASS: as rendered 375x812: one dot per Apoiador (4 buttons for 4 slides)
+  PASS: as rendered 375x812: the carousel has navigation dots at all (4)
+  PASS: as rendered 375x812: every dot is a real <button> (tag=BUTTON)
+  PASS: as rendered 375x812: no duplicate/extra dot controls (4 data-sponsors-dot)
+  PASS: as rendered 375x812: every touch target is at least 24x24px (min 24x24)
+  PASS: as rendered 375x812: targets never overlap — centres are at least 24px apart horizontally in their row (min 24)
+  PASS: as rendered 375x812: the dot block stays inside the carousel stage (block 231.66..345.66 vs stage 221.83..355.5)
+  PASS: as rendered 375x812: the dot block is no wider than the carousel (114 <= 133.67)
+  PASS: as rendered 375x812: the dot block stays compact (34px <= 56.0px)
+  PASS: as rendered 375x812: the controls add no layout height (carousel 284.09px <= tile 276.09px + 12.0)
+  PASS: as rendered 375x812: no horizontal page overflow (scrollWidth-clientWidth=0)
+  PASS: as rendered 375x812: no dot is pushed outside the viewport (0 clipped)
+  PASS: as rendered 375x812: every dot is on screen and hit-tests to itself (unreachable: none)
+  PASS: as rendered 375x812: the controls never reach into the hero copy column (block left 231.66 >= copy right 199.83)
+  PASS: synthetic 10-dot 375x812: the Featured Apoiadores carousel renders
+  PASS: synthetic 10-dot 375x812: one dot per Apoiador (10 buttons for 4 slides)
+  PASS: synthetic 10-dot 375x812: the carousel has navigation dots at all (10)
+  PASS: synthetic 10-dot 375x812: every dot is a real <button> (tag=BUTTON)
+  PASS: synthetic 10-dot 375x812: no duplicate/extra dot controls (10 data-sponsors-dot)
+  PASS: synthetic 10-dot 375x812: every touch target is at least 24x24px (min 24x24)
+  PASS: synthetic 10-dot 375x812: targets never overlap — centres are at least 24px apart horizontally in their row (min 24)
+  FAIL: synthetic 10-dot 375x812: the dot block stays inside the carousel stage (block 159.66..417.66 vs stage 221.83..355.5)
+  FAIL: synthetic 10-dot 375x812: the dot block is no wider than the carousel (258 <= 133.67)
+  PASS: synthetic 10-dot 375x812: the dot block stays compact (34px <= 56.0px)
+  PASS: synthetic 10-dot 375x812: the controls add no layout height (carousel 284.09px <= tile 276.09px + 12.0)
+  PASS: synthetic 10-dot 375x812: no horizontal page overflow (scrollWidth-clientWidth=0)
+  FAIL: synthetic 10-dot 375x812: no dot is pushed outside the viewport (2 clipped)
+  FAIL: synthetic 10-dot 375x812: every dot is on screen and hit-tests to itself (unreachable: [10])
+  FAIL: synthetic 10-dot 375x812: the controls never reach into the hero copy column (block left 159.66 >= copy right 199.83)
+
+-- mobile 390x844
+  PASS: as rendered 390x844: the Featured Apoiadores carousel renders
+  PASS: as rendered 390x844: one dot per Apoiador (4 buttons for 4 slides)
+  PASS: as rendered 390x844: the carousel has navigation dots at all (4)
+  PASS: as rendered 390x844: every dot is a real <button> (tag=BUTTON)
+  PASS: as rendered 390x844: no duplicate/extra dot controls (4 data-sponsors-dot)
+  PASS: as rendered 390x844: every touch target is at least 24x24px (min 24x24)
+  PASS: as rendered 390x844: targets never overlap — centres are at least 24px apart horizontally in their row (min 24)
+  PASS: as rendered 390x844: the dot block stays inside the carousel stage (block 243.13..357.13 vs stage 230.06..370.2)
+  PASS: as rendered 390x844: the dot block is no wider than the carousel (114 <= 140.14)
+  PASS: as rendered 390x844: the dot block stays compact (34px <= 56.0px)
+  PASS: as rendered 390x844: the controls add no layout height (carousel 286.63px <= tile 278.63px + 12.0)
+  PASS: as rendered 390x844: no horizontal page overflow (scrollWidth-clientWidth=0)
+  PASS: as rendered 390x844: no dot is pushed outside the viewport (0 clipped)
+  PASS: as rendered 390x844: every dot is on screen and hit-tests to itself (unreachable: none)
+  PASS: as rendered 390x844: the controls never reach into the hero copy column (block left 243.13 >= copy right 208.06)
+  PASS: synthetic 10-dot 390x844: the Featured Apoiadores carousel renders
+  PASS: synthetic 10-dot 390x844: one dot per Apoiador (10 buttons for 4 slides)
+  PASS: synthetic 10-dot 390x844: the carousel has navigation dots at all (10)
+  PASS: synthetic 10-dot 390x844: every dot is a real <button> (tag=BUTTON)
+  PASS: synthetic 10-dot 390x844: no duplicate/extra dot controls (10 data-sponsors-dot)
+  PASS: synthetic 10-dot 390x844: every touch target is at least 24x24px (min 24x24)
+  PASS: synthetic 10-dot 390x844: targets never overlap — centres are at least 24px apart horizontally in their row (min 24)
+  FAIL: synthetic 10-dot 390x844: the dot block stays inside the carousel stage (block 171.13..429.13 vs stage 230.06..370.2)
+  FAIL: synthetic 10-dot 390x844: the dot block is no wider than the carousel (258 <= 140.14)
+  PASS: synthetic 10-dot 390x844: the dot block stays compact (34px <= 56.0px)
+  PASS: synthetic 10-dot 390x844: the controls add no layout height (carousel 286.63px <= tile 278.63px + 12.0)
+  PASS: synthetic 10-dot 390x844: no horizontal page overflow (scrollWidth-clientWidth=0)
+  FAIL: synthetic 10-dot 390x844: no dot is pushed outside the viewport (2 clipped)
+  FAIL: synthetic 10-dot 390x844: every dot is on screen and hit-tests to itself (unreachable: [10])
+  FAIL: synthetic 10-dot 390x844: the controls never reach into the hero copy column (block left 171.13 >= copy right 208.06)
+
+-- mobile 412x915
+  PASS: as rendered 412x915: the Featured Apoiadores carousel renders
+  PASS: as rendered 412x915: one dot per Apoiador (4 buttons for 4 slides)
+  PASS: as rendered 412x915: the carousel has navigation dots at all (4)
+  PASS: as rendered 412x915: every dot is a real <button> (tag=BUTTON)
+  PASS: as rendered 412x915: no duplicate/extra dot controls (4 data-sponsors-dot)
+  PASS: as rendered 412x915: every touch target is at least 24x24px (min 24x24)
+  PASS: as rendered 412x915: targets never overlap — centres are at least 24px apart horizontally in their row (min 24)
+  PASS: as rendered 412x915: the dot block stays inside the carousel stage (block 260..374 vs stage 242.23..391.77)
+  PASS: as rendered 412x915: the dot block is no wider than the carousel (114 <= 149.53)
+  PASS: as rendered 412x915: the dot block stays compact (34px <= 56.0px)
+  PASS: as rendered 412x915: the controls add no layout height (carousel 290.33px <= tile 282.33px + 12.0)
+  PASS: as rendered 412x915: no horizontal page overflow (scrollWidth-clientWidth=0)
+  PASS: as rendered 412x915: no dot is pushed outside the viewport (0 clipped)
+  PASS: as rendered 412x915: every dot is on screen and hit-tests to itself (unreachable: none)
+  PASS: as rendered 412x915: the controls never reach into the hero copy column (block left 260 >= copy right 219.94)
+  PASS: synthetic 10-dot 412x915: the Featured Apoiadores carousel renders
+  PASS: synthetic 10-dot 412x915: one dot per Apoiador (10 buttons for 4 slides)
+  PASS: synthetic 10-dot 412x915: the carousel has navigation dots at all (10)
+  PASS: synthetic 10-dot 412x915: every dot is a real <button> (tag=BUTTON)
+  PASS: synthetic 10-dot 412x915: no duplicate/extra dot controls (10 data-sponsors-dot)
+  PASS: synthetic 10-dot 412x915: every touch target is at least 24x24px (min 24x24)
+  PASS: synthetic 10-dot 412x915: targets never overlap — centres are at least 24px apart horizontally in their row (min 24)
+  FAIL: synthetic 10-dot 412x915: the dot block stays inside the carousel stage (block 188..446 vs stage 242.23..391.77)
+  FAIL: synthetic 10-dot 412x915: the dot block is no wider than the carousel (258 <= 149.53)
+  PASS: synthetic 10-dot 412x915: the dot block stays compact (34px <= 56.0px)
+  PASS: synthetic 10-dot 412x915: the controls add no layout height (carousel 290.33px <= tile 282.33px + 12.0)
+  PASS: synthetic 10-dot 412x915: no horizontal page overflow (scrollWidth-clientWidth=0)
+  FAIL: synthetic 10-dot 412x915: no dot is pushed outside the viewport (2 clipped)
+  FAIL: synthetic 10-dot 412x915: every dot is on screen and hit-tests to itself (unreachable: [10])
+  FAIL: synthetic 10-dot 412x915: the controls never reach into the hero copy column (block left 188 >= copy right 219.94)
+
+-- mobile 430x932
+  PASS: as rendered 430x932: the Featured Apoiadores carousel renders
+  PASS: as rendered 430x932: one dot per Apoiador (4 buttons for 4 slides)
+  PASS: as rendered 430x932: the carousel has navigation dots at all (4)
+  PASS: as rendered 430x932: every dot is a real <button> (tag=BUTTON)
+  PASS: as rendered 430x932: no duplicate/extra dot controls (4 data-sponsors-dot)
+  PASS: as rendered 430x932: every touch target is at least 24x24px (min 24x24)
+  PASS: as rendered 430x932: targets never overlap — centres are at least 24px apart horizontally in their row (min 24)
+  PASS: as rendered 430x932: the dot block stays inside the carousel stage (block 273.84..387.84 vs stage 252.3..409.39)
+  PASS: as rendered 430x932: the dot block is no wider than the carousel (114 <= 157.09)
+  PASS: as rendered 430x932: the dot block stays compact (34px <= 56.0px)
+  PASS: as rendered 430x932: the controls add no layout height (carousel 293.38px <= tile 285.38px + 12.0)
+  PASS: as rendered 430x932: no horizontal page overflow (scrollWidth-clientWidth=0)
+  PASS: as rendered 430x932: no dot is pushed outside the viewport (0 clipped)
+  PASS: as rendered 430x932: every dot is on screen and hit-tests to itself (unreachable: none)
+  PASS: as rendered 430x932: the controls never reach into the hero copy column (block left 273.84 >= copy right 229.55)
+  PASS: synthetic 10-dot 430x932: the Featured Apoiadores carousel renders
+  PASS: synthetic 10-dot 430x932: one dot per Apoiador (10 buttons for 4 slides)
+  PASS: synthetic 10-dot 430x932: the carousel has navigation dots at all (10)
+  PASS: synthetic 10-dot 430x932: every dot is a real <button> (tag=BUTTON)
+  PASS: synthetic 10-dot 430x932: no duplicate/extra dot controls (10 data-sponsors-dot)
+  PASS: synthetic 10-dot 430x932: every touch target is at least 24x24px (min 24x24)
+  PASS: synthetic 10-dot 430x932: targets never overlap — centres are at least 24px apart horizontally in their row (min 24)
+  FAIL: synthetic 10-dot 430x932: the dot block stays inside the carousel stage (block 201.84..459.84 vs stage 252.3..409.39)
+  FAIL: synthetic 10-dot 430x932: the dot block is no wider than the carousel (258 <= 157.09)
+  PASS: synthetic 10-dot 430x932: the dot block stays compact (34px <= 56.0px)
+  PASS: synthetic 10-dot 430x932: the controls add no layout height (carousel 293.38px <= tile 285.38px + 12.0)
+  PASS: synthetic 10-dot 430x932: no horizontal page overflow (scrollWidth-clientWidth=0)
+  FAIL: synthetic 10-dot 430x932: no dot is pushed outside the viewport (1 clipped)
+  FAIL: synthetic 10-dot 430x932: every dot is on screen and hit-tests to itself (unreachable: [10])
+  FAIL: synthetic 10-dot 430x932: the controls never reach into the hero copy column (block left 201.84 >= copy right 229.55)
+
+-- mobile 768x1024
+  PASS: as rendered 768x1024: the Featured Apoiadores carousel renders
+  PASS: as rendered 768x1024: one dot per Apoiador (4 buttons for 4 slides)
+  PASS: as rendered 768x1024: the carousel has navigation dots at all (4)
+  PASS: as rendered 768x1024: every dot is a real <button> (tag=BUTTON)
+  PASS: as rendered 768x1024: no duplicate/extra dot controls (4 data-sponsors-dot)
+  PASS: as rendered 768x1024: every touch target is at least 24x24px (min 24x24)
+  PASS: as rendered 768x1024: targets never overlap — centres are at least 24px apart horizontally in their row (min 24)
+  PASS: as rendered 768x1024: the dot block stays inside the carousel stage (block 536.13..650.13 vs stage 440.27..746)
+  PASS: as rendered 768x1024: the dot block is no wider than the carousel (114 <= 305.73)
+  PASS: as rendered 768x1024: the dot block stays compact (34px <= 56.0px)
+  PASS: as rendered 768x1024: the controls add no layout height (carousel 420.97px <= tile 412.97px + 12.0)
+  PASS: as rendered 768x1024: no horizontal page overflow (scrollWidth-clientWidth=0)
+  PASS: as rendered 768x1024: no dot is pushed outside the viewport (0 clipped)
+  PASS: as rendered 768x1024: every dot is on screen and hit-tests to itself (unreachable: none)
+  PASS: as rendered 768x1024: the controls never reach into the hero copy column (block left 536.13 >= copy right 412.27)
+  PASS: synthetic 10-dot 768x1024: the Featured Apoiadores carousel renders
+  PASS: synthetic 10-dot 768x1024: one dot per Apoiador (10 buttons for 4 slides)
+  PASS: synthetic 10-dot 768x1024: the carousel has navigation dots at all (10)
+  PASS: synthetic 10-dot 768x1024: every dot is a real <button> (tag=BUTTON)
+  PASS: synthetic 10-dot 768x1024: no duplicate/extra dot controls (10 data-sponsors-dot)
+  PASS: synthetic 10-dot 768x1024: every touch target is at least 24x24px (min 24x24)
+  PASS: synthetic 10-dot 768x1024: targets never overlap — centres are at least 24px apart horizontally in their row (min 24)
+  PASS: synthetic 10-dot 768x1024: the dot block stays inside the carousel stage (block 464.13..722.13 vs stage 440.27..746)
+  PASS: synthetic 10-dot 768x1024: the dot block is no wider than the carousel (258 <= 305.73)
+  PASS: synthetic 10-dot 768x1024: the dot block stays compact (34px <= 56.0px)
+  PASS: synthetic 10-dot 768x1024: the controls add no layout height (carousel 420.97px <= tile 412.97px + 12.0)
+  PASS: synthetic 10-dot 768x1024: no horizontal page overflow (scrollWidth-clientWidth=0)
+  PASS: synthetic 10-dot 768x1024: no dot is pushed outside the viewport (0 clipped)
+  PASS: synthetic 10-dot 768x1024: every dot is on screen and hit-tests to itself (unreachable: none)
+  PASS: synthetic 10-dot 768x1024: the controls never reach into the hero copy column (block left 464.13 >= copy right 412.27)
+
+-- accessibility + interaction 390x844
+  PASS: a11y 390x844: carousel present for a11y checks
+  PASS: a11y 390x844: the dots keep role=group and an accessible name (role=group, label='Navegar entre apoiadores')
+  PASS: a11y 390x844: every dot keeps its own accessible name (4 labels, unique=True)
+  PASS: a11y 390x844: each dot label names its Apoiador (e.g. 'Ir para Apoiador 1')
+  PASS: a11y 390x844: exactly one dot is active (aria-current=1, is-active=1)
+  PASS: a11y 390x844: aria-current and .is-active point at the same dot
+  PASS: a11y 390x844: the two arrow controls keep their accessible names ['Apoiador anterior', 'Próximo apoiador']
+  PASS: a11y 390x844: the carousel status stays a polite live region (aria-live='polite')
+  PASS: keyboard 390x844: ArrowRight advances to the next Apoiador (active index 1)
+  PASS: keyboard 390x844: ArrowRight keeps exactly one synced active dot
+  PASS: keyboard 390x844: End jumps to the last Apoiador (active index 3)
+  PASS: keyboard 390x844: the live region announces the position ('Apoiador 4 de 4')
+  PASS: keyboard 390x844: Home returns to the first Apoiador (active index 0)
+  PASS: keyboard 390x844: clicking the last dot selects the last Apoiador (active index 3 of 4)
+  PASS: keyboard 390x844: the track really scrolled to the last slide (scrollLeft 467 of 467)
+  PASS: keyboard 390x844: keyboard Tab reaches every dot (4 of 4)
+  PASS: keyboard 390x844: the keyboard focus ring is painted on a dot (3px solid rgb(0, 0, 0))
+  PASS: keyboard 390x844: every keyboard-focusable dot sits inside the viewport
+
+-- accessibility + interaction 1440x1000
+  PASS: a11y 1440x1000: carousel present for a11y checks
+  PASS: a11y 1440x1000: the dots keep role=group and an accessible name (role=group, label='Navegar entre apoiadores')
+  PASS: a11y 1440x1000: every dot keeps its own accessible name (4 labels, unique=True)
+  PASS: a11y 1440x1000: each dot label names its Apoiador (e.g. 'Ir para Apoiador 1')
+  PASS: a11y 1440x1000: exactly one dot is active (aria-current=1, is-active=1)
+  PASS: a11y 1440x1000: aria-current and .is-active point at the same dot
+  PASS: a11y 1440x1000: the two arrow controls keep their accessible names ['Apoiador anterior', 'Próximo apoiador']
+  PASS: a11y 1440x1000: the carousel status stays a polite live region (aria-live='polite')
+  PASS: keyboard 1440x1000: ArrowRight advances to the next Apoiador (active index 1)
+  PASS: keyboard 1440x1000: ArrowRight keeps exactly one synced active dot
+  PASS: keyboard 1440x1000: End jumps to the last Apoiador (active index 3)
+  PASS: keyboard 1440x1000: the live region announces the position ('Apoiador 4 de 4')
+  PASS: keyboard 1440x1000: Home returns to the first Apoiador (active index 0)
+  PASS: keyboard 1440x1000: clicking the last dot selects the last Apoiador (active index 3 of 4)
+  PASS: keyboard 1440x1000: the track really scrolled to the last slide (scrollLeft 1029 of 1029)
+  PASS: keyboard 1440x1000: keyboard Tab reaches every dot (4 of 4)
+  PASS: keyboard 1440x1000: the keyboard focus ring is painted on a dot (3px solid rgb(0, 0, 0))
+  PASS: keyboard 1440x1000: every keyboard-focusable dot sits inside the viewport
+
+-- desktop 1440x1000
+  PASS: desktop 1440x1000: carousel present
+  PASS: desktop 1440x1000: the dots keep their desktop padding '6px 10px' (got '6px 10px')
+  PASS: desktop 1440x1000: the visual dot stays (8.0, 8.0) (got {'w': 8, 'h': 8})
+  PASS: desktop 1440x1000: the active pill stays (20.0, 8.0) (got {'w': 20, 'h': 8})
+  PASS: desktop 1440x1000: the dot block stays 38.0px tall (got 38px — one row, never wrapped)
+  PASS: desktop 1440x1000: the row stays 4x24px + 6px 10px padding + border = 118.0px wide (got 118px)
+  PASS: desktop 1440x1000: the block keeps its 10.0px inset from the tile bottom (got 10.0px)
+  PASS: desktop 1440x1000: the block stays inside the tile
+  PASS: desktop 1440x1000: dot centres stay 24.0px apart in their row (got 24)
+  PASS: desktop 1440x1000: no horizontal overflow
+  PASS: desktop 1440x1000: carousel present
+  PASS: desktop 1440x1000: the dots keep their desktop padding '6px 10px' (got '6px 10px')
+  PASS: desktop 1440x1000: the visual dot stays (8.0, 8.0) (got {'w': 8, 'h': 8})
+  PASS: desktop 1440x1000: the active pill stays (20.0, 8.0) (got {'w': 20, 'h': 8})
+  PASS: desktop 1440x1000: the dot block stays 38.0px tall (got 38px — one row, never wrapped)
+  PASS: desktop 1440x1000: the row stays 10x24px + 6px 10px padding + border = 262.0px wide (got 262px)
+  PASS: desktop 1440x1000: the block keeps its 10.0px inset from the tile bottom (got 10.0px)
+  PASS: desktop 1440x1000: the block stays inside the tile
+  PASS: desktop 1440x1000: dot centres stay 24.0px apart in their row (got 24)
+  PASS: desktop 1440x1000: no horizontal overflow
+
+== summary ==
+assertions passed: 211
+assertions failed: 25
+negative control: the pre-fix mobile CSS was re-injected
+  mobile/accessibility failures (expected > 0): 25
+  desktop failures (expected 0): 0
+NEGATIVE CONTROL OK: the regression is detected, scoped to mobile

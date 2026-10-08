@@ -1,0 +1,13 @@
+  PASS: featured sponsor data helper is loaded
+  PASS: Polylang is active
+  PASS: EN homepage receives eligible B2 sponsor data
+  PASS: EN sponsor set has no duplicate permalink identities
+  PASS: EN Hero uses the existing sponsors-carousel--hero component
+  PASS: EN Hero renders one slide per selected sponsor
+  PASS: linked EN sponsor translation is selected
+  PASS: PT master is replaced, not displayed beside its EN translation
+  PASS: mixed translation state has one visible representation for the identity
+  PASS: PT and EN sponsor caches remain language-scoped
+
+10 passed, 0 failed
+stage7 exit=0
