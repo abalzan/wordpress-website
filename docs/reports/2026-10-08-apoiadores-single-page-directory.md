@@ -273,6 +273,26 @@ A gate that has never been shown to fail is not a gate. Four independent proofs:
 | **The browser negative control.** `--negative-control` injects a real `.conexao-pagination` nav and a 3 000 px element into the rendered page and requires the *same predicates* the happy path asserts (`pagination_is_absent`, `has_no_horizontal_overflow`) to be violated: `18 passed, 0 failed` (e.g. `3000 > 390`, `1 node(s)`). | **PASS** |
 | **The HTTP matrix row can go red.** The `pt-apoiadores-single-page-no-pagination` row asserts the absence of `conexao-pagination`/`page-numbers` — the very markup the pre-change render emitted (§9's fixture evidence), so the row fails on the pre-change code. | **PASS** |
 
+## 11. Regression comparison
+
+Before vs after, on the same environment and dataset (local Docker WordPress; 5
+published sponsors — 4 PT + 1 EN; no fixture left behind by any suite):
+
+| Layer | Before | After | Diff |
+|---|---|---|---|
+| In-process PHP suites | 39 theme suites run, 37 passed, 2 failed (`test-event-location-filters`, `test-stage41-rest-language`); 2 767 passed, 5 failed | 101 suites run, 96 passed, 5 failed; 7 756 passed, 7 failed | failing-suite list ⊇ before + 3 plugin suites never reached pre-change (`test-export-language` memory-exit, `test-ics-occurrence-dates` ×1, `test-town-sanitization` ×1) — all §12 |
+| New suite `test-sponsor-archive-single-page.php` | 19 passed, **9 failed** (on unmodified code) | **28 passed, 0 failed** | the behaviour change, proven |
+| Existing `test-sponsor-archive-ordering.php` | 15 passed, 0 failed | 15 passed, 0 failed | ordering contract unchanged |
+| Script-contract suites | 19 run, 17 passed, 2 failed (token-retirement, i18n-freshness) | 19 run, 17 passed, 2 failed (same two) | empty |
+| HTTP acceptance suites | 4 run, 3 passed, 1 failed (event-occurrence ×4) | 4 run, 3 passed, 1 failed (same suite, same 4) | empty |
+| `verify-routing-http.py` alone | 92 passed, 0 failed | **118 passed, 0 failed** (+4 rows, +22 dynamic checks) | only this task's additions |
+
+Per-suite failing-assertion counts are identical before and after
+(`test-event-location-filters` 1, `test-stage41-rest-language` 4, event-occurrence
+4, token-retirement 1, i18n-freshness 3). **The diff of the failing lists is empty
+apart from this task's new green coverage**: no new failure, no fixed-by-accident
+pre-existing failure, no weakened gate.
+
 ## 12. Known pre-existing failures
 
 All of the following were observed **before** this change was applied (targeted
@@ -361,6 +381,8 @@ touches Apoiadores, the archive query layer or any file this task modified:
 | `20-after-acceptance-routing-http.txt` | The HTTP acceptance suite after the change (118/0), including the 4 new rows and the dynamic rendered==available checks |
 | `21-after-lint.txt` | `./scripts/lint.sh` clean (syntax + PHPCS + PHPStan) |
 | `22-after-browser-acceptance.txt` | Browser acceptance at 1440×1000 and 390×844 plus the DOM-injecting negative control (94/0 and 18/0) |
+| `23-after-unrelated-pagination-control.txt` | The shared pagination component still paginates every other surface (`/guias/`, `/blog/`, `/?s=de`, `/eventos/`, `/lazer/` all emit `.conexao-pagination`/`.page-numbers`; only `/apoiadores/` and `/en/apoiadores/` emit none) |
+| `24-after-full-run-tests.txt` | The complete after-change `./scripts/run-tests.sh` output: 101 in-process suites (96 passed, 5 failed — all pre-existing), 19 script suites (17/2, pre-existing), 4 acceptance suites (3/1, pre-existing) |
 
 ## 15. Documentation updated
 
