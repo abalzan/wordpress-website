@@ -7,8 +7,8 @@
 | **Author / agent** | Cline (agent) |
 | **Branch** | `master` |
 | **Start SHA** | `47d3f2a1843d539204e59f30b52dbb39e76c0e66` |
-| **Final SHA** | uncommitted (see §3 — the working tree also carries another session's changes) |
-| **Working tree at finish** | dirty — this change (`inc/archive-query.php`, `inc/sponsors.php`, the new suite, the matrix rows, docs) **plus** files owned by a concurrent session in the same workspace: `wp-content/themes/conexao-br-irlanda/assets/css/main.css` (hero carousel dots), untracked `tests/browser/verify-sponsor-carousel-mobile-browser.py` and `carousel-work/`. None of those are part of this change. |
+| **Final SHA** | `e3f0ba5` — *Render every Apoiador on one page (remove /apoiadores/ pagination)* (this task's commit; see §13 for the concurrent session that reset the working tree mid-verification, which is why the change was committed) |
+| **Working tree at finish** | clean for this task's files (committed). The tree also carries a concurrent session's uncommitted `wp-content/themes/conexao-br-irlanda/assets/css/main.css` and its untracked `tests/browser/verify-sponsor-carousel-mobile-browser.py` + `carousel-work/`; none of those are part of this change. |
 | **Skills followed** | `wp-repository`, `wp-frontend-perf`, `wp-write-in-process-test`, `wp-http-acceptance-matrix`, `wp-update-docs`, `wp-security-review` |
 | **Authoritative docs consulted** | `AGENTS.md`, `docs/engineering-standard.md`, `docs/content-model.md`, `docs/routing.md`, `docs/themes/conexao-br-irlanda.md`, `docs/frontend.md`, `docs/testing.md`, `plugins.json` |
 
@@ -313,22 +313,35 @@ touches Apoiadores, the archive query layer or any file this task modified:
      that was stopped when the concurrent session began editing; the layers this
      change can affect (theme, script contract, HTTP acceptance) were baselined
      completely and separately.
-2. **No production verification.** The change was verified locally only; deploying
+2. **The concurrent session RESET the tracked working tree mid-verification.**
+   At ≈08:47, while this task's full verification run was in progress, the other
+   session ran a `git stash` ("carousel-provenance: HEAD baseline for
+   failing-suite provenance") that removed **every** tracked modification —
+   including this task's `inc/archive-query.php` change. The affected run then
+   reported the pre-change signature (`test-sponsor-archive-single-page.php —
+   19 passed, 9 failed`) and was discarded as invalid for that reason. Recovery:
+   the stash was popped back (restoring both sessions' modifications byte for
+   byte), the change was re-verified (`28/0` again, lint `0`) and then
+   **committed as `e3f0ba5`** so a further reset cannot silently remove it. The
+   other session's `main.css` change was restored to the working tree by the same
+   pop and remains uncommitted, exactly as it was. No evidence in this report
+   comes from the invalidated run.
+3. **No production verification.** The change was verified locally only; deploying
    the theme to WordPress.com is the maintainer's separate release step.
-3. **Apoiador card images could not be exercised with real artwork.** Every local
+4. **Apoiador card images could not be exercised with real artwork.** Every local
    synthetic Apoiador fixture carries no image, so no card renders an `<img>`
    (the documented no-image fallback). The image assertions therefore cover the
    images the page really renders (three theme logos — all loaded, all with alt
    text). The card-image code path (`conexao_sponsor_carousel_image()`) is
    unchanged by this task and is already covered by the sponsor suites.
-4. **The slow 404 path is pre-existing.** `/apoiadores/page/2/` answered 404 in
+5. **The slow 404 path is pre-existing.** `/apoiadores/page/2/` answered 404 in
    5.7–6.5 s before the change and 404 in the same range after; the cost lives in
    the 404 template, not in the guard, and it was measured under a concurrent test
    run.
-5. **The browser layer is opt-in.** It is not discovered by
+6. **The browser layer is opt-in.** It is not discovered by
    `./scripts/run-tests.sh` (that layer never launches a browser) and must be run
    explicitly, as documented in `docs/testing.md`.
-6. **Pre-existing documentation staleness left untouched on purpose:**
+7. **Pre-existing documentation staleness left untouched on purpose:**
    `docs/content-model.md`'s `_sponsor_link` paragraph still claims archive cards
    link to the official website, while the archive has long linked to the Apoiador
    detail page. Recorded here instead of being silently "fixed" (unrelated scope).
