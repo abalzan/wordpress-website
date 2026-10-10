@@ -360,101 +360,26 @@ class Conexao_County_Registry {
 	}
 
 	/**
-	 * Eventbrite date-window listing slugs.
-	 *
-	 * G8. The county `all-events` listing truncates its own pagination
-	 * (measured 2026-10-04: `page_count` pinned at 49 while `object_count`
-	 * runs 1,547–5,722), so a large share of a county's events is simply not
-	 * reachable through it. Eventbrite's *date-window* listings slice the same
-	 * county population by time and, because each slice is far smaller, each one
-	 * declares a page count it can actually serve — so it can be walked to
-	 * genuine completion.
-	 *
-	 * Measured Cork: `events-this-week` enumerated 16/16 declared pages with zero
-	 * errors and surfaced 198 events the capped `all-events` walk never reached.
-	 *
-	 * `events-this-month` is deliberately NOT registered: it measured 48 declared
-	 * pages against a 49-page cap, so it is as exposed to truncation as
-	 * `all-events` and would add request cost without adding reachable coverage.
-	 *
-	 * @var array
-	 */
-	const EVENTBRITE_DATE_WINDOWS = array(
-		'events-today'    => 'Today',
-		'events-tomorrow' => 'Tomorrow',
-		'events-this-week' => 'This week',
-	);
-
-	/**
-	 * Generate one Eventbrite date-window source configuration.
-	 *
-	 * This is the SAME `eventbrite` source type as the county listing: it is
-	 * handled by `Conexao_Source_Eventbrite` and differs only in its discovery
-	 * URL. No new adapter, parser or importer architecture is introduced — the
-	 * existing handler is already configuration-driven (url, county,
-	 * region_labels), so a different window is just a different URL.
-	 *
-	 * @param string $county_slug County slug.
-	 * @param string $window_slug Eventbrite date-window slug.
-	 * @param string $window_name Human-readable window label.
-	 * @return array|null Source config, or null when the county is unknown.
-	 */
-	public static function get_eventbrite_window_source( $county_slug, $window_slug, $window_name ) {
-		$county = self::get_county( $county_slug );
-		if ( ! $county ) {
-			return null;
-		}
-
-		$id = 'eventbrite_' . $county_slug . '_' . str_replace( '-', '_', $window_slug );
-
-		return array(
-			'id'                => $id,
-			'name'              => 'Eventbrite — ' . $county['name'] . ' (' . $window_name . ')',
-			'url'               => 'https://www.eventbrite.ie/d/' . $county['eb_slug'] . '/' . $window_slug . '/',
-			'type'              => 'eventbrite',
-			// Ships inactive, exactly like every other registry source: it must
-			// never start an import or send a request until an operator enables it.
-			'status'            => 'inactive',
-			'county'            => $county['name'],
-			'region_labels'     => $county['eb_region_labels'],
-			'date_window'       => $window_slug,
-			'last_import'       => '',
-			'last_import_status' => '',
-			'events_imported'   => 0,
-			'last_error'        => '',
-		);
-	}
-
-	/**
-	 * Get all Eventbrite date-window source configs.
-	 *
-	 * @return array Array of source configs keyed by source ID.
-	 */
-	public static function get_all_eventbrite_window_sources() {
-		$sources = array();
-
-		foreach ( self::get_slugs() as $slug ) {
-			foreach ( self::EVENTBRITE_DATE_WINDOWS as $window_slug => $window_name ) {
-				$source = self::get_eventbrite_window_source( $slug, $window_slug, $window_name );
-				if ( $source ) {
-					$sources[ $source['id'] ] = $source;
-				}
-			}
-		}
-
-		return $sources;
-	}
-
-	/**
 	 * Get all county source configs (both providers).
+	 *
+	 * 26 Eventbrite county listings + 26 National Heritage Week county
+	 * listings = 52 sources, every one shipping `inactive`.
+	 *
+	 * The G8 Eventbrite **date-window** sources
+	 * (`eventbrite_<county>_events_{today,tomorrow,this_week}`) were retired on
+	 * 2026-09-10 and are deliberately NOT generatable any more. The generators
+	 * were removed rather than left dormant, and
+	 * `Conexao_Event_Sources::get_all()` actively strips any registration of
+	 * that shape still persisted in an environment, so a retired window can
+	 * never be resurrected. Events those sources had imported are preserved:
+	 * a source registration is bookkeeping, never content.
 	 *
 	 * @return array Array of source configs keyed by source ID.
 	 */
 	public static function get_all_county_sources() {
 		return array_merge(
 			self::get_all_eventbrite_sources(),
-			self::get_all_heritage_week_sources(),
-			self::get_all_eventbrite_window_sources()
+			self::get_all_heritage_week_sources()
 		);
 	}
 }

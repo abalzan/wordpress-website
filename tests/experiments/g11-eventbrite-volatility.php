@@ -28,9 +28,8 @@
  *         --source=eventbrite_cork --label=obs1 [--evidence-dir=/var/www/html/...]
  *
  * Sources are the REAL registry ids, resolved through
- * `Conexao_County_Registry::get_eventbrite_window_source()` /
- * `get_eventbrite_source()`, so the URLs measured are exactly the URLs the
- * importer uses. Nothing is substituted or invented.
+ * `Conexao_County_Registry::get_all_eventbrite_sources()`, so the URLs measured
+ * are exactly the URLs the importer uses. Nothing is substituted or invented.
  *
  * @package Conexao_Event_Importer
  */
@@ -85,16 +84,22 @@ function g11_args( array $argv ) {
  * The harness measures the shipped configuration, never a hand-written URL, so
  * a measured URL cannot drift from the one production would use.
  *
- * @param string $source_id Source id, e.g. `eventbrite_cork_events_this_week`.
+ * The G8 date-window ids (`eventbrite_<county>_events_{today,tomorrow,
+ * this_week}`) were retired on 2026-09-10 and no longer resolve: the registry
+ * no longer generates them, so the harness refuses them instead of measuring a
+ * source the importer would never import.
+ *
+ * @param string $source_id Source id, e.g. `eventbrite_cork`.
  * @return array|null Source config, or null when unknown.
  */
 function g11_resolve_source( $source_id ) {
-	if ( preg_match( '/^eventbrite_([a-z]+)_(events_(?:today|tomorrow|this_week))$/', $source_id, $m ) ) {
-		$windows  = Conexao_County_Registry::EVENTBRITE_DATE_WINDOWS;
-		$slug     = str_replace( '_', '-', $m[2] );
-		$config   = Conexao_County_Registry::get_eventbrite_window_source( $m[1], $slug, isset( $windows[ $slug ] ) ? $windows[ $slug ] : $slug );
+	if ( preg_match( '/^eventbrite_[a-z]+_events_(today|tomorrow|this_week)$/', (string) $source_id ) ) {
+		g11_say( sprintf(
+			'%s is a RETIRED Eventbrite date-window source (removed 2026-09-10); it is no longer part of the registry',
+			$source_id
+		) );
 
-		return ( $config && $config['id'] === $source_id ) ? $config : null;
+		return null;
 	}
 
 	$all = Conexao_County_Registry::get_all_eventbrite_sources();

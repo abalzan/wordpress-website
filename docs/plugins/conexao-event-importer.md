@@ -9,14 +9,14 @@
 | **Build** | yes |
 | **Compose mount** | yes |
 | **Dependencies** | `conexao-data-model`, `conexao-event-runtime` |
-| **Version** | 1.9.0 (authoritative source: `wp-content/plugins/conexao-event-importer/conexao-event-importer.php` header) |
+| **Version** | 1.10.0 (authoritative source: `wp-content/plugins/conexao-event-importer/conexao-event-importer.php` header) |
 | **Registry** | [`plugins.json`](../../plugins.json) |
 
 > **Local-only tooling.** Not a production steady-state dependency.
 <!-- END GENERATED PLUGIN REGISTRY: plugin lifecycle metadata -->
 
 - **Path**: `wp-content/plugins/conexao-event-importer/`
-- **Version**: 1.7.1
+- **Version**: 1.10.0
 - **Requires Plugins**: `conexao-data-model`, `conexao-event-runtime`
 - **Purpose**: Local-only event import/export tooling. Fetches events from external sources (Laois Tourism, National Heritage Week, Eventbrite multi-county) into the **local** WordPress installation, downloads all images into the local Media Library, then exports the complete event data as JSON for import into the production WordPress.com site.
 - **Rollout tooling — keep available on production.** All production-critical event behavior (meta/taxonomy registration, `_event_status` public query gate, status admin UI) lives in the separate [Event Runtime](conexao-event-runtime.md) plugin, so this plugin is **not required for runtime event rendering**. However, during the multi-county Events Expansion it is part of the rollout workflow and **must not be deactivated, removed, replaced, or treated as unnecessary production code**. It stays **dormant unless explicitly invoked**: there is no cron, polling, background sync, or frontend fetching, and production never contacts external sources.
@@ -178,21 +178,24 @@ On activation, the plugin seeds these default sources:
 | `motorsport_ireland` | Motorsport Ireland | `website` | inactive |
 | `mondello_park` | Mondello Park | `website` | inactive |
 
-**Full registry size: 136 sources** (measured 2026-10-05 from the live local
-registry) — these 6 legacy defaults, plus 52 county sources, plus the 78
-Eventbrite date-window sources added by the G8 expansion
-(`eventbrite_<county>_events_{today,tomorrow,this_week}`, 26 × 3). All three
-halves are declared in code (no operator `wp eval` needed) and merged
-idempotently by `Conexao_Event_Sources::get_all()`.
+**Full registry size: 58 sources** (measured 2026-09-10 from the live local
+registry) — these 6 legacy defaults, plus 52 county sources. Both halves are
+declared in code (no operator `wp eval` needed) and merged idempotently by
+`Conexao_Event_Sources::get_all()`.
+
+The 78 Eventbrite date-window sources the G8 expansion had added
+(`eventbrite_<county>_events_{today,tomorrow,this_week}`, 26 × 3 — the
+"Eventbrite — <County> (Today) / (Tomorrow) / (This week)" rows) were **retired
+on 2026-09-10** and are no longer part of the registry; see
+[Retired Eventbrite date-window sources](#retired-eventbrite-date-window-sources-g8-retired-2026-09-10).
 
 ### County Source Registry (v1.7.0)
 
 The multi-county expansion introduced 52 county source registrations
-(26 Eventbrite + 26 Heritage Week) for the 26 Republic of Ireland counties,
-and the G8 expansion added 78 Eventbrite date-window registrations on top.
-Together with the six legacy defaults above this is a **136-source registry**.
-All 130 county/window sources ship **inactive**: registering a source never
-starts an import. See
+(26 Eventbrite + 26 Heritage Week) for the 26 Republic of Ireland counties.
+Together with the six legacy defaults above this is a **58-source registry**.
+All 52 county sources ship **inactive**: registering a source never starts an
+import. See
 [the G16 report](../reports/2026-10-05-eventbrite-full-activation.md) for which
 classes are eligible and enabled.
 
@@ -213,19 +216,38 @@ LOGGED (never silently accepted).
 a single source registration (relevant for Galway, Dublin). The 2026 form values
 are audited in `docs/importers/events-expansion-stage-a-audit.md`.
 
-### Eventbrite date-window sources (G8)
+### Retired Eventbrite date-window sources (G8, retired 2026-09-10)
 
-The county `all-events` listing **truncates its own pagination**: `page_count`
-is pinned at exactly 49 for every county regardless of volume, while
-`object_count` runs from 1,547 (Cork) to 5,722 (Cavan). A large share of a
-county's events is therefore not reachable through it at all.
+**Status: removed.** The 78 Eventbrite date-window registrations added by the G8
+expansion are gone: `eventbrite_<county>_events_{today,tomorrow,this_week}`
+(26 counties × 3 windows), which appeared in Event Import → Event Sources as
+`Eventbrite — <County> (Today)`, `Eventbrite — <County> (Tomorrow)` and
+`Eventbrite — <County> (This week)`.
 
-Eventbrite's **date-window** listings (`events-today`, `events-tomorrow`,
-`events-this-week`) slice the same county population by time. Each slice is far
-smaller and declares a page count it can actually serve, so it can be walked to
-genuine completion.
+What the retirement actually did:
 
-Measured on Cork, 2026-10-04:
+- `Conexao_County_Registry::EVENTBRITE_DATE_WINDOWS`,
+  `get_eventbrite_window_source()` and `get_all_eventbrite_window_sources()` were
+  **deleted**, not left dormant. `get_all_county_sources()` now returns only the
+  52 county sources, so the registry cannot generate a window source again.
+- `Conexao_Event_Sources::get_all()` **actively strips** any registration of that
+  shape still persisted in an environment's `conexao_event_sources` option, via
+  `Conexao_Event_Sources::RETIRED_WINDOW_SOURCE_PATTERN`
+  (`/^eventbrite_[a-z]+_events_(today|tomorrow|this_week)$/`) — the same
+  mechanism used for the retired `laois_council` / `leo_laois` ids below. The
+  pattern cannot match a county listing (`eventbrite_<county>`) or a Heritage
+  Week source, so no other registration is at risk.
+- Nothing else changed. The `eventbrite` source type, the county region gate,
+  identity/dedup, the G9 cooldown and the G10 checkpoint are untouched, and the
+  truncation guard below still applies to every Eventbrite listing.
+
+**Why they were measured, and why they are gone.** The county `all-events`
+listing truncates its own pagination — `page_count` is pinned at exactly 49 for
+every county regardless of volume while `object_count` runs from 1,547 (Cork) to
+5,722 (Cavan) — so a large share of a county's events is unreachable through it.
+The date-window listings (`events-today`, `events-tomorrow`, `events-this-week`)
+slice the same county population by time; each slice is far smaller and declares
+a page count it can actually serve. Measured on Cork, 2026-10-04:
 
 | Listing | declared pages | walked | unique events | outcome |
 |---|---:|---:|---:|---|
@@ -235,37 +257,31 @@ Measured on Cork, 2026-10-04:
 | `events-tomorrow` | 2 | 2 | 23 | complete |
 | **window union** | — | 32 requests | 483 | **198 events the capped listing never reaches** |
 
-**These are configuration, not new architecture.** A date-window source has
-`type = eventbrite` and is handled by `Conexao_Source_Eventbrite` — the same
-adapter as the county listing, with a different discovery URL. Source IDs are
-`eventbrite_<county>_events_<window>` (e.g. `eventbrite_cork_events_this_week`).
+They were retired by **operator decision on 2026-09-10**, not because the
+measurement was wrong. The measurement record stays in
+[the G8 report](../reports/2026-10-04-eventbrite-g8-source-expansion.md); this
+section is the record of the removal.
 
-Every date-window source **ships `inactive`**, exactly like every other registry
-source. Enable one explicitly in Event Import → Event Sources.
+**Imported events are preserved.** A source registration is bookkeeping, never
+content: `_event_source` meta on an Event post is left exactly as it was, so an
+event imported through a window source keeps its history. Measured local
+inventory at retirement: 2 288 imported events, **0** of them carrying a window
+`_event_source` and **0** event titles containing `(Today)` / `(Tomorrow)` /
+`(This week)` — see
+`docs/evidence/2026-09-10-retire-eventbrite-windows/01-inventory-before.txt`.
 
-`events-this-month` is deliberately **not** registered: it measured 48 declared
-pages against the same 49-page cap, so it would cost requests without adding
-reachable coverage.
-
-Identity and deduplication are unchanged and deterministic:
-
-- identity is the **native Eventbrite event id** (`_event_source_id`), never an
-  array index, page number or title;
-- the same event reached through two sources carries the same canonical
-  Eventbrite URL, and `Conexao_Event_Deduplicator::find_by_url()` matches on it,
-  so one WordPress event is created — no fuzzy matching was introduced;
-- the county region gate is **unchanged**: eligibility comes from each event's
-  own `locations[].address.region`. The window URL confers nothing, so an event
-  outside the county is rejected even when a county window URL served it.
+The truncation finding itself still stands and still matters: it is why a county
+listing can never report `complete`, and it is what the pagination-semantics
+guard below encodes.
 
 **Seeding:** the county registry is **self-healing**. `Conexao_Event_Sources::get_all()`
 merges any missing county source on every read, so the complete county registry
-(Eventbrite + Heritage Week + Eventbrite date-window sources) is correct on every
-environment — a fresh activation, the local Docker stack, a CI fixture build and a
-restored database alike. `seed_county_sources()` remains available as an explicit,
-idempotent operator step, but it is **no longer required** to obtain the county
-coverage. The registry count is derived from `Conexao_County_Registry`, never
-hard-coded in a test.
+(Eventbrite + Heritage Week) is correct on every environment — a fresh
+activation, the local Docker stack, a CI fixture build and a restored database
+alike. `seed_county_sources()` remains available as an explicit, idempotent
+operator step, but it is **no longer required** to obtain the county coverage.
+The registry count is derived from `Conexao_County_Registry`, never hard-coded
+in a test.
 
 This self-heal is deliberate and narrow:
 - it **only inserts** source ids that do not exist, so an operator's activated,
@@ -280,6 +296,10 @@ were deliberately retired (commit `042259d`, which deleted
 `class-laois-council-source.php` and `class-leo-laois-source.php`). `get_all()`
 actively strips these ids. They must never be restored; the events they
 previously imported are preserved.
+
+The 78 Eventbrite date-window sources are retired the same way, by pattern
+(`RETIRED_WINDOW_SOURCE_PATTERN`, removed 2026-09-10). They must never be
+restored either; the events they imported are preserved.
 
 **Eventbrite pagination cap:** `page_count` is capped at 49 (~980 events).
 Large counties (Dublin, Cork) may report much higher `object_count` values.
@@ -1002,51 +1022,58 @@ Live Eventbrite, Cork, `2026-10-04T20:03Z → 21:57Z` — **40 observations acro
 | Source | Obs | Complete | Volatility | Incremental events | Events/req | Decision |
 |---|---:|---:|---|---:|---:|---|
 | `eventbrite_cork` (all-events) | 10 | 0 | UNKNOWN | — | 2.03 | not scheduled |
-| `eventbrite_cork_events_this_week` | 10 | 10 | **LOW** (0.42 %/interval) | **97** (78.2 %) | **2.07** | **ACTIVE** |
+| `eventbrite_cork_events_this_week` | 10 | 10 | **LOW** (0.42 %/interval) | **97** (78.2 %) | **2.07** | **ACTIVE** when measured — *source retired 2026-09-10* |
 | `eventbrite_cork_events_tomorrow` | 10 | 10 | LOW (0 changes seen) | 20 | 1.15 | **DEFER** — inactive |
 | `eventbrite_cork_events_today` | 10 | 10 | HIGH (calendar) | 8 | **0.20** | **REJECT** — inactive |
+
+> **Since 2026-09-10 the three date-window sources above are retired** and no
+> longer exist in the registry, so none of them can be activated or imported any
+> more. The measurement still stands: it is why the county `all-events` listing
+> is known to be structurally truncated, and it is why `complete = false` is
+> authoritative for that listing. See
+> [Retired Eventbrite date-window sources](#retired-eventbrite-date-window-sources-g8-retired-2026-09-10).
 
 ### The operating model
 
 ```text
 Eventbrite public sources
-        │
-   ┌────┴─────┐
-   │          │
- all-events  date windows (this-week ACTIVE)
-   │          │
- checkpointed  bounded complete
- progressive   discovery
- discovery          │
-   └──────┬───────┘
-          ▼
-  stable Eventbrite IDs → dedupe → normalize
-          ▼
-  completeness gate → reconciliation safety
-          ▼
-       WordPress
+         │
+    ┌────┴─────┐
+    │          │
+  all-events   (date windows retired 2026-09-10)
+    │
+  checkpointed
+  progressive
+  discovery
+    └──────┬───────┘
+           ▼
+   stable Eventbrite IDs → dedupe → normalize
+           ▼
+   completeness gate → reconciliation safety
+           ▼
+        WordPress
 ```
 
 **How to run it.** Manually, on demand, for the sources you have enabled:
 
 ```bash
 # local, on demand — never a schedule
-wp conexao-events import --source=eventbrite_cork_events_this_week
+wp conexao-events import --source=eventbrite_cork
 ```
 
-Two source behaviours, deliberately different:
+One source behaviour, because the date-window class no longer exists:
 
 | Source class | Strategy | Why |
 |---|---|---|
 | **All-events** (large county) | **bounded progressive discovery** — checkpoint, resume, bounded overlap | Measured structurally truncated: 49 pages × 20 = **980 reachable** vs ~1,534 declared. It can **never** be "complete", so it must never be treated as a frequent full crawl. |
-| **Date window** (`this-week`) | **bounded complete discovery** — one small fully-enumerable walk | 9/9 complete enumerations, ~6 requests per run, 2.07 events per request. |
+| ~~**Date window** (`this-week`)~~ | ~~bounded complete discovery — one small fully-enumerable walk~~ | **Retired 2026-09-10.** It measured 9/9 complete enumerations, ~6 requests per run and 2.07 events per request, but the sources were removed from the registry, so there is no window source left to import. |
 
 ### Cadence is deliberately unresolved
 
-`events-this-week` volatility is **LOW**, but only over a **114.6-minute**
-window. That bounds churn *at that interval*; it does **not** establish a daily
-change rate, and extrapolating one would invent stationarity no measurement
-supports.
+`events-this-week` volatility was **LOW**, but only over a **114.6-minute**
+window — and the source it was measured on is retired. That measurement bounds
+churn *at that interval*; it does **not** establish a daily change rate, and
+extrapolating one would invent stationarity no measurement supports.
 
 **To finalise cadence**, keep collecting with the existing harness — no code
 change needed:
@@ -1055,12 +1082,16 @@ change needed:
 ./tests/experiments/g11-run-round.sh <label>      # 15-minute protocol interval
 ```
 
-Once a multi-day series exists, derive a per-source interval from it.
+Once a multi-day series exists, derive a per-source interval from it. The
+harness now refuses a retired window id instead of measuring a source the
+importer would never import.
 
 ### Verified live, not just asserted (G14)
 
-A controlled local run of `eventbrite_cork_events_this_week` proved the whole
-chain on live data:
+A controlled local run of `eventbrite_cork_events_this_week` — a source retired
+on 2026-09-10 — proved the whole chain on live data. The mechanisms it proved
+(checkpoint, bounded overlap, identity dedup, the completeness gate) are exactly
+what the county `all-events` sources still rely on:
 
 | Claim | Live evidence |
 |---|---|
@@ -1684,3 +1715,5 @@ meta group deleted, so a withdrawn series can never leave an orphan rule.
 - `includes/class-conexao-laois-tourism-series.php` — Laois collapsed-series rule
 - `includes/class-event-export.php` / `includes/class-event-import.php` — the local→production transfer (UUIDs + embedded images)
 - `includes/class-event-sources.php` — source CRUD + dashboard
+
+_Last verified: 2026-09-10 by the Eventbrite date-window source retirement_

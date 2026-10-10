@@ -1,0 +1,103 @@
+
+=== sanitize_town() — Eircode stripping ===
+  PASS: Ballinamore N41 E8H0 → Ballinamore (got: 'Ballinamore')
+  PASS: Ballinamore N41E8HO → Ballinamore (got: 'Ballinamore')
+  PASS: Oranmore H91 72H3 → Oranmore (got: 'Oranmore')
+  PASS: Oranmore H91 72H3, → Oranmore (got: 'Oranmore')
+  PASS: H91 72H3 Oranmore → Oranmore (got: 'Oranmore')
+  PASS: Ballinamore → Ballinamore (clean name preserved)
+  PASS: Dublin → Dublin (clean name preserved)
+  PASS: whitespace handled: padded input → Ballinamore
+
+=== sanitize_town() — standalone Eircode rejection ===
+  PASS: A92 DF7X. → '' (standalone Eircode rejected)
+  PASS: W23 FNP4, → '' (standalone Eircode rejected)
+  PASS: N41 E8H0 → '' (standalone Eircode rejected)
+  PASS: H91 72H3 → '' (standalone Eircode rejected)
+  PASS: empty string → ''
+  PASS: whitespace only → ''
+
+=== ensure_town() — defense in depth ===
+  PASS: ensure_town('A92 DF7X.') returns 0 (term not created)
+  PASS: ensure_town('W23 FNP4,') returns 0 (term not created)
+  PASS: ensure_town('Ballinamore N41 E8H0') resolves to Ballinamore term_id=2143
+  PASS: ensure_town('Dublin') creates/resolves a term
+
+=== Normalizer integration — town sanitization ===
+  PASS: normalizer: 'Ballinamore N41 E8H0' → 'Ballinamore' (got: 'Ballinamore')
+  PASS: normalizer: 'A92 DF7X.' → '' (got: '')
+  PASS: normalizer: 'W23 FNP4,' → '' (got: '')
+  PASS: normalizer: 'Dublin' → 'Dublin' (preserved)
+  PASS: normalizer: town sanitized to 'Oranmore' (got: 'Oranmore')
+  PASS: normalizer: address metadata preserved (got: '123 Main St, Oranmore, H91 72H3')
+
+=== is_county_only_value() — a county is not a town ===
+  PASS: Laois is a county, not a town
+  PASS: match is case-insensitive
+  PASS: surrounding whitespace tolerated
+  PASS: Clare is a county, not a town
+  PASS: Kerry is a county, not a town
+  PASS: Meath is a county, not a town
+  PASS: Offaly is a county, not a town
+  PASS: 'Co. Laois' recognised as the county
+  PASS: 'Co Laois' recognised as the county
+  PASS: 'County Laois' recognised as the county
+  PASS: 'Laois, Ireland' recognised as the county
+  PASS: 'Laois Ireland' recognised as the county
+  PASS: 'Cork' is a real town and must be kept
+  PASS: 'Dublin' is a real town and must be kept
+  PASS: 'Galway' is a real town and must be kept
+  PASS: 'Kilkenny' is a real town and must be kept
+  PASS: 'Sligo' is a real town and must be kept
+  PASS: 'Waterford' is a real town and must be kept
+  PASS: 'Wexford' is a real town and must be kept
+  PASS: 'Cavan' is a real town and must be kept
+  PASS: 'Wicklow' is a real town and must be kept
+  PASS: 'Kildare' is a real town and must be kept
+  PASS: 'Limerick' is a real town and must be kept
+  PASS: 'Carlow' is a real town and must be kept
+  PASS: 'Longford' is a real town and must be kept
+  PASS: 'Monaghan' is a real town and must be kept
+  PASS: 'Donegal' is a real town and must be kept
+  PASS: 'Leitrim' is a real town and must be kept
+  PASS: 'Cobh' is a town starting with 'Co'
+  PASS: 'Cong' is a town starting with 'Co'
+  PASS: 'Newtown' is a town, not a county
+  PASS: empty value is not a county
+
+=== sanitize_town() — county names are rejected ===
+  PASS: Laois → '' (county, not a town)
+  PASS: 'Co. Laois' → ''
+  PASS: 'Laois, Ireland' → ''
+  PASS: 'Cork' preserved as a town
+  PASS: 'Dublin' preserved as a town
+  PASS: 'Galway' preserved as a town
+  PASS: 'Cavan' preserved as a town
+  PASS: 'Wicklow' preserved as a town
+  PASS: 'Kildare' preserved as a town
+
+=== ensure_town() — a county never creates a town term ===
+  PASS: ensure_town('Laois') returns 0 — no term is created
+  PASS: ensure_town('Laois') creates no new conexao_town term (term state unchanged)
+
+=== Normalizer integration — county is kept, town is not invented ===
+  PASS: normalizer: county 'Laois' is retained (got: 'Laois')
+  PASS: normalizer: town is empty, not 'Laois' (got: '')
+  PASS: normalizer: venue preserved (got: 'Gorteenameale')
+  PASS: normalizer: _event_location still shows the venue (got: 'Gorteenameale')
+  PASS: normalizer: county-only event is NOT rejected as unlocated
+  PASS: normalizer: county 'Laois' retained with a real town
+  PASS: normalizer: real town 'Portlaoise' still imported (got: 'Portlaoise')
+
+=== Database state verification ===
+  FAIL: no Eircode-contaminated or non-town terms in conexao_town
+  PASS: clean term 'Ballinamore' exists
+  PASS: clean term 'Oranmore' exists (was contaminated)
+  PASS: clean term 'Galway' exists (was 'Galway, Ireland')
+  PASS: legitimate town 'Cork' still exists
+  PASS: legitimate town 'Cobh' still exists
+  PASS: legitimate town 'Corofin' still exists
+  PASS: standalone Eircode 'A92 DF7X.' removed
+  PASS: standalone Eircode 'W23 FNP4,' removed
+
+82 passed, 1 failed

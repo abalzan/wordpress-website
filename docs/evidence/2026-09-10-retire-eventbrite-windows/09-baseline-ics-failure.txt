@@ -1,0 +1,198 @@
+Site: http://localhost:8080 — timezone: Europe/Dublin
+Fixture: /var/www/html/wp-content/plugins/conexao-event-importer/tests/fixtures/ics/laois-tourism.ics
+
+=== 1. Classes loaded ===
+  PASS: Conexao_ICS_Recurrence is loaded
+  PASS: Conexao_Laois_Tourism_Series is loaded
+  PASS: Conexao_Event_Recurrence (runtime) is available
+  PASS: the real Laois ICS fixture is readable
+
+=== 2. Source convention: the feed declares no RRULE at all ===
+  PASS: fixture contains VEVENTs
+  PASS: fixture contains ZERO RRULE lines (measured)
+  PASS: fixture contains zero EXDATE/RDATE lines
+  PASS: fixture yields at least 30 parsed events, got 30
+  PASS: Chair Yoga At Portlaoise Library was parsed
+  PASS: Chair Yoga DTSTART date is 2026-09-29
+  PASS: Chair Yoga DTEND date is 2026-10-20
+  PASS: Chair Yoga DTSTART time is 14:00 (TZID local)
+  PASS: Chair Yoga DTEND time is 15:00 (TZID local)
+  PASS: Chair Yoga carries a recurrence description
+  PASS: Chair Yoga recurrence type is weekly
+  PASS: Chair Yoga resolved by the Laois collapsed-series rule
+  PASS: Chair Yoga weekday set is Tuesday (ISO 2)
+  PASS: Chair Yoga series starts 2026-09-29
+  PASS: Chair Yoga series ends 2026-10-20
+  PASS: Chair Yoga resolves to exactly FOUR occurrences
+  PASS: Chair Yoga occurrence dates are the four expected Tuesdays
+
+=== 3. Chair Yoga occurrence-date matching (the reported bug) ===
+  PASS: Chair Yoga occurs on 2026-09-29 (first occurrence)
+  PASS: Chair Yoga occurs on 2026-10-06 (second occurrence)
+  PASS: Chair Yoga occurs on 2026-10-13 (third occurrence)
+  PASS: Chair Yoga occurs on 2026-10-20 (fourth (final) occurrence)
+  PASS: Chair Yoga does NOT occur on 2026-09-30 (inside the old DTSTART..DTEND range)
+  PASS: Chair Yoga does NOT occur on 2026-10-01 (inside the old DTSTART..DTEND range)
+  PASS: Chair Yoga does NOT occur on 2026-10-02 (inside the old DTSTART..DTEND range)
+  PASS: Chair Yoga does NOT occur on 2026-10-03 (inside the old DTSTART..DTEND range)
+  PASS: Chair Yoga does NOT occur on 2026-10-04 (inside the old DTSTART..DTEND range)
+  PASS: Chair Yoga does NOT occur on 2026-10-05 (inside the old DTSTART..DTEND range)
+  PASS: Chair Yoga does NOT occur on 2026-10-07 (inside the old DTSTART..DTEND range)
+  PASS: Chair Yoga does NOT occur on 2026-10-08 (inside the old DTSTART..DTEND range)
+  PASS: Chair Yoga does NOT occur on 2026-10-09 (inside the old DTSTART..DTEND range)
+  PASS: Chair Yoga does NOT occur on 2026-10-10 (inside the old DTSTART..DTEND range)
+  PASS: Chair Yoga does NOT occur on 2026-10-11 (inside the old DTSTART..DTEND range)
+  PASS: Chair Yoga does NOT occur on 2026-10-12 (inside the old DTSTART..DTEND range)
+  PASS: Chair Yoga does NOT occur on 2026-10-14 (inside the old DTSTART..DTEND range)
+  PASS: Chair Yoga does NOT occur on 2026-10-15 (inside the old DTSTART..DTEND range)
+  PASS: Chair Yoga does NOT occur on 2026-10-16 (inside the old DTSTART..DTEND range)
+  PASS: Chair Yoga does NOT occur on 2026-10-17 (inside the old DTSTART..DTEND range)
+  PASS: Chair Yoga does NOT occur on 2026-10-18 (inside the old DTSTART..DTEND range)
+  PASS: Chair Yoga does NOT occur on 2026-10-19 (inside the old DTSTART..DTEND range)
+  PASS: Chair Yoga specifically does NOT match 2026-10-02
+  PASS: Chair Yoga specifically does NOT match 2026-10-05
+  PASS: Chair Yoga specifically does NOT match 2026-10-07
+  PASS: Chair Yoga specifically does NOT match 2026-10-12
+  PASS: Chair Yoga specifically does NOT match 2026-10-14
+  PASS: Chair Yoga has no occurrence before 2026-09-29
+  PASS: Chair Yoga has no occurrence after 2026-10-20
+  PASS: from 2026-10-02 the next Chair Yoga occurrence is 2026-10-06
+  PASS: from 2026-10-07 the next Chair Yoga occurrence is 2026-10-13
+  PASS: after the series ends there is no next occurrence
+
+=== 4. Other multi-week Laois programmes ===
+  PASS: What Were You Thinking Of Darling? was parsed
+  PASS: What Were You Thinking Of Darling? occurrence dates are consistent (weekly from DTSTART)
+  PASS: What Were You Thinking Of Darling? occurrence count matches its date set
+  PASS: What Were You Thinking Of Darling? stored as a weekly series
+  PASS: What Were You Thinking Of Darling? stored series start is its first occurrence
+  PASS: What Were You Thinking Of Darling? stored series end is its last occurrence
+  PASS: What Were You Thinking Of Darling? occurs on 2026-09-07
+  PASS: What Were You Thinking Of Darling? occurs on 2026-09-14
+  PASS: What Were You Thinking Of Darling? occurs on 2026-09-21
+  PASS: What Were You Thinking Of Darling? occurs on 2026-09-28
+  PASS: What Were You Thinking Of Darling? occurs on 2026-10-05
+  PASS: What Were You Thinking Of Darling? occurs on 2026-10-12
+  PASS: What Were You Thinking Of Darling? occurs on 2026-10-19
+  PASS: What Were You Thinking Of Darling? does NOT occur on the in-range non-occurrence 2026-09-08
+  PASS: Beginners Crochet Classes At Portlaoise Library was parsed
+  PASS: Beginners Crochet Classes At Portlaoise Library occurrence dates are consistent (weekly from DTSTART)
+  PASS: Beginners Crochet Classes At Portlaoise Library occurrence count matches its date set
+  PASS: Beginners Crochet Classes At Portlaoise Library stored as a weekly series
+  PASS: Beginners Crochet Classes At Portlaoise Library stored series start is its first occurrence
+  PASS: Beginners Crochet Classes At Portlaoise Library stored series end is its last occurrence
+  PASS: Beginners Crochet Classes At Portlaoise Library occurs on 2026-09-14
+  PASS: Beginners Crochet Classes At Portlaoise Library occurs on 2026-09-21
+  PASS: Beginners Crochet Classes At Portlaoise Library occurs on 2026-09-28
+  PASS: Beginners Crochet Classes At Portlaoise Library occurs on 2026-10-05
+  PASS: Beginners Crochet Classes At Portlaoise Library occurs on 2026-10-12
+  PASS: Beginners Crochet Classes At Portlaoise Library occurs on 2026-10-19
+  PASS: Beginners Crochet Classes At Portlaoise Library does NOT occur on the in-range non-occurrence 2026-09-15
+  PASS: Bootcamp with Malone Fitness was parsed
+  PASS: Bootcamp with Malone Fitness occurrence dates are consistent (weekly from DTSTART)
+  PASS: Bootcamp with Malone Fitness occurrence count matches its date set
+  PASS: Bootcamp with Malone Fitness stored as a weekly series
+  PASS: Bootcamp with Malone Fitness stored series start is its first occurrence
+  PASS: Bootcamp with Malone Fitness stored series end is its last occurrence
+  PASS: Bootcamp with Malone Fitness occurs on 2026-09-21
+  PASS: Bootcamp with Malone Fitness occurs on 2026-09-28
+  PASS: Bootcamp with Malone Fitness occurs on 2026-10-05
+  PASS: Bootcamp with Malone Fitness occurs on 2026-10-12
+  PASS: Bootcamp with Malone Fitness occurs on 2026-10-19
+  PASS: Bootcamp with Malone Fitness occurs on 2026-10-26
+  PASS: Bootcamp with Malone Fitness does NOT occur on the in-range non-occurrence 2026-09-22
+  PASS: Pilates Programme with Sabrina was parsed
+  PASS: Pilates Programme with Sabrina occurrence dates are consistent (weekly from DTSTART)
+  PASS: Pilates Programme with Sabrina occurrence count matches its date set
+  PASS: Pilates Programme with Sabrina stored as a weekly series
+  PASS: Pilates Programme with Sabrina stored series start is its first occurrence
+  PASS: Pilates Programme with Sabrina stored series end is its last occurrence
+  PASS: Pilates Programme with Sabrina occurs on 2026-09-22
+  PASS: Pilates Programme with Sabrina occurs on 2026-09-29
+  PASS: Pilates Programme with Sabrina occurs on 2026-10-06
+  PASS: Pilates Programme with Sabrina occurs on 2026-10-13
+  PASS: Pilates Programme with Sabrina occurs on 2026-10-20
+  PASS: Pilates Programme with Sabrina occurs on 2026-10-27
+  PASS: Pilates Programme with Sabrina does NOT occur on the in-range non-occurrence 2026-09-23
+
+=== 5. Genuine multi-day and all-day events are NOT series ===
+  PASS: genuine multi-day event still covers 2026-09-30
+  PASS: genuine multi-day event still covers 2026-10-01
+  PASS: genuine multi-day event still covers 2026-10-02
+  PASS: genuine multi-day event still covers 2026-10-03
+  PASS: genuine multi-day event does not extend past its end
+
+=== 6. Explicit RRULE still works (generic, not Laois-specific) ===
+  PASS: explicit RRULE event parsed
+  PASS: explicit RRULE resolved by the standard path
+  PASS: explicit RRULE type is weekly
+  PASS: RRULE series starts at DTSTART
+  PASS: COUNT=5 weekly RRULE yields exactly five occurrences
+  PASS: RRULE series occurs on its 5th date
+  PASS: RRULE series stops after COUNT occurrences
+  PASS: RRULE series does not occur on an off-weekday date
+  PASS: UNTIL-bounded RRULE parsed
+  PASS: UNTIL (a UTC DATE-TIME) yields the calendar date 2026-11-16
+  PASS: UNTIL-bounded RRULE yields four Mondays
+  PASS: FREQ=DAILY event still parses
+  PASS: a non-weekly RRULE is not forced into the weekly model
+  PASS: non-weekly RRULE keeps its literal DTSTART
+  PASS: INTERVAL=2 RRULE event still parses
+  PASS: INTERVAL=2 is refused rather than approximated as weekly
+
+=== 7. The rule is source-scoped (standard ICS semantics preserved) ===
+  PASS: Chair Yoga parses under another source id
+  PASS: the Laois rule does NOT leak to other ICS sources
+  PASS: other source keeps literal DTSTART
+  PASS: other source keeps literal DTEND
+  PASS: adapter claims only laois_tourism
+  PASS: adapter refuses other source ids
+  PASS: adapter refuses eventbrite
+  PASS: adapter rejects: all-day spanning weeks
+  PASS: adapter rejects: different weekdays
+  PASS: adapter rejects: not a whole-week span
+  PASS: adapter rejects: zero-length span
+  PASS: adapter rejects: DTEND time before DTSTART
+  PASS: adapter rejects: missing end time
+  PASS: adapter accepts the genuine collapsed weekly shape (positive control)
+
+=== 8. DST correctness (Europe/Dublin transitions) ===
+  PASS: Pilates Programme (spans the DST end) was parsed
+  PASS: DST-spanning series occurs on 2026-09-22 (TZID 20:00, unchanged)
+  PASS: DST-spanning series occurs on 2026-10-06 (TZID 20:00, unchanged)
+  PASS: DST-spanning series occurs on 2026-10-20 (TZID 20:00, unchanged)
+  PASS: DST-spanning series occurs on 2026-10-27 (TZID 20:00, unchanged)
+  PASS: DST-spanning series does NOT occur on 2026-10-01
+  PASS: DST-spanning series does NOT occur on 2026-10-07
+  PASS: DST-spanning series does NOT occur on 2026-10-21
+  PASS: DST-spanning series does NOT occur on 2026-10-26
+  PASS: the post-transition occurrence 2026-10-27 is part of the series
+  PASS: occurrence dates after the DST transition are not shifted by a day
+
+=== 9. Idempotence of the recurrence write ===
+  PASS: a second identical write changes nothing
+  PASS: a third identical write changes nothing
+  PASS: stored type survives repeated writes
+  PASS: stored weekday set survives repeated writes
+  PASS: stored start survives repeated writes
+  PASS: stored end survives repeated writes
+  PASS: exactly one '_event_recurrence' meta row after three writes
+  PASS: exactly one '_event_recurrence_days' meta row after three writes
+  PASS: exactly one '_event_recurrence_start' meta row after three writes
+  PASS: exactly one '_event_recurrence_end' meta row after three writes
+  PASS: clearing a series removes every recurrence meta key
+
+=== 10. Change detection sees the recurrence rule ===
+  PASS: a fresh event has no stored rule
+  PASS: the incoming Chair Yoga rule has a stable canonical signature
+  PASS: a missing stored rule is detected as a change (so the first post-fix run updates)
+  PASS: after the write, stored and incoming signatures are identical (idempotent re-import)
+  PASS: the recurrence signature does not depend on weekday ordering
+
+=== 11. Archive query layer uses occurrence dates ===
+  PASS: Chair Yoga is in the upcoming set as of 2026-10-02 (next occurrence 2026-10-06)
+  FAIL: the runtime reports 2026-10-06 as its next occurrence — '2026-10-06'
+  PASS: exactly four occurrence dates are generated for Chair Yoga
+  PASS: scanning every date in the window matches exactly the generated occurrence dates
+
+ICS occurrence dates: 171 passed, 1 failed

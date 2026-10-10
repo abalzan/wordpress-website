@@ -1,0 +1,6 @@
+stored_sources=63
+would_remove=0
+would_remove_ids=
+registry_generates=52
+registry_window_sources=0
+writes_performed=0

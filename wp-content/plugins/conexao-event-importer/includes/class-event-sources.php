@@ -12,6 +12,17 @@ class Conexao_Event_Sources {
 	const OPTION_KEY = 'conexao_event_sources';
 
 	/**
+	 * Retired Eventbrite date-window source ids (G8, retired 2026-09-10).
+	 *
+	 * `eventbrite_<county>_events_<window>` for the three Eventbrite
+	 * date-window listings `events-today`, `events-tomorrow` and
+	 * `events-this-week` — the "Eventbrite — <County> (Today)" /
+	 * "(Tomorrow)" / "(This week)" registrations. `get_all()` strips any
+	 * persisted id matching this pattern; see the retirement block there.
+	 */
+	const RETIRED_WINDOW_SOURCE_PATTERN = '/^eventbrite_[a-z]+_events_(today|tomorrow|this_week)$/';
+
+	/**
 	 * Default sources seeded on activation.
 	 *
 	 * @return array
@@ -125,6 +136,33 @@ class Conexao_Event_Sources {
 		foreach ( array( 'laois_council', 'leo_laois', 'local_enterprise_office_laois' ) as $retired_id ) {
 			if ( isset( $sources[ $retired_id ] ) ) {
 				unset( $sources[ $retired_id ] );
+				$changed = true;
+			}
+		}
+
+		/*
+		 * Remove the retired Eventbrite date-window sources (G8, retired
+		 * 2026-09-10).
+		 *
+		 * Those registrations — `eventbrite_<county>_events_today`,
+		 * `..._events_tomorrow`, `..._events_this_week`, shown as
+		 * "Eventbrite — <County> (Today / Tomorrow / This week)" — are no longer
+		 * import sources. The generators were deleted from
+		 * `Conexao_County_Registry`, so this is the one place that also cleans
+		 * the registrations an environment may already have persisted, exactly
+		 * like the retired ids above.
+		 *
+		 * Matching by pattern rather than a hard-coded list of ids means the
+		 * rule cannot drift from the naming scheme it retires, and it covers a
+		 * window registration written by any earlier version. The pattern
+		 * cannot match a county listing (`eventbrite_<county>`, no window
+		 * suffix) or a Heritage Week source, so no other registration is at
+		 * risk. Previously imported events are preserved: `_event_source` meta
+		 * is bookkeeping, never content.
+		 */
+		foreach ( array_keys( $sources ) as $stored_id ) {
+			if ( preg_match( self::RETIRED_WINDOW_SOURCE_PATTERN, (string) $stored_id ) ) {
+				unset( $sources[ $stored_id ] );
 				$changed = true;
 			}
 		}

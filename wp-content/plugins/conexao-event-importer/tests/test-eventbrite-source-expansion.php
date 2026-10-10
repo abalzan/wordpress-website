@@ -1,17 +1,18 @@
 <?php
 /**
- * G8/G9 — complementary source expansion and operational hardening.
+ * G8/G9 — county source expansion and operational hardening.
  *
  * ## What is proved
  *
  * G8 — source expansion:
- *   1. Registry: date-window sources exist, are well-formed, ship INACTIVE, and
- *      carry the real county geography hint.
- *   2. Identity: a window source reuses the existing `eventbrite` handler and
+ *   1. Registry: NO Eventbrite date-window source (`events-today`,
+ *      `events-tomorrow`, `events-this-week` — the retired G8 registrations) is
+ *      generated, and the county registry itself is intact.
+ *   2. Identity: a county source reuses the existing `eventbrite` handler and
  *      emits the NATIVE Eventbrite event id as source_id.
- *   3. Cross-source dedup: the same event reached through two different window
- *      URLs resolves to ONE record (stable canonical URL).
- *   4. Geography: the county-region gate still decides eligibility; the window
+ *   3. Cross-source dedup: the same event reached through two different source
+ *      slugs resolves to ONE record (stable canonical URL).
+ *   4. Geography: the county-region gate still decides eligibility; the source
  *      URL confers nothing.
  *   5. Upstream truncation (object_count > page_count x page_size) is INCOMPLETE,
  *      never complete — so it can never authorise mark_missing_events().
@@ -261,55 +262,68 @@ function g8_walk( array $config, $body ) {
 echo "G8/G9 - source expansion and operational hardening\n";
 
 // ---------------------------------------------------------------------------
-// G8.1 - the registry produces well-formed, inactive date-window sources.
+// G8.1 - the registry NO LONGER registers date-window sources.
+//
+// The G8 expansion registered `eventbrite_<county>_events_{today,tomorrow,
+// this_week}` ("Eventbrite — <County> (Today) / (Tomorrow) / (This week)").
+// They were retired on 2026-09-10: the generators are gone, so the registry
+// must not be able to produce one, and the county registry must be untouched.
 // ---------------------------------------------------------------------------
 
 g8_reset_pacing();
 
-$cork_today = Conexao_County_Registry::get_eventbrite_window_source( 'cork', 'events-today', 'Today' );
+$all_county = Conexao_County_Registry::get_all_county_sources();
 
-assert_true( is_array( $cork_today ), 'G8: a date-window source config is generated' );
-assert_true( 'eventbrite_cork_events_today' === $cork_today['id'], 'G8: window source ID is derived from county + window' );
-assert_true( 'eventbrite' === $cork_today['type'], 'G8: window source reuses the existing eventbrite TYPE (no new architecture)' );
-assert_true( 'inactive' === $cork_today['status'], 'G8: window source ships INACTIVE and cannot start an import on its own' );
-assert_true( 'Cork' === $cork_today['county'], 'G8: window source carries the real county geography hint' );
-assert_true(
-	false !== strpos( $cork_today['url'], 'ireland--cork/events-today/' ),
-	'G8: window source URL targets the county date-window listing'
-);
-assert_true(
-	is_array( $cork_today['region_labels'] ) && in_array( 'Cork', $cork_today['region_labels'], true ),
-	'G8: window source inherits the county region labels used by the geography gate'
-);
-assert_true(
-	null === Conexao_County_Registry::get_eventbrite_window_source( 'not-a-county', 'events-today', 'Today' ),
-	'G8: an unknown county yields no window source'
-);
-
-$all_windows = Conexao_County_Registry::get_all_eventbrite_window_sources();
-assert_true( is_array( $all_windows ) && count( $all_windows ) > 0, 'G8: the registry exposes the date-window source set' );
-
-$all_inactive = true;
-foreach ( $all_windows as $window_source ) {
-	if ( 'inactive' !== $window_source['status'] ) {
-		$all_inactive = false;
+$window_leak = array();
+foreach ( $all_county as $registry_id => $registry_source ) {
+	if ( preg_match( '/^eventbrite_[a-z]+_events_(today|tomorrow|this_week)$/', (string) $registry_id ) ) {
+		$window_leak[] = $registry_id;
+		continue;
+	}
+	// The retired label must not survive anywhere in the config either.
+	foreach ( array( 'id', 'name', 'url' ) as $field ) {
+		if ( ! isset( $registry_source[ $field ] ) ) {
+			continue;
+		}
+		$value = (string) $registry_source[ $field ];
+		foreach ( array( 'events-today', 'events-tomorrow', 'events-this-week' ) as $marker ) {
+			if ( false !== strpos( $value, $marker ) ) {
+				$window_leak[] = $registry_id . ':' . $field;
+			}
+		}
 	}
 }
-assert_true( $all_inactive, 'G8: EVERY registered date-window source ships inactive' );
+assert_true( array() === $window_leak, 'G8: NO (Today)/(Tomorrow)/(This week) date-window source is generated any more' );
 
-$all_county = Conexao_County_Registry::get_all_county_sources();
-assert_true( isset( $all_county['eventbrite_cork_events_today'] ), 'G8: date-window sources join the single county source registry' );
+assert_true(
+	52 === count( $all_county ),
+	'G8: the county registry is exactly 26 Eventbrite + 26 Heritage Week sources'
+);
 assert_true(
 	isset( $all_county['eventbrite_cork'] ) && isset( $all_county['heritage_week_cork'] ),
-	'G8: adding window sources did not drop the pre-existing county sources'
+	'G8: the county listings themselves survived the date-window retirement'
+);
+assert_true(
+	! isset( $all_county['eventbrite_cork_events_today'] )
+		&& ! isset( $all_county['eventbrite_cork_events_tomorrow'] )
+		&& ! isset( $all_county['eventbrite_cork_events_this_week'] ),
+	'G8: none of the three retired windows is registered for Cork'
 );
 
-// events-this-month measured 48 declared pages against the same 49-page cap, so
-// registering it would cost requests without adding reachable coverage.
-assert_true(
-	! isset( $all_county['eventbrite_cork_events_this_month'] ),
-	'G8: events-this-month is deliberately NOT registered (48 pages is as capped as all-events)'
-);
+// Every county source still ships inactive, and every one still carries the
+// real county geography hint.
+$all_inactive = true;
+$county_hints  = true;
+foreach ( $all_county as $county_source ) {
+	if ( 'inactive' !== $county_source['status'] ) {
+		$all_inactive = false;
+	}
+	if ( '' === (string) $county_source['county'] ) {
+		$county_hints = false;
+	}
+}
+assert_true( $all_inactive, 'G8: every county source still ships inactive' );
+assert_true( $county_hints, 'G8: every county source still carries its county hint' );
 
 // ---------------------------------------------------------------------------
 // G8.2 - upstream truncation must never read as complete.
@@ -329,11 +343,11 @@ assert_true(
 	'G8: a listing whose objects exactly fit its declared pages stays COMPLETE'
 );
 
-// Comfortably inside the ceiling: a small date-window listing.
+// Comfortably inside the ceiling: a small listing.
 $small = g8_walk( $config_cork, g8_eb_page( 2, 25, 20, array( g8_eb_event( '333' ) ) ) );
 assert_true(
 	$small->is_fetch_complete(),
-	'G8: a small date-window listing is COMPLETE (the guard does not over-block)'
+	'G8: a small listing is COMPLETE (the guard does not over-block)'
 );
 
 // No declared objects is not evidence of truncation.
@@ -351,51 +365,50 @@ assert_true(
 );
 
 // ---------------------------------------------------------------------------
-// G8.3 - identity: the window source emits the NATIVE Eventbrite id.
+// G8.3 - identity: a county source emits the NATIVE Eventbrite id.
 // ---------------------------------------------------------------------------
 
 g8_reset_pacing();
 
-$window_config = Conexao_County_Registry::get_eventbrite_window_source( 'cork', 'events-this-week', 'This week' );
-$window_events = g8_walk( $window_config, g8_eb_page( 1, 1, 20, array( g8_eb_event( '999888777' ) ) ) );
+$cork_events = g8_walk( $config_cork, g8_eb_page( 1, 1, 20, array( g8_eb_event( '999888777' ) ) ) );
 assert_true(
-	$window_events->has_fetched_events(),
-	'G8: a date-window listing yields events through the existing handler'
+	$cork_events->has_fetched_events(),
+	'G8: a county listing yields events through the existing handler'
 );
 
 $normalizer = new Conexao_Event_Normalizer( new Conexao_Event_Location() );
-$window_raw = $normalizer->normalize(
+$cork_raw = $normalizer->normalize(
 	array(
-		'title'      => 'Window Event',
+		'title'      => 'County Event',
 		'url'        => 'https://www.eventbrite.ie/e/999888777',
 		'source_id'  => '999888777',
-		'source'     => 'eventbrite_cork_events_this_week',
+		'source'     => 'eventbrite_cork',
 		'start_date' => '2099-01-01',
 		'start_time' => '10:00',
 	)
 );
 
 assert_true(
-	'999888777' === $window_raw['source_id'],
+	'999888777' === $cork_raw['source_id'],
 	'G8: identity is the NATIVE Eventbrite event id (not an array index, page number or title)'
 );
 assert_true(
-	'eventbrite_cork_events_this_week' === $window_raw['source'],
-	'G8: the window source records its own source slug for per-source bookkeeping'
+	'eventbrite_cork' === $cork_raw['source'],
+	'G8: the county source records its own source slug for per-source bookkeeping'
 );
 assert_true(
-	'https://www.eventbrite.ie/e/999888777' === $window_raw['source_url'],
-	'G8: the canonical Eventbrite URL is retained and is stable across windows'
+	'https://www.eventbrite.ie/e/999888777' === $cork_raw['source_url'],
+	'G8: the canonical Eventbrite URL is retained and is stable across sources'
 );
 
 // ---------------------------------------------------------------------------
-// G8.4 - geography: the window URL confers nothing.
+// G8.4 - geography: the source URL confers nothing.
 // ---------------------------------------------------------------------------
 
-$wrong_region = g8_walk( $window_config, g8_eb_page( 1, 1, 20, array( g8_eb_event( '555', 'Galway' ) ) ) );
-assert_true( ! ( $wrong_region->has_fetched_events() ), 'G8: an event located outside the county is REJECTED even though a county window URL served it' );
+$wrong_region = g8_walk( $config_cork, g8_eb_page( 1, 1, 20, array( g8_eb_event( '555', 'Galway' ) ) ) );
+assert_true( ! ( $wrong_region->has_fetched_events() ), 'G8: an event located outside the county is REJECTED even though a county listing URL served it' );
 
-$right_region = g8_walk( $window_config, g8_eb_page( 1, 1, 20, array( g8_eb_event( '556', 'Cork' ) ) ) );
+$right_region = g8_walk( $config_cork, g8_eb_page( 1, 1, 20, array( g8_eb_event( '556', 'Cork' ) ) ) );
 assert_true(
 	$right_region->has_fetched_events(),
 	'G8: an event whose own location metadata IS in the county is accepted'
@@ -422,7 +435,7 @@ $g8_b = $normalizer->normalize(
 		'title'      => 'Shared Event',
 		'url'        => 'https://www.eventbrite.ie/e/424242',
 		'source_id'  => '424242',
-		'source'     => 'eventbrite_cork_events_this_week',
+		'source'     => 'eventbrite_dublin',
 		'start_date' => '2099-02-02',
 		'start_time' => '19:00',
 		'location'   => 'Cork',
@@ -454,10 +467,10 @@ foreach ( $shared_meta as $meta_key => $meta_value ) {
 	update_post_meta( $first_post, $meta_key, $meta_value );
 }
 
-$match_from_window = $dedup->find( $g8_b );
+$match_from_other_source = $dedup->find( $g8_b );
 assert_true(
-	(int) $first_post === (int) $match_from_window,
-	'G8: the SAME event arriving through a different window source resolves to the SAME record'
+	(int) $first_post === (int) $match_from_other_source,
+	'G8: the SAME event arriving through a different source slug resolves to the SAME record'
 );
 
 $match_from_original = $dedup->find( $g8_a );
@@ -560,13 +573,13 @@ assert_true(
 
 g8_reset_pacing();
 
-$cool_id = 'eventbrite_cork_events_today';
+$cool_id = 'eventbrite_cork_g9_cooldown';
 Conexao_Source_Cooldown::record_throttled( $cool_id, 'rate_limited' );
 
 $sources = new Conexao_Event_Sources();
 $sources->save(
 	array_merge(
-		$window_config,
+		$config_cork,
 		array( 'id' => $cool_id, 'status' => 'active' )
 	)
 );
@@ -637,11 +650,11 @@ assert_true( $clear_method->invoke( $importer_engine, $probe_recovered ), 'G9: a
  */
 g8_reset_pacing();
 
-$recover_id = 'eventbrite_cork_events_tomorrow';
+$recover_id = 'eventbrite_cork_g9_recovery';
 Conexao_Source_Cooldown::record_throttled( $recover_id, 'rate_limited' );
 $sources->save(
 	array_merge(
-		Conexao_County_Registry::get_eventbrite_window_source( 'cork', 'events-tomorrow', 'Tomorrow' ),
+		$config_cork,
 		array( 'id' => $recover_id, 'status' => 'active' )
 	)
 );

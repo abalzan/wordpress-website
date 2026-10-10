@@ -494,6 +494,71 @@ assert_true(
 	'An empty/absent option self-heals to the complete registry (count derived from the registry)'
 );
 
+	// --- 13g: RETIRED EVENTBRITE DATE-WINDOW SOURCES ------------------------
+	//
+	// The G8 date-window registrations (`eventbrite_<county>_events_today`,
+	// `..._events_tomorrow`, `..._events_this_week` — the "Eventbrite — <County>
+	// (Today)" / "(Tomorrow)" / "(This week)" sources) were retired on
+	// 2026-09-10. Two things must hold: the registry must not GENERATE them,
+	// and get_all() must STRIP any registration of that shape an environment
+	// still has persisted. Events they imported are preserved — a source
+	// registration is bookkeeping, never content.
+	$window_leak = array();
+	foreach ( array_keys( Conexao_County_Registry::get_all_county_sources() ) as $registry_id ) {
+		if ( preg_match( Conexao_Event_Sources::RETIRED_WINDOW_SOURCE_PATTERN, (string) $registry_id ) ) {
+			$window_leak[] = $registry_id;
+		}
+	}
+	assert_true( array() === $window_leak, 'The registry no longer generates any (Today)/(Tomorrow)/(This week) date-window source' );
+
+	// An environment written by an older build still holds those ids.
+	$with_windows = $only_legacy;
+	foreach ( array(
+		'eventbrite_cork_events_today',
+		'eventbrite_cork_events_tomorrow',
+		'eventbrite_cork_events_this_week',
+		'eventbrite_galway_events_this_week',
+	) as $window_id ) {
+		$with_windows[ $window_id ] = array(
+			'id'     => $window_id,
+			'name'   => 'Eventbrite - retired window',
+			'url'    => 'https://www.eventbrite.ie/d/ireland--cork/events-today/',
+			'type'   => 'eventbrite',
+			'status' => 'inactive',
+		);
+	}
+	update_option( $option_key, $with_windows, false );
+
+	$winnowed = $sources_mgr->get_all();
+
+	$windows_left = array();
+	foreach ( array_keys( $winnowed ) as $stored_id ) {
+		if ( preg_match( Conexao_Event_Sources::RETIRED_WINDOW_SOURCE_PATTERN, (string) $stored_id ) ) {
+			$windows_left[] = $stored_id;
+		}
+	}
+	assert_true( array() === $windows_left, 'get_all() strips every persisted date-window registration' );
+
+	// The retirement is persisted, not a filtered view: a later plain read of
+	// the option must not see them resurrected.
+	$persisted = get_option( $option_key, array() );
+	$persisted_left = array();
+	foreach ( array_keys( (array) $persisted ) as $stored_id ) {
+		if ( preg_match( Conexao_Event_Sources::RETIRED_WINDOW_SOURCE_PATTERN, (string) $stored_id ) ) {
+			$persisted_left[] = $stored_id;
+		}
+	}
+	assert_true( array() === $persisted_left, 'A retired date-window source is removed from the stored registry, not just hidden' );
+
+	// Retirement is idempotent, and it removes ONLY the window registrations.
+	$again = $sources_mgr->get_all();
+	assert_true( $winnowed === $again, 'Retiring date-window sources is idempotent (a second read changes nothing)' );
+	assert_true(
+		count( $winnowed ) === count( $sources_mgr->get_defaults() ) + count( Conexao_County_Registry::get_all_county_sources() ),
+		'After the retirement the registry is exactly the legacy defaults plus the county sources'
+	);
+
+
 // Restore the exact environment state this test found.
 if ( is_array( $snapshot ) && array() !== $snapshot ) {
 	update_option( $option_key, $snapshot, false );
