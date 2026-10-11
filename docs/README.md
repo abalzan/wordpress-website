@@ -61,6 +61,7 @@ is **not** an active skill set.
 | [reports/2026-10-03-ui-convergence-t1-plan.md](reports/2026-10-03-ui-convergence-t1-plan.md) | Plan for **UI convergence Phase 1** (audit T1.1–T1.5, Direction A "Converged Minimal"), including the corrected T1.2 diagnosis and the explicit non-goals |
 | [reports/2026-10-03-ui-convergence-t1-report.md](reports/2026-10-03-ui-convergence-t1-report.md) | **UI convergence Phase 1 implementation record** — the `/empregos/` orphan grid fix, the duplicate-event-card fix (and why the audit's recurrence hypothesis was wrong), section-heading and card-title convergence, orange contrast remediation, and the dark-theme token cascade bug. Evidence in [evidence/2026-10-03-ui-convergence-t1/](evidence/2026-10-03-ui-convergence-t1/) |
 | [reports/2026-10-03-ui-convergence-master-report.md](reports/2026-10-03-ui-convergence-master-report.md) | **UI convergence Phase 2 implementation record** (audit T1.6–T1.14) — heading-level contract, one merged event location row, muted-text contrast remediation at both the rule *and* the token layer, card-surface reconciliation, the comment submit button, the default-category label, and text-led image-less leisure cards; plus T1.9/T1.14 recorded as deliberately NOT IMPLEMENTED with evidence. Evidence in [evidence/2026-10-03-ui-convergence-t2/](evidence/2026-10-03-ui-convergence-t2/) |
+| [reports/2026-10-10-ui-polish.md](reports/2026-10-10-ui-polish.md) | **UI polish Phase 3** — the Tier-2 convergence remainder, re-validated against live renders: component-heading tokens, the card-CTA 44px target floor and the 720px single editorial measure, with the shared-card / breakpoint / filter items recorded as deliberately deferred. Evidence in [evidence/2026-10-10-ui-polish/](evidence/2026-10-10-ui-polish/) |
 | [reports/README.md](reports/README.md) | Index of dated stage/feature reports + the no-root-reports rule |
 | [reports/site/](reports/site/) | Repository-engineering stage reports (Stage B repository hygiene, Stage C static quality tooling, …) |
 | [evidence/README.md](evidence/README.md) | Standing rule for machine-readable evidence + contents map |
@@ -206,3 +207,5 @@ _Last verified: 2026-09-30 by the agent skills / documentation migration_
 _Last verified: 2026-10-03 — added the UI / UX audit to the index_
 
 _Last verified: 2026-09-26 by Stage L — Permanent Invariant Gates_
+
+_Last verified: 2026-10-10 by UI polish Phase 3 — component-heading tokens, card-CTA 44px floor, single editorial measure_

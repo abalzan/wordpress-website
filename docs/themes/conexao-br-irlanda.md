@@ -890,3 +890,4 @@ _Last verified: 2026-09-29 by the production theme version bump (1.0.0 → 1.0.1
 _Last verified: 2026-10-03 by Stage 20 — hero preload fallback (Firefox speculative-loader cost bound)_
 
 _Last verified: 2026-10-08 by the Apoiadores single-page directory change (the archive renders its whole editor-curated set on one page; no pagination is generated and `/apoiadores/page/N/` keeps its 404)_
+_Last verified: 2026-10-10 by UI polish Phase 3 — card-CTA 44px floor and the 720px single editorial measure_

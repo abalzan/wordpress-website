@@ -70,9 +70,29 @@ Two scales are authoritative, both token-based, both defined **once** in
 | Role | Treatment | Owner |
 |---|---|---|
 | Page title (`h1`) | its own `clamp()` per surface | surface CSS (hero vs page header are intentionally distinct) |
-| **Section title** | `clamp(1.5rem, 3vw, 2rem)` / 700 | `.section-title` + `.landing-section-title`, `.newsletter-title`, `.related-posts-title`, `.comments-title` |
+| **Section title** | `clamp(1.5rem, 3vw, 2rem)` / 700 | `.section-title` + `.landing-section-title`, `.related-posts-title`, `.comments-title` |
 | **Card title** | `var(--text-lg)` (18px) / 600 / 1.3 | `.card-title`, `.event-card-title`, `.course-card-title`, `.provider-card-title`, `.archive-card-title`, `.post-card-title`, `.news-card-title`, `.leisure-card-title`, `.business-name`, `.landing-card-title`, `.related-post-title`, `.featured-article-title`, `.directory-card-title` |
 | Component heading | scoped component rule | the component, with a comment explaining the exception |
+| Deliberate hero-band exception | `clamp(1.75rem, 3vw, 2.5rem)` / 700 white-on-green | `.newsletter-title` (newsletter band only — never section-scale) |
+| Deliberate feature-slot exception | 24px / 700 | `.featured-article-title` (homepage feature slot only) |
+
+> **Component-heading remainder (UI polish P3, 2026-10-10).** Four component
+> headings sit below section-scale by design, each with a rationale comment at
+> its rule: `.help-section-heading` (`--text-xl`, compact utility panel),
+> `.quick-access-heading` mobile (`--text-base`, compact mobile section label),
+> `.leisure-filters-title` (`--text-lg`/700, filter-panel label, not a page
+> section), `.empregos-opportunities-title` (own 22–28px clamp below the 44px
+> page h1). These are component roles, not divergence — do not "converge" them
+> into section titles.
+
+> **Card-CTA target floor (UI polish P3).** Every card CTA meets the 44px
+> target: `.event-card-cta`, `.post-type-archive-sponsor .archive-card-cta`,
+> `.leisure-card-cta` (base rule; the `--map` modifier inherits it) and the
+> pre-existing `.provider-card-cta`. Inline text links (agency directory rows,
+> footer legal, breadcrumbs) stay unpadded WCAG 2.5.8 inline exceptions.
+
+> **Single editorial measure (UI polish P3).** `.single-post-content` is 720px
+> (readability, both languages); single body is `var(--text-lg)` / 1.7.
 
 Card-title weight is **600**, not 700, so a card title stays clearly distinct
 from a section title (700) at the same optical size.
@@ -245,3 +265,4 @@ _Last verified: 2026-09-26 by Stage L — Permanent Invariant Gates_
 _Last verified: 2026-10-03 by Stage 20 — hero preload fallback (Firefox speculative-loader cost bound)_
 
 _Last verified: 2026-10-08 by the Apoiadores single-page directory change (single-page directory; the shared pagination component renders nothing)_
+_Last verified: 2026-10-10 by UI polish Phase 3 — card-CTA 44px floor, single editorial measure, component-heading tokens_

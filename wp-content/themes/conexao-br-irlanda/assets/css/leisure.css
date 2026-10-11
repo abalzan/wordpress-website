@@ -24,7 +24,10 @@
 	z-index: 20;
 }
 
-/* --- Discovery heading (desktop) --- */
+/* --- Discovery heading (desktop) ---
+   UI polish P3 (audit I1/T1.3 remainder) — a scoped component exception: this
+   labels the compact filter panel, not a page section, so it stays at the
+   card-title size (--text-lg/700) rather than the section-title scale. */
 .leisure-filters-title {
 	font-family: var(--font-display);
 	font-size: var(--text-lg);
@@ -931,6 +934,10 @@
 	transition: background var(--conexao-transition, 250ms ease),
 		    color var(--conexao-transition, 250ms ease),
 		    border-color var(--conexao-transition, 250ms ease);
+	/* UI polish P3 (audit D5/T2.6) — the card CTA renders at 29-31px; floor it
+	   to the 44px target the provider card already meets. The --map modifier
+	   inherits the floor from this base rule. */
+	min-height: 44px;
 }
 
 .leisure-card-cta:hover {

@@ -1408,7 +1408,11 @@ ul, ol {
 
 .help-section-heading {
   font-family: var(--conexao-font-heading);
-  font-size: 1.25rem;
+  /* UI polish P3 (audit I1/T1.3 remainder) — a scoped component exception:
+     the help panel is a compact utility surface, so its heading stays one step
+     below the shared section-title scale. Token-bound (--text-xl = 20px, the
+     same rendered size as before), never a raw rem value. */
+  font-size: var(--text-xl);
   font-weight: 700;
   color: var(--conexao-dark);
   text-align: center;
@@ -1919,7 +1923,9 @@ ul, ol {
 }
 
 .event-card-cta {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
   padding: 10px;
   background: var(--conexao-primary-50);
@@ -1928,6 +1934,11 @@ ul, ol {
   font-weight: 600;
   font-size: 0.875rem;
   transition: all var(--conexao-transition);
+  /* UI polish P3 (audit D5/T2.6) — the most repeated mobile control on the
+     site renders at 34px; floor it to the 44px target the .btn contract and
+     the provider card already meet. justify-content + align-items (above)
+     keep the label centred in the taller box on every card type. */
+  min-height: 44px;
 }
 
 .event-card-cta:hover {
@@ -3447,8 +3458,11 @@ ul, ol {
   gap: 6px;
 }
 
+/* UI polish P3 (audit T2.5, Direction B narrow) — the editorial measure: body
+   copy renders at 800px, past the ~66ch readability guidance; 720px keeps
+   long-form guides legible at both languages without narrowing mobile. */
 .single-post-content {
-  max-width: 800px;
+  max-width: 720px;
   margin: 0 auto;
 }
 
@@ -3470,9 +3484,12 @@ ul, ol {
   object-fit: contain; /* safety net: never crop if a container ever constrains height */
 }
 
+/* UI polish P3 — the off-scale 1.0625rem (17px) body is converged to the
+   documented --text-lg step (18px, the same treatment the Empregos landing
+   body already uses); 1.8 → 1.7 line-height matches the tighter measure. */
 .single-post-content .entry-content {
-  font-size: 1.0625rem;
-  line-height: 1.8;
+  font-size: var(--text-lg);
+  line-height: 1.7;
 }
 
 .single-post-content .entry-content h2 {
@@ -4629,10 +4646,12 @@ input[type="button"] {
     padding: 28px 0 32px;
   }
 
-  /* "Acesso Rápido" heading — visible only on mobile */
+  /* "Acesso Rápido" heading — visible only on mobile. UI polish P3: the
+     off-scale 1.0625rem (17px, on no scale step) is converged to --text-base
+     (16px), the compact mobile-section treatment. */
   .quick-access-heading {
     display: block;
-    font-size: 1.0625rem;
+    font-size: var(--text-base);
     font-weight: 700;
     color: var(--conexao-dark);
     margin: 0 0 14px;
@@ -5185,6 +5204,11 @@ input[type="button"] {
   font-weight: 600;
   color: var(--conexao-primary-text, var(--color-primary));
   text-decoration: none;
+  /* UI polish P3 (audit D5/T2.6) — the 34px card CTA is floored to the 44px
+     target the provider card already meets. This span is aria-hidden
+     decoration (the title link carries the name), so the floor only enlarges
+     the visible affordance, never a second competing target. */
+  min-height: 44px;
 }
 
 .post-type-archive-sponsor .archive-card-cta::after {
@@ -7291,6 +7315,9 @@ input[type="button"] {
   padding: 0;
 }
 
+/* UI polish P3 (audit I1/T1.3 remainder) — a scoped component exception: the
+   directory section title sits below the 44px page h1, so it keeps its own
+   clamp (22–28px) rather than the full section-title scale. */
 .empregos-opportunities-title {
   font-size: clamp(1.375rem, 3vw, 1.75rem);
   font-weight: 700;
