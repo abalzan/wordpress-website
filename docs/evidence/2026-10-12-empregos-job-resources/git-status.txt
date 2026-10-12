@@ -1,0 +1,7 @@
+ M docs/themes/conexao-br-irlanda.md
+ M tests/acceptance/matrices/routing.json
+ M wp-content/themes/conexao-br-irlanda/page-empregos.php
+ M wp-content/themes/conexao-br-irlanda/template-parts/job-resources.php
+?? docs/evidence/2026-12-10-empregos-job-resources/
+?? docs/reports/2026-12-10-empregos-job-resources-plan.md
+?? wp-content/themes/conexao-br-irlanda/tests/test-empregos-job-resources.php

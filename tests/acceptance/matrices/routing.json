@@ -546,6 +546,44 @@
       "note": "The PT Jobs URL is unchanged and still canonical; its hreflang now advertises /en/empregos/ as the EN counterpart."
     },
     {
+      "id": "pt-empregos-job-resources",
+      "url": "/empregos/",
+      "expect_status": 200,
+      "expect_contains": [
+        "class=\"empregos-job-resources\"",
+        "Onde procurar emprego",
+        "href=\"https://www.jobs.ie/\"",
+        "href=\"https://ie.indeed.com/\"",
+        "href=\"https://www.irishjobs.ie/\"",
+        "Encontre vagas de emprego em diversas áreas e regiões da Irlanda.",
+        "Busca de vagas em todo o país, com filtros por área, salário e localização.",
+        "Uma das maiores plataformas de recrutamento da Irlanda, com vagas de grandes empresas.",
+        "target=\"_blank\" rel=\"noopener noreferrer\"",
+        "Acessar Jobs.ie (abre em nova aba)",
+        "Oportunidades de emprego"
+      ],
+      "expect_absent": [
+        "<html lang=\"en-US\">"
+      ],
+      "note": "The three external job-search resources (Jobs.ie, Indeed Ireland, IrishJobs) render on the PT Jobs landing with their exact URLs and descriptions, the 'Acessar' accessible CTA name and secure external-link attributes; the unified opportunities directory heading proves the pre-existing listing/filters section still renders alongside the restored section."
+    },
+    {
+      "id": "en-empregos-job-resources",
+      "url": "/en/empregos/",
+      "expect_status": 200,
+      "expect_contains": [
+        "Where to look for jobs",
+        "href=\"https://www.jobs.ie/\"",
+        "href=\"https://ie.indeed.com/\"",
+        "href=\"https://www.irishjobs.ie/\"",
+        "target=\"_blank\" rel=\"noopener noreferrer\""
+      ],
+      "expect_absent": [
+        "<html lang=\"pt-BR\">"
+      ],
+      "note": "The same shared template renders the job-search resources on the EN Jobs landing with the section heading translated by the existing EN catalogue (no new translation lifecycle) while the external URLs stay identical across languages."
+    },
+    {
       "id": "jobs-legacy-301-pt",
       "url": "/jobs/",
       "expect_status": 301,

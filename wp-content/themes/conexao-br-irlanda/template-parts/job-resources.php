@@ -38,6 +38,8 @@ if ( ! empty( $job_resources ) ) :
 				$resource_image  = conexao_job_resource_image( $job_resource );
 				$external_attrs  = ' target="_blank" rel="noopener noreferrer"';
 				$new_tab_hint    = esc_attr__( '(abre em nova aba)', 'conexao-br-irlanda' );
+				/* translators: %s: external job site name, e.g. "Jobs.ie". */
+				$access_label    = esc_attr( sprintf( __( 'Acessar %s (abre em nova aba)', 'conexao-br-irlanda' ), $resource_title ) );
 				?>
 				<article class="event-card job-resource-card">
 					<?php if ( $resource_image['attachment_id'] ) : ?>
@@ -77,13 +79,12 @@ if ( ! empty( $job_resources ) ) :
 							<p class="event-card-excerpt"><?php echo esc_html( $resource_desc ); ?></p>
 						<?php endif; ?>
 
-						<a href="<?php echo $resource_url; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" class="event-card-cta" title="<?php echo esc_attr( $new_tab_hint ); ?>"<?php echo $external_attrs; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
-							<?php esc_html_e( 'Saiba mais', 'conexao-br-irlanda' ); ?>
+						<a href="<?php echo $resource_url; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" class="event-card-cta" title="<?php echo esc_attr( $new_tab_hint ); ?>" aria-label="<?php echo $access_label; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>"<?php echo $external_attrs; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+							<?php esc_html_e( 'Acessar', 'conexao-br-irlanda' ); ?>
 							<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
 								<line x1="5" y1="12" x2="19" y2="12"></line>
 								<polyline points="12 5 19 12 12 19"></polyline>
 							</svg>
-							<span class="screen-reader-text"><?php esc_html_e( '(abre em nova aba)', 'conexao-br-irlanda' ); ?></span>
 						</a>
 					</div>
 				</article>

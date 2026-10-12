@@ -114,15 +114,15 @@ get_header();
 		<?php endwhile; ?>
 
 		<?php
-		// "Onde procurar emprego" (external job-search sites) is INTENTIONALLY
-		// not rendered on /empregos/ for now — the page goes straight from the
-		// Instagram/vacancies landing content to the recruitment agencies.
-		// Nothing was deleted: the reusable component lives at
-		// template-parts/job-resources.php, the data in inc/job-resources.php
-		// (conexao_job_resources option, editable under Empregos →
-		// "Onde procurar emprego" in wp-admin) and the styles in main.css.
-		// To bring the section back, restore:
-		//   get_template_part( 'template-parts/job-resources' );
+		// "Onde procurar emprego" — external job-search sites, rendered below
+		// the existing Instagram banner / guidance content and above the
+		// unified employment opportunities directory. The section reuses the
+		// shared component at template-parts/job-resources.php, whose data
+		// comes from conexao_job_resources() (inc/job-resources.php, editable
+		// under Empregos → "Onde procurar emprego" in wp-admin) — the SAME
+		// source that backs the compact homepage preview. Restores the
+		// rendering that commit a035ce0 disabled; nothing else changed here.
+		get_template_part( 'template-parts/job-resources' );
 		?>
 
 		<?php

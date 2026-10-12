@@ -1,0 +1,125 @@
+diff --git a/docs/themes/conexao-br-irlanda.md b/docs/themes/conexao-br-irlanda.md
+index 48b7f59..8540efd 100644
+--- a/docs/themes/conexao-br-irlanda.md
++++ b/docs/themes/conexao-br-irlanda.md
+@@ -41,7 +41,7 @@ Modern community portal theme for Conexão BR Irlanda. Features a green/orange p
+ | `guide-filters.php` | Guias archive filter bar (`?categoria=` conexao_category terms used by published guides) |
+ | `event-preview.php` | Homepage events section — compact preview; recurring events append a small italic recurrence label (`Toda quarta-feira`) to the date/time meta line (`·`-separated), via `conexao_event_recurrence_label()` |
+ | `featured-sponsors.php` | Homepage Hero (Featured Apoiadores carousel; renders nothing when no supporter is featured) |
+-| `job-resources.php` | "Onde procurar emprego" — reusable external job-site cards reusing the Event card classes; data from `conexao_job_resources()` in `inc/job-resources.php`, filterable via `conexao_job_resources`. The cards are managed in wp-admin under **Empregos → Onde procurar emprego** (`conexao-job-resources` submenu, stored in the `conexao_job_resources` option; the built-in Jobs.ie / Indeed / IrishJobs defaults apply until first save). **Currently not rendered anywhere** — the Empregos landing intentionally stopped calling this template part (see the comment in `page-empregos.php`); the component, its data and its CSS are retained for future reuse. (The homepage uses the separate compact preview below.) |
++| `job-resources.php` | "Onde procurar emprego" — reusable external job-site cards reusing the Event card classes; data from `conexao_job_resources()` in `inc/job-resources.php`, filterable via `conexao_job_resources`. The cards are managed in wp-admin under **Empregos → Onde procurar emprego** (`conexao-job-resources` submenu, stored in the `conexao_job_resources` option; the built-in Jobs.ie / Indeed / IrishJobs defaults apply until first save). Rendered on the Empregos landing (`page-empregos.php` calls it between the page's landing content and the unified opportunities directory; the call was restored 2026-12-10 after commit `a035ce0` had disabled it). Each card's title, banner and "Acessar" CTA open the external site in a new tab with `rel="noopener noreferrer"`. (The homepage uses the separate compact preview below.) |
+ | `employment-opportunities.php` | Empregos landing — the UNIFIED "Oportunidades de emprego" directory: recruitment agencies, official public-sector recruitment portals and Employment Permit-history employers in ONE shared, filterable grid. All cards reuse the Event card classes with narrow type modifiers (`.agency-card` / `.public-sector-card` / `.permit-employer-card`) and a small non-color type label. Data + filter state from `inc/employment-opportunities.php` (`conexao_employment_opportunities_filter_state()`), which reuses the per-type data helpers in `inc/recruitment-agencies.php` / `inc/permit-employers.php`. One filter toolbar (Tipo de oportunidade / Área de trabalho / Localização / Tipo de contrato) — see the Unified directory filters feature below. Above the filters sits ONE compact safety/permit notice (`.empregos-opportunities-notice`, consolidated from the former separate warning boxes) carrying the scam/payment warning, the agency-fee warning, the historical-only Employment Permit caveat (never current sponsorship) and the official rules link; the work-right reminder follows as a visually subordinate secondary sentence. Employers with `exception` permit status (e.g. Nua Healthcare) render as normal permit-history cards — the compact notice is the single Employment Permit explanation, and no separate exception block is displayed. Agency WRC licence numbers stay in the admin data — the card shows a simple "Licenciada" indicator only when a licence is present. Supersedes the former three separate sections (`recruitment-agencies.php`, `public-sector-jobs.php`, `permit-employers.php` template parts, removed) |
+ | `job-resources-preview.php` | Homepage `.section--jobs` slot ("Onde procurar emprego" — compact, text-only subset of the SAME `conexao_job_resources()` data used by the Empregos landing; first 3 resources only, no images/JS, cards reuse the Event card classes with `.jobs-home-grid` alignment tweaks in `main.css`) |
+ | `hero-events.php` | Retained; no longer rendered (hero uses committed full-bleed asset) |
+@@ -891,3 +891,4 @@ _Last verified: 2026-10-03 by Stage 20 — hero preload fallback (Firefox specul
+ 
+ _Last verified: 2026-10-08 by the Apoiadores single-page directory change (the archive renders its whole editor-curated set on one page; no pagination is generated and `/apoiadores/page/N/` keeps its 404)_
+ _Last verified: 2026-10-10 by UI polish Phase 3 — card-CTA 44px floor and the 720px single editorial measure_
++_Last verified: 2026-12-10 by the Empregos job-search resources restoration — `template-parts/job-resources.php` renders on `/empregos/` again and its CTA follows the homepage "Acessar" pattern_
+diff --git a/tests/acceptance/matrices/routing.json b/tests/acceptance/matrices/routing.json
+index a20428d..81393cc 100644
+--- a/tests/acceptance/matrices/routing.json
++++ b/tests/acceptance/matrices/routing.json
+@@ -545,6 +545,44 @@
+       ],
+       "note": "The PT Jobs URL is unchanged and still canonical; its hreflang now advertises /en/empregos/ as the EN counterpart."
+     },
++    {
++      "id": "pt-empregos-job-resources",
++      "url": "/empregos/",
++      "expect_status": 200,
++      "expect_contains": [
++        "class=\"empregos-job-resources\"",
++        "Onde procurar emprego",
++        "href=\"https://www.jobs.ie/\"",
++        "href=\"https://ie.indeed.com/\"",
++        "href=\"https://www.irishjobs.ie/\"",
++        "Encontre vagas de emprego em diversas áreas e regiões da Irlanda.",
++        "Busca de vagas em todo o país, com filtros por área, salário e localização.",
++        "Uma das maiores plataformas de recrutamento da Irlanda, com vagas de grandes empresas.",
++        "target=\"_blank\" rel=\"noopener noreferrer\"",
++        "Acessar Jobs.ie (abre em nova aba)",
++        "Oportunidades de emprego"
++      ],
++      "expect_absent": [
++        "<html lang=\"en-US\">"
++      ],
++      "note": "The three external job-search resources (Jobs.ie, Indeed Ireland, IrishJobs) render on the PT Jobs landing with their exact URLs and descriptions, the 'Acessar' accessible CTA name and secure external-link attributes; the unified opportunities directory heading proves the pre-existing listing/filters section still renders alongside the restored section."
++    },
++    {
++      "id": "en-empregos-job-resources",
++      "url": "/en/empregos/",
++      "expect_status": 200,
++      "expect_contains": [
++        "Where to look for jobs",
++        "href=\"https://www.jobs.ie/\"",
++        "href=\"https://ie.indeed.com/\"",
++        "href=\"https://www.irishjobs.ie/\"",
++        "target=\"_blank\" rel=\"noopener noreferrer\""
++      ],
++      "expect_absent": [
++        "<html lang=\"pt-BR\">"
++      ],
++      "note": "The same shared template renders the job-search resources on the EN Jobs landing with the section heading translated by the existing EN catalogue (no new translation lifecycle) while the external URLs stay identical across languages."
++    },
+     {
+       "id": "jobs-legacy-301-pt",
+       "url": "/jobs/",
+diff --git a/wp-content/themes/conexao-br-irlanda/page-empregos.php b/wp-content/themes/conexao-br-irlanda/page-empregos.php
+index a0301fb..d14ccf3 100644
+--- a/wp-content/themes/conexao-br-irlanda/page-empregos.php
++++ b/wp-content/themes/conexao-br-irlanda/page-empregos.php
+@@ -114,15 +114,15 @@ get_header();
+ 		<?php endwhile; ?>
+ 
+ 		<?php
+-		// "Onde procurar emprego" (external job-search sites) is INTENTIONALLY
+-		// not rendered on /empregos/ for now — the page goes straight from the
+-		// Instagram/vacancies landing content to the recruitment agencies.
+-		// Nothing was deleted: the reusable component lives at
+-		// template-parts/job-resources.php, the data in inc/job-resources.php
+-		// (conexao_job_resources option, editable under Empregos →
+-		// "Onde procurar emprego" in wp-admin) and the styles in main.css.
+-		// To bring the section back, restore:
+-		//   get_template_part( 'template-parts/job-resources' );
++		// "Onde procurar emprego" — external job-search sites, rendered below
++		// the existing Instagram banner / guidance content and above the
++		// unified employment opportunities directory. The section reuses the
++		// shared component at template-parts/job-resources.php, whose data
++		// comes from conexao_job_resources() (inc/job-resources.php, editable
++		// under Empregos → "Onde procurar emprego" in wp-admin) — the SAME
++		// source that backs the compact homepage preview. Restores the
++		// rendering that commit a035ce0 disabled; nothing else changed here.
++		get_template_part( 'template-parts/job-resources' );
+ 		?>
+ 
+ 		<?php
+diff --git a/wp-content/themes/conexao-br-irlanda/template-parts/job-resources.php b/wp-content/themes/conexao-br-irlanda/template-parts/job-resources.php
+index 09c2a20..55fbc6e 100644
+--- a/wp-content/themes/conexao-br-irlanda/template-parts/job-resources.php
++++ b/wp-content/themes/conexao-br-irlanda/template-parts/job-resources.php
+@@ -38,6 +38,8 @@ if ( ! empty( $job_resources ) ) :
+ 				$resource_image  = conexao_job_resource_image( $job_resource );
+ 				$external_attrs  = ' target="_blank" rel="noopener noreferrer"';
+ 				$new_tab_hint    = esc_attr__( '(abre em nova aba)', 'conexao-br-irlanda' );
++				/* translators: %s: external job site name, e.g. "Jobs.ie". */
++				$access_label    = esc_attr( sprintf( __( 'Acessar %s (abre em nova aba)', 'conexao-br-irlanda' ), $resource_title ) );
+ 				?>
+ 				<article class="event-card job-resource-card">
+ 					<?php if ( $resource_image['attachment_id'] ) : ?>
+@@ -77,13 +79,12 @@ if ( ! empty( $job_resources ) ) :
+ 							<p class="event-card-excerpt"><?php echo esc_html( $resource_desc ); ?></p>
+ 						<?php endif; ?>
+ 
+-						<a href="<?php echo $resource_url; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" class="event-card-cta" title="<?php echo esc_attr( $new_tab_hint ); ?>"<?php echo $external_attrs; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
+-							<?php esc_html_e( 'Saiba mais', 'conexao-br-irlanda' ); ?>
++						<a href="<?php echo $resource_url; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>" class="event-card-cta" title="<?php echo esc_attr( $new_tab_hint ); ?>" aria-label="<?php echo $access_label; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>"<?php echo $external_attrs; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
++							<?php esc_html_e( 'Acessar', 'conexao-br-irlanda' ); ?>
+ 							<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+ 								<line x1="5" y1="12" x2="19" y2="12"></line>
+ 								<polyline points="12 5 19 12 12 19"></polyline>
+ 							</svg>
+-							<span class="screen-reader-text"><?php esc_html_e( '(abre em nova aba)', 'conexao-br-irlanda' ); ?></span>
+ 						</a>
+ 					</div>
+ 				</article>
