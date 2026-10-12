@@ -1,0 +1,48 @@
+conexao test harness
+  repository:    /workspace
+  php:           8.2.32
+  environment:   host (local php)
+  base url:      http://localhost:8080
+
+Script-contract suites (static, no WordPress, no network)
+[PASS] tests/scripts/verify-agent-governance.py
+[FAIL] tests/scripts/verify-cache-key-scoping.py (exit 1)
+         FAIL: the PHP tokenizer could not run: php tokenizer failed: 
+         FAIL: the token scan read at least one production PHP file (an empty scan would pass vacuously)
+[PASS] tests/scripts/verify-documentation-drift.py
+         14 passed, 0 failed
+[PASS] tests/scripts/verify-i18n-freshness.py
+         3 passed, 0 failed
+[PASS] tests/scripts/verify-release-integrity.py
+         224 passed, 0 failed
+[PASS] tests/scripts/verify-script-conventions.py
+         727 passed, 0 failed
+[PASS] tests/scripts/verify-stage10-batch-boundary.py
+[PASS] tests/scripts/verify-stage13-commissioning-readiness.py
+         808 passed, 0 failed
+[FAIL] tests/scripts/verify-stage14-secret-scan.py (exit 1)
+           FAIL: the PHP runtime scanner could not be executed (no local WordPress); conformance is UNPROVEN, not assumed
+[PASS] tests/scripts/verify-stage17-retirement.py
+         110 passed, 0 failed
+[PASS] tests/scripts/verify-stage18-operator-runbook.py
+[PASS] tests/scripts/verify-stage2-promotion.py
+         28 passed, 0 failed
+[PASS] tests/scripts/verify-stage3-automation.py
+         172 passed, 0 failed
+[PASS] tests/scripts/verify-stage4-provider.py
+         148 passed, 0 failed
+[PASS] tests/scripts/verify-stage6-transport-trigger.py
+         49 passed, 0 failed
+[PASS] tests/scripts/verify-stage7-commissioning.py
+         71 passed, 0 failed
+[PASS] tests/scripts/verify-stage8-control-plane.py
+         147 passed, 0 failed
+[PASS] tests/scripts/verify-stage8-release-consistency.py
+         16 passed, 0 failed
+
+----------------------------------------
+In-process PHP suites: 0 total, 0 passed, 0 failed
+Script-contract suites: 18 total, 16 passed, 2 failed
+----------------------------------------
+TESTS FAILED
+full suite output kept in /tmp/tmp.8bAM3s44BV
