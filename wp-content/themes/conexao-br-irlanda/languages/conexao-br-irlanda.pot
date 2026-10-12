@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-04 19:14+0100\n"
+"POT-Creation-Date: 2026-10-11 20:37+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 
 
@@ -1037,7 +1037,7 @@ msgstr ""
 #: wp-content/themes/conexao-br-irlanda/inc/setup.php:165
 msgid "Vaga Vertical (Instagram)"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/sponsors.php:398
+#: wp-content/themes/conexao-br-irlanda/inc/sponsors.php:400
 msgid "Website"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/inc/ui.php:23
