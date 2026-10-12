@@ -1100,6 +1100,28 @@ class Conexao_Event_Importer_Engine {
 			$existing_banner = get_post_meta( $post_id, '_event_banner', true );
 
 			/*
+			 * The END of the event participates in change detection.
+			 *
+			 * `_event_end_date` / `_event_end_time` are what keep a multi-day event
+			 * on the public calendar for every day it is running, and they are what
+			 * Conexao_Event_Status::get_event_end_timestamp() uses to decide that an
+			 * event has finished. Comparing the start fields only meant a source
+			 * that corrected or shortened an end date was classified "unchanged",
+			 * returned early before save_event_meta(), and left the OLD end date on
+			 * the record — so /eventos/ kept listing an event that had already
+			 * ended, with a "Hoje" chip, until the stale end date itself passed.
+			 *
+			 * Reading them here keeps the comparison honest in both directions: the
+			 * first run after such a source change writes the new window (an
+			 * "updated" action) and every later run compares equal (an "unchanged"
+			 * action), so re-imports stay idempotent.
+			 */
+			$existing_end_date = (string) get_post_meta( $post_id, '_event_end_date', true );
+			$existing_end_time = (string) get_post_meta( $post_id, '_event_end_time', true );
+			$incoming_end_date = isset( $normalized['end_date'] ) ? (string) $normalized['end_date'] : '';
+			$incoming_end_time = isset( $normalized['end_time'] ) ? (string) $normalized['end_time'] : '';
+
+			/*
 			 * Recurrence participates in change detection.
 			 *
 			 * Without this, an event imported BEFORE the series adapter existed
@@ -1136,6 +1158,8 @@ class Conexao_Event_Importer_Engine {
 				html_entity_decode( $existing_title, ENT_QUOTES | ENT_HTML5 ) === html_entity_decode( $normalized['title'], ENT_QUOTES | ENT_HTML5 ) &&
 				$existing_date === $normalized['start_date'] &&
 				$existing_time === $normalized['start_time'] &&
+				$existing_end_date === $incoming_end_date &&
+				$existing_end_time === $incoming_end_time &&
 				$existing_url === $normalized['source_url'] &&
 				$existing_venue === $normalized['venue'] &&
 				$existing_org === $normalized['organizer'] &&

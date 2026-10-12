@@ -288,6 +288,13 @@ final class Conexao_Event_Query {
 	 *    than the window end (blank/missing start falls back to
 	 *    `_event_date` inside the evaluator, so it must be a candidate).
 	 *
+	 *    The end-date bound is TODAY, not the window end: the evaluator only
+	 *    accepts an occurrence in [today, today+6] and every accepted
+	 *    occurrence satisfies `end >= today`, so `end >= today` is still a
+	 *    strict superset — while binding the window end here wrongly dropped
+	 *    an active series as soon as its last occurrence fell inside the
+	 *    window (including a series whose last occurrence is today).
+	 *
 	 * The public `_event_status` gate (published OR legacy no-status row) is
 	 * replicated here, compatible with the runtime's pre_get_posts
 	 * meta_query: a `NOT EXISTS` clause does not match an existing empty
@@ -332,7 +339,12 @@ final class Conexao_Event_Query {
 			  )
 		";
 
-		$rows = $wpdb->get_col( $wpdb->prepare( $sql, $window_end, $window_end, $today_str, $today_str ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
+		/*
+		 * Binding order follows the SQL above: the weekly end bound is the
+		 * current local date (see the docblock), the weekly start bound is the
+		 * window end, and both one-time bounds are the current local date.
+		 */
+		$rows = $wpdb->get_col( $wpdb->prepare( $sql, $today_str, $window_end, $today_str, $today_str ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery
 
 		return array_map( 'intval', (array) $rows );
 	}

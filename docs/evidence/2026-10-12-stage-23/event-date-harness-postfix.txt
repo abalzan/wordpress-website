@@ -1,0 +1,89 @@
+Stage 23 event-date harness — repo: /workspace — tz: Europe/Dublin — anchor: 2026-03-11
+
+=== 1. Day transitions (controlled clock, fixture records untouched) ===
+  PASS: T1 single-day event dated today appears today
+  PASS: T1 the same record does NOT appear the next day
+  PASS: T2 event that ended yesterday is excluded today
+  PASS: T2 long multi-day event that ended yesterday is excluded today
+  PASS: T3 tomorrow's event is upcoming today and still listed tomorrow
+  PASS: T3 tomorrow's event is classified as tomorrow today
+  PASS: T3 the same record is classified as TODAY on the next day
+  PASS: T3 it is no longer classified as an upcoming event two days later
+  PASS: T4 ongoing multi-day event stays visible every day it runs
+  PASS: T4 it disappears the day after its end date
+  PASS: upcoming event with no end date stays until its own day
+  PASS: upcoming event with no end date is gone the day after
+  PASS: future multi-day range is visible across its span
+  PASS: future multi-day range is gone the day after its end date
+
+=== 2. Status gate / post status ===
+  PASS: status=expired is hidden regardless of its date
+  PASS: a draft record is hidden
+  PASS: a legacy record with no status meta stays visible
+
+=== 3. Weekly series: candidate window ===
+  PASS: active series (end beyond the window) is listed
+  PASS: open-ended series is listed
+  PASS: series starting beyond the window is not listed yet
+  PASS: series that has ended is not listed
+  PASS: series ENDING INSIDE the window is listed (Stage 23 boundary fix)
+  PASS: series ending TODAY is listed on its occurrence day
+  PASS: series that ended is gone afterwards
+  PASS: series starting inside the window becomes visible
+  PASS: weekly rule with no end meta (open-ended) is listed
+
+=== 4. Timezone boundaries ===
+  PASS: the same instant is a different calendar date in UTC and Europe/Dublin
+  PASS: a date-only event is "today" on its site-local date
+  PASS: the UTC instant 2026-06-30T23:30Z is that event's day in the site timezone
+  PASS: the same UTC date at midday is NOT that event's day (UTC and local are not mixed)
+  PASS: it is not "today" the day after
+  PASS: the local day after 24 Oct 2026 is 25 Oct (DST end)
+
+=== 5. Cache layer ===
+  PASS: the transient key carries the site-local date and language
+  PASS: the TTL ends at the next local midnight
+  PASS: T5/T6 a stale previous-day entry is never served to a later day
+  PASS: the cached read equals the uncached evaluation for the same day
+  PASS: flush_cache() clears yesterday/today/tomorrow for every language and nothing else
+  PASS: the explicit-clock evaluation writes no cache entry
+
+=== 6. Day-by-day scan (anchor -3 .. +32) ===
+  today=2026-03-08  101 102 103 104 105 106 107 108 111 115 116 117 118 120
+  today=2026-03-09  101 102 103 104 105 106 107 108 111 115 116 117 118 120
+  today=2026-03-10  101 102 103 104 105 106 107 108 111 115 116 117 118 120
+  today=2026-03-11  101 103 104 106 107 108 111 115 116 117 118 120
+  today=2026-03-12  103 104 106 109 111 115 116 117 118 120
+  today=2026-03-13  106 109 111 115 116 117 118 120
+  today=2026-03-14  106 109 111 115 117 118 120
+  today=2026-03-15  106 109 111 115 117 118 120
+  today=2026-03-16  106 109 111 115 118 120
+  today=2026-03-17  106 109 111 118 120
+  today=2026-03-18  106 109 111 118 120
+  today=2026-03-19  106 109 110 111 118 120
+  today=2026-03-20  106 109 110 111 118 120
+  today=2026-03-21  106 109 110 111 118 120
+  today=2026-03-22  106 109 110 111 118 120
+  today=2026-03-23  106 109 110 111 118 120
+  today=2026-03-24  106 109 110 111 118 120
+  today=2026-03-25  106 109 110 111 118 120
+  today=2026-03-26  106 109 110 111 118 120
+  today=2026-03-27  106 109 110 111 118 120
+  today=2026-03-28  106 109 110 111 118 120
+  today=2026-03-29  106 109 110 111 118 120
+  today=2026-03-30  106 109 110 111 118 120
+  today=2026-03-31  106 109 110 111 118 120
+  today=2026-04-01  106 109 110 111 118 120
+  today=2026-04-02  109 110 111 118 120
+  today=2026-04-03  109 110 111 118 120
+  today=2026-04-04  109 110 111 118 120
+  today=2026-04-05  109 110 111 118 120
+  today=2026-04-06  109 110 111 118 120
+  today=2026-04-07  109 110 111 118 120
+  today=2026-04-08  109 110 111 118 120
+  today=2026-04-09  110 111 118 120
+  today=2026-04-10  110 111 118 120
+  today=2026-04-11  110 111 118 120
+  today=2026-04-12  110 111 118 120
+
+38 passed, 0 failed

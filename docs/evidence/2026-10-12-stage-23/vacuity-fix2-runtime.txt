@@ -1,0 +1,14 @@
+# Vacuity proof — fix 2 (weekly candidate-window boundary) REVERTED
+# The two suites must fail on the window assertions and nowhere else.
+
+===== harness
+  FAIL: series ENDING INSIDE the window is listed (Stage 23 boundary fix)
+  FAIL: series ending TODAY is listed on its occurrence day
+36 passed, 2 failed
+
+===== wp-content/plugins/conexao-event-runtime/tests/test-event-query.php
+  FAIL: R: a series whose last occurrence is inside the 7-day window is still listed
+  FAIL: R: a series whose last occurrence is today is listed on its occurrence day
+  FAIL: R: the series ending inside the window resolves to today
+  FAIL: R: the series ending today also resolves to today
+44 passed, 4 failed

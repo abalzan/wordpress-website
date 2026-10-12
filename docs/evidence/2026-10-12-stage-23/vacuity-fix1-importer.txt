@@ -1,0 +1,10 @@
+# Vacuity proof — fix 1 (importer schedule refresh) REVERTED
+# Only the end-date change-detection comparisons were removed; nothing else.
+
+===== wp-content/plugins/conexao-event-importer/tests/test-event-schedule-refresh.php
+  FAIL: an end-date-only change is detected as an update (not "unchanged") — expected 'updated', got 'unchanged'
+  FAIL: the stored end date is refreshed to the shortened source range — expected '2026-10-13', got '2026-10-15'
+  FAIL: the record is NO LONGER an upcoming event the day after its refreshed end date
+  FAIL: the record is NO LONGER an upcoming event on the stale end date
+  FAIL: the unchanged fast path leaves the end date untouched — expected '2026-10-13', got '2026-10-15'
+event schedule refresh: 16 passed, 5 failed

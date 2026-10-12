@@ -370,6 +370,78 @@ if ( $md_term_id ) {
 assert_true( ! in_array( $expired_weekly, $md_ids, true ), 'Q: expired weekly event still excluded after multi-day changes' );
 
 // ---------------------------------------------------------------------------
+// R. Weekly-series window boundary (Stage 23)
+// ---------------------------------------------------------------------------
+//
+// The candidate query must admit every series that can still occur in the
+// 7-day window, which includes a series whose LAST occurrence falls inside it
+// (a series is active until its end date, not until its end date minus a
+// week). The evaluator still decides exactly which of the candidates has a
+// real occurrence, so the widened SQL can never surface an ended series.
+test_section( 'Weekly Series Window Boundary' );
+
+Conexao_Event_Query::flush_cache();
+
+// Last occurrence inside the 7-day window (and today is an occurrence day).
+$weekly_end_inside = create_test_event(
+	'Weekly ends inside the window',
+	array(
+		'_event_date'             => query_day_offset( -14 ),
+		'_event_recurrence'       => 'weekly',
+		'_event_recurrence_days'  => (string) query_weekday_offset( 0 ),
+		'_event_recurrence_start' => query_day_offset( -14 ),
+		'_event_recurrence_end'   => query_day_offset( 3 ),
+	)
+);
+
+// Last occurrence IS today.
+$weekly_end_today = create_test_event(
+	'Weekly ends today',
+	array(
+		'_event_date'             => query_day_offset( -7 ),
+		'_event_recurrence'       => 'weekly',
+		'_event_recurrence_days'  => (string) query_weekday_offset( 0 ),
+		'_event_recurrence_start' => query_day_offset( -7 ),
+		'_event_recurrence_end'   => query_day_offset( 0 ),
+	)
+);
+
+// Ended yesterday: the widened candidate query must still exclude it.
+$weekly_end_yesterday = create_test_event(
+	'Weekly ended yesterday',
+	array(
+		'_event_date'             => query_day_offset( -21 ),
+		'_event_recurrence'       => 'weekly',
+		'_event_recurrence_days'  => (string) query_weekday_offset( 0 ),
+		'_event_recurrence_start' => query_day_offset( -21 ),
+		'_event_recurrence_end'   => query_day_offset( -1 ),
+	)
+);
+
+// Next occurrence falls AFTER the end date: a candidate the evaluator refuses.
+$weekly_next_after_end = create_test_event(
+	'Weekly next occurrence after its end',
+	array(
+		'_event_date'             => query_day_offset( -14 ),
+		'_event_recurrence'       => 'weekly',
+		'_event_recurrence_days'  => (string) query_weekday_offset( 1 ),
+		'_event_recurrence_start' => query_day_offset( -14 ),
+		'_event_recurrence_end'   => query_day_offset( 0 ),
+	)
+);
+
+$window_ids = Conexao_Event_Query::upcoming_event_ids();
+
+assert_true( in_array( $weekly_end_inside, $window_ids, true ), 'R: a series whose last occurrence is inside the 7-day window is still listed' );
+assert_true( in_array( $weekly_end_today, $window_ids, true ), 'R: a series whose last occurrence is today is listed on its occurrence day' );
+assert_true( ! in_array( $weekly_end_yesterday, $window_ids, true ), 'R: a series that ended yesterday stays excluded' );
+assert_true( ! in_array( $weekly_next_after_end, $window_ids, true ), 'R: a series whose next occurrence is after its end date is excluded (the evaluator still decides)' );
+assert_true( Conexao_Event_Query::next_occurrence_date( $weekly_end_inside ) === query_day_offset( 0 ), 'R: the series ending inside the window resolves to today' );
+assert_true( Conexao_Event_Query::next_occurrence_date( $weekly_end_today ) === query_day_offset( 0 ), 'R: the series ending today also resolves to today' );
+assert_true( null === Conexao_Event_Query::next_occurrence_date( $weekly_end_yesterday ), 'R: the ended series has no next occurrence' );
+assert_true( null === Conexao_Event_Query::next_occurrence_date( $weekly_next_after_end ), 'R: the after-end series has no next occurrence' );
+
+// ---------------------------------------------------------------------------
 // Cleanup
 // ---------------------------------------------------------------------------
 foreach ( $test_post_ids as $test_post_id ) {
