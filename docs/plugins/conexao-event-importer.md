@@ -327,6 +327,27 @@ Two rules protect it:
    `save_event_taxonomies()` too, so an event imported while the hint was empty
    acquires its county term on the next run instead of being stuck forever.
 
+### Schedule fields and change detection (v1.7.2)
+
+Change detection compares the event's **start and end** scheduling fields —
+`start_date`, `start_time`, `end_date`, `end_time` — alongside title, URL,
+venue, organizer, banner, address and the recurrence rule. The end date and end
+time are what keep a multi-day event on the public calendar for every day it is
+running (`_event_end_date` decides both the `/eventos/` visibility window and
+`Conexao_Event_Status::get_event_end_timestamp()`), so an end-date-only source
+correction must reach the existing record.
+
+Before v1.7.2 only the start fields were compared: a source that shortened or
+corrected an event's end date was classified `"unchanged"`, the fast path
+returned before `save_event_meta()`, and the record kept its **old** end date —
+so `/eventos/` kept listing an event (with a "Hoje" chip) after it had really
+ended. The end fields now participate exactly like the recurrence rule does:
+the first run after such a source change writes the new window (an `"updated"`
+action) and every later run compares equal (an `"unchanged"` action), so
+re-imports stay idempotent. Regression coverage:
+`tests/test-event-schedule-refresh.php`.
+
+
 Events imported before the hint existed are repaired once by
 `scripts/repair-event-county-terms.php` (dry-run by default). It assigns the
 **existing** shared `conexao_county` term and never creates one — counties are

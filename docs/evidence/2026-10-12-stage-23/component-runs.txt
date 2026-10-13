@@ -1,0 +1,67 @@
+# Canonical runner, touched components — ad-hoc WordPress (SQLite), no Polylang installed
+
+===== ./scripts/run-tests.sh --php --only conexao-event-runtime
+  repository:    /workspace
+  php:           8.2.32
+  environment:   host (local php)
+  base url:      http://localhost:8080
+
+In-process PHP suites (serial, one process per suite)
+[PASS] plugin/conexao-event-runtime/test-event-date-transitions.php — 54 passed, 0 failed
+[FAIL] plugin/conexao-event-runtime/test-event-language-gate.php (exit 1)
+           insufficient data: polylang
+           FAIL: test prerequisite is available: function_exists( pll_set_post_language )
+[PASS] plugin/conexao-event-runtime/test-event-query.php — 48 passed, 0 failed
+[PASS] plugin/conexao-event-runtime/test-event-recurrence.php — 90 passed, 0 failed
+
+----------------------------------------
+In-process PHP suites: 4 total, 3 passed, 1 failed
+  prerequisite failures:         1
+Assertions: 192 passed, 0 failed
+----------------------------------------
+TESTS FAILED
+failing suites:
+  - plugin/conexao-event-runtime/test-event-language-gate.php
+full suite output kept in /tmp/tmp.JZ3A4zsibZ
+
+===== ./scripts/run-tests.sh --php --only conexao-event-importer
+[PASS] plugin/conexao-event-importer/test-event-image-sync.php — 30 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-event-schedule-refresh.php — 21 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-eventbrite-importer.php — 68 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-export-language.php — 56 passed, 0 failed
+[FAIL] plugin/conexao-event-importer/test-ics-occurrence-dates.php — 171 passed, 1 failed (exit 1)
+           FAIL: the runtime reports 2026-10-06 as its next occurrence — '2026-10-06'
+[PASS] plugin/conexao-event-importer/test-import-log.php — 53 passed, 0 failed
+[FAIL] plugin/conexao-event-importer/test-ivvcc-importer.php (exit 255)
+         Fatal error: Uncaught Error: Class "DOMDocument" not found in /tmp/wp/wp-content/plugins/conexao-event-importer/includes/sources/class-ivvcc-source.php:239
+[FAIL] plugin/conexao-event-importer/test-language-identity.php (exit 1)
+           insufficient data: polylang
+           FAIL: test prerequisite is available: function_exists( pll_set_post_language )
+[FAIL] plugin/conexao-event-importer/test-mondello-park-importer.php (exit 255)
+         Fatal error: Uncaught Error: Class "DOMDocument" not found in /workspace/wp-content/plugins/conexao-event-importer/tests/test-mondello-park-importer.php:357
+[FAIL] plugin/conexao-event-importer/test-motorsport-ireland-importer.php (exit 255)
+         Fatal error: Uncaught Error: Class "DOMDocument" not found in /tmp/wp/wp-content/plugins/conexao-event-importer/includes/sources/class-motorsport-ireland-source.php:647
+[PASS] plugin/conexao-event-importer/test-past-event-filter.php — 29 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-reappearing-event-lifecycle.php — 5 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-source-county-hint.php — 17 passed, 0 failed
+[FAIL] plugin/conexao-event-importer/test-town-sanitization.php — 78 passed, 5 failed (exit 1)
+           FAIL: clean term 'Oranmore' exists (was contaminated)
+           FAIL: clean term 'Galway' exists (was 'Galway, Ireland')
+           FAIL: legitimate town 'Cork' still exists
+           FAIL: legitimate town 'Cobh' still exists
+           FAIL: legitimate town 'Corofin' still exists
+
+----------------------------------------
+In-process PHP suites: 17 total, 11 passed, 6 failed
+  prerequisite failures:         1
+Assertions: 1141 passed, 6 failed
+----------------------------------------
+TESTS FAILED
+failing suites:
+  - plugin/conexao-event-importer/test-ics-occurrence-dates.php
+  - plugin/conexao-event-importer/test-ivvcc-importer.php
+  - plugin/conexao-event-importer/test-language-identity.php
+  - plugin/conexao-event-importer/test-mondello-park-importer.php
+  - plugin/conexao-event-importer/test-motorsport-ireland-importer.php
+  - plugin/conexao-event-importer/test-town-sanitization.php
+full suite output kept in /tmp/tmp.YZrizcb20n

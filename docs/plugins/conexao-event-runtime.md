@@ -213,6 +213,15 @@ events participate in the existing event surfaces without occurrence posts:
    than the window end). The public `_event_status` gate (published OR
    legacy no-status) is replicated in SQL. No `FIND_IN_SET()`, no
    `WP_Date_Query` weekday logic, no new tables.
+
+   The weekly end bound is **`_event_recurrence_end >= today`**, not
+   `>= today + 7`: the evaluator only accepts an occurrence in
+   `[today, today+6]`, and every accepted occurrence satisfies `end >= today`,
+   so the query stays a strict superset of the evaluation. Binding the window
+   end there instead (the behaviour before v1.2.3) dropped every active series
+   as soon as its last occurrence fell inside the window — seven days before
+   the series ended, including on the day it occurs.
+
 2. **Batch meta load** — `update_meta_cache()` loads all postmeta for the
    candidates in a single query; the evaluator then runs from cache.
 3. **Exact PHP evaluation** — `next_occurrence()` decides per candidate.

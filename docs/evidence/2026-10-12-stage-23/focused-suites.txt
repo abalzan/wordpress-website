@@ -1,12 +1,12 @@
-# Focused suites — local WordPress 7.1.3 (SQLite), site timezone Europe/Dublin, theme conexao-br-irlanda active
+# Focused suites — local WordPress (SQLite), site timezone Europe/Dublin, theme conexao-br-irlanda active
 # command: CONEXAO_TEST_WP_ROOT=/tmp/wp php <suite>   (plugin code synced from the working tree)
+# re-run on the final working tree
 
 ===== wp-content/plugins/conexao-event-runtime/tests/test-event-date-transitions.php
 
-
 == Event date transitions, cache rollover and timezone boundaries (Stage 23) ==
   PASS: the event runtime query/evaluator classes are loaded
-Site timezone: Europe/Dublin — today: 2026-10-12 (2026-10-11 … 2026-10-14)
+Site timezone: Europe/Dublin — today: 2026-10-13 (2026-10-12 … 2026-10-15)
 
 === T1: today → yesterday without touching the record ===
   PASS: T1: the event is in today's results
@@ -81,8 +81,7 @@ Site timezone: Europe/Dublin — today: 2026-10-12 (2026-10-11 … 2026-10-14)
 
 event date transitions: 54 passed, 0 failed
 ===== wp-content/plugins/conexao-event-runtime/tests/test-event-query.php
-
-Site: http://localhost:8080 — timezone: Europe/Dublin — today: 2026-10-12
+Site: http://localhost:8080 — timezone: Europe/Dublin — today: 2026-10-13
 
 === One-Time Events ===
   PASS: one-time today is in the list
@@ -150,7 +149,6 @@ Site: http://localhost:8080 — timezone: Europe/Dublin — today: 2026-10-12
 
 48 passed, 0 failed
 ===== wp-content/plugins/conexao-event-importer/tests/test-event-schedule-refresh.php
-
 
 == Event schedule refresh on re-import (Stage 23) ==
   PASS: the event runtime and the event importer classes are loaded

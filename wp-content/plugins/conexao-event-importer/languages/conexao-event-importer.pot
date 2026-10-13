@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-03 13:55+0100\n"
+"POT-Creation-Date: 2026-10-13 09:48+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 
 
@@ -630,12 +630,12 @@ msgid ""
 "Matched a translated record: the importer never writes to another language."
 msgstr ""
 #. translators: 1: event title, 2: error message
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1255
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1279
 #, php-format
 msgid "The event \"%1$s\" was imported but taxonomy assignment failed: %2$s"
 msgstr ""
 #. translators: 1: event title
-#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1494
+#: wp-content/plugins/conexao-event-importer/includes/class-event-importer.php:1518
 #, php-format
 msgid ""
 "The image for \"%1$s\" could not be downloaded. The external Eventbrite "
