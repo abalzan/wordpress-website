@@ -1,0 +1,2620 @@
+/* ============================================
+   Conexão BR Irlanda — Dark Mode
+   Second, carefully designed color system.
+   Same design system, different color theme.
+   ============================================ */
+
+/* ===== 1. DARK THEME TOKENS =====
+   Override the brand tokens and semantic aliases.
+   The green and orange remain the brand anchors,
+   adjusted for sufficient contrast on dark surfaces.
+
+   NOTE ON SELECTOR SPECIFICITY: these token blocks are scoped to
+   `[data-theme="dark"]`, which has the SAME specificity as the plain `:root`
+   selector used by conexao_customizer_css() (inc/customizer.php). That inline
+   :root block is emitted in wp_head and therefore lands AFTER this stylesheet,
+   so on a tie it wins and the dark tokens never take effect. `:root[data-theme="dark"]`
+   is one class-level attribute MORE specific than `:root`, so it wins that tie
+   and the dark theme actually applies. This is why the brand tokens below are
+   scoped this way and why the accent TEXT token needs the same treatment. */
+:root[data-theme="dark"] {
+  /* Brand tokens — dark-adjusted */
+  --conexao-primary: #3ab875;
+  --conexao-primary-dark: #28a060;
+  --conexao-primary-light: #1a3a2a;
+  --conexao-primary-50: #142b20;
+  /* Brand green for TEXT/ICONS on dark surfaces. --conexao-primary keeps the
+     light value #0E6B3A in practice: conexao_customizer_css() re-declares it
+     on :root AFTER this stylesheet, so it wins the cascade — which is what
+     white-on-green buttons need (white on #0E6B3A = 6.5:1; on #3ab875 = 2.5:1,
+     a failure). Green TEXT on dark surfaces needs the opposite: #0e6b3a on
+     primary-50 #142b20 = 2.27:1 (fail), #3ab875 = 5.94:1 (pass). Same pattern
+     as the .leisure-card-category pill note below. */
+  --conexao-primary-text: #3ab875;
+  --conexao-accent: #f59e42;
+  --conexao-accent-dark: #d97a1a;
+  --conexao-accent-light: #3a2a1a;
+  /*
+   * Dark-mode accent TEXT token, mirroring --conexao-primary-text above.
+   * On dark surfaces the vivid accent is already legible (#f59e42 measures
+   * 8.47:1 on the #0f1720 body and 7.72:1 on the #16202b card), so the dark
+   * theme's accent-text token is the LIGHTER orange rather than a darkened
+   * one. This is why --conexao-accent-text must be re-pointed here instead of
+   * inherited from the light theme, where it has to be darkened to clear AA
+   * on white (UI audit T1.5).
+   */
+  --conexao-accent-text: #f59e42;
+  --conexao-dark: #0f1720;
+  --conexao-gray-900: #e8edf2;
+  --conexao-gray-700: #d1d9e2;
+  --conexao-gray-600: #c0ccd8;
+  --conexao-gray-500: #94a8ba;
+  --conexao-gray-400: #5a6a7a;
+  --conexao-gray-300: #3a4a5a;
+  --conexao-gray-200: #334455;
+  --conexao-gray-100: #1c2836;
+  --conexao-light-gray: #16202b;
+  --conexao-border: #3a4a5a;
+  --conexao-white: #ffffff;
+
+  /* Primary action (Empregos landing CTA): a deepened brand green for dark
+   * mode. Two defects were measured in Chromium before the fix: the bright
+   * orange accent surface (#f59e42) is over-saturated for the dark interface,
+   * AND the anchor colour rule `[data-theme="dark"] a` (0,1,1) outranks
+   * `.btn-primary` (0,1,0), so the label + SVG arrow computed to the dark
+   * green #3ab875 — green-on-orange at 1.16:1, effectively invisible.
+   * The deepened green #287443 carries white text at 5.72:1 (PASS); the hover
+   * deepens to #1f5e2f (11.76:1). Light mode keeps the orange accent from
+   * main.css and is never touched by these rules. */
+  --conexao-cta-bg: #287443;
+  --conexao-cta-bg-dark: #1f5e2f;
+
+  /* Semantic aliases — dark surfaces */
+  --color-background: #0f1720;
+  --color-surface: #16202b;
+  --color-surface-muted: #1c2836;
+  --color-text: #e8edf2;
+  --color-text-secondary: var(--conexao-gray-600);
+  --color-text-muted: var(--conexao-gray-500);
+  --color-border: var(--conexao-border);
+  --color-success: #2e9e63;
+
+  /* Shadows — softer in dark mode */
+  --conexao-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --conexao-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.35);
+  --conexao-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --conexao-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.45);
+  --conexao-shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.5);
+
+  /* Focus ring — brighter for dark */
+  --focus-ring: 3px solid var(--conexao-accent);
+}
+
+/* ===== 2. BASE ===== */
+[data-theme="dark"] body {
+  background-color: var(--color-background);
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] h4,
+[data-theme="dark"] h5,
+[data-theme="dark"] h6 {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] a {
+  color: var(--conexao-primary);
+}
+
+[data-theme="dark"] a:hover {
+  color: var(--conexao-accent);
+}
+
+/* ===== 3. HEADER ===== */
+[data-theme="dark"] .site-header {
+  background: var(--color-surface);
+  border-bottom-color: var(--color-border);
+}
+
+/* Theme-aware header logo: swap assets via the data-theme attribute.
+   Specificity (0,3,0) outranks the base hide rule in header-nav.css
+   regardless of stylesheet order. */
+[data-theme="dark"] .site-header .site-logo-img--light {
+  display: none;
+}
+
+[data-theme="dark"] .site-header .site-logo-img--dark {
+  display: block;
+}
+
+[data-theme="dark"] .header-search .search-field {
+  background: var(--color-surface-muted);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .header-search .search-field::placeholder {
+  color: var(--color-text-muted);
+}
+
+[data-theme="dark"] .header-search .search-field:focus {
+  background: var(--color-surface);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px rgba(46, 158, 99, 0.15);
+}
+
+[data-theme="dark"] .header-search-icon {
+  color: var(--color-text-muted);
+}
+
+[data-theme="dark"] .primary-navigation ul li a {
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .primary-navigation ul li a:hover,
+[data-theme="dark"] .primary-navigation ul li.current-menu-item > a,
+[data-theme="dark"] .primary-navigation ul li.current-menu-parent > a,
+[data-theme="dark"] .primary-navigation ul li.current-menu-ancestor > a,
+[data-theme="dark"] .primary-navigation ul li.current_page_item > a,
+[data-theme="dark"] .primary-navigation ul li.current_page_parent > a,
+[data-theme="dark"] .primary-navigation ul li.current_page_ancestor > a {
+  color: var(--color-primary);
+}
+
+[data-theme="dark"] .primary-navigation ul li.menu-item-has-children .sub-menu,
+[data-theme="dark"] .primary-navigation ul li.menu-item-has-children > ul {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .primary-navigation ul li.menu-item-has-children .sub-menu li a:hover,
+[data-theme="dark"] .primary-navigation ul li.menu-item-has-children > ul li a:hover {
+  background: var(--color-primary-50);
+  color: var(--color-primary);
+}
+
+/* Mobile menu */
+[data-theme="dark"] .mobile-menu-overlay {
+  background: rgba(7, 59, 47, 0.6);
+}
+
+[data-theme="dark"] .mobile-menu-content {
+  background: var(--color-surface);
+}
+
+/* Accent-filled "Anuncie Aqui" CTAs — keep the label white in dark mode.
+   The generic dark anchor rules ([data-theme="dark"] a / a:hover, 0,1,1 and
+   0,2,1) outrank header-nav.css's (0,1,0) CTA rules, which repainted these
+   accent-filled actions green-on-orange (2.7:1) and, on hover/active,
+   orange-on-orange (~1.5:1 — the label effectively disappears). Same
+   specificity trap as the hero CTAs above, fixed the same way: pin the
+   intended white label with dark-scoped selectors that outrank the generic
+   anchor rules. Applies to the mobile drawer CTA and the compact mobile
+   top-bar CTA — the full-text desktop .header-cta is intentionally left
+   untouched by this change. */
+[data-theme="dark"] .mobile-menu-cta,
+[data-theme="dark"] .mobile-menu-cta:hover,
+[data-theme="dark"] .mobile-menu-cta:active,
+[data-theme="dark"] .mobile-menu-cta:focus-visible,
+[data-theme="dark"] .header-cta-compact,
+[data-theme="dark"] .header-cta-compact:hover,
+[data-theme="dark"] .header-cta-compact:active,
+[data-theme="dark"] .header-cta-compact:focus-visible {
+  color: var(--conexao-white);
+}
+
+[data-theme="dark"] .mobile-menu-header {
+  border-bottom-color: var(--color-border);
+}
+
+[data-theme="dark"] .mobile-menu-title {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .mobile-menu-close {
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .mobile-menu-close:hover {
+  background: var(--color-surface-muted);
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .mobile-menu-search-field {
+  background: var(--color-surface-muted);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .mobile-menu-search-field::placeholder {
+  color: var(--color-text-muted);
+}
+
+[data-theme="dark"] .mobile-menu-search-field:focus {
+  background: var(--color-surface);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px rgba(46, 158, 99, 0.15);
+}
+
+[data-theme="dark"] .mobile-menu li {
+  border-bottom-color: var(--color-border);
+}
+
+[data-theme="dark"] .mobile-menu li a {
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .mobile-menu li a:hover,
+[data-theme="dark"] .mobile-menu li.current-menu-item a,
+[data-theme="dark"] .mobile-menu li.current-menu-parent a,
+[data-theme="dark"] .mobile-menu li.current-menu-ancestor a,
+[data-theme="dark"] .mobile-menu li.current_page_item a,
+[data-theme="dark"] .mobile-menu li.current_page_parent a,
+[data-theme="dark"] .mobile-menu li.current_page_ancestor a {
+  color: var(--color-primary);
+  background: var(--color-primary-50);
+}
+
+[data-theme="dark"] .mobile-menu li ul {
+  background: var(--color-surface-muted);
+}
+
+[data-theme="dark"] .mobile-menu li ul li {
+  border-bottom-color: var(--color-border);
+}
+
+[data-theme="dark"] .mobile-menu-extra {
+  border-top-color: var(--color-primary);
+}
+
+[data-theme="dark"] .mobile-menu-extra li {
+  border-bottom-color: var(--color-border);
+}
+
+[data-theme="dark"] .mobile-menu-extra li a {
+  color: var(--color-primary);
+}
+
+[data-theme="dark"] .mobile-menu-footer {
+  background: var(--color-surface-muted);
+  border-top-color: var(--color-border);
+}
+
+[data-theme="dark"] .mobile-menu-social a {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-primary);
+}
+
+[data-theme="dark"] .mobile-menu-social a:hover {
+  background: var(--color-primary);
+  color: var(--conexao-white);
+}
+
+/* Mobile search overlay */
+[data-theme="dark"] .mobile-search-overlay {
+  background: rgba(7, 59, 47, 0.6);
+}
+
+[data-theme="dark"] .mobile-search-overlay-content {
+  background: var(--color-surface);
+}
+
+[data-theme="dark"] .mobile-search-field {
+  background: var(--color-surface-muted);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .mobile-search-field::placeholder {
+  color: var(--color-text-muted);
+}
+
+[data-theme="dark"] .mobile-search-field:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px rgba(46, 158, 99, 0.15);
+}
+
+[data-theme="dark"] .mobile-search-close {
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .mobile-search-close:hover {
+  background: var(--color-surface-muted);
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .mobile-menu-toggle .hamburger-line {
+  background: var(--color-text);
+}
+
+[data-theme="dark"] .mobile-search-toggle {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .mobile-search-toggle:hover {
+  background: var(--color-surface-muted);
+  color: var(--color-primary);
+}
+
+/* ===== 4. THEME TOGGLE ===== */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-muted);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+
+.theme-toggle:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-primary-50);
+}
+
+.theme-toggle:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.theme-toggle .theme-toggle-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.theme-toggle .theme-toggle-icon--sun {
+  display: none;
+}
+
+.theme-toggle .theme-toggle-icon--moon {
+  display: flex;
+}
+
+[data-theme="dark"] .theme-toggle .theme-toggle-icon--sun {
+  display: flex;
+}
+
+[data-theme="dark"] .theme-toggle .theme-toggle-icon--moon {
+  display: none;
+}
+
+/* ===== 5. HERO ===== */
+/* The hero keeps its green gradient in both themes — it's already dark enough. */
+[data-theme="dark"] .hero-section {
+  background: linear-gradient(135deg, #073B2F 0%, #0E6B3A 100%);
+}
+
+/* Hero events widget — white panel becomes dark surface */
+[data-theme="dark"] .hero-events-widget {
+  background: rgba(22, 32, 43, 0.97);
+}
+
+[data-theme="dark"] .hero-events-header {
+  border-bottom-color: var(--color-border);
+}
+
+[data-theme="dark"] .hero-events-title {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .hero-events-count {
+  color: var(--color-primary);
+  background: var(--color-primary-50);
+}
+
+[data-theme="dark"] .hero-event-card {
+  border-bottom-color: var(--color-border);
+}
+
+[data-theme="dark"] .hero-event-card:hover {
+  background: var(--color-primary-50);
+}
+
+[data-theme="dark"] .hero-event-thumb {
+  background: var(--color-surface-muted);
+}
+
+[data-theme="dark"] .hero-event-title {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .hero-event-time,
+[data-theme="dark"] .hero-event-location {
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .hero-event-excerpt {
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .hero-event-date-badge {
+  background: var(--conexao-accent);
+  color: var(--conexao-white);
+}
+
+[data-theme="dark"] .hero-events-cta {
+  background: var(--color-primary);
+  color: var(--conexao-white);
+}
+
+[data-theme="dark"] .hero-events-cta:hover {
+  background: var(--color-primary-dark);
+  color: var(--conexao-white);
+}
+
+/* ===== 6. SECTIONS ===== */
+[data-theme="dark"] .section--gray {
+  background: var(--color-surface-muted);
+}
+
+[data-theme="dark"] .section-title {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .section-subtitle {
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .section-eyebrow {
+  /* Use the intended dark-mode brand green (#3ab875) — not --color-primary,
+     which stays at the light value when page-optimize concatenates a later
+     `:root` after this file, killing the token override and dropping these
+     accents to #0e6b3a (contrast ~2.7:1 on dark surfaces). #3ab875 gives
+     5.9–7.1:1. Keep the global token untouched to avoid regressing
+     white-on-green buttons elsewhere. */
+  color: #3ab875;
+}
+
+[data-theme="dark"] .section-link {
+  color: #3ab875;
+}
+
+[data-theme="dark"] .section-link:hover {
+  color: var(--color-accent);
+}
+
+/* ===== 7. QUICK ACCESS ===== */
+[data-theme="dark"] .quick-access-section {
+  background: var(--color-background);
+}
+
+[data-theme="dark"] .quick-access-card {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .quick-access-card:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+[data-theme="dark"] .quick-access-icon {
+  background: var(--color-primary-50);
+}
+
+[data-theme="dark"] .quick-access-card:hover .quick-access-icon {
+  background: var(--color-primary);
+}
+
+[data-theme="dark"] .quick-access-desc {
+  color: var(--color-text-secondary);
+}
+
+/* ===== 7b. "PRECISA DE AJUDA?" UTILITY SHORTCUTS =====
+   Compact homepage utility section (front-page.php). Mirrors the Quick Access
+   dark treatment: page background section, surface panel, muted chips and the
+   dark-adjusted brand green for icon glyphs (see the --conexao-primary-text
+   note in the tokens block — green TEXT/icons on dark surfaces need #3ab875,
+   not the customizer-re-declared light #0E6B3A). */
+[data-theme="dark"] .help-section {
+  background: var(--color-background);
+}
+
+[data-theme="dark"] .help-section-panel {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .help-shortcut {
+  background: var(--color-surface-muted);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .help-shortcut:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+[data-theme="dark"] .help-shortcut-icon {
+  background: var(--color-primary-50);
+  color: var(--conexao-primary-text);
+}
+
+[data-theme="dark"] .help-shortcut:hover .help-shortcut-icon {
+  background: var(--color-primary);
+  color: var(--conexao-white);
+}
+
+[data-theme="dark"] .help-shortcut:focus-visible {
+  outline-color: var(--conexao-accent);
+}
+
+/* ===== 8. CARDS ===== */
+[data-theme="dark"] .card,
+[data-theme="dark"] .featured-article,
+[data-theme="dark"] .sidebar-widget,
+[data-theme="dark"] .event-card,
+[data-theme="dark"] .news-card,
+[data-theme="dark"] .business-card,
+[data-theme="dark"] .post-card,
+[data-theme="dark"] .directory-card,
+[data-theme="dark"] .archive-card,
+[data-theme="dark"] .blog-post-item,
+[data-theme="dark"] .related-post-card,
+[data-theme="dark"] .widget,
+[data-theme="dark"] .landing-card,
+[data-theme="dark"] .course-card,
+[data-theme="dark"] .provider-card,
+[data-theme="dark"] .leisure-card {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .card:hover,
+[data-theme="dark"] .featured-article:hover,
+[data-theme="dark"] .event-card:hover,
+[data-theme="dark"] .news-card:hover,
+[data-theme="dark"] .business-card:hover,
+[data-theme="dark"] .post-card:hover,
+[data-theme="dark"] .directory-card:hover,
+[data-theme="dark"] .archive-card:hover,
+[data-theme="dark"] .blog-post-item:hover,
+[data-theme="dark"] .related-post-card:hover,
+[data-theme="dark"] .landing-card:hover,
+[data-theme="dark"] .course-card:hover,
+[data-theme="dark"] .provider-card:hover,
+[data-theme="dark"] .leisure-card:hover {
+  border-color: var(--color-primary);
+}
+
+/* Card titles */
+[data-theme="dark"] .card-title a,
+[data-theme="dark"] .event-card-title a,
+[data-theme="dark"] .course-card-title a,
+[data-theme="dark"] .provider-card-title,
+[data-theme="dark"] .leisure-card-title,
+[data-theme="dark"] .leisure-card-title a,
+[data-theme="dark"] .archive-card-title a,
+[data-theme="dark"] .post-card-title a,
+[data-theme="dark"] .news-card-title a,
+[data-theme="dark"] .business-name,
+[data-theme="dark"] .landing-card-title a,
+[data-theme="dark"] .related-post-title a,
+[data-theme="dark"] .featured-article-title a,
+[data-theme="dark"] .blog-post-item .entry-title a {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .card-title a:hover,
+[data-theme="dark"] .event-card-title a:hover,
+[data-theme="dark"] .course-card-title a:hover,
+[data-theme="dark"] .leisure-card-title a:hover,
+[data-theme="dark"] .archive-card-title a:hover,
+[data-theme="dark"] .post-card-title a:hover,
+[data-theme="dark"] .news-card-title a:hover,
+[data-theme="dark"] .landing-card-title a:hover,
+[data-theme="dark"] .related-post-title a:hover,
+[data-theme="dark"] .featured-article-title a:hover,
+[data-theme="dark"] .blog-post-item .entry-title a:hover {
+  color: var(--color-primary);
+}
+
+/* Card excerpts & descriptions */
+[data-theme="dark"] .card-excerpt,
+[data-theme="dark"] .event-card-excerpt,
+[data-theme="dark"] .course-card-excerpt,
+[data-theme="dark"] .provider-card-excerpt,
+[data-theme="dark"] .leisure-card-excerpt,
+[data-theme="dark"] .archive-card-excerpt,
+[data-theme="dark"] .post-card-excerpt,
+[data-theme="dark"] .news-card-excerpt,
+[data-theme="dark"] .business-description,
+[data-theme="dark"] .landing-card-excerpt,
+[data-theme="dark"] .featured-article-excerpt,
+[data-theme="dark"] .blog-post-item .entry-summary {
+  color: var(--color-text-secondary);
+}
+
+/* Card metadata */
+[data-theme="dark"] .card-meta,
+[data-theme="dark"] .event-card-detail,
+[data-theme="dark"] .course-card-detail,
+[data-theme="dark"] .provider-card-detail,
+[data-theme="dark"] .leisure-card-detail,
+[data-theme="dark"] .leisure-card-attr,
+[data-theme="dark"] .archive-card-meta,
+[data-theme="dark"] .post-card-meta,
+[data-theme="dark"] .news-card-meta,
+[data-theme="dark"] .related-post-date,
+[data-theme="dark"] .related-post-meta,
+[data-theme="dark"] .related-post-meta-sep,
+[data-theme="dark"] .related-post-meta-link,
+[data-theme="dark"] .featured-article-meta,
+[data-theme="dark"] .blog-post-item .entry-meta {
+  color: var(--color-text-secondary);
+}
+
+/* Phase 3A — related-card meta links + county link hover states. */
+[data-theme="dark"] .related-post-meta-link:hover {
+  color: var(--conexao-accent);
+}
+
+[data-theme="dark"] .leisure-single-location-link:hover {
+  color: var(--conexao-accent);
+}
+
+[data-theme="dark"] .related-post-meta-link:focus-visible,
+[data-theme="dark"] .leisure-single-location-link:focus-visible,
+[data-theme="dark"] .leisure-single-header .post-categories a:focus-visible {
+  outline: 2px solid var(--conexao-accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+[data-theme="dark"] .event-card-detail--county,
+[data-theme="dark"] .course-card-detail--county {
+  color: var(--color-text-muted);
+}
+
+[data-theme="dark"] .event-card-time-sep {
+  color: var(--color-border);
+}
+
+[data-theme="dark"] .event-card-time {
+  color: var(--color-text-secondary);
+}
+
+/* Card category pills */
+[data-theme="dark"] .card-category,
+[data-theme="dark"] .archive-card-category,
+[data-theme="dark"] .post-card-category,
+[data-theme="dark"] .news-card-category,
+[data-theme="dark"] .business-category,
+[data-theme="dark"] .featured-article-category,
+[data-theme="dark"] .provider-card-category,
+[data-theme="dark"] .leisure-card-category {
+  background: var(--color-primary-50);
+  /* Dark-mode brand green for the accent text on the dark primary-50 tint
+     (see .section-eyebrow notes; #0e6b3a → 2.27:1, #3ab875 → 5.94:1). */
+  color: #3ab875;
+}
+
+[data-theme="dark"] .card-category--accent,
+[data-theme="dark"] .event-card-category {
+  background: var(--color-accent-light);
+  color: var(--color-accent);
+}
+
+/* Card CTAs */
+[data-theme="dark"] .card-cta,
+[data-theme="dark"] .event-card-cta,
+[data-theme="dark"] .course-card-cta,
+[data-theme="dark"] .provider-card-cta,
+[data-theme="dark"] .leisure-card-cta {
+  background: var(--color-primary-50);
+  /* Green text on the dark primary-50 tint: var(--color-primary) resolves to
+     #0e6b3a here (2.27:1 — fail); use the dark-adjusted text green instead. */
+  color: var(--conexao-primary-text);
+}
+
+[data-theme="dark"] .card-cta:hover,
+[data-theme="dark"] .event-card-cta:hover,
+[data-theme="dark"] .course-card-cta:hover,
+[data-theme="dark"] .provider-card-cta:hover,
+[data-theme="dark"] .leisure-card-cta:hover {
+  background: var(--color-primary);
+  color: var(--conexao-white);
+}
+
+/* Secondary "Ver no mapa" action (dark mode): bordered pill that reads as
+   the secondary variant beside the filled primary CTA. The primary dark-mode
+   rule sets a filled --color-primary-50 background on .leisure-card-cta
+   (which this element also carries), so we explicitly reset the background to
+   transparent here. Border uses the dark-adjusted green for contrast. */
+[data-theme="dark"] .leisure-card-cta--map {
+  border-color: var(--color-border);
+  color: var(--conexao-primary-text);
+  background: transparent;
+}
+
+[data-theme="dark"] .leisure-card-cta--map:hover {
+  border-color: var(--conexao-primary-text);
+  color: var(--conexao-white);
+  background: transparent;
+  text-decoration: none;
+}
+
+/* Card date badges */
+[data-theme="dark"] .card-date-badge,
+[data-theme="dark"] .event-card-date-badge,
+[data-theme="dark"] .course-card-date-badge {
+  background: var(--color-surface);
+}
+
+[data-theme="dark"] .card-date-day,
+[data-theme="dark"] .event-card-date-day,
+[data-theme="dark"] .course-card-date-day {
+  color: var(--color-primary);
+}
+
+[data-theme="dark"] .card-date-month,
+[data-theme="dark"] .event-card-date-month,
+[data-theme="dark"] .course-card-date-month {
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .event-card-date-badge {
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .event-card-date-weekday,
+[data-theme="dark"] .event-card-date-range,
+[data-theme="dark"] .event-card-recurrence,
+[data-theme="dark"] .event-card-recurrence-end {
+  color: var(--color-text-muted);
+}
+
+[data-theme="dark"] .event-card-date-badge.is-today {
+  border-color: var(--color-accent);
+}
+
+[data-theme="dark"] .event-card-date-badge.is-today .event-card-date-day {
+  color: var(--color-accent);
+}
+
+[data-theme="dark"] .event-card-date-hint {
+  background: var(--color-accent-light);
+  color: var(--color-accent);
+}
+
+/* Card registration */
+[data-theme="dark"] .event-card-registration {
+  background: var(--color-primary-50);
+  color: var(--color-primary);
+}
+
+/* Card price */
+[data-theme="dark"] .event-card-price,
+[data-theme="dark"] .course-card-price {
+  color: var(--color-primary);
+}
+
+/* Card meta borders */
+[data-theme="dark"] .news-card-meta,
+[data-theme="dark"] .post-card-meta,
+[data-theme="dark"] .archive-card-meta {
+  border-top-color: var(--color-border);
+}
+
+/* ===== 9. FEATURED CONTENT ===== */
+[data-theme="dark"] .featured-article {
+  background: var(--color-surface);
+}
+
+[data-theme="dark"] .featured-article-meta {
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .sidebar-widget-title {
+  color: var(--color-text);
+  border-bottom-color: var(--color-accent);
+}
+
+[data-theme="dark"] .sidebar-list li {
+  border-bottom-color: var(--color-border);
+}
+
+[data-theme="dark"] .sidebar-list li a {
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .sidebar-list li a:hover {
+  color: var(--color-primary);
+}
+
+[data-theme="dark"] .sidebar-list-number {
+  background: var(--color-primary-50);
+  color: var(--color-primary);
+}
+
+/* ===== 11. EVENTS ===== */
+[data-theme="dark"] .events-page-header {
+  border-bottom-color: var(--color-border);
+}
+
+[data-theme="dark"] .events-page-title {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .events-page-description {
+  color: var(--color-text-secondary);
+}
+
+/* Event preview (homepage compact cards) */
+[data-theme="dark"] .event-preview {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+}
+
+[data-theme="dark"] .event-preview:hover {
+  border-color: var(--color-primary);
+}
+
+[data-theme="dark"] .event-preview-title {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .event-preview-title a {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .event-preview-title a:hover {
+  color: var(--color-primary);
+}
+
+[data-theme="dark"] .event-preview-meta,
+[data-theme="dark"] .event-preview-location {
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .event-preview-meta svg,
+[data-theme="dark"] .event-preview-location svg {
+  color: var(--color-primary);
+  opacity: 0.9;
+}
+
+[data-theme="dark"] .event-preview-meta-sep {
+  color: var(--color-text-muted);
+}
+
+[data-theme="dark"] .event-preview-time {
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .event-preview-recurrence {
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .events-section-link {
+  color: #3ab875;
+}
+
+[data-theme="dark"] .events-section-link:hover {
+  color: var(--color-accent);
+}
+
+[data-theme="dark"] .events-section-footer {
+  border-top-color: var(--color-border);
+}
+
+/* ===== 12. FILTERS ===== */
+[data-theme="dark"] .filter-label,
+[data-theme="dark"] .events-filter-label {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .filter-link,
+[data-theme="dark"] .events-filter-link {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .filter-link:hover,
+[data-theme="dark"] .events-filter-link:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-primary-50);
+}
+
+[data-theme="dark"] .filter-link.is-active,
+[data-theme="dark"] .events-filter-link.is-active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--conexao-white);
+}
+
+/* ===== 13. COURSES ===== */
+[data-theme="dark"] .provider-card-logo {
+  background: var(--color-surface-muted);
+  border-bottom-color: var(--color-border);
+}
+
+/* ===== 14. SPONSORS ===== */
+[data-theme="dark"] .sponsors-section {
+  background: var(--color-surface-muted);
+}
+
+[data-theme="dark"] .sponsor-card {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .sponsor-card:hover {
+  border-color: var(--color-primary);
+}
+
+/* Sponsor logos with white/transparent backgrounds need a light surface.
+   We only target the logo container, not the whole card. */
+[data-theme="dark"] .business-logo {
+  background: var(--conexao-white);
+}
+
+[data-theme="dark"] .business-logo img {
+  background: var(--conexao-white);
+}
+
+/* Homepage Apoiadores carousel — navigation arrows. Dark surfaces keep the
+   buttons readable over cards; brand green only on hover/focus, matching
+   the light theme's secondary visual weight. */
+[data-theme="dark"] .sponsors-carousel-arrow {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text-secondary);
+  box-shadow: var(--conexao-shadow-sm);
+}
+
+[data-theme="dark"] .sponsors-carousel-arrow:hover {
+  background: var(--color-primary-50);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  box-shadow: var(--conexao-shadow-md);
+}
+
+[data-theme="dark"] .sponsors-carousel-arrow:focus-visible {
+  outline-color: var(--conexao-accent);
+}
+
+/* Hero Apoiadores carousel (template-parts/featured-sponsors.php) gets a
+   DEDICATED dark treatment rather than an inversion of the light card:
+   a deep, slightly translucent neutral-green surface backs the artwork
+   (letterbox bands / no-image fallback) and keeps the card clearly distinct
+   from the hero photograph, and the shadow gains a faint green glow. The
+   sponsor artwork itself is untouched — never recolored, cropped or
+   darkened; only the integrated controls adjust.
+
+   Only the semantic tokens declared in main.css (.sponsors-carousel--hero)
+   are redefined here; every tile/arrow/dot rule there picks them up
+   automatically. */
+[data-theme="dark"] .sponsors-carousel--hero {
+  /* Deep translucent dark surface over the photo (not pure black). */
+  --sponsor-surface: rgba(13, 24, 19, 0.92);
+  /* Subtle light neutral edge for separation without harshness. */
+  --sponsor-border: rgba(255, 255, 255, 0.14);
+  --sponsor-border-hover: rgba(58, 184, 117, 0.5);
+  /* Dark-adjusted brand green (#3ab875) as the small accent. */
+  --sponsor-accent: var(--conexao-primary);
+  /* Soft dark shadow with a very subtle green glow. */
+  --sponsor-shadow: 0 12px 32px rgba(0, 0, 0, 0.45), 0 0 24px rgba(58, 184, 117, 0.08);
+  --sponsor-shadow-hover: 0 18px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(58, 184, 117, 0.12);
+  /* Integrated controls: slightly deeper glass so the white icons/dots keep
+     contrast over bright artwork without darkening the image itself. */
+  --sponsor-control-bg: rgba(6, 44, 35, 0.55);
+  --sponsor-control-bg-hover: rgba(6, 44, 35, 0.75);
+  --sponsor-control-border: rgba(255, 255, 255, 0.3);
+  --sponsor-control-border-hover: rgba(255, 255, 255, 0.55);
+  --sponsor-control-icon: #ffffff;
+  /* Slightly stronger name scrim so the overlaid name stays readable over
+     bright artwork. */
+  --sponsor-name-scrim: linear-gradient(180deg, rgba(6, 44, 35, 0.82) 0%, rgba(6, 44, 35, 0.44) 58%, rgba(6, 44, 35, 0) 100%);
+}
+
+/* The hero's integrated arrows sit OVER the artwork, not on a card surface,
+   so they keep their translucent on-image style in dark mode. These
+   higher-specificity rules stop the generic dark arrow treatment for the
+   homepage Apoiadores carousel above from leaking into the hero overlay. */
+[data-theme="dark"] .sponsors-carousel--hero .sponsors-carousel-arrow {
+  background: var(--sponsor-control-bg);
+  border-color: var(--sponsor-control-border);
+  color: var(--sponsor-control-icon);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .sponsors-carousel--hero .sponsors-carousel-arrow:hover {
+  background: var(--sponsor-control-bg-hover);
+  border-color: var(--sponsor-control-border-hover);
+  color: var(--sponsor-control-icon);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="dark"] .sponsors-carousel--hero .sponsors-carousel-arrow:focus-visible {
+  outline-color: #ffffff;
+}
+
+/* ===== 15. BLOG / SINGLE POST ===== */
+[data-theme="dark"] .single-post-header {
+  background: var(--color-surface-muted);
+}
+
+[data-theme="dark"] .single-post-header .entry-title {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .single-post-header .entry-meta {
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .single-post-content .entry-content {
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .single-post-content .entry-content h2,
+[data-theme="dark"] .single-post-content .entry-content h3,
+[data-theme="dark"] .single-post-content .entry-content h4,
+[data-theme="dark"] .single-post-content .entry-content h5,
+[data-theme="dark"] .single-post-content .entry-content h6 {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .single-post-content .entry-content a {
+  color: var(--color-primary);
+}
+
+[data-theme="dark"] .single-post-content .entry-content a:hover {
+  color: var(--color-accent);
+}
+
+[data-theme="dark"] .single-post-content .entry-content blockquote {
+  border-left-color: var(--color-accent);
+  background: var(--color-accent-light);
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .single-post-content .entry-content table {
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .single-post-content .entry-content th,
+[data-theme="dark"] .single-post-content .entry-content td {
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .single-post-content .entry-content th {
+  background: var(--color-surface-muted);
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .single-post-content .entry-content tr:nth-child(even) {
+  background: var(--color-surface-muted);
+}
+
+[data-theme="dark"] .single-post-content .entry-content pre,
+[data-theme="dark"] .single-post-content .entry-content code {
+  background: var(--color-surface-muted);
+  color: var(--color-text);
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .single-post-content .entry-content hr {
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .single-post-content .entry-content ul li::marker,
+[data-theme="dark"] .single-post-content .entry-content ol li::marker {
+  color: var(--color-primary);
+}
+
+/* ===== 16. SHARE BUTTONS ===== */
+[data-theme="dark"] .share-buttons {
+  background: var(--color-surface-muted);
+}
+
+[data-theme="dark"] .share-label {
+  color: var(--color-text);
+}
+
+/* ===== 17. RELATED POSTS ===== */
+[data-theme="dark"] .related-posts {
+  border-top-color: var(--color-border);
+}
+
+[data-theme="dark"] .related-posts-title {
+  color: var(--color-text);
+}
+
+/* Phase 3C — related events section on the leisure single page (same divider
+   + heading treatment as related posts above; the event cards themselves are
+   already fully themed for dark mode). */
+[data-theme="dark"] .leisure-single-events {
+  border-top-color: var(--color-border);
+}
+
+[data-theme="dark"] .leisure-single-events-title {
+  color: var(--color-text);
+}
+
+/* ===== 18. PAGINATION ===== */
+[data-theme="dark"] .conexao-pagination .page-numbers,
+[data-theme="dark"] .navigation.pagination .nav-links .page-numbers {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .conexao-pagination .page-numbers:hover,
+[data-theme="dark"] .navigation.pagination .nav-links .page-numbers:hover {
+  background: var(--color-primary-50);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+[data-theme="dark"] .conexao-pagination .page-numbers.current,
+[data-theme="dark"] .conexao-pagination .page-numbers.current:hover,
+[data-theme="dark"] .navigation.pagination .nav-links .page-numbers.current,
+[data-theme="dark"] .navigation.pagination .nav-links .page-numbers.current:hover {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--conexao-white);
+}
+
+[data-theme="dark"] .conexao-pagination .page-numbers.dots {
+  background: transparent;
+  border-color: transparent;
+  color: var(--color-text-muted);
+}
+
+/* ===== 19. PAGE HEADER / ARCHIVE ===== */
+[data-theme="dark"] .page-header {
+  background: var(--color-surface-muted);
+  border-bottom-color: var(--color-border);
+}
+
+[data-theme="dark"] .page-header h1,
+[data-theme="dark"] .archive-title {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .page-header .page-description,
+[data-theme="dark"] .archive-description {
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .archive-header {
+  border-bottom-color: var(--color-border);
+}
+
+/* ===== 20. FORMS ===== */
+[data-theme="dark"] input[type="text"],
+[data-theme="dark"] input[type="email"],
+[data-theme="dark"] input[type="url"],
+[data-theme="dark"] input[type="password"],
+[data-theme="dark"] input[type="search"],
+[data-theme="dark"] input[type="number"],
+[data-theme="dark"] input[type="tel"],
+[data-theme="dark"] textarea,
+[data-theme="dark"] select {
+  background: var(--color-surface-muted);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+  color: var(--color-text-muted);
+}
+
+[data-theme="dark"] input:focus,
+[data-theme="dark"] textarea:focus,
+[data-theme="dark"] select:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px rgba(46, 158, 99, 0.15);
+}
+
+[data-theme="dark"] input:disabled,
+[data-theme="dark"] textarea:disabled,
+[data-theme="dark"] select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ===== 21. NEWSLETTER ===== */
+/* The newsletter section keeps its green gradient — it's already dark enough. */
+[data-theme="dark"] .newsletter-section {
+  background: linear-gradient(135deg, #073B2F 0%, #0E6B3A 100%);
+}
+
+[data-theme="dark"] .newsletter-form {
+  background: var(--color-surface);
+}
+
+[data-theme="dark"] .newsletter-form-title {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .newsletter-form-subtitle {
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .newsletter-input {
+  background: var(--color-surface-muted);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .newsletter-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+[data-theme="dark"] .newsletter-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px rgba(46, 158, 99, 0.15);
+}
+
+[data-theme="dark"] .newsletter-privacy {
+  color: var(--color-text-muted);
+}
+
+/* ===== 22. QUOTE SECTION ===== */
+[data-theme="dark"] .quote-section {
+  background: var(--color-primary-50);
+}
+
+[data-theme="dark"] .quote-text {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .quote-author {
+  color: #3ab875;
+}
+
+/* ===== 23. COMMENTS ===== */
+[data-theme="dark"] .comments-area {
+  border-top-color: var(--color-border);
+}
+
+[data-theme="dark"] .comments-title {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .comment {
+  background: var(--color-surface-muted);
+}
+
+[data-theme="dark"] .comment-metadata {
+  color: var(--color-text-muted);
+}
+
+[data-theme="dark"] .comment-content {
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .comment-reply-link {
+  color: var(--color-primary);
+}
+
+[data-theme="dark"] .comment-form label {
+  color: var(--color-text);
+}
+
+/* ===== 24. SEARCH ===== */
+[data-theme="dark"] .conexao-search-wrap .search-field {
+  background: var(--color-surface-muted);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .conexao-search-wrap .search-field::placeholder {
+  color: var(--color-text-muted);
+}
+
+[data-theme="dark"] .conexao-search-wrap .search-field:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 4px rgba(46, 158, 99, 0.15);
+}
+
+/* ===== 25. BREADCRUMBS ===== */
+[data-theme="dark"] .conexao-breadcrumbs {
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .conexao-breadcrumb-link {
+  color: var(--conexao-primary-text);
+}
+
+[data-theme="dark"] .conexao-breadcrumb-link:hover {
+  color: var(--color-accent);
+}
+
+[data-theme="dark"] .conexao-breadcrumb-sep {
+  color: var(--color-text-muted);
+}
+
+[data-theme="dark"] .conexao-breadcrumb-current {
+  color: var(--color-text);
+}
+
+/* ===== 26. FOOTER ===== */
+/* The footer is already dark navy — keep it consistent in both themes. */
+[data-theme="dark"] .site-footer {
+  background: #0a1118;
+}
+
+[data-theme="dark"] .footer-about {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+[data-theme="dark"] .footer-bottom {
+  border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .footer-copyright {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+[data-theme="dark"] .footer-bottom-links a {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+[data-theme="dark"] .footer-bottom-links a:hover {
+  color: var(--conexao-accent);
+}
+
+/* ===== 27. WHATSAPP FLOAT ===== */
+/* Keep the WhatsApp brand green — no recolor needed. */
+
+/* ===== 28. EMPTY STATES ===== */
+[data-theme="dark"] .empty-state {
+  background: var(--color-surface-muted);
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .empty-state-icon {
+  background: var(--color-primary-50);
+  color: var(--color-primary);
+}
+
+[data-theme="dark"] .empty-state-title {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .empty-state-description {
+  color: var(--color-text-secondary);
+}
+
+/* ===== 29. 404 ===== */
+[data-theme="dark"] .error-404 h1 {
+  color: var(--color-primary);
+}
+
+[data-theme="dark"] .error-404 h2 {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .error-404 p {
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .error-404-list li a {
+  background: var(--color-primary-50);
+  color: var(--color-primary);
+}
+
+[data-theme="dark"] .error-404-list li a:hover {
+  background: var(--color-primary);
+  color: var(--conexao-white);
+}
+
+/* ===== 30. NO RESULTS ===== */
+[data-theme="dark"] .no-results .page-title {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .no-results .page-content p {
+  color: var(--color-text-secondary);
+}
+
+/* ===== 31. LANDING PAGES ===== */
+[data-theme="dark"] .landing-section {
+  border-top-color: var(--color-border);
+}
+
+[data-theme="dark"] .landing-section-title {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .landing-tag {
+  background: var(--color-primary-50);
+  color: var(--color-primary);
+}
+
+[data-theme="dark"] .landing-tag:hover {
+  background: var(--color-primary);
+  color: var(--conexao-white);
+}
+
+/* ===== 32. WIDGETS ===== */
+[data-theme="dark"] .widget-title {
+  color: var(--color-text);
+  border-bottom-color: var(--color-accent);
+}
+
+[data-theme="dark"] .widget ul li {
+  border-bottom-color: var(--color-border);
+}
+
+[data-theme="dark"] .widget ul li a {
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .widget ul li a:hover {
+  color: var(--color-primary);
+}
+
+/* ===== 33. BUTTONS ===== */
+/* Hero buttons — always white text on dark green gradient */
+[data-theme="dark"] .hero-ctas .btn-primary,
+[data-theme="dark"] .hero-ctas .btn-outline {
+  color: var(--conexao-white);
+}
+
+/* Empregos landing CTA (page-empregos.php) — the page's primary action.
+ * Measured before the fix: orange accent background (#f59e42) with the
+ * anchor colour rule `[data-theme="dark"] a` (0,1,1) outranking `.btn-primary`
+ * (0,1,0), so the label + arrow computed to the dark green #3ab875 —
+ * green-on-orange at 1.16:1, and an over-saturated surface. Use the
+ * deepened brand green with white text instead (5.72:1 = PASS). This
+ * selector (0,4,0) also outranks the generic anchor rule, so the text and
+ * SVG arrow inherit currentColor = white. Light mode keeps the orange accent
+ * from main.css and is never touched by these rules. */
+[data-theme="dark"] .empregos-landing-cta .btn.btn-primary {
+  background: var(--conexao-cta-bg);
+  color: var(--conexao-white);
+}
+
+[data-theme="dark"] .empregos-landing-cta .btn.btn-primary:hover {
+  background: var(--conexao-cta-bg-dark);
+  color: var(--conexao-white);
+}
+
+/* Hero secondary CTA hover — the rule above pins white text on the hero's
+   dark green gradient, but its specificity (0,3,0) also beats the global
+   .btn-outline:hover (0,2,0), so on hover the text stays white over the
+   white hover background → unreadable. Restore the shared outline idiom
+   (green text on the white hover fill) for .hero-ctas only. */
+[data-theme="dark"] .hero-ctas .btn-outline:hover {
+  color: var(--color-primary);
+}
+
+[data-theme="dark"] .btn-outline-dark {
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .btn-outline-dark:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-primary-50);
+}
+
+[data-theme="dark"] .btn-link {
+  color: var(--color-primary);
+}
+
+[data-theme="dark"] .btn-link:hover {
+  color: var(--color-accent);
+  background: var(--color-primary-50);
+}
+
+/* ===== 34. WORDPRESS GENERATED CONTENT =====
+   Covers block editor output, tables, lists, quotes, code. */
+[data-theme="dark"] .entry-content {
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .entry-content h1,
+[data-theme="dark"] .entry-content h2,
+[data-theme="dark"] .entry-content h3,
+[data-theme="dark"] .entry-content h4,
+[data-theme="dark"] .entry-content h5,
+[data-theme="dark"] .entry-content h6 {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .entry-content a {
+  color: var(--color-primary);
+}
+
+[data-theme="dark"] .entry-content a:hover {
+  color: var(--color-accent);
+}
+
+[data-theme="dark"] .entry-content blockquote {
+  border-left-color: var(--color-accent);
+  background: var(--color-accent-light);
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .entry-content table {
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .entry-content th,
+[data-theme="dark"] .entry-content td {
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .entry-content th {
+  background: var(--color-surface-muted);
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .entry-content tr:nth-child(even) {
+  background: var(--color-surface-muted);
+}
+
+[data-theme="dark"] .entry-content pre,
+[data-theme="dark"] .entry-content code {
+  background: var(--color-surface-muted);
+  color: var(--color-text);
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .entry-content hr {
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .entry-content ul li::marker,
+[data-theme="dark"] .entry-content ol li::marker {
+  color: var(--color-primary);
+}
+
+[data-theme="dark"] .entry-content .wp-block-quote {
+  border-left-color: var(--color-accent);
+  background: var(--color-accent-light);
+}
+
+[data-theme="dark"] .entry-content .wp-block-pullquote {
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .entry-content .wp-block-code {
+  background: var(--color-surface-muted);
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .entry-content .wp-block-table {
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .entry-content .wp-block-separator {
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .entry-content .wp-block-button__link {
+  background: var(--color-primary);
+  color: var(--conexao-white);
+}
+
+[data-theme="dark"] .entry-content .wp-block-button__link:hover {
+  background: var(--color-primary-dark);
+  color: var(--conexao-white);
+}
+
+[data-theme="dark"] .entry-content .wp-block-file a {
+  color: var(--color-primary);
+}
+
+[data-theme="dark"] .entry-content .wp-block-cover {
+  color: var(--conexao-white);
+}
+
+[data-theme="dark"] .entry-content .wp-block-cover h1,
+[data-theme="dark"] .entry-content .wp-block-cover h2,
+[data-theme="dark"] .entry-content .wp-block-cover h3,
+[data-theme="dark"] .entry-content .wp-block-cover h4,
+[data-theme="dark"] .entry-content .wp-block-cover h5,
+[data-theme="dark"] .entry-content .wp-block-cover h6 {
+  color: var(--conexao-white);
+}
+
+/* ===== 35. CONEXAO-CONTENT PLUGIN =====
+   Dark mode for the plugin's card grid, share, and reading-time components. */
+[data-theme="dark"] .conexao-card {
+  background: var(--color-surface);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .conexao-card h3 {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .conexao-card a,
+[data-theme="dark"] .conexao-card > div {
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .conexao-share {
+  border-top-color: var(--color-border);
+}
+
+[data-theme="dark"] .conexao-share a,
+[data-theme="dark"] .conexao-share button {
+  background: var(--color-primary);
+  color: var(--conexao-white);
+}
+
+[data-theme="dark"] .conexao-share a:hover,
+[data-theme="dark"] .conexao-share button:hover {
+  background: var(--color-primary-dark);
+  color: var(--conexao-white);
+}
+
+[data-theme="dark"] .conexao-reading-time {
+  color: var(--color-text-muted);
+}
+
+/* ===== 36. TRANSITIONS ===== */
+[data-theme="dark"] body,
+[data-theme="dark"] .site-header,
+[data-theme="dark"] .card,
+[data-theme="dark"] .event-card,
+[data-theme="dark"] .course-card,
+[data-theme="dark"] .provider-card,
+[data-theme="dark"] .news-card,
+[data-theme="dark"] .post-card,
+[data-theme="dark"] .archive-card,
+[data-theme="dark"] .business-card,
+[data-theme="dark"] .featured-article,
+[data-theme="dark"] .sidebar-widget,
+[data-theme="dark"] .widget,
+[data-theme="dark"] .quick-access-card,
+[data-theme="dark"] .landing-card,
+[data-theme="dark"] .related-post-card,
+[data-theme="dark"] .blog-post-item,
+[data-theme="dark"] .directory-card,
+[data-theme="dark"] .sponsor-card,
+[data-theme="dark"] .leisure-card,
+[data-theme="dark"] .filter-link,
+  [data-theme="dark"] .events-filter-link,
+[data-theme="dark"] .btn,
+[data-theme="dark"] .header-cta,
+[data-theme="dark"] .theme-toggle,
+[data-theme="dark"] .newsletter-form,
+[data-theme="dark"] .newsletter-input,
+[data-theme="dark"] .single-post-header,
+[data-theme="dark"] .page-header,
+[data-theme="dark"] .share-buttons,
+[data-theme="dark"] .comment,
+[data-theme="dark"] .empty-state,
+[data-theme="dark"] .quote-section,
+[data-theme="dark"] .section--gray,
+[data-theme="dark"] .quick-access-section,
+[data-theme="dark"] .sponsors-section,
+[data-theme="dark"] .conexao-pagination .page-numbers,
+[data-theme="dark"] .navigation.pagination .nav-links .page-numbers {
+  transition: background-color var(--transition), color var(--transition), border-color var(--transition);
+}
+
+/* ===== 37. LEISURE FILTERS =====
+   Comprehensive dark-mode overrides for the /lazer/ filter widget:
+   desktop dropdowns, active-filter indicators, and mobile bottom-sheet. */
+
+/* Dropdown trigger — default state */
+[data-theme="dark"] .leisure-dropdown-trigger {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .leisure-dropdown-trigger:hover,
+[data-theme="dark"] .leisure-dropdown-trigger[aria-expanded="true"] {
+  border-color: var(--conexao-primary-text);
+  color: var(--conexao-primary-text);
+  background: var(--color-primary-50);
+}
+
+[data-theme="dark"] .leisure-dropdown-trigger.is-selected {
+  color: var(--color-text);
+  border-color: var(--color-border);
+  background: var(--color-surface);
+}
+
+[data-theme="dark"] .leisure-dropdown-trigger.is-selected:hover,
+[data-theme="dark"] .leisure-dropdown-trigger.is-selected[aria-expanded="true"] {
+  border-color: var(--conexao-primary-text);
+  color: var(--conexao-primary-text);
+  background: var(--color-primary-50);
+}
+
+/* Active dot indicator */
+[data-theme="dark"] .leisure-dot {
+  background: var(--conexao-primary-text);
+}
+
+/* Dropdown panel */
+[data-theme="dark"] .leisure-dropdown-panel {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+/* Location search (Localização popover) */
+[data-theme="dark"] .leisure-dropdown-search {
+  background: var(--color-surface-muted);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .leisure-dropdown-search::placeholder {
+  color: var(--color-text-muted);
+}
+
+[data-theme="dark"] .leisure-dropdown-search:focus-visible {
+  border-color: var(--conexao-primary-text);
+}
+
+/* "No results" message inside the search panel */
+[data-theme="dark"] .leisure-dropdown-empty {
+  color: var(--color-text-muted);
+}
+
+/* Dropdown links */
+[data-theme="dark"] .leisure-dropdown-link {
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .leisure-dropdown-link:hover {
+  background: var(--color-primary-50);
+  color: var(--conexao-primary-text);
+}
+
+[data-theme="dark"] .leisure-dropdown-link.is-active {
+  background: var(--color-primary-50);
+  color: var(--conexao-primary-text);
+}
+
+/* Checkmark */
+[data-theme="dark"] .leisure-checkmark {
+  color: var(--conexao-primary-text);
+}
+
+/* Toolbar clear link */
+[data-theme="dark"] .leisure-toolbar-clear {
+  color: var(--color-text-muted);
+}
+
+[data-theme="dark"] .leisure-toolbar-clear:hover {
+  color: var(--color-accent);
+  background: var(--color-surface-muted);
+}
+
+/* Discovery heading */
+[data-theme="dark"] .leisure-filters-title {
+  color: var(--color-text);
+}
+
+/* Lightweight result count */
+[data-theme="dark"] .leisure-results-count {
+  color: var(--color-text-muted);
+}
+
+/* Active filter chips */
+[data-theme="dark"] .leisure-active-filters-label {
+  color: var(--color-text-muted);
+}
+
+[data-theme="dark"] .leisure-filter-chip {
+  background: var(--color-primary-50);
+  border-color: var(--conexao-primary-text);
+  color: var(--conexao-primary-text);
+}
+
+[data-theme="dark"] .leisure-filter-chip:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+[data-theme="dark"] .leisure-filter-chip:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+/* Mobile filter trigger */
+[data-theme="dark"] .leisure-mobile-filter-trigger {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .leisure-mobile-filter-trigger:hover,
+[data-theme="dark"] .leisure-mobile-filter-trigger[aria-expanded="true"] {
+  border-color: var(--conexao-primary-text);
+  color: var(--conexao-primary-text);
+  background: var(--color-primary-50);
+}
+
+/* Mobile filter icon */
+[data-theme="dark"] .leisure-mobile-filter-icon {
+  color: var(--conexao-primary-text);
+}
+
+/* Mobile filter count badge */
+[data-theme="dark"] .leisure-mobile-filter-count {
+  background: var(--color-primary);
+  color: var(--conexao-white);
+}
+
+/* Mobile sheet overlay */
+[data-theme="dark"] .leisure-mobile-sheet {
+  background: rgba(0, 0, 0, 0.65);
+}
+
+/* Mobile sheet panel */
+[data-theme="dark"] .leisure-mobile-sheet-panel {
+  background: var(--color-surface);
+}
+
+[data-theme="dark"] .leisure-mobile-sheet-header {
+  border-bottom-color: var(--color-border);
+}
+
+[data-theme="dark"] .leisure-mobile-sheet-handle {
+  background: var(--color-border);
+}
+
+[data-theme="dark"] .leisure-mobile-sheet-title {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .leisure-mobile-sheet-close {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .leisure-mobile-sheet-close:hover {
+  border-color: var(--conexao-primary-text);
+  color: var(--conexao-primary-text);
+  background: var(--color-primary-50);
+}
+
+/* Mobile sheet body */
+[data-theme="dark"] .leisure-mobile-sheet-body {
+  color: var(--color-text-secondary);
+}
+
+/* Section legends (mobile sheet) */
+[data-theme="dark"] .leisure-mobile-section-legend {
+  color: var(--color-text);
+}
+
+/* Location search inside the mobile sheet */
+[data-theme="dark"] .leisure-mobile-search {
+  background: var(--color-surface-muted);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .leisure-mobile-search::placeholder {
+  color: var(--color-text-muted);
+}
+
+[data-theme="dark"] .leisure-mobile-search:focus-visible {
+  border-color: var(--conexao-primary-text);
+}
+
+/* "No results" message under the searched option list */
+[data-theme="dark"] .leisure-filter-options-empty {
+  color: var(--color-text-muted);
+}
+
+/* Filter option labels */
+[data-theme="dark"] .leisure-filter-option {
+  color: var(--color-text-secondary);
+}
+
+/* Native radios: the checked fill uses the brighter dark-mode primary so
+   the selected option reads clearly on dark surfaces (same tone as the
+   active-dot and trigger states above). */
+[data-theme="dark"] .leisure-filter-radio {
+  accent-color: var(--conexao-primary-text);
+}
+
+[data-theme="dark"] .leisure-filter-option:hover {
+  background: var(--color-primary-50);
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .leisure-filter-option:has(.leisure-filter-radio:checked) {
+  background: var(--color-primary-50);
+  color: var(--conexao-primary-text);
+}
+
+/* Mobile sheet footer */
+[data-theme="dark"] .leisure-mobile-sheet-footer {
+  border-top-color: var(--color-border);
+  background: var(--color-surface);
+}
+
+/* Apply button */
+[data-theme="dark"] .leisure-apply-button {
+  background: var(--color-primary);
+  color: var(--conexao-white);
+}
+
+[data-theme="dark"] .leisure-apply-button:hover {
+  background: var(--color-primary-dark);
+}
+
+/* Mobile clear button */
+[data-theme="dark"] .leisure-mobile-clear {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .leisure-mobile-clear:hover {
+  border-color: var(--conexao-primary-text);
+  color: var(--conexao-primary-text);
+  background: var(--color-primary-50);
+}
+
+/* ===== 38. APOIADOR SINGLE (single-sponsor.php) =====
+   The detail page is built on semantic tokens, so most of it adapts via
+   the aliases above. These rules tune the two surfaces and brighten the
+   two darkest brand accents so every contact icon keeps comfortable
+   contrast on dark backgrounds. */
+
+[data-theme="dark"] .sponsor-single-back:hover {
+  color: var(--conexao-primary);
+}
+
+[data-theme="dark"] .sponsor-single-hero {
+  background: var(--color-surface-muted);
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .sponsor-single-contact {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  box-shadow: var(--shadow-sm);
+}
+
+[data-theme="dark"] .sponsor-contact-btn {
+  background: var(--color-surface-muted);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .sponsor-contact-btn:hover {
+  background: var(--color-primary-50);
+  border-color: var(--color-primary);
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .sponsor-contact-btn:focus-visible {
+  outline-color: var(--conexao-accent);
+}
+
+/* Brightened brand accents for contrast on dark surfaces. */
+[data-theme="dark"] .sponsor-contact-btn--facebook .sponsor-contact-icon { color: #5aa7ff; }
+[data-theme="dark"] .sponsor-contact-btn--linkedin .sponsor-contact-icon { color: #58a6dd; }
+
+/* ===== 39. EMPREGOS — SAFETY/PERMIT NOTICE + "IMPORTANTE" BLOCK =====
+   main.css paints the compact safety/permit notice with the light-mode
+   amber tokens (--conexao-warning-bg/border/text fall back to
+   #fff8e1/#ffe082/#e65100 and had no dark overrides), so in dark mode
+   the bright cream surface survived while the text inherited the
+   dark-theme gray — ~1.5:1 contrast (WCAG fail); the orange "Atenção:"
+   was ~3.6:1. Swap in a dark amber-tinted surface with the dark-mode
+   accent for the border and the "Atenção:" label, and pin the body
+   text to the dark secondary text color. All pairings clear WCAG AA:
+   #c0ccd8 on #2e2314 ≈ 9.4:1 and #f59e42 on #2e2314 ≈ 7.2:1; the
+   #f59e42 border also passes non-text contrast (≈ 7.2:1) and, with the
+   tinted box shape, keeps the warning distinguishable without relying
+   on color. Literal #f59e42 (not var(--conexao-accent)) because
+   conexao_customizer_css() re-declares --conexao-accent on :root AFTER
+   this stylesheet — same reason as .section-eyebrow above. Light mode
+   is untouched: these overrides only apply under [data-theme="dark"].
+   2026-09: the former separate warning boxes
+   (.empregos-recruitment-agencies-warning, .empregos-permit-employers-warning)
+   were consolidated into .empregos-opportunities-notice; this selector
+   covers it. */
+[data-theme="dark"] .empregos-opportunities-notice {
+  --conexao-warning-bg: #2e2314;
+  --conexao-warning-border: #f59e42;
+  --conexao-warning-text: #f59e42;
+  color: var(--color-text-secondary);
+}
+
+/* STAGE 3.1 — B2 fallback notice: same amber token treatment in dark mode
+   (reuses the existing variables; no new color system). */
+[data-theme="dark"] .language-fallback-notice {
+  --conexao-warning-bg: #2e2314;
+  --conexao-warning-border: #f59e42;
+  --conexao-warning-text: #f59e42;
+  color: var(--color-text-secondary);
+}
+
+/* ===== 39a. EMPREGOS — UNIFIED DIRECTORY GREEN-TEXT PILLS =====
+   .agency-card-flag--perm and .empregos-permit-indicator--verified paint
+   green text on the --conexao-primary-50 tint. The dark theme re-maps
+   --conexao-primary-50 to #142b20, but --conexao-primary keeps its LIGHT
+   value in the cascade (conexao_customizer_css() re-declares it on :root
+   AFTER this stylesheet — same reason as .section-eyebrow above), which
+   leaves #0e6b3a on #142b20 ≈ 2.27:1 (WCAG fail). Pin the pill text to
+   the dark brand green (#3ab875 on #142b20 ≈ 5.94:1, WCAG AA), exactly
+   like the .archive-card-category pill group. Backgrounds stay on the
+   token (already dark-correct); light mode is untouched. */
+[data-theme="dark"] .agency-card-flag--perm,
+[data-theme="dark"] .empregos-permit-indicator--verified {
+  color: #3ab875;
+}
+
+/* ===== 39b. EMPREGOS — AGENCY DIRECTORY FILTERS =====
+   Dark-mode overrides for the /empregos/ recruitment-agency filter
+   widget (desktop dropdowns, active-filter chips, mobile bottom-sheet).
+   Mirrors section 37 (Leisure filters) so both filter widgets share the
+   same dark-mode treatment, including the brightened --conexao-primary-text
+   accent for selected/hover states. */
+
+/* Dropdown trigger — default state */
+[data-theme="dark"] .agency-filters-dropdown-trigger {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .agency-filters-dropdown-trigger:hover,
+[data-theme="dark"] .agency-filters-dropdown-trigger[aria-expanded="true"] {
+  border-color: var(--conexao-primary-text);
+  color: var(--conexao-primary-text);
+  background: var(--color-primary-50);
+}
+
+[data-theme="dark"] .agency-filters-dropdown-trigger.is-selected {
+  color: var(--color-text);
+  border-color: var(--color-border);
+  background: var(--color-surface);
+}
+
+[data-theme="dark"] .agency-filters-dropdown-trigger.is-selected:hover,
+[data-theme="dark"] .agency-filters-dropdown-trigger.is-selected[aria-expanded="true"] {
+  border-color: var(--conexao-primary-text);
+  color: var(--conexao-primary-text);
+  background: var(--color-primary-50);
+}
+
+/* Active dot indicator */
+[data-theme="dark"] .agency-filters-dot {
+  background: var(--conexao-primary-text);
+}
+
+/* Dropdown panel */
+[data-theme="dark"] .agency-filters-dropdown-panel {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+/* Location search (Localização popover) */
+[data-theme="dark"] .agency-filters-dropdown-search {
+  background: var(--color-surface-muted);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .agency-filters-dropdown-search::placeholder {
+  color: var(--color-text-muted);
+}
+
+[data-theme="dark"] .agency-filters-dropdown-search:focus-visible {
+  border-color: var(--conexao-primary-text);
+}
+
+/* "No results" message inside the search panel */
+[data-theme="dark"] .agency-filters-options-empty {
+  color: var(--color-text-muted);
+}
+
+/* Dropdown links */
+[data-theme="dark"] .agency-filters-dropdown-link {
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .agency-filters-dropdown-link:hover {
+  background: var(--color-primary-50);
+  color: var(--conexao-primary-text);
+}
+
+[data-theme="dark"] .agency-filters-dropdown-link.is-active {
+  background: var(--color-primary-50);
+  color: var(--conexao-primary-text);
+}
+
+/* Checkmark */
+[data-theme="dark"] .agency-filters-checkmark {
+  color: var(--conexao-primary-text);
+}
+
+/* Toolbar clear link */
+[data-theme="dark"] .agency-filters-clear {
+  color: var(--color-text-muted);
+}
+
+[data-theme="dark"] .agency-filters-clear:hover {
+  color: var(--color-accent);
+  background: var(--color-surface-muted);
+}
+
+/* Lightweight result count */
+[data-theme="dark"] .agency-filters-count {
+  color: var(--color-text-muted);
+}
+
+/* Active filter chips */
+[data-theme="dark"] .agency-filters-active-label {
+  color: var(--color-text-muted);
+}
+
+[data-theme="dark"] .agency-filters-chip {
+  background: var(--color-primary-50);
+  border-color: var(--conexao-primary-text);
+  color: var(--conexao-primary-text);
+}
+
+[data-theme="dark"] .agency-filters-chip:hover {
+  border-color: var(--conexao-accent);
+  color: var(--conexao-accent);
+}
+
+/* Zero-results state */
+[data-theme="dark"] .agency-filters-empty {
+  background: var(--color-surface-muted);
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .agency-filters-empty-text {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .agency-filters-empty-clear {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .agency-filters-empty-clear:hover {
+  border-color: var(--conexao-primary-text);
+  color: var(--conexao-primary-text);
+  background: var(--color-primary-50);
+}
+
+/* Mobile "Filtrar" trigger */
+[data-theme="dark"] .agency-filters-mobile-trigger {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .agency-filters-mobile-trigger:hover,
+[data-theme="dark"] .agency-filters-mobile-trigger[aria-expanded="true"] {
+  border-color: var(--conexao-primary-text);
+  color: var(--conexao-primary-text);
+  background: var(--color-primary-50);
+}
+
+[data-theme="dark"] .agency-filters-mobile-icon {
+  color: var(--conexao-primary-text);
+}
+
+[data-theme="dark"] .agency-filters-mobile-count {
+  background: var(--conexao-primary-text);
+  color: #05240f;
+}
+
+/* Mobile sheet */
+[data-theme="dark"] .agency-filters-sheet-panel {
+  background: var(--color-surface);
+}
+
+[data-theme="dark"] .agency-filters-sheet-header {
+  border-bottom-color: var(--color-border);
+}
+
+[data-theme="dark"] .agency-filters-sheet-handle {
+  background: var(--color-border);
+}
+
+[data-theme="dark"] .agency-filters-sheet-title {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .agency-filters-sheet-close {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .agency-filters-sheet-close:hover {
+  border-color: var(--conexao-primary-text);
+  color: var(--conexao-primary-text);
+  background: var(--color-primary-50);
+}
+
+[data-theme="dark"] .agency-filters-sheet-footer {
+  border-top-color: var(--color-border);
+  background: var(--color-surface);
+}
+
+/* Filter option labels */
+[data-theme="dark"] .agency-filters-option {
+  color: var(--color-text-secondary);
+}
+
+/* Native radios: the checked fill uses the brighter dark-mode primary so
+   the selected option reads clearly on dark surfaces. */
+[data-theme="dark"] .agency-filters-radio {
+  accent-color: var(--conexao-primary-text);
+}
+
+[data-theme="dark"] .agency-filters-option:hover {
+  background: var(--color-primary-50);
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .agency-filters-option:has(.agency-filters-radio:checked) {
+  background: var(--color-primary-50);
+  color: var(--conexao-primary-text);
+}
+
+/* Location search inside the mobile sheet */
+[data-theme="dark"] .agency-filters-mobile-search {
+  background: var(--color-surface-muted);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .agency-filters-mobile-search::placeholder {
+  color: var(--color-text-muted);
+}
+
+[data-theme="dark"] .agency-filters-mobile-search:focus-visible {
+  border-color: var(--conexao-primary-text);
+}
+
+/* Apply button */
+[data-theme="dark"] .agency-filters-apply-button {
+  background: var(--color-primary);
+  color: var(--conexao-white);
+}
+
+[data-theme="dark"] .agency-filters-apply-button:hover {
+  background: var(--color-primary-dark);
+}
+
+/* Mobile clear button */
+[data-theme="dark"] .agency-filters-mobile-clear {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .agency-filters-mobile-clear:hover {
+  border-color: var(--conexao-primary-text);
+  color: var(--conexao-primary-text);
+  background: var(--color-primary-50);
+}
+
+/* ===== 39c. EVENTOS — EVENTS FILTERS =====
+   Dark-mode overrides for the /eventos/ filter widget (desktop
+   dropdowns, active-filter chips, mobile bottom-sheet). Mirrors
+   section 39b (agency filters) so all filter widgets share the same
+   dark-mode treatment, including the brightened --conexao-primary-text
+   accent for selected/hover states. */
+
+/* Dropdown trigger — default state */
+[data-theme="dark"] .event-filters-dropdown-trigger {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .event-filters-dropdown-trigger:hover,
+[data-theme="dark"] .event-filters-dropdown-trigger[aria-expanded="true"] {
+  border-color: var(--conexao-primary-text);
+  color: var(--conexao-primary-text);
+  background: var(--color-primary-50);
+}
+
+[data-theme="dark"] .event-filters-dropdown-trigger.is-selected {
+  color: var(--color-text);
+  border-color: var(--color-border);
+  background: var(--color-surface);
+}
+
+[data-theme="dark"] .event-filters-dropdown-trigger.is-selected:hover,
+[data-theme="dark"] .event-filters-dropdown-trigger.is-selected[aria-expanded="true"] {
+  border-color: var(--conexao-primary-text);
+  color: var(--conexao-primary-text);
+  background: var(--color-primary-50);
+}
+
+/* Active dot indicator */
+[data-theme="dark"] .event-filters-dot {
+  background: var(--conexao-primary-text);
+}
+
+/* Dropdown panel */
+[data-theme="dark"] .event-filters-dropdown-panel {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+/* Location search (dropdown popover) */
+[data-theme="dark"] .event-filters-dropdown-search {
+  background: var(--color-surface-muted);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .event-filters-dropdown-search::placeholder {
+  color: var(--color-text-muted);
+}
+
+[data-theme="dark"] .event-filters-dropdown-search:focus-visible {
+  border-color: var(--conexao-primary-text);
+}
+
+/* "No results" message inside the search panel */
+[data-theme="dark"] .event-filters-options-empty {
+  color: var(--color-text-muted);
+}
+
+/* Dropdown links */
+[data-theme="dark"] .event-filters-dropdown-link {
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .event-filters-dropdown-link:hover {
+  background: var(--color-primary-50);
+  color: var(--conexao-primary-text);
+}
+
+[data-theme="dark"] .event-filters-dropdown-link.is-active {
+  background: var(--color-primary-50);
+  color: var(--conexao-primary-text);
+}
+
+/* Checkmark */
+[data-theme="dark"] .event-filters-checkmark {
+  color: var(--conexao-primary-text);
+}
+
+/* Toolbar clear link */
+[data-theme="dark"] .event-filters-clear {
+  color: var(--color-text-muted);
+}
+
+[data-theme="dark"] .event-filters-clear:hover {
+  color: var(--color-accent);
+  background: var(--color-surface-muted);
+}
+
+/* Lightweight result count */
+[data-theme="dark"] .event-filters-count {
+  color: var(--color-text-muted);
+}
+
+/* Active filter chips */
+[data-theme="dark"] .event-filters-active-label {
+  color: var(--color-text-muted);
+}
+
+[data-theme="dark"] .event-filters-chip {
+  background: var(--color-primary-50);
+  border-color: var(--conexao-primary-text);
+  color: var(--conexao-primary-text);
+}
+
+[data-theme="dark"] .event-filters-chip:hover {
+  border-color: var(--conexao-accent);
+  color: var(--conexao-accent);
+}
+
+/* Zero-results state */
+[data-theme="dark"] .event-filters-empty {
+  background: var(--color-surface-muted);
+  border-color: var(--color-border);
+}
+
+[data-theme="dark"] .event-filters-empty-text {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .event-filters-empty-clear {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .event-filters-empty-clear:hover {
+  border-color: var(--conexao-primary-text);
+  color: var(--conexao-primary-text);
+  background: var(--color-primary-50);
+}
+
+/* Mobile "Filtrar" trigger */
+[data-theme="dark"] .event-filters-mobile-trigger {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .event-filters-mobile-trigger:hover,
+[data-theme="dark"] .event-filters-mobile-trigger[aria-expanded="true"] {
+  border-color: var(--conexao-primary-text);
+  color: var(--conexao-primary-text);
+  background: var(--color-primary-50);
+}
+
+[data-theme="dark"] .event-filters-mobile-icon {
+  color: var(--conexao-primary-text);
+}
+
+[data-theme="dark"] .event-filters-mobile-count {
+  background: var(--conexao-primary-text);
+  color: #05240f;
+}
+
+/* Mobile sheet */
+[data-theme="dark"] .event-filters-sheet-panel {
+  background: var(--color-surface);
+}
+
+[data-theme="dark"] .event-filters-sheet-header {
+  border-bottom-color: var(--color-border);
+}
+
+[data-theme="dark"] .event-filters-sheet-handle {
+  background: var(--color-border);
+}
+
+[data-theme="dark"] .event-filters-sheet-title {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .event-filters-sheet-close {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .event-filters-sheet-close:hover {
+  border-color: var(--conexao-primary-text);
+  color: var(--conexao-primary-text);
+  background: var(--color-primary-50);
+}
+
+[data-theme="dark"] .event-filters-sheet-footer {
+  border-top-color: var(--color-border);
+  background: var(--color-surface);
+}
+
+/* Filter option labels */
+[data-theme="dark"] .event-filters-option {
+  color: var(--color-text-secondary);
+}
+
+/* Native radios: the checked fill uses the brighter dark-mode primary so
+   the selected option reads clearly on dark surfaces. */
+[data-theme="dark"] .event-filters-radio {
+  accent-color: var(--conexao-primary-text);
+}
+
+[data-theme="dark"] .event-filters-option:hover {
+  background: var(--color-primary-50);
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .event-filters-option:has(.event-filters-radio:checked) {
+  background: var(--color-primary-50);
+  color: var(--conexao-primary-text);
+}
+
+/* Location search inside the mobile sheet */
+[data-theme="dark"] .event-filters-mobile-search {
+  background: var(--color-surface-muted);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .event-filters-mobile-search::placeholder {
+  color: var(--color-text-muted);
+}
+
+[data-theme="dark"] .event-filters-mobile-search:focus-visible {
+  border-color: var(--conexao-primary-text);
+}
+
+/* Apply button */
+[data-theme="dark"] .event-filters-apply-button {
+  background: var(--color-primary);
+  color: var(--conexao-white);
+}
+
+[data-theme="dark"] .event-filters-apply-button:hover {
+  background: var(--color-primary-dark);
+}
+
+/* Mobile clear button */
+[data-theme="dark"] .event-filters-mobile-clear {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .event-filters-mobile-clear:hover {
+  border-color: var(--conexao-primary-text);
+  color: var(--conexao-primary-text);
+  background: var(--color-primary-50);
+}
+
+/* ===== 40. REDUCED MOTION ===== */
+
+@media (prefers-reduced-motion: reduce) {
+  [data-theme="dark"] body,
+  [data-theme="dark"] .site-header,
+  [data-theme="dark"] .card,
+  [data-theme="dark"] .event-card,
+  [data-theme="dark"] .course-card,
+  [data-theme="dark"] .provider-card,
+  [data-theme="dark"] .news-card,
+  [data-theme="dark"] .post-card,
+  [data-theme="dark"] .archive-card,
+  [data-theme="dark"] .business-card,
+  [data-theme="dark"] .featured-article,
+  [data-theme="dark"] .sidebar-widget,
+  [data-theme="dark"] .widget,
+  [data-theme="dark"] .quick-access-card,
+  [data-theme="dark"] .landing-card,
+  [data-theme="dark"] .related-post-card,
+  [data-theme="dark"] .blog-post-item,
+  [data-theme="dark"] .directory-card,
+  [data-theme="dark"] .sponsor-card,
+  [data-theme="dark"] .filter-link,
+  [data-theme="dark"] .btn,
+  [data-theme="dark"] .header-cta,
+  [data-theme="dark"] .events-filter-link,
+  [data-theme="dark"] .theme-toggle,
+  [data-theme="dark"] .newsletter-form,
+  [data-theme="dark"] .newsletter-input,
+  [data-theme="dark"] .single-post-header,
+  [data-theme="dark"] .page-header,
+  [data-theme="dark"] .share-buttons,
+  [data-theme="dark"] .comment,
+  [data-theme="dark"] .empty-state,
+  [data-theme="dark"] .quote-section,
+  [data-theme="dark"] .section--gray,
+  [data-theme="dark"] .quick-access-section,
+  [data-theme="dark"] .sponsors-section,
+  [data-theme="dark"] .conexao-pagination .page-numbers,
+  [data-theme="dark"] .navigation.pagination .nav-links .page-numbers {
+    transition: none !important;
+  }
+}

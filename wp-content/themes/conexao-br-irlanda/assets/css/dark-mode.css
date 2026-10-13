@@ -57,6 +57,18 @@
   --conexao-border: #3a4a5a;
   --conexao-white: #ffffff;
 
+  /* Primary action (Empregos landing CTA): a deepened brand green for dark
+   * mode. Two defects were measured in Chromium before the fix: the bright
+   * orange accent surface (#f59e42) is over-saturated for the dark interface,
+   * AND the anchor colour rule `[data-theme="dark"] a` (0,1,1) outranks
+   * `.btn-primary` (0,1,0), so the label + SVG arrow computed to the dark
+   * green #3ab875 — green-on-orange at 1.16:1, effectively invisible.
+   * The deepened green #287443 carries white text at 5.72:1 (PASS); the hover
+   * deepens to #1f5e2f (11.76:1). Light mode keeps the orange accent from
+   * main.css and is never touched by these rules. */
+  --conexao-cta-bg: #287443;
+  --conexao-cta-bg-dark: #1f5e2f;
+
   /* Semantic aliases — dark surfaces */
   --color-background: #0f1720;
   --color-surface: #16202b;
@@ -173,24 +185,36 @@
   background: var(--color-surface);
 }
 
-/* Accent-filled "Anuncie Aqui" CTAs — keep the label white in dark mode.
-   The generic dark anchor rules ([data-theme="dark"] a / a:hover, 0,1,1 and
-   0,2,1) outrank header-nav.css's (0,1,0) CTA rules, which repainted these
-   accent-filled actions green-on-orange (2.7:1) and, on hover/active,
-   orange-on-orange (~1.5:1 — the label effectively disappears). Same
-   specificity trap as the hero CTAs above, fixed the same way: pin the
-   intended white label with dark-scoped selectors that outrank the generic
-   anchor rules. Applies to the mobile drawer CTA and the compact mobile
-   top-bar CTA — the full-text desktop .header-cta is intentionally left
-   untouched by this change. */
-[data-theme="dark"] .mobile-menu-cta,
-[data-theme="dark"] .mobile-menu-cta:hover,
-[data-theme="dark"] .mobile-menu-cta:active,
-[data-theme="dark"] .mobile-menu-cta:focus-visible,
+/* Accent-filled "Anuncie Aqui" CTAs — keep the label + upload icon white in
+   dark mode. Each CTA is an <a>, so the generic dark anchor rules
+   ([data-theme="dark"] a / a:hover, specificity 0,1,1 and 0,2,1) outrank
+   header-nav.css's (0,1,0) CTA rules and repainted these accent-filled
+   actions green-on-orange: the label and its stroke="currentColor" icon
+   computed to the dark green #3ab875 on the orange #f59e42 = 1.19:1, and on
+   hover/active orange-on-orange (~1.46:1 — the label effectively disappears).
+   Same specificity trap as the hero CTAs above, fixed the same way: pin the
+   intended white label with dark-scoped selectors (0,2,0 base / 0,3,0 with a
+   state) that outrank the generic anchor rules. The SVG upload icons use
+   stroke="currentColor", so they inherit the pinned white automatically — no
+   separate icon rule is needed. Covers all three instances of the same
+   /anuncie/ action: the full-text desktop .header-cta (>1024px), the compact
+   mobile top-bar .header-cta-compact and the full-width drawer
+   .mobile-menu-cta, in the default, hover, active and keyboard-focus states.
+   The orange accent background itself is left untouched (it still comes from
+   header-nav.css var(--color-accent)); only the text/icon colour is pinned.
+   Light mode is never touched. */
+[data-theme="dark"] .header-cta,
+[data-theme="dark"] .header-cta:hover,
+[data-theme="dark"] .header-cta:active,
+[data-theme="dark"] .header-cta:focus-visible,
 [data-theme="dark"] .header-cta-compact,
 [data-theme="dark"] .header-cta-compact:hover,
 [data-theme="dark"] .header-cta-compact:active,
-[data-theme="dark"] .header-cta-compact:focus-visible {
+[data-theme="dark"] .header-cta-compact:focus-visible,
+[data-theme="dark"] .mobile-menu-cta,
+[data-theme="dark"] .mobile-menu-cta:hover,
+[data-theme="dark"] .mobile-menu-cta:active,
+[data-theme="dark"] .mobile-menu-cta:focus-visible {
   color: var(--conexao-white);
 }
 
@@ -1455,6 +1479,25 @@
 /* Hero buttons — always white text on dark green gradient */
 [data-theme="dark"] .hero-ctas .btn-primary,
 [data-theme="dark"] .hero-ctas .btn-outline {
+  color: var(--conexao-white);
+}
+
+/* Empregos landing CTA (page-empregos.php) — the page's primary action.
+ * Measured before the fix: orange accent background (#f59e42) with the
+ * anchor colour rule `[data-theme="dark"] a` (0,1,1) outranking `.btn-primary`
+ * (0,1,0), so the label + arrow computed to the dark green #3ab875 —
+ * green-on-orange at 1.16:1, and an over-saturated surface. Use the
+ * deepened brand green with white text instead (5.72:1 = PASS). This
+ * selector (0,4,0) also outranks the generic anchor rule, so the text and
+ * SVG arrow inherit currentColor = white. Light mode keeps the orange accent
+ * from main.css and is never touched by these rules. */
+[data-theme="dark"] .empregos-landing-cta .btn.btn-primary {
+  background: var(--conexao-cta-bg);
+  color: var(--conexao-white);
+}
+
+[data-theme="dark"] .empregos-landing-cta .btn.btn-primary:hover {
+  background: var(--conexao-cta-bg-dark);
   color: var(--conexao-white);
 }
 

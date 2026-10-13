@@ -1,0 +1,35 @@
+
+== Header "Anuncie Aqui" CTA dark-mode contrast ==
+  PASS: the generic dark anchor colour rule [data-theme="dark"] a is present (the trap the fix must outrank)
+  PASS: dark-mode.css pins the desktop .header-cta in the accent-CTA block
+  PASS: the accent-CTA rule is well-formed (opening and closing braces found)
+  PASS: the dark accent-CTA block pins [data-theme="dark"] .header-cta
+  PASS: the dark accent-CTA block pins [data-theme="dark"] .header-cta:hover
+  PASS: the dark accent-CTA block pins [data-theme="dark"] .header-cta:active
+  PASS: the dark accent-CTA block pins [data-theme="dark"] .header-cta:focus-visible
+  PASS: the dark accent-CTA block pins [data-theme="dark"] .header-cta-compact
+  PASS: the dark accent-CTA block pins [data-theme="dark"] .header-cta-compact:hover
+  PASS: the dark accent-CTA block pins [data-theme="dark"] .header-cta-compact:active
+  PASS: the dark accent-CTA block pins [data-theme="dark"] .header-cta-compact:focus-visible
+  PASS: the dark accent-CTA block pins [data-theme="dark"] .mobile-menu-cta
+  PASS: the dark accent-CTA block pins [data-theme="dark"] .mobile-menu-cta:hover
+  PASS: the dark accent-CTA block pins [data-theme="dark"] .mobile-menu-cta:active
+  PASS: the dark accent-CTA block pins [data-theme="dark"] .mobile-menu-cta:focus-visible
+  PASS: the dark accent-CTA block sets color: var(--conexao-white) exactly once for the shared body
+  PASS: the dark accent-CTA block does not touch the background (orange fill preserved)
+  PASS: header-nav.css still paints the accent CTA with the orange var(--color-accent) fill
+  PASS: header-nav.css still declares the intended white label for the accent CTA
+  PASS: header.php renders the .header-cta anchor
+  PASS: the .header-cta upload icon uses stroke="currentColor" (inherits the pinned white)
+  PASS: header.php renders the .header-cta-compact anchor
+  PASS: the .header-cta-compact upload icon uses stroke="currentColor" (inherits the pinned white)
+  PASS: header.php renders the .mobile-menu-cta anchor
+  PASS: the .mobile-menu-cta upload icon uses stroke="currentColor" (inherits the pinned white)
+  PASS: dark-mode.css adds no separate rule that recolours the CTA svg (currentColor handles it)
+  PASS: header-nav.css keeps a --focus-ring outline on .header-cta:focus-visible
+  PASS: dark mode keeps a visible --focus-ring (3px solid accent) for the CTA focus state
+  PASS: before the fix the dark label measured 1.19:1 (green #3ab875 on orange #f59e42, effectively invisible)
+  PASS: white text on the orange accent (2.13:1) beats the old green-on-orange (1.19:1)
+  PASS: dark-mode white-on-orange matches the light-mode white-on-orange accent treatment (light #F68B1F = 2.43:1)
+
+header-cta-dark-mode: 31 passed, 0 failed

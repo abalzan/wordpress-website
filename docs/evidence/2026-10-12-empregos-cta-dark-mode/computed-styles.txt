@@ -1,0 +1,42 @@
+# Empregos landing CTA (.empregos-landing-cta .btn.btn-primary) — computed styles
+# Measured with Playwright/Chromium against a standalone harness that loads the
+# REAL design-system.css + main.css + dark-mode.css in the real cascade order
+# (customizer :root block last, exactly as inc/assets.php emits it) and the
+# exact button markup from page-empregos.php.
+
+=== BEFORE / light ===
+  background: rgb(246, 139, 31)  = #F68B1F   (orange accent — main.css .btn-primary)
+  color:      rgb(255, 255, 255) = white
+  icon:       rgb(255, 255, 255) = white (currentColor)
+  text contrast on button: 2.43:1   (pre-existing brand accent, untouched)
+  button on page:           2.43:1
+
+=== BEFORE / dark ===
+  background: rgb(245, 158, 66)  = #F59E42   (orange accent — no dark rule)
+  color:      rgb(58, 184, 117)  = #3AB875   (GREEN — [data-theme=dark] a (0,1,1) beats .btn-primary (0,1,0))
+  icon:       rgb(58, 184, 117)  = #3AB875
+  text contrast on button: 1.19:1   <-- FAIL (green on orange, effectively invisible)
+  button on page:           8.47:1
+
+=== AFTER / light ===
+  background: rgb(246, 139, 31)  = #F68B1F   (UNCHANGED)
+  color:      rgb(255, 255, 255) = white
+  text contrast on button: 2.43:1   (unchanged pre-existing accent)
+
+=== AFTER / dark ===
+  background: rgb(40, 116, 67)   = #287443   (deepened brand green --conexao-cta-bg)
+  color:      rgb(255, 255, 255) = white
+  icon:       rgb(255, 255, 255) = white (currentColor)
+  text contrast on button: 5.72:1   <-- PASS (>= 4.5:1)
+  button on page:           3.15:1   <-- PASS (non-text UI >= 3:1)
+
+=== AFTER / dark hover ===
+  background: rgb(31, 94, 47)    = #1F5E2F   (--conexao-cta-bg-dark)
+  color:      white
+  text contrast on button: 7.78:1   <-- PASS
+  box-shadow: rgba(0,0,0,0.45) 0 8px 24px  (lift + shadow preserved from main.css .btn-primary:hover)
+  transform:  translateY(-2px)
+
+=== AFTER / dark focus-visible ===
+  outline: 3px solid #F59E42 (shared --focus-ring token)
+  outline-offset: 2px

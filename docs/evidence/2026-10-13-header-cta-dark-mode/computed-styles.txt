@@ -1,0 +1,32 @@
+# Header "Anuncie Aqui" CTA — computed color via cascade resolver (Node, no browser)
+# Loads the REAL design-system.css + header-nav.css + main.css + dark-mode.css in
+# cascade order, with the Customizer :root block LAST (as inc/customizer.php emits).
+
+=== LIGHT ===
+  .header-cta [base]                      color=#ffffff             bg=#F68B1F            contrast=2.43:1  (color from header-nav.css)
+  .header-cta [hover]                     color=#ffffff             bg=#c46f18            contrast=3.73:1  (color from header-nav.css)
+  .header-cta [active]                    color=#ffffff             bg=#F68B1F            contrast=2.43:1  (color from header-nav.css)
+  .header-cta [focus-visible]             color=#ffffff             bg=#F68B1F            contrast=2.43:1  (color from header-nav.css)
+  .header-cta-compact [base]              color=#ffffff             bg=#F68B1F            contrast=2.43:1  (color from header-nav.css)
+  .header-cta-compact [hover]             color=#ffffff             bg=#c46f18            contrast=3.73:1  (color from header-nav.css)
+  .header-cta-compact [active]            color=#ffffff             bg=#c46f18            contrast=3.73:1  (color from header-nav.css)
+  .header-cta-compact [focus-visible]     color=#ffffff             bg=#F68B1F            contrast=2.43:1  (color from header-nav.css)
+  .mobile-menu-cta [base]                 color=#ffffff             bg=#F68B1F            contrast=2.43:1  (color from header-nav.css)
+  .mobile-menu-cta [hover]                color=#ffffff             bg=#c46f18            contrast=3.73:1  (color from header-nav.css)
+  .mobile-menu-cta [active]               color=#ffffff             bg=#c46f18            contrast=3.73:1  (color from header-nav.css)
+  .mobile-menu-cta [focus-visible]        color=#ffffff             bg=#F68B1F            contrast=2.43:1  (color from header-nav.css)
+
+=== DARK ===
+  .header-cta [base]                      color=#ffffff             bg=#f59e42            contrast=2.13:1  (color from dark-mode.css)
+  .header-cta [hover]                     color=#ffffff             bg=#d97a1a            contrast=3.11:1  (color from dark-mode.css)
+  .header-cta [active]                    color=#ffffff             bg=#f59e42            contrast=2.13:1  (color from dark-mode.css)
+  .header-cta [focus-visible]             color=#ffffff             bg=#f59e42            contrast=2.13:1  (color from dark-mode.css)
+  .header-cta-compact [base]              color=#ffffff             bg=#f59e42            contrast=2.13:1  (color from dark-mode.css)
+  .header-cta-compact [hover]             color=#ffffff             bg=#d97a1a            contrast=3.11:1  (color from dark-mode.css)
+  .header-cta-compact [active]            color=#ffffff             bg=#d97a1a            contrast=3.11:1  (color from dark-mode.css)
+  .header-cta-compact [focus-visible]     color=#ffffff             bg=#f59e42            contrast=2.13:1  (color from dark-mode.css)
+  .mobile-menu-cta [base]                 color=#ffffff             bg=#f59e42            contrast=2.13:1  (color from dark-mode.css)
+  .mobile-menu-cta [hover]                color=#ffffff             bg=#d97a1a            contrast=3.11:1  (color from dark-mode.css)
+  .mobile-menu-cta [active]               color=#ffffff             bg=#d97a1a            contrast=3.11:1  (color from dark-mode.css)
+  .mobile-menu-cta [focus-visible]        color=#ffffff             bg=#f59e42            contrast=2.13:1  (color from dark-mode.css)
+
