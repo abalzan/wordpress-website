@@ -1,0 +1,321 @@
+conexao test harness
+  repository:    /workspace
+  php:           8.2.32
+  environment:   host (local php)
+  base url:      http://localhost:8080
+
+In-process PHP suites (serial, one process per suite)
+[FAIL] plugin/conexao-admin-ux/test-recurrence-admin.php (exit 255)
+         Fatal error: Uncaught Error: Class "Conexao_Admin_Ux_Fields" not found in /workspace/wp-content/plugins/conexao-admin-ux/tests/test-recurrence-admin.php:58
+[FAIL] plugin/conexao-admin-ux/test-translation-state.php (exit 255)
+         Fatal error: Uncaught Error: Call to undefined function pll_set_post_language() in /workspace/wp-content/plugins/conexao-admin-ux/tests/test-translation-state.php:52
+[FAIL] plugin/conexao-en-translation/test-shared-slug-newsletter.php (exit 255)
+         Fatal error: Uncaught Error: Call to undefined function pll_get_post() in /workspace/wp-content/plugins/conexao-en-translation/tests/test-shared-slug-newsletter.php:293
+[PASS] plugin/conexao-event-importer/test-county-registry.php — 482 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-error-handling.php — 55 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-event-address.php — 76 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-event-image-sync.php — 30 passed, 0 failed
+[FAIL] plugin/conexao-event-importer/test-event-schedule-refresh.php — 16 passed, 5 failed (exit 1)
+           FAIL: an end-date-only change is detected as an update (not "unchanged") — expected 'updated', got 'unchanged'
+           FAIL: the stored end date is refreshed to the shortened source range — expected '2026-10-14', got '2026-10-16'
+           FAIL: the record is NO LONGER an upcoming event the day after its refreshed end date
+           FAIL: the record is NO LONGER an upcoming event on the stale end date
+           FAIL: the unchanged fast path leaves the end date untouched — expected '2026-10-14', got '2026-10-16'
+[PASS] plugin/conexao-event-importer/test-eventbrite-importer.php — 68 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-export-language.php — 56 passed, 0 failed
+[FAIL] plugin/conexao-event-importer/test-ics-occurrence-dates.php — 171 passed, 1 failed (exit 1)
+           FAIL: the runtime reports 2026-10-06 as its next occurrence — '2026-10-06'
+[PASS] plugin/conexao-event-importer/test-import-log.php — 53 passed, 0 failed
+[FAIL] plugin/conexao-event-importer/test-ivvcc-importer.php (exit 255)
+         Fatal error: Uncaught Error: Class "DOMDocument" not found in /tmp/wp/wp-content/plugins/conexao-event-importer/includes/sources/class-ivvcc-source.php:239
+[FAIL] plugin/conexao-event-importer/test-language-identity.php (exit 1)
+           insufficient data: polylang
+           FAIL: test prerequisite is available: function_exists( pll_set_post_language )
+[FAIL] plugin/conexao-event-importer/test-mondello-park-importer.php (exit 255)
+         Fatal error: Uncaught Error: Class "DOMDocument" not found in /workspace/wp-content/plugins/conexao-event-importer/tests/test-mondello-park-importer.php:357
+[FAIL] plugin/conexao-event-importer/test-motorsport-ireland-importer.php (exit 255)
+         Fatal error: Uncaught Error: Class "DOMDocument" not found in /tmp/wp/wp-content/plugins/conexao-event-importer/includes/sources/class-motorsport-ireland-source.php:647
+[PASS] plugin/conexao-event-importer/test-past-event-filter.php — 29 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-reappearing-event-lifecycle.php — 5 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-source-county-hint.php — 17 passed, 0 failed
+[FAIL] plugin/conexao-event-importer/test-town-sanitization.php — 78 passed, 5 failed (exit 1)
+           FAIL: clean term 'Oranmore' exists (was contaminated)
+           FAIL: clean term 'Galway' exists (was 'Galway, Ireland')
+           FAIL: legitimate town 'Cork' still exists
+           FAIL: legitimate town 'Cobh' still exists
+           FAIL: legitimate town 'Corofin' still exists
+[PASS] plugin/conexao-event-runtime/test-event-date-transitions.php — 54 passed, 0 failed
+[FAIL] plugin/conexao-event-runtime/test-event-language-gate.php (exit 1)
+           insufficient data: polylang
+           FAIL: test prerequisite is available: function_exists( pll_set_post_language )
+[FAIL] plugin/conexao-event-runtime/test-event-query.php — 44 passed, 4 failed (exit 1)
+           FAIL: R: a series whose last occurrence is inside the 7-day window is still listed
+           FAIL: R: a series whose last occurrence is today is listed on its occurrence day
+           FAIL: R: the series ending inside the window resolves to today
+           FAIL: R: the series ending today also resolves to today
+[PASS] plugin/conexao-event-runtime/test-event-recurrence.php — 90 passed, 0 failed
+[FAIL] plugin/conexao-leisure-migration/test-excerpt-en-roundtrip.php (exit 1)
+[FAIL] plugin/conexao-leisure-migration/test-language-uuid.php (exit 1)
+           insufficient data: polylang
+           FAIL: test prerequisite is available: function_exists( pll_set_post_language )
+[PASS] plugin/conexao-translation-automation/test-automation-admin-trigger.php — 109 passed, 0 failed
+[FAIL] plugin/conexao-translation-automation/test-automation-apply-safety.php (exit 255)
+         Fatal error: Uncaught Error: Class "Conexao_Translation_Rollout_Engine" not found in /workspace/wp-content/plugins/conexao-translation-automation/tests/test-automation-apply-safety.php:249
+[PASS] plugin/conexao-translation-automation/test-automation-audit.php — 80 passed, 0 failed
+[FAIL] plugin/conexao-translation-automation/test-automation-batch.php (exit 255)
+         Fatal error: Uncaught Error: Class "Conexao_Translation_Rollout_Engine" not found in /workspace/wp-content/plugins/conexao-translation-automation/tests/test-automation-batch.php:465
+[FAIL] plugin/conexao-translation-automation/test-automation-boundary.php (exit 255)
+         Fatal error: Uncaught Error: Class "Conexao_Translation_Rollout_Engine" not found in /workspace/wp-content/plugins/conexao-translation-automation/tests/test-automation-boundary.php:484
+[FAIL] plugin/conexao-translation-automation/test-automation-change-detection.php (exit 255)
+         Fatal error: Uncaught Error: Class "Conexao_Translation_Rollout_Engine" not found in /workspace/wp-content/plugins/conexao-translation-automation/tests/test-automation-change-detection.php:73
+[PASS] plugin/conexao-translation-automation/test-automation-lock.php — 51 passed, 0 failed
+[FAIL] plugin/conexao-translation-automation/test-automation-model-a.php (exit 255)
+         Fatal error: Uncaught Error: Class "Conexao_Translation_Rollout_Engine" not found in /workspace/wp-content/plugins/conexao-translation-automation/tests/test-automation-model-a.php:486
+[FAIL] plugin/conexao-translation-automation/test-automation-promotion.php — 15 passed, 2 failed (exit 1)
+           FAIL: the unchanged engine still owns run, build_plan and validate_manifest
+           FAIL: the engine header version and the VERSION constant agree (header=1.2.0, constant=undefined)
+[PASS] plugin/conexao-translation-automation/test-automation-provider-implementation.php — 144 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-provider-secrets.php — 17 passed, 0 failed
+[PASS] plugin/conexao-translation-automation/test-automation-provider.php — 222 passed, 0 failed
+[FAIL] plugin/conexao-translation-automation/test-automation-secret-scan.php — 41 passed, 1 failed (exit 1)
+         Warning: file_get_contents(/tmp/wp/tests/fixtures/secret-scan-corpus.json): Failed to open stream: No such file or directory in /workspace/wp-content/plugins/conexao-translation-automation/tests/test-automation-secret-scan.php on line 53
+           FAIL: the canonical secret-scan corpus is readable and carries its cases
+[FAIL] plugin/conexao-translation-automation/test-automation-translation-plan.php (exit 1)
+           insufficient data: seed-leisure
+           FAIL: the B2 stage declares at least one record, so the dry-run path is exercisable
+[PASS] plugin/conexao-translation-automation/test-automation-transport-shape.php — 64 passed, 0 failed
+[FAIL] plugin/conexao-translation-automation/test-automation-trigger.php — 87 passed, 12 failed (exit 1)
+           FAIL: a missing baseline yields bootstrap_required — expected 'bootstrap_required', got 'refused'
+           FAIL: an explicit bootstrap adopts the baseline — expected 'bootstrapped', got 'refused'
+           FAIL: the bootstrap observed real records
+           FAIL: the baseline is now persisted — expected 'ok', got 'missing'
+           FAIL: the baseline covers the bootstrapped stage
+           FAIL: the persisted baseline carries an inventory digest — expected 64, got 0
+           FAIL: the baseline adoption is audited as a bootstrap — expected 'bootstrap', got 'manual'
+           FAIL: a non-record value is a hard refusal — expected 'source_state_unusable', got 'unknown_stage'
+           FAIL: an unknown schema version is a hard refusal — expected 'source_state_unusable', got 'unknown_stage'
+           FAIL: a non-allowlisted stage is a hard refusal — expected 'source_state_unusable', got 'unknown_stage'
+[FAIL] plugin/conexao-translation-automation/test-manual-translation-workflow.php (exit 255)
+         Fatal error: Uncaught Error: Class "Conexao_Translation_Rollout_Engine" not found in /workspace/wp-content/plugins/conexao-translation-automation/tests/test-manual-translation-workflow.php:233
+[PASS] plugin/conexao-translation-rollout/test-future-stage-smoke.php — 13 passed, 0 failed
+[PASS] plugin/conexao-translation-rollout/test-legacy-apply-endpoint-closure.php — 36 passed, 0 failed
+[PASS] plugin/conexao-translation-rollout/test-rollout-failure-proofs.php — 4 passed, 0 failed
+[PASS] plugin/conexao-translation-rollout/test-translation-rollout-engine.php — 36 passed, 0 failed
+[FAIL] theme/conexao-br-irlanda/test-blog-en-translation.php (exit 1)
+           insufficient data: polylang
+           FAIL: test prerequisite is available: function_exists( pll_get_post )
+[FAIL] theme/conexao-br-irlanda/test-cache-language-scoping.php (exit 1)
+           insufficient data: polylang
+           FAIL: test prerequisite is available: Polylang is active with pt + en
+[FAIL] theme/conexao-br-irlanda/test-course-provider-card-excerpt-language.php (exit 1)
+           FAIL: Polylang is active
+[FAIL] theme/conexao-br-irlanda/test-en-archive-rewrite-guard.php (exit 1)
+           insufficient data: polylang-pt-en
+           FAIL: Polylang is active with its public API available
+[FAIL] theme/conexao-br-irlanda/test-en-course-provider-category-filter.php — 40 passed, 20 failed (exit 1)
+           FAIL: a PT request resolves the requested language as PT — expected 'pt', got ''
+           FAIL: an EN request resolves the requested language as EN — expected 'en', got ''
+           FAIL: an EN request widens the B2 course_provider query to en,pt — expected 'en,pt', got ''
+           FAIL: the shared helper still widens the events B2 query (no regression) — expected 'en,pt', got ''
+           FAIL: the shared helper still widens the leisure B2 query (no regression) — expected 'en,pt', got ''
+           FAIL: every discovered category renders an English label on /en/cursos/ — expected ["Business","Course Directories","Education","Online Courses","Vocational Training"], got ["Cursos Online"]
+           FAIL: an EN request renders "Cursos Online" as "Online Courses" — expected 'Online Courses', got 'Cursos Online'
+           FAIL: an EN request renders "Diretórios de Cursos" as "Course Directories" — expected 'Course Directories', got 'Diretórios de Cursos'
+           FAIL: an EN request renders "Educação" as "Education" — expected 'Education', got 'Educação'
+           FAIL: an EN request renders "Formação Profissional" as "Vocational Training" — expected 'Vocational Training', got 'Formação Profissional'
+[FAIL] theme/conexao-br-irlanda/test-en-jobs-shared-slug.php (exit 1)
+           insufficient data: plugin-conexao-en-translation-active
+           FAIL: test prerequisite is available: conexao_en_translation_shared_page_slug_filter() (the shared-slug permit)
+[PASS] theme/conexao-br-irlanda/test-event-location-filters.php — 62 passed, 0 failed
+[FAIL] theme/conexao-br-irlanda/test-filter-link-aria-semantics.php — 102 passed, 1 failed (exit 1)
+           FAIL: employment: the selected tipo plus the 3 unselected groups are aria-current (got 1)
+[FAIL] theme/conexao-br-irlanda/test-guide-breadcrumb-filter.php — 33 passed, 3 failed (exit 1)
+           FAIL: D. href points to the Guias archive with the category filter encoded
+           FAIL: J. filtered URL is the canonical deterministic /guias/?categoria= form
+           FAIL: K. category link href is the filtered Guias archive and accessible text is the category name
+[FAIL] theme/conexao-br-irlanda/test-guide-en-translation.php (exit 1)
+           insufficient data: polylang
+           FAIL: test prerequisite is available: function_exists( pll_get_post )
+[FAIL] theme/conexao-br-irlanda/test-header-menu-selection.php (pt) — 10 passed, 2 failed (exit 1)
+           FAIL: S1 Polylang is active
+           FAIL: S2 request resolves to the PT language context
+[FAIL] theme/conexao-br-irlanda/test-header-menu-selection.php (en) — 7 passed, 9 failed (exit 1)
+           FAIL: S1 Polylang is active
+           FAIL: S2 request resolves to the EN language context
+           FAIL: S5 the Main Menu menu exists
+           FAIL: S6 the Main Menu menu is the menu selected for primary
+           FAIL: E3 EN nav renders the canonical EN labels (Home, Sponsors, Guides, Events, Courses, Leisure & Tourism, Jobs, Blog, Contact) — missing ["Home","Sponsors","Guides","Events","Courses","Leisure &amp; Tourism","Jobs","Contact"]
+           FAIL: E5b EN Jobs item points at the linked EN translation /en/empregos/ (shared-slug shape)
+           FAIL: E6 EN homepage marks Home current on /en/ (class level; aria-current is HTTP-verified)
+           FAIL: E7 EN nav does not leak Portuguese labels
+           FAIL: E8 EN Contact item points at the EN contact page
+[PASS] theme/conexao-br-irlanda/test-homepage-content-type-label.php — 29 passed, 0 failed
+[FAIL] theme/conexao-br-irlanda/test-i18n-foundation.php — 25 passed, 4 failed (exit 1)
+           FAIL: JS payload singular filter label — expected '%d filtro ativo', got '%d active filter'
+           FAIL: JS payload load-more status has distinct singular/plural forms
+           FAIL: JS payload singular load-more wording is exact PT — expected 'Mais %1$d %2$s carregado.', got '%1$d more %2$s loaded.'
+           FAIL: dates render Portuguese month names ("setembro")
+[FAIL] theme/conexao-br-irlanda/test-job-en-translation.php (exit 1)
+           insufficient data: polylang
+           FAIL: test prerequisite is available: function_exists( pll_get_post )
+[FAIL] theme/conexao-br-irlanda/test-jobs-en-language.php (exit 1)
+           insufficient data: polylang
+           FAIL: test prerequisite is available: function_exists( pll_get_post )
+[FAIL] theme/conexao-br-irlanda/test-language-switcher-flag.php (exit 255)
+           FAIL: L50 the data layer still resolves BOTH languages while disabled
+           FAIL: L51 the EN row is still computed while disabled
+           FAIL: L52 the PT row is still computed while disabled
+           FAIL: L53 the EN destination still resolves while disabled
+           FAIL: L54 the EN destination is still an /en/ URL while disabled
+           FAIL: L55 Polylang is still active and registered
+         Fatal error: Uncaught Error: Call to undefined function pll_languages_list() in /workspace/wp-content/themes/conexao-br-irlanda/tests/test-language-switcher-flag.php:203
+[PASS] theme/conexao-br-irlanda/test-leisure-attribute-normalization.php — 22 passed, 0 failed
+[FAIL] theme/conexao-br-irlanda/test-leisure-card-excerpt-language.php (exit 1)
+           FAIL: Polylang is active
+[PASS] theme/conexao-br-irlanda/test-leisure-card-map-action.php — 44 passed, 0 failed
+[FAIL] theme/conexao-br-irlanda/test-leisure-multiselect-filters.php — 60 passed, 3 failed (exit 1)
+           FAIL: Tipo reset (Todos) drops ONLY categoria, preserving county + atributo (deduped)
+           FAIL: Características reset (Todas) drops ONLY atributo, preserving county + categoria
+           FAIL: Localização reset (Todos) preserves categoria + atributo
+[PASS] theme/conexao-br-irlanda/test-leisure-related-events.php — 19 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-nav-language-context-logic.php — 49 passed, 0 failed
+[FAIL] theme/conexao-br-irlanda/test-nav-language-context.php (exit 1)
+           FAIL: A0 Polylang active
+[FAIL] theme/conexao-br-irlanda/test-nav-menu-regression.php — 28 passed, 9 failed (exit 1)
+           FAIL: A7 Polylang is active
+           FAIL: C1 English menu "Main Menu" exists
+           FAIL: C2 Polylang nav_menus[primary][en] is assigned
+           FAIL: C4 PT assignment is untouched by the EN work (still "Menu Principal")
+           FAIL: C5 EN menu stores the canonical curated destinations (Home, Sponsors, Guides, Events, Courses, Leisure & Tourism, Jobs, Blog, About Us, Contact) — got []
+           FAIL: C6 EN menu stores English titles (existing EN labels of the linked objects/directories) — got []
+           FAIL: A12 stored menu carries the canonical curated destinations (Início, Apoiadores, Guias, Eventos, Cursos, Empregos, Blog, Contato)
+           FAIL: B4g safe fallback renders all nine canonical items — got 10
+           FAIL: B4h safe fallback renders the canonical nine in the canonical order — got ["In\u00edcio","Apoiadores","Guias","Eventos","Cursos","Lazer e turismo","Lazer e turismo","Empregos","Blog","Contato"]
+[FAIL] theme/conexao-br-irlanda/test-polylang-foundation.php (exit 1)
+           insufficient data: polylang
+           FAIL: test prerequisite is available: function_exists( pll_languages_list )
+[PASS] theme/conexao-br-irlanda/test-recurrence-i18n.php — 12 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-redirect-precedence.php — 15 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-sponsor-archive-ordering.php — 15 passed, 0 failed
+[FAIL] theme/conexao-br-irlanda/test-stage32-bilingual.php (exit 1)
+           insufficient data: polylang
+           FAIL: test prerequisite is available: function_exists( pll_home_url )
+[FAIL] theme/conexao-br-irlanda/test-stage33-bilingual.php (exit 1)
+           insufficient data: polylang
+           FAIL: test prerequisite is available: function_exists( pll_current_language )
+[FAIL] theme/conexao-br-irlanda/test-stage41-rest-language.php (exit 1)
+           insufficient data: polylang
+           FAIL: test prerequisite is available: function_exists( pll_get_post_language )
+[FAIL] theme/conexao-br-irlanda/test-stage45-pages.php (exit 1)
+           insufficient data: polylang
+           FAIL: the active EN translation stage layer is loaded
+[FAIL] theme/conexao-br-irlanda/test-stage7-hero-sponsors.php (exit 1)
+           FAIL: Polylang is active
+[FAIL] theme/conexao-br-irlanda/test-taxonomy-policy.php (exit 1)
+           insufficient data: polylang
+           FAIL: test prerequisite is available: Polylang term API
+[FAIL] theme/conexao-br-irlanda/test-translation-completeness.php (exit 1)
+           insufficient data: polylang
+           FAIL: test prerequisite is available: the Polylang post API
+
+Script-contract suites (static, no WordPress, no network)
+[PASS] tests/scripts/verify-agent-governance.py
+[PASS] tests/scripts/verify-cache-key-scoping.py
+         2 passed, 0 failed
+[PASS] tests/scripts/verify-documentation-drift.py
+         14 passed, 0 failed
+[PASS] tests/scripts/verify-i18n-freshness.py
+         3 passed, 0 failed
+[PASS] tests/scripts/verify-release-integrity.py
+         224 passed, 0 failed
+[PASS] tests/scripts/verify-script-conventions.py
+         727 passed, 0 failed
+[PASS] tests/scripts/verify-stage10-batch-boundary.py
+[PASS] tests/scripts/verify-stage13-commissioning-readiness.py
+         808 passed, 0 failed
+[FAIL] tests/scripts/verify-stage14-secret-scan.py (exit 1)
+           FAIL: the PHP runtime scanner could not be executed (no local WordPress); conformance is UNPROVEN, not assumed
+[PASS] tests/scripts/verify-stage17-retirement.py
+         110 passed, 0 failed
+[PASS] tests/scripts/verify-stage18-operator-runbook.py
+[PASS] tests/scripts/verify-stage2-promotion.py
+         28 passed, 0 failed
+[PASS] tests/scripts/verify-stage3-automation.py
+         172 passed, 0 failed
+[PASS] tests/scripts/verify-stage4-provider.py
+         148 passed, 0 failed
+[PASS] tests/scripts/verify-stage6-transport-trigger.py
+         49 passed, 0 failed
+[PASS] tests/scripts/verify-stage7-commissioning.py
+         71 passed, 0 failed
+[PASS] tests/scripts/verify-stage8-control-plane.py
+         147 passed, 0 failed
+[PASS] tests/scripts/verify-stage8-release-consistency.py
+         16 passed, 0 failed
+
+HTTP acceptance suites (base: http://localhost:8080)
+BLOCKED: HTTP acceptance environment unavailable
+  could not reach http://localhost:8080/. Start the local stack: docker compose up -d
+
+----------------------------------------
+In-process PHP suites: 83 total, 32 passed, 51 failed
+  prerequisite failures:         18
+Assertions: 2815 passed, 81 failed
+Script-contract suites: 18 total, 17 passed, 1 failed
+HTTP acceptance suites: 0 total, 0 passed, 0 failed
+  acceptance environment: BLOCKED
+----------------------------------------
+TESTS FAILED
+failing suites:
+  - plugin/conexao-admin-ux/test-recurrence-admin.php
+  - plugin/conexao-admin-ux/test-translation-state.php
+  - plugin/conexao-en-translation/test-shared-slug-newsletter.php
+  - plugin/conexao-event-importer/test-event-schedule-refresh.php
+  - plugin/conexao-event-importer/test-ics-occurrence-dates.php
+  - plugin/conexao-event-importer/test-ivvcc-importer.php
+  - plugin/conexao-event-importer/test-language-identity.php
+  - plugin/conexao-event-importer/test-mondello-park-importer.php
+  - plugin/conexao-event-importer/test-motorsport-ireland-importer.php
+  - plugin/conexao-event-importer/test-town-sanitization.php
+  - plugin/conexao-event-runtime/test-event-language-gate.php
+  - plugin/conexao-event-runtime/test-event-query.php
+  - plugin/conexao-leisure-migration/test-excerpt-en-roundtrip.php
+  - plugin/conexao-leisure-migration/test-language-uuid.php
+  - plugin/conexao-translation-automation/test-automation-apply-safety.php
+  - plugin/conexao-translation-automation/test-automation-batch.php
+  - plugin/conexao-translation-automation/test-automation-boundary.php
+  - plugin/conexao-translation-automation/test-automation-change-detection.php
+  - plugin/conexao-translation-automation/test-automation-model-a.php
+  - plugin/conexao-translation-automation/test-automation-promotion.php
+  - plugin/conexao-translation-automation/test-automation-secret-scan.php
+  - plugin/conexao-translation-automation/test-automation-translation-plan.php
+  - plugin/conexao-translation-automation/test-automation-trigger.php
+  - plugin/conexao-translation-automation/test-manual-translation-workflow.php
+  - theme/conexao-br-irlanda/test-blog-en-translation.php
+  - theme/conexao-br-irlanda/test-cache-language-scoping.php
+  - theme/conexao-br-irlanda/test-course-provider-card-excerpt-language.php
+  - theme/conexao-br-irlanda/test-en-archive-rewrite-guard.php
+  - theme/conexao-br-irlanda/test-en-course-provider-category-filter.php
+  - theme/conexao-br-irlanda/test-en-jobs-shared-slug.php
+  - theme/conexao-br-irlanda/test-filter-link-aria-semantics.php
+  - theme/conexao-br-irlanda/test-guide-breadcrumb-filter.php
+  - theme/conexao-br-irlanda/test-guide-en-translation.php
+  - theme/conexao-br-irlanda/test-header-menu-selection.php (pt)
+  - theme/conexao-br-irlanda/test-header-menu-selection.php (en)
+  - theme/conexao-br-irlanda/test-i18n-foundation.php
+  - theme/conexao-br-irlanda/test-job-en-translation.php
+  - theme/conexao-br-irlanda/test-jobs-en-language.php
+  - theme/conexao-br-irlanda/test-language-switcher-flag.php
+  - theme/conexao-br-irlanda/test-leisure-card-excerpt-language.php
+  - theme/conexao-br-irlanda/test-leisure-multiselect-filters.php
+  - theme/conexao-br-irlanda/test-nav-language-context.php
+  - theme/conexao-br-irlanda/test-nav-menu-regression.php
+  - theme/conexao-br-irlanda/test-polylang-foundation.php
+  - theme/conexao-br-irlanda/test-stage32-bilingual.php
+  - theme/conexao-br-irlanda/test-stage33-bilingual.php
+  - theme/conexao-br-irlanda/test-stage41-rest-language.php
+  - theme/conexao-br-irlanda/test-stage45-pages.php
+  - theme/conexao-br-irlanda/test-stage7-hero-sponsors.php
+  - theme/conexao-br-irlanda/test-taxonomy-policy.php
+  - theme/conexao-br-irlanda/test-translation-completeness.php
+full suite output kept in /tmp/tmp.pcW71wf2Tc

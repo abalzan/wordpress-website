@@ -160,4 +160,281 @@ the candidate window) instead of masking a symptom with cache changes.
 Nothing in this change can be *operated* from production: it is source code. The
 importer change only takes effect when an operator runs a local import and
 transfers the result; the runtime change takes effect on the next deploy. Neither
+
+## 4. Regression coverage (deterministic, no real-world dates)
+
+All three suites are discovered by convention (`<component>/tests/test-*.php`), use
+the shared bootstrap and assertion API, create and delete their own fixtures, and
+take a **controlled clock** through `upcoming_events( $from )` /
+`upcoming_event_ids( $from )` — nothing sleeps until midnight and nothing depends
+on a production record.
+
+| Suite | Status | Coverage |
+|---|---|---|
+| `wp-content/plugins/conexao-event-runtime/tests/test-event-date-transitions.php` | **new** — 54 assertions | T1 today → yesterday without touching the record; T2 an event that ended yesterday excluded even with a pre-populated cache entry (including a stale previous-day entry that must never be served); T3 tomorrow becomes today (classification, not just membership); T4 ongoing multi-day event visible on every day it runs and gone the day after its end; T5 date-keyed cache, lifetime ends at local midnight, save/delete refresh the list; T6 cached vs cache-bypassed equality; T7 site timezone vs UTC (a UTC instant whose local date differs) and the DST change; T8 upcoming events, ordering, uniqueness, taxonomy filter, pagination and weekly series all intact |
+| `wp-content/plugins/conexao-event-runtime/tests/test-event-query.php` | **extended** (new section `R`) — 48 assertions | a weekly series whose last occurrence is inside the 7-day window (and one ending today) is still listed; a series that ended yesterday stays excluded; a series whose next occurrence falls after its end date stays excluded — i.e. the widened SQL is still decided exactly by the evaluator |
+| `wp-content/plugins/conexao-event-importer/tests/test-event-schedule-refresh.php` | **new** — 21 assertions | an end-date-only source change is applied to the **existing** record (`updated`, same post ID, new `_event_end_date`); the runtime consequence follows (no longer an upcoming event after the refreshed end date); identical data re-imports as `unchanged` (idempotence); the source identity still resolves to exactly one record (no duplicate); a start-date change still behaves as before |
+
+Existing suites were **added to, never relaxed**; no assertion anywhere was
+weakened, skipped or deleted to obtain a green result.
+
+## 5. Verification
+
+### 5.1 Focused results (real WordPress, real run)
+
+| Suite | Result |
+|---|---|
+| `test-event-date-transitions.php` | **54 passed, 0 failed** |
+| `test-event-query.php` | **48 passed, 0 failed** |
+| `test-event-schedule-refresh.php` | **21 passed, 0 failed** |
+| `./scripts/run-tests.sh --php --only conexao-event-runtime` | 4 suites, **3 passed, 1 failed** — the failure is `test-event-language-gate.php` failing its declared prerequisite `polylang` (not installed in the ad-hoc environment); assertions **192 passed, 0 failed** |
+| `./scripts/run-tests.sh --php --only conexao-event-importer` | 17 suites, **11 passed, 6 failed** — all six are environmental (2 × `Class "DOMDocument" not found` because the ad-hoc PHP has no `dom` extension; 1 × `polylang` prerequisite; 1 × ICS fixture records that only `bootstrap-ci-fixtures.php` step 4c creates; 1 × town-term fixture state; **`test-ics-occurrence-dates.php` was proven identical with the change reverted**); assertions **1141 passed, 6 failed** |
+
+### 5.2 Aggregate run
+
+`./scripts/run-tests.sh` (the canonical entrypoint: in-process PHP + script
+contract + HTTP acceptance) was run on the final tree, and again with both fixes
+reverted, in the same ad-hoc environment:
+
+| Layer | Final | Pristine (both fixes reverted) |
+|---|---|---|
+| In-process PHP | 83 suites, **34 passed, 49 failed**; assertions **2824 passed, 72 failed** | 83 suites, **32 passed, 51 failed**; assertions **2815 passed, 81 failed** |
+| Script-contract | 18 suites, **17 passed, 1 failed** (`verify-stage14-secret-scan.py` — needs a local WordPress over HTTP) | 18 suites, 17 passed, 1 failed (the same one) |
+| HTTP acceptance | **0 suites run — `BLOCKED: HTTP acceptance environment unavailable`** | same |
+
+The aggregate therefore **fails in this sandbox for environmental reasons**, not
+because of this change: the environment has no Docker/MySQL/Polylang, no `pt_BR`
+core language pack, no committed CI fixtures, no `dom` extension, and port 8080 is
+already occupied by the sandbox itself, so the acceptance layer is BLOCKED before
+any row executes. §7 shows the failing set differs only by the two suites that
+cover the fixes — every other failure is identical without them.
+
+### 5.3 Gates
+
+| Gate | Result |
+|---|---|
+| `php scripts/generate-registry-docs.php --check` | **registry OK: 10 plugins validated, 19 generated regions current (zero writes)** |
+| `tests/scripts/verify-i18n-freshness.py` | **3 passed, 0 failed — stale catalogues: 0** (both touched catalogues regenerated with the documented `./scripts/i18n-make-pot.sh` and committed) |
+| `tests/scripts/verify-cache-key-scoping.py` | **2 passed, 0 failed** (no cache key added or changed) |
+| `tests/scripts/verify-documentation-drift.py` | **14 passed, 0 failed** |
+| `tests/scripts/verify-script-conventions.py` | **727 passed, 0 failed** |
+| `tests/scripts/verify-release-integrity.py` | **224 passed, 0 failed** |
+| `tests/scripts/verify-stage13-commissioning-readiness.py` | **808 passed, 0 failed** |
+| `verify-agent-governance.py`, `verify-stage3/4/6/7/8/8-consistency/10/17/18` | passed |
+| `tests/scripts/verify-stage14-secret-scan.py` | **failed — environment**: "the PHP runtime scanner could not be executed (no local WordPress)"; it fails identically with the fixes reverted, and it was already failing before this change |
+| `php -l` on every changed PHP file | 0 syntax errors |
+| `./scripts/lint.sh` | **could not run** — it requires `composer install` (`vendor/bin/phpcs`, `vendor/bin/phpstan`), which this sandbox has no Composer for; CI's `static quality` job is authoritative for PHPCS/PHPStan (§11) |
+
+### 5.4 Baseline comparison
+
+See §7. No failure is newly introduced; the only difference between the two runs
+is that **two suites fail when the fixes are absent** and pass with them — exactly
+the coverage added for the two confirmed causes (§6).
+
+
+## 6. Failure proofs / negative tests
+
+Each fix was reverted **on its own** (nothing else changed) and the corresponding
+suite re-run, to prove the new assertions actually depend on the behaviour.
+
+| Proof | What was broken | Result |
+|---|---|---|
+| Fix A — importer schedule refresh | the two end-field comparisons removed from `upsert_event()` | `test-event-schedule-refresh.php`: **16 passed, 5 failed** — `an end-date-only change is detected as an update` (got `unchanged`), `the stored end date is refreshed…` (got `today+3`, expected `today+1`), `the record is NO LONGER an upcoming event the day after its refreshed end date`, `…on the stale end date`, `the unchanged fast path leaves the end date untouched`. Evidence: `vacuity-fix1-importer.txt` |
+| Fix B — weekly candidate window | the binding returned to `window_end` | `test-event-query.php`: **44 passed, 4 failed** — all four `R:` window assertions; `event-date-harness.php`: **36 passed, 2 failed** — both weekly boundary assertions. Evidence: `vacuity-fix2-runtime.txt` |
+| Environment claim — `test-ics-occurrence-dates.php` | nothing; fix B reverted | **171 passed, 1 failed, identical to the run with the fix in place** → the failure is not caused by this change |
+
+## 7. Regression comparison
+
+Same environment, same command (`./scripts/run-tests.sh`), fixes in place vs both
+fixes reverted:
+
+| | Pristine (both fixes reverted) | Final |
+|---|---|---|
+| In-process PHP suites | 83 total, **32 passed, 51 failed** | 83 total, **34 passed, 49 failed** |
+| In-process assertions | **2815 passed, 81 failed** | **2824 passed, 72 failed** |
+| Script-contract suites | 17 passed, 1 failed | 17 passed, 1 failed |
+| HTTP acceptance | BLOCKED (0 suites run) | BLOCKED (0 suites run) |
+
+Diffing the two failing-suite lists (`fails-pristine.txt` vs the final run's list):
+
+| Direction | Suites |
+|---|---|
+| failing **only** with the fixes reverted (i.e. fixed by this change) | `plugin/conexao-event-runtime/test-event-query.php`, `plugin/conexao-event-importer/test-event-schedule-refresh.php` |
+| failing **only** with the fixes in place (i.e. newly introduced) | **none** |
+
+49 of the 51 pristine failures are unchanged, environment-dependent conditions
+(§8). The two that move are exactly the suites written for the two confirmed
+causes, and 9 failing assertions became passing (81 → 72) with none added. The
+new `test-event-date-transitions.php` suite passes in **both** runs by design: it
+locks in the date-layer contract (T1–T8) rather than the two defects.
+
+## 8. Known pre-existing failures (environment, not this change)
+
+Classified from the aggregate log; each is caused by a capability the CI stack has
+and this sandbox does not (proved by the pristine run producing the same list):
+
+| Class | Suites | Cause |
+|---|---|---|
+| Polylang absent | 25 (theme EN/nav/translation suites, `test-event-language-gate.php`, importer language suites, leisure language suites) | Polylang is a pinned third-party plugin CI installs; it is not in this repository and cannot be installed here |
+| Missing committed CI fixtures | `test-ics-occurrence-dates.php` (1 assertion), `test-town-sanitization.php` (5), `test-en-course-provider-category-filter.php`, `test-guide-breadcrumb-filter.php`, `test-i18n-foundation.php`, `test-filter-link-aria-semantics.php`, `test-leisure-multiselect-filters.php`, `test-nav-menu-regression.php`, several `conexao-translation-automation` suites | they assert over the synthetic site built by `scripts/bootstrap-ci-fixtures.php` (pages, guides, pt_BR formats, town terms), which was never run here |
+| `dom` extension missing in the ad-hoc PHP | `test-mondello-park-importer.php`, `test-motorsport-ireland-importer.php` | `DOMDocument` is unavailable in the locally provisioned PHP CLI |
+| Other declared prerequisites | `test-automation-translation-plan.php`, `test-en-jobs-shared-slug.php`, admin-ux/translation suites | require plugin activation states or fixtures this sandbox cannot provide |
+| `verify-stage14-secret-scan.py` | script layer | requires a local WordPress over HTTP |
+
 can be verified against production from here (§11).
+
+
+## 9. Content, Polylang, route and production impact
+
+| Question | Answer |
+|---|---|
+| Records created / updated / deleted by this change | **0** — code, tests, docs and catalogues only (`git diff --stat` touches no content) |
+| Portable identifier strategy | unchanged — `_event_source` + `_event_source_id` (+ URL, content) remain the identity; nothing about matching changed |
+| PT content changed | **no** |
+| Translated types / taxonomies affected | none; PT remains immutable |
+| Language-scoped cache keys | unchanged (`flush_cache()` still clears every language) |
+| Routes, redirects, canonical, hreflang, sitemap | **unchanged** — no route or redirect file was touched |
+| REST contract | unchanged |
+| Capabilities, nonces, sanitisation, escaping | unchanged; the only SQL edit is a **parameter binding** in an existing `$wpdb->prepare()` query |
+| Secrets | none |
+| Queries added / removed | none (the comparison adds meta reads on a path that already reads meta) |
+| Production write / deploy / upload / activation / DB mutation | **no / no / no / no / no** |
+
+## 10. Operational follow-up (production verification still required)
+
+**Outstanding question.** Does the production symptom come from stale
+`_event_end_date` values on live records (the mechanism proven in §2.1)?
+Production cannot be inspected from here and nothing in this change was applied
+there.
+
+**Evidence an authorised operator can collect in wp-admin only** (no SSH, no
+WP-CLI, no database access — WordPress.com):
+
+1. **Confirm the site configuration** — Settings → General: the timezone is
+   `Dublin` / Europe/Dublin. (If it is UTC, that is a separate defect: the runtime
+   evaluates dates in the site timezone.)
+2. **Find a reported case** — Events list, look for events whose end date (the
+   "Data final" field in the event editor) is **in the past** while the record is
+   still `Published`. A record whose stored end date is in the future but whose
+   real event has finished is the symptom; note its source id and end date.
+3. **Confirm the value against the source** — open the event's source URL and read
+   the real end date. If the source says the event ended earlier than the stored
+   end date, the record carries a stale end date, and the importer fix is what
+   refreshes it on the next import.
+4. **Do not purge caches for this** — the repository's cache layer was proven sound
+   (§2.3), and a purge would not change a stored end date. The WordPress.com edge
+   cache is `max-age=300, must-revalidate` and cannot explain a day-scale symptom.
+5. **After a future deploy of this change**, re-check step 2 for the same record
+   after one local import + transfer, and confirm the stored end date now equals
+   the source's and that the event leaves `/eventos/` on the day after it.
+
+**Cache settings or scheduled processes requiring attention: none.** No cron,
+scheduler or cache configuration is part of this change, and none was found to be
+responsible for the symptom.
+
+
+
+## 11. Limitations
+
+- **No Docker, MySQL or WordPress-as-CI in this sandbox.** A PHP CLI, WordPress
+  7.1.3 (SQLite) and GNU gettext were provisioned locally instead (see
+  `environment.md` in the evidence directory). The in-process suites therefore ran
+  against a real WordPress, but without Polylang, the `pt_BR` core language pack,
+  the committed CI fixtures or the `dom` extension.
+- **The HTTP acceptance layer did not run**: the runner reported
+  `BLOCKED: HTTP acceptance environment unavailable` (no reachable WordPress at
+  `http://localhost:8080`; the sandbox occupies that port). No acceptance row was
+  executed, so no request-visible claim is made here.
+- **`./scripts/lint.sh` (PHPCS + PHPStan) did not run**: it requires
+  `composer install`, and Composer is unavailable in this sandbox. CI's
+  `static quality` job remains authoritative for those gates. PHP syntax
+  (`php -l`) was checked on every changed file.
+- **Production was not inspected or modified**, so the *exact* production cause of
+  the reported incident remains unproven (§2.4). What is proven: the code-level
+  mechanism, that the cache and query layers cannot produce it, and that the fix
+  prevents it.
+- **`test-ics-occurrence-dates.php`** keeps one failing assertion here because the
+  ICS fixture records are only created by `bootstrap-ci-fixtures.php` step 4c in
+  CI; it was proven identical with the change reverted.
+## 12. Files added / modified
+
+**3 added, 10 modified, 0 deleted** (`git diff --stat fee68bf..HEAD` plus the
+evidence/plan/report files; every path is one the plan named).
+
+| Path | Change | Note |
+|---|---|---|
+| `wp-content/plugins/conexao-event-runtime/includes/class-event-query.php` | modified | the fix (weekly end bound) + docblock paragraph |
+| `wp-content/plugins/conexao-event-importer/includes/class-event-importer.php` | modified | the fix (end-field change detection) + comment |
+| `wp-content/plugins/conexao-event-runtime/tests/test-event-date-transitions.php` | **added** | T1–T8 |
+| `wp-content/plugins/conexao-event-importer/tests/test-event-schedule-refresh.php` | **added** | schedule refresh + idempotence |
+| `wp-content/plugins/conexao-event-runtime/tests/test-event-query.php` | modified | new section `R` |
+| `wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php` | modified | version 1.2.3 |
+| `wp-content/plugins/conexao-event-importer/conexao-event-importer.php` | modified | version 1.7.2 |
+| `…/conexao-event-runtime/languages/conexao-event-runtime.pot`, `…/conexao-event-importer/languages/conexao-event-importer.pot` | modified | regenerated with the documented script (no string changes) |
+| `docs/plugins/conexao-event-runtime.md`, `docs/plugins/conexao-event-importer.md` | modified | the two contracts, each keeping its generated region current |
+| `docs/architecture.md`, `docs/plugins/README.md`, `docs/project-inventory.md` | modified | **generated** regions regenerated for the version bumps |
+| `docs/reports/2026-10-12-stage-23-event-freshness.md`, `…-plan.md` | **added** | this report + the plan |
+| `docs/evidence/2026-10-12-stage-23/**` | **added** | harness, probes, vacuity proofs, run logs, environment notes |
+
+`plugins.json` was **not** modified (it is the authoritative registry; the version
+lives in the component headers), and no generated region was hand-edited.
+
+## 13. Documentation updated
+
+| Document | Change |
+|---|---|
+| `docs/plugins/conexao-event-importer.md` | new "Schedule fields and change detection (v1.7.2)" section: the start **and end** fields participate, and why an end-date-only change must reach the record |
+| `docs/plugins/conexao-event-runtime.md` | the weekly candidate end bound is `_event_recurrence_end >= today` (with the superset argument) |
+| `docs/architecture.md`, `docs/plugins/README.md`, `docs/project-inventory.md`, both plugin docs | generated registry regions regenerated for the version bumps |
+| `docs/reports/README.md` | this report registered |
+
+No procedure was moved out of a document, so no skill gained or lost a workflow.
+
+## 13a. Evidence paths
+
+`docs/evidence/2026-10-12-stage-23/`:
+
+| File | Proves |
+|---|---|
+| `event-date-harness.php`, `harness-wp-stubs.php` | the investigation instrument: the real runtime classes against real SQL (SQLite) with a controlled clock — runnable without WordPress |
+| `event-date-harness-prefix.txt` | the pre-fix scan: 36 passed, **2 failed** (the weekly window), and the day-by-day matrix showing every expired event excluded |
+| `event-date-harness-postfix.txt` | the post-fix scan: **38 passed, 0 failed**, plus the corrected day-by-day matrix |
+| `focused-suites.txt` | the three focused suites on the final tree: **54 / 48 / 21 assertions, 0 failed** |
+| `component-runs.txt` | `./scripts/run-tests.sh --php --only conexao-event-runtime` (192 assertions, 0 failed; 1 Polylang prerequisite) and `--only conexao-event-importer` (1141 assertions, 6 failed — all environmental) |
+| `vacuity-fix1-importer.txt` | reverting the importer fix alone fails `test-event-schedule-refresh.php` 16/5, including the reproduced stale-end-date symptom |
+| `vacuity-fix2-runtime.txt` | reverting the runtime fix alone fails `test-event-query.php` 44/4 and the harness 36/2 |
+| `aggregate-run.txt` | the canonical runner on the fixed tree (all three layers, with the acceptance layer BLOCKED) |
+| `aggregate-pristine-baseline.txt` | the same runner with both fixes reverted — the baseline for §7 |
+| `fails-final.txt`, `fails-pristine.txt` | the two failing-suite lists that §7 diffs |
+| `script-contract-final.txt` | the script-contract layer on the final tree: **17 passed, 1 failed** (the local-WordPress-dependent Stage 14 scan) |
+| `environment.md` | exactly how the verification environment was provisioned, and what it lacks |
+
+## 14. Rollback / recovery
+
+1. `git revert` the code commit (`fe43ac5`) — two single-site edits, no migration,
+   no data change.
+2. The version bumps, the regenerated catalogues and the registry regions are
+   cosmetic/derived and revert with their own commits; reverting the code alone
+   leaves the new suites red, which is the intended signal.
+3. **No content rollback is required**: this change writes no content and no meta.
+4. Rollback does **not** cover: a record whose end date was already refreshed by an
+   import run performed with the fix in place. That value is source-derived and is
+   reversed only by re-importing older source data.
+
+## 15. Final status
+
+**Final status: PASS WITH LIMITATION**
+
+Both confirmed causes are fixed, the new and extended regression suites pass
+(54 + 48 + 21 assertions, 0 failed), each fix is proven to fail its suite when
+reverted, every permanent gate that can run here is green (registry drift, i18n
+freshness, cache scoping, documentation drift, script conventions, release
+integrity, Stage 13), and the aggregate failing-suite set differs from the
+baseline **only** by the two suites that fail without the fixes (49 vs 51) with no
+new failure anywhere. The limitation is that **production could not be inspected or
+modified** and **the CI-only layers (Docker WordPress, HTTP acceptance, PHPCS/
+PHPStan) could not run in this sandbox**, so the exact production cause of the
+reported incident and the request-visible acceptance layer remain unverified;
+§10 lists the wp-admin-only evidence an operator can collect to close that gap.
+
+_Last verified: 2026-10-12 by Stage 23 — event freshness on `/eventos/`_

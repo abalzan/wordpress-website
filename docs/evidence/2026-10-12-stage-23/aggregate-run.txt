@@ -213,24 +213,56 @@ Script-contract suites (static, no WordPress, no network)
 [PASS] tests/scripts/verify-agent-governance.py
 [PASS] tests/scripts/verify-cache-key-scoping.py
          2 passed, 0 failed
-[PASS] tests/scripts/verify-documentation-drift.py
-         14 passed, 0 failed
+[FAIL] tests/scripts/verify-documentation-drift.py (exit 1)
+         FAIL: Stage G registry drift gate failed (exit 1): php scripts/generate-registry-docs.php --check —   - docs/plugins/conexao-event-importer.md :: plugin lifecycle metadata
 [FAIL] tests/scripts/verify-i18n-freshness.py (exit 1)
-         FAIL: conexao-event-importer: wp-content/plugins/conexao-event-importer/languages/conexao-event-importer.pot is older than wp-content/plugins/conexao-event-importer/includes/class-event-importer.php by 759163s — regenerate the catalogue with `wp i18n make-pot` (never hand-edit)
-[PASS] tests/scripts/verify-release-integrity.py
-         224 passed, 0 failed
+         FAIL: conexao-event-runtime: wp-content/plugins/conexao-event-runtime/languages/conexao-event-runtime.pot is older than wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php by 851915s — regenerate the catalogue with `wp i18n make-pot` (never hand-edit)
+[FAIL] tests/scripts/verify-release-integrity.py (exit 1)
+         FAIL: build-plugins-zip.sh failed: -inventory.md :: docs/project-inventory.md plugins
+         FAIL: conexao-data-model: the manifest does not record a file count
+         FAIL: conexao-data-model: the manifest does not record a byte size
+         FAIL: conexao-data-model: the manifest does not record a SHA-256
+         FAIL: conexao-data-model: the manifest names an artifact that was not built
+         FAIL: conexao-content: the manifest does not record a file count
+         FAIL: conexao-content: the manifest does not record a byte size
+         FAIL: conexao-content: the manifest does not record a SHA-256
+         FAIL: conexao-content: the manifest names an artifact that was not built
+         FAIL: conexao-admin-ux: the manifest does not record a file count
+         FAIL: conexao-admin-ux: the manifest does not record a byte size
+         FAIL: conexao-admin-ux: the manifest does not record a SHA-256
+         FAIL: conexao-admin-ux: the manifest names an artifact that was not built
+         FAIL: conexao-event-runtime: the manifest does not record a file count
+         FAIL: conexao-event-runtime: the manifest does not record a byte size
+         FAIL: conexao-event-runtime: the manifest does not record a SHA-256
+         FAIL: conexao-event-runtime: the manifest names an artifact that was not built
+         FAIL: conexao-event-importer: the manifest does not record a file count
+         FAIL: conexao-event-importer: the manifest does not record a byte size
+         FAIL: conexao-event-importer: the manifest does not record a SHA-256
+         FAIL: conexao-event-importer: the manifest names an artifact that was not built
+         FAIL: conexao-leisure-migration: the manifest does not record a file count
+         FAIL: conexao-leisure-migration: the manifest does not record a byte size
+         FAIL: conexao-leisure-migration: the manifest does not record a SHA-256
+         FAIL: conexao-leisure-migration: the manifest names an artifact that was not built
 [PASS] tests/scripts/verify-script-conventions.py
          727 passed, 0 failed
 [PASS] tests/scripts/verify-stage10-batch-boundary.py
-[PASS] tests/scripts/verify-stage13-commissioning-readiness.py
-         808 passed, 0 failed
+[FAIL] tests/scripts/verify-stage13-commissioning-readiness.py (exit 1)
+         -- 6. injected-negative proofs: the gate must FAIL, shown to fail --
+         FAIL: release_readiness is BLOCKED in a clean tree: no verified release record was supplied
+         FAIL: the release detail does not record the engine digest
+         FAIL: the release detail does not record both plugin versions
 [FAIL] tests/scripts/verify-stage14-secret-scan.py (exit 1)
+         FAIL: build-plugins-zip.sh failed: -inventory.md :: docs/project-inventory.md plugins
            FAIL: the PHP runtime scanner could not be executed (no local WordPress); conformance is UNPROVEN, not assumed
+           FAIL: the repository's packaging script produced artifacts to scan
+           FAIL: the release record emitted by the build exists to be scanned
 [PASS] tests/scripts/verify-stage17-retirement.py
          110 passed, 0 failed
 [PASS] tests/scripts/verify-stage18-operator-runbook.py
-[PASS] tests/scripts/verify-stage2-promotion.py
-         28 passed, 0 failed
+[FAIL] tests/scripts/verify-stage2-promotion.py (exit 1)
+           FAIL generate-registry-docs.php --check reports no drift (ERROR: generated output is stale. Run:
+           FAIL the plugin build succeeds (lugins/conexao-event-importer.md :: plugin lifecycle metadata
+         STAGE 2 PROMOTION GATE: FAILED
 [PASS] tests/scripts/verify-stage3-automation.py
          172 passed, 0 failed
 [PASS] tests/scripts/verify-stage4-provider.py
@@ -252,7 +284,7 @@ BLOCKED: HTTP acceptance environment unavailable
 In-process PHP suites: 83 total, 34 passed, 49 failed
   prerequisite failures:         18
 Assertions: 2824 passed, 72 failed
-Script-contract suites: 18 total, 16 passed, 2 failed
+Script-contract suites: 18 total, 12 passed, 6 failed
 HTTP acceptance suites: 0 total, 0 passed, 0 failed
   acceptance environment: BLOCKED
 ----------------------------------------
@@ -307,4 +339,4 @@ failing suites:
   - theme/conexao-br-irlanda/test-stage7-hero-sponsors.php
   - theme/conexao-br-irlanda/test-taxonomy-policy.php
   - theme/conexao-br-irlanda/test-translation-completeness.php
-full suite output kept in /tmp/tmp.qoaGwtsuHc
+full suite output kept in /tmp/tmp.WVOYNYlYJr
