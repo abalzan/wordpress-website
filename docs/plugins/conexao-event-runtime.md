@@ -9,7 +9,7 @@
 | **Build** | yes |
 | **Compose mount** | yes |
 | **Dependencies** | `conexao-data-model` |
-| **Version** | 1.2.2 (authoritative source: `wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php` header) |
+| **Version** | 1.2.3 (authoritative source: `wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php` header) |
 | **Registry** | [`plugins.json`](../../plugins.json) |
 
 > **Production platform plugin.** Part of the production steady state.
