@@ -1,0 +1,60 @@
+Site: http://localhost:8080 — timezone: Europe/Dublin — today: 2026-10-15
+
+=== One-Time Events ===
+  PASS: one-time today is in the list
+  PASS: one-time future is in the list
+  PASS: event with no recurrence metadata is in the list
+  PASS: one-time beyond the 7-day window is still in the list (archive semantics)
+  PASS: one-time past is NOT in the list
+  PASS: one-time today: next occurrence = stored date
+  PASS: one-time future: next occurrence = stored date
+  PASS: one-time past: no next occurrence
+
+=== Weekly Recurrence ===
+  PASS: weekly active today is in the list
+  PASS: weekly not started (beyond window) is NOT in the list
+  PASS: weekly ended is NOT in the list
+  PASS: twice-weekly active series is in the list
+  PASS: open-ended weekly series is in the list
+  PASS: weekly series with start/weekday mismatch is in the list
+  PASS: weekly event appears exactly once (no per-occurrence results)
+  PASS: weekly active today: next occurrence is today
+  PASS: twice-weekly: next occurrence is today
+  PASS: weekday mismatch: weekday drives the schedule, not the start date
+  PASS: weekly ended: no next occurrence
+
+=== Status Gate ===
+  PASS: expired recurring event is NOT in the list
+  PASS: draft recurring event is NOT in the list
+
+=== Sorting ===
+  PASS: list is sorted by next occurrence ascending
+  PASS: list keys are unique event IDs
+  PASS: today occurrences sort first
+  PASS: first entry is today
+
+=== WP_Query Integration ===
+  PASS: WP_Query with post__in + orderby post__in preserves the ordered list
+  PASS: tax_query narrows the post__in list (filters keep working)
+  PASS: empty ID list yields zero results (no filter leak)
+
+=== Cache ===
+  PASS: date-keyed transient stores the ordered ID map
+
+=== Language-scoped cache ===
+  PASS: PT and EN event transients use different keys (no cross-language hits)
+  PASS: cached read matches fresh evaluation
+  PASS: flush_cache() deletes the date-keyed transient
+  PASS: explicit $from evaluation matches the cached list
+
+=== Multi-Day Events ===
+  PASS: O: in-progress multi-day event is in the list
+  PASS: O: multi-day event starting today is in the list
+  PASS: O: multi-day event ended yesterday is NOT in the list
+  PASS: O: future multi-day event is in the list
+  PASS: P: multi-day event appears exactly once
+  PASS: in-progress multi-day: next occurrence is today
+  PASS: O: taxonomy filter works for multi-day events
+  PASS: Q: expired weekly event still excluded after multi-day changes
+
+41 passed, 0 failed

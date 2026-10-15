@@ -1,0 +1,117 @@
+diff --git a/wp-content/plugins/conexao-event-importer/includes/class-event-cleanup.php b/wp-content/plugins/conexao-event-importer/includes/class-event-cleanup.php
+index c27e663..b611206 100644
+--- a/wp-content/plugins/conexao-event-importer/includes/class-event-cleanup.php
++++ b/wp-content/plugins/conexao-event-importer/includes/class-event-cleanup.php
+@@ -128,6 +128,7 @@ class Conexao_Event_Cleanup {
+ 	 */
+ 	protected function find_past_events() {
+ 		$now = current_datetime();
++		$today_str = $now->format( 'Y-m-d' );
+ 
+ 		$meta_query = array(
+ 			'relation' => 'AND',
+@@ -159,6 +160,29 @@ class Conexao_Event_Cleanup {
+ 				'no_found_rows'          => true,
+ 				'update_post_meta_cache' => false,
+ 				'update_post_term_cache' => false,
++				// Polylang narrows EVERY frontend (non-admin, non-CLI) WP_Query
++				// to the current request locale by default. Cleanup must purge
++				// eligible events in BOTH languages (pt + en), so explicitly
++				// disable Polylang's language filter for this maintenance query
++				// via `lang => ''`. Without this the EN translation of an
++				// expired event is never even SELECTED, so it survives every
++				// cleanup run (and leaves a broken, PT-less EN record behind
++				// on the frontend).
++				'lang'                   => '',
++				// The event runtime's public `_event_status` gate (pre_get_posts)
++				// NARROWS every non-admin, non-CLI event query to
++				// `_event_status = published` OR no status. Cleanup must operate
++				// on the TRUE set of eligible events regardless of editorial
++				// status (expired, draft, source_not_found… are all legitimately
++				// eligible for past-event purge), so this maintenance query opts
++				// out of the frontend visibility gate explicitly — the same
++				// documented idiom repair-event-county-terms.php uses (there via
++				// direct SQL; here via `suppress_filters`, which skips
++				// `pre_get_posts` for this query only). Without this, an event
++				// already flipped to `expired` by a prior run of
++				// Conexao_Event_Status::mark_expired_events() would never be
++				// selected again, and would survive cleanup forever.
++				'suppress_filters'       => true,
+ 				'meta_query'             => $meta_query,
+ 			)
+ 		);
+@@ -175,6 +199,23 @@ class Conexao_Event_Cleanup {
+ 				continue;
+ 			}
+ 
++			// Weekly recurrence: an open-ended series, or one whose
++			// _event_recurrence_end is still in the future, keeps occurring and
++			// is therefore not "past" even when its first occurrence
++			// (_event_date) is long behind us. Only a series whose recurrence
++			// window has closed is eligible for cleanup.
++			if ( 'weekly' === get_post_meta( $post_id, '_event_recurrence', true ) ) {
++				$recurrence_end = get_post_meta( $post_id, '_event_recurrence_end', true );
++				if ( ! is_string( $recurrence_end ) || '' === $recurrence_end ) {
++					continue; // open-ended weekly series: never ends
++				}
++				if ( preg_match( '/^\\d{4}-\\d{2}-\\d{2}$/', $recurrence_end )
++					&& checkdate( (int) substr( $recurrence_end, 5, 2 ), (int) substr( $recurrence_end, 8, 2 ), (int) substr( $recurrence_end, 0, 4 ) )
++					&& $recurrence_end >= $today_str ) {
++					continue; // series still has future occurrences
++				}
++			}
++
+ 			if ( $end_timestamp < $now->getTimestamp() ) {
+ 				$past_ids[] = (int) $post_id;
+ 			}
+@@ -190,6 +231,13 @@ class Conexao_Event_Cleanup {
+ 	 * @param array $result   Result array (passed by reference for counters).
+ 	 */
+ 	protected function delete_event_with_media( $event_id, &$result ) {
++		// Idempotency: if the post is already gone (purged by an earlier run or
++		// manually deleted), there is nothing to do. Returning early here keeps
++		// a repeated cleanup a clean no-op instead of throwing.
++		if ( null === get_post( $event_id ) ) {
++			return;
++		}
++
+ 		// Collect the attachment IDs referenced by this event before deletion.
+ 		$attachment_ids = array();
+ 
+@@ -203,11 +251,31 @@ class Conexao_Event_Cleanup {
+ 			$attachment_ids[] = (int) $thumb_id;
+ 		}
+ 
+-		// Delete the event post.
+-		$deleted = wp_delete_post( $event_id, false );
+-
+-		if ( ! $deleted ) {
+-			throw new Exception( __( 'Could not delete the event post.', 'conexao-event-importer' ) );
++		/*
++		 * Hard-delete the event post. `wp_delete_post( $id, false )` only
++		 * routes to the Trash for `post`/`page` (core post.php); every other
++		 * post type — including `event` — is deleted IMMEDIATELY regardless
++		 * of the `$force_delete` flag. Passing `true` explicitly makes this
++		 * intent unambiguous, and does not change the actual behaviour on any
++		 * WordPress version: events are purged, not trashed, exactly as the
++		 * admin screen's copy ("Events … are deleted") and the CLI
++		 * documentation already promise.
++		 */
++		$deleted = wp_delete_post( $event_id, true );
++
++		/*
++		 * A truthy return from wp_delete_post() is NOT sufficient proof the
++		 * row is gone: it returns the post object (carrying the PRE-deletion
++		 * post_status) even when a filter short-circuits the actual row
++		 * deletion. Re-read the row from the database to verify the delete
++		 * actually landed — a silently-failed delete would otherwise be
++		 * counted as a success and the event would survive every future run.
++		 */
++		$row_status = get_post_status( $event_id );
++		if ( ! $deleted || false !== $row_status ) {
++			throw new Exception(
++				__( 'Could not delete the event post (the database row is still present after the delete attempt).', 'conexao-event-importer' )
++			);
+ 		}
+ 
+ 		$result['events_deleted']++;

@@ -1,0 +1,49 @@
+Site timezone: Europe/Dublin
+Now: 2026-10-15 21:08:54
+
+=== Future Events ===
+  PASS: Event starting in 10 days imports
+  PASS: Tomorrow date-only event imports
+
+=== Events Happening Today ===
+  PASS: Today date-only event imports (runs until end of day)
+  PASS: Today event starting in 2 hours imports
+  PASS: Today event whose only start time already passed is skipped
+
+=== Multi-Day Events ===
+  PASS: Multi-day event in progress (ends in 2 days) imports
+  PASS: Multi-day event that ended yesterday is skipped
+  PASS: Multi-day event that ended an hour ago today is skipped
+
+=== Past Events ===
+  PASS: Event from last week is skipped
+  PASS: Date-only event from last week is skipped
+
+=== Invalid Dates ===
+  PASS: Missing start date is invalid
+  PASS: Unparseable start date is invalid
+  PASS: Impossible calendar date (Feb 30) is invalid
+  PASS: Empty event data is invalid (never treated as future)
+  PASS: Garbage end date falls back to valid start date
+
+=== Timezone Handling ===
+  PASS: Site timezone is configured (Europe/Dublin)
+  PASS: Cutoff evaluated against site-timezone now
+  PASS: Cutoff label reflects the event date/time
+
+=== Normalizer Integration ===
+  PASS: Normalized past event evaluates as past
+  PASS: Normalized future event evaluates as importable
+
+=== Import Result Skip Counters ===
+  PASS: Created count unaffected by skips
+  PASS: skipped_past counter increments
+  PASS: skipped_invalid_date counter increments
+  PASS: Generic skipped counter includes past + invalid-date skips
+  PASS: get_stats exposes skipped_past
+  PASS: get_stats exposes skipped_invalid_date
+  PASS: Both date-skips appear in get_skipped_events()
+  PASS: Past-skip reason recorded verbatim
+  PASS: Skips upgrade status to warning
+
+29 passed, 0 failed

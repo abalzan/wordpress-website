@@ -1,0 +1,97 @@
+Site: http://localhost:8080 — timezone: Europe/Dublin — today: 2026-10-15
+Polylang active: yes (pt,en)
+
+=== Eligibility — one-time events ===
+  PASS: past one-time event (ended yesterday) is selected for cleanup
+  PASS: today date-only event is NOT selected (still running until end of day)
+  PASS: future event (tomorrow) is NOT selected
+  PASS: ongoing multi-day event (ends tomorrow) is NOT selected
+  PASS: event with no date is NOT selected (manual review territory, conservatively preserved)
+
+=== Ownership — cleanup_scope ===
+  PASS: manual (non-imported) past event is NOT selected when cleanup_scope=imported_only
+  PASS: imported past event IS selected when cleanup_scope=imported_only
+
+=== Recurrence ===
+  PASS: weekly series whose recurrence window has already ENDED is selected (all occurrences are past)
+  PASS: weekly series with future occurrences remaining is NOT selected (an ended single occurrence must not purge an active series)
+
+=== Hidden-status events are eligible ===
+  PASS: past event hidden from the public frontend by _event_status=expired is STILL selected for cleanup
+  PASS: past event hidden from the public frontend by _event_status=draft is STILL selected for cleanup
+  PASS: past event hidden from the public frontend by _event_status=source_not_found is STILL selected for cleanup
+
+=== Dry-run performs zero writes ===
+  PASS: selection is deterministic: two consecutive selection passes return the identical candidate list
+  PASS: selection does not change the post_status of fixture #107228
+  PASS: selection does not change the title of fixture #107228
+  PASS: selection does not change the post_status of fixture #107229
+  PASS: selection does not change the title of fixture #107229
+  PASS: selection does not change the post_status of fixture #107230
+  PASS: selection does not change the title of fixture #107230
+  PASS: selection does not change the post_status of fixture #107231
+  PASS: selection does not change the title of fixture #107231
+  PASS: selection does not change the post_status of fixture #107232
+  PASS: selection does not change the title of fixture #107232
+  PASS: selection does not change the post_status of fixture #107233
+  PASS: selection does not change the title of fixture #107233
+  PASS: selection does not change the post_status of fixture #107234
+  PASS: selection does not change the title of fixture #107234
+  PASS: selection does not change the post_status of fixture #107235
+  PASS: selection does not change the title of fixture #107235
+  PASS: selection does not change the post_status of fixture #107236
+  PASS: selection does not change the title of fixture #107236
+  PASS: selection does not change the post_status of fixture #107237
+  PASS: selection does not change the title of fixture #107237
+  PASS: selection does not change the post_status of fixture #107238
+  PASS: selection does not change the title of fixture #107238
+  PASS: selection does not change the post_status of fixture #107239
+  PASS: selection does not change the title of fixture #107239
+
+=== Apply purges eligible events ===
+  PASS: applying cleanup to past one-time reports exactly one deletion
+  PASS: applying cleanup to past one-time reports no errors
+  PASS: past one-time is PURGED (post row removed from the database, not merely trashed)
+  PASS: applying cleanup to imported past (ownership scope) reports exactly one deletion
+  PASS: applying cleanup to imported past (ownership scope) reports no errors
+  PASS: imported past (ownership scope) is PURGED (post row removed from the database, not merely trashed)
+  PASS: applying cleanup to manual past (ownership scope) reports exactly one deletion
+  PASS: applying cleanup to manual past (ownership scope) reports no errors
+  PASS: manual past (ownership scope) is PURGED (post row removed from the database, not merely trashed)
+  PASS: applying cleanup to ended weekly series reports exactly one deletion
+  PASS: applying cleanup to ended weekly series reports no errors
+  PASS: ended weekly series is PURGED (post row removed from the database, not merely trashed)
+  PASS: applying cleanup to hidden-status expired reports exactly one deletion
+  PASS: applying cleanup to hidden-status expired reports no errors
+  PASS: hidden-status expired is PURGED (post row removed from the database, not merely trashed)
+  PASS: applying cleanup to hidden-status draft reports exactly one deletion
+  PASS: applying cleanup to hidden-status draft reports no errors
+  PASS: hidden-status draft is PURGED (post row removed from the database, not merely trashed)
+  PASS: applying cleanup to hidden-status source_not_found reports exactly one deletion
+  PASS: applying cleanup to hidden-status source_not_found reports no errors
+  PASS: hidden-status source_not_found is PURGED (post row removed from the database, not merely trashed)
+  PASS: today date-only SURVIVES (still publish) — never passed through the apply path
+  PASS: today date-only was never a cleanup candidate in the first place
+  PASS: future SURVIVES (still publish) — never passed through the apply path
+  PASS: future was never a cleanup candidate in the first place
+  PASS: ongoing multi-day SURVIVES (still publish) — never passed through the apply path
+  PASS: ongoing multi-day was never a cleanup candidate in the first place
+  PASS: no date SURVIVES (still publish) — never passed through the apply path
+  PASS: no date was never a cleanup candidate in the first place
+  PASS: active weekly series SURVIVES (still publish) — never passed through the apply path
+  PASS: active weekly series was never a cleanup candidate in the first place
+
+=== Failure handling ===
+  PASS: a blocked delete throws instead of silently reporting success
+  PASS: the blocked fixture SURVIVES (the delete genuinely did not happen)
+  PASS: the blocked fixture remains a cleanup candidate for a later, successful run (idempotent retry path)
+  PASS: once the block is removed, the same fixture is PURGED on retry
+
+=== Idempotency ===
+  PASS: re-applying cleanup to an already-purged fixture deletes nothing (events_deleted=0)
+  PASS: re-applying cleanup to an already-purged fixture does not throw a spurious error
+
+=== Cache invalidation ===
+  PASS: Conexao_Event_Query::flush_cache() exists for cache invalidation after deletion
+
+Event Cleanup Purge: 75 passed, 0 failed

@@ -1,0 +1,114 @@
+Site: http://localhost:8080 — timezone: Europe/Dublin
+
+=== Meta Registration ===
+  PASS: Conexao_Event_Recurrence class is loaded
+  PASS: _event_recurrence meta is registered
+  PASS: _event_recurrence_days meta is registered
+  PASS: _event_recurrence_start meta is registered
+  PASS: _event_recurrence_end meta is registered
+  PASS: _event_recurrence type is string
+  PASS: _event_recurrence_days type is string
+  PASS: _event_recurrence_start type is string
+  PASS: _event_recurrence_end type is string
+  PASS: _event_recurrence is REST-visible
+  PASS: _event_recurrence_days is REST-visible
+  PASS: _event_recurrence_start is REST-visible
+  PASS: _event_recurrence_end is REST-visible
+
+=== One-Time Events ===
+  PASS: one-time: occurs on its stored date
+  PASS: one-time: not the day after
+  PASS: one-time: not the day before
+  PASS: unsupported type: behaves as one-time on its date
+  PASS: unsupported type: does not recur weekly
+
+=== Weekly Recurrence: Weekday Selection ===
+  PASS: weekly Wednesday: occurs on 2026-03-04 (start via _event_date)
+  PASS: weekly Wednesday: occurs on 2026-03-11
+  PASS: weekly Wednesday: Tuesday does not occur
+  PASS: weekly Wednesday: Monday does not occur
+  PASS: Mon+Wed: Monday occurs
+  PASS: Mon+Wed: Wednesday occurs
+  PASS: Mon+Wed: next Monday occurs
+  PASS: Mon+Wed: Tuesday does not occur
+  PASS: weekly Sunday: ISO day 7 occurs
+
+=== Weekly Recurrence: Start/End Boundaries ===
+  PASS: start on selected weekday: occurs on start day
+  PASS: start on selected weekday: occurs one week later
+  PASS: start on selected weekday: no occurrence before start
+  PASS: start before selected weekday: first Wednesday occurs
+  PASS: start before selected weekday: Monday (unselected) does not occur
+  PASS: end on selected weekday: last occurrence included
+  PASS: end on selected weekday: no occurrence after end
+  PASS: end before next selected weekday: last Monday still occurs
+  PASS: end before next selected weekday: no occurrence after end
+  PASS: boundaries: start day is inclusive
+  PASS: boundaries: end day is inclusive
+  PASS: boundaries: day before start does not occur
+  PASS: open-ended: still occurs months later
+
+=== Weekly Recurrence: Defensive Data Handling ===
+  PASS: invalid start: occurs_on_date is false
+  PASS: invalid end: treated as open-ended
+  PASS: missing days: falls back to one-time on _event_date
+  PASS: missing days: does not recur weekly
+  PASS: malformed CSV: valid Monday kept
+  PASS: malformed CSV: valid Wednesday kept
+  PASS: malformed CSV: invalid entries discarded
+
+=== Calendar Math: Leap Year, DST, Timezone ===
+  PASS: leap year: 2028-02-29 occurrence
+  PASS: leap year: following Tuesday
+  PASS: leap year: 2028-02-28 (Monday) does not occur
+  PASS: DST spring: before transition occurs
+  PASS: DST spring: first Wednesday after transition occurs
+  PASS: DST spring: Saturday does not occur
+  PASS: DST spring: next occurrence after transition is 2026-04-01
+  PASS: DST fall: next Tuesday after transition is 2026-10-27
+  PASS: timezone: Wednesday in site timezone occurs
+  PASS: timezone: UTC Wed 23:30 maps to Thu in Dublin -> no occurrence
+  PASS: timezone: UTC Tue 23:30 maps to Wed in Dublin -> occurs
+
+=== next_occurrence() ===
+  PASS: one-time: next occurrence after 2026-05-10
+  PASS: one-time: from equals the event date (on/after)
+  PASS: one-time: null after the event date
+  PASS: weekly: from Thursday -> next Monday
+  PASS: weekly: from an occurrence day returns it
+  PASS: weekly: series start within the scan window
+  PASS: ended series: end day itself still returns (inclusive)
+  PASS: ended series: null the day after the end
+  PASS: invalid start: next_occurrence is null
+
+=== current_datetime() Compatibility ===
+  PASS: current_datetime(): one-time occurs on today
+  PASS: current_datetime(): next occurrence is today
+
+=== Multi-Day One-Time Events ===
+  PASS: A: one-day event active on its date
+  PASS: A: one-day event inactive the day before
+  PASS: A: one-day event inactive the day after
+  PASS: B: 2-day event active on day 1
+  PASS: B: 2-day event active on day 2
+  PASS: B: 2-day event inactive before start
+  PASS: B: 2-day event inactive after end
+  PASS: C: festival active on day 1
+  PASS: C: festival active on day 2 (today)
+  PASS: C: festival active on day 3
+  PASS: C: festival inactive before start
+  PASS: C: festival inactive after end
+  PASS: D: in-progress multi-day event active today
+  PASS: E: event ended yesterday is inactive today
+  PASS: F: event ending today is active today
+  PASS: G: event starting tomorrow is inactive today
+  PASS: H: no end date -> active only on start date
+  PASS: H: no end date -> inactive the day after
+  PASS: I: multi-day next occurrence while active returns today
+  PASS: J: multi-day future event returns start date
+  PASS: K: multi-day event already ended returns null
+
+=== Cleanup ===
+Deleted 31 temporary test events.
+
+90 passed, 0 failed
