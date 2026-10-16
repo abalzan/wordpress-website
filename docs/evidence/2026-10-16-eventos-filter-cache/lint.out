@@ -1,0 +1,39 @@
+==> [1/3] PHP syntax check (php -l, 516 files)
+OK: no PHP parse errors.
+==> [2/3] PHPCS (WordPress-Extra + WordPress-Docs + PHPCompatibilityWP) + legacy baseline gate
+PHPCS legacy baseline: 2798 errors / 2160 warnings in 211 files (baseline: 3290 / 2672).
+NEW VIOLATIONS - per-sniff counts grew:
+  + Generic.CodeAnalysis.UnusedFunctionParameter.Found 0/1 -> 0/2 (errors/warnings)
+  + Squiz.Commenting.BlockComment.NoEmptyLineBefore 1/0 -> 2/0 (errors/warnings)
+  + Squiz.Commenting.FunctionComment.SpacingAfterParamType 21/0 -> 22/0 (errors/warnings)
+  + Squiz.PHP.DisallowSizeFunctionsInLoops.Found 3/0 -> 4/0 (errors/warnings)
+FAILED: the PHPCS baseline grew. Fix the new violations, or pay down debt and regenerate the baseline deliberately.
+==> [3/3] PHPStan level 5 via composer analyse (phpstan.neon.dist + baseline)
+Note: Using configuration file /home/andrei/IdeaProjects/wordpress-website/phpstan.neon.dist.
+   0/212 [░░░░░░░░░░░░░░░░░░░░░░░░░░░░]   0%[1G[2K 212/212 [▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓] 100%
+
+ ------ ----------------------------------------------------------------------- 
+  Line   themes/conexao-br-irlanda/inc/cache.php                                
+ ------ ----------------------------------------------------------------------- 
+  81     Call to function is_array() with list<string> will always evaluate to  
+          true.                                                                 
+         🪪  function.alreadyNarrowedType                                       
+         💡  Because the type is coming from a PHPDoc, you can turn off this    
+         check by setting treatPhpDocTypesAsCertain: false in your phpstan.neo  
+         n.dist.                                                                
+ ------ ----------------------------------------------------------------------- 
+
+ ------ ----------------------------------------------------------------------- 
+  Line   themes/conexao-br-irlanda/inc/queries.php                              
+ ------ ----------------------------------------------------------------------- 
+  283    Instanceof between WP_Term and WP_Term will always evaluate to true.   
+         🪪  instanceof.alwaysTrue                                              
+         💡  Because the type is coming from a PHPDoc, you can turn off this    
+         check by setting treatPhpDocTypesAsCertain: false in your phpstan.neo  
+         n.dist.                                                                
+ ------ ----------------------------------------------------------------------- 
+
+ [ERROR] Found 2 errors                                                         
+
+Script phpstan analyse --memory-limit=2G handling the analyse event returned with error code 1
+lint: FAILED (see the check output above)
