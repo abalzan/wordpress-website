@@ -268,6 +268,68 @@ function conexao_guide_category_filter_term_id( $slug ) {
 }
 
 /**
+ * Serialize filter term objects for the persistent cache layer.
+ *
+ * WP_Term instances are kept in the request-level object cache, but the
+ * cross-request transient stores plain slug/name/taxonomy arrays so no
+ * lazy-loaded object graph is ever serialized.
+ *
+ * @param WP_Term[] $terms Term objects.
+ * @return array[] Plain term data (slug, name, taxonomy).
+ */
+function conexao_filter_terms_to_cache( $terms ) {
+	$data = array();
+	foreach ( (array) $terms as $term ) {
+		if ( ! $term instanceof WP_Term ) {
+			continue;
+		}
+		$data[] = array(
+			'slug'     => $term->slug,
+			'name'     => $term->name,
+			'taxonomy' => $term->taxonomy,
+		);
+	}
+	return $data;
+}
+
+/**
+ * Rehydrate cached filter term data into WP_Term objects.
+ *
+ * Terms are re-resolved by slug so the returned objects match what
+ * wp_get_object_terms() would return (term_id, count, description intact).
+ * A term deleted since the cache was written is skipped, never fatal.
+ *
+ * @param mixed  $data     Cached payload (plain arrays).
+ * @param string $taxonomy Expected taxonomy slug.
+ * @return WP_Term[] Term objects, empty when none resolve.
+ */
+function conexao_filter_terms_from_cache( $data, $taxonomy ) {
+	$terms = array();
+	foreach ( (array) $data as $row ) {
+		if ( ! is_array( $row ) || empty( $row['slug'] ) ) {
+			continue;
+		}
+		$term = get_term_by( 'slug', $row['slug'], $taxonomy );
+		if ( $term instanceof WP_Term ) {
+			$terms[] = $term;
+		}
+	}
+	return $terms;
+}
+
+/**
+ * Write a filter term list to both cache layers.
+ *
+ * @param string   $cache_key Language-scoped cache key shared by both layers.
+ * @param WP_Term[] $terms    Term objects to store.
+ * @return void
+ */
+function conexao_filter_terms_store( $cache_key, $terms ) {
+	wp_cache_set( $cache_key, $terms, 'conexao_filters', 300 );
+	set_transient( $cache_key, conexao_filter_terms_to_cache( $terms ), 300 );
+}
+
+/**
  * Get taxonomy terms that are actually used by a specific post type.
  *
  * WordPress' get_terms() counts posts across every post type that shares a
@@ -283,7 +345,9 @@ function conexao_guide_category_filter_term_id( $slug ) {
  * status filters (e.g. the event-importer's _event_status = published filter)
  * are applied automatically — terms only appear when they have visible content.
  *
- * Results are cached in the object cache for 5 minutes.
+ * Results are cached in two layers for 5 minutes: the object cache
+ * (request-level) and a persistent transient (cross-request). Both keys are
+ * language-scoped via conexao_lang_cache_key().
  *
  * @param string $taxonomy  Taxonomy slug (e.g. conexao_category).
  * @param string $post_type Post type slug (e.g. event, guide).
@@ -298,6 +362,13 @@ function conexao_get_terms_for_post_type( $taxonomy, $post_type, $extra_args = a
 		return $cached;
 	}
 
+	$transient = get_transient( $cache_key );
+	if ( false !== $transient ) {
+		$terms = conexao_filter_terms_from_cache( $transient, $taxonomy );
+		wp_cache_set( $cache_key, $terms, 'conexao_filters', 300 );
+		return $terms;
+	}
+
 	$post_ids = get_posts( conexao_b2_widen_query_args( array_merge( array(
 		'post_type'              => $post_type,
 		'post_status'            => 'publish',
@@ -309,7 +380,7 @@ function conexao_get_terms_for_post_type( $taxonomy, $post_type, $extra_args = a
 	), $extra_args ), $post_type ) );
 
 	if ( empty( $post_ids ) ) {
-		wp_cache_set( $cache_key, array(), 'conexao_filters', 300 );
+		conexao_filter_terms_store( $cache_key, array() );
 		return array();
 	}
 
@@ -322,7 +393,7 @@ function conexao_get_terms_for_post_type( $taxonomy, $post_type, $extra_args = a
 		$terms = array();
 	}
 
-	wp_cache_set( $cache_key, $terms, 'conexao_filters', 300 );
+	conexao_filter_terms_store( $cache_key, $terms );
 	return $terms;
 }
 
@@ -335,7 +406,9 @@ function conexao_get_terms_for_post_type( $taxonomy, $post_type, $extra_args = a
  * conexao_get_terms_for_post_type()). Without a county, all towns used by
  * published events are returned. Empty counties/towns never appear.
  *
- * Results are cached in the object cache for 5 minutes.
+ * Results are cached in two layers for 5 minutes: the object cache
+ * (request-level) and a persistent transient (cross-request). Both keys are
+ * language-scoped via conexao_lang_cache_key().
  *
  * @param string $county_slug Optional county slug to scope towns to.
  * @return WP_Term[] Town terms ordered by name ASC.
@@ -347,6 +420,13 @@ function conexao_get_event_towns( $county_slug = '' ) {
 
 	if ( false !== $cached ) {
 		return $cached;
+	}
+
+	$transient = get_transient( $cache_key );
+	if ( false !== $transient ) {
+		$terms = conexao_filter_terms_from_cache( $transient, 'conexao_town' );
+		wp_cache_set( $cache_key, $terms, 'conexao_filters', 300 );
+		return $terms;
 	}
 
 	$args = array(
@@ -362,7 +442,7 @@ function conexao_get_event_towns( $county_slug = '' ) {
 	if ( '' !== $county_slug ) {
 		$county_term = get_term_by( 'slug', $county_slug, 'conexao_county' );
 		if ( ! $county_term || is_wp_error( $county_term ) ) {
-			wp_cache_set( $cache_key, array(), 'conexao_filters', 300 );
+			conexao_filter_terms_store( $cache_key, array() );
 			return array();
 		}
 		$args['tax_query'] = array(
@@ -377,7 +457,7 @@ function conexao_get_event_towns( $county_slug = '' ) {
 	$post_ids = get_posts( conexao_b2_widen_query_args( $args, 'event' ) );
 
 	if ( empty( $post_ids ) ) {
-		wp_cache_set( $cache_key, array(), 'conexao_filters', 300 );
+		conexao_filter_terms_store( $cache_key, array() );
 		return array();
 	}
 
@@ -394,7 +474,7 @@ function conexao_get_event_towns( $county_slug = '' ) {
 		$terms = array();
 	}
 
-	wp_cache_set( $cache_key, $terms, 'conexao_filters', 300 );
+	conexao_filter_terms_store( $cache_key, $terms );
 	return $terms;
 }
 

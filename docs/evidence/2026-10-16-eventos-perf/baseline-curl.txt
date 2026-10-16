@@ -1,0 +1,3 @@
+run1: http=200 ttfb=7.814442s total=7.853316s size=236056
+run2: http=200 ttfb=8.181662s total=8.183875s size=236056
+run3: http=200 ttfb=8.305742s total=8.307439s size=236056

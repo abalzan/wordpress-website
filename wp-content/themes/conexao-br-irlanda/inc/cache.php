@@ -45,6 +45,55 @@ function conexao_homepage_query( $args, $cache_key, $expiration = 300 ) {
 }
 
 /**
+ * Clear every event-filter term cache (both layers, every language).
+ *
+ * Covers the term-list keys (county/town/category for events, category for
+ * guides) plus every per-county town variant. Town variants are enumerated
+ * from the live county taxonomy so no unrelated cache is flushed and no
+ * second lifecycle is introduced: this is the same
+ * conexao_homepage_cache_invalidate() entry point, extended.
+ *
+ * @return void
+ */
+function conexao_clear_event_filter_caches() {
+	$term_keys = array(
+		'conexao_terms_conexao_county_event',
+		'conexao_terms_conexao_town_event',
+		'conexao_terms_conexao_category_event',
+		'conexao_terms_conexao_category_guide',
+	);
+
+	foreach ( $term_keys as $base ) {
+		conexao_flush_language_cache( $base );
+		conexao_flush_language_object_cache( $base, 'conexao_filters' );
+	}
+
+	conexao_flush_language_cache( 'conexao_event_towns' );
+	conexao_flush_language_object_cache( 'conexao_event_towns', 'conexao_filters' );
+
+	$counties = get_terms(
+		array(
+			'taxonomy'   => 'conexao_county',
+			'hide_empty' => false,
+			'fields'     => 'slugs',
+		)
+	);
+	if ( is_wp_error( $counties ) || ! is_array( $counties ) ) {
+		return;
+	}
+
+	foreach ( $counties as $slug ) {
+		$slug = sanitize_title( (string) $slug );
+		if ( '' === $slug ) {
+			continue;
+		}
+		$town_key = 'conexao_event_towns_' . $slug;
+		conexao_flush_language_cache( $town_key );
+		conexao_flush_language_object_cache( $town_key, 'conexao_filters' );
+	}
+}
+
+/**
  * Invalidate all transient caches that depend on portal content.
  *
  * Runs whenever a Guide, Event, Job, Apoiador or standard post is
@@ -95,9 +144,10 @@ function conexao_homepage_cache_invalidate( $post_id ) {
 
 		// Filter bar caches (per-content-type term/category lists) — per
 		// language, because they carry term names and language-scoped posts.
-		conexao_flush_language_object_cache( 'conexao_terms_conexao_category_event', 'conexao_filters' );
-		conexao_flush_language_object_cache( 'conexao_terms_conexao_town_event', 'conexao_filters' );
-		conexao_flush_language_object_cache( 'conexao_terms_conexao_category_guide', 'conexao_filters' );
+		// Both layers (object cache + persistent transient) and every
+		// per-county town variant go through the shared clearer.
+		conexao_clear_event_filter_caches();
+
 		conexao_flush_language_object_cache( 'conexao_provider_categories', 'conexao_filters' );
 
 		// Stage 3.2 — B2 replacement sets (PT masters hidden behind their EN
@@ -115,6 +165,30 @@ function conexao_homepage_cache_invalidate( $post_id ) {
 add_action( 'save_post', 'conexao_homepage_cache_invalidate' );
 add_action( 'delete_post', 'conexao_homepage_cache_invalidate' );
 add_action( 'wp_insert_post', 'conexao_homepage_cache_invalidate' );
+
+/**
+ * Clear filter term caches when a filter taxonomy itself changes.
+ *
+ * Post save/delete hooks above miss taxonomy-only edits (rename a county,
+ * delete a town, add a category): no post is saved, so the term lists would
+ * stay stale until the 5-minute TTL. These hooks close that gap through the
+ * same shared clearer — no second lifecycle.
+ *
+ * @param int $term_id Term ID (unused; the whole list is rebuilt lazily).
+ * @return void
+ */
+function conexao_filter_term_cache_invalidate( $term_id = 0 ) {
+	conexao_clear_event_filter_caches();
+}
+add_action( 'created_conexao_county', 'conexao_filter_term_cache_invalidate' );
+add_action( 'edited_conexao_county', 'conexao_filter_term_cache_invalidate' );
+add_action( 'delete_conexao_county', 'conexao_filter_term_cache_invalidate' );
+add_action( 'created_conexao_town', 'conexao_filter_term_cache_invalidate' );
+add_action( 'edited_conexao_town', 'conexao_filter_term_cache_invalidate' );
+add_action( 'delete_conexao_town', 'conexao_filter_term_cache_invalidate' );
+add_action( 'created_conexao_category', 'conexao_filter_term_cache_invalidate' );
+add_action( 'edited_conexao_category', 'conexao_filter_term_cache_invalidate' );
+add_action( 'delete_conexao_category', 'conexao_filter_term_cache_invalidate' );
 
 /**
  * Limit REST API exposure: only expose the endpoints the theme actually uses.
