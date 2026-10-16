@@ -1,0 +1,279 @@
+conexao test harness
+  repository:    /home/andrei/IdeaProjects/wordpress-website
+  php:           8.5.4
+  environment:   host (docker compose exec)
+  base url:      http://localhost:8080
+
+In-process PHP suites (serial, one process per suite)
+[PASS] plugin/conexao-admin-ux/test-recurrence-admin.php — 60 passed, 0 failed
+[PASS] plugin/conexao-admin-ux/test-translation-state.php — 23 passed, 0 failed
+[PASS] plugin/conexao-en-translation/test-shared-slug-newsletter.php — 39 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-county-registry.php — 482 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-error-handling.php — 55 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-event-address.php — 76 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-event-cleanup-purge.php — 715 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-event-image-sync.php — 30 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-eventbrite-api-contract.php — 110 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-eventbrite-checkpoint.php — 77 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-eventbrite-importer.php — 68 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-eventbrite-rate-limit.php — 73 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-eventbrite-source-expansion.php — 65 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-eventbrite-token-retirement.php — 42 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-eventbrite-volatility.php — 77 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-export-language.php — 58 passed, 0 failed
+[FAIL] plugin/conexao-event-importer/test-ics-occurrence-dates.php — 171 passed, 1 failed (exit 1)
+           FAIL: the runtime reports 2026-10-06 as its next occurrence — '2026-10-06'
+[PASS] plugin/conexao-event-importer/test-import-continuation.php — 272 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-import-log-run-correlation.php — 21 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-import-log.php — 55 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-ivvcc-importer.php — 46 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-language-identity.php — 29 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-mondello-park-importer.php — 142 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-motorsport-ireland-importer.php — 90 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-multi-file-import-ui.php — 41 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-multi-file-import.php — 149 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-past-event-filter.php — 29 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-reappearing-event-lifecycle.php — 5 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-request-budget.php — 33 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-request-retry-policy.php — 59 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-request-reuse.php — 53 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-source-county-hint.php — 18 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-source-fetch-failure.php — 138 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-source-not-found-reconciliation.php — 57 passed, 0 failed
+[PASS] plugin/conexao-event-importer/test-source-pagination-completeness.php — 24 passed, 0 failed
+[FAIL] plugin/conexao-event-importer/test-town-sanitization.php — 82 passed, 1 failed (exit 1)
+           FAIL: no Eircode-contaminated or non-town terms in conexao_town
+[PASS] plugin/conexao-event-runtime/test-event-language-gate.php — 18 passed, 0 failed
+[PASS] plugin/conexao-event-runtime/test-event-query.php — 41 passed, 0 failed
+[PASS] plugin/conexao-event-runtime/test-event-recurrence.php — 90 passed, 0 failed
+[PASS] plugin/conexao-leisure-migration/test-excerpt-en-roundtrip.php — 9 passed, 0 failed
+[PASS] plugin/conexao-leisure-migration/test-language-uuid.php — 16 passed, 0 failed
+[FAIL] plugin/conexao-translation-automation/test-automation-admin-trigger.php (exit 1)
+[FAIL] plugin/conexao-translation-automation/test-automation-apply-safety.php (exit 1)
+[FAIL] plugin/conexao-translation-automation/test-automation-audit.php (exit 1)
+[FAIL] plugin/conexao-translation-automation/test-automation-batch.php (exit 1)
+[FAIL] plugin/conexao-translation-automation/test-automation-boundary.php (exit 1)
+[FAIL] plugin/conexao-translation-automation/test-automation-change-detection.php (exit 1)
+[FAIL] plugin/conexao-translation-automation/test-automation-lock.php (exit 1)
+[FAIL] plugin/conexao-translation-automation/test-automation-model-a.php (exit 1)
+[FAIL] plugin/conexao-translation-automation/test-automation-promotion.php (exit 1)
+[FAIL] plugin/conexao-translation-automation/test-automation-provider-implementation.php (exit 1)
+[FAIL] plugin/conexao-translation-automation/test-automation-provider-secrets.php (exit 1)
+[FAIL] plugin/conexao-translation-automation/test-automation-provider.php (exit 1)
+[FAIL] plugin/conexao-translation-automation/test-automation-secret-scan.php (exit 1)
+[FAIL] plugin/conexao-translation-automation/test-automation-translation-plan.php (exit 1)
+[FAIL] plugin/conexao-translation-automation/test-automation-transport-shape.php (exit 1)
+[FAIL] plugin/conexao-translation-automation/test-automation-trigger.php (exit 1)
+[FAIL] plugin/conexao-translation-automation/test-manual-translation-workflow.php (exit 1)
+[PASS] plugin/conexao-translation-rollout/test-future-stage-smoke.php — 13 passed, 0 failed
+[PASS] plugin/conexao-translation-rollout/test-legacy-apply-endpoint-closure.php — 36 passed, 0 failed
+[PASS] plugin/conexao-translation-rollout/test-rollout-failure-proofs.php — 12 passed, 0 failed
+[PASS] plugin/conexao-translation-rollout/test-translation-rollout-engine.php — 36 passed, 0 failed
+[FAIL] theme/conexao-br-irlanda/test-blog-en-translation.php — 26 passed, 2 failed (exit 1)
+         [16-Oct-2026 08:07:57 UTC] PHP Warning:  preg_match(): Compilation failed: PCRE2 does not support \F, \L, \l, \N{name}, \U, or \u at offset 8 in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-blog-en-translation.php on line 156
+         Warning: preg_match(): Compilation failed: PCRE2 does not support \F, \L, \l, \N{name}, \U, or \u at offset 8 in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-blog-en-translation.php on line 156
+           FAIL: every category used by a blog post has a linked EN term assigned to the EN post — saude-e-bem-estar, saude-e-bem-estar, saude-e-bem-estar, lazer, saude-e-bem-estar
+           FAIL: every category term used by blog posts is linked to an EN term — linked=0 used=5
+[PASS] theme/conexao-br-irlanda/test-cache-language-scoping.php — 9 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-course-provider-card-excerpt-language.php — 45 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-empregos-job-resources.php — 89 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-empregos-landing-cta.php — 11 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-en-archive-rewrite-guard.php — 17 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-en-course-provider-category-filter.php — 60 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-en-jobs-shared-slug.php — 39 passed, 0 failed
+[FAIL] theme/conexao-br-irlanda/test-event-location-filters.php — 62 passed, 1 failed (exit 1)
+           FAIL: unfiltered archive returns all four test events (incl. missing county/town)
+[PASS] theme/conexao-br-irlanda/test-filter-link-aria-semantics.php — 103 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-guide-breadcrumb-filter.php — 36 passed, 0 failed
+[FAIL] theme/conexao-br-irlanda/test-guide-en-translation.php — 659 passed, 3 failed (exit 1)
+           FAIL: stage32-editorial-source: EN keeps the PT publication date
+           FAIL: stage32-editorial-source: EN meta description is set
+           FAIL: stage32-editorial-source: EN guide uses the EN category term(s) — {"expected":[],"actual":[]}
+[PASS] theme/conexao-br-irlanda/test-header-cta-dark-mode.php — 31 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-header-menu-selection.php (pt) — 12 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-header-menu-selection.php (en) — 16 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-hero-preload-fallback.php — 33 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-homepage-content-type-label.php — 29 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-i18n-foundation.php — 29 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-job-en-translation.php — 31 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-jobs-en-language.php — 104 passed, 0 failed
+[FAIL] theme/conexao-br-irlanda/test-language-switcher-flag.php — 43 passed, 17 failed (exit 1)
+           FAIL: L6 the shipped default is DISABLED
+           FAIL: L7 the helper reports the disabled default
+           FAIL: L8 the flag is read from the constant alone, with no request-level override
+           FAIL: L28 language-switcher element count = 0 (both contexts)
+           FAIL: L29 language-switcher--desktop count = 0
+           FAIL: L30 language-switcher--mobile count = 0
+           FAIL: L31 language-switcher-item count = 0
+           FAIL: L32 the renderer emits no markup whatsoever
+           FAIL: L33 no orphaned group role
+           FAIL: L34 no orphaned switcher accessible name
+[PASS] theme/conexao-br-irlanda/test-leisure-attribute-normalization.php — 22 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-leisure-card-excerpt-language.php — 45 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-leisure-card-map-action.php — 47 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-leisure-multiselect-filters.php — 64 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-leisure-related-events.php — 19 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-nav-language-context-logic.php — 49 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-nav-language-context.php — 16 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-nav-menu-regression.php — 41 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-polylang-foundation.php — 62 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-recurrence-i18n.php — 12 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-redirect-precedence.php — 15 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-sponsor-archive-ordering.php — 15 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-sponsor-archive-single-page.php — 28 passed, 0 failed
+[FAIL] theme/conexao-br-irlanda/test-stage32-bilingual.php — 33 passed, 16 failed (exit 1)
+           FAIL: the PT phoenix-park master is in the replacement set (its EN translation exists)
+         [16-Oct-2026 08:10:49 UTC] PHP Warning:  Undefined array key 0 in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-stage32-bilingual.php on line 94
+         Warning: Undefined array key 0 in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-stage32-bilingual.php on line 94
+         [16-Oct-2026 08:10:49 UTC] PHP Warning:  Undefined array key 0 in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-stage32-bilingual.php on line 98
+         Warning: Undefined array key 0 in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-stage32-bilingual.php on line 98
+           FAIL: the PT event master is replaced by its EN translation
+         [16-Oct-2026 08:10:49 UTC] PHP Warning:  Undefined array key 0 in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-stage32-bilingual.php on line 118
+         Warning: Undefined array key 0 in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-stage32-bilingual.php on line 118
+           FAIL: the EN guide carries its linked EN category terms (documents, work)
+         [16-Oct-2026 08:10:49 UTC] PHP Warning:  Undefined array key 0 in /var/www/html/wp-content/themes/conexao-br-irlanda/tests/test-stage32-bilingual.php on line 124
+[FAIL] theme/conexao-br-irlanda/test-stage33-bilingual.php — 178 passed, 8 failed (exit 1)
+           FAIL: term pair conexao_category:trabalho <=> work exists
+           FAIL: term pair conexao_category:festivais <=> festivals exists
+           FAIL: term pair conexao_category:musica <=> music exists
+           FAIL: term pair conexao_category:cultura <=> culture exists
+           FAIL: term pair conexao_category:cidades <=> cities exists
+           FAIL: term pair conexao_category:gastronomia <=> gastronomy exists
+           FAIL: term pair category:comunidade <=> community exists
+           FAIL: all 12 Stage 3.2 EN terms are present and linked (got 5)
+[FAIL] theme/conexao-br-irlanda/test-stage41-rest-language.php (exit 1)
+           FAIL: fixture present: event PT master (#0)
+           FAIL: fixture present: event EN translation (#0)
+           FAIL: fixture present: event EN source (#0)
+           FAIL: fixture present: event PT b2 (#0)
+           FAIL: fixture present: event expired (#0)
+           FAIL: fixture present: event rejected (#0)
+           FAIL: fixture present: event removed (#0)
+           FAIL: fixture present: leisure EN (#0)
+           FAIL: fixture present: guide PT master (#0)
+           FAIL: fixture present: guide EN (#0)
+[FAIL] theme/conexao-br-irlanda/test-stage45-pages.php — 365 passed, 1 failed (exit 1)
+           FAIL: no orphan EN page outside the stage manifests (1 found)
+[PASS] theme/conexao-br-irlanda/test-stage7-hero-sponsors.php — 10 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-taxonomy-policy.php — 18 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-translation-completeness.php — 23 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-ui-convergence-t1.php — 35 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-ui-convergence-t2.php — 63 passed, 0 failed
+[PASS] theme/conexao-br-irlanda/test-ui-polish-p3.php — 13 passed, 0 failed
+
+Script-contract suites (static, no WordPress, no network)
+[PASS] tests/scripts/verify-agent-governance.py
+[PASS] tests/scripts/verify-cache-key-scoping.py
+         2 passed, 0 failed
+[FAIL] tests/scripts/verify-documentation-drift.py (exit 1)
+         FAIL: Stage G registry drift gate failed (exit 1): php scripts/generate-registry-docs.php --check —   - orphaned plugin directory not represented in the registry: wp-content/plugins/conexao-page-translation
+[FAIL] tests/scripts/verify-eventbrite-token-retirement.py (exit 1)
+           FAIL: no live (non-historical) file references the retired token key: tests/experiments/g16-source-eligibility.php
+[FAIL] tests/scripts/verify-i18n-freshness.py (exit 1)
+         FAIL: conexao-br-irlanda: wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot is older than wp-content/themes/conexao-br-irlanda/page-empregos.php by 5804s — regenerate the catalogue with `wp i18n make-pot` (never hand-edit)
+         FAIL: conexao-event-importer: wp-content/plugins/conexao-event-importer/languages/conexao-event-importer.pot is older than wp-content/plugins/conexao-event-importer/includes/class-event-cleanup.php by 307580s — regenerate the catalogue with `wp i18n make-pot` (never hand-edit)
+[FAIL] tests/scripts/verify-release-integrity.py (exit 1)
+         FAIL: build-plugins-zip.sh failed:  wp-content/plugins/conexao-job-translation
+         FAIL: conexao-data-model: the manifest does not record a file count
+         FAIL: conexao-data-model: the manifest does not record a byte size
+         FAIL: conexao-data-model: the manifest does not record a SHA-256
+         FAIL: conexao-data-model: the manifest names an artifact that was not built
+         FAIL: conexao-content: the manifest does not record a file count
+         FAIL: conexao-content: the manifest does not record a byte size
+         FAIL: conexao-content: the manifest does not record a SHA-256
+         FAIL: conexao-content: the manifest names an artifact that was not built
+         FAIL: conexao-admin-ux: the manifest does not record a file count
+         FAIL: conexao-admin-ux: the manifest does not record a byte size
+         FAIL: conexao-admin-ux: the manifest does not record a SHA-256
+         FAIL: conexao-admin-ux: the manifest names an artifact that was not built
+         FAIL: conexao-event-runtime: the manifest does not record a file count
+         FAIL: conexao-event-runtime: the manifest does not record a byte size
+         FAIL: conexao-event-runtime: the manifest does not record a SHA-256
+         FAIL: conexao-event-runtime: the manifest names an artifact that was not built
+         FAIL: conexao-event-importer: the manifest does not record a file count
+         FAIL: conexao-event-importer: the manifest does not record a byte size
+         FAIL: conexao-event-importer: the manifest does not record a SHA-256
+         FAIL: conexao-event-importer: the manifest names an artifact that was not built
+         FAIL: conexao-leisure-migration: the manifest does not record a file count
+         FAIL: conexao-leisure-migration: the manifest does not record a byte size
+         FAIL: conexao-leisure-migration: the manifest does not record a SHA-256
+         FAIL: conexao-leisure-migration: the manifest names an artifact that was not built
+[PASS] tests/scripts/verify-script-conventions.py
+         744 passed, 0 failed
+[PASS] tests/scripts/verify-stage10-batch-boundary.py
+[FAIL] tests/scripts/verify-stage13-commissioning-readiness.py (exit 1)
+         -- 6. injected-negative proofs: the gate must FAIL, shown to fail --
+         FAIL: release_readiness is BLOCKED in a clean tree: no verified release record was supplied
+         FAIL: the release detail does not record the engine digest
+         FAIL: the release detail does not record both plugin versions
+[FAIL] tests/scripts/verify-stage14-secret-scan.py (exit 1)
+         FAIL: build-plugins-zip.sh failed:  wp-content/plugins/conexao-job-translation
+           FAIL: the PHP runtime scanner could not be executed (no local WordPress); conformance is UNPROVEN, not assumed
+           FAIL: the repository's packaging script produced artifacts to scan
+           FAIL: the release record emitted by the build exists to be scanned
+[PASS] tests/scripts/verify-stage17-retirement.py
+         110 passed, 0 failed
+[PASS] tests/scripts/verify-stage18-operator-runbook.py
+[FAIL] tests/scripts/verify-stage2-promotion.py (exit 1)
+           FAIL generate-registry-docs.php --check reports no drift (ERROR: registry validation failed:
+           FAIL the plugin build succeeds ( in the registry: wp-content/plugins/conexao-page-translation
+         STAGE 2 PROMOTION GATE: FAILED
+[PASS] tests/scripts/verify-stage3-automation.py
+         172 passed, 0 failed
+[PASS] tests/scripts/verify-stage4-provider.py
+         148 passed, 0 failed
+[PASS] tests/scripts/verify-stage6-transport-trigger.py
+         49 passed, 0 failed
+[PASS] tests/scripts/verify-stage7-commissioning.py
+         71 passed, 0 failed
+[PASS] tests/scripts/verify-stage8-control-plane.py
+         147 passed, 0 failed
+[PASS] tests/scripts/verify-stage8-release-consistency.py
+         47 passed, 0 failed
+
+HTTP acceptance suites (base: http://localhost:8080)
+[FAIL] tests/acceptance/verify-event-occurrence-http.py (exit 1)
+           FAIL  exactly one weekly series is listed in the Laois archive  -- found 2
+           FAIL  exactly one multi-day event is listed in the Laois archive  -- found 2
+           FAIL  exactly one all-day event is listed in the Laois archive  -- found 3
+           FAIL  the series-end chip is the LAST occurrence of the series  -- chip='até 26 OUT' expected=2 NOV
+[PASS] tests/acceptance/verify-guides-en-http.py — 18 passed, 0 failed
+[PASS] tests/acceptance/verify-release-http.py — 44 passed, 0 failed
+[PASS] tests/acceptance/verify-routing-http.py — 120 passed, 0 failed
+
+----------------------------------------
+In-process PHP suites: 106 total, 79 passed, 27 failed
+Assertions: 6492 passed, 50 failed
+Script-contract suites: 19 total, 12 passed, 7 failed
+HTTP acceptance suites: 4 total, 3 passed, 1 failed
+----------------------------------------
+TESTS FAILED
+failing suites:
+  - plugin/conexao-event-importer/test-ics-occurrence-dates.php
+  - plugin/conexao-event-importer/test-town-sanitization.php
+  - plugin/conexao-translation-automation/test-automation-admin-trigger.php
+  - plugin/conexao-translation-automation/test-automation-apply-safety.php
+  - plugin/conexao-translation-automation/test-automation-audit.php
+  - plugin/conexao-translation-automation/test-automation-batch.php
+  - plugin/conexao-translation-automation/test-automation-boundary.php
+  - plugin/conexao-translation-automation/test-automation-change-detection.php
+  - plugin/conexao-translation-automation/test-automation-lock.php
+  - plugin/conexao-translation-automation/test-automation-model-a.php
+  - plugin/conexao-translation-automation/test-automation-promotion.php
+  - plugin/conexao-translation-automation/test-automation-provider-implementation.php
+  - plugin/conexao-translation-automation/test-automation-provider-secrets.php
+  - plugin/conexao-translation-automation/test-automation-provider.php
+  - plugin/conexao-translation-automation/test-automation-secret-scan.php
+  - plugin/conexao-translation-automation/test-automation-translation-plan.php
+  - plugin/conexao-translation-automation/test-automation-transport-shape.php
+  - plugin/conexao-translation-automation/test-automation-trigger.php
+  - plugin/conexao-translation-automation/test-manual-translation-workflow.php
+  - theme/conexao-br-irlanda/test-blog-en-translation.php
+  - theme/conexao-br-irlanda/test-event-location-filters.php
+  - theme/conexao-br-irlanda/test-guide-en-translation.php
+  - theme/conexao-br-irlanda/test-language-switcher-flag.php
+  - theme/conexao-br-irlanda/test-stage32-bilingual.php
+  - theme/conexao-br-irlanda/test-stage33-bilingual.php
+  - theme/conexao-br-irlanda/test-stage41-rest-language.php
+  - theme/conexao-br-irlanda/test-stage45-pages.php
+full suite output kept in /tmp/tmp.Ap7I4EVFUe

@@ -418,6 +418,116 @@ assert_true(
  );
 
 // ---------------------------------------------------------------------------
+// 11. Eligibility: more than one cleanup batch of expired events.
+// ---------------------------------------------------------------------------
+test_section( 'Eligibility — multi-batch (beyond a single SQL batch)' );
+
+$multi_batch_fixtures = array();
+for ( $i = 0; $i < 210; $i++ ) {
+    $multi_batch_fixtures[] = cleanup_test_event(
+        'multi-batch expired ' . $i,
+        array(
+            '_event_date'     => cleanup_test_day_offset( -1 ),
+            '_event_status'   => 'published',
+            '_event_imported' => '1',
+        )
+    );
+}
+
+// With the fix, find_past_events() paginates through every batch, so events
+// beyond the first MAX_EVENTS_PER_RUN SQL rows are still selected.
+$selected = cleanup_test_selected_ids( $cleanup );
+foreach ( $multi_batch_fixtures as $fixture_id ) {
+    assert_true(
+        in_array( (int) $fixture_id, $selected, true ),
+        'multi-batch expired fixture #' . $fixture_id . ' is selected even though it falls beyond the first SQL batch'
+    );
+}
+
+// ---------------------------------------------------------------------------
+// 12. Re-query after cleanup: deleted expired events are no longer selected.
+// ---------------------------------------------------------------------------
+test_section( 'Re-query after cleanup' );
+
+foreach ( $multi_batch_fixtures as $fixture_id ) {
+    $r = array(
+        'events_found'     => 1,
+        'events_deleted'   => 0,
+        'images_evaluated' => 0,
+        'images_deleted'   => 0,
+        'images_preserved' => 0,
+        'errors'           => array(),
+    );
+    $method = new ReflectionMethod( $cleanup, 'delete_event_with_media' );
+    $method->setAccessible( true );
+    $method->invokeArgs( $cleanup, array( (int) $fixture_id, &$r ) );
+    assert_equals( 1, (int) $r['events_deleted'], 'fixture #' . $fixture_id . ' deleted by apply path' );
+}
+
+$selected_again = cleanup_test_selected_ids( $cleanup );
+foreach ( $multi_batch_fixtures as $fixture_id ) {
+    assert_true(
+        ! in_array( (int) $fixture_id, $selected_again, true ),
+        'expired fixture #' . $fixture_id . ' is no longer selected after deletion (second query confirms purge)'
+    );
+}
+
+// ---------------------------------------------------------------------------
+// 13. Cache invalidation: flush_cache() actually clears event-query transients.
+// ---------------------------------------------------------------------------
+test_section( 'Cache invalidation — flush_cache() clears transients' );
+
+if ( class_exists( 'Conexao_Event_Query' ) ) {
+    $today = Conexao_Event_Query::today();
+    $cache_key_method = new ReflectionMethod( 'Conexao_Event_Query', 'cache_key' );
+    $cache_key_method->setAccessible( true );
+    $key = $cache_key_method->invoke( null, $today, 'pt' );
+    set_transient( $key, 'stale-event-list', HOUR_IN_SECONDS );
+    assert_true( false !== get_transient( $key ), 'sentinel transient is present before flush' );
+    Conexao_Event_Query::flush_cache();
+    assert_true( false === get_transient( $key ), 'event-query transient is cleared by flush_cache()' );
+}
+
+// ---------------------------------------------------------------------------
+// 14. Full run_cleanup() end-to-end: finds, deletes, reports accurately.
+// ---------------------------------------------------------------------------
+test_section( 'Full cleanup run — run_cleanup()' );
+
+$end_to_end_fixtures = array();
+for ( $i = 0; $i < 5; $i++ ) {
+    $end_to_end_fixtures[] = cleanup_test_event(
+        'end-to-end expired ' . $i,
+        array(
+            '_event_date'     => cleanup_test_day_offset( -1 ),
+            '_event_status'   => 'published',
+            '_event_imported' => '1',
+        )
+    );
+}
+
+$run_result = $cleanup->run_cleanup();
+assert_true(
+    (int) $run_result['events_found'] >= count( $end_to_end_fixtures ),
+    'run_cleanup() finds at least the end-to-end fixtures'
+);
+assert_true(
+    (int) $run_result['events_deleted'] >= count( $end_to_end_fixtures ),
+    'run_cleanup() deletes at least the end-to-end fixtures'
+);
+assert_equals(
+    0,
+    count( $run_result['errors'] ),
+    'run_cleanup() reports no deletion errors for end-to-end fixtures'
+);
+foreach ( $end_to_end_fixtures as $fixture_id ) {
+    assert_true(
+        null === get_post( $fixture_id ),
+        'end-to-end fixture #' . $fixture_id . ' is PURGED (post row removed from the database)'
+    );
+}
+
+
+// ---------------------------------------------------------------------------
 // Cleanup the suite's own fixtures.
 // ---------------------------------------------------------------------------
 foreach ( $cleanup_test_event_ids as $cleanup_test_event_id ) {

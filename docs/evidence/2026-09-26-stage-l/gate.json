@@ -1,8 +1,8 @@
 {
   "stage": "L — permanent invariant gates",
-  "generated_at": "2026-10-05T07:26:42Z",
-  "repository_sha": "30b2b3a389b74e002626ab0f20ffbd8c2023e992",
-  "status": "pass",
+  "generated_at": "2026-10-16T10:20:09Z",
+  "repository_sha": "f9b2757728843aeee91a7728b97102b0bcb8fc78",
+  "status": "fail",
   "gates": {
     "taxonomy_policy": {
       "gate": "taxonomy_policy",
@@ -112,7 +112,7 @@
         "  PASS: conexao_tag: every translated term pair is linked in BOTH directions",
         "  PASS: the gate inspected a real shared-term population",
         "",
-        "  inspected: 100 shared terms, 20 translated term pairs",
+        "  inspected: 281 shared terms, 16 translated term pairs",
         "",
         "18 passed, 0 failed",
         "GATE-RESULT {\"gate\":\"taxonomy_policy\",\"status\":\"pass\",\"passed\":18,\"failed\":0,\"violations\":0,\"pre_existing\":0,\"new\":0,\"prerequisites\":[\"polylang\",\"conexao_county + conexao_town + conexao_category terms\"],\"allowlisted\":[],\"allowlisted_count\":0,\"details\":[{\"key\":\"taxonomy:conexao_county:suffixed_duplicate_terms\",\"count\":0,\"label\":\"conexao_county: no per-language suffixed duplicate terms\",\"detail\":{\"slugs\":[]}},{\"key\":\"taxonomy:conexao_county:duplicate_slugs\",\"count\":0,\"label\":\"conexao_county: no duplicate term slugs\",\"detail\":{\"slugs\":[]}},{\"key\":\"taxonomy:conexao_county:language_tagged_terms\",\"count\":0,\"label\":\"conexao_county: every shared term is language-neutral (no language tag)\",\"detail\":{\"sample\":[]}},{\"key\":\"taxonomy:conexao_town:suffixed_duplicate_terms\",\"count\":0,\"label\":\"conexao_town: no per-language suffixed duplicate terms\",\"detail\":{\"slugs\":[]}},{\"key\":\"taxonomy:conexao_town:duplicate_slugs\",\"count\":0,\"label\":\"conexao_town: no duplicate term slugs\",\"detail\":{\"slugs\":[]}},{\"key\":\"taxonomy:conexao_town:language_tagged_terms\",\"count\":0,\"label\":\"conexao_town: every shared term is language-neutral (no language tag)\",\"detail\":{\"sample\":[]}},{\"key\":\"taxonomy:conexao_category:en_terms_without_pt_link\",\"count\":0,\"label\":\"conexao_category: every EN term has a PT master\",\"detail\":{\"slugs\":[]}},{\"key\":\"taxonomy:conexao_category:missing_reverse_link\",\"count\":0,\"label\":\"conexao_category: every translated term pair is linked in BOTH directions\",\"detail\":{\"pairs\":[]}},{\"key\":\"taxonomy:conexao_tag:en_terms_without_pt_link\",\"count\":0,\"label\":\"conexao_tag: every EN term has a PT master\",\"detail\":{\"slugs\":[]}},{\"key\":\"taxonomy:conexao_tag:missing_reverse_link\",\"count\":0,\"label\":\"conexao_tag: every translated term pair is linked in BOTH directions\",\"detail\":{\"pairs\":[]}}]}"
@@ -130,7 +130,7 @@
       "violations": 0,
       "pre_existing": 0,
       "new": 0,
-      "allowlisted": 716,
+      "allowlisted": 1119,
       "prerequisites": [
         "polylang",
         "published PT content"
@@ -141,9 +141,9 @@
           "count": 0,
           "label": "course_provider: eligible public PT records missing a linked EN translation = 0",
           "detail": {
-            "eligible": 8,
+            "eligible": 10,
             "translated": 0,
-            "allowlisted": 8,
+            "allowlisted": 10,
             "sample": []
           }
         },
@@ -160,9 +160,9 @@
           "count": 0,
           "label": "event: eligible public PT records missing a linked EN translation = 0",
           "detail": {
-            "eligible": 453,
-            "translated": 1,
-            "allowlisted": 452,
+            "eligible": 803,
+            "translated": 0,
+            "allowlisted": 803,
             "sample": []
           }
         },
@@ -179,7 +179,7 @@
           "count": 0,
           "label": "guide: the B1 population has enough PT records for the invariant to be non-vacuous (eligible PT >= 11)",
           "detail": {
-            "eligible": 51,
+            "eligible": 53,
             "floor": 11
           }
         },
@@ -188,8 +188,8 @@
           "count": 0,
           "label": "guide: eligible public PT records missing a linked EN translation = 0",
           "detail": {
-            "eligible": 51,
-            "translated": 51,
+            "eligible": 53,
+            "translated": 53,
             "allowlisted": 0,
             "sample": []
           }
@@ -207,9 +207,9 @@
           "count": 0,
           "label": "job: eligible public PT records missing a linked EN translation = 0",
           "detail": {
-            "eligible": 2,
+            "eligible": 1,
             "translated": 1,
-            "allowlisted": 1,
+            "allowlisted": 0,
             "sample": []
           }
         },
@@ -226,9 +226,9 @@
           "count": 0,
           "label": "leisure: eligible public PT records missing a linked EN translation = 0",
           "detail": {
-            "eligible": 246,
-            "translated": 1,
-            "allowlisted": 245,
+            "eligible": 293,
+            "translated": 0,
+            "allowlisted": 293,
             "sample": []
           }
         },
@@ -245,7 +245,7 @@
           "count": 0,
           "label": "page: the B1 population has enough PT records for the invariant to be non-vacuous (eligible PT >= 1)",
           "detail": {
-            "eligible": 42,
+            "eligible": 44,
             "floor": 1
           }
         },
@@ -254,8 +254,8 @@
           "count": 0,
           "label": "page: eligible public PT records missing a linked EN translation = 0",
           "detail": {
-            "eligible": 42,
-            "translated": 32,
+            "eligible": 44,
+            "translated": 34,
             "allowlisted": 10,
             "sample": []
           }
@@ -273,7 +273,7 @@
           "count": 0,
           "label": "post: the B1 population has enough PT records for the invariant to be non-vacuous (eligible PT >= 11)",
           "detail": {
-            "eligible": 35,
+            "eligible": 42,
             "floor": 11
           }
         },
@@ -282,8 +282,8 @@
           "count": 0,
           "label": "post: eligible public PT records missing a linked EN translation = 0",
           "detail": {
-            "eligible": 35,
-            "translated": 35,
+            "eligible": 42,
+            "translated": 42,
             "allowlisted": 0,
             "sample": []
           }
@@ -301,8 +301,8 @@
           "count": 0,
           "label": "sponsor: eligible public PT records missing a linked EN translation = 0",
           "detail": {
-            "eligible": 4,
-            "translated": 1,
+            "eligible": 3,
+            "translated": 0,
             "allowlisted": 3,
             "sample": []
           }
@@ -320,15 +320,15 @@
         "  PASS: post: the B1 population has enough PT records for the invariant to be non-vacuous (eligible PT >= 11)",
         "  PASS: post: eligible public PT records missing a linked EN translation = 0",
         "  PASS: post: every translation relationship is a bidirectional link to a PT master",
-        "  sponsor          eligible PT=4 translated=1 allowlisted=3 missing EN=0 malformed=0",
+        "  sponsor          eligible PT=3 translated=0 allowlisted=3 missing EN=0 malformed=0",
         "  PASS: sponsor: eligible public PT records missing a linked EN translation = 0",
         "  PASS: sponsor: every translation relationship is a bidirectional link to a PT master",
         "  PASS: every discovered content type was evaluated (no type silently skipped)",
         "",
         "23 passed, 0 failed",
-        "  allowlisted: 716 (by documented policy)",
-        "    first 20: course_provider:etbi, course_provider:courses-ie, course_provider:local-enterprise-office, course_provider:solas-ecollege, course_provider:skillnet-ireland, course_provider:springboard-plus, course_provider:qualifax, course_provider:fetch-courses, event:power-up-your-mind-open-to-public-ilen-rovers-gaa-club, event:samhain-mask-making-workshops, event:body-to-mind-plant-based-cooking-workshop-with-hungry-soul, event:ceiliuradh-continued, event:no-wrong-tree-neurodiversity-biodiversity-the-cost-of-conformity, event:poet-paul-mcmahon-live-at-the-lit-lounge-swerve, event:astrology-readings-at-sea-dog-bantry, event:portraits-in-red-wanjiru-kamuyu-uillinn-dance-season-2026, event:wellness-day-with-luam-wellness, event:cuardiocht-an-evening-of-story-poetry-song-and-conversation, event:generational-renewal-in-irish-agriculture, event:pause-space-community-circle",
-        "GATE-RESULT {\"gate\":\"translation_completeness\",\"status\":\"pass\",\"passed\":23,\"failed\":0,\"violations\":0,\"pre_existing\":0,\"new\":0,\"prerequisites\":[\"polylang\",\"published PT content\"],\"allowlisted\":[\"course_provider:etbi\",\"course_provider:courses-ie\",\"course_provider:local-enterprise-office\",\"course_provider:solas-ecollege\",\"course_provider:skillnet-ireland\",\"course_provider:springboard-plus\",\"course_provider:qualifax\",\"course_provider:fetch-courses\",\"event:power-up-your-mind-open-to-public-ilen-rovers-gaa-club\",\"event:samhain-mask-making-workshops\",\"event:body-to-mind-plant-based-cooking-workshop-with-hungry-soul\",\"event:ceiliuradh-continued\",\"event:no-wrong-tree-neurodiversity-biodiversity-the-cost-of-conformity\",\"event:poet-paul-mcmahon-live-at-the-lit-lounge-swerve\",\"event:astrology-readings-at-sea-dog-bantry\",\"event:portraits-in-red-wanjiru-kamuyu-uillinn-dance-season-2026\",\"event:wellness-day-with-luam-wellness\",\"event:cuardiocht-an-evening-of-story-poetry-song-and-conversation\",\"event:generational-renewal-in-irish-agriculture\",\"event:pause-space-community-circle\"],\"allowlisted_count\":716,\"details\":[{\"key\":\"post_type:course_provider:missing_en\",\"count\":0,\"label\":\"course_provider: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":8,\"translated\":0,\"allowlisted\":8,\"sample\":[]}},{\"key\":\"post_type:course_provider:malformed_relationships\",\"count\":0,\"label\":\"course_provider: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:event:missing_en\",\"count\":0,\"label\":\"event: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":453,\"translated\":1,\"allowlisted\":452,\"sample\":[]}},{\"key\":\"post_type:event:malformed_relationships\",\"count\":0,\"label\":\"event: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:guide:empty_population\",\"count\":0,\"label\":\"guide: the B1 population has enough PT records for the invariant to be non-vacuous (eligible PT >= 11)\",\"detail\":{\"eligible\":51,\"floor\":11}},{\"key\":\"post_type:guide:missing_en\",\"count\":0,\"label\":\"guide: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":51,\"translated\":51,\"allowlisted\":0,\"sample\":[]}},{\"key\":\"post_type:guide:malformed_relationships\",\"count\":0,\"label\":\"guide: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:job:missing_en\",\"count\":0,\"label\":\"job: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":2,\"translated\":1,\"allowlisted\":1,\"sample\":[]}},{\"key\":\"post_type:job:malformed_relationships\",\"count\":0,\"label\":\"job: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:leisure:missing_en\",\"count\":0,\"label\":\"leisure: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":246,\"translated\":1,\"allowlisted\":245,\"sample\":[]}},{\"key\":\"post_type:leisure:malformed_relationships\",\"count\":0,\"label\":\"leisure: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:page:empty_population\",\"count\":0,\"label\":\"page: the B1 population has enough PT records for the invariant to be non-vacuous (eligible PT >= 1)\",\"detail\":{\"eligible\":42,\"floor\":1}},{\"key\":\"post_type:page:missing_en\",\"count\":0,\"label\":\"page: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":42,\"translated\":32,\"allowlisted\":10,\"sample\":[]}},{\"key\":\"post_type:page:malformed_relationships\",\"count\":0,\"label\":\"page: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:post:empty_population\",\"count\":0,\"label\":\"post: the B1 population has enough PT records for the invariant to be non-vacuous (eligible PT >= 11)\",\"detail\":{\"eligible\":35,\"floor\":11}},{\"key\":\"post_type:post:missing_en\",\"count\":0,\"label\":\"post: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":35,\"translated\":35,\"allowlisted\":0,\"sample\":[]}},{\"key\":\"post_type:post:malformed_relationships\",\"count\":0,\"label\":\"post: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:sponsor:missing_en\",\"count\":0,\"label\":\"sponsor: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":4,\"translated\":1,\"allowlisted\":3,\"sample\":[]}},{\"key\":\"post_type:sponsor:malformed_relationships\",\"count\":0,\"label\":\"sponsor: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}}]}"
+        "  allowlisted: 1119 (by documented policy)",
+        "    first 20: course_provider:microcreds, course_provider:apprenticeship-ie, course_provider:etbi, course_provider:courses-ie, course_provider:local-enterprise-office, course_provider:solas-ecollege, course_provider:skillnet-ireland, course_provider:springboard-plus, course_provider:qualifax, course_provider:fetch-courses, event:cleanup-test-weekly-series-still-active-6, event:cleanup-test-future-7, event:cleanup-test-ongoing-multi-day-7, event:cleanup-test-no-date-7, event:cleanup-test-today-date-only-2, event:cleanup-test-weekly-series-still-active-4, event:cleanup-test-manual-past-no-_event_imported-4, event:cleanup-test-future-5, event:cleanup-test-ongoing-multi-day-5, event:cleanup-test-no-date-5",
+        "GATE-RESULT {\"gate\":\"translation_completeness\",\"status\":\"pass\",\"passed\":23,\"failed\":0,\"violations\":0,\"pre_existing\":0,\"new\":0,\"prerequisites\":[\"polylang\",\"published PT content\"],\"allowlisted\":[\"course_provider:microcreds\",\"course_provider:apprenticeship-ie\",\"course_provider:etbi\",\"course_provider:courses-ie\",\"course_provider:local-enterprise-office\",\"course_provider:solas-ecollege\",\"course_provider:skillnet-ireland\",\"course_provider:springboard-plus\",\"course_provider:qualifax\",\"course_provider:fetch-courses\",\"event:cleanup-test-weekly-series-still-active-6\",\"event:cleanup-test-future-7\",\"event:cleanup-test-ongoing-multi-day-7\",\"event:cleanup-test-no-date-7\",\"event:cleanup-test-today-date-only-2\",\"event:cleanup-test-weekly-series-still-active-4\",\"event:cleanup-test-manual-past-no-_event_imported-4\",\"event:cleanup-test-future-5\",\"event:cleanup-test-ongoing-multi-day-5\",\"event:cleanup-test-no-date-5\"],\"allowlisted_count\":1119,\"details\":[{\"key\":\"post_type:course_provider:missing_en\",\"count\":0,\"label\":\"course_provider: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":10,\"translated\":0,\"allowlisted\":10,\"sample\":[]}},{\"key\":\"post_type:course_provider:malformed_relationships\",\"count\":0,\"label\":\"course_provider: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:event:missing_en\",\"count\":0,\"label\":\"event: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":803,\"translated\":0,\"allowlisted\":803,\"sample\":[]}},{\"key\":\"post_type:event:malformed_relationships\",\"count\":0,\"label\":\"event: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:guide:empty_population\",\"count\":0,\"label\":\"guide: the B1 population has enough PT records for the invariant to be non-vacuous (eligible PT >= 11)\",\"detail\":{\"eligible\":53,\"floor\":11}},{\"key\":\"post_type:guide:missing_en\",\"count\":0,\"label\":\"guide: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":53,\"translated\":53,\"allowlisted\":0,\"sample\":[]}},{\"key\":\"post_type:guide:malformed_relationships\",\"count\":0,\"label\":\"guide: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:job:missing_en\",\"count\":0,\"label\":\"job: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":1,\"translated\":1,\"allowlisted\":0,\"sample\":[]}},{\"key\":\"post_type:job:malformed_relationships\",\"count\":0,\"label\":\"job: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:leisure:missing_en\",\"count\":0,\"label\":\"leisure: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":293,\"translated\":0,\"allowlisted\":293,\"sample\":[]}},{\"key\":\"post_type:leisure:malformed_relationships\",\"count\":0,\"label\":\"leisure: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:page:empty_population\",\"count\":0,\"label\":\"page: the B1 population has enough PT records for the invariant to be non-vacuous (eligible PT >= 1)\",\"detail\":{\"eligible\":44,\"floor\":1}},{\"key\":\"post_type:page:missing_en\",\"count\":0,\"label\":\"page: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":44,\"translated\":34,\"allowlisted\":10,\"sample\":[]}},{\"key\":\"post_type:page:malformed_relationships\",\"count\":0,\"label\":\"page: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:post:empty_population\",\"count\":0,\"label\":\"post: the B1 population has enough PT records for the invariant to be non-vacuous (eligible PT >= 11)\",\"detail\":{\"eligible\":42,\"floor\":11}},{\"key\":\"post_type:post:missing_en\",\"count\":0,\"label\":\"post: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":42,\"translated\":42,\"allowlisted\":0,\"sample\":[]}},{\"key\":\"post_type:post:malformed_relationships\",\"count\":0,\"label\":\"post: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}},{\"key\":\"post_type:sponsor:missing_en\",\"count\":0,\"label\":\"sponsor: eligible public PT records missing a linked EN translation = 0\",\"detail\":{\"eligible\":3,\"translated\":0,\"allowlisted\":3,\"sample\":[]}},{\"key\":\"post_type:sponsor:malformed_relationships\",\"count\":0,\"label\":\"sponsor: every translation relationship is a bidirectional link to a PT master\",\"detail\":{\"sample\":[]}}]}"
       ]
     },
     "cache_scoping": {
@@ -447,7 +447,7 @@
         "   scope: wp-content/plugins/conexao-translation-rollout",
         "   scope: wp-content/plugins/conexao-translation-automation",
         "",
-        "   scanned 137 production PHP files (PHP token_get_all)",
+        "   scanned 138 production PHP files (PHP token_get_all)",
         "   unscoped conexao_* cache keys: 0",
         "2 passed, 0 failed",
         "GATE-RESULT {\"gate\": \"cache_scoping_static\", \"status\": \"pass\", \"passed\": 2, \"failed\": 0, \"violations\": 0, \"details\": []}"
@@ -586,29 +586,31 @@
       "domain": "documentation_drift",
       "kind": "static",
       "command": "python3 tests/scripts/verify-documentation-drift.py",
-      "exit_code": 0,
-      "status": "pass",
-      "passed": 14,
-      "failed": 0,
-      "violations": 0,
+      "exit_code": 1,
+      "status": "fail",
+      "passed": 13,
+      "failed": 1,
+      "violations": 1,
       "pre_existing": 0,
       "new": 0,
       "allowlisted": 0,
       "prerequisites": [],
-      "details": [],
+      "details": [
+        "Stage G registry drift gate failed (exit 1): php scripts/generate-registry-docs.php --check —   - orphaned plugin directory not represented in the registry: wp-content/plugins/conexao-page-translation"
+      ],
       "output_tail": [
-        "   historical/audit documents without the marker (reported, not gated): 164",
         "",
         "   -- §9.2 no root-level report/evidence file --",
-        "   root files scanned: 17, offenders: 0",
+        "   root files scanned: 18, offenders: 0",
         "",
         "   -- §9.2 AGENTS.md remains orientation --",
         "   AGENTS.md lines: 229",
         "",
         "   -- authoritative sources referenced by the governance layer --",
         "   authoritative sources checked: 7",
-        "14 passed, 0 failed",
-        "GATE-RESULT {\"gate\": \"documentation_drift\", \"status\": \"pass\", \"passed\": 14, \"failed\": 0, \"violations\": 0, \"details\": []}"
+        "FAIL: Stage G registry drift gate failed (exit 1): php scripts/generate-registry-docs.php --check —   - orphaned plugin directory not represented in the registry: wp-content/plugins/conexao-page-translation",
+        "13 passed, 1 failed",
+        "GATE-RESULT {\"gate\": \"documentation_drift\", \"status\": \"fail\", \"passed\": 13, \"failed\": 1, \"violations\": 1, \"details\": [\"Stage G registry drift gate failed (exit 1): php scripts/generate-registry-docs.php --check \\u2014   - orphaned plugin directory not represented in the registry: wp-content/plugins/conexao-page-translation\"]}"
       ]
     },
     "i18n_freshness": {
@@ -616,36 +618,53 @@
       "domain": "i18n_freshness",
       "kind": "static",
       "command": "python3 tests/scripts/verify-i18n-freshness.py",
-      "exit_code": 0,
-      "status": "pass",
+      "exit_code": 1,
+      "status": "fail",
       "passed": 3,
-      "failed": 0,
-      "violations": 0,
-      "pre_existing": 0,
+      "failed": 2,
+      "violations": 2,
+      "pre_existing": 2,
       "new": 0,
       "allowlisted": 0,
       "prerequisites": [],
-      "details": [],
+      "details": [
+        {
+          "component": "conexao-br-irlanda",
+          "catalogue": "wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot",
+          "newest_source": "wp-content/themes/conexao-br-irlanda/page-empregos.php",
+          "catalogue_ts": 1791787669,
+          "newest_source_ts": 1791793473,
+          "lag_seconds": 5804
+        },
+        {
+          "component": "conexao-event-importer",
+          "catalogue": "wp-content/plugins/conexao-event-importer/languages/conexao-event-importer.pot",
+          "newest_source": "wp-content/plugins/conexao-event-importer/includes/class-event-cleanup.php",
+          "catalogue_ts": 1791787669,
+          "newest_source_ts": 1792095249,
+          "lag_seconds": 307580
+        }
+      ],
       "output_tail": [
-        "   conexao-data-model       catalogue=1791143005 newest-source=1790335165 (wp-content/plugins/conexao-data-model/includes/class-agency.php) fresh",
-        "   conexao-content          catalogue=1791143005 newest-source=1790699556 (wp-content/plugins/conexao-content/conexao-content.php) fresh",
-        "   conexao-admin-ux         catalogue=1791143005 newest-source=1790016943 (wp-content/plugins/conexao-admin-ux/includes/class-translation-state.php) fresh",
-        "   conexao-event-runtime    catalogue=1791143005 newest-source=1790699556 (wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php) fresh",
-        "   conexao-event-importer   catalogue=1791143005 newest-source=1791143005 (wp-content/plugins/conexao-event-importer/conexao-event-importer.php) fresh",
-        "   conexao-leisure-migration catalogue=1791143005 newest-source=1790325155 (wp-content/plugins/conexao-leisure-migration/includes/class-leisure-exporter.php) fresh",
-        "   conexao-sponsor-migration catalogue=1791143005 newest-source=1789994211 (wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-importer.php) fresh",
-        "   conexao-translation-automation catalogue=1791143005 newest-source=1790861950 (wp-content/plugins/conexao-translation-automation/includes/class-conexao-translation-automation-batch-control.php) fresh",
+        "   conexao-event-runtime    catalogue=1791787669 newest-source=1791205894 (wp-content/plugins/conexao-event-runtime/conexao-event-runtime.php) fresh",
+        "   conexao-event-importer   catalogue=1791787669 newest-source=1792095249 (wp-content/plugins/conexao-event-importer/includes/class-event-cleanup.php) STALE",
+        "   conexao-leisure-migration catalogue=1791787669 newest-source=1790325155 (wp-content/plugins/conexao-leisure-migration/includes/class-leisure-exporter.php) fresh",
+        "   conexao-sponsor-migration catalogue=1791787669 newest-source=1789994211 (wp-content/plugins/conexao-sponsor-migration/includes/class-sponsor-importer.php) fresh",
+        "   conexao-translation-automation catalogue=1791787669 newest-source=1790861950 (wp-content/plugins/conexao-translation-automation/includes/class-conexao-translation-automation-batch-control.php) fresh",
         "",
-        "   stale catalogues: 0",
-        "3 passed, 0 failed",
-        "GATE-RESULT {\"gate\": \"i18n_freshness\", \"status\": \"pass\", \"passed\": 3, \"failed\": 0, \"violations\": 0, \"pre_existing\": 0, \"new\": 0, \"details\": []}"
+        "   stale catalogues: 2",
+        "FAIL: conexao-br-irlanda: wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot is older than wp-content/themes/conexao-br-irlanda/page-empregos.php by 5804s — regenerate the catalogue with `wp i18n make-pot` (never hand-edit)",
+        "FAIL: conexao-event-importer: wp-content/plugins/conexao-event-importer/languages/conexao-event-importer.pot is older than wp-content/plugins/conexao-event-importer/includes/class-event-cleanup.php by 307580s — regenerate the catalogue with `wp i18n make-pot` (never hand-edit)",
+        "3 passed, 2 failed",
+        "  stale catalogues: 2 pre-existing, 0 new",
+        "GATE-RESULT {\"gate\": \"i18n_freshness\", \"status\": \"fail\", \"passed\": 3, \"failed\": 2, \"violations\": 2, \"pre_existing\": 2, \"new\": 0, \"details\": [{\"component\": \"conexao-br-irlanda\", \"catalogue\": \"wp-content/themes/conexao-br-irlanda/languages/conexao-br-irlanda.pot\", \"newest_source\": \"wp-content/themes/conexao-br-irlanda/page-empregos.php\", \"catalogue_ts\": 1791787669, \"newest_source_ts\": 1791793473, \"lag_seconds\": 5804}, {\"component\": \"conexao-event-importer\", \"catalogue\": \"wp-content/plugins/conexao-event-importer/languages/conexao-event-importer.pot\", \"newest_source\": \"wp-content/plugins/conexao-event-importer/includes/class-event-cleanup.php\", \"catalogue_ts\": 1791787669, \"newest_source_ts\": 1792095249, \"lag_seconds\": 307580}]}"
       ]
     }
   },
-  "total_passed": 84,
-  "total_failed": 0,
-  "total_violations": 0,
-  "total_pre_existing": 0,
+  "total_passed": 83,
+  "total_failed": 3,
+  "total_violations": 2,
+  "total_pre_existing": 2,
   "total_new": 0,
   "total_blocked": 0
 }

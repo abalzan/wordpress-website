@@ -1,0 +1,125 @@
+
+Notice: $_SERVER['HTTP_HOST'] or $_SERVER['REQUEST_URI'] are required but not set. in /var/www/html/wp-content/plugins/polylang/src/functions.php on line 81
+[16-Oct-2026 07:22:32 UTC] PHP Notice:  $_SERVER['HTTP_HOST'] or $_SERVER['REQUEST_URI'] are required but not set. in /var/www/html/wp-content/plugins/polylang/src/functions.php on line 81
+=== APPLY: running Conexao_Event_Cleanup::run_cleanup() ===
+events_found:     493
+events_deleted:   239
+images_evaluated: 208
+images_deleted:   208
+images_preserved: 0
+errors:           113
+  ERROR: Event #19777: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #19719: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #19669: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #19618: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #19614: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #19532: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #19528: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #19526: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #19508: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #19385: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #19365: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #19359: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #19347: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #19339: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #19331: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #19316: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #19296: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #19286: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #19283: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #19267: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #19246: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #19179: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #19168: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #19158: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #19151: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #19128: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #19053: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #19043: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #18914: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #18905: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #18869: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #18828: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #18807: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #18803: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #18793: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #18792: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #18783: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #18771: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #18754: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #18737: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #18716: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #18710: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #18637: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #18633: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #18607: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #18602: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #18538: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #18484: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #18018: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #18014: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #18006: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #18002: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #17961: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #17957: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #17951: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #17947: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #17939: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #17450: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #17417: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #17411: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #17391: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #17332: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #17322: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #17303: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #17297: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #17283: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #17239: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #17221: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #17210: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #17206: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #17191: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #17147: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #17144: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #16973: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #16883: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #16741: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #16691: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #16644: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #16582: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #16574: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #16542: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #16534: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #16496: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #16480: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #16468: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #16394: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #16374: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #16358: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #16348: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #16338: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #16332: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #16270: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #16258: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #15482: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #15483: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #15481: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #15478: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #15472: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #15474: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #15471: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #13641: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #100021: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #100018: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #100026: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #100001: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #100012: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #100020: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #100004: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #270: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #252: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #100016: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #100003: Could not delete the event post (the database row is still present after the delete attempt).
+  ERROR: Event #100015: Could not delete the event post (the database row is still present after the delete attempt).
+
+Eligible candidates remaining after cleanup: 0

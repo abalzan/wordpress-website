@@ -92,6 +92,11 @@ class Conexao_Event_Cleanup {
 			}
 		}
 
+		// Invalidate event archive caches so public views reflect the cleaned dataset.
+		if ( class_exists( 'Conexao_Event_Query' ) ) {
+			Conexao_Event_Query::flush_cache();
+		}
+
 		// Persist the status and history.
 		$this->save_status( $result );
 		$this->save_history( $result );
@@ -121,6 +126,12 @@ class Conexao_Event_Cleanup {
 	 * Uses the shared end-timestamp helper from Conexao_Event_Status so the
 	 * expiry check and the cleanup always agree on "has this event ended?".
 	 *
+	 * The candidate set is read in paginated batches and the expiry check is
+	 * applied in PHP to every batch, so eligible events are never skipped
+	 * merely because they fall beyond a single SQL LIMIT. The complete stable
+	 * candidate list is collected before any deletion happens, so deleting
+	 * records cannot cause offsets to skip remaining candidates.
+	 *
 	 * When the cleanup_scope setting is 'imported_only', manually created
 	 * events (no _event_imported meta) are protected from deletion.
 	 *
@@ -129,6 +140,7 @@ class Conexao_Event_Cleanup {
 	protected function find_past_events() {
 		$now = current_datetime();
 		$today_str = $now->format( 'Y-m-d' );
+		$now_ts = $now->getTimestamp();
 
 		$meta_query = array(
 			'relation' => 'AND',
@@ -151,75 +163,92 @@ class Conexao_Event_Cleanup {
 			);
 		}
 
-		$query = new WP_Query(
-			array(
-				'post_type'              => 'event',
-				'post_status'            => 'any',
-				'posts_per_page'         => self::MAX_EVENTS_PER_RUN,
-				'fields'                 => 'ids',
-				'no_found_rows'          => true,
-				'update_post_meta_cache' => false,
-				'update_post_term_cache' => false,
-				// Polylang narrows EVERY frontend (non-admin, non-CLI) WP_Query
-				// to the current request locale by default. Cleanup must purge
-				// eligible events in BOTH languages (pt + en), so explicitly
-				// disable Polylang's language filter for this maintenance query
-				// via `lang => ''`. Without this the EN translation of an
-				// expired event is never even SELECTED, so it survives every
-				// cleanup run (and leaves a broken, PT-less EN record behind
-				// on the frontend).
-				'lang'                   => '',
-				// The event runtime's public `_event_status` gate (pre_get_posts)
-				// NARROWS every non-admin, non-CLI event query to
-				// `_event_status = published` OR no status. Cleanup must operate
-				// on the TRUE set of eligible events regardless of editorial
-				// status (expired, draft, source_not_found… are all legitimately
-				// eligible for past-event purge), so this maintenance query opts
-				// out of the frontend visibility gate explicitly — the same
-				// documented idiom repair-event-county-terms.php uses (there via
-				// direct SQL; here via `suppress_filters`, which skips
-				// `pre_get_posts` for this query only). Without this, an event
-				// already flipped to `expired` by a prior run of
-				// Conexao_Event_Status::mark_expired_events() would never be
-				// selected again, and would survive cleanup forever.
-				'suppress_filters'       => true,
-				'meta_query'             => $meta_query,
-			)
-		);
-
 		$past_ids = array();
+		$offset = 0;
 
-		foreach ( $query->posts as $post_id ) {
-			$end_timestamp = Conexao_Event_Status::get_event_end_timestamp( $post_id );
+		// Paginate through every event that carries an event date. The SQL
+		// query intentionally does not filter by date -- the shared
+		// get_event_end_timestamp() helper (end date/time, end-of-day
+		// fallback, weekly recurrence window) is the single source of truth
+		// for "has this event ended?" and it is applied here, in PHP, to
+		// every batch so no eligible event is skipped.
+		do {
+			$query = new WP_Query(
+				array(
+					'post_type'              => 'event',
+					'post_status'            => 'any',
+					'posts_per_page'         => self::MAX_EVENTS_PER_RUN,
+					'offset'                 => $offset,
+					'fields'                 => 'ids',
+					'no_found_rows'          => true,
+					'update_post_meta_cache' => false,
+					'update_post_term_cache' => false,
+					// Polylang narrows EVERY frontend (non-admin, non-CLI) WP_Query
+					// to the current request locale by default. Cleanup must purge
+					// eligible events in BOTH languages (pt + en), so explicitly
+					// disable Polylang's language filter for this maintenance query
+					// via `lang => ''`.
+					'lang'                   => '',
+					// The event runtime's public `_event_status` gate (pre_get_posts)
+					// narrows every non-admin, non-CLI event query to
+					// `_event_status = published` OR no status. Cleanup must operate
+					// on the TRUE set of eligible events regardless of editorial
+					// status, so this maintenance query opts out of the frontend
+					// visibility gate via `suppress_filters`.
+					'suppress_filters'       => true,
+					'meta_query'             => $meta_query,
+					// Stable, deterministic, UNIQUE ordering so paginated reads never skip
+					// or revisit a candidate while the set is collected read-only. `ID` is
+					// unique, so `offset` + `posts_per_page` cannot skip or duplicate rows
+					// even when many events share the same `post_date`.
+					'orderby'                => array( 'ID' => 'DESC' ),
+				)
+			);
 
-			// Events with no end date are not cleaned up by the time-based
-			// rule.  They may still be cleaned up if an explicit end date
-			// exists; otherwise, skip (manual review territory).
-			if ( ! $end_timestamp ) {
-				continue;
+			$batch = $query->posts;
+			if ( empty( $batch ) ) {
+				break;
 			}
 
-			// Weekly recurrence: an open-ended series, or one whose
-			// _event_recurrence_end is still in the future, keeps occurring and
-			// is therefore not "past" even when its first occurrence
-			// (_event_date) is long behind us. Only a series whose recurrence
-			// window has closed is eligible for cleanup.
-			if ( 'weekly' === get_post_meta( $post_id, '_event_recurrence', true ) ) {
-				$recurrence_end = get_post_meta( $post_id, '_event_recurrence_end', true );
-				if ( ! is_string( $recurrence_end ) || '' === $recurrence_end ) {
-					continue; // open-ended weekly series: never ends
+			// Prime the postmeta cache for this batch so get_post_meta() calls
+			// inside get_event_end_timestamp() are served from memory, not one
+			// SQL query per meta key per event.
+			update_meta_cache( 'post', array_map( 'intval', $batch ) );
+
+			foreach ( $batch as $post_id ) {
+				$end_timestamp = Conexao_Event_Status::get_event_end_timestamp( $post_id );
+
+				// Events with no end date are not cleaned up by the time-based
+				// rule. They may still be cleaned up if an explicit end date
+				// exists; otherwise, skip (manual review territory).
+				if ( ! $end_timestamp ) {
+					continue;
 				}
-				if ( preg_match( '/^\\d{4}-\\d{2}-\\d{2}$/', $recurrence_end )
-					&& checkdate( (int) substr( $recurrence_end, 5, 2 ), (int) substr( $recurrence_end, 8, 2 ), (int) substr( $recurrence_end, 0, 4 ) )
-					&& $recurrence_end >= $today_str ) {
-					continue; // series still has future occurrences
+
+				// Weekly recurrence: an open-ended series, or one whose
+				// _event_recurrence_end is still in the future, keeps occurring and
+				// is therefore not "past" even when its first occurrence
+				// (_event_date) is long behind us. Only a series whose recurrence
+				// window has closed is eligible for cleanup.
+				if ( 'weekly' === get_post_meta( $post_id, '_event_recurrence', true ) ) {
+					$recurrence_end = get_post_meta( $post_id, '_event_recurrence_end', true );
+					if ( ! is_string( $recurrence_end ) || '' === $recurrence_end ) {
+						continue; // open-ended weekly series: never ends
+					}
+					if ( preg_match( '/^\\d{4}-\\d{2}-\\d{2}$/', $recurrence_end )
+						&& checkdate( (int) substr( $recurrence_end, 5, 2 ), (int) substr( $recurrence_end, 8, 2 ), (int) substr( $recurrence_end, 0, 4 ) )
+						&& $recurrence_end >= $today_str ) {
+						continue; // series still has future occurrences
+					}
+				}
+
+				if ( $end_timestamp < $now_ts ) {
+					$past_ids[] = (int) $post_id;
 				}
 			}
 
-			if ( $end_timestamp < $now->getTimestamp() ) {
-				$past_ids[] = (int) $post_id;
-			}
-		}
+			$offset += count( $batch );
+		} while ( count( $batch ) === self::MAX_EVENTS_PER_RUN );
 
 		return $past_ids;
 	}
@@ -271,8 +300,17 @@ class Conexao_Event_Cleanup {
 		 * actually landed — a silently-failed delete would otherwise be
 		 * counted as a success and the event would survive every future run.
 		 */
-		$row_status = get_post_status( $event_id );
-		if ( ! $deleted || false !== $row_status ) {
+		global $wpdb;
+		/*
+		 * A truthy return from wp_delete_post() is NOT sufficient proof the
+		 * row is gone: it returns the post object (carrying the PRE-deletion
+		 * post_status) even when a filter short-circuits the actual row
+		 * deletion. Verify against the database directly (bypassing the post
+		 * object cache, which can be stale mid-request during bulk deletes)
+		 * so a silently-failed delete is never counted as success.
+		 */
+		$row = $wpdb->get_row( $wpdb->prepare( "SELECT post_status FROM {$wpdb->posts} WHERE ID = %d", $event_id ) );
+		if ( ! $deleted || null !== $row ) {
 			throw new Exception(
 				__( 'Could not delete the event post (the database row is still present after the delete attempt).', 'conexao-event-importer' )
 			);
