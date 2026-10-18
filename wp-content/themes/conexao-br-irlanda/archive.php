@@ -106,9 +106,9 @@ if ( $is_event_archive ) {
 			/*
 			 * Progressive enhancements per archive:
 			 *
-			 * - Automatic infinite scroll (Blog/Guias/Lazer + category
+			 * - Automatic infinite scroll (Blog/Guias/Lazer/Eventos + category
 			 *   archives): tagged `data-infinite-scroll`.
-			 * - Manual "Carregar mais" button (Eventos/Cursos): tagged
+			 * - Manual "Carregar mais" button (Cursos): tagged
 			 *   `data-load-more` — the next batch is fetched ONLY on an
 			 *   explicit user click, never automatically.
 			 *
@@ -118,8 +118,8 @@ if ( $is_event_archive ) {
 			 * existing main-query logic. Without JS, normal pagination
 			 * still renders and works.
 			 */
-			$infinite_scroll = $is_guide_archive || $is_leisure_archive || is_category();
-			$load_more       = $is_event_archive || $is_course_archive;
+			$infinite_scroll = $is_guide_archive || $is_leisure_archive || $is_event_archive || is_category();
+			$load_more       = $is_course_archive;
 			?>
 			<div class="<?php echo ( $is_event_archive || $is_course_archive || $is_leisure_archive ) ? 'events-grid' : 'archive-grid'; ?>"<?php echo $infinite_scroll ? ' data-infinite-scroll' : ''; ?><?php echo $load_more ? ' data-load-more' : ''; ?>>
 				<?php while ( have_posts() ) : the_post(); ?>
