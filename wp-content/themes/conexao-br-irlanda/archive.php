@@ -106,11 +106,10 @@ if ( $is_event_archive ) {
 			/*
 			 * Progressive enhancements per archive:
 			 *
-			 * - Automatic infinite scroll (Blog/Guias/Lazer/Eventos + category
-			 *   archives): tagged `data-infinite-scroll`.
-			 * - Manual "Carregar mais" button (Cursos): tagged
-			 *   `data-load-more` — the next batch is fetched ONLY on an
-			 *   explicit user click, never automatically.
+			 * - Automatic infinite scroll (Blog/Guias/Lazer/Eventos/Cursos +
+			 *   category archives): tagged `data-infinite-scroll`.
+			 * - Manual "Carregar mais" button: no archive currently uses it
+			 *   (Cursos was retagged to infinite scroll on 2026-10-18).
 			 *
 			 * Both enhancements read the next-page URL from the shared
 			 * pagination component below, so filters (?cidade=,
@@ -118,8 +117,8 @@ if ( $is_event_archive ) {
 			 * existing main-query logic. Without JS, normal pagination
 			 * still renders and works.
 			 */
-			$infinite_scroll = $is_guide_archive || $is_leisure_archive || $is_event_archive || is_category();
-			$load_more       = $is_course_archive;
+			$infinite_scroll = $is_guide_archive || $is_leisure_archive || $is_event_archive || $is_course_archive || is_category();
+			$load_more       = false;
 			?>
 			<div class="<?php echo ( $is_event_archive || $is_course_archive || $is_leisure_archive ) ? 'events-grid' : 'archive-grid'; ?>"<?php echo $infinite_scroll ? ' data-infinite-scroll' : ''; ?><?php echo $load_more ? ' data-load-more' : ''; ?>>
 				<?php while ( have_posts() ) : the_post(); ?>

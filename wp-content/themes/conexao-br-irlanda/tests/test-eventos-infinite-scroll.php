@@ -9,7 +9,8 @@
  *
  *  - /eventos/ grid is tagged `data-infinite-scroll` (NOT `data-load-more`)
  *  - /lazer/ grid keeps `data-infinite-scroll` (regression)
- *  - /cursos/ grid keeps `data-load-more` (regression)
+ *  - /cursos/ grid uses `data-infinite-scroll` (retagged 2026-10-18;
+ *    see test-cursos-infinite-scroll.php)
  *  - /eventos/ renders `.conexao-pagination` with a `page-numbers next`
  *    link so the shared initInfiniteScroll() has a next-page URL to fetch
  *  - No server-rendered Carregar mais button markup on /eventos/
@@ -54,7 +55,7 @@ function eis_render_archive( $post_type ) {
 }
 
 // ---------------------------------------------------------------------------
-// Grid tagging: Eventos uses infinite scroll, Lazer keeps it, Cursos keeps load-more
+// Grid tagging: Eventos, Lazer and Cursos all use infinite scroll.
 // ---------------------------------------------------------------------------
 
 test_section( 'Grid progressive-enhancement tagging' );
@@ -80,12 +81,12 @@ assert_true(
     '/lazer/ grid is NOT tagged data-load-more (regression guard)'
 );
 assert_true(
-    false !== strpos( $course_html, 'data-load-more' ),
-    '/cursos/ grid keeps data-load-more (regression guard)'
+    false !== strpos( $course_html, 'data-infinite-scroll' ),
+    '/cursos/ grid IS tagged data-infinite-scroll (retagged 2026-10-18)'
 );
 assert_true(
-    false === strpos( $course_html, 'data-infinite-scroll' ),
-    '/cursos/ grid is NOT tagged data-infinite-scroll (regression guard)'
+    false === strpos( $course_html, 'data-load-more' ),
+    '/cursos/ grid is NOT tagged data-load-more (Load More removed)'
 );
 
 // ---------------------------------------------------------------------------
