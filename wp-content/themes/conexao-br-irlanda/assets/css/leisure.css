@@ -801,7 +801,7 @@
 
 .leisure-card-image {
 	display: block;
-	aspect-ratio: 16 / 10;
+	aspect-ratio: 16 / 9;
 	overflow: hidden;
 	background: var(--conexao-surface-muted, #eef1f4);
 }

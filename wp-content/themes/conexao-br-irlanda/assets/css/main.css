@@ -5079,7 +5079,7 @@ input[type="button"] {
 }
 
 .archive-card-image {
-  aspect-ratio: 16/10;
+  aspect-ratio: 16/9;
   overflow: hidden;
   display: block;
 }
