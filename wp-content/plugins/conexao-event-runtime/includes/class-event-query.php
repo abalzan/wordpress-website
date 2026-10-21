@@ -136,11 +136,15 @@ final class Conexao_Event_Query {
 	 * event is part of the current active/upcoming set, or null otherwise.
 	 * For one-time events this is simply their stored _event_date.
 	 *
-	 * @param int $post_id Event post ID.
+	 * @param int                    $post_id Event post ID.
+	 * @param DateTimeImmutable|null $from    Optional evaluation start. When
+	 *                                        provided, the result is evaluated
+	 *                                        against that date and is NOT
+	 *                                        transient-cached (used by tests).
 	 * @return string|null
 	 */
-	public static function next_occurrence_date( $post_id ) {
-		$events = self::upcoming_events();
+	public static function next_occurrence_date( $post_id, $from = null ) {
+		$events = self::upcoming_events( $from );
 		if ( isset( $events[ (int) $post_id ] ) ) {
 			return $events[ (int) $post_id ];
 		}

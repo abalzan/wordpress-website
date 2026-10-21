@@ -208,7 +208,7 @@ $hero_has_sponsors = ! empty( conexao_get_featured_sponsors() );
 			// 'key' slug, never by translated display text.
 			$help_shortcut_keys = array( 'moradia', 'empregos', 'documentos', 'saude', 'beneficios', 'financas' );
 			foreach ( $quick_access_cards as $card ) :
-				if ( ! empty( $card['key'] ) && in_array( $card['key'], $help_shortcut_keys, true ) ) {
+				if ( in_array( $card['key'], $help_shortcut_keys, true ) ) {
 					continue;
 				}
 				get_template_part( 'template-parts/quick-access-card', null, array( 'card' => $card, 'icons' => $icon_svgs ) );
@@ -407,9 +407,9 @@ $hero_has_sponsors = ! empty( conexao_get_featured_sponsors() );
 // home_url()).
 // Membership comes from the single $help_shortcut_keys list defined with the
 // Quick Access cards above; only the SELECTION here is explicit.
-$help_shortcuts     = array();
+$help_shortcuts = array();
 foreach ( $quick_access_cards as $qa_card ) {
-	if ( ! empty( $qa_card['key'] ) && in_array( $qa_card['key'], $help_shortcut_keys, true ) ) {
+	if ( in_array( $qa_card['key'], $help_shortcut_keys, true ) ) {
 		$help_shortcuts[ $qa_card['key'] ] = $qa_card;
 	}
 }

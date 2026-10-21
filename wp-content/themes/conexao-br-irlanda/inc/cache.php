@@ -61,6 +61,12 @@ function conexao_clear_event_filter_caches() {
 		'conexao_terms_conexao_town_event',
 		'conexao_terms_conexao_category_event',
 		'conexao_terms_conexao_category_guide',
+		// Leisure filter dimensions (Localização, Tipo, Características).
+		// Without these, a newly created/edited leisure record or term left
+		// the /lazer/ filters stale until the 5-minute TTL expired.
+		'conexao_terms_conexao_county_leisure',
+		'conexao_terms_conexao_category_leisure',
+		'conexao_terms_conexao_leisure_attribute_leisure',
 	);
 
 	foreach ( $term_keys as $base ) {
@@ -78,7 +84,7 @@ function conexao_clear_event_filter_caches() {
 			'fields'     => 'slugs',
 		)
 	);
-	if ( is_wp_error( $counties ) || ! is_array( $counties ) ) {
+	if ( is_wp_error( $counties ) ) {
 		return;
 	}
 
@@ -174,10 +180,13 @@ add_action( 'wp_insert_post', 'conexao_homepage_cache_invalidate' );
  * stay stale until the 5-minute TTL. These hooks close that gap through the
  * same shared clearer — no second lifecycle.
  *
- * @param int $term_id Term ID (unused; the whole list is rebuilt lazily).
+ * The callback intentionally accepts no arguments: the whole term list is
+ * rebuilt lazily, so the term ID WordPress passes carries no information the
+ * clearer needs.
+ *
  * @return void
  */
-function conexao_filter_term_cache_invalidate( $term_id = 0 ) {
+function conexao_filter_term_cache_invalidate() {
 	conexao_clear_event_filter_caches();
 }
 add_action( 'created_conexao_county', 'conexao_filter_term_cache_invalidate' );
@@ -189,6 +198,9 @@ add_action( 'delete_conexao_town', 'conexao_filter_term_cache_invalidate' );
 add_action( 'created_conexao_category', 'conexao_filter_term_cache_invalidate' );
 add_action( 'edited_conexao_category', 'conexao_filter_term_cache_invalidate' );
 add_action( 'delete_conexao_category', 'conexao_filter_term_cache_invalidate' );
+add_action( 'created_conexao_leisure_attribute', 'conexao_filter_term_cache_invalidate' );
+add_action( 'edited_conexao_leisure_attribute', 'conexao_filter_term_cache_invalidate' );
+add_action( 'delete_conexao_leisure_attribute', 'conexao_filter_term_cache_invalidate' );
 
 /**
  * Limit REST API exposure: only expose the endpoints the theme actually uses.

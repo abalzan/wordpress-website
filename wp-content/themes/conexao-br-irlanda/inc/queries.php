@@ -272,9 +272,11 @@ function conexao_guide_category_filter_term_id( $slug ) {
  *
  * WP_Term instances are kept in the request-level object cache, but the
  * cross-request transient stores plain slug/name/taxonomy arrays so no
- * lazy-loaded object graph is ever serialized.
+ * lazy-loaded object graph is ever serialized. Callers pass a term list; a
+ * non-term entry is skipped rather than fatal, which keeps a corrupted cache
+ * payload from breaking the archive.
  *
- * @param WP_Term[] $terms Term objects.
+ * @param mixed $terms Candidate filter terms.
  * @return array[] Plain term data (slug, name, taxonomy).
  */
 function conexao_filter_terms_to_cache( $terms ) {
@@ -320,8 +322,8 @@ function conexao_filter_terms_from_cache( $data, $taxonomy ) {
 /**
  * Write a filter term list to both cache layers.
  *
- * @param string   $cache_key Language-scoped cache key shared by both layers.
- * @param WP_Term[] $terms    Term objects to store.
+ * @param string    $cache_key Language-scoped cache key shared by both layers.
+ * @param WP_Term[] $terms     Term objects to store.
  * @return void
  */
 function conexao_filter_terms_store( $cache_key, $terms ) {

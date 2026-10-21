@@ -118,9 +118,8 @@ if ( $is_event_archive ) {
 			 * still renders and works.
 			 */
 			$infinite_scroll = $is_guide_archive || $is_leisure_archive || $is_event_archive || $is_course_archive || is_category();
-			$load_more       = false;
 			?>
-			<div class="<?php echo ( $is_event_archive || $is_course_archive || $is_leisure_archive ) ? 'events-grid' : 'archive-grid'; ?>"<?php echo $infinite_scroll ? ' data-infinite-scroll' : ''; ?><?php echo $load_more ? ' data-load-more' : ''; ?>>
+			<div class="<?php echo ( $is_event_archive || $is_course_archive || $is_leisure_archive ) ? 'events-grid' : 'archive-grid'; ?>"<?php echo $infinite_scroll ? ' data-infinite-scroll' : ''; ?>>
 				<?php while ( have_posts() ) : the_post(); ?>
 					<?php if ( $is_event_archive ) : ?>
 						<?php get_template_part( 'template-parts/event', 'card' ); ?>
