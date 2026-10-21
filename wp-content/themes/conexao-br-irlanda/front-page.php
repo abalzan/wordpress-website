@@ -201,7 +201,16 @@ $hero_has_sponsors = ! empty( conexao_get_featured_sponsors() );
 				'compass' => '<circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>',
 			);
 
+			// "$help_shortcut_keys" is the single source of truth for the "Precisa de ajuda?"
+			// subset: cards listed here are rendered ONLY in the help section (further
+			// down) and are excluded from the primary Quick Access grid below, so no
+			// destination is ever rendered as two tiles. Membership is by the inert
+			// 'key' slug, never by translated display text.
+			$help_shortcut_keys = array( 'moradia', 'empregos', 'documentos', 'saude', 'beneficios', 'financas' );
 			foreach ( $quick_access_cards as $card ) :
+				if ( ! empty( $card['key'] ) && in_array( $card['key'], $help_shortcut_keys, true ) ) {
+					continue;
+				}
 				get_template_part( 'template-parts/quick-access-card', null, array( 'card' => $card, 'icons' => $icon_svgs ) );
 			endforeach;
 			?>
@@ -396,7 +405,8 @@ $hero_has_sponsors = ! empty( conexao_get_featured_sponsors() );
 // destinations with the same helpers the Quick Access cards use
 // (conexao_get_guides_archive_url(), conexao_get_guide_category_url(),
 // home_url()).
-$help_shortcut_keys = array( 'moradia', 'empregos', 'documentos', 'saude', 'beneficios', 'financas' );
+// Membership comes from the single $help_shortcut_keys list defined with the
+// Quick Access cards above; only the SELECTION here is explicit.
 $help_shortcuts     = array();
 foreach ( $quick_access_cards as $qa_card ) {
 	if ( ! empty( $qa_card['key'] ) && in_array( $qa_card['key'], $help_shortcut_keys, true ) ) {
