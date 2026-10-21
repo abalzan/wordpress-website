@@ -104,6 +104,7 @@ function conexao_seo_redirects() {
 
 		// English jobs paths -> Portuguese.
 		'/jobs'                        => '/empregos/',
+		'/en/jobs'                     => '/en/empregos/',
 
 		// English courses paths -> Portuguese.
 		'/courses'                     => '/cursos/',
