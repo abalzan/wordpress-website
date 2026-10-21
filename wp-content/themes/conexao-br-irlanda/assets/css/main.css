@@ -1845,15 +1845,15 @@ ul, ol {
 
 .event-card-category {
   display: inline-block;
-  background: var(--conexao-accent-light);
-  /* Text token: --conexao-accent was 2.31:1 on this tint (fails AA). */
-  color: var(--conexao-accent-text);
+  background: var(--conexao-primary-50);
+  color: var(--conexao-primary);
   padding: 4px 10px;
   border-radius: var(--conexao-radius-full);
   font-size: 0.6875rem;
   font-weight: 600;
   text-transform: uppercase;
   margin-bottom: 12px;
+  /* Converged to tokenized green-on-light-green (T1.16 / I6) */
 }
 
 /* Type comes from the shared card-title rule in design-system.css. */
@@ -2160,8 +2160,8 @@ ul, ol {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: var(--conexao-accent-light);
-  color: var(--conexao-accent-text);
+  background: var(--conexao-primary-50);
+  color: var(--conexao-primary);
   padding: 4px 10px;
   border-radius: var(--conexao-radius-full);
   font-size: 0.6875rem;
@@ -2169,6 +2169,7 @@ ul, ol {
   text-transform: uppercase;
   margin-bottom: 12px;
   align-self: flex-start;
+  /* Converged to tokenized green-on-light-green (T1.16 / I6) */
 }
 
 .events-page .event-card-category svg {
@@ -3124,8 +3125,8 @@ ul, ol {
    label typography is shared in design-system.css. */
 .post-card-category,
 .featured-article-category {
-  background: var(--conexao-accent);
-  color: var(--conexao-white);
+  background: var(--conexao-primary-50);
+  color: var(--conexao-primary);
   padding: 6px 12px;
   border-radius: var(--conexao-radius-full);
   font-size: 0.6875rem;

@@ -728,8 +728,9 @@
 
 [data-theme="dark"] .card-category--accent,
 [data-theme="dark"] .event-card-category {
-  background: var(--color-accent-light);
-  color: var(--color-accent);
+  background: var(--color-primary-50);
+  color: #3ab875;
+  /* Converged to tokenized green-on-light-green in dark mode (T1.16 / I6) */
 }
 
 /* Card CTAs */
