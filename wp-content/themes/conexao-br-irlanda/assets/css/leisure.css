@@ -77,11 +77,15 @@
 	gap: var(--space-2);
 }
 
+/* Touch-target: 44px minimum clickable height for filter chips.
+   min-height 34px + padding 5px top/bottom = 44px total.
+   Mobile .events-filter-link already achieves 44px (36px min + 4px padding each side).
+*/
 .leisure-filter-chip {
 	display: inline-flex;
 	align-items: center;
 	gap: 6px;
-	min-height: 30px;
+	min-height: 34px;
 	padding: 5px 11px;
 	border-radius: var(--radius-full);
 	border: 1px solid var(--color-primary);

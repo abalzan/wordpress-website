@@ -4125,6 +4125,12 @@ ul, ol {
   color: rgba(255, 255, 255, 0.6);
 }
 
+/* ===== 6. FOOTER BOTTOM LINKS =====
+   Touch-target refinement for mobile usability.
+   Each footer link gets a 44px minimum clickable height
+   through min-height, without increasing the footer height
+   disproportionately. Inline text flow is preserved.
+*/
 .footer-bottom-links {
   display: flex;
   align-items: center;
@@ -4136,10 +4142,13 @@ ul, ol {
   color: rgba(255, 255, 255, 0.35);
 }
 
+/* Touch-target: 44px minimum clickable height for standalone footer links */
 .footer-bottom-links a {
   font-size: 0.875rem;
   color: rgba(255, 255, 255, 0.65);
   transition: color var(--conexao-transition);
+  min-height: 44px;
+  display: inline-block;
 }
 
 .footer-bottom-links a:hover {
@@ -7466,9 +7475,13 @@ input[type="button"] {
   margin-bottom: 14px;
 }
 
+/* Touch-target: 44px minimum clickable height for agency card phone links.
+   These are standalone controls with tel: URI schemes, not inline text links.*/
 .agency-card-phone a {
   color: inherit;
   text-decoration: none;
+  min-height: 44px;
+  display: inline-block;
 }
 
 .agency-card-phone a:hover {
