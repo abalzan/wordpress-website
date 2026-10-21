@@ -412,7 +412,7 @@ ul, ol {
    the sponsor panel and its integrated controls. No fixed pixel offsets:
    the relationship emerges from stretch + the flex chains below, so it
    holds at every desktop/tablet width (1024/1280/1440/1600+). */
-@media (min-width: 769px) {
+@media (min-width: 768px) {
   .hero-content.hero-content--with-sponsors {
     max-width: none;
     width: 100%;
@@ -770,7 +770,7 @@ ul, ol {
 /* Tablet: still exactly one sponsor per view; only the column ratio/gap
    tighten so heading and carousel never collide at intermediate widths
    (~769–1199px). The sponsor column keeps its portrait 3:4 frame. */
-@media (max-width: 1199px) and (min-width: 769px) {
+@media (max-width: 1199px) and (min-width: 768px) {
   .hero-content.hero-content--with-sponsors {
     grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.88fr);
     gap: clamp(24px, 3.5vw, 44px);
@@ -2876,7 +2876,7 @@ ul, ol {
 }
 
 /* Tablet: 2 cards per view */
-@media (max-width: 1199px) and (min-width: 769px) {
+@media (max-width: 1199px) and (min-width: 768px) {
   .sponsors-slide {
     flex-basis: calc((100% - 20px) / 2);
   }
@@ -4453,7 +4453,7 @@ input[type="button"] {
 /* ===== Responsive Design ===== */
 
 /* Tablet - 768px to 1199px */
-@media (max-width: 1199px) and (min-width: 769px) {
+@media (max-width: 1199px) and (min-width: 768px) {
   /* Events page tablet adjustments */
   .events-page-header {
     padding: 40px 0 24px;
@@ -5275,7 +5275,7 @@ input[type="button"] {
 }
 
 /* Tablet archive grid */
-@media (max-width: 1199px) and (min-width: 769px) {
+@media (max-width: 1199px) and (min-width: 768px) {
   .archive-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -6268,7 +6268,7 @@ input[type="button"] {
 }
 
 /* --- Responsive: swap between desktop toolbar and mobile sheet --- */
-@media (min-width: 769px) {
+@media (min-width: 768px) {
   .event-filters-mobile {
     display: none;
   }
@@ -8235,7 +8235,7 @@ input[type="button"] {
 }
 
 /* --- Responsive: swap between desktop toolbar and mobile sheet --- */
-@media (min-width: 769px) {
+@media (min-width: 768px) {
   .agency-filters-mobile {
     display: none;
   }

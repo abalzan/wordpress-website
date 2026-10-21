@@ -113,9 +113,40 @@ rendering as before. **Do not un-scope them.**
 
 ### Breakpoints
 
-- Mobile: up to 768px
-- Desktop: 769px+
-- Reduced motion: `prefers-reduced-motion: reduce`
+The responsive stylesheet uses a small, justified set of layout breakpoints. The two documented thresholds are:
+
+- **768px** — Mobile-to-tablet transition. `max-width: 768px` targets viewports ≤768px; `min-width: 768px` targets viewports ≥768px. This is the primary shared breakpoint used across the design system (design-system.css, main.css, sponsor.css, leisure.css). The former `min-width: 769px` rules have been consolidated to `min-width: 768px` to align with this convention (9 rules updated across main.css, sponsor.css, and leisure.css).
+
+- **1024px** — Documented desktop breakpoint. Used in header-nav.css for the navigation drawer transition (`@media (max-width: 1024px)`) and CTA compact mode. This is the second documented threshold from the original audit.
+
+**Intermediate/Component-specific breakpoints** (preserved with justification):
+
+- **1199px** — Tablet intermediate range (`@media (max-width: 1199px) and (min-width: 768px)`). Provides a 2-column grid transition and sponsor/layout adjustments between the mobile single-column state (≤768px) and the full desktop state (≥1024px). Keeps the archive grid at 2 columns and sponsor flex-layout in a comfortable intermediate width. This is intentionally kept as a distinct breakpoint because the layout geometry at 1024px would be too wide for comfortable 2-column display, and at 768px the layout is already single-column.
+
+- **1280px** — Mobile search toggle (`@media (max-width: 1280px)` in main.css, `@media (max-width: 1280px) and (min-width: 1025px)` in header-nav.css). Shows the mobile search toggle button at tablet-and-below widths. Kept as a component-specific rule for the header search interaction.
+
+- **480px** — Small mobile adjustments (`@media (max-width: 480px)` in main.css and sponsor.css). Reduces the quick-access grid from 4 columns, adjusts search overlay padding, and sponsor contact list styling for narrow phone viewports (≈320–414px). Kept because the column reduction and spacing changes serve a distinct narrow-mobile purpose.
+
+- **782px** — Admin bar offset (`@media (max-width: 782px)` in header-nav.css and job-resources-admin.css). Adjusts the header top position when the WordPress admin bar is visible. Very specific to admin-bar mode, kept as-is.
+
+- **600px, 374px, 360px, 359px** — Narrow mobile tweaks. Very targeted adjustments for narrow viewports (admin bar inner padding, minimal grid reductions, container width finesse). Kept as component-specific necessities.
+
+**Consolidation summary**: 9 rules previously using `min-width: 769px` or `@media (max-width: 1199px) and (min-width: 769px)` have been aligned to the 768px convention. The `769px` value no longer appears as a standalone breakpoint in main.css, sponsor.css, or leisure.css — it has been replaced by the documented `768px` threshold. The complementary relationship (`max-width: 768px` for ≤768px and `min-width: 768px` for ≥768px) covers all viewport sizes without gap.
+
+Non-layout media queries (reduced-motion, color-scheme, hover/pointer capability) remain intact and are not counted as viewport breakpoints.
+
+| Standard breakpoints | Value | Purpose |
+|---|---|---|
+| Mobile→Tablet | 768px | Primary shared transition |
+| Desktop | 1024px | Documented second threshold |
+
+| Justified exceptions | Value | Component | Purpose |
+|---|---|---|---|
+| Tablet intermediate | 1199px | Archive grid, sponsor grid | 2-column transition between mobile and desktop |
+| Mobile search toggle | 1280px | Header navigation | Show/hide mobile search button |
+| Small mobile | 480px | Quick-access grid, sponsor contacts | 4→column reduction, overlay padding |
+| Admin bar | 782px | Header navigation | Offset with WP admin bar |
+| Narrow mobile | 600/374/360/359px | Various | Targeted viewport adjustments |
 
 ## CSS Files (load order)
 

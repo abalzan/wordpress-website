@@ -713,7 +713,7 @@
 }
 
 /* --- Responsive: swap between desktop toolbar and mobile sheet --- */
-@media (min-width: 769px) {
+@media (min-width: 768px) {
 	.leisure-mobile-filter {
 		display: none;
 	}

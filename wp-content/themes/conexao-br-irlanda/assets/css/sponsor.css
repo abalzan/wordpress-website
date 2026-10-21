@@ -106,7 +106,7 @@
    hacks — and aligned to the top so the title starts level with the
    image. Below 769px this stays a plain block stack. */
 
-@media (min-width: 769px) {
+@media (min-width: 768px) {
   .sponsor-single-layout {
     display: grid;
     grid-template-columns: minmax(240px, 360px) minmax(0, 1fr);
