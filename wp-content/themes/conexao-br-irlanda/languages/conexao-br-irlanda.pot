@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-11 20:37+0100\n"
+"POT-Creation-Date: 2026-10-20 07:48+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 
 
@@ -118,7 +118,7 @@ msgstr ""
 msgctxt "archive eyebrow"
 msgid "Parceiros da Comunidade"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/archive.php:193
+#: wp-content/themes/conexao-br-irlanda/archive.php:192
 msgid "Conhecer o Apoiador"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/comments.php:8
@@ -816,7 +816,7 @@ msgstr ""
 #: wp-content/themes/conexao-br-irlanda/inc/permit-employers.php:270
 msgid "Cuidadores domiciliários (Home Carers)"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/inc/queries.php:553
+#: wp-content/themes/conexao-br-irlanda/inc/queries.php:633
 msgid "Posts Relacionados"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/inc/recruitment-agencies.php:143
@@ -1170,7 +1170,6 @@ msgstr ""
 #: wp-content/themes/conexao-br-irlanda/template-parts/employment-opportunities.php:665
 #: wp-content/themes/conexao-br-irlanda/template-parts/job-resources-preview.php:40
 #: wp-content/themes/conexao-br-irlanda/template-parts/job-resources.php:40
-#: wp-content/themes/conexao-br-irlanda/template-parts/job-resources.php:86
 msgid "(abre em nova aba)"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/template-parts/content-none.php:3
@@ -1411,16 +1410,12 @@ msgstr ""
 #: wp-content/themes/conexao-br-irlanda/template-parts/pagination.php:24
 msgid "Próximo →"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-card.php:161
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-card.php:173
-msgid "Hoje"
+#. translators: %1$d is the day of the month, %2$s the abbreviated month name, e.g. "até 26 OUT".
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-card.php:111
+#, php-format
+msgid "até %1$d %2$s"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-card.php:165
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-card.php:175
-msgid "Amanhã"
-msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/event-card.php:345
-#: wp-content/themes/conexao-br-irlanda/template-parts/job-resources.php:81
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-card.php:367
 msgid "Saiba mais"
 msgstr ""
 #. translators: %s: filter group name.
@@ -1515,14 +1510,16 @@ msgid "na agenda"
 msgstr ""
 #. translators: %s: external job site name, e.g. "Jobs.ie".
 #: wp-content/themes/conexao-br-irlanda/template-parts/job-resources-preview.php:42
+#: wp-content/themes/conexao-br-irlanda/template-parts/job-resources.php:42
 #, php-format
 msgid "Acessar %s (abre em nova aba)"
 msgstr ""
 #: wp-content/themes/conexao-br-irlanda/template-parts/job-resources-preview.php:55
+#: wp-content/themes/conexao-br-irlanda/template-parts/job-resources.php:83
 msgid "Acessar"
 msgstr ""
-#: wp-content/themes/conexao-br-irlanda/template-parts/job-resources.php:44
-#: wp-content/themes/conexao-br-irlanda/template-parts/job-resources.php:62
+#: wp-content/themes/conexao-br-irlanda/template-parts/job-resources.php:46
+#: wp-content/themes/conexao-br-irlanda/template-parts/job-resources.php:64
 #, php-format
 msgid "Acessar %s"
 msgstr ""

@@ -991,7 +991,7 @@ parameters:
 			path: wp-content/themes/conexao-br-irlanda/template-parts/event-card.php
 
 		-
-			message: '#^Offset 1\|2\|3\|4\|5\|6\|7\|8\|9\|10\|11\|12 on array\{1\: ''JAN'', 2\: ''FEV'', 3\: ''MAR'', 4\: ''ABR'', 5\: ''MAI'', 6\: ''JUN'', 7\: ''JUL'', 8\: ''AGO'', \.\.\.\} in isset\(\) always exists and is not nullable\.$#'
+			message: '#^Offset 1\|2\|3\|4\|5\|6\|7\|8\|9\|10\|11\|12 on array\{1\: ''Jan'', 2\: ''Feb'', 3\: ''Mar'', 4\: ''Apr'', 5\: ''May'', 6\: ''Jun'', 7\: ''Jul'', 8\: ''Aug'', \.\.\.\}\|array\{1\: ''JAN'', 2\: ''FEV'', 3\: ''MAR'', 4\: ''ABR'', 5\: ''MAI'', 6\: ''JUN'', 7\: ''JUL'', 8\: ''AGO'', \.\.\.\} in isset\(\) always exists and is not nullable\.$#'
 			identifier: isset.offset
 			count: 2
 			path: wp-content/themes/conexao-br-irlanda/template-parts/event-card.php

@@ -699,6 +699,18 @@
   color: var(--color-text-secondary);
 }
 
+[data-theme="dark"] .event-card-detail--datetime {
+  color: var(--color-text-secondary);
+}
+
+[data-theme="dark"] .event-card-date-text {
+  color: var(--color-text);
+}
+
+[data-theme="dark"] .event-card-detail--datetime span:not(:last-child)::after {
+  color: var(--color-border);
+}
+
 /* Card category pills */
 [data-theme="dark"] .card-category,
 [data-theme="dark"] .archive-card-category,

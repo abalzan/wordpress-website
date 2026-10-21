@@ -837,17 +837,22 @@ CSS was **removed rather than left dead**, and the accompanying
 ("the map CTA never replaces the card's primary link") instead of the old
 markup, with the new contract asserted directly.
 
-### T1.9 (event date badge) — NOT IMPLEMENTED
+### T1.9 (event date badge) — IMPLEMENTED 2026-10-19 (UI/UX improvement 1)
 
-Measured: the badge renders **4** distinct `(size/weight)` treatments
-(`16px/400`, `18px/600`, `14px/400`, `14px/600`), consistent with the audit. The
-reduction is **not** safe to do blindly: the badge sits inside
-`aria-hidden="true"` decorative markup that sits alongside a separate
-`.event-card-date-iso.screen-reader-text` node carrying the machine-readable
-`<time datetime>`. Collapsing treatments requires deciding which of the four
-elements are redundant, and any mistake degrades an accessible date that is
-currently correct. It needs its own dedicated evidence pass, so it is recorded
-as **BLOCKED-pending-evidence** rather than half-applied.
+The previous BLOCKED-pending-evidence state is resolved. The dedicated pass
+established the redundancy safely: the badge was `aria-hidden="true"`, so its
+weekday, "Hoje"/"Amanhã" hint, recurrence label and series-end chip were
+purely decorative duplicates of data the card already carried. The badge now
+renders the day number and the localized abbreviated month ONLY (PT `20 OUT`
+/ EN `20 Oct`); all real date information lives once in a single compact
+metadata line (`20 OUT · 20:00 — 21:00 · Toda terça-feira · até 27 OUT`) plus
+the unchanged `<time datetime>` node, which carries the full accessible date
+exactly as before. Multi-day duration is preserved (`20–31 OUT`, full range
+cross-month). The `is-today` accent border is retained as a non-text today
+indicator; the redundant "Hoje" label text is gone. No query, recurrence,
+timezone, caching, filtering or pagination behaviour changed. Gated by
+`tests/test-event-date-badge.php` and the full `./scripts/run-tests.sh`
+comparison.
 
 ### T1.14 (homepage shortcut blocks) — NOT IMPLEMENTED
 
@@ -879,8 +884,15 @@ measurement.
   raw `$category->name` gone from `home.php`), the T1.12 placeholder removal
   **plus the preserved image path and title link**, and the T1.13 absence of any
   `color: var(--conexao-gray-500)` in `main.css`. 27 assertions.
+- `tests/test-event-date-badge.php` — pins the UI/UX improvement 1 (audit
+  T1.9) contract: the badge carries the day and localized month only, one
+  compact date/time metadata line, one location row, locale-correct months
+  and a translatable series-end chip, the unchanged aria-hidden badge plus
+  `<time datetime>` accessible date, multi-day duration, `--text-sm` token
+  styling with dark-mode mirrors, and rendered-archive agreement including a
+  date-less event.
 
-_Last verified: 2026-10-03 by UI convergence Phase 2 (T1.6–T1.14)_
+_Last verified: 2026-10-19 by UI/UX improvement 1 (event date badge, audit T1.9)_
 
 _Last verified: 2026-10-03 by UI convergence Phase 1 (T1.1–T1.5)_
 

@@ -1,0 +1,502 @@
+[
+ {
+  "theme": "light",
+  "vp": "1440",
+  "lang": "pt",
+  "overflow": false,
+  "sw": 1440,
+  "iw": 1440,
+  "cards": 10,
+  "lines": 10,
+  "badges": 10,
+  "badStyle": {
+   "fs": "16px",
+   "w": 58,
+   "h": 64,
+   "color": "rgb(14, 107, 58)",
+   "bg": "rgb(255, 255, 255)",
+   "border": "rgb(246, 139, 31)"
+  },
+  "lineStyle": {
+   "fs": "14px",
+   "color": "rgb(108, 117, 125)"
+  },
+  "overlap": false,
+  "titleWrap": false
+ },
+ {
+  "theme": "light",
+  "vp": "1440",
+  "lang": "en",
+  "overflow": false,
+  "sw": 1440,
+  "iw": 1440,
+  "cards": 10,
+  "lines": 10,
+  "badges": 10,
+  "badStyle": {
+   "fs": "16px",
+   "w": 58,
+   "h": 64,
+   "color": "rgb(14, 107, 58)",
+   "bg": "rgb(255, 255, 255)",
+   "border": "rgb(246, 139, 31)"
+  },
+  "lineStyle": {
+   "fs": "14px",
+   "color": "rgb(108, 117, 125)"
+  },
+  "overlap": false,
+  "titleWrap": false
+ },
+ {
+  "theme": "light",
+  "vp": "1024",
+  "lang": "pt",
+  "overflow": false,
+  "sw": 1024,
+  "iw": 1024,
+  "cards": 10,
+  "lines": 10,
+  "badges": 10,
+  "badStyle": {
+   "fs": "16px",
+   "w": 58,
+   "h": 64,
+   "color": "rgb(14, 107, 58)",
+   "bg": "rgb(255, 255, 255)",
+   "border": "rgb(246, 139, 31)"
+  },
+  "lineStyle": {
+   "fs": "14px",
+   "color": "rgb(108, 117, 125)"
+  },
+  "overlap": false,
+  "titleWrap": false
+ },
+ {
+  "theme": "light",
+  "vp": "1024",
+  "lang": "en",
+  "overflow": false,
+  "sw": 1024,
+  "iw": 1024,
+  "cards": 10,
+  "lines": 10,
+  "badges": 10,
+  "badStyle": {
+   "fs": "16px",
+   "w": 58,
+   "h": 64,
+   "color": "rgb(14, 107, 58)",
+   "bg": "rgb(255, 255, 255)",
+   "border": "rgb(246, 139, 31)"
+  },
+  "lineStyle": {
+   "fs": "14px",
+   "color": "rgb(108, 117, 125)"
+  },
+  "overlap": false,
+  "titleWrap": false
+ },
+ {
+  "theme": "light",
+  "vp": "768",
+  "lang": "pt",
+  "overflow": false,
+  "sw": 768,
+  "iw": 768,
+  "cards": 10,
+  "lines": 10,
+  "badges": 10,
+  "badStyle": {
+   "fs": "16px",
+   "w": 58,
+   "h": 64,
+   "color": "rgb(14, 107, 58)",
+   "bg": "rgb(255, 255, 255)",
+   "border": "rgb(246, 139, 31)"
+  },
+  "lineStyle": {
+   "fs": "14px",
+   "color": "rgb(108, 117, 125)"
+  },
+  "overlap": false,
+  "titleWrap": false
+ },
+ {
+  "theme": "light",
+  "vp": "768",
+  "lang": "en",
+  "overflow": false,
+  "sw": 768,
+  "iw": 768,
+  "cards": 10,
+  "lines": 10,
+  "badges": 10,
+  "badStyle": {
+   "fs": "16px",
+   "w": 58,
+   "h": 64,
+   "color": "rgb(14, 107, 58)",
+   "bg": "rgb(255, 255, 255)",
+   "border": "rgb(246, 139, 31)"
+  },
+  "lineStyle": {
+   "fs": "14px",
+   "color": "rgb(108, 117, 125)"
+  },
+  "overlap": false,
+  "titleWrap": false
+ },
+ {
+  "theme": "light",
+  "vp": "390",
+  "lang": "pt",
+  "overflow": false,
+  "sw": 390,
+  "iw": 390,
+  "cards": 10,
+  "lines": 10,
+  "badges": 10,
+  "badStyle": {
+   "fs": "16px",
+   "w": 58,
+   "h": 64,
+   "color": "rgb(14, 107, 58)",
+   "bg": "rgb(255, 255, 255)",
+   "border": "rgb(246, 139, 31)"
+  },
+  "lineStyle": {
+   "fs": "14px",
+   "color": "rgb(108, 117, 125)"
+  },
+  "overlap": false,
+  "titleWrap": false
+ },
+ {
+  "theme": "light",
+  "vp": "390",
+  "lang": "en",
+  "overflow": false,
+  "sw": 390,
+  "iw": 390,
+  "cards": 10,
+  "lines": 10,
+  "badges": 10,
+  "badStyle": {
+   "fs": "16px",
+   "w": 58,
+   "h": 64,
+   "color": "rgb(14, 107, 58)",
+   "bg": "rgb(255, 255, 255)",
+   "border": "rgb(246, 139, 31)"
+  },
+  "lineStyle": {
+   "fs": "14px",
+   "color": "rgb(108, 117, 125)"
+  },
+  "overlap": false,
+  "titleWrap": false
+ },
+ {
+  "theme": "light",
+  "vp": "360",
+  "lang": "pt",
+  "overflow": false,
+  "sw": 360,
+  "iw": 360,
+  "cards": 10,
+  "lines": 10,
+  "badges": 10,
+  "badStyle": {
+   "fs": "16px",
+   "w": 58,
+   "h": 64,
+   "color": "rgb(14, 107, 58)",
+   "bg": "rgb(255, 255, 255)",
+   "border": "rgb(246, 139, 31)"
+  },
+  "lineStyle": {
+   "fs": "14px",
+   "color": "rgb(108, 117, 125)"
+  },
+  "overlap": false,
+  "titleWrap": true
+ },
+ {
+  "theme": "light",
+  "vp": "360",
+  "lang": "en",
+  "overflow": false,
+  "sw": 360,
+  "iw": 360,
+  "cards": 10,
+  "lines": 10,
+  "badges": 10,
+  "badStyle": {
+   "fs": "16px",
+   "w": 58,
+   "h": 64,
+   "color": "rgb(14, 107, 58)",
+   "bg": "rgb(255, 255, 255)",
+   "border": "rgb(246, 139, 31)"
+  },
+  "lineStyle": {
+   "fs": "14px",
+   "color": "rgb(108, 117, 125)"
+  },
+  "overlap": false,
+  "titleWrap": true
+ },
+ {
+  "theme": "dark",
+  "vp": "1440",
+  "lang": "pt",
+  "overflow": false,
+  "sw": 1440,
+  "iw": 1440,
+  "cards": 10,
+  "lines": 10,
+  "badges": 10,
+  "badStyle": {
+   "fs": "16px",
+   "w": 58,
+   "h": 64,
+   "color": "rgb(58, 184, 117)",
+   "bg": "rgb(22, 32, 43)",
+   "border": "rgb(245, 158, 66)"
+  },
+  "lineStyle": {
+   "fs": "14px",
+   "color": "rgb(192, 204, 216)"
+  },
+  "overlap": false,
+  "titleWrap": false
+ },
+ {
+  "theme": "dark",
+  "vp": "1440",
+  "lang": "en",
+  "overflow": false,
+  "sw": 1440,
+  "iw": 1440,
+  "cards": 10,
+  "lines": 10,
+  "badges": 10,
+  "badStyle": {
+   "fs": "16px",
+   "w": 58,
+   "h": 64,
+   "color": "rgb(58, 184, 117)",
+   "bg": "rgb(22, 32, 43)",
+   "border": "rgb(245, 158, 66)"
+  },
+  "lineStyle": {
+   "fs": "14px",
+   "color": "rgb(192, 204, 216)"
+  },
+  "overlap": false,
+  "titleWrap": false
+ },
+ {
+  "theme": "dark",
+  "vp": "1024",
+  "lang": "pt",
+  "overflow": false,
+  "sw": 1024,
+  "iw": 1024,
+  "cards": 10,
+  "lines": 10,
+  "badges": 10,
+  "badStyle": {
+   "fs": "16px",
+   "w": 58,
+   "h": 64,
+   "color": "rgb(58, 184, 117)",
+   "bg": "rgb(22, 32, 43)",
+   "border": "rgb(245, 158, 66)"
+  },
+  "lineStyle": {
+   "fs": "14px",
+   "color": "rgb(192, 204, 216)"
+  },
+  "overlap": false,
+  "titleWrap": false
+ },
+ {
+  "theme": "dark",
+  "vp": "1024",
+  "lang": "en",
+  "overflow": false,
+  "sw": 1024,
+  "iw": 1024,
+  "cards": 10,
+  "lines": 10,
+  "badges": 10,
+  "badStyle": {
+   "fs": "16px",
+   "w": 58,
+   "h": 64,
+   "color": "rgb(58, 184, 117)",
+   "bg": "rgb(22, 32, 43)",
+   "border": "rgb(245, 158, 66)"
+  },
+  "lineStyle": {
+   "fs": "14px",
+   "color": "rgb(192, 204, 216)"
+  },
+  "overlap": false,
+  "titleWrap": false
+ },
+ {
+  "theme": "dark",
+  "vp": "768",
+  "lang": "pt",
+  "overflow": false,
+  "sw": 768,
+  "iw": 768,
+  "cards": 10,
+  "lines": 10,
+  "badges": 10,
+  "badStyle": {
+   "fs": "16px",
+   "w": 58,
+   "h": 64,
+   "color": "rgb(58, 184, 117)",
+   "bg": "rgb(22, 32, 43)",
+   "border": "rgb(245, 158, 66)"
+  },
+  "lineStyle": {
+   "fs": "14px",
+   "color": "rgb(192, 204, 216)"
+  },
+  "overlap": false,
+  "titleWrap": false
+ },
+ {
+  "theme": "dark",
+  "vp": "768",
+  "lang": "en",
+  "overflow": false,
+  "sw": 768,
+  "iw": 768,
+  "cards": 10,
+  "lines": 10,
+  "badges": 10,
+  "badStyle": {
+   "fs": "16px",
+   "w": 58,
+   "h": 64,
+   "color": "rgb(58, 184, 117)",
+   "bg": "rgb(22, 32, 43)",
+   "border": "rgb(245, 158, 66)"
+  },
+  "lineStyle": {
+   "fs": "14px",
+   "color": "rgb(192, 204, 216)"
+  },
+  "overlap": false,
+  "titleWrap": false
+ },
+ {
+  "theme": "dark",
+  "vp": "390",
+  "lang": "pt",
+  "overflow": false,
+  "sw": 390,
+  "iw": 390,
+  "cards": 10,
+  "lines": 10,
+  "badges": 10,
+  "badStyle": {
+   "fs": "16px",
+   "w": 58,
+   "h": 64,
+   "color": "rgb(58, 184, 117)",
+   "bg": "rgb(22, 32, 43)",
+   "border": "rgb(245, 158, 66)"
+  },
+  "lineStyle": {
+   "fs": "14px",
+   "color": "rgb(192, 204, 216)"
+  },
+  "overlap": false,
+  "titleWrap": false
+ },
+ {
+  "theme": "dark",
+  "vp": "390",
+  "lang": "en",
+  "overflow": false,
+  "sw": 390,
+  "iw": 390,
+  "cards": 10,
+  "lines": 10,
+  "badges": 10,
+  "badStyle": {
+   "fs": "16px",
+   "w": 58,
+   "h": 64,
+   "color": "rgb(58, 184, 117)",
+   "bg": "rgb(22, 32, 43)",
+   "border": "rgb(245, 158, 66)"
+  },
+  "lineStyle": {
+   "fs": "14px",
+   "color": "rgb(192, 204, 216)"
+  },
+  "overlap": false,
+  "titleWrap": false
+ },
+ {
+  "theme": "dark",
+  "vp": "360",
+  "lang": "pt",
+  "overflow": false,
+  "sw": 360,
+  "iw": 360,
+  "cards": 10,
+  "lines": 10,
+  "badges": 10,
+  "badStyle": {
+   "fs": "16px",
+   "w": 58,
+   "h": 64,
+   "color": "rgb(58, 184, 117)",
+   "bg": "rgb(22, 32, 43)",
+   "border": "rgb(245, 158, 66)"
+  },
+  "lineStyle": {
+   "fs": "14px",
+   "color": "rgb(192, 204, 216)"
+  },
+  "overlap": false,
+  "titleWrap": true
+ },
+ {
+  "theme": "dark",
+  "vp": "360",
+  "lang": "en",
+  "overflow": false,
+  "sw": 360,
+  "iw": 360,
+  "cards": 10,
+  "lines": 10,
+  "badges": 10,
+  "badStyle": {
+   "fs": "16px",
+   "w": 58,
+   "h": 64,
+   "color": "rgb(58, 184, 117)",
+   "bg": "rgb(22, 32, 43)",
+   "border": "rgb(245, 158, 66)"
+  },
+  "lineStyle": {
+   "fs": "14px",
+   "color": "rgb(192, 204, 216)"
+  },
+  "overlap": false,
+  "titleWrap": true
+ }
+]

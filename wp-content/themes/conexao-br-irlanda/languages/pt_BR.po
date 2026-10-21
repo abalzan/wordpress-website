@@ -1971,3 +1971,12 @@ msgstr "Irlanda"
 #: wp-content/themes/conexao-br-irlanda/inc/recruitment-agencies.php:155
 msgid "irlanda"
 msgstr "irlanda"
+
+# UI/UX improvement 1 (2026-10-19) — the event card's series-end chip
+# ("até 26 OUT"). The pt_BR catalogue is an identity catalogue: the source
+# string is returned verbatim. Presentation only: no event data changes.
+#. translators: %1$d is the day of the month, %2$s the abbreviated month name, e.g. "até 26 OUT".
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-card.php:111
+#, php-format
+msgid "até %1$d %2$s"
+msgstr "até %1$d %2$s"

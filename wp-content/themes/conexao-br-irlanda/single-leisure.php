@@ -374,8 +374,8 @@ if ( function_exists( 'conexao_b2_fallback_notice' ) ) {
 				<?php // Phase 3C — related upcoming events for this county.
 				// Renders nothing when the county has no upcoming events (never an
 				// empty section / no "Nenhum evento encontrado"). Reuses the EXISTING
-				// event card component — no second card design, same date / Hoje /
-				// Amanhã / recurrence labels and existing accessibility.
+				// event card component — no second card design, same compact date
+				// badge + metadata line and existing accessibility.
 				if ( ! empty( $leisure_events ) ) : ?>
 					<section class="leisure-single-events">
 						<h2 class="leisure-single-events-title"><?php esc_html_e( 'Próximos eventos', 'conexao-br-irlanda' ); ?></h2>

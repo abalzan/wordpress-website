@@ -2228,6 +2228,50 @@ ul, ol {
   color: var(--conexao-gray-600);
 }
 
+/* Compact date/time metadata line: "12 Out · 19:00 — 20:00".
+   Reuses the existing metadata size and design tokens; no new type scale.
+   The line flows as inline text (not flex) so long values wrap as whole
+   phrases instead of shrinking; the middot separator is a CSS ::after glued
+   to its preceding value, so it can never dangle at the end of the line
+   and a missing value simply renders no separator. */
+.events-page .event-card-detail--datetime {
+  display: block;
+  font-size: var(--text-sm);
+  line-height: 1.45;
+  color: var(--conexao-gray-600);
+}
+
+.events-page .event-card-detail--datetime svg {
+  vertical-align: -2px;
+  margin-right: 6px;
+}
+
+.events-page .event-card-date-text {
+  font-weight: 600;
+  color: var(--conexao-dark);
+}
+
+.events-page .event-card-detail--datetime span:not(:last-child)::after {
+  content: '·';
+  margin: 0 6px;
+  color: var(--conexao-gray-400);
+  font-weight: 400;
+}
+
+/* Recurrence chips render inline inside the metadata line instead of as
+   stacked badge blocks. */
+.events-page .event-card-detail--datetime .event-card-recurrence,
+.events-page .event-card-detail--datetime .event-card-recurrence-end {
+  display: inline;
+  margin: 0;
+  font-size: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  line-height: inherit;
+  text-transform: inherit;
+  color: inherit;
+}
+
 .events-page .event-card-excerpt {
   font-size: 0.875rem;
   color: var(--conexao-gray-600);

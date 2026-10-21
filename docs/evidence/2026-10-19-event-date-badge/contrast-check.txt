@@ -1,0 +1,6 @@
+light badge day  #0E6B3A on #FFFFFF           6.60:1  AA-normal PASS
+light line meta  #6C757D on #FFFFFF           4.69:1  AA-normal PASS
+light badge today day #AA6115-ish on #FFF     2.13:1  FAIL
+dark badge day   #3AB875 on #16202B           6.50:1  AA-normal PASS
+dark line meta   #C0CCD8 on #16202B           10.09:1  AA-normal PASS
+light date-text  dark on white                19.30:1  AA-normal PASS

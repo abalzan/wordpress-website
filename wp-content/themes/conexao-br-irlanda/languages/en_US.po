@@ -1985,3 +1985,12 @@ msgstr "Vocational Training"
 #: wp-content/themes/conexao-br-irlanda/inc/i18n/fallback.php:640
 msgid "Business"
 msgstr "Business"
+
+# UI/UX improvement 1 (2026-10-19) — the event card's series-end chip
+# ("até 26 OUT" / "until 26 Oct"). PT is the source string; this EN entry
+# localizes it. Presentation only: no event data changes.
+#. translators: %1$d is the day of the month, %2$s the abbreviated month name, e.g. "até 26 OUT".
+#: wp-content/themes/conexao-br-irlanda/template-parts/event-card.php:111
+#, php-format
+msgid "até %1$d %2$s"
+msgstr "until %1$d %2$s"

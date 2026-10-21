@@ -175,7 +175,7 @@ All in `template-parts/`:
 | File | Used On |
 |------|---------|
 | `archive-header.php` | All CPT archives (title, eyebrow, description, filters) |
-| `event-card.php` | Events archive grid |
+| `event-card.php` | Events archive grid (date badge + compact date/time line — UI/UX improvement 1, see below) |
 | `event-filters.php` | Events archive filter widget (event-only, Lazer/Empregos widget standard: `?county=` counties + `?cidade=` towns + `?categoria=` categories used by published events; desktop dropdowns with listbox options + search for long lists, active-filter chips, result count, mobile "Filtrar" bottom sheet with radios + instant apply; AND-combined, County → City cascade server-side via `conexao_get_event_towns()`, URLs through `conexao_event_filter_url()`) |
 | `course-filters.php` | Cursos archive filter bar (course-only: `?categoria=` provider categories from `_provider_category` meta; renders nothing when no categories exist) |
 | `guide-filters.php` | Guias archive filter bar (`?categoria=` conexao_category terms used by published guides) |
@@ -189,6 +189,17 @@ All in `template-parts/`:
 | `quote-section.php` | Testimonial/quote section (homepage + archives) |
 | `pagination.php` | Archive pagination (renders nothing when the query has one page — e.g. the single-page Apoiadores directory) |
 | `content-none.php` | Empty state |
+
+### Event-card date presentation (UI/UX improvement 1, 2026-10-19 — audit T1.9)
+
+Implemented in `template-parts/event-card.php`, `assets/css/main.css`, `assets/css/dark-mode.css`. The contract:
+
+1. **Compact date badge** (`.event-card-date-badge`, `aria-hidden="true"`): the day number and the localized abbreviated month **only** (PT `20 OUT` / EN `20 Oct`). The badge month follows the active UI locale read through the shared `conexao_current_locale()` helper; PT keeps the established uppercase `JAN–DEZ` set, EN renders `Jan–Dec` (this closed a real defect where the EN archive showed Portuguese months while the rest of the card was translated). The `is-today` class (accent border) is retained as a non-text today indicator.
+2. **One compact date/time metadata line** (`.event-card-detail--datetime`, `var(--text-sm)`): the date, the clock time (`event-card-time`, only when `_event_time` is set), the recurrence label (`event-card-recurrence`) and the series-end chip (`event-card-recurrence-end`, a translatable `até %d %s` / `until %d %s` string) — in that order, separated by a CSS-glued middot that can never dangle. Multi-day duration is preserved (`20–31 OUT`, `20 OUT – 15 Nov` cross-month); all-day events show the date/badge only, with no time element.
+3. **One location line** (`.event-card-detail--location`, unchanged T1.8 contract).
+4. **The accessible date is unchanged**: the badge stays decorative and the machine-readable `<time datetime>` node still carries the full sentence. This was the T1.9 blocker in the previous convergence phase — verified directly by `tests/test-event-date-badge.php` (section E).
+
+No query, recurrence-calculation, timezone, caching, filtering or pagination behaviour changes — presentation only.
 
 ## Dark Mode
 

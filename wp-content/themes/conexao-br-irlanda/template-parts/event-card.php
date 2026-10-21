@@ -51,14 +51,39 @@ $month_short_pt = array(
 	1 => 'JAN', 2 => 'FEV', 3 => 'MAR', 4 => 'ABR', 5 => 'MAI', 6 => 'JUN',
 	7 => 'JUL', 8 => 'AGO', 9 => 'SET', 10 => 'OUT', 11 => 'NOV', 12 => 'DEZ',
 );
-$month_full_pt = array(
+$month_short_en = array(
+	1  => 'Jan',
+	2  => 'Feb',
+	3  => 'Mar',
+	4  => 'Apr',
+	5  => 'May',
+	6  => 'Jun',
+	7  => 'Jul',
+	8  => 'Aug',
+	9  => 'Sep',
+	10 => 'Oct',
+	11 => 'Nov',
+	12 => 'Dec',
+);
+
+/*
+ * Localized month abbreviation for the badge and the metadata line.
+ *
+ * The active UI locale (pt_BR / en_US via Polylang, read through the shared
+ * conexao_current_locale()) decides the map, so the English archive shows
+ * "Oct" instead of the Portuguese "OUT". The PT archive keeps the established
+ * uppercase JAN–DEZ set unchanged.
+ */
+$event_card_locale = conexao_current_locale();
+$month_short       = ( 0 === strpos( $event_card_locale, 'pt' ) ) ? $month_short_pt : $month_short_en;
+$month_full_pt     = array(
 	1 => 'janeiro', 2 => 'fevereiro', 3 => 'março', 4 => 'abril', 5 => 'maio', 6 => 'junho',
 	7 => 'julho', 8 => 'agosto', 9 => 'setembro', 10 => 'outubro', 11 => 'novembro', 12 => 'dezembro',
 );
-$weekday_short_pt = array(
+$weekday_short_pt  = array(
 	0 => 'DOM', 1 => 'SEG', 2 => 'TER', 3 => 'QUA', 4 => 'QUI', 5 => 'SEX', 6 => 'SÁB',
 );
-$weekday_full_pt = array(
+$weekday_full_pt   = array(
 	0 => 'domingo', 1 => 'segunda-feira', 2 => 'terça-feira', 3 => 'quarta-feira',
 	4 => 'quinta-feira', 5 => 'sexta-feira', 6 => 'sábado',
 );
@@ -89,16 +114,21 @@ if ( conexao_event_is_recurring( $event_id ) ) {
 	if ( $r_end ) {
 		$r_end_ts  = strtotime( $r_end );
 		$r_end_day = (int) date( 'j', $r_end_ts );
-		$r_end_mon = isset( $month_short_pt[ (int) date( 'n', $r_end_ts ) ] )
-			? $month_short_pt[ (int) date( 'n', $r_end_ts ) ] : '';
-		$recurrence_end_html = sprintf( 'até %d %s', $r_end_day, $r_end_mon );
+		$r_end_mon = isset( $month_short[ (int) date( 'n', $r_end_ts ) ] )
+			? $month_short[ (int) date( 'n', $r_end_ts ) ] : '';
+		$recurrence_end_html = sprintf(
+			/* translators: %1$d is the day of the month, %2$s the abbreviated month name, e.g. "até 26 OUT". */
+			__( 'até %1$d %2$s', 'conexao-br-irlanda' ),
+			$r_end_day,
+			$r_end_mon
+		);
 	}
 }
 
 if ( $event_date ) {
 	$start_day = (string) date( 'j', $date_ts );
 	$day       = $start_day;
-	$month     = isset( $month_short_pt[ $month_num ] ) ? $month_short_pt[ $month_num ] : '---';
+	$month     = isset( $month_short[ $month_num ] ) ? $month_short[ $month_num ] : '---';
 	$weekday   = isset( $weekday_short_pt[ (int) date( 'w', $date_ts ) ] ) ? $weekday_short_pt[ (int) date( 'w', $date_ts ) ] : '---';
 	$date_iso  = $event_date;
 
@@ -119,15 +149,23 @@ if ( $event_date ) {
 	 * ("até 18 OUT") rendered above, so the single next-occurrence date is
 	 * both sufficient and accurate here.
 	 */
+	// Metadata-line date text. The badge shows the start day+month; the line
+	// carries the full range so a multi-day event's duration stays visible.
+	$line_date  = $start_day . ' ' . $month;
 	$show_range = ( $event_end_date && $end_ts > $date_ts && ! conexao_event_is_recurring( $event_id ) );
 	if ( $show_range ) {
+		$end_day = (int) date( 'j', $end_ts );
 		// Multi-day event: surface the stored _event_end_date as a range.
 		if ( date( 'Y-m', $end_ts ) === date( 'Y-m', $date_ts ) ) {
-			$day      = $start_day . '-' . date( 'j', $end_ts ); // "12-15" on the same line.
-			$sr_label = sprintf( '%s a %s de %s de %s', $start_day, date( 'j', $end_ts ), $month_full, $year_num );
+			$day       = $start_day . '-' . $end_day; // "12-15" on the same line.
+			$line_date = $day . ' ' . $month;
+			$sr_label  = sprintf( '%s a %s de %s de %s', $start_day, $end_day, $month_full, $year_num );
 		} else {
-			$end_month = isset( $month_full_pt[ (int) date( 'n', $end_ts ) ] ) ? $month_full_pt[ (int) date( 'n', $end_ts ) ] : '';
-			$sr_label  = sprintf( 'de %s de %s a %s de %s de %s', $start_day, $month_full, date( 'j', $end_ts ), $end_month, date( 'Y', $end_ts ) );
+			$end_month      = isset( $month_short[ (int) date( 'n', $end_ts ) ] ) ? $month_short[ (int) date( 'n', $end_ts ) ] : '';
+			$end_month_full = isset( $month_full_pt[ (int) date( 'n', $end_ts ) ] ) ? $month_full_pt[ (int) date( 'n', $end_ts ) ] : '';
+			$day            = $start_day; // badge shows the start day only
+			$line_date      = sprintf( '%s %s – %d %s', $start_day, $month, $end_day, $end_month );
+			$sr_label       = sprintf( 'de %s de %s a %s de %s de %s', $start_day, $month_full, $end_day, $end_month_full, date( 'Y', $end_ts ) );
 		}
 		$date_iso .= '/' . $event_end_date; // ISO 8601 range, machine-readable.
 	} else {
@@ -142,37 +180,30 @@ if ( $event_date ) {
 	}
 }
 
-// "Hoje"/"Amanhã" — only when the event genuinely falls today/tomorrow
-// (site-local date). Always a subtle chip alongside the real date, never a
-// replacement for it.
+// "Hoje"/"Amanhã" — the visual hint chip is GONE (audit T1.9): the date on
+// the card already tells the visitor which day the event falls on, so a
+// second "Hoje" label was redundant noise on the densest card of the site.
+//
+// The `is-today` state survives: it keeps the badge's accent border, so the
+// emphasis is still there without a second typographic treatment.
 //
 // The shared recurrence evaluator decides whether the event occurs on the
 // current local date — more robust than a raw string comparison against the
 // cached "next occurrence" date, and keeps all recurrence logic in the
 // runtime class (no logic duplicated in template). Routing one-time events
-// through the same evaluator also means a multi-day event shows "Hoje" on
+// through the same evaluator also means a multi-day event is recognised on
 // every day it is running, not only on day 1.
 $is_today = false;
-$hint     = '';
 if ( $event_date && class_exists( 'Conexao_Event_Recurrence' ) ) {
 	$now = current_datetime();
 	if ( Conexao_Event_Recurrence::occurs_on_date( (int) $event_id, $now ) ) {
 		$is_today = true;
-		$hint     = __( 'Hoje', 'conexao-br-irlanda' );
-	} else {
-		$tomorrow = $now->modify( '+1 day' );
-		if ( Conexao_Event_Recurrence::occurs_on_date( (int) $event_id, $tomorrow ) ) {
-			$hint = __( 'Amanhã', 'conexao-br-irlanda' );
-		}
 	}
 } elseif ( $event_date ) {
 	// Runtime inactive: preserve the legacy raw date comparison.
 	$today = current_time( 'Y-m-d' );
 	if ( $event_date === $today ) {
 		$is_today = true;
-		$hint     = __( 'Hoje', 'conexao-br-irlanda' );
-	} elseif ( $event_date === date( 'Y-m-d', strtotime( $today . ' +1 day' ) ) ) {
-		$hint = __( 'Amanhã', 'conexao-br-irlanda' );
 	}
 }
 ?>
@@ -246,19 +277,6 @@ $conexao_card_heading_tag = 'h' . $conexao_card_heading_level;
 		<div class="event-card-date-badge<?php echo $is_today ? ' is-today' : ''; ?>" aria-hidden="true">
 			<span class="event-card-date-day"><?php echo esc_html( $day ); ?></span>
 			<span class="event-card-date-month"><?php echo esc_html( $month ); ?></span>
-			<span class="event-card-date-weekday"><?php echo esc_html( $weekday ); ?></span>
-			<?php if ( $recurrence_label ) : ?>
-				<span class="event-card-recurrence"><?php echo esc_html( $recurrence_label ); ?></span>
-			<?php endif; ?>
-			<?php if ( $show_range && date( 'Y-m', $end_ts ) !== date( 'Y-m', $date_ts ) ) : ?>
-				<span class="event-card-date-range"><?php echo esc_html( 'até ' . date( 'j', $end_ts ) . ' ' . ( isset( $month_short_pt[ (int) date( 'n', $end_ts ) ] ) ? $month_short_pt[ (int) date( 'n', $end_ts ) ] : '' ) ); ?></span>
-			<?php endif; ?>
-			<?php if ( $recurrence_end_html ) : ?>
-				<span class="event-card-recurrence-end"><?php echo esc_html( $recurrence_end_html ); ?></span>
-			<?php endif; ?>
-			<?php if ( $hint ) : ?>
-				<span class="event-card-date-hint"><?php echo esc_html( $hint ); ?></span>
-			<?php endif; ?>
 		</div>
 	</a>
 
@@ -280,13 +298,22 @@ $conexao_card_heading_tag = 'h' . $conexao_card_heading_level;
 		<<?php echo esc_html( $conexao_card_heading_tag ); ?> class="event-card-title"><a href="<?php echo esc_url( $event_url ); ?>"<?php echo $event_target; /* phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped */ ?>><?php the_title(); ?></a></<?php echo esc_html( $conexao_card_heading_tag ); ?>>
 
 		<div class="event-card-details">
-			<?php if ( $event_time ) : ?>
-				<span class="event-card-detail">
+			<?php if ( $event_date ) : ?>
+				<span class="event-card-detail event-card-detail--datetime">
 					<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
 						<circle cx="12" cy="12" r="10"></circle>
 						<polyline points="12 6 12 12 16 14"></polyline>
 					</svg>
-					<span class="event-card-time"><?php echo esc_html( $event_time ); ?></span>
+					<span class="event-card-date-text"><?php echo esc_html( $line_date ); ?></span>
+					<?php if ( $event_time ) : ?>
+						<span class="event-card-time"><?php echo esc_html( $event_time ); ?></span>
+					<?php endif; ?>
+					<?php if ( $recurrence_label ) : ?>
+						<span class="event-card-recurrence"><?php echo esc_html( $recurrence_label ); ?></span>
+					<?php endif; ?>
+					<?php if ( $recurrence_end_html ) : ?>
+						<span class="event-card-recurrence-end"><?php echo esc_html( $recurrence_end_html ); ?></span>
+					<?php endif; ?>
 				</span>
 			<?php endif; ?>
 
