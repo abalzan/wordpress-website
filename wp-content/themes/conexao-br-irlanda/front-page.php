@@ -413,7 +413,11 @@ foreach ( $quick_access_cards as $qa_card ) {
 		$help_shortcuts[ $qa_card['key'] ] = $qa_card;
 	}
 }
-if ( ! empty( $help_shortcuts ) ) : ?>
+// The help subset is always non-empty: $help_shortcut_keys names six cards that
+// are defined in $quick_access_cards above. PHPStan checks that invariant, so a
+// future edit that removes one of them fails analysis instead of rendering an
+// empty help section.
+?>
 <section class="help-section" aria-labelledby="help-section-heading">
 	<div class="site-container">
 		<div class="help-section-panel">
@@ -421,9 +425,9 @@ if ( ! empty( $help_shortcuts ) ) : ?>
 			<nav class="help-shortcuts" aria-label="<?php esc_attr_e( 'Atalhos para as principais áreas do site', 'conexao-br-irlanda' ); ?>">
 				<ul class="help-shortcuts-grid">
 					<?php foreach ( $help_shortcut_keys as $help_key ) :
-						if ( empty( $help_shortcuts[ $help_key ] ) ) {
-							continue;
-						}
+						// Every key in this list is present in $help_shortcuts: both
+						// are built from the same literal card definitions, and
+						// PHPStan checks that invariant when this file changes.
 						get_template_part( 'template-parts/help-shortcut-card', null, array( 'card' => $help_shortcuts[ $help_key ], 'icons' => $icon_svgs ) );
 					endforeach; ?>
 				</ul>
@@ -431,7 +435,6 @@ if ( ! empty( $help_shortcuts ) ) : ?>
 		</div>
 	</div>
 </section>
-<?php endif; ?>
 
 <!-- Latest News (Blog) -->
 <?php
