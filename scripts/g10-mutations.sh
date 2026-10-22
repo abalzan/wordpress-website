@@ -21,7 +21,7 @@
 set -uo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-cd "$REPO_ROOT"
+cd "$REPO_ROOT" || exit 1
 
 SRC_EVENTBRITE="wp-content/plugins/conexao-event-importer/includes/sources/class-eventbrite-source.php"
 SRC_ENGINE="wp-content/plugins/conexao-event-importer/includes/class-event-importer.php"
@@ -115,43 +115,47 @@ apply_step() {
 	M1)
 		# Advance the checkpoint BEFORE the fetch succeeds (the dangerous
 		# inversion). Expected: the ordering proof fails.
-		apply_patch "$SRC_EVENTBRITE" '
+		apply_patch "$SRC_EVENTBRITE" "$(cat <<'MUTATION'
 old = """\t\t\t$html = $client->fetch_page( $base_url, $page );\n\t\t\tif ( empty( $html ) ) {"""
 new = """\t\t\t$this->persist_checkpoint( $page, $page_count, false, "" ); // MUTANT\n\t\t\t$html = $client->fetch_page( $base_url, $page );\n\t\t\tif ( empty( $html ) ) {"""
 assert old in s
 s = s.replace(old, new, 1)
-'
+MUTATION
+)"
 		;;
 	M2)
 		# Resume always restarts at page 1. Expected: resume tests fail.
-		apply_patch "$SRC_EVENTBRITE" '
+		apply_patch "$SRC_EVENTBRITE" "$(cat <<'MUTATION'
 old = "\t\t$start_at = max( 2, $last_page - $overlap );"
 new = "\t\t$start_at = 2; // MUTANT: ignore the stored checkpoint"
 assert old in s
 s = s.replace(old, new, 1)
-'
+MUTATION
+)"
 		;;
 	M3)
 		# An incomplete enumeration is reported as complete.
-		apply_patch "$SRC_ENGINE" '
+		apply_patch "$SRC_ENGINE" "$(cat <<'MUTATION'
 old = """\t\tif ( $fetch_complete && $reconciliation_safe ) {"""
 new = """\t\t$fetch_complete = true; // MUTANT: always complete\n\t\tif ( $fetch_complete && $reconciliation_safe ) {"""
 assert old in s
 s = s.replace(old, new, 1)
-'
+MUTATION
+)"
 		;;
 	M4)
 		# Remove the G8 upstream-truncation guard.
-		apply_patch "$SRC_EVENTBRITE" '
+		apply_patch "$SRC_EVENTBRITE" "$(cat <<'MUTATION'
 old = "\t\tif ( $this->is_upstream_truncated( $object_count, $page_count, $page_size ) ) {"
 new = "\t\tif ( false && $this->is_upstream_truncated( $object_count, $page_count, $page_size ) ) {"
 assert old in s
 s = s.replace(old, new, 1)
-'
+MUTATION
+)"
 		;;
 M5)
 		# One checkpoint shared across all sources (source isolation removed).
-		apply_patch "$SRC_EVENTBRITE" '
+		apply_patch "$SRC_EVENTBRITE" "$(cat <<'MUTATION'
 old = "\t\t$this->checkpoint = Conexao_Source_Enumeration_Checkpoint::get( $this->get_id() );"
 new = "\t\t$this->checkpoint = Conexao_Source_Enumeration_Checkpoint::get( 1 ); // MUTANT: shared"
 assert old in s
@@ -162,29 +166,32 @@ new2 = """\t\tConexao_Source_Enumeration_Checkpoint::record(
 \t\t\t1, // MUTANT: shared"""
 assert old2 in s
 s = s.replace(old2, new2, 1)
-'
+MUTATION
+)"
 		;;
 	M6)
 		# A failed page advances the checkpoint to the page being tried.
-		apply_patch "$SRC_EVENTBRITE" '
+		apply_patch "$SRC_EVENTBRITE" "$(cat <<'MUTATION'
 old = "\t\t\t\t$this->persist_checkpoint( $this->confirmed_page, $page_count, false, $stop_failure );"
 new = "\t\t\t\t$this->persist_checkpoint( $page, $page_count, false, $stop_failure ); // MUTANT"
 assert old in s
 s = s.replace(old, new, 1)
-'
+MUTATION
+)"
 		;;
 	M7)
 		# The checkpoint authorises absence-based reconciliation.
-		apply_patch "$SRC_ENGINE" '
+		apply_patch "$SRC_ENGINE" "$(cat <<'MUTATION'
 old = "\t\t$reconciliation_safe = $this->is_handler_reconciliation_safe( $handler );"
 new = "\t\t$reconciliation_safe = true; // MUTANT: a checkpoint authorises reconciliation"
 assert old in s
 s = s.replace(old, new, 1)
-'
+MUTATION
+)"
 		;;
 	M8)
 		# Identity deduplication of overlap duplicates removed.
-		apply_patch "$SRC_EVENTBRITE" '
+		apply_patch "$SRC_EVENTBRITE" "$(cat <<'MUTATION'
 old = """\t\t\tif ( isset( $seen_ids[ $id ] ) ) {
 \t\t\t\t++$duplicates;
 \t\t\t\tcontinue;
@@ -192,7 +199,8 @@ old = """\t\t\tif ( isset( $seen_ids[ $id ] ) ) {
 new = """\t\t\t// MUTANT: identity dedup removed"""
 assert old in s
 s = s.replace(old, new, 1)
-'
+MUTATION
+)"
 		;;
 	*)
 		return 1
@@ -233,4 +241,3 @@ if [ "$FAILED" -gt 0 ]; then
 	exit 1
 fi
 
-exit 0
