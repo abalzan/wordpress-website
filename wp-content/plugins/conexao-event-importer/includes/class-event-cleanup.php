@@ -247,8 +247,9 @@ class Conexao_Event_Cleanup {
 				}
 			}
 
-			$offset += count( $batch );
-		} while ( count( $batch ) === self::MAX_EVENTS_PER_RUN );
+			$batch_count = count( $batch );
+			$offset += $batch_count;
+		} while ( $batch_count === self::MAX_EVENTS_PER_RUN );
 
 		return $past_ids;
 	}
@@ -296,19 +297,11 @@ class Conexao_Event_Cleanup {
 		 * A truthy return from wp_delete_post() is NOT sufficient proof the
 		 * row is gone: it returns the post object (carrying the PRE-deletion
 		 * post_status) even when a filter short-circuits the actual row
-		 * deletion. Re-read the row from the database to verify the delete
-		 * actually landed — a silently-failed delete would otherwise be
-		 * counted as a success and the event would survive every future run.
-		 */
-		global $wpdb;
-		/*
-		 * A truthy return from wp_delete_post() is NOT sufficient proof the
-		 * row is gone: it returns the post object (carrying the PRE-deletion
-		 * post_status) even when a filter short-circuits the actual row
 		 * deletion. Verify against the database directly (bypassing the post
 		 * object cache, which can be stale mid-request during bulk deletes)
 		 * so a silently-failed delete is never counted as success.
 		 */
+		global $wpdb;
 		$row = $wpdb->get_row( $wpdb->prepare( "SELECT post_status FROM {$wpdb->posts} WHERE ID = %d", $event_id ) );
 		if ( ! $deleted || null !== $row ) {
 			throw new Exception(

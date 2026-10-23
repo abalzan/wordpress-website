@@ -576,7 +576,10 @@ Conexao_Event_Query::flush_cache();
 
 $upcoming = Conexao_Event_Query::upcoming_event_ids( ics_date( '2026-10-02' ) );
 assert_true( in_array( $chair_id, $upcoming, true ), 'Chair Yoga is in the upcoming set as of 2026-10-02 (next occurrence 2026-10-06)' );
-assert_true( '2026-10-06' === (string) Conexao_Event_Query::next_occurrence_date( $chair_id ), 'the runtime reports 2026-10-06 as its next occurrence', conexao_test_describe( '2026-10-06' ) );
+// Evaluate from the same fixed reference date as the upcoming-set assertion
+// above. Without an explicit reference the helper uses the wall clock, which
+// would make this historical fixture a time bomb once the series ends.
+assert_true( '2026-10-06' === (string) Conexao_Event_Query::next_occurrence_date( $chair_id, ics_date( '2026-10-02' ) ), 'the runtime reports 2026-10-06 as its next occurrence from 2026-10-02', conexao_test_describe( '2026-10-06' ) );
 
 $generated = Conexao_ICS_Recurrence::occurrence_dates( '2026-09-29', array( 2 ), '2026-10-20' );
 assert_true( 4 === count( $generated ), 'exactly four occurrence dates are generated for Chair Yoga', conexao_test_describe( 4 ) );

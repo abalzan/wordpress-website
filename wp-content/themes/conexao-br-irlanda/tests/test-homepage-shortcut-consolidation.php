@@ -24,6 +24,13 @@ $failed = 0;
 /**
  * Switch the request language context the way Polylang does while routing.
  *
+ * Polylang's `curlang` switches language-aware helpers (URLs, queries), but it
+ * does not by itself switch the WordPress translation catalogue: `__()` still
+ * resolves against the catalogue loaded for the process. Load the committed
+ * `languages/<locale>.mo` for the requested language explicitly (the same
+ * pattern other suites use), so an EN render really renders EN strings rather
+ * than passing on an English HTML comment.
+ *
  * @param string $slug Language slug.
  * @return string|false Previous language slug.
  */
@@ -36,6 +43,13 @@ function hsc_set_language( $slug ) {
 	$previous = isset( PLL()->curlang->slug ) ? PLL()->curlang->slug : false;
 
 	PLL()->curlang = $model->get_language( $slug );
+
+	$locale    = ( 'en' === $slug ) ? 'en_US' : 'pt_BR';
+	$catalogue = get_template_directory() . '/languages/' . $locale . '.mo';
+	if ( function_exists( 'unload_textdomain' ) && function_exists( 'load_textdomain' ) && is_file( $catalogue ) ) {
+		unload_textdomain( 'conexao-br-irlanda' );
+		load_textdomain( 'conexao-br-irlanda', $catalogue, $locale );
+	}
 
 	return $previous;
 }
@@ -137,8 +151,11 @@ foreach ( array( 'pt', 'en' ) as $lang ) {
 		assert_true( false !== strpos( $html, 'Acesso Rápido' ), "{$label}: 'Acesso Rápido' heading present" );
 		assert_true( false !== strpos( $html, 'Precisa de ajuda?' ), "{$label}: 'Precisa de ajuda?' heading present" );
 	} else {
-		assert_true( false !== strpos( $html, 'Quick Access' ), "{$label}: 'Quick Access' heading present" );
-		assert_true( false !== strpos( $html, 'Need help?' ), "{$label}: 'Need help?' heading present" );
+		// Match the heading itself, not the English HTML comment that also says
+		// "Quick Access": a comment-only match would let a PT render pass the EN
+		// assertion and hide a missing catalogue.
+		assert_true( false !== strpos( $html, '>Quick Access</h2>' ), "{$label}: 'Quick Access' heading present" );
+		assert_true( false !== strpos( $html, '>Need help?</h2>' ), "{$label}: 'Need help?' heading present" );
 	}
 
 	// 6. Both shortcut groups render at least one link.

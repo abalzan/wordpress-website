@@ -314,15 +314,12 @@ $token_options = $wpdb->get_col(
 
 g16_say( 'eventbrite_options_in_db=' . count( (array) $token_options ) );
 
-$token_refs = array();
-
-foreach ( (array) glob( WP_PLUGIN_DIR . '/conexao-event-importer/*.php' ) as $file ) {
-	if ( false !== strpos( (string) file_get_contents( $file ), 'eventbrite_api_token' ) ) {
-		$token_refs[] = basename( $file );
-	}
-}
-
-g16_say( 'executable_files_referencing_eventbrite_api_token=' . count( $token_refs ) );
+// The retired-token invariant is owned by ONE gate: the dedicated G7 static
+// verifier (tests/scripts/verify-eventbrite-token-retirement.py) and its
+// in-process negative-proof suite. This experiment used to duplicate the
+// source scan here, which put the retired key back into executable tooling.
+// The DB-option census below stays as independent evidence that no
+// Eventbrite option was restored.
 
 g16_say( '--- checkpoint / cooldown census ---' );
 
@@ -338,7 +335,6 @@ $evidence = array(
 	'unconfigured_ids'      => $unconfigured,
 	'probes'                => $results,
 	'eventbrite_db_options' => count( (array) $token_options ),
-	'token_file_refs'       => $token_refs,
 	'checkpoints'           => count( (array) $checkpoints ),
 	'cooldown_records'      => count( (array) $cooldown ),
 );

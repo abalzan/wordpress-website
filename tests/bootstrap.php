@@ -90,15 +90,32 @@ if ( '' === $conexao_tests_wp_root ) {
 define( 'CONEXAO_TESTS_WP_ROOT', $conexao_tests_wp_root );
 
 /**
- * Establish the deterministic CLI request context Polylang needs.
+ * Establish the deterministic CLI request context WordPress needs.
  *
- * Several migrated suites set exactly these two values before loading
- * WordPress. Keeping it here is one of the duplicated-bootstrap removals
- * recorded in the Stage E report (PHASE 5).
+ * Several migrated suites set exactly these values before loading WordPress.
+ * Keeping it here is one of the duplicated-bootstrap removals recorded in the
+ * Stage E report (PHASE 5).
+ *
+ * SERVER_NAME is part of that contract: core helpers used by wp_head() (for
+ * example the resource-hint host de-duplication in general-template.php) read
+ * it directly. A real web request always has it; a bare CLI process does not,
+ * which produced an "Undefined array key SERVER_NAME" warning in any suite
+ * that rendered a full page. Deriving it from HTTP_HOST models the request
+ * faithfully instead of masking the warning.
  */
 $_SERVER['HTTP_HOST']   = isset( $_SERVER['HTTP_HOST'] ) ? $_SERVER['HTTP_HOST'] : 'localhost';
 $_SERVER['REQUEST_URI'] = isset( $_SERVER['REQUEST_URI'] ) ? $_SERVER['REQUEST_URI'] : '/';
 $_SERVER['REQUEST_METHOD'] = isset( $_SERVER['REQUEST_METHOD'] ) ? $_SERVER['REQUEST_METHOD'] : 'GET';
+
+if ( ! isset( $_SERVER['SERVER_NAME'] ) ) {
+	$conexao_tests_server_host = (string) $_SERVER['HTTP_HOST'];
+	$conexao_tests_port_at     = strrpos( $conexao_tests_server_host, ':' );
+	if ( false !== $conexao_tests_port_at ) {
+		$conexao_tests_server_host = substr( $conexao_tests_server_host, 0, $conexao_tests_port_at );
+	}
+	$_SERVER['SERVER_NAME'] = '' !== $conexao_tests_server_host ? $conexao_tests_server_host : 'localhost';
+	unset( $conexao_tests_server_host, $conexao_tests_port_at );
+}
 
 require_once CONEXAO_TESTS_WP_ROOT . '/wp-load.php';
 

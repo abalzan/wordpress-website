@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-11 20:37+0100\n"
+"POT-Creation-Date: 2026-10-22 07:13+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 
 
@@ -331,14 +331,16 @@ msgstr ""
 msgid "Event #%1$d: %2$s"
 msgstr ""
 #. translators: %1$d: Events found, %2$d: Events deleted, %3$d: Images deleted, %4$d: Images preserved.
-#: wp-content/plugins/conexao-event-importer/includes/class-event-cleanup.php:106
+#: wp-content/plugins/conexao-event-importer/includes/class-event-cleanup.php:111
 #, php-format
 msgid ""
 "Cleanup run: %1$d events found, %2$d deleted, %3$d images deleted, %4$d "
 "preserved."
 msgstr ""
-#: wp-content/plugins/conexao-event-importer/includes/class-event-cleanup.php:210
-msgid "Could not delete the event post."
+#: wp-content/plugins/conexao-event-importer/includes/class-event-cleanup.php:308
+msgid ""
+"Could not delete the event post (the database row is still present after the "
+"delete attempt)."
 msgstr ""
 #. translators: %s: file path
 #: wp-content/plugins/conexao-event-importer/includes/class-event-export.php:317

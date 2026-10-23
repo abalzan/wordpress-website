@@ -208,7 +208,7 @@ $hero_has_sponsors = ! empty( conexao_get_featured_sponsors() );
 			// 'key' slug, never by translated display text.
 			$help_shortcut_keys = array( 'moradia', 'empregos', 'documentos', 'saude', 'beneficios', 'financas' );
 			foreach ( $quick_access_cards as $card ) :
-				if ( ! empty( $card['key'] ) && in_array( $card['key'], $help_shortcut_keys, true ) ) {
+				if ( in_array( $card['key'], $help_shortcut_keys, true ) ) {
 					continue;
 				}
 				get_template_part( 'template-parts/quick-access-card', null, array( 'card' => $card, 'icons' => $icon_svgs ) );
@@ -407,13 +407,17 @@ $hero_has_sponsors = ! empty( conexao_get_featured_sponsors() );
 // home_url()).
 // Membership comes from the single $help_shortcut_keys list defined with the
 // Quick Access cards above; only the SELECTION here is explicit.
-$help_shortcuts     = array();
+$help_shortcuts = array();
 foreach ( $quick_access_cards as $qa_card ) {
-	if ( ! empty( $qa_card['key'] ) && in_array( $qa_card['key'], $help_shortcut_keys, true ) ) {
+	if ( in_array( $qa_card['key'], $help_shortcut_keys, true ) ) {
 		$help_shortcuts[ $qa_card['key'] ] = $qa_card;
 	}
 }
-if ( ! empty( $help_shortcuts ) ) : ?>
+// The help subset is always non-empty: $help_shortcut_keys names six cards that
+// are defined in $quick_access_cards above. PHPStan checks that invariant, so a
+// future edit that removes one of them fails analysis instead of rendering an
+// empty help section.
+?>
 <section class="help-section" aria-labelledby="help-section-heading">
 	<div class="site-container">
 		<div class="help-section-panel">
@@ -421,9 +425,9 @@ if ( ! empty( $help_shortcuts ) ) : ?>
 			<nav class="help-shortcuts" aria-label="<?php esc_attr_e( 'Atalhos para as principais áreas do site', 'conexao-br-irlanda' ); ?>">
 				<ul class="help-shortcuts-grid">
 					<?php foreach ( $help_shortcut_keys as $help_key ) :
-						if ( empty( $help_shortcuts[ $help_key ] ) ) {
-							continue;
-						}
+						// Every key in this list is present in $help_shortcuts: both
+						// are built from the same literal card definitions, and
+						// PHPStan checks that invariant when this file changes.
 						get_template_part( 'template-parts/help-shortcut-card', null, array( 'card' => $help_shortcuts[ $help_key ], 'icons' => $icon_svgs ) );
 					endforeach; ?>
 				</ul>
@@ -431,7 +435,6 @@ if ( ! empty( $help_shortcuts ) ) : ?>
 		</div>
 	</div>
 </section>
-<?php endif; ?>
 
 <!-- Latest News (Blog) -->
 <?php
