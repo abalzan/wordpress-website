@@ -171,6 +171,26 @@ it, so this is the mechanism to use when adding any cache:
 | The key is per-record, not per-language | A key embedding a record identity is already safe without the suffix: `conexao_reading_time_{$post_id}` (one post's own content) and `conexao_b2_replaced_{md5(types)}` (the post-type set) never vary by language, so PT and EN cannot collide. |
 | The key is an admin report | Suffix with `get_current_user_id()` rather than the language; admin output is per-user, not per-language. |
 
+## Event-Filter Cache Invalidation Matrix
+
+| Cached data | Cache scope | Population/read path | Events or mutations that invalidate it | Language behavior |
+|---|---|---|---|---|
+| **Event counties**<br>`conexao_terms_conexao_county_event_{pt/en}` | L2 persistent transient (DB), 300s TTL; L1 `wp_cache_*` request-local dedup | `conexao_get_terms_for_post_type( 'conexao_county', 'event' )` → language-scoped key via `conexao_lang_cache_key()` → `wp_cache_get()` → compute → `conexao_filter_terms_store()` writes both layers | * Event created (save_post hooks via `conexao_homepage_cache_invalidate()` → `conexao_clear_event_filter_caches()`)<br>* Event updated (wp_update_post)<br>* Event deleted (wp_delete_post)<br>* County term created/edited/deleted (created_conexao_county, edited_conexao_county, delete_conexao_county hooks → `conexao_filter_term_cache_invalidate()`)<br>* Category term changes (created/edited/deleted_conexao_category) | PT and EN entries are independent (keys scoped via `conexao_lang_cache_key()`). Invalidation clears **every** language variant. A PT warm hit cannot return EN filter options and vice versa. |
+| **Event towns**<br>`conexao_terms_conexao_town_event_{pt/en}` + `conexao_event_towns_{county}_{pt/en}` | L2 persistent transient (DB), 300s TTL; L1 `wp_cache_*` request-local. County-scoped variants use key `conexao_event_towns_{county_slug}`. | `conexao_get_event_towns()` → default (all towns)<br>`conexao_get_event_towns( $county_slug )` → county-scoped → language-scoped key | * Event created/updated/deleted (same hooks as counties)<br>* Town term created/edited/deleted (created_conexao_town, edited_conexao_town, delete_conexao_town hooks → `conexao_filter_term_cache_invalidate()`)<br>* County change on an event (re-assigns town terms) | PT and EN independent. County-scoped town keys (`conexao_event_towns_{county}`) are also language-scoped. Invalidation of a county's towns clears only that county's variant; general `conexao_event_towns` (no county) is separate. |
+| **Event categories**<br>`conexao_terms_conexao_category_event_{pt/en}` | L2 persistent transient (DB), 300s TTL; L1 `wp_cache_*` request-local | `conexao_get_terms_for_post_type( 'conexao_category', 'event' )` → language-scoped key via `conexao_lang_cache_key()` → `wp_cache_get()` → compute → store | * Event created/updated/deleted (save_post hooks → `conexao_clear_event_filter_caches()`)<br>* Category term created/edited/deleted (created_conexao_category, edited_conexao_category, delete_conexao_category hooks → `conexao_filter_term_cache_invalidate()`) | PT and EN independent. Invalidation clears every language variant. |
+| **County-scoped town variants**<br>`conexao_event_towns_{county_slug}_{pt/en}` | L2 persistent (DB) per-county key; L1 request-local. General town key has no county prefix. | `conexao_get_event_towns( $county_slug )` → queries terms where term's associated events have the given county | * Town term lifecycle (same hooks as above)<br>* County term rename/delete (affects scoped town keys)<br>* Event re-categorization to different county | PT and EN independent. Each county has its own language-scoped key. Invalidation of a county clears only that county's keys; unrelated counties' town caches remain intact. |
+
+**TTL**: 300 seconds (5 minutes) on both L1 and L2 layers.
+
+**L1 vs L2**:
+- L1 (`wp_cache_*`): Request-local dedup, cleared at request end. Does NOT persist across HTTP requests.
+- L2 (`set_transient` / DB `options` table): Persists across requests unless backend purges it. Language-scoped via `conexao_lang_cache_key()`.
+
+**Key conventions**:
+- All cache keys suffixed `_pt` / `_en` through `conexao_lang_cache_key()`.
+- County-scoped town keys: `conexao_event_towns_{sanitized_county_slug}`.
+- Base keys (no suffix): covered by `conexao_flush_language_cache()` which also clears the un-suffixed key, pre-Polylang write paths.
+
 The two halves are enforced separately and both are blocking:
 
 - **Static** — `tests/scripts/verify-cache-key-scoping.py` scans production
