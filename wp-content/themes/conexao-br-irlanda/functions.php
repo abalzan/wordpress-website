@@ -115,6 +115,9 @@ require_once CONEXAO_THEME_DIR . '/inc/post-views.php';
 // Accent-insensitive search over the native post_title/excerpt/content columns.
 require_once CONEXAO_THEME_DIR . '/inc/search.php';
 
+// -- Seasonal/commemorative occasion foundation ----------------------------
+require_once CONEXAO_THEME_DIR . '/inc/occasion.php';
+
 // -- Theme modules (were the body of the old functions.php) ------------------
 // The order below is the original source order of the old functions.php body,
 // so hook registration order on shared hooks (init, delete_post) is unchanged.
