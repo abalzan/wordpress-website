@@ -1,6 +1,6 @@
 <?php
 /**
- * Halloween navigation click effects regression suite.
+ * Halloween navigation and spontaneous mobile effects regression suite.
  *
  * Verifies the server-side Halloween eligibility marker that gates the
  * client-side navigation click effects. The occasion engine remains the
@@ -12,7 +12,7 @@
 require_once dirname( __DIR__, 4 ) . '/tests/bootstrap.php';
 require_once dirname( __DIR__ ) . '/inc/occasion.php';
 
-test_title( 'Halloween navigation click effects' );
+test_title( 'Halloween navigation and spontaneous mobile effects' );
 
 test_section( 'Halloween eligibility marker output' );
 
@@ -210,12 +210,22 @@ assert_contains(
 	'Only one Halloween effect can be active at a time'
 );
 assert_contains(
+	'var activeLayer = null;',
+	$nav_script,
+	'The shared effect layer is tracked explicitly inside the strict-mode initializer'
+);
+assert_contains(
 	'for (var s = 0; s < 4; s++)',
 	$nav_script,
 	'The witch trail is bounded to four sparkles'
 );
 assert_contains(
-	'window.setTimeout(cleanup, Math.max(0, animationDuration - elapsedMs));',
+	'activeAnimationTimer = window.setTimeout(function() {',
+	$nav_script,
+	'Each effect layer stores a cleanup timer that can be cancelled safely'
+);
+assert_contains(
+	'}, Math.max(0, animationDuration - elapsedMs));',
 	$nav_script,
 	'Each effect layer is removed after only its remaining animation duration'
 );
@@ -386,6 +396,189 @@ assert_contains(
 	"sessionStorage.setItem(dismissalKey, 'dismissed');",
 	$nav_script,
 	'Welcome-card dismissal remains independent from navigation-effect state'
+);
+
+test_section( 'Spontaneous mobile effect schedule and safety' );
+
+assert_contains(
+	"var mobileViewport = window.matchMedia ? window.matchMedia('(max-width: 768px)') : null;",
+	$nav_script,
+	'Spontaneous appearances are limited to the existing mobile breakpoint'
+);
+assert_contains(
+	'var INITIAL_DELAY_MIN_MS = 20000;',
+	$nav_script,
+	'The first surprise waits at least twenty seconds'
+);
+assert_contains(
+	'var INITIAL_DELAY_MAX_MS = 30000;',
+	$nav_script,
+	'The first surprise waits no longer than thirty seconds'
+);
+assert_contains(
+	'var INTERVAL_MIN_MS = 25000;',
+	$nav_script,
+	'Subsequent surprises wait at least twenty-five seconds'
+);
+assert_contains(
+	'var INTERVAL_MAX_MS = 35000;',
+	$nav_script,
+	'Subsequent surprises wait no longer than thirty-five seconds'
+);
+assert_contains(
+	'var hasSpontaneousAppeared = false;',
+	$nav_script,
+	'The first-appearance delay remains in force until a surprise is actually shown'
+);
+assert_contains(
+	'var minimum = hasSpontaneousAppeared ? INTERVAL_MIN_MS : INITIAL_DELAY_MIN_MS;',
+	$nav_script,
+	'Visibility and interface resumes preserve the initial delay until the first appearance'
+);
+assert_contains(
+	'function getSpontaneousAnimationDuration(effectName)',
+	$nav_script,
+	'Spontaneous cleanup waits for each selected effect’s own animation duration'
+);
+assert_contains(
+	'getSpontaneousAnimationDuration(effectName)',
+	$nav_script,
+	'Only spontaneous effects use their full visual duration'
+);
+assert_contains(
+	'return 1100;',
+	$nav_script,
+	'The spontaneous pumpkin laugh is allowed to complete'
+);
+assert_contains(
+	'return 1200;',
+	$nav_script,
+	'The spontaneous ghost float is allowed to complete'
+);
+assert_contains(
+	'spontaneousTimer = window.setTimeout(appearSpontaneously, randomDelay(minimum, maximum));',
+	$nav_script,
+	'Only one stored appearance timer is scheduled with a bounded random delay'
+);
+assert_contains(
+	'window.clearTimeout(spontaneousTimer);',
+	$nav_script,
+	'An existing appearance timer is cleared before a replacement is scheduled'
+);
+assert_contains(
+	"marker.isConnected &&",
+	$nav_script,
+	'The existing selected-Halloween marker remains the live eligibility authority'
+);
+assert_contains(
+	"'visible' === document.visibilityState",
+	$nav_script,
+	'The scheduler is eligible only while the page is visible'
+);
+assert_contains(
+	'!prefersReducedMotion()',
+	$nav_script,
+	'Reduced-motion users never receive spontaneous motion'
+);
+assert_contains(
+	'playEffect(effectName, placement.x, placement.y, 0, true);',
+	$nav_script,
+	'Spontaneous effects use the existing selector and one-effect playback guard'
+);
+assert_contains(
+	'window.addEventListener(\'pagehide\', stopSpontaneous);',
+	$nav_script,
+	'Pending work is cleaned up when the page lifecycle ends'
+);
+assert_contains(
+	'if (event.persisted) scheduleSpontaneous();',
+	$nav_script,
+	'Back-forward-cache restoration schedules a fresh delay instead of replaying state'
+);
+assert_contains(
+	'padding:env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px);',
+	$nav_script,
+	'Safe-area insets are measured before selecting a placement'
+);
+assert_contains(
+	'window.innerWidth',
+	$nav_script,
+	'Placement uses viewport width instead of document height or scroll position'
+);
+assert_contains(
+	'height - insets.bottom - 12',
+	$nav_script,
+	'Placement respects the visible bottom edge and safe-area inset'
+);
+assert_contains(
+	'var clearance = 8;',
+	$nav_script,
+	'Decorative placements keep a bounded margin from viewport edges and nearby content'
+);
+assert_contains(
+	'viewport.left + size.width / 2 + clearance',
+	$nav_script,
+	'Corner candidates include their collision clearance inside the safe viewport'
+);
+assert_contains(
+	'h1, h2, h3, h4, h5, h6, p, li, blockquote,',
+	$nav_script,
+	'Text-bearing content is excluded from spontaneous placements'
+);
+assert_contains(
+	'.hero-badge, [class*="title"],',
+	$nav_script,
+	'Decorative placements also avoid important text in non-semantic content wrappers'
+);
+assert_contains(
+	'input, select, \' +',
+	$nav_script,
+	'Form controls are excluded from spontaneous placements'
+);
+assert_contains(
+	'if (!placement) {',
+	$nav_script,
+	'A dense viewport skips an unsafe effect rather than forcing a position'
+);
+assert_contains(
+	'halloween-nav-bat-spontaneous-fly',
+	$nav_styles,
+	'The bat uses a deliberate, clipped horizontal flight path'
+);
+assert_contains(
+	'halloween-nav-pumpkin-laugh 1.1s',
+	$nav_styles,
+	'The pumpkin animation retains its complete silent laugh'
+);
+assert_contains(
+	'halloween-nav-ghost-float 1.2s',
+	$nav_styles,
+	'The ghost animation retains its complete float-away'
+);
+assert_contains(
+	'width: 56px;',
+	$nav_styles,
+	'The spontaneous pumpkin remains large enough to recognize on a phone'
+);
+assert_contains(
+	'height: 66px;',
+	$nav_styles,
+	'The spontaneous ghost remains recognizable on a phone'
+);
+assert_contains(
+	'halloween-nav-witch-flight 3s cubic-bezier',
+	$nav_styles,
+	'The spontaneous witch continues to use the established three-second flight'
+);
+assert_contains(
+	'var interruptedSpontaneous = activeEffectIsSpontaneous;',
+	$nav_script,
+	'Direct navigation interrupts a spontaneous appearance before its own effect'
+);
+assert_contains(
+	'function handleSpontaneousUiChange(event)',
+	$nav_script,
+	'Closing the welcome greeting can resume scheduling without changing its dismissal key'
 );
 
 test_finish( 'seasonal-halloween-nav-effects' );

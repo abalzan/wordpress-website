@@ -771,6 +771,22 @@ ul, ol {
   animation: halloween-nav-bat-fly 0.9s ease-in-out forwards;
 }
 
+.seasonal-halloween-bat-nav.spontaneous {
+  width: 64px;
+}
+
+.seasonal-halloween-bat-nav.spontaneous.flying {
+  animation-name: halloween-nav-bat-spontaneous-fly;
+}
+
+@keyframes halloween-nav-bat-spontaneous-fly {
+  0%   { transform: translate3d(-120px, 0, 0) rotate(-8deg); opacity: 0; }
+  15%  { opacity: 0.95; }
+  45%  { transform: translate3d(34vw, -8px, 0) rotate(5deg); }
+  75%  { transform: translate3d(72vw, 7px, 0) rotate(-4deg); }
+  100% { transform: translate3d(calc(100vw + 120px), 0, 0) rotate(3deg); opacity: 0; }
+}
+
 @keyframes halloween-nav-bat-fly {
   0%   { transform: translate3d(-120px, -60px, 0) rotate(-10deg); opacity: 0; }
   15%  { opacity: 0.95; }
@@ -788,6 +804,11 @@ ul, ol {
   color: var(--halloween-pumpkin-mid);
   filter: drop-shadow(0 0 12px var(--halloween-accent-glow));
   pointer-events: none;
+}
+
+.seasonal-halloween-pumpkin-nav.spontaneous {
+  width: 56px;
+  height: 56px;
 }
 
 .seasonal-halloween-pumpkin-nav svg {
@@ -817,6 +838,11 @@ ul, ol {
   color: var(--halloween-ghost-color);
   filter: drop-shadow(0 0 8px var(--halloween-decorative-glow));
   pointer-events: none;
+}
+
+.seasonal-halloween-ghost-nav.spontaneous {
+  width: 50px;
+  height: 66px;
 }
 
 .seasonal-halloween-ghost-nav svg {

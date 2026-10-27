@@ -81,7 +81,7 @@
 		});
 	}
 
-// ===== Seasonal Halloween navigation click effects =====
+// ===== Seasonal Halloween navigation and spontaneous mobile effects =====
 function initHalloweenNavEffects() {
 	'use strict';
 
@@ -94,6 +94,17 @@ function initHalloweenNavEffects() {
 	var lastEffectTime = 0;
 	var effectInProgress = false;
 	var lastEffectName = null;
+	var activeLayer = null;
+	var activeCleanup = null;
+	var activeEffectIsSpontaneous = false;
+	var activeAnimationTimer = null;
+	var spontaneousTimer = null;
+	var hasSpontaneousAppeared = false;
+	var mobileViewport = window.matchMedia ? window.matchMedia('(max-width: 768px)') : null;
+	var INITIAL_DELAY_MIN_MS = 5000;
+	var INITIAL_DELAY_MAX_MS = 10000;
+	var INTERVAL_MIN_MS = 10000;
+	var INTERVAL_MAX_MS = 15000;
 
 	var EFFECTS = ['bat', 'pumpkin', 'ghost', 'witch'];
 
@@ -133,6 +144,272 @@ function initHalloweenNavEffects() {
 
 	function getAnimationDuration(effectName) {
 		return 'witch' === effectName ? WITCH_ANIMATION_DURATION_MS : ANIMATION_DURATION_MS;
+	}
+
+	function getSpontaneousAnimationDuration(effectName) {
+		if ('witch' === effectName) return WITCH_ANIMATION_DURATION_MS;
+		if ('ghost' === effectName) return 1200;
+		if ('pumpkin' === effectName) return 1100;
+		if ('bat' === effectName) return 900;
+		return ANIMATION_DURATION_MS;
+	}
+
+	function randomDelay(minimum, maximum) {
+		return minimum + Math.floor(Math.random() * (maximum - minimum + 1));
+	}
+
+	function isSpontaneousEligible() {
+		var presentation = document.querySelector('.seasonal-halloween-presentation:not([hidden])');
+		return !!(
+			marker &&
+			marker.isConnected &&
+			mobileViewport &&
+			mobileViewport.matches &&
+			!prefersReducedMotion() &&
+			'visible' === document.visibilityState &&
+			!presentation &&
+			!document.querySelector('.mobile-menu-overlay.active, .mobile-search-overlay.active')
+		);
+	}
+
+	function clearSpontaneousTimer() {
+		if (null === spontaneousTimer) return;
+		window.clearTimeout(spontaneousTimer);
+		spontaneousTimer = null;
+	}
+
+	function scheduleSpontaneous() {
+		clearSpontaneousTimer();
+		if (!isSpontaneousEligible() || effectInProgress) return;
+
+		var minimum = hasSpontaneousAppeared ? INTERVAL_MIN_MS : INITIAL_DELAY_MIN_MS;
+		var maximum = hasSpontaneousAppeared ? INTERVAL_MAX_MS : INITIAL_DELAY_MAX_MS;
+		spontaneousTimer = window.setTimeout(appearSpontaneously, randomDelay(minimum, maximum));
+	}
+
+	function stopSpontaneous() {
+		clearSpontaneousTimer();
+		if (activeEffectIsSpontaneous && activeCleanup) {
+			activeCleanup(false);
+		}
+	}
+
+	function readSafeAreaInsets() {
+		var probe = document.createElement('div');
+		probe.style.cssText = 'position:fixed;left:0;top:0;width:0;height:0;visibility:hidden;pointer-events:none;padding:env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px);';
+		document.body.appendChild(probe);
+
+		var style = window.getComputedStyle(probe);
+		var insets = {
+			top: parseFloat(style.paddingTop) || 0,
+			right: parseFloat(style.paddingRight) || 0,
+			bottom: parseFloat(style.paddingBottom) || 0,
+			left: parseFloat(style.paddingLeft) || 0
+		};
+		probe.parentNode.removeChild(probe);
+		return insets;
+	}
+
+	function getSafeViewport() {
+		var insets = readSafeAreaInsets();
+		var width = window.innerWidth;
+		var height = window.innerHeight;
+		var header = document.querySelector('.site-header');
+		var top = insets.top + 12;
+
+		if (header) {
+			top = Math.max(top, header.getBoundingClientRect().bottom + 12);
+		}
+
+		return {
+			left: insets.left + 12,
+			right: width - insets.right - 12,
+			top: top,
+			bottom: height - insets.bottom - 12,
+			width: width,
+			height: height
+		};
+	}
+
+	function shuffle(items) {
+		for (var i = items.length - 1; i > 0; i--) {
+			var j = Math.floor(Math.random() * (i + 1));
+			var item = items[i];
+			items[i] = items[j];
+			items[j] = item;
+		}
+		return items;
+	}
+
+	function intersectsVisibleContent(box) {
+		var obstacles = document.querySelectorAll(
+			'.site-header, h1, h2, h3, h4, h5, h6, p, li, blockquote, ' +
+			'figcaption, summary, dt, dd, th, td, .hero-badge, [class*="title"], ' +
+			'[class*="subtitle"], [class*="badge"], [class*="kicker"], a[href], button, input, select, ' +
+			'textarea, label, [role="button"], [contenteditable="true"], ' +
+			'.seasonal-halloween-presentation:not([hidden])'
+		);
+
+		for (var i = 0; i < obstacles.length; i++) {
+			var obstacle = obstacles[i];
+			if (obstacle.hidden || 'none' === window.getComputedStyle(obstacle).display) continue;
+
+			var rect = obstacle.getBoundingClientRect();
+			if (
+				rect.width > 0 &&
+				rect.height > 0 &&
+				box.left < rect.right &&
+				box.right > rect.left &&
+				box.top < rect.bottom &&
+				box.bottom > rect.top
+			) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	function getPlacement(effectName) {
+		var viewport = getSafeViewport();
+		var clearance = 8;
+		var sizes = {
+			bat: { width: 64, height: 42 },
+			pumpkin: { width: 56, height: 56 },
+			ghost: { width: 50, height: 66 }
+		};
+
+		if ('witch' === effectName) {
+			sizes.witch = {
+				width: Math.min(148, Math.max(112, viewport.width * 0.36)),
+				height: Math.min(148, Math.max(112, viewport.width * 0.36)) * 230 / 420
+			};
+		}
+
+		var size = sizes[effectName];
+		if (!size ||
+			viewport.right - viewport.left < size.width + clearance * 2 ||
+			viewport.bottom - viewport.top < size.height + clearance * 2) {
+			return null;
+		}
+
+		var yCandidates = [];
+		var pathTop = viewport.top + clearance;
+		var pathBottom = viewport.bottom - size.height - clearance;
+
+		if ('witch' === effectName) {
+			var witchDrift = viewport.height * 0.03;
+			pathTop += viewport.height * 0.02;
+			pathBottom -= witchDrift;
+			for (var witchBand = 0; witchBand <= 4; witchBand++) {
+				yCandidates.push(pathTop + (pathBottom - pathTop) * witchBand / 4);
+			}
+
+			for (var w = 0; w < shuffle(yCandidates).length; w++) {
+				var witchTop = yCandidates[w];
+				var witchBox = {
+					left: 0,
+					right: viewport.width,
+					top: witchTop - viewport.height * 0.02,
+					bottom: witchTop + size.height + witchDrift
+				};
+				if (!intersectsVisibleContent(witchBox)) {
+					return { x: viewport.width / 2, y: witchTop + size.height / 2 };
+				}
+			}
+			return null;
+		}
+
+		if ('bat' === effectName) {
+			pathTop += 12;
+			pathBottom -= 12;
+			for (var batBand = 0; batBand <= 4; batBand++) {
+				yCandidates.push(pathTop + (pathBottom - pathTop) * batBand / 4);
+			}
+
+			for (var b = 0; b < shuffle(yCandidates).length; b++) {
+				var batTop = yCandidates[b];
+				var batBox = {
+					left: 0,
+					right: viewport.width,
+					top: batTop - 12,
+					bottom: batTop + size.height + 12
+				};
+				if (!intersectsVisibleContent(batBox)) {
+					return { x: viewport.width / 2, y: batTop + size.height / 2 };
+				}
+			}
+			return null;
+		}
+
+		var xCandidates = [
+			viewport.left + size.width / 2 + clearance,
+			viewport.right - size.width / 2 - clearance
+		];
+		var availableHeight = viewport.bottom - viewport.top - size.height - clearance * 2;
+		for (var row = 0; row <= 3; row++) {
+			var centerY = viewport.top + size.height / 2 + clearance + availableHeight * row / 3;
+			for (var column = 0; column < xCandidates.length; column++) {
+				var centerX = xCandidates[column];
+				yCandidates.push({ x: centerX, y: centerY });
+			}
+		}
+
+		var zones = shuffle(yCandidates);
+		for (var z = 0; z < zones.length; z++) {
+			var zone = zones[z];
+			var box = {
+				left: zone.x - size.width / 2 - clearance,
+				right: zone.x + size.width / 2 + clearance,
+				top: zone.y - size.height / 2 - clearance,
+				bottom: zone.y + size.height / 2 + clearance
+			};
+			if (
+				box.left >= viewport.left &&
+				box.right <= viewport.right &&
+				box.top >= viewport.top &&
+				box.bottom <= viewport.bottom &&
+				!intersectsVisibleContent(box)
+			) {
+				return zone;
+			}
+		}
+
+		return null;
+	}
+
+	function appearSpontaneously() {
+		spontaneousTimer = null;
+		if (!isSpontaneousEligible()) return;
+		if (effectInProgress) {
+			scheduleSpontaneous();
+			return;
+		}
+
+		var effectName = pickEffect();
+		var placement = getPlacement(effectName);
+		if (!placement) {
+			scheduleSpontaneous();
+			return;
+		}
+
+		playEffect(effectName, placement.x, placement.y, 0, true);
+	}
+
+	function handleSpontaneousUiChange(event) {
+		if (!event.target || typeof event.target.closest !== 'function') return;
+
+		var target = event.target.closest(
+			'.seasonal-halloween-close, .mobile-menu-toggle, .mobile-menu-close, ' +
+			'.mobile-search-toggle, .mobile-search-close'
+		);
+		if (!target) return;
+
+		if (isSpontaneousEligible()) {
+			scheduleSpontaneous();
+		} else {
+			stopSpontaneous();
+		}
 	}
 
 	function consumeTransitionState() {
@@ -271,36 +548,46 @@ function initHalloweenNavEffects() {
 		}
 		if ('ghost' === type) {
 			return '<svg viewBox="0 0 60 80" focusable="false" aria-hidden="true">' +
-				'<path d="M30 12 C18 12 10 22 10 32 C10 44 18 56 30 56 C42 56 50 44 50 32 C50 22 42 12 30 12 Z" fill="currentColor"/>' +
+				'<path d="M30 8C18 8 10 18 10 31v32c0 3 3 4 5 2l6-6 7 8c1 2 3 2 4 0l7-8 6 6c2 2 5 1 5-2V31C50 18 42 8 30 8Z" fill="currentColor"/>' +
 				'<circle cx="22" cy="28" r="2" fill="#3f3f3f"/>' +
 				'<circle cx="38" cy="28" r="2" fill="#3f3f3f"/>' +
+				'<path d="M24 37q6 6 12 0" fill="none" stroke="#3f3f3f" stroke-width="2" stroke-linecap="round"/>' +
 				'</svg>';
 		}
 		return '';
 	}
 
-	function playEffect(effectName, centerX, centerY, elapsedMs) {
+	function playEffect(effectName, centerX, centerY, elapsedMs, spontaneous) {
 		if (effectInProgress || EFFECTS.indexOf(effectName) === -1 ||
 			elapsedMs >= getAnimationDuration(effectName)) return;
 		effectInProgress = true;
+		activeEffectIsSpontaneous = !!spontaneous;
 		lastEffectTime = getClock().value;
-		var animationDuration = getAnimationDuration(effectName);
+		var animationDuration = spontaneous
+			? getSpontaneousAnimationDuration(effectName)
+			: getAnimationDuration(effectName);
 
 		var layer = document.createElement('div');
 		layer.className = 'seasonal-halloween-effect-layer';
 		layer.setAttribute('aria-hidden', 'true');
+		activeLayer = layer;
 		document.body.appendChild(layer);
 
-		function cleanup() {
-			try {
-				if (layer && layer.parentNode) {
-					layer.parentNode.removeChild(layer);
-				}
-			} catch (err) {
-				// Best-effort cleanup; never let it break navigation.
+		function cleanup(reschedule) {
+			if (null !== activeAnimationTimer) {
+				window.clearTimeout(activeAnimationTimer);
+				activeAnimationTimer = null;
 			}
-			effectInProgress = false;
+			if (layer.parentNode) layer.parentNode.removeChild(layer);
+			if (activeLayer === layer) {
+				activeLayer = null;
+				activeCleanup = null;
+				activeEffectIsSpontaneous = false;
+				effectInProgress = false;
+			}
+			if (false !== reschedule) scheduleSpontaneous();
 		}
+		activeCleanup = cleanup;
 
 		function setProgress(element, duration) {
 			element.style.animationDuration = duration + 'ms';
@@ -310,17 +597,21 @@ function initHalloweenNavEffects() {
 		try {
 			if ('bat' === effectName) {
 				var bat = document.createElement('div');
-				bat.className = 'seasonal-halloween-bat-nav flying';
+				bat.className = 'seasonal-halloween-bat-nav flying' + (spontaneous ? ' spontaneous' : '');
 				bat.innerHTML = createSvgMarkup('bat');
+				if (spontaneous) {
+					bat.style.left = '0px';
+					bat.style.top = (centerY - 21) + 'px';
+				}
 				setProgress(bat, animationDuration);
 				layer.appendChild(bat);
-				for (var p = 0; p < 3; p++) {
+				for (var p = 0; p < (spontaneous ? 0 : 3); p++) {
 					var particle = document.createElement('div');
 					particle.className = 'seasonal-halloween-particle trailing';
 					particle.style.width = '4px';
 					particle.style.height = '4px';
-					particle.style.left = (centerX - 30 - p * 10) + 'px';
-					particle.style.top = (centerY - 10 - p * 8) + 'px';
+					particle.style.left = (spontaneous ? centerX - window.innerWidth / 2 : centerX - 30 - p * 10) + 'px';
+					particle.style.top = (spontaneous ? centerY - 8 : centerY - 10 - p * 8) + 'px';
 					particle.style.setProperty('--px', '-' + (20 + p * 12) + 'px');
 					particle.style.setProperty('--py', (10 + p * 8) + 'px');
 					particle.style.animationDuration = '500ms';
@@ -329,18 +620,21 @@ function initHalloweenNavEffects() {
 				}
 			} else if ('pumpkin' === effectName) {
 				var pumpkin = document.createElement('div');
-				pumpkin.className = 'seasonal-halloween-pumpkin-nav laughing';
+				pumpkin.className = 'seasonal-halloween-pumpkin-nav laughing' + (spontaneous ? ' spontaneous' : '');
 				pumpkin.innerHTML = createSvgMarkup('pumpkin');
-				pumpkin.style.left = (centerX - 32) + 'px';
-				pumpkin.style.top = (centerY - 32) + 'px';
+				var pumpkinSize = spontaneous ? 56 : 64;
+				pumpkin.style.left = (centerX - pumpkinSize / 2) + 'px';
+				pumpkin.style.top = (centerY - pumpkinSize / 2) + 'px';
 				setProgress(pumpkin, animationDuration);
 				layer.appendChild(pumpkin);
 			} else if ('ghost' === effectName) {
 				var ghost = document.createElement('div');
-				ghost.className = 'seasonal-halloween-ghost-nav floating';
+				ghost.className = 'seasonal-halloween-ghost-nav floating' + (spontaneous ? ' spontaneous' : '');
 				ghost.innerHTML = createSvgMarkup('ghost');
-				ghost.style.left = (centerX - 26) + 'px';
-				ghost.style.top = (centerY - 40) + 'px';
+				var ghostWidth = spontaneous ? 50 : 52;
+				var ghostHeight = spontaneous ? 66 : 68;
+				ghost.style.left = (centerX - ghostWidth / 2) + 'px';
+				ghost.style.top = (centerY - ghostHeight / 2) + 'px';
 				setProgress(ghost, animationDuration);
 				layer.appendChild(ghost);
 			} else if ('witch' === effectName) {
@@ -351,13 +645,18 @@ function initHalloweenNavEffects() {
 				}
 
 				var witch = document.createElement('div');
-				witch.className = 'seasonal-halloween-witch-nav flying';
+				witch.className = 'seasonal-halloween-witch-nav flying' + (spontaneous ? ' spontaneous' : '');
 				var illustration = document.createElement('img');
 				illustration.src = witchAsset;
 				illustration.alt = '';
 				illustration.setAttribute('aria-hidden', 'true');
 				illustration.setAttribute('draggable', 'false');
 				witch.appendChild(illustration);
+				if (spontaneous) {
+					var witchWidth = Math.min(148, Math.max(112, window.innerWidth * 0.36));
+					witch.style.width = witchWidth + 'px';
+					witch.style.top = (centerY - witchWidth * 230 / 420 / 2) + 'px';
+				}
 				for (var s = 0; s < 4; s++) {
 					var sparkle = document.createElement('span');
 					sparkle.className = 'seasonal-halloween-witch-sparkle';
@@ -369,10 +668,19 @@ function initHalloweenNavEffects() {
 				setProgress(witch, animationDuration);
 				layer.appendChild(witch);
 			}
-			window.setTimeout(cleanup, Math.max(0, animationDuration - elapsedMs));
+			activeAnimationTimer = window.setTimeout(function() {
+				activeAnimationTimer = null;
+				cleanup();
+			}, Math.max(0, animationDuration - elapsedMs));
+			if (spontaneous) hasSpontaneousAppeared = true;
 		} catch (err) {
 			cleanup();
 		}
+	}
+
+	function cancelActiveSpontaneous() {
+		if (!activeEffectIsSpontaneous || !activeCleanup) return;
+		activeCleanup(false);
 	}
 
 	function isExcluded(target) {
@@ -382,11 +690,6 @@ function initHalloweenNavEffects() {
 	function handleClick(event) {
 		try {
 			if (prefersReducedMotion()) return;
-
-			var now = getClock().value;
-			if (now - lastEffectTime < COOLDOWN_MS) return;
-			if (effectInProgress) return;
-
 			if (event.button !== 0) return;
 			if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
 
@@ -405,6 +708,17 @@ function initHalloweenNavEffects() {
 				var url = new URL(href, window.location.href);
 				if (url.origin !== window.location.origin) return;
 			} catch (err) {
+				return;
+			}
+
+			var interruptedSpontaneous = activeEffectIsSpontaneous;
+			if (interruptedSpontaneous) cancelActiveSpontaneous();
+			if (effectInProgress) return;
+
+			clearSpontaneousTimer();
+			var now = getClock().value;
+			if (!interruptedSpontaneous && now - lastEffectTime < COOLDOWN_MS) {
+				scheduleSpontaneous();
 				return;
 			}
 
@@ -437,6 +751,49 @@ function initHalloweenNavEffects() {
 	}
 
 	document.addEventListener('click', handleClick, { passive: true });
+	document.addEventListener('click', handleSpontaneousUiChange);
+	document.addEventListener('visibilitychange', function() {
+		if ('visible' === document.visibilityState) {
+			scheduleSpontaneous();
+		} else {
+			stopSpontaneous();
+		}
+	});
+	window.addEventListener('pagehide', stopSpontaneous);
+	window.addEventListener('pageshow', function(event) {
+		if (event.persisted) scheduleSpontaneous();
+	});
+
+	if (mobileViewport) {
+		mobileViewport.addEventListener('change', function() {
+			if (mobileViewport.matches) {
+				scheduleSpontaneous();
+			} else {
+				stopSpontaneous();
+			}
+		});
+	}
+
+	if (window.matchMedia) {
+		window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', function(event) {
+			if (event.matches) {
+				stopSpontaneous();
+			} else {
+				scheduleSpontaneous();
+			}
+		});
+	}
+
+	if (window.MutationObserver && marker.parentNode) {
+		var markerObserver = new MutationObserver(function() {
+			if (marker.isConnected) return;
+			stopSpontaneous();
+			markerObserver.disconnect();
+		});
+		markerObserver.observe(marker.parentNode, { childList: true });
+	}
+
+	scheduleSpontaneous();
 }
 
 	// ===== Theme Toggle =====
