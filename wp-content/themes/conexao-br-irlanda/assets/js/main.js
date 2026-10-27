@@ -28,6 +28,7 @@
 		initEventFilters();
 		initSponsorsCarousel();
 		initHalloweenWelcome();
+		initHalloweenNavEffects();
 		initInfiniteScroll();
 		initLoadMore();
 	});
@@ -79,6 +80,174 @@
 			}
 		});
 	}
+
+// ===== Seasonal Halloween navigation click effects =====
+function initHalloweenNavEffects() {
+	'use strict';
+
+	var marker = document.querySelector('.seasonal-halloween-active-marker');
+	if (!marker) return;
+
+	if (prefersReducedMotion()) return;
+
+	var COOLDOWN_MS = 1500;
+	var lastEffectTime = 0;
+	var effectInProgress = false;
+	var lastEffectName = null;
+
+	var EFFECTS = ['bat', 'pumpkin', 'ghost'];
+
+	var EXCLUDED_SELECTORS = '.mobile-menu-toggle, .mobile-menu-close, ' +
+		'.theme-toggle, .mobile-search-toggle, .mobile-search-close, ' +
+		'.seasonal-halloween-close, [aria-controls="mobile-search"], ' +
+		'[aria-controls="mobile-menu"]';
+
+	function pickEffect() {
+		var available = EFFECTS.filter(function(name) {
+			return name !== lastEffectName;
+		});
+		if (available.length === 0) {
+			available = EFFECTS.slice();
+		}
+		var index = Math.floor(Math.random() * available.length);
+		lastEffectName = available[index];
+		return available[index];
+	}
+
+	function createSvgMarkup(type) {
+		if ('bat' === type) {
+			return '<svg viewBox="0 0 100 60" class="bat-wing" focusable="false" aria-hidden="true">' +
+				'<path d="M50 20 C35 12 20 5 10 8 L4 14 L8 22 L4 30 L12 38 L6 45 L16 40 L22 34 L30 40 L38 32 L46 38 L54 32 L62 38 L58 45 L52 38 L44 44 L38 38 L30 44 L22 38 L16 44 L10 38 L14 30 L18 24 L25 18 L35 20 L42 22 L50 20 Z" fill="currentColor"/>' +
+				'<path d="M50 24 L45 28 L55 28 Z" fill="currentColor"/>' +
+				'</svg>';
+		}
+		if ('pumpkin' === type) {
+			return '<svg viewBox="0 0 80 80" focusable="false" aria-hidden="true">' +
+				'<defs>' +
+				'<radialGradient id="nav-pumpkin-fill" cx="40%" cy="30%" r="70%">' +
+				'<stop offset="0%" stop-color="#ffbf69"/>' +
+				'<stop offset="50%" stop-color="#ed7929"/>' +
+				'<stop offset="100%" stop-color="#8f341e"/>' +
+				'</radialGradient>' +
+				'</defs>' +
+				'<ellipse cx="40" cy="50" rx="24" ry="30" fill="url(#nav-pumpkin-fill)"/>' +
+				'<path d="M40 30 L36 22 L44 22 Z" fill="#4d512d"/>' +
+				'<circle cx="30" cy="42" r="3" fill="#3f2a20"/>' +
+				'<circle cx="50" cy="42" r="3" fill="#3f2a20"/>' +
+				'<path d="M30 52 Q35 58 40 52 Q45 58 50 52" fill="none" stroke="#3f2a20" stroke-width="3" stroke-linecap="round"/>' +
+				'</svg>';
+		}
+		if ('ghost' === type) {
+			return '<svg viewBox="0 0 60 80" focusable="false" aria-hidden="true">' +
+				'<path d="M30 12 C18 12 10 22 10 32 C10 44 18 56 30 56 C42 56 50 44 50 32 C50 22 42 12 30 12 Z" fill="currentColor"/>' +
+				'<circle cx="22" cy="28" r="2" fill="#3f3f3f"/>' +
+				'<circle cx="38" cy="28" r="2" fill="#3f3f3f"/>' +
+				'</svg>';
+		}
+		return '';
+	}
+
+	function playEffect(effectName, centerX, centerY) {
+		if (effectInProgress) return;
+		effectInProgress = true;
+		lastEffectTime = Date.now();
+
+		var layer = document.createElement('div');
+		layer.className = 'seasonal-halloween-effect-layer';
+		layer.setAttribute('aria-hidden', 'true');
+		document.body.appendChild(layer);
+
+		var cleanupTimeout;
+		function cleanup() {
+			try {
+				if (layer && layer.parentNode) {
+					layer.parentNode.removeChild(layer);
+				}
+			} catch (err) {
+				// Best-effort cleanup; never let it break navigation.
+			}
+			effectInProgress = false;
+		}
+
+		try {
+			if ('bat' === effectName) {
+				var bat = document.createElement('div');
+				bat.className = 'seasonal-halloween-bat-nav flying';
+				bat.innerHTML = createSvgMarkup('bat');
+				layer.appendChild(bat);
+				for (var p = 0; p < 3; p++) {
+					var particle = document.createElement('div');
+					particle.className = 'seasonal-halloween-particle trailing';
+					particle.style.width = '4px';
+					particle.style.height = '4px';
+					particle.style.left = (centerX - 30 - p * 10) + 'px';
+					particle.style.top = (centerY - 10 - p * 8) + 'px';
+					particle.style.setProperty('--px', '-' + (20 + p * 12) + 'px');
+					particle.style.setProperty('--py', (10 + p * 8) + 'px');
+					layer.appendChild(particle);
+				}
+				cleanupTimeout = setTimeout(cleanup, 950);
+			} else if ('pumpkin' === effectName) {
+				var pumpkin = document.createElement('div');
+				pumpkin.className = 'seasonal-halloween-pumpkin-nav laughing';
+				pumpkin.innerHTML = createSvgMarkup('pumpkin');
+				pumpkin.style.left = (centerX - 32) + 'px';
+				pumpkin.style.top = (centerY - 32) + 'px';
+				layer.appendChild(pumpkin);
+				cleanupTimeout = setTimeout(cleanup, 1150);
+			} else if ('ghost' === effectName) {
+				var ghost = document.createElement('div');
+				ghost.className = 'seasonal-halloween-ghost-nav floating';
+				ghost.innerHTML = createSvgMarkup('ghost');
+				ghost.style.left = (centerX - 26) + 'px';
+				ghost.style.top = (centerY - 40) + 'px';
+				layer.appendChild(ghost);
+				cleanupTimeout = setTimeout(cleanup, 1250);
+			}
+		} catch (err) {
+			cleanup();
+		}
+	}
+
+	function isExcluded(target) {
+		return !!target.closest(EXCLUDED_SELECTORS);
+	}
+
+	function handleClick(event) {
+		try {
+			var now = Date.now();
+			if (now - lastEffectTime < COOLDOWN_MS) return;
+			if (effectInProgress) return;
+
+			if (event.button !== 0) return;
+			if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+
+			var link = event.target.closest('a.nav-link');
+			if (!link) return;
+			if (isExcluded(link)) return;
+
+			var href = link.getAttribute('href');
+			if (!href) return;
+
+			try {
+				var url = new URL(href, window.location.href);
+				if (url.hostname !== window.location.hostname) return;
+			} catch (err) {
+				return;
+			}
+
+			var rect = link.getBoundingClientRect();
+			var centerX = rect.left + rect.width / 2;
+			var centerY = rect.top + rect.height / 2;
+
+			playEffect(pickEffect(), centerX, centerY);
+		} catch (err) {
+			// Never let the decorative system break navigation.
+		}
+	}
+
+	document.addEventListener('click', handleClick, { passive: true });
+}
 
 	// ===== Theme Toggle =====
 	function initThemeToggle() {
