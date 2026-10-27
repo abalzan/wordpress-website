@@ -351,16 +351,23 @@ fragments.
 The destination consumes and removes that record before validating its target,
 same-origin referrer, active-occasion marker, reduced-motion preference, and
 navigation type; refresh and back/forward loads cannot resume it. It resumes
-the CSS animation at the elapsed progress; the total visual
-duration is 1,000 ms, with a 1,500 ms state-expiry ceiling. A monotonic
+the CSS animation at the elapsed progress; existing bat, pumpkin and ghost
+effects remain 1,000 ms, while the rare witch flight is 3,000 ms, with a
+3,500 ms state-expiry ceiling. The witch is selected on one in eight eligible
+effect rolls (never on consecutive rolls); the existing single-active-effect
+guard prevents overlap. Its local SVG is requested only when selected, and
+four CSS sparkles remain bounded to that flight. A monotonic
 performance clock is used when available, with a bounded wall-clock fallback.
 Unavailable/invalid storage or unsupported clock continuity simply omits the
 cross-page effect; ordinary link navigation is never intercepted or delayed.
 If Navigation Timing cannot identify a fresh document navigation, continuity
 is also skipped rather than risking a stale replay.
-Reduced-motion users receive neither a persisted nor resumed effect. Welcome
-card dismissal remains a separate key and does not disable nav effects. See
-the [navigation continuity report](reports/2026-10-27-halloween-navigation-continuity-report.md)
+Reduced-motion users receive neither a persisted nor resumed effect, and the
+witch is hidden by the reduced-motion stylesheet. Welcome-card dismissal
+remains a separate key and does not disable nav effects. The witch appears
+only while the existing selected occasion emits the Halloween marker; no
+date/window logic is duplicated. See the [navigation continuity report](reports/2026-10-27-halloween-navigation-continuity-report.md)
+and [witch animation report](reports/2026-10-27-halloween-witch-animation-report.md)
 for implementation and verification details.
 
 _Last verified: 2026-09-26 by Stage L — Permanent Invariant Gates_
@@ -370,3 +377,4 @@ _Last verified: 2026-10-08 by the Apoiadores single-page directory change (singl
 _Last verified: 2026-10-10 by UI polish Phase 3 — card-CTA 44px floor, single editorial measure, component-heading tokens_
 _Last verified: 2026-10-26 by Halloween homepage presentation refinement_
 _Last verified: 2026-10-27 by Halloween navigation continuity_
+_Last verified: 2026-10-27 by Halloween witch animation_

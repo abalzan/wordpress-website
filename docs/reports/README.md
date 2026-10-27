@@ -172,6 +172,8 @@ The authorised follow-up to the BLOCKED finding above. The empty archive was a
 | [`2026-10-26-halloween-homepage-report.md`](2026-10-26-halloween-homepage-report.md) | Visual, interaction, localization, accessibility, and test results for the Halloween homepage refinement. |
 | [`2026-10-27-halloween-navigation-continuity-plan.md`](2026-10-27-halloween-navigation-continuity-plan.md) | Plan for one-second Halloween navigation-effect continuity. |
 | [`2026-10-27-halloween-navigation-continuity-report.md`](2026-10-27-halloween-navigation-continuity-report.md) | Implementation, timing, accessibility, and verification results for cross-navigation Halloween effects. |
+| [`2026-10-27-halloween-witch-animation-plan.md`](2026-10-27-halloween-witch-animation-plan.md) | Plan for the rare three-second witch-and-broom Halloween navigation effect. |
+| [`2026-10-27-halloween-witch-animation-report.md`](2026-10-27-halloween-witch-animation-report.md) | Implementation, responsive browser checks, and test results for the witch animation. |
 
 ## Related: `docs/audit/` (engineering audits), `docs/engineering-standard.md`
 (the normative standard these reports are measured against).
@@ -181,6 +183,7 @@ _Last verified: 2026-09-27 by the recovery closeout_
 _Last verified: 2026-09-28 by the EN archive route 404 investigation_
 
 _Last verified: 2026-10-26 by Halloween homepage presentation refinement_
+_Last verified: 2026-10-27 by Halloween witch animation_
 
 _Last verified: 2026-09-28 by the B1 English Guides content rollout_
 

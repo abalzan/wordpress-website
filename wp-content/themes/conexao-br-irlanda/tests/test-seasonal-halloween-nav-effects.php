@@ -91,10 +91,14 @@ test_section( 'Navigation continuity contract' );
 
 $theme_root = dirname( __DIR__ );
 $nav_script = file_get_contents( $theme_root . '/assets/js/main.js' );
+$nav_styles = file_get_contents( $theme_root . '/assets/css/main.css' );
 $header_src = file_get_contents( $theme_root . '/header.php' );
+$witch_asset = file_get_contents( $theme_root . '/assets/images/halloween/witch-broom.svg' );
 
 assert_true( is_string( $nav_script ), 'Halloween navigation script is readable' );
+assert_true( is_string( $nav_styles ), 'Halloween navigation styles are readable' );
 assert_true( is_string( $header_src ), 'Header source is readable' );
+assert_true( is_string( $witch_asset ), 'The witch illustration is readable' );
 
 assert_contains(
 	"var TRANSITION_KEY = 'conexao-halloween-nav-effect-v1';",
@@ -102,9 +106,9 @@ assert_contains(
 	'Transition state uses a namespaced, versioned session key'
 );
 assert_contains(
-	"var EFFECTS = ['bat', 'pumpkin', 'ghost'];",
+	"var EFFECTS = ['bat', 'pumpkin', 'ghost', 'witch'];",
 	$nav_script,
-	'Transition state is constrained to the three known effects'
+	'Transition state is constrained to the four known effects'
 );
 assert_contains(
 	'state.version !== 1',
@@ -124,12 +128,72 @@ assert_contains(
 assert_contains(
 	'var ANIMATION_DURATION_MS = 1000;',
 	$nav_script,
-	'Each effect uses a 1,000 millisecond total visual duration'
+	'Existing navigation effects retain their 1,000 millisecond handoff duration'
 );
 assert_contains(
-	'var STATE_EXPIRY_MS = 1500;',
+	'var WITCH_ANIMATION_DURATION_MS = 3000;',
 	$nav_script,
-	'Persisted state expires after at most 1,500 milliseconds'
+	'The witch uses the requested 3,000 millisecond flight duration'
+);
+assert_contains(
+	'halloween-nav-witch-flight 3s cubic-bezier',
+	$nav_styles,
+	'The CSS flight animation lasts three seconds with a smooth easing curve'
+);
+assert_contains(
+	'translate3d(-110%, 3vh, 0)',
+	$nav_styles,
+	'The witch begins fully beyond the left viewport edge'
+);
+assert_contains(
+	'calc(100vw + 110%)',
+	$nav_styles,
+	'The witch exits fully beyond the opposite viewport edge'
+);
+assert_contains(
+	'seasonal-halloween-effect-layer',
+	$nav_styles,
+	'The animation uses the existing fixed, overflow-clipped decorative layer'
+);
+assert_contains(
+	'pointer-events: none;',
+	$nav_styles,
+	'The decorative layer does not intercept interaction'
+);
+assert_contains(
+	".seasonal-halloween-witch-nav {\n    display: none;",
+	$nav_styles,
+	'Reduced-motion users do not see a static substitute witch'
+);
+assert_contains(
+	"return 'witch' === effectName ? WITCH_ANIMATION_DURATION_MS : ANIMATION_DURATION_MS;",
+	$nav_script,
+	'The handoff derives its total duration from the selected effect'
+);
+assert_contains(
+	'Math.random() < 0.125',
+	$nav_script,
+	'The witch is selected as an uncommon one-in-eight surprise'
+);
+assert_contains(
+	'if (effectInProgress || EFFECTS.indexOf(effectName) === -1 ||',
+	$nav_script,
+	'Only one Halloween effect can be active at a time'
+);
+assert_contains(
+	'for (var s = 0; s < 4; s++)',
+	$nav_script,
+	'The witch trail is bounded to four sparkles'
+);
+assert_contains(
+	'window.setTimeout(cleanup, Math.max(0, animationDuration - elapsedMs));',
+	$nav_script,
+	'Each effect layer is removed after only its remaining animation duration'
+);
+assert_contains(
+	'var STATE_EXPIRY_MS = 3500;',
+	$nav_script,
+	'Persisted state has a bounded 3,500 millisecond ceiling for the witch flight'
 );
 assert_contains(
 	'elapsedMs > STATE_EXPIRY_MS',
@@ -142,9 +206,9 @@ assert_contains(
 	'Coordinates outside the current viewport are rejected'
 );
 assert_contains(
-	'Math.max(0, ANIMATION_DURATION_MS - elapsedMs)',
+	'Math.max(0, animationDuration - elapsedMs)',
 	$nav_script,
-	'Destination cleanup uses only the remaining duration'
+	'Destination cleanup uses only the remaining effect duration'
 );
 assert_contains(
 	"element.style.animationDelay = '-' + elapsedMs + 'ms';",
@@ -152,12 +216,12 @@ assert_contains(
 	'Destination CSS animation resumes at the elapsed progress'
 );
 assert_contains(
-	'transition.elapsedMs < ANIMATION_DURATION_MS',
+	'transition.elapsedMs < getAnimationDuration(transition.effect)',
 	$nav_script,
-	'Expired visual effects are not replayed'
+	'Expired effects are rejected using their selected animation duration'
 );
 assert_contains(
-	"window.sessionStorage.removeItem(TRANSITION_KEY);",
+	'window.sessionStorage.removeItem(TRANSITION_KEY);',
 	$nav_script,
 	'Transition state is removed when consumed'
 );
@@ -249,6 +313,45 @@ assert_contains(
 	"'halloween' === conexao_seasonal_variant()",
 	$header_src,
 	'Only the selected Halloween occasion emits the navigation eligibility marker'
+);
+assert_contains(
+	'data-witch-asset="<?php echo esc_url( get_template_directory_uri() . \'/assets/images/halloween/witch-broom.svg\' ); ?>"',
+	$header_src,
+	'The active marker exposes only the locally stored, escaped witch illustration URL'
+);
+assert_true(
+	file_exists( $theme_root . '/assets/images/halloween/witch-broom.svg' ),
+	'The broom-riding witch illustration is stored in the theme assets'
+);
+assert_contains(
+	'seasonal-halloween-witch-nav flying',
+	$nav_script,
+	'The witch is added through the existing decorative effect layer'
+);
+assert_contains(
+	'viewBox="0 0 420 230"',
+	$witch_asset,
+	'The local SVG has a compact, responsive illustration viewBox'
+);
+assert_contains(
+	'<path d="m183 73 37-58-10 65"',
+	$witch_asset,
+	'The SVG includes the witch’s distinctive pointed hat'
+);
+assert_contains(
+	'M92 174 365 190',
+	$witch_asset,
+	'The SVG includes a long broom handle and bristle silhouette'
+);
+assert_contains(
+	'var witch = document.createElement(\'div\');',
+	$nav_script,
+	'The witch is created as temporary decorative markup rather than persistent page content'
+);
+assert_contains(
+	'witchAsset',
+	$nav_script,
+	'The illustration source is read from the Halloween-gated marker'
 );
 assert_contains(
 	"sessionStorage.setItem(dismissalKey, 'dismissed');",

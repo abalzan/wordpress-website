@@ -88,13 +88,14 @@ function initHalloweenNavEffects() {
 	var marker = document.querySelector('.seasonal-halloween-active-marker');
 	var COOLDOWN_MS = 1500;
 	var ANIMATION_DURATION_MS = 1000;
-	var STATE_EXPIRY_MS = 1500;
+	var WITCH_ANIMATION_DURATION_MS = 3000;
+	var STATE_EXPIRY_MS = 3500;
 	var TRANSITION_KEY = 'conexao-halloween-nav-effect-v1';
 	var lastEffectTime = 0;
 	var effectInProgress = false;
 	var lastEffectName = null;
 
-	var EFFECTS = ['bat', 'pumpkin', 'ghost'];
+	var EFFECTS = ['bat', 'pumpkin', 'ghost', 'witch'];
 
 	var EXCLUDED_SELECTORS = '.mobile-menu-toggle, .mobile-menu-close, ' +
 		'.theme-toggle, .mobile-search-toggle, .mobile-search-close, ' +
@@ -128,6 +129,10 @@ function initHalloweenNavEffects() {
 
 		var navigationEntries = window.performance.getEntriesByType('navigation');
 		return !!navigationEntries.length && navigationEntries[0].type === 'navigate';
+	}
+
+	function getAnimationDuration(effectName) {
+		return 'witch' === effectName ? WITCH_ANIMATION_DURATION_MS : ANIMATION_DURATION_MS;
 	}
 
 	function consumeTransitionState() {
@@ -225,11 +230,16 @@ function initHalloweenNavEffects() {
 	}
 
 	function pickEffect() {
+		if ('witch' !== lastEffectName && Math.random() < 0.125) {
+			lastEffectName = 'witch';
+			return 'witch';
+		}
+
 		var available = EFFECTS.filter(function(name) {
-			return name !== lastEffectName;
+			return 'witch' !== name && name !== lastEffectName;
 		});
 		if (available.length === 0) {
-			available = EFFECTS.slice();
+			available = ['bat', 'pumpkin', 'ghost'];
 		}
 		var index = Math.floor(Math.random() * available.length);
 		lastEffectName = available[index];
@@ -271,9 +281,10 @@ function initHalloweenNavEffects() {
 
 	function playEffect(effectName, centerX, centerY, elapsedMs) {
 		if (effectInProgress || EFFECTS.indexOf(effectName) === -1 ||
-			elapsedMs >= ANIMATION_DURATION_MS) return;
+			elapsedMs >= getAnimationDuration(effectName)) return;
 		effectInProgress = true;
 		lastEffectTime = getClock().value;
+		var animationDuration = getAnimationDuration(effectName);
 
 		var layer = document.createElement('div');
 		layer.className = 'seasonal-halloween-effect-layer';
@@ -291,8 +302,8 @@ function initHalloweenNavEffects() {
 			effectInProgress = false;
 		}
 
-		function setProgress(element) {
-			element.style.animationDuration = ANIMATION_DURATION_MS + 'ms';
+		function setProgress(element, duration) {
+			element.style.animationDuration = duration + 'ms';
 			element.style.animationDelay = '-' + elapsedMs + 'ms';
 		}
 
@@ -301,7 +312,7 @@ function initHalloweenNavEffects() {
 				var bat = document.createElement('div');
 				bat.className = 'seasonal-halloween-bat-nav flying';
 				bat.innerHTML = createSvgMarkup('bat');
-				setProgress(bat);
+				setProgress(bat, animationDuration);
 				layer.appendChild(bat);
 				for (var p = 0; p < 3; p++) {
 					var particle = document.createElement('div');
@@ -322,7 +333,7 @@ function initHalloweenNavEffects() {
 				pumpkin.innerHTML = createSvgMarkup('pumpkin');
 				pumpkin.style.left = (centerX - 32) + 'px';
 				pumpkin.style.top = (centerY - 32) + 'px';
-				setProgress(pumpkin);
+				setProgress(pumpkin, animationDuration);
 				layer.appendChild(pumpkin);
 			} else if ('ghost' === effectName) {
 				var ghost = document.createElement('div');
@@ -330,10 +341,35 @@ function initHalloweenNavEffects() {
 				ghost.innerHTML = createSvgMarkup('ghost');
 				ghost.style.left = (centerX - 26) + 'px';
 				ghost.style.top = (centerY - 40) + 'px';
-				setProgress(ghost);
+				setProgress(ghost, animationDuration);
 				layer.appendChild(ghost);
+			} else if ('witch' === effectName) {
+				var witchAsset = marker.getAttribute('data-witch-asset');
+				if (!witchAsset) {
+					cleanup();
+					return;
+				}
+
+				var witch = document.createElement('div');
+				witch.className = 'seasonal-halloween-witch-nav flying';
+				var illustration = document.createElement('img');
+				illustration.src = witchAsset;
+				illustration.alt = '';
+				illustration.setAttribute('aria-hidden', 'true');
+				illustration.setAttribute('draggable', 'false');
+				witch.appendChild(illustration);
+				for (var s = 0; s < 4; s++) {
+					var sparkle = document.createElement('span');
+					sparkle.className = 'seasonal-halloween-witch-sparkle';
+					sparkle.style.left = (s * 5 - 8) + '%';
+					sparkle.style.top = (s % 2 ? 56 : 30) + '%';
+					sparkle.style.animationDelay = 'calc(-' + elapsedMs + 'ms + ' + (s * 150) + 'ms)';
+					witch.appendChild(sparkle);
+				}
+				setProgress(witch, animationDuration);
+				layer.appendChild(witch);
 			}
-			window.setTimeout(cleanup, Math.max(0, ANIMATION_DURATION_MS - elapsedMs));
+			window.setTimeout(cleanup, Math.max(0, animationDuration - elapsedMs));
 		} catch (err) {
 			cleanup();
 		}
@@ -391,7 +427,7 @@ function initHalloweenNavEffects() {
 		return;
 	}
 
-	if (transition && transition.elapsedMs < ANIMATION_DURATION_MS) {
+	if (transition && transition.elapsedMs < getAnimationDuration(transition.effect)) {
 		playEffect(
 			transition.effect,
 			transition.x,

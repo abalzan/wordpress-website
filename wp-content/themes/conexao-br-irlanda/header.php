@@ -47,8 +47,8 @@
 // initializer. The occasion engine remains the sole eligibility authority;
 // no date calculation is duplicated here.
 if ( function_exists( 'conexao_seasonal_variant' ) && 'halloween' === conexao_seasonal_variant() ) :
-?>
-<span class="seasonal-halloween-active-marker" hidden></span>
+	?>
+	<span class="seasonal-halloween-active-marker" data-witch-asset="<?php echo esc_url( get_template_directory_uri() . '/assets/images/halloween/witch-broom.svg' ); ?>" hidden></span>
 <?php endif; ?>
 
 <div id="page" class="site">

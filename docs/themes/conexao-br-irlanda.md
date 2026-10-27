@@ -94,10 +94,15 @@ the dated Halloween report for the responsive and browser verification record.
 The header navigation marker is emitted only while the existing occasion
 engine selects Halloween. Eligible same-origin navigation effects use a
 one-shot, expiring tab-session handoff and resume only the remaining portion of
-their one-second animation; link activation is not delayed, and reduced motion
-prevents persistence and replay. The handoff does not share the welcome-card
-dismissal state. See the
-[navigation continuity report](../reports/2026-10-27-halloween-navigation-continuity-report.md).
+their effect-specific animation. The bat, pumpkin and ghost remain 1,000 ms;
+the rare witch is a 3,000 ms, left-to-right flight, with a 3,500 ms handoff
+expiry. Four restrained CSS sparkles follow the witch. Its locally stored SVG
+(`assets/images/halloween/witch-broom.svg`) is requested only when selected.
+The existing single-active-effect guard prevents overlap, link activation is
+not delayed, and reduced motion prevents persistence and replay and hides the
+witch. The handoff does not share the welcome-card dismissal state. See the
+[navigation continuity report](../reports/2026-10-27-halloween-navigation-continuity-report.md)
+and [witch animation report](../reports/2026-10-27-halloween-witch-animation-report.md).
 
 ## Homepage Apoiadores Carousel
 
@@ -937,3 +942,4 @@ _Last verified: 2026-10-10 by UI polish Phase 3 — card-CTA 44px floor and the 
 _Last verified: 2026-10-12 by the Empregos job-search resources restoration — `template-parts/job-resources.php` renders on `/empregos/` again and its CTA follows the homepage "Acessar" pattern_
 _Last verified: 2026-10-26 by Halloween homepage presentation refinement_
 _Last verified: 2026-10-27 by Halloween navigation continuity_
+_Last verified: 2026-10-27 by Halloween witch animation_
