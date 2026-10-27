@@ -78,7 +78,7 @@ msgstr "Guides"
 msgid "Eventos"
 msgstr "Events"
 
-#: front-page.php:160
+#: front-page.php:172
 #: functions.php:3774
 #: inc/seo.php:47
 #: inc/seo.php:683
@@ -567,9 +567,9 @@ msgstr "Housing"
 msgid "Casas e apartamentos"
 msgstr "Houses and apartments"
 
-#: front-page.php:160
-msgid "Vagas de trabalho"
-msgstr "Job openings"
+#: front-page.php:172
+msgid "Oportunidades de trabalho"
+msgstr "Job opportunities"
 
 #: front-page.php:161
 msgid "Saúde"
