@@ -47,6 +47,29 @@ assert_true(
 );
 assert_contains( 'seasonal-halloween-bat-wing--left', $halloween_markup, 'bat artwork includes distinct articulated wings' );
 assert_contains( 'seasonal-halloween-pumpkin', $halloween_markup, 'the greeting includes original pumpkin artwork' );
+assert_contains(
+	'var(--halloween-pumpkin-highlight, #ffbf69)',
+	$halloween_markup,
+	'the inline pumpkin inherits the presentation theme palette with a readable fallback'
+);
+
+$theme_root  = dirname( __DIR__ );
+$light_style = file_get_contents( $theme_root . '/assets/css/main.css' );
+$dark_style  = file_get_contents( $theme_root . '/assets/css/dark-mode.css' );
+assert_true( is_string( $light_style ), 'Halloween light-mode styles are readable' );
+assert_true( is_string( $dark_style ), 'Halloween dark-mode styles are readable' );
+if ( is_string( $light_style ) && is_string( $dark_style ) ) {
+	assert_contains( '--halloween-surface: #fff2dd;', $light_style, 'the welcome card has a warm light-mode surface' );
+	assert_contains( '--halloween-text: #35243d;', $light_style, 'light-mode greeting text uses a deep plum token' );
+	assert_contains( 'var(--halloween-surface-raised)', $light_style, 'the card uses its scoped semantic surface token' );
+	assert_contains(
+		':root[data-theme="dark"] .seasonal-halloween-presentation',
+		$dark_style,
+		'dark-mode palette follows the existing root theme attribute'
+	);
+	assert_contains( '--halloween-surface: #181522;', $dark_style, 'dark mode has its own cinematic card surface' );
+	assert_contains( '--halloween-text-muted: #f0e5d4;', $dark_style, 'dark-mode supporting copy uses a high-contrast token' );
+}
 
 $occurrence = $halloween->resolve_occurrence_date();
 assert_true( $occurrence instanceof DateTime, 'the dismissal namespace uses the selected occasion occurrence' );

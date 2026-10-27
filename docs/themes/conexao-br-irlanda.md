@@ -91,6 +91,17 @@ animations that stop under `prefers-reduced-motion: reduce`. Greeting,
 supporting copy, CTA, and close label follow the current Polylang locale. See
 the dated Halloween report for the responsive and browser verification record.
 
+The presentation and temporary navigation-effect layer use a Halloween-scoped
+semantic palette in `main.css`, with dark values in `dark-mode.css`. The
+existing root `data-theme` attribute selects a warm cream/deep-plum light
+treatment or a midnight-plum/warm-amber dark treatment. Inline pumpkin artwork
+and active CSS effects inherit those values directly; the toggle changes colors
+in place without a second theme state, animation restart, or change to the
+session-only welcome dismissal. The witch retains its locally stored SVG and
+warm outline, with CSS rim lighting for separation against both themes. See
+the [theme compatibility report](../reports/2026-10-27-halloween-theme-compatibility-report.md)
+for the measured light/dark treatment.
+
 The header navigation marker is emitted only while the existing occasion
 engine selects Halloween. Eligible same-origin navigation effects use a
 one-shot, expiring tab-session handoff and resume only the remaining portion of
@@ -943,3 +954,4 @@ _Last verified: 2026-10-12 by the Empregos job-search resources restoration — 
 _Last verified: 2026-10-26 by Halloween homepage presentation refinement_
 _Last verified: 2026-10-27 by Halloween navigation continuity_
 _Last verified: 2026-10-27 by Halloween witch animation_
+_Last verified: 2026-10-27 by Halloween theme compatibility_

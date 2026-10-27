@@ -257,16 +257,16 @@ function initHalloweenNavEffects() {
 			return '<svg viewBox="0 0 80 80" focusable="false" aria-hidden="true">' +
 				'<defs>' +
 				'<radialGradient id="nav-pumpkin-fill" cx="40%" cy="30%" r="70%">' +
-				'<stop offset="0%" stop-color="#ffbf69"/>' +
-				'<stop offset="50%" stop-color="#ed7929"/>' +
-				'<stop offset="100%" stop-color="#8f341e"/>' +
+				'<stop offset="0%" stop-color="var(--halloween-pumpkin-highlight, #ffbf69)"/>' +
+				'<stop offset="50%" stop-color="var(--halloween-pumpkin-mid, #ed7929)"/>' +
+				'<stop offset="100%" stop-color="var(--halloween-pumpkin-shadow, #8f341e)"/>' +
 				'</radialGradient>' +
 				'</defs>' +
 				'<ellipse cx="40" cy="50" rx="24" ry="30" fill="url(#nav-pumpkin-fill)"/>' +
-				'<path d="M40 30 L36 22 L44 22 Z" fill="#4d512d"/>' +
-				'<circle cx="30" cy="42" r="3" fill="#3f2a20"/>' +
-				'<circle cx="50" cy="42" r="3" fill="#3f2a20"/>' +
-				'<path d="M30 52 Q35 58 40 52 Q45 58 50 52" fill="none" stroke="#3f2a20" stroke-width="3" stroke-linecap="round"/>' +
+				'<path d="M40 30 L36 22 L44 22 Z" fill="var(--halloween-pumpkin-stem-light, #4d512d)"/>' +
+				'<circle cx="30" cy="42" r="3" fill="var(--halloween-pumpkin-face-ink, #4b2519)"/>' +
+				'<circle cx="50" cy="42" r="3" fill="var(--halloween-pumpkin-face-ink, #4b2519)"/>' +
+				'<path d="M30 52 Q35 58 40 52 Q45 58 50 52" fill="none" stroke="var(--halloween-pumpkin-face-ink, #4b2519)" stroke-width="3" stroke-linecap="round"/>' +
 				'</svg>';
 		}
 		if ('ghost' === type) {

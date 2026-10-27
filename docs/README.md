@@ -179,6 +179,8 @@ To add, remove or re-classify a plugin: edit `plugins.json`, add its doc under
 | [reports/2026-10-27-halloween-witch-animation-plan.md](reports/2026-10-27-halloween-witch-animation-plan.md) | Plan for the rare, three-second witch-on-a-broom navigation effect |
 | [reports/2026-10-27-halloween-witch-animation-report.md](reports/2026-10-27-halloween-witch-animation-report.md) | Implementation, responsive browser checks, and test results for the witch animation |
 | [reports/2026-10-27-halloween-witch-animation-report.md](reports/2026-10-27-halloween-witch-animation-report.md) | Implementation, responsive browser checks, and test results for the witch animation |
+| [reports/2026-10-27-halloween-theme-compatibility-plan.md](reports/2026-10-27-halloween-theme-compatibility-plan.md) | Plan for adapting Halloween visuals to the existing light and dark themes |
+| [reports/2026-10-27-halloween-theme-compatibility-report.md](reports/2026-10-27-halloween-theme-compatibility-report.md) | Light/dark implementation, browser verification, tests, and limitations |
 | [events/](events/) | Events location-filters and copy reports |
 | [importers/](importers/) | Event/Lazer/IVVCC/Mondello import pipeline reports and plans |
 | [research/](research/) | Topic research notes (e.g. recruitment agencies, employment permits) |
@@ -219,3 +221,4 @@ _Last verified: 2026-10-10 by UI polish Phase 3 — component-heading tokens, ca
 
 _Last verified: 2026-10-27 by Halloween navigation continuity_
 _Last verified: 2026-10-27 by Halloween witch animation_
+_Last verified: 2026-10-27 by Halloween theme compatibility_

@@ -339,8 +339,21 @@ motion disables them. The seasonal styles live in
 `wp-content/themes/conexao-br-irlanda/assets/css/main.css` and behavior in the
 existing `assets/js/main.js` bundle. See the
 [theme reference](themes/conexao-br-irlanda.md#seasonal-halloween-welcome) and
-[implementation report](reports/2026-10-26-halloween-homepage-report.md) for
-the verified viewport and interaction results.
+[homepage report](reports/2026-10-26-halloween-homepage-report.md) for the
+presentation foundation and the
+[theme compatibility report](reports/2026-10-27-halloween-theme-compatibility-report.md)
+for the theme-specific verification.
+
+The Halloween palette is scoped to the presentation and temporary navigation
+effect layer. Light mode uses a warm cream card, deep-plum text, and shaded
+pumpkin-orange accents; dark mode uses a distinct midnight-plum surface,
+warm-white text, and brighter amber/violet illumination. Both follow the
+existing root `data-theme` attribute. The inline pumpkin artwork and navigation
+effects inherit these CSS custom properties, so changing themes recolors an
+in-flight effect without reinitializing JavaScript, resetting the presentation,
+or changing the existing `conexao-theme` preference and Halloween dismissal
+keys. The locally loaded witch SVG keeps its amber outline; the theme-aware CSS
+rim and glow preserve its silhouette without inverting the artwork.
 
 During the active Halloween occasion, eligible same-origin primary-navigation
 clicks may carry a single allowlisted effect across a normal document
@@ -378,3 +391,4 @@ _Last verified: 2026-10-10 by UI polish Phase 3 — card-CTA 44px floor, single 
 _Last verified: 2026-10-26 by Halloween homepage presentation refinement_
 _Last verified: 2026-10-27 by Halloween navigation continuity_
 _Last verified: 2026-10-27 by Halloween witch animation_
+_Last verified: 2026-10-27 by Halloween theme compatibility_

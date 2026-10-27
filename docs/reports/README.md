@@ -174,6 +174,8 @@ The authorised follow-up to the BLOCKED finding above. The empty archive was a
 | [`2026-10-27-halloween-navigation-continuity-report.md`](2026-10-27-halloween-navigation-continuity-report.md) | Implementation, timing, accessibility, and verification results for cross-navigation Halloween effects. |
 | [`2026-10-27-halloween-witch-animation-plan.md`](2026-10-27-halloween-witch-animation-plan.md) | Plan for the rare three-second witch-and-broom Halloween navigation effect. |
 | [`2026-10-27-halloween-witch-animation-report.md`](2026-10-27-halloween-witch-animation-report.md) | Implementation, responsive browser checks, and test results for the witch animation. |
+| [`2026-10-27-halloween-theme-compatibility-plan.md`](2026-10-27-halloween-theme-compatibility-plan.md) | Plan for theme-aware Halloween presentation and navigation effects. |
+| [`2026-10-27-halloween-theme-compatibility-report.md`](2026-10-27-halloween-theme-compatibility-report.md) | Implementation, visual verification, tests, and remaining limitations. |
 
 ## Related: `docs/audit/` (engineering audits), `docs/engineering-standard.md`
 (the normative standard these reports are measured against).
@@ -256,3 +258,4 @@ _Last verified: 2026-10-05 by the multi-file event importer repair (`PASS WITH L
 _Last verified: 2026-10-05 by G18 - automatic continuation of a resumable enumeration (PASS: the missing transition `resumable -> scheduled` is implemented with one WP-Cron event per source and a 30-minute server-enforced cooldown; a resumable job now continues with no browser open and clears itself on completion; 256 assertions / 0 failed and 14/14 mutation negative controls proven; the Import History Progress cell reads `NOT scheduled` whenever nothing will run; **0 production writes, 0 deployments**)_
 
 _Last verified: 2026-10-27 by Halloween navigation continuity_
+_Last verified: 2026-10-27 by Halloween theme compatibility_

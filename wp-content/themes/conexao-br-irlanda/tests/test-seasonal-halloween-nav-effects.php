@@ -92,11 +92,13 @@ test_section( 'Navigation continuity contract' );
 $theme_root = dirname( __DIR__ );
 $nav_script = file_get_contents( $theme_root . '/assets/js/main.js' );
 $nav_styles = file_get_contents( $theme_root . '/assets/css/main.css' );
+$dark_styles = file_get_contents( $theme_root . '/assets/css/dark-mode.css' );
 $header_src = file_get_contents( $theme_root . '/header.php' );
 $witch_asset = file_get_contents( $theme_root . '/assets/images/halloween/witch-broom.svg' );
 
 assert_true( is_string( $nav_script ), 'Halloween navigation script is readable' );
 assert_true( is_string( $nav_styles ), 'Halloween navigation styles are readable' );
+assert_true( is_string( $dark_styles ), 'Halloween dark-mode styles are readable' );
 assert_true( is_string( $header_src ), 'Header source is readable' );
 assert_true( is_string( $witch_asset ), 'The witch illustration is readable' );
 
@@ -155,6 +157,33 @@ assert_contains(
 	$nav_styles,
 	'The animation uses the existing fixed, overflow-clipped decorative layer'
 );
+assert_contains(
+	'color: var(--halloween-bat-color);',
+	$nav_styles,
+	'The flying bat follows the scoped theme-aware silhouette token'
+);
+assert_contains(
+	'filter: drop-shadow(0 0 2px var(--halloween-bat-rim))',
+	$nav_styles,
+	'The navigation illustrations retain a visible rim in both themes'
+);
+assert_contains(
+	'var(--halloween-pumpkin-highlight, #ffbf69)',
+	$nav_script,
+	'The navigation pumpkin inherits theme colors without JavaScript theme state'
+);
+if ( is_string( $dark_styles ) ) {
+	assert_contains(
+		':root[data-theme="dark"] .seasonal-halloween-effect-layer',
+		$dark_styles,
+		'In-flight navigation effects use the existing root theme attribute'
+	);
+	assert_contains(
+		'--halloween-witch-glow: rgba(255, 174, 87, 0.9);',
+		$dark_styles,
+		'The witch receives theme-specific separation without changing its SVG'
+	);
+}
 assert_contains(
 	'pointer-events: none;',
 	$nav_styles,
