@@ -468,6 +468,89 @@ function ev_test_unrelated_cache_preservation() {
     echo "  Unrelated Cache Preservation Complete\n";
 }
 
+/** Regression test: ev-uncounty is excluded from county dropdown. */
+function ev_test_ev_uncounty_excluded() {
+    global $passed, $failed, $created_posts, $created_terms;
+
+    // Ensure ev-uncounty term does not appear in the county dropdown.
+    // This test creates events with valid counties and verifies that
+    // the invalid 'ev-uncounty' slug is filtered out of the rendered options.
+
+    // Flush any existing filter caches to ensure a clean state.
+    conexao_clear_event_filter_caches();
+
+    // Create test events with valid county terms.
+    $valid_counties = array( 'carlow', 'cavan', 'clare', 'cork', 'dublin', 'galway', 'laois', 'wicklow' );
+    foreach ( $valid_counties as $county ) {
+        $slug = 'ev-' . $county;
+        $term = term_exists( $slug, 'conexao_county' );
+        if ( ! $term || is_wp_error( $term ) ) {
+            $inserted = wp_insert_term( ucfirst( $county ), 'conexao_county', array( 'slug' => $slug ) );
+            if ( ! is_wp_error( $inserted ) ) {
+                $created_terms[ 'conexao_county' ][] = (int) $inserted['term_id'];
+                $post_id = wp_insert_post(
+                    array(
+                        'post_type'    => 'event',
+                        'post_title'   => 'Test event for ' . $county,
+                        'post_status'  => 'publish',
+                        'post_content' => 'Test event for filter cache.',
+                    )
+                );
+                $created_posts[] = (int) $post_id;
+                wp_set_object_terms( $post_id, $inserted['term_id'], 'conexao_county', false );
+            }
+        } else {
+            $post_id = wp_insert_post(
+                array(
+                    'post_type'    => 'event',
+                    'post_title'   => 'Test event for ' . $county,
+                    'post_status'  => 'publish',
+                    'post_content' => 'Test event for filter cache.',
+                )
+            );
+            $created_posts[] = (int) $post_id;
+            wp_set_object_terms( $post_id, $term['term_id'], 'conexao_county', false );
+        }
+    }
+
+    // Render the filter bar and check for ev-uncounty exclusion.
+    $output = ev_test_render_filters();
+
+    // ev-uncounty should NOT appear in the dropdown options.
+    if ( false !== strpos( $output, 'ev-uncounty' ) ) {
+        echo "  FAIL: ev-uncounty appears in the county dropdown options\\n";
+        $failed++;
+    } else {
+        echo "  PASS: ev-uncounty is excluded from the county dropdown\\n";
+        $passed++;
+    }
+
+    // Valid counties SHOULD appear in the dropdown options.
+    $all_valid_present = true;
+    foreach ( $valid_counties as $county ) {
+        $slug = 'ev-' . $county;
+        if ( false === strpos( $output, $slug ) ) {
+            echo "  FAIL: Valid county $slug not found in dropdown\\n";
+            $all_valid_present = false;
+        }
+    }
+    if ( $all_valid_present ) {
+        echo "  PASS: All valid county options are preserved\\n";
+        $passed++;
+    } else {
+        $failed++;
+    }
+
+    // 'Todas' should still appear and retain its behavior.
+    if ( false === strpos( $output, 'Todas' ) ) {
+        echo "  FAIL: 'Todas' option missing from dropdown\\n";
+        $failed++;
+    } else {
+        echo "  PASS: 'Todas' option is present\\n";
+        $passed++;
+    }
+}
+
 /** Run all tests. */
 ev_section( 'Event-Filter Cache Regression Suite' );
 ev_test_cache_miss_and_populate();
@@ -478,5 +561,6 @@ ev_test_taxonomy_invalidation();
 ev_test_language_isolation();
 ev_test_county_scoped_town_variants();
 ev_test_unrelated_cache_preservation();
+ev_test_ev_uncounty_excluded();
 ev_finish();
 $created_terms = array();
