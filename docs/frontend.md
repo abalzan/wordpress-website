@@ -383,6 +383,37 @@ date/window logic is duplicated. See the [navigation continuity report](reports/
 and [witch animation report](reports/2026-10-27-halloween-witch-animation-report.md)
 for implementation and verification details.
 
+### Occasional mobile appearances
+
+The existing Halloween effect initializer may show one spontaneous bat,
+pumpkin, ghost, or witch at a time on viewports up to 768px. The active
+`.seasonal-halloween-active-marker` remains the only eligibility signal; no
+date or occasion rule is duplicated in JavaScript. Before the first appearance,
+the scheduler waits a randomized 20–30 seconds; later appearances wait 25–35
+seconds after the preceding effect finishes. A failed safe-placement attempt
+is skipped and retried with the first-appearance range until something is
+actually shown.
+
+Pumpkins and ghosts use shuffled, bounded edge/corner candidates; bats and the
+witch use deliberate horizontal flight bands. Candidate bounds include CSS
+safe-area insets and an 8px clearance, and candidates that intersect visible
+text, navigation, controls, forms, or the active greeting are rejected. If no
+candidate is safe, the effect is skipped. Spontaneous animations complete at
+their CSS durations (bat 900ms, pumpkin 1,100ms, ghost 1,200ms, witch 3,000ms);
+the established navigation handoff durations remain unchanged.
+
+The single timer is cleared on hidden-page, pagehide, reduced-motion,
+desktop-width, or occasion-marker removal. Returning to an eligible visible
+page schedules a fresh bounded delay; elapsed hidden time never creates a
+burst. A direct navigation interaction retains priority and cancels an active
+spontaneous layer. The welcome-card dismissal remains independent, and theme
+changes recolor an in-flight effect through the existing `data-theme` tokens
+without restarting the timer. `prefers-reduced-motion: reduce` prevents new
+surprises and disables any in-flight CSS animation. The system adds no
+persistent preference, sound, asset request, or animation loop. See the
+[mobile experience report](reports/2026-10-27-halloween-mobile-experience-report.md)
+for actual responsive and timing evidence.
+
 _Last verified: 2026-09-26 by Stage L — Permanent Invariant Gates_
 _Last verified: 2026-10-03 by Stage 20 — hero preload fallback (Firefox speculative-loader cost bound)_
 
@@ -392,3 +423,4 @@ _Last verified: 2026-10-26 by Halloween homepage presentation refinement_
 _Last verified: 2026-10-27 by Halloween navigation continuity_
 _Last verified: 2026-10-27 by Halloween witch animation_
 _Last verified: 2026-10-27 by Halloween theme compatibility_
+_Last verified: 2026-10-27 by Halloween mobile spontaneous appearances_

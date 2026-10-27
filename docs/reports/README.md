@@ -176,6 +176,8 @@ The authorised follow-up to the BLOCKED finding above. The empty archive was a
 | [`2026-10-27-halloween-witch-animation-report.md`](2026-10-27-halloween-witch-animation-report.md) | Implementation, responsive browser checks, and test results for the witch animation. |
 | [`2026-10-27-halloween-theme-compatibility-plan.md`](2026-10-27-halloween-theme-compatibility-plan.md) | Plan for theme-aware Halloween presentation and navigation effects. |
 | [`2026-10-27-halloween-theme-compatibility-report.md`](2026-10-27-halloween-theme-compatibility-report.md) | Implementation, visual verification, tests, and remaining limitations. |
+| [`2026-10-27-halloween-mobile-experience-plan.md`](2026-10-27-halloween-mobile-experience-plan.md) | Plan for bounded, occasional mobile Halloween appearances. |
+| [`2026-10-27-halloween-mobile-experience-report.md`](2026-10-27-halloween-mobile-experience-report.md) | Implementation, cadence, responsive browser results, tests, and limitations. |
 
 ## Related: `docs/audit/` (engineering audits), `docs/engineering-standard.md`
 (the normative standard these reports are measured against).
@@ -259,3 +261,4 @@ _Last verified: 2026-10-05 by G18 - automatic continuation of a resumable enumer
 
 _Last verified: 2026-10-27 by Halloween navigation continuity_
 _Last verified: 2026-10-27 by Halloween theme compatibility_
+_Last verified: 2026-10-27 by Halloween mobile spontaneous appearances_

@@ -115,6 +115,19 @@ witch. The handoff does not share the welcome-card dismissal state. See the
 [navigation continuity report](../reports/2026-10-27-halloween-navigation-continuity-report.md)
 and [witch animation report](../reports/2026-10-27-halloween-witch-animation-report.md).
 
+The same initializer also owns sparse, spontaneous mobile appearances; it does
+not add another seasonal system. It requires the existing Halloween marker,
+waits 20–30 seconds before the first visible surprise and 25–35 seconds between
+completed effects, and uses the existing bat/pumpkin/ghost artwork plus the
+local witch SVG. Bounded viewport candidates account for safe-area insets and
+reject visible content and controls; a dense screen is allowed to skip an
+appearance. The one timer pauses across hidden/ineligible states, direct
+navigation remains higher priority, the welcome dismissal stays independent,
+and theme changes remain CSS-only. Reduced motion suppresses scheduling and
+animation. Full behavior and browser evidence are recorded in the
+[frontend contract](../frontend.md#occasional-mobile-appearances) and
+[mobile experience report](../reports/2026-10-27-halloween-mobile-experience-report.md).
+
 ## Homepage Apoiadores Carousel
 
 The Featured Apoiadores carousel is a compact supporting showcase **inside the homepage Hero** (right-hand column beside the copy at every breakpoint, including mobile), rendered by the reusable template part `template-parts/featured-sponsors.php`. It is a responsive, dependency-free carousel over the **existing sponsor data model** — no new content type, no duplicated supporter data:
@@ -955,3 +968,4 @@ _Last verified: 2026-10-26 by Halloween homepage presentation refinement_
 _Last verified: 2026-10-27 by Halloween navigation continuity_
 _Last verified: 2026-10-27 by Halloween witch animation_
 _Last verified: 2026-10-27 by Halloween theme compatibility_
+_Last verified: 2026-10-27 by Halloween mobile spontaneous appearances_
