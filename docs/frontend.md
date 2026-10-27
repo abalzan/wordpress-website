@@ -323,8 +323,28 @@ the speculative request. `tests/test-hero-preload-fallback.php`
 (`wp-content/themes/conexao-br-irlanda/tests/`) is the gate that keeps the
 desktop preload present and keeps its fallback pointing at the 1600w asset.
 
+### Seasonal Halloween presentation
+
+The Halloween welcome is a non-modal, centered overlay within the homepage
+hero. Its muted twilight backdrop intentionally de-emphasizes the sponsor
+carousel while open; dismissal restores the hero's original interactions. The
+markup is emitted only for the enabled Halloween occasion selected by the
+existing occasion engine, starts hidden until the deferred initializer runs,
+and uses session-only storage keyed by occasion and occurrence year.
+
+The centered PT/EN card uses original inline SVG artwork, a 44px close target,
+visible keyboard focus, and no focus trap. The hero content is inert while the
+presentation is open. Bats use short CSS flight and wing animations; reduced
+motion disables them. The seasonal styles live in
+`wp-content/themes/conexao-br-irlanda/assets/css/main.css` and behavior in the
+existing `assets/js/main.js` bundle. See the
+[theme reference](themes/conexao-br-irlanda.md#seasonal-halloween-welcome) and
+[implementation report](reports/2026-10-26-halloween-homepage-report.md) for
+the verified viewport and interaction results.
+
 _Last verified: 2026-09-26 by Stage L — Permanent Invariant Gates_
 _Last verified: 2026-10-03 by Stage 20 — hero preload fallback (Firefox speculative-loader cost bound)_
 
 _Last verified: 2026-10-08 by the Apoiadores single-page directory change (single-page directory; the shared pagination component renders nothing)_
 _Last verified: 2026-10-10 by UI polish Phase 3 — card-CTA 44px floor, single editorial measure, component-heading tokens_
+_Last verified: 2026-10-26 by Halloween homepage presentation refinement_

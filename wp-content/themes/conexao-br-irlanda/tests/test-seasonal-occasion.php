@@ -67,9 +67,21 @@ assert_true( is_bool( $halloween->is_active() ), 'Fixed annual eligibility is bo
 assert_true( is_bool( $christmas->is_active() ), 'Date-boundary eligibility is boolean' );
 assert_true( is_bool( conexao_seasonal_is_active() ), 'Seasonal screen active check returns a boolean' );
 
+$variant = conexao_seasonal_variant();
+assert_true( null === $variant || is_string( $variant ), 'Selected seasonal variant is a string or null' );
+if ( null !== $variant ) {
+	assert_true( in_array( $variant, array( 'christmas', 'halloween', 'new_year', 'st_patricks_day', 'valentines_day', 'easter' ), true ), 'Selected variant matches a configured occasion' );
+}
+
 $primary = ocons_get_primary_active();
 if ( $primary ) {
 	assert_true( $primary instanceof Conexao_Seasonal_Occasion, 'Primary active occasion is a Conexao_Seasonal_Occasion' );
+	$now = new DateTime( 'now', new DateTimeZone( 'Europe/Lisbon' ) );
+	$season_start = new DateTime( sprintf( '%d-10-16 00:00:00', (int) $now->format( 'Y' ) ), new DateTimeZone( 'Europe/Lisbon' ) );
+	$season_end   = new DateTime( sprintf( '%d-10-31 23:59:59', (int) $now->format( 'Y' ) ), new DateTimeZone( 'Europe/Lisbon' ) );
+	if ( $now >= $season_start && $now <= $season_end ) {
+		assert_equals( 'halloween', $primary->id, 'Halloween is the primary occasion within its active window' );
+	}
 }
 
 test_finish( 'seasonal-occasion' );

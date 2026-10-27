@@ -162,12 +162,23 @@ The authorised follow-up to the BLOCKED finding above. The empty archive was a
 
 | `2026-10-05-multi-file-import-browser-workflow.md` | **The multi-file importer's ADMIN UI still did not work after the backend repair — "click Import, the page refreshes, nothing happens".** This was **not** a backend problem: traced in real Chromium (Playwright), the multi-file form's `submit` event was **never intercepted** and **`preventDefault()` was never called** for it, so the browser performed its default submission — a **document-level** multipart POST to `admin-post.php` → 302 → **full page reload** — and the per-file requests only started on the *reloaded* document (from the `conexao_multi_batch` query string). The shared handler matched `form[data-conexao-import-form]`, an attribute **both** import forms carry. Fix, at the smallest correct layer: a **delegated `submit` listener** scoped by the hidden `action` input, with `event.preventDefault()` as the handler's **first statement**; one `FormData` built from the live form (all files, nonce, action, strategy) asserted against `files.length`; then the existing one-request-per-file orchestration; results rendered **in place**; form and control restored afterwards. The server gains **one additive response-shape switch** — JSON when `conexao_multi_response=json`, otherwise the **unchanged redirect**, so the **no-JavaScript fallback is preserved**, decided only **after** the capability and nonce checks. Also fixed: the `sprintf()` shim now supports positional `%1$s`/`%2$d`, so per-file rows show real counts instead of the raw template. Proven: **browser happy path 49/0** (mouse **and** keyboard activation), **negative control 3/0** (a mutated `admin.js` with `preventDefault()` removed is detected as navigating / document-POSTing / leaking the batch token into the URL), **in-process DOM+contract gate 41/0** with two `preventDefault()` mutation controls, backend suite still **149/149**, total POSTs exactly **1+N+1** with **0** document POSTs and **0** duplicate identities. New: `tests/test-multi-file-import-ui.php` (blocking) and the opt-in `tests/browser/verify-multi-file-import-browser.py`. **0 production writes, 0 deployments.** |
 
+## Seasonal homepage experience (2026-10-26)
+
+| Report | Content |
+|---|---|
+| [`2026-10-26-seasonal-foundation-plan.md`](2026-10-26-seasonal-foundation-plan.md) | Plan for the reusable seasonal occasion eligibility foundation. |
+| [`2026-10-26-seasonal-foundation-report.md`](2026-10-26-seasonal-foundation-report.md) | Completed seasonal occasion foundation; date selection and 15-day lead-in rules remain the engine's authority. |
+| [`2026-10-26-halloween-homepage-plan.md`](2026-10-26-halloween-homepage-plan.md) | Plan for the centered, responsive, dismissible Halloween hero presentation. |
+| [`2026-10-26-halloween-homepage-report.md`](2026-10-26-halloween-homepage-report.md) | Visual, interaction, localization, accessibility, and test results for the Halloween homepage refinement. |
+
 ## Related: `docs/audit/` (engineering audits), `docs/engineering-standard.md`
 (the normative standard these reports are measured against).
 
 _Last verified: 2026-09-27 by the recovery closeout_
 
 _Last verified: 2026-09-28 by the EN archive route 404 investigation_
+
+_Last verified: 2026-10-26 by Halloween homepage presentation refinement_
 
 _Last verified: 2026-09-28 by the B1 English Guides content rollout_
 

@@ -27,9 +27,58 @@
 		initAgencyFilters();
 		initEventFilters();
 		initSponsorsCarousel();
+		initHalloweenWelcome();
 		initInfiniteScroll();
 		initLoadMore();
 	});
+
+	// ===== Seasonal Halloween welcome =====
+	function initHalloweenWelcome() {
+		var presentation = document.querySelector('.seasonal-halloween-presentation[hidden]');
+		if (!presentation) return;
+
+		var closeButton = presentation.querySelector('.seasonal-halloween-close');
+		var dismissalKey = presentation.getAttribute('data-dismiss-key');
+		if (!closeButton || !dismissalKey) return;
+
+		var isDismissed = false;
+		try {
+			isDismissed = window.sessionStorage.getItem(dismissalKey) === 'dismissed';
+		} catch (error) {
+			// Storage may be unavailable; the presentation remains dismissible.
+		}
+		if (isDismissed) return;
+
+		var heroContent = presentation.closest('.hero-section')
+			? presentation.closest('.hero-section').querySelector('.hero-content')
+			: null;
+		if (heroContent) {
+			heroContent.setAttribute('inert', '');
+			heroContent.setAttribute('aria-hidden', 'true');
+		}
+
+		presentation.hidden = false;
+
+		closeButton.addEventListener('click', function() {
+			var returnFocus = document.activeElement === closeButton;
+			try {
+				window.sessionStorage.setItem(dismissalKey, 'dismissed');
+			} catch (error) {
+				// Dismissal still applies for this page when storage is unavailable.
+			}
+
+			presentation.hidden = true;
+			if (heroContent) {
+				heroContent.removeAttribute('inert');
+				heroContent.removeAttribute('aria-hidden');
+			}
+
+			if (returnFocus && heroContent) {
+				var focusTarget = heroContent.querySelector('.hero-ctas a[href]');
+				if (focusTarget) focusTarget.focus();
+			}
+		});
+	}
 
 	// ===== Theme Toggle =====
 	function initThemeToggle() {

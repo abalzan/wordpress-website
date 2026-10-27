@@ -68,6 +68,29 @@ The front-page hero is a single full-bleed cinematic image with overlaid text (t
 
 The hero background is **not** a Customizer setting — the `conexao_hero_image` Media control was removed (the green text-safe zone and castle/family/flags are part of the fixed asset). Only `conexao_hero_title` / `conexao_hero_subtitle` remain customisable.
 
+### Seasonal Halloween welcome
+
+`template-parts/halloween-hero.php` renders the seasonal presentation only
+when `ocons_get_primary_active()` selects an enabled Halloween occasion. It
+does not calculate dates or add another activation path. The presentation
+starts hidden so the ordinary hero remains available without JavaScript;
+`assets/js/main.js` reveals it unless the visitor dismissed it in the current
+tab session. The session key includes the occasion ID and occurrence year, so
+dismissal neither disables the occasion nor carries forward to another year.
+
+While open, a centered welcome card sits above a darkened, moonlit hero
+backdrop. This de-emphasizes the sponsor carousel while open and makes the
+hero content inert for pointer, keyboard, and assistive-technology
+interaction. Closing hides the presentation, restores the hero, and returns
+focus to the first hero CTA when the close button held focus. Sponsor data and
+carousel behavior are unchanged.
+
+The scene uses original inline SVG bat silhouettes with articulated wings and
+a carved, warmly lit pumpkin. Bat flight and wing movement use lightweight CSS
+animations that stop under `prefers-reduced-motion: reduce`. Greeting,
+supporting copy, CTA, and close label follow the current Polylang locale. See
+the dated Halloween report for the responsive and browser verification record.
+
 ## Homepage Apoiadores Carousel
 
 The Featured Apoiadores carousel is a compact supporting showcase **inside the homepage Hero** (right-hand column beside the copy at every breakpoint, including mobile), rendered by the reusable template part `template-parts/featured-sponsors.php`. It is a responsive, dependency-free carousel over the **existing sponsor data model** — no new content type, no duplicated supporter data:
@@ -904,3 +927,4 @@ _Last verified: 2026-10-03 by Stage 20 — hero preload fallback (Firefox specul
 _Last verified: 2026-10-08 by the Apoiadores single-page directory change (the archive renders its whole editor-curated set on one page; no pagination is generated and `/apoiadores/page/N/` keeps its 404)_
 _Last verified: 2026-10-10 by UI polish Phase 3 — card-CTA 44px floor and the 720px single editorial measure_
 _Last verified: 2026-10-12 by the Empregos job-search resources restoration — `template-parts/job-resources.php` renders on `/empregos/` again and its CTA follows the homepage "Acessar" pattern_
+_Last verified: 2026-10-26 by Halloween homepage presentation refinement_

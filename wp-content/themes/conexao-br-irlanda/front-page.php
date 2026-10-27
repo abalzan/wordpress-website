@@ -141,6 +141,16 @@ $hero_has_sponsors = ! empty( conexao_get_featured_sponsors() );
 			<?php endif; ?>
 		</div>
 	</div>
+	<?php
+	$active_occasion = function_exists( 'ocons_get_primary_active' ) ? ocons_get_primary_active() : null;
+	if ( $active_occasion && 'halloween' === $active_occasion->id && $active_occasion->enabled ) {
+		get_template_part(
+			'template-parts/halloween-hero',
+			null,
+			array( 'seasonal_occasion' => $active_occasion )
+		);
+	}
+	?>
 </section>
 
 <!-- Quick Access Categories -->
