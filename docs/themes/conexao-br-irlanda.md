@@ -91,6 +91,14 @@ animations that stop under `prefers-reduced-motion: reduce`. Greeting,
 supporting copy, CTA, and close label follow the current Polylang locale. See
 the dated Halloween report for the responsive and browser verification record.
 
+The header navigation marker is emitted only while the existing occasion
+engine selects Halloween. Eligible same-origin navigation effects use a
+one-shot, expiring tab-session handoff and resume only the remaining portion of
+their one-second animation; link activation is not delayed, and reduced motion
+prevents persistence and replay. The handoff does not share the welcome-card
+dismissal state. See the
+[navigation continuity report](../reports/2026-10-27-halloween-navigation-continuity-report.md).
+
 ## Homepage Apoiadores Carousel
 
 The Featured Apoiadores carousel is a compact supporting showcase **inside the homepage Hero** (right-hand column beside the copy at every breakpoint, including mobile), rendered by the reusable template part `template-parts/featured-sponsors.php`. It is a responsive, dependency-free carousel over the **existing sponsor data model** — no new content type, no duplicated supporter data:
@@ -928,3 +936,4 @@ _Last verified: 2026-10-08 by the Apoiadores single-page directory change (the a
 _Last verified: 2026-10-10 by UI polish Phase 3 — card-CTA 44px floor and the 720px single editorial measure_
 _Last verified: 2026-10-12 by the Empregos job-search resources restoration — `template-parts/job-resources.php` renders on `/empregos/` again and its CTA follows the homepage "Acessar" pattern_
 _Last verified: 2026-10-26 by Halloween homepage presentation refinement_
+_Last verified: 2026-10-27 by Halloween navigation continuity_

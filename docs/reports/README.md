@@ -170,6 +170,8 @@ The authorised follow-up to the BLOCKED finding above. The empty archive was a
 | [`2026-10-26-seasonal-foundation-report.md`](2026-10-26-seasonal-foundation-report.md) | Completed seasonal occasion foundation; date selection and 15-day lead-in rules remain the engine's authority. |
 | [`2026-10-26-halloween-homepage-plan.md`](2026-10-26-halloween-homepage-plan.md) | Plan for the centered, responsive, dismissible Halloween hero presentation. |
 | [`2026-10-26-halloween-homepage-report.md`](2026-10-26-halloween-homepage-report.md) | Visual, interaction, localization, accessibility, and test results for the Halloween homepage refinement. |
+| [`2026-10-27-halloween-navigation-continuity-plan.md`](2026-10-27-halloween-navigation-continuity-plan.md) | Plan for one-second Halloween navigation-effect continuity. |
+| [`2026-10-27-halloween-navigation-continuity-report.md`](2026-10-27-halloween-navigation-continuity-report.md) | Implementation, timing, accessibility, and verification results for cross-navigation Halloween effects. |
 
 ## Related: `docs/audit/` (engineering audits), `docs/engineering-standard.md`
 (the normative standard these reports are measured against).
@@ -249,3 +251,5 @@ _Last verified: 2026-10-02 by Stage 18 - manual translation operator workflow (r
 _Last verified: 2026-10-05 by the multi-file event importer repair (`PASS WITH LIMITATION`: the multi-file chain is proven end to end with 149 assertions and 4 mutation-verified negative controls; the only limitation is that no automated browser test could be run — Playwright is unavailable in this environment — so the UI layer is proven against the real rendered admin HTML rather than a live click path; **0 production writes, 0 deployments**)_
 
 _Last verified: 2026-10-05 by G18 - automatic continuation of a resumable enumeration (PASS: the missing transition `resumable -> scheduled` is implemented with one WP-Cron event per source and a 30-minute server-enforced cooldown; a resumable job now continues with no browser open and clears itself on completion; 256 assertions / 0 failed and 14/14 mutation negative controls proven; the Import History Progress cell reads `NOT scheduled` whenever nothing will run; **0 production writes, 0 deployments**)_
+
+_Last verified: 2026-10-27 by Halloween navigation continuity_

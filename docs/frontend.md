@@ -342,9 +342,31 @@ existing `assets/js/main.js` bundle. See the
 [implementation report](reports/2026-10-26-halloween-homepage-report.md) for
 the verified viewport and interaction results.
 
+During the active Halloween occasion, eligible same-origin primary-navigation
+clicks may carry a single allowlisted effect across a normal document
+navigation. The originating page records only a schema version, allowlisted
+effect, clock type and start time, target path, and viewport position in a
+Halloween-specific `sessionStorage` key; it does not persist query strings or
+fragments.
+The destination consumes and removes that record before validating its target,
+same-origin referrer, active-occasion marker, reduced-motion preference, and
+navigation type; refresh and back/forward loads cannot resume it. It resumes
+the CSS animation at the elapsed progress; the total visual
+duration is 1,000 ms, with a 1,500 ms state-expiry ceiling. A monotonic
+performance clock is used when available, with a bounded wall-clock fallback.
+Unavailable/invalid storage or unsupported clock continuity simply omits the
+cross-page effect; ordinary link navigation is never intercepted or delayed.
+If Navigation Timing cannot identify a fresh document navigation, continuity
+is also skipped rather than risking a stale replay.
+Reduced-motion users receive neither a persisted nor resumed effect. Welcome
+card dismissal remains a separate key and does not disable nav effects. See
+the [navigation continuity report](reports/2026-10-27-halloween-navigation-continuity-report.md)
+for implementation and verification details.
+
 _Last verified: 2026-09-26 by Stage L — Permanent Invariant Gates_
 _Last verified: 2026-10-03 by Stage 20 — hero preload fallback (Firefox speculative-loader cost bound)_
 
 _Last verified: 2026-10-08 by the Apoiadores single-page directory change (single-page directory; the shared pagination component renders nothing)_
 _Last verified: 2026-10-10 by UI polish Phase 3 — card-CTA 44px floor, single editorial measure, component-heading tokens_
 _Last verified: 2026-10-26 by Halloween homepage presentation refinement_
+_Last verified: 2026-10-27 by Halloween navigation continuity_

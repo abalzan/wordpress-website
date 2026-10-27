@@ -86,11 +86,10 @@ function initHalloweenNavEffects() {
 	'use strict';
 
 	var marker = document.querySelector('.seasonal-halloween-active-marker');
-	if (!marker) return;
-
-	if (prefersReducedMotion()) return;
-
 	var COOLDOWN_MS = 1500;
+	var ANIMATION_DURATION_MS = 1000;
+	var STATE_EXPIRY_MS = 1500;
+	var TRANSITION_KEY = 'conexao-halloween-nav-effect-v1';
 	var lastEffectTime = 0;
 	var effectInProgress = false;
 	var lastEffectName = null;
@@ -101,6 +100,129 @@ function initHalloweenNavEffects() {
 		'.theme-toggle, .mobile-search-toggle, .mobile-search-close, ' +
 		'.seasonal-halloween-close, [aria-controls="mobile-search"], ' +
 		'[aria-controls="mobile-menu"]';
+
+	function getClock() {
+		if (window.performance && typeof window.performance.now === 'function' &&
+			Number.isFinite(window.performance.timeOrigin)) {
+			return {
+				type: 'performance',
+				value: window.performance.timeOrigin + window.performance.now()
+			};
+		}
+		return { type: 'wall', value: Date.now() };
+	}
+
+	function removeTransitionState() {
+		try {
+			window.sessionStorage.removeItem(TRANSITION_KEY);
+		} catch (error) {
+			// Storage may be unavailable; the animation remains optional.
+		}
+	}
+
+	function isNormalDocumentNavigation() {
+		if (!window.performance ||
+			typeof window.performance.getEntriesByType !== 'function') {
+			return false;
+		}
+
+		var navigationEntries = window.performance.getEntriesByType('navigation');
+		return !!navigationEntries.length && navigationEntries[0].type === 'navigate';
+	}
+
+	function consumeTransitionState() {
+		var rawState;
+		try {
+			rawState = window.sessionStorage.getItem(TRANSITION_KEY);
+			if (rawState !== null) {
+				window.sessionStorage.removeItem(TRANSITION_KEY);
+			}
+		} catch (error) {
+			return null;
+		}
+
+		if (!rawState) return null;
+
+		var state;
+		try {
+			state = JSON.parse(rawState);
+		} catch (error) {
+			return null;
+		}
+
+		if (!state || Array.isArray(state) || state.version !== 1 ||
+			EFFECTS.indexOf(state.effect) === -1 ||
+			!Number.isFinite(state.startedAt) ||
+			!Number.isFinite(state.x) || !Number.isFinite(state.y) ||
+			('performance' !== state.clock && 'wall' !== state.clock) ||
+			typeof state.target !== 'string') {
+			return null;
+		}
+
+		if (!isNormalDocumentNavigation()) return null;
+
+		try {
+			var target = new URL(state.target, window.location.origin);
+			var referrer = new URL(document.referrer);
+			if (state.target.charAt(0) !== '/' ||
+				target.origin !== window.location.origin ||
+				target.pathname !== window.location.pathname ||
+				target.search || target.hash ||
+				referrer.origin !== window.location.origin) {
+				return null;
+			}
+		} catch (error) {
+			return null;
+		}
+
+		var now = getClock();
+		if (now.type !== state.clock) return null;
+
+		var elapsedMs = now.value - state.startedAt;
+		if (!Number.isFinite(elapsedMs) || elapsedMs < 0 ||
+			elapsedMs > STATE_EXPIRY_MS ||
+			state.x < 0 || state.x > window.innerWidth ||
+			state.y < 0 || state.y > window.innerHeight) {
+			return null;
+		}
+
+		return {
+			effect: state.effect,
+			elapsedMs: elapsedMs,
+			x: state.x,
+			y: state.y
+		};
+	}
+
+	function persistTransitionState(effectName, startedAt, clockType, target, centerX, centerY) {
+		var state = {
+			version: 1,
+			effect: effectName,
+			startedAt: startedAt,
+			clock: clockType,
+			target: target,
+			x: centerX,
+			y: centerY
+		};
+		var rawState;
+
+		try {
+			rawState = JSON.stringify(state);
+			window.sessionStorage.setItem(TRANSITION_KEY, rawState);
+		} catch (error) {
+			return;
+		}
+
+		window.setTimeout(function() {
+			try {
+				if (window.sessionStorage.getItem(TRANSITION_KEY) === rawState) {
+					window.sessionStorage.removeItem(TRANSITION_KEY);
+				}
+			} catch (error) {
+				// The stored record is short-lived and still validated on use.
+			}
+		}, STATE_EXPIRY_MS);
+	}
 
 	function pickEffect() {
 		var available = EFFECTS.filter(function(name) {
@@ -147,17 +269,17 @@ function initHalloweenNavEffects() {
 		return '';
 	}
 
-	function playEffect(effectName, centerX, centerY) {
-		if (effectInProgress) return;
+	function playEffect(effectName, centerX, centerY, elapsedMs) {
+		if (effectInProgress || EFFECTS.indexOf(effectName) === -1 ||
+			elapsedMs >= ANIMATION_DURATION_MS) return;
 		effectInProgress = true;
-		lastEffectTime = Date.now();
+		lastEffectTime = getClock().value;
 
 		var layer = document.createElement('div');
 		layer.className = 'seasonal-halloween-effect-layer';
 		layer.setAttribute('aria-hidden', 'true');
 		document.body.appendChild(layer);
 
-		var cleanupTimeout;
 		function cleanup() {
 			try {
 				if (layer && layer.parentNode) {
@@ -169,11 +291,17 @@ function initHalloweenNavEffects() {
 			effectInProgress = false;
 		}
 
+		function setProgress(element) {
+			element.style.animationDuration = ANIMATION_DURATION_MS + 'ms';
+			element.style.animationDelay = '-' + elapsedMs + 'ms';
+		}
+
 		try {
 			if ('bat' === effectName) {
 				var bat = document.createElement('div');
 				bat.className = 'seasonal-halloween-bat-nav flying';
 				bat.innerHTML = createSvgMarkup('bat');
+				setProgress(bat);
 				layer.appendChild(bat);
 				for (var p = 0; p < 3; p++) {
 					var particle = document.createElement('div');
@@ -184,26 +312,28 @@ function initHalloweenNavEffects() {
 					particle.style.top = (centerY - 10 - p * 8) + 'px';
 					particle.style.setProperty('--px', '-' + (20 + p * 12) + 'px');
 					particle.style.setProperty('--py', (10 + p * 8) + 'px');
+					particle.style.animationDuration = '500ms';
+					particle.style.animationDelay = '-' + elapsedMs + 'ms';
 					layer.appendChild(particle);
 				}
-				cleanupTimeout = setTimeout(cleanup, 950);
 			} else if ('pumpkin' === effectName) {
 				var pumpkin = document.createElement('div');
 				pumpkin.className = 'seasonal-halloween-pumpkin-nav laughing';
 				pumpkin.innerHTML = createSvgMarkup('pumpkin');
 				pumpkin.style.left = (centerX - 32) + 'px';
 				pumpkin.style.top = (centerY - 32) + 'px';
+				setProgress(pumpkin);
 				layer.appendChild(pumpkin);
-				cleanupTimeout = setTimeout(cleanup, 1150);
 			} else if ('ghost' === effectName) {
 				var ghost = document.createElement('div');
 				ghost.className = 'seasonal-halloween-ghost-nav floating';
 				ghost.innerHTML = createSvgMarkup('ghost');
 				ghost.style.left = (centerX - 26) + 'px';
 				ghost.style.top = (centerY - 40) + 'px';
+				setProgress(ghost);
 				layer.appendChild(ghost);
-				cleanupTimeout = setTimeout(cleanup, 1250);
 			}
+			window.setTimeout(cleanup, Math.max(0, ANIMATION_DURATION_MS - elapsedMs));
 		} catch (err) {
 			cleanup();
 		}
@@ -215,7 +345,9 @@ function initHalloweenNavEffects() {
 
 	function handleClick(event) {
 		try {
-			var now = Date.now();
+			if (prefersReducedMotion()) return;
+
+			var now = getClock().value;
 			if (now - lastEffectTime < COOLDOWN_MS) return;
 			if (effectInProgress) return;
 
@@ -228,22 +360,44 @@ function initHalloweenNavEffects() {
 
 			var href = link.getAttribute('href');
 			if (!href) return;
+			if (link.hasAttribute('download')) return;
+
+			var targetName = link.getAttribute('target');
+			if (targetName && '_self' !== targetName.toLowerCase()) return;
 
 			try {
 				var url = new URL(href, window.location.href);
-				if (url.hostname !== window.location.hostname) return;
+				if (url.origin !== window.location.origin) return;
 			} catch (err) {
 				return;
 			}
 
 			var rect = link.getBoundingClientRect();
-			var centerX = rect.left + rect.width / 2;
-			var centerY = rect.top + rect.height / 2;
+			var centerX = Math.max(0, Math.min(window.innerWidth, rect.left + rect.width / 2));
+			var centerY = Math.max(0, Math.min(window.innerHeight, rect.top + rect.height / 2));
+			var effectName = pickEffect();
+			var clock = getClock();
 
-			playEffect(pickEffect(), centerX, centerY);
+			persistTransitionState(effectName, clock.value, clock.type, url.pathname, centerX, centerY);
+			playEffect(effectName, centerX, centerY, 0);
 		} catch (err) {
 			// Never let the decorative system break navigation.
 		}
+	}
+
+	var transition = consumeTransitionState();
+	if (!marker || prefersReducedMotion()) {
+		removeTransitionState();
+		return;
+	}
+
+	if (transition && transition.elapsedMs < ANIMATION_DURATION_MS) {
+		playEffect(
+			transition.effect,
+			transition.x,
+			transition.y,
+			transition.elapsedMs
+		);
 	}
 
 	document.addEventListener('click', handleClick, { passive: true });
